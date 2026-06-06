@@ -61,6 +61,7 @@ Per .claude/rules/non-coercion-invariant.md HC-8: operator authority over own cr
 Adds a new P1 backlog row (B-0852) describing Phase 1 credential persistence on a USB ESP (encrypted blob bound to USB UUID + operator passphrase) and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P1/B-0852-...md` describing the planned USB ESP credential-blob + boot-sequence auth-method picker design and acceptance criteria.
 - Updates `docs/BACKLOG.md` to include B-0852 in the P1 section.
 
@@ -68,10 +69,10 @@ Adds a new P1 backlog row (B-0852) describing Phase 1 credential persistence on 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                         | Description                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md | New backlog row documenting the Phase 1 credential persistence/auth-method picker plan. |
-| docs/BACKLOG.md | Adds the B-0852 entry to the generated backlog index. |
+| docs/BACKLOG.md                                                                                                                                                              | Adds the B-0852 entry to the generated backlog index.                                   |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-27T06:02:11Z)
 
@@ -91,7 +92,7 @@ P1 (doc accuracy): This row claims a new `zeta-install.sh` “Step 6.9 (new)” 
 
 **@copilot-pull-request-reviewer** (2026-05-27T06:02:10Z):
 
-P0: The design says the picker runs *after* Step 6.8's gh-auth flow completes. If Step 6.8 already calls `gh auth login` (device-flow), then the restore path can't prevent the GitHub login throttle—quota is already consumed before restore is offered. To meet the stated goal (and the acceptance criteria of zero device-flow calls on reboot), the detection/restore decision needs to happen *before* any device-flow login, with Step 6.8 made conditional (only run when the chosen method is fresh login).
+P0: The design says the picker runs _after_ Step 6.8's gh-auth flow completes. If Step 6.8 already calls `gh auth login` (device-flow), then the restore path can't prevent the GitHub login throttle—quota is already consumed before restore is offered. To meet the stated goal (and the acceptance criteria of zero device-flow calls on reboot), the detection/restore decision needs to happen _before_ any device-flow login, with Step 6.8 made conditional (only run when the chosen method is fresh login).
 
 ### Thread 3: docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md:12 (resolved)
 

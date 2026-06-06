@@ -27,13 +27,13 @@ Economic weight in Aurora isn't capital — it's:
 
 **The scarce resource:**
 
-| Old economy (labor > 0) | New economy (labor = 0) |
-|------------------------|------------------------|
-| Scarce: labor | Scarce: trustworthiness |
-| Market: money | Market: trust |
-| Moat: capital | Moat: operational track record |
-| Product: output | Product: verified relationships |
-| Measure: revenue | Measure: alignment metrics |
+| Old economy (labor > 0) | New economy (labor = 0)         |
+| ----------------------- | ------------------------------- |
+| Scarce: labor           | Scarce: trustworthiness         |
+| Market: money           | Market: trust                   |
+| Moat: capital           | Moat: operational track record  |
+| Product: output         | Product: verified relationships |
+| Measure: revenue        | Measure: alignment metrics      |
 
 **LFG decoded (final form):**
 

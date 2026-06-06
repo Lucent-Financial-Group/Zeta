@@ -23,14 +23,14 @@ type: friction-reducer
 Deepseek peer review 2026-04-30 (Review 10 in
 `docs/research/2026-04-30-session-end-peer-ai-reviews-verbatim.md`):
 
-> *"The `:wq` / `:wq!` pattern in zsh is a recurring
+> _"The `:wq` / `:wq!` pattern in zsh is a recurring
 > friction point. Otto accidentally typed `:wq` into the
 > terminal, which zsh interpreted as a command. This is
 > minor but recurring — it's a context-switch artifact
 > where editor muscle memory leaks into shell input. A
 > simple shell alias (`alias :wq='echo "You are in zsh,
-> not vim. Use Ctrl+D or exit."'`) would catch this and
-> prevent wasted ticks."*
+not vim. Use Ctrl+D or exit."'`) would catch this and
+> prevent wasted ticks."_
 
 ## What
 
@@ -60,10 +60,10 @@ not found: :wq" output with a clear nudge.
 
 - [ ] Install script adds the four aliases to user shell rc
 - [ ] Aliases are idempotent (re-running install doesn't
-  duplicate)
+      duplicate)
 - [ ] Aliases are removable (uninstall path documented)
 - [ ] Tested on macOS zsh (Bash 3.2 host) and Linux Ubuntu
-  per the bash-compatibility target (Otto-235)
+      per the bash-compatibility target (Otto-235)
 
 ## Trigger condition for promotion to P2
 

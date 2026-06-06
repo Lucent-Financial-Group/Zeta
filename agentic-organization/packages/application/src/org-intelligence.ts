@@ -7,7 +7,13 @@
  */
 
 import { DocScopeKind, type DocEntity, type DocUnit } from "../../domain/src/index.ts";
-import { deriveImpact, deriveOwnership, deriveChangeHistory, deriveNeighborhood, type GraphStoreReader } from "./knowledge-graph-intelligence.ts";
+import {
+  deriveImpact,
+  deriveOwnership,
+  deriveChangeHistory,
+  deriveNeighborhood,
+  type GraphStoreReader,
+} from "./knowledge-graph-intelligence.ts";
 import { runRetrieval } from "./document-retrieval.ts";
 
 export type ServiceIntelligence = {
@@ -57,7 +63,11 @@ export async function summarizeService(
     docCorpus,
     docEntities,
   );
-  const describingDocs = retrieval.hits.map((h) => ({ docUnitId: h.unit.docUnitId, title: h.unit.title, summary: h.unit.summary }));
+  const describingDocs = retrieval.hits.map((h) => ({
+    docUnitId: h.unit.docUnitId,
+    title: h.unit.title,
+    summary: h.unit.summary,
+  }));
 
   return {
     serviceNodeId,

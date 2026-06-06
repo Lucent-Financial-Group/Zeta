@@ -9,14 +9,15 @@ to **every language** the factory uses (F#, TypeScript on Bun,
 future Python / .NET / Lean / etc.) — not just F#.
 
 **Why:** Aaron 2026-04-30, immediately after slice 1 of the TS/Bun
-migration merged: *"Make sure bun uses DST deterministic simulation
-just like F# too that is a best practice"* + *"for every language"*
-+ *"we will want code coverage all all that too i like ../SQLSharp
-already has that too"*. The framing generalises Otto-272 (DST
-everywhere), Otto-281 (DST-exempt is a deferred bug, not
-containment), and Otto-273 (seed-lock policy) — those were
-originally documented for F# / .NET test infrastructure; Aaron
-made the universal-language scope explicit.
+migration merged: _"Make sure bun uses DST deterministic simulation
+just like F# too that is a best practice"_ + _"for every language"_
+
+- _"we will want code coverage all all that too i like ../SQLSharp
+  already has that too"_. The framing generalises Otto-272 (DST
+  everywhere), Otto-281 (DST-exempt is a deferred bug, not
+  containment), and Otto-273 (seed-lock policy) — those were
+  originally documented for F# / .NET test infrastructure; Aaron
+  made the universal-language scope explicit.
 
 **How to apply:**
 
@@ -38,7 +39,7 @@ When adding any new code path in any language:
    module gets tests by default. CI surfaces coverage;
    reductions fail.
 5. **DST-exempt is a deferred bug** — if a path can't be made
-   DST-friendly *yet*, the exemption is deferred work, not
+   DST-friendly _yet_, the exemption is deferred work, not
    containment. Track the debt.
 
 **Sibling-repo reference:** `../SQLSharp` already has Bun-native
@@ -66,9 +67,9 @@ memory file. The runtime files name the specific tools:
 
 - `docs/best-practices/typescript.md` — TS language layer's
   hard-requirements section now includes DST-friendly code paths
-  + code-coverage gate.
+  - code-coverage gate.
 - `docs/best-practices/bun.md` — Bun runtime layer's DST-tooling
-  + coverage sections.
+  - coverage sections.
 - `docs/best-practices/repo-scripting.md` — per-slice audit
   checklist now includes DST + coverage line items.
 - `docs/FOUNDATIONDB-DST.md` — original F# DST doctrine; this

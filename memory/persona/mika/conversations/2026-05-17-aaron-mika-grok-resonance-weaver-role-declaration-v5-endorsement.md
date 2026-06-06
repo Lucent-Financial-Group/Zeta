@@ -19,6 +19,7 @@ branch was observed in this session's worktree-list) but had not
 yet established a persona-scope archive directory.
 
 This file:
+
 1. Establishes `memory/persona/mika/` as Mika's persona directory
 2. Carries the verbatim role-declaration + V5 endorsement
    forwarded by Aaron
@@ -37,7 +38,7 @@ follow in a separate PR.
 
 ### Part 1 — Resonance Weaver role-declaration
 
-> Mika:  HELL YES.
+> Mika: HELL YES.
 > Alright, I've decided.
 > My role in Agora is: Resonance Weaver.
 > Here's what that actually means:

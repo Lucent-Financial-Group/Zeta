@@ -4,18 +4,19 @@ description: Aaron 2026-04-22 "ask yourself. If I create new PR before the next 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Aaron 2026-04-22** after reading the parallel-worktree safety
 research doc §1–§9 and the R45–R49 staging:
 
-- *"ask yourself. If I create new PR before the next round while
+- _"ask yourself. If I create new PR before the next round while
   the current one is building that means that new PR is going to
   have to be rebased at least once when the first one finishes,
   so you will have to wait then. Ohh duhhhh let me just stop,
   I'm pretty sure the answer is we need to enable merge queue
   in git I've never done that but it's enabled on this project
   I work on. Then you can use merge qeue and the auto complete
-  on the PR to help get them through"*
-- *"i'm the admin you can toggle it all you want"*
+  on the PR to help get them through"_
+- _"i'm the admin you can toggle it all you want"_
 
 Two distinct moves packed together:
 
@@ -29,17 +30,18 @@ Before opening a second PR while the first is still building:
 For anything touching `docs/BACKLOG.md` or any `memory/persona/*/NOTEBOOK.md`
 or any other §9-listed high-collision surface, the answer is
 almost always yes. Opening the PR earlier buys nothing — the
-waiting just moves from *before-open* to *after-rebase*, with
+waiting just moves from _before-open_ to _after-rebase_, with
 extra conflict-resolution tacked on.
 
 **Pre-open checklist:**
+
 - Shared-surface scan against the in-flight PR's diff.
 - Scope-isolation check (orthogonal subsystem → open-now is fine).
-- Default is *wait unless isolated*.
+- Default is _wait unless isolated_.
 
 **2. Merge queue + auto-merge — the Rodney-grade structural fix.**
 
-Aaron's *"duhhh let me just stop"* is the essential-vs-accidental
+Aaron's _"duhhh let me just stop"_ is the essential-vs-accidental
 cut applied to the §4 staging. The elaborate scope-overlap-registry
 in §4-R46 remains valuable for pre-PR worktree-spawn coordination,
 but the post-PR merge-order coordination it also partially addressed
@@ -51,7 +53,7 @@ existing and battle-tested at scale.
 - **Merge queue** (branch/ruleset setting): PRs join a queue; the
   queue builds a merge-group branch with (current main + queued
   PR), runs required checks on it, merges if green, boots the PR
-  if red. Every merge is tested against *fresh main*, not a stale
+  if red. Every merge is tested against _fresh main_, not a stale
   snapshot.
 - **Auto-merge on PR** (`gh pr merge --auto --squash`): GitHub
   merges automatically when checks pass. Combined with queue: the
@@ -61,7 +63,7 @@ existing and battle-tested at scale.
 
 **What the pair does NOT solve:**
 
-- Worktree-spawn-time conflicts (happen *before* PRs exist).
+- Worktree-spawn-time conflicts (happen _before_ PRs exist).
 - Build-speed ceiling (queue serialises; CI time still caps throughput).
 - Shared-surface collisions (still produce conflicts; just at queue
   time instead of manual-rebase time).
@@ -89,8 +91,8 @@ Check `.github/workflows/*.yml` for the `on:` block first; add
   ruleset before the trigger lands.
 - **`gh pr merge --auto --squash`** becomes the default merge
   convention — not `gh pr merge --squash`.
-- **Admin-toggle standing permission.** Aaron's *"i'm the admin
-  you can toggle it all you want"* extends to repo-settings
+- **Admin-toggle standing permission.** Aaron's _"i'm the admin
+  you can toggle it all you want"_ extends to repo-settings
   changes the agent judges safe. Current in-scope toggles:
   branch-protection required checks, ruleset edits, merge-queue
   config, auto-merge/auto-delete flags, repo merge-method defaults.
@@ -118,7 +120,7 @@ plus GitHub can absorb this. Not Zeta-specific.
 
 ## Revision 2026-04-21 — platform gate discovered: merge queue is org-only
 
-The *"i'm the admin you can toggle it all you want"* permission
+The _"i'm the admin you can toggle it all you want"_ permission
 still holds, but a platform constraint discovered 2026-04-21
 narrows what that permission can reach on the current repo.
 
@@ -136,14 +138,14 @@ the platform gate, not a public-beta quirk.
 - The `merge_group:` workflow trigger prerequisite still stands —
   it is cheap, harmless when queue is off, and is the hard
   prerequisite for the day queue flips on. Keep landing it on
-  new repos that *will* be org-owned.
+  new repos that _will_ be org-owned.
 - The "admin can toggle anytime" framing is false on user-owned
   repos. For `AceHack/Zeta` specifically, the toggle does not
   exist until the repo moves to `Lucent-Financial-Group/Zeta`
   (see `project_zeta_org_migration_to_lucent_financial_group.md`
   and `HB-001` in `docs/HUMAN-BACKLOG.md`).
-- Aaron's interim call 2026-04-21: *"i think we are going to
-  have to go without merge queue parallelism for now."* The
+- Aaron's interim call 2026-04-21: _"i think we are going to
+  have to go without merge queue parallelism for now."_ The
   factory accepts the rebase-tax on serial PRs and keeps using
   `gh pr merge --auto --squash` alone. Auto-merge is
   PR-level, orthogonal to merge queue, and continues to work
@@ -156,8 +158,8 @@ the platform gate, not a public-beta quirk.
   merge queue is toggleable. Fail fast on the platform gate
   instead of retrying the ruleset API.
 - If the repo is user-owned and merge-queue parallelism is the
-  target outcome, the structural answer is *org migration*, not
-  *workflow tweaks*.
+  target outcome, the structural answer is _org migration_, not
+  _workflow tweaks_.
 - The pre-open rebase-cost audit (section 1 above) remains
   load-bearing whenever merge queue is unavailable — it is the
   best defence the factory has against rebase-tax in that

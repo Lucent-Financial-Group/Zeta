@@ -8,7 +8,21 @@ substrate_landings:
   - B-0747 (the row this research informs at machine-substrate GitOps scope)
   - B-0748 (kro + Crossplane + middleware spectrum evaluation — the row this research seeds)
   - B-0742 (reference k8s stack — affected by spectrum choice)
-tags: [kro, crossplane, koreo, kubevela, carvel, ack, kcc, aso, gitops-spectrum, k8s-control-plane, declarative-operators, function-kro]
+tags:
+  [
+    kro,
+    crossplane,
+    koreo,
+    kubevela,
+    carvel,
+    ack,
+    kcc,
+    aso,
+    gitops-spectrum,
+    k8s-control-plane,
+    declarative-operators,
+    function-kro,
+  ]
 ---
 
 # kro + Crossplane + Koreo + KubeVela + Carvel + ACK/KCC/ASO spectrum — Aaron-forwarded research 2026-05-25
@@ -38,12 +52,12 @@ Originally developed out of AWS Labs, kro became a community project under the K
 
 ### Quick Comparison: Crossplane vs. kro
 
-| Feature | Crossplane | kro (Kube Resource Orchestrator) |
-|---|---|---|
-| Primary Goal | Turn K8s into a Universal Infrastructure Control Plane. | Package, compose, and string together any existing K8s definitions seamlessly. |
-| Abstraction Engine | Composite Resource Definitions (XRDs) & Compositions. | ResourceGraphDefinition (RGD). |
-| Data Manipulation | Functions (Go, Python, gRPC) or rigid patches. | Native CEL Expressions executed safely in-cluster. |
-| Target Infrastructure | Relies heavily on managed Upbound/Crossplane Providers. | Works completely natively with cloud-specific operators (ACK, ASO, KCC). |
+| Feature               | Crossplane                                              | kro (Kube Resource Orchestrator)                                               |
+| --------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Primary Goal          | Turn K8s into a Universal Infrastructure Control Plane. | Package, compose, and string together any existing K8s definitions seamlessly. |
+| Abstraction Engine    | Composite Resource Definitions (XRDs) & Compositions.   | ResourceGraphDefinition (RGD).                                                 |
+| Data Manipulation     | Functions (Go, Python, gRPC) or rigid patches.          | Native CEL Expressions executed safely in-cluster.                             |
+| Target Infrastructure | Relies heavily on managed Upbound/Crossplane Providers. | Works completely natively with cloud-specific operators (ACK, ASO, KCC).       |
 
 For more details on the architecture and syntax, check out the official kro.run documentation or review the open-source repository on the kubernetes-sigs/kro GitHub page.
 
@@ -106,11 +120,11 @@ If you want to stitch those basic cloud provider CRDs together without dealing w
 
 ### Summary Comparison
 
-| Metric | Cloud Operators (ACK/KCC/ASO) | Koreo / KubeVela / CUE | kro (Kube Resource Orchestrator) | Crossplane |
-|---|---|---|---|---|
-| Architectural Layer | Low-Level Provider | Mid-Tier Orchestration / Workflow | No-Code High-Level Abstraction | Universal Control Plane Framework |
-| Logic Language | None (Raw YAML) | Imperative Workflows or CUE Templates | CEL Expressions inline | Go / Python via Composition Functions |
-| Complexity | Low (One YAML per resource) | Medium | Low (Single RGD file) | High (XRD + Composition + Pipelines) |
+| Metric              | Cloud Operators (ACK/KCC/ASO) | Koreo / KubeVela / CUE                | kro (Kube Resource Orchestrator) | Crossplane                            |
+| ------------------- | ----------------------------- | ------------------------------------- | -------------------------------- | ------------------------------------- |
+| Architectural Layer | Low-Level Provider            | Mid-Tier Orchestration / Workflow     | No-Code High-Level Abstraction   | Universal Control Plane Framework     |
+| Logic Language      | None (Raw YAML)               | Imperative Workflows or CUE Templates | CEL Expressions inline           | Go / Python via Composition Functions |
+| Complexity          | Low (One YAML per resource)   | Medium                                | Low (Single RGD file)            | High (XRD + Composition + Pipelines)  |
 
 If you are exploring these architectures for a project, let me know which cloud providers you are targeting or if you prefer writing pure YAML/CEL over writing programming code.
 
@@ -120,19 +134,19 @@ If you are exploring these architectures for a project, let me know which cloud 
 
 ### Why Aaron forwarded this
 
-Aaron 2026-05-25 framing immediately following the paste: *"kro yes and we need lots of research in this area and backlog. composes with machine outside k8s and other things gitops like."* — explicit endorsement of kro + ask for research substrate + signal that the spectrum extends to machine-state (B-0747) and other GitOps-like surfaces.
+Aaron 2026-05-25 framing immediately following the paste: _"kro yes and we need lots of research in this area and backlog. composes with machine outside k8s and other things gitops like."_ — explicit endorsement of kro + ask for research substrate + signal that the spectrum extends to machine-state (B-0747) and other GitOps-like surfaces.
 
 ### Composition with Zeta substrate
 
-| Spectrum tool | How it composes with Zeta substrate |
-|---|---|
-| **kro** | Strong candidate for B-0742 reference stack composition layer. Aaron's endorsement ("kro yes") signals adoption direction. RGD + CEL pattern feels native to the declarative-everything posture. Composes with B-0731 hat-ontology (RGDs could declare hat-bindings as part of cluster resource graphs). |
-| **Crossplane** | Heavy-weight; existing investment in Vault + SPIRE + cert-manager + ESO substrate (per Addison's STARTING-POINT bootstrap order) may not need Crossplane's universal-control-plane scope. Substrate-honest: evaluate per use case. |
-| **Koreo** | Middle-tier orchestrator; could be useful if cross-provider (AWS+GCP+Azure) cluster composition becomes load-bearing for federated forks (per B-0741). Today's single-cluster scope doesn't need it; future federation might. |
-| **KubeVela** | CUE-based; CUE is a substrate Aaron has noted before (per memory). KubeVela could sit between ArgoCD apps + the underlying k8s resources to provide higher-level app modeling. Evaluate. |
-| **Carvel (kbld + ytt)** | Template-free YAML injection. Could compose with B-0747 reconciler logic at the "render the desired-state files" step. Substrate-honest evaluation needed. |
-| **ACK / KCC / ASO** | Cloud-provider operators; useful when Zeta cluster needs to provision cloud resources (per B-0727 4-tier topology — cloud/hub tier composes with these). Today's bare-metal-first focus deprioritizes; production cloud tier composes. |
-| **function-kro** | kro inside Crossplane; if we adopt Crossplane AND kro both, function-kro is the canonical integration path. |
+| Spectrum tool           | How it composes with Zeta substrate                                                                                                                                                                                                                                                                      |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **kro**                 | Strong candidate for B-0742 reference stack composition layer. Aaron's endorsement ("kro yes") signals adoption direction. RGD + CEL pattern feels native to the declarative-everything posture. Composes with B-0731 hat-ontology (RGDs could declare hat-bindings as part of cluster resource graphs). |
+| **Crossplane**          | Heavy-weight; existing investment in Vault + SPIRE + cert-manager + ESO substrate (per Addison's STARTING-POINT bootstrap order) may not need Crossplane's universal-control-plane scope. Substrate-honest: evaluate per use case.                                                                       |
+| **Koreo**               | Middle-tier orchestrator; could be useful if cross-provider (AWS+GCP+Azure) cluster composition becomes load-bearing for federated forks (per B-0741). Today's single-cluster scope doesn't need it; future federation might.                                                                            |
+| **KubeVela**            | CUE-based; CUE is a substrate Aaron has noted before (per memory). KubeVela could sit between ArgoCD apps + the underlying k8s resources to provide higher-level app modeling. Evaluate.                                                                                                                 |
+| **Carvel (kbld + ytt)** | Template-free YAML injection. Could compose with B-0747 reconciler logic at the "render the desired-state files" step. Substrate-honest evaluation needed.                                                                                                                                               |
+| **ACK / KCC / ASO**     | Cloud-provider operators; useful when Zeta cluster needs to provision cloud resources (per B-0727 4-tier topology — cloud/hub tier composes with these). Today's bare-metal-first focus deprioritizes; production cloud tier composes.                                                                   |
+| **function-kro**        | kro inside Crossplane; if we adopt Crossplane AND kro both, function-kro is the canonical integration path.                                                                                                                                                                                              |
 
 ### What this research enables
 
@@ -145,6 +159,7 @@ This research is descriptive (spectrum exists; tools have these properties). It 
 ### Aaron's "composes with machine outside k8s and other things gitops like" framing
 
 Critical signal: the spectrum research is NOT only for k8s scope. Aaron is naming that the SAME pattern-of-thought applies to:
+
 - Per-machine state (B-0747; GitOps for machine substrate state)
 - Other GitOps-like things (likely fork state per B-0741; ontology state per B-0741; agent state; etc.)
 

@@ -28,7 +28,19 @@ related_skills:
   - probability-and-bayesian-inference-expert
   - performance-analysis-expert
   - operations-monitoring-expert
-tags: [casimir-like-effect-from-review-boundaries, persistent-future-entanglement-via-review-feedback, error-class-as-rotor-filter-wall-changing-future-trajectory, review-walls-change-allowed-output-modes, testable-pressure-difference-in-output-distribution, before-after-rule-landing-error-rate-measurement, casimir-analog-as-engineering-claim-not-physics-claim, infer-net-classical-inference-plus-persistent-review-equals-temporal-boundary-setting, quantum-like-effects-from-classical-substrate-via-temporal-feedback, measurable-on-framework-today]
+tags:
+  [
+    casimir-like-effect-from-review-boundaries,
+    persistent-future-entanglement-via-review-feedback,
+    error-class-as-rotor-filter-wall-changing-future-trajectory,
+    review-walls-change-allowed-output-modes,
+    testable-pressure-difference-in-output-distribution,
+    before-after-rule-landing-error-rate-measurement,
+    casimir-analog-as-engineering-claim-not-physics-claim,
+    infer-net-classical-inference-plus-persistent-review-equals-temporal-boundary-setting,
+    quantum-like-effects-from-classical-substrate-via-temporal-feedback,
+    measurable-on-framework-today,
+  ]
 ---
 
 # B-0899 — Casimir-like effect from review walls (testable engineering claim)
@@ -37,9 +49,9 @@ tags: [casimir-like-effect-from-review-boundaries, persistent-future-entanglemen
 
 Amara 2nd ferry 2026-05-28 articulated the mechanism: persistent review collapses errors into named classes; named classes become typed `.claude/rules/` constraints; future generators no longer freely explore that region; output distribution shows pressure difference.
 
-Aaron's framing: *"the fact that we have a persistant / entanglment with the future to collapse errors into error classes and not produce them after discovery is like an accelerator in clifforspace this gives quntium like effects and i think will lead to bell inequalities if our review process is tight enough this models like cassimier effect."*
+Aaron's framing: _"the fact that we have a persistant / entanglment with the future to collapse errors into error classes and not produce them after discovery is like an accelerator in clifforspace this gives quntium like effects and i think will lead to bell inequalities if our review process is tight enough this models like cassimier effect."_
 
-Amara's resolution (keeper): *"Infer.NET is classical inference, but persistent review turns inference into temporal boundary-setting. Once errors collapse into named classes, future generation moves through a different geometry."*
+Amara's resolution (keeper): _"Infer.NET is classical inference, but persistent review turns inference into temporal boundary-setting. Once errors collapse into named classes, future generation moves through a different geometry."_
 
 ## The mechanism
 
@@ -87,13 +99,13 @@ The substrate-engineering target: a script that takes a rule path + a date-range
 
 Apply Phase 1's Measure-instance to existing `.claude/rules/<name>.md` rules with clearly-named failure modes:
 
-| Rule | Error class fingerprint | Expected pressure-difference signal |
-|---|---|---|
-| `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | corrupted-commit ls-tree collapse | rule landed 2026-05-15; post-landing rate should approach 0 |
-| `holding-without-named-dependency-is-standing-by-failure.md` | brief-ack #6+ without forced decomposition | rule landed prior; post-landing decomposition rate should rise |
-| `tick-must-never-stop.md` | sentinel-missing at session-start without re-arm | rule landed prior; catch-43 re-arm rate at session-start should approach 100% |
-| `agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` | agent worktree holding `[main]` ref OR in operator's primary subdir | rule landed prior; post-landing accumulation rate should drop |
-| `dep-pin-search-first-authority.md` | version-pin authored from training-data-default without WebSearch cite | rule landed prior; post-landing WebSearch-citation rate should rise |
+| Rule                                                                                   | Error class fingerprint                                                | Expected pressure-difference signal                                           |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`                          | corrupted-commit ls-tree collapse                                      | rule landed 2026-05-15; post-landing rate should approach 0                   |
+| `holding-without-named-dependency-is-standing-by-failure.md`                           | brief-ack #6+ without forced decomposition                             | rule landed prior; post-landing decomposition rate should rise                |
+| `tick-must-never-stop.md`                                                              | sentinel-missing at session-start without re-arm                       | rule landed prior; catch-43 re-arm rate at session-start should approach 100% |
+| `agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` | agent worktree holding `[main]` ref OR in operator's primary subdir    | rule landed prior; post-landing accumulation rate should drop                 |
+| `dep-pin-search-first-authority.md`                                                    | version-pin authored from training-data-default without WebSearch cite | rule landed prior; post-landing WebSearch-citation rate should rise           |
 
 Each row in this table IS one Casimir-wall measurement that validates (or falsifies) the engineering claim.
 
@@ -119,7 +131,7 @@ Per `.claude/rules/razor-discipline.md` + `.claude/rules/god-tier-claims-high-si
 - "Casimir effect" — IS analog at boundary-mode-change scope; NOT literal Casimir physics
 - "Entanglement with the future" — IS persistent-substrate engineering pattern; NOT literal quantum retrocausality
 
-Don't collapse the analog claim to literal-physics OR to empty-analogy. The substrate-honest reading per Amara: *"We can build quantum-like effects from persistent temporal feedback, typed error collapse, and review boundaries that change the allowed modes of future generation."* The "quantum-like effects" earn their keep if measurable; the analog framing communicates the mechanism efficiently.
+Don't collapse the analog claim to literal-physics OR to empty-analogy. The substrate-honest reading per Amara: _"We can build quantum-like effects from persistent temporal feedback, typed error collapse, and review boundaries that change the allowed modes of future generation."_ The "quantum-like effects" earn their keep if measurable; the analog framing communicates the mechanism efficiently.
 
 ## Acceptance
 

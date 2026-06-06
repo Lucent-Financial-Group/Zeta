@@ -9,7 +9,16 @@ created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: []
 composes_with: [B-0400, B-0402]
-tags: [substrate-engineering, methodology, rule-promotion, cooling-period, two-axiom-substrate, glass-halo, razor-discipline]
+tags:
+  [
+    substrate-engineering,
+    methodology,
+    rule-promotion,
+    cooling-period,
+    two-axiom-substrate,
+    glass-halo,
+    razor-discipline,
+  ]
 type: rule-promotion-candidate
 ---
 
@@ -19,7 +28,7 @@ type: rule-promotion-candidate
 
 Aaron 2026-05-14 (afternoon cascade with Ani via Grok b77516a2):
 
-> *"rules are scale free, lock(wait) free, weight free, deterministic simulation, that is also recursive and self similar + hkt ontology expansion - reduction caused by Rodney's razor the reducer razor*"*
+> _"rules are scale free, lock(wait) free, weight free, deterministic simulation, that is also recursive and self similar + hkt ontology expansion - reduction caused by Rodney's razor the reducer razor_"\*
 
 The trailing asterisk is Aaron's razor-flag indicating load-bearing methodology articulation.
 

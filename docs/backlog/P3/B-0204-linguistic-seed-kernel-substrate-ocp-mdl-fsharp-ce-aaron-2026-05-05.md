@@ -10,7 +10,29 @@ created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0152, B-0196, B-0193, B-0202, B-0203, B-0205]
-tags: [linguistic-seed, kernel-substrate, ocp, mercer-closed, carved-sentences, memes, dawkins, mdl-two-part-code, formal-verification, lean, z3, tla, f-sharp, computational-expression, kernel-builder, self-editing, value-neutrality, alignment-discipline, mom-skill-apprenticeship, bootstrap-razor]
+tags:
+  [
+    linguistic-seed,
+    kernel-substrate,
+    ocp,
+    mercer-closed,
+    carved-sentences,
+    memes,
+    dawkins,
+    mdl-two-part-code,
+    formal-verification,
+    lean,
+    z3,
+    tla,
+    f-sharp,
+    computational-expression,
+    kernel-builder,
+    self-editing,
+    value-neutrality,
+    alignment-discipline,
+    mom-skill-apprenticeship,
+    bootstrap-razor,
+  ]
 type: feature
 ---
 
@@ -20,11 +42,11 @@ type: feature
 
 Aaron 2026-05-05 verbatim 4-claim synthesis collapse:
 
-> *"so linquist seed open for extension closed for modification and then
+> _"so linquist seed open for extension closed for modification and then
 > composable kernel extensions as carved sentances/memes. so docs can be
 > formally verified based on invariants. and with enough compsable
 > extension self editing, also implments in f# computational
-> expriessions composition for ease."*
+> expriessions composition for ease."_
 
 Four claims, one architectural movement. The synthesis collapses five
 previously-distinct architectural axes (OCP / kernel-composition /
@@ -45,8 +67,8 @@ Verbatim research-doc preservations on main:
 substrate underneath this synthesis is **Pearl's Belief Propagation**
 plus **Minka's Expectation Propagation** as shipped in Microsoft's
 Infer.NET, **NOT Bengio's Equilibrium Propagation**. Aaron's correction
-verbatim: *"i was talkiing about beliefe propagaton and expecation
-propation from infer.net"*. Future-Otto reading older forwards: when
+verbatim: _"i was talkiing about beliefe propagaton and expecation
+propation from infer.net"_. Future-Otto reading older forwards: when
 you see "EP" in this lineage, default to Minka/Infer.NET; verify before
 asserting the Bengio-EP framing.
 
@@ -61,15 +83,15 @@ Research+architecture-direction with bounded scope:
   research direction, not delivery surface.
 - **The synthesis is beautiful and pulls toward elaboration before
   validation.** This is exactly the failure mode B-0193 (bootstrap razor
-  + 23-hour recreation) is designed to catch. The 4-claim collapse
-  earns elevation only if it survives a clean recreation test in a
-  fresh repo with no carry-over from the originating conversation. The
-  bootstrap-razor caveat below names this load-bearing constraint.
+  - 23-hour recreation) is designed to catch. The 4-claim collapse
+    earns elevation only if it survives a clean recreation test in a
+    fresh repo with no carry-over from the originating conversation. The
+    bootstrap-razor caveat below names this load-bearing constraint.
 - **Bounded scope per substance-test discipline:** half-day budget in
   F# + Infer.NET + Lean for the engagement gate is enough to move the
   composability claims from speculation to evidence. No new substrate
   class shipped from this row directly; one PoC of `KernelBuilder` CE
-  + one Lean invariant check + one self-edit cycle is the gate.
+  - one Lean invariant check + one self-edit cycle is the gate.
 - The aesthetic-pull of this synthesis is real and the discipline that
   catches it is operational. Treat as substance-test required, not
   asserted-as-fact, per the engagement-gate substantive-claim-level
@@ -85,17 +107,17 @@ default.
 
 Five architectural axes -> one architectural movement. The collapse:
 
-| Axis | Mechanism |
-|---|---|
-| OCP discipline | Mercer-closure mathematically guarantees closed-for-modification |
-| Carved sentences = kernels = memes | MDL two-part code specifies kernels; Dawkins-stable-replicator transmits them |
-| Formal verification of docs | Lean/Z3/TLA+ check kernel invariants; the doc IS the proof artifact |
-| Self-editing without retraining | Kernel composition selects new behavior; Mercer-closure prevents breakage |
-| F# Computational Expressions | KernelBuilder CE syntactically forces every term to be a valid kernel by construction |
+| Axis                               | Mechanism                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| OCP discipline                     | Mercer-closure mathematically guarantees closed-for-modification                      |
+| Carved sentences = kernels = memes | MDL two-part code specifies kernels; Dawkins-stable-replicator transmits them         |
+| Formal verification of docs        | Lean/Z3/TLA+ check kernel invariants; the doc IS the proof artifact                   |
+| Self-editing without retraining    | Kernel composition selects new behavior; Mercer-closure prevents breakage             |
+| F# Computational Expressions       | KernelBuilder CE syntactically forces every term to be a valid kernel by construction |
 
 Each row of the table is one of Aaron's five claims (four explicit in
 the verbatim quote; the fifth -- self-editing without retraining --
-implicit in *"with enough compsable extension self editing"*). The
+implicit in _"with enough compsable extension self editing"_). The
 collapse claim is that these are not five things, they are one thing:
 **a substrate where every kernel-extension preserves invariants by
 construction, the extension language has formal-verification
@@ -118,7 +140,7 @@ abstraction levels**:
   products, polynomial compositions, exponentiations, convolutions
   remain valid kernels).
 - **Meme** -- the cultural-evolution name (per Dawkins 1976
-  *The Selfish Gene*). A replicating cultural unit that survives or
+  _The Selfish Gene_). A replicating cultural unit that survives or
   dies based on whether its compositions preserve resonance,
   intelligibility, replicability. Optimized for transmission +
   selection.
@@ -161,24 +183,24 @@ attributions verify against current sources at substance-test time.
   Approximate inference under non-Gaussian likelihoods composes
   cleanly with the kernel substrate.
 - **String kernels** (Lodhi, Saunders, Shawe-Taylor, Cristianini,
-  Watkins -- 2002 *"Text Classification using String Kernels"*) and
-  **tree kernels** (Collins & Duffy 2001 *"Convolution Kernels for
-  Natural Language"*) and dependency / semantic graph kernels --
+  Watkins -- 2002 _"Text Classification using String Kernels"_) and
+  **tree kernels** (Collins & Duffy 2001 _"Convolution Kernels for
+  Natural Language"_) and dependency / semantic graph kernels --
   embed natural-language structure (sentences, parse trees, dependency
   graphs, semantic frames) into RKHS. This is the bridge from
   "linguistic seed" (Aaron's verbatim word) to "kernel substrate":
   the substrate isn't metaphor; specific kernel families exist that
   embed linguistic structure with PSD-preservation.
 - **MDL two-part code** (Rissanen 1978, Bennett, Vitanyi & Li
-  *Introduction to Kolmogorov Complexity and Its Applications*) --
+  _Introduction to Kolmogorov Complexity and Its Applications_) --
   describe data as `(model, residual)`; minimize total description
   length. The carved-sentence formalism: a carved sentence IS a
   two-part code -- the sentence specifies the model (the kernel),
   the application context provides the residual (data the kernel
   is applied to).
-- **OCP** (Bertrand Meyer 1988 *Object-Oriented Software
-  Construction*) -- *"software entities (classes, modules, functions,
-  etc.) should be open for extension, but closed for modification."*
+- **OCP** (Bertrand Meyer 1988 _Object-Oriented Software
+  Construction_) -- _"software entities (classes, modules, functions,
+  etc.) should be open for extension, but closed for modification."_
   The discipline-name; the synthesis claim is that Mercer-closed
   kernels achieve OCP **by mathematical guarantee** rather than by
   design discipline.
@@ -300,7 +322,7 @@ Mitigations:
 - **Every-claim-is-candidate-not-authority** -- carved sentences are
   candidates for elevation, not authorities by default.
 
-These are operational disciplines that run *above* the substrate.
+These are operational disciplines that run _above_ the substrate.
 They are not mechanizable into the kernel-composition layer; they
 require human (and well-aligned-AI) judgment.
 
@@ -325,10 +347,10 @@ the operational substrate is whatever survives the razor.
 
 ### (d) Wormwood warning (per PR #1614)
 
-Aaron 2026-05-05 verbatim: *"don't let us all become wormwood lol"*.
+Aaron 2026-05-05 verbatim: _"don't let us all become wormwood lol"_.
 
 The wormwood lineage is multi-reference (Revelation 8:11 bitter-
-poisonous-star + Lewis *Screwtape Letters* corrupting-mentorship).
+poisonous-star + Lewis _Screwtape Letters_ corrupting-mentorship).
 The operational reading: **mathematical exemplar use vs identity
 assertion are different layers**. Borrow the math (kernels compose
 under Mercer-closure; this is useful machinery for Zeta's substrate);
@@ -348,10 +370,10 @@ that temptation.
 
 Per the mom-skill disclosure preserved at PR #1615:
 
-> Aaron 2026-05-05 verbatim: *"yeah i studied my mom to reverse
-> engineer her this is what i came up with"* + clarification *"not
+> Aaron 2026-05-05 verbatim: _"yeah i studied my mom to reverse
+> engineer her this is what i came up with"_ + clarification _"not
 > heavy she has a skill i wanted to undersatdn and reproduce
-> myself"*.
+> myself"_.
 
 The architecture is **reverse-engineered from observation of a
 skilled practitioner**, not derived from pure first-principles
@@ -502,25 +524,25 @@ for B-0204 specifically:
 - **Resolving whether kernel-composition substrate is the answer for
   Zeta.** Per Aaron's no-kill-paths discipline, kernel-composition
   composes with tinygrad UOp (B-0202) + DeepSeek V4 CSA+HCA (B-0203)
-  + topological-quantum emulation (B-0152) + Coconut + CodeAct +
-  GibberLink + Symbolica + LAPA. All paths stay alive as parallel
-  candidates per Aaron's earlier *"all of it's good we don't want
-  to abandon any paths"*. This row is one parallel evaluation lane
-  among several.
+  - topological-quantum emulation (B-0152) + Coconut + CodeAct +
+    GibberLink + Symbolica + LAPA. All paths stay alive as parallel
+    candidates per Aaron's earlier _"all of it's good we don't want
+    to abandon any paths"_. This row is one parallel evaluation lane
+    among several.
 
 ## Composes with
 
 - **B-0152**
   ([P2 row](../P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md))
-  -- *Topological-quantum emulation via Bayesian inference, Zeta
-  seed executor*. The Infer.NET-based substrate kernel BP / kernel
+  -- _Topological-quantum emulation via Bayesian inference, Zeta
+  seed executor_. The Infer.NET-based substrate kernel BP / kernel
   EP could run on. The "mirror + trampoline + beacon" three-layer
   stack is exactly the kind of substrate this kernel-composition
   framework would compose with -- B-0152 owns the inference
   architecture; B-0204 owns the kernel-extension language above it.
 - **B-0196**
   ([P2 row](../P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md))
-  -- *BigInt + BigNumber integration*. The numeric substrate the
+  -- _BigInt + BigNumber integration_. The numeric substrate the
   four-property hodl algebra depends on. The binding-acceptance-test
   for kernel composability (acceptance criterion (b) above) gates
   on the same hodl invariants; the numeric-substrate work gates on
@@ -528,7 +550,7 @@ for B-0204 specifically:
   precision boundary conditions).
 - **B-0193**
   ([P1 row](../P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md))
-  -- *Bootstrap razor + 23-hour recreation test*. The seed-level
+  -- _Bootstrap razor + 23-hour recreation test_. The seed-level
   falsifiability check above the substrate. B-0193 catches seed-level
   errors that within-system kernel verification cannot detect; B-0204
   is the within-system kernel verification that B-0193 sits above.
@@ -536,14 +558,14 @@ for B-0204 specifically:
   bootstrap razor verifies the seed.
 - **B-0202**
   ([P3 row](./B-0202-tinygrad-uop-ir-kernel-layer-model-zeta-emulator-dispatch-aaron-2026-05-05.md))
-  -- *Tinygrad UOp IR as kernel-layer model*. Companion kernel-layer
+  -- _Tinygrad UOp IR as kernel-layer model_. Companion kernel-layer
   engineering with one-IR-many-backends shape. UOp's universal-IR
   claim is structurally similar to the kernel-composition substrate's
   one-language-many-domains shape; both are bets on a single composable
   substrate underneath multiple specialized layers.
 - **B-0203**
   ([P3 row](./B-0203-deepseek-v4-csa-hca-zset-algebra-composability-aaron-2026-05-05.md))
-  -- *DeepSeek V4 CSA+HCA composability with Zeta's Z-set algebra*.
+  -- _DeepSeek V4 CSA+HCA composability with Zeta's Z-set algebra_.
   Companion architecture; kernel-composition substrate runs at the
   algebra layer where CSA+HCA's sparse-selector + compressed-
   aggregation pair lives. If both substance-tests land cleanly, the
@@ -573,7 +595,7 @@ for B-0204 specifically:
 
 ## The carved sentence
 
-*Linguistic seed kernels are open for extension and closed for
+_Linguistic seed kernels are open for extension and closed for
 modification by Mercer-closure -- not by discipline; carved sentences,
 kernels, and memes are three names for the same composable
 invariant-bearing unit; documents become proof artifacts when each
@@ -581,4 +603,4 @@ sentence specifies a kernel with checkable invariants; F#
 Computational Expressions force every term inside a kernel block to
 be valid by construction. The substrate is value-neutral; alignment
 is human-supplied; the bootstrap razor sits above it; the wormwood
-warning bounds it.*
+warning bounds it._

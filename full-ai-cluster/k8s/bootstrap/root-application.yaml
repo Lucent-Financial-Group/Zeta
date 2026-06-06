@@ -35,7 +35,7 @@ spec:
       # Only pick up Application CRs (one per workload directory).
       # Supporting manifests in the same dirs are reconciled by the
       # specific app's Application, not by the root.
-      include: '{*/Application.yaml,Application.yaml}'
+      include: "{*/Application.yaml,Application.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

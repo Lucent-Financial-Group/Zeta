@@ -32,17 +32,17 @@ tags:
 
 > "CBOR JSON YAML XML mybe"
 
-> "i'm pretty sure you can use the c# hkt trick to get uom like behaviors" *(separate
-> thread — see "Sibling: C# UoM via the CRTP/HKT trick" below; already substrate)*
+> "i'm pretty sure you can use the c# hkt trick to get uom like behaviors" _(separate
+> thread — see "Sibling: C# UoM via the CRTP/HKT trick" below; already substrate)_
 
 ## The gap
 
-The DynamicValue byte-lock today makes the *code* 4-oracle (TS/F#/C#/Rust all agree),
+The DynamicValue byte-lock today makes the _code_ 4-oracle (TS/F#/C#/Rust all agree),
 but the **seed itself is single source of truth**: `golden-vectors.json` (JSON) and
-`golden-vectors-cbor.json` (CBOR vectors carried *as JSON* hex) are each **one JSON
+`golden-vectors-cbor.json` (CBOR vectors carried _as JSON_ hex) are each **one JSON
 file** that all four oracles trust. If that one file is wrong or drifts, all four
 oracles agree on the wrong data. The RFC-8949-Appendix-A anchor mitigates this for the
-float vectors (independent ground truth), but the seed *artifact* is still a single
+float vectors (independent ground truth), but the seed _artifact_ is still a single
 file in a single format.
 
 This cuts against the framework invariant **"nothing is single source of truth."** The
@@ -53,7 +53,7 @@ not just the code.
 
 Express + cross-validate the seed in **four data formats — CBOR, JSON, YAML, XML**
 (Aaron: "CBOR JSON YAML XML mybe") — so no single file is authoritative. The four
-representations mutually validate: decoding each must yield the *same* canonical
+representations mutually validate: decoding each must yield the _same_ canonical
 `DynamicValue` set, and re-encoding must reproduce each format's canonical bytes.
 
 ```
@@ -73,7 +73,7 @@ format privileged.
 
 This requires the **decode side** (bytes/text → DynamicValue), currently being built
 (CBOR decode: C# #6512; F#/Rust/TS + JSON decode to follow). Cross-format seed
-validation needs decode in *each* format to compare. So the multi-format-seed work is
+validation needs decode in _each_ format to compare. So the multi-format-seed work is
 **gated on the decode side landing across formats**, and is the natural capstone once
 it does.
 
@@ -82,8 +82,8 @@ roster already names YAML/XML as targets).
 
 ## Sibling: C# UoM via the CRTP/HKT trick (already substrate — connect, don't duplicate)
 
-Aaron 2026-06-01: *"i'm pretty sure you can use the c# hkt trick to get uom like
-behaviors."* Correct, and **already covered** — captured here only so the thread is
+Aaron 2026-06-01: _"i'm pretty sure you can use the c# hkt trick to get uom like
+behaviors."_ Correct, and **already covered** — captured here only so the thread is
 not lost:
 
 - `.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md`

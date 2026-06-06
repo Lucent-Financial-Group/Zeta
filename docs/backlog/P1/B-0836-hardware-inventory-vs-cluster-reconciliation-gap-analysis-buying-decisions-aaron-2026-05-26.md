@@ -12,7 +12,18 @@ depends_on:
 composes_with:
   - B-0794
   - B-0782
-tags: [hardware-inventory, cluster-state, gap-analysis, reconciliation, cockroachdb, git-source-of-truth, addison-substrate, buying-decisions, operational]
+tags:
+  [
+    hardware-inventory,
+    cluster-state,
+    gap-analysis,
+    reconciliation,
+    cockroachdb,
+    git-source-of-truth,
+    addison-substrate,
+    buying-decisions,
+    operational,
+  ]
 ---
 
 ## Problem
@@ -40,11 +51,11 @@ Two substrate-engineering targets composed:
 
 ## Three operational questions the reconciliation answers
 
-| Question | Inventory side | Cluster side | Action |
-|---|---|---|---|
-| **Missing registration?** | Machine X exists in inventory | No `maintainers/<op>/cluster-nodes/X/node.yaml` on git | Either X isn't deployed yet OR self-registration failed; investigate |
-| **Phantom node?** | Machine X not in inventory | `maintainers/<op>/cluster-nodes/X/node.yaml` on git | Either inventory is stale OR an unknown machine registered; investigate |
-| **Expansion-buying-decision?** | Inventory + cluster utilization metrics | Workload demand + planned features | What hardware to buy NEXT — answer informed by data instead of guesswork |
+| Question                       | Inventory side                          | Cluster side                                           | Action                                                                   |
+| ------------------------------ | --------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------ |
+| **Missing registration?**      | Machine X exists in inventory           | No `maintainers/<op>/cluster-nodes/X/node.yaml` on git | Either X isn't deployed yet OR self-registration failed; investigate     |
+| **Phantom node?**              | Machine X not in inventory              | `maintainers/<op>/cluster-nodes/X/node.yaml` on git    | Either inventory is stale OR an unknown machine registered; investigate  |
+| **Expansion-buying-decision?** | Inventory + cluster utilization metrics | Workload demand + planned features                     | What hardware to buy NEXT — answer informed by data instead of guesswork |
 
 ## Architecture (composed substrate)
 

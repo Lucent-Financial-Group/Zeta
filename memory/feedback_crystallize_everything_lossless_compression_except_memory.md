@@ -4,22 +4,23 @@ description: Factory-wide default — prose/docs/skills/specs crystallize toward
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Crystallize everything — lossless compression, less is more
 
 Aaron verbatim, 2026-04-22, mid-flow while I was executing
 crystallization turn 2 on `docs/VISION.md`:
 
-> *"we should crystalize everything really it's like lossles
-> compression really less is more, except for the momory files"*
+> _"we should crystalize everything really it's like lossles
+> compression really less is more, except for the momory files"_
 
 Follow-up 2026-04-22 same day — metaphor-extension after I
 acknowledged the policy:
 
-> *"i guess we are making a diamon now :)"*
+> _"i guess we are making a diamon now :)"_
 
 **Diamond = the noun for the output of crystallization.** The
 factory's committed artifacts (docs/specs/skills after
-crystallization has been applied) are *diamonds*: hardest-
+crystallization has been applied) are _diamonds_: hardest-
 natural-material (durable), lossless-clarity (compression-
 preserving), refraction-from-every-angle (same meaning from
 every reader's vantage). The metaphor chain so far:

@@ -4,6 +4,7 @@ description: 2026-04-20 — Aaron: "we should also look for plugability gaps, in
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Pluggability-first — three-tier rule, perf-gated
 
 ## Rule
@@ -50,19 +51,19 @@ accept tier 3 only when the first two fail a simple test.
 
 Key substrings:
 
-- *"look for plugability gaps"* — pluggability audits are
+- _"look for plugability gaps"_ — pluggability audits are
   a first-class factory activity, not just a per-PR concern.
-- *"where it does not negativly hurt our claim of being
-  the fastest database"* — perf is the hard gate. A
+- _"where it does not negativly hurt our claim of being
+  the fastest database"_ — perf is the hard gate. A
   pluggability seam that costs 2× throughput is rejected;
   one that costs ≤5% may be worth it; one that costs
   nothing is the default.
-- *"this just sets us up for long term sucess"* — framing
+- _"this just sets us up for long term sucess"_ — framing
   is future-proofing: consumers with needs we don't yet
   know about can extend Zeta without forking.
-- *"at least an interface shim if it's not really
-  pluggable"* — the tier-2 fallback is explicitly named.
-- *"plumbling one off stuff is the remainder"* — tier 3
+- _"at least an interface shim if it's not really
+  pluggable"_ — the tier-2 fallback is explicitly named.
+- _"plumbling one off stuff is the remainder"_ — tier 3
   is acknowledged as legitimate remainder, not as the
   default.
 
@@ -152,7 +153,7 @@ Key substrings:
 - **Tier 3 (one-off plumbing):** probably core
   operator algebra primitives (`D`, `I`, `z⁻¹`, `H`)
   — these are the algebra, not plugin points; the
-  operators *expressed in* the algebra are pluggable.
+  operators _expressed in_ the algebra are pluggable.
 
 First audit pass: walk `src/Core/**/*.fs` and tag each
 subsystem's current tier. File findings under

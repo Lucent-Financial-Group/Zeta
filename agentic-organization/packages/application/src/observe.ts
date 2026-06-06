@@ -43,24 +43,10 @@ import type {
   TelemetryTimeRange,
 } from "../../observability/src/index.ts";
 import { ActionClass, preflightHatAction } from "./hat-guardrails.ts";
-import type {
-  PromptFlowPhaseGate,
-  PromptFlowRollbackPolicy,
-  PromptFlowRunState,
-} from "./prompt-flow.ts";
-import {
-  MissionTrajectoryStatus,
-  evaluateMissionTrajectory,
-  type MissionTrajectory,
-} from "./schedule-optimizer.ts";
-import {
-  evaluateContextPackReadiness,
-  type ContextPackReadinessPolicyPort,
-} from "./context-pack-readiness-policy.ts";
-import {
-  contextPackMatchesSnapshot,
-  contextPackWithItemProvenanceOmissions,
-} from "./context-pack-scope-evaluator.ts";
+import type { PromptFlowPhaseGate, PromptFlowRollbackPolicy, PromptFlowRunState } from "./prompt-flow.ts";
+import { MissionTrajectoryStatus, evaluateMissionTrajectory, type MissionTrajectory } from "./schedule-optimizer.ts";
+import { evaluateContextPackReadiness, type ContextPackReadinessPolicyPort } from "./context-pack-readiness-policy.ts";
+import { contextPackMatchesSnapshot, contextPackWithItemProvenanceOmissions } from "./context-pack-scope-evaluator.ts";
 import { contextPackDrillTargetGroupsForPack } from "./context-pack-drill-targets.ts";
 import {
   ContextPackCurationStageKind,
@@ -240,30 +226,107 @@ export const ACTION_CLASS_FOR_ACTION_TYPE: Readonly<Partial<Record<string, Actio
  */
 const PHASE_OPTIONS: Readonly<Record<RunLifecyclePhase, readonly AvailableOption[]>> = {
   [RunLifecyclePhase.Observing]: [
-    { actionType: "compose", toPhase: RunLifecyclePhase.Composing, toScope: RunScope.Run, requiresGate: false, requiresEvidence: false, rationale: "selection needed before any side effect" },
-    { actionType: "block", toPhase: RunLifecyclePhase.Blocked, toScope: RunScope.Run, requiresGate: false, requiresEvidence: false, rationale: "no legal move available" },
+    {
+      actionType: "compose",
+      toPhase: RunLifecyclePhase.Composing,
+      toScope: RunScope.Run,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "selection needed before any side effect",
+    },
+    {
+      actionType: "block",
+      toPhase: RunLifecyclePhase.Blocked,
+      toScope: RunScope.Run,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "no legal move available",
+    },
   ],
   [RunLifecyclePhase.Composing]: [
-    { actionType: "request_gate", toPhase: RunLifecyclePhase.AwaitingGate, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: false, rationale: "ratification required before execution" },
+    {
+      actionType: "request_gate",
+      toPhase: RunLifecyclePhase.AwaitingGate,
+      toScope: RunScope.WorkItem,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "ratification required before execution",
+    },
   ],
   [RunLifecyclePhase.AwaitingGate]: [
-    { actionType: "execute", toPhase: RunLifecyclePhase.Executing, toScope: RunScope.WorkItem, requiresGate: true, requiresEvidence: false, rationale: "gate must be approved to execute" },
-    { actionType: "block", toPhase: RunLifecyclePhase.Blocked, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: false, rationale: "gate rejected or stalled" },
+    {
+      actionType: "execute",
+      toPhase: RunLifecyclePhase.Executing,
+      toScope: RunScope.WorkItem,
+      requiresGate: true,
+      requiresEvidence: false,
+      rationale: "gate must be approved to execute",
+    },
+    {
+      actionType: "block",
+      toPhase: RunLifecyclePhase.Blocked,
+      toScope: RunScope.WorkItem,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "gate rejected or stalled",
+    },
   ],
   [RunLifecyclePhase.Executing]: [
-    { actionType: "submit_evidence", toPhase: RunLifecyclePhase.AwaitingEvidence, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: false, rationale: "execution produced output to attest" },
-    { actionType: "fail", toPhase: RunLifecyclePhase.Failed, toScope: RunScope.Run, requiresGate: false, requiresEvidence: false, rationale: "execution failed" },
+    {
+      actionType: "submit_evidence",
+      toPhase: RunLifecyclePhase.AwaitingEvidence,
+      toScope: RunScope.WorkItem,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "execution produced output to attest",
+    },
+    {
+      actionType: "fail",
+      toPhase: RunLifecyclePhase.Failed,
+      toScope: RunScope.Run,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "execution failed",
+    },
   ],
   [RunLifecyclePhase.AwaitingEvidence]: [
-    { actionType: "request_review", toPhase: RunLifecyclePhase.AwaitingReview, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: true, rationale: "review needs evidence" },
+    {
+      actionType: "request_review",
+      toPhase: RunLifecyclePhase.AwaitingReview,
+      toScope: RunScope.WorkItem,
+      requiresGate: false,
+      requiresEvidence: true,
+      rationale: "review needs evidence",
+    },
   ],
   [RunLifecyclePhase.AwaitingReview]: [
-    { actionType: "complete", toPhase: RunLifecyclePhase.Completed, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: true, rationale: "reviewer approved" },
-    { actionType: "rework", toPhase: RunLifecyclePhase.Executing, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: false, rationale: "reviewer requested changes" },
+    {
+      actionType: "complete",
+      toPhase: RunLifecyclePhase.Completed,
+      toScope: RunScope.WorkItem,
+      requiresGate: false,
+      requiresEvidence: true,
+      rationale: "reviewer approved",
+    },
+    {
+      actionType: "rework",
+      toPhase: RunLifecyclePhase.Executing,
+      toScope: RunScope.WorkItem,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "reviewer requested changes",
+    },
   ],
   [RunLifecyclePhase.Completed]: [],
   [RunLifecyclePhase.Blocked]: [
-    { actionType: "resume", toPhase: RunLifecyclePhase.Observing, toScope: RunScope.Run, requiresGate: false, requiresEvidence: false, rationale: "blocker resolved" },
+    {
+      actionType: "resume",
+      toPhase: RunLifecyclePhase.Observing,
+      toScope: RunScope.Run,
+      requiresGate: false,
+      requiresEvidence: false,
+      rationale: "blocker resolved",
+    },
   ],
   [RunLifecyclePhase.Failed]: [],
 };
@@ -335,16 +398,17 @@ export function scheduleAuthorityRule(
       if (hatAssignmentId === undefined) {
         return `option '${option.actionType}' requires a hat assignment before schedule authorization`;
       }
-      const activeBlocks = scheduleBlocks.filter((block) =>
-        block.assignedHatAssignmentId === hatAssignmentId &&
-        optionalMatches(block.assignedAgentId, (snapshot as Partial<AgentObserveSnapshot>).agentId) &&
-        optionalMatches(block.organizationId, (snapshot as Partial<AgentObserveSnapshot>).organizationId) &&
-        optionalMatches(block.projectId, (snapshot as Partial<AgentObserveSnapshot>).projectId) &&
-        optionalMatches(block.teamId, (snapshot as Partial<AgentObserveSnapshot>).teamId) &&
-        optionalMatches(block.workItemId, (snapshot as Partial<AgentObserveSnapshot>).workItemId) &&
-        block.state === ScheduleBlockState.Active &&
-        block.startsAt <= evaluatedAt &&
-        evaluatedAt < block.endsAt
+      const activeBlocks = scheduleBlocks.filter(
+        (block) =>
+          block.assignedHatAssignmentId === hatAssignmentId &&
+          optionalMatches(block.assignedAgentId, (snapshot as Partial<AgentObserveSnapshot>).agentId) &&
+          optionalMatches(block.organizationId, (snapshot as Partial<AgentObserveSnapshot>).organizationId) &&
+          optionalMatches(block.projectId, (snapshot as Partial<AgentObserveSnapshot>).projectId) &&
+          optionalMatches(block.teamId, (snapshot as Partial<AgentObserveSnapshot>).teamId) &&
+          optionalMatches(block.workItemId, (snapshot as Partial<AgentObserveSnapshot>).workItemId) &&
+          block.state === ScheduleBlockState.Active &&
+          block.startsAt <= evaluatedAt &&
+          evaluatedAt < block.endsAt,
       );
       if (activeBlocks.length === 0) {
         return `option '${option.actionType}' requires a current schedule block for hat assignment ${hatAssignmentId}`;
@@ -362,9 +426,7 @@ function optionalMatches(actual: string | undefined, expected: string | undefine
 }
 
 function createOptionalScheduleRules(deps: ObserveDependencies): readonly DeterministicRule[] {
-  return deps.scheduleBlocks === undefined
-    ? []
-    : [scheduleAuthorityRule(deps.scheduleBlocks, deps.clock.now())];
+  return deps.scheduleBlocks === undefined ? [] : [scheduleAuthorityRule(deps.scheduleBlocks, deps.clock.now())];
 }
 
 export const TriAvailability = {
@@ -491,7 +553,9 @@ export type MenuPageTarget = {
 export type ActDependencies = {
   runCommand: (commandType: string, command: unknown, slot: Menu16Slot) => Promise<unknown>;
   dispatchTool: (tool: string, args: unknown, slot: Menu16Slot) => Promise<unknown>;
-  loadPromptFlowContext?: ((request: PromptFlowContextRequest, slot: Menu16Slot) => Promise<PromptFlowContext>) | undefined;
+  loadPromptFlowContext?:
+    | ((request: PromptFlowContextRequest, slot: Menu16Slot) => Promise<PromptFlowContext>)
+    | undefined;
   authorizeSlot?: ((slot: Menu16Slot) => Promise<SlotAuthorizationDecision>) | undefined;
 };
 
@@ -887,16 +951,23 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
     const vetoed = vetoesByAction.get(option.actionType);
     if (survivor !== undefined) {
       const contextVeto = contextReadinessVeto(options.context);
-      rendered[slotIndex] = contextVeto === undefined
-        ? createCommandSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, readout, survivor, options)
-        : createContextReadinessVetoedSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, survivor, contextVeto);
+      rendered[slotIndex] =
+        contextVeto === undefined
+          ? createCommandSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, readout, survivor, options)
+          : createContextReadinessVetoedSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, survivor, contextVeto);
     } else if (vetoed !== undefined) {
       rendered[slotIndex] = createVetoedSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, vetoed);
     }
   }
   if (readout.options.length > 0) {
     renderScopeSlots(rendered, readout.scope);
-    const promptFlowPage = renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId, options.promptFlowPage);
+    const promptFlowPage = renderPromptFlowSlots(
+      rendered,
+      readout,
+      options.promptFlows,
+      options.hatAssignmentId,
+      options.promptFlowPage,
+    );
     page = promptFlowPage === undefined ? undefined : { promptFlows: promptFlowPage };
   }
   if (readout.options.length > 0 || readout.vetoedOptions.length > 0) {
@@ -986,12 +1057,14 @@ function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void 
   const coarserScope = currentIndex >= 0 ? RUN_SCOPE_LADDER[currentIndex + 1] : undefined;
   const finerScope = currentIndex > 0 ? RUN_SCOPE_LADDER[currentIndex - 1] : undefined;
 
-  rendered[8] = coarserScope === undefined
-    ? createDisabledGrammarSlot(8, MENU16_DIRECTIONS[8]!, "scope out", "already at organization scope")
-    : createObserveSlot(8, MENU16_DIRECTIONS[8]!, `scope out to ${coarserScope}`, coarserScope);
-  rendered[9] = finerScope === undefined
-    ? createDisabledGrammarSlot(9, MENU16_DIRECTIONS[9]!, "scope in", "already at run scope")
-    : createObserveSlot(9, MENU16_DIRECTIONS[9]!, `scope in to ${finerScope}`, finerScope);
+  rendered[8] =
+    coarserScope === undefined
+      ? createDisabledGrammarSlot(8, MENU16_DIRECTIONS[8]!, "scope out", "already at organization scope")
+      : createObserveSlot(8, MENU16_DIRECTIONS[8]!, `scope out to ${coarserScope}`, coarserScope);
+  rendered[9] =
+    finerScope === undefined
+      ? createDisabledGrammarSlot(9, MENU16_DIRECTIONS[9]!, "scope in", "already at run scope")
+      : createObserveSlot(9, MENU16_DIRECTIONS[9]!, `scope in to ${finerScope}`, finerScope);
   rendered[10] = createHistoryRetractSlot(10, MENU16_DIRECTIONS[10]!);
   rendered[11] = createHistoryRedoSlot(11, MENU16_DIRECTIONS[11]!);
 }
@@ -1106,10 +1179,12 @@ function createSupervisorSignalCommand(
   return {
     targetHatAssignmentId: context.targetHatAssignmentId,
     title: context.title ?? `Observe-act escalation for ${readout.scope} ${readout.phase}`,
-    message: context.message ?? [
-      `Agent requested supervisor triage for run ${readout.runId} at ${readout.scope}/${readout.phase}.`,
-      `Legal options: ${readout.options.length}; vetoed options: ${readout.vetoedOptions.length}.`,
-    ].join(" "),
+    message:
+      context.message ??
+      [
+        `Agent requested supervisor triage for run ${readout.runId} at ${readout.scope}/${readout.phase}.`,
+        `Legal options: ${readout.options.length}; vetoed options: ${readout.vetoedOptions.length}.`,
+      ].join(" "),
     policyContext: {
       scope: {
         teamId: context.teamId,
@@ -1179,9 +1254,9 @@ function createGlassHaloStatusSignal(
   };
 }
 
-function createOptionalGlassHaloHierarchyStatus(
-  hierarchy: GlassHaloHierarchyStatus | undefined,
-): { hierarchy?: GlassHaloHierarchyStatus } {
+function createOptionalGlassHaloHierarchyStatus(hierarchy: GlassHaloHierarchyStatus | undefined): {
+  hierarchy?: GlassHaloHierarchyStatus;
+} {
   return hierarchy === undefined ? {} : { hierarchy };
 }
 
@@ -1205,12 +1280,7 @@ function createObserveSlot(
   };
 }
 
-function createDisabledGrammarSlot(
-  index: number,
-  direction: string,
-  label: string,
-  reason: string,
-): Menu16Slot {
+function createDisabledGrammarSlot(index: number, direction: string, label: string, reason: string): Menu16Slot {
   return {
     index,
     direction,
@@ -1249,7 +1319,12 @@ function renderPromptFlowSlots(
       rendered[slotIndex] = createPromptFlowSlot(slotIndex, direction, readout, task, hatAssignmentId);
     } else {
       const vetoed = vetoesByTask.get(task.taskId);
-      rendered[slotIndex] = createPromptFlowVetoedSlot(slotIndex, direction, task, vetoed?.reason ?? "prompt flow is not executable by this hat");
+      rendered[slotIndex] = createPromptFlowVetoedSlot(
+        slotIndex,
+        direction,
+        task,
+        vetoed?.reason ?? "prompt flow is not executable by this hat",
+      );
     }
   }
   renderPromptFlowNavigationSlots(rendered, readout.scope, page, pageCount);
@@ -1267,12 +1342,21 @@ function renderPromptFlowNavigationSlots(
   page: number,
   pageCount: number,
 ): void {
-  rendered[0] = page <= 0
-    ? createDisabledGrammarSlot(0, MENU16_DIRECTIONS[0]!, "previous prompt-flow page", "already at first prompt-flow page")
-    : createObserveSlot(0, MENU16_DIRECTIONS[0]!, "previous prompt-flow page", currentScope, { promptFlows: page - 1 });
-  rendered[1] = page >= pageCount - 1
-    ? createDisabledGrammarSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", "already at last prompt-flow page")
-    : createObserveSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", currentScope, { promptFlows: page + 1 });
+  rendered[0] =
+    page <= 0
+      ? createDisabledGrammarSlot(
+          0,
+          MENU16_DIRECTIONS[0]!,
+          "previous prompt-flow page",
+          "already at first prompt-flow page",
+        )
+      : createObserveSlot(0, MENU16_DIRECTIONS[0]!, "previous prompt-flow page", currentScope, {
+          promptFlows: page - 1,
+        });
+  rendered[1] =
+    page >= pageCount - 1
+      ? createDisabledGrammarSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", "already at last prompt-flow page")
+      : createObserveSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", currentScope, { promptFlows: page + 1 });
 }
 
 function clampPromptFlowPage(requestedPage: number, pageCount: number): number {
@@ -1358,9 +1442,7 @@ function createLifecycleTransitionCommand(
   };
 }
 
-function createOptionalHatAssignment(
-  hatAssignmentId: ZetaIdDecimal | undefined,
-): { hatAssignmentId?: ZetaIdDecimal } {
+function createOptionalHatAssignment(hatAssignmentId: ZetaIdDecimal | undefined): { hatAssignmentId?: ZetaIdDecimal } {
   return hatAssignmentId === undefined ? {} : { hatAssignmentId };
 }
 
@@ -1380,9 +1462,10 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
   }
   const authorization = await deps.authorizeSlot?.(slot);
   if (authorization?.status === "denied") {
-    const reason = authorization.reason === ActRejectionReason.ControlPlaneDenied
-      ? ActRejectionReason.ControlPlaneDenied
-      : ActRejectionReason.ScheduleAuthorityDenied;
+    const reason =
+      authorization.reason === ActRejectionReason.ControlPlaneDenied
+        ? ActRejectionReason.ControlPlaneDenied
+        : ActRejectionReason.ScheduleAuthorityDenied;
     return rejectAct(reason, authorization.message);
   }
   switch (slot.impl.kind) {
@@ -1431,7 +1514,10 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       };
     case "prompt_flow":
       if (deps.loadPromptFlowContext === undefined) {
-        return rejectAct(ActRejectionReason.MissingPromptFlowContextLoader, `slot ${index} requires a prompt-flow context loader`);
+        return rejectAct(
+          ActRejectionReason.MissingPromptFlowContextLoader,
+          `slot ${index} requires a prompt-flow context loader`,
+        );
       }
       return {
         outcome: "loaded_context",
@@ -1439,7 +1525,10 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       };
     default: {
       const unhandled: never = slot.impl;
-      return rejectAct(ActRejectionReason.UnsupportedImplementation, `unsupported slot implementation ${(unhandled as { kind?: string }).kind}`);
+      return rejectAct(
+        ActRejectionReason.UnsupportedImplementation,
+        `unsupported slot implementation ${(unhandled as { kind?: string }).kind}`,
+      );
     }
   }
 }
@@ -1505,23 +1594,20 @@ async function buildContextReadout(
   deps: AgentObserveDependencies,
 ): Promise<ContextReadout> {
   if (deps.contextPackBuilder === undefined) {
-    return createContextReadout(
-      createMissingContextPack(snapshot, readout.observedAt),
-      ContextPackStatus.Missing,
-    );
+    return createContextReadout(createMissingContextPack(snapshot, readout.observedAt), ContextPackStatus.Missing);
   }
 
   let result: ContextPackBuildResult;
   try {
     result = await deps.contextPackBuilder.build({
-        snapshot,
-        readout,
-        metrics,
-        promptFlows,
-        hierarchy,
-        observedAt: readout.observedAt,
-        wakeContext: deps.contextPackWakeContext,
-      });
+      snapshot,
+      readout,
+      metrics,
+      promptFlows,
+      hierarchy,
+      observedAt: readout.observedAt,
+      wakeContext: deps.contextPackWakeContext,
+    });
   } catch (error) {
     return createContextReadout(
       createRetrievalFailedContextPack(snapshot, readout.observedAt, error),
@@ -1622,7 +1708,10 @@ function summarizeContextPackUncertainty(
   }
 
   const groups = [...groupsByKey.values()]
-    .sort((left, right) => contextPackUncertaintySeverityRank(right.severity) - contextPackUncertaintySeverityRank(left.severity))
+    .sort(
+      (left, right) =>
+        contextPackUncertaintySeverityRank(right.severity) - contextPackUncertaintySeverityRank(left.severity),
+    )
     .map((group) => ({ ...group }));
 
   return {
@@ -1710,7 +1799,9 @@ function createDegradedContextPack(input: {
   reason: ContextPackOmissionReason;
   message: string;
 }): ContextPack {
-  const freshnessDeadline = new Date(Date.parse(input.observedAt) + MISSING_CONTEXT_PACK_DEADLINE_OFFSET_MS).toISOString();
+  const freshnessDeadline = new Date(
+    Date.parse(input.observedAt) + MISSING_CONTEXT_PACK_DEADLINE_OFFSET_MS,
+  ).toISOString();
   return {
     id: input.id,
     runId: input.snapshot.runId,
@@ -1833,29 +1924,28 @@ function supervisorEscalationScheduleDenial(
   scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
 ): string | undefined {
   if (scheduleBlocks === undefined) return undefined;
-  const matchingScopeBlocks = scheduleBlocks.filter((block) =>
-    block.organizationId === snapshot.organizationId &&
-    block.projectId === snapshot.projectId &&
-    block.assignedAgentId === snapshot.agentId &&
-    block.assignedHatAssignmentId === snapshot.hatAssignmentId &&
-    optionalMatches(block.teamId, snapshot.teamId) &&
-    optionalMatches(block.workItemId, snapshot.workItemId)
+  const matchingScopeBlocks = scheduleBlocks.filter(
+    (block) =>
+      block.organizationId === snapshot.organizationId &&
+      block.projectId === snapshot.projectId &&
+      block.assignedAgentId === snapshot.agentId &&
+      block.assignedHatAssignmentId === snapshot.hatAssignmentId &&
+      optionalMatches(block.teamId, snapshot.teamId) &&
+      optionalMatches(block.workItemId, snapshot.workItemId),
   );
   if (matchingScopeBlocks.length === 0) {
     return "supervisor escalation requires a current schedule block for this work item";
   }
   const stateMatchedBlocks = matchingScopeBlocks.filter((block) =>
-    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_STATES.includes(block.state)
+    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_STATES.includes(block.state),
   );
   if (stateMatchedBlocks.length === 0) {
     return "current schedule block state does not allow supervisor escalation";
   }
   const allowedBlock = stateMatchedBlocks.find((block) =>
-    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_TYPES.includes(block.blockType)
+    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_TYPES.includes(block.blockType),
   );
-  return allowedBlock === undefined
-    ? "current schedule block type does not allow supervisor escalation"
-    : undefined;
+  return allowedBlock === undefined ? "current schedule block type does not allow supervisor escalation" : undefined;
 }
 
 const SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_STATES: readonly ScheduleBlockState[] = [
@@ -1924,10 +2014,12 @@ function createGlassHaloStatusContext(
       priorityItemCount: hierarchy.priorityItems.length,
       actionCount: hierarchy.actions.length,
       vetoedActionCount: hierarchy.vetoedActions.length,
-      ...(hierarchy.mission === undefined ? {} : {
-        missionStatus: hierarchy.mission.status,
-        missionVariancePercent: hierarchy.mission.variancePercent,
-      }),
+      ...(hierarchy.mission === undefined
+        ? {}
+        : {
+            missionStatus: hierarchy.mission.status,
+            missionVariancePercent: hierarchy.mission.variancePercent,
+          }),
     },
   };
 }
@@ -1943,14 +2035,25 @@ export function hierarchyReadoutForHat(
 ): HierarchyReadout {
   const projects = activeProjects(hierarchy?.projects ?? []);
   const initiatives = visibleInitiatives(hierarchy?.initiatives ?? []);
-  const policyViolations = departmentActiveProjectLimitViolations(projects)
-    .filter((violation) => hierarchyViolationVisibleToHat(hat, violation));
+  const policyViolations = departmentActiveProjectLimitViolations(projects).filter((violation) =>
+    hierarchyViolationVisibleToHat(hat, violation),
+  );
   const visibleProjects = visibleProjectsForHat(hat, projects);
   const visibleProjectIds = new Set(visibleProjects.map((project) => project.projectId));
   const visibleInitiativeRows = visibleInitiativesForHat(hat, initiatives, visibleProjectIds);
   const visibleInitiativeIds = new Set(visibleInitiativeRows.map((initiative) => initiative.initiativeId));
-  const visibleWorkBatches = visibleWorkBatchesForHat(hat, hierarchy?.workBatches ?? [], visibleProjectIds, visibleInitiativeIds);
-  const visibleWorkItems = visibleWorkItemsForHat(hat, hierarchy?.workItems ?? [], visibleProjectIds, visibleInitiativeIds);
+  const visibleWorkBatches = visibleWorkBatchesForHat(
+    hat,
+    hierarchy?.workBatches ?? [],
+    visibleProjectIds,
+    visibleInitiativeIds,
+  );
+  const visibleWorkItems = visibleWorkItemsForHat(
+    hat,
+    hierarchy?.workItems ?? [],
+    visibleProjectIds,
+    visibleInitiativeIds,
+  );
   const priorityScope = hierarchyPriorityScopeForHat(hat);
   const priorityItems = prioritizableItemsForHat(
     hat,
@@ -1979,7 +2082,13 @@ export function hierarchyReadoutForHat(
     policyViolations,
     priorityScope,
     priorityItems,
-    scopedMetrics: scopedHierarchyMetricsForHat(hat, visibleProjects, visibleInitiativeRows, visibleWorkBatches, visibleWorkItems),
+    scopedMetrics: scopedHierarchyMetricsForHat(
+      hat,
+      visibleProjects,
+      visibleInitiativeRows,
+      visibleWorkBatches,
+      visibleWorkItems,
+    ),
     actions: actions.allowed,
     vetoedActions: actions.vetoed,
     ...createOptionalHierarchyMission(mission),
@@ -2019,14 +2128,15 @@ function visibleWorkItemsForHat(
 ): readonly HierarchyWorkItem[] {
   if (hat.level === HatLevel.IndividualContributor) return [];
   return workItems
-    .filter((item) => visibleProjectIds.has(item.projectId) || (item.initiativeId !== undefined && visibleInitiativeIds.has(item.initiativeId)))
+    .filter(
+      (item) =>
+        visibleProjectIds.has(item.projectId) ||
+        (item.initiativeId !== undefined && visibleInitiativeIds.has(item.initiativeId)),
+    )
     .sort(comparePriorityRows);
 }
 
-function visibleProjectsForHat(
-  hat: HatDefinition,
-  projects: readonly HierarchyProject[],
-): readonly HierarchyProject[] {
+function visibleProjectsForHat(hat: HatDefinition, projects: readonly HierarchyProject[]): readonly HierarchyProject[] {
   switch (hat.level) {
     case HatLevel.ExecutiveBoard:
     case HatLevel.CSuite:
@@ -2103,19 +2213,17 @@ function prioritizableItemsForHat(
 ): readonly PrioritizableHierarchyItem[] {
   switch (hierarchyPriorityScopeForHat(hat)) {
     case "organization_portfolio":
-      return [
-        ...violations.map(policyViolationPriorityItem),
-        ...projects.map(projectPriorityItem),
-      ].sort(comparePriorityItems);
+      return [...violations.map(policyViolationPriorityItem), ...projects.map(projectPriorityItem)].sort(
+        comparePriorityItems,
+      );
     case "project_trajectory":
       return projects.map(projectPriorityItem).sort(comparePriorityItems);
     case "department_initiatives":
       return initiatives.map(initiativePriorityItem).sort(comparePriorityItems);
     case "initiative_execution":
-      return [
-        ...workBatches.map(workBatchPriorityItem),
-        ...workItems.map(workItemPriorityItem),
-      ].sort(comparePriorityItems);
+      return [...workBatches.map(workBatchPriorityItem), ...workItems.map(workItemPriorityItem)].sort(
+        comparePriorityItems,
+      );
     case "team_work_items":
       return workItems.map(workItemPriorityItem).sort(comparePriorityItems);
     case "current_work_item":
@@ -2200,10 +2308,7 @@ function scopedHierarchyMetricsForHat(
     case "department_initiatives":
       return initiatives.flatMap((initiative) => initiative.metrics);
     case "initiative_execution":
-      return [
-        ...workBatches.flatMap((batch) => batch.metrics),
-        ...workItems.flatMap((item) => item.metrics),
-      ];
+      return [...workBatches.flatMap((batch) => batch.metrics), ...workItems.flatMap((item) => item.metrics)];
     case "team_work_items":
       return workItems.flatMap((item) => item.metrics);
     case "current_work_item":
@@ -2236,38 +2341,113 @@ function candidateHierarchyActions(priorityScope: HierarchyPriorityScope): reado
   switch (priorityScope) {
     case "organization_portfolio":
       return [
-        hierarchyAction("record_priority_decision", ToolBundle.Voting, RunScope.Organization, "Record org priority decision"),
-        hierarchyAction("schedule_coordination_meeting", ToolBundle.Meeting, RunScope.Organization, "Schedule executive coordination meeting"),
-        hierarchyAction("request_status_update", ToolBundle.Status, RunScope.Organization, "Request C-suite trajectory update"),
+        hierarchyAction(
+          "record_priority_decision",
+          ToolBundle.Voting,
+          RunScope.Organization,
+          "Record org priority decision",
+        ),
+        hierarchyAction(
+          "schedule_coordination_meeting",
+          ToolBundle.Meeting,
+          RunScope.Organization,
+          "Schedule executive coordination meeting",
+        ),
+        hierarchyAction(
+          "request_status_update",
+          ToolBundle.Status,
+          RunScope.Organization,
+          "Request C-suite trajectory update",
+        ),
       ];
     case "project_trajectory":
       return [
-        hierarchyAction("record_priority_decision", ToolBundle.PortfolioAndInitiative, RunScope.Project, "Record portfolio priority decision"),
-        hierarchyAction("schedule_coordination_meeting", ToolBundle.Meeting, RunScope.Project, "Schedule trajectory review"),
+        hierarchyAction(
+          "record_priority_decision",
+          ToolBundle.PortfolioAndInitiative,
+          RunScope.Project,
+          "Record portfolio priority decision",
+        ),
+        hierarchyAction(
+          "schedule_coordination_meeting",
+          ToolBundle.Meeting,
+          RunScope.Project,
+          "Schedule trajectory review",
+        ),
         hierarchyAction("request_status_update", ToolBundle.Status, RunScope.Project, "Request director status update"),
       ];
     case "department_initiatives":
       return [
-        hierarchyAction("record_priority_decision", ToolBundle.Project, RunScope.Initiative, "Rank department initiatives"),
-        hierarchyAction("request_staffing", ToolBundle.HatAuthorization, RunScope.Project, "Request staffing or hat supply"),
-        hierarchyAction("schedule_coordination_meeting", ToolBundle.Meeting, RunScope.Project, "Schedule department initiative review"),
+        hierarchyAction(
+          "record_priority_decision",
+          ToolBundle.Project,
+          RunScope.Initiative,
+          "Rank department initiatives",
+        ),
+        hierarchyAction(
+          "request_staffing",
+          ToolBundle.HatAuthorization,
+          RunScope.Project,
+          "Request staffing or hat supply",
+        ),
+        hierarchyAction(
+          "schedule_coordination_meeting",
+          ToolBundle.Meeting,
+          RunScope.Project,
+          "Schedule department initiative review",
+        ),
       ];
     case "initiative_execution":
       return [
-        hierarchyAction("record_priority_decision", ToolBundle.BacklogAndDefect, RunScope.Initiative, "Rank work batches and blockers"),
-        hierarchyAction("schedule_coordination_meeting", ToolBundle.Meeting, RunScope.Initiative, "Schedule coordination meeting"),
-        hierarchyAction("schedule_prioritized_work", ToolBundle.TeamRuntime, RunScope.WorkItem, "Schedule prioritized work block"),
-        hierarchyAction("send_supervisor_signal", ToolBundle.Messaging, RunScope.Initiative, "Escalate blocker or dependency"),
+        hierarchyAction(
+          "record_priority_decision",
+          ToolBundle.BacklogAndDefect,
+          RunScope.Initiative,
+          "Rank work batches and blockers",
+        ),
+        hierarchyAction(
+          "schedule_coordination_meeting",
+          ToolBundle.Meeting,
+          RunScope.Initiative,
+          "Schedule coordination meeting",
+        ),
+        hierarchyAction(
+          "schedule_prioritized_work",
+          ToolBundle.TeamRuntime,
+          RunScope.WorkItem,
+          "Schedule prioritized work block",
+        ),
+        hierarchyAction(
+          "send_supervisor_signal",
+          ToolBundle.Messaging,
+          RunScope.Initiative,
+          "Escalate blocker or dependency",
+        ),
       ];
     case "team_work_items":
       return [
-        hierarchyAction("schedule_coordination_meeting", ToolBundle.Meeting, RunScope.WorkItem, "Coordinate team execution"),
-        hierarchyAction("schedule_prioritized_work", ToolBundle.TeamRuntime, RunScope.WorkItem, "Schedule prioritized work"),
+        hierarchyAction(
+          "schedule_coordination_meeting",
+          ToolBundle.Meeting,
+          RunScope.WorkItem,
+          "Coordinate team execution",
+        ),
+        hierarchyAction(
+          "schedule_prioritized_work",
+          ToolBundle.TeamRuntime,
+          RunScope.WorkItem,
+          "Schedule prioritized work",
+        ),
         hierarchyAction("send_supervisor_signal", ToolBundle.Messaging, RunScope.WorkItem, "Escalate team blocker"),
       ];
     case "current_work_item":
       return [
-        hierarchyAction("send_supervisor_signal", ToolBundle.Messaging, RunScope.WorkItem, "Raise blocker on current work"),
+        hierarchyAction(
+          "send_supervisor_signal",
+          ToolBundle.Messaging,
+          RunScope.WorkItem,
+          "Raise blocker on current work",
+        ),
       ];
   }
 }
@@ -2362,7 +2542,10 @@ function hierarchyMissionReadoutForHat(
     objectives: mission.strategy,
     nextMilestones: mission.milestones
       .filter((milestone) => milestone.status !== "complete")
-      .sort((left, right) => Date.parse(left.targetAt) - Date.parse(right.targetAt) || left.milestoneId.localeCompare(right.milestoneId)),
+      .sort(
+        (left, right) =>
+          Date.parse(left.targetAt) - Date.parse(right.targetAt) || left.milestoneId.localeCompare(right.milestoneId),
+      ),
     metrics: [...mission.metrics, ...mission.milestones.flatMap((milestone) => milestone.metrics)],
     lagSignals,
     correctiveActions: corrective.allowed,
@@ -2370,9 +2553,9 @@ function hierarchyMissionReadoutForHat(
   };
 }
 
-function createOptionalHierarchyMission(
-  mission: HierarchyMissionReadout | undefined,
-): { mission?: HierarchyMissionReadout } {
+function createOptionalHierarchyMission(mission: HierarchyMissionReadout | undefined): {
+  mission?: HierarchyMissionReadout;
+} {
   return mission === undefined ? {} : { mission };
 }
 
@@ -2389,7 +2572,10 @@ function mostSpecificMissionForHat(
   const visibleProjectIds = new Set(projects.map((project) => project.projectId));
   const visibleInitiativeIds = new Set(initiatives.map((initiative) => initiative.initiativeId));
   return missions
-    .map((mission) => ({ mission, score: missionSpecificityScore(hat, mission, visibleProjectIds, visibleInitiativeIds) }))
+    .map((mission) => ({
+      mission,
+      score: missionSpecificityScore(hat, mission, visibleProjectIds, visibleInitiativeIds),
+    }))
     .filter((candidate) => candidate.score > 0)
     .sort(
       (left, right) =>
@@ -2520,7 +2706,8 @@ function missionStatus(
   if (lagSignals.some((signal) => signal.severity === "blocked")) return "blocked";
   if (lagSignals.some((signal) => signal.severity === "behind")) return "behind";
   if (trajectoryStatus === MissionTrajectoryStatus.OffTrack) return "behind";
-  if (lagSignals.some((signal) => signal.severity === "at_risk") || trajectoryStatus === MissionTrajectoryStatus.AtRisk) return "at_risk";
+  if (lagSignals.some((signal) => signal.severity === "at_risk") || trajectoryStatus === MissionTrajectoryStatus.AtRisk)
+    return "at_risk";
   return declared;
 }
 
@@ -2591,8 +2778,9 @@ function firstPromptFlowTaskVeto(
       };
     }
   }
-  const missingSecretScopes = requiredSecretScopesForPromptFlowTask(task)
-    .filter((scope) => !(availableSecretScopes ?? []).includes(scope));
+  const missingSecretScopes = requiredSecretScopesForPromptFlowTask(task).filter(
+    (scope) => !(availableSecretScopes ?? []).includes(scope),
+  );
   if (missingSecretScopes.length > 0) {
     return {
       ruleName: "prompt-flow-secret-scope",
@@ -2611,7 +2799,9 @@ function copyOptionalPromptFlowTaskMetadata(task: PromptFlowTask): Partial<Promp
     ...(task.definitionVersion !== undefined ? { definitionVersion: task.definitionVersion } : {}),
     ...(task.phaseId !== undefined ? { phaseId: task.phaseId } : {}),
     ...(task.runState !== undefined ? { runState: task.runState } : {}),
-    ...(task.permittedUniversalActions !== undefined ? { permittedUniversalActions: task.permittedUniversalActions } : {}),
+    ...(task.permittedUniversalActions !== undefined
+      ? { permittedUniversalActions: task.permittedUniversalActions }
+      : {}),
     ...(task.requiredEvidenceRefs !== undefined ? { requiredEvidenceRefs: task.requiredEvidenceRefs } : {}),
     ...(task.gate !== undefined ? { gate: task.gate } : {}),
     ...(task.reviewerHatIds !== undefined ? { reviewerHatIds: task.reviewerHatIds } : {}),
@@ -2643,7 +2833,10 @@ function createTelemetryCommandCountAgent(
     id: `telemetry.command_total.${scope}`,
     scope,
     compute: async () => {
-      const result = await input.telemetry.queryMetrics(`sum(org_command_total{agentic_scope="${scope}"})`, input.range);
+      const result = await input.telemetry.queryMetrics(
+        `sum(org_command_total{agentic_scope="${scope}"})`,
+        input.range,
+      );
       if (result.status === "degraded") {
         return telemetryDegradedMetricBlock("telemetry.command_total", "commands in range", result);
       }
@@ -2704,11 +2897,7 @@ function createTelemetryWarningLogCountAgent(
   };
 }
 
-function telemetryDegradedMetricBlock(
-  id: string,
-  label: string,
-  result: TelemetryQueryDegraded,
-): MetricBlock {
+function telemetryDegradedMetricBlock(id: string, label: string, result: TelemetryQueryDegraded): MetricBlock {
   return {
     id,
     label,
@@ -2751,7 +2940,10 @@ export function observe(snapshot: RunSnapshot, deps: ObserveDependencies): Obser
   if (TERMINAL_PHASES.has(snapshot.phase)) {
     return {
       outcome: ObserveOutcome.Feedback,
-      feedback: { reason: ObserveFeedbackReason.TerminalPhase, message: `run ${snapshot.runId} is terminal at '${snapshot.phase}'` },
+      feedback: {
+        reason: ObserveFeedbackReason.TerminalPhase,
+        message: `run ${snapshot.runId} is terminal at '${snapshot.phase}'`,
+      },
     };
   }
 
@@ -2826,7 +3018,11 @@ export const DecideOutcome = {
 export type DecideOutcome = (typeof DecideOutcome)[keyof typeof DecideOutcome];
 
 export type DecideResult =
-  | { outcome: typeof DecideOutcome.Selected; readout: RunStateReadout; selection: { option: AvailableOption; reason: string } }
+  | {
+      outcome: typeof DecideOutcome.Selected;
+      readout: RunStateReadout;
+      selection: { option: AvailableOption; reason: string };
+    }
   | { outcome: typeof DecideOutcome.Held; readout: RunStateReadout; reason: string }
   | { outcome: typeof DecideOutcome.Feedback; feedback: ObserveFeedback };
 
@@ -2869,12 +3065,15 @@ export async function decideAsync(
   if (observed.outcome === ObserveOutcome.Feedback) {
     return { outcome: DecideOutcome.Feedback, feedback: observed.feedback };
   }
-  return resolveSelection(observed.readout, await composer.compose({ readout: observed.readout, ...createOptionalRequestTelemetry(requestTelemetry) }));
+  return resolveSelection(
+    observed.readout,
+    await composer.compose({ readout: observed.readout, ...createOptionalRequestTelemetry(requestTelemetry) }),
+  );
 }
 
-function createOptionalRequestTelemetry(
-  telemetry: ComposerSelectionRequest["telemetry"] | undefined,
-): { telemetry?: NonNullable<ComposerSelectionRequest["telemetry"]> } {
+function createOptionalRequestTelemetry(telemetry: ComposerSelectionRequest["telemetry"] | undefined): {
+  telemetry?: NonNullable<ComposerSelectionRequest["telemetry"]>;
+} {
   return telemetry === undefined ? {} : { telemetry };
 }
 
@@ -2900,5 +3099,9 @@ function resolveSelection(readout: RunStateReadout, selection: ComposerSelection
       },
     };
   }
-  return { outcome: DecideOutcome.Selected, readout, selection: { option: selection.option, reason: selection.reason } };
+  return {
+    outcome: DecideOutcome.Selected,
+    readout,
+    selection: { option: selection.option, reason: selection.reason },
+  };
 }

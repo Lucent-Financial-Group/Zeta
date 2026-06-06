@@ -70,7 +70,7 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   `.claude/rules/substrate-or-it-didnt-happen.md`; git log queries produce a persistent
   counter that survives compaction; the rule's forcing function fires reliably only
   when externalized. Audit via `bun tools/hygiene/audit-agencysignature-main-tip.ts
-  --since YYYY-MM-DD --max N`. Spec: AgencySignature Convention v1 trailer block
+--since YYYY-MM-DD --max N`. Spec: AgencySignature Convention v1 trailer block
   (10 fields + `Co-authored-by:`) per
   `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md`
   §10.

@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1840 |
-| Title | backlog(B-0242): file MultiplexedWebSockets F# port task |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T08:30:12Z |
-| Merged at | 2026-05-07T08:37:21Z |
-| Merge commit SHA | `6172111e17a4626a785e98002e05370ac4336acf` |
-| Branch | `backlog/b0242-multiplexed-websockets-fsharp-port` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1840 |
-| Changed files | 2 |
-| Additions / deletions | +87 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1840                                                     |
+| Title                 | backlog(B-0242): file MultiplexedWebSockets F# port task |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T08:30:12Z                                     |
+| Merged at             | 2026-05-07T08:37:21Z                                     |
+| Merge commit SHA      | `6172111e17a4626a785e98002e05370ac4336acf`               |
+| Branch                | `backlog/b0242-multiplexed-websockets-fsharp-port`       |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1840 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +87 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - Adds B-0242 as a backlog task for porting Aaron's MultiplexedWebSockets C# library to .NET 10 F#.
 - Captures the source repository, benchmark target, architecture notes, and acceptance criteria for the future implementation.
 - Clarifies that B-0242 has no prerequisite dependency on B-0241; B-0241's red-team track can consume this port after it exists.
 
 ## Test plan
+
 - [x] Backlog item well-formed
 - [x] BACKLOG.md index regenerated
 - [x] Focused markdownlint passed for the changed backlog item and docs/BACKLOG.md
@@ -41,15 +43,15 @@ Generated with Claude Code.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 2 |
-| Resolved threads | 2 |
-| Unresolved threads | 0 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 3 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 2     |
+| Resolved threads                          | 2     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 3     |
 
 ## Review threads
 
@@ -65,9 +67,9 @@ Generated with Claude Code.
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Fix reversed dependency on B-0241**
-
+  
   The frontmatter declares `depends_on: [B-0241]`, but the task description says the opposite relationship (`B-0241 ... needs this`), which inverts execution order in any dependency-driven backlog workflow. If planners/topological schedulers honor this field, B-0242 will be delayed until after B-0241, even though B-0241 is explicitly blocked on this port, causing incorrect sequencing for the red-team track.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

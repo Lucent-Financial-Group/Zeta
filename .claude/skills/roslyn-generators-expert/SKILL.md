@@ -99,7 +99,7 @@ Three call-outs:
 
 ## Equality discipline — the load-bearing rule
 
-Roslyn skips a pipeline stage only when inputs are *equal*
+Roslyn skips a pipeline stage only when inputs are _equal_
 by `IEquatable<T>`. If your transform returns a record with
 a `Compilation` or `ISymbol` field, the equality comparison
 drifts on every edit, caching fails, the generator re-runs
@@ -176,7 +176,7 @@ act on.
 ## Emitted-code discipline
 
 - **Hint-name.** `RegisterSourceOutput`'s `AddSource(name,
-  text)` uses `name` as the file name. Collisions between
+text)` uses `name` as the file name. Collisions between
   generators silently overwrite in the same project.
   Convention: `Zeta_<Generator>_<Type>.g.cs`.
 - **`#nullable enable`** at the top of every emitted file.
@@ -211,7 +211,7 @@ tests per generator:
 - **Attribute-less input.** Generator emits nothing.
 - **Malformed input.** Generator emits expected diagnostic.
 - **Cachability.** Two runs over the same input produce
-  identical output *and* Roslyn caches the intermediate
+  identical output _and_ Roslyn caches the intermediate
   stages.
 
 ## Packaging — mirrors analyzers
@@ -249,7 +249,7 @@ the user provided the matching `partial` declaration).
 
 ## Reference patterns
 
-- Andrew Lock — *Creating a source generator* (9-part
+- Andrew Lock — _Creating a source generator_ (9-part
   series).
 - Chris Sienkiewicz / Jared Parsons — `IIncrementalGenerator`
   design notes.

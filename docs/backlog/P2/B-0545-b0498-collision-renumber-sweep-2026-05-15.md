@@ -36,8 +36,8 @@ Per `memory/feedback_b0451_per_collision_renumber_procedure_external_references_
 
 Apply:
 
-- **P2/B-0498-substrate-evolution-algebra-* (dated 2026-05-14)** — predates by 1 day → **keeps B-0498**.
-- **P1/B-0498-riven-cursor-terminal-* (dated 2026-05-15)** — postdates → **renumbers** to next free ID.
+- **P2/B-0498-substrate-evolution-algebra-\* (dated 2026-05-14)** — predates by 1 day → **keeps B-0498**.
+- **P1/B-0498-riven-cursor-terminal-\* (dated 2026-05-15)** — postdates → **renumbers** to next free ID.
 
 ## Next free ID
 

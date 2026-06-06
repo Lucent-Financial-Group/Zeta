@@ -51,7 +51,7 @@ Error: The behavior up to this point is:
 **TLC enumerates all interleavings up to a bounded model and finds a
 counter-example.** The specific case: thread A registers an async op,
 thread B simultaneously calls HasAsyncOps — if B's read executes
-*after* A has added to `ops` but *before* the iteration reads index
+_after_ A has added to `ops` but _before_ the iteration reads index
 i, the ResizeArray resize can corrupt the iteration and `found` ends
 up `false` even though a matching op exists.
 
@@ -104,7 +104,7 @@ Three ingredients, all automated in this repo:
 1. **TLA+ specs live next to the code.** `docs/*.tla` + `.cfg`; each
    .tla corresponds to an observable code invariant.
 2. **A test runner shells out to TLC** — `tests/Tests.FSharp/
-   TlcRunnerTests.fs` runs `java -cp tla2tools.jar tlc2.TLC <spec>`
+TlcRunnerTests.fs` runs `java -cp tla2tools.jar tlc2.TLC <spec>`
    and asserts "No error has been found" in stdout. Specs drift =
    tests fail.
 3. **Reviewers are tasked with writing new specs** when they find a
@@ -145,5 +145,5 @@ When you add a new concurrent operation to `Zeta.Core`:
 - `tests/Tests.FSharp/TlcRunnerTests.fs` — the test that shells
   out to TLC
 - `src/Core/Circuit.fs` — the code that was fixed
-- Lamport, *Specifying Systems* — the canonical TLA+ reference
-- Newcombe et al. *How Amazon Web Services Uses Formal Methods* CACM 2015
+- Lamport, _Specifying Systems_ — the canonical TLA+ reference
+- Newcombe et al. _How Amazon Web Services Uses Formal Methods_ CACM 2015

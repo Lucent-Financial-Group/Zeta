@@ -87,19 +87,47 @@ function buildEnvelope(spec: SeedSpec): { record: MemoryRecord; state: MemorySta
   const memoryId = contentAddressedMemoryId(ORG, spec.tier, spec.scope, spec.key);
   const writtenAt = new Date(NOW).toISOString();
   const record: MemoryRecord = {
-    memoryId, organizationId: ORG, tier: spec.tier, scope: spec.scope, key: spec.key,
-    value: spec.value, protected: spec.protected ?? false, writtenBy: "system", writtenAt,
+    memoryId,
+    organizationId: ORG,
+    tier: spec.tier,
+    scope: spec.scope,
+    key: spec.key,
+    value: spec.value,
+    protected: spec.protected ?? false,
+    writtenBy: "system",
+    writtenAt,
   };
   const state: MemoryState = {
-    memoryId, organizationId: ORG, phase: MemoryPhase.Active, confidence: spec.confidence,
-    weight: 0, freshnessAt: spec.freshnessAt ?? writtenAt, reinforcementCount: 1,
-    outcome: { successCount: spec.outcome?.successCount ?? 0, failureCount: spec.outcome?.failureCount ?? 0, inconclusiveCount: 0, workItemsObserved: [] },
+    memoryId,
+    organizationId: ORG,
+    phase: MemoryPhase.Active,
+    confidence: spec.confidence,
+    weight: 0,
+    freshnessAt: spec.freshnessAt ?? writtenAt,
+    reinforcementCount: 1,
+    outcome: {
+      successCount: spec.outcome?.successCount ?? 0,
+      failureCount: spec.outcome?.failureCount ?? 0,
+      inconclusiveCount: 0,
+      workItemsObserved: [],
+    },
     utility: { injectedCount: spec.utility?.injectedCount ?? 0, citedCount: spec.utility?.citedCount ?? 0 },
-    crossScope: { distinctScopes: spec.distinctScopes ?? [spec.scope], firstObservedAt: writtenAt, lastObservedAt: writtenAt },
+    crossScope: {
+      distinctScopes: spec.distinctScopes ?? [spec.scope],
+      firstObservedAt: writtenAt,
+      lastObservedAt: writtenAt,
+    },
   };
   const envelope: MemoryEnvelope = {
-    memoryId, organizationId: ORG, tier: spec.tier, scope: spec.scope, key: spec.key,
-    protected: record.protected, writtenBy: "system", writtenAt, state,
+    memoryId,
+    organizationId: ORG,
+    tier: spec.tier,
+    scope: spec.scope,
+    key: spec.key,
+    protected: record.protected,
+    writtenBy: "system",
+    writtenAt,
+    state,
   };
   // seed the cached weight from intrinsic value so scope-union retrieval surfaces it
   state.weight = computeRestingWeight(envelope, NOW);
@@ -133,10 +161,44 @@ async function main(): Promise<void> {
 
   // ── 1. SEED four memories shaped to trigger every maintenance behavior ──────
   const seeds: Record<string, SeedSpec> = {
-    reinforce: { tier: MemoryTier.Hat, scope: HAT, key: "review:require-rollback-plan", value: "Require a rollback plan before approving any release.", confidence: 0.5, outcome: { successCount: 8 }, utility: { injectedCount: 6, citedCount: 5 } },
-    demote: { tier: MemoryTier.Agent, scope: AGENT, key: "calibration:skip-load-test", value: "Skipping the load test is usually fine for small changes.", confidence: 0.8, outcome: { successCount: 1, failureCount: 6 }, utility: { injectedCount: 8, citedCount: 1 } },
-    promote: { tier: MemoryTier.Work, scope: WORK, key: "rfc-882:redis-sessions-only", value: "Redis is reserved for sessions only (RFC-882).", confidence: 0.85, outcome: { successCount: 5 }, distinctScopes: [WORK, "work-prev-1", "work-prev-2"], utility: { injectedCount: 6, citedCount: 4 } },
-    archive: { tier: MemoryTier.Work, scope: WORK, key: "work-09:temp-flag-note", value: "Temporary feature flag note for an old epic.", confidence: 0.2, freshnessAt: new Date(NOW - 90 * 86_400_000).toISOString(), outcome: { failureCount: 4 }, utility: { injectedCount: 12, citedCount: 0 } },
+    reinforce: {
+      tier: MemoryTier.Hat,
+      scope: HAT,
+      key: "review:require-rollback-plan",
+      value: "Require a rollback plan before approving any release.",
+      confidence: 0.5,
+      outcome: { successCount: 8 },
+      utility: { injectedCount: 6, citedCount: 5 },
+    },
+    demote: {
+      tier: MemoryTier.Agent,
+      scope: AGENT,
+      key: "calibration:skip-load-test",
+      value: "Skipping the load test is usually fine for small changes.",
+      confidence: 0.8,
+      outcome: { successCount: 1, failureCount: 6 },
+      utility: { injectedCount: 8, citedCount: 1 },
+    },
+    promote: {
+      tier: MemoryTier.Work,
+      scope: WORK,
+      key: "rfc-882:redis-sessions-only",
+      value: "Redis is reserved for sessions only (RFC-882).",
+      confidence: 0.85,
+      outcome: { successCount: 5 },
+      distinctScopes: [WORK, "work-prev-1", "work-prev-2"],
+      utility: { injectedCount: 6, citedCount: 4 },
+    },
+    archive: {
+      tier: MemoryTier.Work,
+      scope: WORK,
+      key: "work-09:temp-flag-note",
+      value: "Temporary feature flag note for an old epic.",
+      confidence: 0.2,
+      freshnessAt: new Date(NOW - 90 * 86_400_000).toISOString(),
+      outcome: { failureCount: 4 },
+      utility: { injectedCount: 12, citedCount: 0 },
+    },
   };
 
   const envById = new Map<string, MemoryEnvelope>();
@@ -159,21 +221,39 @@ async function main(): Promise<void> {
 
   // ── 2. INJECT for the release-manager binding (recall → re-rank → ledger) ───
   const ctx: RetrievalCtx = { now: NOW, organizationId: ORG, hatId: HAT, agentId: AGENT, workItemId: WORK };
-  const query = composeInjectionQuery({ roleSentence: "You are the release manager.", taskSummary: "approve the release", recentTurns: [] });
+  const query = composeInjectionQuery({
+    roleSentence: "You are the release manager.",
+    taskSummary: "approve the release",
+    recentTurns: [],
+  });
 
   // Hindsight recall (semantic), then OUR weight re-rank over the candidates we know.
   console.error(`[inject] recalling from Hindsight…`);
-  const recall = await hindsight.recall({ agentId: AGENT, hatAssignmentId: HAT, projectId: PROJECT, workItemId: WORK, promptFlowRunId: "run-inject" });
+  const recall = await hindsight.recall({
+    agentId: AGENT,
+    hatAssignmentId: HAT,
+    projectId: PROJECT,
+    workItemId: WORK,
+    promptFlowRunId: "run-inject",
+  });
   console.error(`[inject] recall returned ${recall.memories.length}; re-ranking + ledger…`);
   const candidates: RecalledCandidate[] = recall.memories
-    .map((m, i) => ({ memoryId: m.memoryId, value: m.content, semanticScore: positionalSemanticScore(i, recall.memories.length) }))
+    .map((m, i) => ({
+      memoryId: m.memoryId,
+      value: m.content,
+      semanticScore: positionalSemanticScore(i, recall.memories.length),
+    }))
     .filter((c) => envById.has(c.memoryId));
   // recall ids are Hindsight-internal here; fall back to a deterministic scope-union retrieval
   // over our own envelopes so the injection ledger is exercised against known memories.
   const scopeEnvelopes = await stateStore.listByScopes(ORG, scopeUnionFor(ctx));
-  const ranked = candidates.length > 0
-    ? rerankRecalled(candidates, envById, ctx, { maxCount: 5 })
-    : retrieveRanked(scopeEnvelopes, ctx, { maxCount: 5 }).map((r) => ({ ...r, value: envById.get(r.envelope.memoryId)?.key ?? "" }));
+  const ranked =
+    candidates.length > 0
+      ? rerankRecalled(candidates, envById, ctx, { maxCount: 5 })
+      : retrieveRanked(scopeEnvelopes, ctx, { maxCount: 5 }).map((r) => ({
+          ...r,
+          value: envById.get(r.envelope.memoryId)?.key ?? "",
+        }));
 
   const promptRunId = id("run");
   const injections = recordInjections(ranked, ctx, promptRunId, new Date(NOW).toISOString());
@@ -210,7 +290,10 @@ async function main(): Promise<void> {
     now: NOW,
     createId: id,
     // the memory_reviewer demotes the bad-KPI memory; the knowledge_router promotes the cross-scope one
-    chooseDemotion: (legal) => ({ index: legal.indexOf(MemoryDemotionChoice.Demote), reason: "reviewer: 6 failures, ratio 0.86" }),
+    chooseDemotion: (legal) => ({
+      index: legal.indexOf(MemoryDemotionChoice.Demote),
+      reason: "reviewer: 6 failures, ratio 0.86",
+    }),
     choosePromotion: (legal) => ({ index: legal.indexOf(true), reason: "router: lesson seen across 3 work items" }),
     chooseConflict: (legal) => ({ index: legal.indexOf(MemoryConflictChoice.KeepThis), reason: "default keep" }),
   });
@@ -218,8 +301,24 @@ async function main(): Promise<void> {
   // ── 6. PERSIST state updates + EMIT every action as an org_event ────────────
   for (const upd of maintenance.updates) {
     const env = envById.get(upd.memoryId)!;
-    const record: MemoryRecord = { memoryId: env.memoryId, organizationId: ORG, tier: env.tier, scope: env.scope, key: env.key, value: "", protected: env.protected, writtenBy: env.writtenBy, writtenAt: env.writtenAt };
-    const nextState: MemoryState = { ...env.state, phase: upd.nextPhase, weight: upd.nextWeight, confidence: upd.nextConfidence, ...(upd.archivedAt !== undefined ? { archivedAt: upd.archivedAt } : {}) };
+    const record: MemoryRecord = {
+      memoryId: env.memoryId,
+      organizationId: ORG,
+      tier: env.tier,
+      scope: env.scope,
+      key: env.key,
+      value: "",
+      protected: env.protected,
+      writtenBy: env.writtenBy,
+      writtenAt: env.writtenAt,
+    };
+    const nextState: MemoryState = {
+      ...env.state,
+      phase: upd.nextPhase,
+      weight: upd.nextWeight,
+      confidence: upd.nextConfidence,
+      ...(upd.archivedAt !== undefined ? { archivedAt: upd.archivedAt } : {}),
+    };
     await stateStore.upsert(record, nextState);
   }
   for (const e of maintenance.events) await appendEvent(e);
@@ -233,7 +332,10 @@ async function main(): Promise<void> {
     events: maintenance.events.length,
   };
   report.legend = {
-    reinforce: memoryIds.reinforce, demote: memoryIds.demote, promote: memoryIds.promote, archive: memoryIds.archive,
+    reinforce: memoryIds.reinforce,
+    demote: memoryIds.demote,
+    promote: memoryIds.promote,
+    archive: memoryIds.archive,
   };
 
   console.log(JSON.stringify({ memorySystemCycle: report }, null, 2));

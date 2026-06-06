@@ -35,7 +35,13 @@ export function externalStateForChangeSet(system: ExternalSystem, phase: ChangeS
   switch (system) {
     case ExternalSystem.GitHub:
     case ExternalSystem.GitLab:
-      return merged ? "merged" : changes ? "changes_requested" : phase === ChangeSetPhase.Approved ? "approved" : "open";
+      return merged
+        ? "merged"
+        : changes
+          ? "changes_requested"
+          : phase === ChangeSetPhase.Approved
+            ? "approved"
+            : "open";
     case ExternalSystem.Jira:
       return merged ? "Done" : changes ? "In Progress" : "In Review";
     default:

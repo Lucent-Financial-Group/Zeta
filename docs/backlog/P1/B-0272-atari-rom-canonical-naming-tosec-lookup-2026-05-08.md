@@ -21,12 +21,12 @@ rename to canonical form. TS script at tools/roms/.
 ## Pre-start checklist
 
 - [x] Prior-art search: checked `tools/roms/` (empty), grepped for
-  TOSEC/No-Intro/canonicalize across repo (no existing TS tooling),
-  read parent B-0083 algorithm section and tooling design.
+      TOSEC/No-Intro/canonicalize across repo (no existing TS tooling),
+      read parent B-0083 algorithm section and tooling design.
 - [x] Dependency walk: parent B-0083 (decomposed umbrella),
-  sibling B-0273 (depends on this item), no other deps.
+      sibling B-0273 (depends on this item), no other deps.
 - [x] Datfile format: Logiqx XML used by both TOSEC and No-Intro;
-  `<rom name="..." sha1="..." />` is the match surface.
+      `<rom name="..." sha1="..." />` is the match surface.
 
 ## Acceptance criteria
 
@@ -38,11 +38,11 @@ rename to canonical form. TS script at tools/roms/.
 
 Closing as **PURE DRIFT** (class #1) per row-close gate triage (step-0 discriminator from PR #3757). All 3 acceptance items verifiably shipped:
 
-| Acceptance | Status |
-|---|---|
-| Script at `tools/roms/canonicalize.ts` | shipped (8953 bytes) |
-| Renames ROMs to TOSEC canonical names | shipped — `renameSync` import + match-and-rename loop; comment: "renames matched files to their canonical names" |
-| Reports unmatched hashes | shipped — output schema includes `{ file, sha1, matched, canonicalName, renamed }` per the file header comment; unmatched-hash filter is the natural reporting surface |
+| Acceptance                             | Status                                                                                                                                                                 |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Script at `tools/roms/canonicalize.ts` | shipped (8953 bytes)                                                                                                                                                   |
+| Renames ROMs to TOSEC canonical names  | shipped — `renameSync` import + match-and-rename loop; comment: "renames matched files to their canonical names"                                                       |
+| Reports unmatched hashes               | shipped — output schema includes `{ file, sha1, matched, canonicalName, renamed }` per the file header comment; unmatched-hash filter is the natural reporting surface |
 
 Provenance:
 

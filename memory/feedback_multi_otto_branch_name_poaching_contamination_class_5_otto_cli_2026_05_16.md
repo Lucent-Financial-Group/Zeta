@@ -28,13 +28,13 @@ landed cleanly and opened as PR #3907.
 
 ## Comparison to prior 4 contamination classes
 
-| Class | Failure mode | Mitigation |
-|---|---|---|
-| 1 | Worktree branch-switch between Bash-tool calls | Single-shot Bash collapses multi-step Edit into one call |
-| 2 | Commit lands on peer's branch label (worktree HEAD switched) | SHA-push `<SHA>:refs/heads/<intended>` bypasses local label |
-| 3 | `.git/index.lock` race during `git add` / `commit` | Retry; lock clears in ~5-10s |
-| 4 | `ls-remote` eventual-consistency stale read post-push | Longer Monitor timeouts (120s+); trust push exit-code |
-| **5** | **Peer pushes OWN content to my branch name on origin** | **Extra-unique namespace prefix** (e.g., `otto-cli-shard-<HHMM>z-<topic>-unique-<date>`) |
+| Class | Failure mode                                                 | Mitigation                                                                               |
+| ----- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| 1     | Worktree branch-switch between Bash-tool calls               | Single-shot Bash collapses multi-step Edit into one call                                 |
+| 2     | Commit lands on peer's branch label (worktree HEAD switched) | SHA-push `<SHA>:refs/heads/<intended>` bypasses local label                              |
+| 3     | `.git/index.lock` race during `git add` / `commit`           | Retry; lock clears in ~5-10s                                                             |
+| 4     | `ls-remote` eventual-consistency stale read post-push        | Longer Monitor timeouts (120s+); trust push exit-code                                    |
+| **5** | **Peer pushes OWN content to my branch name on origin**      | **Extra-unique namespace prefix** (e.g., `otto-cli-shard-<HHMM>z-<topic>-unique-<date>`) |
 
 Class #5 is structurally different: it's not a LOCAL state
 collision (worktree, index, refs) but a REMOTE state collision

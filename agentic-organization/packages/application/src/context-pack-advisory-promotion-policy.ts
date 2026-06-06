@@ -36,8 +36,9 @@ export type ContextPackAdvisoryPromotionPolicyResult = {
 };
 
 export type ContextPackAdvisoryPromotionPolicyPort = {
-  evaluate: (request: ContextPackAdvisoryPromotionPolicyRequest) =>
-    Promise<ContextPackAdvisoryPromotionPolicyResult> | ContextPackAdvisoryPromotionPolicyResult;
+  evaluate: (
+    request: ContextPackAdvisoryPromotionPolicyRequest,
+  ) => Promise<ContextPackAdvisoryPromotionPolicyResult> | ContextPackAdvisoryPromotionPolicyResult;
 };
 
 export type ContextPackAdvisoryPromotionAdmission = {
@@ -88,12 +89,14 @@ export type ContextPackAdvisoryPromotionDecisionAudit = {
   causationId: string;
 };
 
-export type ContextPackAdvisoryPromotionDecisionWriteInput =
-  Omit<ContextPackAdvisoryPromotionDecision, "decisionKey" | "organizationId"> & {
-    decisionKey: string;
-    organizationId: string;
-    audit: ContextPackAdvisoryPromotionDecisionAudit;
-  };
+export type ContextPackAdvisoryPromotionDecisionWriteInput = Omit<
+  ContextPackAdvisoryPromotionDecision,
+  "decisionKey" | "organizationId"
+> & {
+  decisionKey: string;
+  organizationId: string;
+  audit: ContextPackAdvisoryPromotionDecisionAudit;
+};
 
 export type ContextPackAdvisoryPromotionDecisionWriteResult = {
   decisionId: string;
@@ -112,8 +115,9 @@ export type ContextPackAdvisoryPromotionDecisionKeyInput = {
 };
 
 export type ContextPackAdvisoryPromotionDecisionReadPort = {
-  listForPromotion: (request: ContextPackAdvisoryPromotionPolicyRequest) =>
-    Promise<readonly ContextPackAdvisoryPromotionDecision[]> | readonly ContextPackAdvisoryPromotionDecision[];
+  listForPromotion: (
+    request: ContextPackAdvisoryPromotionPolicyRequest,
+  ) => Promise<readonly ContextPackAdvisoryPromotionDecision[]> | readonly ContextPackAdvisoryPromotionDecision[];
 };
 
 export type ContextPackAdvisoryPromotionDecisionWritePort = {
@@ -144,24 +148,31 @@ export function createDefaultContextPackAdvisoryPromotionPolicy(
         return { promotions: [] };
       }
       const decisions = await input.decisions.listForPromotion(request);
-      const approvedDecisions = decisions.filter((decision) =>
-        decision.status === ContextPackAdvisoryPromotionDecisionStatus.Approved &&
-        decision.policyVersion === DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION &&
-        contextPackAdvisoryPromotionDecisionMatchesScope(decision, request)
+      const approvedDecisions = decisions.filter(
+        (decision) =>
+          decision.status === ContextPackAdvisoryPromotionDecisionStatus.Approved &&
+          decision.policyVersion === DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION &&
+          contextPackAdvisoryPromotionDecisionMatchesScope(decision, request),
       );
       const promotions = request.advisoryItems
         .filter((item) => item.kind === ContextPackItemKind.SynthesisGapHypothesis)
         .flatMap((item): readonly ContextPackAdvisoryPromotion[] => {
           const fingerprint = contextPackAdvisoryPromotionFingerprint(item);
           const decision = approvedDecisions.find((candidate) =>
-            contextPackAdvisoryPromotionFingerprintMatches(candidate.fingerprint, fingerprint)
+            contextPackAdvisoryPromotionFingerprintMatches(candidate.fingerprint, fingerprint),
           );
           if (decision === undefined) return [];
-          return [{
-            sourceItemId: item.id,
-            lifecycleBlocker: decision.lifecycleBlocker,
-            evidenceRefs: [item.id, advisoryPromotionDecisionEvidenceRef(decision.decisionId), ...decision.evidenceRefs],
-          }];
+          return [
+            {
+              sourceItemId: item.id,
+              lifecycleBlocker: decision.lifecycleBlocker,
+              evidenceRefs: [
+                item.id,
+                advisoryPromotionDecisionEvidenceRef(decision.decisionId),
+                ...decision.evidenceRefs,
+              ],
+            },
+          ];
         });
 
       return {
@@ -176,15 +187,16 @@ export function createInMemoryContextPackAdvisoryPromotionDecisionReadPort(
   decisions: readonly ContextPackAdvisoryPromotionDecision[],
 ): ContextPackAdvisoryPromotionDecisionReadPort {
   return {
-    listForPromotion: () => decisions.map((decision) => ({
-      ...decision,
-      fingerprint: {
-        ...decision.fingerprint,
-        citationRefs: [...decision.fingerprint.citationRefs],
-        sourcePointerKeys: [...decision.fingerprint.sourcePointerKeys],
-      },
-      evidenceRefs: [...decision.evidenceRefs],
-    })),
+    listForPromotion: () =>
+      decisions.map((decision) => ({
+        ...decision,
+        fingerprint: {
+          ...decision.fingerprint,
+          citationRefs: [...decision.fingerprint.citationRefs],
+          sourcePointerKeys: [...decision.fingerprint.sourcePointerKeys],
+        },
+        evidenceRefs: [...decision.evidenceRefs],
+      })),
   };
 }
 
@@ -233,19 +245,15 @@ export function admitContextPackAdvisoryPromotions(input: {
   for (const promotion of input.result.promotions) {
     const sourceItemId = promotion.sourceItemId.trim();
     if (!admittedAdvisoryIds.has(sourceItemId)) {
-      omittedItemsWithReason.push(advisoryPromotionOmission(
-        sourceItemId,
-        ADVISORY_PROMOTION_SOURCE_NOT_ADMITTED_MESSAGE,
-      ));
+      omittedItemsWithReason.push(
+        advisoryPromotionOmission(sourceItemId, ADVISORY_PROMOTION_SOURCE_NOT_ADMITTED_MESSAGE),
+      );
       continue;
     }
 
     const lifecycleBlocker = promotion.lifecycleBlocker.trim();
     if (lifecycleBlocker.length === 0) {
-      omittedItemsWithReason.push(advisoryPromotionOmission(
-        sourceItemId,
-        ADVISORY_PROMOTION_EMPTY_BLOCKER_MESSAGE,
-      ));
+      omittedItemsWithReason.push(advisoryPromotionOmission(sourceItemId, ADVISORY_PROMOTION_EMPTY_BLOCKER_MESSAGE));
       continue;
     }
 
@@ -255,20 +263,26 @@ export function admitContextPackAdvisoryPromotions(input: {
       accepted.push({
         sourceItemId,
         lifecycleBlocker,
-        evidenceRefs: uniqueStrings((promotion.evidenceRefs ?? []).filter((ref) =>
-          admittedEvidenceRefs.has(ref) || isAdvisoryPromotionDecisionEvidenceRef(ref)
-        )),
+        evidenceRefs: uniqueStrings(
+          (promotion.evidenceRefs ?? []).filter(
+            (ref) => admittedEvidenceRefs.has(ref) || isAdvisoryPromotionDecisionEvidenceRef(ref),
+          ),
+        ),
       });
     }
     traceEvidenceRefs.push(sourceItemId);
-    traceEvidenceRefs.push(...(promotion.evidenceRefs ?? []).filter((ref) =>
-      admittedEvidenceRefs.has(ref) || isAdvisoryPromotionDecisionEvidenceRef(ref)
-    ));
+    traceEvidenceRefs.push(
+      ...(promotion.evidenceRefs ?? []).filter(
+        (ref) => admittedEvidenceRefs.has(ref) || isAdvisoryPromotionDecisionEvidenceRef(ref),
+      ),
+    );
   }
 
-  traceEvidenceRefs.push(...(input.result.evidenceRefs ?? []).filter((ref) =>
-    admittedEvidenceRefs.has(ref) || isAdvisoryPromotionDecisionEvidenceRef(ref)
-  ));
+  traceEvidenceRefs.push(
+    ...(input.result.evidenceRefs ?? []).filter(
+      (ref) => admittedEvidenceRefs.has(ref) || isAdvisoryPromotionDecisionEvidenceRef(ref),
+    ),
+  );
   traceEvidenceRefs.push(...omittedItemsWithReason.map(contextOmissionRef));
 
   return {
@@ -295,8 +309,10 @@ function advisoryPromotionDecisionEvidenceRef(decisionId: string): string {
 }
 
 function isAdvisoryPromotionDecisionEvidenceRef(ref: string): boolean {
-  return ref.startsWith(ADVISORY_PROMOTION_DECISION_EVIDENCE_REF_PREFIX) &&
-    ref.length > ADVISORY_PROMOTION_DECISION_EVIDENCE_REF_PREFIX.length;
+  return (
+    ref.startsWith(ADVISORY_PROMOTION_DECISION_EVIDENCE_REF_PREFIX) &&
+    ref.length > ADVISORY_PROMOTION_DECISION_EVIDENCE_REF_PREFIX.length
+  );
 }
 
 function contextPackAdvisoryPromotionDecisionMatchesScope(
@@ -336,11 +352,7 @@ function stringArraysMatch(left: readonly string[], right: readonly string[]): b
 }
 
 function contextItemEvidenceRefs(item: ContextPackItem): readonly string[] {
-  return uniqueStrings([
-    item.id,
-    item.sourceRef,
-    ...(item.citationRefs ?? []),
-  ]);
+  return uniqueStrings([item.id, item.sourceRef, ...(item.citationRefs ?? [])]);
 }
 
 function contextOmissionRef(omission: ContextPackOmittedItem): string {

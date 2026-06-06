@@ -91,11 +91,11 @@ interface CbEntry {
 function deriveEntry(
   identity: string,
   meta: { model: string; harness: string },
-  envelopes: MessageEnvelope[]
+  envelopes: MessageEnvelope[],
 ): CbEntry {
   // Collect envelopes from this identity (any surface variant)
   const own = envelopes
-    .filter(e => toIdentity(e.from) === identity)
+    .filter((e) => toIdentity(e.from) === identity)
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   const lastCheck = own[0]?.timestamp ?? new Date().toISOString();
@@ -128,10 +128,10 @@ function deriveEntry(
   // Claim-release does NOT count — an agent relinquishing work should not be treated
   // as a health signal (it may be about to go idle).
   const hasWorkSignal = own.some(
-    e =>
+    (e) =>
       (e.topic === "claim" && e.payload.action === "claim") ||
       e.topic === "work-assignment" ||
-      (e.topic === "heartbeat" && e.payload.status === "working")
+      (e.topic === "heartbeat" && e.payload.status === "working"),
   );
 
   let state: CbState;
@@ -169,9 +169,7 @@ async function main() {
   const busDir = args.includes("--bus-dir")
     ? (args[args.indexOf("--bus-dir") + 1] ?? DEFAULT_BUS_DIR)
     : DEFAULT_BUS_DIR;
-  const outPath = args.includes("--out")
-    ? (args[args.indexOf("--out") + 1] ?? DEFAULT_OUT)
-    : DEFAULT_OUT;
+  const outPath = args.includes("--out") ? (args[args.indexOf("--out") + 1] ?? DEFAULT_OUT) : DEFAULT_OUT;
 
   let envelopes: MessageEnvelope[];
   try {
@@ -182,9 +180,7 @@ async function main() {
     process.exit(1);
   }
 
-  const entries: CbEntry[] = Object.entries(AGENT_META).map(([id, meta]) =>
-    deriveEntry(id, meta, envelopes)
-  );
+  const entries: CbEntry[] = Object.entries(AGENT_META).map(([id, meta]) => deriveEntry(id, meta, envelopes));
 
   const snapshot = {
     generatedAt: new Date().toISOString(),

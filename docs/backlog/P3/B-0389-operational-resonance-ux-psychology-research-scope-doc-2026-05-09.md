@@ -112,11 +112,11 @@ Expected: `operational-resonance-research-scope.md` present.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing research-scope doc for this
-  dashboard found in `docs/research/frontier/` (directory may
-  not yet exist — check). No skill or memory file covers this
-  specific research-scope for the Operational Resonance Dashboard.
+      dashboard found in `docs/research/frontier/` (directory may
+      not yet exist — check). No skill or memory file covers this
+      specific research-scope for the Operational Resonance Dashboard.
 - [x] Dependency-restructure: no `depends_on` — root atom.
-  All sibling rows carry `composes_with: [B-0389]`.
+      All sibling rows carry `composes_with: [B-0389]`.
 
 ## Composes with
 

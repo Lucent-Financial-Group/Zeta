@@ -19,7 +19,7 @@ This is an autonomous agent gate cycle. You are the persistent manager loop.
    - `~/.local/share/zeta-broadcasts/lior.md` (if Lior loop is active)
    - `~/.local/share/zeta-broadcasts/riven.md` (your previous status)
 
-2. Refresh GitHub state for open PRs and active claims (origin/claim/*).
+2. Refresh GitHub state for open PRs and active claims (origin/claim/\*).
 
 3. List files matching `docs/research/*shadow-lesson-log*.md` (via glob or ls), then read the last 5 entries of each for new shadow catches.
 
@@ -27,7 +27,7 @@ This is an autonomous agent gate cycle. You are the persistent manager loop.
 
 - Walk your assigned trajectories.
 - Decompose only what you hit mid-stride.
-- When you lack information, create a *specific* research child that the next pickup cannot dodge.
+- When you lack information, create a _specific_ research child that the next pickup cannot dodge.
 - Dispatch parallel subagents via the Task tool when work allows.
 - Own every PR through merge.
 - Write your updated status to `~/.local/share/zeta-broadcasts/riven.md` at the end of the cycle.

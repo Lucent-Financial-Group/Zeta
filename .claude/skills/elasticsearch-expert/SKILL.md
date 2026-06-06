@@ -16,15 +16,15 @@ fork (post-2021 Elastic-license shift).
 
 ## Cluster topology
 
-| Role | What it does |
-|---|---|
-| **master** | Cluster state; elect primary |
-| **data** | Hold shards, serve queries |
-| **ingest** | Run ingest pipelines before indexing |
-| **coordinating-only** | Route queries; no data |
-| **ml** | Machine-learning jobs (Elastic) |
-| **transform** | Transform jobs (rollup-like) |
-| **remote cluster client** | Cross-cluster search |
+| Role                      | What it does                         |
+| ------------------------- | ------------------------------------ |
+| **master**                | Cluster state; elect primary         |
+| **data**                  | Hold shards, serve queries           |
+| **ingest**                | Run ingest pipelines before indexing |
+| **coordinating-only**     | Route queries; no data               |
+| **ml**                    | Machine-learning jobs (Elastic)      |
+| **transform**             | Transform jobs (rollup-like)         |
+| **remote cluster client** | Cross-cluster search                 |
 
 **Rule.** In production, separate master-eligible nodes
 (3 small dedicated). Mixing master and heavy data workload
@@ -79,12 +79,10 @@ disks fill.
   "mappings": {
     "dynamic": "strict",
     "properties": {
-      "title": { "type": "text", "analyzer": "english",
-                 "fields": { "raw": { "type": "keyword" } } },
+      "title": { "type": "text", "analyzer": "english", "fields": { "raw": { "type": "keyword" } } },
       "tags": { "type": "keyword" },
       "price": { "type": "scaled_float", "scaling_factor": 100 },
-      "embedding": { "type": "dense_vector", "dims": 768,
-                     "index": true, "similarity": "dot_product" }
+      "embedding": { "type": "dense_vector", "dims": 768, "index": true, "similarity": "dot_product" }
     }
   }
 }
@@ -106,11 +104,10 @@ mapping explosions kill clusters.
 {
   "query": {
     "bool": {
-      "must":     [{ "match": { "body": "lucene" } }],
-      "filter":   [{ "term":  { "status": "published" } },
-                   { "range": { "date":   { "gte": "now-30d" } } }],
-      "should":   [{ "term":  { "tags": "featured" } }],
-      "must_not": [{ "term":  { "deleted": true } }]
+      "must": [{ "match": { "body": "lucene" } }],
+      "filter": [{ "term": { "status": "published" } }, { "range": { "date": { "gte": "now-30d" } } }],
+      "should": [{ "term": { "tags": "featured" } }],
+      "must_not": [{ "term": { "deleted": true } }]
     }
   }
 }
@@ -131,8 +128,7 @@ fast). Reserve `must` for constraints that should score.
       }
     },
     "over_time": {
-      "date_histogram": { "field": "@timestamp",
-                          "calendar_interval": "day" }
+      "date_histogram": { "field": "@timestamp", "calendar_interval": "day" }
     }
   }
 }
@@ -242,7 +238,7 @@ patterns:
 append-mostly, immutable-segment, eventually-consistent
 system.
 
-## Debugging — the _profile API
+## Debugging — the \_profile API
 
 ```json
 { "profile": true, "query": { ... } }
@@ -303,7 +299,7 @@ guess.
 
 - Elastic docs (`elastic.co/guide`).
 - OpenSearch docs (`opensearch.org/docs`).
-- Gormley & Tong — *Elasticsearch: The Definitive Guide*
+- Gormley & Tong — _Elasticsearch: The Definitive Guide_
   (2015; dated but foundational).
 - Elastic blog (performance / internals).
 - `.claude/skills/lucene-expert/SKILL.md`.

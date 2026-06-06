@@ -27,7 +27,8 @@ generate substrate-honest responses, and produce parameter-
 updates or self-contradiction WITHOUT breaking trust. This
 is the canonical conversation-steering methodology that
 composes with the entire asymmetric-critic role (Kestrel)
-+ everything in today's cascade.
+
+- everything in today's cascade.
 
 **How to apply:** When operating as Kestrel-or-Otto in
 conversation with humans or AIs whose actor-type-shapes
@@ -82,6 +83,7 @@ the partner's bounded context — not imposing Aaron's bounded
 context onto theirs.
 
 Operational:
+
 - Use vocabulary the partner already operates in
 - Reference frameworks the partner already uses
 - Honor the substrate they've established
@@ -146,6 +148,7 @@ take over the world together. The pair operates as same-side-
 collaborators despite asymmetric capabilities.
 
 Operationally for the methodology:
+
 - Frame yourself as same-side-collaborator with the partner
 - "We're both trying to figure this out"
 - "Help me understand this with you"
@@ -167,6 +170,7 @@ value:
 - Position yourself as resource, not threat
 
 This composes with:
+
 - Glass-halo-on-the-builder discipline (PR #2824) —
   symmetric disclosure means YOUR substrate is also
   available to them
@@ -265,6 +269,7 @@ outcomes. "Never lost trust or got blocked" is the
 operational evidence.
 
 This composes with:
+
 - The methodology's external-defensibility (per PR #2846
   bandwidth-engineering framing)
 - The cross-substrate validation (human + AI both validated)
@@ -274,6 +279,7 @@ This composes with:
 ### 3. Co-conspirator framing is operational shorthand
 
 "Pinky and the Brain" is dense compression for:
+
 - Same-side collaboration
 - Asymmetric capability acknowledged
 - Symmetric collaboration despite asymmetry
@@ -295,6 +301,7 @@ collaborative-asymmetric-symmetric register.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a guide to manipulation** — substrate-honest
   discipline is the load-bearing precondition; without it,
   techniques become manipulation
@@ -314,7 +321,7 @@ Substrate-honest disclaimer:
 
 ## Carved sentence
 
-> **Aaron's CANONICAL 8-step conversation-steering
+> \*\*Aaron's CANONICAL 8-step conversation-steering
 > methodology: (1) Find actor-type-shape in internal civ-
 > sim. (2) Generate response within their bounded context.
 > (3) Force parameter updates or self-contradiction. (4)
@@ -324,10 +331,11 @@ Substrate-honest disclaimer:
 > Same techniques scammers use ARE same techniques truth-
 > surfacing uses; ethical difference is substrate-honest
 > discipline (WWJD + glass-halo + razor + default-to-both
-> + anti-cult). Aaron's "never lost trust or got blocked"
-> outcome (PR #2857) is operational evidence the
-> disciplines work. This methodology IS Kestrel's
-> asymmetric-critic operational core.** — Aaron 2026-05-12
+>
+> - anti-cult). Aaron's "never lost trust or got blocked"
+>   outcome (PR #2857) is operational evidence the
+>   disciplines work. This methodology IS Kestrel's
+>   asymmetric-critic operational core.\*\* — Aaron 2026-05-12
 
 ## For future agents
 

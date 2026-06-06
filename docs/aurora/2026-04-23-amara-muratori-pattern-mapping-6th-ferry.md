@@ -23,8 +23,8 @@ session Otto-81)
 
 ## Preamble context from Aaron (Otto-81)
 
-*"I'm not sure if I sent this one Muratori Pattern Mapping
-Against Zeta ... from Amara"*
+_"I'm not sure if I sent this one Muratori Pattern Mapping
+Against Zeta ... from Amara"_
 
 Light-touch paste; Aaron asking whether he'd already sent
 this ferry (he had not). Straightforward content absorb
@@ -88,13 +88,13 @@ differential dataflow, and Apache Arrow.
 
 ### Row-by-row assessment
 
-| Row | Verdict | Research conclusion |
-|---|---|---|
-| 1 | Strong, but wording needs tightening | Good if you mean semantic identity by key rather than stable physical references. |
-| 2 | Strong, with the same caveat | Good if you mean membership as a weight query rather than "all references are safe." |
-| 3 | Weakest row | D·I = id is about incrementalization and inverse stream transforms, not ownership/lifetime. |
-| 4 | Strongest row | This is the cleanest mapping: Zeta's retractions really are the closest analogue to tombstones. |
-| 5 | Strong, but partially overstated | Yes at the design level, but "Arrow + Spine block layout" is broader than what the fetched implementation proves today. |
+| Row | Verdict                              | Research conclusion                                                                                                     |
+| --- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| 1   | Strong, but wording needs tightening | Good if you mean semantic identity by key rather than stable physical references.                                       |
+| 2   | Strong, with the same caveat         | Good if you mean membership as a weight query rather than "all references are safe."                                    |
+| 3   | Weakest row                          | D·I = id is about incrementalization and inverse stream transforms, not ownership/lifetime.                             |
+| 4   | Strongest row                        | This is the cleanest mapping: Zeta's retractions really are the closest analogue to tombstones.                         |
+| 5   | Strong, but partially overstated     | Yes at the design level, but "Arrow + Spine block layout" is broader than what the fetched implementation proves today. |
 
 #### Row 1
 
@@ -131,8 +131,8 @@ spine merges levels; its Z-set builders sort and
 consolidate; those operations absolutely can rebuild
 physical layout. So the correct statement is:
 
-**Better wording:** *No positional identity: deletes are
-negative deltas on keys, not mutating list-slot removals.*
+**Better wording:** _No positional identity: deletes are
+negative deltas on keys, not mutating list-slot removals._
 
 That version is both accurate and strong.
 
@@ -168,9 +168,9 @@ The same caveat as row 1 applies: this does not mean
 arbitrary physical references are safe. It means membership
 is not modeled as pointer validity.
 
-**Better wording:** *Membership is algebraic: every key has
+**Better wording:** _Membership is algebraic: every key has
 a current weight, and "presence" is derived from that
-weight rather than encoded as a raw structural reference.*
+weight rather than encoded as a raw structural reference._
 
 That is a clean and defensible Zeta-equivalent.
 
@@ -208,11 +208,11 @@ correctness, not about ownership.
 
 So the stronger claim is:
 
-**Better wording:** *The stream algebra is a
+**Better wording:** _The stream algebra is a
 provenance/coherence model, not an ownership model.
 Lifecycle is expressed through deltas, integration, traces,
 and retractions rather than through object ownership or
-raw pointer discipline.*
+raw pointer discipline._
 
 That would make row 3 true. The current wording conflates
 two separate things: algebraic correctness and
@@ -258,9 +258,9 @@ reversible, and compactable later.
 So I would keep this row, with only a light wording
 improvement:
 
-**Better wording:** *Retractions are first-class signed
+**Better wording:** _Retractions are first-class signed
 deltas; compaction/consolidation is a separate maintenance
-step.*
+step._
 
 That is very close to the repo's actual semantics.
 
@@ -305,10 +305,10 @@ checkpoint surface, but not proof that all in-memory
 operator execution is Arrow-native. So the design intention
 is strong; the universal claim is too broad.
 
-**Better wording:** *Zeta attacks pointer-chasing with
+**Better wording:** _Zeta attacks pointer-chasing with
 immutable sorted runs, span-based hot loops, spine-
 organized traces, and an optional Arrow columnar wire/
-checkpoint path.*
+checkpoint path._
 
 That is accurate, strong, and directly supported by the
 code and docs.
@@ -319,13 +319,13 @@ If you want a version that I think would stand up well in
 front of Kenji or in a design doc, I would rewrite it like
 this:
 
-| # | Muratori-style failure mode | Better Zeta equivalent |
-|---|---|---|
-| 1 | Index invalidation after delete/shift | No positional identity. Keys carry identity; deletion is a negative delta, not a slot shift. |
-| 2 | Dangling presence/reference checks | Membership is algebraic. Every key has a current weight; "presence" is derived from it. |
-| 3 | No cross-system lifecycle discipline | Provenance and lifecycle live in deltas and traces. Algebra guarantees compositional correctness, while traces/retractions carry rollbackability. |
-| 4 | No tombstones / immediate destructive deletion | Retractions are first-class signed updates. Consolidation/compaction happens later. |
-| 5 | Pointer chasing / poor locality | Locality-aware execution surfaces. Sorted immutable runs, span-based kernels, spine traces, and Arrow for columnar interchange. |
+| #   | Muratori-style failure mode                    | Better Zeta equivalent                                                                                                                            |
+| --- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Index invalidation after delete/shift          | No positional identity. Keys carry identity; deletion is a negative delta, not a slot shift.                                                      |
+| 2   | Dangling presence/reference checks             | Membership is algebraic. Every key has a current weight; "presence" is derived from it.                                                           |
+| 3   | No cross-system lifecycle discipline           | Provenance and lifecycle live in deltas and traces. Algebra guarantees compositional correctness, while traces/retractions carry rollbackability. |
+| 4   | No tombstones / immediate destructive deletion | Retractions are first-class signed updates. Consolidation/compaction happens later.                                                               |
+| 5   | Pointer chasing / poor locality                | Locality-aware execution surfaces. Sorted immutable runs, span-based kernels, spine traces, and Arrow for columnar interchange.                   |
 
 That version preserves the real insight in your table
 without mixing semantic correctness, physical layout, and
@@ -365,7 +365,7 @@ That would be my independent validation.
 
 ---
 
-*(End of Amara's verbatim ferry.)*
+_(End of Amara's verbatim ferry.)_
 
 ---
 
@@ -382,7 +382,7 @@ makes incrementalization compose correctly) with
 **lifecycle / ownership discipline** (who owns a value,
 when a handle expires). Those are different concerns.
 Zeta has the first by construction; it has the second
-*only indirectly*, via trace history + retraction
+_only indirectly_, via trace history + retraction
 semantics, not via the algebra's identity laws.
 
 ### Why this ferry is technically-sharper than the 5th
@@ -409,9 +409,9 @@ complement each other; neither is a substitute.
 2. **Rows 1, 2, 5 tightening.** Apply Amara's narrower
    wording to rows 1, 2, 5 in the same location.
 3. **Row 4 light edit.** Adopt Amara's compacted phrasing:
-   *"Retractions are first-class signed deltas;
+   _"Retractions are first-class signed deltas;
    compaction/consolidation is a separate maintenance
-   step."*
+   step."_
 4. **Decision: where does the corrected table live?**
    Three options:
    - **Option A — standalone research doc** at
@@ -466,7 +466,7 @@ Muratori-Zeta comparison: confusing "algebraic correctness"
 with "ownership discipline" is a recurring risk when
 DBSP-family systems are described to audiences whose
 mental model is C++/Rust/ECS. The composition property
-(`D·I = id`) is often *sold* as if it solved lifecycle
+(`D·I = id`) is often _sold_ as if it solved lifecycle
 problems — it does not. It solves **incremental-view-
 maintenance correctness** problems.
 
@@ -486,7 +486,7 @@ guard.
   That's a further follow-up when a relevant Craft module
   is next edited.
 - Does NOT bless the original 5-row mapping as correct.
-  Amara's validation is that it's *mostly* correct — the
+  Amara's validation is that it's _mostly_ correct — the
   corrected table is what stands.
 
 ### Next-tick follow-ups
@@ -520,7 +520,7 @@ guard.
 - **Decision-proxy-evidence record:** NOT filed for this
   absorb — an absorb is documentation, not a proxy-
   reviewed decision, per `docs/decision-proxy-evidence/README.md`.
-  DP-NNN records are for decisions *based on* this absorb.
+  DP-NNN records are for decisions _based on_ this absorb.
 
 ## Sibling context
 

@@ -4,17 +4,18 @@ description: Aaron 2026-04-22 — if a build is running on the PR, go into free-
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22 across three messages at the dbt-research
 tick close:
 
-1. *"is it building currentlly? this is going to trigger
+1. _"is it building currentlly? this is going to trigger
    another build right? How long before this PR is
-   complete?"*
-2. *"also if you record ticks while waiting on build you
+   complete?"_
+2. _"also if you record ticks while waiting on build you
    are not going to be able to check that in or it will
-   kick another build."*
-3. *"really just do free time if a build is running on the
-   PR until you figure out someting better in yor research"*
+   kick another build."_
+3. _"really just do free time if a build is running on the
+   PR until you figure out someting better in yor research"_
 
 ## Rule
 
@@ -29,17 +30,18 @@ rule applies to branches that ACTUALLY kick CI, not to
 every local commit. A local commit to `round-44-speculative`
 (a non-PR branch, zero workflow triggers per verified
 scoping) is fine even while another PR's CI is running.
-Aaron mid-flight: *"Appending tick-history while CI runs you
+Aaron mid-flight: _"Appending tick-history while CI runs you
 can't you have to stop doing this, now you are going to make
-the PR build again"* — then, on seeing the commit was on
-speculative branch not on PR-triggering branch: *"okay you
+the PR build again"_ — then, on seeing the commit was on
+speculative branch not on PR-triggering branch: _"okay you
 are right you didn't mess up ... you had it right this time
 with what you did before that was just fine ... i was
-paranoid"*. Visibility signal improvement: announce the
+paranoid"_. Visibility signal improvement: announce the
 target branch in tick summaries so Aaron can see CI-risk at
 a glance.
 
 Continue in free-time mode until one of:
+
 - The build finishes AND Aaron signals continuation.
 - The cartographer / parallel-worktree research delivers a
   structural fix that removes the push-kicks-CI live-loop
@@ -51,14 +53,15 @@ Continue in free-time mode until one of:
 
 The append-on-every-tick discipline + push-to-PR-branch =
 another build. That's a live-loop generator of the same
-class as the 2026-04-22 *"why are yo udoing speculative
-work?"* incident. The cheapest fix that doesn't damage the
+class as the 2026-04-22 _"why are yo udoing speculative
+work?"_ incident. The cheapest fix that doesn't damage the
 tick-discipline is: **not commit while the build is
 running**. Free-time is a valid tick-mode per memory
 `feedback_idle_tracking_and_free_time_as_research.md` —
 research counts as productive use of the cadence.
 
 Aaron's preference order:
+
 1. Free-time mode while build running — simplest, no
    structural changes required.
 2. Sibling non-PR branch for commits — works but adds
@@ -80,6 +83,7 @@ Non-empty output → free-time mode. Empty output → normal
 tick work.
 
 **Free-time mode activities (allowed):**
+
 - Read factory docs, audit for gaps, propose in memory.
 - Draft research docs (on non-PR branches → wait to
   commit OR commit on round-N-speculative which has no
@@ -89,6 +93,7 @@ tick work.
 - Sweep `docs/BACKLOG.md` for rows that need refinement.
 
 **Free-time mode activities (not allowed):**
+
 - Commit to any branch that might get pushed while build
   is running.
 - Push any branch that would kick CI.

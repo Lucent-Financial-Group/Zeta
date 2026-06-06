@@ -4,6 +4,7 @@ description: Before proposing any new pattern/tool/language/library, run a prior
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Every net-new technical pattern, tool, language, library, or
 workflow proposal MUST include two upfront checks, and MUST
 be re-checked on a cadence thereafter:
@@ -38,6 +39,7 @@ once-good choice that rotted because the checker didn't
 keep pace with Roslyn.
 
 **How to apply:**
+
 - Any ADR that introduces a new tool / language / library
   MUST cite both (a) prior art inspected and (b) dated
   internet-best-practices findings. Undated findings are

@@ -31,10 +31,10 @@ classification rule.
 
 `tools/health/factory-health-monitor.ts` now exports:
 
-| Export | Purpose |
-|---|---|
-| `classifyBranchLane` | Maps branch prefixes to `codex`, `otto`, `lior`, `alexa`, `riven`, or `other`. |
-| `classifyLaneRunway` | Counts open PRs and active claims by lane, then emits `lane-runway` health signals. |
+| Export               | Purpose                                                                                                        |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `classifyBranchLane` | Maps branch prefixes to `codex`, `otto`, `lior`, `alexa`, `riven`, or `other`.                                 |
+| `classifyLaneRunway` | Counts open PRs and active claims by lane, then emits `lane-runway` health signals.                            |
 | `LaneRunwaySnapshot` | Input shape for future monitor adapters: open PR branches, active claim branches, and optional service health. |
 
 Known branch families covered in this slice:

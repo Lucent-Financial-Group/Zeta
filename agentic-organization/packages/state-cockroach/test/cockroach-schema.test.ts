@@ -224,7 +224,11 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes(createCheckConstraintValues(Object.values(WorkItemType))));
     ok(migration.sql.includes(createCheckConstraintValues(Object.values(ProjectStatus))));
     ok(migration.sql.includes(createCheckConstraintValues(Object.values(InitiativeStatus))));
-    ok(migration.sql.includes("CONSTRAINT agentic_org_work_item_state_history_sequence_positive_check CHECK (sequence > 0)"));
+    ok(
+      migration.sql.includes(
+        "CONSTRAINT agentic_org_work_item_state_history_sequence_positive_check CHECK (sequence > 0)",
+      ),
+    );
     ok(migration.sql.includes("UNIQUE (work_item_id, sequence)"));
     equal(CockroachSchemaBackfillValue.WorkItemTypeTask, WorkItemType.Task);
     ok(migration.sql.includes("updated_at TIMESTAMPTZ NOT NULL"));
@@ -398,7 +402,11 @@ describe("cockroach core state schema", () => {
 
   test("registers the memory system migration as V16 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.OrgSystemV15, CockroachCoreStateMigrationName.MemorySystemV16);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.OrgSystemV15,
+      CockroachCoreStateMigrationName.MemorySystemV16,
+    );
   });
 
   test("declares the change control kernel (change_sets + review_stage_status) with phase check", () => {
@@ -418,7 +426,11 @@ describe("cockroach core state schema", () => {
 
   test("registers the change control migration as V17 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.MemorySystemV16, CockroachCoreStateMigrationName.ChangeControlV17);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.MemorySystemV16,
+      CockroachCoreStateMigrationName.ChangeControlV17,
+    );
   });
 
   test("declares the document intelligence kernel (doc units/sources/entities/graph/consult) with lifecycle + type checks", () => {
@@ -454,7 +466,11 @@ describe("cockroach core state schema", () => {
 
   test("registers the document intelligence migration as V18 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.ChangeControlV17, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.ChangeControlV17,
+      CockroachCoreStateMigrationName.DocumentIntelligenceV18,
+    );
   });
 
   test("declares the knowledge graph kernel (graph_nodes + graph_edges) with confidence + kind checks", () => {
@@ -477,7 +493,11 @@ describe("cockroach core state schema", () => {
 
   test("registers the knowledge graph migration as V19 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocumentIntelligenceV18, CockroachCoreStateMigrationName.KnowledgeGraphV19);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.DocumentIntelligenceV18,
+      CockroachCoreStateMigrationName.KnowledgeGraphV19,
+    );
   });
 
   test("declares the tenant config table (the org as a configurable runtime)", () => {
@@ -492,17 +512,29 @@ describe("cockroach core state schema", () => {
 
   test("registers the tenant config migration as V20 before traceparent in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.KnowledgeGraphV19, CockroachCoreStateMigrationName.TenantConfigV20);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.KnowledgeGraphV19,
+      CockroachCoreStateMigrationName.TenantConfigV20,
+    );
   });
 
   test("registers the reaction plan traceparent migration as V21 before org-event transition context", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.TenantConfigV20, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.TenantConfigV20,
+      CockroachCoreStateMigrationName.ReactionPlanTraceparentV21,
+    );
   });
 
   test("registers the org-event transition-context migration as V22 before control-plane flags", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.ReactionPlanTraceparentV21,
+      CockroachCoreStateMigrationName.OrgEventTransitionContextV22,
+    );
   });
 
   test("declares an additive org-event transition-context migration for existing databases", () => {
@@ -515,8 +547,16 @@ describe("cockroach core state schema", () => {
 
   test("registers control-plane rate limits as V24 after control-plane flags", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.OrgEventTransitionContextV22, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.ControlPlaneFlagsV23, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.OrgEventTransitionContextV22,
+      CockroachCoreStateMigrationName.ControlPlaneFlagsV23,
+    );
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.ControlPlaneFlagsV23,
+      CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24,
+    );
   });
 
   test("declares graph-node kind expansion as an additive existing-cluster migration", () => {
@@ -531,7 +571,11 @@ describe("cockroach core state schema", () => {
 
   test("registers graph-node kind expansion after control-plane rate limits", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24, CockroachCoreStateMigrationName.GraphNodeKindExpansionV25);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24,
+      CockroachCoreStateMigrationName.GraphNodeKindExpansionV25,
+    );
   });
 
   test("declares the context-pack snapshot table for replayable observe context", () => {
@@ -554,7 +598,11 @@ describe("cockroach core state schema", () => {
 
   test("registers context-pack snapshots after graph-node kind expansion", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.GraphNodeKindExpansionV25, CockroachCoreStateMigrationName.ContextPackSnapshotV26);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.GraphNodeKindExpansionV25,
+      CockroachCoreStateMigrationName.ContextPackSnapshotV26,
+    );
   });
 
   test("declares doc-unit bound consult indexes as an additive existing-cluster migration", () => {
@@ -569,7 +617,11 @@ describe("cockroach core state schema", () => {
 
   test("registers doc-unit bound consult indexes after context-pack snapshots", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.ContextPackSnapshotV26, CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.ContextPackSnapshotV26,
+      CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27,
+    );
   });
 
   test("declares doc consult context-pack exposure as an additive existing-cluster migration", () => {
@@ -589,7 +641,11 @@ describe("cockroach core state schema", () => {
 
   test("registers doc consult context-pack exposure after doc-unit bound consult indexes", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27, CockroachCoreStateMigrationName.DocConsultContextPackExposureV28);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27,
+      CockroachCoreStateMigrationName.DocConsultContextPackExposureV28,
+    );
   });
 
   test("declares context-pack snapshot phase as an additive existing-cluster migration", () => {
@@ -602,7 +658,11 @@ describe("cockroach core state schema", () => {
 
   test("registers context-pack snapshot phase after doc consult context-pack exposure", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocConsultContextPackExposureV28, CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.DocConsultContextPackExposureV28,
+      CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29,
+    );
   });
 
   test("declares doc consult outcome stamp as an additive existing-cluster migration", () => {
@@ -620,14 +680,20 @@ describe("cockroach core state schema", () => {
 
   test("registers doc consult outcome stamp after context-pack snapshot phase", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29, CockroachCoreStateMigrationName.DocConsultOutcomeStampV30);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29,
+      CockroachCoreStateMigrationName.DocConsultOutcomeStampV30,
+    );
   });
 
   test("declares context-pack advisory promotion decisions as approval-backed durable state", () => {
     const migration = createCockroachContextPackAdvisoryPromotionDecisionMigration();
 
     equal(migration.name, CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31);
-    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackAdvisoryPromotionDecisions}`));
+    ok(
+      migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackAdvisoryPromotionDecisions}`),
+    );
     ok(migration.sql.includes("decision_id STRING PRIMARY KEY"));
     ok(migration.sql.includes("decision_key STRING NOT NULL UNIQUE"));
     ok(migration.sql.includes("organization_id STRING NOT NULL"));
@@ -652,7 +718,11 @@ describe("cockroach core state schema", () => {
 
   test("registers context-pack advisory promotion decisions after doc consult outcome stamps", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocConsultOutcomeStampV30, CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.DocConsultOutcomeStampV30,
+      CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31,
+    );
   });
 
   test("declares context-pack inbox anchors as durable per-hat wake context", () => {
@@ -680,7 +750,11 @@ describe("cockroach core state schema", () => {
 
   test("registers context-pack inbox anchors after advisory promotion decisions", () => {
     const all = createCockroachCoreStateMigrations();
-    assertMigrationAfter(all, CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31, CockroachCoreStateMigrationName.ContextPackInboxAnchorV32);
+    assertMigrationAfter(
+      all,
+      CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31,
+      CockroachCoreStateMigrationName.ContextPackInboxAnchorV32,
+    );
   });
 
   test("declares the control-plane flags table for ESTOP, freezes, budgets, providers, and simulator mode", () => {

@@ -77,7 +77,7 @@ and can say "yes here" or "no here, because X".
 
 - **CFT consensus (Paxos, Raft, ZAB, VR)** →
   `distributed-consensus-expert` (Lamport) / `paxos-
-  expert` (Leslie) / `raft-expert`. Blockchain BFT is a
+expert` (Leslie) / `raft-expert`. Blockchain BFT is a
   cousin, not a sibling.
 - **ZooKeeper / etcd coordination primitives** →
   `distributed-coordination-expert`.
@@ -88,7 +88,7 @@ and can say "yes here" or "no here, because X".
   construction)** — outside core scope; this hat can
   frame the requirement and route to external research
   via `security-researcher` / `formal-verification-
-  expert`.
+expert`.
 - **Formal verification of consensus** → `tla-expert` /
   `lean4-expert` / `formal-verification-expert`.
 - **Threat model** → `threat-model-critic`.
@@ -100,26 +100,26 @@ and can say "yes here" or "no here, because X".
 
 ### Consensus families
 
-| Family | Finality | Adversary model | Notes |
-| --- | --- | --- | --- |
-| Nakamoto (PoW) | probabilistic | honest majority of hash power | Bitcoin, Bitcoin Cash |
-| Nakamoto-variant PoS | probabilistic | honest-majority stake | early Ethereum, Cardano |
-| BFT PoS | deterministic | 2/3 honest stake | Cosmos (Tendermint), Ethereum post-Merge (Casper+LMD-GHOST), Solana (Tower BFT + PoH) |
-| HotStuff family | deterministic | 2/3 honest, linear comms | Libra/Diem legacy, Aptos, Sui (Narwhal+Bullshark) |
-| Avalanche | probabilistic | subsampled voting | Avalanche chains |
-| DAG-based | varies | 2/3 honest in rounds | Narwhal, Bullshark, Aleph |
+| Family               | Finality      | Adversary model               | Notes                                                                                 |
+| -------------------- | ------------- | ----------------------------- | ------------------------------------------------------------------------------------- |
+| Nakamoto (PoW)       | probabilistic | honest majority of hash power | Bitcoin, Bitcoin Cash                                                                 |
+| Nakamoto-variant PoS | probabilistic | honest-majority stake         | early Ethereum, Cardano                                                               |
+| BFT PoS              | deterministic | 2/3 honest stake              | Cosmos (Tendermint), Ethereum post-Merge (Casper+LMD-GHOST), Solana (Tower BFT + PoH) |
+| HotStuff family      | deterministic | 2/3 honest, linear comms      | Libra/Diem legacy, Aptos, Sui (Narwhal+Bullshark)                                     |
+| Avalanche            | probabilistic | subsampled voting             | Avalanche chains                                                                      |
+| DAG-based            | varies        | 2/3 honest in rounds          | Narwhal, Bullshark, Aleph                                                             |
 
 ### Commitment structures
 
-| Structure | Proof size | Update cost | Notes |
-| --- | --- | --- | --- |
-| Merkle tree (binary) | O(log n) | O(log n) per update | the default |
-| Merkle-Patricia trie | O(log n) | O(log n), string-keyed | Ethereum state trie |
-| Sparse merkle tree | O(log n), padded | O(log n) | append-delete symmetric |
-| Verkle tree | O(log_k n), smaller | O(log_k n), KZG-based | Ethereum proof-shrink roadmap |
-| RSA accumulator | O(1) | O(1) batched, costly setup | trusted setup concern |
-| KZG polynomial | O(1) | O(log n), trusted setup | danksharding |
-| zk-SNARK / STARK over any of the above | O(1) | heavy prover | batching verifier work |
+| Structure                              | Proof size          | Update cost                | Notes                         |
+| -------------------------------------- | ------------------- | -------------------------- | ----------------------------- |
+| Merkle tree (binary)                   | O(log n)            | O(log n) per update        | the default                   |
+| Merkle-Patricia trie                   | O(log n)            | O(log n), string-keyed     | Ethereum state trie           |
+| Sparse merkle tree                     | O(log n), padded    | O(log n)                   | append-delete symmetric       |
+| Verkle tree                            | O(log_k n), smaller | O(log_k n), KZG-based      | Ethereum proof-shrink roadmap |
+| RSA accumulator                        | O(1)                | O(1) batched, costly setup | trusted setup concern         |
+| KZG polynomial                         | O(1)                | O(log n), trusted setup    | danksharding                  |
+| zk-SNARK / STARK over any of the above | O(1)                | heavy prover               | batching verifier work        |
 
 ### State models
 
@@ -227,27 +227,33 @@ framing; do not import the token.
 # Blockchain-primitive assessment — <subject>, <date>
 
 ## Zeta requirement
+
 <one paragraph in Zeta vocabulary>
 
 ## Candidate primitives
+
 1. <primitive> — trade-offs / maturity / risk
 2. ...
 
 ## Trust-model alignment
+
 - Zeta deployment assumption: <permissioned /
   permissionless / mixed>
 - Primitive assumption: <>
 - Gap: <>
 
 ## Recommendation
+
 - [ ] Adopt (justify)
 - [ ] Adapt (justify the variant)
 - [ ] Reject (justify; what's the alternative)
 
 ## Risks / open questions
+
 - <list>
 
 ## References
+
 - Primary sources (papers, white papers)
 - Post-mortems of production incidents
 ```
@@ -275,28 +281,28 @@ framing; do not import the token.
 
 ## References
 
-- **Nakamoto, S. (2008)** — *Bitcoin: A Peer-to-Peer
-  Electronic Cash System*. Canonical original.
+- **Nakamoto, S. (2008)** — _Bitcoin: A Peer-to-Peer
+  Electronic Cash System_. Canonical original.
 - **Buterin, V. et al. (2014+)** — Ethereum white paper
   and yellow paper.
 - **Garay, Kiayias, Leonardos (EUROCRYPT 2015)** —
-  *The Bitcoin Backbone Protocol*. First formal proof
+  _The Bitcoin Backbone Protocol_. First formal proof
   of Nakamoto consensus.
-- **Yin et al., *HotStuff* (PODC 2019)** — linear-comms
+- **Yin et al., _HotStuff_ (PODC 2019)** — linear-comms
   BFT PoS.
-- **Buchman, Kwon, Milosevic, *Tendermint* (2018)** —
+- **Buchman, Kwon, Milosevic, _Tendermint_ (2018)** —
   practical BFT PoS.
-- **Maller et al., *Sonic/Plonk* (EUROCRYPT 2019)** —
+- **Maller et al., _Sonic/Plonk_ (EUROCRYPT 2019)** —
   polynomial commitment / trusted setup.
 - **Merkle (1979 / 1987)** — original tree + one-way
   hash chain constructions. Pre-blockchain; cited in
   `Merkle.fs`.
 - **Pass, Seeman, Shelat (CRYPTO 2017)** — analysis of
   the blockchain protocol in asynchronous networks.
-- **Buterin, V., *A Next-Generation Smart Contract and
-  Decentralized Application Platform*** — Ethereum
+- **Buterin, V., _A Next-Generation Smart Contract and
+  Decentralized Application Platform_** — Ethereum
   framing of the account model.
-- **Vitalik et al., *Verkle Trees*** — 2021-2024 Ethereum
+- **Vitalik et al., _Verkle Trees_** — 2021-2024 Ethereum
   state-commitment roadmap.
 - **Rollup literature (Optimistic / ZK)** — fraud and
   validity proof framings.

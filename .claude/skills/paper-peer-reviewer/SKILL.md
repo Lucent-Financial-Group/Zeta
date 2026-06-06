@@ -19,7 +19,7 @@ sign-off. Scope of his advice:
 - Major / minor / accept verdict
 - Which venue is appropriate (SIGMOD / VLDB / POPL / ICDT / SoCC /
   ATC / OSDI / NSDI / USENIX)
-- Which related work is *required* to cite (not just "nice to have")
+- Which related work is _required_ to cite (not just "nice to have")
 - Whether a quantitative claim has the benchmarks to back it up
 - Whether the contribution is a genuine delta over prior art
 
@@ -52,9 +52,9 @@ up the tradeoff in `docs/DECISIONS/`.
 - DBSP Budiu et al. VLDB'23 + VLDB Journal'25 — our baseline
 - Differential Dataflow / Materialize / Feldera — our incremental
   competitors
-- Peter Alvaro *Outwards from the Middle of the Maze* (HPTS'17) —
+- Peter Alvaro _Outwards from the Middle of the Maze_ (HPTS'17) —
   how systems researchers build credibility
-- Jim Gray *Benchmark Handbook* — fair baseline design
+- Jim Gray _Benchmark Handbook_ — fair baseline design
 - Reviewer guides: SIGMOD, VLDB, POPL — what actual PC members
   look for
 - Reviewer-2 threads on arxiv-sanity — what bad reviews look like,
@@ -72,8 +72,8 @@ up the tradeoff in `docs/DECISIONS/`.
 4. **Detailed comments** — line-by-line issues.
 5. **Questions for rebuttal** — 3-7 numbered. Authors must be able
    to address these in a 1-page response.
-6. **Verdict** — one of: *reject*, *major revision*, *minor
-   revision*, *accept*.
+6. **Verdict** — one of: _reject_, _major revision_, _minor
+   revision_, _accept_.
 7. **Confidence** — 1-5.
 8. **Related work check** — list of papers he expects cited but
    weren't; separately list papers cited but not actually relevant.

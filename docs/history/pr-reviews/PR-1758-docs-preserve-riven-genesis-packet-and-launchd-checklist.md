@@ -10,48 +10,51 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1758 |
-| Title | docs: preserve Riven Genesis packet and launchd checklist |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T01:45:05Z |
-| Merged at | 2026-05-07T01:46:22Z |
-| Merge commit SHA | `e4bdb68092b99b454820962199a40ae744e50df8` |
-| Branch | `claim/riven-genesis-verbatim-launchd-checklist` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1758 |
-| Changed files | 2 |
-| Additions / deletions | +642 / -0 |
+| Field                 | Value                                                     |
+| --------------------- | --------------------------------------------------------- |
+| Number                | 1758                                                      |
+| Title                 | docs: preserve Riven Genesis packet and launchd checklist |
+| Author                | `AceHack` (human)                                         |
+| State                 | MERGED                                                    |
+| Created at            | 2026-05-07T01:45:05Z                                      |
+| Merged at             | 2026-05-07T01:46:22Z                                      |
+| Merge commit SHA      | `e4bdb68092b99b454820962199a40ae744e50df8`                |
+| Branch                | `claim/riven-genesis-verbatim-launchd-checklist`          |
+| Base branch           | `main`                                                    |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1758  |
+| Changed files         | 2                                                         |
+| Additions / deletions | +642 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - Preserves Aaron-forwarded Riven verbatim packet on hospitality, shadow-correlation falsifiability, Superfluid isolation, and the Genesis block as research-grade substrate.
 - Adds a Riven Tier 1 launchd hot-swap checklist for deploying the enhanced tick script without using the contested root checkout.
 - Uses Guarded / Observe-only language per Aaron's correction: the loop is alive even when it declines an unsafe mutation.
 
 ## Checks
+
 - `bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md`
 - `npx markdownlint-cli2 docs/research/2026-05-06-riven-hospitality-entanglement-superfluid-genesis-verbatim-aaron-forwarded.md docs/operations/riven-tier1-launchd-hot-swap-checklist.md`
 - `git diff --check origin/main...HEAD`
 
 ## Coordination
+
 - Claim `riven-genesis-verbatim-launchd-checklist` was pushed first and released in this PR branch.
 - Does not touch Riven's active `task-pr-1702-trajectory-mock-trial` claim, the contested root checkout, or the stale conflicted PR #1703 worktree.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 5 |
-| Resolved threads | 0 |
-| Unresolved threads | 5 |
-| Total review comments | 5 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 5     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 5     |
+| Total review comments                     | 5     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -109,7 +112,7 @@
 
   <pre>
   The fallback restart path uses `launchctl stop/start com.zeta.riven-loop`, which may not target the correct domain on modern launchd and is inconsistent with the repo’s prior art (`bootout`/`bootstrap` + `kickstart` in `docs/CODEX-HARNESS-NOTES.md`). Consider switching the fallback to the bootout/bootstrap sequence (scoped to `gui/$(id -u)` and the plist path) for a more reliable reload.
-
+  
   </pre>
 
 ### Thread 5 -- unresolved

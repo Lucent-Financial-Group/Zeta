@@ -39,17 +39,17 @@ Authoritative "how it works": `tools/persistence/windows/README.md` + commits cb
 
 ## File structure
 
-| File | Responsibility |
-|---|---|
-| `.claude/bin/loop-subprocess-path.ts` (create) | Pure helper: OS-conditional subprocess PATH (the portability fix, extracted to be testable without triggering the tick's load-time side effects) |
-| `.claude/bin/loop-subprocess-path.test.ts` (create) | Unit tests for the helper |
-| `.claude/bin/claude-loop-tick.ts` (modify ~L55-64) | Use the helper instead of the hardcoded POSIX PATH |
-| `tools/persistence/windows/scheduled-task.xml` (create) | Task Scheduler XML template (`.plist` analog) |
-| `tools/persistence/windows/otto-loop-wrapper.ps1` (create) | Per-tick wrapper: PATH + env + `bun claude-loop-tick.ts` |
-| `tools/persistence/windows/install-scheduled-task.ts` (create) | TS installer (mirror of `tools/shadow/launchd/install-launchagent.ts`) |
-| `tools/persistence/windows/install-scheduled-task.test.ts` (create) | Unit tests for installer pure functions |
-| `tools/persistence/windows/README.md` (create) | install / verify / uninstall |
-| `docs/backlog/P2/B-NNNN-windows-pre-install-surface-parity-*.md` (create) | Backlog row closing the `install.sh:159` "Windows backlogged" loop |
+| File                                                                      | Responsibility                                                                                                                                   |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `.claude/bin/loop-subprocess-path.ts` (create)                            | Pure helper: OS-conditional subprocess PATH (the portability fix, extracted to be testable without triggering the tick's load-time side effects) |
+| `.claude/bin/loop-subprocess-path.test.ts` (create)                       | Unit tests for the helper                                                                                                                        |
+| `.claude/bin/claude-loop-tick.ts` (modify ~L55-64)                        | Use the helper instead of the hardcoded POSIX PATH                                                                                               |
+| `tools/persistence/windows/scheduled-task.xml` (create)                   | Task Scheduler XML template (`.plist` analog)                                                                                                    |
+| `tools/persistence/windows/otto-loop-wrapper.ps1` (create)                | Per-tick wrapper: PATH + env + `bun claude-loop-tick.ts`                                                                                         |
+| `tools/persistence/windows/install-scheduled-task.ts` (create)            | TS installer (mirror of `tools/shadow/launchd/install-launchagent.ts`)                                                                           |
+| `tools/persistence/windows/install-scheduled-task.test.ts` (create)       | Unit tests for installer pure functions                                                                                                          |
+| `tools/persistence/windows/README.md` (create)                            | install / verify / uninstall                                                                                                                     |
+| `docs/backlog/P2/B-NNNN-windows-pre-install-surface-parity-*.md` (create) | Backlog row closing the `install.sh:159` "Windows backlogged" loop                                                                               |
 
 ---
 
@@ -83,8 +83,9 @@ test("darwin prepends the POSIX tool dirs + ~/.local/bin", () => {
 });
 
 test("linux uses the same POSIX list as darwin", () => {
-  expect(resolveSubprocessPath("linux", "/home/x", "/existing"))
-    .toBe("/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/home/x/.local/bin");
+  expect(resolveSubprocessPath("linux", "/home/x", "/existing")).toBe(
+    "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/home/x/.local/bin",
+  );
 });
 ```
 
@@ -264,13 +265,26 @@ test("xmlEscape escapes the five XML entities", () => {
 
 test("substitutePlaceholders fills all and leaves none", () => {
   const tpl = "<U>{{USER_ID}}</U><W>{{WRAPPER_PATH}}</W>";
-  const out = substitutePlaceholders(tpl, { USER_ID: "S-1-5-21", WRAPPER_PATH: "C:\\w & x.ps1", TASK_NAME: "T", PWSH_PATH: "p", REPO_ROOT: "r" });
+  const out = substitutePlaceholders(tpl, {
+    USER_ID: "S-1-5-21",
+    WRAPPER_PATH: "C:\\w & x.ps1",
+    TASK_NAME: "T",
+    PWSH_PATH: "p",
+    REPO_ROOT: "r",
+  });
   expect(out).toBe("<U>S-1-5-21</U><W>C:\\w &amp; x.ps1</W>");
 });
 
 test("substitutePlaceholders throws on an unknown leftover placeholder", () => {
-  expect(() => substitutePlaceholders("{{NOT_A_KEY}}", { USER_ID: "", WRAPPER_PATH: "", TASK_NAME: "", PWSH_PATH: "", REPO_ROOT: "" }))
-    .toThrow(/NOT_A_KEY/);
+  expect(() =>
+    substitutePlaceholders("{{NOT_A_KEY}}", {
+      USER_ID: "",
+      WRAPPER_PATH: "",
+      TASK_NAME: "",
+      PWSH_PATH: "",
+      REPO_ROOT: "",
+    }),
+  ).toThrow(/NOT_A_KEY/);
 });
 
 test("toUtf16WithBom prefixes BOM and encodes UTF-16LE", () => {
@@ -333,8 +347,12 @@ export interface Args {
 export type Placeholders = Record<"TASK_NAME" | "USER_ID" | "PWSH_PATH" | "WRAPPER_PATH" | "REPO_ROOT", string>;
 
 export function xmlEscape(s: string): string {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;").replaceAll("'", "&apos;");
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
 }
 
 export function substitutePlaceholders(template: string, vals: Placeholders): string {
@@ -357,19 +375,40 @@ export function parseArgs(argv: string[]): Args {
     const t = argv[i];
     const next = (name: string): string => {
       const v = argv[++i];
-      if (v === undefined || v.startsWith("--")) { throw new Error(`Missing value for ${name}`); }
+      if (v === undefined || v.startsWith("--")) {
+        throw new Error(`Missing value for ${name}`);
+      }
       return v;
     };
     switch (t) {
-      case "--task-name": a.taskName = next("--task-name"); break;
-      case "--model": a.model = next("--model"); break;
-      case "--bun-path": a.bunPath = next("--bun-path"); break;
-      case "--repo-root": a.repoRoot = next("--repo-root"); break;
-      case "--run-claude": a.runClaude = true; break;
-      case "--dry-run": a.dryRun = true; break;
-      case "--register": a.register = true; break;
-      case "--help": case "-h": a.dryRun = false; a.register = false; break;
-      default: throw new Error(`Unknown argument: ${t}`);
+      case "--task-name":
+        a.taskName = next("--task-name");
+        break;
+      case "--model":
+        a.model = next("--model");
+        break;
+      case "--bun-path":
+        a.bunPath = next("--bun-path");
+        break;
+      case "--repo-root":
+        a.repoRoot = next("--repo-root");
+        break;
+      case "--run-claude":
+        a.runClaude = true;
+        break;
+      case "--dry-run":
+        a.dryRun = true;
+        break;
+      case "--register":
+        a.register = true;
+        break;
+      case "--help":
+      case "-h":
+        a.dryRun = false;
+        a.register = false;
+        break;
+      default:
+        throw new Error(`Unknown argument: ${t}`);
     }
   }
   return a;
@@ -400,7 +439,10 @@ git commit -m "feat(persistence/windows): installer pure functions (xmlEscape, s
 
 ```typescript
 function detectRepoRoot(override?: string): string {
-  if (override) { if (!isAbsolute(override)) throw new Error(`--repo-root must be absolute: ${override}`); return override; }
+  if (override) {
+    if (!isAbsolute(override)) throw new Error(`--repo-root must be absolute: ${override}`);
+    return override;
+  }
   return execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
 }
 
@@ -419,7 +461,11 @@ function detectUserSid(): string {
 
 function detectPwsh(): string {
   for (const exe of ["pwsh.exe", "powershell.exe"]) {
-    try { return execFileSync("where.exe", [exe], { encoding: "utf8" }).trim().split(/\r?\n/)[0]; } catch { /* try next */ }
+    try {
+      return execFileSync("where.exe", [exe], { encoding: "utf8" }).trim().split(/\r?\n/)[0];
+    } catch {
+      /* try next */
+    }
   }
   throw new Error("Neither pwsh.exe nor powershell.exe found on PATH");
 }
@@ -452,7 +498,11 @@ function main(): void {
   const xmlPath = join(dir, "task.xml");
   try {
     writeFileSync(xmlPath, toUtf16WithBom(xml));
-    try { execFileSync("schtasks.exe", ["/Delete", "/TN", args.taskName, "/F"], { stdio: "ignore" }); } catch { /* not present */ }
+    try {
+      execFileSync("schtasks.exe", ["/Delete", "/TN", args.taskName, "/F"], { stdio: "ignore" });
+    } catch {
+      /* not present */
+    }
     execFileSync("schtasks.exe", ["/Create", "/TN", args.taskName, "/XML", xmlPath, "/F"], { stdio: "inherit" });
     console.error(`Registered user-mode task "${args.taskName}". Verify: schtasks /Query /TN ${args.taskName}`);
   } finally {
@@ -460,7 +510,9 @@ function main(): void {
   }
 }
 
-if (import.meta.main) { main(); }
+if (import.meta.main) {
+  main();
+}
 ```
 
 - [ ] **Step 2: Re-run unit tests (no regressions)**
@@ -543,11 +595,11 @@ git commit -m "feat(persistence/windows): per-tick PowerShell wrapper (env + bun
 - Create: `tools/persistence/windows/README.md`
 
 - [ ] **Step 1: Write the README** — cover: what it is (user-mode parity with launchd),
-  install (`bun … --register`), verify (`schtasks /Query /TN ZetaOttoLoop /XML`,
-  `Get-ScheduledTask -TaskName ZetaOttoLoop`), logs (`%LOCALAPPDATA%\zeta-otto-loop\`),
-  enable harness-launch (uncomment `ZETA_CLAUDE_LOOP_RUN_CLAUDE` in wrapper), uninstall
-  (`schtasks /Delete /TN ZetaOttoLoop /F`), and the launchd cross-reference. Include the
-  parity table from the spec.
+      install (`bun … --register`), verify (`schtasks /Query /TN ZetaOttoLoop /XML`,
+      `Get-ScheduledTask -TaskName ZetaOttoLoop`), logs (`%LOCALAPPDATA%\zeta-otto-loop\`),
+      enable harness-launch (uncomment `ZETA_CLAUDE_LOOP_RUN_CLAUDE` in wrapper), uninstall
+      (`schtasks /Delete /TN ZetaOttoLoop /F`), and the launchd cross-reference. Include the
+      parity table from the spec.
 
 - [ ] **Step 2: Commit**
 
@@ -577,7 +629,7 @@ Run: `schtasks /Run /TN ZetaOttoLoop; Start-Sleep 8; Get-Content "$env:LOCALAPPD
 Expected: a `heartbeat complete run_id=… fetch=… open_prs=… claude=wait …` line.
 
 - [ ] **Step 4: File the backlog row** `docs/backlog/P2/B-NNNN-windows-pre-install-surface-parity-2026-05-30.md`
-  (next free B-NNNN per `otto-channels-reference-card` ID-allocation: check `git ls-tree origin/main docs/backlog` + `gh pr list`). Status open; slice 1 done, slices 2/3 pending; link both `docs/plans/2026-05-30-windows-parity-*` docs. Regenerate index: `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts`.
+      (next free B-NNNN per `otto-channels-reference-card` ID-allocation: check `git ls-tree origin/main docs/backlog` + `gh pr list`). Status open; slice 1 done, slices 2/3 pending; link both `docs/plans/2026-05-30-windows-parity-*` docs. Regenerate index: `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts`.
 
 - [ ] **Step 5: Final unit-test sweep + commit**
 

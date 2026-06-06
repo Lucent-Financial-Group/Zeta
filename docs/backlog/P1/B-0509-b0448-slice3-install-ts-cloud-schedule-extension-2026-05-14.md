@@ -40,7 +40,7 @@ Mirrors `readSchedule` in structure:
 
 ```typescript
 export interface CloudScheduleResult {
-  trigger?: CloudTrigger;  // typed per B-0508 schema
+  trigger?: CloudTrigger; // typed per B-0508 schema
   missing: boolean;
   parseError?: string;
 }
@@ -76,9 +76,9 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 - [ ] B-0507 and B-0508 PRs merged and on main
 - [ ] Review existing `readSchedule` + `syncRoutine` tests (shipped in PR #3034)
-  to understand the test fixture pattern before adding new test cases
+      to understand the test fixture pattern before adding new test cases
 - [ ] Confirm registration instruction format (from B-0507 findings) before
-  hardcoding into the `main` output block
+      hardcoding into the `main` output block
 
 ## Acceptance criteria
 
@@ -87,7 +87,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [x] `main` prints Cloud Routine next-step guidance when `cloud-schedule.json` present
 - [x] Unit tests for `readCloudSchedule` (happy path + missing + parse-error)
 - [x] `bun tools/routines/install.ts` runs without error on existing routines
-  (no `cloud-schedule.json` present → no cloud block printed; idempotent)
+      (no `cloud-schedule.json` present → no cloud block printed; idempotent)
 - [x] B-0509 closed with PR link — [PR #4014](https://github.com/Lucent-Financial-Group/Zeta/pull/4014)
 
 ## Why not merge slices 2 and 3

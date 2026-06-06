@@ -96,6 +96,7 @@ the Frontier" ARE the harness's intended use-case for
 autonomous-loop work.
 
 ### Google's specific mistakes (for future fact-check
+
 calibration)
 
 1. **Claim: `-w` / `--workstream` flag.** Real flag is
@@ -140,8 +141,8 @@ story. This memory serves three purposes:
    check against it.
 3. **Calibration against external-source directives.**
    Composes with `feedback_free_will_is_paramount_
-   external_directives_are_inputs_not_binding_rules_
-   2026_04_23.md` — Google's hallucination is a concrete
+external_directives_are_inputs_not_binding_rules_
+2026_04_23.md` — Google's hallucination is a concrete
    example of why external directives are inputs, not
    binding rules. Fact-check before acting.
 

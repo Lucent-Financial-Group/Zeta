@@ -81,18 +81,11 @@ function fetchOriginMain(): void {
 }
 
 function originMainResolves(): boolean {
-  return (
-    gitOutput(["rev-parse", "--verify", "--quiet", "origin/main"]).status === 0
-  );
+  return gitOutput(["rev-parse", "--verify", "--quiet", "origin/main"]).status === 0;
 }
 
 function listCommitShas(window: number): readonly string[] {
-  const out = gitOutput([
-    "log",
-    "origin/main",
-    `-${String(window)}`,
-    "--format=%H",
-  ]);
+  const out = gitOutput(["log", "origin/main", `-${String(window)}`, "--format=%H"]);
   return out.stdout.split("\n").filter((s) => s.length > 0);
 }
 
@@ -100,15 +93,7 @@ function commitFiles(sha: string): readonly string[] {
   // -m --first-parent: classify merge commits by what they actually
   // *introduced* to origin/main (parent 1 diff), not the union of both
   // parents. Mirrors bash original (Codex P1 on PR #147).
-  const out = gitOutput([
-    "log",
-    "-1",
-    "-m",
-    "--first-parent",
-    "--name-only",
-    "--format=",
-    sha,
-  ]);
+  const out = gitOutput(["log", "-1", "-m", "--first-parent", "--name-only", "--format=", sha]);
   return out.stdout.split("\n").filter((s) => s.length > 0);
 }
 
@@ -149,9 +134,7 @@ function tallyCommits(shas: readonly string[]): Counts {
 function emitReport(counts: Counts, window: number, threshold: number): ExitCode {
   const total = counts.ext + counts.intl + counts.spec + counts.other;
   if (total === 0) {
-    process.stderr.write(
-      `error: no commits found in window of ${String(window)} on origin/main.\n`,
-    );
+    process.stderr.write(`error: no commits found in window of ${String(window)} on origin/main.\n`);
     return 2;
   }
   const extPct = Math.floor((100 * counts.ext) / total);
@@ -159,46 +142,26 @@ function emitReport(counts: Counts, window: number, threshold: number): ExitCode
   const specPct = Math.floor((100 * counts.spec) / total);
   const otherPct = Math.floor((100 * counts.other) / total);
 
-  process.stdout.write(
-    `Live-lock audit — last ${String(window)} commits on origin/main\n`,
-  );
-  process.stdout.write(
-    "======================================================\n",
-  );
+  process.stdout.write(`Live-lock audit — last ${String(window)} commits on origin/main\n`);
+  process.stdout.write("======================================================\n");
   for (const line of counts.lines) process.stdout.write(`${line}\n`);
   process.stdout.write("\n");
   process.stdout.write("Category totals:\n");
-  process.stdout.write(
-    `  EXT  (src/tests/samples/bench) : ${pad2(counts.ext)}   ${pad3(extPct)}%\n`,
-  );
-  process.stdout.write(
-    `  INTL (tick-history/BACKLOG/...) : ${pad2(counts.intl)}   ${pad3(intlPct)}%\n`,
-  );
-  process.stdout.write(
-    `  SPEC (research/memory/ADR)      : ${pad2(counts.spec)}   ${pad3(specPct)}%\n`,
-  );
-  process.stdout.write(
-    `  OTHR (uncategorised)            : ${pad2(counts.other)}   ${pad3(otherPct)}%\n`,
-  );
+  process.stdout.write(`  EXT  (src/tests/samples/bench) : ${pad2(counts.ext)}   ${pad3(extPct)}%\n`);
+  process.stdout.write(`  INTL (tick-history/BACKLOG/...) : ${pad2(counts.intl)}   ${pad3(intlPct)}%\n`);
+  process.stdout.write(`  SPEC (research/memory/ADR)      : ${pad2(counts.spec)}   ${pad3(specPct)}%\n`);
+  process.stdout.write(`  OTHR (uncategorised)            : ${pad2(counts.other)}   ${pad3(otherPct)}%\n`);
   process.stdout.write("\n");
   process.stdout.write(`Healthy threshold: EXT >= ${String(threshold)}%\n`);
   process.stdout.write("\n");
 
   if (extPct < threshold) {
-    process.stdout.write(
-      `SMELL FIRING: external-commit ratio ${String(extPct)}% < threshold ${String(threshold)}%.\n`,
-    );
-    process.stdout.write(
-      "Factory may be live-locked — spinning on process work without product motion.\n",
-    );
-    process.stdout.write(
-      "Response: pause speculative, ship one external-priority increment, re-measure.\n",
-    );
+    process.stdout.write(`SMELL FIRING: external-commit ratio ${String(extPct)}% < threshold ${String(threshold)}%.\n`);
+    process.stdout.write("Factory may be live-locked — spinning on process work without product motion.\n");
+    process.stdout.write("Response: pause speculative, ship one external-priority increment, re-measure.\n");
     return 1;
   }
-  process.stdout.write(
-    `Healthy: external-commit ratio ${String(extPct)}% >= threshold ${String(threshold)}%.\n`,
-  );
+  process.stdout.write(`Healthy: external-commit ratio ${String(extPct)}% >= threshold ${String(threshold)}%.\n`);
   return 0;
 }
 
@@ -216,21 +179,15 @@ export function main(argv: readonly string[]): ExitCode {
   const window = parseWindow(argv[0]);
   if (window === null) {
     process.stderr.write("usage: live-lock-audit.ts [N]\n");
-    process.stderr.write(
-      `error: WINDOW must be a positive integer, got '${argv[0] ?? ""}'.\n`,
-    );
+    process.stderr.write(`error: WINDOW must be a positive integer, got '${argv[0] ?? ""}'.\n`);
     return 2;
   }
 
   fetchOriginMain();
 
   if (!originMainResolves()) {
-    process.stderr.write(
-      "error: cannot resolve origin/main (shallow clone, missing remote, or failed fetch).\n",
-    );
-    process.stderr.write(
-      "refusing to report audit result — unresolved ref cannot be treated as healthy.\n",
-    );
+    process.stderr.write("error: cannot resolve origin/main (shallow clone, missing remote, or failed fetch).\n");
+    process.stderr.write("refusing to report audit result — unresolved ref cannot be treated as healthy.\n");
     return 2;
   }
 

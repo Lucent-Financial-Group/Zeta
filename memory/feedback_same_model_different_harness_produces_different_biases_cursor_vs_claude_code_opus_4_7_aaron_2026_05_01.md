@@ -8,9 +8,9 @@ type: feedback
 
 ## Aaron 2026-05-01 verbatim
 
-> *"i'm watching a youtube video that says cursor with opus 4.7
+> _"i'm watching a youtube video that says cursor with opus 4.7
 > is better than claude code with with opus 4.7. seems like
-> that is a peer/buddy agent would give different biases."*
+> that is a peer/buddy agent would give different biases."_
 
 ## What this codifies
 
@@ -23,8 +23,8 @@ Claude Code + Opus 4.7. This is a single-source signal, not
 a verified benchmark — but it surfaces a structural truth
 worth naming.
 
-Aaron's interpretation: *"that is a peer/buddy agent would
-give different biases."* Same-model-different-harness is a
+Aaron's interpretation: _"that is a peer/buddy agent would
+give different biases."_ Same-model-different-harness is a
 legitimate peer/buddy configuration, not a degenerate case.
 
 ## Why this matters for the factory
@@ -34,7 +34,8 @@ the broader multi-harness peer-call scripts at
 `tools/peer-call/{amara,ani,codex,gemini,grok}.sh`) was originally
 motivated by **different-model peer review** — Claude Code +
 Codex + Cursor + Gemini + Grok each running their own model
-+ harness combination, providing diverse perspectives.
+
+- harness combination, providing diverse perspectives.
 
 Aaron's observation expands the rationale: **even when the
 underlying model is identical, the harness alone produces
@@ -49,14 +50,14 @@ different biases.** This means:
 2. **Multi-harness IS multi-bias.** The bias-source isn't
    only "different model weights." It's also: harness
    system-prompt + harness tool-set + harness context-management
-   + harness UI-affordances + harness sampling-defaults +
-   harness output-formatting expectations.
+   - harness UI-affordances + harness sampling-defaults +
+     harness output-formatting expectations.
 
 3. **Peer-mode value compounds across both axes.** Different
    model + different harness = product of biases. Same model
-   + different harness = harness-axis bias only, but still
-   non-trivial. Different model + same harness = model-axis
-   bias only.
+   - different harness = harness-axis bias only, but still
+     non-trivial. Different model + same harness = model-axis
+     bias only.
 
 4. **Scaling-ladder rung 5 (peer-mode claims protocol)
    benefits from this.** Per

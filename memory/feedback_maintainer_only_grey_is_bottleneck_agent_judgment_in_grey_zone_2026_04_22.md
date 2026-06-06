@@ -4,18 +4,19 @@ description: Aaron 2026-04-22 auto-loop-30 principle *"yes if i'm the only grey 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Maintainer-as-sole-grey-gatekeeper is the bottleneck
 
 **Source (verbatim, 2026-04-22 auto-loop-30):**
 
-> *"yes if i'm the only grey i'm the bottlenech"* [typo for
-> bottleneck]
+> _"yes if i'm the only grey i'm the bottlenech"_ [typo for
+> > bottleneck]
 
 Composes with same-tick earlier:
 
-> *"clear to me i'm grey grey means fun and do it"*
+> _"clear to me i'm grey grey means fun and do it"_
 >
-> *"the edge is grey"*
+> _"the edge is grey"_
 
 ## The rule
 
@@ -66,7 +67,7 @@ category):
    exercises judgment, names the ambiguity briefly in the
    action record (tick-history, memory, PR body), proceeds.
    Aaron reads the record async; if calibration is off,
-   Aaron corrects *after* the fact and the calibration
+   Aaron corrects _after_ the fact and the calibration
    updates. This is the **vast majority** of non-trivial
    factory decisions.
 3. **Red** (hard policy-layer violation regardless of
@@ -115,6 +116,7 @@ attention.
 ## What this changes in my behavior going forward
 
 **Stop doing:**
+
 - "I'll ask Aaron if this is fine" on gray judgments where
   no escalation trigger fires.
 - "Defer until task-binding lands" when the task is evident
@@ -125,6 +127,7 @@ attention.
   was wrong.
 
 **Start doing:**
+
 - Decide gray cases; record the judgment; proceed.
 - Escalate only on the five explicit triggers above.
 - Keep the chat-register concise; the paper trail (tick-
@@ -171,10 +174,10 @@ attention.
 - **NOT a unilateral reinterpretation of any prior directive.**
   If Aaron previously said "ask me before X", that directive
   holds unless and until Aaron revises it. Gray-judgment-
-  autonomy is the *default*; explicit Aaron-set gates
+  autonomy is the _default_; explicit Aaron-set gates
   override the default.
 - **NOT the same as lowering review standards.** Gray
-  judgment is exercised *well*, not lightly. Think-hard,
+  judgment is exercised _well_, not lightly. Think-hard,
   decide-well, proceed.
 - **NOT agent-acts-without-visibility.** Every gray decision
   leaves a record Aaron can audit and correct.

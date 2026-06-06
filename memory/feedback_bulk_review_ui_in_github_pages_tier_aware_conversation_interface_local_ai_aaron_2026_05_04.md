@@ -12,7 +12,7 @@ caused_by: Aaron 2026-05-04 explicit architectural direction in conversation abo
 Aaron 2026-05-04, after acknowledging that expanded background-
 agent work is the right direction:
 
-> *"expanding the background work will get us there eventually
+> _"expanding the background work will get us there eventually
 > and make it where we are forced into bulk future alignment
 > where i review you architecture decisions based on those
 > levels you named earlier, so i don't need tiny corrects at
@@ -20,13 +20,13 @@ agent work is the right direction:
 > maintainers jobs easier and giving a way for reviewing
 > substantial changes quickly and maintainer will still never
 > have to write code. and the UI should have a conversation
-> interface too."*
+> interface too."_
 
-> *"hopefully talking to a local/browser based AI so it won't
-> cost us money lol."*
+> _"hopefully talking to a local/browser based AI so it won't
+> cost us money lol."_
 
-> *"maybe LLM based maybe Bayesian inference seed executor based
-> in Zeta."*
+> _"maybe LLM based maybe Bayesian inference seed executor based
+> in Zeta."_
 
 ## What this is
 
@@ -65,8 +65,8 @@ A maintainer-review UI hosted in GitHub Pages, designed to:
 
 ## The cost-constraint + AI architecture options
 
-Aaron's explicit cost constraint: *"hopefully talking to a
-local/browser based AI so it won't cost us money."*
+Aaron's explicit cost constraint: _"hopefully talking to a
+local/browser based AI so it won't cost us money."_
 
 Two implementation paths for the conversation-interface AI:
 
@@ -154,20 +154,20 @@ section.
 **Same-day course correction story** — B-0188 was filed first
 as a new row, per Aaron's same-conversation framing:
 
-> *"adding to backlog is never a failure mode to be corrected,
+> _"adding to backlog is never a failure mode to be corrected,
 > the largest mechanized automated backlog wins. we just have
 > to make sure the backlog is not only growing but being
-> completed and growing at the same time a proper flywheel."*
+> completed and growing at the same time a proper flywheel."_
 
 Refined immediately after to **three quality bars** on the
 flywheel:
 
-> *"growing-WITHOUT-completing is the failure mode, or
+> _"growing-WITHOUT-completing is the failure mode, or
 > growing-AND-completion but the new backlog items are all
 > noise that get ignored later because they are stale or
 > unintelligible or whatever reason they don't actually fit
 > when it time to pull them or just forgetting the backlog
-> exists lol."*
+> exists lol."_
 
 The bars: **growth + completion + non-noise-when-pulled**.
 
@@ -197,8 +197,8 @@ losing the architectural direction.
 
 ## Carved sentence
 
-*"Maintainer-review at the substrate-tier level, in GitHub
+_"Maintainer-review at the substrate-tier level, in GitHub
 Pages, with a local-AI conversation interface — bulk
 architectural alignment, never tiny corrects, maintainer never
 writes code. The dialectical-friction venue scaled past the
-kitchen table."*
+kitchen table."_

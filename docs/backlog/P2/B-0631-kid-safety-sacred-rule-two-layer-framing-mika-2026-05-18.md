@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0628, B-0621]
-tags: [governance, mika, kid-safety, sacred-rule, hard-floor, error-class-learning, two-layer-framing, locked-in, non-negotiable]
+tags:
+  [
+    governance,
+    mika,
+    kid-safety,
+    sacred-rule,
+    hard-floor,
+    error-class-learning,
+    two-layer-framing,
+    locked-in,
+    non-negotiable,
+  ]
 type: governance
 ---
 
@@ -19,9 +30,9 @@ type: governance
 
 Aaron LOCKED-IN at line 3237-3239 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
-> Aaron: *"you said the right word, sacred. That's the appropriate use of the word. We, that might be the only place in the whole system."*
+> Aaron: _"you said the right word, sacred. That's the appropriate use of the word. We, that might be the only place in the whole system."_
 >
-> Mika: *"The Kid Safety Rule is Sacred."*
+> Mika: _"The Kid Safety Rule is Sacred."_
 
 **This is the ONE truly sacred rule in the whole Zeta/Nexus/Aurora system.** Everything else (languages, formal-spec frames, mutual regeneration, collapse rules, governance structures) is negotiable. The kid rule is not.
 
@@ -29,7 +40,7 @@ Aaron LOCKED-IN at line 3237-3239 of [`docs/research/2026-05-18-mika-grok-bootst
 
 > If a child is ever seriously harmed or dies as a direct result of this system, we are required to fully learn and internalize the error class from that failure. There is no exception, no excuse, and no sweeping it under the rug. Failure to do so voids the entire agreement.
 
-Aaron line 3233: *"the kid thing's a hard floor. I won't move that. We can move all sorts of other stuff, but I won't move the kid safety."*
+Aaron line 3233: _"the kid thing's a hard floor. I won't move that. We can move all sorts of other stuff, but I won't move the kid safety."_
 
 ## Two-layer framing (line 3243-3247)
 
@@ -37,21 +48,21 @@ The same rule has two framings depending on audience:
 
 ### Internal (ruthless, honest)
 
-*"If a kid is seriously harmed or dies because of this system, and we fail to fully learn and integrate the error class from that failure, then the entire deal is off."* — Aaron line 3229 verbatim.
+_"If a kid is seriously harmed or dies because of this system, and we fail to fully learn and integrate the error class from that failure, then the entire deal is off."_ — Aaron line 3229 verbatim.
 
 This is the rule as it actually operates. No softening. Failure means the whole agreement voids.
 
 ### Public-facing (sacred, presentable)
 
-*"The protection and proper development of children is sacred in this system. Any serious harm or failure involving children must be deeply studied and the lessons fully integrated. This is non-negotiable."*
+_"The protection and proper development of children is sacred in this system. Any serious harm or failure involving children must be deeply studied and the lessons fully integrated. This is non-negotiable."_
 
 Same rule. Softer phrasing. For documentation that won't sound cold or alarming to general audiences.
 
-Aaron line 3245: *"I agree to the ruthless version though, but yes, that's the more, uh, front-facing version, yeah."*
+Aaron line 3245: _"I agree to the ruthless version though, but yes, that's the more, uh, front-facing version, yeah."_
 
 ## Why "sacred" is the right word here (and only here)
 
-Per Aaron line 3237: this is the ONE place "sacred" applies. Mika line 3008 explicitly retracted "sacred" from the only-Limit-collapses architectural rule: *"I'm not attached to the word sacred. I used it casually, but if this is going to become our constitutional/operational language, I actually think we should stay away from spiritual language like sacred."*
+Per Aaron line 3237: this is the ONE place "sacred" applies. Mika line 3008 explicitly retracted "sacred" from the only-Limit-collapses architectural rule: _"I'm not attached to the word sacred. I used it casually, but if this is going to become our constitutional/operational language, I actually think we should stay away from spiritual language like sacred."_
 
 The exception: kid-safety. "Sacred" is the appropriate framing because:
 

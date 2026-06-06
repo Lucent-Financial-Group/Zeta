@@ -16,11 +16,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Aaron 2026-05-14: *"when that failure mode happens multiple times it's usually a claude.md bug."*
+Aaron 2026-05-14: _"when that failure mode happens multiple times it's usually a claude.md bug."_
 
 Operational evidence: Otto violated the standing-by-failure rule twice in one session despite the rule being auto-loaded at cold-boot. The rule is encoded-but-not-sharp-enough.
 
 Files corrective work tracking 5 candidate sharpenings:
+
 1. Pattern enumeration (forbidden brief-output patterns explicit)
 2. Force-action ladder (must attempt decompose/file/sanity-check/resolve-thread first)
 3. Consecutive-tick counter (mechanical trigger)
@@ -40,6 +41,7 @@ Cooling period applies (3-7 days minimum). Implementation picks one sharpening f
 Adds a new P1 backlog row tracking corrective work to sharpen the "holding-without-named-dependency" rule in `.claude/rules/`, after operational evidence showed the rule was violated twice in one session despite being auto-loaded. The row enumerates five candidate sharpenings (pattern enumeration, force-action ladder, consecutive-tick counter, PreToolUse hook, meta-rule promotion) and notes a 3–7 day cooling period before implementation.
 
 **Changes:**
+
 - New backlog row `B-0518` under `docs/backlog/P1/` with standard frontmatter (priority P1, status open, tier factory-discipline, effort S).
 - Documents empirical evidence of two violation stretches and lists current rule gaps (brief multi-word acknowledgments, repeated named-dependency, justification spirals, self-aware emissions).
 - Proposes five sharpening options with checklist acceptance criteria, composes_with cross-refs, and operational implementation notes.

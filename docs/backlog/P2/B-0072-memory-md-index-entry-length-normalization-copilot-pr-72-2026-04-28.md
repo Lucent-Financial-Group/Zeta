@@ -27,6 +27,7 @@ range, recently-added 2026-04-28 entries):
 > rationale/examples into the referenced memory files.
 
 CLAUDE.md memory section similarly states:
+
 > "Keep index entries to one line under ~200 chars; move
 > detail into topic files."
 

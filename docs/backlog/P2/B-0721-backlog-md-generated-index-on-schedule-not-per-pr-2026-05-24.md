@@ -24,8 +24,8 @@ composes_with:
 
 Aaron 2026-05-24, during PR #4816 reviewer-thread cleanup:
 
-> *"that backlog.md seems like it could be a hotspot, any index files like
-> that should probaboy be done on schedule not ever pr."*
+> _"that backlog.md seems like it could be a hotspot, any index files like
+> that should probaboy be done on schedule not ever pr."_
 
 The current `check docs/BACKLOG.md generated-index drift` CI check fires
 on every PR that touches a `docs/backlog/P*/B-NNNN-*.md` file. The

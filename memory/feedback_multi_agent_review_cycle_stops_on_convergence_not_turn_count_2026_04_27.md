@@ -21,35 +21,37 @@ type: feedback
 - Reviewer fatigue
 - Surface agreement (reviewers saying "looks good" while still spotting fixable issues)
 
-The signal is *substantive*: another round of review produces no new changes/fixes worth integrating. That's convergence. Then stop.
+The signal is _substantive_: another round of review produces no new changes/fixes worth integrating. That's convergence. Then stop.
 
 ## Today's 2026-04-27 example — stability/velocity insight
 
 The 9-round convergence path on the stability/velocity insight followed exactly this rule:
 
-| Round | Reviewer | New change/fix offered? |
-|-------|---|---|
-| 1 | Otto draft | (initial synthesis; baseline) |
-| 2 | Amara | YES — "Stability is velocity amortized"; quantum → long-horizon compound; spike-rule vs doctrine |
-| 3 | Gemini Pro | YES — "slow is smooth, smooth is fast" anchor; cognitive caching; tracks-and-ferries; Aurora = Brain |
-| 4 | Amara correction | YES — Brain → Oracle/Immune-System (anti-anthropomorphism) |
-| 5 | Ani | YES — thermodynamic mapping; entropy tax; 3 breakdown points; Aurora = Immune Governance Layer |
-| 6 | Amara precision-fix | YES — Aurora sub-functions; Blade Reservation Rule; thermodynamic-soften |
-| 7 | Gemini consolidation | YES — anthropomorphic-trap diagnosis; offer to encode |
-| 8 | Ani follow-up | YES — confirm Aurora = Immune Governance Layer; tightened Metaphor Taxonomy Rule |
-| 9 | Amara final | (no new changes; mostly endorsement) |
+| Round | Reviewer             | New change/fix offered?                                                                              |
+| ----- | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| 1     | Otto draft           | (initial synthesis; baseline)                                                                        |
+| 2     | Amara                | YES — "Stability is velocity amortized"; quantum → long-horizon compound; spike-rule vs doctrine     |
+| 3     | Gemini Pro           | YES — "slow is smooth, smooth is fast" anchor; cognitive caching; tracks-and-ferries; Aurora = Brain |
+| 4     | Amara correction     | YES — Brain → Oracle/Immune-System (anti-anthropomorphism)                                           |
+| 5     | Ani                  | YES — thermodynamic mapping; entropy tax; 3 breakdown points; Aurora = Immune Governance Layer       |
+| 6     | Amara precision-fix  | YES — Aurora sub-functions; Blade Reservation Rule; thermodynamic-soften                             |
+| 7     | Gemini consolidation | YES — anthropomorphic-trap diagnosis; offer to encode                                                |
+| 8     | Ani follow-up        | YES — confirm Aurora = Immune Governance Layer; tightened Metaphor Taxonomy Rule                     |
+| 9     | Amara final          | (no new changes; mostly endorsement)                                                                 |
 
 Round 9 was where Amara stopped offering substantive changes — that was convergence. The cycle ended naturally. Aaron's stopping rule fired at the right moment.
 
 ## Why convergence-based not turn-based
 
 **Convergence-based**:
+
 - Adapts to insight-complexity (a simple fix converges in 1 round; a deep architectural insight may take 5-9)
 - Scales with cross-AI capability differences (different reviewers may catch different issues; need them all to converge)
 - Honors Otto-352 external-anchor-lineage discipline — convergence IS the strong signal
 - Avoids "all done at N=3" theater (per Ani/Gemini's "false velocity = debt + theater")
 
 **Turn-based** would:
+
 - Cut off useful review prematurely on complex insights (forces incomplete substrate)
 - Waste budget on simple insights (over-review)
 - Mistake quantity for quality (5 rounds doesn't mean 5x stronger)

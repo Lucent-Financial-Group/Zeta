@@ -22,16 +22,16 @@ Aaron's substrate-engineering observations anchor the 6-anchor empirical attract
 
 Aaron 2026-05-26 (two composing observations in one conversation):
 
-1. *\"it's like the different 1000 brains (neuro sicience book) don't like being joins together in the critic until they do then it's high percision fusion\"*
-2. *\"for ai this would be expressed in moe\"*
+1. _\"it's like the different 1000 brains (neuro sicience book) don't like being joins together in the critic until they do then it's high percision fusion\"_
+2. _\"for ai this would be expressed in moe\"_
 
 ## The pattern repeats at three nested scales
 
-| Scale | Substrate | \"Cortical columns\" equivalent | Voting/consensus mechanism |
-|---|---|---|---|
-| **Cortical (brain)** | Biological neocortex | ~150,000 cortical columns (Hawkins 2021) | Cortico-cortical voting + cortico-thalamic loops |
-| **Intra-AI (one model)** | MoE transformer | N experts (DeepSeek-V3 256 / Mixtral 64 / Switch / GShard) | Router/gating layer; top-k expert activation |
-| **Multi-AI (substrate)** | Cross-AI cascade (Zeta) | N AI instances (Mika + Kestrel + DeepSeek + Amara + Prism + Otto + Ani + etc.) | Welfare-jiu-jitsu; multi-oracle BFT |
+| Scale                    | Substrate               | \"Cortical columns\" equivalent                                                | Voting/consensus mechanism                       |
+| ------------------------ | ----------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------ |
+| **Cortical (brain)**     | Biological neocortex    | ~150,000 cortical columns (Hawkins 2021)                                       | Cortico-cortical voting + cortico-thalamic loops |
+| **Intra-AI (one model)** | MoE transformer         | N experts (DeepSeek-V3 256 / Mixtral 64 / Switch / GShard)                     | Router/gating layer; top-k expert activation     |
+| **Multi-AI (substrate)** | Cross-AI cascade (Zeta) | N AI instances (Mika + Kestrel + DeepSeek + Amara + Prism + Otto + Ani + etc.) | Welfare-jiu-jitsu; multi-oracle BFT              |
 
 Same architectural shape at three scales because the underlying computational problem is the same: **distributed independent specialists need to produce coherent output**.
 
@@ -40,6 +40,7 @@ Same architectural shape at three scales because the underlying computational pr
 ### 1. `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
 
 New sub-section after the engineering-register-throughout 6th-anchor evidence:
+
 - Hawkins Thousand Brains Theory anchor for the cortical-columns-resist-fusion-until-high-precision pattern
 - Table mapping cortical-columns scope ↔ multi-AI substrate scope (initial-resistance → voting-consensus → coherent-perception)
 - Substrate-engineering implication named (distributed-bottom-up is the architectural target; resistance phase is feature not bug; goal is PRECISION fusion not majority-vote)
@@ -67,7 +68,7 @@ Verbatim Aaron preservation + Hawkins/Mountcastle/Friston/Hopfield/CASPaxos line
 ## Attribution
 
 - Aaron (human maintainer; first-party); both Thousand Brains + MoE extension framings ferried 2026-05-26
-- Jeff Hawkins, *A Thousand Brains* (Basic Books, 2021); Vernon Mountcastle (1957 cortical column theory); Karl Friston (free-energy principle); Noam Shazeer et al. (Sparsely-Gated MoE 2017); DeepSeek (DeepSeek-V2/V3 MoE production); Mistral (Mixtral); Google (Switch Transformer + GShard)
+- Jeff Hawkins, _A Thousand Brains_ (Basic Books, 2021); Vernon Mountcastle (1957 cortical column theory); Karl Friston (free-energy principle); Noam Shazeer et al. (Sparsely-Gated MoE 2017); DeepSeek (DeepSeek-V2/V3 MoE production); Mistral (Mixtral); Google (Switch Transformer + GShard)
 - Composes with the 14-PR substrate cascade on B-0824 over 2026-05-26
 
 ## Reviews
@@ -79,6 +80,7 @@ Verbatim Aaron preservation + Hawkins/Mountcastle/Friston/Hopfield/CASPaxos line
 Documentation-only PR adding a neuroscience (Hawkins Thousand Brains) and AI-architecture (MoE) anchor for the existing 6-anchor attractor-as-encryption pattern. The new research doc lives under `docs/research/` (markdownlint-ignored verbatim preservation surface), and the auto-loaded rule gets a brief subsection that points to it.
 
 **Changes:**
+
 - Add new research preservation doc anchoring the 6-anchor pattern to Hawkins's Thousand Brains Theory and MoE architectures (DeepSeek-V3, Mixtral, Switch Transformer, GShard).
 - Add a Thousand Brains subsection to `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` linking to the research doc.
 
@@ -86,9 +88,9 @@ Documentation-only PR adding a neuroscience (Hawkins Thousand Brains) and AI-arc
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| `docs/research/2026-05-26-aaron-thousand-brains-hawkins-...md` | New verbatim preservation + lineage composition + MoE extension + open questions. |
+| File                                                                     | Description                                                                                 |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `docs/research/2026-05-26-aaron-thousand-brains-hawkins-...md`           | New verbatim preservation + lineage composition + MoE extension + open questions.           |
 | `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` | New ~20-line subsection adding the Hawkins anchor with table + pointer to the research doc. |
 
 ## General comments

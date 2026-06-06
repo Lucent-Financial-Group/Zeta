@@ -26,17 +26,17 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Rolling 24h series (anchors 1–9)
 
-| # | UTC | Stuck procs | Tier |
-|---|---|---|---|
-| 1 | 2026-05-23T10:18Z | 450 | extreme-extreme |
-| 2 | 2026-05-23T14:11Z | 354 | extreme |
-| 3 | 2026-05-23T16:08Z | 354 | extreme (plateau) |
-| 4 | 2026-05-23T18:09Z | 420 | extreme |
-| 5 | 2026-05-23T20:14Z | 540 | extreme-extreme |
-| 6 | 2026-05-23T22:08Z | 93 | mild (originally reclassified after #7+#8) |
-| 7 | 2026-05-24T00:09Z | 447 | extreme |
-| 8 | 2026-05-24T02:09Z | 534 | extreme-extreme |
-| **9** | **2026-05-24T02:40Z** | **33** | **mild** (this anchor) |
+| #     | UTC                   | Stuck procs | Tier                                       |
+| ----- | --------------------- | ----------- | ------------------------------------------ |
+| 1     | 2026-05-23T10:18Z     | 450         | extreme-extreme                            |
+| 2     | 2026-05-23T14:11Z     | 354         | extreme                                    |
+| 3     | 2026-05-23T16:08Z     | 354         | extreme (plateau)                          |
+| 4     | 2026-05-23T18:09Z     | 420         | extreme                                    |
+| 5     | 2026-05-23T20:14Z     | 540         | extreme-extreme                            |
+| 6     | 2026-05-23T22:08Z     | 93          | mild (originally reclassified after #7+#8) |
+| 7     | 2026-05-24T00:09Z     | 447         | extreme                                    |
+| 8     | 2026-05-24T02:09Z     | 534         | extreme-extreme                            |
+| **9** | **2026-05-24T02:40Z** | **33**      | **mild** (this anchor)                     |
 
 ## Two non-mutually-exclusive readings (per default-to-both)
 
@@ -46,6 +46,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 **Resolution gate:** anchor #10 at ~04:00Z discriminates.
 
 ## Test plan
+
 - [x] Sentinel armed (\`bf82d0a2\`)
 - [x] Isolated worktree off origin/main @ \`209c18c5f2\` (ls-tree=55, status=0)
 - [x] Branch in Otto-CLI lane (\`otto-cli/dotgit-9th-anchor-descent-0240z\`)

@@ -31,14 +31,14 @@ Phase 1a of BACKLOG.md split per Aaron Otto-181 3rd-ask. Aaron approved reasonab
 
 ## Defaults applied (Aaron's 6 open questions)
 
-| # | Question | Default this PR applies | Rationale |
-|---|---|---|---|
-| 1 | ID scheme | `B-NNNN` sequential | Memory-file convention parallel |
-| 2 | Generator language | bash (temporary) | Phase 1a CI fit; **bun+TS long-term** per Aaron Otto-182 |
-| 3 | Phase-2 timing | drain first | Avoid one-time cascade cost |
-| 4 | Retire convention | plain delete | Per CLAUDE.md "honor those that came before" |
-| 5 | Auto-ID | scaffolder (Phase 1b) | Friction reduction |
-| 6 | `composes_with` lint | best-effort first | Strict after adoption |
+| #   | Question             | Default this PR applies | Rationale                                                |
+| --- | -------------------- | ----------------------- | -------------------------------------------------------- |
+| 1   | ID scheme            | `B-NNNN` sequential     | Memory-file convention parallel                          |
+| 2   | Generator language   | bash (temporary)        | Phase 1a CI fit; **bun+TS long-term** per Aaron Otto-182 |
+| 3   | Phase-2 timing       | drain first             | Avoid one-time cascade cost                              |
+| 4   | Retire convention    | plain delete            | Per CLAUDE.md "honor those that came before"             |
+| 5   | Auto-ID              | scaffolder (Phase 1b)   | Friction reduction                                       |
+| 6   | `composes_with` lint | best-effort first       | Strict after adoption                                    |
 
 Aaron confirmed bun+TS is the long-term direction to eliminate needing both `.sh` + `.ps1` per FACTORY-HYGIENE #51 cross-platform parity. Phase 1b or later can migrate the generator to bun+TS when convenient; bash lands Phase 1a as tight-CI-fit for immediate adoption.
 
@@ -61,7 +61,7 @@ Phase-2 content-migration PR will set `BACKLOG_WRITE_FORCE=1` intentionally afte
 
 ## Codex review requested
 
-Aaron Otto-182: *"can you ask codex too?"* — inviting `@codex review` below.
+Aaron Otto-182: _"can you ask codex too?"_ — inviting `@codex review` below.
 
 ## Test plan
 
@@ -77,24 +77,22 @@ Aaron Otto-182: *"can you ask codex too?"* — inviting `@codex review` below.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T10:29:51Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6a447ee234`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -107,6 +105,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Phase 1a scaffolding for splitting the monolithic `docs/BACKLOG.md` into per-row markdown files under `docs/backlog/`, with a generator to produce a compact index.
 
 **Changes:**
+
 - Adds `tools/backlog/generate-index.sh` to generate/check/print the `docs/BACKLOG.md` index from per-row files, including a Phase-1a overwrite guard.
 - Adds schema + usage documentation for per-row backlog files (`tools/backlog/README.md`, `docs/backlog/README.md`).
 - Adds an example per-row backlog entry to exercise the schema and generator (`docs/backlog/P2/B-0001-...`).
@@ -115,12 +114,12 @@ Phase 1a scaffolding for splitting the monolithic `docs/BACKLOG.md` into per-row
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 9 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/backlog/generate-index.sh | Bash generator for `docs/BACKLOG.md` with `--stdout` and `--check` modes plus a write safety guard. |
-| tools/backlog/README.md | Schema/spec and contributor instructions for per-row backlog files and index generation. |
-| docs/backlog/README.md | Overview of `docs/backlog/` layout and quick reference for contributors. |
-| docs/backlog/P2/B-0001-example-schema-self-reference.md | Example backlog row demonstrating frontmatter + body end-to-end. |
+| File                                                    | Description                                                                                         |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| tools/backlog/generate-index.sh                         | Bash generator for `docs/BACKLOG.md` with `--stdout` and `--check` modes plus a write safety guard. |
+| tools/backlog/README.md                                 | Schema/spec and contributor instructions for per-row backlog files and index generation.            |
+| docs/backlog/README.md                                  | Overview of `docs/backlog/` layout and quick reference for contributors.                            |
+| docs/backlog/P2/B-0001-example-schema-self-reference.md | Example backlog row demonstrating frontmatter + body end-to-end.                                    |
 
 ### COMMENTED — @AceHack (2026-04-24T11:03:29Z)
 
@@ -172,24 +171,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T11:06:32Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9bf3d09ff1`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -247,7 +244,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-04-24T10:29:51Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Parse single-quoted YAML scalars before status checks**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Parse single-quoted YAML scalars before status checks**
 
 `extract_field` only strips double quotes, so valid YAML like `status: 'closed'` or `id: 'B-0002'` is returned with surrounding `'` characters. In `generate`, that makes the `status` case fall through to open (`[ ]`) and emits quoted IDs/titles in the index, so quoted frontmatter variants produce incorrect backlog state even though they are valid YAML.
 
@@ -261,7 +258,7 @@ Fixed in 6f659a0. Extended the strip-quotes gsub to also handle single-quoted YA
 
 **@chatgpt-codex-connector** (2026-04-24T10:29:51Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Stop frontmatter scan after first closing delimiter**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Stop frontmatter scan after first closing delimiter**
 
 The parser toggles `in_fm` on every `---` line in the file, so a markdown horizontal rule in the body re-enters parse mode and later `title:`/`status:` text can overwrite real frontmatter values. This causes wrong checkbox/title/index output for otherwise valid row content that includes thematic breaks or YAML-like snippets.
 
@@ -275,7 +272,7 @@ Fixed in 6f659a0. Replaced the `in_fm = !in_fm` toggle with an explicit 3-state 
 
 **@chatgpt-codex-connector** (2026-04-24T10:29:51Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Require second factor for BACKLOG_WRITE_FORCE bypass**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Require second factor for BACKLOG_WRITE_FORCE bypass**
 
 The Phase-1a guard is disabled solely by `BACKLOG_WRITE_FORCE=1`, so any leaked/exported env var in CI or a developer shell will bypass protection and allow destructive overwrite of a large existing `docs/BACKLOG.md`. Given this is intended as a one-time migration escape hatch, relying on a single ambient env var is too easy to trigger accidentally.
 
@@ -324,6 +321,7 @@ Fixed in 9bf3d09. Reworded the cross-reference to the auto-memory path that does
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:28Z):
 
 P1: This section says “no row files exist yet”, but this PR adds `docs/backlog/P2/B-0001-example-schema-self-reference.md`. Update the “Current state — Phase 1a” text to reflect that there is now at least an example row present (and clarify whether it’s authoritative or just a schema exerciser).
+
 ```suggestion
 Tooling + schema landed, and the directory now includes an
 example per-row file to exercise the schema and layout. Phase 2
@@ -343,6 +341,7 @@ Fixed in 9bf3d09. The "no row files exist yet" statement was accurate at initial
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:28Z):
 
 P2: The header comment lists `yq` (and “bash 4+”) as dependencies, but the script currently doesn’t invoke `yq` and appears compatible with older bash versions. Either implement the optional `yq` path / require bash 4 features, or tighten the comment so the documented dependencies match reality.
+
 ```suggestion
 # Dependencies: bash, awk, sort, diff.
 ```
@@ -366,6 +365,7 @@ Same fix as thread 59Xdsr: the `in_fm = !in_fm` toggle was the root cause of bot
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:28Z):
 
 P2: The inline-code span for the `memory/...*.md` reference is split across a newline, which breaks markdown rendering (inline code spans can’t span lines) and also makes the path ambiguous due to the leading underscore on the continuation line. Keep the entire path on one line (or use a fenced code block) so markdownlint/rendering stays stable.
+
 ```suggestion
 - `memory/feedback_aaron_asked_for_backlog_split_three_times_hot_file_detector_pr_213_exists_*.md` —
   context on the 3rd-ask + hot-file-detector.
@@ -373,7 +373,7 @@ P2: The inline-code span for the `memory/...*.md` reference is split across a ne
 
 **@AceHack** (2026-04-24T11:03:47Z):
 
-Acknowledged the inline-code-span formatting concern for the memory/...*.md reference. Addressed at the root by removing that specific path-reference entirely (commit 9bf3d09, thread 59XfPF), which makes the formatting question moot. Leaving this thread unresolved as a breadcrumb for "reviewer intent honored via different mechanism than suggested" so the conversation-preservation captures both the original suggestion and the what-actually-happened-instead.
+Acknowledged the inline-code-span formatting concern for the memory/...\*.md reference. Addressed at the root by removing that specific path-reference entirely (commit 9bf3d09, thread 59XfPF), which makes the formatting question moot. Leaving this thread unresolved as a breadcrumb for "reviewer intent honored via different mechanism than suggested" so the conversation-preservation captures both the original suggestion and the what-actually-happened-instead.
 
 **@AceHack** (2026-04-24T15:03:35Z):
 
@@ -394,6 +394,7 @@ Fixed in 9bf3d09. The README's forward-reference to `tools/backlog/new-row.sh` w
 **@copilot-pull-request-reviewer** (2026-04-24T10:31:29Z):
 
 P1: The README says the generator parses frontmatter via `yq` (with an awk fallback), but `generate-index.sh` currently only uses awk and never invokes `yq`. Either implement the `yq` path in the script or update the documentation to match the actual behavior/dependencies.
+
 ```suggestion
 Walks `docs/backlog/**/*.md`, parses frontmatter with a
 lightweight awk parser, and emits `docs/BACKLOG.md`
@@ -408,7 +409,7 @@ Fixed in 9bf3d09. README's "parses frontmatter via yq or awk fallback" wording w
 
 **@chatgpt-codex-connector** (2026-04-24T11:06:33Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Trim parsed status values before checkbox mapping**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Trim parsed status values before checkbox mapping**
 
 `extract_field` removes quotes but never normalizes trailing whitespace, so YAML like `status: closed   ` (which is still valid and semantically `closed`) is returned with spaces and misses the `closed)` match in `generate`. In that case the row is rendered as open (`[ ]`), which silently misreports backlog state in the generated index for files with incidental trailing spaces.
 
@@ -422,7 +423,7 @@ Fixed in df1224f: added `sub(/[[:space:]]+$/, "")` to extract_field so `status: 
 
 **@chatgpt-codex-connector** (2026-04-24T11:06:33Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Iterate over discovered files without shell word splitting**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Iterate over discovered files without shell word splitting**
 
 The loop `for file in $files` splits on whitespace, so any matching backlog file path containing a space is broken into multiple tokens and passed to `awk` as nonexistent filenames. That makes generation fail hard instead of emitting an index, and this can happen in Phase 1a where files are created manually and only matched by `B-*.md` without slug validation.
 
@@ -437,6 +438,7 @@ Fixed in df1224f: replaced `for file in $files` with NUL-delimited `find -print0
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:49Z):
 
 P1: This section claims the existing monolith is “6100-line”, but `docs/BACKLOG.md` is currently 7658 lines. Update the number or avoid an exact line count so the Phase-2 description stays accurate over time.
+
 ```suggestion
 the existing single-file `docs/BACKLOG.md` content into per-row
 ```
@@ -450,6 +452,7 @@ Fixed in df1224f: softened to `the existing single-file docs/BACKLOG.md content`
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:50Z):
 
 P1: The header references `docs/research/backlog-split-design-otto-181.md`, but that file does not exist in the repo. Either add the referenced design-spec file or update the comment to point at an existing document so the cross-reference isn’t broken.
+
 ```suggestion
 # Header note intentionally avoids a repo-path reference here
 # because the earlier design-spec cross-reference went stale.
@@ -464,6 +467,7 @@ Verified `docs/research/backlog-split-design-otto-181.md` DOES exist in the repo
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:50Z):
 
 P1: `extract_field` claims POSIX awk compatibility, but the quote-stripping regex uses `\x27` (hex escape), which isn’t portable across POSIX awk implementations (notably on macOS). Use a POSIX-safe representation (e.g., octal `\047`) or avoid needing a hex escape so the script matches its stated dependency contract.
+
 ```suggestion
       gsub(/^"|"$|^[[:space:]]*\047|\047[[:space:]]*$/, "")  # Codex P1: handle both " and '\''
 ```
@@ -477,6 +481,7 @@ Fixed in df1224f: swapped `\x27` hex escape to `\047` octal, which is POSIX-awk 
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:51Z):
 
 P2: This comment hardcodes the monolith size as “6100-line”, but `docs/BACKLOG.md` is currently 7658 lines. Either update the number or (preferably) avoid an exact line count so the comment doesn’t drift immediately.
+
 ```suggestion
     # (i.e. the pre-split monolithic backlog that
     # Phase 2 will migrate). Until Phase 2 migrates
@@ -503,6 +508,7 @@ Fixed in df1224f: the `tools/hygiene/audit-git-hotspots.sh` xref was a forward-r
 **@copilot-pull-request-reviewer** (2026-04-24T11:06:51Z):
 
 P2: The structure diagram lists `tools/backlog/new-row.sh` as if it exists, but Phase 1a doesn’t add that script (it’s described as Phase 1b later). Consider annotating it as “(Phase 1b)” or removing it from the tree until it lands to avoid confusing readers.
+
 ```suggestion
     new-row.sh                   ← scaffolds a new row file (Phase 1b)
 ```

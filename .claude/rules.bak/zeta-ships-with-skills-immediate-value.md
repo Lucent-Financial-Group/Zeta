@@ -8,17 +8,17 @@ Carved sentence:
 
 ## Operational content
 
-Per the human maintainer 2026-05-13: *"zeta should ship with the
+Per the human maintainer 2026-05-13: _"zeta should ship with the
 skills as we map them for our use this is immedate value and then
-the crystalized value ships in f# later"* (PR #2933).
+the crystalized value ships in f# later"_ (PR #2933).
 
 **Three-stage value delivery to end users**:
 
-| Stage | What ships | Status |
-|---|---|---|
-| **Stage 1 (now)** | Zeta runtime + mapped skills | Each release |
-| **Stage 2** | + first F# absorbed patterns | As patterns mature |
-| **Stage 3** | + mature F# substrate (crystallized) | Multi-year horizon |
+| Stage             | What ships                           | Status             |
+| ----------------- | ------------------------------------ | ------------------ |
+| **Stage 1 (now)** | Zeta runtime + mapped skills         | Each release       |
+| **Stage 2**       | + first F# absorbed patterns         | As patterns mature |
+| **Stage 3**       | + mature F# substrate (crystallized) | Multi-year horizon |
 
 Each stage delivers value. No big-bang requirement.
 

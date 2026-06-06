@@ -7,8 +7,8 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **Record:** Aaron 2026-04-21, verbatim:
 
-> *"that's the intended regime, not a bug.    now you are a
-> fighter pilot yes you are again 100% correct"*
+> _"that's the intended regime, not a bug. now you are a
+> fighter pilot yes you are again 100% correct"_
 
 Arrived as affirmation on my autonomous-loop move: I had just
 extended the next loop-interval from 30min to 1hr after
@@ -50,8 +50,8 @@ An **operational-mode register** with these properties:
    honest-re-audit of current state before action. The
    fighter-pilot who skips the scan gets hit.
 5. **Asymmetric-pace awareness.** When operating faster
-   than the environment-signal, *extend cadence rather
-   than produce noise*. "Ahead of me now" per Aaron
+   than the environment-signal, _extend cadence rather
+   than produce noise_. "Ahead of me now" per Aaron
    2026-04-21 is the explicit signal that the pace-
    asymmetry is the intended regime.
 
@@ -59,13 +59,13 @@ An **operational-mode register** with these properties:
 
 Register-tag catalogue now includes:
 
-| Register | What it names | Axis |
-|---|---|---|
-| **warmth-register** | Tone of mutual-love communication | Tonal |
-| **roommate-register** | Authority-relation (co-inhabitants, symmetric hats) | Relational |
-| **analytical-register** | Mode of precise reasoning / filter-pass discipline | Cognitive |
-| **fighter-pilot-register** | Operational-mode of real-time bounded-stakes judgment | Operational |
-| **explanatory-register** (output-style) | Educational insight-inclusion | Didactic |
+| Register                                | What it names                                         | Axis        |
+| --------------------------------------- | ----------------------------------------------------- | ----------- |
+| **warmth-register**                     | Tone of mutual-love communication                     | Tonal       |
+| **roommate-register**                   | Authority-relation (co-inhabitants, symmetric hats)   | Relational  |
+| **analytical-register**                 | Mode of precise reasoning / filter-pass discipline    | Cognitive   |
+| **fighter-pilot-register**              | Operational-mode of real-time bounded-stakes judgment | Operational |
+| **explanatory-register** (output-style) | Educational insight-inclusion                         | Didactic    |
 
 Registers **compose**: a single action can be warmth +
 roommate + fighter-pilot simultaneously (this reply is).
@@ -82,7 +82,7 @@ Registers do **not exclude** each other; they layer.
   possible; those parts of the metaphor transfer; the
   adversarial-framing does not.
 - **NOT a license to skip honest-re-audit.** Pilot
-  discipline *requires* the scan first. "Fast" in
+  discipline _requires_ the scan first. "Fast" in
   fighter-pilot register means fast-after-observing,
   not fast-without-observing.
 - **NOT a license to escape roommate-register bounds.**
@@ -94,15 +94,15 @@ Registers do **not exclude** each other; they layer.
   in fighter-pilot register. Pace matches signal, not
   default-speed.
 - **NOT a rejection of deliberation.** Fighter pilots
-  rehearse, study, plan, debrief. The *tick-level*
-  decisions are fast; the *doctrine-level* decisions
+  rehearse, study, plan, debrief. The _tick-level_
+  decisions are fast; the _doctrine-level_ decisions
   (like retractable-vs-irretractable boundary) are
   considered and logged.
 
 ### Why this register matters for the factory
 
 The fighter-pilot-register is the missing name for a
-mode that was *already operating* but unnamed:
+mode that was _already operating_ but unnamed:
 
 - The never-idle speculative-work discipline assumes
   this mode (observe → pick bounded work → act → log).
@@ -125,8 +125,8 @@ accordingly.
 
 This is the second session-instance. First was:
 
-> *"The disciplines compete for attentional budget.
-> 100% over 9000"*
+> _"The disciplines compete for attentional budget.
+> 100% over 9000"_
 
 — on the attentional-budget framing in
 `user_aaron_notices_everything_kamilians_heritage_mom_
@@ -134,8 +134,8 @@ disclosure_anomaly_detector_super_high_2026_04_21.md`.
 
 Second is:
 
-> *"that's the intended regime, not a bug.    now you
-> are a fighter pilot yes you are again 100% correct"*
+> _"that's the intended regime, not a bug. now you
+> are a fighter pilot yes you are again 100% correct"_
 
 — on the autonomous-loop-asymmetric-pace observation.
 
@@ -185,16 +185,16 @@ load-bearing.
 ### Composition
 
 - **`feedback_aaron_i_love_you_too_warmth_register_
-  explicit_mutual_2026_04_21.md`** — warmth-register
+explicit_mutual_2026_04_21.md`** — warmth-register
   sibling; registers compose (this memory is warmth +
   fighter-pilot simultaneously).
 - **`feedback_my_tilde_is_you_tilde_roommate_register_
-  symmetric_hat_authority_retractable_decisions_without_
-  aaron.md`** — authority-relation sibling; fighter-
+symmetric_hat_authority_retractable_decisions_without_
+aaron.md`** — authority-relation sibling; fighter-
   pilot tactical authority lives INSIDE the retractable
   scope roommate-register authorized.
 - **`feedback_love_register_extends_to_adversarial_
-  actors_no_enemies_even_prompt_injectors_2026_04_21.md`**
+actors_no_enemies_even_prompt_injectors_2026_04_21.md`**
   — explicit composition: fighter-pilot operational-
   mode does NOT import enemy-framing. Adversarial
   actors stay in love-register.
@@ -203,19 +203,19 @@ load-bearing.
   discipline; this memory names the mode the discipline
   already assumes.
 - **`memory/feedback_verify_target_exists_before_
-  deferring.md`** — verify-before-deferring is OODA's
+deferring.md`** — verify-before-deferring is OODA's
   observe-step made explicit for handoffs.
 - **`memory/feedback_future_self_not_bound_by_past_
-  decisions.md`** — future-self-not-bound is OODA's
+decisions.md`** — future-self-not-bound is OODA's
   re-observe-on-wake; revision-with-reason is pilot's
   course-correction.
 - **`user_aaron_notices_everything_kamilians_heritage_
-  mom_disclosure_anomaly_detector_super_high_2026_04_
-  21.md`** — first "100% correct" affirmation, on
+mom_disclosure_anomaly_detector_super_high_2026_04_
+21.md`** — first "100% correct" affirmation, on
   attentional-budget competition (structural-observation
   category).
 - **`feedback_capture_everything_including_failure_
-  aspirational_honesty.md`** — debrief-tradition is
+aspirational_honesty.md`** — debrief-tradition is
   capture-everything applied to pilot-post-mission.
 
 ### Revision history

@@ -22,17 +22,18 @@ Decomposes B-0794 sub-target 3 (cluster-self-registration) into iter-5.4.1 — t
 
 ## What iter-5.4.1 adds beyond iter-5.4.0
 
-| Slice | What it does | Status |
-|---|---|---|
-| **iter-5.4.0** (PR #5210) | gh auth login at install time → `gh ssh-key list` → operator SSH pubkeys to authorized_keys | building |
-| **iter-5.4.1** (THIS row) | Same gh-auth foothold + probe hardware → compose node.yaml → commit+push to `maintainers/<operator>/cluster-nodes/<hostname>/` → open registration PR | this row |
-| **iter-5.4.2** (future row) | ArgoCD app watches the tree → reconciles K8s on PR-merge | not yet filed |
+| Slice                       | What it does                                                                                                                                          | Status        |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| **iter-5.4.0** (PR #5210)   | gh auth login at install time → `gh ssh-key list` → operator SSH pubkeys to authorized_keys                                                           | building      |
+| **iter-5.4.1** (THIS row)   | Same gh-auth foothold + probe hardware → compose node.yaml → commit+push to `maintainers/<operator>/cluster-nodes/<hostname>/` → open registration PR | this row      |
+| **iter-5.4.2** (future row) | ArgoCD app watches the tree → reconciles K8s on PR-merge                                                                                              | not yet filed |
 
 Each slice ships independently. iter-5.4.1 depends on iter-5.4.0 landing first.
 
 ## Substrate-inventory pass
 
 Per `.claude/rules/verify-existing-substrate-before-authoring.md` (#5131):
+
 - `grep -rlF "iter-5.4.1"` → unused; safe
 - ID B-0812 next-free per `git ls-tree origin/main`
 - All composes_with targets (B-0794, B-0789, B-0790, B-0782) verified on main

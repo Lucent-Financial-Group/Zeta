@@ -32,24 +32,22 @@ Tick 2055Z. Audit-first-then-decide applied: 2 audits produced 20+ findings, non
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T21:02:11Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1513718788`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -62,6 +60,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a minimal 2055Z hygiene tick shard documenting in-flight PR state, audit results, and why the audit findings were deferred rather than handled in this tick.
 
 **Changes:**
+
 - Adds a new 2055Z tick-history shard.
 - Records cross-platform parity and formal-artifact audit outcomes.
 - Links the tick decision to the audit-first-then-decide memory file.
@@ -80,7 +79,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-15T21:02:11Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point shard reference to an existing tick artifact**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point shard reference to an existing tick artifact**
 
 This tick report claims a `2050Z shard` in the headline, but in commit `2d3b254` there is no corresponding `docs/hygiene-history/ticks/**/2050Z.md` artifact to back that reference (repo-wide path search only finds this mention). Because these shard files are used as durable handoff substrate, a missing referenced shard breaks traceability for future sessions and makes the status note non-verifiable.
 

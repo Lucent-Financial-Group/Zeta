@@ -40,8 +40,7 @@ function pkgAt(name: string, version: string, deps: AceDependency[] = []): AcePa
   };
 }
 
-const regEdge = (name: string, range: string): AceDependency =>
-  ({ kind: "registry", name, version: range });
+const regEdge = (name: string, range: string): AceDependency => ({ kind: "registry", name, version: range });
 
 function fetchOf(map: Record<string, AcePackage>): FetchPackage {
   return async (url) => {
@@ -59,7 +58,8 @@ function world(entries: { pkg: AcePackage; url: string }[]): {
   const registry = new Map<string, Map<string, RegistryEntry>>();
   const fetchMap: Record<string, AcePackage> = {};
   for (const { pkg, url } of entries) {
-    const n = pkg.manifest.name, v = pkg.manifest.version;
+    const n = pkg.manifest.name,
+      v = pkg.manifest.version;
     if (!registry.has(n)) registry.set(n, new Map());
     registry.get(n)!.set(v, { url, package_hash: packageHash(pkg) });
     fetchMap[url] = pkg;
@@ -78,7 +78,7 @@ function world(entries: { pkg: AcePackage; url: string }[]): {
  *   Source "A" means every version of A (version-independent) depends on target.
  */
 type DepGraph = {
-  packages: Record<string, string[]>;  // name → available versions
+  packages: Record<string, string[]>; // name → available versions
   edges: Array<{ from: string; to: string; range: string }>;
 };
 
@@ -174,9 +174,7 @@ function encVer(v) {
   });
 
   if (result.status !== 0) {
-    throw new Error(
-      `Z3 subprocess failed (status ${result.status ?? "null"}):\n${result.stderr ?? ""}`.trimEnd()
-    );
+    throw new Error(`Z3 subprocess failed (status ${result.status ?? "null"}):\n${result.stderr ?? ""}`.trimEnd());
   }
   const out = (result.stdout ?? "").trim();
   if (out !== "sat" && out !== "unsat") {
@@ -208,7 +206,7 @@ async function assertAgreement(
   expect(
     solveOk,
     `solve() and Z3 disagree: solve=${solveOk ? "ok" : "fail"}, Z3=${z3Verdict}. ` +
-      (!solveOk ? `solve reason: ${(solveResult as { reason: string }).reason}` : "")
+      (!solveOk ? `solve reason: ${(solveResult as { reason: string }).reason}` : ""),
   ).toBe(z3Sat);
 
   // Extra self-consistency check for ok cases: every range in the graph that targets
@@ -220,7 +218,7 @@ async function assertAgreement(
         if (chosenVer !== undefined) {
           expect(
             satisfies(chosenVer, edge.range),
-            `Self-consistency: solve() chose ${edge.to}@${chosenVer} but range ${edge.range} not satisfied`
+            `Self-consistency: solve() chose ${edge.to}@${chosenVer} but range ${edge.range} not satisfied`,
           ).toBe(true);
         }
       }
@@ -256,7 +254,7 @@ describe("solver Z3 differential — SAT oracle cross-check", () => {
 
       await assertAgreement(graph, root, registry, fetch);
     },
-    TIMEOUT
+    TIMEOUT,
   );
 
   test(
@@ -289,7 +287,7 @@ describe("solver Z3 differential — SAT oracle cross-check", () => {
 
       await assertAgreement(graph, root, registry, fetch);
     },
-    TIMEOUT
+    TIMEOUT,
   );
 
   test(
@@ -313,6 +311,6 @@ describe("solver Z3 differential — SAT oracle cross-check", () => {
       // Also verify the specific choice is >=1.2.0 (self-consistency check inside assertAgreement).
       await assertAgreement(graph, root, registry, fetch);
     },
-    TIMEOUT
+    TIMEOUT,
   );
 });

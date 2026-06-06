@@ -19,10 +19,7 @@
 //   1   conflict markers found
 
 import { readFileSync } from "node:fs";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type ExitCode = 0 | 1;
 
@@ -49,11 +46,7 @@ const ALLOWLIST: readonly string[] = [
 
 const MARKER_RE = /^(<<<<<<<[\t ]|=======$|>>>>>>>[\t ])/;
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -139,23 +132,13 @@ export function main(): ExitCode {
     process.stderr.write("\n");
     process.stderr.write("How to fix:\n");
     process.stderr.write("  - Open each flagged file\n");
-    process.stderr.write(
-      "  - Resolve the conflict (pick one side, both sides, or\n",
-    );
+    process.stderr.write("  - Resolve the conflict (pick one side, both sides, or\n");
     process.stderr.write("    re-merge manually); REMOVE all marker lines\n");
-    process.stderr.write(
-      "  - Verify by re-running this script (exit 0 = clean)\n",
-    );
+    process.stderr.write("  - Verify by re-running this script (exit 0 = clean)\n");
     process.stderr.write("\n");
-    process.stderr.write(
-      "If a file legitimately discusses these markers (docs about\n",
-    );
-    process.stderr.write(
-      "merge resolution, this script itself, or substrate files\n",
-    );
-    process.stderr.write(
-      "documenting merge-conflict-resolution work), add the path\n",
-    );
+    process.stderr.write("If a file legitimately discusses these markers (docs about\n");
+    process.stderr.write("merge resolution, this script itself, or substrate files\n");
+    process.stderr.write("documenting merge-conflict-resolution work), add the path\n");
     process.stderr.write("to the ALLOWLIST in this script.\n");
     return 1;
   }

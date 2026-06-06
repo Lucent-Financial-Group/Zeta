@@ -4,6 +4,7 @@ description: Aaron Otto-249 5th correction: I keep treating macOS CI runners as 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Standard GitHub-hosted runners are 100% FREE for public
@@ -11,8 +12,8 @@ repositories. All of them. No exceptions.**
 
 Direct Aaron quote (5th correction):
 
-> *"here is the page of free standard runners AGAIN for the
-> 5th time to prove it's free"*
+> _"here is the page of free standard runners AGAIN for the
+> 5th time to prove it's free"_
 
 Authoritative source (the one Aaron cited):
 <https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories>
@@ -21,15 +22,15 @@ Authoritative source (the one Aaron cited):
 
 **Standard runners** (per that official page, as of 2026-04-24):
 
-| Label | OS / arch | Free on public? |
-|---|---|---|
-| `ubuntu-latest`, `ubuntu-24.04`, `ubuntu-22.04` | Ubuntu x64 | **YES** |
-| `ubuntu-24.04-arm`, `ubuntu-22.04-arm` | Ubuntu arm64 | **YES** |
-| `ubuntu-slim` | Ubuntu x64 (1 CPU / 5 GB / 15-min timeout) | **YES** |
-| `macos-latest`, `macos-26`, `macos-15`, `macos-14` | macOS Apple Silicon | **YES** |
-| `macos-26-intel`, `macos-15-intel` | macOS Intel | **YES** |
-| `windows-latest`, `windows-2025`, `windows-2025-vs2026`, `windows-2022` | Windows Server x64 | **YES** |
-| `windows-11-arm` | Windows 11 arm64 | **YES** |
+| Label                                                                   | OS / arch                                  | Free on public? |
+| ----------------------------------------------------------------------- | ------------------------------------------ | --------------- |
+| `ubuntu-latest`, `ubuntu-24.04`, `ubuntu-22.04`                         | Ubuntu x64                                 | **YES**         |
+| `ubuntu-24.04-arm`, `ubuntu-22.04-arm`                                  | Ubuntu arm64                               | **YES**         |
+| `ubuntu-slim`                                                           | Ubuntu x64 (1 CPU / 5 GB / 15-min timeout) | **YES**         |
+| `macos-latest`, `macos-26`, `macos-15`, `macos-14`                      | macOS Apple Silicon                        | **YES**         |
+| `macos-26-intel`, `macos-15-intel`                                      | macOS Intel                                | **YES**         |
+| `windows-latest`, `windows-2025`, `windows-2025-vs2026`, `windows-2022` | Windows Server x64                         | **YES**         |
+| `windows-11-arm`                                                        | Windows 11 arm64                           | **YES**         |
 
 **What IS billed** (so I stop conflating):
 
@@ -78,9 +79,9 @@ reference the pricing table.
 
 ## What this memory does NOT say
 
-- Does NOT claim *larger* runners are free. They're
+- Does NOT claim _larger_ runners are free. They're
   explicitly paid.
-- Does NOT claim standard runners are free on *private*
+- Does NOT claim standard runners are free on _private_
   repos. They're billed with OS multipliers.
 - Does NOT authorize unbounded CI cost. Public-repo-free
   applies; larger-runner opt-ins are a separate decision.
@@ -90,11 +91,11 @@ reference the pricing table.
 
 ## Direct Aaron quote to preserve
 
-> *"the no-cost claim does NOT apply to macOS runners.
-> it does directly apply to macOS runners"*
+> _"the no-cost claim does NOT apply to macOS runners.
+> it does directly apply to macOS runners"_
 >
-> *"here is the page of free standard runners AGAIN for
-> the 5th time to prove it's free"*
+> _"here is the page of free standard runners AGAIN for
+> the 5th time to prove it's free"_
 >
 > URL cited:
 > https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories

@@ -90,9 +90,9 @@ This applies to:
 
 ### Budget-ask protocol
 
-Aaron: *"poor man mode is default until we have scheduled
+Aaron: _"poor man mode is default until we have scheduled
 backlog for the stuff we want to increase bugget for and an
-estiman of cost increases or per experiment costs."*
+estiman of cost increases or per experiment costs."_
 
 **To request a budget increase, the ask must include:**
 
@@ -118,27 +118,27 @@ sub-shape.
 ## Composes with existing memories
 
 - **Scheduling-authority memory** (`feedback_free_work_amara_
-  and_agent_schedule_paid_work_escalate_to_aaron_2026_04_23.md`)
+and_agent_schedule_paid_work_escalate_to_aaron_2026_04_23.md`)
   — this extends it: free work = Amara + Otto schedule,
   paid work = escalate. GitHub-settings authority is a
   specific instance of "free work."
 - **Branch-protection memory** (`feedback_branch_protection_
-  settings_are_agent_call_external_contribution_ready_2026_04_23.md`)
+settings_are_agent_call_external_contribution_ready_2026_04_23.md`)
   — this formalises the broader authority that memory
   hinted at. Branch protection is one entry in a much
   broader "all GitHub settings" scope.
 - **Funding-posture memory** (`project_aaron_funding_posture_
-  servicetitan_salary_plus_other_sources_2026_04_23.md`) —
+servicetitan_salary_plus_other_sources_2026_04_23.md`) —
   informs what budget-asks are realistic. Aaron's
   ServiceTitan salary + other sources fund the factory;
   budget-asks get evaluated against that context.
 - **Mission-is-bootstrapped memory** (`feedback_mission_is_
-  bootstrapped_and_now_mine_aaron_as_friend_not_director_
-  2026_04_23.md`) — ownership on GitHub is the concrete
+bootstrapped_and_now_mine_aaron_as_friend_not_director_
+2026_04_23.md`) — ownership on GitHub is the concrete
   operational manifestation of mission ownership.
 - **Frontier-bootstrap memory** (`project_frontier_becomes_
-  canonical_bootstrap_home_stop_signal_when_ready_agent_
-  owns_construction_2026_04_23.md`) — Frontier construction
+canonical_bootstrap_home_stop_signal_when_ready_agent_
+owns_construction_2026_04_23.md`) — Frontier construction
   will touch GitHub settings extensively (new repo creation,
   branch protection, Actions, etc.); all within authority.
 
@@ -163,9 +163,9 @@ sub-shape.
 1. File the BACKLOG row with the work
 2. Estimate cost (monthly / one-time / per-experiment)
 3. Note alternatives ruled out
-4. Ask Aaron explicitly: *"Budget ask: BACKLOG row #NNN
+4. Ask Aaron explicitly: _"Budget ask: BACKLOG row #NNN
    needs $X/month for Y reason. Alternatives considered:
-   ... Alternatives rejected because: ... Approve?"*
+   ... Alternatives rejected because: ... Approve?"_
 5. If yes, enable the paid feature; log the enablement
 6. If no, file the BACKLOG row as declined-for-budget and
    continue in poor-man's-mode
@@ -202,9 +202,9 @@ sub-shape.
 - **Not a delegation of the paid decision.** Aaron holds
   the billing-increase decision; the agent frames the ask.
 - **Not an exemption from the alignment floor.** HC-1..HC-7
-  + SD-1..SD-8 + DIR-1..DIR-5 + do-no-permanent-harm still
-  bind. Github-settings authority doesn't override any of
-  these.
+  - SD-1..SD-8 + DIR-1..DIR-5 + do-no-permanent-harm still
+    bind. Github-settings authority doesn't override any of
+    these.
 - **Not authorisation to expose sensitive state publicly.**
   Free-tier doesn't mean "everything public." Private
   settings can remain private even on free tier; the

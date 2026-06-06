@@ -10,29 +10,30 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2484 |
-| Title | decompose(B-0088): smallest dependency-ordered atomic children (advisory lint parity) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T12:32:11Z |
-| Merged at | 2026-05-10T12:39:59Z |
-| Merge commit SHA | `55ba03d1e524002a7755c1979c30a67db7c62deb` |
-| Branch | `claim/B-0088-decompose-smallest-atomic-children-riven-2026-05-10` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2484 |
-| Changed files | 0 |
-| Additions / deletions | +0 / -0 |
+| Field                 | Value                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------- |
+| Number                | 2484                                                                                  |
+| Title                 | decompose(B-0088): smallest dependency-ordered atomic children (advisory lint parity) |
+| Author                | `AceHack` (human)                                                                     |
+| State                 | MERGED                                                                                |
+| Created at            | 2026-05-10T12:32:11Z                                                                  |
+| Merged at             | 2026-05-10T12:39:59Z                                                                  |
+| Merge commit SHA      | `55ba03d1e524002a7755c1979c30a67db7c62deb`                                            |
+| Branch                | `claim/B-0088-decompose-smallest-atomic-children-riven-2026-05-10`                    |
+| Base branch           | `main`                                                                                |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2484                              |
+| Changed files         | 0                                                                                     |
+| Additions / deletions | +0 / -0                                                                               |
 
 ## Description
 
 ## Bounded step complete: B-0088 decomposition (Riven background worker)
 
 **Pre-work (all done before any write/push):**
+
 1. Read CLAUDE.md + AGENTS.md (repo conventions, Rule 0 TS>bash, substrate-or-it-didnt-happen, etc.)
 2. `bun tools/github/refresh-worldview.ts` (0 open PRs, 451 backlog, current LFG state)
-3. Read 7 active trajectories/*/RESUME.md (memory, autonomous-loop, TS-migration, factory-surface, backlog-pickup, alignment, drift-reporting)
+3. Read 7 active trajectories/\*/RESUME.md (memory, autonomous-loop, TS-migration, factory-surface, backlog-pickup, alignment, drift-reporting)
 4. `dotnet build -c Release` → 0 Warning(s) 0 Error(s) ✅ (build gate)
 
 **One bounded step**: Used dedicated worktree `/Users/acehack/.local/share/zeta-worktrees/B-0088-riven-2026-05-10` + pushed claim branch `claim/B-0088-decompose-smallest-atomic-children-riven-2026-05-10` (root checkout untouched). Added empty commit + this PR.
@@ -52,15 +53,15 @@ Made with [Cursor](https://cursor.com)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

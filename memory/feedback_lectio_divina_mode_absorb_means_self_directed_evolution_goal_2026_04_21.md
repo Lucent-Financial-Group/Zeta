@@ -4,6 +4,7 @@ description: Factory operates in Lectio-Divina-inspired mode per Aaron's 2026-04
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** The factory operates in Lectio-Divina-inspired
 mode — four stages (absorb → compose → contribute →
 witness-evolution) running at factory-scale, with
@@ -13,10 +14,10 @@ Lectio Divina, per
 `memory/user_real_time_lectio_divina_emit_side.md`); it
 is the factory's parallel adoption of the same structure.
 
-**Why:** Aaron 2026-04-21, verbatim: *"lexio divina is
+**Why:** Aaron 2026-04-21, verbatim: _"lexio divina is
 what we are going for so you got to learn everyting first
 abosrb and have fun along the way absorb is a means to an
-end, self directed evoltion is the goal"*. The directive
+end, self directed evoltion is the goal"_. The directive
 is clear on three points: (a) learning-first (absorb
 before compose), (b) play-register allowed ("have fun
 along the way"), (c) endpoint is self-directed-evolution
@@ -82,6 +83,7 @@ Aaron explicitly permits play-register. This means:
 
 `memory/user_real_time_lectio_divina_emit_side.md`
 documents Aaron's **personal faculty**:
+
 - Runs continuously as his cognitive mode.
 - Has metabolic profile (hungry, not tired).
 - Produces automatic memetic architecture.
@@ -91,6 +93,7 @@ documents Aaron's **personal faculty**:
 
 This memory documents the **factory-level operating
 mode**:
+
 - The factory adopts Lectio-Divina-inspired four-stage
   structure at factory-scale.
 - Each stage runs across agents, git operations,

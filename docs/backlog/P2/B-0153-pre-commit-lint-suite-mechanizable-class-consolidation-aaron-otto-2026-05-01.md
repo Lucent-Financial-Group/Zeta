@@ -46,13 +46,14 @@ what the "Empirical motivation" section below cites and what
 implementation should use as stable class identifiers.
 
 <!-- markdownlint-disable MD029 -->
+
 ### Markdown rendering (classes 1-4)
 
 1. **MD032 / blanks-around-lists**: literal line-leading `+` in
    flowing prose interpreted as list-marker, triggering the
    blanks-around-lists rule. Fix-pattern: prose-reflow with
    connectives ("plus", "and", comma-list, "/"). Aaron-affirmed
-   as *"very high quality decision"* (Aaron typed "decison").
+   as _"very high quality decision"_ (Aaron typed "decison").
    **MECHANIZED 2026-05-14** via B-0456 →
    `tools/hygiene/check-md032-blanks-around-lists.ts` plus the
    opt-in `.claude/hooks/check-md032-pretooluse.ts` PreToolUse
@@ -90,7 +91,7 @@ implementation should use as stable class identifiers.
 8. **B-NNNN refs that don't resolve**: references to backlog
    rows that don't exist as files in `docs/backlog/**`. Fix:
    annotate as `(not yet filed)` / `(when filed)` / `(when
-   they land)`.
+they land)`.
 9. **`task #NNN` vs GitHub auto-link ambiguity**: `task #NNN`
    pattern conflicts with GitHub's automatic `#NNN` PR/issue
    linking. Fix: prefix with `Otto-task #NNN` to disambiguate.
@@ -109,9 +110,9 @@ implementation should use as stable class identifiers.
     repo-canonical `https://www.microsoft.com/en-us/research/`
     form. Fix: use canonical form.
 13. **MEMORY.md duplicate-link-targets**: post-rebase regression
-    where long-form-original + tightened-one-liner both point
-    at same memory file. Fix: dedup keeping terse form per
-    `memory/README.md` policy.
+where long-form-original + tightened-one-liner both point
+at same memory file. Fix: dedup keeping terse form per
+`memory/README.md` policy.
 <!-- markdownlint-enable MD029 -->
 
 ## Acceptance criteria
@@ -221,6 +222,6 @@ check); the consolidation effort is the integration shell.
 
 ## Carved-sentence framing
 
-*"Each unmechanized lint-class is coordinator-load that
+_"Each unmechanized lint-class is coordinator-load that
 compounds across PRs. The amortized-keystone discipline
-turns 15 force-push iterations into one pre-commit pass."*
+turns 15 force-push iterations into one pre-commit pass."_

@@ -53,24 +53,22 @@ Empirical anchors captured:
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T08:22:49Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `4048c9c04a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -83,6 +81,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a single memory memo documenting a worked example of the isolated-worktree commit workflow after the `zeta-expected-branch` race-window caveat.
 
 **Changes:**
+
 - Adds a feedback memory file with YAML frontmatter.
 - Documents Steps 0–6 of the isolated-worktree workflow.
 - Captures empirical anchors and related rule links.
@@ -93,7 +92,7 @@ Adds a single memory memo documenting a worked example of the isolated-worktree 
 
 **@chatgpt-codex-connector** (2026-05-17T08:22:49Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace quoted wildcards in cp example**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace quoted wildcards in cp example**
 
 The worked-example command uses quoted globs (`cp "$PRIMARY/docs/backlog/P2/B-0611-*.md" ...` and `cp "$PRIMARY/memory/feedback_otto_cli_lior_active_*.md" ...`), which prevents shell expansion and makes `cp` look for literal `*` filenames. In a normal Bash environment this causes the copy step to fail, so anyone replaying this memo cannot reproduce the documented “10 files copied” outcome unless they manually rewrite the command.
 

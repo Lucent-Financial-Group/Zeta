@@ -12,14 +12,14 @@ type: project
 
 **Architecture (from source):**
 
-| Component | Implementation | Purpose |
-|-----------|---------------|---------|
-| Two Pipes | `System.IO.Pipelines.Pipe` | Bidirectional send/receive |
-| Write serializer | `ActionBlock` (DataFlow) | Single-writer to send pipe |
-| Request correlation | `ConcurrentDictionary<Guid, TCS>` | In-flight request/response matching |
-| Envelope | 32-byte binary header | Version + GUID + length + message type |
-| Buffer management | `MemoryPool<byte>.Shared` | Zero-alloc |
-| Throughput | 115,309 req/sec | 16x over HttpClient |
+| Component           | Implementation                    | Purpose                                |
+| ------------------- | --------------------------------- | -------------------------------------- |
+| Two Pipes           | `System.IO.Pipelines.Pipe`        | Bidirectional send/receive             |
+| Write serializer    | `ActionBlock` (DataFlow)          | Single-writer to send pipe             |
+| Request correlation | `ConcurrentDictionary<Guid, TCS>` | In-flight request/response matching    |
+| Envelope            | 32-byte binary header             | Version + GUID + length + message type |
+| Buffer management   | `MemoryPool<byte>.Shared`         | Zero-alloc                             |
+| Throughput          | 115,309 req/sec                   | 16x over HttpClient                    |
 
 **ActionBlock sharing (Aaron's intentional design):**
 
@@ -41,6 +41,7 @@ Replace MultiplexedWebSocket's single-item `ActionBlock<Tuple<...>>` sendBlock w
 - Sam Whitfield: Throttled Processor (threading foundation)
 
 **Connects to:**
+
 - project_multiplexed_websockets_flux_capacitor (the composition)
 - project_flux_capacitor_antifragile (the batching mechanism)
 - project_ferry_protocol (send even if not full)

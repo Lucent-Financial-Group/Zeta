@@ -22,10 +22,10 @@ thing.
   the developer reads the suggestion, accepts / modifies /
   rejects, owns the commit.
 - **"AI can't safely own production changes."** Commonly held
-  belief. The reasoning is usually: *"deploying to a live
+  belief. The reasoning is usually: _"deploying to a live
   production system with zero downtime requires judgment,
   context, and institutional memory humans have and AI does
-  not."*
+  not."_
 - **"Full autonomy is for sandboxed toys."** The working
   assumption that autonomous agents play in a safe playground
   while real work stays human-gated.
@@ -40,9 +40,9 @@ factory. Here's why.
 
 ### "AI helps developers write code faster" → the factory IS the developer
 
-- Ownership is not *"suggest a line, dev accepts"* — it is
-  *"the agent lands the commit, tests pass, reviewers sign off,
-  PR merges."*
+- Ownership is not _"suggest a line, dev accepts"_ — it is
+  _"the agent lands the commit, tests pass, reviewers sign off,
+  PR merges."_
 - Specialist reviewers (harsh-critic, spec-zealot, perf
   engineer, threat-model-critic, public-API designer, and
   more) are composed into every change that touches their
@@ -53,9 +53,9 @@ factory. Here's why.
   tests.
 
 The human is not bypassed — humans are in the loop as
-*maintainers*: scope, priority, strategic direction,
+_maintainers_: scope, priority, strategic direction,
 ratification of structural changes. They are not in the loop
-as *bottleneck reviewers*. The factory removes the "needs
+as _bottleneck reviewers_. The factory removes the "needs
 Aaron's eyes on every PR" failure mode without removing
 Aaron's agency.
 
@@ -72,7 +72,7 @@ quality floor is already held.
 
 ### "AI can't safely own production changes" → it's the opposite
 
-Humans are *not actually great* at zero-downtime production
+Humans are _not actually great_ at zero-downtime production
 changes. What makes humans safe on production is **process
 discipline**:
 
@@ -83,7 +83,7 @@ discipline**:
 - Change windows and deployment gates.
 
 These are process, not human insight. The factory follows
-(and *enforces*) the same process, but without the human
+(and _enforces_) the same process, but without the human
 failure modes:
 
 - Review never gets skipped because the reviewer was on
@@ -91,7 +91,7 @@ failure modes:
 - Canaries are always evaluated against explicit rule-IDs, not
   "it looked fine for a few minutes."
 - Post-mortems file lessons into durable memory that future
-  work *actually consults* — not a document everyone read
+  work _actually consults_ — not a document everyone read
   once and forgot.
 - Change windows and gates are configuration, not norms
   hoping to hold.
@@ -150,8 +150,8 @@ memory permanence, and lesson integration.
   feedback quickly with rule-IDs, not "looks fine, merging
   when I get around to it."
 - **Project survives maintainer turnover** — durable memory
-  + governance substrate means the project's institutional
-  knowledge doesn't live in one person's head.
+  - governance substrate means the project's institutional
+    knowledge doesn't live in one person's head.
 
 ### For an individual contributor
 
@@ -176,8 +176,8 @@ memory permanence, and lesson integration.
   structural changes stay human. The factory ships what the
   human directs.
 - **Not a claim that AI is strictly better than humans.** The
-  factory is better at *sustained rigor* and *memory
-  permanence*. Humans are still better at novel-problem
+  factory is better at _sustained rigor_ and _memory
+  permanence_. Humans are still better at novel-problem
   synthesis, stakeholder relationships, and strategic
   vision. The factory augments, not replaces.
 - **Not a promise that adoption is zero-friction.** Adopting

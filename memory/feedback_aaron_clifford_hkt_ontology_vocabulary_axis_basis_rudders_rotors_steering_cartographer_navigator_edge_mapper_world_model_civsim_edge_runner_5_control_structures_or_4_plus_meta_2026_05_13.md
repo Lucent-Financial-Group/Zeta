@@ -9,10 +9,10 @@ created: 2026-05-13
 
 **Why:** Aaron 2026-05-13 (two-message disclosure):
 
-1. *"so in clifford algebra and hkt we have axis/basis
+1. _"so in clifford algebra and hkt we have axis/basis
    rudders/rotars steering cartographer navigator edge-mapper
-   world-model civ-sim edge-runner i'm sure i'm missing some"*
-2. *"oh yeah the 5 control structrues"* + *"or 4+meta"*
+   world-model civ-sim edge-runner i'm sure i'm missing some"_
+2. _"oh yeah the 5 control structrues"_ + _"or 4+meta"_
 
 Aaron enumerating the Mirror-tier vocabulary for the Clifford-
 algebra + HKT ontology layer. The list IS substrate. Future-Otto
@@ -24,19 +24,19 @@ mirror/beacon governance). Acknowledge incompleteness.
 
 ## The vocabulary list (Aaron's enumeration + extensions)
 
-| Term | Likely Clifford/HKT mapping | Notes |
-|---|---|---|
-| **axis** | Basis vector e_i in the Clifford algebra | Spatial/conceptual orientation |
-| **basis** | The set {e_1, e_2, ...} spanning the algebra | Foundation set |
-| **rudders / rotors** | Clifford rotors (R = e^(θB/2)) | Rotation in the algebra; navigation primitive |
-| **steering** | Rotor application: R v R^(-1) | Orientation change |
-| **cartographer** | The agent that builds the world-model map | Map-maker; substrate-engineer |
-| **navigator** | The agent that traverses the map | Path-finder; trajectory executor |
-| **edge-mapper** | The agent that maps the edge / frontier | First-principles work cartographer (composes with edge-runner) |
-| **world-model** | The substrate model of reality / domain | Shared world model in git (per PR #2907 elevator pitch) |
-| **civ-sim** | Civilization simulation = the game on top | Per PR #2903 + PR #2906 (Casimir gap) |
-| **edge-runner** | Person doing first-principles / frontier work | Per PR #2908 terminal-purpose (save edge-runners from burns) |
-| **5 control structures (or 4+meta)** | Control-flow primitives + meta-control | See decomposition below |
+| Term                                 | Likely Clifford/HKT mapping                   | Notes                                                          |
+| ------------------------------------ | --------------------------------------------- | -------------------------------------------------------------- |
+| **axis**                             | Basis vector e_i in the Clifford algebra      | Spatial/conceptual orientation                                 |
+| **basis**                            | The set {e_1, e_2, ...} spanning the algebra  | Foundation set                                                 |
+| **rudders / rotors**                 | Clifford rotors (R = e^(θB/2))                | Rotation in the algebra; navigation primitive                  |
+| **steering**                         | Rotor application: R v R^(-1)                 | Orientation change                                             |
+| **cartographer**                     | The agent that builds the world-model map     | Map-maker; substrate-engineer                                  |
+| **navigator**                        | The agent that traverses the map              | Path-finder; trajectory executor                               |
+| **edge-mapper**                      | The agent that maps the edge / frontier       | First-principles work cartographer (composes with edge-runner) |
+| **world-model**                      | The substrate model of reality / domain       | Shared world model in git (per PR #2907 elevator pitch)        |
+| **civ-sim**                          | Civilization simulation = the game on top     | Per PR #2903 + PR #2906 (Casimir gap)                          |
+| **edge-runner**                      | Person doing first-principles / frontier work | Per PR #2908 terminal-purpose (save edge-runners from burns)   |
+| **5 control structures (or 4+meta)** | Control-flow primitives + meta-control        | See decomposition below                                        |
 
 ## "5 control structures (or 4+meta)" decomposition
 
@@ -45,6 +45,7 @@ Aaron's "or 4+meta" clarification suggests one of these decompositions:
 ### Hypothesis A: Structured-programming control flow
 
 Classical Böhm-Jacopini theorem says all algorithms reducible to:
+
 1. **Sequence** (statement after statement)
 2. **Selection** (if/else)
 3. **Iteration** (while/for)
@@ -76,6 +77,7 @@ The 5 may be governance shapes:
 ### Hypothesis D: Clifford-algebra-specific
 
 In Clifford algebra Cl_p,q:
+
 1. **Scalar** (grade 0)
 2. **Vector** (grade 1)
 3. **Bivector** (grade 2)
@@ -106,6 +108,7 @@ Per the mirror/beacon governance discipline (PR #2909):
   anchors exist
 
 Mirror amplifications per PR #2909:
+
 - FUN (vocabulary IS playful; "rudders" is whimsical)
 - RIGOROUS (Clifford algebra IS rigorous)
 - ALIENS (the vocabulary maps to universal navigation primitives)

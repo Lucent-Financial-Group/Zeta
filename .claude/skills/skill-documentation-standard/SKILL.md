@@ -66,7 +66,7 @@ Notes on each field:
   - `active` — the normal state.
   - `stub` — frontmatter exists, body is a placeholder.
   - `dormant` — intentionally gated off (e.g. `ai-
-    jailbreaker` until activation).
+jailbreaker` until activation).
   - `retired` — kept only as a pointer to a successor.
 - **`bp_rules_cited`** — a machine-readable list of the
   stable BP-NN rules the skill body cites. Used by
@@ -80,8 +80,8 @@ Vault's satellite discipline exactly.
 
 - **No persona name.** Personas live under `.claude/agents/`.
   The skill frontmatter names neither a preferred persona nor
-  a recommended one. (Cross-skill references to *other
-  skills* by slug are fine; those are scope boundaries, not
+  a recommended one. (Cross-skill references to _other
+  skills_ by slug are fine; those are scope boundaries, not
   personas.)
 - **No `hash_diff`.** This is computed, not maintained. The
   `skill-tune-up` audit can derive it from the file contents
@@ -144,8 +144,8 @@ unless justified in the skill's own body.
 inline.** Personas live under `.claude/agents/`. This rule has
 three reasons:
 
-- **Separation of capability from identity.** The *how* of a
-  job (the skill) and the *who* (the persona) evolve on
+- **Separation of capability from identity.** The _how_ of a
+  job (the skill) and the _who_ (the persona) evolve on
   different cadences. Binding them means every persona
   change is a skill edit.
 - **Reusability.** The factory is meant to be portable to
@@ -157,9 +157,9 @@ three reasons:
 Acceptable:
 
 - `"Capability skill. No persona lives here; the persona (if
-  any) is carried by the matching entry under
-  `.claude/agents/`."`
-- Cross-references to *other skill slugs* (e.g. "defers to
+any) is carried by the matching entry under
+`.claude/agents/`."`
+- Cross-references to _other skill slugs_ (e.g. "defers to
   `data-vault-expert`").
 
 Not acceptable:
@@ -190,10 +190,10 @@ When a skill is split, merged, or retired, Data Vault's
 satellite-closing pattern applies:
 
 - Move the old folder to `.claude/skills/_retired/YYYY-MM-DD-
-  <slug>/`.
+<slug>/`.
 - Leave a stub at the original location whose body is one
   paragraph pointing at the successor(s). Set `status:
-  retired` and `superseded_by: <successor-slug>`.
+retired` and `superseded_by: <successor-slug>`.
 - Append a line to `docs/ROUND-HISTORY.md` noting the
   retirement + successor.
 - The `LOAD_DATETIME` of the successor is the new skill's
@@ -219,8 +219,8 @@ to the skill catalog.
 
 ## BP-NN rule it wants to be promoted to
 
-This skill's binding pattern — *every SKILL.md carries the DV-
-style breadcrumb set and follows the body scaffold* — is a
+This skill's binding pattern — _every SKILL.md carries the DV-
+style breadcrumb set and follows the body scaffold_ — is a
 candidate for promotion to a stable `BP-NN` rule in
 `docs/AGENT-BEST-PRACTICES.md`. Promotion is an Architect
 decision via `docs/DECISIONS/YYYY-MM-DD-bp-NN-skill-
@@ -231,11 +231,11 @@ body is the authoritative statement of the rule.
 
 The skill catalog is, structurally, a Data Vault:
 
-- The folder name is the business key (the *hub*).
+- The folder name is the business key (the _hub_).
 - `SKILL.md` is the current-version satellite.
 - `_retired/` holds the closed satellites.
 - Cross-references between skills (defer-to links) are the
-  *links* (DV sense).
+  _links_ (DV sense).
 
 This is not a metaphor — a tooling script could materialise
 the whole `.claude/skills/` tree as a DV schema and the

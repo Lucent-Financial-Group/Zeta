@@ -4,8 +4,9 @@ description: Aaron Otto-87 mid-tick paste of Amara's 7th ferry — substantive A
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-87 mid-tick paste:
-*"another amara update"* followed by the full 7th-ferry text.
+_"another amara update"_ followed by the full 7th-ferry text.
 
 Full ferry content preserved in the conversation transcript
 (`/Users/acehack/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/1937bff2-017c-40b3-adc3-f4e226801a3d.jsonl`
@@ -224,7 +225,7 @@ unchanged from 5th ferry.
      interface + 7-view materialisation).
    - "Veridicality + network-health oracle-scoring
      research" (M effort; tracks β / λ parameter fitting
-     + test-harness).
+     - test-harness).
    - "BLAKE3 receipt hashing + replay-deterministic
      harness" (M effort; tracks cryptographic content
      hashing + signature discipline).
@@ -233,9 +234,9 @@ unchanged from 5th ferry.
      to the existing shortlist + preferred-pattern
      recommendation).
 3. Aminata threat-model pass on the 7-class threat model
-   + the proposed oracle rules (cheap follow-up after
-   absorb; surfaces carrier-laundering-in-the-oracle-
-   scoring-itself + cross-check against SD-9).
+   - the proposed oracle rules (cheap follow-up after
+     absorb; surfaces carrier-laundering-in-the-oracle-
+     scoring-itself + cross-check against SD-9).
 4. Memory update adding the 7-step implementation order
    as pointer.
 5. Tick-history row citing Otto-88 absorb.
@@ -245,7 +246,7 @@ unchanged from 5th ferry.
 - Does NOT authorise starting KSK-as-Zeta-module
   implementation pre-absorb. Implementation is a
   separately-filed BACKLOG row after Otto-88 absorb lands
-  + after Aaron's input on prioritisation.
+  - after Aaron's input on prioritisation.
 - Does NOT authorise applying the proposed ADR as an
   actual ADR without Aaron-sign-off (cross-repo
   architectural decision touching both Zeta and
@@ -299,12 +300,12 @@ unchanged from 5th ferry.
 
 ## Bottom-line ferry message (quote)
 
-> *"Zeta and KSK fit together naturally if you stop trying
+> _"Zeta and KSK fit together naturally if you stop trying
 > to make one swallow the other. Zeta should remain the
 > algebraic substrate for change, replay, compaction, and
 > observability. KSK should remain the policy/consent/
 > receipt layer. Aurora should be the architecture that
-> composes them into a human-governable control plane."*
+> composes them into a human-governable control plane."_
 
 Calibration: 7th ferry is the most architecturally-detailed
 ferry to date. Prior ferries were pattern-level (4th), code-

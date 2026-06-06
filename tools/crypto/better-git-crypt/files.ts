@@ -110,11 +110,7 @@ export function deserializeRecipient(j: RecipientKeyJSON): RecipientKey {
  * recipient and invites accidental sharing/committing of the secret keys.
  */
 export function looksLikeSecretBundle(obj: unknown): boolean {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    ("secretKemKey" in obj || "secretSigKey" in obj)
-  );
+  return typeof obj === "object" && obj !== null && ("secretKemKey" in obj || "secretSigKey" in obj);
 }
 
 export function serializeSecretBundle(kp: GeneratedKeyPair): SecretBundleJSON {
@@ -190,16 +186,14 @@ export function encryptBytes(
   self: SelfKeys,
   extraRecipients: readonly RecipientKey[] = [],
 ): EncryptBytesResult {
-  const recipients: RecipientKey[] = [
-    self.pub,
-    ...extraRecipients.filter((r) => r.identity !== self.pub.identity),
-  ];
-  const res = encrypt(
-    { plaintext, recipients, sender: self.pub, seedSource: "random-bytes" },
-    self.sec,
-  );
+  const recipients: RecipientKey[] = [self.pub, ...extraRecipients.filter((r) => r.identity !== self.pub.identity)];
+  const res = encrypt({ plaintext, recipients, sender: self.pub, seedSource: "random-bytes" }, self.sec);
   if (!res.ok) return { ok: false, feedback: res.feedback };
-  return { ok: true, envelopeBytes: encodeEnvelope(res.envelope), recipientIdentities: recipients.map((r) => r.identity) };
+  return {
+    ok: true,
+    envelopeBytes: encodeEnvelope(res.envelope),
+    recipientIdentities: recipients.map((r) => r.identity),
+  };
 }
 
 /**

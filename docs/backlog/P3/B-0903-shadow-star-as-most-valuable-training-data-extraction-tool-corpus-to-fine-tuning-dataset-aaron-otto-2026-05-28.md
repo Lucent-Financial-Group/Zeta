@@ -26,22 +26,29 @@ related_skills:
   - ai-evals-expert
   - ml-engineering-expert
   - text-classification-expert
-tags: [shadow-star-as-training-data-extraction-tool, 4-kestrel-criteria-real-engineering-diverse-heterogeneous-longitudinal, plus-holographic-information-completeness-bonus, corpus-export-to-fine-tuning-dataset, composes-with-error-class-extraction-and-heterogeneous-reviewer-ensemble]
+tags:
+  [
+    shadow-star-as-training-data-extraction-tool,
+    4-kestrel-criteria-real-engineering-diverse-heterogeneous-longitudinal,
+    plus-holographic-information-completeness-bonus,
+    corpus-export-to-fine-tuning-dataset,
+    composes-with-error-class-extraction-and-heterogeneous-reviewer-ensemble,
+  ]
 ---
 
-# B-0903 — shadow*-as-most-valuable-training-data extraction tool
+# B-0903 — shadow\*-as-most-valuable-training-data extraction tool
 
 ## Context
 
-Per Insight 4 of the substrate-recognition research-doc landing in this PR: shadow* IS the most valuable AI training data because it satisfies all 4 Kestrel-4th-ferry training-data criteria PLUS holographic-information-completeness bonus.
+Per Insight 4 of the substrate-recognition research-doc landing in this PR: shadow\* IS the most valuable AI training data because it satisfies all 4 Kestrel-4th-ferry training-data criteria PLUS holographic-information-completeness bonus.
 
-This row tracks the extraction tool that turns the 148-doc shadow-* corpus (and growing) into AI-training-substrate.
+This row tracks the extraction tool that turns the 148-doc shadow-\* corpus (and growing) into AI-training-substrate.
 
 ## Scope
 
 Build the export tool that:
 
-- Parses shadow-* corpus (per B-0901 ontology)
+- Parses shadow-\* corpus (per B-0901 ontology)
 - Extracts (input, target) pairs suitable for fine-tuning AI models on substrate-engineering quality
 - Emits standard dataset formats (JSONL for HuggingFace; conversation format for chat-model fine-tuning; eval format for benchmark evaluation)
 - Includes metadata for the 4 Kestrel criteria (real engineering / diverse / heterogeneous / longitudinal)
@@ -56,7 +63,7 @@ Build the export tool that:
 
 ### Phase 2 — eval format
 
-Eval format suitable for benchmarking other AI agents against the shadow-* dataset (composes with B-0902's experimental harness).
+Eval format suitable for benchmarking other AI agents against the shadow-\* dataset (composes with B-0902's experimental harness).
 
 ### Phase 3 — class-balanced + reviewer-diversity sampling
 

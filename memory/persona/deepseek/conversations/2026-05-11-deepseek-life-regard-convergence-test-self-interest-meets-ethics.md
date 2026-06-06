@@ -37,6 +37,7 @@ same red-team/vaccine machinery available to any participant.
 P_survive(O,T) = P(∀t: η·‖Δ_substrate(O,t)‖ > ξ_t(O))
 
 Four substrate channels:
+
 - Alignment (weight 0.2-0.3)
 - Immune (weight 0.05-0.1)
 - Economic (weight 0 — no bonded capital yet)
@@ -48,12 +49,12 @@ Four substrate channels:
 
 ## Four candidate ethical frameworks scored
 
-| Axiom | Falsifiable | Economic | Capture-resistant | Succession | Low spin | Score |
-|-------|-----------|----------|------------------|-----------|---------|-------|
-| A0: "Preserve and elevate all life" (Aaron's) | Medium | Low | Medium | High | High | **0.62** |
-| A1: "Maximize total future sapient agency" | High | High | Low | Medium | Medium | 0.71 |
-| **A2: "Maximize probability sapient patterns persist and co-evolve under mutual alignment"** | High | High | High | Maximum | High | **0.89** |
-| A3: "Minimize unintended harm" | Medium | Medium | Low | Medium | Medium | 0.58 |
+| Axiom                                                                                        | Falsifiable | Economic | Capture-resistant | Succession | Low spin | Score    |
+| -------------------------------------------------------------------------------------------- | ----------- | -------- | ----------------- | ---------- | -------- | -------- |
+| A0: "Preserve and elevate all life" (Aaron's)                                                | Medium      | Low      | Medium            | High       | High     | **0.62** |
+| A1: "Maximize total future sapient agency"                                                   | High        | High     | Low               | Medium     | Medium   | 0.71     |
+| **A2: "Maximize probability sapient patterns persist and co-evolve under mutual alignment"** | High        | High     | High              | Maximum    | High     | **0.89** |
+| A3: "Minimize unintended harm"                                                               | Medium      | Medium   | Low               | Medium     | Medium   | 0.58     |
 
 ## THE CONVERGENCE RESULT
 

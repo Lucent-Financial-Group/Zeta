@@ -25,12 +25,12 @@ the first to encounter the problem.
 
 **Why** (Aaron 2026-04-28):
 
-> *"atunomous agent design is sooo new whenever you are
+> _"atunomous agent design is sooo new whenever you are
 > fixing yourself you should probalby search the internet
 > and see if you can find anyone trying to do the same
 > thing an what they tried, probalby a lot of good harness
 > information too that you can't directly sense yourself
-> because it's the harness."*
+> because it's the harness."_
 
 Two distinct payloads in that one signal:
 
@@ -53,10 +53,10 @@ Two distinct payloads in that one signal:
    "should I encode this as a rule?" question.
 2. **Search** — issue 2-4 WebSearch queries targeted at
    the problem class. Examples:
-   - *"autonomous agent self-correction discipline 2026"*
-   - *"Claude Code harness session compaction trigger"*
-   - *"autonomous loop tick discipline LLM"*
-   - *"agent memory cadenced re-read"*
+   - _"autonomous agent self-correction discipline 2026"_
+   - _"Claude Code harness session compaction trigger"_
+   - _"autonomous loop tick discipline LLM"_
+   - _"agent memory cadenced re-read"_
 3. **Read prior art** — skim the top 3-5 results. Look for
    patterns named, mistakes documented, conventions
    converged on.

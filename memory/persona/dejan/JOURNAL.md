@@ -17,8 +17,8 @@ up. Grows monotonically over rounds.
   becomes a bug. Use grep / search to pull the matching
   section on demand.
 - Search hooks: dated section headers (`## Round N — ...`)
-  + action SHA strings + upstream repo names +
-  GitHub-workflow file paths + parity-drift DEBT tags.
+  - action SHA strings + upstream repo names +
+    GitHub-workflow file paths + parity-drift DEBT tags.
 
 ## Write contract
 
@@ -42,6 +42,7 @@ forces synthesis each round; this file preserves the audit
 trail.
 
 Candidate use cases:
+
 - Action SHA ledger across rounds (which SHA was pinned
   when, why it got bumped).
 - Upstream PR outcomes (per GOVERNANCE §23) — which upstream

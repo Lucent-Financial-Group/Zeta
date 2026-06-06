@@ -16,9 +16,9 @@ Grounding memory (user-scope, originated this trajectory):
 
 ## Why This Exists
 
-The autonomous-loop fires every minute via the `<<autonomous-loop>>` cron sentinel. The parent trajectory (`autonomous-loop-coordination`) names the principle: *"Queue-empty is runway, not completion."* But the existing per-tick discipline doesn't encode WHAT to do when runway is present — it defaults to brief-ack ("Nothing to do. Standing by.") which is correct under explicit-cost-signal but missed-opportunity when bounded forward-steps exist on active trajectories.
+The autonomous-loop fires every minute via the `<<autonomous-loop>>` cron sentinel. The parent trajectory (`autonomous-loop-coordination`) names the principle: _"Queue-empty is runway, not completion."_ But the existing per-tick discipline doesn't encode WHAT to do when runway is present — it defaults to brief-ack ("Nothing to do. Standing by.") which is correct under explicit-cost-signal but missed-opportunity when bounded forward-steps exist on active trajectories.
 
-This packet encodes the **quiet-state per-tick procedure** — how Otto decides whether quiet means *advance-a-trajectory* or *brief-ack-and-stop*.
+This packet encodes the **quiet-state per-tick procedure** — how Otto decides whether quiet means _advance-a-trajectory_ or _brief-ack-and-stop_.
 
 ## Current Rule
 
@@ -38,11 +38,11 @@ When the cron fires `<<autonomous-loop>>`:
 4. **Else (genuinely quiet + no cost-signal active)**: trajectory-advancement check:
    a. Read `docs/trajectories/*/RESUME.md` headers (cheap; filesystem-only)
    b. Look for trajectories with a **bounded-cost forward-step available**:
-      - "bounded-cost" = filesystem-only OR REST-only OR sub-1-GraphQL-call
-      - "forward-step available" = NOT awaiting external review/maintainer-decision/blocked-on-dependency
-      - "genuinely-new substrate" = adds load-bearing content, not synonym-fabrication
-   c. If found: advance ONE trajectory bounded; update its RESUME.md `Last refreshed:` line + add a brief substrate-honest progress note
-   d. If none found OR cost-discipline says skip: "Nothing to do. Standing by."
+   - "bounded-cost" = filesystem-only OR REST-only OR sub-1-GraphQL-call
+   - "forward-step available" = NOT awaiting external review/maintainer-decision/blocked-on-dependency
+   - "genuinely-new substrate" = adds load-bearing content, not synonym-fabrication
+     c. If found: advance ONE trajectory bounded; update its RESUME.md `Last refreshed:` line + add a brief substrate-honest progress note
+     d. If none found OR cost-discipline says skip: "Nothing to do. Standing by."
 5. **Visibility signal**: state what advanced (concretely — file paths, single-line summary) OR confirm pure-brief-ack
 6. **Stop** (do NOT call ScheduleWakeup; cron fires next tick automatically)
 

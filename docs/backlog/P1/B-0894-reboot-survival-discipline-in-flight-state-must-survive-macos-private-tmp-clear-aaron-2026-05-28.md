@@ -38,7 +38,7 @@ Targeted searches:
 rg -l "private/tmp/zeta-|/tmp/zeta-|reboot.survival|in.flight.survives" .claude/rules/ docs/backlog/
 ```
 
-Conclusion: NO existing rule or row names the cross-cutting reboot-survival discipline. The `agent-worktree-hygiene` rule actively hardcodes the failure-mode pattern. Mint-new authorized per operator 2026-05-28 explicit framing: *"why are we putting any git stuff in /private/tmp/ this is terrible design"* + *"we need to survive reboots in any kind of inflight stuff"*.
+Conclusion: NO existing rule or row names the cross-cutting reboot-survival discipline. The `agent-worktree-hygiene` rule actively hardcodes the failure-mode pattern. Mint-new authorized per operator 2026-05-28 explicit framing: _"why are we putting any git stuff in /private/tmp/ this is terrible design"_ + _"we need to survive reboots in any kind of inflight stuff"_.
 
 Authoring action: **mint-new + rule-edit** (this row + the `agent-worktree-hygiene` rule edit ship together as the substrate landing of the operator's named requirement).
 
@@ -48,18 +48,18 @@ Operator restart at ~04:30Z UTC pruned **95 worktrees** that had been placed at 
 
 Worse: the 04:09Z autonomous-loop tick had a substantive tick-shard commit (`4f89af885`) sitting on branch `otto-cli/tick-0409z-sentinel-rearm-2026-05-28` with a backgrounded `git push` in flight when restart hit. Push never completed; branch ref + commit object survived in `.git/objects/`, but the worktree directory at `/private/tmp/zeta-otto-cli-0409z-sentinel-rearm/` was gone. The backgrounded-task output file at `/private/tmp/claude-501/<harness-id>/tasks/<task-id>.output` was also gone — couldn't even read the push outcome to know whether to retry.
 
-Operator framing: *"why are we putting any git stuff in /private/tmp/ this is terrible design"* + *"we need to survive reboots in any kind of inflight stuff"*.
+Operator framing: _"why are we putting any git stuff in /private/tmp/ this is terrible design"_ + _"we need to survive reboots in any kind of inflight stuff"_.
 
 ## Root cause
 
 macOS clears `/private/tmp/` on reboot AND via `com.apple.periodic-daily` cleanup of files older than 3 days. `/tmp/` is a symlink to `/private/tmp/` on macOS — same behavior. Four classes of agent in-flight state currently live there:
 
-| State class | Current location | Survives macOS reboot? |
-|---|---|---|
-| Agent worktrees | `/private/tmp/zeta-<task-tag>-<hhmmz>/` (per `agent-worktree-hygiene` rule recommendation) | NO |
-| Bash background-task output | `/private/tmp/claude-501/<harness-id>/tasks/<task-id>.output` (Claude Code harness default) | NO |
-| Bus envelopes | `/tmp/zeta-bus/<envelope-id>.json` (per `tools/bus/bus.ts` line 19 default `ZETA_BUS_DIR`) | NO |
-| Cron sentinel | In-memory only (per `tick-must-never-stop` rule; harness-level non-persistence) | NO (separate root cause; covered by `tick-must-never-stop`) |
+| State class                 | Current location                                                                            | Survives macOS reboot?                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Agent worktrees             | `/private/tmp/zeta-<task-tag>-<hhmmz>/` (per `agent-worktree-hygiene` rule recommendation)  | NO                                                          |
+| Bash background-task output | `/private/tmp/claude-501/<harness-id>/tasks/<task-id>.output` (Claude Code harness default) | NO                                                          |
+| Bus envelopes               | `/tmp/zeta-bus/<envelope-id>.json` (per `tools/bus/bus.ts` line 19 default `ZETA_BUS_DIR`)  | NO                                                          |
+| Cron sentinel               | In-memory only (per `tick-must-never-stop` rule; harness-level non-persistence)             | NO (separate root cause; covered by `tick-must-never-stop`) |
 
 Lior's pattern (`~/Documents/src/repos/Zeta/worktrees/lior-*` + `~/.gemini/tmp/project/lior-*`) survives because user home directory is NOT cleared by macOS.
 
@@ -115,9 +115,9 @@ This row DOES:
 
 Operator 2026-05-28T~04:30Z UTC verbatim:
 
-> *"why are we putting any git stuff in /private/tmp/ this is terrible design"*
-> *"we need to survive reboots in any kind of inflight stuff"*
-> *"hey fyi i had to restart"*
-> *"please reread latest backlog for today, also i moved from vscode back to console"*
+> _"why are we putting any git stuff in /private/tmp/ this is terrible design"_
+> _"we need to survive reboots in any kind of inflight stuff"_
+> _"hey fyi i had to restart"_
+> _"please reread latest backlog for today, also i moved from vscode back to console"_
 
 The restart that produced the empirical anchor for this row was triggered partly by VSCode-Otto surface failure (operator separately disclosed: VSCode-Otto loses context every ~20min and emits "Quiet"; Otto-CLI typically holds ~6h — preserved as user-scope `feedback_aaron_vscode_otto_surface_20min_context_loss_emits_quiet_cli_holds_6h_surface_choice_signal_2026_05_28.md`). The convergence of (surface-failure restart + transient-worktree-location loss) was the substrate-engineering event that surfaced the discipline gap.

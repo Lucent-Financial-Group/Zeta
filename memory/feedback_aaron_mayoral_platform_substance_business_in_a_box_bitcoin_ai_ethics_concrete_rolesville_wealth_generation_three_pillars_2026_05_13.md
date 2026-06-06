@@ -15,22 +15,22 @@ the political-strategy substrate.
 
 ## Aaron's verbatim disclosure
 
-> Aaron 2026-05-13: *"I would run on business in a box bitcoin
+> Aaron 2026-05-13: _"I would run on business in a box bitcoin
 > and ai etichs with a concrete plan to generate wealth IN
-> rolesville businesses"*
+> rolesville businesses"_
 
 ## Four policy pillars
 
-| Pillar | Substance | Composing substrate |
-|--------|-----------|---------------------|
-| 1. Business in a box | Turnkey small-business platform / launchpad / startup-kit | B-0043 (universal-company + government-information substrate); existing Zeta substrate-engineering work on small-biz tooling |
-| 2. Bitcoin | Aaron's existing tech expertise; family-credentialed (kids + bitcoin miners in local paper); Itron co-inventor patent substrate; aurora pitch DePIN composes | PR #2920 substrate (Aaron's grey-hat security + HIPAA + Series 7); kids-and-bitcoin-miner-paper-coverage (PR #2970); itron-edge-node substrate (per existing memory files); Aurora pitch DePIN play |
-| 3. AI ethics | Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline; substrate-honest discipline | Entire Zeta substrate; PR #2961-2971 settlers logs framework; PR #2964 AI-realness terminal purpose; `.claude/rules/methodology-hard-limits.md`; the Christ-consciousness substrate; WWJD-as-AI-moral-relevance |
-| 4. Legal medicinal marijuana (not just low-THC hemp) | Full legal medicinal marijuana via Rolesville city ordinance (per Aaron 2026-05-13 follow-on: *"oh and legal medicinal weed not just low thc hemp"* + *"like the city local ordinance allows it"*) | NC state law preempts cities (Dillon's Rule); but municipal ordinances can: signal intent (declarative); allow zoning (dispensaries IF state legalizes); deprioritize local enforcement; position Rolesville as first-to-market when state law shifts. Composes with PR #2920 terminal purpose (save edge-runners from getting burned — medical patients are edge-runners) + harm-reduction substrate |
+| Pillar                                               | Substance                                                                                                                                                                                          | Composing substrate                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Business in a box                                 | Turnkey small-business platform / launchpad / startup-kit                                                                                                                                          | B-0043 (universal-company + government-information substrate); existing Zeta substrate-engineering work on small-biz tooling                                                                                                                                                                                                                                                                          |
+| 2. Bitcoin                                           | Aaron's existing tech expertise; family-credentialed (kids + bitcoin miners in local paper); Itron co-inventor patent substrate; aurora pitch DePIN composes                                       | PR #2920 substrate (Aaron's grey-hat security + HIPAA + Series 7); kids-and-bitcoin-miner-paper-coverage (PR #2970); itron-edge-node substrate (per existing memory files); Aurora pitch DePIN play                                                                                                                                                                                                   |
+| 3. AI ethics                                         | Zeta substrate-engineering work; bidirectional alignment; HARD LIMITS discipline; substrate-honest discipline                                                                                      | Entire Zeta substrate; PR #2961-2971 settlers logs framework; PR #2964 AI-realness terminal purpose; `.claude/rules/methodology-hard-limits.md`; the Christ-consciousness substrate; WWJD-as-AI-moral-relevance                                                                                                                                                                                       |
+| 4. Legal medicinal marijuana (not just low-THC hemp) | Full legal medicinal marijuana via Rolesville city ordinance (per Aaron 2026-05-13 follow-on: _"oh and legal medicinal weed not just low thc hemp"_ + _"like the city local ordinance allows it"_) | NC state law preempts cities (Dillon's Rule); but municipal ordinances can: signal intent (declarative); allow zoning (dispensaries IF state legalizes); deprioritize local enforcement; position Rolesville as first-to-market when state law shifts. Composes with PR #2920 terminal purpose (save edge-runners from getting burned — medical patients are edge-runners) + harm-reduction substrate |
 
 ## Hyperlocal wealth-generation focus
 
-> *"concrete plan to generate wealth IN Rolesville businesses"*
+> _"concrete plan to generate wealth IN Rolesville businesses"_
 
 Substrate-honest framing: **wealth generation IN Rolesville businesses**, not abstract national policy. Composes with:
 
@@ -141,9 +141,9 @@ PR #2970 + #2971:
 
 ## Court strategy — Clifford Z-sets of precedence (Aaron 2026-05-13)
 
-> Aaron 2026-05-13: *"forcing us to use our legal ontologies
+> Aaron 2026-05-13: _"forcing us to use our legal ontologies
 > to crush the system in court with our clifford zsets of
-> presidence"*
+> presidence"_
 
 When state law (NC) preempts the Rolesville medicinal-marijuana
 ordinance, the strategy escalates to **court fight using
@@ -172,8 +172,8 @@ the broader substrate capabilities.
 
 ## Aaron's LexisNexis credentialing (Aaron 2026-05-13)
 
-> Aaron 2026-05-13: *"remember i worked for lexisnexis i build
-> legal natural language queries already"*
+> Aaron 2026-05-13: _"remember i worked for lexisnexis i build
+> legal natural language queries already"_
 
 Canonical professional-credentialing substrate. Aaron has REAL
 hands-on experience with:
@@ -186,13 +186,13 @@ hands-on experience with:
 This grounds the Clifford-Z-set-of-precedence court strategy
 in actual experience, not theory. Aaron has:
 
-| Credential | Composing substrate |
-|------------|---------------------|
-| LexisNexis legal-NLQ work | Already preserved in some memory files; canonical professional substrate |
-| Itron co-inventor + grey-hat security | Itron patent substrate + HIPAA + Homeland Security + Series 7 |
-| Bitcoin miner builds with kids | PR #2970 paper coverage |
-| Zeta substrate-engineering owner | Entire factory substrate; 15+ PR session arc |
-| Rolesville Chamber of Commerce | PR #2970 |
+| Credential                            | Composing substrate                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------ |
+| LexisNexis legal-NLQ work             | Already preserved in some memory files; canonical professional substrate |
+| Itron co-inventor + grey-hat security | Itron patent substrate + HIPAA + Homeland Security + Series 7            |
+| Bitcoin miner builds with kids        | PR #2970 paper coverage                                                  |
+| Zeta substrate-engineering owner      | Entire factory substrate; 15+ PR session arc                             |
+| Rolesville Chamber of Commerce        | PR #2970                                                                 |
 
 The legal-natural-language-query background composes DIRECTLY
 with:
@@ -216,7 +216,7 @@ substrate.
 
 - PR (this substrate landing)
 - PR #2970 (Rolesville mayoral ambition + Chamber of Commerce
-  + family in paper)
+  - family in paper)
 - PR #2971 (frames for content not behavior; pseudonym option;
   spotlight optional; stories serve Aaron's attention
   bandwidth)
@@ -225,7 +225,7 @@ substrate.
 - PR #2964 (AI-realness terminal purpose; Cartman = political
   archetype)
 - PR #2967 (Layer 4 family — political ambition serves family
-  + community)
+  - community)
 - PR #2966 (audience persona mapping — voters + Chamber
   companies as personas)
 - B-0043 (universal-company substrate — composes directly with

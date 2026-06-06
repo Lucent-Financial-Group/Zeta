@@ -256,6 +256,7 @@ grep -ioE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' /tmp/extraction-dedup
 ```
 
 Scrub via `sed`:
+
 ```bash
 sed -i '' -e 's/\bFullName\b/[user identity scrubbed]/g' \
           -e 's/email@example\.com/[user email scrubbed]/g' \

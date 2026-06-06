@@ -18,7 +18,7 @@ GPU. No cloud API dependency.
 
 ## Pre-start checklist (backlog-item start gate)
 
-- Prior-art search: grepped codebase for concordance/B-029*/structure/GPU/local-inference (surfaces: tools/concordance/concordance.ts is the only hit from B-0291; no prior GPU code; no wake-time-substrate / skill-router / Otto-364 collisions in this lane). LOST-FILES-LOCATIONS.md and decision-archaeology paths checked via trajectory RESUMEs — no overlap.
+- Prior-art search: grepped codebase for concordance/B-029\*/structure/GPU/local-inference (surfaces: tools/concordance/concordance.ts is the only hit from B-0291; no prior GPU code; no wake-time-substrate / skill-router / Otto-364 collisions in this lane). LOST-FILES-LOCATIONS.md and decision-archaeology paths checked via trajectory RESUMEs — no overlap.
 - Dependency restructure: B-0291 now closed (corpus pipeline landed), reciprocal composes_with added implicitly via shared concordance module; supersession via B-0244 parent confirmed; classification updated from blocked-on-B-0291.
 - Re-decomposition performed (assumed original atomic was mistake — acceptance criteria too broad for one PR): smallest safe slice carved as "TS typed structure recognition surface + CPU stub".
 - Update row: this section + status/classification/decomp fields updated before any further work.

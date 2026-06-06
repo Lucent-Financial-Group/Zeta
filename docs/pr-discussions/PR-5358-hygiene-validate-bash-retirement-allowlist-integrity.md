@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - validate the retained shell allowlist for duplicate and out-of-order entries before classifying repo `.sh` drift
 - surface allowlist integrity counts in the bash-retirement inventory report
 - cover duplicate, unsorted, and rendered integrity-error cases in the focused Bun test
 
 ## Checks
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun run hygiene:check-bash-retirement-inventory`
 - `node_modules/.bin/tsc --noEmit -p tsconfig.json`
@@ -35,6 +37,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR hardens the bash-retirement inventory guard (`tools/hygiene/check-bash-retirement-inventory.ts`) by validating that the retained-shell allowlist itself is sorted and de-duplicated before using it to classify repo `.sh` drift, and it surfaces integrity counts in the report output.
 
 **Changes:**
+
 - Add allowlist integrity inspection (duplicate detection + out-of-order detection) and treat integrity drift as a first-class “drift” condition.
 - Extend the rendered report with allowlist integrity counts and a dedicated integrity-errors section that suppresses normal drift classification until fixed.
 - Add focused Bun tests covering duplicate/unsorted allowlist detection and integrity-error rendering (partial).
@@ -43,11 +46,11 @@ This PR hardens the bash-retirement inventory guard (`tools/hygiene/check-bash-r
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/hygiene/check-bash-retirement-inventory.ts | Adds allowlist integrity validation and report rendering for integrity errors/counts. |
-| tools/hygiene/check-bash-retirement-inventory.test.ts | Adds tests for allowlist integrity drift and one integrity rendering path. |
-| docs/claims/codex-loop-bash-retirement-allowlist-integrity-20260526.md | Adds a live claim artifact (should be released/removed before merge per protocol). |
+| File                                                                   | Description                                                                           |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| tools/hygiene/check-bash-retirement-inventory.ts                       | Adds allowlist integrity validation and report rendering for integrity errors/counts. |
+| tools/hygiene/check-bash-retirement-inventory.test.ts                  | Adds tests for allowlist integrity drift and one integrity rendering path.            |
+| docs/claims/codex-loop-bash-retirement-allowlist-integrity-20260526.md | Adds a live claim artifact (should be released/removed before merge per protocol).    |
 
 ## Review threads
 

@@ -54,11 +54,11 @@ and merge.
    - Grok CLI capability map (#126 parent)
    - Gemini capability map (this xref's target)
    - Claude Code capability surfaces (CLAUDE.md / AGENTS.md)
-   When one capability map evolves, the others' cross-references
-   drift. Fix template: when authoring/editing one capability map,
-   sweep the related-document cluster for stale xrefs. Future
-   tooling candidate: doc-lint that maintains a manifest of
-   related-document clusters and warns on edit-without-sweep.
+     When one capability map evolves, the others' cross-references
+     drift. Fix template: when authoring/editing one capability map,
+     sweep the related-document cluster for stale xrefs. Future
+     tooling candidate: doc-lint that maintains a manifest of
+     related-document clusters and warns on edit-without-sweep.
 
 2. **Multi-CLI capability-map family is its own substrate
    pattern.** Worth documenting in the related `_patterns.md`

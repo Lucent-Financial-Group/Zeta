@@ -28,17 +28,17 @@ curl http://localhost:5000/api/pipeline/funnel
 
 ## Endpoints (identical to the F# sibling)
 
-| Method | Path | Returns |
-|---|---|---|
-| GET | `/` | API metadata + endpoint list |
-| GET | `/api/customers` | All customers |
-| GET | `/api/customers/{id}` | Single customer, 404 if missing |
-| GET | `/api/customers/{id}/activities` | Activities for one customer |
-| GET | `/api/opportunities` | All opportunities |
-| GET | `/api/opportunities/{id}` | Single opportunity, 404 if missing |
-| GET | `/api/activities` | All activities |
-| GET | `/api/pipeline/funnel` | Per-stage count + $ total |
-| GET | `/api/pipeline/duplicates` | Customers sharing an email |
+| Method | Path                             | Returns                            |
+| ------ | -------------------------------- | ---------------------------------- |
+| GET    | `/`                              | API metadata + endpoint list       |
+| GET    | `/api/customers`                 | All customers                      |
+| GET    | `/api/customers/{id}`            | Single customer, 404 if missing    |
+| GET    | `/api/customers/{id}/activities` | Activities for one customer        |
+| GET    | `/api/opportunities`             | All opportunities                  |
+| GET    | `/api/opportunities/{id}`        | Single opportunity, 404 if missing |
+| GET    | `/api/activities`                | All activities                     |
+| GET    | `/api/pipeline/funnel`           | Per-stage count + $ total          |
+| GET    | `/api/pipeline/duplicates`       | Customers sharing an email         |
 
 ## Parity guarantee
 

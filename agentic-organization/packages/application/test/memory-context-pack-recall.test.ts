@@ -7,11 +7,7 @@ import {
   contextPackMemorySimilarityConfidenceFor,
   createMemoryContextPackRecallPort,
 } from "../src/index.ts";
-import {
-  MemoryPhase,
-  MemoryTier,
-  type MemoryEnvelope,
-} from "../../domain/src/index.ts";
+import { MemoryPhase, MemoryTier, type MemoryEnvelope } from "../../domain/src/index.ts";
 import type { Memory, MemoryAttribution } from "../../memory/src/index.ts";
 import { readFloorFor } from "../src/memory-ranking.ts";
 
@@ -160,10 +156,10 @@ test("memory context-pack recall ranks by typed similarity before limiting and d
     workItemId: "work-1",
   });
 
-  deepEqual(result.memories.map((memory) => memory.memoryId), [
-    "mem-same-hat-work",
-    "mem-same-work",
-  ]);
+  deepEqual(
+    result.memories.map((memory) => memory.memoryId),
+    ["mem-same-hat-work", "mem-same-work"],
+  );
   equal(result.memories[0]?.similarityCategory, ContextPackMemorySimilarityCategory.SameHatSameWorkItem);
   equal(
     result.memories[0]?.confidence,
@@ -233,12 +229,11 @@ test("memory context-pack recall joins durable governance envelopes before ranki
     workItemId: "work-1",
   });
 
-  deepEqual(envelopeLookups, [[
-    "mem-archived",
-    "mem-low-governance",
-    "mem-high-governance",
-  ]]);
-  deepEqual(result.memories.map((memory) => memory.memoryId), ["mem-high-governance"]);
+  deepEqual(envelopeLookups, [["mem-archived", "mem-low-governance", "mem-high-governance"]]);
+  deepEqual(
+    result.memories.map((memory) => memory.memoryId),
+    ["mem-high-governance"],
+  );
   equal(result.memories[0]?.similarityCategory, ContextPackMemorySimilarityCategory.SameWorkItem);
   equal(result.memories[0]?.governance?.tier, MemoryTier.Work);
   equal(result.memories[0]?.governance?.phase, MemoryPhase.Active);
@@ -305,11 +300,7 @@ test("memory context-pack recall reports an omission when the context lacks reca
   ]);
 });
 
-function memoryRecord(
-  memoryId: string,
-  content: string,
-  retainedAt: string,
-) {
+function memoryRecord(memoryId: string, content: string, retainedAt: string) {
   return {
     memoryId,
     content,

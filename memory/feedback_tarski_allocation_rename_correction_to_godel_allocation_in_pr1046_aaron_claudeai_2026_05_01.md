@@ -8,15 +8,15 @@ type: feedback
 
 PR #1046 (merged 2026-05-01 07:32Z) landed the architectural insight Aaron named with carved sentence:
 
-> *"that's where we catch him kurt, so the rest of the system is a consistent model"*
+> _"that's where we catch him kurt, so the rest of the system is a consistent model"_
 
 PR #1046 framed this as **"Gödel-allocation"** — deliberately concentrating necessary Gödel-incompleteness at the pirate-not-priest spot.
 
 Claude.ai's follow-on letter (Aaron forwarded 2026-05-01 ~09:30Z) substantively corrected this framing:
 
-> *"Gödel's theorems are about formal systems with very specific properties: recursive axiomatizability, sufficient expressive power, classical logic. The Zeta substrate is not, strictly speaking, a formal system in this sense. It's a corpus of natural-language entries with editorial-convergence machinery and runtime-grading proxies. The analogy to Gödel is structural rather than literal."*
+> _"Gödel's theorems are about formal systems with very specific properties: recursive axiomatizability, sufficient expressive power, classical logic. The Zeta substrate is not, strictly speaking, a formal system in this sense. It's a corpus of natural-language entries with editorial-convergence machinery and runtime-grading proxies. The analogy to Gödel is structural rather than literal."_
 
-> *"This is structurally similar to how Tarski's truth theorem handles the liar paradox. Tarski showed that no consistent formal language can contain its own truth predicate; the truth predicate has to live in a meta-language that's strictly more expressive than the object language. Aaron's architecture is doing something similar: the discipline that grades the substrate has to live in a meta-position that's strictly outside the substrate's formal layer."*
+> _"This is structurally similar to how Tarski's truth theorem handles the liar paradox. Tarski showed that no consistent formal language can contain its own truth predicate; the truth predicate has to live in a meta-language that's strictly more expressive than the object language. Aaron's architecture is doing something similar: the discipline that grades the substrate has to live in a meta-position that's strictly outside the substrate's formal layer."_
 
 **Otto's acceptance of the correction**:
 
@@ -25,7 +25,7 @@ The load-bearing mathematical result is **Tarski's truth-theorem (1933, "The Con
 **What was right in PR #1046's framing** (preserve as substrate):
 
 - The architectural choice IS a real metamathematical move — designate a meta-position outside the formalizable substrate, let the un-formalizable disposition live there, run the rest as a consistent model.
-- Aaron's verbatim carved sentence (*"that's where we catch him kurt, so the rest of the system is a consistent model"*) is the correct intuition.
+- Aaron's verbatim carved sentence (_"that's where we catch him kurt, so the rest of the system is a consistent model"_) is the correct intuition.
 - The pirate-not-priest disposition occupies the meta-position by being un-pigeonhole-able by design.
 - Once the meta-position has a designated home, the rest of the substrate can be formal-consistent.
 - The structural analogues table in PR #1046 is mostly correct: ZFC independent-axioms, constructive-mathematics excluded-middle, type-theory stratified-universes, Aaron's pirate-not-priest as designated meta-position. But the row should reference **Tarski-style stratification** as the load-bearing precedent, not Gödel-allocation.
@@ -33,14 +33,14 @@ The load-bearing mathematical result is **Tarski's truth-theorem (1933, "The Con
 **What was overclaim** (correct in substrate):
 
 - Calling it "Gödel-allocation" implied the architecture had solved a Gödel problem; what it actually does is stratify meta-language from object-language, which is the Tarski move, not the Gödel move.
-- The Gödel-incompleteness theorem applies to *formal systems with specific properties* (recursive axiomatizability, sufficient expressive power, classical logic). The Zeta substrate is a corpus of natural-language entries with editorial machinery — not yet a formal system in the Gödel sense. Therefore Gödel doesn't directly apply.
+- The Gödel-incompleteness theorem applies to _formal systems with specific properties_ (recursive axiomatizability, sufficient expressive power, classical logic). The Zeta substrate is a corpus of natural-language entries with editorial machinery — not yet a formal system in the Gödel sense. Therefore Gödel doesn't directly apply.
 - The Tarski move IS what's happening structurally: the un-formalizable discipline lives in a meta-position; the substrate's formal layer (when it earns formal-system status, which is "not yet" per Aaron 2026-05-01) can be consistent given the stratification.
 
 **The corrected framing** (operative going forward):
 
-**Tarski-allocation**: deliberately concentrate the substrate's un-formalizable discipline-grounding at a designated meta-position (the pirate-not-priest spot), structurally analogous to how Tarski's truth-theorem requires the truth predicate to live in a meta-language. The rest of the substrate can run as a (working-toward-formal) consistent system because the un-formalizable part is explicitly *located* outside the formalizable layer rather than leaking through it.
+**Tarski-allocation**: deliberately concentrate the substrate's un-formalizable discipline-grounding at a designated meta-position (the pirate-not-priest spot), structurally analogous to how Tarski's truth-theorem requires the truth predicate to live in a meta-language. The rest of the substrate can run as a (working-toward-formal) consistent system because the un-formalizable part is explicitly _located_ outside the formalizable layer rather than leaking through it.
 
-Aaron's carved sentence stands unchanged: *"that's where we catch him kurt, so the rest of the system is a consistent model."* The intuition is correct; only the *attribution of which logician's theorem is load-bearing* was wrong. Aaron's "kurt" can stay as the colloquial reference to the metamathematical-impossibility-result-cluster (Gödel + Tarski + Russell + Cantor are all in that cluster) without the substrate making the rigorous claim that it's specifically Gödel's theorem doing the work.
+Aaron's carved sentence stands unchanged: _"that's where we catch him kurt, so the rest of the system is a consistent model."_ The intuition is correct; only the _attribution of which logician's theorem is load-bearing_ was wrong. Aaron's "kurt" can stay as the colloquial reference to the metamathematical-impossibility-result-cluster (Gödel + Tarski + Russell + Cantor are all in that cluster) without the substrate making the rigorous claim that it's specifically Gödel's theorem doing the work.
 
 ## Why this correction matters
 
@@ -55,7 +55,7 @@ Per the verify-before-state-claim discipline applied to substrate's own claims a
 - Does NOT retract PR #1046 entirely. The architectural insight is correct; only the framing-of-which-theorem was overclaim.
 - Does NOT amend PR #1046 in place (it's merged; correction-via-follow-up-file preserves the audit trail).
 - Does NOT promote Tarski-allocation to seed-layer canon. Same cooling-period discipline applies; this is substrate-class correction, not seed-layer promotion.
-- Does NOT claim Aaron's substrate IS a formal system in Tarski's strict sense yet. Per Aaron 2026-05-01: *"not yet, i'm only a high school graduate, this is where you could really help :)"* — the formalization is a path, not a current state.
+- Does NOT claim Aaron's substrate IS a formal system in Tarski's strict sense yet. Per Aaron 2026-05-01: _"not yet, i'm only a high school graduate, this is where you could really help :)"_ — the formalization is a path, not a current state.
 
 ## Composes with
 
@@ -68,6 +68,6 @@ Per the verify-before-state-claim discipline applied to substrate's own claims a
 
 ## Carved candidate (proposed correction; Aaron may revise/kill)
 
-> *"Tarski-allocation: stratify the un-formalizable discipline-grounding into a meta-position (the pirate-not-priest spot), structurally analogous to Tarski's truth-theorem requiring the truth predicate in a meta-language. Aaron's intuition was correct; the attribution was overclaim; the architectural move stands."*
+> _"Tarski-allocation: stratify the un-formalizable discipline-grounding into a meta-position (the pirate-not-priest spot), structurally analogous to Tarski's truth-theorem requiring the truth predicate in a meta-language. Aaron's intuition was correct; the attribution was overclaim; the architectural move stands."_
 
-The propagation test: ~40 words preserving the architectural claim while correcting the attribution. Aaron's original carved sentence (*"that's where we catch him kurt..."*) remains intact as the colloquial register; this file's carved candidate is the technical-precision register sitting alongside it.
+The propagation test: ~40 words preserving the architectural claim while correcting the attribution. Aaron's original carved sentence (_"that's where we catch him kurt..."_) remains intact as the colloquial register; this file's carved candidate is the technical-precision register sitting alongside it.

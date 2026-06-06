@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1125 |
-| Title | backlog(B-0154): GitHub Pages for SEO/discoverability + Wiki first-class (Aaron 2026-05-01) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T16:56:36Z |
-| Merged at | 2026-05-01T19:55:42Z |
-| Merge commit SHA | `e3a3d11c481d12bbe095302714aa11deeb93a467` |
-| Branch | `backlog/b0154-github-pages-seo-plus-wiki-first-class-aaron-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1125 |
-| Changed files | 2 |
-| Additions / deletions | +549 / -0 |
+| Field                 | Value                                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| Number                | 1125                                                                                        |
+| Title                 | backlog(B-0154): GitHub Pages for SEO/discoverability + Wiki first-class (Aaron 2026-05-01) |
+| Author                | `AceHack` (human)                                                                           |
+| State                 | MERGED                                                                                      |
+| Created at            | 2026-05-01T16:56:36Z                                                                        |
+| Merged at             | 2026-05-01T19:55:42Z                                                                        |
+| Merge commit SHA      | `e3a3d11c481d12bbe095302714aa11deeb93a467`                                                  |
+| Branch                | `backlog/b0154-github-pages-seo-plus-wiki-first-class-aaron-2026-05-01`                     |
+| Base branch           | `main`                                                                                      |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1125                                    |
+| Changed files         | 2                                                                                           |
+| Additions / deletions | +549 / -0                                                                                   |
 
 ## Description
 
@@ -36,7 +36,7 @@ Aaron 2026-05-01 directional input — two distinct host integrations, ordered b
 
 Aaron's framing verbatim:
 
-> *\"we should use github in two ways for this, 1 see about integrating with github wiki as first class, and 2 this one is higher priority, github pages, once that gets indexed by the search engines, we will have maintainers about to find us from google search with out that we are never goona rank on the search results not even for DBSP F#\"*
+> _\"we should use github in two ways for this, 1 see about integrating with github wiki as first class, and 2 this one is higher priority, github pages, once that gets indexed by the search engines, we will have maintainers about to find us from google search with out that we are never goona rank on the search results not even for DBSP F#\"_
 
 ## Why now — the 404-stall finding
 
@@ -91,15 +91,15 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 34 |
-| Resolved threads | 30 |
-| Unresolved threads | 4 |
-| Total review comments | 34 |
-| Total fix commits (touching thread paths) | 13 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 34    |
+| Resolved threads                          | 30    |
+| Unresolved threads                        | 4     |
+| Total review comments                     | 34    |
+| Total fix commits (touching thread paths) | 13    |
 
 ## Review threads
 
@@ -112,10 +112,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T16:58:48Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:106 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct GitHub topics limit in acceptance criteria**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct GitHub topics limit in acceptance criteria**
+
   The acceptance criteria states `12 topics is GitHub max`, but GitHub’s repository topic docs currently allow up to 20 topics. Keeping the wrong limit here will cause whoever implements this row to under-tag the repo and leave SEO coverage on the table, which directly conflicts with this task’s discoverability goal.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -169,10 +169,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T17:35:26Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:65 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Include contents permission in Pages workflow criteria**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Include contents permission in Pages workflow criteria**
+
   This acceptance criterion defines job permissions as only `pages: write` and `id-token: write`, but in GitHub Actions once any permissions are explicitly set, unspecified scopes default to `none`; that removes `contents: read` and will break standard Pages build steps such as `actions/checkout` (or any step that reads repository files). The criterion should require `contents: read` alongside the deploy permissions to avoid specifying an un-runnable workflow.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -184,10 +184,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T17:35:26Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:97 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove incorrect robots auto-generation requirement**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove incorrect robots auto-generation requirement**
+
   The criterion states that both `robots.txt` and `sitemap.xml` are auto-generated by Jekyll plugins and cites `jekyll-sitemap`, but `jekyll-sitemap` generates only `sitemap.xml`. If implemented as written, the project can ship without a `robots.txt` file while still claiming this acceptance criterion is met, which undermines the SEO validation checks later in the same task.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 7 -- resolved [collapsed]
@@ -199,10 +199,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T17:41:14Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:339 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add Wiki indexing preconditions to acceptance criteria**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Add Wiki indexing preconditions to acceptance criteria**
+
   This criterion treats a GitHub Wiki crawler allow-list as part of discoverability, but GitHub only indexes wikis when repository-level prerequisites are met (notably star threshold and restricted public editing), which are not captured here. Without those prerequisites, Phase 2 can be marked “done” while delivering zero search indexing, so this should either add the GitHub indexing preconditions explicitly or keep SEO success criteria scoped to Pages only.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- resolved [collapsed]
@@ -423,10 +423,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T18:59:02Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:149 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove incorrect claim that Docusaurus blocks crawlers**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove incorrect claim that Docusaurus blocks crawlers**
+
   This criterion marks Docusaurus as losing because “React hydration” prevents plain-HTML crawler access, but Docusaurus statically generates HTML for each route and is explicitly documented as SEO-friendly. Keeping this incorrect premise in the acceptance criteria can drive an unjustified tool rejection and lock Phase 1 implementation into Astro for the wrong reason, which weakens the problem-driven selection process this row is trying to enforce.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 25 -- resolved [outdated, collapsed]
@@ -452,10 +452,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T19:19:27Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:178 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile workflow requirement with Jekyll no-workflow path**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile workflow requirement with Jekyll no-workflow path**
+
   This section says the Jekyll path has "no workflow" and explicitly frames criterion #1 as unnecessary for Jekyll, but acceptance criterion #1 currently requires a checked-in `.github/workflows/pages-deploy.yml` with SHA-pinned actions. If implementers follow the recommended Jekyll-first path, they cannot satisfy the stated Phase 1 criteria as written, so the backlog item becomes internally inconsistent and completion status becomes ambiguous.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 27 -- resolved [collapsed]
@@ -524,10 +524,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T19:49:02Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:289 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile conflicting site-generator decision criteria**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile conflicting site-generator decision criteria**
+
   Criterion #2 says the decision is a Bun-based SSG with an Astro-vs-BunPress spike and winner-takes-all outcome, but this section hard-codes that the analysis already "selects Astro." That contradiction makes the acceptance criteria non-deterministic: implementers can either treat Astro as mandatory or treat the spike result as authoritative, and both interpretations cannot be true at once. Please align this section with a single completion rule so Phase 1 can be unambiguously implemented and reviewed.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 31 -- unresolved
@@ -582,10 +582,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T19:57:04Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:325 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Add real AI search crawlers to robots allow-list**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Add real AI search crawlers to robots allow-list**
+
   The acceptance criteria’s crawler list is missing the agents that actually power AI search discovery (`OAI-SearchBot` for ChatGPT Search and `Claude-SearchBot` for Anthropic search), while listing training-oriented tokens like `GPTBot` and `Google-Extended`. OpenAI’s and Anthropic’s docs describe those search-specific user-agents as the ones needed for indexing, and Google states `Google-Extended` does not affect Google Search inclusion/ranking. If this list is implemented as the canonical robots policy, Phase 1 can be marked complete while still failing discoverability in the AI search channels this item targets.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 34 -- unresolved
@@ -597,10 +597,10 @@ Without Phase 1 landing, Zeta won't rank for \"DBSP F#\" or any niche query. Mai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T19:57:04Z on `docs/backlog/P1/B-0154-github-pages-seo-discoverability-plus-wiki-first-class-aaron-2026-05-01.md`:303 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Require Astro `base` for `/Zeta/` Pages deployment**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Require Astro `base` for `/Zeta/` Pages deployment**
+
   This row fixes the homepage URL to `https://lucent-financial-group.github.io/Zeta/` (a project-site path), but the criteria never require configuring Astro’s `base` for that subpath after choosing Astro as the SSG. Astro’s GitHub Pages deployment guidance calls `base` “usually required” for `<user>.github.io/<repo>` sites; without it, internal links/assets are generated from `/` and commonly break on deploy. Add an explicit `base: '/Zeta'` (or equivalent) requirement so the rollout doesn’t ship a superficially successful but navigationally broken site.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

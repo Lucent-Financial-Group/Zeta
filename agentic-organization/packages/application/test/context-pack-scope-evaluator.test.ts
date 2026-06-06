@@ -1,11 +1,7 @@
 import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  DocScopeKind,
-  GraphNodeKind,
-  graphNodeId,
-} from "../../domain/src/index.ts";
+import { DocScopeKind, GraphNodeKind, graphNodeId } from "../../domain/src/index.ts";
 import {
   asZetaIdDecimal,
   buildHatDefinitions,
@@ -38,27 +34,34 @@ test("contextPackWithItemProvenanceOmissions flags wrong-scope document pointers
   const snapshot = agentSnapshot();
   const evaluated = contextPackWithItemProvenanceOmissions(
     pack(snapshot, {
-      items: [item({
-        id: "doc:foreign-brd",
-        sourcePointers: [{
-          kind: ContextPackSourcePointerKind.DocUnit,
-          docUnitId: "foreign-brd",
-          organizationId: "org-lfg",
-          scopeKind: DocScopeKind.Project,
-          scopeId: "project-other",
-          contentRef: "doc:foreign-brd",
-          contentHash: "hash-foreign-brd",
-          sourceId: "main",
-          version: 1,
-        }],
-      })],
+      items: [
+        item({
+          id: "doc:foreign-brd",
+          sourcePointers: [
+            {
+              kind: ContextPackSourcePointerKind.DocUnit,
+              docUnitId: "foreign-brd",
+              organizationId: "org-lfg",
+              scopeKind: DocScopeKind.Project,
+              scopeId: "project-other",
+              contentRef: "doc:foreign-brd",
+              contentHash: "hash-foreign-brd",
+              sourceId: "main",
+              version: 1,
+            },
+          ],
+        }),
+      ],
     }),
     snapshot,
     hierarchy(),
   );
 
   equal(evaluated.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
-  equal(evaluated.items.some((candidate) => candidate.id === "doc:foreign-brd"), false);
+  equal(
+    evaluated.items.some((candidate) => candidate.id === "doc:foreign-brd"),
+    false,
+  );
   ok(evaluated.lifecycleBlockers.some((blocker) => blocker.includes("item provenance is outside active scope")));
 });
 
@@ -68,20 +71,22 @@ test("contextPackWithItemProvenanceOmissions allows graph edges grounded through
   const foreignNodeId = graphNodeId("org-lfg", GraphNodeKind.Project, "project-other");
   const evaluated = contextPackWithItemProvenanceOmissions(
     pack(snapshot, {
-      items: [item({
-        id: "graph:edge",
-        kind: ContextPackItemKind.GraphNeighborhood,
-        citationRefs: [`graph:${activeProjectNodeId}`],
-        sourcePointers: [
-          { kind: ContextPackSourcePointerKind.GraphNode, nodeId: activeProjectNodeId },
-          {
-            kind: ContextPackSourcePointerKind.GraphEdge,
-            edgeId: "active-to-foreign",
-            fromNodeId: activeProjectNodeId,
-            toNodeId: foreignNodeId,
-          },
-        ],
-      })],
+      items: [
+        item({
+          id: "graph:edge",
+          kind: ContextPackItemKind.GraphNeighborhood,
+          citationRefs: [`graph:${activeProjectNodeId}`],
+          sourcePointers: [
+            { kind: ContextPackSourcePointerKind.GraphNode, nodeId: activeProjectNodeId },
+            {
+              kind: ContextPackSourcePointerKind.GraphEdge,
+              edgeId: "active-to-foreign",
+              fromNodeId: activeProjectNodeId,
+              toNodeId: foreignNodeId,
+            },
+          ],
+        }),
+      ],
     }),
     snapshot,
     hierarchy(),
@@ -94,25 +99,27 @@ test("contextPackWithItemProvenanceOmissions keeps meeting provenance scoped by 
   const snapshot = agentSnapshot();
   const evaluated = contextPackWithItemProvenanceOmissions(
     pack(snapshot, {
-      items: [item({
-        id: "meeting:billing-review",
-        kind: ContextPackItemKind.Meeting,
-        sourcePointers: [
-          {
-            kind: ContextPackSourcePointerKind.Meeting,
-            meetingId: "schedule:schedule-billing-review",
-            workScheduleBlockId: "schedule-billing-review",
-            discussionAnchorId: "discussion-billing-review",
-          },
-          {
-            kind: ContextPackSourcePointerKind.ScheduleBlock,
-            workScheduleBlockId: "schedule-billing-review",
-            assignedHatAssignmentId: snapshot.hatAssignmentId,
-            assignedAgentId: snapshot.agentId,
-          },
-          { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocker" },
-        ],
-      })],
+      items: [
+        item({
+          id: "meeting:billing-review",
+          kind: ContextPackItemKind.Meeting,
+          sourcePointers: [
+            {
+              kind: ContextPackSourcePointerKind.Meeting,
+              meetingId: "schedule:schedule-billing-review",
+              workScheduleBlockId: "schedule-billing-review",
+              discussionAnchorId: "discussion-billing-review",
+            },
+            {
+              kind: ContextPackSourcePointerKind.ScheduleBlock,
+              workScheduleBlockId: "schedule-billing-review",
+              assignedHatAssignmentId: snapshot.hatAssignmentId,
+              assignedAgentId: snapshot.agentId,
+            },
+            { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocker" },
+          ],
+        }),
+      ],
     }),
     snapshot,
     hierarchy(),
@@ -125,21 +132,28 @@ test("contextPackWithItemProvenanceOmissions rejects meeting provenance without 
   const snapshot = agentSnapshot();
   const evaluated = contextPackWithItemProvenanceOmissions(
     pack(snapshot, {
-      items: [item({
-        id: "meeting:unscoped-review",
-        kind: ContextPackItemKind.Meeting,
-        sourcePointers: [{
-          kind: ContextPackSourcePointerKind.Meeting,
-          meetingId: "schedule:schedule-unscoped-review",
-          workScheduleBlockId: "schedule-unscoped-review",
-        }],
-      })],
+      items: [
+        item({
+          id: "meeting:unscoped-review",
+          kind: ContextPackItemKind.Meeting,
+          sourcePointers: [
+            {
+              kind: ContextPackSourcePointerKind.Meeting,
+              meetingId: "schedule:schedule-unscoped-review",
+              workScheduleBlockId: "schedule-unscoped-review",
+            },
+          ],
+        }),
+      ],
     }),
     snapshot,
     hierarchy(),
   );
 
-  equal(evaluated.items.some((candidate) => candidate.id === "meeting:unscoped-review"), false);
+  equal(
+    evaluated.items.some((candidate) => candidate.id === "meeting:unscoped-review"),
+    false,
+  );
   equal(evaluated.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
 });
 
@@ -178,34 +192,40 @@ function agentSnapshot(overrides: Partial<AgentObserveSnapshot> = {}): AgentObse
 function hierarchy(): HierarchyReadout {
   return {
     level: agentSnapshot().hat.level,
-    projects: [{
-      projectId: "project-billing",
-      organizationId: "org-lfg",
-      departmentId: "engineering",
-      name: "Billing",
-      status: "active",
-      trajectory: [],
-      metrics: [],
-    }],
-    initiatives: [{
-      initiativeId: "initiative-billing",
-      projectId: "project-billing",
-      organizationId: "org-lfg",
-      title: "Billing recovery",
-      status: "active",
-      metrics: [],
-    }],
+    projects: [
+      {
+        projectId: "project-billing",
+        organizationId: "org-lfg",
+        departmentId: "engineering",
+        name: "Billing",
+        status: "active",
+        trajectory: [],
+        metrics: [],
+      },
+    ],
+    initiatives: [
+      {
+        initiativeId: "initiative-billing",
+        projectId: "project-billing",
+        organizationId: "org-lfg",
+        title: "Billing recovery",
+        status: "active",
+        metrics: [],
+      },
+    ],
     metrics: [],
     policyViolations: [],
     priorityScope: "current_work_item",
-    priorityItems: [{
-      itemId: "work-billing-blocker",
-      kind: "work_item",
-      label: "Fix billing blocker",
-      scope: RunScope.WorkItem,
-      metrics: [],
-      rationale: "active blocker",
-    }],
+    priorityItems: [
+      {
+        itemId: "work-billing-blocker",
+        kind: "work_item",
+        label: "Fix billing blocker",
+        scope: RunScope.WorkItem,
+        metrics: [],
+        rationale: "active blocker",
+      },
+    ],
     scopedMetrics: [],
     actions: [],
     vetoedActions: [],

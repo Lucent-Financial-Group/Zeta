@@ -17,10 +17,7 @@ interface Fixture {
 // The shared cross-language fixture is the authority. Drive one bun:test case per
 // canonical vector so the unit suite and the cross-verify oracle share exactly the
 // same expected event arrays (fixture-is-JSON, no YAML-in-YAML bootstrap hazard).
-const fixturePath = new URL(
-  "../../../tests/cross-verification/yaml/vectors.json",
-  import.meta.url,
-);
+const fixturePath = new URL("../../../tests/cross-verification/yaml/vectors.json", import.meta.url);
 const fixture = (await Bun.file(fixturePath).json()) as Fixture;
 
 for (const vector of fixture.vectors) {

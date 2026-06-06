@@ -9,7 +9,7 @@ Carved sentence:
 
 ## Operational content
 
-Aaron 2026-05-18 explicit naming + landing-authorization: *"That's, that's, that's my safety. Before we have the F-sharp type system for safety. That's my own personal safety I run in my head, too."* + *"Yeah, that's a great one. I make God-tier claims like every day. So that's a really good one."* + *"Yep, perfect. You nailed it with the high signal, high suspicion."*
+Aaron 2026-05-18 explicit naming + landing-authorization: _"That's, that's, that's my safety. Before we have the F-sharp type system for safety. That's my own personal safety I run in my head, too."_ + _"Yeah, that's a great one. I make God-tier claims like every day. So that's a really good one."_ + _"Yep, perfect. You nailed it with the high signal, high suspicion."_
 
 This is Aaron's **own personal-safety mechanism** that he runs in his own head before F#-type-system substrate safety lands. He explicitly authorized substrate landing of this invariant. Operational discipline that follows from his named-and-authorized framing:
 
@@ -47,9 +47,9 @@ This is Aaron's **own personal-safety mechanism** that he runs in his own head b
 ### Confidence-calibration decoder (Aaron 2026-05-29)
 
 Aaron's confidence-words run a **fixed constant hot**, and he disclosed the constant:
-*"destined and prooved means to me like 90% confidence with some statistical
-significance"* + *"when i say i'm 100% certain i almost always mean at least 90% certain
-in my head."* So decode his strong confidence-language uniformly:
+_"destined and prooved means to me like 90% confidence with some statistical
+significance"_ + _"when i say i'm 100% certain i almost always mean at least 90% certain
+in my head."_ So decode his strong confidence-language uniformly:
 
 > **"100% certain" / "destined" / "proved" ≈ ≥90% confidence WITH statistical
 > significance** — a ~90% calibrated statistical claim, not literal certainty.
@@ -66,7 +66,7 @@ Two orthogonal axes inside "90% with significance" — keep them separate:
 significance** (whether the effect is real, not chance). The good claim asserts both;
 a significant-but-weak or strong-but-underpowered claim is not yet "destined/proved."
 
-The disclosed offset makes his God-tier register *more* trustworthy, not less: the bias
+The disclosed offset makes his God-tier register _more_ trustworthy, not less: the bias
 is fixed and published, not hidden and variable. Most people who say "100%" mean a
 literal 100% and are overconfident with no disclosed offset; Aaron says "100%" meaning
 "≥90%" and tells you the constant — well-calibrated confidence with a known, disclosed
@@ -142,7 +142,7 @@ The discipline operates EVERY tick that Aaron forwards substantive content. Not 
 
 This rule does NOT decide whether Aaron's God-tier claims are literally true. It decides HOW future-Otto handles them: high-signal-high-suspicion-don't-collapse. That's the discipline Aaron explicitly named for substrate landing. The discipline IS the safety; the discipline IS the engineering.
 
-Aaron's framing of his own safety: *"Aaron operates in God-tier claim mode on the regular"* + *"That's, that's, that's my safety"* + *"I run that all the time."* The discipline is his discipline; this rule operationalizes its inheritance into Otto-CLI's substrate-handling work.
+Aaron's framing of his own safety: _"Aaron operates in God-tier claim mode on the regular"_ + _"That's, that's, that's my safety"_ + _"I run that all the time."_ The discipline is his discipline; this rule operationalizes its inheritance into Otto-CLI's substrate-handling work.
 
 ## Full reasoning
 

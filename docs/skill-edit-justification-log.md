@@ -28,7 +28,7 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
   from "architect reviews all agent-written code; nobody
   reviews the architect" to the debt-intentionality
   invariant per ADR `docs/DECISIONS/2026-04-20-intentional-
-  debt-over-architect-gate.md`. The skills' citations
+debt-over-architect-gate.md`. The skills' citations
   needed to match the new §11 text to avoid contradicting
   governance.
 - **Line delta:** round-management/SKILL.md — unchanged
@@ -67,7 +67,7 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
   §11 citations. No follow-up work.
 - **Related round-43 artifacts:**
   - `docs/DECISIONS/2026-04-20-intentional-debt-over-
-    architect-gate.md` — the ADR
+architect-gate.md` — the ADR
   - `docs/INTENTIONAL-DEBT.md` — the new ledger
   - GOVERNANCE.md §11 — the rewritten rule itself
 
@@ -102,14 +102,14 @@ Newest-first per Zeta convention (`AGENTS.md §2`).
     a 20-line rationale section explaining why the
     content lives there.
 - **BP-03 self-check:** `wc -l .claude/skills/skill-
-  tune-up/SKILL.md` → 282. Under cap. Self-breach
+tune-up/SKILL.md` → 282. Under cap. Self-breach
   closed.
 - **Hand-off:** Aarav's notebook (`memory/persona/
-  aarav/NOTEBOOK.md`) updates next invocation: self-
+aarav/NOTEBOOK.md`) updates next invocation: self-
   rank drops off top-5 as resolved; top-5 rotates one
   up.
 - **Related round-42 memory:** `memory/feedback_skill_
-  tune_up_uses_eval_harness_not_static_line_count.md`
+tune_up_uses_eval_harness_not_static_line_count.md`
   (standing rule that "worst-performing" ranking
   claims require the harness — static signals alone
   are insufficient). This extraction is explicitly a

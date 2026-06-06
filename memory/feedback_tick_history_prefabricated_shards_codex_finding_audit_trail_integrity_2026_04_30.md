@@ -10,25 +10,25 @@ type: feedback
 
 Codex P2 review on PR #740 (2026-04-29 tick 0345Z shard):
 
-> *"This row claims a tick at `2026-04-29T03:45:00Z`, but the
+> _"This row claims a tick at `2026-04-29T03:45:00Z`, but the
 > commit that introduced it is timestamped
 > `2026-04-29 02:24:40 +0000`, so the evidence is written for
 > a future tick that had not happened yet. For the liveness
 > log, this creates a factual ordering error (consumers will
 > infer the loop fired at 03:45 when only a 02:24 commit
 > exists), which undermines the auditability this shard
-> system was introduced to preserve."*
+> system was introduced to preserve."_
 
 ## Empirical pattern across 14+ PRs
 
 Sample audit (PR-open vs claimed-tick vs commit-author):
 
-| PR | Branch | PR opened (UTC) | Claimed tick (col1) | Original commit author (UTC) | Gap |
-|---|---|---|---|---|---|
-| #728 | tick-history/2026-04-29-tick-0245Z-shard | 02:05:49Z | 02:45:00Z | 02:05:42Z | +40m |
-| #730 | tick-history/2026-04-29-tick-0255Z-shard | 02:07:17Z | 02:55:00Z | 02:07:14Z | +48m |
-| #734 | tick-history/2026-04-29-tick-0315Z-shard | 02:14:15Z | 03:15:00Z | 02:14:12Z | +61m |
-| #740 | tick-history/2026-04-29-tick-0345Z-shard | 02:24:24Z | 03:45:00Z | 02:24:20Z | +81m |
+| PR   | Branch                                   | PR opened (UTC) | Claimed tick (col1) | Original commit author (UTC) | Gap  |
+| ---- | ---------------------------------------- | --------------- | ------------------- | ---------------------------- | ---- |
+| #728 | tick-history/2026-04-29-tick-0245Z-shard | 02:05:49Z       | 02:45:00Z           | 02:05:42Z                    | +40m |
+| #730 | tick-history/2026-04-29-tick-0255Z-shard | 02:07:17Z       | 02:55:00Z           | 02:07:14Z                    | +48m |
+| #734 | tick-history/2026-04-29-tick-0315Z-shard | 02:14:15Z       | 03:15:00Z           | 02:14:12Z                    | +61m |
+| #740 | tick-history/2026-04-29-tick-0345Z-shard | 02:24:24Z       | 03:45:00Z           | 02:24:20Z                    | +81m |
 
 The gap GROWS as PR sequence progresses — not random error.
 
@@ -132,9 +132,9 @@ violations + likely prefab pattern:
 
 ## Carved sentence
 
-*Tick-history is supposed to be liveness EVIDENCE — events
+_Tick-history is supposed to be liveness EVIDENCE — events
 that happened. Pre-creating the file with a future tick-time
 in col1 produces predictions, not evidence. Fixing the
 schema (col1 format) without fixing the timestamp claim
 laundars the prediction into apparent-evidence, which is
-worse than leaving the schema obviously wrong.*
+worse than leaving the schema obviously wrong._

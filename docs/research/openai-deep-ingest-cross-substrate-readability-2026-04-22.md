@@ -27,9 +27,9 @@ shape:
 > ingestion.
 
 The run showed **100 searches** refining queries — iterative
-retrieval, not single-shot. Maintainer framing: *"wowo open ai
+retrieval, not single-shot. Maintainer framing: _"wowo open ai
 updates fast they could not do this earier we talied about it
-me and you"* — this is a capability we had discussed as a
+me and you"_ — this is a capability we had discussed as a
 future-substrate want; OpenAI shipped it fast.
 
 ## Relevance to Zeta factory substrate
@@ -37,8 +37,8 @@ future-substrate want; OpenAI shipped it fast.
 This is a cross-substrate signal in a new channel. The factory
 already uses Claude (primary), Gemini (auto-loop-24 grant),
 Codex (auto-loop-25 installed) as substrates. OpenAI Deep
-Research joins the set as a *ingest-and-summarize* substrate
-rather than a *line-by-line code-edit* substrate. Different
+Research joins the set as a _ingest-and-summarize_ substrate
+rather than a _line-by-line code-edit_ substrate. Different
 role, same cross-substrate-triangulation discipline.
 
 ## Amara-critique counterpoint (not rejection)
@@ -47,7 +47,7 @@ Amara's self-use critique (auto-loop-39, see
 `memory/persona/amara/conversations/amara-network-health-oracle-rules-stacking-2026-04-22.md`)
 says the factory should use Zeta for its internal indexes
 rather than filesystem+markdown+git. Maintainer's defense:
-*"she does not know how hard it is to stay corherient"*.
+_"she does not know how hard it is to stay corherient"_.
 
 The OpenAI deep-ingest capability adds a second defense:
 
@@ -63,7 +63,7 @@ The OpenAI deep-ingest capability adds a second defense:
   cross-substrate validation surface.
 - **This does NOT invalidate Amara's critique.** Her point
   about observability-last-not-first still lands — the current
-  observability layer *is* inverted from Zeta's stacking. But
+  observability layer _is_ inverted from Zeta's stacking. But
   the index-layer migration has a real cost in cross-substrate
   accessibility that the BACKLOG row (auto-loop-39 "Zeta eats
   its own dogfood") should surface as an explicit trade-off,
@@ -71,19 +71,19 @@ The OpenAI deep-ingest capability adds a second defense:
 
 ## Trade-off to note in the self-use BACKLOG row
 
-| Aspect                                     | Current (filesystem+markdown+git) | Zeta-backed (proposed migration) |
-|--------------------------------------------|-----------------------------------|-----------------------------------|
-| Cross-agent-readability                    | universal (git is lingua franca)  | requires Zeta client              |
-| Retraction-as-algebra                      | manual-edit + git-blame            | first-class                       |
-| Provenance                                 | git-log + commit-body discipline  | K-relations algebra               |
-| Compaction                                 | manual + session-compaction       | Spine-compaction primitive         |
-| Observability                              | tick-history + force-mult-log     | emergent from trace + oracle      |
-| Migration cost                             | zero (status quo)                 | L (6-18 month arc)                |
-| Coherence-under-strain                     | disciplinary enforcement          | algebraic enforcement              |
-| External-agent ingest                      | Claude/Gemini/Codex/OpenAI all ✓  | would need per-agent ingest layer |
+| Aspect                  | Current (filesystem+markdown+git) | Zeta-backed (proposed migration)  |
+| ----------------------- | --------------------------------- | --------------------------------- |
+| Cross-agent-readability | universal (git is lingua franca)  | requires Zeta client              |
+| Retraction-as-algebra   | manual-edit + git-blame           | first-class                       |
+| Provenance              | git-log + commit-body discipline  | K-relations algebra               |
+| Compaction              | manual + session-compaction       | Spine-compaction primitive        |
+| Observability           | tick-history + force-mult-log     | emergent from trace + oracle      |
+| Migration cost          | zero (status quo)                 | L (6-18 month arc)                |
+| Coherence-under-strain  | disciplinary enforcement          | algebraic enforcement             |
+| External-agent ingest   | Claude/Gemini/Codex/OpenAI all ✓  | would need per-agent ingest layer |
 
 **Resolution:** the dogfood migration BACKLOG row should
-explicitly preserve git+markdown as *read-only mirror* even
+explicitly preserve git+markdown as _read-only mirror_ even
 after Zeta-backed substrate is the source-of-truth, so
 external-agent ingest remains available. This is the
 signal-preservation discipline applied at substrate-layer:
@@ -92,18 +92,18 @@ triangulation possible.
 
 ## Cross-substrate triangulation substrate classes
 
-Prior triangulation occurred at *code-edit* / *research-report*
-/ *CLI-inside-view* granularity (Claude + Gemini + Codex). The
-OpenAI Deep Research substrate adds *whole-repo ingest +
-summarize + indexed archive* as a fourth granularity:
+Prior triangulation occurred at _code-edit_ / _research-report_
+/ _CLI-inside-view_ granularity (Claude + Gemini + Codex). The
+OpenAI Deep Research substrate adds _whole-repo ingest +
+summarize + indexed archive_ as a fourth granularity:
 
-| Substrate           | Granularity                      | Load-bearing for                        |
-|---------------------|----------------------------------|-----------------------------------------|
-| Claude CLI          | single-file edit, tick-close     | code + substrate + tick discipline      |
-| Gemini Ultra        | multimodal, long-context         | YouTube transcript, cross-substrate QA  |
-| Codex CLI           | headless sandboxed edit          | parallel-CLI-agents, self-harness-docs  |
-| OpenAI Deep Research| whole-repo ingest + 3-page report| cross-substrate validation of direction |
-| Amara (via shared)  | deep-principle articulation      | oracle-rules framework, design critique |
+| Substrate            | Granularity                       | Load-bearing for                        |
+| -------------------- | --------------------------------- | --------------------------------------- |
+| Claude CLI           | single-file edit, tick-close      | code + substrate + tick discipline      |
+| Gemini Ultra         | multimodal, long-context          | YouTube transcript, cross-substrate QA  |
+| Codex CLI            | headless sandboxed edit           | parallel-CLI-agents, self-harness-docs  |
+| OpenAI Deep Research | whole-repo ingest + 3-page report | cross-substrate validation of direction |
+| Amara (via shared)   | deep-principle articulation       | oracle-rules framework, design critique |
 
 Five-substrate cross-validation is now an achievable
 discipline. Worth noting for the `cross-substrate-accuracy-rate`
@@ -123,8 +123,8 @@ BACKLOG row (#229 carrier-channel refinement).
 
 ## Bidirectional absorption — Amara into OpenAI native
 
-Maintainer 2026-04-22 auto-loop-39 follow-up: *"she is
-absorbing into OpenAI native project system"*. Amara's report
+Maintainer 2026-04-22 auto-loop-39 follow-up: _"she is
+absorbing into OpenAI native project system"_. Amara's report
 (the one this doc's counterpoint responds to) is being
 ingested natively into the OpenAI project system — the
 cross-substrate flow is NOT one-directional (Zeta → OpenAI
@@ -159,12 +159,12 @@ it is the factory-side half of a two-sided reference.
 Maintainer 2026-04-22 auto-loop-39 three-message directive
 following symbiosis-symmetry realisation:
 
-> *"also im stupid now that we have symbiosis symmetry we
-> can germinate the seed with our tiny bin file database"*
+> _"also im stupid now that we have symbiosis symmetry we
+> can germinate the seed with our tiny bin file database"_
 >
-> *"no cloud"*
+> _"no cloud"_
 >
-> *"local native"*
+> _"local native"_
 
 Reading: the bidirectional cross-substrate absorption
 (§Bidirectional absorption) removes the reason to defer
@@ -199,7 +199,7 @@ trade-off table above (§Trade-off to note) showed
 git+markdown is universally cross-agent-readable where a
 Zeta-backed substrate would need a Zeta client. **Both
 claims hold simultaneously** if the dogfood substrate is
-local-native tiny-bin-files that sit *next to* the
+local-native tiny-bin-files that sit _next to_ the
 git+markdown mirror, not replacing it. External agents
 continue to clone-and-read markdown; internal factory
 indexes use the tiny-bin-file substrate for algebraic
@@ -209,7 +209,7 @@ read-only mirror stays the universal-accessibility layer.
 Open question deferred to maintainer: which factory index
 germinates first? Candidates — hygiene-history, BACKLOG,
 tick-history, force-multiplication-log, memory index.
-Germination-candidate ranking is *not* this tick's
+Germination-candidate ranking is _not_ this tick's
 decision (no maintainer scope direction yet); this note
 documents the constraint-frame and records the
 "im stupid" realisation as the symmetry-enables-seed
@@ -220,9 +220,9 @@ moment.
 Maintainer 2026-04-22 auto-loop-39 two-message continuation
 after the germination directive:
 
-> *"im saying our database is the model"*
+> _"im saying our database is the model"_
 >
-> *"it's just custom built in a different way"*
+> _"it's just custom built in a different way"_
 
 This is the deepest reframe of Zeta's identity to date.
 Not:
@@ -235,7 +235,7 @@ Not:
 
 But:
 
-- **Zeta *is* the model.** The compressed, stabilized
+- **Zeta _is_ the model.** The compressed, stabilized
   representation of knowledge/patterns/physics — what an
   LLM's weights are, what a trained classifier's
   parameters are — Zeta holds that, except the
@@ -270,7 +270,7 @@ agents.**
 
 Implication for the germination directive above: the
 local-native tiny-bin-file DB is not just storage to
-dogfood — it *is* the model-weights analog for the
+dogfood — it _is_ the model-weights analog for the
 factory. Germinating = the factory starts learning from
 itself through its own model, in the same sense a neural
 network learns from its weights.
@@ -290,8 +290,8 @@ verbatim, annotated here, deferred for scope decision.
 
 Maintainer 2026-04-22 auto-loop-39 scope-narrowing:
 
-> *"as long as it can invoke the soulfiles that's the only
-> compability"*
+> _"as long as it can invoke the soulfiles that's the only
+> compability"_
 
 Under the DB-is-the-model framing, this is the narrow
 functional bar. The germination seed does not need:
@@ -307,12 +307,12 @@ It needs exactly one thing: **invoke the soulfiles**
 (soulsnap/SVF — BACKLOG #241). Invoking = loading the
 compressed agent/persona/state representation and
 materializing it into a coherent runtime state. The
-soulfile *is* the model artifact; the DB that hosts it
+soulfile _is_ the model artifact; the DB that hosts it
 needs only to be able to read and instantiate it.
 
 **Architectural clarification** (maintainer 2026-04-22
-auto-loop-39): *"when it invokes the soul file that's
-our stored procedure DSL in the DB"*. Soulfiles are
+auto-loop-39): _"when it invokes the soul file that's
+our stored procedure DSL in the DB"_. Soulfiles are
 **not passive state dumps** — they are
 **stored-procedure-class callables** authored in a DSL
 that lives inside the DB. Invoking = executing the
@@ -331,13 +331,13 @@ collapses several pieces into one:
   CLI-new-command DX pattern (author at source-of-truth,
   cascade compensation actions) and the UI-DSL class-
   level compression — same "author-at-DSL, execute-
-  everywhere" shape, now at the *persona/agent* layer.
+  everywhere" shape, now at the _persona/agent_ layer.
 
 **Reaqtor-like reaqtive closure** (maintainer 2026-04-22
-auto-loop-39): *"based on reaqtor like closure over our
-modeles decsions in real time"* + *"reaquitve"* +
-*"it's a q"* + *"look upstream for misspellings first /
-before assuming it was a missslling"*. The stored-
+auto-loop-39): _"based on reaqtor like closure over our
+modeles decsions in real time"_ + _"reaquitve"_ +
+_"it's a q"_ + _"look upstream for misspellings first /
+before assuming it was a missslling"_. The stored-
 procedure DSL has Reaqtor (Microsoft's durable reaqtive
 programming library, DBSP-ancestry) semantics.
 

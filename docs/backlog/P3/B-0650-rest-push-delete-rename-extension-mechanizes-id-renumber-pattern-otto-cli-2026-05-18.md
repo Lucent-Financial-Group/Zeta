@@ -25,11 +25,11 @@ This row mechanizes that pattern into the existing tool so future renumbers / de
 
 Three new flags on `tools/github/rest-push.ts`:
 
-| Flag | Behavior |
-|---|---|
-| `--delete PATH` | Removes `PATH` from the tree (repeatable) |
-| `--rename OLD:NEW` | Deletes `OLD` path + adds `NEW` path with content from local disk at `NEW` (repeatable) |
-| Existing `--file PATH` | Unchanged — adds/modifies a file (repeatable) |
+| Flag                   | Behavior                                                                                |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| `--delete PATH`        | Removes `PATH` from the tree (repeatable)                                               |
+| `--rename OLD:NEW`     | Deletes `OLD` path + adds `NEW` path with content from local disk at `NEW` (repeatable) |
+| Existing `--file PATH` | Unchanged — adds/modifies a file (repeatable)                                           |
 
 All three compose: a single REST commit can have any combination of adds + deletes + renames.
 

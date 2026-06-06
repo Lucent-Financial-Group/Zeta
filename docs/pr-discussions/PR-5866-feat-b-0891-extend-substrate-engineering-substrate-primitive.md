@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-operator 2026-05-28 (shadow*) authorization to pick lane 1 (B-0891) and extend the 5 scenarios.
+operator 2026-05-28 (shadow\*) authorization to pick lane 1 (B-0891) and extend the 5 scenarios.
 
 ## What this PR does
 
@@ -24,11 +24,11 @@ EXTENDS B-0891 PoC scaffold (PR #5724) by adding **tools/zflash/test-harness/ext
 
 ## Substrate-engineering substrate primitives
 
-| Scenario | Primitive | Variants |
-|---|---|---|
-| **3 reformat-with-retention** | PersistedKVSubstrate | qemu-virtual-disk-overlay / qemu-tpm-emulator / file-system-bind-mount / qcow2-snapshot-restore (DEFAULT) |
-| **4 reformat-from-scratch** | PathForkSubstrate | both-must-pass / exactly-one-passes / outcomes-equivalent comparison strategies; migrate-existing-creds + fresh-cluster default forks |
-| **5 cluster-joining** | MultiVMOrchestrationSubstrate | NetworkTopology DU + JoinProtocol DU + OrchestratorKind DU + VMSpec |
+| Scenario                      | Primitive                     | Variants                                                                                                                              |
+| ----------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **3 reformat-with-retention** | PersistedKVSubstrate          | qemu-virtual-disk-overlay / qemu-tpm-emulator / file-system-bind-mount / qcow2-snapshot-restore (DEFAULT)                             |
+| **4 reformat-from-scratch**   | PathForkSubstrate             | both-must-pass / exactly-one-passes / outcomes-equivalent comparison strategies; migrate-existing-creds + fresh-cluster default forks |
+| **5 cluster-joining**         | MultiVMOrchestrationSubstrate | NetworkTopology DU + JoinProtocol DU + OrchestratorKind DU + VMSpec                                                                   |
 
 Plus ImplDesignStatus DU + SCENARIO_IMPL_DESIGN mapping + computeImplDesignProgress aggregator (0/3 → 3/3).
 
@@ -57,6 +57,7 @@ SPECS the impl-design primitives. Runtime QEMU integration (actually persisting 
 This PR extends the B-0891 zflash QEMU test-harness PoC (PR #5724) with a separate design-spec status layer for the three scaffolded scenarios (3/4/5). It adds typed discriminated-union primitives describing the substrate shape each scenario will need (state preservation, path fork, multi-VM orchestration), wired into `run.ts --list` JSON output. The runtime scenario status remains `scaffolded` in `scenarios.ts`; no QEMU runtime behavior changes.
 
 **Changes:**
+
 - Add `extensions.ts` defining `PersistedKVSubstrate`, `PathForkSubstrate`, `MultiVMOrchestrationSubstrate`, `ImplDesignStatus`, `SCENARIO_IMPL_DESIGN`, and `computeImplDesignProgress`.
 - Surface `implDesignProgress` and per-scenario `implDesign` in `run.ts --list` JSON.
 - Add `extensions.test.ts` with 21 type/value-level tests for the new primitives.
@@ -65,11 +66,11 @@ This PR extends the B-0891 zflash QEMU test-harness PoC (PR #5724) with a separa
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/zflash/test-harness/extensions.ts | New typed primitives + per-scenario design-spec status mapping + progress aggregator. |
-| tools/zflash/test-harness/run.ts | `--list` JSON augmented with `implDesignProgress` and per-scenario `implDesign`. |
-| tools/zflash/test-harness/extensions.test.ts | Bun tests asserting variants, defaults, and aggregator counts. |
+| File                                         | Description                                                                           |
+| -------------------------------------------- | ------------------------------------------------------------------------------------- |
+| tools/zflash/test-harness/extensions.ts      | New typed primitives + per-scenario design-spec status mapping + progress aggregator. |
+| tools/zflash/test-harness/run.ts             | `--list` JSON augmented with `implDesignProgress` and per-scenario `implDesign`.      |
+| tools/zflash/test-harness/extensions.test.ts | Bun tests asserting variants, defaults, and aggregator counts.                        |
 
 ## General comments
 

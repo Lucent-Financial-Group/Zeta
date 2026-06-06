@@ -59,7 +59,10 @@ const WRAPPERS: ReadonlyArray<readonly [string, string]> = [
   ["riven.ts", "riven.ts"],
 ];
 
-function runWrapper(name: string, args: readonly string[]): {
+function runWrapper(
+  name: string,
+  args: readonly string[],
+): {
   status: number;
   stdout: string;
   stderr: string;
@@ -111,11 +114,7 @@ describe("peer-call smoke tests (B-0421 acceptance #4)", () => {
         // exit would be 1 with a stderr error — this test
         // catches that regression without depending on cursor-
         // agent / gemini / codex-cli / kiro-cli being installed.
-        const result = runWrapper(name, [
-          "--output-file",
-          "/tmp/peer-call-smoke-test-output.md",
-          "--help",
-        ]);
+        const result = runWrapper(name, ["--output-file", "/tmp/peer-call-smoke-test-output.md", "--help"]);
         expect(result.status).toBe(0);
         // Stderr must not contain the canonical "unknown flag"
         // error from classifyFlag().

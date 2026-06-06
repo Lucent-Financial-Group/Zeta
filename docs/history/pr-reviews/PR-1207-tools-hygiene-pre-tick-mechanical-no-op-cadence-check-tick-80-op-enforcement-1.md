@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1207 |
-| Title | tools(hygiene): pre-tick mechanical no-op-cadence check (Tick-80 op-enforcement #1) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-02T17:16:22Z |
-| Merged at | 2026-05-02T17:43:15Z |
-| Merge commit SHA | `475da25487a37f02d3bfc095ee01a2e73fa9c91e` |
-| Branch | `mechanize-no-op-cadence-pretick-check` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1207 |
-| Changed files | 1 |
-| Additions / deletions | +182 / -0 |
+| Field                 | Value                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| Number                | 1207                                                                                |
+| Title                 | tools(hygiene): pre-tick mechanical no-op-cadence check (Tick-80 op-enforcement #1) |
+| Author                | `AceHack` (human)                                                                   |
+| State                 | MERGED                                                                              |
+| Created at            | 2026-05-02T17:16:22Z                                                                |
+| Merged at             | 2026-05-02T17:43:15Z                                                                |
+| Merge commit SHA      | `475da25487a37f02d3bfc095ee01a2e73fa9c91e`                                          |
+| Branch                | `mechanize-no-op-cadence-pretick-check`                                             |
+| Base branch           | `main`                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1207                            |
+| Changed files         | 1                                                                                   |
+| Additions / deletions | +182 / -0                                                                           |
 
 ## Description
 
@@ -74,6 +74,7 @@ The agent reads the warning alongside the substrate. Closer-to-decision-time tha
 ## What's next (out of scope)
 
 This lands operational-enforcement candidate #1. Remaining candidates from the Tick-80 memo:
+
 - Candidate #2: B-0165 deliberate-quiet-periods protocol (Aaron-side, requires human action)
 - Candidate #3: Multi-AI peer review at-decision-time (composes with B-0164 dual-loop BFT)
 - Candidate #4: Tick-history schema decision-shape column (separate substrate change)
@@ -82,15 +83,15 @@ This lands operational-enforcement candidate #1. Remaining candidates from the T
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 8 |
-| Resolved threads | 8 |
-| Unresolved threads | 0 |
-| Total review comments | 12 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 8     |
+| Resolved threads                          | 8     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 12    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -103,16 +104,16 @@ This lands operational-enforcement candidate #1. Remaining candidates from the T
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-02T17:17:58Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:62 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve informational behavior when no shard files match**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Preserve informational behavior when no shard files match**
+
   This assignment can terminate the script with exit code 1 under `set -euo pipefail` whenever the directory exists but `grep` finds no matching shard filenames, so the later `[[ -z "$RECENT_SHARDS" ]]` fallback is never reached. In that case the check stops being “informational only” and can unexpectedly fail a tick-start workflow; guard the pipeline (for example, allow an empty `grep` result) so the script still exits 0 when no shards are in-window.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-02T17:19:53Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:62 (association: MEMBER)
-    Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
+- **`AceHack` (human)** at 2026-05-02T17:19:53Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:62 (association: MEMBER)
+  Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -127,8 +128,8 @@ This lands operational-enforcement candidate #1. Remaining candidates from the T
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-02T17:19:54Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:54 (association: MEMBER)
-    Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
+- **`AceHack` (human)** at 2026-05-02T17:19:54Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:54 (association: MEMBER)
+  Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -140,12 +141,11 @@ This lands operational-enforcement candidate #1. Remaining candidates from the T
 
 - **`Copilot` (bot)** at 2026-05-02T17:19:20Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:63 (association: NONE)
   Picking the window with a raw lexicographic sort will misorder valid shard names like `1550Z.md` and `1550Z-01.md` (and the README already warns about mixed-format sort drift). That means `tail -n "$WINDOW_SIZE"` can exclude the actual newest shards and undercount recent no-op ticks whenever there are same-minute or mixed-format files.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-02T17:19:55Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:63 (association: MEMBER)
-    Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
+- **`AceHack` (human)** at 2026-05-02T17:19:55Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:63 (association: MEMBER)
+  Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -157,12 +157,11 @@ This lands operational-enforcement candidate #1. Remaining candidates from the T
 
 - **`Copilot` (bot)** at 2026-05-02T17:19:20Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:50 (association: NONE)
   These env vars are used without any numeric validation. A typo like `NO_OP_CHECK_WINDOW=foo` makes `tail -n` fail under `set -e`, so the script exits non-zero even though the header says this check is informational-only and must not block the tick.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-02T17:19:56Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:50 (association: MEMBER)
-    Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
+- **`AceHack` (human)** at 2026-05-02T17:19:56Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:50 (association: MEMBER)
+  Resolved in 6d6e4ae — replaced `ls | grep` pipeline with `shopt -s nullglob` + glob loop using bash regex filtering. Empty-directory case now exits 0 with informational message (verified in /tmp test). Same fix addresses shellcheck SC2010.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -173,10 +172,10 @@ This lands operational-enforcement candidate #1. Remaining candidates from the T
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-02T17:27:27Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:59 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Normalize decimal env vars before arithmetic comparisons**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Normalize decimal env vars before arithmetic comparisons**
+
   `THRESHOLD` is validated with `^[0-9]+$`, so values like `08` are accepted, but Bash then evaluates `[[ "$THRESHOLD" -lt 1 ]]` (and later `[[ $MIN_OBS_COUNT -ge $THRESHOLD ]]`) using arithmetic rules where a leading `0` is octal, producing `value too great for base` and skipping the intended warning path. In practice, setting `NO_OP_CHECK_THRESHOLD=08` (a common zero-padded env style) disables this enforcement check and emits shell errors instead of deterministic behavior; coerce to base-10 (e.g., `10#$THRESHOLD`) before numeric comparisons.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 6 -- resolved [collapsed]
@@ -200,7 +199,6 @@ This lands operational-enforcement candidate #1. Remaining candidates from the T
 
 - **`Copilot` (bot)** at 2026-05-02T17:28:39Z on `tools/hygiene/check-no-op-cadence-pattern.sh`:28 (association: NONE)
   The header says the heuristic is `short body + observation-class language`, but the implementation below matches on `short body OR keyword regex`. That comment is misleading for anyone tuning the threshold or trying to reason about false positives/negatives, because the current check is much broader than the prose describes.
-  
 
 ### Thread 8 -- resolved [collapsed]
 

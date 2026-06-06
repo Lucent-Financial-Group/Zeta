@@ -9,7 +9,23 @@ created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
 composes_with: [B-1006, B-1007, B-0982]
-tags: [codec, codec-algebra, serializer, round-trip, homeostat, proven-from-seed, canonical, json, cbor, yaml, xml, formal-proof-first, infer-net, aaron]
+tags:
+  [
+    codec,
+    codec-algebra,
+    serializer,
+    round-trip,
+    homeostat,
+    proven-from-seed,
+    canonical,
+    json,
+    cbor,
+    yaml,
+    xml,
+    formal-proof-first,
+    infer-net,
+    aaron,
+  ]
 type: design
 ---
 
@@ -17,8 +33,8 @@ type: design
 
 ## Origin (Aaron 2026-06-03)
 
-> *"take the serializer round-trip next … we want to support json yaml xml and
-> cbor so we would need the same for these."*
+> _"take the serializer round-trip next … we want to support json yaml xml and
+> cbor so we would need the same for these."_
 
 "The same" = the **round-trip-from-seed homeostat proof** the DynamicValue
 canonical work established (`decode ∘ encode = id` over arbitrary values +
@@ -27,12 +43,12 @@ the seed-lineage edge, half-(b)). Applied to all four formats Aaron named.
 
 ## State (2026-06-03) — honest, per the proof bar (no fabricated round-trips)
 
-| Format | encode | decode | round-trip proof | gap |
-|---|---|---|---|---|
-| **JSON** | `DynamicValue.toCanonicalJson` | `fromCanonicalJson` | ✅ DONE — `decode∘encode=id` (6/8 shapes) + seed fixed-point, `DynamicValue.Canonical.Tests.fs` | — |
-| **CBOR** | `DynamicValue.toCanonicalCbor` | `fromCanonicalCbor` | ✅ DONE — `decode∘encode=id` (8/8 shapes, TOTAL) + seed fixed-point | — |
-| **YAML** | **none** (parse-only) | `Zeta.Core.FSharp.Yaml.Dom.parse` | ❌ **impossible today** | `Dom.fs`/`Reader.fs` are **forward-only** (a `YamlValue` parser, no renderer); a round-trip needs a **canonical YAML ENCODER** first. Also a separate `YamlValue` DOM, not `DynamicValue`. |
-| **XML** | none | none | ❌ not implemented | the registry has XML as ⬜ (text + XSD schema); needs a full `DynamicValue`↔XML codec. |
+| Format   | encode                         | decode                            | round-trip proof                                                                                | gap                                                                                                                                                                                        |
+| -------- | ------------------------------ | --------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **JSON** | `DynamicValue.toCanonicalJson` | `fromCanonicalJson`               | ✅ DONE — `decode∘encode=id` (6/8 shapes) + seed fixed-point, `DynamicValue.Canonical.Tests.fs` | —                                                                                                                                                                                          |
+| **CBOR** | `DynamicValue.toCanonicalCbor` | `fromCanonicalCbor`               | ✅ DONE — `decode∘encode=id` (8/8 shapes, TOTAL) + seed fixed-point                             | —                                                                                                                                                                                          |
+| **YAML** | **none** (parse-only)          | `Zeta.Core.FSharp.Yaml.Dom.parse` | ❌ **impossible today**                                                                         | `Dom.fs`/`Reader.fs` are **forward-only** (a `YamlValue` parser, no renderer); a round-trip needs a **canonical YAML ENCODER** first. Also a separate `YamlValue` DOM, not `DynamicValue`. |
+| **XML**  | none                           | none                              | ❌ not implemented                                                                              | the registry has XML as ⬜ (text + XSD schema); needs a full `DynamicValue`↔XML codec.                                                                                                     |
 
 So a YAML/XML round-trip is **blocked on encoder implementation** — proving a
 round-trip on code that can't encode would be a fabricated test (the exact
@@ -44,12 +60,12 @@ round-trip on code that can't encode would be a fabricated test (the exact
    - (a) a `YamlValue` renderer (`render : YamlValue -> string`) so
      `parse ∘ render = id` on the YAML DOM, **or**
    - (b) ride the `DynamicValue` model: `toCanonicalYaml : DynamicValue ->
-     Result<string, EncodeError>` + `fromCanonicalYaml` (the registry's
+  Result<string, EncodeError>` + `fromCanonicalYaml` (the registry's
      "same dynamic-object model over any format" vision — preferred, so the
      DynamicValue canonical proof extends directly).
-   Canonical-YAML rules need deciding (safe-subset; block vs flow; key order —
-   order-significant like the JSON/CBOR Object decision). **Design decision →
-   Aaron/Soraya before building.**
+     Canonical-YAML rules need deciding (safe-subset; block vs flow; key order —
+     order-significant like the JSON/CBOR Object decision). **Design decision →
+     Aaron/Soraya before building.**
 2. **YAML round-trip proof** — once an encoder exists, the same
    `DynamicValue.Canonical.Tests.fs` shape: FsCheck `decode∘encode=id` +
    the YAML seed (`tests/cross-verification/yaml/vectors.json`) as fixed point.

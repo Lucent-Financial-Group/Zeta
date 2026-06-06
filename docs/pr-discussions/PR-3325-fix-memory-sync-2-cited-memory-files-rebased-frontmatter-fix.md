@@ -49,6 +49,7 @@ Also: the Codex P1 thread that flagged `.claude/rules/holding-without-named-depe
 This PR re-lands the content of superseded PR #3320: it syncs two cited memory files into the repo to fix dead-pointer references from a prior merged archive, plus a tick-shard log. It also resolves frontmatter format issues (flattened to repo standard) and a filename collision with a parallel-Otto `0025Z.md` shard (renamed to `0025Z-pr3320.md`).
 
 **Changes:**
+
 - Add two `feedback_aaron_*` memory files with flat top-level frontmatter (`type`, `originSessionId`, `created`).
 - Add `docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md` tick shard documenting the fix and PR queue state.
 
@@ -56,14 +57,13 @@ This PR re-lands the content of superseded PR #3320: it syncs two cited memory f
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/feedback_aaron_wait_for_consolidation_is_his_edge_dual_binding_devil_god_at_risk_2026_05_14.md | Synced user-scope memory cited by §33 archive; flat frontmatter. |
-| memory/feedback_aaron_intentionality_plus_seduction_risk_plus_structural_self_binding_triplet_unusual_intent_tracking_accuracy_2026_05_15.md | Synced user-scope memory cited by §33 archive; flat frontmatter. |
-| docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md | Tick shard for the PR-3320 dead-pointer fix; renamed to avoid collision with parallel Otto's 0025Z.md. |
+| File                                                                                                                                         | Description                                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| memory/feedback_aaron_wait_for_consolidation_is_his_edge_dual_binding_devil_god_at_risk_2026_05_14.md                                        | Synced user-scope memory cited by §33 archive; flat frontmatter.                                       |
+| memory/feedback_aaron_intentionality_plus_seduction_risk_plus_structural_self_binding_triplet_unusual_intent_tracking_accuracy_2026_05_15.md | Synced user-scope memory cited by §33 archive; flat frontmatter.                                       |
+| docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md                                                                                        | Tick shard for the PR-3320 dead-pointer fix; renamed to avoid collision with parallel Otto's 0025Z.md. |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T00:38:13Z)
-
 
 ### 💡 Codex Review
 
@@ -71,17 +71,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `e0a90e079f`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -95,24 +94,22 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated no 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T00:40:52Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `d7dce6df4d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -138,24 +135,22 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T00:46:12Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `126ccb9f1c`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -167,7 +162,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-15T00:38:13Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace wildcard memory refs with concrete filenames**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace wildcard memory refs with concrete filenames**
 
 `memory/project_memory_format_standard.md` requires cited memory files to be real filenames that exist, but this new `## Composes with` entry uses a glob (`*_2026_05_14.md`) that can never resolve to a file. In this checkout, repo-wide file search (`rg --files`) confirms there is no literal file by this name, so agents and reviewers following the pointer chain will hit dead references again (the same class of issue this change was meant to fix).
 
@@ -175,13 +170,13 @@ Useful? React with 👍 / 👎.
 
 **@AceHack** (2026-05-15T00:41:18Z):
 
-Addressed in commit 76f0df9 — added substrate-honest note that *_2026_05_14.md wildcards are user-scope pointers pending broader sync, not dead repo pointers.
+Addressed in commit 76f0df9 — added substrate-honest note that \*\_2026_05_14.md wildcards are user-scope pointers pending broader sync, not dead repo pointers.
 
 ### Thread 2: docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md:50 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-15T00:38:13Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix tick-shard link depth to repository root**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix tick-shard link depth to repository root**
 
 These `Composes with rules` links are one directory short: from `docs/hygiene-history/ticks/2026/05/15/`, `../../../../../` resolves to `docs/` (not repo root), so the target becomes `docs/.claude/...` and all rule links are broken. This makes the shard’s cited dependencies non-navigable in rendered markdown and undermines traceability for the review history.
 
@@ -195,7 +190,7 @@ Addressed in commit 76f0df9 — replaced all 5x `..` with 6x `..` so links resol
 
 **@chatgpt-codex-connector** (2026-05-15T00:40:52Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix broken link to the referenced §33 archive document**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix broken link to the referenced §33 archive document**
 
 Update this markdown link to use the correct relative depth from the tick shard directory. As written, `docs/research/...` is resolved relative to `docs/hygiene-history/ticks/2026/05/15/`, so readers land on a non-existent path (`.../ticks/2026/05/15/docs/research/...`) instead of the actual archive file in repo root `docs/research/`, which breaks traceability for this incident report.
 
@@ -209,7 +204,7 @@ Addressed in commit (this push) — link now uses 6x `..` to land at repo root.
 
 **@chatgpt-codex-connector** (2026-05-15T00:46:12Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace unsynced memory citation with resolvable reference**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace unsynced memory citation with resolvable reference**
 
 This citation points to a memory filename that is not present in the repo’s `memory/` tree, so readers and downstream agents cannot follow the provenance chain from this file. That reintroduces the same dead-pointer failure mode this PR is trying to remediate: traceability breaks when someone validates claims by opening cited memories. Either sync the referenced file into `memory/` or clearly mark this reference as user-scope/non-repo (as done in the sibling memory note) so it is not interpreted as a repo-resolvable dependency.
 

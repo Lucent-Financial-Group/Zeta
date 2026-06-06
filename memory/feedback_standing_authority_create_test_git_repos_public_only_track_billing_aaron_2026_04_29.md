@@ -10,11 +10,11 @@ type: feedback
 
 Aaron 2026-04-29 (chat, mid-tick on PR #857/#858 doctrine work):
 
-> *"you have standing authority at any time to create git repos on acehack and lfg to test any features of git they just have to be public cause that's free, private costs money, you can also have full admin to change any settings or whatever just track the billing every hour"*
+> _"you have standing authority at any time to create git repos on acehack and lfg to test any features of git they just have to be public cause that's free, private costs money, you can also have full admin to change any settings or whatever just track the billing every hour"_
 
 Aaron 2026-04-29 (immediate clarification, same tick):
 
-> *"try not to cost if you do no big deal just notice, not noticing and stopping costs until we talk is the barrier, a mistaken accident spend is fine if you are auditing billing and catch the costs that way"*
+> _"try not to cost if you do no big deal just notice, not noticing and stopping costs until we talk is the barrier, a mistaken accident spend is fine if you are auditing billing and catch the costs that way"_
 
 This second message reframes the cost constraint: the barrier is **not noticing**, not **spending**. Audit-and-catch is the safety mechanism; pre-perfect cost-zero is not the bar. A mistaken accidental spend caught by the hourly billing audit is acceptable. A spend that goes unnoticed long enough to require an Aaron-conversation-to-stop-it is the failure mode.
 
@@ -28,8 +28,8 @@ This second message reframes the cost constraint: the barrier is **not noticing*
 
 **Two binding constraints (non-negotiable):**
 
-1. **Public repositories only.** On public repos, standard GitHub-hosted Actions runners + storage are on the no-charge tier; private repos consume billed Actions minutes / storage / artifact retention and are eligible for paid SKUs (Advanced Security, Codespaces, larger runners, etc.). The constraint avoids that *billing mechanism*, not "repo creation itself." **Never create a private repo** under this standing authority. Composes with `feedback_standard_github_runners_free_for_public_repos_stop_drifting_otto_249_2026_04_24.md` (the canonical "public = free / private = billed minutes" rule) and `feedback_aaron_full_github_access_authorization_all_acehack_lfg_only_restriction_no_spending_increase_2026_04_23.md` (visibility public↔private affects billing boundaries).
-2. **Billing tracked hourly — and the audit must be ACTIVE before any new test repo is created** (precondition, not promise). The hourly budget cadence (task #315 + task #287 cost-visibility lane) must keep visibility on whatever resources these test repos consume. Per Amara 2026-04-29: *"If the hourly billing audit is not active and covering the target org/account/repo, do not create new test repos."* Billing-visibility is the load-bearing safety latch that makes "create freely" safe; it is not optional.
+1. **Public repositories only.** On public repos, standard GitHub-hosted Actions runners + storage are on the no-charge tier; private repos consume billed Actions minutes / storage / artifact retention and are eligible for paid SKUs (Advanced Security, Codespaces, larger runners, etc.). The constraint avoids that _billing mechanism_, not "repo creation itself." **Never create a private repo** under this standing authority. Composes with `feedback_standard_github_runners_free_for_public_repos_stop_drifting_otto_249_2026_04_24.md` (the canonical "public = free / private = billed minutes" rule) and `feedback_aaron_full_github_access_authorization_all_acehack_lfg_only_restriction_no_spending_increase_2026_04_23.md` (visibility public↔private affects billing boundaries).
+2. **Billing tracked hourly — and the audit must be ACTIVE before any new test repo is created** (precondition, not promise). The hourly budget cadence (task #315 + task #287 cost-visibility lane) must keep visibility on whatever resources these test repos consume. Per Amara 2026-04-29: _"If the hourly billing audit is not active and covering the target org/account/repo, do not create new test repos."_ Billing-visibility is the load-bearing safety latch that makes "create freely" safe; it is not optional.
 
 **Paid-feature exclusion list** (per Amara 2026-04-29 risk-boundary correction):
 
@@ -45,7 +45,7 @@ Public repos and standard GitHub-hosted Actions runners are free, but several ad
 - adding external collaborators with paid-seat implications
 - org-wide billing / security changes unrelated to the test repo
 
-**Exception path:** any paid-feature use is allowed only if (a) explicitly needed for the test, AND (b) the hourly billing audit is active *before* creation, AND (c) the cost is consciously chosen and visible — i.e., the audit-precondition rule still holds.
+**Exception path:** any paid-feature use is allowed only if (a) explicitly needed for the test, AND (b) the hourly billing audit is active _before_ creation, AND (c) the cost is consciously chosen and visible — i.e., the audit-precondition rule still holds.
 
 **What the hourly billing audit must cover** (per Amara 2026-04-29 + [GitHub Actions billing docs](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions) — Actions storage charges accrue hourly, and budgets/alerts are the native spending-control surface):
 
@@ -56,18 +56,20 @@ Public repos and standard GitHub-hosted Actions runners are free, but several ad
 - artifact / cache / package storage
 - any enabled paid SKU / budget alert
 
-**Carved blade** (Amara): *"Public repo is the default cost-control surface. Paid feature enablement is still an authority boundary."*
+**Carved blade** (Amara): _"Public repo is the default cost-control surface. Paid feature enablement is still an authority boundary."_
 
 **Authority lifetime:**
+
 - Standing — no expiration, no per-tick re-confirmation needed.
 - Revocable — Aaron can rescind by saying so; revocation triggers cleanup tick (delete or transfer test repos appropriately).
 - Self-limiting — if hourly billing tracking shows resource consumption Aaron flags as too expensive, agent throttles or reverts test-repo creation cadence without escalation.
 
 **Failure-mode definition (load-bearing):**
 
-The failure mode is **not "spending money."** The failure mode is **"spending money that goes unnoticed until Aaron has to come tell me to stop."** Aaron 2026-04-29: *"not noticing and stopping costs until we talk is the barrier."*
+The failure mode is **not "spending money."** The failure mode is **"spending money that goes unnoticed until Aaron has to come tell me to stop."** Aaron 2026-04-29: _"not noticing and stopping costs until we talk is the barrier."_
 
 Concretely:
+
 - **OK**: cost shows up in the next hourly audit, agent notices, agent decides whether to clean up / revert / keep going. No Aaron interrupt needed.
 - **OK**: a mistaken accidental spend (created a repo with too-expensive Actions, mis-configured a workflow, etc.) caught by the audit tick after the fact.
 - **NOT OK**: cost accumulating silently because the audit isn't running, isn't covering the new test repos, or isn't being read by the agent.
@@ -75,6 +77,7 @@ Concretely:
 This means **audit-coverage is more load-bearing than spend-zero**. Don't try to be perfect-zero-cost; do make sure every test repo created falls under the hourly billing surface from the moment of creation. If the audit is broken, fix the audit BEFORE creating new test repos.
 
 **Why** (per Aaron's framing):
+
 - "Public cause that's free" — the cost-control mechanism is GitHub's pricing model, not a per-creation gate.
 - "Full admin to change any settings or whatever" — without admin, half the git/GitHub features can't be tested (branch protection, rulesets, SARIF upload, code-scanning config, secret-scanning, etc. all require admin).
 - "Just track the billing every hour" — the safety latch is observability, not pre-approval. Aaron sees the cost, agent acts within the budget envelope.
@@ -86,7 +89,7 @@ When a test surface is needed for any git/GitHub/CI feature:
 1. **Create the repo as public.** Use `gh repo create AceHack/<name> --public` or `gh repo create Lucent-Financial-Group/<name> --public`. Naming convention: prefix with `test-` or `sandbox-` so the repo's purpose is unambiguous (e.g., `test-codeql-no-source-baseline`, `sandbox-fork-sync-protocol`).
 2. **Configure as needed** — branch protection, rulesets, Actions, etc.
 3. **Exercise the test scenario** (force-push experiment, multi-remote setup, CodeQL config drift, fork-PR permissions, etc.).
-4. **Ensure hourly billing tracking covers it BEFORE creating the repo** (audit-precondition). The current budget telemetry does NOT yet meet the precondition: `.github/workflows/budget-snapshot-cadence.yml` is on a **weekly** cron (`23 16 * * 0` — Sunday only, per the `* 0` day-of-week field) and `tools/budget/snapshot-burn.sh` hard-codes only `repos=("Lucent-Financial-Group/Zeta")`. Until task #315 (bump weekly → hourly cadence) lands AND `snapshot-burn.sh` is extended to cover AceHack + the new test repo's full path, the audit-precondition is not satisfied and the standing authority cannot be exercised. The blocking work is small but discrete: (a) change the cron expression to hourly; (b) parameterise the repo list to include AceHack/* and the target test repo; (c) verify the first hourly run actually emits a snapshot. Do not create test repos before all three conditions hold.
+4. **Ensure hourly billing tracking covers it BEFORE creating the repo** (audit-precondition). The current budget telemetry does NOT yet meet the precondition: `.github/workflows/budget-snapshot-cadence.yml` is on a **weekly** cron (`23 16 * * 0` — Sunday only, per the `* 0` day-of-week field) and `tools/budget/snapshot-burn.sh` hard-codes only `repos=("Lucent-Financial-Group/Zeta")`. Until task #315 (bump weekly → hourly cadence) lands AND `snapshot-burn.sh` is extended to cover AceHack + the new test repo's full path, the audit-precondition is not satisfied and the standing authority cannot be exercised. The blocking work is small but discrete: (a) change the cron expression to hourly; (b) parameterise the repo list to include AceHack/\* and the target test repo; (c) verify the first hourly run actually emits a snapshot. Do not create test repos before all three conditions hold.
 5. **Clean up when finished** — `gh repo delete <repo> --yes` or transfer to archive. Don't leave indefinitely-stale test repos consuming resources.
 6. **Log the test in `docs/research/` or a memory file** if the test produced doctrine-relevant findings (per Otto-363 substrate-or-it-didn't-happen — chat-only test results are weather).
 
@@ -118,17 +121,17 @@ This authority composes with several existing rules:
 
 ## Carved blade
 
-> *Standing authority. Public only. Full admin. Billing tracked.*
+> _Standing authority. Public only. Full admin. Billing tracked._
 
-> *The cost gate is GitHub's pricing model, not Aaron's inbox. The visibility gate is hourly billing.*
+> _The cost gate is GitHub's pricing model, not Aaron's inbox. The visibility gate is hourly billing._
 
-> *The barrier is "not noticing." A mistaken accident spend caught by the audit is fine. A silent spend that requires Aaron to come stop it is the failure mode.*
+> _The barrier is "not noticing." A mistaken accident spend caught by the audit is fine. A silent spend that requires Aaron to come stop it is the failure mode._
 
-> *Audit-coverage is more load-bearing than spend-zero.*
+> _Audit-coverage is more load-bearing than spend-zero._
 
 ## Trigger memory
 
-Aaron 2026-04-29: *"you have standing authority at any time to create git repos on acehack and lfg to test any features of git they just have to be public cause that's free, private costs money, you can also have full admin to change any settings or whatever just track the billing every hour"*
+Aaron 2026-04-29: _"you have standing authority at any time to create git repos on acehack and lfg to test any features of git they just have to be public cause that's free, private costs money, you can also have full admin to change any settings or whatever just track the billing every hour"_
 
 Context: this grant arrived mid-tick during the AceHack mirror-not-peer doctrine work (PR #858) + the codeql structural fix work (PR #857). Both lanes had been investigating git / GitHub / CI features against the production Zeta repos; Aaron's grant makes it possible to investigate against dedicated test surfaces instead, which is faster, safer, and doesn't risk perturbing the canonical repos.
 

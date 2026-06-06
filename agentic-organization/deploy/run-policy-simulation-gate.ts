@@ -11,16 +11,9 @@ import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 import { Pool } from "pg";
 
-import {
-  ChangeArtifactKind,
-  ChangeSetPhase,
-  OrgEventKind,
-  type ChangeSet,
-} from "../packages/domain/src/index.ts";
+import { ChangeArtifactKind, ChangeSetPhase, OrgEventKind, type ChangeSet } from "../packages/domain/src/index.ts";
 import { createReleaseQueueCadenceLane } from "../apps/workers/src/org-cadence-lanes.ts";
-import {
-  createContentAddressedEvidenceArtifact,
-} from "../packages/application/src/index.ts";
+import { createContentAddressedEvidenceArtifact } from "../packages/application/src/index.ts";
 import {
   createCockroachChangeSetStore,
   createCockroachCoreStateMigrations,
@@ -85,10 +78,14 @@ async function main(): Promise<void> {
     const events = await orgEvents.listByOrganization(organizationId, 100);
     const simulatedApplied = persisted[0]?.phase === ChangeSetPhase.Applied;
     const unboundHeld = persisted[1]?.phase === ChangeSetPhase.Approved;
-    const appliedEvent = events.find((event) => event.kind === OrgEventKind.ChangeSetApplied && event.subjectId === simulated);
-    const unboundFinding = events.find((event) => event.kind === OrgEventKind.ReviewFindingRaised && event.subjectId === unbound);
-    const unboundLeakedSimulationEvidence = events.some((event) =>
-      event.subjectId === unbound && event.evidenceRefs.includes(simulationEvidence.ref),
+    const appliedEvent = events.find(
+      (event) => event.kind === OrgEventKind.ChangeSetApplied && event.subjectId === simulated,
+    );
+    const unboundFinding = events.find(
+      (event) => event.kind === OrgEventKind.ReviewFindingRaised && event.subjectId === unbound,
+    );
+    const unboundLeakedSimulationEvidence = events.some(
+      (event) => event.subjectId === unbound && event.evidenceRefs.includes(simulationEvidence.ref),
     );
     const ok =
       laneResult.failures.length === 0 &&
@@ -100,18 +97,24 @@ async function main(): Promise<void> {
       unboundFinding !== undefined &&
       !unboundLeakedSimulationEvidence;
 
-    console.log(JSON.stringify({
-      track: "Phase 2.7 policy simulation gate",
-      organizationId,
-      laneResult,
-      persisted: persisted.map((cs) => cs === null ? null : { changeSetId: cs.changeSetId, phase: cs.phase }),
-      events: {
-        appliedEvent: appliedEvent?.id,
-        unboundFinding: unboundFinding?.id,
-        unboundLeakedSimulationEvidence,
-      },
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "Phase 2.7 policy simulation gate",
+          organizationId,
+          laneResult,
+          persisted: persisted.map((cs) => (cs === null ? null : { changeSetId: cs.changeSetId, phase: cs.phase })),
+          events: {
+            appliedEvent: appliedEvent?.id,
+            unboundFinding: unboundFinding?.id,
+            unboundLeakedSimulationEvidence,
+          },
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();
@@ -129,12 +132,14 @@ function policyChangeSet(changeSetId: string): ChangeSet {
     phase: ChangeSetPhase.Approved,
     pipelineId: "internal-only",
     currentStageIndex: 0,
-    artifacts: [{
-      kind: ChangeArtifactKind.ConfigChange,
-      key: `rmo.assignment.${changeSetId}`,
-      before: "0.10",
-      after: "0.20",
-    }],
+    artifacts: [
+      {
+        kind: ChangeArtifactKind.ConfigChange,
+        key: `rmo.assignment.${changeSetId}`,
+        before: "0.10",
+        after: "0.20",
+      },
+    ],
     projections: [],
     revision: 1,
     openedAt: nowIso,

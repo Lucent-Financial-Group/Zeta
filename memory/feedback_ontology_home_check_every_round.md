@@ -4,6 +4,7 @@ description: Standing per-round cadence. Every round makes a little progress tow
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Every round of the Zeta factory MUST make at least a small
 increment of progress toward the twin goals that
 **(1) every named ontology / concept-cluster / framework the
@@ -15,7 +16,7 @@ discoverable**.
 "Proper home" for an ontology means: (a) the concept is named
 and defined in a committed file under `docs/` (or
 `openspec/specs/**` if it is observable behaviour), not only
-in memory or in a persona notebook; (b) the places that *use*
+in memory or in a persona notebook; (b) the places that _use_
 the concept link back to that home; (c) it is discoverable by
 someone walking `docs/` top-down without prior context.
 
@@ -39,7 +40,8 @@ the level of grandfather discharge or BP drift — a recurring
 cadence, not a backlog item that ever finishes.
 
 **How to apply:**
-- Treat ontology-home-check as a *recurring* per-round
+
+- Treat ontology-home-check as a _recurring_ per-round
   obligation, same shape as grandfather-claim discharge: one
   small slice per round, tracked against a running inventory.
 - Named concept-clusters / ontologies that currently need a
@@ -60,7 +62,7 @@ cadence, not a backlog item that ever finishes.
   - Consent-first design primitive
   - Zeta = Seed (database BCL microkernel + plugins + `ace`)
   - Vibe-citation auditable inheritance graph
-- The per-round increment is deliberately *small*: one
+- The per-round increment is deliberately _small_: one
   ontology gets homed per round, or one cross-reference gets
   wired, or one discoverability pointer gets added. This
   keeps the work bounded while still draining the backlog.
@@ -77,7 +79,7 @@ cadence, not a backlog item that ever finishes.
   `Grandfather discharge` lines.
 - Memory-first concepts are OK as a landing point for
   Aaron-personal material (the tetrad, Elizabeth's role,
-  parenting method) but the *factory-hygiene* concepts
+  parenting method) but the _factory-hygiene_ concepts
   listed above belong in committed `docs/` because the
   factory references them in persona skills, ADRs, and
   the tech radar.
@@ -85,7 +87,7 @@ cadence, not a backlog item that ever finishes.
   three consecutive rounds close without an ontology-home
   increment, the next round's scope MUST open with the
   missed increment before any other P2+ work lands.
-- Durable-policy marker: this is a *standing cadence*, not
+- Durable-policy marker: this is a _standing cadence_, not
   a one-shot. Do not check it off when the first concept
   lands — the cadence continues until the inventory is
   exhausted, and the cadence itself is the load-bearing

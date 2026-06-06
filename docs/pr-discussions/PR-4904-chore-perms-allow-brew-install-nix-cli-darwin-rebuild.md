@@ -24,14 +24,14 @@ These are needed to build the installer ISO from the flake **locally on Apple Si
 
 ## Permissions added
 
-| Pattern | Why |
-|---|---|
-| \`Bash(brew install *)\` | Install Nix and any future cluster CLI tooling |
-| \`Bash(brew install --cask *)\` | Cask installs if needed (e.g. orbstack alternative) |
-| \`Bash(brew upgrade *)\`, \`Bash(brew list *)\`, \`Bash(brew --version)\` | Brew maintenance |
-| \`Bash(nix *)\` | The main Nix CLI (\`nix build\`, \`nix flake\`, etc.) |
-| \`Bash(nix-env *)\`, \`Bash(nix-shell *)\`, \`Bash(nix-build *)\`, \`Bash(nix-store *)\`, \`Bash(nix-channel *)\` | Legacy nix command surface |
-| \`Bash(darwin-rebuild *)\` | Activate nix-darwin config changes (linux-builder enable, etc.) |
+| Pattern                                                                                                            | Why                                                             |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| \`Bash(brew install \*)\`                                                                                          | Install Nix and any future cluster CLI tooling                  |
+| \`Bash(brew install --cask \*)\`                                                                                   | Cask installs if needed (e.g. orbstack alternative)             |
+| \`Bash(brew upgrade _)\`, \`Bash(brew list _)\`, \`Bash(brew --version)\`                                          | Brew maintenance                                                |
+| \`Bash(nix \*)\`                                                                                                   | The main Nix CLI (\`nix build\`, \`nix flake\`, etc.)           |
+| \`Bash(nix-env _)\`, \`Bash(nix-shell _)\`, \`Bash(nix-build _)\`, \`Bash(nix-store _)\`, \`Bash(nix-channel \*)\` | Legacy nix command surface                                      |
+| \`Bash(darwin-rebuild \*)\`                                                                                        | Activate nix-darwin config changes (linux-builder enable, etc.) |
 
 ## Test plan
 
@@ -44,24 +44,22 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:17:02Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `942546248a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -73,7 +71,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T03:17:02Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Restore `_ip_risk_acceptance` attribution block**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Restore `_ip_risk_acceptance` attribution block**
 
 This change drops the only `_*_acceptance` metadata from `.claude/settings.json`, so edits to `docs/research/ip-questionable/**` can still proceed (via the existing broad `Bash(gh api *)` allow rule) without the named-human risk attribution required by `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (“MUST attach a named human” with operator/scope/policy/see_also). That creates an auditability regression: the risk-acceptance trail documented for this scope is no longer present at the command-permission surface where it was previously anchored.
 

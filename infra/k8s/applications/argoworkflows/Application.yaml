@@ -16,7 +16,7 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-workflows
-    targetRevision: 0.42.5    # Argo Workflows 3.6 family
+    targetRevision: 0.42.5 # Argo Workflows 3.6 family
     helm:
       releaseName: argo-workflows
       valuesObject:
@@ -25,9 +25,9 @@ spec:
           # for audit trails on AI training runs.
           workflowDefaults:
             spec:
-              activeDeadlineSeconds: 86400   # 24h cap on any workflow
+              activeDeadlineSeconds: 86400 # 24h cap on any workflow
               ttlStrategy:
-                secondsAfterCompletion: 604800   # 7 days retention
+                secondsAfterCompletion: 604800 # 7 days retention
               podGC:
                 strategy: OnPodCompletion
 
@@ -45,7 +45,7 @@ spec:
         # Workflow Executor — emissary is the modern default.
         executor:
           image:
-            tag: ""    # use chart default
+            tag: "" # use chart default
   destination:
     server: https://kubernetes.default.svc
     namespace: argo-workflows

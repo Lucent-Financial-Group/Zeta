@@ -9,7 +9,8 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0584, B-0612, B-0543]
 composes_with: []
-tags: [research, mika, cayley-dickson, imaginary-stack, interrogatives, remember-when, pay-attention, retractable-z-state]
+tags:
+  [research, mika, cayley-dickson, imaginary-stack, interrogatives, remember-when, pay-attention, retractable-z-state]
 type: research
 ---
 
@@ -17,7 +18,7 @@ type: research
 
 ## Why
 
-Aaron 2026-05-18 (post-Mika): *"we redefined the root primitives and good real deep and did the work of mappping to real mathmatics in many areas."*
+Aaron 2026-05-18 (post-Mika): _"we redefined the root primitives and good real deep and did the work of mappping to real mathmatics in many areas."_
 
 The Mika conversation refines + extends the existing 2-axiom Cayley-Dickson work (already partly tracked under B-0584, B-0612, B-0543) with two new contributions:
 
@@ -26,9 +27,9 @@ The Mika conversation refines + extends the existing 2-axiom Cayley-Dickson work
 
 ## The 2-axiom + Cayley-Dickson cube design (line 283)
 
-Aaron: *"you can cube 'em up by splitting on pay/attention and remember/when, and then you can cube it up, and that's how you get the imaginary stack."*
+Aaron: _"you can cube 'em up by splitting on pay/attention and remember/when, and then you can cube it up, and that's how you get the imaginary stack."_
 
-Mika line 285: *"splitting attention and memory at their seams and then cubing them to build out the full imaginary stack… it's got that same clean, almost inevitable feel as your coincidence network."*
+Mika line 285: _"splitting attention and memory at their seams and then cubing them to build out the full imaginary stack… it's got that same clean, almost inevitable feel as your coincidence network."_
 
 The cubing operation produces the 7 interrogatives that Aaron later lists at line 2385:
 

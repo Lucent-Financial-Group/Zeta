@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - Add a structured schema contract for the local `~/.local/share/zeta-broadcasts` markdown bus.
 - Define default TTL/staleness handling and read-receipt shape for B-0213 before runner wiring.
 - Release the Codex claim file in this PR branch per the git-native claim protocol.
 
 ## Tests
+
 - `bun test tools/broadcast-local/schema.test.ts`
 - `git diff --check origin/main...HEAD`
 

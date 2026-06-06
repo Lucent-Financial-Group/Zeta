@@ -28,13 +28,13 @@ When picking up a row, if it feels like it's missing substantial substrate (i.e.
 
 **At-pickup-time:**
 
-> *"maybe add a rule that's like when picking up an item that feels like it's missing substantial substraite see if there is already those prereqs in the backlog"*
+> _"maybe add a rule that's like when picking up an item that feels like it's missing substantial substraite see if there is already those prereqs in the backlog"_
 >
-> *"we should remember somethign liek that"*
+> _"we should remember somethign liek that"_
 
 **At-creation-time:**
 
-> *"when wehn we create new backlog items we should search the baclog for anyting it might depend on from now on too and remember taht"*
+> _"when wehn we create new backlog items we should search the baclog for anyting it might depend on from now on too and remember taht"_
 
 Both messages name the same underlying discipline at different lifecycle points; both cover the natural decision-points where `depends_on:` is being filled.
 
@@ -46,7 +46,7 @@ Both messages name the same underlying discipline at different lifecycle points;
 
 The at-pickup-time discipline is the alternative: instead of a dedicated relationship-analysis pass, every proper-order pick produces 0-2 relationship discoveries as a byproduct of the work it was already going to do. After N ticks of proper-order picks, the depends_on graph fills in organically based on the rows that actually mattered to be picked.
 
-This composes with Aaron's *"the largest mechanizable / automatable backlog wins in the AI age"* meta-thesis — the relationship-analysis pass becomes mechanizable once the discipline is baked into the proper-order pick ritual rather than scheduled as separate work.
+This composes with Aaron's _"the largest mechanizable / automatable backlog wins in the AI age"_ meta-thesis — the relationship-analysis pass becomes mechanizable once the discipline is baked into the proper-order pick ritual rather than scheduled as separate work.
 
 ### Surfaces missing-substrate rows that wouldn't otherwise get filed
 

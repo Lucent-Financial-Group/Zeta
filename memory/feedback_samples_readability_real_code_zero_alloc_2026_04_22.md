@@ -4,6 +4,7 @@ description: Aaron's 2026-04-22 directive separating sample-code and production-
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Samples: readability-first. Real code: zero/low-alloc-first.
 
 ## Rule
@@ -22,9 +23,9 @@ table. This is the discipline the project advertises.
 **Why:** Aaron, 2026-04-22 auto-loop-46, after I "optimized" a sample
 to use struct tuples:
 
-> if that's the discipline you want for samples.  Oh this was sample
-> code?  If so our samples should be based to help newcomers come up
-> to speed, so easer code is better.  real code should follow the
+> if that's the discipline you want for samples. Oh this was sample
+> code? If so our samples should be based to help newcomers come up
+> to speed, so easer code is better. real code should follow the
 > 0/low allocation stuff.
 
 Preceded in the same tick by:
@@ -43,10 +44,10 @@ before they have seen the point.
 ## How to apply
 
 - **Samples under `samples/`** — plain tuples, plain lists, obvious
-  names. A short in-file comment can *point* at the zero-alloc
+  names. A short in-file comment can _point_ at the zero-alloc
   production path (e.g. "production code uses `ZSet.ofPairs` with
   `struct (k, w)` literals — see `docs/BENCHMARKS.md`"). Do not
-  *demonstrate* the zero-alloc path in-sample unless the sample's
+  _demonstrate_ the zero-alloc path in-sample unless the sample's
   subject is zero-alloc itself.
 - **Source under `src/`** — zero-alloc or low-alloc as standard.
   Every `ZSet` construction on a hot path uses `ofPairs` with
@@ -63,16 +64,16 @@ before they have seen the point.
   (`docs/BENCHMARKS.md`, `README.md#performance-design`,
   `docs/CODE-STYLE.md` if it exists). I defaulted to `ZSet.ofSeq`
   based on grep-patterns in the test tree without checking the
-  benchmarks doc — Aaron specifically called out *"you are not
-  reading our docs"* as the fix.
+  benchmarks doc — Aaron specifically called out _"you are not
+  reading our docs"_ as the fix.
 
 ## What this is NOT
 
-- Not license to write *wasteful* sample code. Samples should still
+- Not license to write _wasteful_ sample code. Samples should still
   use the public-surface API idiomatically — just the idiomatic shape,
   not the extreme-perf shape.
 - Not a rule that every `.fs` file under `samples/` is exempt from
-  allocation discipline forever. If the sample's *subject* is a
+  allocation discipline forever. If the sample's _subject_ is a
   performance-property demo, it uses the production shape because the
   shape is the lesson.
 - Not a license to defer zero-alloc in production indefinitely. The
@@ -80,7 +81,7 @@ before they have seen the point.
 - Not a claim that `ZSet.ofPairs` measurably saves allocation over
   `ZSet.ofSeq` in every case — `ofPairs`'s current implementation
   converts to plain tuples internally via `Seq.map`. The discipline
-  is about *intent at the call site* (stack-allocated struct tuples
+  is about _intent at the call site_ (stack-allocated struct tuples
   vs. heap-allocated reference tuples at the literal), not a
   guarantee that the end-to-end allocation is lower.
 

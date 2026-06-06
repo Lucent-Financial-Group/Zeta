@@ -87,17 +87,17 @@ name: stryker-mutation
 on:
   pull_request:
     paths:
-      - "src/Core.CSharp/**"  # Stryker mutation target (iteration-2)
-      - "src/Core/**"  # Core.CSharp.Tests.csproj has direct ProjectReference to Core.fsproj
-      - "tests/Core.CSharp.Tests/**"  # Stryker test-projects (active kill-rate oracle)
+      - "src/Core.CSharp/**" # Stryker mutation target (iteration-2)
+      - "src/Core/**" # Core.CSharp.Tests.csproj has direct ProjectReference to Core.fsproj
+      - "tests/Core.CSharp.Tests/**" # Stryker test-projects (active kill-rate oracle)
       - "stryker-config.json"
       - ".github/workflows/stryker-mutation.yml"
   push:
     branches: [main]
     paths:
-      - "src/Core.CSharp/**"  # Stryker mutation target (iteration-2; matches pull_request paths)
-      - "src/Core/**"  # Core.CSharp.Tests.csproj has direct ProjectReference to Core.fsproj
-      - "tests/Core.CSharp.Tests/**"  # Stryker test-projects (active kill-rate oracle)
+      - "src/Core.CSharp/**" # Stryker mutation target (iteration-2; matches pull_request paths)
+      - "src/Core/**" # Core.CSharp.Tests.csproj has direct ProjectReference to Core.fsproj
+      - "tests/Core.CSharp.Tests/**" # Stryker test-projects (active kill-rate oracle)
       - "stryker-config.json"
       - ".github/workflows/stryker-mutation.yml"
   workflow_dispatch: {}

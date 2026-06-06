@@ -11,9 +11,19 @@ last_updated: 2026-05-09
 depends_on: [B-0380, B-0381]
 composes_with: [B-0023, B-0380, B-0381, B-0382, B-0383, B-0384, B-0386, B-0387]
 parent: B-0023
-tags: [aurora, economics, austrian-school, quant, mathematical-rigor, abct, business-cycle, regime-switching, stochastic-processes]
+tags:
+  [
+    aurora,
+    economics,
+    austrian-school,
+    quant,
+    mathematical-rigor,
+    abct,
+    business-cycle,
+    regime-switching,
+    stochastic-processes,
+  ]
 type: research
-
 ---
 
 # B-0385 — Formalizability assessment: ABCT → credit-cycle stochastic process with regime-switching
@@ -27,8 +37,8 @@ note at `docs/aurora/YYYY-MM-DD-primitive-abct.md`.
 
 ## The Austrian primitive
 
-ABCT (Mises 1912 *Theory of Money and Credit*; Hayek 1929/1931
-*Prices and Production*): when central banks or fractional-reserve
+ABCT (Mises 1912 _Theory of Money and Credit_; Hayek 1929/1931
+_Prices and Production_): when central banks or fractional-reserve
 banks expand credit beyond genuine savings, they artificially lower
 interest rates below the natural rate. This:
 
@@ -41,14 +51,14 @@ interest rates below the natural rate. This:
 
 The boom-bust asymmetry is mechanistic: the Austrian claim is not
 merely "credit expansion causes problems eventually" (which is widely
-agreed) but specifically that the *structure of production* is
+agreed) but specifically that the _structure of production_ is
 distorted in a predictable way and the correction is the liquidation
 of those specific distortions.
 
 Key tension: ABCT predictions about timing have failed empirically
 (post-2008 predictions of immediate hyperinflation). The Austrian
-response is definitional: the prediction is about the *direction*
-and *mechanism* of correction, not the *timing*. Formalizing ABCT
+response is definitional: the prediction is about the _direction_
+and _mechanism_ of correction, not the _timing_. Formalizing ABCT
 forces this definitional question to be resolved.
 
 ## The quant-side analogs
@@ -72,7 +82,7 @@ Credit cycles and regime-switching are well-developed in quant finance:
 
 1. Can ABCT be stated as a regime-switching model where the
    transition probability from boom→bust is increasing in a
-   *credit-expansion-beyond-genuine-savings* state variable?
+   _credit-expansion-beyond-genuine-savings_ state variable?
    What observable is that state variable?
 
 2. Does the Austrian mechanism (malinvestment in specific capital-
@@ -83,14 +93,14 @@ Credit cycles and regime-switching are well-developed in quant finance:
 
 3. The Austrian timing-prediction failure: does formalizing ABCT
    as a stochastic process with uncertain transition times resolve
-   the debate? (The Austrian claim was about *eventual* correction,
+   the debate? (The Austrian claim was about _eventual_ correction,
    not point-in-time prediction.) Or does the stochastic framing
    vacuously make any theory unfalsifiable?
 
 4. What is the relationship between B-0383 (capital-structure
    formalization) and B-0385 (ABCT)? ABCT requires the capital-
    structure formalization as a substrate — this row formalizes the
-   *dynamics* that the capital-structure row formalized the *structure* for.
+   _dynamics_ that the capital-structure row formalized the _structure_ for.
 
 ## Output artifact
 
@@ -123,12 +133,12 @@ ls docs/aurora/ | grep abct
 ## Pre-start checklist
 
 - [x] Prior-art search: B-0381 survey provides prior-work context;
-  no existing `docs/aurora/` note on ABCT formalization.
+      no existing `docs/aurora/` note on ABCT formalization.
 - [x] Dependency-restructure: depends on B-0383 for the capital-structure
-  substrate but parallelizable if B-0383 assessment is in progress —
-  add explicit depends_on on B-0383 if the implementer determines the
-  capital-structure formalization choice gates the ABCT formalization
-  choice. Currently marked as parallelizable with `composes_with`.
+      substrate but parallelizable if B-0383 assessment is in progress —
+      add explicit depends_on on B-0383 if the implementer determines the
+      capital-structure formalization choice gates the ABCT formalization
+      choice. Currently marked as parallelizable with `composes_with`.
 
 ## Composes with
 

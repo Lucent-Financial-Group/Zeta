@@ -13,15 +13,27 @@
 import { Pool } from "pg";
 import { env } from "node:process";
 
-import { createCockroachSqlExecutor, createCockroachOrgEventStore, createCockroachMemoryStateStore } from "../packages/state-cockroach/src/index.ts";
+import {
+  createCockroachSqlExecutor,
+  createCockroachOrgEventStore,
+  createCockroachMemoryStateStore,
+} from "../packages/state-cockroach/src/index.ts";
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
 
 const MEMORY_KINDS = new Set([
-  "memory_retained", "memory_injected", "memory_cited", "memory_outcome_observed",
-  "memory_phase_transition", "memory_reinforced", "memory_archived", "memory_promoted",
-  "memory_demoted", "memory_conflict_flagged", "memory_maintenance_cycle",
+  "memory_retained",
+  "memory_injected",
+  "memory_cited",
+  "memory_outcome_observed",
+  "memory_phase_transition",
+  "memory_reinforced",
+  "memory_archived",
+  "memory_promoted",
+  "memory_demoted",
+  "memory_conflict_flagged",
+  "memory_maintenance_cycle",
 ]);
 
 async function main(): Promise<void> {

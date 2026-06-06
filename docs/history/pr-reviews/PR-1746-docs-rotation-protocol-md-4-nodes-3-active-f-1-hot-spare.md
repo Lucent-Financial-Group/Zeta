@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1746 |
-| Title | docs: ROTATION-PROTOCOL.md — 4 nodes, 3 active, f=1 hot spare |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-06T22:53:38Z |
-| Merged at | 2026-05-06T22:55:58Z |
-| Merge commit SHA | `44502cfdd1fe21b7e224ff01c5d4ea1cbda1cee2` |
-| Branch | `feat/rotation-protocol` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1746 |
-| Changed files | 2 |
-| Additions / deletions | +296 / -0 |
+| Field                 | Value                                                         |
+| --------------------- | ------------------------------------------------------------- |
+| Number                | 1746                                                          |
+| Title                 | docs: ROTATION-PROTOCOL.md — 4 nodes, 3 active, f=1 hot spare |
+| Author                | `AceHack` (human)                                             |
+| State                 | MERGED                                                        |
+| Created at            | 2026-05-06T22:53:38Z                                          |
+| Merged at             | 2026-05-06T22:55:58Z                                          |
+| Merge commit SHA      | `44502cfdd1fe21b7e224ff01c5d4ea1cbda1cee2`                    |
+| Branch                | `feat/rotation-protocol`                                      |
+| Base branch           | `main`                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1746      |
+| Changed files         | 2                                                             |
+| Additions / deletions | +296 / -0                                                     |
 
 ## Description
 
@@ -43,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 6 |
-| Resolved threads | 0 |
-| Unresolved threads | 6 |
-| Total review comments | 6 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 6     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 6     |
+| Total review comments                     | 6     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -67,7 +67,7 @@
 
   <pre>
   P1 (codebase convention): This doc uses persona first-names as node identifiers (e.g., “Otto/Vera/Riven/Lior”). Per `docs/AGENT-BEST-PRACTICES.md` operational rule “No name attribution in code, docs, or skills” (docs/AGENT-BEST-PRACTICES.md:284-356), current-state docs should use role refs instead. Suggest renaming the node column to role-based labels (e.g., harness-based roles) rather than persona names.
-
+  
   </pre>
 
 ### Thread 2 -- unresolved
@@ -82,7 +82,7 @@
 
   <pre>
   P1 (codebase convention): Line 128 references a specific person by name (“Aaron”). This file is a current-state doc under `docs/`, so it should use role refs (e.g., “the human maintainer”) per `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills” (docs/AGENT-BEST-PRACTICES.md:284+).
-
+  
   </pre>
 
 ### Thread 3 -- unresolved
@@ -139,7 +139,7 @@
 
   <pre>
   P1: “B-0215” is ambiguous in this repo right now (there are multiple backlog rows with the same ID in `docs/BACKLOG.md`). Referencing only the bare ID here makes it unclear which work item is meant. Prefer linking to the specific backlog row file path (or include the row title) to avoid misrouting.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

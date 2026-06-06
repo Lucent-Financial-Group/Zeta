@@ -24,7 +24,9 @@ function cleanTestDir(): void {
 }
 
 describe("claim.ts — check", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("check reports unclaimed when bus is empty", () => {
@@ -86,7 +88,9 @@ describe("claim.ts — check", () => {
 });
 
 describe("claim.ts — acquire", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("acquire succeeds on unclaimed item", () => {
@@ -254,7 +258,9 @@ describe("claim.ts — acquire", () => {
 // coordinate; surface-tagged sender IDs (PR #3037) already prevent split-brain
 // across surfaces, so worktree is for observability, not coordination.
 describe("claim.ts — worktree field (B-0444)", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("acquire omits worktree from payload + JSON when --worktree not specified (Copilot review)", () => {
@@ -292,10 +298,14 @@ describe("claim.ts — worktree field (B-0444)", () => {
   test("acquire combines --branch and --worktree in output", () => {
     const r = run(
       "acquire",
-      "--from", "otto-cli",
-      "--item", "B-0603",
-      "--branch", "feat/b0603-test",
-      "--worktree", "/tmp/zeta-test-worktree-B-0603",
+      "--from",
+      "otto-cli",
+      "--item",
+      "B-0603",
+      "--branch",
+      "feat/b0603-test",
+      "--worktree",
+      "/tmp/zeta-test-worktree-B-0603",
     );
     expect(r.exitCode).toBe(0);
     expect(r.stdout).toContain("(feat/b0603-test)");
@@ -314,21 +324,19 @@ describe("claim.ts — worktree field (B-0444)", () => {
   });
 
   test("two surfaces of the same identity in different worktrees — surface IDs still arbitrate, worktree is metadata only", () => {
-    const r1 = run(
-      "acquire",
-      "--from", "otto-cli",
-      "--item", "B-0605",
-      "--worktree", "/tmp/zeta-test-cli-worktree",
-    );
+    const r1 = run("acquire", "--from", "otto-cli", "--item", "B-0605", "--worktree", "/tmp/zeta-test-cli-worktree");
     expect(r1.exitCode).toBe(0);
 
     // otto-desktop on SAME item from a DIFFERENT worktree — REJECTED.
     // Sender-ID surface tag (PR #3037) arbitrates; worktree is observability metadata.
     const r2 = run(
       "acquire",
-      "--from", "otto-desktop",
-      "--item", "B-0605",
-      "--worktree", "/tmp/zeta-test-desktop-worktree",
+      "--from",
+      "otto-desktop",
+      "--item",
+      "B-0605",
+      "--worktree",
+      "/tmp/zeta-test-desktop-worktree",
     );
     expect(r2.exitCode).toBe(1);
     expect(r2.stderr).toContain("otto-cli");
@@ -368,7 +376,9 @@ describe("claim.ts — worktree field (B-0444)", () => {
 });
 
 describe("claim.ts — release", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("release publishes successfully", () => {
@@ -405,7 +415,9 @@ describe("claim.ts — release", () => {
 });
 
 describe("claim.ts — multi-item isolation", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("claims for different items do not interfere", () => {
@@ -432,7 +444,9 @@ describe("claim.ts — multi-item isolation", () => {
 });
 
 describe("claim.ts — unknown command", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("unknown command exits 1", () => {
@@ -446,7 +460,9 @@ describe("claim.ts — unknown command", () => {
 describe("claim.ts — unknown action protection (P2)", () => {
   const BUS_SCRIPT = join(import.meta.dir, "bus.ts");
 
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("unknown action on claim topic does not clear an existing claim", () => {
@@ -455,8 +471,18 @@ describe("claim.ts — unknown action protection (P2)", () => {
     // Inject a message with an unknown action to simulate a buggy sender.
     spawnSync(
       "bun",
-      [BUS_SCRIPT, "publish", "--from", "vera", "--to", "*", "--topic", "claim",
-       "--payload", JSON.stringify({ action: "relinquish", itemId: "B-0300" })],
+      [
+        BUS_SCRIPT,
+        "publish",
+        "--from",
+        "vera",
+        "--to",
+        "*",
+        "--topic",
+        "claim",
+        "--payload",
+        JSON.stringify({ action: "relinquish", itemId: "B-0300" }),
+      ],
       { encoding: "utf-8", env: { ...process.env, ZETA_BUS_DIR: TEST_DIR } },
     );
 
@@ -469,7 +495,9 @@ describe("claim.ts — unknown action protection (P2)", () => {
 // ── P2: same-timestamp mtime tiebreak ────────────────────────────────────────
 
 describe("claim.ts — same-timestamp mtime tiebreak (P2)", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("release with later mtime wins over claim sharing the same ISO timestamp", () => {
@@ -480,18 +508,32 @@ describe("claim.ts — same-timestamp mtime tiebreak (P2)", () => {
     const base = new Date();
     const laterMs = new Date(base.getTime() + 50);
 
-    writeFileSync(join(TEST_DIR, `${claimId}.json`), JSON.stringify({
-      id: claimId, from: "otto", to: "*", topic: "claim",
-      timestamp: ts, expiresAt: exp,
-      payload: { action: "claim", itemId: "B-0999" },
-    }));
+    writeFileSync(
+      join(TEST_DIR, `${claimId}.json`),
+      JSON.stringify({
+        id: claimId,
+        from: "otto",
+        to: "*",
+        topic: "claim",
+        timestamp: ts,
+        expiresAt: exp,
+        payload: { action: "claim", itemId: "B-0999" },
+      }),
+    );
     utimesSync(join(TEST_DIR, `${claimId}.json`), base, base);
 
-    writeFileSync(join(TEST_DIR, `${releaseId}.json`), JSON.stringify({
-      id: releaseId, from: "otto", to: "*", topic: "claim",
-      timestamp: ts, expiresAt: exp,
-      payload: { action: "release", itemId: "B-0999" },
-    }));
+    writeFileSync(
+      join(TEST_DIR, `${releaseId}.json`),
+      JSON.stringify({
+        id: releaseId,
+        from: "otto",
+        to: "*",
+        topic: "claim",
+        timestamp: ts,
+        expiresAt: exp,
+        payload: { action: "release", itemId: "B-0999" },
+      }),
+    );
     utimesSync(join(TEST_DIR, `${releaseId}.json`), laterMs, laterMs);
 
     const r = run("check", "--item", "B-0999");
@@ -503,7 +545,9 @@ describe("claim.ts — same-timestamp mtime tiebreak (P2)", () => {
 // ── P1: acquire lock cleanup + stale lock recovery ───────────────────────────
 
 describe("claim.ts — acquire lock cleanup (P1)", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("no lock files remain in bus dir after acquire", () => {
@@ -539,7 +583,9 @@ describe("claim.ts — acquire lock cleanup (P1)", () => {
 // ── allActiveClaims() ─────────────────────────────────────────────────────────
 
 describe("claim.ts — allActiveClaims()", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-claim-test-"));
+  });
   afterEach(cleanTestDir);
 
   function evalInBus(code: string): { stdout: string; status: number | null } {

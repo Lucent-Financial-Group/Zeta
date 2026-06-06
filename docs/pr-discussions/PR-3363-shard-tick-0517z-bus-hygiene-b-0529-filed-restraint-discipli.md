@@ -38,24 +38,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T05:24:32Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `16fe76f2bf`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -68,24 +66,30 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds the 0517Z tick-history shard, recording bus cleanup, filing B-0529 for tick-shard schema validator drift, and the decision to stop republishing the B-0527 advisory (restraint discipline). This continues the hygiene-history “tick shard” event stream under `docs/hygiene-history/ticks/`.
 
 **Changes:**
+
 - Adds a new tick shard file for 2026-05-15 05:17Z with a pipe-row header plus an H1-rich body.
 - Documents bus-envelope cleanup and current B-0527 collision status.
 - Records the B-0529 backlog filing and links to relevant rule references.
-
 
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/hygiene-history/ticks/2026/05/15/0517Z.md:39**
-* The relative link to `.claude/rules/additive-not-zero-sum.md` is broken for this shard location (it points under `docs/.claude/...`, which doesn’t exist). It should go up to repo root first (add one more `../`, consistent with other tick shards).
+
+- The relative link to `.claude/rules/additive-not-zero-sum.md` is broken for this shard location (it points under `docs/.claude/...`, which doesn’t exist). It should go up to repo root first (add one more `../`, consistent with other tick shards).
+
 ```
 This composes with [`.claude/rules/additive-not-zero-sum.md`](../../../../../.claude/rules/additive-not-zero-sum.md): the substrate already preserves the finding (in 0043Z shard, in 0414Z shard, in B-0529 row referenced PR refs, in this shard). Constant republishing is zero-sum noise; substrate preservation is additive.
 ```
+
 **docs/hygiene-history/ticks/2026/05/15/0517Z.md:49**
-* The relative link to `.claude/rules/otto-channels-reference-card.md` is off by one directory level: `../../../../../.claude/...` resolves to `docs/.claude/...` from this file, but `.claude/` is at the repo root. Add one more `../` so the link resolves correctly.
+
+- The relative link to `.claude/rules/otto-channels-reference-card.md` is off by one directory level: `../../../../../.claude/...` resolves to `docs/.claude/...` from this file, but `.claude/` is at the repo root. Add one more `../` so the link resolves correctly.
+
 ```
 Per [`.claude/rules/otto-channels-reference-card.md`](../../../../../.claude/rules/otto-channels-reference-card.md) ID-allocation discipline:
 ```
+
 </details>
 
 ## Review threads
@@ -94,7 +98,7 @@ Per [`.claude/rules/otto-channels-reference-card.md`](../../../../../.claude/rul
 
 **@chatgpt-codex-connector** (2026-05-15T05:24:32Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix relative paths to `.claude` rule links**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix relative paths to `.claude` rule links**
 
 The rule references in this tick entry use `../../../../../.claude/...`, which from `docs/hygiene-history/ticks/2026/05/15/` resolves to `docs/.claude/...` (non-existent), so the cited governance links are broken for readers. This undermines the traceability this shard relies on, because reviewers cannot open the referenced rule documents directly from the report; the links need one more `..` segment to reach repo root.
 
@@ -107,5 +111,6 @@ Useful? React with 👍 / 👎.
 The relative link to `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` is broken: from this shard path (`docs/hygiene-history/ticks/2026/05/15/0517Z.md`) `../../../../../` resolves to `docs/`, but `.claude/` lives at repo root. Use one more `../` (match other shards in this directory that link via `../../../../../../.claude/...`).
 
 This issue also appears in the following locations of the same file:
+
 - line 39
 - line 49

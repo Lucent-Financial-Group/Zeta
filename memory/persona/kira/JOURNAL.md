@@ -17,8 +17,8 @@ up. Grows monotonically over rounds.
   becomes a bug. Use grep / search to pull the matching
   section on demand.
 - Search hooks: dated section headers (`## Round N — ...`)
-  + persona names + `file:line` citations + finding-type
-  names relevant to this persona's lane.
+  - persona names + `file:line` citations + finding-type
+    names relevant to this persona's lane.
 
 ## Write contract
 

@@ -22,9 +22,7 @@ function setupRepo(): { root: string; cleanup: () => void } {
 
 describe("findSupersessionClaims", () => {
   test("finds backtick ADR supersession targets", () => {
-    const claims = findSupersessionClaims([
-      "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.",
-    ]);
+    const claims = findSupersessionClaims(["**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`."]);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
   });
@@ -40,18 +38,13 @@ describe("findSupersessionClaims", () => {
   });
 
   test("finds markdown link ADR supersession targets", () => {
-    const claims = findSupersessionClaims([
-      "Supersedes ADR [v1](old.md) after review.",
-    ]);
+    const claims = findSupersessionClaims(["Supersedes ADR [v1](old.md) after review."]);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.target).toBe("old.md");
   });
 
   test("finds hard-wrapped markdown link ADR supersession targets", () => {
-    const claims = findSupersessionClaims([
-      "**Status:** Accepted. Supersedes ADR",
-      "[v1](old.md) after review.",
-    ]);
+    const claims = findSupersessionClaims(["**Status:** Accepted. Supersedes ADR", "[v1](old.md) after review."]);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.line).toBe(1);
     expect(claims.at(0)?.target).toBe("old.md");
@@ -79,9 +72,7 @@ describe("findSupersessionClaims", () => {
   });
 
   test("strips markdown link titles from supersession targets", () => {
-    const claims = findSupersessionClaims([
-      'Supersedes ADR [v1](old.md "historical record").',
-    ]);
+    const claims = findSupersessionClaims(['Supersedes ADR [v1](old.md "historical record").']);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.target).toBe("old.md");
   });
@@ -98,36 +89,25 @@ describe("findSupersessionClaims", () => {
   });
 
   test("finds hard-wrapped markdown link with blockquote prefix on continuation", () => {
-    const claims = findSupersessionClaims([
-      "**Status:** Accepted. Supersedes ADR",
-      "> [v1](old.md) after review.",
-    ]);
+    const claims = findSupersessionClaims(["**Status:** Accepted. Supersedes ADR", "> [v1](old.md) after review."]);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.line).toBe(1);
     expect(claims.at(0)?.target).toBe("old.md");
   });
 
   test("ignores supersession text inside fenced code", () => {
-    const claims = findSupersessionClaims([
-      "```md",
-      "Supersedes ADR `docs/DECISIONS/old.md`",
-      "```",
-    ]);
+    const claims = findSupersessionClaims(["```md", "Supersedes ADR `docs/DECISIONS/old.md`", "```"]);
     expect(claims).toEqual([]);
   });
 
   test("finds backtick target with anchor suffix", () => {
-    const claims = findSupersessionClaims([
-      "Supersedes ADR `docs/DECISIONS/old.md#status`.",
-    ]);
+    const claims = findSupersessionClaims(["Supersedes ADR `docs/DECISIONS/old.md#status`."]);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
   });
 
   test("finds backtick target with query suffix", () => {
-    const claims = findSupersessionClaims([
-      "Supersedes ADR `docs/DECISIONS/old.md?v=2`.",
-    ]);
+    const claims = findSupersessionClaims(["Supersedes ADR `docs/DECISIONS/old.md?v=2`."]);
     expect(claims).toHaveLength(1);
     expect(claims.at(0)?.target).toBe("docs/DECISIONS/old.md");
   });
@@ -142,12 +122,7 @@ describe("checkFile", () => {
       writeFileSync(oldAdr, "# ADR old\n\n**Status:** Accepted.\n");
       writeFileSync(
         newAdr,
-        [
-          "# ADR new",
-          "",
-          "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.",
-          "",
-        ].join("\n"),
+        ["# ADR new", "", "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.", ""].join("\n"),
       );
 
       const result = checkFile(newAdr);
@@ -164,23 +139,10 @@ describe("checkFile", () => {
     try {
       const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
       const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
-      writeFileSync(
-        oldAdr,
-        [
-          "# ADR old",
-          "",
-          "> **Superseded by** [`docs/DECISIONS/new.md`](new.md).",
-          "",
-        ].join("\n"),
-      );
+      writeFileSync(oldAdr, ["# ADR old", "", "> **Superseded by** [`docs/DECISIONS/new.md`](new.md).", ""].join("\n"));
       writeFileSync(
         newAdr,
-        [
-          "# ADR new",
-          "",
-          "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.",
-          "",
-        ].join("\n"),
+        ["# ADR new", "", "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.", ""].join("\n"),
       );
 
       const result = checkFile(newAdr);
@@ -198,22 +160,11 @@ describe("checkFile", () => {
       const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
       writeFileSync(
         oldAdr,
-        [
-          "# ADR old",
-          "",
-          "> **Superseded by**",
-          "> [`docs/DECISIONS/new.md`](new.md).",
-          "",
-        ].join("\n"),
+        ["# ADR old", "", "> **Superseded by**", "> [`docs/DECISIONS/new.md`](new.md).", ""].join("\n"),
       );
       writeFileSync(
         newAdr,
-        [
-          "# ADR new",
-          "",
-          "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.",
-          "",
-        ].join("\n"),
+        ["# ADR new", "", "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.", ""].join("\n"),
       );
 
       const result = checkFile(newAdr);
@@ -232,11 +183,7 @@ describe("checkFile", () => {
       writeFileSync(oldAdr, "# ADR old\n");
       writeFileSync(
         newAdr,
-        [
-          "**Status:** Accepted. Supersedes ADR",
-          "> [v1](docs/DECISIONS/old.md) after review.",
-          "",
-        ].join("\n"),
+        ["**Status:** Accepted. Supersedes ADR", "> [v1](docs/DECISIONS/old.md) after review.", ""].join("\n"),
       );
 
       const result = checkFile(newAdr);
@@ -253,10 +200,7 @@ describe("checkFile", () => {
     try {
       const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
       const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
-      writeFileSync(
-        oldAdr,
-        "> **Superseded by** [`other.md`](other.md).\n",
-      );
+      writeFileSync(oldAdr, "> **Superseded by** [`other.md`](other.md).\n");
       writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
 
       const result = checkFile(newAdr);
@@ -273,10 +217,7 @@ describe("checkFile", () => {
     try {
       const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
       const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
-      writeFileSync(
-        oldAdr,
-        "> **Superseded by** [`renew.md`](renew.md) and `new.md.bak`.\n",
-      );
+      writeFileSync(oldAdr, "> **Superseded by** [`renew.md`](renew.md) and `new.md.bak`.\n");
       writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
 
       const result = checkFile(newAdr);
@@ -330,17 +271,9 @@ describe("checkFile", () => {
       // old.md: "superseded by" appears in prose; the NEXT line contains the ADR name as prose too
       writeFileSync(
         oldAdr,
-        [
-          "# ADR old",
-          "",
-          "This approach was superseded by",
-          "new.md conventions adopted later.",
-        ].join("\n"),
+        ["# ADR old", "", "This approach was superseded by", "new.md conventions adopted later."].join("\n"),
       );
-      writeFileSync(
-        newAdr,
-        "Supersedes ADR `docs/DECISIONS/old.md`.\n",
-      );
+      writeFileSync(newAdr, "Supersedes ADR `docs/DECISIONS/old.md`.\n");
 
       const result = checkFile(newAdr);
       expect(result.ok).toBe(true);
@@ -384,13 +317,7 @@ describe("checkFile", () => {
       const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
       writeFileSync(
         oldAdr,
-        [
-          "# ADR old",
-          "",
-          "> **Superseded by**",
-          "`new.md` appears in unrelated prose.",
-          "",
-        ].join("\n"),
+        ["# ADR old", "", "> **Superseded by**", "`new.md` appears in unrelated prose.", ""].join("\n"),
       );
       writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
 
@@ -411,20 +338,9 @@ describe("checkFile", () => {
       // old.md has "superseded by" only inside a fenced code block — no real prose marker
       writeFileSync(
         oldAdr,
-        [
-          "# ADR old",
-          "",
-          "```md",
-          "Superseded by new.md",
-          "```",
-          "",
-          "**Status:** Accepted.",
-        ].join("\n"),
+        ["# ADR old", "", "```md", "Superseded by new.md", "```", "", "**Status:** Accepted."].join("\n"),
       );
-      writeFileSync(
-        newAdr,
-        "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.\n",
-      );
+      writeFileSync(newAdr, "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.\n");
 
       const result = checkFile(newAdr);
       expect(result.ok).toBe(true);
@@ -442,15 +358,7 @@ describe("checkFile", () => {
       const oldAdr = join(fx.root, "docs", "DECISIONS", "old.md");
       const newAdr = join(fx.root, "docs", "DECISIONS", "new.md");
       // old.md: "superseded by new.md" appears inline in a Status sentence (not a marker form)
-      writeFileSync(
-        oldAdr,
-        [
-          "# ADR old",
-          "",
-          "**Status:** Superseded by new.md.",
-          "",
-        ].join("\n"),
-      );
+      writeFileSync(oldAdr, ["# ADR old", "", "**Status:** Superseded by new.md.", ""].join("\n"));
       writeFileSync(newAdr, "Supersedes ADR [v1](old.md).\n");
 
       const result = checkFile(newAdr);
@@ -471,20 +379,11 @@ describe("checkFile", () => {
       // old.md: canonical marker form is inside a tilde fence — must not count
       writeFileSync(
         oldAdr,
-        [
-          "# ADR old",
-          "",
-          "~~~md",
-          "> **Superseded by** [`new.md`](new.md).",
-          "~~~",
-          "",
-          "**Status:** Accepted.",
-        ].join("\n"),
+        ["# ADR old", "", "~~~md", "> **Superseded by** [`new.md`](new.md).", "~~~", "", "**Status:** Accepted."].join(
+          "\n",
+        ),
       );
-      writeFileSync(
-        newAdr,
-        "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.\n",
-      );
+      writeFileSync(newAdr, "**Status:** Accepted. Supersedes ADR `docs/DECISIONS/old.md`.\n");
 
       const result = checkFile(newAdr);
       expect(result.ok).toBe(true);

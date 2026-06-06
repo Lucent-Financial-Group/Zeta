@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1884 |
-| Title | memory(shadow): log rationalizing replay catch |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T14:16:24Z |
-| Merged at | 2026-05-07T14:24:58Z |
-| Merge commit SHA | `ccb28f13eb56e11ae6a45e66611da2fbc3950b2e` |
-| Branch | `codex/shadow-log-rationalizing-replay` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1884 |
-| Changed files | 2 |
-| Additions / deletions | +21 / -30 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1884                                                     |
+| Title                 | memory(shadow): log rationalizing replay catch           |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T14:16:24Z                                     |
+| Merged at             | 2026-05-07T14:24:58Z                                     |
+| Merge commit SHA      | `ccb28f13eb56e11ae6a45e66611da2fbc3950b2e`               |
+| Branch                | `codex/shadow-log-rationalizing-replay`                  |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1884 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +21 / -30                                                |
 
 ## Description
 
 ## Summary
+
 - Add Catch 15 for rationalizing replay: a plausible WHY inserted into a raw observation during sensitive draft replay/refinement.
 - Preserve the shadow mechanic without committing private boss-email or medical disclosure text.
 - Update memory/MEMORY.md to 15 catches and remove older duplicate index rows exposed by the memory duplicate-link gate.
 
 ## Checks
+
 - bun x markdownlint-cli2 memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md memory/MEMORY.md
 - git diff --check
 - bun tools/hygiene/audit-memory-references.ts
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 1 |
-| Unresolved threads | 0 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 1     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -65,7 +67,7 @@
 
   <pre>
   The Pattern summary table contains duplicate `pattern_key` entries for `confident-fabrication` (one row lists `6, 7, 13` and another lists `13`). This should be consolidated into a single row so the summary remains unambiguous and the recurrence/catches columns can be trusted.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

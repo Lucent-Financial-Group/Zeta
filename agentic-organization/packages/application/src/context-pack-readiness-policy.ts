@@ -201,7 +201,9 @@ export function contextPackHasInvalidTimestamps(pack: ContextPack, observedAt: s
 export function contextPackIsStale(pack: ContextPack, observedAt: string): boolean {
   return (
     pack.staleInputs.length > 0 ||
-    pack.items.some((item) => item.freshness === ContextPackFreshness.Stale || item.freshness === ContextPackFreshness.Archived) ||
+    pack.items.some(
+      (item) => item.freshness === ContextPackFreshness.Stale || item.freshness === ContextPackFreshness.Archived,
+    ) ||
     Date.parse(pack.freshnessDeadline) <= Date.parse(observedAt)
   );
 }
@@ -216,10 +218,7 @@ export function contextPackHasMissingRequiredCurationStage(pack: ContextPack): b
 }
 
 function uniqueRequiredCurationStages(pack: ContextPack): readonly ContextPackCurationStageKindType[] {
-  return [...new Set([
-    ...REQUIRED_CURRENT_CONTEXT_PACK_STAGES,
-    ...(pack.curationPlan?.requiredStages ?? []),
-  ])];
+  return [...new Set([...REQUIRED_CURRENT_CONTEXT_PACK_STAGES, ...(pack.curationPlan?.requiredStages ?? [])])];
 }
 
 function contextPackReadinessWithTenantLayers(
@@ -264,21 +263,13 @@ function contextPackReadinessWithTenantLayers(
 
   const hardStopReasons = uniqueStrings([
     ...base.hardStopReasons,
-    ...uncertaintyRules
-      .filter((rule) => ruleMatchesPackUncertainty(rule, request.pack))
-      .map((rule) => rule.message),
-    ...omissionRules
-      .filter((rule) => ruleMatchesPackOmissions(rule, request.pack))
-      .map((rule) => rule.message),
-    ...contradictionRules
-      .filter(() => packHasContradictions(request.pack))
-      .map((rule) => rule.message),
+    ...uncertaintyRules.filter((rule) => ruleMatchesPackUncertainty(rule, request.pack)).map((rule) => rule.message),
+    ...omissionRules.filter((rule) => ruleMatchesPackOmissions(rule, request.pack)).map((rule) => rule.message),
+    ...contradictionRules.filter(() => packHasContradictions(request.pack)).map((rule) => rule.message),
     ...lifecycleBlockerRules
       .filter((rule) => ruleMatchesLifecycleBlockers(rule, request.pack))
       .map((rule) => rule.message),
-    ...staleRules
-      .filter((rule) => ruleMatchesStaleness(rule, request.pack))
-      .map((rule) => rule.message),
+    ...staleRules.filter((rule) => ruleMatchesStaleness(rule, request.pack)).map((rule) => rule.message),
   ]);
 
   if (appliedLayerIds.length === 0 && hardStopReasons.length === base.hardStopReasons.length) return base;
@@ -326,7 +317,7 @@ function tenantReadinessLayerRules(layer: TenantConfigLayer): TenantContextPackR
 }
 
 function tenantContextPackReadinessPolicy(value: unknown): TenantContextPackReadinessPolicy | null {
-  return isRecord(value) ? value as TenantContextPackReadinessPolicy : null;
+  return isRecord(value) ? (value as TenantContextPackReadinessPolicy) : null;
 }
 
 function uncertaintyHardStopRulesFrom(
@@ -365,9 +356,7 @@ function omissionHardStopRulesFrom(
   });
 }
 
-function omissionHardStopRule(
-  rule: TenantContextPackOmissionHardStopRule,
-): NormalizedOmissionHardStopRule | null {
+function omissionHardStopRule(rule: TenantContextPackOmissionHardStopRule): NormalizedOmissionHardStopRule | null {
   const ruleId = optionalString(rule.ruleId);
   const message = optionalString(rule.message);
   if (ruleId === undefined || message === undefined) return null;
@@ -437,9 +426,7 @@ function staleHardStopRulesFrom(
   });
 }
 
-function staleHardStopRule(
-  rule: TenantContextPackStaleHardStopRule,
-): NormalizedStaleHardStopRule | null {
+function staleHardStopRule(rule: TenantContextPackStaleHardStopRule): NormalizedStaleHardStopRule | null {
   const ruleId = optionalString(rule.ruleId);
   const message = optionalString(rule.message);
   if (ruleId === undefined || message === undefined) return null;
@@ -453,19 +440,17 @@ function staleHardStopRule(
 }
 
 function ruleMatchesPackUncertainty(rule: NormalizedUncertaintyHardStopRule, pack: ContextPack): boolean {
-  return (pack.uncertaintySignals ?? []).some((signal) =>
-    signal.severity === rule.severity &&
-    (rule.kinds.length === 0 || rule.kinds.includes(signal.kind))
+  return (pack.uncertaintySignals ?? []).some(
+    (signal) => signal.severity === rule.severity && (rule.kinds.length === 0 || rule.kinds.includes(signal.kind)),
   );
 }
 
 function ruleMatchesPackOmissions(rule: NormalizedOmissionHardStopRule, pack: ContextPack): boolean {
-  return pack.omittedItemsWithReason.some((omission) =>
-    (rule.reasons.length === 0 || rule.reasons.includes(omission.reason)) &&
-    (
-      rule.nodeIdPrefixes.length === 0 ||
-      (omission.nodeId !== undefined && rule.nodeIdPrefixes.some((prefix) => omission.nodeId?.startsWith(prefix)))
-    )
+  return pack.omittedItemsWithReason.some(
+    (omission) =>
+      (rule.reasons.length === 0 || rule.reasons.includes(omission.reason)) &&
+      (rule.nodeIdPrefixes.length === 0 ||
+        (omission.nodeId !== undefined && rule.nodeIdPrefixes.some((prefix) => omission.nodeId?.startsWith(prefix)))),
   );
 }
 
@@ -474,9 +459,8 @@ function packHasContradictions(pack: ContextPack): boolean {
 }
 
 function ruleMatchesLifecycleBlockers(rule: NormalizedLifecycleBlockerHardStopRule, pack: ContextPack): boolean {
-  return pack.lifecycleBlockers.some((blocker) =>
-    rule.blockerPrefixes.length === 0 ||
-    rule.blockerPrefixes.some((prefix) => blocker.startsWith(prefix))
+  return pack.lifecycleBlockers.some(
+    (blocker) => rule.blockerPrefixes.length === 0 || rule.blockerPrefixes.some((prefix) => blocker.startsWith(prefix)),
   );
 }
 
@@ -485,19 +469,17 @@ function ruleMatchesStaleness(rule: NormalizedStaleHardStopRule, pack: ContextPa
 }
 
 function staleInputsMatch(rule: NormalizedStaleHardStopRule, pack: ContextPack): boolean {
-  return pack.staleInputs.some((staleInput) =>
-    rule.staleInputPrefixes.length === 0 ||
-    rule.staleInputPrefixes.some((prefix) => staleInput.startsWith(prefix))
+  return pack.staleInputs.some(
+    (staleInput) =>
+      rule.staleInputPrefixes.length === 0 || rule.staleInputPrefixes.some((prefix) => staleInput.startsWith(prefix)),
   );
 }
 
 function staleItemsMatch(rule: NormalizedStaleHardStopRule, pack: ContextPack): boolean {
-  return pack.items.some((item) =>
-    (item.freshness === ContextPackFreshness.Stale || item.freshness === ContextPackFreshness.Archived) &&
-    (
-      rule.itemIdPrefixes.length === 0 ||
-      rule.itemIdPrefixes.some((prefix) => item.id.startsWith(prefix))
-    )
+  return pack.items.some(
+    (item) =>
+      (item.freshness === ContextPackFreshness.Stale || item.freshness === ContextPackFreshness.Archived) &&
+      (rule.itemIdPrefixes.length === 0 || rule.itemIdPrefixes.some((prefix) => item.id.startsWith(prefix))),
   );
 }
 
@@ -515,7 +497,9 @@ function omissionReasons(values: readonly unknown[] | undefined): readonly Conte
   return uniqueStrings(values.filter(isTenantContextPackOmissionReason));
 }
 
-function normalizedAppliesTo(appliesTo: TenantContextPackCompletenessAppliesTo | undefined): NormalizedReadinessAppliesTo {
+function normalizedAppliesTo(
+  appliesTo: TenantContextPackCompletenessAppliesTo | undefined,
+): NormalizedReadinessAppliesTo {
   if (!isRecord(appliesTo)) return EMPTY_READINESS_APPLIES_TO;
   return {
     hatIds: nonEmptyStrings(appliesTo.hatIds),
@@ -534,13 +518,15 @@ function ruleApplies(
 ): boolean {
   const snapshot = request.snapshot;
   if (snapshot === undefined) return false;
-  return filterMatches(rule.appliesTo.hatIds, snapshot.hat.id) &&
+  return (
+    filterMatches(rule.appliesTo.hatIds, snapshot.hat.id) &&
     filterMatches(rule.appliesTo.departmentIds, snapshot.hat.departmentId) &&
     filterMatches(rule.appliesTo.phases, snapshot.phase) &&
     filterMatches(rule.appliesTo.scopes, snapshot.scope) &&
     filterMatches(rule.appliesTo.projectIds, snapshot.projectId) &&
     filterMatches(rule.appliesTo.teamIds, snapshot.teamId) &&
-    filterMatches(rule.appliesTo.workItemIds, snapshot.workItemId);
+    filterMatches(rule.appliesTo.workItemIds, snapshot.workItemId)
+  );
 }
 
 function tenantConfigLayerMatches(layer: TenantConfigLayer, request: ContextPackReadinessPolicyRequest): boolean {
@@ -559,8 +545,8 @@ function tenantConfigLayerMatches(layer: TenantConfigLayer, request: ContextPack
 }
 
 function compareTenantConfigLayers(left: TenantConfigLayer, right: TenantConfigLayer): number {
-  const specificity = TenantContextPackLayerSpecificity[left.scope.kind] -
-    TenantContextPackLayerSpecificity[right.scope.kind];
+  const specificity =
+    TenantContextPackLayerSpecificity[left.scope.kind] - TenantContextPackLayerSpecificity[right.scope.kind];
   if (specificity !== 0) return specificity;
   const updatedAt = left.updatedAt.localeCompare(right.updatedAt);
   if (updatedAt !== 0) return updatedAt;
@@ -569,10 +555,7 @@ function compareTenantConfigLayers(left: TenantConfigLayer, right: TenantConfigL
   return left.layerId.localeCompare(right.layerId);
 }
 
-function statusWithHardStops(
-  baseStatus: ContextPackStatus,
-  hardStopReasons: readonly string[],
-): ContextPackStatus {
+function statusWithHardStops(baseStatus: ContextPackStatus, hardStopReasons: readonly string[]): ContextPackStatus {
   if (hardStopReasons.length === 0) return baseStatus;
   if (baseStatus === ContextPackStatus.Current || baseStatus === ContextPackStatus.Stale) {
     return ContextPackStatus.Incomplete;

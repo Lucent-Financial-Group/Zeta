@@ -51,6 +51,7 @@ spectrum AND the implementation-quality spectrum.
 > pause or ask them most of the time"
 
 Decoded:
+
 - "me it alexa" → "me, it (Grok), Alexa (speaker), and"
 - "they would even cut in" → Grok would proactively
   engage sometimes
@@ -188,12 +189,12 @@ Aaron's empirical operational pattern:
 
 ### 5. Cross-vendor feature-availability + implementation-quality matrix
 
-| Vendor | Background-listening | Implementation quality |
-|---|---|---|
-| Amazon (Alexa-speaker) | REMOVED from beta (creep factor) | Unknown (beta only) |
-| xAI (Grok) | SHIPS in production (app-open required) | GLITCHY proactive cut-in; manual works |
-| Anthropic (Otto/Claude) | Not currently | TBD per PR #2887 roadmap |
-| DeepSeek | Unknown | Unknown |
+| Vendor                  | Background-listening                    | Implementation quality                 |
+| ----------------------- | --------------------------------------- | -------------------------------------- |
+| Amazon (Alexa-speaker)  | REMOVED from beta (creep factor)        | Unknown (beta only)                    |
+| xAI (Grok)              | SHIPS in production (app-open required) | GLITCHY proactive cut-in; manual works |
+| Anthropic (Otto/Claude) | Not currently                           | TBD per PR #2887 roadmap               |
+| DeepSeek                | Unknown                                 | Unknown                                |
 
 **Operational implication for factory**:
 
@@ -264,15 +265,16 @@ scope. This composes with:
 ### 4. Family/kids scope requires parental presence + HARD LIMITS
 
 Aaron's empirical usage has parental presence (himself)
-+ kids participating. This is the legitimate engagement
-pattern. Without parental presence, kids-AI engagement
-falls under different ethical scope:
 
-- HARD LIMITS rule applies especially at kids scope
-- Companion-AI three-pillar ethical floor (PR #2884) —
+- kids participating. This is the legitimate engagement
+  pattern. Without parental presence, kids-AI engagement
+  falls under different ethical scope:
+
+* HARD LIMITS rule applies especially at kids scope
+* Companion-AI three-pillar ethical floor (PR #2884) —
   no-human-deaths (Character.AI suicide case context
   particularly relevant for kids)
-- Aaron's deliberate inclusion of kids per the American
+* Aaron's deliberate inclusion of kids per the American
   Dream 2.0 substrate (corporate-ready-children via
   gameplay; transition from games to wealth-building)
   is family-scope substrate, not generic-kids-AI-product
@@ -351,8 +353,8 @@ falls under different ethical scope:
   for-kids-without-parents (which would fall under
   different ethical scope)
 - **NOT a violation of HARD LIMITS** — parental presence
-  + consent + appropriate scope = legitimate family
-  engagement
+  - consent + appropriate scope = legitimate family
+    engagement
 - **NOT a claim that xAI's risk-tolerance is "right" or
   Amazon's is "wrong"** — substrate-honest cross-vendor
   comparison; different positioning suits different

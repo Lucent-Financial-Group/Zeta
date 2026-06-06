@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 auto-loop-39 three-message constraint-frame on the
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Zeta self-use germination — local-native constraint-frame
 
 ## Signal
@@ -13,9 +14,9 @@ arriving right after the bidirectional-absorption signal
 (Amara absorbing into OpenAI native project system +
 Zeta repo ingestion by OpenAI Deep Research):
 
-1. *"also im stupid now that we have symbiosis symmetry we can germinate the seed with our tiny bin file database"*
-2. *"no cloud"*
-3. *"local native"*
+1. _"also im stupid now that we have symbiosis symmetry we can germinate the seed with our tiny bin file database"_
+2. _"no cloud"_
+3. _"local native"_
 
 "im stupid" = self-deprecating realisation that the answer
 was there all along. The factory already has the seed — the
@@ -50,7 +51,7 @@ The openai-deep-ingest-cross-substrate-readability note
 argued git+markdown is universally cross-agent-readable;
 migrating to Zeta-backed indexes would reduce that
 surface. **Both claims hold simultaneously** if the
-dogfood substrate is tiny-bin-files that sit *next to*
+dogfood substrate is tiny-bin-files that sit _next to_
 the git+markdown mirror, not replacing it:
 
 - External agents continue to clone-and-read markdown.
@@ -102,8 +103,8 @@ direction yet.
 ## Soulfile = stored-procedure DSL in the DB
 
 Architectural clarification (Aaron 2026-04-22 auto-loop-
-39): *"when it invokes the soul file that's our stored
-procedure DSL in the DB"*.
+39): _"when it invokes the soul file that's our stored
+procedure DSL in the DB"_.
 
 Soulfiles are NOT passive state dumps. They are stored-
 procedure-class callables authored in a DSL living
@@ -128,8 +129,8 @@ purpose query engine.
 
 ## Reaqtor-like reactive-closure semantics
 
-Aaron 2026-04-22 auto-loop-39: *"based on reaqtor like
-closure over our modeles decsions in real time"*.
+Aaron 2026-04-22 auto-loop-39: _"based on reaqtor like
+closure over our modeles decsions in real time"_.
 
 The stored-procedure DSL has Reaqtor (Microsoft's
 durable reactive programming library, DBSP-ancestry)

@@ -17,22 +17,22 @@ installs in dependency order (leaves first, root last).
 This slice uses the **inline-URL** resolution model: each dependency edge
 carries its own resolved location and integrity pin. There is **no registry and
 no version solving** — those are slice 5. The inline-pinned graph this slice
-resolves is exactly the shape a future registry resolver produces *after*
+resolves is exactly the shape a future registry resolver produces _after_
 solving, so slice 4 is the lower half of the registry design, not a throwaway
 detour.
 
 ## Decisions (this spec locks them)
 
-| # | Decision | Choice |
-|---|---|---|
-| D1 | Resolution model | **Inline-URL** — dependency edges carry `{name, version, url, package_hash}`. Registry + semver = slice 5. |
-| D2 | Graph shape | **Recursive / transitive** — a fetched dependency is itself a full package with its own `dependencies`; resolution recurses. |
-| D3 | Version skew (same name, different version, in one graph) | **Strict-refuse** — hard error, install nothing. One name → one version per install graph. Easiest to relax later behind a flag. |
-| D4 | Same name + same version + different `package_hash` | **Always hard-refuse** (`tamper`) — two different packages cannot both be that declared identity. |
-| D5 | Diamond (same name + same version + same `package_hash` via multiple paths) | **Dedup** — visit/install once. Identical `package_hash` ⇒ byte-identical package (manifest+signature+files), so the already-verified node is safe to reuse. |
-| D6 | Atomicity | **Resolve+verify the whole graph, THEN preflight every node's file-path safety + store-key uniqueness, THEN extract.** Any resolution / verification / preflight failure → install nothing. |
-| D7 | Lockfile | **None this slice.** The manifest's inline pins already *are* the transitive lock. (Lockfile becomes relevant in slice 5, where a solver's output needs pinning.) |
-| D8 | Signature policy | Per-node slice-3 gate. A present-but-bad / untrusted / unsupported-algo signature on **any** node hard-refuses always. `--allow-no-signature` applies **graph-wide** and only permits nodes that carry **no** signature. |
+| #   | Decision                                                                    | Choice                                                                                                                                                                                                                   |
+| --- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| D1  | Resolution model                                                            | **Inline-URL** — dependency edges carry `{name, version, url, package_hash}`. Registry + semver = slice 5.                                                                                                               |
+| D2  | Graph shape                                                                 | **Recursive / transitive** — a fetched dependency is itself a full package with its own `dependencies`; resolution recurses.                                                                                             |
+| D3  | Version skew (same name, different version, in one graph)                   | **Strict-refuse** — hard error, install nothing. One name → one version per install graph. Easiest to relax later behind a flag.                                                                                         |
+| D4  | Same name + same version + different `package_hash`                         | **Always hard-refuse** (`tamper`) — two different packages cannot both be that declared identity.                                                                                                                        |
+| D5  | Diamond (same name + same version + same `package_hash` via multiple paths) | **Dedup** — visit/install once. Identical `package_hash` ⇒ byte-identical package (manifest+signature+files), so the already-verified node is safe to reuse.                                                             |
+| D6  | Atomicity                                                                   | **Resolve+verify the whole graph, THEN preflight every node's file-path safety + store-key uniqueness, THEN extract.** Any resolution / verification / preflight failure → install nothing.                              |
+| D7  | Lockfile                                                                    | **None this slice.** The manifest's inline pins already _are_ the transitive lock. (Lockfile becomes relevant in slice 5, where a solver's output needs pinning.)                                                        |
+| D8  | Signature policy                                                            | Per-node slice-3 gate. A present-but-bad / untrusted / unsupported-algo signature on **any** node hard-refuses always. `--allow-no-signature` applies **graph-wide** and only permits nodes that carry **no** signature. |
 
 ## Manifest extension
 
@@ -40,21 +40,21 @@ detour.
 
 ```ts
 export interface AceDependency {
-  readonly name: string;         // identity — skew detection + error messages
-  readonly version: string;      // identity — skew detection + error messages
-  readonly url: string;          // where to fetch the dependency package (http(s) or path)
+  readonly name: string; // identity — skew detection + error messages
+  readonly version: string; // identity — skew detection + error messages
+  readonly url: string; // where to fetch the dependency package (http(s) or path)
   readonly package_hash: string; // integrity pin — sha256 of the canonical FULL package
-                                 // (manifest incl. signature + files), NOT files-only.
+  // (manifest incl. signature + files), NOT files-only.
 }
 
 export interface AceManifest {
   readonly format_version: number;
   readonly name: string;
   readonly version: string;
-  readonly content_hash: string;   // slice-2: sha256(files) — the package's OWN files hash (unchanged)
+  readonly content_hash: string; // slice-2: sha256(files) — the package's OWN files hash (unchanged)
   readonly description?: string;
   readonly signature?: { readonly algo: string; readonly key_id: string; readonly sig: string };
-  readonly dependencies?: ReadonlyArray<AceDependency>;   // NEW — absent = leaf
+  readonly dependencies?: ReadonlyArray<AceDependency>; // NEW — absent = leaf
 }
 ```
 
@@ -64,11 +64,11 @@ byte-for-byte unaffected** (back-compat).
 **Two distinct hashes, two distinct jobs** (this separation closes the dedup
 hole — see the Algorithm note):
 
-- `manifest.content_hash` = `sha256(files)` — the package's *own* slice-2 files
+- `manifest.content_hash` = `sha256(files)` — the package's _own_ slice-2 files
   hash. A package self-verifies its files against it. Unchanged from slice 2.
 - `AceDependency.package_hash` = `sha256` of the canonical JSON of the **entire
   package** (`{manifest, files}`, manifest including its `signature` field) —
-  the *parent's* pin on a *specific, whole* dependency. Canonicalization is the
+  the _parent's_ pin on a _specific, whole_ dependency. Canonicalization is the
   recursive key-sort already used in slice 3 (applied here to the whole package,
   signature **included**, since the signature is part of the package's identity).
 
@@ -88,21 +88,21 @@ and production wires in `fetch` / `readFileSync`.
 export type FetchPackage = (urlOrPath: string) => Promise<string>;
 
 export type ResolveResult =
-  | { ok: true; order: ReadonlyArray<AcePackage> }   // topo order, leaves first, root last
+  | { ok: true; order: ReadonlyArray<AcePackage> } // topo order, leaves first, root last
   | { ok: false; reason: ResolveReason; detail: string; path: ReadonlyArray<string> };
 
 export type ResolveReason =
-  | "version-skew"        // D3: same name, two versions in the graph
-  | "tamper"              // D4: same name+version, different package_hash
-  | "pin-mismatch"        // fetched package's hash/identity != the edge's declared pin
-  | "bad-content-hash"    // slice-2: dep files do not hash to its manifest.content_hash
-  | "bad-signature"       // slice-3: present signature fails verification
-  | "untrusted-key"       // slice-3: signature by a key not in the trust store
-  | "unsupported-algo"    // slice-3: signature.algo !== "ed25519"
-  | "no-signature"        // node carries no signature and --allow-no-signature not given
-  | "cycle"               // back-edge in the dependency graph
-  | "fetch-failed"        // url/path could not be fetched or parsed as a package
-  | "invalid-package";    // fetched JSON is not a well-formed AcePackage
+  | "version-skew" // D3: same name, two versions in the graph
+  | "tamper" // D4: same name+version, different package_hash
+  | "pin-mismatch" // fetched package's hash/identity != the edge's declared pin
+  | "bad-content-hash" // slice-2: dep files do not hash to its manifest.content_hash
+  | "bad-signature" // slice-3: present signature fails verification
+  | "untrusted-key" // slice-3: signature by a key not in the trust store
+  | "unsupported-algo" // slice-3: signature.algo !== "ed25519"
+  | "no-signature" // node carries no signature and --allow-no-signature not given
+  | "cycle" // back-edge in the dependency graph
+  | "fetch-failed" // url/path could not be fetched or parsed as a package
+  | "invalid-package"; // fetched JSON is not a well-formed AcePackage
 
 export async function resolve(
   root: AcePackage,
@@ -155,11 +155,11 @@ whole `{manifest, files}` (signature included). The resolver verifies; it does
 3. If `root.manifest.dependencies` is absent/empty → install the single package exactly as today (no behavior change for leaf packages).
 4. Else call `resolve(root, fetchPackage, loadTrustStore(), {allowNoSignature})`:
    - `ok:false` → print `reason`, `detail`, and the dependency `path`; **exit non-zero; install nothing** (atomic — D6).
-   - `ok:true` → **preflight**: run the file-path safety validation `installPackage` does (reject `..` / absolute / backslash paths) for **every** node in `order` *without writing*; if any node fails → print the offending node + path; **exit non-zero; install nothing**. It also rejects a store-key collision — two nodes sharing a content_hash (the store directory key) but differing in package_hash (identity) → refuse store-collision; the content-addressed store keys by files-hash and cannot hold two distinct packages with identical files (re-keying the store by package identity is a possible slice-5+ evolution, out of scope here). Only once every node passes preflight, `installPackage(storePath, node)` each node in `order` (leaves first, root last).
+   - `ok:true` → **preflight**: run the file-path safety validation `installPackage` does (reject `..` / absolute / backslash paths) for **every** node in `order` _without writing_; if any node fails → print the offending node + path; **exit non-zero; install nothing**. It also rejects a store-key collision — two nodes sharing a content_hash (the store directory key) but differing in package_hash (identity) → refuse store-collision; the content-addressed store keys by files-hash and cannot hold two distinct packages with identical files (re-keying the store by package identity is a possible slice-5+ evolution, out of scope here). Only once every node passes preflight, `installPackage(storePath, node)` each node in `order` (leaves first, root last).
 5. Print the resolved set on success: `installed 3: D@1.0, A@2.1, root@1.0`.
 
 The preflight closes the graph-atomicity gap: without it, `resolve` could succeed
-yet a later `installPackage` fail on an unsafe path *after* earlier nodes were
+yet a later `installPackage` fail on an unsafe path _after_ earlier nodes were
 already extracted, leaving a partial graph. The `slice-2` path validation is
 factored into a shared `validatePackagePaths(pkg): string | null` helper that both
 the preflight loop and `installPackage` call, so the two never drift.
@@ -170,7 +170,7 @@ the root — `fetch(url).text()` for http(s), `readFileSync` for a path.
 ## CLI / UX
 
 - `ace install <url-or-path>` — resolves transitively, **no new flag** for the happy path.
-- `--allow-no-signature` — unchanged flag, now **graph-wide**: permits *unsigned* nodes anywhere in the graph; never bypasses a present-but-bad/untrusted signature on any node.
+- `--allow-no-signature` — unchanged flag, now **graph-wide**: permits _unsigned_ nodes anywhere in the graph; never bypasses a present-but-bad/untrusted signature on any node.
 - Refusal output names the offending node, the reason, and the dependency path to it. Examples:
   - `version-skew: D required at 1.0 (via root → A) and 2.0 (via root → B) — align on one version`
   - `cycle: root → A → B → A`
@@ -215,11 +215,11 @@ registry caching/signing; per-node signature-policy granularity.
 
 ## Files
 
-| File | Change |
-|---|---|
-| `tools/ace/resolve.ts` | **new** — pure transitive resolver + `packageHash` helper |
-| `tools/ace/resolve.test.ts` | **new** — resolver tests |
-| `tools/ace/store.ts` | extend `AceManifest` with `dependencies?`; export `AceDependency`; factor `validatePackagePaths(pkg)` out of `installPackage` (shared with the install preflight) |
-| `tools/ace/ace.ts` | wire `resolve` into `install`; graph preflight; graph-wide `--allow-no-signature`; resolved-set output |
-| `tools/ace/ace.test.ts` | extend — e2e graph install + resolver-refuse + preflight-refuse + store-collision-refuse + unsigned-graph |
-| `.claude/skills/ace/SKILL.md` | document transitive install + the new refusal reasons |
+| File                          | Change                                                                                                                                                            |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/ace/resolve.ts`        | **new** — pure transitive resolver + `packageHash` helper                                                                                                         |
+| `tools/ace/resolve.test.ts`   | **new** — resolver tests                                                                                                                                          |
+| `tools/ace/store.ts`          | extend `AceManifest` with `dependencies?`; export `AceDependency`; factor `validatePackagePaths(pkg)` out of `installPackage` (shared with the install preflight) |
+| `tools/ace/ace.ts`            | wire `resolve` into `install`; graph preflight; graph-wide `--allow-no-signature`; resolved-set output                                                            |
+| `tools/ace/ace.test.ts`       | extend — e2e graph install + resolver-refuse + preflight-refuse + store-collision-refuse + unsigned-graph                                                         |
+| `.claude/skills/ace/SKILL.md` | document transitive install + the new refusal reasons                                                                                                             |

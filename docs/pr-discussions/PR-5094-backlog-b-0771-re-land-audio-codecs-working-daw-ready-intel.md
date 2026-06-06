@@ -37,6 +37,7 @@ Follow-up: close #5058 with substrate-recoverable cross-link.
 Adds a new P2 backlog row (B-0771) capturing the planned substrate work to make audio (DAW-ready) and Intel NPU/VPU resources usable on Zeta cluster nodes, and regenerates the main backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P2/B-0771-...md` backlog row detailing problem/target/acceptance for audio stack + NPU exposure + ONNX runtime contract.
 - Regenerated `docs/BACKLOG.md` to include the new B-0771 entry.
 
@@ -44,10 +45,10 @@ Adds a new P2 backlog row (B-0771) capturing the planned substrate work to make 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                | Description                                                                                |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | docs/backlog/P2/B-0771-audio-codecs-working-plus-intel-npu-vpu-exposed-for-daw-and-ai-workloads-aaron-2026-05-25.md | New backlog row describing audio + Intel NPU/VPU enablement scope and acceptance criteria. |
-| docs/BACKLOG.md | Generated backlog index updated to include B-0771. |
+| docs/BACKLOG.md                                                                                                     | Generated backlog index updated to include B-0771.                                         |
 
 ## Review threads
 

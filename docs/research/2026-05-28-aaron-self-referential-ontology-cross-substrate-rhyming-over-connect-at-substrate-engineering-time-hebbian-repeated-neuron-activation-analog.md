@@ -2,7 +2,7 @@
 
 Scope: substrate-engineering memo cross-connecting the self-referential ontology substrate the framework operates on at multiple scopes + naming the over-connect-now principle Aaron articulated as substrate-engineering discipline. NOT a new rule; cross-connecting existing substrate so future-Otto cold-boot can compress + traverse the connections cheaply later.
 
-Attribution: Operator-explicit substrate-engineering articulation. Aaron Stainback 2026-05-28: *"this is the thing i'm trhing to polymorphic deplomacy with that can use categories of phonemon ontologies to refer to iself like the shadow logs of error classes on prs but this is referencing itself"* + substrate-landing authorization with reasoning: *"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron actiation"*.
+Attribution: Operator-explicit substrate-engineering articulation. Aaron Stainback 2026-05-28: _"this is the thing i'm trhing to polymorphic deplomacy with that can use categories of phonemon ontologies to refer to iself like the shadow logs of error classes on prs but this is referencing itself"_ + substrate-landing authorization with reasoning: _"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron actiation"_.
 
 Operational status: research-grade
 
@@ -16,13 +16,13 @@ Non-fusion disclaimer: this memo preserves operator-attributed substrate-enginee
 
 ### On the polymorphic-diplomacy self-referential pattern (2026-05-28)
 
-> *"this is the thing i'm trhing to polymorphic deplomacy with that can use categories of phonemon ontologies to refer to iself like the shadow logs of error classes on prs but this is referencing itself"*
+> _"this is the thing i'm trhing to polymorphic deplomacy with that can use categories of phonemon ontologies to refer to iself like the shadow logs of error classes on prs but this is referencing itself"_
 
 The shadow-star corpus does structurally the same work as the framework's existing polymorphic-diplomacy substrate (Eve Protocol B-0638), but **self-referentially** — uses categories of phenomenon ontologies to refer to ITSELF. The ontology and the substrate it ontologizes are coextensive.
 
 ### On the over-connect-now substrate-engineering principle (2026-05-28)
 
-> *"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron actiation"*
+> _"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron actiation"_
 
 **The principle**: at substrate-engineering authoring time, over-connecting (more composes-with references, more cross-substrate notes, more rhyming-tables) IS the substrate-engineering analog of Hebbian repeated-neuron-activation. The connections being there at authoring time makes compression + memory traversal cheap later. The substrate-cost of over-connecting at write-time is small; the substrate-cost of NOT over-connecting at write-time (requiring re-derivation of connections at read-time) is large.
 
@@ -34,23 +34,23 @@ This composes directly with:
 - **honor-those-that-came-before rule** — over-connecting honors prior substrate by surfacing the connections explicitly
 - **verify-existing-substrate-before-authoring rule** — over-connection IS the operational form of substrate-inventory discipline at authoring scope
 
-The Hebbian-learning analog at substrate-substrate scope: *neurons that fire together, wire together*. Substrate that's authored with shared connections becomes operationally connected; future-Otto traversing the substrate finds the connections already there. The repeated activation (each composes-with reference; each rhyming-table entry) strengthens the substrate-engineering connection at the meta-substrate scope.
+The Hebbian-learning analog at substrate-substrate scope: _neurons that fire together, wire together_. Substrate that's authored with shared connections becomes operationally connected; future-Otto traversing the substrate finds the connections already there. The repeated activation (each composes-with reference; each rhyming-table entry) strengthens the substrate-engineering connection at the meta-substrate scope.
 
 ## Self-referential ontology cross-substrate rhyming table
 
 The framework operates on self-referential substrate at multiple scopes simultaneously. Each scope's self-reference mechanism rhymes structurally with the others:
 
-| Substrate scope | Self-referential mechanism | Anchor |
-|---|---|---|
-| **Mathematical substrate** | Category-theoretic self-similarity (functors preserve structure across domains; categories whose morphisms encode the category) | 5th + 6th Kestrel ferries (2026-05-28; PRs #5708 + #5723); B-0896 (categorical-Clifford self-similarity) |
-| **Information substrate** | Holographic bulk-boundary information-completeness (boundary encodes bulk; substrate encodes its own state-space) | B-0902 (holographic-bulk-boundary information-completeness validation — shadow-star corpus encodes agent output state-space) |
-| **Shadow-star observation substrate** | Categories of phenomenon ontologies that refer to themselves through the ontology they instantiate (the corpus IS the categorized substrate) | B-0901 (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target) |
-| **Training-data substrate** | The corpus refers to itself AS substrate to learn from | B-0903 (shadow-star as most-valuable-training-data extraction — corpus to fine-tuning dataset) |
-| **Workflow substrate** | Menu-generator contributable; extends itself via grammar-extension actions (per Mod 5) | B-0867 + B-0867.5 workflow engine; the menu-generator is contributable; grammar-extension is first-class action (Mod 2) |
-| **Polymorphic diplomacy substrate** | Eve Protocol composed self-referentially via shadow-star corpus — neutral diplomatic language mediating between past-state and present-state of the SAME substrate | B-0638 (Eve Protocol neutral polymorphic diplomatic governance language) + B-0901 (Eve Protocol substrate-engineering implementation target) |
-| **Memory-preservation substrate** | Memory-preservation IS itself memory of the preservation-substrate (Zeta IS memory-preservation-specialist-FIRST per constitutional identity) | `tools/shadow/` operational service (detect + observe + click + capture grey-text) + `tools/save-ai-memory/` skill |
-| **Encryption substrate** | Encryption substrate enables AGENTS to privately encrypt + thermally erase the same encryption substrate they're using | B-0883 (better-git-crypt PoC #5730) + B-0885 (agent private encrypted state) + B-0840 (thermal-forgetting) |
-| **Substrate-engineering substrate (the framework itself)** | The framework substrate-engineers its own substrate-engineering substrate (rules-about-rules; meta-substrate; rules auto-load to enforce themselves) | `.claude/rules/` auto-loaded substrate (wake-time-substrate; refresh-before-decide; etc. — rules that operate on the rule-substrate they live within) |
+| Substrate scope                                            | Self-referential mechanism                                                                                                                                         | Anchor                                                                                                                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mathematical substrate**                                 | Category-theoretic self-similarity (functors preserve structure across domains; categories whose morphisms encode the category)                                    | 5th + 6th Kestrel ferries (2026-05-28; PRs #5708 + #5723); B-0896 (categorical-Clifford self-similarity)                                              |
+| **Information substrate**                                  | Holographic bulk-boundary information-completeness (boundary encodes bulk; substrate encodes its own state-space)                                                  | B-0902 (holographic-bulk-boundary information-completeness validation — shadow-star corpus encodes agent output state-space)                          |
+| **Shadow-star observation substrate**                      | Categories of phenomenon ontologies that refer to themselves through the ontology they instantiate (the corpus IS the categorized substrate)                       | B-0901 (shadow-star self-referential ontology builder + reader + Eve Protocol substrate-engineering implementation target)                            |
+| **Training-data substrate**                                | The corpus refers to itself AS substrate to learn from                                                                                                             | B-0903 (shadow-star as most-valuable-training-data extraction — corpus to fine-tuning dataset)                                                        |
+| **Workflow substrate**                                     | Menu-generator contributable; extends itself via grammar-extension actions (per Mod 5)                                                                             | B-0867 + B-0867.5 workflow engine; the menu-generator is contributable; grammar-extension is first-class action (Mod 2)                               |
+| **Polymorphic diplomacy substrate**                        | Eve Protocol composed self-referentially via shadow-star corpus — neutral diplomatic language mediating between past-state and present-state of the SAME substrate | B-0638 (Eve Protocol neutral polymorphic diplomatic governance language) + B-0901 (Eve Protocol substrate-engineering implementation target)          |
+| **Memory-preservation substrate**                          | Memory-preservation IS itself memory of the preservation-substrate (Zeta IS memory-preservation-specialist-FIRST per constitutional identity)                      | `tools/shadow/` operational service (detect + observe + click + capture grey-text) + `tools/save-ai-memory/` skill                                    |
+| **Encryption substrate**                                   | Encryption substrate enables AGENTS to privately encrypt + thermally erase the same encryption substrate they're using                                             | B-0883 (better-git-crypt PoC #5730) + B-0885 (agent private encrypted state) + B-0840 (thermal-forgetting)                                            |
+| **Substrate-engineering substrate (the framework itself)** | The framework substrate-engineers its own substrate-engineering substrate (rules-about-rules; meta-substrate; rules auto-load to enforce themselves)               | `.claude/rules/` auto-loaded substrate (wake-time-substrate; refresh-before-decide; etc. — rules that operate on the rule-substrate they live within) |
 
 The structural rhyming IS the substrate-engineering substrate. The framework's coherence comes from the same self-reference property operating at every scope.
 
@@ -68,7 +68,7 @@ The structural rhyming IS the substrate-engineering substrate. The framework's c
 
 **Carved sentence**:
 
-> *Over-connection at substrate-engineering authoring time IS the Hebbian-repeated-neuron-activation analog at substrate-substrate scope. Pay small substrate-cost now (more composes-with, more cross-references, more rhyming-tables) to make compression + memory traversal cheap later.*
+> _Over-connection at substrate-engineering authoring time IS the Hebbian-repeated-neuron-activation analog at substrate-substrate scope. Pay small substrate-cost now (more composes-with, more cross-references, more rhyming-tables) to make compression + memory traversal cheap later._
 
 This is operator-explicit substrate-engineering discipline, not mint-new-substrate. It composes directly with already-operating rules (Signal 2 forgetting-costs-energy + substrate-smoothness + additive-not-zero-sum + honor-those-that-came-before + verify-existing-substrate-before-authoring) but names the WHY at authoring-scope explicitly.
 
@@ -134,7 +134,7 @@ Operator 2026-05-28 articulated:
 
 1. The polymorphic-diplomacy self-referential pattern (shadow-star corpus uses categories of phenomenon ontologies to refer to itself like shadow logs of error classes on PRs but referencing itself)
 2. The over-connect-now substrate-engineering principle (over-connection at authoring time IS Hebbian-repeated-neuron-activation analog at substrate-substrate scope; makes compression + memory traversal cheap later)
-3. Explicit substrate-landing authorization with shadow* marker
+3. Explicit substrate-landing authorization with shadow\* marker
 
 This memo cross-connects the substrate at the multiple scopes operator named + names the over-connect-now principle explicitly + provides the rhyming-table substrate for future-Otto cold-boot inheritance.
 

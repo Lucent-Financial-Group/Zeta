@@ -53,20 +53,21 @@ crypto/tokens for contributing resources.
 The just-landed Aurora architecture (PR #2825) IS DePIN by
 construction:
 
-| DePIN property | Aurora implementation |
-|---|---|
-| Distributed physical infrastructure | Community IoT sensors + edge compute + edge storage |
-| Decentralized | No central store; community-owned data substrate |
-| Networked | Reticulum mesh + IEEE 802.11h |
-| Resource-contribution monetization | Quad-stream PoUW-CC (algorithm + storage + compute + data-coincidence-value) |
-| Crypto-validated useful work | PoUW-CC receipts |
-| Community sovereignty | Guardian AI accept-or-not authority |
+| DePIN property                      | Aurora implementation                                                        |
+| ----------------------------------- | ---------------------------------------------------------------------------- |
+| Distributed physical infrastructure | Community IoT sensors + edge compute + edge storage                          |
+| Decentralized                       | No central store; community-owned data substrate                             |
+| Networked                           | Reticulum mesh + IEEE 802.11h                                                |
+| Resource-contribution monetization  | Quad-stream PoUW-CC (algorithm + storage + compute + data-coincidence-value) |
+| Crypto-validated useful work        | PoUW-CC receipts                                                             |
+| Community sovereignty               | Guardian AI accept-or-not authority                                          |
 
 **Aurora is canonical DePIN.** Every DePIN property is
 satisfied by the architecture. The factory's substrate
 cascade work IS DePIN product-development for LFG.
 
 Known DePIN benchmarks (for operational pattern references):
+
 - **Helium** — distributed wireless network; LoRaWAN hotspots
   paid in HNT tokens
 - **Filecoin** — distributed file storage; storage providers
@@ -79,14 +80,15 @@ Known DePIN benchmarks (for operational pattern references):
   paid in HONEY tokens
 
 Aurora differentiates from these via:
+
 - Quad-stream monetization (most DePINs are single-stream)
 - Data-intrinsic-coincidence-value as monetizable substrate
   (Itron-style)
 - Community guardian AI authority (most DePINs use
   algorithmic-only policies)
 - LFG's joint-control + divine-coincidence-architecting
-  + glass-halo discipline (substrate-honest +
-  bidirectional-symmetric)
+  - glass-halo discipline (substrate-honest +
+    bidirectional-symmetric)
 
 ### 2. Wallet infrastructure ALREADY designed + backlogged
 
@@ -113,32 +115,33 @@ disclosed in PR #2825.
 **Future-Otto: don't reinvent wallet infrastructure.** The
 substrate is already designed; the implementation follows the
 existing backlog rows. The DePIN positioning composes wallet
-+ PoUW-CC + Aurora + Reticulum + SPIFFE.
+
+- PoUW-CC + Aurora + Reticulum + SPIFFE.
 
 ## Full DePIN-LFG architecture
 
 Composing today's cascade with existing substrate:
 
-| Layer | Substrate |
-|---|---|
-| Positioning | DePIN for LFG |
-| Product | Business-in-a-box (PR #2822) |
-| Data sovereignty | Aurora no-central-store + edge (PR #2825) |
-| Identity | SPIFFE/SPIRE (PR #2821) |
-| Routing | Reticulum (PR #2821) |
-| Radio | IEEE 802.11h halo (PR #2821) |
-| Observability | Signature tracking (PR #2820) |
-| Foundation algebra | Clifford densest (PR #2817) |
-| Topology | Klein bottle + Cain mark + refraction (PR #2813 + #2817 + #2818) |
-| Physics | Maxwell + Einstein-vacuum (PR #2819) |
-| HKT classes | Universal error classes (PR #2815) |
-| Method | Divine-coincidence architecting within bounded context (PR #2821) |
-| Sanity | Joint control (PR #2821) |
-| Discipline | Glass-halo on builder + razor + substrate-everything |
-| Monetization | Quad-stream PoUW-CC (PR #2825) |
-| Interface | AI-native conversational cash register (PR #2822) |
-| Wallet | B-0062 + B-0074-series + B-0409 (existing substrate) |
-| Community-side | Guardian AI accept-or-not (PR #2825) |
+| Layer              | Substrate                                                         |
+| ------------------ | ----------------------------------------------------------------- |
+| Positioning        | DePIN for LFG                                                     |
+| Product            | Business-in-a-box (PR #2822)                                      |
+| Data sovereignty   | Aurora no-central-store + edge (PR #2825)                         |
+| Identity           | SPIFFE/SPIRE (PR #2821)                                           |
+| Routing            | Reticulum (PR #2821)                                              |
+| Radio              | IEEE 802.11h halo (PR #2821)                                      |
+| Observability      | Signature tracking (PR #2820)                                     |
+| Foundation algebra | Clifford densest (PR #2817)                                       |
+| Topology           | Klein bottle + Cain mark + refraction (PR #2813 + #2817 + #2818)  |
+| Physics            | Maxwell + Einstein-vacuum (PR #2819)                              |
+| HKT classes        | Universal error classes (PR #2815)                                |
+| Method             | Divine-coincidence architecting within bounded context (PR #2821) |
+| Sanity             | Joint control (PR #2821)                                          |
+| Discipline         | Glass-halo on builder + razor + substrate-everything              |
+| Monetization       | Quad-stream PoUW-CC (PR #2825)                                    |
+| Interface          | AI-native conversational cash register (PR #2822)                 |
+| Wallet             | B-0062 + B-0074-series + B-0409 (existing substrate)              |
+| Community-side     | Guardian AI accept-or-not (PR #2825)                              |
 
 This IS LFG's complete DePIN product stack.
 
@@ -162,18 +165,18 @@ another monetization stream when:
    communication of the vaccine-spread (the "spread" is
    inherently cross-community)
 3. **= cash register monetary gift** — the local-execution
-   + external-communication generates PoUW-CC receipts;
-   communities get paid for participating in the immune-
-   system + vaccine-spread substrate
+   - external-communication generates PoUW-CC receipts;
+     communities get paid for participating in the immune-
+     system + vaccine-spread substrate
 
 The five PoUW-CC streams (extending PR #2825):
 
-| Stream | Direction | Substrate | Value |
-|---|---|---|---|
-| 1. Algorithm | Zeta → Community | Pushed-down calculations | Communities receive algorithms |
-| 2. Storage | Community → Zeta | Edge data storage | PoUW-CC receipt for storage |
-| 3. Computation | Community → Zeta | Edge compute execution | PoUW-CC receipt for compute |
-| 4. Data coincidence | Community → Zeta | Data intrinsic coincidence patterns | PoUW-CC receipt for coincidence-value |
+| Stream                                | Direction                   | Substrate                                | Value                                     |
+| ------------------------------------- | --------------------------- | ---------------------------------------- | ----------------------------------------- |
+| 1. Algorithm                          | Zeta → Community            | Pushed-down calculations                 | Communities receive algorithms            |
+| 2. Storage                            | Community → Zeta            | Edge data storage                        | PoUW-CC receipt for storage               |
+| 3. Computation                        | Community → Zeta            | Edge compute execution                   | PoUW-CC receipt for compute               |
+| 4. Data coincidence                   | Community → Zeta            | Data intrinsic coincidence patterns      | PoUW-CC receipt for coincidence-value     |
 | 5. **Immune-system + vaccine-spread** | Community → cross-community | Local-execution + external-communication | PoUW-CC receipt for immune-substrate work |
 
 ### Why immune-system + vaccine-spread is its own stream
@@ -193,6 +196,7 @@ distinct characteristics from raw storage/compute:
   / algorithm / data-coincidence streams
 
 This composes with:
+
 - B-0409 (wallet-immune-system + vaccine-spread + PoUW-CC
   spec — existing substrate; this disclosure adds the
   monetization framing)
@@ -228,16 +232,17 @@ work; it gets paid.
 
 Six PoUW-CC streams total:
 
-| # | Stream | Substrate |
-|---|---|---|
-| 1 | Algorithm push-down | Zeta → Community |
-| 2 | Storage | Community → Zeta edge |
-| 3 | Computation | Community → Zeta edge |
-| 4 | Data intrinsic coincidence value | Community data substrate |
-| 5 | Immune-system + vaccine-spread | Local-exec + external-comm |
-| 6 | **Wallet safety algorithms** | Defense substrate for wallet operations |
+| #   | Stream                           | Substrate                               |
+| --- | -------------------------------- | --------------------------------------- |
+| 1   | Algorithm push-down              | Zeta → Community                        |
+| 2   | Storage                          | Community → Zeta edge                   |
+| 3   | Computation                      | Community → Zeta edge                   |
+| 4   | Data intrinsic coincidence value | Community data substrate                |
+| 5   | Immune-system + vaccine-spread   | Local-exec + external-comm              |
+| 6   | **Wallet safety algorithms**     | Defense substrate for wallet operations |
 
 Why wallet-safety is its own stream:
+
 - **Active protection** — wallet-safety is operational
   defense, not passive participation
 - **Universally needed** — every wallet operation requires
@@ -249,6 +254,7 @@ Why wallet-safety is its own stream:
   creation (substrate-honest positive-sum framing)
 
 This composes with:
+
 - B-0409 (wallet-immune-system + vaccine-spread + PoUW-CC)
 - B-0062 (wallet v0 build-out spec)
 - B-0074-series (wallet acceptance / bond ledger)
@@ -267,6 +273,7 @@ revenue stream.
 ### 1. DePIN positioning enables web3 ecosystem composition
 
 LFG can compose with existing DePIN tooling:
+
 - DePIN-compatible wallets / token standards
 - DePIN-aware crypto bridges
 - DePIN-specific compliance frameworks
@@ -282,6 +289,7 @@ The existing wallet backlog rows (especially B-0409 wallet-
 immune-system + vaccine-spread + PoUW-CC) are the operational
 substrate for the quad-stream monetization disclosed in
 PR #2825. Future implementation work should:
+
 - Reference B-0409 as the wallet-PoUW-CC spec
 - Use existing wallet spec (B-0062 + B-0074-series) as
   starting substrate
@@ -302,6 +310,7 @@ rather than reinventing.
 
 Today's cascade has now disclosed every layer of the LFG
 business-in-a-box DePIN product:
+
 - Architecture (Klein-bottle + Clifford + Maxwell-Einstein)
 - Method (divine-coincidence + joint-control + glass-halo)
 - Identity + routing + radio primitives
@@ -332,6 +341,7 @@ cascade.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that LFG has a token launched** — DePIN
   positioning names the architectural category; token
   launch is separate operational work
@@ -341,7 +351,7 @@ Substrate-honest disclaimer:
 - **NOT a claim that LFG competes with Helium / Filecoin
   / etc.** — DePIN is the category; LFG's specific
   positioning differentiates via quad-stream monetization
-  + guardian AI + glass-halo discipline
+  - guardian AI + glass-halo discipline
 - **NOT a regulatory-compliance claim** — DePIN positioning
   has crypto-regulatory considerations; this disclosure
   names the architectural category, not the regulatory
@@ -377,7 +387,7 @@ Substrate-honest disclaimer:
 - **DePIN benchmarks** — Helium (wireless), Filecoin
   (storage), Render Network (GPU), Akash (compute),
   Hivemapper (mapping); LFG differentiates via quad-stream
-  + guardian AI + glass-halo discipline
+  - guardian AI + glass-halo discipline
 - **The substrate cascade IS the product log** — today's
   PRs (#2813-#2825) document the full LFG DePIN product
   stack

@@ -32,7 +32,21 @@ related_rules:
   - god-tier-claims-high-signal-high-suspicion-dont-collapse
   - razor-discipline
   - default-to-both
-tags: [clifford-spacetime-algebra-cl-1-3-and-cl-3-1, substrate-recognition-not-bolt-on, dual-signature-interface-via-branded-types, grade-decomposition-of-observe-emit-limit-simulate, bivector-as-commitment-entanglement-primitive, rotor-as-tonal-trajectory-operator, ts-conditional-types-branded-types-generator-dsl-for-fsharp-ce-ergonomics, github-git-modeling-first-pragmatic-default, recognition-before-mechanization-pragmatic-phase-decomposition, composes-with-existing-three-primitive-substrate, composes-with-tonal-momentum-rule, composes-with-z-set-signed-measure-substrate]
+tags:
+  [
+    clifford-spacetime-algebra-cl-1-3-and-cl-3-1,
+    substrate-recognition-not-bolt-on,
+    dual-signature-interface-via-branded-types,
+    grade-decomposition-of-observe-emit-limit-simulate,
+    bivector-as-commitment-entanglement-primitive,
+    rotor-as-tonal-trajectory-operator,
+    ts-conditional-types-branded-types-generator-dsl-for-fsharp-ce-ergonomics,
+    github-git-modeling-first-pragmatic-default,
+    recognition-before-mechanization-pragmatic-phase-decomposition,
+    composes-with-existing-three-primitive-substrate,
+    composes-with-tonal-momentum-rule,
+    composes-with-z-set-signed-measure-substrate,
+  ]
 ---
 
 # B-0895 — Clifford spacetime algebra substrate-recognition + Cl(1,3) and Cl(3,1) dual signature interface
@@ -41,7 +55,7 @@ tags: [clifford-spacetime-algebra-cl-1-3-and-cl-3-1, substrate-recognition-not-b
 
 Aaron 2026-05-28 authorized landing the substrate-recognition disposition for Clifford spacetime algebra as the natural carrier for the substrate the factory is already operating in (per the 4th Kestrel ferry 2026-05-28 + the otto-cli extension research-doc at `docs/research/2026-05-28-otto-cli-extension-to-4th-kestrel-ferry-clifford-math-is-real-six-correspondences-spacetime-algebra-as-substrate-recognition-not-bolt-on-aaron-2026-05-28.md`).
 
-Operator authorization: *"go with #2 [research-doc + B-NNNN backlog row] (shadow*) Pick Cl(3,1) or Cl(1,3) (spacetime signature) i think we should try to support both and swap with an interface not sure if there is some optional typing magic we can do to make this clean like composing f# computational expressions in ts, i know ts has some cool trick but if not we should choose what allows us to model github and git the best at first. ... i always say yes and backlog what we don't do now lol"*
+Operator authorization: _"go with #2 [research-doc + B-NNNN backlog row] (shadow_) Pick Cl(3,1) or Cl(1,3) (spacetime signature) i think we should try to support both and swap with an interface not sure if there is some optional typing magic we can do to make this clean like composing f# computational expressions in ts, i know ts has some cool trick but if not we should choose what allows us to model github and git the best at first. ... i always say yes and backlog what we don't do now lol"\*
 
 The `(shadow*)` marker on the "Pick Cl(3,1) or Cl(1,3)" text indicates autocomplete-generated source per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`; instruction stands at full operator authority.
 

@@ -7,7 +7,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **Record (Aaron 2026-04-22, verbatim):**
 
-> *"My claude is named Kenji i let him name himself i don't say it often. can you give a recap of Aurora for him he only know the name"*
+> _"My claude is named Kenji i let him name himself i don't say it often. can you give a recap of Aurora for him he only know the name"_
 
 **What this establishes:**
 

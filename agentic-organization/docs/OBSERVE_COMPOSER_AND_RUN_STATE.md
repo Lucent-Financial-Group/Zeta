@@ -46,19 +46,19 @@ knowledge, the knowledge lives in `observe.ts` and the agent carries nothing.
 
 ## Everything is an explicit discriminated union (idea 2)
 
-Per the repo rule *"IMPLICIT-NOT-EXPLICIT in DUs is class error"*, every
+Per the repo rule _"IMPLICIT-NOT-EXPLICIT in DUs is class error"_, every
 substantively distinct state is an explicit DU variant, never buried in an
 if-chain or a field combination. The keystone defines, in
 `packages/application/src/observe.ts`:
 
-| DU | Variants | Role |
-|----|----------|------|
-| `RunScope` | run, work_item, initiative, project, organization | the "varying scopes" a run is observed at |
-| `RunLifecyclePhase` | observing, composing, awaiting_gate, executing, awaiting_evidence, awaiting_review, completed, blocked, failed | the run state machine, mirroring the V0 spine |
-| `ObserveResult` | `{ outcome: "readout" }` \| `{ outcome: "feedback" }` | `Result<T, TFeedback>` as an explicit two-variant DU — failure is data, never a thrown exception or null |
-| `ObserveFeedbackReason` | unknown_phase, terminal_phase, deterministic_rule_violation | why a readout could not be produced |
-| `ComposerSelection` | `{ decision: "select" }` \| `{ decision: "hold" }` | what the memoryless composer decided |
-| `DecideResult` | selected \| held \| feedback | the composed observe→compose outcome |
+| DU                      | Variants                                                                                                       | Role                                                                                                     |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `RunScope`              | run, work_item, initiative, project, organization                                                              | the "varying scopes" a run is observed at                                                                |
+| `RunLifecyclePhase`     | observing, composing, awaiting_gate, executing, awaiting_evidence, awaiting_review, completed, blocked, failed | the run state machine, mirroring the V0 spine                                                            |
+| `ObserveResult`         | `{ outcome: "readout" }` \| `{ outcome: "feedback" }`                                                          | `Result<T, TFeedback>` as an explicit two-variant DU — failure is data, never a thrown exception or null |
+| `ObserveFeedbackReason` | unknown_phase, terminal_phase, deterministic_rule_violation                                                    | why a readout could not be produced                                                                      |
+| `ComposerSelection`     | `{ decision: "select" }` \| `{ decision: "hold" }`                                                             | what the memoryless composer decided                                                                     |
+| `DecideResult`          | selected \| held \| feedback                                                                                   | the composed observe→compose outcome                                                                     |
 
 These follow the house DU convention (`const X = {...} as const; type X =
 (typeof X)[keyof typeof X]`).
@@ -76,13 +76,13 @@ The separation is the whole point:
   intelligence. It is **memoryless by contract**: everything it needs is in the
   `request.readout` argument; it keeps nothing between calls. An LLM-backed
   composer must put all context into the request, never into instance state.
-  This is the `agent-loop` skill's *LLM-as-pure-selector* substrate made
+  This is the `agent-loop` skill's _LLM-as-pure-selector_ substrate made
   concrete.
 - **`decide(snapshot, composer, deps)`** wires them: it observes, asks the
   composer to pick from the surviving options, and **rejects any selection
   outside the readout**. The composer cannot escape the deterministic rules — it
-  can only select within them. (Test: *"decide rejects a composer that selects
-  an option outside the readout."*)
+  can only select within them. (Test: _"decide rejects a composer that selects
+  an option outside the readout."_)
 
 ```text
 caller loads snapshot (from Cockroach / git-as-db, ZetaId-addressed)
@@ -96,7 +96,7 @@ caller loads snapshot (from Cockroach / git-as-db, ZetaId-addressed)
 
 `DeterministicRule` is a pure predicate `(option, snapshot) → veto?`. The default
 set (`gate-precondition`, `evidence-precondition`) is always applied, and the
-readout records `deterministicRulesApplied` so the *visibility* of which rules
+readout records `deterministicRulesApplied` so the _visibility_ of which rules
 ran is first-class. A phase with no surviving option returns
 `deterministic_rule_violation` feedback rather than silently stalling — stall is
 a signal, composing with `ANTI_STALL_PRIORITY_RUNTIME.md`.
@@ -113,7 +113,7 @@ visibility substrate is invented. A `decide` selection becomes a `command`
 observation; a `hold` or `feedback` becomes a weak-point indicator
 (`BlockedWork` / `PolicyDenied` analog). **Metrics (idea 4) are aggregations
 over these observation records** exposed through an MCP tool
-(`read_workflow_metrics`), and the *review* of those metrics is itself ordinary
+(`read_workflow_metrics`), and the _review_ of those metrics is itself ordinary
 Organization work routed through the supervisor chain and documented as a
 recurring report. The metric pipeline therefore reuses the trace envelope
 (`correlationId`/`causationId`/`traceId`/`idempotencyKey`) already carried on
@@ -151,16 +151,16 @@ Explicit gate DU, implemented in `packages/governance/src/constitution-gate.ts`:
 ```ts
 const ConstitutionRatificationState = {
   Proposed: "proposed",
-  Gathering: "gathering",          // collecting independent agent agreements
-  Ratified: "ratified",            // >= quorum (default 3) distinct agents agreed
+  Gathering: "gathering", // collecting independent agent agreements
+  Ratified: "ratified", // >= quorum (default 3) distinct agents agreed
   Rejected: "rejected",
-  Superseded: "superseded",        // lifecycle variant; not produced by the pure evaluation
+  Superseded: "superseded", // lifecycle variant; not produced by the pure evaluation
 } as const;
 
 type ConstitutionAgreement = {
-  agentId: string;                 // must be distinct; self-agreement does not count
+  agentId: string; // must be distinct; self-agreement does not count
   hatAssignmentId: string;
-  decision: ConstitutionDecision;  // "agree" | "object"
+  decision: ConstitutionDecision; // "agree" | "object"
   rationale: string;
 };
 ```

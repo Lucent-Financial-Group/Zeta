@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-27 (verbatim):
 
-> *\"i'm fine with it being you if you want and we can always decide to split later it just means you get another surface/tick source i think we should have a few agents starting with one you otto outside k8s as a service so it can repair things outside the cluster itself when there are cluster issues.\"*
+> _\"i'm fine with it being you if you want and we can always decide to split later it just means you get another surface/tick source i think we should have a few agents starting with one you otto outside k8s as a service so it can repair things outside the cluster itself when there are cluster issues.\"_
 
 Three operator decisions:
 
@@ -34,12 +34,12 @@ Classic **\"control plane outside the control plane\"** — when k8s has issues,
 
 ## 4-phase landing
 
-| Phase | Scope | Operator-policy gate |
-|---|---|---|
-| 1 | systemd unit (zeta-otto.service) NixOS module | None (read-only K8s) |
-| 2 | repair-policy framework + per-scope authorization | per-scope explicit |
-| 3 | multi-agent parameterization (Alexa/Riven/Vera/Lior) | Ilyana + Knights Guild |
-| 4 | out-of-band ↔ in-cluster composability (Twilio + bus + PRs) | composes B-0796 |
+| Phase | Scope                                                       | Operator-policy gate   |
+| ----- | ----------------------------------------------------------- | ---------------------- |
+| 1     | systemd unit (zeta-otto.service) NixOS module               | None (read-only K8s)   |
+| 2     | repair-policy framework + per-scope authorization           | per-scope explicit     |
+| 3     | multi-agent parameterization (Alexa/Riven/Vera/Lior)        | Ilyana + Knights Guild |
+| 4     | out-of-band ↔ in-cluster composability (Twilio + bus + PRs) | composes B-0796        |
 
 ## Composes with
 
@@ -56,6 +56,7 @@ Classic **\"control plane outside the control plane\"** — when k8s has issues,
 Adds a new P2 backlog row B-0850 capturing the operator decision to run AI agents (starting with Otto) as systemd services outside k8s for out-of-band cluster repair, and registers it in the backlog index.
 
 **Changes:**
+
 - New per-row file under `docs/backlog/P2/` with frontmatter, phased plan, acceptance criteria, and composes-with references.
 - Adds the B-0850 entry to `docs/BACKLOG.md` P2 open list.
 
@@ -63,10 +64,10 @@ Adds a new P2 backlog row B-0850 capturing the operator decision to run AI agent
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                         | Description                                                    |
+| ---------------------------- | -------------------------------------------------------------- |
 | docs/backlog/P2/B-0850-...md | New backlog row documenting Otto-as-systemd-service substrate. |
-| docs/BACKLOG.md | Registers B-0850 in P2 open list. |
+| docs/BACKLOG.md              | Registers B-0850 in P2 open list.                              |
 
 ## General comments
 

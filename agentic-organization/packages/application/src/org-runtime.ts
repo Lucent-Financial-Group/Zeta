@@ -31,8 +31,19 @@ import {
   type RmoHatCandidateReputation,
   type WorkloadItem,
 } from "./rmo.ts";
-import { assignHat, rankEligibleCandidates, type ActiveBindingSummary, type AgentCandidate } from "./assignment-engine.ts";
-import { advanceBinding, beginBinding, planSuccession, successionEvent, type LifecycleContext } from "./hat-lifecycle.ts";
+import {
+  assignHat,
+  rankEligibleCandidates,
+  type ActiveBindingSummary,
+  type AgentCandidate,
+} from "./assignment-engine.ts";
+import {
+  advanceBinding,
+  beginBinding,
+  planSuccession,
+  successionEvent,
+  type LifecycleContext,
+} from "./hat-lifecycle.ts";
 import { GateOwnerHats, evaluateGate, nextLegalGate, PipelineStage } from "./pipeline.ts";
 
 export type OrgCycleDeps = {
@@ -92,15 +103,25 @@ function chainFor(hatId: string, byId: ReadonlyMap<string, HatDefinition>): read
 }
 
 const HOT: PriorityInputs = {
-  executivePriority: 1, customerImpact: 1, severity: 0.8, releaseRisk: 0.6,
-  blockedDownstreamCount: 3, dependencyFanOut: 2, queueAgeMs: 600_000, hatScarcity: 0.5, budgetBurn: 0.1, estimatedEffort: 0.4,
+  executivePriority: 1,
+  customerImpact: 1,
+  severity: 0.8,
+  releaseRisk: 0.6,
+  blockedDownstreamCount: 3,
+  dependencyFanOut: 2,
+  queueAgeMs: 600_000,
+  hatScarcity: 0.5,
+  budgetBurn: 0.1,
+  estimatedEffort: 0.4,
 };
 
 const RMO_SOURCE_NAME_PATTERN = /^[a-z][a-z0-9._-]{0,63}$/;
 
 export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
   if (deps.rmoCandidateSource === undefined) {
-    throw new Error("runOrgCycle requires an explicit rmoCandidateSource; pass createDemoOrgCycleRmoCandidateSource() only for demos/tests");
+    throw new Error(
+      "runOrgCycle requires an explicit rmoCandidateSource; pass createDemoOrgCycleRmoCandidateSource() only for demos/tests",
+    );
   }
   const rmoCandidateSourceName = deps.rmoCandidateSource.sourceName;
   assertRmoSourceName(rmoCandidateSourceName);
@@ -129,20 +150,28 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     nowIso: nextIso,
     organizationId: deps.organizationId,
     supervisorChain: chainFor(hatId, byId),
-    correlationId: corr, causationId: corr, traceId: corr,
+    correlationId: corr,
+    causationId: corr,
+    traceId: corr,
   });
 
   // ── 1. Executive Board + C-suite set strategic priority (top of the hierarchy acts) ──
   const rec = computePriorityRecommendation(deps.workItemId, HOT, []);
   for (const execHatId of ["executive_board_member", "ceo"]) {
     const hat = byId.get(execHatId)!;
-    const r = decidePriority({ recommendation: rec, deciderHat: hat, chooser: firstLegalChooser() }, priorityCtx(execHatId));
+    const r = decidePriority(
+      { recommendation: rec, deciderHat: hat, chooser: firstLegalChooser() },
+      priorityCtx(execHatId),
+    );
     if (r.outcome === "decided") await emit(r.event);
   }
 
   // ── 2. A Director sets the work-item priority ──
   const director = byId.get("engineering_director")!;
-  const dirDecision = decidePriority({ recommendation: rec, deciderHat: director, chooser: firstLegalChooser() }, priorityCtx("engineering_director"));
+  const dirDecision = decidePriority(
+    { recommendation: rec, deciderHat: director, chooser: firstLegalChooser() },
+    priorityCtx("engineering_director"),
+  );
   const priorityClass = dirDecision.outcome === "decided" ? dirDecision.decision.priorityClass : rec.priorityClass;
   if (dirDecision.outcome === "decided") await emit(dirDecision.event);
 
@@ -154,7 +183,11 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
   const supplyTargets = new Map<string, number>();
   for (const hatId of ownerHatIds) {
     const requiredCount = required.get(hatId) ?? 1;
-    const votes: HatSupplyVote[] = supplyVoters.map((v) => ({ voterHatId: v, approve: true, proposedTarget: requiredCount }));
+    const votes: HatSupplyVote[] = supplyVoters.map((v) => ({
+      voterHatId: v,
+      approve: true,
+      proposedTarget: requiredCount,
+    }));
     const { decision, event } = decideHatSupply(
       { hatId, hatName: byId.get(hatId)?.name ?? hatId, requiredCount, currentCount: 0, votes },
       { ...priorityCtx("cfo") },
@@ -177,7 +210,12 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
       organizationId: deps.organizationId,
       priorityClass,
     });
-    const ranked = rankEligibleCandidates({ hat, candidates: sourcedCandidates.eligibleCandidates, activeBindings, nowMs: t0 });
+    const ranked = rankEligibleCandidates({
+      hat,
+      candidates: sourcedCandidates.eligibleCandidates,
+      activeBindings,
+      nowMs: t0,
+    });
     assertRmoCandidatesAreEligible(rmoCandidateSourceName, hatId, ranked, sourcedCandidates.rmoCandidates);
     const rmoRanked = rankRmoHatCandidates({
       hatId,
@@ -190,7 +228,15 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
         rankedCandidates: rmoRanked,
         chooser: deps.rmoAssignmentChooser ?? firstLegalChooser(),
       },
-      { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(hatId, byId), correlationId: corr, causationId: corr, traceId: corr },
+      {
+        createEventId: () => deps.createId("evt"),
+        nowIso: nextIso,
+        organizationId: deps.organizationId,
+        supervisorChain: chainFor(hatId, byId),
+        correlationId: corr,
+        causationId: corr,
+        traceId: corr,
+      },
     );
     if (rmoAssignment.outcome === "no_legal_candidate") continue;
     rmoAssignment.event.evidenceRefs = [
@@ -206,11 +252,22 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
         activeWearerCount: 0,
         supplyTarget: supplyTargets.get(hatId) ?? 1,
         chooser: (legal) => ({
-          index: Math.max(0, legal.findIndex((candidate) => candidate.agentId === selectedAgentId)),
+          index: Math.max(
+            0,
+            legal.findIndex((candidate) => candidate.agentId === selectedAgentId),
+          ),
           reason: `RMO office selected ${selectedAgentId}`,
         }),
       },
-      { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(hatId, byId), correlationId: corr, causationId: corr, traceId: corr },
+      {
+        createEventId: () => deps.createId("evt"),
+        nowIso: nextIso,
+        organizationId: deps.organizationId,
+        supervisorChain: chainFor(hatId, byId),
+        correlationId: corr,
+        causationId: corr,
+        traceId: corr,
+      },
     );
     if (assignment.outcome === "no_eligible_candidate") continue;
     await emit(assignment.event);
@@ -220,10 +277,17 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
       clock: { nowMs: () => t0, nowIso: nextIso },
       createEventId: () => deps.createId("evt"),
       supervisorChain: chainFor(hatId, byId),
-      correlationId: corr, causationId: corr, traceId: corr,
+      correlationId: corr,
+      causationId: corr,
+      traceId: corr,
     };
     const { binding, event } = beginBinding(
-      { bindingId: deps.createId("binding"), hat, wearerAgentId: assignment.agentId, organizationId: deps.organizationId },
+      {
+        bindingId: deps.createId("binding"),
+        hat,
+        wearerAgentId: assignment.agentId,
+        organizationId: deps.organizationId,
+      },
       ctx,
     );
     await emit(event);
@@ -242,8 +306,22 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     if (ownerId === undefined) break;
     const ownerHat = byId.get(ownerId)!;
     const result = evaluateGate(
-      { workItemId: deps.workItemId, gateKind: gate, evaluatorHat: ownerHat, passedGateKinds: passed, outcomeChooser: () => ({ index: 0, reason: "owner approves on evidence" }) },
-      { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(ownerId, byId), correlationId: corr, causationId: corr, traceId: corr },
+      {
+        workItemId: deps.workItemId,
+        gateKind: gate,
+        evaluatorHat: ownerHat,
+        passedGateKinds: passed,
+        outcomeChooser: () => ({ index: 0, reason: "owner approves on evidence" }),
+      },
+      {
+        createEventId: () => deps.createId("evt"),
+        nowIso: nextIso,
+        organizationId: deps.organizationId,
+        supervisorChain: chainFor(ownerId, byId),
+        correlationId: corr,
+        causationId: corr,
+        traceId: corr,
+      },
     );
     if (result.outcome !== "evaluated") break;
     for (const e of result.events) await emit(e);
@@ -264,16 +342,41 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     const hat = byId.get(leadBinding.hatId)!;
     // advance past warmup → Active
     const tActive = Date.parse(leadBinding.warmupEndsAt) + 1000;
-    const activeCtx: LifecycleContext = { clock: { nowMs: () => tActive, nowIso: nextIso }, createEventId: () => deps.createId("evt"), supervisorChain: chainFor(hat.id, byId), correlationId: corr, causationId: corr, traceId: corr };
+    const activeCtx: LifecycleContext = {
+      clock: { nowMs: () => tActive, nowIso: nextIso },
+      createEventId: () => deps.createId("evt"),
+      supervisorChain: chainFor(hat.id, byId),
+      correlationId: corr,
+      causationId: corr,
+      traceId: corr,
+    };
     const active = advanceBinding(leadBinding, hat, activeCtx);
-    if (active.event !== undefined) { await emit(active.event); await deps.upsertBinding(active.binding); }
+    if (active.event !== undefined) {
+      await emit(active.event);
+      await deps.upsertBinding(active.binding);
+    }
     // advance past TTL → Expired
     const tExpire = Date.parse(leadBinding.expiresAt) + 1000;
-    const expireCtx: LifecycleContext = { clock: { nowMs: () => tExpire, nowIso: nextIso }, createEventId: () => deps.createId("evt"), supervisorChain: chainFor(hat.id, byId), correlationId: corr, causationId: corr, traceId: corr };
+    const expireCtx: LifecycleContext = {
+      clock: { nowMs: () => tExpire, nowIso: nextIso },
+      createEventId: () => deps.createId("evt"),
+      supervisorChain: chainFor(hat.id, byId),
+      correlationId: corr,
+      causationId: corr,
+      traceId: corr,
+    };
     const expired = advanceBinding(active.binding, hat, expireCtx);
-    if (expired.event !== undefined) { await emit(expired.event); await deps.upsertBinding(expired.binding); expiriesObserved += 1; }
+    if (expired.event !== undefined) {
+      await emit(expired.event);
+      await deps.upsertBinding(expired.binding);
+      expiriesObserved += 1;
+    }
     // plan succession for the now-vacant hat
-    const plan = planSuccession({ hat, candidateAgentIds: [`agent-${hat.id}-0`, `agent-${hat.id}-1`], lastWearerAgentId: leadBinding.wearerAgentId });
+    const plan = planSuccession({
+      hat,
+      candidateAgentIds: [`agent-${hat.id}-0`, `agent-${hat.id}-1`],
+      lastWearerAgentId: leadBinding.wearerAgentId,
+    });
     await emit(successionEvent(plan, hat, deps.organizationId, expireCtx));
     successionsPlanned += 1;
   }
@@ -303,14 +406,18 @@ function assertRmoCandidatesAreEligible(
     .map((candidate) => candidate.agentId)
     .sort();
   if (wrongHatAgentIds.length > 0) {
-    throw new Error(`RMO candidate source ${sourceName} returned candidates for the wrong hat ${hatId}: ${wrongHatAgentIds.join(", ")}`);
+    throw new Error(
+      `RMO candidate source ${sourceName} returned candidates for the wrong hat ${hatId}: ${wrongHatAgentIds.join(", ")}`,
+    );
   }
   const ineligibleAgentIds = rmoCandidates
     .filter((candidate) => !eligibleAgentIds.has(candidate.agentId))
     .map((candidate) => candidate.agentId)
     .sort();
   if (ineligibleAgentIds.length > 0) {
-    throw new Error(`RMO candidate source ${sourceName} returned ineligible agents for ${hatId}: ${ineligibleAgentIds.join(", ")}`);
+    throw new Error(
+      `RMO candidate source ${sourceName} returned ineligible agents for ${hatId}: ${ineligibleAgentIds.join(", ")}`,
+    );
   }
 }
 

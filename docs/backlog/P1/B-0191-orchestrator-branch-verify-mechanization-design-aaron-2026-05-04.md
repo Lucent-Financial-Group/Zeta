@@ -23,9 +23,9 @@ type: friction-reducer
 
 Aaron 2026-05-04, after watching me re-do the orchestrator-CWD-bleed-over hazard twice in succession (the second time IN the very commit that encoded the rule preventing it):
 
-> *"for humans this is why oh my zsh reminds us of many things like this it has branch name in the ui"*
+> _"for humans this is why oh my zsh reminds us of many things like this it has branch name in the ui"_
 
-> *"maybe a deliberate design/redesign on the backlog?"*
+> _"maybe a deliberate design/redesign on the backlog?"_
 
 The substrate-level rule already exists (PR #1551 + PR #1568). The operational discipline keeps failing because it relies on agent-memory rather than mechanization. oh-my-zsh's branch-name-in-prompt solves the equivalent human problem — make the current branch ALWAYS visible, removing the discipline-burden.
 
@@ -50,8 +50,8 @@ Empirically observed twice 2026-05-04 (B-0190 commit landed on tier-48 branch; B
 
 **Design correction (Aaron 2026-05-05)**: original draft proposed a git pre-commit hook under `tools/git-hooks/` installed via `tools/setup/` symlink. Two problems:
 
-1. **Contradicts** `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`. Aaron 2026-05-03 verbatim: *"i don't think we need git hooks harness hooks are good vibe coders will never be without a harness of some kind."* Vibe-coders always have a harness (Claude Code, Codex, Cursor, etc.); harnesses provide TS runtime + hook surfaces; harness hooks suffice. Git hooks are unnecessary.
-2. **Symlinks are unreliable** (Aaron 2026-05-05): *"i love symlinks but just an FYI nothing works right with them it always goes wrong it's sad but true even agents can't use them for skills they don't follow the link."* Empirical fact about contributor experience; the install path was doubly bad.
+1. **Contradicts** `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md`. Aaron 2026-05-03 verbatim: _"i don't think we need git hooks harness hooks are good vibe coders will never be without a harness of some kind."_ Vibe-coders always have a harness (Claude Code, Codex, Cursor, etc.); harnesses provide TS runtime + hook surfaces; harness hooks suffice. Git hooks are unnecessary.
+2. **Symlinks are unreliable** (Aaron 2026-05-05): _"i love symlinks but just an FYI nothing works right with them it always goes wrong it's sad but true even agents can't use them for skills they don't follow the link."_ Empirical fact about contributor experience; the install path was doubly bad.
 
 Revised implementation: the verify-branch check fires as a **harness hook** (Claude Code's PreToolUse hook, or each harness's equivalent), invoked before any Bash tool call that runs `git commit`. The check is a TS script under `tools/orchestrator-checks/` that the harness invokes; no git-hooks directory, no symlinks, no tools/setup/ install step.
 
@@ -74,8 +74,7 @@ if (expected && current !== expected) {
 }
 
 // Worktree-suffix warning class (generic contributor pattern):
-const WORKTREE_PATTERN =
-  /^(research|fix\/memory-md-tier|feature)\/.+-\d{4}-\d{2}-\d{2}$/;
+const WORKTREE_PATTERN = /^(research|fix\/memory-md-tier|feature)\/.+-\d{4}-\d{2}-\d{2}$/;
 if (WORKTREE_PATTERN.test(current)) {
   console.error(`INFO: committing on '${current}' -- verify this is intentional.`);
 }
@@ -145,7 +144,7 @@ Establish a session-level env var that ALL orchestrator git operations check. Ea
 - `memory/feedback_parallel_subagent_concurrency_lessons_cluster_aaron_2026_05_04.md` (PR #1551) — Lesson 2 (orchestrator stays on main); same family.
 - `memory/feedback_dst_justifies_ts_quality_over_bash_and_harness_hooks_suffice_no_git_hooks_aaron_2026_05_03.md` -- the harness-hooks-suffice rule that drives the design correction in section 1 (TS over bash, harness hooks not git hooks, no symlink install path).
 - `B-0006` — memory work pattern that hits this most.
-- `B-0017` (folds B-0188) -- bulk-review / bulk-alignment UI for backlog rows; the systematic answer for catching cross-row inconsistencies like the original git-hooks-vs-harness-hooks contradiction (Aaron 2026-05-05: *"it's something we would have caught in the bulk alignment UI on the backlog"*).
+- `B-0017` (folds B-0188) -- bulk-review / bulk-alignment UI for backlog rows; the systematic answer for catching cross-row inconsistencies like the original git-hooks-vs-harness-hooks contradiction (Aaron 2026-05-05: _"it's something we would have caught in the bulk alignment UI on the backlog"_).
 - `B-0162` — pre-commit hook for direct-name-attribution; similar mechanization approach (also worth revising to harness hook per same logic).
 
 ## Pre-start checklist (2026-05-09)

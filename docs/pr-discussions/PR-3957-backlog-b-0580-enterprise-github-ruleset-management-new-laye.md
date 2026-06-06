@@ -23,6 +23,7 @@ Files B-0580 — Enterprise GitHub ruleset management work-stream. Per Aaron 202
 ## Why
 
 Two reframings:
+
 1. **Surface expansion** — was 2 layers (org/individual), now 3 (enterprise/org/individual). Cross-layer rule conflicts become a real failure mode without coherent governance
 2. **DV2.0 ruleset-divergence smell composes** per `dv2-data-split-discipline-activated.md` — the smell was known for repo-split (B-0427); Enterprise multiplies it
 
@@ -59,6 +60,7 @@ Enterprise-layer writes (slice 5) require `admin:enterprise` scope — current l
 Adds a new P2 backlog entry (B-0580) tracking enterprise-level GitHub ruleset management as a third governance layer above existing org/individual rulesets, and registers it in the main backlog index.
 
 **Changes:**
+
 - New backlog doc B-0580 describing motivation, slices, acceptance criteria, and first-discovery findings for the new enterprise ruleset created (`16490134`).
 - Adds B-0580 entry to `docs/BACKLOG.md` under P2.
 
@@ -66,10 +68,10 @@ Adds a new P2 backlog entry (B-0580) tracking enterprise-level GitHub ruleset ma
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                               | Description                                                                         |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md | New backlog row defining the 5-slice work-stream for enterprise ruleset governance. |
-| docs/BACKLOG.md | Registers B-0580 in the P2 backlog list. |
+| docs/BACKLOG.md                                                    | Registers B-0580 in the P2 backlog list.                                            |
 
 ### COMMENTED — @AceHack (2026-05-16T23:05:41Z)
 

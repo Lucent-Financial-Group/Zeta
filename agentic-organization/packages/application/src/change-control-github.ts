@@ -32,7 +32,13 @@ export type GitHubPullRequestState = {
 };
 
 export type GitHubClient = {
-  createPullRequest: (args: { title: string; head: string; base: string; body: string; files: readonly GitHubFileChange[] }) => Promise<{ number: number; url: string }>;
+  createPullRequest: (args: {
+    title: string;
+    head: string;
+    base: string;
+    body: string;
+    files: readonly GitHubFileChange[];
+  }) => Promise<{ number: number; url: string }>;
   getPullRequest: (number: number) => Promise<GitHubPullRequestState>;
   comment: (number: number, body: string) => Promise<void>;
   merge: (number: number) => Promise<void>;
@@ -62,7 +68,11 @@ export function createGitHubHttpClient(input: CreateGitHubHttpClientInput): GitH
   const api = (input.baseUrl ?? "https://api.github.com").replace(/\/$/, "");
   const repo = `${api}/repos/${input.owner}/${input.repo}`;
   const baseBranch = input.baseBranch ?? "main";
-  const headers = { authorization: `Bearer ${input.token}`, accept: "application/vnd.github+json", "content-type": "application/json" };
+  const headers = {
+    authorization: `Bearer ${input.token}`,
+    accept: "application/vnd.github+json",
+    "content-type": "application/json",
+  };
 
   async function ok<T>(res: Response, op: string): Promise<T> {
     if (!res.ok) throw new Error(`github ${op} failed: ${res.status} ${await res.text()}`);
@@ -72,17 +82,38 @@ export function createGitHubHttpClient(input: CreateGitHubHttpClientInput): GitH
   return {
     async createPullRequest(args): Promise<{ number: number; url: string }> {
       // base sha → branch → files → PR (real REST git-data flow)
-      const baseRef = await ok<{ object: { sha: string } }>(await doFetch(`${repo}/git/ref/heads/${baseBranch}`, { headers }), "get-base-ref");
-      await doFetch(`${repo}/git/refs`, { method: "POST", headers, body: JSON.stringify({ ref: `refs/heads/${args.head}`, sha: baseRef.object.sha }) });
+      const baseRef = await ok<{ object: { sha: string } }>(
+        await doFetch(`${repo}/git/ref/heads/${baseBranch}`, { headers }),
+        "get-base-ref",
+      );
+      await doFetch(`${repo}/git/refs`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ ref: `refs/heads/${args.head}`, sha: baseRef.object.sha }),
+      });
       for (const f of args.files) {
-        await doFetch(`${repo}/contents/${encodeURIComponent(f.path)}`, { method: "PUT", headers, body: JSON.stringify({ message: `change: ${f.path}`, content: toBase64(f.content), branch: args.head }) });
+        await doFetch(`${repo}/contents/${encodeURIComponent(f.path)}`, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ message: `change: ${f.path}`, content: toBase64(f.content), branch: args.head }),
+        });
       }
-      const pr = await ok<{ number: number; html_url: string }>(await doFetch(`${repo}/pulls`, { method: "POST", headers, body: JSON.stringify({ title: args.title, head: args.head, base: args.base, body: args.body }) }), "create-pr");
+      const pr = await ok<{ number: number; html_url: string }>(
+        await doFetch(`${repo}/pulls`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ title: args.title, head: args.head, base: args.base, body: args.body }),
+        }),
+        "create-pr",
+      );
       return { number: pr.number, url: pr.html_url };
     },
     async getPullRequest(number): Promise<GitHubPullRequestState> {
       const pr = await ok<{ merged: boolean }>(await doFetch(`${repo}/pulls/${number}`, { headers }), "get-pr");
-      const reviews = await ok<{ state: string }[]>(await doFetch(`${repo}/pulls/${number}/reviews`, { headers }), "get-reviews");
+      const reviews = await ok<{ state: string }[]>(
+        await doFetch(`${repo}/pulls/${number}/reviews`, { headers }),
+        "get-reviews",
+      );
       const decision = reviews.some((r) => r.state === "CHANGES_REQUESTED")
         ? "CHANGES_REQUESTED"
         : reviews.some((r) => r.state === "APPROVED")
@@ -94,7 +125,11 @@ export function createGitHubHttpClient(input: CreateGitHubHttpClientInput): GitH
       await doFetch(`${repo}/issues/${number}/comments`, { method: "POST", headers, body: JSON.stringify({ body }) });
     },
     async merge(number): Promise<void> {
-      await doFetch(`${repo}/pulls/${number}/merge`, { method: "PUT", headers, body: JSON.stringify({ merge_method: "squash" }) });
+      await doFetch(`${repo}/pulls/${number}/merge`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ merge_method: "squash" }),
+      });
     },
   };
 }
@@ -126,7 +161,11 @@ export function gitHubFilesFor(cs: ChangeSet): readonly GitHubFileChange[] {
 
 function prBody(cs: ChangeSet): string {
   const internal = cs.artifacts.filter((a) => !isGitRepresentable(a));
-  const internalNote = internal.length === 0 ? "" : `\n\n_Internal-only artifacts (review of record is the org's ChangeSet ${cs.changeSetId}):_\n` + internal.map((a) => `- ${a.kind}`).join("\n");
+  const internalNote =
+    internal.length === 0
+      ? ""
+      : `\n\n_Internal-only artifacts (review of record is the org's ChangeSet ${cs.changeSetId}):_\n` +
+        internal.map((a) => `- ${a.kind}`).join("\n");
   return `Org ChangeSet ${cs.changeSetId} (work ${cs.workItemId}).${internalNote}`;
 }
 
@@ -143,11 +182,22 @@ export function createGitHubPrPort(deps: { client: GitHubClient; nowMs: () => nu
         body: prBody(cs),
         files: gitHubFilesFor(cs),
       });
-      return { system: ExternalSystem.GitHub, externalId: String(pr.number), url: pr.url, lastSyncedState: "open", syncedAt: new Date(deps.nowMs()).toISOString() };
+      return {
+        system: ExternalSystem.GitHub,
+        externalId: String(pr.number),
+        url: pr.url,
+        lastSyncedState: "open",
+        syncedAt: new Date(deps.nowMs()).toISOString(),
+      };
     },
     async pull(ref: ProjectionRef): Promise<ExternalReviewState> {
       const pr = await deps.client.getPullRequest(Number(ref.externalId));
-      const decision = pr.reviewDecision === "APPROVED" ? ExternalDecision.Approved : pr.reviewDecision === "CHANGES_REQUESTED" ? ExternalDecision.ChangesRequested : ExternalDecision.Pending;
+      const decision =
+        pr.reviewDecision === "APPROVED"
+          ? ExternalDecision.Approved
+          : pr.reviewDecision === "CHANGES_REQUESTED"
+            ? ExternalDecision.ChangesRequested
+            : ExternalDecision.Pending;
       return { decision, merged: pr.merged, detail: `github PR #${pr.number} ${pr.reviewDecision ?? "pending"}` };
     },
     async push(ref: ProjectionRef, stage: ReviewStage, outcome: StageOutcome): Promise<void> {

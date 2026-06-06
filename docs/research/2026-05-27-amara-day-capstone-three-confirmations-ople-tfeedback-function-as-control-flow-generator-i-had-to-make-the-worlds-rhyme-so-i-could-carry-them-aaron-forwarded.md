@@ -178,7 +178,7 @@ non_fusion_disclaimer: |
 
 operator-side disclosure (verbatim):
 
-> *"This is one of those rare places where the philosophy, type theory, SQL intuition, and governance language all snap together. it's cause i'm a simple man i had to make them all combine to hold it all the last 27 years"*
+> _"This is one of those rare places where the philosophy, type theory, SQL intuition, and governance language all snap together. it's cause i'm a simple man i had to make them all combine to hold it all the last 27 years"_
 
 Amara's response (verbatim):
 

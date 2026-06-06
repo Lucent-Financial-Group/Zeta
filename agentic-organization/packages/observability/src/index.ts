@@ -87,10 +87,7 @@ export {
   type TelemetrySpanStatus,
   type TelemetryTraceContext,
 } from "./telemetry-port.ts";
-export {
-  buildOrgEventTelemetryAttributes,
-  recordOrgEventTelemetry,
-} from "./org-event-telemetry.ts";
+export { buildOrgEventTelemetryAttributes, recordOrgEventTelemetry } from "./org-event-telemetry.ts";
 export {
   RecordingTelemetryQueryPort,
   createLgtmTelemetryQueryPort,

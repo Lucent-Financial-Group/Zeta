@@ -37,6 +37,7 @@ Tick 1820Z. PR #3544 (B-0533 Slice A POC) merged this tick. Caught + rescued pee
 This PR adds a tick log under `docs/hygiene-history/ticks/` documenting the 1820Z tick: the merge of B-0533 Slice A POC (PR #3544) and the rescue of a concurrent Otto-CLI commit found on a borrowed worktree.
 
 **Changes:**
+
 - New tick log file recording merged PRs, refined dead-xref scan, and peer-Otto worktree-contention rescue.
 
 ## General comments

@@ -8,8 +8,8 @@ type: feedback
 
 Maintainer 2026-04-24:
 
-> *"you should note somewehre durable that that's the
-> prefered method of update"*
+> _"you should note somewehre durable that that's the
+> prefered method of update"_
 
 Context: I had just (a) edited `.mise.toml` to bump dotnet
 10.0.202 → 10.0.203, (b) run `tools/setup/install.sh`,
@@ -63,6 +63,7 @@ toolchain updates):
 
 GOVERNANCE §24 three-way-parity says the install script
 is the SAME script consumed by:
+
 1. Dev laptop (you)
 2. CI runner (GitHub Actions)
 3. Devcontainer image
@@ -90,7 +91,7 @@ toolchain than your laptop. Reproducible-stability
 - **Verify**: `mise exec -- dotnet --version` →
   `10.0.203`.
 - **Build gate**: `DOTNET_gcServer=0 mise exec -- dotnet
-  build Zeta.sln -c Release` → `0 Warning(s) 0 Error(s)`.
+build Zeta.sln -c Release` → `0 Warning(s) 0 Error(s)`.
   (Routed through `mise exec --` per step 4 above, so a
   legacy / Homebrew `dotnet` earlier on PATH cannot
   silently bypass the `.mise.toml` pin.)
@@ -112,7 +113,8 @@ will run. Same script, three places.
 
 ## Future Otto reference
 
-When asked to update a toolchain: **edit `.mise.toml`
-+ run `tools/setup/install.sh`**. Don't shortcut to
-`mise install` or brew. Verify the build gate after.
-The script is the contract; every other path is drift.
+When asked to update a toolchain: \*\*edit `.mise.toml`
+
+- run `tools/setup/install.sh`\*\*. Don't shortcut to
+  `mise install` or brew. Verify the build gate after.
+  The script is the contract; every other path is drift.

@@ -38,10 +38,7 @@
 
 import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
 
@@ -70,20 +67,11 @@ interface AuditResult {
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
-const HEADER_LABELS: readonly string[] = [
-  "Scope:",
-  "Attribution:",
-  "Operational status:",
-  "Non-fusion disclaimer:",
-];
+const HEADER_LABELS: readonly string[] = ["Scope:", "Attribution:", "Operational status:", "Non-fusion disclaimer:"];
 
 const HEAD_LINES = 20;
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -288,7 +276,13 @@ function emitJsonRollup(args: Args, total: number, filesOk: number, filesMissing
   process.stdout.write(formatJson(payload));
 }
 
-function emitHumanSummary(targetPath: string, total: number, filesOk: number, filesMissing: number, findings: readonly FileFinding[]): void {
+function emitHumanSummary(
+  targetPath: string,
+  total: number,
+  filesOk: number,
+  filesMissing: number,
+  findings: readonly FileFinding[],
+): void {
   process.stderr.write(`archive-header audit on ${targetPath}\n`);
   process.stderr.write(`  files checked:          ${String(total)}\n`);
   process.stderr.write(`  all four headers ok:    ${String(filesOk)}\n`);
@@ -298,9 +292,7 @@ function emitHumanSummary(targetPath: string, total: number, filesOk: number, fi
     process.stderr.write("gaps:\n");
     for (const f of findings) {
       if (f.status === "missing") {
-        process.stderr.write(
-          `  ${f.path}: missing [${f.missingLabels.join(",")}]\n`,
-        );
+        process.stderr.write(`  ${f.path}: missing [${f.missingLabels.join(",")}]\n`);
       }
     }
   }
@@ -309,9 +301,7 @@ function emitHumanSummary(targetPath: string, total: number, filesOk: number, fi
 export function main(argv: readonly string[]): AuditExitCode {
   const parsed = parseArgs(argv);
   if (parsed.kind === "help") {
-    process.stdout.write(
-      "Usage: audit_archive_headers.ts [--path DIR] [--enforce] [--json | --out DIR]\n",
-    );
+    process.stdout.write("Usage: audit_archive_headers.ts [--path DIR] [--enforce] [--json | --out DIR]\n");
     return 0;
   }
   if (parsed.kind === "error") {
@@ -323,18 +313,14 @@ export function main(argv: readonly string[]): AuditExitCode {
   process.chdir(repoRoot());
 
   if (!isDirectory(args.targetPath)) {
-    process.stderr.write(
-      `audit_archive_headers: target path not found: ${args.targetPath}\n`,
-    );
+    process.stderr.write(`audit_archive_headers: target path not found: ${args.targetPath}\n`);
     return 2;
   }
 
   const result = audit(args.targetPath);
 
   if (result.findings.length === 0) {
-    process.stderr.write(
-      `audit_archive_headers: no .md files under ${args.targetPath}\n`,
-    );
+    process.stderr.write(`audit_archive_headers: no .md files under ${args.targetPath}\n`);
     return 0;
   }
 

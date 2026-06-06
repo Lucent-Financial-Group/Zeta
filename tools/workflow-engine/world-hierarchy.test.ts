@@ -96,7 +96,7 @@ describe("verifyHierarchy", () => {
     const world: HierarchicalWorld = {
       ...EMPTY_WORLD,
       substrateAlgebra: "git",
-      hierarchyDepth: 0,  // wrong; should be 2
+      hierarchyDepth: 0, // wrong; should be 2
       parentAlgebra: "dbsp",
     };
     const result = verifyHierarchy(world);
@@ -110,7 +110,7 @@ describe("verifyHierarchy", () => {
       ...EMPTY_WORLD,
       substrateAlgebra: "git",
       hierarchyDepth: 2,
-      parentAlgebra: "clifford",  // wrong; should be dbsp
+      parentAlgebra: "clifford", // wrong; should be dbsp
     };
     const result = verifyHierarchy(world);
     expect(result.ok).toBe(false);
@@ -165,7 +165,7 @@ describe("substrate-engineering composition (end-to-end)", () => {
       ...EMPTY_WORLD,
       substrateAlgebra: "clifford",
       hierarchyDepth: 0,
-      parentAlgebra: "dbsp",  // wrong; root should have null
+      parentAlgebra: "dbsp", // wrong; root should have null
     };
     const verified = verifyHierarchy(malformedClifford);
     expect(verified.ok).toBe(false);

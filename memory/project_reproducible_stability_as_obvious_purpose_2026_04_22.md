@@ -65,11 +65,11 @@ own terms.
 ## What was landed (narrow)
 
 - AGENTS.md: one short `## The purpose: reproducible
-  stability` section naming the thesis, with no
+stability` section naming the thesis, with no
   elaboration of which shipped properties back it.
 - AGENTS.md value #3: the single verb substitution
   `"Ship, break, learn"` → `"Ship, do no permanent
-  harm, learn"` — the change Aaron explicitly
+harm, learn"` — the change Aaron explicitly
   authorized. No added editorial paragraph.
 - README.md: a short `## The thesis` paragraph pointing
   at the AGENTS.md section; disambiguates the word
@@ -81,8 +81,8 @@ Earlier drafts of this memory entry and of the AGENTS.md
 section went further than Aaron's verbatim words and
 were flagged by Aaron as hallucinations. Removed:
 
-- Any narrative about *which* phenomenon Aaron means
-  or *when* his view of the project shifted.
+- Any narrative about _which_ phenomenon Aaron means
+  or _when_ his view of the project shifted.
 - Claims that K-relations provenance is shipped
   ("threads the semiring through every operator") —
   it is not; semiring-parameterized Zeta is the
@@ -116,12 +116,12 @@ the pointer has already been flagged as hallucinated.
 ## How to apply
 
 - When writing first-touch docs, the thesis can be
-  named: *reproducible stability is the point*. Do
+  named: _reproducible stability is the point_. Do
   not elaborate which algebraic properties back it
   unless the elaboration is verified against the
   current code.
 - When an agent is tempted to write narrative about
-  *why* Aaron said a particular word or *when* a
+  _why_ Aaron said a particular word or _when_ a
   shift happened, stop. Capture verbatim; flag
   uncertainty; ask.
 - "Break" in velocity-over-stability contexts has

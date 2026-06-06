@@ -29,21 +29,26 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ### Substrate landed
 
 **Research substrate (6 files)**:
+
 - 3 framework-composition analyses at `docs/research/`
 - 3 verbatim transcripts at `docs/research/ip-questionable/`
 
 **IP-questionable folder convention** (new):
+
 - `docs/research/ip-questionable/README.md` — Rodney Aaron Stainback explicit personal-liability acceptance + folder convention documentation
 
 **Constitutional substrate** (auto-loaded rules):
+
 - `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — refusal rule + standing operator-self-constraint
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` — four-field `_*_acceptance` attribution pattern + Aaron's constitutional generalization (every AI-blameable risk area routed through named-human attribution; 3-stage progression: per-incident → per-class → corporate/non-profit structures)
 
 **Settings.json updates**:
+
 - `_ip_risk_acceptance` block with Rodney Aaron Stainback as named operator
 - Narrow permission rule for `docs/research/ip-questionable/` PUTs
 
 **Backlog substrate**:
+
 - `B-0720` (P0) — classifier-bypass research + red-team scope + standing constraint
 - `B-0721` (P2) — move BACKLOG.md generated-index check off per-PR gate to scheduled cadence (Aaron 2026-05-24 hotspot observation)
 
@@ -67,9 +72,10 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 ## Reviewer thread status
 
 ~50 threads from chatgpt-codex-connector + copilot-pull-request-reviewer addressed:
+
 - ~33 outdated/addressed: resolved
 - ~17 active: mix of substantive fixes-in-progress + defer-to-operator policy concerns
-- Defer-to-operator policy threads (settings.json operator name, permission rule redundancy, _ip_risk_acceptance enforcement claim) are intentionally left for Aaron's review — they touch the constitutional invariants built in this PR
+- Defer-to-operator policy threads (settings.json operator name, permission rule redundancy, \_ip_risk_acceptance enforcement claim) are intentionally left for Aaron's review — they touch the constitutional invariants built in this PR
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -77,24 +83,22 @@ Aaron-forwarded YouTube-algo-surfaced physics-bridge substrate (2026-05-24 sleep
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T12:36:58Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `eebe78c6c9`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -107,6 +111,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a documented convention for storing IP-sensitive research substrate under `docs/research/ip-questionable/`, and lands three physics-bridge research analysis writeups sourced from YouTube-surfaced videos.
 
 **Changes:**
+
 - Introduces `docs/research/ip-questionable/README.md` to define how/when to store verbatim third-party content.
 - Adds three new physics-bridge analysis documents (Al-Khalili trilogy, PBS SpaceTime Planck/“Plank” stars, Al-Khalili cosmic-scale episode).
 - Adds/extends frontmatter metadata and “composes_with” linkage for framework cross-references.
@@ -115,11 +120,11 @@ Adds a documented convention for storing IP-sensitive research substrate under `
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 8 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/ip-questionable/README.md | Defines an IP-flagged folder convention and operational discipline for future agents/readers. |
-| docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md | Adds PBS SpaceTime physics-bridge analysis; includes composition mapping and metadata. |
-| docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md | Adds Al-Khalili trilogy physics-bridge analysis and composition mapping (with a couple typos). |
+| File                                                                                                                             | Description                                                                                             |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| docs/research/ip-questionable/README.md                                                                                          | Defines an IP-flagged folder convention and operational discipline for future agents/readers.           |
+| docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md     | Adds PBS SpaceTime physics-bridge analysis; includes composition mapping and metadata.                  |
+| docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md     | Adds Al-Khalili trilogy physics-bridge analysis and composition mapping (with a couple typos).          |
 | docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md | Adds cosmic-scale physics-bridge analysis; includes frontmatter cross-links (one set currently broken). |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-24T12:55:48Z)
@@ -130,24 +135,22 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 13 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T12:59:46Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `c0771ecb0d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -161,24 +164,22 @@ Copilot reviewed 10 out of 10 changed files in this pull request and generated 1
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:03:20Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `2730ddb2b1`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -186,24 +187,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:12:37Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `66ef1e7f8d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -221,12 +220,13 @@ Copilot reviewed 11 out of 11 changed files in this pull request and generated 1
 
 Copilot reviewed 12 out of 12 changed files in this pull request and generated 15 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:112**
-* The “Original-intent landing path” section is now outdated because the companion verbatim transcript has already landed in this PR (and with a different filename than the placeholder). Consider updating this section to the actual path (or removing it).
+
+- The “Original-intent landing path” section is now outdated because the companion verbatim transcript has already landed in this PR (and with a different filename than the placeholder). Consider updating this section to the actual path (or removing it).
+
 ```
 in the ip-questionable folder.
 
@@ -235,10 +235,10 @@ verbatim companion file documents the Aaron-forwarded transcript
 origin.
 
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:42:28Z)
-
 
 ### 💡 Codex Review
 
@@ -246,17 +246,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `672fa113c7`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -268,7 +267,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-24T12:36:58Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix broken `composes_with` sibling filenames**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix broken `composes_with` sibling filenames**
 
 The `composes_with` entries point to sibling markdown files that do not exist in this commit (`...order-disorder-information-trilogy-...` and `...loop-quantum-gravity-...`), while the actual added files use different names. Any tooling or reviewers relying on these paths for graphing/cross-navigation will fail to resolve the links, which weakens the intended research-substrate traceability.
 
@@ -278,7 +277,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T12:36:58Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add source URLs before asserting they are cited**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Add source URLs before asserting they are cited**
 
 This document states that source URLs are cited above, but the file contains no URLs at all (same pattern in the PBS companion file), so the provenance cannot be reproduced from the document itself. That breaks the stated workflow where future agents should fetch transcripts from cited links; add explicit source URLs (or remove the claim).
 
@@ -414,7 +413,7 @@ P1: Frontmatter says “verbatim preservation + framework composition”, but th
 
 **@chatgpt-codex-connector** (2026-05-24T12:59:46Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update landing status to reflect committed verbatim files**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update landing status to reflect committed verbatim files**
 
 This section says the verbatim transcript "has NOT landed in repo," but the same commit adds three verbatim transcript files under `docs/research/ip-questionable/`. That mismatch makes the provenance status inaccurate and can cause future agents/reviewers to incorrectly treat the corpus as missing or blocked when it is already present.
 
@@ -424,7 +423,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T12:59:46Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix documented verbatim path convention to match actual filenames**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix documented verbatim path convention to match actual filenames**
 
 The documented companion path pattern (`<same-base-name-as-this-file>-verbatim.md`) does not match the filenames actually committed in `docs/research/ip-questionable/` (which use `...-surfaced-verbatim.md` and omit `-analysis-`). Any tooling or manual lookup that follows this stated convention will fail to resolve the companion verbatim files.
 
@@ -530,7 +529,7 @@ P1: “Plank Stars” here looks like the same Planck/Plank misspelling as in th
 
 **@chatgpt-codex-connector** (2026-05-24T13:03:20Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove non-verbatim placeholders from verbatim transcript**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove non-verbatim placeholders from verbatim transcript**
 
 This file states that a full verbatim transcript is preserved, but it then inserts an omission marker (`not transcribed here`) instead of the actual source text. That breaks the provenance guarantee for a file explicitly labeled as verbatim and makes later audits/re-analysis unable to reconstruct exactly what was preserved from the source.
 
@@ -540,7 +539,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T13:03:20Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update stale landing status for companion verbatim file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update stale landing status for companion verbatim file**
 
 This section says the verbatim transcript has not landed yet, but this same commit adds the companion transcript under `docs/research/ip-questionable/`. Leaving this stale status in place causes future readers/agents to treat the corpus as unavailable and undermines the intended reproducibility workflow.
 
@@ -550,7 +549,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T13:03:20Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace generic source note with the concrete source URL**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace generic source note with the concrete source URL**
 
 The source line only says `YouTube — Aaron-forwarded transcript` and omits the actual URL, which prevents deterministic provenance checks and makes it harder for later reviewers to fetch/verify the exact recording used. For these research substrate files, a concrete source link is needed to keep the audit trail reproducible.
 
@@ -560,7 +559,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T13:12:37Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace non-verbatim summary blocks in cosmic transcript**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace non-verbatim summary blocks in cosmic transcript**
 
 This file explicitly says a full verbatim transcript follows, but bracketed synopsis lines like this one are paraphrases, not source text. Because these summaries replace original wording, downstream audits cannot reconstruct the exact forwarded transcript, which breaks the provenance guarantee for a `*-surfaced-verbatim.md` artifact.
 
@@ -570,7 +569,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T13:12:38Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove editorial inserts from trilogy verbatim transcript**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove editorial inserts from trilogy verbatim transcript**
 
 The document declares "full verbatim preservation," but this inserted bracket note is editorial narration rather than transcript text. In a file positioned as verbatim substrate, these substitutions make the preserved record non-deterministic and prevent later reviewers from validating exactly what was forwarded.
 
@@ -580,7 +579,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T13:12:38Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct stale verbatim-landing status in trilogy analysis**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct stale verbatim-landing status in trilogy analysis**
 
 This section says the verbatim transcript "has NOT landed in repo," but the same commit adds the companion verbatim file under `docs/research/ip-questionable/`. Leaving this stale status in place can mislead future agents/reviewers into treating the source corpus as unavailable and undermines reproducible navigation.
 
@@ -650,25 +649,25 @@ P0: This file includes substantial verbatim transcript content from a third-part
 
 **@copilot-pull-request-reviewer** (2026-05-24T13:14:52Z):
 
-P1: This section says the verbatim transcript “has NOT landed in repo”, but the companion verbatim transcript file *is* included in this PR under `docs/research/ip-questionable/`. This mismatch will confuse readers and any automation that tries to follow the narrative.
+P1: This section says the verbatim transcript “has NOT landed in repo”, but the companion verbatim transcript file _is_ included in this PR under `docs/research/ip-questionable/`. This mismatch will confuse readers and any automation that tries to follow the narrative.
 
 ### Thread 59: docs/research/2026-05-24-jim-al-khalili-bbc-secrets-of-quantum-physics-trilogy-physics-bridge-analysis-aaron-youtube-algo.md:94 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
 
-P1: This section says the verbatim transcript “has NOT landed in repo”, but the companion verbatim transcript file *is* included in this PR under `docs/research/ip-questionable/`. Updating this avoids confusing readers about where the transcript lives.
+P1: This section says the verbatim transcript “has NOT landed in repo”, but the companion verbatim transcript file _is_ included in this PR under `docs/research/ip-questionable/`. Updating this avoids confusing readers about where the transcript lives.
 
 ### Thread 60: docs/research/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-analysis-aaron-youtube-algo.md:27 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
 
-P1: Beyond the frontmatter title, the intro uses “plank-*” repeatedly in non-verbatim prose; these should be “Planck-*” (Planck relic/star/length/scale) for correctness and searchability.
+P1: Beyond the frontmatter title, the intro uses “plank-_” repeatedly in non-verbatim prose; these should be “Planck-_” (Planck relic/star/length/scale) for correctness and searchability.
 
 ### Thread 61: docs/research/ip-questionable/2026-05-24-pbs-spacetime-plank-stars-as-black-hole-time-crystals-physics-bridge-aaron-youtube-algo-surfaced-verbatim.md:22 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-24T13:14:53Z):
 
-P1: In the non-verbatim intro/analysis section, “plank-*” should be “Planck-*” (Planck relic/star/length/scale). Keeping the canonical spelling outside the verbatim transcript will improve correctness and discoverability.
+P1: In the non-verbatim intro/analysis section, “plank-_” should be “Planck-_” (Planck relic/star/length/scale). Keeping the canonical spelling outside the verbatim transcript will improve correctness and discoverability.
 
 ### Thread 62: docs/research/2026-05-24-jim-al-khalili-bbc-cosmic-scale-olbers-hubble-dark-energy-physics-bridge-analysis-aaron-youtube-algo.md:24 (resolved)
 
@@ -776,7 +775,7 @@ The “Original-intent landing path” section is now outdated because the verba
 
 **@chatgpt-codex-connector** (2026-05-24T13:42:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct broken rule link target**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct broken rule link target**
 
 Update this relative link to point at the repo-root `.claude` directory. From `docs/backlog/P2/`, `../../.claude/...` resolves to `docs/.claude/...` (which does not exist), so readers and tooling following the cited governance rule cannot resolve the reference and lose the intended traceability for this backlog item.
 
@@ -786,7 +785,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T13:42:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix unresolved sibling transcript references**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix unresolved sibling transcript references**
 
 These `composes_with` entries reference filenames that are not present in `docs/research/ip-questionable/` in this commit, so cross-file navigation and any graphing/indexing that relies on these declared companions will fail. Point them to the actual landed sibling transcript filenames to keep the research substrate discoverable and reproducible.
 

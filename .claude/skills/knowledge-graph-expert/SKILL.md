@@ -9,15 +9,15 @@ Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
 A knowledge graph is a store of entities and relationships
-optimised for traversal. The question it answers cheaply: *what
-is connected to this, through what relations, at what distance?*
+optimised for traversal. The question it answers cheaply: _what
+is connected to this, through what relations, at what distance?_
 Relational stores can answer it too — painfully, at scale.
 
 ## Two data models
 
-| Model | Unit | Example |
-|---|---|---|
-| **RDF triples** | (subject, predicate, object) | `(:alice, :knows, :bob)` |
+| Model              | Unit                                         | Example                                                                |
+| ------------------ | -------------------------------------------- | ---------------------------------------------------------------------- |
+| **RDF triples**    | (subject, predicate, object)                 | `(:alice, :knows, :bob)`                                               |
 | **Property graph** | Nodes + edges, both with properties + labels | `(Alice:Person {age:30})-[:KNOWS {since:2020}]->(Bob:Person {age:31})` |
 
 - **RDF** — W3C standards (RDF/RDFS/OWL/SPARQL), strong on
@@ -91,7 +91,7 @@ the anticipated queries and verify the indexes cover them.
 ## Traversal patterns
 
 - **BFS / DFS** — basics; BFS for shortest-unweighted-path.
-- **Dijkstra / A\*** — shortest weighted path; A* with a
+- **Dijkstra / A\*** — shortest weighted path; A\* with a
   heuristic (geographic lat/lng).
 - **PageRank** — eigenvector of the adjacency matrix;
   authority score.
@@ -129,7 +129,7 @@ wins.
 A celebrity node with 10M edges:
 
 - Cypher `MATCH (a:User)-[:FOLLOWS]->(b:User) WHERE a.name =
-  'kim_k'` returns 10M rows.
+'kim_k'` returns 10M rows.
 - A `:FOLLOWS` edge lookup touches a 10M-wide adjacency.
 - Load-balancing by hash on the celebrity node sends every
   partition's traffic to one shard.
@@ -241,7 +241,7 @@ materialisations for the others.
 - **Semantic model on top** → `ontology-expert`.
 - **Tree-only classification** → `taxonomy-expert`.
 - **Golden-record discipline** → `master-data-management-
-  expert`.
+expert`.
 - **Relational alternatives** → `sql-expert`.
 - **Query planning** → `query-planner` /
   `query-optimizer-expert`.
@@ -280,15 +280,15 @@ one-liner. Current alternative: scan the plan YAML / JSON.
 
 ## Reference patterns
 
-- W3C — *SPARQL 1.1 Query Language*.
-- Robinson, Webber, Eifrem — *Graph Databases* (2nd ed 2015).
-- ISO/IEC 39075:2024 — *GQL*.
-- Hamilton — *Graph Representation Learning* (2020).
+- W3C — _SPARQL 1.1 Query Language_.
+- Robinson, Webber, Eifrem — _Graph Databases_ (2nd ed 2015).
+- ISO/IEC 39075:2024 — _GQL_.
+- Hamilton — _Graph Representation Learning_ (2020).
 - Neo4j GDS (Graph Data Science) documentation.
 - Apache TinkerPop / Gremlin documentation.
 - Datomic index documentation.
-- Grover & Leskovec — *node2vec* (2016).
-- Kipf & Welling — *GCN* (2017).
+- Grover & Leskovec — _node2vec_ (2016).
+- Kipf & Welling — _GCN_ (2017).
 - Amazon Neptune docs; JanusGraph docs; TigerGraph docs.
 - `.claude/skills/graph-theory-expert/SKILL.md` —
   algorithmic foundations.

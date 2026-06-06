@@ -34,8 +34,8 @@ None; depends on B-0434 CSS/JS scaffolding (already shipped).
 
 ## Slice history
 
-| Slice | PR | What shipped |
-|-------|----|--------------|
-| 1 | #3136 | Static bivector fingerprint canvas (HC-1 worked example) + partial-credit score board |
-| 2 | #3137 | Non-orthogonal bivector slider — sin(θ) weight visualisation |
-| 3 | — | Clickable score board rows → any clause's fingerprint loads in canvas; closes B-0437 |
+| Slice | PR    | What shipped                                                                          |
+| ----- | ----- | ------------------------------------------------------------------------------------- |
+| 1     | #3136 | Static bivector fingerprint canvas (HC-1 worked example) + partial-credit score board |
+| 2     | #3137 | Non-orthogonal bivector slider — sin(θ) weight visualisation                          |
+| 3     | —     | Clickable score board rows → any clause's fingerprint loads in canvas; closes B-0437  |

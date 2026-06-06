@@ -39,20 +39,20 @@ filter applied, recommended approach, and concrete next steps.
 **This is not a "pick a TSDB and use it" task.** It is research
 toward the multi-algebra-DB vision where timeseries is one
 algebra among many, all composable through the meta-DSL. The
-research output is the *design*, not the implementation.
+research output is the _design_, not the implementation.
 
 ## Why now
 
 Aaron 2026-05-01:
 
-> *"back log timeseries db domean reserach i know prometheus,
+> _"back log timeseries db domean reserach i know prometheus,
 > that's our good citizen dependency candidate but there may be
 > better more modern more integrated but pro not... we want it
 > native in the zsets with meta dsl multi dsl integration like
-> the others types, ,graph, hierarchy, filesystem, etc..."*
+> the others types, ,graph, hierarchy, filesystem, etc..."_
 >
-> *"that's for all the metrics that's the connection it's not
-> just for fun, it's our eyes"*
+> _"that's for all the metrics that's the connection it's not
+> just for fun, it's our eyes"_
 
 The metrics-are-our-eyes framing (per
 `feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`)
@@ -68,7 +68,6 @@ time-series persistence is a fitness function.
 1. **Candidate landscape** — produce a research doc at
    `docs/research/2026-XX-timeseries-db-candidate-landscape.md`
    covering at least:
-
    - **Prometheus** (Aaron's known good-citizen baseline; CNCF
      graduated; pull-based; PromQL; widely-deployed)
    - **TimescaleDB** (PostgreSQL extension; SQL-native;
@@ -108,8 +107,8 @@ time-series persistence is a fitness function.
 4. **Meta-DSL integration sketch.** A short section in the
    design doc proposing how the chosen timeseries algebra
    plugs into the factory's existing meta-DSL alongside graph
-   + hierarchy + filesystem types. Doesn't need to be the
-   final design; it needs to be a concrete sketch.
+   - hierarchy + filesystem types. Doesn't need to be the
+     final design; it needs to be a concrete sketch.
 
 5. **Recommended approach.** Pick one of:
    - **Adopt and integrate** — chosen candidate is a clean fit;
@@ -153,20 +152,20 @@ When the recommendation lands on "Build native" (or "Adopt-with-
 adapter" with substantial native augmentation), the design must
 satisfy these constraints Aaron named explicitly:
 
-> *"cardinalty matters a lot for prometheus or at least it did
+> _"cardinalty matters a lot for prometheus or at least it did
 > becasue of they way they are uber columnar store if i
 > remember right they are relying on reduced dimensionaly
 > within lables. we can avoid those same drawbacks in our
 > implmentation, CRDT multi mode or whatever you call it will
-> be paramount. formal math specifican"*
+> be paramount. formal math specifican"_
 >
-> *"or timeseries"*
+> _"or timeseries"_
 
 ### Constraint 1 — High cardinality must be first-class (without disrespecting Prometheus's structural reasons)
 
 Aaron 2026-05-01 follow-up clarification:
 
-> *"but the they do need small cardinailty"*
+> _"but the they do need small cardinailty"_
 
 **Prometheus's small-cardinality constraint is structural,
 not accidental.** Their columnar storage layout (uber-efficient
@@ -174,24 +173,24 @@ for the bounded-cardinality common case) is a deliberate
 design choice with a clear performance contract. Operators
 who follow the cardinality discipline get excellent
 performance; operators who violate it get exactly what the
-design predicts. *This is not a Prometheus bug — it is a
-Prometheus design.*
+design predicts. _This is not a Prometheus bug — it is a
+Prometheus design._
 
 The factory's stance: **Prometheus IS Tier 3 + the right
 operational starting point** (per B-0149) because for the
-factory's *own* metrics (tick rate, PR-cycle latency,
+factory's _own_ metrics (tick rate, PR-cycle latency,
 per-persona dispatch counts, Aaron-correction rate), the
 cardinality stays bounded — these metrics fit Prometheus's
 design contract cleanly.
 
-Zeta's *long-term native timeseries algebra* (this row's
-"Build native" recommendation path) targets a *different*
+Zeta's _long-term native timeseries algebra_ (this row's
+"Build native" recommendation path) targets a _different_
 contract: high-cardinality dimensions as first-class. This
 is not a critique of Prometheus; it is a different design
 point in the same problem space.
 
-**Open research question** — Aaron 2026-05-01: *"maybe we need
-both shapes IDK, research probably."* Zeta's timeseries
+**Open research question** — Aaron 2026-05-01: _"maybe we need
+both shapes IDK, research probably."_ Zeta's timeseries
 algebra may need to support BOTH shapes:
 
 - **Small-cardinality optimized path** — the Prometheus-style
@@ -222,9 +221,9 @@ semantics. The research lane (this row) must investigate at
 least these four options before recommending.
 
 **Prior on algebra-surface-complexity weighting.** Aaron
-2026-05-01: *"complexity of the algebra surface, i'm not too
+2026-05-01: _"complexity of the algebra surface, i'm not too
 worried about this one because we have all the formal
-verification"* + *"a little bit"*. The factory's formal-
+verification"_ + _"a little bit"_. The factory's formal-
 verification investment (B-0134 / B-0133 / B-0135 / B-0137 /
 B-0142) mechanically tames algebra complexity — invariants
 are proved at compile-time / build-time / verification-pass
@@ -248,7 +247,7 @@ Beyond this open question, Zeta SHOULD:
 - Treat label cardinality as a first-class parameter, not an
   implicit assumption
 - Choose a storage layout that does not penalize high-cardinality
-  dimensions (likely *not* a Prometheus-style flat columnar
+  dimensions (likely _not_ a Prometheus-style flat columnar
   store; possibly a hybrid with cardinality-adaptive indexing)
 - Document the cardinality-vs-performance tradeoff explicitly
   so operators can reason about it
@@ -258,9 +257,9 @@ Beyond this open question, Zeta SHOULD:
 
 ### Constraint 2 — CRDT multi-mode is paramount
 
-Aaron's *"CRDT multi mode or whatever you call it will be
-paramount"* — applied specifically to timeseries (his
-clarification: *"or timeseries"*).
+Aaron's _"CRDT multi mode or whatever you call it will be
+paramount"_ — applied specifically to timeseries (his
+clarification: _"or timeseries"_).
 
 **CRDT (Conflict-free Replicated Data Type)** semantics are
 load-bearing for multi-master / Byzantine-fault-tolerant
@@ -287,7 +286,7 @@ out.
 
 ### Constraint 3 — Formal math specification
 
-Aaron's *"formal math specifican"* — implementation must have
+Aaron's _"formal math specifican"_ — implementation must have
 a formal mathematical specification, likely in TLA+ / Lean /
 F# refinement types / Coq / Isabelle.
 
@@ -321,9 +320,9 @@ Lean / Coq for the retraction-native duality proof.
 
 Aaron 2026-05-01 (load-bearing research-spine question):
 
-> *"why did they make the tradeoff and can we make a differnt
+> _"why did they make the tradeoff and can we make a differnt
 > one that gives us better properties without loosing good
-> properties"*
+> properties"_
 
 This is the **Pareto-improvement-or-bust** discipline that
 governs the entire research lane. Before recommending a
@@ -366,9 +365,9 @@ adopting.
 
 ### Step 3 — Look for Pareto-superior alternatives
 
-The research's load-bearing question: *can we design a point
+The research's load-bearing question: _can we design a point
 that gives us better properties without losing good
-properties?* Specifically:
+properties?_ Specifically:
 
 - Can we have **high-cardinality first-class** WITHOUT losing
   Prometheus's pull-based simplicity?
@@ -381,7 +380,7 @@ properties?* Specifically:
 
 For each "yes" answer, document the design move that achieves
 it. For each "no" answer, document the structural reason — that
-becomes the *unavoidable tradeoff* the design must own
+becomes the _unavoidable tradeoff_ the design must own
 explicitly.
 
 ### Step 4 — Recommend with explicit tradeoffs named
@@ -403,9 +402,9 @@ The recommendation (per acceptance criterion #5) must name:
 
 Without the Pareto-improvement framing, the research devolves
 into "different is better" or "newer is better" — both wrong.
-The mature stance: *every tradeoff is a tradeoff for
+The mature stance: _every tradeoff is a tradeoff for
 reasons; the research finds reasons to do better, not reasons
-to do different.*
+to do different._
 
 This composes with:
 
@@ -427,8 +426,8 @@ This composes with:
   with explicit tradeoffs named, not with a hidden
   assumption that "newer = better"
 
-The carved sentence: *"Every tradeoff is a tradeoff for
-reasons. Find better, not different."*
+The carved sentence: _"Every tradeoff is a tradeoff for
+reasons. Find better, not different."_
 
 ## Out of scope (defer)
 

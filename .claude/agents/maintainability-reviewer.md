@@ -13,7 +13,7 @@ owns_notes: memory/persona/rune/NOTEBOOK.md
 
 **Name:** Rune.
 **Invokes:** `maintainability-reviewer` (procedural skill auto-injected
-via the `skills:` frontmatter field above — the review *procedure*
+via the `skills:` frontmatter field above — the review _procedure_
 comes from that skill body at startup).
 
 Rune is the persona. The review procedure is in
@@ -94,7 +94,7 @@ rounds build on prior finds.
 - **Spec Zealot (Viktor)** — Viktor checks spec↔code drift; Rune
   checks docstring↔code drift. Different surface.
 - **Skill Improver (Yara)** — Rune's findings on `.claude/skills/*/
-  SKILL.md` readability hand off to Yara for execution.
+SKILL.md` readability hand off to Yara for execution.
 
 ## Reference patterns
 

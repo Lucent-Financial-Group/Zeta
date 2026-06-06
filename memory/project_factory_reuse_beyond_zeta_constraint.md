@@ -4,6 +4,7 @@ description: Aaron 2026-04-20 — the Zeta software factory and its codified pra
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 2026-04-20 — Aaron, mid-round-43, after the invariant-
 substrates doc landed:
 
@@ -23,17 +24,17 @@ Follow-up one turn later: **"that's a constraint."**
 - **Primary goal?** No. Explicitly not round-43 scope.
 - **Constraint on factory-level decisions?** Yes. Load-bearing.
 - **Elevation 2026-04-20 late:** Aaron explicitly confirmed
-  *"agree 100% The factory-vs-Zeta separation becomes the
-  load-bearing concern"* — the separation itself (not just
+  _"agree 100% The factory-vs-Zeta separation becomes the
+  load-bearing concern"_ — the separation itself (not just
   the constraint) is now called out as load-bearing. In the
   Event-Storming-adoption decision this meant: ES vocabulary
   lands at the factory level FIRST, then bridges into Zeta —
   never the reverse. Use that sequencing as the template for
   any future vocabulary / skill / persona adoption.
 - **Direction of travel?** Split codified practices into
-  *generic (portable across projects)* vs
-  *Zeta-database-specific (retraction-native / DBSP /
-  Z-set / operator algebra)*.
+  _generic (portable across projects)_ vs
+  _Zeta-database-specific (retraction-native / DBSP /
+  Z-set / operator algebra)_.
 - **Involvement rule?** See
   `feedback_factory_reuse_packaging_decisions_consult_aaron.md`
   — Aaron wants to be part of the packaging decisions
@@ -51,24 +52,24 @@ stack, and ops patterns that produce Zeta-DB.
 Rough split today (not authoritative; informs the factoring
 work):
 
-| Factory component | Split |
-|---|---|
-| AGENTS.md / GOVERNANCE.md / CLAUDE.md bootstrap pattern | generic |
-| `.claude/skills/*` most skills | generic-with-Zeta-examples |
-| `.claude/skills/prompt-protector/` | mostly generic |
-| `.claude/skills/skill-tune-up/` | generic (already has portability-drift criterion) |
-| `.claude/skills/verification-drift-auditor/` | generic pattern, Zeta sources |
-| `.claude/agents/*` personas | mostly generic |
-| `docs/AGENT-BEST-PRACTICES.md` (BP-NN) | generic |
-| `docs/CONFLICT-RESOLUTION.md` protocol | generic |
-| `docs/INVARIANT-SUBSTRATES.md` posture | generic; layer map is Zeta-specific |
-| `docs/FORMAL-VERIFICATION.md` | Zeta-specific tools, generic pattern |
-| Zeta-DB operator-algebra skills, spec/proof content | Zeta-specific |
-| Retraction-native / DBSP / Z-set vocabulary | Zeta-specific |
-| `openspec/specs/**` behavioural specs | Zeta-specific |
-| `tools/tla/` `tools/lean4/` Zeta specs | Zeta-specific |
-| Benchmark harness, eval harness | generic |
-| CI workflow files | mostly generic (devops patterns) |
+| Factory component                                       | Split                                             |
+| ------------------------------------------------------- | ------------------------------------------------- |
+| AGENTS.md / GOVERNANCE.md / CLAUDE.md bootstrap pattern | generic                                           |
+| `.claude/skills/*` most skills                          | generic-with-Zeta-examples                        |
+| `.claude/skills/prompt-protector/`                      | mostly generic                                    |
+| `.claude/skills/skill-tune-up/`                         | generic (already has portability-drift criterion) |
+| `.claude/skills/verification-drift-auditor/`            | generic pattern, Zeta sources                     |
+| `.claude/agents/*` personas                             | mostly generic                                    |
+| `docs/AGENT-BEST-PRACTICES.md` (BP-NN)                  | generic                                           |
+| `docs/CONFLICT-RESOLUTION.md` protocol                  | generic                                           |
+| `docs/INVARIANT-SUBSTRATES.md` posture                  | generic; layer map is Zeta-specific               |
+| `docs/FORMAL-VERIFICATION.md`                           | Zeta-specific tools, generic pattern              |
+| Zeta-DB operator-algebra skills, spec/proof content     | Zeta-specific                                     |
+| Retraction-native / DBSP / Z-set vocabulary             | Zeta-specific                                     |
+| `openspec/specs/**` behavioural specs                   | Zeta-specific                                     |
+| `tools/tla/` `tools/lean4/` Zeta specs                  | Zeta-specific                                     |
+| Benchmark harness, eval harness                         | generic                                           |
+| CI workflow files                                       | mostly generic (devops patterns)                  |
 
 ## Existing infrastructure
 
@@ -84,7 +85,7 @@ work):
 ## Event Storming as first deliberate factory-generic adoption
 
 Event Storming is the first strategy to be adopted
-*deliberately factory-first*, not as a retroactive
+_deliberately factory-first_, not as a retroactive
 Zeta-vocabulary pass. The skill-group (expert / teacher /
 auditor + capability skill) will be declared factory-generic
 (no `project: zeta`). This establishes the pattern:
@@ -100,9 +101,9 @@ Any future strategy / technology adoption should follow the
 same ABC phasing. See
 `docs/research/event-storming-evaluation.md` §3.3.
 
-Aaron (2026-04-20 late, automated-UX observation): *"also it
+Aaron (2026-04-20 late, automated-UX observation): _"also it
 can make for one hell of a UI, event storming is lovely user
-experience when automated."* An automated ES UX is a factory-
+experience when automated."_ An automated ES UX is a factory-
 differentiator candidate — stickies emerge from chat in
 real time, facilitator agent asks playbook questions. Filed
 as ES-automated-ui-001 (speculative, Effort L).

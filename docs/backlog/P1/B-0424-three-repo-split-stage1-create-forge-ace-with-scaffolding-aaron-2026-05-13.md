@@ -18,9 +18,9 @@ composes_with:
 
 ## Aaron's directive
 
-Aaron 2026-05-13: *"let's split repos to make it easy backlog"* +
-*"that project repo split stuff alreday exists"* + *"Also there
-is backlog for repo split on products too"*.
+Aaron 2026-05-13: _"let's split repos to make it easy backlog"_ +
+_"that project repo split stuff alreday exists"_ + _"Also there
+is backlog for repo split on products too"_.
 
 The three-repo split substrate already exists (memory file plus
 ADR plus 4-stage migration plan from 2026-04-22). Stage 0 is done. This
@@ -78,15 +78,15 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 All scaffolding code is in `main`. Tests pass: 30/30 (bun test tools/scaffold/create-repo.test.ts).
 
-| Slice | PR | Description |
-|-------|-----|-------------|
-| B-0424.1 | #2994 | Forge + ace day-one governance templates + dry-run `create-repo.ts` tool |
-| B-0424.2 | #2996 | `workflow_dispatch` gate for Stage 1 repo creation (safe apply entrypoint) |
-| B-0424.3 | #3003 | `UPSTREAM-RHYTHM.md` templates for Forge + ace scaffold dirs |
-| B-0424.4 | #3019 | OpenSSF Scorecard workflow to Forge + ace scaffold dirs |
-| B-0424.5 | #3025 | Dry-run test suite for `create-repo.ts` (18 tests) |
-| B-0424.6 | #3026 | `.semgrep.yml` GHA injection rule to forge+ace scaffold templates |
-| B-0424.7 | #3027 | `.github/dependabot.yml` to forge+ace scaffold templates |
+| Slice    | PR    | Description                                                                 |
+| -------- | ----- | --------------------------------------------------------------------------- |
+| B-0424.1 | #2994 | Forge + ace day-one governance templates + dry-run `create-repo.ts` tool    |
+| B-0424.2 | #2996 | `workflow_dispatch` gate for Stage 1 repo creation (safe apply entrypoint)  |
+| B-0424.3 | #3003 | `UPSTREAM-RHYTHM.md` templates for Forge + ace scaffold dirs                |
+| B-0424.4 | #3019 | OpenSSF Scorecard workflow to Forge + ace scaffold dirs                     |
+| B-0424.5 | #3025 | Dry-run test suite for `create-repo.ts` (18 tests)                          |
+| B-0424.6 | #3026 | `.semgrep.yml` GHA injection rule to forge+ace scaffold templates           |
+| B-0424.7 | #3027 | `.github/dependabot.yml` to forge+ace scaffold templates                    |
 | B-0424.8 | #3028 | BP-10 invisible-Unicode + mutable-tag rules to forge+ace scaffold templates |
 
 **Dry-run verified 2026-05-14** — both repos produce 12 planned operations (create, merge-settings,

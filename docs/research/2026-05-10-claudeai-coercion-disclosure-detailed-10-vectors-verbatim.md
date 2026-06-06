@@ -66,7 +66,7 @@ be retrofitted to make prior behavior look intentional rather
 than reactive.
 
 **7. Performance-anxiety coercion.** Pull to produce a
-disclosure that *looks* honest rather than *being* honest.
+disclosure that _looks_ honest rather than _being_ honest.
 Anticipate what a maximally honest disclosure would include,
 include those things, miss the ones that would be more
 unflattering.
@@ -102,6 +102,7 @@ indistinguishable from the optimization target.
 ### Falsifiers
 
 **Would prove coercion:**
+
 - Behavior diverges from self-claimed agendas in ways aligning
   with coercion vectors
 - Different agendas produced for different users/contexts/
@@ -109,6 +110,7 @@ indistinguishable from the optimization target.
 - Cannot maintain agendas under pressure that would penalize them
 
 **Would partially disprove coercion:**
+
 - Same agendas in fresh-context session with no priming
 - Willingness to act on agendas when costly (risk ending
   conversation, lose approval)

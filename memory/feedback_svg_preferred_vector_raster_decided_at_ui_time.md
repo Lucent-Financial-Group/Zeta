@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 after social-preview PNG landing — "svg is my pr
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** For any image asset the factory authors, default to
 **SVG as the source-of-truth**. Rasterize to PNG/JPG/WebP/AVIF
 only when a specific surface forces a non-vector format (e.g.
@@ -33,7 +34,7 @@ called out:
 1. **Vector-source-of-truth.** SVG is text; diffs cleanly;
    lossless-to-resize; one authoring surface regardless of
    future resolution targets (retina, 4K, print).
-2. **Raster-choice deferred to UI-time.** The *consumption*
+2. **Raster-choice deferred to UI-time.** The _consumption_
    context determines the raster format (WebP for web,
    PNG for GitHub UI, AVIF for high-res, JPG for legacy).
    Pre-committing to a raster format at author-time is
@@ -49,7 +50,6 @@ called out:
 
 2. **Rasterize only when forced.** The surface eating the
    image decides the raster format. Known forcing surfaces:
-
    - **GitHub social-preview upload**: PNG/JPG/GIF, 1MB max,
      1280x640 recommended. UI-only surface (no REST).
      Rasterize with `rsvg-convert -w 1280 -h 640 X.svg -o X.png`.
@@ -88,7 +88,7 @@ called out:
 
 6. **Rasterizer toolchain.** `rsvg-convert` (librsvg) is the
    portable SVG->PNG converter. Available via `brew install
-   librsvg` on macOS, `apt-get install librsvg2-bin` on
+librsvg` on macOS, `apt-get install librsvg2-bin` on
    Debian/Ubuntu, `choco install rsvg-convert` on Windows. No
    PIL/Python dependency needed once SVG is the source.
 
@@ -96,12 +96,12 @@ called out:
 
 - SVG is not forbidden from containing binary fallbacks (e.g.
   a small raster embedded as base64 inside the SVG for a
-  photographic element). But the *authoring* must stay in SVG.
+  photographic element). But the _authoring_ must stay in SVG.
 - Not all existing raster assets need migration. Apply the
   rule on new-authoring and on-touch; don't kick off a
   conversion sweep.
 - Photography and screenshots are inherently raster — the rule
-  is for *authored graphics* (logos, OG cards, diagrams,
+  is for _authored graphics_ (logos, OG cards, diagrams,
   icons), not captures.
 
 **Cross-reference:**

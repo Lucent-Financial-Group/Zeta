@@ -149,25 +149,35 @@ function createVirtualDisk(diskPath: string): void {
 
 function buildQemuArgs(isoPath: string, diskPath: string, serialLogPath: string): string[] {
   const args: string[] = [
-    "-machine", "q35",
-    "-m", String(MEMORY_MB),
-    "-smp", String(CPU_COUNT),
+    "-machine",
+    "q35",
+    "-m",
+    String(MEMORY_MB),
+    "-smp",
+    String(CPU_COUNT),
     // ISO as CD-ROM, boot priority d (CD-ROM first)
-    "-cdrom", isoPath,
-    "-boot", "d",
+    "-cdrom",
+    isoPath,
+    "-boot",
+    "d",
     // Virtual hard disk as install target (virtio for speed)
-    "-drive", `file=${diskPath},if=virtio,format=qcow2`,
+    "-drive",
+    `file=${diskPath},if=virtio,format=qcow2`,
     // Serial console to file — primary capture channel for pattern matching
-    "-serial", `file:${serialLogPath}`,
+    "-serial",
+    `file:${serialLogPath}`,
     // No display (headless CI)
-    "-display", "none",
+    "-display",
+    "none",
     // Reboot on triple-fault (matches normal install behavior) — DON'T
     // use -no-reboot here because zeta-install might reboot to verify
     // installed system (though we don't currently test post-reboot)
     // -no-reboot,
     // NAT'd internet (zeta-install needs git clone + nix substitution)
-    "-netdev", "user,id=net0",
-    "-device", "virtio-net-pci,netdev=net0",
+    "-netdev",
+    "user,id=net0",
+    "-device",
+    "virtio-net-pci,netdev=net0",
   ];
 
   // KVM acceleration when /dev/kvm is available (GitHub Actions
@@ -305,10 +315,7 @@ async function main(): Promise<never> {
 
   // Race the marker-wait against QEMU early-exit. Whichever resolves
   // first wins; both check the serial log + report consistently.
-  const result = await Promise.race([
-    waitForInstallProgress(serialLogPath),
-    qemuExitPromise,
-  ]);
+  const result = await Promise.race([waitForInstallProgress(serialLogPath), qemuExitPromise]);
 
   if (!qemuExited) {
     console.log(`[qemu-full-install-test] Killing QEMU (PID ${qemu.pid})`);
@@ -326,7 +333,9 @@ async function main(): Promise<never> {
   console.log(`Exit code: ${result.exitCode}`);
   console.log(`Reason: ${result.reason}`);
   if (result.elapsedSeconds !== undefined) {
-    console.log(`Elapsed: ${result.elapsedSeconds}s (${Math.floor(result.elapsedSeconds / 60)}m ${result.elapsedSeconds % 60}s)`);
+    console.log(
+      `Elapsed: ${result.elapsedSeconds}s (${Math.floor(result.elapsedSeconds / 60)}m ${result.elapsedSeconds % 60}s)`,
+    );
   }
   if (result.serialLogTail) {
     console.log("");

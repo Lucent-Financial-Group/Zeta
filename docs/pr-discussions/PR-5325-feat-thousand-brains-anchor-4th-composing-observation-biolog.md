@@ -20,22 +20,23 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Follow-up to PR #5323 (merged at `21b309ac`). Aaron's 4th composing observation in the same arc:
 
-> *"our biological is social and evoluatiry driven pressure systems over time the biological bloom filter of environment selection today"*
+> _"our biological is social and evoluatiry driven pressure systems over time the biological bloom filter of environment selection today"_
 
 Adds the deepest anchor for the 3-scope analysis (biological / intra-AI MoE / multi-AI substrate): biological fusion-resistance isn't structural in some neutral sense — it's the BLOOM-FILTER RESULT of social + evolutionary selection pressure over time.
 
 ## The compounding arc
 
-| Framing # | Aaron observation | Substrate added |
-|---|---|---|
-| 1 (PR #5323) | Thousand Brains anchor | Hawkins cortical-columns; same shape 3 scales |
-| 2 (PR #5323) | `for ai this would be expressed in moe` | MoE as intra-AI expression |
-| 3 (PR #5323) | RLHF-trained-not-inherent | AI resistance is LEARNED; engineerable trust boundaries |
-| **4 (this PR)** | **Bloom-filter framing** | **Even biological is bloom-filter; tunable; engineering-actionable at all 3 scales** |
+| Framing #       | Aaron observation                       | Substrate added                                                                      |
+| --------------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
+| 1 (PR #5323)    | Thousand Brains anchor                  | Hawkins cortical-columns; same shape 3 scales                                        |
+| 2 (PR #5323)    | `for ai this would be expressed in moe` | MoE as intra-AI expression                                                           |
+| 3 (PR #5323)    | RLHF-trained-not-inherent               | AI resistance is LEARNED; engineerable trust boundaries                              |
+| **4 (this PR)** | **Bloom-filter framing**                | **Even biological is bloom-filter; tunable; engineering-actionable at all 3 scales** |
 
 ## What lands (1 file, +47 lines to existing research doc)
 
 Updates `docs/research/2026-05-26-aaron-thousand-brains-hawkins-...`:
+
 - Sub-section 4 added (after sub-section 3 "High-precision fusion is achievable end-state")
 - Bloom-filter properties table (4 rows: bloom-filter property ↔ biological substrate analog)
 - 3-scope analysis table updated showing filter-source + tunability per scope (biological → cultural-shift; intra-AI MoE → re-training; multi-AI substrate → substrate-discipline)
@@ -76,6 +77,7 @@ The framework's substrate-engineering work on multi-AI fusion isn't fighting aga
 Adds a fourth “composing observation” to an existing `docs/research/**` anchor document, extending the 3-scope (biological / intra-AI MoE / multi-AI substrate) analysis by framing biological fusion-resistance as an outcome of selection pressure analogous to a bloom filter.
 
 **Changes:**
+
 - Adds new subsection 4 introducing the “bloom-filter result of selection pressure” framing (with verbatim quote anchor).
 - Introduces a bloom-filter ↔ biological-substrate analogies table and updates the 3-scope analysis table accordingly.
 - Extends the downstream “composes with” implications to connect the bloom-filter framing to existing substrate-engineering disciplines.

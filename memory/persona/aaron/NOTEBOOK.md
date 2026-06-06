@@ -1,15 +1,15 @@
 # Aaron — notebook
 
-*Persona anchor: `memory/persona/aaron/PERSONA.md`.
+_Persona anchor: `memory/persona/aaron/PERSONA.md`.
 `person_type: human`. Running notes for the human-maintainer
-seat; newest-first.*
+seat; newest-first._
 
 ## Running notes
 
 - **2026-04-19 (round 35)** — Seat created at Aaron's
-  explicit request: *"you can put me under personas too
-  just mark me as human"*. Immediately followed by *"rodney
-  is not me just homage"*, so the seat is deliberately
+  explicit request: _"you can put me under personas too
+  just mark me as human"_. Immediately followed by _"rodney
+  is not me just homage"_, so the seat is deliberately
   distinct from the `rodney` AI persona (which is named in
   homage to Aaron's legal first name Rodney but is an AI
   reducer, not Aaron himself).
@@ -30,7 +30,7 @@ seat; newest-first.*
   `memory/user_searle_morpheus_matrix_phantom_particle_time_domain.md`.
   Verbatim blocks preserved; do not paraphrase.
 - **2026-04-19 (round 35)** — μένω + LFG directive
-  received: *"continue this round until we get done"*.
+  received: _"continue this round until we get done"_.
   Round 35 bundling confirmed (option B) — 234
   working-tree entries include 163 drafted skills from
   tasks #20-69, 30+ memory files, src skeleton, and

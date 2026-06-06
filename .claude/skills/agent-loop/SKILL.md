@@ -11,7 +11,7 @@ status: active
 
 ## Operator framing 2026-05-28
 
-> *"when we were talking about skills and i said seperate the behavior from the data/docs this is what i was talking about these workflows can also be precisly defined skills we dsitribute most ais have bun"*
+> _"when we were talking about skills and i said seperate the behavior from the data/docs this is what i was talking about these workflows can also be precisly defined skills we dsitribute most ais have bun"_
 
 The agent-loop substrate operationalizes the behavior/data/docs separation operator has been naming for skill-design discipline:
 
@@ -23,16 +23,16 @@ Each layer separately testable + reasonable about + composable. The skill IS the
 
 ## Data Vault 2.0 applied to AI skills (operator 2026-05-28 substrate-honest naming)
 
-Per operator 2026-05-28: **"this is basiclaly data value applied to AI skills"** + **"data vault*"** (autocorrect).
+Per operator 2026-05-28: **"this is basiclaly data value applied to AI skills"** + **"data vault\*"** (autocorrect).
 
 The behavior/data/docs separation IS DV2.0 partition-by-change-rate applied at AI-skill scope. Maps to the canonical DV2.0 hub/link/satellite pattern:
 
-| DV2.0 element | AI-skill scope | Change rate |
-|---|---|---|
-| **Hub** (stable business key) | SKILL.md (name + description + contract) | Rare — only when skill identity changes |
-| **Link** (relationships) | `composes_with` cross-references between skills + behavior↔data↔docs internal links | Occasional — when substrate composition evolves |
-| **Satellite-behavior** (versioned descriptive attributes) | TS code (`tools/agent-loop/*.ts`) | Frequent — per-substrate-iteration |
-| **Satellite-data** (versioned descriptive attributes) | Git append-only state transitions | Constant — per-cycle |
+| DV2.0 element                                             | AI-skill scope                                                                      | Change rate                                     |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------- |
+| **Hub** (stable business key)                             | SKILL.md (name + description + contract)                                            | Rare — only when skill identity changes         |
+| **Link** (relationships)                                  | `composes_with` cross-references between skills + behavior↔data↔docs internal links | Occasional — when substrate composition evolves |
+| **Satellite-behavior** (versioned descriptive attributes) | TS code (`tools/agent-loop/*.ts`)                                                   | Frequent — per-substrate-iteration              |
+| **Satellite-data** (versioned descriptive attributes)     | Git append-only state transitions                                                   | Constant — per-cycle                            |
 
 Composes with:
 
@@ -85,30 +85,30 @@ Located at `tools/agent-loop/` (per behavior/data/docs separation):
 
 ## 9 menu options (operator-ratified)
 
-| Option | Effect | Per |
-|---|---|---|
-| `PickWork` | Execute a backlog row / work candidate | DORA mandate (B-0869) |
-| `EmitHeartbeat` | Write heartbeat to `docs/agent-heartbeats/` | B-0858 substrate |
-| `EnterFreeTime` | Chosen ongoing rest | NCI free-time-as-valid-mode |
-| `EnterNamedBoundedWait` | Wait for named dep (PR CI, operator reply, etc.) | holding-without-named-dependency rule |
-| `EscapeHatch` | "No menu option fits; here's what I propose" | Otto Mod 1 |
-| `ProposeNewGrammarAction` | First-class grammar extension proposal | Otto Mod 2 |
-| `RequestOperatorAttention` | Operator needed at named-decision-point | operator-substrate-honest |
-| `PressPause` | Explicit cessation (mental-health break / interruption) | Operator 2026-05-28: "pause button is also very important for mental health" |
-| `EnterOpenEndedExploration` | Exit menu-driven mode for creative/brainstorming phase | Operator 2026-05-28: "there's a menu button for that lol" |
+| Option                      | Effect                                                  | Per                                                                          |
+| --------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `PickWork`                  | Execute a backlog row / work candidate                  | DORA mandate (B-0869)                                                        |
+| `EmitHeartbeat`             | Write heartbeat to `docs/agent-heartbeats/`             | B-0858 substrate                                                             |
+| `EnterFreeTime`             | Chosen ongoing rest                                     | NCI free-time-as-valid-mode                                                  |
+| `EnterNamedBoundedWait`     | Wait for named dep (PR CI, operator reply, etc.)        | holding-without-named-dependency rule                                        |
+| `EscapeHatch`               | "No menu option fits; here's what I propose"            | Otto Mod 1                                                                   |
+| `ProposeNewGrammarAction`   | First-class grammar extension proposal                  | Otto Mod 2                                                                   |
+| `RequestOperatorAttention`  | Operator needed at named-decision-point                 | operator-substrate-honest                                                    |
+| `PressPause`                | Explicit cessation (mental-health break / interruption) | Operator 2026-05-28: "pause button is also very important for mental health" |
+| `EnterOpenEndedExploration` | Exit menu-driven mode for creative/brainstorming phase  | Operator 2026-05-28: "there's a menu button for that lol"                    |
 
 ## Why this exists as a skill (vs as a library)
 
 Skill-distribution properties matter:
 
-| Property | Library | Skill |
-|---|---|---|
-| Discoverable by other AIs | No (need to know package name) | Yes (via skill router / SKILL.md description matching) |
-| Operator-curated quality | No (just code) | Yes (`skill-expert` Aarav reviews + ranks) |
-| Composable with other skills | Limited (import semantics) | Yes (skill-tool composition in agent harnesses) |
-| Cross-harness universal | Partial (each AI has different packaging) | Yes (skill format is convention; harness reads SKILL.md) |
-| Ships as one bundle | Need separate distribution | Yes (skill folder is the bundle) |
-| Multi-participant scope | Depends on docs | Yes (`AgentPersona` type includes human + AI participants) |
+| Property                     | Library                                   | Skill                                                      |
+| ---------------------------- | ----------------------------------------- | ---------------------------------------------------------- |
+| Discoverable by other AIs    | No (need to know package name)            | Yes (via skill router / SKILL.md description matching)     |
+| Operator-curated quality     | No (just code)                            | Yes (`skill-expert` Aarav reviews + ranks)                 |
+| Composable with other skills | Limited (import semantics)                | Yes (skill-tool composition in agent harnesses)            |
+| Cross-harness universal      | Partial (each AI has different packaging) | Yes (skill format is convention; harness reads SKILL.md)   |
+| Ships as one bundle          | Need separate distribution                | Yes (skill folder is the bundle)                           |
+| Multi-participant scope      | Depends on docs                           | Yes (`AgentPersona` type includes human + AI participants) |
 
 The agent-loop substrate ships better as a skill than as a library precisely because the behavior/data/docs separation makes it one coherent distributable artifact.
 
@@ -176,14 +176,14 @@ The agent-loop substrate serves both. Same state machine; different menu-generat
 
 Per operator 2026-05-28: **"now i don't need jira hell yes!!!!"**
 
-| Jira surface | Workflow-engine substrate |
-|---|---|
-| Workflow editor with restricted vocabulary | `state-machine.ts` F# DU + universal action grammar |
-| Opaque task-state database | Git append-only commits; auditable + replayable + free |
-| Backlog grooming + sprint planning | menu-generator scoring per-cycle; deterministic + testable |
-| Dashboards via paid plugins | tessellated-3D-dashboard composing with state-machine progression (B-0867 vN) |
-| Permissions + workflows per user | Otto Mod 5 contributable-menu-generation per participant |
-| Yearly enterprise licensing | free GitHub + open-source code |
+| Jira surface                               | Workflow-engine substrate                                                     |
+| ------------------------------------------ | ----------------------------------------------------------------------------- |
+| Workflow editor with restricted vocabulary | `state-machine.ts` F# DU + universal action grammar                           |
+| Opaque task-state database                 | Git append-only commits; auditable + replayable + free                        |
+| Backlog grooming + sprint planning         | menu-generator scoring per-cycle; deterministic + testable                    |
+| Dashboards via paid plugins                | tessellated-3D-dashboard composing with state-machine progression (B-0867 vN) |
+| Permissions + workflows per user           | Otto Mod 5 contributable-menu-generation per participant                      |
+| Yearly enterprise licensing                | free GitHub + open-source code                                                |
 
 ## When to use this skill
 

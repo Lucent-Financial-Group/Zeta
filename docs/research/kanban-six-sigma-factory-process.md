@@ -8,10 +8,10 @@ consolidation decision.
 
 **Source directive:** Aaron 2026-04-20 late:
 
-> *"also khanban is a good practice, i prefer it and
+> _"also khanban is a good practice, i prefer it and
 > six sigma, we should have some skills documents
 > process factory improvments around that we should
-> backlog this research"*
+> backlog this research"_
 
 **Memory source:** `user_kanban_six_sigma_process_preference.md`.
 
@@ -38,15 +38,15 @@ document-by-numbers?"
 
 ### Kanban practices → factory state
 
-| Practice | Factory instance today | Gap? |
-|---|---|---|
-| Visualise the work | `docs/BACKLOG.md` (P0-P3 lanes), `docs/ROUND-HISTORY.md` (Done ledger) | No visual board (text-only); acceptable |
-| WIP limits | Architect-bottleneck per GOVERNANCE §11 is *de facto* WIP-1 on review | **Not explicitly labelled WIP; no per-persona WIP** |
-| Pull, not push | Round-cadence pulls from backlog; `/loop` dynamic ticks are pull-based | OK — the pull-cadence is native |
-| Continuous delivery | Every round commits + pushes; no big-bang releases | OK |
-| Explicit policies | BP-NN rules, GOVERNANCE sections, CLAUDE.md load-bearing rules | OK — well-codified |
-| Feedback loops | Retrospective audits (rows 35/36); meta-wins log; `/loop` ticks | OK — multiple instances |
-| Evolve experimentally | Skill-tune-up ranker + ADR-gated promotion | OK |
+| Practice              | Factory instance today                                                 | Gap?                                                |
+| --------------------- | ---------------------------------------------------------------------- | --------------------------------------------------- |
+| Visualise the work    | `docs/BACKLOG.md` (P0-P3 lanes), `docs/ROUND-HISTORY.md` (Done ledger) | No visual board (text-only); acceptable             |
+| WIP limits            | Architect-bottleneck per GOVERNANCE §11 is _de facto_ WIP-1 on review  | **Not explicitly labelled WIP; no per-persona WIP** |
+| Pull, not push        | Round-cadence pulls from backlog; `/loop` dynamic ticks are pull-based | OK — the pull-cadence is native                     |
+| Continuous delivery   | Every round commits + pushes; no big-bang releases                     | OK                                                  |
+| Explicit policies     | BP-NN rules, GOVERNANCE sections, CLAUDE.md load-bearing rules         | OK — well-codified                                  |
+| Feedback loops        | Retrospective audits (rows 35/36); meta-wins log; `/loop` ticks        | OK — multiple instances                             |
+| Evolve experimentally | Skill-tune-up ranker + ADR-gated promotion                             | OK                                                  |
 
 ### Kanban gap — WIP limits
 
@@ -54,7 +54,7 @@ The only meaningful Kanban gap is **WIP limits**. The
 Architect-bottleneck is the de facto WIP-1 on review,
 but:
 
-- It isn't *labelled* as WIP. Agents reach for it
+- It isn't _labelled_ as WIP. Agents reach for it
   without knowing the frame.
 - **Per-persona WIP** doesn't exist. Daya / Aarav /
   Ilyana can accumulate in-flight findings without a
@@ -113,13 +113,13 @@ congruent.
 
 ### DMAIC → factory state
 
-| DMAIC phase | Factory instance today | Gap? |
-|---|---|---|
-| **Define** | BACKLOG row + ADR proposal stage | OK |
-| **Measure** | DORA 2025 metrics + 4 Golden Signals + RED + USE | Partial — DORA mapping not yet tied to specific factory improvements |
-| **Analyze** | Meta-wins log (`docs/research/meta-wins-log.md`) + harsh-critic reviews | OK |
-| **Improve** | ADR implementation + round commits | OK |
-| **Control** | FACTORY-HYGIENE cadenced rows + BP-NN rules | OK |
+| DMAIC phase | Factory instance today                                                  | Gap?                                                                 |
+| ----------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Define**  | BACKLOG row + ADR proposal stage                                        | OK                                                                   |
+| **Measure** | DORA 2025 metrics + 4 Golden Signals + RED + USE                        | Partial — DORA mapping not yet tied to specific factory improvements |
+| **Analyze** | Meta-wins log (`docs/research/meta-wins-log.md`) + harsh-critic reviews | OK                                                                   |
+| **Improve** | ADR implementation + round commits                                      | OK                                                                   |
+| **Control** | FACTORY-HYGIENE cadenced rows + BP-NN rules                             | OK                                                                   |
 
 ### Six Sigma gap — explicit DMAIC walkthrough
 

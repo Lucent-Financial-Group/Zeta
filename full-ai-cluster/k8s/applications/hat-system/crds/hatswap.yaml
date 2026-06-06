@@ -58,13 +58,13 @@ spec:
                 event:
                   type: string
                   enum:
-                    - SwapOn       # Binding created and Active
-                    - SwapOff      # Binding deleted or Revoked
-                    - WarmupBegin  # Probation entry
-                    - WarmupEnd    # Probation exit (Active)
-                    - Probation    # Anomaly-triggered authority drop
-                    - QuorumGrant  # Quorum signature collected
-                    - Throttled    # Throttle denied a binding/swap
+                    - SwapOn # Binding created and Active
+                    - SwapOff # Binding deleted or Revoked
+                    - WarmupBegin # Probation entry
+                    - WarmupEnd # Probation exit (Active)
+                    - Probation # Anomaly-triggered authority drop
+                    - QuorumGrant # Quorum signature collected
+                    - Throttled # Throttle denied a binding/swap
                 occurredAt:
                   type: string
                   format: date-time

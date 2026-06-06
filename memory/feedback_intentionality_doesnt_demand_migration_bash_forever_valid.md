@@ -4,10 +4,11 @@ description: Factory hygiene rules that force a decision at landing (intentional
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-22: *"The intentionality-enforcement reframe
+
+Aaron 2026-04-22: _"The intentionality-enforcement reframe
 doesn't demand migration; it demands a recorded decision. A
 'this should stay bash forever' is a valid answer if the reason
-holds up."*
+holds up."_
 
 **Why:** I over-corrected on the post-setup script stack audit.
 When labeling 8 pre-existing bash scripts I defaulted 7 of them
@@ -18,8 +19,8 @@ two distinct dimensions:
 1. **Intentionality-enforcement** (the rule): force a decision.
 2. **Migration preference** (a policy): default to bun+TS.
 
-The rule is about the *decision being recorded*. The policy is
-a default for *which way the decision usually goes*. A recorded
+The rule is about the _decision being recorded_. The policy is
+a default for _which way the decision usually goes_. A recorded
 "we considered bun+TS and chose to stay bash because X" fully
 satisfies the rule — it does not violate intentionality, it
 exercises it.
@@ -29,8 +30,8 @@ exercises it.
 - When a factory rule is classified as intentionality-enforcement
   (per `memory/feedback_enforcing_intentional_decisions_not_correctness.md`),
   the allowed answer set is always "{all the preferred options}
-  + {the status quo with a recorded rationale}". Never collapse
-  the answer set to only-the-preferred options.
+  - {the status quo with a recorded rationale}". Never collapse
+    the answer set to only-the-preferred options.
 - In particular: post-setup bash scripts that fall under an
   exception category may be "stay bash forever (recorded
   decision)" — the header comment block states the rationale

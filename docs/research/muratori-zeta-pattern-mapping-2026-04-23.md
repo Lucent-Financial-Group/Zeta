@@ -33,7 +33,7 @@ Casey Muratori's long-running themes across Handmade Hero
 and the later "Big OOPs" talks: avoid making position in
 mutable object graphs the thing that carries identity;
 prefer stable IDs / indices; draw boundaries around
-*systems* not fat objects; care deeply about data layout
+_systems_ not fat objects; care deeply about data layout
 and locality. The systems-design failure modes his
 criticism names — invalidated indices after deletes,
 dangling references, no cross-system lifecycle discipline,
@@ -47,37 +47,37 @@ trace/history structures, Arrow columnar interchange —
 map cleanly to different answers to the same underlying
 questions Muratori is asking.
 
-The corrected table below answers: *given a Muratori-style
+The corrected table below answers: _given a Muratori-style
 failure mode, what is the honest Zeta-equivalent — stated
-narrowly enough that it survives scrutiny?*
+narrowly enough that it survives scrutiny?_
 
 ---
 
 ## The corrected five-row mapping
 
-| # | Muratori-style failure mode | Zeta equivalent |
-|---|---|---|
-| 1 | Index invalidation after delete / shift | **No positional identity.** Keys carry identity; deletion is a negative delta on the key, not a slot shift. A `ZSet<'K>` is a finitely-supported map `K -> ℤ`; the "thing you refer to" is a key, not an offset. |
-| 2 | Dangling presence / reference checks | **Membership is algebraic.** Every key has a current weight; "presence" is derived from that weight (typically `weight > 0`). `ZSet.Item` returns `0L` on absent keys — absence is encoded, not undefined. |
-| 3 | No cross-system lifecycle discipline | **Provenance and lifecycle live in deltas and traces.** Algebra (`D·I = id`) guarantees compositional correctness of incremental views; it does not specify ownership, exclusive mutation, or handle expiry. Rollback / repair capability lives in trace history + retractions, not in object-ownership discipline. |
-| 4 | No tombstones / immediate destructive deletion | **Retractions are first-class signed updates.** Deletion is a negative weight in the same algebra as insertion; consolidation / compaction is a separate maintenance step. No out-of-band "deleted" marker is needed. |
-| 5 | Pointer chasing / poor locality | **Locality-aware execution surfaces.** Sorted immutable runs + `ReadOnlySpan<T>` span-based kernels + spine-organised LSM-like traces + Apache Arrow columnar path for interchange. Not "everything is Arrow all the way down" — Arrow is the wire / checkpoint surface, not a universal in-memory representation. |
+| #   | Muratori-style failure mode                    | Zeta equivalent                                                                                                                                                                                                                                                                                                     |
+| --- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Index invalidation after delete / shift        | **No positional identity.** Keys carry identity; deletion is a negative delta on the key, not a slot shift. A `ZSet<'K>` is a finitely-supported map `K -> ℤ`; the "thing you refer to" is a key, not an offset.                                                                                                    |
+| 2   | Dangling presence / reference checks           | **Membership is algebraic.** Every key has a current weight; "presence" is derived from that weight (typically `weight > 0`). `ZSet.Item` returns `0L` on absent keys — absence is encoded, not undefined.                                                                                                          |
+| 3   | No cross-system lifecycle discipline           | **Provenance and lifecycle live in deltas and traces.** Algebra (`D·I = id`) guarantees compositional correctness of incremental views; it does not specify ownership, exclusive mutation, or handle expiry. Rollback / repair capability lives in trace history + retractions, not in object-ownership discipline. |
+| 4   | No tombstones / immediate destructive deletion | **Retractions are first-class signed updates.** Deletion is a negative weight in the same algebra as insertion; consolidation / compaction is a separate maintenance step. No out-of-band "deleted" marker is needed.                                                                                               |
+| 5   | Pointer chasing / poor locality                | **Locality-aware execution surfaces.** Sorted immutable runs + `ReadOnlySpan<T>` span-based kernels + spine-organised LSM-like traces + Apache Arrow columnar path for interchange. Not "everything is Arrow all the way down" — Arrow is the wire / checkpoint surface, not a universal in-memory representation.  |
 
 ---
 
 ## Why row 3 got rewritten (the teaching case)
 
 The original pre-correction row 3 claimed operator algebra
-*is* the ownership model, citing `D·I = id` and `z⁻¹·z = 1`.
+_is_ the ownership model, citing `D·I = id` and `z⁻¹·z = 1`.
 Amara's 6th ferry flagged this as category error: algebraic
 correctness and lifecycle/ownership discipline are different
 concerns. Zeta has the first by construction (the DBSP
-identity laws hold); it has the second only *indirectly*,
+identity laws hold); it has the second only _indirectly_,
 via trace history + retraction semantics, not via the
 identity laws themselves.
 
 The corrected row 3 preserves the DBSP-correctness content
-*and* names the shape of Zeta's lifecycle story honestly
+_and_ names the shape of Zeta's lifecycle story honestly
 (provenance, trace history, retractions — not ownership).
 
 This is a recurring risk in communicating DBSP-family
@@ -137,12 +137,12 @@ universal in-memory representation.
   for game-engine runtime throughput with bounded working
   sets; Zeta is optimising for incremental-view-maintenance
   correctness over unbounded streams of retractable updates.
-  Different optimisation targets; the mappings are *analogues*,
-  not *rankings*.
+  Different optimisation targets; the mappings are _analogues_,
+  not _rankings_.
 - **Not a marketing table.** Read as systems-design
   vocabulary for engineers from Muratori-adjacent
   backgrounds who want to understand what Zeta's primitives
-  *replace* versus what they *leave untouched*.
+  _replace_ versus what they _leave untouched_.
 - **Not an ownership claim.** Row 3 explicitly disclaims
   that Zeta has an ownership model in the Muratori or Rust
   sense. It has a provenance + coherence model. Those
@@ -161,7 +161,7 @@ universal in-memory representation.
 ## Composition with existing Zeta substrate
 
 - **`docs/DRIFT-TAXONOMY.md`** — pattern 5 (truth-
-  confirmation-from-agreement) applies to *this mapping*
+  confirmation-from-agreement) applies to _this mapping_
   itself: Amara's agreement with Zeta's self-description
   is signal-not-proof. The validation cited public papers +
   official specs + source files as falsifier-grade evidence,

@@ -22,11 +22,11 @@ a first-ever release. Stub-weight until then.
 
 ## Current state (round 29)
 
-- **Not published.** No Zeta.* package exists on
+- **Not published.** No Zeta.\* package exists on
   nuget.org.
 - **Prefix reservation** on `nuget.org` for `Zeta.*` is
   a pending Aaron-owned task (from `docs/
-  CURRENT-ROUND.md` open-asks).
+CURRENT-ROUND.md` open-asks).
 - **Repo visibility** — public at
   `Lucent-Financial-Group/Zeta`. Visibility
   prerequisite for NuGet publish is satisfied;
@@ -140,10 +140,10 @@ When `release.yml` lands:
   1. Check out tag.
   2. `tools/setup/install.sh` (three-way parity).
   3. `dotnet pack Zeta.sln -c Release
-     -o ./artifacts` produces `.nupkg` + `.snupkg`.
+-o ./artifacts` produces `.nupkg` + `.snupkg`.
   4. Sign the `.nupkg` files.
   5. `dotnet nuget push ./artifacts/*.nupkg
-     --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json`.
+--api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json`.
   6. Upload `.nupkg` + `.snupkg` as release artefacts.
   7. Auto-generate GitHub release notes from tag-range
      commits.
@@ -162,7 +162,7 @@ When `release.yml` lands:
 ## Reference patterns
 
 - `docs/INSTALLED.md` — track of tools we rely on
-  (future: track Zeta.* published versions here)
+  (future: track Zeta.\* published versions here)
 - `docs/CURRENT-ROUND.md` open-asks — "NuGet prefix
   reservation" is pending Aaron
 - `.claude/skills/public-api-designer/SKILL.md` —

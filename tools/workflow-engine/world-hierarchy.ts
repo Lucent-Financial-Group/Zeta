@@ -48,10 +48,10 @@ import type { World } from "./world";
  * once shipped.
  */
 export type SubstrateAlgebra =
-  | "clifford"       // Canonical (operator-vote; once shipped)
-  | "dbsp"           // Restricted-or-isomorphic to Clifford (open question)
-  | "git"            // Restricted to tree/commit/ref substrate
-  | "git-forge";     // Forge-specialization (GitHub/GitLab/etc.)
+  | "clifford" // Canonical (operator-vote; once shipped)
+  | "dbsp" // Restricted-or-isomorphic to Clifford (open question)
+  | "git" // Restricted to tree/commit/ref substrate
+  | "git-forge"; // Forge-specialization (GitHub/GitLab/etc.)
 
 /**
  * Hierarchy depth — substrate-engineering substrate marker for which
@@ -161,9 +161,7 @@ export type HierarchyFeedback =
   | { kind: "MissingIntermediateLayer"; expectedParent: SubstrateAlgebra | null; actualParent: SubstrateAlgebra | null }
   | { kind: "DepthMismatch"; expected: HierarchyDepth; actual: HierarchyDepth };
 
-export type HierarchyResult<T> =
-  | { ok: true; value: T }
-  | { ok: false; feedback: HierarchyFeedback };
+export type HierarchyResult<T> = { ok: true; value: T } | { ok: false; feedback: HierarchyFeedback };
 
 /**
  * Parent algebra for any substrate (substrate-engineering inheritance chain).
@@ -171,10 +169,14 @@ export type HierarchyResult<T> =
  */
 export function parentOf(algebra: SubstrateAlgebra): SubstrateAlgebra | null {
   switch (algebra) {
-    case "clifford": return null;
-    case "dbsp": return "clifford";
-    case "git": return "dbsp";
-    case "git-forge": return "git";
+    case "clifford":
+      return null;
+    case "dbsp":
+      return "clifford";
+    case "git":
+      return "dbsp";
+    case "git-forge":
+      return "git";
   }
 }
 
@@ -183,10 +185,14 @@ export function parentOf(algebra: SubstrateAlgebra): SubstrateAlgebra | null {
  */
 export function depthOf(algebra: SubstrateAlgebra): HierarchyDepth {
   switch (algebra) {
-    case "clifford": return 0;
-    case "dbsp": return 1;
-    case "git": return 2;
-    case "git-forge": return 3;
+    case "clifford":
+      return 0;
+    case "dbsp":
+      return 1;
+    case "git":
+      return 2;
+    case "git-forge":
+      return 3;
   }
 }
 
@@ -216,7 +222,10 @@ export function verifyHierarchy(world: HierarchicalWorld): HierarchyResult<Hiera
   }
   const expectedParent = parentOf(world.substrateAlgebra);
   if (world.parentAlgebra !== expectedParent) {
-    return { ok: false, feedback: { kind: "MissingIntermediateLayer", expectedParent, actualParent: world.parentAlgebra } };
+    return {
+      ok: false,
+      feedback: { kind: "MissingIntermediateLayer", expectedParent, actualParent: world.parentAlgebra },
+    };
   }
   return { ok: true, value: world };
 }

@@ -10,7 +10,18 @@ created: 2026-05-18
 last_updated: 2026-05-21
 depends_on: []
 composes_with: [B-0650]
-tags: [git-network-ops, multi-agent-saturation, push-hang, fetch-hang, orphan-subprocesses, harness-shell-wrappers, claude-code-bash-tool, kill-after-discipline, dotgit-pack-contention]
+tags:
+  [
+    git-network-ops,
+    multi-agent-saturation,
+    push-hang,
+    fetch-hang,
+    orphan-subprocesses,
+    harness-shell-wrappers,
+    claude-code-bash-tool,
+    kill-after-discipline,
+    dotgit-pack-contention,
+  ]
 type: operational
 ---
 

@@ -1,7 +1,4 @@
-import {
-  type OrgCycleRmoCandidateSource,
-  type OrgCycleRmoCandidatesForHat,
-} from "./org-runtime.ts";
+import { type OrgCycleRmoCandidateSource, type OrgCycleRmoCandidatesForHat } from "./org-runtime.ts";
 
 export function createDemoOrgCycleRmoCandidateSource(): OrgCycleRmoCandidateSource {
   return {

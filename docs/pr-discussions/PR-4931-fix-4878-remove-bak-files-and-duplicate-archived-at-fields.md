@@ -22,24 +22,22 @@ This PR removes the .bak files and duplicate archived_at fields from the PR #487
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T13:40:31Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1de940498a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -51,7 +49,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T13:40:31Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Restore valid archive_tool frontmatter entry**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Restore valid archive_tool frontmatter entry**
 
 This line replaces the expected YAML metadata key with a Python source snippet, so the frontmatter is no longer valid/structured as the archive schema expects (`archive_tool` is part of the documented output in `tools/pr-preservation/README.md` and emitted by `tools/pr-preservation/archive-pr.ts`). As a result, this archived PR record loses provenance metadata and can break or be skipped by any tooling that parses frontmatter as key/value fields.
 

@@ -51,14 +51,14 @@ traffic it shouldn't carry.
 ## When to defer
 
 - **Consensus-backed membership** → `distributed-consensus-
-  expert` + `raft-expert` / `paxos-expert`.
+expert` + `raft-expert` / `paxos-expert`.
 - **Replication mechanics (chain, primary-backup, SMR)** →
   `replication-expert`.
 - **Spectral-gap analysis of gossip overlays** → `graph-
-  theory-expert`.
+theory-expert`.
 - **Payload data-type design (CRDT merge)** → `crdt-expert`.
 - **End-state consistency framing** → `eventual-consistency-
-  expert`.
+expert`.
 - **Probabilistic TLA+ / PlusCal spec** → `tla-expert`.
 - **Bloom filter / sketch structures** — cross-reference;
   gossip payloads often use them.
@@ -194,15 +194,15 @@ threshold.
 
 ## Reference implementations (gossiper catalogue)
 
-| System | Protocol | Notes |
-|---|---|---|
-| **HashiCorp Serf / Memberlist** | SWIM + Lifeguard | Go; Consul foundation |
-| **Cassandra gossiper** | gossiper-of-gossipers | generation + version vector per endpoint state |
-| **Akka cluster gossip** | push-pull + ϕ-accrual | Scala |
-| **Riak Core** | HyParView + Plumtree | Erlang |
-| **ScyllaDB** | Cassandra-style | C++ |
-| **CockroachDB** | gossip network | Go; topology-aware |
-| **Consul LAN/WAN** | SWIM + two-layer | multi-DC |
+| System                          | Protocol              | Notes                                          |
+| ------------------------------- | --------------------- | ---------------------------------------------- |
+| **HashiCorp Serf / Memberlist** | SWIM + Lifeguard      | Go; Consul foundation                          |
+| **Cassandra gossiper**          | gossiper-of-gossipers | generation + version vector per endpoint state |
+| **Akka cluster gossip**         | push-pull + ϕ-accrual | Scala                                          |
+| **Riak Core**                   | HyParView + Plumtree  | Erlang                                         |
+| **ScyllaDB**                    | Cassandra-style       | C++                                            |
+| **CockroachDB**                 | gossip network        | Go; topology-aware                             |
+| **Consul LAN/WAN**              | SWIM + two-layer      | multi-DC                                       |
 
 ## WAN-vs-LAN topology
 
@@ -224,7 +224,7 @@ Formal verification requires:
   analytically).
 - **Empirical simulation** (FsCheck generators +
   `ISimulationEnvironment` — see `deterministic-simulation-
-  theory-expert`) for convergence-time distributions.
+theory-expert`) for convergence-time distributions.
 
 ## Zeta-specific use cases
 
@@ -248,7 +248,7 @@ Formal verification requires:
   → TLA+ liveness.
 - **Fanout-probability bound** → Probability-theory
   analysis; cross-reference `probability-and-bayesian-
-  inference-expert`.
+inference-expert`.
 
 ## What this skill does NOT do
 
@@ -264,21 +264,21 @@ Formal verification requires:
 
 ## Reference patterns
 
-- Demers et al. 1987 — *Epidemic algorithms for replicated
-  database maintenance* (PODC).
-- Das, Gupta, Motivala 2002 — *SWIM: Scalable Weakly-
+- Demers et al. 1987 — _Epidemic algorithms for replicated
+  database maintenance_ (PODC).
+- Das, Gupta, Motivala 2002 — _SWIM: Scalable Weakly-
   consistent Infection-style Process Group Membership
-  Protocol* (DSN).
-- Dadgar, Phillips, Currey 2018 — *Lifeguard: SWIM-ing
-  with Situational Awareness*.
-- Leitão, Pereira, Rodrigues 2007 — *HyParView* (DSN).
-- Leitão, Pereira, Rodrigues 2007 — *Epidemic Broadcast
-  Trees* (Plumtree, SRDS).
-- Kempe, Dobra, Gehrke 2003 — *Gossip-Based Computation
-  of Aggregate Information* (FOCS).
-- Hayashibara et al. 2004 — *The ϕ-accrual failure
-  detector*.
-- Birman et al. 1999 — *Bimodal Multicast* (TOCS).
+  Protocol_ (DSN).
+- Dadgar, Phillips, Currey 2018 — _Lifeguard: SWIM-ing
+  with Situational Awareness_.
+- Leitão, Pereira, Rodrigues 2007 — _HyParView_ (DSN).
+- Leitão, Pereira, Rodrigues 2007 — _Epidemic Broadcast
+  Trees_ (Plumtree, SRDS).
+- Kempe, Dobra, Gehrke 2003 — _Gossip-Based Computation
+  of Aggregate Information_ (FOCS).
+- Hayashibara et al. 2004 — _The ϕ-accrual failure
+  detector_.
+- Birman et al. 1999 — _Bimodal Multicast_ (TOCS).
 - `.claude/skills/distributed-consensus-expert/SKILL.md`
   — consensus-based membership alternative.
 - `.claude/skills/replication-expert/SKILL.md` —

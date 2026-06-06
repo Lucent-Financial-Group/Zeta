@@ -29,6 +29,7 @@ Adds afternoon-cascade forward-planning rows (B-0498 substrate-evolution algebra
 Regenerates the auto-generated backlog index to include two new forward-planning rows (B-0498 in P2 and B-0499 in P3) that were detected as drift by `tools/backlog/generate-index.ts --check`.
 
 **Changes:**
+
 - Add B-0498 entry under P2 (substrate-evolution algebra rule-promotion).
 - Add B-0499 entry under P3 (Z[i]-weighted DBSP refinement).
 

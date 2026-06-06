@@ -10,7 +10,18 @@ last_updated: 2026-05-26
 depends_on: []
 composes_with:
   - B-0789
-tags: [zflash, agent-driven, auto-type-challenge, pty, child-process-spawn, doc-implementation-gap, substrate-honest-disclosure, ux-improvement, touch-id-pam-preserved]
+tags:
+  [
+    zflash,
+    agent-driven,
+    auto-type-challenge,
+    pty,
+    child-process-spawn,
+    doc-implementation-gap,
+    substrate-honest-disclosure,
+    ux-improvement,
+    touch-id-pam-preserved,
+  ]
 ---
 
 ## Problem
@@ -77,7 +88,7 @@ if (agentMode) {
 
   child.stdout.on("data", (chunk: Buffer) => {
     const text = chunk.toString();
-    process.stdout.write(text);  // pass through to operator's view
+    process.stdout.write(text); // pass through to operator's view
 
     if (!challengeAnswered) {
       buffer += text;
@@ -93,9 +104,7 @@ if (agentMode) {
     }
   });
 
-  const exitCode: number = await new Promise((res) =>
-    child.on("close", (c) => res(c ?? 1)),
-  );
+  const exitCode: number = await new Promise((res) => child.on("close", (c) => res(c ?? 1)));
   process.exit(exitCode);
 } else {
   // existing default behavior — execFileSync with inherited stdio
@@ -147,7 +156,7 @@ The empirical 2026-05-26 session demonstrated the bug-and-workaround flow. This 
 
 ## Origin
 
-Empirical 2026-05-26 USB re-flash session. Operator: *"i got the fingerprint but it didn't format"* (1st run failed silently due to docstring-vs-implementation gap). Workaround: external `expect` wrapper (worked; substantive). Operator query: *"(no built-in pty helper). should we build it this way instead?"* — this row is the YES.
+Empirical 2026-05-26 USB re-flash session. Operator: _"i got the fingerprint but it didn't format"_ (1st run failed silently due to docstring-vs-implementation gap). Workaround: external `expect` wrapper (worked; substantive). Operator query: _"(no built-in pty helper). should we build it this way instead?"_ — this row is the YES.
 
 Per `.claude/rules/honor-those-that-came-before.md` — preserve the existing zflash.ts substrate (iter-4.2 inject, PAM gating, sanity rails); ADD agent-mode as a flag, don't refactor the existing default behavior.
 

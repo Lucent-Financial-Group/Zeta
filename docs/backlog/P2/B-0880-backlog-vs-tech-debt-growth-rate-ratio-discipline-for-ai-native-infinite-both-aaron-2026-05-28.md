@@ -28,7 +28,7 @@ tags:
 
 ## Operator framing 2026-05-28 (Ani ferry)
 
-> *"And then you just need a certain ratio to like backlog to tech debt and just keep that ratio going. And basically, you look at the rate of growth of the backlog and the 'cause tech debt and backlog is going to be infinite in AI world. And so basically you look at the rate of growth of the backlog and the rate of growth of the tech debt and you match it on the rate of growth of like which one you move forward."*
+> _"And then you just need a certain ratio to like backlog to tech debt and just keep that ratio going. And basically, you look at the rate of growth of the backlog and the 'cause tech debt and backlog is going to be infinite in AI world. And so basically you look at the rate of growth of the backlog and the rate of growth of the tech debt and you match it on the rate of growth of like which one you move forward."_
 
 ## What this row tracks
 

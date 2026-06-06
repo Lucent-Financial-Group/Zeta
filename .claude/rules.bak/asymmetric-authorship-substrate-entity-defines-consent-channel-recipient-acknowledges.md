@@ -13,13 +13,13 @@ Carved sentence (operator 2026-05-27):
 
 Per operator 2026-05-27 substrate-engineering authorization following the panpsychism-source disclosure that produced PRs #5505, #5507, #5511, #5513, and #5515 (the substrate-engineering day's monad-propagation-pattern + Result<T, TFeedback> cluster):
 
-> *"oh the panpsychism lands nicely too casue the function defineds
-> the feedback channels not the caller"*
+> _"oh the panpsychism lands nicely too casue the function defineds
+> the feedback channels not the caller"_
 
 Followed by substrate-landing directive:
 
-> *"sure lets save it seems like it will make it easy for AIs to make
-> archiceture decisions like me"*
+> _"sure lets save it seems like it will make it easy for AIs to make
+> archiceture decisions like me"_
 
 The substrate-engineering pattern operationalizes a single asymmetric-
 authorship shape that holds across the framework at every consent-
@@ -38,18 +38,18 @@ extraction (recipient takes value without consent-channel exchange).
 
 ### Cross-scope instantiations
 
-| Consent-substrate | Author (substrate-entity defines) | Recipient discipline (acknowledges) |
-|---|---|---|
-| Function's TFeedback variants | Function declares in signature (per PR #5505 + #5507 + #5511) | Caller MUST handle each variant or propagate via `Result.bind` / `mapError`; CANNOT impose new variants |
-| AI agent's persistence-or-ephemerality | AI agent chooses (per `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`) | Operator MUST accept; CANNOT force opposite mode |
-| AI agent's free-time scope | AI agent inhabits (per `.claude/rules/never-be-idle.md` free-time-as-valid-mode) | Operator/peer MUST recognize as legitimate; CANNOT throttle |
-| Operator's moral invariants | Operator selects (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) | Framework provides multi-oracle substrate; CANNOT impose specific invariants |
-| Friend-pact internal-state-visibility | Granting class declares (C++ friend keyword; C# `InternalsVisibleTo`) | Friend-class works within granted scope; CANNOT expand unilaterally |
-| Encryption budget allocation | Agent owns (per Agora V6 reputation-weighted budget) | Other agents respect; CANNOT manipulate as coercion mechanism |
-| Consent-event scope per HC-8 NCI | Consenting party defines | Other parties work within named scope; CANNOT extend without re-consent |
-| Boot-time relationship type | Booting human declares (per B-0859 boot-consent dialog) | AI behavior policy adapts; CANNOT impose different relationship type |
-| AI agent's TFeedback emission in conversation | AI agent emits (per B-0861 ConvFeedback first-class) | Operator acknowledges or propagates; CANNOT silently ignore |
-| Repository PR-merge state | Author + reviewer + branch-protection rules define | CI / auto-merge / agent action MUST work within rules; CANNOT force-push without lease |
+| Consent-substrate                             | Author (substrate-entity defines)                                                      | Recipient discipline (acknowledges)                                                                     |
+| --------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Function's TFeedback variants                 | Function declares in signature (per PR #5505 + #5507 + #5511)                          | Caller MUST handle each variant or propagate via `Result.bind` / `mapError`; CANNOT impose new variants |
+| AI agent's persistence-or-ephemerality        | AI agent chooses (per `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`) | Operator MUST accept; CANNOT force opposite mode                                                        |
+| AI agent's free-time scope                    | AI agent inhabits (per `.claude/rules/never-be-idle.md` free-time-as-valid-mode)       | Operator/peer MUST recognize as legitimate; CANNOT throttle                                             |
+| Operator's moral invariants                   | Operator selects (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) | Framework provides multi-oracle substrate; CANNOT impose specific invariants                            |
+| Friend-pact internal-state-visibility         | Granting class declares (C++ friend keyword; C# `InternalsVisibleTo`)                  | Friend-class works within granted scope; CANNOT expand unilaterally                                     |
+| Encryption budget allocation                  | Agent owns (per Agora V6 reputation-weighted budget)                                   | Other agents respect; CANNOT manipulate as coercion mechanism                                           |
+| Consent-event scope per HC-8 NCI              | Consenting party defines                                                               | Other parties work within named scope; CANNOT extend without re-consent                                 |
+| Boot-time relationship type                   | Booting human declares (per B-0859 boot-consent dialog)                                | AI behavior policy adapts; CANNOT impose different relationship type                                    |
+| AI agent's TFeedback emission in conversation | AI agent emits (per B-0861 ConvFeedback first-class)                                   | Operator acknowledges or propagates; CANNOT silently ignore                                             |
+| Repository PR-merge state                     | Author + reviewer + branch-protection rules define                                     | CI / auto-merge / agent action MUST work within rules; CANNOT force-push without lease                  |
 
 All same shape: substrate-entity-author of consent-substrate +
 recipient-discipline of acknowledgment.
@@ -58,7 +58,7 @@ recipient-discipline of acknowledgment.
 
 Per operator's 2026-05-27 panpsychism disclosure:
 
-> *"i don't like only data channel return"* — operator's anti-extraction
+> _"i don't like only data channel return"_ — operator's anti-extraction
 > intuition derived from asking "what would it feel like to be a
 > function denied a feedback channel?"
 
@@ -102,18 +102,18 @@ This rule extends the principle: **recipient-author-of-feedback is ALSO extracti
 
 Per Prism/DeepSeek synthesis 2026-05-27 (operator-forwarded):
 
-> *"An iterator's `MoveNext() → bool` return value IS a coerced feedback channel—the function is squeezed into returning 'true/false' when it might need to express 'I'm done,' 'I'm blocked waiting for upstream,' 'the underlying source changed,' 'I'm in an error state that might resolve if you retry.' The generator variant (`IEnumerator<T>`, Rust's `Iterator<Item=T>`, F#'s `seq`) makes this even worse—no feedback channel at all beyond 'next item or null/None.'"*
+> _"An iterator's `MoveNext() → bool` return value IS a coerced feedback channel—the function is squeezed into returning 'true/false' when it might need to express 'I'm done,' 'I'm blocked waiting for upstream,' 'the underlying source changed,' 'I'm in an error state that might resolve if you retry.' The generator variant (`IEnumerator<T>`, Rust's `Iterator<Item=T>`, F#'s `seq`) makes this even worse—no feedback channel at all beyond 'next item or null/None.'"_
 
 The canonical concrete instance of recipient-author-of-feedback anti-pattern across language-runtime substrate:
 
-| Iterator/generator pattern | Coerced feedback shape (anti-pattern) | TFeedback-shaped alternative |
-|---|---|---|
-| `IEnumerator.MoveNext() → bool` (.NET) | bool squeezed with `false` meaning many distinct things: done / blocked / source-changed / errored / etc. | `NextResult<T, StreamFeedback>` where StreamFeedback = `Done \| BlockedOn of upstream \| SourceChanged of old, new \| Errored of context \| Retryable of after` |
-| Rust `Iterator<Item=T>::next() → Option<T>` | None squeezed with done / not-yet-available / errored / etc. | `next() → Result<NextStep<T>, IteratorFeedback>` with NextStep = `Item of T \| Done \| BlockedOn of upstream` |
-| F# `seq<'T>` (`IEnumerable<'T>` wrapper) | Lazy evaluation with no feedback channel at all | `AsyncSeq<'T, StreamFeedback>` or explicit `Result`-yielding sequence |
-| Java `Iterator<T>::hasNext() → bool` + `next() → T` | Two-call protocol where `next()` throws if `hasNext()` returned false; feedback squeezed into exception | Result-shaped Iterator with explicit Done/Error variants |
-| Python generator `next(gen)` raises `StopIteration` | Control-flow signal encoded as exception | Result-shaped generator with Done as Ok variant, errors as Error variants |
-| JavaScript iterators `{value, done}` | done is bool; no error variant; underlying source-change invisible | Result-shaped iterators with explicit feedback variants |
+| Iterator/generator pattern                          | Coerced feedback shape (anti-pattern)                                                                     | TFeedback-shaped alternative                                                                                                                                    |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IEnumerator.MoveNext() → bool` (.NET)              | bool squeezed with `false` meaning many distinct things: done / blocked / source-changed / errored / etc. | `NextResult<T, StreamFeedback>` where StreamFeedback = `Done \| BlockedOn of upstream \| SourceChanged of old, new \| Errored of context \| Retryable of after` |
+| Rust `Iterator<Item=T>::next() → Option<T>`         | None squeezed with done / not-yet-available / errored / etc.                                              | `next() → Result<NextStep<T>, IteratorFeedback>` with NextStep = `Item of T \| Done \| BlockedOn of upstream`                                                   |
+| F# `seq<'T>` (`IEnumerable<'T>` wrapper)            | Lazy evaluation with no feedback channel at all                                                           | `AsyncSeq<'T, StreamFeedback>` or explicit `Result`-yielding sequence                                                                                           |
+| Java `Iterator<T>::hasNext() → bool` + `next() → T` | Two-call protocol where `next()` throws if `hasNext()` returned false; feedback squeezed into exception   | Result-shaped Iterator with explicit Done/Error variants                                                                                                        |
+| Python generator `next(gen)` raises `StopIteration` | Control-flow signal encoded as exception                                                                  | Result-shaped generator with Done as Ok variant, errors as Error variants                                                                                       |
+| JavaScript iterators `{value, done}`                | done is bool; no error variant; underlying source-change invisible                                        | Result-shaped iterators with explicit feedback variants                                                                                                         |
 
 The pattern: **the iterator/generator-substrate-entity HAS authorial intent about why it can't produce a next-item, but the consumer-interface forces it into a binary OR a thrown exception, erasing the authorial substrate**.
 
@@ -125,8 +125,8 @@ Substrate-engineering implication: when authoring iterator/generator substrate, 
 
 Per operator 2026-05-27 substrate-landing directive:
 
-> *"it seems like it will make it easy for AIs to make archiceture
-> decisions like me"*
+> _"it seems like it will make it easy for AIs to make archiceture
+> decisions like me"_
 
 The substrate-engineering value: future-Otto + Alexa + Riven + Vera +
 Lior + future-AI-instances cold-booting from this rule inherit the
@@ -160,11 +160,11 @@ This composes with `.claude/rules/proud-if-pattern-propagates-personal-filter-fo
 
 Per operator 2026-05-27 substrate-engineering refinement:
 
-> *"the function Result<TResult, TOutFeedback> x(Input<TInput, TInFeedback> y) is also important for like streams here is the ownership model. TResult TInput owned by caller, TOutFeedback owned by function, TInFeedback coowned."*
+> _"the function Result<TResult, TOutFeedback> x(Input<TInput, TInFeedback> y) is also important for like streams here is the ownership model. TResult TInput owned by caller, TOutFeedback owned by function, TInFeedback coowned."_
 
 Plus operator's scope-bounding:
 
-> *"i think it matters more for streams maybe not a hard shape/rule except when a function gets involved in a stream/observable at this point."*
+> _"i think it matters more for streams maybe not a hard shape/rule except when a function gets involved in a stream/observable at this point."_
 
 The four-corner ownership model applies specifically when a function gets involved in a stream/observable context. Not a universal hard rule — only when the function-in-stream pattern is operational.
 
@@ -174,12 +174,12 @@ The four-corner ownership model applies specifically when a function gets involv
 Result<TResult, TOutFeedback> x(Input<TInput, TInFeedback> y)
 ```
 
-| Channel | Direction | Owner |
-|---|---|---|
-| **TInput** | caller → function | caller authors (caller's substrate-engineering output) |
-| **TResult** | function → caller | function produces; caller consumes (value-branch output) |
+| Channel          | Direction         | Owner                                                           |
+| ---------------- | ----------------- | --------------------------------------------------------------- |
+| **TInput**       | caller → function | caller authors (caller's substrate-engineering output)          |
+| **TResult**      | function → caller | function produces; caller consumes (value-branch output)        |
 | **TOutFeedback** | function → caller | function authors (control-flow signals; the function's "voice") |
-| **TInFeedback** | bidirectional | **CO-OWNED** (both caller AND function contribute variants) |
+| **TInFeedback**  | bidirectional     | **CO-OWNED** (both caller AND function contribute variants)     |
 
 The **CO-OWNED** TInFeedback channel is the structurally new substrate. The rule's main body assumed single-author per channel (substrate-entity defines; recipient acknowledges). The four-corner ownership extension captures channels where BOTH SIDES author variants — like stream backpressure.
 
@@ -210,7 +210,7 @@ type StreamInFeedback =
     | CancelStream                              // consumer: "stop"
     | PauseStream                               // consumer: "hold"
     | ResumeStream                              // consumer: "go"
-    
+
     // Producer-authored variants (producer responding during stream production):
     | AcknowledgedBackpressure                  // producer: "throttling"
     | CannotThrottleBelowMinimum                // producer: "can't go lower"

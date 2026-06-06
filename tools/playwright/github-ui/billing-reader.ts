@@ -34,9 +34,7 @@ export interface BillingReaderOptions extends GitHubSessionOptions {
  * Read-only; uses B-0317 auth + B-0318 session pattern.
  * Smallest safe slice: Actions minutes primary. Storage/packages reserved for future slices.
  */
-export async function readOrgBillingUsage(
-  options: BillingReaderOptions = {}
-): Promise<OrgBillingUsage> {
+export async function readOrgBillingUsage(options: BillingReaderOptions = {}): Promise<OrgBillingUsage> {
   const org = options.org ?? "Lucent-Financial-Group";
   const url = `https://github.com/organizations/${org}/settings/billing`;
 

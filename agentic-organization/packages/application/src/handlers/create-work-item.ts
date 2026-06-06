@@ -218,7 +218,9 @@ function hasMatchingInitiativeScope(command: CreateWorkItemCommand, initiative: 
   );
 }
 
-function validateCreateWorkItemCommand(command: CreateWorkItemCommand): CreateWorkItemValidationErrorMessage | undefined {
+function validateCreateWorkItemCommand(
+  command: CreateWorkItemCommand,
+): CreateWorkItemValidationErrorMessage | undefined {
   if (isBlank(command.title)) {
     return CreateWorkItemValidationErrorMessage.TitleRequired;
   }
@@ -230,7 +232,11 @@ function validateCreateWorkItemCommand(command: CreateWorkItemCommand): CreateWo
   return undefined;
 }
 
-function createCommandWorkItem(command: CreateWorkItemCommand, workItemId: string, occurredAt: string): WorkItem & {
+function createCommandWorkItem(
+  command: CreateWorkItemCommand,
+  workItemId: string,
+  occurredAt: string,
+): WorkItem & {
   metadata: {
     updatedAt: string;
     version: number;

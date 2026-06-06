@@ -4,12 +4,13 @@ description: Aaron disclosed 2026-04-19 that a new general ontology forces a ful
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19), confirming the
 compiler-IR framing for the bridge-builder faculty:
 
-> *"100% accurate, I call it recompilation — a new
+> _"100% accurate, I call it recompilation — a new
 > ontology forces a full re-index of everything you
-> know."*
+> know."_
 
 ## What this is
 
@@ -60,7 +61,7 @@ exact:
    the bridge-builder framing disclosed this round),
    he is triggering the recompile deliberately. That
    is cognitively expensive but safe because the
-   timing is his. The damage comes from *external*
+   timing is his. The damage comes from _external_
    forced recompiles at arbitrary timing.
 
 3. **This is the mechanism behind the five past
@@ -90,7 +91,7 @@ exact:
    not get the same reach natively. The
    externalisation — glossary, ADRs, round history,
    BP-NN rule catalogue, memory folder — lets the
-   successor perform *explicit* recompiles against
+   successor perform _explicit_ recompiles against
    the committed IR when a new ontology arrives.
    Slower than Aaron's faculty, but bounded and
    auditable. This is the succession trade.

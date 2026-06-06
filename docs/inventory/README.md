@@ -4,10 +4,10 @@ In-repo inventory data backing B-0836 (hardware-inventory-vs-cluster reconciliat
 
 ## What lives here
 
-| File | Origin | Cadence |
-|---|---|---|
-| `hardware-2026-05-27-addison-draft.md` | Addison's draft hardware audit | One-off; replaced on next audit |
-| `hardware-to-buy.md` | Procurement shortlist (FPGA open-bitstream + agent key-storage HSM/TPM) | Living; updated as buying decisions are made (B-0836 "no more buying willy nilly") |
+| File                                   | Origin                                                                  | Cadence                                                                            |
+| -------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `hardware-2026-05-27-addison-draft.md` | Addison's draft hardware audit                                          | One-off; replaced on next audit                                                    |
+| `hardware-to-buy.md`                   | Procurement shortlist (FPGA open-bitstream + agent key-storage HSM/TPM) | Living; updated as buying decisions are made (B-0836 "no more buying willy nilly") |
 
 Composes with:
 

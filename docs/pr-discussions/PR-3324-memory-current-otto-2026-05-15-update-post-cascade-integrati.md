@@ -35,24 +35,22 @@ Per CURRENT-otto.md's own self-curation right ("Owner: Otto; I can revise it per
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T00:34:39Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `241d918d00`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -65,9 +63,10 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates `memory/CURRENT-otto.md` with a new 2026-05-15 section capturing the latest “currently-in-force” Otto substrate after the post-cascade integration (Manifesto V2 shadow-lock, Ani cascade-closing pointers, and the wait-for-consolidation cadence).
 
 **Changes:**
+
 - Adds a 2026-05-15 update section summarizing newly landed repo substrate (Manifesto V2 + backlog rows + §33 archive pointer).
 - Records the operational posture/cadence activation (wait-for-consolidation) and associated rationale for future cold-boot reads.
-- Adds several pointers to “feedback_*.md” artifacts referenced as load-bearing context.
+- Adds several pointers to “feedback\_\*.md” artifacts referenced as load-bearing context.
 
 ## Review threads
 
@@ -75,7 +74,7 @@ Updates `memory/CURRENT-otto.md` with a new 2026-05-15 section capturing the lat
 
 **@chatgpt-codex-connector** (2026-05-15T00:34:39Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Bump `Last updated` metadata when adding a new dated update**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Bump `Last updated` metadata when adding a new dated update**
 
 This commit adds a `2026-05-15` update section, but the file header still says `Last updated: 2026-05-14`, so the document now has conflicting freshness signals. Any reader or automation that keys off the top-level metadata can treat this state snapshot as stale and miss the new operational posture you just recorded. Please update the header date in the same change whenever a newer dated section is introduced.
 

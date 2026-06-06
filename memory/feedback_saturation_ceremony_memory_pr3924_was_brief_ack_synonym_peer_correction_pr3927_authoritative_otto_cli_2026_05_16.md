@@ -19,7 +19,7 @@ My PR #3924's "stop emitting further brief-acks" advice was operationally violat
 
 PR #3927 (peer Otto) is authoritative on this specific corner case:
 
-> *"genuine quiet" / "appropriate bounded wait" / "idle-but-available" / "real bounded named-dependency wait" are ALL brief-acks with synonyms; they count toward the N-consecutive threshold.*
+> _"genuine quiet" / "appropriate bounded wait" / "idle-but-available" / "real bounded named-dependency wait" are ALL brief-acks with synonyms; they count toward the N-consecutive threshold._
 
 Add to that list: **`Saturation; sentinel armed`** — the specific phrasing I used.
 

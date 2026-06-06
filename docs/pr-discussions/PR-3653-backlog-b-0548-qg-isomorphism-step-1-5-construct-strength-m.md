@@ -28,7 +28,7 @@ Files the substrate-honest deferral that emerged from the [PR #3614](https://git
 This row scopes the open Step 1.5 research with:
 
 - **3 resolution paths** (Lawvere-Tierney lifting / strength / propositional restriction) — each with explicit costs + status
-- **Central obstruction named**: `A` is *not* a closure operator (no `p ≤ A(p)`), so standard Lawvere-Tierney construction doesn't apply directly
+- **Central obstruction named**: `A` is _not_ a closure operator (no `p ≤ A(p)`), so standard Lawvere-Tierney construction doesn't apply directly
 - Distinguished from non-monotonicity (which `A` explicitly preserves via finite-limit preservation within an observer-context — per [PR #3639](https://github.com/Lucent-Financial-Group/Zeta/pull/3639) correction)
 - **3 acceptance criteria** — one for each resolution path
 - **Effort estimate L** (1-3 weeks pure research)
@@ -65,5 +65,6 @@ This row scopes the open Step 1.5 research with:
 Adds a new P2 backlog row (B-0548) scoping the deferred Step 1.5 research from the PR #3614 chain: constructing a strength `θ:M(Ω)→Ω` and/or A-lifting `Ã:Zeta→Zeta` so the M/A coherence laws become type-correct.
 
 **Changes:**
+
 - New docs/backlog/P2 row file with frontmatter (id, P2, depends_on B-0544, composes_with B-0543)
 - Documents 3 resolution paths, the closure-operator obstruction, acceptance criteria, prior art

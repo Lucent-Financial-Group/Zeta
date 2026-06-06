@@ -28,15 +28,15 @@ PR #663 is a pure-additive forward-sync of AceHack-canonical content to LFG. Mod
 ## Acceptance
 
 - [x] P0 docstring updated to remove pipe-to-shell examples — resolved by
-  B-0063 (PR #2114, 2026-05-08): `curl_fetch_stream` removed entirely;
-  USAGE section replaced with download-to-temp + verify + exec pattern.
+      B-0063 (PR #2114, 2026-05-08): `curl_fetch_stream` removed entirely;
+      USAGE section replaced with download-to-temp + verify + exec pattern.
 - [x] P1 commentary updated to match actual call-site state — resolved by
-  B-0063 (PR #2114, 2026-05-08): "two-gate command-substitution" and
-  "streamed callers" language removed; COMMAND-SUBSTITUTION + SET-E
-  section now accurately describes download-to-temp + exec for all three
-  call sites (macos.sh, linux.sh, elan.sh).
+      B-0063 (PR #2114, 2026-05-08): "two-gate command-substitution" and
+      "streamed callers" language removed; COMMAND-SUBSTITUTION + SET-E
+      section now accurately describes download-to-temp + exec for all three
+      call sites (macos.sh, linux.sh, elan.sh).
 - [x] LFG carries the cleaned-up file — PR #2114 landed directly on LFG
-  (AceHack-first workflow was abandoned 2026-05-02; double-hop not required).
+      (AceHack-first workflow was abandoned 2026-05-02; double-hop not required).
 
 ## Resolution
 

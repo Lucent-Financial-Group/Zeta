@@ -76,10 +76,12 @@ describe("in-memory organization command effects", () => {
     const result = await store.recordCommandOutcome(statusTransitionOutcome);
 
     equal(result.status, CommandOutcomePersistenceStatus.Committed);
-    deepEqual(factory.snapshot.contextPackInboxAnchors, [{
-      ...createOutcome.effects.contextPackInboxAnchors![0]!,
-      status: ContextPackInboxAnchorStatus.Dismissed,
-    }]);
+    deepEqual(factory.snapshot.contextPackInboxAnchors, [
+      {
+        ...createOutcome.effects.contextPackInboxAnchors![0]!,
+        status: ContextPackInboxAnchorStatus.Dismissed,
+      },
+    ]);
   });
 
   test("rejects context-pack inbox anchor status transitions for missing anchors without mutating state", async () => {
@@ -336,10 +338,12 @@ function createContextPackInboxAnchorCommandOutcome(): RecordCommandOutcomeInput
       requestHash: "hash-inbox-anchor-001",
       result: {
         status: CommandResultStatus.Accepted,
-        artifacts: [{
-          artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
-          artifactId: inboxAnchor.inboxAnchorId,
-        }],
+        artifacts: [
+          {
+            artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
+            artifactId: inboxAnchor.inboxAnchorId,
+          },
+        ],
         idempotency: {
           replayed: false,
         },
@@ -383,10 +387,12 @@ function createContextPackInboxAnchorStatusTransitionOutcome(): RecordCommandOut
       requestHash: "hash-inbox-anchor-status-001",
       result: {
         status: CommandResultStatus.Accepted,
-        artifacts: [{
-          artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
-          artifactId: statusTransition.inboxAnchorId,
-        }],
+        artifacts: [
+          {
+            artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
+            artifactId: statusTransition.inboxAnchorId,
+          },
+        ],
         idempotency: {
           replayed: false,
         },

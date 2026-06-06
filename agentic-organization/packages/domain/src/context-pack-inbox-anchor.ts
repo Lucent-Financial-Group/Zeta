@@ -54,19 +54,23 @@ export type ContextPackInboxAnchorTerminalStatus =
   | typeof ContextPackInboxAnchorStatus.Dismissed;
 
 export function isContextPackInboxAnchorPriority(value: unknown): value is ContextPackInboxAnchorPriority {
-  return typeof value === "string" &&
-    Object.values(ContextPackInboxAnchorPriority).includes(value as ContextPackInboxAnchorPriority);
+  return (
+    typeof value === "string" &&
+    Object.values(ContextPackInboxAnchorPriority).includes(value as ContextPackInboxAnchorPriority)
+  );
 }
 
 export function isContextPackInboxAnchorStatus(value: unknown): value is ContextPackInboxAnchorStatus {
-  return typeof value === "string" &&
-    Object.values(ContextPackInboxAnchorStatus).includes(value as ContextPackInboxAnchorStatus);
+  return (
+    typeof value === "string" &&
+    Object.values(ContextPackInboxAnchorStatus).includes(value as ContextPackInboxAnchorStatus)
+  );
 }
 
-export function isContextPackInboxAnchorTerminalStatus(
-  value: unknown,
-): value is ContextPackInboxAnchorTerminalStatus {
-  return value === ContextPackInboxAnchorStatus.Read ||
+export function isContextPackInboxAnchorTerminalStatus(value: unknown): value is ContextPackInboxAnchorTerminalStatus {
+  return (
+    value === ContextPackInboxAnchorStatus.Read ||
     value === ContextPackInboxAnchorStatus.Snoozed ||
-    value === ContextPackInboxAnchorStatus.Dismissed;
+    value === ContextPackInboxAnchorStatus.Dismissed
+  );
 }

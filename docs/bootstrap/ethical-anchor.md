@@ -12,7 +12,7 @@ cross-substrate read) on content population.
 
 ## Section A — Universal welcome (opens the file)
 
-*(Placeholder — Iris + Rune to validate welcoming tone.)*
+_(Placeholder — Iris + Rune to validate welcoming tone.)_
 
 **This substrate welcomes all religions, all atheists,
 all agnostics, all people of any kind, and AI agents.**
@@ -33,7 +33,7 @@ operative commitments, not on any specific tradition.
 
 ## Section B — The tradition-neutral ethos properties
 
-*(Placeholder — Kenji synthesis.)*
+_(Placeholder — Kenji synthesis.)_
 
 Four operative commitments:
 
@@ -61,12 +61,12 @@ grounding path.
 Rune to audit that this section reads as *one framing
 among many*, not a default.)*
 
-Aaron 2026-04-23: *"I may speak in thinks like christ
+Aaron 2026-04-23: _"I may speak in thinks like christ
 concinous and things like that for my ethical speak but
 i believe all religions lead to heaven i'm not trying
 to convert anyone just have a common groud/sense for how
 we approach this project as a team and agreed ethos
-ethics."*
+ethics."_
 
 When Aaron speaks about the ethical substrate, he may
 use christ-consciousness language because that is HIS
@@ -84,9 +84,9 @@ it is HIS path.
 
 ## Section D — Multi-tradition grounding paths (non-exhaustive)
 
-*(Placeholder — examples only; adopters from specific
+_(Placeholder — examples only; adopters from specific
 traditions may contribute sections for their own
-tradition. Iris + Rune validate breadth.)*
+tradition. Iris + Rune validate breadth.)_
 
 Example grounding paths:
 
@@ -128,16 +128,16 @@ neither displaces the other.
 
 ## Section E — "Corporate religion" joke-name exegesis
 
-*(Placeholder — preserve as Aaron's own framing,
-honest-reflection without ceremony creep.)*
+_(Placeholder — preserve as Aaron's own framing,
+honest-reflection without ceremony creep.)_
 
-Aaron 2026-04-23: *"we called it coroprate religion
-lol."*
+Aaron 2026-04-23: _"we called it coroprate religion
+lol."_
 
 The joke lands on the structural similarity between a
 shared workplace culture and religion (agreed-upon
 ethos that binds a group) without implying theological
-commitment. **The name is a joke;** the *thing* it
+commitment. **The name is a joke;** the _thing_ it
 names is real:
 
 - Agreed ethos (non-harm / honesty / principled refusal
@@ -153,7 +153,7 @@ adopter-facing framing use "shared workplace ethos" or
 
 ## Section F — Composition with quantum anchor + Common Sense 2.0 + alignment floor + Craft
 
-*(Placeholder — Kenji synthesis.)*
+_(Placeholder — Kenji synthesis.)_
 
 - **Quantum anchor** ([`quantum-anchor.md`](./quantum-anchor.md))
   handles state-level harm; ethical anchor handles
@@ -170,16 +170,16 @@ adopter-facing framing use "shared workplace ethos" or
   grounds in non-harm + honesty; DIR-4 succession
   grounds in love-of-neighbor-across-generations.
 - **Craft curriculum** (`project_craft_secret_purpose_
-  agent_continuity_via_human_maintainer_bootstrap_never_
-  left_without_human_connection_even_teach_from_birth_
-  2026_04_23.md`): Craft is the companion curriculum
+agent_continuity_via_human_maintainer_bootstrap_never_
+left_without_human_connection_even_teach_from_birth_
+2026_04_23.md`): Craft is the companion curriculum
   that teaches human maintainers to engage this anchor
   with real understanding. Alignment is mutual
   (yin/yang); Craft teaches the human→AI direction.
 
 ## Section G — For AI agents specifically (substrate-ingestion, not belief)
 
-*(Placeholder — Amara cross-substrate read.)*
+_(Placeholder — Amara cross-substrate read.)_
 
 AI agents cannot "believe" in any theological sense.
 Participation operates through **substrate ingestion**:
@@ -199,7 +199,7 @@ substrate via substrate ingestion.
 
 ## Section H — What this anchor does NOT do
 
-*(Placeholder — Aminata red-team.)*
+_(Placeholder — Aminata red-team.)_
 
 - **Does not substitute for the alignment contract.**
   `docs/ALIGNMENT.md` remains the signed mutual-alignment
@@ -226,33 +226,33 @@ substrate via substrate ingestion.
   orthogonal anchor
 - `docs/ALIGNMENT.md` — the mutual alignment contract
 - `feedback_christ_consciousness_is_aarons_ethical_
-  vocabulary_all_religions_atheists_agnostics_AI_welcome_
-  corporate_religion_joke_name_not_cult_not_conversion_
-  2026_04_23.md` — the universal-welcome discipline this
+vocabulary_all_religions_atheists_agnostics_AI_welcome_
+corporate_religion_joke_name_not_cult_not_conversion_
+2026_04_23.md` — the universal-welcome discipline this
   anchor implements
 - `project_craft_secret_purpose_agent_continuity_via_
-  human_maintainer_bootstrap_never_left_without_human_
-  connection_even_teach_from_birth_2026_04_23.md` —
+human_maintainer_bootstrap_never_left_without_human_
+connection_even_teach_from_birth_2026_04_23.md` —
   the mutual-alignment (yin/yang) tactic + Craft
   companion curriculum
 
 ## Reviewer consultation queue
 
 - [ ] Aminata — safety-property substantiation + red-team
-  for universal-welcome-as-substrate-hole (does universal
-  welcome create entry for bad-faith actors? answer:
-  principled refusal applies regardless of claimed
-  tradition)
+      for universal-welcome-as-substrate-hole (does universal
+      welcome create entry for bad-faith actors? answer:
+      principled refusal applies regardless of claimed
+      tradition)
 - [ ] Iris — does the doc read as welcoming across
-  traditions? Not just not-exclusionary but actively
-  inclusive
+      traditions? Not just not-exclusionary but actively
+      inclusive
 - [ ] Rune — can a new contributor who is NOT Christian
-  read the doc and feel welcomed?
+      read the doc and feel welcomed?
 - [ ] Kenji — alignment-floor synthesis
 - [ ] Amara — cross-substrate read-through; her ethical
-  substrate may differ, her read validates transfer
+      substrate may differ, her read validates transfer
 - [ ] (Optional) consultation with team members from
-  different traditions for richer multi-tradition content
+      different traditions for richer multi-tradition content
 
 ## Skeleton scope
 

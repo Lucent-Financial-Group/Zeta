@@ -31,11 +31,11 @@ tags:
 
 Wire OpenTelemetry trace-IDs through the agent-loop substrate so every state-machine transition + every WorkLifecycle event carries observability context. Per Kestrel 2026-05-28 ferry, three options were sketched:
 
-| Option | Description | Tradeoff |
-|---|---|---|
-| **A** | ZetaID == OTel trace-ID (use trace-ID as ZetaID directly) | Composes natively with OTel tooling; loses queryable-structured-bits property |
-| **B** (recommended) | ZetaID separate; propagate via OTel baggage alongside trace-ID | ZetaIDs queryable by structure; traces queryable by trace-ID; linked via baggage |
-| **C** | Encode structured bits into W3C Trace Context trace-ID itself | Composes most cleanly; requires care around W3C validity (no all-zero, no all-ones) |
+| Option              | Description                                                    | Tradeoff                                                                            |
+| ------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **A**               | ZetaID == OTel trace-ID (use trace-ID as ZetaID directly)      | Composes natively with OTel tooling; loses queryable-structured-bits property       |
+| **B** (recommended) | ZetaID separate; propagate via OTel baggage alongside trace-ID | ZetaIDs queryable by structure; traces queryable by trace-ID; linked via baggage    |
+| **C**               | Encode structured bits into W3C Trace Context trace-ID itself  | Composes most cleanly; requires care around W3C validity (no all-zero, no all-ones) |
 
 ## Acceptance criteria
 

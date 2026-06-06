@@ -4,6 +4,7 @@ description: In VISION.md, AGENTS.md, CLAUDE.md, skill files, ADRs, docs/, code 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Keep the maintainer's personal name (Aaron) out of most files
 in the repo. Use "the human maintainer" or "the maintainer"
 instead. Exempt surfaces:
@@ -14,12 +15,12 @@ instead. Exempt surfaces:
 - (added 2026-04-21) the `For:` column and per-addressee sub-table
   headers (`### For: Aaron`, etc.) in `docs/HUMAN-BACKLOG.md`,
   plus direct quotations in the `Source` / `Ask` fields where
-  redaction would lose evidential value. Prose *outside* the
+  redaction would lose evidential value. Prose _outside_ the
   row schema in that file still uses role-refs. Carve-out is
   documented in-file under "Name attribution — explicit
   carve-out" and is driven by Aaron's 2026-04-20 directive
-  *"can you put my tasks at the top of the human backlog i
-  don't want to have to go digging through it to find my tasks"*,
+  _"can you put my tasks at the top of the human backlog i
+  don't want to have to go digging through it to find my tasks"_,
   which intrinsically needs name-based sub-tables to work.
 
 **Why:** the repo is a public-facing research artifact —

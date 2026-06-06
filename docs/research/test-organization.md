@@ -7,22 +7,22 @@ review. Scope: rename + regroup every file under `tests/Tests.FSharp/`.
 
 28 `.fs` files live flat in one directory. Sizes and names, auditorily scanned:
 
-| Confusing file           | Lines | What it actually covers                       |
-|--------------------------|-------|------------------------------------------------|
-| `CoverageTests.fs`       |  729  | ZSet / IndexedZSet / Pool / Circuit grab-bag   |
-| `CoverageTests2.fs`      |  461  | AsofJoin, Windows, Upsert, Transaction, Exchange |
-| `CoverageBoostTests.fs`  |  352  | Weight, Metrics, Plan, DSL, HLL, Clock, Hash   |
-| `Round17Tests.fs`        |  364  | FastCDC, ClosurePair, Merkle, Bloom, ResidualMax |
-| `Round8Tests.fs`         |  489  | SpineSelector, BalancedSpine, Checkpoint, Shard |
-| `Round7Tests.fs`         |  192  | NestedCircuit, SimdMerge, ChaosEnv, Plan       |
-| `Round6Tests.fs`         |  288  | Differentiate2, AitkenAccelerate, BackingStore |
-| `InfrastructureTests.fs` |  365  | CountMin, Watermark, Sink, Mailbox             |
-| `NewFeatureTests.fs`     |  206  | Tropical, KLL, HyperMinHash, Haar, Memento, CRDT |
-| `AdvancedTests.fs`       |  202  | Jump, Rendezvous, GCounter, PNCounter, OrSet, Rx |
+| Confusing file           | Lines | What it actually covers                          |
+| ------------------------ | ----- | ------------------------------------------------ |
+| `CoverageTests.fs`       | 729   | ZSet / IndexedZSet / Pool / Circuit grab-bag     |
+| `CoverageTests2.fs`      | 461   | AsofJoin, Windows, Upsert, Transaction, Exchange |
+| `CoverageBoostTests.fs`  | 352   | Weight, Metrics, Plan, DSL, HLL, Clock, Hash     |
+| `Round17Tests.fs`        | 364   | FastCDC, ClosurePair, Merkle, Bloom, ResidualMax |
+| `Round8Tests.fs`         | 489   | SpineSelector, BalancedSpine, Checkpoint, Shard  |
+| `Round7Tests.fs`         | 192   | NestedCircuit, SimdMerge, ChaosEnv, Plan         |
+| `Round6Tests.fs`         | 288   | Differentiate2, AitkenAccelerate, BackingStore   |
+| `InfrastructureTests.fs` | 365   | CountMin, Watermark, Sink, Mailbox               |
+| `NewFeatureTests.fs`     | 206   | Tropical, KLL, HyperMinHash, Haar, Memento, CRDT |
+| `AdvancedTests.fs`       | 202   | Jump, Rendezvous, GCounter, PNCounter, OrSet, Rx |
 
-`RoundN` encodes *when* the test was written, not *what* it tests — useless at
-search time. `Coverage*` names encode *why* (a coverage target) rather than
-*what*. Humans can't browse this.
+`RoundN` encodes _when_ the test was written, not _what_ it tests — useless at
+search time. `Coverage*` names encode _why_ (a coverage target) rather than
+_what_. Humans can't browse this.
 
 ## 2. Research: how humans find things
 
@@ -37,12 +37,12 @@ search time. `Coverage*` names encode *why* (a coverage target) rather than
 - **Naming.** F# community consensus (FSharp.Core, Fantomas, Fable, Ionide)
   uses `{Subject}Tests.fs` — same subject as the module under test, `.Tests`
   suffix. No `Test_` prefixing (that's xUnit-Java idiom), no scenario in the
-  filename (scenarios go in the test name: `` let ``X rejects Y`` ``).
+  filename (scenarios go in the test name: `let`X rejects Y` `).
 - **Growth.** When a file exceeds ~400 lines, split by sub-aspect:
   `Spine.Tests.fs` → `Spine.Tests.fs` + `Spine.Checkpoint.Tests.fs`. The
   dot-separator is an F# idiom and sorts adjacently.
 - **Search-first vs browse-first.** The user said "we can grep as fast as
-  you". Correct — so optimise filenames for *browse-ability* (scanning the
+  you". Correct — so optimise filenames for _browse-ability_ (scanning the
   tree and predicting where a test lives), not for redundancy with grep.
 
 ## 3. Proposed layout
@@ -83,36 +83,36 @@ Ten top-level folders, each with 3–7 files. Each filename names a module in
 
 ## 4. Rename map (every file)
 
-| From                                  | To                                              |
-|---------------------------------------|-------------------------------------------------|
-| `ZSetTests.fs`                        | `Algebra/ZSet.Tests.fs`                         |
-| `AggregateTests.fs`                   | `Operators/Aggregate.Tests.fs`                  |
-| `WindowTests.fs`                      | `Operators/Window.Tests.fs`                     |
-| `CircuitTests.fs`                     | `Circuit/Circuit.Tests.fs`                      |
-| `IncrementalTests.fs`                 | `Circuit/Incremental.Tests.fs`                  |
-| `AdvancedTests.fs`                    | split: `Runtime/ConsistentHash.Tests.fs`, `Crdt/*.Tests.fs`, `Infra/Rx.Tests.fs` |
-| `InfrastructureTests.fs`              | split: `Sketches/CountMin.Tests.fs`, `Infra/Watermark.Tests.fs`, `Infra/Sink.Tests.fs`, `Runtime/Mailbox.Tests.fs` |
-| `NestedAndRuntimeTests.fs`            | split: `Circuit/NestedCircuit.Tests.fs`, `Runtime/Runtime.Tests.fs` |
-| `FormalVerificationTests.fs`          | `Formal/Z3.Laws.Tests.fs`                       |
-| `CoverageTests.fs`                    | split across `Algebra/`, `Circuit/`, `Operators/` by subject |
-| `CoverageTests2.fs`                   | split across `Operators/`, `Runtime/`           |
-| `CoverageBoostTests.fs`               | split across `Infra/`, `Sketches/`, `Circuit/Plan.Tests.fs` |
-| `NewFeatureTests.fs`                  | split across `Sketches/`, `Crdt/`               |
-| `FuzzTests.fs`                        | `Properties/Fuzz.Tests.fs`                      |
-| `DeterministicTests.fs`               | `Properties/Determinism.Tests.fs`               |
-| `AllocationTests.fs`                  | `Runtime/Allocation.Tests.fs`                   |
-| `SpineAndSafetyTests.fs`              | split: `Storage/Spine.Selector.Tests.fs`, `Storage/Spine.Balanced.Tests.fs`, `Storage/Checkpoint.Tests.fs` |
-| `QueryCETests.fs`                     | `Infra/Dsl.Tests.fs`                            |
-| `Round6Tests.fs`                      | split: `Operators/Differentiate.Tests.fs`, `Storage/Spine.Disk.Tests.fs`, `Runtime/Runtime.Tests.fs` |
-| `Round7Tests.fs`                      | split: `Circuit/NestedCircuit.Tests.fs`, `Storage/Simd.Tests.fs`, `Infra/ChaosEnv.Tests.fs`, `Circuit/Plan.Tests.fs` |
-| `Round8Tests.fs`                      | split: `Storage/Spine.Selector.Tests.fs`, `Storage/Checkpoint.Tests.fs`, `Algebra/ZSet.Overflow.Tests.fs`, `Runtime/Shard.Tests.fs` |
-| `Round17Tests.fs`                     | split: `Storage/FastCdc.Tests.fs`, `Storage/Merkle.Tests.fs`, `Sketches/Bloom.Tests.fs`, `Operators/ResidualMax.Tests.fs` |
-| `MathInvariantTests.fs`               | `Properties/Math.Invariants.Tests.fs`           |
-| `ConcurrencyHarness.fs`               | `_Support/ConcurrencyHarness.fs`                |
-| `ThreadSafetyTests.fs`                | `Runtime/Concurrency.Tests.fs`                  |
-| `PlanBranchTests.fs`                  | `Circuit/Plan.Branches.Tests.fs`                |
-| `TlcRunnerTests.fs`                   | `Formal/Tlc.Runner.Tests.fs`                    |
-| `InfoTheoreticSharderClaimTests.fs`   | `Formal/Sharder.InfoTheoretic.Tests.fs`         |
+| From                                | To                                                                                                                                  |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `ZSetTests.fs`                      | `Algebra/ZSet.Tests.fs`                                                                                                             |
+| `AggregateTests.fs`                 | `Operators/Aggregate.Tests.fs`                                                                                                      |
+| `WindowTests.fs`                    | `Operators/Window.Tests.fs`                                                                                                         |
+| `CircuitTests.fs`                   | `Circuit/Circuit.Tests.fs`                                                                                                          |
+| `IncrementalTests.fs`               | `Circuit/Incremental.Tests.fs`                                                                                                      |
+| `AdvancedTests.fs`                  | split: `Runtime/ConsistentHash.Tests.fs`, `Crdt/*.Tests.fs`, `Infra/Rx.Tests.fs`                                                    |
+| `InfrastructureTests.fs`            | split: `Sketches/CountMin.Tests.fs`, `Infra/Watermark.Tests.fs`, `Infra/Sink.Tests.fs`, `Runtime/Mailbox.Tests.fs`                  |
+| `NestedAndRuntimeTests.fs`          | split: `Circuit/NestedCircuit.Tests.fs`, `Runtime/Runtime.Tests.fs`                                                                 |
+| `FormalVerificationTests.fs`        | `Formal/Z3.Laws.Tests.fs`                                                                                                           |
+| `CoverageTests.fs`                  | split across `Algebra/`, `Circuit/`, `Operators/` by subject                                                                        |
+| `CoverageTests2.fs`                 | split across `Operators/`, `Runtime/`                                                                                               |
+| `CoverageBoostTests.fs`             | split across `Infra/`, `Sketches/`, `Circuit/Plan.Tests.fs`                                                                         |
+| `NewFeatureTests.fs`                | split across `Sketches/`, `Crdt/`                                                                                                   |
+| `FuzzTests.fs`                      | `Properties/Fuzz.Tests.fs`                                                                                                          |
+| `DeterministicTests.fs`             | `Properties/Determinism.Tests.fs`                                                                                                   |
+| `AllocationTests.fs`                | `Runtime/Allocation.Tests.fs`                                                                                                       |
+| `SpineAndSafetyTests.fs`            | split: `Storage/Spine.Selector.Tests.fs`, `Storage/Spine.Balanced.Tests.fs`, `Storage/Checkpoint.Tests.fs`                          |
+| `QueryCETests.fs`                   | `Infra/Dsl.Tests.fs`                                                                                                                |
+| `Round6Tests.fs`                    | split: `Operators/Differentiate.Tests.fs`, `Storage/Spine.Disk.Tests.fs`, `Runtime/Runtime.Tests.fs`                                |
+| `Round7Tests.fs`                    | split: `Circuit/NestedCircuit.Tests.fs`, `Storage/Simd.Tests.fs`, `Infra/ChaosEnv.Tests.fs`, `Circuit/Plan.Tests.fs`                |
+| `Round8Tests.fs`                    | split: `Storage/Spine.Selector.Tests.fs`, `Storage/Checkpoint.Tests.fs`, `Algebra/ZSet.Overflow.Tests.fs`, `Runtime/Shard.Tests.fs` |
+| `Round17Tests.fs`                   | split: `Storage/FastCdc.Tests.fs`, `Storage/Merkle.Tests.fs`, `Sketches/Bloom.Tests.fs`, `Operators/ResidualMax.Tests.fs`           |
+| `MathInvariantTests.fs`             | `Properties/Math.Invariants.Tests.fs`                                                                                               |
+| `ConcurrencyHarness.fs`             | `_Support/ConcurrencyHarness.fs`                                                                                                    |
+| `ThreadSafetyTests.fs`              | `Runtime/Concurrency.Tests.fs`                                                                                                      |
+| `PlanBranchTests.fs`                | `Circuit/Plan.Branches.Tests.fs`                                                                                                    |
+| `TlcRunnerTests.fs`                 | `Formal/Tlc.Runner.Tests.fs`                                                                                                        |
+| `InfoTheoreticSharderClaimTests.fs` | `Formal/Sharder.InfoTheoretic.Tests.fs`                                                                                             |
 
 ## 5. Rules for new test files
 
@@ -134,7 +134,7 @@ Ten top-level folders, each with 3–7 files. Each filename names a module in
   wildcards disallowed — we list explicitly, one folder per `ItemGroup`.
 - **Churn.** 28 renames is one PR, reviewed as a pure move. No test bodies
   change; `git log --follow` tracks history. The `.fsproj` is the only file
-  whose *content* changes.
+  whose _content_ changes.
 - **IDE navigation.** VS Code / Rider / Ionide all recurse; tree-view
   becomes better, not worse.
 
@@ -142,7 +142,7 @@ Ten top-level folders, each with 3–7 files. Each filename names a module in
 
 1. Create empty folders. No build change. (commit 1)
 2. Move `ConcurrencyHarness.fs` → `_Support/`; update `.fsproj`; `dotnet
-   test`. (commit 2)
+test`. (commit 2)
 3. Move the **already-well-named** files (ZSet, Circuit, Aggregate, Window,
    Incremental, Fuzz, Determinism, Allocation, PlanBranch, TlcRunner,
    InfoTheoreticSharder, FormalVerification, MathInvariant, ThreadSafety,

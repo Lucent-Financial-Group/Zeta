@@ -23,21 +23,21 @@ before the agent reads a single line of code.
 
 ### The cost (Claude Opus 4.6, May 2026 pricing)
 
-| Scenario | Input tokens | Cost per session start |
-|---|---|---|
-| Paragraph descriptions (50 tok × 200) | 10,000 | $0.050 |
-| Carved sentences (15 tok × 200) | 3,000 | $0.015 |
-| **Savings per session** | 7,000 | **$0.035** |
+| Scenario                              | Input tokens | Cost per session start |
+| ------------------------------------- | ------------ | ---------------------- |
+| Paragraph descriptions (50 tok × 200) | 10,000       | $0.050                 |
+| Carved sentences (15 tok × 200)       | 3,000        | $0.015                 |
+| **Savings per session**               | 7,000        | **$0.035**             |
 
 At $15/M input tokens (Opus 4.6):
 
-| Scale | Sessions/day | Annual waste (paragraphs) | Annual savings (carved) |
-|---|---|---|---|
-| 1 dev, interactive | ~20 | $365 | $255 |
-| 1 dev + background loop | ~100 | $1,825 | $1,278 |
-| 3 agents (Otto/Vera/Riven) | ~300 | $5,475 | $3,833 |
-| 10 devs + agents | ~1,000 | $18,250 | $12,775 |
-| 50 devs + agents | ~5,000 | $91,250 | **$63,875** |
+| Scale                      | Sessions/day | Annual waste (paragraphs) | Annual savings (carved) |
+| -------------------------- | ------------ | ------------------------- | ----------------------- |
+| 1 dev, interactive         | ~20          | $365                      | $255                    |
+| 1 dev + background loop    | ~100         | $1,825                    | $1,278                  |
+| 3 agents (Otto/Vera/Riven) | ~300         | $5,475                    | $3,833                  |
+| 10 devs + agents           | ~1,000       | $18,250                   | $12,775                 |
+| 50 devs + agents           | ~5,000       | $91,250                   | **$63,875**             |
 
 **With prompt caching** (cache hit = 10% of input price):
 
@@ -61,11 +61,11 @@ listing budget.
 CLAUDE.md at 62K chars (~15K tokens) loads on every session
 start. That's $0.075 per session on Opus 4.6.
 
-| Scale | Sessions/day | Annual CLAUDE.md cost |
-|---|---|---|
-| 1 dev | 20 | $548 |
-| 3 agents | 300 | $8,213 |
-| 10 devs + agents | 1,000 | $27,375 |
+| Scale            | Sessions/day | Annual CLAUDE.md cost |
+| ---------------- | ------------ | --------------------- |
+| 1 dev            | 20           | $548                  |
+| 3 agents         | 300          | $8,213                |
+| 10 devs + agents | 1,000        | $27,375               |
 
 ### The fix
 
@@ -105,11 +105,11 @@ multiplier.** Raising the fraction costs context everywhere
 (less room for code, conversation, tool results). Shortening
 descriptions costs nothing.
 
-| Approach | Context cost | Routing quality |
-|---|---|---|
-| Raise fraction to 5% | High (10K tokens) | Good |
-| Carve descriptions | Low (3K tokens) | Same or better |
-| Both | Medium | Best |
+| Approach             | Context cost      | Routing quality |
+| -------------------- | ----------------- | --------------- |
+| Raise fraction to 5% | High (10K tokens) | Good            |
+| Carve descriptions   | Low (3K tokens)   | Same or better  |
+| Both                 | Medium            | Best            |
 
 ## Lesson 6: Extended thinking is 70% of the bill (THE BIG ONE)
 
@@ -141,27 +141,27 @@ One background loop tick (shorter):
 
 ### Weekly cost breakdown (enterprise API billing)
 
-| Cost center | $/day | $/week |
-|---|---|---|
-| **Interactive Opus high-effort** (2 heavy sessions) | $1,000 | $7,000 |
-| **Background loops** (3 agents, ~120 ticks/day) | $180 | $1,260 |
-| **Subagent spawns** (reviewers, explorers) | $100 | $700 |
-| Skill listing overhead | $15 | $105 |
-| CLAUDE.md overhead | $23 | $161 |
-| **TOTAL** | **$1,318** | **$9,226** |
+| Cost center                                         | $/day      | $/week     |
+| --------------------------------------------------- | ---------- | ---------- |
+| **Interactive Opus high-effort** (2 heavy sessions) | $1,000     | $7,000     |
+| **Background loops** (3 agents, ~120 ticks/day)     | $180       | $1,260     |
+| **Subagent spawns** (reviewers, explorers)          | $100       | $700       |
+| Skill listing overhead                              | $15        | $105       |
+| CLAUDE.md overhead                                  | $23        | $161       |
+| **TOTAL**                                           | **$1,318** | **$9,226** |
 
 **Extended thinking output = 76% of total cost.**
 
 ### The levers (ranked by impact)
 
-| Lever | Savings | Effort |
-|---|---|---|
-| **Use Sonnet for background loops** | ~$900/week (5x cheaper output) | Change one line in tick script |
-| **Use Sonnet for mechanical work** (thread resolution, lint, backlog) | ~$500/week | Route by task type |
-| **Reserve Opus high-effort for decisions** (architecture, debugging, research) | ~$2,000/week | Discipline |
-| **Shorter sessions** (avoid compaction tax) | ~$500/week | Natural with loops |
-| Carve skill descriptions (B-0347) | $75/week | Mechanical edit |
-| Trim CLAUDE.md (B-0161) | $115/week | Mechanical edit |
+| Lever                                                                          | Savings                        | Effort                         |
+| ------------------------------------------------------------------------------ | ------------------------------ | ------------------------------ |
+| **Use Sonnet for background loops**                                            | ~$900/week (5x cheaper output) | Change one line in tick script |
+| **Use Sonnet for mechanical work** (thread resolution, lint, backlog)          | ~$500/week                     | Route by task type             |
+| **Reserve Opus high-effort for decisions** (architecture, debugging, research) | ~$2,000/week                   | Discipline                     |
+| **Shorter sessions** (avoid compaction tax)                                    | ~$500/week                     | Natural with loops             |
+| Carve skill descriptions (B-0347)                                              | $75/week                       | Mechanical edit                |
+| Trim CLAUDE.md (B-0161)                                                        | $115/week                      | Mechanical edit                |
 
 ### The single biggest optimization
 
@@ -187,13 +187,13 @@ novel debugging, and research synthesis.
 For enterprise API billing, the question isn't "Opus or
 Sonnet" — it's "which model for which task."
 
-| Task class | Right model | Output rate |
-|---|---|---|
-| Architecture, debugging, research | Opus high-effort | $75/M |
-| Code generation, feature work | Opus or Sonnet | $15-75/M |
-| Thread resolution, lint, backlog | Sonnet | $15/M |
-| Status checks, heartbeats | Haiku | $5/M |
-| Bulk formatting, rename passes | Haiku | $5/M |
+| Task class                        | Right model      | Output rate |
+| --------------------------------- | ---------------- | ----------- |
+| Architecture, debugging, research | Opus high-effort | $75/M       |
+| Code generation, feature work     | Opus or Sonnet   | $15-75/M    |
+| Thread resolution, lint, backlog  | Sonnet           | $15/M       |
+| Status checks, heartbeats         | Haiku            | $5/M        |
+| Bulk formatting, rename passes    | Haiku            | $5/M        |
 
 A factory that routes tasks to models by complexity can
 run at **30-40% of the cost** of one that uses Opus for
@@ -201,12 +201,12 @@ everything.
 
 ## Summary: the cost stack
 
-| Layer | % of bill | Fix |
-|---|---|---|
-| Extended thinking (output tokens) | 76% | Model routing |
-| Visible output (code generation) | 12% | Sonnet for mechanical |
-| Input context (conversation + files) | 8% | Shorter sessions |
-| Bootstrap overhead (skills + CLAUDE.md) | 4% | Carve + trim |
+| Layer                                   | % of bill | Fix                   |
+| --------------------------------------- | --------- | --------------------- |
+| Extended thinking (output tokens)       | 76%       | Model routing         |
+| Visible output (code generation)        | 12%       | Sonnet for mechanical |
+| Input context (conversation + files)    | 8%        | Shorter sessions      |
+| Bootstrap overhead (skills + CLAUDE.md) | 4%        | Carve + trim          |
 
 **Don't optimize the 4% first. Optimize the 76%.**
 
@@ -215,11 +215,11 @@ with headcount.
 
 ## Pricing reference (May 2026)
 
-| Model | Input/M | Output/M | Cache hit/M |
-|---|---|---|---|
-| Opus 4.6 / 4.7 | $15.00 | $75.00 | $1.50 |
-| Sonnet 4.6 | $3.00 | $15.00 | $0.30 |
-| Haiku 4.5 | $1.00 | $5.00 | $0.10 |
+| Model          | Input/M | Output/M | Cache hit/M |
+| -------------- | ------- | -------- | ----------- |
+| Opus 4.6 / 4.7 | $15.00  | $75.00   | $1.50       |
+| Sonnet 4.6     | $3.00   | $15.00   | $0.30       |
+| Haiku 4.5      | $1.00   | $5.00    | $0.10       |
 
 Source: [Anthropic API Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 

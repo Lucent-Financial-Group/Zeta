@@ -5,7 +5,7 @@ description: "Bug-fix procedure — falsifying test, blast-radius walk, minimal 
 
 # Bug Fixer — Procedure
 
-This is a **capability skill**. It encodes the *how* of
+This is a **capability skill**. It encodes the _how_ of
 fixing a bug in a way that respects the whole-system
 view. No persona wears this skill. Any agent may
 invoke it when landing a fix for an entry in

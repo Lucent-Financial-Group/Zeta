@@ -22,12 +22,12 @@ Scheduled absorb of Codex's **first completed peer-agent deep-review** — 4 con
 
 ## Four reports absorbed
 
-| # | Filename | Focus |
-|---|---|---|
-| 1 | `deep-factory-review-2026-04-24.md` | Governance / hygiene / process-entropy |
-| 2 | `deep-system-review-2026-04-24.md` (v1) | Code / tests / contracts |
-| 3 | `deep-repo-review-2026-04-24.md` | Architecture / process / security |
-| 4 | `deep-system-review-2026-04-24.md` (v2) | Durability / recursive / strategic |
+| #   | Filename                                | Focus                                  |
+| --- | --------------------------------------- | -------------------------------------- |
+| 1   | `deep-factory-review-2026-04-24.md`     | Governance / hygiene / process-entropy |
+| 2   | `deep-system-review-2026-04-24.md` (v1) | Code / tests / contracts               |
+| 3   | `deep-repo-review-2026-04-24.md`        | Architecture / process / security      |
+| 4   | `deep-system-review-2026-04-24.md` (v2) | Durability / recursive / strategic     |
 
 Convergent findings across 4 independent passes = high signal.
 
@@ -49,7 +49,7 @@ Convergent findings across 4 independent passes = high signal.
 
 ## Codex one-liner preserved
 
-> *"Zeta is closer to a research operating system than a standard code repository. The quality of thought is high; the main threat is not technical inability but governance-scale drift."*
+> _"Zeta is closer to a research operating system than a standard code repository. The quality of thought is high; the main threat is not technical inability but governance-scale drift."_
 
 ## Factory discipline preserved
 
@@ -75,6 +75,7 @@ Convergent findings across 4 independent passes = high signal.
 Adds an Aurora-layer absorb document capturing four convergent Codex deep-review reports from 2026-04-24, intended as a research/provenance artifact for later operationalization.
 
 **Changes:**
+
 - Introduces a new Aurora archive/absorb doc summarizing convergent P0/P1 findings and strategic recommendations from four Codex reviews.
 - Records remediation paths, non-authorization boundaries, and a cross-reference list to related audits/docs/memories.
 
@@ -85,6 +86,7 @@ Adds an Aurora-layer absorb document capturing four convergent Codex deep-review
 **@copilot-pull-request-reviewer** (2026-04-24T10:45:05Z):
 
 P1: The report table lists Codex filenames under `docs/research/...`, but those files don’t exist in this repo. Using repo-relative paths here looks like link-rot/confuses readers into thinking the files should be present. Suggest changing these to plain filenames (or explicitly mark them as Codex-side artifacts not landed in-repo) and avoid `docs/...`-prefixed paths unless they resolve.
+
 ```suggestion
 reported `make_pr` tool invocation). Filenames below are
 Codex-side artifact names as reported in that drop, not
@@ -110,6 +112,7 @@ or consolidate.
 **@copilot-pull-request-reviewer** (2026-04-24T10:45:05Z):
 
 P1: This cross-reference points at `memory/project_codex_first_deep_review_4_reports_convergent_findings_pending_dedicated_absorb_otto_189_2026_04_24.md`, but there is no such file under `memory/` in the repo. Either add the referenced memory file in this PR or update the reference to an existing in-repo memory/doc so readers can follow it.
+
 ```suggestion
 - `docs/aurora/2026-04-24-codex-4-report-first-completed-
   peer-review-deep-system-factory-repo-audit.md` (current
@@ -122,6 +125,7 @@ P1: This cross-reference points at `memory/project_codex_first_deep_review_4_rep
 **@copilot-pull-request-reviewer** (2026-04-24T10:45:06Z):
 
 P2: `memory/feedback_peer_harness_progression_*` isn’t a concrete path a reader can open, and there are multiple similarly-named files. Prefer listing the specific filenames (or pointing at `memory/MEMORY.md` entries) so the cross-reference is actionable.
+
 ```suggestion
 - `memory/MEMORY.md` (see the Otto-86 peer-harness
   progression entries covering the 4-stage arc).
@@ -132,6 +136,7 @@ P2: `memory/feedback_peer_harness_progression_*` isn’t a concrete path a reade
 **@copilot-pull-request-reviewer** (2026-04-24T10:45:06Z):
 
 P0: This doc cites “GOVERNANCE §33” as if it exists, but `GOVERNANCE.md` currently has rules numbered 1–32 and contains no §33. Please update this reference to the actual canonical source of the archive-header requirement (or land the governance rule in the same change) to avoid pointing readers at a nonexistent section.
+
 ```suggestion
 - External-conversation archive-header convention —
   this doc follows the four-field header.
@@ -148,15 +153,17 @@ P0: This new doc uses direct contributor name attribution (e.g., “Aaron”). R
 ### @chatgpt-codex-connector (2026-04-24T10:43:53Z)
 
 ### Summary
-* Reviewed the trigger and PR context; this appears to be an informational absorb summary for PR #354 follow-up, not a request for new code/doc edits.
-* Verified the repository already contains the absorb document matching the trigger’s content (milestone framing, convergent P0 findings, and advisory/ADR posture), so no additional patch was needed in this branch. [docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.mdL1-L44](https://github.com/Lucent-Financial-Group/Zeta/blob/e11379ab67a817499294e18b26f10bc8cdcddd7d/docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.md#L1-L44) [docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.mdL131-L220](https://github.com/Lucent-Financial-Group/Zeta/blob/e11379ab67a817499294e18b26f10bc8cdcddd7d/docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.md#L131-L220)
-* Because no files were changed, I did **not** create a commit and did **not** call `make_pr` (per your constraint).
+
+- Reviewed the trigger and PR context; this appears to be an informational absorb summary for PR #354 follow-up, not a request for new code/doc edits.
+- Verified the repository already contains the absorb document matching the trigger’s content (milestone framing, convergent P0 findings, and advisory/ADR posture), so no additional patch was needed in this branch. [docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.mdL1-L44](https://github.com/Lucent-Financial-Group/Zeta/blob/e11379ab67a817499294e18b26f10bc8cdcddd7d/docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.md#L1-L44) [docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.mdL131-L220](https://github.com/Lucent-Financial-Group/Zeta/blob/e11379ab67a817499294e18b26f10bc8cdcddd7d/docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.md#L131-L220)
+- Because no files were changed, I did **not** create a commit and did **not** call `make_pr` (per your constraint).
 
 **Testing**
-* ✅ `git status --short`
-* ✅ `git branch --show-current`
-* ✅ `git log --oneline -5`
-* ✅ `git show --name-only --pretty=format:'%h %s' HEAD`
-* ✅ `nl -ba docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.md | sed -n '1,220p'`
 
- [View task →](https://chatgpt.com/s/cd_69eb48f424d481918b2a1d8428a1fdc2)
+- ✅ `git status --short`
+- ✅ `git branch --show-current`
+- ✅ `git log --oneline -5`
+- ✅ `git show --name-only --pretty=format:'%h %s' HEAD`
+- ✅ `nl -ba docs/aurora/2026-04-24-codex-4-report-first-completed-peer-review-deep-system-factory-repo-audit.md | sed -n '1,220p'`
+
+[View task →](https://chatgpt.com/s/cd_69eb48f424d481918b2a1d8428a1fdc2)

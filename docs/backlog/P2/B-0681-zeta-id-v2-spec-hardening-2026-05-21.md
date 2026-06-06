@@ -100,7 +100,7 @@ add a discriminator bit, or pick one. v2 should pick.
 - Cross-verification harness extended to test v2 + v1 vectors
   side-by-side
 - Empirical: collision probability table at typical generation rates
-  + benchmark showing HLC monotonicity holds within a millisecond
+  - benchmark showing HLC monotonicity holds within a millisecond
 
 ## Composes with
 

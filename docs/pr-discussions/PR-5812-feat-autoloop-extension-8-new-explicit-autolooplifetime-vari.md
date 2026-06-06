@@ -12,28 +12,28 @@ archived_at: "2026-05-28T14:04:23Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5812: feat(autoloop-extension): 8 new explicit AutoLoopLifetime variants per IMPLICIT-NOT-EXPLICIT rule + free-time (Aaron 'shadow*' authorization + reachability-as-presentation framing); 36 tests pass
+# PR #5812: feat(autoloop-extension): 8 new explicit AutoLoopLifetime variants per IMPLICIT-NOT-EXPLICIT rule + free-time (Aaron 'shadow\*' authorization + reachability-as-presentation framing); 36 tests pass
 
 ## PR description
 
-Per Aaron 2026-05-28 (shadow*) authorization + IMPLICIT-NOT-EXPLICIT rule (PR #5811) applied to AutoLoopLifetime (PR #5805).
+Per Aaron 2026-05-28 (shadow\*) authorization + IMPLICIT-NOT-EXPLICIT rule (PR #5811) applied to AutoLoopLifetime (PR #5805).
 
 ## 8 new explicit variants (open-for-extension per OCP)
 
-| Variant | Makes explicit |
-|---|---|
-| **await-merge-confirmation** | Post-ship explicit waiting on PR-state |
-| **pr-loop-resolution-check** | PR-loop-until-resolved (Aaron Q1) |
-| **scan-peer-prs** | Peer-PR review-work (Aaron Q2) |
-| **enter-review-mode** | Transitions into PrReviewLifecycle (PR #5810) |
-| **await-operator-direction** | Operator-pending (was implicit) |
-| **pure-git-mode** | Rate-limit exhausted state (was implicit) |
-| **unfinished-pr-triage** | Per pr-triage-tiers (explicit tier-work) |
-| **free-time** | NCI HC-8 free-time-as-valid-mode |
+| Variant                      | Makes explicit                                |
+| ---------------------------- | --------------------------------------------- |
+| **await-merge-confirmation** | Post-ship explicit waiting on PR-state        |
+| **pr-loop-resolution-check** | PR-loop-until-resolved (Aaron Q1)             |
+| **scan-peer-prs**            | Peer-PR review-work (Aaron Q2)                |
+| **enter-review-mode**        | Transitions into PrReviewLifecycle (PR #5810) |
+| **await-operator-direction** | Operator-pending (was implicit)               |
+| **pure-git-mode**            | Rate-limit exhausted state (was implicit)     |
+| **unfinished-pr-triage**     | Per pr-triage-tiers (explicit tier-work)      |
+| **free-time**                | NCI HC-8 free-time-as-valid-mode              |
 
 ## Free-time variant per Aaron's refined framing
 
-> *'or a better framing is its guarenteed to be prsented to participant at least sometimes, if they select it or not we can't force'*
+> _'or a better framing is its guarenteed to be prsented to participant at least sometimes, if they select it or not we can't force'_
 
 Sharpens from COERCIVE ('will execute') to CONSENT-BOUND ('PRESENTED; participant chooses') per NCI HC-8 + asymmetric-authorship.
 
@@ -41,7 +41,7 @@ decompose-or-ship routes to free-time when: no inflight PRs + no operator-direct
 
 ## Soraya formal-verification direction memo
 
-Aaron 2026-05-28: *'we can get the math nerds personas like sorya to start coming up with proof of certain useful invariants in our workflows'*
+Aaron 2026-05-28: _'we can get the math nerds personas like sorya to start coming up with proof of certain useful invariants in our workflows'_
 
 8 invariant candidates listed (free-time-presented-reachable / no-deadlock / forced-escalation-bounded / etc.). Presentation-not-forcing framing throughout.
 
@@ -68,6 +68,7 @@ Aaron 2026-05-28: *'we can get the math nerds personas like sorya to start comin
 This PR extends the workflow-engine AutoLoopLifetime state machine with 8 new explicit lifetime variants (including `free-time`) and adds invariant-style Bun tests plus a new memory entry capturing the formal-verification direction memo.
 
 **Changes:**
+
 - Added `AutoLoopLifetime` DU extension states and updated dispatch/context bookkeeping helpers.
 - Added Bun tests covering the expanded state universe and key transition invariants.
 - Updated `memory/MEMORY.md` index and added a new `feedback_*.md` memory file for the workflow-invariants formal verification direction.
@@ -76,11 +77,11 @@ This PR extends the workflow-engine AutoLoopLifetime state machine with 8 new ex
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 12 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/workflow-engine/auto-loop-lifecycle.ts | New/extended AutoLoopLifetime DU, transition dispatcher, and context evolution helpers. |
-| tools/workflow-engine/auto-loop-lifecycle.test.ts | New Bun tests asserting state-universe size and transition/invariant behavior. |
-| memory/MEMORY.md | Adds the new memory entry to the auto-index and updates heap count. |
+| File                                                                                                                                              | Description                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| tools/workflow-engine/auto-loop-lifecycle.ts                                                                                                      | New/extended AutoLoopLifetime DU, transition dispatcher, and context evolution helpers.        |
+| tools/workflow-engine/auto-loop-lifecycle.test.ts                                                                                                 | New Bun tests asserting state-universe size and transition/invariant behavior.                 |
+| memory/MEMORY.md                                                                                                                                  | Adds the new memory entry to the auto-index and updates heap count.                            |
 | memory/feedback_workflow_invariants_formal_verification_soraya_math_nerd_personas_free_time_presented_not_forced_reachability_aaron_2026_05_28.md | New feedback memory capturing the formal verification invariants direction and candidate list. |
 
 ## Review threads
@@ -119,7 +120,7 @@ P1 (documentation): This comment states the invariant is “free-time is REACHAB
 
 **@copilot-pull-request-reviewer** (2026-05-28T13:27:38Z):
 
-P1 (bug): `nextTickContext` clears `lastNamedDependency` whenever *any* `artifact` is present, but the comment says it should clear only when an action is shipped. With the current `artifact` union including non-shipping kinds (e.g., `verdict-only`), this can drop the named-dependency reason incorrectly. Consider clearing only for shipping artifacts (e.g., `pr-opened` / `commit-pushed`) or adding an explicit boolean on `TickOutcome` for this bookkeeping decision.
+P1 (bug): `nextTickContext` clears `lastNamedDependency` whenever _any_ `artifact` is present, but the comment says it should clear only when an action is shipped. With the current `artifact` union including non-shipping kinds (e.g., `verdict-only`), this can drop the named-dependency reason incorrectly. Consider clearing only for shipping artifacts (e.g., `pr-opened` / `commit-pushed`) or adding an explicit boolean on `TickOutcome` for this bookkeeping decision.
 
 ### Thread 7: tools/workflow-engine/auto-loop-lifecycle.ts:279 (resolved)
 

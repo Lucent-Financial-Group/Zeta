@@ -4,10 +4,12 @@ Operational status: research-grade conversation absorb; not operational policy.
 Non-fusion disclaimer: preserves framing as alignment research substrate only; no new policy promoted.
 
 ---
+
 title: "Background Service as AI Persistence Layer"
 date: 2026-05-08
 status: research-grade
 source: "Copilot-authored root-checkout note, preserved by Codex/Vera"
+
 ---
 
 # Background Service as AI Persistence Layer

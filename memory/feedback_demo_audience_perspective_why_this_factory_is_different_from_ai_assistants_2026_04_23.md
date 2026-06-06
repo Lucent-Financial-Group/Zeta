@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 directive on demo framing. Most potential adopte
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Demo framing — from the audience's perspective
 
 ## Verbatim (2026-04-23)
@@ -16,11 +17,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > humans can make changes in an uptime safe way, this is a test
 > releguated to huamns then if we get right AI could actuaaly
 > do much better, humans are not great at 0 down time changes
-> to a live production system.  So think about what companies
+> to a live production system. So think about what companies
 > know about whats possible with AI agents currently and why
 > this software factory is not that and how we are diferent and
 > better and why they should choose us, how will it help them
-> forward their objects.  I asid all this from a company poing
+> forward their objects. I asid all this from a company poing
 > of view becaseu that's who i care about right now but this
 > is also true of anyone project even non company related like
 > open source or individuate contribute pojrects too.
@@ -34,14 +35,14 @@ They do not yet know that:
 
 1. A fully-autonomous agent factory can own the whole coding +
    devops pipeline end-to-end.
-2. That factory can hold *good* DORA metrics — deployment
+2. That factory can hold _good_ DORA metrics — deployment
    frequency, lead time, change failure rate, MTTR — at or
    better than human-only teams.
 3. Humans are not actually great at zero-downtime production
    changes. What makes humans safe is process discipline (code
    review, CI gates, canaries, runbooks). AI can follow and
    enforce that same discipline.
-4. AI done right does *much better* on repetitive rigor than
+4. AI done right does _much better_ on repetitive rigor than
    humans can sustainably maintain — which is where production-
    change safety lives.
 
@@ -62,9 +63,9 @@ priors:
   Refuted by: the factory's output is measurable — DORA
   metrics, live-lock audit, provenance + lesson-permanence
   discipline, alignment observability. Production posture is
-  the *default*, not the exception.
+  the _default_, not the exception.
 - **"We need human-in-the-loop on every change for safety."**
-  Refuted by: humans are in the loop *as maintainers* (scope,
+  Refuted by: humans are in the loop _as maintainers_ (scope,
   priority, ratification) — not as bottleneck reviewers. The
   factory catches what humans usually catch (and more), faster,
   and maintains lessons across incidents the way humans often
@@ -106,22 +107,22 @@ the differentiators:
   with whatever came after.
 - **Generic applicability.** The factory isn't a CRM product,
   or a DevOps product, or a reviewer product. It's a
-  software-factory primitive that applies to *any* software
+  software-factory primitive that applies to _any_ software
   work — company, OSS, individual project.
 
 ## How to apply to the demo
 
-- **Factory-demo README / landing doc** leads with *"Most AI
+- **Factory-demo README / landing doc** leads with _"Most AI
   coding tools assist developers. This factory replaces the
   whole pipeline, maintaining better DORA than human-only teams
-  on continuous deploys. Here's why that's possible."* Then the
+  on continuous deploys. Here's why that's possible."_ Then the
   working CRM demo. Then the mechanism walkthrough.
 - **Demo narrative (video / walkthrough)** shows the factory
   doing something a company would typically consider "too
   risky for autonomous agents" — a live-production-style change
   with rollback-safe algebra, specialist reviews, and DORA-
-  metric measurement live. The effect is *"oh — this is not
-  what I thought AI agent tools do."*
+  metric measurement live. The effect is _"oh — this is not
+  what I thought AI agent tools do."_
 - **"How will it help them?"** framing: name concrete outcomes
   the adopting org gains. Deployment frequency up. Lead time
   down. Change failure rate measured and decreasing. MTTR
@@ -148,17 +149,17 @@ the differentiators:
   focused.
 - Not ServiceTitan-specific — applies to any audience
   (companies, OSS projects, individual contributors) per
-  Aaron's *"this is also true of anyone project"* explicit
+  Aaron's _"this is also true of anyone project"_ explicit
   statement.
 
 ## Composes with
 
 - `memory/feedback_open_source_repo_demos_stay_generic_not_company_specific_2026_04_23.md`
-  (generic framing — this memory deepens the *audience*
+  (generic framing — this memory deepens the _audience_
   lens on top of the generic rule)
 - `memory/feedback_servicetitan_demo_sells_software_factory_not_zeta_database_2026_04_23.md`
-  (factory-not-database pitch — this memory names *what
-  the factory IS* from the audience's side)
+  (factory-not-database pitch — this memory names _what
+  the factory IS_ from the audience's side)
 - `memory/feedback_lesson_permanence_is_how_we_beat_arc3_and_dora_2026_04_23.md`
   (lesson-permanence as DORA-beating mechanism — referenced
   here as the "why we are different" differentiator)

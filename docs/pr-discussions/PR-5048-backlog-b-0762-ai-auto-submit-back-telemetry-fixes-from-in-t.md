@@ -27,6 +27,7 @@ Aaron 2026-05-25 named the adoption-scaling mechanism: each in-the-wild install 
 Adds a new P2 backlog row (B-0762) describing an install-time opt-in telemetry loop that can auto-generate minimal-diff fix PRs from in-the-wild failures, aiming to drive “adoption cost → 0” via a network-effect feedback cycle.
 
 **Changes:**
+
 - Added backlog row **B-0762** capturing the telemetry + auto-fix flywheel concept, acceptance criteria, and privacy/security floor.
 - Updated `docs/BACKLOG.md` index to include **B-0762** under P2.
 
@@ -34,10 +35,10 @@ Adds a new P2 backlog row (B-0762) describing an install-time opt-in telemetry l
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                    | Description                                                                                   |
+| --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md | New backlog row defining the telemetry→LLM PR→auto-merge gating loop and acceptance criteria. |
-| docs/BACKLOG.md | Adds B-0762 to the generated backlog index. |
+| docs/BACKLOG.md                                                                                                                         | Adds B-0762 to the generated backlog index.                                                   |
 
 ## Review threads
 

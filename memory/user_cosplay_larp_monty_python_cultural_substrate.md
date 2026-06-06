@@ -6,14 +6,14 @@ type: user
 
 Aaron disclosed (2026-04-19):
 
-> *"i like oosplay and like the larping and all
+> _"i like oosplay and like the larping and all
 > that stuff it's uber dorky but i'm a member of
 > the walks really funny club and i write/watch
-> python, tis but a flesh wound jamie"*
+> python, tis but a flesh wound jamie"_
 
 Dropped immediately after naming the CPT memory
 a "spacetime anchor," so this disclosure is
-*inside* the role-play-licensing frame it
+_inside_ the role-play-licensing frame it
 describes.
 
 ## Five packed signals
@@ -42,13 +42,13 @@ describes.
 ### 2. "Uber dorky" as peer-register self-labelling
 
 Aaron self-labels, no hedge, no apology:
-*"it's uber dorky but"*. The "but" is *not*
+_"it's uber dorky but"_. The "but" is _not_
 defensive; it is the conversational marker
 preceding the Python-club declaration. He is
 not apologising for it — he is announcing it
 with the wonder-register from
 `user_childhood_wonder_register.md`. The
-"uber dorky" self-label is a *flag* in
+"uber dorky" self-label is a _flag_ in
 Aaron's cultural register, not a confession.
 
 Composes with:
@@ -98,7 +98,7 @@ Cultural weight:
 - Python programming language (Guido van
   Rossum, 1991). Guido named it after Monty
   Python's Flying Circus explicitly (see
-  *Python Tutorial* 1.4: "I needed a name that
+  _Python Tutorial_ 1.4: "I needed a name that
   was short, unique, and slightly mysterious.
   ... I happened to be reading the published
   scripts from 'Monty Python's Flying Circus,'
@@ -109,9 +109,9 @@ Cultural weight:
 
 **Watch**:
 
-- Monty Python the comedy — *Flying Circus*,
-  *Holy Grail*, *Life of Brian*, *Meaning of
-  Life*, live shows.
+- Monty Python the comedy — _Flying Circus_,
+  _Holy Grail_, _Life of Brian_, _Meaning of
+  Life_, live shows.
 
 The slash is load-bearing: Aaron is declaring
 both. The dual-pun is itself Monty-Python-style
@@ -121,7 +121,7 @@ register when appropriate.
 
 ### 5. "'Tis but a flesh wound" — Holy Grail Black Knight
 
-*Monty Python and the Holy Grail* (1975), the
+_Monty Python and the Holy Grail_ (1975), the
 Black Knight scene. King Arthur cuts off the
 Black Knight's arm; the Black Knight declares
 "'Tis but a flesh wound." Arthur cuts off the
@@ -133,23 +133,23 @@ Cultural meaning inside the fanbase:
 - Absurdist refusal to concede.
 - Satire of heroic / tragic posture.
 - Catchphrase for performative denial
-  deployed *for comedy* not for real
+  deployed _for comedy_ not for real
   denial.
 
 Aaron quoting it mid-disclosure is
 register-marking: the conversation has
 comedic-absurd register available whenever
 the frame calls for it. The Black Knight
-quote *is* the register-switch itself.
+quote _is_ the register-switch itself.
 
 Composes with:
 
 - `user_real_time_lectio_divina_emit_side.md`
   win-without-fighting via words-not-swords —
-  the Black Knight is the *anti-pattern*
+  the Black Knight is the _anti-pattern_
   comedy (all swords, no words, loses anyway).
 - `user_probabilistic_never_zero_cognition.md`
-  — "'tis but a flesh wound" is the *parody*
+  — "'tis but a flesh wound" is the _parody_
   of never-collapse-to-zero: maintaining
   P > 0 of "winning" when limbs are gone is
   comic, not heroic.
@@ -162,7 +162,7 @@ Composes with:
 
 ### 6. "jamie" — preserved verbatim, ambiguous
 
-The disclosure ends with *"jamie"*. Candidate
+The disclosure ends with _"jamie"_. Candidate
 readings, held without collapse
 (`user_probabilistic_never_zero_cognition.md`):
 
@@ -187,8 +187,8 @@ verbatim quote when citing.
 
 This memory's load-bearing function is not
 cataloguing Aaron's hobbies. It is
-*disclosing the cultural substrate he operates
-in*, which licenses agents to:
+_disclosing the cultural substrate he operates
+in_, which licenses agents to:
 
 - **Use Python / Monty Python register** when
   the frame calls for it. Comedic absurd
@@ -197,7 +197,7 @@ in*, which licenses agents to:
 - **Recognise cosplay / LARP framing** when
   Aaron deploys it. If he says "I'm in the
   Ilyana role right now," the cosplay /
-  persona-run register is *native*, not
+  persona-run register is _native_, not
   metaphorical. The factory's persona roster
   is structurally closer to a LARP character
   sheet than to a corporate org chart.
@@ -216,7 +216,7 @@ in*, which licenses agents to:
    and the μένω framing
    (`user_meno_persist_endure_correct_compact.md`),
    Aaron's cosplay / LARP / Python membership
-   is *his* register, not a factory default.
+   is _his_ register, not a factory default.
    Factory artefacts do not adopt Monty-Python
    voice unilaterally.
 2. **Register-matching is legitimate.** When
@@ -233,7 +233,7 @@ in*, which licenses agents to:
    none.
 4. **Do not correct Aaron's dork self-labelling.**
    He owns it. Don't reassure him "it's not
-   that dorky"; that *is* the violation. Match
+   that dorky"; that _is_ the violation. Match
    the register ("uber dorky, same") or move
    on.
 5. **LARP persona-runs get anchor labels.** If

@@ -28,7 +28,7 @@ translation.
   whether they map onto Zeta's tropical-LFP layer or need a
   separate fixpoint path.
 - Isolation-level behaviour, `SERIALIZABLE` vs `REPEATABLE
-  READ` vs `READ COMMITTED`, and how Zeta's retraction-native
+READ` vs `READ COMMITTED`, and how Zeta's retraction-native
   model relates.
 - Dialect-portability audits (a claim that "this works in
   Postgres" is not a claim about ANSI SQL).
@@ -56,7 +56,7 @@ SQL's `NULL` is **unknown**, not "empty" or "zero". Every
 translation rule has to respect:
 
 - `NULL = NULL` is `UNKNOWN`, not `TRUE`. Use `IS NOT DISTINCT
-  FROM` for null-aware equality.
+FROM` for null-aware equality.
 - `NULL AND FALSE` is `FALSE` (short-circuit wins).
 - `NULL AND TRUE` is `UNKNOWN`.
 - `NULL OR TRUE` is `TRUE`.
@@ -143,7 +143,7 @@ table.
   rollout).
 - **`docs/research/` drafts.** Forward-looking design notes on
   the SQL → operator-algebra translation live here.
-- **`openspec/specs/**`.** The SQL-frontend capability spec
+- **`openspec/specs/**`.\*\* The SQL-frontend capability spec
   (when written) will live here and gate the translation-
   rule table.
 - **`docs/PRIOR-ART-LIST.md`.** Postgres / DuckDB / Feldera /

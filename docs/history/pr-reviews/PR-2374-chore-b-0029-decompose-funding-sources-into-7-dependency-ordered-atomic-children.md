@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2374 |
-| Title | chore(B-0029): decompose funding-sources into 7 dependency-ordered atomic children |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-09T23:34:42Z |
-| Merged at | 2026-05-09T23:42:28Z |
-| Merge commit SHA | `a8a7c7c9b1803a32640241becc97849ea4f6ede0` |
-| Branch | `chore/decompose-b0029-funding-sources-2026-05-09` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2374 |
-| Changed files | 9 |
-| Additions / deletions | +429 / -7 |
+| Field                 | Value                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| Number                | 2374                                                                               |
+| Title                 | chore(B-0029): decompose funding-sources into 7 dependency-ordered atomic children |
+| Author                | `AceHack` (human)                                                                  |
+| State                 | MERGED                                                                             |
+| Created at            | 2026-05-09T23:34:42Z                                                               |
+| Merged at             | 2026-05-09T23:42:28Z                                                               |
+| Merge commit SHA      | `a8a7c7c9b1803a32640241becc97849ea4f6ede0`                                         |
+| Branch                | `chore/decompose-b0029-funding-sources-2026-05-09`                                 |
+| Base branch           | `main`                                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2374                           |
+| Changed files         | 9                                                                                  |
+| Additions / deletions | +429 / -7                                                                          |
 
 ## Description
 
@@ -46,15 +46,15 @@ B-0029.4 (B-0024 reframe) ── standalone, no blocking deps
 
 ## Child rows
 
-| ID | Title | Effort | Classification |
-|----|-------|--------|----------------|
-| B-0029.1 | Comparable OSS project funding state survey | S | research-now |
-| B-0029.2 | GitHub Sponsors + npm funding field setup | XS | buildable-after-B-0029.1 |
-| B-0029.3 | AI/substrate grants survey (Anthropic, MS, F#, .NET Foundation) | S | research-now |
-| B-0029.4 | Trading-bot prerequisite reframe — update B-0024 | XS | buildable-now |
-| B-0029.5 | Substrate-as-SaaS market validation | S | research-now |
-| B-0029.6 | IP / research-output licensing pathways survey | S | research-now |
-| B-0029.7 | Self-sustaining loop closure measurement design | M | blocked-on-.1-.2-.3-.5-.6 |
+| ID       | Title                                                           | Effort | Classification            |
+| -------- | --------------------------------------------------------------- | ------ | ------------------------- |
+| B-0029.1 | Comparable OSS project funding state survey                     | S      | research-now              |
+| B-0029.2 | GitHub Sponsors + npm funding field setup                       | XS     | buildable-after-B-0029.1  |
+| B-0029.3 | AI/substrate grants survey (Anthropic, MS, F#, .NET Foundation) | S      | research-now              |
+| B-0029.4 | Trading-bot prerequisite reframe — update B-0024                | XS     | buildable-now             |
+| B-0029.5 | Substrate-as-SaaS market validation                             | S      | research-now              |
+| B-0029.6 | IP / research-output licensing pathways survey                  | S      | research-now              |
+| B-0029.7 | Self-sustaining loop closure measurement design                 | M      | blocked-on-.1-.2-.3-.5-.6 |
 
 **Five rows are parallel-buildable-now**: B-0029.1, B-0029.3, B-0029.4, B-0029.5, B-0029.6.
 
@@ -68,15 +68,15 @@ B-0029.4 (B-0024 reframe) ── standalone, no blocking deps
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 2 |
-| Unresolved threads | 0 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 4 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 2     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 4     |
 
 ## Review threads
 
@@ -92,7 +92,7 @@ B-0029.4 (B-0024 reframe) ── standalone, no blocking deps
 
   <pre>
   `depends_on` duplicates `children` for this decomposed tracking row. Other decomposed parent rows keep `depends_on: []` and use `children:` to express the decomposition; putting all children in `depends_on` makes the parent look hard-blocked in tooling that treats `depends_on` as prerequisites (e.g., backlog audits / blocked-chain analysis). Consider leaving `depends_on: []` here and relying on `children:` (and per-child `depends_on`) to encode the ordering.
-
+  
   </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -107,7 +107,7 @@ B-0029.4 (B-0024 reframe) ── standalone, no blocking deps
 
   <pre>
   The deliverable path points at `docs/backlog/P2/B-0024-*`, but B-0024 currently lives under P3 (`docs/backlog/P3/...`). Updating this to the correct path (or using a priority-agnostic glob like `docs/backlog/**/B-0024-*.md`) will prevent confusion when someone picks up the row.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

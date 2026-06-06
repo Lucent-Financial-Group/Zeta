@@ -24,13 +24,13 @@ Operator 2026-05-26 substrate-honest observation on Kirsanov's reservoir-computi
 
 Names the universal basis-decomposition pattern \`Σ ωᵢ sᵢ(t) ≈ y(t)\` operating across 5 application domains:
 
-| Domain | Basis | Weights | Target |
-| --- | --- | --- | --- |
-| Fourier transform | sines/cosines | Fourier coefficients | arbitrary periodic signal |
-| Audio fingerprinting (Shazam-like) | spectral hash features | match-strength coefficients | song identification |
-| Itron energy disaggregation | per-device load signatures | per-device usage coefficients | total household power draw |
-| Reservoir computing (B-0839.3) | random reservoir neurons | learned readout weights | target signal (zebra finch song) |
-| **Zeta substrate-engineering** | **substrate-row content** | **operator + agent 'this composes with X' tuning** | **substantive engineering output (PRs + ratified substrate)** |
+| Domain                             | Basis                      | Weights                                            | Target                                                        |
+| ---------------------------------- | -------------------------- | -------------------------------------------------- | ------------------------------------------------------------- |
+| Fourier transform                  | sines/cosines              | Fourier coefficients                               | arbitrary periodic signal                                     |
+| Audio fingerprinting (Shazam-like) | spectral hash features     | match-strength coefficients                        | song identification                                           |
+| Itron energy disaggregation        | per-device load signatures | per-device usage coefficients                      | total household power draw                                    |
+| Reservoir computing (B-0839.3)     | random reservoir neurons   | learned readout weights                            | target signal (zebra finch song)                              |
+| **Zeta substrate-engineering**     | **substrate-row content**  | **operator + agent 'this composes with X' tuning** | **substantive engineering output (PRs + ratified substrate)** |
 
 ## The substantively-new substrate-engineering claim
 

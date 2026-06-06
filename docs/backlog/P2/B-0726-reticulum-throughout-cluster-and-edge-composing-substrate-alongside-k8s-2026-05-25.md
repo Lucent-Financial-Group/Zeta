@@ -27,11 +27,11 @@ composes_with:
 
 Aaron 2026-05-25, during the B-0725 polyglot-accelerator + edge-FPGA conversation:
 
-> *"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"*
+> _"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"_
 
 Then sharpening the answer when I sketched a K8s-in-cluster + Reticulum-past-gateway hybrid:
 
-> *"i'm thinking it will require reticiulum at the edge and in cluster"*
+> _"i'm thinking it will require reticiulum at the edge and in cluster"_
 
 That's the load-bearing distinction. Not K8s up-to-the-edge-then-Reticulum-past — Reticulum is in the cluster too, as a composing substrate that operates at a different layer than Cilium / K8s networking.
 
@@ -39,11 +39,11 @@ Composes with B-0289 (Green Lantern hardware spec — Reticulum mesh for $10-mic
 
 ## The layered substrate
 
-| Layer | Owner | Purpose | Identity |
-|-------|-------|---------|----------|
-| Pod-to-pod, Service, NetworkPolicy | Cilium / K8s | Intra-cluster networking; high-throughput; mTLS via SPIRE | K8s ServiceAccount + SPIRE SVID |
-| Cross-substrate routing | Reticulum | Identity-based addressing across physical layers; survives heterogeneous networks; works on tiny devices | Reticulum cryptographic identity (Ed25519) |
-| Physical | Ethernet, WiFi, LoRa, packet-radio, serial, USB | Whatever moves bits | (transparent) |
+| Layer                              | Owner                                           | Purpose                                                                                                  | Identity                                   |
+| ---------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| Pod-to-pod, Service, NetworkPolicy | Cilium / K8s                                    | Intra-cluster networking; high-throughput; mTLS via SPIRE                                                | K8s ServiceAccount + SPIRE SVID            |
+| Cross-substrate routing            | Reticulum                                       | Identity-based addressing across physical layers; survives heterogeneous networks; works on tiny devices | Reticulum cryptographic identity (Ed25519) |
+| Physical                           | Ethernet, WiFi, LoRa, packet-radio, serial, USB | Whatever moves bits                                                                                      | (transparent)                              |
 
 The key claim: a pod can be addressed BOTH via its K8s Service (Cilium handles routing within the cluster) AND via its Reticulum destination (Reticulum handles routing from any edge device on the mesh). Same workload, two reachability modes. The Reticulum destination doesn't replace the K8s Service — they're orthogonal addressing schemes that compose.
 
@@ -169,17 +169,17 @@ Bigger architectural decision than B-0725 polyglot-accelerator (which is increme
 
 ## Bigger picture: 4-tier federated topology
 
-Aaron 2026-05-25, expanding the picture: *"imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes"*.
+Aaron 2026-05-25, expanding the picture: _"imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes"_.
 
 This row covers **one cluster + its edge**; the 4-tier federation across cluster classes is its own design problem and lives in **B-0727** (filed as a sibling). Brief shape:
 
-| Tier | Examples | Resource profile | Role |
-|------|----------|------------------|------|
-| Cloud / hub | AWS / GCP / own datacenter | Full GPU fleet, fast internal network | Heavy training, archival, cross-region authority |
-| Community | Shared regional infra (multi-owner) | Mid-size, spare capacity from members | Burst inference, shared models, regional aggregation |
-| Home / business | The boxes Aaron is provisioning tonight | 2-NVMe + GPU + maybe Coral / NCS | Owner-controlled inference, family / SMB workloads |
-| Edge | Pi / Jetson / NUC in field | Single device, accelerator-equipped | Real-time inference, sensor aggregation, leaf-routing |
-| (Leaf) | Microcontrollers, RNode-class | $10-50 hardware, intermittent, battery | Pure data source / actuator; ride on stronger edge for routing |
+| Tier            | Examples                                | Resource profile                       | Role                                                           |
+| --------------- | --------------------------------------- | -------------------------------------- | -------------------------------------------------------------- |
+| Cloud / hub     | AWS / GCP / own datacenter              | Full GPU fleet, fast internal network  | Heavy training, archival, cross-region authority               |
+| Community       | Shared regional infra (multi-owner)     | Mid-size, spare capacity from members  | Burst inference, shared models, regional aggregation           |
+| Home / business | The boxes Aaron is provisioning tonight | 2-NVMe + GPU + maybe Coral / NCS       | Owner-controlled inference, family / SMB workloads             |
+| Edge            | Pi / Jetson / NUC in field              | Single device, accelerator-equipped    | Real-time inference, sensor aggregation, leaf-routing          |
+| (Leaf)          | Microcontrollers, RNode-class           | $10-50 hardware, intermittent, battery | Pure data source / actuator; ride on stronger edge for routing |
 
 Reticulum-throughout (this row) is what makes tier-to-tier traffic work without per-pair network engineering — each cluster announces destinations on the shared mesh; routing is identity-based; physical layer between tiers is fungible. B-0727 covers the workload-placement / trust / federation policy concerns; this row covers the protocol substrate that makes them possible.
 

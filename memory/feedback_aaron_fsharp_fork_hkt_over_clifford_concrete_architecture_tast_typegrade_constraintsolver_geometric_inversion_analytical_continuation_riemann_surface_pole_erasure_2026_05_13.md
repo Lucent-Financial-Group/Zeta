@@ -10,11 +10,11 @@ created: 2026-05-13
 **Why:** Aaron 2026-05-13 forwarded Google Search AI's
 substantive technical answers to two questions:
 
-1. *"i want to fork f# and use clifford as the bases for the
-   hkt type system"*
-2. *"i also want to like have a transformation between
+1. _"i want to fork f# and use clifford as the bases for the
+   hkt type system"_
+2. _"i also want to like have a transformation between
    geometic and type compostion with a kind of analytical
-   continuation"*
+   continuation"_
 
 The AI gave CONCRETE compiler-fork architecture + an
 analytical-continuation bridge between discrete type
@@ -36,21 +36,21 @@ continuation bridge.
 
 ### 1. Map kinds to multivector grades
 
-| F# Kind | Clifford grade | Examples |
-|---|---|---|
-| `Type` (or `*`) | Grade 0 (scalar) | `int`, `string`, `float` |
-| `Type -> Type` (or `* -> *`) | Grade 1 (vector) | Linear type constructors |
-| `(Type -> Type) -> Type -> Type` | Grade 2 (bivector) | Bifunctor-like; relationships between types |
-| Higher kinds | Higher grades | Functorial transformations over multivector components |
-| Top kind | Pseudoscalar | Complete closed execution context |
+| F# Kind                          | Clifford grade     | Examples                                               |
+| -------------------------------- | ------------------ | ------------------------------------------------------ |
+| `Type` (or `*`)                  | Grade 0 (scalar)   | `int`, `string`, `float`                               |
+| `Type -> Type` (or `* -> *`)     | Grade 1 (vector)   | Linear type constructors                               |
+| `(Type -> Type) -> Type -> Type` | Grade 2 (bivector) | Bifunctor-like; relationships between types            |
+| Higher kinds                     | Higher grades      | Functorial transformations over multivector components |
+| Top kind                         | Pseudoscalar       | Complete closed execution context                      |
 
 ### 2. Replace type composition with geometric product
 
-| F# operation | Clifford operation |
-|---|---|
-| Type composition `∘` | Geometric product `*` |
-| Type unification (resolution) | Inner product `·` (collapses to scalar) |
-| Type product (extension) | Outer product `∧` (constructs higher grades) |
+| F# operation                  | Clifford operation                           |
+| ----------------------------- | -------------------------------------------- |
+| Type composition `∘`          | Geometric product `*`                        |
+| Type unification (resolution) | Inner product `·` (collapses to scalar)      |
+| Type product (extension)      | Outer product `∧` (constructs higher grades) |
 
 ### 3. Modify F# compiler source (`fsharp/fsharp` repo)
 
@@ -80,11 +80,11 @@ Replace Hindley-Milner structural-equality unification with
 
 ### 4. Replace monads with rotors + sandwich operations
 
-| Standard HKT | Clifford HKT |
-|---|---|
-| Monadic bind `>>=` | Sandwich product `V · U · V^-1` |
+| Standard HKT              | Clifford HKT                              |
+| ------------------------- | ----------------------------------------- |
+| Monadic bind `>>=`        | Sandwich product `V · U · V^-1`           |
 | Lifting data into context | Reflection / projection into higher grade |
-| Type transformation | Pure rotation in type space (rotor) |
+| Type transformation       | Pure rotation in type space (rotor)       |
 
 ## Analytical continuation bridge (Aaron's second question)
 
@@ -130,10 +130,10 @@ When type mismatch encountered:
 
 ### Resolving type singularities
 
-| Mechanism | Compiler behavior |
-|---|---|
-| **Branch cuts** | Incompatible types treated as branch cuts on type manifold |
-| **Riemann sheets** | Type evaluated on alternate sheet via temporary geometric rotor context |
+| Mechanism                   | Compiler behavior                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Branch cuts**             | Incompatible types treated as branch cuts on type manifold                                           |
+| **Riemann sheets**          | Type evaluated on alternate sheet via temporary geometric rotor context                              |
 | **Removable singularities** | Apply L'Hôpital's rule in ConstraintSolver.fs to compute stable finite type layout for zero-divisors |
 
 ## Composes with factory substrate
@@ -148,6 +148,7 @@ discipline (per PR #2934) into F# compiler internals.
 
 Brandstetter/Ruhe/Gupta/Welleck/Stark/Hess papers provide
 the mathematical foundation:
+
 - Pin group + sandwich product = compile-time AI-safety
   preserving transformations
 - Cartan-Dieudonné theorem = N reflections suffice in N-dim
@@ -158,6 +159,7 @@ the mathematical foundation:
 ### PR #2914 (Clifford/HKT vocabulary)
 
 Vocabulary maps:
+
 - axis/basis → base vectors of Clifford algebra
 - rudders/rotors → Clifford rotors implementing kind
   transformations

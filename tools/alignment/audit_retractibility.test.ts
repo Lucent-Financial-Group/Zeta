@@ -6,12 +6,7 @@
 // Run: bun test tools/alignment/audit_retractibility.test.ts
 
 import { describe, expect, test } from "bun:test";
-import {
-  auditRetractibility,
-  countInboundRefs,
-  main,
-  parseArgs,
-} from "./audit_retractibility.ts";
+import { auditRetractibility, countInboundRefs, main, parseArgs } from "./audit_retractibility.ts";
 
 describe("parseArgs", () => {
   test("returns help for -h", () => {
@@ -155,9 +150,7 @@ describe("auditRetractibility", () => {
       ".claude/agents/alignment-auditor.md",
     ]);
     if (result.surfaces.length >= 2) {
-      expect(result.surfaces[0]!.inboundRefs).toBeGreaterThanOrEqual(
-        result.surfaces[1]!.inboundRefs,
-      );
+      expect(result.surfaces[0]!.inboundRefs).toBeGreaterThanOrEqual(result.surfaces[1]!.inboundRefs);
     }
   });
 });

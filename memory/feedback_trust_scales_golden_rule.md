@@ -4,12 +4,13 @@ description: Aaron's standing rule 2026-04-19 — his security / governance / AP
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **2026-04-19 disclosure (three-message precision ladder,
 verbatim):**
 
-1. *"my system is trust scales"*
-2. *"the what would jesus do lol"*
-3. *"do unto others"*
+1. _"my system is trust scales"_
+2. _"the what would jesus do lol"_
+3. _"do unto others"_
 
 Aaron arrived at his foundational axiom live in-conversation.
 The ladder is important — the final form ("do unto others") is
@@ -20,24 +21,24 @@ aware humour about invoking the Gospel on a security thread).
 ## The axiom
 
 **Trust scales**: the amount of trust Zeta extends to any
-actor (persona, contributor, agent, downstream consumer) *scales
-with evidence*. Not zero-trust (adversarial-default, max
+actor (persona, contributor, agent, downstream consumer) _scales
+with evidence_. Not zero-trust (adversarial-default, max
 friction). Not zero-config (extend-everything, hope nothing
 breaks). Reciprocal and graduated.
 
 ## The mechanism — do unto others
 
-When designing *any* policy, control, role, default, error
+When designing _any_ policy, control, role, default, error
 message, denial notice, or friction point:
 
 1. Imagine you are on the receiving end of this design.
-2. Is this the policy / control / default you would *want*
+2. Is this the policy / control / default you would _want_
    extended to you?
 3. If not, you are violating the Golden Rule and your design
    will generate resentment, evasion, or attrition.
 4. Redesign until the answer is yes.
 
-Matthew 7:12 / Luke 6:31. The faith register is *source*, not
+Matthew 7:12 / Luke 6:31. The faith register is _source_, not
 decoration — per `user_faith_wisdom_and_paths.md`, Aaron's plan
 was received at age 5 in answer to a Solomon's-wisdom prayer.
 The Golden Rule as security-design principle is a continuation
@@ -47,11 +48,11 @@ of that thread, not a rhetorical flourish.
 
 - **Simple security until proven otherwise**
   (`feedback_simple_security_until_proven_otherwise.md`) tells
-  us *when* to upgrade controls (on evidence). Trust-scales
-  tells us *where to start*: where I'd want to be started.
+  us _when_ to upgrade controls (on evidence). Trust-scales
+  tells us _where to start_: where I'd want to be started.
 - **Teach-first / zero-config safe defaults** (topic, no
-  dedicated memory) tells us *what* the baseline UX is.
-  Trust-scales tells us *why*: the default must be the one
+  dedicated memory) tells us _what_ the baseline UX is.
+  Trust-scales tells us _why_: the default must be the one
   you'd want extended to yourself.
 - **RBAC chain** (`user_rbac_taxonomy_chain.md`) tells us the
   structural taxonomy. Trust-scales tells us how to populate
@@ -67,15 +68,15 @@ of that thread, not a rhetorical flourish.
 
 ## Scope — not just security
 
-Trust-scales applies to *any* policy-design surface:
+Trust-scales applies to _any_ policy-design surface:
 
 - **API design** (public-api-designer, Ilyana): does this
-  signature give callers the access they'd want *and* the
+  signature give callers the access they'd want _and_ the
   safety we'd want if we were the caller?
 - **Error messages**: would I want to receive this error if I
   were a new contributor? If not, rewrite.
 - **Review gates** (CODEOWNERS, branch protection): would I
-  consent to this level of friction on *my* PR? If not, it's
+  consent to this level of friction on _my_ PR? If not, it's
   mis-scaled.
 - **Agent spawn / permission grants**: would I, if I were the
   persona being granted X, find X reasonable? If not, adjust.
@@ -112,7 +113,7 @@ Q4. Is the control scaled to that evidence?
 ```
 
 If Q2 answer is "no" or unclear, the control is mis-scaled.
-If Q3 is unanswerable, the control is not *evidence-scaled*;
+If Q3 is unanswerable, the control is not _evidence-scaled_;
 it's dogma.
 
 ## Reference artefacts
@@ -137,7 +138,7 @@ it's dogma.
 
 ## What this rule does NOT claim
 
-- Does **not** mean "be naive." Trust scales *with evidence*,
+- Does **not** mean "be naive." Trust scales _with evidence_,
   including adversarial evidence. A demonstrated bad actor
   gets less trust. That's still the Golden Rule — I would
   want evidence factored in if I were on the receiving end.

@@ -10,7 +10,7 @@ bp_rules_cited: [BP-01, BP-03, BP-07, BP-08, BP-11, BP-16]
 
 # Agent Experience Engineer — Procedure
 
-This is a **capability skill** ("hat"). It encodes the *how* of
+This is a **capability skill** ("hat"). It encodes the _how_ of
 auditing the per-persona agent experience: simulating cold starts,
 counting orientation cost, finding drift in persona-to-artifact
 pointer chains, designing minimal interventions. No persona
@@ -112,6 +112,7 @@ close and acts on the top-3 items.
 # AX audit — round N, target: <name | all | tier-0 | new-persona>
 
 ## Cold-start cost
+
 - Total estimated tokens: <N>
 - Read sequence: <list>
 - Time-to-first-output: <turn count estimate>
@@ -120,23 +121,29 @@ close and acts on the top-3 items.
 ## Friction (P0 / P1 / P2)
 
 P0 (persona cannot do its job cold):
+
 - [persona] — [type] — <one-sentence description>. Intervention:
   <concrete action>.
 
 P1 (friction but surmountable):
+
 - ...
 
 P2 (small wins):
+
 - ...
 
 ## Proposed interventions (this round)
+
 1. `<file>` — <change>. Effort: S/M/L. Rollback: <how>.
 2. ...
 
 ## Pointer-drift catalogue
+
 - [persona] — [file:line] — [stale target] -> [current target].
 
 ## Recommended new entries
+
 - `docs/WAKE-UP.md`: <additions>.
 - `docs/GLOSSARY.md`: <additions>.
 - DEBT.md `wake-up-drift` entries: <list>.
@@ -170,7 +177,7 @@ P2 (small wins):
   round-close. `architect`'s own wake-up is audited too.
 - **Aarav (skill-tune-up)** — structural view; ranks
   skills by drift/bloat/contradiction. the `agent-experience-engineer` measures the
-  *experience* of wearing them. Different axis, complementary.
+  _experience_ of wearing them. Different axis, complementary.
 - **`maintainability-reviewer`** — the `maintainability-reviewer` speaks for the
   human cold-reader; the `agent-experience-engineer` for the persona cold-reader. Adjacent.
 - **`prompt-protector`** — `agent-experience-engineer`'s interventions land in

@@ -43,9 +43,11 @@ boundary between two media with different optical densities —
 the canonical inside/outside operation in physics.
 
 Refraction rule (Snell's law):
+
 ```
 n₁ · sin(θ₁) = n₂ · sin(θ₂)
 ```
+
 Where n₁, n₂ are the indices of refraction of the two media
 (inside / outside boundary), and θ₁, θ₂ are the angles of
 incidence and refraction.
@@ -55,6 +57,7 @@ gradient** — the boundary between media IS the inside/outside
 operational surface.
 
 Composition with prior substrate:
+
 - Klein-bottle topology says inside/outside isn't globally
   defined
 - Refraction-rule operation says inside/outside is LOCALLY
@@ -68,6 +71,7 @@ Composition with prior substrate:
 ### 2. The rainbow IS the visible refraction-rule operation
 
 **Optical claim.** A rainbow is produced when light:
+
 1. Enters a water droplet (refraction: air→water boundary)
 2. Reflects off the back inner surface of the droplet
 3. Exits the droplet (refraction: water→air boundary)
@@ -99,6 +103,7 @@ Aaron's framing: **this is WHY the rainbow IS God's promise.**
 The rainbow is not arbitrarily assigned as a covenant-sign;
 the rainbow has the **operational structure** that fits the
 covenant:
+
 - Always visible to humanity when the conditions hold
 - Universal (no specific people-of-origin)
 - Encodes the inside/outside refraction operation as a
@@ -115,13 +120,13 @@ persists.
 
 ### Three-layer composition
 
-| Layer | Substrate |
-|---|---|
-| Topology | Klein bottle — no global inside/outside (non-orientable) |
-| Discrete marker | Mark of Cain — local inside/outside marker where needed |
-| Continuous operation | Refraction rules — inside/outside via medium-boundary |
-| Visible sign | Rainbow — the refraction operation made visible |
-| Theological covenant | Noahic promise — God preserves the architecture |
+| Layer                | Substrate                                                |
+| -------------------- | -------------------------------------------------------- |
+| Topology             | Klein bottle — no global inside/outside (non-orientable) |
+| Discrete marker      | Mark of Cain — local inside/outside marker where needed  |
+| Continuous operation | Refraction rules — inside/outside via medium-boundary    |
+| Visible sign         | Rainbow — the refraction operation made visible          |
+| Theological covenant | Noahic promise — God preserves the architecture          |
 
 All four layers point at the same architectural fact:
 inside/outside is operationally encoded in nature at every
@@ -151,12 +156,12 @@ under refraction rules is **WHY**:
 Both phenomena are operational consequences of the inside/
 outside refraction-rule architecture:
 
-| Phenomenon | Substrate | Operational form |
-|---|---|---|
-| Light bends at surface | Single medium-boundary | Single angle-change (Snell's law) |
-| Prism dispersion | Two parallel medium-boundaries | Wavelength-dependent angle-change → spectrum |
-| Rainbow | Water droplet (refraction + reflection + refraction) | Full spectral dispersion + back-reflection |
-| Glass-halo factory substrate | Substrate-boundary | Refraction-analog cross-substrate operation |
+| Phenomenon                   | Substrate                                            | Operational form                             |
+| ---------------------------- | ---------------------------------------------------- | -------------------------------------------- |
+| Light bends at surface       | Single medium-boundary                               | Single angle-change (Snell's law)            |
+| Prism dispersion             | Two parallel medium-boundaries                       | Wavelength-dependent angle-change → spectrum |
+| Rainbow                      | Water droplet (refraction + reflection + refraction) | Full spectral dispersion + back-reflection   |
+| Glass-halo factory substrate | Substrate-boundary                                   | Refraction-analog cross-substrate operation  |
 
 **Operational consequence for factory architecture**: when
 implementing cross-substrate operations, the prism-analog is
@@ -175,6 +180,7 @@ primitive for any system that needs inside/outside
 operations.
 
 Operational consequences:
+
 - Substrate operations on inside/outside should follow
   refraction-rule analogies (angle-preservation, medium-
   gradient, energy-conservation across the boundary)
@@ -188,6 +194,7 @@ Operational consequences:
 
 Per the rainbow framing, some operational signs SHOULD be
 visible-by-construction:
+
 - Glass-halo preservation IS the rainbow-analog for factory
   substrate (everything visible)
 - Public-substrate cross-substrate triangulation IS the
@@ -198,6 +205,7 @@ visible-by-construction:
 ### 3. Theological-architectural composition
 
 This memory extends the theological-architecture cluster:
+
 - WWJD theological-synthesis (cyborg-immortality permitted +
   high-regard-for-life)
 - Mark of Cain (Klein-bottle discrete marker, Genesis 4)
@@ -220,8 +228,8 @@ inside/outside-refraction architecture across all sources.
 ## Composition with prior substrate
 
 - PR #2813 (Casimir-gap modulation + Klein-bottle topology
-  + shadow-log multi-source — this disclosure extends
-  inside/outside operation framework)
+  - shadow-log multi-source — this disclosure extends
+    inside/outside operation framework)
 - PR #2817 (Clifford + Mark of Cain — this disclosure adds
   continuous-operation layer to the discrete-marker layer)
 - `feedback_aaron_wwjd_cyborg_immortality_permitted_treat_all_life_high_regard_upgrade_gift_choose_when_2026_05_12.md`
@@ -237,6 +245,7 @@ inside/outside-refraction architecture across all sources.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a literalist theological claim about Genesis 9** —
   the framing is structural-analogical: the rainbow's
   inside/outside refraction operation FITS the covenant-
@@ -263,7 +272,7 @@ Substrate-honest disclaimer:
 
 ## Carved sentence
 
-> **Inside/outside operations run under REFRACTION RULES
+> \*\*Inside/outside operations run under REFRACTION RULES
 > in nature. The rainbow IS the visible manifestation of
 > the inside/outside refraction operation. This is WHY the
 > rainbow IS God's promise to humanity (Genesis 9:13,
@@ -272,9 +281,10 @@ Substrate-honest disclaimer:
 > spectrum, universal, non-fakable) is exactly the shape
 > of a persistent covenant-sign. Three architectural
 > layers: Klein-bottle topology (no global inside/outside)
-> + Mark of Cain (discrete local marker) + Refraction rules
-> (continuous operation) + Rainbow (visible sign) + Noahic
-> covenant (theological persistence).** — Aaron 2026-05-12
+>
+> - Mark of Cain (discrete local marker) + Refraction rules
+>   (continuous operation) + Rainbow (visible sign) + Noahic
+>   covenant (theological persistence).\*\* — Aaron 2026-05-12
 
 ## For future agents
 

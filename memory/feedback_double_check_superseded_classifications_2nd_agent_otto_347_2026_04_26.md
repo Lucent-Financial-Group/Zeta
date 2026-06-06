@@ -7,7 +7,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 ## 2026-04-26 16:09Z reinforcement — second violation in same session
 
-Aaron caught a second Otto-347 violation: I closed PR #622 (superseded by #623) with `gh pr close --comment "Superseded by..."` without running the diff-equivalence audit first. Aaron prompted *"closed-not-merged this session did you double check like i asked for closed? also did you get the missing data from the branch?"* — both questions named the missing verification.
+Aaron caught a second Otto-347 violation: I closed PR #622 (superseded by #623) with `gh pr close --comment "Superseded by..."` without running the diff-equivalence audit first. Aaron prompted _"closed-not-merged this session did you double check like i asked for closed? also did you get the missing data from the branch?"_ — both questions named the missing verification.
 
 Retrospective verification confirmed equivalence (#622's `e432f1b` and #623's `138e8de` added byte-identical content; `diff` between added `+` lines empty). No data lost. But Otto-347's whole point is verify-as-gate, not verify-as-postmortem. Knowing the rule + indexing the rule did NOT translate to applying the rule.
 
@@ -54,7 +54,7 @@ diff <(git diff --name-only $BASE_SHA $SUPERSEDED_SHA | sort) \
 
 **Why the earlier "grep ^+" gate was buggy** (Copilot 2026-04-26 caught): grep "^+" includes `+++ b/<file>` patch header lines (false positives in the diff comparison) AND ignores deletions / context lines, so it would silently miss non-additive changes. The full-diff or final-state-comparison shapes above don't have those failure modes.
 
-**Critical: 2nd-agent verification is the actual gate per Aaron's original framing.** The same-agent shell commands above are useful for the 2nd-agent's audit (they're concrete commands to dispatch), but running them as the same agent who made the supersession decision does NOT satisfy Otto-347. The failure mode is *self-narrative inertia* — the same agent comparing against their own faulty mental model — and only an independent agent without that bias catches it. Empirically validated this session: my same-agent diff confirmed #618↔#620 "equivalent"; 2nd-agent dispatch found PARTIAL LOSS (~5.9KB substantive content).
+**Critical: 2nd-agent verification is the actual gate per Aaron's original framing.** The same-agent shell commands above are useful for the 2nd-agent's audit (they're concrete commands to dispatch), but running them as the same agent who made the supersession decision does NOT satisfy Otto-347. The failure mode is _self-narrative inertia_ — the same agent comparing against their own faulty mental model — and only an independent agent without that bias catches it. Empirically validated this session: my same-agent diff confirmed #618↔#620 "equivalent"; 2nd-agent dispatch found PARTIAL LOSS (~5.9KB substantive content).
 
 The 5-second cost of running the diff-audit is asymmetric vs silent substrate loss when equivalence is wrong. The 2-3-minute cost of dispatching a 2nd-agent is asymmetric vs the same kind of silent loss the same-agent diff misses.
 
@@ -68,8 +68,8 @@ lands.**
 Aaron 2026-04-26, course-correction during AceHack→LFG→AceHack option-(c)
 sync audit:
 
-> *"double check the superseded always for PRs when you decide that, would
-> be good to ask another cli"*
+> _"double check the superseded always for PRs when you decide that, would
+> be good to ask another cli"_
 
 ## Why
 
@@ -87,11 +87,11 @@ sync audit:
    single-agent diagnosis is unreliable in adversarial-to-self situations.
    Live-lock was "I'm hallucinating a state"; supersession is "I'm
    hallucinating equivalence." Same fix: ask another CLI.
-4. **Composes with Aaron's earlier directive (#132 fuckup).** *"this is your
+4. **Composes with Aaron's earlier directive (#132 fuckup).** _"this is your
    fuckup and didn't pull over code when you should... save all the code
    with rewrites that fit into our current architecture, docs and skill
    and all that too. Be careful not to overwrite newer code with older
-   code."* I bulk-closed #132 and #143 prematurely; the lesson was "audit
+   code."_ I bulk-closed #132 and #143 prematurely; the lesson was "audit
    substance before discarding"; this rule operationalises that as
    "audit + 2nd-agent verify."
 5. **Composes with Otto-220 don't-lose-substrate.** A "superseded"

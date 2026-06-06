@@ -12,16 +12,17 @@
 The factory-infrastructure three-repo split (Zeta + Forge + ace) was decided in [the 2026-04-22 ADR](2026-04-22-three-repo-split-zeta-forge-ace.md). This is the **companion ADR for the product axis** — it answers which LFG product concepts get their own public GitHub repos, in what order, under what governance.
 
 Aaron 2026-05-13 articulated the dual-axis design:
-> *"so anytihgn you don't want them to fork specifically you have in a repo can still be public and such glass halo but the licence can say no fork please respect honesty or something not enforcable"* *(verbatim; typos preserved)*
+
+> _"so anytihgn you don't want them to fork specifically you have in a repo can still be public and such glass halo but the licence can say no fork please respect honesty or something not enforcable"_ _(verbatim; typos preserved)_
 
 The design constraints cascade from four child rows of B-0425:
 
-| Row | Output | Merged / authored |
-|-----|--------|------------------|
-| B-0464 | `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` | PR #3122 (merged 2026-05-14) |
+| Row    | Output                                                               | Merged / authored            |
+| ------ | -------------------------------------------------------------------- | ---------------------------- |
+| B-0464 | `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md`                           | PR #3122 (merged 2026-05-14) |
 | B-0465 | `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md` | PR #3124 (merged 2026-05-14) |
-| B-0466 | `docs/research/2026-05-14-product-repo-naming-review-b0425.md` | Authored 2026-05-14 |
-| B-0467 | `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md` | Authored 2026-05-14 |
+| B-0466 | `docs/research/2026-05-14-product-repo-naming-review-b0425.md`       | Authored 2026-05-14          |
+| B-0467 | `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md`           | Authored 2026-05-14          |
 
 ---
 
@@ -29,15 +30,15 @@ The design constraints cascade from four child rows of B-0425:
 
 ### 1. Which products get repos and when
 
-| Product | Verdict | Approved slug | License | Timing |
-|---------|---------|--------------|---------|--------|
-| **Civsim** | **repo-ready now** | **`civsim`** | Honor-system (mutual-privacy FAQ clause) | Create immediately per scaffolding checklist below |
-| KSK | later | `lf-ksk` (provisional) | Honor-system | After KSK strategic-encryption scope design + hardware CI design (open backlog row needed) |
-| Aurora | later | `aurora-network` (provisional) | Honor-system | After Aurora Network DAO-layer design row completes |
-| American Dream 2.0 | later | `american-dream` (provisional) | Honor-system | After NFT/tokenization infrastructure design |
-| DIO | later | `lf-dio` (provisional, ⚠️ re-evaluate) | Honor-system | After product definition + full naming-expert re-review |
-| Wellness | later | TBD | Honor-system | After product scope narrows to implementable MVP |
-| Dawn | stays-in-monorepo | N/A | N/A | Home: `docs/charter/DAWN.md` in Zeta repo |
+| Product            | Verdict            | Approved slug                          | License                                  | Timing                                                                                     |
+| ------------------ | ------------------ | -------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Civsim**         | **repo-ready now** | **`civsim`**                           | Honor-system (mutual-privacy FAQ clause) | Create immediately per scaffolding checklist below                                         |
+| KSK                | later              | `lf-ksk` (provisional)                 | Honor-system                             | After KSK strategic-encryption scope design + hardware CI design (open backlog row needed) |
+| Aurora             | later              | `aurora-network` (provisional)         | Honor-system                             | After Aurora Network DAO-layer design row completes                                        |
+| American Dream 2.0 | later              | `american-dream` (provisional)         | Honor-system                             | After NFT/tokenization infrastructure design                                               |
+| DIO                | later              | `lf-dio` (provisional, ⚠️ re-evaluate) | Honor-system                             | After product definition + full naming-expert re-review                                    |
+| Wellness           | later              | TBD                                    | Honor-system                             | After product scope narrows to implementable MVP                                           |
+| Dawn               | stays-in-monorepo  | N/A                                    | N/A                                      | Home: `docs/charter/DAWN.md` in Zeta repo                                                  |
 
 ### 2. License applied to all product repos
 
@@ -82,12 +83,12 @@ Each product repo carries a lightweight `.claude/` configuration (product-scoped
 
 ### Open questions (not blocking this ADR)
 
-| Question | Status |
-|----------|--------|
-| When does ace ship? (Stage 3 trigger) | B-0424 Stage 3, multi-year |
-| Which products are ready for public-announce vs "public but not announced"? | Deferred to per-product launch rows |
-| Strategic-encryption scope: which product repos need gitcrypt? | KSK explicitly; civsim per PR #2902 authority already granted; others TBD per product |
-| Aurora Network scaffolding row | Needs dedicated B-04xx decomposition |
+| Question                                                                    | Status                                                                                |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| When does ace ship? (Stage 3 trigger)                                       | B-0424 Stage 3, multi-year                                                            |
+| Which products are ready for public-announce vs "public but not announced"? | Deferred to per-product launch rows                                                   |
+| Strategic-encryption scope: which product repos need gitcrypt?              | KSK explicitly; civsim per PR #2902 authority already granted; others TBD per product |
+| Aurora Network scaffolding row                                              | Needs dedicated B-04xx decomposition                                                  |
 
 ---
 
@@ -136,12 +137,12 @@ This ADR does **not** supersede [2026-04-22 three-repo-split ADR](2026-04-22-thr
 
 ## References
 
-| Document | Role |
-|----------|------|
-| `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md` | License template for all product repos |
-| `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md` | Per-product repo-readiness verdicts |
-| `docs/research/2026-05-14-product-repo-naming-review-b0425.md` | Approved and provisional repo slugs |
-| `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md` | Cross-repo version-pin and CI mechanism |
-| `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` | Sibling factory-infrastructure ADR |
-| `memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md` | Aaron's design intent verbatim |
-| `memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md` | Civsim mutual-privacy design |
+| Document                                                                                                                          | Role                                    |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `docs/legal/HONOR-SYSTEM-LICENSE-DRAFT.md`                                                                                        | License template for all product repos  |
+| `docs/research/2026-05-14-product-repo-substrate-inventory-b0425.md`                                                              | Per-product repo-readiness verdicts     |
+| `docs/research/2026-05-14-product-repo-naming-review-b0425.md`                                                                    | Approved and provisional repo slugs     |
+| `docs/DECISIONS/2026-05-14-product-repo-glue-mechanism.md`                                                                        | Cross-repo version-pin and CI mechanism |
+| `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`                                                                    | Sibling factory-infrastructure ADR      |
+| `memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md` | Aaron's design intent verbatim          |
+| `memory/feedback_aaron_civsim_forkable_pvp_raids_destiny_style_mutual_privacy_no_strategic_advantage_game_design_2026_05_13.md`   | Civsim mutual-privacy design            |

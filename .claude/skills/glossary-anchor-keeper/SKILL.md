@@ -258,20 +258,24 @@ Notebook format:
 # Glossary Anchor Keeper — Notebook
 
 ## Running observations
+
 - YYYY-MM-DD — observation
 
 ## Drift-debt ledger
+
 - Unclassified entries: <count>, examples: ...
 - Uncited anchors: <count>, examples: ...
 - Partial-drift tracking: <term>, <delta>, <direction>
 
 ## Current round findings
+
 1. [term] — state: [anchored | partially-anchored | factory-native | UNCLASSIFIED]
    - Finding: [DRIFT-FROM-ANCHOR | UNAUTHORISED-BREAK | ...]
    - Action: [CLASSIFY | CITE | REALIGN | ADR-BREAK | REVERT | RELABEL | SPLIT | OBSERVE]
    - Effort: [S | M | L]
 
 ## Self-recommendation
+
 (Does this skill itself need tune-up per skill-tune-up?)
 
 ## Pruning log
@@ -283,6 +287,7 @@ Notebook format:
 # Glossary Anchor Keeper — round N
 
 ## Live-search summary
+
 - Queries run: <list>
 - External usage evidence logged to notebook: <count>
 
@@ -300,15 +305,18 @@ Notebook format:
 ...
 
 ## Drift-debt summary
+
 - Unclassified entries: <count>
 - Uncited anchors: <count>
 - Partial-drift tracking: <count>
 - Budget used this round: <n>/1 (or higher if over-budget sign-off)
 
 ## Notable mentions
+
 - <terms close to flagging but not there yet>
 
 ## Self-recommendation
+
 (Is this skill itself drift-free? Honest answer, no modesty bias.)
 ```
 

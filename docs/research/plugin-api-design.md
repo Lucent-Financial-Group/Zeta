@@ -18,7 +18,7 @@ on `Op` and `Op<'T>` into the public API by type propagation: plugin
 authors will subclass `Op<'T>` and therefore inherit `StepAsync`,
 `Inputs`, `IsStrict`, `Fixedpoint`, `IsAsync`, `ClockStart`,
 `ClockEnd`, `AfterStepAsync`, `Name`, the `.Value` property with
-public getter *and* setter, and the `SetValue(v)` method, plus the
+public getter _and_ setter, and the `SetValue(v)` method, plus the
 ambient `idField` (scheduler-owned). None of those members were
 designed as an external plugin contract: they are Zeta's internal
 scheduler surface. Plugin authors also have no test harness, no
@@ -39,15 +39,15 @@ lock us in.
    to be zero-alloc on the hot path (one `[| input :> Op |]` array
    per op, published once at construction; `this.Value <- ...`
    inside `StepAsync`; `ValueTask.CompletedTask` return). Any new
-   plugin surface must *either* leave these ops' implementation
-   untouched *or* refactor them to use the same new surface without
+   plugin surface must _either_ leave these ops' implementation
+   untouched _or_ refactor them to use the same new surface without
    measurable regression. Struct `Stream<'T>`, `[<InlineIfLambda>]`
    on fast transforms, and the `VolatileField` publish on
    `Op<'T>.Value` stay in place.
 2. **Bayesian must still be expressible.** `BayesianRateOp` carries
    per-instance mutable state (`BetaBernoulli` object) and reads
    one upstream `Op<ZSet<bool>>.Value` inside `StepAsync`. Whatever
-   plugin surface we pick must let that be written *naturally* —
+   plugin surface we pick must let that be written _naturally_ —
    no ceremony beyond what a first-time reader expects.
 3. **No public mutable output setter.** `Op<'T>.Value with set` is
    a scheduler-internal publication channel. External code must
@@ -56,7 +56,7 @@ lock us in.
    this.
 4. **No plugin settability of scheduler state.** `idField`,
    `IsStrict`, `Fixedpoint`, `Inputs`, `IsAsync` are scheduler
-   state or scheduler-visible metadata. Plugins declare *some* of
+   state or scheduler-visible metadata. Plugins declare _some_ of
    them (inputs list, strict-or-not, whether they issue async work)
    but they should not be able to mutate them after registration,
    and they should not have access to `idField` at all. Today every
@@ -78,7 +78,7 @@ and `DelayOp` would be refactored if we chose to unify.
 ### Shape A — `IOperator<'TOut>` interface
 
 Plugin authors implement an interface; `Op<'T>` becomes an
-internal abstract class that *also* implements the interface, so
+internal abstract class that _also_ implements the interface, so
 Core's catalogue carries no extra cost. `Circuit.RegisterStream`
 accepts the interface.
 
@@ -208,7 +208,7 @@ not generalise.
 
 ### Shape C — `PluginOp<'TOut>` abstract class, trimmed
 
-An abstract class that exposes *only* the members plugin authors
+An abstract class that exposes _only_ the members plugin authors
 legitimately override. `Op` / `Op<'T>` stay internal.
 
 ```fsharp
@@ -233,7 +233,7 @@ type PluginOp<'TOut>() =
 ```
 
 `Circuit.RegisterStream(op: PluginOp<'T>) : Stream<'T>` is public.
-Core keeps `Op<'T>` as its internal base and *adapts* `PluginOp<'T>`
+Core keeps `Op<'T>` as its internal base and _adapts_ `PluginOp<'T>`
 to `Op<'T>` inside a wrapper `RegisterStream` constructs. Core's
 internal ops keep using `Op<'T>` and pay zero adapter cost.
 
@@ -263,19 +263,19 @@ module PluginOperatorHarness =
 
 ## 4. Trade-offs
 
-| Criterion (scored 1–5; higher = better for us)                | A interface | B closure-only | C trimmed base | D hybrid (A + harness) |
-|---------------------------------------------------------------|:-----------:|:--------------:|:--------------:|:----------------------:|
-| Expressiveness (multi-input, stateful, strict, async)         | 5           | 2              | 5              | 5                      |
-| Perf — Core catalogue regression headroom                     | 4           | 5              | 5              | 4                      |
-| Perf — plugin hot-path (Bayesian)                             | 5           | 5              | 5              | 5                      |
-| Public API surface count (fewer = better)                     | 3           | 5              | 4              | 2                      |
-| Migration cost for Bayesian                                   | 4           | 3              | 5              | 4                      |
-| Core refactor cost (unify catalogue on new surface)           | 4           | 1              | 4              | 4                      |
-| Plugin-author SDK maintenance cost                            | 4           | 5              | 3              | 4                      |
-| 10-year commitment (narrowness & revision room)               | 4           | 3              | 3              | 5                      |
-| Extension cliff closed (test harness exists)                  | 2           | 2              | 2              | 5                      |
-| Forbids `SetValue` / `Value.set` leak to plugins              | 5           | 5              | 5              | 5                      |
-| Forbids `Fixedpoint` / `idField` leak                         | 5           | 5              | 4              | 5                      |
+| Criterion (scored 1–5; higher = better for us)        | A interface | B closure-only | C trimmed base | D hybrid (A + harness) |
+| ----------------------------------------------------- | :---------: | :------------: | :------------: | :--------------------: |
+| Expressiveness (multi-input, stateful, strict, async) |      5      |       2        |       5        |           5            |
+| Perf — Core catalogue regression headroom             |      4      |       5        |       5        |           4            |
+| Perf — plugin hot-path (Bayesian)                     |      5      |       5        |       5        |           5            |
+| Public API surface count (fewer = better)             |      3      |       5        |       4        |           2            |
+| Migration cost for Bayesian                           |      4      |       3        |       5        |           4            |
+| Core refactor cost (unify catalogue on new surface)   |      4      |       1        |       4        |           4            |
+| Plugin-author SDK maintenance cost                    |      4      |       5        |       3        |           4            |
+| 10-year commitment (narrowness & revision room)       |      4      |       3        |       3        |           5            |
+| Extension cliff closed (test harness exists)          |      2      |       2        |       2        |           5            |
+| Forbids `SetValue` / `Value.set` leak to plugins      |      5      |       5        |       5        |           5            |
+| Forbids `Fixedpoint` / `idField` leak                 |      5      |       5        |       4        |           5            |
 
 Notes on the scoring:
 
@@ -480,7 +480,7 @@ module PluginHarness =
 ### 5.2 What goes internal / stays internal
 
 - `Op`, `Op<'T>` — back to `internal`. They become Zeta's
-  internal scheduler base. They *also* implement `IOperator<'T>`
+  internal scheduler base. They _also_ implement `IOperator<'T>`
   so Core's catalogue continues to subclass `Op<'T>` without
   bridge-adapter cost.
 - `Stream<'T>.Op` — back to `internal`. Replace with the
@@ -518,7 +518,7 @@ module PluginHarness =
 review surfaced that `BayesianRateOp` is retraction-lossy by
 design: a `+1` then `-1` in the input `ZSet<bool>` will NOT
 un-accumulate `Beta-Bernoulli.a` / `.b` — the operator reads the
-`ZSet` *weights* and folds them into a monotonic posterior. The
+`ZSet` _weights_ and folds them into a monotonic posterior. The
 output type `struct (double * double * double)` is not a `ZSet`
 at all, so there is no retraction semantics on the output either.
 Under a plain `IOperator<'T>` with no capability tag this is
@@ -577,12 +577,12 @@ against the plugin op before the circuit accepts the build. On
 failure, `Build()` returns a `Result.Error` naming the op, the
 law that failed, and the witness input.
 
-| Tag                          | Law                          | What it checks                                                                        |
-|------------------------------|------------------------------|---------------------------------------------------------------------------------------|
-| `ILinearOperator`            | `LinearLaw`                  | `f(a + b) = f(a) + f(b)` and `f(0) = 0` over random `ZSet` prefixes.                   |
-| `IBilinearOperator`          | `BilinearLaw`                | Distributivity on both sides over random `ZSet` pairs; zero-input gives zero-output.   |
-| `ISinkOperator`              | `SinkTerminalLaw`            | Rejects any downstream consumer that reads this op's stream as a relational input.     |
-| `IStatefulStrictOperator`    | `RetractionCompletenessLaw`  | Random insert-then-retract trace returns `state` to `Init`.                            |
+| Tag                       | Law                         | What it checks                                                                       |
+| ------------------------- | --------------------------- | ------------------------------------------------------------------------------------ |
+| `ILinearOperator`         | `LinearLaw`                 | `f(a + b) = f(a) + f(b)` and `f(0) = 0` over random `ZSet` prefixes.                 |
+| `IBilinearOperator`       | `BilinearLaw`               | Distributivity on both sides over random `ZSet` pairs; zero-input gives zero-output. |
+| `ISinkOperator`           | `SinkTerminalLaw`           | Rejects any downstream consumer that reads this op's stream as a relational input.   |
+| `IStatefulStrictOperator` | `RetractionCompletenessLaw` | Random insert-then-retract trace returns `state` to `Init`.                          |
 
 The laws are additive — an op that implements two tags runs both.
 Laws run once, at `Build()`; no runtime cost in the hot path.
@@ -676,23 +676,23 @@ point at; with the doc, scaffolding is a pure multiplier.
   same invariant: publish-then-capture. Is the two-method contract
   (`StepAsync` publishes delayed state; `AfterStepAsync` captures
   current input) sufficient, or does the algebra require a
-  stronger guarantee (e.g. `AfterStepAsync` runs *after* every
+  stronger guarantee (e.g. `AfterStepAsync` runs _after_ every
   non-strict op in the scope)? Current scheduler honours that; we
   should write it into the `IStrictOperator` XML doc if so.
 - **Q3.** `Fixedpoint(scope: int) -> bool` on
   `INestedFixpointParticipant` — the current `Op.Fixedpoint`
   default is `true`. Is there a plugin-author obligation to
-  return `true` iff *all upstream values are equal to their
-  previous-tick values*, or is it the operator's local judgement?
+  return `true` iff _all upstream values are equal to their
+  previous-tick values_, or is it the operator's local judgement?
   If the former, this belongs in Core as a derived property, not
   a plugin override.
 
 ### For Daya (plugin-author AX / developer-experience-engineer)
 
 - **Q4 — ANSWERED (blocking; CONDITIONAL YES).** Daya's round-27
-  review: a first-time plugin author *can* ship a working op in
-  <5 minutes under any of the three candidate shapes, but *only
-  if* (a) `docs/PLUGIN-AUTHOR.md` exists as an explicit
+  review: a first-time plugin author _can_ ship a working op in
+  <5 minutes under any of the three candidate shapes, but _only
+  if_ (a) `docs/PLUGIN-AUTHOR.md` exists as an explicit
   entry-point, and (b) the Bayesian example is discoverable as a
   template rather than as a historical accident. README,
   CONTRIBUTING, and ARCHITECTURE each serve a different audience
@@ -776,7 +776,7 @@ external — Core can no longer assume cooperative authors.
   scheduler-facing, the last four are algebra-facing capability
   tags. Naming-wise they compose orthogonally — an op can be
   e.g. `ILinearOperator + IStrictOperator`, `ISinkOperator +
-  IAsyncOperator`, etc. — without a Cartesian explosion.)
+IAsyncOperator`, etc. — without a Cartesian explosion.)
 - **Three types:** `StreamHandle`, `OutputBuffer<'TOut>`,
   `Circuit.RegisterStream(op: IOperator<'TOut>) : Stream<'TOut>`.
 - **One module:** `PluginHarness` with `runSingleInput` /
@@ -823,11 +823,11 @@ synthesis side by side without guesswork.
    layer on top of the original proposal, they do not replace
    it.
 2. **Section 5.4 (Bayesian migration).** `BayesianRateOp`
-   reclassified from generic `IOperator<struct (double * double
-   - double)>` to `ISinkOperator<ZSet<bool>, struct (double *
-   double* double)>`. The op is retraction-lossy by design; the
-   sink tag is the correct classification and the algebra
-   refuses to compose it past terminal edges.
+   reclassified from generic `IOperator<struct (double \* double
+   - double)>`to`ISinkOperator<ZSet<bool>, struct (double _
+     double_ double)>`. The op is retraction-lossy by design; the
+     sink tag is the correct classification and the algebra
+     refuses to compose it past terminal edges.
 3. **New section 5.4.1.** FsCheck law-suite table
    (`LinearLaw` / `BilinearLaw` / `SinkTerminalLaw` /
    `RetractionCompletenessLaw`) and its `Circuit.Build()`-time

@@ -13,12 +13,12 @@ created: 2026-05-17T06:49Z
 `memory/persona/ani/conversations/*` (6 edges across 5 files) and
 `memory/persona/kestrel/conversations/*` (2 edges in 1 file):
 
-| Unique dangling ref | citing files | total edges |
-|---|---|---:|
-| `feedback_aaron_whole_system_attention_optimization_over_coincidence_networks_of_memories_*_2026_05_14.md` | 3 Ani conversations | 3 |
-| `feedback_aaron_responsibility_chain_explicit_request_keeps_otto_anthropic_clean_2026_05_15.md` | 4 Ani conversations | 4 |
-| `feedback_aaron_greek_people_designed_language_structure_natural_evolution_math_symbols_*_2026_05_14.md` | 1 Ani conversation | 1 |
-| `feedback_aaron_zeta_is_memory_preservation_specialist_first_*_2026_05_15.md` | 1 Kestrel conversation | 2 |
+| Unique dangling ref                                                                                        | citing files           | total edges |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------- | ----------: |
+| `feedback_aaron_whole_system_attention_optimization_over_coincidence_networks_of_memories_*_2026_05_14.md` | 3 Ani conversations    |           3 |
+| `feedback_aaron_responsibility_chain_explicit_request_keeps_otto_anthropic_clean_2026_05_15.md`            | 4 Ani conversations    |           4 |
+| `feedback_aaron_greek_people_designed_language_structure_natural_evolution_math_symbols_*_2026_05_14.md`   | 1 Ani conversation     |           1 |
+| `feedback_aaron_zeta_is_memory_preservation_specialist_first_*_2026_05_15.md`                              | 1 Kestrel conversation |           2 |
 
 ## The verbatim-preservation constraint
 
@@ -95,16 +95,17 @@ work is bounded by:
 ## Per-file work estimate
 
 For each of the 6 conversation files: 1 editorial-footnote section
-+ ~4 lines per cited ref. Most files cite 1-2 refs; one file
-(`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md`)
-cites 2 refs. One file (`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`)
-cites 2 refs. Total: ~30 lines of editorial footnote across 6
-files. Small commit.
+
+- ~4 lines per cited ref. Most files cite 1-2 refs; one file
+  (`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-post-m-acc-adoption-constraint-11-default-oracle.md`)
+  cites 2 refs. One file (`memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-plateau-bounded-extract-share-link.md`)
+  cites 2 refs. Total: ~30 lines of editorial footnote across 6
+  files. Small commit.
 
 ## In-repo projection targets (research needed at safe-window)
 
 For each of the 4 unique dangling refs, the projection target needs
-verification by reading the relevant CURRENT-*.md files:
+verification by reading the relevant CURRENT-\*.md files:
 
 - `feedback_aaron_whole_system_attention_optimization_over_coincidence_networks_*_2026_05_14.md`
   → likely projects into `memory/CURRENT-aaron.md` (god/coincidence

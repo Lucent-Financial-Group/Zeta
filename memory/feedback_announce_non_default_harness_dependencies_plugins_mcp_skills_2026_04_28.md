@@ -8,14 +8,14 @@ type: feedback
 
 **Original framing (2026-04-28 morning, Aaron):** I used
 `pr-review-toolkit:silent-failure-hunter` without flagging it as
-plugin-sourced. Aaron: *"where did that come from, built into
+plugin-sourced. Aaron: _"where did that come from, built into
 the harness, plugins and settings and things that are not
 harness default are this own type of dependeny we should track
-and you should mention if you plan on using it again somewhere."*
+and you should mention if you plan on using it again somewhere."_
 
-**Extended framing (same day, Aaron):** *"you should do that for
+**Extended framing (same day, Aaron):** _"you should do that for
 build in ones too becaseue not every agent will have the claude
-harness that comes here, like the ones you wrap too."*
+harness that comes here, like the ones you wrap too."_
 
 The extension is right: every harness has a different built-in
 toolset. `Read` / `Edit` / `Bash` / `Task` / `Skill` /
@@ -35,15 +35,15 @@ the harness-tooling surface explicit so the workflow is
 **Rule:** when invoking ANY harness-specific tool / agent /
 skill / primitive, name the harness assumption in the same turn.
 
-| Surface | Marker | Example | Harness scope |
-|---|---|---|---|
-| **Claude Code built-in tool** | bare name; no namespace | `Read`, `Edit`, `Bash`, `Task`, `Skill`, `TaskCreate`, `TaskGet`, `TaskUpdate`, `TaskOutput`, `TaskStop`, `CronCreate`, `CronList`, `CronDelete`, `ScheduleWakeup`, `ToolSearch`, `RemoteTrigger`, `WebSearch`, `WebFetch`, `Grep`, `Glob`, `LS`, `Write`, `NotebookEdit`, `EnterPlanMode`, `ExitPlanMode`, `EnterWorktree`, `ExitWorktree`, `Monitor`, `PushNotification`, `AskUserQuestion`, `ListMcpResourcesTool`, `ReadMcpResourceTool` | Claude Code only |
-| **Claude Code subagent dispatch** | `Task` tool with `subagent_type: <built-in>` | `Task(subagent_type: "general-purpose")` | Claude Code only |
-| Plugin-namespaced subagent | `<plugin-name>:<agent-name>` | `pr-review-toolkit:silent-failure-hunter` | Plugin install required |
-| MCP server tool | `mcp__<connector>__<tool>` | `mcp__claude_ai_Slack__slack_send_message` | MCP connection required |
-| Project-level skill | `projectSettings:<skill>` | `projectSettings:btw`, `projectSettings:next-steps` | Repo `.claude/skills/` install |
-| Plugin-bundled skill | `plugin:<plugin>:<skill>` | `plugin:skill-creator:skill-creator` | Plugin install required |
-| User-scope skill / setting | (path under `~/.claude/`) | invoking via that path | User profile required |
+| Surface                           | Marker                                       | Example                                                                                                                                                                                                                                                                                                                                                                                                                                      | Harness scope                  |
+| --------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **Claude Code built-in tool**     | bare name; no namespace                      | `Read`, `Edit`, `Bash`, `Task`, `Skill`, `TaskCreate`, `TaskGet`, `TaskUpdate`, `TaskOutput`, `TaskStop`, `CronCreate`, `CronList`, `CronDelete`, `ScheduleWakeup`, `ToolSearch`, `RemoteTrigger`, `WebSearch`, `WebFetch`, `Grep`, `Glob`, `LS`, `Write`, `NotebookEdit`, `EnterPlanMode`, `ExitPlanMode`, `EnterWorktree`, `ExitWorktree`, `Monitor`, `PushNotification`, `AskUserQuestion`, `ListMcpResourcesTool`, `ReadMcpResourceTool` | Claude Code only               |
+| **Claude Code subagent dispatch** | `Task` tool with `subagent_type: <built-in>` | `Task(subagent_type: "general-purpose")`                                                                                                                                                                                                                                                                                                                                                                                                     | Claude Code only               |
+| Plugin-namespaced subagent        | `<plugin-name>:<agent-name>`                 | `pr-review-toolkit:silent-failure-hunter`                                                                                                                                                                                                                                                                                                                                                                                                    | Plugin install required        |
+| MCP server tool                   | `mcp__<connector>__<tool>`                   | `mcp__claude_ai_Slack__slack_send_message`                                                                                                                                                                                                                                                                                                                                                                                                   | MCP connection required        |
+| Project-level skill               | `projectSettings:<skill>`                    | `projectSettings:btw`, `projectSettings:next-steps`                                                                                                                                                                                                                                                                                                                                                                                          | Repo `.claude/skills/` install |
+| Plugin-bundled skill              | `plugin:<plugin>:<skill>`                    | `plugin:skill-creator:skill-creator`                                                                                                                                                                                                                                                                                                                                                                                                         | Plugin install required        |
+| User-scope skill / setting        | (path under `~/.claude/`)                    | invoking via that path                                                                                                                                                                                                                                                                                                                                                                                                                       | User profile required          |
 
 Mention the **harness name** / **plugin name** / **MCP server
 name** / **settings source** at the point of use, so the reader
@@ -62,10 +62,10 @@ can:
 **Why:** non-default-harness tools are a dependency type the
 factory hasn't been tracking explicitly. Aaron 2026-04-28:
 
-> *"where did that come from, built into the harness, plugins
+> _"where did that come from, built into the harness, plugins
 > and settings and things that are not harness default are this
 > own type of dependeny we should track and you should mention
-> if you plan on using it again somewhere"*
+> if you plan on using it again somewhere"_
 
 This composes with the version-currency rule (always-WebSearch
 before asserting a version is current): both are "make the
@@ -174,7 +174,7 @@ their environment.
   are by-name **Claude-Code-only**: other harnesses won't read
   `.claude/`, they read their own canonical homes (`.codex/`,
   `.cursor/`, `.gemini/`, …) or an agreed shared convention. The
-  *patterns* those skills encode (e.g. `/btw` semantics, `/loop`
+  _patterns_ those skills encode (e.g. `/btw` semantics, `/loop`
   six-step checklist, the cadenced re-read just landed) may be
   portable; the **directory** is not. When evangelising a
   pattern cross-harness, port the substrate to AGENTS.md (the
@@ -191,27 +191,27 @@ discipline.
 
 **Application-failure pattern Aaron 2026-04-28 surfaced:** I
 default-read `.claude/skills/` when looking for skills, even
-when the substrate could live elsewhere — *"you are the stubborn
+when the substrate could live elsewhere — _"you are the stubborn
 one that won't read any directory other than .claude for skills
-we tested ScheduleWakeup."* The `.claude/` directory is
+we tested ScheduleWakeup."_ The `.claude/` directory is
 **Claude-Code-only by design**, so listing it as a "factory
 roster" that other agents access is misleading. Cross-harness
 portability requires the substrate to live in a harness-neutral
 location (AGENTS.md, `docs/`, `memory/`, repo-root convention)
 or to be ported per-harness into each canonical home. The
-factory's roster of skill *content* lives in `.claude/skills/`
-*as the Claude-Code instance of it*; future cross-harness work
+factory's roster of skill _content_ lives in `.claude/skills/`
+_as the Claude-Code instance of it_; future cross-harness work
 will need to either (a) agree on a shared skill home and migrate
 or (b) port per-harness via the canonical-home pattern.
 
-**Empirical-test gate (Aaron 2026-04-28):** *"any harness that
+**Empirical-test gate (Aaron 2026-04-28):** _"any harness that
 tries to use a shared location will need to test like you can
 they actuall load the skill, you though you would be able to in
-a shared non .claude location but you could not."* Cross-harness
+a shared non .claude location but you could not."_ Cross-harness
 portability claims must be **tested per harness**, not assumed.
 Empirical fact: Claude Code's skill discovery is **scoped to
 `.claude/skills/`**; a previous attempt to put a skill in a
-shared non-`.claude/` location *failed to load* in Claude Code,
+shared non-`.claude/` location _failed to load_ in Claude Code,
 contrary to my assumption. So:
 
 - Before claiming a "shared skill home" is portable across N
@@ -220,9 +220,9 @@ contrary to my assumption. So:
   "harness Y loads it."
 - The `.claude/skills/` empirical-failure result for non-default
   paths is a calibration data point: even Claude Code (which
-  *does* support skills) doesn't auto-discover outside its
+  _does_ support skills) doesn't auto-discover outside its
   canonical home. Other harnesses are likely similarly scoped.
-- The portable surface that *is* empirically tested across
+- The portable surface that _is_ empirically tested across
   harnesses is **AGENTS.md** — every coding-agent harness reads
   it (it's the established universal convention). For
   not-yet-tested cross-harness skill-home proposals, treat them

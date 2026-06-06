@@ -46,7 +46,17 @@ describe("bus — publish + list", () => {
 
   test("list --topic filters by topic", () => {
     run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
-    run("publish", "--from", "vera", "--to", "otto", "--topic", "claim", "--payload", '{"action":"claim","itemId":"B-0400"}');
+    run(
+      "publish",
+      "--from",
+      "vera",
+      "--to",
+      "otto",
+      "--topic",
+      "claim",
+      "--payload",
+      '{"action":"claim","itemId":"B-0400"}',
+    );
 
     const heartbeats = JSON.parse(run("list", "--topic", "heartbeat", "--json").stdout);
     expect(heartbeats).toHaveLength(1);
@@ -58,9 +68,29 @@ describe("bus — publish + list", () => {
   });
 
   test("list --to filters by recipient (includes broadcast)", () => {
-    run("publish", "--from", "otto", "--to", "vera", "--topic", "review-request", "--payload", '{"artifact":"tools/bus/bus.ts"}');
+    run(
+      "publish",
+      "--from",
+      "otto",
+      "--to",
+      "vera",
+      "--topic",
+      "review-request",
+      "--payload",
+      '{"artifact":"tools/bus/bus.ts"}',
+    );
     run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"working"}');
-    run("publish", "--from", "otto", "--to", "alexa", "--topic", "shadow-catch", "--payload", '{"content":"pattern spotted"}');
+    run(
+      "publish",
+      "--from",
+      "otto",
+      "--to",
+      "alexa",
+      "--topic",
+      "shadow-catch",
+      "--payload",
+      '{"content":"pattern spotted"}',
+    );
 
     // vera receives: direct + broadcast
     const forVera = JSON.parse(run("list", "--to", "vera", "--json").stdout);
@@ -75,11 +105,24 @@ describe("bus — publish + list", () => {
 });
 
 describe("bus — read", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("read returns a specific message by id", () => {
-    const p = run("publish", "--from", "vera", "--to", "otto", "--topic", "claim", "--payload", '{"action":"claim","itemId":"B-0001"}', "--json");
+    const p = run(
+      "publish",
+      "--from",
+      "vera",
+      "--to",
+      "otto",
+      "--topic",
+      "claim",
+      "--payload",
+      '{"action":"claim","itemId":"B-0001"}',
+      "--json",
+    );
     const env = JSON.parse(p.stdout);
 
     const r = run("read", env.id, "--json");
@@ -97,7 +140,9 @@ describe("bus — read", () => {
 });
 
 describe("bus — clean", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("clean removes all messages", () => {
@@ -126,18 +171,27 @@ describe("bus — clean", () => {
 });
 
 describe("bus — TTL expiry", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("expired messages are excluded from list by default", () => {
     // publish a message then manually expire it via env override + tiny TTL
     // We use the programmatic API directly (import) to set a 0ms TTL
-    const r = spawnSync("bun", ["-e", `
+    const r = spawnSync(
+      "bun",
+      [
+        "-e",
+        `
       process.env.ZETA_BUS_DIR = ${JSON.stringify(TEST_DIR)};
       const { publish } = await import(${JSON.stringify(SCRIPT)});
       const env = publish("otto", "*", { topic: "heartbeat", payload: { status: "idle" } }, 0);
       console.log(JSON.stringify(env));
-    `], { encoding: "utf-8" });
+    `,
+      ],
+      { encoding: "utf-8" },
+    );
     expect(r.status).toBe(0);
     const env = JSON.parse(r.stdout.trim());
     expect(env.id).toBeTruthy();
@@ -153,7 +207,9 @@ describe("bus — TTL expiry", () => {
 });
 
 describe("bus — watch", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("watch --timeout 0 exits 0 with no messages", () => {
@@ -188,7 +244,11 @@ describe("bus — watch", () => {
     });
 
     expect(r.status).toBe(0);
-    const msgs = (r.stdout ?? "").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    const msgs = (r.stdout ?? "")
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
     expect(msgs.length).toBeGreaterThan(0);
     expect(msgs[0].topic).toBe("heartbeat");
     expect((msgs[0].payload as { check: string }).check).toBe("live");
@@ -245,7 +305,9 @@ describe("bus — watch", () => {
 });
 
 describe("bus — status", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("status on empty bus prints 'bus: empty'", () => {
@@ -269,7 +331,17 @@ describe("bus — status", () => {
 
   test("status shows latest heartbeat per agent (deduplicated)", () => {
     run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"idle"}');
-    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"working","note":"on B-0400"}');
+    run(
+      "publish",
+      "--from",
+      "otto",
+      "--to",
+      "*",
+      "--topic",
+      "heartbeat",
+      "--payload",
+      '{"status":"working","note":"on B-0400"}',
+    );
     run("publish", "--from", "vera", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
 
     const r = run("status", "--json");
@@ -284,8 +356,17 @@ describe("bus — status", () => {
   });
 
   test("status --json includes active claim messages", () => {
-    run("publish", "--from", "vera", "--to", "*", "--topic", "claim",
-      "--payload", JSON.stringify({ action: "claim", itemId: "B-0300", branch: "feat/b-0300" }));
+    run(
+      "publish",
+      "--from",
+      "vera",
+      "--to",
+      "*",
+      "--topic",
+      "claim",
+      "--payload",
+      JSON.stringify({ action: "claim", itemId: "B-0300", branch: "feat/b-0300" }),
+    );
 
     const r = run("status", "--json");
     expect(r.exitCode).toBe(0);
@@ -299,8 +380,17 @@ describe("bus — status", () => {
   });
 
   test("status --json includes review-request messages", () => {
-    run("publish", "--from", "otto", "--to", "vera", "--topic", "review-request",
-      "--payload", JSON.stringify({ artifact: "tools/bus/bus.ts", question: "is the status command correct?" }));
+    run(
+      "publish",
+      "--from",
+      "otto",
+      "--to",
+      "vera",
+      "--topic",
+      "review-request",
+      "--payload",
+      JSON.stringify({ artifact: "tools/bus/bus.ts", question: "is the status command correct?" }),
+    );
 
     const r = run("status", "--json");
     expect(r.exitCode).toBe(0);
@@ -324,8 +414,17 @@ describe("bus — status", () => {
   });
 
   test("status human-readable shows claims section when claims present", () => {
-    run("publish", "--from", "riven", "--to", "*", "--topic", "claim",
-      "--payload", JSON.stringify({ action: "claim", itemId: "B-0001" }));
+    run(
+      "publish",
+      "--from",
+      "riven",
+      "--to",
+      "*",
+      "--topic",
+      "claim",
+      "--payload",
+      JSON.stringify({ action: "claim", itemId: "B-0001" }),
+    );
 
     const r = run("status");
     expect(r.exitCode).toBe(0);
@@ -335,8 +434,17 @@ describe("bus — status", () => {
   });
 
   test("status human-readable shows review-requests section when present", () => {
-    run("publish", "--from", "alexa", "--to", "otto", "--topic", "review-request",
-      "--payload", JSON.stringify({ artifact: "src/Foo.fs" }));
+    run(
+      "publish",
+      "--from",
+      "alexa",
+      "--to",
+      "otto",
+      "--topic",
+      "review-request",
+      "--payload",
+      JSON.stringify({ artifact: "src/Foo.fs" }),
+    );
 
     const r = run("status");
     expect(r.exitCode).toBe(0);
@@ -347,7 +455,7 @@ describe("bus — status", () => {
   test("status skips malformed heartbeat (no status field) — does not overwrite valid entry", () => {
     run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{"status":"alive"}');
     // malformed: valid object but missing status enum
-    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", '{}');
+    run("publish", "--from", "otto", "--to", "*", "--topic", "heartbeat", "--payload", "{}");
 
     const r = run("status", "--json");
     expect(r.exitCode).toBe(0);
@@ -369,7 +477,9 @@ describe("bus — status", () => {
 });
 
 describe("bus — error handling", () => {
-  beforeEach(() => { TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-")); });
+  beforeEach(() => {
+    TEST_DIR = mkdtempSync(join(tmpdir(), "zeta-bus-test-"));
+  });
   afterEach(cleanTestDir);
 
   test("publish without required flags exits 1", () => {

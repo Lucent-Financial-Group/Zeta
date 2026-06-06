@@ -14,14 +14,14 @@ looser than ours.
 
 ## Table of contents (Anthropic's)
 
-| # | Chapter                    | Page |
-|---|----------------------------|------|
-| 1 | Fundamentals               | 4    |
-| 2 | Planning and design        | 7    |
-| 3 | Testing and iteration      | 14   |
-| 4 | Distribution and sharing   | 18   |
-| 5 | Patterns and troubleshooting | 21 |
-| 6 | Resources and references   | 28   |
+| #   | Chapter                      | Page |
+| --- | ---------------------------- | ---- |
+| 1   | Fundamentals                 | 4    |
+| 2   | Planning and design          | 7    |
+| 3   | Testing and iteration        | 14   |
+| 4   | Distribution and sharing     | 18   |
+| 5   | Patterns and troubleshooting | 21   |
+| 6   | Resources and references     | 28   |
 
 ## The load-bearing claims
 
@@ -41,7 +41,7 @@ them.
   `SKILL.md` or `references/`.
 - `name` field: kebab-case, matches folder.
 - `description` field: under 1024 characters, MUST describe
-  both *what* and *when*, mention file types if relevant, no
+  both _what_ and _when_, mention file types if relevant, no
   XML tags.
 
 ### Use-case definition (Chapter 2, pp. 7-9)
@@ -63,11 +63,11 @@ Anthropic defines success criteria in two halves:
   complete without correction, consistent results across
   sessions.
 
-The explicit caveat: *"These are aspirational targets — rough
+The explicit caveat: _"These are aspirational targets — rough
 benchmarks rather than precise thresholds. Aim for rigor but
 accept that there will be an element of vibes-based
 assessment. We are actively developing more robust measurement
-guidance and tooling."* (p. 9)
+guidance and tooling."_ (p. 9)
 
 ### Testing (Chapter 3, pp. 14-17)
 
@@ -88,18 +88,18 @@ Three test areas for any serious skill:
    skill) vs. with-skill; count tool calls, tokens,
    back-and-forth messages (Page 16).
 
-**Pro tip (p. 15):** *"Iterate on a single challenging task
+**Pro tip (p. 15):** _"Iterate on a single challenging task
 until Claude succeeds, then extract the winning approach into
-a skill."*
+a skill."_
 
-**Crucial constraint (p. 17):** *"skill-creator helps you
+**Crucial constraint (p. 17):** _"skill-creator helps you
 design and refine skills but does not execute automated test
-suites or produce quantitative evaluation results."* In our
+suites or produce quantitative evaluation results."_ In our
 flows, that machinery lives in the upstream
 `claude-plugins-official/skill-creator` plugin bundle
 (`evals/evals.json`, `aggregate_benchmark`, `eval-viewer`) —
-the plugin is the *engine*, our `skill-creator` SKILL.md is
-the *wrapper*.
+the plugin is the _engine_, our `skill-creator` SKILL.md is
+the _wrapper_.
 
 ### Iteration feedback loops (p. 17)
 
@@ -145,15 +145,15 @@ Five reusable patterns:
 
 Our factory has three skills over this surface:
 
-| Factory skill     | Role                                                                     |
-|-------------------|--------------------------------------------------------------------------|
-| `skill-tune-up`   | Ranks who needs attention. Cites BP-NN.                                  |
-| `skill-creator`   | Customisation wrapper around Anthropic's upstream plugin.                |
-| `skill-improver`  | Applies BP-NN-cited checkbox fixes in-place.                             |
+| Factory skill    | Role                                                      |
+| ---------------- | --------------------------------------------------------- |
+| `skill-tune-up`  | Ranks who needs attention. Cites BP-NN.                   |
+| `skill-creator`  | Customisation wrapper around Anthropic's upstream plugin. |
+| `skill-improver` | Applies BP-NN-cited checkbox fixes in-place.              |
 
 - **skill-tune-up** uses the PDF's triggering-/undertriggering
   / overtriggering symptoms (p. 17) as diagnostic vocabulary.
-- **skill-creator** treats this PDF as the *normative* spec
+- **skill-creator** treats this PDF as the _normative_ spec
   for structure (Chapter 1), planning (Chapter 2), and
   patterns (Chapter 5). The bespoke workflow in that SKILL.md
   adds the Zeta-specific wrapper (BP-NN citations, Prompt-

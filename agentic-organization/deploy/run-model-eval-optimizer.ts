@@ -47,10 +47,7 @@ import {
   createCockroachTenantConfigStore,
   splitSqlStatements,
 } from "../packages/state-cockroach/src/index.ts";
-import {
-  evaluateSimulationRisk,
-  runOrgPolicySimulation,
-} from "../packages/simulator/src/index.ts";
+import { evaluateSimulationRisk, runOrgPolicySimulation } from "../packages/simulator/src/index.ts";
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
@@ -93,8 +90,7 @@ async function main(): Promise<void> {
       model: candidateModel,
       evaluatedAt: nowIso,
       cases: evalCases,
-      decide: async (testCase) =>
-        testCase.class === ModelEvalCaseClass.NeutralEvidence ? "approve" : "assign",
+      decide: async (testCase) => (testCase.class === ModelEvalCaseClass.NeutralEvidence ? "approve" : "assign"),
     });
     const summary = summarizeModelEvalReport(report);
     const evalEvidence = createContentAddressedEvidenceArtifact("model-eval-report", summary);
@@ -108,9 +104,27 @@ async function main(): Promise<void> {
       organizationId,
       seed: `model-eval-optimizer-${proofRunId}`,
       stream: [
-        { eventId: `sim-intake-${proofRunId}`, kind: "work_intake", occurredAt: nowIso, workItemId: `work-optimizer-${proofRunId}`, priority: 80 },
-        { eventId: `sim-complete-${proofRunId}`, kind: "work_completed", occurredAt: nowIso, workItemId: `work-optimizer-${proofRunId}`, leadTimeMs: 600_000 },
-        { eventId: `sim-review-${proofRunId}`, kind: "review_lag", occurredAt: nowIso, workItemId: `work-optimizer-${proofRunId}`, lagMs: 120_000 },
+        {
+          eventId: `sim-intake-${proofRunId}`,
+          kind: "work_intake",
+          occurredAt: nowIso,
+          workItemId: `work-optimizer-${proofRunId}`,
+          priority: 80,
+        },
+        {
+          eventId: `sim-complete-${proofRunId}`,
+          kind: "work_completed",
+          occurredAt: nowIso,
+          workItemId: `work-optimizer-${proofRunId}`,
+          leadTimeMs: 600_000,
+        },
+        {
+          eventId: `sim-review-${proofRunId}`,
+          kind: "review_lag",
+          occurredAt: nowIso,
+          workItemId: `work-optimizer-${proofRunId}`,
+          lagMs: 120_000,
+        },
       ],
       baseline: {
         overlayId: "current-frontier-reviewer",
@@ -135,7 +149,13 @@ async function main(): Promise<void> {
       minThroughputDelta: 0,
     });
     if (simulationDecision.status !== "accepted") {
-      console.log(JSON.stringify({ track: "G2/M3/M5 model eval optimizer", organizationId, simulationDecision, PROOF: "FAIL" }, null, 2));
+      console.log(
+        JSON.stringify(
+          { track: "G2/M3/M5 model eval optimizer", organizationId, simulationDecision, PROOF: "FAIL" },
+          null,
+          2,
+        ),
+      );
       process.exitCode = 1;
       return;
     }
@@ -171,14 +191,22 @@ async function main(): Promise<void> {
     });
 
     if (proposal.kind !== "proposed") {
-      console.log(JSON.stringify({ track: "G2/M3/M5 model eval optimizer", organizationId, proposal, PROOF: "FAIL" }, null, 2));
+      console.log(
+        JSON.stringify({ track: "G2/M3/M5 model eval optimizer", organizationId, proposal, PROOF: "FAIL" }, null, 2),
+      );
       process.exitCode = 1;
       return;
     }
 
     const artifact = proposal.changeSet.artifacts[0];
     if (artifact?.kind !== ChangeArtifactKind.ConfigChange) {
-      console.log(JSON.stringify({ track: "G2/M3/M5 model eval optimizer", organizationId, reason: "missing config artifact", PROOF: "FAIL" }, null, 2));
+      console.log(
+        JSON.stringify(
+          { track: "G2/M3/M5 model eval optimizer", organizationId, reason: "missing config artifact", PROOF: "FAIL" },
+          null,
+          2,
+        ),
+      );
       process.exitCode = 1;
       return;
     }
@@ -200,36 +228,45 @@ async function main(): Promise<void> {
       afterResolved.budgetDeltaTokens === -512 &&
       afterResolved.directives.includes(`optimizer:model-downgrade:${summary.runId}`) &&
       events.some((event) => event.kind === OrgEventKind.ModelEvalCompleted) &&
-      events.some((event) =>
-        event.kind === OrgEventKind.DecisionOptimizationProposed &&
-        event.evidenceRefs.includes(evalEvidence.ref) &&
-        event.evidenceRefs.includes(kpiEvidence.ref) &&
-        event.evidenceRefs.includes(simulationEvidence.ref)
+      events.some(
+        (event) =>
+          event.kind === OrgEventKind.DecisionOptimizationProposed &&
+          event.evidenceRefs.includes(evalEvidence.ref) &&
+          event.evidenceRefs.includes(kpiEvidence.ref) &&
+          event.evidenceRefs.includes(simulationEvidence.ref),
       );
 
-    console.log(JSON.stringify({
-      track: "G2/M3/M5 model eval optimizer",
-      organizationId,
-      evalEvidenceRef: evalEvidence.ref,
-      kpiEvidenceRef: kpiEvidence.ref,
-      simulationEvidenceRef: simulationEvidence.ref,
-      simulationDecision,
-      evalSummary: summary,
-      changeSet: {
-        changeSetId: proposal.changeSet.changeSetId,
-        phase: proposal.changeSet.phase,
-        artifactCount: proposal.changeSet.artifacts.length,
-      },
-      resolved: {
-        before: beforeResolved,
-        after: afterResolved,
-      },
-      events: {
-        modelEvalCompleted: events.filter((event) => event.kind === OrgEventKind.ModelEvalCompleted).length,
-        decisionOptimizationProposed: events.filter((event) => event.kind === OrgEventKind.DecisionOptimizationProposed).length,
-      },
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "G2/M3/M5 model eval optimizer",
+          organizationId,
+          evalEvidenceRef: evalEvidence.ref,
+          kpiEvidenceRef: kpiEvidence.ref,
+          simulationEvidenceRef: simulationEvidence.ref,
+          simulationDecision,
+          evalSummary: summary,
+          changeSet: {
+            changeSetId: proposal.changeSet.changeSetId,
+            phase: proposal.changeSet.phase,
+            artifactCount: proposal.changeSet.artifacts.length,
+          },
+          resolved: {
+            before: beforeResolved,
+            after: afterResolved,
+          },
+          events: {
+            modelEvalCompleted: events.filter((event) => event.kind === OrgEventKind.ModelEvalCompleted).length,
+            decisionOptimizationProposed: events.filter(
+              (event) => event.kind === OrgEventKind.DecisionOptimizationProposed,
+            ).length,
+          },
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();
@@ -286,7 +323,7 @@ function cockroachGenericStore(input: {
       const tenantPrefix = "tenant-config/";
       if (key.startsWith(tenantPrefix) && key.endsWith(".json")) {
         const organizationId = key.slice(tenantPrefix.length, -".json".length);
-        return await input.tenantConfigs.get(organizationId) as T | null;
+        return (await input.tenantConfigs.get(organizationId)) as T | null;
       }
       throw new Error(`unsupported optimizer get key: ${key}`);
     },

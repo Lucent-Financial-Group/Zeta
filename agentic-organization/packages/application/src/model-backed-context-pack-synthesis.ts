@@ -1,7 +1,4 @@
-import type {
-  ChatCompletionPort,
-  ChatCompletionResult,
-} from "./model-backed-composer.ts";
+import type { ChatCompletionPort, ChatCompletionResult } from "./model-backed-composer.ts";
 import { HatLevel } from "../../domain/src/index.ts";
 import type {
   ContextPackEphemeralGapHypothesis,
@@ -13,10 +10,7 @@ import type {
   ContextPackEphemeralSynthesisRequest,
   ContextPackEphemeralSynthesisResult,
 } from "./context-pack-builder.ts";
-import type {
-  ContextPackItem,
-  ContextPackOmittedItem,
-} from "./observe.ts";
+import type { ContextPackItem, ContextPackOmittedItem } from "./observe.ts";
 import { ContextPackAttentionLaneRefKind } from "./observe.ts";
 import { ContextPackUncertaintySeverity } from "./observe.ts";
 
@@ -149,12 +143,16 @@ function contextPackSynthesisPrompt(
     "Never report confidence above the weakest cited evidence item confidence; omit confidence when uncertain.",
     "",
     "Uncertainty signals:",
-    ...boundedUncertaintySignals(request.uncertaintySignals, input.maxUncertaintySignals ?? DEFAULT_MAX_UNCERTAINTY_SIGNALS)
-      .map(formatUncertaintySignal),
+    ...boundedUncertaintySignals(
+      request.uncertaintySignals,
+      input.maxUncertaintySignals ?? DEFAULT_MAX_UNCERTAINTY_SIGNALS,
+    ).map(formatUncertaintySignal),
     "Treat uncertainty signals as deterministic bounds; do not resolve them from model judgment.",
     "",
     "Known contradictions:",
-    ...request.contradictions.slice(0, input.maxContradictions ?? DEFAULT_MAX_CONTRADICTIONS).map((item) => `- ${item}`),
+    ...request.contradictions
+      .slice(0, input.maxContradictions ?? DEFAULT_MAX_CONTRADICTIONS)
+      .map((item) => `- ${item}`),
     "",
     "Legal observe actions:",
     ...request.legalActions.map(formatLegalAction),
@@ -170,32 +168,40 @@ function contextPackSynthesisPrompt(
         uncertaintyExplanation: "why confidence is bounded by the cited evidence",
         reasons: ["hat-specific reason"],
       },
-      rankedContextRefs: [{
-        itemId: "doc:example",
-        reason: "why this context matters most",
-        evidenceRefs: ["doc:example"],
-        uncertaintyExplanation: "what remains uncertain about this ranking",
-      }],
-      gapHypotheses: [{
-        message: "missing or weak context hypothesis",
-        evidenceRefs: ["doc:example"],
-        suggestedNextStep: "who or what to consult next",
-        confidence: 0.7,
-        uncertaintyExplanation: "what the cited evidence does and does not prove",
-      }],
-      questions: [{
-        audienceHatLevel: "manager",
-        question: "one precise question",
-        evidenceRefs: ["doc:example"],
-        uncertaintyExplanation: "why this question is still unresolved",
-      }],
-      recommendedActionRefs: [{
-        actionType: "meta.escalate",
-        direction: "legal next action to consider",
-        reason: "why this action fits the supplied evidence",
-        evidenceRefs: ["doc:example"],
-        uncertaintyExplanation: "why this action remains advisory",
-      }],
+      rankedContextRefs: [
+        {
+          itemId: "doc:example",
+          reason: "why this context matters most",
+          evidenceRefs: ["doc:example"],
+          uncertaintyExplanation: "what remains uncertain about this ranking",
+        },
+      ],
+      gapHypotheses: [
+        {
+          message: "missing or weak context hypothesis",
+          evidenceRefs: ["doc:example"],
+          suggestedNextStep: "who or what to consult next",
+          confidence: 0.7,
+          uncertaintyExplanation: "what the cited evidence does and does not prove",
+        },
+      ],
+      questions: [
+        {
+          audienceHatLevel: "manager",
+          question: "one precise question",
+          evidenceRefs: ["doc:example"],
+          uncertaintyExplanation: "why this question is still unresolved",
+        },
+      ],
+      recommendedActionRefs: [
+        {
+          actionType: "meta.escalate",
+          direction: "legal next action to consider",
+          reason: "why this action fits the supplied evidence",
+          evidenceRefs: ["doc:example"],
+          uncertaintyExplanation: "why this action remains advisory",
+        },
+      ],
       curationEvidenceRefs: ["doc:example"],
     }),
   ].join("\n");
@@ -211,7 +217,9 @@ function formatCurationLane(lane: ContextPackEphemeralSynthesisRequest["curation
   ].join(" | ");
 }
 
-function formatLaneRef(ref: ContextPackEphemeralSynthesisRequest["curationPlan"]["lanes"][number]["refs"][number]): string {
+function formatLaneRef(
+  ref: ContextPackEphemeralSynthesisRequest["curationPlan"]["lanes"][number]["refs"][number],
+): string {
   switch (ref.kind) {
     case ContextPackAttentionLaneRefKind.Item:
       return `item:${ref.itemId}`;
@@ -229,7 +237,7 @@ function formatCurationLaneDetails(
   maxLaneRefDetails: number,
 ): readonly string[] {
   return request.curationPlan.lanes.flatMap((lane) =>
-    lane.refs.slice(0, maxLaneRefDetails).map((ref) => formatCurationLaneRefDetail(lane.kind, ref, request))
+    lane.refs.slice(0, maxLaneRefDetails).map((ref) => formatCurationLaneRefDetail(lane.kind, ref, request)),
   );
 }
 
@@ -246,8 +254,8 @@ function formatCurationLaneRefDetail(
         : `- lane=${laneKind} | ${formatEvidenceItem(item)}`;
     }
     case ContextPackAttentionLaneRefKind.Omission: {
-      const omission = request.omissions.find((candidate) =>
-        candidate.nodeId === ref.omissionRef || `omission:${candidate.reason}` === ref.omissionRef
+      const omission = request.omissions.find(
+        (candidate) => candidate.nodeId === ref.omissionRef || `omission:${candidate.reason}` === ref.omissionRef,
       );
       return omission === undefined
         ? `- lane=${laneKind} | missingOmission=${ref.omissionRef}`
@@ -288,7 +296,9 @@ function boundedUncertaintySignals(
     .slice(0, maxSignals);
 }
 
-function uncertaintySeverityRank(severity: ContextPackEphemeralSynthesisRequest["uncertaintySignals"][number]["severity"]): number {
+function uncertaintySeverityRank(
+  severity: ContextPackEphemeralSynthesisRequest["uncertaintySignals"][number]["severity"],
+): number {
   switch (severity) {
     case ContextPackUncertaintySeverity.High:
       return 3;
@@ -377,15 +387,20 @@ function optionalRankedContextRefs(
 ): { rankedContextRefs?: readonly ContextPackEphemeralRankedContextRef[] } {
   if (value === undefined) return {};
   return {
-    rankedContextRefs: parseObjectArray(value, "rankedContextRefs").slice(0, maxItems).map((entry) => {
-      const payload = entry as ParsedRankedContextRefPayload;
-      return {
-        itemId: parseRequiredString(payload.itemId, "context-pack synthesis rankedContextRefs require itemId"),
-        reason: parseRequiredString(payload.reason, "context-pack synthesis rankedContextRefs require reason"),
-        evidenceRefs: parseNonEmptyEvidenceRefs(payload.evidenceRefs, "context-pack synthesis rankedContextRefs require evidenceRefs"),
-        ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
-      };
-    }),
+    rankedContextRefs: parseObjectArray(value, "rankedContextRefs")
+      .slice(0, maxItems)
+      .map((entry) => {
+        const payload = entry as ParsedRankedContextRefPayload;
+        return {
+          itemId: parseRequiredString(payload.itemId, "context-pack synthesis rankedContextRefs require itemId"),
+          reason: parseRequiredString(payload.reason, "context-pack synthesis rankedContextRefs require reason"),
+          evidenceRefs: parseNonEmptyEvidenceRefs(
+            payload.evidenceRefs,
+            "context-pack synthesis rankedContextRefs require evidenceRefs",
+          ),
+          ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
+        };
+      }),
   };
 }
 
@@ -395,31 +410,41 @@ function optionalGapHypotheses(
 ): { gapHypotheses?: readonly ContextPackEphemeralGapHypothesis[] } {
   if (value === undefined) return {};
   return {
-    gapHypotheses: parseObjectArray(value, "gapHypotheses").slice(0, maxItems).map((entry) => {
-      const payload = entry as ParsedGapHypothesisPayload;
-      return {
-        message: parseRequiredString(payload.message, "context-pack synthesis gapHypotheses require message"),
-        evidenceRefs: parseNonEmptyEvidenceRefs(payload.evidenceRefs, "context-pack synthesis gapHypotheses require evidenceRefs"),
-        ...optionalStringField("suggestedNextStep", payload.suggestedNextStep),
-        ...optionalConfidence(payload.confidence),
-        ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
-      };
-    }),
+    gapHypotheses: parseObjectArray(value, "gapHypotheses")
+      .slice(0, maxItems)
+      .map((entry) => {
+        const payload = entry as ParsedGapHypothesisPayload;
+        return {
+          message: parseRequiredString(payload.message, "context-pack synthesis gapHypotheses require message"),
+          evidenceRefs: parseNonEmptyEvidenceRefs(
+            payload.evidenceRefs,
+            "context-pack synthesis gapHypotheses require evidenceRefs",
+          ),
+          ...optionalStringField("suggestedNextStep", payload.suggestedNextStep),
+          ...optionalConfidence(payload.confidence),
+          ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
+        };
+      }),
   };
 }
 
 function optionalQuestions(value: unknown, maxItems: number): { questions?: readonly ContextPackEphemeralQuestion[] } {
   if (value === undefined) return {};
   return {
-    questions: parseObjectArray(value, "questions").slice(0, maxItems).map((entry) => {
-      const payload = entry as ParsedQuestionPayload;
-      return {
-        question: parseRequiredString(payload.question, "context-pack synthesis questions require question"),
-        evidenceRefs: parseNonEmptyEvidenceRefs(payload.evidenceRefs, "context-pack synthesis questions require evidenceRefs"),
-        ...optionalAudienceHatLevel(payload.audienceHatLevel),
-        ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
-      };
-    }),
+    questions: parseObjectArray(value, "questions")
+      .slice(0, maxItems)
+      .map((entry) => {
+        const payload = entry as ParsedQuestionPayload;
+        return {
+          question: parseRequiredString(payload.question, "context-pack synthesis questions require question"),
+          evidenceRefs: parseNonEmptyEvidenceRefs(
+            payload.evidenceRefs,
+            "context-pack synthesis questions require evidenceRefs",
+          ),
+          ...optionalAudienceHatLevel(payload.audienceHatLevel),
+          ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
+        };
+      }),
   };
 }
 
@@ -429,16 +454,24 @@ function optionalRecommendedActionRefs(
 ): { recommendedActionRefs?: readonly ContextPackEphemeralRecommendedActionRef[] } {
   if (value === undefined) return {};
   return {
-    recommendedActionRefs: parseObjectArray(value, "recommendedActionRefs").slice(0, maxItems).map((entry) => {
-      const payload = entry as ParsedRecommendedActionRefPayload;
-      return {
-        actionType: parseRequiredString(payload.actionType, "context-pack synthesis recommendedActionRefs require actionType"),
-        ...optionalStringField("direction", payload.direction),
-        reason: parseRequiredString(payload.reason, "context-pack synthesis recommendedActionRefs require reason"),
-        evidenceRefs: parseNonEmptyEvidenceRefs(payload.evidenceRefs, "context-pack synthesis recommendedActionRefs require evidenceRefs"),
-        ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
-      };
-    }),
+    recommendedActionRefs: parseObjectArray(value, "recommendedActionRefs")
+      .slice(0, maxItems)
+      .map((entry) => {
+        const payload = entry as ParsedRecommendedActionRefPayload;
+        return {
+          actionType: parseRequiredString(
+            payload.actionType,
+            "context-pack synthesis recommendedActionRefs require actionType",
+          ),
+          ...optionalStringField("direction", payload.direction),
+          reason: parseRequiredString(payload.reason, "context-pack synthesis recommendedActionRefs require reason"),
+          evidenceRefs: parseNonEmptyEvidenceRefs(
+            payload.evidenceRefs,
+            "context-pack synthesis recommendedActionRefs require evidenceRefs",
+          ),
+          ...optionalStringField("uncertaintyExplanation", payload.uncertaintyExplanation),
+        };
+      }),
   };
 }
 
@@ -456,10 +489,7 @@ function parseNonEmptyEvidenceRefs(value: unknown, message: string): readonly st
   return refs;
 }
 
-function optionalStringField<Key extends string>(
-  key: Key,
-  value: unknown,
-): Record<Key, string> | {} {
+function optionalStringField<Key extends string>(key: Key, value: unknown): Record<Key, string> | {} {
   if (value === undefined) return {};
   return { [key]: parseRequiredString(value, `context-pack synthesis ${key} must be a string`) } as Record<Key, string>;
 }
@@ -512,7 +542,9 @@ function parseRequiredString(value: unknown, message: string): string {
 
 function parseStringArray(value: unknown): readonly string[] {
   if (!Array.isArray(value)) throw new Error("context-pack synthesis expected a string array");
-  return uniqueStrings(value.map((entry) => parseRequiredString(entry, "context-pack synthesis array entry must be a string")));
+  return uniqueStrings(
+    value.map((entry) => parseRequiredString(entry, "context-pack synthesis array entry must be a string")),
+  );
 }
 
 function uniqueStrings(values: readonly string[]): readonly string[] {

@@ -10,13 +10,13 @@ is carried by the matching entry under `.claude/agents/`.
 
 Negotiation is the process of reaching agreement between
 parties with different starting interests. It is distinct
-from conflict resolution: negotiation *prevents* conflict
-(or sometimes precedes it); conflict resolution *resolves*
+from conflict resolution: negotiation _prevents_ conflict
+(or sometimes precedes it); conflict resolution _resolves_
 conflict that has already surfaced.
 
 ## The Harvard framework — Fisher & Ury
 
-From *Getting to Yes*:
+From _Getting to Yes_:
 
 1. **Separate people from problem.** Don't fight the
    counterparty; fight the problem.
@@ -32,11 +32,11 @@ irreconcilable often have compatible interests underneath.
 
 ## Integrative vs distributive
 
-| Type | Shape | Mode |
-|---|---|---|
-| **Integrative** | Enlarge the pie | Collaborative, info-sharing |
-| **Distributive** | Split fixed pie | Competitive, info-guarding |
-| **Mixed** | Both at once | Most real negotiations |
+| Type             | Shape           | Mode                        |
+| ---------------- | --------------- | --------------------------- |
+| **Integrative**  | Enlarge the pie | Collaborative, info-sharing |
+| **Distributive** | Split fixed pie | Competitive, info-guarding  |
+| **Mixed**        | Both at once    | Most real negotiations      |
 
 **Rule.** Most "distributive" negotiations hide integrative
 opportunities. Look for multi-issue structure where parties'
@@ -209,7 +209,7 @@ rails.
 ## When to defer
 
 - **Conflict already crystallised** → `conflict-resolution-
-  expert`.
+expert`.
 - **Authority framework** → `governance-expert`.
 - **API being negotiated** → `public-api-designer`.
 - **Bad-faith counterparty** → `threat-model-critic`.
@@ -234,12 +234,12 @@ rails.
 
 ## Reference patterns
 
-- Fisher, Ury, Patton — *Getting to Yes* (3rd ed.).
-- Ury — *Getting Past No*; *The Power of a Positive No*.
-- Galinsky, Schweitzer — *Friend and Foe*.
-- Raiffa — *Negotiation Analysis*.
-- Malhotra & Bazerman — *Negotiation Genius*.
-- Thompson — *The Mind and Heart of the Negotiator*.
+- Fisher, Ury, Patton — _Getting to Yes_ (3rd ed.).
+- Ury — _Getting Past No_; _The Power of a Positive No_.
+- Galinsky, Schweitzer — _Friend and Foe_.
+- Raiffa — _Negotiation Analysis_.
+- Malhotra & Bazerman — _Negotiation Genius_.
+- Thompson — _The Mind and Heart of the Negotiator_.
 - `.claude/skills/conflict-resolution-expert/SKILL.md`.
 - `.claude/skills/governance-expert/SKILL.md`.
 - `.claude/skills/public-api-designer/SKILL.md`.

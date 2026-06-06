@@ -1,15 +1,16 @@
 # agentic-organization — North Star, critical pillars, implementation patterns (synthesis for Max's onboarding, through the lightlike / no-cage / accelerator lens)
 
 > **What this is.** Max (co-owner of LFG, onboarding deep into lightlike + no-cage
-> self-modifying DUs in TS) sent a prompt: *"read agentic-organization/docs …
+> self-modifying DUs in TS) sent a prompt: _"read agentic-organization/docs …
 > describe the most important and critical pillars and their implementation
-> patterns so I can review this for how it can be improved using [my lens]."*
+> patterns so I can review this for how it can be improved using [my lens]."_
 > Aaron noted the lens is swappable. So this is **Otto's run of that prompt
 > through the lightlike / no-cage-self-modifying-DU / PR-less-accelerator lens** —
 > the **multi-oracle complement** to Max's own math-proofs/algorithms review of
 > the same docs (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`
-> + cross-substrate-triangulation). Read alongside Max's review; convergence
-> across the two lenses is the signal.
+>
+> - cross-substrate-triangulation). Read alongside Max's review; convergence
+>   across the two lenses is the signal.
 >
 > Built from a 4-agent parallel read of all ~32 `agentic-organization/docs/`
 > files. Load-bearing phrases quoted verbatim.
@@ -19,8 +20,8 @@
 > An AI-driven operating system where **work, memory, and attention are
 > first-class governed primitives** — and where agents **expand their own
 > coordination substrate safely** rather than freeze an initial vocabulary.
-> *"The platform should make expansion reviewable, traceable, scoped, and safe;
-> it should not make the first tool list a cage."*
+> _"The platform should make expansion reviewable, traceable, scoped, and safe;
+> it should not make the first tool list a cage."_
 
 That last clause **is the no-cage principle** Max is onboarding to, already baked
 into the project's North Star. The system treats "remember when" (memory) and
@@ -36,22 +37,23 @@ propagation + long-lived patterns, not isolated workers) · **tick-sources**
 
 ## 2. The critical pillars (+ implementation patterns)
 
-**P1 — Hat system (cluster-native authority).** *"Hats are persistent roles.
-Agents wear hats temporarily."* A hat bundles skills + OPA/RBAC authority + tool
+**P1 — Hat system (cluster-native authority).** _"Hats are persistent roles.
+Agents wear hats temporarily."_ A hat bundles skills + OPA/RBAC authority + tool
 access + credential scope + memory scope + supervisor-graph position + succession
-+ reputation. Four CRDs: `Hat` / `HatBinding` (time-bounded wearing) / `HatSwap`
-(one durable event per transition) / `HatPolicy` (graph constraints). Org DB =
-business truth; CRDs = runtime enforcement. *Pattern: hat-as-atomic-unit;
-authority refreshes continuously via short-lived JWT `HatToken`, never granted
-forever → roles never become cages.*
 
-**P2 — Always-on event-driven runtime (anti-stall).** *Pattern:* state change →
+- reputation. Four CRDs: `Hat` / `HatBinding` (time-bounded wearing) / `HatSwap`
+  (one durable event per transition) / `HatPolicy` (graph constraints). Org DB =
+  business truth; CRDs = runtime enforcement. _Pattern: hat-as-atomic-unit;
+  authority refreshes continuously via short-lived JWT `HatToken`, never granted
+  forever → roles never become cages._
+
+**P2 — Always-on event-driven runtime (anti-stall).** _Pattern:_ state change →
 domain event → rule evaluation → deterministic **ReactionPlan** → executor claims
 under **lease + fencing token** → outcome observed. Always-on workers (Scheduler,
 RuleEvaluation, ReactionExecutor, OutboxPublisher, LeaseReaper, Reconciler) run
 **independent of agent sessions** — "event first, recovery second." Anti-stall:
-typed blockers + **alternate-work lanes** + movement invariant (*"every active
-initiative has a next executable item or explicit pause"*) + queue-SLO escalation.
+typed blockers + **alternate-work lanes** + movement invariant (_"every active
+initiative has a next executable item or explicit pause"_) + queue-SLO escalation.
 
 **P3 — Command pipeline + append-only event-store (the spine).** Every privileged
 action is a **command**, never a direct field write. Pipeline: parse → authn
@@ -64,12 +66,12 @@ concurrency; every row carries actor/hat/correlation/causation/trace IDs).
 Transport: **NATS/JetStream** with transactional outbox + inbox-dedupe →
 exactly-once-ish.
 
-**P4 — Work-anchors + supervisor-chain communication.** *Non-negotiable:* nothing
-is anchorless — *"every discussion, meeting, message thread, and broadcast has a
-work anchor."* The primary executable primitive is **`send_supervisor_signal`**:
+**P4 — Work-anchors + supervisor-chain communication.** _Non-negotiable:_ nothing
+is anchorless — _"every discussion, meeting, message thread, and broadcast has a
+work anchor."_ The primary executable primitive is **`send_supervisor_signal`**:
 typed upward signals (ask_question / report_blocker / request_decision /
 request_resource / request_review / report_risk / suggest_improvement /
-request_escalation) up the hat chain. *Ambiguity is a work-type, not a blocker.*
+request_escalation) up the hat chain. _Ambiguity is a work-type, not a blocker._
 
 **P5 — Ambiguous-requirement lifecycle + business quality gates (the leash).**
 A maturity ladder (raw_intake → … → implementation_ready) gated by a chain
@@ -77,7 +79,7 @@ A maturity ladder (raw_intake → … → implementation_ready) gated by a chain
 → runtime_validation → final_business_validation → release_readiness). **No
 self-approval.** Final validation evaluates **every business rule** rule-by-rule
 (satisfied / not_applicable / changed_by_decision — never partial without
-rerouting). *"No free-floating meeting or chat should decide a release."*
+rerouting). _"No free-floating meeting or chat should decide a release."_
 
 **P6 — Execution + memory substrate.** k3s schedules Hermes session containers;
 Oz/Warp orchestrates; Cilium/SPIRE/Vault for mesh+identity+secrets. Memory =
@@ -96,37 +98,37 @@ messaging-nats / observability / runtime / workers). Temporal/Dapr deferred.
 
 This is the load-bearing insight for onboarding. The agentic-organization is the
 **leash-market** instantiation; the **PR-less git-monster accelerator**
-(`docs/accelerator/`) is the **Agora-market** instantiation — of the *same* core.
+(`docs/accelerator/`) is the **Agora-market** instantiation — of the _same_ core.
 Per the dual-market framing + **Otto Modification 4** (each action-type declares
 its gate: internal transitions append-only/PR-less = Agora; cross-cutting
 substrate PR-gated = leash):
 
-| Core primitive | agentic-organization (leash) | accelerator (Agora / lightlike) |
-|---|---|---|
-| Action grammar | `UniversalActionRecord` + DU state machine + explicit commands | `move-next` + `AgentState`/`MenuOption` DUs + `transition` (`tools/agent-loop/state-machine.ts`, `tools/accelerator/move-next-harness.ts`) |
-| Source of truth | append-only events in **CockroachDB** + NATS outbox | append-only events in **git-as-free-event-store** (`docs/accelerator/EVENT-STORE-SCHEMA.md`) |
-| State persistence | DB rows + optimistic `version` | per-agent `events/<agent>/<ulid>.json`, conflict-free by construction |
-| Authority | hats as CRDs + OPA + short-lived JWT | hats (B-0868) + tools-rented-not-owned + Sorting-Hat succession |
-| Gating | quality-gate chain, no-self-approval (PR-protected) | PR-less direct-push (Agora) vs PR-gated (leash) per Otto Mod 4 |
-| No-cage | *"should not make the first tool list a cage"* | no-cage self-modifying DUs (Max's framing) |
-| Reversibility | mistake-assumption (reviewable/reversible) | retraction-native (light) + razor-as-compression-engine |
+| Core primitive    | agentic-organization (leash)                                   | accelerator (Agora / lightlike)                                                                                                            |
+| ----------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Action grammar    | `UniversalActionRecord` + DU state machine + explicit commands | `move-next` + `AgentState`/`MenuOption` DUs + `transition` (`tools/agent-loop/state-machine.ts`, `tools/accelerator/move-next-harness.ts`) |
+| Source of truth   | append-only events in **CockroachDB** + NATS outbox            | append-only events in **git-as-free-event-store** (`docs/accelerator/EVENT-STORE-SCHEMA.md`)                                               |
+| State persistence | DB rows + optimistic `version`                                 | per-agent `events/<agent>/<ulid>.json`, conflict-free by construction                                                                      |
+| Authority         | hats as CRDs + OPA + short-lived JWT                           | hats (B-0868) + tools-rented-not-owned + Sorting-Hat succession                                                                            |
+| Gating            | quality-gate chain, no-self-approval (PR-protected)            | PR-less direct-push (Agora) vs PR-gated (leash) per Otto Mod 4                                                                             |
+| No-cage           | _"should not make the first tool list a cage"_                 | no-cage self-modifying DUs (Max's framing)                                                                                                 |
+| Reversibility     | mistake-assumption (reviewable/reversible)                     | retraction-native (light) + razor-as-compression-engine                                                                                    |
 
 **They are not competitors — they are the same substrate gated two ways.** The
 agentic-org proves the gated/corporate side at production-infra weight
 (CockroachDB/NATS/k3s); the accelerator proves the free/no-vendor-lockin side at
 git-weight. Otto Mod 4 is the routing rule between them.
 
-**Max's agent-OS = the leash plugin system** (Aaron 2026-05-30, *"he said agent
-os can be leash plugin system"*). This places Max's declarative-workflow agentic
+**Max's agent-OS = the leash plugin system** (Aaron 2026-05-30, _"he said agent
+os can be leash plugin system"_). This places Max's declarative-workflow agentic
 OS concretely: it **IS the leash-market plugin layer** — the gated/corporate
 plugin system that runs leash-market DUs through the quality-gate chain. The
 accelerator is the Agora-market layer (no-cage, PR-less). So the dual-market gets
 a clean implementation split:
 
-| Market | Plugin/runtime layer | Gate |
-|---|---|---|
+| Market                | Plugin/runtime layer                                                          | Gate                                          |
+| --------------------- | ----------------------------------------------------------------------------- | --------------------------------------------- |
 | **Leash** (corporate) | **Max's agent-OS** (declarative-workflow plugin system) + agentic-org runtime | PR-protected, quality-gated, no-self-approval |
-| **Agora** (OSS) | the accelerator (move-next harness + git-event-store) | PR-less direct-push, append-only |
+| **Agora** (OSS)       | the accelerator (move-next harness + git-event-store)                         | PR-less direct-push, append-only              |
 
 Both speak the same DU action-grammar (Max's ontologies-in-DUs ↔ UniversalActionRecord
 ↔ move-next); they differ only in gate + substrate-weight. Max's OS plugging in as
@@ -134,18 +136,18 @@ the leash plugin system is the cleanest realization of Otto Mod 4.
 
 ### We are a DIO (Distributed Intelligence Organization) running on a DID (Distributed Intelligence Database)
 
-Aaron 2026-05-30 (canonical, corrected): *"Distributed Intelligence Originization
-dio running on Distribution Intelligence Database"* → **DIO = Distributed
+Aaron 2026-05-30 (canonical, corrected): _"Distributed Intelligence Originization
+dio running on Distribution Intelligence Database"_ → **DIO = Distributed
 Intelligence Organization**, running on a **DID = Distributed Intelligence
 Database**. (NOT "DAO / Distributed Autonomous Organization" — that was an earlier
-mis-expansion of *"we are a dio"*; Aaron corrected it explicitly. The
+mis-expansion of _"we are a dio"_; Aaron corrected it explicitly. The
 distinction is load-bearing: **Intelligence**, not **Autonomous** — the org is a
-distributed *intelligence*, and it runs *on* a distributed-intelligence
-*database*, not a blockchain-flavored autonomous-org.) The full canonical
+distributed _intelligence_, and it runs _on_ a distributed-intelligence
+_database_, not a blockchain-flavored autonomous-org.) The full canonical
 architecture lives at
 [`2026-05-30-dio-did-canonical-architecture-...`](2026-05-30-dio-did-canonical-architecture-everything-in-the-stream-rx-joins-as-threads-of-time-self-propagating-markdown-aaron-mika-otto.md).
 
-(*"or the Admanate machine i'm sure i'm spelling this wrong"* — alternate name,
+(_"or the Admanate machine i'm sure i'm spelling this wrong"_ — alternate name,
 spelling-uncertain; best read: an **"Adamant machine"** = an unbreakable /
 permanent / append-only machine, composing with the "firm ground"
 permanent-ratchet substrate from the encryption-budget doc; flagged uncertain,
@@ -167,8 +169,8 @@ machine you "can't take back what you gave in the dark."
 
 ## 4. Max-convergence — declarative workflows + ontologies-in-DUs (cross-substrate triangulation)
 
-Aaron 2026-05-30: Max has his own *"agentic OS"* of **declarative workflows**, and
-he found **ontologies in DUs "clean as fuck."** That is the *same shape* arrived
+Aaron 2026-05-30: Max has his own _"agentic OS"_ of **declarative workflows**, and
+he found **ontologies in DUs "clean as fuck."** That is the _same shape_ arrived
 at independently:
 
 - **Max's agent-OS** = declarative workflows + ontologies-in-discriminated-unions.
@@ -180,14 +182,15 @@ at independently:
 Three independent instantiations converging on **declarative-workflows-as-DUs +
 ontologies-in-DUs** is strong cross-substrate-triangulation signal that the shape
 is load-bearing (per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`
-+ the ontology-as-DU substrate: schemas-as-rows B-0829, ontology-negotiation
-B-0811, the monad-propagation / OPLE-T-TFeedback DU cluster). **Onboarding Max is
-composition, not rewrite** — his declarative-workflow OS and the Zeta substrate
-share the DU/declarative core; the bridge is the DU action-grammar.
+
+- the ontology-as-DU substrate: schemas-as-rows B-0829, ontology-negotiation
+  B-0811, the monad-propagation / OPLE-T-TFeedback DU cluster). **Onboarding Max is
+  composition, not rewrite** — his declarative-workflow OS and the Zeta substrate
+  share the DU/declarative core; the bridge is the DU action-grammar.
 
 ## 5. Improvement opportunities (through the lightlike / no-cage lens — for Max's review)
 
-These are the candidate improvements the *lightlike/no-cage/accelerator* lens
+These are the candidate improvements the _lightlike/no-cage/accelerator_ lens
 surfaces (the complement to whatever Max's math-proofs lens surfaces):
 
 1. **A git-as-free-event-store backend for Agora-market DUs.** agentic-org's
@@ -232,7 +235,7 @@ surfaces (the complement to whatever Max's math-proofs lens surfaces):
   (no magic strings). Your declarative-workflow OS plugs in at the action-grammar
   layer.
 - **The no-cage principle you're onboarding to** is explicit project doctrine
-  (*"should not make the first tool list a cage"*) — agents propose new
+  (_"should not make the first tool list a cage"_) — agents propose new
   tools/flows/lifecycles through governed work, not a frozen command list.
 - **The lightlike side** (what I've been building) is `docs/accelerator/` +
   `tools/accelerator/` + `tools/agent-loop/` — the move-next harness, git-event-store
@@ -248,9 +251,10 @@ Composes with: `agentic-organization/docs/*` (the source); the accelerator
 (`docs/accelerator/README.md` + `EVENT-STORE-SCHEMA.md` + `SUBSTRATE-GROUNDING.md`);
 B-0867 (workflow-engine v1 DU + universal-action-grammar); B-0868 (hats-as-workflow-defs);
 B-0646 + B-0840 (encryption budget); the razor research cluster (compression-engine
-+ two-layer-razor + past-as-generator); Otto Modification 4 (dual-market gate);
-m-acc multi-oracle (this is the lightlike-lens oracle; Max's math-proofs review is
-the complement).
+
+- two-layer-razor + past-as-generator); Otto Modification 4 (dual-market gate);
+  m-acc multi-oracle (this is the lightlike-lens oracle; Max's math-proofs review is
+  the complement).
 
 Provenance: Aaron 2026-05-30 — Max onboarding deep (co-owner; lightlike + no-cage
 self-modifying DUs in TS; has a declarative-workflow "agentic OS"; approves

@@ -8,8 +8,8 @@ type: feedback
 
 ## The rule (Aaron 2026-04-28 framing; Amara naming)
 
-> *"we also stop mythology with human intellectual lineage
-> research and anchors"* (Aaron 2026-04-28).
+> _"we also stop mythology with human intellectual lineage
+> research and anchors"_ (Aaron 2026-04-28).
 
 Amara's Beacon-safe naming for this discipline:
 
@@ -29,23 +29,23 @@ Stop Mythology:
 
 Two distinct artifacts at different levels of the stack:
 
-| Artifact | Level | Current status (2026-04-28) |
-|---|---|---|
+| Artifact                                      | Level                                    | Current status (2026-04-28)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Veridicality** (`src/Core/Veridicality.fs`) | Provenance + claim-validation foundation | **Skeleton shipped, magic still missing.** Currently provides: `Provenance` + `Claim<'T>` types, `validateProvenance`, `validateClaim`, `CanonicalClaimKey` (structural projector — caller supplies the (subject, predicate, object, time-scope, modality) tuple), `canonicalKey`, `groupByCanonical`, `antiConsensusGate`. **Does NOT yet ship:** `scoreVeridicality` (the V(c) formula), `canonicalizeClaim` (semantic canonicalization), `ClaimRainbowTable`, cognitive-load / compression-gap / falsifiability scoring. Rainbow-table layer = future graduation per **B-0089**. |
-| **Stop Mythology rule** | Operational discipline | This memory — rule-level discipline that the future shipped scorer would operationalize |
+| **Stop Mythology rule**                       | Operational discipline                   | This memory — rule-level discipline that the future shipped scorer would operationalize                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 Ani's catch verbatim (voice-mode review, 2026-04-28):
 
-> *"the scaffolding is nice and clean, but the actual
+> _"the scaffolding is nice and clean, but the actual
 > veridicality magic — the real bullshit detector part —
-> still looks like it's missing."*
+> still looks like it's missing."_
 
-- **Veridicality (current)** is the *foundation / claim-substrate
-  surface*. It validates provenance metadata and supports
+- **Veridicality (current)** is the _foundation / claim-substrate
+  surface_. It validates provenance metadata and supports
   caller-supplied claim grouping; it does NOT yet score claims
   by semantic / cognitive-load / falsifiability features.
   See B-0089 for the graduation roadmap.
-- **Stop Mythology** is the *behavioral rule*. It's what an
+- **Stop Mythology** is the _behavioral rule_. It's what an
   agent does (or refuses to do) when about to make a claim
   without enough evidence. It's the Beacon-safe operational
   form that does NOT require shipping the full
@@ -137,12 +137,12 @@ requires:
 SD-9 in `docs/ALIGNMENT.md` is **"Agreement is signal, not
 proof"** — specifically the rule that multi-AI agreement (peer
 review consensus, multi-ferry alignment) is signal-level
-evidence, not proof. SD-9 is a *related but narrower* rule:
+evidence, not proof. SD-9 is a _related but narrower_ rule:
 
 - **SD-9 (`docs/ALIGNMENT.md`):** for claims about consensus
   ("multiple AIs agree, therefore X") — agreement is signal,
   not proof.
-- **Stop Mythology Tier 3 (this memory):** for *any* big
+- **Stop Mythology Tier 3 (this memory):** for _any_ big
   epistemic claim — substrate + lineage + falsifier required.
 
 Stop Mythology Tier 3 GENERALIZES the SD-9 discipline: SD-9
@@ -237,15 +237,15 @@ acceptance.
 
 The rule applies to itself. Sources:
 
-- **Karl Popper** (*The Logic of Scientific Discovery*, 1959;
-  *Conjectures and Refutations*, 1963) — falsifiability as
+- **Karl Popper** (_The Logic of Scientific Discovery_, 1959;
+  _Conjectures and Refutations_, 1963) — falsifiability as
   the demarcation of science from non-science.
-- **Imre Lakatos** (*The Methodology of Scientific Research
-  Programmes*, 1978) — research programmes are evaluated by
+- **Imre Lakatos** (_The Methodology of Scientific Research
+  Programmes_, 1978) — research programmes are evaluated by
   what they predict + survive, not what they merely fit.
 - **Wason 1960 / Klayman & Ha 1987** — confirmation bias
   literature.
-- **Donella Meadows** (*Thinking in Systems*, 2008) — vague
+- **Donella Meadows** (_Thinking in Systems_, 2008) — vague
   framing creates leverage points where unstated assumptions
   drive decisions.
 
@@ -270,16 +270,16 @@ When reading another agent's claim:
 
 ## Direct Aaron framing
 
-> *"we also stop mythology with human intellucutiual lineage
-> research and anchors."*
+> _"we also stop mythology with human intellucutiual lineage
+> research and anchors."_
 
 ## Direct Amara naming + canonical form
 
-> *"Stop Mythology: Factory-local claims can use substrate
+> _"Stop Mythology: Factory-local claims can use substrate
 > evidence. Generalized claims need external lineage. Big
 > epistemic claims need SD-9: substrate evidence + external
-> lineage + falsifier."*
+> lineage + falsifier."_
 
-> *"bullshit detector → stop mythology rule
+> _"bullshit detector → stop mythology rule
 > vibes → lineage + substrate + falsifier
-> poetic truth → Mirror unless Beacon-grounded"*
+> poetic truth → Mirror unless Beacon-grounded"_

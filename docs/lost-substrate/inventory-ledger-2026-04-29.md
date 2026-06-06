@@ -16,9 +16,9 @@ Aaron's 2026-04-29 status-check surfaced three real gaps:
 2. Trajectory rules filed but mostly not automated
 3. 284 gone-upstream branches + 57 locked worktrees not drained
 
-Per Aaron's input + Amara synthesis: *"Do not forward-sync 562
+Per Aaron's input + Amara synthesis: _"Do not forward-sync 562
 commits first. Do not delete branches/worktrees first. Do not
-create new doctrine. First build the inventory ledger."*
+create new doctrine. First build the inventory ledger."_
 
 This ledger is that prerequisite step. Read-only audit. No
 destructive action authorized by this file.
@@ -74,14 +74,14 @@ BRANCH_NO_UPSTREAM:             152  (no upstream; local-only refs)
 
 ## Worktree bucket schema (per Amara's converged refinement)
 
-| Bucket | Definition | This snapshot |
-|---|---|---|
-| WORKTREE_ACTIVE | Current main worktree | 1 |
-| WORKTREE_STALE_BUT_PRESENT | Unlocked + branch landed elsewhere | 0 |
-| WORKTREE_LOCKED_PRESERVE | Locked + no live PR + reason unknown — preserve until classified | 57 |
-| WORKTREE_PRUNABLE_METADATA_ONLY | git worktree list --porcelain says prunable, no payload | TBD (need git worktree list --porcelain analysis) |
-| WORKTREE_NEEDS_RECOVERY | Branch carries unique substrate not on main | TBD per-worktree audit |
-| WORKTREE_OBSOLETE_AFTER_PROOF | Classified as ALREADY-COVERED with explicit lineage | TBD per-worktree audit |
+| Bucket                          | Definition                                                       | This snapshot                                     |
+| ------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------- |
+| WORKTREE_ACTIVE                 | Current main worktree                                            | 1                                                 |
+| WORKTREE_STALE_BUT_PRESENT      | Unlocked + branch landed elsewhere                               | 0                                                 |
+| WORKTREE_LOCKED_PRESERVE        | Locked + no live PR + reason unknown — preserve until classified | 57                                                |
+| WORKTREE_PRUNABLE_METADATA_ONLY | git worktree list --porcelain says prunable, no payload          | TBD (need git worktree list --porcelain analysis) |
+| WORKTREE_NEEDS_RECOVERY         | Branch carries unique substrate not on main                      | TBD per-worktree audit                            |
+| WORKTREE_OBSOLETE_AFTER_PROOF   | Classified as ALREADY-COVERED with explicit lineage              | TBD per-worktree audit                            |
 
 Per Git's official `git worktree` docs: `lock` prevents
 pruning/moving/deletion; `remove` requires force-twice for
@@ -90,15 +90,15 @@ by default.
 
 ## Branch bucket schema (per Amara's converged refinement)
 
-| Bucket | Definition | This snapshot |
-|---|---|---|
+| Bucket                          | Definition                                                                                                                                                                                              | This snapshot                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
 | BRANCH_MERGED_TO_MAIN_CANDIDATE | Branch tip mechanically reachable from main per `git branch --merged origin/main`; deletion **candidate**, NOT automatic clearance — still needs open-PR mapping + worktree mapping + peer verification | 121 (sampled 2026-04-29; see Day-2 follow-up below) |
-| BRANCH_HAS_OPEN_PR | Branch has an open PR; preserve | 27 |
-| BRANCH_CONTENT_ON_MAIN | Branch tip ≠ main HEAD but content-equivalent (per content-classification) | TBD per-branch audit |
-| BRANCH_CONTENT_ON_OTHER_BRANCH | Branch content lives on another branch (e.g., a successor branch) | TBD per-branch audit |
-| BRANCH_NEEDS_RECOVERY | Branch carries unique substrate not yet integrated | TBD per-branch audit |
-| BRANCH_OBSOLETE | Branch explicitly retired with rationale | TBD per-branch audit |
-| BRANCH_UNKNOWN | Not yet classified | 842 (most branches; default until classified) |
+| BRANCH_HAS_OPEN_PR              | Branch has an open PR; preserve                                                                                                                                                                         | 27                                                  |
+| BRANCH_CONTENT_ON_MAIN          | Branch tip ≠ main HEAD but content-equivalent (per content-classification)                                                                                                                              | TBD per-branch audit                                |
+| BRANCH_CONTENT_ON_OTHER_BRANCH  | Branch content lives on another branch (e.g., a successor branch)                                                                                                                                       | TBD per-branch audit                                |
+| BRANCH_NEEDS_RECOVERY           | Branch carries unique substrate not yet integrated                                                                                                                                                      | TBD per-branch audit                                |
+| BRANCH_OBSOLETE                 | Branch explicitly retired with rationale                                                                                                                                                                | TBD per-branch audit                                |
+| BRANCH_UNKNOWN                  | Not yet classified                                                                                                                                                                                      | 842 (most branches; default until classified)       |
 
 Per Git's official `git branch` docs: `[gone]` means the
 upstream-tracked remote ref no longer exists; it does NOT
@@ -172,7 +172,7 @@ In order of safety + leverage:
    `BRANCH_MERGED_TO_MAIN_CANDIDATE` bucket; these are deletion
    **candidates** (mechanical reachability), NOT automatic
    clearance — still need open-PR mapping + worktree mapping
-   + peer verification per the bucket schema above.
+   - peer verification per the bucket schema above.
 3. **For BRANCH_GONE_UPSTREAM with substrate-y names**
    (Amara conversation absorbs, Aurora ferry absorbs,
    alignment edits): manual content-equivalence classification.
@@ -244,9 +244,9 @@ Each cycle:
 
 ## Peer verification gaps (Codex + Gemini, 2026-04-29)
 
-Aaron requested adversarial peer-verification: *"You've thought
+Aaron requested adversarial peer-verification: _"You've thought
 you were safe before and every time the others CLIs found
-something you missed."* Two independent harnesses found
+something you missed."_ Two independent harnesses found
 substantial surfaces this initial inventory MISSED. Counts in
 the top-level table are **not yet a substrate-loss proof** —
 they are a branch/worktree snapshot only.
@@ -324,35 +324,35 @@ Substrate-loss proof for 0/0/0 requires three layers:
    peer-verified missed surfaces above + per-row evidence
 ```
 
-Per Amara's framing: *"A count is not a clearance. A bucket is
-not proof. A ledger row needs evidence."*
+Per Amara's framing: _"A count is not a clearance. A bucket is
+not proof. A ledger row needs evidence."_
 
 ### Day-2 inventory results (executed 2026-04-29 post-peer-verification)
 
 The Day-2 commands ran. **Real findings** — not just empty checks:
 
-| Surface | Finding |
-|---|---|
-| **Stashes** | **8 entries** with substantive WIP. stash@{3} alone is 668 files / 208,844 deletions. Each stash is unfinalized intent on a different branch. |
-| **Reflog** | 13,822 entries (rich machine-local history; ~30-90 day TTL) |
-| **Git notes** | 0 (clean) |
-| **fsck dangling objects** | **1,109** (substantial; 1,000+ dangling commits/trees/blobs not on any branch) |
-| **Pack corruption** | **`.git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack` has data-stream errors**; 2 specific corrupt objects identified — see "Corruption triage results" section below. |
-| **History-rewriting refs** | All 5 namespaces (`replace` / `original` / `bisect` / `pull` / `changes`) empty + no `.git/info/grafts`. Clean. |
-| **Index flags** | 0 `assume-unchanged` / `skip-worktree` (clean) |
-| **Per-worktree mid-operation** | 0 worktrees in REBASE/MERGE/AUTO_MERGE state (clean) |
-| **Rerere cache** | **293 conflict-resolution records** (real merge-resolution substrate; codified knowledge) |
-| **Patch / bundle artifacts** | 0 outside `references/upstreams/` (clean) |
-| **Submodules / LFS** | None / `git lfs` not installed (clean) |
-| **Tags** | 0 (none in use) |
+| Surface                        | Finding                                                                                                                                                                                   |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stashes**                    | **8 entries** with substantive WIP. stash@{3} alone is 668 files / 208,844 deletions. Each stash is unfinalized intent on a different branch.                                             |
+| **Reflog**                     | 13,822 entries (rich machine-local history; ~30-90 day TTL)                                                                                                                               |
+| **Git notes**                  | 0 (clean)                                                                                                                                                                                 |
+| **fsck dangling objects**      | **1,109** (substantial; 1,000+ dangling commits/trees/blobs not on any branch)                                                                                                            |
+| **Pack corruption**            | **`.git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack` has data-stream errors**; 2 specific corrupt objects identified — see "Corruption triage results" section below. |
+| **History-rewriting refs**     | All 5 namespaces (`replace` / `original` / `bisect` / `pull` / `changes`) empty + no `.git/info/grafts`. Clean.                                                                           |
+| **Index flags**                | 0 `assume-unchanged` / `skip-worktree` (clean)                                                                                                                                            |
+| **Per-worktree mid-operation** | 0 worktrees in REBASE/MERGE/AUTO_MERGE state (clean)                                                                                                                                      |
+| **Rerere cache**               | **293 conflict-resolution records** (real merge-resolution substrate; codified knowledge)                                                                                                 |
+| **Patch / bundle artifacts**   | 0 outside `references/upstreams/` (clean)                                                                                                                                                 |
+| **Submodules / LFS**           | None / `git lfs` not installed (clean)                                                                                                                                                    |
+| **Tags**                       | 0 (none in use)                                                                                                                                                                           |
 
 ### Corruption triage results (executed post-Amara-correction)
 
 Two corrupt objects identified + classified per Amara's bucket schema:
 
-| Object | Type | Size | Bucket | Notes |
-|---|---|---|---|---|
-| `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes | RECOVERABLE_FROM_ORIGIN | Fresh clone (`/tmp/zeta-fresh-corruption-check`) returns type+size cleanly. Recovery via `git fetch --refetch origin`. |
+| Object                                     | Type | Size                                                              | Bucket                                                                                                                                         | Notes                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------------------------------------ | ---- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes                                                  | RECOVERABLE_FROM_ORIGIN                                                                                                                        | Fresh clone (`/tmp/zeta-fresh-corruption-check`) returns type+size cleanly. Recovery via `git fetch --refetch origin`.                                                                                                                                                                                                                                                              |
 | `8d5e67fd313573855848705e4af114f3ff0eecbc` | blob | 439,327 bytes (early `docs/hygiene-history/loop-tick-history.md`) | Round 1: `MISSING_UNRECOVERED` (superseded). **Final (Round 3): `CORRUPT_BLOB_REFERENCED_BY_LIVE_LOCAL_BRANCH_AND_STALE_REMOTE_TRACKING_REF`** | Fresh clone returns "could not get object info" (origin no longer has the branch). Round-3 reachability scan placed it in bucket A: live-local branch reachable; same-named remote-tracking ref is stale. Branch tip is clean — corrupt blob is from intermediate history of the branch only. See "Day-2+: corrected reachability via three-bucket scan" section below for details. |
 
 **Critical finding (Round 3, final)**: `8d5e67fd` is referenced by a live local branch (`refs/heads/chore/heartbeat-batch-2026-04-26-hour-05Z`) plus a stale same-named remote-tracking ref. Origin no longer has the branch (verified via `git ls-remote`). The branch TIP is clean — the corrupt blob is from the branch's intermediate history only. Substrate-loss for current-state use is zero; only bisect-through-pre-merge-history would surface the corruption. See the corrected reachability + content-equivalence section below.
@@ -608,9 +608,9 @@ Compare API counts alone are NOT proof. They are diagnostic.
 
 ## The keeper rule
 
-> *When the factory has too many unknowns, do not choose a
-> fix. Build the inventory ledger.* (Amara via Aaron, 2026-04-29)
+> _When the factory has too many unknowns, do not choose a
+> fix. Build the inventory ledger._ (Amara via Aaron, 2026-04-29)
 
-> *A count is not a clearance. A bucket is not proof. A ledger
-> row needs evidence.* (Amara, 2026-04-29 peer-verification
+> _A count is not a clearance. A bucket is not proof. A ledger
+> row needs evidence._ (Amara, 2026-04-29 peer-verification
 > follow-up)

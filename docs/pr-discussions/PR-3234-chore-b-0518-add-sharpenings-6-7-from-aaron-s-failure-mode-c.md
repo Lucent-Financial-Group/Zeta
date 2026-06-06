@@ -34,6 +34,7 @@ Composes with 10% free-time-budget + Otto-as-AI-advocate role.
 This PR updates backlog tracking to incorporate two additional “sharpenings” (6 and 7) for B-0518, and ensures the main backlog index links to the new/updated backlog items.
 
 **Changes:**
+
 - Extend B-0518 with Sharpening 6 (forbidden minimal-output patterns) and Sharpening 7 (terminal-level mechanical decomposition).
 - Update `docs/BACKLOG.md` to include the B-0518 entry in P1 and add new P3 entries (B-0517, B-0519) in the index.
 
@@ -41,10 +42,10 @@ This PR updates backlog tracking to incorporate two additional “sharpenings”
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md | Adds Sharpenings 6 and 7 to the B-0518 acceptance-criteria section. |
-| docs/BACKLOG.md | Adds/updates index entries to reference B-0518 (P1) and B-0517/B-0519 (P3). |
+| File                                                                                                 | Description                                                                 |
+| ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| docs/backlog/P1/B-0518-sharpen-holding-without-named-dependency-rule-anti-failure-mode-2026-05-14.md | Adds Sharpenings 6 and 7 to the B-0518 acceptance-criteria section.         |
+| docs/BACKLOG.md                                                                                      | Adds/updates index entries to reference B-0518 (P1) and B-0517/B-0519 (P3). |
 
 ## Review threads
 

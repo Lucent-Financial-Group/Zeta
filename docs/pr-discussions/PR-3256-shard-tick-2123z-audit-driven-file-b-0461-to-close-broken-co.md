@@ -27,22 +27,22 @@ Tick 2026-05-14T21:23Z shard. Substantive work in [#3253](https://github.com/Luc
 
 ## Slice-5 subscriber-handler row family now complete
 
-| Slice | Topic | Producer | Row |
-|---|---|---|---|
-| 5.1 | `infinite-backlog-nudge` | B-0440 | B-0459 |
-| 5.2 | `work-assignment` | B-0441 | B-0460 |
-| 5.3 | `missed-substrate-cascade` | B-0442 | **B-0461 (now filed)** |
+| Slice | Topic                      | Producer | Row                    |
+| ----- | -------------------------- | -------- | ---------------------- |
+| 5.1   | `infinite-backlog-nudge`   | B-0440   | B-0459                 |
+| 5.2   | `work-assignment`          | B-0441   | B-0460                 |
+| 5.3   | `missed-substrate-cascade` | B-0442   | **B-0461 (now filed)** |
 
 ## Audit-driven workflow
 
 This tick exercises a different cadence from the prior Copilot-driven catches:
 
-| Step | Source | Latency |
-|---|---|---|
-| Detection | Audit run on main | Run-time |
+| Step          | Source                         | Latency   |
+| ------------- | ------------------------------ | --------- |
+| Detection     | Audit run on main              | Run-time  |
 | Investigation | Find the placeholder reference | Same-tick |
-| Fix | Author the missing row | Same-tick |
-| Verify | Audit re-runs clean | Same-tick |
+| Fix           | Author the missing row         | Same-tick |
+| Verify        | Audit re-runs clean            | Same-tick |
 
 Cousin to the three-step propagation pattern (review-time catch → out-of-band fix → mechanization) from tick 2113Z. Both produce durable factory defenses; this one is faster because the audit IS the mechanization.
 
@@ -75,6 +75,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR adds a hygiene-history tick shard documenting the 21:23Z audit-driven workflow around filing B-0461 in the related PR #3253.
 
 **Changes:**
+
 - Adds a new tick log for the 2026-05-14T21:23Z shard.
 - Records audit output, follow-up PR status, verification steps, and session tally.
 

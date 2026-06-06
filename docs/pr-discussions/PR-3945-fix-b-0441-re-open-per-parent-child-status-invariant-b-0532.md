@@ -62,24 +62,22 @@ The `lint (backlog parent-child status)` check failed on PR #3942 but auto-merge
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T21:27:50Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `8e8f1611ca`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -92,6 +90,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR restores backlog parent/child status consistency by re-opening **B-0441** (parent) while child work (notably B-0460) remains open, and updates the generated backlog index accordingly.
 
 **Changes:**
+
 - Re-opened B-0441 (`status: open`) and updated `last_updated` to 2026-05-16.
 - Added a “Closure status (2026-05-16)” note to explain why the row remains open despite progress.
 - Regenerated `docs/BACKLOG.md` to reflect the row’s open status.
@@ -100,17 +99,18 @@ This PR restores backlog parent/child status consistency by re-opening **B-0441*
 
 Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                        | Description                                                            |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | docs/backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md | Re-opens the parent row and adds a closure/status explanation section. |
-| docs/BACKLOG.md | Regenerated index reflecting B-0441 as open. |
-
+| docs/BACKLOG.md                                                                             | Regenerated index reflecting B-0441 as open.                           |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md:184**
-* The closure note says the notifier-side is complete and that all acceptance criteria are checked, but the parent acceptance list includes the assignment-history cooldown criterion (slice 5a) which is still tracked as open in B-0501 and not implemented in `tools/bg/backlog-ready-notifier.ts`. Update this note to reflect the remaining unshipped notifier-side work, or align the acceptance checklist/child statuses with what’s actually shipped.
+
+- The closure note says the notifier-side is complete and that all acceptance criteria are checked, but the parent acceptance list includes the assignment-history cooldown criterion (slice 5a) which is still tracked as open in B-0501 and not implemented in `tools/bg/backlog-ready-notifier.ts`. Update this note to reflect the remaining unshipped notifier-side work, or align the acceptance checklist/child statuses with what’s actually shipped.
+
 ```
 ## Closure status (2026-05-16)
 
@@ -118,10 +118,10 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 c
 
 **Row stays `status: open`** because child **B-0460** (slice 5.2, agent-side subscriber handler) is genuinely the remaining unshipped scope, and the `--enforce-parent-child-status` lint (B-0532 gate) correctly requires parent rows to stay open while any child is open. Closing this row would violate that invariant.
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T21:32:07Z)
-
 
 ### 💡 Codex Review
 
@@ -129,17 +129,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `096774ea47`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -165,7 +164,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-16T21:27:50Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep slice 5a acceptance unchecked until implemented**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep slice 5a acceptance unchecked until implemented**
 
 This change marks the "Tracks assignment history ..." criterion as shipped, but the referenced child row `docs/backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md` is still `status: open` with unchecked acceptance items, and the notifier implementation (`tools/bg/backlog-ready-notifier.ts`) still has no `historyFile`/cooldown dedup path. Marking this as complete can cause reviewers and automation to treat slice 5a as finished and skip the remaining implementation work.
 
@@ -183,7 +182,7 @@ This issue also appears on line 180 of the same file.
 
 **@chatgpt-codex-connector** (2026-05-16T21:32:07Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Don’t declare slice 5a shipped while child B-0501 is open**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Don’t declare slice 5a shipped while child B-0501 is open**
 
 The new closure note says notifier-side work is complete and explicitly lists slice 5a as shipped, but child row `B-0501` is still `status: open` with all acceptance items unchecked (`docs/backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md`). This creates contradictory backlog state that can mislead reviewers/automation into treating dedup-cooldown work as finished when it is still tracked as unfinished; either the shipped claim needs to be removed here or B-0501 needs to be actually closed with implemented criteria.
 

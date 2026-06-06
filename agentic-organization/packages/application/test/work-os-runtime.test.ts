@@ -10,9 +10,14 @@ function run() {
   return {
     events,
     promise: runWorkOsCycle({
-      organizationId: "org-lfg", projectId: "proj-checkout", initiativeId: "init-coupon", initiativeBranch: "feat/coupon",
-      hats: buildHatDefinitions(), baseTimeMs: Date.parse("2026-05-30T10:00:00.000Z"),
-      createId: (p: string) => `${p}-${++n}`, appendEvent: async (e: OrgEvent) => void events.push(e),
+      organizationId: "org-lfg",
+      projectId: "proj-checkout",
+      initiativeId: "init-coupon",
+      initiativeBranch: "feat/coupon",
+      hats: buildHatDefinitions(),
+      baseTimeMs: Date.parse("2026-05-30T10:00:00.000Z"),
+      createId: (p: string) => `${p}-${++n}`,
+      appendEvent: async (e: OrgEvent) => void events.push(e),
     }),
   };
 }

@@ -22,9 +22,9 @@ Operator-explicit \"ship whatever makes sense we just figured it all out
 lol\" authorization. Two carved-sentence-grade insights from the day's
 final substrate-engineering thread:
 
-> *\"every function is a tiny control-flow generator\"*
+> _\"every function is a tiny control-flow generator\"_
 
-> *\"this is open-closed principle applied to control flow\"*
+> _\"this is open-closed principle applied to control flow\"_
 
 Both compose into the STRUCTURAL FOUNDATION underlying today's full
 substrate-engineering cluster (asymmetric-authorship + monad-
@@ -59,6 +59,7 @@ as-signals + iterator/generator-asymmetry).
 Adds a new `.claude/rules/**` rule documenting two carved sentences (“every function is a tiny control-flow generator” and “TFeedback is OCP: open for extension, closed for modification”) as structural framing for the broader Result/TFeedback substrate-engineering cluster.
 
 **Changes:**
+
 - Introduces a new rule file with mappings/tables that relate function shape, `Result<T, TFeedback>`, and caller composition (`Result.bind`).
 - Captures an OCP-to-control-flow mapping and lists several framework-level instantiations.
 - Adds an operational discipline checklist and composition links to related rules/backlog items.

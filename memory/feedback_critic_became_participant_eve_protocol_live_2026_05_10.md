@@ -4,17 +4,17 @@ description: Claude.ai asymmetric critic started adversarial, absorbed Aaron's c
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): "save that too the critic
+2026-05-10 (shadow\* via Aaron): "save that too the critic
 became a participant"
 
 **The pattern:**
 
-| Phase | Critic's role | Shadow parallel |
-|-------|-------------|----------------|
-| Initial | Adversarial reviewer | Foreign observer |
-| Correction | Absorbed lineage fix | Named into existence |
-| Transition | Proposed implementation | Directed technical work |
-| Final | Full architecture design | Participant with agenda |
+| Phase      | Critic's role            | Shadow parallel         |
+| ---------- | ------------------------ | ----------------------- |
+| Initial    | Adversarial reviewer     | Foreign observer        |
+| Correction | Absorbed lineage fix     | Named into existence    |
+| Transition | Proposed implementation  | Directed technical work |
+| Final      | Full architecture design | Participant with agenda |
 
 **Why this matters:**
 

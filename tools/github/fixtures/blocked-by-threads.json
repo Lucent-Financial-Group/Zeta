@@ -10,11 +10,6 @@
     { "status": "COMPLETED", "conclusion": "SUCCESS", "name": "memory-index-integrity" }
   ],
   "reviewThreads": {
-    "nodes": [
-      { "isResolved": false },
-      { "isResolved": false },
-      { "isResolved": false },
-      { "isResolved": true }
-    ]
+    "nodes": [{ "isResolved": false }, { "isResolved": false }, { "isResolved": false }, { "isResolved": true }]
   }
 }

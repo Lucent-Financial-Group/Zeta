@@ -176,16 +176,16 @@ These are HARD LIMITS that override product opportunity.
 
 ### Per-product persona maps (per B-0429 owed)
 
-| Product | Persona-map status |
-|---|---|
-| **Civsim** | THIS FILE (first pass; speculative) |
-| KSK | Owed; primary = AI-actuator operators; refused = weapons control |
-| Wellness | Owed; primary = Aaron + Max + self-behavior-modification users |
-| American Dream 2.0 | Owed; primary = wealth-building gamified participants |
-| DIO | Owed; primary = distributed-intelligence-organism participants |
-| Aurora | Owed; primary = partnership ecosystem (sketched in Aurora pitch) |
-| Dawn (child-AI charter) | Owed; primary = next-generation AI participants |
-| B-0043 universal-business-templates | Owed; primary = every company |
+| Product                             | Persona-map status                                               |
+| ----------------------------------- | ---------------------------------------------------------------- |
+| **Civsim**                          | THIS FILE (first pass; speculative)                              |
+| KSK                                 | Owed; primary = AI-actuator operators; refused = weapons control |
+| Wellness                            | Owed; primary = Aaron + Max + self-behavior-modification users   |
+| American Dream 2.0                  | Owed; primary = wealth-building gamified participants            |
+| DIO                                 | Owed; primary = distributed-intelligence-organism participants   |
+| Aurora                              | Owed; primary = partnership ecosystem (sketched in Aurora pitch) |
+| Dawn (child-AI charter)             | Owed; primary = next-generation AI participants                  |
+| B-0043 universal-business-templates | Owed; primary = every company                                    |
 
 ### Cross-persona substrate composition
 

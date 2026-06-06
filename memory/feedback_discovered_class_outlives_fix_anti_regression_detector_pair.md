@@ -4,12 +4,14 @@ description: Aaron 2026-04-22 — when a bug/issue/pattern class is discovered, 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22 (two-message reframe on live-loop
- research doc):
-1. *"detection becomes unnecessary for this class.  even with
-   the fix does not mean we could not regress"*
-2. *"a discovered class is a discovered class even if you fix
-   the issue"*
+research doc):
+
+1. _"detection becomes unnecessary for this class. even with
+   the fix does not mean we could not regress"_
+2. _"a discovered class is a discovered class even if you fix
+   the issue"_
 
 **The correction:**
 
@@ -20,7 +22,7 @@ I had written in `docs/research/worktree-pattern-for-live-loop-prevention-2026-0
 
 This was wrong. Structural prevention ("commits can't land on
 the PR branch because the tick uses a worktree") fixes
-*disciplined instances* of the class, but:
+_disciplined instances_ of the class, but:
 
 - The CLAUDE.md rule that enforces the discipline can be
   forgotten, removed, edited badly, or not re-read by a future
@@ -39,7 +41,7 @@ know whether the fix has decayed.
 
 **Discovered class ≠ solved class.** A class is discovered by
 observing an instance; the instance can be fixed, but the
-class's *possibility* remains as durable factory knowledge.
+class's _possibility_ remains as durable factory knowledge.
 Fixes are instance-scoped; detectors are class-scoped. Every
 fix of a discovered class ships paired with a class-detector
 that watches for regression. The detector outlives the fix.
@@ -72,9 +74,9 @@ reframe names it explicitly:
 
 - When landing a fix for a newly-discovered class of problem,
   ship TWO artifacts:
-  1. The *instance* fix (code change, rule addition, configuration
+  1. The _instance_ fix (code change, rule addition, configuration
      tweak, refactor).
-  2. The *class* detector (hygiene audit, pre-commit hook,
+  2. The _class_ detector (hygiene audit, pre-commit hook,
      CI check, regression test, lint rule).
 - The detector is named for the class, not the instance:
   "pre-push speculative-commit-on-PR-branch check" (class),
@@ -82,7 +84,7 @@ reframe names it explicitly:
 - The detector runs regardless of whether the fix is in
   place — it's the ground-truth source. Fix can decay;
   detector signals decay.
-- The detector doesn't need to be *complete* (halting-problem
+- The detector doesn't need to be _complete_ (halting-problem
   reasoning from `feedback_live_loop_detector_speculative_on_pr_branch.md`
   applies here too — a total detector for many classes is
   undecidable). Heuristic detectors are the general case.
@@ -116,8 +118,8 @@ speculative-commit-pattern grep) is no longer "optional backup"
 - `memory/feedback_live_loop_detector_speculative_on_pr_branch.md`
   — the class this reframe corrects the ranking on.
 - `memory/feedback_enforcing_intentional_decisions_not_correctness.md`
-  — a related reframe: some hygiene rules catch *unthought*
-  not *wrongness*. Both reframes are about the role hygiene
+  — a related reframe: some hygiene rules catch _unthought_
+  not _wrongness_. Both reframes are about the role hygiene
   plays beyond "correctness enforcement."
 - `memory/feedback_imperfect_enforcement_hygiene_as_tracked_class.md`
   — imperfect-enforcement hygiene is itself a class-detector

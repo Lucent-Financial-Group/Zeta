@@ -85,14 +85,10 @@ test("each non-pk column round-trips its NOT NULL flag", () => {
       },
     ],
   };
-  const parsed = parseCreateTable(
-    emitCreateTable(schema),
-    schema.schemaVersion,
-  );
+  const parsed = parseCreateTable(emitCreateTable(schema), schema.schemaVersion);
   equal(parsed.outcome, "schema");
   if (parsed.outcome !== "schema") return;
-  const byName = (n: string): ColumnDef | undefined =>
-    parsed.schema.columns.find((c) => c.name === n);
+  const byName = (n: string): ColumnDef | undefined => parsed.schema.columns.find((c) => c.name === n);
   deepEqual(byName("i_req"), schema.columns[0]);
   deepEqual(byName("b_opt"), schema.columns[1]);
   deepEqual(byName("ts_req"), schema.columns[2]);

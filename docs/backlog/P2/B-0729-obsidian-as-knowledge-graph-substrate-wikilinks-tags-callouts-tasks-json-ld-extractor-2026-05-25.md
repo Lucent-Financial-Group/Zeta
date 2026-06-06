@@ -29,33 +29,33 @@ tags: [knowledge-graph, obsidian, foam, substrate, conventions, tooling, json-ld
 
 Aaron 2026-05-25, asking about knowledge-graph standards for the git-native substrate:
 
-> *"this is great is this a standard format for knowledge graphs are there any standards we can follow? we had shit tons for our master data and ontologies and graphs at lexis nexis. i'd love light git native ai friendly ones too so the graph is transverable by all and also have like enrichiment like tags to tag things for further enrihment and have annotation system for evolvoing documentaiton incluing actions like structured future todos?"*
+> _"this is great is this a standard format for knowledge graphs are there any standards we can follow? we had shit tons for our master data and ontologies and graphs at lexis nexis. i'd love light git native ai friendly ones too so the graph is transverable by all and also have like enrichiment like tags to tag things for further enrihment and have annotation system for evolvoing documentaiton incluing actions like structured future todos?"_
 
 Then on the standard-vs-extend decision:
 
-> *"lets do it i like all. of that and like i said we all use obsedian so we can use that if no standard exists and extend"*
+> _"lets do it i like all. of that and like i said we all use obsedian so we can use that if no standard exists and extend"_
 
 The semantic-web standards (RDF / OWL / SPARQL / JSON-LD / SKOS) are real + load-bearing for enterprise federated data (Aaron used them at LexisNexis) but too heavy for a git-native team substrate. The light-tier standards (Obsidian / Foam / Logseq vault format) are the right floor; the framework adopts them + extends where the team has needs they don't cover.
 
 ## What the framework already has
 
-| Standard | Status |
-|----------|--------|
-| Markdown | ✓ all substrate is `.md` |
+| Standard         | Status                                                  |
+| ---------------- | ------------------------------------------------------- |
+| Markdown         | ✓ all substrate is `.md`                                |
 | YAML frontmatter | ✓ backlog rows use it; could extend to rules + personas |
-| Markdown links | ✓ pervasive; uses `[text](path.md)` not `[[wikilinks]]` |
-| GFM tasks | ✓ `- [ ]` / `- [x]` throughout |
-| Mermaid diagrams | ✓ supported on GitHub + Obsidian + Foam |
+| Markdown links   | ✓ pervasive; uses `[text](path.md)` not `[[wikilinks]]` |
+| GFM tasks        | ✓ `- [ ]` / `- [x]` throughout                          |
+| Mermaid diagrams | ✓ supported on GitHub + Obsidian + Foam                 |
 
 ## What's missing (filled in 5 layers below)
 
-| Layer | Standard | Gap |
-|-------|----------|-----|
-| L1 | `[[wikilinks]]` | Use `[text](path)` instead; graph view loses some semantic categorization |
-| L2 | Frontmatter `tags: [...]` convention | Backlog uses it; rules + personas + docs don't |
-| L3 | Obsidian callouts (`> [!note]`, `> [!todo]`, `> [!warning]`) | Not used; annotation system for evolving documentation |
-| L4 | Obsidian Tasks-plugin format (`- [ ] do 📅 2026-06-01 🔼 #project`) | GFM tasks lack due-date / priority / recurring semantics |
-| L5 | JSON-LD + property-graph extractor | Agents can't programmatically query the graph today |
+| Layer | Standard                                                            | Gap                                                                       |
+| ----- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| L1    | `[[wikilinks]]`                                                     | Use `[text](path)` instead; graph view loses some semantic categorization |
+| L2    | Frontmatter `tags: [...]` convention                                | Backlog uses it; rules + personas + docs don't                            |
+| L3    | Obsidian callouts (`> [!note]`, `> [!todo]`, `> [!warning]`)        | Not used; annotation system for evolving documentation                    |
+| L4    | Obsidian Tasks-plugin format (`- [ ] do 📅 2026-06-01 🔼 #project`) | GFM tasks lack due-date / priority / recurring semantics                  |
+| L5    | JSON-LD + property-graph extractor                                  | Agents can't programmatically query the graph today                       |
 
 ## L1 — Add frontmatter aliases (NOT wikilink conversion; ~1 day TS script + convention doc)
 
@@ -112,6 +112,7 @@ Standard callout syntax for evolving documentation. **Use UPPERCASE markers for 
 > Read flash-usb.ts before changing anything here.
 
 > [!IMPORTANT] Composes with
+>
 > - [PR #4974](https://github.com/Lucent-Financial-Group/Zeta/pull/4974)
 > - [CLAUDE.md](../CLAUDE.md)
 ```
@@ -160,10 +161,10 @@ Both files commit to the repo (`docs/knowledge-graph/`) + regenerate on every PR
 
 Query patterns the extractor enables:
 
-- *"What does B-0728 compose with?"* — graph traversal of `zeta:composesWith` edges from `B-0728` node
-- *"What rules are tagged `hat-system`?"* — JSON-path query over node tags
-- *"What's open AND tagged `B-0724`?"* — JSON-path query over task nodes filtered by tag
-- *"What persona's last conversation referenced `Reticulum`?"* — full-text search over persona conversation nodes filtered by reference
+- _"What does B-0728 compose with?"_ — graph traversal of `zeta:composesWith` edges from `B-0728` node
+- _"What rules are tagged `hat-system`?"_ — JSON-path query over node tags
+- _"What's open AND tagged `B-0724`?"_ — JSON-path query over task nodes filtered by tag
+- _"What persona's last conversation referenced `Reticulum`?"_ — full-text search over persona conversation nodes filtered by reference
 
 Composes with:
 

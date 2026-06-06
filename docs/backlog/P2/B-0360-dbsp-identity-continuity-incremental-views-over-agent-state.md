@@ -40,7 +40,7 @@ agent's current state without full re-scan.
 
 - NOT "identity is a Z-set" (metaphysical claim; razor-cut)
 - NOT "shadow log +1/-1 = DBSP +1/-1" (different algebras;
-  see feedback_zset_weight_conflation_*)
+  see feedback*zset_weight_conflation*\*)
 - NOT alignment-via-control-theory (DBSP is for stream
   processing, not for proving alignment properties)
 
@@ -72,4 +72,4 @@ as a concept.
 - `src/Core/ZSet.fs`, `src/Core/Operators.fs` (DBSP algebra)
 - `tools/hygiene/classify-memory-load-bearing.ts` (B-0332)
 - `tools/hygiene/validate-memory-schema.ts` (B-0335)
-- feedback_zset_weight_conflation_* (the conflation catch)
+- feedback*zset_weight_conflation*\* (the conflation catch)

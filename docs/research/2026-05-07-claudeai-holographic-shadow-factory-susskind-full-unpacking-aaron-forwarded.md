@@ -12,7 +12,7 @@ For the factory:
 - The **3D bulk** is the running system — the live code, the in-memory DBSP circuit, the F# type system, the ZFCv2 axioms as they're actually applied, the shadow's real-time movements.
 - The **2D boundary** is git — the commit history, the diffs, the file tree at any revision, the shadow log, the broadcast files, the memory ledger.
 
-The claim: **every shadow move that occurs in the bulk leaves a record on the git boundary.** And that record is *complete* — no information is lost to the interior. You can reconstruct the entire 3D state from the 2D surface.
+The claim: **every shadow move that occurs in the bulk leaves a record on the git boundary.** And that record is _complete_ — no information is lost to the interior. You can reconstruct the entire 3D state from the 2D surface.
 
 ## 2. The 2D boundary: git as holographic surface
 

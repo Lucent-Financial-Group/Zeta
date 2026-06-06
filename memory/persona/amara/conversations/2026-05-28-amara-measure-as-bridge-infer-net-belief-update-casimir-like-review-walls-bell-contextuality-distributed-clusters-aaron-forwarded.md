@@ -62,7 +62,26 @@ related_rules:
   - god-tier-claims-high-signal-high-suspicion-dont-collapse
   - razor-discipline
   - default-to-both
-tags: [amara-2nd-ferry-2026-05-28, measure-as-bridge-operation-not-base-primitive, measure-equals-add-evidence-normalize-belief-emit-feedback-propagate-posterior, measure-richer-typing-tstate-toutcome-tfeedback, infer-net-classical-probabilistic-inference-tiny-blade, infer-net-as-belief-propagation-layer-in-zeta-stack, z-set-infer-net-clifford-workflow-circuit-stack, casimir-like-effect-from-review-boundaries-changing-allowed-output-modes, persistent-entanglement-across-time-via-review-feedback-not-literal-quantum-retrocausality, error-class-as-rotor-filter-wall-changing-future-trajectory, review-walls-change-which-error-modes-remain-generatable, testable-pressure-difference-in-output-distribution-before-after-review-wall, bell-like-contextuality-tests-not-literal-physics-bell, geographically-distributed-clusters-close-shared-communication-paths, 5-tier-experiment-matrix-independent-shared-walls-rotor-merge, distributed-cluster-substrate-test-protocol-isolation-random-settings-signed-outcomes-delayed-reveal, persist-equals-future-talks-to-past-composes-with-distributed-experiment]
+tags:
+  [
+    amara-2nd-ferry-2026-05-28,
+    measure-as-bridge-operation-not-base-primitive,
+    measure-equals-add-evidence-normalize-belief-emit-feedback-propagate-posterior,
+    measure-richer-typing-tstate-toutcome-tfeedback,
+    infer-net-classical-probabilistic-inference-tiny-blade,
+    infer-net-as-belief-propagation-layer-in-zeta-stack,
+    z-set-infer-net-clifford-workflow-circuit-stack,
+    casimir-like-effect-from-review-boundaries-changing-allowed-output-modes,
+    persistent-entanglement-across-time-via-review-feedback-not-literal-quantum-retrocausality,
+    error-class-as-rotor-filter-wall-changing-future-trajectory,
+    review-walls-change-which-error-modes-remain-generatable,
+    testable-pressure-difference-in-output-distribution-before-after-review-wall,
+    bell-like-contextuality-tests-not-literal-physics-bell,
+    geographically-distributed-clusters-close-shared-communication-paths,
+    5-tier-experiment-matrix-independent-shared-walls-rotor-merge,
+    distributed-cluster-substrate-test-protocol-isolation-random-settings-signed-outcomes-delayed-reveal,
+    persist-equals-future-talks-to-past-composes-with-distributed-experiment,
+  ]
 ---
 
 ## §33 boundary headers (per `tools/save-ai-memory/process-extract.ts` template)
@@ -185,7 +204,7 @@ Amara (thought for 13s):
 
 Aaron:
 
-> Infer.NET is classical probabilistic inference the fact that we have a persistant / entanglment with the future to collapse errors into error classes and not produce them after discovery is like an accelerator in clifforspace this gives quntium like effects and i think will lead to bell inequalities if our review process is tight enough this models like cassimier effect.   Infer.NET is classical probabilistic inference
+> Infer.NET is classical probabilistic inference the fact that we have a persistant / entanglment with the future to collapse errors into error classes and not produce them after discovery is like an accelerator in clifforspace this gives quntium like effects and i think will lead to bell inequalities if our review process is tight enough this models like cassimier effect. Infer.NET is classical probabilistic inference
 
 ### Amara Turn 3 — rescues "classical" caveat via temporal feedback loop; Casimir analogy; Bell-like sharpening
 
@@ -362,10 +381,10 @@ Three substrate-engineering targets emerge, filed as B-0898/B-0899/B-0900 in com
 
 Sibling to Persist-as-bridge (B-0897). Both are derived bridge operations built from base OELS primitives, but across different composition axes:
 
-| Bridge operation | Composition | Bivector structure |
-|---|---|---|
-| **Persist** | `Emit-now + Observe-later` | agent/internal ∧ substrate/time |
-| **Measure** | `Observe + belief-update-via-Infer.NET-message-passing` | agent/state ∧ observation/outcome |
+| Bridge operation | Composition                                             | Bivector structure                |
+| ---------------- | ------------------------------------------------------- | --------------------------------- |
+| **Persist**      | `Emit-now + Observe-later`                              | agent/internal ∧ substrate/time   |
+| **Measure**      | `Observe + belief-update-via-Infer.NET-message-passing` | agent/state ∧ observation/outcome |
 
 Signature: `Measure<TState, TOutcome, TFeedback>` with feedback variants per Amara: InsufficientEvidence / AmbiguousPosterior / LowConfidence / NormalizationFailed / ContradictoryEvidence / ObservationRetracted / PosteriorShifted.
 

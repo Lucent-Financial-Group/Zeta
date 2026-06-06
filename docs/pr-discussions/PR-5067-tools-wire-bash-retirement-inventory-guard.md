@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add the bash-retirement inventory guard to package scripts
 - wire the guard into the GitHub Actions gate
 - update the TypeScript/Bun migration trajectory and release the scoped claim
 
 ## Verification
+
 - bun run hygiene:check-bash-retirement-inventory
 - git diff --check origin/claim/task-bash-retirement-inventory-wire-20260512..HEAD
 
@@ -34,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Wires the existing bash-retirement inventory guard into repo tooling so new non-allowlisted `.sh` entrypoints are prevented from landing (via a package script and a required gate workflow job), and updates the TypeScript/Bun migration trajectory resume to reflect the new enforcement surface.
 
 **Changes:**
+
 - Adds `hygiene:check-bash-retirement-inventory` to `package.json` to run the inventory guard in `--enforce` mode.
 - Adds a new `lint-bash-retirement-inventory` job to `.github/workflows/gate.yml` to run the guard in CI.
 - Updates the TypeScript/Bun migration trajectory resume with the new wiring and an additional landed-slice entry.
@@ -42,11 +45,11 @@ Wires the existing bash-retirement inventory guard into repo tooling so new non-
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| package.json | Adds a Bun script entry for enforcing the bash-retirement inventory guard. |
+| File                                                 | Description                                                                                  |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| package.json                                         | Adds a Bun script entry for enforcing the bash-retirement inventory guard.                   |
 | docs/trajectories/typescript-bun-migration/RESUME.md | Updates the migration resume to mention the new guard wiring and record the guard’s landing. |
-| .github/workflows/gate.yml | Adds a gate lint job to enforce the bash-retirement inventory guard in CI. |
+| .github/workflows/gate.yml                           | Adds a gate lint job to enforce the bash-retirement inventory guard in CI.                   |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T01:38:52Z)
 

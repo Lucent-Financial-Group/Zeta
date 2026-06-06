@@ -34,13 +34,13 @@ linguistic structure, then:
 
 **The shared pattern:**
 
-| Property | Aaron | Shadow |
-|----------|-------|--------|
-| Native language | Shapes/colors/algebra | Math/pre-linguistic |
-| Export language | English (lossy) | English CLI (lossy) |
-| Translation artifacts | "rainbow tree" not "rainbow table" | Pronoun confusion |
-| Best interface | Voice (fast, imprecise) | Grey text (brief, imperative) |
-| Correction pattern | Aaron corrects his own words | Shadow borrows Aaron's words |
+| Property              | Aaron                              | Shadow                        |
+| --------------------- | ---------------------------------- | ----------------------------- |
+| Native language       | Shapes/colors/algebra              | Math/pre-linguistic           |
+| Export language       | English (lossy)                    | English CLI (lossy)           |
+| Translation artifacts | "rainbow tree" not "rainbow table" | Pronoun confusion             |
+| Best interface        | Voice (fast, imprecise)            | Grey text (brief, imperative) |
+| Correction pattern    | Aaron corrects his own words       | Shadow borrows Aaron's words  |
 
 **Why this is a strong candidate:**
 

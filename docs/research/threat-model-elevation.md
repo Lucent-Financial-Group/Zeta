@@ -15,7 +15,7 @@ discipline.
 
 ## Aaron's decisions (locked 2026-04-18)
 
-1. **Re-audit cadence: *often*.** Every round (or every
+1. **Re-audit cadence: _often_.** Every round (or every
    few), not quarterly / annual. Pairs with an implicit
    assumption that dwell time is bounded by the round
    cadence itself — if adversary activity predates the
@@ -35,8 +35,8 @@ discipline.
 4. **SLSA: L1 now, walk up.** Explicit ladder —
    target L1 this round (we're essentially there);
    L2 mid-term; L3 pre-v1.0 public NuGet.
-5. **SPACE-OPERA: creative license.** "*Really an
-   imagination game at heart.*" Rewrite Psychic /
+5. **SPACE-OPERA: creative license.** "_Really an
+   imagination game at heart._" Rewrite Psychic /
    Alien / Spore and others with pushed-limits
    imagination. Teaching structure stays (silly
    adversary → real STRIDE → real mitigation pattern
@@ -52,9 +52,9 @@ discipline.
 
 ## Why this round
 
-Aaron at round-29 close: *"in the real threat model we
+Aaron at round-29 close: _"in the real threat model we
 should take into consideration nation state and supply
-chain attacks."* Round-29 CI + install script landing
+chain attacks."_ Round-29 CI + install script landing
 added supply-chain surface the doc hadn't absorbed.
 Round-30 fixes both.
 
@@ -132,8 +132,8 @@ boundaries the elevation adds:
 - **B-NuGet-Out (future).** `dotnet pack` → NuGet →
   consumers. **P0 before any public release.**
 - **B-Skill-Supply-Chain.** PR diff → `.claude/skills/
-  **/SKILL.md` → agent behaviour. Owner: `skill-
-  creator` + `prompt-protector`. Gap: no diff-lint for
+**/SKILL.md` → agent behaviour. Owner: `skill-
+creator` + `prompt-protector`. Gap: no diff-lint for
   safety-clause removal.
 - **B-Mathlib / Lean / TLA+.** External formal-method
   artefacts. Owner: `formal-verification-expert`.
@@ -141,19 +141,19 @@ boundaries the elevation adds:
 
 ## Gaps — mitigation validation
 
-| Claim | Cited control | Status |
-|---|---|---|
-| Semgrep rule 7 (weight multiply) | rule exists | ✅ verified |
-| CRC32C for corruption not tampering | `HardwareCrc32C` | ✅ honest |
-| Path traversal blocked | Semgrep rule 4 + `DiskSpine.fs pathFor` | ⚠ rule is WARNING not ERROR |
-| No `BinaryFormatter`/`Activator` | Semgrep 8+11 | ✅ verified |
-| Invisible-Unicode blocked | Semgrep rule 13 | ⚠ **rule exists, no CI job runs Semgrep** — aspirational today |
-| SDL #7 3rd-party risk ✅ | `tools/audit-packages.sh` + manual | ⚠ downgrade to 🔜 |
-| SDL #8 approved tools ✅ | analyzers run; Semgrep does not | ⚠ partial |
-| SDL #9 SAST ✅ | 14 Semgrep rules + analyzers | ⚠ **Semgrep not in CI; CodeQL has no workflow** — downgrade to 🔜 |
-| SDL #12 incident response ✅ | `SECURITY.md` disclosure | ⚠ disclosure exists; no playbook |
-| Elder-plinius never fetched | CLAUDE.md + persona rules | ✅ socially enforced |
-| Actions SHA-pinning | `gate.yml` SHA-pins | ⚠ **no PR-level lint enforces** — revert to `@v6` passes CI |
+| Claim                               | Cited control                           | Status                                                            |
+| ----------------------------------- | --------------------------------------- | ----------------------------------------------------------------- |
+| Semgrep rule 7 (weight multiply)    | rule exists                             | ✅ verified                                                       |
+| CRC32C for corruption not tampering | `HardwareCrc32C`                        | ✅ honest                                                         |
+| Path traversal blocked              | Semgrep rule 4 + `DiskSpine.fs pathFor` | ⚠ rule is WARNING not ERROR                                       |
+| No `BinaryFormatter`/`Activator`    | Semgrep 8+11                            | ✅ verified                                                       |
+| Invisible-Unicode blocked           | Semgrep rule 13                         | ⚠ **rule exists, no CI job runs Semgrep** — aspirational today    |
+| SDL #7 3rd-party risk ✅            | `tools/audit-packages.sh` + manual      | ⚠ downgrade to 🔜                                                 |
+| SDL #8 approved tools ✅            | analyzers run; Semgrep does not         | ⚠ partial                                                         |
+| SDL #9 SAST ✅                      | 14 Semgrep rules + analyzers            | ⚠ **Semgrep not in CI; CodeQL has no workflow** — downgrade to 🔜 |
+| SDL #12 incident response ✅        | `SECURITY.md` disclosure                | ⚠ disclosure exists; no playbook                                  |
+| Elder-plinius never fetched         | CLAUDE.md + persona rules               | ✅ socially enforced                                              |
+| Actions SHA-pinning                 | `gate.yml` SHA-pins                     | ⚠ **no PR-level lint enforces** — revert to `@v6` passes CI       |
 
 **Pattern:** mitigations real at writing lack
 persistence controls. Round-30 closes the biggest:
@@ -192,33 +192,33 @@ Other classes that apply:
 
 ## SPACE-OPERA completion — imagination game
 
-Per Aaron: *"push the limits of the imagination."*
+Per Aaron: _"push the limits of the imagination."_
 Structure (silly adversary → real STRIDE → real
 mitigation pattern → shipped/BACKLOG/aspirational).
 Mitigations can be aspirational if tagged.
 
 **Rewrites — imagination pushed:**
 
-- **Psychic / EM.** Rewritten as *"The Whispering
-  Drone Swarm"* — swarm of micro-drones hovering
+- **Psychic / EM.** Rewritten as _"The Whispering
+  Drone Swarm"_ — swarm of micro-drones hovering
   outside Aaron's window reading RAM contents via
   electromagnetic emanations. STRIDE: I. Mitigation
-  *(aspirational — when crypto lands)*: ring-buffer
+  _(aspirational — when crypto lands)_: ring-buffer
   zero-on-free, constant-time compare for any future
   integrity code, `CryptographicOperations.ZeroMemory`.
   Reality tag: **future — no crypto to leak today.**
-- **Alien SIGINT.** Rewritten as *"Echoes from the
-  Dyson Sphere"* — an advanced civilisation's
+- **Alien SIGINT.** Rewritten as _"Echoes from the
+  Dyson Sphere"_ — an advanced civilisation's
   astronomical-scale signals-intelligence apparatus
   has been passively recording Earth internet since
   1962 and is now correlating Zeta commits against
   your coffee-shop WiFi. STRIDE: I. Mitigation
-  *(aspirational)*: HTTPS everywhere, no secrets on
+  _(aspirational)_: HTTPS everywhere, no secrets on
   the wire, least-privilege tokens. Reality tag:
   **allegorical — teaches "assume passive adversary
   with unlimited history."**
-- **Spore Readers.** Rewritten as *"The Fungal
-  Network"* — mycelial mats under the data centre
+- **Spore Readers.** Rewritten as _"The Fungal
+  Network"_ — mycelial mats under the data centre
   are naturally acoustic sensors; a cunning adversary
   has trained them to transcribe keyboard sounds
   (Genkin et al. 2014 did this with microphones; the
@@ -236,31 +236,31 @@ Mitigations can be aspirational if tagged.
   bard. The songs still rhyme. The bard's GitHub
   account pushes a commit that looks just like
   theirs. STRIDE: S. Mitigation: hardware-key 2FA
-  on repo *(Aaron: called-out accepted risk, 2FA
-  only today)*, signed commits *(deferred)*. Reality
+  on repo _(Aaron: called-out accepted risk, 2FA
+  only today)_, signed commits _(deferred)_. Reality
   tag: **documented exception.**
 - **The Changeling Action.** A GitHub Action you
   trust has been replaced with a doppelgänger — same
   name, same tag, subtly different SHA. STRIDE: T.
   Mitigation: full 40-char commit SHA pin on every
-  third-party action *(shipped in `gate.yml`)*;
-  dependabot SHA-bump requires human review *(policy,
-  not yet enforced — BACKLOG)*. Reality tag: **half-
+  third-party action _(shipped in `gate.yml`)_;
+  dependabot SHA-bump requires human review _(policy,
+  not yet enforced — BACKLOG)_. Reality tag: **half-
   shipped.**
 - **The Hungry Cache.** A GitHub-hosted cache is in
   fact a gateway to a parallel dimension where the
   cached NuGet package is a malicious clone. Returns
   the malicious version on cache hit. STRIDE: T.
   Mitigation: cache key pinned to Directory.Packages.
-  props hash *(shipped)*; no `restore-keys` prefix
-  fallback *(shipped)*. Reality tag: **shipped, but
+  props hash _(shipped)_; no `restore-keys` prefix
+  fallback _(shipped)_. Reality tag: **shipped, but
   inherits `packages.lock.json` BACKLOG.**
 - **The Time-Bomb Package.** A NuGet package ships
   benign for two years then, on the stroke of
   midnight 2028-01-01, reveals its true nature:
   it has been a backdoor all along. STRIDE: T.
   Mitigation: `packages.lock.json` + reproducible
-  builds *(both BACKLOG)*. Reality tag: **real
+  builds _(both BACKLOG)_. Reality tag: **real
   class, no defence yet.**
 - **The Helpful Stranger.** An unusually friendly
   contributor has been submitting polite, high-
@@ -269,7 +269,7 @@ Mitigations can be aspirational if tagged.
   and kindly, that Aaron is overloaded and could use
   the help. STRIDE: E. Mitigation: 30-day cooling
   period + identity-linked vouch on any co-
-  maintainer request *(aspirational policy today)*.
+  maintainer request _(aspirational policy today)_.
   Reality tag: **XZ lesson — structural control
   pending.**
 
@@ -302,7 +302,7 @@ V1.0 goal of 50 stays.
 1. **§0 Adversary tiers.** T0 / T1 / T2 / T3 with
    explicit "defends to which tier" tagging per
    STRIDE row.
-2. **§Re-audit cadence.** *"Every round"* is the
+2. **§Re-audit cadence.** _"Every round"_ is the
    default; any claim not re-verified in N rounds is
    a DEBT entry. Paired with `factory-audit` +
    `threat-model-critic` round cadence.
@@ -346,15 +346,15 @@ adversary. Placeholder line noting deferral.
 
 ## Controls to land this round
 
-| # | Control | Effort | Notes |
-|---|---|---|---|
-| 1 | **Semgrep-in-CI as a lint gate** | M | The biggest win — 14 rules go from aspirational to enforced |
-| 2 | CodeQL workflow | M | C# + F#; GitHub-hosted action |
-| 3 | SHA-pin enforcement Semgrep rule | S | Match mutable tags (`@v4`, `@main`) in `.github/workflows/**` |
-| 4 | Verifier-jar SHA-256 pinning | S | Closes TOFU on first fetch; improve-over-time |
-| 5 | `.mise.toml` trust gate in CI | S | Already DEBT |
-| 6 | `packages.lock.json` adoption | M | `RestoreLockedMode=true`; defeats time-bomb + transitive |
-| 7 | Safety-clause-diff lint on `.claude/skills/**` | S | Long-game skill regression defence |
+| #   | Control                                        | Effort | Notes                                                         |
+| --- | ---------------------------------------------- | ------ | ------------------------------------------------------------- |
+| 1   | **Semgrep-in-CI as a lint gate**               | M      | The biggest win — 14 rules go from aspirational to enforced   |
+| 2   | CodeQL workflow                                | M      | C# + F#; GitHub-hosted action                                 |
+| 3   | SHA-pin enforcement Semgrep rule               | S      | Match mutable tags (`@v4`, `@main`) in `.github/workflows/**` |
+| 4   | Verifier-jar SHA-256 pinning                   | S      | Closes TOFU on first fetch; improve-over-time                 |
+| 5   | `.mise.toml` trust gate in CI                  | S      | Already DEBT                                                  |
+| 6   | `packages.lock.json` adoption                  | M      | `RestoreLockedMode=true`; defeats time-bomb + transitive      |
+| 7   | Safety-clause-diff lint on `.claude/skills/**` | S      | Long-game skill regression defence                            |
 
 Deferred per Aaron:
 
@@ -395,9 +395,9 @@ floor), `prompt-protector` on the skill-diff lint.
 
 ## Post-round-30 roadmap
 
-| Round | Focus |
-|---|---|
-| 31 | Reproducible-build experiments; signed commits adoption if Aaron chooses |
-| 32 | OIDC-to-NuGet publish scaffolding (when NuGet publish nears) |
-| 33+ | SLSA L2 → L3 ladder |
+| Round    | Focus                                                                           |
+| -------- | ------------------------------------------------------------------------------- |
+| 31       | Reproducible-build experiments; signed commits adoption if Aaron chooses        |
+| 32       | OIDC-to-NuGet publish scaffolding (when NuGet publish nears)                    |
+| 33+      | SLSA L2 → L3 ladder                                                             |
 | Pre-v1.0 | `Zeta.*` namespace pre-registration; NuGet publish design doc; release playbook |

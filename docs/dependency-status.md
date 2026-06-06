@@ -1,8 +1,8 @@
 # Dependency status — what the factory runs on
 
 > **First-class factory surface** (B-0109): per the human maintainer
-> 2026-04-30, *"looking at github status should be first class for us we
-> live on git and github for now until we get a 2nd host in the future."*
+> 2026-04-30, _"looking at github status should be first class for us we
+> live on git and github for now until we get a 2nd host in the future."_
 > The factory's hot path runs through GitHub today; any GitHub
 > degradation IS a factory degradation, with this page as the
 > visibility layer.
@@ -23,7 +23,7 @@ If `Pull Requests` reports anything other than `operational`, the
 required-conversation-resolution gate that auto-merge depends on
 may return wrong-state data — see § Known concern classes for
 the failure modes this surface flags. Composes with the
-*BLOCKED-with-green-CI means investigate review threads first*
+_BLOCKED-with-green-CI means investigate review threads first_
 rule in `CLAUDE.md` — that rule says investigate; this surface
 says verify the API is reporting truth before believing the
 investigation result.
@@ -44,58 +44,58 @@ Grouped by operational role. Each row names the dependency, what the factory use
 
 ### Hosting + version control
 
-| Dependency | Used for | Status source | Factory-relevant components |
-|---|---|---|---|
-| GitHub (LFG repo) | canonical development; PRs; auto-merge; required checks; merge target | <https://www.githubstatus.com/> + <https://www.githubstatus.com/api/v2/summary.json> | Pull Requests, Actions, API Requests, Webhooks |
-| GitHub (AceHack mirror) | backup mirror; receives daily fast-forward sync from LFG/main | (same as above — same host) | (same components) |
+| Dependency              | Used for                                                              | Status source                                                                        | Factory-relevant components                    |
+| ----------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| GitHub (LFG repo)       | canonical development; PRs; auto-merge; required checks; merge target | <https://www.githubstatus.com/> + <https://www.githubstatus.com/api/v2/summary.json> | Pull Requests, Actions, API Requests, Webhooks |
+| GitHub (AceHack mirror) | backup mirror; receives daily fast-forward sync from LFG/main         | (same as above — same host)                                                          | (same components)                              |
 
 ### CI + automation
 
-| Dependency | Used for | Status source | Factory-relevant components |
-|---|---|---|---|
-| GitHub Actions | every required check (build-and-test, lint, semgrep, shellcheck, actionlint, markdownlint); the every-minute autonomous-loop cron | <https://www.githubstatus.com/> | Actions |
-| GitHub Copilot review | inline PR review comments; first-pass gate-finding | <https://www.githubstatus.com/> | Copilot |
-| Codex (OpenAI) | additional PR review surface | <https://status.openai.com/> | API |
+| Dependency            | Used for                                                                                                                          | Status source                   | Factory-relevant components |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------- |
+| GitHub Actions        | every required check (build-and-test, lint, semgrep, shellcheck, actionlint, markdownlint); the every-minute autonomous-loop cron | <https://www.githubstatus.com/> | Actions                     |
+| GitHub Copilot review | inline PR review comments; first-pass gate-finding                                                                                | <https://www.githubstatus.com/> | Copilot                     |
+| Codex (OpenAI)        | additional PR review surface                                                                                                      | <https://status.openai.com/>    | API                         |
 
 ### AI runtimes (agent harnesses)
 
-| Dependency | Used for | Status source | Factory-relevant components |
-|---|---|---|---|
-| Anthropic API (Claude Code harness) | autonomous-loop sessions; substrate authoring | <https://status.anthropic.com/> | API, Claude Code |
-| OpenAI API (ChatGPT) | the human-maintainer ferry channels with external AI co-originators; Codex review | <https://status.openai.com/> | API, ChatGPT |
-| Google Gemini | additional substrate ferry channel | <https://status.cloud.google.com/> | Gemini API |
+| Dependency                          | Used for                                                                          | Status source                      | Factory-relevant components |
+| ----------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------- | --------------------------- |
+| Anthropic API (Claude Code harness) | autonomous-loop sessions; substrate authoring                                     | <https://status.anthropic.com/>    | API, Claude Code            |
+| OpenAI API (ChatGPT)                | the human-maintainer ferry channels with external AI co-originators; Codex review | <https://status.openai.com/>       | API, ChatGPT                |
+| Google Gemini                       | additional substrate ferry channel                                                | <https://status.cloud.google.com/> | Gemini API                  |
 
 ### Language runtimes
 
-| Dependency | Used for | Status source | Factory-relevant components |
-|---|---|---|---|
-| .NET SDK (mise-pinned `10.0.203`) | F# build; tests; analyzers | <https://github.com/dotnet/core/issues> (no formal status page) | (release health) |
-| Bun (mise-pinned) | TS scripts under `tools/`; `bun tools/github/poll-pr-gate*.ts` | <https://bun.sh/blog> + <https://github.com/oven-sh/bun/issues> | (no formal status page) |
-| Python 3.14 (mise-pinned) | helper scripts; `uv tool install` flow | (none — release-health only) | (release health) |
-| Java 26 (mise-pinned) | TLA+ + Alloy verifier jars | (none — release-health only) | (release health) |
-| Lean (elan-managed, outside mise) | formal-verification proofs | <https://github.com/leanprover/lean4/issues> | Mathlib |
-| mise | language-runtime version manager | <https://github.com/jdx/mise/issues> | (release health) |
+| Dependency                        | Used for                                                       | Status source                                                   | Factory-relevant components |
+| --------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------- |
+| .NET SDK (mise-pinned `10.0.203`) | F# build; tests; analyzers                                     | <https://github.com/dotnet/core/issues> (no formal status page) | (release health)            |
+| Bun (mise-pinned)                 | TS scripts under `tools/`; `bun tools/github/poll-pr-gate*.ts` | <https://bun.sh/blog> + <https://github.com/oven-sh/bun/issues> | (no formal status page)     |
+| Python 3.14 (mise-pinned)         | helper scripts; `uv tool install` flow                         | (none — release-health only)                                    | (release health)            |
+| Java 26 (mise-pinned)             | TLA+ + Alloy verifier jars                                     | (none — release-health only)                                    | (release health)            |
+| Lean (elan-managed, outside mise) | formal-verification proofs                                     | <https://github.com/leanprover/lean4/issues>                    | Mathlib                     |
+| mise                              | language-runtime version manager                               | <https://github.com/jdx/mise/issues>                            | (release health)            |
 
 ### Package registries
 
 Independent outage sources from the runtimes; build/install/restore breaks when these degrade even when the runtime itself is healthy.
 
-| Dependency | Used for | Status source | Factory-relevant components |
-|---|---|---|---|
-| NuGet (`api.nuget.org`) | .NET package fetch (`dotnet restore`, `dotnet tool install`, Stryker, Semgrep) | <https://status.nuget.org/> | API |
-| PyPI (`pypi.org`) | `uv tool install` (ruff today; expanding) | <https://status.python.org/> | PyPI |
-| npm registry | bun-resolved package fetch when bun falls back to npm | <https://status.npmjs.org/> | Registry |
-| Homebrew (`formulae.brew.sh`) | system-level macOS packages (mise itself + curl bootstrap) | <https://status.brew.sh/> | (formula fetch) |
-| apt (Debian/Ubuntu) | system-level Linux packages | (no canonical status; per-mirror) | (none) |
+| Dependency                    | Used for                                                                       | Status source                     | Factory-relevant components |
+| ----------------------------- | ------------------------------------------------------------------------------ | --------------------------------- | --------------------------- |
+| NuGet (`api.nuget.org`)       | .NET package fetch (`dotnet restore`, `dotnet tool install`, Stryker, Semgrep) | <https://status.nuget.org/>       | API                         |
+| PyPI (`pypi.org`)             | `uv tool install` (ruff today; expanding)                                      | <https://status.python.org/>      | PyPI                        |
+| npm registry                  | bun-resolved package fetch when bun falls back to npm                          | <https://status.npmjs.org/>       | Registry                    |
+| Homebrew (`formulae.brew.sh`) | system-level macOS packages (mise itself + curl bootstrap)                     | <https://status.brew.sh/>         | (formula fetch)             |
+| apt (Debian/Ubuntu)           | system-level Linux packages                                                    | (no canonical status; per-mirror) | (none)                      |
 
 ### Verifiers + analyzers (jar / binary downloads)
 
-| Dependency | Used for | Status source | Factory-relevant components |
-|---|---|---|---|
-| TLA+ (`tla2tools.jar` v1.8.0) | safety/liveness specs | <https://github.com/tlaplus/tlaplus/releases> | (release host) |
-| Alloy (`alloy.jar` v6.2.0) | structural model checking | <https://github.com/AlloyTools/org.alloytools.alloy/releases> | (release host) |
-| Stryker (.NET tool) | mutation testing | <https://stryker-mutator.io/blog/> | (NuGet feed) |
-| Semgrep | static analysis | <https://semgrep.dev/blog> | (CLI registry) |
+| Dependency                    | Used for                  | Status source                                                 | Factory-relevant components |
+| ----------------------------- | ------------------------- | ------------------------------------------------------------- | --------------------------- |
+| TLA+ (`tla2tools.jar` v1.8.0) | safety/liveness specs     | <https://github.com/tlaplus/tlaplus/releases>                 | (release host)              |
+| Alloy (`alloy.jar` v6.2.0)    | structural model checking | <https://github.com/AlloyTools/org.alloytools.alloy/releases> | (release host)              |
+| Stryker (.NET tool)           | mutation testing          | <https://stryker-mutator.io/blog/>                            | (NuGet feed)                |
+| Semgrep                       | static analysis           | <https://semgrep.dev/blog>                                    | (CLI registry)              |
 
 ## Live status sources
 
@@ -130,7 +130,7 @@ The maintainer 2026-04-30 surfaced this concern citing Trunk.io's [merge-queue-b
 
 When the GitHub Pull Requests component is flagged `degraded_performance` or worse: pause auto-merge arming until restored. (Mitigation rule lives in follow-up rows; this surface flags the condition.)
 
-This composes with `CLAUDE.md`'s *BLOCKED-with-green-CI means investigate review threads first* rule. That rule assumes the API is reporting truth; this surface is the prerequisite check that the assumption holds. If `Pull Requests` is degraded, an apparent 0-unresolved-threads count is unreliable.
+This composes with `CLAUDE.md`'s _BLOCKED-with-green-CI means investigate review threads first_ rule. That rule assumes the API is reporting truth; this surface is the prerequisite check that the assumption holds. If `Pull Requests` is degraded, an apparent 0-unresolved-threads count is unreliable.
 
 ### GitHub Actions runner queue degradation
 
@@ -188,7 +188,7 @@ Recommended sequencing (each becomes its own backlog row when promoted):
 - `memory/feedback_all_cryptography_quantum_resistant_even_one_gap_is_attack_vector_2026_04_23.md` — quantum-resistant policy presumes known crypto-primitive state
 - `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md` — absorb-and-contribute presumes the dependency list is legible
 - `docs/AUTONOMOUS-LOOP.md` — autonomous loop runs on GitHub-mediated state; tick rituals consume this surface
-- `CLAUDE.md` *BLOCKED-with-green-CI* rule — that rule's reliability presupposes the API is reporting truth; this surface verifies the precondition
+- `CLAUDE.md` _BLOCKED-with-green-CI_ rule — that rule's reliability presupposes the API is reporting truth; this surface verifies the precondition
 
 ## Last refreshed
 

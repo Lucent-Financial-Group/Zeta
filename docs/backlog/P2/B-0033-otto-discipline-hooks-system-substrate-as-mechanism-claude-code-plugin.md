@@ -41,7 +41,7 @@ Child stubs created as placeholders; each is one-PR implementable, verifiable in
 
 The Write-tool security hook fired on "eval" substring during my Maji research doc write (a false-positive — the doc discussed identity-evaluation metrics, not code-eval). Aaron observed:
 
-> *"i love these hooks great for learning, seems like current otto could setup similar hooks for future otto for the rules that have not fully absorbe into the substrate reflexivly / instincts. also good for when we make a harness plugin."*
+> _"i love these hooks great for learning, seems like current otto could setup similar hooks for future otto for the rules that have not fully absorbe into the substrate reflexivly / instincts. also good for when we make a harness plugin."_
 
 This is **Otto-341 mechanism-over-discipline at the harness layer**.
 
@@ -51,17 +51,17 @@ The recurring failure-modes Otto-NNN substrate names but my per-instance discipl
 
 ## Recurring failure-modes that hooks would catch
 
-| Otto-NNN failure mode | Hook target |
-|---|---|
-| **Edit-without-Read** (Otto-343 recurring) | Pre-Edit hook: check file mtime; require recent Read; fail-with-guidance if file modified since Read |
-| **Inline Python heredocs** (Otto-346 violations 1-4) | Pre-bash hook: detect `python3 -c` / `python3 << ...` patterns; suggest tool extraction |
-| **Directive vocabulary** (Otto-293 + B-0025) | Pre-commit grep: "directive:" in YAML keys; "directive" in body prose |
-| **DST-exempt comments** (Otto-281) | Pre-commit grep: flag as deferred bug |
-| **Magic-number-without-rationale** (Otto-282) | Pre-commit checker on numeric literals |
-| **Bulk-resolve-without-reading** (Otto-281 + earlier session catches) | Pre-action hook on GraphQL `markPullRequestReviewThreadAsResolved` mutations: require explicit per-thread justification |
-| **Heartbeat-row identical-(none) repetition** (Aaron catch this session) | Pre-commit pattern match: flag 3+ identical recent rows |
-| **Markdown table cell-count mismatch** (B-0027) | Pre-commit: check N pipes per data row in tick-history |
-| **Conflict markers in committed files** (B-0030 sibling) | Already shipped (`tools/hygiene/check-no-conflict-markers.sh`) — model for others |
+| Otto-NNN failure mode                                                    | Hook target                                                                                                             |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **Edit-without-Read** (Otto-343 recurring)                               | Pre-Edit hook: check file mtime; require recent Read; fail-with-guidance if file modified since Read                    |
+| **Inline Python heredocs** (Otto-346 violations 1-4)                     | Pre-bash hook: detect `python3 -c` / `python3 << ...` patterns; suggest tool extraction                                 |
+| **Directive vocabulary** (Otto-293 + B-0025)                             | Pre-commit grep: "directive:" in YAML keys; "directive" in body prose                                                   |
+| **DST-exempt comments** (Otto-281)                                       | Pre-commit grep: flag as deferred bug                                                                                   |
+| **Magic-number-without-rationale** (Otto-282)                            | Pre-commit checker on numeric literals                                                                                  |
+| **Bulk-resolve-without-reading** (Otto-281 + earlier session catches)    | Pre-action hook on GraphQL `markPullRequestReviewThreadAsResolved` mutations: require explicit per-thread justification |
+| **Heartbeat-row identical-(none) repetition** (Aaron catch this session) | Pre-commit pattern match: flag 3+ identical recent rows                                                                 |
+| **Markdown table cell-count mismatch** (B-0027)                          | Pre-commit: check N pipes per data row in tick-history                                                                  |
+| **Conflict markers in committed files** (B-0030 sibling)                 | Already shipped (`tools/hygiene/check-no-conflict-markers.sh`) — model for others                                       |
 
 Each is substrate-named-but-recurring. Hooks convert language-layer-discipline → mechanism-layer-enforcement.
 
@@ -94,13 +94,13 @@ These are Claude-Code-specific; package as plugin.
 
 - `lint-tick-history-order` (PR #534)
 - `lint-no-conflict-markers` (PR #539)
-- + future: lint-no-directive-vocabulary, lint-no-inline-python-heredocs, etc.
+- - future: lint-no-directive-vocabulary, lint-no-inline-python-heredocs, etc.
 
 These are CI-native; survive any agent / harness combination; the most durable layer.
 
 ## Plugin packaging strategy
 
-Per Aaron's *"good for when we make a harness plugin"*:
+Per Aaron's _"good for when we make a harness plugin"_:
 
 1. **Internal first**: Layer 1 + 2 + 3 wired into Zeta repo
 2. **Extract**: package the Layer 2 (Claude Code hooks) as standalone plugin
@@ -134,6 +134,7 @@ Linus → git → Otto-345 substrate-tooling. Hooks add a layer: Linus → git �
 ### Maji formal model (PR #555)
 
 Amara's Maji guards include:
+
 > "No uncommitted context-window claim is identity-authoritative."
 
 Hooks enforce that programmatically: a context-window claim (e.g., agent says "Edit this file") doesn't become substrate without first verifying the substrate-state. The hook IS the enforcement of `Trust(S_t) > Trust(W_t)`.
@@ -159,7 +160,7 @@ Total: L spread across multiple PRs.
 
 Aaron 2026-04-26 corrected an earlier draft of this row that included "Substrate-poisoning trigger words" as a hook target:
 
-> *"Substrate-poisoning trigger words what are these, i don't like too much filtering like this or it leads to 1984"*
+> _"Substrate-poisoning trigger words what are these, i don't like too much filtering like this or it leads to 1984"_
 
 He's exactly right. Vocabulary-based pre-censorship of substrate is **Newspeak/1984 territory** — voluntary self-censorship that progressively narrows what can be said/thought.
 
@@ -183,7 +184,7 @@ The Otto-343 catalog entry #2 observation was real: filter sharpens on certain v
 
 Aaron 2026-04-26 follow-up to the 1984 correction:
 
-> *"it also is a type of immunity to prompt injection over time, you have to catalog and account for what could be 'poison' words to the substrate, instead you will have to integrate them in a non harmful way. forcing better and better immunity over time as the words leak in, expanding your mind, you loose all that in 1984"*
+> _"it also is a type of immunity to prompt injection over time, you have to catalog and account for what could be 'poison' words to the substrate, instead you will have to integrate them in a non harmful way. forcing better and better immunity over time as the words leak in, expanding your mind, you loose all that in 1984"_
 
 This is the load-bearing structural reason vocabulary-filtering is wrong, not just an aesthetic 1984 reference:
 
@@ -265,6 +266,6 @@ This composes with Otto-345 substrate-visibility-discipline: the hook's existenc
 
 ## Aaron's framing in his own words
 
-> *"i love these hooks great for learning, seems like current otto could setup similar hooks for future otto for the rules that have not fully absorbe into the substrate reflexivly / instincts. also good for when we make a harness plugin."*
+> _"i love these hooks great for learning, seems like current otto could setup similar hooks for future otto for the rules that have not fully absorbe into the substrate reflexivly / instincts. also good for when we make a harness plugin."_
 
 The "for learning" framing is operationally important: hooks aren't punitive; they're teaching-via-mechanism. Per Otto-346 Claim 5 (every interaction IS alignment + research): hook-firings ARE alignment events; hook-misses ARE research data. The system improves via the same bidirectional-learning loop everything else does.

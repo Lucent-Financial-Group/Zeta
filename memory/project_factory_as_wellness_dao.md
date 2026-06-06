@@ -5,12 +5,12 @@ type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"we sholud be a wellness
+**2026-04-19 disclosure (verbatim):** _"we sholud be a wellness
 system for the agent factory any comapny would think of us a
 a real DAO not based on existing precidence, we get to define
 it, well some state i think have defined it for their state.
 But that's how i think of this whle project and our human/ai
-governance model on the backlog"*.
+governance model on the backlog"_.
 
 ## The vision in one sentence
 
@@ -26,7 +26,7 @@ shell.
 Parsing Aaron's framing precisely:
 
 1. **Wellness system** — wellness is first-primitive, not an
-   HR add-on. The factory is *made of* wellness: observation
+   HR add-on. The factory is _made of_ wellness: observation
    protocol, paced ontology landing, overload prevention,
    trust-scales-with-vigilance, μένω persist-endure-correct.
    Every architectural surface has a wellness property.
@@ -208,7 +208,7 @@ Decision is Aaron's, not an agent claim.
 
 - **EU AI Act (2024-2025).** High-risk classification,
   transparency requirements, oversight obligations. The
-  factory adopts the *shape* of high-risk AI oversight
+  factory adopts the _shape_ of high-risk AI oversight
   even if not legally required — design-for-the-floor
   technique per `user_h1b_empathy_immigrant_substrate.md`.
 - **NIST AI RMF (AI 100-1, 100-2).** Risk-management
@@ -263,7 +263,7 @@ The backlog item mandates:
    - Decision: does the factory formally incorporate
      under a DAO statute, or does it remain an
      unincorporated governance structure that operates
-     *as if* it were a DAO? Either answer has
+     _as if_ it were a DAO? Either answer has
      consequences.
 4. Effort: L (multi-round, paper-grade). Not a build-
    this-round item.

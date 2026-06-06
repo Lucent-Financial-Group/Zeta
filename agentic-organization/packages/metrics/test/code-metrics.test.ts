@@ -37,7 +37,8 @@ test("a small clean file produces no findings", () => {
 });
 
 test("reports max nesting depth", () => {
-  const source = "function f() {\n if (a) {\n  if (b) {\n   if (c) {\n    if (d) {\n     g();\n    }\n   }\n  }\n }\n}\n";
+  const source =
+    "function f() {\n if (a) {\n  if (b) {\n   if (c) {\n    if (d) {\n     g();\n    }\n   }\n  }\n }\n}\n";
   const report = analyzeSource("nest.ts", source);
   ok(report.maxNestingDepth >= 5);
 });

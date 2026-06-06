@@ -82,12 +82,12 @@ update to be reviewed in isolation before mass file moves happen.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing PR touching both these files in context
-  of this split; no memory file with a prior schema update for this.
+      of this split; no memory file with a prior schema update for this.
 - [x] Dependency-restructure: `depends_on: [B-0375, B-0376]` — need
-  inventory (B-0375) to know what "history surface" means for aurora,
-  and the naming decision (B-0376) to put the right dir name in.
+      inventory (B-0375) to know what "history surface" means for aurora,
+      and the naming decision (B-0376) to put the right dir name in.
 - [x] Reciprocal pointer: B-0375 and B-0376 both carry
-  `composes_with: [B-0377]`.
+      `composes_with: [B-0377]`.
 
 ## Composes with
 

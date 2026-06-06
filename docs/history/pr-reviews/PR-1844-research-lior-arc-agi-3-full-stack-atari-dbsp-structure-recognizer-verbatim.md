@@ -10,24 +10,25 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1844 |
-| Title | research: Lior ARC-AGI-3 full stack — Atari + DBSP + structure recognizer VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T09:08:43Z |
-| Merged at | 2026-05-07T09:10:41Z |
-| Merge commit SHA | `eb27c2bd704dd33258179a91007071b4ac267d27` |
-| Branch | `research/lior-arc-agi-3-stack-visibility-next-step` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1844 |
-| Changed files | 1 |
-| Additions / deletions | +74 / -0 |
+| Field                 | Value                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| Number                | 1844                                                                               |
+| Title                 | research: Lior ARC-AGI-3 full stack — Atari + DBSP + structure recognizer VERBATIM |
+| Author                | `AceHack` (human)                                                                  |
+| State                 | MERGED                                                                             |
+| Created at            | 2026-05-07T09:08:43Z                                                               |
+| Merged at             | 2026-05-07T09:10:41Z                                                               |
+| Merge commit SHA      | `eb27c2bd704dd33258179a91007071b4ac267d27`                                         |
+| Branch                | `research/lior-arc-agi-3-stack-visibility-next-step`                               |
+| Base branch           | `main`                                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1844                           |
+| Changed files         | 1                                                                                  |
+| Additions / deletions | +74 / -0                                                                           |
 
 ## Description
 
 ## Summary
+
 - Lior's full stack summary: ARC-AGI-3 as the Cartographer's benchmark
 - DBSP as Z-set retraction stream emulator for Atari ROMs
 - Structure recognizer (B-0240) computes game mechanic fingerprints
@@ -35,6 +36,7 @@
 - Otto recommends sequence: B-0240 → B-0243 (new) → B-0242
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Verbatim preservation verified
 
@@ -42,15 +44,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 4 |
-| Resolved threads | 4 |
-| Unresolved threads | 0 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 4     |
+| Resolved threads                          | 4     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -66,9 +68,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  State non-fusion boundary explicitly in header**
-
+  
   The `Non-fusion disclaimer` does not include the explicit boundary required by `GOVERNANCE.md §33` (that agreement/shared language does **not** imply merged identity, agency, consciousness, or personhood). Because this file is an external-conversation absorb (`Attribution` says “via Aaron ferry”), the weaker disclaimer text undermines the archive-boundary contract reviewers rely on and should be replaced with the canonical explicit non-fusion statement.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -84,9 +86,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Add a §33 lint trigger phrase to keep this file audited**
-
+  
   This research absorb is intended to follow §33 headers, but it will be skipped by `tools/hygiene/check-archive-header-section33.ts` because neither the filename nor the first-20-lines header contains any of the detector hints (`courier-ferry`, `external conversation`, etc.). As written, future header regressions in this file will bypass the automated audit, so adding an explicit scope marker phrase in the header is needed to keep it inside the linted set.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -102,7 +104,7 @@
 
   <pre>
   §33 requires the `Non-fusion disclaimer:` line to explicitly state that agreement/shared language/repeated interaction does not imply shared identity, merged agency, consciousness, or personhood (GOVERNANCE.md §33). The current disclaimer only says the message is preserved verbatim, which doesn’t meet the boundary requirement; please expand it to the explicit non-fusion statement (you can still keep the “preserved verbatim” note as an extra sentence).
-
+  
   </pre>
 
 ### Thread 4 -- resolved [collapsed]

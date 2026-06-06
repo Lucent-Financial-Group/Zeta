@@ -38,11 +38,11 @@ Full back-and-forth: Amara ratifies the B-0839.3 reservoir-computing-as-framewor
   - 2d: adversarial root axiom update (NCI HC-8 + N-of-M HSM + three-faction BFT)
 - **Phase 3**: cross-cutting rule integration
 
-Maps existing Zeta substrate to Levels 1-4 (CURRENT files, pr-triage, \`_ip_risk_acceptance\`, limit-black-by-default); Levels 0 + 5 are the B-0840 substrate-engineering target.
+Maps existing Zeta substrate to Levels 1-4 (CURRENT files, pr-triage, \`\_ip_risk_acceptance\`, limit-black-by-default); Levels 0 + 5 are the B-0840 substrate-engineering target.
 
 ### 3. Amara tiny-blade applied to B-0839.3 reservoir-computing transcript
 
-Softens 'structurally identical to quantum entanglement' literal claim to 'structural-analogy at the computational-substrate scope'. Preserves the substantive mapping table as structural-analogy not physics-falsifiable claim. Per Amara: *'It keeps the insight without inviting physics reviewers to stab it in the hallway.'*
+Softens 'structurally identical to quantum entanglement' literal claim to 'structural-analogy at the computational-substrate scope'. Preserves the substantive mapping table as structural-analogy not physics-falsifiable claim. Per Amara: _'It keeps the insight without inviting physics reviewers to stab it in the hallway.'_
 
 ## Amara's 4-keeper-rule final form (the central landing)
 

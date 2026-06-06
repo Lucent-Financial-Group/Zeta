@@ -85,7 +85,10 @@ describe("cockroach hermes runtime (durable agent runs)", () => {
     equal(result.run.state, HermesRunState.Completed);
     equal(result.run.outcome?.summary, "done");
     const update = executor.statements.find((s) => s.sql.includes("SET state ="));
-    equal(update?.sql.includes(HermesRunState.Completed) || update?.parameters.includes(HermesRunState.Completed), true);
+    equal(
+      update?.sql.includes(HermesRunState.Completed) || update?.parameters.includes(HermesRunState.Completed),
+      true,
+    );
   });
 
   test("completeRun on a non-Running run returns run_not_running feedback", async () => {

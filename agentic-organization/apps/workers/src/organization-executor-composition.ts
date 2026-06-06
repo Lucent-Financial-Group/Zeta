@@ -25,7 +25,10 @@ import {
   type CommandResult,
   type EnsureWorkItemPort,
 } from "../../../packages/application/src/index.ts";
-import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
+import {
+  createCommandAuthorizationPort,
+  createPolicyDecisionObservationPort,
+} from "../../../packages/policy/src/index.ts";
 import {
   createCockroachDurableStateAdapters,
   type CockroachOrganizationSqlExecutor,
@@ -90,7 +93,9 @@ function synthesizeActor(action: ReactionPlanAction): AgenticActor {
   };
 }
 
-type WorkAnchorSeederStore = ReturnType<typeof createCockroachDurableStateAdapters<CommandResult>>["workAnchorStateStore"];
+type WorkAnchorSeederStore = ReturnType<
+  typeof createCockroachDurableStateAdapters<CommandResult>
+>["workAnchorStateStore"];
 
 function createCockroachWorkItemSeeder(input: {
   store: WorkAnchorSeederStore;

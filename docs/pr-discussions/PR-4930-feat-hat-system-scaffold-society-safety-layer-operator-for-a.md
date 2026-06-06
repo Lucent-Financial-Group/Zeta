@@ -34,16 +34,16 @@ Compositions captured from the design conversation:
 
 ## What's in the directory
 
-| Path | What |
-|------|------|
-| `Application.yaml` | ArgoCD Application; reconciles everything below |
-| `crds/` | Hat, HatBinding, HatSwap, HatPolicy (4 CRDs) |
-| `hats/` | Seed: hat-designer, observer, executor, policy-admin + default HatPolicy |
-| `policies/` | 7 OPA Gatekeeper ConstraintTemplates (cooldown, max-bindings, COI, quorum, warmup, max-new-hats, no-supervisor-cycles) |
-| `operator/` | Go operator scaffold (kubebuilder layout — needs `kubebuilder init`) |
-| `graph/` | Hat-graph DOT renderer + docs |
-| `queries/` | Loki + Hubble query library for hat ↔ network-flow attribution |
-| `deployment.yaml` | Operator Deployment (replicas:0 until image built) + RBAC |
+| Path               | What                                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `Application.yaml` | ArgoCD Application; reconciles everything below                                                                        |
+| `crds/`            | Hat, HatBinding, HatSwap, HatPolicy (4 CRDs)                                                                           |
+| `hats/`            | Seed: hat-designer, observer, executor, policy-admin + default HatPolicy                                               |
+| `policies/`        | 7 OPA Gatekeeper ConstraintTemplates (cooldown, max-bindings, COI, quorum, warmup, max-new-hats, no-supervisor-cycles) |
+| `operator/`        | Go operator scaffold (kubebuilder layout — needs `kubebuilder init`)                                                   |
+| `graph/`           | Hat-graph DOT renderer + docs                                                                                          |
+| `queries/`         | Loki + Hubble query library for hat ↔ network-flow attribution                                                         |
+| `deployment.yaml`  | Operator Deployment (replicas:0 until image built) + RBAC                                                              |
 
 ## Sync gating
 
@@ -76,24 +76,22 @@ Deployment ships at `replicas: 0` so ArgoCD reports healthy while the operator i
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T13:36:41Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `59e88cb8e3`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -105,7 +103,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T13:36:41Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Sanitize HatSwap GenerateName to lowercase DNS-1123**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Sanitize HatSwap GenerateName to lowercase DNS-1123**
 
 `GenerateName` is built from `t.Event`, but the event constants are CamelCase (e.g. `SwapOn`, `WarmupBegin`), so names like `observer-SwapOn-` include uppercase letters and are rejected by Kubernetes name validation. That causes HatSwap creation to fail for normal transitions, which breaks the durable tick stream and any policy/query logic that depends on HatSwap records.
 
@@ -115,7 +113,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T13:36:41Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Fail reconcile when tick.Emit cannot persist the HatSwap CR**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Fail reconcile when tick.Emit cannot persist the HatSwap CR**
 
 The reconciler discards `tick.Emit` errors, so reconciliation still reports success when the durable HatSwap write fails. In those cases no retry is scheduled and transitions become untracked, which directly violates the “one tick per transition” contract and can silently desynchronize cooldown/quorum logic that reads swap history.
 
@@ -125,7 +123,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T13:36:41Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Implement DeepCopyObject instead of returning the same pointer**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Implement DeepCopyObject instead of returning the same pointer**
 
 These `DeepCopyObject` stubs return the original object pointer instead of an actual copy. Kubernetes runtime/scheme callers assume `DeepCopyObject` produces an independent object; returning aliases can leak in-place mutations across cache/reconcile paths and lead to subtle state corruption.
 
@@ -135,7 +133,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T13:36:41Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Pass a duration unit to nats.PingInterval**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Pass a duration unit to nats.PingInterval**
 
 `nats.PingInterval` expects a `time.Duration`, but passing the bare literal `30` configures a 30ns interval rather than 30 seconds. This can cause excessive ping traffic/reconnect churn and unnecessary load whenever NATS is enabled.
 

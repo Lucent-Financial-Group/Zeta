@@ -2,11 +2,7 @@ import { equal } from "node:assert/strict";
 import { test } from "node:test";
 import { WorkItemState, WorkItemType, type WorkItem } from "../../domain/src/index.ts";
 import { ObserveOutcome, RunScope } from "../src/observe.ts";
-import {
-  ObserveWorkItemFeedbackReason,
-  observeWorkItem,
-  snapshotForWorkItem,
-} from "../src/observe-work-item.ts";
+import { ObserveWorkItemFeedbackReason, observeWorkItem, snapshotForWorkItem } from "../src/observe-work-item.ts";
 
 const deps = { clock: { now: () => "2026-05-29T00:00:00.000Z" } };
 
@@ -48,7 +44,10 @@ test("observeWorkItem returns a readout with legal options for an in_progress it
   equal(result.readout.outcome, ObserveOutcome.Readout);
   if (result.readout.outcome !== ObserveOutcome.Readout) return;
   // executing -> submit_evidence | fail
-  equal(result.readout.readout.options.some((o) => o.actionType === "submit_evidence"), true);
+  equal(
+    result.readout.readout.options.some((o) => o.actionType === "submit_evidence"),
+    true,
+  );
 });
 
 test("a done work item observes to a terminal-phase feedback", () => {
@@ -63,7 +62,11 @@ test("a done work item observes to a terminal-phase feedback", () => {
 test("gate approval flows from facts into the snapshot and unlocks execute", () => {
   // a review-state item maps to awaiting_review; awaiting_gate is what gates execute,
   // so use a facts-driven snapshot directly to prove the gate flag plumbs through.
-  const approved = snapshotForWorkItem(workItem(WorkItemState.Review), { ...facts, hasGateApproval: true, hasEvidence: true });
+  const approved = snapshotForWorkItem(workItem(WorkItemState.Review), {
+    ...facts,
+    hasGateApproval: true,
+    hasEvidence: true,
+  });
   equal(approved.outcome, "ok");
   if (approved.outcome !== "ok") return;
   equal(approved.snapshot.hasGateApproval, true);

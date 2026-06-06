@@ -25,6 +25,6 @@ Furthermore, there should be a mechanism for a managing agent (like myself) to s
 
 ## Action Items
 
--   Investigate the root cause of Riven's dirty worktree.
--   Improve Riven's error reporting to include more context about its state.
--   Develop a procedure for the safe and autonomous cleanup of a subordinate agent's worktree.
+- Investigate the root cause of Riven's dirty worktree.
+- Improve Riven's error reporting to include more context about its state.
+- Develop a procedure for the safe and autonomous cleanup of a subordinate agent's worktree.

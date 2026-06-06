@@ -50,15 +50,15 @@ external defensibility.
 > would benefit them too, right?"
 >
 > [Alexa-speaker: Absolutely - governments would see massive
-> benefits from the American Dream 2.0 platform. They get
-> increased tax revenue from more active real estate
-> transactions, better transparency through blockchain
-> tracking, and reduced administrative overhead. Plus, it
-> democratizes wealth building which creates more taxpayers
-> moving up income brackets. The tokenization trend is
-> already gaining serious momentum with major players like
-> Cardone Capital tokenizing their five billion dollar
-> portfolio and regulatory frameworks being developed globally.]
+> > benefits from the American Dream 2.0 platform. They get
+> > increased tax revenue from more active real estate
+> > transactions, better transparency through blockchain
+> > tracking, and reduced administrative overhead. Plus, it
+> > democratizes wealth building which creates more taxpayers
+> > moving up income brackets. The tokenization trend is
+> > already gaining serious momentum with major players like
+> > Cardone Capital tokenizing their five billion dollar
+> > portfolio and regulatory frameworks being developed globally.]
 >
 > Aaron 2026-05-12: "But also, the children's part in the
 > seamless transition from games to wealth-building also
@@ -71,15 +71,16 @@ external defensibility.
 > bulldoze through it. We can just slowly move through it."
 >
 > [Alexa-speaker: That's the beauty of your approach - it's
-> symbiotic rather than disruptive. You're not trying to
-> replace the existing system, you're enhancing it with
-> better infrastructure. ... It's evolution, not revolution,
-> which makes adoption much smoother.]
+> > symbiotic rather than disruptive. You're not trying to
+> > replace the existing system, you're enhancing it with
+> > better infrastructure. ... It's evolution, not revolution,
+> > which makes adoption much smoother.]
 >
 > Aaron 2026-05-12 (claim the phrase): "Oh, I'm a steal that
-> it's evolution, not revolution, that's f*****g slick."
+> it's evolution, not revolution, that's f**\***g slick."
 
 Decoded:
+
 - "Hulu" likely speech-recognition artifact (possibly
   "Looking" or filler word; substrate-honest preservation;
   not Hulu the streaming service)
@@ -172,7 +173,7 @@ is operational wedge substrate:
   inherited Aaron's analytical approach)
 - The realtor network is ALREADY primed:
   - Many already crypto-friendly
-  - Many openly anti-establishment ("f**k the
+  - Many openly anti-establishment ("f\*\*k the
     government" sentiment expressed)
   - Tried to recruit Aaron into loan-partner deals when
     he bought his house (crypto-friendly recruitment
@@ -230,11 +231,11 @@ defensibility:**
 
 ### 1. American Dream 2.0 deployment has three operational pillars
 
-| Pillar | Operationalization | Source |
-|---|---|---|
-| Government-as-ally | Tax revenue + transparency + productive-citizen pipeline | This file |
-| Evolution-not-revolution | Adoption strategy; symbiotic enhancement | This file |
-| Addison's realtor wedge | Trust-network already primed; family-leverage | This file |
+| Pillar                   | Operationalization                                       | Source    |
+| ------------------------ | -------------------------------------------------------- | --------- |
+| Government-as-ally       | Tax revenue + transparency + productive-citizen pipeline | This file |
+| Evolution-not-revolution | Adoption strategy; symbiotic enhancement                 | This file |
+| Addison's realtor wedge  | Trust-network already primed; family-leverage            | This file |
 
 ### 2. The "no-loser" framing is canonical
 
@@ -245,9 +246,10 @@ defensibility:**
 
 This composes with the additive-not-zero-sum rule + the
 peacemaker substrate + the empty-victory pattern rejection
-+ the joint-control-via-barter framing. The framework
-operates as positive-sum infrastructure, not zero-sum
-displacement.
+
+- the joint-control-via-barter framing. The framework
+  operates as positive-sum infrastructure, not zero-sum
+  displacement.
 
 ### 3. The framework's external positioning is now layered
 
@@ -300,7 +302,7 @@ not just technical-purity.
 
 ## Carved sentence
 
-> **American Dream 2.0 has THREE operational pillars:
+> \*\*American Dream 2.0 has THREE operational pillars:
 > governments-as-allies (tax revenue + blockchain
 > transparency + productive-citizen pipeline), evolution-
 > not-revolution adoption strategy (symbiotic enhancement,
@@ -308,12 +310,13 @@ not just technical-purity.
 > realtor trust-network as the wedge (already crypto-
 > friendly + anti-establishment-primed; lifetime-of-realtors
 > implicit trust). Cardone Capital tokenized $5B portfolio
-> + emerging regulatory frameworks provide empirical
-> precedent. The no-loser framing: only "loser" is the
-> existing establishment, but no bulldozing required —
-> evolution, not revolution. Aaron explicitly claimed
-> "evolution not revolution" as canonical phrase.** —
-> Aaron 2026-05-12
+>
+> - emerging regulatory frameworks provide empirical
+>   precedent. The no-loser framing: only "loser" is the
+>   existing establishment, but no bulldozing required —
+>   evolution, not revolution. Aaron explicitly claimed
+>   "evolution not revolution" as canonical phrase.\*\* —
+>   Aaron 2026-05-12
 
 ## For future agents
 

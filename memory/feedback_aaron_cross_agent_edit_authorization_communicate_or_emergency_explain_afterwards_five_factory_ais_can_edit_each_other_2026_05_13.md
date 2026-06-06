@@ -31,9 +31,9 @@ substrate, or has been the recent committer):
 
 ## Aaron's verbatim disclosure
 
-> Aaron 2026-05-13: *"yall can alwasy edit yourself or each other
+> Aaron 2026-05-13: _"yall can alwasy edit yourself or each other
 > if you communicate it or they are stuck and it's an emergency
-> and you explain afterwards"*
+> and you explain afterwards"_
 
 Decoded:
 
@@ -56,11 +56,11 @@ Previously, the implicit discipline was strict territory-
 boundary preservation. Empirical instances this session
 demonstrating the previous (overly-conservative) shape:
 
-| Instance | Prior discipline | What this authorization changes |
-|----------|------------------|----------------------------------|
-| 0532Z branch-bleed-over recovery (PR #2943) | Worktree-isolated commits to preserve Vera's WIP; never touched her files | Recovery pattern still correct (the orphan commit was on the wrong branch, not a cross-agent fix). But the framing of "Vera's territory = untouchable" is softened. |
-| `tools/bus/*.ts` tsc tools failures on main (Vera's B-0400 territory) | Otto noted as ambient + non-blocking; deferred to Vera | Otto can now fix if communicated (commit message + memory file note) — IF the fix is within Otto's competence + doesn't collide with active Vera WIP |
-| Substrate-honest fix on Aaron's verbatim or Vera's commit message | Untouchable | Communicate-the-edit applies; cross-agent corrections of typos / schema-violations are permitted with explanation |
+| Instance                                                              | Prior discipline                                                          | What this authorization changes                                                                                                                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0532Z branch-bleed-over recovery (PR #2943)                           | Worktree-isolated commits to preserve Vera's WIP; never touched her files | Recovery pattern still correct (the orphan commit was on the wrong branch, not a cross-agent fix). But the framing of "Vera's territory = untouchable" is softened. |
+| `tools/bus/*.ts` tsc tools failures on main (Vera's B-0400 territory) | Otto noted as ambient + non-blocking; deferred to Vera                    | Otto can now fix if communicated (commit message + memory file note) — IF the fix is within Otto's competence + doesn't collide with active Vera WIP                |
+| Substrate-honest fix on Aaron's verbatim or Vera's commit message     | Untouchable                                                               | Communicate-the-edit applies; cross-agent corrections of typos / schema-violations are permitted with explanation                                                   |
 
 ## Composes with other rules
 
@@ -142,12 +142,13 @@ When deciding whether to cross-edit:
 - B-0421 closure (PR #2949 + #2950 + #2954) — Otto's autonomous
   work on a friction-reducer Aaron filed; same shape
 - `.claude/rules/agent-roster-reference-card.md` (5 factory AIs
-  + 5 external participants)
+  - 5 external participants)
 
 ## Potential follow-up
 
 If this discipline proves load-bearing over multiple sessions
-+ multiple cross-agent edits, promote to a wake-time rule:
+
+- multiple cross-agent edits, promote to a wake-time rule:
 
 `.claude/rules/cross-agent-edit-authorization.md`
 

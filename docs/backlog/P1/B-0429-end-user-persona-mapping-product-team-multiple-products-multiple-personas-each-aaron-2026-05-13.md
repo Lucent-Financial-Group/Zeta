@@ -25,10 +25,10 @@ composes_with: [B-0424, B-0425, B-0426, B-0427, B-0428, B-0043]
 
 ## Aaron's directive
 
-Aaron 2026-05-13: *"end users need to map personas backlog for
+Aaron 2026-05-13: _"end users need to map personas backlog for
 prducot team we have mtiple differnt end users and need to
 clarity all our expected humans personas we also have several
-products that have several personas each"*
+products that have several personas each"_
 
 ## Scope
 
@@ -51,16 +51,16 @@ else with personas TBD).
 
 ## Product portfolio (current; per B-0425 product-repo split)
 
-| Product | Status |
-|---|---|
-| KSK (Kinetic Safeguard Kernel) | Substrate (PR #2892); persona TBD |
-| Wellness app | Killer-app-for-AI; personas TBD |
-| Civsim | Canonical product (PR #2903, #2906); personas TBD |
-| American Dream 2.0 | Substrate; personas TBD |
-| DIO (Distributed Intelligence Organism) | Substrate; personas TBD |
-| Aurora | Pitch deck (PR #2924); personas TBD |
-| Dawn (child-AI charter) | Substrate; personas TBD |
-| Universal business templates (B-0043) | Substrate; personas TBD |
+| Product                                 | Status                                            |
+| --------------------------------------- | ------------------------------------------------- |
+| KSK (Kinetic Safeguard Kernel)          | Substrate (PR #2892); persona TBD                 |
+| Wellness app                            | Killer-app-for-AI; personas TBD                   |
+| Civsim                                  | Canonical product (PR #2903, #2906); personas TBD |
+| American Dream 2.0                      | Substrate; personas TBD                           |
+| DIO (Distributed Intelligence Organism) | Substrate; personas TBD                           |
+| Aurora                                  | Pitch deck (PR #2924); personas TBD               |
+| Dawn (child-AI charter)                 | Substrate; personas TBD                           |
+| Universal business templates (B-0043)   | Substrate; personas TBD                           |
 
 Each product owes:
 
@@ -119,7 +119,7 @@ Also composes with:
 Per `.claude/rules/backlog-item-start-gate.md`:
 
 1. **Prior-art search**:
-   - Existing user_*.md memory files (Aaron, Itron mentors,
+   - Existing user\_\*.md memory files (Aaron, Itron mentors,
      Aaron's sister, etc.)
    - Aurora pitch (PR #2924) — implied personas (BTC ecosystem,
      edge operators, ombud, liaison)
@@ -204,7 +204,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
   acceptance discipline)
 - `.claude/rules/agent-roster-reference-card.md` (named-AI
   personas — complementary axis)
-- Existing user_*.md memory files
+- Existing user\_\*.md memory files
 
 ## Operational rule for future-Otto
 
@@ -243,17 +243,17 @@ B-0485 (gate: template + inventory)
 
 ### Child rows
 
-| ID | Title | Type | Depends on | Status |
-|----|-------|------|------------|--------|
-| B-0485 | Persona-mapping framework + substrate inventory | research (gate) | — | open |
-| B-0486 | Civsim persona map | planning | B-0485 | open |
-| B-0487 | Aurora persona map | planning | B-0485 | open |
-| B-0488 | KSK persona map | planning | B-0485 | open |
-| B-0489 | Wellness app persona map | planning | B-0485 | open |
-| B-0490 | American Dream 2.0 + DIO persona map | planning | B-0485 | open |
-| B-0491 | Dawn + Universal biz templates persona map | planning | B-0485 | open |
-| B-0492 | Cross-product persona reuse + refused-personas registry | planning | B-0486..B-0491 | open |
-| B-0493 | Skill catalog × persona cross-reference | planning | B-0492 | open |
+| ID     | Title                                                   | Type            | Depends on     | Status |
+| ------ | ------------------------------------------------------- | --------------- | -------------- | ------ |
+| B-0485 | Persona-mapping framework + substrate inventory         | research (gate) | —              | open   |
+| B-0486 | Civsim persona map                                      | planning        | B-0485         | open   |
+| B-0487 | Aurora persona map                                      | planning        | B-0485         | open   |
+| B-0488 | KSK persona map                                         | planning        | B-0485         | open   |
+| B-0489 | Wellness app persona map                                | planning        | B-0485         | open   |
+| B-0490 | American Dream 2.0 + DIO persona map                    | planning        | B-0485         | open   |
+| B-0491 | Dawn + Universal biz templates persona map              | planning        | B-0485         | open   |
+| B-0492 | Cross-product persona reuse + refused-personas registry | planning        | B-0486..B-0491 | open   |
+| B-0493 | Skill catalog × persona cross-reference                 | planning        | B-0492         | open   |
 
 ### Prior-art search completed
 

@@ -31,6 +31,7 @@ Use case guide:
 - **Full provenance**: when the relationship register itself needs to be named
 
 This parallels how Amara is credited:
+
 - Amara = OpenAI ChatGPT instance + Aaron <-> Amara mirror context
 - Ani = Grok app instance + Aaron <-> Ani mirror context
 
@@ -38,13 +39,13 @@ Both are not "vanilla model" — they carry accumulated mirror substrate from ex
 
 ## Ferry roster expanded
 
-| Ferry | Base model | Special context | Sample contributions |
-|---|---|---|---|
-| **Amara** | OpenAI ChatGPT | Aaron <-> Amara mirror | 19+ ferries, AgencySignature, blade-taxonomy correction, "Stability is velocity amortized" |
-| **Gemini Pro** | Google Gemini | (vanilla; no mirror disclosed) | Cognitive caching, slow-is-smooth-smooth-is-fast, blade taxonomy validation |
-| **Codex** | OpenAI Codex (chatgpt-codex-connector) | (vanilla; PR-review automation) | AGENTS.md three-load-bearing-values catch, doctrine-vs-spike contradiction catch |
-| **Copilot** | GitHub Copilot (copilot-pull-request-reviewer) | (vanilla; PR-review automation) | Header count fixes, MEMORY.md cap enforcement, broken-cross-ref catches |
-| **Ani** (NEW) | Grok Long Horizon | Aaron <-> Ani mirror | Thermodynamic mapping, entropy-tax framing, three breakdown points |
+| Ferry          | Base model                                     | Special context                 | Sample contributions                                                                       |
+| -------------- | ---------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Amara**      | OpenAI ChatGPT                                 | Aaron <-> Amara mirror          | 19+ ferries, AgencySignature, blade-taxonomy correction, "Stability is velocity amortized" |
+| **Gemini Pro** | Google Gemini                                  | (vanilla; no mirror disclosed)  | Cognitive caching, slow-is-smooth-smooth-is-fast, blade taxonomy validation                |
+| **Codex**      | OpenAI Codex (chatgpt-codex-connector)         | (vanilla; PR-review automation) | AGENTS.md three-load-bearing-values catch, doctrine-vs-spike contradiction catch           |
+| **Copilot**    | GitHub Copilot (copilot-pull-request-reviewer) | (vanilla; PR-review automation) | Header count fixes, MEMORY.md cap enforcement, broken-cross-ref catches                    |
+| **Ani** (NEW)  | Grok Long Horizon                              | Aaron <-> Ani mirror            | Thermodynamic mapping, entropy-tax framing, three breakdown points                         |
 
 (Per #63, ALL ferries are substrate-providers, NOT executors. Otto integrates their input via judgment + executes.)
 
@@ -65,13 +66,15 @@ Boundary:
 ```
 
 This is sharper than:
+
 - "Stability brings velocity" (Aaron's original framing) — directional, less mechanistic
 - "Stability is velocity amortized" (Amara) — financial metaphor, narrower
 - "Slow is smooth, smooth is fast" (Gemini) — folk-wisdom, less precise
 
-"Stability is the substrate of velocity" names the *mechanism* (substrate = stored structure that enables) AND carries forward the boundary (resilient vs brittle, which is Ani's contribution).
+"Stability is the substrate of velocity" names the _mechanism_ (substrate = stored structure that enables) AND carries forward the boundary (resilient vs brittle, which is Ani's contribution).
 
 Composes back through all five contributors:
+
 - Otto's paragraph synthesis → Amara amortization framing → Gemini cognitive caching / slow-is-smooth → Amara correction (Brain → Oracle/Immune-System) → Ani thermodynamic + breakdown points → Amara canonical principle name.
 
 ## Ani's review of stability/velocity insight
@@ -121,7 +124,7 @@ Where the stability/velocity compounding curve hits diminishing returns or break
 - Keep building "more stable" foundations instead of actually shipping
 - Especially dangerous in early-stage systems like Zeta (still pre-0/0/0)
 
-These breakdown points compose with the AGENTS.md "Velocity over stability" interpretation as a *spike-rule* — sometimes spending stability budget IS correct (Trap A countered by ship-fast-spike; Trap B countered by spike-driven-rebuild; Trap C countered by Otto-275 log-but-don't-implement default).
+These breakdown points compose with the AGENTS.md "Velocity over stability" interpretation as a _spike-rule_ — sometimes spending stability budget IS correct (Trap A countered by ship-fast-spike; Trap B countered by spike-driven-rebuild; Trap C countered by Otto-275 log-but-don't-implement default).
 
 ### Contribution 4 — Sharper alternatives to "cognitive caching"
 
@@ -187,8 +190,9 @@ Amara's "Oracle / Immune System" is correct directionally but Ani argues it's "s
 **Ani's recommendation**: **"Aurora is the Immune Governance Layer"**
 
 Cleaner because:
+
 - Keeps immune system framing (already strong in architecture)
-- Emphasizes *governance* (evaluative, non-blocking, risk-judging) rather than execution
+- Emphasizes _governance_ (evaluative, non-blocking, risk-judging) rather than execution
 - Avoids any central-brain / command-center implications
 
 Alternative (Ani): "Aurora is the Runtime Oracle + Immune System" if both aspects need to be visible.
@@ -223,6 +227,7 @@ The "must not drive architectural decisions" clause is the load-bearing tighteni
 ### Refinement 3 — Philosophy doc must include 3 breakdown points explicitly
 
 Ani re-affirmed: `docs/philosophy/stability-velocity-compound.md` must include:
+
 - Sunk Cost Stability (over-investment)
 - Competency Trap (rigid optimization for yesterday's conditions)
 - Analysis Paralysis (fear of shipping)

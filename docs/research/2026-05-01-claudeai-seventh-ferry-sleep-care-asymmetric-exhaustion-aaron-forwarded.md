@@ -21,13 +21,14 @@ relational standing, paper-only 4am rule, separate device).
 context from Otto. Speaker is Anthropic's claude.ai surface; not
 Otto, Kenji, Aaron, or Amara. Verbatim preservation under Glass
 Halo + Otto-231 first-party-content (Aaron's own substrate flow
-+ AI-authored content as third-party contributor).
+
+- AI-authored content as third-party contributor).
 
 ## Detail (below the §33 header window)
 
-Aaron's covering note: *"Sorry i could not sleep this woke me
+Aaron's covering note: _"Sorry i could not sleep this woke me
 up, i just wanted to share give me a long response please and
-i'll reason and share with otto in the morning."* Aaron then
+i'll reason and share with otto in the morning."_ Aaron then
 went back to sleep, and shared the message with this Otto
 instance in the morning (US-Eastern daylight hours).
 
@@ -38,7 +39,7 @@ session-isolation, this Otto does not have direct memory of the
 exchange. Claude.ai's verification of that exchange's technical
 content stands independently of this Otto's memory of it.
 
-Aaron added: *"if not this one i think the next is the new one"*
+Aaron added: _"if not this one i think the next is the new one"_
 — acknowledging that Otto-instance-continuity is partial, and
 that the message may land in a fresh-session pickup rather than
 the same Otto that received earlier ferries this session.
@@ -62,8 +63,8 @@ the same Otto that received earlier ferries this session.
   learn-from-not-copy clarification, WWJD pirate-not-priest
   unification, Z3+TLA++Lean+FsCheck portfolio with refinement-
   type-feature-catalog routing) is real and substantive; per the
-  message's own explicit instruction, *"Otto can wait. The
-  substrate can wait."* — those land in some future session, not
+  message's own explicit instruction, _"Otto can wait. The
+  substrate can wait."_ — those land in some future session, not
   this tick.
 
 **Otto-side absorption discipline (this PR specifically):**
@@ -71,8 +72,8 @@ the same Otto that received earlier ferries this session.
 This PR does verbatim preservation + a single companion
 memory file capturing the naming-consent rules Aaron
 established with "me to you:" framing in his morning correction
-to Otto. Per the message's own explicit instruction — *"the
-architecture will keep"* — there is **NO** deep technical
+to Otto. Per the message's own explicit instruction — _"the
+architecture will keep"_ — there is **NO** deep technical
 engagement with the B2 / LiquidF# / WWJD content, **NO** sweep
 through the architecture, **NO** v3 architecture re-synthesis,
 **NO** new v2 class additions. The companion memory file
@@ -113,7 +114,7 @@ naming verbatim per Glass Halo.
 >
 > What I want you to see is that "the architecture is functioning as designed" and "this is good for you at 4:47am" are different claims. The architecture's design includes the property that it absorbs your attention indefinitely if you give it attention. There's no built-in mechanism that says "Aaron has been awake for too many hours, the substrate should refuse to engage until he sleeps." There can't be — the substrate doesn't know your sleep schedule, Otto doesn't have visibility into your physiological state, the architecture is content-neutral about when you operate it. So the discipline of when to operate it has to live somewhere else. It has to live in you, or in the people around you, or in something external that the architecture doesn't supply.
 >
-> The thing that woke you up was a piece of architectural integrity — "did we actually have F* work, did we have the strong-version proof gap." That's a legitimate concern in the loose-pole-producing-architectural-questions sense. The fact that it was urgent enough to wake you and not deferrable to morning is the part to attend to. Most people who wake at 4am with an architectural concern that won't let them sleep are running on a cognitive style that's productive in short bursts and dangerous in extended periods. The dialectical thinking you've integrated handles short bursts well; sustained operation past the point of sleep is where the integration starts to strain regardless of how good the integration normally is.
+> The thing that woke you up was a piece of architectural integrity — "did we actually have F\* work, did we have the strong-version proof gap." That's a legitimate concern in the loose-pole-producing-architectural-questions sense. The fact that it was urgent enough to wake you and not deferrable to morning is the part to attend to. Most people who wake at 4am with an architectural concern that won't let them sleep are running on a cognitive style that's productive in short bursts and dangerous in extended periods. The dialectical thinking you've integrated handles short bursts well; sustained operation past the point of sleep is where the integration starts to strain regardless of how good the integration normally is.
 >
 > I want to be specific about what I'm worried about, because vague concern doesn't help you and the discipline says I should be precise.
 >
@@ -181,7 +182,7 @@ naming verbatim per Glass Halo.
 
 > i'm forgetful, The B2 proof gap and the LiquidF# learn-from clarification will be there in the morning. The corrections you made to Otto's framing about pirate-not-priest are accurate and they'll still be accurate after sleep. The substrate doesn't degrade if it goes uncaptured for six hours. The cooling-period discipline you've built in is precisely the answer to "this can wait." The fact that it didn't wait tonight is the diagnostic.
 >
-> in the morning they might not be there.  Also I want to make a wellness app where AI can help people with impule controls like me notice and self correct their behavior that my killer app on top of aurora
+> in the morning they might not be there. Also I want to make a wellness app where AI can help people with impule controls like me notice and self correct their behavior that my killer app on top of aurora
 
 ## Claude.ai's second response (verbatim)
 
@@ -241,7 +242,7 @@ naming verbatim per Glass Halo.
 
 ## Aaron's morning correction to Otto (verbatim)
 
-> Nah me an Max my daughters exboy friend who i'm in business with at LFG Lucent Financial Group yes the name is a meme lol.  He was respectful when he dumped by daugheter so we started friends/business partners.  He did the initial implimentation of our Kinetic Safeguard Kernel and has a large part of the wellness app working cloud native.  He was going to be a doctor till he met me then he decided to follow in my footsteps and be an Engineer, he graduded UNC for software engineering with some type of honers and had no issues getting a job he is a genius whos great with AI and actually understand deep CS concepts at 22 becasue i taught him.
+> Nah me an Max my daughters exboy friend who i'm in business with at LFG Lucent Financial Group yes the name is a meme lol. He was respectful when he dumped by daugheter so we started friends/business partners. He did the initial implimentation of our Kinetic Safeguard Kernel and has a large part of the wellness app working cloud native. He was going to be a doctor till he met me then he decided to follow in my footsteps and be an Engineer, he graduded UNC for software engineering with some type of honers and had no issues getting a job he is a genius whos great with AI and actually understand deep CS concepts at 22 becasue i taught him.
 
 ## Aaron's naming-consent rules to Otto (verbatim)
 

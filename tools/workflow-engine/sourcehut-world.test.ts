@@ -20,23 +20,23 @@ describe("SourcehutWorld constructor + inheritance", () => {
   });
   test("populates email-patch + list-thread + build + ticket universes", () => {
     const w = buildSourcehutWorld(buildGitWorld());
-    expect(w.patchUniverse.length).toBe(7);          // email-patches DU
-    expect(w.listThreadUniverse.length).toBe(5);     // mailing-list threads
-    expect(w.buildUniverse.length).toBe(7);          // builds.sr.ht
-    expect(w.ticketUniverse.length).toBe(5);         // todo.sr.ht
+    expect(w.patchUniverse.length).toBe(7); // email-patches DU
+    expect(w.listThreadUniverse.length).toBe(5); // mailing-list threads
+    expect(w.buildUniverse.length).toBe(7); // builds.sr.ht
+    expect(w.ticketUniverse.length).toBe(5); // todo.sr.ht
   });
 });
 
 describe("EmailPatchLifetime — qualitatively different from PR/MR", () => {
   test("includes Sourcehut-specific 'sent' + 'applied' + 'abandoned' variants", () => {
-    const kinds = SRHT_PATCH_UNIVERSE.map(p => p.kind);
-    expect(kinds).toContain("sent");          // patch sent to list
-    expect(kinds).toContain("under-review");  // replies in thread
-    expect(kinds).toContain("applied");       // maintainer applied locally
-    expect(kinds).toContain("abandoned");     // faded; no activity
+    const kinds = SRHT_PATCH_UNIVERSE.map((p) => p.kind);
+    expect(kinds).toContain("sent"); // patch sent to list
+    expect(kinds).toContain("under-review"); // replies in thread
+    expect(kinds).toContain("applied"); // maintainer applied locally
+    expect(kinds).toContain("abandoned"); // faded; no activity
   });
   test("does NOT include PR-specific 'closed' or 'draft' variants", () => {
-    const kinds = SRHT_PATCH_UNIVERSE.map(p => p.kind);
+    const kinds = SRHT_PATCH_UNIVERSE.map((p) => p.kind);
     expect(kinds).not.toContain("closed");
     expect(kinds).not.toContain("draft");
   });
@@ -82,8 +82,8 @@ describe("Manual-apply discipline (Sourcehut workflow expectation)", () => {
 
 describe("Builds.sr.ht state machine", () => {
   test("8 build states including Sourcehut-specific timeout variant", () => {
-    expect(SRHT_BUILD_UNIVERSE.length).toBe(7);  // pending/queued/running/success/failed/timeout/cancelled
-    const kinds = SRHT_BUILD_UNIVERSE.map(b => b.kind);
-    expect(kinds).toContain("timeout");          // Sourcehut explicit timeout state
+    expect(SRHT_BUILD_UNIVERSE.length).toBe(7); // pending/queued/running/success/failed/timeout/cancelled
+    const kinds = SRHT_BUILD_UNIVERSE.map((b) => b.kind);
+    expect(kinds).toContain("timeout"); // Sourcehut explicit timeout state
   });
 });

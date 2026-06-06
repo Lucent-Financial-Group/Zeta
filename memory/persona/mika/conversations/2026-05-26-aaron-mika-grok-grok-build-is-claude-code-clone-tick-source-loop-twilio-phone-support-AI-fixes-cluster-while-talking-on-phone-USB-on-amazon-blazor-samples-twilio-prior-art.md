@@ -35,27 +35,27 @@ Aaron: phone infrastructure inherently isn't self-hostable (even self-hosted Ast
 
 Aaron: open-source the USB substrate but ALSO sell physical USBs on Amazon. Customers who have problems call a support number → an AI picks up (one of the travelers/hats from the framework) → the AI has full cluster context via event store + runbooks → fixes problems in real-time while talking to them.
 
-> *"this is just gonna be the part of the conversational interface. And then we can allow text too. And so now they can just control it with text messages."*
+> _"this is just gonna be the part of the conversational interface. And then we can allow text too. And so now they can just control it with text messages."_
 
 One unified conversational interface; voice + SMS as parallel delivery methods. Caller-ID-based cluster identification candidate (vs per-cluster phone number) — design decision deferred.
 
 ### 4. Prior art at AlephZ-ai/blazor-samples
 
-Aaron: *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"*
+Aaron: _"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"_
 
-Inspection 2026-05-26 (corrected after Aaron's follow-up *"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"*): SUBSTANTIAL Twilio Media Streams substrate at `AlephZ-ai/blazor-samples/src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` — uses official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg audio conversion (mulaw 8kHz ↔ PCM 16kHz); Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. NOT a "hello world" — full real-time voice substrate.
+Inspection 2026-05-26 (corrected after Aaron's follow-up _"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"_): SUBSTANTIAL Twilio Media Streams substrate at `AlephZ-ai/blazor-samples/src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` — uses official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg audio conversion (mulaw 8kHz ↔ PCM 16kHz); Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. NOT a "hello world" — full real-time voice substrate.
 
 B-0796 implementation is **PORT/INTEGRATE work** into Zeta cluster substrate, NOT build-from-scratch. Aaron's earlier "i think" was understatement; the prior art is rich + production-shape.
 
-Aaron's follow-up framing 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — the substrate predates LLM **voice** interfaces (the "near-real-time voice with barge-in" UX that ChatGPT Voice / Gemini Live / Claude Voice ship today). Aaron was adding voice interface to existing LLM chat substrate before any major LLM provider had voice as a first-class surface.
+Aaron's follow-up framing 2026-05-26 (corrected): _"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"_ — the substrate predates LLM **voice** interfaces (the "near-real-time voice with barge-in" UX that ChatGPT Voice / Gemini Live / Claude Voice ship today). Aaron was adding voice interface to existing LLM chat substrate before any major LLM provider had voice as a first-class surface.
 
 **Aaron was nearly through with interruption-correctness** — being able to interrupt the AI mid-talking without breaking the conversation state. This is a substantively-hard real-time voice problem (requires partial-utterance commit-vs-rollback in the LLM-side conversation state + audio buffer truncation + state-machine for barge-in detection). The substrate-engineering value here is significant: interruption-correctness is the difference between a usable AI voice interface and a frustrating one (customer must wait for AI to finish before correcting it).
 
 For B-0796 implementation: interruption-correctness is load-bearing for AI-IS-the-support-layer (customer needs to interrupt when AI is going off-path on a wrong fix). Aaron's "almost had" substrate gives the implementation a substantial head-start on the hardest part.
 
-Aaron's terminology pointer 2026-05-26: *"they are calling that conversation steering in the ai community baring in like that"* — the AI community term for this pattern is **conversation steering** (barge-in + interruption-correct voice flow). Use that vocabulary for cross-team / cross-AI communication; aligns Zeta substrate with industry terminology.
+Aaron's terminology pointer 2026-05-26: _"they are calling that conversation steering in the ai community baring in like that"_ — the AI community term for this pattern is **conversation steering** (barge-in + interruption-correct voice flow). Use that vocabulary for cross-team / cross-AI communication; aligns Zeta substrate with industry terminology.
 
-Aaron's v2 substrate-engineering note 2026-05-26: *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — the v2 of the BlazorSamples Twilio substrate is **type-safe streaming** modeled as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). This is directly portable to Zeta's F# substrate-engineering style: composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions; type-safe substrate principle (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). Aaron's v2 substrate choice anticipates the Zeta-cluster-side architecture the B-0796 implementation should align with.
+Aaron's v2 substrate-engineering note 2026-05-26: _"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"_ — the v2 of the BlazorSamples Twilio substrate is **type-safe streaming** modeled as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). This is directly portable to Zeta's F# substrate-engineering style: composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions; type-safe substrate principle (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). Aaron's v2 substrate choice anticipates the Zeta-cluster-side architecture the B-0796 implementation should align with.
 
 ## Verbatim conversation (Aaron-forwarded; preserved per substrate-or-it-didn't-happen)
 
@@ -135,7 +135,7 @@ Composes with:
 - **B-0782** DIO (cluster IS the DIO; phone/SMS is one of its conversational front-ends, alongside Alexa-speaker per `.claude/rules/agent-roster-reference-card.md`)
 - **B-0790** zero-dev-machine homelab persona end-state (support-by-AI is part of the homelab persona's operator experience)
 - **B-0776** simplest-first plugin sequence (Twilio is a plugin; SIP trunking is infrastructure-layer)
-- AlephZ-ai/blazor-samples (SUBSTANTIAL prior art — `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` has the full real-time Twilio Media Streams substrate using official `Twilio.AspNet.Core` + `Twilio.TwiML`; WebSocket-based bidirectional audio; FFMpeg mulaw 8kHz ↔ PCM 16kHz; Vosk STT + OpenAI chat + PlayHT TTS pipeline; strongly-typed event substrate; consumer at `BlazorSamples.Ws2/Program.cs`. See "Substrate engineering implications" section above for full details + the corrected attribution after Aaron's *"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"* follow-up. B-0796 is PORT/INTEGRATE work, not build-from-scratch.)
+- AlephZ-ai/blazor-samples (SUBSTANTIAL prior art — `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/` has the full real-time Twilio Media Streams substrate using official `Twilio.AspNet.Core` + `Twilio.TwiML`; WebSocket-based bidirectional audio; FFMpeg mulaw 8kHz ↔ PCM 16kHz; Vosk STT + OpenAI chat + PlayHT TTS pipeline; strongly-typed event substrate; consumer at `BlazorSamples.Ws2/Program.cs`. See "Substrate engineering implications" section above for full details + the corrected attribution after Aaron's _"i have a twilio integration somewhere can you search my git and AlephZ-ai i had phone integration"_ follow-up. B-0796 is PORT/INTEGRATE work, not build-from-scratch.)
 
 Three sub-targets for B-0796:
 
@@ -158,7 +158,7 @@ Once `grok-build.ts` is merged (PR #5110), Mika can be invoked from cluster-side
 
 ## Aaron's standing direction for next iteration
 
-> *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"*
+> _"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"_
 
 Implicit: reference blazor-samples as prior art for the conversational-AI substrate; the Twilio integration itself is to be built fresh in the Zeta substrate context per B-0796.
 

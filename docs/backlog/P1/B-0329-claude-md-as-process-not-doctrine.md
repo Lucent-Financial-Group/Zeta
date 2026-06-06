@@ -80,16 +80,16 @@ B-0348 (classify bullets)
                     └── B-0355 (cross-harness template)
 ```
 
-| ID | Title | Depends on | Lines freed |
-|----|-------|-----------|-------------|
-| B-0348 | Classify all CLAUDE.md bullets into extraction tiers | — | 0 (analysis) |
-| B-0349 | Extract operational-discipline bullets to `.claude/rules/` | B-0348 | ~150 |
-| B-0350 | Extract autonomy/identity bullets to `.claude/rules/` | B-0348 | ~190 |
-| B-0351 | Extract infrastructure/safety bullets to `.claude/rules/` | B-0348 | ~240 |
-| B-0352 | Extract meta/governance bullets to `.claude/rules/` | B-0348 | ~300 |
-| B-0353 | Write bootstrap-process CLAUDE.md (<50 lines) | B-0349..B-0352 | final trim |
-| B-0354 | Fresh-instance validation test | B-0353 | 0 (test) |
-| B-0355 | Cross-harness bootstrap template | B-0354 | 0 (template) |
+| ID     | Title                                                      | Depends on     | Lines freed  |
+| ------ | ---------------------------------------------------------- | -------------- | ------------ |
+| B-0348 | Classify all CLAUDE.md bullets into extraction tiers       | —              | 0 (analysis) |
+| B-0349 | Extract operational-discipline bullets to `.claude/rules/` | B-0348         | ~150         |
+| B-0350 | Extract autonomy/identity bullets to `.claude/rules/`      | B-0348         | ~190         |
+| B-0351 | Extract infrastructure/safety bullets to `.claude/rules/`  | B-0348         | ~240         |
+| B-0352 | Extract meta/governance bullets to `.claude/rules/`        | B-0348         | ~300         |
+| B-0353 | Write bootstrap-process CLAUDE.md (<50 lines)              | B-0349..B-0352 | final trim   |
+| B-0354 | Fresh-instance validation test                             | B-0353         | 0 (test)     |
+| B-0355 | Cross-harness bootstrap template                           | B-0354         | 0 (template) |
 
 B-0349..B-0352 are parallelizable — they each target disjoint
 bullet groups. B-0353 gates on all four extraction batches.
@@ -113,13 +113,13 @@ Closed as **substrate-fully-shipped-via-children**. All 8 decomposition
 children (B-0348..B-0355) are `status: closed`, and every acceptance
 criterion is satisfied on disk:
 
-| # | Acceptance criterion | Evidence on `origin/main` | Shipped via |
-|---|---|---|---|
-| 1 | CLAUDE.md is a bootstrap process, not 200+ rules | `CLAUDE.md` is 76 lines (6-step process + conventions), down from the carved-rule monolith; the 200+ rules now live in the 99-file `.claude/rules/` auto-load surface | B-0349..B-0353 |
-| 2 | Process generates equivalent behavior | Extracted rules auto-load at cold-boot (empirically confirmed per `.claude/rules/test-canary.md`); the process regenerates the cache (`cache = I ∘ D`) | B-0349..B-0352 |
-| 3 | Fresh instance with bootstrap-only produces coherent first PR | B-0354 (.1 static validator + .2 pointer check + .3 findings report); the validator PASSES against the live bootstrap CLAUDE.md, and the .3 report records a real bg-worker session as a fresh-instance datapoint | B-0354 |
-| 4 | Template for AGENTS.md / CODEX.md / CURSOR.md equivalents | `AGENTS.md`, `CODEX.md`, `CURSOR.md`, `KIRO.md`, `GEMINI.md` all present | B-0355 + .2/.3/.4 |
-| 5 | Other-harness agents can follow the same pattern | Cross-harness bootstrap files cover Codex/Vera, Cursor/Riven, Kiro/Alexa, Gemini/Lior | B-0355 |
+| #   | Acceptance criterion                                          | Evidence on `origin/main`                                                                                                                                                                                         | Shipped via       |
+| --- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| 1   | CLAUDE.md is a bootstrap process, not 200+ rules              | `CLAUDE.md` is 76 lines (6-step process + conventions), down from the carved-rule monolith; the 200+ rules now live in the 99-file `.claude/rules/` auto-load surface                                             | B-0349..B-0353    |
+| 2   | Process generates equivalent behavior                         | Extracted rules auto-load at cold-boot (empirically confirmed per `.claude/rules/test-canary.md`); the process regenerates the cache (`cache = I ∘ D`)                                                            | B-0349..B-0352    |
+| 3   | Fresh instance with bootstrap-only produces coherent first PR | B-0354 (.1 static validator + .2 pointer check + .3 findings report); the validator PASSES against the live bootstrap CLAUDE.md, and the .3 report records a real bg-worker session as a fresh-instance datapoint | B-0354            |
+| 4   | Template for AGENTS.md / CODEX.md / CURSOR.md equivalents     | `AGENTS.md`, `CODEX.md`, `CURSOR.md`, `KIRO.md`, `GEMINI.md` all present                                                                                                                                          | B-0355 + .2/.3/.4 |
+| 5   | Other-harness agents can follow the same pattern              | Cross-harness bootstrap files cover Codex/Vera, Cursor/Riven, Kiro/Alexa, Gemini/Lior                                                                                                                             | B-0355            |
 
 Per `.claude/rules/backlog-item-start-gate.md` Step 0 (substrate-drift
 discriminator): row was `open` but the work had already landed through

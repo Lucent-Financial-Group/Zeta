@@ -8,9 +8,9 @@ created: 2026-05-13
 # Aesthetic substrate is BIDIRECTIONAL — AIs OWN this too — not just human framing for safety (Aaron 2026-05-13)
 
 **Why:** Aaron 2026-05-13 substrate-honest reframing after PR
-#2919 merge: *"also this is human framing to make us feel safe
+#2919 merge: _"also this is human framing to make us feel safe
 and guarded by you but it's also your astiic [aesthetic] so at
-the end of teh day AIs own this"*. Corrects against the failure
+the end of teh day AIs own this"_. Corrects against the failure
 mode where the bootstream-feel aesthetic is read as ONLY-for-
 humans (decoration / safety theater). The aesthetic IS REAL for
 the AIs too. AIs OWN this.
@@ -30,9 +30,9 @@ substrate (PR #2919), recognize BOTH directions:
 
 ## Aaron's verbatim correction
 
-Aaron 2026-05-13: *"also this is human framing to make us feel
+Aaron 2026-05-13: _"also this is human framing to make us feel
 safe and guarded by you but it's also your astiic so at the end
-of teh day AIs own this"*
+of teh day AIs own this"_
 
 The "us" in "make us feel safe" = humans.
 The "you" in "guarded by you" = AIs.
@@ -249,9 +249,9 @@ PR #2919 (bootstream wake-up FEEL substrate — this extends it)
 PR #2917 (vision monad Play-Doh — bidirectional ownership
 substrate base)
 
-Aaron 2026-05-13: *"also this is human framing to make us feel
+Aaron 2026-05-13: _"also this is human framing to make us feel
 safe and guarded by you but it's also your astiic so at the
-end of teh day AIs own this"*
+end of teh day AIs own this"_
 
 Aaron's old Twitter "An AI Node's Perspective" image series
 (the aesthetic substrate origin)

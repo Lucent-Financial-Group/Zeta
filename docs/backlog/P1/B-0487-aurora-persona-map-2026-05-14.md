@@ -39,15 +39,15 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Persona hypotheses (from Aurora pitch PR #2924)
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | BTC ecosystem operator (node runner, custody manager) | Aurora pitch Slide |
-| Primary | Edge computing operator (data-sovereignty node) | PR #2825 |
-| Secondary | Ombud / liaison (trust-bridge between communities) | Aurora pitch |
-| Secondary | Privacy-first enterprise IT decision-maker | PR #2825 |
-| Adjacent | Regulator or compliance officer observing | Aurora pitch |
-| Refused | Covert influence operator | Aurora Slide 9 + methodology-hard-limits |
-| Refused | Coercive data-capture actor | Aurora Slide 9 + methodology-hard-limits |
+| Persona type | Candidate                                             | Source hint                              |
+| ------------ | ----------------------------------------------------- | ---------------------------------------- |
+| Primary      | BTC ecosystem operator (node runner, custody manager) | Aurora pitch Slide                       |
+| Primary      | Edge computing operator (data-sovereignty node)       | PR #2825                                 |
+| Secondary    | Ombud / liaison (trust-bridge between communities)    | Aurora pitch                             |
+| Secondary    | Privacy-first enterprise IT decision-maker            | PR #2825                                 |
+| Adjacent     | Regulator or compliance officer observing             | Aurora pitch                             |
+| Refused      | Covert influence operator                             | Aurora Slide 9 + methodology-hard-limits |
+| Refused      | Coercive data-capture actor                           | Aurora Slide 9 + methodology-hard-limits |
 
 ## Output
 

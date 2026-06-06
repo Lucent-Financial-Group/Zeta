@@ -32,7 +32,7 @@ is intentionally docs-only — no code changes.
 ## Acceptance criteria
 
 - [ ] `docs/AUTONOMOUS-LOOP.md` updated with a new subsection under the
-  `missed-substrate-detector` service entry:
+      `missed-substrate-detector` service entry:
   - Documents `--auto-recover` flag: purpose, default (`off`), when to enable.
   - Documents `--recovery-dry-run` flag: purpose (log intent without mutations).
   - Explains the recovery branch naming convention (`recovery/<prN>-<timestamp>`).
@@ -46,6 +46,7 @@ is intentionally docs-only — no code changes.
     `--recovery-dry-run` to the flags column.
 
 - [ ] B-0442 acceptance criterion updated: mark the slice 5 row as `[x]`:
+
   ```
   - [x] Optionally auto-opens recovery PR with the missing commits (gated by
         configuration) (slice 5 — landed 2026-05-14 via B-0503 + B-0504)
@@ -54,8 +55,8 @@ is intentionally docs-only — no code changes.
 - [ ] B-0442 frontmatter updated: add `children: [B-0503, B-0504, B-0505]` field.
 
 - [ ] All tests still pass (no code touched; verification only):
-  `bun tools/bg/missed-substrate-detector.test.ts`
-  `bun tools/bg/missed-substrate-recovery.test.ts`
+      `bun tools/bg/missed-substrate-detector.test.ts`
+      `bun tools/bg/missed-substrate-recovery.test.ts`
 
 ## Why docs-only is a separate row
 

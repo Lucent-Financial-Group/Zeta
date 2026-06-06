@@ -25,8 +25,8 @@ as a load path, point it at a specific child instead.
 
 The human maintainer directed during an autonomous-loop session (2026-04-24):
 
-> *"but if per folder should not say empty when it has
-> subfolders"*
+> _"but if per folder should not say empty when it has
+> subfolders"_
 
 Translation: branch folders need their own sentinel prose
 so the tree self-documents — opening `nintendo/README.md`

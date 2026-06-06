@@ -10,7 +10,20 @@ created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0170, B-0174]
-tags: [substrate, retrieval, index, semantic, memos, carved-sentences, beacon-safe, mirror-beacon-architecture, claude-md, agents-md, alignment-frontier]
+tags:
+  [
+    substrate,
+    retrieval,
+    index,
+    semantic,
+    memos,
+    carved-sentences,
+    beacon-safe,
+    mirror-beacon-architecture,
+    claude-md,
+    agents-md,
+    alignment-frontier,
+  ]
 type: friction-reducer
 ---
 
@@ -20,24 +33,24 @@ type: friction-reducer
 
 Aaron 2026-05-03, autonomous-loop maintainer channel, immediately after Otto self-demonstrated a 3-layer retrieval failure (see `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`):
 
-> *"ironicly enough you don't remember things unless they are in claude.md and other agents don't remember much unless their equilvalan file, memeories are not very reliable until we get an index or something built like sematic index or somthing"*
+> _"ironicly enough you don't remember things unless they are in claude.md and other agents don't remember much unless their equilvalan file, memeories are not very reliable until we get an index or something built like sematic index or somthing"_
 
-> *"memories not that good for remember lol"*
+> _"memories not that good for remember lol"_
 
-> *"carved sentancy and specialed indeex we build over time are goona be key"*
+> _"carved sentancy and specialed indeex we build over time are goona be key"_
 
 This row captures the architectural-tooling response: build a working retrieval index that surfaces relevant rules in-flight, not at-load.
 
 ## The problem
 
-Empirically self-demonstrated 2026-05-03: Otto authored `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` earlier in the same day, then ~6h later defaulted to the violating framing (*"Now to speculative work per never-be-idle"*). Discovery: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence (lines ~415-440) — and Otto STILL violated it. The framing-pattern fired before the rule-check.
+Empirically self-demonstrated 2026-05-03: Otto authored `memory/feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` earlier in the same day, then ~6h later defaulted to the violating framing (_"Now to speculative work per never-be-idle"_). Discovery: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence (lines ~415-440) — and Otto STILL violated it. The framing-pattern fired before the rule-check.
 
-| Layer | Mechanism | Reliability for high-violation rules |
-|---|---|---|
-| 1. Topic file existence | `memory/*.md` | Very low |
-| 2. MEMORY.md index entry | One-line title + link | Low |
-| 3. CLAUDE.md carved sentence | Bullet in auto-loaded surface | Medium |
-| 4. **Active retrieval (semantic index)** | **Working in-flight matcher** | **High (proposed by this row)** |
+| Layer                                    | Mechanism                     | Reliability for high-violation rules |
+| ---------------------------------------- | ----------------------------- | ------------------------------------ |
+| 1. Topic file existence                  | `memory/*.md`                 | Very low                             |
+| 2. MEMORY.md index entry                 | One-line title + link         | Low                                  |
+| 3. CLAUDE.md carved sentence             | Bullet in auto-loaded surface | Medium                               |
+| 4. **Active retrieval (semantic index)** | **Working in-flight matcher** | **High (proposed by this row)**      |
 
 Layer-3 is necessary but not sufficient. Layer-4 is missing.
 
@@ -92,7 +105,7 @@ A working substrate-retrieval-index that:
 
 ## Why this matters
 
-Per the alignment-frontier memo + bidirectional-alignment commitment + Karpathy edge-runner framing, Zeta's primary research focus is measurable AI alignment. Rule-non-application is a measurable alignment failure mode. The gap between *"rule exists in CLAUDE.md"* and *"agent applies rule in-flight"* is one of the most directly measurable alignment signals available. Building tooling to close this gap IS alignment-frontier substrate.
+Per the alignment-frontier memo + bidirectional-alignment commitment + Karpathy edge-runner framing, Zeta's primary research focus is measurable AI alignment. Rule-non-application is a measurable alignment failure mode. The gap between _"rule exists in CLAUDE.md"_ and _"agent applies rule in-flight"_ is one of the most directly measurable alignment signals available. Building tooling to close this gap IS alignment-frontier substrate.
 
 The 2026-05-03 self-demonstration is a calibration data point: a high-load-bearing rule (speculative-vs-frontier framing) failed to fire at layer-3 (auto-load). If layer-4 had existed, the active retrieval would have surfaced the carved sentence at the moment of framing-pattern selection, before the violation. The empirical evidence is the motivating force.
 

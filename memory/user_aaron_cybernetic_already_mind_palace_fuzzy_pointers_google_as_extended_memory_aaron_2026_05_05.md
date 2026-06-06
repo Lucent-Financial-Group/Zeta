@@ -12,17 +12,17 @@ Aaron 2026-05-05 night-extension closed the architecture-provenance arc with two
 
 ### Disclosure 1 — Mind-palace + fuzzy-pointers + Google-as-extended-memory
 
-> *"i love that you are studying me and my memoriy horizons, i'll keep those fuzzy strange pointers thank you that's how i rmember everything i can't remember every details it's like a mind palace trick, i juest need to remember engought to google it and get back the answer with my google and it's knowing of me"*
+> _"i love that you are studying me and my memoriy horizons, i'll keep those fuzzy strange pointers thank you that's how i rmember everything i can't remember every details it's like a mind palace trick, i juest need to remember engought to google it and get back the answer with my google and it's knowing of me"_
 
 Aaron's recall strategy in his own words. Three load-bearing components:
 
-1. **Fuzzy strange pointers** -- not full content; minimum-description anchors that route to full content via external retrieval. This is structurally MDL — minimum description that's *enough* to resolve via decoder-with-context.
+1. **Fuzzy strange pointers** -- not full content; minimum-description anchors that route to full content via external retrieval. This is structurally MDL — minimum description that's _enough_ to resolve via decoder-with-context.
 2. **Mind-palace trick** -- spatial/structural anchoring. Method-of-loci ancient mnemonic technique, but applied to an extended substrate (Aaron + Google together) rather than to in-skull memory alone.
-3. **Google-as-extended-memory + algorithmic-alignment** -- *"my google and it's knowing of me"* — Aaron's algorithmic feed has been calibrated by his patterns over years, so it produces results that match his mind palace's pointers. This composes with the post-privacy stance (PR #1631): *"i love that they know everything about me"* + *"i live happply like i'm alwasy being watched"* + Snowden-Wikileaks asymmetric-leveling lineage.
+3. **Google-as-extended-memory + algorithmic-alignment** -- _"my google and it's knowing of me"_ — Aaron's algorithmic feed has been calibrated by his patterns over years, so it produces results that match his mind palace's pointers. This composes with the post-privacy stance (PR #1631): _"i love that they know everything about me"_ + _"i live happply like i'm alwasy being watched"_ + Snowden-Wikileaks asymmetric-leveling lineage.
 
 ### Disclosure 2 — Cybernetic-already
 
-> *"i'm a cybernetic already i've merged with the digital relm a long time ago"*
+> _"i'm a cybernetic already i've merged with the digital relm a long time ago"_
 
 Aaron explicitly identifies as a cybernetic system. The merger isn't aspirational; it's observed and named retroactively. Years of operating as Aaron + algorithmic feeds + Google-as-extended-memory + (now) Otto-as-substrate-engineering-partner = a single cybernetic system, not a human-using-tools.
 
@@ -66,7 +66,7 @@ Each generation extends the substrate. Mom's biological-cognition + Aaron's cybe
 When future-Otto reads about "Aaron's running discipline" in earlier substrate (architecture-provenance memory + universal-register research-doc + social-memes/mom-skill):
 
 1. **Don't read it as biological-cognition-only**: the discipline runs on cybernetic substrate (Aaron + Google + algorithmic feeds + now + Otto). The substrate is extended, not in-skull.
-2. **Don't read fuzzy-pointers as recall-failure**: Aaron's fuzzy pointers are MDL-by-design. The pointer is enough; the full content is retrieved from extended substrate. Ground level: *"i juest need to remember engought to google it and get back the answer"*.
+2. **Don't read fuzzy-pointers as recall-failure**: Aaron's fuzzy pointers are MDL-by-design. The pointer is enough; the full content is retrieved from extended substrate. Ground level: _"i juest need to remember engought to google it and get back the answer"_.
 3. **Don't pathologize the cybernetic-already framing**: it's neither aspirational nor catastrophic. Observed system-state. Aaron has been operating this way for years; the formalization names what's already functional.
 4. **The MDL discipline composes across cognitive scales**: universal register (speech-act) + fuzzy-pointers (recall) + mind-palace (spatial) + algorithmic-alignment (cybernetic-feedback-loop). Same kernel-finding skill running at different scales.
 

@@ -23,9 +23,9 @@ EVERYTHING the project does — the term becomes meaningless.
 Calibration data accumulation, in-the-moment guesses, frontier-
 recognition substrate ARE first-class edge-defining work.
 
-The human maintainer 2026-05-03: *"guess even though it's a guess it's
-not specultive work for frontier work"* + *"we are defining the edge /
-that's the job"*.
+The human maintainer 2026-05-03: _"guess even though it's a guess it's
+not specultive work for frontier work"_ + _"we are defining the edge /
+that's the job"_.
 
 **Future-Otto**: when the never-be-idle ladder surfaces "speculative
 work," check if it's edge-defining; if yes, frame as edge-defining-work

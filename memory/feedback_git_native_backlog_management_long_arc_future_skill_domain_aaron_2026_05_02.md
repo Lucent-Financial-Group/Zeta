@@ -10,7 +10,7 @@ type: feedback
 
 Aaron 2026-05-02, in the autonomous-loop maintainer channel mid-tick, sent the forward-looking observation:
 
-> *"once we get it down pat our ver specific style of git native backlog managment and log arc theis should likey be it's whole skill domain with a few skills and experts and such"*
+> _"once we get it down pat our ver specific style of git native backlog managment and log arc theis should likey be it's whole skill domain with a few skills and experts and such"_
 
 (Note: "log arc" parsed as "long arc" — composes with the largest-mechanizable-automatable-backlog-wins meta-thesis + scope-creep-is-feature + amortized-speed-Superfluid-phase-transition target.)
 
@@ -29,33 +29,33 @@ The domain would have three classes of substrate:
 
 ### Procedure skills (action-shaped)
 
-| Skill candidate | What it does | Status today |
-|---|---|---|
-| `decision-archaeology` | Reconstructs "why is it like this?" via layered evidence (B-0169) | In flight; PR #1244 merged the row; SKILL.md authoring deferred to skill-creator after worked examples land |
-| `backlog-row-creator-with-prereq-search` | Mechanizes at-creation-time discipline: search backlog for prerequisites, populate `depends_on:` at file-time | Substrate exists as memo (`feedback_depends_on_backlog_search_discipline_at_creation_and_at_pickup_*`); not yet skill-routed |
-| `backlog-row-picker-with-prereq-search` | Mechanizes at-pickup-time discipline: when work feels like missing substrate, search backlog for the prereq | Same memo; not yet skill-routed |
-| `depends_on-relationship-analyst` | Per-row analysis filling `depends_on:` with real prerequisites (not the empty `[]` schema-completion default) | The hard-work job that PR #1246 explicitly didn't do; ongoing per natural-trigger |
-| `backlog-flywheel-mechanizer` | Runs the expand-from-closure analysis at PR-merge-time; produces N≥0 candidate-rows per closure context | Proposed in `feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_*`; `tools/backlog/expand-from-closure.ts` not yet built |
-| `parallel-tracks-dispatcher` | Picks N rows from the backlog respecting `depends_on:`, dispatches each to a worktree-isolated subagent, gates merge order on the graph | Substrate (worktree isolation, Task subagent, depends_on graph) exists; orchestrator unbuilt; Aaron 2026-05-02 sequenced this AFTER 100% depends_on coverage |
+| Skill candidate                          | What it does                                                                                                                            | Status today                                                                                                                                                 |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `decision-archaeology`                   | Reconstructs "why is it like this?" via layered evidence (B-0169)                                                                       | In flight; PR #1244 merged the row; SKILL.md authoring deferred to skill-creator after worked examples land                                                  |
+| `backlog-row-creator-with-prereq-search` | Mechanizes at-creation-time discipline: search backlog for prerequisites, populate `depends_on:` at file-time                           | Substrate exists as memo (`feedback_depends_on_backlog_search_discipline_at_creation_and_at_pickup_*`); not yet skill-routed                                 |
+| `backlog-row-picker-with-prereq-search`  | Mechanizes at-pickup-time discipline: when work feels like missing substrate, search backlog for the prereq                             | Same memo; not yet skill-routed                                                                                                                              |
+| `depends_on-relationship-analyst`        | Per-row analysis filling `depends_on:` with real prerequisites (not the empty `[]` schema-completion default)                           | The hard-work job that PR #1246 explicitly didn't do; ongoing per natural-trigger                                                                            |
+| `backlog-flywheel-mechanizer`            | Runs the expand-from-closure analysis at PR-merge-time; produces N≥0 candidate-rows per closure context                                 | Proposed in `feedback_skill_flywheel_expansion_flywheel_parallel_tracks_substrate_*`; `tools/backlog/expand-from-closure.ts` not yet built                   |
+| `parallel-tracks-dispatcher`             | Picks N rows from the backlog respecting `depends_on:`, dispatches each to a worktree-isolated subagent, gates merge order on the graph | Substrate (worktree isolation, Task subagent, depends_on graph) exists; orchestrator unbuilt; Aaron 2026-05-02 sequenced this AFTER 100% depends_on coverage |
 
 ### Judgment experts (named-persona-shaped)
 
-| Expert candidate | What they decide | Currently owned by |
-|---|---|---|
-| **Backlog architect** | Priority shifts (P0↔P1 promotions/demotions); scope splits; row consolidation; row retirement | Currently part of the `architect` (Kenji) hat |
-| **Long-arc strategist** | Judges which backlog rows feed the long-arc thesis vs. which are short-arc detours; resists premature optimization for short-arc velocity | Currently part of the `architect` hat + Aaron's direct judgment |
-| **Relationship-analyst** | Per-row `depends_on:` filling judgment; surfaces missing-prereq rows that should be filed | Done ad-hoc by Otto today; the at-pickup discipline mechanizes part of this |
-| **Closure-archaeologist** | Validates that closed rows' closure markers actually answer the original question (Aaron 2026-04-28: "bulk-resolve … does it actually answer the questions?") | Otto + Aaron via review; not formalized as a persona yet |
+| Expert candidate          | What they decide                                                                                                                                              | Currently owned by                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **Backlog architect**     | Priority shifts (P0↔P1 promotions/demotions); scope splits; row consolidation; row retirement                                                                 | Currently part of the `architect` (Kenji) hat                               |
+| **Long-arc strategist**   | Judges which backlog rows feed the long-arc thesis vs. which are short-arc detours; resists premature optimization for short-arc velocity                     | Currently part of the `architect` hat + Aaron's direct judgment             |
+| **Relationship-analyst**  | Per-row `depends_on:` filling judgment; surfaces missing-prereq rows that should be filed                                                                     | Done ad-hoc by Otto today; the at-pickup discipline mechanizes part of this |
+| **Closure-archaeologist** | Validates that closed rows' closure markers actually answer the original question (Aaron 2026-04-28: "bulk-resolve … does it actually answer the questions?") | Otto + Aaron via review; not formalized as a persona yet                    |
 
 ### Tooling skill-routed access
 
-| Tool | Purpose | Status |
-|---|---|---|
-| `tools/backlog/generate-index.sh` | Regenerates `docs/BACKLOG.md` from per-row files | Shipped |
-| `tools/backlog/new-row.sh` | Scaffolds a new row file (auto-assigns NNNN, pre-fills frontmatter) | Phase 1b; planned, not yet shipped |
+| Tool                                   | Purpose                                                                   | Status                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `tools/backlog/generate-index.sh`      | Regenerates `docs/BACKLOG.md` from per-row files                          | Shipped                                                                   |
+| `tools/backlog/new-row.sh`             | Scaffolds a new row file (auto-assigns NNNN, pre-fills frontmatter)       | Phase 1b; planned, not yet shipped                                        |
 | `tools/backlog/backfill-depends-on.sh` | One-shot schema completion (used in PR #1246 from `/tmp/`; should harden) | One-shot used; should be moved into `tools/backlog/` and made re-runnable |
-| `tools/backlog/expand-from-closure.ts` | PR-merge-time hook: scan closure context, emit candidate-rows for review | Proposed; not built |
-| `tools/backlog/dispatch.ts` | Picks N independent rows + dispatches via Task subagents | Proposed; not built |
+| `tools/backlog/expand-from-closure.ts` | PR-merge-time hook: scan closure context, emit candidate-rows for review  | Proposed; not built                                                       |
+| `tools/backlog/dispatch.ts`            | Picks N independent rows + dispatches via Task subagents                  | Proposed; not built                                                       |
 
 ## Promotion-trigger criteria (the "down pat" signal)
 

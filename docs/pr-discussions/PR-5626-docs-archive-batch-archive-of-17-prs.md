@@ -27,6 +27,7 @@ Automated batch archival of 17 PRs to preserve discussion and context, and to re
 Automated archival of 17 merged pull-request discussions into `docs/pr-discussions/` to preserve review context and reduce active PR queue noise.
 
 **Changes:**
+
 - Added 17 new PR-discussion archive markdown files under `docs/pr-discussions/`.
 - Each archive includes YAML frontmatter (PR metadata + archive provenance) and the preserved PR conversation content.
 
@@ -37,17 +38,17 @@ Copilot reviewed 17 out of 17 changed files in this pull request and generated n
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                        | Description                              |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------- |
 | docs/pr-discussions/PR-4963-backlog-b-0725-polyglot-accelerator-hardware-shape-coral-ncs.md | Archived discussion record for PR #4963. |
 | docs/pr-discussions/PR-4962-fix-tools-flash-usb-ts-ts-strict-mode-errors-6-narrowing-fix.md | Archived discussion record for PR #4962. |
-| docs/pr-discussions/PR-4961-docs-add-agentic-organization-architecture.md | Archived discussion record for PR #4961. |
-| docs/pr-discussions/PR-4960-backlog-b-0724-ts-hat-system-operator-polyglot-k8s-operator.md | Archived discussion record for PR #4960. |
-| docs/pr-discussions/PR-4959-feat-tools-flash-usb-ts-safety-railed-dd-wrapper-for-the-ai.md | Archived discussion record for PR #4959. |
-| docs/pr-discussions/PR-4958-docs-add-agentic-organization-architecture.md | Archived discussion record for PR #4958. |
+| docs/pr-discussions/PR-4961-docs-add-agentic-organization-architecture.md                   | Archived discussion record for PR #4961. |
+| docs/pr-discussions/PR-4960-backlog-b-0724-ts-hat-system-operator-polyglot-k8s-operator.md  | Archived discussion record for PR #4960. |
+| docs/pr-discussions/PR-4959-feat-tools-flash-usb-ts-safety-railed-dd-wrapper-for-the-ai.md  | Archived discussion record for PR #4959. |
+| docs/pr-discussions/PR-4958-docs-add-agentic-organization-architecture.md                   | Archived discussion record for PR #4958. |
 | docs/pr-discussions/PR-4957-docs-hygiene-tick-1707z-3-blocked-resolve-threads-prs-surfac.md | Archived discussion record for PR #4957. |
 | docs/pr-discussions/PR-4956-ci-ai-cluster-workflow-that-builds-full-ai-cluster-installer.md | Archived discussion record for PR #4956. |
-| docs/pr-discussions/PR-4954-backlog-b-0722-ci-ephemeral-cluster-smoke-via-k3d-on-runner.md | Archived discussion record for PR #4954. |
+| docs/pr-discussions/PR-4954-backlog-b-0722-ci-ephemeral-cluster-smoke-via-k3d-on-runner.md  | Archived discussion record for PR #4954. |
 | docs/pr-discussions/PR-4953-feat-ai-cluster-local-dev-cluster-via-k3d-argocd-sync-wave-d.md | Archived discussion record for PR #4953. |
 | docs/pr-discussions/PR-4952-docs-hygiene-tick-1636z-3rd-vacuous-task-condition-tick-toda.md | Archived discussion record for PR #4952. |
 | docs/pr-discussions/PR-4951-feat-ai-cluster-nfd-lstopo-zeta-install-helper-cluster-hardw.md | Archived discussion record for PR #4951. |
@@ -55,7 +56,8 @@ Copilot reviewed 17 out of 17 changed files in this pull request and generated n
 | docs/pr-discussions/PR-4945-docs-hygiene-tick-1539z-43-open-prs-all-dirty-cross-lane-tas.md | Archived discussion record for PR #4945. |
 | docs/pr-discussions/PR-4937-docs-hygiene-tick-1405z-3-blocked-resolve-threads-prs-audite.md | Archived discussion record for PR #4937. |
 | docs/pr-discussions/PR-4934-docs-research-decomposed-add-shadow-lesson-log-for-2026-05-2.md | Archived discussion record for PR #4934. |
-| docs/pr-discussions/PR-4931-fix-4878-remove-bak-files-and-duplicate-archived-at-fields.md | Archived discussion record for PR #4931. |
+| docs/pr-discussions/PR-4931-fix-4878-remove-bak-files-and-duplicate-archived-at-fields.md   | Archived discussion record for PR #4931. |
+
 </details>
 
 ## General comments

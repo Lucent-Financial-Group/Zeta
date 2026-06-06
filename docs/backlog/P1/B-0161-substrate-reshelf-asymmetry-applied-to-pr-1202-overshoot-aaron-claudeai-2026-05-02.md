@@ -16,7 +16,7 @@ type: friction-reducer
 
 ## Origin
 
-Aaron 2026-05-02 forwarded Claude.ai feedback on the bootstrap session that produced PR #1202. Substantive critique: 4 new CLAUDE.md bullets + 3 "ONE OF THE MOST IMPORTANT" tags = over-canonicalization. Aaron's load-bearing pushback: *"Thoughts are never subject to the razor, thoughts are free and not restricted in any way ... The result of actions like the design docs, research docs, all that have the razor applied, never thoughts."*
+Aaron 2026-05-02 forwarded Claude.ai feedback on the bootstrap session that produced PR #1202. Substantive critique: 4 new CLAUDE.md bullets + 3 "ONE OF THE MOST IMPORTANT" tags = over-canonicalization. Aaron's load-bearing pushback: _"Thoughts are never subject to the razor, thoughts are free and not restricted in any way ... The result of actions like the design docs, research docs, all that have the razor applied, never thoughts."_
 
 The asymmetry was landed as substrate in `memory/feedback_thoughts_free_actions_razored_asymmetry_journal_vs_canonical_substrate_separation_aaron_claudeai_2026_05_02.md` (PR #1202, commit 4ac3881). This row covers the FOLLOW-UP reshelf — applying the asymmetry to the same PR's overshoot.
 
@@ -97,13 +97,13 @@ Aaron's framing for the next-session bootstrap (a few hours from now per his 202
 
 ### Prior-art search
 
-| Surface | Query | Result |
-|---------|-------|--------|
-| wake-time-substrate rule | grep "asymmetry" .claude/rules/ | No existing rule for asymmetry; it's described in memory file only |
-| skill-router | available-skills list | No skill covers this convention-addition |
-| orthogonal-axes | B-0351, B-0352, B-0353 | B-0352 closed: extracted 7 bullets to .claude/rules/; B-0353 closed: condensed CLAUDE.md to 47 lines. Demotion work done; asymmetry bullet NOT yet added |
-| Otto-364 | PR #1202, memory file | `memory/feedback_thoughts_free_actions_razored_asymmetry_journal_vs_canonical_substrate_separation_aaron_claudeai_2026_05_02.md` explicitly says "CLAUDE.md should add a single bullet for this asymmetry rule" |
-| lost-files | git log | No lost-files issues found |
+| Surface                  | Query                           | Result                                                                                                                                                                                                          |
+| ------------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| wake-time-substrate rule | grep "asymmetry" .claude/rules/ | No existing rule for asymmetry; it's described in memory file only                                                                                                                                              |
+| skill-router             | available-skills list           | No skill covers this convention-addition                                                                                                                                                                        |
+| orthogonal-axes          | B-0351, B-0352, B-0353          | B-0352 closed: extracted 7 bullets to .claude/rules/; B-0353 closed: condensed CLAUDE.md to 47 lines. Demotion work done; asymmetry bullet NOT yet added                                                        |
+| Otto-364                 | PR #1202, memory file           | `memory/feedback_thoughts_free_actions_razored_asymmetry_journal_vs_canonical_substrate_separation_aaron_claudeai_2026_05_02.md` explicitly says "CLAUDE.md should add a single bullet for this asymmetry rule" |
+| lost-files               | git log                         | No lost-files issues found                                                                                                                                                                                      |
 
 **Finding:** The demotion work (action-hierarchy, amortized-speed, edge-runner, cron-unreliability) is already done via B-0351/B-0352. The asymmetry bullet itself was NEVER added to CLAUDE.md. This is the remaining work.
 
@@ -120,11 +120,11 @@ Add the asymmetry rule as a single bullet in CLAUDE.md Conventions section. This
 
 ### Razored acceptance criteria — ALL COMPLETE
 
-| AC | Status | Evidence |
-|----|--------|----------|
-| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | B-0351, B-0352, and B-0353 closed rows |
-| Add asymmetry bullet to CLAUDE.md | ✓ DONE | PR #2465 (commit 3c903aa3, 2026-05-10) |
-| Cooling-period respected (≥24h after PR #1202) | ✓ DONE | 8 days elapsed (2026-05-02 → 2026-05-10) |
+| AC                                                                                         | Status | Evidence                                 |
+| ------------------------------------------------------------------------------------------ | ------ | ---------------------------------------- |
+| CLAUDE.md trim (demote action-hierarchy, amortized-speed, edge-runner, cron-unreliability) | ✓ DONE | B-0351, B-0352, and B-0353 closed rows   |
+| Add asymmetry bullet to CLAUDE.md                                                          | ✓ DONE | PR #2465 (commit 3c903aa3, 2026-05-10)   |
+| Cooling-period respected (≥24h after PR #1202)                                             | ✓ DONE | 8 days elapsed (2026-05-02 → 2026-05-10) |
 
 ### Free-zone acceptance criteria — blocked by B-0330 format standard
 

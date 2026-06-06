@@ -31,16 +31,11 @@ const ACTION_CLASSES: ReadonlySet<string> = new Set([
   "agent-decision",
 ]);
 
-const ACTION_GATES: ReadonlySet<string> = new Set([
-  "append-only",
-  "pr-gated",
-]);
+const ACTION_GATES: ReadonlySet<string> = new Set(["append-only", "pr-gated"]);
 
 function splitCsv(field: string): ReadonlyArray<string> {
   if (field.trim() === "") return [];
-  return field
-    .split(",")
-    .map((part) => part.trim());
+  return field.split(",").map((part) => part.trim());
 }
 
 function hasIllegalDelimiter(value: string): boolean {
@@ -76,15 +71,7 @@ export function parseActionGrammarLine(line: string): ActionGrammarParseResult {
     };
   }
 
-  const [
-    id,
-    actionClass,
-    gate,
-    label,
-    description,
-    composesWithRaw,
-    feedbackRaw,
-  ] = fields;
+  const [id, actionClass, gate, label, description, composesWithRaw, feedbackRaw] = fields;
 
   const scalarError =
     validateScalar("id", id ?? "") ??
@@ -103,9 +90,7 @@ export function parseActionGrammarLine(line: string): ActionGrammarParseResult {
 
   const composesWith = splitCsv(composesWithRaw ?? "");
   const feedbackVariants = splitCsv(feedbackRaw ?? "");
-  const listError =
-    validateList("composesWith", composesWith) ??
-    validateList("feedbackVariants", feedbackVariants);
+  const listError = validateList("composesWith", composesWith) ?? validateList("feedbackVariants", feedbackVariants);
   if (listError !== undefined) return { ok: false, error: listError };
   if (feedbackVariants.length === 0) {
     return { ok: false, error: "feedbackVariants requires at least one item" };
@@ -126,13 +111,7 @@ export function parseActionGrammarLine(line: string): ActionGrammarParseResult {
 }
 
 export function composeActionGrammarLine(action: Action): ActionGrammarComposeResult {
-  const scalarFields = [
-    action.id,
-    action.class,
-    action.gate,
-    action.label,
-    action.description,
-  ];
+  const scalarFields = [action.id, action.class, action.gate, action.label, action.description];
   for (const field of scalarFields) {
     const error = validateScalar("action field", field);
     if (error !== undefined) {
@@ -140,8 +119,7 @@ export function composeActionGrammarLine(action: Action): ActionGrammarComposeRe
     }
   }
   const listError =
-    validateList("composesWith", action.composesWith) ??
-    validateList("feedbackVariants", action.feedbackVariants);
+    validateList("composesWith", action.composesWith) ?? validateList("feedbackVariants", action.feedbackVariants);
   if (listError !== undefined) {
     return { ok: false, error: listError };
   }

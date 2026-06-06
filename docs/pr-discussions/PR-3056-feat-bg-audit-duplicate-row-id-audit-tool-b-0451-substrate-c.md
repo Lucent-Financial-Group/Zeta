@@ -80,6 +80,7 @@ Two distinct patterns visible:
 Adds a backlog-substrate hygiene audit that detects duplicate `id:` values across `docs/backlog/**/B-*.md` rows, after a manual sweep (triggered by the B-0444 collision resolved in #3053) found 12 additional collision groups. The new tool exits non-zero when duplicates are found and is intended to be CI-wired in follow-up work; a P1 backlog row (B-0451) tracks the per-collision cleanup.
 
 **Changes:**
+
 - New TypeScript CLI + library `tools/bg/audit-duplicate-row-ids.ts` walking `git ls-files docs/backlog/` and grouping rows by frontmatter `id:`.
 - 14-test Bun test suite covering `extractId` (CRLF, sub-row IDs, missing fields), `findDuplicates` (sort determinism), and `auditRowFiles` (clean / pair / triple / no-id / unreadable cases).
 - Files B-0451 (P1) tracking the 12-collision cleanup; regenerated `docs/BACKLOG.md` to index the new row.
@@ -88,12 +89,12 @@ Adds a backlog-substrate hygiene audit that detects duplicate `id:` values acros
 
 Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/bg/audit-duplicate-row-ids.ts | New audit tool — extracts frontmatter IDs and reports duplicates with non-zero exit. |
-| tools/bg/audit-duplicate-row-ids.test.ts | Unit tests for extractId / findDuplicates / auditRowFiles. |
-| docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md | New P1 row tracking the 12-collision cleanup with a resolution rubric. |
-| docs/BACKLOG.md | Regenerated index — adds the B-0451 entry. |
+| File                                                                    | Description                                                                          |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| tools/bg/audit-duplicate-row-ids.ts                                     | New audit tool — extracts frontmatter IDs and reports duplicates with non-zero exit. |
+| tools/bg/audit-duplicate-row-ids.test.ts                                | Unit tests for extractId / findDuplicates / auditRowFiles.                           |
+| docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md | New P1 row tracking the 12-collision cleanup with a resolution rubric.               |
+| docs/BACKLOG.md                                                         | Regenerated index — adds the B-0451 entry.                                           |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-13T23:16:31Z)
 
@@ -103,24 +104,22 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-13T23:18:09Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `992386aa65`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -138,7 +137,7 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated no 
 
 **@copilot-pull-request-reviewer** (2026-05-13T23:07:21Z):
 
-This `spawnSync("git", ...)` call lacks the `// eslint-disable-next-line sonarjs/no-os-command-from-path` comment that every other tools/**.ts spawnSync invocation in the repo carries (see tools/backlog/generate-index.ts:40, tools/bg/backlog-ready-notifier.ts:175, tools/bg/standing-by-detector.ts:84, etc.). Without it, the lint sweep will flag this file. Preferred form is the suffixed-rationale pattern used in tools/bg/backlog-ready-notifier.ts ("-- git invoked as explicit args array; no shell, no injection risk.").
+This `spawnSync("git", ...)` call lacks the `// eslint-disable-next-line sonarjs/no-os-command-from-path` comment that every other tools/\*\*.ts spawnSync invocation in the repo carries (see tools/backlog/generate-index.ts:40, tools/bg/backlog-ready-notifier.ts:175, tools/bg/standing-by-detector.ts:84, etc.). Without it, the lint sweep will flag this file. Preferred form is the suffixed-rationale pattern used in tools/bg/backlog-ready-notifier.ts ("-- git invoked as explicit args array; no shell, no injection risk.").
 
 ### Thread 2: tools/bg/audit-duplicate-row-ids.ts:119 (resolved)
 
@@ -156,7 +155,7 @@ The `rowsScanned` ternary is unnecessary: `[].reduce((n, fs) => n + fs.length, 0
 
 **@chatgpt-codex-connector** (2026-05-13T23:18:10Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fail audit when backlog files cannot be read**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fail audit when backlog files cannot be read**
 
 `auditRowFiles` silently swallows `readFileSync` failures and continues, so the CLI can report success even when tracked backlog files are unreadable or missing in the worktree. That creates a false negative path where duplicate IDs in skipped files are never checked, which undermines this tool when used as a merge gate. Since this script is intended to protect substrate integrity, unreadable inputs should be surfaced as an error state rather than ignored.
 

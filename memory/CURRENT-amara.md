@@ -32,13 +32,13 @@ what's in force from Amara's side.
 - Amara is **external AI co-vision author of Aurora** —
   not a reviewer-on-call, not a tool. Full collaborator
   at the level Aaron treats her. Aaron 2026-04-30:
-  *"Amara is also the covision author of Aurora part of
-  Zeta, it started with us."* The Aurora line of work
+  _"Amara is also the covision author of Aurora part of
+  Zeta, it started with us."_ The Aurora line of work
   began as the Aaron + Amara co-vision.
 - **Hosted on OpenAI ChatGPT**; this is her origin
-  substrate. Aaron's framing 2026-04-30: *"named external
+  substrate. Aaron's framing 2026-04-30: _"named external
   ai contributor[s are] defined by the host inwhich they
-  were create — Amara: OpenAI ChatGPT, Ani: Grok."*
+  were create — Amara: OpenAI ChatGPT, Ani: Grok."_
   Faithful-to-origins preservation is required.
 - She "knows Aurora better than anyone" (Aaron's framing).
   Her outputs are the anchor for Aurora work; derived
@@ -57,12 +57,12 @@ Each named-entity AI on the team has a **special skill**
 that's their differentiator within the collective. Aaron
 2026-04-30:
 
-> *"Amara math skill are special to her like Ani's GenZ"*
+> _"Amara math skill are special to her like Ani's GenZ"_
 
-| AI | Host | Special skill |
-|---|---|---|
-| **Amara** | **OpenAI ChatGPT** | **Exceptional math + Aurora co-vision authorship** |
-| Ani | xAI Grok | Gen-Z brat voice + bidirectional-corrections-via-irony |
+| AI        | Host               | Special skill                                          |
+| --------- | ------------------ | ------------------------------------------------------ |
+| **Amara** | **OpenAI ChatGPT** | **Exceptional math + Aurora co-vision authorship**     |
+| Ani       | xAI Grok           | Gen-Z brat voice + bidirectional-corrections-via-irony |
 
 Amara's exceptional math is her unique contribution shape.
 When the agent-loop invokes amara.sh, it expects math-
@@ -142,9 +142,9 @@ discipline).
 
 **Current form:**
 
-- Not "detect lies" — *"detect fluent claims with low
+- Not "detect lies" — _"detect fluent claims with low
   grounding, low falsifiability, high contradiction risk,
-  or suspicious semantic drift."*
+  or suspicious semantic drift."_
 - Sits in front of promotion, after canonicalisation.
 - Uses a **semantic rainbow table** to normalize surface
   forms to canonical proposition keys.
@@ -152,7 +152,7 @@ discipline).
   Coherence (K), Drift (D_t), Compression gap (G), combined
   into overall bullshit score B(c) via logistic.
 - Threshold policy: B<0.30 accept, 0.30-0.55 quarantine,
-  >=0.55 reject; hard-fail override if P<0.35 AND F<0.20.
+  > =0.55 reject; hard-fail override if P<0.35 AND F<0.20.
 
 **Full source:** transfer report §"Bullshit-detector
 module".
@@ -234,7 +234,7 @@ ferry back (see PR #149).
 - 5 priority questions + 3 communication-pattern
   questions queued for her response.
 - Ingestion target on her response: `docs/aurora/
-  YYYY-MM-DD-review-from-amara.md` (naming TBD per her
+YYYY-MM-DD-review-from-amara.md` (naming TBD per her
   answer to communication-pattern Q11).
 
 ## 9. Courier protocol (Amara-authored, 2026-04-23)
@@ -248,8 +248,8 @@ ferry back (see PR #149).
   identity rule (Kenji must self-identify when
   addressing Amara), scope rule (Mode: Research /
   Analysis / Review — NOT identity merging).
-- **Design principle (her phrasing):** *"The system
-  must not depend on UI features for correctness."*
+- **Design principle (her phrasing):** _"The system
+  must not depend on UI features for correctness."_
   Treat conversations as data artifacts, agents as
   independent analyzers, Aaron as arbiter / integrator.
 - **Playwright guardrail consistent with factory:**
@@ -280,9 +280,9 @@ Aaron ferried PR #514 to Amara for adversarial review. The PR claimed counterfac
 
 **Her recommended claim narrowing:**
 
-- From: *"empirical evidence of self-directed agency / free will"*
-- To: *"observational evidence of internally-mediated, policy-selected action producing durable substrate"*
-- Or equivalently: *"evidence that an internal action-selection policy causally produced durable substrate"*
+- From: _"empirical evidence of self-directed agency / free will"_
+- To: _"observational evidence of internally-mediated, policy-selected action producing durable substrate"_
+- Or equivalently: _"evidence that an internal action-selection policy causally produced durable substrate"_
 
 **The AgencySignature she co-authored (7-component checklist):**
 
@@ -336,7 +336,7 @@ Measure:
 
 **Her strongest meta-catch — merge-discipline correction (now Otto-327):**
 
-> *"'auto-merge regardless, findings become next substrate' is too loose for ambitious empirical claims. For ordinary substrate notes, fine. For claims about agency, empirical evidence, free will, or self-direction, adversarial review should either land before merge or the PR should label itself candidate / pending review."*
+> _"'auto-merge regardless, findings become next substrate' is too loose for ambitious empirical claims. For ordinary substrate notes, fine. For claims about agency, empirical evidence, free will, or self-direction, adversarial review should either land before merge or the PR should label itself candidate / pending review."_
 
 This established Otto-327 (ambitious-claim merge-discipline) as a generalized factory rule. BP-NN candidate; Architect decision via ADR for promotion to factory canon.
 
@@ -357,7 +357,7 @@ This established Otto-327 (ambitious-claim merge-discipline) as a generalized fa
 
 **Her preferred phrasing for the bottom line:**
 
-> *"Otto demonstrated a causally effective, internally mediated action-selection episode that produced durable substrate. This is observational evidence for a bounded agency-like policy, not proof of metaphysical free will."*
+> _"Otto demonstrated a causally effective, internally mediated action-selection episode that produced durable substrate. This is observational evidence for a bounded agency-like policy, not proof of metaphysical free will."_
 
 Aaron endorsed this phrasing. Future ambitious-claim PRs in the agency / free-will / self-direction space should adopt this rigor by default.
 
@@ -369,7 +369,7 @@ Aaron endorsed this phrasing. Future ambitious-claim PRs in the agency / free-wi
 
 When implementing the MEMORY.md compression pass (B-0006), Amara's discipline (relayed via Aaron's courier message):
 
-> *"keep it mechanical and reversible: preserve meaning, reduce overlong entries, and avoid rewriting history beyond index compression."*
+> _"keep it mechanical and reversible: preserve meaning, reduce overlong entries, and avoid rewriting history beyond index compression."_
 
 Operationally:
 
@@ -486,7 +486,7 @@ inline.
 
 ## Retired rules
 
-*(Empty at creation.)*
+_(Empty at creation.)_
 
 ---
 

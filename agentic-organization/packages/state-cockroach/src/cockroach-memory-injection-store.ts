@@ -46,7 +46,8 @@ function rowToInjection(row: MemoryInjectionRow): MemoryInjectionRecord {
     hatId: row.hat_id,
     agentId: row.agent_id,
     promptFlowRunId: row.prompt_flow_run_id,
-    weightAtInjection: typeof row.weight_at_injection === "number" ? row.weight_at_injection : Number(row.weight_at_injection),
+    weightAtInjection:
+      typeof row.weight_at_injection === "number" ? row.weight_at_injection : Number(row.weight_at_injection),
     cited: row.cited,
     injectedAt: toIso(row.injected_at),
   };
@@ -66,9 +67,16 @@ export function createCockroachMemoryInjectionStore(
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
           ON CONFLICT (injection_id) DO NOTHING`,
         parameters: [
-          injection.injectionId, injection.organizationId, injection.memoryId, injection.workItemId,
-          injection.hatId, injection.agentId, injection.promptFlowRunId, injection.weightAtInjection,
-          injection.cited, injection.injectedAt,
+          injection.injectionId,
+          injection.organizationId,
+          injection.memoryId,
+          injection.workItemId,
+          injection.hatId,
+          injection.agentId,
+          injection.promptFlowRunId,
+          injection.weightAtInjection,
+          injection.cited,
+          injection.injectedAt,
         ],
       });
     },

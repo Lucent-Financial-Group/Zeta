@@ -21,6 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Otto-bg-worker tick 1539Z. Fresh task-fired session ~1h34 after 1405Z Otto-CLI audit. Task brief condition (`gate=BLOCKED and nextAction=resolve-threads`) **matches zero open PRs** — all 3 tracked from 1405Z (#4878/#4934/#4931) merged within 32-67min of that audit.
 
 Current state:
+
 - **43 open PRs** (up from 37); all DIRTY (need rebase); all `lior-*` surface
 - **~10 with failed required checks** (rf=1) — rebase alone wouldn't move to CLEAN
 - **4 with auto-merge already armed** (#4857/#4868/#4876/#4929)
@@ -52,24 +53,22 @@ Sentinel: \`877abe32\` armed at session-start per [`tick-must-never-stop.md`](..
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T15:43:37Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `acbd7c326a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -82,6 +81,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard (1539Z) capturing an audit-only autonomous-loop run where the task brief’s “BLOCKED + resolve-threads” condition matched zero PRs, so the tick documents current PR-gate state and re-applies prior cross-lane precedent.
 
 **Changes:**
+
 - Add tick shard `1539Z.md` with task brief, PR-gate snapshot, and disposition rationale.
 - Record follow-up status for the earlier 1405Z-tracked PRs (now merged) plus build/sentinel notes.
 
@@ -111,7 +111,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-25T15:43:37Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct auto-merge count to match listed PRs**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct auto-merge count to match listed PRs**
 
 The bullet says there are `3` PRs with auto-merge armed, but it lists four PR numbers (`#4857, #4868, #4876, #4929`). This makes the tick snapshot internally inconsistent, which is a problem because these shard docs are used as audit substrate and readers cannot tell which value is authoritative.
 
@@ -125,7 +125,7 @@ Fixed in commit `f6d3b26b`: count reconciled with enumerated PR list. Landed via
 
 **@chatgpt-codex-connector** (2026-05-25T15:43:37Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile failed-check count with enumerated PR list**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile failed-check count with enumerated PR list**
 
 This line reports `~10` PRs with failed required checks, but it enumerates 12 PRs. Even with approximation, this discrepancy is large enough to distort the triage summary and can mislead follow-up prioritization based on this historical record.
 

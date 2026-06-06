@@ -16,7 +16,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-40"
   name: external-secrets
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -52,4 +52,4 @@ spec:
     namespace: external-secrets
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

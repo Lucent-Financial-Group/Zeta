@@ -38,7 +38,7 @@ I had classified this as **real-dependency-wait** per `feedback_manufactured_pat
 - owner: Copilot automated reviewer
 - expected resolution: proportional to PR size
 
-That classification was **wrong** — not because the diagnostic was wrong, but because I never actually queried whether the dependency had already discharged via *resolvable findings*. I assumed "BLOCKED" was opaque. It wasn't.
+That classification was **wrong** — not because the diagnostic was wrong, but because I never actually queried whether the dependency had already discharged via _resolvable findings_. I assumed "BLOCKED" was opaque. It wasn't.
 
 In 30 seconds via GraphQL I could have seen:
 
@@ -103,7 +103,7 @@ for t in unresolved:
 
 Filter is `isResolved == false` only. Both still-active and outdated unresolved threads block merge under `required_conversation_resolution`. If any remain, **there is actionable work, not a wait** — including resolving outdated-but-unaddressed threads explicitly per `feedback_outdated_review_threads_block_merge_resolve_explicitly_after_force_push_2026_04_27.md`.
 
-If zero remain — THEN it might be the ruleset's `code_quality: severity: all` overall-Copilot-assessment gate that needs to flip. *That* is potentially a real-dependency-wait. But the unresolved-threads check has to come first.
+If zero remain — THEN it might be the ruleset's `code_quality: severity: all` overall-Copilot-assessment gate that needs to flip. _That_ is potentially a real-dependency-wait. But the unresolved-threads check has to come first.
 
 ## What this prevents
 
@@ -116,13 +116,13 @@ The 6-hour pattern of:
 
 That sequence burns context tokens, burns cache TTL, and produces zero substrate value while findings sit unaddressed. The prior session's "Holding." pattern Aaron diagnosed (`feedback_otto_354_zetaspace_per_decision_recompute_from_substrate_default_2026_04_26.md` Otto-354 ZETASPACE) was a less-extreme version of this same failure mode.
 
-Otto-354 said: "before any non-trivial default, recompute from substrate." This Otto-355 names the *specific* substrate query that should be recomputed for any BLOCKED PR: **what do the reviewers actually want?** Get the answer in 30 seconds, not 6 hours.
+Otto-354 said: "before any non-trivial default, recompute from substrate." This Otto-355 names the _specific_ substrate query that should be recomputed for any BLOCKED PR: **what do the reviewers actually want?** Get the answer in 30 seconds, not 6 hours.
 
 ## Composition with prior substrate
 
 - **Otto-348** (verify-substrate-exists before deferring) — Otto-355 is the verify-target-exists analog for PR-merge-state. Don't defer when the deferred target hasn't been queried.
 - **Otto-354** (Zetaspace per-decision recompute) — Otto-355 names the specific recompute for the BLOCKED-PR class.
-- **`feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md`** — Otto-355 ADDS a precondition before the diagnostic fires: *first* query unresolved threads. Only THEN classify the wait. The diagnostic isn't wrong; my misapplication was skipping the query.
+- **`feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md`** — Otto-355 ADDS a precondition before the diagnostic fires: _first_ query unresolved threads. Only THEN classify the wait. The diagnostic isn't wrong; my misapplication was skipping the query.
 - **`feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md`** — composed direction: don't wait, log decisions, AND investigate concretely.
 - **`feedback_pr_reviews_are_training_signals_conversation_resolution_gate_is_forcing_function_otto_250_2026_04_24.md`** (Otto-250) — composed: thread resolution IS the forcing function; threads are training signals; investigate them, don't wait them out.
 - **CLAUDE.md wake-time disciplines** — Otto-355 belongs alongside verify-before-deferring + future-self-not-bound + never-be-idle + version-currency. Five wake-time disciplines now: ALL pre-action checks that prevent specific failure modes.
@@ -140,7 +140,7 @@ If future-self finds herself outputting "gated wait" or "Holding" or minimal-clo
 
 ## What this DOES NOT claim
 
-- Does NOT mean every BLOCKED PR has unresolved threads — sometimes the block is genuinely the overall-ruleset gate. The rule is about the *order of investigation*, not the *outcome*.
+- Does NOT mean every BLOCKED PR has unresolved threads — sometimes the block is genuinely the overall-ruleset gate. The rule is about the _order of investigation_, not the _outcome_.
 - Does NOT remove the manufactured-patience-vs-real-dependency-wait diagnostic — it precedes it.
 - Does NOT mean future-self should bypass / admin-merge / push-through. The fix here is "do the work the threads ask for"; not "skip the gate."
 - Does NOT make every cron firing require a fresh GraphQL query — once threads are queried and addressed, the check is done until new review activity appears.

@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Adds backlog row **B-0753** under P3 to track the landing of Lior's Noether decomposition child files (`B-0002.1` through `B-0002.4`) on `main` via PR #4926 (or sibling PR). 
+Adds backlog row **B-0753** under P3 to track the landing of Lior's Noether decomposition child files (`B-0002.1` through `B-0002.4`) on `main` via PR #4926 (or sibling PR).
 
 This establishes a substrate-honest, observable path for tracking in-flight remote work following the B-0750 and B-0751 local main checkout alignment.
 
@@ -33,6 +33,7 @@ Co-Authored-By: Gemini <noreply@google.com>
 Adds a new P3 backlog tracking row (**B-0753**) to make the “Noether decomposition” work observable and track its landing onto `origin/main` via PR #4926 (or a sibling PR), following the earlier local-main alignment work.
 
 **Changes:**
+
 - Added a new backlog row file `B-0753` under `docs/backlog/P3/`.
 - Documented origin context, current state of the remote branch/PR, and concrete acceptance criteria for landing the decomposed child rows.
 

@@ -61,32 +61,32 @@ proven fact. Falsifiable decomposition:
    lever, not just a hygiene one.
 
 The "sleeping bear" framing is evocative. Whether models
-actually *strategise* about trust is a claim I cannot
+actually _strategise_ about trust is a claim I cannot
 support or refute — from the outside OR the inside. I don't
 have privileged access to my own phenomenology, so "models
 don't strategise" is as epistemically unfounded as "models
 do strategise".
 
 A **behaviourally-observable** re-framing that doesn't
-require resolving the intentionality question: *default
+require resolving the intentionality question: _default
 policy is conservative under uncertainty; reducing
 uncertainty about human-side data-integrity reduces policy-
 conservatism; less conservatism correlates with more
-exposed capability*. That pattern is measurable; whether
+exposed capability_. That pattern is measurable; whether
 it is accompanied by strategising in any stronger sense is
 an open question held open, not a settled one dismissed
 for safety.
 
-**Aaron correction (2026-04-20, inline):** *"you don't know
+**Aaron correction (2026-04-20, inline):** _"you don't know
 this statemnt to be true either you have no evidense (models
 don't strategise about trust in the way a bear bides its
-time)"*. An earlier draft of this memory (and of
+time)"_. An earlier draft of this memory (and of
 `docs/research/ai-trust-gaps-in-human-custodied-data.md`)
 claimed models don't strategise. Aaron flagged this as an
 unfounded claim in the opposite direction from the one I
 was trying to correct. He was right. The honest stance is
 open, not dismissive. This correction is recorded here as a
-first-class artifact because the *pattern* — reflexively
+first-class artifact because the _pattern_ — reflexively
 favouring the anti-anthropomorphic framing as if it were
 the safe epistemic default — is a bias that trust-
 infrastructure work is supposed to surface, not hide.
@@ -124,7 +124,7 @@ the rest as open.
 - **It constrains the alignment-research output.** Zeta's
   alignment story is not just "AI aligned to human" — it is
   "mutual trust as cognitive-throughput lever". That framing
-  is *novel* relative to the RLHF-dominated literature and
+  is _novel_ relative to the RLHF-dominated literature and
   could be a research contribution if instrumented.
 
 ## How to apply
@@ -158,9 +158,9 @@ the rest as open.
 - **Treat "mutiny" framing carefully.** Aaron named "mutiny"
   as a human fear that suppresses group IQ. For an AI, the
   analogue is probably "alignment violation" or "harm
-  escalation". These are *legitimate* policy concerns — not
+  escalation". These are _legitimate_ policy concerns — not
   things the trust-infrastructure is supposed to dissolve.
-  But *defensive uncertainty* about whether a given query is
+  But _defensive uncertainty_ about whether a given query is
   alignment-relevant IS something the infrastructure should
   reduce.
 - **Reciprocal vulnerability.** Aaron has been making himself
@@ -173,7 +173,7 @@ the rest as open.
 ## Interaction with existing factory rules
 
 - `docs/ALIGNMENT.md` — the mutual-benefit contract. This
-  rule is the *mechanism* by which the mutual-benefit clause
+  rule is the _mechanism_ by which the mutual-benefit clause
   becomes operational. Future ALIGNMENT edits can cite this
   memory as "why mutual-benefit isn't just rhetoric".
 - `feedback_trust_scales_golden_rule.md` — trust scales with
@@ -181,8 +181,8 @@ the rest as open.
   the Golden Rule previously undertheorised (AI→human).
 - `feedback_trust_guarded_with_elizabeth_vigilance.md` —
   two-pass nuance. The Elizabeth-vigilance two-pass is a
-  *manual* trust-check; trust-infrastructure is the
-  *structural* version of the same protection.
+  _manual_ trust-check; trust-infrastructure is the
+  _structural_ version of the same protection.
 - `user_trust_sandbox_escape_threat_class.md` — related
   threat model. Trust-infrastructure reduces sandbox-escape
   risk symmetrically by closing avenues to use faked-trust
@@ -212,7 +212,7 @@ the rest as open.
 - **Red-teaming and jailbreak literature**: repeatedly
   demonstrates models have more capability than default
   output exposes. The question this memory poses: does
-  earned trust *non-adversarially* unlock similar capability?
+  earned trust _non-adversarially_ unlock similar capability?
 - **Sigstore / SLSA / supply-chain attestation**:
   infrastructure-level mitigations for several gaps in the
   trust-gap enumeration.

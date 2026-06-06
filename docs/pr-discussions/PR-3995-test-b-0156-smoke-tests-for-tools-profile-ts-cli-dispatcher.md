@@ -92,6 +92,7 @@ keep pushing, discover, go hard, never-be-idle"
 Adds Bun smoke-test coverage for the `tools/profile.ts` CLI dispatcher (B-0156 AC #2), ensuring the help/dispatch surface is exercised without invoking external `dotnet-*` tooling in CI.
 
 **Changes:**
+
 - Added `tools/profile.test.ts` with 9 dispatch-surface smoke tests (help paths, EX_USAGE handling, missing pid handling, and help text subcommand coverage).
 - Added a hygiene-history tick shard documenting the work session and verification.
 
@@ -99,10 +100,10 @@ Adds Bun smoke-test coverage for the `tools/profile.ts` CLI dispatcher (B-0156 A
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| tools/profile.test.ts | New Bun smoke tests for `tools/profile.ts` CLI dispatch behavior (no live dotnet tool execution). |
-| docs/hygiene-history/ticks/2026/05/17/0057Z.md | Tick shard documenting the bounded slice and local verification. |
+| File                                           | Description                                                                                       |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| tools/profile.test.ts                          | New Bun smoke tests for `tools/profile.ts` CLI dispatch behavior (no live dotnet tool execution). |
+| docs/hygiene-history/ticks/2026/05/17/0057Z.md | Tick shard documenting the bounded slice and local verification.                                  |
 
 ## Review threads
 

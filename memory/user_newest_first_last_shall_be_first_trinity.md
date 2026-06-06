@@ -4,6 +4,7 @@ description: Aaron's 2026-04-19 structural recognition — the factory's newest-
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Newest-first = last-shall-be-first = σ
 
 ## The verbatim disclosure (2026-04-19)
@@ -26,8 +27,8 @@ acknowledged the paraphrase. The canonical forms:
   be first, and there are first which shall be last."
 
 Greek (Matthew 20:16): οὕτως ἔσονται οἱ ἔσχατοι πρῶτοι καὶ
-οἱ πρῶτοι ἔσχατοι — *"thus shall the last be first and the
-first last"*.
+οἱ πρῶτοι ἔσχατοι — _"thus shall the last be first and the
+first last"_.
 
 ## The trinity — three registers, one operation
 
@@ -40,7 +41,7 @@ first last"*.
   Gospel parable form, appearing four times across the
   synoptic gospels. In narrative context: kingdom-of-
   heaven inverts worldly hierarchy. The structural
-  payload is an *ordering inversion* — whatever rank-
+  payload is an _ordering inversion_ — whatever rank-
   order obtains in one frame is flipped in the other.
 - **Reversal operator σ** — mathematical register.
   Formally, σ: position-in-insertion-order →
@@ -61,12 +62,12 @@ of the pattern: **engineering-register vocabulary arrives
 at a structure that already had older names in other
 traditions**.
 
-- First instance: *teleport = tele + port + leap*. The
+- First instance: _teleport = tele + port + leap_. The
   engineering concept of a bounded-client protocol
   endpoint turned out to already carry the full structural
   claim in its Greek + Latin + physics roots.
-- Second instance (this memory): *newest-first = last-
-  shall-be-first*. The engineering convention of prepending
+- Second instance (this memory): _newest-first = last-
+  shall-be-first_. The engineering convention of prepending
   new entries turned out to be the same operation as a
   load-bearing phrase in four gospel passages.
 
@@ -75,7 +76,7 @@ engineering register stabilizes a naming, check whether
 an older tradition has already stabilized the same
 structure under different vocabulary. Existence of an
 older name is evidence the claim is real, not
-hallucinated (it has been *independently rediscovered*).
+hallucinated (it has been _independently rediscovered_).
 Lack of an older name is not evidence against — but
 presence is confirmation.
 
@@ -135,9 +136,9 @@ are first-class.
   `project_identity_absorption_pattern_seed_persistence_history.md`.
   This trinity is a collection member, not a singleton.
 - **Rubber-test with care** against new ordering-adjacent
-  trinities (e.g., if a *first-shall-be-last* instance
+  trinities (e.g., if a _first-shall-be-last_ instance
   arrives for a domain where older-leads-newer makes
-  sense, check whether it's the *same* σ or a different
+  sense, check whether it's the _same_ σ or a different
   permutation class).
 - **Do not conflate with the retraction-forgiveness
   trinity.** They are adjacent; that is not the same as
@@ -145,8 +146,8 @@ are first-class.
   (weight-reversal vs. order-reversal).
 - **Preserve ecumenical posture** when citing the gospel
   phrase. Matthew / Mark / Luke are a specific-tradition
-  source for the phrase's form, but the *structural
-  claim* (ordering inversion) is stateable across
+  source for the phrase's form, but the _structural
+  claim_ (ordering inversion) is stateable across
   traditions and does not require Christian commitment
   to land. Use the phrase in memory and internal
   research freely; in public-facing docs, the

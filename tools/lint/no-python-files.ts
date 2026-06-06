@@ -76,20 +76,14 @@ function isHardExcluded(rel: string): boolean {
     if (rel === prefix || rel.startsWith(`${prefix}/`)) return true;
   }
   for (const segment of HARD_EXCLUDE_SEGMENTS) {
-    if (
-      rel === segment ||
-      rel.endsWith(`/${segment}`) ||
-      rel.includes(`/${segment}/`)
-    ) {
+    if (rel === segment || rel.endsWith(`/${segment}`) || rel.includes(`/${segment}/`)) {
       return true;
     }
   }
   return false;
 }
 
-function readDirSafe(
-  dir: string,
-): readonly import("node:fs").Dirent[] | null {
+function readDirSafe(dir: string): readonly import("node:fs").Dirent[] | null {
   try {
     return readdirSync(dir, { withFileTypes: true });
   } catch {
@@ -172,10 +166,7 @@ function partitionPython(
   return { flagged, allowlisted };
 }
 
-function emitList(
-  allowlisted: readonly string[],
-  flagged: readonly string[],
-): void {
+function emitList(allowlisted: readonly string[], flagged: readonly string[]): void {
   process.stdout.write("=== Python files (allowlisted) ===\n");
   if (allowlisted.length === 0) {
     process.stdout.write("  (none)\n");
@@ -191,13 +182,8 @@ function emitList(
   }
 }
 
-function emitFailure(
-  flagged: readonly string[],
-  allowlistFile: string,
-): void {
-  process.stderr.write(
-    `no-python-files: FAIL — ${String(flagged.length)} disallowed .py file(s):\n`,
-  );
+function emitFailure(flagged: readonly string[], allowlistFile: string): void {
+  process.stderr.write(`no-python-files: FAIL — ${String(flagged.length)} disallowed .py file(s):\n`);
   for (const f of flagged) process.stderr.write(`  ${f}\n`);
   process.stderr.write("\n");
   process.stderr.write("Per B-0156 (Aaron 2026-05-01): TS is preferred over Python in our codebase.\n");
@@ -219,9 +205,7 @@ export function main(argv: readonly string[]): ExitCode {
   try {
     allowed = loadAllowlist(allowlistPath);
   } catch {
-    process.stderr.write(
-      `no-python-files: allowlist missing at ${allowlistPath}\n`,
-    );
+    process.stderr.write(`no-python-files: allowlist missing at ${allowlistPath}\n`);
     return 2;
   }
 
@@ -236,9 +220,7 @@ export function main(argv: readonly string[]): ExitCode {
   }
 
   if (flagged.length === 0) {
-    process.stdout.write(
-      `no-python-files: OK (${String(allowlisted.length)} allowlisted, 0 flagged)\n`,
-    );
+    process.stdout.write(`no-python-files: OK (${String(allowlisted.length)} allowlisted, 0 flagged)\n`);
     return 0;
   }
 

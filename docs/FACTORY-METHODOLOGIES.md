@@ -22,19 +22,19 @@ not does not.
 
 ## Kanban — visual flow, WIP-limited, pull-based
 
-Kanban is how work *moves* through the factory.
+Kanban is how work _moves_ through the factory.
 
 ### Practices we apply
 
-| Practice | Factory instance |
-|---|---|
-| Visualise the work | `docs/BACKLOG.md` (P0-P3 priority lanes); `docs/ROUND-HISTORY.md` (Done ledger) |
-| WIP limits | FACTORY-HYGIENE row 37: per-persona cap 3, cross-persona cap 7; architect-bottleneck per GOVERNANCE §11 is the canonical WIP-1 on review |
-| Pull, not push | Round-cadence pulls from `BACKLOG.md`; `/loop` dynamic ticks pull the next speculative-work item |
-| Continuous delivery | Every round commits + pushes; no big-bang releases |
-| Explicit policies | `docs/AGENT-BEST-PRACTICES.md` BP-NN rules, `GOVERNANCE.md` numbered sections, `CLAUDE.md` load-bearing rules |
-| Feedback loops | Retrospective audits (FACTORY-HYGIENE rows 35/36); meta-wins log; `/loop` tick cadence |
-| Evolve experimentally | `skill-tune-up` ranker + ADR-gated promotion of new BP-NN rules |
+| Practice              | Factory instance                                                                                                                         |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Visualise the work    | `docs/BACKLOG.md` (P0-P3 priority lanes); `docs/ROUND-HISTORY.md` (Done ledger)                                                          |
+| WIP limits            | FACTORY-HYGIENE row 37: per-persona cap 3, cross-persona cap 7; architect-bottleneck per GOVERNANCE §11 is the canonical WIP-1 on review |
+| Pull, not push        | Round-cadence pulls from `BACKLOG.md`; `/loop` dynamic ticks pull the next speculative-work item                                         |
+| Continuous delivery   | Every round commits + pushes; no big-bang releases                                                                                       |
+| Explicit policies     | `docs/AGENT-BEST-PRACTICES.md` BP-NN rules, `GOVERNANCE.md` numbered sections, `CLAUDE.md` load-bearing rules                            |
+| Feedback loops        | Retrospective audits (FACTORY-HYGIENE rows 35/36); meta-wins log; `/loop` tick cadence                                                   |
+| Evolve experimentally | `skill-tune-up` ranker + ADR-gated promotion of new BP-NN rules                                                                          |
 
 ### The pull-triggered vs always-on criterion
 
@@ -67,24 +67,24 @@ consolidation decision (see
 
 ## Six Sigma — DMAIC-structured improvement
 
-Six Sigma is how factory *improvements* are structured.
+Six Sigma is how factory _improvements_ are structured.
 
 ### DMAIC cycle
 
-| Phase | Factory instance |
-|---|---|
-| **Define** | BACKLOG proposal + ADR problem-statement stage |
-| **Measure** | DORA 2025 metrics + 4 Golden Signals + RED + USE; baseline before any change |
+| Phase       | Factory instance                                                                                           |
+| ----------- | ---------------------------------------------------------------------------------------------------------- |
+| **Define**  | BACKLOG proposal + ADR problem-statement stage                                                             |
+| **Measure** | DORA 2025 metrics + 4 Golden Signals + RED + USE; baseline before any change                               |
 | **Analyze** | `docs/research/meta-wins-log.md` + harsh-critic reviews + spec-zealot / formal-verification-expert routing |
-| **Improve** | ADR implementation + round commits |
-| **Control** | `docs/FACTORY-HYGIENE.md` cadenced rows + BP-NN rules — the artifacts that prevent regression |
+| **Improve** | ADR implementation + round commits                                                                         |
+| **Control** | `docs/FACTORY-HYGIENE.md` cadenced rows + BP-NN rules — the artifacts that prevent regression              |
 
 ### DMAIC proposal template
 
 Factory-improvement proposals (new hygiene row, new BP-NN
 rule, process change) fill the template at
 `docs/templates/DMAIC-proposal-template.md` before the ADR
-lands. The cognitive cost of filling the template *is* the
+lands. The cognitive cost of filling the template _is_ the
 Six Sigma discipline.
 
 ### Control = FACTORY-HYGIENE row
@@ -128,7 +128,7 @@ tune the absorb-time filter.
 **Kanban governs flow; Six Sigma governs improvement.**
 
 - Kanban moves work through the round-cadence.
-- Six Sigma structures the work *of* improving how the
+- Six Sigma structures the work _of_ improving how the
   round-cadence runs.
 - Together they form a self-improving loop: Kanban pulls
   the next round; retrospective audit measures what

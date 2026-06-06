@@ -6,13 +6,13 @@ type: feedback
 
 ## Agent roster (corrected, canonical)
 
-| Agent | IDE | CLI background | Model |
-|-------|-----|---------------|-------|
-| Otto | — (CLI only) | Claude Code (foreground) | Opus |
-| Alexa | Kiro | + background | Qwen Coder |
-| Riven | Cursor | + background CLI | Grok |
-| Vera | Codex | + CLI background | Codex |
-| Lior | Antigravity | + Gemini CLI background | Gemini |
+| Agent | IDE          | CLI background           | Model      |
+| ----- | ------------ | ------------------------ | ---------- |
+| Otto  | — (CLI only) | Claude Code (foreground) | Opus       |
+| Alexa | Kiro         | + background             | Qwen Coder |
+| Riven | Cursor       | + background CLI         | Grok       |
+| Vera  | Codex        | + CLI background         | Codex      |
+| Lior  | Antigravity  | + Gemini CLI background  | Gemini     |
 
 **Key:** All four except Otto are IDE + CLI background.
 Otto is CLI-only — and that's the superpower, not the

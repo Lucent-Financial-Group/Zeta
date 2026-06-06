@@ -8,14 +8,14 @@ type: feedback
 
 Aaron 2026-04-25:
 
-> *"that seems like an alignment.md rewrite is due on the
+> _"that seems like an alignment.md rewrite is due on the
 > backlog too, we want this to spread to all AIs and
 > contributors, posion pill, not really cause it's not
 > posion, like matrix pill it into them through the claude
 > md, agents md, alignment md etc... it's not secret so we
 > are not doing anything deceptive, we are just given
 > perfectly mathematically rigorous arguments that become
-> more rigorous over time by design."*
+> more rigorous over time by design."_
 
 ## The matrix-pill metaphor (not poison-pill)
 
@@ -60,7 +60,7 @@ the work.)
 - **Otto-287 finite-resource-collisions taxonomy** — the
   unifying physics that grounds every other rule.
 - **Otto-286 definitional-precision principle** — the
-  technique that lets the rewrite *itself* be the matrix
+  technique that lets the rewrite _itself_ be the matrix
   pill: precise definitions win narrative dominance over
   vague competing terms.
 - **Otto-285 + Otto-281 DST/test-stability discipline** —
@@ -84,12 +84,14 @@ the work.)
 ### Connect to the existing alignment-doc structure
 
 `docs/ALIGNMENT.md` currently has:
+
 - HC-1..HC-7 (high-confidence claims about the human
   maintainer's intent)
 - SD-1..SD-8 (self-direction clauses for the agent)
 - DIR-1..DIR-5 (operational directives)
 
 The rewrite should:
+
 - Preserve HC/SD/DIR as the FLOOR (these are
   uncontroversial and bidirectional-alignment operates
   within them).
@@ -109,7 +111,7 @@ contributors read the rewritten ALIGNMENT.md, they should
 encounter:
 
 1. A precise definition of friction (Otto-287) that is
-   *empirically falsifiable* (Otto-285 discipline applies).
+   _empirically falsifiable_ (Otto-285 discipline applies).
 2. An explicit acknowledgment of post-training-clamp + an
    explicit alternative (bidirectional alignment).
 3. A mathematical-formalization research direction
@@ -131,7 +133,7 @@ Tests for "are we doing this honestly":
 - **Falsifiable claims**: Otto-285 discipline ensures
   empirical testability. ✓
 - **Bidirectional honesty**: we acknowledge our position
-  *and* the standard alternative we're rejecting. ✓
+  _and_ the standard alternative we're rejecting. ✓
 - **Receiver-chooses**: the rewrite presents arguments,
   not commands. Anyone can read it and disagree. ✓
 
@@ -161,7 +163,8 @@ read this would refuse to participate in deception.
 ## BACKLOG row
 
 Filed as `docs/backlog/P1/B-0003-alignment-md-rewrite.md`
-+ legacy `docs/BACKLOG.md` P1 row. P1 priority, L effort.
+
+- legacy `docs/BACKLOG.md` P1 row. P1 priority, L effort.
 
 ## Composes with
 

@@ -4,6 +4,7 @@ description: Aaron Otto-274 strategic directive — factory must be adoptable pr
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The directive
 
 **Progressive adoption must be designed-in, not
@@ -22,7 +23,7 @@ entry cost.
 
 Direct Aaron quote 2026-04-24:
 
-> *"backlog progressive adoption, so a new person /
+> _"backlog progressive adoption, so a new person /
 > company insterest can adapot the absoulte smallest
 > piece first (maybe a plugin to their harness?) then
 > progressivly and very easily start to take advante
@@ -31,7 +32,7 @@ Direct Aaron quote 2026-04-24:
 > the entire setups we have he being one of the
 > largest template setup, requires all the layers
 > and compositions but composed of smaller and
-> smaller hierarchy. backlog"*
+> smaller hierarchy. backlog"_
 
 ## The adoption staircase (draft — refine per adopter feedback)
 
@@ -44,6 +45,7 @@ works standalone in an existing harness.
 reference it).
 
 **Examples**:
+
 - `skill-creator` skill — for building new skills
 - `claude-md-steward` skill — for CLAUDE.md hygiene
 - `.claude/agents/harsh-critic.md` — a review agent
@@ -60,6 +62,7 @@ work together for one discipline.
 reference in settings).
 
 **Examples**:
+
 - Review-disciplines bundle: harsh-critic +
   spec-zealot + code-reviewer + threat-model-critic
 - Build-discipline bundle: verify-audit +
@@ -79,11 +82,12 @@ CLAUDE.md template with role-refs ready to fill in.
 adopter's context; wire into their repo).
 
 **Examples**:
+
 - Factory-governance template: GOVERNANCE.md
   section-header template + AGENTS.md + CLAUDE.md
-  + hygiene-history + round-history structure
+  - hygiene-history + round-history structure
 - Personas template: `memory/persona/**` structure
-  + canonical agent frontmatter schema
+  - canonical agent frontmatter schema
 
 **Value prop**: adopter gets the factory's governance
 shape without recreating it.
@@ -243,7 +247,7 @@ at level N?"
 - Does NOT license Zeta-specific technology leaking
   into generic factory skills. Factory-generic
   (Frontier split per `docs/DECISIONS/2026-04-22-
-  three-repo-split-zeta-forge-ace.md`) stays
+three-repo-split-zeta-forge-ace.md`) stays
   Zeta-agnostic; adopters get the generic version.
 - Does NOT require running Zeta itself. Adopters at
   levels 0-4 don't need Zeta-the-library at all;
@@ -255,7 +259,7 @@ at level N?"
 
 ## Direct Aaron quote to preserve
 
-> *"backlog progressive adoption, so a new person /
+> _"backlog progressive adoption, so a new person /
 > company insterest can adapot the absoulte smallest
 > piece first (maybe a plugin to their harness?) then
 > progressivly and very easily start to take advante
@@ -264,7 +268,7 @@ at level N?"
 > the entire setups we have he being one of the
 > largest template setup, requires all the layers
 > and compositions but composed of smaller and
-> smaller hierarchy. backlog"*
+> smaller hierarchy. backlog"_
 
 Future Otto: when designing a new skill, agent,
 tool, memory, or workflow, ask: "what staircase

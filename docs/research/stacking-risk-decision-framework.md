@@ -30,21 +30,21 @@ Every agent action requires both:
    authorization?
 
 Gray-zone on either layer is handled via the gray-zone-judgment
-discipline (the factory's default posture is *agent decides,
-records, proceeds*, not *agent asks every time*).
+discipline (the factory's default posture is _agent decides,
+records, proceeds_, not _agent asks every time_).
 
 ## The stacking overlay
 
 Stacking-risk is an overlay on the two-layer model, not a
 replacement. When the action implicates multiple ambiguity
-sources, the *interaction* between them can exceed what any
+sources, the _interaction_ between them can exceed what any
 single source would imply:
 
-| Layer              | Example                                                    | Alone       |
-| ------------------ | ---------------------------------------------------------- | ----------- |
-| ToS-clause         | Automated access gray-area against provider's terms        | Manageable  |
-| Content-sensitivity| Politically-hot / jurisdiction-dependent archive contents  | Manageable  |
-| Copyright-scope    | Items with unverifiable per-file license provenance        | Manageable  |
+| Layer               | Example                                                   | Alone      |
+| ------------------- | --------------------------------------------------------- | ---------- |
+| ToS-clause          | Automated access gray-area against provider's terms       | Manageable |
+| Content-sensitivity | Politically-hot / jurisdiction-dependent archive contents | Manageable |
+| Copyright-scope     | Items with unverifiable per-file license provenance       | Manageable |
 
 **Each row alone is manageable with the gray-zone discipline.
 All three together is not**, because:
@@ -68,8 +68,8 @@ All three together is not**, because:
 ## The decision rule
 
 **When ≥ 3 layers of ambiguity compound on the same action,
-the agent's default flips from *decide and proceed* to
-*decline and propose clean-substrate alternative*.**
+the agent's default flips from _decide and proceed_ to
+_decline and propose clean-substrate alternative_.**
 
 This is a targeted exception to the gray-zone default posture,
 not a reversion to ask-every-time. Two-layer gray stays in the
@@ -77,7 +77,7 @@ agent's judgment zone; three-layer-stacked gray triggers the
 stacking-risk exception.
 
 **Clean-substrate pattern.** When stacking-risk fires, look
-for an *alternative substrate* that dissolves one or more of
+for an _alternative substrate_ that dissolves one or more of
 the risk layers:
 
 - ToS-layer risk → route through owned-hardware (no third-
@@ -98,14 +98,14 @@ is in-scope).
 The five explicit escalation triggers for ask-first stay
 load-bearing (irreversibility, shared-state-visible, axiom-
 layer-scope, budget-significant, novel-failure-class). Stacking-
-risk is a *sixth* trigger class, specific to compound gray.
+risk is a _sixth_ trigger class, specific to compound gray.
 
 ## Current instances
 
-| Instance           | Date       | Layers stacked                                    | Resolution                     |
-| ------------------ | ---------- | ------------------------------------------------- | ------------------------------ |
-| ROM-torrent offer  | 2026-04-22 | Policy-layer (copyright) + content (commercial)   | Decline + redirect to Chronovisor research |
-| IceDrive + pCloud  | 2026-04-22 | ToS + content-sensitivity + copyright-scope       | Propose RAID-clean-substrate + maintainer override widened gray zone |
+| Instance          | Date       | Layers stacked                                  | Resolution                                                           |
+| ----------------- | ---------- | ----------------------------------------------- | -------------------------------------------------------------------- |
+| ROM-torrent offer | 2026-04-22 | Policy-layer (copyright) + content (commercial) | Decline + redirect to Chronovisor research                           |
+| IceDrive + pCloud | 2026-04-22 | ToS + content-sensitivity + copyright-scope     | Propose RAID-clean-substrate + maintainer override widened gray zone |
 
 The IceDrive/pCloud case had all three stacked; the ROM case
 had two stacked but the policy-layer was enough alone (third-
@@ -170,7 +170,7 @@ Until then: this doc is the canonical record.
 ## What this is NOT
 
 - **NOT a reversal of the gray-zone-agent-judgment default.**
-  The default posture (*decide, record, proceed* on gray-alone)
+  The default posture (_decide, record, proceed_ on gray-alone)
   stays. Stacking-risk is a narrow exception for ≥ 3 layers
   compounding.
 - **NOT a license to over-count layers.** "ToS-gray" plus

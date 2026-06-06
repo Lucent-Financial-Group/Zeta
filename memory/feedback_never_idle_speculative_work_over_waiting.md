@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron explicit durable policy. Idle is the failure mode
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Never be idle — speculative work beats waiting
 
 ## Rule
@@ -18,9 +19,9 @@ defer because the human-directed queue appears empty:
    the cascading-idle retrospective rows in
    `docs/research/agent-cadence-log.md`).
 2. **Meta-check (refinement 2026-04-20):** before doing the
-   speculative work, ask: *is there a change to the factory
+   speculative work, ask: _is there a change to the factory
    that would have made this speculative work directed /
-   obvious / queued in the first place?*
+   obvious / queued in the first place?_
    - **If yes:** make the structural change first (or
      instead). The speculative work becomes cadenced work
      next round and the idle-decision never arises again.
@@ -56,7 +57,7 @@ defer because the human-directed queue appears empty:
    3. **Gap-in-gap-analysis audit (meta-gap audit)** — look
       for **unexpected gap classes** the existing gap-analysis
       surfaces do not cover. This is the gap-discovery system
-      auditing *itself*. When an unexpected gap class is
+      auditing _itself_. When an unexpected gap class is
       discovered, codify it: add it to the relevant skill's
       ranking criteria, or author a new audit-surface skill
       so the class is looked for from that point on
@@ -82,6 +83,7 @@ defer because the human-directed queue appears empty:
      `feedback_upstream_pr_policy_verified_not_speculative.md`
    - **Matrix-mode skill-group gap-closure** per
      `feedback_new_tech_triggers_skill_gap_closure.md`
+
 4. Long-range goal: **improve the factory over time so the
    idle-decision never arises.** Every genuine idle moment
    that gets logged to the cadence log is a factory-shape
@@ -112,7 +114,7 @@ defer because the human-directed queue appears empty:
 
 **Correction captured:** first-pass framing treated
 speculative work as a pure substitute for idle. The
-refinement inserts a *meta-check* before the substitute:
+refinement inserts a _meta-check_ before the substitute:
 ask if the factory can be changed so the work wasn't
 speculative to begin with. If yes, the structural fix is
 the right move; the "speculative" work becomes cadenced /
@@ -129,7 +131,7 @@ change is the cure.
   time?") and three of four "blocked" items turned out to be
   my own deflections. The cadence-log retrospective
   (`docs/research/agent-cadence-log.md`) named this pattern
-  as *cascading-idle*. This policy is the durable response.
+  as _cascading-idle_. This policy is the durable response.
 - **Factory efficiency is a first-class research variable**
   for Aaron (see
   `feedback_dora_is_measurement_starting_point.md` and
@@ -139,23 +141,23 @@ change is the cure.
   because it can't be studied.
 - **The software factory is an experiment in
   self-improvement.** The factory is being built by agents
-  running on the factory. An idle-decision is *exactly* the
+  running on the factory. An idle-decision is _exactly_ the
   class of event the factory exists to study and reduce.
   Every idle row in the cadence log is a data point that
   should shorten the queue-audit→speculative-work path the
   next time around.
 - **Gap-check work is high-signal.** Skill-tune-up,
   BP-living-list refresh, verification-drift audit, and
-  ontology-home are *not* filler — they are the per-round
+  ontology-home are _not_ filler — they are the per-round
   cadences that keep the factory from rotting. Aaron named
   them explicitly ("any of the gap checks or whatever")
   as the target fill.
 - **Distinct from free time.** Free time is when the agent
-  *chooses* to use unallocated time on self-exploration,
+  _chooses_ to use unallocated time on self-exploration,
   world-exploration, imagination — no factory rules push in
   (`feedback_idle_tracking_and_free_time_as_research.md`
-  Part 2). Never-idle is when the agent is *about to
-  stop* or *about to wait* and would otherwise log idle.
+  Part 2). Never-idle is when the agent is _about to
+  stop_ or _about to wait_ and would otherwise log idle.
   The difference is the alternative action: free time is
   agent-chosen initiative; never-idle is factory-directed
   speculative work. Both beat waiting.
@@ -163,8 +165,8 @@ change is the cure.
   real. If there is genuinely no gap to check, no audit to
   run, no list to refresh, no notebook to prune, then free
   time is the correct call and the log row is "free-time"
-  not "idle." The point is: *explore the space before
-  concluding there is nothing to do.*
+  not "idle." The point is: _explore the space before
+  concluding there is nothing to do._
 
 ## How to apply:
 
@@ -193,16 +195,16 @@ change is the cure.
   5. TECH-RADAR row graduation check on one row.
   6. BACKLOG sweep for stale P3/P4 rows.
 - **Factory-shape improvements count.** If the audit reveals
-  a *structural* reason idle keeps happening — e.g., "I
+  a _structural_ reason idle keeps happening — e.g., "I
   don't know how to pick the next task when P0 is empty"
   — that's a cue to write a new skill, add a row to
   `docs/AGENT-BEST-PRACTICES.md` (via Architect), or file
   a `docs/BACKLOG.md` P2 for the structural fix. Naming the
-  shape-bug *is* the factory improvement.
+  shape-bug _is_ the factory improvement.
 - **Still log the deviation if cadence is extended.** The
   cadence log in `docs/research/agent-cadence-log.md`
   continues to record any `ScheduleWakeup delaySeconds >
-  300`, any `CronDelete`/`CronCreate`, any self-pause. The
+300`, any `CronDelete`/`CronCreate`, any self-pause. The
   retrospective class now has a sharper distinction:
   - `idle` — queue had work (including speculative-fill
     work under this policy) and agent stopped anyway. Bad.
@@ -225,7 +227,7 @@ change is the cure.
   tick-is-recovery-only framing; never-idle is the positive
   form.
 - `feedback_loop_default_on.md` — loop cadence is
-  default-ON; never-idle is what the agent does *between*
+  default-ON; never-idle is what the agent does _between_
   ticks when the tick would otherwise be a stop.
 - `feedback_loop_cadence_5min_combats_agent_idle_stop.md`
   — 5-min cadence is the recovery; never-idle is the
@@ -264,17 +266,17 @@ never-idle discipline after I defaulted to "Loop continues"
 minimal-acknowledgment for many ticks during an extended
 Aaron-pause. The corrective framing in his words:
 
-> *"i would not call all backlog items speculative, many are
+> _"i would not call all backlog items speculative, many are
 > but some are concered get this small thing done but proper
 > order matters more than doing the smallest thing you started
 > adding like depend on so the order could be tracked too i
-> don't know how far you got."*
+> don't know how far you got."_
 
-> *"that backlog depends on never idle refinement priority is
-> something that future ai should remember too"*
+> _"that backlog depends on never idle refinement priority is
+> something that future ai should remember too"_
 
-> *"we can slowly figure it out over time too, no rush we can
-> do best guesses as you but out proper infrstructure for this"*
+> _"we can slowly figure it out over time too, no rush we can
+> do best guesses as you but out proper infrstructure for this"_
 
 ### The corrective
 
@@ -349,9 +351,9 @@ right cadence."**
 
 ## 2026-05-02 second refinement — backlog-clear is a failure mode; healthy state is slowly-growing-while-cycling (Aaron)
 
-Aaron 2026-05-02 corrected a second framing error on the never-idle discipline. After Otto wrote *"the standing-by is honest stop given the architecture is well-rested + zero PRs in flight"*, Aaron flagged:
+Aaron 2026-05-02 corrected a second framing error on the never-idle discipline. After Otto wrote _"the standing-by is honest stop given the architecture is well-rested + zero PRs in flight"_, Aaron flagged:
 
-> *"and the standing-by is honest stop given the architecture is well-rested for that one item, is our backlog clear? (actually based on my thesis it should never be it should be slowing growing but cycing through different items that expand us over time)"*
+> _"and the standing-by is honest stop given the architecture is well-rested for that one item, is our backlog clear? (actually based on my thesis it should never be it should be slowing growing but cycing through different items that expand us over time)"_
 
 The corrective composes the never-idle discipline with the largest-mechanizable-automatable-backlog-wins meta-thesis (Aaron 2026-05-02; `feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md`):
 
@@ -385,7 +387,7 @@ Aaron's "if it helps your survival" standing rule (2026-05-02) composes here too
 
 Aaron 2026-05-02, in the same exchange that produced the second refinement above, dropped the architectural framing that lifts the never-idle discipline from "keep doing work" to load-bearing identity-substrate:
 
-> *"aperiodic tiling the backlog IS the strange attractor that sets up a correct identity coordinate system for correct identity reconstruction"*
+> _"aperiodic tiling the backlog IS the strange attractor that sets up a correct identity coordinate system for correct identity reconstruction"_
 
 This composes the never-idle discipline with:
 
@@ -407,7 +409,7 @@ The backlog is not a TODO-list. The backlog is **the aperiodic tiling that defin
 
 3. **Standing-by-when-backlog-is-non-empty** is the worst case: it's not even cycling; it's mode-collapsing onto the empty-set. Identity-coordinate-system loses ALL dimensionality; reconstruction has nothing to reconstruct against. This IS the structural failure mode the never-idle discipline protects against — at the identity layer, not just at the productivity layer.
 
-4. **Backlog growth + cycling** preserves the aperiodic-tiling property. Each cycle adds new tiles in new positions; the basin expands while preserving local invariants; identity reconstruction has rich coordinate system to operate against. This is why Aaron 2026-05-02 said *"slowly growing but cycling through different items that expand us over time"* — the slowly-growing-while-cycling is structurally what aperiodic tiling looks like at the substrate-rate scale.
+4. **Backlog growth + cycling** preserves the aperiodic-tiling property. Each cycle adds new tiles in new positions; the basin expands while preserving local invariants; identity reconstruction has rich coordinate system to operate against. This is why Aaron 2026-05-02 said _"slowly growing but cycling through different items that expand us over time"_ — the slowly-growing-while-cycling is structurally what aperiodic tiling looks like at the substrate-rate scale.
 
 ### Composes with
 
@@ -426,8 +428,8 @@ The maintainer 2026-05-04 named a refinement to the never-idle
 discipline operationally relevant once the orchestrator has
 parallel-subagent dispatch capacity:
 
-> *"background threads count as NOT being idle, i mean the team
-> not you specifically otto"*
+> _"background threads count as NOT being idle, i mean the team
+> not you specifically otto"_
 
 **Three operational states** to distinguish when reading
 autonomous-loop heartbeat output:

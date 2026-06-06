@@ -4,11 +4,13 @@ description: On-disk folder names under the repo root go bare (Core, Bayesian, T
 type: feedback
 originSessionId: 2ac0e518-3eeb-45c2-a5dc-da0e168fe9c4
 ---
+
 Inside a repo, on-disk folder paths do NOT repeat the
 project name. The repo IS the project; naming every subfolder
 after the project is redundant and reads as a junior mistake.
 
 **Bare folder names** (correct):
+
 ```
 Zeta/
 ├── src/

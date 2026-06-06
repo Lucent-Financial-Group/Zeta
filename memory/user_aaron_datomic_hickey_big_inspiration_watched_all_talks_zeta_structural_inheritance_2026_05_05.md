@@ -11,9 +11,9 @@ type: user
 Aaron 2026-05-05, in response to a Claude.ai conversation that
 mapped Hickey-talk fingerprints onto the Zeta architecture:
 
-> *"Datomic and hicky was a big inspiration glad you niticed i've
+> _"Datomic and hicky was a big inspiration glad you niticed i've
 > watched all his talks. and i think that completey the mecnized
-> backlog pretty well"*
+> backlog pretty well"_
 
 ## Why this matters as user-substrate
 
@@ -30,14 +30,14 @@ explicitly rather than pretending the choices are de-novo).
 
 ## The mapping (preserved in PR #1600 research-doc)
 
-| Hickey talk | Zeta property |
-|---|---|
-| "The Value of Values" | Topological-invariants-over-geometry; deformation classes are values; geometric instances are computed views |
-| "Are We There Yet?" | Time-as-first-class; logical clocks; point-in-time queries; deterministic replay |
-| "Simple Made Easy" | Properties-from-representation; smooth-by-design enables adversarial robustness; complect-vs-compose discipline |
-| "Maybe Not" / Clojure spec | Specs-over-implementation; OpenSpec is source of truth predates Zeta substrate (Aaron 2026-05-05: *"opnespec is source of truth"* was first sentence) |
-| "Hammock Driven Development" | Cron-substrate-continuity + autonomous-loop ticks operationalize hammock thinking with substrate persistence |
-| "Effective Programs" | Immutable-facts shape from Datomic = DBSP retraction-native baseline |
+| Hickey talk                  | Zeta property                                                                                                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "The Value of Values"        | Topological-invariants-over-geometry; deformation classes are values; geometric instances are computed views                                          |
+| "Are We There Yet?"          | Time-as-first-class; logical clocks; point-in-time queries; deterministic replay                                                                      |
+| "Simple Made Easy"           | Properties-from-representation; smooth-by-design enables adversarial robustness; complect-vs-compose discipline                                       |
+| "Maybe Not" / Clojure spec   | Specs-over-implementation; OpenSpec is source of truth predates Zeta substrate (Aaron 2026-05-05: _"opnespec is source of truth"_ was first sentence) |
+| "Hammock Driven Development" | Cron-substrate-continuity + autonomous-loop ticks operationalize hammock thinking with substrate persistence                                          |
+| "Effective Programs"         | Immutable-facts shape from Datomic = DBSP retraction-native baseline                                                                                  |
 
 ## How to apply
 

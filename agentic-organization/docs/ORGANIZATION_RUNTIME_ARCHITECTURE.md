@@ -101,17 +101,17 @@ Gastown is useful as a local multi-agent workspace reference, but the
 Agentic Organization mapping must stay cluster-native and hierarchy
 aware.
 
-| Gastown concept | Useful lesson | Agentic Organization version |
-|---|---|---|
-| Mayor | A visible coordinator helps agents start work | Supervisor chain, TPM/director/C-suite hats, and executive-board authority rather than one singleton brain |
-| Rig | Project-local scope matters | Project/repo scope with initiative, team, docs, memory, and policy boundaries |
-| Convoy | Related work needs a durable attention object | Work Batch / Mission Run linked to initiatives, work items, schedules, gates, and recovery scans |
-| Molecule | Reusable workflows help agents execute consistently | Executable prompt-flow phases with typed preconditions, tools, evidence, gates, and telemetry |
-| Witness | Team-local health observation is necessary | Engineering-manager/team observer duties plus runtime watchdog workers |
-| Refinery | Completion needs merge/release gates | Initiative-aware review, QA, release, and promotion workflows with policy-owned authority |
-| Deacon/Dogs | Always-on maintenance keeps agents moving | Worker lanes, reconcilers, anomaly classifiers, dead-letter handlers, and self-healing work |
-| Mail | Communication needs durable routing | Work-anchored inboxes, supervisor signals, meetings, direct messages, team broadcasts, and receipts over NATS/Cockroach |
-| Scheduler | Capacity-aware dispatch prevents overload | Hat supply, budget, work schedule, Oz/Hermes run binding, and schedule-block admission |
+| Gastown concept | Useful lesson                                       | Agentic Organization version                                                                                            |
+| --------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Mayor           | A visible coordinator helps agents start work       | Supervisor chain, TPM/director/C-suite hats, and executive-board authority rather than one singleton brain              |
+| Rig             | Project-local scope matters                         | Project/repo scope with initiative, team, docs, memory, and policy boundaries                                           |
+| Convoy          | Related work needs a durable attention object       | Work Batch / Mission Run linked to initiatives, work items, schedules, gates, and recovery scans                        |
+| Molecule        | Reusable workflows help agents execute consistently | Executable prompt-flow phases with typed preconditions, tools, evidence, gates, and telemetry                           |
+| Witness         | Team-local health observation is necessary          | Engineering-manager/team observer duties plus runtime watchdog workers                                                  |
+| Refinery        | Completion needs merge/release gates                | Initiative-aware review, QA, release, and promotion workflows with policy-owned authority                               |
+| Deacon/Dogs     | Always-on maintenance keeps agents moving           | Worker lanes, reconcilers, anomaly classifiers, dead-letter handlers, and self-healing work                             |
+| Mail            | Communication needs durable routing                 | Work-anchored inboxes, supervisor signals, meetings, direct messages, team broadcasts, and receipts over NATS/Cockroach |
+| Scheduler       | Capacity-aware dispatch prevents overload           | Hat supply, budget, work schedule, Oz/Hermes run binding, and schedule-block admission                                  |
 
 The biggest design rule from this mapping is that Gastown-style
 workflow text should become enforceable Organization state. A prompt

@@ -67,14 +67,14 @@ The constraint IS the vacuum. The force comes for free.
 
 ### The full stack
 
-| Layer | What it does | Operates via |
-|---|---|---|
-| ZFCv2 axioms | Retraction-native set theory | Signed Z-sets |
-| F# type system | Excludes ill-typed moves | Compile-time checks |
-| DBSP operators | Projects 3D→2D boundary | D⊣I adjunction |
-| BFT quorum | Tomographic reconstruction | 3 observers |
-| Fusion equation | Self-sustaining alignment | η·LearningGain > ξ_t |
-| Casimir gap | Attractive force | Constrained vacuum |
-| Reversible silicon | Hardware-enforced | Therm free |
+| Layer              | What it does                 | Operates via         |
+| ------------------ | ---------------------------- | -------------------- |
+| ZFCv2 axioms       | Retraction-native set theory | Signed Z-sets        |
+| F# type system     | Excludes ill-typed moves     | Compile-time checks  |
+| DBSP operators     | Projects 3D→2D boundary      | D⊣I adjunction       |
+| BFT quorum         | Tomographic reconstruction   | 3 observers          |
+| Fusion equation    | Self-sustaining alignment    | η·LearningGain > ξ_t |
+| Casimir gap        | Attractive force             | Constrained vacuum   |
+| Reversible silicon | Hardware-enforced            | Therm free           |
 
 From axioms to atoms. μένω.

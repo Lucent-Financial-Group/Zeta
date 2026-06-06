@@ -43,17 +43,17 @@ Existing rows (not children, compose):
 
 ### Child row map
 
-| Child | Step | Title | Priority | Depends on | Effort |
-|-------|------|-------|----------|------------|--------|
-| B-0330 | 2 | Memory-format standardization | P1 | — | S |
-| B-0331 | 3 | Memory ontology/classification audit | P1 | B-0330 | M |
-| B-0332 | 7 | Load-bearing-vs-decorative classifier | P1 | — | S |
-| B-0333 | 5 | Memory-retire/supersession discipline | P1 | B-0332 | S |
-| B-0334 | 6 | Cross-reference integrity enforcement | P1 | B-0330 | S |
-| B-0335 | 11 | Memory schema validation tooling | P1 | B-0330 | M |
-| B-0336 | AC-3 | B-0006 acceptance recalibration | P1 | B-0332 | S |
-| B-0337 | 8 | Trust-calculus calibration | P2 | B-0332 | M |
-| B-0338 | 9 | Memory graduation ladder | P2 | B-0330, B-0332, B-0333 | M |
+| Child  | Step | Title                                 | Priority | Depends on             | Effort |
+| ------ | ---- | ------------------------------------- | -------- | ---------------------- | ------ |
+| B-0330 | 2    | Memory-format standardization         | P1       | —                      | S      |
+| B-0331 | 3    | Memory ontology/classification audit  | P1       | B-0330                 | M      |
+| B-0332 | 7    | Load-bearing-vs-decorative classifier | P1       | —                      | S      |
+| B-0333 | 5    | Memory-retire/supersession discipline | P1       | B-0332                 | S      |
+| B-0334 | 6    | Cross-reference integrity enforcement | P1       | B-0330                 | S      |
+| B-0335 | 11   | Memory schema validation tooling      | P1       | B-0330                 | M      |
+| B-0336 | AC-3 | B-0006 acceptance recalibration       | P1       | B-0332                 | S      |
+| B-0337 | 8    | Trust-calculus calibration            | P2       | B-0332                 | M      |
+| B-0338 | 9    | Memory graduation ladder              | P2       | B-0330, B-0332, B-0333 | M      |
 
 ### Buildable now (no deps)
 
@@ -64,11 +64,11 @@ Existing rows (not children, compose):
 
 Aaron 2026-05-04, after watching the day's tier-cadence drain MEMORY.md from ~268KB to ~139KB across 60+ PRs:
 
-> *"seems like your memory work needs a trajectory i don't think we have one for that"*
+> _"seems like your memory work needs a trajectory i don't think we have one for that"_
 
 Same-tick framing-correction:
 
-> *"just remember long horizon is our default and so should future agents remember and short horizon short cuts should be deliberate and not accidentally based on the middle path"*
+> _"just remember long horizon is our default and so should future agents remember and short horizon short cuts should be deliberate and not accidentally based on the middle path"_
 
 The naming made operational: memory work has been tactical / one-shot (drain the next tier) for the entire 2026-05-04 session despite the maintainer's never-be-idle authorization. The other domains have trajectory chains (DBSP B-0131→B-0138, TS B-0140+B-0156+B-0125, OpenSpec B-0171+composes_with cluster). Memory has only B-0006 and no multi-step strategic plan.
 
@@ -128,7 +128,7 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 
 ### Step 9 — Memory-as-substrate-engineering meta-discipline (NEW)
 
-- Memory work IS substrate engineering. Codify the discipline: when do you write a new memory file vs append to an existing one? When does a feedback_ get promoted to a CLAUDE.md bullet? When is a CLAUDE.md bullet itself promoted to GOVERNANCE? The graduation ladder needs structure.
+- Memory work IS substrate engineering. Codify the discipline: when do you write a new memory file vs append to an existing one? When does a feedback\_ get promoted to a CLAUDE.md bullet? When is a CLAUDE.md bullet itself promoted to GOVERNANCE? The graduation ladder needs structure.
 
 ### Step 10 — MEMORY.md marker-vs-index (existing — B-0066)
 
@@ -142,7 +142,7 @@ These are candidate sub-rows that should exist for memory work to be a planned d
 
 - **Foundation tier**: memory is the most-active substrate domain (every session does memory work) yet has no trajectory; pure tactical work compounds accidental complexity.
 - **Same priority as B-0140 (TS migration completion) and B-0171 (OpenSpec catch-up)**: all three are foundation-tier substrate-organization work.
-- **Aaron's verbatim P1 naming**: *"seems like your memory work needs a trajectory"* + *"long horizon is our default."*
+- **Aaron's verbatim P1 naming**: _"seems like your memory work needs a trajectory"_ + _"long horizon is our default."_
 
 ## Why not P0
 

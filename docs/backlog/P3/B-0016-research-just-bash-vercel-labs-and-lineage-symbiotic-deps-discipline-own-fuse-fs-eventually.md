@@ -9,7 +9,11 @@ ask: Aaron 2026-04-25 ("just backlog this")
 created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md, feedback_otto_301_no_software_dependencies_hardware_bootstrap_no_os_we_are_microkernel_super_long_term_decision_resolution_anchor_2026_04_25.md]
+composes_with:
+  [
+    feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md,
+    feedback_otto_301_no_software_dependencies_hardware_bootstrap_no_os_we_are_microkernel_super_long_term_decision_resolution_anchor_2026_04_25.md,
+  ]
 tags: [research, filesystem, fuse, sandboxing, just-bash, agent-execution, fs-substrate]
 type: feature
 ---
@@ -24,16 +28,16 @@ NOT an industry-interface like SQL. It's a sandbox-execution-environment (simila
 
 ## Lineage / siblings to study
 
-| Project | Language | What it adds |
-|---------|----------|--------------|
-| just-bash | TypeScript | Core sandbox + in-memory VFS |
-| bash-tool | TypeScript | FS-context retrieval, Vercel AI SDK bridge |
-| wterm/just-bash | Zig | In-browser Bash via just-bash engine |
-| ArchilFs | TS+S3 | S3-as-POSIX mount through just-bash |
-| ChromaFs | TS+vector | Vector-DB-as-FS (FS calls → Chroma queries) |
-| gbash | Go | Deterministic JSON-RPC sandbox, mvdan/sh delegation |
-| bashkit | TS | Virtual Bash interpreter, recursive descent, 75+ commands |
-| Utah | .shx → Bash | TypeScript-like syntax transpiling to clean Bash |
+| Project         | Language    | What it adds                                              |
+| --------------- | ----------- | --------------------------------------------------------- |
+| just-bash       | TypeScript  | Core sandbox + in-memory VFS                              |
+| bash-tool       | TypeScript  | FS-context retrieval, Vercel AI SDK bridge                |
+| wterm/just-bash | Zig         | In-browser Bash via just-bash engine                      |
+| ArchilFs        | TS+S3       | S3-as-POSIX mount through just-bash                       |
+| ChromaFs        | TS+vector   | Vector-DB-as-FS (FS calls → Chroma queries)               |
+| gbash           | Go          | Deterministic JSON-RPC sandbox, mvdan/sh delegation       |
+| bashkit         | TS          | Virtual Bash interpreter, recursive descent, 75+ commands |
+| Utah            | .shx → Bash | TypeScript-like syntax transpiling to clean Bash          |
 
 ## What we absorb (per Otto-323 symbiotic-deps discipline)
 

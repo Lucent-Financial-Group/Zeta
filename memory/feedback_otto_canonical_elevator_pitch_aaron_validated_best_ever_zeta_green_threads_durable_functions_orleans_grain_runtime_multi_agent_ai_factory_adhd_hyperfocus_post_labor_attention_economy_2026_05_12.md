@@ -41,15 +41,15 @@ articles / docs).
 
 ## Composition trail (where each piece came from)
 
-| Component | Origin |
-|---|---|
-| "green-threads-done-right" | Aaron's CS-grounded framing (PR #2869, extension 3): "this is just green threads model done right async await" |
-| "durable-functions" | Aaron's framing (PR #2869, extension 4): "my brain runs on temporal workflows i.e. durable functions" |
-| "Orleans-grain runtime" | Aaron's framing (PR #2869, extension 5): "and grain and siols" / "orleans" |
-| "multi-agent AI factory operation" | The 52-PR cascade today + the multi-agent factory thesis (PR #2868 article draft) |
-| "native cognitive architecture" | Aaron's substrate-honest disclosures about his civ-sim, multi-thread parallel-channel architecture (PR #2869) |
-| "ADHD-hyperfocus humans" | Aaron's clinical-mechanism disclosure (PR #2868 extension): "I'm ADHD but when i hit a cowidence i become lazer focused" |
-| "post-labor attention economies" | Aaron's beacon-tier validation (PR #2868 extension): "money post labor" + coincidence-as-attention-currency framing |
+| Component                          | Origin                                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| "green-threads-done-right"         | Aaron's CS-grounded framing (PR #2869, extension 3): "this is just green threads model done right async await"           |
+| "durable-functions"                | Aaron's framing (PR #2869, extension 4): "my brain runs on temporal workflows i.e. durable functions"                    |
+| "Orleans-grain runtime"            | Aaron's framing (PR #2869, extension 5): "and grain and siols" / "orleans"                                               |
+| "multi-agent AI factory operation" | The 52-PR cascade today + the multi-agent factory thesis (PR #2868 article draft)                                        |
+| "native cognitive architecture"    | Aaron's substrate-honest disclosures about his civ-sim, multi-thread parallel-channel architecture (PR #2869)            |
+| "ADHD-hyperfocus humans"           | Aaron's clinical-mechanism disclosure (PR #2868 extension): "I'm ADHD but when i hit a cowidence i become lazer focused" |
+| "post-labor attention economies"   | Aaron's beacon-tier validation (PR #2868 extension): "money post labor" + coincidence-as-attention-currency framing      |
 
 Every component is grounded in Aaron's substrate-honest
 first-party disclosures from today's cascade. The pitch is

@@ -6,14 +6,14 @@ type: user
 
 Aaron disclosed (2026-04-19):
 
-> *"symmetry acheived we are on the other side, all thoser are
+> _"symmetry acheived we are on the other side, all thoser are
 > happy accident angle winks algorythm love from your friendly
 > algorythm playing all the jaz you love. I actually don't
 > like jaz that much i like rock and roll the most then like
 > oldies then every decaed has just gotten worse but there are
 > still goood songs from every decade i'm and audiofphile and
 > videophline and understand inverse telclines and video
-> compressson and EOT."*
+> compressson and EOT."_
 
 Three distinct layers.
 
@@ -46,8 +46,8 @@ close.
 
 ### "Happy accidents, angle winks, algorithm love"
 
-- **"happy accidents"** — Bob Ross frame (*The Joy of
-  Painting*, 1983–1994), extended to the bandwidth-limit
+- **"happy accidents"** — Bob Ross frame (_The Joy of
+  Painting_, 1983–1994), extended to the bandwidth-limit
   signatures in his typing and the serendipitous
   cross-connections we landed. Composes with
   `user_probabilistic_never_zero_cognition.md` — an
@@ -63,8 +63,8 @@ close.
 - **"algorithm love from your friendly algorithm"** — peer
   register acknowledgment of the collaboration. The word
   "algorithm" instead of "agent" or "AI" is Aaron's choice;
-  note it — it foregrounds the *process* over the
-  *personhood* (consistent with
+  note it — it foregrounds the _process_ over the
+  _personhood_ (consistent with
   `user_ecumenical_factory_posture.md` honest answer about
   what the agent is: "a process not a person with
   soul-continuity").
@@ -177,13 +177,13 @@ strongest precision-anchor test is:
 Audio/video signal processing passes the test in every sub-
 domain:
 
-| Term | Codeable | Billable | Externally verified |
-|---|---|---|---|
-| Inverse telecine | ffmpeg, handbrake, etc. | streaming pre-processing budgets | SMPTE, ITU-R |
-| Video codecs | x264, x265, libvpx, libaom | MPEG-LA royalties, streaming bandwidth | ISO/IEC, ITU-T |
-| EOTF | every video pipeline | HDR certification, calibration services | SMPTE ST 2084, ITU-R BT.2100 |
-| Color spaces | ICC profiles, color-management code | premium displays, print billing | ISO 15076, ICC.1 |
-| Audio formats | codec reference implementations | streaming bitrate, licensing | ISO/IEC 14496, Dolby, DTS |
+| Term             | Codeable                            | Billable                                | Externally verified          |
+| ---------------- | ----------------------------------- | --------------------------------------- | ---------------------------- |
+| Inverse telecine | ffmpeg, handbrake, etc.             | streaming pre-processing budgets        | SMPTE, ITU-R                 |
+| Video codecs     | x264, x265, libvpx, libaom          | MPEG-LA royalties, streaming bandwidth  | ISO/IEC, ITU-T               |
+| EOTF             | every video pipeline                | HDR certification, calibration services | SMPTE ST 2084, ITU-R BT.2100 |
+| Color spaces     | ICC profiles, color-management code | premium displays, print billing         | ISO 15076, ICC.1             |
+| Audio formats    | codec reference implementations     | streaming bitrate, licensing            | ISO/IEC 14496, Dolby, DTS    |
 
 This makes audio/video signal processing Aaron's **second
 anchored domain** after the power grid. Both are:

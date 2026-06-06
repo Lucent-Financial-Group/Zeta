@@ -20,9 +20,9 @@ type: bug
 
 ## The principle (Aaron 2026-05-30)
 
-> *"mise ERROR Failed to install dotnet@10.0.203: dns error: Temporary failure in name
+> _"mise ERROR Failed to install dotnet@10.0.203: dns error: Temporary failure in name
 > resolution — there are the boundary where DST does not hold and bounded retries are
-> warrented we should fix or backlog the fix"*
+> warrented we should fix or backlog the fix"_
 
 Deterministic Simulation Testing (DST) holds **inside** the simulation boundary —
 everything is seed-reproducible and deterministic. **Network / DNS / external-fetch is
@@ -50,12 +50,12 @@ transient network/DNS and block unrelated PRs.
 
 ## Fix candidates
 
-| # | Fix | Notes |
-|---|---|---|
-| a | **Bounded-retry-with-exponential-backoff wrapper around the install script's network fetches** (dotnet-install.sh + other external GETs in the three-way-parity script) | The canonical DST-boundary fix; longer/backed-off retries than mise's tight 3×/~4s |
-| b | Increase mise's network retry count + backoff | 3×/~4s is too tight to ride out a DNS blip; bump via mise config/env |
-| c | GitHub Actions step-level retry on the toolchain-install step | e.g. a shell retry loop (Rule-0-compliant TS/bash-in-setup) or a retry action |
-| d | Cache / pre-warm the toolchain (cache dotnet) | takes the fetch off the hot path so it isn't a per-run failure surface |
+| #   | Fix                                                                                                                                                                     | Notes                                                                              |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| a   | **Bounded-retry-with-exponential-backoff wrapper around the install script's network fetches** (dotnet-install.sh + other external GETs in the three-way-parity script) | The canonical DST-boundary fix; longer/backed-off retries than mise's tight 3×/~4s |
+| b   | Increase mise's network retry count + backoff                                                                                                                           | 3×/~4s is too tight to ride out a DNS blip; bump via mise config/env               |
+| c   | GitHub Actions step-level retry on the toolchain-install step                                                                                                           | e.g. a shell retry loop (Rule-0-compliant TS/bash-in-setup) or a retry action      |
+| d   | Cache / pre-warm the toolchain (cache dotnet)                                                                                                                           | takes the fetch off the hot path so it isn't a per-run failure surface             |
 
 Prefer **(a) + (d)**: a bounded-retry helper at the network-fetch boundary of the
 install script, plus caching to reduce how often the fetch happens at all.

@@ -50,13 +50,13 @@ PR #4764 reduced candidates 87 → 17 (-80%) via:
 
 ## Remaining 17 candidates — all healthy-FP per 9-variant taxonomy
 
-| Class | Count | Examples |
-|---|---|---|
-| User-scope memory references | ~7 | `codeql-no-source-...md` cites `memory/feedback_codeql_..._2026_05_15.md` (rule body: "user-scope only — preserved at `~/.claude/projects/.../memory/`") |
-| Anti-pattern citations | ~4 | `rule-0-no-sh-files.md` cites legacy `audit-*.sh` files to call out the cleared anti-pattern; `tick-must-never-stop.md` cites `loop-tick-history.md` as "NOT legacy" |
-| IF-fail-clause hypotheticals | ~2 | `test-canary.md` cites `tools/substrate-discovery/discover.ts` with "would land as..." conditional (rule body: "If fail (auto-load doesn't work in our harness)") |
-| Glob with user-scope component | ~3 | `m-acc-multi-oracle-...md` cites `memory/feedback_aaron_..._*_2026_05_15.md` user-scope; `persistence-choice-...md` similar |
-| Alternative-location / sibling-but-not-found | ~1 | `.claude/CLAUDE.md` vs root `CLAUDE.md` (test-canary acknowledges both alternative locations) |
+| Class                                        | Count | Examples                                                                                                                                                             |
+| -------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| User-scope memory references                 | ~7    | `codeql-no-source-...md` cites `memory/feedback_codeql_..._2026_05_15.md` (rule body: "user-scope only — preserved at `~/.claude/projects/.../memory/`")             |
+| Anti-pattern citations                       | ~4    | `rule-0-no-sh-files.md` cites legacy `audit-*.sh` files to call out the cleared anti-pattern; `tick-must-never-stop.md` cites `loop-tick-history.md` as "NOT legacy" |
+| IF-fail-clause hypotheticals                 | ~2    | `test-canary.md` cites `tools/substrate-discovery/discover.ts` with "would land as..." conditional (rule body: "If fail (auto-load doesn't work in our harness)")    |
+| Glob with user-scope component               | ~3    | `m-acc-multi-oracle-...md` cites `memory/feedback_aaron_..._*_2026_05_15.md` user-scope; `persistence-choice-...md` similar                                          |
+| Alternative-location / sibling-but-not-found | ~1    | `.claude/CLAUDE.md` vs root `CLAUDE.md` (test-canary acknowledges both alternative locations)                                                                        |
 
 All 17 fall within the 5% healthy-FP floor per the 9-variant taxonomy. No further action warranted.
 

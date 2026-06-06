@@ -18,10 +18,10 @@ Current GitHub project:
 
 The cluster scaffold is split into two top-level directories:
 
-| Directory | Purpose |
-|---|---|
-| `usb-nixos-installer/` | USB-only installer bootstrap, intentionally minimal |
-| `full-ai-cluster/` | End-to-end cluster scaffold, including installer copy, NixOS host configs, k3s bootstrap, and ArgoCD applications |
+| Directory              | Purpose                                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `usb-nixos-installer/` | USB-only installer bootstrap, intentionally minimal                                                               |
+| `full-ai-cluster/`     | End-to-end cluster scaffold, including installer copy, NixOS host configs, k3s bootstrap, and ArgoCD applications |
 
 The full cluster layer includes:
 
@@ -33,28 +33,28 @@ The full cluster layer includes:
 
 Important concrete directories:
 
-| Path | Meaning |
-|---|---|
-| `full-ai-cluster/usb-nixos-installer/` | Byte-identical copy of the standalone USB installer |
-| `full-ai-cluster/flake.nix` | Cluster flake for installer, hosts, and maintainer linux-builder support |
-| `full-ai-cluster/nixos/modules/` | Host-level NixOS modules |
-| `full-ai-cluster/nixos/hosts/control-plane/` | Control-plane host config |
-| `full-ai-cluster/nixos/hosts/worker-gpu/` | GPU worker host config |
-| `full-ai-cluster/k8s/bootstrap/` | K3S first-boot manifests, applied in dependency order |
-| `full-ai-cluster/k8s/applications/` | ArgoCD-recognized platform applications |
-| `full-ai-cluster/k8s/applications/hat-system/` | Cluster-native hat CRDs, OPA policies, seed hats, graph tooling, and operator implementations |
-| `full-ai-cluster/k8s/applications/hat-system/crds/` | Canonical Hat, HatBinding, HatSwap, and HatPolicy schemas |
-| `full-ai-cluster/k8s/applications/hat-system/operator/` | Go reference operator scaffold and reliability baseline |
-| `full-ai-cluster/k8s/applications/hat-system/operator-ts/` | Future TypeScript operator implementation, if/when parity work starts |
+| Path                                                       | Meaning                                                                                       |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `full-ai-cluster/usb-nixos-installer/`                     | Byte-identical copy of the standalone USB installer                                           |
+| `full-ai-cluster/flake.nix`                                | Cluster flake for installer, hosts, and maintainer linux-builder support                      |
+| `full-ai-cluster/nixos/modules/`                           | Host-level NixOS modules                                                                      |
+| `full-ai-cluster/nixos/hosts/control-plane/`               | Control-plane host config                                                                     |
+| `full-ai-cluster/nixos/hosts/worker-gpu/`                  | GPU worker host config                                                                        |
+| `full-ai-cluster/k8s/bootstrap/`                           | K3S first-boot manifests, applied in dependency order                                         |
+| `full-ai-cluster/k8s/applications/`                        | ArgoCD-recognized platform applications                                                       |
+| `full-ai-cluster/k8s/applications/hat-system/`             | Cluster-native hat CRDs, OPA policies, seed hats, graph tooling, and operator implementations |
+| `full-ai-cluster/k8s/applications/hat-system/crds/`        | Canonical Hat, HatBinding, HatSwap, and HatPolicy schemas                                     |
+| `full-ai-cluster/k8s/applications/hat-system/operator/`    | Go reference operator scaffold and reliability baseline                                       |
+| `full-ai-cluster/k8s/applications/hat-system/operator-ts/` | Future TypeScript operator implementation, if/when parity work starts                         |
 
 ## OS and Cluster Responsibilities
 
-| Layer | Owns |
-|---|---|
-| NixOS host layer | k3s, Docker/rootless Docker posture, local storage, GPU drivers/toolkit/passthrough/device plugin support |
-| k3s bootstrap layer | first-boot installation of Cilium, security substrate, ArgoCD, and root app |
-| ArgoCD layer | ongoing reconciliation of platform applications |
-| Organization layer | work, hats, tasks, assignments, approvals, signals, runs, memory attribution, and evidence |
+| Layer               | Owns                                                                                                      |
+| ------------------- | --------------------------------------------------------------------------------------------------------- |
+| NixOS host layer    | k3s, Docker/rootless Docker posture, local storage, GPU drivers/toolkit/passthrough/device plugin support |
+| k3s bootstrap layer | first-boot installation of Cilium, security substrate, ArgoCD, and root app                               |
+| ArgoCD layer        | ongoing reconciliation of platform applications                                                           |
+| Organization layer  | work, hats, tasks, assignments, approvals, signals, runs, memory attribution, and evidence                |
 
 The Organization should assume the cluster exists as the execution substrate. It should not duplicate host bootstrap logic.
 
@@ -62,10 +62,10 @@ The Organization should assume the cluster exists as the execution substrate. It
 
 The scaffold deliberately has two reconciliation domains:
 
-| Reconciler | Scope | Update path |
-|---|---|---|
+| Reconciler  | Scope                                                                                                           | Update path                                                                           |
+| ----------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | Nix / NixOS | Host OS, bootloader, kernel modules, K3S service, Docker, host storage, GPU drivers, passthrough, base packages | `nixos-install --flake` for first install, `nixos-rebuild switch --flake` for updates |
-| ArgoCD | Cluster workloads and platform applications under `k8s/applications/` | Git commit and push, then ArgoCD reconciliation |
+| ArgoCD      | Cluster workloads and platform applications under `k8s/applications/`                                           | Git commit and push, then ArgoCD reconciliation                                       |
 
 The Organization runtime should be a consumer of this substrate. It should create Organization records, request workload launches, watch health, and surface drift, but it should not become the host bootstrap system.
 
@@ -112,35 +112,35 @@ The concrete bootstrap directory currently represents this order with:
 
 ## Confirmed Component Direction
 
-| Component | Direction |
-|---|---|
-| Cilium | CNI, KPR, L7 policy, Hubble, Gateway API, ingress, BPF masquerade, encryption |
-| cert-manager | TLS issuance |
-| Vault | Secrets backend |
-| SPIRE | Workload identity |
-| Trust Manager | CA bundle distribution |
-| External Secrets Operator | Vault-to-Kubernetes Secret sync |
-| ArgoCD | App-of-Apps reconciliation |
-| Open Policy Agent / Gatekeeper | Cluster policy constraints |
-| Sealed Secrets | Encrypted low-churn Git-stored secrets |
-| Longhorn | Persistent storage |
-| CockroachDB | Distributed SQL source of truth for Organization-owned critical state |
-| Temporal TS | Durable workflow/process rail |
-| Dapr Actors | Entity-local actor/concurrency rail |
-| Orleans | Cluster-resident .NET virtual actor/silo capability; NestJS composes with it through adapters when .NET grain semantics are needed |
-| Argo Workflows / Rollouts | DAG jobs and progressive delivery |
-| Hindsight | Hermes persistent memory |
-| OpenZiti / Ziti | Secure transport/connectivity layer |
-| Hermes | Custom cloud-oriented agent runtime |
-| NATS | Event/status/inbox transport |
-| Redis | Cache or short-lived coordination support, not Organization truth |
-| Weaviate | Vector database option; Hindsight remains Hermes memory integration |
-| Loki / Tempo / Alloy / Mimir / Prometheus / Grafana | Observability stack |
-| GitLab | Default-on forge/service platform |
-| Forgejo | Manual-sync alternative |
-| Ollama / vLLM / local coder models | Deferred/manual local-model phase |
-| Oz / Warp | Agent/session orchestration layer; distinct from OpenZiti transport |
-| Warp as separate app | Removed as a standalone component if Oz owns this orchestration role |
+| Component                                           | Direction                                                                                                                          |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Cilium                                              | CNI, KPR, L7 policy, Hubble, Gateway API, ingress, BPF masquerade, encryption                                                      |
+| cert-manager                                        | TLS issuance                                                                                                                       |
+| Vault                                               | Secrets backend                                                                                                                    |
+| SPIRE                                               | Workload identity                                                                                                                  |
+| Trust Manager                                       | CA bundle distribution                                                                                                             |
+| External Secrets Operator                           | Vault-to-Kubernetes Secret sync                                                                                                    |
+| ArgoCD                                              | App-of-Apps reconciliation                                                                                                         |
+| Open Policy Agent / Gatekeeper                      | Cluster policy constraints                                                                                                         |
+| Sealed Secrets                                      | Encrypted low-churn Git-stored secrets                                                                                             |
+| Longhorn                                            | Persistent storage                                                                                                                 |
+| CockroachDB                                         | Distributed SQL source of truth for Organization-owned critical state                                                              |
+| Temporal TS                                         | Durable workflow/process rail                                                                                                      |
+| Dapr Actors                                         | Entity-local actor/concurrency rail                                                                                                |
+| Orleans                                             | Cluster-resident .NET virtual actor/silo capability; NestJS composes with it through adapters when .NET grain semantics are needed |
+| Argo Workflows / Rollouts                           | DAG jobs and progressive delivery                                                                                                  |
+| Hindsight                                           | Hermes persistent memory                                                                                                           |
+| OpenZiti / Ziti                                     | Secure transport/connectivity layer                                                                                                |
+| Hermes                                              | Custom cloud-oriented agent runtime                                                                                                |
+| NATS                                                | Event/status/inbox transport                                                                                                       |
+| Redis                                               | Cache or short-lived coordination support, not Organization truth                                                                  |
+| Weaviate                                            | Vector database option; Hindsight remains Hermes memory integration                                                                |
+| Loki / Tempo / Alloy / Mimir / Prometheus / Grafana | Observability stack                                                                                                                |
+| GitLab                                              | Default-on forge/service platform                                                                                                  |
+| Forgejo                                             | Manual-sync alternative                                                                                                            |
+| Ollama / vLLM / local coder models                  | Deferred/manual local-model phase                                                                                                  |
+| Oz / Warp                                           | Agent/session orchestration layer; distinct from OpenZiti transport                                                                |
+| Warp as separate app                                | Removed as a standalone component if Oz owns this orchestration role                                                               |
 
 The pasted scaffold status still mentions Istio in one historical component-status line. Treat that as stale. The active direction is: Istio is removed, and Cilium Service Mesh owns L7 policy, mTLS-capable service mesh behavior, Gateway API, ingress, traffic handling, and observability without per-pod sidecars.
 
@@ -188,12 +188,12 @@ Implications:
 
 The scaffold intentionally keeps multiple secret mechanisms because the secrets have different lifetimes and access patterns:
 
-| Mechanism | Use |
-|---|---|
-| Sealed Secrets | Encrypted Git-stored secrets for low-churn configuration |
-| Vault | Runtime secrets backend, rotation, and audit |
-| External Secrets Operator | Vault-to-Kubernetes Secret synchronization |
-| SOPS | File-level encryption, including Hermes image-time secrets where required by the current spec |
+| Mechanism                 | Use                                                                                           |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| Sealed Secrets            | Encrypted Git-stored secrets for low-churn configuration                                      |
+| Vault                     | Runtime secrets backend, rotation, and audit                                                  |
+| External Secrets Operator | Vault-to-Kubernetes Secret synchronization                                                    |
+| SOPS                      | File-level encryption, including Hermes image-time secrets where required by the current spec |
 
 Organization implication: agents should never receive broad raw secrets. They should request actions through the MCP Gateway and Credential Proxy, which resolve approved scopes against Vault/External Secrets-backed references.
 

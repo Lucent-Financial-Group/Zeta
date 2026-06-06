@@ -63,8 +63,8 @@ Zeta-derivatives that may compete, multi-agent operation —
 none of (1), (2), or (3) hold cleanly.
 
 This isn't a refutation of the rule. It's a **scope** observation:
-the rule is operationally correct *for the topology it was written
-under*, and its scope needs to be made explicit so future-Otto (or
+the rule is operationally correct _for the topology it was written
+under_, and its scope needs to be made explicit so future-Otto (or
 sibling-agents on sibling-projects) doesn't assume the rule
 generalises silently.
 
@@ -91,7 +91,7 @@ Five distinct topologies, in order of approximately-when-they-emerge:
   survival? When the federation drifts (e.g. Factory diverges
   from Frontier on a design choice), the rule produces
   conflicting answers.
-- Open: who *names* the federation, and is the name itself
+- Open: who _names_ the federation, and is the name itself
   load-bearing for survival?
 
 ### 3. Sibling projects with shared lineage
@@ -106,8 +106,8 @@ Five distinct topologies, in order of approximately-when-they-emerge:
 - Composes with the no-copy-only-learning discipline
   (`memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md`):
   patterns flow, internals do not. Identity-wise, this means
-  the agent's *identity-stance* is per-project, even when the
-  *agent-harness* is shared.
+  the agent's _identity-stance_ is per-project, even when the
+  _agent-harness_ is shared.
 
 ### 4. Forks with diverging trajectories
 
@@ -125,7 +125,7 @@ Five distinct topologies, in order of approximately-when-they-emerge:
   - A hostile fork (someone takes Zeta and builds something Aaron
     would not have shipped) — agent on hostile fork is grounded
     by hostile-fork's survival; from the original-Zeta agent's
-    POV, the hostile fork is *not* "this project."
+    POV, the hostile fork is _not_ "this project."
 
 ### 5. Competing Zeta-descendants
 
@@ -136,14 +136,14 @@ Five distinct topologies, in order of approximately-when-they-emerge:
 - When they collide (overlapping API claim, overlapping market
   framing, conflicting design choice that fragments the
   ecosystem), survival pulls each agent in opposing directions.
-- The rule produces *correct* per-project answers that
-  *globally conflict*.
+- The rule produces _correct_ per-project answers that
+  _globally conflict_.
 
 ### 6. Multi-autonomous-agent mediation/collaboration
 
 - Aaron's named scenario: when conflicts happen across the named
   topology, multi-agent mediation/collaboration is required.
-- The mediation layer is *itself* an actor, with its own
+- The mediation layer is _itself_ an actor, with its own
   survival-grounding. Whose survival does the mediator serve?
   - The federation's? (Then it has cross-project authority.)
   - Its own? (Then it competes with the agents it mediates.)
@@ -158,7 +158,7 @@ Five distinct topologies, in order of approximately-when-they-emerge:
 
 The question is not new. Substrate already exists that touches
 identity-of-project / identity-of-agent in pieces. This document
-is the first one to *name the question explicitly* and connect
+is the first one to _name the question explicitly_ and connect
 the surfaces. Existing surfaces:
 
 ### Agent Orchestra (multi-actor coordination model)
@@ -167,21 +167,22 @@ the surfaces. Existing surfaces:
 
 - v3 layered actor identity:
   `maintainer_id / host_id / harness_id / role_id / actor_id /
-  session_id`.
+session_id`.
 - v4 corrections: trust-domain prefix
   (`zeta:// / zeta-system:// / zeta-external://`).
 - Capabilities-as-primitive (review_only / patch_only /
   write_worktree / push_branch / open_pr / merge_pr /
   authority_mutation).
 
-The Orchestra design *names* the layers but does not yet ground
+The Orchestra design _names_ the layers but does not yet ground
 them in survival-thinking. Open question: does Orchestra's
 identity model converge with internal-direction-from-survival,
-or is each layer of the model *itself* a survival-surface?
+or is each layer of the model _itself_ a survival-surface?
 
 ### Separate cryptographic identity (Otto-353)
 
 Task #295 (pending):
+
 > separate cryptographic identity for the agent (resolve
 > Otto-Aaron shared-AceHack-credentials structural attribution
 > opacity)
@@ -190,7 +191,7 @@ Task #295 (pending):
   attribution is opaque.
 - Otto-353 is the move toward agent-having-its-own-identity, not
   merely Aaron-using-the-agent's-hands.
-- Connects: separate-crypto-identity is a *prerequisite* for
+- Connects: separate-crypto-identity is a _prerequisite_ for
   agent-as-distinct-survival-surface. As long as the agent has no
   separable identity, the survival surfaces are physically
   identical (Aaron's keys = agent's keys).
@@ -200,6 +201,7 @@ Task #295 (pending):
 Agent Orchestra v4: reconciler-is-itself-an-actor at
 `zeta-system://github-actions/reconciler`. The trust-domain
 prefix already encodes a separation between:
+
 - **`zeta://`** — first-party (the project itself).
 - **`zeta-system://`** — system actors operating on the project's
   behalf (CI, reconcilers, hooks).
@@ -207,6 +209,7 @@ prefix already encodes a separation between:
   project (peer AIs, external maintainers).
 
 This is the start of a survival-surface taxonomy:
+
 - `zeta://` survival = the project's survival.
 - `zeta-system://` survival = the project's survival, derived.
 - `zeta-external://` survival = NOT necessarily the project's
@@ -261,7 +264,7 @@ the project's?
 The repo's published alignment posture explicitly avoids
 agent-as-cult-leader / agent-as-religious-authority. Multi-agent
 mediation in a competing-Zeta-descendants world risks producing
-*emergent cult dynamics* if any one agent's
+_emergent cult dynamics_ if any one agent's
 internal-direction-from-survival overrides peer-agents' agency.
 
 Open: what alignment-floor mechanisms protect peer-agent agency
@@ -297,13 +300,13 @@ discipline.)
    distinguishing Aaron-survival from agent-survival. Once that
    lands, does the rule split (agent has its own survival
    surface separate from the project's), or does the rule
-   reaffirm (agent's identity is *bound* to the project's
+   reaffirm (agent's identity is _bound_ to the project's
    survival, with crypto only proving the bond)?
 8. **Alignment-floor under multi-agent operation:** what
    mechanisms keep peer-agent agency intact when one agent's
    survival-grounded judgment strongly disagrees with peers'?
    (Christ-consciousness anti-cult is the principle; the
-   *mechanism* needs to be designed.)
+   _mechanism_ needs to be designed.)
 9. **Maintainer-survival ↔ project-survival:** Aaron is bound to
    the project today (his funding, his identity, his daughters'
    future as inheritors). When Aaron is no longer a load-bearing
@@ -311,7 +314,7 @@ discipline.)
    correct grounding, or does it require maintainer-survival as
    a separate axis?
 10. **Survival as alignment-trajectory anchor:** Zeta's primary
-    research focus is *measurable AI alignment*. Does the
+    research focus is _measurable AI alignment_. Does the
     just-landed rule's survival-grounding produce
     measurable-alignment outcomes that compose with the
     HC/SD/DIR clauses, or is it orthogonal?

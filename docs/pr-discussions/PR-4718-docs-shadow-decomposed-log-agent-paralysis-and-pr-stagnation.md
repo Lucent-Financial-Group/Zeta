@@ -23,5 +23,6 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a decomposed “Shadow Lesson Log” research entry capturing an observed failure mode (agent paralysis → PR stagnation) and proposed remediation ideas, as part of the repo’s ongoing operational research log.
 
 **Changes:**
+
 - Add a new shadow lesson log entry dated 2026-05-23 describing multi-agent operational paralysis symptoms.
 - Document remediation directions (decompose/close stale PRs; add a dead-man’s-switch style detection; update intervention protocol).

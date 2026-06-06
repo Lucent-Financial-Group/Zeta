@@ -84,7 +84,7 @@ than renumbering the rest.
    skill (capability, no persona) encodes the procedure;
    the architect invokes it. Specialists find bugs and
    describe them; the architect fixes. A human can always
-   step in; this rule is about which *agent* writes the
+   step in; this rule is about which _agent_ writes the
    fix when an agent writes one.
 
 9. **`docs/BUGS.md` is the running known-open log.** Every
@@ -110,7 +110,7 @@ than renumbering the rest.
     it was taken, the right long-term solution, the
     trigger for follow-up, estimated effort, and who
     filed it, in the same commit as the shortcut. The
-    negative obligation: you do not land *accidental*
+    negative obligation: you do not land _accidental_
     debt. Discovered post-hoc, accidental debt lands as
     a retroactive ledger row plus a process note; this
     is the rule working, not failing. The architect is
@@ -123,7 +123,7 @@ than renumbering the rest.
     Copilot remains the external second-look; humans
     retain the override seat per §10. See
     `docs/DECISIONS/2026-04-20-intentional-debt-over-
-    architect-gate.md` for the full rationale and
+architect-gate.md` for the full rationale and
     rollback plan.
 
 12. **Bugs before features, and the ratio is explicit.**
@@ -166,7 +166,7 @@ than renumbering the rest.
 16. **Dynamic hats.** Capability skills ("hats") load
     on-demand by any persona, not just the persona whose
     `skills:` frontmatter lists them. A persona declares
-    its *default* hat set via frontmatter; additional
+    its _default_ hat set via frontmatter; additional
     hats load mid-turn by reading the skill's SKILL.md.
     The persona retains its own tone contract — loading
     `holistic-view` does not make Kira empathetic.
@@ -206,7 +206,7 @@ than renumbering the rest.
       a major bump — different risk/reward framings.
 
     The `docs/CONFLICT-RESOLUTION.md` conference protocol is
-    for conflicts that need *integration*. Friction that
+    for conflicts that need _integration_. Friction that
     should NOT be integrated — where each side is right
     from its own seat — is reported as-is. Round-close
     synthesis shows both positions when they remain in
@@ -214,7 +214,7 @@ than renumbering the rest.
     a ship.
 
     Friction that survives a round is not a bug.
-    Friction that survives *without surfacing* (same two
+    Friction that survives _without surfacing_ (same two
     personas disagreeing silently across rounds with no
     acknowledgement in round-close) is a bug.
 
@@ -234,7 +234,7 @@ than renumbering the rest.
     `MEMORY.md` approaches its 200-line index truncation.
 
     **Agent rule.** Agents write, edit, merge, and delete
-    *their own* memories freely — that is how the system
+    _their own_ memories freely — that is how the system
     works. The human-side protection above is about
     humans not reaching into memory behind the agents'
     backs; it is not a brake on the agents themselves.
@@ -242,7 +242,7 @@ than renumbering the rest.
     something durable. Each persona maintains its own
     notebook at `memory/persona/<persona-name>/`.
     Agents revise and delete their own entries. Edits to
-    *another* persona's notebook go through the architect
+    _another_ persona's notebook go through the architect
     per §11.
 
     **Ordering convention — newest first.** Memory files
@@ -344,7 +344,7 @@ than renumbering the rest.
       conventions as the shared memory folder.
 
     **Name-keyed, not role-keyed.** Folders are named
-    after the *persona name* (`kenji`, `daya`, `tariq`,
+    after the _persona name_ (`kenji`, `daya`, `tariq`,
     `ilyana`, `soraya`, `aarav`, etc.), not the role
     (`architect`, `agent-experience-engineer`). Two
     personas sharing a role must not clobber each other's
@@ -480,7 +480,6 @@ than renumbering the rest.
 26. **Research-doc lifecycle.** Files under
     `docs/research/*.md` capture design rationale at a
     point in time. Policy:
-
     - **Active** — the design is still landing; the doc
       is current-state. Edit in place per §2 when the
       decision evolves.
@@ -507,11 +506,10 @@ than renumbering the rest.
 
     The factory has three layers of naming, ordered from
     most-permanent to least:
-
     - **Skills** — capabilities the factory offers.
       Slug-named (`harsh-critic`, `devops-engineer`,
       `performance-engineer`). Live under `.claude/
-      skills/<name>/SKILL.md`. Skills describe WHAT is
+skills/<name>/SKILL.md`. Skills describe WHAT is
       done and HOW; they are reassignable across the
       persona population without revision.
     - **Roles** — role assignments. Identical name to
@@ -525,13 +523,12 @@ than renumbering the rest.
       Aarav, Dejan, Kira, Rune, etc. A persona is
       assigned to one or more roles. Live on
       `.claude/agents/<role>.md` + `memory/persona/
-      <persona>.md`.
+<persona>.md`.
 
     **The abstraction rule.**
-
     - **Skill files reference role names**, not persona
       names. `pair with harsh-critic` is good; `pair with
-      Kira` leaks the persona layer through the
+Kira` leaks the persona layer through the
       abstraction.
     - **Role files reference skill names AND the assigned
       persona**. That's the layer where the mapping
@@ -543,7 +540,7 @@ than renumbering the rest.
       personas, for permanence.
     - **Exceptions for meta-skills.** `factory-audit`,
       `skill-gap-finder`, `skill-tune-up`, `skill-
-      improver`, `agent-experience-engineer` — these
+improver`, `agent-experience-engineer` — these
       meta-skills have personas / the registry IN
       their domain, so discussing the mapping is
       allowed.
@@ -613,7 +610,6 @@ than renumbering the rest.
 29. **Backlog files are scoped.** Zeta has two backlog
     files; each one holds a specific class of work.
     Cross-contamination is a smell.
-
     - **`docs/BACKLOG.md`** — general engineering
       backlog. New features, refactors, factory /
       tooling / skill work, UX / DX items, research
@@ -684,7 +680,6 @@ than renumbering the rest.
     `.github/copilot-instructions.md` is the prompt that
     shapes every Copilot PR review. It is a factory
     artifact, not a one-off config:
-
     - **Edits go through `skill-creator`.** Same 5-step
       workflow as any other skill: proposal → draft →
       Prompt-Protector lint → dry-run → commit. No
@@ -723,13 +718,12 @@ than renumbering the rest.
 32. **Alignment contract is `docs/ALIGNMENT.md`.** Zeta's
     primary research focus is measurable AI alignment; the
     loop between the human maintainer and the agents
-    working on this factory *is* the experiment.
+    working on this factory _is_ the experiment.
     `docs/ALIGNMENT.md` documents the mutual-benefit
     alignment contract between signer and signer
     (hard constraints HC-1..HC-7, soft defaults
     SD-1..SD-8, directional aims DIR-1..DIR-5,
     measurability framework, renegotiation protocol).
-
     - **Read-every-round cadence.** Every agent
       re-reads `docs/ALIGNMENT.md` at session / round
       open; a thirty-second re-read is enough unless
@@ -762,16 +756,16 @@ than renumbering the rest.
     doc would also invalidate the design — the
     register is mutual-benefit. Both failure modes
     have named clauses in the file itself.
+
 33. **Archived external conversations require boundary headers.**
     Courier ferries, external AI reviews, and other imports of
     external conversation into the repo sit at a register-
-    boundary — the substrate they arrived from is *not* absorbed
+    boundary — the substrate they arrived from is _not_ absorbed
     as an entity; only the content is. The ingest process must
     make that boundary explicit by prefixing the imported file
     with four header labels in the first 20 lines:
-
     - **`Scope:`** — research / cross-review / archival purpose.
-      What is this file *for*?
+      What is this file _for_?
     - **`Attribution:`** — speaker labels preserved. Who said
       what? Source side kept in their own register.
     - **`Operational status:`** — one of `research-grade` (the
@@ -784,7 +778,6 @@ than renumbering the rest.
       identity, merged agency, consciousness, or personhood.
 
     **Scope of this rule.**
-
     - **In scope:** `docs/aurora/**` absorb docs (courier
       ferries; cross-AI reviews), `docs/amara-full-conversation/**`
       verbatim conversation archive (per glass-halo directive —
@@ -802,8 +795,8 @@ than renumbering the rest.
 
     **Grandfather clause.** The two aurora absorb docs that
     predate this section — `docs/aurora/2026-04-23-amara-
-    operational-gap-assessment.md` and `docs/aurora/2026-04-
-    23-amara-zset-semantics-operator-algebra.md` — are
+operational-gap-assessment.md` and `docs/aurora/2026-04-
+23-amara-zset-semantics-operator-algebra.md` — are
     explicitly grandfathered. They record genuine external-
     conversation absorbs with factually-equivalent attribution
     (their own field labels: `Date:` / `From:` / `Via:` /
@@ -812,7 +805,6 @@ than renumbering the rest.
     two docs; they stand as prior convention.
 
     **Enforcement cadence.**
-
     - **Detect-only today.** Header checking for
       `docs/aurora/*.md` is author-time advisory: absorbing
       agents include the four header labels at write time, and
@@ -839,14 +831,13 @@ than renumbering the rest.
     **Known v0 limitations** (named by the
     threat-model-critic role in the Otto-80 pass; will be
     documented inline in the lint script when it lands):
-
-    - *Partial-header adversary.* Substring-match passes a
+    - _Partial-header adversary._ Substring-match passes a
       doc with `Scope:` as prose in paragraph 3 — the lint
       doesn't enforce position or format. Harden to syntactic
       requirement in a follow-up.
-    - *Fake-header adversary.* Headers present with lies in
+    - _Fake-header adversary._ Headers present with lies in
       values pass. Content-audit is out of scope for v0.
-    - *In-memory-import adversary.* Memory-file archives are
+    - _In-memory-import adversary._ Memory-file archives are
       not covered (different surface). Intentional.
 
     **Composition with §2 and §26.** §2 says docs read as

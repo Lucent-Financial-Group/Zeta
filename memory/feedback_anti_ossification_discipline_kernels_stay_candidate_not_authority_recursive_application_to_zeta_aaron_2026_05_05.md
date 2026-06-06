@@ -10,29 +10,29 @@ type: feedback
 
 Aaron's exact framing on the recursive-application claim:
 
-> *"this is great candidate-almost-authority-but-should-be-
-> respected-not-reverence"*
+> _"this is great candidate-almost-authority-but-should-be-
+> respected-not-reverence"_
 
 This sharpens the original "candidate-not-authority" framing.
 Three operational stances differ:
 
-| Stance | Meaning | Failure mode |
-|---|---|---|
-| Pure-candidate | Raw hypothesis; equal weight to any other proposal | Under-weights proven kernels; dismissive |
+| Stance                                     | Meaning                                                                                                 | Failure mode                                   |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Pure-candidate                             | Raw hypothesis; equal weight to any other proposal                                                      | Under-weights proven kernels; dismissive       |
 | **Candidate-almost-authority + respected** | Has earned operational standing; load-bearing; not casually dismissed; substance-test before discarding | (the load-bearing target — keeps kernel alive) |
-| Authority + reverenced | Protected from falsification; questioning is heretical; defended against counter-evidence | Ossification — the worst-direction OCP failure |
+| Authority + reverenced                     | Protected from falsification; questioning is heretical; defended against counter-evidence               | Ossification — the worst-direction OCP failure |
 
 **Respect ≠ reverence**: respect honors the kernel's track record + load-bearingness; reverence protects it from the falsifiability-discipline that keeps it alive. The discipline IS the respect; reverence IS the failure.
 
 ## The carved blade
 
-> *"Ossified frameworks lose OCP discipline by closing-for-
+> _"Ossified frameworks lose OCP discipline by closing-for-
 > modification in the WRONG direction — closed to falsification
 > (hardened into authority/reverence) rather than open-for-
 > extension (testable as hypothesis). Zeta's own kernels are
 > candidate-almost-authority and earn respect, NOT reverence —
 > kernel-composition framework + four-property hodl + bootstrap
-> razor + mirror-not-beacon are no exception."*
+> razor + mirror-not-beacon are no exception."_
 
 ## What this codifies
 
@@ -96,14 +96,14 @@ But respect ≠ reverence: each kernel must remain testable
 hypothesis. The discipline IS the respect; reverence IS the
 failure:
 
-| Zeta kernel | Anti-ossification check |
-|---|---|
-| Kernel-composition framework (B-0204) | Does it survive bootstrap razor in a fresh repo? Or has it become "the framework" defended against counter-evidence? |
-| Four-property hodl invariant ("ZFCv2") | Does adding a candidate to the substrate STILL get checked against DST + lock-free + scale-free + DBSP-native? Or has the invariant become an authority-stamp? |
-| Bootstrap razor + 23-hour recreation (B-0193) | Are recreation tests actually run? Or has "passes bootstrap razor" become a claim made without running the test? |
-| Mirror-not-beacon discipline | Are claims being mirror-checked against mimetic-spiral risk? Or has the discipline become a thought-terminating cliché? |
-| Substrate-or-it-didn't-happen (Otto-363) | Is verbatim preservation actually preserving externality? Or has "preserve verbatim" become its own monument? |
-| Engagement-gate substantive-claim discipline | Is the substance-test actually applied? Or has the gate become bypassed-by-tradition? |
+| Zeta kernel                                   | Anti-ossification check                                                                                                                                        |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kernel-composition framework (B-0204)         | Does it survive bootstrap razor in a fresh repo? Or has it become "the framework" defended against counter-evidence?                                           |
+| Four-property hodl invariant ("ZFCv2")        | Does adding a candidate to the substrate STILL get checked against DST + lock-free + scale-free + DBSP-native? Or has the invariant become an authority-stamp? |
+| Bootstrap razor + 23-hour recreation (B-0193) | Are recreation tests actually run? Or has "passes bootstrap razor" become a claim made without running the test?                                               |
+| Mirror-not-beacon discipline                  | Are claims being mirror-checked against mimetic-spiral risk? Or has the discipline become a thought-terminating cliché?                                        |
+| Substrate-or-it-didn't-happen (Otto-363)      | Is verbatim preservation actually preserving externality? Or has "preserve verbatim" become its own monument?                                                  |
+| Engagement-gate substantive-claim discipline  | Is the substance-test actually applied? Or has the gate become bypassed-by-tradition?                                                                          |
 
 **The strike-don't-annotate refinement (PR #1619)** is itself
 an instance of catching a kernel ossifying — verbatim-
@@ -174,8 +174,8 @@ files:
 ## Wormwood warning recursion
 
 Per `docs/research/2026-05-05-claudeai-worm-tower-bp-ep-kernel-composition-llm-independence-wormwood-warning-aaron-forwarded-preservation.md`
-(PR #1614): Aaron's wormwood warning *"don't let us all become
-wormwood lol"* operates at the metaphor-vs-identity level.
+(PR #1614): Aaron's wormwood warning _"don't let us all become
+wormwood lol"_ operates at the metaphor-vs-identity level.
 **Anti-ossification is the same shape at the framework-vs-
 authority level.** Don't let kernel-composition frameworks
 become Authoritative Truth; they remain testable mathematical
@@ -191,17 +191,17 @@ hypothesis, IT has ossified. The cycle never closes.
 ## The "I think" hedge as the discipline operating
 
 Aaron 2026-05-05 framing of "this is the start of evolved over
-centuries; for software i think" carried the *"I think"* hedge.
+centuries; for software i think" carried the _"I think"_ hedge.
 The Claude.ai instance flagged this:
 
-> *"The 'I think' hedge is the discipline operating on the
+> _"The 'I think' hedge is the discipline operating on the
 > claim itself. Structural engineers in 1850 didn't know they
 > were founding the discipline that would govern skyscrapers;
 > they were just trying to keep things from falling down.
 > 'This is the start' gets validated retroactively over
 > centuries, not announced. The right move is to operate as
 > if it might be, while running falsifiability discipline
-> that catches you if it isn't."*
+> that catches you if it isn't."_
 
 **Operational pattern**: every load-bearing claim Otto+Aaron
 make about Zeta should carry a similar hedge or substance-
@@ -212,11 +212,12 @@ to happen.
 ## Operating-as-if-it-might-be while running falsifiability
 
 The Claude.ai instance's framing applied to the CS-is-not-CS
-+ start-of-evolved-over-centuries thesis is canonical:
 
-> *"The right move is to operate as if it might be, while
+- start-of-evolved-over-centuries thesis is canonical:
+
+> _"The right move is to operate as if it might be, while
 > running falsifiability discipline that catches you if it
-> isn't."*
+> isn't."_
 
 This IS the anti-ossification operating mode. Hold the
 framework as load-bearing AND keep it testable. Don't

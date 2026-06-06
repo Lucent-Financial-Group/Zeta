@@ -23,11 +23,11 @@ helper script that lands in `tools/` wears this hat.
 ## Zeta's Python scope (today)
 
 - **Semgrep** — used by the lint gate (`semgrep --config
-  .semgrep.yml`). Installed via `uv tool install semgrep`
+.semgrep.yml`). Installed via `uv tool install semgrep`
   once `.mise.toml` + mise-managed python is in place;
   currently via Homebrew. 14 custom rules in `.semgrep.yml`.
 - **Mathlib scripts under `tools/lean4/.lake/packages/
-  mathlib/scripts/`** — upstream code we don't touch; not
+mathlib/scripts/`** — upstream code we don't touch; not
   Zeta's Python.
 - **Future:** benchmark-diff tooling, JSON coverage
   report post-processing, any paper-track data analysis.
@@ -80,16 +80,16 @@ without running the main body.
 uses.** Every pre-`uv` alternative is a smell on a Zeta
 PR diff — flag and rewrite:
 
-| Smell | Replace with |
-|---|---|
-| `pip install <pkg>` | `uv tool install <pkg>` (CLI) or `uv add <pkg>` (in a pyproject) |
-| `pipx install <pkg>` | `uv tool install <pkg>` — same contract, 10-100x faster, one fewer dep |
-| `poetry install` / `poetry add` | `uv sync` / `uv add` — uv reads pyproject natively |
+| Smell                                         | Replace with                                                                                                                                                      |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pip install <pkg>`                           | `uv tool install <pkg>` (CLI) or `uv add <pkg>` (in a pyproject)                                                                                                  |
+| `pipx install <pkg>`                          | `uv tool install <pkg>` — same contract, 10-100x faster, one fewer dep                                                                                            |
+| `poetry install` / `poetry add`               | `uv sync` / `uv add` — uv reads pyproject natively                                                                                                                |
 | `pyenv install 3.X` (as a standalone manager) | `mise install python@3.X` via `.mise.toml` — Zeta's managed runtime. `uv` also installs Python via `uv python install` but we centralize the runtime pin on mise. |
-| `conda install` / `mamba install` | `uv tool install` for CLIs; flag to Kenji if the package genuinely needs conda's C-dep stack (rare at Zeta's scope) |
-| `requirements.txt` without a lockfile | `pyproject.toml` + `uv.lock` |
-| `virtualenv` / `venv` hand-managed | `uv venv` (auto-activated by mise's `python.uv_venv_auto = "source"`) |
-| `pip-tools` / `pip-compile` | `uv lock` — same compile-and-pin semantics, faster |
+| `conda install` / `mamba install`             | `uv tool install` for CLIs; flag to Kenji if the package genuinely needs conda's C-dep stack (rare at Zeta's scope)                                               |
+| `requirements.txt` without a lockfile         | `pyproject.toml` + `uv.lock`                                                                                                                                      |
+| `virtualenv` / `venv` hand-managed            | `uv venv` (auto-activated by mise's `python.uv_venv_auto = "source"`)                                                                                             |
+| `pip-tools` / `pip-compile`                   | `uv lock` — same compile-and-pin semantics, faster                                                                                                                |
 
 **Why uv wins on every axis.** Rust-implemented; resolves
 10-100x faster than pip/poetry; single tool covers
@@ -160,7 +160,7 @@ composes more cleanly.
 
 - Raise specific exceptions (`ValueError`, `FileNotFoundError`,
   custom subclasses of `Exception`). Never bare `raise
-  Exception(...)`.
+Exception(...)`.
 - Catch specific exceptions. `except Exception:` is a
   code smell; `except BaseException:` is a bug.
 - `finally` for cleanup; `with` blocks (context managers)
@@ -181,17 +181,17 @@ composes more cleanly.
 
 - **`pytest`** when we reach the size where Python helpers
   need tests. Until then, `assert` + `python -m script.py
-  --self-test` is OK for trivial scripts.
+--self-test` is OK for trivial scripts.
 - Fixture-heavy testing doesn't apply at our current
   scale; revisit when Python footprint reaches 500+ LOC.
 
 ## Pitfalls
 
 - **Mutable default arguments.** `def f(x=[]): x.append(1)
-  ; return x` — the list is shared across calls. Always
+; return x` — the list is shared across calls. Always
   `def f(x=None): x = x or []`.
 - **Late binding in closures.** `funcs = [lambda: i for i
-  in range(3)]` all return 2. Use `lambda i=i: i` to
+in range(3)]` all return 2. Use `lambda i=i: i` to
   capture.
 - **`dict.get` with mutable default.** Same trap; prefer
   `dict.setdefault` or check explicitly.

@@ -35,7 +35,7 @@ promoted?
 Per `.claude/rules/backlog-item-start-gate.md`:
 
 - [ ] B-0471 prior-art audit complete (especially the promotion-gate
-  research doc at `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md`)
+      research doc at `docs/research/2026-05-01-claudeai-mirror-beacon-gate-taxonomy-canonicalization-aaron-forwarded.md`)
 - [ ] `docs/ALIGNMENT.md` reviewed — which clauses apply at Beacon tier?
 - [ ] Reciprocal pointers on B-0471/B-0472/B-0474 verified
 

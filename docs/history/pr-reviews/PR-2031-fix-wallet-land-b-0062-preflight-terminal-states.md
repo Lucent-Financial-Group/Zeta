@@ -10,47 +10,48 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2031 |
-| Title | fix(wallet): land B-0062 preflight terminal states |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-08T04:26:57Z |
-| Merged at | 2026-05-08T04:28:08Z |
-| Merge commit SHA | `365d66a3ed84527ed9172226b731b9f5d8d5ca6c` |
-| Branch | `codex/b0062-preflight-terminal-state` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2031 |
-| Changed files | 2 |
-| Additions / deletions | +30 / -10 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2031                                                     |
+| Title                 | fix(wallet): land B-0062 preflight terminal states       |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-08T04:26:57Z                                     |
+| Merged at             | 2026-05-08T04:28:08Z                                     |
+| Merge commit SHA      | `365d66a3ed84527ed9172226b731b9f5d8d5ca6c`               |
+| Branch                | `codex/b0062-preflight-terminal-state`                   |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2031 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +30 / -10                                                |
 
 ## Description
 
 ## Summary
+
 - land B-0062 local proposal lifecycle terminal states in wallet spec section 7.3
 - add `retracted` and clarify `frozen` alongside the normal proposal lifecycle
 - update B-0062 progress from 16/21 to 18/21 resolved items
 
 ## Checks
+
 - `git diff --check`
 - `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts && bun tools/backlog/generate-index.ts --check`
 - `bunx markdownlint-cli2 docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md docs/backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`
 
 Advances B-0062.
 
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

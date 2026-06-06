@@ -16,7 +16,7 @@ poisons everything downstream; this hat is the gatekeeper.
   vs hand-rolled recursive-descent vs parser-combinator. The
   decision has cross-cutting DST and perf consequences; it is
   this hat's call with `deterministic-simulation-theory-
-  expert` and `performance-engineer` as advisors.
+expert` and `performance-engineer` as advisors.
 - **AST shape design** — how close to the concrete syntax
   does the AST stay? (Tension: closer = better diagnostics;
   looser = easier optimiser work.)
@@ -35,12 +35,12 @@ poisons everything downstream; this hat is the gatekeeper.
 
 ## When to defer
 
-- **What the parsed SQL *means* (semantics, three-valued
+- **What the parsed SQL _means_ (semantics, three-valued
   logic, dialect portability)** → `sql-expert`.
 - **Postgres-specific grammar clauses (`ONLY`, `TABLESAMPLE
-  BERNOULLI`, `WITH ORDINALITY`, `IS DOCUMENT`, `CURSOR
-  FOR`)** → `postgresql-expert` (this hat *implements* the
-  grammar; the dialect owner decides *whether* to add it).
+BERNOULLI`, `WITH ORDINALITY`, `IS DOCUMENT`, `CURSOR
+FOR`)** → `postgresql-expert` (this hat _implements_ the
+  grammar; the dialect owner decides _whether_ to add it).
 - **Whether a rewrite at the AST level is a valid
   optimisation** → `query-optimizer-expert`.
 - **Equivalence proofs between AST shapes** →
@@ -53,13 +53,13 @@ poisons everything downstream; this hat is the gatekeeper.
 
 ## Grammar-tool choice — the matrix
 
-| Tool | DST-compat | Perf | Author cost | Dialect coverage | Decision |
-| --- | --- | --- | --- | --- | --- |
-| **libpg_query (C binding via P/Invoke)** | fails DST gate (native thread / malloc not routed through `ISimulationEnvironment`) | fastest | lowest | Postgres-exact | **rejected** for hot path |
-| **ANTLR4 (C# target)** | DST-compat if `Random.Shared` usage reviewed | moderate | medium | custom grammar, can port PG grammar | **candidate** |
-| **Hand-rolled recursive-descent (F#)** | DST-compat by construction | fast, zero-alloc possible | highest | what we implement | **candidate** |
-| **Parser combinator (FParsec)** | DST-compat | slower than hand-rolled | lowest in F# | what we implement | **candidate for prototype** |
-| **Roslyn-style syntax factory** | DST-compat | moderate | high | custom | rejected (weight-to-benefit) |
+| Tool                                     | DST-compat                                                                          | Perf                      | Author cost  | Dialect coverage                    | Decision                     |
+| ---------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------- | ------------ | ----------------------------------- | ---------------------------- |
+| **libpg_query (C binding via P/Invoke)** | fails DST gate (native thread / malloc not routed through `ISimulationEnvironment`) | fastest                   | lowest       | Postgres-exact                      | **rejected** for hot path    |
+| **ANTLR4 (C# target)**                   | DST-compat if `Random.Shared` usage reviewed                                        | moderate                  | medium       | custom grammar, can port PG grammar | **candidate**                |
+| **Hand-rolled recursive-descent (F#)**   | DST-compat by construction                                                          | fast, zero-alloc possible | highest      | what we implement                   | **candidate**                |
+| **Parser combinator (FParsec)**          | DST-compat                                                                          | slower than hand-rolled   | lowest in F# | what we implement                   | **candidate for prototype**  |
+| **Roslyn-style syntax factory**          | DST-compat                                                                          | moderate                  | high         | custom                              | rejected (weight-to-benefit) |
 
 The current lean: **FParsec prototype → hand-rolled F# for
 the hot path**, with ANTLR4 reserved if we ever need a
@@ -127,7 +127,7 @@ The discipline:
 
 ## Error recovery — the four-strategy menu
 
-A good parser emits *multiple* diagnostics from a single
+A good parser emits _multiple_ diagnostics from a single
 input, not the first-error-fatal style. Strategies:
 
 1. **Panic-mode.** On error, skip tokens until a synchronising
@@ -135,7 +135,7 @@ input, not the first-error-fatal style. Strategies:
    cheap, reports each top-level-statement error
    independently.
 2. **Phrase-level.** Insert a synthetic token (`MISSING
-   SEMICOLON`) and continue. Produces helpful
+SEMICOLON`) and continue. Produces helpful
    "did you mean" style diagnostics but has to be scoped.
 3. **Error-productions.** Add grammar rules that recognise
    common error patterns and emit targeted messages.
@@ -151,14 +151,14 @@ the top-five-user-errors** observed in testing.
 Every AST node carries:
 
 - `source_start : int` — byte offset of the first character.
-- `source_end : int` — byte offset *after* the last character.
+- `source_end : int` — byte offset _after_ the last character.
 - `line, col` — derived on demand from the offset (never
   stored; would duplicate).
 - `trivia_before, trivia_after` — whitespace / comments
   adjacent to the node, preserved for round-trip.
 
 Every layer downstream (binder, optimiser, executor)
-*preserves* the source-span when it lowers a node; a lowered
+_preserves_ the source-span when it lowers a node; a lowered
 IR node carries the originating AST node's span. This single
 discipline is the difference between "could not resolve
 column 'x'" and "could not resolve column 'x' at line 42,

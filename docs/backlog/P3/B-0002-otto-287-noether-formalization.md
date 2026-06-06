@@ -21,9 +21,9 @@ Push the Otto-287 finite-resource-collisions taxonomy from
 in the style of Noether's theorem (continuous symmetries
 → conserved quantities).
 
-Source: Aaron 2026-04-25 directive *"backlog ongoing
+Source: Aaron 2026-04-25 directive _"backlog ongoing
 research here to formalize this conservation law
-analogously."*
+analogously."_
 
 ## What's owed
 

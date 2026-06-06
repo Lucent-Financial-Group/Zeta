@@ -16,11 +16,11 @@ currently proves.**
 
 ## Why this exists
 
-The `formal-verification-expert` (Soraya) owns the *portfolio
-view* of formal coverage: which tool proves what, what's next
+The `formal-verification-expert` (Soraya) owns the _portfolio
+view_ of formal coverage: which tool proves what, what's next
 to route, what the cross-check triage rule says (BP-16). Her
 view is excellent for properties that have already been
-*recognised* as verification targets — they're in her routing
+_recognised_ as verification targets — they're in her routing
 table, they're on her notebook, they have a row in
 `docs/research/proof-tool-coverage.md`.
 
@@ -30,9 +30,9 @@ monotonicity in a docstring three rounds ago; no one filed it
 as a proof obligation. A threat-model entry says "we enforce
 tenant isolation at the sharder level"; there's no Alloy model
 of the sharder topology. A Lean theorem takes `h : LTI f` as a
-hypothesis without anything in the repo ever *proving* a
+hypothesis without anything in the repo ever _proving_ a
 specific operator is LTI. These are gaps in the portfolio's
-*intake*, not in its execution.
+_intake_, not in its execution.
 
 This skill is the dedicated intake-scanner. It surfaces what
 Soraya should route; she decides how to route it.
@@ -56,14 +56,14 @@ The signals this pass watches for:
 - **Cryptographic claims without a proof.** A docstring or
   security note asserting collision-resistance, injectivity,
   second-preimage, or domain-separation for a function, with
-  no F*/Z3/Lean artifact.
+  no F\*/Z3/Lean artifact.
 - **Threat-model claims without a static-analysis rule.**
   A THREAT-MODEL.md entry asserting "we prevent X" where X
   is a taint/injection class, without a matching CodeQL or
   Semgrep rule.
 - **Refinement-type obligations.** Claims that a value is
   non-negative / non-empty / bounded / monotonic, stated in
-  comments or tests, with no LiquidF#/Dafny/F* refinement.
+  comments or tests, with no LiquidF#/Dafny/F\* refinement.
 - **Algebra-obligation debt.** "This operator commutes with
   that" / "deltas distribute over addition" / "retraction is
   additive-inverse under fold" — stated but unproven.
@@ -88,13 +88,13 @@ proposes; Soraya + the Architect decide.
 
 ## Distinct from siblings
 
-| | `formal-verification-expert` | `verification-drift-auditor` | `claims-tester` | `formal-analysis-gap-finder` (this) |
-|---|---|---|---|---|
-| Looks at | routed targets | existing artifacts + their paper sources | prose claims | prose/test/doc claims without formal artifacts |
-| Question | "how do we prove X?" | "does our proof match the paper?" | "does running-the-claim reproduce it?" | "what are we asserting but not proving?" |
-| Catches | wrong-tool routing | Class 1-6 drift from source | un-testable or falsified claims | *absence* of any formal artifact |
-| Landing | tool selection + routing | finding → owner fixes artifact | finding → test or prose edit | finding → Soraya routes to tool |
-| Cadence | every routing ask | 5-10 rounds | 5-10 rounds | 5-10 rounds, offset |
+|          | `formal-verification-expert` | `verification-drift-auditor`             | `claims-tester`                        | `formal-analysis-gap-finder` (this)            |
+| -------- | ---------------------------- | ---------------------------------------- | -------------------------------------- | ---------------------------------------------- |
+| Looks at | routed targets               | existing artifacts + their paper sources | prose claims                           | prose/test/doc claims without formal artifacts |
+| Question | "how do we prove X?"         | "does our proof match the paper?"        | "does running-the-claim reproduce it?" | "what are we asserting but not proving?"       |
+| Catches  | wrong-tool routing           | Class 1-6 drift from source              | un-testable or falsified claims        | _absence_ of any formal artifact               |
+| Landing  | tool selection + routing     | finding → owner fixes artifact           | finding → test or prose edit           | finding → Soraya routes to tool                |
+| Cadence  | every routing ask            | 5-10 rounds                              | 5-10 rounds                            | 5-10 rounds, offset                            |
 
 The drift auditor catches **"the proof we have is wrong."**
 The claims-tester catches **"the prose-claim is falsified by
@@ -103,10 +103,10 @@ at all."** They compose; none replaces another.
 
 ## Distinct from other gap-finders
 
-| | `skill-gap-finder` | `factory-automation-gap-finder` | `factory-balance-auditor` | `formal-analysis-gap-finder` (this) |
-|---|---|---|---|---|
-| Looks for | absent skills | manual work a script could do | authority without a compensator | properties without a formal artifact |
-| Landing | `skill-creator` | `devops-engineer` or owning skill | Architect + reviewer pair | `formal-verification-expert` (Soraya) |
+|           | `skill-gap-finder` | `factory-automation-gap-finder`   | `factory-balance-auditor`       | `formal-analysis-gap-finder` (this)   |
+| --------- | ------------------ | --------------------------------- | ------------------------------- | ------------------------------------- |
+| Looks for | absent skills      | manual work a script could do     | authority without a compensator | properties without a formal artifact  |
+| Landing   | `skill-creator`    | `devops-engineer` or owning skill | Architect + reviewer pair       | `formal-verification-expert` (Soraya) |
 
 Run all four. They compose — a factory with full skill
 coverage but no formal proofs is still unverified; a factory
@@ -151,7 +151,7 @@ still slow.
 Default: the full repo state as-is for prose scan (claims
 don't have a cadence), narrowed to last 5-10 rounds of
 `docs/ROUND-HISTORY.md` + open items in `docs/BACKLOG.md` /
-`docs/BUGS.md` / `docs/DEBT.md` for *change-driven* signals.
+`docs/BUGS.md` / `docs/DEBT.md` for _change-driven_ signals.
 Scan recent diff hunks (`git log --since="5 rounds ago" -p`)
 for new assertions added without accompanying proof tasks.
 
@@ -300,7 +300,7 @@ catches the **absence** of any artifact. A claim that fails
 drift-audit (artifact exists but doesn't match paper) is
 Soraya+drift-auditor territory. A claim with no artifact at
 all is this skill's territory. On the rare case where a
-prose claim *contradicts* an existing artifact, this skill
+prose claim _contradicts_ an existing artifact, this skill
 flags it to both.
 
 ## Interaction with `claims-tester`
@@ -336,17 +336,21 @@ Structure:
 # Formal Analysis Gap Finder — Scratch
 
 ## Running observations
+
 - YYYY-MM-DD — observation
 
 ## Current top-5 (refresh each run)
+
 1. [claim snippet] — priority: [P0/P1/P2]
    - Property class: [class]
    - Effort: [S/M/L]
 
 ## Watching (signals not yet flagging)
+
 - [claim] — why watching, what signal would promote
 
 ## Promoted to Soraya's queue (log)
+
 - YYYY-MM-DD — [claim] → Soraya routed as [tool]
 
 ## Pruning log

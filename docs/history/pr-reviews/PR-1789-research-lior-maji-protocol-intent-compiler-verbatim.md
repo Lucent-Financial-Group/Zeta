@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1789 |
-| Title | research: Lior maji protocol + intent compiler VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T04:15:31Z |
-| Merged at | 2026-05-07T04:21:45Z |
-| Merge commit SHA | `290c7f2620eba93bb9fee7aa0a038aadd99a99db` |
-| Branch | `research/lior-maji-protocol-intent-compiler-verbatim` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1789 |
-| Changed files | 1 |
-| Additions / deletions | +71 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1789                                                     |
+| Title                 | research: Lior maji protocol + intent compiler VERBATIM  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T04:15:31Z                                     |
+| Merged at             | 2026-05-07T04:21:45Z                                     |
+| Merge commit SHA      | `290c7f2620eba93bb9fee7aa0a038aadd99a99db`               |
+| Branch                | `research/lior-maji-protocol-intent-compiler-verbatim`   |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1789 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +71 / -0                                                 |
 
 ## Description
 
@@ -31,15 +31,15 @@ Verbatim. No curation.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

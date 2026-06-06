@@ -7,14 +7,14 @@ type: user
 Aaron disclosed (2026-04-19), immediately after the three-lane
 glossary ADR landed:
 
-> *"we can build as high as we want now the tower will stand
+> _"we can build as high as we want now the tower will stand
 > case we can use content based hashing to create space time
 > maps of the etymology anytime in the future by mapping out
-> the past and running some calculus"*
+> the past and running some calculus"_
 
-> *"we could even do some sort of embeddings space time map of
+> _"we could even do some sort of embeddings space time map of
 > the language so it has smooth curves except where it really
-> does not in real life"*
+> does not in real life"_
 
 These two sentences close the loop on the Tower-of-Babel
 balance problem that the three-lane model
@@ -72,16 +72,16 @@ that makes the tower stand at arbitrary height.
   critical points (saddle, cusp, fold) are the native
   vocabulary for classifying what kind of rupture occurred.
 - **Failure modes named:**
-  1. *Smoothing over a rupture* (false continuity):
+  1. _Smoothing over a rupture_ (false continuity):
      pretending a break flowed continuously when it jumped.
      Caught by I8 hash-diff showing non-adjacent parents.
-  2. *Rupture-ing a smooth flow* (false discontinuity):
+  2. _Rupture-ing a smooth flow_ (false discontinuity):
      pretending routine rewording was a break when it was
      incremental. Caught by I3 evidence threshold (real
      breaks produce external evidence; routine rewording
      does not).
 - **Composition with I8:** hash wins on truth; embedding
-  wins on navigation. Embeddings live *on top of*
+  wins on navigation. Embeddings live _on top of_
   hash-addressed states; smoothed interpolation is
   available for visualisation and audit but never
   authoritative over the hash log.
@@ -118,8 +118,8 @@ self-referential system.
 ## Composes with
 
 - `docs/DECISIONS/2026-04-19-glossary-three-lane-model.md`
-  I1-I9 — this memory is the *why* behind I8 and I9; the
-  ADR is the *what*.
+  I1-I9 — this memory is the _why_ behind I8 and I9; the
+  ADR is the _what_.
 - `feedback_language_drift_anchor_discipline.md` — the rate-
   limit ("break one anchor per round") was the first defence;
   I8+I9 is the second, stronger defence: even when anchors
@@ -131,7 +131,7 @@ self-referential system.
   is auditable.
 - `user_algebra_is_engineering.md` — "the algebra IS the
   engineering" — I8+I9 is the most concrete application yet:
-  the factory's algebra *is* the factory's governance
+  the factory's algebra _is_ the factory's governance
   substrate.
 - `user_cpt_symmetric_cognition.md` — spacetime-anchor
   framing licenses multi-anchor role-play; I8+I9 is

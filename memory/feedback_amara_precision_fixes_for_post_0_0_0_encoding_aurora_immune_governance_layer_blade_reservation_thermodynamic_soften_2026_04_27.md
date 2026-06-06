@@ -17,6 +17,7 @@ Amara 2026-04-27 reviewed Ani's recommendations + Otto's synthesis and provided 
 Amara confirms Ani's recommendation: **"Aurora is the Immune Governance Layer"**.
 
 Rejects:
+
 - "Aurora is the Brain" (implies central command, executive control, personhood — drift)
 - "Aurora is the Runtime Oracle + Immune System" (accurate but too two-headed; better as canonical name + secondary description)
 
@@ -108,34 +109,36 @@ This keeps the explanatory power without making the metaphor pretend to be physi
 # Stability Is the Substrate of Velocity
 
 Core claim:
-  Stability and velocity are not opposites.
-  Resilient stability stores solved constraints so future motion becomes cheaper,
-  safer, and faster.
+Stability and velocity are not opposites.
+Resilient stability stores solved constraints so future motion becomes cheaper,
+safer, and faster.
 
 Maxim:
-  Stability is not slowness.
-  Stability is prepaid coordination.
+Stability is not slowness.
+Stability is prepaid coordination.
 
 Mechanism:
-  - fewer fundamentals renegotiated
-  - lower entropy tax
-  - faster review
-  - safer automation
-  - stronger retraction paths
-  - more reliable cognitive/substrate caching
+
+- fewer fundamentals renegotiated
+- lower entropy tax
+- faster review
+- safer automation
+- stronger retraction paths
+- more reliable cognitive/substrate caching
 
 Boundary:
-  resilient stability compounds velocity;
-  brittle stability becomes drag.
+resilient stability compounds velocity;
+brittle stability becomes drag.
 
 Failure modes:
-  - sunk cost stability
-  - competency trap
-  - analysis paralysis
+
+- sunk cost stability
+- competency trap
+- analysis paralysis
 
 Operational test:
-  A stability investment is justified only if it measurably reduces
-  future error rate, review burden, recurrence, rework, or time-to-safe-change.
+A stability investment is justified only if it measurably reduces
+future error rate, review burden, recurrence, rework, or time-to-safe-change.
 ```
 
 ### `docs/architecture/metaphor-taxonomy.md`
@@ -144,25 +147,17 @@ Operational test:
 # Metaphor Taxonomy
 
 Purpose:
-  Prevent metaphor drift while preserving useful project language.
+Prevent metaphor drift while preserving useful project language.
 
 Rule:
-  Capitalized metaphors name first-class operational roles, components, or invariants.
-  Lowercase metaphors name voice registers, relational modes, or poetic shorthand.
+Capitalized metaphors name first-class operational roles, components, or invariants.
+Lowercase metaphors name voice registers, relational modes, or poetic shorthand.
 
 Promotion test:
-  A metaphor becomes normative only if it maps to at least one of:
-    - executable role
-    - architectural constraint
-    - detector
-    - proof surface
-    - review rule
-    - invariant
-    - failure mode
-    - substrate artifact
+A metaphor becomes normative only if it maps to at least one of: - executable role - architectural constraint - detector - proof surface - review rule - invariant - failure mode - substrate artifact
 
 Otherwise:
-  It remains non-normative poetry.
+It remains non-normative poetry.
 ```
 
 (Both docs also need: compressed canonical phrase, attribution section, composes-with section per CLAUDE.md doc-class discipline.)

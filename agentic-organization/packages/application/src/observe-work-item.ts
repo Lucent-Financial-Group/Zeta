@@ -57,12 +57,17 @@ export type ObserveWorkItemResult =
 export function snapshotForWorkItem(
   workItem: WorkItem,
   facts: ObserveWorkItemFacts,
-): { outcome: "ok"; snapshot: RunSnapshot } | { outcome: "feedback"; feedback: { reason: ObserveWorkItemFeedbackReason; message: string } } {
+):
+  | { outcome: "ok"; snapshot: RunSnapshot }
+  | { outcome: "feedback"; feedback: { reason: ObserveWorkItemFeedbackReason; message: string } } {
   const phaseString = RUN_PHASE_FOR_STATE[workItem.state];
   if (!VALID_PHASES.has(phaseString)) {
     return {
       outcome: "feedback",
-      feedback: { reason: ObserveWorkItemFeedbackReason.PhaseUnmapped, message: `work item state '${workItem.state}' mapped to unknown run phase '${phaseString}'` },
+      feedback: {
+        reason: ObserveWorkItemFeedbackReason.PhaseUnmapped,
+        message: `work item state '${workItem.state}' mapped to unknown run phase '${phaseString}'`,
+      },
     };
   }
 

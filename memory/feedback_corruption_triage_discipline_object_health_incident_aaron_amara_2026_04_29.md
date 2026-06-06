@@ -8,13 +8,13 @@ type: feedback
 
 ## Source
 
-Aaron 2026-04-29: *"you for sure need to make sure your future
-self remembers this, this is very important"* — after a Day-2
+Aaron 2026-04-29: _"you for sure need to make sure your future
+self remembers this, this is very important"_ — after a Day-2
 inventory pass surfaced two corrupt git objects on this repo.
 
-Amara synthesis 2026-04-29: *"A corrupt object is not a backlog
+Amara synthesis 2026-04-29: _"A corrupt object is not a backlog
 item. It is a substrate health incident. Do not prune the
-evidence while investigating lost evidence."*
+evidence while investigating lost evidence."_
 
 ## The rule (load-bearing)
 
@@ -86,11 +86,11 @@ object via the same potentially-corrupt repo proves nothing.
 includes reflogs as heads; `--no-reflogs` excludes them. So the
 correct frame distinguishes three reachability buckets:
 
-| Bucket | Definition |
-|---|---|
-| A | Live branch / tag / ref reachable (`git rev-list --objects --all`; per-ref scan) |
-| B | Reflog / stash / local-recovery reachable (default-fsck reach minus bucket A; `refs/stash` rev-list) |
-| C | Dangling / unreachable only (no live ref, no reflog, no stash reaches it) |
+| Bucket | Definition                                                                                           |
+| ------ | ---------------------------------------------------------------------------------------------------- |
+| A      | Live branch / tag / ref reachable (`git rev-list --objects --all`; per-ref scan)                     |
+| B      | Reflog / stash / local-recovery reachable (default-fsck reach minus bucket A; `refs/stash` rev-list) |
+| C      | Dangling / unreachable only (no live ref, no reflog, no stash reaches it)                            |
 
 **Reachability scan commands** (all read-only; per the soulfile-
 cleanliness rule below, run the raw dumps to a `/tmp` working
@@ -132,14 +132,14 @@ not the other way around.
 the reachability schema; once reachability is classified, this
 table picks the recovery path):
 
-| Bucket | Definition |
-|---|---|
-| RECOVERABLE_FROM_ORIGIN | Object exists in fresh clone with same SHA + type + size; recovery via re-clone or `git fetch --refetch` |
-| RECOVERABLE_FROM_OTHER_LOCAL_CLONE | Object exists in another local clone of the same repo |
-| DANGLING_CANDIDATE_NEEDS_CLASSIFICATION | Object is dangling/unreachable; may be lost substrate; per-object `git show` inspection needed |
-| CORRUPT_LOOSE_OBJECT | Loose object in `.git/objects/XX/YY*`; can't be unpacked locally |
-| CORRUPT_PACK_OBJECT | Object in pack file with data-stream error |
-| MISSING_UNRECOVERED | Not in current repo, not in origin, not in other local clones — lost substrate |
+| Bucket                                  | Definition                                                                                               |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| RECOVERABLE_FROM_ORIGIN                 | Object exists in fresh clone with same SHA + type + size; recovery via re-clone or `git fetch --refetch` |
+| RECOVERABLE_FROM_OTHER_LOCAL_CLONE      | Object exists in another local clone of the same repo                                                    |
+| DANGLING_CANDIDATE_NEEDS_CLASSIFICATION | Object is dangling/unreachable; may be lost substrate; per-object `git show` inspection needed           |
+| CORRUPT_LOOSE_OBJECT                    | Loose object in `.git/objects/XX/YY*`; can't be unpacked locally                                         |
+| CORRUPT_PACK_OBJECT                     | Object in pack file with data-stream error                                                               |
+| MISSING_UNRECOVERED                     | Not in current repo, not in origin, not in other local clones — lost substrate                           |
 
 ### Step 5: Repair plan (only after classification)
 
@@ -181,9 +181,9 @@ MISSING_UNRECOVERED              → record in lost-substrate ledger; substrate-
 
 Two corrupt objects identified during Day-2 inventory pass:
 
-| Object | Type | Size | Reachability bucket | Recovery-source bucket | Final classification |
-|---|---|---|---|---|---|
-| `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes | A (live) | RECOVERABLE_FROM_ORIGIN | Fresh-clone cat-file confirmed; recoverable via `git fetch --refetch` |
+| Object                                     | Type | Size                                                                     | Reachability bucket | Recovery-source bucket                 | Final classification                                                         |
+| ------------------------------------------ | ---- | ------------------------------------------------------------------------ | ------------------- | -------------------------------------- | ---------------------------------------------------------------------------- |
+| `9bf2daee3ce53c88633824f9532a0158aaa92ed9` | blob | 16,455,417 bytes                                                         | A (live)            | RECOVERABLE_FROM_ORIGIN                | Fresh-clone cat-file confirmed; recoverable via `git fetch --refetch`        |
 | `8d5e67fd313573855848705e4af114f3ff0eecbc` | blob | 439,327 bytes (intermediate `docs/hygiene-history/loop-tick-history.md`) | A (live local only) | LOCAL_ONLY (origin deleted the branch) | `CORRUPT_BLOB_REFERENCED_BY_LIVE_LOCAL_BRANCH_AND_STALE_REMOTE_TRACKING_REF` |
 
 **The `8d5e67fd` finding required three rounds of triage**
@@ -317,8 +317,8 @@ recipe, not multi-MB raw dumps. See
 
 ## Why this is in memory/, not just a doc
 
-Aaron emphasized: *"you for sure need to make sure your
-future self remembers this, this is very important."* Per the
+Aaron emphasized: _"you for sure need to make sure your
+future self remembers this, this is very important."_ Per the
 auto-memory protocol + Aaron's natural-home-of-memories-is-in-
 repo rule (2026-04-24), this is durable substrate that future-
 Claude must consult on cold-start when corruption is observed.

@@ -1,10 +1,6 @@
 import { equal } from "node:assert/strict";
 import { test } from "node:test";
-import {
-  MemoryOperation,
-  createInProcessMemory,
-  type MemoryAttribution,
-} from "../src/memory.ts";
+import { MemoryOperation, createInProcessMemory, type MemoryAttribution } from "../src/memory.ts";
 
 function attribution(overrides: Partial<MemoryAttribution> = {}): MemoryAttribution {
   return {

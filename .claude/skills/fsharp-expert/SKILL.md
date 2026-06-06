@@ -61,7 +61,7 @@ these.
 ## Generic-by-default (load-bearing in F#)
 
 F#'s generics + type inference make generic-by-default
-*nearly free* — frequently the compiler infers the most
+_nearly free_ — frequently the compiler infers the most
 general type signature on its own, with no annotation cost
 to the author. This skill therefore enforces generic-by-
 default harder on `.fs` files than on any other surface.
@@ -70,7 +70,7 @@ default harder on `.fs` files than on any other surface.
 extension point, the default question is "can this be
 generic?" not "should this be generic?". If the concrete
 type is load-bearing (e.g., an operator specialised to
-`ZEntry<int64>` for allocation reasons), document *why*
+`ZEntry<int64>` for allocation reasons), document _why_
 concretely; otherwise let inference widen.
 
 **Where it matters most in Zeta.**
@@ -138,7 +138,7 @@ visible.
 ## Idioms Zeta uses heavily
 
 - **Struct records for hot paths.** `[<Struct; IsReadOnly;
-  NoComparison; NoEquality>]` with explicit `val` fields —
+NoComparison; NoEquality>]` with explicit `val` fields —
   see `StreamHandle` and `OutputBuffer<'TOut>` in
   `src/Core/PluginApi.fs`. Avoid accidental boxing on the
   hot path.
@@ -167,7 +167,7 @@ visible.
   `PluginOperatorAdapter` in `src/Core/PluginApi.fs` is
   the pattern.
 - **Mixed-visibility property pitfall.** `member this.P
-  with get = ... and internal set v = ...` compiles but
+with get = ... and internal set v = ...` compiles but
   the IDE hover-doc is misleading. the `public-api-designer` caught this on
   `Op<'T>.Value` round 27; fix is a doc comment pointing
   at the setter's actual caller.
@@ -183,11 +183,11 @@ visible.
 - **`ref cell` vs `byref`.** F# `ref` cells are heap-
   allocated; `byref<'T>` is stack-rooted. Hot-path counters
   prefer `int ref` wrapped once + `Interlocked.Increment
-  (&x.contents)`. the `performance-engineer` benchmarks before choosing.
+(&x.contents)`. the `performance-engineer` benchmarks before choosing.
 - **`Seq` for one-shot, `Array`/`List` for multi-pass.**
   `Seq` is lazy; iterating twice does work twice. Lists
   are linked; `List.item n` is O(n). Prefer `|>
-  List.toArray` before any tick loop that indexes by
+List.toArray` before any tick loop that indexes by
   position (round-28 the `harsh-critic` P1 on `checkLinear`).
 
 ## Nullable reference types + `F#`

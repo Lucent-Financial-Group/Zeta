@@ -10,7 +10,7 @@ type: feedback
 
 Aaron 2026-05-05 verbatim:
 
-> *"ruole thress assume there is already an ortohoginal trjeactor for the thing and find it"*
+> _"ruole thress assume there is already an ortohoginal trjeactor for the thing and find it"_
 
 ## Composition with Rules #1 and #2
 
@@ -22,10 +22,10 @@ Rule #3 is the orthogonal-basis-discipline application. Composes with `feedback_
 
 ## How to apply
 
-When the impulse is *"I should add a workflow / cadence / lint / hook"*:
+When the impulse is _"I should add a workflow / cadence / lint / hook"_:
 
 1. **Catch the impulse.**
-2. **Apply Rule #3.** *"Assume an orthogonal trajectory already covers this axis. Where is the workflow / cadence / lint?"*
+2. **Apply Rule #3.** _"Assume an orthogonal trajectory already covers this axis. Where is the workflow / cadence / lint?"_
 3. **Search the trajectory surfaces:**
    - `ls .github/workflows/` — every existing workflow file
    - `ls tools/lint/` and `ls tools/hygiene/` — every lint script
@@ -37,7 +37,7 @@ When the impulse is *"I should add a workflow / cadence / lint / hook"*:
 ## Failure modes Rule #3 catches (this session, 2026-05-05)
 
 1. **Compression-cadence proposal** — would have stood up a parallel `claude-md-compression-cadence.yml` rank-deficient with `razor-cadence.yml` substrate-pruning axis.
-2. **Persona-name "Otto" in `.claude/skills/**`** — the `role-ref-current-state-surfaces-lint.yml` axis already exists; the gap is `paths:` scope (doesn't include `.claude/skills/**` + `.claude/agents/**`). Rule #3 says: extend the existing axis's scope, don't author a new lint.
+2. **Persona-name "Otto" in `.claude/skills/**`** — the `role-ref-current-state-surfaces-lint.yml`axis already exists; the gap is`paths:`scope (doesn't include`.claude/skills/**`+`.claude/agents/**`). Rule #3 says: extend the existing axis's scope, don't author a new lint.
 3. **PR-comment git-native archive impulse** — `memory/project_git_native_pr_review_archive_*.md` already exists with 5-phase plan. The trajectory is named; mechanization is owed. Rule #3 says: don't propose parallel; execute the existing phases.
 
 ## Composes with

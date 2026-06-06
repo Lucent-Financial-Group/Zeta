@@ -4,6 +4,7 @@ description: 2026-04-20 late; Aaron explicit refinement to the never-idle policy
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Gap-of-gaps audit
 
 ## Rule
@@ -11,7 +12,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 When speculative work is genuinely needed (never-idle step
 2 returned "no structural fix"), one of the highest-value
 modes is **auditing the factory's gap-analysis surfaces for
-gaps**. That is: look for *unexpected gap classes* that the
+gaps**. That is: look for _unexpected gap classes_ that the
 current set of audits / rankers / living-lists does not
 cover. When found:
 
@@ -26,7 +27,7 @@ cover. When found:
    predicts future coverage).
 
 The factory's gap-discovery repertoire **must self-extend**.
-Unexpected gaps *will* happen — the only question is whether
+Unexpected gaps _will_ happen — the only question is whether
 the next one of the same class gets caught.
 
 ## Aaron's verbatim statement (2026-04-20 late)
@@ -47,17 +48,18 @@ the next one of the same class gets caught.
 
 Key substrings:
 
-- *"look for gaps in gap analyss"* — the meta-audit itself.
-- *"gaps we didn't pre think of, unexpect gaps"* — the
-  *class* of gap the factory isn't yet looking for.
-- *"we make sure that class of gap is looked for from that
-  point on"* — the codification obligation. One-time
+- _"look for gaps in gap analyss"_ — the meta-audit itself.
+- _"gaps we didn't pre think of, unexpect gaps"_ — the
+  _class_ of gap the factory isn't yet looking for.
+- _"we make sure that class of gap is looked for from that
+  point on"_ — the codification obligation. One-time
   discovery is not enough; the class must enter the repertoire.
-- *"naturel flow of the software factory"* — framing: this
+- _"naturel flow of the software factory"_ — framing: this
   is part of the factory's normal self-maintenance, not an
   exceptional event.
 
 ## Speculative-work priority ordering (Aaron's "first things
+
 I would go")
 
 Explicit from the same statement:
@@ -66,7 +68,7 @@ Explicit from the same statement:
    gap-analysis surface.
 2. **Generative factory improvements** — structural
    additions ("just look for generaing impovments to our
-   factory"). Note: Aaron ranked this *equal or better*
+   factory"). Note: Aaron ranked this _equal or better_
    than (1) — "or even better." Generative > reactive.
 3. **Gap-of-gaps audit** — "another meta kind of things
    you could do." The audit-the-audits layer.
@@ -74,13 +76,13 @@ Explicit from the same statement:
    none of (1-3) produces work.
 
 The priority is not strict — Aaron's framing is soft. But
-the *ordering* of recommendations is clear: fix > generate >
+the _ordering_ of recommendations is clear: fix > generate >
 meta-audit > routine.
 
 ## Current factory gap-analysis surfaces (audit baseline)
 
-This list lets me recognise what is *already* covered so I
-can look for what is *not*. Drift-prone; refresh when
+This list lets me recognise what is _already_ covered so I
+can look for what is _not_. Drift-prone; refresh when
 skill-tune-up reports new audit surfaces.
 
 - `skill-tune-up` — skills by tune-up urgency
@@ -101,7 +103,7 @@ skill-tune-up reports new audit surfaces.
 - Matrix-mode skill-group coverage for adopted
   technologies.
 - Matrix-mode skill-group coverage for adopted
-  *strategies* (post-Event-Storming generalisation).
+  _strategies_ (post-Event-Storming generalisation).
 
 ## Example gap classes the baseline might miss (seed list)
 
@@ -137,7 +139,7 @@ questions.
 - **Frontmatter / body divergence** — every skill's
   frontmatter description still matches what the body
   actually does (BP-08 already exists; gap is whether
-  we're *checking*)?
+  we're _checking_)?
 - **Meta-win rate** — is the meta-wins log producing
   rows, or has meta-check stopped firing (per
   `feedback_meta_wins_tracked_separately.md` cadence
@@ -169,15 +171,15 @@ cover:
 5. **Log to `docs/research/meta-wins-log.md`** if the
    codification was the structural fix from a never-idle
    meta-check firing. Depth ≥ 2 is the common outcome
-   because codification *itself* predicts future
+   because codification _itself_ predicts future
    coverage.
 
 ## Why:
 
-- **Gaps are inevitable.** Aaron: *"gaps are gooing to
-  happen."* Factory cannot pre-think every class of gap
+- **Gaps are inevitable.** Aaron: _"gaps are gooing to
+  happen."_ Factory cannot pre-think every class of gap
   at design time. The honest engineering position is
-  to build gap-discovery that *adapts*.
+  to build gap-discovery that _adapts_.
 - **One-time fixes are first-aid; codification is the
   cure.** This is the same principle as never-idle
   step 2 (structural > speculative), applied at the
@@ -188,21 +190,21 @@ cover:
   production system hardens into when it stops
   improving. The rule keeps the repertoire alive.
 - **Compound-meta payoff.** A gap-of-gaps audit that
-  finds a new class *and* codifies it is a depth-2
+  finds a new class _and_ codifies it is a depth-2
   meta-win by construction. Multiple classes found in
   one tick is depth-3. The meta-wins log will see
   this.
 
 ## Cadence
 
-- No fixed cadence — the audit is a *mode*, not a ritual.
+- No fixed cadence — the audit is a _mode_, not a ritual.
 - Fire whenever (1) never-idle meta-check returned
   "no structural fix" AND (2) known-gap and generative
   options are exhausted for the moment AND (3) the
   tick has time for a proper audit (not a 60-second
   fragment).
 - Lower-bound expectation: at least once every 10
-  rounds the factory should produce *some* new gap-
+  rounds the factory should produce _some_ new gap-
   class codification. Zero for 10+ rounds is either
   "the factory is genuinely mature" (unlikely pre-v1)
   or "the meta-audit stopped firing" (regression).
@@ -211,7 +213,7 @@ cover:
 
 - `feedback_never_idle_speculative_work_over_waiting.md`
   — parent policy. This memory is the speculative-work
-  *priority ordering* extension.
+  _priority ordering_ extension.
 - `feedback_new_tech_triggers_skill_gap_closure.md`
   (Matrix-mode) — tech-coverage gap is one class of
   gap-class; strategy-coverage is another

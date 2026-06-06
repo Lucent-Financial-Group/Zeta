@@ -4,23 +4,25 @@ description: Aaron Otto-106 "Also it may not be obvious but any single point of 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-106 (verbatim):
 
-*"Also it may not be obvious but any single point of
+_"Also it may not be obvious but any single point of
 failures should be identified and fixed if possible this
-matters a lot once we start deploying"*
+matters a lot once we start deploying"_
 
 ## The rule
 
 **Single-point-of-failure (SPOF) identification is an
 ongoing discipline, not a one-shot audit.** Every time
-Otto ships substrate, also consider: *what becomes a SPOF
-when this lands?* Fix SPOFs where practical; flag them
+Otto ships substrate, also consider: _what becomes a SPOF
+when this lands?_ Fix SPOFs where practical; flag them
 where the fix is beyond current tick budget; never leave
 an unacknowledged SPOF in surface Otto just touched.
 
 "Not always obvious" is Aaron's explicit framing — SPOFs
 often hide in:
+
 - Single-threaded coordinator (control-plane singletons)
 - Single-disk / single-region / single-cloud / single-
   region-within-cloud assumptions
@@ -41,7 +43,7 @@ often hide in:
 
 ## Why: pre-deployment risk
 
-*"this matters a lot once we start deploying"*
+_"this matters a lot once we start deploying"_
 
 Zeta is currently single-node research-grade. Once
 deployment begins (v1 release, production operation,
@@ -65,6 +67,7 @@ magnitude harder.
 When shipping new substrate (like PR #295 RobustStats
 or PR #297 TemporalCoordinationDetection), the commit
 message or PR body calls out:
+
 1. **Identified SPOFs in the shipped surface** — if any.
 2. **Inherited SPOFs it depends on** — if any.
 3. **Mitigations applied this ship** — or explicit
@@ -78,6 +81,7 @@ absence-of-SPOF is explicit, not assumed.
 
 Beyond per-ship sweeps, a periodic (monthly? quarterly?)
 factory-wide audit:
+
 1. List all production-path surfaces (core runtime,
    build tooling, CI, release signing, deployment, ops).
 2. For each, ask: what single thing, if it failed,
@@ -93,6 +97,7 @@ first full audit lands.
 ### Pairing with existing invariants
 
 SPOF discipline pairs with:
+
 - **Retraction-native semantics** (Otto-73) — SPOF on
   the retraction path itself is existential; ensure
   retraction doesn't depend on the original writer

@@ -43,10 +43,7 @@ import { resolve } from "node:path";
 import { describe, expect, test } from "bun:test";
 
 const ROOT = resolve(import.meta.dir, "../..");
-const SCRIPT_PATH = resolve(
-  ROOT,
-  "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
-);
+const SCRIPT_PATH = resolve(ROOT, "full-ai-cluster/usb-nixos-installer/zeta-install.sh");
 const INSTALL_SCRIPT_PATH = resolve(ROOT, "tools/setup/install.sh");
 
 // Cache the script content — read once, asserted many times.
@@ -62,13 +59,9 @@ function extractStep(stepHeader: string, nextStepHeader: string | null): string 
   if (startIdx < 0) {
     throw new Error(`step header not found in installer script: ${stepHeader}`);
   }
-  const endIdx = nextStepHeader
-    ? SCRIPT.indexOf(nextStepHeader, startIdx + stepHeader.length)
-    : SCRIPT.length;
+  const endIdx = nextStepHeader ? SCRIPT.indexOf(nextStepHeader, startIdx + stepHeader.length) : SCRIPT.length;
   if (nextStepHeader && endIdx < 0) {
-    throw new Error(
-      `next step header not found after ${stepHeader}: ${nextStepHeader}`,
-    );
+    throw new Error(`next step header not found after ${stepHeader}: ${nextStepHeader}`);
   }
   return SCRIPT.slice(startIdx, endIdx);
 }
@@ -90,10 +83,7 @@ const ITER_42_BLOCK = extractStep(
   "Step 6.56: B-0852.3b cred-blob passphrase prompt",
 );
 
-const ITER_595_BLOCK = extractStep(
-  "Step 6.95: iter-5.5.0",
-  "Step 7: print initial credentials",
-);
+const ITER_595_BLOCK = extractStep("Step 6.95: iter-5.5.0", "Step 7: print initial credentials");
 
 describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
   test("the gh auth login branch is gated on user opt-in", () => {
@@ -136,18 +126,14 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
   });
 
   test("B-0835 Bug 2b fix: SSH_KEY_ERR_FILE is created via mktemp", () => {
-    expect(ITER_540_BLOCK).toMatch(
-      /SSH_KEY_ERR_FILE=\$\(mktemp [^)]+\)/,
-    );
+    expect(ITER_540_BLOCK).toMatch(/SSH_KEY_ERR_FILE=\$\(mktemp [^)]+\)/);
   });
 
   test("B-0835 Bug 2b fix: SSH_KEY_ERR_FILE is used as stderr redirect on gh ssh-key list", () => {
     // The fix: stderr must be captured so we can discriminate scope-error
     // from empty-list. If the redirect goes to /dev/null instead, the
     // discrimination silently fails.
-    expect(ITER_540_BLOCK).toMatch(
-      /gh ssh-key list --json [^ ]+ 2>"\$SSH_KEY_ERR_FILE"/,
-    );
+    expect(ITER_540_BLOCK).toMatch(/gh ssh-key list --json [^ ]+ 2>"\$SSH_KEY_ERR_FILE"/);
   });
 
   test("B-0835 Bug 2b fix: discriminates scope-error from empty-list", () => {
@@ -165,17 +151,13 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
   });
 
   test("B-0835 Bug 2b fix: empty-no-error branch points to settings/keys", () => {
-    expect(ITER_540_BLOCK).toContain(
-      "https://github.com/settings/keys",
-    );
+    expect(ITER_540_BLOCK).toContain("https://github.com/settings/keys");
   });
 
   test("B-0835 Bug 2b fix: cleans up SSH_KEY_ERR_FILE temp file", () => {
     // Trap-style cleanup or explicit rm -f. The current implementation uses
     // explicit rm -f at end of the block.
-    expect(ITER_540_BLOCK).toMatch(
-      /rm -f "\$SSH_KEY_ERR_FILE" 2>\/dev\/null \|\| true/,
-    );
+    expect(ITER_540_BLOCK).toMatch(/rm -f "\$SSH_KEY_ERR_FILE" 2>\/dev\/null \|\| true/);
   });
 
   test("GH_AUTH_OK=1 is set ONLY in the success branch of gh auth login", () => {
@@ -190,22 +172,13 @@ describe("iter-5.4.0 — gh auth + ssh-key flow (B-0835 Bug 2a + 2b)", () => {
 
 describe("B-0891 retained zflash credential preseed", () => {
   test("iter-4.2 copies the zflash-baked blob to target ESP before USB unmount", () => {
-    expect(ITER_42_BLOCK).toContain(
-      'BOOT_USB_CREDS_BLOB="$(dirname "$PUBKEY_FILE")/zeta-creds.enc"',
-    );
-    expect(ITER_42_BLOCK).toContain(
-      'sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc',
-    );
+    expect(ITER_42_BLOCK).toContain('BOOT_USB_CREDS_BLOB="$(dirname "$PUBKEY_FILE")/zeta-creds.enc"');
+    expect(ITER_42_BLOCK).toContain('sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc');
     expect(ITER_42_BLOCK).toContain("BOOT_USB_CREDS_PRESEEDED=1");
 
     const sourceIdx = ITER_42_BLOCK.indexOf("BOOT_USB_CREDS_BLOB=");
-    const copyIdx = ITER_42_BLOCK.indexOf(
-      'sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc',
-    );
-    const unmountIdx = ITER_42_BLOCK.indexOf(
-      'sudo umount "$PROBE_MOUNT"',
-      copyIdx,
-    );
+    const copyIdx = ITER_42_BLOCK.indexOf('sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc');
+    const unmountIdx = ITER_42_BLOCK.indexOf('sudo umount "$PROBE_MOUNT"', copyIdx);
     expect(sourceIdx).toBeGreaterThan(0);
     expect(copyIdx).toBeGreaterThan(sourceIdx);
     expect(unmountIdx).toBeGreaterThan(copyIdx);
@@ -215,9 +188,7 @@ describe("B-0891 retained zflash credential preseed", () => {
     expect(SCRIPT).toMatch(
       /if \[ "\$\{BOOT_USB_CREDS_PRESEEDED:-0\}" = "1" \] && \[ -f \/mnt\/boot\/zeta-creds\.enc \]; then\n\s+PICKER_OPT_OUT=1/,
     );
-    expect(SCRIPT).toContain(
-      "/mnt/boot/zeta-creds.enc already present from zflash retention preseed",
-    );
+    expect(SCRIPT).toContain("/mnt/boot/zeta-creds.enc already present from zflash retention preseed");
   });
 });
 
@@ -233,18 +204,14 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(ITER_595_BLOCK).toContain("tools/setup/install.sh");
     expect(ITER_595_BLOCK).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
     expect(ITER_595_BLOCK).toContain("ZETA_INSTALL_FULL=1");
-    expect(ITER_595_BLOCK).toContain("BUN_INSTALL=\"$ZETA_HOME/.bun\"");
+    expect(ITER_595_BLOCK).toContain('BUN_INSTALL="$ZETA_HOME/.bun"');
   });
 
   test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/agent-clis");
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/one-liner-tools");
-    expect(ITER_595_BLOCK).not.toContain(
-      "bun install --global @anthropic-ai/claude-code",
-    );
-    expect(ITER_595_BLOCK).not.toContain(
-      "bun install --global @google/gemini-cli",
-    );
+    expect(ITER_595_BLOCK).not.toContain("bun install --global @anthropic-ai/claude-code");
+    expect(ITER_595_BLOCK).not.toContain("bun install --global @google/gemini-cli");
     expect(ITER_595_BLOCK).not.toContain("bun install --global @openai/codex");
   });
 });
@@ -274,9 +241,7 @@ describe("iter-5.4.1 — self-registration commit+push flow (B-0812)", () => {
   test("ClusterNode YAML matches B-0813 schema: spec.registration block", () => {
     // Copilot finding on #5352: maintainer was at spec.maintainer (flat);
     // schema requires spec.registration.maintainer (nested block).
-    expect(ITER_541_BLOCK).toMatch(
-      /^ {2}registration:\n {4}maintainer: \$MAINTAINER/m,
-    );
+    expect(ITER_541_BLOCK).toMatch(/^ {2}registration:\n {4}maintainer: \$MAINTAINER/m);
   });
 
   test("ClusterNode YAML matches B-0813 schema: spec.hardware.storage nested", () => {
@@ -291,18 +256,14 @@ describe("iter-5.4.1 — self-registration commit+push flow (B-0812)", () => {
   test("Copilot finding on #5352: MAC parses field AFTER link/ether (not before)", () => {
     // Prior bug: `$(NF-2)` extracted `brd` not the MAC. Fix: loop until
     // `link/ether` found, then print field $(i+1).
-    expect(ITER_541_BLOCK).toMatch(
-      /for\(i=1;i<=NF;i\+\+\) if\(\$i=="link\/ether"\)\{print \$\(i\+1\); exit\}/,
-    );
+    expect(ITER_541_BLOCK).toMatch(/for\(i=1;i<=NF;i\+\+\) if\(\$i=="link\/ether"\)\{print \$\(i\+1\); exit\}/);
   });
 
   test("Self-reg branch name includes hostname + UTC timestamp", () => {
     // Convention: register-<NODE_HOSTNAME>-<YYYYMMDDTHHMMSSZ>. Catches
     // regression if someone changes the branch shape (would break the
     // cluster-side ArgoCD pattern that watches register-* branches).
-    expect(ITER_541_BLOCK).toMatch(
-      /REG_BRANCH="register-\$\{NODE_HOSTNAME\}-\$\(date -u \+%Y%m%dT%H%M%SZ\)"/,
-    );
+    expect(ITER_541_BLOCK).toMatch(/REG_BRANCH="register-\$\{NODE_HOSTNAME\}-\$\(date -u \+%Y%m%dT%H%M%SZ\)"/);
   });
 
   test("PR-create URL detection uses SELF_REG_PR_URL + writes /tmp marker", () => {
@@ -311,15 +272,11 @@ describe("iter-5.4.1 — self-registration commit+push flow (B-0812)", () => {
     // existence, not rely on subshell exports (subshells don't propagate
     // env to parent).
     expect(ITER_541_BLOCK).toContain("/tmp/zeta-self-reg-pr-url");
-    expect(ITER_541_BLOCK).toMatch(
-      /if \[ -s \/tmp\/zeta-self-reg-pr-url \]; then/,
-    );
+    expect(ITER_541_BLOCK).toMatch(/if \[ -s \/tmp\/zeta-self-reg-pr-url \]; then/);
   });
 
   test("cleanup: temp WORK_DIR + PR URL marker are removed", () => {
-    expect(ITER_541_BLOCK).toMatch(
-      /rm -rf "\$WORK_DIR" \/tmp\/zeta-self-reg-pr-url 2>\/dev\/null \|\| true/,
-    );
+    expect(ITER_541_BLOCK).toMatch(/rm -rf "\$WORK_DIR" \/tmp\/zeta-self-reg-pr-url 2>\/dev\/null \|\| true/);
   });
 });
 
@@ -341,8 +298,6 @@ describe("iter-5.4 substrate-honest framing (defense-in-depth assertions)", () =
   test("iter-5.4.1 names operator-overridable mock-cluster cleanup path", () => {
     // The skip branch should explicitly name where the manual re-run path
     // lives (post-install operator can re-run via tools/cluster/register-node.ts).
-    expect(ITER_541_BLOCK).toContain(
-      "tools/cluster/register-node.ts",
-    );
+    expect(ITER_541_BLOCK).toContain("tools/cluster/register-node.ts");
   });
 });

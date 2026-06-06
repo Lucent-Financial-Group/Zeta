@@ -15,7 +15,16 @@ composes_with:
   - B-0813
   - B-0815
   - B-0816
-tags: [cluster-tooling, register, operator-invocation, gh-auth, ts-rule-0-compliant, iter-5-4-sibling, symmetric-to-deregister]
+tags:
+  [
+    cluster-tooling,
+    register,
+    operator-invocation,
+    gh-auth,
+    ts-rule-0-compliant,
+    iter-5-4-sibling,
+    symmetric-to-deregister,
+  ]
 ---
 
 ## Problem

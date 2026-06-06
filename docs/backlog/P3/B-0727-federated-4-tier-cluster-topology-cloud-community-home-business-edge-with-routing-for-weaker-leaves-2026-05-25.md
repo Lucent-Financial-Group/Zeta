@@ -27,11 +27,11 @@ composes_with:
 
 Aaron 2026-05-25, sketching the federated topology during the Reticulum-throughout conversation (B-0726):
 
-> *"imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes"*
+> _"imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes"_
 
 Then immediately correcting the hierarchical reading I gave it:
 
-> *"and that's not a hierarchy it's weight free routing cloud/hub nodes don't get to hog net neutrality"*
+> _"and that's not a hierarchy it's weight free routing cloud/hub nodes don't get to hog net neutrality"_
 
 That's the load-bearing distinction. The framework's `default-to-both.md` + `additive-not-zero-sum.md` + `m-acc-multi-oracle-end-user-moral-invariants.md` + `non-coercion-invariant.md` + the 5-always-active substrate-engineering disciplines (scale-free + lock-free + weight-free + DST + DV2.0) all point at WEIGHT-FREE substrate. A hierarchical routing model would violate this — cloud-tier could censor / throttle / extract from lower tiers. Net neutrality at substrate layer is the discipline.
 
@@ -39,13 +39,13 @@ That's the load-bearing distinction. The framework's `default-to-both.md` + `add
 
 Reframing: these are profiles of resource availability + workload affinity, not levels of authority. A peer with cloud-class resources can run more workloads; that does NOT grant it routing privilege over peers with leaf-class resources.
 
-| Profile | Examples | Resource availability | Workload affinity |
-|---------|----------|----------------------|-------------------|
-| **Cloud / hub** | AWS / GCP / Azure / your-own-DC | Full GPU fleet, fast LAN, multi-region | Heavy training, model registry, cross-region archival |
-| **Community** | Shared regional infra; multi-owner co-op | Mid-size; spare capacity contributed | Burst inference, shared models, regional aggregation, civic compute |
-| **Home / business** | Owner-controlled (Aaron's tonight) | 2-NVMe + GPU + maybe Coral / NCS | Family / SMB workloads, owner-controlled inference, agent persistence |
-| **Edge** | Pi / Jetson / NUC in field | Single device + accelerator | Real-time inference, sensor aggregation, voluntary leaf-routing |
-| **Leaf** | Microcontrollers, RNode-class | $10-50 hardware, intermittent, battery | Sensor / actuator; rides voluntary stronger-peer routing; not K8s-class |
+| Profile             | Examples                                 | Resource availability                  | Workload affinity                                                       |
+| ------------------- | ---------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------- |
+| **Cloud / hub**     | AWS / GCP / Azure / your-own-DC          | Full GPU fleet, fast LAN, multi-region | Heavy training, model registry, cross-region archival                   |
+| **Community**       | Shared regional infra; multi-owner co-op | Mid-size; spare capacity contributed   | Burst inference, shared models, regional aggregation, civic compute     |
+| **Home / business** | Owner-controlled (Aaron's tonight)       | 2-NVMe + GPU + maybe Coral / NCS       | Family / SMB workloads, owner-controlled inference, agent persistence   |
+| **Edge**            | Pi / Jetson / NUC in field               | Single device + accelerator            | Real-time inference, sensor aggregation, voluntary leaf-routing         |
+| **Leaf**            | Microcontrollers, RNode-class            | $10-50 hardware, intermittent, battery | Sensor / actuator; rides voluntary stronger-peer routing; not K8s-class |
 
 ## Weight-free routing — the load-bearing property
 
@@ -64,13 +64,13 @@ If a cloud peer tried to leverage its resource advantage to throttle or surveil 
 
 ## Composes with the 5 always-active substrate-engineering disciplines
 
-| Discipline | How this row honors it |
-|------------|------------------------|
-| **Scale-free** | Same protocol at every scale (leaf microcontroller → cloud DC); no per-tier exception in routing protocol |
-| **Lock-free** | No global routing-authority lock; every peer makes local routing decisions; no consensus required for forwarding |
-| **Weight-free** | THIS IS THE ROW'S CARVED BLADE — resource availability ≠ authority weight; routing is rank-free |
-| **DST (deterministic simulation testing)** | Routing decisions are deterministic-per-peer (given identity + observed peers + local policy); reproducible failure modes |
-| **DV2.0 (data partition by change rate)** | Hub-satellite partition applies to peer types — peer identity = hub (stable); reachability state = satellite (fast-changing) |
+| Discipline                                 | How this row honors it                                                                                                       |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Scale-free**                             | Same protocol at every scale (leaf microcontroller → cloud DC); no per-tier exception in routing protocol                    |
+| **Lock-free**                              | No global routing-authority lock; every peer makes local routing decisions; no consensus required for forwarding             |
+| **Weight-free**                            | THIS IS THE ROW'S CARVED BLADE — resource availability ≠ authority weight; routing is rank-free                              |
+| **DST (deterministic simulation testing)** | Routing decisions are deterministic-per-peer (given identity + observed peers + local policy); reproducible failure modes    |
+| **DV2.0 (data partition by change rate)**  | Hub-satellite partition applies to peer types — peer identity = hub (stable); reachability state = satellite (fast-changing) |
 
 ## Composes with framework rules
 
@@ -103,30 +103,30 @@ The "routing for weaker leaves" pattern Aaron described is voluntary service-off
 
 ## The Internet analogy (where it composes, where it diverges)
 
-| Internet | This federation |
-|----------|-----------------|
-| Tier-1 ISPs settle-free peer; tier-2 pay tier-1 for transit | All peers are settle-free; voluntary routing contribution |
-| BGP routing tables; per-AS policy | Reticulum announce + per-peer policy |
-| DNS root authority (ICANN) | NO root authority — multi-oracle naming |
-| HTTPS-as-trust (CA hierarchy) | Cryptographic identity-as-trust (Reticulum / SPIRE-shaped); no CA hierarchy |
-| Net neutrality is a regulatory question | Net neutrality is a SUBSTRATE PROPERTY enforced at protocol |
-| Tier-1 can effectively control transit | No peer can effectively control transit; weight-free |
-| Vendor-controlled at the infrastructure layer | Owner-controlled at every peer |
+| Internet                                                    | This federation                                                             |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Tier-1 ISPs settle-free peer; tier-2 pay tier-1 for transit | All peers are settle-free; voluntary routing contribution                   |
+| BGP routing tables; per-AS policy                           | Reticulum announce + per-peer policy                                        |
+| DNS root authority (ICANN)                                  | NO root authority — multi-oracle naming                                     |
+| HTTPS-as-trust (CA hierarchy)                               | Cryptographic identity-as-trust (Reticulum / SPIRE-shaped); no CA hierarchy |
+| Net neutrality is a regulatory question                     | Net neutrality is a SUBSTRATE PROPERTY enforced at protocol                 |
+| Tier-1 can effectively control transit                      | No peer can effectively control transit; weight-free                        |
+| Vendor-controlled at the infrastructure layer               | Owner-controlled at every peer                                              |
 
 The Internet's tier-1 model is what this row consciously DOES NOT replicate. The Internet got the routing protocol right (BGP) but the AUTHORITY model wrong (hierarchical tiers + DNS root + CA hierarchy). This federation gets the routing protocol from Reticulum AND keeps the authority weight-free.
 
 ## Architectural layers (what each profile peer needs)
 
-| Layer | Cloud/hub | Community | Home/Business | Edge | Leaf |
-|-------|-----------|-----------|---------------|------|------|
-| K8s control plane | K8s native | K3S / K8s | K3S | K3S (single-node) or none | none |
-| Reticulum daemon | Yes (peer announce) | Yes | Yes (per node) | Yes | Native firmware (RNode) |
-| Identity issuer | Self-rooted; peers verify via web-of-trust | Same | Same | Same | Optional |
-| ArgoCD federation | ApplicationSet across consenting peers | Same | Same | Pulls from upstream peer | N/A |
-| Hat-system | Peer-local hat catalog; cross-peer hat-import via consent | Same | Same | Owner-deployed hats | N/A |
-| Storage | Longhorn HA + object store | Longhorn shared with consenting members | Longhorn (multi-disk) | Local NVMe or SD | EEPROM / flash |
-| Observability | Full stack | Aggregator + shipper | Local + shipper | Lightweight metrics | Batched upload |
-| Voluntary routing service | Cross-region aggregation, model registry | Burst inference, civic compute | Family / SMB workload host, sometimes-bridge | LoRa-to-Internet bridge, leaf-routing | None (consumes routing) |
+| Layer                     | Cloud/hub                                                 | Community                               | Home/Business                                | Edge                                  | Leaf                    |
+| ------------------------- | --------------------------------------------------------- | --------------------------------------- | -------------------------------------------- | ------------------------------------- | ----------------------- |
+| K8s control plane         | K8s native                                                | K3S / K8s                               | K3S                                          | K3S (single-node) or none             | none                    |
+| Reticulum daemon          | Yes (peer announce)                                       | Yes                                     | Yes (per node)                               | Yes                                   | Native firmware (RNode) |
+| Identity issuer           | Self-rooted; peers verify via web-of-trust                | Same                                    | Same                                         | Same                                  | Optional                |
+| ArgoCD federation         | ApplicationSet across consenting peers                    | Same                                    | Same                                         | Pulls from upstream peer              | N/A                     |
+| Hat-system                | Peer-local hat catalog; cross-peer hat-import via consent | Same                                    | Same                                         | Owner-deployed hats                   | N/A                     |
+| Storage                   | Longhorn HA + object store                                | Longhorn shared with consenting members | Longhorn (multi-disk)                        | Local NVMe or SD                      | EEPROM / flash          |
+| Observability             | Full stack                                                | Aggregator + shipper                    | Local + shipper                              | Lightweight metrics                   | Batched upload          |
+| Voluntary routing service | Cross-region aggregation, model registry                  | Burst inference, civic compute          | Family / SMB workload host, sometimes-bridge | LoRa-to-Internet bridge, leaf-routing | None (consumes routing) |
 
 Note: every "Identity issuer" row says **self-rooted; peers verify via web-of-trust**. There is no root CA. No tier has identity-issuance authority over another tier.
 

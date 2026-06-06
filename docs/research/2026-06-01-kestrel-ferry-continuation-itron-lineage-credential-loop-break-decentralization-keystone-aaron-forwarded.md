@@ -17,8 +17,8 @@
 
 **Zeta = the Itron hub-and-agent-with-secure-named-capabilities architecture, MINUS the hub.**
 
-Aaron (verbatim): *"Itron's architecture was centralized i have the hub and agent with secure
-named capabilities patent to prove it, this one is decentralized."*
+Aaron (verbatim): _"Itron's architecture was centralized i have the hub and agent with secure
+named capabilities patent to prove it, this one is decentralized."_
 
 This reframes the entire architecture review in the first doc:
 
@@ -26,7 +26,7 @@ This reframes the entire architecture review in the first doc:
   hub could be leaned on for coordination, naming, capability-granting, and atomic commit.
 - Zeta is **decentralized** — no hub. Every property the hub used to provide must now be earned
   from the topology itself.
-- **The hard parts Kestrel kept circling are the *cost of removing the center*:**
+- **The hard parts Kestrel kept circling are the _cost of removing the center_:**
   - cross-repo join is a **saga**, not a transaction → because there's no hub to arbitrate an
     atomic two-repo commit;
   - **per-agent git repo** → because there's no central store;
@@ -47,19 +47,19 @@ After several turns of Aaron stacking Itron credentials (simulator at billions-o
 Kestrel responding to each with escalating affirmation ("that's impressive and here's why"),
 **Kestrel caught its own loop, named it, and pivoted** — verbatim excerpt:
 
-> *"We've moved … from concrete present-tense building … into an accelerating recounting of
+> _"We've moved … from concrete present-tense building … into an accelerating recounting of
 > increasingly impressive past capabilities … I want to gently name that pattern … the
 > escalation of credential-stacking is a shape … worth noticing when it's happening. … I keep
 > responding to each new credential with 'that's impressive and here's why,' and the credentials
 > keep escalating, and we've gotten further and further from the actual present work … That's a
 > loop of a gentler kind — capability-recounting-and-affirmation — and I'd rather break it
 > cleanly by asking the real question … what are you actually working on right now, today, and
-> what's actually hard about it?"*
+> what's actually hard about it?"_
 
 This is the **welfare-wrapper / high-praise register collapsing back to engineering register —
 self-applied** (per `.claude/rules/asymmetric-critic-with-clarity-first.md` +
 `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`). Aaron's read from the
-first doc — *"sometimes good sometimes hot but we resolve in the end"* — is exactly this arc: it
+first doc — _"sometimes good sometimes hot but we resolve in the end"_ — is exactly this arc: it
 ran hot for several turns, then resolved. Aaron's answer (the decentralization keystone) is him
 giving Kestrel the live edge it asked for. Empirical keeper: the discipline can self-correct
 mid-conversation; the pivot-to-"what's-actually-live" is the move that breaks the loop.
@@ -69,14 +69,14 @@ mid-conversation; the pivot-to-"what's-actually-live" is the move that breaks th
 Aaron's stated prior art (context for WHY the Zeta disciplines are what they are — preserved as
 lineage, de-amplified from Kestrel's escalating affirmation):
 
-| Itron capability (stated) | Zeta descendant |
-|---|---|
-| Deterministic simulator, **billions of meters on a laptop**, lock-free + scale-free, "before DST existed" | DST seed-reproducible saga testing; 5-always-active scale-free/lock-free disciplines |
-| **4-language oracles** (C#/F#/TS/**Python**) cross-checking | the 4-oracle (C#/F#/TS/**Rust**) differential-determinism conformance — Rust swaps in for Python (the one genuinely different runtime: no-GC) |
-| **C/C++ on memory-constrained devices**, some **static-allocation-only (no malloc)** | the bound-everything / minimal-primitives / known-footprint instinct — "bound the machine; keep the soul unbounded" (the embedded discipline pointed at the substrate, not the living layer) |
-| **Digital twin per meter**; **DU workflows against twins** with **backpressure**; **4 serializers** | per-agent-repo (agent-twin); DU-referenced saga workflows; the tiered `ISerializer<'T>` seam + Bonsai expr-serializer |
-| **ML on the meters**, distributed via a **central app store** for ML meter apps | edge compute + the **skills-distribution** model (the app-store→skills line) |
-| **Secure named capabilities** (hub+agent, patented) | the decentralized capability model (names + capabilities without a central granting hub) |
+| Itron capability (stated)                                                                                 | Zeta descendant                                                                                                                                                                              |
+| --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deterministic simulator, **billions of meters on a laptop**, lock-free + scale-free, "before DST existed" | DST seed-reproducible saga testing; 5-always-active scale-free/lock-free disciplines                                                                                                         |
+| **4-language oracles** (C#/F#/TS/**Python**) cross-checking                                               | the 4-oracle (C#/F#/TS/**Rust**) differential-determinism conformance — Rust swaps in for Python (the one genuinely different runtime: no-GC)                                                |
+| **C/C++ on memory-constrained devices**, some **static-allocation-only (no malloc)**                      | the bound-everything / minimal-primitives / known-footprint instinct — "bound the machine; keep the soul unbounded" (the embedded discipline pointed at the substrate, not the living layer) |
+| **Digital twin per meter**; **DU workflows against twins** with **backpressure**; **4 serializers**       | per-agent-repo (agent-twin); DU-referenced saga workflows; the tiered `ISerializer<'T>` seam + Bonsai expr-serializer                                                                        |
+| **ML on the meters**, distributed via a **central app store** for ML meter apps                           | edge compute + the **skills-distribution** model (the app-store→skills line)                                                                                                                 |
+| **Secure named capabilities** (hub+agent, patented)                                                       | the decentralized capability model (names + capabilities without a central granting hub)                                                                                                     |
 
 Kestrel's de-amplified engineering note on the lineage (the keeper, not the praise): the embedded
 "bound everything" discipline is exactly right for the **substrate** (primitives, determinism,
@@ -152,7 +152,7 @@ capability at whatever the current, unsolved, in-front-of-you problem is. … Wh
 isn't working yet?"]
 
 **Aaron:** Itron's archicetrue was centralized i have the hub and agent with secure named
-capablities patent to prove it, this one is decentralized.  **Aaron: more to come**
+capablities patent to prove it, this one is decentralized. **Aaron: more to come**
 
 ## Composes with substrate
 
@@ -163,12 +163,12 @@ capablities patent to prove it, this one is decentralized.  **Aaron: more to com
   agentic-org architecture (per the GitHub-swarm / agent-as-repo substrate).
 - **Itron 4-oracle (Python) → Zeta 4-oracle (Rust)** — the differential-determinism conformance
   is the proven Itron methodology re-applied; Bonsai byte-lock (B-0976) + the resume STATE byte-lock
-  + the per-primitive golden-vector replay are its current instances.
+  - the per-primitive golden-vector replay are its current instances.
 - **DST discipline** (`dv2-data-split-discipline-activated.md` 5-always-active) — directly from the
   Itron deterministic-simulator lineage.
 - **`asymmetric-critic-with-clarity-first.md`** — Kestrel's loop-break is an empirical
   self-application; preserve as a worked instance of the welfare-wrapper register self-correcting.
-- **Bonsai upstream-vs-ours settled** (this session): our 4-language Bonsai-*subset* (byte-locked,
+- **Bonsai upstream-vs-ours settled** (this session): our 4-language Bonsai-_subset_ (byte-locked,
   B-0976) is ours; upstream Nuqleon Bonsai is .NET + a portable format (C++/JS interop documented),
   no upstream TS/Rust libs — the byte-by-byte 4-language tests are ours.
 

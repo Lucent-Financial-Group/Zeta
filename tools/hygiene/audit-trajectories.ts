@@ -49,20 +49,14 @@ interface SpawnResult {
   readonly exitCode: number;
 }
 
-async function runCmd(
-  cmd: readonly string[],
-  cwd: string = REPO_ROOT,
-): Promise<SpawnResult> {
+async function runCmd(cmd: readonly string[], cwd: string = REPO_ROOT): Promise<SpawnResult> {
   const proc = Bun.spawn({
     cmd: [...cmd],
     cwd,
     stdout: "pipe",
     stderr: "pipe",
   });
-  const [stdout, stderr] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-  ]);
+  const [stdout, stderr] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
   const exitCode = await proc.exited;
   return { stdout, stderr, exitCode };
 }
@@ -167,9 +161,7 @@ interface RunRollupItem {
 }
 
 async function axisCadenceWorkflows(ghAvailable: boolean): Promise<void> {
-  console.log(
-    "## 1. Scheduled cadence workflows (.github/workflows/*-cadence.yml)",
-  );
+  console.log("## 1. Scheduled cadence workflows (.github/workflows/*-cadence.yml)");
   const wfDir = join(REPO_ROOT, ".github", "workflows");
   const files = listFiles(wfDir, (n) => /-cadence\.yml$/.test(n));
   console.log(`Count: ${files.length}`);
@@ -205,9 +197,7 @@ async function axisCadenceWorkflows(ghAvailable: boolean): Promise<void> {
     // explicitly so auth/network breakage doesn't masquerade as
     // "no recent runs" cleanliness.
     if (r.exitCode !== 0) {
-      console.log(
-        `  SKIP: gh run list exited ${r.exitCode}; recent-runs unreliable. stderr: ${r.stderr.trim()}`,
-      );
+      console.log(`  SKIP: gh run list exited ${r.exitCode}; recent-runs unreliable. stderr: ${r.stderr.trim()}`);
       continue;
     }
     let runs: RunRollupItem[] = [];
@@ -221,9 +211,7 @@ async function axisCadenceWorkflows(ghAvailable: boolean): Promise<void> {
     } else {
       console.log("  Recent runs (last 5):");
       for (const run of runs) {
-        console.log(
-          `  ${run.createdAt ?? "?"} status=${run.status ?? "?"} conclusion=${run.conclusion ?? "n/a"}`,
-        );
+        console.log(`  ${run.createdAt ?? "?"} status=${run.status ?? "?"} conclusion=${run.conclusion ?? "n/a"}`);
       }
     }
   }
@@ -231,14 +219,9 @@ async function axisCadenceWorkflows(ghAvailable: boolean): Promise<void> {
 }
 
 async function axisLintWorkflows(ghAvailable: boolean): Promise<void> {
-  console.log(
-    "## 2. Event-driven lint / integrity workflows (*-lint.yml, *-integrity.yml)",
-  );
+  console.log("## 2. Event-driven lint / integrity workflows (*-lint.yml, *-integrity.yml)");
   const wfDir = join(REPO_ROOT, ".github", "workflows");
-  const files = listFiles(
-    wfDir,
-    (n) => /-lint\.yml$/.test(n) || /-integrity\.yml$/.test(n),
-  );
+  const files = listFiles(wfDir, (n) => /-lint\.yml$/.test(n) || /-integrity\.yml$/.test(n));
   console.log(`Count: ${files.length}`);
   for (const wf of files) {
     const name = basename(wf);
@@ -271,9 +254,7 @@ async function axisLintWorkflows(ghAvailable: boolean): Promise<void> {
     // Per PR #1702 review 2026-05-06: surface gh failures
     // so a non-zero exit isn't reported as "0 failures" cleanliness.
     if (r.exitCode !== 0) {
-      console.log(
-        `  SKIP: gh run list exited ${r.exitCode}; failure-count unreliable. stderr: ${r.stderr.trim()}`,
-      );
+      console.log(`  SKIP: gh run list exited ${r.exitCode}; failure-count unreliable. stderr: ${r.stderr.trim()}`);
       continue;
     }
     let runs: Array<{ conclusion?: string | null }> = [];
@@ -316,14 +297,9 @@ async function axisHooks(): Promise<void> {
 }
 
 async function axisHygieneTooling(): Promise<void> {
-  console.log(
-    "## 4. Hygiene tooling cadence (tools/hygiene/audit-*.sh + audit-*.ts)",
-  );
+  console.log("## 4. Hygiene tooling cadence (tools/hygiene/audit-*.sh + audit-*.ts)");
   const dir = join(REPO_ROOT, "tools", "hygiene");
-  const files = listFiles(
-    dir,
-    (n) => /^audit-.*\.(sh|ts)$/.test(n),
-  );
+  const files = listFiles(dir, (n) => /^audit-.*\.(sh|ts)$/.test(n));
   console.log(`Count: ${files.length}`);
   for (const tf of files) {
     const rel = tf.replace(`${REPO_ROOT}/`, "");
@@ -340,9 +316,7 @@ interface IssueJson {
 }
 
 async function axisRazorCadence(ghAvailable: boolean): Promise<void> {
-  console.log(
-    "## 5. Razor-cadence tracking issues (gh label razor-cadence, open)",
-  );
+  console.log("## 5. Razor-cadence tracking issues (gh label razor-cadence, open)");
   if (!ghAvailable) {
     console.log("SKIP: gh CLI not available");
     console.log("");
@@ -370,9 +344,7 @@ async function axisRazorCadence(ghAvailable: boolean): Promise<void> {
   // a non-zero exit. A failed gh call would otherwise print "Count: 0"
   // -- identical to genuine cleanliness -- masking real cadence skips.
   if (r.exitCode !== 0) {
-    console.log(
-      `SKIP: gh issue list exited ${r.exitCode}; razor-cadence count unreliable. stderr: ${r.stderr.trim()}`,
-    );
+    console.log(`SKIP: gh issue list exited ${r.exitCode}; razor-cadence count unreliable. stderr: ${r.stderr.trim()}`);
     console.log("");
     return;
   }
@@ -385,18 +357,12 @@ async function axisRazorCadence(ghAvailable: boolean): Promise<void> {
   console.log(`Count: ${issues.length}`);
   if (issues.length > 0) {
     console.log("Open issues (sorted by age):");
-    const sorted = [...issues].sort((a, b) =>
-      a.createdAt.localeCompare(b.createdAt),
-    );
+    const sorted = [...issues].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     for (const iss of sorted.slice(0, 20)) {
-      console.log(
-        `  #${iss.number} created=${iss.createdAt} -- ${iss.title}`,
-      );
+      console.log(`  #${iss.number} created=${iss.createdAt} -- ${iss.title}`);
     }
     console.log("");
-    console.log(
-      "Triage: age IS the cadence-skip signal (per B-0192). Older = more overdue.",
-    );
+    console.log("Triage: age IS the cadence-skip signal (per B-0192). Older = more overdue.");
   }
   console.log("");
 }
@@ -431,12 +397,8 @@ async function main(): Promise<number> {
   console.log(`# Trajectory audit (${nowIso()})`);
   console.log("");
   console.log(`Repo: ${REPO_ROOT}`);
-  console.log(
-    "Sibling: tools/hygiene/audit-lost-files.ts (lost-files axis)",
-  );
-  console.log(
-    "Discipline: orthogonal-axes (memory/feedback_orthogonal_axes_factory_hygiene.md)",
-  );
+  console.log("Sibling: tools/hygiene/audit-lost-files.ts (lost-files axis)");
+  console.log("Discipline: orthogonal-axes (memory/feedback_orthogonal_axes_factory_hygiene.md)");
   console.log("");
 
   const ghAvailable = await hasCommand("gh");
@@ -450,12 +412,8 @@ async function main(): Promise<number> {
   axisAgents();
 
   console.log("## Summary");
-  console.log(
-    "Audit complete. Sibling: tools/hygiene/audit-lost-files.ts.",
-  );
-  console.log(
-    "Triage: per-axis. Aging razor-cadence issues = mechanization-firing-but-pass-not-run.",
-  );
+  console.log("Audit complete. Sibling: tools/hygiene/audit-lost-files.ts.");
+  console.log("Triage: per-axis. Aging razor-cadence issues = mechanization-firing-but-pass-not-run.");
   console.log("Stale hook / tool last-modified-date = trajectory drift candidate.");
   return 0;
 }
@@ -464,9 +422,7 @@ if (import.meta.main) {
   main().then(
     (code) => process.exit(code),
     (err) => {
-      process.stderr.write(
-        `fatal: ${err instanceof Error ? err.message : String(err)}\n`,
-      );
+      process.stderr.write(`fatal: ${err instanceof Error ? err.message : String(err)}\n`);
       process.exit(1);
     },
   );

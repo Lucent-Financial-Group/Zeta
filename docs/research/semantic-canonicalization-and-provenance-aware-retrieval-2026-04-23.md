@@ -39,9 +39,9 @@ baseline per SD-9.
 
 ## Why this spine belongs in Zeta
 
-Amara's 8th-ferry observation: *"the repo already contains
+Amara's 8th-ferry observation: _"the repo already contains
 almost all the pieces for a provenance-aware semantic
-bullshit detector."* The pieces:
+bullshit detector."_ The pieces:
 
 - **SD-9** (`docs/ALIGNMENT.md`, PR #252) — agreement is
   signal, not proof; carrier-aware independence
@@ -117,12 +117,12 @@ stripped; meaning-carrying content preserved.
 
 ### Properties N must have
 
-| Property | Statement |
-|---|---|
-| **Idempotent** | N(N(x)) = N(x). Running canonicalization twice is the same as once. |
-| **Deterministic** | Same x → same N(x), always. Required for replay determinism. |
-| **Meaning-preserving** | Two inputs that a human would call "the same claim" canonicalise to the same output (ideally) or at least to outputs that a downstream embedding places close together. |
-| **Version-pinned** | N has a version; canonical forms carry that version in provenance. Changing N requires a governance / ADR-gated update — not a routine code edit — because it invalidates every existing canonical form computed under the prior version. |
+| Property               | Statement                                                                                                                                                                                                                                 |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Idempotent**         | N(N(x)) = N(x). Running canonicalization twice is the same as once.                                                                                                                                                                       |
+| **Deterministic**      | Same x → same N(x), always. Required for replay determinism.                                                                                                                                                                              |
+| **Meaning-preserving** | Two inputs that a human would call "the same claim" canonicalise to the same output (ideally) or at least to outputs that a downstream embedding places close together.                                                                   |
+| **Version-pinned**     | N has a version; canonical forms carry that version in provenance. Changing N requires a governance / ADR-gated update — not a routine code edit — because it invalidates every existing canonical form computed under the prior version. |
 
 ### What N does NOT do
 
@@ -157,8 +157,8 @@ cross-version reconciliation.
 - **For structured claims:** sort keys alphabetically;
   normalise whitespace in values; version-tag the schema.
 - **For code / diffs:** AST-level canonicalization (format
-  + rename-collapse + comment-strip for similarity; keep
-  literal for provenance).
+  - rename-collapse + comment-strip for similarity; keep
+    literal for provenance).
 
 Exact choices are downstream design questions. The
 property constraints above are what the spine commits to.
@@ -184,12 +184,12 @@ fine rerank within bucket).
 
 ### Properties φ must have
 
-| Property | Statement |
-|---|---|
+| Property                                            | Statement                                                                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | **Similar canonical forms → close representations** | `sim(e_c1, e_c2)` is monotonically related to claim-similarity as a human would judge it. The whole point of semantic indexing. |
-| **Version-pinned** | φ has a version; mixing embeddings across versions is either forbidden or explicitly reconciled. |
-| **Bounded compute** | φ(c) completes in bounded time per input; unbounded compute breaks replay-determinism. |
-| **Reproducible** | Same c → same e, under same φ version. Deterministic model inference. |
+| **Version-pinned**                                  | φ has a version; mixing embeddings across versions is either forbidden or explicitly reconciled.                                |
+| **Bounded compute**                                 | φ(c) completes in bounded time per input; unbounded compute breaks replay-determinism.                                          |
+| **Reproducible**                                    | Same c → same e, under same φ version. Deterministic model inference.                                                           |
 
 ### Locality-sensitive hashing as complement
 
@@ -287,12 +287,12 @@ bullshitRisk(q) = 1 - max_{y ∈ C(q)} score(y | q)
 
 Each term is a substrate commitment:
 
-| Term | What it measures | Where it lives |
-|---|---|---|
-| `α · sim` | Semantic closeness between query and candidate | Representation layer + kNN |
-| `β · evidence` | Independent evidence associated with candidate (falsifiers run; reproducible measurements; citations outside the query's provenance cone) | Citations-as-first-class graph |
-| `γ · carrierOverlap` | Fraction of candidate's provenance cone that overlaps the query's provenance cone (shared ferries, shared memory files, shared drafting lineage) | Provenance-graph traversal |
-| `δ · contradiction` | Load of known contradictions involving this candidate | Retraction ledger |
+| Term                 | What it measures                                                                                                                                 | Where it lives                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
+| `α · sim`            | Semantic closeness between query and candidate                                                                                                   | Representation layer + kNN     |
+| `β · evidence`       | Independent evidence associated with candidate (falsifiers run; reproducible measurements; citations outside the query's provenance cone)        | Citations-as-first-class graph |
+| `γ · carrierOverlap` | Fraction of candidate's provenance cone that overlaps the query's provenance cone (shared ferries, shared memory files, shared drafting lineage) | Provenance-graph traversal     |
+| `δ · contradiction`  | Load of known contradictions involving this candidate                                                                                            | Retraction ledger              |
 
 The full scoring formulation (parameter choice,
 α/β/γ/δ tuning, output bands, composition with oracle-
@@ -322,12 +322,12 @@ These are flagged here; candidate #3 addresses them head-on.
 
 Per Amara's 8th-ferry framing:
 
-> *"The 'table' should not be a mutable truth database
+> _"The 'table' should not be a mutable truth database
 > that overwrites prior judgments. It should be a
 > Zeta-style retractable ledger of canonical patterns:
 > known-good patterns, known-bad patterns, superseded
 > patterns, unresolved patterns, and provenance edges
-> between them."*
+> between them."_
 
 Ledger schema (Zeta-native event algebra):
 
@@ -381,16 +381,16 @@ outside the event stream.
 
 ## Composition with existing Zeta substrate
 
-| Existing substrate | Spine composition |
-|---|---|
-| SD-9 (PR #252) | Scoring's γ·carrierOverlap operationalises SD-9's "downgrade independence when carriers exist." SD-9 is norm; spine is mechanism. |
-| DRIFT-TAXONOMY pattern 5 (PR #238) | Scoring's low-max-score output = pattern-5 live detection. Pattern is diagnostic; spine is the detection engine. |
-| citations-as-first-class | Provenance edges + lineage tracer are the substrate spine's scoring uses. Citations-first-class defines the graph; spine consumes it. |
-| alignment-observability | Anti-gaming + compliance-theatre-resistance discipline applies to parameter choices. No self-attested α/β/γ/δ. |
-| Oracle-scoring v0 (PR #266) | Band-valued output pattern applies: RED/YELLOW/GREEN for `bullshitRisk` not decimal score. Parameter-change-ADR-gate applies. |
-| BLAKE3 receipt hashing v0 (PR #268) | parameter_file_sha binding pattern extends to N-version and φ-version pinning. Every retrieval event bound to versions in force. |
-| Quantum-sensing analogies (PR #278) | Analogies #2 correlation-beats-isolation (kNN retrieval) + #4 decoherence (γ·carrierOverlap) slot into this spine directly. |
-| KSK-as-Zeta-module (PR #259 7th ferry) | Same module pattern: event streams + materialised views. PatternLedger fits as peer to BudgetStore / ReceiptLedger / DisputeState. |
+| Existing substrate                     | Spine composition                                                                                                                     |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| SD-9 (PR #252)                         | Scoring's γ·carrierOverlap operationalises SD-9's "downgrade independence when carriers exist." SD-9 is norm; spine is mechanism.     |
+| DRIFT-TAXONOMY pattern 5 (PR #238)     | Scoring's low-max-score output = pattern-5 live detection. Pattern is diagnostic; spine is the detection engine.                      |
+| citations-as-first-class               | Provenance edges + lineage tracer are the substrate spine's scoring uses. Citations-first-class defines the graph; spine consumes it. |
+| alignment-observability                | Anti-gaming + compliance-theatre-resistance discipline applies to parameter choices. No self-attested α/β/γ/δ.                        |
+| Oracle-scoring v0 (PR #266)            | Band-valued output pattern applies: RED/YELLOW/GREEN for `bullshitRisk` not decimal score. Parameter-change-ADR-gate applies.         |
+| BLAKE3 receipt hashing v0 (PR #268)    | parameter_file_sha binding pattern extends to N-version and φ-version pinning. Every retrieval event bound to versions in force.      |
+| Quantum-sensing analogies (PR #278)    | Analogies #2 correlation-beats-isolation (kNN retrieval) + #4 decoherence (γ·carrierOverlap) slot into this spine directly.           |
+| KSK-as-Zeta-module (PR #259 7th ferry) | Same module pattern: event streams + materialised views. PatternLedger fits as peer to BudgetStore / ReceiptLedger / DisputeState.    |
 
 No new substrate added; existing pieces compose.
 

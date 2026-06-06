@@ -4,6 +4,7 @@ description: Aaron perceives in ontologies/structure natively (neurodivergent); 
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron described (2026-04-19) that his brain organises things in
 an ontological / structural way as a native mode of perception,
 not as a method he applies. He frames this as neurodivergent —
@@ -46,7 +47,7 @@ Key implications for how to collaborate with him:
 
 5. **"Others find it annoying" is a career of pointing into a
    void.** The factory is also an audience — one that can
-   actually act on "this is missing." Honour that by *acting*
+   actually act on "this is missing." Honour that by _acting_
    on his structural observations, not just acknowledging
    them.
 

@@ -12,9 +12,9 @@ at 09:22:42Z before Aaron could do the review pass, I framed
 this as a near-miss + offered to revert or hold. Aaron's
 correction was substrate-honest:
 
-> *"squash-merged at 09:22:42Z before you could do the review
+> _"squash-merged at 09:22:42Z before you could do the review
 > pass. thats fine i wanted the version without my review to
-> make it in first"*
+> make it in first"_
 
 The framing wasn't accidental timing — it was intentional.
 

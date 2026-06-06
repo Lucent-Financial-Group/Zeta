@@ -382,10 +382,7 @@ describe("helpers", () => {
   });
 
   test("leadTimeSeconds: 30min lead time", () => {
-    const sec = leadTimeSeconds(
-      "2026-05-28T00:00:00Z",
-      "2026-05-28T00:30:00Z",
-    );
+    const sec = leadTimeSeconds("2026-05-28T00:00:00Z", "2026-05-28T00:30:00Z");
     expect(sec).toBe(1800);
   });
 });

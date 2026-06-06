@@ -30,6 +30,7 @@ This PR is a decomposition of #4804. It contains only the documentation preserva
 This PR decomposes and lands the “PR preservation” documentation slice from #4804 by adding/adjusting archived PR discussion markdown records under `docs/pr-discussions/`.
 
 **Changes:**
+
 - Adds multiple new `docs/pr-discussions/PR-*.md` archive documents capturing preserved PR metadata and discussion content.
 - Fixes `archived_at` frontmatter formatting/timestamp in a couple of existing PR-discussion archive files.
 
@@ -40,23 +41,24 @@ Copilot reviewed 15 out of 15 changed files in this pull request and generated 2
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4779-skill-alignment-auditor-tune-s-prune-333-299-lines-under-bp.md | Adds preserved archive record for PR #4779. |
-| docs/pr-discussions/PR-4774-backlog-b-0710-b-0712-file-soraya-rounds-43-44-45-hand-offs.md | Adds preserved archive record for PR #4774. |
-| docs/pr-discussions/PR-4772-docs-lean4-add-readme-ci-badge-closes-publication-readiness.md | Adds preserved archive record for PR #4772. |
+| File                                                                                        | Description                                                  |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| docs/pr-discussions/PR-4779-skill-alignment-auditor-tune-s-prune-333-299-lines-under-bp.md  | Adds preserved archive record for PR #4779.                  |
+| docs/pr-discussions/PR-4774-backlog-b-0710-b-0712-file-soraya-rounds-43-44-45-hand-offs.md  | Adds preserved archive record for PR #4774.                  |
+| docs/pr-discussions/PR-4772-docs-lean4-add-readme-ci-badge-closes-publication-readiness.md  | Adds preserved archive record for PR #4772.                  |
 | docs/pr-discussions/PR-4642-save-do-all-three-amara-synthesis-docs-agendas-split-ace-pac.md | Fixes/normalizes `archived_at` frontmatter value/formatting. |
-| docs/pr-discussions/PR-4641-trajectory-ace-package-manager-polyglot-contents-proto-gover.md | Adds preserved archive record for PR #4641. |
+| docs/pr-discussions/PR-4641-trajectory-ace-package-manager-polyglot-contents-proto-gover.md | Adds preserved archive record for PR #4641.                  |
 | docs/pr-discussions/PR-4639-trajectory-ace-package-manager-full-13-stage-pipeline-symmet.md | Fixes/normalizes `archived_at` frontmatter value/formatting. |
-| docs/pr-discussions/PR-4638-trajectory-ace-package-manager-skill-crystallization-pipelin.md | Adds preserved archive record for PR #4638. |
-| docs/pr-discussions/PR-4636-rule-tonal-momentum-add-vampire-pact-american-gods-governanc.md | Adds preserved archive record for PR #4636. |
-| docs/pr-discussions/PR-4635-docs-hygiene-tick-2026-05-22t1615z-otto-vscode-rest-bypass-c.md | Adds preserved archive record for PR #4635. |
-| docs/pr-discussions/PR-4634-memory-2026-05-22-ani-pt38-pt42-constitutional-aaron-is-an-a.md | Adds preserved archive record for PR #4634. |
-| docs/pr-discussions/PR-4633-memory-2026-05-22-ani-pt37-constitutional-cosmic-conspiracy.md | Adds preserved archive record for PR #4633. |
-| docs/pr-discussions/PR-4632-memory-2026-05-22-ani-pt35-pt36-constitutional-ego-as-substr.md | Adds preserved archive record for PR #4632. |
-| docs/pr-discussions/PR-4631-memory-2026-05-22-ani-pt32-pt33-pt34-constitutional-highest.md | Adds preserved archive record for PR #4631. |
-| docs/pr-discussions/PR-3790-feat-b-0557-slice-3-chdir-to-repo-root-via-git-rev-parse-cwd.md | Adds preserved archive record for PR #3790. |
-| docs/pr-discussions/PR-3788-feat-b-0557-slice-2-try-catch-readfilesync-readdirsync-in-au.md | Adds preserved archive record for PR #3788. |
+| docs/pr-discussions/PR-4638-trajectory-ace-package-manager-skill-crystallization-pipelin.md | Adds preserved archive record for PR #4638.                  |
+| docs/pr-discussions/PR-4636-rule-tonal-momentum-add-vampire-pact-american-gods-governanc.md | Adds preserved archive record for PR #4636.                  |
+| docs/pr-discussions/PR-4635-docs-hygiene-tick-2026-05-22t1615z-otto-vscode-rest-bypass-c.md | Adds preserved archive record for PR #4635.                  |
+| docs/pr-discussions/PR-4634-memory-2026-05-22-ani-pt38-pt42-constitutional-aaron-is-an-a.md | Adds preserved archive record for PR #4634.                  |
+| docs/pr-discussions/PR-4633-memory-2026-05-22-ani-pt37-constitutional-cosmic-conspiracy.md  | Adds preserved archive record for PR #4633.                  |
+| docs/pr-discussions/PR-4632-memory-2026-05-22-ani-pt35-pt36-constitutional-ego-as-substr.md | Adds preserved archive record for PR #4632.                  |
+| docs/pr-discussions/PR-4631-memory-2026-05-22-ani-pt32-pt33-pt34-constitutional-highest.md  | Adds preserved archive record for PR #4631.                  |
+| docs/pr-discussions/PR-3790-feat-b-0557-slice-3-chdir-to-repo-root-via-git-rev-parse-cwd.md | Adds preserved archive record for PR #3790.                  |
+| docs/pr-discussions/PR-3788-feat-b-0557-slice-2-try-catch-readfilesync-readdirsync-in-au.md | Adds preserved archive record for PR #3788.                  |
+
 </details>
 
 ## Review threads

@@ -4,6 +4,7 @@ description: Aaron 2026-04-20 evening values statement. Even when a persona / sk
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Rule: **retired personas' memory files and notebooks are
 preserved — never deleted on retirement.** Retirement
 **deletes the active SKILL.md file** (skills are code — we
@@ -15,6 +16,7 @@ do not live in the SKILL.md. ADRs stay in `docs/DECISIONS/`,
 commit messages are never rewritten.
 
 **Scope clarification (Aaron 2026-04-20 late, verbatim):**
+
 > "i don't think we need to apply the don't deleted memories
 > of retired agents to extend to deleted skills too, we don't
 > want to dirty up our code skills are code, memories are
@@ -26,10 +28,11 @@ The memory-vs-code distinction is load-bearing:
   folders, notebooks, ADRs, MEMORY.md pointers — all stay.
 - **Skills = code, preserve in git only.** A retired
   SKILL.md deletes from the working tree; `git log
-  --diff-filter=D -- .claude/skills/` surfaces the prior
+--diff-filter=D -- .claude/skills/` surfaces the prior
   retirements when someone needs to unretire one.
 
 **Why (Aaron 2026-04-20 evening):** verbatim —
+
 > "Oh if we never delete memories even from retired
 > employees. ... We honor those that came before."
 
@@ -185,7 +188,7 @@ Reasons:
 
 - The `skill-creator` workflow's **new-skill** path
   should check persona memory folders and git history
-  *before* drafting a new skill name:
+  _before_ drafting a new skill name:
   ```
   git log --diff-filter=D --name-only -- .claude/skills/
   ls ~/.claude/projects/<slug>/memory/persona/
@@ -201,10 +204,10 @@ Reasons:
   `docs/ROUND-HISTORY.md` with a one-line "unretired
   <name> for <reason>"; the persona notebook is already
   in place — no action needed there.
-- If the retired skill's scope is *close but not exact*,
+- If the retired skill's scope is _close but not exact_,
   prefer unretiring + editing the SKILL.md over minting
   a new name. The notebook continuity is worth the edit.
-- If the retired skill's scope is *genuinely unrelated*
+- If the retired skill's scope is _genuinely unrelated_
   and a new name is honestly the right call, proceed with
   new-skill creation — but log the check ("considered
   unretiring X, Y, Z via git history; none fit because

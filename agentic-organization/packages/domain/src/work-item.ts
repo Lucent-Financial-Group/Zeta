@@ -11,11 +11,7 @@
  * time the same way observe.ts vetoes options that require an unapproved gate.
  */
 
-import {
-  WorkItemState,
-  WorkItemType,
-  baseLegalNextStates,
-} from "./work-item-state-machine.ts";
+import { WorkItemState, WorkItemType, baseLegalNextStates } from "./work-item-state-machine.ts";
 import type { WorkItem } from "./records.ts";
 
 /** A legal transition + the gates that must be approved before it may be taken. */
@@ -47,7 +43,11 @@ const key = (from: WorkItemState, to: WorkItemState): string => `${from}->${to}`
 const FEATURE_GATES: Readonly<Record<string, readonly string[]>> = {
   [key(WorkItemState.Triage, WorkItemState.Ready)]: ["brd_approval", "architecture_approval"],
   [key(WorkItemState.InProgress, WorkItemState.Review)]: ["implementation_review"],
-  [key(WorkItemState.Review, WorkItemState.Done)]: ["runtime_validation", "final_business_validation", "release_readiness"],
+  [key(WorkItemState.Review, WorkItemState.Done)]: [
+    "runtime_validation",
+    "final_business_validation",
+    "release_readiness",
+  ],
 };
 
 const DEFECT_GATES: Readonly<Record<string, readonly string[]>> = {
@@ -59,15 +59,51 @@ const DEFECT_GATES: Readonly<Record<string, readonly string[]>> = {
 const NO_GATES: Readonly<Record<string, readonly string[]>> = {};
 
 export const WORKFLOW_POLICIES: Readonly<Record<WorkItemType, WorkflowPolicy>> = {
-  [WorkItemType.Goal]: { workItemType: WorkItemType.Goal, ownerDepartmentId: "product_and_customer_discovery", gatesByTransition: { [key(WorkItemState.Triage, WorkItemState.Ready)]: ["brd_approval"] } },
-  [WorkItemType.Report]: { workItemType: WorkItemType.Report, ownerDepartmentId: "observability_and_evidence", gatesByTransition: NO_GATES },
-  [WorkItemType.ServiceRequest]: { workItemType: WorkItemType.ServiceRequest, ownerDepartmentId: "operations_and_infrastructure", gatesByTransition: NO_GATES },
-  [WorkItemType.Task]: { workItemType: WorkItemType.Task, ownerDepartmentId: "engineering", gatesByTransition: FEATURE_GATES },
-  [WorkItemType.Defect]: { workItemType: WorkItemType.Defect, ownerDepartmentId: "engineering", gatesByTransition: DEFECT_GATES },
-  [WorkItemType.CapabilityRequest]: { workItemType: WorkItemType.CapabilityRequest, ownerDepartmentId: "capability_and_automation_expansion", gatesByTransition: { [key(WorkItemState.Triage, WorkItemState.Ready)]: ["architecture_approval"] } },
-  [WorkItemType.Review]: { workItemType: WorkItemType.Review, ownerDepartmentId: "engineering_management", gatesByTransition: NO_GATES },
-  [WorkItemType.Incident]: { workItemType: WorkItemType.Incident, ownerDepartmentId: "operations_and_infrastructure", gatesByTransition: NO_GATES },
-  [WorkItemType.Release]: { workItemType: WorkItemType.Release, ownerDepartmentId: "delivery_and_release", gatesByTransition: { [key(WorkItemState.Review, WorkItemState.Done)]: ["release_readiness"] } },
+  [WorkItemType.Goal]: {
+    workItemType: WorkItemType.Goal,
+    ownerDepartmentId: "product_and_customer_discovery",
+    gatesByTransition: { [key(WorkItemState.Triage, WorkItemState.Ready)]: ["brd_approval"] },
+  },
+  [WorkItemType.Report]: {
+    workItemType: WorkItemType.Report,
+    ownerDepartmentId: "observability_and_evidence",
+    gatesByTransition: NO_GATES,
+  },
+  [WorkItemType.ServiceRequest]: {
+    workItemType: WorkItemType.ServiceRequest,
+    ownerDepartmentId: "operations_and_infrastructure",
+    gatesByTransition: NO_GATES,
+  },
+  [WorkItemType.Task]: {
+    workItemType: WorkItemType.Task,
+    ownerDepartmentId: "engineering",
+    gatesByTransition: FEATURE_GATES,
+  },
+  [WorkItemType.Defect]: {
+    workItemType: WorkItemType.Defect,
+    ownerDepartmentId: "engineering",
+    gatesByTransition: DEFECT_GATES,
+  },
+  [WorkItemType.CapabilityRequest]: {
+    workItemType: WorkItemType.CapabilityRequest,
+    ownerDepartmentId: "capability_and_automation_expansion",
+    gatesByTransition: { [key(WorkItemState.Triage, WorkItemState.Ready)]: ["architecture_approval"] },
+  },
+  [WorkItemType.Review]: {
+    workItemType: WorkItemType.Review,
+    ownerDepartmentId: "engineering_management",
+    gatesByTransition: NO_GATES,
+  },
+  [WorkItemType.Incident]: {
+    workItemType: WorkItemType.Incident,
+    ownerDepartmentId: "operations_and_infrastructure",
+    gatesByTransition: NO_GATES,
+  },
+  [WorkItemType.Release]: {
+    workItemType: WorkItemType.Release,
+    ownerDepartmentId: "delivery_and_release",
+    gatesByTransition: { [key(WorkItemState.Review, WorkItemState.Done)]: ["release_readiness"] },
+  },
 };
 
 export function workflowPolicyFor(type: WorkItemType): WorkflowPolicy {

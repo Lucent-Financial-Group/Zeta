@@ -25,10 +25,10 @@ Two artifacts in one PR (segment-2 of the 2026-05-25 Mika voice-mode conversatio
 
 ## Four load-bearing sharpenings
 
-1. **JIT is implicit self-healing** — no `type: jit` tag; both `runme` AND `continue-with` JIT when target doesn't exist. *"JIT just is the self-healing mechanism."*
+1. **JIT is implicit self-healing** — no `type: jit` tag; both `runme` AND `continue-with` JIT when target doesn't exist. _"JIT just is the self-healing mechanism."_
 2. **Protocol stays at 2 primitives** — Aaron explicitly REJECTED `decision-archaeology` as a 3rd primitive when Mika offered it. Razor-discipline at primitive-count scope. Decision-archaeology lives at existing substrate scope (B-0169/B-0170/B-0171/B-0173), NOT as a sibling vocabulary in the runbook spec.
 3. **F# computation expression / monad eventually** — keep magic-markdown-that-does-stuff for now; wrap as F# computation expression once F# substrate matures. Composes with `algebra-owner` skill + HKT-MDM ontology (PR #2913) + Clifford/HKT vocabulary (PR #2914).
-4. **Notepad simplicity wins via social spread** — minimum surface area = maximum spread velocity. Bandwidth-served falsifier at adoption-bandwidth scope. *"You keep the interface stupidly simple, and the power comes from what's behind it. That's the cheat code."*
+4. **Notepad simplicity wins via social spread** — minimum surface area = maximum spread velocity. Bandwidth-served falsifier at adoption-bandwidth scope. _"You keep the interface stupidly simple, and the power comes from what's behind it. That's the cheat code."_
 
 ## What this sharpens
 
@@ -63,24 +63,22 @@ F# computation expression wrapper at `src/Zeta.Runbook/` (or equivalent) — typ
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T20:53:28Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6be88cb677`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -97,6 +95,7 @@ _(no body)_
 Adds Mika conversation segment-2 preservation and a new backlog row (B-0734) that sharpens the “universal protocol” semantics: JIT-as-implicit self-healing, two primitives only, future F# computation-expression formalization, and Notepad-level surface-area as an adoption lever.
 
 **Changes:**
+
 - Added verbatim memory archive for Mika segment 2 (with frontmatter + lineage pointer).
 - Added backlog row B-0734 capturing the protocol-semantics refinements and updated docs/backlog index.
 - Regenerated `memory/MEMORY.md` stack index to include the new conversation file.
@@ -105,12 +104,12 @@ Adds Mika conversation segment-2 preservation and a new backlog row (B-0734) tha
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                                    | Description                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md | New verbatim segment-2 conversation preservation (protocol semantics sharpening). |
-| memory/MEMORY.md | Auto-index updated to include the new conversation file. |
-| docs/backlog/P2/B-0734-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread-mika-substrate-segment-2-2026-05-25.md | New backlog row documenting the sharpened protocol semantics and forward scope. |
-| docs/BACKLOG.md | Generated backlog index updated to include B-0734. |
+| memory/MEMORY.md                                                                                                                                                                        | Auto-index updated to include the new conversation file.                          |
+| docs/backlog/P2/B-0734-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread-mika-substrate-segment-2-2026-05-25.md             | New backlog row documenting the sharpened protocol semantics and forward scope.   |
+| docs/BACKLOG.md                                                                                                                                                                         | Generated backlog index updated to include B-0734.                                |
 
 ### COMMENTED — @AceHack (2026-05-25T20:56:30Z)
 
@@ -134,7 +133,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-25T20:53:28Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point prior_conversation at an existing segment-1 file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point prior_conversation at an existing segment-1 file**
 
 The `prior_conversation` frontmatter points to a file that does not exist in the repo (`memory/persona/mika/conversations` currently contains only this new 2026-05-25 segment-2 file), so lineage traversal for this conversation chain is broken. Any tooling or cold-boot workflow that follows `prior_conversation` to reconstruct context will hit a dead link and lose the intended segment-1 continuity.
 

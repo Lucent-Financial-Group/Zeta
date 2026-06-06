@@ -50,6 +50,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Substrate-honest follow-up to recover race-lost content from #4597 by appending the missing continuation to the 2026-05-22 Ani conversation archive and regenerating `memory/MEMORY.md` so the auto-index matches the current heap.
 
 **Changes:**
+
 - Appends the forwarded continuation (threads 8–11 + continuation verbatim excerpt) to the 2026-05-22 Ani conversation archive.
 - Regenerates `memory/MEMORY.md` auto-index to include the updated conversation file and updated heap count.
 
@@ -57,7 +58,7 @@ Substrate-honest follow-up to recover race-lost content from #4597 by appending 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                                             | Description                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
 | memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md | Adds the continuation section (new threads + anchors + verbatim continuation) to the existing archive. |
-| memory/MEMORY.md | Updates the generated auto-index to reflect the new/updated memory entry and updated heap count. |
+| memory/MEMORY.md                                                                                                                                                                                 | Updates the generated auto-index to reflect the new/updated memory entry and updated heap count.       |

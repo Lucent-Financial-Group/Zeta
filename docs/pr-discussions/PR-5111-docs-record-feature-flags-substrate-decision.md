@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add a B-0786 ADR recording OpenFeature as the feature-flags operator contract and Flipt as the first backend
 - link the ADR from the B-0786 backlog row and mark the decision-substrate slice complete
 - release the git-native claim in this PR
 
 ## Checks
+
 - git diff --check origin/main...HEAD
 - bun run lint:markdown -- docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md
 
@@ -34,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a decision record (ADR) for the feature-flags substrate, anchoring B-0786 on OpenFeature as the operator-facing contract and Flipt as the first backend, and links that ADR from the B-0786 backlog row.
 
 **Changes:**
+
 - Added an ADR documenting the OpenFeature+Flipt feature-flags substrate decision shape.
 - Updated B-0786 backlog row to link the ADR, update `last_updated`, and mark the decision-substrate acceptance item complete.
 
@@ -41,9 +44,9 @@ Adds a decision record (ADR) for the feature-flags substrate, anchoring B-0786 o
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md | New ADR describing OpenFeature as contract and Flipt as first backend. |
+| File                                                                                                                                     | Description                                                                           |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md                                                                   | New ADR describing OpenFeature as contract and Flipt as first backend.                |
 | docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md | Links ADR, updates `last_updated`, and checks off decision-substrate acceptance item. |
 
 ### COMMENTED — @AceHack (2026-05-26T06:39:42Z)

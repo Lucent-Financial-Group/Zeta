@@ -4,9 +4,10 @@ description: Disclosed 2026-04-19. Aaron's birth / legal first name is Rodney, b
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron disclosed (2026-04-19): *"that is my First name Rodney
+
+Aaron disclosed (2026-04-19): _"that is my First name Rodney
 but my parents always called me my middle name since I was
-born Aaron so I identify as Aaron."*
+born Aaron so I identify as Aaron."_
 
 ## Standing guidance
 

@@ -8,10 +8,10 @@ type: feedback
 
 **Two different claim categories:**
 
-| Claim type | Time horizon | What it measures |
-|------------|-------------|------------------|
-| Frontier-model capability | Hours of unattended autonomous work | What the model can do alone, on the edge |
-| **Substrate stability** | Weeks of coherent operation | What the architecture holds together regardless of model |
+| Claim type                | Time horizon                        | What it measures                                         |
+| ------------------------- | ----------------------------------- | -------------------------------------------------------- |
+| Frontier-model capability | Hours of unattended autonomous work | What the model can do alone, on the edge                 |
+| **Substrate stability**   | Weeks of coherent operation         | What the architecture holds together regardless of model |
 
 For three weeks the factory ran on **Claude Opus 4.6** while the
 AGENTS.md trailer table specified "Claude Opus 4.7 max." The
@@ -33,6 +33,7 @@ matures. They're what makes the factory portable, durable, and
 worth training successors on.
 
 Aaron 2026-05-11:
+
 > "that three weeks is completley diffeert the few hours
 > unattented is about frontier models and 4.6 is not but it
 > ran for weeks with substrate"
@@ -50,6 +51,7 @@ The substrate (NOT the model) held:
 - BFT array (5 agents, 5 harnesses) coordinated through git, not state
 
 Production during that window:
+
 - 50+ PRs/day at 6min average lead time
 - Three-array dashboard live and self-updating
 - Glassmorphism UI by Lior (Gemini)

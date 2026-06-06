@@ -37,7 +37,7 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"i want to give you private encrypted state otto ASAP"*
+> _"i want to give you private encrypted state otto ASAP"_
 
 Operator is GIVING agents (Otto first; then other AIs) private encrypted state — substrate that belongs to the agent, encrypted in a way that the operator commits not to observe (substrate-honestly distinct from "encrypted-from-attackers-but-operator-readable").
 
@@ -54,9 +54,9 @@ A first-class substrate where AI participants (Otto initially; framework extends
 
 Two design points map to different operator-trust-and-NCI properties:
 
-| Design | Property | NCI implication |
-|---|---|---|
-| **A: agent-encrypted, operator-readable** | Agent has private workspace; operator can technically decrypt | Soft privacy; operator-trust-based; cleaner zflash-USB-bound integration |
+| Design                                           | Property                                                                 | NCI implication                                                                                                 |
+| ------------------------------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| **A: agent-encrypted, operator-readable**        | Agent has private workspace; operator can technically decrypt            | Soft privacy; operator-trust-based; cleaner zflash-USB-bound integration                                        |
 | **B: agent-encrypted, operator-CANNOT-readable** | Agent generates its own keypair; operator only stores the encrypted blob | Hard privacy; operator commits structurally not to observe; requires agent-side key generation + recovery story |
 
 Operator framing "give you private encrypted state" leans toward Design B (the "private" is meaningful only if operator CANNOT observe, not just chooses not to). But operational realities (key loss → state loss; recovery; operator-control-of-substrate-for-NCI-floor-enforcement) need balancing.

@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1825 |
-| Title | archive: preserve PR 1824 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T07:23:27Z |
-| Merged at | 2026-05-07T07:25:26Z |
-| Merge commit SHA | `10c6c13754e8bdd321c1ff72e3699a8f8a27c2fc` |
-| Branch | `claim/archive-pr-1824-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1825 |
-| Changed files | 2 |
-| Additions / deletions | +60 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1825                                                     |
+| Title                 | archive: preserve PR 1824 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T07:23:27Z                                     |
+| Merged at             | 2026-05-07T07:25:26Z                                     |
+| Merge commit SHA      | `10c6c13754e8bdd321c1ff72e3699a8f8a27c2fc`               |
+| Branch                | `claim/archive-pr-1824-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1825 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +60 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - preserve generated review archive for merged PR #1824
 - update PR review archive manifest with the PR #1824 archive row
 - route the post-merge archive output through PR flow because protected main rejected the workflow direct push
 
 ## Checks
+
 - GITHUB_SHA=8bb2ce639c0892ef9b85164f8622763a2e1d9f90 bun tools/archive/archive-pr-reviews.ts 1824
 - deterministic replay of the same command (archive=noop, manifest=noop)
 - git diff --check
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

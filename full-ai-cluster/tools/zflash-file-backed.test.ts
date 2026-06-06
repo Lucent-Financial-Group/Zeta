@@ -1,8 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import {
-  parseFileBackedZflashArgs,
-  runFileBackedZflashCli,
-} from "./zflash-file-backed";
+import { parseFileBackedZflashArgs, runFileBackedZflashCli } from "./zflash-file-backed";
 
 describe("parseFileBackedZflashArgs", () => {
   test("parses the file-backed QEMU image CLI shape", () => {
@@ -39,7 +36,9 @@ describe("parseFileBackedZflashArgs", () => {
       error: "--output is required",
       kind: "error",
     });
-    expect(parseFileBackedZflashArgs(["--iso", "installer.iso", "--output", "out.img", "--esp-offset-bytes", "0"])).toEqual({
+    expect(
+      parseFileBackedZflashArgs(["--iso", "installer.iso", "--output", "out.img", "--esp-offset-bytes", "0"]),
+    ).toEqual({
       error: "--esp-offset-bytes must be a positive safe integer",
       kind: "error",
     });
@@ -106,7 +105,8 @@ describe("runFileBackedZflashCli", () => {
     );
 
     expect(result).toEqual({
-      error: "command failed (qemu-img convert -f raw -O raw artifacts/zeta-installer.iso artifacts/zflash-baked.img) with exit 17: convert failed",
+      error:
+        "command failed (qemu-img convert -f raw -O raw artifacts/zeta-installer.iso artifacts/zflash-baked.img) with exit 17: convert failed",
       ok: false,
     });
   });

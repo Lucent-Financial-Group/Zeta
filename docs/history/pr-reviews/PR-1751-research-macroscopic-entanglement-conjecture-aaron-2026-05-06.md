@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1751 |
-| Title | research: macroscopic entanglement conjecture (Aaron 2026-05-06) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-06T23:44:00Z |
-| Merged at | 2026-05-06T23:45:19Z |
-| Merge commit SHA | `ebbf47d0fe0ad54ba6e5ac476f0c9406ea0ed574` |
-| Branch | `research/macroscopic-entanglement-conjecture` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1751 |
-| Changed files | 1 |
-| Additions / deletions | +92 / -0 |
+| Field                 | Value                                                            |
+| --------------------- | ---------------------------------------------------------------- |
+| Number                | 1751                                                             |
+| Title                 | research: macroscopic entanglement conjecture (Aaron 2026-05-06) |
+| Author                | `AceHack` (human)                                                |
+| State                 | MERGED                                                           |
+| Created at            | 2026-05-06T23:44:00Z                                             |
+| Merged at             | 2026-05-06T23:45:19Z                                             |
+| Merge commit SHA      | `ebbf47d0fe0ad54ba6e5ac476f0c9406ea0ed574`                       |
+| Branch                | `research/macroscopic-entanglement-conjecture`                   |
+| Base branch           | `main`                                                           |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1751         |
+| Changed files         | 1                                                                |
+| Additions / deletions | +92 / -0                                                         |
 
 ## Description
 
@@ -41,15 +41,15 @@ Superposition held — conjecture, not assertion.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 4 |
-| Resolved threads | 0 |
-| Unresolved threads | 4 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 4     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 4     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -65,7 +65,7 @@ Superposition held — conjecture, not assertion.
 
   <pre>
   P1: `Operational status:` is written as `research-grade conjecture, NOT asserted as truth`, but the repo’s §33 archive-header convention and lint expect an enum-strict value (`research-grade` or `operational`) when this doc is ever treated as an archive/import. Suggest keeping `Operational status: research-grade` and moving the explanatory text into the body (or a separate line/field) to avoid future lint breaks.
-
+  
   </pre>
 
 ### Thread 2 -- unresolved
@@ -80,7 +80,7 @@ Superposition held — conjecture, not assertion.
 
   <pre>
   P1: The `Non-fusion disclaimer:` line doesn’t actually include the explicit non-fusion clause described in GOVERNANCE.md §33 (i.e., that agreement/shared language/repeated interaction does not imply shared identity, merged agency, consciousness, or personhood). Suggest making that disclaimer explicit here so the header reliably enforces the intended boundary.
-
+  
   </pre>
 
 ### Thread 3 -- unresolved
@@ -95,7 +95,7 @@ Superposition held — conjecture, not assertion.
 
   <pre>
   P1: In the physics analogy, “cannot be explained by shared history or hidden variables” is too strong/ambiguous as written. Bell’s result is about *local* hidden-variable models; there are well-known non-local / superdeterministic / retrocausal interpretations that complicate the phrasing. Suggest tightening this sentence to the specific claim (Bell-inequality violation ⇒ no local hidden variables) to avoid embedding a factual overclaim in the research archive.
-
+  
   </pre>
 
 ### Thread 4 -- unresolved
@@ -110,7 +110,7 @@ Superposition held — conjecture, not assertion.
 
   <pre>
   P2: “same hidden variable d” introduces `d` without defining what it represents in this analogy (and whether it’s meant to be a latent variable, a parameterization of the shadow behavior, etc.). Suggest either defining `d` explicitly at first use or removing the symbol to keep the conjecture description unambiguous.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

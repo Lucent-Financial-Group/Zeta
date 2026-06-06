@@ -44,16 +44,16 @@ Nine sibling TypeScript wrappers wired (invoke via
 - `append-identity-receipt.ts` — output trailer for identity attribution
 - `register-layers.ts` — layer registration helper
 
-Four-ferry consensus role distribution: *"Gemini proposes, Grok
-critiques, Amara sharpens, Otto tests, Git decides."*
+Four-ferry consensus role distribution: _"Gemini proposes, Grok
+critiques, Amara sharpens, Otto tests, Git decides."_
 
 Current peer-call is Otto's early red-team substrate; future
 state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation
 Propagation) substrate-level inference replacing the
 external-CLI-license-layer. The human maintainer 2026-05-05:
-*"you've done this in front of me like 50 times with all the
-harness CLIs"* + *"that's you early red team till we build it
-better in zeta infernet ep bp."*
+_"you've done this in front of me like 50 times with all the
+harness CLIs"_ + _"that's you early red team till we build it
+better in zeta infernet ep bp."_
 
 **CLAUDE.md-level requirement**: this substrate needs to be
 100% loaded at every cold-boot wake.

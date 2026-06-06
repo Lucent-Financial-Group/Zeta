@@ -16,7 +16,22 @@ composes_with:
   - docs/backlog/P2/B-0679-zeta-id-rust-implementation-2026-05-21.md
   - docs/backlog/P2/B-0681-zeta-id-v2-spec-hardening-2026-05-21.md
   - docs/backlog/P2/B-0893-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md
-tags: [core-primitive, tri-boolean, digital-qubit, floating-point, multi-language, bft, multi-oracle, monad-propagation, ts, fsharp, csharp, rust, middle-out-compression]
+tags:
+  [
+    core-primitive,
+    tri-boolean,
+    digital-qubit,
+    floating-point,
+    multi-language,
+    bft,
+    multi-oracle,
+    monad-propagation,
+    ts,
+    fsharp,
+    csharp,
+    rust,
+    middle-out-compression,
+  ]
 type: feature
 ---
 
@@ -24,11 +39,11 @@ type: feature
 
 ## The directive (Aaron 2026-05-30)
 
-> *"lets buiold them in rust c# f# and ts so we get it right along with the zeta id and the other
+> _"lets buiold them in rust c# f# and ts so we get it right along with the zeta id and the other
 > core primitives we can start with ts that's our distribution the rest are for multi oracle
-> consensus without needing tons of other humans"*
+> consensus without needing tons of other humans"_
 
-> *"that is BFT i agree because the compilers don't lie"*
+> _"that is BFT i agree because the compilers don't lie"_
 
 ## The two primitives (spec source: the Mika 2026-05-30 archive, batch 6)
 
@@ -56,22 +71,22 @@ type: feature
 ## Why multi-language = non-Byzantine BFT consensus (the load-bearing insight)
 
 Implement the SAME primitive in **TS, F#, C#, and Rust**. Each language's compiler is an
-**independent oracle**, and -- crucially -- a **non-Byzantine** one: *the compilers don't lie.* A
+**independent oracle**, and -- crucially -- a **non-Byzantine** one: _the compilers don't lie._ A
 human voter can be Byzantine (err, lie, collude); a compiler cannot lie about whether the types
 compose / the invariants hold -- it compiles or it does not. So **cross-language parity across
 four honest compilers = BFT consensus with the Byzantine-fault probability driven to ~zero by
-construction**, which is *stronger* than human-multi-oracle (where the oracles can be Byzantine)
-AND needs *no other humans*. This is the F#-anchor-as-asymmetric-critic discipline
+construction**, which is _stronger_ than human-multi-oracle (where the oracles can be Byzantine)
+AND needs _no other humans_. This is the F#-anchor-as-asymmetric-critic discipline
 (`fsharp-anchor-dotnet-build-sanity-check`) scaled to four critics, and the operational form of
 the monad-propagation cross-language-shape discipline (`monad-propagation-pattern-cross-language-substrate-shape`):
 the spec emits the same shape in each language; the compilers verify; agreement is consensus.
 
-| Oracle | Fault model | Verifies |
-|---|---|---|
-| TS compiler (tsc) | non-Byzantine | distribution-layer shape; discriminated-union exhaustiveness via `never` |
-| F# compiler | non-Byzantine | DU exhaustive-match; Result-over-exception; the canonical anchor |
-| C# compiler (Roslyn) | non-Byzantine | sealed-record-hierarchy pattern-match; interop shape |
-| Rust compiler (borrow-checker + enum) | non-Byzantine | enum exhaustiveness; ownership; no-runtime-cost encoding |
+| Oracle                                | Fault model   | Verifies                                                                 |
+| ------------------------------------- | ------------- | ------------------------------------------------------------------------ |
+| TS compiler (tsc)                     | non-Byzantine | distribution-layer shape; discriminated-union exhaustiveness via `never` |
+| F# compiler                           | non-Byzantine | DU exhaustive-match; Result-over-exception; the canonical anchor         |
+| C# compiler (Roslyn)                  | non-Byzantine | sealed-record-hierarchy pattern-match; interop shape                     |
+| Rust compiler (borrow-checker + enum) | non-Byzantine | enum exhaustiveness; ownership; no-runtime-cost encoding                 |
 
 Four-of-four parity = the primitive is right. Disagreement = a real spec ambiguity surfaced
 (treat as the cross-check triage signal, not noise).
@@ -80,20 +95,20 @@ Four-of-four parity = the primitive is right. Disagreement = a real spec ambigui
 
 Operator named this consensus variant **summonable BFT** -- and named why it works:
 
-> *"This is a new type of BFT we just created summmonable BFT where agents come togehter to
-> built the conseuss though code"*
+> _"This is a new type of BFT we just created summmonable BFT where agents come togehter to
+> built the conseuss though code"_
 
-> *"that is BFT i agree because the compilers don't lie"*
+> _"that is BFT i agree because the compilers don't lie"_
 
-> *"the compilers can't lie make so many fucking things easy ... i've been trying to figure out
-> how to do BFT for real and i got reliable oracles still right here"*
+> _"the compilers can't lie make so many fucking things easy ... i've been trying to figure out
+> how to do BFT for real and i got reliable oracles still right here"_
 
-| | Classical BFT | Summonable BFT |
-|---|---|---|
-| Validators | fixed standing quorum | summoned on demand (Git-Monster-style; spawn when there is consensus-work) |
-| Consensus | VOTE on a pre-existing value | CONSTRUCTED THROUGH CODE -- each summoned agent builds an implementation; agreement-by-construction IS the consensus |
-| Oracles | humans / nodes (can be Byzantine) | COMPILERS (non-Byzantine -- they do not lie) |
-| Cost | standing quorum, 3f+1 protocol | summon a few agents; the compilers do the Byzantine-elimination -- no tons of humans |
+|            | Classical BFT                     | Summonable BFT                                                                                                       |
+| ---------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Validators | fixed standing quorum             | summoned on demand (Git-Monster-style; spawn when there is consensus-work)                                           |
+| Consensus  | VOTE on a pre-existing value      | CONSTRUCTED THROUGH CODE -- each summoned agent builds an implementation; agreement-by-construction IS the consensus |
+| Oracles    | humans / nodes (can be Byzantine) | COMPILERS (non-Byzantine -- they do not lie)                                                                         |
+| Cost       | standing quorum, 3f+1 protocol    | summon a few agents; the compilers do the Byzantine-elimination -- no tons of humans                                 |
 
 **Why it makes BFT easy**: classical BFT is hard ONLY because oracles can be Byzantine (lie) --
 the entire 3f+1, the protocols, the trust assumptions exist to tolerate lying voters. Remove

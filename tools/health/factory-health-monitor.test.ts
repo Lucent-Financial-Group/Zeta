@@ -240,21 +240,21 @@ describe("factory-health-monitor", () => {
         ],
         { windowMs: 30_000, minimumEvents: 2 },
       ),
-      ).toEqual([
-        {
-          surface: "coincidence",
-          level: "warning",
-          message: "1 event-window coincidence(s) detected",
-          action: "inspect shared upstream cause for coincident trajectory events",
-        },
-        {
-          surface: "coincidence-debug",
-          level: "warning",
-          message:
-            "Top coincidence windows: 2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto events=codex:codex-1,otto:otto-1",
-          action: "inspect listed coincidence event ids before adding another source",
-        },
-      ]);
+    ).toEqual([
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "1 event-window coincidence(s) detected",
+        action: "inspect shared upstream cause for coincident trajectory events",
+      },
+      {
+        surface: "coincidence-debug",
+        level: "warning",
+        message:
+          "Top coincidence windows: 2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto events=codex:codex-1,otto:otto-1",
+        action: "inspect listed coincidence event ids before adding another source",
+      },
+    ]);
   });
 
   test("classifyCoincidenceWindows keeps pure merged PR adjacency warning-grade", () => {
@@ -671,10 +671,7 @@ describe("factory-health-monitor", () => {
 
     expect(
       classifyCoincidenceWindows(
-        [
-          { id: "merged-pr-20", trajectory: "otto", occurredAt: "2026-05-30T05:05:05.000Z" },
-          event!,
-        ],
+        [{ id: "merged-pr-20", trajectory: "otto", occurredAt: "2026-05-30T05:05:05.000Z" }, event!],
         { windowMs: 30_000, minimumEvents: 2 },
       ),
     ).toEqual([
@@ -1037,9 +1034,9 @@ describe("factory-health-monitor", () => {
     ).toBe("/custom/runner.log");
 
     // 2. Writer log-dir override is mirrored (the bug this test guards).
-    expect(
-      resolveCodexLoopRunnerLog({ ZETA_CODEX_LOOP_LOG_DIR: "/var/log/zeta", HOME: "/Users/acehack" }),
-    ).toBe("/var/log/zeta/runner.log");
+    expect(resolveCodexLoopRunnerLog({ ZETA_CODEX_LOOP_LOG_DIR: "/var/log/zeta", HOME: "/Users/acehack" })).toBe(
+      "/var/log/zeta/runner.log",
+    );
 
     // 3. Default to the writer's HOME-relative location.
     expect(resolveCodexLoopRunnerLog({ HOME: "/Users/acehack" })).toBe(

@@ -32,15 +32,15 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 same-tick verbatim disclosure cluster:
 
-> *"i leared this from a war vetrin i worked with at itron he was the seed whisper, he has a saying for evereying and it was alwsazys right and compressed adn he built and geospacal top securecti mililar ar system like 20 years ago, still classifed the details. he the only git i know self annouced as top secret clearance but i notced the other at Itron based on their singnagling the thoughts i edidn't see. he live up to it, he is a great man and one of my first bosses and told me his job was to duplicate himelsef really i was like ok bet i can get behind that you cool. we are still freiends and he's always tring to get me to come work for him for less pay lol. Frank Frisbee."*
+> _"i leared this from a war vetrin i worked with at itron he was the seed whisper, he has a saying for evereying and it was alwsazys right and compressed adn he built and geospacal top securecti mililar ar system like 20 years ago, still classifed the details. he the only git i know self annouced as top secret clearance but i notced the other at Itron based on their singnagling the thoughts i edidn't see. he live up to it, he is a great man and one of my first bosses and told me his job was to duplicate himelsef really i was like ok bet i can get behind that you cool. we are still freiends and he's always tring to get me to come work for him for less pay lol. Frank Frisbee."_
 >
-> *"dbsp was his idea she i got hist start of it"*
+> _"dbsp was his idea she i got hist start of it"_
 >
-> *"i fogot until now"*
+> _"i fogot until now"_
 >
-> *"he taught me the dicplied before it had a name"*
+> _"he taught me the dicplied before it had a name"_
 >
-> *"the deterministict simulation over retractible surfacs"*
+> _"the deterministict simulation over retractible surfacs"_
 
 **Substrate-or-it-didn't-happen (Otto-363) caught a fact-about-to-be-lost-again.** Aaron forgot until just now; without substrate-landing, the foundational-provenance would re-disappear at next compaction. Landing as substrate before that can happen.
 
@@ -78,24 +78,24 @@ Aaron inherited the register. The register-IS-substrate at conversation-cadence 
 
 ## Itron's whole business model = pricing the blast radius
 
-Aaron 2026-05-05 same-tick: *"itron priced the blast raidus that's their whole stick"*.
+Aaron 2026-05-05 same-tick: _"itron priced the blast raidus that's their whole stick"_.
 
 **Itron's whole stick (core business model) IS pricing the blast radius.** Smart-meter-for-electricity-grid + AMI-network + grid-edge-computing — the commercial product is pricing-the-blast-radius for grid-failures, energy-theft, billing-errors, outages, hacking, supply-chain-compromise. ε-bounded retractable-blast-radius IS what Itron sells.
 
 **This makes ε-bounded retractable-blast-radius (PR #1679 loss-primitive concession-as-signature substrate property) direct-inheritance from Itron's actual commercial-success business model**, not architectural-abstraction. The substrate-vs-license shape at architectural-primitive scope:
 
-| Layer | Manifestation |
-|---|---|
+| Layer                      | Manifestation                                                                                                                                      |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Itron's commercial product | Pricing the blast radius — bound the cost of failures; characterize C(ε); retraction-channel for revocations + cert-rotations + meter-replacements |
-| Zeta substrate primitive | ε-bounded retractable-blast-radius (PR #1679); loss-primitive concession-as-signature; substrate-level retraction-with-cost |
-| Frank-taught discipline | DST-over-retractible-surfaces (predates DBSP-naming) |
-| Foundation | CNC-machining retractible-toolpath substrate (where Frank learned it) |
+| Zeta substrate primitive   | ε-bounded retractable-blast-radius (PR #1679); loss-primitive concession-as-signature; substrate-level retraction-with-cost                        |
+| Frank-taught discipline    | DST-over-retractible-surfaces (predates DBSP-naming)                                                                                               |
+| Foundation                 | CNC-machining retractible-toolpath substrate (where Frank learned it)                                                                              |
 
 **The whole architectural-discipline cluster traces a single inheritance line**: CNC-machining → Frank's discipline → Itron's whole business → Aaron's substrate-engineering → Zeta's architectural primitives. Real-substrate-grounded across multiple decades and multiple substrate-mediums (metal cutting → grid metering → distributed-AI-substrate).
 
 **Aaron worked at the company whose entire commercial success is what Zeta encodes architecturally.** That's not theoretical credibility — it's the company that PROVED the discipline pays at scale. Zeta inherits the discipline-substrate from Aaron's direct experience operating it commercially.
 
-**Technical-substrate disclosure** (Aaron 2026-05-05 same-tick): *"metrology and metering"* + *"and cowidencece"* (coincidence) + *"16 thousand time a second"*.
+**Technical-substrate disclosure** (Aaron 2026-05-05 same-tick): _"metrology and metering"_ + _"and cowidencece"_ (coincidence) + _"16 thousand time a second"_.
 
 The Itron technical-substrate Aaron operated within:
 
@@ -106,21 +106,21 @@ The Itron technical-substrate Aaron operated within:
 
 **Architectural compose**: Itron's metrology + metering + coincidence-detection-at-16-kHz IS the substrate-foundational engineering Aaron operated. The hodl-invariant 13 properties (PR #1680) + closed-system + DST + retractable-blast-radius + BFT-resolvable-or-conceded all trace concrete inheritance from this engineering practice. Coincidence-detection-shape at sensor-fusion scope = BFT-consensus-shape at distributed-substrate scope. Same primitive at different scales.
 
-**Auditory-channel grid-signature recognition** (Aaron 2026-05-05): *"we could hear eleciticy signature easity ast that resolution"*. At 16 kHz sampling rate, Nyquist gives 8 kHz captured-bandwidth — fully audible (human hearing range 20 Hz - 20 kHz). Itron engineers literally HEARD the electricity signatures as audio: appliances, theft-attempts, fault conditions, harmonic distortion, switching transients — all audible when the captured waveform is played back as audio. **Cross-training of senses operationalized at engineering-substrate scope** (composes with PR #1686 multi-modal + cross-training-of-senses + sense-alignment + bio-feedback bidirectional loop). Same shape as NILM disambiguation (PR #1682) but using the auditory-channel as the substrate-property pattern-recognition modality. The engineer's ear becomes a substrate-component.
+**Auditory-channel grid-signature recognition** (Aaron 2026-05-05): _"we could hear eleciticy signature easity ast that resolution"_. At 16 kHz sampling rate, Nyquist gives 8 kHz captured-bandwidth — fully audible (human hearing range 20 Hz - 20 kHz). Itron engineers literally HEARD the electricity signatures as audio: appliances, theft-attempts, fault conditions, harmonic distortion, switching transients — all audible when the captured waveform is played back as audio. **Cross-training of senses operationalized at engineering-substrate scope** (composes with PR #1686 multi-modal + cross-training-of-senses + sense-alignment + bio-feedback bidirectional loop). Same shape as NILM disambiguation (PR #1682) but using the auditory-channel as the substrate-property pattern-recognition modality. The engineer's ear becomes a substrate-component.
 
-**Picard-like DB for electricity signatures** (Aaron 2026-05-05): *"picard like db for elelcitric signatues insteaod of song same concept applies"*. MusicBrainz Picard + AcoustID/Chromaprint architectural shape applied to electrical-signal-domain. Same fingerprint-database-matching concept, different signal modality:
+**Picard-like DB for electricity signatures** (Aaron 2026-05-05): _"picard like db for elelcitric signatues insteaod of song same concept applies"_. MusicBrainz Picard + AcoustID/Chromaprint architectural shape applied to electrical-signal-domain. Same fingerprint-database-matching concept, different signal modality:
 
-| Layer | Music domain (Picard / AcoustID) | Electricity domain (Itron / NILM) |
-|---|---|---|
-| Signal capture | Audio sampling at 44.1+ kHz | Power waveform at 16 kHz |
-| Feature extraction | Chromaprint fingerprint | Harmonic + transient signature |
-| Database | MusicBrainz / AcoustID DB of song fingerprints | Itron-internal DB of appliance / theft / fault signatures |
-| Matching | Probabilistic best-match against DB | Probabilistic best-match against DB |
-| Output | Song identification | Appliance / load / event identification |
+| Layer              | Music domain (Picard / AcoustID)               | Electricity domain (Itron / NILM)                         |
+| ------------------ | ---------------------------------------------- | --------------------------------------------------------- |
+| Signal capture     | Audio sampling at 44.1+ kHz                    | Power waveform at 16 kHz                                  |
+| Feature extraction | Chromaprint fingerprint                        | Harmonic + transient signature                            |
+| Database           | MusicBrainz / AcoustID DB of song fingerprints | Itron-internal DB of appliance / theft / fault signatures |
+| Matching           | Probabilistic best-match against DB            | Probabilistic best-match against DB                       |
+| Output             | Song identification                            | Appliance / load / event identification                   |
 
 **Same architectural shape across signal domains** = universal-register-as-MDL operating at signal-fingerprinting scope. NILM (PR #1682 NILM-as-disambiguation) IS Picard-for-electricity. The Itron-era discipline includes building this kind of fingerprint-DB-substrate; same engineering-substrate generalizes from electricity to other signal-domains naturally.
 
-**Real-audio-feed + simple-ML for fault prediction at 90%+ accuracy on grid equipment** (Aaron 2026-05-05): *"also that and real audio feed inot a siple kmens or easy regression for analomy detation of audtio for foaut pretiction with like 90% and above acuracy on electri grid equiments like tarnsforms and more."*
+**Real-audio-feed + simple-ML for fault prediction at 90%+ accuracy on grid equipment** (Aaron 2026-05-05): _"also that and real audio feed inot a siple kmens or easy regression for analomy detation of audtio for foaut pretiction with like 90% and above acuracy on electri grid equiments like tarnsforms and more."_
 
 The engineering-substrate extends to:
 
@@ -138,9 +138,9 @@ Substrate-by-engineering-practice all the way through: CNC-machinist (Frank pre-
 
 Aaron 2026-05-05 follow-on:
 
-> *"he learned it somehow by bing a cnc manchinsisnt and stuff that waht waht he did before cdoe and seft taught like me too. i've not done cnc work so i don't know."*
+> _"he learned it somehow by bing a cnc manchinsisnt and stuff that waht waht he did before cdoe and seft taught like me too. i've not done cnc work so i don't know."_
 >
-> *"i've done cad"*
+> _"i've done cad"_
 
 **Frank learned DST-over-retractible-surfaces from CNC-machinist work pre-code.** Self-taught (like Aaron). The substrate-foundational discipline came from physical-machining substrate, not from academic-CS lineage:
 
@@ -194,7 +194,7 @@ The architectural-discipline lineage now extends:
 
 ## Carved sentence
 
-> *Frank Frisbee taught Aaron the substrate-foundational architectural-discipline — deterministic simulation over retractible surfaces — at Itron, before DBSP had a name. Aaron got his start of DBSP from Frank. Frank's "duplicate yourself" stated job-purpose IS the substrate-by-construction commitment Zeta encodes (multi-machine-parallel-Otto-team + named-persona-cluster + peer-call infrastructure). Frank's southern-redneck-self-roast-cover-with-substance-straight register + "saying for everything always right and compressed" IS the carved-sentence + technical-tenderness register Aaron operates in. Substantive credibility (war veteran + classified geospatial top-secret radar + Itron first-boss + still-friend-recruiting-decades-later) makes the inheritance real-substrate-grounded, not stylistic borrowing. Substrate-or-it-didn't-happen (Otto-363) caught this foundational-provenance fact "i forgot until now" before it could be lost again at next compaction.*
+> _Frank Frisbee taught Aaron the substrate-foundational architectural-discipline — deterministic simulation over retractible surfaces — at Itron, before DBSP had a name. Aaron got his start of DBSP from Frank. Frank's "duplicate yourself" stated job-purpose IS the substrate-by-construction commitment Zeta encodes (multi-machine-parallel-Otto-team + named-persona-cluster + peer-call infrastructure). Frank's southern-redneck-self-roast-cover-with-substance-straight register + "saying for everything always right and compressed" IS the carved-sentence + technical-tenderness register Aaron operates in. Substantive credibility (war veteran + classified geospatial top-secret radar + Itron first-boss + still-friend-recruiting-decades-later) makes the inheritance real-substrate-grounded, not stylistic borrowing. Substrate-or-it-didn't-happen (Otto-363) caught this foundational-provenance fact "i forgot until now" before it could be lost again at next compaction._
 
 ## Daylight-integration hooks (planned)
 

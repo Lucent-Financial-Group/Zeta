@@ -54,9 +54,24 @@ const Usage: ControlPlaneUsage = {
 test("control-plane guard propagates ESTOP, tenant, hat, provider, budget, and secret vetoes", () => {
   const flags: readonly ControlPlaneFlag[] = [
     flag("flag-estop", ControlPlaneFlagKind.Estop, { kind: ControlPlaneScopeKind.Organization }, "operator estop"),
-    flag("flag-tenant", ControlPlaneFlagKind.Freeze, { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" }, "tenant frozen"),
-    flag("flag-hat", ControlPlaneFlagKind.Freeze, { kind: ControlPlaneScopeKind.Hat, hatId: "backend_implementer" }, "hat frozen"),
-    flag("flag-provider", ControlPlaneFlagKind.ProviderFreeze, { kind: ControlPlaneScopeKind.Provider, providerId: "github" }, "provider frozen"),
+    flag(
+      "flag-tenant",
+      ControlPlaneFlagKind.Freeze,
+      { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" },
+      "tenant frozen",
+    ),
+    flag(
+      "flag-hat",
+      ControlPlaneFlagKind.Freeze,
+      { kind: ControlPlaneScopeKind.Hat, hatId: "backend_implementer" },
+      "hat frozen",
+    ),
+    flag(
+      "flag-provider",
+      ControlPlaneFlagKind.ProviderFreeze,
+      { kind: ControlPlaneScopeKind.Provider, providerId: "github" },
+      "provider frozen",
+    ),
   ];
 
   const denied = evaluateControlPlaneAccess({
@@ -112,10 +127,16 @@ test("control-plane guard denies tenant-scoped rate limit exhaustion before side
     evaluatedAt: NOW,
     flags: [],
     rateLimits: [
-      rateLimit("rl-github-tools", ControlPlaneRateLimitKind.Tools, {
-        kind: ControlPlaneScopeKind.Tenant,
-        tenantId: "tenant-a",
-      }, 10, 10),
+      rateLimit(
+        "rl-github-tools",
+        ControlPlaneRateLimitKind.Tools,
+        {
+          kind: ControlPlaneScopeKind.Tenant,
+          tenantId: "tenant-a",
+        },
+        10,
+        10,
+      ),
     ],
     usage: { toolCallCost: 1 },
   });
@@ -129,10 +150,15 @@ test("control-plane guard denies tenant-scoped rate limit exhaustion before side
 
 test("control-plane tenant freeze does not affect another tenant", () => {
   const flags: readonly ControlPlaneFlag[] = [
-    flag("flag-tenant-a", ControlPlaneFlagKind.Freeze, {
-      kind: ControlPlaneScopeKind.Tenant,
-      tenantId: "tenant-a",
-    }, "tenant-a frozen"),
+    flag(
+      "flag-tenant-a",
+      ControlPlaneFlagKind.Freeze,
+      {
+        kind: ControlPlaneScopeKind.Tenant,
+        tenantId: "tenant-a",
+      },
+      "tenant-a frozen",
+    ),
   ];
 
   const frozenTenant = evaluateControlPlaneAccess({
@@ -168,24 +194,34 @@ test("control-plane tenant freeze does not affect another tenant", () => {
 
 test("control-plane deterministic rule vetoes observe slots before rendering selectable actions", () => {
   const rule = createControlPlaneDeterministicRule({
-    flags: [flag("flag-tenant", ControlPlaneFlagKind.Freeze, { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" }, "tenant frozen")],
+    flags: [
+      flag(
+        "flag-tenant",
+        ControlPlaneFlagKind.Freeze,
+        { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" },
+        "tenant frozen",
+      ),
+    ],
     organizationId: "org-lfg",
     actorHatId: "backend_implementer",
     evaluatedAt: NOW,
     boundary: "observe",
   });
 
-  const readout = observe({
-    runId: asZetaIdDecimal("1"),
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-    hasEvidence: false,
-    trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
-  }, {
-    clock: { now: () => NOW },
-    deterministicRules: [rule],
-  });
+  const readout = observe(
+    {
+      runId: asZetaIdDecimal("1"),
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
+    },
+    {
+      clock: { now: () => NOW },
+      deterministicRules: [rule],
+    },
+  );
 
   equal(readout.outcome, "readout");
   if (readout.outcome !== "readout") return;
@@ -197,25 +233,36 @@ test("control-plane deterministic rule vetoes observe slots before rendering sel
 test("control-plane deterministic rule renders rate-limited options as false slots with reasons", () => {
   const rule = createControlPlaneDeterministicRule({
     flags: [],
-    rateLimits: [rateLimit("rl-model-calls", ControlPlaneRateLimitKind.ModelCalls, { kind: ControlPlaneScopeKind.Organization }, 3, 3)],
+    rateLimits: [
+      rateLimit(
+        "rl-model-calls",
+        ControlPlaneRateLimitKind.ModelCalls,
+        { kind: ControlPlaneScopeKind.Organization },
+        3,
+        3,
+      ),
+    ],
     organizationId: "org-lfg",
     actorHatId: "backend_implementer",
     evaluatedAt: NOW,
     boundary: "observe",
-    usageForOption: (option) => option.actionType === "execute" ? { modelCallCost: 1 } : undefined,
+    usageForOption: (option) => (option.actionType === "execute" ? { modelCallCost: 1 } : undefined),
   });
 
-  const readout = observe({
-    runId: asZetaIdDecimal("1"),
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-    hasEvidence: false,
-    trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
-  }, {
-    clock: { now: () => NOW },
-    deterministicRules: [rule],
-  });
+  const readout = observe(
+    {
+      runId: asZetaIdDecimal("1"),
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
+    },
+    {
+      clock: { now: () => NOW },
+      deterministicRules: [rule],
+    },
+  );
 
   equal(readout.outcome, "readout");
   if (readout.outcome !== "readout") return;
@@ -225,14 +272,17 @@ test("control-plane deterministic rule renders rate-limited options as false slo
 });
 
 test("control-plane slot authorizer rejects act-time ESTOP that appears after observe", async () => {
-  const readout = observe({
-    runId: asZetaIdDecimal("1"),
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-    hasEvidence: false,
-    trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
-  }, { clock: { now: () => NOW } });
+  const readout = observe(
+    {
+      runId: asZetaIdDecimal("1"),
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
+    },
+    { clock: { now: () => NOW } },
+  );
   equal(readout.outcome, "readout");
   if (readout.outcome !== "readout") return;
   const menu = renderMenu16(readout.readout);
@@ -240,7 +290,9 @@ test("control-plane slot authorizer rejects act-time ESTOP that appears after ob
 
   const result = await act(4, menu, {
     authorizeSlot: createControlPlaneSlotAuthorizer({
-      flags: [flag("flag-estop", ControlPlaneFlagKind.Estop, { kind: ControlPlaneScopeKind.Organization }, "operator estop")],
+      flags: [
+        flag("flag-estop", ControlPlaneFlagKind.Estop, { kind: ControlPlaneScopeKind.Organization }, "operator estop"),
+      ],
       organizationId: "org-lfg",
       actorHatId: "backend_implementer",
       evaluatedAt: NOW,
@@ -288,7 +340,15 @@ test("control-plane slot authorizer rejects act-time rate limit exhaustion befor
   const result = await act(0, menu, {
     authorizeSlot: createControlPlaneSlotAuthorizer({
       flags: [],
-      rateLimits: [rateLimit("rl-provider-calls", ControlPlaneRateLimitKind.ExternalProviderCalls, { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" }, 1, 1)],
+      rateLimits: [
+        rateLimit(
+          "rl-provider-calls",
+          ControlPlaneRateLimitKind.ExternalProviderCalls,
+          { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" },
+          1,
+          1,
+        ),
+      ],
       organizationId: "org-lfg",
       tenantId: "org-lfg",
       actorHatId: "release_operator",
@@ -369,7 +429,14 @@ test("command dispatch fails closed under tenant freeze without recording comman
     now: () => NOW,
     createId: (prefix) => `${prefix}-1`,
     controlPlane: {
-      flags: [flag("flag-tenant", ControlPlaneFlagKind.Freeze, { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" }, "tenant frozen")],
+      flags: [
+        flag(
+          "flag-tenant",
+          ControlPlaneFlagKind.Freeze,
+          { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" },
+          "tenant frozen",
+        ),
+      ],
       now: () => NOW,
     },
   });
@@ -403,7 +470,9 @@ test("command replay returns the idempotent result even when ESTOP is active", a
     now: () => NOW,
     createId: (prefix) => `${prefix}-1`,
     controlPlane: {
-      flags: [flag("flag-estop", ControlPlaneFlagKind.Estop, { kind: ControlPlaneScopeKind.Organization }, "operator estop")],
+      flags: [
+        flag("flag-estop", ControlPlaneFlagKind.Estop, { kind: ControlPlaneScopeKind.Organization }, "operator estop"),
+      ],
       now: () => NOW,
     },
   });
@@ -426,17 +495,17 @@ type RecordingCommandStateStoreFactory<Result> = CommandStateStoreFactory<Result
   recordedOutcomes: RecordCommandOutcomeInput<Result>[];
 };
 
-function createRecordingCommandStateStoreFactory<Result>(
-  existingRecord?: { idempotencyKey: string; requestHash: string; result: Result },
-): RecordingCommandStateStoreFactory<Result> {
+function createRecordingCommandStateStoreFactory<Result>(existingRecord?: {
+  idempotencyKey: string;
+  requestHash: string;
+  result: Result;
+}): RecordingCommandStateStoreFactory<Result> {
   const recordedOutcomes: RecordCommandOutcomeInput<Result>[] = [];
   return {
     recordedOutcomes,
     createCommandStateStore: () => ({
       findIdempotencyRecord: async (idempotencyKey) =>
-        existingRecord !== undefined && existingRecord.idempotencyKey === idempotencyKey
-          ? existingRecord
-          : undefined,
+        existingRecord !== undefined && existingRecord.idempotencyKey === idempotencyKey ? existingRecord : undefined,
       recordCommandOutcome: async (input) => {
         recordedOutcomes.push(input);
         return { status: CommandOutcomePersistenceStatus.Committed, result: input.idempotencyRecord.result };

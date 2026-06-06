@@ -21,8 +21,8 @@ supersedes: []
 # Metrics and the 3-Agent Review Board
 
 Operator idea 4, sharpened (2026-05-29): metrics have **two layers** — a
-*quantitative* layer gathered mechanically like test coverage, and a
-*qualitative* layer run by a board of reviewer agents who must **agree** before a
+_quantitative_ layer gathered mechanically like test coverage, and a
+_qualitative_ layer run by a board of reviewer agents who must **agree** before a
 comment is published. The qualitative layer is the constitution gate (idea 2)
 applied to review findings: ≥3 distinct reviewers, agreement required.
 
@@ -31,12 +31,12 @@ applied to review findings: ≥3 distinct reviewers, agreement required.
 `packages/metrics/src/code-metrics.ts` measures source text the way a coverage
 tool measures execution: deterministic, no judgment, just numbers.
 
-| Metric (`CodeMetricKind`) | What it catches | Default warn / flag |
-|---|---|---|
-| `longest_function` | sprawling functions | 40 / 80 lines |
-| `longest_class` | **god classes** | 200 / 400 lines |
-| `file_length` | god files | 400 / 800 lines |
-| `max_nesting_depth` | tangled control flow | 4 / 6 |
+| Metric (`CodeMetricKind`) | What it catches      | Default warn / flag |
+| ------------------------- | -------------------- | ------------------- |
+| `longest_function`        | sprawling functions  | 40 / 80 lines       |
+| `longest_class`           | **god classes**      | 200 / 400 lines     |
+| `file_length`             | god files            | 400 / 800 lines     |
+| `max_nesting_depth`       | tangled control flow | 4 / 6               |
 
 `analyzeSource(filePath, source, thresholds?)` returns a `CodeMetricsReport` with
 the measured spans plus a list of `MetricFinding`s. Each finding is an explicit
@@ -60,11 +60,11 @@ CandidateFinding[]  +  ReviewerVote[]  ->  evaluateReviewBoard({ findings, votes
 
 `FindingDecision.state` is an explicit DU:
 
-- **adopted** — ≥ quorum *distinct* reviewers agreed and fewer than quorum
+- **adopted** — ≥ quorum _distinct_ reviewers agreed and fewer than quorum
   disagreed; the comment is published
 - **withheld** — too few distinct agreers; the comment is dropped (no
   single reviewer can force a comment through)
-- **contested** — quorum agreed *and* quorum disagreed; escalate rather than
+- **contested** — quorum agreed _and_ quorum disagreed; escalate rather than
   silently pick a side
 
 The board returns `feedback` (`too_few_reviewers`) if fewer than quorum distinct
@@ -76,8 +76,8 @@ is 3.
 The agreement rule is identical in shape to
 `governance/src/constitution-gate.ts`: **distinct** agreers (one agent voting
 three times counts once — no self-amplification), quorum-gated, with disagreement
-able to veto. The constitution gate ratifies *rule sets*; the review board
-ratifies *review findings*. Same multi-oracle principle, two scopes. They live in
+able to veto. The constitution gate ratifies _rule sets_; the review board
+ratifies _review findings_. Same multi-oracle principle, two scopes. They live in
 different packages (no cross-import across the boundary), so the logic is restated
 rather than shared — but the semantics are deliberately the same, and both are
 explicit DUs with no buried thresholds.

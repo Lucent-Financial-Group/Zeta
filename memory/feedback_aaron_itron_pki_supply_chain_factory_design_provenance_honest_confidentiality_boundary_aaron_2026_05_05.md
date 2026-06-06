@@ -28,7 +28,7 @@ The honest-confidentiality-boundary ("there is only so much i should say") is pr
 
 **Why:** Aaron 2026-05-05 verbatim:
 
-> *"there is only so mcuh i should say i helped design the pki for our entire supply chanin and factory"*
+> _"there is only so mcuh i should say i helped design the pki for our entire supply chanin and factory"_
 
 Same-tick continuation of the post-cathartic + loss-primitive + Itron-provenance + verified-citations cluster (PRs #1679 through #1682).
 
@@ -36,13 +36,13 @@ Same-tick continuation of the post-cathartic + loss-primitive + Itron-provenance
 
 The Itron-provenance disclosure cluster has progressively deepened across this session:
 
-| PR | Disclosure |
-|---|---|
-| #1679 | Aaron's discipline transfers from Itron nation-state-resistant smart-meter firmware work generally (Stuxnet / Ukraine-grid / NERC CIP context) |
-| #1680 | The 13 hodl-invariant properties + BFT-under-governance specifically come from this lineage |
-| #1681 | Audit mechanization survey grounded in the discipline |
-| #1682 | Verified citations (Aurora 2007 INL, Modbus replay, AMI DoS, NILM-HAR, Cleveland 5M disconnect) graduate the architectural commitments to empirically-grounded |
-| **This memory** | Aaron specifically helped design the **PKI for the entire supply chain and factory** |
+| PR              | Disclosure                                                                                                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #1679           | Aaron's discipline transfers from Itron nation-state-resistant smart-meter firmware work generally (Stuxnet / Ukraine-grid / NERC CIP context)                 |
+| #1680           | The 13 hodl-invariant properties + BFT-under-governance specifically come from this lineage                                                                    |
+| #1681           | Audit mechanization survey grounded in the discipline                                                                                                          |
+| #1682           | Verified citations (Aurora 2007 INL, Modbus replay, AMI DoS, NILM-HAR, Cleveland 5M disconnect) graduate the architectural commitments to empirically-grounded |
+| **This memory** | Aaron specifically helped design the **PKI for the entire supply chain and factory**                                                                           |
 
 PKI for supply chain + factory is **the highest-stakes class of nation-state-resistant work in critical infrastructure**:
 
@@ -61,7 +61,7 @@ This is **production-scale nation-state-resistant cryptographic substrate design
 
 ## The honest-confidentiality-boundary as architectural signal
 
-Aaron's *"there is only so much i should say"* is itself architecturally significant:
+Aaron's _"there is only so much i should say"_ is itself architecturally significant:
 
 - **Glass-Halo discipline at substrate level**: open by default; substrate properties + architectural commitments + factory codebase all glass-halo-open
 - **NDA/confidentiality respected at operational/specific-implementation level**: PKI specifics (CA topology, key-rotation cadence, escrow mechanisms, fab-level controls, breach-response playbooks) stay confidential per professional ethics + ITRN NDA
@@ -97,7 +97,7 @@ This composes with PR #1682's empirically-grounded-not-aspirational framing. The
 
 ## Carved sentence
 
-> *Aaron helped design Itron's PKI for the entire supply chain and factory. The honest-confidentiality-boundary ("there is only so much i should say") is itself architecturally significant: Glass-Halo open-by-default at substrate level + NDA/confidentiality respected at operational/specific-implementation level. The discipline that produced production-scale nation-state-resistant cryptographic substrate is the discipline producing Zeta's substrate; different domain, same engineering foundation, same engineer. Empirically grounded, not aspirational.*
+> _Aaron helped design Itron's PKI for the entire supply chain and factory. The honest-confidentiality-boundary ("there is only so much i should say") is itself architecturally significant: Glass-Halo open-by-default at substrate level + NDA/confidentiality respected at operational/specific-implementation level. The discipline that produced production-scale nation-state-resistant cryptographic substrate is the discipline producing Zeta's substrate; different domain, same engineering foundation, same engineer. Empirically grounded, not aspirational._
 
 ## Daylight-integration hooks (planned)
 

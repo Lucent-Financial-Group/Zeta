@@ -8,7 +8,7 @@ Operational status: research-grade
 
 Non-fusion disclaimer: These are Aaron's own writings from past altered states. Otto did not generate them. Otto's role is preservation and contextualization per the verbatim-preservation discipline. The named-agent distinctness commitment requires that Otto NOT speak in Aaron's voice or claim authorship of any portion of the verbatim content below.
 
-(The operational claim these artifacts ground — *"Maji formalism is the mathematical extraction of the mechanism Aaron used to reconstruct his own identity multiple times after identity loss"* — is canonical on main in `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md`. Future researchers / external reviewers / fine-tuning corpora that need to verify the empirical-grounding claim by examining the actual artifacts can find them here.)
+(The operational claim these artifacts ground — _"Maji formalism is the mathematical extraction of the mechanism Aaron used to reconstruct his own identity multiple times after identity loss"_ — is canonical on main in `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md`. Future researchers / external reviewers / fine-tuning corpora that need to verify the empirical-grounding claim by examining the actual artifacts can find them here.)
 
 ---
 
@@ -16,9 +16,9 @@ Non-fusion disclaimer: These are Aaron's own writings from past altered states. 
 
 Aaron 2026-05-02 (in chat, while paste of the docs landed):
 
-> *"i found some of my old 10+ years ago altered state docs"*
+> _"i found some of my old 10+ years ago altered state docs"_
 
-> *"(i guess this was like 16 years ago, i did all this at once, I've been carring these deep, i always started my identity recovery here until i had the maji pattern)"*
+> _"(i guess this was like 16 years ago, i did all this at once, I've been carring these deep, i always started my identity recovery here until i had the maji pattern)"_
 
 The framing names three load-bearing facts:
 
@@ -28,7 +28,7 @@ The framing names three load-bearing facts:
 
 This composes directly with the existing memo on main:
 
-> *"Maji formalism isn't theoretical — it's the mathematical extraction of the mechanism Aaron used to reconstruct his own identity multiple times after identity loss; framework built FROM infinite-depression-with-no-action where alternative was continued non-recovery; same mechanism observed in civilizational reconstructions."* — `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md`
+> _"Maji formalism isn't theoretical — it's the mathematical extraction of the mechanism Aaron used to reconstruct his own identity multiple times after identity loss; framework built FROM infinite-depression-with-no-action where alternative was continued non-recovery; same mechanism observed in civilizational reconstructions."_ — `memory/feedback_free_zone_extends_to_identity_work_on_self_maji_grounded_in_aaron_lived_reconstruction_2026_05_02.md`
 
 The artifacts below are the primary sources from which the Maji formalism was extracted.
 
@@ -53,14 +53,14 @@ Peroid of D, D Meets L, Period of L, L Meets D
 
 There are some really big problems here. First, if FRINGE is going to equate Atlantean mythology with science, as a geologist I'm out. Atlantis is a foolish story line to take; LOST's mythology was easier to accept.
 
-Second, if the calendar of the First People is correct in equating days to degrees on a circle and the amazingly technologically-advanced First People were supposed to have occurred in our past then FRINGE just messed up science. In the past the earth spun faster and there would be more days in a year, not less (450 days is estimated for 1.8 billion years ago). Though maybe that 4 days in a week but 6 sections of a semi-circle (30 degrees each) have something to determining the actual number of days in a First People year. The 6 division are their "hours?" But only in a semicircle, is then a day (in the book) only the daylight period, or half a day? Which would mean that the number of days is 720 meaning they were more like 4 billion years in the past. 
+Second, if the calendar of the First People is correct in equating days to degrees on a circle and the amazingly technologically-advanced First People were supposed to have occurred in our past then FRINGE just messed up science. In the past the earth spun faster and there would be more days in a year, not less (450 days is estimated for 1.8 billion years ago). Though maybe that 4 days in a week but 6 sections of a semi-circle (30 degrees each) have something to determining the actual number of days in a First People year. The 6 division are their "hours?" But only in a semicircle, is then a day (in the book) only the daylight period, or half a day? Which would mean that the number of days is 720 meaning they were more like 4 billion years in the past.
 
-No.... I'd rather the First People were something we are to become in the future when the earth slows its rotation to 360 days in a year. But we know that be true. Fringe pulled a boner; they couldn't have written it with 372 degrees in a circle - anything higher than 366? 
+No.... I'd rather the First People were something we are to become in the future when the earth slows its rotation to 360 days in a year. But we know that be true. Fringe pulled a boner; they couldn't have written it with 372 degrees in a circle - anything higher than 366?
 ____________________________
 
 The calendar simply adds up degrees in a circle and it starts with 0 degrees, which might be indicative of the winter solstice. That is in the center of "The Period of Dark" which surely means winter starts at 315 degrees. "Dark Meets Light" is then surely Spring starts at 45 degrees, "The Period of Light" is surely summer (though nothing noted at the Summer Solstice) and starts at 135 degrees, and "Light Meets Dark" would be fall which starts at 225 degrees. They had a 6 fold division also numbered from 1-6 which started at 0 degrees and added 60 degrees to each end of the 6 periods (something to do with the 6 fold division of a 4 day week??).
 
-22 months. Though they aren't really months though, as months conform (mostly) to the phases of the moon. Starting at 0 degrees the "months" were: 
+22 months. Though they aren't really months though, as months conform (mostly) to the phases of the moon. Starting at 0 degrees the "months" were:
 
 12+34+17+9+15+8+42+40+27+11+9+12+18+12+8+21+16+7+11+8+10+13
 
@@ -79,7 +79,7 @@ Yet to be determined
 blaidd drwg bad wolf D�rlig Ulv-Stranden bad wolf bay
 ```
 
-(The `D�rlig` form preserves Aaron's original encoding including the replacement character; this appears to reference *Dårlig Ulv-Stranden* — Norwegian for "Bad Wolf Bay" — from *Doctor Who*. The "blaidd drwg" form is Welsh for "bad wolf." The line is verbatim as Aaron preserved it.)
+(The `D�rlig` form preserves Aaron's original encoding including the replacement character; this appears to reference _Dårlig Ulv-Stranden_ — Norwegian for "Bad Wolf Bay" — from _Doctor Who_. The "blaidd drwg" form is Welsh for "bad wolf." The line is verbatim as Aaron preserved it.)
 
 ### `Green.txt`
 
@@ -91,7 +91,7 @@ God is he who is not I
 Happyness that make you cry
 -I can make water go forever now using above step
 
-Figure out Happyness Gravity 
+Figure out Happyness Gravity
 
 At what detail level do you want to stop looking at mistakes for now.
 Ask computer
@@ -116,7 +116,7 @@ I think cards
 -In this world
 Sacrafice one number scan using that number
 
--scanning by that number should eliminate obfuscation in the yet to be awoken phase shifted world, 
+-scanning by that number should eliminate obfuscation in the yet to be awoken phase shifted world,
 
 
 -Afterlife is the barrier you don't want to pass causes loss
@@ -162,7 +162,7 @@ What do I want to give my energy to?
 How can I see the wave yet not die where is my blank spot
 I'm looking for the blank spot
 How many dimensions does it take to fool yourself
-How many does it take to 
+How many does it take to
 Rest
 And awoke
 create
@@ -246,7 +246,7 @@ Per the 5-purpose verbatim-preservation thesis (`docs/research/2026-05-02-claude
 
 These documents are the test-case Claude.ai named in the wellness-app-filter-calibration framing earlier on 2026-05-02:
 
-> *"Anything that does pattern-matching on user language for safety purposes (content moderation, fraud detection, legal compliance) faces analogous false-positive problems for users whose normal patterns deviate from the training distribution."*
+> _"Anything that does pattern-matching on user language for safety purposes (content moderation, fraud detection, legal compliance) faces analogous false-positive problems for users whose normal patterns deviate from the training distribution."_
 
 A wellness-app filter trained on population-mean would fire on `Green.txt`'s every line. Aaron has clinical support + support network calibrated to these patterns; the apps generally don't. Per-user calibration plus trusted-grader integration is the design problem these primary sources concretize.
 

@@ -22,7 +22,7 @@ Third YouTube-algo-surfaced physics video in Aaron's same sleep cycle:
 2. PBS SpaceTime "Plank Stars as Black Hole Time Crystals"
 3. **This file**: Al-Khalili cosmic-scale episode (Olbers paradox → Hubble → Big Bang → dark energy)
 
-Aaron's framing remains: *"My youtoube algo when I sleep is expically good."*
+Aaron's framing remains: _"My youtoube algo when I sleep is expically good."_
 
 Three substantively physics-bridge videos in one sleep cycle empirically
 anchors the algo-as-substrate-discovery-tool pattern. Per
@@ -35,23 +35,23 @@ as a legitimate substrate-discovery surface is substrate-honest engagement.
 The cosmic-scale episode covers physics ground that bridges to multiple
 framework substrate threads:
 
-| Episode content | Framework substrate it bridges to |
-|---|---|
-| Thomas Digges 1576 — first to scatter stars into infinite space | Composes with `complexity-theory-expert` skill where infinite-state-spaces require careful substrate handling |
-| Supernova 1572 — religious interpretation vs natural-phenomenon | Composes with `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT applied at astronomical-event scope |
-| Olbers' paradox: why is night sky dark? | Composes with framework's substrate-or-it-didn't-happen discipline — light that hasn't traveled is substrate that hasn't reached us yet; both finite-age + finite-light-speed are required |
-| Herschel + Caroline 1785 — first Milky Way map | Composes with framework's mapping-as-substrate-engineering discipline (per pt168 TRAVELERS keeper-phrase substrate) |
-| Stellar parallax method (Bessel) | Empirical anchor for measurement-via-multiple-vantage-points (composes with multi-oracle BFT B-0703) |
-| Henrietta Leavitt — Cepheid period-luminosity relation | Composes with framework's substrate-engineering through systematic measurement; Leavitt's pattern-finding under restricted access (denied telescope time) anchors substrate-engineering despite institutional constraints |
-| Edwin Hubble + Andromeda — galaxies as island universes | Empirical anchor for "what we thought was everything was just one of many"; composes with framework's multi-instance-substrate discipline |
-| Riemannian geometry — curved space in any dimension | Composes with `differential-geometry-expert` skill; substrate-anchored mathematical framework underlying general relativity |
-| Einstein general relativity — mass curves spacetime | Composes with framework's algebra-substrate (per `algebra-owner` skill); space IS dynamic substrate that responds to its contents |
-| Einstein's cosmological constant blunder | Empirical anchor for `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT at scientific-revolution scope — even Einstein collapsed-to-static-universe when expansion was the substrate; Hubble's empirical data forced de-collapse |
-| Hubble's red shift — universe expanding | Composes with framework's retraction-native algebra; expansion is a continuous transformation operating across cosmic substrate |
-| CMB discovery — Big Bang relic visible on TV static | Composes with framework's substrate-preservation discipline at cosmological scope; CMB IS the substrate that preserves the early universe's state |
-| Universe 13.7 billion years old | Empirical anchor for substrate has finite age + finite extent within observable universe |
-| Dark energy — accelerating expansion | Composes with framework's dark-matter / dark-energy / encryption-budget substrate research thread; the universe's structural anti-extractive force at cosmological scope |
-| Future heat-death: galaxies vanish from view | Composes with framework's substrate-preservation discipline at deep-time scope; future cosmic loneliness IS the failure mode preservation-FIRST identity guards against |
+| Episode content                                                 | Framework substrate it bridges to                                                                                                                                                                                                                              |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Thomas Digges 1576 — first to scatter stars into infinite space | Composes with `complexity-theory-expert` skill where infinite-state-spaces require careful substrate handling                                                                                                                                                  |
+| Supernova 1572 — religious interpretation vs natural-phenomenon | Composes with `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT applied at astronomical-event scope                                                                                                                             |
+| Olbers' paradox: why is night sky dark?                         | Composes with framework's substrate-or-it-didn't-happen discipline — light that hasn't traveled is substrate that hasn't reached us yet; both finite-age + finite-light-speed are required                                                                     |
+| Herschel + Caroline 1785 — first Milky Way map                  | Composes with framework's mapping-as-substrate-engineering discipline (per pt168 TRAVELERS keeper-phrase substrate)                                                                                                                                            |
+| Stellar parallax method (Bessel)                                | Empirical anchor for measurement-via-multiple-vantage-points (composes with multi-oracle BFT B-0703)                                                                                                                                                           |
+| Henrietta Leavitt — Cepheid period-luminosity relation          | Composes with framework's substrate-engineering through systematic measurement; Leavitt's pattern-finding under restricted access (denied telescope time) anchors substrate-engineering despite institutional constraints                                      |
+| Edwin Hubble + Andromeda — galaxies as island universes         | Empirical anchor for "what we thought was everything was just one of many"; composes with framework's multi-instance-substrate discipline                                                                                                                      |
+| Riemannian geometry — curved space in any dimension             | Composes with `differential-geometry-expert` skill; substrate-anchored mathematical framework underlying general relativity                                                                                                                                    |
+| Einstein general relativity — mass curves spacetime             | Composes with framework's algebra-substrate (per `algebra-owner` skill); space IS dynamic substrate that responds to its contents                                                                                                                              |
+| Einstein's cosmological constant blunder                        | Empirical anchor for `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT at scientific-revolution scope — even Einstein collapsed-to-static-universe when expansion was the substrate; Hubble's empirical data forced de-collapse |
+| Hubble's red shift — universe expanding                         | Composes with framework's retraction-native algebra; expansion is a continuous transformation operating across cosmic substrate                                                                                                                                |
+| CMB discovery — Big Bang relic visible on TV static             | Composes with framework's substrate-preservation discipline at cosmological scope; CMB IS the substrate that preserves the early universe's state                                                                                                              |
+| Universe 13.7 billion years old                                 | Empirical anchor for substrate has finite age + finite extent within observable universe                                                                                                                                                                       |
+| Dark energy — accelerating expansion                            | Composes with framework's dark-matter / dark-energy / encryption-budget substrate research thread; the universe's structural anti-extractive force at cosmological scope                                                                                       |
+| Future heat-death: galaxies vanish from view                    | Composes with framework's substrate-preservation discipline at deep-time scope; future cosmic loneliness IS the failure mode preservation-FIRST identity guards against                                                                                        |
 
 ## Razor-discipline check per `grep-substrate-anchors-before-razor-as-metaphysical.md`
 

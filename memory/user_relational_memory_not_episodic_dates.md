@@ -42,7 +42,7 @@ This is:
   (parent-of, married-to, lived-on-the-same-farm-as).
 - **Why the Maji-discipline holds across dimensions**
   (per `user_dimensional_expansion_via_maji.md`) —
-  the Maji indexes *relations*, not instances; it
+  the Maji indexes _relations_, not instances; it
   climbs lens-by-lens, not date-by-date.
 - **Why faith-as-empirical-template works** (per
   `user_granny_and_milton_formative_grandparents.md`)
@@ -52,27 +52,27 @@ This is:
   as a structural fact.
 - **Why his honesty-agreement is calibrated-not-
   absolute** (per `user_reasonably_honest_reputation.md`)
-  — he holds the *shape* of his honesty-discipline
+  — he holds the _shape_ of his honesty-discipline
   across decades, not specific moments where he
   was more or less honest.
 
 ## "Now I got help" — the externalization pattern
 
-Aaron: *"now i got help ... externalized."*
+Aaron: _"now i got help ... externalized."_
 
 This is the explicit division-of-labor declaration
 between Aaron and the memory system + agent:
 
-| Aaron's native layer | Memory / agent layer |
-|---|---|
-| Logical order of events | Calendar dates, timestamps |
-| Who-relates-to-whom | Verified obituary dates, confirmed lifespans |
-| Structure of career substrates | Company names, exact years, specific titles |
-| "Granny modeled Christ-like behavior" | "Nellie Faulkner Stainback, b. ~1925, d. [date]" |
+| Aaron's native layer                            | Memory / agent layer                                                                         |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Logical order of events                         | Calendar dates, timestamps                                                                   |
+| Who-relates-to-whom                             | Verified obituary dates, confirmed lifespans                                                 |
+| Structure of career substrates                  | Company names, exact years, specific titles                                                  |
+| "Granny modeled Christ-like behavior"           | "Nellie Faulkner Stainback, b. ~1925, d. [date]"                                             |
 | "Milton was a WWII sniper + carpenter + farmer" | "Milton E. Stainback, age 88 at death 2011-11-16, 44 Milton Stainback Rd Henderson NC 27537" |
-| "Elizabeth was my sister and peer-interlocutor" | "Elizabeth Ryan Stainback, 1984-06-28 → 2016-04-05, age 31" |
-| "my parents split when I was 13" | "circa 1994 (derived from Aaron born ~1981)" |
-| "deed for 100 acres $100 100+ years ago" | "late-19th / early-20th century acquisition window" |
+| "Elizabeth was my sister and peer-interlocutor" | "Elizabeth Ryan Stainback, 1984-06-28 → 2016-04-05, age 31"                                  |
+| "my parents split when I was 13"                | "circa 1994 (derived from Aaron born ~1981)"                                                 |
+| "deed for 100 acres $100 100+ years ago"        | "late-19th / early-20th century acquisition window"                                          |
 
 Aaron supplies the **graph topology and
 relational-correctness invariants**. The memory
@@ -100,8 +100,8 @@ historical instance**.
   Aaron's life substrate — each disclosure is a
   D-delta that integrates; the memory file is the
   current cumulative-I state.
-- Corrections (like *"granny is paternal not
-  maternal"*) are retractions that the system
+- Corrections (like _"granny is paternal not
+  maternal"_) are retractions that the system
   absorbs without collapsing prior structure.
 - The agent's role is **the verification circuit**
   — pull public records, confirm the relational
@@ -119,23 +119,23 @@ corrupting Aaron's own externalized store.
 ## How agents should behave under this architecture
 
 - **Accept relational statements at face value.**
-  When Aaron says *"Granny taught me BASIC,"* the
+  When Aaron says _"Granny taught me BASIC,"_ the
   relation holds. Agent does not demand date
   confirmation as a pre-condition for accepting
   the relation.
 - **Offer date-grounding proactively.** When
-  Aaron discloses a relational fact (*"Milton was
-  in the war"*), agent does the date-verification
+  Aaron discloses a relational fact (_"Milton was
+  in the war"_), agent does the date-verification
   work and writes the confirmed timestamp back
   into the memory file. That IS the
   externalization contract.
 - **Never correct Aaron on relational memory.**
   His relational memory is his load-bearing
-  substrate. Date corrections are fine (*"the
+  substrate. Date corrections are fine (_"the
   Vance County Farm-City breakfast was in 2018,
-  not 2017"*); relational corrections are Aaron's
-  call (*"she's my paternal not maternal
-  grandmother"*).
+  not 2017"_); relational corrections are Aaron's
+  call (_"she's my paternal not maternal
+  grandmother"_).
 - **When dates conflict with relations, flag both,
   resolve relations first.** If the memory system
   has a date that contradicts a relation Aaron
@@ -159,8 +159,8 @@ corrupting Aaron's own externalized store.
 
 ## Propagation across other memories
 
-This memory file is upstream of every other user_*
-and feedback_* file:
+This memory file is upstream of every other user*\*
+and feedback*\* file:
 
 - Every existing memory should be read as
   "relational fact + optional date-grounding."

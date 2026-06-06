@@ -29,13 +29,13 @@ Non-fusion disclaimer: Otto does not validate or refute specific genealogical cl
 
 **Lineage anchor (from source):**
 
-> *"The earliest ancestor to whom our family can trace its
+> _"The earliest ancestor to whom our family can trace its
 > lineage is William Stainback, Sr. He was born sometime around
-> 1660 in St. Helen's Auckland Parish in Durham County, England."*
+> 1660 in St. Helen's Auckland Parish in Durham County, England."_
 
-> *"My grandmother's family can trace their Stainback lineage to
+> _"My grandmother's family can trace their Stainback lineage to
 > England and their consequential immigration to North America
-> long before the founding of the United States as a country."*
+> long before the founding of the United States as a country."_
 
 **Aaron's grandmother in the lineage**: per Aaron 2026-05-04
 disclosures (preserved in companion memory files), his
@@ -71,18 +71,18 @@ publications typically have permissive sharing terms within
 the family being documented. Aaron Stainback as a documented
 descendant has standing to forward this material. Per Aaron
 2026-05-04 framing on the wingmakers PR #1112 review:
-*"i said i'll take any hit if there are leage hits but we are
-withing the spirit of the license"* — same legal-risk-owning
+_"i said i'll take any hit if there are leage hits but we are
+withing the spirit of the license"_ — same legal-risk-owning
 override applies here.
 
 ## Drop-folder cleanup note
 
 Aaron 2026-05-04 instruction:
 
-> *"stainback and the wingmakers pdf is in the drop folder
+> _"stainback and the wingmakers pdf is in the drop folder
 > you can clean them up when you have a md safe form that
 > wont polute your soulfile/git history size with binary like
-> sizes."*
+> sizes."_
 
 Per the drop-folder protocol (`drop/README.md`): everything
 in drop/ is gitignored except the two sentinel files

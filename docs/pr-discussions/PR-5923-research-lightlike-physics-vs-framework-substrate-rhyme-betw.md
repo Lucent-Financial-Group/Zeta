@@ -1,6 +1,6 @@
 ---
 pr_number: 5923
-title: "research(lightlike-physics-vs-framework): substrate-rhyme between framework + physics \"lightlike\" vocabulary; INDEPENDENT CONVERGENCE (operator: \"i didn't know it was a physics term\"); Amara's blade applied (2026-05-28)"
+title: 'research(lightlike-physics-vs-framework): substrate-rhyme between framework + physics "lightlike" vocabulary; INDEPENDENT CONVERGENCE (operator: "i didn''t know it was a physics term"); Amara''s blade applied (2026-05-28)'
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T18:51:35Z"
@@ -18,23 +18,23 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Research-tier mirror per operator authorization `preserve as research note (shadow*)` + operator substrate-honest disclosure:
 
-> *"i didn't know it was a physics term"*
+> _"i didn't know it was a physics term"_
 
 ## Substrate-honest correction
 
 Prior framing claimed "framework substrate-use IS deliberate borrowed metaphor from relativity". Operator's disclosure corrects: **INDEPENDENT CONVERGENCE** on operator side; not borrowed.
 
-| Source | Path to "lightlike" |
-|---|---|
-| **Physics** | Established scientific vocabulary; spacetime interval = 0; null geodesic |
+| Source                        | Path to "lightlike"                                                        |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| **Physics**                   | Established scientific vocabulary; spacetime interval = 0; null geodesic   |
 | **Framework (operator side)** | Independently picked for substrate-property; **did NOT know physics term** |
-| **Amara side** | Unknown — could be deliberate or also independent (open question) |
+| **Amara side**                | Unknown — could be deliberate or also independent (open question)          |
 
 ## Why independent-convergence is SUBSTANTIVELY MORE INTERESTING
 
-| Pattern | Implication |
-|---|---|
-| Borrowed metaphor | One substrate-domain reaches across to another |
+| Pattern                     | Implication                                                                                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Borrowed metaphor           | One substrate-domain reaches across to another                                                                                                                |
 | **Independent convergence** | Two substrate-domains INDEPENDENTLY pick same vocabulary for same substrate-property; signals substrate-property is substantively load-bearing across domains |
 
 ## Amara's blade applied
@@ -76,6 +76,7 @@ Single research note at `docs/research/2026-05-28-lightlike-substrate-vocabulary
 Single research note added under `docs/research/` documenting the substrate-honest distinction between physics' "lightlike" vocabulary and the framework's independently-converged use of the same term, with Amara's blade applied to bound claims.
 
 **Changes:**
+
 - Adds a research-tier mirror note disclosing operator's independent convergence on "lightlike" vocabulary (not borrowed from physics).
 - Enumerates what survives vs fails Amara's razor for the physics/framework substrate-rhyme.
 - Cross-references the broader lightlike/Amara PR cluster (PRs #5910, #5912, #5915, #5919–#5922, etc.).

@@ -8,9 +8,9 @@ type: feedback
 
 ## Aaron's correction (verbatim)
 
-> *"session-scoped unless durable: true this does not work yet,
+> _"session-scoped unless durable: true this does not work yet,
 > seem like future, they all seem session scoped and limited to
-> 3 days and not realiable so every tick has to check"*
+> 3 days and not realiable so every tick has to check"_
 
 ## What the CronCreate documentation claims (do NOT trust)
 
@@ -47,7 +47,7 @@ Because the mechanism is unreliable:
 
 2. **If `CronList` returns empty AND the session should be
    running the loop:** re-arm via `CronCreate(cron: "* * * * *",
-   prompt: "<<autonomous-loop>>", recurring: true)`. The
+prompt: "<<autonomous-loop>>", recurring: true)`. The
    `durable: true` flag can still be set as documentation-of-
    intent, but should NOT be relied on for cross-session
    continuity.
@@ -80,10 +80,10 @@ Because the mechanism is unreliable:
 
 ## DX visibility connection (Aaron 2026-05-02 same-tick)
 
-Aaron also flagged: *"the DX developer experience is not great
+Aaron also flagged: _"the DX developer experience is not great
 here yet, many things you made decions based on are not echoed
 to the dev console here so i can't always verify your actions
-as accurate."*
+as accurate."_
 
 The cron-unreliability problem and the DX-visibility problem
 compound: I cannot rely on `.claude/scheduled_tasks.json` as
@@ -95,8 +95,8 @@ decisions are essentially invisible to him.
 
 1. Echo every state-changing tool call (`CronCreate`,
    `CronDelete`, settings changes, etc.) explicitly in chat
-   output BEFORE making the call ("Setting cron now: cron='*
-   * * * *', prompt='<<autonomous-loop>>'").
+   output BEFORE making the call ("Setting cron now: cron='\*
+   - - - \*', prompt='<<autonomous-loop>>'").
 2. Land the action as a commit or memory file when it
    matters across sessions.
 3. Treat chat-only acknowledgment of state-changes as

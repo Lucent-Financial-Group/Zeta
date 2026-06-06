@@ -62,7 +62,8 @@ export type CodeMetricsReport = {
 };
 
 const FUNCTION_DECL = /\b(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)/;
-const ARROW_DECL = /\b(?:export\s+)?const\s+([A-Za-z_$][\w$]*)\s*(?::[^=]+)?=\s*(?:async\s+)?\([^)]*\)\s*(?::[^=]+)?=>\s*\{/;
+const ARROW_DECL =
+  /\b(?:export\s+)?const\s+([A-Za-z_$][\w$]*)\s*(?::[^=]+)?=\s*(?:async\s+)?\([^)]*\)\s*(?::[^=]+)?=>\s*\{/;
 const METHOD_DECL = /^\s*(?:public|private|protected|static|async|\s)*([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*(?::[^={]+)?\{/;
 const CLASS_DECL = /\b(?:export\s+)?(?:abstract\s+)?class\s+([A-Za-z_$][\w$]*)/;
 
@@ -142,26 +143,54 @@ export function analyzeSource(
 
   const fileSeverity = severityFor(fileLengthLines, thresholds.fileLengthLines);
   if (fileSeverity !== MetricSeverity.Ok) {
-    findings.push({ metric: CodeMetricKind.FileLength, severity: fileSeverity, value: fileLengthLines, threshold: thresholds.fileLengthLines.warn, subject: filePath, message: `file is ${fileLengthLines} lines` });
+    findings.push({
+      metric: CodeMetricKind.FileLength,
+      severity: fileSeverity,
+      value: fileLengthLines,
+      threshold: thresholds.fileLengthLines.warn,
+      subject: filePath,
+      message: `file is ${fileLengthLines} lines`,
+    });
   }
 
   if (longestFunction !== undefined) {
     const sev = severityFor(longestFunction.lines, thresholds.longestFunctionLines);
     if (sev !== MetricSeverity.Ok) {
-      findings.push({ metric: CodeMetricKind.LongestFunction, severity: sev, value: longestFunction.lines, threshold: thresholds.longestFunctionLines.warn, subject: longestFunction.name, message: `function '${longestFunction.name}' is ${longestFunction.lines} lines` });
+      findings.push({
+        metric: CodeMetricKind.LongestFunction,
+        severity: sev,
+        value: longestFunction.lines,
+        threshold: thresholds.longestFunctionLines.warn,
+        subject: longestFunction.name,
+        message: `function '${longestFunction.name}' is ${longestFunction.lines} lines`,
+      });
     }
   }
 
   if (longestClass !== undefined) {
     const sev = severityFor(longestClass.lines, thresholds.longestClassLines);
     if (sev !== MetricSeverity.Ok) {
-      findings.push({ metric: CodeMetricKind.LongestClass, severity: sev, value: longestClass.lines, threshold: thresholds.longestClassLines.warn, subject: longestClass.name, message: `class '${longestClass.name}' is ${longestClass.lines} lines (god-class risk)` });
+      findings.push({
+        metric: CodeMetricKind.LongestClass,
+        severity: sev,
+        value: longestClass.lines,
+        threshold: thresholds.longestClassLines.warn,
+        subject: longestClass.name,
+        message: `class '${longestClass.name}' is ${longestClass.lines} lines (god-class risk)`,
+      });
     }
   }
 
   const nestSeverity = severityFor(maxNestingDepth, thresholds.maxNestingDepth);
   if (nestSeverity !== MetricSeverity.Ok) {
-    findings.push({ metric: CodeMetricKind.MaxNestingDepth, severity: nestSeverity, value: maxNestingDepth, threshold: thresholds.maxNestingDepth.warn, subject: filePath, message: `max nesting depth is ${maxNestingDepth}` });
+    findings.push({
+      metric: CodeMetricKind.MaxNestingDepth,
+      severity: nestSeverity,
+      value: maxNestingDepth,
+      threshold: thresholds.maxNestingDepth.warn,
+      subject: filePath,
+      message: `max nesting depth is ${maxNestingDepth}`,
+    });
   }
 
   const report: CodeMetricsReport = {

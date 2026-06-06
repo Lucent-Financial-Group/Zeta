@@ -91,7 +91,7 @@ This pattern:
 
 1. **`tools/setup/macos.sh` Homebrew install.** Currently:
    `HOMEBREW_INSTALLER="$(curl_fetch_stream URL)"; bash -c
-   "$HOMEBREW_INSTALLER"`. Convert to download-to-temp +
+"$HOMEBREW_INSTALLER"`. Convert to download-to-temp +
    exec. Homebrew does NOT publish a SHA256 of install.sh;
    document the size-check-only stance + the upstream
    project as the trust anchor.
@@ -101,7 +101,7 @@ This pattern:
    whether install.sh ships in a verifiable form.
 3. **`tools/setup/common/elan.sh` Lean-toolchain install.**
    Currently: `curl_fetch_stream URL | sh -s -- -y
-   --default-toolchain none`. Convert. elan-init.sh ships
+--default-toolchain none`. Convert. elan-init.sh ships
    from `raw.githubusercontent.com/leanprover/elan/master/`
    — investigate whether tag-pinned versions are available
    (move from `master` to a pinned tag if so).
@@ -109,20 +109,14 @@ This pattern:
 ## Done-criteria
 
 - [x] All three call sites converted to download-to-temp,
-      size-check, and exec pattern.
-      - `elan.sh`: pinned commit SHA + SHA256 verify (pre-existing).
-      - `linux.sh` mise: pinned tarball + per-arch SHA256 (pre-existing).
-      - `macos.sh` Homebrew: download-to-temp + non-empty size check
-        (converted by this PR).
+      size-check, and exec pattern. - `elan.sh`: pinned commit SHA + SHA256 verify (pre-existing). - `linux.sh` mise: pinned tarball + per-arch SHA256 (pre-existing). - `macos.sh` Homebrew: download-to-temp + non-empty size check
+      (converted by this PR).
 - [x] For each call site, the upstream's verifiability
       story is documented in the inline comment (signed
       release / SHA256SUMS / project-as-trust-anchor with
-      no upstream verification).
-      - `elan.sh`: commit-pinned + SHA256.
-      - `linux.sh` mise: version-pinned tarball + per-arch SHA256.
-      - `macos.sh` Homebrew: no upstream SHA256 (HEAD-tracking,
-        no tagged releases); trust anchor is HTTPS + GitHub +
-        Homebrew project. Documented inline.
+      no upstream verification). - `elan.sh`: commit-pinned + SHA256. - `linux.sh` mise: version-pinned tarball + per-arch SHA256. - `macos.sh` Homebrew: no upstream SHA256 (HEAD-tracking,
+      no tagged releases); trust anchor is HTTPS + GitHub +
+      Homebrew project. Documented inline.
 - [x] `tools/setup/common/curl-fetch.sh` doc-comments
       reflect the new pattern; `curl_fetch_stream` removed
       entirely (no remaining call sites).

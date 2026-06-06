@@ -12,7 +12,7 @@ archived_at: "2026-05-14T00:20:10Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #3058: fix(backlog): resolve B-0090.x ID collisions — renumber Riven ts-* series .1-.4 → .5-.8
+# PR #3058: fix(backlog): resolve B-0090.x ID collisions — renumber Riven ts-\* series .1-.4 → .5-.8
 
 ## PR description
 
@@ -20,16 +20,16 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Second per-collision cleanup from the [B-0451](docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) sweep. Two complete B-0090 decompositions had landed with overlapping sub-row IDs:
 
-| Sub-ID | First filer (2026-05-10, [#2503](https://github.com/Lucent-Financial-Group/Zeta/pull/2503)) | Second filer (2026-05-11, [#2680](https://github.com/Lucent-Financial-Group/Zeta/pull/2680)) |
-|---|---|---|
-| B-0090.1 | Riven ts-worktree-survey | lost-substrate-3-bucket-taxonomy |
-| B-0090.2 | Riven ts-orphan-branch-survey | worktree-branch-delta-audit |
-| B-0090.3 | Riven ts-closed-pr-survey | closed-not-merged-pr-scan |
-| B-0090.4 | Riven ts-draft-pr-aged-survey | cadence-and-hygiene-history-hook |
+| Sub-ID   | First filer (2026-05-10, [#2503](https://github.com/Lucent-Financial-Group/Zeta/pull/2503)) | Second filer (2026-05-11, [#2680](https://github.com/Lucent-Financial-Group/Zeta/pull/2680)) |
+| -------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| B-0090.1 | Riven ts-worktree-survey                                                                    | lost-substrate-3-bucket-taxonomy                                                             |
+| B-0090.2 | Riven ts-orphan-branch-survey                                                               | worktree-branch-delta-audit                                                                  |
+| B-0090.3 | Riven ts-closed-pr-survey                                                                   | closed-not-merged-pr-scan                                                                    |
+| B-0090.4 | Riven ts-draft-pr-aged-survey                                                               | cadence-and-hygiene-history-hook                                                             |
 
 ## Resolution
 
-The B-0090 parent body describes the SECOND decomposition explicitly as canonical (3-bucket-taxonomy / worktree-delta / closed-not-merged / cadence-hook, lines 14-17 + 39-42). Per the external-references rule (same as [#3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053), [#3057](https://github.com/Lucent-Financial-Group/Zeta/pull/3057)), the second set keeps the original IDs; Riven's ts-* series renumbered as a unit:
+The B-0090 parent body describes the SECOND decomposition explicitly as canonical (3-bucket-taxonomy / worktree-delta / closed-not-merged / cadence-hook, lines 14-17 + 39-42). Per the external-references rule (same as [#3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053), [#3057](https://github.com/Lucent-Financial-Group/Zeta/pull/3057)), the second set keeps the original IDs; Riven's ts-\* series renumbered as a unit:
 
 ```
 B-0090.1 → B-0090.5  (TS worktree survey)
@@ -44,8 +44,8 @@ Internal `depends_on: [B-0090.1]` cross-refs in siblings remapped to `B-0090.5` 
 
 Inline duplicate-ID count on the branch:
 
-| Before | After |
-|---|---|
+| Before        | After        |
+| ------------- | ------------ |
 | 11 dup groups | 7 dup groups |
 
 [B-0451](docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md) cleanup progress: **1/12 → 5/12** (B-0068.1 in [#3057](https://github.com/Lucent-Financial-Group/Zeta/pull/3057) already merged; B-0090.1-4 in this PR).
@@ -71,6 +71,7 @@ Remaining 7: B-0370-0373 (4 cross-priority bleed), B-0409 (3-way), B-0410, B-041
 Renames Riven's four B-0090.x atomic child rows (.1-.4 → .5-.8) to resolve ID collisions with a second B-0090 decomposition, remaps internal `depends_on` references, and regenerates the backlog index.
 
 **Changes:**
+
 - Delete old `B-0090.{1,2,3,4}-...riven...md` files and add `B-0090.{5,6,7,8}-...riven...md` with `renumbered_from` + reason frontmatter
 - Remap internal `depends_on: [B-0090.1]` → `[B-0090.5]` on the renumbered siblings
 - Regenerate `docs/BACKLOG.md` to reflect the new IDs
@@ -82,17 +83,18 @@ Copilot reviewed 10 out of 10 changed files in this pull request and generated n
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P2/B-0090.1-ts-worktree-survey-atomic-riven-2026-05-10.md | Old .1 row deleted (renumbered to .5) |
-| docs/backlog/P2/B-0090.2-ts-orphan-branch-survey-atomic-riven-2026-05-10.md | Old .2 row deleted (renumbered to .6) |
-| docs/backlog/P2/B-0090.3-ts-closed-pr-survey-atomic-riven-2026-05-10.md | Old .3 row deleted (renumbered to .7) |
-| docs/backlog/P2/B-0090.4-ts-draft-pr-aged-survey-atomic-riven-2026-05-10.md | Old .4 row deleted (renumbered to .8) |
-| docs/backlog/P2/B-0090.5-ts-worktree-survey-atomic-riven-2026-05-10.md | New row, renumbered_from B-0090.1, deps cleared |
+| File                                                                        | Description                                                  |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| docs/backlog/P2/B-0090.1-ts-worktree-survey-atomic-riven-2026-05-10.md      | Old .1 row deleted (renumbered to .5)                        |
+| docs/backlog/P2/B-0090.2-ts-orphan-branch-survey-atomic-riven-2026-05-10.md | Old .2 row deleted (renumbered to .6)                        |
+| docs/backlog/P2/B-0090.3-ts-closed-pr-survey-atomic-riven-2026-05-10.md     | Old .3 row deleted (renumbered to .7)                        |
+| docs/backlog/P2/B-0090.4-ts-draft-pr-aged-survey-atomic-riven-2026-05-10.md | Old .4 row deleted (renumbered to .8)                        |
+| docs/backlog/P2/B-0090.5-ts-worktree-survey-atomic-riven-2026-05-10.md      | New row, renumbered_from B-0090.1, deps cleared              |
 | docs/backlog/P2/B-0090.6-ts-orphan-branch-survey-atomic-riven-2026-05-10.md | New row, renumbered_from B-0090.2, depends_on remapped to .5 |
-| docs/backlog/P2/B-0090.7-ts-closed-pr-survey-atomic-riven-2026-05-10.md | New row, renumbered_from B-0090.3, depends_on remapped to .5 |
+| docs/backlog/P2/B-0090.7-ts-closed-pr-survey-atomic-riven-2026-05-10.md     | New row, renumbered_from B-0090.3, depends_on remapped to .5 |
 | docs/backlog/P2/B-0090.8-ts-draft-pr-aged-survey-atomic-riven-2026-05-10.md | New row, renumbered_from B-0090.4, depends_on remapped to .5 |
-| docs/BACKLOG.md | Regenerated index reflecting the new IDs |
+| docs/BACKLOG.md                                                             | Regenerated index reflecting the new IDs                     |
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-13T23:27:22Z)

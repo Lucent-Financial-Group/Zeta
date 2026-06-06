@@ -45,11 +45,14 @@ export const CockroachCommandStateStoreStatement = {
 export type CockroachCommandStateStoreStatement =
   (typeof CockroachCommandStateStoreStatement)[keyof typeof CockroachCommandStateStoreStatement];
 
-export type CockroachSqlStatement = {
-  name: CockroachCommandStateStoreStatement;
-  sql: string;
-  parameters: readonly unknown[];
-} | CockroachDocConsultLedgerSqlStatement | CockroachWorkAnchorSqlStatement;
+export type CockroachSqlStatement =
+  | {
+      name: CockroachCommandStateStoreStatement;
+      sql: string;
+      parameters: readonly unknown[];
+    }
+  | CockroachDocConsultLedgerSqlStatement
+  | CockroachWorkAnchorSqlStatement;
 
 export type CockroachDocConsultLedgerSqlStatement = {
   name: CockroachDocConsultLedgerStoreStatement;
@@ -107,116 +110,118 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
     recordCommandOutcome: async (outcome) => {
       try {
         return await executor.executeTransaction(async (transaction) => {
-        const claimResult = await transaction.execute<CockroachIdempotencyClaimRow<Result>>({
-          name: CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
-          sql: CockroachCommandStateStoreSql.ClaimIdempotencyRecord,
-          parameters: [
-            outcome.idempotencyRecord.idempotencyKey,
-            outcome.idempotencyRecord.requestHash,
-            outcome.idempotencyRecord.result,
-          ],
-        });
-        const claim = claimResult.rows[0];
-        const claimStatus = claim?.persistence_status ?? CommandOutcomePersistenceStatus.IdempotencyConflict;
+          const claimResult = await transaction.execute<CockroachIdempotencyClaimRow<Result>>({
+            name: CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+            sql: CockroachCommandStateStoreSql.ClaimIdempotencyRecord,
+            parameters: [
+              outcome.idempotencyRecord.idempotencyKey,
+              outcome.idempotencyRecord.requestHash,
+              outcome.idempotencyRecord.result,
+            ],
+          });
+          const claim = claimResult.rows[0];
+          const claimStatus = claim?.persistence_status ?? CommandOutcomePersistenceStatus.IdempotencyConflict;
 
-        if (claimStatus === CommandOutcomePersistenceStatus.Replayed) {
-          return {
-            status: CommandOutcomePersistenceStatus.Replayed,
-            result: claim?.result_json as Result,
-          };
-        }
-
-        if (claimStatus === CommandOutcomePersistenceStatus.IdempotencyConflict) {
-          if (claim?.request_hash === undefined || claim.request_hash === null) {
+          if (claimStatus === CommandOutcomePersistenceStatus.Replayed) {
             return {
-              status: CommandOutcomePersistenceStatus.IdempotencyConflict,
+              status: CommandOutcomePersistenceStatus.Replayed,
+              result: claim?.result_json as Result,
             };
           }
 
+          if (claimStatus === CommandOutcomePersistenceStatus.IdempotencyConflict) {
+            if (claim?.request_hash === undefined || claim.request_hash === null) {
+              return {
+                status: CommandOutcomePersistenceStatus.IdempotencyConflict,
+              };
+            }
+
+            return {
+              status: CommandOutcomePersistenceStatus.IdempotencyConflict,
+              existingRequestHash: claim.request_hash,
+            };
+          }
+
+          const unsupportedEffectConflict = findUnsupportedCommandEffectConflict(outcome.effects);
+
+          if (unsupportedEffectConflict !== undefined) {
+            throw new CockroachCommandEffectConflictError(unsupportedEffectConflict);
+          }
+
+          for (const supervisorSignal of outcome.effects.supervisorSignals) {
+            await transaction.execute(createInsertSupervisorSignalStatement(supervisorSignal));
+          }
+
+          for (const discussionAnchor of outcome.effects.discussionAnchors) {
+            await transaction.execute(createInsertDiscussionAnchorStatement(discussionAnchor));
+          }
+
+          for (const decisionRecord of outcome.effects.decisionRecords) {
+            await transaction.execute(createInsertDecisionRecordStatement(decisionRecord));
+          }
+
+          for (const qualityGateEvaluation of outcome.effects.qualityGateEvaluations) {
+            await transaction.execute(createInsertQualityGateEvaluationStatement(qualityGateEvaluation));
+          }
+
+          const docConsultLedgerStore = createCockroachDocConsultLedgerStore({
+            executor: createDocConsultLedgerTransactionExecutor(transaction),
+          });
+
+          for (const docConsultOutcomeStamp of outcome.effects.docConsultOutcomeStamps ?? []) {
+            const stampResult = await docConsultLedgerStore.stampOutcome(docConsultOutcomeStamp);
+            if (stampResult.stampedCount === 0) {
+              throw new CockroachCommandEffectConflictError(
+                CommandOutcomeEffectConflictReason.DocConsultOutcomeStampMissing,
+              );
+            }
+          }
+
+          for (const workScheduleBlock of outcome.effects.workScheduleBlocks) {
+            await assertNoOverlappingWorkScheduleBlock(transaction, workScheduleBlock);
+            await transaction.execute(createInsertWorkScheduleBlockStatement(workScheduleBlock));
+          }
+
+          for (const inboxAnchor of outcome.effects.contextPackInboxAnchors ?? []) {
+            await transaction.execute(createInsertContextPackInboxAnchorStatement(inboxAnchor));
+          }
+
+          for (const decision of outcome.effects.contextPackAdvisoryPromotionDecisions ?? []) {
+            await transaction.execute(createUpsertContextPackAdvisoryPromotionDecisionStatement(decision));
+          }
+
+          for (const statusTransition of outcome.effects.contextPackInboxAnchorStatusTransitions ?? []) {
+            const result = await transaction.execute(
+              createUpdateContextPackInboxAnchorStatusStatement(statusTransition),
+            );
+            if (result.rows.length === 0) {
+              throw new CockroachCommandEffectConflictError(
+                CommandOutcomeEffectConflictReason.ContextPackInboxAnchorMissing,
+              );
+            }
+          }
+
+          const workAnchorStateStore = createCockroachWorkAnchorStateStore({
+            executor: {
+              execute: transaction.execute,
+              executeTransaction: async (operation) => await operation(transaction),
+            },
+          });
+
+          await recordWorkAnchorEffects(workAnchorStateStore, outcome.effects.workAnchors);
+
+          for (const auditEvent of outcome.effects.auditEvents) {
+            await transaction.execute(createInsertAuditEventStatement(auditEvent));
+          }
+
+          for (const outboxEvent of outcome.effects.outboxEvents) {
+            await transaction.execute(createInsertOutboxEventStatement(outboxEvent));
+          }
+
           return {
-            status: CommandOutcomePersistenceStatus.IdempotencyConflict,
-            existingRequestHash: claim.request_hash,
+            status: CommandOutcomePersistenceStatus.Committed,
+            result: outcome.idempotencyRecord.result,
           };
-        }
-
-        const unsupportedEffectConflict = findUnsupportedCommandEffectConflict(outcome.effects);
-
-        if (unsupportedEffectConflict !== undefined) {
-          throw new CockroachCommandEffectConflictError(unsupportedEffectConflict);
-        }
-
-        for (const supervisorSignal of outcome.effects.supervisorSignals) {
-          await transaction.execute(createInsertSupervisorSignalStatement(supervisorSignal));
-        }
-
-        for (const discussionAnchor of outcome.effects.discussionAnchors) {
-          await transaction.execute(createInsertDiscussionAnchorStatement(discussionAnchor));
-        }
-
-        for (const decisionRecord of outcome.effects.decisionRecords) {
-          await transaction.execute(createInsertDecisionRecordStatement(decisionRecord));
-        }
-
-        for (const qualityGateEvaluation of outcome.effects.qualityGateEvaluations) {
-          await transaction.execute(createInsertQualityGateEvaluationStatement(qualityGateEvaluation));
-        }
-
-        const docConsultLedgerStore = createCockroachDocConsultLedgerStore({
-          executor: createDocConsultLedgerTransactionExecutor(transaction),
-        });
-
-        for (const docConsultOutcomeStamp of outcome.effects.docConsultOutcomeStamps ?? []) {
-          const stampResult = await docConsultLedgerStore.stampOutcome(docConsultOutcomeStamp);
-          if (stampResult.stampedCount === 0) {
-            throw new CockroachCommandEffectConflictError(
-              CommandOutcomeEffectConflictReason.DocConsultOutcomeStampMissing,
-            );
-          }
-        }
-
-        for (const workScheduleBlock of outcome.effects.workScheduleBlocks) {
-          await assertNoOverlappingWorkScheduleBlock(transaction, workScheduleBlock);
-          await transaction.execute(createInsertWorkScheduleBlockStatement(workScheduleBlock));
-        }
-
-        for (const inboxAnchor of outcome.effects.contextPackInboxAnchors ?? []) {
-          await transaction.execute(createInsertContextPackInboxAnchorStatement(inboxAnchor));
-        }
-
-        for (const decision of outcome.effects.contextPackAdvisoryPromotionDecisions ?? []) {
-          await transaction.execute(createUpsertContextPackAdvisoryPromotionDecisionStatement(decision));
-        }
-
-        for (const statusTransition of outcome.effects.contextPackInboxAnchorStatusTransitions ?? []) {
-          const result = await transaction.execute(createUpdateContextPackInboxAnchorStatusStatement(statusTransition));
-          if (result.rows.length === 0) {
-            throw new CockroachCommandEffectConflictError(
-              CommandOutcomeEffectConflictReason.ContextPackInboxAnchorMissing,
-            );
-          }
-        }
-
-        const workAnchorStateStore = createCockroachWorkAnchorStateStore({
-          executor: {
-            execute: transaction.execute,
-            executeTransaction: async (operation) => await operation(transaction),
-          },
-        });
-
-        await recordWorkAnchorEffects(workAnchorStateStore, outcome.effects.workAnchors);
-
-        for (const auditEvent of outcome.effects.auditEvents) {
-          await transaction.execute(createInsertAuditEventStatement(auditEvent));
-        }
-
-        for (const outboxEvent of outcome.effects.outboxEvents) {
-          await transaction.execute(createInsertOutboxEventStatement(outboxEvent));
-        }
-
-        return {
-          status: CommandOutcomePersistenceStatus.Committed,
-          result: outcome.idempotencyRecord.result,
-        };
         });
       } catch (error) {
         if (error instanceof CockroachCommandEffectConflictError) {
@@ -510,9 +515,7 @@ function createInsertContextPackInboxAnchorStatement(
 }
 
 function createUpsertContextPackAdvisoryPromotionDecisionStatement(
-  decision: NonNullable<
-    CommandStateStoreResult<unknown>["effects"]["contextPackAdvisoryPromotionDecisions"]
-  >[number],
+  decision: NonNullable<CommandStateStoreResult<unknown>["effects"]["contextPackAdvisoryPromotionDecisions"]>[number],
 ): CockroachSqlStatement {
   return {
     name: CockroachCommandStateStoreStatement.UpsertContextPackAdvisoryPromotionDecision,

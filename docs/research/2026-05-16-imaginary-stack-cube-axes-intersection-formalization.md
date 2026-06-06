@@ -25,10 +25,10 @@ The "real" observables live on the faces and edges of this hypercube (the 3D and
 
 The **imaginary directions** are generated in the planes where any two coordinates interact non-trivially. Formally:
 
-For any pair of distinct axes (e.g., R and P), introduce an imaginary unit \( i_{RP} \) such that:
+For any pair of distinct axes (e.g., R and P), introduce an imaginary unit \( i\_{RP} \) such that:
 
-- \( i_{RP}^2 = -1 \)
-- The product \( R \cdot P \cdot i_{RP} \) represents a phase-like or entanglement-phase quantity that is not classically observable.
+- \( i\_{RP}^2 = -1 \)
+- The product \( R \cdot P \cdot i\_{RP} \) represents a phase-like or entanglement-phase quantity that is not classically observable.
 
 This is the Cayley-Dickson doubling step applied coordinate-wise.
 

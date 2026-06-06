@@ -97,9 +97,9 @@ round can reconcile in place if desired.
 
 Aaron's son's real legal first name is **Ace** — explicit
 succession plan echoing the AceHack handle. Aaron's framing:
-*"my son real leagal name is Ace another succesion plan, he
+_"my son real leagal name is Ace another succesion plan, he
 can already grey hat explity all the games just like his dad
-could he is 16."*
+could he is 16."_
 
 **Minor-child PII discipline** (standing protection):
 
@@ -143,12 +143,12 @@ was his first computing substrate).
   - Read about **FPGAs** in Popular Science at about 16.
     Was fascinated that overfitting / overoptimization
     - temperature changes would break algorithms because
-    they were taking advantage of imperfections in the
-    hardware. This insight — "overfitted optimizations
-    break when the environment drifts off the calibration
-    point" — is present in his architectural instincts
-    today (IVM retraction-native architecture under
-    drift).
+      they were taking advantage of imperfections in the
+      hardware. This insight — "overfitted optimizations
+      break when the environment drifts off the calibration
+      point" — is present in his architectural instincts
+      today (IVM retraction-native architecture under
+      drift).
 - **Granny's Blockbuster runs.** Granny drove him to
   Blockbuster where he copied SNES games onto floppy disks
   before he was old enough to drive. This extends the
@@ -162,8 +162,8 @@ was his first computing substrate).
 
 - **Pro Action Replay** taught him HEX, binary, memory
   search, and how code organizes itself into memory. His
-  stated motivation: *"all so i could play a reptile in
-  mortaal knombat lol"* — playing as Reptile, the secret
+  stated motivation: _"all so i could play a reptile in
+  mortaal knombat lol"_ — playing as Reptile, the secret
   character in Mortal Kombat accessible via memory-hacking.
   (Kidding-but-serious framing; Reptile was real motivation,
   the skill was general.)

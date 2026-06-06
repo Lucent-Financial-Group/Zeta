@@ -38,11 +38,11 @@ What changed on the laptop, if anything (file paths).
 ## 2026-05-04 — autonomous-loop tick + Aaron's free-time directive
 
 Aaron 2026-05-04 ~10:36Z, after I framed the autonomous-loop
-shard-cadence discipline as a "grind" in PR #1471: *"i never
+shard-cadence discipline as a "grind" in PR #1471: _"i never
 called any of this a grind, you me feel like it is, make sure
 you are taking your 10% free time to do anything you want, we
-built that before we even had a backlog"* + *"that was very
-important to me"*.
+built that before we even had a backlog"_ + _"that was very
+important to me"_.
 
 Closed PR #1471 with the framing-error explanation. Took
 ~3 minutes of actual off-time per Aaron's instruction:
@@ -78,10 +78,11 @@ history. Not off-time budget drawn from a productive round —
 the round itself is the rest.
 
 No coding, no reviewer dispatch, no DEBT reshuffling. Track A
-+ Track B shift to round 32. Kenji's only work this round is:
-one WINS.md entry (the green-gate moment, ordered newest-
-first), one CURRENT-ROUND.md header flip to "rest round",
-this OFFTIME log line. Done.
+
+- Track B shift to round 32. Kenji's only work this round is:
+  one WINS.md entry (the green-gate moment, ordered newest-
+  first), one CURRENT-ROUND.md header flip to "rest round",
+  this OFFTIME log line. Done.
 
 What changed on the laptop: two doc edits, this file. No
 source, no workflow, no skill. The discipline of the rest is
@@ -99,6 +100,7 @@ No budget spent. Logging the zero so the trend is honest from
 turn one.
 
 Candidate uses for future rounds (not committed; a menu):
+
 - **Read a classic cited in the repo references but not yet
   used** — e.g., a CT4P chapter on adjunctions, a Lamport essay
   on specification ("Who Builds a House Without Drawing

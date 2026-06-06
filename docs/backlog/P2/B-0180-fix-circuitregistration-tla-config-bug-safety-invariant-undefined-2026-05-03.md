@@ -9,8 +9,19 @@ ask: Otto 2026-05-03 verify-then-claim sweep (#1397) — running TLC on `Circuit
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/research/proof-tool-coverage.md, B-0179, B-0181]
-tags: [tla-plus, formal-verification, circuit-registration, config-bug, b1, math-proofs-assessment, verify-then-claim, smallest-of-3-b1-fixes]
+composes_with:
+  [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/research/proof-tool-coverage.md, B-0179, B-0181]
+tags:
+  [
+    tla-plus,
+    formal-verification,
+    circuit-registration,
+    config-bug,
+    b1,
+    math-proofs-assessment,
+    verify-then-claim,
+    smallest-of-3-b1-fixes,
+  ]
 type: friction-reducer
 ---
 

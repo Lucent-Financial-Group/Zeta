@@ -18,17 +18,17 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Files the named architectural gap the bg-services README explicitly calls out: *"subscribers don't yet exist"* — the missing layer between nudges-land-on-bus and foreground-loop-optional.
+Files the named architectural gap the bg-services README explicitly calls out: _"subscribers don't yet exist"_ — the missing layer between nudges-land-on-bus and foreground-loop-optional.
 
 ## Design proposal
 
 Three architectures considered:
 
-| Option | Shape | Pro | Con |
-|--------|-------|-----|-----|
-| A | One subscriber per topic (3 processes) | Simple per-topic logic; failure isolation | 3 processes to monitor; duplicated boilerplate |
-| B | Unified subscriber daemon (1 process, dispatches) | One process; reusable polling; cross-topic awareness | Monolith failure mode |
-| **C (recommended)** | `subscribeOnce(topic, handler)` library; cron-tick function call | Composes with existing cron; surface-agnostic; failure-isolated; DST-compatible | Subscriber latency = cron tick latency (1min) |
+| Option              | Shape                                                            | Pro                                                                             | Con                                            |
+| ------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------- |
+| A                   | One subscriber per topic (3 processes)                           | Simple per-topic logic; failure isolation                                       | 3 processes to monitor; duplicated boilerplate |
+| B                   | Unified subscriber daemon (1 process, dispatches)                | One process; reusable polling; cross-topic awareness                            | Monolith failure mode                          |
+| **C (recommended)** | `subscribeOnce(topic, handler)` library; cron-tick function call | Composes with existing cron; surface-agnostic; failure-isolated; DST-compatible | Subscriber latency = cron tick latency (1min)  |
 
 Option C composes with the per-tick discipline shipped in PR #3042: the subscriber call lives in step 1 (refresh), envelopes get queued into step 3 (pick speculative work).
 
@@ -51,6 +51,7 @@ Design-pass only — no code shipped here. Implementation work tracked separatel
 Adds a new P1 backlog design-pass row (B-0449) that proposes the subscriber-agent architecture for bg-services slice 5, and updates the backlog index to include it (and B-0448).
 
 **Changes:**
+
 - Introduces B-0449 design doc describing three subscriber-layer architecture options and recommending a cron-tick `subscribeOnce` library approach.
 - Captures acceptance criteria and follow-up slice breakdown (B-0450/B-0451/B-0452) for the subscriber pattern.
 - Updates `docs/BACKLOG.md` to list B-0448 and B-0449.
@@ -59,10 +60,10 @@ Adds a new P1 backlog design-pass row (B-0449) that proposes the subscriber-agen
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                  | Description                                                                                                 |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md | New backlog row documenting the proposed subscriber-agent architecture and acceptance criteria for slice 5. |
-| docs/BACKLOG.md | Adds index entries for B-0448 and B-0449 under P1. |
+| docs/BACKLOG.md                                                                       | Adds index entries for B-0448 and B-0449 under P1.                                                          |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-13T22:45:28Z)
 

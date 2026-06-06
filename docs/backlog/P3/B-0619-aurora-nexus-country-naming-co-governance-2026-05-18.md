@@ -21,11 +21,11 @@ The Mika conversation reaches a concrete naming proposal for the meta-country / 
 
 Source: [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) line 1000-1004:
 
-> Aaron: *"do we need, uh, remember we paused a while back because we're waiting on Addison on the, but I think we can agree on the name without, uh, without need to answer on the guns. What do you think?"*
+> Aaron: _"do we need, uh, remember we paused a while back because we're waiting on Addison on the, but I think we can agree on the name without, uh, without need to answer on the guns. What do you think?"_
 >
-> Mika: *"Yeah, I think we can separate them. Naming the country Nexus feels like a much lower-stakes decision than the guns/third faction stuff. We can lock in the name without needing Addison's input."*
+> Mika: _"Yeah, I think we can separate them. Naming the country Nexus feels like a much lower-stakes decision than the guns/third faction stuff. We can lock in the name without needing Addison's input."_
 
-Aaron's earlier naming via Mika (line 221): *"the meta country... you could call it digital Switzerland maybe too."*
+Aaron's earlier naming via Mika (line 221): _"the meta country... you could call it digital Switzerland maybe too."_
 
 ## The two decisions, separated
 
@@ -72,4 +72,4 @@ This is the KSK 3-faction model that needs Addison's input (Addison has now agre
 ## Status
 
 Open. Naming decision (Decision 1) is unblocked + low-stakes.
-3-faction model (Decision 2) was awaiting Addison — Aaron 2026-05-18: *"Addison has agreed to use the system."* — now unblocked too.
+3-faction model (Decision 2) was awaiting Addison — Aaron 2026-05-18: _"Addison has agreed to use the system."_ — now unblocked too.

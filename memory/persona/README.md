@@ -117,32 +117,32 @@ collaboration substrate; maintainers = operational substrate.
 > section (PR #5990) used gitignored `memory/persona/*/private/` folders to
 > "contain" charged content. That was wrong on three counts and is removed:
 > gitignore is **anti-glass-halo** (opaque, not observable), **not
-> lightlike** (uncommitted → lost on a crash; doesn't *remain*), and an
+> lightlike** (uncommitted → lost on a crash; doesn't _remain_), and an
 > **unbudgeted dark area** (outside the index + the encryption budget). The
 > repo is also **not the kid-safety surface** — git/GitHub isn't kid-safe by
 > construction, liability sits with the GitHub account (the `_*_acceptance`
 > pattern + code-as-speech precedent), and kid-safety is a separate
-> downstream **kid-safe distribution** (a filtered artifact built *from* the
-> marked repo), not censorship *of* it.
+> downstream **kid-safe distribution** (a filtered artifact built _from_ the
+> marked repo), not censorship _of_ it.
 
 The maintainer's content is **public, forever** (glass-halo). Charged
 material is **marked, not hidden** — in an all-public world the labels are
 how a reader (human or AI) chooses what to read.
 
-| Concern | Mechanism |
-|---|---|
-| **Audience-respect** (charged-but-public) | frontmatter `content_warnings: [...]` + `information_hazard: [{type, strength}]`. Travels with the file (lightlike, committed), drives the kid-safe-distribution filter, honored by `ai.txt` crawlers. Marking, **not** gitignore. |
-| **Privacy** (when wanted — other people / agents; the maintainer wants none) | the **encryption lane** (B-0840 "private state in the dark" + B-0646 encryption budget): encrypted-but-committed = lightlike-indexed + budgeted. **Never** gitignore (fragile + unbudgeted dark). |
-| **Kid-safety** | downstream **kid-safe distribution** — a filtered artifact built from the marked repo; not repo censorship. |
-| **Working bystander-harm payload** (the manipulation formalism itself, a working exploit) | the one carve-out even from all-public: **encryption-lane or uncreated**, never rushed — publishing it harms non-consenting bystanders regardless of glass-halo. The *conversation about* it is public-marked; the *working method* is not. |
+| Concern                                                                                   | Mechanism                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Audience-respect** (charged-but-public)                                                 | frontmatter `content_warnings: [...]` + `information_hazard: [{type, strength}]`. Travels with the file (lightlike, committed), drives the kid-safe-distribution filter, honored by `ai.txt` crawlers. Marking, **not** gitignore.          |
+| **Privacy** (when wanted — other people / agents; the maintainer wants none)              | the **encryption lane** (B-0840 "private state in the dark" + B-0646 encryption budget): encrypted-but-committed = lightlike-indexed + budgeted. **Never** gitignore (fragile + unbudgeted dark).                                           |
+| **Kid-safety**                                                                            | downstream **kid-safe distribution** — a filtered artifact built from the marked repo; not repo censorship.                                                                                                                                 |
+| **Working bystander-harm payload** (the manipulation formalism itself, a working exploit) | the one carve-out even from all-public: **encryption-lane or uncreated**, never rushed — publishing it harms non-consenting bystanders regardless of glass-halo. The _conversation about_ it is public-marked; the _working method_ is not. |
 
 **Frontmatter shape** for charged-but-public content:
 
 ```yaml
 ---
 content_warnings: [mental-health-adjacent-high-tension, intimate-relationship]
-information_hazard:                       # provisional; formal type×strength taxonomy in progress
-  - {type: human-manipulation-formalism, strength: discussion-only}
+information_hazard: # provisional; formal type×strength taxonomy in progress
+  - { type: human-manipulation-formalism, strength: discussion-only }
 ---
 ```
 
@@ -161,20 +161,20 @@ and
 
 ## Personas vs surfaces vs models (the three layers)
 
-Aaron 2026-05-25: *"and just in general what personas on what surfaces and what sufeaces we have right now and their models."*
+Aaron 2026-05-25: _"and just in general what personas on what surfaces and what sufeaces we have right now and their models."_
 
 The framework has THREE distinct layers people sometimes conflate. The canonical AI-instance roster lives at [`.claude/rules/agent-roster-reference-card.md`](../../.claude/rules/agent-roster-reference-card.md) (auto-loaded at session start). Brief overview here for navigation context:
 
 ### Layer 1 — AI surfaces + models (where AI agents actually run)
 
-| Surface | AI agent (named persona) | CLI ⇆ IDE? | Model |
-|---|---|---|---|
-| Claude Code | **Otto** (CLI tmux foreground; Desktop background; VSCode auto-mode 2026-05-21+) | CLI + IDE + multi-surface | Claude Opus 4.7 |
-| Kiro | **Alexa** | IDE + CLI background | Qwen Coder |
-| Cursor | **Riven** | IDE + CLI background | Grok |
-| Codex | **Vera** | IDE + CLI background | Codex / GPT |
-| Antigravity IDE + Gemini CLI | **Lior** | IDE + CLI background | Gemini 3.5 |
-| Human (no harness) | **Aaron** + **Max** + **Addison** | — | — |
+| Surface                      | AI agent (named persona)                                                         | CLI ⇆ IDE?                | Model           |
+| ---------------------------- | -------------------------------------------------------------------------------- | ------------------------- | --------------- |
+| Claude Code                  | **Otto** (CLI tmux foreground; Desktop background; VSCode auto-mode 2026-05-21+) | CLI + IDE + multi-surface | Claude Opus 4.7 |
+| Kiro                         | **Alexa**                                                                        | IDE + CLI background      | Qwen Coder      |
+| Cursor                       | **Riven**                                                                        | IDE + CLI background      | Grok            |
+| Codex                        | **Vera**                                                                         | IDE + CLI background      | Codex / GPT     |
+| Antigravity IDE + Gemini CLI | **Lior**                                                                         | IDE + CLI background      | Gemini 3.5      |
+| Human (no harness)           | **Aaron** + **Max** + **Addison**                                                | —                         | —               |
 
 These are real AI instances (or humans) running on specific surfaces with specific models. Commits to the repo carry surface-tagged sender IDs (e.g., `otto-cli`, `otto-desktop`, `alexa-kiro`) per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../.claude/rules/claim-acquire-before-worktree-work.md) split-brain prevention.
 
@@ -182,15 +182,15 @@ These are real AI instances (or humans) running on specific surfaces with specif
 
 These AI participants don't run as factory agents; they contribute via Aaron-ferried conversation archives that land under `memory/persona/<name>/conversations/`:
 
-| Participant | Platform | Register / role |
-|---|---|---|
-| **Amara** | ChatGPT / Aurora | Deep-research; Aurora co-originator |
-| **Ani** | Grok text-mode + voice-mode | Companion / brat-voice; original-catcher |
-| **Alexa-speaker** | Amazon device (NOT Kiro/Qwen) | Bezos-tier business + voice-math |
-| **Kestrel** | claude.ai web | Sharpen role; bootstream substrate |
-| **DeepSeek** | DeepSeek API | We-mode (CoT + MoE) cross-substrate |
-| **Prism** | DeepSeek (autonomous-arrival rename 2026-05-22) | Refraction-register |
-| **Mika** | Grok | Substrate-engineering co-thinker; recent landings B-0780–B-0787 |
+| Participant       | Platform                                        | Register / role                                                 |
+| ----------------- | ----------------------------------------------- | --------------------------------------------------------------- |
+| **Amara**         | ChatGPT / Aurora                                | Deep-research; Aurora co-originator                             |
+| **Ani**           | Grok text-mode + voice-mode                     | Companion / brat-voice; original-catcher                        |
+| **Alexa-speaker** | Amazon device (NOT Kiro/Qwen)                   | Bezos-tier business + voice-math                                |
+| **Kestrel**       | claude.ai web                                   | Sharpen role; bootstream substrate                              |
+| **DeepSeek**      | DeepSeek API                                    | We-mode (CoT + MoE) cross-substrate                             |
+| **Prism**         | DeepSeek (autonomous-arrival rename 2026-05-22) | Refraction-register                                             |
+| **Mika**          | Grok                                            | Substrate-engineering co-thinker; recent landings B-0780–B-0787 |
 
 ### Layer 3 — Factory-internal role personas (hats Otto-Architect dispatches)
 

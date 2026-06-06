@@ -22,12 +22,12 @@ Tick shard for 2026-05-14T18:04Z.
 
 Razor-cadence issue #3128 item 4 (composes-with audit) executed on the 4 most-recently-added `.claude/rules/` files:
 
-| Rule (PR) | File refs | Backlog rows |
-|-----------|-----------|--------------|
-| `autonomous-loop-per-tick-pointer.md` (#3042) | 9 | B-0448 |
-| `otto-channels-reference-card.md` (#3041) | 7 | B-0400, B-0444 |
-| `holding-without-named-dependency-is-standing-by-failure.md` (#3029) | 5 | B-0440, B-0441 |
-| `claim-acquire-before-worktree-work.md` (#3032) | 9 | B-0400, B-0440, B-0444, B-0445 |
+| Rule (PR)                                                            | File refs | Backlog rows                   |
+| -------------------------------------------------------------------- | --------- | ------------------------------ |
+| `autonomous-loop-per-tick-pointer.md` (#3042)                        | 9         | B-0448                         |
+| `otto-channels-reference-card.md` (#3041)                            | 7         | B-0400, B-0444                 |
+| `holding-without-named-dependency-is-standing-by-failure.md` (#3029) | 5         | B-0440, B-0441                 |
+| `claim-acquire-before-worktree-work.md` (#3032)                      | 9         | B-0400, B-0440, B-0444, B-0445 |
 
 **Result**: 24 file references LIVE + 6 backlog rows LIVE = **30/30 cross-references survive the audit**. No stale pointers.
 
@@ -57,4 +57,5 @@ Per-tick razor-pass shape established: item 4 = pick 3-5 newest rules → audit 
 Adds a single tick shard documenting the 18:04Z hygiene tick that performed the composes-with audit (item 4 of razor-cadence #3128) over the four most recently added `.claude/rules/` files, recording 30/30 cross-references LIVE.
 
 **Changes:**
+
 - New tick shard at `docs/hygiene-history/ticks/2026/05/14/1804Z.md` capturing the per-tick 7-step autonomous-loop discipline output.

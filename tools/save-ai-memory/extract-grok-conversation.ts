@@ -320,10 +320,8 @@ async function main(): Promise<void> {
   // GROK_SCROLL_CONTAINER source-of-truth via a maintenance script.
   const JS_SCROLL_TOP_AND_HEIGHT =
     '(function() { var c = document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden"); if (!c) return "ERROR: container not found"; c.scrollTop = 0; return c.scrollHeight.toString(); })()';
-  const JS_SCROLL_100 =
-    'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollTop = 100';
-  const JS_SCROLL_0 =
-    'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollTop = 0';
+  const JS_SCROLL_100 = 'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollTop = 100';
+  const JS_SCROLL_0 = 'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollTop = 0';
   const JS_SCROLL_HEIGHT =
     'document.querySelector("div.w-full.h-full.overflow-y-auto.overflow-x-hidden").scrollHeight.toString()';
   const JS_BODY_INNER_TEXT = "document.body.innerText";
@@ -339,7 +337,10 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   if (initSH.trim().length === 0) {
-    log(cfg, "ABORT: initial scrollHeight returned empty (likely no Chrome tab matches the URL fragment, or osascript timed out / failed silently)");
+    log(
+      cfg,
+      "ABORT: initial scrollHeight returned empty (likely no Chrome tab matches the URL fragment, or osascript timed out / failed silently)",
+    );
     process.exit(1);
   }
   const initSHNum = Number.parseInt(initSH, 10);
@@ -373,10 +374,7 @@ async function main(): Promise<void> {
     if (growth < cfg.stableThreshold) {
       stableCount++;
       if (stableCount >= cfg.stableRequired) {
-        log(
-          cfg,
-          `plateau confirmed at iter ${i} (${stableCount} consecutive sub-${cfg.stableThreshold}px iters)`,
-        );
+        log(cfg, `plateau confirmed at iter ${i} (${stableCount} consecutive sub-${cfg.stableThreshold}px iters)`);
         break;
       }
     } else {
@@ -390,7 +388,10 @@ async function main(): Promise<void> {
   // For the final extract, accept any return as data.
   const finalText = runJs(cfg, JS_BODY_INNER_TEXT, 120, false);
   if (finalText.trim().length === 0) {
-    log(cfg, "ABORT: final body.innerText extraction returned empty; aborting before silent-success contaminates downstream pipeline");
+    log(
+      cfg,
+      "ABORT: final body.innerText extraction returned empty; aborting before silent-success contaminates downstream pipeline",
+    );
     process.exit(1);
   }
   log(cfg, `extracted ${finalText.length} bytes`);

@@ -10,46 +10,49 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1763 |
-| Title | archive: preserve PR 1762 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T02:09:34Z |
-| Merged at | 2026-05-07T02:10:53Z |
-| Merge commit SHA | `3889d419db749a1d25cfdd34644a46f7640d7aee` |
-| Branch | `claim/archive-pr-1762-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1763 |
-| Changed files | 2 |
-| Additions / deletions | +61 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1763                                                     |
+| Title                 | archive: preserve PR 1762 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T02:09:34Z                                     |
+| Merged at             | 2026-05-07T02:10:53Z                                     |
+| Merge commit SHA      | `3889d419db749a1d25cfdd34644a46f7640d7aee`               |
+| Branch                | `claim/archive-pr-1762-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1763 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +61 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1762 review archive generated from the active claim branch.
 - Adds the PR #1762 manifest entry with merge commit SHA `7ec1ab2d8674bdba3ac864d5442a439e1961af49`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1762-archive-preserve-pr-1761-review-output.md`
 - `git diff --check origin/main...HEAD`
 
 ## Notes
+
 PR #1762 had no review threads; this archive closes the post-merge archive chain for that PR.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

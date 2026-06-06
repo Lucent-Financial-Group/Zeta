@@ -14,23 +14,23 @@ Aaron 2026-04-25 evening, after Otto-316 compute fleet:
 
 ## Ubiquiti portfolio (inferred from "almost one of every category")
 
-| Tier | Ubiquiti category | Aaron's coverage |
-|------|------------------|------------------|
-| **High-bandwidth indoor/campus** | UniFi WiFi 7 access points (U7 series, 802.11be, 6GHz MLO multi-link operation) | ✓ Has |
-| **Long-range backhaul** | airMAX / GBE / LiteBeam / NanoStation (point-to-point directional, line-of-sight, km-scale) | ✓ Has |
-| **Network switching** | UniFi Switch family | ✓ Has (implied "almost every category") |
-| **Routing / firewall** | UniFi Cloud Gateway / Dream Machine | ✓ Has (implied) |
-| **Cameras / IoT** | UniFi Protect / G5 cameras | ✓ Has (implied) |
-| **Phone systems** | UniFi Talk | ✓ Has (implied) |
-| **Door access** | UniFi Access | ✓ Has (implied) |
+| Tier                             | Ubiquiti category                                                                           | Aaron's coverage                        |
+| -------------------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------- |
+| **High-bandwidth indoor/campus** | UniFi WiFi 7 access points (U7 series, 802.11be, 6GHz MLO multi-link operation)             | ✓ Has                                   |
+| **Long-range backhaul**          | airMAX / GBE / LiteBeam / NanoStation (point-to-point directional, line-of-sight, km-scale) | ✓ Has                                   |
+| **Network switching**            | UniFi Switch family                                                                         | ✓ Has (implied "almost every category") |
+| **Routing / firewall**           | UniFi Cloud Gateway / Dream Machine                                                         | ✓ Has (implied)                         |
+| **Cameras / IoT**                | UniFi Protect / G5 cameras                                                                  | ✓ Has (implied)                         |
+| **Phone systems**                | UniFi Talk                                                                                  | ✓ Has (implied)                         |
+| **Door access**                  | UniFi Access                                                                                | ✓ Has (implied)                         |
 
 ## 3-tier network layer (composing Otto-314 + Otto-317)
 
-| Tier | Range / use | Hardware |
-|------|------------|----------|
-| **Sub-1GHz mesh / low-power IoT** | 1km+ mesh, wall-penetrating, embedded sensors | HaLow (802.11ah) — Otto-314 |
-| **High-bandwidth indoor/campus** | meters to ~100m, dense WiFi 7 capacity | Ubiquiti UniFi WiFi 7 — Otto-317 |
-| **Long-range line-of-sight backhaul** | km-scale point-to-point links | Ubiquiti airMAX / beaming — Otto-317 |
+| Tier                                  | Range / use                                   | Hardware                             |
+| ------------------------------------- | --------------------------------------------- | ------------------------------------ |
+| **Sub-1GHz mesh / low-power IoT**     | 1km+ mesh, wall-penetrating, embedded sensors | HaLow (802.11ah) — Otto-314          |
+| **High-bandwidth indoor/campus**      | meters to ~100m, dense WiFi 7 capacity        | Ubiquiti UniFi WiFi 7 — Otto-317     |
+| **Long-range line-of-sight backhaul** | km-scale point-to-point links                 | Ubiquiti airMAX / beaming — Otto-317 |
 
 **Logical layer**: RNS (Reticulum Network Stack) routes packets across ALL physical tiers transparently. Identity persists via Destination Hash regardless of which physical layer carries the packet (Otto-314 μένω engineering instance).
 

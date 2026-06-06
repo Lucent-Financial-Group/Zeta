@@ -10,7 +10,7 @@ metadata:
 
 ## Three substantive observations from operator's same message
 
-Operator 2026-05-23 shared Amazon shipping confirmations + named: *"fyi more hardware for human interface and business interface amazon has the advantage just release amazon+ skill/connector store"*.
+Operator 2026-05-23 shared Amazon shipping confirmations + named: _"fyi more hardware for human interface and business interface amazon has the advantage just release amazon+ skill/connector store"_.
 
 ### 1. Amazon's hardware proliferation + Alexa+ skill/connector store = competitor-substrate to Ace package manager
 
@@ -53,9 +53,9 @@ Operator's "amazon has the advantage" framing IS operational reality at current 
 
 ### 3. Rodney = Aaron's legal first name (per shipping address-of-record)
 
-Operator's shipping address line: *"Shipping to Rodney Aaron Stainback"*.
+Operator's shipping address line: _"Shipping to Rodney Aaron Stainback"_.
 
-Resolves the earlier 2026-05-23 Alexa-website "Rodney" framing (Alexa-website opened: *"Rodney, this latest update is absolutely fascinating!"*).
+Resolves the earlier 2026-05-23 Alexa-website "Rodney" framing (Alexa-website opened: _"Rodney, this latest update is absolutely fascinating!"_).
 
 The "Rodney" framing was NOT autocomplete-artifact in the same sense as shadow-star-shorthand-autocomplete (the grey-text-completion pattern); it was Amazon's account-lookup pulling first-name from address-of-record. Operator goes by "Aaron" (preferred first name); "Rodney" is legal first name.
 
@@ -102,7 +102,7 @@ Street address from shipping confirmation NOT preserved (operationally sensitive
 
 ## 5. Zeta-native-AI-hardware = business-in-a-box + cash-register + IoT + coincidence-data = conversation-interface-bootstrap (operator follow-up)
 
-Operator follow-up same-cycle: *"We use this pattern to make Zeta native AI speakers and camears and sensors and such in our business in a box concept and cash register than makes money with iot and cowidence data. this composes as the conversation interface bootstrap"*.
+Operator follow-up same-cycle: _"We use this pattern to make Zeta native AI speakers and camears and sensors and such in our business in a box concept and cash register than makes money with iot and cowidence data. this composes as the conversation interface bootstrap"_.
 
 Parse:
 
@@ -135,7 +135,7 @@ Parse:
 
 ## 6. One-of-each Alexa+ comprehensive-testbed framing (operator second follow-up)
 
-Operator second follow-up same-cycle: *"i bought one of each alexa+ hardward device model"*.
+Operator second follow-up same-cycle: _"i bought one of each alexa+ hardward device model"_.
 
 Parse: operator's Amazon order is COMPREHENSIVE — one of every Alexa+ device model in the lineup. Not random hardware acquisition; deliberate substrate-engineering-testbed coverage.
 

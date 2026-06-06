@@ -38,10 +38,7 @@
 //   2 — gaps found and --enforce was set
 //   64 — argument error
 
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 type Mode = "summary" | "list" | "enforce";
@@ -64,12 +61,7 @@ const PATTERNS: readonly RegExp[] = [
   /C:\/Users\/[a-zA-Z0-9._-]+/,
 ];
 
-const PATTERN_NAMES: readonly string[] = [
-  "/Users/<name>/",
-  "/home/<name>/",
-  "C:\\Users\\<name>",
-  "C:/Users/<name>",
-];
+const PATTERN_NAMES: readonly string[] = ["/Users/<name>/", "/home/<name>/", "C:\\Users\\<name>", "C:/Users/<name>"];
 
 const EXCLUDE_RE =
   /^(docs\/ROUND-HISTORY\.md|docs\/hygiene-history\/|docs\/DECISIONS\/|tools\/hygiene\/audit-machine-specific-content\.(sh|ts)|\.gemini\/(launchd|service)\/[^/]+\.plist$)/;
@@ -89,10 +81,7 @@ function parseMode(argv: readonly string[]): ParseResult {
   return { kind: "error", message: `unknown arg: ${arg}` };
 }
 
-function classifyGitFailure(
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyGitFailure(args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start 'git ${args.join(" ")}': ${result.error.message}`;
   }
@@ -104,9 +93,7 @@ function classifyGitFailure(
   }
   if (result.status !== 0) {
     const stderr = result.stderr.trim();
-    return stderr !== ""
-      ? stderr
-      : `'git ${args.join(" ")}' exited ${String(result.status)}`;
+    return stderr !== "" ? stderr : `'git ${args.join(" ")}' exited ${String(result.status)}`;
   }
   return null;
 }

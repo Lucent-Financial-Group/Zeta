@@ -4,13 +4,14 @@ description: Aaron 2026-04-22 auto-loop-28 directive extending the absorb-and-co
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Escro — maintain every dependency; microkernel-OS endpoint
 
 **Source (verbatim, 2026-04-22 auto-loop-28):**
 
-> *"for escro we should maintain every dependecy we have if you were to really push it that means we need our own microkernal os"*
+> _"for escro we should maintain every dependecy we have if you were to really push it that means we need our own microkernal os"_
 >
-> *"we can grow our way there"*
+> _"we can grow our way there"_
 
 Two sibling messages in the same minute. The second qualifies the first.
 
@@ -21,7 +22,7 @@ Two sibling messages in the same minute. The second qualifies the first.
    "escro"; likely typo for Escro or variant. Preserving
    exact spelling here so later disambiguation is
    auditable.
-2. **Universal-maintenance rule for Escro** — *every*
+2. **Universal-maintenance rule for Escro** — _every_
    dependency maintained, not just community-substrate-class
    ones. This is a **strict superset** of the
    absorb-and-contribute discipline named auto-loop-27
@@ -58,7 +59,7 @@ Two sibling messages in the same minute. The second qualifies the first.
 - **It distinguishes Escro from the factory at large** — the
   scope-tag is load-bearing. Zeta-core, the software factory
   itself, the auto-memory, the personas — none of these are
-  named in the directive. *"for escro we should ..."* binds
+  named in the directive. _"for escro we should ..."_ binds
   the discipline to Escro. Factory-level policy still defaults
   to the absorb-and-contribute tier-gated discipline unless
   Aaron extends the scope.

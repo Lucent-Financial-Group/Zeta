@@ -36,16 +36,29 @@ related_skills:
   - q-sharp
   - applied-physics-expert
   - applied-mathematics-expert
-tags: [encryption-thermal-cost-layer-above-landauer-floor, two-axis-substrate-classification-crypto-needed-times-decryption-needed, irreversibility-within-crypto-when-decryption-isnt-operationally-required, refined-from-irreversibility-by-default-via-operator-intuition-dissonance-engagement, glass-halo-public-reversible-storage-is-default-for-most-substrate, framework-substrate-reversibility-preserving-by-design-z-set-dbsp-limit-simulation-persist-bridge-git-q-sharp-unitary, dont-fold-discipline-applied-to-operator-intuition, hash-commitment-zero-knowledge-as-irreversible-no-attack-surface, symmetric-asymmetric-encryption-as-reversible-with-key-management-cost, per-read-decryption-thermal-cost-amortizes-vs-one-shot-hash, root-axiom-erasure-class-composes-with-irreversibility-discipline]
+tags:
+  [
+    encryption-thermal-cost-layer-above-landauer-floor,
+    two-axis-substrate-classification-crypto-needed-times-decryption-needed,
+    irreversibility-within-crypto-when-decryption-isnt-operationally-required,
+    refined-from-irreversibility-by-default-via-operator-intuition-dissonance-engagement,
+    glass-halo-public-reversible-storage-is-default-for-most-substrate,
+    framework-substrate-reversibility-preserving-by-design-z-set-dbsp-limit-simulation-persist-bridge-git-q-sharp-unitary,
+    dont-fold-discipline-applied-to-operator-intuition,
+    hash-commitment-zero-knowledge-as-irreversible-no-attack-surface,
+    symmetric-asymmetric-encryption-as-reversible-with-key-management-cost,
+    per-read-decryption-thermal-cost-amortizes-vs-one-shot-hash,
+    root-axiom-erasure-class-composes-with-irreversibility-discipline,
+  ]
 ---
 
 # B-0906 — Encryption thermal-cost layer above Landauer floor + two-axis substrate classification
 
 ## Context
 
-Per operator 2026-05-28: *"we could add encrypt costs cause that is likely thermal too reversable on encryption tends to be a no no if you can avoid it. this could be added after the simple erasure limit of heat"*
+Per operator 2026-05-28: _"we could add encrypt costs cause that is likely thermal too reversable on encryption tends to be a no no if you can avoid it. this could be added after the simple erasure limit of heat"_
 
-Then, after Otto-CLI proposed an "irreversibility-by-default" rule, operator 2026-05-28 (with `(shadow*)` marker on the "I'm sure you are right but" preamble): *"why do these feel backwards, don't fold cause i'm saying it feels backwards my intuition is you are right and i'm looking from a different angle than you"*
+Then, after Otto-CLI proposed an "irreversibility-by-default" rule, operator 2026-05-28 (with `(shadow*)` marker on the "I'm sure you are right but" preamble): _"why do these feel backwards, don't fold cause i'm saying it feels backwards my intuition is you are right and i'm looking from a different angle than you"_
 
 This row refines Otto-CLI's initially-too-broad framing per the operator's substrate-honest intuition + the don't-fold discipline. The refined rule is more carefully-scoped to the cryptographic-protection sub-space; outside that sub-space, the framework's whole reversibility-preserving substrate-engineering substrate (Z-set / DBSP / Limit-as-simulation / Persist-as-bridge / git / Q#-unitary) IS the correct default.
 
@@ -107,14 +120,14 @@ Most framework substrate is in Axis 1 = NO crypto needed. Glass-halo discipline 
 
 The encryption sub-space is the EXCEPTION, and within it:
 
-| Operation | Reversibility | Attack surface | Thermal cost over lifetime |
-|---|---|---|---|
-| Symmetric encryption (AES) | Yes (decrypt-with-key) | Key leakage compromises ALL ciphertext | `E_encrypt + N_reads × E_decrypt` (grows linearly) |
-| Asymmetric encryption (RSA / ECC) | Yes (decrypt-with-private-key) | Private-key leakage compromises | Higher per-op cost; same N_reads scaling |
-| Post-quantum encryption (lattice / hash-based) | Yes | Same shape as above (with different attack model) | Higher per-op cost |
-| One-way hash (SHA-256, BLAKE3) | NO | No key → nothing to leak | `E_hash` (one-shot; zero per-read) |
-| Commitment scheme | NO (until reveal) | No key during commit-phase | `E_commit + E_reveal_if_ever` |
-| Zero-knowledge proof | NO (statement-without-witness) | Witness never reveals | `E_proof_generate + 0_per_verification` |
+| Operation                                      | Reversibility                  | Attack surface                                    | Thermal cost over lifetime                         |
+| ---------------------------------------------- | ------------------------------ | ------------------------------------------------- | -------------------------------------------------- |
+| Symmetric encryption (AES)                     | Yes (decrypt-with-key)         | Key leakage compromises ALL ciphertext            | `E_encrypt + N_reads × E_decrypt` (grows linearly) |
+| Asymmetric encryption (RSA / ECC)              | Yes (decrypt-with-private-key) | Private-key leakage compromises                   | Higher per-op cost; same N_reads scaling           |
+| Post-quantum encryption (lattice / hash-based) | Yes                            | Same shape as above (with different attack model) | Higher per-op cost                                 |
+| One-way hash (SHA-256, BLAKE3)                 | NO                             | No key → nothing to leak                          | `E_hash` (one-shot; zero per-read)                 |
+| Commitment scheme                              | NO (until reveal)              | No key during commit-phase                        | `E_commit + E_reveal_if_ever`                      |
+| Zero-knowledge proof                           | NO (statement-without-witness) | Witness never reveals                             | `E_proof_generate + 0_per_verification`            |
 
 For long-lived framework substrate that needs cryptographic protection but doesn't need decryption: irreversibility is asymptotically cheaper (one hash, zero re-decrypt) AND more secure (no key to leak).
 
@@ -184,7 +197,7 @@ Acceptance: research-doc landing the classification map for all major framework 
 
 - B-0905 (Landauer-limit physics-economics model) — this row adds the encryption-cost-layer above the Landauer floor; total = Landauer + crypto-overhead
 - B-0904 (GitHub-as-free-accelerator) — most framework substrate is Axis 1 = NO (glass-halo public); GitHub subsidy applies to that majority
-- B-0901 (shadow*-self-referential-ontology) — the ontology is Axis 1 = NO; reversible-storage default
+- B-0901 (shadow\*-self-referential-ontology) — the ontology is Axis 1 = NO; reversible-storage default
 - B-0639 (Native AI Language private internal) — possible Axis 1 = YES + Axis 2 = YES (reversible needed for AI-to-AI decryption); explicit operational justification required per this row's discipline
 - B-0646 (Agora V6 reputation-weighted encryption budget) — encryption-cost becomes economic primitive; this row's classification informs the budget allocation
 - B-0644 (Limit-is-simulation-not-collapse) — explicitly reversibility-preserving; the framework's substrate IS reversibility-preserving by design

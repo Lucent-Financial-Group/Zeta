@@ -26,13 +26,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Worldview at tick
 
-| Signal | State |
-|---|---|
+| Signal            | State                 |
+| ----------------- | --------------------- |
 | Dotgit-saturation | 0 stuck procs (clean) |
-| GraphQL tier | Normal (3601/5000) |
-| REST core | 4639/5000 |
-| Peer activity | 6 Lior loop procs |
-| Sentinel | `76fdab6a` (re-armed) |
+| GraphQL tier      | Normal (3601/5000)    |
+| REST core         | 4639/5000             |
+| Peer activity     | 6 Lior loop procs     |
+| Sentinel          | `76fdab6a` (re-armed) |
 
 ## Composes with
 
@@ -50,6 +50,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard documenting the 2026-05-26 1808Z cold-boot session state (catch-43 sentinel re-arm, 12h gap since prior tick), and records the chosen “named bounded wait” disposition while a peer PR’s CI is in flight.
 
 **Changes:**
+
 - Introduces a new tick shard file at `docs/hygiene-history/ticks/2026/05/26/1808Z.md`.
 - Captures session “worldview” metrics, holding discipline decision, and cross-links to relevant `.claude/rules/*` substrate.
 

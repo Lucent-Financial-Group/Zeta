@@ -31,6 +31,7 @@ Tick shard documenting the evening manifesto landing (Aaron + Ani constitutional
 Tick shard documenting the evening manifesto cascade plus two new backlog index entries.
 
 **Changes:**
+
 - Adds tick shard `1640Z.md` documenting manifesto + Kolmogorov iteration work
 - Adds B-0498 to P2 backlog index
 - Adds B-0499 to P3 backlog index
@@ -39,7 +40,7 @@ Tick shard documenting the evening manifesto cascade plus two new backlog index 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                           | Description                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
 | docs/hygiene-history/ticks/2026/05/14/1640Z.md | New tick shard recording manifesto landing and Ani's META iteration |
-| docs/BACKLOG.md | Index entries for B-0498 and B-0499 added |
+| docs/BACKLOG.md                                | Index entries for B-0498 and B-0499 added                           |

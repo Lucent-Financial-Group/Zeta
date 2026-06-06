@@ -59,10 +59,7 @@ import {
   type Qcow2RetentionExecutor,
   type Qcow2SnapshotRetentionPlan,
 } from "./qemu-state";
-import {
-  planPathForkRuntime,
-  type PathForkRuntimePlan,
-} from "./path-fork";
+import { planPathForkRuntime, type PathForkRuntimePlan } from "./path-fork";
 
 type Mode = "list" | "dry-run" | "scenario" | "all";
 
@@ -156,9 +153,7 @@ function emitListing(): void {
         implDesignProgress: computeImplDesignProgress(),
         scenarios: SCENARIOS.map((s) => {
           const implDesign =
-            s.id === "reformat-with-retention" ||
-            s.id === "reformat-from-scratch" ||
-            s.id === "cluster-joining"
+            s.id === "reformat-with-retention" || s.id === "reformat-from-scratch" || s.id === "cluster-joining"
               ? SCENARIO_IMPL_DESIGN[s.id]
               : undefined;
           return {
@@ -184,9 +179,7 @@ function emitDryRun(scenarioId?: ScenarioId): number {
     console.error(`scenarios.ts invariant violated: ${(e as Error).message}`);
     return 2;
   }
-  const targets = scenarioId
-    ? SCENARIOS.filter((s) => s.id === scenarioId)
-    : SCENARIOS;
+  const targets = scenarioId ? SCENARIOS.filter((s) => s.id === scenarioId) : SCENARIOS;
   if (targets.length === 0) {
     console.error(`scenario not found: ${scenarioId}`);
     return 2;
@@ -223,9 +216,8 @@ function dryRunPlanMessage(scenario: Scenario): string {
 }
 
 function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResult {
-  const harnessPath = scenario.id === "initial-format"
-    ? "tools/ci/qemu-boot-test.ts"
-    : "tools/ci/qemu-full-install-test.ts";
+  const harnessPath =
+    scenario.id === "initial-format" ? "tools/ci/qemu-boot-test.ts" : "tools/ci/qemu-full-install-test.ts";
   const absHarnessPath = resolve(REPO_ROOT, harnessPath);
   if (!existsSync(absHarnessPath)) {
     return {
@@ -328,7 +320,10 @@ function preparePathForkRunDirectory(option: string | undefined): { ok: string }
   }
 }
 
-function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
+function retentionArtifactPaths(
+  absIsoPath: string,
+  runDirectory: string,
+): {
   readonly diskPath: string;
   readonly serialLogPath: string;
 } {
@@ -339,7 +334,10 @@ function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
   };
 }
 
-function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
+function pathForkArtifactPaths(
+  absIsoPath: string,
+  runDirectory: string,
+): {
   readonly startingDiskPath: string;
   readonly migrateSerialLogPath: string;
   readonly freshSerialLogPath: string;
@@ -352,10 +350,7 @@ function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
   };
 }
 
-export function runRetentionRuntime(
-  isoPath: string,
-  options: RetentionRuntimeOptions = {},
-): ScenarioResult {
+export function runRetentionRuntime(isoPath: string, options: RetentionRuntimeOptions = {}): ScenarioResult {
   const absIsoPath = resolve(isoPath);
   const runDirectory = prepareRetentionRunDirectory(options.runDirectory);
   if ("error" in runDirectory) {
@@ -365,9 +360,8 @@ export function runRetentionRuntime(
       message: `could not prepare QEMU retention run directory: ${runDirectory.error}`,
     };
   }
-  const bootImagePath = options.bootImagePath === undefined
-    ? retentionBootImagePathFromEnv()
-    : resolve(options.bootImagePath);
+  const bootImagePath =
+    options.bootImagePath === undefined ? retentionBootImagePathFromEnv() : resolve(options.bootImagePath);
   const artifacts = retentionArtifactPaths(absIsoPath, runDirectory.ok);
   const planned = planQcow2SnapshotRetention({
     isoPath: absIsoPath,
@@ -394,9 +388,10 @@ export function runRetentionRuntime(
     };
   }
 
-  const executorOptions = options.timeoutMs === undefined
-    ? { cwd: options.cwd ?? REPO_ROOT }
-    : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
+  const executorOptions =
+    options.timeoutMs === undefined
+      ? { cwd: options.cwd ?? REPO_ROOT }
+      : { cwd: options.cwd ?? REPO_ROOT, timeoutMs: options.timeoutMs };
   const executor = options.executor ?? createSpawnSyncQcow2RetentionExecutor(executorOptions);
   const executed = executeQcow2SnapshotRetentionPlan(planned.ok, executor);
 
@@ -419,10 +414,7 @@ export function runRetentionRuntime(
   };
 }
 
-export function runPathForkRuntime(
-  isoPath: string,
-  options: PathForkRuntimeOptions = {},
-): ScenarioResult {
+export function runPathForkRuntime(isoPath: string, options: PathForkRuntimeOptions = {}): ScenarioResult {
   const absIsoPath = resolve(isoPath);
   const runDirectory = preparePathForkRunDirectory(options.runDirectory);
   if ("error" in runDirectory) {
@@ -432,9 +424,8 @@ export function runPathForkRuntime(
       message: `could not prepare QEMU path-fork run directory: ${runDirectory.error}`,
     };
   }
-  const bootImagePath = options.bootImagePath === undefined
-    ? pathForkBootImagePathFromEnv()
-    : resolve(options.bootImagePath);
+  const bootImagePath =
+    options.bootImagePath === undefined ? pathForkBootImagePathFromEnv() : resolve(options.bootImagePath);
   const artifacts = pathForkArtifactPaths(absIsoPath, runDirectory.ok);
   const planned = planPathForkRuntime({
     isoPath: absIsoPath,
@@ -453,9 +444,10 @@ export function runPathForkRuntime(
   }
 
   const missingRequirements = planned.ok.forks.flatMap((fork) => fork.missingRuntimeRequirements);
-  const requirementSuffix = missingRequirements.length === 0
-    ? ""
-    : ` Missing runtime requirement(s): ${[...new Set(missingRequirements)].join(", ")}.`;
+  const requirementSuffix =
+    missingRequirements.length === 0
+      ? ""
+      : ` Missing runtime requirement(s): ${[...new Set(missingRequirements)].join(", ")}.`;
 
   return {
     id: "reformat-from-scratch",
@@ -480,9 +472,10 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
     case "scaffolded":
       if (scenario.id === "reformat-with-retention") {
         const timeoutMs = retentionTimeoutMsFromEnv();
-        const options = timeoutMs === undefined
-          ? { execute: retentionExecutionEnabledFromEnv() }
-          : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
+        const options =
+          timeoutMs === undefined
+            ? { execute: retentionExecutionEnabledFromEnv() }
+            : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
         return runRetentionRuntime(isoPath, options);
       }
       if (scenario.id === "reformat-from-scratch") {

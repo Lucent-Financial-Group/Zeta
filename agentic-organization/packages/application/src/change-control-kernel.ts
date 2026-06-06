@@ -158,13 +158,19 @@ export function evaluateStageGate(stage: ReviewStage, cs: ChangeSet, deps: Revie
 }
 
 /** DECIDE — the stage's authority chooses within the legal outcomes (clamped). */
-export function decideByAuthority(stage: ReviewStage, cs: ChangeSet, gate: StageGateEvaluation, deps: ReviewKernelDeps): Decision {
+export function decideByAuthority(
+  stage: ReviewStage,
+  cs: ChangeSet,
+  gate: StageGateEvaluation,
+  deps: ReviewKernelDeps,
+): Decision {
   const legal = legalStageOutcomes(stage, gate.satisfiable);
   switch (stage.authority.kind) {
     case "hat": {
       const chooser = deps.hatChooser ?? firstLegalChooser<StageOutcome>();
       const choice = chooseWithinLegal(legal, `stage:${stage.id}`, chooser);
-      if (choice.outcome === "no_legal_option") return { kind: "decided", outcome: StageOutcome.RequestChanges, decidedBy: stage.authority.hatId };
+      if (choice.outcome === "no_legal_option")
+        return { kind: "decided", outcome: StageOutcome.RequestChanges, decidedBy: stage.authority.hatId };
       return { kind: "decided", outcome: choice.option, decidedBy: stage.authority.hatId };
     }
     case "quorum": {
@@ -174,14 +180,26 @@ export function decideByAuthority(stage: ReviewStage, cs: ChangeSet, gate: Stage
     }
     case "human":
       // the org PAUSES for a human — the ChangeSet does not advance until resumeHumanStage
-      return { kind: "pending", reason: `human sign-off required (${stage.authority.role})`, by: `human:${stage.authority.role}` };
+      return {
+        kind: "pending",
+        reason: `human sign-off required (${stage.authority.role})`,
+        by: `human:${stage.authority.role}`,
+      };
     case "external": {
       const ext = deps.externalDecision ? deps.externalDecision(cs, stage) : ExternalDecision.Pending;
       if (ext === ExternalDecision.Approved && isLegalStageOutcome(stage, gate.satisfiable, StageOutcome.Approve))
         return { kind: "decided", outcome: StageOutcome.Approve, decidedBy: `external:${stage.authority.system}` };
       if (ext === ExternalDecision.ChangesRequested)
-        return { kind: "decided", outcome: StageOutcome.RequestChanges, decidedBy: `external:${stage.authority.system}` };
-      return { kind: "pending", reason: `awaiting external approval (${stage.authority.system})`, by: `external:${stage.authority.system}` };
+        return {
+          kind: "decided",
+          outcome: StageOutcome.RequestChanges,
+          decidedBy: `external:${stage.authority.system}`,
+        };
+      return {
+        kind: "pending",
+        reason: `awaiting external approval (${stage.authority.system})`,
+        by: `external:${stage.authority.system}`,
+      };
     }
     default:
       return { kind: "pending", reason: "unknown authority", by: "unknown" };
@@ -189,37 +207,91 @@ export function decideByAuthority(stage: ReviewStage, cs: ChangeSet, gate: Stage
 }
 
 /** Apply a clamped outcome to the ChangeSet (advance cursor / approve / bounce / reject) + emit. */
-export function advanceChangeSet(cs: ChangeSet, pipeline: ReviewPipeline, stage: ReviewStage, outcome: StageOutcome, decidedBy: string, deps: ReviewKernelDeps, evidenceRefs: readonly string[] = []): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
+export function advanceChangeSet(
+  cs: ChangeSet,
+  pipeline: ReviewPipeline,
+  stage: ReviewStage,
+  outcome: StageOutcome,
+  decidedBy: string,
+  deps: ReviewKernelDeps,
+  evidenceRefs: readonly string[] = [],
+): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
   const at = new Date(deps.now).toISOString();
   const base = { ...cs, updatedAt: at };
   const events: OrgEvent[] = [];
 
   if (outcome === StageOutcome.Reject) {
-    events.push(event(deps, OrgEventKind.ChangeSetRejected, cs.changeSetId, cs.phase, ChangeSetPhase.Rejected, `rejected at stage ${stage.id} by ${decidedBy}: ${stage.id} is blocking`, actorOf(decidedBy), evidenceRefs));
+    events.push(
+      event(
+        deps,
+        OrgEventKind.ChangeSetRejected,
+        cs.changeSetId,
+        cs.phase,
+        ChangeSetPhase.Rejected,
+        `rejected at stage ${stage.id} by ${decidedBy}: ${stage.id} is blocking`,
+        actorOf(decidedBy),
+        evidenceRefs,
+      ),
+    );
     return { changeSet: { ...base, phase: ChangeSetPhase.Rejected }, events };
   }
   if (outcome === StageOutcome.RequestChanges) {
-    events.push(event(deps, OrgEventKind.ChangesRequested, cs.changeSetId, cs.phase, ChangeSetPhase.ChangesRequested, `changes requested at stage ${stage.id} by ${decidedBy}`, actorOf(decidedBy), evidenceRefs));
+    events.push(
+      event(
+        deps,
+        OrgEventKind.ChangesRequested,
+        cs.changeSetId,
+        cs.phase,
+        ChangeSetPhase.ChangesRequested,
+        `changes requested at stage ${stage.id} by ${decidedBy}`,
+        actorOf(decidedBy),
+        evidenceRefs,
+      ),
+    );
     return { changeSet: { ...base, phase: ChangeSetPhase.ChangesRequested }, events };
   }
   // approve
-  events.push(event(deps, OrgEventKind.StageApproved, cs.changeSetId, stage.id, undefined, `stage ${stage.id} approved by ${decidedBy}`, actorOf(decidedBy), evidenceRefs));
+  events.push(
+    event(
+      deps,
+      OrgEventKind.StageApproved,
+      cs.changeSetId,
+      stage.id,
+      undefined,
+      `stage ${stage.id} approved by ${decidedBy}`,
+      actorOf(decidedBy),
+      evidenceRefs,
+    ),
+  );
   if (moreStagesRemain(cs, pipeline)) {
     const nextIndex = cs.currentStageIndex + 1;
-    events.push(event(deps, OrgEventKind.ReviewStageAdvanced, cs.changeSetId, stage.id, pipeline.stages[nextIndex]!.id, `advanced ${stage.id} → ${pipeline.stages[nextIndex]!.id}`, actorOf(decidedBy), evidenceRefs));
+    events.push(
+      event(
+        deps,
+        OrgEventKind.ReviewStageAdvanced,
+        cs.changeSetId,
+        stage.id,
+        pipeline.stages[nextIndex]!.id,
+        `advanced ${stage.id} → ${pipeline.stages[nextIndex]!.id}`,
+        actorOf(decidedBy),
+        evidenceRefs,
+      ),
+    );
     return { changeSet: { ...base, currentStageIndex: nextIndex }, events };
   }
-  events.push(event(
-    deps,
-    OrgEventKind.ChangeSetApproved,
-    cs.changeSetId,
-    cs.phase,
-    ChangeSetPhase.Approved,
-    `all blocking stages passed — change set approved`,
-    undefined,
-    evidenceRefs,
-    { kind: "change_set_review", currentStageIndex: cs.currentStageIndex, stageCount: pipeline.stages.length },
-  ));
+  events.push(
+    event(
+      deps,
+      OrgEventKind.ChangeSetApproved,
+      cs.changeSetId,
+      cs.phase,
+      ChangeSetPhase.Approved,
+      `all blocking stages passed — change set approved`,
+      undefined,
+      evidenceRefs,
+      { kind: "change_set_review", currentStageIndex: cs.currentStageIndex, stageCount: pipeline.stages.length },
+    ),
+  );
   return { changeSet: { ...base, phase: ChangeSetPhase.Approved }, events };
 }
 
@@ -231,7 +303,13 @@ function actorOf(decidedBy: string): string | undefined {
 export function runReviewStage(cs: ChangeSet, pipeline: ReviewPipeline, deps: ReviewKernelDeps): StageResult {
   const stage = currentStage(cs, pipeline);
   if (cs.phase !== ChangeSetPhase.InReview || stage === undefined) {
-    return { changeSet: cs, events: [], paused: false, decision: { kind: "pending", reason: "not in review", by: "kernel" }, gate: { satisfiable: false, detail: "n/a", evidenceRefs: [] } };
+    return {
+      changeSet: cs,
+      events: [],
+      paused: false,
+      decision: { kind: "pending", reason: "not in review", by: "kernel" },
+      gate: { satisfiable: false, detail: "n/a", evidenceRefs: [] },
+    };
   }
   const gate = evaluateStageGate(stage, cs, deps);
   const decision = decideByAuthority(stage, cs, gate, deps);
@@ -243,15 +321,36 @@ export function runReviewStage(cs: ChangeSet, pipeline: ReviewPipeline, deps: Re
   }
   // clamp: the decided outcome MUST be legal for this gate (anti-fabrication)
   if (!isLegalStageOutcome(stage, gate.satisfiable, decision.outcome)) {
-    const ev = event(deps, OrgEventKind.ReviewFindingRaised, cs.changeSetId, stage.id, undefined, `illegal outcome ${decision.outcome} clamped — gate not satisfiable`, undefined, gate.evidenceRefs);
-    const forced = advanceChangeSet(cs, pipeline, stage, StageOutcome.RequestChanges, decision.decidedBy, deps, gate.evidenceRefs);
+    const ev = event(
+      deps,
+      OrgEventKind.ReviewFindingRaised,
+      cs.changeSetId,
+      stage.id,
+      undefined,
+      `illegal outcome ${decision.outcome} clamped — gate not satisfiable`,
+      undefined,
+      gate.evidenceRefs,
+    );
+    const forced = advanceChangeSet(
+      cs,
+      pipeline,
+      stage,
+      StageOutcome.RequestChanges,
+      decision.decidedBy,
+      deps,
+      gate.evidenceRefs,
+    );
     return { changeSet: forced.changeSet, events: [ev, ...forced.events], paused: false, decision, gate };
   }
   const applied = advanceChangeSet(cs, pipeline, stage, decision.outcome, decision.decidedBy, deps, gate.evidenceRefs);
   return { changeSet: applied.changeSet, events: applied.events, paused: false, decision, gate };
 }
 
-function gateEvaluation(signalSatisfied: boolean, detail: string, evidenceRefs: readonly string[]): StageGateEvaluation {
+function gateEvaluation(
+  signalSatisfied: boolean,
+  detail: string,
+  evidenceRefs: readonly string[],
+): StageGateEvaluation {
   if (!signalSatisfied) {
     return { satisfiable: false, detail, evidenceRefs: [] };
   }
@@ -263,11 +362,7 @@ function gateEvaluation(signalSatisfied: boolean, detail: string, evidenceRefs: 
   return { satisfiable: true, detail, evidenceRefs: [...evidenceRefs] };
 }
 
-function explicitEvidenceRefs(
-  cs: ChangeSet,
-  stage: ReviewStage,
-  deps: ReviewKernelDeps,
-): readonly string[] {
+function explicitEvidenceRefs(cs: ChangeSet, stage: ReviewStage, deps: ReviewKernelDeps): readonly string[] {
   return deps.stageEvidenceRefs === undefined ? [] : deps.stageEvidenceRefs(cs, stage);
 }
 
@@ -283,7 +378,13 @@ function artifactEvidenceRefs(cs: ChangeSet): readonly string[] {
 }
 
 /** Resume a PAUSED human stage with the human's clamped decision. */
-export function resumeHumanStage(cs: ChangeSet, pipeline: ReviewPipeline, humanOutcome: StageOutcome, role: string, deps: ReviewKernelDeps): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
+export function resumeHumanStage(
+  cs: ChangeSet,
+  pipeline: ReviewPipeline,
+  humanOutcome: StageOutcome,
+  role: string,
+  deps: ReviewKernelDeps,
+): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
   const stage = currentStage(cs, pipeline);
   if (cs.phase !== ChangeSetPhase.InReview || stage === undefined || stage.authority.kind !== "human") {
     return { changeSet: cs, events: [] };
@@ -295,39 +396,104 @@ export function resumeHumanStage(cs: ChangeSet, pipeline: ReviewPipeline, humanO
 }
 
 /** Apply an approved ChangeSet — the materialize step (runtime does the artifact write + external merge). */
-export function applyChangeSet(cs: ChangeSet, deps: ReviewKernelDeps): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
+export function applyChangeSet(
+  cs: ChangeSet,
+  deps: ReviewKernelDeps,
+): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
   if (cs.phase !== ChangeSetPhase.Approved) return { changeSet: cs, events: [] };
   const policy = evaluateChangeSetSimulationPolicy(cs, deps);
   if (!policy.allowed) {
-    const ev = event(deps, OrgEventKind.ReviewFindingRaised, cs.changeSetId, cs.phase, undefined, policy.detail, undefined, policy.evidenceRefs);
+    const ev = event(
+      deps,
+      OrgEventKind.ReviewFindingRaised,
+      cs.changeSetId,
+      cs.phase,
+      undefined,
+      policy.detail,
+      undefined,
+      policy.evidenceRefs,
+    );
     return { changeSet: cs, events: [ev] };
   }
   const at = new Date(deps.now).toISOString();
-  const ev = event(deps, OrgEventKind.ChangeSetApplied, cs.changeSetId, cs.phase, ChangeSetPhase.Applied, `change set applied — artifacts materialized to ${cs.targetRef}`, undefined, policy.evidenceRefs);
+  const ev = event(
+    deps,
+    OrgEventKind.ChangeSetApplied,
+    cs.changeSetId,
+    cs.phase,
+    ChangeSetPhase.Applied,
+    `change set applied — artifacts materialized to ${cs.targetRef}`,
+    undefined,
+    policy.evidenceRefs,
+  );
   return { changeSet: { ...cs, phase: ChangeSetPhase.Applied, updatedAt: at }, events: [ev] };
 }
 
 /** Open a ChangeSet into review (drafted → in_review at stage 0). */
-export function openChangeSet(cs: ChangeSet, deps: ReviewKernelDeps): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
+export function openChangeSet(
+  cs: ChangeSet,
+  deps: ReviewKernelDeps,
+): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
   const policy = evaluateChangeSetSimulationPolicy(cs, deps);
   if (!policy.allowed) {
-    const ev = event(deps, OrgEventKind.ReviewFindingRaised, cs.changeSetId, ChangeSetPhase.Drafted, undefined, policy.detail, cs.proposerHatId, policy.evidenceRefs);
+    const ev = event(
+      deps,
+      OrgEventKind.ReviewFindingRaised,
+      cs.changeSetId,
+      ChangeSetPhase.Drafted,
+      undefined,
+      policy.detail,
+      cs.proposerHatId,
+      policy.evidenceRefs,
+    );
     return { changeSet: cs, events: [ev] };
   }
   const at = new Date(deps.now).toISOString();
-  const ev = event(deps, OrgEventKind.ChangeSetOpened, cs.changeSetId, ChangeSetPhase.Drafted, ChangeSetPhase.InReview, `change set opened: ${cs.title} (${cs.artifacts.length} artifact(s))`, cs.proposerHatId, policy.evidenceRefs);
+  const ev = event(
+    deps,
+    OrgEventKind.ChangeSetOpened,
+    cs.changeSetId,
+    ChangeSetPhase.Drafted,
+    ChangeSetPhase.InReview,
+    `change set opened: ${cs.title} (${cs.artifacts.length} artifact(s))`,
+    cs.proposerHatId,
+    policy.evidenceRefs,
+  );
   return { changeSet: { ...cs, phase: ChangeSetPhase.InReview, currentStageIndex: 0, updatedAt: at }, events: [ev] };
 }
 
 /** Resubmit after changes-requested (changes_requested → in_review, revision++, cursor 0). */
-export function resubmitChangeSet(cs: ChangeSet, deps: ReviewKernelDeps): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
+export function resubmitChangeSet(
+  cs: ChangeSet,
+  deps: ReviewKernelDeps,
+): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
   if (cs.phase !== ChangeSetPhase.ChangesRequested) return { changeSet: cs, events: [] };
   const at = new Date(deps.now).toISOString();
-  const ev = event(deps, OrgEventKind.ReviewStageAdvanced, cs.changeSetId, undefined, undefined, `resubmitted at revision ${cs.revision + 1} — re-entering review`, cs.proposerHatId);
-  return { changeSet: { ...cs, phase: ChangeSetPhase.InReview, currentStageIndex: 0, revision: cs.revision + 1, updatedAt: at }, events: [ev] };
+  const ev = event(
+    deps,
+    OrgEventKind.ReviewStageAdvanced,
+    cs.changeSetId,
+    undefined,
+    undefined,
+    `resubmitted at revision ${cs.revision + 1} — re-entering review`,
+    cs.proposerHatId,
+  );
+  return {
+    changeSet: {
+      ...cs,
+      phase: ChangeSetPhase.InReview,
+      currentStageIndex: 0,
+      revision: cs.revision + 1,
+      updatedAt: at,
+    },
+    events: [ev],
+  };
 }
 
-export function evaluateChangeSetSimulationPolicy(cs: ChangeSet, deps: ReviewKernelDeps): ChangeSetSimulationPolicyEvaluation {
+export function evaluateChangeSetSimulationPolicy(
+  cs: ChangeSet,
+  deps: ReviewKernelDeps,
+): ChangeSetSimulationPolicyEvaluation {
   if (!requiresSimulationBeforePolicyChange(cs)) {
     return { required: false, allowed: true, detail: "simulation not required", evidenceRefs: [] };
   }
@@ -348,7 +514,9 @@ export function evaluateChangeSetSimulationPolicy(cs: ChangeSet, deps: ReviewKer
     return {
       required: true,
       allowed: true,
-      detail: hasSimulationEvidence ? "policy/config change carries simulation evidence" : "policy/config change carries emergency waiver evidence",
+      detail: hasSimulationEvidence
+        ? "policy/config change carries simulation evidence"
+        : "policy/config change carries emergency waiver evidence",
       evidenceRefs: validEvidenceRefs,
     };
   }
@@ -356,7 +524,8 @@ export function evaluateChangeSetSimulationPolicy(cs: ChangeSet, deps: ReviewKer
   return {
     required: true,
     allowed: false,
-    detail: "policy/config change requires content-addressed simulation evidence or emergency waiver before review/apply",
+    detail:
+      "policy/config change requires content-addressed simulation evidence or emergency waiver before review/apply",
     evidenceRefs: validEvidenceRefs,
   };
 }
@@ -422,12 +591,10 @@ function isAcceptedSimulationForChangeSet(artifact: ContentAddressedEvidenceArti
   }
 
   const payload = objectPayload(artifact.payload);
-  return payload !== undefined
-    && (
-      payload.decision === "accepted"
-      || payload.outcome === "accepted"
-      || payload.accepted === true
-    );
+  return (
+    payload !== undefined &&
+    (payload.decision === "accepted" || payload.outcome === "accepted" || payload.accepted === true)
+  );
 }
 
 function isEmergencyWaiverForChangeSet(artifact: ContentAddressedEvidenceArtifact, changeSetId: string): boolean {
@@ -436,11 +603,13 @@ function isEmergencyWaiverForChangeSet(artifact: ContentAddressedEvidenceArtifac
   }
 
   const payload = objectPayload(artifact.payload);
-  return payload !== undefined
-    && typeof payload.approvedBy === "string"
-    && payload.approvedBy.trim().length > 0
-    && typeof payload.reason === "string"
-    && payload.reason.trim().length > 0;
+  return (
+    payload !== undefined &&
+    typeof payload.approvedBy === "string" &&
+    payload.approvedBy.trim().length > 0 &&
+    typeof payload.reason === "string" &&
+    payload.reason.trim().length > 0
+  );
 }
 
 function evidenceCoversChangeSet(payload: unknown, changeSetId: string): boolean {

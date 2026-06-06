@@ -24,7 +24,7 @@ external authors. Three candidate shapes on the table:
 
 My job: answer the 5 algebra questions for each shape, propose
 safeguards, and — if warranted — propose a 4th shape that
-preserves the laws *better*.
+preserves the laws _better_.
 
 ### Grounding from the current code
 
@@ -48,7 +48,7 @@ preserves the laws *better*.
   **`BayesianRateOp` is neither linear nor bilinear.** It holds
   a mutable `BetaBernoulli` that accumulates `alpha`/`beta` across
   ticks — a strict state carry Core does not know about. It is
-  *causal* and *deterministic-per-tick* given tick history. It
+  _causal_ and _deterministic-per-tick_ given tick history. It
   produces a `struct(double*double*double)` that is **not a
   Z-set** — there is no retraction semantics on the output at
   all. This is the shape an external plugin author will reach
@@ -61,7 +61,7 @@ preserves the laws *better*.
 the plugin author just writes a per-tick function and Core
 trusts its classification, nothing stops an author from
 filing a plugin under "linear" while carrying hidden state.
-The answer must be that *declarations are checked* (FsCheck
+The answer must be that _declarations are checked_ (FsCheck
 property laws at registration or a sealed marker-interface
 hierarchy that type-forbids state).
 
@@ -83,7 +83,7 @@ the shape must make it explicit.
 **Q4 — Causality:** No shape Ilyana is considering gives a
 plugin op pointers to future ticks, because `StepAsync` only
 sees `input.Value` at the current tick. All three shapes pass
-Q4 *by construction* — the `Op<'T>` architecture already
+Q4 _by construction_ — the `Op<'T>` architecture already
 enforces point-wise causality because there is no
 `Stream.At(tickOffset)` API. Good.
 
@@ -96,43 +96,43 @@ poison composition.
 
 ### Candidate A: `IOperator<'T>` interface
 
-| Q  | Verdict     | How violation happens                                                         |
-|----|-------------|-------------------------------------------------------------------------------|
-| Q1 | **FAIL**    | Plugin implements `ILinearOperator<'T>` marker without satisfying laws.       |
-| Q2 | CONDITIONAL | Plugin uses `let mutable` inside impl, forgets to set `IsStrict`.              |
-| Q3 | CONDITIONAL | Nothing enforces `ZSet`-in-`ZSet`-out.                                         |
-| Q4 | PASS        | Interface gives no future-tick access.                                        |
-| Q5 | CONDITIONAL | Depends on Q1 honesty.                                                        |
+| Q   | Verdict     | How violation happens                                                   |
+| --- | ----------- | ----------------------------------------------------------------------- |
+| Q1  | **FAIL**    | Plugin implements `ILinearOperator<'T>` marker without satisfying laws. |
+| Q2  | CONDITIONAL | Plugin uses `let mutable` inside impl, forgets to set `IsStrict`.       |
+| Q3  | CONDITIONAL | Nothing enforces `ZSet`-in-`ZSet`-out.                                  |
+| Q4  | PASS        | Interface gives no future-tick access.                                  |
+| Q5  | CONDITIONAL | Depends on Q1 honesty.                                                  |
 
-Interfaces have *no* way to ship abstract state fields or
+Interfaces have _no_ way to ship abstract state fields or
 `AfterStepAsync` hooks — authors re-invent them ad hoc. Virtual
 dispatch cost identical to abstract class. **Weakest shape.**
 
 ### Candidate B: `Circuit.Extend(input, factory)` builder
 
-| Q  | Verdict     | How violation happens                                                          |
-|----|-------------|--------------------------------------------------------------------------------|
-| Q1 | PASS        | Factory can only take pure `'TIn -> 'TOut`; no state slot exposed.              |
-| Q2 | PASS        | No `AfterStepAsync` surface means no cross-tick state. Strict-ordering N/A.     |
-| Q3 | PASS        | Input and output both `ZSet<_>`, retractions flow through untouched.            |
-| Q4 | PASS        | Pure function — no tick history.                                                |
-| Q5 | PASS        | Pure per-tick = linear by construction (if author uses `ZSet.map`).             |
+| Q   | Verdict | How violation happens                                                       |
+| --- | ------- | --------------------------------------------------------------------------- |
+| Q1  | PASS    | Factory can only take pure `'TIn -> 'TOut`; no state slot exposed.          |
+| Q2  | PASS    | No `AfterStepAsync` surface means no cross-tick state. Strict-ordering N/A. |
+| Q3  | PASS    | Input and output both `ZSet<_>`, retractions flow through untouched.        |
+| Q4  | PASS    | Pure function — no tick history.                                            |
+| Q5  | PASS    | Pure per-tick = linear by construction (if author uses `ZSet.map`).         |
 
 **Strongest on laws but narrowest in scope.** A
-Beta-Bernoulli rate tracker *cannot* be expressed under B
+Beta-Bernoulli rate tracker _cannot_ be expressed under B
 because it needs cross-tick state. Bayesian canary would have
 to live entirely inside Core. Good for 80% of plugin wants,
 bad for the other 20%.
 
 ### Candidate C: `abstract class PluginOp<'TIn, 'TOut>`
 
-| Q  | Verdict     | How violation happens                                                           |
-|----|-------------|---------------------------------------------------------------------------------|
-| Q1 | FAIL        | Any `let mutable` inside subclass invisibly violates linearity claim.            |
-| Q2 | CONDITIONAL | Same strict/non-strict confusion as `Op<'T>` today.                              |
-| Q3 | CONDITIONAL | `'TOut` can be any type; retraction semantics lost silently.                     |
-| Q4 | PASS        | Per-tick `Compute` cannot reach future ticks.                                    |
-| Q5 | CONDITIONAL | Q1 honesty dependent.                                                            |
+| Q   | Verdict     | How violation happens                                                 |
+| --- | ----------- | --------------------------------------------------------------------- |
+| Q1  | FAIL        | Any `let mutable` inside subclass invisibly violates linearity claim. |
+| Q2  | CONDITIONAL | Same strict/non-strict confusion as `Op<'T>` today.                   |
+| Q3  | CONDITIONAL | `'TOut` can be any type; retraction semantics lost silently.          |
+| Q4  | PASS        | Per-tick `Compute` cannot reach future ticks.                         |
+| Q5  | CONDITIONAL | Q1 honesty dependent.                                                 |
 
 Basically `Op<'T>` with a sealed wrapper. Inherits the same
 "abstract class = every virtual is a contract" problem Ilyana
@@ -144,7 +144,7 @@ arbitrary `let mutable` fields.
 
 Propose a discriminated shape the plugin author picks from by
 algebraic role, not by abstract-class inheritance. The type
-system enforces *which* laws apply. Sketch:
+system enforces _which_ laws apply. Sketch:
 
 ```fsharp
 type PluginOp<'TIn, 'TOut> =
@@ -170,16 +170,16 @@ type PluginOp<'TIn, 'TOut> =
         retract : ('State -> 'TIn -> 'State)
 ```
 
-| Q  | Verdict     | How violation happens                                            |
-|----|-------------|------------------------------------------------------------------|
-| Q1 | PASS        | `Linear` constructor only accepts pure `'TIn -> 'TOut`.           |
-| Q2 | PASS        | `StatefulStrict` forces explicit strict path.                     |
-| Q3 | PASS        | `Sink` tag marks retraction-lossy ops; Core can route accordingly. |
-| Q4 | PASS        | No constructor exposes tick indexing.                             |
-| Q5 | PASS        | Sum-type tagging gives Core enough info to verify chain rule.      |
+| Q   | Verdict | How violation happens                                              |
+| --- | ------- | ------------------------------------------------------------------ |
+| Q1  | PASS    | `Linear` constructor only accepts pure `'TIn -> 'TOut`.            |
+| Q2  | PASS    | `StatefulStrict` forces explicit strict path.                      |
+| Q3  | PASS    | `Sink` tag marks retraction-lossy ops; Core can route accordingly. |
+| Q4  | PASS    | No constructor exposes tick indexing.                              |
+| Q5  | PASS    | Sum-type tagging gives Core enough info to verify chain rule.      |
 
 **Key property:** `BayesianRateOp` would be `Sink` —
-explicitly *not* a relational operator. Under Candidate D,
+explicitly _not_ a relational operator. Under Candidate D,
 Core can refuse to compose `Sink . anything` except at the
 circuit's terminal edge, which is exactly what the algebra
 wants. Under A/B/C this invariant is undiscoverable.
@@ -199,7 +199,7 @@ wants. Under A/B/C this invariant is undiscoverable.
    plugin if we have one; otherwise by convention + code
    review + FsCheck retraction test catching the consequence.
 4. **`Q^Delta` derivation must see the tag.** `Incremental.fs`
-   already special-cases linear and bilinear by *construction*
+   already special-cases linear and bilinear by _construction_
    (no inspection). Under D the incrementalizer can dispatch
    on the tag and apply the right rule; under A/C it would
    have to trust a marker interface. D is more honest.
@@ -303,22 +303,23 @@ depends on B1/B2/B3.
 
 **DEBT.md entry.** "Lean `IsLinear` predicate too weak for B2
 (`linear_commute_zInv`)" — lists the three candidates:
-  (a) causality (`f s n` depends only on `s 0 .. s n`);
-  (b) explicit shift-commutation axiom;
-  (c) pointwise per-tick `AddMonoidHom` family.
+(a) causality (`f s n` depends only on `s 0 .. s n`);
+(b) explicit shift-commutation axiom;
+(c) pointwise per-tick `AddMonoidHom` family.
 
 ### Recommendation: **(c) pointwise action** — roll our own
+
 `IsDbspLinear` with a bundled per-tick `AddMonoidHom` family.
 
 **Why not (a) causality-only.** Causality by itself still fails
 B2 at `n = 0`: knowing `f s 0` depends only on `s 0` does not
-force `f (zInv s) 0 = 0` unless we *also* know `f` sends the
+force `f (zInv s) 0 = 0` unless we _also_ know `f` sends the
 zero-at-tick-0 sub-stream to zero at tick 0. Closing that gap
 means inventing a second axiom on top of (a) — at which point
 (c) is the cleaner statement of what we actually want.
 
 **Why not (b) shift-commutation axiom.** It is textbook cheating:
-the axiom *is* the statement of B2. B3 and `chain_rule` would
+the axiom _is_ the statement of B2. B3 and `chain_rule` would
 reduce to appeals to the axiom, removing the proof's
 evidentiary content. Rune (maintainability) would reject it on
 honest-docstring grounds and the paper-peer-reviewer (Yusuf)
@@ -326,9 +327,9 @@ would flag it in any write-up.
 
 **Why (c) is right for Zeta.** Every DBSP primitive we ship —
 `Map`, `IndexedJoin` (on one side fixed), `Plus`, `z-inv`, `D`,
-`I` — is *already* pointwise-at-each-tick in the F# code
+`I` — is _already_ pointwise-at-each-tick in the F# code
 (`src/Zeta.Core/Operators.fs`). Retraction-native semantics
-*require* per-tick determinism. So (c) models exactly what our
+_require_ per-tick determinism. So (c) models exactly what our
 operators satisfy; (a) and (b) model strictly larger function
 classes we will never instantiate. Stronger predicate, easier
 proofs, and it matches the Bagchi-et-al. "relational algebra
@@ -358,15 +359,15 @@ F# mirror for the operator-algebra side (non-proof, for
 
 ### Downstream proof impact
 
-| Sub-lemma            | Status      | Depends on (c) how                                                                 |
-|----------------------|-------------|------------------------------------------------------------------------------------|
-| T3 `I_zInv_eq`       | closed      | independent of linearity                                                           |
-| T4 `D_I_eq`          | closed      | independent                                                                        |
-| T5 `I_D_eq`          | open `sorry`| independent — pure telescoping                                                     |
-| **B1** `linear_commute_I`  | open  | rewritten: `phi_n` pulls through `Finset.range` by `AddMonoidHom.map_sum`         |
-| **B2** `linear_commute_zInv` | open | direct: at `n=0` `phi_0` on zero prefix = 0; at `n=k+1` `phi_{k+1}` coincides with `phi_k` on the shifted prefix |
-| **B3** `linear_commute_D`    | open | corollary of B2 plus `AddMonoidHom.map_sub`                                      |
-| `chain_rule`               | open | uses B1/B2/B3 by their existing high-level plan; no new obligations               |
+| Sub-lemma                    | Status       | Depends on (c) how                                                                                               |
+| ---------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| T3 `I_zInv_eq`               | closed       | independent of linearity                                                                                         |
+| T4 `D_I_eq`                  | closed       | independent                                                                                                      |
+| T5 `I_D_eq`                  | open `sorry` | independent — pure telescoping                                                                                   |
+| **B1** `linear_commute_I`    | open         | rewritten: `phi_n` pulls through `Finset.range` by `AddMonoidHom.map_sum`                                        |
+| **B2** `linear_commute_zInv` | open         | direct: at `n=0` `phi_0` on zero prefix = 0; at `n=k+1` `phi_{k+1}` coincides with `phi_k` on the shifted prefix |
+| **B3** `linear_commute_D`    | open         | corollary of B2 plus `AddMonoidHom.map_sub`                                                                      |
+| `chain_rule`                 | open         | uses B1/B2/B3 by their existing high-level plan; no new obligations                                              |
 
 B3 actually shortens — it becomes a one-line corollary instead
 of needing its own tactic script.
@@ -424,4 +425,3 @@ independent. Estimated ~half a day to close B2 with the
 predicate, ~2 days for the full chain-rule theorem. Landable
 this round if Kenji has the Lean budget; otherwise clean
 candidate for a dedicated algebra-design spike.
-

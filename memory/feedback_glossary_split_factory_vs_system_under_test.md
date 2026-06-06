@@ -27,10 +27,10 @@ the factory-reuse work:
   `retraction` (in the DB sense of a negative-weight
   delta), `spine`, `tick`, `ZSet`, `Pipeline`.
 
-The file *name* for the SUT glossary is generic
+The file _name_ for the SUT glossary is generic
 (`SYSTEM-UNDER-TEST-GLOSSARY.md`) so a second adopter could
 also publish one under the same filename in their repo; the
-file *content* is project-specific and carries the
+file _content_ is project-specific and carries the
 `project: zeta` frontmatter tag.
 
 Some terms overload. `spec`, `retraction`, `spine`, `delta`,
@@ -44,27 +44,27 @@ is documented, not elided.
 
 Verbatim (2026-04-20):
 
-> *"gonna need to split the glossary too into system under
-> test and factory"*
+> _"gonna need to split the glossary too into system under
+> test and factory"_
 
 This is the same portability cleave that has been running
 through the round in every other artefact surface:
 
-| Surface | Factory side | System-under-test side |
-|---|---|---|
-| Hygiene (`docs/FACTORY-HYGIENE.md`) | `factory` scope rows | `project` scope rows |
-| BP-NN rules (`docs/AGENT-BEST-PRACTICES.md`) | generic BP-NN | `project: zeta` frontmatter |
-| Resume (this round) | `docs/FACTORY-RESUME.md` (me) | `docs/SHIPPED-VERIFICATION-CAPABILITIES.md` (what I ship) |
-| Skills (`.claude/skills/`) | generic skills | `project: zeta` tagged skills |
-| Glossary | `docs/GLOSSARY.md` (terms I use) | `docs/SYSTEM-UNDER-TEST-GLOSSARY.md` (terms Zeta defines) |
+| Surface                                      | Factory side                     | System-under-test side                                    |
+| -------------------------------------------- | -------------------------------- | --------------------------------------------------------- |
+| Hygiene (`docs/FACTORY-HYGIENE.md`)          | `factory` scope rows             | `project` scope rows                                      |
+| BP-NN rules (`docs/AGENT-BEST-PRACTICES.md`) | generic BP-NN                    | `project: zeta` frontmatter                               |
+| Resume (this round)                          | `docs/FACTORY-RESUME.md` (me)    | `docs/SHIPPED-VERIFICATION-CAPABILITIES.md` (what I ship) |
+| Skills (`.claude/skills/`)                   | generic skills                   | `project: zeta` tagged skills                             |
+| Glossary                                     | `docs/GLOSSARY.md` (terms I use) | `docs/SYSTEM-UNDER-TEST-GLOSSARY.md` (terms Zeta defines) |
 
 The missing glossary split was the gap. Two failure modes it
 removes:
 
 1. **Adopter confusion.** A greenfield adopter reads
    `docs/GLOSSARY.md` today and has to reverse-engineer which
-   terms are about *the factory itself* vs which terms are
-   about *Zeta DB*. When the SUT changes (or a second adopter
+   terms are about _the factory itself_ vs which terms are
+   about _Zeta DB_. When the SUT changes (or a second adopter
    shows up), all the DBSP entries are junk to them. The split
    makes the factory glossary copy-paste-useful to adopter #2.
 2. **Bridge-term ambiguity.** The factory uses `retraction` to
@@ -78,7 +78,7 @@ removes:
 This is also consistent with the **glossary-as-tiebreaker**
 rule (`feedback_glossary_as_tiebreaker_axioms_decide.md`).
 If the glossary is the tiebreaker, it must be unambiguous
-about *which layer* the disputed term belongs to. Splitting
+about _which layer_ the disputed term belongs to. Splitting
 is part of making the tiebreaker usable.
 
 # How to apply:
@@ -92,9 +92,9 @@ is part of making the tiebreaker usable.
 - **`docs/GLOSSARY.md` keeps factory terms** plus bridge-
   term-entries that point to the SUT glossary for the
   domain sense. Example: the factory `retraction` entry
-  stays; it ends with *"For the DB / DBSP sense
+  stays; it ends with _"For the DB / DBSP sense
   (negative-weight Z-set delta), see
-  `docs/SYSTEM-UNDER-TEST-GLOSSARY.md`."*
+  `docs/SYSTEM-UNDER-TEST-GLOSSARY.md`."_
 - **Frontmatter declares layer.** Both glossaries get YAML
   frontmatter (`layer: factory` vs `layer: sut, project: zeta`)
   matching the scope-column pattern elsewhere.
@@ -128,14 +128,14 @@ tier-1. The split makes the tier-1 reference specific:
 - disputes about SUT-layer terms (`Z-set`, `circuit`,
   `retraction-as-delta`) → `docs/SYSTEM-UNDER-TEST-GLOSSARY.md`
 - disputes about bridge terms → both glossaries
-  consulted; often the disambiguation is *which layer the
-  speaker meant* and the bridge-term cross-reference
+  consulted; often the disambiguation is _which layer the
+  speaker meant_ and the bridge-term cross-reference
   settles it immediately.
 
 # What this rule does NOT do
 
 - It does NOT merge all project-scoped content into the
-  SUT glossary. Project-scoped *hygiene* still lives in
+  SUT glossary. Project-scoped _hygiene_ still lives in
   FACTORY-HYGIENE.md with a `project` scope tag, not in
   the glossary. Scope cleaves are per-artefact.
 - It does NOT require symmetric term counts. Factory

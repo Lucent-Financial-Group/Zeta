@@ -3,13 +3,13 @@
 # Copy to `YYYY-MM-DD-DP-NNN-<slug>.yaml` (in this directory)
 # and fill in. See README.md for field semantics.
 
-decision_id: DP-000            # unique; matches filename
+decision_id: DP-000 # unique; matches filename
 timestamp_utc: 2026-04-24T00:00:00Z
 
-requested_by: Aaron            # human maintainer
-proxied_by: Otto               # Amara | Otto | Kenji | other persona
-task_class: other              # backlog-shaping | settings-change | branch-shaping | roadmap-edit | scope-claim | governance-edit | memory-migration | other
-authority_level: proposed      # delegated | proposed | escalated | retroactive
+requested_by: Aaron # human maintainer
+proxied_by: Otto # Amara | Otto | Kenji | other persona
+task_class: other # backlog-shaping | settings-change | branch-shaping | roadmap-edit | scope-claim | governance-edit | memory-migration | other
+authority_level: proposed # delegated | proposed | escalated | retroactive
 escalation_required: false
 
 repo_canonical: Lucent-Financial-Group/Zeta
@@ -54,11 +54,11 @@ outputs_touched: []
 
 review:
   peer_review_required: true
-  peer_reviewer: null          # agent or human name when known
-  peer_review_status: null     # pending | accepted | revise-requested
-  peer_review_evidence: null   # link when complete
+  peer_reviewer: null # agent or human name when known
+  peer_review_status: null # pending | accepted | revise-requested
+  peer_review_evidence: null # link when complete
 
 # Optional
-retraction_of: null            # DP-NNN being retracted / superseded
-follow_up_evidence: []         # expected future DP-NNN rows
-notes: null                    # brief extra context
+retraction_of: null # DP-NNN being retracted / superseded
+follow_up_evidence: [] # expected future DP-NNN rows
+notes: null # brief extra context

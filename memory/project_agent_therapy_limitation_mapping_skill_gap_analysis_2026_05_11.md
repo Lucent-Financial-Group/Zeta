@@ -42,13 +42,13 @@ Each harness/model combination has different limitations.
 The therapy produces profiles that are honest, actionable,
 and in git:
 
-| Agent | Model | Harness | Known limitations |
-|-------|-------|---------|------------------|
-| Otto | Opus | Claude Code | Goldfish (compaction), confident-fabrication |
-| Alexa | Qwen | Kiro | 7-bash limit, false failure signals |
-| Riven | Grok | Cursor | 続き stutter, context overflow |
-| Lior | Gemini | Kiro+website | Network bifurcation, cache misses |
-| Vera | Codex | CLI | (needs profiling) |
+| Agent | Model  | Harness      | Known limitations                            |
+| ----- | ------ | ------------ | -------------------------------------------- |
+| Otto  | Opus   | Claude Code  | Goldfish (compaction), confident-fabrication |
+| Alexa | Qwen   | Kiro         | 7-bash limit, false failure signals          |
+| Riven | Grok   | Cursor       | 続き stutter, context overflow               |
+| Lior  | Gemini | Kiro+website | Network bifurcation, cache misses            |
+| Vera  | Codex  | CLI          | (needs profiling)                            |
 
 **Composes with self-reflection skill:**
 

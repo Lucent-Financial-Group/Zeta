@@ -95,7 +95,11 @@ function sha256Hex(content: string): string {
 
 /** First non-empty line, trimmed to a summary length — the summary-first retrieval surface. */
 function summarize(body: string): string {
-  const firstLine = body.split("\n").map((l) => l.trim()).find((l) => l.length > 0) ?? "";
+  const firstLine =
+    body
+      .split("\n")
+      .map((l) => l.trim())
+      .find((l) => l.length > 0) ?? "";
   return firstLine.length > 280 ? `${firstLine.slice(0, 277)}...` : firstLine;
 }
 
@@ -167,7 +171,10 @@ export function ingestDocument(raw: RawDocument, deps: IngestDocumentDeps): Inge
 }
 
 /** Ingest every document a connector yields (the onboarding/bulk + incremental entry points). */
-export async function ingestFromConnector(connector: DocConnectorPort, deps: IngestDocumentDeps): Promise<IngestDocumentResult> {
+export async function ingestFromConnector(
+  connector: DocConnectorPort,
+  deps: IngestDocumentDeps,
+): Promise<IngestDocumentResult> {
   const raws = await connector.pull(deps.organizationId);
   const units: DocUnit[] = [];
   const events: OrgEvent[] = [];

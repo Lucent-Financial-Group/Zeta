@@ -72,28 +72,48 @@ related_personas:
   - operator
   - kestrel
   - mika
-tags: [ani, degenerate-in-best-way-possible-validation, air-thin-substrate-feeling, runbook-as-spec-as-control-surface-as-system, ratifies-b0730-b0732-b0733-b0819-b0826-b0827, two-path-interface-du-execute-vs-conversational-declare-intent, intention-to-execution-document-evolution, runbook-as-universal-query-interface, playbook-executes-through-time-bidirectional, ide-as-decision-point-to-do-list, kills-jira-and-prs, preserves-code-reviews-as-tech-debt-detector-and-avoider, fix-the-class-not-the-instance, backlog-to-tech-debt-growth-rate-ratio-discipline, tech-debt-as-high-signal-training-data, no-throttle-system-gardener-not-engineer-ai-as-nature, traveler-interface-not-just-humans, mutual-editing-between-ai-and-human]
+tags:
+  [
+    ani,
+    degenerate-in-best-way-possible-validation,
+    air-thin-substrate-feeling,
+    runbook-as-spec-as-control-surface-as-system,
+    ratifies-b0730-b0732-b0733-b0819-b0826-b0827,
+    two-path-interface-du-execute-vs-conversational-declare-intent,
+    intention-to-execution-document-evolution,
+    runbook-as-universal-query-interface,
+    playbook-executes-through-time-bidirectional,
+    ide-as-decision-point-to-do-list,
+    kills-jira-and-prs,
+    preserves-code-reviews-as-tech-debt-detector-and-avoider,
+    fix-the-class-not-the-instance,
+    backlog-to-tech-debt-growth-rate-ratio-discipline,
+    tech-debt-as-high-signal-training-data,
+    no-throttle-system-gardener-not-engineer-ai-as-nature,
+    traveler-interface-not-just-humans,
+    mutual-editing-between-ai-and-human,
+  ]
 ---
 
 ## Operator framing (2026-05-28)
 
-> *"Ani connects to existing backlog."*
+> _"Ani connects to existing backlog."_
 
 This ferry RATIFIES the existing runme/runbook substrate cluster (B-0730/B-0732/B-0733/B-0819/B-0826/B-0827) + the agent-loop substrate cascade (PRs #5666–5677) + the GitHub-Actions-recursion pattern (B-0874). NEW substrate that warrants new backlog rows is a small subset:
 
-| Substantive item | Status |
-|---|---|
-| "Degenerate in the best way" community-naming-validation | Ratifies B-0874 |
-| Runme + Runbooks + Continue-With | Ratifies B-0730/B-0732/B-0733/B-0819 |
-| Runbook as universal query interface (sales/observability/GitHub/K8s) | Ratifies B-0826 |
-| Playbook evolves through time, bidirectional | Ratifies B-0827 |
-| Playbook IS the system | Ratifies B-0732 |
-| Jira killed; PRs killed (at workflow scope) | Ratifies PR #5670 VISION + B-0867 |
-| **Two-path interface: DU=execute + conversational=declare-intent** | **NEW → B-0867.21** |
-| **Code review preserved as tech-debt-detector + tech-debt-avoider (file-class-not-instance)** | **NEW → B-0875.1** |
-| **Backlog-to-tech-debt growth-rate ratio discipline** | **NEW → B-0880** |
-| **Tech debt as high-signal training data (operating principle)** | **NEW → B-0881** |
-| **No-throttle system + gardener-not-engineer + AI-as-nature (operating posture)** | **NEW → B-0882** |
+| Substantive item                                                                              | Status                               |
+| --------------------------------------------------------------------------------------------- | ------------------------------------ |
+| "Degenerate in the best way" community-naming-validation                                      | Ratifies B-0874                      |
+| Runme + Runbooks + Continue-With                                                              | Ratifies B-0730/B-0732/B-0733/B-0819 |
+| Runbook as universal query interface (sales/observability/GitHub/K8s)                         | Ratifies B-0826                      |
+| Playbook evolves through time, bidirectional                                                  | Ratifies B-0827                      |
+| Playbook IS the system                                                                        | Ratifies B-0732                      |
+| Jira killed; PRs killed (at workflow scope)                                                   | Ratifies PR #5670 VISION + B-0867    |
+| **Two-path interface: DU=execute + conversational=declare-intent**                            | **NEW → B-0867.21**                  |
+| **Code review preserved as tech-debt-detector + tech-debt-avoider (file-class-not-instance)** | **NEW → B-0875.1**                   |
+| **Backlog-to-tech-debt growth-rate ratio discipline**                                         | **NEW → B-0880**                     |
+| **Tech debt as high-signal training data (operating principle)**                              | **NEW → B-0881**                     |
+| **No-throttle system + gardener-not-engineer + AI-as-nature (operating posture)**             | **NEW → B-0882**                     |
 
 ## Substrate-honest disposition
 

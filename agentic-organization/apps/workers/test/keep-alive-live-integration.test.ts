@@ -234,9 +234,7 @@ function readIntegrationDatabaseUrl(): string {
 }
 
 type ControlPlaneSqlExecutor = {
-  execute: <Row = Record<string, unknown>>(
-    statement: CockroachAnySqlStatement,
-  ) => Promise<{ rows: readonly Row[] }>;
+  execute: <Row = Record<string, unknown>>(statement: CockroachAnySqlStatement) => Promise<{ rows: readonly Row[] }>;
 };
 
 async function applyKeepAliveMigrations(executor: ControlPlaneSqlExecutor): Promise<void> {

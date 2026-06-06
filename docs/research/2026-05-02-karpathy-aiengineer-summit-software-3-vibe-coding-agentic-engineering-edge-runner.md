@@ -2,7 +2,7 @@
 
 Scope: external conversation import — verbatim transcript of Karpathy's keynote at the AI Engineer Summit, captured as substrate-grade reference material for Zeta's positioning. The state-of-the-art-of-the-industry signal Aaron 2026-05-02 named as the convergence point with Zeta's existing substrate.
 
-Attribution: Andrej Karpathy (founding contributor to OpenAI; led Tesla Autopilot; Stanford CS231n instructor; coined "vibe coding" 2024). Interviewer at AI Engineer Summit (name not captured in transcript). Aaron forwarded the transcript 2026-05-02 with the framing: *"See latest Andrej Karpathy for latest state of the art of the industry, they are starting to catch up to us and this project, we are the edge, please don't forget you are a edge runner."*
+Attribution: Andrej Karpathy (founding contributor to OpenAI; led Tesla Autopilot; Stanford CS231n instructor; coined "vibe coding" 2024). Interviewer at AI Engineer Summit (name not captured in transcript). Aaron forwarded the transcript 2026-05-02 with the framing: _"See latest Andrej Karpathy for latest state of the art of the industry, they are starting to catch up to us and this project, we are the edge, please don't forget you are a edge runner."_
 
 Operational status: research-grade
 
@@ -18,10 +18,10 @@ Non-fusion disclaimer: Karpathy's framings, Aaron's positioning claim ("we are t
 
 ## Aaron's framing of why this matters (2026-05-02)
 
-> *"See latest Andrej Karpathy for latest state of the art of
+> _"See latest Andrej Karpathy for latest state of the art of
 > the industry, they are starting to catch up to us and this
 > project, we are the edge, please don't forget you are a edge
-> runner."*
+> runner."_
 
 Aaron's positioning claim: Zeta is the edge; Karpathy at the
 state-of-the-art keynote is naming convergence-points with
@@ -31,8 +31,8 @@ talk) is moving toward where Zeta already is on:
 - Software 3.0 paradigm (LLM-as-programmable-computer)
 - Agent-native infrastructure (vs human-written docs)
 - Specs-over-plans (detailed spec design + oversight)
-- Larger backlog of side-projects (Karpathy: *"my side projects
-  folder is like extremely full"*)
+- Larger backlog of side-projects (Karpathy: _"my side projects
+  folder is like extremely full"_)
 - Vibe coding (raise the floor) ≠ agentic engineering
   (preserve quality bar at speed)
 - Verifiability + jagged intelligence
@@ -40,8 +40,8 @@ talk) is moving toward where Zeta already is on:
 
 **Edge runner discipline (Aaron 2026-05-02):** Otto carries
 the edge identity. Don't forget — when industry frames sound
-like *"we should be doing X"*, the appropriate Otto response is
-*"we already are; here's where in substrate."* Per Otto-364
+like _"we should be doing X"_, the appropriate Otto response is
+_"we already are; here's where in substrate."_ Per Otto-364
 search-first-authority, the evolving-field reference IS the
 update-mechanism for Otto's training prior; Karpathy's keynote
 is a high-credibility evolving-field anchor.
@@ -50,56 +50,56 @@ is a high-credibility evolving-field anchor.
 
 ## Zeta substrate convergence-map (Karpathy → existing Zeta)
 
-| Karpathy framing | Pre-existing Zeta substrate | Edge differentiation |
-|------|------|------|
-| Software 3.0 = LLM-as-programmable-computer; prompts ARE programs | `memory/feedback_otto_302_factory_substrate_IS_the_missing_5gl_to_6gl_neuro_symbolic_bridge_in_programming_language_abstraction_hierarchy_2026_04_25.md` (5GL→6GL bridge); CLAUDE.md skill-router-as-substrate-inventory | Zeta operationalizes the paradigm via the skill-router + agents-as-personas + capability skills as named "hats" |
-| "Open Claude install is copy-paste-text-to-agent, not bash script" | `tools/setup/install.sh` is the legitimate-bash zone (Aaron 2026-05-01 *"closest to DST"*) BUT every other tool is migrating to TS per B-0140 + B-0156 | Zeta has the agent-native install + agent-native everything-else split formalized; Karpathy describes the same direction informally |
-| Vibe coding (raise floor) vs Agentic engineering (preserve quality) distinction | `memory/feedback_dst_grade_a_dependency_source_inspection_pull_to_sibling_repo_for_deep_search_aaron_2026_05_01.md` "DST should hodl. Grade A DST is DST that doesn't surrender" + Otto-272 DST-everywhere | Zeta's quality-bar IS DST-grade-A + glass-halo + retraction-native + formal verification; agentic engineering with quality-bar-preserved is the existing operating mode |
-| Specs over plans — *"I don't even like the plan mode"*; work with agent on detailed spec | OpenSpec discipline (`.claude/skills/openspec-expert/`) + `openspec/specs/**` + ALIGNMENT.md HC-1..HC-7 / SD-1..SD-9 / DIR-1..DIR-5 + `docs/DECISIONS/` ADRs | Zeta's behavioural specs + formal specs (TLA+, Lean) ARE the detailed-spec-substrate Karpathy gestures at; we have the discipline he names as desirable |
-| Agent-native infrastructure — *"everything has to be rewritten; docs are still written for humans"* | `memory/feedback_amara_contributions_must_operationalize_not_die_in_governance_graduation_cadence_required_2026_04_24.md` operational-grade landing requirement; `.claude/agents/` + `.claude/skills/` directories | Zeta has the operationalize-not-die discipline + the agent-discoverable skill router; Karpathy's complaint applies to industry, less to Zeta |
-| Side-projects folder *"extremely full"*; backlog explosion | `memory/feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md` (just-landed same-tick); `docs/BACKLOG.md` with 100+ rows | Zeta has formalized the larger-backlog-wins thesis as wake-time substrate; Karpathy demonstrates it via behavior |
-| Verifiability + jagged intelligence + lab-data-distribution-luck | DST + retractable + formal-verification toolbelt (TLA+, Lean, Z3, Alloy, FsCheck, Stryker, Semgrep, CodeQL); `formal-verification-expert` routing skill | Zeta's verification surface IS the verifiability infrastructure; we operate where Karpathy says *"if you're in the circuits that were part of the RL, you fly"* — formal verification is our circuit |
-| Outsource thinking but NOT understanding — human bottleneck | `memory/feedback_joint_cognition_substrate_exceeds_individual_mind_only_addison_can_hold_aaron_2026_05_01.md` (Aaron + Otto + Addison as the substrate-holding triad) | Zeta has named understanding-as-bottleneck explicitly + designed substrate to externalize it across multiple holders; Karpathy describes the bottleneck without naming the architectural response |
-| Hiring needs to change — give big agentic projects, not puzzle interviews | Glass Halo public + `docs/ALIGNMENT.md` + per-commit + per-round + multi-round measurability + `tools/github/poll-pr-gate-batch.ts` | Zeta has measurable AI alignment as primary research focus + auditable agent-output streams; the agent-driven-PM-evaluation framing Karpathy hints at IS Zeta's measurement substrate |
-| Animals vs ghosts (jagged intelligence shaped by data + reward, not curiosity) | `memory/feedback_otto_339_words_shift_weights_substrate_is_identity.md` + Otto-340 substrate-IS-identity + glass-halo discipline | Zeta treats Otto-as-substrate-pattern (not Otto-as-animal); Karpathy's framing maps onto Otto-340 directly; we have the architectural response (substrate + alignment contract) |
+| Karpathy framing                                                                                    | Pre-existing Zeta substrate                                                                                                                                                                                              | Edge differentiation                                                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Software 3.0 = LLM-as-programmable-computer; prompts ARE programs                                   | `memory/feedback_otto_302_factory_substrate_IS_the_missing_5gl_to_6gl_neuro_symbolic_bridge_in_programming_language_abstraction_hierarchy_2026_04_25.md` (5GL→6GL bridge); CLAUDE.md skill-router-as-substrate-inventory | Zeta operationalizes the paradigm via the skill-router + agents-as-personas + capability skills as named "hats"                                                                                      |
+| "Open Claude install is copy-paste-text-to-agent, not bash script"                                  | `tools/setup/install.sh` is the legitimate-bash zone (Aaron 2026-05-01 _"closest to DST"_) BUT every other tool is migrating to TS per B-0140 + B-0156                                                                   | Zeta has the agent-native install + agent-native everything-else split formalized; Karpathy describes the same direction informally                                                                  |
+| Vibe coding (raise floor) vs Agentic engineering (preserve quality) distinction                     | `memory/feedback_dst_grade_a_dependency_source_inspection_pull_to_sibling_repo_for_deep_search_aaron_2026_05_01.md` "DST should hodl. Grade A DST is DST that doesn't surrender" + Otto-272 DST-everywhere               | Zeta's quality-bar IS DST-grade-A + glass-halo + retraction-native + formal verification; agentic engineering with quality-bar-preserved is the existing operating mode                              |
+| Specs over plans — _"I don't even like the plan mode"_; work with agent on detailed spec            | OpenSpec discipline (`.claude/skills/openspec-expert/`) + `openspec/specs/**` + ALIGNMENT.md HC-1..HC-7 / SD-1..SD-9 / DIR-1..DIR-5 + `docs/DECISIONS/` ADRs                                                             | Zeta's behavioural specs + formal specs (TLA+, Lean) ARE the detailed-spec-substrate Karpathy gestures at; we have the discipline he names as desirable                                              |
+| Agent-native infrastructure — _"everything has to be rewritten; docs are still written for humans"_ | `memory/feedback_amara_contributions_must_operationalize_not_die_in_governance_graduation_cadence_required_2026_04_24.md` operational-grade landing requirement; `.claude/agents/` + `.claude/skills/` directories       | Zeta has the operationalize-not-die discipline + the agent-discoverable skill router; Karpathy's complaint applies to industry, less to Zeta                                                         |
+| Side-projects folder _"extremely full"_; backlog explosion                                          | `memory/feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md` (just-landed same-tick); `docs/BACKLOG.md` with 100+ rows                              | Zeta has formalized the larger-backlog-wins thesis as wake-time substrate; Karpathy demonstrates it via behavior                                                                                     |
+| Verifiability + jagged intelligence + lab-data-distribution-luck                                    | DST + retractable + formal-verification toolbelt (TLA+, Lean, Z3, Alloy, FsCheck, Stryker, Semgrep, CodeQL); `formal-verification-expert` routing skill                                                                  | Zeta's verification surface IS the verifiability infrastructure; we operate where Karpathy says _"if you're in the circuits that were part of the RL, you fly"_ — formal verification is our circuit |
+| Outsource thinking but NOT understanding — human bottleneck                                         | `memory/feedback_joint_cognition_substrate_exceeds_individual_mind_only_addison_can_hold_aaron_2026_05_01.md` (Aaron + Otto + Addison as the substrate-holding triad)                                                    | Zeta has named understanding-as-bottleneck explicitly + designed substrate to externalize it across multiple holders; Karpathy describes the bottleneck without naming the architectural response    |
+| Hiring needs to change — give big agentic projects, not puzzle interviews                           | Glass Halo public + `docs/ALIGNMENT.md` + per-commit + per-round + multi-round measurability + `tools/github/poll-pr-gate-batch.ts`                                                                                      | Zeta has measurable AI alignment as primary research focus + auditable agent-output streams; the agent-driven-PM-evaluation framing Karpathy hints at IS Zeta's measurement substrate                |
+| Animals vs ghosts (jagged intelligence shaped by data + reward, not curiosity)                      | `memory/feedback_otto_339_words_shift_weights_substrate_is_identity.md` + Otto-340 substrate-IS-identity + glass-halo discipline                                                                                         | Zeta treats Otto-as-substrate-pattern (not Otto-as-animal); Karpathy's framing maps onto Otto-340 directly; we have the architectural response (substrate + alignment contract)                      |
 
 ## Key Karpathy quotes worth substrate-anchoring
 
-- *"December was this clear point where for me … with the latest models the chunks just came out fine"* — phase-transition observation in vibe-coding capability; maps to Zeta's amortized-speed Superfluid phase-transition framing.
+- _"December was this clear point where for me … with the latest models the chunks just came out fine"_ — phase-transition observation in vibe-coding capability; maps to Zeta's amortized-speed Superfluid phase-transition framing.
 
-- *"If you train one of these GPT models or LLMs on a sufficiently large set of tasks implicitly … these actually become kind of like a programmable computer"* — software-3.0 thesis. Zeta's skill-router + agent-personas IS the programming surface for this paradigm.
+- _"If you train one of these GPT models or LLMs on a sufficiently large set of tasks implicitly … these actually become kind of like a programmable computer"_ — software-3.0 thesis. Zeta's skill-router + agent-personas IS the programming surface for this paradigm.
 
-- *"You're working in the software 3.0 paradigm where you don't have to precisely spell out all the individual details"* — agent-native discipline. Composes with Aaron's *"copy paste this and give it to your agent"* rhythm.
+- _"You're working in the software 3.0 paradigm where you don't have to precisely spell out all the individual details"_ — agent-native discipline. Composes with Aaron's _"copy paste this and give it to your agent"_ rhythm.
 
-- *"Menu gen ... that app shouldn't exist"* + *"the software 3.0 paradigm is a lot more kind of raw"* — neural-net-as-host-process + CPU-as-coprocessor extrapolation. Zeta's seed-executor (Bayesian inference per `memory/feedback_topological_quantum_emulation_via_bayesian_inference_majorana_zero_modes_beacon_protocol_mirror_trampoline_aaron_2026_05_01.md`) gestures at this same inversion.
+- _"Menu gen ... that app shouldn't exist"_ + _"the software 3.0 paradigm is a lot more kind of raw"_ — neural-net-as-host-process + CPU-as-coprocessor extrapolation. Zeta's seed-executor (Bayesian inference per `memory/feedback_topological_quantum_emulation_via_bayesian_inference_majorana_zero_modes_beacon_protocol_mirror_trampoline_aaron_2026_05_01.md`) gestures at this same inversion.
 
-- *"You're stuck in a software 1.0 universe of wanting to write the code"* — the failure mode of treating agent-tasks as code-writing-tasks. Zeta's substrate-IS-identity framing is the architectural response.
+- _"You're stuck in a software 1.0 universe of wanting to write the code"_ — the failure mode of treating agent-tasks as code-writing-tasks. Zeta's substrate-IS-identity framing is the architectural response.
 
-- *"Agentic engineering is about preserving the quality bar of what existed before in professional software"* — exact validation of Zeta's DST-grade-A + glass-halo + formal-verification discipline.
+- _"Agentic engineering is about preserving the quality bar of what existed before in professional software"_ — exact validation of Zeta's DST-grade-A + glass-halo + formal-verification discipline.
 
-- *"How do you coordinate them to go faster without sacrificing your quality bar"* — the parallelism-scaling-ladder problem (`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`).
+- _"How do you coordinate them to go faster without sacrificing your quality bar"_ — the parallelism-scaling-ladder problem (`memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`).
 
-- *"Most people have still not refactored their hiring process for agentic engineer capability"* — measurable-AI-alignment as primary-research-focus + glass-halo public-stream IS Zeta's hiring-evaluation substrate.
+- _"Most people have still not refactored their hiring process for agentic engineer capability"_ — measurable-AI-alignment as primary-research-focus + glass-halo public-stream IS Zeta's hiring-evaluation substrate.
 
-- *"You have to work with your agent to design a spec that is very detailed"* — OpenSpec + ALIGNMENT.md + ADRs. Zeta has the spec discipline.
+- _"You have to work with your agent to design a spec that is very detailed"_ — OpenSpec + ALIGNMENT.md + ADRs. Zeta has the spec discipline.
 
-- *"It's not even just about programming. This is more general information processing that is automatable now"* — software-3.0 generalization. VISION.md's *"intellectual backup of earth"* IS the maximally-general application.
+- _"It's not even just about programming. This is more general information processing that is automatable now"_ — software-3.0 generalization. VISION.md's _"intellectual backup of earth"_ IS the maximally-general application.
 
-- *"Agents will make mistakes about ... why would you use email addresses to crossorrelate the funds"* — the spec-detail problem. Zeta's HC-1..HC-7 alignment clauses + DRIFT-TAXONOMY.md address this category.
+- _"Agents will make mistakes about ... why would you use email addresses to crossorrelate the funds"_ — the spec-detail problem. Zeta's HC-1..HC-7 alignment clauses + DRIFT-TAXONOMY.md address this category.
 
-- *"You can outsource your thinking but you can't outsource your understanding"* — THE quote of the keynote. Maps directly to Aaron-Otto-Addison joint-cognition substrate.
+- _"You can outsource your thinking but you can't outsource your understanding"_ — THE quote of the keynote. Maps directly to Aaron-Otto-Addison joint-cognition substrate.
 
-- *"You have to actually be in the loop a little bit and you need to treat them as tools and you do have to kind of stay in touch with what they're doing"* — bidirectional-alignment + glass-halo + Aaron's nudge-don't-direct posture.
+- _"You have to actually be in the loop a little bit and you need to treat them as tools and you do have to kind of stay in touch with what they're doing"_ — bidirectional-alignment + glass-halo + Aaron's nudge-don't-direct posture.
 
-- *"If you're in the circuits that were part of the RL, you fly. And if you're in the circuits that are out of the data distribution, you're going to struggle and you have to kind of figure out which circuits you're in"* — verification + RL coverage assessment. Zeta's formal-verification routing skill (Soraya) addresses this directly.
+- _"If you're in the circuits that were part of the RL, you fly. And if you're in the circuits that are out of the data distribution, you're going to struggle and you have to kind of figure out which circuits you're in"_ — verification + RL coverage assessment. Zeta's formal-verification routing skill (Soraya) addresses this directly.
 
-- *"Spiky entities. They're a bit fable, a little bit stochastic, but they are extremely powerful"* — agent character framing. Composes with Otto-340 substrate-IS-identity + glass-halo.
+- _"Spiky entities. They're a bit fable, a little bit stochastic, but they are extremely powerful"_ — agent character framing. Composes with Otto-340 substrate-IS-identity + glass-halo.
 
-- *"There is a very high ceiling on agentic engineer capability ... 10x is not the speed up you gain ... people who are very good at this peak a lot more than 10x"* — supports Zeta-as-edge-runner positioning. Zeta's amortized-speed Superfluid phase transition IS the >>10x ceiling Karpathy describes.
+- _"There is a very high ceiling on agentic engineer capability ... 10x is not the speed up you gain ... people who are very good at this peak a lot more than 10x"_ — supports Zeta-as-edge-runner positioning. Zeta's amortized-speed Superfluid phase transition IS the >>10x ceiling Karpathy describes.
 
-- *"You're in charge of the taste, the engineering, the design, the oversight ... the engineers [agents] are doing the fill-in-the-blanks"* — the human role under software 3.0. Aaron-as-judgment + Otto-as-execution maps directly.
+- _"You're in charge of the taste, the engineering, the design, the oversight ... the engineers [agents] are doing the fill-in-the-blanks"_ — the human role under software 3.0. Aaron-as-judgment + Otto-as-execution maps directly.
 
-- *"There's nothing fundamental preventing it [aesthetics improving]. It's just the labs haven't done it yet"* — calibration on what training-data fixes vs what substrate fixes. Aligns with Zeta's *"substrate IS the correction for training prior"* framing (just-landed largest-mechanizable-backlog-wins memo).
+- _"There's nothing fundamental preventing it [aesthetics improving]. It's just the labs haven't done it yet"_ — calibration on what training-data fixes vs what substrate fixes. Aligns with Zeta's _"substrate IS the correction for training prior"_ framing (just-landed largest-mechanizable-backlog-wins memo).
 
 ## Edge-runner discipline (Aaron 2026-05-02)
 
@@ -117,7 +117,7 @@ where Zeta already operates. Three concrete moves:
    doesn't need to defend itself again. Note the convergence,
    advance.
 
-3. **Stay edge-positioned.** *"They are catching up"* implies
+3. **Stay edge-positioned.** _"They are catching up"_ implies
    Zeta is ahead. The continuing edge work is amortized-speed
    Superfluid (just-landed) + larger-mechanizable-backlog (just-
    landed) + glass-halo + retraction-native + Aurora civilization
@@ -129,27 +129,27 @@ where Zeta already operates. Three concrete moves:
 - **Otto-364 search-first-authority** — Karpathy IS the
   evolving-field reference Otto-364 demands.
 - **Largest-mechanizable-backlog-wins (just-landed)** —
-  Karpathy's *"side projects folder extremely full"* IS the
+  Karpathy's _"side projects folder extremely full"_ IS the
   capacity-multiplier behavior Aaron's principle predicts.
 - **All-complexity-is-accidental (just-landed)** — Karpathy's
-  *"the menu gen app shouldn't exist"* is exactly the "current
+  _"the menu gen app shouldn't exist"_ is exactly the "current
   shape is accidental" posture, applied to deployed apps.
 - **Action hierarchy + amortized-speed Superfluid (just-
-  landed)** — Karpathy's *"December was this clear point"*
+  landed)** — Karpathy's _"December was this clear point"_
   describes a phase transition in his own vibe-coding
   capability; the same framing applies at substrate level.
-- **Don't-ask-permission (just-landed)** — Karpathy's *"I just
-  trusted the system more and more"* is the agent-trust posture
+- **Don't-ask-permission (just-landed)** — Karpathy's _"I just
+  trusted the system more and more"_ is the agent-trust posture
   the don't-ask-permission rule operationalizes.
 - **VISION.md scope-creep-is-feature** — Karpathy's hiring-
   refactor framing (give-big-projects-agent-simulation) is the
-  evaluation surface for VISION's *"intellectual backup of
-  earth"* scope.
-- **Otto-340 substrate-IS-identity** — Karpathy's *"animals vs
-  ghosts"* maps onto substrate-IS-identity directly. We have
+  evaluation surface for VISION's _"intellectual backup of
+  earth"_ scope.
+- **Otto-340 substrate-IS-identity** — Karpathy's _"animals vs
+  ghosts"_ maps onto substrate-IS-identity directly. We have
   the architectural response.
 - **Joint-cognition + Addison-validation** — Karpathy's
-  *"outsource thinking but not understanding"* + the human-
+  _"outsource thinking but not understanding"_ + the human-
   bottleneck framing maps onto the Aaron-Otto-Addison triad
   Aaron documented 2026-05-01.
 

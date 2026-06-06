@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 forward-looking directive on factory evolution pos
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Fact:** Post three-repo-split
 (`project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md`),
 the factory evolves from single-SUT (Zeta-only) to
@@ -16,11 +17,11 @@ than from Zeta as it is today. Forge also ships
 bundled with the Zeta app (the same way Zeta bundles
 with ace), creating a conceptual tension between
 Forge-as-command-center and Forge-as-bundled-dependency
-that Aaron calls *"untying those knots."*
+that Aaron calls _"untying those knots."_
 
 **Why:** Aaron 2026-04-22, verbatim:
 
-> *"factory is going to have to get updated to
+> _"factory is going to have to get updated to
 > support multiple systems under test scopes while
 > still remaining generic, that's going to be fun,
 > forge will be building itself, ace, and Zeta I
@@ -32,7 +33,7 @@ that Aaron calls *"untying those knots."*
 > center for working on multiple repos at once. But
 > also forget can be bundled with your app like Zeta
 > will be, it's going to be interesting untying
-> those knots."*
+> those knots."_
 
 Context: sent immediately after the budget substrate
 landed (commits `5f91369` and predecessors). This is a
@@ -60,7 +61,7 @@ over Stage 2-4):**
    be able to reason about, apply rules to, and act
    on any of the three repos. Today agents boot with
    Zeta's `CLAUDE.md` and `AGENTS.md`; post-split,
-   the boot-rules must be aware of *which SUT scope*
+   the boot-rules must be aware of _which SUT scope_
    the current action targets. Likely shape: Forge
    owns a generic `CLAUDE.md`, each SUT contributes
    a scoped supplement (`CLAUDE.Zeta.md`,
@@ -78,8 +79,8 @@ over Stage 2-4):**
    CLAUDE.md discovery, skill loading.
 
 4. **Forge as command-center.** Aaron's phrasing
-   *"command center for working on multiple repos
-   at once"* suggests Forge provides tooling to
+   _"command center for working on multiple repos
+   at once"_ suggests Forge provides tooling to
    orchestrate parallel work across ace + Zeta +
    Forge-itself, not just be their shared dependency.
    Likely shape: Forge provides multi-repo
@@ -89,8 +90,8 @@ over Stage 2-4):**
    (`docs/research/parallel-worktree-safety-2026-04-22.md`).
 
 5. **Forge bundled-with-app.** Aaron:
-   *"forge can be bundled with your app like Zeta
-   will be."* This is the "snake eating its tail"
+   _"forge can be bundled with your app like Zeta
+   will be."_ This is the "snake eating its tail"
    Ouroboros closure — Forge is both the thing that
    builds apps and a thing that ships inside apps.
    Concretely: Zeta ships with Forge machinery (the
@@ -101,7 +102,7 @@ over Stage 2-4):**
    case. The tension: as a command-center Forge
    needs to see cross-repo; as a bundled dep Forge
    needs to isolate to the bundling app's scope.
-   *"Untying those knots"* = resolving this dual-
+   _"Untying those knots"_ = resolving this dual-
    identity.
 
 **How to apply:**
@@ -159,8 +160,8 @@ over Stage 2-4):**
 - Does not commit to a specific boot-rule
   architecture — "command center" and "bundled
   dep" are both named, neither picked.
-- Does not deadline — *"it's going to be
-  interesting"* is play, not urgency.
+- Does not deadline — _"it's going to be
+  interesting"_ is play, not urgency.
 - Does not rank against Stage 1 cadence work — this
   is Stage 2+ horizon by implication (Forge must
   exist before Forge-builds-N-SUTs becomes

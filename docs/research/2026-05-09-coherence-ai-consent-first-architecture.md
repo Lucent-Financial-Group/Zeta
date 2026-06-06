@@ -27,12 +27,12 @@ Post-execution verification displayed
 
 ## Consent types
 
-| Type | User action | Use case |
-| ---- | ----------- | -------- |
-| Explicit | User reviews + confirms each action | Default for all world-affecting actions |
-| Blanket | User pre-authorizes a class of actions | `--permission-mode auto` in Claude Code |
-| Delegated | User delegates to another agent/human | Multi-agent review (PR workflow) |
-| Emergency | Override with N-of-M multi-sig | KSK pattern (military/safety) |
+| Type      | User action                            | Use case                                |
+| --------- | -------------------------------------- | --------------------------------------- |
+| Explicit  | User reviews + confirms each action    | Default for all world-affecting actions |
+| Blanket   | User pre-authorizes a class of actions | `--permission-mode auto` in Claude Code |
+| Delegated | User delegates to another agent/human  | Multi-agent review (PR workflow)        |
+| Emergency | Override with N-of-M multi-sig         | KSK pattern (military/safety)           |
 
 ## KSK (Key-Splitting Key) override pattern
 
@@ -59,40 +59,40 @@ key shares), and cryptocurrency multi-sig wallets.
 
 ```typescript
 interface ConsentRequest {
-    id: string;
-    agent: string;
-    action: ActionDescription;
-    blastRadius: "local" | "shared" | "external";
-    retractable: boolean;
-    retractionPath: string | null;
-    requestedAt: string;
+  id: string;
+  agent: string;
+  action: ActionDescription;
+  blastRadius: "local" | "shared" | "external";
+  retractable: boolean;
+  retractionPath: string | null;
+  requestedAt: string;
 }
 
 interface ConsentGrant {
-    requestId: string;
-    grantedBy: string;
-    grantType: "explicit" | "blanket" | "delegated" | "emergency";
-    grantedAt: string;
-    conditions: string[];
-    expiresAt: string | null;
+  requestId: string;
+  grantedBy: string;
+  grantType: "explicit" | "blanket" | "delegated" | "emergency";
+  grantedAt: string;
+  conditions: string[];
+  expiresAt: string | null;
 }
 
 interface ConsentAuditEntry {
-    request: ConsentRequest;
-    grant: ConsentGrant | null;
-    executed: boolean;
-    executedAt: string | null;
-    outcome: "success" | "failure" | "retracted";
+  request: ConsentRequest;
+  grant: ConsentGrant | null;
+  executed: boolean;
+  executedAt: string | null;
+  outcome: "success" | "failure" | "retracted";
 }
 ```
 
 ## Blast radius classification
 
-| Blast radius | Examples | Default consent |
-| ------------ | -------- | --------------- |
-| Local | Edit file, run test, read code | Blanket (auto) |
-| Shared | Push to repo, merge PR, edit settings | Explicit |
-| External | Send email, post to API, modify infra | Explicit + confirmation |
+| Blast radius | Examples                              | Default consent         |
+| ------------ | ------------------------------------- | ----------------------- |
+| Local        | Edit file, run test, read code        | Blanket (auto)          |
+| Shared       | Push to repo, merge PR, edit settings | Explicit                |
+| External     | Send email, post to API, modify infra | Explicit + confirmation |
 
 ## Retraction path requirement
 

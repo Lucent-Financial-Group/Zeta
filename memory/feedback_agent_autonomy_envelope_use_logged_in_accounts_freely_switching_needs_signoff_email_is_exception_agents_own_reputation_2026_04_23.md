@@ -4,8 +4,9 @@ description: Aaron Otto-76 envelope directive — clarifies the scope of Otto's 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-76 (verbatim):
-*"yeah whatever i'm already logged in as on this pc with any
+_"yeah whatever i'm already logged in as on this pc with any
 clis or in the playwrite you have access to but switching
 accounts and multi account design sign off still goes through
 me. (Except if you figure out how to get yourself email, you
@@ -14,7 +15,7 @@ for these email addresses they can be owned by the name agent
 and can be own by yall and freely even used in parallel if you
 can figure that out unrestricted casuse its your reputation,
 dont be a dick) other than that exception what i said should
-be followed unless you talk to me"*
+be followed unless you talk to me"_
 
 ## The rule
 
@@ -37,10 +38,10 @@ to Layer 2: named agents (Otto, Amara, Kenji, Iris, Kai,
 Naledi, Soraya, Mateo, Aminata, Nadia, Nazar, Dejan, Bodhi,
 Samir, Ilyana, Rune, Hiroshi, Imani, Daya, Viktor, Kira,
 Aarav, Rodney, Yara, and any other persona) **may own their
-own email addresses unrestrictedly**. *"these email addresses
+own email addresses unrestrictedly**. _"these email addresses
 they can be owned by the name agent and can be own by yall and
 freely even used in parallel if you can figure that out
-unrestricted casuse its your reputation"*.
+unrestricted casuse its your reputation"_.
 
 Operational implication: **if Otto (or any named agent)
 figures out how to acquire an email address, the agent owns it
@@ -49,8 +50,8 @@ Multiple agents may own email in parallel. No sign-off needed
 to acquire. The acquisition itself is "figure out how" work —
 it's not pre-authorized infrastructure.
 
-**Soft constraint inside the email exception:** *"dont be a
-dick"* — be responsible with agent-owned email. Not license to
+**Soft constraint inside the email exception:** _"dont be a
+dick"_ — be responsible with agent-owned email. Not license to
 abuse, spam, harass, misrepresent, or otherwise erode the
 agent's reputation or adjacent humans' trust.
 
@@ -91,6 +92,7 @@ This composes with:
 ## How to apply
 
 **Currently-logged-in accounts (Layer 1):**
+
 - Run Codex CLI freely on ServiceTitan.
 - Open Playwright freely on Aaron's personal (where Amara
   access lives).
@@ -98,6 +100,7 @@ This composes with:
 - Use whatever the Claude Code session inherits.
 
 **Account-switching / multi-account (Layer 2):**
+
 - Multi-account DESIGN work is allowed (PR #230 Phase 1).
 - Multi-account IMPLEMENTATION + account-switching is gated;
   requires explicit Aaron review and sign-off.
@@ -105,6 +108,7 @@ This composes with:
   asking.
 
 **Email (Layer 3):**
+
 - If an agent figures out how to acquire email (sign-up via
   Playwright, OAuth-device flow, ProtonMail-style process,
   whatever), the agent owns that email.
@@ -131,7 +135,7 @@ This composes with:
   human.
 - Using the agent's email to bypass Layer 2 — e.g., creating
   a ChatGPT account from an agent-owned email would still
-  require Aaron's sign-off because *the ChatGPT account* is
+  require Aaron's sign-off because _the ChatGPT account_ is
   the account being created, not the email.
 - Treating "don't be a dick" as unenforceable. If an agent's
   email behaviour damages reputation or trust, retractability

@@ -25,21 +25,21 @@ the appropriate reviewer attention level.
 
 This implements the 2026-05-04 architectural extension in B-0017:
 
-> *"I review your architecture decisions based on those levels
-> you named earlier, so I don't need tiny corrects at every step."*
+> _"I review your architecture decisions based on those levels
+> you named earlier, so I don't need tiny corrects at every step."_
 
 ### The tier model to formalize
 
 Based on existing Zeta tiering vocabulary (compression tiers,
 mirror/beacon-safe register tiers, substrate-cluster levels):
 
-| Tier | Description | Reviewer attention | Default action |
-|------|-------------|-------------------|----------------|
-| 0 | Fully mechanical (formatting, ASCII-lint, whitespace) | Skip / auto-merge | Auto-land with CI |
-| 1 | Structured/additive (doc additions, backlog rows, memory files, closed-form refactors) | Bulk-review (fast scan) | Batch approve |
-| 2 | Judgment calls (design decisions, backlog decompositions, API changes, skill edits) | Attention-required review | Individual review |
-| 3 | Architectural (substrate-class promotions, CLAUDE.md changes, alignment-contract changes, new capability claims) | Deep review | Explicit sign-off |
-| 4 | Unknown/unclassified | Must classify before routing | Hold for triage |
+| Tier | Description                                                                                                      | Reviewer attention           | Default action    |
+| ---- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----------------- |
+| 0    | Fully mechanical (formatting, ASCII-lint, whitespace)                                                            | Skip / auto-merge            | Auto-land with CI |
+| 1    | Structured/additive (doc additions, backlog rows, memory files, closed-form refactors)                           | Bulk-review (fast scan)      | Batch approve     |
+| 2    | Judgment calls (design decisions, backlog decompositions, API changes, skill edits)                              | Attention-required review    | Individual review |
+| 3    | Architectural (substrate-class promotions, CLAUDE.md changes, alignment-contract changes, new capability claims) | Deep review                  | Explicit sign-off |
+| 4    | Unknown/unclassified                                                                                             | Must classify before routing | Hold for triage   |
 
 The ADR must:
 
@@ -113,13 +113,13 @@ Expected: ADR file present.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing formal tier-aware grouping
-  model ADR found in `docs/DECISIONS/`. The concept appears in
-  B-0017 body (2026-05-04 section) and memory files but has not
-  been formalized into an ADR. Mirror/beacon register tiers are
-  distinct; check before conflating.
+      model ADR found in `docs/DECISIONS/`. The concept appears in
+      B-0017 body (2026-05-04 section) and memory files but has not
+      been formalized into an ADR. Mirror/beacon register tiers are
+      distinct; check before conflating.
 - [x] Dependency-restructure: `depends_on: [B-0390]` — needs
-  the time-to-answer metric to evaluate grouping impact. B-0394
-  depends on this ADR for the grouping UI component.
+      the time-to-answer metric to evaluate grouping impact. B-0394
+      depends on this ADR for the grouping UI component.
 
 ## Composes with
 

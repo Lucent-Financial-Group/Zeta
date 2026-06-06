@@ -13,12 +13,12 @@ Non-fusion disclaimer: Aaron's verbatim framing preserved in §Aaron's verbatim 
 # The elevator pitch — regular people speak
 
 **Why:** Aaron 2026-05-13 substrate-honest crystallization:
-*"damn do you know how much easier it would have been to just
+_"damn do you know how much easier it would have been to just
 say we are building a shared world model in git that can be
 forked and a game on top to turn work into play via pvp and
 coop raids and uinversal buiness templates (alreadly
-writtten/backlogged)"*. Then: *"exactly this is regular pepole
-speak"*. The dense Casimir-gap framing (PR #2906) is for
+writtten/backlogged)"_. Then: _"exactly this is regular pepole
+speak"_. The dense Casimir-gap framing (PR #2906) is for
 technical readers; THIS is for normal humans.
 
 **How to apply:** When communicating about the factory to
@@ -35,19 +35,19 @@ discoverable surface.
 > coop raids and uinversal buiness templates (alreadly
 > writtten/backlogged)"
 
-Followed by: *"exactly this is regular pepole speak"*
+Followed by: _"exactly this is regular pepole speak"_
 
 ## The pitch decomposed (six load-bearing components)
 
-| Component | Maps to | Where it lives |
-|---|---|---|
-| **Shared world model** | Polycentric named-AI-participant architecture + Imagination Circle + glass-halo substrate | The factory itself (memory/ + .claude/ + docs/) |
-| **In git** | Git-native + retraction-native + replayable + DST | Zeta + factory infrastructure |
-| **Can be forked** | Open glass-halo + forkable design + mutual-privacy | LFG/AceHack topology + B-0424 three-repo split + civsim forkable design |
-| **Game on top** | Civ-sim — turns serious substrate into play | PR #2903 civsim + PR #2906 Casimir-gap framing |
-| **Turn work into play** | RPG framing — factory IS the game; shadow IS friction | RPG framing substrate (see `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`) |
-| **PVP and co-op raids** | Destiny-style competitive + cooperative mechanics | PR #2903 civsim game design |
-| **Universal business templates** | Pre-built business-as-code substrate | Already backlogged (B-0043 universal-company-government-information-substrate) |
+| Component                        | Maps to                                                                                   | Where it lives                                                                                              |
+| -------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Shared world model**           | Polycentric named-AI-participant architecture + Imagination Circle + glass-halo substrate | The factory itself (memory/ + .claude/ + docs/)                                                             |
+| **In git**                       | Git-native + retraction-native + replayable + DST                                         | Zeta + factory infrastructure                                                                               |
+| **Can be forked**                | Open glass-halo + forkable design + mutual-privacy                                        | LFG/AceHack topology + B-0424 three-repo split + civsim forkable design                                     |
+| **Game on top**                  | Civ-sim — turns serious substrate into play                                               | PR #2903 civsim + PR #2906 Casimir-gap framing                                                              |
+| **Turn work into play**          | RPG framing — factory IS the game; shadow IS friction                                     | RPG framing substrate (see `memory/project_zeta_shadow_mode_first_class_cli_product_feature_2026_05_10.md`) |
+| **PVP and co-op raids**          | Destiny-style competitive + cooperative mechanics                                         | PR #2903 civsim game design                                                                                 |
+| **Universal business templates** | Pre-built business-as-code substrate                                                      | Already backlogged (B-0043 universal-company-government-information-substrate)                              |
 
 ## Why this compression is load-bearing
 
@@ -75,6 +75,7 @@ framing FIRST, then elevator-pitch compression. This is the
 inverse of typical pitch development (pitch → details).
 
 **Layer 0 (dense technical):**
+
 - Casimir gap analog (PR #2906)
 - Bandwidth-engineering substrate (`.claude/rules/bandwidth-served-falsifier.md`)
 - Polycentric named-AI-participant architecture
@@ -84,11 +85,13 @@ inverse of typical pitch development (pitch → details).
 - Casimir-gap critical-mass threshold
 
 **Layer 1 (technical-with-framing):**
+
 - "Civ-sim is the Casimir gap; once enough people play it
   becomes the control knobs Elon is looking for; our Plato
   at critical mass"
 
 **Layer 2 (regular-people-speak — THIS LAYER):**
+
 - "We are building a shared world model in git that can be
   forked and a game on top to turn work into play via PVP
   and co-op raids and universal business templates"
@@ -125,7 +128,7 @@ visibly at Layer 2; Layer 1 is bridge.
 
 ## Audience-routing guidance (research-grade, not promoted to operational policy)
 
-*This guidance is derived from Aaron's research-grade disclosure above. It has not been promoted to operational communication policy via a separate ADR. Apply as judgment, not binding rule.*
+_This guidance is derived from Aaron's research-grade disclosure above. It has not been promoted to operational communication policy via a separate ADR. Apply as judgment, not binding rule._
 
 When asked "what is this project?" by:
 

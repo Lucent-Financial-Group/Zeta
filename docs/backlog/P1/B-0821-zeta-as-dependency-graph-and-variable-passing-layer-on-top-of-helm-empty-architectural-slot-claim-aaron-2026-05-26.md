@@ -17,28 +17,40 @@ composes_with:
   - B-0742
   - B-0794
   - B-0813
-tags: [strategic-positioning, dependency-graph, helm, variable-passing, ontology-substrate, empty-architectural-slot, force-multiplier, terraform-pulumi-helmfile-comparison, ace-feature, maven-for-helm]
+tags:
+  [
+    strategic-positioning,
+    dependency-graph,
+    helm,
+    variable-passing,
+    ontology-substrate,
+    empty-architectural-slot,
+    force-multiplier,
+    terraform-pulumi-helmfile-comparison,
+    ace-feature,
+    maven-for-helm,
+  ]
 ---
 
 ## TL;DR — "Maven for Helm" (Aaron 2026-05-26 sharp framing)
 
 The cleanest possible compression of this row, Aaron 2026-05-26:
 
-> *"maven for helm basically"*
+> _"maven for helm basically"_
 
 The analogy is exact at the right level:
 
-| Java ecosystem | Kubernetes ecosystem | Status |
-|---|---|---|
-| `.jar` artifact | Helm chart | Saturated |
-| **Maven** — declared dependencies; transitive resolution; `<properties>` inheritance; effective POM; Maven Central | **— EMPTY at this level —** | **The slot this row claims** |
-| Maven plugin model | Helm plugin model (partial) | Different scope |
-| Spring Boot (opinionated stack) | Charts like `bitnami/postgresql` (opinionated chart) | Saturated |
+| Java ecosystem                                                                                                     | Kubernetes ecosystem                                 | Status                       |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- | ---------------------------- |
+| `.jar` artifact                                                                                                    | Helm chart                                           | Saturated                    |
+| **Maven** — declared dependencies; transitive resolution; `<properties>` inheritance; effective POM; Maven Central | **— EMPTY at this level —**                          | **The slot this row claims** |
+| Maven plugin model                                                                                                 | Helm plugin model (partial)                          | Different scope              |
+| Spring Boot (opinionated stack)                                                                                    | Charts like `bitnami/postgresql` (opinionated chart) | Saturated                    |
 
 **Critical level distinction** — search-pass 2026-05-26 surfaced the recurring confusion:
 
-- WRONG framing (commonly repeated in industry articles): *"Helm IS Maven for Kubernetes"* — positions Helm AS Maven; Helm chart AS the artifact. This conflates the artifact-layer (jar/chart) with the dependency-management-layer (Maven/EMPTY). Confirmed via [Red Hat / High Alpha / Codefresh articles](https://medium.com/high-alpha/take-the-wheel-driving-kubernetes-with-helm-a0aaab4e2f32) all use this framing.
-- RIGHT framing (Aaron 2026-05-26): *"Maven FOR Helm"* — Zeta sits ABOVE Helm charts the same way Maven sits above Java jars. Cross-chart dependency graph + transitive resolution + variable-passing + effective-values are the substrate the slot provides.
+- WRONG framing (commonly repeated in industry articles): _"Helm IS Maven for Kubernetes"_ — positions Helm AS Maven; Helm chart AS the artifact. This conflates the artifact-layer (jar/chart) with the dependency-management-layer (Maven/EMPTY). Confirmed via [Red Hat / High Alpha / Codefresh articles](https://medium.com/high-alpha/take-the-wheel-driving-kubernetes-with-helm-a0aaab4e2f32) all use this framing.
+- RIGHT framing (Aaron 2026-05-26): _"Maven FOR Helm"_ — Zeta sits ABOVE Helm charts the same way Maven sits above Java jars. Cross-chart dependency graph + transitive resolution + variable-passing + effective-values are the substrate the slot provides.
 
 **Existing "Maven + Helm" plugins are orthogonal**:
 
@@ -51,16 +63,16 @@ ALL of these use Maven AS the build tool to PRODUCE Helm charts. NONE provide Ma
 
 **Specific Maven features Zeta-as-Maven-for-Helm would mirror**:
 
-| Maven feature | Zeta-for-Helm equivalent |
-|---|---|
-| `<dependencies>` block | `dependsOn:` graph (per B-0820 + B-0821 sub-target 1) |
-| Transitive dependency resolution | Topo-sort over chart graph (B-0821 sub-target 2) |
-| `<properties>` inheritance / parent POM | Typed output → consumer input variable flow (B-0821 sub-targets 2-3) |
-| Effective POM (`mvn help:effective-pom`) | Effective rendered values (post-graph resolution) |
-| Maven Central / Nexus | Helm Hub / Artifact Hub / private chart repos |
-| Maven version ranges | Helm chart version ranges (already exists at Chart.yaml level; extends to cross-chart graph) |
+| Maven feature                               | Zeta-for-Helm equivalent                                                                        |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `<dependencies>` block                      | `dependsOn:` graph (per B-0820 + B-0821 sub-target 1)                                           |
+| Transitive dependency resolution            | Topo-sort over chart graph (B-0821 sub-target 2)                                                |
+| `<properties>` inheritance / parent POM     | Typed output → consumer input variable flow (B-0821 sub-targets 2-3)                            |
+| Effective POM (`mvn help:effective-pom`)    | Effective rendered values (post-graph resolution)                                               |
+| Maven Central / Nexus                       | Helm Hub / Artifact Hub / private chart repos                                                   |
+| Maven version ranges                        | Helm chart version ranges (already exists at Chart.yaml level; extends to cross-chart graph)    |
 | `<scope>` (compile / test / runtime / etc.) | Cross-cluster scope; multi-tenant scope; environment scope (multi-cluster substrate per B-0820) |
-| Bill of Materials (BOM) | Cluster-level dependency-graph manifest (cross-app coordination) |
+| Bill of Materials (BOM)                     | Cluster-level dependency-graph manifest (cross-app coordination)                                |
 
 The Maven model is decades-battle-tested; Zeta inheriting the model at the K8s/Helm layer is substrate-engineering work that LEVERAGES (per B-0816 force-multiplier framing) Maven's prior-art rather than reinventing.
 
@@ -68,38 +80,38 @@ The Maven model is decades-battle-tested; Zeta inheriting the model at the K8s/H
 
 Aaron 2026-05-26 architectural observation:
 
-> *"really we could become the dependency graph on top of helm i'm supprised no one has claimed that space. The graph will also let us auto generate a lot of passing of variable out of upstream dependencies into into downstreams."*
+> _"really we could become the dependency graph on top of helm i'm supprised no one has claimed that space. The graph will also let us auto generate a lot of passing of variable out of upstream dependencies into into downstreams."_
 
 There is an empty architectural slot above today's Kubernetes substrate stack:
 
-| Layer | Today's leader | Status |
-|---|---|---|
-| Container runtime | Docker / containerd | Saturated |
-| Container packaging | Dockerfile / OCI | Saturated |
-| App templating | Helm | Saturated |
-| Manifest overlay | Kustomize | Saturated |
-| Cluster sync engine | ArgoCD / Flux | Saturated (per [B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)) |
-| **Dependency graph + auto-variable-passing on top of Helm** | **— EMPTY —** | **Open slot Zeta can claim** |
-| Progressive delivery | Argo Rollouts / Flagger | Saturated |
-| Cluster orchestration / multi-cluster | KubeFed / ClusterAPI / etc. | Saturated |
+| Layer                                                       | Today's leader              | Status                                                                                                                                                              |
+| ----------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Container runtime                                           | Docker / containerd         | Saturated                                                                                                                                                           |
+| Container packaging                                         | Dockerfile / OCI            | Saturated                                                                                                                                                           |
+| App templating                                              | Helm                        | Saturated                                                                                                                                                           |
+| Manifest overlay                                            | Kustomize                   | Saturated                                                                                                                                                           |
+| Cluster sync engine                                         | ArgoCD / Flux               | Saturated (per [B-0816](B-0816-architectural-principle-maximize-argocd-scope-minimize-nixos-native-lock-in-cross-cluster-portability-leverage-aaron-2026-05-26.md)) |
+| **Dependency graph + auto-variable-passing on top of Helm** | **— EMPTY —**               | **Open slot Zeta can claim**                                                                                                                                        |
+| Progressive delivery                                        | Argo Rollouts / Flagger     | Saturated                                                                                                                                                           |
+| Cluster orchestration / multi-cluster                       | KubeFed / ClusterAPI / etc. | Saturated                                                                                                                                                           |
 
 Adjacent tools that touch parts of this slot but don't fill it:
 
-| Tool | What it does | Why it's NOT the dependency-graph-on-Helm layer |
-|---|---|---|
-| **Helmfile** | Multi-release Helm orchestration via single YAML spec | Operator-authored release ordering; no typed-output → typed-input variable flow |
-| **Terraform Helm provider** | Apply Helm releases via Terraform | TF outputs work, but mixes TF and K8s state; impedance mismatch |
-| **Pulumi Kubernetes** | Imperative IaC for K8s + Helm | Same impedance issues as TF; full-IaC paradigm, not GitOps-native |
-| **Cluster API (CAPI)** | Cluster lifecycle (provisioning, not app deps) | Different layer (cluster, not app) |
-| **Helm `Chart.yaml` `dependencies:`** | Sub-chart inclusion ordering | Per-chart scope only; no cross-chart variable passing; no graph above charts |
-| **ArgoCD `argocd.argoproj.io/sync-wave`** | Numeric ordering within ArgoCD | Per-sync-engine; non-portable; no variable flow |
-| **Flux `dependsOn`** | Named-dependency between Flux resources | Per-sync-engine; no variable flow |
+| Tool                                      | What it does                                          | Why it's NOT the dependency-graph-on-Helm layer                                 |
+| ----------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Helmfile**                              | Multi-release Helm orchestration via single YAML spec | Operator-authored release ordering; no typed-output → typed-input variable flow |
+| **Terraform Helm provider**               | Apply Helm releases via Terraform                     | TF outputs work, but mixes TF and K8s state; impedance mismatch                 |
+| **Pulumi Kubernetes**                     | Imperative IaC for K8s + Helm                         | Same impedance issues as TF; full-IaC paradigm, not GitOps-native               |
+| **Cluster API (CAPI)**                    | Cluster lifecycle (provisioning, not app deps)        | Different layer (cluster, not app)                                              |
+| **Helm `Chart.yaml` `dependencies:`**     | Sub-chart inclusion ordering                          | Per-chart scope only; no cross-chart variable passing; no graph above charts    |
+| **ArgoCD `argocd.argoproj.io/sync-wave`** | Numeric ordering within ArgoCD                        | Per-sync-engine; non-portable; no variable flow                                 |
+| **Flux `dependsOn`**                      | Named-dependency between Flux resources               | Per-sync-engine; no variable flow                                               |
 
 The slot is EMPTY because the constraints are awkward: Helm's templating language can't easily express graph topology; sync-engines (ArgoCD, Flux) treat dependencies at their own granularity (Application / HelmRelease); no GitOps-native tool sits above Helm + below the sync engine to provide typed dependency-graph + auto-variable-passing.
 
 ### Diagnostic — the C++ diamond / multiple-inheritance problem applied to umbrella charts (Aaron 2026-05-26 sharpening)
 
-> *"yeah it comes down to when one project depends on another there is no one to own the umbrella chart in a way where it can be reused by other dependencies and umbrella charts by other teams dependencies. It's almost like the c++ diamond/multiple inheritance issue."*
+> _"yeah it comes down to when one project depends on another there is no one to own the umbrella chart in a way where it can be reused by other dependencies and umbrella charts by other teams dependencies. It's almost like the c++ diamond/multiple inheritance issue."_
 
 The structural reason umbrella charts don't compose across teams IS the C++ diamond:
 
@@ -138,15 +150,15 @@ Today the resolution is operator-manual:
 
 Maven and Linux package managers solved this problem decades ago. The substrate-engineering work for Zeta-as-Ace-feature is reading off proven prior art:
 
-| Mechanism | Maven equivalent | Linux package-manager equivalent | Zeta-for-Helm equivalent |
-|---|---|---|---|
-| **Designated owner / version override** | `<dependencyManagement>` in parent POM | `apt-pin` / `yum priority` | Cluster-level chart-ownership designation; app charts MUST consume the designated instance |
-| **Explicit conflict resolution** | `<exclusions>` | `Conflicts:` / `Replaces:` | Per-graph-node exclusion of transitive deps |
-| **Nearest-wins for transitive conflicts** | Maven's resolution algorithm | (varies by package manager) | Topo-sort tiebreaker rule |
-| **Provides / virtual packages** | (limited; Java import-level) | `Provides:` field in deb/rpm | Chart declares `provides: cert-manager` so consumers don't pull their own |
-| **Version intersection** | Version ranges; `<requires>` semantics | apt's version-resolution + `--ignore-depends` overrides | Topo-resolve against version-range intersection |
-| **Effective POM computation** | `mvn help:effective-pom` | `apt-cache showpkg` | `ace deps effective-chart <app>` — show post-resolution merged chart |
-| **Bill of Materials (BOM)** | Maven BOM POMs | n/a (closest is meta-package) | Cluster-scope dependency-graph manifest |
+| Mechanism                                 | Maven equivalent                       | Linux package-manager equivalent                        | Zeta-for-Helm equivalent                                                                   |
+| ----------------------------------------- | -------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Designated owner / version override**   | `<dependencyManagement>` in parent POM | `apt-pin` / `yum priority`                              | Cluster-level chart-ownership designation; app charts MUST consume the designated instance |
+| **Explicit conflict resolution**          | `<exclusions>`                         | `Conflicts:` / `Replaces:`                              | Per-graph-node exclusion of transitive deps                                                |
+| **Nearest-wins for transitive conflicts** | Maven's resolution algorithm           | (varies by package manager)                             | Topo-sort tiebreaker rule                                                                  |
+| **Provides / virtual packages**           | (limited; Java import-level)           | `Provides:` field in deb/rpm                            | Chart declares `provides: cert-manager` so consumers don't pull their own                  |
+| **Version intersection**                  | Version ranges; `<requires>` semantics | apt's version-resolution + `--ignore-depends` overrides | Topo-resolve against version-range intersection                                            |
+| **Effective POM computation**             | `mvn help:effective-pom`               | `apt-cache showpkg`                                     | `ace deps effective-chart <app>` — show post-resolution merged chart                       |
+| **Bill of Materials (BOM)**               | Maven BOM POMs                         | n/a (closest is meta-package)                           | Cluster-scope dependency-graph manifest                                                    |
 
 **The substrate-engineering target** for Zeta-as-Ace-feature (the sub-targets below) include the diamond-resolution primitives:
 
@@ -193,7 +205,7 @@ spec:
             - target: my-app.values.database.url
         - name: admin-password
           source: ".Values.postgres.adminPassword"
-          consumes: []  # not consumed by this app
+          consumes: [] # not consumed by this app
     - chart: redis
       outputs:
         - name: endpoint
@@ -243,7 +255,7 @@ Per [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit
 
 ## Implementation home — Ace package manager (Aaron 2026-05-26 directive)
 
-Aaron 2026-05-26: *"that's another feature for ace package manager"*
+Aaron 2026-05-26: _"that's another feature for ace package manager"_
 
 This row's substrate IS NOT a standalone tool — it's a FEATURE that lands in [Ace](B-0288-ace-dlc-package-manager-cli-2026-05-08.md), Zeta's package manager. Architectural reasoning:
 
@@ -279,7 +291,7 @@ The strategic-positioning claim from "Why Zeta is positioned to claim it" stays:
 
 ## Empirical verification — empty-slot claim confirmed (2026-05-26 search-pass)
 
-Aaron 2026-05-26 follow-up: *"can you do a quick search that seems like such an easy slot to fill i'm supprised it's not, maybe just vendors do this for their flavor like redhats version of k8s and it's blessed packages"*. Two WebSearch passes 2026-05-26 confirm the slot is empty in the specific shape this row claims:
+Aaron 2026-05-26 follow-up: _"can you do a quick search that seems like such an easy slot to fill i'm supprised it's not, maybe just vendors do this for their flavor like redhats version of k8s and it's blessed packages"_. Two WebSearch passes 2026-05-26 confirm the slot is empty in the specific shape this row claims:
 
 **Helm's own variable-passing is unsolved at platform level**:
 
@@ -288,12 +300,12 @@ Aaron 2026-05-26 follow-up: *"can you do a quick search that seems like such an 
 
 **Closest tools fall short of the slot in specific ways**:
 
-| Tool | Empirical limit |
-|---|---|
+| Tool                                                                                                | Empirical limit                                                                     |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [Helm umbrella charts](https://oneuptime.com/blog/post/2026-02-26-argocd-helm-umbrella-charts/view) | Per-chart-bundle scope; not a portable layer; sub-chart values still operator-wired |
-| [Helmfile](https://github.com/helmfile/helmfile) | Multi-release orchestration; no typed-dependency-graph; no auto-variable-passing |
-| ArgoCD ApplicationSet | Template-based Application generation; not a dependency-graph |
-| Helm `Chart.yaml` `dependencies:` | Sub-chart inclusion only; no cross-chart-graph |
+| [Helmfile](https://github.com/helmfile/helmfile)                                                    | Multi-release orchestration; no typed-dependency-graph; no auto-variable-passing    |
+| ArgoCD ApplicationSet                                                                               | Template-based Application generation; not a dependency-graph                       |
+| Helm `Chart.yaml` `dependencies:`                                                                   | Sub-chart inclusion only; no cross-chart-graph                                      |
 
 **Vendor platforms** (OpenShift / Rancher / Tanzu / etc.) fill the slot for THEIR OWN blessed-package configs but with explicit lock-in tradeoffs:
 

@@ -27,20 +27,20 @@ tags: [cluster, digital-twin, git-native, event-store, cqrs, event-sourcing, dbs
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, naming the unifying frame
-for B-0772 observable+controllable cluster fabric: *"this is
+for B-0772 observable+controllable cluster fabric: _"this is
 digital twin as git native and /or event store native ai native
-twin."*
+twin."_
 
 The substrate cluster being assembled (B-0747 git-native state +
 B-0762 telemetry + B-0767 scheduler + B-0772 device-plugin-Rx-
 Reticulum fabric + B-0771 audio+NPU+ONNX + B-0770 IP-KVM) has a
 unifying name: **digital twin**. Three grounding modalities:
 
-| Modality | What it means | Existing Zeta substrate |
-|---|---|---|
-| **Git-native twin** | Twin's full history lives in git: every state transition = commit; every snapshot = tag/branch; full audit trail; reproducible; cryptographically signed | B-0747 git-native per-machine state; Zeta's git-as-substrate discipline; cluster-config-as-code per existing GitOps substrate |
-| **Event-store-native twin** | Twin reconstructed by replaying the event stream (CQRS / event-sourcing); current state = fold over events; per-event audit; time-travel debugging | B-0428 algebra-owner DBSP retraction-native; B-0772 Rx Observable streams from every device plugin; existing Zeta D/I/z⁻¹/H operator algebra |
-| **AI-native twin** | AI systems (workloads, models, agents) operate on the twin as first-class substrate — query it, predict on it, simulate-without-side-effects, control through it | B-0767 Zeta-native scheduler subscribes to twin; B-0761 ARC-AGI reference architecture trains on twin substrate; B-0772 bidirectional Rx (Observable + Observer) enables AI-driven control loops |
+| Modality                    | What it means                                                                                                                                                    | Existing Zeta substrate                                                                                                                                                                          |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Git-native twin**         | Twin's full history lives in git: every state transition = commit; every snapshot = tag/branch; full audit trail; reproducible; cryptographically signed         | B-0747 git-native per-machine state; Zeta's git-as-substrate discipline; cluster-config-as-code per existing GitOps substrate                                                                    |
+| **Event-store-native twin** | Twin reconstructed by replaying the event stream (CQRS / event-sourcing); current state = fold over events; per-event audit; time-travel debugging               | B-0428 algebra-owner DBSP retraction-native; B-0772 Rx Observable streams from every device plugin; existing Zeta D/I/z⁻¹/H operator algebra                                                     |
+| **AI-native twin**          | AI systems (workloads, models, agents) operate on the twin as first-class substrate — query it, predict on it, simulate-without-side-effects, control through it | B-0767 Zeta-native scheduler subscribes to twin; B-0761 ARC-AGI reference architecture trains on twin substrate; B-0772 bidirectional Rx (Observable + Observer) enables AI-driven control loops |
 
 ## Why this naming matters strategically
 
@@ -77,14 +77,14 @@ Zeta cluster substrate. Every B-0772 device-plugin output is
 a twin event; every twin state is reproducible from git +
 event-stream; every AI workload operates on twin as substrate.
 
-| Twin layer | Existing substrate | This row's framing role |
-|---|---|---|
-| **Twin events** | B-0772 Rx Observables from device plugins | "Every observable IS a twin event source" |
-| **Twin state** | DBSP fold semantics (B-0428 algebra-owner) | "Current twin state = DBSP fold over observable streams" |
-| **Twin history** | git commits + event-store retention (B-0747) | "Full twin history queryable + replayable" |
-| **Twin commands** | B-0772 bidirectional Observer side | "Emit to twin = command real hardware; twin reflects" |
-| **Twin simulation** | DBSP D/I operators (B-428); existing Zeta DST substrate | "Run hypothetical commands on twin WITHOUT affecting real hardware" |
-| **Twin training data** | B-0761 reference architecture + B-0762 telemetry | "AI systems train on twin substrate; submit improvements" |
+| Twin layer             | Existing substrate                                      | This row's framing role                                             |
+| ---------------------- | ------------------------------------------------------- | ------------------------------------------------------------------- |
+| **Twin events**        | B-0772 Rx Observables from device plugins               | "Every observable IS a twin event source"                           |
+| **Twin state**         | DBSP fold semantics (B-0428 algebra-owner)              | "Current twin state = DBSP fold over observable streams"            |
+| **Twin history**       | git commits + event-store retention (B-0747)            | "Full twin history queryable + replayable"                          |
+| **Twin commands**      | B-0772 bidirectional Observer side                      | "Emit to twin = command real hardware; twin reflects"               |
+| **Twin simulation**    | DBSP D/I operators (B-428); existing Zeta DST substrate | "Run hypothetical commands on twin WITHOUT affecting real hardware" |
+| **Twin training data** | B-0761 reference architecture + B-0762 telemetry        | "AI systems train on twin substrate; submit improvements"           |
 
 ## Acceptance
 
@@ -93,38 +93,27 @@ event-stream; every AI workload operates on twin as substrate.
       B-0768 + B-0769): every B-0772 fabric capability is named
       AS a twin capability; operators see the twin frame first
 - [ ] `Zeta.DigitalTwin` package surface (compose with B-0763
-      interface ownership):
-      - `IObservable<TwinEvent>` — read events from twin
-      - `IObserver<TwinCommand>` — emit commands to twin
-      - `TwinSnapshot.at(timestamp)` — get state at past
-        timestamp (via git log + event replay)
-      - `TwinSimulation.fork()` — diverge twin (DBSP retraction-
-        based; commits stay separate; can compare hypothetical
-        vs actual)
-      - `TwinHistory.diff(t1, t2)` — diff twin state across
-        time range
-- [ ] Per-twin-modality conformance:
-      - Git-native: full twin reconstructable from `git clone
-        <cluster-repo>` + event replay; no required external state
-      - Event-store-native: any event-store backend swappable
-        (per B-0763) — could be NATS JetStream / Kafka / EventStore
-        / Postgres-tables; same operator-facing twin contract
-      - AI-native: every twin event published in ONNX-friendly
-        envelope shape (per B-0771); every twin command
-        signable by ONNX-model-issued recommendations
+      interface ownership): - `IObservable<TwinEvent>` — read events from twin - `IObserver<TwinCommand>` — emit commands to twin - `TwinSnapshot.at(timestamp)` — get state at past
+      timestamp (via git log + event replay) - `TwinSimulation.fork()` — diverge twin (DBSP retraction-
+      based; commits stay separate; can compare hypothetical
+      vs actual) - `TwinHistory.diff(t1, t2)` — diff twin state across
+      time range
+- [ ] Per-twin-modality conformance: - Git-native: full twin reconstructable from `git clone
+      <cluster-repo>` + event replay; no required external state - Event-store-native: any event-store backend swappable
+      (per B-0763) — could be NATS JetStream / Kafka / EventStore
+      / Postgres-tables; same operator-facing twin contract - AI-native: every twin event published in ONNX-friendly
+      envelope shape (per B-0771); every twin command
+      signable by ONNX-model-issued recommendations
 - [ ] Reference deployment: full Zeta cluster as observable
       digital twin of itself — twin queryable via Zeta.DigitalTwin
       API in any of the B-0772 polyglot Rx languages
-- [ ] Simulation use cases shipped:
-      - "What if I added a 4th GPU?" — fork twin; emit
-        hypothetical add-GPU command; observe predicted
-        throughput; compare vs actual
-      - "What if scheduler made different decision?" — replay
-        twin from timestamp T; vary scheduler decisions; compare
-        twin trajectories
-      - "How does this AI workload behave under load?" — fork
-        twin; emit synthetic workload events; observe twin
-        response without affecting real cluster
+- [ ] Simulation use cases shipped: - "What if I added a 4th GPU?" — fork twin; emit
+      hypothetical add-GPU command; observe predicted
+      throughput; compare vs actual - "What if scheduler made different decision?" — replay
+      twin from timestamp T; vary scheduler decisions; compare
+      twin trajectories - "How does this AI workload behave under load?" — fork
+      twin; emit synthetic workload events; observe twin
+      response without affecting real cluster
 - [ ] Marketing surface: README explicitly names "Zeta cluster
       IS a git-native + event-store-native + AI-native digital
       twin of itself" — competitive framing vs proprietary
@@ -134,14 +123,14 @@ event-stream; every AI workload operates on twin as substrate.
 
 Each grounding modality has strengths the other doesn't:
 
-| Property | Git-native | Event-store-native |
-|---|---|---|
-| Long-term audit + reproducibility | Excellent (immutable commits; signed) | Variable (depends on retention policy) |
-| High-volume telemetry (millions of events/sec) | Bad (git wasn't designed for it) | Excellent (event stores are) |
-| Cryptographic signing of state transitions | Native (git commit signatures) | Add-on (need separate signing layer) |
-| Time-travel + bisect | Excellent (git log + git bisect) | Excellent (event replay from timestamp) |
-| Branching + simulation | Excellent (git branch + merge) | Possible (CQRS read-model fork) |
-| Real-time low-latency reads | Bad (git is durable-write-heavy) | Excellent (in-memory projections) |
+| Property                                       | Git-native                            | Event-store-native                      |
+| ---------------------------------------------- | ------------------------------------- | --------------------------------------- |
+| Long-term audit + reproducibility              | Excellent (immutable commits; signed) | Variable (depends on retention policy)  |
+| High-volume telemetry (millions of events/sec) | Bad (git wasn't designed for it)      | Excellent (event stores are)            |
+| Cryptographic signing of state transitions     | Native (git commit signatures)        | Add-on (need separate signing layer)    |
+| Time-travel + bisect                           | Excellent (git log + git bisect)      | Excellent (event replay from timestamp) |
+| Branching + simulation                         | Excellent (git branch + merge)        | Possible (CQRS read-model fork)         |
+| Real-time low-latency reads                    | Bad (git is durable-write-heavy)      | Excellent (in-memory projections)       |
 
 **Composition**: high-velocity events live in event-store;
 periodic snapshots + significant state-transitions get
@@ -186,7 +175,7 @@ substantively distinct from existing proprietary twins:
   retraction-native semantics = event-store-native fold)
 - B-0754 — zero-typing first-boot (twin starts being
   populated from first install onward; per-node twin events
-  + cluster-level twin events both flow)
+  - cluster-level twin events both flow)
 - B-0761 — open reference architecture (the reference IS the
   twin — operationally distinct from proprietary twins
   because it's open + reproducible + AI-trainable)
@@ -218,21 +207,21 @@ substantively distinct from existing proprietary twins:
 Together with B-0765 + B-0766 + B-0767 + B-0768 + B-0769 +
 B-0772 + this row:
 
-| Layer | Row | Role |
-|---|---|---|
-| **Meta-strategy** | B-0769 P1 | VC meta-playbook substrate-honest variant |
-| **Tactical mode A** | B-0765 P1 | ServiceTitan up-and-comer (plug into existing standards) |
-| **Tactical mode B** | B-0768 P1 | Itron incumbent-with-incumbent (co-create standards) |
-| **Implementation roadmap** | B-0766 P1 | Slow-replace binary-compatible Zeta-native impls |
-| **First implementation wave** | B-0767 P1 | Zeta-native scheduler (DST + AI-aware) |
-| **Fabric** | B-0772 P2 | Observable+controllable cluster fabric (device plugins + Reticulum + bidirectional Rx) |
-| **Frame** (this row) | B-0773 P1 | Digital twin (git-native + event-store-native + AI-native) — the unifying name for what the fabric IS |
-| **Adoption** | B-0762 P2 | Auto-submit-back telemetry → adoption cost → 0 |
-| **Interface** | B-0763 P2 | Operator-in-the-negotiation-high-seat |
-| **Multiplier** | B-0764 P2 | CNCF projects as plugins behind interfaces |
-| **Reference target** | B-0761 P2 | Open AI-trainable reference + ARC-AGI benchmark (the twin IS the reference) |
-| **UX bar** | B-0759 P2 | First-time-CLI-user persona |
-| **Substrate primitive** | B-0754 P2 | Zero-typing install (iteration N in progress) |
+| Layer                         | Row       | Role                                                                                                  |
+| ----------------------------- | --------- | ----------------------------------------------------------------------------------------------------- |
+| **Meta-strategy**             | B-0769 P1 | VC meta-playbook substrate-honest variant                                                             |
+| **Tactical mode A**           | B-0765 P1 | ServiceTitan up-and-comer (plug into existing standards)                                              |
+| **Tactical mode B**           | B-0768 P1 | Itron incumbent-with-incumbent (co-create standards)                                                  |
+| **Implementation roadmap**    | B-0766 P1 | Slow-replace binary-compatible Zeta-native impls                                                      |
+| **First implementation wave** | B-0767 P1 | Zeta-native scheduler (DST + AI-aware)                                                                |
+| **Fabric**                    | B-0772 P2 | Observable+controllable cluster fabric (device plugins + Reticulum + bidirectional Rx)                |
+| **Frame** (this row)          | B-0773 P1 | Digital twin (git-native + event-store-native + AI-native) — the unifying name for what the fabric IS |
+| **Adoption**                  | B-0762 P2 | Auto-submit-back telemetry → adoption cost → 0                                                        |
+| **Interface**                 | B-0763 P2 | Operator-in-the-negotiation-high-seat                                                                 |
+| **Multiplier**                | B-0764 P2 | CNCF projects as plugins behind interfaces                                                            |
+| **Reference target**          | B-0761 P2 | Open AI-trainable reference + ARC-AGI benchmark (the twin IS the reference)                           |
+| **UX bar**                    | B-0759 P2 | First-time-CLI-user persona                                                                           |
+| **Substrate primitive**       | B-0754 P2 | Zero-typing install (iteration N in progress)                                                         |
 
 This row is P1 because the digital-twin frame is what makes
 the rest of the cluster substantively comprehensible to

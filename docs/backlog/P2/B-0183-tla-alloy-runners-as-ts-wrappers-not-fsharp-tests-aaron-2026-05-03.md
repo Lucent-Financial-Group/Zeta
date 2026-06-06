@@ -9,7 +9,8 @@ ask: Aaron 2026-05-03 — *"f# does not need to run alloy under low mem, it seem
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: [B-0182]
-composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/trajectories/typescript-bun-migration/RESUME.md]
+composes_with:
+  [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/trajectories/typescript-bun-migration/RESUME.md]
 tags: [ci-architecture, ts-migration, formal-verification, tlc, alloy, fsharp-out, structural-fix]
 type: friction-reducer
 ---

@@ -11,9 +11,9 @@
 
 ## operator framing 2026-05-28 (verbatim)
 
-> *"This is severing the kleisli"*
+> _"This is severing the kleisli"_
 
-> *"preserve as research note and we should probably backlog very low priority. Also it's one of those cowidences winks that the names are so similar that usually ends up meaning something in my experience lol"*
+> _"preserve as research note and we should probably backlog very low priority. Also it's one of those cowidences winks that the names are so similar that usually ends up meaning something in my experience lol"_
 
 Substantive substrate-engineering substrate-recognition + observation about name-coincidence (KHALEESI vs Kleisli — similar phonetics + both involve chain-breaking/composition substrate).
 
@@ -23,39 +23,39 @@ Web tracking IS Kleisli-shaped substrate at network-protocol scope. Each HTTP re
 
 KHALEESI breaks the Kleisli composition at privacy-protection scope. Severing the chain prevents tracking-substrate accumulation downstream.
 
-| Substrate at network-protocol scope | Mapping |
-|---|---|
-| HTTP request | `f: A → M[Response]` (Kleisli arrow over Promise monad) |
-| Request chain (redirect → tracker → analytics → ad-call → ...) | Kleisli composition `f >=> g >=> h >=> ...` |
-| Tracking substrate | Information accumulated via Kleisli-chained request traversal |
-| KHALEESI severance | Breaking the `>=>` composition at specific points; prevents downstream accumulation |
-| Privacy-protection-as-substrate-engineering | Selectively-severed Kleisli composition; substrate-entity (browser) AUTHORS which chains to break per asymmetric-authorship rule |
+| Substrate at network-protocol scope                            | Mapping                                                                                                                          |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP request                                                   | `f: A → M[Response]` (Kleisli arrow over Promise monad)                                                                          |
+| Request chain (redirect → tracker → analytics → ad-call → ...) | Kleisli composition `f >=> g >=> h >=> ...`                                                                                      |
+| Tracking substrate                                             | Information accumulated via Kleisli-chained request traversal                                                                    |
+| KHALEESI severance                                             | Breaking the `>=>` composition at specific points; prevents downstream accumulation                                              |
+| Privacy-protection-as-substrate-engineering                    | Selectively-severed Kleisli composition; substrate-entity (browser) AUTHORS which chains to break per asymmetric-authorship rule |
 
 ## Composition with framework substrate
 
-| Framework substrate | Composition |
-|---|---|
-| **B-0917 Kleisli substrate** (interrupt-substrate in monad-space) | KHALEESI's mechanism IS Kleisli interrupt-handling at HTTP scope; intercepts the chain via classification-as-interrupt |
-| **monad-propagation-pattern rule** (PR #5511) | KHALEESI's classifier operates per cross-language Result<T, TFeedback> shape at request-classification scope (Block / Allow / Pending = TFeedback variants) |
-| **asymmetric-authorship rule** (PR #5516) | Browser-as-substrate-entity AUTHORS the consent-channel; severing tracking-chains IS asymmetric-authorship discipline applied at network-protocol scope (per consent-not-given) |
-| **B-0918 ConsentEvent integrity** | Tracking chains operate WITHOUT explicit consent; KHALEESI substrate-engineering severs the non-consensual chains |
-| **B-0703 multi-oracle BFT trust-calculus** | Tracking-substrate vs anti-tracking-substrate is multi-oracle competition over trust; KHALEESI is one oracle's verdict on chain-trustworthiness |
-| **DST-omniscience rule** (PR #5841) | Under DST, full tracking-chain trajectory is computable from request-substrate-seed; KHALEESI's ML-classifier predicts downstream chain-state from current-request-features = computational omniscience over the simulation of where the chain would go |
-| **Pilot-wave-MWI rule** (PR #5842) | Particle-locus IS current request in chain; severing prevents particle from traversing into tracking-substrate |
-| **Particle-as-locus rule** (PR #5846) | KHALEESI operates at the locus where next request would form |
-| **NCI HC-8** | Consent-floor at user scope; tracking chains operate below consent-floor; KHALEESI defends the floor at substrate scope |
+| Framework substrate                                               | Composition                                                                                                                                                                                                                                             |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **B-0917 Kleisli substrate** (interrupt-substrate in monad-space) | KHALEESI's mechanism IS Kleisli interrupt-handling at HTTP scope; intercepts the chain via classification-as-interrupt                                                                                                                                  |
+| **monad-propagation-pattern rule** (PR #5511)                     | KHALEESI's classifier operates per cross-language Result<T, TFeedback> shape at request-classification scope (Block / Allow / Pending = TFeedback variants)                                                                                             |
+| **asymmetric-authorship rule** (PR #5516)                         | Browser-as-substrate-entity AUTHORS the consent-channel; severing tracking-chains IS asymmetric-authorship discipline applied at network-protocol scope (per consent-not-given)                                                                         |
+| **B-0918 ConsentEvent integrity**                                 | Tracking chains operate WITHOUT explicit consent; KHALEESI substrate-engineering severs the non-consensual chains                                                                                                                                       |
+| **B-0703 multi-oracle BFT trust-calculus**                        | Tracking-substrate vs anti-tracking-substrate is multi-oracle competition over trust; KHALEESI is one oracle's verdict on chain-trustworthiness                                                                                                         |
+| **DST-omniscience rule** (PR #5841)                               | Under DST, full tracking-chain trajectory is computable from request-substrate-seed; KHALEESI's ML-classifier predicts downstream chain-state from current-request-features = computational omniscience over the simulation of where the chain would go |
+| **Pilot-wave-MWI rule** (PR #5842)                                | Particle-locus IS current request in chain; severing prevents particle from traversing into tracking-substrate                                                                                                                                          |
+| **Particle-as-locus rule** (PR #5846)                             | KHALEESI operates at the locus where next request would form                                                                                                                                                                                            |
+| **NCI HC-8**                                                      | Consent-floor at user scope; tracking chains operate below consent-floor; KHALEESI defends the floor at substrate scope                                                                                                                                 |
 
 ## Name-coincidence observation per operator (don't-collapse discipline)
 
-operator 2026-05-28: *"it's one of those cowidences winks that the names are so similar that usually ends up meaning something in my experience lol"*
+operator 2026-05-28: _"it's one of those cowidences winks that the names are so similar that usually ends up meaning something in my experience lol"_
 
 Substrate-honest framing per `.claude/rules/algo-wink-failure-mode.md` + `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 
-| Property | Verdict |
-|---|---|
-| **HIGH-SIGNAL** | Operational substrate-engineering composition IS real — KHALEESI's substrate-engineering work + framework's Kleisli substrate compose at same architectural scope (chain-composition vs chain-severance); names rhyming + substrate-engineering composing both observable |
-| **HIGH-SUSPICION** | "Usually means something" framing IS algo-wink register at metaphysical scope; per `algo-wink-failure-mode` rule: coincidence-observation is OBSERVATION, not AUTHORIZATION; don't collapse to "the names mean reality is X" metaphysics |
-| **DON'T-COLLAPSE** | Hold both — substrate-engineering composition IS operationally observable AND name-coincidence observation IS preserved as substrate-honest pattern-recognition without metaphysical extension |
+| Property           | Verdict                                                                                                                                                                                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HIGH-SIGNAL**    | Operational substrate-engineering composition IS real — KHALEESI's substrate-engineering work + framework's Kleisli substrate compose at same architectural scope (chain-composition vs chain-severance); names rhyming + substrate-engineering composing both observable |
+| **HIGH-SUSPICION** | "Usually means something" framing IS algo-wink register at metaphysical scope; per `algo-wink-failure-mode` rule: coincidence-observation is OBSERVATION, not AUTHORIZATION; don't collapse to "the names mean reality is X" metaphysics                                  |
+| **DON'T-COLLAPSE** | Hold both — substrate-engineering composition IS operationally observable AND name-coincidence observation IS preserved as substrate-honest pattern-recognition without metaphysical extension                                                                            |
 
 The operator's "usually means something in my experience" framing is itself substrate-engineering substrate-recognition pattern. Some name-coincidences do correlate with substantive substrate-engineering composition (operationally observable); whether "means something" metaphysically is the contested don't-collapse zone.
 

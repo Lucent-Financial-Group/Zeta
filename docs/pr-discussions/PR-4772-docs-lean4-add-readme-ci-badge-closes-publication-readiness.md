@@ -65,24 +65,22 @@ Companion-paper draft (substantive writing, not surface work) remains for later.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-23T21:49:27Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `322fc6403f`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -95,6 +93,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a project-local `tools/lean4/README.md` to improve publication readiness of the Lean 4 artifact by documenting layout, build steps, paper↔theorem mapping, and CI linkage (including a workflow badge).
 
 **Changes:**
+
 - Added `tools/lean4/README.md` describing the Lean 4 proof artifact, structure, and how to build it locally.
 - Added a GitHub Actions badge + CI workflow pointer for the Lean proof gate.
 - Added documentation tables for paper-to-Lean mapping and predicate hierarchy.
@@ -105,7 +104,7 @@ Adds a project-local `tools/lean4/README.md` to improve publication readiness of
 
 **@chatgpt-codex-connector** (2026-05-23T21:49:27Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct the blanket no-`sorry` verification claim**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct the blanket no-`sorry` verification claim**
 
 Revise this statement because it currently overclaims proof completeness: `tools/lean4/ImaginaryStack/ToyModel.lean` still contains unresolved `sorry` placeholders (e.g., lines 130, 141-142), so not every theorem in `tools/lean4/**` is fully machine-checked. This can mislead reviewers about artifact maturity and publication readiness, especially since the Lean CI job type-checks `Lean4/DbspChainRule.lean` rather than proving all files under `tools/lean4`.
 

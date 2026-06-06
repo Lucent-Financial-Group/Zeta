@@ -4,12 +4,13 @@ description: Aaron Otto-267 strategic vision thesis. Names the PAYOFF that justi
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## Critical precision (Aaron Otto-267 precision 2026-04-24)
 
-> *"you don't have to teach bayesian we are teaching
+> _"you don't have to teach bayesian we are teaching
 > gitops with the starboard basicaly but we will use
 > Bayesian belif propagation to design our curculur for
-> maximum effect and amplification."*
+> maximum effect and amplification."_
 
 **The subject being TAUGHT = gitops** (the factory
 discipline — git-native operations, rule of balance
@@ -50,7 +51,7 @@ scale.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"i think you'll find the ultimate balance is the
+> _"i think you'll find the ultimate balance is the
 > experience duraably contained gitnative in this repo
 > with every class of error and its resolution, a
 > goldmine for operational resonance/alignment
@@ -59,7 +60,7 @@ Direct Aaron quote 2026-04-24:
 > propagation that works in both directions on humans
 > and ai that infer.net math, the teaching currculcrum
 > will allow for an belief amplication vector. this is
-> how we ear bidirectional trust on a massive scale."*
+> how we ear bidirectional trust on a massive scale."_
 
 ## Decomposition — the seven load-bearing pieces
 
@@ -122,7 +123,7 @@ over correct behaviors in this specific context.
 **Humans learn from AI**: every AI-generated artifact
 (drain subagent fix, audit report, recovery plan,
 rebased PR, memory-saved rule) teaches humans what
-the AI *reliably* gets right and wrong. The human's
+the AI _reliably_ gets right and wrong. The human's
 prior about AI capability updates.
 
 **Infer.net math**: Microsoft Research's probabilistic-
@@ -274,6 +275,7 @@ approximate inference (EP, VMP, Gibbs).
 Why infer.net vs other frameworks (Pyro, Stan, Gen,
 etc.)? Aaron doesn't say explicitly, but plausible
 reasons:
+
 - Infer.net handles LARGE discrete graphical models
   well (corpus is a large graph)
 - Infer.net's message-passing is transparent
@@ -310,13 +312,13 @@ this tick; BACKLOG row.
    at graduated belief levels."
 4. **P2 BACKLOG row**: "Belief-amplification vector
    visualization — given the cross-reference graph in
-   memory/**, render the vector direction that
+   memory/\*\*, render the vector direction that
    strengthens most with new evidence (the dominant
    curriculum eigenvector)."
 
 ## Direct Aaron quote to preserve
 
-> *"i think you'll find the ultimate balance is the
+> _"i think you'll find the ultimate balance is the
 > experience duraably contained gitnative in this repo
 > with every class of error and its resolution, a
 > goldmine for operational resonance/alignment
@@ -325,7 +327,7 @@ this tick; BACKLOG row.
 > propagation that works in both directions on humans
 > and ai that infer.net math, the teaching currculcrum
 > will allow for an belief amplication vector. this is
-> how we ear bidirectional trust on a massive scale."*
+> how we ear bidirectional trust on a massive scale."_
 
 Future Otto: every tick's error+counterweight pair
 is a curriculum entry. Every memory compose-citation

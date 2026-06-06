@@ -1,11 +1,7 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  QualityGateKind,
-  QualityGateOutcome,
-  type QualityGateEvaluation,
-} from "../../domain/src/index.ts";
+import { QualityGateKind, QualityGateOutcome, type QualityGateEvaluation } from "../../domain/src/index.ts";
 import { createInMemoryQualityGateEvaluationStateReader } from "../src/index.ts";
 
 describe("in-memory quality gate evaluation state reader", () => {

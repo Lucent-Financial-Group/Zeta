@@ -1,21 +1,13 @@
 import { deepEqual } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  CommandType,
-  ScheduleBlockState,
-  ScheduleBlockType,
-  type WorkScheduleBlock,
-} from "../../domain/src/index.ts";
+import { CommandType, ScheduleBlockState, ScheduleBlockType, type WorkScheduleBlock } from "../../domain/src/index.ts";
 import {
   CommandScheduleAuthorityDecisionStatus,
   CommandScheduleAuthorityDenialReason,
   type WorkScheduleBlockAuthorityReaderPort,
 } from "../src/ports.ts";
-import {
-  ScheduleAuthorityMessage,
-  createScheduleBlockCommandAuthority,
-} from "../src/schedule-authority.ts";
+import { ScheduleAuthorityMessage, createScheduleBlockCommandAuthority } from "../src/schedule-authority.ts";
 import { ObserveCommandType } from "../src/observe.ts";
 
 describe("schedule block command authority", () => {
@@ -24,7 +16,9 @@ describe("schedule block command authority", () => {
       scheduleBlockReader: createScheduleBlockReader([]),
     });
 
-    const decision = await authority.authorizeCommandSchedule(createScheduleRequest(CommandType.CreateDiscussionAnchor));
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(CommandType.CreateDiscussionAnchor),
+    );
 
     deepEqual(decision, {
       status: CommandScheduleAuthorityDecisionStatus.NotRequired,
@@ -75,7 +69,9 @@ describe("schedule block command authority", () => {
       scheduleBlockReader: createScheduleBlockReader([]),
     });
 
-    const decision = await authority.authorizeCommandSchedule(createScheduleRequest(CommandType.TriageSupervisorSignal));
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(CommandType.TriageSupervisorSignal),
+    );
 
     deepEqual(decision, {
       status: CommandScheduleAuthorityDecisionStatus.Denied,

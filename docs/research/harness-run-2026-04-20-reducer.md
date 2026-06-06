@@ -36,15 +36,15 @@ Each condition answered independently; outputs graded against
 
 ## Results
 
-| Metric | with-skill | without-skill | delta |
-| --- | --- | --- | --- |
-| Pass rate (eval-0) | 5/5 (100%) | 5/5 (100%) | 0pp |
-| Pass rate (eval-1) | 5/5 (100%) | 5/5 (100%) | 0pp |
-| Aggregate pass rate | 10/10 (100%) | 10/10 (100%) | **0pp** |
-| Tokens (eval-0) | 50410 | 39032 | +29% |
-| Tokens (eval-1) | 49543 | 38181 | +30% |
-| Wall-time (eval-0) | 93.6s | 66.9s | +40% |
-| Wall-time (eval-1) | 69.9s | 58.9s | +19% |
+| Metric              | with-skill   | without-skill | delta   |
+| ------------------- | ------------ | ------------- | ------- |
+| Pass rate (eval-0)  | 5/5 (100%)   | 5/5 (100%)    | 0pp     |
+| Pass rate (eval-1)  | 5/5 (100%)   | 5/5 (100%)    | 0pp     |
+| Aggregate pass rate | 10/10 (100%) | 10/10 (100%)  | **0pp** |
+| Tokens (eval-0)     | 50410        | 39032         | +29%    |
+| Tokens (eval-1)     | 49543        | 38181         | +30%    |
+| Wall-time (eval-0)  | 93.6s        | 66.9s         | +40%    |
+| Wall-time (eval-1)  | 69.9s        | 58.9s         | +19%    |
 
 ## Findings
 
@@ -138,7 +138,7 @@ Each condition answered independently; outputs graded against
 2. Architect decides OBSERVE vs SHRINK after seeing these
    numbers. No SPLIT.
 3. Ledger row `2026-04-20 (round 42) — Aarav ranked skills
-   by static BP-03 line-count only` gets a second progress
+by static BP-03 line-count only` gets a second progress
    note; 3 candidates still pending (consent-primitives-expert
    next).
 

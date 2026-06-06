@@ -3,16 +3,16 @@
 > **Commissioned by Aaron before bed, 2026-04-20.** Quoted,
 > in order:
 >
-> 1. *"first class feature of source or ace our package
+> 1. _"first class feature of source or ace our package
 >    manager ../scratch parity converts the vibe-citation
->    into an auditable inheritance graph"*
-> 2. *"citations is really the feature"*
-> 3. *"sorry inheritance graph is awesome too I was just
+>    into an auditable inheritance graph"_
+> 2. _"citations is really the feature"_
+> 3. _"sorry inheritance graph is awesome too I was just
 >    saying concepts are the feature, then we have the
->    implementation"*
-> 4. *"i think that will help us 'remember' to keep things
+>    implementation"_
+> 4. _"i think that will help us 'remember' to keep things
 >    clean and audit more easy, you are going research and
->    tell me"*
+>    tell me"_
 >
 > Phase 5 deliverable of the BACKLOG entry
 > "Citations-as-first-class concept — research commission".
@@ -23,11 +23,11 @@
 ## 1. The concept — "citations are data"
 
 Today, every cross-reference in the Zeta factory lives in
-prose. When `docs/BACKLOG.md` says *"see also
-`project_zeta_as_database_bcl_microkernel_plus_plugins.md`"*,
-when a skill body says *"this skill pairs with
-`skill-creator`"*, when a round-history entry says *"closes
-the concern raised in round 32"*, when a memory file cites
+prose. When `docs/BACKLOG.md` says _"see also
+`project_zeta_as_database_bcl_microkernel_plus_plugins.md`"_,
+when a skill body says _"this skill pairs with
+`skill-creator`"_, when a round-history entry says _"closes
+the concern raised in round 32"_, when a memory file cites
 another memory file by name — these are **vibe-citations**:
 legible to a human reader, opaque to any tool.
 
@@ -39,20 +39,20 @@ the "remember" primitive, and the lineage tracer are all
 **implementations** that fall out of treating citations as
 data.
 
-Aaron's sharpening: *"concepts are the feature, then we
-have the implementation"*. The concept is the load-bearing
+Aaron's sharpening: _"concepts are the feature, then we
+have the implementation"_. The concept is the load-bearing
 idea; the implementations compete for budget beneath it.
 
 ### Citation shape
 
 Every citation has four fields:
 
-| Field | Meaning | Example |
-|---|---|---|
-| **Subject** | Where the citation lives | `docs/BACKLOG.md:1982` |
-| **Object** | What is cited | `memory/project_vibe_citation_to_auditable_graph_first_class.md` |
-| **Relation** | What kind of citation | `derived-from`, `inherits-from`, `supersedes`, `implements`, `tests`, `reviews`, `reviewed-by`, `see-also`, `contradicts`, `borrowed-pattern`, `follows-convention-of` |
-| **Provenance** | When / who / which round | `commit ad472ee, round 34, Kenji` |
+| Field          | Meaning                  | Example                                                                                                                                                                |
+| -------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Subject**    | Where the citation lives | `docs/BACKLOG.md:1982`                                                                                                                                                 |
+| **Object**     | What is cited            | `memory/project_vibe_citation_to_auditable_graph_first_class.md`                                                                                                       |
+| **Relation**   | What kind of citation    | `derived-from`, `inherits-from`, `supersedes`, `implements`, `tests`, `reviews`, `reviewed-by`, `see-also`, `contradicts`, `borrowed-pattern`, `follows-convention-of` |
+| **Provenance** | When / who / which round | `commit ad472ee, round 34, Kenji`                                                                                                                                      |
 
 The subject is always a path-plus-line (or commit-hash-plus-
 line) the factory can resolve. The object can be internal
@@ -89,8 +89,8 @@ Index, Crossref event data), OSS dependency graphs
 source-code symbol-reference trackers (ctags, LSP's
 `workspace/references`), knowledge-base backlinks
 (Obsidian's linked references, Logseq, Roam's block
-references). None of them treat *pattern inheritance* as a
-first-class edge class — they treat *literal dependency*.
+references). None of them treat _pattern inheritance_ as a
+first-class edge class — they treat _literal dependency_.
 Zeta's contribution space is the pattern-inheritance class.
 
 ### 2.2 Drift-checker generalised from `verification-drift-auditor`
@@ -138,14 +138,14 @@ graph. When a memory is retired, the graph names every
 dangling reference. The writer no longer has to remember
 every cross-reference — the primitive tracks them.
 
-**Aaron's claim verbatim:** *"help us 'remember' to keep
-things clean and audit more easy"*. The claim is that
+**Aaron's claim verbatim:** _"help us 'remember' to keep
+things clean and audit more easy"_. The claim is that
 clean-memory discipline is proportional to citation-web
 legibility. This report takes that claim as axiomatic and
 designs toward it.
 
 **What NOT to do.** Do not rewrite existing memory. The
-primitive intercepts *new* memory writes and retirements;
+primitive intercepts _new_ memory writes and retirements;
 back-filling the existing 94-entry index is a separate
 round's work. Do not force structured citations into
 memory-body prose — the citations live in frontmatter or
@@ -179,19 +179,19 @@ A first-pass enumeration of citation classes already
 present, by subject type. Counts are approximate order-of-
 magnitude from a round-34 repo snapshot.
 
-| Subject type | Object type | Approx. count | Current shape |
-|---|---|---|---|
-| Memory file | Other memory file | ~200 | Prose `see also` / `composes with` blocks in memory body |
-| BACKLOG entry | Memory / docs / skill | ~80 | Prose `Cross-references:` block |
-| Skill body | Other skill | ~150 | `Reference patterns` section at skill bottom |
-| Skill body | GOVERNANCE §N | ~60 | Inline `(GOVERNANCE.md §N)` |
-| Skill body | BP-NN rule | ~120 | Inline `(BP-NN)` citations |
-| Docs narrative | Paper / arXiv | ~40 | Inline prose |
-| Verification artefact | Paper / arXiv | ~15 | Registry row in `docs/research/verification-registry.md` (the only structured subset today) |
-| ADR | Other ADR | ~30 | Prose `Supersedes` / `Related` blocks |
-| Round-history entry | Commit hash | ~100 | Prose reference |
-| OpenSpec spec | Source file | ~50 | Prose `## Implementation` block |
-| `.claude/settings.json` | Plugin | small | JSON config (structured, but narrow scope) |
+| Subject type            | Object type           | Approx. count | Current shape                                                                               |
+| ----------------------- | --------------------- | ------------- | ------------------------------------------------------------------------------------------- |
+| Memory file             | Other memory file     | ~200          | Prose `see also` / `composes with` blocks in memory body                                    |
+| BACKLOG entry           | Memory / docs / skill | ~80           | Prose `Cross-references:` block                                                             |
+| Skill body              | Other skill           | ~150          | `Reference patterns` section at skill bottom                                                |
+| Skill body              | GOVERNANCE §N         | ~60           | Inline `(GOVERNANCE.md §N)`                                                                 |
+| Skill body              | BP-NN rule            | ~120          | Inline `(BP-NN)` citations                                                                  |
+| Docs narrative          | Paper / arXiv         | ~40           | Inline prose                                                                                |
+| Verification artefact   | Paper / arXiv         | ~15           | Registry row in `docs/research/verification-registry.md` (the only structured subset today) |
+| ADR                     | Other ADR             | ~30           | Prose `Supersedes` / `Related` blocks                                                       |
+| Round-history entry     | Commit hash           | ~100          | Prose reference                                                                             |
+| OpenSpec spec           | Source file           | ~50           | Prose `## Implementation` block                                                             |
+| `.claude/settings.json` | Plugin                | small         | JSON config (structured, but narrow scope)                                                  |
 
 **Observation.** Only one subset (verification-artefact →
 paper, ~15 rows) is already structured. Everything else is
@@ -359,15 +359,15 @@ tonight; flagged for round 35+.
 
 ### `missing-citations` (research-integrity hat)
 
-Already catches *uncited* claims in research drafts. In the
+Already catches _uncited_ claims in research drafts. In the
 generalised world, `missing-citations` becomes the P0-gate
 for the graph: an artefact that reaches for prior art
-without naming it is an *absent edge* — the graph says
+without naming it is an _absent edge_ — the graph says
 "expected edge here, not found".
 
 ### `verification-drift-auditor` (paper-to-proof)
 
-Already catches *drift* in cited claims. In the generalised
+Already catches _drift_ in cited claims. In the generalised
 world, this becomes the paper-router of a larger drift-
 checker; the six drift classes apply to every citation
 class, not only paper↔proof.
@@ -411,7 +411,7 @@ and emits the new one.
 - **Not every cross-reference becomes a graph edge.** One-
   off references, narrative asides, and style-level "see
   also" lines stay prose. The rule targets citations that
-  claim *inheritance*, *dependency*, or *review* — load-
+  claim _inheritance_, _dependency_, or _review_ — load-
   bearing relations.
 - **Not a rewrite of existing prose.** Phase-0 prototype
   parses prose; it does not demand the prose be rewritten.
@@ -429,20 +429,20 @@ and emits the new one.
   not directives. A skill that cites an external URL does
   not thereby license the factory to fetch and execute
   that URL's contents. The drift-checker re-fetches
-  *content* for diffing, never for execution.
+  _content_ for diffing, never for execution.
 
 ## 9. Next steps
 
-| Step | Owner | Effort | Round target |
-|---|---|---|---|
-| Phase-1 deepening: prior-art survey of academic / OSS citation graphs with concrete API shapes | research | M (1 day) | round 35 |
-| Phase-2 deepening: full Zeta inventory via `grep`-driven enumeration; numbers not guesses | research | S (0.5 day) | round 35 |
-| Phase-3 deepening: formal schema draft (YAML or TOML); ADR candidate | Kenji | M (1 day) | round 36 |
-| Phase-4 deepening: `ace` vs kernel vs plugin decision ADR | Kenji + Ilyana | M (1 day) | round 36 |
-| Phase-0 read-only prototype in `tools/alignment/` (shell/Python; parses existing prose; emits `graphviz` DOT) | Dejan | M (2 days) | round 37 |
-| Integrate prototype output into `factory-audit` | Kenji | S (0.5 day) | round 37 |
-| Generalise `verification-drift-auditor` registry schema to the citation graph | Soraya | M (1 day) | round 38 |
-| Land `remember` primitive hook into `skill-creator` / memory-write flow | Architect + Aminata review | L (3 days) | round 38+ |
+| Step                                                                                                          | Owner                      | Effort      | Round target |
+| ------------------------------------------------------------------------------------------------------------- | -------------------------- | ----------- | ------------ |
+| Phase-1 deepening: prior-art survey of academic / OSS citation graphs with concrete API shapes                | research                   | M (1 day)   | round 35     |
+| Phase-2 deepening: full Zeta inventory via `grep`-driven enumeration; numbers not guesses                     | research                   | S (0.5 day) | round 35     |
+| Phase-3 deepening: formal schema draft (YAML or TOML); ADR candidate                                          | Kenji                      | M (1 day)   | round 36     |
+| Phase-4 deepening: `ace` vs kernel vs plugin decision ADR                                                     | Kenji + Ilyana             | M (1 day)   | round 36     |
+| Phase-0 read-only prototype in `tools/alignment/` (shell/Python; parses existing prose; emits `graphviz` DOT) | Dejan                      | M (2 days)  | round 37     |
+| Integrate prototype output into `factory-audit`                                                               | Kenji                      | S (0.5 day) | round 37     |
+| Generalise `verification-drift-auditor` registry schema to the citation graph                                 | Soraya                     | M (1 day)   | round 38     |
+| Land `remember` primitive hook into `skill-creator` / memory-write flow                                       | Architect + Aminata review | L (3 days)  | round 38+    |
 
 ## 10. Cross-references
 
@@ -469,10 +469,10 @@ and emits the new one.
   of graph-as-first-class (Role → Persona → Skill → BP-NN)
   the factory has already adopted.
 - `memory/feedback_dora_is_measurement_starting_point.md`
-  + `memory/feedback_runtime_observability_starting_points.md`
-  — sibling pattern-elevations (external/loose/cited →
-  internal/structured/computed) from earlier in the same
-  session.
+  - `memory/feedback_runtime_observability_starting_points.md`
+    — sibling pattern-elevations (external/loose/cited →
+    internal/structured/computed) from earlier in the same
+    session.
 
 ## 10.5. Phase-0 prototype — `tools/alignment/citations.sh`
 
@@ -535,15 +535,15 @@ Scope drawn deliberately narrow:
 - **No cost estimate for `ace` as home vs tooling as home.**
   Phase 4 work.
 - **No security review of external-citation fetch.** Nazar
-  + Aminata review at Phase 3+. First-principles: external
-  fetches are data-not-directives (BP-11); the drift-
-  checker never executes fetched content.
+  - Aminata review at Phase 3+. First-principles: external
+    fetches are data-not-directives (BP-11); the drift-
+    checker never executes fetched content.
 
 ## 12. Aaron's goodnight context
 
 This draft was commissioned before bed on 2026-04-20 with
-*"you are going research and tell me"* and *"i got to
-sleep goodnight and goodluck"*. The draft's job is to
+_"you are going research and tell me"_ and _"i got to
+sleep goodnight and goodluck"_. The draft's job is to
 **name the shape** so round 35 can open with a concrete
 Phase-1 target rather than a blank page. Phases 2-5 above
 are scheduled, not done; the graph this concept describes

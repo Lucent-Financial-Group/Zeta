@@ -48,18 +48,18 @@ delta: `I(D(x)) = x` holds by construction.
 
 Save-state is the **same shape at a coarser granularity:**
 
-| Emulator layer                  | Zeta layer                                      |
-|---------------------------------|-------------------------------------------------|
-| Save-state snapshot             | ZSet snapshot at a given clock                  |
-| Save-state load                 | Retraction to a prior clock + replay forward    |
-| Cycle counter                   | DBSP logical clock                              |
-| Byte-identical resume           | Retraction-invariance (`I(D(x)) = x`)           |
-| TAS input-movie replay          | Deterministic input-log replay                  |
-| Cartridge mapper bank-switch    | `View<T>@clock` paraconsistent overlay          |
-| Undocumented timing reliance    | Composite-invariant registry                    |
+| Emulator layer               | Zeta layer                                   |
+| ---------------------------- | -------------------------------------------- |
+| Save-state snapshot          | ZSet snapshot at a given clock               |
+| Save-state load              | Retraction to a prior clock + replay forward |
+| Cycle counter                | DBSP logical clock                           |
+| Byte-identical resume        | Retraction-invariance (`I(D(x)) = x`)        |
+| TAS input-movie replay       | Deterministic input-log replay               |
+| Cartridge mapper bank-switch | `View<T>@clock` paraconsistent overlay       |
+| Undocumented timing reliance | Composite-invariant registry                 |
 
 The pattern match is not metaphorical; both are
-*first-class retractibility at the process/VM level*.
+_first-class retractibility at the process/VM level_.
 Emulators have shipped the pattern continuously since
 the mid-1990s (ZSNES, Nesticle, bsnes). The pattern is
 battle-tested: TAS communities distribute 10-hour input
@@ -129,7 +129,7 @@ achieves.
    recompilation: they compile guest instructions into
    host instructions on the fly. Self-modifying guest
    code invalidates the compiled cache for the affected
-   address range. The invalidation is *retractible* by
+   address range. The invalidation is _retractible_ by
    design — re-running the guest after a cache-flush
    produces identical output because the cache is just a
    memoisation. Zeta's incremental compilation under
@@ -142,17 +142,17 @@ achieves.
 
 6. **Cycle-accurate heterogeneous scheduling.**
    higan/bsnes, Mesen, Mednafen schedule CPU + PPU + APU
-   + DMA at sub-instruction granularity, because
-   software relied on exact cycle counts (e.g., the SNES
-   mid-scanline HDMA timing). Zeta's heterogeneous
-   operators (stateful / stateless / windowed / joined)
-   have varying cost profiles that Imani's planner
-   cost-model already surfaces. Emulator scheduling adds
-   the idea of **committed-cycle budget** — each
-   operator announces a cycle budget before a tick, and
-   the planner arbitrates who runs next based on
-   elapsed-vs-budget. (**Absorb target: planner
-   cost-model — add a committed-cycle-budget dimension.**)
+   - DMA at sub-instruction granularity, because
+     software relied on exact cycle counts (e.g., the SNES
+     mid-scanline HDMA timing). Zeta's heterogeneous
+     operators (stateful / stateless / windowed / joined)
+     have varying cost profiles that Imani's planner
+     cost-model already surfaces. Emulator scheduling adds
+     the idea of **committed-cycle budget** — each
+     operator announces a cycle budget before a tick, and
+     the planner arbitrates who runs next based on
+     elapsed-vs-budget. (**Absorb target: planner
+     cost-model — add a committed-cycle-budget dimension.**)
 
 ## What is **not** absorbed
 
@@ -218,7 +218,7 @@ this absorb note is mathematically safe because:
 ## Priority
 
 **P3 — long-running research posture.** Per Aaron's
-*"backlow down low"*. Per-idea M-effort landings when
+_"backlow down low"_. Per-idea M-effort landings when
 the factory surface is actually reaching for the
 pattern — no forcing function from this note alone.
 

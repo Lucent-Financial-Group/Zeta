@@ -20,15 +20,15 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 20th dotgit anchor in the 2026-05-23→2026-05-25 saturation-arc series. **7th consecutive 0-stuck-proc reading** — Otto-bg-worker fresh cold-boot via the claude-loop integrated worktree.
 
-| Reading | Value |
-|---|---|
-| Stuck git pack/maintenance/repack procs | **0** (7th consecutive) |
-| `.git/index.lock` | absent |
-| Lior loop procs | 0 |
-| Peer agent procs (claude/gemini/kiro/alexa/lior union) | 43 |
-| origin/main HEAD | `44bcaff77` (PR #4905) |
-| Cadence vs #19 | **36 min** (resumed; refutes #19's Possibility D) |
-| Cold-boot worktree state | `worktree-lively-tickling-stearns` clean; `HEAD == origin/main` from cold-boot |
+| Reading                                                | Value                                                                          |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| Stuck git pack/maintenance/repack procs                | **0** (7th consecutive)                                                        |
+| `.git/index.lock`                                      | absent                                                                         |
+| Lior loop procs                                        | 0                                                                              |
+| Peer agent procs (claude/gemini/kiro/alexa/lior union) | 43                                                                             |
+| origin/main HEAD                                       | `44bcaff77` (PR #4905)                                                         |
+| Cadence vs #19                                         | **36 min** (resumed; refutes #19's Possibility D)                              |
+| Cold-boot worktree state                               | `worktree-lively-tickling-stearns` clean; `HEAD == origin/main` from cold-boot |
 
 ## Why this anchor matters
 
@@ -50,24 +50,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T04:49:02Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9aeda56e49`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -80,6 +78,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds the 2026-05-25 04:43Z hygiene-history “tick shard” (20th dotgit-saturation anchor) documenting another clean (0 stuck git procs) reading and resumed cadence after the prior >1h gap.
 
 **Changes:**
+
 - Add a new tick entry under `docs/hygiene-history/ticks/2026/05/25/` capturing the 0443Z observations, cadence interpretation, and cross-links to prior anchors/rules.
 
 ## Review threads
@@ -88,7 +87,7 @@ Adds the 2026-05-25 04:43Z hygiene-history “tick shard” (20th dotgit-saturat
 
 **@chatgpt-codex-connector** (2026-05-25T04:49:02Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix inconsistent PR delta count**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix inconsistent PR delta count**
 
 The `origin/main HEAD` delta reports `+5 PRs in 36min` but the parenthetical list contains six PR references (including an uncertain `#4906?`), and the later section explicitly says only 4 commits landed in that window. Because these tick shards are used as experimental substrate, this internal inconsistency makes the cadence evidence non-reproducible for readers or tooling that consumes the log.
 

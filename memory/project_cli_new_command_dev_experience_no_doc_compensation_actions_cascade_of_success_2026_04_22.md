@@ -4,13 +4,14 @@ description: Aaron 2026-04-22 auto-loop-29 late-tick architectural directive for
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # CLI new-command DX — compensation-actions cascade
 
 **Source (verbatim, 2026-04-22 auto-loop-29):**
 
-> *"when we have a cli the dev experience for new commands
+> _"when we have a cli the dev experience for new commands
 > when you are writing them no documentation, let compsation
-> actions take care of it, cascade of success"*
+> actions take care of it, cascade of success"_
 
 ## What the directive says
 
@@ -18,7 +19,7 @@ When authoring a new CLI command:
 
 1. **No documentation at command-author time** — the author
    writes the command itself (name, parameters, behavior); does
-   *not* simultaneously hand-author help text, man pages,
+   _not_ simultaneously hand-author help text, man pages,
    README entries, cookbook examples, completion scripts.
 2. **Compensation actions take care of it** — downstream
    automated processes consume the command definition as
@@ -78,13 +79,14 @@ definition:
   troubleshooting where applicable.
 
 Cascade is a pipeline: each step reads the command definition
-+ the previous step's output, produces its artifact, succeeds
-or fails visibly.
+
+- the previous step's output, produces its artifact, succeeds
+  or fails visibly.
 
 ## Alignment with factory substrate
 
 - **Retraction-native operator algebra (D/I/z⁻¹/H over ZSet):**
-  command definitions are the *events*; cascade steps are
+  command definitions are the _events_; cascade steps are
   operators over the command-event stream. A new command is
   a D (delta); cascade steps are I/H/z⁻¹ projections into
   derivatives.
@@ -101,7 +103,7 @@ or fails visibly.
 
 ## Open questions (to Aaron, not self-resolved)
 
-1. **Which CLI is this for?** — *"when we have a cli"*
+1. **Which CLI is this for?** — _"when we have a cli"_
    suggests a specific future one. Candidates: Zeta.Core CLI
    (developer-facing library CLI), factory-CLI (tick /
    hygiene / audit orchestration), Escro CLI (product-level).
@@ -132,8 +134,8 @@ Flag these to Aaron rather than self-resolving.
 ## What this is NOT
 
 - **NOT a directive to start building a CLI this round.**
-  *"when we have a cli"* is conditional — directive
-  addresses the DX posture *when* the CLI materializes, not
+  _"when we have a cli"_ is conditional — directive
+  addresses the DX posture _when_ the CLI materializes, not
   a demand that it materialize now.
 - **NOT license to ship commands with zero testing.** The
   cascade includes tests — doc-less-at-author-time ≠
@@ -147,7 +149,7 @@ Flag these to Aaron rather than self-resolving.
   truth, cascade derivatives) generalises to any command-
   shaped surface: factory operators, skill invocations, REST
   endpoints. CLI is the first application; it may generalise.
-- **NOT a round-45 BACKLOG row.** *"when we have a cli"* is
+- **NOT a round-45 BACKLOG row.** _"when we have a cli"_ is
   conditional, and the current factory CLI is a bash-script
   ecosystem (`tools/*.sh`), not a structured-command system.
   File the directive to memory; file a BACKLOG row when a

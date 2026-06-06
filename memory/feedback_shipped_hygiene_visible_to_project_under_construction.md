@@ -34,10 +34,10 @@ hygiene terms."
 
 Aaron's verbatim (2026-04-20):
 
-> *"the factory will ship with hygene checks that will
+> _"the factory will ship with hygene checks that will
 > run for the project under construction too, can we
 > list somewhere what hygene checks ship for the system
-> under construction with the factory too"*
+> under construction with the factory too"_
 
 Two separate concerns that were previously mushed in
 `docs/FACTORY-HYGIENE.md`:
@@ -156,7 +156,7 @@ without per-row reverse-engineering.
 - It does NOT make the factory-internal items
   invisible or demote them. They keep their row in
   the main table. The summary section is a
-  *projection* of the main table, not a replacement.
+  _projection_ of the main table, not a replacement.
 - It does NOT require per-row documentation of HOW
   each item ships beyond a one-line gloss. Deep
   onboarding detail belongs in adopter documentation

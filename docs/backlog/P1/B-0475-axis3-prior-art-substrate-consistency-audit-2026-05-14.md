@@ -41,17 +41,17 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Surfaces to audit
 
-| Surface | Path | What to verify |
-|---------|------|----------------|
-| B-0427 parent row | `docs/backlog/P1/B-0427-*.md` | Axis-3 scope and constraints still accurate |
-| Axis-1 ADR (three-repo split) | `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md` | Axis-1 positions set; no Axis-3 conflict |
-| Axis-1 product-repo ADR | `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md` | Axis-1 + glue mechanism decided; check for Axis-3 implications |
-| Axis-2 substrate (B-0426 parent row) | `docs/backlog/P1/B-0426-*.md` | Mirror/Beacon; confirm Axis-2 in-flight status |
-| Orthogonal-axes memory | `memory/feedback_orthogonal_axes_factory_hygiene.md` | All three axes consistent |
-| Aaron's Axis-3 framing | `memory/feedback_aaron_repo_split_third_orthogonal_axis_code_vs_english_formal_verification_maybe_split_ruleset_divergence_is_smell_2026_05_13.md` | Framing matches B-0427 body |
-| B-0424 (factory split) | `docs/backlog/P1/B-0424-*.md` | Stage-1 factory split — does Axis-3 affect Stage-1 scope? |
-| DV2.0 rule | `.claude/rules/dv2-data-split-discipline-activated.md` | DV2.0 hub-satellite partition directly informs Code/English cut |
-| GOVERNANCE.md (repo-placement sections) | `GOVERNANCE.md` | Search for "repo" or "directory" headings — any sections that classify which docs belong in which repo per engineering-practices (e.g. `grep -n "^## " GOVERNANCE.md` to enumerate sections) |
+| Surface                                 | Path                                                                                                                                               | What to verify                                                                                                                                                                               |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B-0427 parent row                       | `docs/backlog/P1/B-0427-*.md`                                                                                                                      | Axis-3 scope and constraints still accurate                                                                                                                                                  |
+| Axis-1 ADR (three-repo split)           | `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`                                                                                     | Axis-1 positions set; no Axis-3 conflict                                                                                                                                                     |
+| Axis-1 product-repo ADR                 | `docs/DECISIONS/2026-05-14-product-repo-split-decisions.md`                                                                                        | Axis-1 + glue mechanism decided; check for Axis-3 implications                                                                                                                               |
+| Axis-2 substrate (B-0426 parent row)    | `docs/backlog/P1/B-0426-*.md`                                                                                                                      | Mirror/Beacon; confirm Axis-2 in-flight status                                                                                                                                               |
+| Orthogonal-axes memory                  | `memory/feedback_orthogonal_axes_factory_hygiene.md`                                                                                               | All three axes consistent                                                                                                                                                                    |
+| Aaron's Axis-3 framing                  | `memory/feedback_aaron_repo_split_third_orthogonal_axis_code_vs_english_formal_verification_maybe_split_ruleset_divergence_is_smell_2026_05_13.md` | Framing matches B-0427 body                                                                                                                                                                  |
+| B-0424 (factory split)                  | `docs/backlog/P1/B-0424-*.md`                                                                                                                      | Stage-1 factory split — does Axis-3 affect Stage-1 scope?                                                                                                                                    |
+| DV2.0 rule                              | `.claude/rules/dv2-data-split-discipline-activated.md`                                                                                             | DV2.0 hub-satellite partition directly informs Code/English cut                                                                                                                              |
+| GOVERNANCE.md (repo-placement sections) | `GOVERNANCE.md`                                                                                                                                    | Search for "repo" or "directory" headings — any sections that classify which docs belong in which repo per engineering-practices (e.g. `grep -n "^## " GOVERNANCE.md` to enumerate sections) |
 
 ## Questions this audit must answer
 

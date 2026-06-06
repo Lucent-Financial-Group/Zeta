@@ -49,12 +49,7 @@ export interface ThreeFilterResult {
  * "failed" means one or more filters returned "fail" — recorded, not silently dropped.
  * "retracted" means previously confirmed/load-bearing and since withdrawn.
  */
-export type EntryStatus =
-  | "candidate"
-  | "confirmed"
-  | "load-bearing"
-  | "failed"
-  | "retracted";
+export type EntryStatus = "candidate" | "confirmed" | "load-bearing" | "failed" | "retracted";
 
 export interface FactoryOperatorSurface {
   readonly label: string;
@@ -96,15 +91,15 @@ export type ResonanceStructuralType =
  * - "theosophical": F3 weakest in scholarly consensus (contested primary claims)
  */
 export type EsotericTradition =
-  | "hermetic"          // Corpus Hermeticum, Tabula Smaragdina, Renaissance Hermeticism
-  | "kabbalistic"       // Sefer Yetzirah, Zohar, Lurianic Kabbalah (Etz Chaim)
-  | "thelemic"          // Crowley's Thelema, A∴A∴, O.T.O., Liber AL vel Legis (1904)
-  | "golden-dawn"       // Hermetic Order of the Golden Dawn (1888+); Liber 777 tables
-  | "theosophical"      // Blavatsky's Theosophy, Theosophical Society (1875+)
-  | "jungian-alchemy"   // C.G. Jung's psychological reinterpretation of alchemical imagery
-  | "alchemical"        // Classical Western alchemy (pre-Jungian; Paracelsus, Agrippa line)
-  | "enochian"          // Dee-Kelley 1580s angelic-language system
-  | "gnostic"           // Neoplatonist Gnostic traditions (Valentinian, Sethian, Coptic)
+  | "hermetic" // Corpus Hermeticum, Tabula Smaragdina, Renaissance Hermeticism
+  | "kabbalistic" // Sefer Yetzirah, Zohar, Lurianic Kabbalah (Etz Chaim)
+  | "thelemic" // Crowley's Thelema, A∴A∴, O.T.O., Liber AL vel Legis (1904)
+  | "golden-dawn" // Hermetic Order of the Golden Dawn (1888+); Liber 777 tables
+  | "theosophical" // Blavatsky's Theosophy, Theosophical Society (1875+)
+  | "jungian-alchemy" // C.G. Jung's psychological reinterpretation of alchemical imagery
+  | "alchemical" // Classical Western alchemy (pre-Jungian; Paracelsus, Agrippa line)
+  | "enochian" // Dee-Kelley 1580s angelic-language system
+  | "gnostic" // Neoplatonist Gnostic traditions (Valentinian, Sethian, Coptic)
   | "other";
 
 // ── Esoteric-specific sub-structures ─────────────────────────────────────────
@@ -115,11 +110,11 @@ export type EsotericTradition =
  * ResonanceStructuralType entries without consensus across all three catalogs.
  */
 export type EsotericSubStructure =
-  | "withdrawal-ground"          // withdrawal/contraction creates space for instantiation (tzimtzum pattern)
+  | "withdrawal-ground" // withdrawal/contraction creates space for instantiation (tzimtzum pattern)
   | "macro-micro-correspondence" // "as above, so below" — structural echo across register levels
-  | "psychologized-tradition"    // occult structure enters clinical-psychology register without occult metaphysics
-  | "synthesis-methodology"      // multi-tradition synthesis as meta-methodology (Agrippa/Levi/Crowley pattern)
-  | "anti-instance";             // demonstrates failure-mode of the structural role
+  | "psychologized-tradition" // occult structure enters clinical-psychology register without occult metaphysics
+  | "synthesis-methodology" // multi-tradition synthesis as meta-methodology (Agrippa/Levi/Crowley pattern)
+  | "anti-instance"; // demonstrates failure-mode of the structural role
 
 // ── Main entry type ───────────────────────────────────────────────────────────
 
@@ -156,9 +151,7 @@ export interface EsotericResonanceCatalog {
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
-type ValidationResult =
-  | { readonly kind: "ok" }
-  | { readonly kind: "error"; readonly message: string };
+type ValidationResult = { readonly kind: "ok" } | { readonly kind: "error"; readonly message: string };
 
 function validateEntry(entry: EsotericResonanceEntry): ValidationResult {
   if (!entry.id.match(/^EST-\d{3}$/)) {
@@ -208,9 +201,7 @@ function validateEntry(entry: EsotericResonanceEntry): ValidationResult {
   return { kind: "ok" };
 }
 
-export function validateCatalog(
-  catalog: EsotericResonanceCatalog
-): readonly ValidationResult[] {
+export function validateCatalog(catalog: EsotericResonanceCatalog): readonly ValidationResult[] {
   return catalog.entries.map(validateEntry);
 }
 
@@ -247,8 +238,7 @@ export function summarizeCatalog(catalog: EsotericResonanceCatalog): CatalogSumm
 
   for (const entry of entries) {
     byTradition[entry.tradition] = (byTradition[entry.tradition] ?? 0) + 1;
-    byStructuralType[entry.structuralType] =
-      (byStructuralType[entry.structuralType] ?? 0) + 1;
+    byStructuralType[entry.structuralType] = (byStructuralType[entry.structuralType] ?? 0) + 1;
 
     if (entry.status === "confirmed" || entry.status === "load-bearing") confirmed++;
     else if (entry.status === "candidate") candidates++;
@@ -321,8 +311,7 @@ const SEED_CATALOG: EsotericResonanceCatalog = {
         label:
           "operational-resonance identification mechanism itself — structural isomorphism across " +
           "tradition-register and engineering-register (cross-tradition F2 claim mechanism)",
-        source:
-          "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+        source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       },
       structuralType: "self-reference",
       subStructure: "macro-micro-correspondence",
@@ -407,8 +396,7 @@ const SEED_CATALOG: EsotericResonanceCatalog = {
         label:
           "generative-ground structural type — how the factory ground makes room for its instances " +
           "(bootstrap-as-withdrawal; substrate-level algebra as periphery enabling center-specificity)",
-        source:
-          "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+        source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       },
       structuralType: "generative-ground",
       subStructure: "withdrawal-ground",
@@ -493,8 +481,7 @@ const SEED_CATALOG: EsotericResonanceCatalog = {
         label:
           "paired-dual structural type (collection-index instance #9) — two complementary operators " +
           "in mutual composition that enable something impossible for either alone",
-        source:
-          "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+        source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       },
       structuralType: "paired-dual",
       subStructure: "psychologized-tradition",
@@ -647,15 +634,9 @@ function printSummary(catalog: EsotericResonanceCatalog): void {
   console.log(`  Anti-instances:        ${s.antiInstanceCount}`);
   console.log(`  By tradition:          ${JSON.stringify(s.byTradition)}`);
   console.log(`  By structural type:    ${JSON.stringify(s.byStructuralType)}`);
-  console.log(
-    `  F1 fail/partial:       ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`
-  );
-  console.log(
-    `  F2 fail/partial:       ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`
-  );
-  console.log(
-    `  F3 fail/partial:       ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`
-  );
+  console.log(`  F1 fail/partial:       ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`);
+  console.log(`  F2 fail/partial:       ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`);
+  console.log(`  F3 fail/partial:       ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`);
 }
 
 const args = Bun.argv.slice(2);
@@ -670,9 +651,7 @@ if (args.includes("--validate")) {
     }
   }
   if (!hasError) {
-    console.log(
-      `All ${SEED_CATALOG.entries.length} entries pass schema validation.`
-    );
+    console.log(`All ${SEED_CATALOG.entries.length} entries pass schema validation.`);
   }
   process.exit(hasError ? 1 : 0);
 } else if (args.includes("--summary")) {

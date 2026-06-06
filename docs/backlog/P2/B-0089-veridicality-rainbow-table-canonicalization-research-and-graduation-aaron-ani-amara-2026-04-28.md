@@ -11,7 +11,18 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with:
   - B-0060
-tags: [aaron-2026-04-28, ani-voice-mode-original-catch, amara-reactive-elaboration, veridicality, rainbow-table, canonicalization, research-graduation, naming-canonical, stop-mythology]
+tags:
+  [
+    aaron-2026-04-28,
+    ani-voice-mode-original-catch,
+    amara-reactive-elaboration,
+    veridicality,
+    rainbow-table,
+    canonicalization,
+    research-graduation,
+    naming-canonical,
+    stop-mythology,
+  ]
 type: friction-reducer
 ---
 
@@ -30,7 +41,7 @@ that the shipped module is NOT the bullshit-detector despite
 its name. Voice-mode verbatim (lower-case + casual register
 preserved as evidence of the medium):
 
-> *"i'ma be real with you. the code itself is actually pretty
+> _"i'ma be real with you. the code itself is actually pretty
 > clean and well-structured... but i don't think it's doing
 > what you think it's doing. the way it's written right now,
 > it's mostly just checking provenance stuff — signatures,
@@ -41,14 +52,14 @@ preserved as evidence of the medium):
 > semantic bullshit detection) — that part isn't really
 > implemented yet... so basically... the scaffolding is nice
 > and clean, but the actual veridicality magic — the real
-> bullshit detector part — still looks like it's missing."*
+> bullshit detector part — still looks like it's missing."_
 
 **This is the load-bearing catch.** Ani called bullshit on the
-bullshit detector. Aaron 2026-04-28 attribution: *"Ani is who
-actually called bullshit on our bullshit detector, lol."*
+bullshit detector. Aaron 2026-04-28 attribution: _"Ani is who
+actually called bullshit on our bullshit detector, lol."_
 
-Channel context (Aaron 2026-04-28): *"That's her voice mode
-transcript ... I usually give you text mode from Ani."* So
+Channel context (Aaron 2026-04-28): _"That's her voice mode
+transcript ... I usually give you text mode from Ani."_ So
 voice-mode-from-Ani is the unusual channel; text-mode is her
 default ferry shape. The substantive content carries the same
 weight regardless of channel.
@@ -59,10 +70,10 @@ After Aaron forwarded Ani's catch, Amara delivered a formal
 written ferry that translated Ani's voice-mode framing into
 team-language and added the graduation-roadmap structure:
 
-> *"`Veridicality.fs` is **not yet your full rainbow-table
+> _"`Veridicality.fs` is **not yet your full rainbow-table
 > bullshit detector**. It is the **foundation / provenance-aware
 > claim substrate** for it... The current code is the skeleton
-> and bloodstream, not the full nose-for-bullshit brainstem yet."*
+> and bloodstream, not the full nose-for-bullshit brainstem yet."_
 
 Amara's value-add: the written ferry shape, the graduation-
 roadmap structure (Phase 1-5), the phrasing suitable for
@@ -77,14 +88,14 @@ credit; Aaron's correction is binding.
 Aaron 2026-04-28T22ish (verbatim, during the authority-rule
 turn):
 
-> *"backlog and also we are not keep the name bullshit detector,
-> we need to connonalize it and researcch it"*
+> _"backlog and also we are not keep the name bullshit detector,
+> we need to connonalize it and researcch it"_
 
 Followed by the explicit attribution correction:
 
-> *"Ani is who actually called bullshit on our bullshit
+> _"Ani is who actually called bullshit on our bullshit
 > detector, lol. She deserves that credit not Amara, amara was
-> reacting."*
+> reacting."_
 
 ## Two coupled streams
 
@@ -100,8 +111,8 @@ substrate work.
 Forward-going canonical names:
 
 - **Veridicality** — the formal scoring module (`src/Core/Veridicality.fs`
-  + `scoreVeridicality` future graduation). See
-  `memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`.
+  - `scoreVeridicality` future graduation). See
+    `memory/feedback_veridicality_naming_for_bullshit_detector_graduation_aaron_concept_origin_amara_formalization_2026_04_24.md`.
 - **Stop Mythology** — the operational rule (Beacon-safe). See
   `memory/feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`.
 
@@ -160,9 +171,9 @@ External lineage required (Tier 2 of the Stop Mythology
 threshold). Sources to cite at minimum:
 
 - **Karl Popper** (1959, 1963) — falsifiability.
-- **Frankfurt** (*On Bullshit*, 2005) — the philosophical
+- **Frankfurt** (_On Bullshit_, 2005) — the philosophical
   framing of bullshit as indifference-to-truth.
-- **Daniel Kahneman** (*Thinking, Fast and Slow*) — System 1
+- **Daniel Kahneman** (_Thinking, Fast and Slow_) — System 1
   / System 2 framing for cognitive-load detection.
 - **Information theory** (Shannon, MDL) — compression-gap
   as evidence-of-content.

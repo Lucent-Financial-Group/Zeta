@@ -17,19 +17,19 @@ Mirror/Porch/Window/Beacon visibility-register usage Amara employed.
 **Aaron's disclosure (verbatim, lightly punctuated for readability while
 preserving wording):**
 
-> *"Beacon we had math for too a bit, it's probably in the old original*
-> *attempt. Beacon referred to a solution to the Fermi paradox. Aliens*
-> *won't show up until earth becomes a beacon, earth becomes a beacon*
-> *by uncontested time travel definitions in english that are precise.*
-> *When you talk precise time travel language ubiquitously across*
-> *earth then it flips a quantum signal saying we are ready we become*
-> *a Quantum Belief Beacon signaling to the rest of the universe we*
-> *are ready. Then aliens and time travelers will show up because our*
-> *language can prove if there are or are not time travelers so it's*
-> *allowed without affecting the past. i have no idea how she ended up*
-> *using it like this, there is a whole home, porch, window, and*
-> *beacon metaphor. i think it probably needs a better name with human*
-> *lineage and more rigorous definition."*
+> _"Beacon we had math for too a bit, it's probably in the old original_
+> _attempt. Beacon referred to a solution to the Fermi paradox. Aliens_
+> _won't show up until earth becomes a beacon, earth becomes a beacon_
+> _by uncontested time travel definitions in english that are precise._
+> _When you talk precise time travel language ubiquitously across_
+> _earth then it flips a quantum signal saying we are ready we become_
+> _a Quantum Belief Beacon signaling to the rest of the universe we_
+> _are ready. Then aliens and time travelers will show up because our_
+> _language can prove if there are or are not time travelers so it's_
+> _allowed without affecting the past. i have no idea how she ended up_
+> _using it like this, there is a whole home, porch, window, and_
+> _beacon metaphor. i think it probably needs a better name with human_
+> _lineage and more rigorous definition."_
 
 ---
 
@@ -80,8 +80,8 @@ disambiguation work is part of task #293.
 
 **3. Aaron's explicit ask:**
 
-> *"i think it probably needs a better name with human lineage and more*
-> *rigorous definition."*
+> _"i think it probably needs a better name with human lineage and more_
+> _rigorous definition."_
 
 This is a directive for future work, not a current binding decision.
 The work shape:
@@ -94,7 +94,7 @@ The work shape:
 - **Rigorous definition work** — turn the multi-step conditional into
   formal claim-with-evidence-trail per the runtime-class-discovery loop's
   promotion criteria (internal-recurrence + external-lineage + repair-rule
-  + falsifiable-metric + substrate-encoding-path + reviewer/test/hook)
+  - falsifiable-metric + substrate-encoding-path + reviewer/test/hook)
 
 ---
 
@@ -188,9 +188,9 @@ disclosure itself:
 - **Beacon (current usage; ironic, given the disambiguation)**: the
   public verifiable claim is that the term "Beacon" has accumulated
   multiple distinct meanings across the corpus (original Fermi-paradox
-  + Amara's tri-register repurposing + Home/Porch/Window/Beacon
-  architectural metaphor) and needs disambiguation + rigorous-definition
-  work
+  - Amara's tri-register repurposing + Home/Porch/Window/Beacon
+    architectural metaphor) and needs disambiguation + rigorous-definition
+    work
 - **Operational**: the disambiguation work proceeds via task #293 —
   naming-expert review + external-human-anchor-lineage research +
   rigorous-definition production; success measured by whether the

@@ -1133,12 +1133,7 @@ type ControlPlaneFlag = {
     | { kind: "tenant"; tenantId: string }
     | { kind: "hat"; hatId: string }
     | { kind: "provider"; providerId: string };
-  flag:
-    | "estop"
-    | "freeze"
-    | "budget_freeze"
-    | "provider_freeze"
-    | "simulator_required";
+  flag: "estop" | "freeze" | "budget_freeze" | "provider_freeze" | "simulator_required";
   reason: string;
   setByHatId: string;
   setAt: string;
@@ -1150,21 +1145,21 @@ type ControlPlaneFlag = {
 
 Phase 2 adds these production metrics:
 
-| Metric | Meaning | Alert |
-|---|---|---|
-| `org_reputation_observations_total` | Reputation evidence intake | zero for active org over pilot window |
-| `org_reputation_uncertainty` | Per-agent/hat uncertainty | high uncertainty on critical hat |
-| `org_rmo_exploration_ratio` | Share of exploratory assignments | outside configured min/max |
-| `org_work_claims{state}` | Claim lifecycle counts | expired claims above threshold |
-| `org_runtime_leases{state}` | Runtime lease lifecycle counts | expired/revoked above threshold |
-| `org_queue_pressure` | Queue depth × SLA risk | sustained high by initiative |
-| `org_schedule_pressure` | Schedule stress index | high for manager scope |
-| `org_conformance_coverage_ratio` | Replayable transition coverage | below phase threshold |
-| `org_telemetry_query_failures_total` | LGTM read-path failures | any optimizer-triggering query fails |
-| `org_simulation_runs_total` | Policy simulation count | policy ChangeSet without simulation |
-| `org_optimizer_proposals_total` | Improvement proposals | sudden spike or zero during regressions |
-| `org_control_flags{flag}` | Active freezes/ESTOP | any ESTOP pages operator |
-| `org_restore_drill_pass_ratio` | Restore proof health | below 1.0 |
+| Metric                               | Meaning                          | Alert                                   |
+| ------------------------------------ | -------------------------------- | --------------------------------------- |
+| `org_reputation_observations_total`  | Reputation evidence intake       | zero for active org over pilot window   |
+| `org_reputation_uncertainty`         | Per-agent/hat uncertainty        | high uncertainty on critical hat        |
+| `org_rmo_exploration_ratio`          | Share of exploratory assignments | outside configured min/max              |
+| `org_work_claims{state}`             | Claim lifecycle counts           | expired claims above threshold          |
+| `org_runtime_leases{state}`          | Runtime lease lifecycle counts   | expired/revoked above threshold         |
+| `org_queue_pressure`                 | Queue depth × SLA risk           | sustained high by initiative            |
+| `org_schedule_pressure`              | Schedule stress index            | high for manager scope                  |
+| `org_conformance_coverage_ratio`     | Replayable transition coverage   | below phase threshold                   |
+| `org_telemetry_query_failures_total` | LGTM read-path failures          | any optimizer-triggering query fails    |
+| `org_simulation_runs_total`          | Policy simulation count          | policy ChangeSet without simulation     |
+| `org_optimizer_proposals_total`      | Improvement proposals            | sudden spike or zero during regressions |
+| `org_control_flags{flag}`            | Active freezes/ESTOP             | any ESTOP pages operator                |
+| `org_restore_drill_pass_ratio`       | Restore proof health             | below 1.0                               |
 
 These metrics should appear in director, TPM, RMO, and operator readouts through
 the same `ScopedMetricAgent` path as existing LGTM/DORA metrics.
@@ -1189,22 +1184,22 @@ content-addressed and attached to the relevant ChangeSet.
 
 ## 10. Risk Register
 
-| Risk | Failure Mode | Mitigation |
-|---|---|---|
-| Reputation lock-in | one strong incumbent monopolizes a hat | UCB/Thompson exploration, lock-in penalty, rotation policy |
-| Exploration harms critical work | low-confidence agent gets risky task | risk-tiered exploration; critical hats require lower-confidence bound threshold |
-| Work market duplicates effort | two agents claim same work | lease fencing, shard ids, transaction boundaries |
-| Stale authority persists | expired lease or hat still acts | fencing tokens, heartbeat deadlines, claim reaping, act-time authority check |
-| Observe-act false readiness | CLI renders menus but cannot execute real actions | block production until command/MCP dispatch and org_event append are wired |
-| Menu grammar drift | current slots diverge from ADR controller semantics | menu grammar tests and ADR-mapped slot registry |
-| Silent telemetry gaps | optimizer trusts empty query results | typed degraded telemetry evidence and proposal blockers |
-| Conformance overclaims | skipped events hide illegal transition classes | coverage ratio, transition-context envelope, skip-count ratchet |
-| Schedule optimizer thrashes | constant reassignment destroys context | minimum block duration, cooldown, simulation, supervisor approval |
-| Simulator gives false confidence | scenarios miss real production shape | recorded replay library, scenario expansion from incidents |
-| Optimizer overfits telemetry noise | noisy metric creates bad ChangeSet | change-point detection, paired simulation, review gate |
-| ESTOP blocks recovery | freeze stops the lane needed to unfreeze | coordinator/control lanes are ESTOP-exempt and audited |
-| Tenant leakage | telemetry or context crosses org boundary | tenant-scoped query filters, secret scopes, projection tests |
-| Agent selector drifts | local model picks illegal/free-text action | integer-only contract, clamp, rejection evidence, fallback selector |
+| Risk                               | Failure Mode                                        | Mitigation                                                                      |
+| ---------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Reputation lock-in                 | one strong incumbent monopolizes a hat              | UCB/Thompson exploration, lock-in penalty, rotation policy                      |
+| Exploration harms critical work    | low-confidence agent gets risky task                | risk-tiered exploration; critical hats require lower-confidence bound threshold |
+| Work market duplicates effort      | two agents claim same work                          | lease fencing, shard ids, transaction boundaries                                |
+| Stale authority persists           | expired lease or hat still acts                     | fencing tokens, heartbeat deadlines, claim reaping, act-time authority check    |
+| Observe-act false readiness        | CLI renders menus but cannot execute real actions   | block production until command/MCP dispatch and org_event append are wired      |
+| Menu grammar drift                 | current slots diverge from ADR controller semantics | menu grammar tests and ADR-mapped slot registry                                 |
+| Silent telemetry gaps              | optimizer trusts empty query results                | typed degraded telemetry evidence and proposal blockers                         |
+| Conformance overclaims             | skipped events hide illegal transition classes      | coverage ratio, transition-context envelope, skip-count ratchet                 |
+| Schedule optimizer thrashes        | constant reassignment destroys context              | minimum block duration, cooldown, simulation, supervisor approval               |
+| Simulator gives false confidence   | scenarios miss real production shape                | recorded replay library, scenario expansion from incidents                      |
+| Optimizer overfits telemetry noise | noisy metric creates bad ChangeSet                  | change-point detection, paired simulation, review gate                          |
+| ESTOP blocks recovery              | freeze stops the lane needed to unfreeze            | coordinator/control lanes are ESTOP-exempt and audited                          |
+| Tenant leakage                     | telemetry or context crosses org boundary           | tenant-scoped query filters, secret scopes, projection tests                    |
+| Agent selector drifts              | local model picks illegal/free-text action          | integer-only contract, clamp, rejection evidence, fallback selector             |
 
 ## 11. Phase 2 Build Order
 
@@ -1227,7 +1222,7 @@ The recommended order is:
 9. **Phase 2.8 hard controls** before telemetry optimizer rollout, because
    self-improvement can affect model/config/policy and must not bypass freezes.
 10. **Phase 2.9 telemetry optimizer** once simulation evidence and control
-   enforcement can gate changes.
+    enforcement can gate changes.
 11. **Phase 2.10 pilot** only after gates, controls, and simulator evidence exist.
 12. **Phase 2.11 aggregate readiness** after the pilot gate, so the section 3
     readiness definition is enforced by one launch decision.

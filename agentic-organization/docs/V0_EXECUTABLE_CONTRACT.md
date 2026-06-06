@@ -167,7 +167,7 @@ without it.
 9. `start_prompt_flow` locks the agent into the selected deterministic
    work protocol.
 10. `launch_hermes_run` binds the Organization work item, agent, session,
-   hat assignment, and prompt-flow run to the Hermes/OZ runtime adapter.
+    hat assignment, and prompt-flow run to the Hermes/OZ runtime adapter.
 11. `record_universal_action` and `record_action_observation` capture
     what the agent did and what the system observed.
 12. `submit_evidence` attaches logs, screenshots, code refs, traces, or

@@ -16,7 +16,7 @@ decomposition: atomic
 Second child of B-0159. Extend refresh.ts with:
 
 1. Backlog row delta (docs/backlog/ file count vs stored snapshot)
-2. Claim-file inventory (claim/* branches on origin)
+2. Claim-file inventory (claim/\* branches on origin)
 3. Branch state (current branch ahead/behind origin/main)
 4. Pending CI runs
 

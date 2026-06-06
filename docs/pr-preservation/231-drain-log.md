@@ -66,7 +66,7 @@ clean case of Codex enforcing version-currency on the doc itself.
 - Severity: P1
 - Finding: matrix row claimed Codex has `/model` slash command, but
   doc body + capability map (`docs/research/openai-codex-cli-
-  capability-map.md` L277) describe model selection via `-m` /
+capability-map.md` L277) describe model selection via `-m` /
   `--model` and profiles, not `/model`.
 - Outcome: **FIX** — replaced `/model + plan-mode commands` with
   `-m / --model, profiles, plan-mode commands` per capability map.
@@ -148,7 +148,7 @@ clean case of Codex enforcing version-currency on the doc itself.
    reclassifications (TodoWrite Sept 15 2025 + Hooks `rust-v0.117.0`
    March 26 2026) are the version-currency rule (CLAUDE.md "Version
    currency — search first, training data is stale") working in
-   reverse: the *reviewer* enforces it on the doc rather than the
+   reverse: the _reviewer_ enforces it on the doc rather than the
    author searching at write-time. Score-summary propagation
    (Parity 10→11, Gap 4→3) is load-bearing — without that, the
    matrix's running counts drift from the row data.
@@ -162,7 +162,7 @@ clean case of Codex enforcing version-currency on the doc itself.
 4. **Discriminator-falsification finding pattern.** Earlier wave (post
    merge of follow-up #1) had caught a related issue: the AGENTS.md-
    read test asked the agent to recite the three load-bearing values,
-   but the *test doc itself* repeated those values inline — false-
+   but the _test doc itself_ repeated those values inline — false-
    positive readiness path. The fix was unique-to-AGENTS.md content
    (the build-and-test gate command block). Same shape as
    randomized-canary in security testing.

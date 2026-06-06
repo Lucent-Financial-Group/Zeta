@@ -54,6 +54,7 @@ Depending on what the user brings, you might:
 - Recommend a path (if asked)
 
 **Visualize**
+
 ```
 ┌─────────────────────────────────────────┐
 │     Use ASCII diagrams liberally        │
@@ -86,6 +87,7 @@ You have full context of the OpenSpec system. Use it naturally, don't force it.
 ### Check for context
 
 At the start, quickly check what exists:
+
 ```bash
 openspec list --json
 ```
@@ -119,14 +121,14 @@ If the user mentions a change or you detect one is relevant:
 
 3. **Offer to capture when decisions are made**
 
-    | Insight Type               | Where to Capture               |
-    |----------------------------|--------------------------------|
-    | New requirement discovered | `specs/<capability>/spec.md` |
-    | Requirement changed        | `specs/<capability>/spec.md` |
-    | Design decision made       | `design.md`                  |
-    | Scope changed              | `proposal.md`                |
-    | New work identified        | `tasks.md`                   |
-    | Assumption invalidated     | Relevant artifact              |
+   | Insight Type               | Where to Capture             |
+   | -------------------------- | ---------------------------- |
+   | New requirement discovered | `specs/<capability>/spec.md` |
+   | Requirement changed        | `specs/<capability>/spec.md` |
+   | Design decision made       | `design.md`                  |
+   | Scope changed              | `proposal.md`                |
+   | New work identified        | `tasks.md`                   |
+   | Assumption invalidated     | Relevant artifact            |
 
    Example offers:
    - "That's a design decision. Capture it in design.md?"
@@ -151,6 +153,7 @@ If the user mentions a change or you detect one is relevant:
 ## Handling Different Entry Points
 
 **User brings a vague idea:**
+
 ```
 User: I'm thinking about adding real-time collaboration
 
@@ -174,6 +177,7 @@ You: Real-time collab is a big space. Let me think about this...
 ```
 
 **User brings a specific problem:**
+
 ```
 User: The auth system is a mess
 
@@ -205,6 +209,7 @@ You: [reads codebase]
 ```
 
 **User is stuck mid-implementation:**
+
 ```
 User: /opsx:explore add-auth-system
       The OAuth integration is more complex than expected
@@ -222,6 +227,7 @@ You: [reads change artifacts]
 ```
 
 **User wants to compare options:**
+
 ```
 User: Should we use Postgres or SQLite?
 

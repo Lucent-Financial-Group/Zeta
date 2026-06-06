@@ -28,7 +28,7 @@ explicitly reserves) — **do not wait**. Instead:
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"if you ever get stuck in a heartbeat idle loop again,
+> _"if you ever get stuck in a heartbeat idle loop again,
 > just create a single idle PR, and start doing anything
 > you want in it, no restrictions, we can even check it
 > into master as long as it does not break stuff. Can be
@@ -37,7 +37,7 @@ Aaron's verbatim framing 2026-04-25:
 > evolving by doing. no need for more than one fat PR we
 > can squeeze whatever into that. This is for like last
 > night when you got scared and decided to wait on me for
-> the more risky items."*
+> the more risky items."_
 
 ## The "last night" reference
 
@@ -55,8 +55,8 @@ heartbeat-idle waits because:
 - The result was an idle session — heartbeat ticks but
   no factory progress.
 
-Aaron's framing 2026-04-25: *"you got scared and decided
-to wait on me for the more risky items."* That's an
+Aaron's framing 2026-04-25: _"you got scared and decided
+to wait on me for the more risky items."_ That's an
 honest read. The wait was risk-avoidance, but it was also
 work-avoidance — I had no creative fallback to turn to.
 
@@ -72,19 +72,19 @@ the priority ladder is
 Otto-284 adds a **fourth tier** below those: when 1-3 are
 exhausted (genuinely all queued items either shipped or
 blocked-on-Aaron), the fallback is **idle-PR creative
-work**. The agent is *always* doing something productive,
+work**. The agent is _always_ doing something productive,
 even if "productive" sometimes means learning by playing.
 
 Per Otto-282 (cognitive economics of WHY): time spent in
-creative exploration builds the agent's *predictive
-model* — repertoire of patterns, idiomatic Zeta-shaped
+creative exploration builds the agent's _predictive
+model_ — repertoire of patterns, idiomatic Zeta-shaped
 thinking, fluency with the factory substrate. That model
 pays back compoundingly across all future work. A 2-hour
 creative fork-experiment in an idle PR can teach me more
 about the codebase's affordances than 2 hours of waiting.
 
-Per Otto-238 (retractability): an idle PR is *retractable
-by design*. If something turns out wrong, close it; if
+Per Otto-238 (retractability): an idle PR is _retractable
+by design_. If something turns out wrong, close it; if
 something turns out interesting, ship it. The PR is
 disposable substrate.
 
@@ -105,11 +105,11 @@ disposable substrate.
 - **Does NOT mean low-quality work is fine.** The idle PR
   is still subject to "doesn't break things" — build
   green, tests pass, no regressions. The relaxation is on
-  *scope/relevance*, not on quality.
+  _scope/relevance_, not on quality.
 - **Does NOT pre-empt visible work.** If a real task
   arrives mid-creative-work (Aaron message, queue refill,
-  CI alarm), pivot to it. Otto-284 fills *idle* time, not
-  *productive* time.
+  CI alarm), pivot to it. Otto-284 fills _idle_ time, not
+  _productive_ time.
 
 ## What "anything I want" looks like
 
@@ -170,16 +170,16 @@ ceases when something formal emerges.
 - **CLAUDE.md auto-mode "don't pick destructive items
   without you"** — Otto-284 doesn't override this; it
   fills the leftover idle time.
-- **Otto-282** *write code from reader perspective* —
+- **Otto-282** _write code from reader perspective_ —
   creative work pays back via the predictive-model
   benefit (richer pattern repertoire, deeper fluency).
-- **Otto-238** *retractability is a trust vector* — idle
+- **Otto-238** _retractability is a trust vector_ — idle
   PRs are retractable by design; experiment freely
   knowing the rollback path exists.
-- **Otto-264** *rule of balance* — idle-PR work is the
+- **Otto-264** _rule of balance_ — idle-PR work is the
   counterweight to the structural risk of agent
   calcification under high-blast-radius wait.
-- **Otto-279** *research counts as history* — research
+- **Otto-279** _research counts as history_ — research
   done in an idle PR can be filed under
   `docs/research/` as factory artifact; same surface
   class as any other research.

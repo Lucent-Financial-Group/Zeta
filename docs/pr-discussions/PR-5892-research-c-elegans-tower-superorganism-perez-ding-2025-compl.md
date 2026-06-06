@@ -18,16 +18,16 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Research-tier ONLY per operator explicit disposition:
 
-> *"research for such that's some crazy shit"*
-> *"we don't want to just code that up without proper research"*
+> _"research for such that's some crazy shit"_
+> _"we don't want to just code that up without proper research"_
 
 No backlog row at this scope — substrate-anchor for future substrate-engineering substrate-target work; substrate-honest disposition preserved.
 
 ## Substrate-grounding (per WebFetch 2026-05-28)
 
-[Scientific American](https://www.scientificamerican.com/article/this-tower-of-worms-is-a-squirming-superorganism/) reporting on Perez & Ding et al., *Current Biology* (2025) DOI: 10.1016/j.cub.2025.05.026:
+[Scientific American](https://www.scientificamerican.com/article/this-tower-of-worms-is-a-squirming-superorganism/) reporting on Perez & Ding et al., _Current Biology_ (2025) DOI: 10.1016/j.cub.2025.05.026:
 
-- **Species**: *C. elegans*
+- **Species**: _C. elegans_
 - **Trigger**: food scarcity (researchers induced via food-empty dish)
 - **Function**: cooperative dispersal + resource-seeking (hitchhike on fruit flies)
 - **Scale**: "dozens of worms" coordinate as superorganism
@@ -35,11 +35,11 @@ No backlog row at this scope — substrate-anchor for future substrate-engineeri
 
 ## Three-layer biological instantiation
 
-| Layer | Substrate |
-|---|---|
-| **Individual** | c302 connectome (Cook et al. 2019; 302 neurons fully mapped) |
-| **Collective** | Tower-superorganism (Perez & Ding 2025; dozens-of-worms coordinated dispersal) |
-| **Formal** | Aurora multi-oracle BFT immune-math + B-0703 three-faction BFT + B-0664 NCI HC-8 |
+| Layer          | Substrate                                                                        |
+| -------------- | -------------------------------------------------------------------------------- |
+| **Individual** | c302 connectome (Cook et al. 2019; 302 neurons fully mapped)                     |
+| **Collective** | Tower-superorganism (Perez & Ding 2025; dozens-of-worms coordinated dispersal)   |
+| **Formal**     | Aurora multi-oracle BFT immune-math + B-0703 three-faction BFT + B-0664 NCI HC-8 |
 
 The framework's multi-oracle BFT formal-math has — uniquely in known biological substrate — a complete-substrate instantiation across ALL THREE substrate-layers simultaneously at the SAME tractability scope.
 

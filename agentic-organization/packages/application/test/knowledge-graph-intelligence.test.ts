@@ -2,11 +2,36 @@ import { equal, ok, deepEqual } from "node:assert/strict";
 import { test } from "node:test";
 
 import { GraphConfidence, GraphEdgeKind, type GraphEdge } from "../../domain/src/index.ts";
-import { deriveImpact, deriveOwnership, deriveChangeHistory, deriveNeighborhood, augmentHitsWithGraph, type GraphStoreReader } from "../src/index.ts";
+import {
+  deriveImpact,
+  deriveOwnership,
+  deriveChangeHistory,
+  deriveNeighborhood,
+  augmentHitsWithGraph,
+  type GraphStoreReader,
+} from "../src/index.ts";
 
 const prov = { source: "x", method: "parse", observedAt: "t" };
-function e(from: string, kind: GraphEdgeKind, to: string, conf: GraphConfidence = GraphConfidence.Extracted, changeSetId?: string): GraphEdge {
-  return { edgeId: `${from}-${kind}-${to}`, organizationId: "org-lfg", fromNodeId: from, toNodeId: to, kind, confidence: conf, provenance: prov, ...(changeSetId ? { changeSetId } : {}), createdAt: "t", updatedAt: "t", version: 1 };
+function e(
+  from: string,
+  kind: GraphEdgeKind,
+  to: string,
+  conf: GraphConfidence = GraphConfidence.Extracted,
+  changeSetId?: string,
+): GraphEdge {
+  return {
+    edgeId: `${from}-${kind}-${to}`,
+    organizationId: "org-lfg",
+    fromNodeId: from,
+    toNodeId: to,
+    kind,
+    confidence: conf,
+    provenance: prov,
+    ...(changeSetId ? { changeSetId } : {}),
+    createdAt: "t",
+    updatedAt: "t",
+    version: 1,
+  };
 }
 
 // graph: web depends_on billing depends_on auth; billing changed_by cs-42; billing owned_by hat-pay
@@ -18,7 +43,8 @@ const EDGES: GraphEdge[] = [
   e("billing", GraphEdgeKind.DependsOn, "old-auth", GraphConfidence.Retracted), // retracted — excluded
 ];
 const store: GraphStoreReader = {
-  outEdges: async (_o, from) => EDGES.filter((x) => x.fromNodeId === from && x.confidence !== GraphConfidence.Retracted),
+  outEdges: async (_o, from) =>
+    EDGES.filter((x) => x.fromNodeId === from && x.confidence !== GraphConfidence.Retracted),
   inEdges: async (_o, to) => EDGES.filter((x) => x.toNodeId === to && x.confidence !== GraphConfidence.Retracted),
 };
 
@@ -47,7 +73,10 @@ test("deriveNeighborhood gives the Stage-5 context (out/in + changeSets), exclud
 });
 
 test("augmentHitsWithGraph lights up D3 Stage 5: a retrieved unit traverses to its service + change", async () => {
-  const hits = [{ docUnitId: "u-billing-rb", aboutNode: "billing" }, { docUnitId: "u-orphan", aboutNode: null }];
+  const hits = [
+    { docUnitId: "u-billing-rb", aboutNode: "billing" },
+    { docUnitId: "u-orphan", aboutNode: null },
+  ];
   const augmented = await augmentHitsWithGraph(hits, store, "org-lfg", (h) => h.aboutNode);
   const billingHit = augmented.find((a) => a.hit.docUnitId === "u-billing-rb")!;
   ok(billingHit.neighborhood !== null);

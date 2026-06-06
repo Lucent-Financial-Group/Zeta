@@ -40,8 +40,8 @@ anchors** in this priority order:
 Aaron 2026-05-01 (verbatim, conversation about artifact-name-
 as-rule discipline):
 
-> *"would Aaron name this file/branch/commit this way? best
-> find an external anchor other than me"*
+> _"would Aaron name this file/branch/commit this way? best
+> find an external anchor other than me"_
 
 The trigger was Otto framing the artifact-name-as-rule test
 as "would Aaron name this way?" — i.e., using Aaron-the-person
@@ -96,13 +96,13 @@ ladder:
 
 OLD test (Aaron-as-anchor — wrong):
 
-> *"Would Aaron name this file/branch/commit this way?"*
+> _"Would Aaron name this file/branch/commit this way?"_
 
 NEW test (mechanical + self-encoding):
 
-> *"Does the name pass a mechanical leak audit (zero
+> _"Does the name pass a mechanical leak audit (zero
 > identifying strings)? Does the name self-encode its
-> purpose (every reference re-applies the discipline)?"*
+> purpose (every reference re-applies the discipline)?"_
 
 Both criteria are external to Otto AND to Aaron. They survive
 Aaron's absence. They survive maintainer-changeover. They
@@ -136,9 +136,9 @@ mechanically self-test on every name-the-thing event.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Aaron is the ferry-of-last-resort, not the test-of-first-
+_"Aaron is the ferry-of-last-resort, not the test-of-first-
 resort. Default to mechanical, external, or self-encoding
-anchors. Escalate to Aaron only when no alternative exists."*
+anchors. Escalate to Aaron only when no alternative exists."_
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not
@@ -169,9 +169,9 @@ rule applied to its own promotion.)
 
 Aaron 2026-05-01 follow-up:
 
-> *"you pr review agents can mechanicalize any anchor you want
+> _"you pr review agents can mechanicalize any anchor you want
 > on the pr process, just be ready to have the pre condition
-> fix for that class or you'll be in PR review hell."*
+> fix for that class or you'll be in PR review hell."_
 
 Sharpens the rule with a load-bearing operational discipline:
 
@@ -234,7 +234,7 @@ hell of any individual check that does fire.
 
 Aaron 2026-05-01 follow-up:
 
-> *"more precise mechanicalization is cheaper and more accurate."*
+> _"more precise mechanicalization is cheaper and more accurate."_
 
 Mechanical tests have a precision axis. Higher precision is
 better on BOTH cost and accuracy:
@@ -245,11 +245,11 @@ better on BOTH cost and accuracy:
 
 Examples of the precision axis:
 
-| Lower precision | Higher precision |
-|---|---|
+| Lower precision                  | Higher precision                                                                                                                                   |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | "Does the file contain 'STCRM'?" | "Does any of [path / filename / commit msg / branch / commit body / PR title / PR body] contain any of `<list of company names + known aliases>`?" |
-| "Does markdownlint pass?" | "Does the file have any line starting with `+`/`-` immediately following non-blank line?" (precise MD032 trigger pattern) |
-| "Does this look insecure?" | "Run Semgrep with `[OWASP top 10 + project-specific] rules`" |
+| "Does markdownlint pass?"        | "Does the file have any line starting with `+`/`-` immediately following non-blank line?" (precise MD032 trigger pattern)                          |
+| "Does this look insecure?"       | "Run Semgrep with `[OWASP top 10 + project-specific] rules`"                                                                                       |
 
 The discipline: **invest in the precision of the mechanical
 check.** A precise test:
@@ -287,8 +287,8 @@ ones.
 
 Aaron 2026-05-01 follow-up:
 
-> *"this is the lesson the sibling repo you got the patterns
-> from have not encoded yet either."*
+> _"this is the lesson the sibling repo you got the patterns
+> from have not encoded yet either."_
 
 Important calibration on external-anchor authority. The
 `../no-copy-only-learning-agents-insight` sibling repo
@@ -306,7 +306,8 @@ But it does NOT yet have:
 
 So the external anchor is **partial** — strong on
 parallel-CI architecture, silent on the pre-condition-fix
-+ precision-axis layer this rule names.
+
+- precision-axis layer this rule names.
 
 **Consequence for the discipline**: external anchors are
 useful where they speak, but **don't extrapolate from
@@ -344,7 +345,7 @@ Does this rule pass its own test?
 
 - **Mechanical**: file name `feedback_prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01.md` — contains "aaron" twice, but as `aaron_as_anchor` (the rule-name) and `aaron_2026_05_01` (the date+author convention). The rule-name IS the rule's content, so it self-encodes. The date+author convention is mechanical (`memory/README.md` documents the **type-prefix** part — `feedback_*` / `project_*` / `user_*` / `reference_*`; the `<topic>_<date>` body and `aaron_<date>` author-attribution suffix are **emergent conventions** observable across the corpus but not formally schema'd in any single canonical doc as of 2026-05-01). Neither is Aaron-as-anchor for the test.
 - **External-process**: would a memory-naming audit flag this? `memory/README.md` schema-checks the type-prefix (`feedback_*`); the body shape `prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01` matches the convention emergent in the corpus (verifiable via `grep -lE '^memory/feedback_.*_aaron_[0-9]{4}_[0-9]{2}_[0-9]{2}\.md$' memory/`). External-process check passes against the type-prefix schema (canonical) + corpus-pattern check (emergent).
-- **Documentation-gap acknowledgment** (Copilot reviewer 2026-05-01 caught this): the `<type>_<topic>_<date>[_aaron_<date>].md` full convention is not formally documented in `memory/README.md` (which covers the type-prefix only). The corpus-pattern check is a *de facto* schema, not a *de jure* one. A future B-0153 lint class candidate: extract the emergent convention into a documented schema in `memory/README.md` so the external-process check has a single canonical citation. Filed as candidate, not landed in this memo.
+- **Documentation-gap acknowledgment** (Copilot reviewer 2026-05-01 caught this): the `<type>_<topic>_<date>[_aaron_<date>].md` full convention is not formally documented in `memory/README.md` (which covers the type-prefix only). The corpus-pattern check is a _de facto_ schema, not a _de jure_ one. A future B-0153 lint class candidate: extract the emergent convention into a documented schema in `memory/README.md` so the external-process check has a single canonical citation. Filed as candidate, not landed in this memo.
 - **Self-encoding**: filename contains the rule's name (`prefer_mechanical_external_anchors_over_aaron_as_anchor`); every reference re-applies the rule. ✓
 - **External-anchor lineage**: composes_with cites Otto-352 + Otto-357 + Otto-364 + visibility-constraint + assumed-state-vs-actual-state — five pre-existing anchors. ✓
 - **Aaron-as-anchor**: not invoked for the test. ✓

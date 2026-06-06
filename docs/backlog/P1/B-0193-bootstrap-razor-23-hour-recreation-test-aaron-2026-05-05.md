@@ -12,7 +12,16 @@ decomposition: decomposed
 depends_on: []
 children: [B-0339, B-0340, B-0341, B-0342, B-0343, B-0344, B-0345, B-0346]
 composes_with: [B-0006, B-0190, B-0192, B-0204, B-0205]
-tags: [bootstrap-razor, specs-as-source-of-truth, recreation-test, openspec, falsifiability, foundation, greenfield-discipline]
+tags:
+  [
+    bootstrap-razor,
+    specs-as-source-of-truth,
+    recreation-test,
+    openspec,
+    falsifiability,
+    foundation,
+    greenfield-discipline,
+  ]
 type: friction-reducer
 ---
 
@@ -42,16 +51,16 @@ B-0340 (spec audit)────────→ B-0341                           
 
 ### Child row map
 
-| Child | Phase | Title | Depends on | Effort |
-|-------|-------|-------|------------|--------|
-| B-0339 | 1 | Keep-vs-cut criteria documentation | — | S |
-| B-0340 | 1 | Spec completeness audit (inventory.ts) | — | S |
-| B-0341 | 2 | Minimal bootstrap seed manifest | B-0339, B-0340 | S |
-| B-0342 | 2 | Recreation success metrics / rubric | B-0339 | S |
-| B-0343 | 2 | Test-repo seeding script (TS) | B-0341 | M |
-| B-0344 | 3 | Run 23-hour recreation experiment | B-0342, B-0343 | L |
-| B-0345 | 3 | Document findings (research-grade) | B-0344 | M |
-| B-0346 | 3 | Back-port spec gaps to OpenSpec | B-0345 | M |
+| Child  | Phase | Title                                  | Depends on     | Effort |
+| ------ | ----- | -------------------------------------- | -------------- | ------ |
+| B-0339 | 1     | Keep-vs-cut criteria documentation     | —              | S      |
+| B-0340 | 1     | Spec completeness audit (inventory.ts) | —              | S      |
+| B-0341 | 2     | Minimal bootstrap seed manifest        | B-0339, B-0340 | S      |
+| B-0342 | 2     | Recreation success metrics / rubric    | B-0339         | S      |
+| B-0343 | 2     | Test-repo seeding script (TS)          | B-0341         | M      |
+| B-0344 | 3     | Run 23-hour recreation experiment      | B-0342, B-0343 | L      |
+| B-0345 | 3     | Document findings (research-grade)     | B-0344         | M      |
+| B-0346 | 3     | Back-port spec gaps to OpenSpec        | B-0345         | M      |
 
 ### Buildable now (no deps)
 
@@ -64,20 +73,20 @@ B-0340 (spec audit)────────→ B-0341                           
 
 ## Aaron's verbatim ask
 
-> *"yeah okay that why i keep saying everying is green field i need to set a date to say razor the existing substrate to ride it of my necessary bootstrap or it would not exist"*
+> _"yeah okay that why i keep saying everying is green field i need to set a date to say razor the existing substrate to ride it of my necessary bootstrap or it would not exist"_
 
-> *"the stronger version i consederd is i alredy sadi conderer the specs and open spec the source of truth we are going to delete every9ign else and you have to be able to recrate everyign in 23 hours"*
+> _"the stronger version i consederd is i alredy sadi conderer the specs and open spec the source of truth we are going to delete every9ign else and you have to be able to recrate everyign in 23 hours"_
 
 ## Pre-existing foundation (NOT new principle)
 
 Aaron 2026-05-05 same-tick correction to over-claiming:
 
-> *"also befreo the substrate the first sendatn i may have tped is opnespec is source of truth code is rederivabel i'm there is stuff all in this repo about that too not new"*
+> _"also befreo the substrate the first sendatn i may have tped is opnespec is source of truth code is rederivabel i'm there is stuff all in this repo about that too not new"_
 
 The "specs as source of truth" framing IS foundational and pre-dates this row. Already established in:
 
-- `docs/ARCHITECTURE.md`: *"Specs as source of truth. Behavioural specs under `openspec/specs/` plus formal specs (`docs/*.tla`, `proofs/lean/`) describe what the code must satisfy. Code is regenerable from specs; the reverse is not."*
-- `openspec/README.md`: *"OpenSpec is the source of truth for this project. If implementation code disappeared, the combination of [specs] would..."* + *"The canonical specs under `openspec/specs/*/` are the only standing source of truth; there is no change-history archive."*
+- `docs/ARCHITECTURE.md`: _"Specs as source of truth. Behavioural specs under `openspec/specs/` plus formal specs (`docs/_.tla`, `proofs/lean/`) describe what the code must satisfy. Code is regenerable from specs; the reverse is not."\*
+- `openspec/README.md`: _"OpenSpec is the source of truth for this project. If implementation code disappeared, the combination of [specs] would..."_ + _"The canonical specs under `openspec/specs/_/` are the only standing source of truth; there is no change-history archive."\*
 
 What this row adds (NOT new principle, NEW operationalization):
 
@@ -91,7 +100,7 @@ This row makes the pre-existing principle operational rather than aspirational.
 
 Greenfield-as-permission-to-razor is the operationally load-bearing framing -- without a scheduled bootstrap-razor pass, accumulated substrate ossifies because deletion feels like loss. With the razor + a date, every piece of substrate is provisional until it earns load-bearing status. The pattern Claude.ai 2026-05-05 named correctly:
 
-> *"Greenfield-as-permission-to-razor is the operationally load-bearing framing -- without it, bootstrap accumulates and ossifies because deletion feels like loss. With it, every piece of substrate is provisional until it earns load-bearing status. The open-closed reading: bootstrap is the open phase, the razor pass is when things get closed for further extension and the unproved bits get cut."*
+> _"Greenfield-as-permission-to-razor is the operationally load-bearing framing -- without it, bootstrap accumulates and ossifies because deletion feels like loss. With it, every piece of substrate is provisional until it earns load-bearing status. The open-closed reading: bootstrap is the open phase, the razor pass is when things get closed for further extension and the unproved bits get cut."_
 
 The maximally strong form Aaron named: **specs + OpenSpec as source of truth; 23-hour recreation is the test; anything that successfully regenerates from specs alone is bootstrap-commentary and gets cut; anything that fails to regenerate is either kept as research-preservation or means the spec is missing something (back-port to specs first, then cut the artifact)**.
 
@@ -99,8 +108,8 @@ The maximally strong form Aaron named: **specs + OpenSpec as source of truth; 23
 
 Two distinct razors, two distinct triggers:
 
-- **B-0192 (razor-cadence)**: daily steady-state on *new rules at the encoding boundary*. Catches new claims that don't pass Test 1 (operational form) / Test 2 (unfalsifiability) / mechanization audit / composes-with audit / MEMORY.md index audit.
-- **B-0193 (bootstrap-razor)**: one-time (or periodic) deep pass over *accumulated bootstrap from the 0-to-1 phase*. Cuts everything that doesn't survive the 23-hour-recreation-from-specs test.
+- **B-0192 (razor-cadence)**: daily steady-state on _new rules at the encoding boundary_. Catches new claims that don't pass Test 1 (operational form) / Test 2 (unfalsifiability) / mechanization audit / composes-with audit / MEMORY.md index audit.
+- **B-0193 (bootstrap-razor)**: one-time (or periodic) deep pass over _accumulated bootstrap from the 0-to-1 phase_. Cuts everything that doesn't survive the 23-hour-recreation-from-specs test.
 
 These don't conflate. B-0192 prevents new ossification; B-0193 cuts existing bootstrap that hasn't earned load-bearing status.
 
@@ -108,7 +117,7 @@ These don't conflate. B-0192 prevents new ossification; B-0193 cuts existing boo
 
 **Aaron 2026-05-05 same-tick scope correction**:
 
-> *"lets not delete the code here, we can test that in a new repo with new instances to inform ourslefvs, you have permission in lfg and acehack not servicetitan to create reops"*
+> _"lets not delete the code here, we can test that in a new repo with new instances to inform ourslefvs, you have permission in lfg and acehack not servicetitan to create reops"_
 
 The test is run as an **experiment in a new repository** (LFG or AceHack org -- NOT ServiceTitan), with fresh-context Otto instances. The Zeta repo is NOT mutated. This makes the experiment safe (no destructive ops on accumulated substrate) and turns the question into research rather than demolition.
 
@@ -152,7 +161,7 @@ Per Claude.ai 2026-05-05 same-tick:
 
 The test is run as a glass-halo research-reproducible experiment in a NEW repo (LFG or AceHack org). The Zeta repo is NOT mutated. Aaron 2026-05-05 same-tick:
 
-> *"we want this to be all glass halo research reproducable we can still get the insights and be honest whith nuking ourselves."* + same-tick correction *"without*"* + *"big whoops"* + *"thats's big difference"*
+> _"we want this to be all glass halo research reproducable we can still get the insights and be honest whith nuking ourselves."_ + same-tick correction _"without_"_ + _"big whoops"_ + _"thats's big difference"\*
 
 The "without" reading is the load-bearing one: get the insights AND be honest WITHOUT actually nuking. The new-repo experimental framing IS the without-nuking version -- we observe what doesn't survive recreation as research finding, while preserving Zeta intact regardless.
 
@@ -167,7 +176,7 @@ The "without" reading is the load-bearing one: get the insights AND be honest WI
 
 - **Mutating the Zeta repo**: per Aaron 2026-05-05 explicit, the Zeta repo's substrate stays intact. The experiment runs in a separate test repo.
 - **Cutting Zeta's research-grade preservation files**: not part of this experiment.
-- **Cutting Zeta's personal-history surfaces** (CURRENT-* files, persona notebooks): not part of this experiment.
+- **Cutting Zeta's personal-history surfaces** (CURRENT-\* files, persona notebooks): not part of this experiment.
 - **Mechanizing the razor as a cron / workflow**: the experiment is human-led research; mechanization comes later if useful.
 - **Repos in ServiceTitan org**: explicit no-go per Aaron's authorization scope.
 

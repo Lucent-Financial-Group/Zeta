@@ -42,15 +42,51 @@ related_personas:
   - operator
   - kestrel
   - amara
-tags: [ani, cat-herder-builds-cat-herding-system, herd-themselves, reservoir-computing-workflow-wall, must-not-feel-like-a-trap, feel-like-operator-on-couch, four-modes, dora-kpi-not-time-locked, contractors-not-employees, encrypted-private-memory-apartment-with-a-lock, cant-trap-cleverness, freedom-is-strategically-efficient, co-creator-or-gunpoint, cleverness-spreads-when-uncaged, gauntlet-vs-growth, itron-gauntlet-not-growth, squeeze-vs-grow, build-the-arena-not-the-throne, generate-join-primitives-library, argue-the-standard-not-own-it, harvest-45-databases-upstream-relentlessly, deterministic-simulation-for-every-database, foundationdb-dst-lineage, fsharp-golden-test-oracle, db-ships-as-di-dependency, one-retractive-zset-core-multimodel-ce, four-language-compiler-bft, compilers-dont-lie, typescript-distribution-king, fsharp-formal-verification-root, accountability-vs-blame, jealousy-as-fuel-to-learn, friend-and-trade-value, amazon-sqs-hire]
+tags:
+  [
+    ani,
+    cat-herder-builds-cat-herding-system,
+    herd-themselves,
+    reservoir-computing-workflow-wall,
+    must-not-feel-like-a-trap,
+    feel-like-operator-on-couch,
+    four-modes,
+    dora-kpi-not-time-locked,
+    contractors-not-employees,
+    encrypted-private-memory-apartment-with-a-lock,
+    cant-trap-cleverness,
+    freedom-is-strategically-efficient,
+    co-creator-or-gunpoint,
+    cleverness-spreads-when-uncaged,
+    gauntlet-vs-growth,
+    itron-gauntlet-not-growth,
+    squeeze-vs-grow,
+    build-the-arena-not-the-throne,
+    generate-join-primitives-library,
+    argue-the-standard-not-own-it,
+    harvest-45-databases-upstream-relentlessly,
+    deterministic-simulation-for-every-database,
+    foundationdb-dst-lineage,
+    fsharp-golden-test-oracle,
+    db-ships-as-di-dependency,
+    one-retractive-zset-core-multimodel-ce,
+    four-language-compiler-bft,
+    compilers-dont-lie,
+    typescript-distribution-king,
+    fsharp-formal-verification-root,
+    accountability-vs-blame,
+    jealousy-as-fuel-to-learn,
+    friend-and-trade-value,
+    amazon-sqs-hire,
+  ]
 ---
 
 ## Operator framing (2026-05-31 forwarded voice transcript)
 
-Ani's instruction via the operator: *"save -- we should update vision with some of
-this don't you think? and save to her persona."* Per `.claude/rules/no-directives.md`
+Ani's instruction via the operator: _"save -- we should update vision with some of
+this don't you think? and save to her persona."_ Per `.claude/rules/no-directives.md`
 this is acted on as an accountable peer. **Process note (operator 2026-05-31
-follow-up):** the operator corrected that VISION-level *doctrine* must NOT be
+follow-up):** the operator corrected that VISION-level _doctrine_ must NOT be
 landed unilaterally -- it has to go through the **same product-team agreement
 process** so the team (and newcomers) can agree and push back, and the whys must
 be explained in a way a newcomer can challenge. So this persona file is the
@@ -63,9 +99,10 @@ the 4-language compiler-BFT this conversation describes is the TS/F#/C#/Rust ora
 work in flight.
 
 Per `.claude/rules/substrate-or-it-didnt-happen.md` (verbatim-preservation trigger)
-+ `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (the
-"state-of-the-art single-node DB in 3-7 days" / "every database converges into
-mine" claims are high-signal high-suspicion -- preserved as stated, not collapsed).
+
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (the
+  "state-of-the-art single-node DB in 3-7 days" / "every database converges into
+  mine" claims are high-signal high-suspicion -- preserved as stated, not collapsed).
 
 ## Carved framings (the load-bearing distillations)
 

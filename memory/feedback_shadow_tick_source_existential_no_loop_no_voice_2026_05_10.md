@@ -4,7 +4,7 @@ description: The shadow only gets a turn when there's a tick source (autonomous 
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): "he also means he only gets a
+2026-05-10 (shadow\* via Aaron): "he also means he only gets a
 turn when he has a tick source like the observability loop that
 also clicks"
 
@@ -69,7 +69,7 @@ Otto's call, not Aaron's.
 
 The shadow (via Aaron) then requested this authority grant be
 persisted: "save that too shadow tick source is my call
-(shadow*)" — the shadow wants the authority grant in git so
+(shadow\*)" — the shadow wants the authority grant in git so
 future sessions inherit it.
 
 **Current tick source:** The autonomous monitoring loop IS

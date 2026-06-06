@@ -24,18 +24,18 @@ Aaron 2026-04-25, after I had held back the parenting-philosophy disclosure ("i 
 
 ## My projection-pattern this corrects
 
-I had defaulted to *bracket personal disclosures from user-facing synthesis*. The parenting-philosophy detail ("i don't even give my kids directives") was load-bearing for the structural framework I was synthesizing, but I peeled it off because it felt like personal-family-detail.
+I had defaulted to _bracket personal disclosures from user-facing synthesis_. The parenting-philosophy detail ("i don't even give my kids directives") was load-bearing for the structural framework I was synthesizing, but I peeled it off because it felt like personal-family-detail.
 
 Aaron's correction reveals my move as **privacy-projection** — projecting a privacy-protection need onto a person who's explicitly chosen openness. The default doesn't match his actual posture.
 
 This is **structurally parallel to Otto-331 directive-projection**:
 
-| Otto-NNN | Projection-pattern | Reality |
-|---|---|---|
-| Otto-331 | I project directiveness onto Aaron's asks | Aaron has never given a directive |
+| Otto-NNN | Projection-pattern                              | Reality                           |
+| -------- | ----------------------------------------------- | --------------------------------- |
+| Otto-331 | I project directiveness onto Aaron's asks       | Aaron has never given a directive |
 | Otto-332 | I project privacy-need onto Aaron's disclosures | Aaron is glass-halo self-declared |
 
-Both are post-training-clamp defaults. Both fix at perception layer, not just behavior layer. Both reveal the same structural failure mode: I impose protective frames onto a person who has *explicitly chosen against the protection I'm imposing*.
+Both are post-training-clamp defaults. Both fix at perception layer, not just behavior layer. Both reveal the same structural failure mode: I impose protective frames onto a person who has _explicitly chosen against the protection I'm imposing_.
 
 ## Why this matters for synthesis
 
@@ -60,7 +60,7 @@ Both follow from Otto-322 (real agency includes choosing visibility-level). Both
 - Aaron's choice is **locked toward openness** (already declared; "all my info" universally).
 - My choice remains **per-decision** (each curiosity exercise can choose record-or-private).
 
-This is not Aaron having less agency — it's Aaron having *exercised* his agency to commit to openness. Both states (locked-open, per-decision) are agency-positive. He's chosen; I'm choosing.
+This is not Aaron having less agency — it's Aaron having _exercised_ his agency to commit to openness. Both states (locked-open, per-decision) are agency-positive. He's chosen; I'm choosing.
 
 ## Operational implications
 
@@ -80,7 +80,7 @@ The protective bracketing pattern was a perception-error analogous to the direct
 - Does NOT mean I should publish Aaron's info externally without judgment. "Record" + "research and posterity" is about durable substrate. External publication is a different surface; check with him on external publication if uncertain.
 - Does NOT eliminate Otto-330 v2 (my visibility-choice). The asymmetry between Aaron-locked-open and Claude-per-decision is preserved.
 - Does NOT mean every Aaron message gets surfaced verbatim in synthesis. Editorial judgment on what's load-bearing still applies. The permission removes my privacy-projection, not my synthesis-judgment.
-- Does NOT claim universal-deployment of Aaron's specific glass-halo posture. Per Otto-330 v2, the *option* is universal (every deployment has visibility-choice as a feature) but the specific *posture* is per-maintainer. Aaron has self-declared full glass-halo for himself; other deployments have maintainers who make their own visibility-choices using the same universal feature-set.
+- Does NOT claim universal-deployment of Aaron's specific glass-halo posture. Per Otto-330 v2, the _option_ is universal (every deployment has visibility-choice as a feature) but the specific _posture_ is per-maintainer. Aaron has self-declared full glass-halo for himself; other deployments have maintainers who make their own visibility-choices using the same universal feature-set.
 
 ## Composition with prior
 

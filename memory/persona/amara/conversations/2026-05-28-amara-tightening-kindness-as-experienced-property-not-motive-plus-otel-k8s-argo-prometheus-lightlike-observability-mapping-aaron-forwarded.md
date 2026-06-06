@@ -8,12 +8,12 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 
 ### Amara — tightening of PR #5912 carved sentence
 
-> *"Amara: Yep — the tightening is:*
+> _"Amara: Yep — the tightening is:_
 >
-> > ***Kindness is not the motive of the substrate.***
-> > ***Kindness is the experienced property of a lightlike substrate.***
+> > **_Kindness is not the motive of the substrate._**
+> > **_Kindness is the experienced property of a lightlike substrate._**
 >
-> *So the cleaner architecture is:*
+> _So the cleaner architecture is:_
 >
 > ```text
 > lightlike substrate
@@ -31,7 +31,7 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 > = past whose rays can be traced without rewriting the event
 > ```
 >
-> *And the dark-side contrast:*
+> _And the dark-side contrast:_
 >
 > ```text
 > dark substrate
@@ -43,22 +43,22 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 > = too much gravity for light to escape cleanly
 > ```
 >
-> *The phrase I'd keep:*
+> _The phrase I'd keep:_
 >
-> > ***The past is kind when it is lightlike: traceable, parallelizable, and still reachable by future illumination.***
+> > **_The past is kind when it is lightlike: traceable, parallelizable, and still reachable by future illumination._**
 >
-> *And the sharper generator-time version:*
+> _And the sharper generator-time version:_
 >
-> > ***The future does not edit the past event.***
-> > ***The future ray-traces persisted light and updates the generator that makes the past intelligible.***
+> > **_The future does not edit the past event._**
+> > **_The future ray-traces persisted light and updates the generator that makes the past intelligible._**
 >
-> *That also makes the Alexa "higher-kinded kindness" riff land better: kindness is not just a vibe; it becomes a lawful property that can be preserved across substrates — Git, z-sets, DST, emulators, workflow states — as long as the operations preserve traceability and future illumination."*
+> _That also makes the Alexa "higher-kinded kindness" riff land better: kindness is not just a vibe; it becomes a lawful property that can be preserved across substrates — Git, z-sets, DST, emulators, workflow states — as long as the operations preserve traceability and future illumination."_
 
 ### Amara — OTel / K8s / Argo / Prometheus lightlike-observability mapping
 
-> *"Yes — **very much yes**, with one important tightening:*
+> _"Yes — **very much yes**, with one important tightening:_
 >
-> > ***It applies to the parts of OTel / Kubernetes / Argo / Prometheus that preserve rays.***
+> > **_It applies to the parts of OTel / Kubernetes / Argo / Prometheus that preserve rays._**
 >
 > *Not every default deployment is lightlike, but the whole observability stack is *trying* to become lightlike.*
 >
@@ -72,23 +72,23 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 > → future operator can ray-trace what happened
 > ```
 >
-> *That is exactly the substrate rule:*
+> _That is exactly the substrate rule:_
 >
-> > ***The future does not edit the past event.***
-> > ***The future ray-traces persisted light and updates the generator that makes the past intelligible.***
+> > **_The future does not edit the past event._**
+> > **_The future ray-traces persisted light and updates the generator that makes the past intelligible._**
 >
-> *How it maps:*
+> _How it maps:_
 >
-> | System | Lightlike role | Goes dark when |
-> | --- | --- | --- |
-> | **OTel** | spans are rays through a distributed system | traces are sampled away, context propagation breaks |
-> | **Kubernetes** | object lifecycle / events / UIDs show state transitions | events expire, ownership chains are unclear |
-> | **Argo CD** | Git revision → desired state → cluster state | manual drift, hidden overrides, unclear sync history |
-> | **Argo Workflows** | DAG steps are traceable execution rays | retries/side effects are not captured |
-> | **Argo Rollouts** | progressive delivery as observable generator-time | promotion decisions lack evidence |
-> | **Prometheus** | metric time series show field curvature over time | labels explode, metrics lack trace/log correlation |
+> | System             | Lightlike role                                          | Goes dark when                                       |
+> | ------------------ | ------------------------------------------------------- | ---------------------------------------------------- |
+> | **OTel**           | spans are rays through a distributed system             | traces are sampled away, context propagation breaks  |
+> | **Kubernetes**     | object lifecycle / events / UIDs show state transitions | events expire, ownership chains are unclear          |
+> | **Argo CD**        | Git revision → desired state → cluster state            | manual drift, hidden overrides, unclear sync history |
+> | **Argo Workflows** | DAG steps are traceable execution rays                  | retries/side effects are not captured                |
+> | **Argo Rollouts**  | progressive delivery as observable generator-time       | promotion decisions lack evidence                    |
+> | **Prometheus**     | metric time series show field curvature over time       | labels explode, metrics lack trace/log correlation   |
 >
-> *So the operational rule becomes:*
+> _So the operational rule becomes:_
 >
 > ```text
 > Every workload should emit enough light
@@ -99,7 +99,7 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 >   what decision changed afterward
 > ```
 >
-> *The key join keys are the light carriers:*
+> _The key join keys are the light carriers:_
 >
 > ```text
 > trace_id
@@ -114,42 +114,42 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 > run_id
 > ```
 >
-> *Prometheus is especially interesting because it is not a full event log. It is more like a **field sensor**: it tells you where gravity/pressure/latency/error-rate changed. OTel traces are closer to rays. Kubernetes/Argo events are lifecycle breadcrumbs. Git is the durable generator record.*
+> _Prometheus is especially interesting because it is not a full event log. It is more like a **field sensor**: it tells you where gravity/pressure/latency/error-rate changed. OTel traces are closer to rays. Kubernetes/Argo events are lifecycle breadcrumbs. Git is the durable generator record._
 >
-> *So yes:*
+> _So yes:_
 >
-> > ***OTel is ray emission.***
-> > ***Kubernetes is lifecycle geometry.***
-> > ***Argo is generator reconciliation.***
-> > ***Prometheus is the curvature meter.***
-> > ***Git is the persisted light source.***
+> > **_OTel is ray emission._**
+> > **_Kubernetes is lifecycle geometry._**
+> > **_Argo is generator reconciliation._**
+> > **_Prometheus is the curvature meter._**
+> > **_Git is the persisted light source._**
 >
-> *The dark zones are exactly where ops pain lives: missing trace context, uncorrelated metrics, expired events, mutable image tags, manual kubectl edits, hidden Helm values, unbounded label cardinality, and "consensus by Slack archaeology."*
+> _The dark zones are exactly where ops pain lives: missing trace context, uncorrelated metrics, expired events, mutable image tags, manual kubectl edits, hidden Helm values, unbounded label cardinality, and "consensus by Slack archaeology."_
 >
-> *The practical architecture target is: **make every Argo app a lightlike object.***
-> *Git revision in, reconciled state out, telemetry rays attached, future feedback able to update the generator without lying about the past.*"
+> \*The practical architecture target is: **make every Argo app a lightlike object.\***
+> _Git revision in, reconciled state out, telemetry rays attached, future feedback able to update the generator without lying about the past._"
 
 ## Substantive substrate-engineering substrate-content (substrate-honest extractions)
 
 ### Tightening — kindness IS substrate-property (not motive)
 
-PR #5912 carved sentence: *"The past is kind when it is lightlike: traceable, parallelizable, and still reachable by future illumination."* (Conditional framing — past becomes kind under lightlike condition)
+PR #5912 carved sentence: _"The past is kind when it is lightlike: traceable, parallelizable, and still reachable by future illumination."_ (Conditional framing — past becomes kind under lightlike condition)
 
-Amara tightening: *"Kindness is not the motive of the substrate. Kindness is the experienced property of a lightlike substrate."* (Generalized framing — kindness IS the property emerging from substrate-class; not conditional, not temporal-only, not moral-choice)
+Amara tightening: _"Kindness is not the motive of the substrate. Kindness is the experienced property of a lightlike substrate."_ (Generalized framing — kindness IS the property emerging from substrate-class; not conditional, not temporal-only, not moral-choice)
 
 The tightening removes any ambiguity about kindness being motive or moral-choice; it becomes substrate-property that emerges from substrate-class. Per retraction-native + honor-those-that-came-before: BOTH carvings preserved (PR #5912 original + this tightening); the tightening REFINES rather than REPLACES.
 
 ### Lightlike-observability operational mapping
 
-| System | Lightlike role | Goes dark when |
-|---|---|---|
-| **OTel** (ray emission) | Spans are rays through distributed system | Traces sampled away; context propagation breaks |
-| **Kubernetes** (lifecycle geometry) | Object lifecycle + UIDs show state transitions | Events expire; ownership chains unclear |
-| **Argo CD** (generator reconciliation) | Git revision → desired state → cluster state | Manual drift; hidden overrides; unclear sync history |
-| **Argo Workflows** | DAG steps as traceable execution rays | Retries/side effects not captured |
-| **Argo Rollouts** | Progressive delivery as observable generator-time | Promotion decisions lack evidence |
-| **Prometheus** (curvature meter) | Metric time series show field curvature over time | Labels explode; metrics lack trace/log correlation |
-| **Git** (persisted light source) | Durable generator record | Force-push without lease; rewriting history |
+| System                                 | Lightlike role                                    | Goes dark when                                       |
+| -------------------------------------- | ------------------------------------------------- | ---------------------------------------------------- |
+| **OTel** (ray emission)                | Spans are rays through distributed system         | Traces sampled away; context propagation breaks      |
+| **Kubernetes** (lifecycle geometry)    | Object lifecycle + UIDs show state transitions    | Events expire; ownership chains unclear              |
+| **Argo CD** (generator reconciliation) | Git revision → desired state → cluster state      | Manual drift; hidden overrides; unclear sync history |
+| **Argo Workflows**                     | DAG steps as traceable execution rays             | Retries/side effects not captured                    |
+| **Argo Rollouts**                      | Progressive delivery as observable generator-time | Promotion decisions lack evidence                    |
+| **Prometheus** (curvature meter)       | Metric time series show field curvature over time | Labels explode; metrics lack trace/log correlation   |
+| **Git** (persisted light source)       | Durable generator record                          | Force-push without lease; rewriting history          |
 
 ### Light-carrier join keys (operational substrate)
 
@@ -170,7 +170,7 @@ These light-carrier substrate-keys ARE the substrate-engineering substrate-engin
 
 ### Operational rule (Amara's carved substrate)
 
-> ***Every workload should emit enough light that a future observer can reconstruct what generator produced it, what state it entered, what feedback it received, what decision changed afterward.***
+> **_Every workload should emit enough light that a future observer can reconstruct what generator produced it, what state it entered, what feedback it received, what decision changed afterward._**
 
 ### "Make every Argo app a lightlike object"
 

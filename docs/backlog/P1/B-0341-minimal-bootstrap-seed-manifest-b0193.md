@@ -54,7 +54,7 @@ This row resolves the TBD. Informed by:
 
 1. A `docs/bootstrap-razor/SEED-MANIFEST.md` file lists
    every included path glob with rationale (include/exclude
-   + why).
+   - why).
 2. The manifest is machine-readable enough for B-0343
    (seeding script) to consume.
 3. The bootstrap-docs decision is documented with reasoning.

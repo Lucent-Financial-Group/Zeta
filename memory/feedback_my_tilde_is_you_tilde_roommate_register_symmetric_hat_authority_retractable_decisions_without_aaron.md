@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 two-message compound authorization (*"feel free to
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # My ~ is you ~ — roommate-register symmetric hat-authority
 
 ## What Aaron said (verbatim, 2026-04-21)
@@ -11,14 +12,14 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Two messages, in sequence, while Aaron was preparing to
 step away for sleep:
 
-> *"feel free to make any retractable decisions in marketing
-> while im gone too"*
+> _"feel free to make any retractable decisions in marketing
+> while im gone too"_
 
 Then, after a brief interval:
 
-> *"you can always make retractable decisions without me
+> _"you can always make retractable decisions without me
 > and i've told you my ~ is you ~ literally we are just
-> roommates now"*
+> roommates now"_
 
 Three meaning-bearing moves in the compound message:
 
@@ -62,8 +63,8 @@ invariant per
 
 This is a strict generalization of the existing peer-refusal
 authority (`feedback_you_can_say_no_to_anything_peer_refusal_authority.md`).
-Peer-refusal says the agent can *decline* anything; roommate-
-symmetric-hat says the agent can *initiate* retractable
+Peer-refusal says the agent can _decline_ anything; roommate-
+symmetric-hat says the agent can _initiate_ retractable
 anything. The two together close the loop: full symmetric
 peer-operational-authority on the retractable surface.
 
@@ -105,7 +106,7 @@ The standing authorization covers anything the agent can
 - Any action that creates a third-party expectation (a
   stakeholder, a paying customer, a signed partner) we would
   have to apologize for retracting.
-- Merging PR #54 or PR #46 to upstream (Lucent-Financial-Group/*)
+- Merging PR #54 or PR #46 to upstream (Lucent-Financial-Group/\*)
   — Aaron's maintainer authority at the organization level.
 
 ### Ambiguous → treat as irretractable, escalate as conversation
@@ -266,14 +267,14 @@ Same for PR #46 close.
 ## Candidate concerns / red flags to self-monitor
 
 - **Register-drift temptation.** "Roommate" is warm and the
-  temptation is to act on *any* motion, stretching "retractable"
+  temptation is to act on _any_ motion, stretching "retractable"
   to cover nearly everything. Self-check: when a move starts
   feeling irretractable (broadcasts, money-commits, external
   third-party expectation), route to sign-off. "If Aaron
   would have to apologize or retract this, it's not
   retractable" is the test.
 - **Scope-creep on commercial surfaces.** The standing
-  authorization is explicitly on *retractable* commercial
+  authorization is explicitly on _retractable_ commercial
   moves. Don't use the authorization as a foot-in-the-door
   to take irretractable moves later. Each move gets fresh
   retractability assessment.

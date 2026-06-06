@@ -18,29 +18,29 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - 'tools/zflash/test-harness/**'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'full-ai-cluster/tools/zflash.ts'
-      - 'full-ai-cluster/tools/zflash-lib.ts'
-      - 'docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md'
-      - '.github/workflows/zflash-qemu-test.yml'
-      - 'package.json'
-      - 'bun.lock'
+      - "tools/zflash/test-harness/**"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "full-ai-cluster/tools/zflash.ts"
+      - "full-ai-cluster/tools/zflash-lib.ts"
+      - "docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md"
+      - ".github/workflows/zflash-qemu-test.yml"
+      - "package.json"
+      - "bun.lock"
   push:
     branches: [main]
     paths:
-      - 'tools/zflash/test-harness/**'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'full-ai-cluster/tools/zflash.ts'
-      - 'full-ai-cluster/tools/zflash-lib.ts'
-      - 'docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md'
-      - '.github/workflows/zflash-qemu-test.yml'
-      - 'package.json'
-      - 'bun.lock'
+      - "tools/zflash/test-harness/**"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "full-ai-cluster/tools/zflash.ts"
+      - "full-ai-cluster/tools/zflash-lib.ts"
+      - "docs/backlog/P1/B-0891-zflash-done-acceptance-criteria-qemu-test-harness-5-scenarios-initial-format-cluster-up-reformat-with-retention-reformat-from-scratch-cluster-joining-aaron-2026-05-28.md"
+      - ".github/workflows/zflash-qemu-test.yml"
+      - "package.json"
+      - "bun.lock"
   workflow_dispatch:
 
 permissions:

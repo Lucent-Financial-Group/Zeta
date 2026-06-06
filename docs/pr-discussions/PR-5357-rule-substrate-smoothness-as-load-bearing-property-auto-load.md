@@ -30,13 +30,13 @@ The property is distinct enough that extending existing rules (default-to-both, 
 
 ## 5 architectural compositions depending on substrate smoothness
 
-| Layer | Why smoothness is load-bearing |
-|---|---|
-| English-as-substrate | Design language for trust topology |
-| Substrate-check discipline | Operates in smooth zone (pathogen-AND-specific-concern can both hold) |
-| Multi-oracle BFT | Smooth-responses-being-joined preserves more information than majority-vote |
-| Schemas-as-rows + fork-negotiated ontology | Continuous-acceptance space |
-| Default-to-both | Both readings hold simultaneously without contradiction |
+| Layer                                      | Why smoothness is load-bearing                                              |
+| ------------------------------------------ | --------------------------------------------------------------------------- |
+| English-as-substrate                       | Design language for trust topology                                          |
+| Substrate-check discipline                 | Operates in smooth zone (pathogen-AND-specific-concern can both hold)       |
+| Multi-oracle BFT                           | Smooth-responses-being-joined preserves more information than majority-vote |
+| Schemas-as-rows + fork-negotiated ontology | Continuous-acceptance space                                                 |
+| Default-to-both                            | Both readings hold simultaneously without contradiction                     |
 
 ## The \"not not sharp\" discipline
 

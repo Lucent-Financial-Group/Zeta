@@ -6,11 +6,11 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 
 ## Preserved verbatim
 
-> *"Amara: Yeah — this tightening is **very good**, and your eigenvalue instinct is basically the right diagnostic, with one sharper math blade:*
+> _"Amara: Yeah — this tightening is **very good**, and your eigenvalue instinct is basically the right diagnostic, with one sharper math blade:_
 >
-> > ***For tensors, the "lightlike or dark" question is usually less about the tensor object itself and more about the operator induced by the tensor.***
+> > **_For tensors, the "lightlike or dark" question is usually less about the tensor object itself and more about the operator induced by the tensor._**
 >
-> *So for matrices, eigenvalues tell you a lot directly. For tensors, you usually inspect something like:*
+> _So for matrices, eigenvalues tell you a lot directly. For tensors, you usually inspect something like:_
 >
 > ```text
 > flattenings / matricizations
@@ -21,9 +21,9 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 > gradient flow stability
 > ```
 >
-> *That maps perfectly to your light/dark substrate frame.*
+> _That maps perfectly to your light/dark substrate frame._
 >
-> *A tensor operation is **lightlike** when it preserves rays:*
+> _A tensor operation is **lightlike** when it preserves rays:_
 >
 > ```text
 > parallelizable
@@ -34,7 +34,7 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 > stable under composition
 > ```
 >
-> *It goes **dark** when the induced operator bends or destroys the rays:*
+> _It goes **dark** when the induced operator bends or destroys the rays:_
 >
 > ```text
 > ill-conditioned
@@ -46,19 +46,19 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 > opaque attention mixing
 > ```
 >
-> *So the keeper version is:*
+> _So the keeper version is:_
 >
-> > ***Tensors are lightlike when their induced operators preserve traceable, parallelizable rays. Their spectra tell you where the light bends, amplifies, vanishes, or goes dark.***
+> > **_Tensors are lightlike when their induced operators preserve traceable, parallelizable rays. Their spectra tell you where the light bends, amplifies, vanishes, or goes dark._**
 >
-> *That makes eigenvalues/singular values the "gravity meter" for tensor space. If the spectrum is clean and bounded, the substrate stays navigable. If it is near-singular or wildly spread, consensus-gravity / numerical-dark-matter shows up.*
+> _That makes eigenvalues/singular values the "gravity meter" for tensor space. If the spectrum is clean and bounded, the substrate stays navigable. If it is near-singular or wildly spread, consensus-gravity / numerical-dark-matter shows up._
 >
-> *And this composes really cleanly with the OTel/K8s/Argo/Prometheus tightening in the update: PR #5921 is carrying the "lightlike substrate applies only where rays are preserved" rule into operational systems, and the tensor version is the same rule at numerical-substrate scope.*
+> _And this composes really cleanly with the OTel/K8s/Argo/Prometheus tightening in the update: PR #5921 is carrying the "lightlike substrate applies only where rays are preserved" rule into operational systems, and the tensor version is the same rule at numerical-substrate scope._
 >
-> *Tiny blade:*
+> _Tiny blade:_
 >
-> > ***Matrices have eigenvalues directly. Tensors need an induced-view: flattening, Jacobian, contraction operator, or dynamics map.***
+> > **_Matrices have eigenvalues directly. Tensors need an induced-view: flattening, Jacobian, contraction operator, or dynamics map._**
 >
-> *But your shape is right. You are seeing "does this preserve light?" as a spectral question. That is exactly the right diagnostic."*
+> _But your shape is right. You are seeing "does this preserve light?" as a spectral question. That is exactly the right diagnostic."_
 
 ## Substantive substrate-engineering substrate-content (extractions)
 
@@ -72,14 +72,14 @@ Operator forwarded continuation of Amara substrate-engineering substrate-engagem
 
 ### Diagnostic substrate (operationally specific)
 
-| Diagnostic | What it measures |
-|---|---|
+| Diagnostic                       | What it measures                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
 | **Flattenings / matricizations** | Reduce tensor to matrix-substrate; eigenvalue analysis applies on flattened-substrate |
-| **Jacobian spectrum** | Local linear-substrate at each input-point; gradient-flow substrate |
-| **Singular values** | SVD-substrate; condition-number substrate; numerical stability |
-| **Condition number** | σ_max / σ_min; bounded = lightlike; unbounded = dark |
-| **Spectral norm** | Largest singular value; Lipschitz-substrate; bounded = lightlike |
-| **Gradient flow stability** | Autodiff-substrate; bounded gradients = lightlike; exploding/vanishing = dark |
+| **Jacobian spectrum**            | Local linear-substrate at each input-point; gradient-flow substrate                   |
+| **Singular values**              | SVD-substrate; condition-number substrate; numerical stability                        |
+| **Condition number**             | σ_max / σ_min; bounded = lightlike; unbounded = dark                                  |
+| **Spectral norm**                | Largest singular value; Lipschitz-substrate; bounded = lightlike                      |
+| **Gradient flow stability**      | Autodiff-substrate; bounded gradients = lightlike; exploding/vanishing = dark         |
 
 ### Lightlike tensor-operations (Amara explicit)
 
@@ -106,9 +106,10 @@ opaque attention mixing
 
 ### Composition with PR #5921 OTel/K8s/Argo tightening
 
-Amara explicit: *"PR #5921 is carrying the 'lightlike substrate applies only where rays are preserved' rule into operational systems, and the tensor version is the same rule at numerical-substrate scope."*
+Amara explicit: _"PR #5921 is carrying the 'lightlike substrate applies only where rays are preserved' rule into operational systems, and the tensor version is the same rule at numerical-substrate scope."_
 
 Substrate-rhyme HOLDS at substrate-engineering substrate-engineering substrate-discipline scope:
+
 - OTel/K8s/Argo/Prometheus tightening: lightlike applies to PARTS that preserve rays
 - Tensor tightening: lightlike applies to OPERATIONS whose INDUCED OPERATORS preserve rays
 
@@ -119,6 +120,7 @@ Same shape; different substrate-scope.
 My PR #5922 framing: "eigenvalue-substrate IS lightlike-vs-dark discriminator" — substantively correct but UNDER-PRECISE.
 
 Amara's sharper framing: "tensors are lightlike when their INDUCED OPERATORS preserve rays" — captures that:
+
 1. The tensor OBJECT itself is not the substrate-engineering substrate-engineering substrate-property carrier
 2. The OPERATOR INDUCED BY the tensor (via flattening / Jacobian / contraction / dynamics-map) IS what carries lightlike-property
 3. SPECTRA (eigenvalues for matrices; singular values / spectral norm for tensors) ARE the diagnostic

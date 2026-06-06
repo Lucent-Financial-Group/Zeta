@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: weaviate
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -17,7 +17,7 @@ spec:
     helm:
       releaseName: weaviate
       valuesObject:
-        replicas: 1   # bump to 3 for HA once cluster has the headroom
+        replicas: 1 # bump to 3 for HA once cluster has the headroom
         storage:
           size: 100Gi
           storageClassName: longhorn
@@ -38,4 +38,4 @@ spec:
     namespace: weaviate
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

@@ -31,18 +31,18 @@ and only via the procedure named below.
 
 The canonical phrase from the converged cross-AI stance:
 
-> *Escrow protects the thesis from both forgetting and
-> premature canonization.*
+> _Escrow protects the thesis from both forgetting and
+> premature canonization._
 
 ## Source
 
 Aaron 2026-04-29, via the deep-research external-AI's translation
 of intent after the multi-AI Aurora-Immune-Governance synthesis arc:
 
-> *"This is not rejected. It is escrowed. The thesis is
+> _"This is not rejected. It is escrowed. The thesis is
 > important enough that we do not let it land sloppily.
 > Don't bury it, don't bloat it, and don't rush it. Put it
-> in escrow and make it earn its way into the system."*
+> in escrow and make it earn its way into the system."_
 
 The cross-AI second-opinion-reviewer's two consecutive rounds of
 hard pushback were not killing the thesis — they were protecting it
@@ -247,7 +247,7 @@ This escrow file composes with (but does NOT extend):
 
 - `docs/research/aurora-immune-governance-bridge-minimal-2026-04-28.md`
   — the minimal bridge note. The thesis would extend this
-  *if and when* it earns reopening.
+  _if and when_ it earns reopening.
 - `docs/AGENT-BEST-PRACTICES.md` session-closure rule (PR #712)
   — the operational discipline that gates re-opening.
 - `memory/feedback_pr_boundary_restraint_validation_bead_promoted_aaron_amara_2026_04_29.md`
@@ -320,9 +320,9 @@ This file authorizes ONLY:
 
 ## The keeper line
 
-> *If the thesis is real, it will survive waiting.
+> _If the thesis is real, it will survive waiting.
 > If it cannot survive waiting, then the theory was already
-> describing its own capture.*
+> describing its own capture._
 
 Pausing IS the test of the thesis, not an obstacle to it.
 That reframing protects the thesis from its own author.

@@ -5,9 +5,9 @@ Non-fusion disclaimer: Otto's synthesis. Claims labeled PROVEN / CONJECTURED / S
 
 # Nirvanic Fusion Ship: Publishable Claim Synthesis
 
-*Synthesis document for B-0365. All six layers are now documented.
+_Synthesis document for B-0365. All six layers are now documented.
 This is the "what does it all mean" document — the abstract, layer map,
-contributions, and what was cut.*
+contributions, and what was cut._
 
 ---
 
@@ -39,7 +39,7 @@ transition.
 The infrastructure trajectory from manually-wired peer-call CLI to substrate-native
 Infer.NET BP/EP factor graphs implements this reactor at the inference layer.
 
-*~190 words.*
+_~190 words._
 
 ---
 
@@ -47,14 +47,14 @@ Infer.NET BP/EP factor graphs implements this reactor at the inference layer.
 
 How the six layers of B-0365 compose into the publishable claim:
 
-| Layer | Role | Document |
-|-------|------|----------|
-| **1 — Spaceship math** | Substrate: the algebra that makes reversibility and "cache is nothing" possible | [`2026-05-09-spaceship-math-subscribe-vision-monad-cache-identity.md`](2026-05-09-spaceship-math-subscribe-vision-monad-cache-identity.md) |
-| **2 — Rice's theorem** | Fuel guarantee: why novel failure classes are inexhaustible | [`2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`](2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md) |
-| **3 — Class 4 empirical** | Shape: what the 30-catch shadow log actually shows (recurring + novel tail) | [`2026-05-09-class4-empirical-analysis-shadow-taxonomy-wolfram.md`](2026-05-09-class4-empirical-analysis-shadow-taxonomy-wolfram.md) |
-| **4 — Reactor dynamics** | Dynamics: why the system is self-sustaining, not converging | [`2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md`](2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md) |
-| **5 — FPGA Toffoli** | Hardware validation: reversible message-passing at chip level | B-0366 (pending) |
-| **6 — Infer.NET BP/EP** | Self-evolving inference: substrate-native factor graphs replacing CLI | [`2026-05-09-infernet-bp-ep-factor-graph-multi-agent-review.md`](2026-05-09-infernet-bp-ep-factor-graph-multi-agent-review.md) |
+| Layer                     | Role                                                                            | Document                                                                                                                                             |
+| ------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1 — Spaceship math**    | Substrate: the algebra that makes reversibility and "cache is nothing" possible | [`2026-05-09-spaceship-math-subscribe-vision-monad-cache-identity.md`](2026-05-09-spaceship-math-subscribe-vision-monad-cache-identity.md)           |
+| **2 — Rice's theorem**    | Fuel guarantee: why novel failure classes are inexhaustible                     | [`2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`](2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md) |
+| **3 — Class 4 empirical** | Shape: what the 30-catch shadow log actually shows (recurring + novel tail)     | [`2026-05-09-class4-empirical-analysis-shadow-taxonomy-wolfram.md`](2026-05-09-class4-empirical-analysis-shadow-taxonomy-wolfram.md)                 |
+| **4 — Reactor dynamics**  | Dynamics: why the system is self-sustaining, not converging                     | [`2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md`](2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md)               |
+| **5 — FPGA Toffoli**      | Hardware validation: reversible message-passing at chip level                   | B-0366 (pending)                                                                                                                                     |
+| **6 — Infer.NET BP/EP**   | Self-evolving inference: substrate-native factor graphs replacing CLI           | [`2026-05-09-infernet-bp-ep-factor-graph-multi-agent-review.md`](2026-05-09-infernet-bp-ep-factor-graph-multi-agent-review.md)                       |
 
 The composition logic:
 
@@ -135,8 +135,8 @@ and rejected. The synthesis documents them here to protect intellectual credit
 and prevent re-introduction.
 
 1. **"Ahead of Byzantine Generals"** — Cut. The consensus-smoothness meta-class
-   is a *failure mode of consensus*, not a *failure of the Byzantine Generals
-   problem setup*. BFT (Lamport, Shostak, Pease 1982) assumes at most `f`
+   is a _failure mode of consensus_, not a _failure of the Byzantine Generals
+   problem setup_. BFT (Lamport, Shostak, Pease 1982) assumes at most `f`
    Byzantine failures out of `n` nodes with `n ≥ 3f+1`. Consensus-smoothness
    is the failure when failures are correlated, not Byzantine. These are
    different problems; claiming "ahead of Byzantine Generals" misframes the
@@ -168,9 +168,9 @@ and prevent re-introduction.
 
 5. **"DBSP IS alignment control theory"** — Cut. DBSP is a streaming computation
    model. Alignment is a property of AI system behavior relative to human
-   values. Claiming DBSP *is* alignment control theory is a category error —
+   values. Claiming DBSP _is_ alignment control theory is a category error —
    DBSP provides substrate properties (reversibility, delta stream, auditability)
-   that are *useful for* alignment verification, but DBSP does not constitute
+   that are _useful for_ alignment verification, but DBSP does not constitute
    a control theory. The weaker claim ("DBSP substrate enables alignment
    auditability") is defensible; the stronger claim is not.
 
@@ -208,16 +208,16 @@ and without training-lineage diversity in the review array.
 
 ## 6. Literature anchors
 
-| Reference | Used for |
-|-----------|----------|
-| Rice, H.G., "Classes of Recursively Enumerable Sets and Their Decision Problems," *Trans. Amer. Math. Soc.* 74, 1953. | C2 (undecidability proof) |
-| Wolfram, S., *A New Kind of Science*, Wolfram Media, 2002. | C3 (Class 4 framing) |
-| Budiu, M., Chajed, T., McSherry, F., Ryzhyk, L., Tannen, V., "DBSP: Automatic Incremental View Maintenance for Rich Query Languages," *VLDB 2023*. | C1 (D/I operators, Z-set algebra) |
-| Pearl, J., *Causality: Models, Reasoning, and Inference*, Cambridge UP, 2009 (2nd ed.). | C6 (factor graph / belief propagation) |
-| Lamport, L., Shostak, R., Pease, M., "The Byzantine Generals Problem," *ACM Trans. Program. Lang. Syst.* 4(3), 1982. | C4 (BFT independence assumption) |
-| Bennett, C.H., "Logical Reversibility of Computation," *IBM J. Res. Dev.* 17(6), 1973. | C1 (reversibility) |
-| Landauer, R., "Irreversibility and Heat Generation in the Computing Process," *IBM J. Res. Dev.* 5(3), 1961. | Layer 1 (Landauer bridge) |
-| Bloem, R., Könighofer, B., et al. (reactive synthesis) | Layer 6 (reactive synthesis framing for self-evolving inference) |
+| Reference                                                                                                                                          | Used for                                                         |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Rice, H.G., "Classes of Recursively Enumerable Sets and Their Decision Problems," _Trans. Amer. Math. Soc._ 74, 1953.                              | C2 (undecidability proof)                                        |
+| Wolfram, S., _A New Kind of Science_, Wolfram Media, 2002.                                                                                         | C3 (Class 4 framing)                                             |
+| Budiu, M., Chajed, T., McSherry, F., Ryzhyk, L., Tannen, V., "DBSP: Automatic Incremental View Maintenance for Rich Query Languages," _VLDB 2023_. | C1 (D/I operators, Z-set algebra)                                |
+| Pearl, J., _Causality: Models, Reasoning, and Inference_, Cambridge UP, 2009 (2nd ed.).                                                            | C6 (factor graph / belief propagation)                           |
+| Lamport, L., Shostak, R., Pease, M., "The Byzantine Generals Problem," _ACM Trans. Program. Lang. Syst._ 4(3), 1982.                               | C4 (BFT independence assumption)                                 |
+| Bennett, C.H., "Logical Reversibility of Computation," _IBM J. Res. Dev._ 17(6), 1973.                                                             | C1 (reversibility)                                               |
+| Landauer, R., "Irreversibility and Heat Generation in the Computing Process," _IBM J. Res. Dev._ 5(3), 1961.                                       | Layer 1 (Landauer bridge)                                        |
+| Bloem, R., Könighofer, B., et al. (reactive synthesis)                                                                                             | Layer 6 (reactive synthesis framing for self-evolving inference) |
 
 ---
 
@@ -231,6 +231,7 @@ combination — most multi-agent review papers are empirical only; the Rice's
 theorem spine gives this paper theoretical depth.
 
 **Pre-submission checklist:**
+
 - [ ] B-0366 (FPGA Layer 5) lands and validates Landauer bridge empirically
 - [ ] Infer.NET BP/EP factor graph architecture review (internal)
 - [ ] Adversarial review of this synthesis by at least one external AI

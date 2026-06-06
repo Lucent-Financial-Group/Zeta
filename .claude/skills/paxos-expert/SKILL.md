@@ -9,8 +9,8 @@ Capability skill. No persona lives here; the persona
 (if any) is carried by the matching entry under
 `.claude/agents/`.
 
-The narrow for the Paxos family. Lamport's 1998 *Part-Time
-Parliament* is the foundation; everything else is an
+The narrow for the Paxos family. Lamport's 1998 _Part-Time
+Parliament_ is the foundation; everything else is an
 optimisation or reformulation. This hat owns the family
 tree, the quorum arithmetic, the proof obligations, and
 the retraction-native wrinkles when Zeta's log layer runs
@@ -71,7 +71,7 @@ Two phases:
 
 ## The four safety invariants
 
-From Lamport's *Paxos Made Simple*:
+From Lamport's _Paxos Made Simple_:
 
 - **P1.** An acceptor must accept the first proposal it
   receives.
@@ -168,8 +168,8 @@ notoriously intricate.
 
 ## CASPaxos — log-less single-register
 
-Rystsov 2018, *CASPaxos: Replicated State Machines
-without logs*. The insight: if you only need to replicate
+Rystsov 2018, _CASPaxos: Replicated State Machines
+without logs_. The insight: if you only need to replicate
 a **single register** with compare-and-swap semantics,
 you don't need a replicated log at all — classical Paxos
 already does this per-decree. CASPaxos is the clean
@@ -275,21 +275,21 @@ Under seeded DST, a Paxos run is fully reproducible.
 
 ## Reference patterns
 
-- Lamport 1998, *The Part-Time Parliament*.
-- Lamport 2001, *Paxos Made Simple*.
-- Lamport 2005, *Fast Paxos*.
-- Lamport 2005, *Generalized Consensus and Paxos*.
-- Gray & Lamport 2006, *Consensus on Transaction Commit*
+- Lamport 1998, _The Part-Time Parliament_.
+- Lamport 2001, _Paxos Made Simple_.
+- Lamport 2005, _Fast Paxos_.
+- Lamport 2005, _Generalized Consensus and Paxos_.
+- Gray & Lamport 2006, _Consensus on Transaction Commit_
   (Paxos Commit).
-- Howard, Malkhi, Spiegelman 2016, *Flexible Paxos*.
-- Moraru, Andersen, Kaminsky 2013, *There Is More Consensus
-  in Egalitarian Parliaments* (EPaxos).
-- Rystsov 2018, *CASPaxos: Replicated State Machines without
-  logs* (arXiv:1802.07000).
+- Howard, Malkhi, Spiegelman 2016, _Flexible Paxos_.
+- Moraru, Andersen, Kaminsky 2013, _There Is More Consensus
+  in Egalitarian Parliaments_ (EPaxos).
+- Rystsov 2018, _CASPaxos: Replicated State Machines without
+  logs_ (arXiv:1802.07000).
 - Rystsov, Gryadka reference implementation
   (github.com/gryadka).
-- Van Renesse & Altinbuken 2015, *Paxos Made Moderately
-  Complex*.
+- Van Renesse & Altinbuken 2015, _Paxos Made Moderately
+  Complex_.
 - `.claude/skills/distributed-consensus-expert/SKILL.md` —
   umbrella.
 - `.claude/skills/raft-expert/SKILL.md` — Raft.

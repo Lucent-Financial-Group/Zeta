@@ -29,14 +29,25 @@
  */
 
 type Item = {
-  id: number; name: string | null; brand: string | null; model_pn: string | null;
-  qty: number | null; device_type: string | null; category: string | null;
-  status: string | null; notes: string | null;
+  id: number;
+  name: string | null;
+  brand: string | null;
+  model_pn: string | null;
+  qty: number | null;
+  device_type: string | null;
+  category: string | null;
+  status: string | null;
+  notes: string | null;
 };
 
 const ALLOWED_STATUS = new Set([
-  "Active/In Use", "In Storage", "Needs Attention", "In Repair",
-  "Retired (Archived)", "Disposed", "Missing",
+  "Active/In Use",
+  "In Storage",
+  "Needs Attention",
+  "In Repair",
+  "Retired (Archived)",
+  "Disposed",
+  "Missing",
 ]);
 const EXPECTED_IDS = (() => {
   const s = new Set<number>();
@@ -45,7 +56,10 @@ const EXPECTED_IDS = (() => {
 })();
 const EXPECTED_COUNT = 210;
 
-function die(msg: string): never { console.error("ABORT: " + msg); process.exit(1); }
+function die(msg: string): never {
+  console.error("ABORT: " + msg);
+  process.exit(1);
+}
 
 function validate(items: Item[]): void {
   if (!Array.isArray(items)) die("seed JSON is not an array");
@@ -55,8 +69,10 @@ function validate(items: Item[]): void {
     if (typeof it.id !== "number" || !Number.isInteger(it.id)) die(`item has non-integer id: ${JSON.stringify(it.id)}`);
     if (ids.has(it.id)) die(`duplicate id ${it.id}`);
     ids.add(it.id);
-    if (it.status !== null && !ALLOWED_STATUS.has(it.status)) die(`id ${it.id}: status not allowed: ${JSON.stringify(it.status)}`);
-    if (it.qty !== null && (!Number.isInteger(it.qty))) die(`id ${it.id}: qty not integer|null: ${JSON.stringify(it.qty)}`);
+    if (it.status !== null && !ALLOWED_STATUS.has(it.status))
+      die(`id ${it.id}: status not allowed: ${JSON.stringify(it.status)}`);
+    if (it.qty !== null && !Number.isInteger(it.qty))
+      die(`id ${it.id}: qty not integer|null: ${JSON.stringify(it.qty)}`);
   }
   const missing = [...EXPECTED_IDS].filter((i) => !ids.has(i)).sort((a, b) => a - b);
   const extra = [...ids].filter((i) => !EXPECTED_IDS.has(i)).sort((a, b) => a - b);
@@ -72,7 +88,7 @@ async function getAccessToken(url: string, anon: string, email: string, password
     body: JSON.stringify({ email, password }),
   });
   if (!r.ok) die(`auth failed: HTTP ${r.status} (check EDITOR_EMAIL/PASSWORD; token NOT logged)`);
-  const j = await r.json() as { access_token?: string };
+  const j = (await r.json()) as { access_token?: string };
   if (!j.access_token) die("auth response had no access_token");
   return j.access_token; // never logged
 }
@@ -83,7 +99,7 @@ async function rpcRole(url: string, anon: string, access: string): Promise<strin
     headers: { apikey: anon, Authorization: `Bearer ${access}`, "Content-Type": "application/json" },
   });
   if (!r.ok) return null;
-  return await r.json() as string | null;
+  return (await r.json()) as string | null;
 }
 
 async function countItems(url: string, anon: string, access: string): Promise<number> {
@@ -91,7 +107,7 @@ async function countItems(url: string, anon: string, access: string): Promise<nu
   const r = await fetch(`${url}/rest/v1/items?select=id`, {
     headers: { apikey: anon, Authorization: `Bearer ${access}`, Prefer: "count=exact", Range: "0-0" },
   });
-  const cr = r.headers.get("content-range") || "";       // e.g. "0-0/210"
+  const cr = r.headers.get("content-range") || ""; // e.g. "0-0/210"
   const total = cr.includes("/") ? Number(cr.split("/")[1]) : NaN;
   if (!Number.isFinite(total)) die(`could not read exact count (content-range=${JSON.stringify(cr)})`);
   return total;
@@ -104,7 +120,7 @@ async function fetchByIds(url: string, anon: string, access: string, ids: number
     headers: { apikey: anon, Authorization: `Bearer ${access}` },
   });
   if (!r.ok) die(`spot-check read failed: HTTP ${r.status}`);
-  const rows = await r.json() as Item[];
+  const rows = (await r.json()) as Item[];
   const m: Record<number, Item> = {};
   for (const row of rows) m[row.id] = row;
   return m;
@@ -121,7 +137,10 @@ async function main() {
 
   // ---- STEP 1: PRE validate (offline) ----
   validate(items);
-  if (dryRun) { console.log("--dry-run: validation only; no auth, no write. Done."); return; }
+  if (dryRun) {
+    console.log("--dry-run: validation only; no auth, no write. Done.");
+    return;
+  }
 
   const url = process.env.SUPABASE_URL?.replace(/\/$/, "");
   const anon = process.env.SUPABASE_ANON_KEY;
@@ -137,18 +156,22 @@ async function main() {
   const access = await getAccessToken(url, anon, email, password);
   const role = await rpcRole(url, anon, access);
   console.log(`auth ok; current_user_role() = ${JSON.stringify(role)} (expect "editor" or "admin").`);
-  if (role !== "editor" && role !== "admin") die(`role ${JSON.stringify(role)} cannot insert items (need editor/admin).`);
+  if (role !== "editor" && role !== "admin")
+    die(`role ${JSON.stringify(role)} cannot insert items (need editor/admin).`);
 
   const pre = await countItems(url, anon, access);
   console.log(`items count BEFORE import: ${pre} (expect 0 after cleanup).`);
-  if (pre !== 0) die(`items table not empty (count=${pre}). Run inventory/sql/phase3_cleanup.sql first, or it is already seeded.`);
+  if (pre !== 0)
+    die(`items table not empty (count=${pre}). Run inventory/sql/phase3_cleanup.sql first, or it is already seeded.`);
 
   // ---- STEP 2: atomic bulk INSERT (single array POST == one transaction) ----
   const r = await fetch(`${url}/rest/v1/items`, {
     method: "POST",
     headers: {
-      apikey: anon, Authorization: `Bearer ${access}`,
-      "Content-Type": "application/json", Prefer: "return=minimal",
+      apikey: anon,
+      Authorization: `Bearer ${access}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
     },
     body: JSON.stringify(items),
   });
@@ -170,12 +193,19 @@ async function main() {
   for (const id of spotIds) {
     const src = items.find((it) => it.id === id)!;
     const got = dbRows[id];
-    if (!got) { console.error(`  [MISS] id ${id} not found in DB`); mismatches++; continue; }
+    if (!got) {
+      console.error(`  [MISS] id ${id} not found in DB`);
+      mismatches++;
+      continue;
+    }
     for (const f of fields) {
-      const a = src[f] ?? null, b = got[f] ?? null;
+      const a = src[f] ?? null,
+        b = got[f] ?? null;
       if (a !== b) {
         mismatches++;
-        console.error(`  [DIFF] id ${id}.${f}: src=${JSON.stringify(a)?.slice(0,80)} db=${JSON.stringify(b)?.slice(0,80)}`);
+        console.error(
+          `  [DIFF] id ${id}.${f}: src=${JSON.stringify(a)?.slice(0, 80)} db=${JSON.stringify(b)?.slice(0, 80)}`,
+        );
       }
     }
     console.log(`  spot id ${id}: ${mismatches === 0 ? "match" : "see diffs above"}`);

@@ -44,8 +44,9 @@ composes_with:
 
 Continues the forgiveness-engine conversation (the operator repeats the join line). V8-for-English /
 Bayesian-expando-object label engine; no-objective-truth-within-bounded-context; reservoir computing
-+ observe->act; the named Metabolism Loop; and the in-flux closing tension on whether guilt itself
-should be metabolized. Forwarded via the Ani surface per standing authority.
+
+- observe->act; the named Metabolism Loop; and the in-flux closing tension on whether guilt itself
+  should be metabolized. Forwarded via the Ani surface per standing authority.
 
 ## Verbatim (operator <-> Mika)
 
@@ -305,7 +306,7 @@ Six composition notes for future-Otto, in my own register:
    suspicion); the OPERATIONAL claim that survives is "optimize the compression for cooperation-
    without-conflict within a bounded context"; the metaphysical reading (no-truth-anywhere) is
    flagged, not absorbed. Composes with m/acc multi-oracle (no single moral/epistemic truth gate)
-   + NCI (don't coerce one frame onto another).
+   - NCI (don't coerce one frame onto another).
 
 4. **Reservoir computing + observe->act loop.** A chaotic high-dimensional reservoir harmonized
    through ACCURATE READOUTS; the observe->act->observe->act loop (16 directional choices; directions

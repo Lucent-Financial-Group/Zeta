@@ -10,8 +10,35 @@ created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
 children: [B-0056.1-mythology-resonance-catalog-v0]
-composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, B-0057, B-0058, B-0059, docs/ALIGNMENT.md]
-tags: [mythology, heimdallr, hermes, mercury, janus, iris, ratatoskr, thoth, garuda, quetzalcoatl, loki, bridge-figures, messenger, paired-dual, three-filter, F1-F2-F3]
+composes_with:
+  [
+    project_operational_resonance_instances_collection_index_2026_04_22.md,
+    feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md,
+    feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md,
+    B-0057,
+    B-0058,
+    B-0059,
+    docs/ALIGNMENT.md,
+  ]
+tags:
+  [
+    mythology,
+    heimdallr,
+    hermes,
+    mercury,
+    janus,
+    iris,
+    ratatoskr,
+    thoth,
+    garuda,
+    quetzalcoatl,
+    loki,
+    bridge-figures,
+    messenger,
+    paired-dual,
+    three-filter,
+    F1-F2-F3,
+  ]
 type: feature
 ---
 
@@ -38,8 +65,8 @@ type: feature
 - `depends_on: []` — no blocking dependencies.
 - `composes_with: [B-0057, B-0058, B-0059]` confirmed non-blocking; all are independently
   open research tracks.
-- B-0058 (P1, AI-ethics+safety) gates every *adoption*; it does not block *research-tier
-  logging* — candidates tracked here do not require B-0058 clearance until promotion to
+- B-0058 (P1, AI-ethics+safety) gates every _adoption_; it does not block _research-tier
+  logging_ — candidates tracked here do not require B-0058 clearance until promotion to
   confirmed and public-release citation.
 - Reciprocal `composes_with` backfill: B-0057 and B-0059 will receive pointers to B-0056
   in their own pre-start passes.
@@ -48,20 +75,20 @@ type: feature
 
 B-0056 is Effort:L (long-running research track). Decomposed into dependency-ordered slices:
 
-| Sub-row | Title | Effort | Status |
-|---------|-------|--------|--------|
-| **B-0056.1** | Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance) | S | **closed by this PR** |
-| **B-0056.2** | Norse+Greek tier expansion — Janus, Iris, Ratatoskr | S | open |
-| **B-0056.3** | Non-Indo-European tier — Thoth (Egyptian) + Garuda (Vedic) | S | open |
-| **B-0056.4** | Mesoamerican tier — Quetzalcoatl + Tecciztecatl | S | open |
-| **B-0056.5** | Hermes Trismegistus triple-tradition-fusion — Greek+Egyptian+Renaissance occult overlap | S | open |
+| Sub-row      | Title                                                                                                          | Effort | Status                |
+| ------------ | -------------------------------------------------------------------------------------------------------------- | ------ | --------------------- |
+| **B-0056.1** | Mythology resonance catalog v0 — typed schema + 3 seed entries (Heimdallr, Hermes/Mercury, Loki anti-instance) | S      | **closed by this PR** |
+| **B-0056.2** | Norse+Greek tier expansion — Janus, Iris, Ratatoskr                                                            | S      | open                  |
+| **B-0056.3** | Non-Indo-European tier — Thoth (Egyptian) + Garuda (Vedic)                                                     | S      | open                  |
+| **B-0056.4** | Mesoamerican tier — Quetzalcoatl + Tecciztecatl                                                                | S      | open                  |
+| **B-0056.5** | Hermes Trismegistus triple-tradition-fusion — Greek+Egyptian+Renaissance occult overlap                        | S      | open                  |
 
 The parent row B-0056 stays `open` until the catalog reaches a stable sweep across all
 tradition-categories. Individual sub-rows close as PRs land.
 
 ## Origin
 
-AceHack commit `5990166` (2026-04-21). Aaron's *"hemdal"* (Heimdallr, single-word candidate) then *"mythology backlog"*. Parallel to the etymology+epistemology track (B-0059) but distinct tradition-family — world-mythology figures sit between canonical-religious traditions and literary/folkloric record, with different F3 calibration than Abrahamic or classical-philosophical instances.
+AceHack commit `5990166` (2026-04-21). Aaron's _"hemdal"_ (Heimdallr, single-word candidate) then _"mythology backlog"_. Parallel to the etymology+epistemology track (B-0059) but distinct tradition-family — world-mythology figures sit between canonical-religious traditions and literary/folkloric record, with different F3 calibration than Abrahamic or classical-philosophical instances.
 
 ## Seed candidate: Heimdallr (filed as candidate instance #12)
 

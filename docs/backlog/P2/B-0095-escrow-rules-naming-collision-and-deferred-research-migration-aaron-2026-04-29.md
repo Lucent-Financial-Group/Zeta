@@ -23,13 +23,13 @@ type: friction-reducer
 
 Aaron 2026-04-29 input after the B-0094 escrow PR landed:
 
-> *"backlog add other stuff we need from backlog research to
+> _"backlog add other stuff we need from backlog research to
 > escrow, we also needs rules for what goes in here, shit
 > that's not ready yet, we've also overloaded escrow for this
 > use and the use in software engineering for having copies of
 > all our dependies local native incase the remote dependence
 > disappears kind of like vendoring from the old go days (not
-> exactly, there are modern software escrow too)  backlog"*
+> exactly, there are modern software escrow too) backlog"_
 
 Three distinct sub-asks wrapped in one input.
 
@@ -65,7 +65,7 @@ Options:
   or `docs/research/reservoir/` — pick a term less collision-
   prone with software-engineering vocabulary.
 - **Option B: Disambiguate via prefix.** Keep `docs/research/
-  escrowed/` but add a top-level rule that this directory is
+escrowed/` but add a top-level rule that this directory is
   for research-grade preservation, distinct from the software-
   engineering-vendoring sense. The vendoring-adjacent surface
   in this repo is `references/upstreams/` (read-only clones
@@ -194,7 +194,7 @@ input was one wrapper.
 - Does NOT authorize moving the existing B-0094 escrow file
   before sub-ask 1 (naming-collision) is resolved. Until then,
   the file stays at `docs/research/escrowed/aurora-autonomous-
-  flywheel-thesis-2026-04-28.md` per the in-flight PR #714.
+flywheel-thesis-2026-04-28.md` per the in-flight PR #714.
 - Does NOT authorize bulk-migrating backlog rows to escrow
   before sub-ask 2 (rules) lands. Without rules, migrations
   are arbitrary.

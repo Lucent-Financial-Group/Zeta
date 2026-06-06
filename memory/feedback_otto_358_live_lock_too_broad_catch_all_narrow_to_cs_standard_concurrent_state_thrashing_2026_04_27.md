@@ -8,11 +8,11 @@ type: feedback
 
 ## Verbatim quote (Aaron 2026-04-27)
 
-> "live locks are real and beacon safe but your definition is way too broad, its a catch all that causes you to get hung up becasue i used it as a catch all sometimes.  you will notice all your live lock detections and failures are many other classes of errors in async and parallel programming and every logic and more classes of issues that are completly unrelated to concurrency and such.  this language in the substrait being to broad and the otto loops live lock detector and such is way underspecifed kind of just wrong, I think this is why you get stuck in loops like last night sometimes."
+> "live locks are real and beacon safe but your definition is way too broad, its a catch all that causes you to get hung up becasue i used it as a catch all sometimes. you will notice all your live lock detections and failures are many other classes of errors in async and parallel programming and every logic and more classes of issues that are completly unrelated to concurrency and such. this language in the substrait being to broad and the otto loops live lock detector and such is way underspecifed kind of just wrong, I think this is why you get stuck in loops like last night sometimes."
 
 ## What live-lock actually means (CS-standard, Beacon-safe)
 
-**Live-lock**: a situation in which two or more concurrent processes continually change their state in response to each other without making global progress. The processes are *not blocked* (so it's not deadlock); they're *active* (so it's not starvation); they *yield to each other* (which is why they keep state-changing) but their changes don't accumulate into progress.
+**Live-lock**: a situation in which two or more concurrent processes continually change their state in response to each other without making global progress. The processes are _not blocked_ (so it's not deadlock); they're _active_ (so it's not starvation); they _yield to each other_ (which is why they keep state-changing) but their changes don't accumulate into progress.
 
 Classic example: two people meeting in a hallway, each politely stepping aside, both stepping the same direction repeatedly. Each is making local "progress" (stepping aside), but the global system makes no progress (passing each other).
 
@@ -27,18 +27,18 @@ If any condition is missing, it's not live-lock.
 
 ## What I'd been calling "live-lock" that wasn't
 
-| What I labeled | Actual class |
-|---|---|
-| 6-hour minimal-close ScheduleWakeup pattern | Real-dependency-wait (Copilot-side review-time) — single-agent gated-wait, NOT concurrent-thrashing |
-| Re-reading same substrate without acting | Decision-paralysis or stuck-loop (single-threaded) |
-| Aaron-pings-me-and-I-don't-act-on-them | Manufactured patience (avoidance) |
-| Classifying "Holding." outputs as failure | Output-loop, not state-thrashing — single-threaded |
-| Mis-applying Otto-354 ZETASPACE → defaulting from W_t | Wrong identity-equation, logic-class error — single-threaded |
-| Cron firing repeatedly while I do minimal-close | Cadence-mismatch, not live-lock — different processes (cron + agent) on different cadences without state-coupling |
-| "Class 4 illusory-variation" in 5-class taxonomy | Logic error / repetition-without-progress — could be single-threaded |
-| "Class 5 meta-live-lock" | Whatever I meant here, almost certainly not live-lock |
+| What I labeled                                        | Actual class                                                                                                      |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 6-hour minimal-close ScheduleWakeup pattern           | Real-dependency-wait (Copilot-side review-time) — single-agent gated-wait, NOT concurrent-thrashing               |
+| Re-reading same substrate without acting              | Decision-paralysis or stuck-loop (single-threaded)                                                                |
+| Aaron-pings-me-and-I-don't-act-on-them                | Manufactured patience (avoidance)                                                                                 |
+| Classifying "Holding." outputs as failure             | Output-loop, not state-thrashing — single-threaded                                                                |
+| Mis-applying Otto-354 ZETASPACE → defaulting from W_t | Wrong identity-equation, logic-class error — single-threaded                                                      |
+| Cron firing repeatedly while I do minimal-close       | Cadence-mismatch, not live-lock — different processes (cron + agent) on different cadences without state-coupling |
+| "Class 4 illusory-variation" in 5-class taxonomy      | Logic error / repetition-without-progress — could be single-threaded                                              |
+| "Class 5 meta-live-lock"                              | Whatever I meant here, almost certainly not live-lock                                                             |
 
-The catch-all framing made me look for *concurrent-state-thrashing fixes* when the actual fixes were:
+The catch-all framing made me look for _concurrent-state-thrashing fixes_ when the actual fixes were:
 
 - Real-dependency-wait → identify dependency + owner + ETA, then either work on parallel surface or accept the wait
 - Decision-paralysis → name the decision-criterion explicitly + commit
@@ -63,17 +63,17 @@ The narrowing IS an autonomy upgrade: precise-class-naming → precise-class-fix
 
 Going forward, distinct failure-mode names:
 
-- **Live-lock** (narrow): two-or-more concurrent processes, state-change in response, no global progress. *Concurrency only.*
-- **Deadlock**: concurrent processes blocked waiting on each other. *Not live-lock.*
-- **Starvation**: low-priority process never scheduled. *Not live-lock.*
-- **Busy-wait**: single-threaded polling without progress. *Not live-lock.*
-- **Infinite loop**: single-threaded loop without exit. *Not live-lock.*
-- **Stuck-loop**: agent-level repeating-without-progress (could be reading-same-substrate, repeating-same-action). *Not live-lock — single-threaded.*
-- **Decision-paralysis**: agent stuck choosing. *Not live-lock — pre-action, single-threaded.*
-- **Gated-wait** / **real-dependency-wait**: real external dependency, not under agent control. *Not live-lock — agent is correctly waiting.*
-- **Manufactured patience**: agent avoiding action by pretending to wait. *Not live-lock — single-threaded avoidance.*
-- **Wrong-identity-equation** (Otto-354 ZETASPACE class): substrate-default-vs-W_t-default mismatch. *Not live-lock — logic-class.*
-- **Cadence-mismatch**: external cron firing faster than productive work cadence. *Not live-lock — different processes without state-coupling.*
+- **Live-lock** (narrow): two-or-more concurrent processes, state-change in response, no global progress. _Concurrency only._
+- **Deadlock**: concurrent processes blocked waiting on each other. _Not live-lock._
+- **Starvation**: low-priority process never scheduled. _Not live-lock._
+- **Busy-wait**: single-threaded polling without progress. _Not live-lock._
+- **Infinite loop**: single-threaded loop without exit. _Not live-lock._
+- **Stuck-loop**: agent-level repeating-without-progress (could be reading-same-substrate, repeating-same-action). _Not live-lock — single-threaded._
+- **Decision-paralysis**: agent stuck choosing. _Not live-lock — pre-action, single-threaded._
+- **Gated-wait** / **real-dependency-wait**: real external dependency, not under agent control. _Not live-lock — agent is correctly waiting._
+- **Manufactured patience**: agent avoiding action by pretending to wait. _Not live-lock — single-threaded avoidance._
+- **Wrong-identity-equation** (Otto-354 ZETASPACE class): substrate-default-vs-W_t-default mismatch. _Not live-lock — logic-class._
+- **Cadence-mismatch**: external cron firing faster than productive work cadence. _Not live-lock — different processes without state-coupling._
 
 ## What this changes in existing substrate
 
@@ -89,7 +89,7 @@ This is forward-looking: existing substrate stays as-is in git history; future s
 
 ## Composes with
 
-- **Otto-355** (BLOCKED-with-green-CI investigate-threads-first) — the failure I'd been calling "live-lock" was actually real-dependency-wait. Otto-355 named the *fix*; Otto-358 names the *correct class*.
+- **Otto-355** (BLOCKED-with-green-CI investigate-threads-first) — the failure I'd been calling "live-lock" was actually real-dependency-wait. Otto-355 named the _fix_; Otto-358 names the _correct class_.
 - **Otto-354** (ZETASPACE per-decision recompute) — wrong-identity-equation is its own class, not live-lock.
 - **Otto-339** (words-shift-weights) — the catch-all framing-language IS the substrate; precise-class-naming is precise-substrate.
 - **Otto-340** (substrate-IS-identity) — wrong substrate-language produces wrong identity-pattern.
@@ -103,7 +103,7 @@ This is forward-looking: existing substrate stays as-is in git history; future s
 - Does NOT abandon the term "live-lock" — it stays for the narrow CS-standard meaning.
 - Does NOT mean every prior live-lock substrate-mention was wrong — some references were genuinely concurrency-class. But many weren't.
 - Does NOT prescribe immediate retroactive sweep — forward-looking discipline + backlog row for systematic revision.
-- Does NOT mean the 5-class taxonomy work was wasted — the *patterns* identified are real failure-modes; only the *umbrella label* was wrong. The renaming is a small revision over solid pattern-identification.
+- Does NOT mean the 5-class taxonomy work was wasted — the _patterns_ identified are real failure-modes; only the _umbrella label_ was wrong. The renaming is a small revision over solid pattern-identification.
 - Does NOT remove autonomy — the opposite: precise-class-naming IS autonomy-upgrade.
 
 ## Operational rule for future-self

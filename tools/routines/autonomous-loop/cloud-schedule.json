@@ -4,9 +4,7 @@
     "type": "scheduled",
     "cronExpression": "0 9 * * *"
   },
-  "repos": [
-    "Lucent-Financial-Group/Zeta"
-  ],
+  "repos": ["Lucent-Financial-Group/Zeta"],
   "connectors": [],
   "description": "Otto autonomous-loop — Cloud Routine (4th catch-43 defence layer)",
   "notes": "Companion to schedule.json (Desktop routine at 0 */2 * * *). Both can fire in parallel."

@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Files Aaron's *'i'm thinking it will require reticiulum at the edge and in cluster'* — Reticulum runs in the cluster as a composing substrate alongside K8s, not partitioned by network tier. Cluster nodes speak Reticulum natively; workloads addressable via both Cilium (intra-cluster) and Reticulum (cross-substrate identity-routing).
+Files Aaron's _'i'm thinking it will require reticiulum at the edge and in cluster'_ — Reticulum runs in the cluster as a composing substrate alongside K8s, not partitioned by network tier. Cluster nodes speak Reticulum natively; workloads addressable via both Cilium (intra-cluster) and Reticulum (cross-substrate identity-routing).
 
 Composes with B-0289 Green Lantern (already-in-progress edge substrate); PR #4930 hat-system (Reticulum identities can be hat-bound with succession semantics); SPIRE (identity-issuer pattern); m-acc / multi-oracle / NCI / 5-always-active-disciplines.
 

@@ -1,12 +1,7 @@
 import { ToolBundle } from "../../domain/src/index.ts";
 import { isContentAddressedEvidenceRef } from "./content-addressed-evidence.ts";
 import { ActionClass } from "./hat-guardrails.ts";
-import {
-  RunScope,
-  type MetricBlock,
-  type PromptFlowTask,
-  type PromptFlowToolInjection,
-} from "./observe.ts";
+import { RunScope, type MetricBlock, type PromptFlowTask, type PromptFlowToolInjection } from "./observe.ts";
 
 export const PromptFlowRunState = {
   Created: "created",
@@ -131,9 +126,7 @@ export type PromptFlowAdvanceResult =
     }
   | { outcome: "rejected"; reason: "unknown_phase" | "terminal_state" | "definition_mismatch"; message: string };
 
-type GateEvidenceCheck =
-  | { outcome: "satisfied" }
-  | Extract<PromptFlowAdvanceResult, { outcome: "blocked" }>;
+type GateEvidenceCheck = { outcome: "satisfied" } | Extract<PromptFlowAdvanceResult, { outcome: "blocked" }>;
 
 const executableRunStates: ReadonlySet<PromptFlowRunState> = new Set([
   PromptFlowRunState.Created,
@@ -160,7 +153,10 @@ export function lintPromptFlowDefinition(definition: PromptFlowDefinition): read
     diagnostics.push({ code: "missing_phases", message: "prompt flow must define at least one phase" });
   }
   if (definition.rollbackPolicy.description.trim() === "") {
-    diagnostics.push({ code: "missing_rollback", message: "prompt flow rollback policy must describe the compensating path" });
+    diagnostics.push({
+      code: "missing_rollback",
+      message: "prompt flow rollback policy must describe the compensating path",
+    });
   }
 
   for (const phase of definition.phases) {
@@ -171,7 +167,9 @@ export function lintPromptFlowDefinition(definition: PromptFlowDefinition): read
 }
 
 export function compilePromptFlowTasks(input: CompilePromptFlowTasksInput): readonly PromptFlowTask[] {
-  const definitionsByKey = new Map(input.definitions.map((definition) => [definitionKey(definition.promptFlowId, definition.version), definition]));
+  const definitionsByKey = new Map(
+    input.definitions.map((definition) => [definitionKey(definition.promptFlowId, definition.version), definition]),
+  );
   const tasks: PromptFlowTask[] = [];
   for (const run of input.runs) {
     if (!executableRunStates.has(run.state)) continue;
@@ -207,10 +205,22 @@ export function advancePromptFlowRun(
   }
   const phaseIndex = definition.phases.findIndex((phase) => phase.phaseId === run.currentPhaseId);
   if (phaseIndex < 0) {
-    return { outcome: "rejected", reason: "unknown_phase", message: `run ${run.runId} phase ${run.currentPhaseId} is not in prompt flow ${definition.promptFlowId}` };
+    return {
+      outcome: "rejected",
+      reason: "unknown_phase",
+      message: `run ${run.runId} phase ${run.currentPhaseId} is not in prompt flow ${definition.promptFlowId}`,
+    };
   }
-  if (run.state === PromptFlowRunState.Completed || run.state === PromptFlowRunState.Failed || run.state === PromptFlowRunState.Cancelled) {
-    return { outcome: "rejected", reason: "terminal_state", message: `run ${run.runId} is terminal in state ${run.state}` };
+  if (
+    run.state === PromptFlowRunState.Completed ||
+    run.state === PromptFlowRunState.Failed ||
+    run.state === PromptFlowRunState.Cancelled
+  ) {
+    return {
+      outcome: "rejected",
+      reason: "terminal_state",
+      message: `run ${run.runId} is terminal in state ${run.state}`,
+    };
   }
   if (run.state === PromptFlowRunState.Paused) {
     return { outcome: "advanced", run: { ...run, state: PromptFlowRunState.RunningPhase } };
@@ -235,7 +245,10 @@ export function advancePromptFlowRun(
   if (nextPhase === undefined) {
     return { outcome: "advanced", run: { ...run, state: PromptFlowRunState.Completed } };
   }
-  return { outcome: "advanced", run: { ...run, currentPhaseId: nextPhase.phaseId, state: PromptFlowRunState.ContextLoaded } };
+  return {
+    outcome: "advanced",
+    run: { ...run, currentPhaseId: nextPhase.phaseId, state: PromptFlowRunState.ContextLoaded },
+  };
 }
 
 function compilePromptFlowTask(
@@ -278,16 +291,28 @@ function lintPromptFlowPhase(phase: PromptFlowPhaseDefinition): readonly PromptF
     diagnostics.push({ code: "missing_phase_id", message: "prompt flow phase id is required" });
   }
   if (phase.permittedUniversalActions.length === 0) {
-    diagnostics.push({ code: "missing_permitted_actions", message: "prompt flow phase must name permitted universal actions", phaseId });
+    diagnostics.push({
+      code: "missing_permitted_actions",
+      message: "prompt flow phase must name permitted universal actions",
+      phaseId,
+    });
   }
   if (phase.directions.length === 0) {
     diagnostics.push({ code: "missing_directions", message: "prompt flow phase must provide directions", phaseId });
   }
   if (phase.requiredEvidenceRefs.length === 0) {
-    diagnostics.push({ code: "missing_required_evidence", message: "prompt flow phase must declare required evidence", phaseId });
+    diagnostics.push({
+      code: "missing_required_evidence",
+      message: "prompt flow phase must declare required evidence",
+      phaseId,
+    });
   }
   if (phase.gate.requiredEvidenceRefs.length === 0) {
-    diagnostics.push({ code: "missing_gate", message: "prompt flow phase gate must declare evidence requirements", phaseId });
+    diagnostics.push({
+      code: "missing_gate",
+      message: "prompt flow phase gate must declare evidence requirements",
+      phaseId,
+    });
   }
   if (phase.gate.kind === PromptFlowGateKind.HumanApproval) {
     if (phase.gate.approverHatIds === undefined || phase.gate.approverHatIds.length === 0) {
@@ -316,7 +341,11 @@ function lintPromptFlowPhase(phase: PromptFlowPhaseDefinition): readonly PromptF
     });
   }
   if (!Number.isInteger(phase.timeoutSeconds) || phase.timeoutSeconds <= 0) {
-    diagnostics.push({ code: "invalid_timeout", message: "prompt flow phase timeout must be a positive integer", phaseId });
+    diagnostics.push({
+      code: "invalid_timeout",
+      message: "prompt flow phase timeout must be a positive integer",
+      phaseId,
+    });
   }
   return diagnostics;
 }
@@ -358,10 +387,11 @@ function checkGateEvidence(
       };
     }
     const approverHatIds = new Set(phase.gate.approverHatIds ?? []);
-    const approvedCount = humanApprovals.filter((approval) =>
-      approval.approved &&
-      isContentAddressedEvidenceRef(approval.evidenceRef) &&
-      (approverHatIds.size === 0 || approverHatIds.has(approval.approverHatId))
+    const approvedCount = humanApprovals.filter(
+      (approval) =>
+        approval.approved &&
+        isContentAddressedEvidenceRef(approval.evidenceRef) &&
+        (approverHatIds.size === 0 || approverHatIds.has(approval.approverHatId)),
     ).length;
     const requiredHumanApprovalCount = phase.gate.requiredHumanApprovalCount ?? 1;
     if (approvedCount < requiredHumanApprovalCount) {
@@ -382,9 +412,7 @@ type NormalizedPromptFlowAdvanceEvidence = {
   humanApprovals: readonly PromptFlowHumanApproval[];
 };
 
-function normalizePromptFlowAdvanceEvidence(
-  evidence: PromptFlowAdvanceEvidence,
-): NormalizedPromptFlowAdvanceEvidence {
+function normalizePromptFlowAdvanceEvidence(evidence: PromptFlowAdvanceEvidence): NormalizedPromptFlowAdvanceEvidence {
   if (isEvidenceRefList(evidence)) {
     return { evidenceRefs: evidence, humanApprovals: [] };
   }

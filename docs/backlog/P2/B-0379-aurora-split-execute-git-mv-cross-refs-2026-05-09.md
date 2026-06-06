@@ -67,7 +67,7 @@ Remove the history-surface scope from the aurora README. Update to reflect:
 - History imports moved to `docs/<chosen-name>/`.
 - Add a one-line pointer to the new directory.
 
-### Step 4 — Cross-reference sweep in memory/**
+### Step 4 — Cross-reference sweep in memory/\*\*
 
 ```bash
 rg "docs/aurora" memory/ --files-with-matches
@@ -103,9 +103,9 @@ bun tools/hygiene/audit-canonical-homes.ts 2>/dev/null || echo "Auditor not yet 
 ## Why (and why last)
 
 This is the execution atom — it has the highest blast radius (file moves
-touch all downstream cross-references in memory/**). Running it last,
+touch all downstream cross-references in memory/\**). Running it last,
 after all schema-doc updates are in place, means the type system is
-declared correct *before* the migration happens — not after.
+declared correct *before\* the migration happens — not after.
 
 If execution runs first and the schema docs are wrong, a reviewer
 sees the moved files but the rules still say `docs/aurora/**` is a
@@ -138,12 +138,12 @@ Rated M (not S) because:
 ## Pre-start checklist
 
 - [x] Prior-art search: no prior PR executing this kind of split for aurora;
-  no existing `docs/courier/**` or `docs/cross-ai-imports/**` directory;
-  `tools/hygiene/LOST-FILES-LOCATIONS.md` checked — no orphaned aurora-split
-  artifacts found.
+      no existing `docs/courier/**` or `docs/cross-ai-imports/**` directory;
+      `tools/hygiene/LOST-FILES-LOCATIONS.md` checked — no orphaned aurora-split
+      artifacts found.
 - [x] Dependency-restructure: `depends_on: [B-0377, B-0378]` — both schema
-  updates must land first. Also inherits the classification from B-0375
-  and the naming decision from B-0376 (transitively through B-0377/B-0378).
+      updates must land first. Also inherits the classification from B-0375
+      and the naming decision from B-0376 (transitively through B-0377/B-0378).
 - [x] Reciprocal pointer: B-0377 and B-0378 carry `composes_with: [B-0379]`.
 
 ## Composes with

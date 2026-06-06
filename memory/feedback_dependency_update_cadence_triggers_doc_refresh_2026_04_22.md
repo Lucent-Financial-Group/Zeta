@@ -7,9 +7,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Aaron 2026-04-22 auto-loop-20 (mid-tick arrival):
 
-> *"for our dependencies we need to track theri update
->  cadence.  it's a trigger for a document refresh on
->  that dependency"*
+> _"for our dependencies we need to track theri update
+> cadence. it's a trigger for a document refresh on
+> that dependency"_
 
 ## The rule
 
@@ -29,7 +29,7 @@ would ever affect it).
   cites `BenchmarkDotNet 0.15.8` today is ambient-wrong
   three months from now when 0.16.0 ships with renamed
   APIs or new primitives. Nothing in the factory currently
-  *signals* this — the doc looks the same; the dep has
+  _signals_ this — the doc looks the same; the dep has
   moved. The maintainer pays the cost on next read: either
   follows stale instructions, or spends audit-time figuring
   out which version the doc was written against.
@@ -44,7 +44,7 @@ would ever affect it).
   between them isn't.
 - **Intentionality-enforcement generalizes to this.** The
   reframe from the DV-2.0 / post-setup-script-stack work
-  (*"we are enforcing intentional decisions"*) applies here
+  (_"we are enforcing intentional decisions"_) applies here
   verbatim: a dep release without a recorded
   refresh-decision is a silent gap; a dep release with a
   recorded decision (refresh / defer / irrelevant-here) is
@@ -76,7 +76,7 @@ would ever affect it).
   has to be **cadenced**, with a history of
   detected-release-events and their downstream
   refresh-decisions, so a forensic audit can answer
-  *"which dep-release caused this doc refresh?"* from a
+  _"which dep-release caused this doc refresh?"_ from a
   single substrate.
 
 ## How to apply:
@@ -140,13 +140,13 @@ would ever affect it).
 - **NOT a commitment to auto-refresh docs.** The trigger
   fires; the refresh is a recorded decision, not an
   automated rewrite. An AI-drafted doc-refresh can be
-  agent-executed, but the *decision* to refresh (vs
+  agent-executed, but the _decision_ to refresh (vs
   defer vs irrelevant-here) belongs to a human or to
   an agent with Aaron's explicit authorization for that
   class. Automated doc-rewrite on dep-release is not
   what this directive says.
 - **NOT a license to expand scope silently.** Aaron said
-  *"for our dependencies"* — meaning factory
+  _"for our dependencies"_ — meaning factory
   dependencies, not every external reference in every
   file. Scope-enumeration in Phase 1 gets flagged to
   Aaron for class-inclusion decisions before the
@@ -182,7 +182,7 @@ would ever affect it).
 - `feedback_dv2_scope_universal_indexing.md` — DV-2.0
   `last_updated` per skill is the doc-currency side of
   the ledger; dep-cadence audit extends this to
-  *referenced* deps, not just self-authorship.
+  _referenced_ deps, not just self-authorship.
 - `docs/POST-SETUP-SCRIPT-STACK.md` + Q3 five-exception
   framework — the intentionality-pattern for
   classification is identical in shape: each

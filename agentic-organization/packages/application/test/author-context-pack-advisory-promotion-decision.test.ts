@@ -82,28 +82,37 @@ describe("author context-pack advisory-promotion decision handler", () => {
       "org-lfg:engineering_director:99:project-billing:team-platform:work-billing:management_blocker:" +
         "synthesis_gap_hypothesis:summary-hash-owner-gap",
     );
-    equal(result.contextPackAdvisoryPromotionDecision?.policyVersion, DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION);
-    equal(result.contextPackAdvisoryPromotionDecision?.audit.decidedByAgentId, AdvisoryPromotionDecisionTestId.AgentDirector);
+    equal(
+      result.contextPackAdvisoryPromotionDecision?.policyVersion,
+      DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
+    );
+    equal(
+      result.contextPackAdvisoryPromotionDecision?.audit.decidedByAgentId,
+      AdvisoryPromotionDecisionTestId.AgentDirector,
+    );
     equal(result.contextPackAdvisoryPromotionDecision?.audit.decidedAt, AdvisoryPromotionDecisionTestTime.DecidedAt);
-    deepEqual(outcome.effects.contextPackAdvisoryPromotionDecisions, [
-      result.contextPackAdvisoryPromotionDecision,
+    deepEqual(outcome.effects.contextPackAdvisoryPromotionDecisions, [result.contextPackAdvisoryPromotionDecision]);
+    deepEqual(result.artifacts, [
+      {
+        artifactType: CommandResultArtifactType.ContextPackAdvisoryPromotionDecision,
+        artifactId: AdvisoryPromotionDecisionTestId.Decision,
+        label: "ownership gap blocks execution",
+      },
     ]);
-    deepEqual(result.artifacts, [{
-      artifactType: CommandResultArtifactType.ContextPackAdvisoryPromotionDecision,
-      artifactId: AdvisoryPromotionDecisionTestId.Decision,
-      label: "ownership gap blocks execution",
-    }]);
   });
 
   test("rejects revoked decisions with empty lifecycle blockers before emitting effects", async () => {
-    const outcome = await authorContextPackAdvisoryPromotionDecision({
-      ...command,
-      status: ContextPackAdvisoryPromotionDecisionStatus.Revoked,
-      lifecycleBlocker: " ",
-    }, {
-      now: () => AdvisoryPromotionDecisionTestTime.DecidedAt,
-      createId: (prefix) => `${prefix}-001`,
-    });
+    const outcome = await authorContextPackAdvisoryPromotionDecision(
+      {
+        ...command,
+        status: ContextPackAdvisoryPromotionDecisionStatus.Revoked,
+        lifecycleBlocker: " ",
+      },
+      {
+        now: () => AdvisoryPromotionDecisionTestTime.DecidedAt,
+        createId: (prefix) => `${prefix}-001`,
+      },
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Rejected);
@@ -116,16 +125,19 @@ describe("author context-pack advisory-promotion decision handler", () => {
   });
 
   test("rejects unsupported advisory item kinds before emitting effects", async () => {
-    const outcome = await authorContextPackAdvisoryPromotionDecision({
-      ...command,
-      fingerprint: {
-        ...command.fingerprint,
-        itemKind: ContextPackItemKind.Policy,
+    const outcome = await authorContextPackAdvisoryPromotionDecision(
+      {
+        ...command,
+        fingerprint: {
+          ...command.fingerprint,
+          itemKind: ContextPackItemKind.Policy,
+        },
       },
-    }, {
-      now: () => AdvisoryPromotionDecisionTestTime.DecidedAt,
-      createId: (prefix) => `${prefix}-001`,
-    });
+      {
+        now: () => AdvisoryPromotionDecisionTestTime.DecidedAt,
+        createId: (prefix) => `${prefix}-001`,
+      },
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Rejected);

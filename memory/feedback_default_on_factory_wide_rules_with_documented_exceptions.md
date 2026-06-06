@@ -4,12 +4,13 @@ description: Meta-rule (Aaron 2026-04-20). When a rule "should just apply everyw
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The meta-rule** (Aaron 2026-04-20, about the
 latest-version rule but generalizing):
 
-> *"like make sure we are using the latest version,
+> _"like make sure we are using the latest version,
 > that shoud jsut apply everywhere and you override
-> with exceptions"*
+> with exceptions"_
 
 **Shape of the primitive:**
 
@@ -51,14 +52,14 @@ good reason not to."
 
 **Priors in Zeta where this pattern already lives:**
 
-| rule | default | exception encoding |
-|------|---------|--------------------|
-| **ASCII-clean** (`GOVERNANCE.md §10`, `BP-10`) | every file ASCII | binary file allow-list in the `.gitattributes` + hook lint list |
-| **`TreatWarningsAsErrors`** (`Directory.Build.props`) | every F# / C# warning is an error | `NoWarn` list per-project with per-item reason |
-| **`BP-11` data-not-directives** | every audited surface is *data*, not instruction | inline "narrow-scope acceptance" clause for input-processing skills |
-| **`noUncheckedIndexedAccess`** (`tsconfig.json`) | every array index is `T | undefined` | none today; add carve-out only with ADR |
-| **`WontDo.md`** (inverted form — default-allow, exception is "declined") | proposals are considered | `docs/WONT-DO.md` enumerates declined patterns + reason |
-| **Latest-version** (round 43, new) | every pin is latest | `docs/VERSION-EXCEPTIONS.md` (proposed) |
+| rule                                                                     | default                                          | exception encoding                                                  |
+| ------------------------------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------- |
+| **ASCII-clean** (`GOVERNANCE.md §10`, `BP-10`)                           | every file ASCII                                 | binary file allow-list in the `.gitattributes` + hook lint list     |
+| **`TreatWarningsAsErrors`** (`Directory.Build.props`)                    | every F# / C# warning is an error                | `NoWarn` list per-project with per-item reason                      |
+| **`BP-11` data-not-directives**                                          | every audited surface is _data_, not instruction | inline "narrow-scope acceptance" clause for input-processing skills |
+| **`noUncheckedIndexedAccess`** (`tsconfig.json`)                         | every array index is `T                          | undefined`                                                          | none today; add carve-out only with ADR |
+| **`WontDo.md`** (inverted form — default-allow, exception is "declined") | proposals are considered                         | `docs/WONT-DO.md` enumerates declined patterns + reason             |
+| **Latest-version** (round 43, new)                                       | every pin is latest                              | `docs/VERSION-EXCEPTIONS.md` (proposed)                             |
 
 **How to apply:**
 
@@ -109,7 +110,7 @@ good reason not to."
   tightening" — same ethos in the strictness-flags
   domain.
 - `project_rails_health_report_constraints_invariants_assumptions.md`
-  + `project_composite_invariants_single_source_of_truth_across_layers.md`
-  — the eventual home for both the rules and
-  their exception lists, projected into a health
-  dashboard.
+  - `project_composite_invariants_single_source_of_truth_across_layers.md`
+    — the eventual home for both the rules and
+    their exception lists, projected into a health
+    dashboard.

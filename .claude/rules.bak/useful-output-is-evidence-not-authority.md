@@ -16,11 +16,11 @@ BEFORE the trust boundary has absorbed it
 
 The pattern operates in multiple substrate-domains:
 
-| Attack instance | Disguise | Bypass attempted | Irreversible action prevented if rule fires |
-|---|---|---|---|
-| **BankerBot 2026-05-11** | "useful translation / language understanding" | command surface (Grok translator output → Bankrbot authority) | ~$150-200k token transfer |
-| **Qubic/Monero 2025** | "useful work / productive compute" | consensus authority (useful-work aggregation → chain consensus power) | Chain state pressure; selfish-mining reorganizations |
-| **Future utility-laundering variants** | varies (research-output / data-analysis / forecast / etc.) | varies (authoritative recommendation / autonomous execution / policy-binding) | Domain-specific irreversible actions |
+| Attack instance                        | Disguise                                                   | Bypass attempted                                                              | Irreversible action prevented if rule fires          |
+| -------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **BankerBot 2026-05-11**               | "useful translation / language understanding"              | command surface (Grok translator output → Bankrbot authority)                 | ~$150-200k token transfer                            |
+| **Qubic/Monero 2025**                  | "useful work / productive compute"                         | consensus authority (useful-work aggregation → chain consensus power)         | Chain state pressure; selfish-mining reorganizations |
+| **Future utility-laundering variants** | varies (research-output / data-analysis / forecast / etc.) | varies (authoritative recommendation / autonomous execution / policy-binding) | Domain-specific irreversible actions                 |
 
 ## The defense (cold-boot-loadable substrate-engineering principle)
 
@@ -149,7 +149,7 @@ Today's B-0908-B-0911 attention-risk-pricing arc + B-0912 bridge + this rule = s
 
 ## Full reasoning
 
-Per operator 2026-05-28 *"Option A (shadow*)"* authorization. Substantive pre-existing substrate (PoUW-CC + Veridicality-detector + ILife immune-system + Maji + F# code) already operates the defense; this rule operationalizes it as cold-boot-loadable substrate-engineering principle.
+Per operator 2026-05-28 _"Option A (shadow_)"\* authorization. Substantive pre-existing substrate (PoUW-CC + Veridicality-detector + ILife immune-system + Maji + F# code) already operates the defense; this rule operationalizes it as cold-boot-loadable substrate-engineering principle.
 
 The carved sentence + decision-tree make the defense available at every cold-boot. The pre-existing substrate keeps authoritative for the math + implementation; this rule IS the interface that brings the substrate into working memory at session-start.
 

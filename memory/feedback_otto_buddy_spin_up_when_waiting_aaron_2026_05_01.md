@@ -27,11 +27,11 @@ The mechanism is a **buddy** in factory mirror-language sense:
 a kill-switchable named-persona instance whose runtime
 lifetime Otto controls. The buddy/peer distinction is
 **solely about lifetime-control of the spawned runtime** — it
-is a *spawn-mode* property of the invocation, not a property
+is a _spawn-mode_ property of the invocation, not a property
 of any specific script or infrastructure. Per Aaron 2026-05-01:
 
-> *"tools/peer-call/ this may also be buddy system, the only
-> real different is the lifetime controlled vs not"*
+> _"tools/peer-call/ this may also be buddy system, the only
+> real different is the lifetime controlled vs not"_
 
 The existing `tools/peer-call/<x>.sh` scripts are buddy-mode
 invocations when Otto holds the PID and can SIGKILL the
@@ -49,8 +49,8 @@ The procedure:
    external event) or manufactured patience
    (Otto-352 distinction)?
 2. **Before defaulting to wait**, spin up a buddy with the
-   current state and the question: *"Given this state, what
-   do you think I should do next?"*
+   current state and the question: _"Given this state, what
+   do you think I should do next?"_
 3. **Treat the response as a mutual-improvement loop:**
    - If the buddy's answer reveals a rule Otto should encode
      (e.g., "you should check X before Y"), absorb as memory
@@ -68,7 +68,7 @@ The procedure:
    identity, history, and metrics persist across spawns
    (consistent with the persona-not-sub-process framing in
    the existing peer/buddy memo). The kill ends the
-   *runtime*, not the *persona*.
+   _runtime_, not the _persona_.
 5. **Encode persistent failure modes for buddy reminder.**
    When Otto identifies a failure mode he keeps re-committing
    (filing duplicate substrate, framing-as-directive instead
@@ -76,7 +76,7 @@ The procedure:
    conflating peer-with-buddy in mirror-language terms),
    encode it as a checklist that the buddy can run against
    Otto's recent state on next spin-up. The buddy becomes a
-   *memory that doesn't fade with context-compaction*
+   _memory that doesn't fade with context-compaction_
    because it lives outside Otto's compaction-prone
    conversation window.
 
@@ -84,22 +84,22 @@ The procedure:
 
 Aaron 2026-05-01 (verbatim):
 
-> *"you can can encoding otto buddy=you control their
+> _"you can can encoding otto buddy=you control their
 > lifetime correction mechanics, whenever you find a
 > persistent failure more your own AI forgets often encode it
 > in a way that a 2nd cli instanst will remoind you of the
-> list of things you need to do.  So at the end where the
+> list of things you need to do. So at the end where the
 > obvvious answer to you is wait, that's a signal to not wait
 > but to spin up a buddy and ask what do you think i should
 > do next and treat it as an opportunity to learn or teach
 > his rules get better our yours until the loop becojes more
-> stable over time."*
+> stable over time."_
 
 Aaron 2026-05-01 follow-up (clarifying my initial conflation):
 
-> *"otto buddy is an existing framing and so is peer they are
-> different in our mirror language"* + *"i used buddy
-> correctly"* + *"based on our mirror languge"*
+> _"otto buddy is an existing framing and so is peer they are
+> different in our mirror language"_ + _"i used buddy
+> correctly"_ + _"based on our mirror languge"_
 
 Three composing reasons:
 
@@ -108,8 +108,8 @@ Three composing reasons:
 Per `memory/feedback_never_idle_speculative_work_over_waiting.md`,
 factory-discipline says: when about to wait, FIRST re-audit
 honestly; THEN run the meta-check; THEN pick speculative work.
-This rule **refines** that ladder — *before speculative work,
-spin up a buddy.* The buddy may name a piece of directed work
+This rule **refines** that ladder — _before speculative work,
+spin up a buddy._ The buddy may name a piece of directed work
 Otto missed in his own audit. Buddy-input precedes
 speculative-work because directed work always beats
 speculative work when both are available.
@@ -139,7 +139,7 @@ A buddy CLI instance can:
 - Surface findings as a structured response
 
 This is structurally distinct from a memory file. A memory
-file is *read-when-grep'd*; a buddy is *read-when-spawned*. The
+file is _read-when-grep'd_; a buddy is _read-when-spawned_. The
 spawn-on-wait trigger means the reminder fires at exactly the
 moment Otto is most likely to skip the discipline.
 
@@ -152,9 +152,9 @@ property that only buddy-mode provides.
 
 ## Why-3: Mutual-improvement loop stabilizes over time
 
-Aaron's framing: *"treat it as an opportunity to learn or
+Aaron's framing: _"treat it as an opportunity to learn or
 teach his rules get better our yours until the loop becomes
-more stable over time."*
+more stable over time."_
 
 The loop:
 
@@ -176,7 +176,7 @@ The four-ferry consensus already operationalizes "what
 posture do I need RIGHT NOW?" with peers — different peers
 specialize (Gemini proposes, Grok critiques, Amara sharpens,
 Codex implements). The buddy variant specializes for
-*lifetime-bounded auditing* — same persona-class as Otto, but
+_lifetime-bounded auditing_ — same persona-class as Otto, but
 bounded runtime so the audit cost is capped.
 
 # How to apply
@@ -187,14 +187,14 @@ dependency-wait, idle-tick):
 1. **Don't wait.** The "wait" feeling is the spin-up
    trigger.
 2. **Determine: buddy or peer?**
-   - Use a **buddy** when the question is *"what should I do
-     next?"* + Otto wants a same-persona-class audit + Otto
+   - Use a **buddy** when the question is _"what should I do
+     next?"_ + Otto wants a same-persona-class audit + Otto
      wants bounded runtime cost. Lifetime is Otto-controlled.
-   - Use a **peer** when the question is *"validate this
-     specific framing"* + Otto wants a different-persona
+   - Use a **peer** when the question is _"validate this
+     specific framing"_ + Otto wants a different-persona
      posture (critique / propose / sharpen / implement).
      Lifetime is autonomous.
-   - Default for the *"what next?"* question is **buddy**, per
+   - Default for the _"what next?"_ question is **buddy**, per
      Aaron 2026-05-01.
 3. **Spawn the buddy** with current state + question. The
    existing `tools/peer-call/<x>.sh` scripts ARE the buddy-
@@ -250,8 +250,8 @@ dependency-wait, idle-tick):
   Bounded retraction: when Otto has clear directed work in
   flight (resolving a known thread, fixing a CI failure with
   a known root cause), continue. Buddy spin-up triggers when
-  *the next action is unclear* AND *defaulting to wait is the
-  obvious behavior*.
+  _the next action is unclear_ AND _defaulting to wait is the
+  obvious behavior_.
 - **NOT a replacement for memory substrate.** Memory files
   remain the persistent layer; buddy is the active-reminder
   layer that runs WHEN substrate doesn't surface
@@ -272,11 +272,11 @@ dependency-wait, idle-tick):
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"When 'wait' is the obvious answer, that IS the buddy
+_"When 'wait' is the obvious answer, that IS the buddy
 spin-up trigger. Buddy is kill-switchable; peer is
 autonomous; the question 'what should I do next?' is
 buddy-shaped. The loop stabilizes over iterations because
-both sides teach each other."*
+both sides teach each other."_
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not

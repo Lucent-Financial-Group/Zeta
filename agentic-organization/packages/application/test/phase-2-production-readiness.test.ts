@@ -29,15 +29,13 @@ test("Phase 2 production readiness passes only when the pilot and every readines
 });
 
 test("Phase 2 production readiness blocks failed, missing, and unevidenced properties", () => {
-  const properties = allProperties("passed").filter((property) =>
-    property.property !== Phase2ReadinessProperty.ContinuousProof,
+  const properties = allProperties("passed").filter(
+    (property) => property.property !== Phase2ReadinessProperty.ContinuousProof,
   );
-  const failed = properties.find((property) =>
-    property.property === Phase2ReadinessProperty.LearningAssignment,
-  );
+  const failed = properties.find((property) => property.property === Phase2ReadinessProperty.LearningAssignment);
   if (failed === undefined) throw new Error("missing test property");
-  const unevidenced = properties.find((property) =>
-    property.property === Phase2ReadinessProperty.OperationalKillSwitches,
+  const unevidenced = properties.find(
+    (property) => property.property === Phase2ReadinessProperty.OperationalKillSwitches,
   );
   if (unevidenced === undefined) throw new Error("missing test property");
 
@@ -46,9 +44,10 @@ test("Phase 2 production readiness blocks failed, missing, and unevidenced prope
     evaluatedAt: NOW,
     pilot: blockedPilot(),
     properties: [
-      ...properties.filter((property) =>
-        property.property !== Phase2ReadinessProperty.LearningAssignment &&
-        property.property !== Phase2ReadinessProperty.OperationalKillSwitches
+      ...properties.filter(
+        (property) =>
+          property.property !== Phase2ReadinessProperty.LearningAssignment &&
+          property.property !== Phase2ReadinessProperty.OperationalKillSwitches,
       ),
       {
         ...failed,
@@ -128,18 +127,10 @@ function allProperties(status: "passed" | "failed"): readonly Phase2ReadinessPro
   }));
 }
 
-function slo(
-  kind: PilotSloKind,
-  observed: number,
-  target: number,
-  direction: "higher_or_equal" | "lower_or_equal",
-) {
+function slo(kind: PilotSloKind, observed: number, target: number, direction: "higher_or_equal" | "lower_or_equal") {
   return { kind, observed, target, direction, evidenceRef: `pilot:slo:${kind}` };
 }
 
-function drill(
-  kind: PilotDisasterDrillKind,
-  status: "passed" | "failed" = "passed",
-) {
+function drill(kind: PilotDisasterDrillKind, status: "passed" | "failed" = "passed") {
   return { kind, status, finding: status, evidenceRef: `pilot:drill:${kind}` };
 }

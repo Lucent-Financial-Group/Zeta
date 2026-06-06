@@ -6,9 +6,9 @@ description: Prompt engineering — system prompts, few-shot design, tool descri
 # Prompt Engineering Expert — the prompt-craft hat
 
 Offensive/craft counterpart to `prompt-protector` (defense).
-This skill owns *how to make the model do the right thing*;
-the protector owns *how to make the model resist the wrong
-thing*. They pair.
+This skill owns _how to make the model do the right thing_;
+the protector owns _how to make the model resist the wrong
+thing_. They pair.
 
 ## When to wear this skill
 
@@ -34,15 +34,15 @@ thing*. They pair.
 - **Prompt-protector** (Nadia) — adversarial / defensive
   review. This skill writes the prompt; protector attacks it.
 - **Skill-creator** — workflow for creating a new skill
-  end-to-end. This skill is the *craft* that lives inside
+  end-to-end. This skill is the _craft_ that lives inside
   that workflow.
 - **Skill-improver** (Yara) — executes checkbox edits from
   `skill-tune-up` findings. This skill is the reference she
-  consults on *how* to edit.
+  consults on _how_ to edit.
 - **Claude-md-steward** — owns the three-file taxonomy
   (AGENTS / CLAUDE / MEMORY). This skill is consulted when
   writing their bodies.
-- **Llm-systems-expert** — owns the *system architecture*
+- **Llm-systems-expert** — owns the _system architecture_
   around the prompt (context windows, tool orchestration).
   This skill owns the prompt text itself.
 - **Ai-evals-expert** — owns the measurement of whether a
@@ -56,7 +56,7 @@ capability skill, every subagent is a prompt-engineering
 artifact. Specific Zeta surfaces this skill governs:
 
 - **Capability-skill frontmatter.** The `description:` field
-  is the *primary triggering mechanism* — undertrigger =
+  is the _primary triggering mechanism_ — undertrigger =
   underspecified description.
 - **Capability-skill bodies.** "When to wear" / "When to
   defer" / "What this skill does NOT do" — canonical
@@ -76,8 +76,8 @@ artifact. Specific Zeta surfaces this skill governs:
 
 For Claude Code skill triggering, the frontmatter
 `description:` is the only thing the model reads at skill-
-selection time. So it must carry both *what the skill does*
-and *when to use it*, with enough specific contexts to pull
+selection time. So it must carry both _what the skill does_
+and _when to use it_, with enough specific contexts to pull
 the trigger reliably.
 
 - **Undertriggered** skill: description is too narrow, too
@@ -114,7 +114,7 @@ Why wrong: <1-line explanation>
 "Always use semantic HTML headings" works; "Never use `<div>`
 when you mean `<section>`" works worse. Negation fires
 uneven attention. Prefer the positive version where possible.
-Use "NEVER" sparingly; when you do, attach a *why*.
+Use "NEVER" sparingly; when you do, attach a _why_.
 
 ### 4. Explain the why
 
@@ -123,7 +123,7 @@ rationale ("don't compress encrypted payloads because random
 bytes don't compress and CRIME-class attacks become possible")
 generalises to adjacent cases. A bare rule doesn't.
 
-If a rule lacks a *why*, it's brittle. Always explain.
+If a rule lacks a _why_, it's brittle. Always explain.
 
 ### 5. Structured output beats freeform output
 
@@ -162,7 +162,7 @@ aggressive pruning on round-close.
 ### 8. Tool descriptions are prompts
 
 A `description` field on a tool is what the model reads to
-decide *when to call this tool*. Same rules apply: concrete
+decide _when to call this tool_. Same rules apply: concrete
 trigger phrases, examples in the description, why it's
 different from adjacent tools.
 
@@ -180,7 +180,7 @@ treated as negotiable content. Keep rules system-side.
 ### 10. "Agentic" prompts need explicit completion criteria
 
 When an agent is autonomous (runs tools, takes multiple
-turns), its prompt must say *what "done" looks like*. Open-
+turns), its prompt must say _what "done" looks like_. Open-
 ended "help me with X" leads to loop behaviour. Prefer:
 
 - Explicit termination condition ("return when the test
@@ -267,10 +267,10 @@ ended "help me with X" leads to loop behaviour. Prefer:
 
 ## Procedure — writing / revising a skill prompt
 
-1. **State the trigger:** when *should* this skill fire?
+1. **State the trigger:** when _should_ this skill fire?
    What phrases will real users / agents say?
 2. **State the scope:** what does it do? What does it
-   explicitly *not* do?
+   explicitly _not_ do?
 3. **State the handoffs:** when does it defer to another
    skill?
 4. **Draft the frontmatter description** with trigger
@@ -292,16 +292,19 @@ ended "help me with X" leads to loop behaviour. Prefer:
 # Prompt review — <skill / tool / persona>
 
 ## Triggering analysis
+
 - Current triggers: <list>
 - Missed phrasings: <list>
 - Over-fires on: <list>
 
 ## Scope clarity
+
 - What the prompt claims to do: <summary>
 - What it actually handles well: <summary>
 - Gap: <summary>
 
 ## Principle checklist
+
 - [ ] Description field carries concrete triggers
 - [ ] Positive framing where possible
 - [ ] Rationale attached to non-obvious rules
@@ -312,6 +315,7 @@ ended "help me with X" leads to loop behaviour. Prefer:
 - [ ] ≤ 500 lines body (or hierarchical disclosure)
 
 ## Recommended edits
+
 <specific, one-line-each, ordered by impact>
 ```
 
@@ -324,7 +328,7 @@ ended "help me with X" leads to loop behaviour. Prefer:
 - Does not execute the skill-creation workflow
   (`skill-creator`).
 - Does not own the tool schemas themselves (that's the tool
-  author); it owns the *prose* on them.
+  author); it owns the _prose_ on them.
 - Does not treat "just prompt harder" as a solution to a
   systems problem. If the gap is context or architecture,
   `llm-systems-expert` owns it.
@@ -346,23 +350,23 @@ ended "help me with X" leads to loop behaviour. Prefer:
 
 ### Primary literature
 
-- Anthropic, *Prompt engineering overview*
+- Anthropic, _Prompt engineering overview_
   (docs.claude.com/en/docs/build-with-claude/prompt-
   engineering).
-- OpenAI, *Prompt engineering guide*
+- OpenAI, _Prompt engineering guide_
   (platform.openai.com/docs/guides/prompt-engineering).
-- Schulhoff et al., *The Prompt Report: A Systematic Survey
-  of Prompting Techniques* (2024).
-- Wei et al., *Chain-of-Thought Prompting Elicits Reasoning
-  in Large Language Models* (NeurIPS 2022).
-- Kojima et al., *Large Language Models are Zero-Shot
-  Reasoners* (NeurIPS 2022).
-- Yao et al., *ReAct: Synergizing Reasoning and Acting in
-  Language Models* (ICLR 2023).
-- Madaan et al., *Self-Refine: Iterative Refinement with
-  Self-Feedback* (NeurIPS 2023).
-- Khot et al., *Decomposed Prompting* (ICLR 2023).
-- Zhou et al., *Least-to-Most Prompting* (ICLR 2023).
+- Schulhoff et al., _The Prompt Report: A Systematic Survey
+  of Prompting Techniques_ (2024).
+- Wei et al., _Chain-of-Thought Prompting Elicits Reasoning
+  in Large Language Models_ (NeurIPS 2022).
+- Kojima et al., _Large Language Models are Zero-Shot
+  Reasoners_ (NeurIPS 2022).
+- Yao et al., _ReAct: Synergizing Reasoning and Acting in
+  Language Models_ (ICLR 2023).
+- Madaan et al., _Self-Refine: Iterative Refinement with
+  Self-Feedback_ (NeurIPS 2023).
+- Khot et al., _Decomposed Prompting_ (ICLR 2023).
+- Zhou et al., _Least-to-Most Prompting_ (ICLR 2023).
 
 ### Zeta-adjacent references
 

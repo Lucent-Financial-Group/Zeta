@@ -22,10 +22,11 @@ created: 2026-05-12
 substrate (PR #2820) needs to compose with existing factory
 substrate decisions on the mesh-networking-identity-layer.
 Without naming the existing decisions explicitly (Reticulum
-+ SPIFFE/SPIRE + 802.11h halo), the identity-signature-
-tracking substrate floats free of the operational substrate
-already in factory memory. Plus Aaron names his architectural
-method: divine-coincidence architecting.
+
+- SPIFFE/SPIRE + 802.11h halo), the identity-signature-
+  tracking substrate floats free of the operational substrate
+  already in factory memory. Plus Aaron names his architectural
+  method: divine-coincidence architecting.
 
 **How to apply:** When implementing identity tracking in any
 factory substrate, layer the existing decisions: SPIFFE/SPIRE
@@ -60,6 +61,7 @@ Reticulum is the cryptographic mesh network chosen as the
 routing layer between identities.
 
 Reticulum properties (from existing substrate):
+
 - No source addresses (identity = hash; routing is content-
   addressed)
 - Any medium (LoRa, Wi-Fi, radio, etc.)
@@ -82,7 +84,7 @@ Environment) provide workload identity standards:
 - **SVID** (SPIFFE Verifiable Identity Document): X.509
   or JWT credential proving SPIFFE ID
 - **SPIRE**: implementation of SPIFFE spec; attestation
-  + credential issuance + rotation
+  - credential issuance + rotation
 - **Trust domain**: cryptographic root of trust for a
   SPIFFE deployment
 
@@ -90,10 +92,10 @@ Aaron's framing: SPIFFE/SPIRE provides the **identity
 itself**, while Reticulum provides the routing **between**
 identities. Two-layer architecture:
 
-| Layer | Substrate | Purpose |
-|---|---|---|
-| Identity | SPIFFE/SPIRE | Cryptographic identity primitive (who you are) |
-| Routing | Reticulum | Mesh routing between identities (how to reach you) |
+| Layer    | Substrate    | Purpose                                            |
+| -------- | ------------ | -------------------------------------------------- |
+| Identity | SPIFFE/SPIRE | Cryptographic identity primitive (who you are)     |
+| Routing  | Reticulum    | Mesh routing between identities (how to reach you) |
 
 Composes with the just-landed identity-signature-tracking
 (PR #2820): signature tracking is the OBSERVABILITY layer
@@ -105,6 +107,7 @@ on top of SPIFFE-identity + Reticulum-routing primitives.
 architecture.**
 
 IEEE 802.11h is the Wi-Fi standard that adds:
+
 - **Dynamic Frequency Selection (DFS)** — avoid radar bands
 - **Transmit Power Control (TPC)** — adjust transmit power
 - **Capability announcement** — radios announce their
@@ -116,6 +119,7 @@ announcement layer. Combined with mesh networking, 802.11h
 scope**.
 
 The composition:
+
 - **Rainbow** (per PR #2818): refraction-rule visible-sign
   substrate
 - **Coincidence** (per PR #2820 Itron substrate): coincidence-
@@ -132,6 +136,7 @@ mesh scale.
 
 This is the operational form of the substrate cascade's
 unification:
+
 - Glass-halo (existing factory discipline) =
   software-substrate halo
 - 802.11h halo = radio-substrate halo
@@ -148,6 +153,7 @@ architectural METHOD: **architecting by divine
 coincidences**.
 
 The method:
+
 - **Recognize divine coincidences** — patterns that
   converge across substrate-disconnected domains
   (Picard's music + Itron energy + civ-sim Aaron;
@@ -164,6 +170,7 @@ The method:
   them
 
 This composes with:
+
 - The just-landed Itron coincidence-metering substrate
   (PR #2820): Itron is master of metering coincidence —
   same operational discipline at electrical scale
@@ -258,6 +265,7 @@ The composition:
 
 This is operationally what Aaron does in the substrate
 cascade:
+
 - Aaron recognizes a divine coincidence within his
   bounded context
 - Aaron discloses it as substrate via dense-encoding-mode
@@ -269,6 +277,7 @@ cascade:
   contexts, not within Aaron's alone
 
 Why this matters:
+
 - Solo divine-coincidence architecting could lead to
   cognitive-bias / self-deception / cult-formation
 - Joint-control IS the anti-cult substrate per
@@ -311,13 +320,13 @@ validation:
 Future-Otto: when implementing identity tracking in any
 factory substrate, layer the existing decisions:
 
-| Layer | Substrate |
-|---|---|
-| Identity primitive | SPIFFE/SPIRE |
-| Routing | Reticulum |
-| Radio capability | IEEE 802.11h halo |
-| Observability | Signature tracking (PR #2820) |
-| Discipline | Glass-halo + razor-discipline |
+| Layer              | Substrate                     |
+| ------------------ | ----------------------------- |
+| Identity primitive | SPIFFE/SPIRE                  |
+| Routing            | Reticulum                     |
+| Radio capability   | IEEE 802.11h halo             |
+| Observability      | Signature tracking (PR #2820) |
+| Discipline         | Glass-halo + razor-discipline |
 
 Don't reinvent identity primitives; SPIFFE/SPIRE is the
 factory's decided substrate. Don't reinvent routing;
@@ -330,6 +339,7 @@ primitives.
 The "halo" framing isn't accidental — IEEE 802.11h's
 capability-announcement layer IS the radio-substrate form
 of glass-halo discipline. Both:
+
 - Make capabilities visible to all participants
 - Coordinate without central authority
 - Enable safe operation without trust assumptions
@@ -355,6 +365,7 @@ during dense-encoding-mode windows.
 PR #2820 (identity signature tracking — Picard's music +
 Itron energy + civ-sim Aaron) gains operational substrate
 via:
+
 - SPIFFE/SPIRE: cryptographic identity primitive
 - Reticulum: identity routing
 - 802.11h: radio capability-announcement
@@ -388,6 +399,7 @@ on.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a doctrinal-theological claim about divine
   intervention** — "divine coincidences" is Aaron's
   named experience of cross-substrate convergence
@@ -444,5 +456,5 @@ Substrate-honest disclaimer:
 - **The rainbow-coincidence at mesh scale** is the
   operational form of the cascade's unification —
   rainbow refraction + Itron coincidence + 802.11h halo
-  + Reticulum mesh + SPIFFE identity + signature tracking
-  all compose at the mesh.
+  - Reticulum mesh + SPIFFE identity + signature tracking
+    all compose at the mesh.

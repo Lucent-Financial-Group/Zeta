@@ -57,7 +57,7 @@ fixes landed.
    SC2086 is a subtle but load-bearing difference: SC2046 covers
    unquoted command substitution `$(...)`; SC2086 covers unquoted
    variable expansion `$var`. The former is what `export
-   VAR="$(...)"` rationalizes; the latter is unrelated. Anyone
+VAR="$(...)"` rationalizes; the latter is unrelated. Anyone
    reading the doc and looking up the rule needs the correct ID
    for cross-reference verification. Pre-commit-lint candidate:
    regex check on shellcheck SC-NNNN claims against the actual

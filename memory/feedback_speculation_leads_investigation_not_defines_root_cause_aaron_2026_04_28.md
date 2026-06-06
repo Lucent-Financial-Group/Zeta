@@ -19,8 +19,8 @@ Not from a plausible-sounding causal narrative I assemble from nearby facts.
 
 ## Why: the LFG #661 incident (2026-04-28T13:30-14:30Z)
 
-Aaron asked: *"why can't you make it work with it turn[ed] on, give me an exact
-clear defin[i]tion i can understand"*
+Aaron asked: _"why can't you make it work with it turn[ed] on, give me an exact
+clear defin[i]tion i can understand"_
 
 I produced a 4-step "exact mechanical answer":
 
@@ -33,7 +33,7 @@ I produced a 4-step "exact mechanical answer":
 4. The advanced workflow uploads SARIF successfully but the umbrella's verdict
    is dominated by the missing-configuration expectation
 
-Aaron: *"this seems like a bullshit answer"*
+Aaron: _"this seems like a bullshit answer"_
 
 He was right. Steps 1-2 are facts (verifiable via `gh api`). Steps 3-4 are
 **speculation** — I had no primary-source evidence that GitHub's umbrella
@@ -56,15 +56,16 @@ GitHub's actual error text:
 > found:
 >
 > ### Actions workflow (`codeql.yml`)
-> * `/language:java-kotlin`
+>
+> - `/language:java-kotlin`
 
 That's the **mechanism**. Not org-level inheritance. Not config-attachment
 asymmetry. The workflow on `main` has produced `java-kotlin` analyses; the
 PR head's `codeql.yml` matrix doesn't include `java-kotlin`; the umbrella
 can't compute the alert delta; emits NEUTRAL.
 
-Then: Aaron's *"we have java in our codebase, it's just a little but it's
-there"* — confirmed by `find . -name '*.java'` finding `tools/alloy/AlloyRunner.java`
+Then: Aaron's _"we have java in our codebase, it's just a little but it's
+there"_ — confirmed by `find . -name '*.java'` finding `tools/alloy/AlloyRunner.java`
 as first-party (the workflow's "no Java/Kotlin source" comment was wrong).
 
 The fix follows mechanically from primary-source evidence: add `java-kotlin`
@@ -72,32 +73,32 @@ to the `analyze` matrix.
 
 ## What changed in the workflow
 
-| Step | Before pushback | After pushback |
-| --- | --- | --- |
-| Hypothesis | "Org-level config inheritance asymmetry" | "Workflow matrix mismatch with main's analyses" |
-| Source | Speculative narrative | `gh api .../check-runs/<id>` summary text |
-| Confidence framing | "Exact mechanical answer" (false confidence) | "Primary-source quote, mechanism follows" |
-| Action affordance | "Pick one of 3 options requiring your auth" | "Add `java-kotlin` to matrix; non-destructive" |
+| Step               | Before pushback                              | After pushback                                  |
+| ------------------ | -------------------------------------------- | ----------------------------------------------- |
+| Hypothesis         | "Org-level config inheritance asymmetry"     | "Workflow matrix mismatch with main's analyses" |
+| Source             | Speculative narrative                        | `gh api .../check-runs/<id>` summary text       |
+| Confidence framing | "Exact mechanical answer" (false confidence) | "Primary-source quote, mechanism follows"       |
+| Action affordance  | "Pick one of 3 options requiring your auth"  | "Add `java-kotlin` to matrix; non-destructive"  |
 
 ## The discipline going forward
 
 When asked for a mechanism:
 
 1. **Find the primary source first.** Error message, config dump, log line,
-   API response, code path. *Quote it verbatim.*
+   API response, code path. _Quote it verbatim._
 2. **Hypotheses are scaffolding.** They direct what to query / fetch / read.
    They are NOT the answer.
 3. **Confidence calibration matches source.** If the answer comes from a
    primary source, it can be stated confidently. If it comes from inference
-   over nearby facts, frame it explicitly: *"hypothesis pending verification."*
+   over nearby facts, frame it explicitly: _"hypothesis pending verification."_
 4. **Bullshit-call recovery is fast.** Aaron's "this seems like a bullshit
    answer" is data: the framing was wrong; back up; re-source.
 
 ## Mandatory labeling discipline (Aaron 2026-04-28T14:42Z extension)
 
-> *"it will make it easier for your future self if any logs or anything
+> _"it will make it easier for your future self if any logs or anything
 > you say about root cause of things, include if it's speculation or
-> based on evidence and list the evidence"*
+> based on evidence and list the evidence"_
 
 Every root-cause statement (in chat, commit messages, memory files, tick
 history, PR descriptions, BACKLOG rows, ADRs) MUST carry an explicit label:
@@ -122,6 +123,7 @@ Good (labelled, evidence-backed):
 > include `java-kotlin`.
 >
 > **Evidence:**
+>
 > - `gh api repos/Lucent-Financial-Group/Zeta/check-runs/73401083160 --jq .output.summary` → "1 configuration present on `refs/heads/main` was not found: codeql.yml /language:java-kotlin"
 > - `gh api .../code-scanning/analyses?ref=refs/heads/main` → 5 java-kotlin analyses on main, latest 2026-04-28T09:08:48Z
 > - `find . -name '*.java'` → `tools/alloy/AlloyRunner.java` (first-party)
@@ -147,20 +149,20 @@ Why this matters across surfaces:
 
 ## Aaron's verbatim corrections (2026-04-28)
 
-> *"this seems like a bullshit answer"*
+> _"this seems like a bullshit answer"_
 > — Aaron 2026-04-28T13:30Z, on my 4-step org-inheritance narrative.
 
-> *"we have java in our codebase, it's just a little but it's there"*
+> _"we have java in our codebase, it's just a little but it's there"_
 > — Aaron 2026-04-28T14:32Z, correcting the workflow's "no Java/Kotlin source"
 > assumption.
 
-> *"Speculation-as-mechanism is the failure mode; primary-source-first is the
-> discipline. yes never speculate, i don't"*
+> _"Speculation-as-mechanism is the failure mode; primary-source-first is the
+> discipline. yes never speculate, i don't"_
 > — Aaron 2026-04-28T14:35Z, accepting my own retroactive framing as binding.
 
-> *"speculation leads investigation not defines root cause"*
+> _"speculation leads investigation not defines root cause"_
 > — Aaron 2026-04-28T14:35Z, refining the rule. Speculation has a role in
-> *leading* investigation; it has no role in *defining* root cause.
+> _leading_ investigation; it has no role in _defining_ root cause.
 
 ## Composes with
 

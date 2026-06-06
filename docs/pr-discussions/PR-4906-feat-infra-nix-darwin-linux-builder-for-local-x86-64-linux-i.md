@@ -22,7 +22,7 @@ Adds \`infra/nix-darwin/\` + wires \`darwinConfigurations.zeta-mac\` into \`flak
 
 \`\`\`bash
 nix run nix-darwin/master#darwin-rebuild -- switch \\
-  --flake /path/to/Zeta#zeta-mac
+--flake /path/to/Zeta#zeta-mac
 \`\`\`
 
 …and gets a working linux-builder VM. From then on \`nix build .#installer-iso\` from the repo root builds the x86_64-linux ISO locally via Apple's Virtualization.framework + Rosetta 2 — no Parallels, Lima, Docker, or remote builders.
@@ -33,11 +33,11 @@ The installer ISO target is \`x86_64-linux\`. Apple Silicon is \`aarch64-darwin\
 
 ## Files
 
-| File | Purpose |
-|---|---|
+| File                                   | Purpose                                                                                                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | \`infra/nix-darwin/configuration.nix\` | The actual config: \`nix.linux-builder.enable = true\`, sizing (8GB RAM, 40GB disk, 6 cores), \`extra-platforms = [ "x86_64-linux" ]\`, trusted-users = @admin, baseline package set |
-| \`infra/nix-darwin/README.md\` | Prerequisites, setup command, troubleshooting, "what this is NOT" |
-| \`flake.nix\` | Adds \`inputs.nix-darwin\` pinned to master + \`darwinConfigurations.zeta-mac\` |
+| \`infra/nix-darwin/README.md\`         | Prerequisites, setup command, troubleshooting, "what this is NOT"                                                                                                                    |
+| \`flake.nix\`                          | Adds \`inputs.nix-darwin\` pinned to master + \`darwinConfigurations.zeta-mac\`                                                                                                      |
 
 ## Composes with
 
@@ -61,6 +61,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Adds a nix-darwin configuration under `infra/nix-darwin/` and wires it into `flake.nix` as `darwinConfigurations.zeta-mac`, enabling maintainers on Apple Silicon macOS to use nix-darwin’s `linux-builder` VM to build the repo’s `x86_64-linux` installer ISO locally.
 
 **Changes:**
+
 - Add nix-darwin workstation configuration enabling `nix.linux-builder` + Rosetta-backed `extra-platforms = [ "x86_64-linux" ]`.
 - Document the intended maintainer workflow (one-command setup, ISO build, troubleshooting) in `infra/nix-darwin/README.md`.
 - Extend `flake.nix` with a `nix-darwin` input and a `darwinConfigurations.zeta-mac` output.
@@ -69,14 +70,13 @@ Adds a nix-darwin configuration under `infra/nix-darwin/` and wires it into `fla
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| infra/nix-darwin/README.md | Documents prerequisites and setup/build workflow for nix-darwin linux-builder on Apple Silicon. |
-| infra/nix-darwin/configuration.nix | Implements the nix-darwin config enabling linux-builder, caches, trusted users, and baseline tools. |
-| flake.nix | Adds `nix-darwin` flake input and exports `darwinConfigurations.zeta-mac` to apply the workstation config. |
+| File                               | Description                                                                                                |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| infra/nix-darwin/README.md         | Documents prerequisites and setup/build workflow for nix-darwin linux-builder on Apple Silicon.            |
+| infra/nix-darwin/configuration.nix | Implements the nix-darwin config enabling linux-builder, caches, trusted users, and baseline tools.        |
+| flake.nix                          | Adds `nix-darwin` flake input and exports `darwinConfigurations.zeta-mac` to apply the workstation config. |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:28:09Z)
-
 
 ### 💡 Codex Review
 
@@ -84,17 +84,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `980db14858`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -108,24 +107,22 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 5 c
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:39:03Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `776fb373cb`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -167,7 +164,7 @@ The resource-sizing comment says “Default 8GB RAM / 8 cores”, but the config
 
 **@chatgpt-codex-connector** (2026-05-25T03:28:09Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Publish installer-iso for Darwin hosts**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Publish installer-iso for Darwin hosts**
 
 The new workflow instructs Apple Silicon users to run `nix build .#installer-iso`, but this flake still exposes `installer-iso` only under `packages.x86_64-linux` (the package set is gated by `system == "x86_64-linux"`), so on `aarch64-darwin` the attribute lookup fails before the linux-builder can be used. This means the headline feature introduced here is not actually runnable on the target platform unless users manually build an explicit Linux attribute path.
 
@@ -207,7 +204,7 @@ Minor doc clarity: this breaks “Virtualization.framework” across lines as �
 
 **@chatgpt-codex-connector** (2026-05-25T03:39:04Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update README to reference an existing CI workflow**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update README to reference an existing CI workflow**
 
 The new documentation points readers to `../../.github/workflows/build-installer-iso.yml` as the source-of-truth CI path, but that workflow file is not present in this repository (I checked the current `.github/workflows/` tree). This leaves maintainers following the new nix-darwin guide without a valid CI reference and makes the “source of truth” claim unverifiable; point this link at the actual workflow file (or remove the specific filename) to avoid stale guidance.
 

@@ -4,13 +4,14 @@ description: Aaron 2026-04-22 auto-loop-24 (post-tick-close) shared ThePrimeTime
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22 auto-loop-24 (post-tick-close PR #119 open):
 
-> *"My youtube algorythm winks at me sometimes, this may help
->  you plan on how to resolve pointer issues in an eleglant way
->  or at lesat see bad patterns
->  https://www.youtube.com/watch?v=NW6PhVdq9R8 Thanks Mr Page"*
-> — followed by clarification: *"Larry Page come on it's YouTube"*
+> _"My youtube algorythm winks at me sometimes, this may help
+> you plan on how to resolve pointer issues in an eleglant way
+> or at lesat see bad patterns
+> https://www.youtube.com/watch?v=NW6PhVdq9R8 Thanks Mr Page"_
+> — followed by clarification: _"Larry Page come on it's YouTube"_
 
 ## The video (as captured)
 
@@ -35,12 +36,12 @@ Aaron 2026-04-22 auto-loop-24 (post-tick-close PR #119 open):
 
 ## The Larry-Page-thanks joke
 
-Aaron's *"Thanks Mr Page"* sign-off is a tongue-in-cheek
+Aaron's _"Thanks Mr Page"_ sign-off is a tongue-in-cheek
 tip-of-the-hat to Larry Page, Google co-founder, whose
 PageRank algorithm is the ancestor of YouTube's recommender.
-The *"youtube algorythm winks at me sometimes"* opener
+The _"youtube algorythm winks at me sometimes"_ opener
 anthropomorphizes the recommender as a personality that
-*chooses* what to surface. My first parse looked for a gamedev
+_chooses_ what to surface. My first parse looked for a gamedev
 "Mr Page" — wrong. The correct parse: Aaron thanks the person
 who built the foundation that surfaces serendipitous content.
 
@@ -56,8 +57,8 @@ Five compositional threads:
 ### 1. AI-authored-code-under-expert-review ↔ factory Copilot-triage
 
 The video's structural shape is: AI agent produces code;
-human expert reviews; findings surface. That's the *exact
-shape* of the factory's Copilot-review-resolution substrate
+human expert reviews; findings surface. That's the _exact
+shape_ of the factory's Copilot-review-resolution substrate
 (auto-loop-10/11/12 catalog: split accept/reject / all-reject /
 design-intrinsic-hardcode + auto-loop-20's two new shapes:
 memory-ref-from-outside / persona-name-false-positive). The
@@ -66,7 +67,7 @@ prose/reference/hygiene layer; the video is at code/algorithm
 layer. Same review-discipline shape; different surface.
 
 Implication: the patterns the gamedev catches in Devin.ai's
-output may be the *code-layer analog* of Copilot's
+output may be the _code-layer analog_ of Copilot's
 prose-layer findings. A video-transcript absorption could
 extend the Copilot-rejection-grounds catalog with code-shape
 classes.
@@ -92,13 +93,13 @@ doesn't-map-terrain / doesn't-build-moats).
 
 ### 3. Zeta retraction-native semantics ↔ "elegant way" hint
 
-Aaron's *"resolve pointer issues in an eleglant way"* is not
+Aaron's _"resolve pointer issues in an eleglant way"_ is not
 accidental framing. Zeta's operator algebra (D / I / z⁻¹ / H)
 operates on **retraction-native** semantics — every value
 change carries its negation; references are algebraic objects
 composed via operators, not manually-threaded lifecycle
 tokens. The pointer-lifecycle problem is re-expressed as a
-*function-composition* problem, where the type system and
+_function-composition_ problem, where the type system and
 the algebra guarantee ref-integrity without manual management.
 
 This is the factory's answer to "elegant pointer resolution"
@@ -120,7 +121,7 @@ memory after the shift.
 
 **Zeta equivalent**: ZSet retraction-native semantics. A value
 change carries its algebraic negation; index-over-ZSet is
-*stable* under retraction because retractions are recorded as
+_stable_ under retraction because retractions are recorded as
 negative-weight entries, not in-place mutations of a backing
 array. The operator algebra preserves reference-validity by
 construction — there is no "shift" because there is no
@@ -132,11 +133,11 @@ Muratori: AI code accessed entity properties through indices
 without verifying existence. No ownership model means no safe
 signaling across systems that a lifecycle has ended.
 
-**Zeta equivalent**: ZSet membership has *weight* not
+**Zeta equivalent**: ZSet membership has _weight_ not
 presence/absence. An "absent" row has zero weight; a "removed"
 row has negative weight combined with positive history. Access
 is always-safe because the type answers "what weight" not
-"does this exist" — the latter is a *derived* predicate, not
+"does this exist" — the latter is a _derived_ predicate, not
 a structural invariant the caller must maintain.
 
 ### Pattern 3 — Lack of Ownership Model
@@ -145,7 +146,7 @@ Muratori: Couldn't safely signal lifecycle to other systems
 (render / collision). Cross-system state coherence fell
 through the cracks.
 
-**Zeta equivalent**: Operator algebra composition *is* the
+**Zeta equivalent**: Operator algebra composition _is_ the
 ownership model. `D · I = identity` — every derivative has a
 paired integral. `z⁻¹ · z = 1` — every shift has an inverse.
 Ownership isn't a mental model the author maintains; it's an
@@ -160,7 +161,7 @@ breaking the temporal logic of the game loop where multiple
 systems access the same state within a single frame.
 
 **Zeta equivalent**: This is literally the retraction-native
-pattern. Retractions are *recorded* events with algebraic
+pattern. Retractions are _recorded_ events with algebraic
 semantics; cleanup is a separate pass (compaction / bloom
 filters) that runs when economically justified. Multiple
 downstream consumers can observe the retraction-event at
@@ -175,7 +176,7 @@ Muratori: Deeply nested objects, OOP-pattern pointer chasing,
 cache misses.
 
 **Zeta equivalent**: This is the flip side of the algebra
-story. Retraction-native *data representation* (Arrow
+story. Retraction-native _data representation_ (Arrow
 columnar format, `ArrowInt64Serializer`, Spine's block-layout)
 is cache-friendly by construction — the operators are
 decoupled from the memory layout. The algebra lets you write
@@ -185,7 +186,7 @@ touching the algorithm.
 
 **Composite claim** (worth testing with Aaron for the
 ServiceTitan demo narrative): the five Muratori patterns are
-all *symptoms* of manual-pointer-lifecycle-management. Zeta's
+all _symptoms_ of manual-pointer-lifecycle-management. Zeta's
 operator algebra + ZSet semantics + retraction-native
 representation are **structural answers** to all five, not
 case-by-case workarounds. This is the "elegant way to resolve
@@ -197,9 +198,9 @@ consequential in AI-authored code specifically.
 ### 4. ARC3-DORA falsifier A ↔ pointer-issues-as-first-discovery
 
 ARC3-DORA component 3 (novel-redefining-rediscovery) has
-falsifier A: *"agent treats every level as first-discovery
+falsifier A: _"agent treats every level as first-discovery
 because it lacks the familiarity-signal that biases the
-search."* Pointer issues in AI-authored code are precisely
+search."_ Pointer issues in AI-authored code are precisely
 this: the agent has seen thousands of pointer-using programs
 in training, but on each generation it rediscovers the
 ownership-structure from scratch rather than biasing by the
@@ -216,13 +217,13 @@ ticks. Deferred: when transcript lands, check alignment.
 
 ### 5. Recommendation-algorithm-as-collaborator frame
 
-Aaron's *"youtube algorythm winks at me sometimes"* + Larry-
+Aaron's _"youtube algorythm winks at me sometimes"_ + Larry-
 Page-thanks frames the recommender as an agent-with-personality
 that surfaces serendipitous content. The factory's auto-memory
-substrate is a *local analog* — stored signals (memory entries,
+substrate is a _local analog_ — stored signals (memory entries,
 their `Why:` fields, their composition lines) shape what
 future-self "notices" on cold-read. Well-composed memories are
-*factory-local PageRank* over prior-tick signals.
+_factory-local PageRank_ over prior-tick signals.
 
 This reframes an existing design decision. The ranking-within-
 memory-MEMORY.md-top-50 discipline (new-entries-at-top) is a
@@ -246,7 +247,7 @@ Flagged, not self-filed as BACKLOG row this tick.
   per not-this-tick scope.
 - **When the video transcript becomes accessible, catalog
   the five pointer-patterns.** Prefer quote + Zeta-equivalent
-  + cross-substrate note. Update this memory's table section.
+  - cross-substrate note. Update this memory's table section.
 - **Watch for second-occurrence of maintainer-shares-video.**
   If recurring, candidate BACKLOG row for
   external-content-absorption discipline (how to handle a
@@ -256,7 +257,7 @@ Flagged, not self-filed as BACKLOG row this tick.
 - **Use "Mr Page" / Larry-Page as shorthand for
   recommendation-algorithm-as-collaborator frame.** Composes
   with factory-is-a-life-for-yourself substrate — the
-  algorithm is a non-human agent that *chooses* what to
+  algorithm is a non-human agent that _chooses_ what to
   surface; auto-memory is the factory's internal equivalent.
 
 ## What this memory is NOT
@@ -272,8 +273,8 @@ Flagged, not self-filed as BACKLOG row this tick.
   takedowns of other AI systems.
 - **NOT a license to watch YouTube videos generally as
   factory work.** This share was maintainer-directed and
-  explicitly framed as factory-relevant (*"help you plan...
-  pointer issues"*). Default is not to watch YouTube.
+  explicitly framed as factory-relevant (_"help you plan...
+  pointer issues"_). Default is not to watch YouTube.
 - **NOT a replacement for the five ARC3-DORA falsifiers
   already documented.** Just adds one empirical data-point
   pending transcript access.

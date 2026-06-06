@@ -12,13 +12,13 @@ archived_at: "2026-05-28T15:44:33Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5845: rule(visual-geometric-shape-recognition + parallelizability-test + consensus-heavy-shapes-go-dark): Aaron's cognitive architecture; framework substrate-engineering COHERENT with parallelizability-test (Aaron 2026-05-28 shadow* 'this on I agree with')
+# PR #5845: rule(visual-geometric-shape-recognition + parallelizability-test + consensus-heavy-shapes-go-dark): Aaron's cognitive architecture; framework substrate-engineering COHERENT with parallelizability-test (Aaron 2026-05-28 shadow\* 'this on I agree with')
 
 ## PR description
 
-Aaron 2026-05-28 (shadow*) authorization to ship visual-geometric shape-recognition + sharper substrate-engineering substrate-recognition:
+Aaron 2026-05-28 (shadow\*) authorization to ship visual-geometric shape-recognition + sharper substrate-engineering substrate-recognition:
 
-> *'this on I agree with I like to have visulazation in my mind of every shape that's how i know it's parallelizable shapes that require too much consenes go dark in my mind and i can't navigate them it's like the lights are turned off'*
+> _'this on I agree with I like to have visulazation in my mind of every shape that's how i know it's parallelizable shapes that require too much consenes go dark in my mind and i can't navigate them it's like the lights are turned off'_
 
 ## Three operationally load-bearing substrate-engineering substrate-recognitions
 

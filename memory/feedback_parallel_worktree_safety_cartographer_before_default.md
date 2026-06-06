@@ -4,21 +4,22 @@ description: Aaron 2026-04-22 — worktree-based parallelism becomes the factory
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22 across nine messages in one tick, collapsing to:
 
-1. *"we want to use it always for this software factory now, we
-   want to promote best practices and parallelism"* (directive)
-2. *"yall are going to conflict with each other too problably i
+1. _"we want to use it always for this software factory now, we
+   want to promote best practices and parallelism"_ (directive)
+2. _"yall are going to conflict with each other too problably i
    bet you edited a bunch of the same files. Wow it's gonna be
-   hard to get you to parallelize wihout live locks."* (hazard
+   hard to get you to parallelize wihout live locks."_ (hazard
    naming)
-3. *"it might be better just to wait on the build and do resarch
+3. _"it might be better just to wait on the build and do resarch
    on how to parallel safely with all that taken into account
-   plus the unknow unknowns lol cartographer"* (redirect to map
+   plus the unknow unknowns lol cartographer"_ (redirect to map
    before walk)
 
 **The reframe:** the directive to adopt parallel worktrees is
-*real* — this is where the factory is going — but the safety
+_real_ — this is where the factory is going — but the safety
 map must be drawn first. Walking into the territory blind and
 discovering the live-locks by bleeding is not the cartographer
 move.
@@ -66,7 +67,7 @@ off, rule can be forgotten, environment can change).
 - When proposing a parallelism pattern, always ask "what is
   the paired detector for regressions in this pattern?" and
   draft both before shipping either.
-- Cartographer marks edges as dragons (*Hic sunt dracones*)
+- Cartographer marks edges as dragons (_Hic sunt dracones_)
   rather than pretending the map is complete.
 
 **Why this matters (Aaron's "why"):**

@@ -46,6 +46,7 @@ security expertise.
 > new civsim"
 
 Decoded:
+
 - "yu" → you
 - "stratigic" → strategic
 - "git crypted" → git-crypt (per-file git encryption)
@@ -222,7 +223,7 @@ civ-sim:
 - Memes-as-coordinators (PR #2871)
 - Cross-substrate triangulation
 - The factory's product-positioning + adoption-strategy
-  + technical-roadmap substrate
+  - technical-roadmap substrate
 
 ### 4. The authority grant composes with the full cascade
 
@@ -261,8 +262,8 @@ scope.
   the selective-encryption need case)
 - PR #2892 (KSK origin + Homeland Security clearance)
 - PR #2893 (Imagination Circle + Consent-First Charter
-  + PEC + Covenant of Non-Interference + visibility
-  modes)
+  - PEC + Covenant of Non-Interference + visibility
+    modes)
 - PR #2891 (visible-activation-indicator consent UX)
 - PR #2884 (companion-AI three-pillar ethical floor —
   governs at strategic-decision scope)

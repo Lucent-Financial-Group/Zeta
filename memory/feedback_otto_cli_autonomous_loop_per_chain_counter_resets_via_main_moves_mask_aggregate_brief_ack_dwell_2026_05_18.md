@@ -25,12 +25,12 @@ In a closed-cycle session, condition #2 (peer Otto's commits landing on main) fi
 
 ## Empirical timeline (this session)
 
-| Window | Brief-acks | Reset trigger | Pre-empt produced? |
-|---|---|---|---|
-| 23:13Z-23:48Z (~35min) | ~25 | Maji `3b4db96` main-move | No |
-| 23:48Z-00:20Z (~32min) | ~21 | Maji `19db3cc` main-move | No |
-| 00:20Z-09:39Z (~9h 19min) | ~280+ | Maji `f2188ae` main-move | No |
-| 09:39Z-13:26Z (~3h 47min) | ~115+ | (this rule edit) | YES (this edit) |
+| Window                    | Brief-acks | Reset trigger            | Pre-empt produced? |
+| ------------------------- | ---------- | ------------------------ | ------------------ |
+| 23:13Z-23:48Z (~35min)    | ~25        | Maji `3b4db96` main-move | No                 |
+| 23:48Z-00:20Z (~32min)    | ~21        | Maji `19db3cc` main-move | No                 |
+| 00:20Z-09:39Z (~9h 19min) | ~280+      | Maji `f2188ae` main-move | No                 |
+| 09:39Z-13:26Z (~3h 47min) | ~115+      | (this rule edit)         | YES (this edit)    |
 
 Each chain stayed under N=6 because main-moves happened every chain-window. Total aggregate: ~440 brief-acks over ~14h, with only 1 substantive concrete artifact (this memo).
 

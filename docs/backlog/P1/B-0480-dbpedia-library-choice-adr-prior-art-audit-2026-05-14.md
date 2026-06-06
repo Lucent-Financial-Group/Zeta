@@ -44,25 +44,25 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Prior-art surfaces to audit
 
-| Surface | Path | What to verify |
-|---------|------|----------------|
-| F# CE model | `src/Core/Dsl.fs` | CircuitBuilder pattern — applies to SparqlBuilder |
-| Package manifest | `Directory.Packages.props` | Confirm no RDF packages already present |
-| B-0043 parent | `docs/backlog/P3/B-0043-*.md` | Scope of universal-business-templates |
-| PR #2913 | GitHub | HKT-MDM universality — confirm `M<'T>` substrate shape |
-| DV2.0 rule | `.claude/rules/dv2-data-split-discipline-activated.md` | Hub-satellite partition applies |
-| Aaron's DBpedia memory | `memory/feedback_aaron_dbpedia_is_free_master_data_*.md` | Confirm Path A vs Path B ordering |
+| Surface                | Path                                                     | What to verify                                         |
+| ---------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
+| F# CE model            | `src/Core/Dsl.fs`                                        | CircuitBuilder pattern — applies to SparqlBuilder      |
+| Package manifest       | `Directory.Packages.props`                               | Confirm no RDF packages already present                |
+| B-0043 parent          | `docs/backlog/P3/B-0043-*.md`                            | Scope of universal-business-templates                  |
+| PR #2913               | GitHub                                                   | HKT-MDM universality — confirm `M<'T>` substrate shape |
+| DV2.0 rule             | `.claude/rules/dv2-data-split-discipline-activated.md`   | Hub-satellite partition applies                        |
+| Aaron's DBpedia memory | `memory/feedback_aaron_dbpedia_is_free_master_data_*.md` | Confirm Path A vs Path B ordering                      |
 
 ## Evaluation criteria for library choice
 
-| Criterion | dotNetRDF 3.x | RDFSharp 3.x |
-|-----------|---------------|--------------|
-| Last NuGet publish | Verify via search | Verify via search |
-| CI offline capability | Needs recording or mocking | Needs recording or mocking |
-| SPARQL 1.1 query support | Yes | Yes |
-| RDF-Star support | Yes (claimed) | Partial |
-| API surface size | Large | Small/focused |
-| F# ergonomics | Verify | Verify |
+| Criterion                | dotNetRDF 3.x              | RDFSharp 3.x               |
+| ------------------------ | -------------------------- | -------------------------- |
+| Last NuGet publish       | Verify via search          | Verify via search          |
+| CI offline capability    | Needs recording or mocking | Needs recording or mocking |
+| SPARQL 1.1 query support | Yes                        | Yes                        |
+| RDF-Star support         | Yes (claimed)              | Partial                    |
+| API surface size         | Large                      | Small/focused              |
+| F# ergonomics            | Verify                     | Verify                     |
 
 **Use Otto-364 WebSearch to verify current NuGet activity before asserting.**
 

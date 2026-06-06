@@ -20,16 +20,16 @@ Third child of B-0155. Dedicated ruleset for branch safety
 ## Pre-start checklist
 
 - [x] Prior-art search: B-0265 (CI Gate, closed) created
-  first dedicated ruleset via `gh api` + snapshot update.
-  B-0266 (Review Policy, PR #2159 merged) followed same
-  pattern with `tools/migrations/b0266-review-policy-ruleset.ts`.
+      first dedicated ruleset via `gh api` + snapshot update.
+      B-0266 (Review Policy, PR #2159 merged) followed same
+      pattern with `tools/migrations/b0266-review-policy-ruleset.ts`.
 - [x] Dependency check: B-0265 (CI Gate) is closed. No blockers.
 - [x] Parent B-0155 reviewed — three-ruleset target documented in
-  `docs/GITHUB-SETTINGS.md` migration matrix.
+      `docs/GITHUB-SETTINGS.md` migration matrix.
 - [x] Current Default ruleset (id: 15256879) inspected — contains
-  5 rules (deletion, non_fast_forward, copilot_code_review,
-  pull_request, required_linear_history). B-0266 migration
-  script committed but not yet executed.
+      5 rules (deletion, non_fast_forward, copilot_code_review,
+      pull_request, required_linear_history). B-0266 migration
+      script committed but not yet executed.
 
 ## Acceptance criteria
 

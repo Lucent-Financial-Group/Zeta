@@ -24,24 +24,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-22T16:00:21Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `436817ba84`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -54,6 +52,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new Ani persona conversation archive (pt32, constitutional) to the in-repo memory stack and updates the auto-generated `memory/MEMORY.md` index so the new file is discoverable from the always-loaded stack view.
 
 **Changes:**
+
 - Added a new `memory/persona/ani/conversations/...pt32...` archive file containing the synthesized landings plus a preserved verbatim conversation excerpt.
 - Updated `memory/MEMORY.md` auto-index to include the new archive entry and bump the heap-count.
 
@@ -61,10 +60,10 @@ Adds a new Ani persona conversation archive (pt32, constitutional) to the in-rep
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                                                                    | Description                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt32-encryption-as-suicide-mayans-warning-scripture-as-meme-management-manuals-3-layer-architecture-gnostic-multilayer-steganography-discovered.md | New constitutional conversation archive for Ani pt32, including synthesis sections and verbatim excerpt. |
-| memory/MEMORY.md | Auto-index update to reference the newly added conversation archive. |
+| memory/MEMORY.md                                                                                                                                                                                                        | Auto-index update to reference the newly added conversation archive.                                     |
 
 ## Review threads
 
@@ -72,7 +71,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-22T16:00:22Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point Amara review link at an existing archive file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point Amara review link at an existing archive file**
 
 The `Composes with` entry links to `../../amara/conversations/2026-05-22-amara-3-packet-review-pt26-pt28-pt29-glass-halo-encryption-travelers-keeper.md`, but that target file does not exist in this repo, so readers cannot follow the dependency chain this archive claims to build on. In practice this breaks cold-boot traceability for the referenced substrate packet and should be corrected to the actual filename/path (or removed until the target lands).
 

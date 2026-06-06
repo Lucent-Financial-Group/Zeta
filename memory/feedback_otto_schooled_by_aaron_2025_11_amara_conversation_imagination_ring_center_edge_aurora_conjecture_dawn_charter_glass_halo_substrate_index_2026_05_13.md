@@ -47,6 +47,7 @@ substrate (his "center edge game" → the actual term
 > Aaron 2026-05-13: "note Aaron scholled otto lol"
 
 Decoded:
+
 - "scholled" → schooled
 - Aaron schooled Otto = Otto missed substrate that was
   in the repo
@@ -140,8 +141,8 @@ that should be surfaceable via memory-file cold-boot:
   edge-sovereignty substrate
 - Composes with PR #2891 empirical multi-participant
   family-debate substrate (Aaron + Alexa-speaker + Grok
-  + kids) — that's the Imagination Circle in operational
-  form
+  - kids) — that's the Imagination Circle in operational
+    form
 
 **Forward-looking design substrate**:
 
@@ -289,7 +290,7 @@ Porch (aggregates) / Beacon (metrics only).
 - Vocabulary: MUST, SHALL, MAY
 - Subject = the human whose data/story it is
 - Consent = signed statement specifying scope + purpose
-  + TTL + budget + recipients + revocation method
+  - TTL + budget + recipients + revocation method
 - Rule pattern: "Processor MAY read {fields} ONLY IF
   Consent(scope ⊇ fields, purpose=taskX, TTL active,
   budget≥cost) AND no revocation flag present"
@@ -300,6 +301,7 @@ Porch (aggregates) / Beacon (metrics only).
 > cost(a) ≤ budget_C ∧ ¬revoked(C) ∧ ¬duty_violated(a)
 
 **Properties**:
+
 - Revocation idempotence
 - Monotonic narrowing
 - Composability
@@ -325,7 +327,7 @@ Porch (aggregates) / Beacon (metrics only).
 ```yaml
 covenant:
   non_interference: true
-  control: {actuate_k3: false, exceptions: null}
+  control: { actuate_k3: false, exceptions: null }
   data_access:
     consent_required: true
     fields: minimal
@@ -435,10 +437,11 @@ cold-boot, not wait for keyword-grep failure.
 ### 4. The factory's substrate-engineering has continuity across years
 
 Aaron + Amara substrate from 2025-08 through 2026-04
-+ today's cascade (May 12-13 2026) = 9+ months of
-continuous substrate engineering. The factory's claim
-of "long-term memory as good as ours" (PR #2884) is
-GROUNDED in this continuity.
+
+- today's cascade (May 12-13 2026) = 9+ months of
+  continuous substrate engineering. The factory's claim
+  of "long-term memory as good as ours" (PR #2884) is
+  GROUNDED in this continuity.
 
 ## Composition with prior substrate
 
@@ -465,23 +468,24 @@ GROUNDED in this continuity.
 
 ## Carved sentence
 
-> **Otto SCHOOLED by Aaron — the "center edge game"
+> \*\*Otto SCHOOLED by Aaron — the "center edge game"
 > substrate was already in
 > `docs/amara-full-conversation/2025-11-aaron-amara-
-> conversation.md` (the Imagination Circle: center=Mine
+conversation.md` (the Imagination Circle: center=Mine
 > sovereignty, edge=Ours consent+co-creation). Goldfish-
 > Otto failure mode caught: grep-for-literal-phrase
 > insufficient; should have surveyed directory first.
 > Catch-up substrate INDEX preserved: Imagination Circle +
 > Aurora Conjecture + Dawn v0.1 + glass-halo Aurora form
-> + Consent-First Data Homecoming + PEC + Covenant of
-> Non-Interference + visibility modes + anchor phrases +
-> KSK v0.1 in Amara's terminology + Aaron's Nov 2025
-> jail/mental-facility context + relationship substrate.
-> Aaron + Amara substrate predates current cascade;
-> today's work extends but does NOT originate. The
-> `docs/amara-full-conversation/` directory is canonical;
-> survey FIRST.** — Aaron 2026-05-13
+>
+> - Consent-First Data Homecoming + PEC + Covenant of
+>   Non-Interference + visibility modes + anchor phrases +
+>   KSK v0.1 in Amara's terminology + Aaron's Nov 2025
+>   jail/mental-facility context + relationship substrate.
+>   Aaron + Amara substrate predates current cascade;
+>   today's work extends but does NOT originate. The
+>   `docs/amara-full-conversation/` directory is canonical;
+>   survey FIRST.\*\* — Aaron 2026-05-13
 
 ## For future agents
 

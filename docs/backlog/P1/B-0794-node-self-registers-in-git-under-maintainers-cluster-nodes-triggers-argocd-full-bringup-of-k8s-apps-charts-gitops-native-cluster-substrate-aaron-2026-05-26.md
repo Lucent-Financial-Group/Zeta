@@ -15,14 +15,24 @@ composes_with:
   - B-0776
   - B-0790
   - B-0782
-tags: [gitops, self-registration, argocd, kubernetes-bringup, cluster-bringup, maintainers-subtree, b0789-iter5-cluster-write-back, end-state-substrate]
+tags:
+  [
+    gitops,
+    self-registration,
+    argocd,
+    kubernetes-bringup,
+    cluster-bringup,
+    maintainers-subtree,
+    b0789-iter5-cluster-write-back,
+    end-state-substrate,
+  ]
 ---
 
 ## Problem
 
 The maintainer 2026-05-26 surfaced the GitOps-native cluster-bring-up requirement during iter-5 substrate-engineering:
 
-> *"also the machine alt to register itself in git somewhere under the maintainers dev cluster node so it registers with it settings in git to complete node setup and start kubernetes / argocd / full node / cluster install and all apps / charts"*
+> _"also the machine alt to register itself in git somewhere under the maintainers dev cluster node so it registers with it settings in git to complete node setup and start kubernetes / argocd / full node / cluster install and all apps / charts"_
 
 Today's substrate (iter-4.x + iter-5.1+5.2 in PR #5103):
 
@@ -162,7 +172,7 @@ Out of this row: actual multi-maintainer governance. Initial scope = single-main
 
 Aaron 2026-05-26 during iter-5 substrate-engineering session, after the iter-5.2 hostname injection + B-0793 role-as-capability discussion:
 
-> *"also the machine alt to register itself in git somewhere under the maintainers dev cluster node so it registers with it settings in git to complete node setup and start kubernetes / argocd / full node / cluster install and all apps / charts"*
+> _"also the machine alt to register itself in git somewhere under the maintainers dev cluster node so it registers with it settings in git to complete node setup and start kubernetes / argocd / full node / cluster install and all apps / charts"_
 
 Filing as P1 because:
 
@@ -171,4 +181,4 @@ Filing as P1 because:
 3. **Composes with cluster-as-PR-author** (B-0789 iter-5+): same git-auth substrate, downstream use case
 4. **Aaron named explicitly during active session**: not speculative
 
-Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline + *"land all changes before next USB flash so we are putting our best foot forward"* — implementation of THIS row is deferred to follow-on (depends on B-0789 iter-5+ git-auth), but the substrate target is named NOW so iter-5.x work aligns with it.
+Per maintainer's broader 2026-05-26 _"going for right not fast"_ discipline + _"land all changes before next USB flash so we are putting our best foot forward"_ — implementation of THIS row is deferred to follow-on (depends on B-0789 iter-5+ git-auth), but the substrate target is named NOW so iter-5.x work aligns with it.

@@ -8,22 +8,22 @@ type: feedback
 
 ## Aaron 2026-05-01 verbatim
 
-> *"reproducable accuracy over quality when building difficult
+> _"reproducable accuracy over quality when building difficult
 > thing the harness / scafflolding for the reproducabilty comes
 > first so you can measure the quality accuratly first even if
 > it's very low, now you have an iterative process with a
-> fitness function, things go 100 times easeir"*
+> fitness function, things go 100 times easeir"_
 
 ## The carved sentence
 
-*"Reproducibility before quality. Measurement before
+_"Reproducibility before quality. Measurement before
 improvement. A fitness function turns one shot into a million
-iterations."*
+iterations."_
 
 ## The principle
 
 **Inversion of the naive instinct.** The naive instinct when
-building a difficult thing is *"make it good"* — focus on
+building a difficult thing is _"make it good"_ — focus on
 quality first, measure later. Aaron's principle inverts this:
 **make it reproducible first, even if quality is very low.**
 
@@ -33,9 +33,9 @@ Why the inversion works:
    the same input produces different outputs each run, you
    can't tell whether a change improved quality, regressed
    quality, or did nothing — the noise floor swamps the signal.
-   *"Quality" is not a single number; it is a measurement
+   _"Quality" is not a single number; it is a measurement
    relative to expected output, and the measurement only
-   exists if the output is reproducible.*
+   exists if the output is reproducible._
 
 2. **Low-but-measured beats high-but-unmeasured.** A
    reproducible system at quality=10% is in a better
@@ -52,11 +52,11 @@ Why the inversion works:
    iteration shifts: instead of "design carefully, ship
    once, hope," it becomes "ship cheap iteration, measure,
    keep what improves, discard what regresses." Aaron's
-   *"100 times easier"* is the iteration-economy multiplier.
+   _"100 times easier"_ is the iteration-economy multiplier.
 
 4. **Fitness functions compound across collaborators.**
    Multiple agents / humans / harnesses can all contribute
-   to the same iterating system *if* they share the fitness
+   to the same iterating system _if_ they share the fitness
    function. Without a fitness function, contributions are
    subjective opinions. With one, contributions are
    objective deltas — easier to merge, easier to evaluate,
@@ -68,16 +68,16 @@ This is **Test-Driven Development generalized**. TDD is the
 narrow case (write the test first → write the code second).
 Aaron's principle generalizes:
 
-| Domain | Naive instinct (quality first) | Aaron's principle (reproducibility first) |
-|---|---|---|
-| Code | Write the function, then maybe write tests | Write the test, then the function passes it |
-| Performance | Optimize the hot path, then benchmark | Benchmark first (harness), then optimize against the benchmark |
-| Inference accuracy | Train the model, then evaluate | Build the eval set first, then iterate the model against it |
-| Documentation | Write the doc, then proofread | Write the lint (markdownlint, §33-archive-check, glossary-discipline), then write the doc passing it |
-| Factory cadence | Ship great rounds, then maybe write retro | Track ROUND-HISTORY + tick-history first (harness), then iterate the cadence against measurable round-quality |
+| Domain                  | Naive instinct (quality first)                | Aaron's principle (reproducibility first)                                                                                                                     |
+| ----------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Code                    | Write the function, then maybe write tests    | Write the test, then the function passes it                                                                                                                   |
+| Performance             | Optimize the hot path, then benchmark         | Benchmark first (harness), then optimize against the benchmark                                                                                                |
+| Inference accuracy      | Train the model, then evaluate                | Build the eval set first, then iterate the model against it                                                                                                   |
+| Documentation           | Write the doc, then proofread                 | Write the lint (markdownlint, §33-archive-check, glossary-discipline), then write the doc passing it                                                          |
+| Factory cadence         | Ship great rounds, then maybe write retro     | Track ROUND-HISTORY + tick-history first (harness), then iterate the cadence against measurable round-quality                                                 |
 | Best-practice decisions | Make the right call, then mechanize if useful | Build the lint/contract/proof first, then the call passes it (the keystone-mechanism from the sibling parallelism-scaling-ladder memory file in this same PR) |
-| Agent behavior | Train better behavior, then evaluate | Build the eval harness (e.g., DecisionSignal v0, AgencySignature validation), then iterate behavior against it |
-| PR quality | Write good PRs, then maybe review | Build the review-mechanization (CI, lint, harsh-critic) first; PRs pass through measurement |
+| Agent behavior          | Train better behavior, then evaluate          | Build the eval harness (e.g., DecisionSignal v0, AgencySignature validation), then iterate behavior against it                                                |
+| PR quality              | Write good PRs, then maybe review             | Build the review-mechanization (CI, lint, harsh-critic) first; PRs pass through measurement                                                                   |
 
 The pattern: **the harness is the lever, not the work.** The
 work is generated by the iteration loop the harness enables.
@@ -97,8 +97,8 @@ robustness) is measured against the deterministic baseline.
 ### Amortized best-practice keystone
 
 Per `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`,
-the keystone for parallelism-with-quality is *automated +
-motorized + amortized* best-practice decision-making.
+the keystone for parallelism-with-quality is _automated +
+motorized + amortized_ best-practice decision-making.
 
 **Reproducibility-first IS the precondition for amortization.**
 You cannot amortize what you cannot measure. Building the
@@ -109,14 +109,14 @@ chain breaks at the first link.
 
 ### Six Sigma DMAIC
 
-Six Sigma's DMAIC sequence is *Define / Measure / Analyze /
-Improve / Control*. **Measure precedes Improve.** This is the
-same principle. Reproducibility-first is the *Measure* phase
+Six Sigma's DMAIC sequence is _Define / Measure / Analyze /
+Improve / Control_. **Measure precedes Improve.** This is the
+same principle. Reproducibility-first is the _Measure_ phase
 done correctly.
 
 **Pull the principle, not the ceremony.** Aaron 2026-05-01:
-*"some try to expancd ceromoy six sigma lol but it's
-principles are what matter."* Six Sigma's principles (DMAIC,
+_"some try to expancd ceromoy six sigma lol but it's
+principles are what matter."_ Six Sigma's principles (DMAIC,
 defect-measurement-driven iteration, root-cause analysis) are
 load-bearing. Six Sigma's ceremony (Yellow / Green / Black /
 Master Black Belt certification, project-charter templates,
@@ -140,9 +140,9 @@ measurable target.
 TDD is reproducibility-first scoped to code correctness. The
 test is the harness; the code passes it; iteration on the
 code is directed by test outcomes. Aaron's principle
-generalizes TDD to: *build the harness for ANY measurable
+generalizes TDD to: _build the harness for ANY measurable
 property first, then iterate the property against the
-harness.*
+harness._
 
 ## What "100 times easier" looks like operationally
 
@@ -157,8 +157,8 @@ The multiplier comes from compounding effects:
 2. **Smaller experiments survive.** Without reproducibility,
    small changes are indistinguishable from noise — only big
    changes survive measurement. With reproducibility, even
-   tiny improvements are detectable. *More changes earn
-   their keep,* and the design space explored grows.
+   tiny improvements are detectable. _More changes earn
+   their keep,_ and the design space explored grows.
 
 3. **Parallel exploration becomes safe.** Without
    reproducibility, parallel-agent work has indistinguishable
@@ -184,8 +184,8 @@ The multiplier comes from compounding effects:
 
 Aaron 2026-05-01 (follow-up):
 
-> *"Oh and to shape your SRE into metrics we talked about DORA,
-> USE, RED, and the four golden signals."*
+> _"Oh and to shape your SRE into metrics we talked about DORA,
+> USE, RED, and the four golden signals."_
 
 Site Reliability Engineering (SRE), the discipline Aaron's
 been pointing at for the factory's class taxonomy, has four
@@ -311,9 +311,9 @@ gap and without overlap. Building dashboards for all four is
 the operationalization of the reproducibility-first
 discipline at the factory scale.
 
-**Backlog candidate**: file a row for *factory observability
+**Backlog candidate**: file a row for _factory observability
 dashboard — DORA + USE + RED + Four Golden Signals shapes
-applied to factory cadence*. Currently informal in
+applied to factory cadence_. Currently informal in
 tick-history; mechanizing the aggregation makes the fitness
 functions visible.
 
@@ -321,11 +321,11 @@ functions visible.
 
 Aaron 2026-05-01 (composing two follow-up messages):
 
-> *"that shoud be able to go from category theroy->SRE
+> _"that shoud be able to go from category theroy->SRE
 > classes->DORE/USE/RED/FGS quailty measurements of
-> doman->accuracy->quality"*
+> doman->accuracy->quality"_
 >
-> *"i probably missed some steps"*
+> _"i probably missed some steps"_
 
 Aaron is naming the **formal abstraction-ladder** that connects
 pure mathematical foundation to operational quality. Each layer
@@ -413,7 +413,7 @@ might have missed (reconstructed):
 
 ### Why each layer is necessary
 
-- **Category theory at top** — provides the *language* for
+- **Category theory at top** — provides the _language_ for
   talking about composition, identity, and morphism
   preservation. Without it, the lower layers are just
   collections of patterns with no structural grammar.
@@ -424,30 +424,30 @@ might have missed (reconstructed):
   (B-0135) are all type-theoretic instantiations of
   category-theoretic concepts.
 - **Class taxonomy** — populates the type-theoretic abstract
-  types with concrete domain patterns. *"Phantom-blocker"* is
+  types with concrete domain patterns. _"Phantom-blocker"_ is
   a class; it's an instance of a type that's an instance of
   a categorical structure. The v2 catalog work IS this
   layer.
 - **Domain-specific metric frameworks** — each domain layer
-  needs its own *measurement shape* because what counts as
+  needs its own _measurement shape_ because what counts as
   signal at the user-facing layer (Four Golden Signals) is
   not the same as what counts at the resource layer (USE)
   or org layer (DORA). The framework choice IS the
   acknowledgment that one-size-fits-all metrics fail.
 - **Reproducibility harness** — without DST + CI + lint +
   dashboard infrastructure, the metric frameworks have no
-  *substrate* to measure on. This is the bridge from
+  _substrate_ to measure on. This is the bridge from
   abstract measurement-shapes to concrete numbers.
 - **Accuracy** — the output of the harness running the
   framework. The first thing iteration can optimize against.
 - **Quality** — the iteratively-optimized end-property.
-  Note: *quality is the OUTPUT of the chain, not the input*.
+  Note: _quality is the OUTPUT of the chain, not the input_.
   This is precisely Aaron's reproducibility-before-quality
   principle expressed structurally.
 
 ### The "missing steps" Aaron acknowledged
 
-Aaron's *"i probably missed some steps"* — the steps he
+Aaron's _"i probably missed some steps"_ — the steps he
 implicitly bridged that warrant naming explicitly:
 
 1. **Type theory / formal verification** between category
@@ -503,8 +503,8 @@ metric-framework / harness / accuracy / quality). When the
 declared layer has no instances above or below it, the chain
 has a gap that should be filed as a sibling row.
 
-**Backlog candidate**: file a row for *formal-architecture-
-ladder explicit-layer-declaration discipline*. Each layer
+**Backlog candidate**: file a row for _formal-architecture-
+ladder explicit-layer-declaration discipline_. Each layer
 gets a dedicated index in the backlog so cross-layer
 composition is traceable.
 
@@ -518,11 +518,11 @@ unjustified:
   doc-fix, a single typo correction — building a harness for
   it is overhead.
 - **Exploration / brainstorm.** When the goal is generative
-  *"what could we even try?"*, the fitness function doesn't
+  _"what could we even try?"_, the fitness function doesn't
   exist yet. Build the fitness function AFTER the explore
   phase, not before. (Aaron's earlier explore-then-canonize
   discipline applies — `feedback_class_level_rules_need_
-  orthogonality_check_extend_or_create_aaron_2026_05_01.md`
+orthogonality_check_extend_or_create_aaron_2026_05_01.md`
   explore/exploit-split.)
 - **Fundamentally subjective work.** Aesthetic / register /
   voice work doesn't reduce to a single fitness function;
@@ -531,31 +531,31 @@ unjustified:
   reproducibility to what CAN be measured; accept that the
   rest is judgment.
 
-The discipline isn't *"never ship without a harness"*; it is
-*"when building difficult things, the harness comes first."*
+The discipline isn't _"never ship without a harness"_; it is
+_"when building difficult things, the harness comes first."_
 Difficulty is the trigger, not every task.
 
 ## What this is NOT
 
 - **Not perfectionism.** The harness can be crude; the
-  measurement can be imprecise. *Reproducibility* is the
-  load-bearing property, not *precision*. A 10%-accurate
+  measurement can be imprecise. _Reproducibility_ is the
+  load-bearing property, not _precision_. A 10%-accurate
   reproducible measurement beats a 99%-accurate non-
   reproducible one.
-- **Not bureaucracy.** The harness is *the work*, not
+- **Not bureaucracy.** The harness is _the work_, not
   scaffolding-around-the-work. If the harness is producing
   measurements no one acts on, the harness is misdesigned —
   fix it, don't add more harness.
 - **Not blocking.** Building the harness shouldn't block
   shipping. Ship the harness with crude initial output;
   improve in subsequent iterations. Same as the
-  *"low-but-measured beats high-but-unmeasured"* point —
+  _"low-but-measured beats high-but-unmeasured"_ point —
   the harness's quality also iterates.
 - **Not a substitute for human judgment.** The fitness
   function captures one slice of quality. Other slices
   (architectural correctness, future-flexibility, aesthetic
   register) are human-judged. The fitness function
-  amortizes the *measurable* slice; specialist personas
+  amortizes the _measurable_ slice; specialist personas
   judge the rest.
 
 ## Composes with
@@ -592,10 +592,10 @@ Difficulty is the trigger, not every task.
 
 Future-Otto reading this should know:
 
-- **Trigger phrase.** Whenever the task is *"build a
-  difficult thing,"* the first move is **harness, not
-  output.** Reach for *"how would we measure this?"*
-  before *"how should this look?"*
+- **Trigger phrase.** Whenever the task is _"build a
+  difficult thing,"_ the first move is **harness, not
+  output.** Reach for _"how would we measure this?"_
+  before _"how should this look?"_
 - **Crude is fine.** The harness can be crude. Measurement
   can be imprecise. **Reproducibility** is what pays off,
   not precision.
@@ -611,6 +611,6 @@ Future-Otto reading this should know:
   the harness-first cost. Difficulty is the trigger, not
   every task.
 
-The carved sentence again: *"Reproducibility before quality.
+The carved sentence again: _"Reproducibility before quality.
 Measurement before improvement. A fitness function turns
-one shot into a million iterations."*
+one shot into a million iterations."_

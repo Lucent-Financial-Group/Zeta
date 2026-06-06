@@ -60,19 +60,19 @@ matters.
 
 ### Work Management
 
-| Table                     | V0 responsibility                                                                      |
-| ------------------------- | -------------------------------------------------------------------------------------- |
-| `projects`                | top-level work containers                                                              |
-| `initiatives`             | project-scoped bodies of work                                                          |
-| `work_items`              | supervisor-chain signals, capability requests, tasks, defects, reviews, and follow-ups |
-| `work_item_state_history` | append-only state transitions                                                          |
-| `work_item_dependencies`  | blocking or informational dependencies                                                 |
-| `blockers`                | active impediments with owner, severity, and resolution path                           |
-| `assignments`             | work item to agent/hat/session assignment records                                      |
-| `gates`                   | required review points for readiness, code, QA, memory, or security                    |
-| `gate_decisions`          | approve, reject, needs-changes, or defer decisions                                     |
+| Table                      | V0 responsibility                                                                                                                |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `projects`                 | top-level work containers                                                                                                        |
+| `initiatives`              | project-scoped bodies of work                                                                                                    |
+| `work_items`               | supervisor-chain signals, capability requests, tasks, defects, reviews, and follow-ups                                           |
+| `work_item_state_history`  | append-only state transitions                                                                                                    |
+| `work_item_dependencies`   | blocking or informational dependencies                                                                                           |
+| `blockers`                 | active impediments with owner, severity, and resolution path                                                                     |
+| `assignments`              | work item to agent/hat/session assignment records                                                                                |
+| `gates`                    | required review points for readiness, code, QA, memory, or security                                                              |
+| `gate_decisions`           | approve, reject, needs-changes, or defer decisions                                                                               |
 | `quality_gate_evaluations` | typed V0 business, architecture, runtime, final business, and release readiness gate evaluations with BRD business-rule evidence |
-| `releases`                | release groupings once release management enters the slice                             |
+| `releases`                 | release groupings once release management enters the slice                                                                       |
 
 The first Cockroach-backed Work Anchor Kernel migration is
 `0003_agentic_org_work_anchor_kernel`. It is additive over the legacy
@@ -93,39 +93,39 @@ cannot be duplicated or zero-filled.
 
 ### Schedules, Prompt Flows, and Actions
 
-| Table                           | V0 responsibility                                                  |
-| ------------------------------- | ------------------------------------------------------------------ |
-| `hat_schedule_templates`        | default work rhythm by hat                                         |
-| `work_schedules`                | concrete schedule assigned to an agent/hat context                 |
+| Table                           | V0 responsibility                                                                                                                                           |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hat_schedule_templates`        | default work rhythm by hat                                                                                                                                  |
+| `work_schedules`                | concrete schedule assigned to an agent/hat context                                                                                                          |
 | `work_schedule_blocks`          | work-item-scoped schedule authority blocks with assigned agent/hat, type, state, window, optional discussion anchor, trace, and anti-overlap capacity guard |
-| `hat_assignment_authorities`    | durable projection of active/revoked/expired/released/suspended hat assignment authority for command-time resource checks |
-| `prompt_flow_definitions`       | named deterministic work protocols                                 |
-| `prompt_flow_versions`          | immutable versioned prompt-flow contract                           |
-| `prompt_flow_phases`            | ordered reusable phases                                            |
-| `hat_prompt_flow_bindings`      | which hats can run which prompt flows                              |
-| `prompt_flow_runs`              | one execution of a prompt-flow version                             |
-| `prompt_flow_phase_runs`        | state and evidence for each phase execution                        |
-| `prompt_flow_gate_decisions`    | reviewer decisions at phase boundaries                             |
-| `universal_action_definitions`  | typed action grammar catalog                                       |
-| `universal_action_records`      | action intent emitted by an agent or workflow                      |
-| `universal_action_observations` | observed result, evidence, and side effects for an action          |
+| `hat_assignment_authorities`    | durable projection of active/revoked/expired/released/suspended hat assignment authority for command-time resource checks                                   |
+| `prompt_flow_definitions`       | named deterministic work protocols                                                                                                                          |
+| `prompt_flow_versions`          | immutable versioned prompt-flow contract                                                                                                                    |
+| `prompt_flow_phases`            | ordered reusable phases                                                                                                                                     |
+| `hat_prompt_flow_bindings`      | which hats can run which prompt flows                                                                                                                       |
+| `prompt_flow_runs`              | one execution of a prompt-flow version                                                                                                                      |
+| `prompt_flow_phase_runs`        | state and evidence for each phase execution                                                                                                                 |
+| `prompt_flow_gate_decisions`    | reviewer decisions at phase boundaries                                                                                                                      |
+| `universal_action_definitions`  | typed action grammar catalog                                                                                                                                |
+| `universal_action_records`      | action intent emitted by an agent or workflow                                                                                                               |
+| `universal_action_observations` | observed result, evidence, and side effects for an action                                                                                                   |
 
 ### Communication, Graph, Documents, and Context
 
-| Table                  | V0 responsibility                                                                         |
-| ---------------------- | ----------------------------------------------------------------------------------------- |
-| `supervisor_signals`   | supervisor-chain and capability-request intake records before or during work-item routing |
-| `discussion_anchors`   | required typed work anchor for any discussion; V0 persists work-item-scoped anchors with team/project provenance |
-| `conversation_threads` | one-on-one, team, department, executive, or broadcast thread                              |
-| `messages`             | immutable message log with actor and hat attribution                                      |
-| `meetings`             | structured meeting sessions with mode and anchor                                          |
-| `decision_records`     | explicit decisions linked to work, discussion anchors, rationale, alternatives, and follow-up work |
+| Table                      | V0 responsibility                                                                                                          |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `supervisor_signals`       | supervisor-chain and capability-request intake records before or during work-item routing                                  |
+| `discussion_anchors`       | required typed work anchor for any discussion; V0 persists work-item-scoped anchors with team/project provenance           |
+| `conversation_threads`     | one-on-one, team, department, executive, or broadcast thread                                                               |
+| `messages`                 | immutable message log with actor and hat attribution                                                                       |
+| `meetings`                 | structured meeting sessions with mode and anchor                                                                           |
+| `decision_records`         | explicit decisions linked to work, discussion anchors, rationale, alternatives, and follow-up work                         |
 | `quality_gate_evaluations` | business quality gate outcomes linked to work, discussion anchors, artifacts, business-rule results, and release readiness |
-| `documents`            | BRDs, CAs, ADRs, reports, test cases, runbooks, and memory reviews                        |
-| `artifact_links`       | logs, screenshots, traces, code refs, PRs, builds, and uploads                            |
-| `graph_nodes`          | agent-readable graph node registry                                                        |
-| `graph_edges`          | typed relationships between work, docs, messages, decisions, runs, and memories           |
-| `context_packs`        | deterministic context bundles assembled for an agent run or review                        |
+| `documents`                | BRDs, CAs, ADRs, reports, test cases, runbooks, and memory reviews                                                         |
+| `artifact_links`           | logs, screenshots, traces, code refs, PRs, builds, and uploads                                                             |
+| `graph_nodes`              | agent-readable graph node registry                                                                                         |
+| `graph_edges`              | typed relationships between work, docs, messages, decisions, runs, and memories                                            |
+| `context_packs`            | deterministic context bundles assembled for an agent run or review                                                         |
 
 ### Runtime, Memory, Security, and Audit
 
@@ -410,33 +410,33 @@ review without exposing CockroachDB types to application code.
 
 ## V0 Commands
 
-| Command                     | Actor scope                                                                                | Writes                                                                                                   | Emits                                                              |
-| --------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `create_work_item`          | manager, TPM, director, or authorized work-routing automation                              | `work_items`, `audit_events`, `outbox_events`                                                            | `work_item.changed`                                                |
-| `send_supervisor_signal`    | any authorized hat with supervisor line; capability request inputs enter through this path | `supervisor_signals`, `audit_events`, `outbox_events`; reaction execution owns any follow-up work/discussion records | `supervisor_signal.sent`                                           |
-| `triage_supervisor_signal`  | target supervisor hat, director, or engineering manager                                    | V0 `open_work_item` path validates the supervisor signal and emits a follow-up `work_item.changed`; later triage actions add signal status, assignments, gates, and context packs | `work_item.changed` |
-| `create_discussion_anchor`  | any authorized hat with validated work anchor                                              | `discussion_anchors`, `audit_events`, `outbox_events`; graph edge projection follows                     | `discussion_anchor.created`                                       |
-| `record_decision`           | any authorized hat with a validated decision-capable discussion anchor                     | `decision_records`, `audit_events`, `outbox_events`; graph edge projection follows                       | `decision.recorded`                                               |
-| `record_quality_gate_evaluation` | authorized reviewer/business/product/architecture/delivery hat with a validated gate-result discussion anchor | `quality_gate_evaluations`, `audit_events`, `outbox_events`; graph edge projection follows | `quality_gate.evaluated` |
-| `create_context_pack`       | manager, reviewer, implementer for assigned work                                           | `context_packs`, `graph_edges`, `audit_events`                                                           | `work_item.changed`                                                |
-| `mark_work_ready`           | manager or reviewer                                                                        | `work_items`, `work_item_state_history`, `gates`                                                         | `work_item.changed`, `gate_requested`                              |
-| `reserve_hat`               | manager, director, platform operator                                                       | `hat_assignments`, `hat_tokens`, `audit_events`                                                          | `hat_assignment_changed`                                           |
-| `issue_hat_token`           | hat service, after policy allow                                                            | `hat_tokens`, `audit_events`                                                                             | `hat_token_changed`                                                |
-| `refresh_hat_token`         | active assigned agent/session                                                              | `hat_tokens`, `audit_events`                                                                             | `hat_token_changed`                                                |
-| `revoke_hat_assignment`     | manager, director, security, policy automation                                             | `hat_assignments`, `hat_tokens`, `audit_events`                                                          | `hat_assignment_changed`, `hat_token_changed`                      |
-| `schedule_work_block`       | manager, TPM, scheduler, or authorized work-routing automation with validated work anchor   | `work_schedule_blocks`, `audit_events`, `outbox_events`; later graph edge projection follows              | `work_schedule_block.scheduled`                                    |
-| `start_schedule_block`      | assigned agent/session or scheduler                                                        | `work_schedule_blocks`, `agent_sessions`                                                                 | `schedule_block_changed`                                           |
-| `start_prompt_flow`         | assigned agent/session                                                                     | `prompt_flow_runs`, `prompt_flow_phase_runs`                                                             | `prompt_flow_changed`                                              |
-| `record_universal_action`   | assigned agent/session, workflow activity, adapter                                         | `universal_action_records`, `mcp_tool_calls`, `audit_events`                                             | `prompt_flow_changed`                                              |
-| `record_action_observation` | adapter, worker, reviewer, assigned agent                                                  | `universal_action_observations`, `artifact_links`                                                        | `prompt_flow_changed`                                              |
-| `launch_hermes_run`         | runtime service or Temporal activity                                                       | `hermes_runs`, `agent_sessions`, `audit_events`                                                          | `hermes_run_changed`                                               |
-| `record_hermes_run_status`  | Hermes/OZ callback, reconciler, platform operator                                          | `hermes_runs`, `artifact_links`                                                                          | `hermes_run_changed`                                               |
-| `submit_evidence`           | implementer, QA, reviewer, adapter                                                         | `artifact_links`, `graph_edges`, `audit_events`                                                          | `work_item.changed`                                                |
-| `request_gate_review`       | implementer, manager, workflow                                                             | `gates`, `work_items`                                                                                    | `gate_requested`, `work_item.changed`                              |
-| `decide_gate`               | reviewer hat, not same active implementer assignment                                       | `gate_decisions`, `gates`, `work_items`, `audit_events`                                                  | `gate_decided`, `work_item.changed`                                |
-| `record_memory_event`       | memory adapter, assigned agent/session, memory curator                                     | `memory_events`, `graph_edges`, `audit_events`                                                           | `memory_event_recorded`                                            |
-| `submit_credential_request` | any authorized hat with anchored work                                                      | `credential_requests`, `work_items`, `discussion_anchors`                                                | `credential_request_changed`                                       |
-| `complete_outcome_review`   | manager, memory curator, reviewer                                                          | `work_items`, `decisions`, optional follow-up `work_items`                                               | `outcome_review_completed`                                         |
+| Command                          | Actor scope                                                                                                   | Writes                                                                                                                                                                            | Emits                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `create_work_item`               | manager, TPM, director, or authorized work-routing automation                                                 | `work_items`, `audit_events`, `outbox_events`                                                                                                                                     | `work_item.changed`                           |
+| `send_supervisor_signal`         | any authorized hat with supervisor line; capability request inputs enter through this path                    | `supervisor_signals`, `audit_events`, `outbox_events`; reaction execution owns any follow-up work/discussion records                                                              | `supervisor_signal.sent`                      |
+| `triage_supervisor_signal`       | target supervisor hat, director, or engineering manager                                                       | V0 `open_work_item` path validates the supervisor signal and emits a follow-up `work_item.changed`; later triage actions add signal status, assignments, gates, and context packs | `work_item.changed`                           |
+| `create_discussion_anchor`       | any authorized hat with validated work anchor                                                                 | `discussion_anchors`, `audit_events`, `outbox_events`; graph edge projection follows                                                                                              | `discussion_anchor.created`                   |
+| `record_decision`                | any authorized hat with a validated decision-capable discussion anchor                                        | `decision_records`, `audit_events`, `outbox_events`; graph edge projection follows                                                                                                | `decision.recorded`                           |
+| `record_quality_gate_evaluation` | authorized reviewer/business/product/architecture/delivery hat with a validated gate-result discussion anchor | `quality_gate_evaluations`, `audit_events`, `outbox_events`; graph edge projection follows                                                                                        | `quality_gate.evaluated`                      |
+| `create_context_pack`            | manager, reviewer, implementer for assigned work                                                              | `context_packs`, `graph_edges`, `audit_events`                                                                                                                                    | `work_item.changed`                           |
+| `mark_work_ready`                | manager or reviewer                                                                                           | `work_items`, `work_item_state_history`, `gates`                                                                                                                                  | `work_item.changed`, `gate_requested`         |
+| `reserve_hat`                    | manager, director, platform operator                                                                          | `hat_assignments`, `hat_tokens`, `audit_events`                                                                                                                                   | `hat_assignment_changed`                      |
+| `issue_hat_token`                | hat service, after policy allow                                                                               | `hat_tokens`, `audit_events`                                                                                                                                                      | `hat_token_changed`                           |
+| `refresh_hat_token`              | active assigned agent/session                                                                                 | `hat_tokens`, `audit_events`                                                                                                                                                      | `hat_token_changed`                           |
+| `revoke_hat_assignment`          | manager, director, security, policy automation                                                                | `hat_assignments`, `hat_tokens`, `audit_events`                                                                                                                                   | `hat_assignment_changed`, `hat_token_changed` |
+| `schedule_work_block`            | manager, TPM, scheduler, or authorized work-routing automation with validated work anchor                     | `work_schedule_blocks`, `audit_events`, `outbox_events`; later graph edge projection follows                                                                                      | `work_schedule_block.scheduled`               |
+| `start_schedule_block`           | assigned agent/session or scheduler                                                                           | `work_schedule_blocks`, `agent_sessions`                                                                                                                                          | `schedule_block_changed`                      |
+| `start_prompt_flow`              | assigned agent/session                                                                                        | `prompt_flow_runs`, `prompt_flow_phase_runs`                                                                                                                                      | `prompt_flow_changed`                         |
+| `record_universal_action`        | assigned agent/session, workflow activity, adapter                                                            | `universal_action_records`, `mcp_tool_calls`, `audit_events`                                                                                                                      | `prompt_flow_changed`                         |
+| `record_action_observation`      | adapter, worker, reviewer, assigned agent                                                                     | `universal_action_observations`, `artifact_links`                                                                                                                                 | `prompt_flow_changed`                         |
+| `launch_hermes_run`              | runtime service or Temporal activity                                                                          | `hermes_runs`, `agent_sessions`, `audit_events`                                                                                                                                   | `hermes_run_changed`                          |
+| `record_hermes_run_status`       | Hermes/OZ callback, reconciler, platform operator                                                             | `hermes_runs`, `artifact_links`                                                                                                                                                   | `hermes_run_changed`                          |
+| `submit_evidence`                | implementer, QA, reviewer, adapter                                                                            | `artifact_links`, `graph_edges`, `audit_events`                                                                                                                                   | `work_item.changed`                           |
+| `request_gate_review`            | implementer, manager, workflow                                                                                | `gates`, `work_items`                                                                                                                                                             | `gate_requested`, `work_item.changed`         |
+| `decide_gate`                    | reviewer hat, not same active implementer assignment                                                          | `gate_decisions`, `gates`, `work_items`, `audit_events`                                                                                                                           | `gate_decided`, `work_item.changed`           |
+| `record_memory_event`            | memory adapter, assigned agent/session, memory curator                                                        | `memory_events`, `graph_edges`, `audit_events`                                                                                                                                    | `memory_event_recorded`                       |
+| `submit_credential_request`      | any authorized hat with anchored work                                                                         | `credential_requests`, `work_items`, `discussion_anchors`                                                                                                                         | `credential_request_changed`                  |
+| `complete_outcome_review`        | manager, memory curator, reviewer                                                                             | `work_items`, `decisions`, optional follow-up `work_items`                                                                                                                        | `outcome_review_completed`                    |
 
 ## Idempotency
 

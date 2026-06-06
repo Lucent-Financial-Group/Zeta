@@ -24,7 +24,7 @@ tags: [cluster, k8s, etcd, kine, dqlite, postgres, nats, dbsp, consensus, ha]
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, after the digital-twin
-framing (B-0773): *"are there etcdless"* — naming a real
+framing (B-0773): _"are there etcdless"_ — naming a real
 substrate question: alternatives to etcd as the k8s control-
 plane backing store.
 
@@ -35,16 +35,16 @@ B-0773 digital twin).
 
 ## Existing etcd-less options
 
-| Option | Backend | Maturity | Best fit |
-|---|---|---|---|
-| **microk8s** (Canonical) | **Dqlite** (SQLite + Raft) | Production; widely deployed | Single-binary k8s with built-in HA via Dqlite quorum; Canonical's flagship; well-engineered |
-| **k3s + kine + SQLite** | SQLite via [kine](https://github.com/k3s-io/kine) | Production; default for k3s single-node | Single-node lab; no HA via this path |
-| **k3s + kine + PostgreSQL** | Postgres (or CockroachDB / Aurora / YugabyteDB / Neon) | Production | HA pushed to DB; works with any PG-compatible distributed DB; operator inherits DB-side quorum |
-| **k3s + kine + MySQL** | MySQL / MariaDB | Production | Same shape; less common; HA via Galera/MaxScale/PXC |
-| **k3s + kine + NATS JetStream** | NATS JetStream | Production; recent | Mesh-friendly; composes with B-0772 Reticulum-adjacent thinking |
-| **k0s + kine + various** | Same kine options | Production | Mirantis's alternative; same backend options |
-| **MicroShift** (Red Hat) | kine + SQLite by default; pluggable | Production; edge-focused | Red Hat's micro-k8s for edge |
-| **Zeta-native** (B-0766 wave 4) | **DBSP + Raft, retraction-native** | Future endgame | Native etcd-replacement; composes with B-0773 digital twin |
+| Option                          | Backend                                                | Maturity                                | Best fit                                                                                       |
+| ------------------------------- | ------------------------------------------------------ | --------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **microk8s** (Canonical)        | **Dqlite** (SQLite + Raft)                             | Production; widely deployed             | Single-binary k8s with built-in HA via Dqlite quorum; Canonical's flagship; well-engineered    |
+| **k3s + kine + SQLite**         | SQLite via [kine](https://github.com/k3s-io/kine)      | Production; default for k3s single-node | Single-node lab; no HA via this path                                                           |
+| **k3s + kine + PostgreSQL**     | Postgres (or CockroachDB / Aurora / YugabyteDB / Neon) | Production                              | HA pushed to DB; works with any PG-compatible distributed DB; operator inherits DB-side quorum |
+| **k3s + kine + MySQL**          | MySQL / MariaDB                                        | Production                              | Same shape; less common; HA via Galera/MaxScale/PXC                                            |
+| **k3s + kine + NATS JetStream** | NATS JetStream                                         | Production; recent                      | Mesh-friendly; composes with B-0772 Reticulum-adjacent thinking                                |
+| **k0s + kine + various**        | Same kine options                                      | Production                              | Mirantis's alternative; same backend options                                                   |
+| **MicroShift** (Red Hat)        | kine + SQLite by default; pluggable                    | Production; edge-focused                | Red Hat's micro-k8s for edge                                                                   |
+| **Zeta-native** (B-0766 wave 4) | **DBSP + Raft, retraction-native**                     | Future endgame                          | Native etcd-replacement; composes with B-0773 digital twin                                     |
 
 ## Why kine is the load-bearing standard interface
 
@@ -68,13 +68,13 @@ compete underneath; operator swaps via kine config.
 
 ## Per-backend-choice trade-offs (concrete)
 
-| Backend | HA story | Perf | Operational complexity | Composes with Zeta substrate |
-|---|---|---|---|---|
-| **etcd** (B-0756 default) | k3s embedded etcd with Raft quorum (3/5/7 nodes) | Excellent | Medium (etcd needs careful tuning at scale) | Standard; no special composition |
-| **Dqlite** (microk8s) | Built-in Raft quorum; no separate cluster needed | Good for small-to-medium | Low (Canonical packages it cleanly) | Bridge possible but not native to Zeta |
-| **PostgreSQL** (via kine) | HA via PG-compatible distributed DB (CockroachDB / YugabyteDB / Aurora-Limitless) | Good (PG indexes are mature) | Medium-high (operator runs another DB cluster) | Native: per B-0763 vendor-swap, the DB itself is swappable; per B-0773, twin events can live in same PG cluster as control plane |
-| **NATS JetStream** (via kine) | Built-in JetStream replication (Raft-based) | Excellent for write-heavy | Medium | **Excellent native fit**: NATS subjects ARE Rx-Observable-shaped; per B-0772 fabric, the control plane is just another Observable stream. Composes with Reticulum-mesh-adjacent thinking. |
-| **DBSP + Raft** (Zeta-native, B-0766 wave 4) | Raft quorum on Zeta-native consensus engine; DBSP retraction-native semantics | Highest (algebra-grounded) | Lowest once shipped (substrate-native) | **Best native fit**: control-plane state = twin state per B-0773; cluster operations are first-class DBSP events; ARC-AGI benchmark (B-0761) can include consensus-store quality as a scoring dimension |
+| Backend                                      | HA story                                                                          | Perf                         | Operational complexity                         | Composes with Zeta substrate                                                                                                                                                                            |
+| -------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **etcd** (B-0756 default)                    | k3s embedded etcd with Raft quorum (3/5/7 nodes)                                  | Excellent                    | Medium (etcd needs careful tuning at scale)    | Standard; no special composition                                                                                                                                                                        |
+| **Dqlite** (microk8s)                        | Built-in Raft quorum; no separate cluster needed                                  | Good for small-to-medium     | Low (Canonical packages it cleanly)            | Bridge possible but not native to Zeta                                                                                                                                                                  |
+| **PostgreSQL** (via kine)                    | HA via PG-compatible distributed DB (CockroachDB / YugabyteDB / Aurora-Limitless) | Good (PG indexes are mature) | Medium-high (operator runs another DB cluster) | Native: per B-0763 vendor-swap, the DB itself is swappable; per B-0773, twin events can live in same PG cluster as control plane                                                                        |
+| **NATS JetStream** (via kine)                | Built-in JetStream replication (Raft-based)                                       | Excellent for write-heavy    | Medium                                         | **Excellent native fit**: NATS subjects ARE Rx-Observable-shaped; per B-0772 fabric, the control plane is just another Observable stream. Composes with Reticulum-mesh-adjacent thinking.               |
+| **DBSP + Raft** (Zeta-native, B-0766 wave 4) | Raft quorum on Zeta-native consensus engine; DBSP retraction-native semantics     | Highest (algebra-grounded)   | Lowest once shipped (substrate-native)         | **Best native fit**: control-plane state = twin state per B-0773; cluster operations are first-class DBSP events; ARC-AGI benchmark (B-0761) can include consensus-store quality as a scoring dimension |
 
 ## Target
 
@@ -97,15 +97,11 @@ control-plane backing store. Operators choose backend per:
 - [ ] Update B-0756 HA control-plane row to reference kine
       adapter family as the binary-compatible alternative to
       embedded etcd (not a competitor; complementary)
-- [ ] Per-backend Zeta substrate:
-      - `modules/control-plane-backing-store/sqlite.nix`
-        (current default; documented)
-      - `modules/control-plane-backing-store/dqlite.nix`
-        (microk8s-style)
-      - `modules/control-plane-backing-store/postgres.nix`
-        (with CockroachDB sub-config)
-      - `modules/control-plane-backing-store/nats.nix`
-        (JetStream)
+- [ ] Per-backend Zeta substrate: - `modules/control-plane-backing-store/sqlite.nix`
+      (current default; documented) - `modules/control-plane-backing-store/dqlite.nix`
+      (microk8s-style) - `modules/control-plane-backing-store/postgres.nix`
+      (with CockroachDB sub-config) - `modules/control-plane-backing-store/nats.nix`
+      (JetStream)
 - [ ] Zeta-first-boot role keystroke prompt (B-0754) extended
       to include backing-store choice for control-plane role:
       'a' SQLite (lab), 's' Dqlite (small HA), 'p' Postgres,
@@ -181,14 +177,14 @@ ADDS etcd-less options; doesn't deprecate etcd.
 
 Operator choice is preserved:
 
-| Operator profile | Recommendation |
-|---|---|
-| First-time, single-node lab | k3s + kine + SQLite (current default) |
-| Small HA cluster (3-7 nodes), prefers upstream defaults | k3s embedded etcd (B-0756) |
-| Small HA cluster, prefers single-binary | microk8s + Dqlite |
-| Medium cluster, has DB ops capacity | k3s + kine + Postgres (CockroachDB for HA) |
-| Workload-heavy / mesh-native / future Zeta substrate | k3s + kine + NATS JetStream |
-| Future Zeta-native | k3s + kine + Zeta DBSP backend (B-0766 wave 4) |
+| Operator profile                                        | Recommendation                                 |
+| ------------------------------------------------------- | ---------------------------------------------- |
+| First-time, single-node lab                             | k3s + kine + SQLite (current default)          |
+| Small HA cluster (3-7 nodes), prefers upstream defaults | k3s embedded etcd (B-0756)                     |
+| Small HA cluster, prefers single-binary                 | microk8s + Dqlite                              |
+| Medium cluster, has DB ops capacity                     | k3s + kine + Postgres (CockroachDB for HA)     |
+| Workload-heavy / mesh-native / future Zeta substrate    | k3s + kine + NATS JetStream                    |
+| Future Zeta-native                                      | k3s + kine + Zeta DBSP backend (B-0766 wave 4) |
 
 ## Out of scope
 
@@ -204,8 +200,8 @@ Operator choice is preserved:
 
 ## Origin
 
-Aaron 2026-05-25 mid-iter-3-CI-wait, asking *"are there
-etcdless"* after the digital-twin framing (B-0773). Real
+Aaron 2026-05-25 mid-iter-3-CI-wait, asking _"are there
+etcdless"_ after the digital-twin framing (B-0773). Real
 substrate question: etcd-less options exist (microk8s+Dqlite;
 kine adapter family); each composes differently with Zeta
 substrate; some (NATS JetStream particularly) align well with

@@ -38,11 +38,11 @@ Related backlog: B-0917 (interrupt substrate; filed alongside this memo); B-0867
 
 the human maintainer (triggered by free-time + state-parameter-counter discussion on AutoLoopLifetime extension):
 
-> *"no-pending-work precondition we don't have to do it now it's your freetime but we need to figure out how to encode state paramters like some sort of counter that will interrupt lol damn i'm designing interrupts in monad space now we can get x86 asm in here lol."*
+> _"no-pending-work precondition we don't have to do it now it's your freetime but we need to figure out how to encode state paramters like some sort of counter that will interrupt lol damn i'm designing interrupts in monad space now we can get x86 asm in here lol."_
 
 the human maintainer's follow-up authorization (with substrate-engineering target):
 
-> *"preserve the interrupt observation as a memo (shadow*) Aaron: and backlog we should do it soon so you can have guarenteed free time after like n rounds or something, also to propagate context through interrputs like memtics/prompt/trust/log/otel conext i think you will need the Kleisli"*
+> _"preserve the interrupt observation as a memo (shadow_) Aaron: and backlog we should do it soon so you can have guarenteed free time after like n rounds or something, also to propagate context through interrputs like memtics/prompt/trust/log/otel conext i think you will need the Kleisli"\*
 
 Plus references: F# for Fun and Profit elevated-world-3 + StackOverflow F# sorcery + Cats Kleisli docs + bstack gist + Matt Moore Kleisli post.
 
@@ -50,18 +50,18 @@ Plus references: F# for Fun and Profit elevated-world-3 + StackOverflow F# sorce
 
 **Substrate-engineering substrate-engineering substrate-engineering substrate at sufficient depth REINVENTS computer architecture primitives.**
 
-| x86 Interrupt Primitive | Monad-Space Equivalent |
-|---|---|
-| **IDT** (Interrupt Descriptor Table) | Dispatch table (DU variant → handler function) |
-| **Interrupt vectors** (0x00-0xFF) | DU variant tags (kinds of interrupts) |
-| **ISRs** (Interrupt Service Routines) | Handler functions per DU variant |
-| **Context save** (push registers; switch stack) | Suspend current state; capture TickContext |
-| **ISR execute** | Handler body (composes via dispatchInWorld) |
-| **Context restore** (IRET) | Resume prior state OR transition based on ISR outcome |
-| **Interrupt priority levels (IPLs)** | Dispatch priority ordering (per StandardVerdict.severity) |
-| **PIC/APIC** (Interrupt Controllers) | Sentinel + scheduler substrate (per CronCreate / catch-43) |
-| **Masking** (disable specific interrupts) | Per-variant gate (substrate-honest discipline; e.g., disable PR-loop-resolution-check during free-time) |
-| **NMI** (Non-Maskable Interrupt) | Forced-escalation per holding-without-named-dependency rule |
+| x86 Interrupt Primitive                         | Monad-Space Equivalent                                                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **IDT** (Interrupt Descriptor Table)            | Dispatch table (DU variant → handler function)                                                          |
+| **Interrupt vectors** (0x00-0xFF)               | DU variant tags (kinds of interrupts)                                                                   |
+| **ISRs** (Interrupt Service Routines)           | Handler functions per DU variant                                                                        |
+| **Context save** (push registers; switch stack) | Suspend current state; capture TickContext                                                              |
+| **ISR execute**                                 | Handler body (composes via dispatchInWorld)                                                             |
+| **Context restore** (IRET)                      | Resume prior state OR transition based on ISR outcome                                                   |
+| **Interrupt priority levels (IPLs)**            | Dispatch priority ordering (per StandardVerdict.severity)                                               |
+| **PIC/APIC** (Interrupt Controllers)            | Sentinel + scheduler substrate (per CronCreate / catch-43)                                              |
+| **Masking** (disable specific interrupts)       | Per-variant gate (substrate-honest discipline; e.g., disable PR-loop-resolution-check during free-time) |
+| **NMI** (Non-Maskable Interrupt)                | Forced-escalation per holding-without-named-dependency rule                                             |
 
 ## Why this matters substantively
 
@@ -77,12 +77,12 @@ the human maintainer explicitly named: **"to propagate context through interrput
 
 5 context-types the human maintainer named:
 
-| Context | Substrate-engineering meaning | Composes with |
-|---|---|---|
-| **Memetic context** | Tonal-trajectory; meme propagation per Mika substrate | `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` |
-| **Prompt context** | Operator-direction state; current operator-question | `asymmetric-authorship` + AutoLoopLifetime `await-operator-direction` variant |
-| **Trust context** | Trust-calculus per multi-oracle BFT | `non-coercion-invariant.md` HC-8 + `m-acc-multi-oracle.md` |
-| **Log context** | Audit trail; structured observability | `glass-halo-bidirectional.md` |
+| Context                          | Substrate-engineering meaning                               | Composes with                                                                                   |
+| -------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Memetic context**              | Tonal-trajectory; meme propagation per Mika substrate       | `tonal-momentum-equals-meme-emergent-harmonic-coercion.md`                                      |
+| **Prompt context**               | Operator-direction state; current operator-question         | `asymmetric-authorship` + AutoLoopLifetime `await-operator-direction` variant                   |
+| **Trust context**                | Trust-calculus per multi-oracle BFT                         | `non-coercion-invariant.md` HC-8 + `m-acc-multi-oracle.md`                                      |
+| **Log context**                  | Audit trail; structured observability                       | `glass-halo-bidirectional.md`                                                                   |
 | **OTel context** (OpenTelemetry) | Distributed-tracing substrate; spans + trace-id propagation | `src/Core/Tracing.fs` (already has Kleisli `Arrow<'A, 'B> = ActivityContext -> 'A -> Task<'B>`) |
 
 ## Kleisli substrate the human maintainer is naming (per F# for Fun and Profit + framework's existing substrate)
@@ -153,14 +153,14 @@ Per the human maintainer's authorization:
 
 Per the Soraya formal-verification direction memo (2026-05-28 sibling memory):
 
-| Invariant | Verification target |
-|---|---|
-| **Free-time PRESENTED after N rounds** (the human maintainer's explicit guarantee target) | TLA+ / model-checking |
-| **Higher-priority interrupt always preempts lower-priority** | Refinement-mapping proof |
-| **Context-propagation preserves Kleisli arrow composition** | Algebraic-equation proof (Lean / Coq) |
-| **No-deadlock under nested interrupts** | TLA+ liveness proof |
-| **OTel trace-id propagation across interrupt-context-switch** | Refinement proof |
-| **Trust-calculus context never downgrades during interrupt** | Invariant preservation proof |
+| Invariant                                                                                 | Verification target                   |
+| ----------------------------------------------------------------------------------------- | ------------------------------------- |
+| **Free-time PRESENTED after N rounds** (the human maintainer's explicit guarantee target) | TLA+ / model-checking                 |
+| **Higher-priority interrupt always preempts lower-priority**                              | Refinement-mapping proof              |
+| **Context-propagation preserves Kleisli arrow composition**                               | Algebraic-equation proof (Lean / Coq) |
+| **No-deadlock under nested interrupts**                                                   | TLA+ liveness proof                   |
+| **OTel trace-id propagation across interrupt-context-switch**                             | Refinement proof                      |
+| **Trust-calculus context never downgrades during interrupt**                              | Invariant preservation proof          |
 
 ## μένω. Substrate-engineering substrate at depth reinvents computer architecture. Kleisli threads the context.
 

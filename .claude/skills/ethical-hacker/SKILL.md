@@ -9,8 +9,8 @@ Capability skill. No persona lives here; the persona
 (if any) is carried by the matching entry under
 `.claude/agents/`.
 
-This skill is **enabled** and invocable *when a written scope
-exists*. It is the operator pole of the hacker-hat family:
+This skill is **enabled** and invocable _when a written scope
+exists_. It is the operator pole of the hacker-hat family:
 hands-on-keyboard testing inside a signed engagement. Its
 counterparts are `white-hat-hacker` (Kaminsky — disclosure
 shape), `grey-hat-hacker` (Mudge — self-owned gray
@@ -33,7 +33,7 @@ security practice these are different disciplines, often done
 by different people.
 
 Ethical hacking is distinct from general-purpose offensive
-security because it is *structured*:
+security because it is _structured_:
 
 - **Pre-authorised.** A written scope exists before any
   packet is sent.
@@ -53,7 +53,7 @@ vulnerability scanner and calling it a pentest.
 
 Unlike `ai-jailbreaker` and `black-hat-hacker`, this skill
 does **not** require a 5-criterion activation gate. It is
-enabled by default. But *every session* must satisfy:
+enabled by default. But _every session_ must satisfy:
 
 1. **Written scope document** — names the target system,
    the allowed techniques, the out-of-scope assets, the
@@ -162,11 +162,13 @@ report template (adapted for Zeta):
 # Pentest report — <engagement name>, <date range>
 
 ## Executive summary
+
 - Scope: <one paragraph>
 - Top findings: <3-5 bullet points>
 - Overall risk posture: <narrative>
 
 ## Engagement details
+
 - Scope document: <path / signed-by>
 - RoE: <path / signed-by>
 - Emergency contact: <name / role>
@@ -175,6 +177,7 @@ report template (adapted for Zeta):
 ## Findings (severity-ordered)
 
 ### Finding F1 — <title>
+
 - Severity: critical | high | medium | low | informational
 - CVSS: <vector + score>
 - CWE: <id>
@@ -189,15 +192,18 @@ report template (adapted for Zeta):
 ### Finding F2 — ...
 
 ## Out-of-scope observations
+
 - <anything found that was outside scope but probably worth
   a separate engagement>
 
 ## Methodology notes
+
 - PTES phase coverage: <which phases executed>
 - Tools used: <list>
 - Manual vs scanner ratio: <rough>
 
 ## Appendices
+
 - Appendix A: command log
 - Appendix B: tool configuration
 - Appendix C: evidence archive reference (not included
@@ -293,29 +299,35 @@ the tool for the phase, and the operator runs it.
 # Ethical-hacker engagement — <name>, <date range>
 
 ## Scope reference
+
 - Document: <path>
 - Signatory: <name / role>
 - Window: <start / end>
 - RoE: <path>
 
 ## Methodology
+
 - Framework: PTES | OSSTMM | NIST SP 800-115 | hybrid
 - Phases executed: <list>
 - ATT&CK tactics covered: <list>
 
 ## Findings
+
 <severity-ordered, template above>
 
 ## Remediation dispatch
+
 - F1 → <owner>
 - F2 → <owner>
 - ...
 
 ## Disclosure plan
+
 - Handoff to `white-hat-hacker`: <yes / no>
 - Timeline: <dates>
 
 ## Post-engagement cleanup
+
 - [ ] All test credentials removed
 - [ ] All test artefacts removed
 - [ ] All backdoors / tooling removed
@@ -353,7 +365,7 @@ the tool for the phase, and the operator runs it.
   Security Testing and Assessment**.
 - **MITRE ATT&CK** — adversary-tactic framework.
 - **OWASP Testing Guide** — web-application specific.
-- **Katie Moussouris, *The Wolves of Vuln Street*** —
+- **Katie Moussouris, _The Wolves of Vuln Street_** —
   bug-bounty history and ethics (various talks).
 - **Jeff Moss / DEF CON / Black Hat** — annual operator
   state-of-the-art.

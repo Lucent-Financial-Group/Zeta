@@ -13,13 +13,13 @@ metadata:
     argocd.argoproj.io/sync-wave: "10"
   name: hindsight
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
     repoURL: ghcr.io/vectorize-io/charts
     chart: hindsight
-    targetRevision: 0.3.0   # bump to latest as vectorize-io publishes
+    targetRevision: 0.3.0 # bump to latest as vectorize-io publishes
     helm:
       releaseName: hindsight
       valuesObject:
@@ -40,7 +40,7 @@ spec:
           # Sourced from a Vault-backed ExternalSecret rather than
           # hardcoded.
           llm:
-            provider: groq   # change per maintainer preference
+            provider: groq # change per maintainer preference
             existingSecret:
               name: hindsight-llm-api-key
               key: api-key
@@ -65,7 +65,7 @@ spec:
     namespace: hindsight
   syncPolicy:
     automated:
-      prune: false   # never prune — memory store is precious
+      prune: false # never prune — memory store is precious
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

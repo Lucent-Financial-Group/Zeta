@@ -45,8 +45,8 @@ training-data cutoff makes default knowledge stale.
 
 ## Maintainer framing (verbatim)
 
-> *"i aslo added the kiro-cli now too to your agent/cli
-> roster"*  — Aaron 2026-04-28.
+> _"i aslo added the kiro-cli now too to your agent/cli
+> roster"_ — Aaron 2026-04-28.
 
 ## Composes with
 

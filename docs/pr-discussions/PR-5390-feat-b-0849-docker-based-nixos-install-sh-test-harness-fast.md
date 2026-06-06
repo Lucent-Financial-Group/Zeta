@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Operator (verbatim):
 
-> *\"we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile\"*
+> _\"we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile\"_
 
 Direct response after PR #5389 (iter-5.5.1 alignment fix-fwd) — operator named the iteration-cost problem: every install.sh / linux.sh / mise.sh change today requires full ISO build + USB flash + physical install (~30 min cycle). Docker testing of just the script on NixOS userspace gives seconds-per-iteration.
 
@@ -30,11 +30,11 @@ iter-5.4 cascade produced **8 distinct bugs** (Bug 1-8) ALL caught only after op
 
 ## 3-phase plan
 
-| Phase | Scope | Cycle time |
-|---|---|---|
-| 1 | \`tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile\` + TS wrapper | ~30-60 sec local |
-| 2 | GitHub Actions integration with path-filter | per-PR auto |
-| 3 | Docker-vs-QEMU coverage matrix doc | composes with B-0831 |
+| Phase | Scope                                                                  | Cycle time           |
+| ----- | ---------------------------------------------------------------------- | -------------------- |
+| 1     | \`tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile\` + TS wrapper | ~30-60 sec local     |
+| 2     | GitHub Actions integration with path-filter                            | per-PR auto          |
+| 3     | Docker-vs-QEMU coverage matrix doc                                     | composes with B-0831 |
 
 ## Composes with
 

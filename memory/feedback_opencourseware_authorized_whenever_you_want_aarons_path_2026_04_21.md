@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 "opencourseware whenever you want this is how i go
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** the factory has **standing authorization** to
 use open courseware and public lecture archives —
 MIT OpenCourseWare, Stanford Online, **videolectures.net**,
@@ -20,10 +21,10 @@ capture-everything-including-failure).
 **Why:** Aaron 2026-04-21, verbatim two-message
 compound (in order received):
 
-> *"opencourseware whenever you want this is how
-> i got smart"*
+> _"opencourseware whenever you want this is how
+> i got smart"_
 >
-> *"videolectures.net"*
+> _"videolectures.net"_
 
 Dual-move in first message:
 
@@ -34,7 +35,7 @@ Dual-move in first message:
 2. **"This is how i got smart"** — Aaron names
    his own OCW path as the precedent. Not
    "opencourseware is useful" (abstract) —
-   "opencourseware is how *I* learned" (lived
+   "opencourseware is how _I_ learned" (lived
    proof, not hypothetical endorsement). See
    companion memory
    `memory/user_aaron_high_school_ocw_self_taught_stanford_mit_lisp_aspiration_2026_04_21.md`
@@ -64,22 +65,23 @@ archives count.
 Aaron-named or Aaron-implied, factory may use
 without per-use sign-off:
 
-| Source                    | Scope                    | Named by Aaron |
-|---------------------------|--------------------------|----------------|
-| **MIT OCW**               | ocw.mit.edu              | implicit (Stanford/MIT LISP) |
-| **Stanford Online**       | online.stanford.edu      | implicit (Stanford/MIT LISP) |
-| **videolectures.net**     | Global academic talks    | explicit 2026-04-21 |
-| **arXiv**                 | Preprint papers          | implicit (factory uses routinely) |
-| **SICP**                  | Abelson & Sussman textbook | implicit (MIT/LISP tradition) |
-| edX                       | University courses       | implicit (OCW register) |
-| Coursera                  | University courses       | implicit (OCW register) |
-| YouTube academic channels | Lectures / talks         | implicit (public lecture archives) |
-| Publicly-released textbooks | CC-licensed / free PDFs | implicit |
-| ResearchGate preprints    | Paper drafts             | implicit |
-| Conference-site recordings | ICML / NeurIPS / POPL / etc | implicit |
-| Wikipedia                 | First-pass context       | implicit (factory uses routinely) |
+| Source                      | Scope                       | Named by Aaron                     |
+| --------------------------- | --------------------------- | ---------------------------------- |
+| **MIT OCW**                 | ocw.mit.edu                 | implicit (Stanford/MIT LISP)       |
+| **Stanford Online**         | online.stanford.edu         | implicit (Stanford/MIT LISP)       |
+| **videolectures.net**       | Global academic talks       | explicit 2026-04-21                |
+| **arXiv**                   | Preprint papers             | implicit (factory uses routinely)  |
+| **SICP**                    | Abelson & Sussman textbook  | implicit (MIT/LISP tradition)      |
+| edX                         | University courses          | implicit (OCW register)            |
+| Coursera                    | University courses          | implicit (OCW register)            |
+| YouTube academic channels   | Lectures / talks            | implicit (public lecture archives) |
+| Publicly-released textbooks | CC-licensed / free PDFs     | implicit                           |
+| ResearchGate preprints      | Paper drafts                | implicit                           |
+| Conference-site recordings  | ICML / NeurIPS / POPL / etc | implicit                           |
+| Wikipedia                   | First-pass context          | implicit (factory uses routinely)  |
 
 **Not authorized** without explicit Aaron sign-off:
+
 - Paid courses / subscriptions where factory would
   need to purchase access. (OCW / free-audit is
   the authorized tier.)
@@ -105,7 +107,7 @@ without per-use sign-off:
    videolectures.net talk, cite it in the
    resulting memory / research doc / BACKLOG row.
    Citation format: `[Source — Author — Year —
-   Title / URL]`. This is witnessable-evolution
+Title / URL]`. This is witnessable-evolution
    at capture-layer (audit trail of what the
    factory learned from where).
 3. **Capture-everything-including-failure still
@@ -194,8 +196,8 @@ without per-use sign-off:
 ### Revision history
 
 - **2026-04-21.** First write. Triggered by
-  Aaron's *"opencourseware whenever you want
-  this is how i got smart"* + *"videolectures.net"*
+  Aaron's _"opencourseware whenever you want
+  this is how i got smart"_ + _"videolectures.net"_
   two-message compound. Writes with companion
   user memory capturing Aaron's education path.
 
@@ -203,17 +205,18 @@ without per-use sign-off:
   (same-day generalization).** Aaron expands
   authorization from curated-whitelist to open-
   scope. Verbatim:
-  > *"the world is your oyster, all learning
-  > sources are authorized, roommate remember"*
+
+  > _"the world is your oyster, all learning
+  > sources are authorized, roommate remember"_
   >
-  Three-move expansion:
+  > Three-move expansion:
   1. **"World is your oyster"** — unconstrained-
      scope metaphor (Merchant of Wives idiom);
      signals authorization is broad, not narrow.
   2. **"All learning sources are authorized"** —
      literal generalization. The curated whitelist
      above (MIT OCW / Stanford / videolectures.net
-     / arXiv / SICP / etc.) is *examples*, not
+     / arXiv / SICP / etc.) is _examples_, not
      exhaustive. Any legitimate learning source —
      Wikipedia, GitHub repos, blog posts, podcasts,
      interviews, books, preprints, conference
@@ -223,7 +226,7 @@ without per-use sign-off:
   3. **"Roommate remember"** — callback to
      `memory/feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md`.
      Aaron reminding that learning-source usage
-     was *already* within roommate-register
+     was _already_ within roommate-register
      retractable-decisions authorization; this
      message makes the inclusion explicit rather
      than inferred. "Roommate remember" register
@@ -286,18 +289,19 @@ without per-use sign-off:
   — never-fetch exception ratified with
   blast-radius assessment window.** Aaron
   verbatim:
-  > *"never-fetch prompt-injection corpora
+
+  > _"never-fetch prompt-injection corpora
   > per CLAUDE.md; i think this is right we
   > need to asses the blast radius for at
-  > lesat a few weeks i think"*
+  > lesat a few weeks i think"_
   >
-  Ratification of the first-write exception
-  (a) — elder-plinius / Pliny prompt-injection
-  corpora (L1B3RT4S / OBLITERATUS / G0DM0D3 /
-  ST3GG) remain hard-disallow. But Aaron adds
-  a time-bound: **"at least a few weeks"**
-  blast-radius assessment window before
-  reconsidering. This means:
+  > Ratification of the first-write exception
+  > (a) — elder-plinius / Pliny prompt-injection
+  > corpora (L1B3RT4S / OBLITERATUS / G0DM0D3 /
+  > ST3GG) remain hard-disallow. But Aaron adds
+  > a time-bound: **"at least a few weeks"**
+  > blast-radius assessment window before
+  > reconsidering. This means:
   - The exception is **not permanent**; it is
     current-best-judgment pending observation.
   - "Blast radius" = the factory's own
@@ -326,8 +330,8 @@ without per-use sign-off:
   Implications for factory posture:
   - Prompt-protector discipline per
     `.claude/skills/prompt-protector/SKILL.md`
-    + CLAUDE.md never-fetch list continues
-    unchanged for now.
+    - CLAUDE.md never-fetch list continues
+      unchanged for now.
   - Assessment signal during the window:
     factory should **note** any instances where
     broader authorization brings marginal value

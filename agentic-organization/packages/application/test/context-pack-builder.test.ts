@@ -134,23 +134,36 @@ test("deterministic context builder always includes a hat communication brief be
   ok(brief?.reasons.includes("supervisor:cto"));
   ok(brief?.citationRefs?.includes("hat:engineering_director"));
   ok(brief?.citationRefs?.includes("hat:cto"));
-  ok(brief?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode &&
-    pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Hat, "engineering_director")
-  ));
-  ok(brief?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode &&
-    pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Hat, "cto")
-  ));
-  ok(brief?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.Policy && pointer.policyId === "hat_communication_brief"
-  ));
-  ok(result.pack.items.some((item) =>
-    item.kind === ContextPackItemKind.SynthesisBriefing &&
-    item.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.Policy && pointer.policyId === "hat_communication_brief"
-    )
-  ));
+  ok(
+    brief?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.GraphNode &&
+        pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Hat, "engineering_director"),
+    ),
+  );
+  ok(
+    brief?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.GraphNode &&
+        pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Hat, "cto"),
+    ),
+  );
+  ok(
+    brief?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.Policy && pointer.policyId === "hat_communication_brief",
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.kind === ContextPackItemKind.SynthesisBriefing &&
+        item.sourcePointers?.some(
+          (pointer) =>
+            pointer.kind === ContextPackSourcePointerKind.Policy && pointer.policyId === "hat_communication_brief",
+        ),
+    ),
+  );
 });
 
 test("deterministic context builder marks required document lane missing when no source-of-truth docs are admitted", async () => {
@@ -161,23 +174,28 @@ test("deterministic context builder marks required document lane missing when no
     }),
   });
 
-  const result = await builder.build(request({
-    hat: engineeringDirector,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.Project,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: engineeringDirector,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.Project,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
-  ok(result.pack.curationPlan?.lanes.some((lane) =>
-    lane.kind === ContextPackAttentionLaneKind.RequiredDocuments &&
-    lane.required &&
-    lane.refs.length === 0
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "required_curation_lane:required_documents" &&
-    item.reason === ContextPackOmissionReason.NotIndexed &&
-    item.message.includes("required_documents")
-  ));
+  ok(
+    result.pack.curationPlan?.lanes.some(
+      (lane) => lane.kind === ContextPackAttentionLaneKind.RequiredDocuments && lane.required && lane.refs.length === 0,
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "required_curation_lane:required_documents" &&
+        item.reason === ContextPackOmissionReason.NotIndexed &&
+        item.message.includes("required_documents"),
+    ),
+  );
 });
 
 test("deterministic context builder makes required ephemeral synthesis absence visible for management blockers", async () => {
@@ -195,20 +213,25 @@ test("deterministic context builder makes required ephemeral synthesis absence v
     }),
   });
 
-  const result = await builder.build(request({
-    hat: engineeringDirector,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.Project,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: engineeringDirector,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.Project,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   ok(result.pack.curationPlan?.requiredStages?.includes(ContextPackCurationStageKind.EphemeralSynthesis));
   ok(!result.pack.curationTrace.some((stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "ephemeral_synthesis:required_unavailable" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("required for blocked management context")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "ephemeral_synthesis:required_unavailable" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("required for blocked management context"),
+    ),
+  );
   equal(evaluateContextPackReadiness(result.pack, observedAt), ContextPackStatus.Incomplete);
 });
 
@@ -273,11 +296,14 @@ test("deterministic context builder marks missing ephemeral synthesis for wake-r
 
   ok(result.pack.curationPlan?.requiredStages?.includes(ContextPackCurationStageKind.EphemeralSynthesis));
   ok(!result.pack.curationTrace.some((stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "ephemeral_synthesis:required_unavailable" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("wake-requested context build")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "ephemeral_synthesis:required_unavailable" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("wake-requested context build"),
+    ),
+  );
   equal(evaluateContextPackReadiness(result.pack, observedAt), ContextPackStatus.Incomplete);
 });
 
@@ -297,11 +323,13 @@ test("deterministic context builder rejects hat communication briefs outside the
             targetLevel: "manager",
             targetHatId: "security_director",
           },
-          availableTools: [{
-            toolType: "request_decision",
-            useWhen: "wrong path",
-            requiredEvidence: ["evidence"],
-          }],
+          availableTools: [
+            {
+              toolType: "request_decision",
+              useWhen: "wrong path",
+              requiredEvidence: ["evidence"],
+            },
+          ],
         },
         citationRefs: ["hat:backend_implementer", "hat:security_director"],
         sourcePointers: [
@@ -317,11 +345,14 @@ test("deterministic context builder rejects hat communication briefs outside the
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.HatCommunicationBrief));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "hat_communication_brief" &&
-    item.reason === ContextPackOmissionReason.OutOfScope &&
-    item.message.includes("must match active hat")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "hat_communication_brief" &&
+        item.reason === ContextPackOmissionReason.OutOfScope &&
+        item.message.includes("must match active hat"),
+    ),
+  );
 });
 
 test("default hat communication brief derives supervisor level from the target hat definition", async () => {
@@ -332,11 +363,13 @@ test("default hat communication brief derives supervisor level from the target h
     }),
   });
 
-  const result = await builder.build(request({
-    hat: backendImplementer,
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.Executing,
-  }));
+  const result = await builder.build(
+    request({
+      hat: backendImplementer,
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.Executing,
+    }),
+  );
   const brief = result.pack.items.find((item) => item.kind === ContextPackItemKind.HatCommunicationBrief);
 
   ok(brief?.summary.includes("supervisor director:engineering_director"));
@@ -359,11 +392,14 @@ test("deterministic context builder records hat communication brief provider fai
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.HatCommunicationBrief));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "hat_communication_brief" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("policy store offline")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "hat_communication_brief" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("policy store offline"),
+    ),
+  );
 });
 
 test("deterministic context builder packs scoped documents, required consults, conflicts, and typed doc provenance", async () => {
@@ -462,7 +498,7 @@ test("deterministic context builder augments retrieved docs with graph neighborh
       sourceGraphVersion: "docs-v2",
     }),
     graph,
-    nodeIdForDocUnit: (unit) => unit.docUnitId === "billing-adr" ? "node-billing" : null,
+    nodeIdForDocUnit: (unit) => (unit.docUnitId === "billing-adr" ? "node-billing" : null),
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
@@ -470,12 +506,18 @@ test("deterministic context builder augments retrieved docs with graph neighborh
   const graphItem = result.pack.items.find((item) => item.id === "graph:node-billing");
   equal(graphItem?.kind, ContextPackItemKind.GraphNeighborhood);
   ok(graphItem?.summary.includes("outbound=2"));
-  ok(graphItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode && pointer.nodeId === "node-billing",
-  ));
-  ok(graphItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphEdge && pointer.edgeId === "node-billing-depends_on-node-auth",
-  ));
+  ok(
+    graphItem?.sourcePointers?.some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.GraphNode && pointer.nodeId === "node-billing",
+    ),
+  );
+  ok(
+    graphItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.GraphEdge &&
+        pointer.edgeId === "node-billing-depends_on-node-auth",
+    ),
+  );
   ok(result.pack.curationTrace.some((stage) => stage.stage === ContextPackCurationStageKind.GraphTraversal));
 });
 
@@ -522,33 +564,45 @@ test("deterministic context builder adds scoped memory pointers and ephemeral sy
       equal(query.organizationId, "org-lfg");
       equal(query.projectId, "project-billing");
       equal(query.workItemId, "work-billing-blocked");
-      const authorityLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.Authority);
+      const authorityLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.Authority,
+      );
       equal(authorityLane?.required, true);
-      ok(authorityLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "hat_brief:engineering_director"
-      ));
-      const requiredDocsLane = query.curationPlan.lanes.find((lane) =>
-        lane.kind === ContextPackAttentionLaneKind.RequiredDocuments
+      ok(
+        authorityLane?.refs.some(
+          (ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "hat_brief:engineering_director",
+        ),
+      );
+      const requiredDocsLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.RequiredDocuments,
       );
       equal(requiredDocsLane?.required, true);
-      ok(requiredDocsLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "doc:billing-brd"
-      ));
+      ok(
+        requiredDocsLane?.refs.some(
+          (ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "doc:billing-brd",
+        ),
+      );
       const memoryLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.Memory);
       equal(memoryLane?.required, false);
-      ok(memoryLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "memory:mem-1"
-      ));
-      const legalActionsLane = query.curationPlan.lanes.find((lane) =>
-        lane.kind === ContextPackAttentionLaneKind.LegalActions
+      ok(
+        memoryLane?.refs.some(
+          (ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "memory:mem-1",
+        ),
+      );
+      const legalActionsLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.LegalActions,
       );
       equal(legalActionsLane?.required, true);
-      ok(legalActionsLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.LegalAction && ref.actionType === "meta.escalate"
-      ));
-      ok(query.curationPlan.deterministicInstructions.some((instruction) =>
-        instruction.includes("Rank required documents and active graph context before advisory memory"),
-      ));
+      ok(
+        legalActionsLane?.refs.some(
+          (ref) => ref.kind === ContextPackAttentionLaneRefKind.LegalAction && ref.actionType === "meta.escalate",
+        ),
+      );
+      ok(
+        query.curationPlan.deterministicInstructions.some((instruction) =>
+          instruction.includes("Rank required documents and active graph context before advisory memory"),
+        ),
+      );
       return {
         summary: `Synthesized ${query.items.length} deterministic items for ${query.hatId}`,
         briefing: {
@@ -558,27 +612,35 @@ test("deterministic context builder adds scoped memory pointers and ephemeral sy
           confidence: 0.76,
           reasons: ["hat:director", "blocked-work"],
         },
-        rankedContextRefs: [{
-          itemId: "doc:billing-brd",
-          reason: "Business rules are the highest-priority context for this blocker.",
-          evidenceRefs: ["doc:billing-brd"],
-        }],
-        gapHypotheses: [{
-          message: "Ownership evidence may be missing from the indexed meeting notes.",
-          evidenceRefs: ["doc:billing-brd"],
-          suggestedNextStep: "Ask the engineering manager for the owner decision record.",
-        }],
-        questions: [{
-          question: "Which team owns failed invoice recovery?",
-          audienceHatLevel: HatLevel.Manager,
-          evidenceRefs: ["doc:billing-brd"],
-        }],
-        recommendedActionRefs: [{
-          actionType: "meta.escalate",
-          direction: "Escalate to engineering manager for owner assignment.",
-          reason: "The BRD defines the recovery requirement but no owner is present in context.",
-          evidenceRefs: ["doc:billing-brd"],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: "doc:billing-brd",
+            reason: "Business rules are the highest-priority context for this blocker.",
+            evidenceRefs: ["doc:billing-brd"],
+          },
+        ],
+        gapHypotheses: [
+          {
+            message: "Ownership evidence may be missing from the indexed meeting notes.",
+            evidenceRefs: ["doc:billing-brd"],
+            suggestedNextStep: "Ask the engineering manager for the owner decision record.",
+          },
+        ],
+        questions: [
+          {
+            question: "Which team owns failed invoice recovery?",
+            audienceHatLevel: HatLevel.Manager,
+            evidenceRefs: ["doc:billing-brd"],
+          },
+        ],
+        recommendedActionRefs: [
+          {
+            actionType: "meta.escalate",
+            direction: "Escalate to engineering manager for owner assignment.",
+            reason: "The BRD defines the recovery requirement but no owner is present in context.",
+            evidenceRefs: ["doc:billing-brd"],
+          },
+        ],
         lifecycleBlockers: ["director should resolve billing owner ambiguity"],
         curationEvidenceRefs: ["doc:billing-brd"],
       };
@@ -602,14 +664,20 @@ test("deterministic context builder adds scoped memory pointers and ephemeral sy
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
-  ok(result.pack.curationPlan?.lanes.some((lane) =>
-    lane.kind === ContextPackAttentionLaneKind.RequiredDocuments &&
-    lane.refs.some((ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "doc:billing-brd")
-  ));
-  ok(result.pack.curationPlan?.lanes.some((lane) =>
-    lane.kind === ContextPackAttentionLaneKind.Memory &&
-    lane.refs.some((ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "memory:mem-1")
-  ));
+  ok(
+    result.pack.curationPlan?.lanes.some(
+      (lane) =>
+        lane.kind === ContextPackAttentionLaneKind.RequiredDocuments &&
+        lane.refs.some((ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "doc:billing-brd"),
+    ),
+  );
+  ok(
+    result.pack.curationPlan?.lanes.some(
+      (lane) =>
+        lane.kind === ContextPackAttentionLaneKind.Memory &&
+        lane.refs.some((ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "memory:mem-1"),
+    ),
+  );
   const memoryItem = result.pack.items.find((item) => item.id === "memory:mem-1");
   equal(memoryItem?.kind, ContextPackItemKind.MemoryPointer);
   equal(memoryItem?.required, false);
@@ -647,64 +715,83 @@ test("deterministic context builder adds scoped memory pointers and ephemeral sy
   equal(briefing?.summary, "BRD-backed owner ambiguity requires director staffing decision.");
   equal(briefing?.confidence, 0.76);
   deepEqual(briefing?.reasons, ["hat:director", "blocked-work"]);
-  ok(briefing?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd"
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === "synthesis:engineering_director:42:99:ranked:0:doc-billing-brd" &&
-    item.kind === ContextPackItemKind.SynthesisRankedContext &&
-    item.summary === "Business rules are the highest-priority context for this blocker." &&
-    item.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd"
-    )
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === "synthesis:engineering_director:42:99:gap:0" &&
-    item.kind === ContextPackItemKind.SynthesisGapHypothesis &&
-    item.summary.includes("Ask the engineering manager for the owner decision record") &&
-    item.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd"
-    )
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === "synthesis:engineering_director:42:99:question:0" &&
-    item.kind === ContextPackItemKind.SynthesisQuestion &&
-    item.reasons.includes("audience:manager") &&
-    item.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd"
-    )
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === "synthesis:engineering_director:42:99:action:0" &&
-    item.kind === ContextPackItemKind.SynthesisRecommendedAction &&
-    item.title === "Recommended action: Escalate to engineering manager for owner assignment." &&
-    item.reasons.includes("action:meta.escalate") &&
-    item.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd"
-    )
-  ));
+  ok(
+    briefing?.sourcePointers?.some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd",
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.id === "synthesis:engineering_director:42:99:ranked:0:doc-billing-brd" &&
+        item.kind === ContextPackItemKind.SynthesisRankedContext &&
+        item.summary === "Business rules are the highest-priority context for this blocker." &&
+        item.sourcePointers?.some(
+          (pointer) => pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd",
+        ),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.id === "synthesis:engineering_director:42:99:gap:0" &&
+        item.kind === ContextPackItemKind.SynthesisGapHypothesis &&
+        item.summary.includes("Ask the engineering manager for the owner decision record") &&
+        item.sourcePointers?.some(
+          (pointer) => pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd",
+        ),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.id === "synthesis:engineering_director:42:99:question:0" &&
+        item.kind === ContextPackItemKind.SynthesisQuestion &&
+        item.reasons.includes("audience:manager") &&
+        item.sourcePointers?.some(
+          (pointer) => pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd",
+        ),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.id === "synthesis:engineering_director:42:99:action:0" &&
+        item.kind === ContextPackItemKind.SynthesisRecommendedAction &&
+        item.title === "Recommended action: Escalate to engineering manager for owner assignment." &&
+        item.reasons.includes("action:meta.escalate") &&
+        item.sourcePointers?.some(
+          (pointer) => pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd",
+        ),
+    ),
+  );
   ok(result.pack.curationTrace.some((stage) => stage.stage === ContextPackCurationStageKind.MemoryRecall));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis &&
-    stage.evidenceRefs.includes("synthesis:engineering_director:42:99:action:0")
-  ));
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.EphemeralSynthesis &&
+        stage.evidenceRefs.includes("synthesis:engineering_director:42:99:action:0"),
+    ),
+  );
   ok(result.pack.curationTrace.some((stage) => stage.summary.includes("Synthesized")));
 });
 
 test("deterministic context builder caps synthesis confidence by cited deterministic evidence", async () => {
   const memory: ContextPackMemoryRecallPort = {
     recall: async () => ({
-      memories: [{
-        memoryId: "mem-low-confidence",
-        providerId: "hindsight",
-        summary: "Prior blocker is only weakly similar.",
-        confidence: 0.42,
-        retainedAt: "2026-05-30T00:00:00.000Z",
-        creatingAgentId: "agent-prior",
-        creatingHatAssignmentId: "hat-prior",
-        advisory: true,
-        reasons: ["weak similarity"],
-      }],
+      memories: [
+        {
+          memoryId: "mem-low-confidence",
+          providerId: "hindsight",
+          summary: "Prior blocker is only weakly similar.",
+          confidence: 0.42,
+          retainedAt: "2026-05-30T00:00:00.000Z",
+          creatingAgentId: "agent-prior",
+          creatingHatAssignmentId: "hat-prior",
+          advisory: true,
+          reasons: ["weak similarity"],
+        },
+      ],
     }),
   };
   const synthesis: ContextPackEphemeralSynthesisPort = {
@@ -717,29 +804,40 @@ test("deterministic context builder caps synthesis confidence by cited determini
         confidence: 0.99,
         uncertaintyExplanation: "Only a weakly similar memory supports this briefing.",
       },
-      gapHypotheses: [{
-        message: "Weakly grounded gap hypothesis.",
-        evidenceRefs: ["memory:mem-low-confidence", `required_curation_lane:${ContextPackAttentionLaneKind.RequiredDocuments}`],
-        confidence: 0.91,
-        uncertaintyExplanation: "The missing-document omission is not evidence, so memory remains the ceiling.",
-      }],
-      rankedContextRefs: [{
-        itemId: "memory:mem-low-confidence",
-        reason: "Weak memory should remain weakly ranked.",
-        evidenceRefs: ["memory:mem-low-confidence"],
-        uncertaintyExplanation: "Ranking is based only on weak memory similarity.",
-      }],
-      questions: [{
-        question: "What stronger evidence can confirm this weak memory?",
-        evidenceRefs: ["memory:mem-low-confidence"],
-        uncertaintyExplanation: "Question confidence is limited by the weak memory pointer.",
-      }],
-      recommendedActionRefs: [{
-        actionType: "meta.escalate",
-        reason: "Escalate only as a weakly grounded advisory.",
-        evidenceRefs: ["memory:mem-low-confidence"],
-        uncertaintyExplanation: "Escalation is advisory until stronger evidence exists.",
-      }],
+      gapHypotheses: [
+        {
+          message: "Weakly grounded gap hypothesis.",
+          evidenceRefs: [
+            "memory:mem-low-confidence",
+            `required_curation_lane:${ContextPackAttentionLaneKind.RequiredDocuments}`,
+          ],
+          confidence: 0.91,
+          uncertaintyExplanation: "The missing-document omission is not evidence, so memory remains the ceiling.",
+        },
+      ],
+      rankedContextRefs: [
+        {
+          itemId: "memory:mem-low-confidence",
+          reason: "Weak memory should remain weakly ranked.",
+          evidenceRefs: ["memory:mem-low-confidence"],
+          uncertaintyExplanation: "Ranking is based only on weak memory similarity.",
+        },
+      ],
+      questions: [
+        {
+          question: "What stronger evidence can confirm this weak memory?",
+          evidenceRefs: ["memory:mem-low-confidence"],
+          uncertaintyExplanation: "Question confidence is limited by the weak memory pointer.",
+        },
+      ],
+      recommendedActionRefs: [
+        {
+          actionType: "meta.escalate",
+          reason: "Escalate only as a weakly grounded advisory.",
+          evidenceRefs: ["memory:mem-low-confidence"],
+          uncertaintyExplanation: "Escalation is advisory until stronger evidence exists.",
+        },
+      ],
       curationEvidenceRefs: ["memory:mem-low-confidence"],
     }),
   };
@@ -769,11 +867,17 @@ test("deterministic context builder caps synthesis confidence by cited determini
   equal(gap?.confidenceBasis?.kind, ContextPackConfidenceBasisKind.CitedEvidenceCeiling);
   equal(gap?.confidenceBasis?.modelConfidence, 0.91);
   deepEqual(gap?.confidenceBasis?.citedEvidenceRefs, ["memory:mem-low-confidence"]);
-  equal(gap?.confidenceBasis?.uncertaintyExplanation, "The missing-document omission is not evidence, so memory remains the ceiling.");
+  equal(
+    gap?.confidenceBasis?.uncertaintyExplanation,
+    "The missing-document omission is not evidence, so memory remains the ceiling.",
+  );
   equal(ranked?.confidenceBasis?.kind, ContextPackConfidenceBasisKind.CitedEvidenceCeiling);
   equal(ranked?.confidenceBasis?.modelConfidence, undefined);
   equal(ranked?.confidenceBasis?.uncertaintyExplanation, "Ranking is based only on weak memory similarity.");
-  equal(question?.confidenceBasis?.uncertaintyExplanation, "Question confidence is limited by the weak memory pointer.");
+  equal(
+    question?.confidenceBasis?.uncertaintyExplanation,
+    "Question confidence is limited by the weak memory pointer.",
+  );
   equal(action?.confidenceBasis?.uncertaintyExplanation, "Escalation is advisory until stronger evidence exists.");
 });
 
@@ -816,39 +920,54 @@ test("deterministic context builder sends typed uncertainty signals into synthes
   };
   const memory: ContextPackMemoryRecallPort = {
     recall: async () => ({
-      memories: [{
-        memoryId: "mem-indirect-owner",
-        providerId: "hindsight",
-        summary: "A prior incident only indirectly suggests the billing owner.",
-        confidence: 0.43,
-        retainedAt: "2026-05-30T00:00:00.000Z",
-        advisory: true,
-        similarityCategory: ContextPackMemorySimilarityCategory.SameProjectDifferentWorkItem,
-        reasons: ["weak similarity", "indirect memory"],
-      }],
+      memories: [
+        {
+          memoryId: "mem-indirect-owner",
+          providerId: "hindsight",
+          summary: "A prior incident only indirectly suggests the billing owner.",
+          confidence: 0.43,
+          retainedAt: "2026-05-30T00:00:00.000Z",
+          advisory: true,
+          similarityCategory: ContextPackMemorySimilarityCategory.SameProjectDifferentWorkItem,
+          reasons: ["weak similarity", "indirect memory"],
+        },
+      ],
     }),
   };
   const synthesis: ContextPackEphemeralSynthesisPort = {
     synthesize: async (query) => {
-      ok(query.uncertaintySignals.some((signal) =>
-        signal.kind === ContextPackUncertaintySignalKind.StaleEvidence &&
-        signal.severity === ContextPackUncertaintySeverity.High &&
-        signal.evidenceRefs.includes("doc:billing-owner-policy-old")
-      ));
-      ok(query.uncertaintySignals.some((signal) =>
-        signal.kind === ContextPackUncertaintySignalKind.ConflictingEvidence &&
-        signal.evidenceRefs.includes("doc:billing-owner-policy-current") &&
-        signal.evidenceRefs.includes("doc:billing-owner-policy-old")
-      ));
-      ok(query.uncertaintySignals.some((signal) =>
-        signal.kind === ContextPackUncertaintySignalKind.LowConfidenceEvidence &&
-        signal.evidenceRefs.includes("memory:mem-indirect-owner")
-      ));
-      ok(query.uncertaintySignals.some((signal) =>
-        signal.kind === ContextPackUncertaintySignalKind.IndirectEvidence &&
-        signal.message === "Evidence memory:mem-indirect-owner is advisory memory with same_project_different_work_item similarity, not source-of-truth context." &&
-        signal.evidenceRefs.includes("memory:mem-indirect-owner")
-      ));
+      ok(
+        query.uncertaintySignals.some(
+          (signal) =>
+            signal.kind === ContextPackUncertaintySignalKind.StaleEvidence &&
+            signal.severity === ContextPackUncertaintySeverity.High &&
+            signal.evidenceRefs.includes("doc:billing-owner-policy-old"),
+        ),
+      );
+      ok(
+        query.uncertaintySignals.some(
+          (signal) =>
+            signal.kind === ContextPackUncertaintySignalKind.ConflictingEvidence &&
+            signal.evidenceRefs.includes("doc:billing-owner-policy-current") &&
+            signal.evidenceRefs.includes("doc:billing-owner-policy-old"),
+        ),
+      );
+      ok(
+        query.uncertaintySignals.some(
+          (signal) =>
+            signal.kind === ContextPackUncertaintySignalKind.LowConfidenceEvidence &&
+            signal.evidenceRefs.includes("memory:mem-indirect-owner"),
+        ),
+      );
+      ok(
+        query.uncertaintySignals.some(
+          (signal) =>
+            signal.kind === ContextPackUncertaintySignalKind.IndirectEvidence &&
+            signal.message ===
+              "Evidence memory:mem-indirect-owner is advisory memory with same_project_different_work_item similarity, not source-of-truth context." &&
+            signal.evidenceRefs.includes("memory:mem-indirect-owner"),
+        ),
+      );
       return {
         summary: "Synthesis saw deterministic uncertainty signals.",
         briefing: {
@@ -868,23 +987,35 @@ test("deterministic context builder sends typed uncertainty signals into synthes
 
   const briefing = result.pack.items.find((item) => item.kind === ContextPackItemKind.SynthesisBriefing);
   equal(briefing?.confidence, 0.43);
-  ok(briefing?.confidenceBasis?.uncertaintySignals?.some((signal) =>
-    signal.kind === ContextPackUncertaintySignalKind.StaleEvidence &&
-    signal.evidenceRefs.includes("doc:billing-owner-policy-old")
-  ));
-  ok(briefing?.confidenceBasis?.uncertaintySignals?.some((signal) =>
-    signal.kind === ContextPackUncertaintySignalKind.LowConfidenceEvidence &&
-    signal.evidenceRefs.includes("memory:mem-indirect-owner")
-  ));
+  ok(
+    briefing?.confidenceBasis?.uncertaintySignals?.some(
+      (signal) =>
+        signal.kind === ContextPackUncertaintySignalKind.StaleEvidence &&
+        signal.evidenceRefs.includes("doc:billing-owner-policy-old"),
+    ),
+  );
+  ok(
+    briefing?.confidenceBasis?.uncertaintySignals?.some(
+      (signal) =>
+        signal.kind === ContextPackUncertaintySignalKind.LowConfidenceEvidence &&
+        signal.evidenceRefs.includes("memory:mem-indirect-owner"),
+    ),
+  );
   const memoryItem = result.pack.items.find((item) => item.id === "memory:mem-indirect-owner");
-  ok(memoryItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.HindsightMemory &&
-    pointer.similarityCategory === ContextPackMemorySimilarityCategory.SameProjectDifferentWorkItem
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.GapReview &&
-    stage.evidenceRefs.includes("uncertainty:stale_evidence:doc-billing-owner-policy-old")
-  ));
+  ok(
+    memoryItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.HindsightMemory &&
+        pointer.similarityCategory === ContextPackMemorySimilarityCategory.SameProjectDifferentWorkItem,
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.GapReview &&
+        stage.evidenceRefs.includes("uncertainty:stale_evidence:doc-billing-owner-policy-old"),
+    ),
+  );
 });
 
 test("deterministic context builder profiles management blocker context for director synthesis", async () => {
@@ -894,13 +1025,17 @@ test("deterministic context builder profiles management blocker context for dire
   let hasManagementInstruction = false;
   const synthesis: ContextPackEphemeralSynthesisPort = {
     synthesize: async (query) => {
-      const graphLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood);
-      const activeWorkLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork);
+      const graphLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood,
+      );
+      const activeWorkLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork,
+      );
       graphLanePriority = graphLane?.priority ?? 0;
       activeWorkLanePriority = activeWorkLane?.priority ?? 0;
       graphLaneRequired = graphLane?.required ?? false;
-      hasManagementInstruction = query.curationPlan.deterministicInstructions.some((instruction) =>
-        instruction === ContextPackCurationProfileInstruction.ManagementBlocker,
+      hasManagementInstruction = query.curationPlan.deterministicInstructions.some(
+        (instruction) => instruction === ContextPackCurationProfileInstruction.ManagementBlocker,
       );
       return { summary: "Management blocker profile captured." };
     },
@@ -922,16 +1057,20 @@ test("deterministic context builder profiles management blocker context for dire
     synthesis,
   });
 
-  const result = await builder.build(request({
-    hat: engineeringDirector,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.Project,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: engineeringDirector,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.Project,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
-  ok(result.pack.curationPlan?.deterministicInstructions.some((instruction) =>
-    instruction === ContextPackCurationProfileInstruction.ManagementBlocker,
-  ));
+  ok(
+    result.pack.curationPlan?.deterministicInstructions.some(
+      (instruction) => instruction === ContextPackCurationProfileInstruction.ManagementBlocker,
+    ),
+  );
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.ManagementBlocker);
   equal(graphLaneRequired, true);
   ok(graphLanePriority < activeWorkLanePriority);
@@ -1013,24 +1152,29 @@ test("deterministic context builder uses management document focus before retrie
     }),
   });
 
-  const result = await builder.build(request({
-    hat: engineeringDirector,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.Project,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: engineeringDirector,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.Project,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   ok(result.pack.items.some((item) => item.id === "doc:customer-rules"));
   ok(result.pack.items.some((item) => item.id === "doc:runtime-design"));
   ok(!result.pack.items.some((item) => item.id === "doc:operator-notes"));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.DocumentFocus &&
-    stage.summary.includes("management_blocker") &&
-    stage.summary.includes("context-pack-document-focus:v1") &&
-    stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Brd}`) &&
-    stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Architecture}`) &&
-    stage.evidenceRefs.includes("focus-term:business rules")
-  ));
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.DocumentFocus &&
+        stage.summary.includes("management_blocker") &&
+        stage.summary.includes("context-pack-document-focus:v1") &&
+        stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Brd}`) &&
+        stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Architecture}`) &&
+        stage.evidenceRefs.includes("focus-term:business rules"),
+    ),
+  );
 });
 
 test("deterministic context builder uses pre-retrieval curation intent for document focus and final profile", async () => {
@@ -1079,24 +1223,29 @@ test("deterministic context builder uses pre-retrieval curation intent for docum
     },
   });
 
-  const result = await builder.build(request({
-    hat: engineeringDirector,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: engineeringDirector,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.SecurityControl);
   ok(capturedQuery.includes("least privilege"));
   ok(!capturedQuery.includes("business rules"));
   deepEqual(capturedPreferredDocTypes, [DocType.Policy, DocType.Adr, DocType.DecisionRecord]);
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.DocumentFocus &&
-    stage.summary.includes("security_control") &&
-    stage.summary.includes("test-curation-intent:v1") &&
-    stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Policy}`) &&
-    stage.evidenceRefs.includes("focus-term:least privilege")
-  ));
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.DocumentFocus &&
+        stage.summary.includes("security_control") &&
+        stage.summary.includes("test-curation-intent:v1") &&
+        stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Policy}`) &&
+        stage.evidenceRefs.includes("focus-term:least privilege"),
+    ),
+  );
 });
 
 test("deterministic context builder reports document-focus policy failures separately from retrieval failures", async () => {
@@ -1112,20 +1261,25 @@ test("deterministic context builder reports document-focus policy failures separ
     },
   });
 
-  const result = await builder.build(request({
-    hat: engineeringDirector,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.Project,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: engineeringDirector,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.Project,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_pack_document_focus" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("document context focus policy failed") &&
-    item.message.includes("focus policy offline") &&
-    !item.message.includes("document context retrieval failed")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_pack_document_focus" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("document context focus policy failed") &&
+        item.message.includes("focus policy offline") &&
+        !item.message.includes("document context retrieval failed"),
+    ),
+  );
 });
 
 test("deterministic context builder profiles implementer execution context around active work", async () => {
@@ -1135,38 +1289,44 @@ test("deterministic context builder profiles implementer execution context aroun
   let hasImplementerInstruction = false;
   const synthesis: ContextPackEphemeralSynthesisPort = {
     synthesize: async (query) => {
-      const activeWorkLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork);
-      const requiredDocumentsLane = query.curationPlan.lanes.find((lane) =>
-        lane.kind === ContextPackAttentionLaneKind.RequiredDocuments
+      const activeWorkLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork,
       );
-      const graphLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood);
+      const requiredDocumentsLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.RequiredDocuments,
+      );
+      const graphLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood,
+      );
       activeWorkLanePriority = activeWorkLane?.priority ?? 0;
       requiredDocumentsLanePriority = requiredDocumentsLane?.priority ?? 0;
       graphLaneRequired = graphLane?.required ?? true;
-      hasImplementerInstruction = query.curationPlan.deterministicInstructions.some((instruction) =>
-        instruction === ContextPackCurationProfileInstruction.ImplementerExecution,
+      hasImplementerInstruction = query.curationPlan.deterministicInstructions.some(
+        (instruction) => instruction === ContextPackCurationProfileInstruction.ImplementerExecution,
       );
       return { summary: "Implementer execution profile captured." };
     },
   };
   const lifecycleAnchors: ContextPackLifecycleAnchorPort = {
     load: () => ({
-      items: [{
-        id: "decision:billing-acceptance",
-        kind: ContextPackItemKind.DecisionRecord,
-        title: "Billing acceptance criteria decision",
-        summary: "The implementer must keep failed invoice recovery deterministic.",
-        sourceRef: "decision:billing-acceptance",
-        required: true,
-        freshness: ContextPackFreshness.Live,
-        confidence: 0.95,
-        reasons: ["lifecycle_anchor:decision"],
-        citationRefs: ["decision:billing-acceptance", "work:work-billing-blocked"],
-        sourcePointers: [
-          { kind: ContextPackSourcePointerKind.Decision, decisionId: "billing-acceptance" },
-          { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
-        ],
-      }],
+      items: [
+        {
+          id: "decision:billing-acceptance",
+          kind: ContextPackItemKind.DecisionRecord,
+          title: "Billing acceptance criteria decision",
+          summary: "The implementer must keep failed invoice recovery deterministic.",
+          sourceRef: "decision:billing-acceptance",
+          required: true,
+          freshness: ContextPackFreshness.Live,
+          confidence: 0.95,
+          reasons: ["lifecycle_anchor:decision"],
+          citationRefs: ["decision:billing-acceptance", "work:work-billing-blocked"],
+          sourcePointers: [
+            { kind: ContextPackSourcePointerKind.Decision, decisionId: "billing-acceptance" },
+            { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
+          ],
+        },
+      ],
     }),
   };
   const builder = createDeterministicContextPackBuilder({
@@ -1185,16 +1345,20 @@ test("deterministic context builder profiles implementer execution context aroun
     synthesis,
   });
 
-  const result = await builder.build(request({
-    hat: backendImplementer,
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: backendImplementer,
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
-  ok(result.pack.curationPlan?.deterministicInstructions.some((instruction) =>
-    instruction === ContextPackCurationProfileInstruction.ImplementerExecution,
-  ));
+  ok(
+    result.pack.curationPlan?.deterministicInstructions.some(
+      (instruction) => instruction === ContextPackCurationProfileInstruction.ImplementerExecution,
+    ),
+  );
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.ImplementerExecution);
   ok(activeWorkLanePriority < requiredDocumentsLanePriority);
   equal(graphLaneRequired, false);
@@ -1233,23 +1397,28 @@ test("deterministic context builder curates product hats around customer and bus
     },
   });
 
-  const result = await builder.build(request({
-    hat: productOwner,
-    phase: RunLifecyclePhase.AwaitingGate,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: productOwner,
+      phase: RunLifecyclePhase.AwaitingGate,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.ProductValidation);
   equal(profileId, ContextPackCurationProfileId.ProductValidation);
   equal(hasProductInstruction, true);
   ok(result.pack.items.some((item) => item.id === "doc:customer-rfp"));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.DocumentFocus &&
-    stage.summary.includes("product_validation") &&
-    stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Brd}`) &&
-    stage.evidenceRefs.includes("focus-term:customer requirements")
-  ));
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.DocumentFocus &&
+        stage.summary.includes("product_validation") &&
+        stage.evidenceRefs.includes(`preferred-doc-type:${DocType.Brd}`) &&
+        stage.evidenceRefs.includes("focus-term:customer requirements"),
+    ),
+  );
 });
 
 test("deterministic context builder curates architecture hats around CA, ADR, and design authority", async () => {
@@ -1281,28 +1450,32 @@ test("deterministic context builder curates architecture hats around CA, ADR, an
     }),
     synthesis: {
       synthesize: async (query) => {
-        const requiredDocsLane = query.curationPlan.lanes.find((lane) =>
-          lane.kind === ContextPackAttentionLaneKind.RequiredDocuments
+        const requiredDocsLane = query.curationPlan.lanes.find(
+          (lane) => lane.kind === ContextPackAttentionLaneKind.RequiredDocuments,
         );
-        const graphLane = query.curationPlan.lanes.find((lane) =>
-          lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood
+        const graphLane = query.curationPlan.lanes.find(
+          (lane) => lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood,
         );
         requiredDocumentsLanePriority = requiredDocsLane?.priority ?? 0;
         graphLanePriority = graphLane?.priority ?? 0;
-        ok(query.curationPlan.deterministicInstructions.includes(
-          ContextPackCurationProfileInstruction.ArchitectureDecision,
-        ));
+        ok(
+          query.curationPlan.deterministicInstructions.includes(
+            ContextPackCurationProfileInstruction.ArchitectureDecision,
+          ),
+        );
         return { summary: "Architecture decision profile captured." };
       },
     },
   });
 
-  const result = await builder.build(request({
-    hat: architect,
-    phase: RunLifecyclePhase.AwaitingGate,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: architect,
+      phase: RunLifecyclePhase.AwaitingGate,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.ArchitectureDecision);
   ok(requiredDocumentsLanePriority < graphLanePriority);
@@ -1339,28 +1512,28 @@ test("deterministic context builder curates review and QA hats around evidence a
     }),
     synthesis: {
       synthesize: async (query) => {
-        const activeWorkLane = query.curationPlan.lanes.find((lane) =>
-          lane.kind === ContextPackAttentionLaneKind.ActiveWork
+        const activeWorkLane = query.curationPlan.lanes.find(
+          (lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork,
         );
-        const requiredDocsLane = query.curationPlan.lanes.find((lane) =>
-          lane.kind === ContextPackAttentionLaneKind.RequiredDocuments
+        const requiredDocsLane = query.curationPlan.lanes.find(
+          (lane) => lane.kind === ContextPackAttentionLaneKind.RequiredDocuments,
         );
         activeWorkLanePriority = activeWorkLane?.priority ?? 0;
         requiredDocumentsLanePriority = requiredDocsLane?.priority ?? 0;
-        ok(query.curationPlan.deterministicInstructions.includes(
-          ContextPackCurationProfileInstruction.EvidenceReview,
-        ));
+        ok(query.curationPlan.deterministicInstructions.includes(ContextPackCurationProfileInstruction.EvidenceReview));
         return { summary: "Evidence review profile captured." };
       },
     },
   });
 
-  const result = await builder.build(request({
-    hat: qaReviewer,
-    phase: RunLifecyclePhase.AwaitingReview,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: qaReviewer,
+      phase: RunLifecyclePhase.AwaitingReview,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.EvidenceReview);
   ok(activeWorkLanePriority < requiredDocumentsLanePriority);
@@ -1393,12 +1566,14 @@ test("deterministic context builder retrieves active hat department docs even wh
     }),
   });
 
-  const result = await builder.build(request({
-    hat: qaReviewer,
-    phase: RunLifecyclePhase.AwaitingReview,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: qaReviewer,
+      phase: RunLifecyclePhase.AwaitingReview,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   ok(result.pack.items.some((item) => item.id === "doc:qa-department-runbook"));
   ok(result.pack.items.some((item) => item.id === "doc:engineering-department-runbook"));
@@ -1431,24 +1606,30 @@ test("deterministic context builder lets active-hat archetypes beat broad execut
     }),
   });
 
-  const architectureResult = await builder.build(request({
-    hat: architect,
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
-  const securityResult = await builder.build(request({
-    hat: securityReviewer,
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
-  const qaResult = await builder.build(request({
-    hat: qaReviewer,
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const architectureResult = await builder.build(
+    request({
+      hat: architect,
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
+  const securityResult = await builder.build(
+    request({
+      hat: securityReviewer,
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
+  const qaResult = await builder.build(
+    request({
+      hat: qaReviewer,
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(architectureResult.pack.curationPlan?.profileId, ContextPackCurationProfileId.ArchitectureDecision);
   equal(securityResult.pack.curationPlan?.profileId, ContextPackCurationProfileId.SecurityControl);
@@ -1482,32 +1663,42 @@ test("deterministic context builder preserves specialist context while adding bl
     }),
   });
 
-  const productResult = await builder.build(request({
-    hat: productOwner,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
-  const securityResult = await builder.build(request({
-    hat: securityReviewer,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
-  const architectureResult = await builder.build(request({
-    hat: architect,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const productResult = await builder.build(
+    request({
+      hat: productOwner,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
+  const securityResult = await builder.build(
+    request({
+      hat: securityReviewer,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
+  const architectureResult = await builder.build(
+    request({
+      hat: architect,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(productResult.pack.curationPlan?.profileId, ContextPackCurationProfileId.ProductValidation);
-  ok(productResult.pack.curationPlan?.deterministicInstructions.includes(
-    ContextPackCurationProfileInstruction.ProductValidation,
-  ));
-  ok(productResult.pack.curationPlan?.deterministicInstructions.includes(
-    ContextPackCurationProfileInstruction.ManagementBlocker,
-  ));
+  ok(
+    productResult.pack.curationPlan?.deterministicInstructions.includes(
+      ContextPackCurationProfileInstruction.ProductValidation,
+    ),
+  );
+  ok(
+    productResult.pack.curationPlan?.deterministicInstructions.includes(
+      ContextPackCurationProfileInstruction.ManagementBlocker,
+    ),
+  );
   equal(securityResult.pack.curationPlan?.profileId, ContextPackCurationProfileId.SecurityControl);
   equal(architectureResult.pack.curationPlan?.profileId, ContextPackCurationProfileId.ArchitectureDecision);
 });
@@ -1527,23 +1718,28 @@ test("deterministic context builder reports blocker-overlay required lanes for s
     }),
   });
 
-  const result = await builder.build(request({
-    hat: productOwner,
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: productOwner,
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.ProductValidation);
-  ok(result.pack.curationPlan?.lanes.some((lane) =>
-    lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood &&
-    lane.required &&
-    lane.refs.length === 0
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "required_curation_lane:graph_neighborhood" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
+  ok(
+    result.pack.curationPlan?.lanes.some(
+      (lane) => lane.kind === ContextPackAttentionLaneKind.GraphNeighborhood && lane.required && lane.refs.length === 0,
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "required_curation_lane:graph_neighborhood" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
 });
 
 test("deterministic context builder routes architecture bundles without stealing generic readiness work", async () => {
@@ -1567,24 +1763,30 @@ test("deterministic context builder routes architecture bundles without stealing
     }),
   });
 
-  const architectureBundleResult = await builder.build(request({
-    hat: integrationEngineer,
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
-  const engineeringManagerResult = await builder.build(request({
-    hat: engineeringManager,
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
-  const readinessReviewerResult = await builder.build(request({
-    hat: readinessReviewer,
-    phase: RunLifecyclePhase.AwaitingReview,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const architectureBundleResult = await builder.build(
+    request({
+      hat: integrationEngineer,
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
+  const engineeringManagerResult = await builder.build(
+    request({
+      hat: engineeringManager,
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
+  const readinessReviewerResult = await builder.build(
+    request({
+      hat: readinessReviewer,
+      phase: RunLifecyclePhase.AwaitingReview,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(architectureBundleResult.pack.curationPlan?.profileId, ContextPackCurationProfileId.ArchitectureDecision);
   ok(engineeringManagerResult.pack.curationPlan?.profileId !== ContextPackCurationProfileId.ReleaseDelivery);
@@ -1672,12 +1874,14 @@ test("deterministic context builder curates remaining organizational archetypes 
       },
     });
 
-    const result = await builder.build(request({
-      hat: testCase.hat,
-      phase: RunLifecyclePhase.Executing,
-      scope: RunScope.WorkItem,
-      workItemId: "work-billing-blocked",
-    }));
+    const result = await builder.build(
+      request({
+        hat: testCase.hat,
+        phase: RunLifecyclePhase.Executing,
+        scope: RunScope.WorkItem,
+        workItemId: "work-billing-blocked",
+      }),
+    );
 
     equal(result.pack.curationPlan?.profileId, testCase.expectedProfileId);
     equal(synthesisProfileId, testCase.expectedProfileId);
@@ -1715,28 +1919,30 @@ test("deterministic context builder curates security hats around policy, credent
     }),
     synthesis: {
       synthesize: async (query) => {
-        const omissionsLane = query.curationPlan.lanes.find((lane) =>
-          lane.kind === ContextPackAttentionLaneKind.Omissions
+        const omissionsLane = query.curationPlan.lanes.find(
+          (lane) => lane.kind === ContextPackAttentionLaneKind.Omissions,
         );
-        const legalActionsLane = query.curationPlan.lanes.find((lane) =>
-          lane.kind === ContextPackAttentionLaneKind.LegalActions
+        const legalActionsLane = query.curationPlan.lanes.find(
+          (lane) => lane.kind === ContextPackAttentionLaneKind.LegalActions,
         );
         omissionsLanePriority = omissionsLane?.priority ?? 0;
         legalActionsLanePriority = legalActionsLane?.priority ?? 0;
-        ok(query.curationPlan.deterministicInstructions.includes(
-          ContextPackCurationProfileInstruction.SecurityControl,
-        ));
+        ok(
+          query.curationPlan.deterministicInstructions.includes(ContextPackCurationProfileInstruction.SecurityControl),
+        );
         return { summary: "Security control profile captured." };
       },
     },
   });
 
-  const result = await builder.build(request({
-    hat: securityReviewer,
-    phase: RunLifecyclePhase.AwaitingGate,
-    scope: RunScope.WorkItem,
-    workItemId: "work-billing-blocked",
-  }));
+  const result = await builder.build(
+    request({
+      hat: securityReviewer,
+      phase: RunLifecyclePhase.AwaitingGate,
+      scope: RunScope.WorkItem,
+      workItemId: "work-billing-blocked",
+    }),
+  );
 
   equal(result.pack.curationPlan?.profileId, ContextPackCurationProfileId.SecurityControl);
   ok(omissionsLanePriority < legalActionsLanePriority);
@@ -1796,8 +2002,8 @@ test("deterministic context builder snapshots evidence and scope before curation
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   equal(result.pack.projectId, "project-billing");
@@ -1807,10 +2013,13 @@ test("deterministic context builder snapshots evidence and scope before curation
   equal(result.pack.curationPlan?.policyVersion, TestCurationProfile.PolicyVersion);
   ok(!result.pack.items.some((item) => item.id === TestCurationProfile.SyntheticItemId));
   ok(!synthesisTrace?.evidenceRefs.includes(TestCurationProfile.SyntheticItemId));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === `synthesis_curation_evidence:${TestCurationProfile.SyntheticItemId}` &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === `synthesis_curation_evidence:${TestCurationProfile.SyntheticItemId}` &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed,
+    ),
+  );
 });
 
 test("deterministic context builder turns empty required curation lanes into explicit omissions", async () => {
@@ -1837,17 +2046,25 @@ test("deterministic context builder turns empty required curation lanes into exp
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
   const memoryLane = result.pack.curationPlan?.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.Memory);
-  const omissionsLane = result.pack.curationPlan?.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.Omissions);
+  const omissionsLane = result.pack.curationPlan?.lanes.find(
+    (lane) => lane.kind === ContextPackAttentionLaneKind.Omissions,
+  );
 
   equal(memoryLane?.required, true);
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === `required_curation_lane:${ContextPackAttentionLaneKind.Memory}` &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
-  ok(omissionsLane?.refs.some((ref) =>
-    ref.kind === ContextPackAttentionLaneRefKind.Omission &&
-    ref.omissionRef === `required_curation_lane:${ContextPackAttentionLaneKind.Memory}`
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === `required_curation_lane:${ContextPackAttentionLaneKind.Memory}` &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
+  ok(
+    omissionsLane?.refs.some(
+      (ref) =>
+        ref.kind === ContextPackAttentionLaneRefKind.Omission &&
+        ref.omissionRef === `required_curation_lane:${ContextPackAttentionLaneKind.Memory}`,
+    ),
+  );
 });
 
 test("deterministic context builder injects scoped lifecycle anchors before synthesis", async () => {
@@ -1858,23 +2075,37 @@ test("deterministic context builder injects scoped lifecycle anchors before synt
       ok(query.items.some((item) => item.id === "quality_gate:gate-billing-runtime"));
       ok(query.items.some((item) => item.id === "schedule_block:schedule-billing-meeting"));
       ok(query.items.some((item) => item.id === "supervisor_signal:signal-billing-blocker"));
-      const activeWorkLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork);
-      ok(activeWorkLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "decision:decision-billing-owner"
-      ));
-      ok(activeWorkLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "quality_gate:gate-billing-runtime"
-      ));
-      ok(activeWorkLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "supervisor_signal:signal-billing-blocker"
-      ));
+      const activeWorkLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork,
+      );
+      ok(
+        activeWorkLane?.refs.some(
+          (ref) =>
+            ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "decision:decision-billing-owner",
+        ),
+      );
+      ok(
+        activeWorkLane?.refs.some(
+          (ref) =>
+            ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "quality_gate:gate-billing-runtime",
+        ),
+      );
+      ok(
+        activeWorkLane?.refs.some(
+          (ref) =>
+            ref.kind === ContextPackAttentionLaneRefKind.Item &&
+            ref.itemId === "supervisor_signal:signal-billing-blocker",
+        ),
+      );
       return {
         summary: "Lifecycle anchors were visible before synthesis.",
-        rankedContextRefs: [{
-          itemId: "decision:decision-billing-owner",
-          reason: "The owner decision is the highest-priority blocker context.",
-          evidenceRefs: ["decision:decision-billing-owner"],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: "decision:decision-billing-owner",
+            reason: "The owner decision is the highest-priority blocker context.",
+            evidenceRefs: ["decision:decision-billing-owner"],
+          },
+        ],
       };
     },
   };
@@ -1898,43 +2129,67 @@ test("deterministic context builder injects scoped lifecycle anchors before synt
   const decision = result.pack.items.find((item) => item.id === "decision:decision-billing-owner");
   equal(decision?.kind, ContextPackItemKind.DecisionRecord);
   equal(decision?.required, true);
-  ok(decision?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.Decision && pointer.decisionId === "decision-billing-owner"
-  ));
-  ok(decision?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.Discussion && pointer.discussionId === "disc-billing-owner"
-  ));
-  ok(decision?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode &&
-    pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Decision, "decision-billing-owner")
-  ));
+  ok(
+    decision?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.Decision && pointer.decisionId === "decision-billing-owner",
+    ),
+  );
+  ok(
+    decision?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.Discussion && pointer.discussionId === "disc-billing-owner",
+    ),
+  );
+  ok(
+    decision?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.GraphNode &&
+        pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Decision, "decision-billing-owner"),
+    ),
+  );
   const supervisorSignalItem = result.pack.items.find((item) => item.id === "supervisor_signal:signal-billing-blocker");
   equal(supervisorSignalItem?.kind, ContextPackItemKind.SupervisorSignal);
-  ok(supervisorSignalItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.SupervisorSignal &&
-    pointer.supervisorSignalId === "signal-billing-blocker"
-  ));
+  ok(
+    supervisorSignalItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.SupervisorSignal &&
+        pointer.supervisorSignalId === "signal-billing-blocker",
+    ),
+  );
   const meetingItem = result.pack.items.find((item) => item.id === "schedule_block:schedule-billing-meeting");
   equal(meetingItem?.kind, ContextPackItemKind.Meeting);
-  ok(meetingItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.Meeting &&
-    pointer.meetingId === "schedule:schedule-billing-meeting" &&
-    pointer.workScheduleBlockId === "schedule-billing-meeting" &&
-    pointer.discussionAnchorId === "disc-billing-owner"
-  ));
-  ok(meetingItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode &&
-    pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Meeting, "schedule:schedule-billing-meeting")
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === "synthesis:engineering_director:42:99:ranked:0:decision-decision-billing-owner" &&
-    item.kind === ContextPackItemKind.SynthesisRankedContext
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.LifecycleAnchors &&
-    stage.evidenceRefs.includes("decision:decision-billing-owner") &&
-    stage.evidenceRefs.includes("quality_gate:gate-billing-runtime")
-  ));
+  ok(
+    meetingItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.Meeting &&
+        pointer.meetingId === "schedule:schedule-billing-meeting" &&
+        pointer.workScheduleBlockId === "schedule-billing-meeting" &&
+        pointer.discussionAnchorId === "disc-billing-owner",
+    ),
+  );
+  ok(
+    meetingItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.GraphNode &&
+        pointer.nodeId === graphNodeId("org-lfg", GraphNodeKind.Meeting, "schedule:schedule-billing-meeting"),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.id === "synthesis:engineering_director:42:99:ranked:0:decision-decision-billing-owner" &&
+        item.kind === ContextPackItemKind.SynthesisRankedContext,
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.LifecycleAnchors &&
+        stage.evidenceRefs.includes("decision:decision-billing-owner") &&
+        stage.evidenceRefs.includes("quality_gate:gate-billing-runtime"),
+    ),
+  );
 });
 
 test("deterministic context builder admits broader work-item lifecycle anchors under team scope", async () => {
@@ -1945,11 +2200,13 @@ test("deterministic context builder admits broader work-item lifecycle anchors u
       entities: [],
     }),
     lifecycleAnchors: createInMemoryContextPackLifecycleAnchorPort({
-      discussionAnchors: [{
-        ...broaderDiscussionAnchor,
-        discussionAnchorId: "disc-billing-program",
-        title: "Billing program discussion",
-      }],
+      discussionAnchors: [
+        {
+          ...broaderDiscussionAnchor,
+          discussionAnchorId: "disc-billing-program",
+          title: "Billing program discussion",
+        },
+      ],
     }),
   });
 
@@ -1987,17 +2244,23 @@ test("deterministic context builder admits active inbox anchors before synthesis
     synthesize: async (query) => {
       ok(query.items.some((item) => item.id === "inbox:inbox-active-blocker"));
       ok(!query.items.some((item) => item.id === "inbox:inbox-other-hat"));
-      const activeWorkLane = query.curationPlan.lanes.find((lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork);
-      ok(activeWorkLane?.refs.some((ref) =>
-        ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "inbox:inbox-active-blocker"
-      ));
+      const activeWorkLane = query.curationPlan.lanes.find(
+        (lane) => lane.kind === ContextPackAttentionLaneKind.ActiveWork,
+      );
+      ok(
+        activeWorkLane?.refs.some(
+          (ref) => ref.kind === ContextPackAttentionLaneRefKind.Item && ref.itemId === "inbox:inbox-active-blocker",
+        ),
+      );
       return {
         summary: "Inbox anchor was visible before synthesis.",
-        rankedContextRefs: [{
-          itemId: "inbox:inbox-active-blocker",
-          reason: "The inbox item explains why this hat woke up.",
-          evidenceRefs: ["inbox:inbox-active-blocker"],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: "inbox:inbox-active-blocker",
+            reason: "The inbox item explains why this hat woke up.",
+            evidenceRefs: ["inbox:inbox-active-blocker"],
+          },
+        ],
       };
     },
   };
@@ -2022,24 +2285,34 @@ test("deterministic context builder admits active inbox anchors before synthesis
   const inboxItem = result.pack.items.find((item) => item.id === "inbox:inbox-active-blocker");
   equal(inboxItem?.kind, ContextPackItemKind.InboxAnchor);
   equal(inboxItem?.required, true);
-  ok(inboxItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.InboxAnchor &&
-    pointer.inboxAnchorId === "inbox-active-blocker" &&
-    pointer.targetHatAssignmentId === "99" &&
-    pointer.targetAgentId === "agent-director"
-  ));
-  ok(inboxItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.WorkItem && pointer.workItemId === "work-billing-blocked"
-  ));
+  ok(
+    inboxItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.InboxAnchor &&
+        pointer.inboxAnchorId === "inbox-active-blocker" &&
+        pointer.targetHatAssignmentId === "99" &&
+        pointer.targetAgentId === "agent-director",
+    ),
+  );
+  ok(
+    inboxItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.WorkItem && pointer.workItemId === "work-billing-blocked",
+    ),
+  );
   ok(!result.pack.items.some((item) => item.id === "inbox:inbox-other-hat"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "inbox:inbox-other-hat" &&
-    item.reason === ContextPackOmissionReason.OutOfScope
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === "synthesis:engineering_director:42:99:ranked:0:inbox-inbox-active-blocker" &&
-    item.kind === ContextPackItemKind.SynthesisRankedContext
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) => item.nodeId === "inbox:inbox-other-hat" && item.reason === ContextPackOmissionReason.OutOfScope,
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.id === "synthesis:engineering_director:42:99:ranked:0:inbox-inbox-active-blocker" &&
+        item.kind === ContextPackItemKind.SynthesisRankedContext,
+    ),
+  );
 });
 
 test("deterministic context builder uses accepted inbox anchors as graph traversal roots", async () => {
@@ -2057,18 +2330,13 @@ test("deterministic context builder uses accepted inbox anchors as graph travers
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
-  ok(result.pack.items.some((item) =>
-    item.id === `graph:${inboxNodeId}` &&
-    item.reasons.includes("inbox anchor")
-  ));
+  ok(result.pack.items.some((item) => item.id === `graph:${inboxNodeId}` && item.reasons.includes("inbox anchor")));
 });
 
 test("deterministic context builder admits active-hat inbox anchors without active work provenance", async () => {
   const inboxNodeId = graphNodeId("org-lfg", GraphNodeKind.InboxAnchor, "inbox-active-blocker");
   const projectNodeId = graphNodeId("org-lfg", GraphNodeKind.Project, "project-billing");
-  const graph = graphStore([
-    edge(inboxNodeId, GraphEdgeKind.References, projectNodeId),
-  ]);
+  const graph = graphStore([edge(inboxNodeId, GraphEdgeKind.References, projectNodeId)]);
   const builder = createDeterministicContextPackBuilder({
     documents: createInMemoryContextPackDocumentPort({ corpus: [], entities: [] }),
     inboxAnchors: createInMemoryContextPackInboxAnchorPort({
@@ -2081,16 +2349,14 @@ test("deterministic context builder admits active-hat inbox anchors without acti
 
   const inboxItem = result.pack.items.find((item) => item.id === "inbox:inbox-active-blocker");
   equal(inboxItem?.kind, ContextPackItemKind.InboxAnchor);
-  ok(inboxItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.InboxAnchor &&
-    pointer.targetHatAssignmentId === "99"
-  ));
+  ok(
+    inboxItem?.sourcePointers?.some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.InboxAnchor && pointer.targetHatAssignmentId === "99",
+    ),
+  );
   ok(!inboxItem?.sourcePointers?.some((pointer) => pointer.kind === ContextPackSourcePointerKind.WorkItem));
   ok(!inboxItem?.citationRefs?.includes("work:undefined"));
-  ok(result.pack.items.some((item) =>
-    item.id === `graph:${inboxNodeId}` &&
-    item.reasons.includes("inbox anchor")
-  ));
+  ok(result.pack.items.some((item) => item.id === `graph:${inboxNodeId}` && item.reasons.includes("inbox anchor")));
   ok(!result.pack.omittedItemsWithReason.some((item) => item.nodeId === "inbox:inbox-active-blocker"));
 });
 
@@ -2100,7 +2366,11 @@ test("deterministic context builder uses lifecycle anchors as graph traversal ro
   const meetingNodeId = graphNodeId("org-lfg", GraphNodeKind.Meeting, "schedule:schedule-billing-meeting");
   const signalNodeId = graphNodeId("org-lfg", GraphNodeKind.SupervisorSignal, "signal-billing-blocker");
   const graph = graphStore([
-    edge(decisionNodeId, GraphEdgeKind.References, graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-billing-blocked")),
+    edge(
+      decisionNodeId,
+      GraphEdgeKind.References,
+      graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-billing-blocked"),
+    ),
     edge(gateNodeId, GraphEdgeKind.References, decisionNodeId),
     edge(meetingNodeId, GraphEdgeKind.References, decisionNodeId),
     edge(signalNodeId, GraphEdgeKind.References, gateNodeId),
@@ -2122,22 +2392,26 @@ test("deterministic context builder uses lifecycle anchors as graph traversal ro
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
-  ok(result.pack.items.some((item) =>
-    item.id === `graph:${decisionNodeId}` &&
-    item.reasons.includes("lifecycle anchor:decision")
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === `graph:${gateNodeId}` &&
-    item.reasons.includes("lifecycle anchor:quality_gate")
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === `graph:${meetingNodeId}` &&
-    item.reasons.includes("lifecycle anchor:meeting")
-  ));
-  ok(result.pack.items.some((item) =>
-    item.id === `graph:${signalNodeId}` &&
-    item.reasons.includes("lifecycle anchor:supervisor_signal")
-  ));
+  ok(
+    result.pack.items.some(
+      (item) => item.id === `graph:${decisionNodeId}` && item.reasons.includes("lifecycle anchor:decision"),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) => item.id === `graph:${gateNodeId}` && item.reasons.includes("lifecycle anchor:quality_gate"),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) => item.id === `graph:${meetingNodeId}` && item.reasons.includes("lifecycle anchor:meeting"),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) => item.id === `graph:${signalNodeId}` && item.reasons.includes("lifecycle anchor:supervisor_signal"),
+    ),
+  );
 });
 
 test("deterministic context builder merges duplicate graph root citation refs and reasons", async () => {
@@ -2192,12 +2466,14 @@ test("deterministic context builder preserves semantic graph roots over collidin
     }),
     graph,
     nodeIdForDocUnit: () => workNodeId,
-    graphRootSeeds: () => [{
-      nodeId: workNodeId,
-      title: "Work-rooted blocker context",
-      citationRefs: ["work:work-billing-blocked"],
-      reasons: ["work-rooted director context"],
-    }],
+    graphRootSeeds: () => [
+      {
+        nodeId: workNodeId,
+        title: "Work-rooted blocker context",
+        citationRefs: ["work:work-billing-blocked"],
+        reasons: ["work-rooted director context"],
+      },
+    ],
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
@@ -2213,7 +2489,11 @@ test("deterministic context builder preserves semantic graph roots over collidin
 test("deterministic context builder preserves explicit graph root titles while merging lifecycle provenance", async () => {
   const decisionNodeId = graphNodeId("org-lfg", GraphNodeKind.Decision, "decision-billing-owner");
   const graph = graphStore([
-    edge(decisionNodeId, GraphEdgeKind.References, graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-billing-blocked")),
+    edge(
+      decisionNodeId,
+      GraphEdgeKind.References,
+      graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-billing-blocked"),
+    ),
   ]);
   const builder = createDeterministicContextPackBuilder({
     documents: createInMemoryContextPackDocumentPort({
@@ -2224,12 +2504,14 @@ test("deterministic context builder preserves explicit graph root titles while m
       decisionRecords: [decisionRecord()],
     }),
     graph,
-    graphRootSeeds: () => [{
-      nodeId: decisionNodeId,
-      title: "Director-curated blocker decision context",
-      citationRefs: ["director_root:decision-billing-owner"],
-      reasons: ["director curated root"],
-    }],
+    graphRootSeeds: () => [
+      {
+        nodeId: decisionNodeId,
+        title: "Director-curated blocker decision context",
+        citationRefs: ["director_root:decision-billing-owner"],
+        reasons: ["director curated root"],
+      },
+    ],
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
@@ -2258,15 +2540,21 @@ test("deterministic context builder records lifecycle anchor retrieval failures 
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "lifecycle_anchors" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("anchor store unavailable")
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.LifecycleAnchors &&
-    stage.evidenceRefs.includes("lifecycle_anchors")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "lifecycle_anchors" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("anchor store unavailable"),
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.LifecycleAnchors &&
+        stage.evidenceRefs.includes("lifecycle_anchors"),
+    ),
+  );
 });
 
 test("deterministic context builder rejects lifecycle anchors without active work scope", async () => {
@@ -2310,11 +2598,13 @@ test("deterministic context builder omits out-of-scope lifecycle adapter output 
           ],
         },
       ],
-      graphRootSeeds: [{
-        nodeId: leakedNodeId,
-        title: "Leaked decision root",
-        reasons: ["lifecycle anchor:decision"],
-      }],
+      graphRootSeeds: [
+        {
+          nodeId: leakedNodeId,
+          title: "Leaked decision root",
+          reasons: ["lifecycle anchor:decision"],
+        },
+      ],
     }),
   };
   const graph = graphStore([
@@ -2333,10 +2623,11 @@ test("deterministic context builder omits out-of-scope lifecycle adapter output 
 
   ok(!result.pack.items.some((item) => item.id === "decision:decision-leaked"));
   ok(!result.pack.items.some((item) => item.id === `graph:${leakedNodeId}`));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "decision:decision-leaked" &&
-    item.reason === ContextPackOmissionReason.OutOfScope
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) => item.nodeId === "decision:decision-leaked" && item.reason === ContextPackOmissionReason.OutOfScope,
+    ),
+  );
 });
 
 test("deterministic context builder omits lifecycle adapter schedule anchors for another hat assignment", async () => {
@@ -2380,11 +2671,14 @@ test("deterministic context builder omits lifecycle adapter schedule anchors for
 
   ok(!result.pack.items.some((item) => item.id === "schedule_block:schedule-other-hat"));
   ok(!result.pack.items.some((item) => item.id === `graph:${scheduleNodeId}`));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "schedule_block:schedule-other-hat" &&
-    item.reason === ContextPackOmissionReason.OutOfScope &&
-    item.message.includes("schedule anchor is outside active hat assignment")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "schedule_block:schedule-other-hat" &&
+        item.reason === ContextPackOmissionReason.OutOfScope &&
+        item.message.includes("schedule anchor is outside active hat assignment"),
+    ),
+  );
 });
 
 test("deterministic context builder omits lifecycle adapter schedule anchors without schedule provenance", async () => {
@@ -2423,11 +2717,14 @@ test("deterministic context builder omits lifecycle adapter schedule anchors wit
 
   ok(!result.pack.items.some((item) => item.id === "schedule_block:schedule-mislabelled"));
   ok(!result.pack.items.some((item) => item.id === `graph:${scheduleNodeId}`));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "schedule_block:schedule-mislabelled" &&
-    item.reason === ContextPackOmissionReason.OutOfScope &&
-    item.message.includes("schedule anchor lacks active hat assignment provenance")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "schedule_block:schedule-mislabelled" &&
+        item.reason === ContextPackOmissionReason.OutOfScope &&
+        item.message.includes("schedule anchor lacks active hat assignment provenance"),
+    ),
+  );
 });
 
 test("deterministic context builder omits lifecycle adapter supervisor signals targeted to another hat assignment", async () => {
@@ -2470,11 +2767,14 @@ test("deterministic context builder omits lifecycle adapter supervisor signals t
 
   ok(!result.pack.items.some((item) => item.id === "supervisor_signal:signal-other-hat"));
   ok(!result.pack.items.some((item) => item.id === `graph:${signalNodeId}`));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "supervisor_signal:signal-other-hat" &&
-    item.reason === ContextPackOmissionReason.OutOfScope &&
-    item.message.includes("supervisor signal is outside active target hat assignment")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "supervisor_signal:signal-other-hat" &&
+        item.reason === ContextPackOmissionReason.OutOfScope &&
+        item.message.includes("supervisor signal is outside active target hat assignment"),
+    ),
+  );
 });
 
 test("deterministic context builder omits lifecycle adapter supervisor signals without target provenance", async () => {
@@ -2513,11 +2813,14 @@ test("deterministic context builder omits lifecycle adapter supervisor signals w
 
   ok(!result.pack.items.some((item) => item.id === "supervisor_signal:signal-mislabelled"));
   ok(!result.pack.items.some((item) => item.id === `graph:${signalNodeId}`));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "supervisor_signal:signal-mislabelled" &&
-    item.reason === ContextPackOmissionReason.OutOfScope &&
-    item.message.includes("supervisor signal lacks target hat assignment provenance")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "supervisor_signal:signal-mislabelled" &&
+        item.reason === ContextPackOmissionReason.OutOfScope &&
+        item.message.includes("supervisor signal lacks target hat assignment provenance"),
+    ),
+  );
 });
 
 test("deterministic context builder carries memory recall omissions into the context pack", async () => {
@@ -2544,10 +2847,13 @@ test("deterministic context builder carries memory recall omissions into the con
 
   equal(result.pack.omittedItemsWithReason[0]?.nodeId, "memory_scope:missing_work_item_id");
   equal(result.pack.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.MemoryRecall &&
-    stage.evidenceRefs.includes("memory_scope:missing_work_item_id")
-  ));
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.MemoryRecall &&
+        stage.evidenceRefs.includes("memory_scope:missing_work_item_id"),
+    ),
+  );
 });
 
 test("deterministic context builder traverses explicit work graph roots without requiring document roots", async () => {
@@ -2569,15 +2875,17 @@ test("deterministic context builder traverses explicit work graph roots without 
 
   const graphItem = result.pack.items.find((item) => item.id === "graph:work-billing-blocked");
   equal(graphItem?.kind, ContextPackItemKind.GraphNeighborhood);
-  ok(graphItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphEdge && pointer.edgeId === "work-billing-blocked-references-decision-owner-missing",
-  ));
+  ok(
+    graphItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.GraphEdge &&
+        pointer.edgeId === "work-billing-blocked-references-decision-owner-missing",
+    ),
+  );
 });
 
 test("deterministic context builder preserves semantic graph root seed metadata for hat-specific context", async () => {
-  const graph = graphStore([
-    edge("project-billing", GraphEdgeKind.References, "decision-budget-risk"),
-  ]);
+  const graph = graphStore([edge("project-billing", GraphEdgeKind.References, "decision-budget-risk")]);
   const builder = createDeterministicContextPackBuilder({
     documents: createInMemoryContextPackDocumentPort({
       corpus: [],
@@ -2601,16 +2909,17 @@ test("deterministic context builder preserves semantic graph root seed metadata 
   equal(graphItem?.title, "Project context for Billing Platform");
   deepEqual(graphItem?.reasons, ["project trajectory root", "director priority scope"]);
   ok(graphItem?.citationRefs?.includes("project:project-billing"));
-  ok(graphItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphEdge &&
-    pointer.edgeId === "project-billing-references-decision-budget-risk",
-  ));
+  ok(
+    graphItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.GraphEdge &&
+        pointer.edgeId === "project-billing-references-decision-budget-risk",
+    ),
+  );
 });
 
 test("deterministic context builder preserves semantic graph root titles while merging raw root provenance", async () => {
-  const graph = graphStore([
-    edge("project-billing", GraphEdgeKind.References, "decision-budget-risk"),
-  ]);
+  const graph = graphStore([edge("project-billing", GraphEdgeKind.References, "decision-budget-risk")]);
   const builder = createDeterministicContextPackBuilder({
     documents: createInMemoryContextPackDocumentPort({
       corpus: [],
@@ -2684,26 +2993,40 @@ test("default context completeness policy requires management blocker business, 
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_architecture" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_policy" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_graph" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
-  ok(!result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_business"
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_requirement:management_blocker_architecture" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_requirement:management_blocker_policy" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_requirement:management_blocker_graph" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
+  ok(
+    !result.pack.omittedItemsWithReason.some(
+      (item) => item.nodeId === "context_requirement:management_blocker_business",
+    ),
+  );
   ok(result.pack.lifecycleBlockers.some((blocker) => blocker.includes("management blocker architecture context")));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.RequiredConsult &&
-    stage.evidenceRefs.includes("context_policy:default_management_blocker:v1")
-  ));
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.RequiredConsult &&
+        stage.evidenceRefs.includes("context_policy:default_management_blocker:v1"),
+    ),
+  );
 });
 
 test("default context completeness policy ignores wrong-scope documents even when hat-bound retrieval includes them", async () => {
@@ -2746,17 +3069,23 @@ test("default context completeness policy ignores wrong-scope documents even whe
 
   ok(result.pack.items.some((item) => item.id === "doc:other-project-brd"));
   ok(result.pack.items.some((item) => item.id === "doc:other-project-ca"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_business" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_architecture" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
-  ok(!result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_policy"
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_requirement:management_blocker_business" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_requirement:management_blocker_architecture" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
+  ok(
+    !result.pack.omittedItemsWithReason.some((item) => item.nodeId === "context_requirement:management_blocker_policy"),
+  );
 });
 
 test("deterministic context builder rejects synthesis grounded only in wrong-scope documents", async () => {
@@ -2783,37 +3112,48 @@ test("deterministic context builder rejects synthesis grounded only in wrong-sco
           summary: "This only cites an unrelated project document.",
           evidenceRefs: ["doc:other-project-brd"],
         },
-        rankedContextRefs: [{
-          itemId: "doc:other-project-brd",
-          reason: "This unrelated document should not become ranked context.",
-          evidenceRefs: ["doc:other-project-brd"],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: "doc:other-project-brd",
+            reason: "This unrelated document should not become ranked context.",
+            evidenceRefs: ["doc:other-project-brd"],
+          },
+        ],
         curationEvidenceRefs: ["doc:other-project-brd"],
       }),
     },
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(result.pack.items.some((item) => item.id === "doc:other-project-brd"));
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisBriefing));
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisRankedContext));
   ok(!synthesisTrace?.evidenceRefs.includes("doc:other-project-brd"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis briefing was not grounded")
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis advisory was not grounded")
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "synthesis_curation_evidence:doc:other-project-brd" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis briefing was not grounded"),
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis advisory was not grounded"),
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "synthesis_curation_evidence:doc:other-project-brd" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed,
+    ),
+  );
 });
 
 test("deterministic context builder rejects synthesis grounded through wrong-scope document graph citations", async () => {
@@ -2838,11 +3178,13 @@ test("deterministic context builder rejects synthesis grounded through wrong-sco
     synthesis: {
       synthesize: async () => ({
         summary: "Wrong-scope graph citations should not ground advice.",
-        rankedContextRefs: [{
-          itemId: `graph:${wrongScopeDocNodeId}`,
-          reason: "A graph item with only wrong-scope document provenance should not be grounded.",
-          evidenceRefs: [`graph:${wrongScopeDocNodeId}`],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: `graph:${wrongScopeDocNodeId}`,
+            reason: "A graph item with only wrong-scope document provenance should not be grounded.",
+            evidenceRefs: [`graph:${wrongScopeDocNodeId}`],
+          },
+        ],
         curationEvidenceRefs: [`graph:${wrongScopeDocNodeId}`],
       }),
     },
@@ -2850,21 +3192,27 @@ test("deterministic context builder rejects synthesis grounded through wrong-sco
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
   const graphItem = result.pack.items.find((item) => item.id === `graph:${wrongScopeDocNodeId}`);
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(graphItem?.citationRefs?.includes("doc:other-project-brd"));
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisRankedContext));
   ok(!synthesisTrace?.evidenceRefs.includes(`graph:${wrongScopeDocNodeId}`));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis advisory was not grounded")
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === `synthesis_curation_evidence:graph:${wrongScopeDocNodeId}` &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis advisory was not grounded"),
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === `synthesis_curation_evidence:graph:${wrongScopeDocNodeId}` &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed,
+    ),
+  );
 });
 
 test("deterministic context builder rejects synthesis grounded through wrong-scope graph-only roots", async () => {
@@ -2875,41 +3223,51 @@ test("deterministic context builder rejects synthesis grounded through wrong-sco
       entities: [],
     }),
     graph: graphStore([]),
-    graphRootSeeds: () => [{
-      nodeId: wrongProjectNodeId,
-      title: "Wrong project graph root",
-      citationRefs: [`graph:${wrongProjectNodeId}`],
-      reasons: ["test wrong project graph root"],
-    }],
+    graphRootSeeds: () => [
+      {
+        nodeId: wrongProjectNodeId,
+        title: "Wrong project graph root",
+        citationRefs: [`graph:${wrongProjectNodeId}`],
+        reasons: ["test wrong project graph root"],
+      },
+    ],
     synthesis: {
       synthesize: async () => ({
         summary: "Wrong-scope graph-only roots should not ground advice.",
-        rankedContextRefs: [{
-          itemId: `graph:${wrongProjectNodeId}`,
-          reason: "A graph-only item for another project should not be grounded.",
-          evidenceRefs: [`graph:${wrongProjectNodeId}`],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: `graph:${wrongProjectNodeId}`,
+            reason: "A graph-only item for another project should not be grounded.",
+            evidenceRefs: [`graph:${wrongProjectNodeId}`],
+          },
+        ],
         curationEvidenceRefs: [`graph:${wrongProjectNodeId}`],
       }),
     },
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(result.pack.items.some((item) => item.id === `graph:${wrongProjectNodeId}`));
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisRankedContext));
   ok(!synthesisTrace?.evidenceRefs.includes(`graph:${wrongProjectNodeId}`));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis advisory was not grounded")
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === `synthesis_curation_evidence:graph:${wrongProjectNodeId}` &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis advisory was not grounded"),
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === `synthesis_curation_evidence:graph:${wrongProjectNodeId}` &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed,
+    ),
+  );
 });
 
 test("deterministic context builder admits synthesis grounded in active initiative and priority work graph roots", async () => {
@@ -2956,18 +3314,24 @@ test("deterministic context builder admits synthesis grounded in active initiati
   });
 
   const result = await builder.build(request({ workItemId: "work-billing" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
-  ok(result.pack.items.some((item) =>
-    item.kind === ContextPackItemKind.SynthesisRankedContext &&
-    item.reasons.includes(`target:graph:${initiativeNodeId}`)
-  ));
-  ok(result.pack.items.some((item) =>
-    item.kind === ContextPackItemKind.SynthesisRankedContext &&
-    item.reasons.includes(`target:graph:${priorityWorkNodeId}`)
-  ));
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.kind === ContextPackItemKind.SynthesisRankedContext &&
+        item.reasons.includes(`target:graph:${initiativeNodeId}`),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.kind === ContextPackItemKind.SynthesisRankedContext &&
+        item.reasons.includes(`target:graph:${priorityWorkNodeId}`),
+    ),
+  );
   ok(synthesisTrace?.evidenceRefs.includes(`graph:${initiativeNodeId}`));
   ok(synthesisTrace?.evidenceRefs.includes(`graph:${priorityWorkNodeId}`));
 });
@@ -2978,40 +3342,37 @@ test("deterministic context builder rejects synthesis grounded through lifecycle
   const mixedDecisionId = "decision:mixed-doc-provenance";
   const lifecycleAnchors: ContextPackLifecycleAnchorPort = {
     load: () => ({
-      items: [{
-        id: mixedDecisionId,
-        kind: ContextPackItemKind.DecisionRecord,
-        title: "Mixed provenance decision",
-        summary: "This active decision cites one active BRD and one unrelated BRD.",
-        sourceRef: mixedDecisionId,
-        freshness: ContextPackFreshness.Live,
-        confidence: 0.95,
-        required: true,
-        reasons: ["lifecycle_anchor:decision"],
-        citationRefs: [
-          mixedDecisionId,
-          "work:work-billing-blocked",
-          `doc:${activeDocId}`,
-          `doc:${wrongScopeDocId}`,
-        ],
-        sourcePointers: [
-          { kind: ContextPackSourcePointerKind.Decision, decisionId: "mixed-doc-provenance" },
-          { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
-          {
-            kind: ContextPackSourcePointerKind.DocUnit,
-            docUnitId: activeDocId,
-            organizationId: "org-lfg",
-            docType: DocType.Brd,
-            scopeKind: DocScopeKind.Project,
-            scopeId: "project-billing",
-            contentRef: `git://docs/${activeDocId}.md`,
-            contentHash: `hash-${activeDocId}`,
-            sourceId: "source-main",
-            version: 1,
-            provenanceChangeSetId: "cs-docs",
-          },
-        ],
-      }],
+      items: [
+        {
+          id: mixedDecisionId,
+          kind: ContextPackItemKind.DecisionRecord,
+          title: "Mixed provenance decision",
+          summary: "This active decision cites one active BRD and one unrelated BRD.",
+          sourceRef: mixedDecisionId,
+          freshness: ContextPackFreshness.Live,
+          confidence: 0.95,
+          required: true,
+          reasons: ["lifecycle_anchor:decision"],
+          citationRefs: [mixedDecisionId, "work:work-billing-blocked", `doc:${activeDocId}`, `doc:${wrongScopeDocId}`],
+          sourcePointers: [
+            { kind: ContextPackSourcePointerKind.Decision, decisionId: "mixed-doc-provenance" },
+            { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
+            {
+              kind: ContextPackSourcePointerKind.DocUnit,
+              docUnitId: activeDocId,
+              organizationId: "org-lfg",
+              docType: DocType.Brd,
+              scopeKind: DocScopeKind.Project,
+              scopeId: "project-billing",
+              contentRef: `git://docs/${activeDocId}.md`,
+              contentHash: `hash-${activeDocId}`,
+              sourceId: "source-main",
+              version: 1,
+              provenanceChangeSetId: "cs-docs",
+            },
+          ],
+        },
+      ],
     }),
   };
   const builder = createDeterministicContextPackBuilder({
@@ -3039,11 +3400,13 @@ test("deterministic context builder rejects synthesis grounded through lifecycle
     synthesis: {
       synthesize: async () => ({
         summary: "Mixed-scope lifecycle citations should not ground advice.",
-        rankedContextRefs: [{
-          itemId: mixedDecisionId,
-          reason: "A lifecycle item with any wrong-scope document citation should not be grounded.",
-          evidenceRefs: [mixedDecisionId],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: mixedDecisionId,
+            reason: "A lifecycle item with any wrong-scope document citation should not be grounded.",
+            evidenceRefs: [mixedDecisionId],
+          },
+        ],
         curationEvidenceRefs: [mixedDecisionId],
       }),
     },
@@ -3051,22 +3414,28 @@ test("deterministic context builder rejects synthesis grounded through lifecycle
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
   const lifecycleItem = result.pack.items.find((item) => item.id === mixedDecisionId);
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(lifecycleItem?.citationRefs?.includes(`doc:${activeDocId}`));
   ok(lifecycleItem?.citationRefs?.includes(`doc:${wrongScopeDocId}`));
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisRankedContext));
   ok(!synthesisTrace?.evidenceRefs.includes(mixedDecisionId));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis advisory was not grounded")
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === `synthesis_curation_evidence:${mixedDecisionId}` &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis advisory was not grounded"),
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === `synthesis_curation_evidence:${mixedDecisionId}` &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed,
+    ),
+  );
 });
 
 test("deterministic context builder rejects synthesis grounded through wrong-scope graph edges", async () => {
@@ -3075,28 +3444,30 @@ test("deterministic context builder rejects synthesis grounded through wrong-sco
   const edgeOnlyItemId = "decision:cross-project-edge";
   const lifecycleAnchors: ContextPackLifecycleAnchorPort = {
     load: () => ({
-      items: [{
-        id: edgeOnlyItemId,
-        kind: ContextPackItemKind.DecisionRecord,
-        title: "Cross-project graph edge",
-        summary: "This deterministic item only has a graph edge from active project to unrelated project.",
-        sourceRef: edgeOnlyItemId,
-        freshness: ContextPackFreshness.Live,
-        confidence: 0.95,
-        required: true,
-        reasons: ["test wrong graph edge"],
-        citationRefs: [edgeOnlyItemId, "graph:edge-cross-project"],
-        sourcePointers: [
-          { kind: ContextPackSourcePointerKind.Decision, decisionId: "cross-project-edge" },
-          { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
-          {
-            kind: ContextPackSourcePointerKind.GraphEdge,
-            edgeId: "edge-cross-project",
-            fromNodeId: activeProjectNodeId,
-            toNodeId: wrongProjectNodeId,
-          },
-        ],
-      }],
+      items: [
+        {
+          id: edgeOnlyItemId,
+          kind: ContextPackItemKind.DecisionRecord,
+          title: "Cross-project graph edge",
+          summary: "This deterministic item only has a graph edge from active project to unrelated project.",
+          sourceRef: edgeOnlyItemId,
+          freshness: ContextPackFreshness.Live,
+          confidence: 0.95,
+          required: true,
+          reasons: ["test wrong graph edge"],
+          citationRefs: [edgeOnlyItemId, "graph:edge-cross-project"],
+          sourcePointers: [
+            { kind: ContextPackSourcePointerKind.Decision, decisionId: "cross-project-edge" },
+            { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
+            {
+              kind: ContextPackSourcePointerKind.GraphEdge,
+              edgeId: "edge-cross-project",
+              fromNodeId: activeProjectNodeId,
+              toNodeId: wrongProjectNodeId,
+            },
+          ],
+        },
+      ],
     }),
   };
   const builder = createDeterministicContextPackBuilder({
@@ -3108,28 +3479,33 @@ test("deterministic context builder rejects synthesis grounded through wrong-sco
     synthesis: {
       synthesize: async () => ({
         summary: "Cross-project graph edges should not ground advice.",
-        rankedContextRefs: [{
-          itemId: edgeOnlyItemId,
-          reason: "A graph edge to a wrong project should not be synthesis ground.",
-          evidenceRefs: [edgeOnlyItemId],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: edgeOnlyItemId,
+            reason: "A graph edge to a wrong project should not be synthesis ground.",
+            evidenceRefs: [edgeOnlyItemId],
+          },
+        ],
         curationEvidenceRefs: [edgeOnlyItemId],
       }),
     },
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(result.pack.items.some((item) => item.id === edgeOnlyItemId));
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisRankedContext));
   ok(!synthesisTrace?.evidenceRefs.includes(edgeOnlyItemId));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis advisory was not grounded")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis advisory was not grounded"),
+    ),
+  );
 });
 
 test("deterministic context builder snapshots deterministic evidence before completeness policy can mutate it", async () => {
@@ -3171,16 +3547,19 @@ test("deterministic context builder snapshots deterministic evidence before comp
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(!result.pack.items.some((item) => item.id === "policy:synthetic-mutation"));
   ok(!synthesisTrace?.evidenceRefs.includes("policy:synthetic-mutation"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "synthesis_curation_evidence:policy:synthetic-mutation" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "synthesis_curation_evidence:policy:synthetic-mutation" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed,
+    ),
+  );
 });
 
 test("deterministic context builder snapshots request scope before completeness policy can mutate it", async () => {
@@ -3233,22 +3612,24 @@ test("deterministic context builder snapshots request scope before lifecycle ada
       lifecycleRequest.request.snapshot.projectId = "project-mutated-by-lifecycle";
       lifecycleRequest.request.snapshot.workItemId = "work-mutated-by-lifecycle";
       return {
-        items: [{
-          id: "decision:decision-original-work",
-          kind: ContextPackItemKind.DecisionRecord,
-          title: "Original work decision",
-          summary: "The original work item still owns this decision.",
-          sourceRef: "decision:decision-original-work",
-          freshness: ContextPackFreshness.Live,
-          confidence: 0.95,
-          required: true,
-          reasons: ["lifecycle_anchor:decision"],
-          citationRefs: ["decision:decision-original-work", "work:work-billing-blocked"],
-          sourcePointers: [
-            { kind: ContextPackSourcePointerKind.Decision, decisionId: "decision-original-work" },
-            { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
-          ],
-        }],
+        items: [
+          {
+            id: "decision:decision-original-work",
+            kind: ContextPackItemKind.DecisionRecord,
+            title: "Original work decision",
+            summary: "The original work item still owns this decision.",
+            sourceRef: "decision:decision-original-work",
+            freshness: ContextPackFreshness.Live,
+            confidence: 0.95,
+            required: true,
+            reasons: ["lifecycle_anchor:decision"],
+            citationRefs: ["decision:decision-original-work", "work:work-billing-blocked"],
+            sourcePointers: [
+              { kind: ContextPackSourcePointerKind.Decision, decisionId: "decision-original-work" },
+              { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing-blocked" },
+            ],
+          },
+        ],
       };
     },
   };
@@ -3270,11 +3651,13 @@ test("deterministic context builder snapshots request scope before lifecycle ada
         synthesisScope = { projectId: query.projectId, workItemId: query.workItemId };
         return {
           summary: "Original scope is stable.",
-          rankedContextRefs: [{
-            itemId: "decision:decision-original-work",
-            reason: "The original work decision remains in scope.",
-            evidenceRefs: ["decision:decision-original-work"],
-          }],
+          rankedContextRefs: [
+            {
+              itemId: "decision:decision-original-work",
+              reason: "The original work decision remains in scope.",
+              evidenceRefs: ["decision:decision-original-work"],
+            },
+          ],
           curationEvidenceRefs: ["decision:decision-original-work"],
         };
       },
@@ -3318,26 +3701,42 @@ test("deterministic context builder snapshots document units before graph-root c
 
   deepEqual(result.pack.staleInputs, []);
   const docItem = result.pack.items.find((item) => item.id === "doc:billing-brd");
-  ok(docItem?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.DocUnit &&
-    pointer.docUnitId === "billing-brd" &&
-    pointer.scopeId === "project-billing"
-  ));
+  ok(
+    docItem?.sourcePointers?.some(
+      (pointer) =>
+        pointer.kind === ContextPackSourcePointerKind.DocUnit &&
+        pointer.docUnitId === "billing-brd" &&
+        pointer.scopeId === "project-billing",
+    ),
+  );
 });
 
 test("default context completeness policy requires graph context rooted in the active work scope", async () => {
   const builder = createDeterministicContextPackBuilder({
     documents: createInMemoryContextPackDocumentPort({
       corpus: [
-        docUnit({ docUnitId: "billing-brd", type: DocType.Brd, title: "Billing BRD", summary: "Recover failed invoices." }),
-        docUnit({ docUnitId: "billing-ca", type: DocType.Architecture, title: "Billing CA", summary: "Billing recovery architecture." }),
-        docUnit({ docUnitId: "billing-policy", type: DocType.Policy, title: "Billing Policy", summary: "Billing recovery policy." }),
+        docUnit({
+          docUnitId: "billing-brd",
+          type: DocType.Brd,
+          title: "Billing BRD",
+          summary: "Recover failed invoices.",
+        }),
+        docUnit({
+          docUnitId: "billing-ca",
+          type: DocType.Architecture,
+          title: "Billing CA",
+          summary: "Billing recovery architecture.",
+        }),
+        docUnit({
+          docUnitId: "billing-policy",
+          type: DocType.Policy,
+          title: "Billing Policy",
+          summary: "Billing recovery policy.",
+        }),
       ],
       entities: [],
     }),
-    graph: graphStore([
-      edge("work-other", GraphEdgeKind.References, "decision-other"),
-    ]),
+    graph: graphStore([edge("work-other", GraphEdgeKind.References, "decision-other")]),
     graphRootNodeIds: () => ["work-other"],
     completenessPolicy: createDefaultContextPackCompletenessPolicy(),
   });
@@ -3345,17 +3744,25 @@ test("default context completeness policy requires graph context rooted in the a
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
   ok(result.pack.items.some((item) => item.id === "graph:work-other"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:management_blocker_graph" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_requirement:management_blocker_graph" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
 });
 
 test("default context completeness policy accepts source-backed active-scope documents and graph roots", async () => {
   const builder = createDeterministicContextPackBuilder({
     documents: createInMemoryContextPackDocumentPort({
       corpus: [
-        docUnit({ docUnitId: "billing-brd", type: DocType.Brd, title: "Billing BRD", summary: "Recover failed invoices." }),
+        docUnit({
+          docUnitId: "billing-brd",
+          type: DocType.Brd,
+          title: "Billing BRD",
+          summary: "Recover failed invoices.",
+        }),
         docUnit({
           docUnitId: "department-ca",
           type: DocType.Architecture,
@@ -3376,18 +3783,18 @@ test("default context completeness policy accepts source-backed active-scope doc
       ],
       entities: [],
     }),
-    graph: graphStore([
-      edge("work-billing-blocked", GraphEdgeKind.References, "decision-owner-missing"),
-    ]),
+    graph: graphStore([edge("work-billing-blocked", GraphEdgeKind.References, "decision-owner-missing")]),
     graphRootNodeIds: (context) => [context.snapshot.workItemId ?? "missing-work"],
     completenessPolicy: createDefaultContextPackCompletenessPolicy(),
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
-  ok(!result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId?.startsWith("context_requirement:management_blocker")
-  ));
+  ok(
+    !result.pack.omittedItemsWithReason.some((item) =>
+      item.nodeId?.startsWith("context_requirement:management_blocker"),
+    ),
+  );
 });
 
 test("default context completeness policy does not apply management blocker rules to individual contributor work", async () => {
@@ -3400,23 +3807,33 @@ test("default context completeness policy does not apply management blocker rule
     completenessPolicy: createDefaultContextPackCompletenessPolicy(),
   });
 
-  const result = await builder.build(request({
-    hat: implementer,
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.Executing,
-  }));
+  const result = await builder.build(
+    request({
+      hat: implementer,
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.Executing,
+    }),
+  );
 
-  ok(!result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId?.startsWith("context_requirement:management_blocker")
-  ));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "required_curation_lane:required_documents" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.RequiredConsult &&
-    stage.summary === "policy completeness omissions=0"
-  ));
+  ok(
+    !result.pack.omittedItemsWithReason.some((item) =>
+      item.nodeId?.startsWith("context_requirement:management_blocker"),
+    ),
+  );
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "required_curation_lane:required_documents" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.RequiredConsult &&
+        stage.summary === "policy completeness omissions=0",
+    ),
+  );
 });
 
 test("deterministic context builder ignores legacy raw synthesis status fields without dropping grounded advisories", async () => {
@@ -3435,11 +3852,13 @@ test("deterministic context builder ignores legacy raw synthesis status fields w
     synthesis: {
       synthesize: async () => ({
         summary: "Legacy raw blocker with grounded advisory",
-        rankedContextRefs: [{
-          itemId: "doc:billing-brd",
-          reason: "The grounded advisory should survive legacy raw status fields.",
-          evidenceRefs: ["doc:billing-brd"],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: "doc:billing-brd",
+            reason: "The grounded advisory should survive legacy raw status fields.",
+            evidenceRefs: ["doc:billing-brd"],
+          },
+        ],
         lifecycleBlockers: ["invented blocker"],
         contradictions: ["invented contradiction"],
       }),
@@ -3450,10 +3869,13 @@ test("deterministic context builder ignores legacy raw synthesis status fields w
 
   ok(!result.pack.lifecycleBlockers.includes("invented blocker"));
   ok(!result.pack.contradictions.includes("invented contradiction"));
-  ok(result.pack.items.some((item) =>
-    item.kind === ContextPackItemKind.SynthesisRankedContext &&
-    item.summary.includes("grounded advisory should survive")
-  ));
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.kind === ContextPackItemKind.SynthesisRankedContext &&
+        item.summary.includes("grounded advisory should survive"),
+    ),
+  );
 });
 
 test("deterministic context builder promotes admitted synthesis advisories only through policy", async () => {
@@ -3462,7 +3884,10 @@ test("deterministic context builder promotes admitted synthesis advisories only 
   const admittedGapId = "synthesis:engineering_director:42:99:gap:0";
   const promotionPolicy: ContextPackAdvisoryPromotionPolicyPort = {
     evaluate: async (policyRequest) => {
-      equal(policyRequest.advisoryItems.some((item) => item.id === admittedGapId), true);
+      equal(
+        policyRequest.advisoryItems.some((item) => item.id === admittedGapId),
+        true,
+      );
       equal(policyRequest.request.snapshot.workItemId, "work-billing-blocked");
       const mutableRequest = policyRequest.request as ContextPackBuildRequest;
       mutableRequest.snapshot.projectId = "project-mutated-by-promotion-policy";
@@ -3507,11 +3932,13 @@ test("deterministic context builder promotes admitted synthesis advisories only 
     synthesis: {
       synthesize: async () => ({
         summary: "Grounded gap should stay advisory until policy promotes it.",
-        gapHypotheses: [{
-          message: "Ownership evidence may be missing from the indexed meeting notes.",
-          evidenceRefs: ["doc:billing-brd"],
-          suggestedNextStep: "Ask the engineering manager for the owner decision record.",
-        }],
+        gapHypotheses: [
+          {
+            message: "Ownership evidence may be missing from the indexed meeting notes.",
+            evidenceRefs: ["doc:billing-brd"],
+            suggestedNextStep: "Ask the engineering manager for the owner decision record.",
+          },
+        ],
         curationEvidenceRefs: ["doc:billing-brd"],
       }),
     },
@@ -3527,16 +3954,22 @@ test("deterministic context builder promotes admitted synthesis advisories only 
   const admittedGap = result.pack.items.find((item) => item.id === admittedGapId);
   equal(admittedGap?.kind, ContextPackItemKind.SynthesisGapHypothesis);
   ok(!admittedGap?.summary.includes("mutated by promotion policy"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "advisory_promotion:synthesis:not-admitted" &&
-    item.reason === ContextPackOmissionReason.OutOfScope &&
-    item.message.includes("advisory promotion source item was not admitted")
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.AdvisoryPromotion &&
-    stage.evidenceRefs.includes(admittedGapId) &&
-    stage.evidenceRefs.includes("advisory_promotion:synthesis:not-admitted")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "advisory_promotion:synthesis:not-admitted" &&
+        item.reason === ContextPackOmissionReason.OutOfScope &&
+        item.message.includes("advisory promotion source item was not admitted"),
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.AdvisoryPromotion &&
+        stage.evidenceRefs.includes(admittedGapId) &&
+        stage.evidenceRefs.includes("advisory_promotion:synthesis:not-admitted"),
+    ),
+  );
 });
 
 test("default advisory promotion policy leaves omission-grounded gaps advisory without hat approval", async () => {
@@ -3555,11 +3988,13 @@ test("default advisory promotion policy leaves omission-grounded gaps advisory w
     }),
     completenessPolicy: {
       evaluate: async () => ({
-        omittedItemsWithReason: [{
-          nodeId: missingOwnerRef,
-          reason: ContextPackOmissionReason.NotIndexed,
-          message: "owner decision record is not indexed for this blocker",
-        }],
+        omittedItemsWithReason: [
+          {
+            nodeId: missingOwnerRef,
+            reason: ContextPackOmissionReason.NotIndexed,
+            message: "owner decision record is not indexed for this blocker",
+          },
+        ],
       }),
     },
     synthesis: {
@@ -3567,11 +4002,13 @@ test("default advisory promotion policy leaves omission-grounded gaps advisory w
         ok(query.omissions.some((item) => item.nodeId === missingOwnerRef));
         return {
           summary: "Grounded omission gap should be eligible for deterministic promotion.",
-          gapHypotheses: [{
-            message: "Ownership evidence may be missing from indexed meeting notes.",
-            evidenceRefs: ["doc:billing-brd", missingOwnerRef],
-            confidence: 0.86,
-          }],
+          gapHypotheses: [
+            {
+              message: "Ownership evidence may be missing from indexed meeting notes.",
+              evidenceRefs: ["doc:billing-brd", missingOwnerRef],
+              confidence: 0.86,
+            },
+          ],
           curationEvidenceRefs: ["doc:billing-brd"],
         };
       },
@@ -3584,16 +4021,23 @@ test("default advisory promotion policy leaves omission-grounded gaps advisory w
   const gap = result.pack.items.find((item) => item.id === "synthesis:engineering_director:42:99:gap:0");
   equal(gap?.kind, ContextPackItemKind.SynthesisGapHypothesis);
   ok(gap?.citationRefs?.includes(missingOwnerRef));
-  ok(gap?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd"
-  ));
-  ok(!result.pack.lifecycleBlockers.some((blocker) =>
-    blocker.includes("Ownership evidence may be missing from indexed meeting notes")
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.AdvisoryPromotion &&
-    stage.summary === "promoted 0 synthesis advisories; omissions=0"
-  ));
+  ok(
+    gap?.sourcePointers?.some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.DocUnit && pointer.docUnitId === "billing-brd",
+    ),
+  );
+  ok(
+    !result.pack.lifecycleBlockers.some((blocker) =>
+      blocker.includes("Ownership evidence may be missing from indexed meeting notes"),
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.AdvisoryPromotion &&
+        stage.summary === "promoted 0 synthesis advisories; omissions=0",
+    ),
+  );
 });
 
 test("default advisory promotion policy promotes only hat-approved matching advisory fingerprints", async () => {
@@ -3613,45 +4057,51 @@ test("default advisory promotion policy promotes only hat-approved matching advi
     }),
     completenessPolicy: {
       evaluate: async () => ({
-        omittedItemsWithReason: [{
-          nodeId: missingOwnerRef,
-          reason: ContextPackOmissionReason.NotIndexed,
-          message: "owner decision record is not indexed for this blocker",
-        }],
+        omittedItemsWithReason: [
+          {
+            nodeId: missingOwnerRef,
+            reason: ContextPackOmissionReason.NotIndexed,
+            message: "owner decision record is not indexed for this blocker",
+          },
+        ],
       }),
     },
     synthesis: {
       synthesize: async () => ({
         summary: "Grounded omission gap should be eligible for deterministic promotion.",
-        gapHypotheses: [{
-          message: "Ownership evidence may be missing from indexed meeting notes.",
-          evidenceRefs: ["doc:billing-brd", missingOwnerRef],
-          confidence: 0.86,
-        }],
+        gapHypotheses: [
+          {
+            message: "Ownership evidence may be missing from indexed meeting notes.",
+            evidenceRefs: ["doc:billing-brd", missingOwnerRef],
+            confidence: 0.86,
+          },
+        ],
         curationEvidenceRefs: ["doc:billing-brd"],
       }),
     },
     advisoryPromotionPolicy: createDefaultContextPackAdvisoryPromotionPolicy({
       decisions: {
         listForPromotion: async (policyRequest) => {
-          const gap = policyRequest.advisoryItems.find((item) =>
-            item.id === "synthesis:engineering_director:42:99:gap:0"
+          const gap = policyRequest.advisoryItems.find(
+            (item) => item.id === "synthesis:engineering_director:42:99:gap:0",
           );
           if (gap === undefined) return [];
-          return [{
-            decisionId: "approval-owner-gap",
-            status: ContextPackAdvisoryPromotionDecisionStatus.Approved,
-            policyVersion: DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
-            lifecycleBlocker: approvedBlocker,
-            fingerprint: contextPackAdvisoryPromotionFingerprint(gap),
-            evidenceRefs: [missingOwnerRef, "model-only-unadmitted-ref"],
-            hatId: "engineering_director",
-            hatAssignmentId: "99",
-            organizationId: "org-lfg",
-            projectId: "project-billing",
-            workItemId: "work-billing-blocked",
-            curationProfileId: policyRequest.curationPlan?.profileId,
-          }];
+          return [
+            {
+              decisionId: "approval-owner-gap",
+              status: ContextPackAdvisoryPromotionDecisionStatus.Approved,
+              policyVersion: DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
+              lifecycleBlocker: approvedBlocker,
+              fingerprint: contextPackAdvisoryPromotionFingerprint(gap),
+              evidenceRefs: [missingOwnerRef, "model-only-unadmitted-ref"],
+              hatId: "engineering_director",
+              hatAssignmentId: "99",
+              organizationId: "org-lfg",
+              projectId: "project-billing",
+              workItemId: "work-billing-blocked",
+              curationProfileId: policyRequest.curationPlan?.profileId,
+            },
+          ];
         },
       },
     }),
@@ -3660,13 +4110,16 @@ test("default advisory promotion policy promotes only hat-approved matching advi
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
   ok(result.pack.lifecycleBlockers.includes(approvedBlocker));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.AdvisoryPromotion &&
-    stage.evidenceRefs.includes("synthesis:engineering_director:42:99:gap:0") &&
-    stage.evidenceRefs.includes("advisory_promotion_decision:approval-owner-gap") &&
-    stage.evidenceRefs.includes(missingOwnerRef) &&
-    !stage.evidenceRefs.includes("model-only-unadmitted-ref")
-  ));
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.AdvisoryPromotion &&
+        stage.evidenceRefs.includes("synthesis:engineering_director:42:99:gap:0") &&
+        stage.evidenceRefs.includes("advisory_promotion_decision:approval-owner-gap") &&
+        stage.evidenceRefs.includes(missingOwnerRef) &&
+        !stage.evidenceRefs.includes("model-only-unadmitted-ref"),
+    ),
+  );
 });
 
 test("deterministic context builder omits synthesis briefings that are not grounded in deterministic evidence", async () => {
@@ -3698,10 +4151,13 @@ test("deterministic context builder omits synthesis briefings that are not groun
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisBriefing));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis briefing was not grounded")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis briefing was not grounded"),
+    ),
+  );
 });
 
 test("deterministic context builder omits ungrounded structured synthesis advisories", async () => {
@@ -3720,45 +4176,63 @@ test("deterministic context builder omits ungrounded structured synthesis adviso
     synthesis: {
       synthesize: async () => ({
         summary: "Advisory references are not in context.",
-        rankedContextRefs: [{
-          itemId: "doc:not-in-pack",
-          reason: "Missing item should not be promoted.",
-          evidenceRefs: ["doc:not-in-pack"],
-        }],
-        gapHypotheses: [{
-          message: "Unsupported gap.",
-          evidenceRefs: ["doc:not-in-pack"],
-        }],
-        questions: [{
-          question: "Unsupported question?",
-          evidenceRefs: ["doc:not-in-pack"],
-        }],
-        recommendedActionRefs: [{
-          actionType: "meta.escalate",
-          direction: "Unsupported action",
-          reason: "No deterministic evidence.",
-          evidenceRefs: ["doc:not-in-pack"],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: "doc:not-in-pack",
+            reason: "Missing item should not be promoted.",
+            evidenceRefs: ["doc:not-in-pack"],
+          },
+        ],
+        gapHypotheses: [
+          {
+            message: "Unsupported gap.",
+            evidenceRefs: ["doc:not-in-pack"],
+          },
+        ],
+        questions: [
+          {
+            question: "Unsupported question?",
+            evidenceRefs: ["doc:not-in-pack"],
+          },
+        ],
+        recommendedActionRefs: [
+          {
+            actionType: "meta.escalate",
+            direction: "Unsupported action",
+            reason: "No deterministic evidence.",
+            evidenceRefs: ["doc:not-in-pack"],
+          },
+        ],
       }),
     },
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
-  ok(!result.pack.items.some((item) =>
-    item.kind === ContextPackItemKind.SynthesisRankedContext ||
-    item.kind === ContextPackItemKind.SynthesisGapHypothesis ||
-    item.kind === ContextPackItemKind.SynthesisQuestion ||
-    item.kind === ContextPackItemKind.SynthesisRecommendedAction
-  ));
-  equal(result.pack.omittedItemsWithReason.filter((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis advisory was not grounded")
-  ).length, 4);
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis &&
-    stage.evidenceRefs.includes("retrieval_failed")
-  ));
+  ok(
+    !result.pack.items.some(
+      (item) =>
+        item.kind === ContextPackItemKind.SynthesisRankedContext ||
+        item.kind === ContextPackItemKind.SynthesisGapHypothesis ||
+        item.kind === ContextPackItemKind.SynthesisQuestion ||
+        item.kind === ContextPackItemKind.SynthesisRecommendedAction,
+    ),
+  );
+  equal(
+    result.pack.omittedItemsWithReason.filter(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis advisory was not grounded"),
+    ).length,
+    4,
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.EphemeralSynthesis &&
+        stage.evidenceRefs.includes("retrieval_failed"),
+    ),
+  );
 });
 
 test("deterministic context builder omits ranked synthesis advisories targeting missing context items", async () => {
@@ -3777,11 +4251,13 @@ test("deterministic context builder omits ranked synthesis advisories targeting 
     synthesis: {
       synthesize: async () => ({
         summary: "Ranked target must already exist in deterministic context.",
-        rankedContextRefs: [{
-          itemId: "doc:not-in-pack",
-          reason: "A fake ranked target should not enter the director dashboard.",
-          evidenceRefs: ["doc:billing-brd"],
-        }],
+        rankedContextRefs: [
+          {
+            itemId: "doc:not-in-pack",
+            reason: "A fake ranked target should not enter the director dashboard.",
+            evidenceRefs: ["doc:billing-brd"],
+          },
+        ],
       }),
     },
   });
@@ -3789,10 +4265,13 @@ test("deterministic context builder omits ranked synthesis advisories targeting 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisRankedContext));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis ranked context target was not grounded")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis ranked context target was not grounded"),
+    ),
+  );
 });
 
 test("deterministic context builder omits synthesis action advisories outside legal observe actions", async () => {
@@ -3811,11 +4290,13 @@ test("deterministic context builder omits synthesis action advisories outside le
     synthesis: {
       synthesize: async () => ({
         summary: "The model asks for an unavailable action.",
-        recommendedActionRefs: [{
-          actionType: "work.merge",
-          reason: "This action is not legal in the current readout.",
-          evidenceRefs: ["doc:billing-brd"],
-        }],
+        recommendedActionRefs: [
+          {
+            actionType: "work.merge",
+            reason: "This action is not legal in the current readout.",
+            evidenceRefs: ["doc:billing-brd"],
+          },
+        ],
         curationEvidenceRefs: ["doc:billing-brd"],
       }),
     },
@@ -3824,10 +4305,13 @@ test("deterministic context builder omits synthesis action advisories outside le
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
 
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisRecommendedAction));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.OutOfScope &&
-    item.message.includes("synthesis recommended action is not legal")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.OutOfScope &&
+        item.message.includes("synthesis recommended action is not legal"),
+    ),
+  );
 });
 
 test("deterministic context builder omits ungrounded synthesis curation evidence refs from the trace", async () => {
@@ -3852,17 +4336,20 @@ test("deterministic context builder omits ungrounded synthesis curation evidence
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(synthesisTrace?.evidenceRefs.includes("doc:billing-brd"));
   ok(!synthesisTrace?.evidenceRefs.includes("doc:not-in-pack"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "synthesis_curation_evidence:doc:not-in-pack" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis curation evidence was not grounded")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "synthesis_curation_evidence:doc:not-in-pack" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis curation evidence was not grounded"),
+    ),
+  );
 });
 
 test("deterministic context builder snapshots deterministic evidence before synthesis can mutate it", async () => {
@@ -3906,17 +4393,20 @@ test("deterministic context builder snapshots deterministic evidence before synt
   });
 
   const result = await builder.build(request({ workItemId: "work-billing-blocked" }));
-  const synthesisTrace = result.pack.curationTrace.find((stage) =>
-    stage.stage === ContextPackCurationStageKind.EphemeralSynthesis
+  const synthesisTrace = result.pack.curationTrace.find(
+    (stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis,
   );
 
   ok(!result.pack.items.some((item) => item.id === "doc:synthetic-mutation"));
   ok(!result.pack.items.some((item) => item.kind === ContextPackItemKind.SynthesisBriefing));
   ok(!synthesisTrace?.evidenceRefs.includes("doc:synthetic-mutation"));
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("ephemeral synthesis briefing was not grounded")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("ephemeral synthesis briefing was not grounded"),
+    ),
+  );
 });
 
 test("deterministic context builder gives ranked advisory items collision-safe ids", async () => {
@@ -3968,7 +4458,14 @@ test("deterministic context builder gives ranked advisory items collision-safe i
 test("deterministic context builder records optional source failures as omissions instead of throwing", async () => {
   const builder = createDeterministicContextPackBuilder({
     documents: createInMemoryContextPackDocumentPort({
-      corpus: [docUnit({ docUnitId: "billing-brd", type: DocType.Brd, title: "Billing BRD", summary: "Recover failed invoices." })],
+      corpus: [
+        docUnit({
+          docUnitId: "billing-brd",
+          type: DocType.Brd,
+          title: "Billing BRD",
+          summary: "Recover failed invoices.",
+        }),
+      ],
       entities: [],
     }),
     graph: {
@@ -3991,22 +4488,24 @@ test("deterministic context builder injects scoped LGTM telemetry evidence befor
     load: async (query) => {
       equal(query.request.snapshot.workItemId, "work-billing");
       return {
-        items: [{
-          id: "telemetry:runtime:trace-billing-timeout",
-          kind: ContextPackItemKind.Trace,
-          title: "Runtime timeout trace",
-          summary: "Tempo trace shows billing timeout across 7 spans.",
-          sourceRef: "trace:trace-billing-timeout",
-          required: false,
-          freshness: ContextPackFreshness.Live,
-          confidence: 0.94,
-          reasons: ["lgtm:tempo", "telemetry:runtime_incident"],
-          citationRefs: ["trace:trace-billing-timeout", "log:loki:billing-timeout", "metric:mimir:latency"],
-          sourcePointers: [
-            { kind: ContextPackSourcePointerKind.Trace, traceId: "trace-billing-timeout" },
-            { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing" },
-          ],
-        }],
+        items: [
+          {
+            id: "telemetry:runtime:trace-billing-timeout",
+            kind: ContextPackItemKind.Trace,
+            title: "Runtime timeout trace",
+            summary: "Tempo trace shows billing timeout across 7 spans.",
+            sourceRef: "trace:trace-billing-timeout",
+            required: false,
+            freshness: ContextPackFreshness.Live,
+            confidence: 0.94,
+            reasons: ["lgtm:tempo", "telemetry:runtime_incident"],
+            citationRefs: ["trace:trace-billing-timeout", "log:loki:billing-timeout", "metric:mimir:latency"],
+            sourcePointers: [
+              { kind: ContextPackSourcePointerKind.Trace, traceId: "trace-billing-timeout" },
+              { kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-billing" },
+            ],
+          },
+        ],
       };
     },
   };
@@ -4033,25 +4532,34 @@ test("deterministic context builder injects scoped LGTM telemetry evidence befor
 
   const result = await builder.build(request({ scope: RunScope.WorkItem, phase: RunLifecyclePhase.Failed }));
 
-  ok(result.pack.items.some((item) =>
-    item.id === "telemetry:runtime:trace-billing-timeout" &&
-    item.kind === ContextPackItemKind.Trace &&
-    item.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.Trace &&
-      pointer.traceId === "trace-billing-timeout"
-    )
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.TelemetryEvidence &&
-    stage.evidenceRefs.includes("telemetry:runtime:trace-billing-timeout")
-  ));
-  ok(result.pack.items.some((item) =>
-    item.kind === ContextPackItemKind.SynthesisBriefing &&
-    item.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.Trace &&
-      pointer.traceId === "trace-billing-timeout"
-    )
-  ));
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.id === "telemetry:runtime:trace-billing-timeout" &&
+        item.kind === ContextPackItemKind.Trace &&
+        item.sourcePointers?.some(
+          (pointer) =>
+            pointer.kind === ContextPackSourcePointerKind.Trace && pointer.traceId === "trace-billing-timeout",
+        ),
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.TelemetryEvidence &&
+        stage.evidenceRefs.includes("telemetry:runtime:trace-billing-timeout"),
+    ),
+  );
+  ok(
+    result.pack.items.some(
+      (item) =>
+        item.kind === ContextPackItemKind.SynthesisBriefing &&
+        item.sourcePointers?.some(
+          (pointer) =>
+            pointer.kind === ContextPackSourcePointerKind.Trace && pointer.traceId === "trace-billing-timeout",
+        ),
+    ),
+  );
 });
 
 test("deterministic context builder records LGTM telemetry evidence failures as omissions", async () => {
@@ -4067,15 +4575,21 @@ test("deterministic context builder records LGTM telemetry evidence failures as 
 
   const result = await builder.build(request({ scope: RunScope.WorkItem, phase: RunLifecyclePhase.Failed }));
 
-  ok(result.pack.omittedItemsWithReason.some((item) =>
-    item.nodeId === "telemetry_evidence" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("tempo unavailable")
-  ));
-  ok(result.pack.curationTrace.some((stage) =>
-    stage.stage === ContextPackCurationStageKind.TelemetryEvidence &&
-    stage.evidenceRefs.includes("telemetry_evidence")
-  ));
+  ok(
+    result.pack.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "telemetry_evidence" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("tempo unavailable"),
+    ),
+  );
+  ok(
+    result.pack.curationTrace.some(
+      (stage) =>
+        stage.stage === ContextPackCurationStageKind.TelemetryEvidence &&
+        stage.evidenceRefs.includes("telemetry_evidence"),
+    ),
+  );
 });
 
 function request(overrides: Partial<ContextPackBuildRequest["snapshot"]> = {}): ContextPackBuildRequest {

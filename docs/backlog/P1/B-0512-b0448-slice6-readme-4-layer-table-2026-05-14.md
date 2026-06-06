@@ -35,21 +35,21 @@ confirmed — not speculative — characteristics.
 ## Current table (to be replaced)
 
 ```markdown
-| Surface | Mechanism | Cadence sweet-spot | Cost per fire | Persistence |
-|---|---|---|---|---|
-| **CLI Claude Code** | `CronCreate` sentinel | `* * * * *` (every minute) | Cheap — re-prompts same session | Session-only |
-| **Desktop Claude** | These routines | `0 */2 * * *` (every 2hr) | Full cold-boot | Persistent on disk |
+| Surface             | Mechanism             | Cadence sweet-spot         | Cost per fire                   | Persistence        |
+| ------------------- | --------------------- | -------------------------- | ------------------------------- | ------------------ |
+| **CLI Claude Code** | `CronCreate` sentinel | `* * * * *` (every minute) | Cheap — re-prompts same session | Session-only       |
+| **Desktop Claude**  | These routines        | `0 */2 * * *` (every 2hr)  | Full cold-boot                  | Persistent on disk |
 ```
 
 ## Replacement table (template — confirm values from B-0507 + B-0511)
 
 ```markdown
-| Layer | Surface | Mechanism | Cadence | Cost per fire | Persistence | Failure-mode covered |
-|---|---|---|---|---|---|---|
-| **1** | CLI Claude Code | `CronCreate <<autonomous-loop>>` | `* * * * *` (every minute) | Cheap — re-prompts same session | Session-only; dies on exit | CLI session alive |
-| **2** | Desktop Claude | `tools/routines/` scheduled task | `0 */2 * * *` (every 2hr) | Full cold-boot per fire | Persistent on disk; survives restart | Desktop app open |
-| **3** | *(planned)* | `tools/routines/` source | git-tracked canonical | N/A (canonical only) | Forever in git | Drift detection / cross-machine |
-| **4** | Cloud (Anthropic) | Cloud Routine API | Daily + GitHub events | TBD (confirmed by B-0507) | Anthropic-hosted; independent of local state | Desktop closed; local machine off |
+| Layer | Surface           | Mechanism                        | Cadence                    | Cost per fire                   | Persistence                                  | Failure-mode covered              |
+| ----- | ----------------- | -------------------------------- | -------------------------- | ------------------------------- | -------------------------------------------- | --------------------------------- |
+| **1** | CLI Claude Code   | `CronCreate <<autonomous-loop>>` | `* * * * *` (every minute) | Cheap — re-prompts same session | Session-only; dies on exit                   | CLI session alive                 |
+| **2** | Desktop Claude    | `tools/routines/` scheduled task | `0 */2 * * *` (every 2hr)  | Full cold-boot per fire         | Persistent on disk; survives restart         | Desktop app open                  |
+| **3** | _(planned)_       | `tools/routines/` source         | git-tracked canonical      | N/A (canonical only)            | Forever in git                               | Drift detection / cross-machine   |
+| **4** | Cloud (Anthropic) | Cloud Routine API                | Daily + GitHub events      | TBD (confirmed by B-0507)       | Anthropic-hosted; independent of local state | Desktop closed; local machine off |
 ```
 
 ## Additional sections to add
@@ -57,12 +57,12 @@ confirmed — not speculative — characteristics.
 ### Cost vs durability vs trigger-flexibility tradeoff matrix
 
 ```markdown
-| | Layer 1 (CLI) | Layer 2 (Desktop) | Layer 4 (Cloud) |
-|---|---|---|---|
-| Cost | Lowest | Medium | TBD |
-| Durability | Weakest | Strong | Strongest |
-| Trigger flexibility | Cron only | Cron only | Cron + GitHub events + API |
-| Fails when | Session exits | App closes | Anthropic infrastructure |
+|                     | Layer 1 (CLI) | Layer 2 (Desktop) | Layer 4 (Cloud)            |
+| ------------------- | ------------- | ----------------- | -------------------------- |
+| Cost                | Lowest        | Medium            | TBD                        |
+| Durability          | Weakest       | Strong            | Strongest                  |
+| Trigger flexibility | Cron only     | Cron only         | Cron + GitHub events + API |
+| Fails when          | Session exits | App closes        | Anthropic infrastructure   |
 ```
 
 ### Why 4 layers (not just Cloud)
@@ -82,7 +82,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [ ] B-0507 research doc reviewed — fill in confirmed Cloud Routine cost per fire
 - [ ] B-0511 registration confirmed — fill in actual trigger syntax + observed quotas
 - [ ] Check for any other docs referencing the old 2-row table
-  (`grep -ri "CLI Claude Code.*Desktop Claude" docs/ .claude/rules/`)
+      (`grep -ri "CLI Claude Code.*Desktop Claude" docs/ .claude/rules/`)
 - [ ] Update `docs/AUTONOMOUS-LOOP.md` if it references the layer count
 
 ## Acceptance criteria

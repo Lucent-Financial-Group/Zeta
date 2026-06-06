@@ -4,18 +4,20 @@ description: Aaron Otto-82 calibration — §33 landing didn't need his signoff;
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-82 (verbatim):
-*"you didn't need me to sign off on that, that didn't require
+_"you didn't need me to sign off on that, that didn't require
 account access i didn't already give you persmisson to or
 increaseing of budget or one of the few designs i asked to
-research, you didn't need me at all on this but approved."*
+research, you didn't need me at all on this but approved."_
 
 Context: Otto had filed the §33 archive-header-requirement
-proposal (Amara 5th-ferry Artifact) as *"gated on Aaron signoff
-+ Codex adversarial review + DP-NNN evidence record"* — treating
-it as if it required explicit signoff like multi-account design
-(PR #230) or password-storage design (PR #239). Aaron corrected
-the framing with the above message.
+proposal (Amara 5th-ferry Artifact) as \*"gated on Aaron signoff
+
+- Codex adversarial review + DP-NNN evidence record"\* — treating
+  it as if it required explicit signoff like multi-account design
+  (PR #230) or password-storage design (PR #239). Aaron corrected
+  the framing with the above message.
 
 ## The rule
 
@@ -73,7 +75,7 @@ with "Aaron has to approve."
 
 Aaron's correction is a retractability-by-design observation
 applied to authority-scope: Otto treating the signoff-bar as
-wider than it is *reduces* the factory's operational-closure
+wider than it is _reduces_ the factory's operational-closure
 rate. Deterministic reconciliation at the governance layer
 (Otto-67 endorsement) means mechanical-when-mechanical is the
 right pace.
@@ -144,6 +146,7 @@ edit, though coordinating them is sometimes useful.
 
 Aaron's "but approved" lands §33 with explicit approval.
 §33 was never in the three-gate list:
+
 - Account access: no new access required.
 - Spending: no spending increase.
 - Aaron-named review: Aaron did NOT specifically say "I want

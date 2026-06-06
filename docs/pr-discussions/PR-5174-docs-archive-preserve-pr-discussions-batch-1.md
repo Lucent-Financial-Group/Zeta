@@ -27,6 +27,7 @@ This PR preserves the discussions for a batch of recently merged PRs, following 
 This PR adds new `docs/pr-discussions/` archive entries for recently merged PRs (batch 1), preserving their descriptions/reviews/threads as durable history substrate.
 
 **Changes:**
+
 - Add new PR discussion archives for PRs #5126–#5129.
 - Update the existing PR #5134 archive metadata and rewrite several rule links.
 
@@ -37,13 +38,14 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 2 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                        | Description                                                                                                                        |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | docs/pr-discussions/PR-5134-rule-refresh-before-decide-extends-to-working-tree-reads-100.md | Updates `archived_at` and rewrites several `.claude/rules/*` links (currently makes them non-navigable from the archive location). |
-| docs/pr-discussions/PR-5129-backlog-b-0806-iter-7-p2-ansible-gitops-crossplane-compositi.md | New preserved discussion archive for PR #5129. |
-| docs/pr-discussions/PR-5128-fix-b-0058-filter-gate-log-test-no-longer-pollutes-productio.md | New preserved discussion archive for PR #5128. |
-| docs/pr-discussions/PR-5127-docs-b-0798-add-classifier-bypass-research-boundary.md | New preserved discussion archive for PR #5127. |
-| docs/pr-discussions/PR-5126-rule-2-wake-time-substrate-lessons-from-session-2026-05-26-d.md | New preserved discussion archive for PR #5126. |
+| docs/pr-discussions/PR-5129-backlog-b-0806-iter-7-p2-ansible-gitops-crossplane-compositi.md | New preserved discussion archive for PR #5129.                                                                                     |
+| docs/pr-discussions/PR-5128-fix-b-0058-filter-gate-log-test-no-longer-pollutes-productio.md | New preserved discussion archive for PR #5128.                                                                                     |
+| docs/pr-discussions/PR-5127-docs-b-0798-add-classifier-bypass-research-boundary.md          | New preserved discussion archive for PR #5127.                                                                                     |
+| docs/pr-discussions/PR-5126-rule-2-wake-time-substrate-lessons-from-session-2026-05-26-d.md | New preserved discussion archive for PR #5126.                                                                                     |
+
 </details>
 
 ## Review threads

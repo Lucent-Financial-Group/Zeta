@@ -20,7 +20,7 @@ report's section by name.
 integration target** — the concrete engineering work that
 establishes Aurora-class runtime operations on top of the
 existing Zeta substrate. It is not the full Aurora scope; it
-is the *operations integration* surface.
+is the _operations integration_ surface.
 
 ## The integration target: runtime oracle framework
 
@@ -73,9 +73,9 @@ target because:
   types as shipped surface — only as candidate structures for
   discussion.
 - Does **not** rename any existing Zeta module to Aurora-
-  branded names. Amara's report explicitly says *"the best
+  branded names. Amara's report explicitly says _"the best
   transfer is ideas, invariants, and interfaces, not branding
-  or persona identity."*
+  or persona identity."_
 - Does **not** compete with or replace the `SignalQuality`
   module. The oracle framework composes with SignalQuality;
   five of the six oracles have SignalQuality analogues. The
@@ -86,15 +86,15 @@ target because:
 SignalQuality (shipped, commit `acb9858`) has six dimensions.
 Mapping to Amara's six oracle families:
 
-| SignalQuality dimension | Amara's oracle family | Mapping |
-|---|---|---|
-| Compression | Algebra | Same axis — reject un-consolidated output |
-| Entropy | Drift | Distribution-shift detection on both |
-| Consistency | Coherence | Same axis — contradiction with prior |
-| Grounding | Provenance | Same axis — source-edge presence |
-| Falsifiability | Falsifiability | Direct mapping |
-| Drift | Drift | Direct mapping |
-| *(none)* | **Harm** | **Gap — new work required** |
+| SignalQuality dimension | Amara's oracle family | Mapping                                   |
+| ----------------------- | --------------------- | ----------------------------------------- |
+| Compression             | Algebra               | Same axis — reject un-consolidated output |
+| Entropy                 | Drift                 | Distribution-shift detection on both      |
+| Consistency             | Coherence             | Same axis — contradiction with prior      |
+| Grounding               | Provenance            | Same axis — source-edge presence          |
+| Falsifiability          | Falsifiability        | Direct mapping                            |
+| Drift                   | Drift                 | Direct mapping                            |
+| _(none)_                | **Harm**              | **Gap — new work required**               |
 
 The mapping is 5/6 clean. The sixth — harm oracle — is new
 work: it gates on consent, retractability, and harm-handling
@@ -152,8 +152,8 @@ Aarav (controlled-vocabulary owner).
 
 ### 6. Compaction-preserves-contradiction test for Spine
 
-Amara's §"Compaction strategy" warning: *"do not compact
-away contradictory support."* Zeta's spine compaction today
+Amara's §"Compaction strategy" warning: _"do not compact
+away contradictory support."_ Zeta's spine compaction today
 merges by key + weight. Property test: seed the spine with
 explicitly-contradictory records (same provenance edge, both
 support and retraction present), run compaction, verify both
@@ -213,7 +213,7 @@ From `memory/project_aaron_external_priority_stack_and_live_lock_smell_2026_04_2
 
 ---
 
-*This plan is the inaugural Aurora operations integration
+_This plan is the inaugural Aurora operations integration
 target per Aaron's 2026-04-23 directive. Subsequent Aurora
 integration passes compose with this plan rather than
-replacing it.*
+replacing it._

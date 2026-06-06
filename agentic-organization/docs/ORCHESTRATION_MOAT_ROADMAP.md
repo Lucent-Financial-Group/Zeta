@@ -10,8 +10,8 @@ date: 2026-05-30
 
 Three asks, one thesis.
 
-> **Thesis.** Gastown's orchestration is *advisory* (prose molecules, honor-system steps,
-> singleton coordinators, polling). Ours is *enforced* (a typed observe→decide clamp on a
+> **Thesis.** Gastown's orchestration is _advisory_ (prose molecules, honor-system steps,
+> singleton coordinators, polling). Ours is _enforced_ (a typed observe→decide clamp on a
 > deterministic, replayable org_event ledger). We close the gap by porting their best
 > **tooling** onto our kernel; we go miles ahead by exploiting what an **enforced +
 > deterministic + replayable** kernel uniquely enables — capabilities gastown cannot build
@@ -27,7 +27,7 @@ is an additive layer on existing primitives — no substrate change.
 
 ### G1. Release/merge queue with batch + bisect failure isolation
 
-*Gap closed: gastown Refinery (`internal/refinery/batch.go`).*
+_Gap closed: gastown Refinery (`internal/refinery/batch.go`)._
 
 **Status: shipped 2026-05-30.**
 
@@ -46,7 +46,7 @@ is an additive layer on existing primitives — no substrate change.
 
 ### G2. Model-eval harness (Class A/B downgrade)
 
-*Gap closed: gastown gt-model-eval.*
+_Gap closed: gastown gt-model-eval._
 
 **Status: shipped 2026-05-31.**
 
@@ -61,7 +61,7 @@ is an additive layer on existing primitives — no substrate change.
 
 ### G3. Recovery scanners (the lanes our NORTH_STAR already names)
 
-*Gap closed: gastown convoy stranded-scan + reaper + witness patrol.*
+_Gap closed: gastown convoy stranded-scan + reaper + witness patrol._
 
 **Status: shipped 2026-05-30.**
 
@@ -94,7 +94,7 @@ illegal transition reached durable state = a kernel bypass = a P0.
   the live worker (continuously replay the tail of the ledger); (c) a **deploy proof** that
   replays the in-cluster ledger after each kind run.
 - **Why gastown cannot:** there is no kernel to replay against — their workflow is prose an
-  agent read. We can *prove* the org only ever took legal transitions. That is the strongest
+  agent read. We can _prove_ the org only ever took legal transitions. That is the strongest
   possible form of "the orchestration pattern was enforced."
 - **Build:** `packages/application/src/conformance.ts` — `replayLedger(events): ConformanceReport`
   (pure) + CI job + lane.
@@ -103,7 +103,7 @@ illegal transition reached durable state = a kernel bypass = a P0.
 
 Because `decide()` is pure and ids are content-addressed/deterministic, we can **fork org state,
 apply a policy delta (autonomy level, gate config, hat guardrail, model selection), replay a
-recorded or synthetic intake stream, and diff the outcomes** — *before* shipping the change.
+recorded or synthetic intake stream, and diff the outcomes** — _before_ shipping the change.
 
 - "What if we make the security stage a 5-of-5 quorum?" "What if release-manager runs on Haiku?"
   Answer with a simulation, not production.
@@ -193,14 +193,14 @@ Enforcement is only as strong as its weakest side-door. Three hardening moves cl
 
 - Every state transition flows through the command pipeline → `legal<X>Transitions` clamp →
   atomic effects. Add a **guard/lint** (and a conformance assertion, M1) that no store write
-  bypasses the pipeline. The kernel is the *only* door.
+  bypasses the pipeline. The kernel is the _only_ door.
 
 ### E2. Real authority + non-forgeable evidence (kill the two current stubs)
 
 **Status: shipped 2026-05-30.**
 
 - Replace the **permissive command-authorization stub** with a real authority port (hat
-  definition → allowed command types + tool kinds). A TPM *structurally* cannot emit an
+  definition → allowed command types + tool kinds). A TPM _structurally_ cannot emit an
   implementation command.
 - Make **evidence non-forgeable**: gate satisfaction must cite content-addressed evidence
   artifacts (a test-run id, a quorum-vote record, an external-approval id), not a boolean an
@@ -216,7 +216,7 @@ Enforcement is only as strong as its weakest side-door. Three hardening moves cl
 
 ### E3. Continuous proof + emergency stop
 
-- The conformance checker (M1) runs as a **live lane + CI gate**: the org is *continuously*
+- The conformance checker (M1) runs as a **live lane + CI gate**: the org is _continuously_
   proven to have only taken legal transitions. A breach pages immediately.
 - Add **ESTOP** (Part-2 of the comparison, Tier-2): a `control_plane` flag every lane + agent
   checks each tick — distributed freeze, coordinator-exempt, for when a human must halt the org.

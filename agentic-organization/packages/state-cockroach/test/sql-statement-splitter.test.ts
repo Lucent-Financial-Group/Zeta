@@ -39,7 +39,8 @@ test("does not split on a semicolon inside a line comment (comment is preserved)
 });
 
 test("splits the real ADD COLUMN + UPDATE pattern into separate statements", () => {
-  const sql = "ALTER TABLE t ADD COLUMN IF NOT EXISTS version INT8 DEFAULT 1;\nUPDATE t SET version = COALESCE(version, 1);";
+  const sql =
+    "ALTER TABLE t ADD COLUMN IF NOT EXISTS version INT8 DEFAULT 1;\nUPDATE t SET version = COALESCE(version, 1);";
   deepEqual(splitSqlStatements(sql), [
     "ALTER TABLE t ADD COLUMN IF NOT EXISTS version INT8 DEFAULT 1",
     "UPDATE t SET version = COALESCE(version, 1)",

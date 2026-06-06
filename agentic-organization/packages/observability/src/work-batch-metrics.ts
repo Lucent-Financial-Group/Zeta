@@ -8,13 +8,15 @@
  * Pure + order-independent: same inputs → same metrics.
  */
 
-import { OrgEventKind, WorkItemState, WorkItemType, type ChangeSet, type OrgEvent, type WorkItem } from "../../domain/src/index.ts";
 import {
-  aggregateDoraMetrics,
-  rollUpDoraMetrics,
-  type DoraMetrics,
-  type DoraTimeWindow,
-} from "./dora-metrics.ts";
+  OrgEventKind,
+  WorkItemState,
+  WorkItemType,
+  type ChangeSet,
+  type OrgEvent,
+  type WorkItem,
+} from "../../domain/src/index.ts";
+import { aggregateDoraMetrics, rollUpDoraMetrics, type DoraMetrics, type DoraTimeWindow } from "./dora-metrics.ts";
 
 export type TestSummary = {
   runs: number;
@@ -59,7 +61,9 @@ export function rollUpBatchMetrics(input: {
   const done = items.filter((i) => i.state === WorkItemState.Done).length;
   const blocked = items.filter((i) => i.state === WorkItemState.Blocked).length;
   const inReview = items.filter((i) => i.state === WorkItemState.Review).length;
-  const openDefects = items.filter((i) => i.workItemType === WorkItemType.Defect && i.state !== WorkItemState.Done).length;
+  const openDefects = items.filter(
+    (i) => i.workItemType === WorkItemType.Defect && i.state !== WorkItemState.Done,
+  ).length;
 
   // QA bounce-back = a work-item transition review → in_progress (rework) for a batch member.
   const qaBounceBacks = events.filter(

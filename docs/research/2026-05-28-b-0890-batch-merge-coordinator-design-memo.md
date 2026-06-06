@@ -36,17 +36,17 @@ The batch-merger inverts the cost shape: O(N events × O(1) state-append + REST-
 
 **Option A — Pure hourly cron.** Coordinator fires every 60 minutes via GitHub Actions `schedule:` trigger (per B-0874 infinite-runtime substrate). Bundles whatever's accumulated. Simple, predictable, easy to reason about.
 
-- *Cost:* low-event-rate periods waste a PR cycle on near-empty batches; high-event-rate periods let batches grow unboundedly until next tick.
-- *Failure mode:* if 200 events accumulate in one hour and a single trajectory's edits conflict with another's, the conflict-resolution work happens at one bursty point.
+- _Cost:_ low-event-rate periods waste a PR cycle on near-empty batches; high-event-rate periods let batches grow unboundedly until next tick.
+- _Failure mode:_ if 200 events accumulate in one hour and a single trajectory's edits conflict with another's, the conflict-resolution work happens at one bursty point.
 
 **Option B — Pure threshold-of-M events.** Coordinator fires when M (e.g., 25) unmerged events exist on trajectory branches. Self-regulating to actual event rate.
 
-- *Cost:* during quiet periods, events sit indefinitely waiting for the M-th sibling; observability lag grows unbounded.
-- *Failure mode:* threshold-detection itself requires polling (which costs GraphQL on `gh api`), creating a chicken-and-egg problem.
+- _Cost:_ during quiet periods, events sit indefinitely waiting for the M-th sibling; observability lag grows unbounded.
+- _Failure mode:_ threshold-detection itself requires polling (which costs GraphQL on `gh api`), creating a chicken-and-egg problem.
 
 **Option C — Hybrid (whichever-first).** Coordinator fires when EITHER `M events queued` OR `T seconds since last merge`, whichever happens first. Both bounds operative.
 
-- *Cost:* slightly more complex state to track (one int counter, one timestamp); both bounds bound their respective worst cases.
+- _Cost:_ slightly more complex state to track (one int counter, one timestamp); both bounds bound their respective worst cases.
 
 ### Recommendation: Option C with M=25, T=15 minutes
 
@@ -127,17 +127,23 @@ Recommendation: LEAVE ALONE by default. Pruning is a separate concern handled by
 type CoordinatorState =
   | { tag: "Idle"; lastBatchMergedAt: ISOTime; eventCountSinceLastMerge: number }
   | { tag: "ClaimingEvents"; tickStartedAt: ISOTime; trajectoryRefs: TrajectoryRef[] }
-  | { tag: "AssemblingBundle"; batchBranch: BranchName; merged: TrajectoryRef[]; pending: TrajectoryRef[]; conflicts: ConflictReport[] }
+  | {
+      tag: "AssemblingBundle";
+      batchBranch: BranchName;
+      merged: TrajectoryRef[];
+      pending: TrajectoryRef[];
+      conflicts: ConflictReport[];
+    }
   | { tag: "OpeningPR"; batchBranch: BranchName; prTitle: string; prBody: string }
   | { tag: "ArmingMerge"; prNumber: number; prUrl: string }
   | { tag: "Done"; prNumber: number; mergedAt: ISOTime; eventCount: number };
 
 interface TrajectoryRef {
-  readonly chromosomeHex: string;        // bit-field 70-74 from ZetaIDs at HEAD
-  readonly branchName: BranchName;       // e.g., "trajectory/0f"
+  readonly chromosomeHex: string; // bit-field 70-74 from ZetaIDs at HEAD
+  readonly branchName: BranchName; // e.g., "trajectory/0f"
   readonly headSha: string;
-  readonly eventCount: number;           // commits ahead of origin/main
-  readonly oldestEventTimestamp: ISOTime;  // for ordering decisions
+  readonly eventCount: number; // commits ahead of origin/main
+  readonly oldestEventTimestamp: ISOTime; // for ordering decisions
 }
 
 interface ConflictReport {
@@ -152,14 +158,14 @@ interface ConflictReport {
 
 Each transition is durable on the github side (GitHub holds the truth) and recoverable from query:
 
-| State at crash | Recovery on next cron-tick |
-|---|---|
-| **Idle** | Re-enter Idle; nothing to recover. Counter `eventCountSinceLastMerge` recomputed by `git log origin/main..origin/trajectory/* --oneline \| wc -l` (or equivalent REST query) |
-| **ClaimingEvents** | Re-enumerate trajectory refs via `gh api repos/.../branches?per_page=100`. Idempotent because event commits are durable on their branches. |
+| State at crash       | Recovery on next cron-tick                                                                                                                                                                                                                                                                                                                                                                                                               |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Idle**             | Re-enter Idle; nothing to recover. Counter `eventCountSinceLastMerge` recomputed by `git log origin/main..origin/trajectory/* --oneline \| wc -l` (or equivalent REST query)                                                                                                                                                                                                                                                             |
+| **ClaimingEvents**   | Re-enumerate trajectory refs via `gh api repos/.../branches?per_page=100`. Idempotent because event commits are durable on their branches.                                                                                                                                                                                                                                                                                               |
 | **AssemblingBundle** | Detect orphaned `batch/<hex>` branch (created by prior crashed run; identified by `[orphan-batch]` topic or branch-creation timestamp > T_orphan_threshold). DELETE the orphan via `gh api -X DELETE repos/.../git/refs/heads/batch/<hex>`. Start fresh from `origin/main`. The re-merge picks up trajectory branches whose events haven't reached main yet, which by Design A includes everything the prior crash had partially merged. |
-| **OpeningPR** | Detect existing open PR from `batch/<hex>` → main via `findExistingPR()` pattern from `merge-heartbeats-to-main.ts`. If found, skip to ArmingMerge. If not, retry PR creation. |
-| **ArmingMerge** | `gh pr merge <N> --auto --squash` is idempotent per the existing heartbeat-merger code (`armResult` already handles re-arm safely). Just retry. |
-| **Done** | Nothing to do. Counter resets. Next cron-tick enters Idle. |
+| **OpeningPR**        | Detect existing open PR from `batch/<hex>` → main via `findExistingPR()` pattern from `merge-heartbeats-to-main.ts`. If found, skip to ArmingMerge. If not, retry PR creation.                                                                                                                                                                                                                                                           |
+| **ArmingMerge**      | `gh pr merge <N> --auto --squash` is idempotent per the existing heartbeat-merger code (`armResult` already handles re-arm safely). Just retry.                                                                                                                                                                                                                                                                                          |
+| **Done**             | Nothing to do. Counter resets. Next cron-tick enters Idle.                                                                                                                                                                                                                                                                                                                                                                               |
 
 ### Why no persisted coordinator state
 
@@ -189,7 +195,7 @@ Recommendation: ship without the reaper initially. The crash window is small (on
 
 **Choice A — Strict global causal order.** Coordinator orders all events across all trajectories by ZetaID timestamp (bits 75-122; 48-bit ms) and replays them as a single linear sequence onto the batch branch. Produces a totally-ordered event log on main matching wall-clock ms granularity.
 
-**Choice B — Per-trajectory order; trajectories independent.** Each trajectory's events maintain order *within* the trajectory (by virtue of being commits on a branch). Across trajectories, no order is enforced; coordinator merges trajectories in arbitrary order (alphabetical, or hash-sorted for determinism).
+**Choice B — Per-trajectory order; trajectories independent.** Each trajectory's events maintain order _within_ the trajectory (by virtue of being commits on a branch). Across trajectories, no order is enforced; coordinator merges trajectories in arbitrary order (alphabetical, or hash-sorted for determinism).
 
 ### Recommendation: Choice B (per-trajectory order; trajectories independent) — with one exception
 
@@ -359,17 +365,17 @@ Catch the error; re-check existence; skip if gone; continue with remaining traje
 
 ### 7.6 Failure-mode summary table
 
-| Failure mode | Impact | Mitigation | Substrate composition |
-|---|---|---|---|
-| Required check fails on batch PR | Auto-merge stalls indefinitely | Sibling auditor (out of v1 scope; B-0890.5) | `blocked-green-ci-investigate-threads.md` applies |
-| Required-review block | PR sits unactionable | Operator-side ruleset config (`[skip-review]` carve-out) | B-0858 branch-protection precedent |
-| Status-check timeout | Quasi-stuck PR | Sibling auditor handles | `pr-triage-tiers.md` Tier 1-4 disposition |
-| GraphQL rate-limit at PR-create | Coordinator fails | REST fallback (PR-create via REST); defer arming to next tick | `refresh-world-model-poll-pr-gate.md` Pure-git tier |
-| Batch too large (event count) | Reviewer UX degraded | Threshold M=25 cap | — |
-| Batch too large (diff bytes) | PR display breaks | Pre-check + split | — |
-| Coordinator-vs-coordinator race | Duplicate PRs | GitHub Actions `concurrency:` group | B-0874 GitHub Actions substrate |
-| Trajectory deleted mid-batch | Merge errors | Skip + log | — |
-| Crash mid-batch (any state) | Recovered next tick | Stateless coordinator; events durable on trajectory branches | Design A (all-or-nothing batch branch) |
+| Failure mode                     | Impact                         | Mitigation                                                    | Substrate composition                               |
+| -------------------------------- | ------------------------------ | ------------------------------------------------------------- | --------------------------------------------------- |
+| Required check fails on batch PR | Auto-merge stalls indefinitely | Sibling auditor (out of v1 scope; B-0890.5)                   | `blocked-green-ci-investigate-threads.md` applies   |
+| Required-review block            | PR sits unactionable           | Operator-side ruleset config (`[skip-review]` carve-out)      | B-0858 branch-protection precedent                  |
+| Status-check timeout             | Quasi-stuck PR                 | Sibling auditor handles                                       | `pr-triage-tiers.md` Tier 1-4 disposition           |
+| GraphQL rate-limit at PR-create  | Coordinator fails              | REST fallback (PR-create via REST); defer arming to next tick | `refresh-world-model-poll-pr-gate.md` Pure-git tier |
+| Batch too large (event count)    | Reviewer UX degraded           | Threshold M=25 cap                                            | —                                                   |
+| Batch too large (diff bytes)     | PR display breaks              | Pre-check + split                                             | —                                                   |
+| Coordinator-vs-coordinator race  | Duplicate PRs                  | GitHub Actions `concurrency:` group                           | B-0874 GitHub Actions substrate                     |
+| Trajectory deleted mid-batch     | Merge errors                   | Skip + log                                                    | —                                                   |
+| Crash mid-batch (any state)      | Recovered next tick            | Stateless coordinator; events durable on trajectory branches  | Design A (all-or-nothing batch branch)              |
 
 ---
 

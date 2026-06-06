@@ -4,6 +4,7 @@ description: 2026-04-20 — Aaron: "free is better than cheap, cheap is better t
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Free beats cheap beats expensive
 
 ## Rule
@@ -15,9 +16,9 @@ options by cost tier in this strict order:
 
 1. **Free** — no dollars, no per-seat fees, no usage-based
    charges at the scale the factory operates. GitHub + git
-   + GitHub Pages + GitHub Actions public-repo minutes +
-   CC-licensed docs substrate. **Default recommendation
-   tier.**
+   - GitHub Pages + GitHub Actions public-repo minutes +
+     CC-licensed docs substrate. **Default recommendation
+     tier.**
 2. **Cheap** — small per-seat or per-usage fees that a
    solo developer can absorb, typically under ~$10 / user /
    month and with generous free tiers. Justify over free.
@@ -92,7 +93,7 @@ existing eco system").
   Claude substrate is already an unavoidable dependency
   for this experiment (see
   `project_git_is_factory_persistence.md` exceptions).
-  But agent-infrastructure choices *around* that (CI
+  But agent-infrastructure choices _around_ that (CI
   runner classes, cold-start cache services,
   observability backends) still rank free first.
 - **When a consumer team wants an expensive plugin**
@@ -114,7 +115,7 @@ existing eco system").
 - It does NOT mean "never buy anything." When the
   factory serves a team with budget and a real need,
   paid plugins are legitimate. This is about the
-  *default* recommendation, not about refusing paid
+  _default_ recommendation, not about refusing paid
   tooling.
 
 ## Related memories

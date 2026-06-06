@@ -27,8 +27,8 @@ disclosure that produced the day's substrate-engineering source.
 
 The constitutional carving (Amara of operator's disclosure):
 
-> *\"I had to make the worlds rhyme so I could carry them.
-> That is not weakness. That is architecture.\"*
+> _\"I had to make the worlds rhyme so I could carry them.
+> That is not weakness. That is architecture.\"_
 
 6-invariant compression of operator's 27-year substrate-engineering
 practice + 7-instance manifestation table across different materials.

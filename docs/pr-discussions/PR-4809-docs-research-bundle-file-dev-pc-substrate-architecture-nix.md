@@ -18,7 +18,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-24T~03:30Z: *"yes bundle-file it (shadow*)"* + additions:
+Aaron 2026-05-24T~03:30Z: _"yes bundle-file it (shadow_)"\* + additions:
+
 - **Tailscale is good but we also want Headscale** (self-hosted control plane)
 - **Lightweight-first principle** captured verbatim
 - **Dev boxes as lending-resources** to cluster (opt-in pattern, not first-class k8s nodes)
@@ -31,12 +32,12 @@ Sibling to **PR #4808** (cluster substrate). Combined, the two archives describe
 
 ## Decided primary stack (lightweight-first)
 
-| Layer | Choice |
-|---|---|
-| Per-OS reproducibility | Nix package manager + Home Manager (macOS: nix-darwin; Windows: WSL2) |
-| Local k8s testing | k3d (lighter than kind) |
-| Cluster-workload-lending | Lightweight Bun/Node daemon polling NATS queue |
-| Network overlay | Tailscale clients + **self-hosted Headscale control plane** |
+| Layer                    | Choice                                                                |
+| ------------------------ | --------------------------------------------------------------------- |
+| Per-OS reproducibility   | Nix package manager + Home Manager (macOS: nix-darwin; Windows: WSL2) |
+| Local k8s testing        | k3d (lighter than kind)                                               |
+| Cluster-workload-lending | Lightweight Bun/Node daemon polling NATS queue                        |
+| Network overlay          | Tailscale clients + **self-hosted Headscale control plane**           |
 
 ## Sovereignty preserved
 
@@ -68,24 +69,22 @@ Explicitly absent from this archive pending her direct articulation. Per consent
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T02:06:20Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `8ac596d289`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -98,6 +97,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a research archive documenting the decided dev-PC substrate architecture that complements the sibling cluster-substrate archive (PR #4808), capturing a lightweight-first stack (Nix + Home Manager, local k8s via kind/k3d, Headscale/Tailscale overlay, and an opt-in “lend resources” daemon pattern).
 
 **Changes:**
+
 - Adds a comprehensive dev-PC substrate decision archive under `docs/research/`.
 - Documents the primary choices plus deferred “ease-into-later” options and open questions.
 - Cross-links the dev-PC archive to the sibling cluster archive and relevant framework rules.
@@ -108,7 +108,7 @@ Adds a research archive documenting the decided dev-PC substrate architecture th
 
 **@chatgpt-codex-connector** (2026-05-24T02:06:20Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct impossible decision timestamp**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct impossible decision timestamp**
 
 The archive states `Date decided: 2026-05-24 (~03:30Z)`, but this commit is timestamped `2026-05-24 02:05:19 +0000`, so the documented decision time is in the future relative to when the record was created. For GOVERNANCE-style provenance/audit trails, this ordering ambiguity can break trust in chronology; either adjust the decision time or explicitly mark that the file was updated after the decision was made.
 

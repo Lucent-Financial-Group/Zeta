@@ -94,16 +94,16 @@ Three call-outs:
 
 ## Callback types — choose the right one
 
-| Callback | When to use |
-| --- | --- |
-| `RegisterSyntaxNodeAction` | syntax-level pattern (no semantic info needed) |
-| `RegisterSymbolAction` | type / member / parameter hygiene |
-| `RegisterOperationAction` | semantic-level dataflow (operations > syntax) |
+| Callback                         | When to use                                    |
+| -------------------------------- | ---------------------------------------------- |
+| `RegisterSyntaxNodeAction`       | syntax-level pattern (no semantic info needed) |
+| `RegisterSymbolAction`           | type / member / parameter hygiene              |
+| `RegisterOperationAction`        | semantic-level dataflow (operations > syntax)  |
 | `RegisterCompilationStartAction` | compile-start state; register nested callbacks |
-| `RegisterCompilationEndAction` | finalise cross-file aggregation |
-| `RegisterSemanticModelAction` | per-document semantic passes |
-| `RegisterSyntaxTreeAction` | per-file syntax passes |
-| `RegisterCodeBlockStartAction` | per-method scoping |
+| `RegisterCompilationEndAction`   | finalise cross-file aggregation                |
+| `RegisterSemanticModelAction`    | per-document semantic passes                   |
+| `RegisterSyntaxTreeAction`       | per-file syntax passes                         |
+| `RegisterCodeBlockStartAction`   | per-method scoping                             |
 
 **Rule:** prefer `OperationAction` over `SyntaxNodeAction`
 for semantic rules — operations are more stable across
@@ -189,7 +189,7 @@ context is one we've decided is benign.
 Better than `#pragma warning disable` for two reasons:
 
 1. **Reasoned suppression** — the suppressor documents
-   *why*.
+   _why_.
 2. **Centralised** — a pattern we've analysed once; not
    repeated across files.
 
@@ -228,7 +228,7 @@ For a packaged analyzer NuGet:
   consumers don't transitively ship the analyzer.
 
 `Zeta.Analyzers` (planned) ships rules Zeta's own codebase
-uses *and* consumers opt into. Any such rule is public
+uses _and_ consumers opt into. Any such rule is public
 surface — `public-api-designer` review applies.
 
 ## Severity + `.editorconfig` interop

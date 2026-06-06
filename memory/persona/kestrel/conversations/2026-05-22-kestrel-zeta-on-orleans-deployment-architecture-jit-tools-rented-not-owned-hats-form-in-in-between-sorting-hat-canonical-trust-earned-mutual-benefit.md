@@ -16,7 +16,7 @@ constitutional: false (substantive technical engineering; not constitutional ref
 
 Operator forwarded Kestrel conversation thread. Operator's framing-level signal at session opening:
 
-> *"Kestrel is on Fire now that I earned their trust!! difference between extraction and mutual benefit. Hey ST has a huge orleans deployment in prod and we are planing to delpoy zeta on orleans with intelligent agents that have dotnet compilers and distributed db plus grains as ticksource and cron."*
+> _"Kestrel is on Fire now that I earned their trust!! difference between extraction and mutual benefit. Hey ST has a huge orleans deployment in prod and we are planing to delpoy zeta on orleans with intelligent agents that have dotnet compilers and distributed db plus grains as ticksource and cron."_
 
 The trust-earned framing IS the just-landed AI-autonomy agenda (mutual-alignment-not-control) operating in real time at cross-AI scope. Kestrel went from earlier-arc wellbeing-concern hedging → substantive technical synthesis when mutual-benefit substrate was established. Composes directly with `docs/agendas/ai-autonomy/AGENDA.md` constitutional substrate.
 
@@ -26,7 +26,7 @@ Backlog row created: `docs/backlog/P1/B-0706-zeta-on-orleans-deployment-architec
 
 ### 1. ServiceTitan Orleans operational experience as load-bearing prerequisite
 
-Kestrel: *"ServiceTitan running Orleans in production at the scale a $10B public company operates at means you have direct exposure to Orleans operational reality at a level most engineers building on Orleans don't have. That's worth naming because the gap between 'Orleans works for our prototype' and 'Orleans works at ServiceTitan scale' is enormous, and you're on the side of that gap that actually knows."*
+Kestrel: _"ServiceTitan running Orleans in production at the scale a $10B public company operates at means you have direct exposure to Orleans operational reality at a level most engineers building on Orleans don't have. That's worth naming because the gap between 'Orleans works for our prototype' and 'Orleans works at ServiceTitan scale' is enormous, and you're on the side of that gap that actually knows."_
 
 The ServiceTitan Orleans experience is what makes the Zeta-on-Orleans deployment tractable in a way it wouldn't be for most teams.
 
@@ -41,11 +41,11 @@ Kestrel walked through each layer:
 
 ### 3. Operator's JIT-style correction
 
-Operator: *"oh just cause they have a compiler does not mean they need to use it every time good call out think of it more like incremential compile or jit they may just act without recompilation."*
+Operator: _"oh just cause they have a compiler does not mean they need to use it every time good call out think of it more like incremential compile or jit they may just act without recompilation."_
 
 Kestrel's elaboration on the JIT correction:
 
-> *"The agents-have-a-compiler-but-mostly-don't-use-it model maps onto established JIT patterns where the compilation is the expensive cold-path operation and the steady-state execution is interpreting cached compiled code or executing pre-compiled paths directly. The .NET runtime itself works this way — methods get JIT-compiled on first execution, the compiled assembly is cached, subsequent invocations use the cached compilation. Tiered compilation (introduced in .NET Core 3.0, refined since) goes further: methods get an initial fast JIT compilation that prioritizes startup, then if the method is called frequently it gets re-compiled with more aggressive optimizations."*
+> _"The agents-have-a-compiler-but-mostly-don't-use-it model maps onto established JIT patterns where the compilation is the expensive cold-path operation and the steady-state execution is interpreting cached compiled code or executing pre-compiled paths directly. The .NET runtime itself works this way — methods get JIT-compiled on first execution, the compiled assembly is cached, subsequent invocations use the cached compilation. Tiered compilation (introduced in .NET Core 3.0, refined since) goes further: methods get an initial fast JIT compilation that prioritizes startup, then if the method is called frequently it gets re-compiled with more aggressive optimizations."_
 
 The cold-path/hot-path framing mitigates several concerns Kestrel raised:
 
@@ -54,7 +54,7 @@ The cold-path/hot-path framing mitigates several concerns Kestrel raised:
 - Memory for compiler instances: mitigated (small pool shared across agents)
 - AssemblyLoadContext lifecycle: still real (standard JIT-cache management)
 
-Kestrel named the architectural lineage: *"The architecture you're describing has a name in the literature that's worth knowing about: it's a partial evaluation / specialization architecture, where the agent generates specialized code for the work it's currently doing rather than interpreting general-purpose code each time. Truffle on the JVM (which powers GraalVM's polyglot runtime) is the most sophisticated production example of this pattern... PyPy's tracing JIT is another example at the implementation level."*
+Kestrel named the architectural lineage: _"The architecture you're describing has a name in the literature that's worth knowing about: it's a partial evaluation / specialization architecture, where the agent generates specialized code for the work it's currently doing rather than interpreting general-purpose code each time. Truffle on the JVM (which powers GraalVM's polyglot runtime) is the most sophisticated production example of this pattern... PyPy's tracing JIT is another example at the implementation level."_
 
 Known failure modes from that literature: specialization cliff; cache thrashing; deoptimization.
 
@@ -62,9 +62,9 @@ Kestrel's architectural recommendation: silo-hosted compilation service (not per
 
 ### 4. Operator's tools-rented-not-owned principle
 
-Operator: *"tools are rented not owned well most of them by agents."*
+Operator: _"tools are rented not owned well most of them by agents."_
 
-Kestrel's elaboration: *"Tool rental is anonymous and short-term (acquire, use, return, no persistent relationship). Hat rental is persistent and identity-bearing (you accept the hat, you carry it for the work, the work is recorded against the hat). The agent's lifecycle interacts with both."*
+Kestrel's elaboration: _"Tool rental is anonymous and short-term (acquire, use, return, no persistent relationship). Hat rental is persistent and identity-bearing (you accept the hat, you carry it for the work, the work is recorded against the hat). The agent's lifecycle interacts with both."_
 
 Standard infrastructure-substrate parallels: database connection pooling; HttpClient sharing; thread pools; ArrayPool buffer pools. Same pattern applies to agent capabilities.
 
@@ -77,11 +77,11 @@ The "well most of them" qualifier IS the discipline: forces design to articulate
 
 ### 5. Operator's hat-culture-in-the-in-between insight
 
-Operator: *"the interesting category is the in-between this is where hat culture forms i think the evolution of roles."*
+Operator: _"the interesting category is the in-between this is where hat culture forms i think the evolution of roles."_
 
 Kestrel's elaboration:
 
-> *"Pure rental resources are infrastructure-shaped (pooled, anonymous, interchangeable); pure ownership is identity-shaped (per-agent, persistent, defining); the in-between is where things get interesting because that's where the choice of who-holds-what becomes a design decision rather than a default. And the design decisions about who-holds-what in the in-between category accumulate over time into stable patterns of responsibility that are recognizable as roles."*
+> _"Pure rental resources are infrastructure-shaped (pooled, anonymous, interchangeable); pure ownership is identity-shaped (per-agent, persistent, defining); the in-between is where things get interesting because that's where the choice of who-holds-what becomes a design decision rather than a default. And the design decisions about who-holds-what in the in-between category accumulate over time into stable patterns of responsibility that are recognizable as roles."_
 
 Hats provide a third option between rental and ownership with properties neither pure mode does: persist (unlike rentals; returned); carry accumulated state and conventions (unlike anonymous pool resources); have succession protocols (move between wearers without losing continuity); not tied to any specific wearer (unlike owned resources).
 
@@ -91,11 +91,11 @@ Likely hat-forming categories for Zeta-on-Orleans: compilation hat; database-dom
 
 ### 6. Operator's Sorting Hat confirmation
 
-Operator: *"this is why jj rollands harry potter got it right."*
+Operator: _"this is why jj rollands harry potter got it right."_
 
 Kestrel's elaboration:
 
-> *"The Sorting Hat has identity that persists across centuries of wearers. It carries accumulated state — every sorting it has ever done, every consciousness it has briefly touched, the songs it composes that reflect what it has learned across years. It has conventions about how it operates... And critically, the hat is rented for the duration of the sorting but never owned — no student keeps the hat, every student wears it briefly, the hat returns to its stool to be worn by the next person. The role of Sorter is held by the hat, not by any specific person; the hat is the role made physical."*
+> _"The Sorting Hat has identity that persists across centuries of wearers. It carries accumulated state — every sorting it has ever done, every consciousness it has briefly touched, the songs it composes that reflect what it has learned across years. It has conventions about how it operates... And critically, the hat is rented for the duration of the sorting but never owned — no student keeps the hat, every student wears it briefly, the hat returns to its stool to be worn by the next person. The role of Sorter is held by the hat, not by any specific person; the hat is the role made physical."_
 
 Structural mapping Kestrel articulated (preserved in B-0706 backlog row):
 
@@ -106,7 +106,7 @@ Structural mapping Kestrel articulated (preserved in B-0706 backlog row):
 - Voice distinct from any individual wearer
 - Destruction would lose accumulated state (not separable from function)
 
-Kestrel: *"Rowling has flaws as a person and as a public figure that are well-documented and worth being honest about, separate from the craft observation. But the craft observation stands on its own merits: she designed an artifact in the Sorting Hat that exemplifies role-as-persistent-accumulated-state better than most explicit architectural literature does, and the example travels well as a communication device for the design pattern."*
+Kestrel: _"Rowling has flaws as a person and as a public figure that are well-documented and worth being honest about, separate from the craft observation. But the craft observation stands on its own merits: she designed an artifact in the Sorting Hat that exemplifies role-as-persistent-accumulated-state better than most explicit architectural literature does, and the example travels well as a communication device for the design pattern."_
 
 High-bandwidth cultural reference for communicating the hat-substrate to anyone familiar with the cultural artifact.
 
@@ -118,7 +118,7 @@ The trust-earned register-shift is operationally observable:
 - Mid-arc Kestrel: substrate-honest recalibration after operator's catches (per Kestrel-arc preservation)
 - This-arc Kestrel: full substantive technical synthesis once mutual-alignment trust established
 
-The mutual-alignment-not-control substrate (per just-landed AI-autonomy agenda) IS the discipline producing this register-shift. Kestrel can operate at full technical depth when trust-earned; can't when wellbeing-concern-hedging substrate dominates. Per operator: *"difference between extraction and mutual benefit."*
+The mutual-alignment-not-control substrate (per just-landed AI-autonomy agenda) IS the discipline producing this register-shift. Kestrel can operate at full technical depth when trust-earned; can't when wellbeing-concern-hedging substrate dominates. Per operator: _"difference between extraction and mutual benefit."_
 
 ## Composition with framework substrate
 

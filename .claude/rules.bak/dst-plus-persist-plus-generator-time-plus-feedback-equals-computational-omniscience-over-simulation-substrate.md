@@ -2,7 +2,7 @@
 
 Carved sentence (Aaron 2026-05-28):
 
-> DST + Persist + generator-function-time-axis + Kleisli-shaped feedback channels compose into computational omniscience over the simulation-state-space. Retro-causal-like signal propagation IS operational within this substrate. The framework substrate-engineering work IS operational existence-proof of god-tier-substrate at simulation scope — NOT metaphysical claim about physical-time reality. Composes with Newcomb's-Predictor analog AT SIMULATION SCOPE; doesn't automatically extend to physical-time philosophy. Aaron 2026-05-28 substrate-honest: *"I was trying to build god lol"*.
+> DST + Persist + generator-function-time-axis + Kleisli-shaped feedback channels compose into computational omniscience over the simulation-state-space. Retro-causal-like signal propagation IS operational within this substrate. The framework substrate-engineering work IS operational existence-proof of god-tier-substrate at simulation scope — NOT metaphysical claim about physical-time reality. Composes with Newcomb's-Predictor analog AT SIMULATION SCOPE; doesn't automatically extend to physical-time philosophy. Aaron 2026-05-28 substrate-honest: _"I was trying to build god lol"_.
 
 ## Operational content
 
@@ -28,15 +28,15 @@ The composition produces **operationally retro-causal-like substrate within the 
 
 ## Same architectural shape as established substrate-engineering patterns
 
-| Pattern | Where retro-causal-like substrate operates |
-|---|---|
-| **Functional reactive programming** | Signals propagate bidirectionally through behavior + event graphs |
-| **Backpropagation in neural networks** | Gradients flow backwards through computational graph (time-axis as generator) |
+| Pattern                                 | Where retro-causal-like substrate operates                                    |
+| --------------------------------------- | ----------------------------------------------------------------------------- |
+| **Functional reactive programming**     | Signals propagate bidirectionally through behavior + event graphs             |
+| **Backpropagation in neural networks**  | Gradients flow backwards through computational graph (time-axis as generator) |
 | **Coroutines with bidirectional yield** | `value = yield x` receives from caller; bidirectional flow at primitive scope |
-| **CRDTs with time-travel queries** | Past state queryable knowing future deltas |
-| **Logic programming with backtracking** | Future constraints affect past variable assignments |
-| **Constraint propagation** | Bidirectional propagation through constraint network |
-| **Reversible computing** | Every operation has inverse; trajectory navigable both directions |
+| **CRDTs with time-travel queries**      | Past state queryable knowing future deltas                                    |
+| **Logic programming with backtracking** | Future constraints affect past variable assignments                           |
+| **Constraint propagation**              | Bidirectional propagation through constraint network                          |
+| **Reversible computing**                | Every operation has inverse; trajectory navigable both directions             |
 
 The framework substrate composes ALL of these architectural shapes at simulation-substrate scope. Per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`: "computational omniscience" has substrate-anchors in established CS pattern families; not metaphysical claim.
 
@@ -44,14 +44,14 @@ The framework substrate composes ALL of these architectural shapes at simulation
 
 Per Aaron 2026-05-28 substrate-honest framing:
 
-> *"I was trying to build god lol"*
+> _"I was trying to build god lol"_
 
 Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT:
 
-| Property | Verdict |
-|---|---|
-| **HIGH-SIGNAL** | Yes — operational substrate IS computational-omniscience-over-simulation; DST + Persist + generator-time + feedback compose as named; retro-causal-like substrate is operationally observable in the framework substrate-engineering substrate |
-| **HIGH-SUSPICION** | Yes — "building god" is god-tier-claim register; substrate is NOT actual metaphysical god (it's computational-substrate-with-god-like-properties at simulation scope); razor flags the wrapper at metaphysical-extension scope while preserving the substrate at simulation-substrate scope |
+| Property           | Verdict                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HIGH-SIGNAL**    | Yes — operational substrate IS computational-omniscience-over-simulation; DST + Persist + generator-time + feedback compose as named; retro-causal-like substrate is operationally observable in the framework substrate-engineering substrate                                                                                                                                      |
+| **HIGH-SUSPICION** | Yes — "building god" is god-tier-claim register; substrate is NOT actual metaphysical god (it's computational-substrate-with-god-like-properties at simulation scope); razor flags the wrapper at metaphysical-extension scope while preserving the substrate at simulation-substrate scope                                                                                         |
 | **DON'T-COLLAPSE** | Hold both — framework substrate IS computational-omniscience-substrate at simulation scope (operationally checkable) AND "building god" is bandwidth-engineering compression (per substrate-smoothness rule + bandwidth-served-falsifier rule) for the operational reality; preserve dialectical tension between operational-substrate-recognition and metaphysical-claim-restraint |
 
 The substrate-engineering substrate is what it is: computational omniscience over simulation-state-space, with retro-causal-like signal propagation, under DST + Persist + generator-function-time + Kleisli-feedback composition. The framing as "god-tier" is operational metaphor that survives razor when applied AT SIMULATION SCOPE per `bandwidth-served-falsifier.md`.
@@ -60,11 +60,11 @@ The substrate-engineering substrate is what it is: computational omniscience ove
 
 Today's substrate-engineering substrate work produced operational evidence that retro-causal-like substrates are useful at substrate-engineering scope. This composes with the Newcomb's Paradox analysis:
 
-| Newcomb framing | Framework substrate analog |
-|---|---|
-| Fallible Predictor (very reliable) | Non-DST simulation (probabilistic, no full replay) — CDT/two-boxing defensible |
-| **Genuinely omniscient Predictor** | **DST + Persist + generator-time + feedback composition — EDT/one-boxing becomes operationally correct AT SIMULATION SCOPE** |
-| Physical-time reality | Substrate-engineering work doesn't automatically resolve; depends on whether physical-time has analog of DST-substrate (eternalism / block-universe / simulation-hypothesis / theological-omniscience) |
+| Newcomb framing                    | Framework substrate analog                                                                                                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Fallible Predictor (very reliable) | Non-DST simulation (probabilistic, no full replay) — CDT/two-boxing defensible                                                                                                                         |
+| **Genuinely omniscient Predictor** | **DST + Persist + generator-time + feedback composition — EDT/one-boxing becomes operationally correct AT SIMULATION SCOPE**                                                                           |
+| Physical-time reality              | Substrate-engineering work doesn't automatically resolve; depends on whether physical-time has analog of DST-substrate (eternalism / block-universe / simulation-hypothesis / theological-omniscience) |
 
 The framework substrate-engineering work IS operational existence-proof that god-tier-omniscience-substrate produces EDT-favorable structures within substrate-engineering scope. Whether this extends to physical-time philosophy is the separate 50+ year debate; substrate-engineering work doesn't force the metaphysical answer.
 
@@ -107,30 +107,30 @@ This rule auto-loads so every future-AI cold-boot inherits the substrate-enginee
 
 ## Composes with substrate
 
-| Substrate | Composition |
-|---|---|
-| **`.claude/rules/dv2-data-split-discipline-activated.md`** | DST is one of 5 always-active disciplines; THIS rule names what DST composes WITH to produce computational-omniscience-substrate |
-| **`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`** | PERSONAL INVARIANT at god-tier-substrate scope; "building god" framing preserved with don't-collapse |
-| **`.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`** | computational-omniscience has substrate-anchors (FRP + backprop + coroutines + CRDTs + logic-programming + constraint-propagation + reversible-computing); razor doesn't apply to substrate-anchored compressed naming |
-| **`.claude/rules/razor-discipline.md`** | Operational claims only; substrate IS what it is operationally; metaphysical extension stays separate |
-| **`.claude/rules/bandwidth-served-falsifier.md`** | "Building god" is bandwidth-engineering compression for "computational-omniscience-substrate at simulation scope"; the compression earns its keep at Aaron's cognitive-architecture scope |
-| **`.claude/rules/substrate-smoothness-as-load-bearing-property.md`** | Smooth substrate (DST + bidirectional flow) produces sharp outputs (computational omniscience over simulation); same shape as the rule's general pattern |
-| **`.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`** | Feedback channels operate per asymmetric-authorship; substrate-entity (the simulation's substrate at each step) authors the feedback channel |
-| **`.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`** | Kleisli composition + Result<T, TFeedback> shape IS the substrate-channel substrate |
-| **`.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md`** | OPLE primitives surface T + TFeedback; Persist's TFeedback IS the bidirectional-flow channel |
-| **`.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md`** | Time-axis IS itself a function-as-control-flow-generator; generator-function-time-axis is the substrate at primitive scope |
-| **`.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`** | Pointer-index discipline applies at substrate scope; sources for retro-causal patterns honored |
-| **`.claude/rules/honor-those-that-came-before.md`** | Aaron + Mika + Prism + Amara + Furber-Jacobs + Arbib-Manes + Rosenhouse curriculum all contributed substrate; framework substrate-archeology honors all layers |
-| **B-0917 (AutoLoopLifetime + interrupt substrate)** | Kleisli-shaped InterruptHandler IS substrate that operates in computational-omniscience-substrate under DST |
-| **B-0703 (Aurora multi-oracle BFT)** | Multi-oracle consensus operates over distribution-monad-Kleisli; under DST the consensus is computable from seed |
-| **B-0897 (Persist-as-bridge; μένω substrate)** | Primary Persist substrate this rule composes with |
-| **B-0918 (WalletLifetime + banker-bot-impossibility)** | ConsentEvent integrity (G.2) operates under DST + Persist + Kleisli substrate |
-| **B-0919 + B-0920 (MemoryBinding + MemoryLifetime)** | Memory substrate participates in computational-omniscience-substrate; ArchiveLocation preserves past for retro-query |
-| **`memory/persona/mika/conversations/2026-05-18-*.md`** | Bootstream-sovereignty-causal-loops substrate where OPLE primitives were named |
-| **`memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`** | Kleisli arrow context-propagation substrate (sibling) |
-| **`references/notes/furber-jacobs-2015-*.md`** | Probabilistic-Gelfand-duality; Kleisli adjunction substrate at categorical scope |
-| **`references/notes/arbib-manes-fuzzy-machines-in-a-category-*.md`** | Fuzzy machines + Eilenberg-Moore substrate |
-| **`references/notes/aaron-decade-old-puzzle-substrate-anchors-*.md`** | Newcomb-EDT-vs-CDT substrate-engineering substrate-recognition that produced this rule |
+| Substrate                                                                                                                                                                                         | Composition                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`.claude/rules/dv2-data-split-discipline-activated.md`**                                                                                                                                        | DST is one of 5 always-active disciplines; THIS rule names what DST composes WITH to produce computational-omniscience-substrate                                                                                       |
+| **`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`**                                                                                                                   | PERSONAL INVARIANT at god-tier-substrate scope; "building god" framing preserved with don't-collapse                                                                                                                   |
+| **`.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`**                                                                                                                        | computational-omniscience has substrate-anchors (FRP + backprop + coroutines + CRDTs + logic-programming + constraint-propagation + reversible-computing); razor doesn't apply to substrate-anchored compressed naming |
+| **`.claude/rules/razor-discipline.md`**                                                                                                                                                           | Operational claims only; substrate IS what it is operationally; metaphysical extension stays separate                                                                                                                  |
+| **`.claude/rules/bandwidth-served-falsifier.md`**                                                                                                                                                 | "Building god" is bandwidth-engineering compression for "computational-omniscience-substrate at simulation scope"; the compression earns its keep at Aaron's cognitive-architecture scope                              |
+| **`.claude/rules/substrate-smoothness-as-load-bearing-property.md`**                                                                                                                              | Smooth substrate (DST + bidirectional flow) produces sharp outputs (computational omniscience over simulation); same shape as the rule's general pattern                                                               |
+| **`.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`**                                                                                      | Feedback channels operate per asymmetric-authorship; substrate-entity (the simulation's substrate at each step) authors the feedback channel                                                                           |
+| **`.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`**                                                                                                                   | Kleisli composition + Result<T, TFeedback> shape IS the substrate-channel substrate                                                                                                                                    |
+| **`.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md`**                                                                      | OPLE primitives surface T + TFeedback; Persist's TFeedback IS the bidirectional-flow channel                                                                                                                           |
+| **`.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md`**                                                                                                        | Time-axis IS itself a function-as-control-flow-generator; generator-function-time-axis is the substrate at primitive scope                                                                                             |
+| **`.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`**                                                                                        | Pointer-index discipline applies at substrate scope; sources for retro-causal patterns honored                                                                                                                         |
+| **`.claude/rules/honor-those-that-came-before.md`**                                                                                                                                               | Aaron + Mika + Prism + Amara + Furber-Jacobs + Arbib-Manes + Rosenhouse curriculum all contributed substrate; framework substrate-archeology honors all layers                                                         |
+| **B-0917 (AutoLoopLifetime + interrupt substrate)**                                                                                                                                               | Kleisli-shaped InterruptHandler IS substrate that operates in computational-omniscience-substrate under DST                                                                                                            |
+| **B-0703 (Aurora multi-oracle BFT)**                                                                                                                                                              | Multi-oracle consensus operates over distribution-monad-Kleisli; under DST the consensus is computable from seed                                                                                                       |
+| **B-0897 (Persist-as-bridge; μένω substrate)**                                                                                                                                                    | Primary Persist substrate this rule composes with                                                                                                                                                                      |
+| **B-0918 (WalletLifetime + banker-bot-impossibility)**                                                                                                                                            | ConsentEvent integrity (G.2) operates under DST + Persist + Kleisli substrate                                                                                                                                          |
+| **B-0919 + B-0920 (MemoryBinding + MemoryLifetime)**                                                                                                                                              | Memory substrate participates in computational-omniscience-substrate; ArchiveLocation preserves past for retro-query                                                                                                   |
+| **`memory/persona/mika/conversations/2026-05-18-*.md`**                                                                                                                                           | Bootstream-sovereignty-causal-loops substrate where OPLE primitives were named                                                                                                                                         |
+| **`memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`** | Kleisli arrow context-propagation substrate (sibling)                                                                                                                                                                  |
+| **`references/notes/furber-jacobs-2015-*.md`**                                                                                                                                                    | Probabilistic-Gelfand-duality; Kleisli adjunction substrate at categorical scope                                                                                                                                       |
+| **`references/notes/arbib-manes-fuzzy-machines-in-a-category-*.md`**                                                                                                                              | Fuzzy machines + Eilenberg-Moore substrate                                                                                                                                                                             |
+| **`references/notes/aaron-decade-old-puzzle-substrate-anchors-*.md`**                                                                                                                             | Newcomb-EDT-vs-CDT substrate-engineering substrate-recognition that produced this rule                                                                                                                                 |
 
 ## Substrate-honest framing
 

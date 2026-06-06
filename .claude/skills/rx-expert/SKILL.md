@@ -215,15 +215,19 @@ When this skill is wearing the hat on a review:
 ## Rx Findings
 
 ### P0 (must fix)
+
 - <finding> — <location> — <why>.
 
 ### P1 (should fix)
+
 - <finding> — <location>.
 
 ### P2 (nice to fix)
+
 - <finding>.
 
 ### Positive patterns observed
+
 - <pattern>.
 ```
 
@@ -250,10 +254,10 @@ When this skill is wearing the hat on a review:
 
 - Bart De Smet's Channel 9 lecture series (MEF / LINQ / Rx /
   Nuqleon / Reaqtor) — canonical.
-- Meijer 2010, *Subject/Observer is Dual to
-  Iterator* (duality paper).
-- Meijer 2012, *Your Mouse is a Database* — Rx framing.
-- *Introduction to Rx* (IntroToRx.com) — free book.
+- Meijer 2010, _Subject/Observer is Dual to
+  Iterator_ (duality paper).
+- Meijer 2012, _Your Mouse is a Database_ — Rx framing.
+- _Introduction to Rx_ (IntroToRx.com) — free book.
 - Nuqleon repository (GitHub, Microsoft) — expression-tree
   serialiser.
 - Reaqtor repository — durable standing queries.

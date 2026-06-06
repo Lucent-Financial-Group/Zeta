@@ -53,14 +53,20 @@ function main() {
   const total = reports.length;
   const droppedEstimate = Math.max(0, total - 200); // rough, matches original symptom
 
-  console.log(JSON.stringify({
-    totalSkills: total,
-    exceedingBudget: exceeding.length,
-    droppedEstimate,
-    maxLen: Math.max(...reports.map(r => r.descLen)),
-    sampleExceeding: exceeding.slice(0, 5).map(r => ({ name: r.name, len: r.descLen, sample: r.sample })),
-    note: "B-0347 smallest slice: audit tool. Next slice: carve + re-run.",
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        totalSkills: total,
+        exceedingBudget: exceeding.length,
+        droppedEstimate,
+        maxLen: Math.max(...reports.map((r) => r.descLen)),
+        sampleExceeding: exceeding.slice(0, 5).map((r) => ({ name: r.name, len: r.descLen, sample: r.sample })),
+        note: "B-0347 smallest slice: audit tool. Next slice: carve + re-run.",
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 main();

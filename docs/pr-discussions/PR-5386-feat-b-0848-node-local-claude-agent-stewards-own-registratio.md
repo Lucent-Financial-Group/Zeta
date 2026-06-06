@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron's verbatim proposal in response to PR #5380 being auto-merge-armed + blocked on 1 Copilot thread:
 
-> *\"oh shit is that pr fully automatic?  can we make an claude agent get installed and do what you do on there but it's main goal is just to get it to steward the registerain pr for now and then after it's checked in report on the status of the k8s cluster, i can interactive login like gh if that works.\"*
+> _\"oh shit is that pr fully automatic? can we make an claude agent get installed and do what you do on there but it's main goal is just to get it to steward the registerain pr for now and then after it's checked in report on the status of the k8s cluster, i can interactive login like gh if that works.\"_
 
 This is the **first concrete instance of B-0847** (each Zeta AI gets own GitHub identity) — node-local Claude IS the AI that needs the identity; PR-stewardship IS the first work that needs the substrate-honest attribution.
 
@@ -42,14 +42,14 @@ Mirror of iter-5.4.0 \`gh auth login\`: operator SSHes to node → \`claude logi
 
 ## 5-phase landing
 
-| Phase | Scope | Status |
-|---|---|---|
-| 0 | substrate row | this PR |
-| 1 | manual install on node-e5a176 + PR-stewardship validation | next |
-| 2 | K8s health reporter scope expansion | after Phase 1 + cluster up |
-| 3 | NixOS module + multi-node composability | after Phase 2 |
-| 4 | per-AI GitHub identity migration (composes B-0847) | after Ilyana review |
-| 5 | cluster-wide coordination (composes B-0796 Twilio sibling) | long-horizon |
+| Phase | Scope                                                      | Status                     |
+| ----- | ---------------------------------------------------------- | -------------------------- |
+| 0     | substrate row                                              | this PR                    |
+| 1     | manual install on node-e5a176 + PR-stewardship validation  | next                       |
+| 2     | K8s health reporter scope expansion                        | after Phase 1 + cluster up |
+| 3     | NixOS module + multi-node composability                    | after Phase 2              |
+| 4     | per-AI GitHub identity migration (composes B-0847)         | after Ilyana review        |
+| 5     | cluster-wide coordination (composes B-0796 Twilio sibling) | long-horizon               |
 
 ## Composes with
 

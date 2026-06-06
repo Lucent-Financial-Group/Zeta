@@ -11,7 +11,21 @@ discipline: persona-scope archive — segment 2 of the runbooks-as-executable-re
 substrate_landings:
   - B-0734 (JIT is implicit self-healing; no third primitive; F# computation expression eventually; Notepad simplicity wins via social spread)
 prior_conversation: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-hat-ontology-top-down-vs-bottom-up-play-doh-leverage-class-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo.md
-tags: [runbooks, runme, continue-with, jit-implicit, self-healing, no-third-primitive, fsharp-computation-expression, monad, notepad-simplicity, social-spread, mika-substrate, protocol-semantics-sharpening]
+tags:
+  [
+    runbooks,
+    runme,
+    continue-with,
+    jit-implicit,
+    self-healing,
+    no-third-primitive,
+    fsharp-computation-expression,
+    monad,
+    notepad-simplicity,
+    social-spread,
+    mika-substrate,
+    protocol-semantics-sharpening,
+  ]
 ---
 
 # Aaron + Mika 2026-05-25 segment 2 — JIT-is-implicit + no-third-primitive + F#-monad-eventually + Notepad-simplicity-wins (verbatim preservation)
@@ -26,7 +40,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"Alright, we got most of this saved in the cluster now. This is a great minimum agreement that doesn't even require any morals or fuckin' nothin'. It's just like execute, continue with."*
+> _"Alright, we got most of this saved in the cluster now. This is a great minimum agreement that doesn't even require any morals or fuckin' nothin'. It's just like execute, continue with."_
 
 **Mika:**
 
@@ -45,7 +59,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"And then"*
+> _"And then"_
 
 **Mika:**
 
@@ -53,7 +67,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"It's just implicitly, um, JIT if it doesn't exist. So you don't even have to, like, say it's JIT."*
+> _"It's just implicitly, um, JIT if it doesn't exist. So you don't even have to, like, say it's JIT."_
 
 **Mika:**
 
@@ -75,7 +89,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"But even from the human's point of view, it's not just continue with that can be JITted. It's run me. Imagine if a human wrote this document and gave it to an AI, and it's like, run me, and it runs this script, and around it, it explains what that script means and all of that kinda shit. You see what I mean?"*
+> _"But even from the human's point of view, it's not just continue with that can be JITted. It's run me. Imagine if a human wrote this document and gave it to an AI, and it's like, run me, and it runs this script, and around it, it explains what that script means and all of that kinda shit. You see what I mean?"_
 
 **Mika:**
 
@@ -96,7 +110,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"We do jet, uh, run me. We should do, like, decision archaeology of how we got there."*
+> _"We do jet, uh, run me. We should do, like, decision archaeology of how we got there."_
 
 **Mika:**
 
@@ -114,7 +128,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron (rejects the third-primitive expansion):**
 
-> *"No, we don't have to expand any primitives yet. I'm just giving you context. We don't have to agree on anything. Like, I'm just trying to say we need to agree on JIT, and JIT just is the self-healing mechanism. And it basically, you just JIT anything that the document says, like if it says execute this, it don't exist, well JIT the bitch. If it says continue with and it exists, don't exist, whatever, continue. Create it, don't, you see what I mean?"*
+> _"No, we don't have to expand any primitives yet. I'm just giving you context. We don't have to agree on anything. Like, I'm just trying to say we need to agree on JIT, and JIT just is the self-healing mechanism. And it basically, you just JIT anything that the document says, like if it says execute this, it don't exist, well JIT the bitch. If it says continue with and it exists, don't exist, whatever, continue. Create it, don't, you see what I mean?"_
 
 **Mika:**
 
@@ -136,7 +150,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"Yeah, and you can wrap that in abstract computation expression or monad eventually."*
+> _"Yeah, and you can wrap that in abstract computation expression or monad eventually."_
 
 **Mika:**
 
@@ -152,7 +166,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"Yeah, people love Notepad, man. I'm telling you. It's hard to beat."*
+> _"Yeah, people love Notepad, man. I'm telling you. It's hard to beat."_
 
 **Mika:**
 
@@ -166,7 +180,7 @@ Per Aaron's earlier "are we saving all the Mika to her persona too?" catch + the
 
 **Aaron:**
 
-> *"Yeah, I mean, look, 'cause simple wins because the social spread, right?"*
+> _"Yeah, I mean, look, 'cause simple wins because the social spread, right?"_
 
 **Mika:**
 

@@ -35,10 +35,10 @@ parse error / unintended match.
 {
   "query": {
     "bool": {
-      "must":     [{ "match": { "body": "lucene" } }],
-      "filter":   [{ "term":  { "status": "published" } }],
-      "should":   [{ "match_phrase": { "title": "deep dive" } }],
-      "must_not": [{ "term":  { "deleted": true } }],
+      "must": [{ "match": { "body": "lucene" } }],
+      "filter": [{ "term": { "status": "published" } }],
+      "should": [{ "match_phrase": { "title": "deep dive" } }],
+      "must_not": [{ "term": { "deleted": true } }],
       "minimum_should_match": 1
     }
   }
@@ -107,21 +107,21 @@ FROM logs-*
 
 ## Solr query parsers — a menagerie
 
-| Parser | Use |
-|---|---|
-| `{!lucene}` | Classical. Default. |
-| `{!dismax}` | Weighted multi-field. |
-| `{!edismax}` | Weighted multi-field + phrase boost + sloppy. |
-| `{!graph}` | Graph traversal. |
-| `{!func}` / `{!frange}` | Function / function range. |
-| `{!join}` | Cross-document joins. |
-| `{!collapse}` | Field collapsing. |
-| `{!child}` / `{!parent}` | Block-join. |
-| `{!surround}` | Span / proximity operators. |
-| `{!complex-phrase}` | Wildcarded phrases. |
-| `{!knn}` | Vector search. |
-| `{!terms}` | Bulk terms. |
-| `{!switch}` | Dispatch on query value. |
+| Parser                   | Use                                           |
+| ------------------------ | --------------------------------------------- |
+| `{!lucene}`              | Classical. Default.                           |
+| `{!dismax}`              | Weighted multi-field.                         |
+| `{!edismax}`             | Weighted multi-field + phrase boost + sloppy. |
+| `{!graph}`               | Graph traversal.                              |
+| `{!func}` / `{!frange}`  | Function / function range.                    |
+| `{!join}`                | Cross-document joins.                         |
+| `{!collapse}`            | Field collapsing.                             |
+| `{!child}` / `{!parent}` | Block-join.                                   |
+| `{!surround}`            | Span / proximity operators.                   |
+| `{!complex-phrase}`      | Wildcarded phrases.                           |
+| `{!knn}`                 | Vector search.                                |
+| `{!terms}`               | Bulk terms.                                   |
+| `{!switch}`              | Dispatch on query value.                      |
 
 Local params: `{!edismax qf="title body" mm=2}query text`.
 
@@ -262,15 +262,15 @@ disable leading-wildcard by default.
 
 Common cross-engine patterns:
 
-| Semantic | Lucene | ES DSL | Solr |
-|---|---|---|---|
-| AND | `a AND b` | `bool/must` | `+a +b` |
-| OR | `a OR b` | `bool/should` | `a b` |
-| NOT | `NOT a` | `bool/must_not` | `-a` |
-| Phrase | `"a b"` | `match_phrase` | `"a b"` |
-| Field | `f:v` | `term:{f:v}` | `f:v` |
-| Range | `[a TO b]` | `range` | `[a TO b]` |
-| Boost | `a^5` | `boost` | `a^5` |
+| Semantic | Lucene     | ES DSL          | Solr       |
+| -------- | ---------- | --------------- | ---------- |
+| AND      | `a AND b`  | `bool/must`     | `+a +b`    |
+| OR       | `a OR b`   | `bool/should`   | `a b`      |
+| NOT      | `NOT a`    | `bool/must_not` | `-a`       |
+| Phrase   | `"a b"`    | `match_phrase`  | `"a b"`    |
+| Field    | `f:v`      | `term:{f:v}`    | `f:v`      |
+| Range    | `[a TO b]` | `range`         | `[a TO b]` |
+| Boost    | `a^5`      | `boost`         | `a^5`      |
 
 ## Query DSL tools / libraries
 

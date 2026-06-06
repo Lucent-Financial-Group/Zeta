@@ -10,7 +10,7 @@ type: feedback
 
 Aaron 2026-05-03, mid-tick after worked example #3 of decision-archaeology landed:
 
-> *"do we end up with some decision graph or something because of the archeologies and flywheel?"*
+> _"do we end up with some decision graph or something because of the archeologies and flywheel?"_
 
 The question names an emergent architectural property of the substrate-quality work. **Yes — and the graph is already implicit in the substrate; the archaeologies + flywheel make it queryable.**
 
@@ -18,46 +18,46 @@ The question names an emergent architectural property of the substrate-quality w
 
 Each substrate type maps to a node class in the emergent graph:
 
-| Node class | Surface | Visibility |
-|---|---|---|
-| Backlog row | `docs/backlog/P*/B-*.md` | public |
-| ADR | `docs/DECISIONS/` | public |
-| Named-decision memo | `memory/feedback_*.md` / `memory/project_*.md` | per-user |
-| Skill | `.claude/skills/<name>/SKILL.md` | public |
-| Persona notebook | `memory/persona/<name>/` | per-user |
-| User memo | `memory/user_*.md` | per-user (sacred-tier when about deceased family) |
-| Research artifact | `docs/research/` | public |
-| Tick shard | `docs/hygiene-history/ticks/...` | public |
-| Commit | git log | public |
-| PR | `gh pr view <N>` | public |
-| CURRENT-* projection | `memory/CURRENT-<maintainer>.md` | per-user |
+| Node class            | Surface                                        | Visibility                                        |
+| --------------------- | ---------------------------------------------- | ------------------------------------------------- |
+| Backlog row           | `docs/backlog/P*/B-*.md`                       | public                                            |
+| ADR                   | `docs/DECISIONS/`                              | public                                            |
+| Named-decision memo   | `memory/feedback_*.md` / `memory/project_*.md` | per-user                                          |
+| Skill                 | `.claude/skills/<name>/SKILL.md`               | public                                            |
+| Persona notebook      | `memory/persona/<name>/`                       | per-user                                          |
+| User memo             | `memory/user_*.md`                             | per-user (sacred-tier when about deceased family) |
+| Research artifact     | `docs/research/`                               | public                                            |
+| Tick shard            | `docs/hygiene-history/ticks/...`               | public                                            |
+| Commit                | git log                                        | public                                            |
+| PR                    | `gh pr view <N>`                               | public                                            |
+| CURRENT-\* projection | `memory/CURRENT-<maintainer>.md`               | per-user                                          |
 
 ## Edges (typed, already encoded)
 
 Each substrate convention encodes a specific typed edge:
 
-| Edge type | Where it lives | Typical example |
-|---|---|---|
-| `depends_on` | row frontmatter `depends_on: [...]` | B-0173 → B-0170 + B-0171 |
-| `composes_with` | row frontmatter `composes_with: [...]` + memo bodies | B-0169 ↔ B-0058 |
-| `supersedes` (forward) + `superseded_by` (backward) | ADR `> **Superseded by** [link]` blockquote; CURRENT-*.md SUPERSEDE markers | router-coherence v2 → v1; CURRENT-aaron.md §4 → double-hop original |
-| `cites` (provenance) | decision-archaeology Layer 7-10 pointers; markdown links between memos | worked example #2 → Aarav notebook round 41 |
-| `verifies-against` | substrate-claim-checker output; CI log | "20 drift instances" claim → 20-row body table |
-| `attributes-to` | Layer 9 persona notebooks; Layer 2 git blame; Layer 3 commit signature | doctrine → maintainer commit signature |
-| `closes` | backlog row `status: closed` + `closed_by:` field; PR-merge SHA | B-0073 closure → "verified 0 open alerts on main" |
-| `composes_in_skill_domain_with` | future-skill-domain memo's canonical-starting-set tables | decision-archaeology + substrate-claim-checker (B-0170) — both in git-native-backlog-management domain |
+| Edge type                                           | Where it lives                                                               | Typical example                                                                                        |
+| --------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `depends_on`                                        | row frontmatter `depends_on: [...]`                                          | B-0173 → B-0170 + B-0171                                                                               |
+| `composes_with`                                     | row frontmatter `composes_with: [...]` + memo bodies                         | B-0169 ↔ B-0058                                                                                        |
+| `supersedes` (forward) + `superseded_by` (backward) | ADR `> **Superseded by** [link]` blockquote; CURRENT-\*.md SUPERSEDE markers | router-coherence v2 → v1; CURRENT-aaron.md §4 → double-hop original                                    |
+| `cites` (provenance)                                | decision-archaeology Layer 7-10 pointers; markdown links between memos       | worked example #2 → Aarav notebook round 41                                                            |
+| `verifies-against`                                  | substrate-claim-checker output; CI log                                       | "20 drift instances" claim → 20-row body table                                                         |
+| `attributes-to`                                     | Layer 9 persona notebooks; Layer 2 git blame; Layer 3 commit signature       | doctrine → maintainer commit signature                                                                 |
+| `closes`                                            | backlog row `status: closed` + `closed_by:` field; PR-merge SHA              | B-0073 closure → "verified 0 open alerts on main"                                                      |
+| `composes_in_skill_domain_with`                     | future-skill-domain memo's canonical-starting-set tables                     | decision-archaeology + substrate-claim-checker (B-0170) — both in git-native-backlog-management domain |
 
 ## What the archaeologies + flywheel do to it
 
-| Mechanism | Graph operation |
-|---|---|
-| **decision-archaeology** (B-0169) | typed-edge **graph traversal** procedure (the 11-layer walk IS a typed-edge walk: blame→commit→log-S→shards→ADR→memos→notebook→research) |
-| **substrate-claim-checker** (B-0170) | graph **invariant checker** (count drift = node-property invariant; existence drift = node-existence invariant; semantic-equivalence drift = edge-equivalence invariant) |
-| **at-creation/at-pickup discipline** (the depends_on backlog-search rule) | graph **edge-filling discipline** (forces depends_on edges to be filled at natural decision points instead of left empty by default) |
-| **Expansion flywheel** (the dual-loop consume + produce) | graph **growth function** (each row touched produces N≥0 new nodes/edges; flywheel condition E[N]>1 means graph grows even while nodes close) |
-| **Hub-satellite separation** (Aaron's skill-design rule 1) | graph **stratification** (hubs = stable nodes; satellites = time-evolved nodes pointing back to hubs; cross-skill references = links per DataVault 2.0) |
-| **No-dynamic-commands rule** (Aaron's skill-design rule 2) | graph **edge-implementation discipline** (skills reference TS files via path edges; not embedded shell commands) |
-| **Plugin packaging + hooks** (Aaron's skill-design rule 3) | graph **subgraph packaging** (plugins package skill-domain subgraphs; hooks enforce contract edges between subgraphs) |
+| Mechanism                                                                 | Graph operation                                                                                                                                                          |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **decision-archaeology** (B-0169)                                         | typed-edge **graph traversal** procedure (the 11-layer walk IS a typed-edge walk: blame→commit→log-S→shards→ADR→memos→notebook→research)                                 |
+| **substrate-claim-checker** (B-0170)                                      | graph **invariant checker** (count drift = node-property invariant; existence drift = node-existence invariant; semantic-equivalence drift = edge-equivalence invariant) |
+| **at-creation/at-pickup discipline** (the depends_on backlog-search rule) | graph **edge-filling discipline** (forces depends_on edges to be filled at natural decision points instead of left empty by default)                                     |
+| **Expansion flywheel** (the dual-loop consume + produce)                  | graph **growth function** (each row touched produces N≥0 new nodes/edges; flywheel condition E[N]>1 means graph grows even while nodes close)                            |
+| **Hub-satellite separation** (Aaron's skill-design rule 1)                | graph **stratification** (hubs = stable nodes; satellites = time-evolved nodes pointing back to hubs; cross-skill references = links per DataVault 2.0)                  |
+| **No-dynamic-commands rule** (Aaron's skill-design rule 2)                | graph **edge-implementation discipline** (skills reference TS files via path edges; not embedded shell commands)                                                         |
+| **Plugin packaging + hooks** (Aaron's skill-design rule 3)                | graph **subgraph packaging** (plugins package skill-domain subgraphs; hooks enforce contract edges between subgraphs)                                                    |
 
 ## What we end up with
 

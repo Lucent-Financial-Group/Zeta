@@ -3,9 +3,9 @@
 Every unresolved reviewer finding across rounds lives here until
 it's fixed, re-scoped, or explicitly declined (in which case it
 moves to `docs/WONT-DO.md`). This file is the counterpart to
-`docs/BACKLOG.md`: BACKLOG holds *features and research*; BUGS
-holds *things that are broken or misleading in shipped code
-and docs*.
+`docs/BACKLOG.md`: BACKLOG holds _features and research_; BUGS
+holds _things that are broken or misleading in shipped code
+and docs_.
 
 Entries are current-state. When a bug is fixed, **delete the
 entry entirely** — don't leave "fixed in round N" crud. The
@@ -14,8 +14,10 @@ fix shows up in `docs/ROUND-HISTORY.md`; this file reads clean.
 ## Format
 
 Each entry:
+
 ```markdown
 ### <short title>
+
 - **Site:** `file:line` (the authoritative location)
 - **Found:** <round> by <reviewer expert name>
 - **Severity:** P0 | P1 | P2

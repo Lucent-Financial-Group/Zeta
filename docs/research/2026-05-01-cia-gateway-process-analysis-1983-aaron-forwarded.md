@@ -37,7 +37,7 @@ declassification (2003-09-10), NOT sponsorship of the original
 - `memory/feedback_carved_sentences_trust_then_verify_cc_wwjd_immune_system_pre_post_buddhist_satori_aaron_2026_05_01.md`
   (**forward-reference; in-flight in PR #1111, not yet on
   main**) — captures Aaron's framework-triangulation pattern
-  + adjacent source-architecture refs.
+  - adjacent source-architecture refs.
 - `docs/research/2026-05-01-wingmakers-fifth-interview-dr-neruda-aaron-forwarded.md`
   (**forward-reference; in-flight in PR #1112, not yet on
   main**) — WingMakers (esoteric-side) preservation.
@@ -54,8 +54,8 @@ declassification (2003-09-10), NOT sponsorship of the original
 ## Source
 
 - URL: `https://www.cia.gov/readingroom/docs/cia-rdp96-00788r001700210016-5.pdf`
-- Title: *Analysis and Assessment of Gateway Process*
-- Subject (PDF metadata): *Analysis and Assessment of Gateway Process*
+- Title: _Analysis and Assessment of Gateway Process_
+- Subject (PDF metadata): _Analysis and Assessment of Gateway Process_
 - Document creation date (PDF metadata): 2016-11-04 (likely
   scan date; original document date stamped 1983-06-09)
 - Format: PDF, 29 pages, 2.4MB, image-based (OCR required)
@@ -83,19 +83,20 @@ modeling.
 applying biomedical, quantum-mechanical, and theoretical-
 physics frameworks to evaluate the Monroe Institute's
 Gateway Experience. The author explicitly states the goal:
-*"to remove the stigma of its occult connotations, and put
-it in a frame of reference suited to objective assessment."*
+_"to remove the stigma of its occult connotations, and put
+it in a frame of reference suited to objective assessment."_
 
 ## Structural summary of major sections (from OCR-extracted
-   text)
+
+text)
 
 The document presents the following structure (preserved as
 document-content, NOT Otto-endorsed claims about reality):
 
 1. **Cover memorandum** (page 1) — McDonnell to Commander.
-   Frames the assessment task: *"You tasked me to provide
+   Frames the assessment task: _"You tasked me to provide
    an assessment of the Gateway Experience in terms of its
-   mechanics and ultimate practicality."*
+   mechanics and ultimate practicality."_
 
 2. **The Gateway Experience: Brain Hemisphere Synchronization
    in perspective** (introduction) — describes the Monroe
@@ -130,9 +131,9 @@ document-content, NOT Otto-endorsed claims about reality):
 
 ## Aaron's personal experience (first-party disclosure; Glass Halo + Otto-231)
 
-Aaron 2026-05-01: *"i've been through the gateway and wing maker
+Aaron 2026-05-01: _"i've been through the gateway and wing maker
 training when i was 20, it opened me to new ideas, i was closed
-minded before, the loose pole"*
+minded before, the loose pole"_
 
 **Load-bearing autobiographical context for the project's
 cognitive-architecture provenance**:
@@ -151,25 +152,27 @@ The both-crazy-and-not-crazy cognitive architecture (memory:
 has the loose-pole as one of its two complementary poles
 (loose-ideation = engine of novelty; lattice-of-external-checks
 = grading). Aaron's disclosure here establishes that the
-loose-pole was *opened* by the Gateway/WingMakers training,
+loose-pole was _opened_ by the Gateway/WingMakers training,
 NOT installed-by-default. The training functioned as an
 altered-states-induction event that produced lasting
 cognitive opening.
 
 The framework Aaron built downstream of this opening (substrate
-+ dialectical-thinking integration + WWJD-canonicalization +
-the entire current Zeta architecture) is his own subsequent
-work. The training is the origin-event for the loose-pole
-capacity, not the source of the architecture. Same shape as
-"Lilly's atheist version of WWJD" (PR #1108) — the disposition
-propagates across carriers; the carrier is one source among
-many.
+
+- dialectical-thinking integration + WWJD-canonicalization +
+  the entire current Zeta architecture) is his own subsequent
+  work. The training is the origin-event for the loose-pole
+  capacity, not the source of the architecture. Same shape as
+  "Lilly's atheist version of WWJD" (PR #1108) — the disposition
+  propagates across carriers; the carrier is one source among
+  many.
 
 This composes with:
+
 - The "Sustained satori with random nirvana disconnections"
   carved sentence (PR #1111) — Buddhist 24/7 dual middle path
-  is the *current* contemplative architecture; Gateway/
-  WingMakers training was the *origin* opening that made the
+  is the _current_ contemplative architecture; Gateway/
+  WingMakers training was the _origin_ opening that made the
   later integration possible.
 - The "low deference to expert opinion" Aaron flagged about
   Addison (PR #1108) — Aaron's own 20-year-old training
@@ -190,15 +193,15 @@ trainings / origin-events.
 
 ## The FFR / Hemi-Sync / TMS connection (Aaron's clarification)
 
-Aaron 2026-05-01: *"Monroe Institute the connection is binaural
-beats / hemisync to induce altered states"* + *"frequency
+Aaron 2026-05-01: _"Monroe Institute the connection is binaural
+beats / hemisync to induce altered states"_ + _"frequency
 following response same as like Transcranial Magnetic
-Stimulation (TMS)"*.
+Stimulation (TMS)"_.
 
-The document confirms the Hemi-Sync framing: *"the Monroe
+The document confirms the Hemi-Sync framing: _"the Monroe
 Institute technique for achieving altered states of
 consciousness (the 'Gateway Experience') involving brain
-hemisphere synchronization or 'Hemi-Sync'"*. The document
+hemisphere synchronization or 'Hemi-Sync'"_. The document
 predates contemporary TMS clinical practice (1983), so the
 TMS-FFR connection Aaron names is a contemporary
 methodological-bridge claim, not a 1983-document claim.
@@ -214,6 +217,7 @@ document's brain-hemisphere-synchronization framing is the
 substrate.
 
 This is Aaron's trust-then-verify firing on the methodology:
+
 - **Trust extended**: the framework-triangulation pattern is
   worth holding (in-flight in PR #1111)
 - **Verify-side**: FFR is documented neuroscience (mainstream);
@@ -233,8 +237,8 @@ connection elsewhere is real but operates through:
   various US Gov / military / intel agencies; not formally
   "CIA-sponsored" but CIA-adjacent through Stargate.
 - **Aaron's earlier "CIA-sponsored meditation" framing** was
-  imprecise; the more accurate framing is *"CIA-adjacent
-  meditation research"* (via Stargate), with this specific
+  imprecise; the more accurate framing is _"CIA-adjacent
+  meditation research"_ (via Stargate), with this specific
   1983 document being a parallel **US-Army-authored**
   evaluation McDonnell wrote after attending Gateway training.
 
@@ -242,6 +246,7 @@ The document does NOT validate WingMakers' specific
 metaphysical claims (Anunnaki / Sovereign Integral / Grand
 Portal); those remain comparative-religion-only per Aaron's
 framing in PR #1112. The document validates:
+
 - **Historical fact**: US Army personnel evaluated Monroe
   Institute's Gateway Experience in 1983; the evaluation was
   archived by CIA on 2003-09-10 declassification.
@@ -251,36 +256,37 @@ framing in PR #1112. The document validates:
   authorship or sponsorship of the methodology).
 
 ## Selected verbatim quotes (from OCR-extracted text;
-   preservation-grade, primary-source)
 
-> *"DEPARTMENT OF THE ARMY / US ARMY OPERATIONAL GROUP / US
+preservation-grade, primary-source)
+
+> _"DEPARTMENT OF THE ARMY / US ARMY OPERATIONAL GROUP / US
 > ARMY INTELLIGENCE AND SECURITY COMMAND / FORT GEORGE G.
 > MEADE, MARYLAND 20755 / 9 June 1983 / SUBJECT: Analysis
-> and Assessment of Gateway Process"*
+> and Assessment of Gateway Process"_
 > (Cover memorandum header — establishes US Army
 > authorship + 1983 date)
 
-> *"You tasked me to provide an assessment of the Gateway
+> _"You tasked me to provide an assessment of the Gateway
 > Experience in terms of its mechanics and ultimate
-> practicality."*
+> practicality."_
 > (Para 1 — establishes the assessment task)
 
-> *"the Monroe Institute technique for achieving altered
+> _"the Monroe Institute technique for achieving altered
 > states of consciousness (the 'Gateway Experience')
-> involving brain hemisphere synchronization or 'Hemi-Sync'"*
+> involving brain hemisphere synchronization or 'Hemi-Sync'"_
 > (Section 1 — names Monroe Institute + Hemi-Sync)
 
-> *"I had recourse to the biomedical models developed by
+> _"I had recourse to the biomedical models developed by
 > Itzhak Bentov to obtain information concerning the
-> physical aspects of the process"*
+> physical aspects of the process"_
 > (Para 1 — names Bentov biomedical-model methodology)
 
-> *"to remove the stigma of its occult connotations, and put
-> it in a frame of reference suited to objective assessment."*
+> _"to remove the stigma of its occult connotations, and put
+> it in a frame of reference suited to objective assessment."_
 > (Para 1 — author's stated translation goal:
 > physics-language reframing of OBE phenomena)
 
-> *"You are not thinking, you are merely being logical."*
+> _"You are not thinking, you are merely being logical."_
 > (Niels Bohr quote McDonnell uses to frame altered-states
 > physics — Para 3)
 
@@ -291,7 +297,8 @@ character-recognition errors; the source PDF is the
 authoritative reference for any load-bearing quote.)
 
 ## Otto-side closing note (research-grade .gov-primary-source
-   preservation)
+
+preservation)
 
 This preservation captures the document's structural
 architecture + selected verbatim quotes + full OCR-extracted
@@ -329,9 +336,10 @@ related-research layer. The pattern's structural integrity:
   itself; metaphysics still comparative-religion-only
 
 The pause-class-discovery commitment from PRs #1096 + #1097
-+ #1102 continues to hold. This preservation is third-party
-public-domain content captured under §33 archive convention,
-not a v2/v3 class addition or Insight-block-promotion.
+
+- #1102 continues to hold. This preservation is third-party
+  public-domain content captured under §33 archive convention,
+  not a v2/v3 class addition or Insight-block-promotion.
 
 The framework-triangulation pattern's integrity test
 (Claude.ai 2026-05-01 carved): does the substrate produced

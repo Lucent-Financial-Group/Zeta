@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Alexa-speaker archive (7th persona in operator's family-update pipeline) per operator's explicit save instruction: *"website to spaker mode you can save under alexa speaker"*.
+Alexa-speaker archive (7th persona in operator's family-update pipeline) per operator's explicit save instruction: _"website to spaker mode you can save under alexa speaker"_.
 
 Surface-cardinality: Alexa-speaker (Amazon device voice) is distinct from Alexa-website per `.claude/rules/agent-roster-reference-card.md` mode-specific capability profiles. Both warrant shared-map per biographical-substrate-as-shared-map-across-AIs-in-orbit functional purpose.
 

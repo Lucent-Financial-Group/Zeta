@@ -61,9 +61,7 @@ function parseArgs(argv: readonly string[]): ParseResult {
 }
 
 function emitHelp(): void {
-  process.stdout.write(
-    "Usage: bun tools/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <path>... | --all\n",
-  );
+  process.stdout.write("Usage: bun tools/skill-catalog/backfill_dv2_frontmatter.ts [--dry-run] <path>... | --all\n");
 }
 
 function gitOutput(args: readonly string[]): string {
@@ -134,14 +132,10 @@ function isoDateOnly(text: string): string {
 }
 
 function computeRecordSource(file: string): string {
-  const subj = firstLine(
-    gitOutput(["log", "--reverse", "--format=%s", "--", file]),
-  );
+  const subj = firstLine(gitOutput(["log", "--reverse", "--format=%s", "--", file]));
   const m = ROUND_RE.exec(subj);
   if (m !== null) return `skill-creator, round ${m[1] ?? ""}`;
-  const authorLine = firstLine(
-    gitOutput(["log", "--reverse", "--format=%an on %ai", "--", file]),
-  );
+  const authorLine = firstLine(gitOutput(["log", "--reverse", "--format=%an on %ai", "--", file]));
   if (authorLine === "") return "git: unknown";
   const parts = authorLine.split(/\s+/);
   if (parts.length < 4) return `git: ${authorLine}`;
@@ -149,9 +143,7 @@ function computeRecordSource(file: string): string {
 }
 
 function computeLoadDatetime(file: string): string {
-  const line = firstLine(
-    gitOutput(["log", "--reverse", "--format=%ai", "--", file]),
-  );
+  const line = firstLine(gitOutput(["log", "--reverse", "--format=%ai", "--", file]));
   return isoDateOnly(line);
 }
 
@@ -179,11 +171,7 @@ interface ProcessOutcome {
   readonly exitCode: ExitCode;
 }
 
-function buildInjections(
-  file: string,
-  content: string,
-  today: string,
-): readonly string[] {
+function buildInjections(file: string, content: string, today: string): readonly string[] {
   const inject: string[] = [];
   if (!fieldPresent(content, "record_source")) {
     inject.push(`record_source: "${computeRecordSource(file)}"`);
@@ -202,10 +190,7 @@ function buildInjections(
   return inject;
 }
 
-function injectBeforeSecondFence(
-  content: string,
-  blob: readonly string[],
-): string {
+function injectBeforeSecondFence(content: string, blob: readonly string[]): string {
   const lines = content.split("\n");
   const out: string[] = [];
   let count = 0;
@@ -223,11 +208,7 @@ function injectBeforeSecondFence(
   return out.join("\n");
 }
 
-function processOne(
-  file: string,
-  dryRun: boolean,
-  today: string,
-): ProcessOutcome {
+function processOne(file: string, dryRun: boolean, today: string): ProcessOutcome {
   // Single readFileSync — avoids TOCTOU race the bash original had via
   // separate `[ ! -f "$file" ]` test before content read. Errors from
   // ENOENT, EACCES, EISDIR, etc. all surface as readFileSync exceptions
@@ -236,10 +217,7 @@ function processOne(
   try {
     content = readFileSync(file, "utf8");
   } catch (err) {
-    const code =
-      err !== null && typeof err === "object" && "code" in err
-        ? String(err.code)
-        : "";
+    const code = err !== null && typeof err === "object" && "code" in err ? String(err.code) : "";
     if (code === "ENOENT" || code === "EISDIR") {
       return {
         status: "warn",

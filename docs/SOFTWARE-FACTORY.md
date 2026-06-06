@@ -11,26 +11,26 @@ care as the production code.
 
 We call this an **agent-driven software factory** — "software
 defined software factory" in shorthand. Read it the way you would
-read *software-defined networking*: the factory's configuration,
+read _software-defined networking_: the factory's configuration,
 participants, and workflow are all code-shaped artefacts under
 version control, not implicit habits or undocumented tooling.
 
 ## What "software factory" has meant, historically
 
 The term has a long lineage. Microsoft's Software Factories
-initiative and Greenfield & Short's 2004 book (*Software Factories:
+initiative and Greenfield & Short's 2004 book (_Software Factories:
 Assembling Applications with Patterns, Models, Frameworks, and
-Tools*) argued that software production scales through *product
-lines* — reusable domain-specific languages, templates, and
+Tools_) argued that software production scales through _product
+lines_ — reusable domain-specific languages, templates, and
 generators that assemble family members of a product from a
-common core. Czarnecki & Eisenecker's *Generative Programming*
+common core. Czarnecki & Eisenecker's _Generative Programming_
 (2000) and the FAST method ("Family-oriented Abstraction,
 Specification, and Translation") from Bell Labs live in the
 same tradition. The factory, in all three, is a **DSL-and-code-
 generator** affair: you describe the variation points, and the
 factory emits concrete artefacts.
 
-This repo borrows the *attitude* of that tradition — treat the
+This repo borrows the _attitude_ of that tradition — treat the
 production machinery as a first-class product — but the machinery
 is fundamentally different. Our "generators" are AI agents
 equipped with capability skills, reading procedural specs, and
@@ -136,8 +136,8 @@ orchestration, and the open-source LangGraph / CrewAI / AutoGen /
 MetaGPT / OpenDevin cluster all publish pieces of what a factory
 like this needs: skill definitions, sub-agent spawning, tool
 protocols (MCP is the closest thing to a standard), memory stores.
-None publishes a fully-worked convention for *the repo as the
-factory* — glossary, best-practices tiers, expert registry with
+None publishes a fully-worked convention for _the repo as the
+factory_ — glossary, best-practices tiers, expert registry with
 named personas, round history, formal-verification portfolio,
 and agent review gates, all as first-class git artefacts. In
 several places this repo is deliberately ahead of any codified

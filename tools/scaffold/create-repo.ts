@@ -64,23 +64,20 @@ const REPO_CONFIGS: Record<string, RepoConfig> = {
   forge: {
     org: "Lucent-Financial-Group",
     name: "Forge",
-    description:
-      "Software factory that builds Zeta and ace — factory tooling and governance",
+    description: "Software factory that builds Zeta and ace — factory tooling and governance",
     homepage: "https://github.com/Lucent-Financial-Group/Zeta",
   },
   ace: {
     org: "Lucent-Financial-Group",
     name: "ace",
-    description:
-      "Package manager for the Lucent Financial Group software stack",
+    description: "Package manager for the Lucent Financial Group software stack",
   },
   // Product repos — honor-system license, no AceHack mirror
   // See ADR: docs/DECISIONS/2026-05-14-product-repo-split-decisions.md
   civsim: {
     org: "Lucent-Financial-Group",
     name: "civsim",
-    description:
-      "Civilisation simulation — turn-based strategy with AI-directed factions and mutual-privacy design",
+    description: "Civilisation simulation — turn-based strategy with AI-directed factions and mutual-privacy design",
     isProduct: true,
     backlogItem: "B-0469",
   },
@@ -103,9 +100,7 @@ const repoArg = args.find((_, i) => args[i - 1] === "--repo");
 const dryRun = !args.includes("--apply");
 
 if (!repoArg || !REPO_CONFIGS[repoArg]) {
-  console.error(
-    `Usage: bun tools/scaffold/create-repo.ts --repo <forge|ace> [--dry-run|--apply]`
-  );
+  console.error(`Usage: bun tools/scaffold/create-repo.ts --repo <forge|ace> [--dry-run|--apply]`);
   console.error(`Known repos: ${Object.keys(REPO_CONFIGS).join(", ")}`);
   process.exit(1);
 }
@@ -132,12 +127,7 @@ function gh(args: string[]): { ok: boolean; stdout: string; stderr: string } {
   };
 }
 
-function plan(
-  step: string,
-  description: string,
-  command: string,
-  data?: Record<string, unknown>
-): Operation {
+function plan(step: string, description: string, command: string, data?: Record<string, unknown>): Operation {
   const op: Operation = {
     step,
     description,
@@ -149,63 +139,48 @@ function plan(
   return op;
 }
 
-function ghApiPatch(
-  path: string,
-  data: Record<string, unknown>,
-  description: string,
-  step: string
-): Operation {
+function ghApiPatch(path: string, data: Record<string, unknown>, description: string, step: string): Operation {
   const body = JSON.stringify(data);
   const op = plan(step, description, `gh api --method PATCH ${path} --input -`, data);
   if (!dryRun) {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
-    const result = spawnSync(
-      "gh",
-      ["api", "--method", "PATCH", path, "--input", "-"],
-      { input: body, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 }
-    );
+    const result = spawnSync("gh", ["api", "--method", "PATCH", path, "--input", "-"], {
+      input: body,
+      encoding: "utf8",
+      maxBuffer: 8 * 1024 * 1024,
+    });
     op.status = result.status === 0 ? "executed" : "failed";
     if (op.status === "failed") op.error = result.stderr;
   }
   return op;
 }
 
-function ghApiPut(
-  path: string,
-  data: Record<string, unknown>,
-  description: string,
-  step: string
-): Operation {
+function ghApiPut(path: string, data: Record<string, unknown>, description: string, step: string): Operation {
   const body = JSON.stringify(data);
   const op = plan(step, description, `gh api --method PUT ${path} --input -`, data);
   if (!dryRun) {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
-    const result = spawnSync(
-      "gh",
-      ["api", "--method", "PUT", path, "--input", "-"],
-      { input: body, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 }
-    );
+    const result = spawnSync("gh", ["api", "--method", "PUT", path, "--input", "-"], {
+      input: body,
+      encoding: "utf8",
+      maxBuffer: 8 * 1024 * 1024,
+    });
     op.status = result.status === 0 ? "executed" : "failed";
     if (op.status === "failed") op.error = result.stderr;
   }
   return op;
 }
 
-function ghApiPost(
-  path: string,
-  data: Record<string, unknown>,
-  description: string,
-  step: string
-): Operation {
+function ghApiPost(path: string, data: Record<string, unknown>, description: string, step: string): Operation {
   const body = JSON.stringify(data);
   const op = plan(step, description, `gh api --method POST ${path} --input -`, data);
   if (!dryRun) {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
-    const result = spawnSync(
-      "gh",
-      ["api", "--method", "POST", path, "--input", "-"],
-      { input: body, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 }
-    );
+    const result = spawnSync("gh", ["api", "--method", "POST", path, "--input", "-"], {
+      input: body,
+      encoding: "utf8",
+      maxBuffer: 8 * 1024 * 1024,
+    });
     op.status = result.status === 0 ? "executed" : "failed";
     if (op.status === "failed") op.error = result.stderr;
   }
@@ -228,7 +203,7 @@ function step01_createRepo(): void {
       allow_rebase_merge: false,
       delete_branch_on_merge: true,
       allow_auto_merge: true,
-    }
+    },
   );
   // Plan 01b-merge-settings unconditionally so dry-run output is complete.
   const mergeData: Record<string, unknown> = {
@@ -243,7 +218,7 @@ function step01_createRepo(): void {
     "01b-merge-settings",
     "Apply merge/auto-merge settings (squash-only, auto-merge, delete-branch-on-merge)",
     `gh api --method PATCH /repos/${config.org}/${config.name} --input -`,
-    mergeData
+    mergeData,
   );
   if (!dryRun) {
     // Create repo
@@ -267,14 +242,16 @@ function step01_createRepo(): void {
     if (repoMeta.ok) {
       try {
         defaultBranch = (JSON.parse(repoMeta.stdout) as { default_branch: string }).default_branch;
-      } catch { /* keep "main" */ }
+      } catch {
+        /* keep "main" */
+      }
     }
     // Apply merge settings (and optional homepage) via PATCH
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
     const mergeResult = spawnSync(
       "gh",
       ["api", "--method", "PATCH", `/repos/${config.org}/${config.name}`, "--input", "-"],
-      { input: JSON.stringify(mergeData), encoding: "utf8", maxBuffer: 8 * 1024 * 1024 }
+      { input: JSON.stringify(mergeData), encoding: "utf8", maxBuffer: 8 * 1024 * 1024 },
     );
     mergeOp.status = mergeResult.status === 0 ? "executed" : "failed";
     if (mergeOp.status === "failed") mergeOp.error = mergeResult.stderr;
@@ -304,7 +281,7 @@ function step02_branchProtection(): void {
       required_conversation_resolution: true,
     },
     `Apply branch protection to ${config.name}/${defaultBranch} (1 review, signed commits, linear history, no force-push)`,
-    "02-branch-protection"
+    "02-branch-protection",
   );
 
   // Required signed commits uses POST to enable (DELETE to disable) — not PUT.
@@ -313,7 +290,7 @@ function step02_branchProtection(): void {
     `/repos/${config.org}/${config.name}/branches/${defaultBranch}/protection/required_signatures`,
     {},
     `Require signed commits on ${config.name}/${defaultBranch}`,
-    "02b-required-signed-commits"
+    "02b-required-signed-commits",
   );
 }
 
@@ -328,7 +305,7 @@ function step03_enableSecurity(): void {
       },
     },
     "Enable secret scanning + push protection",
-    "03a-secret-scanning"
+    "03a-secret-scanning",
   );
 
   // Dependabot alerts (vulnerability alerts)
@@ -336,15 +313,10 @@ function step03_enableSecurity(): void {
     "03b-dependabot-alerts",
     "Enable Dependabot vulnerability alerts",
     `gh api --method PUT /repos/${config.org}/${config.name}/vulnerability-alerts`,
-    {}
+    {},
   );
   if (!dryRun) {
-    const result = gh([
-      "api",
-      "--method",
-      "PUT",
-      `/repos/${config.org}/${config.name}/vulnerability-alerts`,
-    ]);
+    const result = gh(["api", "--method", "PUT", `/repos/${config.org}/${config.name}/vulnerability-alerts`]);
     depOp.status = result.ok ? "executed" : "failed";
     if (!result.ok) depOp.error = result.stderr;
   }
@@ -354,15 +326,10 @@ function step03_enableSecurity(): void {
     "03c-dependabot-security-updates",
     "Enable Dependabot security updates (automated PRs)",
     `gh api --method PUT /repos/${config.org}/${config.name}/automated-security-fixes`,
-    {}
+    {},
   );
   if (!dryRun) {
-    const result = gh([
-      "api",
-      "--method",
-      "PUT",
-      `/repos/${config.org}/${config.name}/automated-security-fixes`,
-    ]);
+    const result = gh(["api", "--method", "PUT", `/repos/${config.org}/${config.name}/automated-security-fixes`]);
     autoOp.status = result.ok ? "executed" : "failed";
     if (!result.ok) autoOp.error = result.stderr;
   }
@@ -373,7 +340,7 @@ function step03_enableSecurity(): void {
     `/repos/${config.org}/${config.name}/private-vulnerability-reporting`,
     {},
     "Enable private vulnerability reporting",
-    "03d-private-vuln-reporting"
+    "03d-private-vuln-reporting",
   );
 }
 
@@ -388,7 +355,7 @@ function step04_codeqlDefaultSetup(): void {
       query_suite: "default",
     },
     "Enable CodeQL default-setup (required for code_scanning ruleset rule — advanced-only fails)",
-    "04-codeql-default-setup"
+    "04-codeql-default-setup",
   );
 }
 
@@ -400,7 +367,7 @@ function step05_forkToAcehack(): void {
       "05-fork-to-acehack",
       `Skipped — product repos are not mirrored to ${FORK_ORG} (factory repos only)`,
       "",
-      {}
+      {},
     ).status = "skipped";
     return;
   }
@@ -408,21 +375,14 @@ function step05_forkToAcehack(): void {
     "05-fork-to-acehack",
     `Fork ${config.org}/${config.name} → ${FORK_ORG}/${config.name}`,
     `gh api --method POST /repos/${config.org}/${config.name}/forks --field organization=${FORK_ORG}`,
-    { organization: FORK_ORG }
+    { organization: FORK_ORG },
   );
   if (!dryRun) {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh CLI is PATH-resolved intentionally
     const result = spawnSync(
       "gh",
-      [
-        "api",
-        "--method",
-        "POST",
-        `/repos/${config.org}/${config.name}/forks`,
-        "--field",
-        `organization=${FORK_ORG}`,
-      ],
-      { encoding: "utf8", maxBuffer: 8 * 1024 * 1024 }
+      ["api", "--method", "POST", `/repos/${config.org}/${config.name}/forks`, "--field", `organization=${FORK_ORG}`],
+      { encoding: "utf8", maxBuffer: 8 * 1024 * 1024 },
     );
     op.status = result.status === 0 ? "executed" : "failed";
     if (op.status === "failed") op.error = result.stderr;
@@ -437,7 +397,7 @@ function step06_pushScaffoldFiles(): void {
       "06-push-scaffold-files",
       `No scaffold directory found at ${scaffoldPath} — skipping file push`,
       "",
-      {}
+      {},
     ).status = "skipped";
     return;
   }
@@ -448,18 +408,13 @@ function step06_pushScaffoldFiles(): void {
     "06-push-scaffold-files",
     `Push ${files.length} scaffold files to ${config.org}/${config.name} via git`,
     `git clone + git add + git commit + git push`,
-    { files: files.map((f) => relative(scaffoldPath, f)) }
+    { files: files.map((f) => relative(scaffoldPath, f)) },
   );
 
   if (!dryRun) {
     // Clone, copy files, commit, push
     const tmpDir = `/tmp/scaffold-${config.name}-${Date.now()}`;
-    const cloneResult = gh([
-      "repo",
-      "clone",
-      `${config.org}/${config.name}`,
-      tmpDir,
-    ]);
+    const cloneResult = gh(["repo", "clone", `${config.org}/${config.name}`, tmpDir]);
     if (!cloneResult.ok) {
       op.status = "failed";
       op.error = `Clone failed: ${cloneResult.stderr}`;
@@ -514,7 +469,7 @@ function step06_pushScaffoldFiles(): void {
         "-m",
         `chore(scaffold): day-one governance files\n\nB-0424 Stage 1 — three-repo split scaffolding.\nSee docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`,
       ],
-      gitOpts
+      gitOpts,
     );
     if (commitResult.status !== 0) {
       op.status = "failed";
@@ -560,7 +515,9 @@ function step07_summary(): void {
     "Upload SVG social-preview PNG via GitHub UI (GitHub requires rasterized PNG format)",
     "Enable merge queue via GitHub UI: Settings → Merge queue (org feature, no API)",
     ...(hasSemgrep
-      ? ["Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step (.semgrep.yml is in scaffold files; CI job still needs wiring in Stage 2)"]
+      ? [
+          "Wire gate workflow: add `semgrep --config .semgrep.yml --error --metrics=off` step (.semgrep.yml is in scaffold files; CI job still needs wiring in Stage 2)",
+        ]
       : []),
     "Add bun-test, bun-lint, codeql, scorecard as required status checks AFTER CI workflows are wired (branch protection was created with empty contexts to avoid deadlock)",
     "Verify budget caps $0 at org level: github.com/organizations/Lucent-Financial-Group/settings/billing",
@@ -574,12 +531,9 @@ function step07_summary(): void {
         `Release bus claim: bun tools/bus/claim.ts release --from <agent> --item ${claimItem}`,
       ]
     : [];
-  plan(
-    "07-next-steps",
-    "Manual steps required after this tool completes",
-    "",
-    { manualSteps: [...baseSteps, ...productSteps] }
-  ).status = "planned";
+  plan("07-next-steps", "Manual steps required after this tool completes", "", {
+    manualSteps: [...baseSteps, ...productSteps],
+  }).status = "planned";
 }
 
 // --- Main ---

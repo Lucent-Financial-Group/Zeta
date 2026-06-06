@@ -12,14 +12,14 @@ bubble wrap. The hat system is neither. The reason it isn't a cage
 is the time-bound — hats are **chosen-and-returnable**, not
 permanent identity capture:
 
-| Property | Cage / role-as-identity | Hat (this system) |
-|----------|-------------------------|-------------------|
-| Authority lives on | the wearer | the role |
-| Removable | only by destroying the wearer | by swap-off (one command) |
-| Reputation | belongs to the wearer | accumulates on the hat |
-| Succession | breaks identity | preserves identity |
-| Concurrency | one identity, one mask | one wearer, many hats over time |
-| Bound to time | indefinite | every binding has cooldown, warmup, sticky-attribution windows |
+| Property           | Cage / role-as-identity       | Hat (this system)                                              |
+| ------------------ | ----------------------------- | -------------------------------------------------------------- |
+| Authority lives on | the wearer                    | the role                                                       |
+| Removable          | only by destroying the wearer | by swap-off (one command)                                      |
+| Reputation         | belongs to the wearer         | accumulates on the hat                                         |
+| Succession         | breaks identity               | preserves identity                                             |
+| Concurrency        | one identity, one mask        | one wearer, many hats over time                                |
+| Bound to time      | indefinite                    | every binding has cooldown, warmup, sticky-attribution windows |
 
 Max's compression — **`hat = skills + opa/rbac`** — captures the
 essential parts. Skills describe what the wearer CAN do; OPA + RBAC
@@ -35,17 +35,17 @@ gets swapped off; the hat persists.
 
 ## What's in this directory
 
-| Path | What it is |
-|------|------------|
-| `Application.yaml` | ArgoCD Application; default-on; reconciles everything below into the `hat-system` namespace |
-| `namespace.yaml` | Namespace with restricted PodSecurity labels |
-| `deployment.yaml` | Operator Deployment (replicas:0 until image is built) + ServiceAccount + ClusterRole + binding |
-| `crds/` | Four CRDs: Hat, HatBinding, HatSwap, HatPolicy |
-| `hats/` | Seed Hat resources: hat-designer, observer, executor, policy-admin + default HatPolicy |
-| `policies/` | Seven OPA Gatekeeper ConstraintTemplates + Constraints for the throttles |
-| `operator/` | Go source for the operator (kubebuilder layout) |
-| `graph/` | Hat-graph render helper + docs (Max thinks in hat graphs) |
-| `queries/` | Loki + Hubble query library for hat ↔ network-flow attribution |
+| Path               | What it is                                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| `Application.yaml` | ArgoCD Application; default-on; reconciles everything below into the `hat-system` namespace    |
+| `namespace.yaml`   | Namespace with restricted PodSecurity labels                                                   |
+| `deployment.yaml`  | Operator Deployment (replicas:0 until image is built) + ServiceAccount + ClusterRole + binding |
+| `crds/`            | Four CRDs: Hat, HatBinding, HatSwap, HatPolicy                                                 |
+| `hats/`            | Seed Hat resources: hat-designer, observer, executor, policy-admin + default HatPolicy         |
+| `policies/`        | Seven OPA Gatekeeper ConstraintTemplates + Constraints for the throttles                       |
+| `operator/`        | Go source for the operator (kubebuilder layout)                                                |
+| `graph/`           | Hat-graph render helper + docs (Max thinks in hat graphs)                                      |
+| `queries/`         | Loki + Hubble query library for hat ↔ network-flow attribution                                 |
 
 ## The four CRDs
 
@@ -85,15 +85,15 @@ their durability needs.
 Max's "talks in hat graphs" reading — each throttle reads as a
 constraint over the live cluster's hat graph:
 
-| Throttle | Graph statement | Policy file |
-|----------|-----------------|-------------|
-| cooldown | no `wears` edge if `succeeded` exists with `t < cooldown` | `01-cooldown.yaml` |
-| max-bindings | wearer out-degree on `wears` ≤ N | `02-max-bindings.yaml` |
-| conflict-of-interest | no `wears` pair connected by `conflicts-with` | `03-conflict-of-interest.yaml` |
-| quorum | `cosigned-by` in-degree ≥ quorumSize | `04-quorum.yaml` |
-| warmup | Active phase reachable only after WarmupEndsAt | `05-warmup.yaml` |
-| max-new-hats | Hat node creation rate ≤ K per day | `06-max-new-hats.yaml` |
-| no-supervisor-cycles | `supervises` is a DAG | `07-no-supervisor-cycles.yaml` |
+| Throttle             | Graph statement                                           | Policy file                    |
+| -------------------- | --------------------------------------------------------- | ------------------------------ |
+| cooldown             | no `wears` edge if `succeeded` exists with `t < cooldown` | `01-cooldown.yaml`             |
+| max-bindings         | wearer out-degree on `wears` ≤ N                          | `02-max-bindings.yaml`         |
+| conflict-of-interest | no `wears` pair connected by `conflicts-with`             | `03-conflict-of-interest.yaml` |
+| quorum               | `cosigned-by` in-degree ≥ quorumSize                      | `04-quorum.yaml`               |
+| warmup               | Active phase reachable only after WarmupEndsAt            | `05-warmup.yaml`               |
+| max-new-hats         | Hat node creation rate ≤ K per day                        | `06-max-new-hats.yaml`         |
+| no-supervisor-cycles | `supervises` is a DAG                                     | `07-no-supervisor-cycles.yaml` |
 
 The first six are admission-time enforcement (Gatekeeper). The
 seventh ALSO at admission time, but it's the one that gives the

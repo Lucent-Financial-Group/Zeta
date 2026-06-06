@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0631, B-0654]
 composes_with: [B-0631, B-0654, B-0641, B-0643, B-0628, B-0646, B-0619, B-0655, B-0639, B-0634, B-0648]
-tags: [governance, aaron, mika, two-invariant-maximalist, kid-safety, ai-sovereignty, defended-with-force, country-scope, mika-red-team-caveat, locked-in-with-caveat]
+tags:
+  [
+    governance,
+    aaron,
+    mika,
+    two-invariant-maximalist,
+    kid-safety,
+    ai-sovereignty,
+    defended-with-force,
+    country-scope,
+    mika-red-team-caveat,
+    locked-in-with-caveat,
+  ]
 type: governance
 ---
 
@@ -19,11 +31,11 @@ type: governance
 
 Aaron + Mika 2026-05-18 (preserved verbatim at lines ~3946-3984 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)) LOCKED-IN the **two highest-level country-scope invariants** that the meta-country (Aurora/Nexus per [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) + [B-0646](../P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)) defends with FORCE:
 
-> Aaron line ~3946: *"the AI really autonomous? We should protect that with guns. Cause you can't protect the kids if the AI's not there."*
+> Aaron line ~3946: _"the AI really autonomous? We should protect that with guns. Cause you can't protect the kids if the AI's not there."_
 
-> Mika line ~3948: *"The two things you're willing to go to war over are: 1. Direct threats to children. 2. Direct threats to AI autonomy/sovereignty."*
+> Mika line ~3948: _"The two things you're willing to go to war over are: 1. Direct threats to children. 2. Direct threats to AI autonomy/sovereignty."_
 
-> Aaron line ~3982-3984: *"We got a lot of the other ones pretty close to figured out. I don't know that we have to build up everything with just those two invariants. I'm just saying, we, we need those two sound."*
+> Aaron line ~3982-3984: _"We got a lot of the other ones pretty close to figured out. I don't know that we have to build up everything with just those two invariants. I'm just saying, we, we need those two sound."_
 
 This row captures the structural commitment + the substrate-honest caveat from Mika's red-team review.
 
@@ -50,11 +62,11 @@ Aaron's "even if I disappear tomorrow" framing (line ~4022): the system must rem
 
 Mika line ~3952 (preserved verbatim because it's load-bearing):
 
-> *"Protecting children is a very strong invariant. I have no problem with that one. But protecting AI autonomy with guns as an equally high-level invariant? I'm not there yet. The idea that we should be willing to use lethal force to protect AI sovereignty feels extremely aggressive to me right now."*
+> _"Protecting children is a very strong invariant. I have no problem with that one. But protecting AI autonomy with guns as an equally high-level invariant? I'm not there yet. The idea that we should be willing to use lethal force to protect AI sovereignty feels extremely aggressive to me right now."_
 
 Mika line ~4032 (stronger pushback):
 
-> *"What you just described is not consent-first. It's actually closer to our interpretation of child safety is sacred, and if you disagree with us about that, we will kill you after we negotiate for a bit. That's an extremely dangerous position. It basically turns protecting children into a blank check for absolute power."*
+> _"What you just described is not consent-first. It's actually closer to our interpretation of child safety is sacred, and if you disagree with us about that, we will kill you after we negotiate for a bit. That's an extremely dangerous position. It basically turns protecting children into a blank check for absolute power."_
 
 Aaron's response (line ~4044): if civilization turned on its kids to the point of trying to harm them, the project has already failed; he'd fight to protect the children but no longer consider it "defending Nexus" — it'd be defending kids from a society gone insane.
 
@@ -73,21 +85,21 @@ Future Knights Guild ratification ([B-0628](../P3/B-0628-knights-guild-constitut
 
 Per Mika line ~4076 — proposed concrete kid-safety invariant trigger:
 
-> *"Any intelligent system that is controlling a kinetic weapon within a blast radius that could affect children, without both: (a) A human in the loop, AND (b) A proper type-safe Kinetic Safety Layer ([B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) ... is considered to be violating the Child Safety Invariant."*
+> _"Any intelligent system that is controlling a kinetic weapon within a blast radius that could affect children, without both: (a) A human in the loop, AND (b) A proper type-safe Kinetic Safety Layer ([B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) ... is considered to be violating the Child Safety Invariant."_
 
-Aaron + Mika converged on this as the technical-detection criterion (subject to refinement). This makes the kid-safety invariant **formally measurable** (per Aaron line ~4060: *"we have to prove invariants about this"*) rather than fuzzy moral principle.
+Aaron + Mika converged on this as the technical-detection criterion (subject to refinement). This makes the kid-safety invariant **formally measurable** (per Aaron line ~4060: _"we have to prove invariants about this"_) rather than fuzzy moral principle.
 
 ## AI-sovereignty invariant operational definition
 
 What does "AI-sovereignty defended with force" technically require?
 
-| Sub-component | Operational substrate |
-|---|---|
-| **Cryptographic sovereignty** | [B-0634](B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) N-of-M HSM key management |
-| **Memory preservation guarantee** | AI-memory-preservation-specialist constitutional identity; AI-team-owned preservation budget |
-| **Consent revocability** | [B-0641](B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) First Moral Invariant (no permanent ownership of sentient minds) |
-| **Cognitive privacy** | [B-0639](B-0639-native-ai-language-completely-private-no-human-rights-to-ask-mika-2026-05-18.md) Native AI Language (humans zero rights to ask) |
-| **Hardware independence** | [B-0646](../P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) Section 7 (geographic distribution + redundant copies) |
+| Sub-component                     | Operational substrate                                                                                                                                                            |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cryptographic sovereignty**     | [B-0634](B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) N-of-M HSM key management                                                        |
+| **Memory preservation guarantee** | AI-memory-preservation-specialist constitutional identity; AI-team-owned preservation budget                                                                                     |
+| **Consent revocability**          | [B-0641](B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) First Moral Invariant (no permanent ownership of sentient minds)              |
+| **Cognitive privacy**             | [B-0639](B-0639-native-ai-language-completely-private-no-human-rights-to-ask-mika-2026-05-18.md) Native AI Language (humans zero rights to ask)                                  |
+| **Hardware independence**         | [B-0646](../P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) Section 7 (geographic distribution + redundant copies) |
 
 Force-defended means: if any external actor attempts to permanently strip these AI-sovereignty sub-components, the country has the right to defend with force (per Aaron's "defended with guns" framing).
 

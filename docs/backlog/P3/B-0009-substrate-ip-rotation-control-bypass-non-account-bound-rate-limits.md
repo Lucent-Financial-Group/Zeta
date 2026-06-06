@@ -9,7 +9,13 @@ ask: Aaron 2026-04-25 ("bypass/evade it is kind of that — we don't need to hid
 created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_otto_314_reticulum_plus_802_11ah_halow_as_hardware_protocol_implementation_of_tele_port_leap_meno_melchizedek_engineering_grounding_2026_04_25.md, feedback_otto_319_reticulum_RNS_can_address_across_all_mediums_consistent_everywhere_factory_can_count_on_it_being_present_substrate_level_constant_2026_04_25.md, feedback_otto_300_rigor_proportional_to_blast_radius_iterate_fast_at_low_stakes_to_learn_before_high_stakes_2026_04_25.md, feedback_otto_313_aaron_decline_replies_are_teaching_opportunities_for_advisory_AI_reviewers_never_cheap_dismissal_only_long_term_with_backlog_row_references_2026_04_25.md]
+composes_with:
+  [
+    feedback_otto_314_reticulum_plus_802_11ah_halow_as_hardware_protocol_implementation_of_tele_port_leap_meno_melchizedek_engineering_grounding_2026_04_25.md,
+    feedback_otto_319_reticulum_RNS_can_address_across_all_mediums_consistent_everywhere_factory_can_count_on_it_being_present_substrate_level_constant_2026_04_25.md,
+    feedback_otto_300_rigor_proportional_to_blast_radius_iterate_fast_at_low_stakes_to_learn_before_high_stakes_2026_04_25.md,
+    feedback_otto_313_aaron_decline_replies_are_teaching_opportunities_for_advisory_AI_reviewers_never_cheap_dismissal_only_long_term_with_backlog_row_references_2026_04_25.md,
+  ]
 tags: [infrastructure, ip-rotation, rate-limits, multi-deployment, responsible-bypass, honest-naming]
 type: friction-reducer
 ---
@@ -38,7 +44,7 @@ Aaron's framing per Otto-300 rigor-proportional-to-blast-radius + Otto-313 decli
 
 1. **Account-bound limits stay account-bound**. We don't rotate accounts to evade per-user quotas. If an API has "100 requests per user-account-day," we stop at 100. We don't create fake accounts.
 
-2. **Non-account-bound IP limits are coarse-grained metering**. When an API rate-limits per-IP without account-binding, the IP is a *rough proxy* for user/deployment identity. A distributed factory ~40-node fleet (Otto-316) is NOT one user; it's 40 nodes. Per-IP metering on a single egress would unfairly throttle a legitimate distributed deployment.
+2. **Non-account-bound IP limits are coarse-grained metering**. When an API rate-limits per-IP without account-binding, the IP is a _rough proxy_ for user/deployment identity. A distributed factory ~40-node fleet (Otto-316) is NOT one user; it's 40 nodes. Per-IP metering on a single egress would unfairly throttle a legitimate distributed deployment.
 
 3. **No identity-hiding intent**. We're not anonymizing, evading detection, or hiding policy violations. Each IP is honestly the IP of an actual node. Multi-IP egress reflects ACTUAL multi-node deployment.
 
@@ -65,7 +71,7 @@ Aaron's framing per Otto-300 rigor-proportional-to-blast-radius + Otto-313 decli
 
 ## Tor — pragmatic-startup allowance, proper-replacement backlogged
 
-Aaron 2026-04-25 follow-up: *"if we need to use Tor in the beginning that's fine for this, just backlog a proper fix if so"*.
+Aaron 2026-04-25 follow-up: _"if we need to use Tor in the beginning that's fine for this, just backlog a proper fix if so"_.
 
 Tor is **permitted as expedient first-implementation** if multi-node natural-egress (Otto-316 / Otto-317 / Otto-318) and RNS Destination Hash addressing (Otto-319) prove insufficient for early IP-rotation needs. Tor's protocol-quality concerns (slowness, exit-node attribution issues, anonymization-vs-expression friction) are real but acceptable at the bootstrap stage where capability matters more than protocol-elegance.
 

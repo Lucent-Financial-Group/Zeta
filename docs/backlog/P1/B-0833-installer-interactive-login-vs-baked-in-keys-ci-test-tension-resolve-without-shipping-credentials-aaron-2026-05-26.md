@@ -11,7 +11,8 @@ depends_on:
   - B-0794
 composes_with:
   - B-0831
-tags: [installer, ci, gh-auth, security, interactive-vs-headless-test, credential-handling, substrate-engineering-tension]
+tags:
+  [installer, ci, gh-auth, security, interactive-vs-headless-test, credential-handling, substrate-engineering-tension]
 ---
 
 ## Problem
@@ -26,10 +27,10 @@ progress as B-0832's nmtui empirical anchor was being filed):
 
 The tension is between two installer authentication modes:
 
-| Mode | What it does | Security property | Testability property |
-|---|---|---|---|
-| **Interactive login** | Operator runs `gh auth login` at install time; device-code flow opens browser; types code; OAuth completes | NO credentials ship on ISO; aligned with B-0794 homelab-mode framework | **Hard to test in CI**: requires human typing code OR mock GH device-code endpoint |
-| **Baked-in keys** | SSH key / PAT pre-staged on ISO at build time | **Violates**: ISO is publicly downloadable; baked credentials = secret leakage | Easy to test (no auth flow needed) |
+| Mode                  | What it does                                                                                               | Security property                                                              | Testability property                                                               |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| **Interactive login** | Operator runs `gh auth login` at install time; device-code flow opens browser; types code; OAuth completes | NO credentials ship on ISO; aligned with B-0794 homelab-mode framework         | **Hard to test in CI**: requires human typing code OR mock GH device-code endpoint |
+| **Baked-in keys**     | SSH key / PAT pre-staged on ISO at build time                                                              | **Violates**: ISO is publicly downloadable; baked credentials = secret leakage | Easy to test (no auth flow needed)                                                 |
 
 The CI cascade #6 substrate (per B-0831) currently has NO path to test
 the interactive-login flow end-to-end without either:
@@ -111,9 +112,9 @@ Properties:
 
 ### Approach E — AI agent drives real GitHub OAuth via Playwright (dedicated AI GH accounts)
 
-Operator's contribution 2026-05-26: *"to have it fully tested by ai
+Operator's contribution 2026-05-26: _"to have it fully tested by ai
 likely going to have to preform the step and use paywrite to login
-into github likely going to need its own accounts and such"*.
+into github likely going to need its own accounts and such"_.
 
 AI agent uses Playwright (browser automation) to drive the real GH
 device-code flow end-to-end:

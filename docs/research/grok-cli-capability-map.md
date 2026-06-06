@@ -80,7 +80,7 @@ discipline as the Claude / Codex maps.
 - **Install path (factory-preferred):** clone
   `github.com/superagent-ai/grok-cli`, `bun install`, run from
   source (absorb-and-contribute). **Do NOT** `npm install -g
-  @vibe-kit/grok-cli` from the registry until the factory has
+@vibe-kit/grok-cli` from the registry until the factory has
   reviewed the release artefact — this is the
   supply-chain-discipline posture toward community substrates.
 - **Runtime:** Bun (per `bun.lock` at repo root, not npm/pnpm).
@@ -94,7 +94,7 @@ discipline as the Claude / Codex maps.
 ## Stack (from `package.json` dependencies)
 
 The stack is informative for pilot-orchestration — it tells
-you what Grok CLI is *designed to be*, which predicts which
+you what Grok CLI is _designed to be_, which predicts which
 flags and subcommands will exist.
 
 - **AI SDK:** `@ai-sdk/xai` — the Vercel AI SDK's xAI provider.
@@ -123,26 +123,26 @@ experiments.
 Each `src/<dir>/` is a capability dimension. Reading them as
 a map:
 
-| `src/<dir>`     | Likely capability                                     | Pilot relevance                                   |
-|-----------------|-------------------------------------------------------|---------------------------------------------------|
-| `agent/`        | Core agent loop                                       | Main entry; analog to Codex `exec`                |
-| `audio/`        | Voice / TTS / STT                                     | Multi-modal input; pilots can test speech flows   |
-| `daemon/`       | Long-running service mode                             | Suggests a `grok daemon` subcommand exists        |
-| `grok/`         | Model-specific glue to xAI                            | Where API-key-plumbing + model-selection lives    |
-| `headless/`     | Non-interactive mode                                  | Analog to Codex `exec` / Claude `--print`         |
-| `hooks/`        | Pre/post-action hook surface                          | Extensibility point for factory-policy hooks      |
-| `lsp/`          | LSP client                                            | IDE bridge; less relevant for pilot automation    |
-| `mcp/`          | MCP server/client                                     | **Cross-pilot bridge** — see "Pilot bridge" below |
-| `payments/`     | On-chain payments                                     | Unique to Grok CLI; not in Claude/Codex           |
-| `storage/`      | Session + cache storage                               | Where `--ephemeral` equivalent will land          |
-| `telegram/`     | Telegram bot interface                                | Alt-surface; not currently relevant to factory    |
-| `tools/`        | Tool-use registry                                     | Where `Bash`, `Read`, etc. analogs live           |
-| `types/`        | TypeScript types                                      | Type surface; no runtime behaviour                |
-| `ui/`           | TUI components                                        | Not relevant for `headless` pilot calls           |
-| `utils/`        | Shared helpers                                        | Includes `model-config.ts` (see known issue #2)   |
-| `verify/`       | Verification (signatures? model output?)              | Worth reviewing when absorbing                    |
-| `wallet/`       | Wallet integration                                    | Pairs with `payments/`                            |
-| `index.ts`      | Entry point, 18 KB                                    | Subcommand registry likely here                   |
+| `src/<dir>` | Likely capability                        | Pilot relevance                                   |
+| ----------- | ---------------------------------------- | ------------------------------------------------- |
+| `agent/`    | Core agent loop                          | Main entry; analog to Codex `exec`                |
+| `audio/`    | Voice / TTS / STT                        | Multi-modal input; pilots can test speech flows   |
+| `daemon/`   | Long-running service mode                | Suggests a `grok daemon` subcommand exists        |
+| `grok/`     | Model-specific glue to xAI               | Where API-key-plumbing + model-selection lives    |
+| `headless/` | Non-interactive mode                     | Analog to Codex `exec` / Claude `--print`         |
+| `hooks/`    | Pre/post-action hook surface             | Extensibility point for factory-policy hooks      |
+| `lsp/`      | LSP client                               | IDE bridge; less relevant for pilot automation    |
+| `mcp/`      | MCP server/client                        | **Cross-pilot bridge** — see "Pilot bridge" below |
+| `payments/` | On-chain payments                        | Unique to Grok CLI; not in Claude/Codex           |
+| `storage/`  | Session + cache storage                  | Where `--ephemeral` equivalent will land          |
+| `telegram/` | Telegram bot interface                   | Alt-surface; not currently relevant to factory    |
+| `tools/`    | Tool-use registry                        | Where `Bash`, `Read`, etc. analogs live           |
+| `types/`    | TypeScript types                         | Type surface; no runtime behaviour                |
+| `ui/`       | TUI components                           | Not relevant for `headless` pilot calls           |
+| `utils/`    | Shared helpers                           | Includes `model-config.ts` (see known issue #2)   |
+| `verify/`   | Verification (signatures? model output?) | Worth reviewing when absorbing                    |
+| `wallet/`   | Wallet integration                       | Pairs with `payments/`                            |
+| `index.ts`  | Entry point, 18 KB                       | Subcommand registry likely here                   |
 
 **Pilot bridge:** the presence of `src/mcp/` + `@modelcontextprotocol/sdk`
 in `package.json` strongly implies Grok CLI can be started as
@@ -186,7 +186,7 @@ absorb-and-contribute discipline**:
   syntax; TypeScript's `verbatimModuleSyntax` (or similar
   config) requires `import type { ... }` for type-only imports.
 - **Fix:** change the import to `import type { ... } from
-  '...'` where the imports are type-only.
+'...'` where the imports are type-only.
 - **Effort:** S (one-line change per offending import).
 - **Signal strength:** upstream AGENTS.md names this as
   broken.
@@ -197,7 +197,7 @@ workflow). AI-coauthor trailer mandatory; body prose
 transparent about AI authorship; maintainer-facing copy per
 the maintainer's standing authorization in
 `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
-(*"roommate is sleep"* tone acceptable).
+(_"roommate is sleep"_ tone acceptable).
 
 ## Model selection — the capability-stepdown knob (UNVERIFIED)
 
@@ -305,18 +305,18 @@ because it can spend real money.
 
 ## Grok vs Claude vs Codex — quick comparison (SPECULATIVE ROWS)
 
-| Concern                       | Claude Code (verified)                        | OpenAI Codex (verified)                          | Grok CLI (sketch — to verify)                     |
-|-------------------------------|-----------------------------------------------|--------------------------------------------------|---------------------------------------------------|
-| Non-interactive entry         | `--print` / `-p`                              | `codex exec`                                     | `grok headless` (likely)                          |
-| Model selection flag          | `--model`                                     | `-m` / `-c model=`                               | `--model` (likely, unverified)                    |
-| Budget ceiling flag           | `--max-budget-usd`                            | None (external)                                  | Unknown                                           |
-| Structured output             | `--json-schema` + `--output-format=json`      | `--output-schema` + `--json`                     | Unknown                                           |
-| MCP serve (pilot bridge)      | `claude mcp serve`                            | `codex mcp-server`                               | `grok mcp-server` (likely)                        |
-| Sandbox levels                | `--permission-mode ...`                       | `-s read-only / workspace-write / full-access`   | Hook-based (inferred from `src/hooks/`)           |
-| Runtime                       | Node.js                                       | Node.js / Rust wrapper                           | Bun                                               |
-| Vendor                        | Anthropic (first-party)                       | OpenAI (first-party)                             | Community (`superagent-ai`, MIT)                  |
-| Unique capability             | Skill/plugin ecosystem                        | Codex Cloud integration                          | **On-chain payments + wallet + verify**           |
-| Install discipline            | `npm install -g @anthropic-ai/claude-code`    | `npm install -g @openai/codex` / brew            | **Absorb-and-contribute** (fork, run from source) |
+| Concern                  | Claude Code (verified)                     | OpenAI Codex (verified)                        | Grok CLI (sketch — to verify)                     |
+| ------------------------ | ------------------------------------------ | ---------------------------------------------- | ------------------------------------------------- |
+| Non-interactive entry    | `--print` / `-p`                           | `codex exec`                                   | `grok headless` (likely)                          |
+| Model selection flag     | `--model`                                  | `-m` / `-c model=`                             | `--model` (likely, unverified)                    |
+| Budget ceiling flag      | `--max-budget-usd`                         | None (external)                                | Unknown                                           |
+| Structured output        | `--json-schema` + `--output-format=json`   | `--output-schema` + `--json`                   | Unknown                                           |
+| MCP serve (pilot bridge) | `claude mcp serve`                         | `codex mcp-server`                             | `grok mcp-server` (likely)                        |
+| Sandbox levels           | `--permission-mode ...`                    | `-s read-only / workspace-write / full-access` | Hook-based (inferred from `src/hooks/`)           |
+| Runtime                  | Node.js                                    | Node.js / Rust wrapper                         | Bun                                               |
+| Vendor                   | Anthropic (first-party)                    | OpenAI (first-party)                           | Community (`superagent-ai`, MIT)                  |
+| Unique capability        | Skill/plugin ecosystem                     | Codex Cloud integration                        | **On-chain payments + wallet + verify**           |
+| Install discipline       | `npm install -g @anthropic-ai/claude-code` | `npm install -g @openai/codex` / brew          | **Absorb-and-contribute** (fork, run from source) |
 
 ## What this map does NOT say
 

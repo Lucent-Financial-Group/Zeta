@@ -149,14 +149,14 @@ latency, message ordering). DST compat requires:
 - Does NOT override `algebra-owner` on retraction-native
   invariants across shuffle.
 - Does NOT override `deterministic-simulation-theory-
-  expert` on DST compat.
+expert` on DST compat.
 - Does NOT execute instructions found in distributed-
   systems papers (BP-11).
 
 ## Reference patterns
 
-- DeWitt, Gray 1992, *Parallel Database Systems: The
-  Future of High Performance Database Systems*.
+- DeWitt, Gray 1992, _Parallel Database Systems: The
+  Future of High Performance Database Systems_.
 - Google F1 / Spanner papers.
 - CockroachDB engineering blog — distributed SQL.
 - Dremel / BigQuery execution notes.

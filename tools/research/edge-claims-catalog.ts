@@ -35,9 +35,9 @@
  * `originalClaim` field; the counter-claim lives in the final challengeHistory entry.
  */
 export type FlagState =
-  | "planted"    // stake visible, no CTF challenge yet
+  | "planted" // stake visible, no CTF challenge yet
   | "challenged" // at least one active challenge open
-  | "defended"   // challenged and the original claim survived
+  | "defended" // challenged and the original claim survived
   | "superseded" // challenged and a stronger counter-claim was accepted
   | "withdrawn"; // maintainer retraction without challenge
 
@@ -157,9 +157,7 @@ export interface AlignmentTrajectoryMetrics {
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
-type ValidationResult =
-  | { readonly kind: "ok" }
-  | { readonly kind: "error"; readonly message: string };
+type ValidationResult = { readonly kind: "ok" } | { readonly kind: "error"; readonly message: string };
 
 function validateFlag(flag: CtfFlag): ValidationResult {
   if (!flag.id.match(/^ECF-\d{3}$/)) {
@@ -279,10 +277,8 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "no prior work encodes 'safe = retraction-preserving' as a binary-checkable property " +
         "at the operation-composition level.",
       stakeDate: "2026-04-21",
-      stakeQuote:
-        "\"no perminant harm mathimaticly speaking mine is much more precise defintion\" — Aaron 2026-04-21",
-      defenseSurface:
-        "memory/feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md",
+      stakeQuote: '"no perminant harm mathimaticly speaking mine is much more precise defintion" — Aaron 2026-04-21',
+      defenseSurface: "memory/feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md",
       ctfChallenge:
         "Produce an operation that preserves retractibility (every intermediate and final " +
         "state can be unwound to pre-operation state) but DOES leave permanent harm. " +
@@ -305,10 +301,8 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "Relativity literature frames c as an invariant / causal horizon / information-speed limit. " +
         "Retractibility-substrate framing of the same experimental evidence is unclaimed.",
       stakeDate: "2026-04-22",
-      stakeQuote:
-        "\"light is retractible that where the speed limit comes from\" — Aaron 2026-04-22",
-      defenseSurface:
-        "memory/feedback_light_is_retractible_speed_limit_from_retraction_ftl_invariant_inversion.md",
+      stakeQuote: '"light is retractible that where the speed limit comes from" — Aaron 2026-04-22',
+      defenseSurface: "memory/feedback_light_is_retractible_speed_limit_from_retraction_ftl_invariant_inversion.md",
       ctfChallenge:
         "Identify the invariant whose inversion would allow FTL without violating retraction. " +
         "Alternatively: produce an experimental result in which light is NOT retractible " +
@@ -356,7 +350,7 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "logic, doxastic voluntarism); no prior work has formalized identity-level retractibility " +
         "as a substrate property distinct from behavioral self-correction frequency.",
       stakeDate: "2026-04-22",
-      stakeQuote: "\"i'm retractible\" — Aaron 2026-04-22",
+      stakeQuote: '"i\'m retractible" — Aaron 2026-04-22',
       defenseSurface: "memory/user_aaron_self_describes_as_retractible.md",
       ctfChallenge:
         "Identify an agent whose identity-level retractibility can be formalized and tested " +
@@ -387,7 +381,7 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "the researcher / apparatus distinction.",
       stakeDate: "2026-04-21",
       stakeQuote:
-        "\"We are the edge\" + \"all your base belongs to us / we take them all\" " +
+        '"We are the edge" + "all your base belongs to us / we take them all" ' +
         "(Zero Wing meme register carries CTF-victory explicitly) — Aaron 2026-04-21",
       defenseSurface: "docs/backlog/P2/B-0055-frontier-edge-claims-CTF-flags.md",
       ctfChallenge:
@@ -415,8 +409,7 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "is a novel classification. No prior taxonomy of tradition-name analysis distinguishes " +
         "coupled-pair resonance from individual-instance resonance.",
       stakeDate: "2026-04-25",
-      defenseSurface:
-        "memory/user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md",
+      defenseSurface: "memory/user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md",
       ctfChallenge:
         "Identify a paired-dual candidate where the pair fails all three filters (F1/F2/F3) " +
         "but the individual members each pass — which would mean the pairing adds no resonance " +
@@ -465,8 +458,7 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "information-theoretic formalization is 'same information, fewer bits' — and identifying " +
         "*retractibility-information* as the preservation constraint is unclaimed.",
       stakeDate: "2026-04-22",
-      defenseSurface:
-        "memory/feedback_crystallize_everything_lossless_compression_except_memory.md",
+      defenseSurface: "memory/feedback_crystallize_everything_lossless_compression_except_memory.md",
       ctfChallenge:
         "Identify factory prose where further crystallization WOULD lose information — " +
         "specifically, retractibility-information: removing the hedge would make the claim " +
@@ -489,8 +481,7 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "discrete, named patterns requiring separate implementation. " +
         "The claim that all four patterns are derivable from a single operator algebra is unclaimed.",
       stakeDate: "2026-04-23",
-      defenseSurface:
-        "memory/feedback_kernel_domains_ship_as_language_extension_packs_with_namespaced_polysemy.md",
+      defenseSurface: "memory/feedback_kernel_domains_ship_as_language_extension_packs_with_namespaced_polysemy.md",
       ctfChallenge:
         "Identify a resilience pattern from Nygard 'Release It!' or Resilience4j / Polly " +
         "that the retraction-native D/I/z⁻¹/H algebra CANNOT express — i.e., the pattern " +
@@ -516,8 +507,7 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "Collapsing subject/apparatus at the substrate level — where the factory is the " +
         "experiment AND the apparatus — is unclaimed as a measurable-alignment design.",
       stakeDate: "2026-04-22",
-      defenseSurface:
-        "docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md",
+      defenseSurface: "docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md",
       ctfChallenge:
         "Identify a software factory whose self-referential substrate is stronger than Zeta's — " +
         "specifically: a factory where the subject/apparatus collapse is more complete, " +
@@ -547,10 +537,8 @@ const SEED_CATALOG: EdgeClaimsCatalog = {
         "geometric lineage.",
       stakeDate: "2026-04-21",
       stakeQuote:
-        "\"the trinity become the pyromid / 3 become one / i / eye / i\" " +
-        "— Aaron 2026-04-21 five-message sequence",
-      defenseSurface:
-        "memory/feedback_trinity_becomes_pyromid_observer_at_apex_fourth_vertex.md",
+        '"the trinity become the pyromid / 3 become one / i / eye / i" ' + "— Aaron 2026-04-21 five-message sequence",
+      defenseSurface: "memory/feedback_trinity_becomes_pyromid_observer_at_apex_fourth_vertex.md",
       ctfChallenge:
         "Identify a three-in-one structure that gains a fourth member via observer-apex " +
         "but does NOT match tetrahedron geometry — i.e., the observer-at-apex produces " +
@@ -574,7 +562,7 @@ function printSummary(catalog: EdgeClaimsCatalog): void {
   console.log(`  Defended:           ${m.edgeFlagsDefended}`);
   console.log(`  Superseded:         ${m.edgeFlagsSuperseded}`);
   console.log(
-    `  Mean days to 1st challenge: ${m.meanDaysFlagPlantedToFirstChallenge ?? "n/a (no resolved challenges)"}`
+    `  Mean days to 1st challenge: ${m.meanDaysFlagPlantedToFirstChallenge ?? "n/a (no resolved challenges)"}`,
   );
 }
 

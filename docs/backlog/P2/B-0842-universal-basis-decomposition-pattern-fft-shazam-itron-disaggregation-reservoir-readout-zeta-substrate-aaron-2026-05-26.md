@@ -14,7 +14,18 @@ composes_with:
   - B-0838
   - B-0840
   - B-0841
-tags: [universal-pattern, basis-decomposition, fourier-transform, audio-fingerprinting, energy-disaggregation, reservoir-readout, substrate-as-basis, mathematical-unification, cross-domain-isomorphism]
+tags:
+  [
+    universal-pattern,
+    basis-decomposition,
+    fourier-transform,
+    audio-fingerprinting,
+    energy-disaggregation,
+    reservoir-readout,
+    substrate-as-basis,
+    mathematical-unification,
+    cross-domain-isomorphism,
+  ]
 ---
 
 ## Problem
@@ -31,13 +42,13 @@ The reservoir-computing readout equation (per B-0839.3 transcript at end of vide
 
 Where `ωᵢ` are the learned readout weights, `sᵢ(t)` are reservoir neuron states, `y(t)` is the target signal — IS the universal basis-decomposition pattern. The same mathematical form appears across multiple application domains:
 
-| Application | Basis `sᵢ(t)` | Weights `ωᵢ` | Target `y(t)` |
-| --- | --- | --- | --- |
-| **Fourier transform** (analog FFT) | Sines / cosines at frequency `ωᵢ` | Fourier coefficients | Arbitrary periodic signal |
-| **Audio fingerprinting** (Shazam-style; Picard-iteration-like fixed-point search) | Spectral hash features | Match-strength coefficients | Song identification |
-| **Itron energy disaggregation** | Per-device load signatures | Per-device usage coefficients | Total household power draw |
-| **Reservoir computing** (Kirsanov B-0839.3) | Random reservoir neuron states | Learned readout weights | Target signal (e.g., zebra finch song) |
-| **Zeta substrate-engineering** | Substrate-row content + memory-file content + research-doc content + persona-conversation content | Operator + agent "this composes with X" tuning weights | Substantive engineering output (PRs landed + substrate ratified) |
+| Application                                                                       | Basis `sᵢ(t)`                                                                                     | Weights `ωᵢ`                                           | Target `y(t)`                                                    |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------- |
+| **Fourier transform** (analog FFT)                                                | Sines / cosines at frequency `ωᵢ`                                                                 | Fourier coefficients                                   | Arbitrary periodic signal                                        |
+| **Audio fingerprinting** (Shazam-style; Picard-iteration-like fixed-point search) | Spectral hash features                                                                            | Match-strength coefficients                            | Song identification                                              |
+| **Itron energy disaggregation**                                                   | Per-device load signatures                                                                        | Per-device usage coefficients                          | Total household power draw                                       |
+| **Reservoir computing** (Kirsanov B-0839.3)                                       | Random reservoir neuron states                                                                    | Learned readout weights                                | Target signal (e.g., zebra finch song)                           |
+| **Zeta substrate-engineering**                                                    | Substrate-row content + memory-file content + research-doc content + persona-conversation content | Operator + agent "this composes with X" tuning weights | Substantive engineering output (PRs landed + substrate ratified) |
 
 The 5 columns are NOT just analogous — they are mathematically isomorphic at the basis-decomposition level. Same equation, different domains.
 

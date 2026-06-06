@@ -67,11 +67,7 @@ import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } 
 import { homedir, platform, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  buildBlob,
-  composeBundle,
-  parseArgs as parsePersistArgs,
-} from "../../tools/installer/zeta-creds-persist";
+import { buildBlob, composeBundle, parseArgs as parsePersistArgs } from "../../tools/installer/zeta-creds-persist";
 import { parseUuidFromDiskutilInfo } from "./zflash-lib";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
@@ -195,10 +191,7 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
     // when stderr is empty (e.g., ENOENT when git binary is missing).
     // Per #5093 Copilot P1: "(no stderr captured)" hides the actual cause.
     const execMsg = e instanceof Error ? e.message : String(e);
-    const execCode =
-      e && typeof e === "object" && "code" in e
-        ? String((e as { code: unknown }).code)
-        : "";
+    const execCode = e && typeof e === "object" && "code" in e ? String((e as { code: unknown }).code) : "";
 
     // Discriminate: network-flavored failures → degrade to "offline" warn.
     // Other failures (git missing, no origin, auth) → bail loud unless
@@ -272,17 +265,12 @@ function checkLocalCheckoutFreshness(repoRoot: string): void {
   const errored: { file: string; status: number; stderr: string }[] = [];
   for (const file of INSTALL_SUBSTRATE_FILES) {
     try {
-      execFileSync(
-        "git",
-        ["-C", repoRoot, "diff", "--quiet", "HEAD", "origin/main", "--", file],
-        { stdio: ["ignore", "ignore", "pipe"] },
-      );
+      execFileSync("git", ["-C", repoRoot, "diff", "--quiet", "HEAD", "origin/main", "--", file], {
+        stdio: ["ignore", "ignore", "pipe"],
+      });
       // exit 0 = no diff
     } catch (e: unknown) {
-      const status =
-        e && typeof e === "object" && "status" in e
-          ? Number((e as { status: number }).status)
-          : -1;
+      const status = e && typeof e === "object" && "status" in e ? Number((e as { status: number }).status) : -1;
       if (status === 1) {
         stale.push(file);
       } else {
@@ -348,7 +336,9 @@ function autoDownloadFreshIsoIfNeeded(localIso: string): string {
       ],
       { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
     );
-    const runs = (JSON.parse(runsJson) as { workflow_runs?: Array<{ id: number; updated_at: string; head_sha: string }> }).workflow_runs ?? [];
+    const runs =
+      (JSON.parse(runsJson) as { workflow_runs?: Array<{ id: number; updated_at: string; head_sha: string }> })
+        .workflow_runs ?? [];
     if (runs.length === 0) {
       process.stdout.write("zflash: no successful ISO builds found on origin/main (iter-4.3 skipped)\n");
       return localIso;
@@ -378,11 +368,9 @@ function autoDownloadFreshIsoIfNeeded(localIso: string): string {
     // to localIso so it's always string; overwrite on copy success.
     let dlDest: string = localIso;
     try {
-      execFileSync(
-        "gh",
-        ["run", "download", String(latest.id), "--dir", dlDir, "-R", ZETA_REPO_GH],
-        { stdio: "inherit" },
-      );
+      execFileSync("gh", ["run", "download", String(latest.id), "--dir", dlDir, "-R", ZETA_REPO_GH], {
+        stdio: "inherit",
+      });
       // gh run download puts artifact into a directory NAMED after the artifact.
       // Walk dlDir to find the .iso file.
       const findIsoUnder = (d: string): string | null => {
@@ -647,12 +635,7 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
   }
 
   const target = join(mountPoint, "zeta-creds.enc");
-  const persistArgv = [
-    "--usb-uuid",
-    usbUuid,
-    "--output",
-    target,
-  ];
+  const persistArgv = ["--usb-uuid", usbUuid, "--output", target];
   if (credBake.passphraseFile !== null) {
     persistArgv.push("--passphrase-file", credBake.passphraseFile);
   }
@@ -688,7 +671,9 @@ function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredB
   try {
     execFileSync("sudo", ["chmod", "600", target], { stdio: "ignore" });
   } catch {
-    process.stdout.write(`B-0852: chmod 600 not honored for ${target}; continuing because some FAT mounts ignore POSIX modes\n`);
+    process.stdout.write(
+      `B-0852: chmod 600 not honored for ${target}; continuing because some FAT mounts ignore POSIX modes\n`,
+    );
   }
   process.stdout.write(`B-0852: wrote encrypted credential blob to ${target} (USB UUID ${usbUuid})\n`);
 }
@@ -703,7 +688,9 @@ async function injectPubkeyToUsb(
     process.stdout.write(`iter-5.2: ALSO injecting hostname '${hostOverride}' into ESP ...\n`);
   }
   if (credBake.bakeCredArgs.length > 0) {
-    process.stdout.write(`B-0852: ALSO baking ${credBake.bakeCredArgs.length} credential blob entr${credBake.bakeCredArgs.length === 1 ? "y" : "ies"} into ESP ...\n`);
+    process.stdout.write(
+      `B-0852: ALSO baking ${credBake.bakeCredArgs.length} credential blob entr${credBake.bakeCredArgs.length === 1 ? "y" : "ies"} into ESP ...\n`,
+    );
   }
 
   // Brief settle so macOS re-reads partition table after dd
@@ -742,10 +729,7 @@ async function injectPubkeyToUsb(
     mountResult = mountEsp(espPart);
   } catch (e) {
     dumpDiagnostics(`mountEsp ${espPart} failed (both diskutil + mount_msdos paths)`);
-    bail(
-      3,
-      `iter-4.2 inject failed: could not mount ${espPart}: ${e instanceof Error ? e.message : String(e)}`,
-    );
+    bail(3, `iter-4.2 inject failed: could not mount ${espPart}: ${e instanceof Error ? e.message : String(e)}`);
   }
   const mountPoint = mountResult.mountPoint;
   process.stdout.write(`iter-4.2: mounted at ${mountPoint} (via ${mountResult.method})\n`);
@@ -761,7 +745,9 @@ async function injectPubkeyToUsb(
   const VALID_PUBKEY = /^(ssh-(ed25519|rsa|dss)|ecdsa-sha2-\S+|sk-ssh-ed25519@\S+|sk-ecdsa-sha2-\S+)\s+\S+/;
   if (!VALID_PUBKEY.test(firstLine)) {
     unmountEsp(espPart, mountResult);
-    dumpDiagnostics(`${pubkeyPath} first line is not a recognized OpenSSH pubkey (expected ssh-ed25519 / ssh-rsa / ssh-dss / ecdsa-sha2-* / sk-ssh-ed25519@* / sk-ecdsa-sha2-*)`);
+    dumpDiagnostics(
+      `${pubkeyPath} first line is not a recognized OpenSSH pubkey (expected ssh-ed25519 / ssh-rsa / ssh-dss / ecdsa-sha2-* / sk-ssh-ed25519@* / sk-ecdsa-sha2-*)`,
+    );
     bail(3, `iter-4.2 inject failed: ${pubkeyPath} is not a recognized SSH pubkey format.`);
   }
 
@@ -834,9 +820,7 @@ async function injectPubkeyToUsb(
     execFileSync("diskutil", ["eject", flashedDevice], { stdio: "inherit" });
     process.stdout.write(`iter-4.2: ${flashedDevice} ejected; safe to remove USB.\n`);
   } catch {
-    process.stdout.write(
-      `(eject ${flashedDevice} reported error; safe to remove USB anyway.)\n`,
-    );
+    process.stdout.write(`(eject ${flashedDevice} reported error; safe to remove USB anyway.)\n`);
   }
 }
 
@@ -890,9 +874,7 @@ async function main() {
       // homedir; raw `--ssh-key ~/.ssh/id_ed25519.pub` would resolve to
       // a literal `~/.ssh/...` path under cwd and fail existence checks.
       // Expand leading `~/` (and bare `~`) to homedir() before resolve.
-      const expanded = next === "~" || next.startsWith("~/")
-        ? join(homedir(), next.slice(next === "~" ? 1 : 2))
-        : next;
+      const expanded = next === "~" || next.startsWith("~/") ? join(homedir(), next.slice(next === "~" ? 1 : 2)) : next;
       sshKeyOverride = resolve(expanded);
       i++;
       continue;
@@ -948,9 +930,7 @@ async function main() {
       if (!next || next.startsWith("-")) {
         bail(2, "--bake-passphrase-file requires a path argument");
       }
-      const expanded = next === "~" || next.startsWith("~/")
-        ? join(homedir(), next.slice(next === "~" ? 1 : 2))
-        : next;
+      const expanded = next === "~" || next.startsWith("~/") ? join(homedir(), next.slice(next === "~" ? 1 : 2)) : next;
       bakePassphraseFile = resolve(expanded);
       i++;
       continue;
@@ -1060,9 +1040,7 @@ async function main() {
     if (repoRoot) {
       checkLocalCheckoutFreshness(repoRoot);
     } else {
-      process.stderr.write(
-        "zflash: (iter-4.3 freshness check skipped — not running from a git checkout)\n",
-      );
+      process.stderr.write("zflash: (iter-4.3 freshness check skipped — not running from a git checkout)\n");
     }
   } else {
     process.stderr.write("zflash: WARN — iter-4.3 freshness check bypassed via --skip-freshness-check\n");
@@ -1149,9 +1127,7 @@ async function main() {
   //
   // Touch ID PAM gate is PRESERVED — agent cannot bypass biometric
   // physical-presence proof on the operator's Mac.
-  const flashUsbArgs = willInject
-    ? [flashUsb, "--short", "--no-eject", isoPath]
-    : [flashUsb, "--short", isoPath];
+  const flashUsbArgs = willInject ? [flashUsb, "--short", "--no-eject", isoPath] : [flashUsb, "--short", isoPath];
   if (agentMode) {
     process.stdout.write(
       "\nzflash: --agent mode active — will auto-type challenge response\n" +
@@ -1202,10 +1178,7 @@ async function main() {
       // execFileSync throws on non-zero exit; child has already printed
       // its own error message + exited with its own code via flash-usb's
       // bail(). We propagate the exit code.
-      const status =
-        e && typeof e === "object" && "status" in e
-          ? Number((e as { status: number }).status) || 1
-          : 1;
+      const status = e && typeof e === "object" && "status" in e ? Number((e as { status: number }).status) || 1 : 1;
       process.exit(status);
     }
   }

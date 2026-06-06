@@ -8,7 +8,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-30"
   name: sealed-secrets
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -19,10 +19,10 @@ spec:
       releaseName: sealed-secrets
       valuesObject:
         fullnameOverride: sealed-secrets-controller
-        keyrenewperiod: 720h   # 30 days
+        keyrenewperiod: 720h # 30 days
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
   syncPolicy:
-    automated: { prune: false, selfHeal: true }   # never prune — would orphan secrets
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    automated: { prune: false, selfHeal: true } # never prune — would orphan secrets
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

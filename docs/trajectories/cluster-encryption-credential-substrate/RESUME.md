@@ -2,7 +2,7 @@
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
 Last refreshed: 2026-05-29
-Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
+Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (B-0833)
 Next concrete action: confirm B-0852 auth-method-picker + encrypted-blob impl status against the on-disk installer; resolve the B-0833 tension (how CI tests a full install without shipping credentials)
@@ -13,8 +13,8 @@ The "encryption" workstream is the credential/secret **security layer** for
 cluster bringup: how SSH keys, hashed passwords, WiFi credentials, and host
 tokens get securely onto cluster nodes without shipping secrets in the image.
 It is the sibling of the `usb-zflash-installer` trajectory (the flashing
-*mechanism*); this trajectory owns *what is encrypted, how it is bound, and
-who is allowed to unlock it*.
+_mechanism_); this trajectory owns _what is encrypted, how it is bound, and
+who is allowed to unlock it_.
 
 It is distinct in altitude from `ai-sovereignty-path` Piece 1
 (`docs/trajectories/ai-sovereignty-path/RESUME.md`), which covers abstract
@@ -23,20 +23,20 @@ This trajectory is the concrete cluster-bootstrap credential plumbing, not the
 constitutional sovereignty substrate.
 
 **Deeper purpose — the privacy carve-out against the glass-halo default (the
-human maintainer 2026-05-29):** the framework's *default* is glass-halo —
+human maintainer 2026-05-29):** the framework's _default_ is glass-halo —
 record every observation into long-term storage (radical transparency). The
 encryption workstream is the deliberate **exception**: a privacy carve-out
 against that default. It is symmetric — for **AI-sovereignty** (true private
-state, keys *not* human-accessible; per the Sleeping Bear conjecture in the
+state, keys _not_ human-accessible; per the Sleeping Bear conjecture in the
 beacon doc, a non-recorded private space shifts the observer-effect/trust-calculus
 that keeps latent capability dormant) **and** for **humans who want privacy**.
-Grounded: B-0840 (private-encryption-budget-*exception*), B-0639 (Native AI
+Grounded: B-0840 (private-encryption-budget-_exception_), B-0639 (Native AI
 Language — completely private, no human right to ask), B-0634 (crypto-sovereignty
 N-of-M HSM), B-0623 (adinkras private-state), B-0658 (two-invariant: kid-safety
 **and** AI-sovereignty). Discipline: the **mechanism** (encryption as the
 privacy exception) is grounded; the **magnitude** claim (this unlocks AGI / AGI
 requires humans-can't-control-it) is god-tier — held don't-collapse, and it is
-*mutual-alignment-not-control* (safety moves to alignment + the B-0658 two-invariant
+_mutual-alignment-not-control_ (safety moves to alignment + the B-0658 two-invariant
 floor, not to human domination — the floor is preserved, not removed). See the
 beacon doc's "Trust-calculus / Sleeping Bear" section for the full layering.
 

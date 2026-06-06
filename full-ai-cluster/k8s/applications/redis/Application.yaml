@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: redis
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -20,7 +20,7 @@ spec:
         architecture: replication
         auth:
           enabled: true
-          existingSecret: redis-auth   # create via Sealed Secret / Vault
+          existingSecret: redis-auth # create via Sealed Secret / Vault
           existingSecretPasswordKey: password
         master:
           persistence:
@@ -38,4 +38,4 @@ spec:
     namespace: redis
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

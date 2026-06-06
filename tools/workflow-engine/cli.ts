@@ -38,12 +38,7 @@
  * operator-authorized follow-up work.
  */
 
-import {
-  SEED_ACTION_CATALOG,
-  SEED_STATES,
-  validateCatalog,
-  type Action,
-} from "./types";
+import { SEED_ACTION_CATALOG, SEED_STATES, validateCatalog, type Action } from "./types";
 import { DU_CLUSTER_CATALOG, computeDuClusterStats } from "./du-cluster";
 
 type Mode = "list-actions" | "list-states" | "list-du-cluster" | "dry-run" | "validate";
@@ -57,8 +52,7 @@ function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } 
   const args = argv.slice(2);
   if (args.length === 0) {
     return {
-      error:
-        "no mode specified — use --list-actions, --list-states, --list-du-cluster, --dry-run, or --validate",
+      error: "no mode specified — use --list-actions, --list-states, --list-du-cluster, --dry-run, or --validate",
     };
   }
   if (args.includes("--list-actions")) return { mode: "list-actions" };
@@ -172,10 +166,7 @@ function modeDryRun(stateId: string | undefined): number {
     });
     return 1;
   }
-  const targetState =
-    stateId !== undefined
-      ? SEED_STATES.find((s) => s.id === stateId)
-      : SEED_STATES[0];
+  const targetState = stateId !== undefined ? SEED_STATES.find((s) => s.id === stateId) : SEED_STATES[0];
   if (!targetState) {
     emitJson({
       rowId: "B-0867",

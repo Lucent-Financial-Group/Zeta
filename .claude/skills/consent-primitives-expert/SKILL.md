@@ -5,12 +5,12 @@ description: Consent algebra — grants/revocations, abelian-group model, GDPR e
 
 # Consent Primitives Expert — the consent-algebra hat
 
-Capability skill ("hat"). Owns the *algebraic and data-
-structural* layer of consent. Sibling to
+Capability skill ("hat"). Owns the _algebraic and data-
+structural_ layer of consent. Sibling to
 `consent-ux-researcher` (UX surface) and
 `glass-halo-architect` (architectural stance / radical-
-transparency-as-defense). This skill is the *engine*;
-the others are the *chassis* and the *strategic stance*.
+transparency-as-defense). This skill is the _engine_;
+the others are the _chassis_ and the _strategic stance_.
 
 ## Core claim — the isomorphism
 
@@ -25,7 +25,7 @@ Z-sets have multiplicity in ℤ; consent events have
 multiplicity in {grant, retract}, which embeds cleanly
 into ℤ (grant = +1, retract = -1, net effect = sum). The
 operator algebra (D / I / z⁻¹ / H) over Z-sets therefore
-applies *directly* to consent histories. Every invariant
+applies _directly_ to consent histories. Every invariant
 proven for Z-set operators is a consent-algebra theorem
 for free.
 
@@ -95,7 +95,7 @@ structure.
 
 The empty consent history. Neutral baseline. Nothing
 granted, nothing retracted. Critically, the identity
-element exists *as a first-class thing*, not as a
+element exists _as a first-class thing_, not as a
 default absence — a user who has never consented
 and a user who granted-then-revoked land at the same
 group element.
@@ -115,9 +115,9 @@ semantics, the inverse is an explicit retraction tuple
 with multiplicity -1.
 
 **Why this matters:** GDPR-style "right to be
-forgotten" via delete is a *destructive* operation that
+forgotten" via delete is a _destructive_ operation that
 loses audit. Retraction-via-inverse is a
-*non-destructive* operation that preserves audit. The
+_non-destructive_ operation that preserves audit. The
 effect (is consent currently in force?) is zero after
 retraction; the history (what was consented, when,
 withdrawn when, why) remains.
@@ -127,8 +127,8 @@ withdrawn when, why) remains.
 `g_A ∘ g_B = g_B ∘ g_A`. The order of independent
 grants does not affect the final consent-state.
 
-For the *same scope*, `g_A ∘ g_A⁻¹ = identity`
-regardless of bracket. For *different scopes*, the
+For the _same scope_, `g_A ∘ g_A⁻¹ = identity`
+regardless of bracket. For _different scopes_, the
 grants are independent and trivially commute.
 
 Commutativity is what makes audit log merging (across
@@ -234,8 +234,8 @@ consent events whose downstream effect is nil.
 before any data flowed under it; a grant to a resource
 no one ever read; a grant-retract pair whose interior
 produced no observable event. These elements satisfy
-`φ(g) = identity` — they are *audit-visible* in the
-full history but *effect-null* everywhere downstream.
+`φ(g) = identity` — they are _audit-visible_ in the
+full history but _effect-null_ everywhere downstream.
 
 **Zeta consequence — legitimate log compaction.** The usual
 tension in retraction-native systems: audit logs grow
@@ -316,7 +316,7 @@ accounting, not an estimate.
   events check membership in each record's stabilizer
   first; records unchanged by that consent class are
   skipped entirely. Natural index: `Stab⁻¹(g) = {x :
-  g ∈ Stab(x)}`, the records immune to `g`.
+g ∈ Stab(x)}`, the records immune to `g`.
 - **Fixed-point classification** — a record with
   `Stab(x) = G` is publication-invariant under ALL
   consent events (typically: no personal data). These
@@ -355,9 +355,9 @@ can leak; the algebra forbids it.
 
 This is what "the math isn't incidental; the algebra is
 the engineering" means. Every one of these four is a
-proof obligation *already satisfied* by Zeta's Z-set
+proof obligation _already satisfied_ by Zeta's Z-set
 retraction-native substrate. We are not building consent
-primitives on top of Zeta. We are *labelling* Zeta's
+primitives on top of Zeta. We are _labelling_ Zeta's
 existing algebra with consent semantics.
 
 ## Consent lifecycle — the state machine perspective
@@ -371,8 +371,8 @@ requested → granted → active → expired | revoked → archived
 ```
 
 Each state transition is an event in the abelian group.
-The state machine is the *interpretation*; the algebra
-is the *substrate*.
+The state machine is the _interpretation_; the algebra
+is the _substrate_.
 
 **Key invariant:** at any time, the current consent
 state is the sum (in the abelian group) of all events
@@ -412,8 +412,9 @@ let isConsentInForce (events: seq<ConsentEvent>) subject scope =
 
 **Observation:** this is identical in shape to Zeta's
 Z-set "is-element-present" query (`sum-multiplicity
+
 > 0`). The isomorphism is not metaphor; it is
-implementation.
+> implementation.
 
 ### Audit query — full history
 

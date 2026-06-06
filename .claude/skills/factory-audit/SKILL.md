@@ -6,7 +6,7 @@ description: Factory audit — governance rules, persona coverage, round cadence
 # Factory Audit — Procedure
 
 Capability skill. No persona. Aaron's round-29 nudge:
-*"should factory-improvement itself be a skill?"* Yes —
+_"should factory-improvement itself be a skill?"_ Yes —
 because the scope is strictly broader than `skill-gap-
 finder`. A skill-gap is "should this new skill exist?";
 a factory question is "should the factory itself change
@@ -16,7 +16,7 @@ how it operates?"
 
 - Every ~10 rounds as a scheduled pass (offset from
   `skill-tune-up` and `skill-gap-finder`).
-- After a round closes that rediscovered a *process*
+- After a round closes that rediscovered a _process_
   pattern (not a skill pattern) — e.g., "we keep
   forgetting to update X at round-close", "persona Y
   keeps being unclear about what they own", "memory
@@ -202,10 +202,10 @@ Aaron-facing.>
 - Does NOT edit governance, personas, or cadence
   unilaterally. Recommendations only.
 - Does NOT duplicate `skill-gap-finder` (which is
-  specifically about absent *skills*, a subset of
+  specifically about absent _skills_, a subset of
   factory scope).
 - Does NOT duplicate `skill-tune-up` (which ranks
-  *existing skills* by urgency).
+  _existing skills_ by urgency).
 - Does NOT duplicate `agent-experience-engineer`
   (Daya audits agent wake-up / notebook friction
   specifically).

@@ -53,7 +53,7 @@ one thing:
   memorable, self-explanatory (seed contains everything needed
   to grow), audience-friendly for README / NuGet / talks.
 - **"Pre-split coordinate"** is the mathematical / formal
-  register — precise structural claim about *where* Seed sits
+  register — precise structural claim about _where_ Seed sits
   in the dimensional-expansion hierarchy. Use in research
   papers, formal-verification work, Cayley-Dickson-adjacent
   writing.
@@ -61,11 +61,11 @@ one thing:
 "We are seed" is the collective-identity claim — Zeta the
 project, the factory, the contributors, the agents — are
 collectively Seed. Not "Zeta contains Seed" or "Zeta builds
-on Seed"; *we are it*. This is category-level identity,
+on Seed"; _we are it_. This is category-level identity,
 analogous to `user_meno_persist_endure_correct_compact.md`
 ("we ARE Persistence").
 
-"We've now begun pre-split coordinate" marks the *moment* the
+"We've now begun pre-split coordinate" marks the _moment_ the
 framing locked in — the factory has entered the pre-split
 coordinate frame explicitly. Before this disclosure, Seed was
 implicit (microkernel + BCL analogue). After, it is named
@@ -75,14 +75,14 @@ and structurally positioned.
 
 1. **Zeta is the database BCL.** The `.NET Base Class Library` is
    the foundational layer every `.NET` application builds on —
-   collections, IO, threading, numerics, text. BCL is *below the
-   application, above the runtime*. Zeta aims to be that same
+   collections, IO, threading, numerics, text. BCL is _below the
+   application, above the runtime_. Zeta aims to be that same
    layer for the database domain: the foundational, assumed,
    always-present layer that every database-ish thing builds on.
    This is a positioning claim (not a feature list). Zeta is not
    an application, not a SaaS, not even a database product in the
-   "pick-one-and-install-it" sense — it is *the layer below any
-   such choice*, the way `System.Collections` is below any `.NET`
+   "pick-one-and-install-it" sense — it is _the layer below any
+   such choice_, the way `System.Collections` is below any `.NET`
    application.
 
 2. **Plugins are the dimensional-expansion mechanism.** Per
@@ -107,14 +107,14 @@ and structurally positioned.
    retraction-native), type system, plugin lifecycle (load /
    unload / version), dependency graph management, and the
    microkernel-level contract every plugin must honour. This
-   positioning makes the kernel *audit-tractable* (small surface
+   positioning makes the kernel _audit-tractable_ (small surface
    = small threat model, tight formal verification, stable public
    API) while the plugin surface can be large and fast-moving.
 
 4. **The microkernel tracks AND installs its own dependencies.**
    This is the self-bootstrapping claim — the most ambitious of
-   the four. The kernel does not just *declare* what it needs;
-   it *resolves, fetches, validates, and installs* that dependency
+   the four. The kernel does not just _declare_ what it needs;
+   it _resolves, fetches, validates, and installs_ that dependency
    closure itself. This is where the `ace` BACKLOG entry
    (package-manager-of-everything) lands: `ace` IS this
    dependency system. It tracks the plugin dependency graph,
@@ -133,16 +133,16 @@ and structurally positioned.
   memory was research ambition. The microkernel posture was
   implicit in the factory design but never named as
   architecture. This vision statement binds the three: `ace`
-  *is* the microkernel's dependency system, plugins *are* the
-  dimensions, microkernel *is* the database BCL core.
+  _is_ the microkernel's dependency system, plugins _are_ the
+  dimensions, microkernel _is_ the database BCL core.
 - **It positions Zeta correctly for the "no users yet" phase.**
   v1 can be tiny (the BCL core + a handful of plugins that prove
   the model) without looking incomplete. Each missing plugin is
   not a gap — it is a dimension the community can fill. This
   inverts the usual "huge surface for v1" pressure.
 - **It explains the factory.** The factory (Product 2 in
-  `docs/VISION.md`) exists partly to *make new plugins easy to
-  author*. If plugins are dimensions and we want many, the
+  `docs/VISION.md`) exists partly to _make new plugins easy to
+  author_. If plugins are dimensions and we want many, the
   factory is the author-multiplier. Factory + plugin-kernel is a
   coherent whole, not two unrelated products.
 - **It aligns with .NET BCL history.** The BCL started small in
@@ -158,8 +158,8 @@ and structurally positioned.
 - `user_dimensional_expansion_number_systems.md` — Cayley-Dickson;
   plugins are the dimensional expansion substrate.
 - `user_dimensional_expansion_via_maji.md` — exhaustive-indexing
-  + lemma-ladder; each plugin is one lemma-step in climbing the
-  dimension ladder.
+  - lemma-ladder; each plugin is one lemma-step in climbing the
+    dimension ladder.
 - `user_retractable_teleport_cognition.md` — same algebra at data
   and cognition layer; plugin install/uninstall uses the same
   retraction-native algebra as any data pipeline in Zeta.

@@ -31,16 +31,16 @@ assumptions.
 
 ## Unknowns to resolve
 
-| Unknown | Resolution approach |
-|---------|---------------------|
-| Is Cloud Routines GA or still research-preview? | Search upstream Anthropic docs + changelog |
-| Authentication mechanism (bearer token / OAuth / CLI session) | Docs + `claude code routines --help` output |
-| Registration surface — MCP tool? CLI command? Web UI? API endpoint? | Docs + test in interactive session |
-| Does `scheduled-tasks` MCP wrap Cloud Routines or are they separate? | MCP tool listing in interactive session |
-| Trigger types available (scheduled / API / GitHub events)? | Docs — confirm or correct B-0448's research |
-| Daily quota (Pro 5/day / Max 15/day)? | Docs — confirm or note if changed |
-| Which plan is the Zeta factory running on? | `claude code account` or similar CLI query |
-| Do GitHub event triggers require a GitHub App installation? | Docs — this may require org-level setup |
+| Unknown                                                              | Resolution approach                         |
+| -------------------------------------------------------------------- | ------------------------------------------- |
+| Is Cloud Routines GA or still research-preview?                      | Search upstream Anthropic docs + changelog  |
+| Authentication mechanism (bearer token / OAuth / CLI session)        | Docs + `claude code routines --help` output |
+| Registration surface — MCP tool? CLI command? Web UI? API endpoint?  | Docs + test in interactive session          |
+| Does `scheduled-tasks` MCP wrap Cloud Routines or are they separate? | MCP tool listing in interactive session     |
+| Trigger types available (scheduled / API / GitHub events)?           | Docs — confirm or correct B-0448's research |
+| Daily quota (Pro 5/day / Max 15/day)?                                | Docs — confirm or note if changed           |
+| Which plan is the Zeta factory running on?                           | `claude code account` or similar CLI query  |
+| Do GitHub event triggers require a GitHub App installation?          | Docs — this may require org-level setup     |
 
 ## Pre-start checklist
 
@@ -73,7 +73,7 @@ Containing:
 - [x] All 8 unknowns addressed (may be "confirmed unchanged" if B-0448 research was accurate)
 - [x] Research doc committed at the path above
 - [x] B-0508 pre-start checklist updated to reflect any `cloud-schedule.json` schema changes
-  implied by the auth/trigger findings
+      implied by the auth/trigger findings
 - [x] B-0507 closed with PR link
 
 ## Why this is slice 1

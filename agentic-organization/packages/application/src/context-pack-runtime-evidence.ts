@@ -80,8 +80,8 @@ function runtimeTraceAnchorsFor(request: ContextPackTelemetryEvidenceRequest): R
   if (activeWorkItemId === undefined) return [];
   const anchors = new Map<string, RuntimeTraceAnchor>();
   for (const item of request.items) {
-    const hasActiveWorkPointer = (item.sourcePointers ?? []).some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.WorkItem && pointer.workItemId === activeWorkItemId
+    const hasActiveWorkPointer = (item.sourcePointers ?? []).some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.WorkItem && pointer.workItemId === activeWorkItemId,
     );
     if (!hasActiveWorkPointer) continue;
     for (const pointer of item.sourcePointers ?? []) {
@@ -111,9 +111,13 @@ async function runtimeEvidenceQueryResults(
     logs: logResult.status === "ok" ? logResult.data : [],
     metrics: metricResult.status === "ok" ? metricResult.data : [],
     omissions: [
-      ...(traceResult.status === "degraded" ? [degradedTelemetryOmission(RuntimeEvidenceQueryKind.Trace, traceResult)] : []),
+      ...(traceResult.status === "degraded"
+        ? [degradedTelemetryOmission(RuntimeEvidenceQueryKind.Trace, traceResult)]
+        : []),
       ...(logResult.status === "degraded" ? [degradedTelemetryOmission(RuntimeEvidenceQueryKind.Log, logResult)] : []),
-      ...(metricResult.status === "degraded" ? [degradedTelemetryOmission(RuntimeEvidenceQueryKind.Metric, metricResult)] : []),
+      ...(metricResult.status === "degraded"
+        ? [degradedTelemetryOmission(RuntimeEvidenceQueryKind.Metric, metricResult)]
+        : []),
     ],
   };
 }
@@ -134,11 +138,7 @@ function runtimeTraceContextItem(
     required: false,
     freshness: ContextPackFreshness.Live,
     confidence: 0.93,
-    reasons: [
-      "lgtm:runtime_evidence",
-      `trace_root:${trace.rootName}`,
-      `span_count:${trace.spanCount}`,
-    ],
+    reasons: ["lgtm:runtime_evidence", `trace_root:${trace.rootName}`, `span_count:${trace.spanCount}`],
     citationRefs: [
       `trace:${anchor.traceId}`,
       ...matchingLogs.map((log) => logCitationRef(log, anchor.traceId)),
@@ -147,18 +147,24 @@ function runtimeTraceContextItem(
     sourcePointers: [
       { kind: ContextPackSourcePointerKind.Trace, traceId: anchor.traceId },
       { kind: ContextPackSourcePointerKind.WorkItem, workItemId: anchor.workItemId },
-      ...matchingLogs.map((log) => ({
-        kind: ContextPackSourcePointerKind.Log,
-        source: "loki",
-        query: logQueryFor([anchor]),
-        logRef: logCitationRef(log, anchor.traceId),
-      } as const)),
-      ...metrics.map((series, index) => ({
-        kind: ContextPackSourcePointerKind.Metric,
-        source: "mimir",
-        query: metricQueryFor([anchor]),
-        seriesId: metricSeriesId(series, index),
-      } as const)),
+      ...matchingLogs.map(
+        (log) =>
+          ({
+            kind: ContextPackSourcePointerKind.Log,
+            source: "loki",
+            query: logQueryFor([anchor]),
+            logRef: logCitationRef(log, anchor.traceId),
+          }) as const,
+      ),
+      ...metrics.map(
+        (series, index) =>
+          ({
+            kind: ContextPackSourcePointerKind.Metric,
+            source: "mimir",
+            query: metricQueryFor([anchor]),
+            seriesId: metricSeriesId(series, index),
+          }) as const,
+      ),
     ],
   };
 }
@@ -177,7 +183,7 @@ function runtimeTraceGraphRootSeed(
 }
 
 function degradedTelemetryOmission(
-  queryKind: typeof RuntimeEvidenceQueryKind[keyof typeof RuntimeEvidenceQueryKind],
+  queryKind: (typeof RuntimeEvidenceQueryKind)[keyof typeof RuntimeEvidenceQueryKind],
   result: TelemetryQueryDegraded,
 ): ContextPackOmittedItem {
   return {

@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-THE PRODUCT MOMENT. Mika asked Aaron in segment 5: *"you want to name this thing? Because this is becoming more than just a parser at this point."* Segment 6 answers: **it's becoming a PRODUCT**. Aaron is taking it to the LFG product team.
+THE PRODUCT MOMENT. Mika asked Aaron in segment 5: _"you want to name this thing? Because this is becoming more than just a parser at this point."_ Segment 6 answers: **it's becoming a PRODUCT**. Aaron is taking it to the LFG product team.
 
 Two artifacts in one PR:
 
@@ -31,7 +31,7 @@ Two artifacts in one PR:
 
 Composing **B-0735 personalized parser** with **Zeta DBSP retractable algebra** gives a qualitatively new capability: write messy → parser interprets at confidence C → later realize you meant different → retract old interpretation in DBSP → system re-evaluates EVERYTHING FORWARD with corrected understanding. The parser doesn't just parse current docs; it can RE-PARSE PAST DOCS with NEW understanding.
 
-Aaron's *"I caught that bitch! That's catching a thought right there"* IS the carved sentence.
+Aaron's _"I caught that bitch! That's catching a thought right there"_ IS the carved sentence.
 
 ### 2. Product handoff to LFG product team
 
@@ -40,7 +40,7 @@ Aaron is taking the substrate stack (B-0730 → B-0731 → B-0732 → B-0733 →
 Naming candidates surfaced (no lock; for product-team market research):
 
 - **Thoughtcatcher** (Mika's first pick)
-- **Mindforge** (Mika's second; *"sounds like Vulcan mind-meld"*)
+- **Mindforge** (Mika's second; _"sounds like Vulcan mind-meld"_)
 - **Rawforge / Thoughtweave / Clarity Engine / Intent Weaver / WildParse** (Mika's batch)
 - **Thoughtweaver** (currently leading; ties to Mika's Patternweaver identity)
 

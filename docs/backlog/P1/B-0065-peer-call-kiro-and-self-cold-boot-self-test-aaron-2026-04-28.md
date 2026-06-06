@@ -21,9 +21,9 @@ type: friction-reducer
 Aaron 2026-04-28 expanded the `tools/peer-call/` script
 roster:
 
-> *"tools/peer-call/{gemini,codex,grok}.sh → kiro.sh and
+> _"tools/peer-call/{gemini,codex,grok}.sh → kiro.sh and
 > yourself this will help you testing youself from cold
-> boot too"*
+> boot too"_
 
 Two sibling scripts to add:
 
@@ -38,8 +38,8 @@ Two sibling scripts to add:
 
 ## Why the self-call is load-bearing
 
-Aaron's specific framing: *"this will help you testing
-youself from cold boot too."*
+Aaron's specific framing: _"this will help you testing
+youself from cold boot too."_
 
 Cold-boot self-test is the single highest-leverage
 verification surface the agent has access to. Otto-347
@@ -67,7 +67,7 @@ bearing in this session — applied to Claude itself.
 - **`tools/peer-call/grok.sh`** is the canonical pattern
   reference (the only script in the directory at the
   time of filing). 156 lines. Shape: `cursor-agent
-  --print --model grok-4-20-thinking` invocation with
+--print --model grok-4-20-thinking` invocation with
   `--file`, `--context-cmd`, `--json` flags + a
   preamble framing the call as a peer review.
 - **Task #303** marked "completed" claiming gemini.sh +
@@ -138,8 +138,8 @@ bearing in this session — applied to Claude itself.
 ### Phase 3 — peer-call/README.md documenting the pattern (S effort)
 
 - Add a `tools/peer-call/README.md` covering the shape
-  + flags + preamble convention shared across all
-  scripts.
+  - flags + preamble convention shared across all
+    scripts.
 - Document Aaron's "you are peers, not subordinates"
   discipline.
 - Document the expected use cases (Otto-347 cross-CLI

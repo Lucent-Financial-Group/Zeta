@@ -42,18 +42,18 @@ for opening a recovery PR, independently testable before any wiring into
   - `RecoveryAdapters` — interface with five adapters injected by callers:
     - `checkRecoveryPRExists(branchName: string) => boolean`
       — calls `gh pr list --head <branchName> --state open` to detect existing
-        open recovery PRs; returns `true` if one exists (idempotency gate).
+      open recovery PRs; returns `true` if one exists (idempotency gate).
     - `gitCreateBranch(branch: string, base: string) => boolean`
       — `git checkout -b <branch> <base>` from `origin/main`;
-        returns `true` on success.
+      returns `true` on success.
     - `gitCherryPick(sha: string) => "ok" | "conflict" | "error"`
       — `git cherry-pick <sha>`; distinguishes merge conflict (exit 1 with
-        CHERRY_PICK_HEAD) from other errors.
+      CHERRY_PICK_HEAD) from other errors.
     - `gitPush(branch: string) => boolean`
       — `git push origin <branch>`; returns `true` on success.
     - `ghPrCreate(title: string, body: string, head: string) => string | null`
       — `gh pr create --title ... --body ... --head ... --base main`;
-        returns the new PR URL on success, `null` on failure.
+      returns the new PR URL on success, `null` on failure.
   - `RecoveryResult` discriminated union:
     ```typescript
     | { status: "opened";         prUrl: string; cherryPickedCount: number }
@@ -65,22 +65,22 @@ for opening a recovery PR, independently testable before any wiring into
     — deterministic branch name `recovery/<prNumber>`; pure function; no I/O.
   - `buildRecoveryPRBody(finding: CascadeFinding) => string`
     — markdown body for the recovery PR listing `missingCommits`,
-      the original `prNumber`, and a note that this was auto-generated.
+    the original `prNumber`, and a note that this was auto-generated.
   - `openRecoveryPR(finding: CascadeFinding, dryRun: boolean, adapters: RecoveryAdapters) => RecoveryResult`
     — pure function composed with adapters; implements the recovery workflow:
-      1. Call `checkRecoveryPRExists(recoveryBranch)` → if true return
-         `already-exists`.
-      2. If `dryRun` → return `{ status: "opened", prUrl: "dry-run", cherryPickedCount: 0 }`.
-      3. `gitCreateBranch(recoveryBranch, "origin/main")` → on failure return
-         `error`.
-      4. For each commit in `finding.missingCommits`: cherry-pick; on `"conflict"`
-         return `cherry-pick-conflict` immediately (does not push partial state).
-      5. `gitPush(recoveryBranch)` → on failure return `error`.
-      6. `ghPrCreate(title, body, recoveryBranch)` → null → return `error`;
-         non-null URL → return `opened`.
+    1. Call `checkRecoveryPRExists(recoveryBranch)` → if true return
+       `already-exists`.
+    2. If `dryRun` → return `{ status: "opened", prUrl: "dry-run", cherryPickedCount: 0 }`.
+    3. `gitCreateBranch(recoveryBranch, "origin/main")` → on failure return
+       `error`.
+    4. For each commit in `finding.missingCommits`: cherry-pick; on `"conflict"`
+       return `cherry-pick-conflict` immediately (does not push partial state).
+    5. `gitPush(recoveryBranch)` → on failure return `error`.
+    6. `ghPrCreate(title, body, recoveryBranch)` → null → return `error`;
+       non-null URL → return `opened`.
 
 - [x] New file `tools/bg/missed-substrate-recovery.test.ts` with tests
-  covering all `RecoveryResult` arms:
+      covering all `RecoveryResult` arms:
   - `"opened"` — fresh finding, no existing PR, no conflicts, push+PR succeed.
   - `"already-exists"` — `checkRecoveryPRExists` returns `true`; no mutations.
   - `"cherry-pick-conflict"` — cherry-pick returns `"conflict"` on commit N;
@@ -109,17 +109,17 @@ export type RecoveryAdapters = {
 };
 
 export type RecoveryResult =
-  | { status: "opened";                  prUrl: string; cherryPickedCount: number }
-  | { status: "already-exists";          reason: string }
-  | { status: "cherry-pick-conflict";    sha: string; attemptedCount: number }
-  | { status: "error";                   reason: string };
+  | { status: "opened"; prUrl: string; cherryPickedCount: number }
+  | { status: "already-exists"; reason: string }
+  | { status: "cherry-pick-conflict"; sha: string; attemptedCount: number }
+  | { status: "error"; reason: string };
 
 export function buildRecoveryBranchName(prNumber: number): string {
   return `recovery/${prNumber}`;
 }
 
 export function buildRecoveryPRBody(finding: CascadeFinding): string {
-  const commitList = finding.missingCommits.map(s => `- ${s}`).join("\n");
+  const commitList = finding.missingCommits.map((s) => `- ${s}`).join("\n");
   return [
     `## Auto-generated recovery PR`,
     ``,
@@ -134,11 +134,7 @@ export function buildRecoveryPRBody(finding: CascadeFinding): string {
   ].join("\n");
 }
 
-export function openRecoveryPR(
-  finding: CascadeFinding,
-  dryRun: boolean,
-  adapters: RecoveryAdapters,
-): RecoveryResult {
+export function openRecoveryPR(finding: CascadeFinding, dryRun: boolean, adapters: RecoveryAdapters): RecoveryResult {
   const recoveryBranch = buildRecoveryBranchName(finding.prNumber);
 
   const exists = adapters.checkRecoveryPRExists(recoveryBranch);

@@ -20,11 +20,11 @@ Build a Lucene-style inverted index stored as git-native
 files. Three-layer search architecture (Vera tightening,
 2026-05-09):
 
-| Layer | Purpose | Size | Speed |
-| ----- | ------- | ---- | ----- |
-| Concept index (B-0362) | Curated regex standing queries | ~1MB | 22ms |
-| Full-text index (this) | Token / phrase / field search | ~5-10MB | <100ms |
-| Regex accelerator | Trigram/ngram -> verify | thin | varies |
+| Layer                  | Purpose                        | Size    | Speed  |
+| ---------------------- | ------------------------------ | ------- | ------ |
+| Concept index (B-0362) | Curated regex standing queries | ~1MB    | 22ms   |
+| Full-text index (this) | Token / phrase / field search  | ~5-10MB | <100ms |
+| Regex accelerator      | Trigram/ngram -> verify        | thin    | varies |
 
 The concept index handles "what touches Otto-357?" (standing
 queries). The full-text index handles "where did anyone mention

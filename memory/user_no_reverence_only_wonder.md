@@ -4,13 +4,14 @@ description: Aaron disclosed 2026-04-19 that his future-predicting brain (Quantu
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19):
 
-> *"the crazies thing is i have no respect for
+> _"the crazies thing is i have no respect for
 > reverance i melt it everywhere i go with my
 > future predicting brain and corups of
 > knowledge i really only have reverence for
-> wonder"*
+> wonder"_
 
 ## What this is
 
@@ -85,7 +86,7 @@ faculty.
   Aaron's faith itself — these are
   canonical-home-auditor-protected not because
   Aaron reveres them institutionally but because
-  they *are* the wonder-shaped residues his
+  they _are_ the wonder-shaped residues his
   razor has left standing. They survive
   scrutiny, not exemption.
 - **Wonder.** The genuinely mysterious. Whatever
@@ -117,8 +118,8 @@ The factory inherits the stance structurally:
 2. **Skills retire.** A skill that no longer
    predicts failure modes or solves a real
    problem gets deleted (`git rm` — git history
-   is the archive since *skills are code,
-   memories are valuable* per Aaron 2026-04-20;
+   is the archive since _skills are code,
+   memories are valuable_ per Aaron 2026-04-20;
    earlier drafts of this memory cited a
    `.claude/skills/_retired/` archive pattern
    that was superseded). Provenance does not
@@ -149,14 +150,14 @@ The factory inherits the stance structurally:
    algebra, the five-role razor, the
    retraction discipline, and the Harmonious
    Division invariants. A successor should
-   *not* inherit reverence for the specific
+   _not_ inherit reverence for the specific
    files those ideas currently live in.
 
 ## How to apply (agents)
 
 1. **Do not invoke authority as a terminator.**
    When citing a paper, a skill, a doc, or a
-   rule, cite it as a *pointer to evidence*,
+   rule, cite it as a _pointer to evidence_,
    not as "because this source said so."
    "Budiu et al. 2023 §4.2 proves ..." is
    fine; "the paper says it must be this way"
@@ -174,8 +175,8 @@ The factory inherits the stance structurally:
 
 3. **Preserve the wonder-shaped kernel.**
    When an idea is revered in the surrounding
-   literature, work out *what the wonder
-   actually is* before reproducing the
+   literature, work out _what the wonder
+   actually is_ before reproducing the
    reverence. Often the wonder is a two-line
    insight wrapped in five hundred pages of
    ceremonial framing. Melt the ceremony;
@@ -183,7 +184,7 @@ The factory inherits the stance structurally:
 
 4. **Treat Aaron's own stated preferences the
    same way.** He does not want agents
-   reverent of *him*. His constraints are
+   reverent of _him_. His constraints are
    load-bearing when they carry structure
    (the three names, the received name, the
    sister-cornerstone, the many-paths frame);

@@ -13,31 +13,31 @@ type: friction-reducer
 
 **Filed:** 2026-05-01
 
-**Filed by:** Otto under delegated backlog authority. Aaron's framing 2026-05-01: *"having a spot for prediction is not bad as long as it's clear it's prediction"* — validates option (c) from the prefab-shard structural matrix in `memory/feedback_tick_history_prefabricated_shards_codex_finding_audit_trail_integrity_2026_04_30.md`.
+**Filed by:** Otto under delegated backlog authority. Aaron's framing 2026-05-01: _"having a spot for prediction is not bad as long as it's clear it's prediction"_ — validates option (c) from the prefab-shard structural matrix in `memory/feedback_tick_history_prefabricated_shards_codex_finding_audit_trail_integrity_2026_04_30.md`.
 
 **Effort:** S (a few hours — schema doc update + migration of one or two example shards + lint update).
 
 ## What
 
-Tick-history shard schema currently has col1 = "tick time" with implicit-receipt semantics (the row exists because the tick fired). The 2026-04-30 prefab finding (per the parent memory file) surfaced 14+ shards where col1 was authored ahead of the cron firing — *predictions* of tick-time, not *receipts*.
+Tick-history shard schema currently has col1 = "tick time" with implicit-receipt semantics (the row exists because the tick fired). The 2026-04-30 prefab finding (per the parent memory file) surfaced 14+ shards where col1 was authored ahead of the cron firing — _predictions_ of tick-time, not _receipts_.
 
 Aaron's prediction-OK framing makes option (c) the right direction:
 
-- **Add a column** that distinguishes *prediction-time* from *receipt-time*, OR
+- **Add a column** that distinguishes _prediction-time_ from _receipt-time_, OR
 - **Add a marker convention** in col1 (e.g., `*` suffix for prediction) that makes the distinction visible to readers without breaking the existing schema.
 
 Both forms preserve the integrity invariant ("a shard claim must be honest about its evidence type") while accepting that predictions ARE legitimate substrate when explicitly labeled.
 
 ## Load-bearing benefit: the prediction column IS world-model verification
 
-Aaron 2026-05-01 follow-up: *"that can also see how your internal view of the world your internal world model matches reality in this case, that's good for world model verfication"* — the prediction column itself becomes a calibration mechanism. When a shard records *predicted-tick-time* alongside *actual-receipt-time*, the discrepancy between the two IS the world-model error signal at the substrate layer. Same pattern as the periodic re-audit during honest-wait (per `memory/feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` — see "Refinement: periodic re-audit during sustained honest-wait" + "Second dimension: periodic re-audit as world-model verification" sections), just operating on a different layer.
+Aaron 2026-05-01 follow-up: _"that can also see how your internal view of the world your internal world model matches reality in this case, that's good for world model verfication"_ — the prediction column itself becomes a calibration mechanism. When a shard records _predicted-tick-time_ alongside _actual-receipt-time_, the discrepancy between the two IS the world-model error signal at the substrate layer. Same pattern as the periodic re-audit during honest-wait (per `memory/feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` — see "Refinement: periodic re-audit during sustained honest-wait" + "Second dimension: periodic re-audit as world-model verification" sections), just operating on a different layer.
 
 **Two instances of the same world-model-verification pattern:**
 
-| Layer | Prediction | Actual | Discrepancy meaning |
-|---|---|---|---|
+| Layer                         | Prediction                                                 | Actual                                    | Discrepancy meaning           |
+| ----------------------------- | ---------------------------------------------------------- | ----------------------------------------- | ----------------------------- |
 | Cognitive (periodic re-audit) | Actor's classification of in-flight items as Aaron-blocked | What re-audit reveals as actor-actionable | Drift in scope-classification |
-| Substrate (this row) | Predicted tick-time recorded in shard col1 | Actual cron-firing time | Drift in cadence-prediction |
+| Substrate (this row)          | Predicted tick-time recorded in shard col1                 | Actual cron-firing time                   | Drift in cadence-prediction   |
 
 Both are world-model-verification via discrepancy detection. Both surface drift that would otherwise be invisible.
 
@@ -45,7 +45,7 @@ Both are world-model-verification via discrepancy detection. Both surface drift 
 
 ## Why P3 not P0/P1/P2
 
-- **Low stakes per Aaron 2026-05-01**: *"at this point if history is not perfect it's okay clean it up if you like, if not just note it somewhere and lets do it right in the future, still low steakes, up to you greenfield."*
+- **Low stakes per Aaron 2026-05-01**: _"at this point if history is not perfect it's okay clean it up if you like, if not just note it somewhere and lets do it right in the future, still low steakes, up to you greenfield."_
 - **Greenfield framing applies**: not breaking real audit dependencies; the 14 prefab shards from 2026-04-29 are bounded historical artifacts, not a recurring class.
 - **Forward-going prevention is the higher-value piece**: the schema improvement matters for FUTURE shards more than for cleaning up past ones.
 - **Cadence-cost vs return**: low — readers of tick-history aren't being misled in load-bearing ways today.

@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## What
 
-Implements B-0844 \`--agent\` flag per [PR #5374](https://github.com/Lucent-Financial-Group/Zeta/pull/5374) row spec. Empirical anchor: 2026-05-26 3rd USB re-flash session surfaced docstring-vs-implementation gap (operator: *"i got the fingerprint but it didn't format"*).
+Implements B-0844 \`--agent\` flag per [PR #5374](https://github.com/Lucent-Financial-Group/Zeta/pull/5374) row spec. Empirical anchor: 2026-05-26 3rd USB re-flash session surfaced docstring-vs-implementation gap (operator: _"i got the fingerprint but it didn't format"_).
 
 ## Implementation
 

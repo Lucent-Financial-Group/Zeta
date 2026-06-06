@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1790 |
-| Title | archive: preserve PR 1789 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T04:28:50Z |
-| Merged at | 2026-05-07T04:31:11Z |
-| Merge commit SHA | `7b964b4a6f4a162f7179c6157cb74153029b1259` |
-| Branch | `claim/archive-pr-1789-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1790 |
-| Changed files | 2 |
-| Additions / deletions | +51 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1790                                                     |
+| Title                 | archive: preserve PR 1789 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T04:28:50Z                                     |
+| Merged at             | 2026-05-07T04:31:11Z                                     |
+| Merge commit SHA      | `7b964b4a6f4a162f7179c6157cb74153029b1259`               |
+| Branch                | `claim/archive-pr-1789-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1790 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +51 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1789 review archive after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1789 manifest entry with merge commit SHA `290c7f2620eba93bb9fee7aa0a038aadd99a99db`.
 - Keeps the claim marker lifecycle in branch history while the final PR diff retains only archive substrate plus the manifest row.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1789-research-lior-maji-protocol-intent-compiler-verbatim.md`
 - `git diff --check`
 - `git diff --check origin/main...HEAD`
@@ -40,15 +42,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

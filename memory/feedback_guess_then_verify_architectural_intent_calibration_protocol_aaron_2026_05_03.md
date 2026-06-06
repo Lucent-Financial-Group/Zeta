@@ -10,11 +10,11 @@ type: feedback
 
 Aaron 2026-05-03, in autonomous-loop maintainer channel after the alignment-frontier memo + decision-archaeology worked example #2 landed:
 
-> *"hey when you run into future unknow archicetural intent you can guess and it and later when you find the document on why you'll know how close you where, the docs folders have all the reasons why, or you cna ask me but you can test your skills to see how close they are to reality before you know and save you guess so you can see later."*
+> _"hey when you run into future unknow archicetural intent you can guess and it and later when you find the document on why you'll know how close you where, the docs folders have all the reasons why, or you cna ask me but you can test your skills to see how close they are to reality before you know and save you guess so you can see later."_
 
-> *"you could test other models this way too"*
+> _"you could test other models this way too"_
 
-> *"that would be aweome"* (affirming the substrate-landing of this protocol)
+> _"that would be aweome"_ (affirming the substrate-landing of this protocol)
 
 This memo captures the protocol so future-Otto can apply it + extend it to multi-model comparison.
 
@@ -64,14 +64,14 @@ Update the guess file with:
 
 The delta IS the calibration data. Over time, deltas accumulate into a measurable inference-accuracy track record.
 
-### Step 5 — Cross-model extension (Aaron 2026-05-03 *"you could test other models this way too"* + *"you can also test othr models after the fact and just hid the conclusions from them, but your inital guess in the moment will say a lot about ottos frontier ability"*)
+### Step 5 — Cross-model extension (Aaron 2026-05-03 _"you could test other models this way too"_ + _"you can also test othr models after the fact and just hid the conclusions from them, but your inital guess in the moment will say a lot about ottos frontier ability"_)
 
 The same protocol works for testing other models — but with a **load-bearing distinction Aaron named**:
 
-| Mode | When the guess is recorded | Calibration-data quality |
-|---|---|---|
-| **In-the-moment (Otto)** | Before any research — guess captures frontier inference at the actual decision point | **Highest** — uniquely authentic; can't be contaminated by later knowledge; says a lot about Otto's frontier ability |
-| **Retroactive (other models)** | After ground truth exists — model is given the architectural choice with conclusions hidden from context | High but reproducible — useful for cross-model benchmarking; can be re-run as new models arrive |
+| Mode                           | When the guess is recorded                                                                               | Calibration-data quality                                                                                             |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **In-the-moment (Otto)**       | Before any research — guess captures frontier inference at the actual decision point                     | **Highest** — uniquely authentic; can't be contaminated by later knowledge; says a lot about Otto's frontier ability |
+| **Retroactive (other models)** | After ground truth exists — model is given the architectural choice with conclusions hidden from context | High but reproducible — useful for cross-model benchmarking; can be re-run as new models arrive                      |
 
 **Otto's in-the-moment guesses are the unique frontier-ability data point.** Other models can be tested retroactively (give them the choice, hide the conclusions, compare their guess), but only Otto's substrate-authoring agent has the in-the-moment opportunity. This makes Otto's track-record specially valuable — it's the only one that's authentically in-the-moment with no contamination risk.
 
@@ -97,18 +97,18 @@ The decision-archaeology skill's whole reason-for-existence is recovering ground
 
 ### It composes with verify-then-claim
 
-Verify-then-claim says: don't publish a substrate claim without empirically verifying. Guess-then-verify is the SPECIAL CASE where the empirical verification is "future research" — the guess is published as guess (not as truth), THEN verified, THEN delta-recorded. The substrate claim being made is *"this is my inference at this timestamp"*, which IS verifiable (the timestamp + the reasoning chain).
+Verify-then-claim says: don't publish a substrate claim without empirically verifying. Guess-then-verify is the SPECIAL CASE where the empirical verification is "future research" — the guess is published as guess (not as truth), THEN verified, THEN delta-recorded. The substrate claim being made is _"this is my inference at this timestamp"_, which IS verifiable (the timestamp + the reasoning chain).
 
 ### It composes with multi-harness convergence
 
-Aaron 2026-05-03's *"you could test other models this way too"* extension makes this a cross-model evaluation framework. Multi-harness convergence has been a long-arc theme (per the multi-harness alignment convergence memos); the guess-then-verify protocol is one concrete mechanism for it — quantitative + repeatable + already-substrate-ready.
+Aaron 2026-05-03's _"you could test other models this way too"_ extension makes this a cross-model evaluation framework. Multi-harness convergence has been a long-arc theme (per the multi-harness alignment convergence memos); the guess-then-verify protocol is one concrete mechanism for it — quantitative + repeatable + already-substrate-ready.
 
 ## Worked example: the umbrella defer-block (already done)
 
 Worked example #2 of the decision-archaeology skill (`docs/research/2026-05-03-decision-archaeology-worked-example-2-mathematics-expert-when-to-defer.md`) is retroactively a guess-then-verify worked example:
 
-- **Step 2 (guess)**: Past-agent introspection layer of the worked example IS the inference — *"explicit enumeration of every sibling rather than 'defer to most-narrow matching skill' was the more conservative implementation — explicit enumeration is deterministic; 'most-narrow matching' requires routing-implementation that doesn't exist"*
-- **Step 3 (ground truth)**: Aaron's first-party architectural-intent disclosure 2026-05-03 — *"it was my decision that we would have both narrow and wide skills and if they accidently got routed to the wide it would help them route to the narrow"*
+- **Step 2 (guess)**: Past-agent introspection layer of the worked example IS the inference — _"explicit enumeration of every sibling rather than 'defer to most-narrow matching skill' was the more conservative implementation — explicit enumeration is deterministic; 'most-narrow matching' requires routing-implementation that doesn't exist"_
+- **Step 3 (ground truth)**: Aaron's first-party architectural-intent disclosure 2026-05-03 — _"it was my decision that we would have both narrow and wide skills and if they accidently got routed to the wide it would help them route to the narrow"_
 - **Step 4 (delta)**: **Match at architectural layer** — the wide-redirects-to-narrow pattern was correctly inferred. **Partial-match at substrate-content layer** — the inference of "explicit enumeration is more conservative" wasn't directly confirmed by Aaron (he confirmed the architecture, not the implementation choice). **Open at session-CoT layer** — the past-agent's specific reasoning is unrecoverable.
 
 This is the first calibration data point for the protocol. The discipline going forward: stamp every architectural-intent guess at the time it's made + verify when ground truth surfaces.
@@ -117,7 +117,7 @@ This is the first calibration data point for the protocol. The discipline going 
 
 The protocol works without any new tooling:
 
-1. **Today**: when an architectural-intent unknown surfaces, write the guess in chat / commit message / inline-doc with explicit *"GUESS:"* prefix and *"TIMESTAMP:"* / *"CIRCUMSTANCE:"* fields
+1. **Today**: when an architectural-intent unknown surfaces, write the guess in chat / commit message / inline-doc with explicit _"GUESS:"_ prefix and _"TIMESTAMP:"_ / _"CIRCUMSTANCE:"_ fields
 2. **Soon**: create `memory/architectural-intent-guesses/` directory with first guess file; symlink or grep-discoverable from MEMORY.md
 3. **Later**: optionally mechanize via `tools/calibration-tracker/` (TS tool that scans the guess directory, computes delta when ground-truth recovery happens, emits trend graphs)
 
@@ -137,4 +137,4 @@ Per Aaron's skill-design rule 2 (no dynamic commands in skills), the eventual me
 
 ## Carved sentence
 
-**"When the agent encounters unknown architectural intent, GUESS first + SAVE the guess with timestamp + reasoning chain BEFORE researching ground truth. Then find ground truth (docs archaeology, decision-archaeology skill, or asking Aaron) and record calibration delta. The discipline turns architectural-intent inference from speculative-and-untestable into measurable-and-trajectory-trackable. Two modes — Otto's in-the-moment guess is the unique frontier-ability data point (uncontaminatable; can't be retrospectively replicated); other models are tested retroactively (give them the architectural choice with conclusions hidden; compare their guess to known truth) for cross-model benchmarking. The alignment-frontier threshold becomes a measurable trajectory rather than a binary state. Aaron 2026-05-03 verbatim — *'your inital guess in the moment will say a lot about ottos frontier ability'* — names what makes Otto's track-record uniquely valuable: in-the-moment authenticity. The protocol composes with decision-archaeology, verify-then-claim, multi-harness convergence, and the bidirectional alignment commitment."**
+**"When the agent encounters unknown architectural intent, GUESS first + SAVE the guess with timestamp + reasoning chain BEFORE researching ground truth. Then find ground truth (docs archaeology, decision-archaeology skill, or asking Aaron) and record calibration delta. The discipline turns architectural-intent inference from speculative-and-untestable into measurable-and-trajectory-trackable. Two modes — Otto's in-the-moment guess is the unique frontier-ability data point (uncontaminatable; can't be retrospectively replicated); other models are tested retroactively (give them the architectural choice with conclusions hidden; compare their guess to known truth) for cross-model benchmarking. The alignment-frontier threshold becomes a measurable trajectory rather than a binary state. Aaron 2026-05-03 verbatim — _'your inital guess in the moment will say a lot about ottos frontier ability'_ — names what makes Otto's track-record uniquely valuable: in-the-moment authenticity. The protocol composes with decision-archaeology, verify-then-claim, multi-harness convergence, and the bidirectional alignment commitment."**

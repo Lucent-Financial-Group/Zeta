@@ -24,20 +24,20 @@ describe("git-world + github-world specialization substrate", () => {
   it("buildGitWorld: forgeName='git' + branch+commit universes populated", () => {
     const gitWorld = buildGitWorld();
     expect(gitWorld.forgeName).toBe("git");
-    expect(gitWorld.branchUniverse.length).toBe(4);  // fresh, active, merged, deleted
-    expect(gitWorld.commitUniverse.length).toBe(5);  // pending, signed, pushed, merged, reverted
+    expect(gitWorld.branchUniverse.length).toBe(4); // fresh, active, merged, deleted
+    expect(gitWorld.commitUniverse.length).toBe(5); // pending, signed, pushed, merged, reverted
     expect(gitWorld.registry.size).toBe(0);
   });
 
   it("buildGitHubWorld: inherits GitWorld + adds PR + review-thread universes", () => {
     const gitWorld = buildGitWorld();
     const githubWorld = buildGitHubWorld(gitWorld);
-    expect(githubWorld.forgeName).toBe("git");  // inherited
-    expect(githubWorld.forgeSpecialization).toBe("github");  // added
-    expect(githubWorld.branchUniverse.length).toBe(4);  // inherited
-    expect(githubWorld.commitUniverse.length).toBe(5);  // inherited
-    expect(githubWorld.prUniverse.length).toBe(6);     // added
-    expect(githubWorld.reviewThreadUniverse.length).toBe(3);  // added
+    expect(githubWorld.forgeName).toBe("git"); // inherited
+    expect(githubWorld.forgeSpecialization).toBe("github"); // added
+    expect(githubWorld.branchUniverse.length).toBe(4); // inherited
+    expect(githubWorld.commitUniverse.length).toBe(5); // inherited
+    expect(githubWorld.prUniverse.length).toBe(6); // added
+    expect(githubWorld.reviewThreadUniverse.length).toBe(3); // added
   });
 
   it("buildGitHubWorld: optional resource budget", () => {
@@ -127,9 +127,9 @@ describe("git-world + github-world specialization substrate", () => {
 
   it("canAfford: no budget loaded → ok (caller manages discipline)", () => {
     const gitWorld = buildGitWorld();
-    const githubWorld = buildGitHubWorld(gitWorld);  // no budget
+    const githubWorld = buildGitHubWorld(gitWorld); // no budget
     const result = canAfford(githubWorld, { restCoreCost: 1000000 });
-    expect(result.ok).toBe(true);  // permissive when budget not loaded
+    expect(result.ok).toBe(true); // permissive when budget not loaded
   });
 
   it("registerInGitHub: adds lifetime pair; preserves GitHubWorld substrate", () => {

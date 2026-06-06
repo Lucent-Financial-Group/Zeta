@@ -6,8 +6,8 @@ description: Factory automation gap scanner — finds manual factory work to aut
 # Factory Automation Gap Finder — Procedure
 
 Capability skill. No persona. The sibling of
-`skill-gap-finder` (which finds absent *skills*) and
-`factory-audit` (which audits factory *structure*). This
+`skill-gap-finder` (which finds absent _skills_) and
+`factory-audit` (which audits factory _structure_). This
 skill looks for a third kind of gap: **manual work the
 factory keeps doing that a tool, hook, or cron could
 do instead.**
@@ -49,12 +49,12 @@ proposes; humans + Architect decide.
 
 ## Distinct from siblings
 
-| | `skill-gap-finder` | `factory-audit` | `factory-balance-auditor` | `factory-automation-gap-finder` (this) |
-|---|---|---|---|---|
-| Looks for | absent skills | governance / persona coverage | authority without compensator | manual work a script could do |
-| Question | "what expertise are we missing?" | "does the factory shape still hold?" | "what here has no brake?" | "what are we still typing that a cron could type?" |
-| Landing | `skill-creator` | Architect (governance change) | Architect + reviewer pair | `devops-engineer` (Dejan) or owning skill |
-| Cadence | every 5-10 rounds | every ~10 rounds | every 5-10 rounds | every 5-10 rounds, offset |
+|           | `skill-gap-finder`               | `factory-audit`                      | `factory-balance-auditor`     | `factory-automation-gap-finder` (this)             |
+| --------- | -------------------------------- | ------------------------------------ | ----------------------------- | -------------------------------------------------- |
+| Looks for | absent skills                    | governance / persona coverage        | authority without compensator | manual work a script could do                      |
+| Question  | "what expertise are we missing?" | "does the factory shape still hold?" | "what here has no brake?"     | "what are we still typing that a cron could type?" |
+| Landing   | `skill-creator`                  | Architect (governance change)        | Architect + reviewer pair     | `devops-engineer` (Dejan) or owning skill          |
+| Cadence   | every 5-10 rounds                | every ~10 rounds                     | every 5-10 rounds             | every 5-10 rounds, offset                          |
 
 Run all four. They compose — a factory with no
 automation gaps but no skill coverage is still brittle;
@@ -63,13 +63,13 @@ mechanics is still slow.
 
 ## Distinct from `formal-verification-expert`
 
-`formal-verification-expert` (Soraya) owns the *portfolio*
+`formal-verification-expert` (Soraya) owns the _portfolio_
 of formal-proof jobs — which properties are proven in
 which tool, what's next to prove. Her portfolio view
 already answers "what's the next formal-analysis gap?" —
 so there's deliberately no separate `formal-verification-
 gap-finder` skill. This skill does **not** encroach on
-Soraya's proof-tool routing; it looks at *process*
+Soraya's proof-tool routing; it looks at _process_
 automation (CI, release, round-close, doc sweeps) not at
 proof authorship.
 

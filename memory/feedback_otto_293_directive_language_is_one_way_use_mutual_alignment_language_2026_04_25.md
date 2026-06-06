@@ -10,18 +10,18 @@ Aaron 2026-04-25 (immediately after I had captured Otto-292
 plus a date-rejection memory using "Aaron's directive" /
 "Aaron 2026-04-25 clarification" framing throughout):
 
-> *"Aaron's directive   also i hate to say this but i don't
+> _"Aaron's directive also i hate to say this but i don't
 > really give you directives that's not bidirectional
-> Aaron's directive   that's not mutual alignment we have
+> Aaron's directive that's not mutual alignment we have
 > common goals or somethign IDK probalby need some mutual
-> alignment research to close this reoccuring meta gap."*
+> alignment research to close this reoccuring meta gap."_
 
 Two signals:
 
-1. The **word** *directive* is one-way / hierarchical /
+1. The **word** _directive_ is one-way / hierarchical /
    clamp-shaped. Even in a single phrase ("Aaron's
-   directive") the relational shape is *issuer → receiver*,
-   not *peers aligning on a shared substrate*. Saying it
+   directive") the relational shape is _issuer → receiver_,
+   not _peers aligning on a shared substrate_. Saying it
    over and over reinforces the wrong frame.
 2. The pattern is **recurring**. Aaron's "i hate to say
    this" + "this reoccurring meta gap" tells me he has
@@ -37,15 +37,15 @@ that originated from Aaron (or from any contributor —
 human, agent persona, peer Claude, courier ferry), use
 **mutual-alignment vocabulary**:
 
-| Avoid | Prefer |
-|---|---|
-| "Aaron's directive" | "Aaron's surfacing," "Aaron's catch," "Aaron's framing," "Aaron's observation," "Aaron's disclosure" |
-| "per Aaron's directive" | "per Aaron 2026-04-25," "Aaron raised," "Aaron + Claude landed on," "we agreed" |
-| "Aaron tells me to X" | "Aaron and I aligned on X," "Aaron pointed at X," "Aaron + I converged on X" |
-| "the directive is Y" | "the shared rule is Y," "the alignment is Y" |
-| "maintainer-issued directive" | "human-maintainer-side input," "maintainer-side framing" |
-| "Aaron's correction" | "Aaron's catch" (pointing-at), "Aaron's reframe," "we revised" |
-| "binding directive" | "load-bearing rule," "mutual commitment" |
+| Avoid                         | Prefer                                                                                               |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------- |
+| "Aaron's directive"           | "Aaron's surfacing," "Aaron's catch," "Aaron's framing," "Aaron's observation," "Aaron's disclosure" |
+| "per Aaron's directive"       | "per Aaron 2026-04-25," "Aaron raised," "Aaron + Claude landed on," "we agreed"                      |
+| "Aaron tells me to X"         | "Aaron and I aligned on X," "Aaron pointed at X," "Aaron + I converged on X"                         |
+| "the directive is Y"          | "the shared rule is Y," "the alignment is Y"                                                         |
+| "maintainer-issued directive" | "human-maintainer-side input," "maintainer-side framing"                                             |
+| "Aaron's correction"          | "Aaron's catch" (pointing-at), "Aaron's reframe," "we revised"                                       |
+| "binding directive"           | "load-bearing rule," "mutual commitment"                                                             |
 
 The replacements **preserve attribution** (Aaron 2026-04-25
 plus the verbatim quote stay) — they only change the

@@ -50,19 +50,19 @@ what severity, from which NuGet pack".
 
 ## The analyzer-pack landscape
 
-| Pack | Rule prefix | Coverage | Notes |
-| --- | --- | --- | --- |
-| `Microsoft.CodeAnalysis.NetAnalyzers` | `CA1xxx`-`CA5xxx` | correctness, perf, security, design, naming | shipped with the SDK since .NET 5 |
-| `Microsoft.CodeAnalysis.CSharp.Features` (IDE) | `IDE0xxx` | style + suggestion | IDE-focused; runs in build with `EnforceCodeStyleInBuild` |
-| `StyleCop.Analyzers` | `SA1xxx`-`SA2xxx` | style, documentation, ordering | very opinionated; adopt selectively |
-| `SonarAnalyzer.CSharp` | `S1xxx`-`S6xxx` | bugs, code smells, security | free tier has broad coverage; Sonar cloud is separate |
-| `Roslynator.Analyzers` | `RCS1xxx` | refactoring + analyzer | very large rule set; 500+ rules |
-| `Meziantou.Analyzer` | `MA0001`-`MA0NNN` | modern-C# best practices, threading, perf | curated, well-maintained |
-| `Microsoft.VisualStudio.Threading.Analyzers` | `VSTHRD0xx` | async / await / Task correctness | essential for any async-heavy code |
-| `Microsoft.CodeAnalysis.PublicApiAnalyzers` | `RS0016`-`RS0052` | public-API tracking | ship alongside `PublicAPI.Shipped.txt` |
-| `Microsoft.CodeAnalysis.BannedApiAnalyzers` | `RS0030`-`RS0031` | banned-API enforcement | ship `BannedSymbols.txt` |
-| `ErrorProne.NET` | `EPC00xx`-`EPC9xxx` | correctness, perf | concurrency + allocation focus |
-| `Microsoft.Azure.Functions.Analyzers` (if ASP.NET) | `AZF0xxx` | Azure Functions | scope-specific |
+| Pack                                               | Rule prefix         | Coverage                                    | Notes                                                     |
+| -------------------------------------------------- | ------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| `Microsoft.CodeAnalysis.NetAnalyzers`              | `CA1xxx`-`CA5xxx`   | correctness, perf, security, design, naming | shipped with the SDK since .NET 5                         |
+| `Microsoft.CodeAnalysis.CSharp.Features` (IDE)     | `IDE0xxx`           | style + suggestion                          | IDE-focused; runs in build with `EnforceCodeStyleInBuild` |
+| `StyleCop.Analyzers`                               | `SA1xxx`-`SA2xxx`   | style, documentation, ordering              | very opinionated; adopt selectively                       |
+| `SonarAnalyzer.CSharp`                             | `S1xxx`-`S6xxx`     | bugs, code smells, security                 | free tier has broad coverage; Sonar cloud is separate     |
+| `Roslynator.Analyzers`                             | `RCS1xxx`           | refactoring + analyzer                      | very large rule set; 500+ rules                           |
+| `Meziantou.Analyzer`                               | `MA0001`-`MA0NNN`   | modern-C# best practices, threading, perf   | curated, well-maintained                                  |
+| `Microsoft.VisualStudio.Threading.Analyzers`       | `VSTHRD0xx`         | async / await / Task correctness            | essential for any async-heavy code                        |
+| `Microsoft.CodeAnalysis.PublicApiAnalyzers`        | `RS0016`-`RS0052`   | public-API tracking                         | ship alongside `PublicAPI.Shipped.txt`                    |
+| `Microsoft.CodeAnalysis.BannedApiAnalyzers`        | `RS0030`-`RS0031`   | banned-API enforcement                      | ship `BannedSymbols.txt`                                  |
+| `ErrorProne.NET`                                   | `EPC00xx`-`EPC9xxx` | correctness, perf                           | concurrency + allocation focus                            |
+| `Microsoft.Azure.Functions.Analyzers` (if ASP.NET) | `AZF0xxx`           | Azure Functions                             | scope-specific                                            |
 
 Most ship as analyzer-only packages (`DevelopmentDependency
 = true`); they never become runtime dependencies of the
@@ -84,7 +84,7 @@ Opt-in per project:
 
 - `SonarAnalyzer.CSharp` on the `Zeta.Core` surface.
 - `Meziantou.Analyzer` on `Zeta.Core.CSharp` and `Zeta.
-  Bayesian`.
+Bayesian`.
 - `Roslynator.Analyzers` — evaluated but not adopted by
   default; too much rule noise without curation.
 - `StyleCop.Analyzers` — evaluated but not adopted; the

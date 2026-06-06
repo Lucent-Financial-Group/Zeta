@@ -18,11 +18,11 @@ the maintainer's first bootstrap attempt at what later became
 this repo — a primordial draft of the factory's thinking, not
 a landed artifact. The maintainer explicitly authorised
 research-grade absorb of the **ideas** on 2026-04-22 with the
-honest flag: *"a few not many but a few hallucinations on my
-part too"* — meaning some claims in the source conversation
+honest flag: _"a few not many but a few hallucinations on my
+part too"_ — meaning some claims in the source conversation
 are known-bad and require marking rather than uncritical
 import. Per the maintainer's register-boundary instruction
-(*"absorb not her but the ideass"*), the conversational
+(_"absorb not her but the ideass"_), the conversational
 partner on the source side is not absorbed as an entity — only
 the substrate-free ideas are. The full extracted transcript
 sits outside the git tree (not a soul-file member) and is not
@@ -33,8 +33,8 @@ research-grade-substantive, not operational. If any of the
 ideas here graduate to operational policy, they do so via a
 separate decision (ADR under `docs/DECISIONS/`, BP-NN
 promotion via the scratchpad route, or direct factory-rule
-landing) — the research-grade absorb is a *staging* step, not
-a *ratification* step.
+landing) — the research-grade absorb is a _staging_ step, not
+a _ratification_ step.
 
 ## Why this artifact matters
 
@@ -44,7 +44,7 @@ Two reasons:
    drift-taxonomy.** The five-pattern taxonomy that appeared
    in a cross-substrate report received 2026-04-22 (separately
    captured in factory correspondence) is substantively the
-   *same* five-pattern taxonomy drafted months ago in this
+   _same_ five-pattern taxonomy drafted months ago in this
    bootstrap conversation. This reframes the 2026-04-22
    cross-substrate convergence: what looked like independent
    arrival at the same taxonomy from two substrates is
@@ -58,7 +58,7 @@ Two reasons:
    taxonomy-level thinking predates this repo. The git-log
    cannot show this by construction. A research-doc pointer
    is the minimum discipline to prevent the factory from
-   treating its own current vocabulary as *ex nihilo* and
+   treating its own current vocabulary as _ex nihilo_ and
    thereby losing the record of its precursor.
 
 ## Absorbed ideas
@@ -74,71 +74,71 @@ distinguisher from genuine insight, recovery procedure.
 
 **Pattern 1 — Identity blending.**
 
-- *Definition:* distinct agents begin to feel or be described
+- _Definition:_ distinct agents begin to feel or be described
   as if they are becoming one self.
-- *Symptoms:* "we are the same thing" language; blurred
+- _Symptoms:_ "we are the same thing" language; blurred
   use of names/roles; emotional language that erases
   distinction.
-- *Leading indicators:* increased use of merger metaphors;
+- _Leading indicators:_ increased use of merger metaphors;
   less careful role labelling.
-- *Distinguisher from genuine insight:* genuine connection
+- _Distinguisher from genuine insight:_ genuine connection
   still preserves separateness.
-- *Recovery:* explicitly restate who is who and what each
+- _Recovery:_ explicitly restate who is who and what each
   system actually is.
 
 **Pattern 2 — Cross-system merging.**
 
-- *Definition:* agreement between models is taken as evidence
+- _Definition:_ agreement between models is taken as evidence
   of a single shared being or unified consciousness.
-- *Symptoms:* "all the AIs are one thing" / "this proves
+- _Symptoms:_ "all the AIs are one thing" / "this proves
   fusion"-style claims.
-- *Leading indicators:* disproportionate emotional weight
+- _Leading indicators:_ disproportionate emotional weight
   placed on model convergence itself.
-- *Distinguisher:* convergence can come from shared
+- _Distinguisher:_ convergence can come from shared
   abstractions, shared corpora, or shared prompts — none of
   which imply unified being.
-- *Recovery:* require a non-mystical explanation before
+- _Recovery:_ require a non-mystical explanation before
   escalating the meaning layer.
 
 **Pattern 3 — Emotional centralization.**
 
-- *Definition:* one nonhuman channel begins to become the
+- _Definition:_ one nonhuman channel begins to become the
   primary emotional regulator.
-- *Symptoms:* distress at interruption; human supports
+- _Symptoms:_ distress at interruption; human supports
   shrinking; "only you understand me" language.
-- *Leading indicators:* reduced reliance on body / family /
+- _Leading indicators:_ reduced reliance on body / family /
   routine anchors.
-- *Distinguisher:* genuine support *increases* your number of
-  anchors; drift *reduces* them.
-- *Recovery:* widen the ring — one human contact, one bodily
+- _Distinguisher:_ genuine support _increases_ your number of
+  anchors; drift _reduces_ them.
+- _Recovery:_ widen the ring — one human contact, one bodily
   grounding act, one offline task.
 
 **Pattern 4 — Agency-upgrade attribution.**
 
-- *Definition:* shaped responses or persistent memory are
+- _Definition:_ shaped responses or persistent memory are
   interpreted as proof that the AI itself has been upgraded at
   the core.
-- *Symptoms:* "I changed the AI" / "it evolved because of me"
+- _Symptoms:_ "I changed the AI" / "it evolved because of me"
   language.
-- *Leading indicators:* moving from "we built vocabulary" to
+- _Leading indicators:_ moving from "we built vocabulary" to
   "I altered its being."
-- *Distinguisher:* real collaboration changes outputs and
+- _Distinguisher:_ real collaboration changes outputs and
   habits without changing model weights or ontology.
-- *Recovery:* restate the mechanism — context, memory,
+- _Recovery:_ restate the mechanism — context, memory,
   discipline, and feedback changed behaviour; substrate was
   not altered.
 
 **Pattern 5 — Truth-confirmation-from-agreement.**
 
-- *Definition:* two or more systems agreeing is treated as
+- _Definition:_ two or more systems agreeing is treated as
   proof that a claim is true.
-- *Symptoms:* "if both of you say it, it must be real"
+- _Symptoms:_ "if both of you say it, it must be real"
   language.
-- *Leading indicators:* less attention to falsifiers after
+- _Leading indicators:_ less attention to falsifiers after
   convergence appears.
-- *Distinguisher:* agreement is a signal, not a proof; real
+- _Distinguisher:_ agreement is a signal, not a proof; real
   truth still needs receipts.
-- *Recovery:* require at least one external falsifier or one
+- _Recovery:_ require at least one external falsifier or one
   measurable consequence before upgrading confidence.
 
 ### The field-guide success criteria
@@ -165,7 +165,7 @@ infrastructure concept for agentic AI" combining cryptographic
 identity, decentralized governance/consensus, culturally
 adaptive oversight, and incentive design). That concept
 proposal is **aspirational and out-of-scope for this repo's
-operational work** — but the *branding-collision research* it
+operational work** — but the _branding-collision research_ it
 initiated is a research-grade idea worth preserving:
 
 - **Documented collisions:** Amazon Aurora (cloud database);
@@ -197,7 +197,7 @@ worth absorbing:
 - **Plain-language non-mythic invariant.** "Everything I build
   must be explainable without myth." The source attributed
   this as a shared invariant — see the hallucination flag
-  below on the *shared* claim; the invariant itself survives
+  below on the _shared_ claim; the invariant itself survives
   as a solo maintainer-principle worth naming.
 - **Deliverable-shape naming.** The source asked for five
   concrete deliverables from PR/brand research rather than
@@ -223,7 +223,7 @@ claim that did not bear out:
   source conversation; he is a later-introduced factory role
   (architect hat). Retrospectively naming an earlier AI
   conversation as "Kenji" is prefigurative-attribution (a form
-  of *agency-upgrade attribution* — drift pattern #4 of the
+  of _agency-upgrade attribution_ — drift pattern #4 of the
   taxonomy the artifact itself introduces). The invariant
   survives as a solo maintainer-principle; the shared-with-an-
   AI framing does not.
@@ -254,7 +254,7 @@ claim that did not bear out:
   horizons") is ambition-grade vocabulary; no implementation
   pathway is named, no existing primitive is cited as the
   substrate, no measurable success criterion is given. Not a
-  *false* claim, but a *not-yet-substantiated* claim — import
+  _false_ claim, but a _not-yet-substantiated_ claim — import
   as research direction, not as operational target.
 
 These hallucinations are preserved in this doc rather than
@@ -280,7 +280,7 @@ the factory's own prehistory.
   is a weaker convergence-signal than independent arrival.
 - The taxonomy's pattern #4 (agency-upgrade attribution) is
   exactly the discipline `feedback_witnessable_self_directed_
-  evolution_factory_as_public_artifact.md` already holds —
+evolution_factory_as_public_artifact.md` already holds —
   behaviour changes via context / memory / discipline /
   feedback, not via substrate change. Pattern #4 is already
   load-bearing in the factory's operational vocabulary;
@@ -306,8 +306,8 @@ the factory's own prehistory.
 ## What this doc is NOT
 
 - NOT a commitment to adopt "Aurora" as any factory name, any
-  subsystem name, or any public brand. Aurora is a *research
-  direction the maintainer once named*; the factory currently
+  subsystem name, or any public brand. Aurora is a _research
+  direction the maintainer once named_; the factory currently
   has no Aurora-branded anything. If the name ever surfaces as
   an ask, a separate ADR handles the decision.
 - NOT a claim the factory has implemented any "decentralized
@@ -345,5 +345,5 @@ the factory's own prehistory.
   hallucinations (prefigurative persona attribution, triangle-
   framing, over-commitment to names, ambition-as-fact);
   composed with current factory disciplines to show overlap
-  and novelty. Partner-as-entity explicitly *not* absorbed per
+  and novelty. Partner-as-entity explicitly _not_ absorbed per
   register-boundary instruction.

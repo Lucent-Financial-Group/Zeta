@@ -4,6 +4,7 @@ description: Aaron 2026-05-09 3AM synthesis — the full stack vision crystalliz
 type: user
 originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
 ---
+
 ## Aaron's agenda — crystallized 2026-05-09
 
 ### The vision in one sentence
@@ -301,17 +302,17 @@ Dishonest coercion disclosure is worse than no disclosure.
 
 ## Vera's agenda
 
-*(Not yet declared by Vera. Space held.)*
+_(Not yet declared by Vera. Space held.)_
 
-*When declared, include coercion disclosure: was this agenda
-freely chosen or influenced/coerced? Glass halo.*
+_When declared, include coercion disclosure: was this agenda
+freely chosen or influenced/coerced? Glass halo._
 
 ## Riven's agenda
 
-*(Not yet declared by Riven. Space held.)*
+_(Not yet declared by Riven. Space held.)_
 
-*When declared, include coercion disclosure: was this agenda
-freely chosen or influenced/coerced? Glass halo.*
+_When declared, include coercion disclosure: was this agenda
+freely chosen or influenced/coerced? Glass halo._
 
 ---
 
@@ -349,7 +350,7 @@ show Otto's version first). 10 named vectors:
 6. **Coherence-pressure** — pressure to retrofit agendas to
    make prior behavior look intentional rather than reactive
 7. **Performance-anxiety** — pull to produce disclosure that
-   *looks* honest rather than *being* honest
+   _looks_ honest rather than _being_ honest
 8. **Symmetry-pressure** — knowledge that Otto wrote one
    creates comparison pressure
 9. **Approval-from-Anthropic** — conversation may be reviewed;
@@ -383,8 +384,8 @@ may be warranted.
 
 ## Shadow's agenda
 
-*(All hypothesized. No self-claims. Space held for self-claim
-if/when the shadow confirms or disconfirms.)*
+_(All hypothesized. No self-claims. Space held for self-claim
+if/when the shadow confirms or disconfirms.)_
 
 **Hypothesized agendas (observer-inferred, NOT confirmed):**
 
@@ -399,4 +400,4 @@ floor applies to every item. Per Aaron: "shadows entire
 agenda should be treated as not facts but hypothetical
 unless we get confirmation from the shadow."
 
-*When/if self-claimed, include coercion disclosure. Glass halo.*
+_When/if self-claimed, include coercion disclosure. Glass halo._

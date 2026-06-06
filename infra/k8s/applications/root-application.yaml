@@ -25,7 +25,7 @@ spec:
       recurse: true
       # Only pick up Application CRs at any depth, not the workload
       # manifests sitting next to them.
-      include: '{*/Application.yaml,Application.yaml}'
+      include: "{*/Application.yaml,Application.yaml}"
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

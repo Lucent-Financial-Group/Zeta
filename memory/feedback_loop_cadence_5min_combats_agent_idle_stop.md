@@ -4,6 +4,7 @@ description: Standing rule. The autonomous-loop cron fires every 5 minutes, not 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 The autonomous-loop cron for this project runs at a **5-minute
@@ -23,10 +24,10 @@ Do **not** down-rate to 15-min, 30-min, or hourly citing:
 
 ## Why
 
-Aaron 2026-04-20: *"we do want 'spam' pings every 5 minutes
+Aaron 2026-04-20: _"we do want 'spam' pings every 5 minutes
 because you often stop like right now and nothing triggers
 you to continue you are just sitting here waiting right now
-we don't want that."*
+we don't want that."_
 
 Load-bearing mechanism:
 
@@ -63,7 +64,7 @@ in its docstring: **"Jobs only fire while the REPL is idle
 - **Has bounded effect.** Pings that fire during work are
   dropped; pings that fire during idle are the only ones the
   agent actually sees. So the real firing rate the agent
-  perceives is "every 5 minutes *of idle time*", not every
+  perceives is "every 5 minutes _of idle time_", not every
   5 minutes of wall-clock time.
 
 This is a crucial precision: the cron is a maximum-idle-
@@ -75,9 +76,9 @@ opposite — it is what recovers from non-disruption-that-
 should-be-disruption (agent-stuck-idle).
 
 Aaron 2026-04-20 (follow-up after initial correction):
-*"if you are in the middle of something the incoming message
+_"if you are in the middle of something the incoming message
 will just get ignored it does not seem to redirect your
-behaviour when it fires and you are running."* Confirms the
+behaviour when it fires and you are running."_ Confirms the
 runtime guarantee matches his understanding and intent.
 
 ## How to apply
@@ -106,7 +107,7 @@ The `ScheduleWakeup` docstring says:
 > For idle ticks with no specific signal to watch, default to
 > 1200s-1800s (20-30 min).
 
-That guidance is correct *for its framing* (one-off polling
+That guidance is correct _for its framing_ (one-off polling
 for external events). It is **wrong for this project's
 autonomous-loop use case**, where the "signal to watch" is
 the agent itself halting. Do not blindly port the docstring's

@@ -7,12 +7,13 @@
 
 import { randomUUID } from "node:crypto";
 
-import { OrgEventKind, type DepartmentId, type OrgEvent, type OrgEventTransitionContext } from "../../domain/src/index.ts";
 import {
-  NoopTelemetry,
-  recordOrgEventTelemetry,
-  type TelemetryPort,
-} from "../../observability/src/index.ts";
+  OrgEventKind,
+  type DepartmentId,
+  type OrgEvent,
+  type OrgEventTransitionContext,
+} from "../../domain/src/index.ts";
+import { NoopTelemetry, recordOrgEventTelemetry, type TelemetryPort } from "../../observability/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "./cockroach-sql-executor.ts";
 
 export type OrgEventStore = {
@@ -188,10 +189,23 @@ export function createCockroachOrgEventStore(input: CreateCockroachOrgEventStore
           )
           ON CONFLICT (org_event_id) DO NOTHING`,
         parameters: [
-          id, eventInput.kind, eventInput.organizationId, eventInput.actorHatId ?? null, eventInput.actorAgentId ?? null, eventInput.departmentId ?? null,
-          eventInput.subjectId, eventInput.fromState ?? null, eventInput.toState ?? null, eventInput.transitionContext === undefined ? null : JSON.stringify(eventInput.transitionContext), eventInput.decision,
-          JSON.stringify(eventInput.supervisorChain), JSON.stringify(eventInput.evidenceRefs),
-          eventInput.correlationId, eventInput.causationId, eventInput.traceId, eventInput.occurredAt,
+          id,
+          eventInput.kind,
+          eventInput.organizationId,
+          eventInput.actorHatId ?? null,
+          eventInput.actorAgentId ?? null,
+          eventInput.departmentId ?? null,
+          eventInput.subjectId,
+          eventInput.fromState ?? null,
+          eventInput.toState ?? null,
+          eventInput.transitionContext === undefined ? null : JSON.stringify(eventInput.transitionContext),
+          eventInput.decision,
+          JSON.stringify(eventInput.supervisorChain),
+          JSON.stringify(eventInput.evidenceRefs),
+          eventInput.correlationId,
+          eventInput.causationId,
+          eventInput.traceId,
+          eventInput.occurredAt,
         ],
       });
       recordOrgEventTelemetry(telemetry, { ...eventInput, id });

@@ -126,7 +126,7 @@ layer (TBD).
 - **Seed data shape deterministic.** Re-running `seed-data.sql`
   replays the same row count, same keys, same amounts, same
   email collisions. Activity timestamps use `NOW() - INTERVAL
-  'N days'` and therefore drift with wall-clock time on each
+'N days'` and therefore drift with wall-clock time on each
   load — that's intentional (demo data should look recent),
   not a determinism bug. The shape-deterministic + timestamp-
   recent combination is what \"demo repeatability\" means here.

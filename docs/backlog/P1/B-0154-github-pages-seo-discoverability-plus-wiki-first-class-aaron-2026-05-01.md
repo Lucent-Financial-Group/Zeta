@@ -83,12 +83,12 @@ Aaron 2026-05-01 directional input — two distinct host integrations, ordered b
 
 Aaron's framing:
 
-> *"we should use github in two ways for this, 1 see about
+> _"we should use github in two ways for this, 1 see about
 > integrating with github wiki as first class, and 2 this one
 > is higher priority, github pages, once that gets indexed by
 > the search engines, we will have maintainers about to find
 > us from google search with out that we are never goona rank
-> on the search results not even for DBSP F#"*
+> on the search results not even for DBSP F#"_
 
 ## Why now
 
@@ -139,68 +139,65 @@ funnel is broken at the discovery step.
    selection).
 
    **Problem statement** (factored out from criterion #1 + #4
-   + #8 + #9):
-   - Render `docs/**/*.md` (markdown source) to plain HTML
-   - Generate `sitemap.xml` + `robots.txt` for crawler
+   - #8 + #9):
+   * Render `docs/**/*.md` (markdown source) to plain HTML
+   * Generate `sitemap.xml` + `robots.txt` for crawler
      discovery
-   - SEO metadata: `<title>`, `<meta description>`, canonical
+   * SEO metadata: `<title>`, `<meta description>`, canonical
      URL, Open Graph, Twitter Card, JSON-LD
-   - AI-agent-crawler-accessible (no SPA hydration that
+   * AI-agent-crawler-accessible (no SPA hydration that
      blocks crawlers; semantic HTML)
-   - Hosted on GitHub Pages (static-only)
-   - Playwright-testable (HTTP 200 / metadata / mobile
+   * Hosted on GitHub Pages (static-only)
+   * Playwright-testable (HTTP 200 / metadata / mobile
      viewport)
-   - Minimize new dependency surface — already shipped:
+   * Minimize new dependency surface — already shipped:
      4-bash + dotnet + bun-TS (per `tools/setup/install.sh`
      post-install graph) + Python (via `tools/setup/manifests/uv-tools`).
      Adding Ruby (Jekyll) or Go (Hugo) would be NEW; Python
      already ships but its static-site path (MkDocs) is
      less mature than Node/Bun
-   - DST-achievable per the per-tool/language guidance
-   - GitHub-native first; portable second (the `git-native
-     vs GitHub-native` distinction in
+   * DST-achievable per the per-tool/language guidance
+   * GitHub-native first; portable second (the `git-native
+vs GitHub-native` distinction in
      `memory/feedback_git_native_vs_github_native_plural_host_pluggable_adapters_2026_04_23.md`)
 
    **Candidate tools** (problem-axis scored):
 
-   | Tool | Language runtime | Markdown render | Sitemap/robots | Plain-HTML output | New dep? | Best-at |
-   |---|---|---|---|---|---|---|
-   | [Astro](https://astro.build/) | Node/Bun (TS) | content-collections | `@astrojs/sitemap` + author robots.txt | Yes (default) | No (Bun shipped) | TS-native static site, content-collections |
-   | [Eleventy](https://www.11ty.dev/) | Node/Bun | markdown-it / nunjucks | plugin or author | Yes | No (Bun shipped) | thin md→html, minimal config |
-   | [Hugo](https://gohugo.io/) | Go | goldmark | built-in | Yes | **Yes** (Go) | very-fast static sites |
-   | [Jekyll](https://jekyllrb.com/) | Ruby | kramdown | jekyll-sitemap (auto) | Yes | **Yes** (Ruby) | GitHub Pages auto-build (zero workflow) |
-   | [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) | Python | python-markdown | built-in | Yes | **Yes** (Python — already shipped via `uv-tools` manifest) | technical docs with search |
-   | [Docusaurus](https://docusaurus.io/) | Node | mdx | built-in | Yes (SSG) | No | React-heavy interactive docs |
+   | Tool                                                            | Language runtime | Markdown render        | Sitemap/robots                         | Plain-HTML output | New dep?                                                   | Best-at                                    |
+   | --------------------------------------------------------------- | ---------------- | ---------------------- | -------------------------------------- | ----------------- | ---------------------------------------------------------- | ------------------------------------------ |
+   | [Astro](https://astro.build/)                                   | Node/Bun (TS)    | content-collections    | `@astrojs/sitemap` + author robots.txt | Yes (default)     | No (Bun shipped)                                           | TS-native static site, content-collections |
+   | [Eleventy](https://www.11ty.dev/)                               | Node/Bun         | markdown-it / nunjucks | plugin or author                       | Yes               | No (Bun shipped)                                           | thin md→html, minimal config               |
+   | [Hugo](https://gohugo.io/)                                      | Go               | goldmark               | built-in                               | Yes               | **Yes** (Go)                                               | very-fast static sites                     |
+   | [Jekyll](https://jekyllrb.com/)                                 | Ruby             | kramdown               | jekyll-sitemap (auto)                  | Yes               | **Yes** (Ruby)                                             | GitHub Pages auto-build (zero workflow)    |
+   | [MkDocs Material](https://squidfunk.github.io/mkdocs-material/) | Python           | python-markdown        | built-in                               | Yes               | **Yes** (Python — already shipped via `uv-tools` manifest) | technical docs with search                 |
+   | [Docusaurus](https://docusaurus.io/)                            | Node             | mdx                    | built-in                               | Yes (SSG)         | No                                                         | React-heavy interactive docs               |
 
    **Best-tool-for-the-job analysis**:
 
    The problem axes that discriminate (where tools differ
    meaningfully):
-
    - **Plain-HTML output for AI-agent crawlers**: All
      candidate tools generate plain HTML at build time
      (Docusaurus uses SSG and is documented as SEO-friendly,
      not pure-SPA). Tied — not a discriminator.
    - **No new dependency surface**: Hugo / Jekyll lose
      (new runtimes). MkDocs is borderline (Python is
-     already shipped via uv-tools, so it's not a *new*
+     already shipped via uv-tools, so it's not a _new_
      dep — but the Python static-site path is less mature
      than the Node/Bun path). Astro / Eleventy / Docusaurus
      don't add new runtimes.
-   - **Best-fit for `docs/**/*.md` source structure**:
-     Astro's content-collections (typed frontmatter,
-     glob-based content discovery) is purpose-built for
-     this. Eleventy is more permissive but less typed.
-     Docusaurus uses MDX (Markdown + React component
-     embedding) which is more powerful but more complex
-     than vanilla Markdown — useful if interactive
-     React docs are wanted, overkill for our `docs/**/*.md`
-     tree which is plain Markdown. MkDocs has good `nav:`
-     structure but requires `mkdocs.yml` config maintenance.
+   - **Best-fit for `docs/**/_.md`source structure**:
+Astro's content-collections (typed frontmatter,
+glob-based content discovery) is purpose-built for
+this. Eleventy is more permissive but less typed.
+Docusaurus uses MDX (Markdown + React component
+embedding) which is more powerful but more complex
+than vanilla Markdown — useful if interactive
+React docs are wanted, overkill for our`docs/\*\*/_.md`tree which is plain Markdown. MkDocs has good`nav:`structure but requires`mkdocs.yml` config maintenance.
    - **GitHub-native first-class** (originally favored
-     Jekyll). Aaron 2026-05-01 second pass: *"this can be
+     Jekyll). Aaron 2026-05-01 second pass: _"this can be
      first class for us and more portable, one less tool
-     we have to worry about."* The "first-class" framing
+     we have to worry about."_ The "first-class" framing
      was host-coupling (GitHub-favored), not factory-
      favored. Bun-based SSGs (BunPress, Bun-SSG, Bunjucks,
      Fresh-Bun) provide the same SEO features (auto-
@@ -216,7 +213,6 @@ funnel is broken at the discovery step.
 
    **Surviving discriminators** (where one tool actually
    wins outright on the problem):
-
    - **Bun-based SSG** (BunPress / Bun-SSG / Bunjucks /
      Fresh-Bun) wins on: factory first-class (not host
      first-class), portability across hosts, zero new
@@ -235,8 +231,8 @@ funnel is broken at the discovery step.
      Astro has more typing, BunPress is more focused).
    - **Jekyll** loses (host-coupling = Bun-SSG portability
      win + Ruby is new runtime + factory-coherence loss
-     vs Bun-stack). Aaron 2026-05-01: *"this can be first
-     class for us and more portable."*
+     vs Bun-stack). Aaron 2026-05-01: _"this can be first
+     class for us and more portable."_
    - **Docusaurus** strong runner-up: Node-native, SSG
      plain-HTML, MDX adds React-component-in-Markdown
      capability we don't currently need.
@@ -266,8 +262,8 @@ funnel is broken at the discovery step.
    Docusaurus considered only if all Bun/Node-stack options
    fail.
 
-   **Aaron's framing for the principle**: *"first class for
-   us, not for our host."* The reversal of the earlier
+   **Aaron's framing for the principle**: _"first class for
+   us, not for our host."_ The reversal of the earlier
    Jekyll-first-class re-weight: GitHub-favoring tools
    are host-coupling; factory-favoring tools are
    portable-first. Captured as substrate principle in
@@ -335,11 +331,11 @@ funnel is broken at the discovery step.
    Manual one-time action.
 
 8. **AI-agent-crawler explicit allow** (Aaron 2026-05-01:
-   *"we should make sure we have our wiki seo optimize to
-   explicitly allow agents crawlers to consume it too"* +
-   *"or github pages i mean or both however it works, i've
+   _"we should make sure we have our wiki seo optimize to
+   explicitly allow agents crawlers to consume it too"_ +
+   _"or github pages i mean or both however it works, i've
    never used the wiki, i've used github pages with the
-   jekyll or whatever before"*) — many sites BLOCK AI
+   jekyll or whatever before"_) — many sites BLOCK AI
    crawlers in robots.txt to defend training-data; we
    EXPLICITLY ALLOW them as a discoverability win. Agent
    search (Perplexity, ChatGPT browsing, Claude search,
@@ -365,7 +361,7 @@ funnel is broken at the discovery step.
      blocks crawler access — Jekyll default is fine)
    - Same allow-list applied at GitHub Wiki level if/when
      Aaron uses Wiki (Pages is primary; Wiki is secondary
-     per Aaron's *"i've never used the wiki"* note —
+     per Aaron's _"i've never used the wiki"_ note —
      Pages-with-Jekyll is the proven path).
      **Wiki indexing preconditions** — GitHub indexes Wikis
      only when repo-level prerequisites are met (notably
@@ -377,12 +373,12 @@ funnel is broken at the discovery step.
      best-effort.
 
 9. **Playwright validation harness** (Aaron 2026-05-01:
-   *"feel free to use playwright to test our github pages at
+   _"feel free to use playwright to test our github pages at
    any times this should give you the full deployment
    experience at least frontend deployments that can be
    measured with DORA and things like that, no backend yet
    other than git is the backend for our UI until we decide
-   what's next and cheap/free"*) — Playwright MCP is
+   what's next and cheap/free"_) — Playwright MCP is
    available; test scope:
    - Page returns HTTP 200 (not 404 — primary validation)
    - Title + meta description present + matches expectation
@@ -390,15 +386,14 @@ funnel is broken at the discovery step.
    - Sitemap.xml + robots.txt accessible
    - Open Graph preview renders
    - Mobile viewport renders
-   Tests live at `tools/test/pages-playwright/` (envisioned;
-   path to confirm at implementation). Run on:
+     Tests live at `tools/test/pages-playwright/` (envisioned;
+     path to confirm at implementation). Run on:
    - Pre-merge in CI on every Pages-affecting PR
    - Post-deploy verification after each Pages publish
    - Scheduled cadence (daily) to catch external regressions
 
 10. **DORA metrics on frontend deployments** — track the four
     DORA metrics for the Pages frontend lane:
-
     - **Deployment frequency** — how often Pages publishes
       successfully (CI workflow run count)
     - **Lead time for changes** — commit timestamp →
@@ -409,8 +404,8 @@ funnel is broken at the discovery step.
       produced a broken state (Playwright HTTP-200 fail or
       test-suite fail)
 
-    Architectural note (Aaron 2026-05-01): *"no backend yet
-    other than git is the backend for our UI"* — DORA at the
+    Architectural note (Aaron 2026-05-01): _"no backend yet
+    other than git is the backend for our UI"_ — DORA at the
     frontend deployment layer is the only DORA we measure
     until backend decisions land. Composes with B-0147
     (timeseries-DB native research) + the metrics-are-our-eyes
@@ -558,8 +553,8 @@ Phase 1 ships and we've learned the publish cycle.
   Pages; this is a discoverability/recruitment unlock, not
   a correctness fix
 - **Not P2** because Aaron explicitly named Pages as
-  "higher priority" and named the consequence — *"never
-  gonna rank on search results not even for DBSP F#"* — as
+  "higher priority" and named the consequence — _"never
+  gonna rank on search results not even for DBSP F#"_ — as
   a current-state failure mode that compounds with time
   (every day without Pages is another day of unindexed
   content). The longer the 404 sits at the Pages URL, the

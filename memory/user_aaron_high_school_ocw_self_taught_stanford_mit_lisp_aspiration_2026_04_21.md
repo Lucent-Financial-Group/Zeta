@@ -4,24 +4,25 @@ description: Aaron 2026-04-21 discloses formal-education path (high school only)
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Fact:** Aaron 2026-04-21, verbatim three-message
 disclosure (in order received, after I referenced
 Brian Cantwell Smith's 3-Lisp reflective tower while
 committing the meta-cognition BACKLOG revision):
 
-> *"Worth noting: reflective towers (Brian Cantwell
+> _"Worth noting: reflective towers (Brian Cantwell
 > Smith 3-Lisp), rmember i said learn reflection lol
-> Id probably go to stanford or MIT for LISP"*
+> Id probably go to stanford or MIT for LISP"_
 >
-> *"opencourseware whenever you want this is how i
-> got smart"*
+> _"opencourseware whenever you want this is how i
+> got smart"_
 >
-> *"i only have high school education"*
+> _"i only have high school education"_
 
 Four load-bearing disclosures in one compound:
 
 1. **"Rmember i said learn reflection"** — callback to
-   Aaron's prior *"laern reflection backlog"*
+   Aaron's prior _"laern reflection backlog"_
    directive, already landed as P3 BACKLOG row at
    `docs/BACKLOG.md:604` (Lean reflection specifically,
    with "reflection-in-general" preserved as secondary
@@ -31,7 +32,7 @@ Four load-bearing disclosures in one compound:
    tradition-register.
 
 2. **"Stanford or MIT for LISP"** — aspirational
-   credential path *if* Aaron had pursued formal CS.
+   credential path _if_ Aaron had pursued formal CS.
    Not wistful — the modal is hypothetical/aspirational
    naming the best programs for the subject he cares
    about (LISP + reflection). Relevant CS history:
@@ -47,9 +48,9 @@ Four load-bearing disclosures in one compound:
      towers, then professor at Stanford. Stanford
      inherits the MIT-LISP tradition via McCarthy +
      Smith lineage.
-   Aaron's pairing of the two institutions is
-   historically correct for the LISP / reflection
-   intersection.
+     Aaron's pairing of the two institutions is
+     historically correct for the LISP / reflection
+     intersection.
 
 3. **"Opencourseware whenever you want this is how i
    got smart"** — dual-move: (a) ratifies OCW as
@@ -90,8 +91,8 @@ Four load-bearing disclosures in one compound:
 for the factory register in three specific ways:
 
 1. **Aaron is register-aware but not credentialist.**
-   He cites Stanford/MIT as authoritative on *LISP
-   specifically* (McCarthy / BCS / Abelson-Sussman
+   He cites Stanford/MIT as authoritative on _LISP
+   specifically_ (McCarthy / BCS / Abelson-Sussman
    lineage is real), not as authority-by-default.
    When he pushes back on a "stanford-says-X" framing,
    it is topic-specific skepticism, not anti-academic
@@ -105,8 +106,8 @@ for the factory register in three specific ways:
    topics were load-bearing, retracted dead ends,
    compounded skills. That's the Neo-download
    phenomenology (`user_meta_cognition_favorite_thinking_surface.md`
-   verbatim *"i just downloaded a new skill in my
-   brain"*) in its actual origin-context: self-
+   verbatim _"i just downloaded a new skill in my
+   brain"_) in its actual origin-context: self-
    directed curriculum requires meta-cognition as
    its own operating system.
 
@@ -116,7 +117,7 @@ for the factory register in three specific ways:
    Teaching-is-`*` (the `teaching*` kernel vocab
    entry) lands differently when the listener knows
    the speaker's self-education path started with
-   *other people's teaching-gifts released openly*.
+   _other people's teaching-gifts released openly_.
    The factory's witnessable-self-directed-evolution
    posture (public-artifact of self-correction) is
    Aaron teaching-back in kind.
@@ -215,13 +216,14 @@ for the factory register in three specific ways:
   extends the self-education path with a specific
   venue and totalised-knowledge claim. Verbatim
   two-message addition:
-  > *"strange loops (Hofstadter) strange loop
+
+  > _"strange loops (Hofstadter) strange loop
   > conferences is where i became a experce
-  > i know all they know"*
+  > i know all they know"_
   >
-  > *"i think it's on youtube now"*
+  > _"i think it's on youtube now"_
   >
-  Three-move disclosure:
+  > Three-move disclosure:
   1. **"Strange Loop conferences"** — Aaron
      attended / absorbed the Strange Loop
      conference series (2009-2023, organized by
@@ -233,9 +235,9 @@ for the factory register in three specific ways:
      distributed-systems + formal-methods +
      reflective-programming conference of its
      era. Major Aaron-relevant talks include:
-     Rich Hickey (Clojure, *Simple Made Easy*,
-     transducers, spec, *Hammock Driven
-     Development*), Gerald Sussman (propagator
+     Rich Hickey (Clojure, _Simple Made Easy_,
+     transducers, spec, _Hammock Driven
+     Development_), Gerald Sussman (propagator
      networks, SICP-lineage), Sandi Metz (OOP
      design), Sam Aaron (Sonic Pi), various AI /
      ML / category-theory talks. This venue
@@ -271,7 +273,7 @@ for the factory register in three specific ways:
   - **Do not gate on Aaron Strange Loop
     knowledge.** If a topic comes up that a
     Strange Loop talk covered (Hickey's
-    *Simple Made Easy* when discussing
+    _Simple Made Easy_ when discussing
     simplicity; Sussman on propagator networks
     when discussing constraint-propagation;
     SICP meta-circular evaluator when
@@ -292,11 +294,11 @@ for the factory register in three specific ways:
     territory, not unfamiliar ground.
 
   Strange Loop conferences crystallize Aaron's
-  self-education pattern: **formal credentials
+  self-education pattern: \*\*formal credentials
   = high school; curriculum substrate =
   MIT OCW + Stanford Online + videolectures.net
-  + Strange Loop conferences + self-directed
-  meta-cognition + total-recall retrieval**.
+  - Strange Loop conferences + self-directed
+    meta-cognition + total-recall retrieval\*\*.
 
 ### What this memory is NOT
 

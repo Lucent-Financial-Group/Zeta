@@ -8,7 +8,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: alloy
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -19,7 +19,7 @@ spec:
       releaseName: alloy
       valuesObject:
         controller:
-          type: daemonset   # collect from every node
+          type: daemonset # collect from every node
         alloy:
           configMap:
             create: true
@@ -45,4 +45,4 @@ spec:
     namespace: alloy
   syncPolicy:
     automated: { prune: true, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

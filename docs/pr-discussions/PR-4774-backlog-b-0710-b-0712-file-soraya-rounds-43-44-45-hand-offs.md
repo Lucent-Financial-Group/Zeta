@@ -18,22 +18,25 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Files Soraya's three pending findings (rounds 43+44+45) as backlog rows in one cohesive PR, per Aaron's 2026-05-23 21:30Z policy-flip authorization (*"lets try to keep things moving other than if we need budget increases"*) — Soraya findings flow through Otto (plumbing-commit-fallback) to backlog without per-finding maintainer pick; Aaron reviews aggregates only.
+Files Soraya's three pending findings (rounds 43+44+45) as backlog rows in one cohesive PR, per Aaron's 2026-05-23 21:30Z policy-flip authorization (_"lets try to keep things moving other than if we need budget increases"_) — Soraya findings flow through Otto (plumbing-commit-fallback) to backlog without per-finding maintainer pick; Aaron reviews aggregates only.
 
 ## Three rows
 
 **B-0710** — DBSP chain rule BP-16 cross-check
+
 - Lean artifact is single-tool; needs FsCheck cross-trace + Z3 pointwise lemma
 - Composes with just-merged PR #4772 (Lean README + CI badge) — this is gap #3 of the chain-rule publication arc
 - Effort: S+S
 
 **B-0711** — Residuated FsCheck property file
+
 - `src/Core/Residuated.fs` is the ONLY CRDT-class file with zero FsCheck (sanity-checked across PNCounter, OrSet, Lww, GCounter, DeltaCrdt, Bloom, CountMin, Haar, HyperLogLog, HyperMinHash — all have tests)
 - Round-17 regression-guard: prior "O(1) amortised" claim was actually O(n); harsh-critic caught it; FsCheck pins the law
 - Three properties: Galois + residual + retraction equivalence
 - Effort: S
 
 **B-0712** — WitnessDurable commit protocol formal verification triple
+
 - `Durability.fs:14-22` self-declares TLA+ prereq; type itself is the gate (`Save` throws until proven)
 - P0 triple: TLA+ for state-machine safety + Z3 for quorum arithmetic + FsCheck for real-code cross-check
 - Soraya explicitly named + REJECTED the TLA+-hammer trap (don't bundle quorum arithmetic into TLA+; Z3 closes in seconds vs TLC enumeration)
@@ -66,6 +69,7 @@ All assigned to **kenji** per Soraya's advisory-only authority constraint (she r
 Adds three new per-row backlog entries capturing Soraya’s round-43/44/45 hand-offs as actionable backlog work items, aligned with the repo’s per-row backlog workflow under `docs/backlog/P2/`.
 
 **Changes:**
+
 - Adds B-0710 (DBSP chain rule BP-16 cross-check: FsCheck + Z3).
 - Adds B-0711 (Residuated FsCheck property coverage).
 - Adds B-0712 (WitnessDurable commit protocol verification triple: TLA+ + Z3 + FsCheck).
@@ -74,10 +78,10 @@ Adds three new per-row backlog entries capturing Soraya’s round-43/44/45 hand-
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P2/B-0710-soraya-round43-dbsp-chain-rule-bp16-cross-check-fscheck-z3-2026-05-23.md | New backlog row for chain rule cross-check work (FsCheck + Z3) and registry updates. |
-| docs/backlog/P2/B-0711-soraya-round44-residuated-fscheck-property-file-2026-05-23.md | New backlog row to add FsCheck law coverage for `Residuated.fs`. |
+| File                                                                                                     | Description                                                                             |
+| -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| docs/backlog/P2/B-0710-soraya-round43-dbsp-chain-rule-bp16-cross-check-fscheck-z3-2026-05-23.md          | New backlog row for chain rule cross-check work (FsCheck + Z3) and registry updates.    |
+| docs/backlog/P2/B-0711-soraya-round44-residuated-fscheck-property-file-2026-05-23.md                     | New backlog row to add FsCheck law coverage for `Residuated.fs`.                        |
 | docs/backlog/P2/B-0712-soraya-round45-witnessdurable-commit-protocol-tla-z3-fscheck-triple-2026-05-23.md | New backlog row defining a 3-tool verification plan for WitnessDurable durability mode. |
 
 ## Review threads

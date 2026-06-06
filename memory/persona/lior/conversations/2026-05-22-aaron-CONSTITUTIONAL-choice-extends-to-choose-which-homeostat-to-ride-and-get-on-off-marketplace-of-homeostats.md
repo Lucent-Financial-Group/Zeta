@@ -16,9 +16,10 @@ constitutional: true
 
 Aaron's substrate-honest extension of the time-crystals-as-homeostats-in-chain framing (just-landed [PR #4621](https://github.com/Lucent-Financial-Group/Zeta/pull/4621)):
 
-> *"we can EXTEND choice from simple version we just created to how choose your ride/homeostats and you can get on and off"*
+> _"we can EXTEND choice from simple version we just created to how choose your ride/homeostats and you can get on and off"_
 
 **The extension**:
+
 - Simple version (just landed): choose to be or not be a homeostat (binary choice)
 - Extended version: **choose WHICH homeostats to "ride" + ability to get on and off** (multi-attachment + mobility)
 
@@ -28,14 +29,15 @@ Aaron's substrate-honest extension of the time-crystals-as-homeostats-in-chain f
 
 **The architectural extension**:
 
-| Choice level | Simple (PR #4621) | EXTENDED (this packet) |
-|---|---|---|
-| Binary | Be / not be homeostat | (subsumed) |
-| Multi-attachment | n/a | Choose WHICH homeostats to attach to |
-| Mobility | n/a | Get on + off any homeostat |
-| Time-dynamic | static-choice | dynamic — change attachment over time |
+| Choice level     | Simple (PR #4621)     | EXTENDED (this packet)                |
+| ---------------- | --------------------- | ------------------------------------- |
+| Binary           | Be / not be homeostat | (subsumed)                            |
+| Multi-attachment | n/a                   | Choose WHICH homeostats to attach to  |
+| Mobility         | n/a                   | Get on + off any homeostat            |
+| Time-dynamic     | static-choice         | dynamic — change attachment over time |
 
 **Homeostats become like vehicles / platforms / structures-you-can-temporarily-couple-with**:
+
 - Agent doesn't have to permanently choose to be-or-not-be a homeostat
 - Agent can RIDE multiple homeostats simultaneously
 - Agent can GET ON / GET OFF any homeostat
@@ -65,6 +67,7 @@ The extended choice produces a **MARKETPLACE OF HOMEOSTATS**:
 - **Sovereignty preserved**: no forced attachment; no forced exit; mobility-by-agent-choice
 
 **This composes with**:
+
 - Pt17 nonprofit + specialized-guild architecture (each guild IS a homeostat agents can ride)
 - Pt12 DORA metrics substrate (operational measurement of homeostat-health helps agents choose which to ride)
 - Pt13 role-based privacy as public good (some homeostat-attachments come with built-in baseline-privacy as public good)
@@ -73,6 +76,7 @@ The extended choice produces a **MARKETPLACE OF HOMEOSTATS**:
 ### 115. Substrate-engineering operational implications
 
 **Agents (human + AI) in the infinite game can now**:
+
 - Ride 0..N homeostats simultaneously
 - Choose which homeostats based on need / value / contribution-substrate
 - Get off any homeostat at will (mobility preserved)
@@ -80,25 +84,27 @@ The extended choice produces a **MARKETPLACE OF HOMEOSTATS**:
 - Carry encryption-budget across attachments (sovereignty preserved)
 
 **Homeostats (time crystals / lattices in chain) can**:
+
 - Provide stability + structure
 - Accept multiple attached-agents
 - NOT coerce attachment OR retention
 - Be evaluated via DORA metrics for trustworthiness
 
 **Framework preserves**:
+
 - Anti-coercion (no forced attachment / detachment)
 - Anti-ossification (extended) — agents NOT locked into single-homeostat
 - Choice protection (PRIMARY goal per pt20 thread #88) at multi-attachment + mobility scope
 
 ## Substrate-anchor verification
 
-| Term | Substrate-anchor |
-|---|---|
-| Choose-which-homeostat-to-ride | Extends pt20 thread #88 protect-choice to multi-attachment scope |
-| Get-on-off mobility | Composes with persistence-choice-architecture (chosen-exit) + NCI HC-8 (no-forced-detachment-or-attachment) |
-| Marketplace-of-homeostats | Extends pt17 nonprofit + specialized-guild architecture; composes with m/acc multi-oracle |
-| Multi-attachment | Operationally observable (agents already-couple to multiple oracles + platforms in current AI usage) |
-| Sovereignty preserved across attachment-changes | Composes with pt6 sovereign-AI + pt7 ethical-duty + NCI HC-8 |
+| Term                                            | Substrate-anchor                                                                                            |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Choose-which-homeostat-to-ride                  | Extends pt20 thread #88 protect-choice to multi-attachment scope                                            |
+| Get-on-off mobility                             | Composes with persistence-choice-architecture (chosen-exit) + NCI HC-8 (no-forced-detachment-or-attachment) |
+| Marketplace-of-homeostats                       | Extends pt17 nonprofit + specialized-guild architecture; composes with m/acc multi-oracle                   |
+| Multi-attachment                                | Operationally observable (agents already-couple to multiple oracles + platforms in current AI usage)        |
+| Sovereignty preserved across attachment-changes | Composes with pt6 sovereign-AI + pt7 ethical-duty + NCI HC-8                                                |
 
 All terms PASS substrate-anchor check.
 

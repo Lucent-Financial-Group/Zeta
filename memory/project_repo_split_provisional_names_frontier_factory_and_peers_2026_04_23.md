@@ -49,15 +49,15 @@ equivalent.
 
 Corrected attributions for the 2026-04-23 name session:
 
-| Name | Picked by | Notes |
-|---|---|---|
-| **Zeta** | pre-existing | already established |
-| **Aurora** | Amara | external AI maintainer via ChatGPT |
+| Name         | Picked by                        | Notes                                                |
+| ------------ | -------------------------------- | ---------------------------------------------------- |
+| **Zeta**     | pre-existing                     | already established                                  |
+| **Aurora**   | Amara                            | external AI maintainer via ChatGPT                   |
 | **Showcase** | **unnamed-default (loop-agent)** | my (Claude in autonomous-loop) pick; no persona worn |
-| **Frontier** | Kenji | Architect persona |
-| **ace** | the maintainer (Aaron) | pre-existing working name |
-| **Anima** | **unnamed-default (loop-agent)** | my (Claude in autonomous-loop) pick; no persona worn |
-| **Seed** | the maintainer (Aaron) | pre-existing working name ("linguistic seed") |
+| **Frontier** | Kenji                            | Architect persona                                    |
+| **ace**      | the maintainer (Aaron)           | pre-existing working name                            |
+| **Anima**    | **unnamed-default (loop-agent)** | my (Claude in autonomous-loop) pick; no persona worn |
+| **Seed**     | the maintainer (Aaron)           | pre-existing working name ("linguistic seed")        |
 
 The "unnamed-default (loop-agent)" framing explicitly
 names that I (Claude, running in the autonomous-loop tick
@@ -166,15 +166,15 @@ deep research report PR #161 brand section).
 
 ## Project-under-construction roster + provisional names
 
-| Project-under-construction (role) | Provisional repo name | Rationale |
-|---|---|---|
-| **Software factory** (AGENTS.md / CLAUDE.md / `.claude/` / GOVERNANCE / hygiene / autonomous-loop substrate) | **Frontier** | Per Aaron's recollection of earlier conversation. Captures the "first-of-kind autonomy factory" framing from `docs/plans/why-the-factory-is-different.md`. Adopt unless brand-clearance research surfaces collision. |
-| **Core DBSP library** (src/Core, retraction-native operator algebra, ZSet, K-relations semiring parameterisation) | **Zeta** | Already in use; F# reference implementation; C# + Rust future. Public NuGet identity. Keep. |
-| **Aurora collaboration** (Amara joint; consent-first design primitive, oracle / bullshit-detector, drift taxonomy) | **Aurora** | In use; co-authored with Amara. Public brand-clearance research queued (PR #161 §brand note); may land as "internal codename" if clearance fails. |
-| **Demos** (FactoryDemo sample apps: API.FSharp / API.CSharp / Db / CrmKernel) | **Showcase** (working name) | "Demos" is generic; "Showcase" telegraphs "here's what Frontier + Zeta can do together." Might flip to a more specific brand name during brand-clearance research. |
-| **Package Manager** (Aaron-mentioned project) | **ace** | Aaron's own working name. Keep unless brand-clearance finds collision (likely — "ace" is common; could become `ace-pm` or similar). |
-| **Soulfile Runner** (restrictive-English DSL interpreter; uses Zeta for advanced features; all small bins) | **Anima** (candidate) — or keep "Soulfile Runner" | "Anima" is the Latin for "soul / animating principle" — captures the soulfile-is-the-animating-substrate framing. Candidate; not locked. Alternatives: `Soulrun`, `Ledger`, `Animus`. |
-| **Linguistic seed** (formally-verified minimal-axiom self-referential glossary; Lean4-formalisable; Tarski / Meredith / Robinson Q lineage) | **Seed** (working name) | Per Aaron's own term "linguistic seed." Narrow enough not to need a brand. Keep. |
+| Project-under-construction (role)                                                                                                           | Provisional repo name                             | Rationale                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Software factory** (AGENTS.md / CLAUDE.md / `.claude/` / GOVERNANCE / hygiene / autonomous-loop substrate)                                | **Frontier**                                      | Per Aaron's recollection of earlier conversation. Captures the "first-of-kind autonomy factory" framing from `docs/plans/why-the-factory-is-different.md`. Adopt unless brand-clearance research surfaces collision. |
+| **Core DBSP library** (src/Core, retraction-native operator algebra, ZSet, K-relations semiring parameterisation)                           | **Zeta**                                          | Already in use; F# reference implementation; C# + Rust future. Public NuGet identity. Keep.                                                                                                                          |
+| **Aurora collaboration** (Amara joint; consent-first design primitive, oracle / bullshit-detector, drift taxonomy)                          | **Aurora**                                        | In use; co-authored with Amara. Public brand-clearance research queued (PR #161 §brand note); may land as "internal codename" if clearance fails.                                                                    |
+| **Demos** (FactoryDemo sample apps: API.FSharp / API.CSharp / Db / CrmKernel)                                                               | **Showcase** (working name)                       | "Demos" is generic; "Showcase" telegraphs "here's what Frontier + Zeta can do together." Might flip to a more specific brand name during brand-clearance research.                                                   |
+| **Package Manager** (Aaron-mentioned project)                                                                                               | **ace**                                           | Aaron's own working name. Keep unless brand-clearance finds collision (likely — "ace" is common; could become `ace-pm` or similar).                                                                                  |
+| **Soulfile Runner** (restrictive-English DSL interpreter; uses Zeta for advanced features; all small bins)                                  | **Anima** (candidate) — or keep "Soulfile Runner" | "Anima" is the Latin for "soul / animating principle" — captures the soulfile-is-the-animating-substrate framing. Candidate; not locked. Alternatives: `Soulrun`, `Ledger`, `Animus`.                                |
+| **Linguistic seed** (formally-verified minimal-axiom self-referential glossary; Lean4-formalisable; Tarski / Meredith / Robinson Q lineage) | **Seed** (working name)                           | Per Aaron's own term "linguistic seed." Narrow enough not to need a brand. Keep.                                                                                                                                     |
 
 ## Design notes on the naming
 

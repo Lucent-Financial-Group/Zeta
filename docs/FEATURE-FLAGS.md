@@ -24,12 +24,12 @@ See also:
 
 ## Active flags
 
-| Flag | Stage | Since | Until | Gates | Tracking |
-|------|-------|-------|-------|-------|----------|
-| `witnessDurable`    | ResearchPreview | r17 | —   | `DurabilityMode.WitnessDurable` | `docs/papers/WDC-draft.md` (not yet written) |
-| `signedSemiNaive`   | ResearchPreview | r18 | —   | `RecursiveSignedSemiNaive` (not yet implemented) | `docs/research/retraction-safe-semi-naive.md` |
-| `countingSemiNaive` | Experimental    | r19 | —   | `RecursiveCounting` / `CountingClosureTable`    | `src/Core/Recursive.fs`, `src/Core/Hierarchy.fs` |
-| `cqfCountingFilter` | Experimental    | r18 | —   | CQF replacement for `CountingBloomFilter` (not yet implemented) | `docs/research/bloom-filter-frontier.md` |
+| Flag                | Stage           | Since | Until | Gates                                                           | Tracking                                         |
+| ------------------- | --------------- | ----- | ----- | --------------------------------------------------------------- | ------------------------------------------------ |
+| `witnessDurable`    | ResearchPreview | r17   | —     | `DurabilityMode.WitnessDurable`                                 | `docs/papers/WDC-draft.md` (not yet written)     |
+| `signedSemiNaive`   | ResearchPreview | r18   | —     | `RecursiveSignedSemiNaive` (not yet implemented)                | `docs/research/retraction-safe-semi-naive.md`    |
+| `countingSemiNaive` | Experimental    | r19   | —     | `RecursiveCounting` / `CountingClosureTable`                    | `src/Core/Recursive.fs`, `src/Core/Hierarchy.fs` |
+| `cqfCountingFilter` | Experimental    | r18   | —     | CQF replacement for `CountingBloomFilter` (not yet implemented) | `docs/research/bloom-filter-frontier.md`         |
 
 `Since` = the round the flag was introduced.
 `Until` = the round the flag will be retired (blank = no date yet).

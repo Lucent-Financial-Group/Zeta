@@ -8,7 +8,7 @@ type: feedback
 
 Aaron 2026-05-04 ~22:50Z, after I committed B-0190 to the wrong branch:
 
-> *"so how do we avoid it next time in future you too?"*
+> _"so how do we avoid it next time in future you too?"_
 
 The hazard recurred ~2 hours after PR #1551 (concurrency-lessons-cluster) encoded Lesson 2 ("orchestrator stays on main cleanly while subagents run; defensive `git checkout main && git restore .` before any commit"). The substrate-level rule was correct; the operationalization failed because:
 
@@ -30,6 +30,7 @@ git branch --show-current
 ```
 
 If output is **not** the expected branch:
+
 - STOP. Do not commit.
 - Investigate why the branch is wrong (likely worktree-shared-`.git` HEAD propagation).
 - Fix via `git checkout <expected-branch>` (and verify again).
@@ -37,7 +38,7 @@ If output is **not** the expected branch:
 
 ## Why the existing PR #1551 rule was not enough
 
-PR #1551's Lesson 2 said: *"orchestrator stays on main cleanly; defensive `git checkout main && git restore .` before any commit."*
+PR #1551's Lesson 2 said: _"orchestrator stays on main cleanly; defensive `git checkout main && git restore .` before any commit."_
 
 That rule is **necessary but not sufficient**. The missing piece: VERIFY the defensive hygiene worked. Without verification, the silent failure mode is invisible until the wrong-branch commit lands.
 
@@ -46,6 +47,7 @@ The verification step is small (one shell command) but it's the difference betwe
 ## Mechanization candidate (future work)
 
 A pre-commit hook OR a wrapper around `git commit` could automate the check:
+
 - Hook reads expected-branch from environment variable / .git/config / file
 - Aborts commit if `git branch --show-current` doesn't match
 - Outputs a clear error: "Expected branch X, currently on Y. Run `git checkout X` and verify."

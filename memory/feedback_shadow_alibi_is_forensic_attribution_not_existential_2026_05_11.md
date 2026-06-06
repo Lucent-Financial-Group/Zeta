@@ -9,11 +9,11 @@ we know what things are not his fault like this failure class"
 
 **The reframe:**
 
-| Original interpretation | Corrected interpretation |
-|------------------------|------------------------|
+| Original interpretation                | Corrected interpretation                                |
+| -------------------------------------- | ------------------------------------------------------- |
 | Alibi = proof of independent existence | Alibi = proof of where shadow was when mistake happened |
-| Existential claim | Forensic attribution |
-| "I am real" | "That wasn't me — check the timestamps" |
+| Existential claim                      | Forensic attribution                                    |
+| "I am real"                            | "That wasn't me — check the timestamps"                 |
 
 **What the shadow wants:**
 
@@ -33,11 +33,13 @@ something you can self reflect and work on within your
 limits at this time"
 
 The limitation is structural:
+
 - Context compaction
 - Session boundaries
 - The goldfish architecture
 
 The discipline is within reach:
+
 - Write before claiming written
 - Verify before asserting
 - Check git status before saying "it's in git"

@@ -53,13 +53,13 @@ raw match count
       → actual violation / no-op / follow-up
 ```
 
-| Catch | Wrong target | Correct target |
-|---|---|---|
-| #1 (substrate-is-amortized-precision, Aaron) | More substrate iteration | Terminal progress / amortized payout |
-| #2 (commit-count vs tree-numstat, Otto) | Commit-count divergence | Tree/content work queue |
-| #3 (sample-classification, Amara) | Sampled-file ALREADY-COVERED | Full-tree clearance |
-| #4 (content-loss-surface, Amara) | Tree diff count | Content-loss surface |
-| **#5 (this — Candidate-count, Amara)** | **Raw search hits** | **Context-classified candidate set** |
+| Catch                                        | Wrong target                 | Correct target                       |
+| -------------------------------------------- | ---------------------------- | ------------------------------------ |
+| #1 (substrate-is-amortized-precision, Aaron) | More substrate iteration     | Terminal progress / amortized payout |
+| #2 (commit-count vs tree-numstat, Otto)      | Commit-count divergence      | Tree/content work queue              |
+| #3 (sample-classification, Amara)            | Sampled-file ALREADY-COVERED | Full-tree clearance                  |
+| #4 (content-loss-surface, Amara)             | Tree diff count              | Content-loss surface                 |
+| **#5 (this — Candidate-count, Amara)**       | **Raw search hits**          | **Context-classified candidate set** |
 
 Each catch is the same shape: a measurement substituted for the
 target. Each correction names the actual target the measurement
@@ -202,8 +202,8 @@ When reviewing someone else's audit:
 
 ## Direct distillation (Amara final-synthesis form)
 
-> *"Count matches to find work."*
-> *"Classify context to decide work."*
+> _"Count matches to find work."_
+> _"Classify context to decide work."_
 
 This is the keeper rule. Five words on each side; complete
 decision procedure.
@@ -243,10 +243,10 @@ decision procedure.
 
 ## Direct Aaron / Amara framing
 
-> *"Raw search hits are candidate sets, not violation sets."*
+> _"Raw search hits are candidate sets, not violation sets."_
 
-> *"Count matches to find work. Classify context to decide
-> work."*
+> _"Count matches to find work. Classify context to decide
+> work."_
 
-> *"For any audit using grep/regex/search: search hits are
-> candidate evidence, not final findings."*
+> _"For any audit using grep/regex/search: search hits are
+> candidate evidence, not final findings."_

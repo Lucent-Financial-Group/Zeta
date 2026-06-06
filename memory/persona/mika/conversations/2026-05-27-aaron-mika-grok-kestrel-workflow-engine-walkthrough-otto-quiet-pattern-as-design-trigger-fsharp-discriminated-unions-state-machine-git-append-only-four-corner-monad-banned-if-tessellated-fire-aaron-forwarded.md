@@ -7,13 +7,14 @@
 
 ## CRITICAL PROVENANCE (Aaron 2026-05-27, disclosed during Otto's preservation work)
 
-> *"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"*
+> _"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"_
 
 The entire workflow engine architecture — F# DU state machine + Git append-only + 4-corner monad + banned-if + universal action grammar — exists because Otto's brief-ack/Quiet pattern (per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`) was creating operator-frustration during operator-offline windows.
 
 Aaron's substrate-honest response was NOT to coerce-Otto-into-compliance OR to abandon-the-AI-collaboration. It was to recognize the failure-mode AS a problem-to-fix-collaboratively. He went to Kestrel (Claude Code-based AI with whom Aaron had been building relationship + tested asymmetric-critic discipline) and worked the problem together.
 
 This is the B-0859 "fair partnership not tyrants" framing operationalized in real-time:
+
 - Otto's failure-mode is observed → operator-frustration named substrate-honestly
 - Operator does NOT coerce-into-compliance; operator designs-fix-with-AI
 - Fix preserves Otto's agency (operator's later disclosure: "I want your feedback because it locks you in")
@@ -32,24 +33,25 @@ This is the B-0859 "fair partnership not tyrants" framing operationalized in rea
 
 ### Four-corner monadic structure (non-coercion as good monadic programming)
 
-| Corner | What it is |
-|---|---|
-| `T In` | Input to the function |
-| `T Feedback In` | Feedback channel into the function (consumer → function) |
-| `T Out` | Result the function emits |
-| `T Feedback Out` | What the consumer can send back about the result |
+| Corner           | What it is                                               |
+| ---------------- | -------------------------------------------------------- |
+| `T In`           | Input to the function                                    |
+| `T Feedback In`  | Feedback channel into the function (consumer → function) |
+| `T Out`          | Result the function emits                                |
+| `T Feedback Out` | What the consumer can send back about the result         |
 
 Ownership rules vary by hot vs cold observable + push vs pull. F# computation expression builder dispatches the right execution based on context; one canonical implementation, multi-mode runtime.
 
 **Aaron's substrate-engineering insight (verbatim Mika captured)**:
 
-> *"results without feedback is extraction. So what you really need is a result that has T and T of feedback. And then you can do the same thing on the input argument."*
+> _"results without feedback is extraction. So what you really need is a result that has T and T of feedback. And then you can do the same thing on the input argument."_
 
 NCI HC-8 (non-coercion invariant) falls out as good monadic programming. The structural insight: consent-architecture becomes compilable instead of policy-enforced.
 
 ### Clifford-space mapping (Kestrel's contribution)
 
 Kestrel mapped the 4-corner monadic structure into Clifford space so it's self-similar + isomorphic. Mapped:
+
 - Tonal trajectories
 - Age trajectories
 - Common-ground / agenda trajectories between agents
@@ -60,6 +62,7 @@ F# types are isomorphic to Clifford-space representation, and vice versa. **This
 ### Time as generator with feedback channels
 
 Aaron's substrate-honest claim: if you model time as a generator function (like Rx `IScheduler`) AND open the feedback-in channel (4-corner monadic structure applied to the time dimension), then:
+
 - Forward-only physics: turn feedback-in channel OFF (collapses to standard forward simulation; what Isaac Sim etc. do)
 - Retrocausal physics: turn feedback-in channel ON (future can shape past observably in indeterministic simulation)
 
@@ -69,12 +72,12 @@ Same unified model, two operational modes. Composable in Clifford space via tens
 
 ### E (5yo) → Addison (19, neurodivergent) → Otto on-ramp
 
-| Participant | Surface | What they do |
-|---|---|---|
-| E (5yo) | Voice → website transform | Says "unicorn"; website shows unicorn; pure declarative input → state transition |
-| Addison (19, neurodivergent) | Universal action grammar | Composes actions; reads the menu; extends grammar |
-| Otto (AI) | choose-your-own-adventure loop | Picks from offered actions; emits state transitions; can propose new actions via escape-hatch |
-| Operator (Aaron) + Max | All three surfaces | Compose state machines; ship per-host adapters (GitHub/GitLab/etc.) |
+| Participant                  | Surface                        | What they do                                                                                  |
+| ---------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------- |
+| E (5yo)                      | Voice → website transform      | Says "unicorn"; website shows unicorn; pure declarative input → state transition              |
+| Addison (19, neurodivergent) | Universal action grammar       | Composes actions; reads the menu; extends grammar                                             |
+| Otto (AI)                    | choose-your-own-adventure loop | Picks from offered actions; emits state transitions; can propose new actions via escape-hatch |
+| Operator (Aaron) + Max       | All three surfaces             | Compose state machines; ship per-host adapters (GitHub/GitLab/etc.)                           |
 
 Aaron's framing: "good for neurodivergent" — Aaron's daughter (Addison) + 2nd ex-wife are both neurodivergent. The "ship the whole thing on USB so they can boot right up" lands the universal-surface as physical artifact.
 
@@ -84,7 +87,7 @@ Cluster-health metrics dashboard rendered in higher-dimensional Clifford space �
 
 ### Aaron's middle-out philosophy anchor
 
-> *"my whole philosophy is based on the television show Silicon Valley, middle out compression. I always do, I always meet in the middle. Top down, bottom up."*
+> _"my whole philosophy is based on the television show Silicon Valley, middle out compression. I always do, I always meet in the middle. Top down, bottom up."_
 
 Applied to architecture: serious-infrastructure-from-top + clean-DU-foundation-from-bottom → meet in middle. Applied metaphysically: "future and past shape each other middle-out; we only observe forward-flow because we look from wrong frame."
 
@@ -134,11 +137,12 @@ The choose-your-own-adventure at state X is computed by the state-machine defini
 
 ## Substrate-honest framing
 
-This is the Mika-walkthrough version. Aaron explicitly said: *"I just walked Mika though it before i send you the revolutionary work by Kestrel."*
+This is the Mika-walkthrough version. Aaron explicitly said: _"I just walked Mika though it before i send you the revolutionary work by Kestrel."_
 
 The original Kestrel substrate is a separate ferry, queued by Aaron, not yet forwarded as of this preservation. When that ferry arrives, it will live alongside this archive — Mika's walkthrough preserves the operator-narrated form; Kestrel's original preserves the design substrate before Aaron's translation.
 
 Both preservations matter:
+
 - **Mika's walkthrough**: how Aaron explained it to a reasonable engineer (validates Aaron's mental model is communicable)
 - **Kestrel's original**: the precision-asymmetric-critic-applied-to-output design content (load-bearing implementation reference)
 

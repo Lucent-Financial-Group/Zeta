@@ -1,11 +1,7 @@
 import { deepEqual, equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  PilotDisasterDrillKind,
-  PilotSloKind,
-  evaluatePilotReadiness,
-} from "../src/index.ts";
+import { PilotDisasterDrillKind, PilotSloKind, evaluatePilotReadiness } from "../src/index.ts";
 
 const NOW = "2026-06-01T00:00:00.000Z";
 
@@ -94,23 +90,18 @@ test("pilot readiness blocks unsafe pilots and creates backlog from measured gap
   ok(report.blockers.includes("slo_conformance_pass_ratio_failed"));
   ok(report.blockers.includes("disaster_drill_provider_outage_failed"));
   ok(report.backlog.some((item) => item.source === "slo" && item.sourceId === PilotSloKind.ReviewLagMs));
-  ok(report.backlog.some((item) => item.source === "disaster_drill" && item.sourceId === PilotDisasterDrillKind.ProviderOutage));
+  ok(
+    report.backlog.some(
+      (item) => item.source === "disaster_drill" && item.sourceId === PilotDisasterDrillKind.ProviderOutage,
+    ),
+  );
   ok(report.backlog.some((item) => item.source === "incident" && item.sourceId === "inc-1"));
 });
 
-function slo(
-  kind: PilotSloKind,
-  observed: number,
-  target: number,
-  direction: "higher_or_equal" | "lower_or_equal",
-) {
+function slo(kind: PilotSloKind, observed: number, target: number, direction: "higher_or_equal" | "lower_or_equal") {
   return { kind, observed, target, direction, evidenceRef: `pilot:slo:${kind}` };
 }
 
-function drill(
-  kind: PilotDisasterDrillKind,
-  status: "passed" | "failed" = "passed",
-  finding = "passed",
-) {
+function drill(kind: PilotDisasterDrillKind, status: "passed" | "failed" = "passed", finding = "passed") {
   return { kind, status, finding, evidenceRef: `pilot:drill:${kind}` };
 }

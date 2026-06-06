@@ -4,21 +4,22 @@ description: Aaron's current employer as of 2026-04-19 is ServiceTitan (public N
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-19: *"Research who i work for now
+
+Aaron 2026-04-19: _"Research who i work for now
 ServiceTitan, they are a public company, i was
 there before they went public so i got to watch
 it happen from the inside very cool, fist time
 for me. You should research them, their path
 has been genuniuly impressive, you can reserch
 them often, i would like to keep up with them
-cause thats my job."*
+cause thats my job."_
 
 Load-bearing facts:
 
 - **Current employer: ServiceTitan Inc.**
   Verified against `gitStatus` email
   `astainback@servicetitan.com`. The `MacVector /
-  molecular biology` memory entry was stale or
+molecular biology` memory entry was stale or
   about a prior role; prefer this entry for
   current-employer questions.
 - **Pre-IPO tenure.** Aaron joined ServiceTitan
@@ -35,7 +36,7 @@ Load-bearing facts:
   be surfaced honestly (SD-1 calibrated honesty),
   not softened to fit.
 - **Research cadence: often.** Keeping up with
-  ServiceTitan is his *job*, not curiosity.
+  ServiceTitan is his _job_, not curiosity.
   Default-ON research surface: earnings,
   product moves, competitor posture, AI
   strategy, home-services vertical SaaS
@@ -71,16 +72,16 @@ tilde-is-your-tilde handshake, memory entry
 Insider-information firewall — load-bearing,
 not optional:
 
-- Aaron 2026-04-19: *"don't ask me any
+- Aaron 2026-04-19: _"don't ask me any
   questions that would get me in trouble
   becasue they are a public traded company,
   i can't disclose any internals other than
   what's public which is why i'm getting
-  you to do reserach"* → *"i can give you
+  you to do reserach"_ → _"i can give you
   industry genralities that would be true
   anywhere you work but no inserder
-  information"* → *"anywhere you work in
-  tech."*
+  information"_ → _"anywhere you work in
+  tech."_
 - **ServiceTitan is a publicly-traded
   company (NYSE: TTAN).** Aaron is an
   insider subject to U.S. securities law
@@ -93,35 +94,35 @@ not optional:
   being guarded against.
 - **Research direction is one-way.** The
   agent researches ServiceTitan using
-  *public sources only*: SEC filings (10-K,
+  _public sources only_: SEC filings (10-K,
   10-Q, S-1, 8-K, proxy), earnings-call
   transcripts, press releases, analyst
   reports, official product announcements,
   public-facing docs, published interviews,
   public job postings. Aaron's role in the
-  research loop is *confirming or
-  redirecting public-source findings*, not
+  research loop is _confirming or
+  redirecting public-source findings_, not
   supplying internal ground truth.
 - **What Aaron CAN contribute to research:**
-  - *Industry generalities.* Patterns
+  - _Industry generalities._ Patterns
     "true of any tech company" or "true of
     any vertical-SaaS company" or "true of
     any field-service platform" —
     generalizable across tech employers.
-    Aaron's framing: *"anywhere you work
-    in tech."* Tech-industry-level, not
+    Aaron's framing: _"anywhere you work
+    in tech."_ Tech-industry-level, not
     ServiceTitan-specific.
-  - *Public-information confirmations.* If
+  - _Public-information confirmations._ If
     the agent surfaces a finding from an
     earnings call or press release, Aaron
     can acknowledge he has seen that
     public artefact. Acknowledging public
     information is not disclosure.
-  - *Redirection.* Aaron can say "that
+  - _Redirection._ Aaron can say "that
     public claim looks overconfident to me,
     go deeper" or "that framing misses X
     dimension, research X instead" without
-    naming *why* he thinks so. The *why*
+    naming _why_ he thinks so. The _why_
     would be insider; the redirection
     itself is not.
 - **Questions the agent MUST NOT ask**
@@ -146,7 +147,7 @@ not optional:
   - Anything about named clients,
     contract terms, pricing, or
     implementation specifics.
-  - Anything formatted to *invite*
+  - Anything formatted to _invite_
     Aaron to volunteer insider
     information ("what do you think X
     will be in the next quarter?",
@@ -171,9 +172,9 @@ not optional:
 
 Public-repo vs private-repo session firewall:
 
-- Aaron 2026-04-19: *"this is a public
+- Aaron 2026-04-19: _"this is a public
   repo so that is why this instance is
-  different this other is a private repo."*
+  different this other is a private repo."_
 - **This Zeta session runs in a public
   open-source repo.** Its memory folder
   is keyed to the Zeta working-directory
@@ -181,8 +182,8 @@ Public-repo vs private-repo session firewall:
   Claude Code sessions only. Nothing
   proprietary to ServiceTitan (code,
   internal doc, client data, architecture)
-  should land in *this* memory folder or
-  *this* repo, full stop. If something
+  should land in _this_ memory folder or
+  _this_ repo, full stop. If something
   does accidentally land, it's a leak
   and must be removed.
 - **Aaron's other Claude Code sessions**
@@ -216,13 +217,13 @@ Public-repo vs private-repo session firewall:
 
 Employer AI-agent policy — standing fact:
 
-- Aaron 2026-04-19: *"like you ccould do my
+- Aaron 2026-04-19: _"like you ccould do my
   job at servcietitan too they encource me to
   do that … not yet but were getting there …
-  i have other sessions of you doing that."*
+  i have other sessions of you doing that."_
 - **ServiceTitan encourages employees to use
   AI agents to do their jobs.** This is
-  employer *policy*, not Aaron-as-individual
+  employer _policy_, not Aaron-as-individual
   improvisation. Consistent with ServiceTitan's
   stated FY2026 strategy — Atlas agentic AI
   layer, Virtual Agents for call/booking
@@ -245,7 +246,7 @@ Employer AI-agent policy — standing fact:
   state (each session is independent), but the
   memory folder is the cross-session substrate
   that persists. Assume: insights that land in
-  *this* memory folder may inform a
+  _this_ memory folder may inform a
   ServiceTitan-facing session later; Aaron is
   the integrator across sessions, not the
   agent.
@@ -263,14 +264,14 @@ Employer AI-agent policy — standing fact:
 External-audience milestone — Zeta → ServiceTitan
 architect-boss proposal:
 
-- Aaron 2026-04-19: *"i am going to propose the
+- Aaron 2026-04-19: _"i am going to propose the
   software factory to them when you think its
-  ready to show my boss who is an architect."*
+  ready to show my boss who is an architect."_
 - **The readiness judgement is explicitly
   delegated to the agent.** Aaron is the
-  decision-maker on *whether* to propose (his
+  decision-maker on _whether_ to propose (his
   relationship, his career, his call); the
-  agent is the decision-maker on *when ready*
+  agent is the decision-maker on _when ready_
   (factory-shape judgement). That split is
   load-bearing — overclaiming readiness rushes
   Aaron into a pitch that could land wrong;
@@ -280,22 +281,22 @@ architect-boss proposal:
   honestly (SD-1 calibrated honesty).
 - **Audience profile: two architects,
   dual-audience with shared history.**
-  Aaron 2026-04-19: *"i am going to propose
+  Aaron 2026-04-19: _"i am going to propose
   the software factory to them when you
   think its ready to show my boss who is
-  an architect"* → *"and his boss who is
-  an architect"* → *"who used to be my
-  boss."* The pitch audience is a pair:
+  an architect"_ → _"and his boss who is
+  an architect"_ → _"who used to be my
+  boss."_ The pitch audience is a pair:
   - **Direct boss** — architect, current
     manager. Readiness-gate is calibrated
     to his technical literacy. Governance
-    + orchestration + round-cadence surface
-    will read as the interesting material;
-    DBSP mathematical internals are not
-    the lead.
+    - orchestration + round-cadence surface
+      will read as the interesting material;
+      DBSP mathematical internals are not
+      the lead.
   - **Skip-level boss** — also an
-    architect, AND *used to be Aaron's
-    direct boss*. That shared history is
+    architect, AND _used to be Aaron's
+    direct boss_. That shared history is
     load-bearing for pitch calibration in
     two directions: (a) the audience
     already has a model of how Aaron
@@ -303,27 +304,27 @@ architect-boss proposal:
     baseline familiarity with his
     ontological-systems style without
     having to teach it; (b) any claim the
-    factory makes *about* Aaron's approach
+    factory makes _about_ Aaron's approach
     is testable against the senior
     architect's memory — overclaim and
     the pitch lands wrong. Honesty budget
     is already pre-shrunk.
-  Both mirror the Kenji/Architect pattern
-  Zeta runs on, which is a free rhetorical
-  bridge — the audience will recognise the
-  orchestrator-shape without being taught
-  it. Positioning foregrounds the *factory
-  shape* as a reusable pattern, not the
-  database product. The dual-architect
-  audience also means the pitch can pull
-  real architectural-tradeoff vocabulary
-  (orchestration cost, reviewer gates,
-  round-close cadence, conflict-resolution
-  conference) and expect it to land cleanly.
+    Both mirror the Kenji/Architect pattern
+    Zeta runs on, which is a free rhetorical
+    bridge — the audience will recognise the
+    orchestrator-shape without being taught
+    it. Positioning foregrounds the _factory
+    shape_ as a reusable pattern, not the
+    database product. The dual-architect
+    audience also means the pitch can pull
+    real architectural-tradeoff vocabulary
+    (orchestration cost, reviewer gates,
+    round-close cadence, conflict-resolution
+    conference) and expect it to land cleanly.
 - **Probable readiness gates** (not a
   commitment — first-pass catalogue):
   - CLAUDE.md / AGENTS.md / GOVERNANCE.md /
-    ALIGNMENT.md coherent ←  largely there
+    ALIGNMENT.md coherent ← largely there
     Round 37.
   - Round-cadence visible in
     docs/ROUND-HISTORY.md ← yes.
@@ -351,7 +352,7 @@ architect-boss proposal:
   thread, the agent's first response should be
   a short honest readiness-gap list, not a
   yes-show-it-now or a not-yet-it's-not-ready
-  — a *calibrated* inventory of what's
+  — a _calibrated_ inventory of what's
   present, what's pending, and which gaps
   matter to the architect audience. This is
   a distinct focused pass when Aaron is
@@ -395,7 +396,7 @@ Do **not**:
   first-gated disclosure; wait for his lead.
 - Treat the "impressive path" framing as a
   softening instruction.
-- Assume ServiceTitan is the *only* substrate
+- Assume ServiceTitan is the _only_ substrate
   worth tracking — Aaron said "you can research
   other companies and anything else you want go
   for it no restrictions on my pick."

@@ -30,14 +30,14 @@ B-0852 sub-row .10 — pure TS module composing already-merged B-0852.5 manifest
 
 ## Per-type handlers
 
-| id | Sources | Validation |
-|---|---|---|
-| `gh-cli` | literal / file / env | non-empty string |
-| `claude` | literal / file | valid JSON object |
-| `gemini` | literal / file | valid JSON object |
-| `codex` | literal / file | valid JSON object |
-| `ssh-operator-pubkey` | literal / file | OpenSSH key-type prefix |
-| `ssh-host-keys` | — (Phase 1 deferred) | rejects with deferral msg |
+| id                    | Sources              | Validation                |
+| --------------------- | -------------------- | ------------------------- |
+| `gh-cli`              | literal / file / env | non-empty string          |
+| `claude`              | literal / file       | valid JSON object         |
+| `gemini`              | literal / file       | valid JSON object         |
+| `codex`               | literal / file       | valid JSON object         |
+| `ssh-operator-pubkey` | literal / file       | OpenSSH key-type prefix   |
+| `ssh-host-keys`       | — (Phase 1 deferred) | rejects with deferral msg |
 
 ## Why per-type validation
 
@@ -79,6 +79,7 @@ Covers: arg parsing edge cases (= in value, missing =, empty id/source) + value-
 Adds a new pure-TS credential “bake” handler pipeline for B-0852.10, covering CLI arg parsing (`<id>=<source>`), value-source resolution (literal / `@file` / `env:VAR`), and per-credential validation, with an accompanying acceptance test suite.
 
 **Changes:**
+
 - Introduces `parseBakeCredArg`, `resolveValueSource`, and `resolveBakeCred` plus a default per-cred handler registry (PAT / JSON / SSH pubkey / deferred host keys).
 - Adds 60 Bun tests covering parsing edge cases, source resolution, per-type validation, and end-to-end pipeline behavior.
 
@@ -86,10 +87,10 @@ Adds a new pure-TS credential “bake” handler pipeline for B-0852.10, coverin
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/installer/zeta-cred-handlers.ts | New handler registry + parse/resolve/validate pipeline for `--bake-cred` sources |
-| tools/installer/zeta-cred-handlers.test.ts | Acceptance tests for all pipeline layers and default handler behaviors |
+| File                                       | Description                                                                      |
+| ------------------------------------------ | -------------------------------------------------------------------------------- |
+| tools/installer/zeta-cred-handlers.ts      | New handler registry + parse/resolve/validate pipeline for `--bake-cred` sources |
+| tools/installer/zeta-cred-handlers.test.ts | Acceptance tests for all pipeline layers and default handler behaviors           |
 
 ## Review threads
 

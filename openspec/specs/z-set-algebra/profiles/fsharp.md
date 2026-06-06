@@ -86,6 +86,7 @@ There is no `reduce` operator on `ZSet` — aggregation is expressed through
   `key` and `value` extractors to each entry, using a bucket-chained index
   (`bucketHead[k] = first i`, `nextIdx[i] = next i`) that avoids a per-key
   `List<_>` allocation.
+
 - `add (a: IndexedZSet<'K, 'V>) (b: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V>`
   — key-wise merge; inner `ZSet<'V>` values are added for shared keys.
 - `neg (a: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V>` — negates every inner

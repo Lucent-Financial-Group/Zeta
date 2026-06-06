@@ -24,13 +24,13 @@ pipelines
 
 A LEGO block has a fixed set of studs on top and a fixed
 set of sockets on the bottom. Any block can snap onto any
-other block *because the interface is standardised*. You
+other block _because the interface is standardised_. You
 don't re-engineer the studs each time; you rely on them
 being compatible.
 
 A **Zeta operator** is a LEGO block for data pipelines.
-Its *studs* are the typed inputs it accepts; its
-*sockets* are the typed outputs it produces. Many core
+Its _studs_ are the typed inputs it accepts; its
+_sockets_ are the typed outputs it produces. Many core
 operators transform `Stream<ZSet<_>>` to
 `Stream<ZSet<_>>`, but composition is more general: one
 operator can snap downstream of another whenever the
@@ -51,8 +51,8 @@ algebra guarantees the composition.
 
 ### Why it matters
 
-In a retraction-native world, building pipelines *by
-composition* (rather than one big hand-written query)
+In a retraction-native world, building pipelines _by
+composition_ (rather than one big hand-written query)
 has three practical benefits:
 
 1. **Each block is testable in isolation.** A `filter`
@@ -75,15 +75,15 @@ reconfigurable.
 
 Zeta ships a small core that covers most pipelines:
 
-| Operator | What it does | Input | Output |
-|---|---|---|---|
-| `D` (delta) | Extract the change (insertions + retractions) from a Z-set stream | Z-set(t) | ΔZ-set(t) |
-| `I` (integral) | Reconstruct state by accumulating changes | ΔZ-set(t) | Z-set(t) |
-| `z⁻¹` (delay) | Hold last-tick value; one-step lookback | Z-set(t) | Z-set(t-1) |
+| Operator           | What it does                                                                                    | Input     | Output                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------ |
+| `D` (delta)        | Extract the change (insertions + retractions) from a Z-set stream                               | Z-set(t)  | ΔZ-set(t)                                        |
+| `I` (integral)     | Reconstruct state by accumulating changes                                                       | ΔZ-set(t) | Z-set(t)                                         |
+| `z⁻¹` (delay)      | Hold last-tick value; one-step lookback                                                         | Z-set(t)  | Z-set(t-1)                                       |
 | `H` (`distinct^Δ`) | Incremental-distinct boundary-crossing operator (per `openspec/specs/operator-algebra/spec.md`) | ΔZ-set(t) | ΔZ-set(t) (with multiplicities clamped to {0,1}) |
-| `filter` | Keep only entries satisfying a predicate | Z-set(t) | Z-set(t) |
-| `map` | Transform keys via a function | Z-set(t) | Z-set(t) |
-| `count` | Sum weights to a scalar | Z-set(t) | ℤ |
+| `filter`           | Keep only entries satisfying a predicate                                                        | Z-set(t)  | Z-set(t)                                         |
+| `map`              | Transform keys via a function                                                                   | Z-set(t)  | Z-set(t)                                         |
+| `count`            | Sum weights to a scalar                                                                         | Z-set(t)  | ℤ                                                |
 
 Note: nested / recursive composition (one pipeline as
 an element of another's input) is provided via the
@@ -125,7 +125,7 @@ Each `|>` is a LEGO snap. Each step's output type
 becomes the next step's input type. Note the order:
 `integrate` is a Z-set-to-Z-set operator
 (`Stream<ZSet<_>> -> Stream<ZSet<_>>`), so it must run
-*before* `count` collapses the Z-set to a scalar; once
+_before_ `count` collapses the Z-set to a scalar; once
 you have a `Stream<int64>`, the Z-set-typed operators
 no longer apply. No hand-written glue code; the
 type-checker enforces the sockets line up.
@@ -138,12 +138,12 @@ scalar aggregations stay exact; the whole pipeline
 
 ### Why composition — compared to alternatives
 
-| Alternative | Problem |
-|---|---|
-| One big hand-written SQL query | Hard to test parts; impossible to swap a subsection; no guarantee about retraction semantics |
-| Monolithic procedural code | Same as above, with less declarative reasoning available |
-| Lambda architecture (speed + batch layers) | Maintains two separate pipelines that must agree; consistency bugs on their own |
-| ETL pipeline frameworks | Composition is present but often retraction-unaware; stateful transforms need explicit re-processing logic |
+| Alternative                                | Problem                                                                                                    |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| One big hand-written SQL query             | Hard to test parts; impossible to swap a subsection; no guarantee about retraction semantics               |
+| Monolithic procedural code                 | Same as above, with less declarative reasoning available                                                   |
+| Lambda architecture (speed + batch layers) | Maintains two separate pipelines that must agree; consistency bugs on their own                            |
+| ETL pipeline frameworks                    | Composition is present but often retraction-unaware; stateful transforms need explicit re-processing logic |
 
 Composition wins when (a) the operators are algebraically
 well-defined, (b) retraction semantics are preserved by
@@ -182,8 +182,8 @@ Before the next module, you should be able to answer:
 - Why does the `|>` pipeline operator in F# work as a
   composition mechanism for Zeta operators? (Hint: each
   operator's output type is what the next one consumes.)
-- Give an example pipeline where `filter` comes *before*
-  `count`. Then explain why a `map` *after* `count`
+- Give an example pipeline where `filter` comes _before_
+  `count`. Then explain why a `map` _after_ `count`
   cannot type-check against the documented F# surface
   (`Pipeline.count` produces `Stream<int64>` while
   `Pipeline.map` consumes `Stream<ZSet<_>>`) — what
@@ -198,8 +198,8 @@ Before the next module, you should be able to answer:
 
 ## Theoretical track — opt-in (for learners who really care)
 
-*If applied is enough, stop here. The below is for those
-going deep.*
+_If applied is enough, stop here. The below is for those
+going deep._
 
 ### Operators as categorical arrows
 
@@ -207,8 +207,8 @@ In category-theoretic terms, a Zeta operator `Q : ZSet K
 → ZSet L` is an arrow in a category whose objects are
 Z-set types. Composition `Q_2 ∘ Q_1` is arrow
 composition. The LEGO anchor is literally categorical:
-the *studs* and *sockets* are the types, the *blocks* are
-the arrows, and *snapping* is composition.
+the _studs_ and _sockets_ are the types, the _blocks_ are
+the arrows, and _snapping_ is composition.
 
 ### The DBSP operator signatures
 
@@ -222,10 +222,10 @@ From Budiu et al. VLDB 2023 §2:
 - `lift(f) : Stream<ZSet K> → Stream<ZSet L>` where
   `f : ZSet K → ZSet L` is a function (the point-lift)
 - Bilinear operator / join: `⋈ : Stream<ZSet K> ×
-  Stream<ZSet L> → Stream<ZSet (K × L)>`
+Stream<ZSet L> → Stream<ZSet (K × L)>`
 
 These compose via arrow composition. The DBSP paper
-proves several identities that let us *rewrite* a
+proves several identities that let us _rewrite_ a
 composition into an equivalent, often cheaper form — the
 basis of Zeta's query-plan optimiser.
 

@@ -252,7 +252,7 @@ list — contributor populations change.
   informs
 - `AGENTS.md` — the doc AI contributors (persona 4)
   read first
-- GitHub Blog (2026): *"How to write a great
-  agents.md: Lessons from over 2,500 repositories"* —
+- GitHub Blog (2026): _"How to write a great
+  agents.md: Lessons from over 2,500 repositories"_ —
   absorbed into
   `docs/research/attracting-ai-contributors-2026-04-22.md`

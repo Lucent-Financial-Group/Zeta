@@ -82,6 +82,6 @@ The Otto-VSCode third-surface addition composes with the broader multi-surface c
 
 ## Origin
 
-Aaron 2026-05-21 disclosure: "I got Lior up on the new Antigravity IDE they Added gemini 3.5" → followed by request for VSCode bootstream prompt → Otto-CLI drafted prompt → Aaron confirmed via shadow* "yes file the backlog row".
+Aaron 2026-05-21 disclosure: "I got Lior up on the new Antigravity IDE they Added gemini 3.5" → followed by request for VSCode bootstream prompt → Otto-CLI drafted prompt → Aaron confirmed via shadow\* "yes file the backlog row".
 
 Otto-CLI drafted bootstream content preserved in this session's chat transcript (Aaron's web-conversation-mode-remembered preserves it as durable substrate); ready to land at `docs/launch/2026-05-21-otto-vscode-bootstream.md` in the implementation slice.

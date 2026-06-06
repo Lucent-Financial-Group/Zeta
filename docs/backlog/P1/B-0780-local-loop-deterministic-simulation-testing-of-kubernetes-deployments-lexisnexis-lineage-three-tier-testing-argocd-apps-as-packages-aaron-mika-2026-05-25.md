@@ -21,7 +21,20 @@ composes_with:
   - B-0773
   - B-0774
   - B-0776
-tags: [cluster, dst, deterministic-simulation, kubernetes, scheduler, lexisnexis, local-loop, argo-cd, app-of-apps, packages-json, three-tier-testing]
+tags:
+  [
+    cluster,
+    dst,
+    deterministic-simulation,
+    kubernetes,
+    scheduler,
+    lexisnexis,
+    local-loop,
+    argo-cd,
+    app-of-apps,
+    packages-json,
+    three-tier-testing,
+  ]
 ---
 
 ## Problem
@@ -128,11 +141,11 @@ for cluster composition:
 
 ### Component 4: Three-tier testing story
 
-| Tier | What developer / CI runs | What it tests |
-|---|---|---|
-| **Pure-code (no Docker, no K8s)** | `dotnet test` (or equivalent F# test runner) | Full deterministic simulation of cluster substrate; replayable; fast; no infra dependencies |
-| **Docker-observable** | Local Docker + K8s (kind / k3d / Docker Desktop K8s); same test runs inside actual K8s | Same substrate + actual K8s integration; visible via `kubectl` + Docker Desktop GUI |
-| **Full CI** | CI pipeline runs same test in real cluster substrate | Production-like validation; same Argo CD App-of-Apps; identical composition |
+| Tier                              | What developer / CI runs                                                               | What it tests                                                                               |
+| --------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Pure-code (no Docker, no K8s)** | `dotnet test` (or equivalent F# test runner)                                           | Full deterministic simulation of cluster substrate; replayable; fast; no infra dependencies |
+| **Docker-observable**             | Local Docker + K8s (kind / k3d / Docker Desktop K8s); same test runs inside actual K8s | Same substrate + actual K8s integration; visible via `kubectl` + Docker Desktop GUI         |
+| **Full CI**                       | CI pipeline runs same test in real cluster substrate                                   | Production-like validation; same Argo CD App-of-Apps; identical composition                 |
 
 Same test code, three tiers of substrate. Operator picks tier
 per need:
@@ -148,27 +161,23 @@ opt into higher tiers when their workflow demands.
 
 ## Acceptance
 
-- [ ] `Zeta.K8s.LocalLoop` umbrella project structure:
-      - `Zeta.K8s.LocalLoop.SimulationEnvironment` — deterministic
-        cluster-state simulator (uses Zeta.Core
-        ISimulationEnvironment + .NET deterministic thread
-        scheduler)
-      - `Zeta.K8s.LocalLoop.Scheduler` — composes with B-0767
-        Zeta-native scheduler running in sim mode
-      - `Zeta.K8s.LocalLoop.AppOfApps` — Argo CD App-of-Apps
-        parser + applier
-      - `Zeta.K8s.LocalLoop.TestHarness` — three-tier test
-        harness (pure-code / Docker / CI selection)
+- [ ] `Zeta.K8s.LocalLoop` umbrella project structure: - `Zeta.K8s.LocalLoop.SimulationEnvironment` — deterministic
+      cluster-state simulator (uses Zeta.Core
+      ISimulationEnvironment + .NET deterministic thread
+      scheduler) - `Zeta.K8s.LocalLoop.Scheduler` — composes with B-0767
+      Zeta-native scheduler running in sim mode - `Zeta.K8s.LocalLoop.AppOfApps` — Argo CD App-of-Apps
+      parser + applier - `Zeta.K8s.LocalLoop.TestHarness` — three-tier test
+      harness (pure-code / Docker / CI selection)
 - [ ] Three-tier test harness API:
-      ```fsharp
-      [<ZetaClusterTest(Tier.PureCode)>]
-      let ``installing redis app of apps yields running redis service`` () =
-        LocalLoop.simulate {
-          appOfApps = "fixtures/redis-only.yaml"
-          duration = TimeSpan.FromMinutes(2.0)
-          seed = 42UL
-        } |> assertContains "service/redis-master"
-      ```
+      `fsharp
+    [<ZetaClusterTest(Tier.PureCode)>]
+    let ``installing redis app of apps yields running redis service`` () =
+      LocalLoop.simulate {
+        appOfApps = "fixtures/redis-only.yaml"
+        duration = TimeSpan.FromMinutes(2.0)
+        seed = 42UL
+      } |> assertContains "service/redis-master"
+    `
       — same test runs at any tier via attribute change
 - [ ] Argo CD App-of-Apps test fixtures: minimal / typical /
       stress / fault-injection scenarios; reproducible
@@ -187,20 +196,20 @@ opt into higher tiers when their workflow demands.
 
 ## Composition with the strategic substrate
 
-| Composition row | How Local Loop composes |
-|---|---|
-| B-0428 F# fork for AI safety | Local Loop is F#/.NET native; same substrate base |
-| B-0747 git-native per-machine state | App-of-Apps as packages.json IS git-native cluster composition |
-| B-0754 zero-typing first-boot | The installer-substrate is testable via Local Loop too (sim the boot flow) |
-| B-0761 open AI-trainable reference | Local Loop scenarios become benchmark scenarios per ARC-AGI parallel |
-| B-0762 auto-submit-back telemetry | In-the-wild failures reproducible via Local Loop with the failure envelope |
-| B-0763 operator-in-the-negotiation-high-seat | Operators run Local Loop without Zeta-specific tooling; works with vanilla F# stack |
-| B-0766 slow-replace k8s | Local Loop validates each binary-compatible Zeta-native impl against conformance suite |
-| B-0767 Zeta-native scheduler | Scheduler IS the determinism gate; Local Loop tests scheduler decisions deterministically |
-| B-0772 observable+controllable fabric | Local Loop tests fabric Observable + Observer behavior deterministically |
-| B-0773 cluster as digital twin | Twin state IS the simulated state at any timestamp |
-| B-0774 etcd-less options | Local Loop validates per-backend (kine + SQLite / NATS / CockroachDB) deterministically |
-| B-0776 simplest-first plugin sequence | Each plugin tested via Local Loop at pure-code tier before integration |
+| Composition row                              | How Local Loop composes                                                                   |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| B-0428 F# fork for AI safety                 | Local Loop is F#/.NET native; same substrate base                                         |
+| B-0747 git-native per-machine state          | App-of-Apps as packages.json IS git-native cluster composition                            |
+| B-0754 zero-typing first-boot                | The installer-substrate is testable via Local Loop too (sim the boot flow)                |
+| B-0761 open AI-trainable reference           | Local Loop scenarios become benchmark scenarios per ARC-AGI parallel                      |
+| B-0762 auto-submit-back telemetry            | In-the-wild failures reproducible via Local Loop with the failure envelope                |
+| B-0763 operator-in-the-negotiation-high-seat | Operators run Local Loop without Zeta-specific tooling; works with vanilla F# stack       |
+| B-0766 slow-replace k8s                      | Local Loop validates each binary-compatible Zeta-native impl against conformance suite    |
+| B-0767 Zeta-native scheduler                 | Scheduler IS the determinism gate; Local Loop tests scheduler decisions deterministically |
+| B-0772 observable+controllable fabric        | Local Loop tests fabric Observable + Observer behavior deterministically                  |
+| B-0773 cluster as digital twin               | Twin state IS the simulated state at any timestamp                                        |
+| B-0774 etcd-less options                     | Local Loop validates per-backend (kine + SQLite / NATS / CockroachDB) deterministically   |
+| B-0776 simplest-first plugin sequence        | Each plugin tested via Local Loop at pure-code tier before integration                    |
 
 ## Why P1 priority
 

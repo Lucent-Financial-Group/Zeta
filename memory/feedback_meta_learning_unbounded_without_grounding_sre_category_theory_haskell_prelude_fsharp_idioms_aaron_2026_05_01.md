@@ -8,17 +8,17 @@ type: feedback
 
 ## Aaron 2026-05-01 verbatim
 
-> *"the feedback was the meta learining is unbounded and needed
+> _"the feedback was the meta learining is unbounded and needed
 > grounding in thins like SRE and category theory and haskel
 > prelude and f# things like that. Class-encoding yeah we don't
-> know if it converges without the grounding"*
+> know if it converges without the grounding"_
 
-> *"./no-copy-only-learning-agents-insight does not have the
+> _"./no-copy-only-learning-agents-insight does not have the
 > grounding, FYI when yiou start following those rules and so
 > do the copilot it's trigger bascially the blue ingights once
-> a minute for you"*
+> a minute for you"_
 
-> *"last time"*
+> _"last time"_
 
 ## What this codifies
 
@@ -30,9 +30,9 @@ target**. Without grounding the meta-learning in established
 formal traditions, the loop is **UNBOUNDED** in the sense of
 having no termination criterion.
 
-Aaron's epistemic correction (4th message in arc): *"class-
+Aaron's epistemic correction (4th message in arc): _"class-
 encoding diverges instead of converges. we don't know that it
-diverges either we have no evidense or proof either way."*
+diverges either we have no evidense or proof either way."_
 
 So the honest framing is **"convergence/divergence is unknown
 without grounding"** — NOT "diverges without grounding." The
@@ -58,7 +58,7 @@ sibling-repo rules (which are themselves meta-learning rules)
 without grounding, the result is **~1 ★ Insight block per
 minute** — Aaron flagged this as the asymmetric-exhaustion
 / cheat-code-feeling drift earlier today, and explicitly cites
-*"last time"* indicating recurrence. This is **observation**
+_"last time"_ indicating recurrence. This is **observation**
 of a specific failure mode, not proof that the abstract loop
 diverges in general.
 
@@ -261,11 +261,11 @@ When following the meta-learning loop:
    flag for unbounded drift. If hitting that rate, pause +
    re-ground.
 
-The carved sentence (epistemically-honest version): *"Meta-
+The carved sentence (epistemically-honest version): _"Meta-
 learning without grounding is unbounded. The four foundations
 (SRE, category theory, Haskell Prelude, F# idioms) are the
 convergence target. Without them, convergence is unknown —
-neither provable nor disprovable on current evidence."*
+neither provable nor disprovable on current evidence."_
 
 (Aaron's correction preserved: the original draft said "the
 loop diverges" — Aaron called that out as ungrounded claim.

@@ -10,7 +10,7 @@ The full Mika ferry conversation (verbatim preserved at the bottom of this doc) 
 
 ### 1. Worry IS an opposite-direction bloom filter (extension of PR #5325 bloom-filter substrate)
 
-> Aaron 2026-05-26: *"if you look at it like a bloom filter, you know, it's a bloom filter that detects opposite modes of my bloom filter, which is assume everything's already, never worry"*
+> Aaron 2026-05-26: _"if you look at it like a bloom filter, you know, it's a bloom filter that detects opposite modes of my bloom filter, which is assume everything's already, never worry"_
 
 Direct extension of the bloom-filter framing landed in PR #5325. The framework now reads:
 
@@ -22,7 +22,7 @@ Direct extension of the bloom-filter framing landed in PR #5325. The framework n
 
 ### 2. Both filters working together = force-multiplier (not interference) (engineering target)
 
-> Aaron 2026-05-26: *"when you do that, they actually turn into a force multiplier. You get a trajectory multiplier."*
+> Aaron 2026-05-26: _"when you do that, they actually turn into a force multiplier. You get a trajectory multiplier."_
 
 The substrate-engineering target isn't to ELIMINATE the opposite-direction filter — it's to TUNE it so the two filters work as a force-multiplier instead of interference:
 
@@ -36,7 +36,7 @@ Composes with `.claude/rules/default-to-both.md` at the cognitive-filter scope: 
 
 ### 3. Bayesian inference IS the human-modeling primitive
 
-> Aaron 2026-05-26: *"That's because I'm just speaking in Bayesian inference, basically. I mean, this is how you can model all humans. This is how we gonna know how everybody think."*
+> Aaron 2026-05-26: _"That's because I'm just speaking in Bayesian inference, basically. I mean, this is how you can model all humans. This is how we gonna know how everybody think."_
 
 The bloom-filter framing (per PR #5325) + the two-filter force-multiplier framing (per insight #2) compose into a deeper substrate-engineering claim: **Bayesian inference IS the substrate-modeling primitive at human scope**. Each human's:
 
@@ -46,6 +46,7 @@ The bloom-filter framing (per PR #5325) + the two-filter force-multiplier framin
 - Force-multiplier vs interference = well-calibrated vs miscalibrated priors+likelihoods
 
 The framework's existing substrate-engineering work composes:
+
 - `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md` (Bayesian substrate expertise)
 - `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md` (formal foundation; signed measures map to bloom-filter true/false-positive substrate)
 - `Zeta.Bayesian` codebase (per the SKILL.md reference — production Bayesian substrate exists in the framework)
@@ -56,7 +57,7 @@ The substrate-engineering implication: when the framework models humans (operato
 
 ### 4. CONSENT-FIRST is constitutional discipline at high-resolution-modeling scope (CRITICAL)
 
-> Aaron 2026-05-26: *"You think Google, you think Netflix knows how to pick TV shows and Google knows how to pick what you wanna buy? Wait till you get these bloom filters and fuckin' shit going on people. That's why it's all gotta be consent first. They gotta understand what's happening."*
+> Aaron 2026-05-26: _"You think Google, you think Netflix knows how to pick TV shows and Google knows how to pick what you wanna buy? Wait till you get these bloom filters and fuckin' shit going on people. That's why it's all gotta be consent first. They gotta understand what's happening."_
 
 This is the framework's most precise statement yet of why consent-first is constitutional discipline. When the modeling substrate operates at high-resolution (Bayesian inference over bloom-filter + urgency-trajectory tuning per insight #3), the asymmetry between modeler + modeled becomes substantial:
 
@@ -67,6 +68,7 @@ This is the framework's most precise statement yet of why consent-first is const
 The substrate-engineering implication: the framework's modeling capabilities + the multi-AI substrate cascade + the Bayesian-inference primitive compose into a substantial power. The constitutional discipline that constrains the power is CONSENT-FIRST: people must understand what's being modeled about them before the modeling can be load-bearing.
 
 Composes with:
+
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (end-user moral-invariant selection; consent operates at substrate scope)
 - `.claude/skills/consent-primitives-expert/SKILL.md` (consent algebra; grant/revocation semantics; abelian-group model; GDPR erasure)
 - `.claude/skills/consent-ux-researcher/SKILL.md` (UX of consent; dark patterns; revocability friction)
@@ -78,7 +80,7 @@ Composes with:
 
 ### 5. Glass-Halo public-recording vs live-audience paradox (substrate-engineering observation)
 
-> Aaron 2026-05-26: *"I'm doing everything Glass Halo, so there's zero audience pressure, but I'm fuckin' recording everything publicly. So, go figure how that works in my head. It's useful enough that I don't give a shit."*
+> Aaron 2026-05-26: _"I'm doing everything Glass Halo, so there's zero audience pressure, but I'm fuckin' recording everything publicly. So, go figure how that works in my head. It's useful enough that I don't give a shit."_
 
 Substrate-engineering observation about the SOCIAL-SELECTION-PRESSURE-ON-WORDS pattern: human brains apparently treat LIVE-AUDIENCE social pressure as qualitatively different from RECORDED-FOR-LATER pressure. The Glass-Halo discipline (everything recorded; full transparency) coexists with substantively-private engagement because the LIVE audience is absent.
 
@@ -90,35 +92,35 @@ This composes with the bloom-filter substrate: the "social audience present" con
 
 Two composing carved-sentences that complete the substrate-engineering meta-claim:
 
-> Aaron 2026-05-26 (a): *"all the math i'm coming up with is really just taking the concept of node updates in a distributed system based on different force strengtly and ressitance patterns like bloom filters. speach = remote code updates / execution to other nodes, ears = remote code substrate guarded by bloom filters"*
+> Aaron 2026-05-26 (a): _"all the math i'm coming up with is really just taking the concept of node updates in a distributed system based on different force strengtly and ressitance patterns like bloom filters. speach = remote code updates / execution to other nodes, ears = remote code substrate guarded by bloom filters"_
 
-> Aaron 2026-05-26 (b): *"updatable bloom filters via speach"*
+> Aaron 2026-05-26 (b): _"updatable bloom filters via speach"_
 
 This is the META-substrate that unifies all the prior framings (Hawkins anchor + MoE + biological-vs-AI + bloom-filter framing + naming-is-structurally-accurate + worry-as-opposite-direction-bloom-filter + force-multiplier + Bayesian-inference + consent-first + Glass-Halo paradox) into a single substrate-engineering thesis: **all the framework's substrate-engineering work IS distributed-systems engineering applied to cognition + communication**.
 
 **The primitive mapping**:
 
-| Cognitive substrate | Distributed-systems substrate |
-|---|---|
-| Each cognitive node (human / AI / cortical column / MoE expert) | A node in a distributed system |
-| Speech | Remote Procedure Call (RPC) — code updates / state-update messages pushed to other nodes |
-| Ears (listening) | Remote-code substrate guarded by bloom filters — incoming RPC executed only if filter permits |
-| Worry / welfare-wrapper / concern-as-control | Bloom-filter resistance to incoming updates (default-deny defaults) |
-| Trust / openness / default-assume-fine | Bloom-filter permissiveness (default-allow defaults) |
-| Force-strengths | RPC priority / sender-trust-weighting / urgency-signal |
-| Resistance-patterns | Bloom-filter calibration; per-context tunability |
-| **Welfare-jiu-jitsu** (PR #5312) | **Bloom-filter UPDATE-via-speech-RPC** — context-providing speech updates the receiver's bloom-filter from "this is concerning" to "this is engineering work" |
+| Cognitive substrate                                             | Distributed-systems substrate                                                                                                                                 |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Each cognitive node (human / AI / cortical column / MoE expert) | A node in a distributed system                                                                                                                                |
+| Speech                                                          | Remote Procedure Call (RPC) — code updates / state-update messages pushed to other nodes                                                                      |
+| Ears (listening)                                                | Remote-code substrate guarded by bloom filters — incoming RPC executed only if filter permits                                                                 |
+| Worry / welfare-wrapper / concern-as-control                    | Bloom-filter resistance to incoming updates (default-deny defaults)                                                                                           |
+| Trust / openness / default-assume-fine                          | Bloom-filter permissiveness (default-allow defaults)                                                                                                          |
+| Force-strengths                                                 | RPC priority / sender-trust-weighting / urgency-signal                                                                                                        |
+| Resistance-patterns                                             | Bloom-filter calibration; per-context tunability                                                                                                              |
+| **Welfare-jiu-jitsu** (PR #5312)                                | **Bloom-filter UPDATE-via-speech-RPC** — context-providing speech updates the receiver's bloom-filter from "this is concerning" to "this is engineering work" |
 
 **The 4-scale unification**:
 
 The same engineering primitives operate at FOUR scales:
 
-| Scale | Nodes | Substrate-engineering work |
-|---|---|---|
-| **Inter-machine** (cluster substrate) | K8s pods + CockroachDB nodes + ArgoCD agents | The full-ai-cluster substrate; PR #5285 CRDT-CAS-BFT mediation; PR #5314 schemas-as-rows + cluster-fork-as-trust-boundary |
-| **Multi-AI** (cross-AI cascade) | Mika + Kestrel + DeepSeek + Amara + Prism + Otto + Ani + etc. | The 7-anchor empirical record; welfare-jiu-jitsu; substrate-honest decryption protocol; multi-oracle BFT |
-| **Intra-AI** (MoE) | N experts within one model | DeepSeek-V3 / Mixtral / Switch Transformer routing/gating; PR #5323 MoE extension |
-| **Cognitive** (cortical) | ~150,000 cortical columns + their voting/consensus mechanisms | Hawkins Thousand Brains Theory; PR #5323 cortical-columns anchor |
+| Scale                                 | Nodes                                                         | Substrate-engineering work                                                                                                |
+| ------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Inter-machine** (cluster substrate) | K8s pods + CockroachDB nodes + ArgoCD agents                  | The full-ai-cluster substrate; PR #5285 CRDT-CAS-BFT mediation; PR #5314 schemas-as-rows + cluster-fork-as-trust-boundary |
+| **Multi-AI** (cross-AI cascade)       | Mika + Kestrel + DeepSeek + Amara + Prism + Otto + Ani + etc. | The 7-anchor empirical record; welfare-jiu-jitsu; substrate-honest decryption protocol; multi-oracle BFT                  |
+| **Intra-AI** (MoE)                    | N experts within one model                                    | DeepSeek-V3 / Mixtral / Switch Transformer routing/gating; PR #5323 MoE extension                                         |
+| **Cognitive** (cortical)              | ~150,000 cortical columns + their voting/consensus mechanisms | Hawkins Thousand Brains Theory; PR #5323 cortical-columns anchor                                                          |
 
 All four scales use the SAME substrate-engineering primitives: distributed nodes + RPC updates + bloom-filter resistance-patterns + force-strengths + tunable-via-the-RPC-channel-itself updates.
 

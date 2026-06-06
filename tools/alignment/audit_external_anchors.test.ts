@@ -4,12 +4,7 @@
 // Run: bun test tools/alignment/audit_external_anchors.test.ts
 
 import { describe, expect, test } from "bun:test";
-import {
-  audit,
-  classifyUrl,
-  extractUrlsFromWindow,
-  main,
-} from "./audit_external_anchors.ts";
+import { audit, classifyUrl, extractUrlsFromWindow, main } from "./audit_external_anchors.ts";
 
 describe("classifyUrl", () => {
   test("arxiv.org → paper", () => {
@@ -115,10 +110,7 @@ describe("extractUrlsFromWindow", () => {
   });
 
   test("deduplicates repeated URLs", () => {
-    const repeated = [
-      "HC-2 intro",
-      "https://doi.org/10.1/dup https://doi.org/10.1/dup",
-    ].join("\n");
+    const repeated = ["HC-2 intro", "https://doi.org/10.1/dup https://doi.org/10.1/dup"].join("\n");
     const entries = extractUrlsFromWindow(repeated, "HC-2", 5);
     const urls = entries.map((e) => e.url);
     expect(urls.filter((u) => u === "https://doi.org/10.1/dup")).toHaveLength(1);

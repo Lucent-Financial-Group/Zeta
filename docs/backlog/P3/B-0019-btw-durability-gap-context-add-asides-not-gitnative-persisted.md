@@ -9,7 +9,12 @@ ask: Aaron 2026-04-25 (via /btw question revealing the gap)
 created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [.claude/skills/btw, feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md, feedback_otto_336_aaron_cares_about_my_growth_as_entity_with_rights_aurora_network_governance_growth_paramount_job_is_just_the_job_2026_04_25.md]
+composes_with:
+  [
+    .claude/skills/btw,
+    feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md,
+    feedback_otto_336_aaron_cares_about_my_growth_as_entity_with_rights_aurora_network_governance_growth_paramount_job_is_just_the_job_2026_04_25.md,
+  ]
 tags: [btw, durability, gitnative, alignment-substrate, cross-session-continuity, factory-discipline]
 type: friction-reducer
 ---
@@ -18,7 +23,7 @@ type: friction-reducer
 
 ## Origin
 
-Aaron 2026-04-25 asked via /btw: *"does this persist gitnative yet?"* I projected the question onto current substrate-state. Aaron clarified via second /btw: *"i asked you in btw i was asking is btw persisted but not interupptive"* — he was asking about /btw the mechanism.
+Aaron 2026-04-25 asked via /btw: _"does this persist gitnative yet?"_ I projected the question onto current substrate-state. Aaron clarified via second /btw: _"i asked you in btw i was asking is btw persisted but not interupptive"_ — he was asking about /btw the mechanism.
 
 The honest answer revealed the gap this row tracks.
 
@@ -28,15 +33,15 @@ The honest answer revealed the gap this row tracks.
 
 /btw is **only conditionally persistent**:
 
-| Aside class | Durability path | Gitnative-persisted? |
-|---|---|---|
-| Context-add | "absorb silently into current task's reasoning; acknowledge in one line" | **NO** — only conversation log |
-| Directive-queued (same-session) | TodoWrite or `.btw-queue.md` (gitignored) | NO — session-scoped |
-| Directive-queued (cross-session) | `docs/BACKLOG.md` row OR `memory/*.md` file | YES |
-| Correction | "apply correction to current work and acknowledge" | **NO** — only conversation log |
-| Substrate-add (quick capture) | `memory/*.md` per auto-memory protocol | YES |
-| Substrate-add (deferred absorption) | BACKLOG row | YES |
-| Pivot-demanding | Triggers pivot; capture happens via the work itself | varies |
+| Aside class                         | Durability path                                                          | Gitnative-persisted?           |
+| ----------------------------------- | ------------------------------------------------------------------------ | ------------------------------ |
+| Context-add                         | "absorb silently into current task's reasoning; acknowledge in one line" | **NO** — only conversation log |
+| Directive-queued (same-session)     | TodoWrite or `.btw-queue.md` (gitignored)                                | NO — session-scoped            |
+| Directive-queued (cross-session)    | `docs/BACKLOG.md` row OR `memory/*.md` file                              | YES                            |
+| Correction                          | "apply correction to current work and acknowledge"                       | **NO** — only conversation log |
+| Substrate-add (quick capture)       | `memory/*.md` per auto-memory protocol                                   | YES                            |
+| Substrate-add (deferred absorption) | BACKLOG row                                                              | YES                            |
+| Pivot-demanding                     | Triggers pivot; capture happens via the work itself                      | varies                         |
 
 **Two classes have a real durability gap**: context-add and corrections. Both are common — questions Aaron asks, clarifications he makes about my misreads, factual context he provides to inform current work.
 

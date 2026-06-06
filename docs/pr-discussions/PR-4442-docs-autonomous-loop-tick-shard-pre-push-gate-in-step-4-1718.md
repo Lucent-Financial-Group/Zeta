@@ -45,24 +45,22 @@ Pre-empt-at-#1 from the 6th tick (1718Z) of the 2026-05-20 autonomous-loop sessi
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T17:28:01Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `4749e65347`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -75,6 +73,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Codifies a tick-shard-specific pre-push verification gate in the canonical autonomous-loop per-tick checklist, and records the corresponding 1718Z tick shard documenting the rationale and linkage to the earlier path-depth incident.
 
 **Changes:**
+
 - Extend step 4 in `docs/AUTONOMOUS-LOOP-PER-TICK.md` with guidance to run `tools/hygiene/check-shard-before-push.ts` when landing a tick shard.
 - Add the `1718Z` tick shard write-up capturing the motivation, composition links, and verify notes.
 
@@ -82,22 +81,24 @@ Codifies a tick-shard-specific pre-push verification gate in the canonical auton
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/AUTONOMOUS-LOOP-PER-TICK.md | Adds a tick-shard-specific pre-push checker note under step 4 (Verify + commit). |
-| docs/hygiene-history/ticks/2026/05/20/1718Z.md | New tick shard documenting the pre-empt cycle and the canonical-doc update. |
-
+| File                                           | Description                                                                      |
+| ---------------------------------------------- | -------------------------------------------------------------------------------- |
+| docs/AUTONOMOUS-LOOP-PER-TICK.md               | Adds a tick-shard-specific pre-push checker note under step 4 (Verify + commit). |
+| docs/hygiene-history/ticks/2026/05/20/1718Z.md | New tick shard documenting the pre-empt cycle and the canonical-doc update.      |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/20/1718Z.md:47**
-* P1: This link label looks like a file path (`docs/hygiene-history/ticks/2026/05/20/1703Z.md`) but the target is PR #4441. If the intent is to link to the PR until the shard lands on main, rename the link text to match the target (or link directly to the file once it exists) to keep xrefs clear.
+
+- P1: This link label looks like a file path (`docs/hygiene-history/ticks/2026/05/20/1703Z.md`) but the target is PR #4441. If the intent is to link to the PR until the shard lands on main, rename the link text to match the target (or link directly to the file once it exists) to keep xrefs clear.
+
 ```
 
 - [`docs/hygiene-history/ticks/2026/05/20/1703Z.md`](https://github.com/Lucent-Financial-Group/Zeta/pull/4441) (the empirical anchor this tick codifies)
 - [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../../../../../docs/AUTONOMOUS-LOOP-PER-TICK.md) (the canonical file extended this tick)
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-20T17:48:06Z)
@@ -112,7 +113,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 **@chatgpt-codex-connector** (2026-05-20T17:28:01Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace 1703Z anchor with resolvable link**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace 1703Z anchor with resolvable link**
 
 The new step-4 gate links to `hygiene-history/ticks/2026/05/20/1703Z.md`, but that file is not present in this commit’s tree, so the anchor is immediately broken for readers and any future link-audit that checks this document. This is especially risky because this paragraph is the canonical guidance about preventing broken shard references; use a stable PR URL (as done in `1718Z.md`) or wait until the shard file exists on this branch before linking it.
 
@@ -151,6 +152,7 @@ The Verify bullet claiming `git diff --stat` shows "1 file changed" doesn’t ma
 Vera tick triage (2026-05-20T17:33Z): REST/GitHub state refreshed while GraphQL is exhausted (`remaining=0`). Branch is owner-only from Vera lane (`maintainer_can_modify=false`), so I am not patching from the contested root checkout.
 
 Current #4442 state:
+
 - Head `4749e653474a4a1abe50356896416dc897d8a031`, base `4626362ca8fe44e6073b94677beb9df5247b2539`.
 - Build/lint/CodeQL checks are green; only the GitHub Copilot/Agent job was still in progress at inspection time.
 - Actionable review blocker: `docs/AUTONOMOUS-LOOP-PER-TICK.md:135` links to `hygiene-history/ticks/2026/05/20/1703Z.md`, but that shard is not present in this PR tree. Replace it with a resolvable PR/main URL or defer the direct file link until the shard is on `main`.
@@ -162,6 +164,7 @@ Root checkout stayed read-only.
 Vera follow-up triage (2026-05-20T17:39Z): rechecked current head `67b33b52e389e718057b11114914e0106f4b5d0a` after the owner push. All visible checks are green/success or skipped, but the PR remains review-blocked and owner-only from Vera lane (`maintainer_can_modify=false`), so I am not patching from the contested root checkout.
 
 Current actionable owner fixes:
+
 - `docs/AUTONOMOUS-LOOP-PER-TICK.md:135`: the `1703Z.md` target is still not present in this branch/repo state; use a stable PR/main URL or land the shard first.
 - `docs/AUTONOMOUS-LOOP-PER-TICK.md:152`: description says `check-shard-before-push.ts` runs `audit-md032-plus-linestart`, but the script actually runs its internal MD032 scan, `markdownlint-cli2`, and `audit-tick-shard-relative-paths`; align the prose or the script.
 - `docs/hygiene-history/ticks/2026/05/20/1718Z.md:37` and line 45: link text says concrete `1703Z.md`, but URL points to PR #4441; rename link text to something like `PR #4441 (1703Z shard)` for merge-order-stable clarity.
@@ -170,4 +173,4 @@ Root checkout stayed read-only.
 
 ### @AceHack (2026-05-20T17:45:53Z)
 
-Vera tick recheck (2026-05-20T17:45Z): current head is `82e63a748788a848fe054d52c5405baa664a9b2c`. GraphQL now shows all visible review threads resolved; three are also outdated, and the remaining 1718Z link-text thread is resolved.  Current blocker is CI still in progress, not an owner patch: CodeQL is neutral/completed, but analyze/path/submit-nuget/lint jobs are still running on this head. No CI rerun is warranted unless one of those jobs finishes with a real failure. Vera did not touch the contested root checkout (`maintainer_can_modify=false`).
+Vera tick recheck (2026-05-20T17:45Z): current head is `82e63a748788a848fe054d52c5405baa664a9b2c`. GraphQL now shows all visible review threads resolved; three are also outdated, and the remaining 1718Z link-text thread is resolved. Current blocker is CI still in progress, not an owner patch: CodeQL is neutral/completed, but analyze/path/submit-nuget/lint jobs are still running on this head. No CI rerun is warranted unless one of those jobs finishes with a real failure. Vera did not touch the contested root checkout (`maintainer_can_modify=false`).

@@ -14,7 +14,7 @@ supply its location + integrity pin, instead of inline-pinning `url` + `package_
 `ace install` resolves such registry deps by looking them up (exact version) in a
 local registry, then runs the **identical** slice-4 verify + atomic-install path.
 
-This is sub-slice **5.1 of 5**. It is the *lower half* of the registry — the data
+This is sub-slice **5.1 of 5**. It is the _lower half_ of the registry — the data
 layer + exact-version lookup — with **no semver ranges and no constraint solver**
 (those are 5.2). Just as slice 4 was the lower half of dependency resolution
 (the inline-pinned graph a solver eventually outputs), 5.1 is the registry's data
@@ -22,23 +22,23 @@ layer that the 5.2 solver eventually populates.
 
 ## Decomposition of slice 5 (the operator 2026-06-01)
 
-| Sub-slice | Scope |
-|---|---|
+| Sub-slice           | Scope                                                                  |
+| ------------------- | ---------------------------------------------------------------------- |
 | **5.1 (this spec)** | registry data layer (bundled ∪ user, local) + **exact-version** lookup |
-| 5.2 | semver ranges (`^1.2.0`) + constraint **solver** |
-| 5.3 | lockfile (pin the solved graph) |
-| deferred | remote registry (network fetch + caching + offline + staleness) |
+| 5.2                 | semver ranges (`^1.2.0`) + constraint **solver**                       |
+| 5.3                 | lockfile (pin the solved graph)                                        |
+| deferred            | remote registry (network fetch + caching + offline + staleness)        |
 
 ## Decisions (this spec locks them)
 
-| # | Decision | Choice |
-|---|---|---|
-| D1 | Registry shape | **Bundled ∪ user, LOCAL** — `tools/ace/registry.json` (ships `{}`) ∪ `~/.ace/registry.json`, mirroring the trust store's `bundledTrustPath ∪ trustStorePath` union. Remote = deferred. |
-| D2 | Dep edge shape | **Explicit discriminated union** — `{kind:"inline", …}` \| `{kind:"registry", name, version}` (per the implicit-not-explicit-in-DUs rule). |
-| D3 | Version match | **Exact only** — `registry[name][version]` exact key lookup. Ranges (`^1.2.0`) = 5.2. |
-| D4 | Registry-dep verification | **Identical to inline** — after lookup fills `{url, package_hash}`, run the exact slice-4 path (slice-2 files hash + `package_hash` pin + declared-identity + slice-3 signature gate). |
-| D5 | Registry-miss | New `registry-miss` refusal when `registry[name][version]` is absent. |
-| D6 | Back-compat | Slice-4 inline deps gain `kind:"inline"`. Zero real `.ace` packages with deps exist (verified), so this is a pre-release type change touching tests + spec only — no migration. |
+| #   | Decision                  | Choice                                                                                                                                                                                 |
+| --- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Registry shape            | **Bundled ∪ user, LOCAL** — `tools/ace/registry.json` (ships `{}`) ∪ `~/.ace/registry.json`, mirroring the trust store's `bundledTrustPath ∪ trustStorePath` union. Remote = deferred. |
+| D2  | Dep edge shape            | **Explicit discriminated union** — `{kind:"inline", …}` \| `{kind:"registry", name, version}` (per the implicit-not-explicit-in-DUs rule).                                             |
+| D3  | Version match             | **Exact only** — `registry[name][version]` exact key lookup. Ranges (`^1.2.0`) = 5.2.                                                                                                  |
+| D4  | Registry-dep verification | **Identical to inline** — after lookup fills `{url, package_hash}`, run the exact slice-4 path (slice-2 files hash + `package_hash` pin + declared-identity + slice-3 signature gate). |
+| D5  | Registry-miss             | New `registry-miss` refusal when `registry[name][version]` is absent.                                                                                                                  |
+| D6  | Back-compat               | Slice-4 inline deps gain `kind:"inline"`. Zero real `.ace` packages with deps exist (verified), so this is a pre-release type change touching tests + spec only — no migration.        |
 
 ## Manifest dep DU (`tools/ace/store.ts`)
 
@@ -46,8 +46,13 @@ layer that the 5.2 solver eventually populates.
 
 ```ts
 export type AceDependency =
-  | { readonly kind: "inline"; readonly name: string; readonly version: string;
-      readonly url: string; readonly package_hash: string }
+  | {
+      readonly kind: "inline";
+      readonly name: string;
+      readonly version: string;
+      readonly url: string;
+      readonly package_hash: string;
+    }
   | { readonly kind: "registry"; readonly name: string; readonly version: string };
 ```
 
@@ -64,23 +69,31 @@ On-disk format (both bundled + user files):
 {
   "libfoo": {
     "1.2.0": { "url": "https://…/libfoo-1.2.0.json", "package_hash": "sha256:…" },
-    "1.3.0": { "url": "https://…/libfoo-1.3.0.json", "package_hash": "sha256:…" }
-  }
+    "1.3.0": { "url": "https://…/libfoo-1.3.0.json", "package_hash": "sha256:…" },
+  },
 }
 ```
 
 ```ts
-export interface RegistryEntry { readonly url: string; readonly package_hash: string; }
+export interface RegistryEntry {
+  readonly url: string;
+  readonly package_hash: string;
+}
 export type Registry = Map<string, Map<string, RegistryEntry>>; // name → version → entry
 
 /** tools/ace/registry.json — bundled root anchor (ships `{}`). */
-export function bundledRegistryPath(): string;   // mirrors bundledTrustPath()
+export function bundledRegistryPath(): string; // mirrors bundledTrustPath()
 /** ~/.ace/registry.json — operator-managed. */
-export function registryPath(): string;          // mirrors trustStorePath()
+export function registryPath(): string; // mirrors trustStorePath()
 /** bundled ∪ user; user overrides bundled on (name, version). */
 export function loadRegistry(bundledPath?: string, userPath?: string): Registry;
 /** Append/overwrite a user-registry entry; dir 0700, file 0600, dedup by (name,version). */
-export function addRegistryEntry(name: string, version: string, entry: RegistryEntry, userPath?: string): { added: boolean };
+export function addRegistryEntry(
+  name: string,
+  version: string,
+  entry: RegistryEntry,
+  userPath?: string,
+): { added: boolean };
 ```
 
 `tools/ace/registry.json` ships as `{}` (empty bundled anchor — exactly like
@@ -109,22 +122,29 @@ edge kind **before** the existing cycle/dedup/skew/tamper/verify logic (which is
 otherwise unchanged — it already keys on `name`, `version`, `package_hash`):
 
 ```ts
-    let url: string;
-    let package_hash: string;
-    if (edge.kind === "registry") {
-      const entry = registry.get(edge.name)?.get(edge.version);
-      if (entry === undefined) {
-        return { ok: false, reason: "registry-miss",
-                 detail: `${edge.name}@${edge.version} not found in registry`, path: here };
-      }
-      url = entry.url; package_hash = entry.package_hash;
-    } else { // kind === "inline"
-      url = edge.url; package_hash = edge.package_hash;
-    }
-    // …existing slice-4 logic, now using `url` + `package_hash` (instead of edge.url/edge.package_hash):
-    //   cycle (visiting) → dedup/skew/tamper (byName keyed on name, package_hash) →
-    //   fetch(url) → slice-2 self-hash → pin (packageHash(dep) === package_hash) →
-    //   identity (dep.manifest.name/version === edge.name/version) → slice-3 signature gate
+let url: string;
+let package_hash: string;
+if (edge.kind === "registry") {
+  const entry = registry.get(edge.name)?.get(edge.version);
+  if (entry === undefined) {
+    return {
+      ok: false,
+      reason: "registry-miss",
+      detail: `${edge.name}@${edge.version} not found in registry`,
+      path: here,
+    };
+  }
+  url = entry.url;
+  package_hash = entry.package_hash;
+} else {
+  // kind === "inline"
+  url = edge.url;
+  package_hash = edge.package_hash;
+}
+// …existing slice-4 logic, now using `url` + `package_hash` (instead of edge.url/edge.package_hash):
+//   cycle (visiting) → dedup/skew/tamper (byName keyed on name, package_hash) →
+//   fetch(url) → slice-2 self-hash → pin (packageHash(dep) === package_hash) →
+//   identity (dep.manifest.name/version === edge.name/version) → slice-3 signature gate
 ```
 
 Registry deps are transitive automatically: a registry-dep's fetched package may
@@ -186,7 +206,7 @@ change that).
 - mixed graph: one `inline` edge + one `registry` edge → both resolve
 - transitive registry deps (registry-dep whose package declares its own registry-dep) → full graph resolves
 - a registry dep whose looked-up `package_hash` mismatches the fetched package → `pin-mismatch` (verification still applies post-lookup)
-- exact-version: `registry` dep at a version NOT in the registry (even if a *different* version is present) → `registry-miss` (no range fallback)
+- exact-version: `registry` dep at a version NOT in the registry (even if a _different_ version is present) → `registry-miss` (no range fallback)
 
 **`ace.test.ts`** (temp HOME + temp pkg files):
 
@@ -197,13 +217,13 @@ change that).
 
 ## Files
 
-| File | Change |
-|---|---|
-| `tools/ace/store.ts` | `AceDependency` → DU (`inline`\|`registry`); add `RegistryEntry`/`Registry`, `bundledRegistryPath`/`registryPath`/`loadRegistry`/`addRegistryEntry` |
-| `tools/ace/resolve.ts` | `resolve` gains `registry` param; per-edge kind dispatch (registry lookup → `url`+`package_hash`); add `registry-miss` reason |
-| `tools/ace/ace.ts` | `ace registry add`/`list` verbs; pass `loadRegistry()` into `resolve` in `install`; slice-4 inline edges constructed with `kind:"inline"` |
-| `tools/ace/registry.json` | **new** — bundled anchor, ships `{}` |
-| `tools/ace/store.test.ts` | registry load/add tests |
-| `tools/ace/resolve.test.ts` | registry-dep + registry-miss + mixed/transitive tests; existing inline edges gain `kind:"inline"` |
-| `tools/ace/ace.test.ts` | `registry add`/`list` + e2e registry-install tests; existing inline edges gain `kind:"inline"` |
-| `.claude/skills/ace/SKILL.md` | document `registry add`/`list` + registry-dep resolution + `registry-miss` |
+| File                          | Change                                                                                                                                              |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/ace/store.ts`          | `AceDependency` → DU (`inline`\|`registry`); add `RegistryEntry`/`Registry`, `bundledRegistryPath`/`registryPath`/`loadRegistry`/`addRegistryEntry` |
+| `tools/ace/resolve.ts`        | `resolve` gains `registry` param; per-edge kind dispatch (registry lookup → `url`+`package_hash`); add `registry-miss` reason                       |
+| `tools/ace/ace.ts`            | `ace registry add`/`list` verbs; pass `loadRegistry()` into `resolve` in `install`; slice-4 inline edges constructed with `kind:"inline"`           |
+| `tools/ace/registry.json`     | **new** — bundled anchor, ships `{}`                                                                                                                |
+| `tools/ace/store.test.ts`     | registry load/add tests                                                                                                                             |
+| `tools/ace/resolve.test.ts`   | registry-dep + registry-miss + mixed/transitive tests; existing inline edges gain `kind:"inline"`                                                   |
+| `tools/ace/ace.test.ts`       | `registry add`/`list` + e2e registry-install tests; existing inline edges gain `kind:"inline"`                                                      |
+| `.claude/skills/ace/SKILL.md` | document `registry add`/`list` + registry-dep resolution + `registry-miss`                                                                          |

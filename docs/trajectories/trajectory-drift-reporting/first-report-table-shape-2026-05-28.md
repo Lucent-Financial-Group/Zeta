@@ -20,14 +20,14 @@ surfaces reviewable drift candidates.
 
 ## Report Table
 
-| Column | Meaning | Required evidence |
-|---|---|---|
-| `trajectory` | Packet path under `docs/trajectories/`. | Exact `RESUME.md` path. |
-| `declared_state` | Current status, blocker, and next action stated by the packet. | Quoted or line-referenced packet text. |
-| `observed_signal` | Recent commit, PR, claim, or workflow evidence that bears on the packet. | Commit SHA, PR number, claim ref, or workflow/job URL. |
-| `drift_class` | The smallest useful classifier for the mismatch, or `none`. | One classifier from the list below. |
-| `recommended_next_action` | Report-only suggestion for a future claim or review. | One bounded action with path scope. |
-| `owner_surface` | Current path owner, if any. | Open PR head, active claim ref, or `none observed`. |
+| Column                    | Meaning                                                                  | Required evidence                                      |
+| ------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------ |
+| `trajectory`              | Packet path under `docs/trajectories/`.                                  | Exact `RESUME.md` path.                                |
+| `declared_state`          | Current status, blocker, and next action stated by the packet.           | Quoted or line-referenced packet text.                 |
+| `observed_signal`         | Recent commit, PR, claim, or workflow evidence that bears on the packet. | Commit SHA, PR number, claim ref, or workflow/job URL. |
+| `drift_class`             | The smallest useful classifier for the mismatch, or `none`.              | One classifier from the list below.                    |
+| `recommended_next_action` | Report-only suggestion for a future claim or review.                     | One bounded action with path scope.                    |
+| `owner_surface`           | Current path owner, if any.                                              | Open PR head, active claim ref, or `none observed`.    |
 
 ## Drift Classes
 

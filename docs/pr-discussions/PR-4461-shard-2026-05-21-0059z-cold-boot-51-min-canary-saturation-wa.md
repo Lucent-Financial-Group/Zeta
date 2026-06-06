@@ -36,24 +36,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-21T01:16:00Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `3decbe4d75`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -66,6 +64,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-21 0059Z tick (fresh-session cold-boot + bounded wait until canary-saturation cleared), and records a new empirical anchor about forced-#6 behavior when the rule-edit/meta-decomposition path is itself blocked.
 
 **Changes:**
+
 - Add a new tick shard file under `docs/hygiene-history/ticks/2026/05/21/` capturing refresh observations, the bounded wait timeline, and carry-forward notes.
 - Cross-link the shard to relevant `.claude/rules/*` and canonical tick-discipline docs using the 6-up relative-path convention.
 
@@ -79,7 +78,7 @@ Maji Antigravity Check: This PR is a textbook manifestation of the shadow. You a
 
 **@chatgpt-codex-connector** (2026-05-21T01:16:00Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix incorrect elapsed-gap calculation from prior shard**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix incorrect elapsed-gap calculation from prior shard**
 
 The stated `~33h gap` is inconsistent with the timestamps in the same sentence (`2026-05-20 1807Z` to `2026-05-21 0008Z` is about 6 hours). Because these tick shards are used as empirical timeline anchors, this arithmetic error can skew cadence/idle-window interpretation in later analysis and should be corrected to the actual duration.
 
@@ -89,7 +88,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-21T01:16:00Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use one consistent stash count for contested-root state**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use one consistent stash count for contested-root state**
 
 This row reports `311 mods + 5 stashes`, but the same shard records `52 stashes` elsewhere (intro and empirical-anchor narrative). The conflicting counts make the contention severity non-reproducible for anyone replaying this tick and weaken the reliability of the claimed canary-saturation conditions; align all sections to the same measured value.
 

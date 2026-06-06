@@ -23,9 +23,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - '**/*.md'
-      - '.github/workflows/lint-autofix.yml'
-      - '.github/workflows/lint-autofix-apply.yml'
+      - "**/*.md"
+      - ".github/workflows/lint-autofix.yml"
+      - ".github/workflows/lint-autofix-apply.yml"
 
 permissions:
   contents: read

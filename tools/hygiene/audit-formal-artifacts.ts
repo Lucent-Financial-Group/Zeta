@@ -67,11 +67,9 @@ function classify(relPath: string): Category | null {
   if (ext === ".tla") return "tla+";
   if (ext === ".smt2") return "z3";
   if (ext === ".als") return "alloy";
-  if (relPath.startsWith("tools/Z3Verify/") && (ext === ".fs" || ext === ".fsproj"))
-    return "z3";
+  if (relPath.startsWith("tools/Z3Verify/") && (ext === ".fs" || ext === ".fsproj")) return "z3";
   if (relPath.startsWith("tools/alloy/") && ext === ".java") return "alloy";
-  if (relPath.includes("Formal/") && ext === ".fs" && relPath.startsWith("tests/"))
-    return "formal-test";
+  if (relPath.includes("Formal/") && ext === ".fs" && relPath.startsWith("tests/")) return "formal-test";
   return null;
 }
 
@@ -92,10 +90,7 @@ async function buildReferenceIndex(): Promise<Map<string, string>> {
   return index;
 }
 
-function findRefsInIndex(
-  relPath: string,
-  index: Map<string, string>,
-): string[] {
+function findRefsInIndex(relPath: string, index: Map<string, string>): string[] {
   const refs: string[] = [];
 
   for (const [mdFile, content] of index) {
@@ -118,12 +113,8 @@ function emitMarkdown(artifacts: FormalArtifact[]): void {
 
   console.log(`# Formal Artifact Catalog (${nowIso()})`);
   console.log("");
-  console.log(
-    "B-0139 first-slice output. Scans Lean4, TLA+, Z3, Alloy files and",
-  );
-  console.log(
-    "formal test harnesses. Cross-references against docs/ for substrate-status.",
-  );
+  console.log("B-0139 first-slice output. Scans Lean4, TLA+, Z3, Alloy files and");
+  console.log("formal test harnesses. Cross-references against docs/ for substrate-status.");
   console.log("");
   console.log("## Summary");
   console.log("");
@@ -164,8 +155,7 @@ function emitMarkdown(artifacts: FormalArtifact[]): void {
     console.log(`## ${labels[cat]}`);
     console.log("");
     for (const a of items) {
-      const status =
-        a.substrateStatus === "referenced" ? "REFERENCED" : "**UNREFERENCED**";
+      const status = a.substrateStatus === "referenced" ? "REFERENCED" : "**UNREFERENCED**";
       console.log(`### \`${a.path}\``);
       console.log(`- Lines: ${a.lines}`);
       console.log(`- Status: ${status}`);
@@ -185,12 +175,8 @@ function emitMarkdown(artifacts: FormalArtifact[]): void {
   if (unreferenced.length > 0) {
     console.log("## Action items");
     console.log("");
-    console.log(
-      "Unreferenced artifacts need substrate integration (memory-file pointer,",
-    );
-    console.log(
-      "backlog-row pointer, or explicit 'preserved-in-codebase-only' classification).",
-    );
+    console.log("Unreferenced artifacts need substrate integration (memory-file pointer,");
+    console.log("backlog-row pointer, or explicit 'preserved-in-codebase-only' classification).");
     console.log("");
     for (const a of unreferenced) {
       console.log(`- [ ] \`${a.path}\` (${a.category}, ${a.lines} lines)`);
@@ -202,18 +188,9 @@ function emitMarkdown(artifacts: FormalArtifact[]): void {
 async function main(): Promise<number> {
   const jsonMode = process.argv.includes("--json");
 
-  const formalFiles = await gitLsFiles(
-    "*.lean",
-    "*.tla",
-    "*.smt2",
-    "*.als",
-    "tools/Z3Verify/*",
-    "tools/alloy/*.java",
-  );
+  const formalFiles = await gitLsFiles("*.lean", "*.tla", "*.smt2", "*.als", "tools/Z3Verify/*", "tools/alloy/*.java");
 
-  const formalTestFiles = (
-    await gitLsFiles("tests/Tests.FSharp/Formal/*.fs")
-  ).filter((f) => f.includes("Formal/"));
+  const formalTestFiles = (await gitLsFiles("tests/Tests.FSharp/Formal/*.fs")).filter((f) => f.includes("Formal/"));
 
   const allPaths = [...new Set([...formalFiles, ...formalTestFiles])];
 
@@ -250,25 +227,20 @@ async function main(): Promise<number> {
     const summary = {
       generatedAt: nowIso(),
       totalArtifacts: artifacts.length,
-      referenced: artifacts.filter((a) => a.substrateStatus === "referenced")
-        .length,
-      unreferenced: artifacts.filter(
-        (a) => a.substrateStatus === "unreferenced",
-      ).length,
+      referenced: artifacts.filter((a) => a.substrateStatus === "referenced").length,
+      unreferenced: artifacts.filter((a) => a.substrateStatus === "unreferenced").length,
       totalLines: artifacts.reduce((sum, a) => sum + a.lines, 0),
       byCategory: Object.fromEntries(
-        (["lean4", "tla+", "z3", "alloy", "formal-test"] as Category[]).map(
-          (cat) => {
-            const items = artifacts.filter((a) => a.category === cat);
-            return [
-              cat,
-              {
-                count: items.length,
-                lines: items.reduce((s, a) => s + a.lines, 0),
-              },
-            ];
-          },
-        ),
+        (["lean4", "tla+", "z3", "alloy", "formal-test"] as Category[]).map((cat) => {
+          const items = artifacts.filter((a) => a.category === cat);
+          return [
+            cat,
+            {
+              count: items.length,
+              lines: items.reduce((s, a) => s + a.lines, 0),
+            },
+          ];
+        }),
       ),
       artifacts,
     };
@@ -284,9 +256,7 @@ if (import.meta.main) {
   main().then(
     (code) => process.exit(code),
     (err) => {
-      process.stderr.write(
-        `fatal: ${err instanceof Error ? err.message : String(err)}\n`,
-      );
+      process.stderr.write(`fatal: ${err instanceof Error ? err.message : String(err)}\n`);
       process.exit(1);
     },
   );

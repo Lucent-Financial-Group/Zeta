@@ -56,6 +56,7 @@ The 4 threads on the merged PRs will be resolved via GraphQL \`resolveReviewThre
 Small follow-up that addresses 4 Copilot review findings on the already-merged PRs #3156 and #3161, applied directly on main.
 
 **Changes:**
+
 - Fix B-0506 frontmatter `type` from `feature` to `chore` and expand bare rule filenames to full `.claude/rules/` paths in the Composes-with list.
 - Correct "~17/47" to "8/47 (~17%)" for internal consistency and fix a "per per-tick" grammar nit in the 1822Z tick shard.
 
@@ -63,7 +64,7 @@ Small follow-up that addresses 4 Copilot review findings on the already-merged P
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                            | Description                                                                  |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md | Frontmatter type semantic fix; full paths for Composes-with rule references. |
-| docs/hygiene-history/ticks/2026/05/14/1822Z.md | Numeric consistency fix (8/47, ~17%) and grammar fix ("per-tick"). |
+| docs/hygiene-history/ticks/2026/05/14/1822Z.md                                  | Numeric consistency fix (8/47, ~17%) and grammar fix ("per-tick").           |

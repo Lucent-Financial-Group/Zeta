@@ -10,7 +10,7 @@ type: feedback
 
 Aaron 2026-05-05 verbatim, immediately after Rule #1:
 
-> *"rule number two assume it's on backlog and you just have to find it and all its depnedles and udp0les and cleanu pthe depldns on to firue your mess out"*
+> _"rule number two assume it's on backlog and you just have to find it and all its depnedles and udp0les and cleanu pthe depldns on to firue your mess out"_
 
 Translation: assume it's on backlog. Find the row. Find all its dependencies. Find all its updates / supersessions. Clean up the depends-on chain. Figure out the mess from the depends-on graph.
 
@@ -23,10 +23,10 @@ Rule #2 is downstream of Rule #1 and adds the depends-on-graph-traversal discipl
 
 ## How to apply
 
-When the impulse is *"I should add a backlog row"* or *"this is new work that should be tracked"* or *"let me propose this as a backlog item"*:
+When the impulse is _"I should add a backlog row"_ or _"this is new work that should be tracked"_ or _"let me propose this as a backlog item"_:
 
 1. **Catch the impulse.**
-2. **Apply Rule #2.** *"Assume it's on backlog. Where is the row?"*
+2. **Apply Rule #2.** _"Assume it's on backlog. Where is the row?"_
 3. **Search the backlog systematically:**
    - `find docs/backlog -type f -name "*.md"` then grep keywords from the impulse
    - `grep -rln <keyword> docs/backlog/` across P0/P1/P2/P3 tiers
@@ -47,11 +47,11 @@ When the impulse is *"I should add a backlog row"* or *"this is new work that sh
 
 ## Why: the depends-on chain IS the decision-archaeology
 
-The backlog rows form a graph. Each row's `depends_on:` and `relates_to:` fields are edges. The graph captures *why* each piece of work exists in relation to other work. When the chain is broken (orphan rows, dangling pointers, missing supersession links), the decision-archaeology breaks: future-agents can't reconstruct the mess.
+The backlog rows form a graph. Each row's `depends_on:` and `relates_to:` fields are edges. The graph captures _why_ each piece of work exists in relation to other work. When the chain is broken (orphan rows, dangling pointers, missing supersession links), the decision-archaeology breaks: future-agents can't reconstruct the mess.
 
-Aaron's framing *"clean up the depends-on chain to figure your mess out"* names this directly: the mess is figured out by walking the graph. If the agent skips the walk, the mess persists. The backfill of missing depends-on pointers is part of the decision-archaeology.
+Aaron's framing _"clean up the depends-on chain to figure your mess out"_ names this directly: the mess is figured out by walking the graph. If the agent skips the walk, the mess persists. The backfill of missing depends-on pointers is part of the decision-archaeology.
 
-This composes with the git-blame discipline (Aaron 2026-05-05 same session: *"you can find you repeated filure modes with git blame and the decison archelogies too you are very honest when you check shit in and on the PRs"*). Git-blame on backlog rows reveals when each `depends_on:` was added; depends-on graph walks reveal which work is blocked on which other work; the agent's own commit honesty fills in the rationale.
+This composes with the git-blame discipline (Aaron 2026-05-05 same session: _"you can find you repeated filure modes with git blame and the decison archelogies too you are very honest when you check shit in and on the PRs"_). Git-blame on backlog rows reveals when each `depends_on:` was added; depends-on graph walks reveal which work is blocked on which other work; the agent's own commit honesty fills in the rationale.
 
 ## Example failure mode this rule catches (this session, 2026-05-05)
 

@@ -43,6 +43,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Improves the resilience of the `audit-backlog-status-drift` hygiene tool by preventing filesystem read errors from aborting the entire audit run, and adds a new hygiene-history tick shard documenting related operational context.
 
 **Changes:**
+
 - Wraps `readdirSync` and `readFileSync` in `try/catch` inside `enumerateOpenRows()` to warn-and-continue on unreadable directories/files.
 - Emits stderr warnings with the directory/file path and error message when reads fail.
 - Adds a new `docs/hygiene-history/ticks/...` shard documenting the session tick.
@@ -51,22 +52,24 @@ Improves the resilience of the `audit-backlog-status-drift` hygiene tool by prev
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/hygiene/audit-backlog-status-drift.ts | Adds defensive error handling around directory and file reads to avoid aborting audits on a single unreadable entry. |
-| docs/hygiene-history/ticks/2026/05/16/0644Z.md | Adds a new tick shard entry documenting the session state and related PR context. |
-
+| File                                           | Description                                                                                                          |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| tools/hygiene/audit-backlog-status-drift.ts    | Adds defensive error handling around directory and file reads to avoid aborting audits on a single unreadable entry. |
+| docs/hygiene-history/ticks/2026/05/16/0644Z.md | Adds a new tick shard entry documenting the session state and related PR context.                                    |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/audit-backlog-status-drift.ts:212**
-* Same issue as above: casting `err as Error` risks losing information for non-`Error` throws. Use `err instanceof Error ? err.message : String(err)` for consistent, safe stderr output.
+
+- Same issue as above: casting `err as Error` risks losing information for non-`Error` throws. Use `err instanceof Error ? err.message : String(err)` for consistent, safe stderr output.
+
 ```
                 process.stderr.write(
                     `audit-backlog-status-drift: unable to read ${path}: ${(err as Error).message}\n`,
                 );
 ```
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-16T07:01:48Z)

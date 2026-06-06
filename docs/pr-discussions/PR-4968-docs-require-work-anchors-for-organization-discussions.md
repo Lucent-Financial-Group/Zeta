@@ -36,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR strengthens the “discussion anchoring” invariant across the Agentic Organization design docs and introduces a new Agent-Native Knowledge Graph/Retrieval document as the context layer tying work items to discussions, decisions, evidence, and runs.
 
 **Changes:**
+
 - Adds `AGENT_NATIVE_KNOWLEDGE_GRAPH.md` describing a typed graph schema, retrieval contracts, context packs, and `validate_discussion_anchor`.
 - Propagates “no unanchored discussions” requirements through OS, UI/observability, runtime architecture, build plan, and readiness checklist docs.
 - Updates tool bundles and actor/runtime descriptions to include discussion anchor validation and tracking.
@@ -47,21 +48,22 @@ Copilot reviewed 13 out of 13 changed files in this pull request and generated 4
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| agentic-organization/docs/WORK_AND_RELEASE_MANAGEMENT_OS.md | Adds anchor validation into the signal model and guardrails. |
-| agentic-organization/docs/UI_AND_OBSERVABILITY_CONCEPTS.md | Requires an anchor selector before opening discussions; records anchor in meeting UI metadata. |
-| agentic-organization/docs/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md | Extends actor responsibilities to include anchor state and adds anchor to runtime context. |
-| agentic-organization/docs/README.md | Adds the new Knowledge Graph/Retrieval doc to the canonical doc list. |
-| agentic-organization/docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md | Introduces an explicit Discussion Anchor Policy and updates meeting/chat requirements. |
-| agentic-organization/docs/ORGANIZATION_LAYER_BUILD_PLAN.md | Adds “discussion anchors” as a first-class schema/service concern and as workspace context. |
-| agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md | Adds discussion anchors + Knowledge Graph/Retrieval V0 decisions and preflight tools. |
-| agentic-organization/docs/IMPLEMENTATION_CONCEPTS.md | Adds anchor enforcement requirements to meeting concepts and open preflight steps. |
-| agentic-organization/docs/DEPARTMENT_HAT_TOOL_INVENTORY.md | Adds `validate_discussion_anchor` into tool bundles. |
-| agentic-organization/docs/ANTI_STALL_PRIORITY_RUNTIME.md | Requires anchors for prioritization meetings and votes. |
-| agentic-organization/docs/AMBIGUOUS_REQUIREMENT_LIFECYCLE.md | Anchors customer interview threads to intake/work items. |
-| agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md | Requires scheduled jobs to supply discussion anchors when opening comms artifacts. |
-| agentic-organization/docs/AGENT_NATIVE_KNOWLEDGE_GRAPH.md | New: defines graph node/edge schema, retrieval/context-pack contracts, and anchoring/tooling expectations. |
+| File                                                            | Description                                                                                                |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| agentic-organization/docs/WORK_AND_RELEASE_MANAGEMENT_OS.md     | Adds anchor validation into the signal model and guardrails.                                               |
+| agentic-organization/docs/UI_AND_OBSERVABILITY_CONCEPTS.md      | Requires an anchor selector before opening discussions; records anchor in meeting UI metadata.             |
+| agentic-organization/docs/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md  | Extends actor responsibilities to include anchor state and adds anchor to runtime context.                 |
+| agentic-organization/docs/README.md                             | Adds the new Knowledge Graph/Retrieval doc to the canonical doc list.                                      |
+| agentic-organization/docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md  | Introduces an explicit Discussion Anchor Policy and updates meeting/chat requirements.                     |
+| agentic-organization/docs/ORGANIZATION_LAYER_BUILD_PLAN.md      | Adds “discussion anchors” as a first-class schema/service concern and as workspace context.                |
+| agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md | Adds discussion anchors + Knowledge Graph/Retrieval V0 decisions and preflight tools.                      |
+| agentic-organization/docs/IMPLEMENTATION_CONCEPTS.md            | Adds anchor enforcement requirements to meeting concepts and open preflight steps.                         |
+| agentic-organization/docs/DEPARTMENT_HAT_TOOL_INVENTORY.md      | Adds `validate_discussion_anchor` into tool bundles.                                                       |
+| agentic-organization/docs/ANTI_STALL_PRIORITY_RUNTIME.md        | Requires anchors for prioritization meetings and votes.                                                    |
+| agentic-organization/docs/AMBIGUOUS_REQUIREMENT_LIFECYCLE.md    | Anchors customer interview threads to intake/work items.                                                   |
+| agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md    | Requires scheduled jobs to supply discussion anchors when opening comms artifacts.                         |
+| agentic-organization/docs/AGENT_NATIVE_KNOWLEDGE_GRAPH.md       | New: defines graph node/edge schema, retrieval/context-pack contracts, and anchoring/tooling expectations. |
+
 </details>
 
 ## Review threads

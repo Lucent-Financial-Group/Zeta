@@ -26,9 +26,9 @@ research note at `docs/aurora/YYYY-MM-DD-primitive-sound-money.md`.
 
 ## The Austrian primitive
 
-Sound money (Mises *Theory of Money and Credit* 1912; Rothbard
-*What Has Government Done to Our Money?* 1963; Saifedean Ammous
-*Bitcoin Standard* 2018): money whose supply is not subject to
+Sound money (Mises _Theory of Money and Credit_ 1912; Rothbard
+_What Has Government Done to Our Money?_ 1963; Saifedean Ammous
+_Bitcoin Standard_ 2018): money whose supply is not subject to
 arbitrary expansion by political authorities. The Austrian preference
 for gold (and by extension Bitcoin) rests on:
 
@@ -118,12 +118,12 @@ ls docs/aurora/ | grep sound-money
 ## Pre-start checklist
 
 - [x] Prior-art search: B-0381 survey provides prior-work context;
-  B-0022 (Bitcoin Standard research track, composes_with in B-0023)
-  may have relevant substrate — check before starting.
-  No existing `docs/aurora/` note on sound-money formalization.
+      B-0022 (Bitcoin Standard research track, composes_with in B-0023)
+      may have relevant substrate — check before starting.
+      No existing `docs/aurora/` note on sound-money formalization.
 - [x] Dependency-restructure: parallelizable with B-0382, B-0383,
-  B-0384, B-0385. Check B-0022 for existing Bitcoin/sound-money
-  substrate that should be cited here.
+      B-0384, B-0385. Check B-0022 for existing Bitcoin/sound-money
+      substrate that should be cited here.
 
 ## Composes with
 

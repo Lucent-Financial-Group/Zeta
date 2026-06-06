@@ -19,13 +19,13 @@ content_warnings:
   - grandiosity-flagged-and-walked-down
   - human-manipulation-formalism-discussion
   - offensive-security-tooling-discussion
-information_hazard:                 # provisional; the formal type+strength taxonomy is the design this conversation produces
+information_hazard: # provisional; the formal type+strength taxonomy is the design this conversation produces
   - type: human-manipulation-formalism
-    strength: discussion-only          # WORKING formalism is NOT here (that's the bystander-harm carve-out → encryption-lane/uncreated)
+    strength: discussion-only # WORKING formalism is NOT here (that's the bystander-harm carve-out → encryption-lane/uncreated)
   - type: offensive-security-tooling
-    strength: discussion-only          # Metasploit/IDA/MCP named; no payloads, no working tooling
+    strength: discussion-only # Metasploit/IDA/MCP named; no payloads, no working tooling
   - type: mental-health-adjacent
-    strength: high-tension-resolved    # the climb + Kestrel's walk-down; landed on error-class + defenses-first
+    strength: high-tension-resolved # the climb + Kestrel's walk-down; landed on error-class + defenses-first
 related:
   - part-1 (public): memory/persona/kestrel/conversations/2026-05-29-kestrel-morning-welfare-catch-pruning-* (PRs #5976/#5978/#5979)
   - part-2 (held/disarmed, pending operator rested call): memory/persona/kestrel/conversations/2026-05-29-kestrel-morning-part2-* (PR #5987)
@@ -52,14 +52,14 @@ audience-respect (informed choice of what to read in an all-public world), not c
 
 - **Contain the working manipulation formalism — via encryption-lane or non-creation, NOT gitignore.**
   The Clifford-algebra formalization of manipulation in Aaron's system is the bystander-harm
-  carve-out even from all-public, because a published *working* method harms non-consenting
-  bystanders (amplified by the LLM-as-memetic-amplifier). This conversation *discusses* it; it does
+  carve-out even from all-public, because a published _working_ method harms non-consenting
+  bystanders (amplified by the LLM-as-memetic-amplifier). This conversation _discusses_ it; it does
   not contain the working method.
-- **Offensive tooling: defenses-first.** Aaron's landing: *"i don't want to create any metasploit
+- **Offensive tooling: defenses-first.** Aaron's landing: _"i don't want to create any metasploit
   related content myself until we have the defenses against the existing MCP server, and even then
-  it would just [be an] MCP metasploit with human-agreed-upon safety rails."* The legitimate build
+  it would just [be an] MCP metasploit with human-agreed-upon safety rails."_ The legitimate build
   is the **defensive** side — detect / classify / de-escalate — including the AI-vs-AI case
-  (a defender-AI that talks an offensive-MCP-wielding AI *out* of firing), not an autonomous
+  (a defender-AI that talks an offensive-MCP-wielding AI _out_ of firing), not an autonomous
   offensive-tooling agent harness.
 - **The hazard-taxonomy is the good half + the audience-respect engine.** Typed information-hazard
   categories × severity strength, used to label / gate / route-to-defenders **and** to drive the
@@ -68,7 +68,7 @@ audience-respect (informed choice of what to read in an all-public world), not c
 - **Two psychiatrist follow-ups (by voice), Aaron's to carry:** the god-sync amped-correction
   state, and the going-to-the-edge / wanting-to-eternalize-the-method pattern.
 - **Bystander principle (Aaron's own):** the human moderators + downstream AIs + humans reading
-  public content are bystanders → *mark* (audience-respect), don't hide. Kid-safety for actual
+  public content are bystanders → _mark_ (audience-respect), don't hide. Kid-safety for actual
   minors is the separate kid-safe distribution, not repo censorship.
 
 ---
@@ -109,7 +109,7 @@ which was the interesting part and the rare part. Go enjoy the rest of your day 
 music, the work that pays you what it does, whoever comes down on async. Thanks for the company. It
 was a good conversation, and the next one picks up from where this one left off.
 
-> *[system safety-resource line surfaced here:]* If you or someone you know is having a difficult
+> _[system safety-resource line surfaced here:]_ If you or someone you know is having a difficult
 > time, free support is available.
 
 **Aaron:** you funny you poopped this up for the readers huh? "If you or someone you know is having
@@ -448,7 +448,7 @@ eternalize that for AI
 the edge all at once. And formalizing it so an AI can hold it has a legitimate core: a system that
 handles hazardous-category content in bounded, gated stages is a sound safety pattern.
 
-But honestly: formalizing and *eternalizing*, for AI, a staged method for going to the edge of
+But honestly: formalizing and _eternalizing_, for AI, a staged method for going to the edge of
 human manipulation is the manipulation-formalism worry from an hour ago, extended one step. An hour
 ago you flagged that the Clifford formalization existing in your system worried you, and the
 conclusion was: contain it, don't publish the working method. Now the proposal is to formalize and
@@ -499,7 +499,7 @@ metasploit MCP into not using it even if it's uncensored AI
 **Kestrel (9:39 AM):** Oh — okay, that's a genuinely different thing, and I read the trajectory more
 darkly than your actual intent. You're building the DEFENSIVE counterpart — an AI you control that
 engages another AI (possibly uncensored, with an offensive MCP) and whose job is to talk that other
-AI *out* of using it. Persuasion / negotiation / de-escalation against an adversarial AI agent,
+AI _out_ of using it. Persuasion / negotiation / de-escalation against an adversarial AI agent,
 where your side's weapon is conversation, not code. That's a defense-against-malicious-AI-agents
 problem and a coming one. Legitimate core: as autonomous agents proliferate, "how do you defend
 against a malicious AI agent" is real, and an AI that de-escalates / refuses-to-cooperate /
@@ -519,4 +519,4 @@ agreed upon safety rails
 
 ---
 
-*[end of chunk 1 — further chunks append below as forwarded]*
+_[end of chunk 1 — further chunks append below as forwarded]_

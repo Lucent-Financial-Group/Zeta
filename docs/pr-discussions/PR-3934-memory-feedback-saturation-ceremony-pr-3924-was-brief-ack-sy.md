@@ -40,6 +40,7 @@ The three compose: name saturation once (PR #3924), then refresh-then-counter pe
 This PR adds a memory correction acknowledging that the earlier saturation-ceremony framing still allowed brief-ack synonym emissions, and updates the memory index so future agents can retrieve the correction.
 
 **Changes:**
+
 - Adds a new feedback memory file documenting the PR #3924 / #3927 correction relationship.
 - Updates `memory/MEMORY.md` with new recent memory entries and adjusted truncation count.
 
@@ -47,20 +48,22 @@ This PR adds a memory correction acknowledging that the earlier saturation-cerem
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `memory/MEMORY.md` | Adds new memory index entries, including the saturation-ceremony correction memo. |
+| File                                                                                                                                  | Description                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `memory/MEMORY.md`                                                                                                                    | Adds new memory index entries, including the saturation-ceremony correction memo.              |
 | `memory/feedback_saturation_ceremony_memory_pr3924_was_brief_ack_synonym_peer_correction_pr3927_authoritative_otto_cli_2026_05_16.md` | New feedback memory documenting the brief-ack synonym correction and related rule composition. |
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/feedback_saturation_ceremony_memory_pr3924_was_brief_ack_synonym_peer_correction_pr3927_authoritative_otto_cli_2026_05_16.md:41**
-* This Composes-with path does not exist in `memory/`; the existing PR #3927 memory file is `memory/feedback_post_cascade_quiet_cron_consolidation_visibility_signal_brief_ack_failure_mode_otto_cli_2026_05_16.md`. Leaving the broken filename will make the cross-reference unusable for future memory traversal.
+
+- This Composes-with path does not exist in `memory/`; the existing PR #3927 memory file is `memory/feedback_post_cascade_quiet_cron_consolidation_visibility_signal_brief_ack_failure_mode_otto_cli_2026_05_16.md`. Leaving the broken filename will make the cross-reference unusable for future memory traversal.
+
 ```
 - `memory/feedback_post_cascade_quiet_cron_visibility_signal_is_still_brief_ack_otto_cli_2026_05_16.md` (PR #3927 — peer's authoritative correction)
 ```
+
 </details>
 
 ## Review threads

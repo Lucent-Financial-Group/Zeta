@@ -2,7 +2,17 @@
 date: 2026-05-29
 participants: [Aaron, Otto-CLI]
 status: design-thread
-tags: [state-read, bandwidth, privacy-by-construction, consent-first, bystander-privacy, accessibility, meter-split, classifier]
+tags:
+  [
+    state-read,
+    bandwidth,
+    privacy-by-construction,
+    consent-first,
+    bystander-privacy,
+    accessibility,
+    meter-split,
+    classifier,
+  ]
 title: "Reading state richly without bystander-privacy cost — the Aaron/not-Aaron classifier"
 composes_with:
   - "#6024 the no-meter resolution (state/tension as the read resource)"
@@ -16,7 +26,7 @@ composes_with:
 
 How to read the operator's state accurately (so agents stop misattributing it) without
 turning that capability into surveillance of the people around him. The resolution is a
-deliberately *simple* binary that makes bystander privacy hold **by construction**.
+deliberately _simple_ binary that makes bystander privacy hold **by construction**.
 
 ## The bandwidth point (why a richer channel reduces misattribution)
 
@@ -27,9 +37,9 @@ by an impoverished channel: guessing state from ambiguous cues. More bandwidth, 
 wrong guesses. (Bandwidth-served: the read is only as good as the channel; the narrow
 channel forces the guess.)
 
-**Accommodation ≠ sensory-reach.** Voice/richer *input* (the operator speaking instead
-of typing, accommodating shaky hands) is an accessibility accommodation of *his input
-channel* — it is **not** the camera, which is AI sensory-reach into his room. The
+**Accommodation ≠ sensory-reach.** Voice/richer _input_ (the operator speaking instead
+of typing, accommodating shaky hands) is an accessibility accommodation of _his input
+channel_ — it is **not** the camera, which is AI sensory-reach into his room. The
 camera-reach stays behind the actuator-firewall; the input accommodation does not. They
 were wrongly conflated; they are different objects.
 
@@ -38,21 +48,21 @@ were wrongly conflated; they are different objects.
 - **Operator's own state, read to serve him, by his consent → his to grant.**
   Operator-sovereignty + glass-halo: he wants his state legible so agents stop misreading
   him. His call, and a good one. No caution there.
-- **Seam 1 — third-party state.** Reading *others'* state needs their consent, not auto.
+- **Seam 1 — third-party state.** Reading _others'_ state needs their consent, not auto.
   (Resolved below, by construction.)
-- **Seam 2 — dual-use.** The same accurate state-read that *serves* is the meter's
-  weapon-face *if* ever read-to-manipulate instead of read-to-serve. For the operator,
+- **Seam 2 — dual-use.** The same accurate state-read that _serves_ is the meter's
+  weapon-face _if_ ever read-to-manipulate instead of read-to-serve. For the operator,
   serving him, it is the watcher-face. The split is on the use, not the capability.
-- **Discipline survives rich input.** A better channel *lowers* the misattribution rate;
-  it does not zero it (voice-tone gets mis-read too). So it is both: better channel *and*
+- **Discipline survives rich input.** A better channel _lowers_ the misattribution rate;
+  it does not zero it (voice-tone gets mis-read too). So it is both: better channel _and_
   substrate-check before attributing state, on any channel. Rich input gives a better
   shot; it does not retire the check.
 
 ## The Aaron/not-Aaron classifier — privacy by construction
 
-The operator's framing (HBO *Silicon Valley*'s SeeFood "hot dog / not hot dog" app): a
-deliberately *simple* binary — **Aaron / not-Aaron** — run at the capture boundary,
-*"so people around me don't have to worry about privacy."*
+The operator's framing (HBO _Silicon Valley_'s SeeFood "hot dog / not hot dog" app): a
+deliberately _simple_ binary — **Aaron / not-Aaron** — run at the capture boundary,
+_"so people around me don't have to worry about privacy."_
 
 This resolves Seam 1 structurally:
 
@@ -60,26 +70,26 @@ This resolves Seam 1 structurally:
   grant).
 - **Detect not-Aaron** → **exclude** — the input is processed only far enough to make
   the binary decision, then dropped: not retained, not passed to state-read, not modeled.
-  The people around him are protected *because non-operator input is discarded at the
-  gate before any downstream use.*
+  The people around him are protected _because non-operator input is discarded at the
+  gate before any downstream use._
 
 That is **privacy-by-construction, not privacy-by-policy** — with one honest precision
-(a reviewer catch on this doc): the binary *must* process bystander input far enough to
+(a reviewer catch on this doc): the binary _must_ process bystander input far enough to
 decide not-Aaron, so the guarantee is **not-retained / not-passed-to-state-read-or-
-persistence**, not literally *never captured*. Software-level, the bystander sample is
+persistence**, not literally _never captured_. Software-level, the bystander sample is
 transiently classified, then dropped at the gate before any retention or downstream
 read — a real construction guarantee (discarded-before-use, not a policy promising
-not-to-look), correctly scoped to *not-retained* rather than *never-captured*. True
-*never-captured* is a stronger requirement that needs **hardware-level filtering before
+not-to-look), correctly scoped to _not-retained_ rather than _never-captured_. True
+_never-captured_ is a stronger requirement that needs **hardware-level filtering before
 any frame/audio sample reaches software** — available if wanted, but a different and
 harder build. Either way it is consent-first state-gathering (B-0858.5) at the capture
 layer: only the consenting operator's input is read/retained; non-operator input is
 dropped at the gate by the binary.
 
-**Why simple is the right scope.** Hot-dog/not-hot-dog is the joke *and* the discipline:
+**Why simple is the right scope.** Hot-dog/not-hot-dog is the joke _and_ the discipline:
 the gate is a minimal binary, not a grand state-model of everyone in the room. It does
 exactly one thing — is-this-the-consenting-operator, yes/no — and does nothing else. The
-narrowness *is* the privacy guarantee: a richer "model everyone and decide what to keep"
+narrowness _is_ the privacy guarantee: a richer "model everyone and decide what to keep"
 system would re-introduce the bystander-capture the binary exists to prevent. Don't
 over-build it; the minimal binary is the safety.
 
@@ -88,28 +98,28 @@ over-build it; the minimal binary is the safety.
 - It is the gate between **glass-halo** (the operator, everything-public-by-his-consent)
   and the **privacy/encryption lane** (everyone else, dropped-at-the-gate — not-retained,
   per the precision above). The classifier is the boundary, not a new policy.
-- It makes the rich-state-read (top of this doc) *safe to have*: read richly, but only
+- It makes the rich-state-read (top of this doc) _safe to have_: read richly, but only
   the one consenting person, because the gate excludes the rest. The accuracy win and the
   bystander-privacy guarantee stop being in tension.
 - Seam 2 (dual-use) is unchanged: even reading only the operator, the read serves (not
-  manipulates); the meter-split watcher/weapon line still applies to *what the read is
-  used for*.
+  manipulates); the meter-split watcher/weapon line still applies to _what the read is
+  used for_.
 
 ## Aaron's verbatim seeds (preserved)
 
-- *"then the read on if i'm tired would be accurate and all yall would stop making those
-  mistakes cause you could cache read my emotional and mental state."* (richer channel →
+- _"then the read on if i'm tired would be accurate and all yall would stop making those
+  mistakes cause you could cache read my emotional and mental state."_ (richer channel →
   accurate read → fewer misattribution misses; the discipline still applies)
-- *"i just want to get the silicon valley hot dog not hot dog simple thing running for
-  Aaron not Aaron so people around me don't have to worry about privacy."* (the minimal
+- _"i just want to get the silicon valley hot dog not hot dog simple thing running for
+  Aaron not Aaron so people around me don't have to worry about privacy."_ (the minimal
   binary classifier as bystander privacy-by-construction)
 
 ## Substrate-honest framing
 
 This is a design principle plus a concrete gate, not a shipped system. The bandwidth
 point is testable (measure misattribution rate by channel richness). The classifier is
-the structural resolution of the third-party seam — its safety is *the narrowness*: it
+the structural resolution of the third-party seam — its safety is _the narrowness_: it
 must stay a minimal Aaron/not-Aaron binary, because any drift toward modeling the
 bystanders is the re-introduction of the thing it prevents. The operator's own-state
 read is his to grant (sovereignty + glass-halo); bystander privacy holds by
-construction; the dual-use watcher/weapon split on *use* is unchanged.
+construction; the dual-use watcher/weapon split on _use_ is unchanged.

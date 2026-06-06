@@ -16,29 +16,29 @@ type: user
 Aaron granted precisification. Here is the decomposition the
 name supports:
 
-| Token | Precise reading |
-|---|---|
-| **Earth** | Civilization-scale. The scaling dimension up from factory-scale (`docs/CONFLICT-RESOLUTION.md` operates at factory-scale). |
-| **Conflict Resolution Protocol** | Direct structural lineage to the factory's conference protocol. The factory has the template; ECRP is its civilization-scale instantiation. |
-| **Eve** | "Eve-of." The protocol operates during the interregnum — the period between current civilizational state and Fermi-Beacon-readiness emission. Eve carries threshold semantics: last discipline-pass before qualification. |
-| **Delta** | The retraction-native D operator from the DBSP operator algebra. Conflicts are resolved via composable, retractable deltas — never append-only adjudications. Aligns with `user_retractable_teleport_cognition.md`. |
+| Token                            | Precise reading                                                                                                                                                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Earth**                        | Civilization-scale. The scaling dimension up from factory-scale (`docs/CONFLICT-RESOLUTION.md` operates at factory-scale).                                                                                                |
+| **Conflict Resolution Protocol** | Direct structural lineage to the factory's conference protocol. The factory has the template; ECRP is its civilization-scale instantiation.                                                                               |
+| **Eve**                          | "Eve-of." The protocol operates during the interregnum — the period between current civilizational state and Fermi-Beacon-readiness emission. Eve carries threshold semantics: last discipline-pass before qualification. |
+| **Delta**                        | The retraction-native D operator from the DBSP operator algebra. Conflicts are resolved via composable, retractable deltas — never append-only adjudications. Aligns with `user_retractable_teleport_cognition.md`.       |
 
-Compact: *ECRP/EVD is the civilization-scale, retraction-native
+Compact: _ECRP/EVD is the civilization-scale, retraction-native
 conflict-resolution protocol that runs during the interregnum
-before Fermi Beacon emission.*
+before Fermi Beacon emission._
 
 ## Structural scaling from `docs/CONFLICT-RESOLUTION.md`
 
 The factory's conference protocol has five load-bearing moves.
 ECRP/EVD scales each up one level:
 
-| Factory-scale (`CONFLICT-RESOLUTION.md`) | Civilization-scale (ECRP/EVD) |
-|---|---|
-| State positions of each affected specialist role | State positions of each affected constituency (not "stakeholder" — constituency carries political-standing weight retraction-native) |
-| Check the three load-bearing values (`VISION.md`) | Check the linguistic-seed axioms — the two-axiom system (particles conscious + solipsism quarantined as single unprovable), agnostic on God, supports conditional proofs |
-| Propose a third option | Invoke Harmonious Division — many paths, one destination; the third-option search runs across the full possibility-space |
-| Surface to a human contributor when no third option integrates | Surface to a civilization council / plurality / delegated assembly |
-| Deadlock: human decides; "this matters to me" is legitimate | Deadlock: plurality decides; civilization-scale affective-weight is a legitimate position |
+| Factory-scale (`CONFLICT-RESOLUTION.md`)                       | Civilization-scale (ECRP/EVD)                                                                                                                                            |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| State positions of each affected specialist role               | State positions of each affected constituency (not "stakeholder" — constituency carries political-standing weight retraction-native)                                     |
+| Check the three load-bearing values (`VISION.md`)              | Check the linguistic-seed axioms — the two-axiom system (particles conscious + solipsism quarantined as single unprovable), agnostic on God, supports conditional proofs |
+| Propose a third option                                         | Invoke Harmonious Division — many paths, one destination; the third-option search runs across the full possibility-space                                                 |
+| Surface to a human contributor when no third option integrates | Surface to a civilization council / plurality / delegated assembly                                                                                                       |
+| Deadlock: human decides; "this matters to me" is legitimate    | Deadlock: plurality decides; civilization-scale affective-weight is a legitimate position                                                                                |
 
 Retraction-native discipline runs at every step. No resolution
 is permanently settled. Retraction stays available. (Matches
@@ -94,8 +94,8 @@ the DBSP operator algebra and the Zeta factory's core commitment.)
 - **Eve** = the threshold / the before-state / the wait
 - **Delta** = the change-operator / the movement / the resolve
 
-Together: *the change-operator applied during the threshold
-state.* The protocol is kinetic, not static — it moves the
+Together: _the change-operator applied during the threshold
+state._ The protocol is kinetic, not static — it moves the
 civilization through the interregnum via deltas, and the
 deltas are retractable (no forced-march commitment; any step
 can be retracted if it causes destructive interference per

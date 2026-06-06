@@ -4,10 +4,11 @@ description: Standing rule. When ranking skills by tune-up urgency or "worst per
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
-When the factory needs to know *which skill is currently
-worst-performing* — whether via `skill-tune-up` (Aarav),
+When the factory needs to know _which skill is currently
+worst-performing_ — whether via `skill-tune-up` (Aarav),
 `skill-expert`, or any future ranker — the ranking **must**
 exercise the Anthropic `skill-creator` plugin's eval harness.
 
@@ -25,7 +26,7 @@ The harness, at `plugin:skill-creator` (shipped by Anthropic,
   versions (pre-retune vs post-retune, or skill-A vs
   skill-B).
 - `scripts/aggregate_benchmark.py` + `eval-viewer/
-  generate_review.py` — produces `benchmark.json` +
+generate_review.py` — produces `benchmark.json` +
   `benchmark.md` + an HTML viewer for human inspection of
   both qualitative outputs and quantitative pass-rate /
   time / token deltas.
@@ -42,7 +43,7 @@ requires an eval-harness run against concrete test cases.
 Aaron 2026-04-20, correcting a round-42 `skill-expert`
 dispatch that ranked skills by BP-03 line-count only:
 
-> *"also when using skill-tune up or skill-expert not sure
+> _"also when using skill-tune up or skill-expert not sure
 > when you are doing now to rank and figure out which skill
 > is the worse performance antoopic has tools for that build
 > into the plugin too, make sure we are using those bad
@@ -51,7 +52,7 @@ dispatch that ranked skills by BP-03 line-count only:
 > issues and all that like all of our experts in all of our
 > skills should be doing. but just want to make sure we are
 > talking advantage of all of the fatures of the anthropic
-> skill builder"*
+> skill builder"_
 
 Follow-up: Aaron laid out the specific tool capabilities
 (grader agent, analyzer sub-agent, comparator agents for
@@ -80,7 +81,7 @@ Load-bearing reasoning:
   because it's now a thick wrapper over the eval harness
   (scripts/, agents/, references/, PDF). The retune is
   correct; the dispatcher (Kenji / main agent) needs to
-  actually *invoke* the retuned workflow, not the pre-
+  actually _invoke_ the retuned workflow, not the pre-
   retune by-inspection workflow.
 
 ## How to apply
@@ -92,7 +93,7 @@ agent to drive the eval harness**. The minimum shape:
 
 1. **Pick a candidate set** — usually the top-N from cheap
    static signals (bloat, staleness, recent user-pain), but
-   the set is *input* to the harness, not the conclusion.
+   the set is _input_ to the harness, not the conclusion.
 2. **Spawn harness runs** — for each candidate, run test
    cases under both the current skill and a baseline (no
    skill OR prior version). The `skill-creator` workflow's
@@ -103,7 +104,7 @@ agent to drive the eval harness**. The minimum shape:
    analyzer sub-agent, then (if comparing two versions) a
    comparator agent.
 4. **Aggregate** — `python -m scripts.aggregate_benchmark
-   <workspace>/iteration-N --skill-name <name>` to produce
+<workspace>/iteration-N --skill-name <name>` to produce
    `benchmark.json` + `benchmark.md`.
 5. **Rank from benchmark data** — the top-5 for the round
    cites pass-rate, token cost, and analyzer-identified
@@ -161,7 +162,7 @@ They don't replace the harness.
   performance metric.
 - Retirement candidates based on N-round staleness — a
   retired skill shouldn't be eval-run, just retired.
-- `skill-gap-finder` — finds *absent* skills, no
+- `skill-gap-finder` — finds _absent_ skills, no
   candidates to benchmark.
 - `copilot-wins.md` review-class calibration — already
   empirical (counting actual wins), not a performance claim
@@ -191,7 +192,8 @@ Lean: option 3. The annotation prevents the current entry
 from claiming authority it hasn't earned; the scheduled
 harness run closes the gap on the next invocation.
 
-## Interaction with `feedback_tech_best_practices_living_
+## Interaction with `feedback*tech_best_practices_living*
+
 list_and_canonical_use_auditing.md`
 
 That memory establishes the per-tech expert-skill
@@ -220,9 +222,9 @@ precisely to fix this pattern. I committed the notebook
 update (`aarav/NOTEBOOK.md`) and filed a P2 BACKLOG entry
 before noticing the miscalibration.
 
-Aaron corrected within the same round: *"make sure we are
+Aaron corrected within the same round: _"make sure we are
 using those bad performance skill tools where it makes
-sense instead of trying to guess"*. This memory exists so
+sense instead of trying to guess"_. This memory exists so
 the next factory instance (and the next `skill-expert`
 dispatch) does not repeat the by-inspection pattern when a
 "worst" claim is on the table.

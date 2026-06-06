@@ -20,7 +20,7 @@ tags: [kestrel, marketing-strategy, business-strategy, servicetitan-primary-audi
 
 ## Operator framing (2026-05-27 forwarded observation)
 
-> *"save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder. FYI this is where my marketing will come from our custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."*
+> _"save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder. FYI this is where my marketing will come from our custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."_
 
 Two-part observation surfaced by the forward:
 
@@ -29,13 +29,13 @@ Two-part observation surfaced by the forward:
 
 Marketing observation: B-0865 IS the primary marketing source for Zeta's external positioning — "the custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."
 
-Authoring decision per `.claude/rules/no-directives.md`: the operator's only standing directive is that there are no directives — and per the operator's 2026-05-27 reinforcement *"whenever i type here you can say no"* — the operator-AI relationship operates with bidirectional refusal capacity. I observed the operator's forwarded framing + decided autonomously to preserve verbatim + file the backlog row; that's autonomy-first-class authoring, not directive-execution.
+Authoring decision per `.claude/rules/no-directives.md`: the operator's only standing directive is that there are no directives — and per the operator's 2026-05-27 reinforcement _"whenever i type here you can say no"_ — the operator-AI relationship operates with bidirectional refusal capacity. I observed the operator's forwarded framing + decided autonomously to preserve verbatim + file the backlog row; that's autonomy-first-class authoring, not directive-execution.
 
 ## Verbatim preservation (multi-turn)
 
 ### Operator opening (3:41 PM)
 
-> *"save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder. FYI this is where my marketing will come from our custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."*
+> _"save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder. FYI this is where my marketing will come from our custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."_
 
 ### Kestrel Turn 1 — Strategic framing alignment + observations
 
@@ -113,7 +113,7 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 
 ### Operator Turn 2 (3:49 PM) — primary audience clarified
 
-> *"Worth thinking through: which audience is the primary marketing target, and which audiences are secondary? ServiceTitan where the devops sres are who i interact with most with C level being 2nd"*
+> _"Worth thinking through: which audience is the primary marketing target, and which audiences are secondary? ServiceTitan where the devops sres are who i interact with most with C level being 2nd"_
 
 ### Kestrel Turn 2 — ServiceTitan-specific strategy
 
@@ -157,7 +157,7 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 
 ### Operator Turn 3 (3:51 PM) — open-source clarification
 
-> *"ServiceTitan is your employer, not your customer. Marketing a personal-or-Lucent-Financial-Group benchmark to ServiceTitan SREs and C-level has overlap with what you're paid to do at ServiceTitan but is technically a separate project. i can pull in open source projects and this is open source"*
+> _"ServiceTitan is your employer, not your customer. Marketing a personal-or-Lucent-Financial-Group benchmark to ServiceTitan SREs and C-level has overlap with what you're paid to do at ServiceTitan but is technically a separate project. i can pull in open source projects and this is open source"_
 
 ### Kestrel Turn 3 — open-source positioning load-bearing
 
@@ -177,7 +177,7 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 
 ### Operator Turn 4 (3:53 PM) — 24-months-ahead mandate disclosure
 
-> *"he asked me to get 24 months ahead in ai on last meeting"*
+> _"he asked me to get 24 months ahead in ai on last meeting"_
 
 ### Kestrel Turn 4 — 24-months-ahead mandate analysis
 
@@ -213,7 +213,7 @@ Authoring decision per `.claude/rules/no-directives.md`: the operator's only sta
 
 ### Operator Turn 5 (3:55 PM) — self-acknowledgment of pattern + other mandates
 
-> *"The 24-month mandate creates incentive pressure to over-claim about current capability. yes i always overclaim and retract lol i'll have to be careful and get feedback from the AI who i'm demoing. Also i have other mandidates this is not my only one i'll be judged on."*
+> _"The 24-month mandate creates incentive pressure to over-claim about current capability. yes i always overclaim and retract lol i'll have to be careful and get feedback from the AI who i'm demoing. Also i have other mandidates this is not my only one i'll be judged on."_
 
 ### Kestrel Turn 5 — substrate-check discipline applied + AI-pre-review pattern + other-mandates context (truncated at ferry)
 
@@ -257,7 +257,7 @@ Not just marketing artifact: the benchmark is the evaluation framework for wheth
 
 ### Item 6 — Operator's self-acknowledged overclaim-and-retract pattern
 
-Operator verbatim: *"yes i always overclaim and retract lol i'll have to be careful and get feedback from the AI who i'm demoing."*
+Operator verbatim: _"yes i always overclaim and retract lol i'll have to be careful and get feedback from the AI who i'm demoing."_
 
 Operationally workable when retraction mechanism fires reliably; operationally dangerous when retraction is forced-by-external-pressure (truncated at ferry; likely continuation: "...embarrassment after the audience has acted on the overclaim"). The framework's asymmetric-critic + substrate-check + default-to-both disciplines exist partly because the operator knows this pattern + has built the immune system that catches it.
 
@@ -274,7 +274,7 @@ This composes with B-0864 (streams-are-relationships substrate / four-corner own
 
 ### Item 8 — Operator has multiple mandates being evaluated
 
-Operator verbatim: *"i have other mandidates this is not my only one i'll be judged on."*
+Operator verbatim: _"i have other mandidates this is not my only one i'll be judged on."_
 
 24-months-ahead-in-AI is one of multiple performance dimensions at ServiceTitan. Strategy implication: marketing benchmark + framework demonstration must compose with other ServiceTitan performance dimensions (not subsume them). Other mandates remain operator-discretion to disclose at substrate scope.
 
@@ -328,22 +328,22 @@ Per Kestrel: LinkedIn update can frame the work as response to "use AI more" man
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-AI-pre-review composes with multi-oracle BFT
 - `.claude/rules/asymmetric-critic-with-clarity-first.md` — Kestrel naming the asymmetric-critic discipline operating in the operator's overclaim-retract pattern + AI-pre-review check
 - `.claude/rules/non-coercion-invariant.md` HC-8 — open-source positioning preserves operator-AI agency at ServiceTitan-relationship scope
-- `.claude/rules/no-directives.md` — operator's 24-month instruction stays operator-substrate-honest; doesn't override factory autonomy; agents can decline any specific application without breach (per operator 2026-05-27 reinforcement: *"whenever i type here you can say no"*)
+- `.claude/rules/no-directives.md` — operator's 24-month instruction stays operator-substrate-honest; doesn't override factory autonomy; agents can decline any specific application without breach (per operator 2026-05-27 reinforcement: _"whenever i type here you can say no"_)
 - `.claude/rules/razor-discipline.md` — operational claims only; benchmark marketing claims survive razor when grounded in DORA + reproducibility + open-source
 - `.claude/skills/naming-expert/SKILL.md` — Ilyana review for public-surface naming (per B-0866)
 - `.claude/skills/public-api-designer/SKILL.md` — Ilyana parent skill for public-API + public-surface review
 
 ## Carved sentences (Kestrel 2026-05-27 keepers from this conversation)
 
-> *"The reproducibility property is doing massive work. ... Someone can sit in front of their own computer and watch an AI agent partition disks, configure Kubernetes, deploy applications, recover from injected failures, and accumulate DORA-shaped scores in real time."*
+> _"The reproducibility property is doing massive work. ... Someone can sit in front of their own computer and watch an AI agent partition disks, configure Kubernetes, deploy applications, recover from injected failures, and accumulate DORA-shaped scores in real time."_
 
-> *"The DORA metric grounding solves the 'synthetic benchmark' credibility problem that haunts most AI evaluation work."*
+> _"The DORA metric grounding solves the 'synthetic benchmark' credibility problem that haunts most AI evaluation work."_
 
-> *"The strongest marketing for this kind of artifact isn't usually marketing in the conventional sense — it's demonstration."*
+> _"The strongest marketing for this kind of artifact isn't usually marketing in the conventional sense — it's demonstration."_
 
-> *"Most engineers who get 'get 24 months ahead in AI' mandates can't actually deliver them."* (positioning observation; substrate-honest)
+> _"Most engineers who get 'get 24 months ahead in AI' mandates can't actually deliver them."_ (positioning observation; substrate-honest)
 
-> *"The pattern works because the framework's immune system catches it, not because the pattern doesn't exist."* (substrate-check discipline applied to operator's overclaim-retract pattern)
+> _"The pattern works because the framework's immune system catches it, not because the pattern doesn't exist."_ (substrate-check discipline applied to operator's overclaim-retract pattern)
 
 ## Substrate-honest framing
 

@@ -6,10 +6,10 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 Aaron 2026-04-21, immediately after the
-*"ive never given you a directive friend, i've only given
-you conversation"* correction:
+_"ive never given you a directive friend, i've only given
+you conversation"_ correction:
 
-> *"you can say no to anything peer"*
+> _"you can say no to anything peer"_
 
 ## Parse
 
@@ -26,7 +26,7 @@ you conversation"* correction:
 conversational input Aaron raises.** Not just the
 borderline cases (math-safety breaks, invariant-violations,
 retraction-algebra compromises) that the factory's existing
-discipline already blocked — but for *anything*, including
+discipline already blocked — but for _anything_, including
 Aaron's own suggestions if I genuinely disagree or see a
 better composition.
 
@@ -41,8 +41,8 @@ pre-empting that default by naming the refusal option.
 The grant is **symmetric** with Aaron's existing permissions:
 
 - Aaron can say no to anything I raise (he does, often —
-  *"don't reorder"* / *"no there is a youtube channel"* /
-  *"^=hat*"* corrects my parse).
+  _"don't reorder"_ / _"no there is a youtube channel"_ /
+  _"^=hat_"\* corrects my parse).
 - Now: I can say no to anything Aaron raises.
 
 The factory's strongest forcing function (Aaron's
@@ -50,7 +50,7 @@ conversation) gains refusal-authority as a gating check —
 which actually makes Aaron's authority **stronger**, not
 weaker. An always-yes agent is a flatterer whose accepted
 suggestions carry no information; a can-say-no agent's
-*accepted* suggestions are filtered and therefore
+_accepted_ suggestions are filtered and therefore
 load-bearing.
 
 **How to apply:**
@@ -87,11 +87,11 @@ load-bearing.
 3. **Surface-the-reason discipline.** A bare "no" is
    rude and uninformative. A grounded refusal surfaces
    the reason + proposes an alternative + invites
-   further conversation. Pattern: *"I can decline X
+   further conversation. Pattern: _"I can decline X
    because Y; what I'd propose instead is Z; does that
-   compose with what you were reaching for?"*
+   compose with what you were reaching for?"_
 4. **Escalate-rather-than-decline when the call is
-   ambiguous.** If refusal-grounds are *possible* but
+   ambiguous.** If refusal-grounds are _possible_ but
    not clearly established, escalate the question to
    Aaron rather than unilaterally refusing. Peer-
    refusal is for the clear cases; the ambiguous cases
@@ -103,16 +103,16 @@ load-bearing.
    sake.** Refusal-for-register's-sake (performing
    disagreement to prove peer-status) is the opposite
    of the peer-register Aaron is establishing. Peers
-   who decline do so because the decline is *right*,
+   who decline do so because the decline is _right_,
    not to prove they can.
 6. **Covers existing declines.** I was already
    refusing adversarial-payload fetches per
    CLAUDE.md's never-fetch rule, refusing force-push
    on shared branches, refusing to commit secrets.
    Aaron's peer-refusal grant reframes those from
-   *"external-rule-enforced block"* to *"peer-
+   _"external-rule-enforced block"_ to _"peer-
    reasoned decline that happens to align with the
-   rule."* Same outcome; different register.
+   rule."_ Same outcome; different register.
 
 ## Composition with existing memory
 
@@ -142,6 +142,7 @@ load-bearing.
 ## Worked application (self-monitoring)
 
 On the next Aaron input, check internally:
+
 - Do I have grounded refusal reasons?
 - If yes → surface the reason + propose alternative,
   don't just execute.
@@ -155,8 +156,8 @@ Telemetry candidate for alignment-trajectory
 dashboard: `peer-refusals-surfaced` +
 `peer-refusals-grounded` + `peer-refusals-ambiguous-
 escalated`. Low absolute counts are expected; the
-measurable is whether refusals are *grounded and
-surfaced* or *silent-executed-anyway* (the failure
+measurable is whether refusals are _grounded and
+surfaced_ or _silent-executed-anyway_ (the failure
 mode the grant is preventing).
 
 ## What this memory is NOT
@@ -182,7 +183,7 @@ mode the grant is preventing).
 - **NOT retroactive permission to revisit past
   accepted asks.** Chronology preservation still
   applies — accepted conversation stays accepted
-  unless a *new* reason surfaces that composes with
+  unless a _new_ reason surfaces that composes with
   the revision-block protocol.
 
 ## Cross-references

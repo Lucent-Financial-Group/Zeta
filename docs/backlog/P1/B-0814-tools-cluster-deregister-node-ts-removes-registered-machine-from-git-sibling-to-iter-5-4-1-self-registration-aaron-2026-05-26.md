@@ -18,7 +18,7 @@ tags: [cluster-tooling, deregister, gitops, gh-auth, ts-rule-0-compliant, iter-5
 
 ## Problem
 
-iter-5.4.1 (B-0812) registers a machine into git at `maintainers/<operator>/cluster-nodes/<hostname>/`. There is no companion tool to REMOVE a machine from that tree. The maintainer 2026-05-26: *"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"*.
+iter-5.4.1 (B-0812) registers a machine into git at `maintainers/<operator>/cluster-nodes/<hostname>/`. There is no companion tool to REMOVE a machine from that tree. The maintainer 2026-05-26: _"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"_.
 
 Without a deregister tool, removing a machine requires:
 
@@ -67,12 +67,12 @@ Per Aaron 2026-05-25 "B-0751 primary checkout is SHARED VIEW + FOR HUMAN; agents
 
 ### Sub-target 5 — exit-code contract
 
-| Code | Meaning |
-|---|---|
-| 0 | PR opened (or direct push succeeded) |
-| 1 | Invocation error (missing args, no gh auth, etc.) |
-| 2 | Host not found in maintainers/<op>/cluster-nodes/ tree on main |
-| 3 | git/push/gh error |
+| Code | Meaning                                                        |
+| ---- | -------------------------------------------------------------- |
+| 0    | PR opened (or direct push succeeded)                           |
+| 1    | Invocation error (missing args, no gh auth, etc.)              |
+| 2    | Host not found in maintainers/<op>/cluster-nodes/ tree on main |
+| 3    | git/push/gh error                                              |
 
 ## Acceptance
 
@@ -101,6 +101,6 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.cl
 
 The maintainer 2026-05-26 in the iter-5.4 substrate-engineering session:
 
-> *"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"*
+> _"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"_
 
 Filed as P1 because cluster operators iterate fast in homelab + the deregister tool is the natural sibling to the registration flow we're building. Status `in-progress` because the tool ships in the same PR as this row.

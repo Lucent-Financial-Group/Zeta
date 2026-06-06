@@ -38,15 +38,15 @@ codify rollback/repair actions if contract mismatches appear.
 
 **Compatibility results (PASS with one pre-existing gap):**
 
-| Check | Result |
-|-------|--------|
-| Line cap satisfied post-cutover | ✅ PASS — 110 lines (was 370 pre-cutover) |
-| Byte cap satisfied | ❌ PARTIAL — 62 KB (pre-existing; not a regression) |
-| One-line-per-file format | ✅ PASS — 100/100 lines correct |
-| Reindexer format contract | ✅ PASS — `--check` exits 0 |
-| AutoDream marker preserved | ✅ PASS — marker at line 1; reindexer passes it through |
-| AutoDream write-back compat | ✅ PASS — no conflict by design |
-| AutoMemory write-back scope | ✅ PASS — targets user-scope path, not repo-scope |
+| Check                           | Result                                                  |
+| ------------------------------- | ------------------------------------------------------- |
+| Line cap satisfied post-cutover | ✅ PASS — 110 lines (was 370 pre-cutover)               |
+| Byte cap satisfied              | ❌ PARTIAL — 62 KB (pre-existing; not a regression)     |
+| One-line-per-file format        | ✅ PASS — 100/100 lines correct                         |
+| Reindexer format contract       | ✅ PASS — `--check` exits 0                             |
+| AutoDream marker preserved      | ✅ PASS — marker at line 1; reindexer passes it through |
+| AutoDream write-back compat     | ✅ PASS — no conflict by design                         |
+| AutoMemory write-back scope     | ✅ PASS — targets user-scope path, not repo-scope       |
 
 **Key architectural finding:** AutoMemory writes to `~/.claude/projects/<slug>/memory/MEMORY.md`
 (user-scope), not `memory/MEMORY.md` (repo-scope). The two surfaces are independent —

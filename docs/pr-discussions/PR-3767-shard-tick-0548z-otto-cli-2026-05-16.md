@@ -29,4 +29,5 @@ Tick shard from this resume-session series. Auto-PR'd during post-rate-reset swe
 Adds a single tick-history note documenting a hygiene tick during a rate-limit-zero window, recording a B-0533 partial-completion audit and a pure-git audit pattern.
 
 **Changes:**
+
 - New tick file under `docs/hygiene-history/ticks/2026/05/16/` recording refresh state, B-0533 audit conclusion, and counter status.

@@ -1,16 +1,16 @@
 # Intentional-debt ledger
 
-*For the conceptual frame — what tech debt IS, classes,
+_For the conceptual frame — what tech debt IS, classes,
 how discovery is automated, how this doubles as AI
 instructions — see
 [`docs/TECH-DEBT.md`](TECH-DEBT.md) (factory primer) and
 [`docs/SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md)
 (Zeta-specific). This file remains the declared-shortcut
 ledger; the primer explains how the factory treats
-intentional-vs-accidental debt.*
+intentional-vs-accidental debt._
 
 This file is the factory's first-class record of shortcuts —
-cases where an agent *knowingly* took a quick path instead of
+cases where an agent _knowingly_ took a quick path instead of
 the right long-term path, and named it as debt in the same
 commit. The invariant behind this file is stated in
 GOVERNANCE.md §11 and justified in
@@ -65,7 +65,7 @@ without a ledger row, the fix is:
    declaration pass. The note is for process learning,
    not blame.
 3. **No penalty.** Retroactive entries are normal. The
-   rule is "no *accidental* debt"; the rule is not "no
+   rule is "no _accidental_ debt"; the rule is not "no
    mistakes". A shortcut noticed later and declared
    retroactively is the system working, not failing.
 
@@ -100,13 +100,13 @@ history, not a TODO list.
   referenced by many skills). If the old phrasing
   appears there, it will contradict the new §11.
 - **Why now:** Landing the ADR + ledger + §11 rewrite
-  + internal-skill citation refresh in one round is
-  already a large change. Auditing external-contract
-  files without a specialist read (devops-engineer for
-  copilot-instructions, conflict-resolution-expert for
-  the protocol doc) risks silent drift on files where
-  wording carries weight. Scoped to round 44 per the
-  ADR implementation plan.
+  - internal-skill citation refresh in one round is
+    already a large change. Auditing external-contract
+    files without a specialist read (devops-engineer for
+    copilot-instructions, conflict-resolution-expert for
+    the protocol doc) risks silent drift on files where
+    wording carries weight. Scoped to round 44 per the
+    ADR implementation plan.
 - **Right long-term solution:** Audit
   `.github/copilot-instructions.md` in round 44. If
   the old §11 phrasing appears, replace it with a
@@ -131,7 +131,7 @@ history, not a TODO list.
   of running the upstream eval harness to produce a
   genuinely re-designed skill, I extracted ~180 lines
   verbatim to `docs/references/skill-tune-up-eval-
-  loop.md` via the manual-edit + justification-log
+loop.md` via the manual-edit + justification-log
   path. The SKILL.md is now 282 lines (under cap) but
   the content is unchanged — the "tune-up" was
   mechanical, not a real evaluation of whether the
@@ -174,12 +174,12 @@ history, not a TODO list.
   set.
 - **Why now:** Retroactive filing — this row documents
   an accidental shortcut that Aaron called out during
-  round 42 (*"make sure we are using those bad
+  round 42 (_"make sure we are using those bad
   performance skill tools where it makes sense instead
-  of trying to guess"*). The fix landed immediately as
+  of trying to guess"_). The fix landed immediately as
   the standing memory
   `feedback_skill_tune_up_uses_eval_harness_not_static_
-  line_count.md`. This ledger row names the original
+line_count.md`. This ledger row names the original
   shortcut so future rounds remember what the correct
   pattern is.
 - **Right long-term solution:** Every "worst-performing
@@ -205,7 +205,7 @@ history, not a TODO list.
   aggregate 9/10 vs baseline 10/10; +35% tokens +35%
   wall-time for zero pass-rate benefit. Empirical data
   at `docs/research/harness-run-2026-04-20-performance-
-  analysis-expert.md`. Row stays open; 4 static-top-5
+analysis-expert.md`. Row stays open; 4 static-top-5
   candidates still pending harness runs.
 - **Progress 2026-04-20 (#2):** Iteration-1 dry-run
   complete on `reducer` (second candidate; 570 lines,
@@ -221,7 +221,7 @@ history, not a TODO list.
   equal cost. Recommended action: OBSERVE with bias
   toward SHRINK-if-touched; SPLIT ruled out. Empirical
   data at `docs/research/harness-run-2026-04-20-
-  reducer.md`. Pattern across two candidates: >500-line
+reducer.md`. Pattern across two candidates: >500-line
   SKILL.md bodies add ~30% cost overhead uniformly;
   mandatory-section vs lighter-framework structure
   determines whether cost translates to pass-rate
@@ -243,7 +243,7 @@ history, not a TODO list.
   507 lines carry distinct technical content per
   section; pruning risk is content-loss. Empirical data
   at `docs/research/harness-run-2026-04-20-consent-
-  primitives-expert.md`. Pattern across three
+primitives-expert.md`. Pattern across three
   candidates: pass-rate delta zero on 6/6 evals; the
   frontier baseline is too strong for content-graded
   assertions to discriminate; output character (which
@@ -272,8 +272,8 @@ history, not a TODO list.
 
 ## Resolved
 
-*(empty — first row lands when one of the open rows
-resolves in a later round)*
+_(empty — first row lands when one of the open rows
+resolves in a later round)_
 
 ## Template for new rows
 
@@ -297,7 +297,7 @@ resolves in a later round)*
   edits specifically. When a skill edit is a genuine
   shortcut (not just a mechanical rename / lint fix),
   it lands here too with a cross-reference.
-- **`docs/BACKLOG.md`** — the *work* queue. Debt rows
+- **`docs/BACKLOG.md`** — the _work_ queue. Debt rows
   whose trigger has fired become BACKLOG rows. Debt
   rows whose work is in flight stay here with the
   BACKLOG row referenced.
@@ -306,6 +306,6 @@ resolves in a later round)*
   promoted to Adopt) are not debt per se; they are
   stance. Debt rows name specific shortcuts within the
   current stance.
-- **`docs/ROUND-HISTORY.md`** — the *history* log.
+- **`docs/ROUND-HISTORY.md`** — the _history_ log.
   Each round's close summary mentions any new debt
   rows or resolutions from this ledger.

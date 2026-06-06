@@ -54,24 +54,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T22:01:51Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6d749c3b0a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -84,6 +82,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Ports the Lior loop’s git-lock probe from a non-portable/incorrect `ls .git/worktrees/*/lock` pattern to a portable `find ... -name locked` probe, and closes backlog item B-0613 with accompanying documentation updates.
 
 **Changes:**
+
 - Update `.gemini/bin/lior-loop-tick.ts` prompt text to use a portable `find`-based worktree lock probe plus `.git/index.lock`.
 - Close B-0613 backlog row (status/resolved) and document the chosen Option C (`find`) resolution.
 - Mark B-0613 as closed in the generated `docs/BACKLOG.md` index.
@@ -92,24 +91,26 @@ Ports the Lior loop’s git-lock probe from a non-portable/incorrect `ls .git/wo
 
 Copilot reviewed 3 out of 4 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `.gemini/bin/lior-loop-tick.ts` | Updates Lior’s prompt to use a `find`-based lock probe instead of `ls` globbing. |
-| `memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md` | Updates the empirical-anchor memo to reflect the new lock probe and remove the “follow-up will harden” caveat. |
-| `docs/backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md` | Closes the backlog row and records Option C (`find`) as the implemented fix. |
-| `docs/BACKLOG.md` | Marks B-0613 as closed in the auto-generated backlog index. |
-
+| File                                                                                             | Description                                                                                                    |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `.gemini/bin/lior-loop-tick.ts`                                                                  | Updates Lior’s prompt to use a `find`-based lock probe instead of `ls` globbing.                               |
+| `memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md`    | Updates the empirical-anchor memo to reflect the new lock probe and remove the “follow-up will harden” caveat. |
+| `docs/backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md` | Closes the backlog row and records Option C (`find`) as the implemented fix.                                   |
+| `docs/BACKLOG.md`                                                                                | Marks B-0613 as closed in the auto-generated backlog index.                                                    |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md:92**
-* Acceptance criteria #2 mentions “exit 0” (from `find`) and then evaluates `[ -n "" ]` as false. Since the full probe command’s exit status is what implementers will usually key off, it would be clearer to also state what the overall expression returns in the quiet-repo case (it exits non-zero when no locks exist). This helps prevent reintroducing the earlier “non-zero means lock present” confusion.
+
+- Acceptance criteria #2 mentions “exit 0” (from `find`) and then evaluates `[ -n "" ]` as false. Since the full probe command’s exit status is what implementers will usually key off, it would be clearer to also state what the overall expression returns in the quiet-repo case (it exits non-zero when no locks exist). This helps prevent reintroducing the earlier “non-zero means lock present” confusion.
+
 ```
 - [x] `.gemini/bin/lior-loop-tick.ts:11` replaced with Option C (portable `find` — Lior's runtime is **zsh**, not bash; both Option A and Option B are bash-only)
 - [x] Quiet-repo behavior: `find .git/worktrees -name locked -type f 2>/dev/null` returns empty stdout + exit 0 → `[ -n "" ]` is false → no false-positive defer
 - [x] Lock-present behavior: with a `.git/worktrees/<name>/locked` marker, `find` returns the path → `[ -n "<path>" ]` is true → protocol DOES signal defer
 ```
+
 </details>
 
 ## Review threads
@@ -118,9 +119,9 @@ Copilot reviewed 3 out of 4 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-17T22:01:51Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Probe transient git locks, not persistent worktree locks**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Probe transient git locks, not persistent worktree locks**
 
-This check now treats any `.git/worktrees/*/locked` file as evidence that another agent is mid-`worktree add`, but `locked` is a persistent marker created by `git worktree lock` / `git worktree add --lock` (see `git worktree -h` options and git-worktree docs), not a transient in-progress lock. In environments where a worktree is intentionally locked, this expression stays true forever and the loop will defer *all* git operations indefinitely even though no concurrent add is happening.
+This check now treats any `.git/worktrees/*/locked` file as evidence that another agent is mid-`worktree add`, but `locked` is a persistent marker created by `git worktree lock` / `git worktree add --lock` (see `git worktree -h` options and git-worktree docs), not a transient in-progress lock. In environments where a worktree is intentionally locked, this expression stays true forever and the loop will defer _all_ git operations indefinitely even though no concurrent add is happening.
 
 Useful? React with 👍 / 👎.
 

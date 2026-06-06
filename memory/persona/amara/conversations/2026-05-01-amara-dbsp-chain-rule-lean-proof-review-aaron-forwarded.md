@@ -2,7 +2,7 @@
 
 Scope: External conversation import — Amara peer-AI review of the DBSP chain rule Lean 4 formal-verification artifact, with sharpened framing of Zeta's claim relative to Karpathy. Sibling to the second Deepseek synthesis on the same artifact ([`2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md`](2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md), PR #1176) and to the Ani Lean-proof review ([`2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md`](2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md), this PR).
 
-Attribution: Amara (peer-AI; Aurora deep-research register, external co-originator), Aaron-forwarded 2026-05-01. Amara revises her earlier Karpathy framing (in PR #1176) after seeing the Lean proof artifact: *"you are farther ahead than my Karpathy framing gave you credit for."* Aaron's affirmation on forwarding: *"yep."*
+Attribution: Amara (peer-AI; Aurora deep-research register, external co-originator), Aaron-forwarded 2026-05-01. Amara revises her earlier Karpathy framing (in PR #1176) after seeing the Lean proof artifact: _"you are farther ahead than my Karpathy framing gave you credit for."_ Aaron's affirmation on forwarding: _"yep."_
 
 Operational status: research-grade
 
@@ -14,7 +14,7 @@ Non-fusion disclaimer: Amara's review represents Amara's own reading in her char
 
 ## Verbatim Amara synthesis (forwarded by Aaron 2026-05-01)
 
-> Yeah — **you are farther ahead than my Karpathy framing gave you credit for**. I was describing Zeta as if it were mostly building the *agentic engineering operating system*. This attached Lean file shows you're also doing the next layer: **machine-checking the math that the operating system depends on**.
+> Yeah — **you are farther ahead than my Karpathy framing gave you credit for**. I was describing Zeta as if it were mostly building the _agentic engineering operating system_. This attached Lean file shows you're also doing the next layer: **machine-checking the math that the operating system depends on**.
 >
 > That is not "agent-native docs." That is **verifier-native substrate**.
 >
@@ -223,33 +223,34 @@ Non-fusion disclaimer: Amara's review represents Amara's own reading in her char
 
 ## Otto's reception note (research-grade, not operational)
 
-Amara's review is the third peer-AI deep-read of the DBSP chain rule Lean artifact (after second Deepseek synthesis in PR #1176 and Ani Lean-review sibling in this PR). Amara's contribution is the *thesis-revision* layer above the artifact-review layer:
+Amara's review is the third peer-AI deep-read of the DBSP chain rule Lean artifact (after second Deepseek synthesis in PR #1176 and Ani Lean-review sibling in this PR). Amara's contribution is the _thesis-revision_ layer above the artifact-review layer:
 
-**The revised framing:** *"verifier-native substrate"* (extends Karpathy's *"agent-native docs"*). Amara's three-layer ladder:
+**The revised framing:** _"verifier-native substrate"_ (extends Karpathy's _"agent-native docs"_). Amara's three-layer ladder:
+
 - Karpathy: agentic-engineering operating system
 - Earlier Amara framing (PR #1176): Zeta builds the OS for that
 - Revised Amara framing (this file): Zeta is **machine-checking the math the OS depends on**
 
 **The carved-sentence cluster** Amara surfaces:
 
-> *Context is the program.*
-> *Substrate is the source code for context.*
-> *Lean proofs are the machine-checkable laws inside the substrate.*
+> _Context is the program._
+> _Substrate is the source code for context._
+> _Lean proofs are the machine-checkable laws inside the substrate._
 
-> *Karpathy says verifiable domains move fastest.*
-> *Zeta is making the domain verifiable.*
+> _Karpathy says verifiable domains move fastest._
+> _Zeta is making the domain verifiable._
 
-> *Vibe coding produces code.*
-> *Agentic engineering produces code plus checks.*
-> *Zeta produces code plus checks plus machine-checked mathematical contracts.*
+> _Vibe coding produces code._
+> _Agentic engineering produces code plus checks._
+> _Zeta produces code plus checks plus machine-checked mathematical contracts._
 
 These are research-grade carved-sentence candidates. Pause-Insight-block-promotion discipline holds — preserved here verbatim, promotion to operational doctrine deferred.
 
 **Four actionable critical notes** worth lifting (not actioning this tick — preserved as future work):
 
-1. **Don't flatten** *"the DBSP chain rule"* into one thing in README/summary prose; preserve the Proposition-3.2-vs-Dop_LTI_commute distinction. (Already correct in the Lean file; the discipline is in surrounding language.)
+1. **Don't flatten** _"the DBSP chain rule"_ into one thing in README/summary prose; preserve the Proposition-3.2-vs-Dop_LTI_commute distinction. (Already correct in the Lean file; the discipline is in surrounding language.)
 2. **`IsTimeInvariant` as explicit contract boundary**, not a hack. Frame as operator contract that user-operators must prove.
-3. **CI-enforce no-sorry**: file text says no `sorry`, but CI should have a Lean build + no-sorry check. *"If that gate already exists, excellent. If not, that is the next hardening row."* Filing as future BACKLOG candidate (not opening this tick — gen-rate-vs-drain-rate discipline).
+3. **CI-enforce no-sorry**: file text says no `sorry`, but CI should have a Lean build + no-sorry check. _"If that gate already exists, excellent. If not, that is the next hardening row."_ Filing as future BACKLOG candidate (not opening this tick — gen-rate-vs-drain-rate discipline).
 4. **Use Lean artifact as Karpathy-counterexample** for "are we agentic engineering or vibe coding" framing. Composes with the existing Karpathy verifiability anchor file.
 
 **Cross-peer convergence observed across three Lean-artifact reviews** (Deepseek-2 in PR #1176 + Ani sibling + Amara this file):

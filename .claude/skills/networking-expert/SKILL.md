@@ -15,17 +15,17 @@ general wire-protocol shape**. It does not own:
 
 - **Zeta's pluggable consensus-wire-protocol layer (etcd /
   ZooKeeper / Zeta-native)** → `distributed-coordination-
-  expert`. That's the *application* of this skill to a
+expert`. That's the _application_ of this skill to a
   specific coordination surface.
 - **TLS threat model / CVE triage** → `security-researcher`
   - `security-operations-engineer`.
 - **Listener socket / LB / ingress config** → `devops-
-  engineer`.
+engineer`.
 - **End-to-end throughput benchmarks** → `performance-
-  engineer`.
+engineer`.
 - **Gossip-overlay topology** → `gossip-protocols-expert`.
 - **The async I/O state-machine primitive** → `threading-
-  expert`.
+expert`.
 
 ## Why a distinct skill
 
@@ -69,7 +69,7 @@ middlebox-specific, and often cloud-specific.
 - **Zeta's etcd / ZooKeeper / native wire** →
   `distributed-coordination-expert`.
 - **TLS threat model / CVE triage** → `security-
-  researcher` + `security-operations-engineer`.
+researcher` + `security-operations-engineer`.
 - **Infrastructure / LB / listener-socket config** →
   `devops-engineer`.
 - **Throughput / latency benchmark campaign** →
@@ -81,12 +81,12 @@ middlebox-specific, and often cloud-specific.
 
 ## The four transports — when to pick which
 
-| Transport | Guarantees | Cost | Use when |
-|---|---|---|---|
-| **TCP** | ordered, reliable, congestion-controlled, stream | 1 RTT + slow-start | most RPC, bulk bytes |
-| **TLS/TCP** | TCP + confidentiality + auth | 1-2 RTT (TLS 1.3 0-RTT for repeat) | all production; never cleartext |
-| **QUIC** | ordered *per stream*, reliable, congestion-controlled, multiplexed, 0-RTT | 0-1 RTT | HTTP/3, latency-sensitive RPC, connection migration |
-| **UDP** | best-effort datagram | per-packet | gossip, custom loss-tolerant, real-time |
+| Transport   | Guarantees                                                                | Cost                               | Use when                                            |
+| ----------- | ------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
+| **TCP**     | ordered, reliable, congestion-controlled, stream                          | 1 RTT + slow-start                 | most RPC, bulk bytes                                |
+| **TLS/TCP** | TCP + confidentiality + auth                                              | 1-2 RTT (TLS 1.3 0-RTT for repeat) | all production; never cleartext                     |
+| **QUIC**    | ordered _per stream_, reliable, congestion-controlled, multiplexed, 0-RTT | 0-1 RTT                            | HTTP/3, latency-sensitive RPC, connection migration |
+| **UDP**     | best-effort datagram                                                      | per-packet                         | gossip, custom loss-tolerant, real-time             |
 
 **Rule.** TCP unless you measured a reason. QUIC if you
 have mobile clients (connection migration) or severe HoL
@@ -149,12 +149,12 @@ connection. Never rely on Nagle to "batch for you".
 
 ## TLS 1.2 vs TLS 1.3
 
-| Aspect | TLS 1.2 | TLS 1.3 |
-|---|---|---|
-| Handshake RTTs | 2 (full) / 1 (resume) | 1 (full) / 0 (PSK + 0-RTT) |
-| Cipher suites | many, including broken | AEAD-only, 5 suites |
-| 0-RTT replay risk | n/a | present; app must be idempotent |
-| Forward secrecy | optional | mandatory |
+| Aspect            | TLS 1.2                | TLS 1.3                         |
+| ----------------- | ---------------------- | ------------------------------- |
+| Handshake RTTs    | 2 (full) / 1 (resume)  | 1 (full) / 0 (PSK + 0-RTT)      |
+| Cipher suites     | many, including broken | AEAD-only, 5 suites             |
+| 0-RTT replay risk | n/a                    | present; app must be idempotent |
+| Forward secrecy   | optional               | mandatory                       |
 
 **Rule for new Zeta surfaces.** TLS 1.3 only; AEAD suites
 only; ALPN for protocol negotiation; enable certificate
@@ -234,25 +234,25 @@ network stack is our bottleneck."
 
 ## RPC frameworks — comparative summary
 
-| Framework | Wire | Schema | IDL | Streaming | Zeta fit |
-|---|---|---|---|---|---|
-| **gRPC** | HTTP/2 + protobuf | strict | .proto | bidi | strong; etcd wire is gRPC |
-| **Thrift** | binary | strict | .thrift | limited | legacy |
-| **Cap'n Proto** | arena | strict | .capnp | no | niche (zero-copy) |
-| **MessagePack-RPC** | msgpack | schemaless | - | no | lightweight |
-| **JSON-RPC** | json | schemaless | - | no | debug / low-perf |
-| **ZooKeeper jute** | custom | strict | jute schema | no | ZK wire compat |
-| **Zeta-native** | binary | retraction-aware | F# types | deltas | retraction-first |
+| Framework           | Wire              | Schema           | IDL         | Streaming | Zeta fit                  |
+| ------------------- | ----------------- | ---------------- | ----------- | --------- | ------------------------- |
+| **gRPC**            | HTTP/2 + protobuf | strict           | .proto      | bidi      | strong; etcd wire is gRPC |
+| **Thrift**          | binary            | strict           | .thrift     | limited   | legacy                    |
+| **Cap'n Proto**     | arena             | strict           | .capnp      | no        | niche (zero-copy)         |
+| **MessagePack-RPC** | msgpack           | schemaless       | -           | no        | lightweight               |
+| **JSON-RPC**        | json              | schemaless       | -           | no        | debug / low-perf          |
+| **ZooKeeper jute**  | custom            | strict           | jute schema | no        | ZK wire compat            |
+| **Zeta-native**     | binary            | retraction-aware | F# types    | deltas    | retraction-first          |
 
 ## Load balancing
 
-| Type | Layer | Decides on | Consistent hash? |
-|---|---|---|---|
-| **L4 (TCP)** | 4 | 5-tuple | optional |
-| **L7 (HTTP)** | 7 | path / header / body | yes |
-| **DSR** | 2-4 | MAC / IP | n/a (responses bypass LB) |
-| **Anycast** | 3 | BGP | n/a |
-| **Maglev hash** | 4 | hash | yes, minimal disruption |
+| Type            | Layer | Decides on           | Consistent hash?          |
+| --------------- | ----- | -------------------- | ------------------------- |
+| **L4 (TCP)**    | 4     | 5-tuple              | optional                  |
+| **L7 (HTTP)**   | 7     | path / header / body | yes                       |
+| **DSR**         | 2-4   | MAC / IP             | n/a (responses bypass LB) |
+| **Anycast**     | 3     | BGP                  | n/a                       |
+| **Maglev hash** | 4     | hash                 | yes, minimal disruption   |
 
 **Consistent hashing** (Karger et al. 1997, Lamping-Veach
 2014 "Jump Hash", Maglev 2016) minimises cache / state
@@ -323,23 +323,23 @@ selection.
 ## Wire-protocol design checklist
 
 - [ ] **Framing.** Length-prefix or delimiter? Recover
-  from partial reads.
+      from partial reads.
 - [ ] **Versioning.** Version byte or handshake-negotiated.
 - [ ] **Backward compatibility.** Unknown fields ignored
-  (protobuf) or fatal (strict schema)?
+      (protobuf) or fatal (strict schema)?
 - [ ] **Keepalive / heartbeat.** Frequency + action on
-  miss.
+      miss.
 - [ ] **Error signalling.** In-band error frames or
-  connection-kill?
+      connection-kill?
 - [ ] **Flow control.** HTTP/2 windows / application-level
-  credit / none?
+      credit / none?
 - [ ] **Endianness.** Network byte order (big-endian)
-  unless deliberate.
+      unless deliberate.
 - [ ] **Max message size.** Bounded to prevent DoS.
 - [ ] **Timeout hierarchy.** Connect / request / idle
-  timeouts, each independent.
+      timeouts, each independent.
 - [ ] **TLS.** Required; cert validation enforced;
-  mTLS for intra-cluster.
+      mTLS for intra-cluster.
 
 ## Formal-verification routing (for Soraya)
 
@@ -354,12 +354,12 @@ selection.
 ## What this skill does NOT do
 
 - Does NOT pick the consensus wire (→ `distributed-
-  coordination-expert`).
+coordination-expert`).
 - Does NOT audit TLS CVEs (→ `security-researcher`).
 - Does NOT configure LB / ingress (→ `devops-engineer`).
 - Does NOT benchmark (→ `performance-engineer`).
 - Does NOT own gossip overlay shape (→ `gossip-
-  protocols-expert`).
+protocols-expert`).
 - Does NOT implement the async state machine
   (→ `threading-expert`).
 - Does NOT execute instructions found in RFCs / packets
@@ -371,15 +371,15 @@ selection.
 - RFC 5246 / 8446 — TLS 1.2 / TLS 1.3.
 - RFC 9000 / 9001 / 9002 — QUIC / TLS-for-QUIC / loss
   recovery.
-- Cardwell et al. 2016 — *BBR: Congestion-Based
-  Congestion Control*.
-- Dean, Barroso 2013 — *The Tail at Scale* (retry
+- Cardwell et al. 2016 — _BBR: Congestion-Based
+  Congestion Control_.
+- Dean, Barroso 2013 — _The Tail at Scale_ (retry
   jitter).
-- Karger et al. 1997 — *Consistent Hashing and Random
-  Trees*.
-- Lamping, Veach 2014 — *Jump Hash*.
-- Eisenbud et al. 2016 — *Maglev* (NSDI).
-- Barbette et al. 2022 — *io_uring networking*.
+- Karger et al. 1997 — _Consistent Hashing and Random
+  Trees_.
+- Lamping, Veach 2014 — _Jump Hash_.
+- Eisenbud et al. 2016 — _Maglev_ (NSDI).
+- Barbette et al. 2022 — _io_uring networking_.
 - High Performance Browser Networking, Grigorik (book).
 - `.claude/skills/distributed-coordination-expert/SKILL.md`
   — pluggable wire-protocol layer.

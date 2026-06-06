@@ -22,13 +22,13 @@ Two directives bound the design:
    negative-weight, not destructive), storage-format tight
    (Spine/Arrow columnar, not a bolted-on graph DB), and
    operator-algebra-composable (existing ZSet operators compose
-   over Graph). Aaron claim: *"first of its kind, no competitors"*
+   over Graph). Aaron claim: _"first of its kind, no competitors"_
    if this shape holds.
 
 2. **Amara Otto-122 — "theory cathedral warning":** the Graph
    substrate must be validated by a running toy cartel detector,
    not just by answering design questions. Amara's prescription:
-   *"Can this detect even a dumb cartel in a toy simulation?"*
+   _"Can this detect even a dumb cartel in a toy simulation?"_
    (50 synthetic validators + 5-node cartel + λ₁ + modularity +
    `detected: bool` output, ~200 lines of Python-equivalent).
 

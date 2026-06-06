@@ -278,13 +278,13 @@ authoritative state lives where.
 - Other branches: `git log --all -- <path>` /
   `git branch -a --contains <sha>`.
 - Stashes: `git stash list` + `git stash show -p
-  stash@{N}`.
+stash@{N}`.
 - Reflog: `git reflog` (orphans pre-force-push or
   pre-`reset --hard`).
 - Dangling objects: `git fsck --lost-found` (commits
   and blobs no ref points at).
 - Deleted-in-history: `git log --diff-filter=D --all --
-  <path>` to find the commit that deleted it.
+<path>` to find the commit that deleted it.
 - Renamed: `git log --follow <path>` /
   `git log --find-renames=N`.
 - Tags: `git tag -l` + `git show <tag>` — a tag can
@@ -395,9 +395,9 @@ authoritative state lives where.
   discovery mechanism. Always pair the file landing
   with the index row in the same commit.
 
-**Source:** Aaron 2026-04-24 quiz directive *"wherever
+**Source:** Aaron 2026-04-24 quiz directive _"wherever
 are all the places you could look for missing files /
-we should probably keep a list check in somewhere"*.
+we should probably keep a list check in somewhere"_.
 Composes with Otto-230 (fresh-session-quality-gap),
 Otto-264 (LOST-branch recovery), Otto-242 (sidecar
 pattern), Otto-250 (PR-preservation), and the

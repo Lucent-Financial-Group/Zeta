@@ -21,41 +21,43 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 PR 2 of Addison's NixOS-AI-cluster bootstrap plan. Wires the installer config from #4897 into a buildable flake and seeds the shared modules every cluster host will import.
 
 Building on:
+
 - #4897 — installer USB package list (merged)
 
 Setting up:
-- PR 3 — per-host configs (control-plane + worker-gpu-*)
+
+- PR 3 — per-host configs (control-plane + worker-gpu-\*)
 - PR 4 — k8s bootstrap + ArgoCD Applications
 - PR 5 — helper scripts + infra README
 
 ## Files
 
-| File | Purpose |
-|---|---|
-| `flake.nix` | Repo-root entry. Wires `nixosConfigurations.installer` to the file from #4897; exposes `packages.installer-iso`, `devShells.default`, `nixosModules.{common,k3s-server,k3s-agent,gpu}` |
-| `infra/nixos/modules/common.nix` | Shared baseline every host imports — Nix/flakes settings, locale, networking, SSH key-only, `zeta` admin user, baseline packages, systemd-boot |
-| `infra/nixos/modules/k3s-server.nix` | K3S control-plane (embedded etcd, disables servicelb+traefik, auto-applies k8s/bootstrap/ manifests so ArgoCD self-installs) |
-| `infra/nixos/modules/k3s-agent.nix` | K3S worker (joins via serverAddr+tokenFile; node label `zeta.io/role=worker`) |
-| `infra/nixos/modules/gpu.nix` | NVIDIA driver + container toolkit, unfree scoped to nvidia+cuda only, node label `zeta.io/gpu=nvidia` |
-| `.gitignore` | Nix patterns: `result`, `result-*`, `.direnv/`, `.envrc.local`, `.nix-eval-cache/`, top-level `/hardware-configuration.nix` |
+| File                                 | Purpose                                                                                                                                                                                |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `flake.nix`                          | Repo-root entry. Wires `nixosConfigurations.installer` to the file from #4897; exposes `packages.installer-iso`, `devShells.default`, `nixosModules.{common,k3s-server,k3s-agent,gpu}` |
+| `infra/nixos/modules/common.nix`     | Shared baseline every host imports — Nix/flakes settings, locale, networking, SSH key-only, `zeta` admin user, baseline packages, systemd-boot                                         |
+| `infra/nixos/modules/k3s-server.nix` | K3S control-plane (embedded etcd, disables servicelb+traefik, auto-applies k8s/bootstrap/ manifests so ArgoCD self-installs)                                                           |
+| `infra/nixos/modules/k3s-agent.nix`  | K3S worker (joins via serverAddr+tokenFile; node label `zeta.io/role=worker`)                                                                                                          |
+| `infra/nixos/modules/gpu.nix`        | NVIDIA driver + container toolkit, unfree scoped to nvidia+cuda only, node label `zeta.io/gpu=nvidia`                                                                                  |
+| `.gitignore`                         | Nix patterns: `result`, `result-*`, `.direnv/`, `.envrc.local`, `.nix-eval-cache/`, top-level `/hardware-configuration.nix`                                                            |
 
 ## How it composes
 
 \`\`\`
 flake.nix
-  └─ nixosConfigurations.installer
-        └─ infra/nixos/hosts/installer/configuration.nix  (from #4897)
+└─ nixosConfigurations.installer
+└─ infra/nixos/hosts/installer/configuration.nix (from #4897)
 
-  Future (PR 3):
-  ├─ nixosConfigurations.control-plane
-  │     └─ infra/nixos/hosts/control-plane/configuration.nix
-  │           ├─ imports common.nix
-  │           └─ imports k3s-server.nix  ──► auto-applies k8s/bootstrap/*
-  └─ nixosConfigurations.worker-gpu-NN
-        └─ infra/nixos/hosts/worker-gpu-NN/configuration.nix
-              ├─ imports common.nix
-              ├─ imports k3s-agent.nix
-              └─ imports gpu.nix
+Future (PR 3):
+├─ nixosConfigurations.control-plane
+│ └─ infra/nixos/hosts/control-plane/configuration.nix
+│ ├─ imports common.nix
+│ └─ imports k3s-server.nix ──► auto-applies k8s/bootstrap/\*
+└─ nixosConfigurations.worker-gpu-NN
+└─ infra/nixos/hosts/worker-gpu-NN/configuration.nix
+├─ imports common.nix
+├─ imports k3s-agent.nix
+└─ imports gpu.nix
 \`\`\`
 
 ## Security
@@ -64,7 +66,7 @@ flake.nix
 - Tokens are placeholder-pathed (`tokenFile = /var/lib/rancher/k3s/.../token`) so plaintext secrets never land in Git.
 - `sops-nix` / `agenix` wiring lands in a follow-up PR alongside the per-host configs that need real tokens.
 - SSH key-only baseline; `wheelNeedsPassword = true` default (sudo requires password).
-- `allowUnfreePredicate` is *scoped* — only NVIDIA driver + CUDA packages are allowed, not blanket unfree.
+- `allowUnfreePredicate` is _scoped_ — only NVIDIA driver + CUDA packages are allowed, not blanket unfree.
 
 ## Forward refs
 
@@ -87,6 +89,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Adds an initial Nix flake entrypoint plus shared NixOS modules to bootstrap a NixOS-based cluster (installer ISO now; per-host configs/modules composition next).
 
 **Changes:**
+
 - Introduces `flake.nix` with `nixosConfigurations.installer`, exported shared `nixosModules`, a devShell, and a package alias for building the installer ISO.
 - Adds shared NixOS modules for a common baseline, K3s server/agent roles, and NVIDIA GPU enablement.
 - Updates `.gitignore` for common Nix/direnv outputs and generated hardware config.
@@ -98,14 +101,15 @@ Copilot reviewed 12 out of 13 changed files in this pull request and generated 7
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| `flake.nix` | New repo-root flake wiring installer config, module exports, packages/devShell/formatter. |
-| `infra/nixos/modules/common.nix` | Shared baseline settings for hosts (Nix settings, SSH baseline, packages, boot defaults). |
-| `infra/nixos/modules/k3s-server.nix` | K3s control-plane module with embedded etcd and bootstrap-manifest wiring. |
-| `infra/nixos/modules/k3s-agent.nix` | K3s worker/agent module with join configuration and node labeling. |
-| `infra/nixos/modules/gpu.nix` | NVIDIA driver + container toolkit + node labeling for GPU workers. |
-| `.gitignore` | Ignores Nix build artifacts, direnv files, and generated top-level hardware config. |
+| File                                 | Description                                                                               |
+| ------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `flake.nix`                          | New repo-root flake wiring installer config, module exports, packages/devShell/formatter. |
+| `infra/nixos/modules/common.nix`     | Shared baseline settings for hosts (Nix settings, SSH baseline, packages, boot defaults). |
+| `infra/nixos/modules/k3s-server.nix` | K3s control-plane module with embedded etcd and bootstrap-manifest wiring.                |
+| `infra/nixos/modules/k3s-agent.nix`  | K3s worker/agent module with join configuration and node labeling.                        |
+| `infra/nixos/modules/gpu.nix`        | NVIDIA driver + container toolkit + node labeling for GPU workers.                        |
+| `.gitignore`                         | Ignores Nix build artifacts, direnv files, and generated top-level hardware config.       |
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T02:41:20Z)

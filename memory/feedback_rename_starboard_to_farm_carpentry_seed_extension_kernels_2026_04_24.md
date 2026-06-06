@@ -8,14 +8,14 @@ type: feedback
 
 Maintainer 2026-04-24:
 
-> *"Instead of Starboard lets go with someting farm
+> _"Instead of Starboard lets go with someting farm
 > related and carperntry related since those will be our
 > two seed extenion kernels we can shrink over time, i saw
 > one of your researcher i think write like big bangs at
 > every layer i thought that was cool. this is from google
 > ai, just suggestions, we can idate, keep all the exiting
 > nautical and elron and all that research but we will be
-> renaming starboard to someting else."*
+> renaming starboard to someting else."_
 
 ## What changes
 
@@ -39,8 +39,8 @@ Maintainer 2026-04-24:
 
 - All existing nautical / Elron / Hubbard research
   substrate stays put. Maintainer is explicit:
-  *"keep all the exiting nautical and elron and all that
-  research"*. Renaming the chosen factory vocabulary does
+  _"keep all the exiting nautical and elron and all that
+  research"_. Renaming the chosen factory vocabulary does
   NOT mean purging the substrate. Per Otto-237 IP
   adoption-vs-mention: nautical/Elron stays MENTIONED;
   only the ADOPTED factory vocabulary changes.
@@ -55,8 +55,8 @@ Maintainer 2026-04-24:
   finalists and `naming-expert` runs the IP /
   cross-substrate-conflict / Otto-244 no-symlinks
   checks.
-- Maintainer said *"we can idate"* (iterate) and *"just
-  suggestions"*. Don't auto-adopt any name from either
+- Maintainer said _"we can idate"_ (iterate) and _"just
+  suggestions"_. Don't auto-adopt any name from either
   Google AI slate.
 
 ## Google AI ideation slates received 2026-04-24
@@ -84,7 +84,7 @@ Maintainer 2026-04-24:
 
 ## Notable resonances (surface to `naming-expert`, do NOT settle)
 
-- **Siliqua-Core** — *siliqua* literally means seed pod;
+- **Siliqua-Core** — _siliqua_ literally means seed pod;
   direct linguistic match for the maintainer's
   "seed-extension kernel" framing.
 - **Zeta-ic Yield** — pairs the existing

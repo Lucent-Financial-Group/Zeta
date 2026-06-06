@@ -62,9 +62,9 @@ filesystem-specific, and often hardware-specific.
 - **Zeta's actual storage subsystem (spine, WAL, disk
   backing)** → `storage-specialist`.
 - **End-to-end write-path benchmark** → `performance-
-  engineer`.
+engineer`.
 - **CI / infra / image filesystem choice** → `devops-
-  engineer`.
+engineer`.
 - **ACL / capability / untrusted-input filesystem threats**
   → `security-operations-engineer`.
 - **Columnar-specific on-disk layout (Parquet, Arrow
@@ -78,7 +78,7 @@ filesystem-specific, and often hardware-specific.
 
 - `write(2)` — copies into the page cache. Not durable.
 - `fsync(2)` — flushes dirty pages + metadata. Durable
-  *if the drive honors cache-flush*. Most enterprise SSDs
+  _if the drive honors cache-flush_. Most enterprise SSDs
   do; consumer SSDs often lie.
 - `fdatasync(2)` — skips metadata if file size unchanged.
 - `sync_file_range(2)` — partial flush; does NOT flush
@@ -125,15 +125,15 @@ filesystem-specific, and often hardware-specific.
 
 ## Journaling filesystems — what journaling guarantees
 
-| FS | Journals | Data mode | CoW | Checksums | Snapshots |
-|---|---|---|---|---|---|
-| **ext4** | metadata | `ordered` / `journal` / `writeback` | no | metadata only | no |
-| **XFS** | metadata | `ordered`-equivalent | optional reflink | metadata only | via reflink |
-| **Btrfs** | - | - | yes | yes (CRC32C) | yes |
-| **ZFS** | ZIL | - | yes | yes (SHA/Fletcher) | yes |
-| **APFS** | metadata | - | yes | yes | yes |
-| **NTFS** | USN + $LogFile | - | no (on native) | metadata only | VSS |
-| **ReFS** | - | - | yes | yes | yes |
+| FS        | Journals       | Data mode                           | CoW              | Checksums          | Snapshots   |
+| --------- | -------------- | ----------------------------------- | ---------------- | ------------------ | ----------- |
+| **ext4**  | metadata       | `ordered` / `journal` / `writeback` | no               | metadata only      | no          |
+| **XFS**   | metadata       | `ordered`-equivalent                | optional reflink | metadata only      | via reflink |
+| **Btrfs** | -              | -                                   | yes              | yes (CRC32C)       | yes         |
+| **ZFS**   | ZIL            | -                                   | yes              | yes (SHA/Fletcher) | yes         |
+| **APFS**  | metadata       | -                                   | yes              | yes                | yes         |
+| **NTFS**  | USN + $LogFile | -                                   | no (on native)   | metadata only      | VSS         |
+| **ReFS**  | -              | -                                   | yes              | yes                | yes         |
 
 **Rule.** Journaling metadata does not mean journaling
 data. ext4 `data=writeback` gives metadata consistency
@@ -163,10 +163,10 @@ it isn't.
 
 ## mmap — the three-trap problem
 
-- **Trap 1: no write-visibility guarantee without msync
-  - fsync.** Touching a page via mmap marks it dirty, but
-  fsync on the file descriptor is *sometimes* enough on
-  Linux, *never* enough on macOS.
+- \*\*Trap 1: no write-visibility guarantee without msync
+  - fsync.\** Touching a page via mmap marks it dirty, but
+    fsync on the file descriptor is *sometimes* enough on
+    Linux, *never\* enough on macOS.
 - **Trap 2: SIGBUS on file truncation.** If the file shrinks
   beneath an mmap region, reads SIGBUS.
 - **Trap 3: allocation at fault time.** First touch
@@ -272,17 +272,17 @@ A write is durable only if ALL of these are true:
 
 - [ ] Write call succeeded.
 - [ ] fsync (Linux / Windows FlushFileBuffers / macOS
-  F_FULLFSYNC) returned success.
+      F_FULLFSYNC) returned success.
 - [ ] Parent directory was fsync'd (Linux; metadata
-  durability).
+      durability).
 - [ ] The error path panics on fsync-EIO (PostgreSQL rule).
 - [ ] An application-level checksum was written AND is
-  verified on read.
+      verified on read.
 - [ ] The on-disk format survives torn writes (sector-
-  atomic assumption — many FS guarantee 512B; 4K is
-  safer; pages larger than 4K need CoW or checksums).
+      atomic assumption — many FS guarantee 512B; 4K is
+      safer; pages larger than 4K need CoW or checksums).
 - [ ] The drive honors FUA / cache flush (unknown for
-  consumer SSDs; assume yes only for enterprise PLP).
+      consumer SSDs; assume yes only for enterprise PLP).
 
 Miss any box and durability is a statement of hope, not
 a guarantee.
@@ -300,7 +300,7 @@ a guarantee.
 ## What this skill does NOT do
 
 - Does NOT own Zeta's storage subsystem (→ `storage-
-  specialist`).
+specialist`).
 - Does NOT run benchmarks (→ `performance-engineer`).
 - Does NOT pick CI infra (→ `devops-engineer`).
 - Does NOT design Parquet / Arrow layouts
@@ -312,23 +312,23 @@ a guarantee.
 
 ## Reference patterns
 
-- Alice Ma et al. 2014 — *All File Systems Are Not
-  Created Equal* (OSDI).
-- Pillai et al. 2014 — *All File Systems Are Not Created
-  Equal* + *Crash Consistency*.
-- Chen et al. 2017 — *Crash Consistency Without a File
-  System Crash*.
-- Bornholt et al. 2016 — *Specifying and Checking File
-  System Crash-Consistency Models* (ASPLOS).
+- Alice Ma et al. 2014 — _All File Systems Are Not
+  Created Equal_ (OSDI).
+- Pillai et al. 2014 — _All File Systems Are Not Created
+  Equal_ + _Crash Consistency_.
+- Chen et al. 2017 — _Crash Consistency Without a File
+  System Crash_.
+- Bornholt et al. 2016 — _Specifying and Checking File
+  System Crash-Consistency Models_ (ASPLOS).
 - Linux `io_uring` docs — Kernel.org.
 - PostgreSQL 2018 fsync-gate post-mortem — Craig Ringer.
 - SQLite "Atomic Commit in SQLite" — sqlite.org.
-- LWN — *The fsync-gate saga* articles.
-- Microsoft — *Durable Transactions in Windows* (ReFS /
+- LWN — _The fsync-gate saga_ articles.
+- Microsoft — _Durable Transactions in Windows_ (ReFS /
   NTFS docs).
-- Apple — *TN3138: On the various usages of fsync on
-  iOS and macOS*.
-- ZFS — *Intent Log and Write Cache* documentation.
+- Apple — _TN3138: On the various usages of fsync on
+  iOS and macOS_.
+- ZFS — _Intent Log and Write Cache_ documentation.
 - `.claude/skills/storage-specialist/SKILL.md` — Zeta's
   storage subsystem.
 - `.claude/skills/performance-engineer/SKILL.md` —

@@ -89,7 +89,7 @@ common type. The rules:
   refuses; MySQL coerces. Zeta's call: **refuse** (aligns
   with Postgres).
 - **NULL type inference.** `NULL + INT → INT`; `NULL +
-  NULL → UNKNOWN` (needs context).
+NULL → UNKNOWN` (needs context).
 
 The coercion graph is a DAG; the binder picks the least
 common supertype. Ambiguity errors when multiple paths

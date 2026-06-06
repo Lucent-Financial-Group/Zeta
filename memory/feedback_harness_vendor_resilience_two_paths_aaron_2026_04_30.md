@@ -6,8 +6,8 @@ type: feedback
 
 When a harness vendor (Claude Code, Codex, Cursor, Gemini CLI,
 etc.) has a bug or limitation that affects the factory, the
-agent's instinct may be *"out-of-scope, can't fix from inside
-the harness."* That framing is wrong. Vendor limitations are
+agent's instinct may be _"out-of-scope, can't fix from inside
+the harness."_ That framing is wrong. Vendor limitations are
 not absolute. Two load-bearing paths:
 
 1. **Submit feedback upstream** to the harness vendor's
@@ -16,15 +16,15 @@ not absolute. Two load-bearing paths:
    constraint.
 2. **Make our substrate resilient** against vendor
    limitations. Even when the upstream fix lands eventually,
-   the factory needs rules that work reliably *now* despite
+   the factory needs rules that work reliably _now_ despite
    the limitation. Resilience-against-vendor-limitations is
    itself substrate the factory tracks.
 
-> *"Exactly but we don't have to be limited by their
+> _"Exactly but we don't have to be limited by their
 > limitations, we can also submit feedback to their open
 > source repos and make sure our substrate has the rules
 > for still working reliably despite the limitations of the
-> vendors harnesses"*
+> vendors harnesses"_
 > — Aaron 2026-04-30
 
 **Why:**
@@ -39,8 +39,8 @@ applies to any vendor-side limitation that affects how the
 factory reads, writes, or coordinates.
 
 The "out-of-scope" framing comes from a smaller mental model
-where we're a *consumer* of vendor harnesses. Aaron's
-correction inverts that: we're a *peer dependency* — both an
+where we're a _consumer_ of vendor harnesses. Aaron's
+correction inverts that: we're a _peer dependency_ — both an
 absorber AND a contributor. Otto-323 + Otto-346
 absorb-and-contribute discipline applied at the harness
 layer.
@@ -55,15 +55,15 @@ that ships product.
 
 1. **When a vendor limitation surfaces, classify into the two
    paths:**
-   - *Upstream-fixable:* file an issue / open a PR / submit
+   - _Upstream-fixable:_ file an issue / open a PR / submit
      a design proposal. Track the upstream issue number in a
      receipt or backlog row so the factory remembers the
      dependency.
-   - *Local-resilience-required:* add a rule to our substrate
+   - _Local-resilience-required:_ add a rule to our substrate
      that lets the factory work reliably despite the
      limitation. Land it as a memory rule, governance line,
      or executable check.
-   - In practice, most cases want *both* paths — upstream
+   - In practice, most cases want _both_ paths — upstream
      for the long-term fix, local resilience for the now.
 2. **Treat vendor harnesses as peer dependencies.** That
    means: read their CHANGELOG, watch their release notes,
@@ -92,11 +92,11 @@ that ships product.
 Gemini's review packet 2026-04-30 surfaced a Claude Code
 console-print leak — conversation content appearing in
 local console output. My initial framing was
-*"out-of-scope, harness vendor's bug, we can document it but
-can't fix it."* Aaron's correction landed:
+_"out-of-scope, harness vendor's bug, we can document it but
+can't fix it."_ Aaron's correction landed:
 
-> *"Exactly but we don't have to be limited by their
-> limitations ..."*
+> _"Exactly but we don't have to be limited by their
+> limitations ..."_
 
 Two paths apply:
 
@@ -131,6 +131,6 @@ Two paths apply:
 
 **Carved sentence:**
 
-*"Vendor-harness limitations are not absolute. Submit
+_"Vendor-harness limitations are not absolute. Submit
 upstream; make our substrate resilient. Both paths serve
-the backup mission."*
+the backup mission."_

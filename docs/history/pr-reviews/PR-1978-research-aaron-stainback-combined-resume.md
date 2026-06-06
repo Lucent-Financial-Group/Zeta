@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1978 |
-| Title | research: Aaron Stainback combined resume |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-08T00:40:46Z |
-| Merged at | 2026-05-08T00:42:43Z |
-| Merge commit SHA | `6c9a516d6e1755751981e18714ca673559ef9081` |
-| Branch | `research/aaron-resume-2026-05-07` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1978 |
-| Changed files | 2 |
-| Additions / deletions | +471 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1978                                                     |
+| Title                 | research: Aaron Stainback combined resume                |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-08T00:40:46Z                                     |
+| Merged at             | 2026-05-08T00:42:43Z                                     |
+| Merge commit SHA      | `6c9a516d6e1755751981e18714ca673559ef9081`               |
+| Branch                | `research/aaron-resume-2026-05-07`                       |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1978 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +471 / -0                                                |
 
 ## Description
 
@@ -41,15 +41,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

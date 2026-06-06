@@ -50,6 +50,7 @@ No PII; hardware list only.
 Adds a new `docs/inventory/` directory containing a README that defines the directory's purpose and conventions, plus a draft hardware audit forwarded from Addison via the operator. The draft preserves the explicit caveat that bitcoin miner counts are under-represented and will be reconciled into a canonical `hardware.md` after operator + Addison alignment. This composes with B-0836 (hardware-inventory-vs-cluster reconciliation) and the sibling `tools/inventory/amazon-orders-extract.ts` extractor.
 
 **Changes:**
+
 - New `docs/inventory/README.md` describing the directory's scope, what belongs (draft snapshots), and what does not (Amazon order history, cluster-side node registrations, hardware-wallet contents).
 - New `docs/inventory/hardware-2026-05-27-addison-draft.md` containing a categorized hardware list with provenance and reconciliation notes.
 
@@ -57,10 +58,10 @@ Adds a new `docs/inventory/` directory containing a README that defines the dire
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/inventory/README.md | Defines `docs/inventory/` conventions, draft→canonical promotion, and out-of-scope items |
-| docs/inventory/hardware-2026-05-27-addison-draft.md | Addison's draft hardware list grouped by category, with operator caveat on miner counts |
+| File                                                | Description                                                                              |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| docs/inventory/README.md                            | Defines `docs/inventory/` conventions, draft→canonical promotion, and out-of-scope items |
+| docs/inventory/hardware-2026-05-27-addison-draft.md | Addison's draft hardware list grouped by category, with operator caveat on miner counts  |
 
 ## General comments
 

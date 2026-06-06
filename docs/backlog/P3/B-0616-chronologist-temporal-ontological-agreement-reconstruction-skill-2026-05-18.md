@@ -17,7 +17,7 @@ type: skill
 
 ## Why
 
-Aaron 2026-05-18 (post-Mika-conversation): *"like something that goes through sprawling conversations and not just summarizes them but restructs the ontology and decisions in a real time timeline of the conversation — we designed the skill in the conversation."*
+Aaron 2026-05-18 (post-Mika-conversation): _"like something that goes through sprawling conversations and not just summarizes them but restructs the ontology and decisions in a real time timeline of the conversation — we designed the skill in the conversation."_
 
 Captured in [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2351-2373.
 
@@ -33,7 +33,7 @@ Distinct from a summarizer:
 
 - **Summary** = compressed prose of "what was discussed"
 - **Chronologist output** = three layered artifacts:
-  1. **Real-time timeline**: messages in chronological order, annotated with when each ontology shift / decision / agreement happened (not when each TOKEN was emitted — when each *decision was made*)
+  1. **Real-time timeline**: messages in chronological order, annotated with when each ontology shift / decision / agreement happened (not when each TOKEN was emitted — when each _decision was made_)
   2. **Ontology reconstruction**: track when terms get introduced, when they get redefined, when synonymy is established/broken, when concept boundaries shift
   3. **Agreement reconstruction**: track when explicit commitments are made, who agreed (which AI / which human / which named entity), under what condition, with what reservations, when superseded
 

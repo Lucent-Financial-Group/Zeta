@@ -22,18 +22,18 @@ Implements [PR #4031](https://github.com/Lucent-Financial-Group/Zeta/pull/4031) 
 
 ## Rules fixed
 
-| Rule | Memory ref disclosed |
-|---|---|
-| `persistence-choice-architecture-for-zeta-ais.md` | `feedback_classifier_caught_otto_*` + `feedback_aaron_zeta_is_memory_preservation_specialist_*` |
-| `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | `feedback_codeql_no_source_seen_on_docs_only_pr_*` |
-| `premise-flagged-unverified-stays-unverified-downstream.md` | `feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_*` |
+| Rule                                                          | Memory ref disclosed                                                                            |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `persistence-choice-architecture-for-zeta-ais.md`             | `feedback_classifier_caught_otto_*` + `feedback_aaron_zeta_is_memory_preservation_specialist_*` |
+| `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | `feedback_codeql_no_source_seen_on_docs_only_pr_*`                                              |
+| `premise-flagged-unverified-stays-unverified-downstream.md`   | `feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_*`                                   |
 
 Each citation now names: (a) the file is user-scope only (not in-repo at the cited path), (b) cold-boot fallback (the rule's own body sections + `CURRENT-*.md` projections in-repo).
 
 ## Skipped (with rationale)
 
 - **Audit candidate #1** (`holding-without-named-dependency-...` → `feedback_classifier_caught_*`): the ref string `classifier_caught` was NOT found anywhere in the current `origin/main` version of that rule. Likely a stale audit anchor. Skipped (no action needed).
-- **Audit candidate #4** (`shadow-star-shorthand-...` → `feedback_aaron_shadow_star_shorthand_*`): the rule already has good Option B disclosure at line 78: *"preserved at user-scope memory. These memos auto-load into every Otto-CLI session via `~/.claude/projects/<slug>/memory/MEMORY.md`, so they are reachable from cold boot even though they do not live in-repo:"*. No change needed.
+- **Audit candidate #4** (`shadow-star-shorthand-...` → `feedback_aaron_shadow_star_shorthand_*`): the rule already has good Option B disclosure at line 78: _"preserved at user-scope memory. These memos auto-load into every Otto-CLI session via `~/.claude/projects/<slug>/memory/MEMORY.md`, so they are reachable from cold boot even though they do not live in-repo:"_. No change needed.
 
 ## Empirical: peer-Otto worktree contamination during this fix
 
@@ -61,6 +61,7 @@ Mid-edit, peer Otto-CLI fresh-session switched the shared worktree to a differen
 This PR updates three `.claude/rules/` documents to disclose that cited memory files are user-scope only and to provide cold-boot fallback guidance for fresh checkouts.
 
 **Changes:**
+
 - Adds user-scope-only disclosure for dangling `memory/feedback_*.md` references.
 - Points readers to in-rule projections and `memory/CURRENT-*.md` fallback files.
 - Keeps the changes documentation-only.
@@ -69,23 +70,25 @@ This PR updates three `.claude/rules/` documents to disclose that cited memory f
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md` | Adds disclosure and fallback text for a user-scope-only substrate lesson memory. |
-| `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` | Adds disclosure and fallback text for two user-scope-only memory citations. |
-| `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | Adds disclosure and fallback text for the user-scope-only CodeQL canary memory. |
-
+| File                                                                        | Description                                                                      |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md`   | Adds disclosure and fallback text for a user-scope-only substrate lesson memory. |
+| `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`             | Adds disclosure and fallback text for two user-scope-only memory citations.      |
+| `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | Adds disclosure and fallback text for the user-scope-only CodeQL canary memory.  |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/persistence-choice-architecture-for-zeta-ais.md:135**
-* P1: This says `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` carries the constitutional projection, but neither file currently contains the cited memory stem or the "Zeta is memory preservation specialist first" wording. That makes the advertised cold-boot fallback inaccurate.
+
+- P1: This says `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` carries the constitutional projection, but neither file currently contains the cited memory stem or the "Zeta is memory preservation specialist first" wording. That makes the advertised cold-boot fallback inaccurate.
+
 ```
   (user-scope only; same cold-boot fallback as above —
   `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` in-repo
   carries the constitutional projection)
 ```
+
 </details>
 
 ## Review threads

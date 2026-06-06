@@ -24,14 +24,14 @@ as "not a workstream with a cadence" and refers to "those workstreams" it
 protects. Made explicit here (the human maintainer 2026-05-29):
 
 - **Trajectory = the genus.** Any tracked path through state-space over time —
-  including emergent arcs, *states* (`autonomous-loop-quiet-state`), *postures*
-  (`anti-infection`), and *disciplines* (`trajectory-drift-reporting`). A
+  including emergent arcs, _states_ (`autonomous-loop-quiet-state`), _postures_
+  (`anti-infection`), and _disciplines_ (`trajectory-drift-reporting`). A
   trajectory can be unowned and uncadenced; it is descriptive. There can be many.
 - **Workstream = the species, and a current-focus status.** A trajectory the
-  operator is *actively powering* — owned, cadenced, deliverable-bearing.
-  Physics anchor: a workstream is a trajectory under *sustained thrust toward an
-  attractor*. Because thrust budget (operator + agent focus) is finite, only a
-  few trajectories can be workstreams at once — the rest *coast* (still tracked,
+  operator is _actively powering_ — owned, cadenced, deliverable-bearing.
+  Physics anchor: a workstream is a trajectory under _sustained thrust toward an
+  attractor_. Because thrust budget (operator + agent focus) is finite, only a
+  few trajectories can be workstreams at once — the rest _coast_ (still tracked,
   still moving, no active thrust). "Workstream" is therefore not a permanent
   tag; it is the active-focus subset, capacity-/WIP-bounded. A coasting
   trajectory becomes a workstream when thrust is applied; a workstream reverts to
@@ -40,7 +40,7 @@ protects. Made explicit here (the human maintainer 2026-05-29):
 Operationally: tag a RESUME.md `Type: workstream (current-focus)` only while it
 is in the active set; drop or mark it coasting when it leaves. The genus surface
 (`docs/trajectories/`) holds both; the workstream designation is a property of
-*now*, not of the trajectory's identity.
+_now_, not of the trajectory's identity.
 
 Eventual encoding (design-stage): a trajectory's state is trackable as a
 **128-bit genetic-ID seed** (discrete, reversible via parser-combinator ↔

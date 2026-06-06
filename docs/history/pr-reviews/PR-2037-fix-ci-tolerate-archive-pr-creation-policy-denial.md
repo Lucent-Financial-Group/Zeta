@@ -10,46 +10,47 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2037 |
-| Title | fix(ci): tolerate archive PR creation policy denial |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-08T04:49:48Z |
-| Merged at | 2026-05-08T04:56:21Z |
-| Merge commit SHA | `12d48f2647b97ce5798c52ca8475572ca1db2419` |
-| Branch | `codex/archive-pr-create-denied-success` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2037 |
-| Changed files | 1 |
-| Additions / deletions | +34 / -3 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2037                                                     |
+| Title                 | fix(ci): tolerate archive PR creation policy denial      |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-08T04:49:48Z                                     |
+| Merged at             | 2026-05-08T04:56:21Z                                     |
+| Merge commit SHA      | `12d48f2647b97ce5798c52ca8475572ca1db2419`               |
+| Branch                | `codex/archive-pr-create-denied-success`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2037 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +34 / -3                                                 |
 
 ## Description
 
 ## Summary
+
 - make `pr-archive-on-merge` exit green after successfully pushing the archive branch when repository policy denies Actions-created PRs
 - emit a step-summary note and notice naming the pushed archive branch for the next agent/maintainer pass
 - keep unexpected `gh pr create` failures hard-failing
 
 ## Checks
+
 - `bunx actionlint .github/workflows/pr-archive-on-merge.yml`
 - `git diff --check`
 
 This prevents the repeated non-required `archive` failure we just had to repair manually for #2031, #2033, and #2035 after durable archive branches were already pushed.
 
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 3 |
-| Resolved threads | 3 |
-| Unresolved threads | 0 |
-| Total review comments | 3 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 3     |
+| Resolved threads                          | 3     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 3     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -65,9 +66,9 @@ This prevents the repeated non-required `archive` failure we just had to repair 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Preserve gh failure exit code before fallback handling**
-
+  
   Capture of `create_status` happens after the `if gh pr create ...; then ... fi` compound, so on a failed `gh pr create` the stored status is `0` (Bash returns success for an `if` with no `else` branch when the condition is false). In the non-policy-denial path this makes `exit "$create_status"` succeed, causing unexpected PR-creation failures to be silently reported as green instead of failing the workflow.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -83,9 +84,9 @@ This prevents the repeated non-required `archive` failure we just had to repair 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Narrow policy-denial detection instead of matching all GraphQL errors**
-
+  
   The fallback condition treats any log containing `createPullRequest` as a repository-policy denial, but that token is broadly associated with GitHub GraphQL mutation failures and can appear for unrelated errors (invalid head/base state, validation failures, etc.). In those cases the workflow exits 0 and emits a misleading "policy" summary, masking real failures that should remain hard-fail.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -101,7 +102,7 @@ This prevents the repeated non-required `archive` failure we just had to repair 
 
   <pre>
   P0: The policy-denial detection is too broad. Matching any "createPullRequest" will also catch unrelated `gh pr create` GraphQL failures (e.g., "Base ref must be a branch (createPullRequest)"), causing this workflow to exit green and emit a misleading notice on genuine errors you intended to keep hard-failing. Tighten the check to the specific repository-policy denial text (or require both the denial phrase and the createPullRequest suffix) so unexpected failures still fail the job.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

@@ -9,8 +9,8 @@
 
 Resolve `name@range` against a **hosted, signed** catalog fetched over HTTP(S),
 merged **under** the existing local registry, with **all per-package verification
-unchanged**. A remote index is untrusted transport carrying a *signed, anti-rollback,
-freshness-gated* document; the package bytes it points at are still hash-pinned +
+unchanged**. A remote index is untrusted transport carrying a _signed, anti-rollback,
+freshness-gated_ document; the package bytes it points at are still hash-pinned +
 signature-gated exactly as today.
 
 ## Decomposition of slice 5→6 (recap)
@@ -29,9 +29,9 @@ signature-gated exactly as today.
    `sequence` high-water mark; (c) **freshness** via an `issued_at` window — bounded both
    in the past (max-staleness) **and** the future (max-skew; Codex #6424 P2).
    A remote registry is never shipped unsigned. (Anti-rollback + freshness are what the
-   per-package pin *cannot* provide — they defend availability + version-selection.)
-   **Mandatory per-registry key (Codex #6424 P1):** the trust store is the *global
-   package-signing* keyring with no registry role separation, so an any-trusted-key
+   per-package pin _cannot_ provide — they defend availability + version-selection.)
+   **Mandatory per-registry key (Codex #6424 P1):** the trust store is the _global
+   package-signing_ keyring with no registry role separation, so an any-trusted-key
    fallback would let an unrelated package author's key sign a catalog and steer this
    registry's version selection. A remote therefore **must** pin its expected signer
    (`--key` required); the index's `signature.key_id` must equal that pin (and the key
@@ -62,7 +62,7 @@ JSON, signed over the existing canonical-JSON discipline (`canonicalJson` in
   "issued_at": "2026-06-01T12:00:00Z",
   "packages": {
     "leaf": { "1.0.0": { "url": "https://…/leaf-1.0.0.json", "package_hash": "sha256:…" } },
-    "mid":  { "2.3.0": { "url": "https://…/mid-2.3.0.json",  "package_hash": "sha256:…" } }
+    "mid": { "2.3.0": { "url": "https://…/mid-2.3.0.json", "package_hash": "sha256:…" } }
   },
   "signature": { "algo": "ed25519", "key_id": "ed25519:…", "sig": "<base64>" }
 }
@@ -110,7 +110,7 @@ Reuse the existing ed25519 + `keyId` + trust-lookup logic; add index-shaped sibl
   (used by the CLI subcommands); dedup by `url`.
 - `registryCacheDir(): string` → `~/.ace/registry-cache/`.
 - The existing **sync `loadRegistry(bundled, user)` is untouched** (local-only path +
-  tests). Remote loading is a new async function (below) that *unions on top of* it.
+  tests). Remote loading is a new async function (below) that _unions on top of_ it.
 
 ### `tools/ace/registry-remote.ts` (new — fetch + verify + anti-rollback + cache + merge)
 
@@ -141,9 +141,9 @@ Pure-where-possible; the only effectful surfaces are `fetch` + cache file I/O.
        (negative diff), so a skewed/compromised signer could publish a future-dated
        high-sequence index accepted for years; the future-skew bound refuses it
        (Codex #6424 P2).
-     The **past** gate is **skipped only** for a cached body under `--offline`; the
-     **future-skew** gate is **always** enforced (a future timestamp is never legitimate
-     offline either). Signature + anti-rollback always enforced.
+       The **past** gate is **skipped only** for a cached body under `--offline`; the
+       **future-skew** gate is **always** enforced (a future timestamp is never legitimate
+       offline either). Signature + anti-rollback always enforced.
 - `fetchRemoteIndex(remote, trustStore, opts): Promise<{ entries: Registry } | { error: string } | { skipped: string }>`
   — per-registry orchestration:
   1. read cache meta;
@@ -157,7 +157,7 @@ Pure-where-possible; the only effectful surfaces are `fetch` + cache file I/O.
      - **network error** → cached body if present → `verifyIndex` → entries (+ warn);
        else `{ skipped }` (+ warn).
   - Any **parse / signature / anti-rollback / freshness** failure on the body chosen for
-    use → `{ error }` (HARD refusal — an invalid *signed* index is an attack signal,
+    use → `{ error }` (HARD refusal — an invalid _signed_ index is an attack signal,
     never a degrade-to-local).
 - `loadRegistries(opts: { offline?: boolean; trustStore: TrustStore; … }): Promise<{ registry: Registry; warnings: string[]; errors: string[] }>`
   — orchestrates the merge:
@@ -200,18 +200,18 @@ install (graph): read root → verify → loadRegistries(offline?)              
 
 ## Error handling
 
-| Situation | Behavior |
-| --- | --- |
-| Remote unreachable, cache present | Use cache + warn |
-| Remote unreachable, no cache | Skip remote + warn (continue local-only) |
-| `--offline`, cache present | Use cache; **skip past max-staleness only** (future-skew still enforced); sig + anti-rollback still enforced |
-| `--offline`, no cache | Skip remote + warn |
-| `304 Not Modified` | Use cached body (full gates) |
-| Index parse / shape / `format_version ≠ 1` | **Hard refusal** (named registry) |
-| Index signature bad / untrusted / not-the-pinned-key | **Hard refusal** (attack signal; pin is mandatory) |
-| Index `sequence < high-water` | **Hard refusal** (rollback) |
-| Index too stale (`issued_at` past max-staleness) | **Hard refusal** (freshness); `--offline` skips this gate on cache |
-| Index `issued_at` in the future beyond max-skew | **Hard refusal** (clock-skew / compromised-signer guard; always enforced, incl. `--offline`) |
+| Situation                                            | Behavior                                                                                                     |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Remote unreachable, cache present                    | Use cache + warn                                                                                             |
+| Remote unreachable, no cache                         | Skip remote + warn (continue local-only)                                                                     |
+| `--offline`, cache present                           | Use cache; **skip past max-staleness only** (future-skew still enforced); sig + anti-rollback still enforced |
+| `--offline`, no cache                                | Skip remote + warn                                                                                           |
+| `304 Not Modified`                                   | Use cached body (full gates)                                                                                 |
+| Index parse / shape / `format_version ≠ 1`           | **Hard refusal** (named registry)                                                                            |
+| Index signature bad / untrusted / not-the-pinned-key | **Hard refusal** (attack signal; pin is mandatory)                                                           |
+| Index `sequence < high-water`                        | **Hard refusal** (rollback)                                                                                  |
+| Index too stale (`issued_at` past max-staleness)     | **Hard refusal** (freshness); `--offline` skips this gate on cache                                           |
+| Index `issued_at` in the future beyond max-skew      | **Hard refusal** (clock-skew / compromised-signer guard; always enforced, incl. `--offline`)                 |
 
 ## Testing
 
@@ -243,7 +243,7 @@ install (graph): read root → verify → loadRegistries(offline?)              
 
 ## Scope / YAGNI — deferred (future slices / backlog rows)
 
-- **Mirror / failover** across multiple URLs for the *same* registry → backlog.
+- **Mirror / failover** across multiple URLs for the _same_ registry → backlog.
 - **Incremental / paginated index** (delta updates, range requests) → backlog; slice 6
   fetches a single index document.
 - **Full TUF role separation** (root / targets / snapshot / timestamp, key rotation
@@ -262,8 +262,8 @@ install (graph): read root → verify → loadRegistries(offline?)              
 - `tools/ace/signing.ts` — `canonicalIndexBytes` + `signIndex` + `verifyIndexSignature`
   (additive siblings; reuse ed25519 + `keyId` + trust-lookup).
 - `tools/ace/store.ts` — `RemoteRegistryConfig` / `RegistriesConfig` + `registriesPath`
-  + `readRegistriesConfig` / `writeRegistryRemote` / `removeRegistryRemote` +
-  `registryCacheDir`; sync `loadRegistry` unchanged.
+  - `readRegistriesConfig` / `writeRegistryRemote` / `removeRegistryRemote` +
+    `registryCacheDir`; sync `loadRegistry` unchanged.
 - `tools/ace/ace.ts` — `ace registry remote add/list/rm`; `--offline` on install/update;
   swap `loadRegistry()` → `await loadRegistries(...)` in the install + update handlers;
   usage text.

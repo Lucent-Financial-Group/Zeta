@@ -36,12 +36,14 @@ export type McpToolDescriptor = {
 export const METRICS_TOOL_DESCRIPTORS: readonly McpToolDescriptor[] = [
   {
     name: MetricsToolName.AnalyzeSource,
-    description: "Gather quantitative code metrics (longest function/class, file length, max nesting) for one source file and flag god-object risks.",
+    description:
+      "Gather quantitative code metrics (longest function/class, file length, max nesting) for one source file and flag god-object risks.",
     inputKeys: ["filePath", "source", "thresholds?"],
   },
   {
     name: MetricsToolName.RunReviewBoard,
-    description: "Run the >=3-agent qualitative review board over candidate findings and reviewer votes; returns which findings the board agreed to adopt.",
+    description:
+      "Run the >=3-agent qualitative review board over candidate findings and reviewer votes; returns which findings the board agreed to adopt.",
     inputKeys: ["findings", "votes", "quorum?"],
   },
 ];
@@ -73,20 +75,30 @@ export function dispatchMetricsTool(name: string, args: unknown): MetricsToolRes
   if (name === MetricsToolName.AnalyzeSource) {
     const a = args as AnalyzeSourceArgs;
     if (typeof a?.filePath !== "string" || typeof a?.source !== "string") {
-      return { outcome: "feedback", feedback: { reason: "bad_args", message: "analyze_source requires filePath and source strings" } };
+      return {
+        outcome: "feedback",
+        feedback: { reason: "bad_args", message: "analyze_source requires filePath and source strings" },
+      };
     }
-    const report = a.thresholds === undefined ? analyzeSource(a.filePath, a.source) : analyzeSource(a.filePath, a.source, a.thresholds);
+    const report =
+      a.thresholds === undefined
+        ? analyzeSource(a.filePath, a.source)
+        : analyzeSource(a.filePath, a.source, a.thresholds);
     return { outcome: "ok", tool: MetricsToolName.AnalyzeSource, report };
   }
 
   if (name === MetricsToolName.RunReviewBoard) {
     const a = args as RunReviewBoardArgs;
     if (!Array.isArray(a?.findings) || !Array.isArray(a?.votes)) {
-      return { outcome: "feedback", feedback: { reason: "bad_args", message: "run_review_board requires findings[] and votes[]" } };
+      return {
+        outcome: "feedback",
+        feedback: { reason: "bad_args", message: "run_review_board requires findings[] and votes[]" },
+      };
     }
-    const result = a.quorum === undefined
-      ? evaluateReviewBoard({ findings: a.findings, votes: a.votes })
-      : evaluateReviewBoard({ findings: a.findings, votes: a.votes, quorum: a.quorum });
+    const result =
+      a.quorum === undefined
+        ? evaluateReviewBoard({ findings: a.findings, votes: a.votes })
+        : evaluateReviewBoard({ findings: a.findings, votes: a.votes, quorum: a.quorum });
     if (result.outcome === "feedback") {
       return { outcome: "feedback", feedback: result.feedback };
     }

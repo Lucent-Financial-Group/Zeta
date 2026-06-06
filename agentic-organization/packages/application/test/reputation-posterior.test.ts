@@ -271,7 +271,8 @@ test("normal-risk exploration samples uncertainty but high-risk work requires a 
         currentLoad: 0,
         consecutiveAssignmentCount: agentId === "agent-safe" ? 5 : 0,
         recentSameHatAssignments: agentId === "agent-safe" ? 5 : 0,
-      })),
+      }),
+    ),
   });
 
   const normalSelection = selectRmoCandidateWithExploration({
@@ -386,7 +387,10 @@ function quality(
   };
 }
 
-function collaboration(agentId: string, success: boolean): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
+function collaboration(
+  agentId: string,
+  success: boolean,
+): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
   return {
     organizationId: "org-1",
     agentId,
@@ -399,7 +403,10 @@ function collaboration(agentId: string, success: boolean): Parameters<typeof pro
   };
 }
 
-function latency(agentId: string, value: number): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
+function latency(
+  agentId: string,
+  value: number,
+): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
   return {
     organizationId: "org-1",
     agentId,
@@ -412,7 +419,10 @@ function latency(agentId: string, value: number): Parameters<typeof projectReput
   };
 }
 
-function cost(agentId: string, value: number): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
+function cost(
+  agentId: string,
+  value: number,
+): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
   return {
     organizationId: "org-1",
     agentId,
@@ -425,7 +435,10 @@ function cost(agentId: string, value: number): Parameters<typeof projectReputati
   };
 }
 
-function incidentContribution(agentId: string, contributed: boolean): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
+function incidentContribution(
+  agentId: string,
+  contributed: boolean,
+): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
   return {
     organizationId: "org-1",
     agentId,
@@ -438,7 +451,10 @@ function incidentContribution(agentId: string, contributed: boolean): Parameters
   };
 }
 
-function reviewReversal(agentId: string, reversed: boolean): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
+function reviewReversal(
+  agentId: string,
+  reversed: boolean,
+): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
   return {
     organizationId: "org-1",
     agentId,

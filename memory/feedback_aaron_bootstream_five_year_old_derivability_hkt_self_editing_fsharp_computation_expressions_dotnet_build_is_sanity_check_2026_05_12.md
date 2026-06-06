@@ -281,11 +281,11 @@ operationally-grounded substrate.
 
 ### 2. Half-encoded substrate has three epistemic states
 
-| State | Description | Evaluation |
-|---|---|---|
-| F# anchored | Substrate lands as compilable F# code | Operationally grounded; compiler validates |
-| F# referenced | Documentation references existing F# constructs | Grounded; can be cross-validated |
-| Language ahead of code | Documentation describes F# constructs not yet written | Valid but speculative; tracked separately |
+| State                  | Description                                           | Evaluation                                 |
+| ---------------------- | ----------------------------------------------------- | ------------------------------------------ |
+| F# anchored            | Substrate lands as compilable F# code                 | Operationally grounded; compiler validates |
+| F# referenced          | Documentation references existing F# constructs       | Grounded; can be cross-validated           |
+| Language ahead of code | Documentation describes F# constructs not yet written | Valid but speculative; tracked separately  |
 
 All three valid; methodology cares about distinguishing them.
 Future-Otto: when implementing today's cascade substrate,
@@ -346,6 +346,7 @@ This composes with:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all of today's cascade has F#
   anchors** — half-encoded means some labels are
   language ahead of code; tracking which is which is the

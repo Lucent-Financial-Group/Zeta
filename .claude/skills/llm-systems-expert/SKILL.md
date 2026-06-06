@@ -8,7 +8,7 @@ description: LLM systems — RAG, agent loops, tool orchestration, context budge
 Capability skill ("hat"). Distinct from
 `prompt-engineering-expert` (which owns prose) and
 `ai-evals-expert` (which owns measurement). This skill owns
-*how an LLM-shaped system is put together*: the plumbing
+_how an LLM-shaped system is put together_: the plumbing
 around the model — context, retrieval, tools, memory,
 orchestration, cost.
 
@@ -30,7 +30,7 @@ orchestration, cost.
   cache-hit rate, tool-call round-trip.
 - Safety rails at the system level (input filtering, output
   filtering, HITL gates, refusal escalation).
-- Evaluation *wiring* (how evals hook into the system;
+- Evaluation _wiring_ (how evals hook into the system;
   measurement itself is `ai-evals-expert`).
 - Memory architecture (short-term working, long-term vector,
   structured KV).
@@ -106,7 +106,7 @@ feasibility.
 2. **Chunking.** Token budget per chunk (typical 256-1024
    tokens), overlap (10-20%), semantic vs. fixed-size.
 3. **Embedding.** Model choice (OpenAI `text-embedding-3-
-   large`, BGE, E5, Jina, Cohere). Dimensionality vs.
+large`, BGE, E5, Jina, Cohere). Dimensionality vs.
    storage vs. quality.
 4. **Vector index.** FAISS / HNSW / pgvector / LanceDB /
    Qdrant / Weaviate / Milvus. Index structure affects
@@ -166,18 +166,18 @@ count, cost. Always have a termination criterion.
 
 ### Context-window budgeting
 
-Mental model: the context window is a *shared resource* that
+Mental model: the context window is a _shared resource_ that
 several tenants compete for.
 
-| Tenant | Typical share | Notes |
-|--------|---------------|-------|
-| System prompt | 2-10% | Stable; cache-worthy. |
-| Skill / persona body | 10-30% | Loaded on trigger. |
-| Prior conversation | 20-50% | Grows; compaction candidate. |
-| Tool results | 10-30% | Can dominate (large file reads). |
-| Retrieved context (RAG) | 10-30% | Chunk count controls. |
-| User turn | 1-5% | Usually small. |
-| Reserve for response | 5-15% | Never zero. |
+| Tenant                  | Typical share | Notes                            |
+| ----------------------- | ------------- | -------------------------------- |
+| System prompt           | 2-10%         | Stable; cache-worthy.            |
+| Skill / persona body    | 10-30%        | Loaded on trigger.               |
+| Prior conversation      | 20-50%        | Grows; compaction candidate.     |
+| Tool results            | 10-30%        | Can dominate (large file reads). |
+| Retrieved context (RAG) | 10-30%        | Chunk count controls.            |
+| User turn               | 1-5%          | Usually small.                   |
+| Reserve for response    | 5-15%         | Never zero.                      |
 
 **Practical rules:**
 
@@ -270,8 +270,8 @@ and deletion as first-class operations.
 
 ### Evaluation wiring
 
-This skill designs *where* evals hook in; `ai-evals-expert`
-designs *what* they measure.
+This skill designs _where_ evals hook in; `ai-evals-expert`
+designs _what_ they measure.
 
 - **Unit-eval.** One input → one output against a rubric.
 - **End-to-end.** Whole pipeline against a rubric.
@@ -292,8 +292,8 @@ design choice against it.
 - **Latency budget.** First-token latency (streaming) +
   total-response latency + tool-call round-trips.
 - **Cache-hit rate target.** > 60% on stable prefixes.
-- **Cost per request.** = input_tokens *input_price +
-  output_tokens* output_price + tool_call_overhead.
+- **Cost per request.** = input_tokens _input_price +
+  output_tokens_ output_price + tool_call_overhead.
 
 Tracked via `observability-and-tracing-expert`'s trace
 format.
@@ -352,47 +352,56 @@ format.
 # LLM system design — <name>
 
 ## Task
+
 - Input: <shape>
 - Output: <shape>
 - Success criterion: <rubric>
 
 ## Shape
+
 <single-shot | RAG | tool-using | planning | multi-agent>
 
 ## Context budget
+
 | Tenant | Token share | Notes |
 
 ## Tool surface
+
 <list; each with description, schema sketch, error shape>
 
 ## Memory
+
 - Short-term: <description>
 - Long-term: <store, update policy, deletion policy>
 
 ## Evaluation hooks
+
 <regression set, judge-LLM, shadow, A/B>
 
 ## Safety rails
+
 <input filter, output filter, HITL, refusal>
 
 ## Cost/latency envelope
+
 - Target p50 latency: <ms>
 - Target p99 latency: <ms>
 - Target $/request: <$>
 - Target cache-hit rate: <%>
 
 ## Open risks
+
 <list>
 ```
 
 ## What this skill does NOT do
 
 - Does not write individual prompts (`prompt-engineering-
-  expert`).
+expert`).
 - Does not adversarially test (`prompt-protector`).
 - Does not measure correctness (`ai-evals-expert`).
 - Does not train embedding / classifier models (`ml-
-  engineering-expert`).
+engineering-expert`).
 - Does not pick the LLM vendor (business decision; this
   skill gives trade-offs).
 - Does not write trace-format specs
@@ -415,21 +424,21 @@ format.
 
 ### Primary literature
 
-- Lewis et al., *Retrieval-Augmented Generation for
-  Knowledge-Intensive NLP Tasks* (NeurIPS 2020).
-- Yao et al., *ReAct: Synergizing Reasoning and Acting in
-  Language Models* (ICLR 2023).
-- Shinn et al., *Reflexion: Language Agents with Verbal
-  Reinforcement Learning* (NeurIPS 2023).
-- Wang et al., *Voyager: An Open-Ended Embodied Agent with
-  LLMs* (2023).
-- Schick et al., *Toolformer: Language Models Can Teach
-  Themselves to Use Tools* (NeurIPS 2023).
-- Khattab et al., *ColBERTv2* / Santhanam et al.,
-  *ColBERT-PLAID* (SIGIR 2022 / 2023) — late-interaction
+- Lewis et al., _Retrieval-Augmented Generation for
+  Knowledge-Intensive NLP Tasks_ (NeurIPS 2020).
+- Yao et al., _ReAct: Synergizing Reasoning and Acting in
+  Language Models_ (ICLR 2023).
+- Shinn et al., _Reflexion: Language Agents with Verbal
+  Reinforcement Learning_ (NeurIPS 2023).
+- Wang et al., _Voyager: An Open-Ended Embodied Agent with
+  LLMs_ (2023).
+- Schick et al., _Toolformer: Language Models Can Teach
+  Themselves to Use Tools_ (NeurIPS 2023).
+- Khattab et al., _ColBERTv2_ / Santhanam et al.,
+  _ColBERT-PLAID_ (SIGIR 2022 / 2023) — late-interaction
   retrieval.
-- Anthropic, *Building effective agents* (docs).
-- OpenAI, *Agents SDK* documentation.
+- Anthropic, _Building effective agents_ (docs).
+- OpenAI, _Agents SDK_ documentation.
 - MCP (Model Context Protocol) specification —
   modelcontextprotocol.io.
 

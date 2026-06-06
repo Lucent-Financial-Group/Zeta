@@ -3,16 +3,17 @@ name: research counts as history — first-name attribution allowed (humans AND 
 description: Otto-279 policy correction — `docs/research/` is a HISTORY surface (sibling to `docs/ROUND-HISTORY.md`, `docs/DECISIONS/`), not a current-state surface; first-name attribution IS appropriate there for humans (Aaron) AND agents (Amara, Aminata, Otto, Kira, etc.); AGENT-BEST-PRACTICES "no names in docs" rule needs `docs/research/` carve-out; sweep existing research docs that had names stripped by subagents (e.g. on #282 #351); BACKLOGGED for post-drain to avoid churn.
 type: feedback
 ---
+
 Aaron Otto-279, 2026-04-24, while draining #282 thread on
 name-attribution Copilot review:
 
-> *"i feel like under research that counts as history and we
+> _"i feel like under research that counts as history and we
 > should give first name attribution? you? gives agent their
-> attributions too. we can add it to the list."*
+> attributions too. we can add it to the list."_
 
 Then immediately after:
 
-> *"backlog that that will be a lot of churn after the drain"*
+> _"backlog that that will be a lot of churn after the drain"_
 
 ## The rule
 
@@ -24,6 +25,7 @@ human contributors) AND for agent personas (Amara, Aminata,
 Otto, Kira, Dejan, etc.).
 
 **Why:**
+
 - Research docs ARE the historical record of who-said-what
   on a given absorb / cross-review / synthesis turn. Stripping
   names destroys the record.
@@ -74,8 +76,7 @@ enumeration in `docs/AGENT-BEST-PRACTICES.md` and
 - `docs/DECISIONS/**` — ADRs are historical decisions
 - `docs/aurora/**` — courier-ferry archive (already implicit
   per GOVERNANCE §33)
-- `docs/pr-preservation/**` — PR conversation archive (Otto-
-  250) — preserves who-said-what verbatim
+- `docs/pr-preservation/**` — PR conversation archive (Otto- 250) — preserves who-said-what verbatim
 - `docs/hygiene-history/**` — tick-history + drain-logs are
   append-only history surfaces (Otto-229)
 - `docs/WINS.md` — historical wins log
@@ -113,12 +114,14 @@ surfaces; use the role-ref ("the harsh-critic said X").
 ## How to apply
 
 **Now (during drain):**
+
 - Don't strip names from research docs.
 - Don't sweep existing research docs.
 - Reply to Copilot threads on #282 explaining the policy
   (research = history, names appropriate) and resolve them.
 
 **Post-drain (BACKLOG row):**
+
 - Update `docs/AGENT-BEST-PRACTICES.md` BP rule: extend the
   "names allowed" surface list per the canonical list above.
 - Sweep recent research docs where subagents stripped names:

@@ -173,10 +173,8 @@ export async function reconcileSettings(
 // CLI entrypoint
 // ---------------------------------------------------------------------------
 
-const DEFAULT_SETTINGS_URL =
-  "https://github.com/Lucent-Financial-Group/Zeta/settings";
-const DEFAULT_SECURITY_URL =
-  "https://github.com/Lucent-Financial-Group/Zeta/settings/security_analysis";
+const DEFAULT_SETTINGS_URL = "https://github.com/Lucent-Financial-Group/Zeta/settings";
+const DEFAULT_SECURITY_URL = "https://github.com/Lucent-Financial-Group/Zeta/settings/security_analysis";
 const DEFAULT_EXPECTED_JSON = "tools/hygiene/github-settings.expected.json";
 
 interface CliArgs {
@@ -260,9 +258,7 @@ export async function main(argv: readonly string[]): Promise<number> {
   process.stdout.write(JSON.stringify(result, null, 2) + "\n");
 
   if (result.drift.length > 0) {
-    process.stderr.write(
-      `drift detected: ${String(result.drift.length)} setting(s) differ from expected\n`,
-    );
+    process.stderr.write(`drift detected: ${String(result.drift.length)} setting(s) differ from expected\n`);
     for (const d of result.drift) {
       process.stderr.write(
         `  ${d.uiKey} (${d.jsonPath}): ui=${String(d.uiValue)} expected=${String(d.expectedValue)}\n`,
@@ -275,8 +271,10 @@ export async function main(argv: readonly string[]): Promise<number> {
 }
 
 if (import.meta.main) {
-  main(process.argv.slice(2)).then((code) => process.exit(code)).catch((err: unknown) => {
-    process.stderr.write(`fatal: ${String(err)}\n`);
-    process.exit(1);
-  });
+  main(process.argv.slice(2))
+    .then((code) => process.exit(code))
+    .catch((err: unknown) => {
+      process.stderr.write(`fatal: ${String(err)}\n`);
+      process.exit(1);
+    });
 }

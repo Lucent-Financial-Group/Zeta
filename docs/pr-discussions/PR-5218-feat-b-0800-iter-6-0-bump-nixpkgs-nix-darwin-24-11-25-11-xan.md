@@ -18,25 +18,26 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary — P1 EOL recovery
 
-The maintainer 2026-05-26: *"24.11 is a 2 year old version you found a 25.11 when you searched latest we need to make sure we are on latest too"*.
+The maintainer 2026-05-26: _"24.11 is a 2 year old version you found a 25.11 when you searched latest we need to make sure we are on latest too"_.
 
 Per WebSearch (per `.claude/rules/dep-pin-search-first-authority.md` landed earlier today):
+
 - **NixOS 25.11 "Xantusia"** — current stable; released 2025-11-30; EOL 2026-06-30
 - Our `nixos-24.11` pin had been EOL since **2025-06-30** (~11 months out-of-support) — substantive supply-chain-security gap
 
 ## Changes
 
-| File | Old | New |
-|---|---|---|
-| `full-ai-cluster/flake.nix` nixpkgs.url | `nixos-24.11` | `nixos-25.11` |
-| `full-ai-cluster/flake.nix` nix-darwin.url | `nix-darwin-24.11` | `nix-darwin-25.11` |
-| `full-ai-cluster/flake.nix` stateVersion | `24.11` | `25.11` |
-| `full-ai-cluster/usb-nixos-installer/flake.nix` nixpkgs+stateVersion | `24.11` | `25.11` |
-| `full-ai-cluster/nixos/modules/common.nix` stateVersion default | `24.11` | `25.11` |
-| `full-ai-cluster/nixos/hosts/worker-template/default.nix` stateVersion | `24.11` | `25.11` |
-| `full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix` stateVersion | `24.11` | `25.11` |
-| `full-ai-cluster/README.md` + `tools/zflash.ts` | nix-darwin-24.11 / zeta-installer-24.11.iso refs | bumped |
-| Both `flake.lock` files | regenerated via `nix flake update` | nixpkgs pinned to `b77b3de` (2026-05-22) |
+| File                                                                                 | Old                                              | New                                      |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------ | ---------------------------------------- |
+| `full-ai-cluster/flake.nix` nixpkgs.url                                              | `nixos-24.11`                                    | `nixos-25.11`                            |
+| `full-ai-cluster/flake.nix` nix-darwin.url                                           | `nix-darwin-24.11`                               | `nix-darwin-25.11`                       |
+| `full-ai-cluster/flake.nix` stateVersion                                             | `24.11`                                          | `25.11`                                  |
+| `full-ai-cluster/usb-nixos-installer/flake.nix` nixpkgs+stateVersion                 | `24.11`                                          | `25.11`                                  |
+| `full-ai-cluster/nixos/modules/common.nix` stateVersion default                      | `24.11`                                          | `25.11`                                  |
+| `full-ai-cluster/nixos/hosts/worker-template/default.nix` stateVersion               | `24.11`                                          | `25.11`                                  |
+| `full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix` stateVersion | `24.11`                                          | `25.11`                                  |
+| `full-ai-cluster/README.md` + `tools/zflash.ts`                                      | nix-darwin-24.11 / zeta-installer-24.11.iso refs | bumped                                   |
+| Both `flake.lock` files                                                              | regenerated via `nix flake update`               | nixpkgs pinned to `b77b3de` (2026-05-22) |
 
 ## stateVersion bump rationale
 

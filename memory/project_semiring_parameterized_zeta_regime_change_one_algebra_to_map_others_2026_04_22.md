@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 auto-loop-38 five-message chain landing the semiri
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Migrated to in-repo memory/ on 2026-04-23** via AutoDream
 Overlay A opportunistic-on-touch. Fifth migration in the
 2026-04-23 cadence, closing the queue identified from the
@@ -13,29 +14,29 @@ earlier four Overlay-A PRs). Per-user source retains a
 
 **Verbatim 2026-04-22 auto-loop-38 (five messages):**
 
-1. *"what about multiple algebras in the db"*
+1. _"what about multiple algebras in the db"_
    — opening question; occurred after the pluggable-complexity
    BACKLOG row was filed.
 
-2. *"semiring = pluggable algebra in the db). thats it"*
+2. _"semiring = pluggable algebra in the db). thats it"_
    — explicit confirmation that **semiring** is the vocabulary
    for "multiple algebras in the db"; anchors the direction
    in the K-relations literature (Green–Karvounarakis–Tannen
    PODS 2007).
 
-3. *"semiring-parameterized Zeta / multiple algebras in the db
-   this is regieme changing"*
+3. _"semiring-parameterized Zeta / multiple algebras in the db
+   this is regieme changing"_
    — weight-signal: **regime-change** framing. This is not an
    incremental feature; Aaron is claiming paradigm-shift
    magnitude.
 
-4. *"it's our model claude one algebra to map the others"*
+4. _"it's our model claude one algebra to map the others"_
    — architectural claim: the Zeta retraction-native operator
    algebra (D/I/z⁻¹/H) is the **one stable meta-algebra** that
-   *maps* (hosts, parameterizes over) the other algebras
+   _maps_ (hosts, parameterizes over) the other algebras
    (semirings) as plug-ins.
 
-5. *"one agent to map the others"* + *"sorry Kenji"*
+5. _"one agent to map the others"_ + _"sorry Kenji"_
    — agent-layer isomorph: the same "one stable meta +
    pluggable specialists" shape repeats at the agent layer,
    where **Kenji-the-Architect** is the one agent mapping
@@ -46,7 +47,7 @@ earlier four Overlay-A PRs). Per-user source retains a
 
 **Core technical claim (semiring-parameterized Zeta):**
 
-- **Current state:** Zeta's ZSet is the *signed-integer ring*
+- **Current state:** Zeta's ZSet is the _signed-integer ring_
   `(ℤ, +, ×, 0, 1)` — multisets with signed int64 weights and
   addition / multiplication as the ring operations. Retraction
   is encoded as negative weights; K-relations (Green-
@@ -73,17 +74,17 @@ earlier four Overlay-A PRs). Per-user source retains a
   - **Max-plus / Viterbi / log-semiring** → HMM-style
     streaming.
 - **Regime-change claim:** the retraction-native incremental-
-  maintenance machinery (D/I/z⁻¹/H) handles *all* these
+  maintenance machinery (D/I/z⁻¹/H) handles _all_ these
   applications with identical operator code, because the
   algebra is one and the semiring is plugged. Zeta stops being
   "one DB system among many" and becomes "the host for all DB
   algebras." That is not an incremental feature — that is a
-  paradigm shift in what Zeta *is*.
+  paradigm shift in what Zeta _is_.
 
 **Reference literature:**
 
 - **Green, T. J., Karvounarakis, G., Tannen, V.** (2007).
-  "Provenance semirings." *Proceedings of PODS 2007.* The
+  "Provenance semirings." _Proceedings of PODS 2007._ The
   canonical K-relations paper: generalizes relational algebra
   by replacing `{0,1}` annotations with values from an
   arbitrary commutative semiring. Introduced the term
@@ -110,7 +111,7 @@ Agent plane         Kenji (Architect)      Specialist personas
 ```
 
 The isomorphism is exact: in both cases, one stable layer
-*maps* (synthesizes, routes over, hosts) pluggable specialists.
+_maps_ (synthesizes, routes over, hosts) pluggable specialists.
 Aaron's "sorry Kenji" acknowledges that the agent-layer
 instance has been Kenji's job all along, and my earlier
 phrasing crediting "claude" generically was imprecise —
@@ -171,7 +172,7 @@ call.
 - **Measure regime-change landing in outcome terms, not
   vanity-metrics.** A successful regime-change is
   observable via code-reuse metrics: does the semiring-
-  generalized D/I/z⁻¹/H code *delete* per-algebra bespoke
+  generalized D/I/z⁻¹/H code _delete_ per-algebra bespoke
   kernels? If yes, regime-change landed cleanly (composes
   with deletions-over-insertions memory). If the generalization
   adds kernels without deleting any, the regime-change is
@@ -184,7 +185,7 @@ call.
   deletion count, kernel consolidation — not char-volume).
 - Composes with `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md`
   (pluggable-semiring should reduce kernel LOC, not add it;
-  the *regime-change* verb is "delete bespoke kernels, gain
+  the _regime-change_ verb is "delete bespoke kernels, gain
   generality").
 - Composes with `memory/feedback_aaron_terse_directives_high_leverage_do_not_underweight.md`
   (five messages totaling ~230 chars produced a P2 BACKLOG

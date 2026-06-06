@@ -26,13 +26,13 @@ Closes the loop on the refinement candidate documented in [PR #4410](https://git
 
 ## Empirical scoreboard (all 6 attempts)
 
-| Date | Time | Lior state | Outcome |
-|---|---|---|---|
-| 2026-05-15 | 1338Z | 18min into cleanup | clean ✅ |
-| 2026-05-15 | 1345Z | active | corrupted ❌ (PR #3492) |
-| 2026-05-15 | 1521Z | 3.2% CPU | corrupted ❌ |
-| 2026-05-15 | 1547Z | 0.0% CPU | corrupted ❌ |
-| 2026-05-15 | 1631Z | absent | clean ✅ |
+| Date           | Time      | Lior state         | Outcome                         |
+| -------------- | --------- | ------------------ | ------------------------------- |
+| 2026-05-15     | 1338Z     | 18min into cleanup | clean ✅                        |
+| 2026-05-15     | 1345Z     | active             | corrupted ❌ (PR #3492)         |
+| 2026-05-15     | 1521Z     | 3.2% CPU           | corrupted ❌                    |
+| 2026-05-15     | 1547Z     | 0.0% CPU           | corrupted ❌                    |
+| 2026-05-15     | 1631Z     | absent             | clean ✅                        |
 | **2026-05-20** | **1413Z** | **3 procs active** | **clean ✅** (this PR's anchor) |
 
 3 clean, 3 corrupted. Pre-worktree blanket-defer stays as safest baseline; post-worktree-creation guard remains load-bearing.
@@ -66,6 +66,7 @@ Closes the loop on the refinement candidate documented in [PR #4410](https://git
 Updates the CodeQL docs-only canary rule to better describe a “verify-before-defer” refinement for worktree creation under concurrent agent activity, and records an additional empirical data point (2026-05-20T14:13Z) supporting that refinement.
 
 **Changes:**
+
 - Refines the pre-worktree guard section wording to describe a verify-before-defer composition approach.
 - Adds a new “Empirical anchor (2026-05-20T14:13Z)” section capturing the 6th worktree-creation datapoint.
 

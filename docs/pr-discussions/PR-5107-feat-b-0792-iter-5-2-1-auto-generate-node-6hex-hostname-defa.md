@@ -27,6 +27,7 @@ Composes iter-5.2 --host mechanism with B-0794 digital-twin substrate. Zero-typi
 Adds a zero-typing default hostname for `zflash` when `--host` is omitted, generating a random `node-<6hex>` name and printing it pre-flash so the operator can SSH in post-install (with the intent to allow later renames via the digital-twin workflow).
 
 **Changes:**
+
 - Auto-generate `node-<6hex>` hostname via Web Crypto when `--host` is not provided (and `--no-inject` is not set).
 - Print a clear pre-flash message showing the generated hostname and an example `ssh zeta@<host>.local` target.
 

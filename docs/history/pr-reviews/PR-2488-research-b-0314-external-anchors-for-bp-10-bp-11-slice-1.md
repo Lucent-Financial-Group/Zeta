@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2488 |
-| Title | research(B-0314): external anchors for BP-10, BP-11 (slice 1) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T13:02:40Z |
-| Merged at | 2026-05-10T13:10:34Z |
-| Merge commit SHA | `8775b0f48f356efd96e7b0d93167f80236ad4aa8` |
-| Branch | `fix/B-0314-bp-nn-anchor-backfill-slice1` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2488 |
-| Changed files | 3 |
-| Additions / deletions | +346 / -5 |
+| Field                 | Value                                                         |
+| --------------------- | ------------------------------------------------------------- |
+| Number                | 2488                                                          |
+| Title                 | research(B-0314): external anchors for BP-10, BP-11 (slice 1) |
+| Author                | `AceHack` (human)                                             |
+| State                 | MERGED                                                        |
+| Created at            | 2026-05-10T13:02:40Z                                          |
+| Merged at             | 2026-05-10T13:10:34Z                                          |
+| Merge commit SHA      | `8775b0f48f356efd96e7b0d93167f80236ad4aa8`                    |
+| Branch                | `fix/B-0314-bp-nn-anchor-backfill-slice1`                     |
+| Base branch           | `main`                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2488      |
+| Changed files         | 3                                                             |
+| Additions / deletions | +346 / -5                                                     |
 
 ## Description
 
@@ -38,11 +38,11 @@
 
 ## Changed files
 
-| File | Change |
-| --- | --- |
-| `docs/AGENT-BEST-PRACTICES.md` | Inline citations added after BP-10 and BP-11 |
+| File                                                             | Change                                        |
+| ---------------------------------------------------------------- | --------------------------------------------- |
+| `docs/AGENT-BEST-PRACTICES.md`                                   | Inline citations added after BP-10 and BP-11  |
 | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md` | New — full anchor dossier for BP-10 and BP-11 |
-| `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md` | Pre-start checklist + slice-progress table |
+| `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md`           | Pre-start checklist + slice-progress table    |
 
 ## Focused checks
 
@@ -63,15 +63,15 @@ Slice 2 should cover BP-12 (re-sanitise at sub-agent boundaries) and BP-16 (form
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 2 |
-| Resolved threads | 2 |
-| Unresolved threads | 0 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 3 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 2     |
+| Resolved threads                          | 2     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 3     |
 
 ## Review threads
 
@@ -87,16 +87,16 @@ Slice 2 should cover BP-12 (re-sanitise at sub-agent boundaries) and BP-16 (form
 
   <pre>
   P1 (xref): This note says B-0311 will extract URLs from this file via `EXTERNAL_RE`, but the implemented scanner (`tools/alignment/audit_external_anchors.ts`) doesn’t use `EXTERNAL_RE`; it extracts via `MARKDOWN_LINK_RE` + `BARE_URL_RE` in `extractUrlsFromWindow`. Please update this reference so it matches the current tool/implementation (otherwise readers will grep for `EXTERNAL_RE` and get misled).
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T13:10:19Z on `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md`:271 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T13:10:19Z on `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md`:271 (association: MEMBER)
 
-    <pre>
-    Fixed: updated the B-0311 xref to correctly name `MARKDOWN_LINK_RE` + `BARE_URL_RE` in `extractUrlsFromWindow` (commit 21f93ccf). `EXTERNAL_RE` does not exist in the scanner implementation.
-    </pre>
+  <pre>
+  Fixed: updated the B-0311 xref to correctly name `MARKDOWN_LINK_RE` + `BARE_URL_RE` in `extractUrlsFromWindow` (commit 21f93ccf). `EXTERNAL_RE` does not exist in the scanner implementation.
+  </pre>
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -110,16 +110,16 @@ Slice 2 should cover BP-12 (re-sanitise at sub-agent boundaries) and BP-16 (form
 
   <pre>
   P1: The slice-progress table includes BP-28 as in-scope ("BP-12–BP-28"), but this backlog row’s earlier scope/done-criteria language refers to "25 rules". Please reconcile the rule count / range so the row is internally consistent (either adjust the scope/done-criteria count or adjust the in-scope BP range).
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T13:10:25Z on `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md`:60 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T13:10:25Z on `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md`:60 (association: MEMBER)
 
-    <pre>
-    Fixed: AGENT-BEST-PRACTICES.md has 28 rules (BP-01–BP-28). Updated scope, done-criteria, and coverage target throughout B-0314 from 25→28 (commit 21f93ccf). The slice-progress table range BP-01–BP-09, BP-12–BP-28 is now consistent with the corrected scope.
-    </pre>
+  <pre>
+  Fixed: AGENT-BEST-PRACTICES.md has 28 rules (BP-01–BP-28). Updated scope, done-criteria, and coverage target throughout B-0314 from 25→28 (commit 21f93ccf). The slice-progress table range BP-01–BP-09, BP-12–BP-28 is now consistent with the corrected scope.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

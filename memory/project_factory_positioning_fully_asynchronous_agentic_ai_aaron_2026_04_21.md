@@ -4,8 +4,9 @@ description: Aaron 2026-04-21 "that is fully asycronous agentec ai" names the fa
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-**Fact:** Aaron 2026-04-21, verbatim: *"that is fully
-asycronous agentec ai"*. The factory — the meta-level
+
+**Fact:** Aaron 2026-04-21, verbatim: _"that is fully
+asycronous agentec ai"_. The factory — the meta-level
 system that produces Zeta the library — is named
 "fully asynchronous agentic AI". This is distinct
 from the library's own positioning.
@@ -71,14 +72,14 @@ AI-collaboration / agent-orchestration care about
 the factory. These are DIFFERENT audiences with
 DIFFERENT reading surfaces:
 
-| Audience | Surface | Positioning |
-|---|---|---|
-| F# / .NET engineers building streaming data systems | Zeta (library) | retraction-native IVM |
-| F# practitioners valuing correctness-by-construction | Zeta (library) | retraction-native IVM |
-| DBSP-adjacent researchers | Zeta (library) | DBSP-in-.NET |
-| AI-collaboration researchers | Factory (meta-system) | fully async agentic AI |
-| Alignment researchers | Factory (meta-system) | fully async agentic AI + measurable alignment |
-| Open-source factory-practices audience | Factory (meta-system) | fully async agentic AI |
+| Audience                                             | Surface               | Positioning                                   |
+| ---------------------------------------------------- | --------------------- | --------------------------------------------- |
+| F# / .NET engineers building streaming data systems  | Zeta (library)        | retraction-native IVM                         |
+| F# practitioners valuing correctness-by-construction | Zeta (library)        | retraction-native IVM                         |
+| DBSP-adjacent researchers                            | Zeta (library)        | DBSP-in-.NET                                  |
+| AI-collaboration researchers                         | Factory (meta-system) | fully async agentic AI                        |
+| Alignment researchers                                | Factory (meta-system) | fully async agentic AI + measurable alignment |
+| Open-source factory-practices audience               | Factory (meta-system) | fully async agentic AI                        |
 
 The library's positioning doc lives at
 `docs/marketing/positioning-draft-2026-04-21.md`.

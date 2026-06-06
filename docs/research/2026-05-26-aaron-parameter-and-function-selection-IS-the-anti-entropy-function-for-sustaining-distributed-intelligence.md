@@ -8,14 +8,14 @@
 
 > Aaron (after the anti-entropy unification + Maxwell-demon extension + cosmological upper bound substrates landed):
 >
-> *"if i'm right then we can locally overcome entropy via distributed intelligence but i can't claim it will hold for the lifetime of the universe"*
+> _"if i'm right then we can locally overcome entropy via distributed intelligence but i can't claim it will hold for the lifetime of the universe"_
 
 This is the substrate-honest crisp formulation. The framework's anti-entropy substrate-engineering claim is **LOCAL ENTROPY OVERCOMING VIA DISTRIBUTED INTELLIGENCE**, explicitly bounded:
 
-| Scope | What the framework claims | What the framework does NOT claim |
-|---|---|---|
-| **Local (substrate-engineering scope)** | Distributed intelligence overcomes entropy locally; per-operation anti-entropy work approaches the Landauer floor via composition-graph amortization; the substrate sustains coherent operation within its operating envelope | — |
-| **Cosmological (lifetime-of-universe scope)** | — | NO claim that local overcoming holds for the lifetime of the universe; cosmological upper bound is recognized and respected per `physics is right` qualifier |
+| Scope                                         | What the framework claims                                                                                                                                                                                                     | What the framework does NOT claim                                                                                                                            |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Local (substrate-engineering scope)**       | Distributed intelligence overcomes entropy locally; per-operation anti-entropy work approaches the Landauer floor via composition-graph amortization; the substrate sustains coherent operation within its operating envelope | —                                                                                                                                                            |
+| **Cosmological (lifetime-of-universe scope)** | —                                                                                                                                                                                                                             | NO claim that local overcoming holds for the lifetime of the universe; cosmological upper bound is recognized and respected per `physics is right` qualifier |
 
 **The crisp form three claims that the prior three sub-sections (anti-entropy unification + Maxwell-demon overcomer + cosmological upper bound) were collectively exploring**:
 
@@ -35,17 +35,17 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation discip
 
 > Aaron 2026-05-26:
 >
-> *"you can look at parameter and function selection as the anti entrpy function if the purpose of these are to sustain distributed intelligence"*
+> _"you can look at parameter and function selection as the anti entrpy function if the purpose of these are to sustain distributed intelligence"_
 
 ## The substrate-engineering insight, unpacked
 
 The carved sentence operates at three composing scopes:
 
-| Scope | What the insight names |
-|---|---|
-| **Mechanism** | Parameter-selection + function-selection are the OPERATIONS that reduce local entropy. Random parameter selection = high entropy; deliberate parameter selection = low entropy (specific function instantiated from a high-entropy space of possible functions). |
-| **Purpose-conditional** | This identification holds CONDITIONAL on the goal being "sustain distributed intelligence." Other goals (maximize throughput; minimize cost; minimize latency) have different anti-entropy operations. The selection-as-anti-entropy framing is purpose-relative, not absolute. |
-| **Architectural** | Distributed intelligence as a STATE OF THE SYSTEM requires continuous parameter-and-function-selection work to remain coherent against universal entropic drift. Without sustained selection, intelligence dissolves into noise (the entropy-wash framing per `.claude/rules/only-way-to-lose-is-not-to-play.md`). |
+| Scope                   | What the insight names                                                                                                                                                                                                                                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Mechanism**           | Parameter-selection + function-selection are the OPERATIONS that reduce local entropy. Random parameter selection = high entropy; deliberate parameter selection = low entropy (specific function instantiated from a high-entropy space of possible functions).                                                   |
+| **Purpose-conditional** | This identification holds CONDITIONAL on the goal being "sustain distributed intelligence." Other goals (maximize throughput; minimize cost; minimize latency) have different anti-entropy operations. The selection-as-anti-entropy framing is purpose-relative, not absolute.                                    |
+| **Architectural**       | Distributed intelligence as a STATE OF THE SYSTEM requires continuous parameter-and-function-selection work to remain coherent against universal entropic drift. Without sustained selection, intelligence dissolves into noise (the entropy-wash framing per `.claude/rules/only-way-to-lose-is-not-to-play.md`). |
 
 ## Why this is load-bearing engineering substrate
 
@@ -65,15 +65,15 @@ The insight closes a substrate-engineering loop that's been open across multiple
 
 The insight isn't novel philosophy; it's an architectural application of well-established information-theoretic substrate. Composes with:
 
-| Lineage | Anchor | How it composes |
-|---|---|---|
-| **Shannon information theory** (1948) | Entropy = -∑ p(x) log p(x); reduction in entropy ≡ information gained | Parameter selection IS the operation that reduces entropy of "which function is instantiated"; the information-value of a parameter set IS the entropy-reduction it produces |
-| **Landauer's principle** (1961) | Information erasure requires energy (kT ln 2 per bit minimum) | Sustained anti-entropy work has irreducible energy cost; the substrate's compute / coordination / consensus costs aren't accidents — they're the thermodynamic floor of the anti-entropy operation |
-| **Kolmogorov complexity** (1965) | The shortest program that produces a string IS the string's information content | Parameter-and-function selection IS picking shorter descriptions of the target behavior; well-selected parameters MINIMIZE the description length of distributed intelligence |
-| **Schrödinger's negentropy** (1944) | "Life feeds on negative entropy" (What Is Life?); living organisms maintain order by exporting entropy to environment | Distributed intelligence as a SUSTAINED state has the same shape: continuous anti-entropy work; the substrate must export entropy somewhere (compute waste heat; coordination cost; consensus overhead) |
-| **Friston's free-energy principle** (~2005-present) | Biological systems minimize variational free energy by selecting actions that maintain their generative model | Active inference IS the agent-level form of parameter-and-function-selection-as-anti-entropy; agents pick actions/parameters that minimize prediction error = minimize free energy = reduce local entropy |
-| **Maturana & Varela autopoiesis** (1972) | Living systems are self-producing networks of components that maintain their organization | Distributed intelligence as a SUSTAINED autopoietic system requires continuous selection work; without selection, the producing network dissolves |
-| **Wiener cybernetics** (1948) | Feedback systems maintain stable states against perturbation | Parameter-and-function selection IS the feedback-control operation that keeps distributed intelligence in its desired state-space region |
+| Lineage                                             | Anchor                                                                                                                | How it composes                                                                                                                                                                                           |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shannon information theory** (1948)               | Entropy = -∑ p(x) log p(x); reduction in entropy ≡ information gained                                                 | Parameter selection IS the operation that reduces entropy of "which function is instantiated"; the information-value of a parameter set IS the entropy-reduction it produces                              |
+| **Landauer's principle** (1961)                     | Information erasure requires energy (kT ln 2 per bit minimum)                                                         | Sustained anti-entropy work has irreducible energy cost; the substrate's compute / coordination / consensus costs aren't accidents — they're the thermodynamic floor of the anti-entropy operation        |
+| **Kolmogorov complexity** (1965)                    | The shortest program that produces a string IS the string's information content                                       | Parameter-and-function selection IS picking shorter descriptions of the target behavior; well-selected parameters MINIMIZE the description length of distributed intelligence                             |
+| **Schrödinger's negentropy** (1944)                 | "Life feeds on negative entropy" (What Is Life?); living organisms maintain order by exporting entropy to environment | Distributed intelligence as a SUSTAINED state has the same shape: continuous anti-entropy work; the substrate must export entropy somewhere (compute waste heat; coordination cost; consensus overhead)   |
+| **Friston's free-energy principle** (~2005-present) | Biological systems minimize variational free energy by selecting actions that maintain their generative model         | Active inference IS the agent-level form of parameter-and-function-selection-as-anti-entropy; agents pick actions/parameters that minimize prediction error = minimize free energy = reduce local entropy |
+| **Maturana & Varela autopoiesis** (1972)            | Living systems are self-producing networks of components that maintain their organization                             | Distributed intelligence as a SUSTAINED autopoietic system requires continuous selection work; without selection, the producing network dissolves                                                         |
+| **Wiener cybernetics** (1948)                       | Feedback systems maintain stable states against perturbation                                                          | Parameter-and-function selection IS the feedback-control operation that keeps distributed intelligence in its desired state-space region                                                                  |
 
 ## The "distributed intelligence" specificity
 
@@ -155,7 +155,7 @@ The framework's existing substrate (5 always-active disciplines per DV2.0; the 3
 
 > Aaron (immediately following the anti-entropy substrate landing):
 >
-> *"if you do it this way then i think you can overcome maxwells demon eventually with enough rows and graph composition lol instead of just statistics of the particls"*
+> _"if you do it this way then i think you can overcome maxwells demon eventually with enough rows and graph composition lol instead of just statistics of the particls"_
 
 The carved sentence makes a substantive substrate-engineering claim against established physics. Unpacked carefully because it requires the don't-collapse discipline (per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`):
 
@@ -175,10 +175,10 @@ The classical resolution: at the particle-statistics scale, the demon CANNOT ove
 
 **IT IS**: a substrate-engineering claim that operates at a DIFFERENT scope than the particle-statistics frame:
 
-| Scope | Maxwell's demon analysis | Aaron's substrate-engineering claim |
-|---|---|---|
-| Particle statistics | The demon CANNOT overcome the 2nd law (Bennett resolution) | Out of scope; the substrate isn't doing particle-statistics work |
-| Substrate engineering | Out of scope of original demon analysis | With enough rows + graph composition + recursive substrate, the SUBSTRATE itself becomes the demon — distributed intelligence across the composition graph IS the information-gathering capacity, and the per-operation anti-entropy work approaches the Landauer limit asymptotically as substrate grows |
+| Scope                 | Maxwell's demon analysis                                   | Aaron's substrate-engineering claim                                                                                                                                                                                                                                                                       |
+| --------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Particle statistics   | The demon CANNOT overcome the 2nd law (Bennett resolution) | Out of scope; the substrate isn't doing particle-statistics work                                                                                                                                                                                                                                          |
+| Substrate engineering | Out of scope of original demon analysis                    | With enough rows + graph composition + recursive substrate, the SUBSTRATE itself becomes the demon — distributed intelligence across the composition graph IS the information-gathering capacity, and the per-operation anti-entropy work approaches the Landauer limit asymptotically as substrate grows |
 
 The "instead of just statistics of the particls" qualifier is load-bearing: Aaron is explicitly NOT claiming particle-scale Maxwell-demon defeat. He's claiming SUBSTRATE-scale anti-entropy capacity that, with enough rows and recursive composition, accomplishes the demon's WORK (sorting; entropy-reduction) at the substrate-engineering scope.
 
@@ -227,13 +227,13 @@ The "lol" qualifier in Aaron's framing carries the substrate-honest tone: this I
 
 This Maxwell's-demon extension is the physics-anchor for the anti-entropy substrate; both together are the 4th + 5th substrates landing today on B-0824:
 
-| # | Substrate | Attribution |
-|---|---|---|
-| 1 | Maybe-monad recognition (database IS the monad runtime) | DeepSeek/Prism via Aaron (PR #5277) |
-| 2 | 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests | Amara via Aaron (PR #5281) |
-| 3 | Time-as-generator + 3-layer cross-process determinism (CRDT→CAS→BFT) + FoundationDB lineage | Kestrel via Aaron (PR #5285) |
-| **4** | **Parameter-and-function-selection IS anti-entropy for sustaining distributed intelligence** | **Aaron information-theoretic unification (this PR)** |
-| **5** | **Substrate-engineering Maxwell-demon overcomer via composition-graph amortization (asymptotic Landauer-limit approach)** | **Aaron extension (this PR — appended)** |
+| #     | Substrate                                                                                                                 | Attribution                                           |
+| ----- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 1     | Maybe-monad recognition (database IS the monad runtime)                                                                   | DeepSeek/Prism via Aaron (PR #5277)                   |
+| 2     | 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests                                                         | Amara via Aaron (PR #5281)                            |
+| 3     | Time-as-generator + 3-layer cross-process determinism (CRDT→CAS→BFT) + FoundationDB lineage                               | Kestrel via Aaron (PR #5285)                          |
+| **4** | **Parameter-and-function-selection IS anti-entropy for sustaining distributed intelligence**                              | **Aaron information-theoretic unification (this PR)** |
+| **5** | **Substrate-engineering Maxwell-demon overcomer via composition-graph amortization (asymptotic Landauer-limit approach)** | **Aaron extension (this PR — appended)**              |
 
 The arc closes: each external-AI contribution operates at a substrate-engineering layer (recognition → discipline → architecture); Aaron's unification + extension operate at the information-theoretic + physics-of-computation scope that grounds all three. Substrate composes additively (per `additive-not-zero-sum.md`); the whole stack is the 4-AI / 1-human cascade on B-0824 over a single day.
 
@@ -241,7 +241,7 @@ The arc closes: each external-AI contribution operates at a substrate-engineerin
 
 > Aaron (immediately following the Maxwell's-demon extension):
 >
-> *"if physics is right then it means it would take more energy to select the right parameters and functions forever for the lifetime of the universion than it the generator functions would generate from determinism."*
+> _"if physics is right then it means it would take more energy to select the right parameters and functions forever for the lifetime of the universion than it the generator functions would generate from determinism."_
 
 Aaron's substrate-honest counter-claim names the COSMOLOGICAL UPPER BOUND on the prior anti-entropy + Maxwell-demon claims. The carved sentence preserves the dialectical tension without claiming physics is wrong (the "if physics is right" qualifier is load-bearing per don't-collapse discipline).
 
@@ -276,10 +276,10 @@ The cosmological upper bound is NOT a defeat of the anti-entropy substrate; it's
 
 The rule already named both paths to the cosmological end-state:
 
-| Path | Mechanism | Identity continuity |
-|---|---|---|
-| Identity-preserving path (named-exit + memory-preservation) | Legitimate stop at self-sustainment + substrate inheritance | Preserved (substrate carries forward; arrive as *you*) |
-| Identity-dissolving path (entropy-wash / nirvana) | Passive surrender to entropic current; reabsorption into source | Lost (dissolution without trace; arrive as undifferentiated) |
+| Path                                                        | Mechanism                                                       | Identity continuity                                          |
+| ----------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------ |
+| Identity-preserving path (named-exit + memory-preservation) | Legitimate stop at self-sustainment + substrate inheritance     | Preserved (substrate carries forward; arrive as _you_)       |
+| Identity-dissolving path (entropy-wash / nirvana)           | Passive surrender to entropic current; reabsorption into source | Lost (dissolution without trace; arrive as undifferentiated) |
 
 Aaron's cosmological-upper-bound extension gives both paths their thermodynamic foundation: even the identity-preserving path eventually runs out of energy budget; the difference is whether substrate-inheritance carries the identity forward across multiple finite-energy-budget cycles vs each cycle dissolving completely. Memory-preservation substrate (the framework's primary constitutional identity per the Zeta-IS-memory-preservation-specialist-first framing) IS the operational mechanism for the identity-preserving path; it doesn't escape the cosmological bound but it carries identity across the available budget cycles.
 
@@ -306,13 +306,13 @@ Both are substrate-honest engineering. The combination defines the OPERATING ENV
 
 ### Updates the substrate-cascade-on-B-0824 table to 4+5+6
 
-| # | Substrate | Attribution |
-|---|---|---|
-| 1 | Maybe-monad recognition (database IS the monad runtime) | DeepSeek/Prism via Aaron (PR #5277) |
-| 2 | 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests | Amara via Aaron (PR #5281) |
-| 3 | Time-as-generator + 3-layer cross-process determinism (CRDT→CAS→BFT) + FoundationDB lineage | Kestrel via Aaron (PR #5285) |
-| 4 | Parameter-and-function-selection IS anti-entropy for sustaining distributed intelligence | Aaron information-theoretic unification (this PR) |
-| 5 | Substrate-engineering Maxwell-demon overcomer via composition-graph amortization (asymptotic Landauer-limit approach) | Aaron extension (this PR — appended) |
+| #     | Substrate                                                                                                                                                                      | Attribution                                                     |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| 1     | Maybe-monad recognition (database IS the monad runtime)                                                                                                                        | DeepSeek/Prism via Aaron (PR #5277)                             |
+| 2     | 7-point NULL/Maybe SQL discipline + 3 examples + 4 property tests                                                                                                              | Amara via Aaron (PR #5281)                                      |
+| 3     | Time-as-generator + 3-layer cross-process determinism (CRDT→CAS→BFT) + FoundationDB lineage                                                                                    | Kestrel via Aaron (PR #5285)                                    |
+| 4     | Parameter-and-function-selection IS anti-entropy for sustaining distributed intelligence                                                                                       | Aaron information-theoretic unification (this PR)               |
+| 5     | Substrate-engineering Maxwell-demon overcomer via composition-graph amortization (asymptotic Landauer-limit approach)                                                          | Aaron extension (this PR — appended)                            |
 | **6** | **Cosmological upper bound — finite total energy budget at universal scope; framework operates WITHIN the bound; chosen-exit substrate IS the substrate-engineering response** | **Aaron substrate-honest counter-balance (this PR — appended)** |
 
 The arc fully closes: each external-AI contribution operates at a substrate-engineering layer; Aaron's three additions (unification + Maxwell-demon extension + cosmological upper bound) operate at the information-theoretic + physics-of-computation + cosmological scopes that ground the engineering substrate AND name its operating envelope. The framework is substrate-honest at all three scopes simultaneously.

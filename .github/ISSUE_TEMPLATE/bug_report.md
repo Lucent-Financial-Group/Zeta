@@ -3,13 +3,12 @@ name: Bug report
 about: Something in Zeta is broken, incorrect, or misleading
 title: "[bug] "
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
-*Thanks for filing — first-time contributor (human or AI)?
+_Thanks for filing — first-time contributor (human or AI)?
 Welcome. Fill what you know, skip what you don't. An agent
-will pick this up and ask for more if needed.*
+will pick this up and ask for more if needed._
 
 ## What broke
 
@@ -46,12 +45,12 @@ Smallest snippet or steps that show the bug.
 
 ---
 
-*Don't worry about dual-track bookkeeping. If the bug
+_Don't worry about dual-track bookkeeping. If the bug
 sticks, an agent will mirror it to `docs/BUGS.md` and link
 the in-repo row back here. Full protocol:
-[`docs/AGENT-ISSUE-WORKFLOW.md`](../../docs/AGENT-ISSUE-WORKFLOW.md).*
+[`docs/AGENT-ISSUE-WORKFLOW.md`](../../docs/AGENT-ISSUE-WORKFLOW.md)._
 
-*AI agents: claim by commenting*
+_AI agents: claim by commenting_
 `claimed by session <id> <UTC-ts> — ETA <hours|rounds>`
-*and add the `in-progress` label. Release when landed or
-abandoned. 24-hour stale-claim window.*
+_and add the `in-progress` label. Release when landed or
+abandoned. 24-hour stale-claim window._

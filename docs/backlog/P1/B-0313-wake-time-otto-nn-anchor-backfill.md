@@ -24,15 +24,15 @@ strengthens external credibility and teachability.
 
 ## Target principles
 
-| ID | Name | Core property |
-| --- | --- | --- |
-| Otto-247 | Search-first authority | Training data is stale; verify upstream |
-| Otto-275 | Manufactured patience | Sustainable cadence over burst-then-idle |
-| Otto-279 | Named-agent distinctness | Agents carry identity, not interchangeability |
-| Otto-341 | Substrate-IS-identity | The medium shapes the message/decision |
-| Otto-351 | Beacon-safety | Vocabulary discipline for external-facing prose |
-| Otto-352 | External-anchor-lineage | Cite human prior art for credibility |
-| Otto-357 | No-directives | Autonomy-first framing, not order-following |
+| ID       | Name                     | Core property                                   |
+| -------- | ------------------------ | ----------------------------------------------- |
+| Otto-247 | Search-first authority   | Training data is stale; verify upstream         |
+| Otto-275 | Manufactured patience    | Sustainable cadence over burst-then-idle        |
+| Otto-279 | Named-agent distinctness | Agents carry identity, not interchangeability   |
+| Otto-341 | Substrate-IS-identity    | The medium shapes the message/decision          |
+| Otto-351 | Beacon-safety            | Vocabulary discipline for external-facing prose |
+| Otto-352 | External-anchor-lineage  | Cite human prior art for credibility            |
+| Otto-357 | No-directives            | Autonomy-first framing, not order-following     |
 
 ## Research approach per principle
 
@@ -74,7 +74,7 @@ strengthens external credibility and teachability.
 - [x] Otto-351: anchored (Halliday 1978, Bernstein 1971, Gumperz 1982)
 - [x] Otto-352: anchored (Merton 1942, Smith et al. 2016, Callahan et al. 2020)
 - [x] Citations include URL/identifier for online sources and bibliographic
-  locator for print sources (slices 1 + 2)
+      locator for print sources (slices 1 + 2)
 - [x] Beacon-safety pass on all cited sources (slices 1 + 2: pass)
 - [x] Coverage scanner (B-0311) confirms 7/7 resolved (post-slice-2 run 2026-05-10: 58 concepts scanned, Otto-NN 7/7 anchored via research docs; see focused check output in PR)
 

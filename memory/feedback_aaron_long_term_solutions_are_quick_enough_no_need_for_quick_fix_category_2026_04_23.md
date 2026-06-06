@@ -41,11 +41,11 @@ the dichotomy:
 
 Composes with Otto-52 reviewer-discipline memory:
 
-> *"take the advice and give good response on what you fix
-> or didn't fix and why when you resolve comments"* +
-> *"make the right long term decisions to solve it, no
+> _"take the advice and give good response on what you fix
+> or didn't fix and why when you resolve comments"_ +
+> _"make the right long term decisions to solve it, no
 > hacks or quick fixes, it's fine to say won't fix not,
-> put xxx on backlog to address if it's a huge change"*
+> put xxx on backlog to address if it's a huge change"_
 
 Otto-52 named the no-hacks rule. Otto-59 ratifies the
 baseline-pace discipline: you don't need a "fast track" to
@@ -57,8 +57,8 @@ thing-done-right IS the fast track.
 ### For Otto (future ticks) — language discipline
 
 - Stop using "quick fix" / "quick win" as a category label.
-  If it's a one-line change with reasoning, it's just *a
-  change*; describe what it does, not how fast it is.
+  If it's a one-line change with reasoning, it's just _a
+  change_; describe what it does, not how fast it is.
 - Stop prefacing substantive work with "substantial" or
   similar — it implies the smaller work is lower-rigor.
   All work is done at the baseline rigor.
@@ -77,7 +77,7 @@ diff shows it.
 
 Don't narrate "first I did the quick fix, then I did the
 real work". Just report what was done in order. Aaron's
-*"no rush"* clarifies: the factory's pace isn't a
+_"no rush"_ clarifies: the factory's pace isn't a
 race; velocity is a byproduct of discipline, not a
 target.
 
@@ -101,17 +101,17 @@ target.
 ## Composes with
 
 - `feedback_aaron_trust_based_approval_pattern_approves_
-  without_comprehending_details_2026_04_23.md` — Aaron
+without_comprehending_details_2026_04_23.md` — Aaron
   approves at batch; not a rush-mechanism. Matches the
   "quick enough" framing.
 - `feedback_codex_as_substantive_reviewer_teamwork_pattern_
-  address_findings_honestly_aaron_endorsed_2026_04_23.md`
+address_findings_honestly_aaron_endorsed_2026_04_23.md`
   — Otto-52 reviewer-discipline baseline; no-hacks rule
   there. This feedback reinforces it.
 - `feedback_split_attention_model_validated_phase_1_drain_
-  background_new_substrate_foreground_2026_04_24.md` —
-  split attention is discipline for *parallel* work, not
-  for *prioritization-by-speed*. This feedback clarifies
+background_new_substrate_foreground_2026_04_24.md` —
+  split attention is discipline for _parallel_ work, not
+  for _prioritization-by-speed_. This feedback clarifies
   the distinction.
 - Otto-54 / Otto-57 / Otto-58 session directives overall
   — the factory's pace this session (4-6 PRs per tick +
@@ -128,7 +128,7 @@ target.
   language, not tick-budget.
 - **Not license to claim every PR is "quick-enough".**
   Some PRs are genuinely large (research-arcs,
-  multi-tick absorbs). The feedback means don't *categorize*
+  multi-tick absorbs). The feedback means don't _categorize_
   them as quick-or-slow; describe them by what they do.
 - **Not a change to the no-hacks rule.** Quality discipline
   is unchanged; the feedback removes the false-quick-fix

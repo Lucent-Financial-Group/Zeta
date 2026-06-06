@@ -146,8 +146,7 @@ export function loadWorld(opts: LoadWorldOptions): World {
     ? opts.nextAction()
     : nextActionFromBacklog(opts.repoRoot ?? process.cwd(), opts.activeClaims ?? [], opts.maxPriority ?? "P2");
   // Selector = oracle: the chosen item IS the backlog for this tick (no re-selection).
-  const backlog: readonly BacklogItem[] =
-    next.kind === "do_item" || next.kind === "decompose" ? [next.item] : [];
+  const backlog: readonly BacklogItem[] = next.kind === "do_item" || next.kind === "decompose" ? [next.item] : [];
 
   // Mode = projection of the event log (v5). Fold over an EMPTY backlog: mode
   // transitions don't depend on backlog contents, so this isolates the persisted mode.

@@ -42,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a durable, non-operational research-boundary document for B-0720/B-0798 and wires it into the backlog rows so future work has explicit allowed/forbidden evidence classes and stop conditions.
 
 **Changes:**
+
 - Add `docs/security/B-0720-classifier-bypass-research-boundary.md` defining the standing constraint, evidence class boundaries, stop conditions, reporting/dependency rules, and closure gate.
 - Update B-0798 to compose with the new boundary doc and mark acceptance items complete with an output summary.
 - Update B-0720 to link to the active B-0798 boundary location.
@@ -50,12 +51,12 @@ Adds a durable, non-operational research-boundary document for B-0720/B-0798 and
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| docs/security/B-0720-classifier-bypass-research-boundary.md | New defensive boundary doc for future B-0720 work (non-operational; evidence/stop/closure rules). |
-| docs/claims/backlog-0798.md | Live claim file for the work session (should be released before merge). |
-| docs/backlog/P0/B-0798-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md | Links B-0798 to the boundary doc and records acceptance/output notes. |
-| docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md | Adds an “Active B-0798 boundary” section pointing to the boundary document. |
+| File                                                                                                                     | Description                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| docs/security/B-0720-classifier-bypass-research-boundary.md                                                              | New defensive boundary doc for future B-0720 work (non-operational; evidence/stop/closure rules). |
+| docs/claims/backlog-0798.md                                                                                              | Live claim file for the work session (should be released before merge).                           |
+| docs/backlog/P0/B-0798-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md                                 | Links B-0798 to the boundary doc and records acceptance/output notes.                             |
+| docs/backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md | Adds an “Active B-0798 boundary” section pointing to the boundary document.                       |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T08:51:40Z)
 

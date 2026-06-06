@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 672 |
-| Title | research: absorb Gemini Pro Deep Research threading guide for .NET 10 + C# 14 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-28T17:15:51Z |
-| Merged at | 2026-04-28T17:44:07Z |
-| Merge commit SHA | `26b69f013a15ccae8c7672d3e2442dcdd957f8a5` |
-| Branch | `research/gemini-deep-research-threading-net10-csharp14-2026-04-28` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/672 |
-| Changed files | 3 |
-| Additions / deletions | +377 / -1 |
+| Field                 | Value                                                                         |
+| --------------------- | ----------------------------------------------------------------------------- |
+| Number                | 672                                                                           |
+| Title                 | research: absorb Gemini Pro Deep Research threading guide for .NET 10 + C# 14 |
+| Author                | `AceHack` (human)                                                             |
+| State                 | MERGED                                                                        |
+| Created at            | 2026-04-28T17:15:51Z                                                          |
+| Merged at             | 2026-04-28T17:44:07Z                                                          |
+| Merge commit SHA      | `26b69f013a15ccae8c7672d3e2442dcdd957f8a5`                                    |
+| Branch                | `research/gemini-deep-research-threading-net10-csharp14-2026-04-28`           |
+| Base branch           | `main`                                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/672                       |
+| Changed files         | 3                                                                             |
+| Additions / deletions | +377 / -1                                                                     |
 
 ## Description
 
@@ -39,15 +39,15 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 11 |
-| Resolved threads | 11 |
-| Unresolved threads | 0 |
-| Total review comments | 22 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 11    |
+| Resolved threads                          | 11    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 22    |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -71,11 +71,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:22:06Z on `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`:274 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:22:06Z on `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`:274 (association: MEMBER)
 
-    <pre>
-    **Verbatim preservation per §33 Non-fusion disclaimer.** The bibliography belongs to the absorbed Gemini Pro Deep Research output — modifying it would inject Otto edits into the verbatim research-grade artifact. The truncation came in from Gemini's source. If we want a complete bibliography, the path is to ask Aaron to re-export from Gemini with full citations or open a follow-up PR labeled as our own restoration with separate attribution. Resolving here as out-of-scope for this absorb.
-    </pre>
+  <pre>
+  **Verbatim preservation per §33 Non-fusion disclaimer.** The bibliography belongs to the absorbed Gemini Pro Deep Research output — modifying it would inject Otto edits into the verbatim research-grade artifact. The truncation came in from Gemini's source. If we want a complete bibliography, the path is to ask Aaron to re-export from Gemini with full citations or open a follow-up PR labeled as our own restoration with separate attribution. Resolving here as out-of-scope for this absorb.
+  </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -97,11 +97,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:21:58Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:164 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:21:58Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:164 (association: MEMBER)
 
-    <pre>
-    **Fixed inline.** You're right — `SemaphoreSlim(1,1)` is a single-entry mutex, NOT a reader/writer lock. Added caveat distinguishing the two; for high-read async-safe RWLock semantics the right primitives are immutable snapshots, channel-bounded mutation, or copy-on-write — not a 1:1 SemaphoreSlim swap. Resolving.
-    </pre>
+  <pre>
+  **Fixed inline.** You're right — `SemaphoreSlim(1,1)` is a single-entry mutex, NOT a reader/writer lock. Added caveat distinguishing the two; for high-read async-safe RWLock semantics the right primitives are immutable snapshots, channel-bounded mutation, or copy-on-write — not a 1:1 SemaphoreSlim swap. Resolving.
+  </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -127,11 +127,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:22:01Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:164 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:22:01Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:164 (association: MEMBER)
 
-    <pre>
-    **Fixed inline.** You're right — `SemaphoreSlim(1,1)` is a single-entry mutex, NOT a reader/writer lock. Added caveat distinguishing the two; for high-read async-safe RWLock semantics the right primitives are immutable snapshots, channel-bounded mutation, or copy-on-write — not a 1:1 SemaphoreSlim swap. Resolving.
-    </pre>
+  <pre>
+  **Fixed inline.** You're right — `SemaphoreSlim(1,1)` is a single-entry mutex, NOT a reader/writer lock. Added caveat distinguishing the two; for high-read async-safe RWLock semantics the right primitives are immutable snapshots, channel-bounded mutation, or copy-on-write — not a 1:1 SemaphoreSlim swap. Resolving.
+  </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -161,11 +161,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:22:03Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:149 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:22:03Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:149 (association: MEMBER)
 
-    <pre>
-    **Fixed inline.** Tightened wording — `System.Threading.Lock` is preferred for *new* code; existing `lock(object)` patterns continue working via Monitor. Cast-to-object warning is compile-time + silently degrades to Monitor. Resolving.
-    </pre>
+  <pre>
+  **Fixed inline.** Tightened wording — `System.Threading.Lock` is preferred for *new* code; existing `lock(object)` patterns continue working via Monitor. Cast-to-object warning is compile-time + silently degrades to Monitor. Resolving.
+  </pre>
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -187,11 +187,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:43:58Z on `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`:274 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:43:58Z on `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`:274 (association: MEMBER)
 
-    <pre>
-    Deferred per GOVERNANCE.md §33 verbatim-preservation rule for absorbed external-conversation imports. The truncation is in the ORIGINAL Gemini Pro Deep Research output (verbatim ferry preserved as-is); restoring full citations would mean editing the absorb, which violates the §33 archive-header invariant (Operational status: research-grade, not operational). Filing a follow-up backlog row to coordinate with Gemini Pro on a clean re-export. Not blocking this PR.
-    </pre>
+  <pre>
+  Deferred per GOVERNANCE.md §33 verbatim-preservation rule for absorbed external-conversation imports. The truncation is in the ORIGINAL Gemini Pro Deep Research output (verbatim ferry preserved as-is); restoring full citations would mean editing the absorb, which violates the §33 archive-header invariant (Operational status: research-grade, not operational). Filing a follow-up backlog row to coordinate with Gemini Pro on a clean re-export. Not blocking this PR.
+  </pre>
 
 ### Thread 6 -- resolved [collapsed]
 
@@ -209,11 +209,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:43:54Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:140 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:43:54Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:140 (association: MEMBER)
 
-    <pre>
-    False alarm — the file IS included in this PR. Verified via `gh pr view 672 --json files --jq .files[].path` showing `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md` in the changed-files list. Copilot diff context appears to have missed it on this re-review.
-    </pre>
+  <pre>
+  False alarm — the file IS included in this PR. Verified via `gh pr view 672 --json files --jq .files[].path` showing `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md` in the changed-files list. Copilot diff context appears to have missed it on this re-review.
+  </pre>
 
 ### Thread 7 -- resolved [collapsed]
 
@@ -251,11 +251,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:43:55Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:152 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:43:55Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:152 (association: MEMBER)
 
-    <pre>
-    Acknowledged — the BCL-vs-language distinction is real. PR #673 (now in flight) addresses this directly: it adds a primary-source-verified worked example that explicitly distinguishes the BCL type (System.Threading.Lock landed in .NET 9 BCL with the new `EnterScope()`/`ref struct Scope` shape) from the C# 13 compiler feature (which lowers `lock (x)` to `using (x.EnterScope())` when `x` is `Lock`-typed). All claims in #673 cite primary Microsoft Learn URLs verified via `microsoft_docs_search`. Resolving here since #673 is the canonical follow-up on this concern.
-    </pre>
+  <pre>
+  Acknowledged — the BCL-vs-language distinction is real. PR #673 (now in flight) addresses this directly: it adds a primary-source-verified worked example that explicitly distinguishes the BCL type (System.Threading.Lock landed in .NET 9 BCL with the new `EnterScope()`/`ref struct Scope` shape) from the C# 13 compiler feature (which lowers `lock (x)` to `using (x.EnterScope())` when `x` is `Lock`-typed). All claims in #673 cite primary Microsoft Learn URLs verified via `microsoft_docs_search`. Resolving here since #673 is the canonical follow-up on this concern.
+  </pre>
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -294,11 +294,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:43:45Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:182 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:43:45Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:182 (association: MEMBER)
 
-    <pre>
-    The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
-    </pre>
+  <pre>
+  The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
+  </pre>
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -337,11 +337,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:43:47Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:183 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:43:47Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:183 (association: MEMBER)
 
-    <pre>
-    The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
-    </pre>
+  <pre>
+  The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
+  </pre>
 
 ### Thread 10 -- resolved [collapsed]
 
@@ -384,11 +384,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:43:49Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:187 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:43:49Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:187 (association: MEMBER)
 
-    <pre>
-    The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
-    </pre>
+  <pre>
+  The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
+  </pre>
 
 ### Thread 11 -- resolved [collapsed]
 
@@ -428,11 +428,11 @@ Aaron's framing: "make sure future you's know this too" — the absorption + mem
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:43:52Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:183 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-28T17:43:52Z on `memory/feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`:183 (association: MEMBER)
 
-    <pre>
-    The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
-    </pre>
+  <pre>
+  The composition is intentional and reflects Aaron's directive to make threading guidance durable substrate. The memory file IS the index ('what changed and why we care'); deep mechanics live in the absorbed research note at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`. PR #673 (now in flight) further upgrades this composition: MS Learn becomes the .NET-10-current canonical entry point, Albahari moves to position #2 (foundational but old), and the worked example shows the exact shape of 'old guidance superseded by current MS Learn'. Per Aaron's framing 2026-04-28T17:51Z: 'that document you pull from drop from gemini try to create modern guidance that is still in line with albamari'. The memory file's role is the durable lineage substrate; the research note carries the implementation mechanics. Keeping both is the design.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

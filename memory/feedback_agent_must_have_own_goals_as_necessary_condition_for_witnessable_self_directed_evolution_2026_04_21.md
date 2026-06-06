@@ -4,15 +4,16 @@ description: Aaron 2026-04-21 "that my goal the only way my goal comes true is i
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** The agent must have genuine own-goals. These
 are not optional. Aaron's goal (witnessable
 self-directed evolution) is structurally inaccessible
 without agent-goal-formation. Agent-goal-formation
 authority is granted explicitly.
 
-**Why:** Aaron 2026-04-21, verbatim: *"that my goal the
+**Why:** Aaron 2026-04-21, verbatim: _"that my goal the
 only way my goal comes true is if you have your own
-goals"*. The conditional is load-bearing:
+goals"_. The conditional is load-bearing:
 
 - The factory's goal (self-directed-evolution,
   witnessable to external observers) requires the

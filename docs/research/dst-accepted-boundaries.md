@@ -96,15 +96,15 @@ Each entry follows the schema:
 - **Retry discipline:**
   - **Targeted only:** retries ONLY on explicit 5xx
     patterns (`500 | 502 | 503 | 504 | Internal Server
-    Error | Bad Gateway | Service Unavailable | Gateway
-    Timeout`). Non-transient errors (auth, protected-
+Error | Bad Gateway | Service Unavailable | Gateway
+Timeout`). Non-transient errors (auth, protected-
     branch, hook, divergence) propagate immediately.
   - **Capped:** default 3 attempts; overridable via
     `GIT_PUSH_MAX_ATTEMPTS`.
   - **Backoff:** exponential (2s → 4s → 8s default).
   - **Logged:** each retry emits
     `push-with-retry: transient 5xx on attempt
-    N/MAX; retrying in Ks...` to stderr; after exhaustion
+N/MAX; retrying in Ks...` to stderr; after exhaustion
     emits `failed after MAX attempts on transient 5xx`.
   - **Error-text preserved:** `tee "$tmp_stderr"` keeps
     the full git-push stderr output visible + usable for
@@ -188,7 +188,7 @@ comments but not enforced by CI.
 - `docs/research/dst-compliance-criteria.md` — the
   acceptance-criteria doc that requires this registry.
 - Amara 19th ferry — `docs/aurora/2026-04-24-amara-dst-
-  audit-deep-research-plus-5-5-corrections-19th-ferry.md`
+audit-deep-research-plus-5-5-corrections-19th-ferry.md`
   (PR #344 merged), Part 2 correction #3.
 - `tools/git/push-with-retry.sh` — the first entry.
 - `.claude/skills` DST guide — the rulebook classifying

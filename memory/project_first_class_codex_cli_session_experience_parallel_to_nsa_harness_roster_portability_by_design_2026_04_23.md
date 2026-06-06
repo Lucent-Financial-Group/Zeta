@@ -4,15 +4,16 @@ description: Aaron Otto-75 directive — start building first-class Codex-CLI su
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-75 (verbatim):
-*"can you start building first class codex support with the codex
+_"can you start building first class codex support with the codex
 clis help , it might eventually be benefitial to switch otto to
 codex later depending on which modeel/harness is ahead. this is
 basically the same ask as a new session claude first class
 experience, this is a codex session as a first class experince.
 and really the code one is a first class claude code experience,
 we also even tually will have first class claude desktop cowork
-and claude code desktop too. backlog"*
+and claude code desktop too. backlog"_
 
 **What the directive says:**
 
@@ -77,7 +78,7 @@ Codex CLI capabilities clarify.
 **Scope limits:**
 
 - NOT a commitment to harness-swap for Otto today. Aaron's
-  *"it might eventually be benefitial"* is contingent on
+  _"it might eventually be benefitial"_ is contingent on
   model/harness-lead assessment.
 - NOT a duplication of cross-harness-mirror-pipeline work.
 - NOT locking Zeta to any single harness family —
@@ -108,6 +109,7 @@ Codex CLI capabilities clarify.
 tick, S effort, any Otto-ish wake can pick it up).
 
 **PRs:**
+
 - PR #227 (LFG) — Otto-75 primary tick Govern-stage
   CONTRIBUTOR-CONFLICTS backfill (3 resolved rows)
 - PR #228 (LFG) — BACKLOG row for this directive

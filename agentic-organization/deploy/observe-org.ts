@@ -12,7 +12,11 @@ import { Pool } from "pg";
 import { env } from "node:process";
 
 import { buildHatDefinitions } from "../packages/application/src/index.ts";
-import { createCockroachSqlExecutor, createCockroachOrgEventStore, createCockroachHatBindingStore } from "../packages/state-cockroach/src/index.ts";
+import {
+  createCockroachSqlExecutor,
+  createCockroachOrgEventStore,
+  createCockroachHatBindingStore,
+} from "../packages/state-cockroach/src/index.ts";
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 import { buildOrgSnapshot, renderOrgSnapshot } from "../packages/observability/src/index.ts";
 

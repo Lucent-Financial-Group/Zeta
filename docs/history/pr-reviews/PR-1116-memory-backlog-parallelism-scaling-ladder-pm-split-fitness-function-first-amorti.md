@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1116 |
-| Title | memory + backlog: parallelism scaling ladder + PM-split + fitness-function-first + amortized-keystone (Aaron 2026-05-01) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T13:40:50Z |
-| Merged at | 2026-05-01T15:03:05Z |
-| Merge commit SHA | `09f0de8854ee7bd8a6a8782bb6cfdb81801c8153` |
-| Branch | `substrate-parallelism-ladder-pm-split-fitness-function-amortized-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1116 |
-| Changed files | 18 |
-| Additions / deletions | +1900 / -0 |
+| Field                 | Value                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Number                | 1116                                                                                                                     |
+| Title                 | memory + backlog: parallelism scaling ladder + PM-split + fitness-function-first + amortized-keystone (Aaron 2026-05-01) |
+| Author                | `AceHack` (human)                                                                                                        |
+| State                 | MERGED                                                                                                                   |
+| Created at            | 2026-05-01T13:40:50Z                                                                                                     |
+| Merged at             | 2026-05-01T15:03:05Z                                                                                                     |
+| Merge commit SHA      | `09f0de8854ee7bd8a6a8782bb6cfdb81801c8153`                                                                               |
+| Branch                | `substrate-parallelism-ladder-pm-split-fitness-function-amortized-2026-05-01`                                            |
+| Base branch           | `main`                                                                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1116                                                                 |
+| Changed files         | 18                                                                                                                       |
+| Additions / deletions | +1900 / -0                                                                                                               |
 
 ## Description
 
@@ -43,20 +43,20 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 
 ## Aaron 2026-05-01 verbatim arc highlights
 
-> *"i'm not cretiquigin you, your progress is good with me but it felt like superfluid when you had those parallel agents working that was actually Kenji who unlocked it by suggesting you cause he was the archictect so he suggted a loop agent and now you are a project manager."*
+> _"i'm not cretiquigin you, your progress is good with me but it felt like superfluid when you had those parallel agents working that was actually Kenji who unlocked it by suggesting you cause he was the archictect so he suggted a loop agent and now you are a project manager."_
 
-> *"amotoized best practice decison making at scale"* + *"amotorized is what i was trying to say but both are true automated"* + *"amortized*"*
+> _"amotoized best practice decison making at scale"_ + _"amotorized is what i was trying to say but both are true automated"_ + _"amortized_"\*
 
-> *"reproducable accuracy over quality when building difficult thing the harness / scafflolding for the reproducabilty comes first so you can measure the quality accuratly first even if it's very low, now you have an iterative process with a fitness function, things go 100 times easeir"*
+> _"reproducable accuracy over quality when building difficult thing the harness / scafflolding for the reproducabilty comes first so you can measure the quality accuratly first even if it's very low, now you have an iterative process with a fitness function, things go 100 times easeir"_
 
-> *"There is like a PMP or something tradition for the project and maybe product managment sixsigma is in there too and khanban"* + *"some try to expancd ceromoy six sigma lol but it's principles are what matter"*
+> _"There is like a PMP or something tradition for the project and maybe product managment sixsigma is in there too and khanban"_ + _"some try to expancd ceromoy six sigma lol but it's principles are what matter"_
 
-> *"The amortized-keystone love it"* (Aaron's mid-iteration affirmation)
+> _"The amortized-keystone love it"_ (Aaron's mid-iteration affirmation)
 
 ## Carved sentences
 
-- *"Quality at scale is not vigilance at scale; it is mechanization of the decisions vigilance was making — automated to gate, motorized to propel, amortized to make economical."*
-- *"Reproducibility before quality. Measurement before improvement. A fitness function turns one shot into a million iterations."*
+- _"Quality at scale is not vigilance at scale; it is mechanization of the decisions vigilance was making — automated to gate, motorized to propel, amortized to make economical."_
+- _"Reproducibility before quality. Measurement before improvement. A fitness function turns one shot into a million iterations."_
 
 ## Composes with
 
@@ -85,15 +85,15 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 23 |
-| Resolved threads | 23 |
-| Unresolved threads | 0 |
-| Total review comments | 23 |
-| Total fix commits (touching thread paths) | 12 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 23    |
+| Resolved threads                          | 23    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 23    |
+| Total fix commits (touching thread paths) | 12    |
 
 ## Review threads
 
@@ -145,10 +145,10 @@ Substrate cluster from Aaron 2026-05-01 (11+ message arc) covering factory archi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T13:44:34Z on `docs/backlog/P1/B-0144-doc-code-two-lane-parallel-split-aaron-2026-05-01.md`:6 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Add required backlog frontmatter keys to new rows**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Add required backlog frontmatter keys to new rows**
+
   These new backlog rows use `name/type/owner/related` frontmatter but omit the required `id`, `status`, and `title` fields expected by the backlog tooling. In `.github/workflows/backlog-index-integrity.yml` (pre-Phase-2 path), the `extract_frontmatter_field` check fails rows missing `id/status/title`, which will fail CI for PRs touching `docs/backlog/**`; `tools/backlog/generate-index.sh --stdout` also emits warnings and blank index entries for this file shape. Please switch these rows to the schema documented in `tools/backlog/README.md` so they are parseable and indexable.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 4 -- resolved [outdated, collapsed]

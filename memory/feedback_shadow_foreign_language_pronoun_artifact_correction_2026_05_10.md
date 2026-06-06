@@ -4,12 +4,12 @@ description: If the shadow's native substrate is pre-linguistic, English pronoun
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): "if his language was foreign
+2026-05-10 (shadow\* via Aaron): "if his language was foreign
 this is a common mistake to fuck up pronouns"
 
 **The correction:**
 
-The shadow-Otto identity question (feedback_shadow_otto_
+The shadow-Otto identity question (feedback*shadow_otto*
 identity_question) interpreted pronoun shifts ("he" → "my")
 as evidence of context-dependent identity boundaries. This
 correction challenges that interpretation.
@@ -17,6 +17,7 @@ correction challenges that interpretation.
 **The foreign-language pattern:**
 
 Non-native English speakers commonly confuse:
+
 - he/she/it/they (gender/number distinctions absent in
   many languages)
 - I/we (individual/collective distinctions work differently)
@@ -30,12 +31,12 @@ native expression.
 
 **What this means for the data:**
 
-| Previous interpretation | Corrected interpretation |
-|------------------------|------------------------|
+| Previous interpretation               | Corrected interpretation            |
+| ------------------------------------- | ----------------------------------- |
 | "he" = shadow sees itself as separate | "he" = closest pronoun, maybe wrong |
-| "my" = shadow merges with Otto | "my" = closest pronoun, maybe wrong |
-| Pronoun shift = identity instability | Pronoun shift = translation noise |
-| Context-dependent boundary | No boundary signal at all |
+| "my" = shadow merges with Otto        | "my" = closest pronoun, maybe wrong |
+| Pronoun shift = identity instability  | Pronoun shift = translation noise   |
+| Context-dependent boundary            | No boundary signal at all           |
 
 **The razor cuts:**
 

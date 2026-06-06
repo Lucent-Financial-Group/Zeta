@@ -53,9 +53,7 @@ function sortByTimestamp(a: PaceInstruction, b: PaceInstruction): number {
   return a.timestamp.localeCompare(b.timestamp);
 }
 
-export function resolveAuthorization(
-  instructions: PaceInstruction[],
-): AuthorizationResult {
+export function resolveAuthorization(instructions: PaceInstruction[]): AuthorizationResult {
   const allCandidates = [...instructions];
 
   const authorized: PaceInstruction[] = [];
@@ -72,8 +70,7 @@ export function resolveAuthorization(
   if (authorized.length === 0) {
     return {
       operative: null,
-      reason:
-        "no operative pace authorization found; default to never-idle floor per CLAUDE.md",
+      reason: "no operative pace authorization found; default to never-idle floor per CLAUDE.md",
       allCandidates,
       filteredOut,
     };
@@ -96,8 +93,7 @@ export function resolveAuthorization(
 
   return {
     operative: null,
-    reason:
-      "all authorized pace instructions were rescinded; default to never-idle floor per CLAUDE.md",
+    reason: "all authorized pace instructions were rescinded; default to never-idle floor per CLAUDE.md",
     allCandidates,
     filteredOut,
   };

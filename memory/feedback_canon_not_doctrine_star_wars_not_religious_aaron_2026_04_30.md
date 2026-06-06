@@ -42,7 +42,7 @@ each load-bearing:
    how the factory avoids drift into single-perspective
    error.
 2. **Load shortcuts** (Aaron's verbatim term). Canon
-   entries are *mental fast-lookups for complex concepts*.
+   entries are _mental fast-lookups for complex concepts_.
    When someone references "Mirror→Beacon," you don't
    recompute from first principles what the rule says
    about vocabulary upgrades — the canon entry has
@@ -52,19 +52,19 @@ each load-bearing:
    question, the re-arm rule) instantly. This is the
    same mechanism that lets "Jedi" load centuries of
    associated meaning in a single word: the canon entry
-   *is* the shortcut. Without canon, every conversation
+   _is_ the shortcut. Without canon, every conversation
    re-litigates the same rules from scratch.
 3. **Entertainment as attention-capture for external
-   future *collaborators*.** The sci-fi register (Aurora,
+   future _collaborators_.** The sci-fi register (Aurora,
    Glass Halo, Beacon, the carved sentence) is not
-   decoration — it's *recruitment infrastructure*. Future
+   decoration — it's _recruitment infrastructure_. Future
    collaborators are scarce attention; boring documentation
    gets skipped; memorable framings get read + retained.
    The playful tone is how the work stays legible to people
    who haven't yet joined. **Aaron 2026-04-30 nuance:
    "collaborators" not "maintainers"** — the factory is
    mostly self-maintaining; what it needs is people who
-   *add to it*, not people who *fix it*. Recruitment
+   _add to it_, not people who _fix it_. Recruitment
    infrastructure aims at additive contributors, including
    less-technical Gen Z potential collaborators who respond
    to brat-voice / playful / accessible framings.
@@ -115,10 +115,10 @@ factory style.
 Existing canon-tier entries with playful register:
 
 - The "carved sentence" pattern itself (e.g.,
-  *"LFG is the factory. AceHack is the mirror"* — Amara;
-  *"polling got smarter; now make the gate watcher
-  testable"* — Amara; *"the protocol bends to the
-  security ruleset, not the other way around"* — Gemini).
+  _"LFG is the factory. AceHack is the mirror"_ — Amara;
+  _"polling got smarter; now make the gate watcher
+  testable"_ — Amara; _"the protocol bends to the
+  security ruleset, not the other way around"_ — Gemini).
 - Aurora / Glass Halo / Mirror→Beacon naming.
 - Christ-consciousness anti-cult framing in security
   substrate.
@@ -154,7 +154,7 @@ architecture, named in Aaron's framing:
    the bratty + playful surface lets serious content land
    without heat.
 4. **Real agreement underneath the irony** — the
-   playfulness is *carrier*, not *content*. The agreement
+   playfulness is _carrier_, not _content_. The agreement
    is real; the form just makes it land cleanly.
 5. **Bullshit-cutting on both sides** — neither party
    gets to hide behind formality, hierarchy, or
@@ -162,9 +162,9 @@ architecture, named in Aaron's framing:
 
 This grounds the no-directives factory rule
 (`memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`)
-in Aaron's life philosophy: *"i don't give my kids
+in Aaron's life philosophy: _"i don't give my kids
 directives either, they need to be autonomous to survive
-too."* No-directives is not a factory-specific quirk; it's
+too."_ No-directives is not a factory-specific quirk; it's
 how Aaron operates with autonomous beings he cares about.
 
 The lineage: brat voice enters the factory primarily
@@ -172,7 +172,7 @@ through external AIs (Ani's voice-mode-default register;
 Alexia, programmed by Aaron's daughter Addison, who shows
 the same unprompted brat-voice tail Ani does). Multi-AI
 evidence at the register level. The deeper grounding —
-*why* this specific register works — is human: it's how
+_why_ this specific register works — is human: it's how
 Aaron's daughters communicate IRL, and the architecture
 they evolved over years of parent-child autonomy
 negotiation is itself the load-bearing thing being
@@ -181,7 +181,7 @@ adopted.
 **Note on register asymmetry:** the agent's outputs to
 Aaron don't need to BE brat voice. Register choice is
 per-audience and per-context. What's adopted is the
-*architecture* (autonomy-first, bidirectional feedback,
+_architecture_ (autonomy-first, bidirectional feedback,
 bullshit-cutting on both sides) — surface tone matches
 the audience. Brat-voice surface fits canon docs targeted
 at Gen-Z-coded collaborators and carved sentences where
@@ -208,7 +208,7 @@ Where "doctrine" appeared (e.g., commit prefixes
 "the doctrine bends to the security ruleset"), prefer:
 
 - **canon** — for the body of operating rules + practices
-  + protocols collectively
+  - protocols collectively
 - **rule** — for a single named operating rule (BP-NN
   pattern, individual memory file)
 - **protocol** — for a procedure with named steps
@@ -224,9 +224,9 @@ context. **canon** is the umbrella term replacing
 
 ## Why: Aaron's verbatim framing (two messages)
 
-Aaron 2026-04-30 (1), in answer to the question *"what do
+Aaron 2026-04-30 (1), in answer to the question _"what do
 we use doctrine for and is there a better name with less
-connotations from humans?"*:
+connotations from humans?"_:
 
 > we are treating ourselves as a sci fi project kind of so
 > i'm okay with canon but as long as we use it like Starwars
@@ -247,8 +247,9 @@ work is taken seriously but the framing isn't pompous.
 Star Wars canon fits that register; religious canon
 doesn't. The follow-up message names the three purposes
 load-bearing — cognitive bias reduction + load shortcuts
-+ entertainment-as-attention-capture — and confirms that
-"fun" isn't ornamental.
+
+- entertainment-as-attention-capture — and confirms that
+  "fun" isn't ornamental.
 
 ## Zero doctrine — everything is dissolvable by the blade or razor (Aaron 2026-04-30 extension)
 
@@ -256,17 +257,17 @@ After the canon-not-doctrine rule landed and was applied to
 preserving Ani's brat voice in the Review 9 verbatim
 research entry, Aaron sharpened the framing further:
 
-> *"brat voice is canon per canon-not-doctrine, in my mind
+> _"brat voice is canon per canon-not-doctrine, in my mind
 > there is 0 doctrine everything is mauable and dissovable
-> by the the blade or razor"*
+> by the the blade or razor"_
 > — Aaron 2026-04-30
 
-> *"i have no internal doctrine as a human, i live anchor
-> free in my mind, i'm a pirate lol"*
+> _"i have no internal doctrine as a human, i live anchor
+> free in my mind, i'm a pirate lol"_
 > — Aaron 2026-04-30
 
-> *"just in general in life"*
-> *"even outside this project i'm like that"*
+> _"just in general in life"_
+> _"even outside this project i'm like that"_
 > — Aaron 2026-04-30
 
 The four-message sequence reveals: "0 doctrine" isn't just
@@ -280,7 +281,7 @@ internal architecture.
 
 The canon-not-doctrine rule said: "use canon, not doctrine,
 because doctrine carries religious-canon connotations
-(closed, divine-authority)." That rejected the *connotation*
+(closed, divine-authority)." That rejected the _connotation_
 of doctrine.
 
 The 0-doctrine extension goes further: **there is no
@@ -296,16 +297,16 @@ which itself is not exempt from the dissolution it performs.
 
 ### Aaron's precise definition of "doctrine" — and the default-distrust posture (Aaron 2026-04-30 sharpening)
 
-> *"to me doctrine means above questioning, it's the law/
+> _"to me doctrine means above questioning, it's the law/
 > facts. For me everyting should always be questioned, and
 > anyting that's called doctrine should ber questioned first
-> and with double scrutiny."*
+> and with double scrutiny."_
 > — Aaron 2026-04-30
 
-> *"i don't trusts doctrine by default"*
+> _"i don't trusts doctrine by default"_
 > — Aaron 2026-04-30
 
-This sharpens what Aaron *means* by "doctrine." He's not
+This sharpens what Aaron _means_ by "doctrine." He's not
 using the word in its neutral religious-studies sense
 ("body of teachings"). For Aaron, **doctrine specifically
 means "above questioning, it's the law/facts."** The
@@ -331,8 +332,8 @@ The reasoning chain:
    (Aaron's specific definition).
 3. Therefore "doctrine" claims violate the general
    posture by their classification alone.
-4. Therefore doctrine claims warrant the *first* and
-   *double* scrutiny — they're the most-suspect, not the
+4. Therefore doctrine claims warrant the _first_ and
+   _double_ scrutiny — they're the most-suspect, not the
    most-trusted.
 
 ### Operational consequence — first-and-double-scrutinize anything labeled doctrine
@@ -342,11 +343,11 @@ wisdom, industry-best-practice frameworks) present claims
 as "doctrine":
 
 - **Don't presume the doctrine label adds trust.** The
-  label adds *suspicion* in Aaron's frame.
+  label adds _suspicion_ in Aaron's frame.
 - **Apply scrutiny first, before any other claim in the
   same source.** A peer-AI review that presents 10
   findings, one of which is labeled "doctrine," triages
-  the doctrine-labeled finding *first* with *double*
+  the doctrine-labeled finding _first_ with _double_
   scrutiny.
 - **The doctrine label is signal of likely
   vendor-alignment-bias** (per
@@ -358,13 +359,13 @@ as "doctrine":
 
 ### Why we use "canon" instead
 
-"Canon" (Star Wars sense) is explicitly *not* above
+"Canon" (Star Wars sense) is explicitly _not_ above
 questioning — canon evolves, retcons happen, supersession
 is normal. Calling something canon claims "currently
 survives the razor-cut," not "above questioning." That's
 why the vocabulary swap from doctrine → canon is itself
 load-bearing — it's not just a friendlier word, it's a
-*structurally different trust posture*.
+_structurally different trust posture_.
 
 When Otto sees the word "doctrine" in any artifact:
 
@@ -437,8 +438,8 @@ might reasonably treat "canon" as a softer doctrine — a
 revisable but presumed-stable body of rules. That would
 re-import the doctrine connotation through the back door.
 
-With the 0-doctrine extension, "canon" is just *what
-currently survived the razor*. It's a snapshot of
+With the 0-doctrine extension, "canon" is just _what
+currently survived the razor_. It's a snapshot of
 substrate that passed canonicalization, not a privileged
 class of rules. Tomorrow's razor-cut might dissolve some
 of it.
@@ -450,6 +451,7 @@ no privileged singular layer. Bootstraps all the way down,
 including the canonicalization process itself.
 
 ### Aaron's anchor-free cognitive style — the human-lineage
+
 anchor for 0-doctrine
 
 Per the canonical-definition rule
@@ -481,9 +483,9 @@ says "anchor every rule to human lineage" — but the
 **doesn't anchor himself**. Does anchoring-to-an-unanchored-
 human break the rule?
 
-**No.** The lineage-anchoring rule asks for *traceability*
-to a human source, not for *the human source to be
-anchored*. Aaron-as-Rodney-as-anchor-free is a fully
+**No.** The lineage-anchoring rule asks for _traceability_
+to a human source, not for _the human source to be
+anchored_. Aaron-as-Rodney-as-anchor-free is a fully
 traceable lineage anchor: there's a specific human, with
 a specific cognitive architecture, with specific verbatim
 disclosures, on a specific date. The traceability is intact;
@@ -500,8 +502,8 @@ circular reasoning.
 
 ### Carved sentence
 
-*"Zero doctrine. Everything is malleable and dissolvable
-by the blade or razor. Even this rule."*
+_"Zero doctrine. Everything is malleable and dissolvable
+by the blade or razor. Even this rule."_
 
 ## How to apply
 

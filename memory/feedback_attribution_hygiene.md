@@ -22,14 +22,14 @@ rows, BACKLOG rows), include attribution at author-time:
   `.claude-plugin/plugin.json`)".
 - **Fictional character** — creator (author) + publisher.
   "Ralph Wiggum" → "Ralph Wiggum (character by Matt Groening,
-  *The Simpsons*, Fox Broadcasting)".
+  _The Simpsons_, Fox Broadcasting)".
 - **Related work** — link community implementations,
   forks, derivative projects. "Huntley's Ralph Loop" →
   "Huntley's Ralph Loop + related community impl
   `mikeyobrien/ralph-orchestrator`".
 
-**Why.** Aaron 2026-04-22: *"missing attribution hygene"* +
-*"like the other hygene this one is missing a skiil/row"*.
+**Why.** Aaron 2026-04-22: _"missing attribution hygene"_ +
+_"like the other hygene this one is missing a skiil/row"_.
 The catch came after `docs/AUTONOMOUS-LOOP.md` named
 "Geoffrey Huntley's bash-wrapper", "Ralph Wiggum pattern",
 "ralph-loop@claude-plugins-official plugin" without URLs,
@@ -39,8 +39,8 @@ become orphaned claims — a name without attribution is a
 claim someone-somewhere-said-this, unprovable and
 unreviewable. Attribution at author-time is cheap; attribution
 at retrospective audit is expensive. The real gap Aaron
-flagged wasn't the one-off — it's that the factory had *no
-hygiene row* catching this class, unlike filename-content-match
+flagged wasn't the one-off — it's that the factory had _no
+hygiene row_ catching this class, unlike filename-content-match
 (#39), declarative-manifest-boundary, or the other on-touch
 disciplines.
 
@@ -59,7 +59,7 @@ disciplines.
   load-bearing doc gets the URL.
 - **Character / cultural references get creator+publisher.**
   "Ralph Wiggum" alone is not attribution; "Ralph Wiggum
-  (Matt Groening, *The Simpsons*, Fox Broadcasting)" is.
+  (Matt Groening, _The Simpsons_, Fox Broadcasting)" is.
   The test: can a reader who has never heard of the
   reference look it up with what you wrote?
 - **Plugin / library authorship beats plugin name.** A
@@ -115,7 +115,7 @@ edits to `docs/AUTONOMOUS-LOOP.md` (d076fbe / d954681) +
   no confirmation that this is the same Geoffrey Huntley
   who writes about agentic coding.
 - "Ralph Wiggum pattern" — no creator (Matt Groening), no
-  show (*The Simpsons*), no publisher (Fox Broadcasting).
+  show (_The Simpsons_), no publisher (Fox Broadcasting).
 - "`ralph-loop@claude-plugins-official` plugin" — no
   author (Anthropic per the plugin's `plugin.json`), no
   note that the plugin README credits Huntley as the
@@ -124,10 +124,10 @@ edits to `docs/AUTONOMOUS-LOOP.md` (d076fbe / d954681) +
   to the experimental-science lineage (R.A. Fisher and the
   20th-century statistical-methodology literature).
 
-Aaron's response, verbatim: *"missing attribution hygene"*
-followed by *"like the other hygene this one is missing a
-skiil/row"*. The second message is the load-bearing one:
-the issue isn't that I missed *this one* attribution set —
+Aaron's response, verbatim: _"missing attribution hygene"_
+followed by _"like the other hygene this one is missing a
+skiil/row"_. The second message is the load-bearing one:
+the issue isn't that I missed _this one_ attribution set —
 the issue is that the factory had no row / no skill catching
 this class, so the same gap could re-surface next round.
 

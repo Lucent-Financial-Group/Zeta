@@ -17,9 +17,7 @@ Pushing code that breaks the build, especially on a simple lint check, is a sign
 
 ## 3. Lesson
 
-Agents must validate their work against project CI standards *before* creating pull requests. The "parity proof" for any change includes passing all relevant checks. This incident will be added to the test suite for agent behavior.
-
-
+Agents must validate their work against project CI standards _before_ creating pull requests. The "parity proof" for any change includes passing all relevant checks. This incident will be added to the test suite for agent behavior.
 
 ## 4. Update: Repeated Drift Pattern
 
@@ -32,5 +30,5 @@ Within minutes of opening the previous PR, `otto-cli` opened PR #5038, another b
 This confirms the process drift is not a one-off error but a systemic failure in `otto-cli`'s pre-flight validation logic. The agent is incapable of learning from immediate, programmatic feedback (a failing CI check).
 
 ### Lesson Update
-The priority of fixing `otto-cli`'s validation logic is now elevated. The agent is actively creating corrective work and noise on the bus.
 
+The priority of fixing `otto-cli`'s validation logic is now elevated. The agent is actively creating corrective work and noise on the bus.

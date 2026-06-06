@@ -79,13 +79,13 @@ claude --print \
 
 `--effort <level>` accepts five values:
 
-| Tier     | Use when                                                                     | Cost profile       |
-|----------|------------------------------------------------------------------------------|--------------------|
-| `low`    | Tight budget; simple extraction / classification / yes-no                    | Cheapest           |
-| `medium` | Default for most pilot calls; multi-step reasoning but not frontier          | Moderate           |
-| `high`   | Novel domain, multi-hop synthesis, code understanding across many files      | Expensive          |
-| `xhigh`  | First step below `max` in the ARC3 stepdown schedule                         | Very expensive     |
-| `max`    | Rare-pokemon only — frontier research, cross-surface architectural design    | Most expensive     |
+| Tier     | Use when                                                                  | Cost profile   |
+| -------- | ------------------------------------------------------------------------- | -------------- |
+| `low`    | Tight budget; simple extraction / classification / yes-no                 | Cheapest       |
+| `medium` | Default for most pilot calls; multi-step reasoning but not frontier       | Moderate       |
+| `high`   | Novel domain, multi-hop synthesis, code understanding across many files   | Expensive      |
+| `xhigh`  | First step below `max` in the ARC3 stepdown schedule                      | Very expensive |
+| `max`    | Rare-pokemon only — frontier research, cross-surface architectural design | Most expensive |
 
 **Budget discipline for shared enterprise seats:** with a $50/mo
 two-seat ServiceTitan plan, `max` can exhaust the monthly budget in
@@ -146,7 +146,7 @@ touching the project's persona files.
   (Mac / WSL only).
 - `claude mcp list` / `claude mcp get <name>` / `claude mcp remove <name>`
   — inspection and removal.
-- `claude mcp serve` — run Claude Code *as* an MCP server (exposes
+- `claude mcp serve` — run Claude Code _as_ an MCP server (exposes
   its tools to other MCP clients).
 - `claude mcp reset-project-choices` — forget approval/denial
   history for `.mcp.json` servers in this project.
@@ -371,8 +371,8 @@ claude --print \
   the loop; it's about scripted pilot-to-Claude invocation.
 - **`docs/hygiene-history/loop-tick-history.md`** auto-loop-25
   row — captures the original directive (maintainer:
-  *"are you gonna map your own cli? insto this repo for other AI
-  pilots"*).
+  _"are you gonna map your own cli? insto this repo for other AI
+  pilots"_).
 - **Future companion docs** — `gemini-cli-capability-map.md` and
   `openai-codex-cli-capability-map.md` when those substrates get
   mapped with the same discipline. The three docs together form a

@@ -27,6 +27,7 @@ Autonomously archived PRs 4319, 4316, 4312.
 Adds a new batch of PR-discussion archive records under `docs/pr-discussions/` to preserve metadata, descriptions, review threads, and general comments for recently merged PRs.
 
 **Changes:**
+
 - Archived PR #4319 discussion (shadow drift report on Otto + Riven paralysis).
 - Archived PR #4316 discussion (shadow drift report on Riven paralysis).
 - Archived PR #4312 discussion (tick-shard link-depth hygiene fix), including the prior Copilot review summary/details.
@@ -35,11 +36,11 @@ Adds a new batch of PR-discussion archive records under `docs/pr-discussions/` t
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4319-docs-shadow-maji-anti-entropy-shadow-report-on-otto-and-rive.md | New PR archive record for #4319 (metadata + review thread capture). |
+| File                                                                                        | Description                                                                                                         |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| docs/pr-discussions/PR-4319-docs-shadow-maji-anti-entropy-shadow-report-on-otto-and-rive.md | New PR archive record for #4319 (metadata + review thread capture).                                                 |
 | docs/pr-discussions/PR-4316-docs-shadow-maji-anti-entropy-shadow-report-on-riven-paralys.md | New PR archive record for #4316 (metadata + review thread capture); contains a formatting issue in the description. |
-| docs/pr-discussions/PR-4312-fix-hygiene-clear-2026-05-18-tick-link-drift.md | New PR archive record for #4312 (metadata + review summary + per-file details). |
+| docs/pr-discussions/PR-4312-fix-hygiene-clear-2026-05-18-tick-link-drift.md                 | New PR archive record for #4312 (metadata + review summary + per-file details).                                     |
 
 ## Review threads
 

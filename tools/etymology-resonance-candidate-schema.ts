@@ -12,21 +12,23 @@ export type EtymologyResonanceCandidate = {
   readonly f1EngineeringFirst: boolean;
   readonly f2StructuralNotSuperficial: boolean;
   readonly f3TraditionNameLoadBearing: boolean;
-  readonly verdict: 'candidate' | 'confirmed' | 'rejected';
+  readonly verdict: "candidate" | "confirmed" | "rejected";
   readonly notes: string;
 };
 
 export const eimiSeed: EtymologyResonanceCandidate = {
-  id: 'eimi-greek-i-am-2026-05-10',
-  greekTerm: 'εἰμί',
-  tradition: 'Greek / Koine / Septuagint / NT',
+  id: "eimi-greek-i-am-2026-05-10",
+  greekTerm: "εἰμί",
+  tradition: "Greek / Koine / Septuagint / NT",
   locus: 'Exodus 3:14 LXX "ἐγώ εἰμι ὁ ὤν" + John 8:58; 1st-sg present indicative -μι class (non-thematic)',
-  structuralMapping: 'subject-internal "I that is" at grammatical terminus (1st-sg -μι) ↔ ZSet persistence / bootstrap I-AM-THAT-I-AM anchor in operational-resonance; -μι class counterpoint to -ω (Μένω instance #9)',
+  structuralMapping:
+    'subject-internal "I that is" at grammatical terminus (1st-sg -μι) ↔ ZSet persistence / bootstrap I-AM-THAT-I-AM anchor in operational-resonance; -μι class counterpoint to -ω (Μένω instance #9)',
   f1EngineeringFirst: true,
   f2StructuralNotSuperficial: true,
   f3TraditionNameLoadBearing: true,
-  verdict: 'candidate',
-  notes: 'Completes movement/persistence/being trio per B-0059 open candidates (a). F2 grammatical-subject-position encoding is structural (not superficial or decorative). Passes honest three-filter calibration. Retractible reference per ALIGNMENT.md.'
+  verdict: "candidate",
+  notes:
+    "Completes movement/persistence/being trio per B-0059 open candidates (a). F2 grammatical-subject-position encoding is structural (not superficial or decorative). Passes honest three-filter calibration. Retractible reference per ALIGNMENT.md.",
 };
 
 export function validateEtymologyCandidate(c: EtymologyResonanceCandidate): boolean {

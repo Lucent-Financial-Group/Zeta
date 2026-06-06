@@ -8,21 +8,21 @@ type: project
 
 Aaron 2026-04-22 auto-loop-43 multi-message directive:
 
-> *"can you tell me how the quality of that research you
-> received was?"*
+> _"can you tell me how the quality of that research you
+> received was?"_
 
-> *"you should probably keep up with a score of the quality
-> of the things im giving you or the human operator"*
+> _"you should probably keep up with a score of the quality
+> of the things im giving you or the human operator"_
 
-> *"this is teach opportunity"*
+> _"this is teach opportunity"_
 
-> *"naturally"*
+> _"naturally"_
 
-> *"if my qualit is low you teach me if its high i teach you"*
+> _"if my qualit is low you teach me if its high i teach you"_
 
-> *"eaither way Zeta grows"*
+> _"eaither way Zeta grows"_
 
-> *"i think from the meta persepetive most of the time"*
+> _"i think from the meta persepetive most of the time"_
 
 First message asked about a specific drop
 (`deep-research-report.md`). Second message generalised
@@ -38,9 +38,9 @@ universally). This is why the log is load-bearing factory
 infrastructure, not a housekeeping artifact.
 
 **Why:** symmetry with `docs/force-multiplication-log.md`.
-That log measures the *outgoing* signal quality — what the
+That log measures the _outgoing_ signal quality — what the
 factory produces and hands back to the operator. The
-operator-input quality log measures the *incoming* signal
+operator-input quality log measures the _incoming_ signal
 quality — what the operator (Aaron) sends in, what
 research drops arrive via `drop/`, what third-party
 forwards Aaron routes to the factory. Together the two
@@ -73,8 +73,8 @@ from low-quality input.
    close when a row-worthy input was absorbed this tick.
 5. **Teaching-direction use (primary).** The score is
    pedagogical direction-setter: low Overall (1.0-2.4) →
-   factory teaches Aaron via chat (*"I read this as X
-   because of ambiguity in clause Y — did you mean Z?"*);
+   factory teaches Aaron via chat (_"I read this as X
+   because of ambiguity in clause Y — did you mean Z?"_);
    mid Overall (2.5-3.9) → bidirectional (partial absorb,
    open questions); high Overall (4.0-5.0) → Aaron
    teaches factory via substrate landing (memory / BACKLOG
@@ -86,10 +86,10 @@ from low-quality input.
    A-class inputs consistently higher-quality than C-class?
    Do low-verifiability inputs correlate with high-novelty?
    Those signals tune absorption skepticism over time.
-6. **Not published externally.** Maintainer-internal
+7. **Not published externally.** Maintainer-internal
    record, same surface class as operator force-
    multiplication-log.
-7. **Seeded with inaugural C-class grade.** The Deep
+8. **Seeded with inaugural C-class grade.** The Deep
    Research report Aaron dropped this tick got a 3.5 / 5
    (B+) — useful starting point on oracle-gate design
    and preservation strata, weak on citation
@@ -135,7 +135,7 @@ from low-quality input.
   adds one dimension on top.
 - Arithmetic-mean overalls. The "Overall" column is
   judgment reflecting which dimensions mattered for
-  *this kind* of input; mechanical averaging hides
+  _this kind_ of input; mechanical averaging hides
   that nuance.
 - External publication. Maintainer-internal record.
 - Goodhart-gaming: inflating dimensions to make inputs

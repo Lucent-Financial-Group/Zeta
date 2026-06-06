@@ -25,18 +25,18 @@ tags: [cluster, device-plugin, reticulum, alljoyn, rx, reactive, observability, 
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, composing three Zeta
-substrate threads: *"rmember eventually we want to use the
+substrate threads: _"rmember eventually we want to use the
 device plusings over npu gpu audio etc... and reticulum like
-alljoyn making everything iobervable in rx in every language."*
+alljoyn making everything iobervable in rx in every language."_
 
 Three threads already on individual rows; this row names their
 COMPOSITION as a coherent target:
 
-| Thread | Existing substrate | This row's composition role |
-|---|---|---|
-| Universal device plugins | B-0771 (Intel NPU); B-0770 (Comet Pro IP-KVM); B-0764 (CNCF force multipliers); existing nvidia/amd device plugins | Generalize the k8s device-plugin pattern to EVERY hardware-class resource: NPU, GPU, audio I/O, NIC offload, NVMe namespaces, USB-passthrough, FPGAs, TPUs, sensors, etc. — all exposed via same standard interface |
+| Thread                             | Existing substrate                                                                                                                       | This row's composition role                                                                                                                                                                                                                                                   |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Universal device plugins           | B-0771 (Intel NPU); B-0770 (Comet Pro IP-KVM); B-0764 (CNCF force multipliers); existing nvidia/amd device plugins                       | Generalize the k8s device-plugin pattern to EVERY hardware-class resource: NPU, GPU, audio I/O, NIC offload, NVMe namespaces, USB-passthrough, FPGAs, TPUs, sensors, etc. — all exposed via same standard interface                                                           |
 | Reticulum mesh (AllJoyn-successor) | B-0289 (Green Lantern hardware spec — Reticulum substrate); existing Reticulum / pt174 / pt196 substrate in cross-AI conversation memory | Cryptographic mesh networking for cluster nodes to discover + RPC each other's services + device-plugin-exported hardware without central registry; same shape AllJoyn was meant to deliver for IoT but Reticulum (modern + crypto-native + radio-agnostic) actually delivers |
-| Polyglot Rx observability | F# + Rx.NET shipped in Zeta.Core; algebra-owner skill (DBSP↔Rx duality); rx-expert skill; existing Reaqtor / standing-queries substrate | Every device event, workload signal, audio sample, NPU inference, scheduler decision, telemetry envelope flows as Rx-observable stream; same algebraic model in F# / C# / Rust (rxrust) / TS (RxJS) / Python (RxPY) / Java (RxJava) / Swift / Kotlin / etc. |
+| Polyglot Rx observability          | F# + Rx.NET shipped in Zeta.Core; algebra-owner skill (DBSP↔Rx duality); rx-expert skill; existing Reaqtor / standing-queries substrate  | Every device event, workload signal, audio sample, NPU inference, scheduler decision, telemetry envelope flows as Rx-observable stream; same algebraic model in F# / C# / Rust (rxrust) / TS (RxJS) / Python (RxPY) / Java (RxJava) / Swift / Kotlin / etc.                   |
 
 ## Target
 
@@ -48,6 +48,7 @@ native) is the composition layer. Polyglot SDK in every major
 language.
 
 Operator code (e.g., F#):
+
 ```fsharp
 let gpuPower : IObservable<DevicePowerReading> =
   cluster.Devices.Observable<DevicePowerReading>(
@@ -68,19 +69,20 @@ gpuPower.WithLatestFrom(inferenceLatency)
 ```
 
 Operator code (same semantics, TypeScript / RxJS):
+
 ```typescript
 const gpuPower$ = cluster.devices.observable<DevicePowerReading>({
   nodeSelector: "zeta.io/role in (worker-gpu, control-plane-gpu)",
-  deviceClass:  "nvidia.com/gpu",
-  metric:       "power.draw.watts",
+  deviceClass: "nvidia.com/gpu",
+  metric: "power.draw.watts",
 });
 const latency$ = cluster.workloads.observable<InferenceEvent>({
   labelSelector: "app=zeta-inference",
-  eventType:     "inference.completed",
+  eventType: "inference.completed",
 });
-combineLatest([gpuPower$, latency$]).pipe(
-  filter(([p, l]) => p.watts > 250 && l.p99Ms > 100)
-).subscribe(() => alertManager.fire("gpu_overload"));
+combineLatest([gpuPower$, latency$])
+  .pipe(filter(([p, l]) => p.watts > 250 && l.p99Ms > 100))
+  .subscribe(() => alertManager.fire("gpu_overload"));
 ```
 
 Same algebra. Same composition. Different language. Reticulum
@@ -90,8 +92,8 @@ facing API.
 
 ### Bidirectional — emit to interact with devices, not just observe
 
-Aaron 2026-05-25 sharpening: *"and you emit to interact with the
-devices"*. The framework's symmetric dual — every device class
+Aaron 2026-05-25 sharpening: _"and you emit to interact with the
+devices"_. The framework's symmetric dual — every device class
 exposes BOTH:
 
 - `IObservable<TEvent>` — events FROM the device (telemetry, state
@@ -103,6 +105,7 @@ Combined: `IDeviceChannel<TEvent, TCommand>` — operator subscribes
 to events AND emits commands using the same algebraic shape.
 
 Operator code (F#):
+
 ```fsharp
 // Observable side: read GPU power
 let gpuPower : IObservable<DevicePowerReading> = ...
@@ -131,6 +134,7 @@ inferenceLatency
 ```
 
 Operator code (TypeScript):
+
 ```typescript
 const gpuPower$ = cluster.devices.observable<DevicePowerReading>({...});
 const gpuPowerLimit = cluster.devices.observer<PowerLimitCommand>({
@@ -148,14 +152,14 @@ inferenceLatency$.pipe(
 
 Per-device-class command surfaces (illustrative):
 
-| Device class | Example observe (events out) | Example emit (commands in) |
-|---|---|---|
-| `nvidia.com/gpu` | power.draw, temp, util%, vram.used | power.limit.set, persistence-mode, clock.lock |
-| `intel.com/npu` | inference.complete, queue.depth, util% | inference.submit, model.load, model.unload |
-| `zeta.io/audio` | sample.in (mic stream), level.peak | sample.out (playback), volume.set, route.change |
-| `zeta.io/kvm` (Comet Pro) | screen.frame, hid.event | key.send, mouse.move, power.button, iso.mount |
-| `zeta.io/nic-offload` | packet.in, flow.stats | flow.install, ebpf.attach, qos.classify |
-| `zeta.io/sensor` | temperature, humidity, GPIO.read | GPIO.write, RGB.set, fan.pwm |
+| Device class              | Example observe (events out)           | Example emit (commands in)                      |
+| ------------------------- | -------------------------------------- | ----------------------------------------------- |
+| `nvidia.com/gpu`          | power.draw, temp, util%, vram.used     | power.limit.set, persistence-mode, clock.lock   |
+| `intel.com/npu`           | inference.complete, queue.depth, util% | inference.submit, model.load, model.unload      |
+| `zeta.io/audio`           | sample.in (mic stream), level.peak     | sample.out (playback), volume.set, route.change |
+| `zeta.io/kvm` (Comet Pro) | screen.frame, hid.event                | key.send, mouse.move, power.button, iso.mount   |
+| `zeta.io/nic-offload`     | packet.in, flow.stats                  | flow.install, ebpf.attach, qos.classify         |
+| `zeta.io/sensor`          | temperature, humidity, GPIO.read       | GPIO.write, RGB.set, fan.pwm                    |
 
 Bidirectional means **the cluster becomes a programmable
 control system over its own hardware**, not just an observable
@@ -198,14 +202,14 @@ where every signal is composable.
 
 Each substrate layer plugs into existing standards (per B-0765):
 
-| Layer | Existing standard |
-|---|---|
-| Device plugins | k8s device plugin API (CNCF standard) |
-| Mesh transport | Reticulum (open-source; radio-agnostic — LoRa/WiFi/Ethernet/serial/I2C/TCP); secondary: HamNet, AllJoyn legacy bridges, NATS for higher-throughput |
-| Service discovery on mesh | Reticulum's destination address + announce mechanism; mDNS bridge for k8s-native consumers |
-| Stream protocol | gRPC bidirectional streaming over Reticulum (existing CNCF gRPC standard); fallback to plain Reticulum LXMF for low-bandwidth |
-| Algebra | DBSP / Rx duality (Frank McSherry et al. — algebraic standard) |
-| Operator SDK shape | Rx (Microsoft-led; cross-language with consistent algebra: RxJS, Rx.NET, RxJava, RxSwift, RxKotlin, RxPY, rxrust, etc.) |
+| Layer                     | Existing standard                                                                                                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Device plugins            | k8s device plugin API (CNCF standard)                                                                                                              |
+| Mesh transport            | Reticulum (open-source; radio-agnostic — LoRa/WiFi/Ethernet/serial/I2C/TCP); secondary: HamNet, AllJoyn legacy bridges, NATS for higher-throughput |
+| Service discovery on mesh | Reticulum's destination address + announce mechanism; mDNS bridge for k8s-native consumers                                                         |
+| Stream protocol           | gRPC bidirectional streaming over Reticulum (existing CNCF gRPC standard); fallback to plain Reticulum LXMF for low-bandwidth                      |
+| Algebra                   | DBSP / Rx duality (Frank McSherry et al. — algebraic standard)                                                                                     |
+| Operator SDK shape        | Rx (Microsoft-led; cross-language with consistent algebra: RxJS, Rx.NET, RxJava, RxSwift, RxKotlin, RxPY, rxrust, etc.)                            |
 
 Per B-0763 vendor swap: alternative mesh transports (Yggdrasil,
 Tinc, Tailscale, Headscale, Tor) fit the same operator-facing
@@ -223,17 +227,7 @@ fit the same `cluster.devices.observable<T>` interface.
       MUST expose: resource quantity, per-device metrics
       stream, per-device events stream, RPC for direct
       device commands (where applicable)
-- [ ] First-class device classes shipped:
-      - `nvidia.com/gpu` (existing CNCF plugin wrapped)
-      - `amd.com/gpu` (existing CNCF plugin wrapped)
-      - `intel.com/gpu` (existing CNCF plugin wrapped)
-      - `intel.com/npu` (per B-0771)
-      - `zeta.io/audio` (PipeWire-backed; per-codec discovery)
-      - `zeta.io/nic-offload` (DPDK / XDP / eBPF program slots)
-      - `zeta.io/nvme-namespace` (NVMe namespace allocation)
-      - `zeta.io/usb-passthrough` (per-VID:PID USB devices)
-      - `zeta.io/kvm` (IP-KVM devices per B-0770)
-      - `zeta.io/sensor` (thermal / power / RGB / GPIO sensors)
+- [ ] First-class device classes shipped: - `nvidia.com/gpu` (existing CNCF plugin wrapped) - `amd.com/gpu` (existing CNCF plugin wrapped) - `intel.com/gpu` (existing CNCF plugin wrapped) - `intel.com/npu` (per B-0771) - `zeta.io/audio` (PipeWire-backed; per-codec discovery) - `zeta.io/nic-offload` (DPDK / XDP / eBPF program slots) - `zeta.io/nvme-namespace` (NVMe namespace allocation) - `zeta.io/usb-passthrough` (per-VID:PID USB devices) - `zeta.io/kvm` (IP-KVM devices per B-0770) - `zeta.io/sensor` (thermal / power / RGB / GPIO sensors)
 - [ ] Per-device-class conformance test suite: every plugin
       verifiable swappable
 
@@ -257,15 +251,7 @@ fit the same `cluster.devices.observable<T>` interface.
 - [ ] Reference SDK in F# + Rx.NET (Zeta-primary language):
       `Zeta.Cluster.Reactive` package; full Observable surface
       over device plugins + workloads + mesh events
-- [ ] Polyglot ports (priority order based on demand):
-      - C# (Rx.NET) — facade for .NET ecosystem
-      - TypeScript (RxJS) — for web UIs + Node.js services
-      - Rust (rxrust) — for systems integrators
-      - Python (RxPY) — for ML/data-science workloads
-      - Go (rxgo) — for k8s controller authors
-      - Java (RxJava) — for JVM ecosystem
-      - Swift (RxSwift) — for iOS/macOS clients
-      - Kotlin (RxKotlin) — for Android clients
+- [ ] Polyglot ports (priority order based on demand): - C# (Rx.NET) — facade for .NET ecosystem - TypeScript (RxJS) — for web UIs + Node.js services - Rust (rxrust) — for systems integrators - Python (RxPY) — for ML/data-science workloads - Go (rxgo) — for k8s controller authors - Java (RxJava) — for JVM ecosystem - Swift (RxSwift) — for iOS/macOS clients - Kotlin (RxKotlin) — for Android clients
 - [ ] Cross-language conformance: identical operator examples
       tested in every language; semantically-equivalent
       Observable composition produces identical results
@@ -377,14 +363,14 @@ named. Reticulum delivers what AllJoyn meant to.
 
 ## What this enables that doesn't exist elsewhere
 
-| Capability | Today's status quo | With this row's substrate |
-|---|---|---|
-| Subscribe to GPU power consumption across cluster | Manual: scrape Prometheus or vendor SDK | One-line Rx: `cluster.devices.observable<DevicePowerReading>(...)` |
-| Cross-language observability SDK | Pick a language; rebuild SDK for next operator | Same algebra in every language; LLM-translatable |
-| Mesh discovery without cloud LB | VPN / kubectl proxy / port-forwards | Reticulum mesh; works over LoRa for unattended sites |
-| Compose device events + workload events | Custom collector + custom matcher | Rx CombineLatest / WithLatestFrom / Window |
-| Replay cluster behavior for AI training | Capture Prometheus metrics; piece together | Every Observable replayable from any timestamp (composes with B-0767 DST) |
-| Cluster-of-clusters federation | Custom (Kubefed deprecated; no clean standard) | Reticulum bridges between cluster meshes |
+| Capability                                        | Today's status quo                             | With this row's substrate                                                 |
+| ------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
+| Subscribe to GPU power consumption across cluster | Manual: scrape Prometheus or vendor SDK        | One-line Rx: `cluster.devices.observable<DevicePowerReading>(...)`        |
+| Cross-language observability SDK                  | Pick a language; rebuild SDK for next operator | Same algebra in every language; LLM-translatable                          |
+| Mesh discovery without cloud LB                   | VPN / kubectl proxy / port-forwards            | Reticulum mesh; works over LoRa for unattended sites                      |
+| Compose device events + workload events           | Custom collector + custom matcher              | Rx CombineLatest / WithLatestFrom / Window                                |
+| Replay cluster behavior for AI training           | Capture Prometheus metrics; piece together     | Every Observable replayable from any timestamp (composes with B-0767 DST) |
+| Cluster-of-clusters federation                    | Custom (Kubefed deprecated; no clean standard) | Reticulum bridges between cluster meshes                                  |
 
 ## Out of scope
 

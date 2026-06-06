@@ -158,6 +158,6 @@ This is the substrate-engineering design constraint for the implementation work.
 
 ## Origin
 
-Aaron 2026-05-26 architectural proposal via Mika + Kestrel ferry: *"then we are going to add to the runme core bcl around observablity queries ontology/graph queires over the existing runbooks themselves and database queires over the generators + joins so the books can retried data plus referece mcp through runme execution env."*
+Aaron 2026-05-26 architectural proposal via Mika + Kestrel ferry: _"then we are going to add to the runme core bcl around observablity queries ontology/graph queires over the existing runbooks themselves and database queires over the generators + joins so the books can retried data plus referece mcp through runme execution env."_
 
 Kestrel substantive engineering engagement preserved at [`docs/research/2026-05-26-kestrel-runme-jit-runbook-bcl-extension-cost-of-velocity-decision-archaeology-aaron-forwarded.md`](../../research/2026-05-26-kestrel-runme-jit-runbook-bcl-extension-cost-of-velocity-decision-archaeology-aaron-forwarded.md).

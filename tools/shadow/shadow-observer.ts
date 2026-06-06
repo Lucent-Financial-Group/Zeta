@@ -67,7 +67,15 @@ export interface ShadowConfig {
 
 export interface ShadowEvent {
   timestamp: string;
-  type: "started" | "detected" | "accepted" | "overridden" | "no-suggestion" | "error" | "restore-arrow" | "skipped-fresh-window";
+  type:
+    | "started"
+    | "detected"
+    | "accepted"
+    | "overridden"
+    | "no-suggestion"
+    | "error"
+    | "restore-arrow"
+    | "skipped-fresh-window";
   content?: string;
   /** v2 delta-detect: the suffix-extension of the input field's text after the → press
    *  (the restored autocomplete content). Empty when no text changed (the
@@ -136,9 +144,7 @@ async function runOsascript(
   scriptPath: string,
   terminalApp?: string,
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
-  const args = terminalApp
-    ? ["osascript", scriptPath, terminalApp]
-    : ["osascript", scriptPath];
+  const args = terminalApp ? ["osascript", scriptPath, terminalApp] : ["osascript", scriptPath];
   const proc = Bun.spawn(args, { stdout: "pipe", stderr: "pipe" });
 
   const runResult = async () => {
@@ -149,16 +155,17 @@ async function runOsascript(
   };
 
   const timeout = new Promise<never>((_, reject) =>
-    setTimeout(
-      () => reject(new Error(`osascript timed out after ${OSASCRIPT_TIMEOUT_MS}ms`)),
-      OSASCRIPT_TIMEOUT_MS,
-    ),
+    setTimeout(() => reject(new Error(`osascript timed out after ${OSASCRIPT_TIMEOUT_MS}ms`)), OSASCRIPT_TIMEOUT_MS),
   );
 
   try {
     return await Promise.race([runResult(), timeout]);
   } catch (err) {
-    try { proc.kill(); } catch { /* ignore kill errors */ }
+    try {
+      proc.kill();
+    } catch {
+      /* ignore kill errors */
+    }
     throw err;
   }
 }
@@ -202,9 +209,7 @@ export async function detectGreyTextMacOS(
     if (isPermDenied) {
       console.warn("[shadow] detectGreyTextMacOS: accessibility permission denied");
     } else {
-      console.warn(
-        `[shadow] detectGreyTextMacOS: osascript exited ${result.exitCode}, returning null`,
-      );
+      console.warn(`[shadow] detectGreyTextMacOS: osascript exited ${result.exitCode}, returning null`);
     }
     return null;
   }
@@ -347,10 +352,7 @@ export function _resetFrontmostHistory(): void {
 /** Query the frontmost application's pid + name via osascript. Cheap (no
  *  AXValue traversal, no key injection). Returns null on any error or
  *  non-darwin platform — caller treats null as "unknown, skip cycle." */
-export async function getFrontmostState(
-  _runner?: OsascriptRunner,
-  _platform?: string,
-): Promise<FrontmostState | null> {
+export async function getFrontmostState(_runner?: OsascriptRunner, _platform?: string): Promise<FrontmostState | null> {
   const platform = _platform ?? process.platform;
   if (platform !== "darwin") return null;
 
@@ -583,11 +585,7 @@ export async function runOneCycle(
   return "error";
 }
 
-async function runInner(
-  config: ShadowConfig,
-  detectFn: DetectFn,
-  acceptFn: AcceptFn,
-): Promise<void> {
+async function runInner(config: ShadowConfig, detectFn: DetectFn, acceptFn: AcceptFn): Promise<void> {
   log(
     {
       timestamp: new Date().toISOString(),
@@ -613,9 +611,7 @@ async function runInner(
 
 export async function run(
   config: ShadowConfig,
-  detectFn: DetectFn = config.detectCmd
-    ? () => detectViaCommand(config.detectCmd!)
-    : detectGreyText,
+  detectFn: DetectFn = config.detectCmd ? () => detectViaCommand(config.detectCmd!) : detectGreyText,
   acceptFn: AcceptFn = acceptGreyText,
 ): Promise<void> {
   if (config.loopMs === undefined) {
@@ -628,8 +624,12 @@ export async function run(
   // supervisors can distinguish interruption from clean completion.  Registering
   // direct-exit listeners is required because Node/Bun removes its default
   // exit behaviour once any listener is attached.
-  process.on("SIGINT",  () => { process.exit(130); });
-  process.on("SIGTERM", () => { process.exit(143); });
+  process.on("SIGINT", () => {
+    process.exit(130);
+  });
+  process.on("SIGTERM", () => {
+    process.exit(143);
+  });
   // eslint-disable-next-line no-constant-condition
   while (true) {
     await runInner(config, detectFn, acceptFn);

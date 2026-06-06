@@ -89,7 +89,7 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
       return {
         error:
           "Usage: bun tools/cluster/deregister-node.ts --host <hostname> " +
-          "[--maintainer <name>] [--reason \"...\"] [--push-direct]",
+          '[--maintainer <name>] [--reason "..."] [--push-direct]',
       };
     } else {
       return { error: `unknown argument: ${a}` };
@@ -213,9 +213,7 @@ function main(): number {
 
   // Step 4: branch
   const ts = isoUtcTimestamp();
-  const branch = pushDirect
-    ? "main"
-    : `deregister/${host}-${ts}`;
+  const branch = pushDirect ? "main" : `deregister/${host}-${ts}`;
   if (!pushDirect) {
     const sw = run("git", ["switch", "-c", branch, "origin/main"], wt);
     if (!sw.ok) {
@@ -255,9 +253,7 @@ function main(): number {
   }
 
   // Step 7: push
-  const pushArgs = pushDirect
-    ? ["push", "origin", "HEAD:main"]
-    : ["push", "-u", "origin", branch];
+  const pushArgs = pushDirect ? ["push", "origin", "HEAD:main"] : ["push", "-u", "origin", branch];
   const push = run("git", pushArgs, wt);
   if (!push.ok) {
     process.stderr.write(`deregister-node: git push failed:\n${push.stderr}\n`);
@@ -290,9 +286,7 @@ function main(): number {
     process.stdout.write(`deregister-node: PR opened: ${prUrl}\n`);
     process.stdout.write(`deregister-node: review + merge to complete deregistration\n`);
   } else {
-    process.stdout.write(
-      `deregister-node: direct push to main succeeded; ArgoCD will reconcile within ~3 min\n`,
-    );
+    process.stdout.write(`deregister-node: direct push to main succeeded; ArgoCD will reconcile within ~3 min\n`);
   }
 
   // Step 9: cleanup temp worktree

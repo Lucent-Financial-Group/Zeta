@@ -44,9 +44,9 @@ Two or more concurrent Otto-CLI claude-code sessions sharing the same
 
 1. Session A starts `git worktree add` (forks `git reset --hard`)
 2. Session B's concurrent git read/write triggers an `Interrupted
-   system call` on shared `.git/objects/pack`
+system call` on shared `.git/objects/pack`
 3. Either A's or B's `git reset` exits with `fatal: Could not reset
-   index file to revision 'HEAD'`
+index file to revision 'HEAD'`
 4. `git worktree add` rolls back (rm-rf the partial worktree)
 5. Tick-shard work is lost; substrate has to land via bus envelopes
 
@@ -67,12 +67,14 @@ import { execFileSync } from "node:child_process";
 
 const MY_PID = process.pid;
 const claudeProcs = execFileSync("pgrep", ["-fl", "claude-code.*Otto"], {
-  encoding: "utf-8"
-}).split("\n").filter((line) => {
-  const parts = line.trim().split(/\s+/);
-  const pid = parseInt(parts[0] ?? "", 10);
-  return pid && pid !== MY_PID;
-});
+  encoding: "utf-8",
+})
+  .split("\n")
+  .filter((line) => {
+    const parts = line.trim().split(/\s+/);
+    const pid = parseInt(parts[0] ?? "", 10);
+    return pid && pid !== MY_PID;
+  });
 
 if (claudeProcs.length > 0) {
   // Bus-publish deferred and exit cleanly so peer can finish.
@@ -90,12 +92,12 @@ if (claudeProcs.length > 0) {
 
 ## Alternative mitigations (preserved for comparison)
 
-| Approach | Pros | Cons | Effort |
-|---|---|---|---|
-| **Cron-sentinel mutex** (above) | Small, zero blast radius, autonomous-loop-only | Misses interactive Otto-CLI vs autonomous-loop concurrency | S |
-| **Pre-worktree-add `lsof`** | Catches more cases (any peer git, not just Otto-CLI) | Slower per-worktree-add invocation | S |
-| **`flock /tmp/zeta-git.lock`** | Serializes ALL Otto-CLI git ops; clean | Holds the lock for the entire worktree-add (~5 sec) which throttles even non-contending ops | M |
-| **Per-session bare clone** | True isolation; no `.git/` sharing | Massive disk usage + replication overhead; needs design | L |
+| Approach                        | Pros                                                 | Cons                                                                                        | Effort |
+| ------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------ |
+| **Cron-sentinel mutex** (above) | Small, zero blast radius, autonomous-loop-only       | Misses interactive Otto-CLI vs autonomous-loop concurrency                                  | S      |
+| **Pre-worktree-add `lsof`**     | Catches more cases (any peer git, not just Otto-CLI) | Slower per-worktree-add invocation                                                          | S      |
+| **`flock /tmp/zeta-git.lock`**  | Serializes ALL Otto-CLI git ops; clean               | Holds the lock for the entire worktree-add (~5 sec) which throttles even non-contending ops | M      |
+| **Per-session bare clone**      | True isolation; no `.git/` sharing                   | Massive disk usage + replication overhead; needs design                                     | L      |
 
 Cron-sentinel mutex is the substrate-honest first move because:
 
@@ -137,14 +139,14 @@ Mechanization shipped 2026-05-15 via **PR #3375** (`feat(b-0530): cron-sentinel-
 
 The shipped tool [`tools/orchestrator-checks/cron-sentinel-mutex.ts`](../../../tools/orchestrator-checks/cron-sentinel-mutex.ts) implements every acceptance criterion:
 
-| Acceptance criterion | Status |
-|---|---|
-| New `tools/orchestrator-checks/cron-sentinel-mutex.ts` | shipped |
-| Detects peer claude-code processes via `pgrep -fl` | shipped (uses `pgrep -afl`) |
-| Bus-publish `shadow-catch` topic on detection | shipped (per `docs/AUTONOMOUS-LOOP-PER-TICK.md` §1 integration) |
-| Exit code 0 in detect-mode; structured exit on peer-detected | shipped (`Math.min(1 + peerCount, 250)`; 251 = pgrep error) |
-| Composes-with existing `<<autonomous-loop>>` substrate | shipped — invoked at top of every per-tick discipline cycle |
-| Documented in `claim-acquire-before-worktree-work.md` | shipped via PR #3377 (Borrow-on-existing pattern section) |
+| Acceptance criterion                                         | Status                                                          |
+| ------------------------------------------------------------ | --------------------------------------------------------------- |
+| New `tools/orchestrator-checks/cron-sentinel-mutex.ts`       | shipped                                                         |
+| Detects peer claude-code processes via `pgrep -fl`           | shipped (uses `pgrep -afl`)                                     |
+| Bus-publish `shadow-catch` topic on detection                | shipped (per `docs/AUTONOMOUS-LOOP-PER-TICK.md` §1 integration) |
+| Exit code 0 in detect-mode; structured exit on peer-detected | shipped (`Math.min(1 + peerCount, 250)`; 251 = pgrep error)     |
+| Composes-with existing `<<autonomous-loop>>` substrate       | shipped — invoked at top of every per-tick discipline cycle     |
+| Documented in `claim-acquire-before-worktree-work.md`        | shipped via PR #3377 (Borrow-on-existing pattern section)       |
 
 **Live verification this tick (2026-05-16T04:28Z)**: ran the tool on Otto-CLI cold-boot; correctly reported `peerDetected: true` with PIDs 2706 + 2710 (Claude Desktop processes). The peer-handling clause in [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../AUTONOMOUS-LOOP-PER-TICK.md) §1 routed this tick away from `git worktree add` and into the borrow-on-existing-branch pattern — zero contention failures across 3 consecutive ticks of this session.
 

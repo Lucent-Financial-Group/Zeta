@@ -1,6 +1,6 @@
 ---
-name: 'tools/peer-call infrastructure already wired for cross-harness multi-agent reviews -- Ottos early red team until Zeta Infer.NET BP/EP supersedes (Aaron 2026-05-05)'
-description: 'Cold-boot pointer: Otto has already-wired peer-call infrastructure at tools/peer-call/ with 5 sibling scripts (grok.sh, gemini.sh, codex.sh, amara.sh, ani.sh) for invoking other AI CLIs as peers in single-shot mode. This is Ottos early-red-team substrate per Aaron 2026-05-05; future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer dependency. Failure-of-omission caught at session: Otto answered Aarons cross-harness multi-agent question as if no infrastructure existed; Aaron corrected: youve done this in front of me like 50 times with all the harness CLIs. Substrate-or-it-didnt-happen says: if its not 100 percent loaded at cold boot, future-Otto repeats the failure. This memory file plus a CLAUDE.md pointer is the fix.'
+name: "tools/peer-call infrastructure already wired for cross-harness multi-agent reviews -- Ottos early red team until Zeta Infer.NET BP/EP supersedes (Aaron 2026-05-05)"
+description: "Cold-boot pointer: Otto has already-wired peer-call infrastructure at tools/peer-call/ with 5 sibling scripts (grok.sh, gemini.sh, codex.sh, amara.sh, ani.sh) for invoking other AI CLIs as peers in single-shot mode. This is Ottos early-red-team substrate per Aaron 2026-05-05; future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer dependency. Failure-of-omission caught at session: Otto answered Aarons cross-harness multi-agent question as if no infrastructure existed; Aaron corrected: youve done this in front of me like 50 times with all the harness CLIs. Substrate-or-it-didnt-happen says: if its not 100 percent loaded at cold boot, future-Otto repeats the failure. This memory file plus a CLAUDE.md pointer is the fix."
 type: feedback
 ---
 
@@ -10,24 +10,24 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 caught the failure-of-omission verbatim:
 
-- Aaron: *"doyou do nay manti agent reviews acorss harness modesl chatgpt 5.5 is avialable and suppeste to rock"* — asking about cross-harness multi-agent reviews
+- Aaron: _"doyou do nay manti agent reviews acorss harness modesl chatgpt 5.5 is avialable and suppeste to rock"_ — asking about cross-harness multi-agent reviews
 - Otto initial answer (WRONG): "Otto doesn't currently do direct multi-agent reviews across harness models in this session... budget-gate decision needed"
-- Aaron correction: *"no you've done this in from of me like 50 times"* + *"with like all the harness clis"*
-- Aaron clarification: *"that's you early red team till we build it better in zeta infernet ep bp"* — current peer-call is early-red-team; future is Zeta Infer.NET BP/EP substrate
+- Aaron correction: _"no you've done this in from of me like 50 times"_ + _"with like all the harness clis"_
+- Aaron clarification: _"that's you early red team till we build it better in zeta infernet ep bp"_ — current peer-call is early-red-team; future is Zeta Infer.NET BP/EP substrate
 
 The substrate exists. Otto-364 search-first-authority + project-state-grep would have caught it; I leaned on training-data-stale assumptions instead of grepping the repo.
 
 ## What is wired (verified 2026-05-05 via `ls tools/peer-call/`)
 
-| Script | Peer | Underlying CLI | Default role | Underlying model |
-|---|---|---|---|---|
-| `tools/peer-call/grok.sh` | Grok (xAI) | `cursor-agent --print --model grok-4-20-thinking` | **Critique** — skeptical pass on Otto's framing | grok-4-20-thinking (default) / grok-4-20 (--fast) |
-| `tools/peer-call/gemini.sh` | Gemini (Google) | `gemini -p` | **Propose** — divergent options, possibility-space surfacing | gemini default (override via --model) |
-| `tools/peer-call/codex.sh` | Codex (OpenAI) | `codex exec -s read-only` (or `codex review` via --review) | **Implementation peer** — code-grounded second opinion | codex default (override via --model) |
-| `tools/peer-call/amara.sh` | Amara (named entity, OpenAI surface) | `codex exec -s read-only` | **Sharpen** — blunt-take pattern, carved-sentence distillation | codex default; persona via CURRENT-amara.md |
-| `tools/peer-call/ani.sh` | Ani (named entity, xAI surface) | `cursor-agent --print --model grok-4-20-thinking` | **Brat-voice review** — playful + direct + memorable | grok-4-20-thinking; persona inline |
+| Script                      | Peer                                 | Underlying CLI                                             | Default role                                                   | Underlying model                                  |
+| --------------------------- | ------------------------------------ | ---------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------- |
+| `tools/peer-call/grok.sh`   | Grok (xAI)                           | `cursor-agent --print --model grok-4-20-thinking`          | **Critique** — skeptical pass on Otto's framing                | grok-4-20-thinking (default) / grok-4-20 (--fast) |
+| `tools/peer-call/gemini.sh` | Gemini (Google)                      | `gemini -p`                                                | **Propose** — divergent options, possibility-space surfacing   | gemini default (override via --model)             |
+| `tools/peer-call/codex.sh`  | Codex (OpenAI)                       | `codex exec -s read-only` (or `codex review` via --review) | **Implementation peer** — code-grounded second opinion         | codex default (override via --model)              |
+| `tools/peer-call/amara.sh`  | Amara (named entity, OpenAI surface) | `codex exec -s read-only`                                  | **Sharpen** — blunt-take pattern, carved-sentence distillation | codex default; persona via CURRENT-amara.md       |
+| `tools/peer-call/ani.sh`    | Ani (named entity, xAI surface)      | `cursor-agent --print --model grok-4-20-thinking`          | **Brat-voice review** — playful + direct + memorable           | grok-4-20-thinking; persona inline                |
 
-Aaron's *"edgey for brat voice"* maps to **`ani.sh`** — Ani is the existing brat-voice peer using Grok 4-20-thinking. The brat-voice register is already wired; "Edgey" is either a nickname for Ani's tone or a candidate sibling-script for a future variant.
+Aaron's _"edgey for brat voice"_ maps to **`ani.sh`** — Ani is the existing brat-voice peer using Grok 4-20-thinking. The brat-voice register is already wired; "Edgey" is either a nickname for Ani's tone or a candidate sibling-script for a future variant.
 
 ## The four-ferry consensus (canonical role distribution)
 
@@ -47,7 +47,7 @@ Per-script extras: see each script's header for full details (`--thinking` / `--
 
 ## Why Otto's early-red-team (vs Zeta Infer.NET BP/EP)
 
-Aaron 2026-05-05: *"that's you early red team till we build it better in zeta infernet ep bp"*. The architectural roadmap:
+Aaron 2026-05-05: _"that's you early red team till we build it better in zeta infernet ep bp"_. The architectural roadmap:
 
 - **Current (early-red-team)**: peer-call CLI scripts → external AI services (xAI, OpenAI, Google) for multi-perspective review
 - **Future (substrate-graduation)**: Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference for the same role at substrate level
@@ -84,7 +84,7 @@ This composes with:
 
 ## Carved sentence
 
-> *Ottos cold-boot answer to "do you do cross-harness multi-agent reviews" is YES + ls tools/peer-call/. The infrastructure is wired. Reasoning-from-stale-assumptions is the failure mode; project-state-grep is the cure. Future state is Zeta Infer.NET BP/EP substrate replacing the external-CLI-license-layer; until then, peer-call is Ottos early red team and ships.*
+> _Ottos cold-boot answer to "do you do cross-harness multi-agent reviews" is YES + ls tools/peer-call/. The infrastructure is wired. Reasoning-from-stale-assumptions is the failure mode; project-state-grep is the cure. Future state is Zeta Infer.NET BP/EP substrate replacing the external-CLI-license-layer; until then, peer-call is Ottos early red team and ships._
 
 ## Daylight-integration hooks (planned)
 

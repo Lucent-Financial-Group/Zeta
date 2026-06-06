@@ -7,7 +7,7 @@ created: 2026-05-15
 
 ## Aaron's exact words
 
-> *"part of the shared subssrate is red team -> antigen -> spread at network speed withing oracle -> bft speed at cross trust boundaries. we out fix any attackers"*
+> _"part of the shared subssrate is red team -> antigen -> spread at network speed withing oracle -> bft speed at cross trust boundaries. we out fix any attackers"_
 
 (2026-05-15 to Kestrel on claude.ai, answering the threat-catalog-governance question.)
 
@@ -15,7 +15,7 @@ created: 2026-05-15
 
 Otto-CLI initially framed this as "genuinely new architecture." Aaron corrected:
 
-> *"we've spoken about this before and representing these as hkt in a f# fork based on clifford algebra for ai type safety and computation expression that compose"*
+> _"we've spoken about this before and representing these as hkt in a f# fork based on clifford algebra for ai type safety and computation expression that compose"_
 
 The architecture itself is **established prior substrate** (immune-system-pattern + multi-oracle + red-team-as-antigen has been discussed before). What's load-bearing is the **representation strategy**:
 
@@ -86,12 +86,12 @@ Aaron's answer is **none of these three** — it's not about catalog governance 
 
 This is biological-immune-system architecture, not library-curation architecture. The vulnerability profile is completely different:
 
-| Library-curation vulnerability | Antigen-propagation analog |
-|---|---|
-| Curator capture | No curator — distributed generation |
-| Selective deletion | Antigens are append-only within propagation window |
-| Selective addition | Cross-trust addition requires BFT consensus |
-| Static governance capture | Dynamic — current threat landscape, not historical catalog |
+| Library-curation vulnerability | Antigen-propagation analog                                 |
+| ------------------------------ | ---------------------------------------------------------- |
+| Curator capture                | No curator — distributed generation                        |
+| Selective deletion             | Antigens are append-only within propagation window         |
+| Selective addition             | Cross-trust addition requires BFT consensus                |
+| Static governance capture      | Dynamic — current threat landscape, not historical catalog |
 
 ## Where the compiler matters
 

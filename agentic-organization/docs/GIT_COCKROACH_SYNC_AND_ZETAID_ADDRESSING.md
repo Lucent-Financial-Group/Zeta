@@ -41,10 +41,10 @@ ideas 1 (git<->cockroach converter), 2 (explicit DUs), 3 (frontmatter graph), 7
 
 > **Why this is git's native shape.** Linus Torvalds built git as a
 > content-addressable object database (a "stupid content tracker"): `git
-> hash-object` writes a blob keyed by its SHA, `git cat-file` reads it back;
+hash-object` writes a blob keyed by its SHA, `git cat-file` reads it back;
 > trees and commits are just objects on top. Git-as-db is not a hack — it is
-> git used for what it fundamentally is. The one thing we add is a *stable,
-> semantic, time-ordered* key (ZetaId) because a content SHA changes whenever
+> git used for what it fundamentally is. The one thing we add is a _stable,
+> semantic, time-ordered_ key (ZetaId) because a content SHA changes whenever
 > content changes and therefore cannot be a primary key or a foreign-key target.
 
 ## The stack
@@ -72,12 +72,12 @@ optional fields (repo rule: IMPLICIT-NOT-EXPLICIT is class error).
 
 `sql-to-schema.ts` converts a `CREATE TABLE` into that schema:
 
-| SQL | frontmatter column |
-|-----|--------------------|
-| `id TEXT PRIMARY KEY` | `{ type: zeta_id, pk: true, required: true }` |
-| `status TEXT NOT NULL CHECK (status IN ('a','b'))` | `{ type: enum, required: true, values: [a, b] }` |
-| `project_id TEXT REFERENCES project(id)` | `{ type: fk, references: project }` |
-| `reviewer_ids TEXT[] REFERENCES hat_assignment(id)` | `{ type: fk_array, references: hat_assignment }` |
+| SQL                                                    | frontmatter column                                      |
+| ------------------------------------------------------ | ------------------------------------------------------- |
+| `id TEXT PRIMARY KEY`                                  | `{ type: zeta_id, pk: true, required: true }`           |
+| `status TEXT NOT NULL CHECK (status IN ('a','b'))`     | `{ type: enum, required: true, values: [a, b] }`        |
+| `project_id TEXT REFERENCES project(id)`               | `{ type: fk, references: project }`                     |
+| `reviewer_ids TEXT[] REFERENCES hat_assignment(id)`    | `{ type: fk_array, references: hat_assignment }`        |
 | `estimate INTEGER` / `created_at TIMESTAMPTZ NOT NULL` | `{ type: int }` / `{ type: timestamp, required: true }` |
 
 The reverse (schema → `CREATE TABLE`) feeds the Cockroach projection, so the
@@ -172,10 +172,10 @@ fully testable with in-memory fakes:
   a periodic full reconcile (`ALWAYS_ON_ORCHESTRATION_RUNTIME.md`) is the
   recovery net
 
-Conflicts cannot arise at the event layer (unique ids). At the *row* layer, two
+Conflicts cannot arise at the event layer (unique ids). At the _row_ layer, two
 upserts to the same aggregate are resolved deterministically by the timestamp
 fold — there is no last-write-wins ambiguity to hand-resolve, because the id
-*is* the clock.
+_is_ the clock.
 
 ## Status
 

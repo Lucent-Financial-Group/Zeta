@@ -20,8 +20,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Operator-directed substrate-landing per 2026-05-27 directive:
 
-> *\"that means our core observe, emit, limit the emit needs to surface
-> not just T but T, TFeedback\"*
+> _\"that means our core observe, emit, limit the emit needs to surface
+> not just T but T, TFeedback\"_
 
 Confirmed with \"agree\" + \"both\" (ship rule landing principle + backlog
 row decomposing implementation work).
@@ -36,8 +36,8 @@ row decomposing implementation work).
 
 2. **B-0862 (P1)**: implementation decomposition into 10 sub-rows
    covering F# types + per-primitive extension + downstream migration
-   + cross-language substrate + spec-to-code + computation-expression
-   ergonomics + ConvFeedback overlap
+   - cross-language substrate + spec-to-code + computation-expression
+     ergonomics + ConvFeedback overlap
 
 ## Why constitutional
 

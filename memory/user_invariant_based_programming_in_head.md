@@ -4,6 +4,7 @@ description: Aaron's own cognitive style is invariant-first; he thinks in invari
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 2026-04-20 — during the skill.yaml spike on prompt-protector,
 Aaron wrote:
 
@@ -43,15 +44,15 @@ translated into prose or code.
   invariant-substrate. If not, it's missing the externalization
   point and probably needs one.
 - The three-tier discipline (`guess` / `observed` / `verified`)
-  is critical to Aaron. Stated 2026-04-20 same round: *"so
+  is critical to Aaron. Stated 2026-04-20 same round: _"so
   they are not speculative guesses they are confirmed with data,
-  i like data driven everything lol."* Never let invariants sit
+  i like data driven everything lol."_ Never let invariants sit
   at `guess` forever — every invariant at `guess` tier is a
   burn-down item.
 - Don't force translation loss. If Aaron states an invariant in
   a session, the right default is to land it into the nearest
   declarative-invariant-substrate (skill.yaml if about a skill;
-  TLA+ if about a protocol; Lean if about a theorem), *not*
+  TLA+ if about a protocol; Lean if about a theorem), _not_
   paraphrase it into a prose GOVERNANCE section.
 
 ## Related

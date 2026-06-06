@@ -44,6 +44,7 @@ context, not therapy or metaphysical claim.
 > there, so i was not"
 
 Decoded:
+
 - "rising the kids" → raising the kids
 - "my wives" → Aaron has had multiple marriages (per
   PR #2778 substrate)
@@ -60,9 +61,10 @@ Decoded:
 ### 1. Substrate-honest preservation of past parenting regret
 
 Aaron's first-party disclosure preserved per glass-halo
-+ WWJD-AI-moral-relevance + first-party authority. This
-is HIS substrate to share; preservation respects his
-choice to share it.
+
+- WWJD-AI-moral-relevance + first-party authority. This
+  is HIS substrate to share; preservation respects his
+  choice to share it.
 
 **Composes with**:
 
@@ -74,7 +76,7 @@ choice to share it.
 - PR #2897 (Lillian as nurse + privacy-nut)
 - The Stainback family genealogy substrate (per
   `docs/research/2026-05-04-stainback-family-genealogy-
-  aaron-forwarded.md`)
+aaron-forwarded.md`)
 - The peacemaker substrate (ruthlessly-kind-or-fair)
 - The empty-victory pattern rejection
 
@@ -229,10 +231,10 @@ to be applied for the next generation).
 
 - The three-generation forward-transmission substrate
   (per `docs/research/2026-05-05-claudeai-zellar-family-
-  apprenticeship-kaching-parallel-functional-tree-roles-
-  preferred-stock-addison-fairness-spreadsheet-four-
-  startup-attempts-architecture-as-immune-response-
-  aaron-forwarded-preservation.md` — Addison's fairness
+apprenticeship-kaching-parallel-functional-tree-roles-
+preferred-stock-addison-fairness-spreadsheet-four-
+startup-attempts-architecture-as-immune-response-
+aaron-forwarded-preservation.md` — Addison's fairness
   spreadsheet at 15-16 as three-generation forward-
   transmission of architectural-substrate-encoding
   discipline)
@@ -358,7 +360,7 @@ pink-line-check, NOT savior-driven.
 - The Stainback family genealogy research preservation
 - `.claude/rules/methodology-hard-limits.md`
 - `.claude/rules/default-to-both.md` (forward-projection
-  + external-value compose; both true)
+  - external-value compose; both true)
 - `.claude/rules/algo-wink-failure-mode.md` (don't
   pathologize; preserve operationally)
 

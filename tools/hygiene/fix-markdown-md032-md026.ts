@@ -78,10 +78,7 @@ const YAML_RATIO_MIN = 0.75;
 // only the expected-outcome surface is exception-free. The
 // `bytesDiff` is the UTF-16 code-unit delta; for ASCII content it
 // matches Python's `len(fixed) - len(original)`.
-type FixResult =
-  | { kind: "unchanged" }
-  | { kind: "fixed"; bytesDiff: number }
-  | { kind: "not-found" };
+type FixResult = { kind: "unchanged" } | { kind: "fixed"; bytesDiff: number } | { kind: "not-found" };
 
 interface FenceState {
   openChar: string | null;
@@ -138,11 +135,7 @@ function isYamlContinuation(line: string): boolean {
 }
 
 function isYamlOk(line: string): boolean {
-  return (
-    line.trim() === "" ||
-    YAML_KEY_LINE.test(line) ||
-    isYamlContinuation(line)
-  );
+  return line.trim() === "" || YAML_KEY_LINE.test(line) || isYamlContinuation(line);
 }
 
 function isList(line: string): boolean {
@@ -228,12 +221,7 @@ function parseFenceLine(line: string): {
 }
 
 // Update fence state and the `inside` mark for a single line.
-function processFenceLine(
-  line: string,
-  i: number,
-  inside: boolean[],
-  state: FenceState,
-): void {
+function processFenceLine(line: string, i: number, inside: boolean[], state: FenceState): void {
   const parsed = parseFenceLine(line);
   if (parsed === null) {
     inside[i] = state.openChar !== null;
@@ -247,10 +235,7 @@ function processFenceLine(
   }
   // Possible closing fence — must be same char class, length >=
   // openLen, and have no info string.
-  const isClose =
-    parsed.fenceChar === state.openChar &&
-    parsed.fenceLen >= state.openLen &&
-    parsed.info === "";
+  const isClose = parsed.fenceChar === state.openChar && parsed.fenceLen >= state.openLen && parsed.info === "";
   inside[i] = true; // both closing line and lookalike are inside
   if (isClose) {
     state.openChar = null;
@@ -285,10 +270,7 @@ function classifyLines(lines: readonly string[]): boolean[] {
 
 // Insert blank lines before list blocks (where the previous line is
 // non-blank and not itself a list/continuation).
-function insertBlanksBefore(
-  lines: readonly string[],
-  inside: readonly boolean[],
-): BlanksBeforePass {
+function insertBlanksBefore(lines: readonly string[], inside: readonly boolean[]): BlanksBeforePass {
   const out: string[] = [];
   const outInside: boolean[] = [];
   for (let i = 0; i < lines.length; i += 1) {
@@ -315,10 +297,7 @@ function insertBlanksBefore(
 
 // Insert blank lines after list blocks (where the next line is
 // non-blank and not part of the list).
-function insertBlanksAfter(
-  lines: readonly string[],
-  inside: readonly boolean[],
-): string[] {
+function insertBlanksAfter(lines: readonly string[], inside: readonly boolean[]): string[] {
   const out: string[] = [];
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
@@ -423,10 +402,7 @@ function printHelp(): void {
   );
 }
 
-async function processOneFile(
-  path: string,
-  dryRun: boolean,
-): Promise<{ changed: boolean; error: boolean }> {
+async function processOneFile(path: string, dryRun: boolean): Promise<{ changed: boolean; error: boolean }> {
   const result = await fixFile(path, dryRun);
   switch (result.kind) {
     case "not-found":

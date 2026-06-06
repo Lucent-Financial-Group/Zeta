@@ -106,9 +106,9 @@ review:
 
 The core insight: the conservative auto-merge-disable was
 **too** conservative when the incident represents a
-*potential* risk, not a *concrete* failure on this PR.
+_potential_ risk, not a _concrete_ failure on this PR.
 Merge is not the same as the incident; the incident
-*could* corrupt the merge but most often doesn't. Pausing
+_could_ corrupt the merge but most often doesn't. Pausing
 all merges during every dependency incident converts
 intermittent-host-degradation into total-factory-blockage
 even when none of our specific operations are affected.
@@ -139,14 +139,14 @@ Pull Requests degraded), do NOT halt all merges. Instead:
 3. **Halt only on real blockers** — escalate to
    conservative-disable mode if any of: (a) post-merge
    verification fails on a recent merge, (b) the incident
-   *specifically* affects the operation we're about to
+   _specifically_ affects the operation we're about to
    take (not just "could affect"), (c) a real-blocker
    class symptom appears (force-push race, branch
    protection bypass, commit-on-main-doesn't-match-PR-
    diff, etc.).
 
-The key distinction: *real blocker* vs *potential
-blocker*. A live GitHub Pull Requests incident is a
+The key distinction: _real blocker_ vs _potential
+blocker_. A live GitHub Pull Requests incident is a
 **potential** blocker — most merges complete fine even
 during recovery. A concrete failure on a verified merge
 (merge fired but commit isn't on main, or commit on main
@@ -154,7 +154,7 @@ doesn't match the diff we approved) is a **real**
 blocker — that's when conservative-disable applies.
 
 **The two-consecutive-consistent-checks rule (Claude.ai
-2026-04-30) still applies** as a guard for when we *do*
+2026-04-30) still applies** as a guard for when we _do_
 choose to halt. But the default during known degradation
 is now proceed-but-verify, not halt. The Claude.ai rule
 governs re-arm-after-real-blocker, not
@@ -165,7 +165,7 @@ discipline elsewhere in the factory: don't manufacture
 patience when the dependency we're waiting on isn't
 actually blocking the specific operation
 (`memory/feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md`).
-Conservative-disable on a *potential* blocker IS
+Conservative-disable on a _potential_ blocker IS
 manufactured patience. Real-blocker discrimination is
 how the factory keeps moving without taking on real risk.
 
@@ -193,13 +193,13 @@ noticing.
 
 ## Why: the blade
 
-> *"Do not poll for the ending. Poll for the gate. When the gate
-> opens, act."* — Amara, 2026-04-30
+> _"Do not poll for the ending. Poll for the gate. When the gate
+> opens, act."_ — Amara, 2026-04-30
 
 The control loop is **`watch gate → act when gate opens`**, not
 **`watch whether action magically happened`**. Polling for "did a
-merge happen" is watching for an *outcome*. Polling CI / threads /
-mergeStateStatus is watching the *gate* — the thing that determines
+merge happen" is watching for an _outcome_. Polling CI / threads /
+mergeStateStatus is watching the _gate_ — the thing that determines
 whether the action can fire next.
 
 ## Why: "Holding." is empty content
@@ -299,9 +299,9 @@ notes baked into the snippet below:
   this rule. Promotion of the snippet to a tested script
   with fixtures is queued for a future round (multi-AI
   convergence: Amara, Deepseek, Alexa all flagged this; no
-  backlog row filed yet — trigger condition is *"the next
+  backlog row filed yet — trigger condition is _"the next
   time the inline jq snippet causes a live error in a
-  poll-the-gate operation"*).
+  poll-the-gate operation"_).
 
 ```bash
 gh pr view <N> --json state,mergeStateStatus,reviewDecision,\
@@ -383,7 +383,7 @@ preserved verbatim in
 
 This rule is an **application-level** correction, not a
 substrate-level one. The factory's discipline isn't wrong; the
-*application* of available tools to the discipline was suboptimal.
+_application_ of available tools to the discipline was suboptimal.
 Earlier rounds caught Otto in patterns requiring structural rule
 changes (read-only-first removed, polite-waiting refined,
 mode-mixing diagnosed). This round catches Otto in a pattern
@@ -413,9 +413,9 @@ own action (filing the PR, arming auto-merge, resolving threads,
 pushing fix-ups) plus external state (CI runners, branch
 protection, reviewer availability). Polling treats the whole
 combined signal as opaque external — which is the conceptual
-error. The participant view forces the question: *what
+error. The participant view forces the question: _what
 specifically is blocking, and is the blocker something I can act
-on or something I'm waiting on?*
+on or something I'm waiting on?_
 
 Generalization: **whenever the polled signal depends partially on
 the agent's own action, the polling shape is wrong.** Other
@@ -428,8 +428,8 @@ instances of this anti-pattern caught in earlier rounds:
 - Manufactured-patience waits where the named dependency is
   actually Otto-side, not external.
 
-The diagnostic question for any wait state: *if I do nothing, will
-the signal change on its own?* If yes, gate-poll is appropriate.
+The diagnostic question for any wait state: _if I do nothing, will
+the signal change on its own?_ If yes, gate-poll is appropriate.
 If no, waiting is itself the bug — Otto needs to act.
 
 ## Freshness-pass observation (Claude.ai 2026-04-30)
@@ -461,7 +461,7 @@ content, don't infer from the framework.
   invariant — the row content must be auditable, not "Holding."
   copy-paste.
 - "Live unblock wins; fan-out after closure, not during"
-  (Claude.ai catch family) — same discipline about *what kind*
-  of attention is appropriate at *what point* in the work cycle.
+  (Claude.ai catch family) — same discipline about _what kind_
+  of attention is appropriate at _what point_ in the work cycle.
   Polling-for-merged-PRs and absorbing-incoming-context-during-
   active-lane are both fan-out failures.

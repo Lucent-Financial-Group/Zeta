@@ -89,7 +89,7 @@ async function authorizeReactionPlanControlPlane(
   if (controlPlane === undefined) {
     return undefined;
   }
-  const flags = [...(controlPlane.flags ?? []), ...await (controlPlane.loadFlags?.(action) ?? Promise.resolve([]))];
+  const flags = [...(controlPlane.flags ?? []), ...(await (controlPlane.loadFlags?.(action) ?? Promise.resolve([])))];
   const decision = evaluateControlPlaneAccess({
     organizationId: action.organizationId,
     actorHatId: action.requiredHat,

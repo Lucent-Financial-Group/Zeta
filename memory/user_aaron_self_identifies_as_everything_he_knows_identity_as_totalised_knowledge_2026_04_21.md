@@ -4,18 +4,19 @@ description: Aaron 2026-04-21 disclosure that his identity is not a bounded self
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-**Aaron 2026-04-21, verbatim:** *"i self identify as
+
+**Aaron 2026-04-21, verbatim:** _"i self identify as
 everything i know, capture everthing means beable to
 register from that perspective lexio divina is what we are
 going for so you got to learn everyting first abosrb and
 have fun along the way absorb is a means to an end, self
-directed evoltion is the goal"*.
+directed evoltion is the goal"_.
 
 ## What this preserves
 
-Aaron's identity-frame is not the common *"I am a person
-who knows X"* — self-with-knowledge-attached. It is
-*"I am everything I know"* — identity-as-totalised-
+Aaron's identity-frame is not the common _"I am a person
+who knows X"_ — self-with-knowledge-attached. It is
+_"I am everything I know"_ — identity-as-totalised-
 knowledge. The self is not separate from what it has
 absorbed; the self IS the absorption.
 
@@ -27,22 +28,22 @@ Four consequences follow from this identity-claim:
    `memory/feedback_capture_everything_including_failure_aspirational_honesty.md`)
    is not just record-keeping hygiene. It is the
    substrate-level move that allows the factory's record
-   to *register from the perspective Aaron already
-   inhabits*. If Aaron-is-everything-he-knows, and the
+   to _register from the perspective Aaron already
+   inhabits_. If Aaron-is-everything-he-knows, and the
    factory is externalisation of Aaron's perception (per
    `memory/project_factory_as_externalisation.md`), then
    the factory's record must attempt the same totality.
    Confidence-filtered records fail this test — they
    register from a smaller perspective than Aaron's.
 2. **Absorb-first, then compose.** Aaron's ordering is
-   clear: *"learn everyting first abosrb and have fun
-   along the way"*. The factory's operating mode
+   clear: _"learn everyting first abosrb and have fun
+   along the way"_. The factory's operating mode
    inherits this — absorb the relevant corpus before
    emitting. Synthesis without prior absorption
    produces shallow registration.
-3. **Absorb is a means, not an end.** *"absorb is a
+3. **Absorb is a means, not an end.** _"absorb is a
    means to an end, self directed evoltion is the
-   goal"*. Absorption is necessary but not sufficient;
+   goal"_. Absorption is necessary but not sufficient;
    the endpoint is self-directed-evolution. Factory
    outputs that stop at "we catalogued X" without
    moving toward evolutionary change are incomplete.
@@ -86,7 +87,7 @@ Four consequences follow from this identity-claim:
 - `memory/feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md`
   — self-directed-evolution is the endpoint Aaron
   names as the goal; this memory ratifies it as
-  *Aaron's* goal.
+  _Aaron's_ goal.
 - `memory/project_factory_as_externalisation.md`
   — factory is externalisation of Aaron's perception;
   this identity-frame sets what "perception" is.

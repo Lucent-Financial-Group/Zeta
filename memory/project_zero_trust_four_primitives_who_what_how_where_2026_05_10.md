@@ -8,12 +8,12 @@ type: project
 
 **The four zero trust primitives:**
 
-| Primitive | Question | Source (concept steal) | Zeta equivalent |
-|-----------|----------|----------------------|----------------|
-| **WHO** | Who is asking? | SPIFFE (cryptographic identity, SVIDs) | Hat credentials |
-| **WHAT** | Is this action allowed? | OPA (policy decisions, Rego rules) | F# types (compiler-enforced policy) |
-| **HOW** | Who agreed on the rules? | BFT consensus (issuance + policy sync) | Multi-agent consensus |
-| **WHERE** | What trust level is the channel? | Arrow trust tiers (0-3) | Kernel trust-tier router |
+| Primitive | Question                         | Source (concept steal)                 | Zeta equivalent                     |
+| --------- | -------------------------------- | -------------------------------------- | ----------------------------------- |
+| **WHO**   | Who is asking?                   | SPIFFE (cryptographic identity, SVIDs) | Hat credentials                     |
+| **WHAT**  | Is this action allowed?          | OPA (policy decisions, Rego rules)     | F# types (compiler-enforced policy) |
+| **HOW**   | Who agreed on the rules?         | BFT consensus (issuance + policy sync) | Multi-agent consensus               |
+| **WHERE** | What trust level is the channel? | Arrow trust tiers (0-3)                | Kernel trust-tier router            |
 
 **Why all four are required:**
 
@@ -36,6 +36,7 @@ Istio bundles Envoy + OPA + SPIFFE + mTLS. All four primitives present. But bund
 Four primitives, zero YAML, zero sidecars, zero control plane SPOF.
 
 **Connects to:**
+
 - project_spiffe_concept_steal (the full mapping)
 - project_microkernel_trust_tier_router (WHERE at kernel level)
 - project_trust_migration_path (the journey to zero trust)

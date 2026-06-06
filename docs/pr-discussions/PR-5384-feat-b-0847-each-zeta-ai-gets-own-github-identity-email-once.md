@@ -20,14 +20,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron caught an algo-wink-failure-mode 2026-05-26: I framed \`gh autoMergeRequest.enabledBy: AceHack\` as "operator-authority armed the merge" when the field is structurally OAuth-token-owner (not actor). Actual actor was me (Otto-CLI); visible only via Co-Authored-By trailer in commits.
 
-Aaron's proposed fix: *"i think we should create you your own github with email once we get you running on the cluster"* → substrate-honest end-to-end attribution.
+Aaron's proposed fix: _"i think we should create you your own github with email once we get you running on the cluster"_ → substrate-honest end-to-end attribution.
 
 This PR files [B-0847](docs/backlog/P2/B-0847-each-ai-gets-own-github-identity-with-email-once-cluster-operational-substrate-honest-attribution-end-to-end-closes-enabledby-token-owner-not-actor-algo-wink-aaron-2026-05-26.md) as the durable future-target substrate.
 
 ## 4-phase plan
 
 - **Phase 1**: Ilyana public-surface naming review per AI (gates ALL creation)
-- **Phase 2**: legal-risk attribution \`_ai_github_identity_acceptance\` block per AI per existing rule
+- **Phase 2**: legal-risk attribution \`\_ai_github_identity_acceptance\` block per AI per existing rule
 - **Phase 3**: HSM + per-AI OAuth tokens + email infrastructure (cluster-dependent)
 - **Phase 4**: per-AI gitconfig + \`gh\` token routing migration
 
@@ -61,6 +61,7 @@ B-0751 (per-agent isolated clones) · B-0628 (Knights Guild ratification) · \`a
 Files a new P2 backlog row (B-0847) capturing a future-target plan to give each Zeta AI its own GitHub identity + email once cluster infrastructure is operational, addressing the `gh enabledBy = token-owner ≠ actor` attribution gap. Updates the backlog index accordingly.
 
 **Changes:**
+
 - Adds new backlog row file under `docs/backlog/P2/` describing problem, 4-phase plan, composes-with links, and acceptance criteria.
 - Adds the row to `docs/BACKLOG.md` index in P2 section.
 
@@ -68,10 +69,10 @@ Files a new P2 backlog row (B-0847) capturing a future-target plan to give each 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                     | Description                                                          |
+| ---------------------------------------- | -------------------------------------------------------------------- |
 | docs/backlog/P2/B-0847-...-2026-05-26.md | New P2 backlog row capturing per-AI GitHub identity substrate target |
-| docs/BACKLOG.md | Index entry for B-0847 added to P2 list |
+| docs/BACKLOG.md                          | Index entry for B-0847 added to P2 list                              |
 
 ## General comments
 

@@ -52,24 +52,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T22:18:05Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `ade5f320b7`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -82,11 +80,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new empirical anchor to the holding-without-named-dependency rule, documenting the observed pre-empt-substrate saturation pattern during a compressed GraphQL-exhausted session.
 
 **Changes:**
+
 - Adds a dated “pre-empt-substrate-pool-saturation” anchor.
 - Documents the session timeline, observed saturation signal, REST fallback dependency, and operational lesson.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T22:27:34Z)
-
 
 ### 💡 Codex Review
 
@@ -94,17 +92,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `3e124c9787`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -122,7 +119,7 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-17T22:18:05Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align cadence claim with the timeline evidence**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align cadence claim with the timeline evidence**
 
 This anchor states that the natural cadence is roughly two pre-empts per reset window and that a third tends to be fabricated, but the same table documents three concrete pre-empts before saturation (`cycle 3`, `cycle 5`, and `cycle 6`). That internal mismatch makes the operational threshold ambiguous and can cause agents to force `#6` one cycle too early in similar windows, reducing legitimate throughput.
 
@@ -132,7 +129,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T22:18:06Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix duplicate merge event for PR #4104 in the cycle log**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix duplicate merge event for PR #4104 in the cycle log**
 
 The timeline records PR `#4104` as already merged in cycle 3 and then records PR `#4104 auto-merge fire` again in cycle 4, which is a contradictory state transition for the same PR. Because this section is used to reason about counter resets and pre-empt discipline, the duplicated merge event can mislead later readers about when the reset actually happened.
 
@@ -148,7 +145,7 @@ The summary says the first ~4 cycles produced clean pre-empts, but the table imm
 
 **@chatgpt-codex-connector** (2026-05-17T22:27:34Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep cadence baseline consistent with this anchor**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep cadence baseline consistent with this anchor**
 
 This anchor defines the saturation cadence as roughly **3–4** Otto-initiated pre-empts per reset window, but this sentence still references a "natural-cadence-of-2-pre-empts" baseline, which creates conflicting operational guidance in the same section. That inconsistency can cause agents to escalate to forced-#6 too early or classify normal cycles as saturation incorrectly. Fresh evidence: after the recent edits, the contradiction is localized to this newly added compose paragraph while the rest of the new anchor consistently uses 3–4.
 

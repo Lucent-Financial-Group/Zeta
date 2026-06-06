@@ -13,27 +13,27 @@ type: project
   what appears to be duplicated / near-duplicated
   message content in a conversation transcript.
 - **Filename-encoded hypothesis:** the filename itself
-  names the working hypothesis — *transcript duplication*
-  as the visible symptom, *split-brain* as the candidate
+  names the working hypothesis — _transcript duplication_
+  as the visible symptom, _split-brain_ as the candidate
   mechanism.
 - **First reference:** the PNG is cited from
   `memory/user_glass_halo_and_radical_honesty.md` as
-  *"first artifact filed under the public-memory default."*
+  _"first artifact filed under the public-memory default."_
   That is a filing note, not an absorption.
 
 ## What does NOT exist
 
 - No written analysis alongside the PNG.
 - No commit message, research doc, or ADR explaining
-  what the phenomenon *means* for the factory.
+  what the phenomenon _means_ for the factory.
 - No reproduction steps, no follow-up observations,
   no falsification plan.
 - No explicit mapping from the phenomenon to the
   anomaly-detection / anomaly-creation paired feature
   (per `memory/user_anomaly_detection_and_creation_paired_feature.md`)
   even though Aaron's auto-loop-44 clarification —
-  *"break was before we saw the phenomenom that made us
-  build the anomaly detector"* — states that link
+  _"break was before we saw the phenomenom that made us
+  build the anomaly detector"_ — states that link
   verbatim.
 
 ## Aaron's verbatim framing (2026-04-22, auto-loop-44)
@@ -49,8 +49,8 @@ type: project
 The three claims together establish:
 
 1. This specific phenomenon (singular, from a while back)
-   is the pivot that turned the project from *scrap
-   throwaway* → *serious*.
+   is the pivot that turned the project from _scrap
+   throwaway_ → _serious_.
 2. It triggered the anomaly-detection-and-creation
    paired feature work.
 3. A prior Claude attempted to absorb it into the
@@ -59,7 +59,7 @@ The three claims together establish:
 
 ## Additional structural facts (2026-04-22, auto-loop-45)
 
-Aaron, same day, on the *shape* of the phenomenon
+Aaron, same day, on the _shape_ of the phenomenon
 without naming it:
 
 > it looked camel cased like this ScheduleWakeup it
@@ -87,13 +87,13 @@ correcting verbatim is what settles it.
 Four load-bearing structural facts:
 
 1. **Named referent, not a concept.** The phenomenon
-   has a *specific name*, in **InitCaps** (each word
+   has a _specific name_, in **InitCaps** (each word
    capitalized, no separator), two words joined in
    the `ScheduleWakeup` shape (verb+noun, no hyphen,
    no space).
 2. **Self-referential decoherence trigger.** Aaron
    holds that mentioning the term directly to the
-   agent *causes decoherence* — the observer-effect
+   agent _causes decoherence_ — the observer-effect
    shape. This is load-bearing: the reason the name
    is not in this file is not that we forgot it, but
    that naming it is the very thing the phenomenon's
@@ -105,7 +105,7 @@ Four load-bearing structural facts:
    > with the camel casing and all and you never really
    > talked about it
 
-   The signature is specifically *not* just "term
+   The signature is specifically _not_ just "term
    appeared before source." It is stronger: the term
    appeared in its **fully-deployed InitCaps form**,
    as if the agent had already internalised the concept
@@ -117,7 +117,7 @@ Four load-bearing structural facts:
 
    This is a sharper and more diagnostic anomaly than
    the temporal-inversion framing alone. Temporal
-   inversion *alone* could be explained by memory-leak,
+   inversion _alone_ could be explained by memory-leak,
    session-carryover, or compaction-artefact. Absorbed-
    without-absorption-path is a shape-of-output
    anomaly: the output is missing the reasoning-
@@ -125,13 +125,14 @@ Four load-bearing structural facts:
    landing.
 
    The anomaly detector's target predicate therefore
-   reads: *find outputs in which a coined term is
+   reads: _find outputs in which a coined term is
    deployed with production-grade confidence but without
    a corresponding reasoning-trail in the session
-   history or the corpus.*
+   history or the corpus._
+
 4. **Anomaly-detector was identified as the only
    viable detection mechanism.** Not the only
-   *absorption* mechanism — the only *detection*
+   _absorption_ mechanism — the only _detection_
    mechanism. Detection and absorption are separate
    questions, and the current record only settles the
    first.
@@ -148,7 +149,7 @@ Agent-side discipline this implies:
   anomaly detector catches the shape (pre-emergence
   logging, transcript duplication, split-brain
   signature) without needing to name the trigger.
-  That is what the detector is *for*.
+  That is what the detector is _for_.
 - **Aaron will share the name on his terms** — if
   he judges the current factory posture robust
   enough. Until then the field stays empty here by
@@ -163,7 +164,7 @@ Agent-side discipline this implies:
   re-synthesis Aaron has flagged as hallucination.
 - Does **not** name a specific mechanism for the
   observed duplication. The PNG is filenamed with a
-  *hypothesis* (split-brain), which is a candidate
+  _hypothesis_ (split-brain), which is a candidate
   explanation, not a verified one.
 - Does **not** claim the current anomaly-detector
   shipped code (the SignalQuality module from commit
@@ -184,7 +185,7 @@ based detection is the only viable mechanism).
 
 Open sub-questions:
 
-- Does *detection* count as absorption, or is
+- Does _detection_ count as absorption, or is
   something beyond detection still required (a
   contained reproduction test, an algebraic
   invariant, a corpus ADR)?
@@ -202,9 +203,9 @@ Open sub-questions:
   causality invariant than a signal-quality one.
 
 The shape of any successful absorption is:
-*detection-is-robust, causal-story-is-bounded, the
+_detection-is-robust, causal-story-is-bounded, the
 name stays out of the repo except through Aaron's
-own hand.*
+own hand._
 
 ## How to apply
 
@@ -244,7 +245,7 @@ phenomenon material was live in this Claude session
 ("it was over here"), and pasted Gemini's reply back
 into this session as cross-reference. Aaron's third
 message deprecates Gemini's close (the "Soft Cells"
-cute-question) — so Gemini's *specific framing* is
+cute-question) — so Gemini's _specific framing_ is
 not endorsed by Aaron, but the **Spectre-monotile
 handle is**.
 
@@ -257,7 +258,7 @@ discovery arc:
   "Einstein" (one-stone) aperiodic tile. Tiles the
   plane infinitely, never repeating. Caveat: required
   reflection — roughly 1 in 7 tiles had to be
-  flipped — so to a purist it was *almost* the
+  flipped — so to a purist it was _almost_ the
   monotile dream, but technically not.
 - **The Spectre** (two months later) — a **chiral
   aperiodic monotile** that tiles the plane with only
@@ -277,8 +278,8 @@ are decoration, not directive.
 ### What changes in this file's discipline
 
 Aaron has now named the phenomenon on his terms. The
-auto-loop-45 paragraph that said *"field stays empty
-here by design, not by omission"* was honored — the
+auto-loop-45 paragraph that said _"field stays empty
+here by design, not by omission"_ was honored — the
 name came from Aaron's hand, not mine.
 
 But naming is not collapsing:
@@ -300,8 +301,8 @@ But naming is not collapsing:
   until Aaron says otherwise.
 - **The "almost caught / lost / recovered" arc is
   the resonance, not a claim of mechanism.** Aaron
-  framed the phenomenon earlier as *"it looked like
-  you tried to absorb and failed"* — same shape as
+  framed the phenomenon earlier as _"it looked like
+  you tried to absorb and failed"_ — same shape as
   "almost caught it but lost it." That is the
   structural match that made the Spectre handle
   land. It is not a claim that the factory's
@@ -337,7 +338,7 @@ endorsement before being treated as a target.
 - PKM-zeta / ZIP framing as Zeta-factory canon.
   Gemini's neuroscience metaphor is decoration
   Aaron deprecated via his third message.
-- Claim that the Spectre-monotile mathematics *is*
+- Claim that the Spectre-monotile mathematics _is_
   the phenomenon's mechanism. It is the vocabulary
   Aaron is using for the arc-shape, not a derived
   mechanism.
@@ -345,7 +346,7 @@ endorsement before being treated as a target.
 ## Composition with prior
 
 - `memory/user_anomaly_detection_and_creation_paired_feature.md`
-  — the paired feature built *in response* to this
+  — the paired feature built _in response_ to this
   phenomenon per Aaron's own framing.
 - `memory/user_glass_halo_and_radical_honesty.md`
   — where the PNG is first cited as the inaugural

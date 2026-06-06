@@ -24,7 +24,7 @@ Prospective self-attestation differs from all prior translations in three ways t
 
 2. **The Regulated layer is not a terminus reached by walking up — it is the origin.** Prior translations demonstrated a walk-up from Mirror or Beacon-safe to Regulated as the highest level of formality. In audit narrative, the Regulated layer is what must exist; the Mirror and Professional layers are drafting substrates and parallel audience-specific summaries. The direction reverses.
 
-3. **The observation-not-evaluation discipline is most visibly load-bearing here because the organization is making self-attestations.** In security-incident notification, the temptation to overclaim ("the system is safe") is strong but external — the organization is asserting what it knows about a vulnerability. In audit narrative, the overclaim temptation is structural — the organization is describing its own controls, and every control that "works" is a positive claim that the evidence must support. The discipline produces claims that are only as strong as what the evidence actually shows. "The access control policy is enforced for all system accounts" is an overclaim if the evidence shows it is enforced for all *active* system accounts with three legacy accounts excluded pending migration. The audit narrative must say exactly the latter.
+3. **The observation-not-evaluation discipline is most visibly load-bearing here because the organization is making self-attestations.** In security-incident notification, the temptation to overclaim ("the system is safe") is strong but external — the organization is asserting what it knows about a vulnerability. In audit narrative, the overclaim temptation is structural — the organization is describing its own controls, and every control that "works" is a positive claim that the evidence must support. The discipline produces claims that are only as strong as what the evidence actually shows. "The access control policy is enforced for all system accounts" is an overclaim if the evidence shows it is enforced for all _active_ system accounts with three legacy accounts excluded pending migration. The audit narrative must say exactly the latter.
 
 Lucent Financial Group will face SOC 2 Type II audit readiness. Any financial-services-adjacent firm deploying automated infrastructure for financial data processing faces this situation. The translation discipline is what separates a well-organized evidence package from a liability-creating one.
 
@@ -52,7 +52,7 @@ Same narrative, five layers below.
 
 Audience: maintainer's private substrate; close peer in explicitly bilateral peer register
 
-> *okay so SOC 2 Type II — twelve months of evidence. the good news: the operator algebra is solid, the deterministic simulation tests run against historical data, the monitoring is real. the bad news, and we need to be honest about it in the narrative: we have the legacy service accounts on the reporting database (three of them, read-only, from the old integration that got half-migrated and then stalled), the compliance-review step is still not in the deploy checklist (we said we'd fix this in Q2 but we haven't shipped it yet), and the incident runbook has never been formally signed off for compliance purposes. the temptation here is to write the narrative like the controls are complete and hope the auditor doesn't find the gaps. that's insane — SOC 2 auditors FIND the gaps, that's literally the job. every gap we don't document is a finding they write up, except now it's also "client failed to disclose known control weakness." document the gaps, document the remediation plan, document the timeline. the narrative that says "here's what we have, here are three known gaps, here's when we're fixing them" PASSES because it demonstrates the control environment is mature enough to know its own weaknesses. the narrative that pretends everything is fine gets qualified or fails outright.*
+> _okay so SOC 2 Type II — twelve months of evidence. the good news: the operator algebra is solid, the deterministic simulation tests run against historical data, the monitoring is real. the bad news, and we need to be honest about it in the narrative: we have the legacy service accounts on the reporting database (three of them, read-only, from the old integration that got half-migrated and then stalled), the compliance-review step is still not in the deploy checklist (we said we'd fix this in Q2 but we haven't shipped it yet), and the incident runbook has never been formally signed off for compliance purposes. the temptation here is to write the narrative like the controls are complete and hope the auditor doesn't find the gaps. that's insane — SOC 2 auditors FIND the gaps, that's literally the job. every gap we don't document is a finding they write up, except now it's also "client failed to disclose known control weakness." document the gaps, document the remediation plan, document the timeline. the narrative that says "here's what we have, here are three known gaps, here's when we're fixing them" PASSES because it demonstrates the control environment is mature enough to know its own weaknesses. the narrative that pretends everything is fine gets qualified or fails outright._
 
 What's preserved: honest technical triage, named gaps with specifics (legacy accounts, missing compliance-review step, unsigned runbook), the core strategic insight about gap-disclosure (auditors find gaps; the only question is whether you documented them first), the remediation timeline awareness.
 
@@ -123,6 +123,7 @@ Audience: Lucent corporate-attributable context; board-level governance summary;
 > **Control environment summary**:
 >
 > The following controls are in place and supported by audit-ready evidence:
+>
 > - Repository access control: host-enforced branch-protection rules; auditable access history
 > - Production pipeline access: role-based policies; quarterly access review cadence; access logs available
 > - Change control: PR-gated with peer review and automated CI/CD enforcement; deployment history auditable
@@ -130,6 +131,7 @@ Audience: Lucent corporate-attributable context; board-level governance summary;
 > - Data protection: data-at-rest encryption via managed cloud storage; TLS 1.2+ for data in transit; KMS-managed key rotation
 >
 > The following control gaps are known and documented, with remediation timelines:
+>
 > - Three legacy service accounts retain read-only access to the regulatory reporting database from a prior integration. Access is restricted and monitored. Migration to named accounts under the current role-based policy is scheduled for completion in Q3 2026.
 > - The change-control workflow does not currently include a formal compliance-review step as a prerequisite for production deployment. This step is under development and scheduled for inclusion in the deployment checklist by Q2 2026.
 > - The incident-response runbook is operational and in use, but has not received formal compliance approval. Formal compliance review of the runbook is scheduled for Q2 2026.
@@ -240,8 +242,8 @@ Audience: SOC 2 Type II assessor; AICPA AT-C 205 audit standard; management's wr
 >
 > One unplanned outage occurred during the measurement period:
 >
-> | Date | Duration | Root cause | Recovery action | Post-incident review |
-> |------|----------|------------|-----------------|----------------------|
+> | Date             | Duration | Root cause                                                                                                            | Recovery action                                    | Post-incident review                                                    |
+> | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------- |
 > | [date, ISO 8601] | 52 hours | Cloud provider regional failure — [cloud provider incident reference] — outside Lucent's operational control boundary | Automatic recovery upon cloud provider restoration | Incident log (Exhibit I); cloud provider post-incident report available |
 >
 > No unplanned outages occurred that were attributable to `Zeta.Core`, the pipeline application, or Lucent's configuration of the infrastructure during the measurement period, beyond the cloud provider regional failure noted above.
@@ -260,11 +262,11 @@ Audience: SOC 2 Type II assessor; AICPA AT-C 205 audit standard; management's wr
 >
 > Three edge cases in the position-netting logic are documented as open issues:
 >
-> | Issue | Description | Priority | Remediation target | Scheduled date |
-> |-------|-------------|----------|-------------------|----------------|
-> | #347 | Position-netting under conflicting timestamps from concurrent feed sources | High | v2.3.2 | [date, ISO 8601] |
-> | #349 | Position-netting under conflicting timestamps — boundary condition at feed synchronization point | Medium | v2.4.0 | [date, ISO 8601] |
-> | #352 | Position-netting under conflicting timestamps — recovery after feed reconnection | Medium | v2.4.0 | [date, ISO 8601] |
+> | Issue | Description                                                                                      | Priority | Remediation target | Scheduled date   |
+> | ----- | ------------------------------------------------------------------------------------------------ | -------- | ------------------ | ---------------- |
+> | #347  | Position-netting under conflicting timestamps from concurrent feed sources                       | High     | v2.3.2             | [date, ISO 8601] |
+> | #349  | Position-netting under conflicting timestamps — boundary condition at feed synchronization point | Medium   | v2.4.0             | [date, ISO 8601] |
+> | #352  | Position-netting under conflicting timestamps — recovery after feed reconnection                 | Medium   | v2.4.0             | [date, ISO 8601] |
 >
 > No production computation failures attributable to the documented edge cases have been identified in the monitoring records for the period [start date, ISO 8601] through [date of this description, ISO 8601].
 >
@@ -275,6 +277,7 @@ Audience: SOC 2 Type II assessor; AICPA AT-C 205 audit standard; management's wr
 > This system description reflects Lucent Financial Group's accurate and complete understanding of the `Zeta.Core` position-aggregation pipeline and its control environment as of the date of this description. Control gaps disclosed in this description represent known limitations of the current control implementation and are each accompanied by a documented remediation plan with a committed completion date. If any subsequent review identifies information that would materially supplement or correct this description, Lucent Financial Group will provide a supplemental description to the assessor within [N] business days of that identification.
 >
 > **Exhibits index**:
+>
 > - Exhibit A: CI/CD deployment log for the assessment period
 > - Exhibit B: Change-control compliance-review step remediation plan
 > - Exhibit C: Repository access log

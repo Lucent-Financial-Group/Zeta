@@ -4,10 +4,11 @@ description: Aaron's extension of the rails-health direction (2026-04-20, no rus
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **PRIORITY — low, moves slowly:** Aaron confirmed
-2026-04-20: *"against this project wide invariant
+2026-04-20: _"against this project wide invariant
 system is low priority and can move slowly there is
-not a rush here"*. Backlog tier **P3**. Forward
+not a rush here"_. Backlog tier **P3**. Forward
 motion is opportunistic (when writing new ADRs,
 sketch assumptions in registry-compatible form),
 not scheduled. Sibling memory:
@@ -15,10 +16,10 @@ not scheduled. Sibling memory:
 
 **The idea** (Aaron 2026-04-20, pasted intact):
 
-> *"plus some iinvariants we shold be able to just
+> _"plus some iinvariants we shold be able to just
 > list once and not have to repate them everywhere,
 > that whole composite invariant system across all
-> layers is sometime we can build twards"*
+> layers is sometime we can build twards"_
 
 **Why this is the right direction:**
 
@@ -81,19 +82,20 @@ id: INV-DELTA-RETRACTION-CLOSED
 category: invariant | constraint | assumption
 statement: "<canonical prose statement>"
 layers:
-  tla:    tools/tla/specs/Delta.tla#L145
-  lean:   tools/lean4/Lean4/Delta.lean#L88
-  z3:     tools/Z3Verify/DeltaRetraction.z3#L12
+  tla: tools/tla/specs/Delta.tla#L145
+  lean: tools/lean4/Lean4/Delta.lean#L88
+  z3: tools/Z3Verify/DeltaRetraction.z3#L12
   runtime: src/Core/Delta.fs#L230
   fscheck: tests/Tests.FSharp/DeltaProperties.fs#L42
-  docs:   docs/ARCHITECTURE.md#delta-semantics
-  bp:     docs/AGENT-BEST-PRACTICES.md BP-38
+  docs: docs/ARCHITECTURE.md#delta-semantics
+  bp: docs/AGENT-BEST-PRACTICES.md BP-38
 owner: architect
 confidence: high | medium | low
 last-verified: 2026-04-20
 probe: <how to check this rail is still intact>
 revisit: <cadence or trigger condition>
 ---
+
 <canonical statement body + reasoning + references>
 ```
 
@@ -111,7 +113,7 @@ components:
   - INV-DELTA-MONOTONIC
   - INV-DELTA-BYTE-IDENTICAL
 statement: "The Delta subsystem is correct iff every
-            component invariant holds."
+  component invariant holds."
 ```
 
 Semantics: the composite is `intact` iff every
@@ -149,7 +151,7 @@ Strongest → weakest coupling:
    frontmatter and generates the TLA+ `INVARIANT`
    clause, the Lean `theorem` header, the Z3
    `assert`, the F# `Debug.Assert` call-site. The
-   prose in the registry is *the* statement; the
+   prose in the registry is _the_ statement; the
    substrate artefacts are derived. Any drift
    between generated and committed is a red rail.
 2. **Reference citation** — the TLA+ spec keeps
@@ -176,7 +178,7 @@ substrate matures.
 - **`docs/GLOSSARY.md`** — vocabulary version of
   the same pattern.
 - **`docs/INVARIANT-SUBSTRATES.md`** — the
-  narrative about *which substrate proves what*.
+  narrative about _which substrate proves what_.
   Natural home for a pointer to the registry.
 - **`.claude/skills/verification-drift-auditor/`**
   — the nascent drift-detection surface. Would

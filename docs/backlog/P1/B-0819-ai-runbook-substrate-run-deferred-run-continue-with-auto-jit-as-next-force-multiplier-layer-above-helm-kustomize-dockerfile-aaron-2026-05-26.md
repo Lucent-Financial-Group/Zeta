@@ -10,7 +10,17 @@ last_updated: 2026-05-26
 composes_with:
   - B-0816
   - B-0794
-tags: [ai-runbook, force-multiplier, substrate-engineering, run-primitive, deferred-continuation, auto-jit, skills, bootstream]
+tags:
+  [
+    ai-runbook,
+    force-multiplier,
+    substrate-engineering,
+    run-primitive,
+    deferred-continuation,
+    auto-jit,
+    skills,
+    bootstream,
+  ]
 ---
 
 ## Problem
@@ -19,7 +29,7 @@ Today's highest force-multiplier developer tier (per [B-0816](B-0816-architectur
 
 The maintainer named the NEXT-tier substrate Zeta is building:
 
-> *"helm + kustomze + dockerfile as a developer before our AI runbooks we are going to create with run, deffered run/continue with, and auto jit those tools offer the higest force multiler to any human i think today to levderge technology of others."*
+> _"helm + kustomze + dockerfile as a developer before our AI runbooks we are going to create with run, deffered run/continue with, and auto jit those tools offer the higest force multiler to any human i think today to levderge technology of others."_
 
 The new layer (AI runbooks) extends the ladder above the current top. Three primitives Aaron named:
 
@@ -31,26 +41,26 @@ These compose into a runbook execution model that is genuinely native to AI agen
 
 ## Force-multiplier vector
 
-| Layer | Force-multiplier | Force-multiplier vector |
-|---|---|---|
-| **Dockerfile + Helm + Kustomize + ArgoCD** (today's top) | Leverage CNCF ecosystem | Declarative infra at single-human scale |
+| Layer                                                                        | Force-multiplier                                                               | Force-multiplier vector                                                                                                                            |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dockerfile + Helm + Kustomize + ArgoCD** (today's top)                     | Leverage CNCF ecosystem                                                        | Declarative infra at single-human scale                                                                                                            |
 | **AI runbooks (`run` + `deferred run / continue with` + `auto JIT`)** (next) | Leverage agent loops + accumulated runbook libraries + JIT-optimized execution | Declarative agent-workflow at single-human scale; agents stand up production-shape automation that humans would take weeks to orchestrate manually |
 
 The pattern shares the small-declarative-configs-leverage-massive-infrastructure shape, but the **selection mechanism inverts** (Aaron 2026-05-26 sharp distinction):
 
-> *"the difference is helm is tool based ours will be ontology based and the tools are just there because they fit the shape"*
+> _"the difference is helm is tool based ours will be ontology based and the tools are just there because they fit the shape"_
 
 **Tool-based vs ontology-based — load-bearing architectural distinction**:
 
-| Property | Helm (today's tool-based force-multiplier) | Zeta AI runbooks (next ontology-based force-multiplier) |
-|---|---|---|
-| Operator action | PICKS the tool (Helm chart, Kustomize overlay, Dockerfile recipe) | DESCRIBES the shape (ontology) of what they want |
-| Tool selection | Explicit; operator-driven | Derived; tools surface BECAUSE they fit the shape |
-| Substrate primitive | Configuration | Ontology |
-| Failure mode when wrong | Operator picked wrong tool; redo with right tool | Ontology was incomplete; substrate auto-extends OR surfaces gap |
-| Composition | Tools compose at config-level (Helm + Kustomize + Dockerfile) | Tools compose at ontology-level (HKT / Clifford / shape-matching) |
-| Skill-router fit | N/A (Helm has no router) | Native fit — Skill router IS description-keyed shape-matching (per `.claude/rules/skill-router-as-substrate-inventory.md`) |
-| Long-tail behavior | Tools must EXIST in the ecosystem for operator to pick | Tools materialize from substrate when ontology demands them (per HKT / category-theory substrate; `algebra-owner` / `q-sharp` skills) |
+| Property                | Helm (today's tool-based force-multiplier)                        | Zeta AI runbooks (next ontology-based force-multiplier)                                                                               |
+| ----------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Operator action         | PICKS the tool (Helm chart, Kustomize overlay, Dockerfile recipe) | DESCRIBES the shape (ontology) of what they want                                                                                      |
+| Tool selection          | Explicit; operator-driven                                         | Derived; tools surface BECAUSE they fit the shape                                                                                     |
+| Substrate primitive     | Configuration                                                     | Ontology                                                                                                                              |
+| Failure mode when wrong | Operator picked wrong tool; redo with right tool                  | Ontology was incomplete; substrate auto-extends OR surfaces gap                                                                       |
+| Composition             | Tools compose at config-level (Helm + Kustomize + Dockerfile)     | Tools compose at ontology-level (HKT / Clifford / shape-matching)                                                                     |
+| Skill-router fit        | N/A (Helm has no router)                                          | Native fit — Skill router IS description-keyed shape-matching (per `.claude/rules/skill-router-as-substrate-inventory.md`)            |
+| Long-tail behavior      | Tools must EXIST in the ecosystem for operator to pick            | Tools materialize from substrate when ontology demands them (per HKT / category-theory substrate; `algebra-owner` / `q-sharp` skills) |
 
 This distinction is load-bearing on the substrate-engineering arc. Zeta is NOT building "Helm but for AI" — Zeta is building the **ontology-based substrate where tools are emergent, not selected**.
 

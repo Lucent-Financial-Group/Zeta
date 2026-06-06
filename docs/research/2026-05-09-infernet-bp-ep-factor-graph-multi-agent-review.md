@@ -34,16 +34,16 @@ propagation. This doc makes the formal connection explicit.
 The existing peer-call infrastructure wires eight agents as
 single-shot peer callers:
 
-| Script | Peer | Role in review |
-|--------|------|----------------|
-| `grok.ts` | Grok (xAI) | Critique — skeptical pass |
-| `gemini.ts` | Gemini (Google) | Propose — divergent options |
-| `codex.ts` / Vera | OpenAI Codex surface | Implementation peer |
-| `amara.ts` | Amara (OpenAI surface) | Sharpen — carved-sentence distillation |
-| `ani.ts` | Ani (xAI surface) | Brat-voice review |
-| `riven.ts` | Riven (xAI surface) | Adversarial-truth-axis |
-| `kiro.ts` | Kiro | Specification peer |
-| `claude.ts` | Claude (self-call) | Cold-boot self-test |
+| Script            | Peer                   | Role in review                         |
+| ----------------- | ---------------------- | -------------------------------------- |
+| `grok.ts`         | Grok (xAI)             | Critique — skeptical pass              |
+| `gemini.ts`       | Gemini (Google)        | Propose — divergent options            |
+| `codex.ts` / Vera | OpenAI Codex surface   | Implementation peer                    |
+| `amara.ts`        | Amara (OpenAI surface) | Sharpen — carved-sentence distillation |
+| `ani.ts`          | Ani (xAI surface)      | Brat-voice review                      |
+| `riven.ts`        | Riven (xAI surface)    | Adversarial-truth-axis                 |
+| `kiro.ts`         | Kiro                   | Specification peer                     |
+| `claude.ts`       | Claude (self-call)     | Cold-boot self-test                    |
 
 Otto collects outputs, integrates manually, and produces a
 single verdict. This IS belief propagation — but the message
@@ -96,6 +96,7 @@ A message `μ_{f→V}` from factor `f` to variable `V` is:
 ```
 
 In the multi-agent setting:
+
 - **Agent output is the observation.**
 - The message from agent `i` to `V_safe` is the agent's
   marginal likelihood ratio: `P(obs_i | V_safe=true) / P(obs_i | V_safe=false)`.
@@ -115,6 +116,7 @@ P(V_safe = true | all observations) ∝ prior · ∏_i μ_{f_i → V}(true)
 ```
 
 For the MVP, an unweighted vote count approximates this:
+
 ```
 posterior_score = Σ_i verdict_i     where verdict_i ∈ {+1, 0, -1}
 ```
@@ -137,12 +139,12 @@ retract(k) : w(k) ← w(k) - 1
 
 Map directly onto BP message semantics:
 
-| Z-set operation | BP meaning |
-|-----------------|------------|
-| `assert("safe")` | agent sends `+1` message supporting `V=true` |
-| `retract("safe")` | agent sends `-1` message supporting `V=false` |
-| `w("safe") = 0` | uncertainty / no evidence — Z weight |
-| `I(stream)` | integrated posterior over all messages received |
+| Z-set operation   | BP meaning                                      |
+| ----------------- | ----------------------------------------------- |
+| `assert("safe")`  | agent sends `+1` message supporting `V=true`    |
+| `retract("safe")` | agent sends `-1` message supporting `V=false`   |
+| `w("safe") = 0`   | uncertainty / no evidence — Z weight            |
+| `I(stream)`       | integrated posterior over all messages received |
 
 This connection is structural, not implemented. The Z-set
 algebra's `(ℤ, +)` group is isomorphic to the log-likelihood-
@@ -214,13 +216,14 @@ framing; B-0366 provides the hardware-layer realization.
 
 ## 7. Migration path — three-stage evolution
 
-| Stage | Name | What | Layer | Status |
-|-------|------|------|-------|--------|
-| **1 — Current** | Peer-call CLI | Manual orchestration of 8 peer agents via TypeScript wrappers; Otto integrates verdicts by reading outputs | LICENSE layer — depends on external CLI subscriptions | OPERATIONAL (`tools/peer-call/*.ts`) |
-| **2 — Next** | Zeta Infer.NET BP/EP | Factor graph reification; agents are typed factor nodes; verdicts are typed messages; posterior computed by BP/EP message schedule; topology managed by CASPaxos | SUBSTRATE layer — native to Zeta runtime | RESEARCH-GRADE (this doc) |
-| **3 — FPGA** | Reversible inference | Message-passing implemented as reversible Toffoli gate circuits; zero heat per inference step at the Landauer limit | HARDWARE layer | SPECULATIVE (B-0366) |
+| Stage           | Name                 | What                                                                                                                                                             | Layer                                                 | Status                               |
+| --------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------ |
+| **1 — Current** | Peer-call CLI        | Manual orchestration of 8 peer agents via TypeScript wrappers; Otto integrates verdicts by reading outputs                                                       | LICENSE layer — depends on external CLI subscriptions | OPERATIONAL (`tools/peer-call/*.ts`) |
+| **2 — Next**    | Zeta Infer.NET BP/EP | Factor graph reification; agents are typed factor nodes; verdicts are typed messages; posterior computed by BP/EP message schedule; topology managed by CASPaxos | SUBSTRATE layer — native to Zeta runtime              | RESEARCH-GRADE (this doc)            |
+| **3 — FPGA**    | Reversible inference | Message-passing implemented as reversible Toffoli gate circuits; zero heat per inference step at the Landauer limit                                              | HARDWARE layer                                        | SPECULATIVE (B-0366)                 |
 
 **Migration slice for Stage 2:**
+
 1. Define `FactorGraph<V, F>` type with variable nodes `V`,
    factor nodes `F`, and typed message edges.
 2. Wrap each peer-call script as an `IFactor<V>` — takes the
@@ -233,16 +236,16 @@ framing; B-0366 provides the hardware-layer realization.
 
 ## 8. Razor check — claim classification
 
-| Claim | Status | Basis |
-|-------|--------|-------|
-| Peer-call CLI exists with 8 agents | PROVEN | `ls tools/peer-call/*.ts` |
-| Multi-agent review aggregates uncertain opinions | PROVEN | observable behavior |
-| Factor graph framing maps agents to factors | CONJECTURED | structural analogy — not implemented |
-| Z-set `+1/-1` maps to BP message multiplicities | CONJECTURED | algebraic isomorphism — not type-checked |
-| Posterior = product of agent likelihoods | CONJECTURED | standard BP theory applied to new domain |
-| CASPaxos governs topology evolution | SPECULATIVE | architectural vision — no design + no implementation |
-| Toffoli gate implements reversible BP | SPECULATIVE | theoretical connection — B-0366 scope |
-| Zero-heat inference at Landauer limit | SPECULATIVE | long-range research goal — FPGA not built |
+| Claim                                            | Status      | Basis                                                |
+| ------------------------------------------------ | ----------- | ---------------------------------------------------- |
+| Peer-call CLI exists with 8 agents               | PROVEN      | `ls tools/peer-call/*.ts`                            |
+| Multi-agent review aggregates uncertain opinions | PROVEN      | observable behavior                                  |
+| Factor graph framing maps agents to factors      | CONJECTURED | structural analogy — not implemented                 |
+| Z-set `+1/-1` maps to BP message multiplicities  | CONJECTURED | algebraic isomorphism — not type-checked             |
+| Posterior = product of agent likelihoods         | CONJECTURED | standard BP theory applied to new domain             |
+| CASPaxos governs topology evolution              | SPECULATIVE | architectural vision — no design + no implementation |
+| Toffoli gate implements reversible BP            | SPECULATIVE | theoretical connection — B-0366 scope                |
+| Zero-heat inference at Landauer limit            | SPECULATIVE | long-range research goal — FPGA not built            |
 
 ## Prior art pointer
 

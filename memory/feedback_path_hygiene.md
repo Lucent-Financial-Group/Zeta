@@ -4,6 +4,7 @@ description: Absolute filesystem paths and paths outside the repo root are docum
 type: feedback
 originSessionId: 2ac0e518-3eeb-45c2-a5dc-da0e168fe9c4
 ---
+
 Documentation should never embed absolute filesystem paths
 or paths outside the repo root. These are doc smells:
 

@@ -112,7 +112,12 @@ export function detectRegressions(history: readonly TestRun[]): readonly Regress
       }
     }
     if (lastPassed !== undefined) {
-      out.push({ testCaseId, lastPassedRunId: lastPassed.testRunId, failingRunId: latest.testRunId, detectedAt: latest.finishedAt });
+      out.push({
+        testCaseId,
+        lastPassedRunId: lastPassed.testRunId,
+        failingRunId: latest.testRunId,
+        detectedAt: latest.finishedAt,
+      });
     }
   }
   return out;

@@ -54,5 +54,6 @@ Branch was named \`fix/b0533-slice-a-lior-dead-xrefs\` based on initial plan (Li
 Updates a stale cross-reference in the glass-halo bidirectional rule to point at the post-§33 DeepSeek conversation-archive location, aligning `.claude/rules/**` with the DeepSeek archive migration (per B-0533 Slice A POC).
 
 **Changes:**
+
 - Replaces the old `docs/research/...` citation with the migrated `memory/persona/deepseek/conversations/...` path.
 - Adds an inline provenance note recording the migration date and PR reference.

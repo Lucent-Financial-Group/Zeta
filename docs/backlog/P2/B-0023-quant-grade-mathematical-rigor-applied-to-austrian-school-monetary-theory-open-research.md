@@ -12,7 +12,11 @@ last_updated: 2026-05-09
 depends_on: []
 children: [B-0380, B-0381, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
 decomposition: clean
-composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/aurora/**]
+composes_with:
+  [
+    docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md,
+    docs/aurora/**,
+  ]
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-research, real-time-publishing]
 type: feature
 ---
@@ -54,10 +58,10 @@ Two schools with distinct strengths and missing intersection:
 - Calculation problem (Mises 1920) — mechanism critique of central planning
 - ABCT — malinvestment from artificial credit expansion → predictable bust
 - Sound-money emphasis, methodological individualism
-- Mostly *deductive-from-action-axioms*, not empirical-mathematical
+- Mostly _deductive-from-action-axioms_, not empirical-mathematical
 - Doesn't have its quant analogue
 
-**The synthesis-gap**: applying quant-grade math (stochastic calculus, measure theory, rigorous probability) directly to the *Austrian foundations* (time-preference, capital-structure, calculation, ABCT) rather than to mainstream macro. Each Austrian primitive could in principle be formalized with quant-grade rigor — that synthesis doesn't exist as a developed school.
+**The synthesis-gap**: applying quant-grade math (stochastic calculus, measure theory, rigorous probability) directly to the _Austrian foundations_ (time-preference, capital-structure, calculation, ABCT) rather than to mainstream macro. Each Austrian primitive could in principle be formalized with quant-grade rigor — that synthesis doesn't exist as a developed school.
 
 ## Why this is Aurora-relevant
 
@@ -111,7 +115,7 @@ Composes with Otto-279 (research counts as history), Otto-286 (definitional prec
 ## Composes with
 
 - **B-0021** (Aurora econ-foundation; Austrian-school candidate) — this row deepens B-0021's investigation toward synthesis, not framework selection
-- **`docs/aurora/**`** — Aurora research substrate; econ-foundation lives here
+- **`docs/aurora/**`\*\* — Aurora research substrate; econ-foundation lives here
 - **Otto-286** (definitional precision) — methodology
 - **Otto-329 Phase 4+** — Aurora research direction
 - **Otto-335** (alignment at language layer) — extends to economics
@@ -139,16 +143,16 @@ mistakes" and "if too broad, decompose before implementation":
 
 **Dependency-ordered atomic child rows:**
 
-| ID | Title | Priority | Effort | Depends on |
-|----|-------|----------|--------|-----------|
-| B-0380 | Controlled-vocabulary pass (Otto-286): define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" | P3 | S | — |
-| B-0381 | Literature survey: existing partial quant × Austrian synthesis attempts; annotated bibliography | P3 | M | B-0380 |
-| B-0382 | Per-primitive #1: time-preference → stochastic utility-discount | P3 | M | B-0380, B-0381 |
-| B-0383 | Per-primitive #2: capital-structure / Hayekian triangle → multi-stage stochastic production | P3 | M | B-0380, B-0381 |
-| B-0384 | Per-primitive #3: calculation-problem → information-theoretic complexity bound | P3 | M | B-0380, B-0381 |
-| B-0385 | Per-primitive #4: ABCT → credit-cycle stochastic process with regime-switching | P3 | M | B-0380, B-0381 |
-| B-0386 | Per-primitive #5: sound-money → monetary-aggregate process with hard-cap constraint | P3 | M | B-0380, B-0381 |
-| B-0387 | Synthesis ADR: formalizability matrix + open-research publishing pipeline | P2 | M | B-0382, B-0383, B-0384, B-0385, B-0386 |
+| ID     | Title                                                                                                                     | Priority | Effort | Depends on                             |
+| ------ | ------------------------------------------------------------------------------------------------------------------------- | -------- | ------ | -------------------------------------- |
+| B-0380 | Controlled-vocabulary pass (Otto-286): define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" | P3       | S      | —                                      |
+| B-0381 | Literature survey: existing partial quant × Austrian synthesis attempts; annotated bibliography                           | P3       | M      | B-0380                                 |
+| B-0382 | Per-primitive #1: time-preference → stochastic utility-discount                                                           | P3       | M      | B-0380, B-0381                         |
+| B-0383 | Per-primitive #2: capital-structure / Hayekian triangle → multi-stage stochastic production                               | P3       | M      | B-0380, B-0381                         |
+| B-0384 | Per-primitive #3: calculation-problem → information-theoretic complexity bound                                            | P3       | M      | B-0380, B-0381                         |
+| B-0385 | Per-primitive #4: ABCT → credit-cycle stochastic process with regime-switching                                            | P3       | M      | B-0380, B-0381                         |
+| B-0386 | Per-primitive #5: sound-money → monetary-aggregate process with hard-cap constraint                                       | P3       | M      | B-0380, B-0381                         |
+| B-0387 | Synthesis ADR: formalizability matrix + open-research publishing pipeline                                                 | P2       | M      | B-0382, B-0383, B-0384, B-0385, B-0386 |
 
 **Dependency order:**
 

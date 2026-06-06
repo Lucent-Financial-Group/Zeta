@@ -24,7 +24,7 @@ path-hygiene, newest-first ordering, public-API review
 requirement, folder-naming, etc.) live in the shared memory
 folder. **GOVERNANCE.md §18 carries the canonical absolute path
 — refer there rather than repeating it here.** Read the
-shared folder *after* this one on wake-up so architect-
+shared folder _after_ this one on wake-up so architect-
 specific voice dominates over averaged voice.
 
 - [JOURNAL.md](JOURNAL.md) — long-term journal (append-only; Tier 3; grep only).

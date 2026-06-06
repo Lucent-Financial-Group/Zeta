@@ -48,15 +48,15 @@ Not P4 because the 4-catch empirical evidence is recent and concrete.
 
 The parsing must distinguish row-body sections by their headings:
 
-| Section | Treatment |
-|---|---|
-| `## Acceptance` / `## Acceptance criteria` | extract primary-artifact paths |
-| `## Proposed mechanization` | extract primary-artifact paths |
-| `## Scope` | extract primary-artifact paths |
-| `composes_with:` (frontmatter) | **skip** (cross-reference only) |
-| `## Composes with` (body section) | **skip** (cross-reference only) |
-| `## Origin` / `## Source` / `## Why P3` | **skip** (context only) |
-| `## Non-goals` | **skip** (intentionally absent work) |
+| Section                                    | Treatment                            |
+| ------------------------------------------ | ------------------------------------ |
+| `## Acceptance` / `## Acceptance criteria` | extract primary-artifact paths       |
+| `## Proposed mechanization`                | extract primary-artifact paths       |
+| `## Scope`                                 | extract primary-artifact paths       |
+| `composes_with:` (frontmatter)             | **skip** (cross-reference only)      |
+| `## Composes with` (body section)          | **skip** (cross-reference only)      |
+| `## Origin` / `## Source` / `## Why P3`    | **skip** (context only)              |
+| `## Non-goals`                             | **skip** (intentionally absent work) |
 
 A path mentioned in the `## Acceptance` section is a primary artifact. A path mentioned in `## Composes with` is a sibling, not a primary artifact.
 
@@ -64,12 +64,12 @@ A path mentioned in the `## Acceptance` section is a primary artifact. A path me
 
 The naive `grep -oE 'tools/[a-z0-9_/-]+\.ts'` over the whole body flagged 4 P3 rows as drift candidates; all 4 were false positives:
 
-| Row | False match | True state |
-|---|---|---|
-| [B-0116](B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md) | `tools/github/poll-pr-gate.ts` (composes_with) | Primary artifact `tools/gh-jq-safe.sh` does NOT exist; row is genuinely open |
-| [B-0205](B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md) | `tools/github/poll-pr-gate-batch.ts` (composes_with) | Effort: L research+architecture row; multi-axis instrumentation in-progress |
-| [B-0422](B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) | `.claude/rules/backlog-item-start-gate.md` (rule citation) | Research row; Clifford engine in-progress |
-| [B-0537](B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md) | `tools/hygiene/audit-memory-index-entry-lengths.ts` (existing audit tool, but row's work is cleanup + CI gate which haven't shipped) | Genuinely open work (Slice A cleanup + Slice B CI gate pending) |
+| Row                                                                                                            | False match                                                                                                                          | True state                                                                   |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| [B-0116](B-0116-gh-jq-safe-wrapper-zsh-quoting-2026-04-30.md)                                                  | `tools/github/poll-pr-gate.ts` (composes_with)                                                                                       | Primary artifact `tools/gh-jq-safe.sh` does NOT exist; row is genuinely open |
+| [B-0205](B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md)                         | `tools/github/poll-pr-gate-batch.ts` (composes_with)                                                                                 | Effort: L research+architecture row; multi-axis instrumentation in-progress  |
+| [B-0422](B-0422-clifford-algebraic-narrative-engine-pauli-symmetry-breaking-falsifiability-test-2026-05-12.md) | `.claude/rules/backlog-item-start-gate.md` (rule citation)                                                                           | Research row; Clifford engine in-progress                                    |
+| [B-0537](B-0537-memory-md-index-entry-lengths-cleanup-and-gate-2026-05-15.md)                                  | `tools/hygiene/audit-memory-index-entry-lengths.ts` (existing audit tool, but row's work is cleanup + CI gate which haven't shipped) | Genuinely open work (Slice A cleanup + Slice B CI gate pending)              |
 
 These four cases drive the section-aware parsing requirement.
 

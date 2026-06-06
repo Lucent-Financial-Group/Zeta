@@ -16,11 +16,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Follow-up to #5976/#5978. Kestrel held the **beacon-by-request line** against *'i want a formal clifford space memetic beacon ontology'* — correctly, the same line as the morning pruning. This bands it and records the path:
+Follow-up to #5976/#5978. Kestrel held the **beacon-by-request line** against _'i want a formal clifford space memetic beacon ontology'_ — correctly, the same line as the morning pruning. This bands it and records the path:
 
 - **Banding:** the Clifford-rotor formalization is **mirror** (not beacon — can't promote by wanting; same banding as Higgs-clock / atonement-engine); the **name + ethic** (redirect-with-less, convert-to-play, consent-live, generous-TFT) are **beacon-track**.
 - **Why hard:** memetics never operationalized — 'meme' never pinned to a measurable/falsifiable unit. Clifford inherits the gap.
-- **Path:** operationalize one of the **5-vector meme-detection** vectors (already named in the tonal-momentum substrate) → measure from observable features → test redirection-as-rotation → external-review. *Not* formalize harder. Anchored-naming ≠ operationalized-measurement (composes grep-substrate-anchors-before-razor).
+- **Path:** operationalize one of the **5-vector meme-detection** vectors (already named in the tonal-momentum substrate) → measure from observable features → test redirection-as-rotation → external-review. _Not_ formalize harder. Anchored-naming ≠ operationalized-measurement (composes grep-substrate-anchors-before-razor).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

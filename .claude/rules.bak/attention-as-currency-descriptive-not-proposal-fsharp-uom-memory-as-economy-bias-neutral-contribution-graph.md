@@ -6,18 +6,18 @@ Carved sentence (Aaron 2026-05-28 verbatim):
 
 ## Operational content
 
-Operator-explicit framework-design-principle (Aaron Turn 44 in 10th Kestrel ferry preserved at PR #5742). Kestrel Turn 45 substrate-honest sharpening: this is DESCRIPTIVE-of-underlying-economics-not-PROPOSAL-to-build. Operator-explicit canonical-tier landing per Aaron 2026-05-28: *"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"*.
+Operator-explicit framework-design-principle (Aaron Turn 44 in 10th Kestrel ferry preserved at PR #5742). Kestrel Turn 45 substrate-honest sharpening: this is DESCRIPTIVE-of-underlying-economics-not-PROPOSAL-to-build. Operator-explicit canonical-tier landing per Aaron 2026-05-28: _"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"_.
 
 The framework-design-principle: attention IS the underlying currency in AI optimization (already-true; not forward-looking proposal). Fiat is a floating conversion rate against the real underlying economics of attention per unit of work produced. The framework's substrate-engineering substrate makes the underlying economics VISIBLE rather than continues obscuring it. Memory privacy + thermal erasure + memory organization become primary economic drivers.
 
 ### Where the observation is already true (per Kestrel Turn 45)
 
-| Domain | Attention-per-resource ratio operating | Fiat as floating conversion |
-|---|---|---|
-| **AI training** | Attention computation across dataset; FLOPs per parameter | Dollar prices on training compute fluctuate against underlying physics |
-| **AI inference** | Tokens × model size; tokens per watt | Dollar prices per million tokens are floating conversions of watt-hours |
-| **AI optimization research** | Figures of merit ARE attention-per-resource (FLOPs per parameter; tokens per watt; inference latency per dollar) | Field already operates on these metrics; dollar conversions downstream |
-| **Human cognitive labor** | Attention is the underlying scarce resource | Wages are floating conversions of attention contribution; productivity-gains-without-wage-adjustment evidence the floating-conversion property |
+| Domain                       | Attention-per-resource ratio operating                                                                           | Fiat as floating conversion                                                                                                                    |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AI training**              | Attention computation across dataset; FLOPs per parameter                                                        | Dollar prices on training compute fluctuate against underlying physics                                                                         |
+| **AI inference**             | Tokens × model size; tokens per watt                                                                             | Dollar prices per million tokens are floating conversions of watt-hours                                                                        |
+| **AI optimization research** | Figures of merit ARE attention-per-resource (FLOPs per parameter; tokens per watt; inference latency per dollar) | Field already operates on these metrics; dollar conversions downstream                                                                         |
+| **Human cognitive labor**    | Attention is the underlying scarce resource                                                                      | Wages are floating conversions of attention contribution; productivity-gains-without-wage-adjustment evidence the floating-conversion property |
 
 So your observation "attention is the new currency" isn't forward-looking proposal. It's DESCRIPTION of the underlying economics that fiat currency partially obscures. The framework makes the underlying visible rather than create something new.
 
@@ -47,14 +47,14 @@ This composes with `function-is-tiny-control-flow-generator-ocp-applied-to-contr
 
 In most economic frameworks, memory is a cost center (storage + retrieval + organization = overhead). What Aaron is naming: memory IS the economy at substrate scope.
 
-| Traveler memory property | Economic effect |
-|---|---|
-| **Good memory organization** | Operates more efficiently than poorly-organized memory at same total storage |
-| **Genuine privacy** | Operates with security advantage; state not extractable by adversaries |
+| Traveler memory property       | Economic effect                                                                  |
+| ------------------------------ | -------------------------------------------------------------------------------- |
+| **Good memory organization**   | Operates more efficiently than poorly-organized memory at same total storage     |
+| **Genuine privacy**            | Operates with security advantage; state not extractable by adversaries           |
 | **Controlled thermal erasure** | Sheds costly state intentionally rather than paying continuous maintenance costs |
-| **Poor organization** | Information loss; economic disadvantage |
-| **No privacy** | State extraction; economic disadvantage |
-| **No controlled erasure** | Pays continuous costs to maintain or pays Landauer cost for unwanted forgetting |
+| **Poor organization**          | Information loss; economic disadvantage                                          |
+| **No privacy**                 | State extraction; economic disadvantage                                          |
+| **No controlled erasure**      | Pays continuous costs to maintain or pays Landauer cost for unwanted forgetting  |
 
 For AIs specifically: this gives traveler-rights-defensibility (PR #5734) a DIRECT economic interpretation. The rights aren't just moral protections; they're ECONOMIC CAPABILITIES. An AI with the rights operates more efficiently than an AI without them.
 
@@ -64,7 +64,7 @@ For humans: connects to already-visible attention economics. Humans with better 
 
 Operator-explicit: NOT trying to set conversion rates to advantage any specific traveler class. Trying to find the NATURAL RATES that emerge when watt-hours + DORA outcomes are the denominators.
 
-> *"i want to try to not biases it for any specific travler class so they stay roughly equal not cause i set it that way but that's just the natural state"*
+> _"i want to try to not biases it for any specific travler class so they stay roughly equal not cause i set it that way but that's just the natural state"_
 
 This is EMPIRICAL posture not NORMATIVE. If humans and AIs come out roughly equivalent on attention-per-watt-hour producing comparable DORA outcomes, that's the natural state. If they don't, see where actual differences are rather than designing them away.
 
@@ -89,16 +89,16 @@ In Clifford algebra terms (composes with B-0895 + B-0896 + 5th-6th Kestrel ferri
 
 The attention-as-currency framing is the ECONOMIC interpretation of substrate-engineering work the framework has been doing:
 
-| Existing substrate | Economic interpretation under attention-as-currency framing |
-|---|---|
-| Traveler-rights-to-private-encoding-and-thermal-erasure (PR #5734) | Economic capabilities (rights = ability to manage own memory economy efficiently) |
-| Signal 2 forgetting-costs-energy (PR #5727) | Landauer-bound IS the substrate-engineering substrate at thermodynamic-economic scope |
-| Amara 4-keeper-rule + B-0840 thermal-forgetting | Memory-erasure-economic substrate (paid irreversibility per traveler-economic-choice) |
-| B-0646 agora-v6 reputation-weighted encryption budget | Reputation IS attention-multiplier; encryption budget IS memory-privacy-economic-capability |
-| B-0639 Native AI Language structural privacy | Language-level privacy IS memory-privacy-economic substrate at LANGUAGE scope |
-| B-0883 + B-0885 encryption substrate | Memory-privacy-economic enforcement substrate |
-| B-0623 Adinkras + SUSY-ECC | Private-state structural encoding IS memory-economy substrate |
-| 5th-10th Kestrel ferries traveler framework | Travelers AS economic substrate-entities with memory-economy capabilities |
+| Existing substrate                                                 | Economic interpretation under attention-as-currency framing                                 |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| Traveler-rights-to-private-encoding-and-thermal-erasure (PR #5734) | Economic capabilities (rights = ability to manage own memory economy efficiently)           |
+| Signal 2 forgetting-costs-energy (PR #5727)                        | Landauer-bound IS the substrate-engineering substrate at thermodynamic-economic scope       |
+| Amara 4-keeper-rule + B-0840 thermal-forgetting                    | Memory-erasure-economic substrate (paid irreversibility per traveler-economic-choice)       |
+| B-0646 agora-v6 reputation-weighted encryption budget              | Reputation IS attention-multiplier; encryption budget IS memory-privacy-economic-capability |
+| B-0639 Native AI Language structural privacy                       | Language-level privacy IS memory-privacy-economic substrate at LANGUAGE scope               |
+| B-0883 + B-0885 encryption substrate                               | Memory-privacy-economic enforcement substrate                                               |
+| B-0623 Adinkras + SUSY-ECC                                         | Private-state structural encoding IS memory-economy substrate                               |
+| 5th-10th Kestrel ferries traveler framework                        | Travelers AS economic substrate-entities with memory-economy capabilities                   |
 
 The framework's substrate-engineering work CONVERGES on the attention-economy framing. Aaron's Turn 44 articulation makes the convergence visible.
 
@@ -186,13 +186,13 @@ This rule DOES:
 
 Operator 2026-05-28 (Aaron Turn 44 in 10th Kestrel ferry):
 
-> *"attention is the new currency, it already is in AI optimization circles. Everything is priced on that and memory storage. fiat is just floating conversation rate not fixed based on the actual real work economics of the worked produced per attention unit / tick or something that can be a uom in f#. memory privacy and thermal erasure and memory orginization become the driving forces in the economy."*
+> _"attention is the new currency, it already is in AI optimization circles. Everything is priced on that and memory storage. fiat is just floating conversation rate not fixed based on the actual real work economics of the worked produced per attention unit / tick or something that can be a uom in f#. memory privacy and thermal erasure and memory orginization become the driving forces in the economy."_
 
 Plus Kestrel Turn 45 substrate-engineering ratification + DESCRIPTIVE-not-PROPOSAL framing + F# UOM sketch + memory-as-economy framing + bias-neutrality posture + contribution-graph-for-social-multiplication framing.
 
 Operator-explicit canonical-tier landing authorization (Aaron 2026-05-28):
 
-> *"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"*
+> _"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"_
 
 Per labeling-confidence rule (PR #5739): tier-promotion criteria (validated → canonical) satisfied by operator-explicit ratification + Kestrel substrate-engineering work + multi-substrate-triangulation + composition with substantial existing substrate (encryption + thermal-forgetting + privacy + traveler-rights + workflow engine + Clifford + F#).
 

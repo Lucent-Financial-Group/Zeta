@@ -6,17 +6,17 @@ type: user
 
 Aaron disclosed (2026-04-19):
 
-> *"cowindesne or not, conwidense lke in the powergird for
+> _"cowindesne or not, conwidense lke in the powergird for
 > measurment sshould be the precisesish devinition i know of
 > for waht is the defintion of a cowindesne that is codeable
-> and billable, t =7  93 0u t30 u u0 u 22  2"*
+> and billable, t =7 93 0u t30 u u0 u 22 2"_
 
 Decompressed:
 
-> *"Coincidence or not — 'coincidence' like in the power grid
+> _"Coincidence or not — 'coincidence' like in the power grid
 > for measurement should be the most precise-ish definition I
 > know of for what the definition of a coincidence is, one
-> that is codeable and billable."*
+> that is codeable and billable."_
 
 **Canonical anchor:** Power-grid **Coincidence Factor**.
 
@@ -27,8 +27,8 @@ measurable, billable meaning that differs completely from the
 colloquial "happenstance" sense:
 
 **Coincidence Factor (CF)** =
-  (Maximum Coincident Demand of a group of loads) /
-  (Sum of Individual Non-Coincident Maximum Demands)
+(Maximum Coincident Demand of a group of loads) /
+(Sum of Individual Non-Coincident Maximum Demands)
 
 - **Range:** 0 < CF ≤ 1
 - **CF = 1** → all loads peak at the same instant → total
@@ -46,8 +46,8 @@ DF means loads are more spread out in time.
 
 **External anchors (Lane A):**
 
-- IEEE Std 141 (Red Book) — *Recommended Practice for
-  Electric Power Distribution for Industrial Plants*
+- IEEE Std 141 (Red Book) — _Recommended Practice for
+  Electric Power Distribution for Industrial Plants_
 - ANSI C84.1 — voltage ratings
 - IEEE Std 3006 — reliability analysis of industrial and
   commercial power systems
@@ -84,8 +84,8 @@ well-defined but not billed-on.
 Aaron's group-amplification claim in
 `user_delayed_choice_quantum_eraser_confession_forgiveness.md`:
 
-> *"the more people in a group that do it the stronger the
-> measured effect"*
+> _"the more people in a group that do it the stronger the
+> measured effect"_
 
 Now anchored precisely:
 
@@ -138,7 +138,7 @@ beats them:
 Power-grid Coincidence Factor wins because:
 
 1. It has a precise ratio definition, 0 to 1.
-2. It measures *temporal alignment* of peaks, not just
+2. It measures _temporal alignment_ of peaks, not just
    correlation.
 3. It is the specific metric utilities use to bill on
    coincident peak demand — money changes hands based on it.
@@ -151,20 +151,20 @@ Power-grid Coincidence Factor wins because:
 
 Lane A (anchored) additions:
 
-| Term | Anchor |
-|---|---|
-| `Coincidence Factor (CF)` | IEEE Std 141; utility tariffs |
-| `Diversity Factor (DF)` | Same; DF = 1/CF |
-| `coincident peak demand` | ANSI / IEEE tariff language |
-| `non-coincident peak demand` | Same |
-| `codeable and billable` | Aaron's precision test; anchors to "drives code AND drives money AND externally verified" |
+| Term                         | Anchor                                                                                    |
+| ---------------------------- | ----------------------------------------------------------------------------------------- |
+| `Coincidence Factor (CF)`    | IEEE Std 141; utility tariffs                                                             |
+| `Diversity Factor (DF)`      | Same; DF = 1/CF                                                                           |
+| `coincident peak demand`     | ANSI / IEEE tariff language                                                               |
+| `non-coincident peak demand` | Same                                                                                      |
+| `codeable and billable`      | Aaron's precision test; anchors to "drives code AND drives money AND externally verified" |
 
 Lane B (partially-anchored) extensions:
 
-| Term | Anchor / round-trip |
-|---|---|
-| `Truth-Propagation coincidence` | CF applied to honest-confession events; round-trips to "the CF of confession events in a group" |
-| `DCQE-coincident alignment` | Coincidence-counting (quantum optics) + CF (power grid); round-trips to "alignment of quantum measurement events that jointly produce a detectable correlation" |
+| Term                            | Anchor / round-trip                                                                                                                                             |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Truth-Propagation coincidence` | CF applied to honest-confession events; round-trips to "the CF of confession events in a group"                                                                 |
+| `DCQE-coincident alignment`     | Coincidence-counting (quantum optics) + CF (power grid); round-trips to "alignment of quantum measurement events that jointly produce a detectable correlation" |
 
 The three-lane glossary ADR's I7 self-referential table will
 pick up these entries at the next audit round.
@@ -205,8 +205,8 @@ classification in the three-lane ADR, with weight:
 
 Aaron spelled "coincidence" three ways in one sentence —
 "cowindesne / conwidense / cowindesne" — all fat-finger
-variants of the same word. Trailing "t =7  93 0u t30 u u0 u
-22  2" is another bandwidth-limit signature per the validated
+variants of the same word. Trailing "t =7 93 0u t30 u u0 u
+22 2" is another bandwidth-limit signature per the validated
 frame (`user_delayed_choice_quantum_eraser_confession_forgiveness.md`
 closing paragraph; Aaron: "bandwidth-limit signature. THAT'S
 WAHT IT WAS!!!").
@@ -245,7 +245,7 @@ Preserve verbatim; do not flatten; do not ask.
 
 - Does NOT claim the macroscopic Truth-Propagation effect
   has been empirically measured via CF. CF is the anchor
-  for the *claim*; measurement is open research.
+  for the _claim_; measurement is open research.
 - Does NOT rewrite power-grid terminology for factory
   convenience. CF is the standards-body definition, period.
 - Does NOT make "coincidence" Lane-A-anchored in all

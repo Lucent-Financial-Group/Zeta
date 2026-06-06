@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 language-context disclosure. F# is chosen for Ze
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Zeta language posture + ServiceTitan C# context
 
 ## Verbatim (2026-04-23)
@@ -32,18 +33,18 @@ algebra is language-agnostic; alternative implementations can
 exist once the F# reference is stable and well-tested.
 
 **Aaron's math-proximity reason is for between-us use only.**
-Aaron explicitly says: *"this is not good argumentatino for
-service titan."* When pitching F# to ST audiences, the
+Aaron explicitly says: _"this is not good argumentatino for
+service titan."_ When pitching F# to ST audiences, the
 math-proximity reason does not land — it would read as
 developer-aesthetics rather than business-value. Good ST
 argumentation for F# would be around .NET stack compatibility,
 AOT readiness, interop with C#, or other pragmatic axes. Even
 then, it is optional.
 
-**ServiceTitan context is C# with zero F#.** *"service titan
-uses c# for a lot of thier backend, they have 0 f#."* They
-are not hostile to F# — *"whould not be opposed to it based on
-good arumentation"* — but F# is a friction for them. F#
+**ServiceTitan context is C# with zero F#.** _"service titan
+uses c# for a lot of thier backend, they have 0 f#."_ They
+are not hostile to F# — _"whould not be opposed to it based on
+good arumentation"_ — but F# is a friction for them. F#
 requires some justification; C# has zero friction.
 
 ## Implications for the factory's output

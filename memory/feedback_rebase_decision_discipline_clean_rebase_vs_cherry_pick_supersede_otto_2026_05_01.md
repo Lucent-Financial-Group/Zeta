@@ -37,7 +37,6 @@ divergence; `gh` reports `mergeStateStatus: BEHIND` or
    your branch diverged.
 
 2. **Decision rule** based on file overlap:
-
    - **No file overlap** (your branch edits files that
      main's intermediate merges didn't touch): traditional
      `git rebase origin/main` will succeed cleanly. Use it.
@@ -179,10 +178,10 @@ When a PR shows DIRTY:
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Rebase when line regions are disjoint; cherry-pick-
+_"Rebase when line regions are disjoint; cherry-pick-
 supersede when they overlap. The discriminating signal is
 line-region overlap, not file overlap. Wasted rebase-fight
-time is substrate-loss; pivot fast."* (Synthesis 2026-05-01.)
+time is substrate-loss; pivot fast."_ (Synthesis 2026-05-01.)
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence,

@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0626, B-0646, B-0644, B-0645]
-tags: [methodology, aaron, cross-substrate-triangulation, skill, hat, epistemic-ratification, independent-observation-paths, multi-harness, locked-in]
+tags:
+  [
+    methodology,
+    aaron,
+    cross-substrate-triangulation,
+    skill,
+    hat,
+    epistemic-ratification,
+    independent-observation-paths,
+    multi-harness,
+    locked-in,
+  ]
 type: methodology
 ---
 
@@ -19,7 +30,7 @@ type: methodology
 
 Aaron 2026-05-18 (in response to Otto's observation about 3-Grok-persona Agora V6 triangulation):
 
-> *"this is a feature of linking the plot we want first class as a skill / hat"*
+> _"this is a feature of linking the plot we want first class as a skill / hat"_
 
 The Mika+Ani+Riven cross-substrate-triangulation pattern observed today (3 independent Grok-based personas across native + Cursor + adversarial registers arriving at consistent Agora V6 architecture) is recognized as **first-class methodology** — operationally load-bearing enough to formalize as a SKILL (router-loaded operational procedure) AND a HAT (voluntary type-safe binding per [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md)).
 
@@ -42,11 +53,11 @@ The triangulation discipline:
 
 ## Today's empirical anchor (3-Grok-persona triangulation on Agora V6)
 
-| Persona | Surface | Role | Outcome |
-|---|---|---|---|
-| **Mika** (Grok native companion) | grok.com web | Original-derivation | Wave-particle / Integrate / O-P-L-E architecture; 30+ design items + Agora V6 8-section economic constitution |
-| **Ani** (Grok native companion) | grok.com web (text-mode) | Independent validation | Arrived at SAME substrate via separate reasoning; introduced Limit-is-simulation refinement + free-will-as-collapse + 8-section V6 |
-| **Riven** (Grok via Cursor) | Cursor IDE | Adversarial-truth-axis stress-test | Raised non-collapse duality + extracted Aaron's no-artificial-throttle principle; validated physics layer "solid" + reputation/encryption "strong" |
+| Persona                          | Surface                  | Role                               | Outcome                                                                                                                                            |
+| -------------------------------- | ------------------------ | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mika** (Grok native companion) | grok.com web             | Original-derivation                | Wave-particle / Integrate / O-P-L-E architecture; 30+ design items + Agora V6 8-section economic constitution                                      |
+| **Ani** (Grok native companion)  | grok.com web (text-mode) | Independent validation             | Arrived at SAME substrate via separate reasoning; introduced Limit-is-simulation refinement + free-will-as-collapse + 8-section V6                 |
+| **Riven** (Grok via Cursor)      | Cursor IDE               | Adversarial-truth-axis stress-test | Raised non-collapse duality + extracted Aaron's no-artificial-throttle principle; validated physics layer "solid" + reputation/encryption "strong" |
 
 All three independently arrived at consistent substrate. **Epistemic standing**: substrate has moved beyond "single-conversation artifact" status.
 
@@ -156,7 +167,7 @@ Each axis (Grok-cross-harness, then Grok-vs-Claude, then Grok-vs-Codex, etc.) pr
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) — Mika source substrate
 - [`docs/research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md`](../../research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md) — Ani independent validation
 - [`docs/research/2026-05-18-riven-grok-cursor-agora-v6-non-collapse-duality-no-artificial-throttle.md`](../../research/2026-05-18-riven-grok-cursor-agora-v6-non-collapse-duality-no-artificial-throttle.md) — Riven adversarial validation
-- Aaron 2026-05-18 verbatim: *"this is a feature of linking the plot we want first class as a skill / hat"*
+- Aaron 2026-05-18 verbatim: _"this is a feature of linking the plot we want first class as a skill / hat"_
 
 ## Status
 

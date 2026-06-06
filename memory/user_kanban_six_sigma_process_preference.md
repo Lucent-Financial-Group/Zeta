@@ -7,10 +7,10 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Aaron disclosed (2026-04-20 late, verbatim):
 
-> *"also khanban is a good practice, i prefer it and
+> _"also khanban is a good practice, i prefer it and
 > six sigma, we should have some skills documents
 > process factory improvments around that we should
-> backlog this research"*
+> backlog this research"_
 
 ## What this is
 
@@ -20,6 +20,7 @@ codified as first-class factory substrate.
 ### Kanban (his spelling "khanban")
 
 Visual workflow management. Core practices:
+
 - **Visualise the work** — every work item on a board
   in a visible column (To Do / Doing / Done, with
   swim-lanes).
@@ -49,8 +50,8 @@ Visual workflow management. Core practices:
 
 **What's missing:** explicit WIP limits per persona /
 per cadence slot. No skill codifies a WIP discipline.
-The architect-bottleneck per GOVERNANCE §11 is a *de
-facto* WIP-1 on review, but it's not framed as Kanban.
+The architect-bottleneck per GOVERNANCE §11 is a _de
+facto_ WIP-1 on review, but it's not framed as Kanban.
 
 ### Six Sigma
 
@@ -68,8 +69,8 @@ Data-driven process improvement. Core cycle: **DMAIC**
 **Factory mappings already in place:**
 
 - DORA metrics (per `reference_dora_2025_reports.md`
-  + `feedback_dora_is_measurement_starting_point.md`)
-  = Measure phase substrate.
+  - `feedback_dora_is_measurement_starting_point.md`)
+    = Measure phase substrate.
 - Meta-wins logging (row 9) = Analyze + Improve phase
   record.
 - FACTORY-HYGIENE cadenced rows = Control phase —

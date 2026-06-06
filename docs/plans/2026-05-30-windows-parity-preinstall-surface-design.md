@@ -22,7 +22,7 @@ solution at parity with the macOS surfaces.
 
 ## Operator constraints (Aaron, 2026-05-30)
 
-- **User-mode preferred.** This is a *client workstation, not a server.* Admin is
+- **User-mode preferred.** This is a _client workstation, not a server._ Admin is
   available on this PC but held in reserve; the clean solution must not require it.
 - **Network is ServiceTitan's — off-limits.** Never remove the corporate AV/EDR agent
   (it is wired into network access control; removing it quarantines the machine).
@@ -36,20 +36,20 @@ solution at parity with the macOS surfaces.
 
 ## Prior-art grounding
 
-| Source | What it gives |
-|---|---|
-| `tools/shadow/launchd/install-launchagent.ts` | The TS-installer pattern to mirror: detect bun + repo-root, safe placeholder substitution (XML-escaped), validate, atomic write, optional bootstrap |
-| `tools/kiro/launchd/com.lucent.zeta.kiro-loop.plist` + `install.sh` | The persistent-loop plist shape (StartInterval 60, RunAtLoad, log paths, `__REPO_ROOT__`/`__USER_HOME__` placeholders) + install flow (bootout → substitute → lint → bootstrap) |
-| `tools/ops/setup-dual-background-agents.ts` | **The canonical Otto worker**: launchd runs `.claude/bin/claude-loop-tick.ts` with env `ZETA_CLAUDE_LOOP_RUN_CLAUDE=1` + `_MODEL` + `_WORKTREE` |
-| `../scratch/scripts/setup/windows/*.ps1` | Cross-OS PowerShell install-graph template (slice 2): `bootstrap.ps1`, `common.ps1` (`Test-IsAdministrator`), `choco.ps1`, `mise.ps1`, `dotnet.ps1`, `services.ps1`, `PLATFORM_PARITY.md` |
-| This machine's `OneDrive Startup Task` (exported XML) | Authoritative Task Scheduler XML schema for a real user-mode, Limited-privilege, logon-triggered task |
+| Source                                                              | What it gives                                                                                                                                                                             |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/shadow/launchd/install-launchagent.ts`                       | The TS-installer pattern to mirror: detect bun + repo-root, safe placeholder substitution (XML-escaped), validate, atomic write, optional bootstrap                                       |
+| `tools/kiro/launchd/com.lucent.zeta.kiro-loop.plist` + `install.sh` | The persistent-loop plist shape (StartInterval 60, RunAtLoad, log paths, `__REPO_ROOT__`/`__USER_HOME__` placeholders) + install flow (bootout → substitute → lint → bootstrap)           |
+| `tools/ops/setup-dual-background-agents.ts`                         | **The canonical Otto worker**: launchd runs `.claude/bin/claude-loop-tick.ts` with env `ZETA_CLAUDE_LOOP_RUN_CLAUDE=1` + `_MODEL` + `_WORKTREE`                                           |
+| `../scratch/scripts/setup/windows/*.ps1`                            | Cross-OS PowerShell install-graph template (slice 2): `bootstrap.ps1`, `common.ps1` (`Test-IsAdministrator`), `choco.ps1`, `mise.ps1`, `dotnet.ps1`, `services.ps1`, `PLATFORM_PARITY.md` |
+| This machine's `OneDrive Startup Task` (exported XML)               | Authoritative Task Scheduler XML schema for a real user-mode, Limited-privilege, logon-triggered task                                                                                     |
 
 ## Slices
 
 - **Slice 1 (this spec's build target): user-mode Windows background-service installer.**
 - **Slice 2 (follow-up): install-graph `windows.ps1` + `install.sh` dispatch** (scoop-primary, port from `../scratch`).
 - **Slice 3 (follow-up, thin): elevation/biometric parity doc** — user-mode needs no
-  runtime elevation; Windows Hello = the *interactive* Touch ID parity only.
+  runtime elevation; Windows Hello = the _interactive_ Touch ID parity only.
 
 ---
 
@@ -57,16 +57,16 @@ solution at parity with the macOS surfaces.
 
 ### Parity map (launchd → Task Scheduler)
 
-| launchd (macOS) | Task Scheduler (Windows, user-mode) |
-|---|---|
-| LaunchAgent in `~/Library/LaunchAgents` | Per-user task, no admin |
-| `gui/$uid` domain | `<Principal><LogonType>InteractiveToken</LogonType></Principal>` |
-| (user agent, never elevated) | **OMIT `<RunLevel>`** → resolves to `Limited` (least-privilege; no UAC) |
-| `StartInterval` 60 | `<LogonTrigger>` + `<Repetition><Interval>PT1M</Interval><StopAtDurationEnd>false</StopAtDurationEnd></Repetition>` |
-| `RunAtLoad` true | logon trigger fires at sign-in |
-| `KeepAlive` + `ThrottleInterval` | `<RestartOnFailure>` + `<MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>` |
-| `StandardOutPath`/`StandardErrorPath` | wrapper redirects to `%LOCALAPPDATA%\zeta-otto-loop\*.log` |
-| plist is UTF-8 | **task XML must be UTF-16** (`schtasks /Create /XML` requirement) |
+| launchd (macOS)                         | Task Scheduler (Windows, user-mode)                                                                                 |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| LaunchAgent in `~/Library/LaunchAgents` | Per-user task, no admin                                                                                             |
+| `gui/$uid` domain                       | `<Principal><LogonType>InteractiveToken</LogonType></Principal>`                                                    |
+| (user agent, never elevated)            | **OMIT `<RunLevel>`** → resolves to `Limited` (least-privilege; no UAC)                                             |
+| `StartInterval` 60                      | `<LogonTrigger>` + `<Repetition><Interval>PT1M</Interval><StopAtDurationEnd>false</StopAtDurationEnd></Repetition>` |
+| `RunAtLoad` true                        | logon trigger fires at sign-in                                                                                      |
+| `KeepAlive` + `ThrottleInterval`        | `<RestartOnFailure>` + `<MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>`                               |
+| `StandardOutPath`/`StandardErrorPath`   | wrapper redirects to `%LOCALAPPDATA%\zeta-otto-loop\*.log`                                                          |
+| plist is UTF-8                          | **task XML must be UTF-16** (`schtasks /Create /XML` requirement)                                                   |
 
 For a dev laptop the OneDrive-default settings are flipped: `RunOnlyIfNetworkAvailable=false`,
 `StopIfGoingOnBatteries=false`, `DisallowStartIfOnBatteries=false`, `StopOnIdleEnd=false`

@@ -43,7 +43,7 @@ substrate. Otto-session ran 6 consecutive new-
 substrate ticks (Otto-39..44) while Phase 1 threads
 got drained in 30-second sweeps between them.
 
-Aaron's *"amazing"* is the highest explicit
+Aaron's _"amazing"_ is the highest explicit
 endorsement he's given this session. Validates the
 pattern as discipline.
 
@@ -101,13 +101,13 @@ pattern as discipline.
 ## Composes with
 
 - `feedback_current_memory_per_maintainer_distillation_
-  pattern_prefer_progress_2026_04_23.md` — progress-
+pattern_prefer_progress_2026_04_23.md` — progress-
   over-quiet-close discipline that this operationalises
 - `project_amara_operational_gap_assessment_...` (PR
-  #196 merged) — *"mechanize already-discovered
-  failure modes"* is the background-axis discipline
+  #196 merged) — _"mechanize already-discovered
+  failure modes"_ is the background-axis discipline
 - `project_loop_agent_named_otto_role_project_manager_
-  2026_04_23.md` — Otto-as-PM role requires this split
+2026_04_23.md` — Otto-as-PM role requires this split
   attention; running one queue while producing another
   substrate IS the PM function
 - `feedback_never_idle_speculative_work_over_waiting` —
@@ -143,16 +143,16 @@ pattern as discipline.
 **Substrate production metrics** over Otto-39..44
 (6 consecutive ticks):
 
-| Tick | Foreground | Background |
-|---|---|---|
-| 39 | Craft module #2 | (n/a; fresh-branch) |
-| 40 | Linguistic-seed truth term | (n/a) |
-| 41 | Craft module #3 | (n/a) |
-| 42 | MD032 preflight tool + hygiene row #56 | (n/a) |
-| 43 | Zora-UX directive + BACKLOG row + 2 MD fixes | (interrupt-handled cleanly) |
-| 44 | Zora-UX research doc v0 | 2 PRs update-branch |
-| 45 | (background focused) | 9 threads drained across 5 PRs |
-| 46 | Craft module #4 (this tick) | (n/a) |
+| Tick | Foreground                                   | Background                     |
+| ---- | -------------------------------------------- | ------------------------------ |
+| 39   | Craft module #2                              | (n/a; fresh-branch)            |
+| 40   | Linguistic-seed truth term                   | (n/a)                          |
+| 41   | Craft module #3                              | (n/a)                          |
+| 42   | MD032 preflight tool + hygiene row #56       | (n/a)                          |
+| 43   | Zora-UX directive + BACKLOG row + 2 MD fixes | (interrupt-handled cleanly)    |
+| 44   | Zora-UX research doc v0                      | 2 PRs update-branch            |
+| 45   | (background focused)                         | 9 threads drained across 5 PRs |
+| 46   | Craft module #4 (this tick)                  | (n/a)                          |
 
 6-of-8 ticks produced foreground substrate. Background
 work was either interrupt-driven or batch-drained

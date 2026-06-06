@@ -25,7 +25,13 @@ function snapshot(overrides: Partial<KeepAliveSnapshot> = {}): KeepAliveSnapshot
 }
 
 function agent(id: string, ageMs: number): AgentHeartbeat {
-  return { agentId: id, hatAssignmentId: `${id}-hat`, workItemId: `wi-${id}`, heartbeatAgeMs: ageMs, deadlineMs: 60_000 };
+  return {
+    agentId: id,
+    hatAssignmentId: `${id}-hat`,
+    workItemId: `wi-${id}`,
+    heartbeatAgeMs: ageMs,
+    deadlineMs: 60_000,
+  };
 }
 
 function lease(id: string, expiresInMs: number): RuntimeLease {
@@ -36,21 +42,30 @@ test("org is alive when the control-plane heartbeat is within its deadline", () 
   const result = evaluateKeepAlive(snapshot({ orgHeartbeatAgeMs: 10_000, orgHeartbeatDeadlineMs: 30_000 }));
   equal(result.orgLiveness, OrgLiveness.Alive);
   // a heartbeat tick is ALWAYS emitted — the org must keep proving it is alive
-  equal(result.actions.some((a) => a.kind === KeepAliveActionKind.EmitHeartbeat), true);
+  equal(
+    result.actions.some((a) => a.kind === KeepAliveActionKind.EmitHeartbeat),
+    true,
+  );
 });
 
 test("org is flatlining when the heartbeat is past its deadline (deterministic detection)", () => {
   const result = evaluateKeepAlive(snapshot({ orgHeartbeatAgeMs: 45_000, orgHeartbeatDeadlineMs: 30_000 }));
   equal(result.orgLiveness, OrgLiveness.Flatlining);
   // a flatlining org raises a deterministic self-heal action
-  equal(result.actions.some((a) => a.kind === KeepAliveActionKind.RaiseOrgStallAlert), true);
+  equal(
+    result.actions.some((a) => a.kind === KeepAliveActionKind.RaiseOrgStallAlert),
+    true,
+  );
 });
 
 test("a fresh agent is alive and produces no nudge", () => {
   const result = evaluateKeepAlive(snapshot({ agents: [agent("a1", 5_000)] }));
   const a1 = result.agentLiveness.find((x) => x.agentId === "a1");
   equal(a1?.liveness, AgentLiveness.Alive);
-  equal(result.actions.some((a) => a.kind === KeepAliveActionKind.ReassignStaleWork), false);
+  equal(
+    result.actions.some((a) => a.kind === KeepAliveActionKind.ReassignStaleWork),
+    false,
+  );
 });
 
 test("a stale agent is detected deterministically and its work is flagged for reassignment", () => {
@@ -84,7 +99,9 @@ test("a quiet but live org with no agents still ticks (keep-alive never silently
 });
 
 test("multiple stale agents each get their own reassignment action (no collapse)", () => {
-  const result = evaluateKeepAlive(snapshot({ agents: [agent("a3", 90_000), agent("a4", 120_000), agent("a5", 1_000)] }));
+  const result = evaluateKeepAlive(
+    snapshot({ agents: [agent("a3", 90_000), agent("a4", 120_000), agent("a5", 1_000)] }),
+  );
   const reassigns = result.actions.filter((a) => a.kind === KeepAliveActionKind.ReassignStaleWork);
   equal(reassigns.length, 2);
 });
@@ -94,7 +111,13 @@ test("BOUNDARY: an entity exactly AT its deadline is still alive (> not >=)", ()
   const org = evaluateKeepAlive(snapshot({ orgHeartbeatAgeMs: 30_000, orgHeartbeatDeadlineMs: 30_000 }));
   equal(org.orgLiveness, OrgLiveness.Alive);
   // agent at exactly deadline -> Alive
-  const ag = evaluateKeepAlive(snapshot({ agents: [{ agentId: "b1", hatAssignmentId: "b1-hat", workItemId: "wi-b1", heartbeatAgeMs: 60_000, deadlineMs: 60_000 }] }));
+  const ag = evaluateKeepAlive(
+    snapshot({
+      agents: [
+        { agentId: "b1", hatAssignmentId: "b1-hat", workItemId: "wi-b1", heartbeatAgeMs: 60_000, deadlineMs: 60_000 },
+      ],
+    }),
+  );
   equal(ag.agentLiveness.find((x) => x.agentId === "b1")?.liveness, AgentLiveness.Alive);
 });
 

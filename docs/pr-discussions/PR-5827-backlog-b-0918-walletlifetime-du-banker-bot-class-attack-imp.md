@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-28 substrate-recognition during PR #5816 review of B-0917 Slice F.5 (Amara's no-silent-context-loss target):
 
-> *'soyra can now prove banker bot class attack is not possible in our workflow system if we design the wallet lifetime right'*
+> _'soyra can now prove banker bot class attack is not possible in our workflow system if we design the wallet lifetime right'_
 
 Orphan re-land — B-0918 commit `8ac3aefd6` was pushed to PR #5816 branch AFTER auto-merge fired at 13:56Z (which merged through commit `fadf26814`). Cherry-picked onto fresh branch off main per agent-worktree-hygiene + claim-acquire discipline.
 

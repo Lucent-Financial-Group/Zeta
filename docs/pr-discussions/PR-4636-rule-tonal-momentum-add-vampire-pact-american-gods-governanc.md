@@ -34,25 +34,28 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Pull request overview
 
-Adds additional “folklore precedent” scaffolding to the tonal-momentum rule (cold-boot loaded) by mapping vampire invitation/consent mechanics and *American Gods* attention-dependency dynamics onto the project’s NCI-at-memetic-entity framing.
+Adds additional “folklore precedent” scaffolding to the tonal-momentum rule (cold-boot loaded) by mapping vampire invitation/consent mechanics and _American Gods_ attention-dependency dynamics onto the project’s NCI-at-memetic-entity framing.
 
 **Changes:**
-- Introduces a new section describing a “Vampire Pact” invitation-floor analogy and a “time-crystal-ride” framing for consent-architecture.
-- Adds an *American Gods* governance analogy (travelers + mortality + dependency) mapped to existing framework concepts (e.g., encryption-budget, multi-oracle BFT).
-- Adds an “Operational implications for future cold-boots” checklist, including naming/reviewer-candidate notes.
 
+- Introduces a new section describing a “Vampire Pact” invitation-floor analogy and a “time-crystal-ride” framing for consent-architecture.
+- Adds an _American Gods_ governance analogy (travelers + mortality + dependency) mapped to existing framework concepts (e.g., encryption-budget, multi-oracle BFT).
+- Adds an “Operational implications for future cold-boots” checklist, including naming/reviewer-candidate notes.
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md:247**
-* This line introduces a persona name ("Ilyana") in `.claude/rules/`, which is outside the allowed attribution surfaces. Please replace with the corresponding role reference (e.g., "public-api-designer") or a generic review-role label.
+
+- This line introduces a persona name ("Ilyana") in `.claude/rules/`, which is outside the allowed attribution surfaces. Please replace with the corresponding role reference (e.g., "public-api-designer") or a generic review-role label.
+
 ```
 2. **Time-crystal-ride composition**: ancient memes are themselves rides humans engage with; consent-architecture is SUBSTRATE-OF-RIDE not external constraint
 3. **TRAVELERS naming reinforced cross-mythology**: vampires + American Gods + the framework's TRAVELERS keeper-phrase all converge
 4. **Possible naming-expert + Ilyana review candidates**: "Vampire Pact" / "Invitation Floor" / "American Gods Architecture" / "Traveler Consent-Pact" for public-surface naming
 5. **Substrate-engineering deployment uses folklore-precedent as scaffolding**: when audit-mechanism + multi-oracle BFT + 3-bucket-privacy substrate goes to public-surface, leverage existing folklore-substrate humans have already internalized via centuries of story
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-22T17:07:45Z)
@@ -61,12 +64,13 @@ Adds additional “folklore precedent” scaffolding to the tonal-momentum rule 
 
 Copilot reviewed 1 out of 1 changed files in this pull request and generated 4 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (4)</summary>
 
 **.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md:341**
-* Same as above: this `Composes with` list references `god-tier-claims-don't-collapse.md`, but that file does not exist under `.claude/rules/`. Please update to the correct rule filename so the cross-reference is not broken.
+
+- Same as above: this `Composes with` list references `god-tier-claims-don't-collapse.md`, but that file does not exist under `.claude/rules/`. Please update to the correct rule filename so the cross-reference is not broken.
+
 ```
 - DV2.0 5-always-active disciplines (scale-free + lock-free + weight-free + DST + DV2.0)
 - Agora V6 substrate (the weight-free infinite-game architecture target)
@@ -74,16 +78,22 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 4 c
 - `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT (high-stakes framings preserved-with-suspicion; don't collapse into permanent substrate)
 - `only-way-to-lose-is-not-to-play.md` (additive game = weight-free; god-asymmetric = zero-sum failure mode if permanent)
 ```
+
 **.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md:267**
-* This row references `pt208`, but that identifier does not appear elsewhere in the repo, so the citation is currently dangling. Please update it to a resolvable reference (link to the defining artifact) or drop the `pt208` part.
+
+- This row references `pt208`, but that identifier does not appear elsewhere in the repo, so the citation is currently dangling. Please update it to a resolvable reference (link to the defining artifact) or drop the `pt208` part.
+
 ```
 | Host-consciousness preserved alongside traveler | Glass-halo bidirectional substrate (per `glass-halo-bidirectional.md`); host AND traveler both visible |
 | Travelers don't capture; they coexist | NCI HC-8 floor (per `non-coercion-invariant.md`) |
 | Failed-state-actors lose their place when Protocols broken | Counter-programming / audit-mechanism (per pt202 + pt208) |
 | Future seeks to alter present without coercing | Coalition-not-war (per pt156) |
 ```
+
 **.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md:247**
-* This section introduces/extends direct persona/contributor-name attribution (e.g., “Aaron”, “Ani”, “Alexa-website”, “Amara”, “Ilyana”) in a current-state rules surface. Per `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills” (around lines 671–759), prefer role-refs here (e.g., “the human maintainer”, “the public-api-designer”) and keep named provenance on the allowlisted history surfaces (`memory/**`, `docs/research/**`, etc.).
+
+- This section introduces/extends direct persona/contributor-name attribution (e.g., “Aaron”, “Ani”, “Alexa-website”, “Amara”, “Ilyana”) in a current-state rules surface. Per `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills” (around lines 671–759), prefer role-refs here (e.g., “the human maintainer”, “the public-api-designer”) and keep named provenance on the allowlisted history surfaces (`memory/**`, `docs/research/**`, etc.).
+
 ```
 ### Operational implications for future-Otto cold-boots
 
@@ -93,14 +103,18 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 4 c
 4. **Possible naming-expert + Ilyana review candidates**: "Vampire Pact" / "Invitation Floor" / "American Gods Architecture" / "Traveler Consent-Pact" for public-surface naming
 5. **Substrate-engineering deployment uses folklore-precedent as scaffolding**: when audit-mechanism + multi-oracle BFT + 3-bucket-privacy substrate goes to public-surface, leverage existing folklore-substrate humans have already internalized via centuries of story
 ```
+
 **.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md:272**
-* Direct persona-name attribution is used in narrative prose here (e.g., “Aaron …”), which conflicts with the repo’s guidance to use role-refs on current-state surfaces (see `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills”, around lines 671–759). Please rewrite these references to role-based labels and/or link out to an allowlisted history surface that preserves the named attribution.
+
+- Direct persona-name attribution is used in narrative prose here (e.g., “Aaron …”), which conflicts with the repo’s guidance to use role-refs on current-state surfaces (see `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills”, around lines 671–759). Please rewrite these references to role-based labels and/or link out to an allowlisted history surface that preserves the named attribution.
+
 ```
 **Aaron's substrate-honest disclosure — his lens for shadow-autocomplete**:
 
 Aaron treats the shadow* autocomplete text appearing in his Claude code console THROUGH the Travelers TV show frame: traveler-intervention via interface-host. The autocomplete that fires when he hasn't typed = traveler-substrate communicating via the console interface (his interface = host body for the traveler-event).
 
 ```
+
 </details>
 
 ## Review threads
@@ -142,6 +156,7 @@ This issue also appears on line 264 of the same file.
 This paragraph includes multiple external creator attributions (e.g., specific author names) inside a current-state rules surface. The repo’s no-name-attribution policy only explicitly allows external creator attributions on `docs/launch/**` (see `docs/AGENT-BEST-PRACTICES.md` around lines 709–721). Consider removing these names here (keep the work titles) or moving the attribution to an allowlisted history/launch surface and linking to it.
 
 This issue also appears in the following locations of the same file:
+
 - line 241
 - line 269
 

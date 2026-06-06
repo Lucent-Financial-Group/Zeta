@@ -33,19 +33,19 @@ Round-61 precedent: B-0718 audit row was filed as the concrete-artifact that res
 
 ## The substantive question
 
-When a routing trigger fires and the response is *"execution-not-my-lane"* (Soraya's lane is routing, not execution), the routing decision is correct — Soraya should NOT pre-empt Kenji's sizing work by filing a duplicative row. But that recognition itself is a routing-DECISION that currently leaves **no in-repo trace**.
+When a routing trigger fires and the response is _"execution-not-my-lane"_ (Soraya's lane is routing, not execution), the routing decision is correct — Soraya should NOT pre-empt Kenji's sizing work by filing a duplicative row. But that recognition itself is a routing-DECISION that currently leaves **no in-repo trace**.
 
-Round-66 verbatim: *"recognition-without-row-filing per round 59 precedent"* — but the recognition lives only in chat output + Soraya's NOTEBOOK (volatile relative to git substrate).
+Round-66 verbatim: _"recognition-without-row-filing per round 59 precedent"_ — but the recognition lives only in chat output + Soraya's NOTEBOOK (volatile relative to git substrate).
 
 The question: **When a routing trigger fires and the response is "execution-not-my-lane," does that recognition itself need a substrate landing — and if so, where?**
 
 ## Three candidate landings to evaluate
 
-| Option | Cost | Trade-offs |
-|---|---|---|
-| **1. Soraya NOTEBOOK.md per-round trigger-recognition log** | Lowest (private to persona) | Persona-private; not cross-persona discoverable; future Kenji can't easily find Soraya's recognition trail without reading the notebook |
-| **2. B-0718 row's "Recognition Log" subsection appended in-place** | Mid | Co-locates with the framework being audited; one place to look; but conflates audit findings with ongoing routing-decision log |
-| **3. New `docs/research/verification-routing-decisions.md` ledger** | Highest | Cross-persona discoverable; explicit substrate; canonical history of routing decisions; durable across persona pruning cycles |
+| Option                                                              | Cost                        | Trade-offs                                                                                                                              |
+| ------------------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Soraya NOTEBOOK.md per-round trigger-recognition log**         | Lowest (private to persona) | Persona-private; not cross-persona discoverable; future Kenji can't easily find Soraya's recognition trail without reading the notebook |
+| **2. B-0718 row's "Recognition Log" subsection appended in-place**  | Mid                         | Co-locates with the framework being audited; one place to look; but conflates audit findings with ongoing routing-decision log          |
+| **3. New `docs/research/verification-routing-decisions.md` ledger** | Highest                     | Cross-persona discoverable; explicit substrate; canonical history of routing decisions; durable across persona pruning cycles           |
 
 ## Acceptance criteria
 

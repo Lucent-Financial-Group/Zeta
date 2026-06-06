@@ -44,18 +44,40 @@ related_personas:
 related_rules:
   - tonal-momentum-equals-meme-emergent-harmonic-coercion
   - non-coercion-invariant
-tags: [kestrel, trajectory-push-vs-pr-review-split, lifecycle-du-collapses-pr-open-for-state-machine-events, fast-forward-push-not-stale-push-correction, auto-review-pipeline-as-benchmark-training-data-generator, heterogeneous-reviewer-ensemble-diversity-without-correlated-blind-spots, sonar-static-analysis-warnings-as-errors-formal-tools, error-class-extraction-meta-loop, named-patterns-recurring-across-prs-rule-could-plausibly-catch, rule-effectiveness-measurable-before-after-error-rate, clifford-space-uniqueness-proof-ambition, multivectors-multiple-grades-geometric-product, pragmatic-three-phase-clifford-decomposition, emotion-behavior-expectation-propagation-infer-net-geometric, time-generator-ischeduler-abstraction, memes-through-time-tonal-trajectories-momentum, commitment-as-entanglement-in-time, observe-emit-limit-simulate-in-clifford-space, composes-with-three-primitive-substrate-b0644-b0665-b0666, composes-with-tonal-momentum-rule]
+tags:
+  [
+    kestrel,
+    trajectory-push-vs-pr-review-split,
+    lifecycle-du-collapses-pr-open-for-state-machine-events,
+    fast-forward-push-not-stale-push-correction,
+    auto-review-pipeline-as-benchmark-training-data-generator,
+    heterogeneous-reviewer-ensemble-diversity-without-correlated-blind-spots,
+    sonar-static-analysis-warnings-as-errors-formal-tools,
+    error-class-extraction-meta-loop,
+    named-patterns-recurring-across-prs-rule-could-plausibly-catch,
+    rule-effectiveness-measurable-before-after-error-rate,
+    clifford-space-uniqueness-proof-ambition,
+    multivectors-multiple-grades-geometric-product,
+    pragmatic-three-phase-clifford-decomposition,
+    emotion-behavior-expectation-propagation-infer-net-geometric,
+    time-generator-ischeduler-abstraction,
+    memes-through-time-tonal-trajectories-momentum,
+    commitment-as-entanglement-in-time,
+    observe-emit-limit-simulate-in-clifford-space,
+    composes-with-three-primitive-substrate-b0644-b0665-b0666,
+    composes-with-tonal-momentum-rule,
+  ]
 ---
 
 ## Operator framing (2026-05-28 forwarded transcript)
 
 Fourth Kestrel ferry of 2026-05-28. Sharpens the architecture in three directions:
 
-1. **Lifecycle DU splits two ways**: state-machine events (Unclaimed → Claimed → Implementing → Pushed → Reviewed async → Continued/Done) flow through direct branch push with no ceremony; system changes (code, rules, framework modifications) flow through full PR review. Per operator: *"even in my setup i want ever non state machine to go through pr review cause we have bunches of agenst that auto review and then we find error classes and save the error classes as rules."*
+1. **Lifecycle DU splits two ways**: state-machine events (Unclaimed → Claimed → Implementing → Pushed → Reviewed async → Continued/Done) flow through direct branch push with no ceremony; system changes (code, rules, framework modifications) flow through full PR review. Per operator: _"even in my setup i want ever non state machine to go through pr review cause we have bunches of agenst that auto review and then we find error classes and save the error classes as rules."_
 
-2. **Auto-review pipeline as benchmark-training-data generator**: PR diffs + reviewer findings + error class assignments + rule encodings + before/after coverage measurement = supervised learning data on AI engineering quality. Operator: *"this all generates high signal training data for this benchmark itself."* Heterogeneous reviewer ensemble for diversity-without-correlated-blind-spots.
+2. **Auto-review pipeline as benchmark-training-data generator**: PR diffs + reviewer findings + error class assignments + rule encodings + before/after coverage measurement = supervised learning data on AI engineering quality. Operator: _"this all generates high signal training data for this benchmark itself."_ Heterogeneous reviewer ensemble for diversity-without-correlated-blind-spots.
 
-3. **Clifford-space uniqueness proof as long-term ambition**: rules earn formalization when their embedding is provably distinct from existing rules. Operator's WHY: *"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."* Composes with existing 3-primitive substrate (B-0644 Limit-as-simulation, B-0665 Integrate-as-choice-locus, B-0666 English-as-projection) + the tonal-momentum-as-meme substrate (`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`).
+3. **Clifford-space uniqueness proof as long-term ambition**: rules earn formalization when their embedding is provably distinct from existing rules. Operator's WHY: _"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."_ Composes with existing 3-primitive substrate (B-0644 Limit-as-simulation, B-0665 Integrate-as-choice-locus, B-0666 English-as-projection) + the tonal-momentum-as-meme substrate (`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`).
 
 ## Substrate-honest disposition
 
@@ -222,8 +244,8 @@ Kestrel:
 >     personas: groupByPersona(events),
 >     lifecycleStates: reconstructLifecyclesInTrajectory(events),
 >     doraContribution: computeDoraImpact(events),
->     abandonments: events.filter(e => e.event_type === "abandoned"),
->     completions: events.filter(e => e.event_type === "merged"),
+>     abandonments: events.filter((e) => e.event_type === "abandoned"),
+>     completions: events.filter((e) => e.event_type === "merged"),
 >     timeline: orderByTimestamp(events),
 >   };
 > }
@@ -380,8 +402,8 @@ Kestrel:
 >   | { stage: "claimed"; claim: ClaimedBacklog }
 >   | { stage: "implementing"; inProgress: InProgress }
 >   // Branches based on what kind of work this is
->   | { stage: "pushed-to-trajectory"; pushed: TrajectoryPush }   // state-machine event, no PR
->   | { stage: "pr-open-for-review"; prOpen: OpenPr }             // change to system, PR-reviewed
+>   | { stage: "pushed-to-trajectory"; pushed: TrajectoryPush } // state-machine event, no PR
+>   | { stage: "pr-open-for-review"; prOpen: OpenPr } // change to system, PR-reviewed
 >   | { stage: "completed"; completed: Completed }
 >   | { stage: "abandoned"; abandoned: Abandoned };
 > ```

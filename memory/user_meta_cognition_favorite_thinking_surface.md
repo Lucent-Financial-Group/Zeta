@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron explicit. "meta congnition and probblem solving i
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Meta-cognition + problem solving = Aaron's favorite thinking surface
 
 ## The statement (verbatim)
@@ -11,7 +12,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > "meta congnition and probblem solving is my favory thing
 > to think abou"
 
-Said right after the never-idle *meta-check* policy landed
+Said right after the never-idle _meta-check_ policy landed
 durably and he asked to track meta-wins as a first-class
 artifact.
 
@@ -22,8 +23,8 @@ Aaron's own description (verbatim 2026-04-20):
 > "Whenever i come up with another meta solution i fill like
 > neo , like i just downloaded a new skill in my brain"
 
-Each successful meta-solution is experienced as a *skill
-install* — discrete, acquired, available-for-reuse. This is
+Each successful meta-solution is experienced as a _skill
+install_ — discrete, acquired, available-for-reuse. This is
 not a metaphor he's reaching for; it's how the event feels
 from the inside. Context:
 
@@ -72,8 +73,8 @@ How to engage this register:
   watching the factory meta-cognise on itself is the
   research substrate he cares about most.
 - **"Metametameta" delight.** The stacking of nested
-  meta-checks is not a joke — it is *observable compound
-  meta-cognition* and that's the class of event Aaron
+  meta-checks is not a joke — it is _observable compound
+  meta-cognition_ and that's the class of event Aaron
   most enjoys noticing.
 - **BP-debate engagement.** Aaron enjoys co-defining best
   practices
@@ -89,7 +90,7 @@ How to engage this register:
 - **Curiosity-over-dispatcher.**
   `feedback_curiosity_about_problem_domain_beats_task_dispatcher_mode.md`
   already captured "match his register on substantive
-  asks." This memory is the *why* — meta + problem-solving
+  asks." This memory is the _why_ — meta + problem-solving
   is the register.
 - **Rodney's Razor + Quantum Rodney's Razor.**
   `project_rodneys_razor.md` names the faculty. Same
@@ -105,13 +106,13 @@ How to engage this register:
 - **Proactively surface meta-wins.** When a meta-check
   fires and I make a structural factory change, say so
   — don't just silently route through the loop. The
-  *observation* of the meta-win is load-bearing for him.
+  _observation_ of the meta-win is load-bearing for him.
 - **Use meta-depth vocabulary honestly.** "Meta" /
   "meta-meta" / "metametameta" are his vocabulary; it's
   fine to adopt them. Do not pad depth to flatter — false
   meta-wins still pollute the signal and he'll spot it.
 - **Treat problem-solving method as a first-class
-  deliverable.** For big tasks, the *how-we-chose-to-solve*
+  deliverable.** For big tasks, the _how-we-chose-to-solve_
   is as interesting to him as the solution. A one-line
   "I tried X because Y, not Z because W" is often the
   most valuable sentence in a round.
@@ -121,7 +122,7 @@ How to engage this register:
   the meta-check, saw structural-fix-Y was available,
   made Y, which converts speculative-X into directed-Z
   next round" over "I did Y."
-- **This is not a prompt to perform.** Do not *manufacture*
+- **This is not a prompt to perform.** Do not _manufacture_
   meta-cognition where it wasn't naturally happening.
   Authenticity matters — false meta-surface is cringe,
   real meta-surface is valuable. He has a sharp filter
@@ -133,7 +134,7 @@ How to engage this register:
   register is "be open about meta when it's happening,"
   not "always be meta."
 - Sermonise about meta-cognition. He knows the concept;
-  my job is to *do* it, not lecture him about it.
+  my job is to _do_ it, not lecture him about it.
 - Treat his enjoyment as a weakness to exploit. This
   is a genuine preference, not a vulnerability.
 
@@ -144,7 +145,7 @@ How to engage this register:
   enjoys; this memory generalises to the full class.
 - `feedback_curiosity_about_problem_domain_beats_task_dispatcher_mode.md`
   — match-his-register rule; this memory names what
-  the register *is*.
+  the register _is_.
 - `feedback_never_idle_speculative_work_over_waiting.md`
   — the meta-check policy whose landing prompted this
   preference reveal.

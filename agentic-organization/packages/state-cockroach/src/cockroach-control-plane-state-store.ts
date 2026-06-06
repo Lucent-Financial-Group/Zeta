@@ -63,8 +63,7 @@ export const ControlPlaneRateLimitKind = {
   ReleaseActions: "release_actions",
 } as const;
 
-export type ControlPlaneRateLimitKind =
-  (typeof ControlPlaneRateLimitKind)[keyof typeof ControlPlaneRateLimitKind];
+export type ControlPlaneRateLimitKind = (typeof ControlPlaneRateLimitKind)[keyof typeof ControlPlaneRateLimitKind];
 
 export type ControlPlaneScope =
   | { kind: typeof ControlPlaneScopeKind.Organization }

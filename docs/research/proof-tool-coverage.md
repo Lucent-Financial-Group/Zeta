@@ -1,7 +1,7 @@
 # Proof-Tool Coverage — Current State & Expansion Plan
 
 Snapshot of every formal / verification tool in the repo, what it
-proves today, what it *could* prove with more rigging, and a
+proves today, what it _could_ prove with more rigging, and a
 prioritised list of tools we're **not yet using** that would catch
 bug classes our stack currently misses.
 
@@ -63,22 +63,22 @@ the test harness is already wired.
 
 **14 `.tla` files in `docs/`**, of which **9 have `.cfg`**:
 
-| Spec | `.cfg`? | In CI? |
-|---|---|---|
-| `DbspSpec` | yes | **yes** |
-| `SpineAsyncProtocol` | yes | **yes** |
-| `CircuitRegistration` | yes | **yes** |
-| `TwoPCSink` | yes | **yes** |
-| `SpineMergeInvariants` | yes | **yes** |
-| `TransactionInterleaving` | yes | **yes** |
-| `OperatorLifecycleRace` | yes | **yes** |
-| `TickMonotonicity` | yes | **yes** |
-| `SmokeCheck` | yes | **yes** (smoke) |
-| `ChaosEnvDeterminism` | **missing** | no |
-| `ConsistentHashRebalance` | **missing** | no |
-| `DictionaryStripedCAS` | **missing** | no |
-| `AsyncStreamEnumerator` | **missing** | no |
-| `SpineMergeInvariants_TTrace_…` | n/a (TLC output) | no |
+| Spec                            | `.cfg`?          | In CI?          |
+| ------------------------------- | ---------------- | --------------- |
+| `DbspSpec`                      | yes              | **yes**         |
+| `SpineAsyncProtocol`            | yes              | **yes**         |
+| `CircuitRegistration`           | yes              | **yes**         |
+| `TwoPCSink`                     | yes              | **yes**         |
+| `SpineMergeInvariants`          | yes              | **yes**         |
+| `TransactionInterleaving`       | yes              | **yes**         |
+| `OperatorLifecycleRace`         | yes              | **yes**         |
+| `TickMonotonicity`              | yes              | **yes**         |
+| `SmokeCheck`                    | yes              | **yes** (smoke) |
+| `ChaosEnvDeterminism`           | **missing**      | no              |
+| `ConsistentHashRebalance`       | **missing**      | no              |
+| `DictionaryStripedCAS`          | **missing**      | no              |
+| `AsyncStreamEnumerator`         | **missing**      | no              |
+| `SpineMergeInvariants_TTrace_…` | n/a (TLC output) | no              |
 
 CI runs nine specs via `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` —
 all `.cfg`-bearing specs are now wired (B1 → A in the math-proofs
@@ -121,8 +121,8 @@ it's parked mid-setup.**
   `ROADMAP.md` as P2, 2-week effort.
 - `docs/INSTALLED.md` flags Lean 4 / elan as "still required but
   NOT yet installed on this box."
-- `docs/BACKLOG.md` line 109: *"Lean 4 chain-rule proof with
-  Mathlib (2-week effort)"* — still open.
+- `docs/BACKLOG.md` line 109: _"Lean 4 chain-rule proof with
+  Mathlib (2-week effort)"_ — still open.
 
 **What's left to finish the chain-rule proof:**
 
@@ -139,8 +139,8 @@ it's parked mid-setup.**
 6. Add CI job that runs `lake build` in `proofs/lean/`.
 
 **This is the single highest-leverage outstanding verification
-task.** Once landed, the README can cite *"Chain rule is
-machine-checked in Lean 4"* — a publication-grade claim.
+task.** Once landed, the README can cite _"Chain rule is
+machine-checked in Lean 4"_ — a publication-grade claim.
 
 ---
 
@@ -162,12 +162,12 @@ shelling out to `java -jar alloy.jar`.**
 
 Rough `[<Property>]` count:
 
-| File | Property count |
-|---|---|
-| `ZSetTests.fs` | 15 |
-| `FuzzTests.fs` | 9 |
+| File                    | Property count     |
+| ----------------------- | ------------------ |
+| `ZSetTests.fs`          | 15                 |
+| `FuzzTests.fs`          | 9                  |
 | `MathInvariantTests.fs` | 7 (+ 7 `[<Fact>]`) |
-| `Round17Tests.fs` | 1 |
+| `Round17Tests.fs`       | 1                  |
 
 **~32 FsCheck properties total**, covering Z-set algebra, tropical
 semiring, G-counter, serializer round-trip, Beam retraction
@@ -190,24 +190,24 @@ modes, chain rule pipeline.
 
 ---
 
-## 6. Tools we DON'T use but *could* — one-sentence bug-class map
+## 6. Tools we DON'T use but _could_ — one-sentence bug-class map
 
-| Tool | Bug class it catches that our stack misses |
-|---|---|
-| **Dafny** | Pre/postcondition violations on individual methods (esp. `Serializer`, `BalancedSpine.Merge`) — turns imperative F# loops into ghost-code proofs of loop invariants |
-| **F*** (F-star) | Refinement-type bugs — e.g. non-empty-list invariants on `Spine.batches`, non-negative weights in counted sets |
-| **Coq / Rocq** | Deep theorem-prover chains that Lean 4 can't yet express — alternative if Mathlib port stalls |
-| **Isabelle/HOL** | Higher-order temporal proofs (LTL over DBSP stream traces); stronger automation than Lean for first-order lemmas |
-| **Stainless** (Scala) | Pure-function termination + recursion-depth proofs — relevant for `Recursive.fs` and `Hierarchy.fs` LFP loops |
-| **Kani** (Rust MC) | Only useful if we add Rust interop to Feldera; n/a today |
-| **P / P#** | State-machine refinement proofs for `Circuit` lifecycle — would subsume `CircuitRegistration.tla` with executable code |
-| **Viper** | Separation-logic proofs of heap-state non-aliasing in SIMD merge + ArrayPool — catches pool-mis-return bugs |
-| **Eldarica / Spacer (Horn)** | Recursive-program invariant synthesis — could auto-derive loop invariants for `BalancedSpine.compactLevel` |
-| **Liquid Haskell / LiquidF#** | ~~Refinement types inline in F# — catches `arr.[i]` out-of-bounds *at compile time* over the whole codebase~~ **Round-35 Hold: tool dormant.** No currently-maintained F#-native refinement checker; F7 (the Microsoft Research ancestor) last shipped 2012. See `docs/research/liquidfsharp-findings.md`. Successor path: F\* extraction to F# (Assess, TECH-RADAR round 35). |
-| **Hypothesis-style coverage-guided fuzz** | Deeper counter-example minimisation than FsCheck's generic shrinker; catches concurrency bugs via state-space exploration |
-| **Mutation testing (Stryker)** | Configured via `stryker-config.json` and run in CI via `.github/workflows/stryker-mutation.yml` — path-filtered to `src/Core/**` + `tests/Tests.FSharp/**`; threshold-break at 50% gates the workflow; HTML + json reports uploaded as 90-day artifacts on every run. Kill-rate trend observable from the workflow run page. |
-| **CodeQL** | Data-flow / taint analysis (untrusted `File.ReadAllBytes` → parser) — config deferred, listed as P0 in `BACKLOG.md` |
-| **Semgrep** | Pattern-level anti-patterns; 12 rules shipped but only run externally (`TECH-RADAR.md` says "runs externally"); **not part of CI** |
+| Tool                                      | Bug class it catches that our stack misses                                                                                                                                                                                                                                                                                                                                     |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Dafny**                                 | Pre/postcondition violations on individual methods (esp. `Serializer`, `BalancedSpine.Merge`) — turns imperative F# loops into ghost-code proofs of loop invariants                                                                                                                                                                                                            |
+| **F\*** (F-star)                          | Refinement-type bugs — e.g. non-empty-list invariants on `Spine.batches`, non-negative weights in counted sets                                                                                                                                                                                                                                                                 |
+| **Coq / Rocq**                            | Deep theorem-prover chains that Lean 4 can't yet express — alternative if Mathlib port stalls                                                                                                                                                                                                                                                                                  |
+| **Isabelle/HOL**                          | Higher-order temporal proofs (LTL over DBSP stream traces); stronger automation than Lean for first-order lemmas                                                                                                                                                                                                                                                               |
+| **Stainless** (Scala)                     | Pure-function termination + recursion-depth proofs — relevant for `Recursive.fs` and `Hierarchy.fs` LFP loops                                                                                                                                                                                                                                                                  |
+| **Kani** (Rust MC)                        | Only useful if we add Rust interop to Feldera; n/a today                                                                                                                                                                                                                                                                                                                       |
+| **P / P#**                                | State-machine refinement proofs for `Circuit` lifecycle — would subsume `CircuitRegistration.tla` with executable code                                                                                                                                                                                                                                                         |
+| **Viper**                                 | Separation-logic proofs of heap-state non-aliasing in SIMD merge + ArrayPool — catches pool-mis-return bugs                                                                                                                                                                                                                                                                    |
+| **Eldarica / Spacer (Horn)**              | Recursive-program invariant synthesis — could auto-derive loop invariants for `BalancedSpine.compactLevel`                                                                                                                                                                                                                                                                     |
+| **Liquid Haskell / LiquidF#**             | ~~Refinement types inline in F# — catches `arr.[i]` out-of-bounds _at compile time_ over the whole codebase~~ **Round-35 Hold: tool dormant.** No currently-maintained F#-native refinement checker; F7 (the Microsoft Research ancestor) last shipped 2012. See `docs/research/liquidfsharp-findings.md`. Successor path: F\* extraction to F# (Assess, TECH-RADAR round 35). |
+| **Hypothesis-style coverage-guided fuzz** | Deeper counter-example minimisation than FsCheck's generic shrinker; catches concurrency bugs via state-space exploration                                                                                                                                                                                                                                                      |
+| **Mutation testing (Stryker)**            | Configured via `stryker-config.json` and run in CI via `.github/workflows/stryker-mutation.yml` — path-filtered to `src/Core/**` + `tests/Tests.FSharp/**`; threshold-break at 50% gates the workflow; HTML + json reports uploaded as 90-day artifacts on every run. Kill-rate trend observable from the workflow run page.                                                   |
+| **CodeQL**                                | Data-flow / taint analysis (untrusted `File.ReadAllBytes` → parser) — config deferred, listed as P0 in `BACKLOG.md`                                                                                                                                                                                                                                                            |
+| **Semgrep**                               | Pattern-level anti-patterns; 12 rules shipped but only run externally (`TECH-RADAR.md` says "runs externally"); **not part of CI**                                                                                                                                                                                                                                             |
 
 ---
 
@@ -240,7 +240,7 @@ papers (POPL / PLDI target per `ROADMAP.md`).
 distinct groups (non-endomorphism composition). Tracked in
 the proof log, not blocking.
 
-### #2 — ~~Liquid Haskell / LiquidF# refinement types~~ F* extraction to F# (successor)
+### #2 — ~~Liquid Haskell / LiquidF# refinement types~~ F\* extraction to F# (successor)
 
 **Status (round 35):** the LiquidF# recommendation is
 withdrawn. Day-0 availability check terminated via stop-rule
@@ -276,15 +276,15 @@ afternoon's work each.
 
 ## Budget summary
 
-| Item | Cost | Payoff |
-|---|---|---|
-| +15 Z3 lemmas | 1 day | Pointwise axioms at full strength |
-| +4 TLA+ `.cfg` + CI | 2 days | 9/14 specs CI-checked → 13/14 |
-| Lean 4 chain-rule proof | 2 weeks | **Paper-grade claim** |
-| +15 FsCheck properties | 3 days | CRDT + Residuated law coverage |
-| Alloy CI hook | 0.5 day | Structural-invariant CI |
-| LiquidF# trial | 1 week | Compile-time refinement types |
-| Stryker + Semgrep CI | 1 day | Mutation kill-rate published |
+| Item                    | Cost    | Payoff                            |
+| ----------------------- | ------- | --------------------------------- |
+| +15 Z3 lemmas           | 1 day   | Pointwise axioms at full strength |
+| +4 TLA+ `.cfg` + CI     | 2 days  | 9/14 specs CI-checked → 13/14     |
+| Lean 4 chain-rule proof | 2 weeks | **Paper-grade claim**             |
+| +15 FsCheck properties  | 3 days  | CRDT + Residuated law coverage    |
+| Alloy CI hook           | 0.5 day | Structural-invariant CI           |
+| LiquidF# trial          | 1 week  | Compile-time refinement types     |
+| Stryker + Semgrep CI    | 1 day   | Mutation kill-rate published      |
 
 **Near-term commitment: the Lean proof first, then stryker+semgrep
 CI, then the Liquid-F# trial.**

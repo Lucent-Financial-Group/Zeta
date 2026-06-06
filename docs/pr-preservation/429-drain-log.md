@@ -11,7 +11,8 @@ Rebase context: clean rebase onto `origin/main`; no conflicts.
 Per Otto-250 (PR review comments + responses + resolutions are
 high-quality training signals): full record of the substantive
 substrate-clarification + formatting fixes captured in the parent
-+ this follow-up drain pair.
+
+- this follow-up drain pair.
 
 This PR is the **post-merge cascade** to #270 (research: multi-Claude
 peer-harness experiment design — "Otto-iterates-to-bullet-proof;

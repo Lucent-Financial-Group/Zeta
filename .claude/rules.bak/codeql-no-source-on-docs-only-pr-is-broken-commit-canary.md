@@ -7,7 +7,7 @@ Carved sentence:
 > CORRUPTED. Run `git ls-tree HEAD | wc -l` BEFORE treating as flake.
 > Lock-cleanup races with peer agents can collapse the commit tree
 > silently — at worktree-creation time, between `git add` and `git
-> commit`, or during user operations. The only reliable safe-window
+commit`, or during user operations. The only reliable safe-window
 > indicator is `ps -A | grep -E "gemini.*Lior|lior.*loop"` returning
 > nothing.
 
@@ -33,11 +33,11 @@ fi
 
 **Three downstream signals all point to the same root cause:**
 
-| Signal | Misread as | Actual cause |
-|---|---|---|
-| CodeQL `no source code seen` (3×) | CI flake | Commit literally has no source code |
+| Signal                                                 | Misread as       | Actual cause                         |
+| ------------------------------------------------------ | ---------------- | ------------------------------------ |
+| CodeQL `no source code seen` (3×)                      | CI flake         | Commit literally has no source code  |
 | `gh pr update-branch --rebase` → `RebaseConflictError` | Phantom conflict | Tree-replacement conflicts with main |
-| `gh api .../files` reports ~5000 changed files | API quirk | Real destructive diff vs main |
+| `gh api .../files` reports ~5000 changed files         | API quirk        | Real destructive diff vs main        |
 
 **The confirmation bias trap:** when N sibling docs-only PRs pass clean
 and ours fails, the natural read is "we hit a flake." The substrate-honest
@@ -257,4 +257,4 @@ PR #3492 close comment:
 https://github.com/Lucent-Financial-Group/Zeta/pull/3492#issuecomment-4460689811
 
 Bus envelope `35bdbd0c-913d-4b18-8e46-95ba5c81b1cc` (topic
-`shadow-catch`, otto-cli→*, 2026-05-15T14:45:04Z)
+`shadow-catch`, otto-cli→\*, 2026-05-15T14:45:04Z)

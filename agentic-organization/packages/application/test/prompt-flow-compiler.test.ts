@@ -30,12 +30,10 @@ test("lintPromptFlowDefinition requires production registry fields", () => {
     ],
   });
 
-  deepEqual(diagnostics.map((diagnostic) => diagnostic.code), [
-    "missing_owner_department",
-    "missing_allowed_hats",
-    "missing_required_evidence",
-    "evidence_gate_mismatch",
-  ]);
+  deepEqual(
+    diagnostics.map((diagnostic) => diagnostic.code),
+    ["missing_owner_department", "missing_allowed_hats", "missing_required_evidence", "evidence_gate_mismatch"],
+  );
 });
 
 test("compilePromptFlowTasks compiles the active phase into an observe-visible task", () => {
@@ -91,17 +89,22 @@ test("compilePromptFlowTasks filters runs outside the definition scope", () => {
 });
 
 test("lintPromptFlowDefinition rejects divergent phase and gate evidence contracts", () => {
-  const diagnostics = lintPromptFlowDefinition(definition({
-    phases: [
-      {
-        ...definition().phases[0]!,
-        requiredEvidenceRefs: ["shown-to-agent"],
-        gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["gate-enforces"] },
-      },
-    ],
-  }));
+  const diagnostics = lintPromptFlowDefinition(
+    definition({
+      phases: [
+        {
+          ...definition().phases[0]!,
+          requiredEvidenceRefs: ["shown-to-agent"],
+          gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["gate-enforces"] },
+        },
+      ],
+    }),
+  );
 
-  deepEqual(diagnostics.map((diagnostic) => diagnostic.code), ["evidence_gate_mismatch"]);
+  deepEqual(
+    diagnostics.map((diagnostic) => diagnostic.code),
+    ["evidence_gate_mismatch"],
+  );
 });
 
 test("promptFlowReadoutForHat vetoes definitions outside allowed hats", () => {

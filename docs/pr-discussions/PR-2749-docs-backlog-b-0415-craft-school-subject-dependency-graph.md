@@ -38,12 +38,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new P2 backlog row (B-0415) describing a “craft school” curriculum layer that maps human anchors to subjects and models prerequisites as a `depends_on` DAG.
 
 **Changes:**
+
 - Introduces backlog item B-0415 with schema-compliant YAML frontmatter.
 - Defines the proposed “human anchors → subjects → depends_on” dependency-graph concept plus acceptance criteria.
 - Adds an example mapping and origin note for traceability.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T20:26:24Z)
-
 
 ### 💡 Codex Review
 
@@ -51,17 +51,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `25f0befdd5`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -79,7 +78,7 @@ P1: The link target `docs/HUMAN-ANCHOR-ARRAY.md` does not exist in the repo (sea
 
 **@chatgpt-codex-connector** (2026-05-11T20:26:24Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Regenerate backlog index after adding new row**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Regenerate backlog index after adding new row**
 
 Adding this per-row backlog file without updating `docs/BACKLOG.md` leaves the generated index out of sync, so `B-0415` is missing from the canonical backlog listing even though the row exists. Because this repo’s backlog flow treats `docs/BACKLOG.md` as generated output, this drift can break review/triage surfaces and will be caught by the backlog index integrity workflow once parity checks run on auto-generated mode.
 
@@ -89,7 +88,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-11T20:26:24Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace broken reference to missing anchor doc**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace broken reference to missing anchor doc**
 
 This task says to extend `docs/HUMAN-ANCHOR-ARRAY.md`, but that file path does not exist in the repository at this commit. The dead reference makes the backlog item harder to execute and verify because contributors cannot locate the baseline document it claims to extend; either point to the existing source file or state explicitly that creating this doc is part of the work.
 

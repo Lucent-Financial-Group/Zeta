@@ -83,7 +83,7 @@ so it works across audiences.
 - **Common Sense 2.0** memory: stable-starting-point +
   live-lock-resistance + decoherence-resistance are the
   safety properties; deterministic reconciliation is the
-  *mechanism* that makes those properties checkable.
+  _mechanism_ that makes those properties checkable.
 - **Memory-index-integrity CI** (PR #220, merged):
   first concrete deterministic-reconciliation
   mechanism already landed. Prototype for the pattern.
@@ -102,12 +102,12 @@ so it works across audiences.
   reconciliation, claim reconciliation, state
   reconciliation, intent reconciliation.
 - **No philosophical baggage**: Doesn't claim values,
-  alignment, consciousness, or agency. Just says: *there
+  alignment, consciousness, or agency. Just says: _there
   are multiple sources; they should reconcile
-  deterministically; the mechanism matters.*
+  deterministically; the mechanism matters._
 - **Actionable**: Answers "what should I build?" with
-  *"a mechanism that reconciles X sources
-  deterministically"*. Every concrete build becomes a
+  _"a mechanism that reconciles X sources
+  deterministically"_. Every concrete build becomes a
   reconciliation-mechanism design problem.
 
 ## What this endorsement is NOT
@@ -116,7 +116,7 @@ so it works across audiences.
   native" stays for Zeta's algebra; "alignment contract"
   stays for `docs/ALIGNMENT.md`; "Common Sense 2.0" stays
   for the safety substrate. "Deterministic reconciliation"
-  is a distinct concept about *operational closure*, not
+  is a distinct concept about _operational closure_, not
   a replacement for those terms.
 - **Not a commitment to name every future memory with
   this phrase.** Use when it fits; don't force it. A
@@ -140,7 +140,7 @@ Otto coined the phrase in Otto-66 closing insight; Aaron
 endorsed it explicitly Otto-67. Otto (loop-agent PM hat,
 Otto-67) filed this memory as a naming discipline anchor.
 Future-session Otto + external agents inherit:
-*"deterministic reconciliation"* is the canonical term
+_"deterministic reconciliation"_ is the canonical term
 for the operational-closure-not-philosophical-alignment
 framing; propagate into BACKLOG / ADR / research / Craft /
 commit-message vocabulary as work implementing the

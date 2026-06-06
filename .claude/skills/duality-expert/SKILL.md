@@ -62,7 +62,7 @@ Everything else is an instance.
 
 The canonical programming-duality paper. `IEnumerable<T>`
 is a pull source; `IObservable<T>` is a push source. The
-observer *subscribes* (the "pull" has reversed into a
+observer _subscribes_ (the "pull" has reversed into a
 push). The interfaces are mechanically arrows-reversed
 from each other. This is the duality every LINQ/Rx
 developer has seen the fingerprint of without being told
@@ -96,8 +96,8 @@ compiler level; both views are valid. See
 
 ### Initial vs terminal object
 
-- **Initial:** unique arrow *out*. `Void` in Haskell. `Never` in TypeScript.
-- **Terminal:** unique arrow *in*. `Unit` in Haskell. `void` in C#.
+- **Initial:** unique arrow _out_. `Void` in Haskell. `Never` in TypeScript.
+- **Terminal:** unique arrow _in_. `Unit` in Haskell. `void` in C#.
 - Arrows reversed. One sentence apart.
 
 ### Monad vs comonad
@@ -119,9 +119,9 @@ catalogue; everyone meets it first.
 ### Stone duality
 
 Boolean algebras ↔ Stone spaces (totally disconnected
-compact Hausdorff spaces). A *syntactic* structure
+compact Hausdorff spaces). A _syntactic_ structure
 (Boolean operations) is provably equivalent to a
-*topological* one. The prototype of "reverse the arrows
+_topological_ one. The prototype of "reverse the arrows
 and get a category-theoretic equivalence between two
 fields that don't look related".
 
@@ -136,7 +136,7 @@ FFT enters the picture.
 
 ### Gelfand duality
 
-Commutative C*-algebras ↔ compact Hausdorff spaces.
+Commutative C\*-algebras ↔ compact Hausdorff spaces.
 "Algebra of functions on a space" is the arrow-reversed
 "space whose points are homomorphisms of the algebra".
 The algebraic-geometry reflex.
@@ -153,8 +153,8 @@ contravariant vs covariant — see
 
 ### Lenses vs prisms (and the profunctor optics story)
 
-Lenses look at *products* (get one field from a record);
-prisms look at *sums* (project one variant of a union).
+Lenses look at _products_ (get one field from a record);
+prisms look at _sums_ (project one variant of a union).
 Arrows-reversed. Profunctor optics uniformly encode
 both.
 
@@ -176,7 +176,7 @@ When faced with a new problem, ask three questions:
   they're merely symmetric in surface syntax. Verify by
   trying to reverse the arrows on an actual diagram.
 - **Dual solves a different problem.** `IObservable`
-  looks dual to `IEnumerable` and *is*, but the duality
+  looks dual to `IEnumerable` and _is_, but the duality
   doesn't give you back-pressure for free. The
   mathematical duality is real; the engineering reality
   isn't.
@@ -210,12 +210,15 @@ When this skill is on a design review:
 ## Duality Findings
 
 ### Duality observed
+
 - <pair>: <direction-A>, <direction-B>, <reversed-arrow-evidence>.
 
 ### Design move suggested
+
 - Mirror <surface-A> as <surface-B> — because <reason>.
 
 ### False duality flagged
+
 - <surface-A> and <surface-B> look dual but are not; <why>.
 ```
 
@@ -243,17 +246,17 @@ When this skill is on a design review:
 
 ## Reference patterns
 
-- Meijer 2010, *Subject/Observer is Dual to Iterator*.
-- Meijer 2012, *Your Mouse is a Database* (the grand
+- Meijer 2010, _Subject/Observer is Dual to Iterator_.
+- Meijer 2012, _Your Mouse is a Database_ (the grand
   duality tour).
 - Meijer + Beckman Channel 9 lectures on LINQ / Rx
   duality.
-- MacLane — *Categories for the Working Mathematician*
+- MacLane — _Categories for the Working Mathematician_
   — limits / colimits / duality.
-- Awodey — *Category Theory* — duality principle chapter.
-- Johnstone — *Stone Spaces* — Stone duality proper.
-- Pontryagin — *Topological Groups*.
-- *Profunctor Optics: Modular Data Accessors* — modern
+- Awodey — _Category Theory_ — duality principle chapter.
+- Johnstone — _Stone Spaces_ — Stone duality proper.
+- Pontryagin — _Topological Groups_.
+- _Profunctor Optics: Modular Data Accessors_ — modern
   lens/prism unification.
 - `.claude/skills/linq-expert/SKILL.md` — Erik.
 - `.claude/skills/rx-expert/SKILL.md` — Bart.

@@ -4,6 +4,7 @@ description: Aaron 2026-04-20 — on deciding how to package Zeta's software fac
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule.** Do not make factory-reuse packaging decisions
 unilaterally. When the factory is being packaged for reuse
 across projects (the constraint recorded in
@@ -50,7 +51,7 @@ itself is the product.
   shortcut. Aaron enjoys this kind of thinking; his
   participation is a feature, not friction.
 - Small, reversible factoring moves (mark a skill `project:
-  zeta` that was already Zeta-specific; pull a helper into a
+zeta` that was already Zeta-specific; pull a helper into a
   generic location when it was already generic) do NOT need
   consultation — they are executions of the constraint, not
   packaging decisions.
@@ -62,7 +63,7 @@ itself is the product.
 **What this is not.** This is not a deferral rule across
 factory work generally — Aaron's `feedback_fix_factory_when_blocked_post_hoc_notify.md`
 still stands for blockers. This rule is specifically about
-*packaging for cross-project reuse* where the best-practice
+_packaging for cross-project reuse_ where the best-practice
 surface itself is being defined.
 
 **Related memory.**

@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1850 |
-| Title | backlog(B-0243): osascript/Chrome browser extraction skill |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T09:35:09Z |
-| Merged at | 2026-05-07T09:41:03Z |
-| Merge commit SHA | `145729663041041e352e182066f15fe66a95dcba` |
-| Branch | `backlog/b0243-osascript-chrome-extraction-skill` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1850 |
-| Changed files | 2 |
-| Additions / deletions | +49 / -0 |
+| Field                 | Value                                                      |
+| --------------------- | ---------------------------------------------------------- |
+| Number                | 1850                                                       |
+| Title                 | backlog(B-0243): osascript/Chrome browser extraction skill |
+| Author                | `AceHack` (human)                                          |
+| State                 | MERGED                                                     |
+| Created at            | 2026-05-07T09:35:09Z                                       |
+| Merged at             | 2026-05-07T09:41:03Z                                       |
+| Merge commit SHA      | `145729663041041e352e182066f15fe66a95dcba`                 |
+| Branch                | `backlog/b0243-osascript-chrome-extraction-skill`          |
+| Base branch           | `main`                                                     |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1850   |
+| Changed files         | 2                                                          |
+| Additions / deletions | +49 / -0                                                   |
 
 ## Description
 
 ## Summary
+
 - Files B-0243: skill for extracting content from authenticated browser sessions
 - Pattern: kill Playwright Chrome → osascript → JS execution in real Chrome tabs
 - Prevents the 20-minute Playwright fight from recurring
 - Aaron: "maybe skill this"
 
 ## Test plan
+
 - [ ] Backlog item well-formed
 - [ ] BACKLOG.md index regenerated
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 2 |
-| Unresolved threads | 0 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 2     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -79,7 +81,7 @@
 
   <pre>
   The `Composes with` section references `feedback_osascript_chrome_extraction_skill_candidate_aaron_2026_05_07.md`, but that file doesn’t exist anywhere in the repo. Either add the referenced file under the appropriate `memory/**` path or change this to a valid in-repo path/link (or explicitly note it lives outside the repo) to avoid a dead cross-reference.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

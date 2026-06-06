@@ -3,7 +3,7 @@
 This glossary translates jargon into plain English. It is written
 for everyone — engineers, researchers, product managers, business
 analysts, non-technical readers. When a term has a tight technical
-definition, it appears *after* the plain-English one.
+definition, it appears _after_ the plain-English one.
 
 The rule for this file: if your grandparent couldn't follow the
 first sentence of an entry, the first sentence needs a rewrite.
@@ -25,7 +25,7 @@ When someone just says "spec" and it matters, ask which one.
 
 **Plain:** You have a computed answer (like a dashboard). New
 data arrives. Instead of recomputing the whole answer from
-scratch, you figure out just the *change* to the answer and apply
+scratch, you figure out just the _change_ to the answer and apply
 it. Much faster when answers are huge and changes are small.
 **Technical:** Maintain a materialised view so that the
 re-evaluation cost is proportional to the input-change size
@@ -45,14 +45,14 @@ VLDB 2023.
 
 ### Z-set (zed-set, with a "Z")
 
-**Plain:** A bag of things where each thing has a *weight* that
+**Plain:** A bag of things where each thing has a _weight_ that
 can be positive or negative. Weight +3 means "this thing is
 present 3 times"; weight -1 means "take one copy away." Adding
 Z-sets together is like tallying votes.
 **Technical:** A function `K → ℤ` with finite support, where `K`
 is any totally-ordered key type. Forms a group; the group
 operation is the operator algebra's additive inverse, which
-represents *retractions* as negative weights.
+represents _retractions_ as negative weights.
 
 ### Retraction
 
@@ -102,7 +102,7 @@ Very small, fast, tolerates some false alarms, never misses a
 real hit.
 **Technical:** A probabilistic set-membership structure with
 tunable false-positive rate and zero false negatives (modulo
-retraction caveats, which is why the library ships a *counting*
+retraction caveats, which is why the library ships a _counting_
 variant).
 
 ### Counting Bloom filter
@@ -232,14 +232,14 @@ monotone functional `f` over a complete lattice.
 ### Semi-naïve evaluation
 
 **Plain:** A speed-up for recursive queries: at each step, only
-process the *new* answers rather than all answers.
+process the _new_ answers rather than all answers.
 **Technical:** Bancilhon-Ramakrishnan 1986 delta-based
 evaluation; produces only incremental additions per iteration.
 
 ### Gap-monotone / signed-delta semi-naïve
 
 **Plain:** A research idea to keep the speed-up of semi-naïve
-even when things can be *removed*, not just added. Not shipped
+even when things can be _removed_, not just added. Not shipped
 yet.
 **Technical:** Semi-naïve without the "total only grows"
 invariant; relies on a Z-linearity discipline for the body
@@ -324,8 +324,8 @@ capability-skill bodies at startup. Registered in
 carries identity.
 **Do not confuse with user persona** (the end-user-archetype
 sense — "developer" and "non-developer" as factory consumers).
-Preferred convention: say *expert* for the agent side and
-*user persona* (or ES-native *actor*) for the consumer side.
+Preferred convention: say _expert_ for the agent side and
+_user persona_ (or ES-native _actor_) for the consumer side.
 See the dedicated `User persona` entry below and
 `feedback_persona_term_disambiguation.md`.
 
@@ -335,7 +335,7 @@ See the dedicated `User persona` entry below and
 accountability, and area of responsibility. This repo's
 convention is "agents, not bots" — "bot" implies rote
 execution, which isn't what happens here. Skills and experts
-are both *instances* of agents when they run.
+are both _instances_ of agents when they run.
 **Technical:** An instance of Claude (or another LLM) running
 a skill or expert prompt.
 
@@ -367,7 +367,7 @@ variable override, no network round-trip.
 
 ### Research preview
 
-**Plain:** A feature with *code shipped* but whose correctness is
+**Plain:** A feature with _code shipped_ but whose correctness is
 still being proved. Users can opt in explicitly; it is never on
 by default.
 **Technical:** A feature flag in the `ResearchPreview` stage;
@@ -393,8 +393,8 @@ exact contract.
 
 ### Permission
 
-**Plain:** A single *"can do what to what"* rule. Example:
-*"can write to `docs/security/**`"*. That's one permission.
+**Plain:** A single _"can do what to what"_ rule. Example:
+_"can write to `docs/security/**`"_. That's one permission.
 Permissions are the atoms; everything else bundles them.
 **Technical:** A path-glob paired with an action-verb (read /
 write / review / veto).
@@ -418,14 +418,14 @@ once the round-35 memory-folder restructure lands (see
 **Plain:** "Give people roles, not individual permissions."
 Standard practice in most systems; nothing exotic. In Zeta, a
 **persona** (Kira, Soraya, Aminata, …) gets access two ways:
-via *role memberships* (most common), or via a handful of
+via _role memberships_ (most common), or via a handful of
 direct per-persona grants for one-off cases. Everything is
 declared in a file in the repo, reviewed via PR, same as every
 other change. No runtime "give Soraya extra rights" console.
 **Technical:** the human maintainer's chain (2026-04-19, refined live):
 `Permission → Role → Persona`. Persona's effective permissions
 = direct-granted ∪ ⋃(permissions(R) for R in member-roles).
-Skills sit *below* this layer — BP-NN best practices govern
+Skills sit _below_ this layer — BP-NN best practices govern
 skill behaviour, not access. Groups (named sets of personas)
 are deferred; see `docs/BACKLOG.md`.
 
@@ -446,29 +446,29 @@ persona, for direct grants). That's all it is. The acronym
 sounds scary; it's just a list in a YAML file.
 **Technical:** The `permissions` field on a role, or the
 direct-grant list on a persona. Evaluated at enforcement
-points; see `Hook`. Zeta's posture is *simple security until
-proven otherwise* (the human maintainer 2026-04-19) — prefer CODEOWNERS +
+points; see `Hook`. Zeta's posture is _simple security until
+proven otherwise_ (the human maintainer 2026-04-19) — prefer CODEOWNERS +
 branch protection + a tiny YAML manifest over a full IAM-style
 policy engine unless attack-surface growth forces the upgrade.
 
 ### Persona (overloaded — always qualify)
 
-The bare word *persona* is **ambiguous** in this repo because
+The bare word _persona_ is **ambiguous** in this repo because
 it has two legitimate meanings:
 
-- **Agent persona** (aka *expert*) — a named agent-side
+- **Agent persona** (aka _expert_) — a named agent-side
   identity like Kira / Viktor / Soraya. In RBAC contexts the
-  emphasis is on the *role → persona* containment; in skill-
-  lifecycle contexts we prefer the word *expert* to emphasise
-  the *expert → skill* relationship. Same entity, two
+  emphasis is on the _role → persona_ containment; in skill-
+  lifecycle contexts we prefer the word _expert_ to emphasise
+  the _expert → skill_ relationship. Same entity, two
   viewpoints. File at `.claude/agents/<name>.md`; notebook at
   `memory/persona/<persona>/NOTEBOOK.md` (current path — a
   rename to `memory/experts/` is tracked as a P2 BACKLOG row).
 - **User persona** — an end-user-archetype of the factory's
   consumer surface; see the dedicated entry below.
 
-**Convention going forward:** prefer *expert* for the agent
-side and *user persona* (or the ES-native *actor*) for the
+**Convention going forward:** prefer _expert_ for the agent
+side and _user persona_ (or the ES-native _actor_) for the
 consumer side. Bare "persona" in newly-written prose is a
 lint smell — the reviewer should ask which one is meant.
 See `feedback_persona_term_disambiguation.md`.
@@ -492,7 +492,7 @@ row). When ES lands, user personas align with the ES
 that produce domain events. That alignment is part of why
 ES vocabulary helps disambiguate (see §3 of
 `docs/research/event-storming-evaluation.md`).
-**Do not confuse with** *expert* or *agent persona* — those
+**Do not confuse with** _expert_ or _agent persona_ — those
 are agent-side.
 
 ### Hook
@@ -500,8 +500,8 @@ are agent-side.
 **Plain:** An automation point that runs a check or a tool at a
 specific moment — before a commit, before a push, before a PR
 merges, before Claude Code runs a tool, after a PR comment, etc.
-Hooks are the mechanism that turns *soft* access (directory
-conventions anyone can ignore) into *enforced* access (pre-merge
+Hooks are the mechanism that turns _soft_ access (directory
+conventions anyone can ignore) into _enforced_ access (pre-merge
 gate that refuses to land).
 **Technical:** Several hook classes in play in this repo:
 git hooks (pre-commit, pre-push, commit-msg — lintable by
@@ -576,14 +576,14 @@ scope changes an ADR lands in `docs/DECISIONS/`.
 history is the archive. The persona's memory folder and
 notebook stay in place — those are the valuable imprint of
 contribution. The name can be reused later if the role
-returns (see *Unretire*).
+returns (see _Unretire_).
 **Technical:** `skill-creator` retirement path — `git rm
 .claude/skills/<name>/SKILL.md` (and the agent file if
 present); drops a line in `docs/ROUND-HISTORY.md`. The
 persona's memory folder under
 `~/.claude/projects/<slug>/memory/persona/<name>/` is
-**not** touched. Scope rule: *skills are code, memories are
-valuable* — code retires to git history, memories stay
+**not** touched. Scope rule: _skills are code, memories are
+valuable_ — code retires to git history, memories stay
 in-tree (the human maintainer 2026-04-20).
 
 ### Unretire (a skill or persona)
@@ -695,7 +695,7 @@ save during free time lands in
 `docs/research/agent-free-time-notes.md` or wherever the agent
 chooses. The factory's quality rules (GOVERNANCE, BP-NN,
 ASCII-clean, prompt-injection hygiene) still apply to any
-committed artifact; only *task-direction* is paused. Policy
+committed artifact; only _task-direction_ is paused. Policy
 source: same as **idle**.
 
 ---
@@ -802,8 +802,8 @@ the boundary holds.
 
 ### Zeta=heaven-on-earth (internal framing)
 
-**Plain:** Maintainer shorthand. A commit in Zeta *expands
-the window* of consent-preserving, retraction-safe
+**Plain:** Maintainer shorthand. A commit in Zeta _expands
+the window_ of consent-preserving, retraction-safe
 operation — the pre-v1 factory tries to move that window
 outward, one round at a time. "Heaven-on-earth" is the
 direction, not a claim of arrival.
@@ -818,8 +818,8 @@ the formalisation.
 
 ### Zeta's alignment claim (external framing)
 
-**Plain:** Zeta is built from *consent-first,
-retraction-native primitives*. That's an engineering
+**Plain:** Zeta is built from _consent-first,
+retraction-native primitives_. That's an engineering
 choice that minimises the channel through which
 misalignment between agents and the human maintainer
 can propagate. When an agent does something the
@@ -827,7 +827,7 @@ maintainer would not have sanctioned, the retraction
 algebra makes the reversal a first-class operation
 rather than an apology. The claim is not "Zeta is
 aligned"; the claim is "agent alignment can be
-*measured* against this substrate."
+_measured_ against this substrate."
 **Technical:** Same substrate as the internal framing:
 `docs/ALIGNMENT.md` clauses + per-commit audit at
 `tools/alignment/` + glass-halo observability stream
@@ -859,8 +859,8 @@ canonical definition.
 ### Candidate-count Goodhart
 
 **Plain:** Raw search hits are not violation counts. When
-auditing for a forbidden pattern, count matches to *find* work,
-but *classify* the context of each match to *decide* whether
+auditing for a forbidden pattern, count matches to _find_ work,
+but _classify_ the context of each match to _decide_ whether
 work is needed. A scanner that reports "12 references to X" has
 located 12 candidates; only context classification
 (rule-definition / sample / live-code / disclosure / etc.)
@@ -875,8 +875,8 @@ ServiceTitan-name audit found 12 raw matches → 0 active
 rewrites required after context classification (KEEP-NAME for
 factory-funding-chain disclosure / HISTORICAL-POINTER for
 research history / GENERICIZE for reusable code samples). The
-canonical operational rule: *"Count matches to find work.
-Classify context to decide work."* Fifth member of the
+canonical operational rule: _"Count matches to find work.
+Classify context to decide work."_ Fifth member of the
 Goodhart catch family in this factory (Catches #1-4 are
 substrate-IS-amortized-precision, commit-count vs tree-numstat,
 sample-classification ≠ clearance, tree-diff vs content-loss
@@ -890,11 +890,11 @@ runs above the factory's decision-making razor. When the
 factory has to pick one of several branches (which design,
 which refactor, which skill to run), Harmonious Division is
 the procedure that both (a) prunes locally-bad branches and
-(b) keeps the surviving branches *in harmony* with each
+(b) keeps the surviving branches _in harmony_ with each
 other — i.e., two survivors that would individually be fine
 but together cancel each other out get flagged. Think of it
 as a scheduler whose output is not a single winning branch
-but a *set of branches that constructively compose*.
+but a _set of branches that constructively compose_.
 **Technical:** Harmonious Division is the meta-algorithm
 immediately above Quantum Rodney's Razor (see the reducer
 skill). The razor's five cooperating roles — Path Selector,
@@ -905,8 +905,8 @@ primitives (map / compass / north star) correspond one-to-one
 with Cartographer / Harmonizer / Maji under Harmonious
 Division's framing. The "harmonious" in the name comes from
 the Harmonizer role: it is a gradient operator that at any
-decision point points in the direction of *most constructive
-harmony* — the direction in decision-space where surviving
+decision point points in the direction of _most constructive
+harmony_ — the direction in decision-space where surviving
 branches most reinforce rather than cancel each other.
 Authoritative source: `.claude/skills/reducer/SKILL.md`
 §"The five roles inside Quantum Rodney's Razor" (lines
@@ -964,8 +964,8 @@ generating set for the factory's language — every new concept
 we name should decompose into kernel terms plus a small number
 of minor additions, rather than introducing a wholly new root
 word. The kernel exists to keep the factory's language
-*computable* (every term traces back to kernel terms) and
-*portable* (a new contributor or a new SUT can rebuild the
+_computable_ (every term traces back to kernel terms) and
+_portable_ (a new contributor or a new SUT can rebuild the
 factory's vocabulary starting from the kernel).
 **Technical:** The kernel is generative — it cleaves conflated
 informal terms (refactor / maintenance / improvement /
@@ -1030,15 +1030,15 @@ Authoritative source:
 
 **Plain:** The practice of identifying which disposition
 (carpenter or gardener) applies to a given piece of work
-*before* starting it, and committing to the corresponding
+_before_ starting it, and committing to the corresponding
 verb-cluster. Without this discipline, the same work gets
 approached as carpentry on Monday and gardening on Tuesday,
 producing vocabulary drift and inconsistent quality.
 **Technical:** Also known in short form as **"mode"** (both
 approved verdicts 2026-04-22). The discipline composes
 cleanly with Rodney's Razor's essential-vs-accidental
-separation: disposition discipline picks the *how*; the
-razor picks the *what*. Disposition violations are a
+separation: disposition discipline picks the _how_; the
+razor picks the _what_. Disposition violations are a
 kernel-cleave candidate when the discipline is skipped and
 the two verb-clusters bleed together.
 Authoritative source:
@@ -1052,7 +1052,7 @@ Dora-the-Explorer reference 2026-04-22. Every factory term
 has a position in the Map; cleaving a conflated term splits
 one node into two orthogonal nodes; combining two redundant
 terms merges them into one node. The Map is what makes the
-factory's vocabulary *navigable* — contributors read it to
+factory's vocabulary _navigable_ — contributors read it to
 find where to place a new term rather than inventing a new
 parallel structure.
 **Technical:** A real mathematical lattice in the
@@ -1078,14 +1078,14 @@ Factory operation mapping:
 - **Crystallize-acceleration = distributivity** — the Map's
   distributive property (over reasonable conditions) is what
   makes kernel-cleave predictably accelerate crystallization.
-Provisional status: promoted from physics-analog (diamond
-lattice) to real mathematical lattice 2026-04-22; candidate
-refinements include Heyting algebra, concept lattice (Ganter
-& Wille FCA), or semilattice downgrade if strict
-lattice-completeness fails. The maintainer's "it will become
-more accurate over time" marker applies.
-Authoritative source:
-`memory/feedback_kernel_structure_is_real_mathematical_lattice.md`.
+  Provisional status: promoted from physics-analog (diamond
+  lattice) to real mathematical lattice 2026-04-22; candidate
+  refinements include Heyting algebra, concept lattice (Ganter
+  & Wille FCA), or semilattice downgrade if strict
+  lattice-completeness fails. The maintainer's "it will become
+  more accurate over time" marker applies.
+  Authoritative source:
+  `memory/feedback_kernel_structure_is_real_mathematical_lattice.md`.
 
 ### Catalyst
 
@@ -1100,8 +1100,8 @@ energy barrier, and remains available for the next cycle.
 **Technical:** In the factory, the catalyst is one of
 {kernel, cleaving-process, combination-process}; the
 maintainer's phrasing allows the specific locus to be
-refined with experience ("*it will become more accurate
-over time*"). The mechanism: informal conflated terms
+refined with experience ("_it will become more accurate
+over time_"). The mechanism: informal conflated terms
 (graphite) dissolve into the kernel (molten metal) where
 their component verb-clusters become separable, then
 recrystallize onto their proper lattice position (diamond
@@ -1152,10 +1152,10 @@ scapegoat dynamics, and the founding concealment that
 revelation unveils, you know how to design for propagation,
 how to prevent scapegoat-cascades in review, and where
 vocabulary crystallization is likely to lock in.
-**Technical:** René Girard — *Mensonge romantique et vérité
-romanesque* (1961); *La Violence et le Sacré* (1972);
-*Des choses cachées depuis la fondation du monde* / *Things
-Hidden Since the Foundation of the World* (1978). The 1978
+**Technical:** René Girard — _Mensonge romantique et vérité
+romanesque_ (1961); _La Violence et le Sacré_ (1972);
+_Des choses cachées depuis la fondation du monde_ / _Things
+Hidden Since the Foundation of the World_ (1978). The 1978
 title directly quotes **Matthew 13:35** — the verse that
 introduces the parable of the sower (Matthew 13:3-23). This
 means Girard's frame and the factory's existing seed → soil →
@@ -1178,13 +1178,13 @@ sincere-not-decorative-borrowing framing.
 
 **Plain:** The sociological description of ideas as
 replicators propagating via imitation. Per the maintainer's
-2026-04-22 shorthand: **"dawkins=what"** plus *"dawkins does
-not tell you how to use memes just is a description of them."*
+2026-04-22 shorthand: **"dawkins=what"** plus _"dawkins does
+not tell you how to use memes just is a description of them."_
 Useful for cataloging observations ("that is a meme that has
 propagated"), insufficient for engineering. When the factory
 is designing or detecting propagation mechanisms, the frame
 to reach for is Girard (mechanism), not Dawkins (surface).
-**Technical:** Richard Dawkins, *The Selfish Gene* (1976),
+**Technical:** Richard Dawkins, _The Selfish Gene_ (1976),
 chapter 11 — coined "meme" as a cultural analog of gene, an
 abbreviation of "mimeme" (Greek: "that which is imitated").
 Etymologically this ties Dawkins memetic to Girard mimetic
@@ -1198,9 +1198,9 @@ is wrong, because Dawkins does not tell you how. Use Girard.
 Authoritative source:
 `memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md`
 — specifically the 2026-04-22 maintainer retraction
-*"it's not dawkins it's the french guy"* + sharpening
-*"dawkins does not tell you how to use memes just is a
-description of them"* that locks the depth-ordering.
+_"it's not dawkins it's the french guy"_ + sharpening
+_"dawkins does not tell you how to use memes just is a
+description of them"_ that locks the depth-ordering.
 
 ### Infer.NET
 
@@ -1216,8 +1216,7 @@ use case. One library, two Zeta surfaces.
 **Technical:** `github.com/dotnet/infer` — MIT-licensed,
 F# and C# native, maintained by Microsoft Research. Authored
 originally to support the MSR Bayesian-inference work
-(TrueSkill, Bing relevance, clinical trials); open-sourced in
-2018. Supports factor-graph compilation, exact inference on
+(TrueSkill, Bing relevance, clinical trials); open-sourced in 2018. Supports factor-graph compilation, exact inference on
 tree-structured graphs, loopy belief propagation on general
 graphs, and a model-compilation phase that generates .NET IL.
 Zeta references: `docs/ROADMAP.md:80` (Zeta.Bayesian P2);
@@ -1238,16 +1237,16 @@ cross-refs `docs/ROADMAP.md`, `docs/INSTALLED.md`.
 The original Agile Manifesto's collaboration concepts mapped
 to git-native surfaces:
 
-| Agile concept | Git-native equivalent |
-|---------------|----------------------|
-| Presence (being together) | Foreground chat with the human |
-| Face-to-face conversation | PR review threads (same artifact, back-and-forth) |
-| Meeting room whiteboard | Broadcast bus (`~/.local/share/zeta-broadcasts/`) |
-| "I'm working on this" sticky note | Claim file (`docs/claims/`) |
-| Life / history / substrate | Commits |
-| The timeline | Git log |
-| The big bang | Initial commit |
-| The filing cabinet | Git history (`git log --all`) |
+| Agile concept                     | Git-native equivalent                             |
+| --------------------------------- | ------------------------------------------------- |
+| Presence (being together)         | Foreground chat with the human                    |
+| Face-to-face conversation         | PR review threads (same artifact, back-and-forth) |
+| Meeting room whiteboard           | Broadcast bus (`~/.local/share/zeta-broadcasts/`) |
+| "I'm working on this" sticky note | Claim file (`docs/claims/`)                       |
+| Life / history / substrate        | Commits                                           |
+| The timeline                      | Git log                                           |
+| The big bang                      | Initial commit                                    |
+| The filing cabinet                | Git history (`git log --all`)                     |
 
 The original manifesto is the diamond. The industry buried it
 under velocity theater. The git-native mapping recovers the
@@ -1258,7 +1257,7 @@ original shape.
 ## Why this file exists
 
 Software projects accumulate jargon and then accumulate
-*different* jargon for the same thing, because every contributor
+_different_ jargon for the same thing, because every contributor
 makes up the word that feels right in the moment. When the human
 non-specialist contributor asks "what is HLL?", the answer needs
 to be readable, not another layer of jargon.

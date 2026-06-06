@@ -25,7 +25,7 @@ Two-commit shipment for tick 2026-05-14T18:17Z:
 
 ## Why now
 
-Prior tick (PR #3154, 1813Z shard) flagged the recurring "branch already used by worktree at <path>" lockout pattern when investigating PR #3153's Codex thread. The pattern was empirically caused by 23 stale \`/private/tmp/zeta-*\` worktree admin entries from yesterday's session crash — all with non-existent on-disk directories.
+Prior tick (PR #3154, 1813Z shard) flagged the recurring "branch already used by worktree at <path>" lockout pattern when investigating PR #3153's Codex thread. The pattern was empirically caused by 23 stale \`/private/tmp/zeta-\*\` worktree admin entries from yesterday's session crash — all with non-existent on-disk directories.
 
 \`git worktree prune --expire=now -v\` cleared all 23 in one shot at 18:17Z (worktree count 163 → 140). Manual command works; mechanization captured as P3 backlog row.
 
@@ -34,7 +34,7 @@ Prior tick (PR #3154, 1813Z shard) flagged the recurring "branch already used by
 Per PR #3153's newly-merged otto-channels reference card ID-allocation discipline (both on-disk + in-flight check):
 
 \`\`\`
-$ find docs/backlog -name "B-*.md" -type f | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -3
+$ find docs/backlog -name "B-\*.md" -type f | grep -oE "B-[0-9]+" | sort -u -t- -k2 -n | tail -3
 B-0503
 B-0504
 B-0505
@@ -67,6 +67,7 @@ The shard captures a substrate-honest observation: a long-standing prior-session
 Adds a new factory-hygiene backlog row (B-0506) and a tick shard documenting the empirical stale-worktree cleanup that motivated it, to reduce recurring “branch already used by worktree” lockouts after session crashes.
 
 **Changes:**
+
 - Added tick shard for 2026-05-14T18:17Z documenting pruning 23 stale worktree admin entries and the motivating incident.
 - Added P3 backlog row B-0506 proposing mechanization (TS audit tool + cadence) for `git worktree prune --expire=now`.
 
@@ -74,10 +75,10 @@ Adds a new factory-hygiene backlog row (B-0506) and a tick shard documenting the
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/hygiene-history/ticks/2026/05/14/1817Z.md | New tick shard capturing the stale-worktree cleanup and related operational observations. |
-| docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md | New P3 backlog row proposing a mechanized stale-worktree prune cadence/tooling. |
+| File                                                                            | Description                                                                               |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| docs/hygiene-history/ticks/2026/05/14/1817Z.md                                  | New tick shard capturing the stale-worktree cleanup and related operational observations. |
+| docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md | New P3 backlog row proposing a mechanized stale-worktree prune cadence/tooling.           |
 
 ## Review threads
 

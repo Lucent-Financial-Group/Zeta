@@ -2,7 +2,7 @@
 
 ## Operator framing
 
-> *"option 3 (shadow*) Aaron: 3"*
+> _"option 3 (shadow_) Aaron: 3"\*
 
 Substrate-honest reading: operator option-3 disposition (ferry preservation + rule extension + research note + skill). This research note IS the research-tier preservation per option-3.
 
@@ -32,15 +32,15 @@ Git commit
 
 ### Per-system lightlike-role + dark-when failure modes
 
-| System | Lightlike role | Goes dark when |
-|---|---|---|
-| **OTel** | Spans are rays through distributed system | Traces sampled away; context propagation breaks |
-| **Kubernetes** | Object lifecycle + UIDs show state transitions | Events expire; ownership chains unclear |
-| **Argo CD** | Git revision → desired state → cluster state | Manual drift; hidden overrides; unclear sync history |
-| **Argo Workflows** | DAG steps as traceable execution rays | Retries/side effects not captured |
-| **Argo Rollouts** | Progressive delivery as observable generator-time | Promotion decisions lack evidence |
-| **Prometheus** | Metric time series show field curvature over time | Labels explode; metrics lack trace/log correlation |
-| **Git** | Durable generator record | Force-push without lease; rewriting history |
+| System             | Lightlike role                                    | Goes dark when                                       |
+| ------------------ | ------------------------------------------------- | ---------------------------------------------------- |
+| **OTel**           | Spans are rays through distributed system         | Traces sampled away; context propagation breaks      |
+| **Kubernetes**     | Object lifecycle + UIDs show state transitions    | Events expire; ownership chains unclear              |
+| **Argo CD**        | Git revision → desired state → cluster state      | Manual drift; hidden overrides; unclear sync history |
+| **Argo Workflows** | DAG steps as traceable execution rays             | Retries/side effects not captured                    |
+| **Argo Rollouts**  | Progressive delivery as observable generator-time | Promotion decisions lack evidence                    |
+| **Prometheus**     | Metric time series show field curvature over time | Labels explode; metrics lack trace/log correlation   |
+| **Git**            | Durable generator record                          | Force-push without lease; rewriting history          |
 
 ## Light-carrier join keys (operationally specific substrate)
 
@@ -91,22 +91,22 @@ Per Amara's blade discipline (PRs #5910 + #5912 + #5919 + #5920):
 
 Full-ai-cluster substrate (per `full-ai-cluster/` + existing cluster substrate) operationally composes:
 
-| Cluster component | Lightlike-observability composition |
-|---|---|
+| Cluster component                   | Lightlike-observability composition                                                                                                                            |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Git** (substrate-source-of-truth) | Persisted-light-source per Amara mapping; force-push-with-lease discipline preserves lightlike substrate (per `force-push-with-lease-authorization-policy.md`) |
-| **Argo CD** (GitOps reconciliation) | Generator reconciliation substrate; Git revision → desired state → cluster state; argo_app_revision light-carrier |
-| **Argo Workflows** (DAG-substrate) | DAG steps as traceable execution rays; workflow_id light-carrier; composes with B-0867 workflow-engine substrate |
-| **Kubernetes** (cluster-substrate) | Lifecycle geometry; k8s_uid + owner_reference light-carriers preserve ownership chains |
-| **OTel** (observability substrate) | Ray emission; trace_id + span_id light-carriers preserve distributed-trace substrate |
-| **Prometheus** (metrics substrate) | Curvature meter (field-sensor; NOT full event log); composes with OTel via exemplars + correlation |
+| **Argo CD** (GitOps reconciliation) | Generator reconciliation substrate; Git revision → desired state → cluster state; argo_app_revision light-carrier                                              |
+| **Argo Workflows** (DAG-substrate)  | DAG steps as traceable execution rays; workflow_id light-carrier; composes with B-0867 workflow-engine substrate                                               |
+| **Kubernetes** (cluster-substrate)  | Lifecycle geometry; k8s_uid + owner_reference light-carriers preserve ownership chains                                                                         |
+| **OTel** (observability substrate)  | Ray emission; trace_id + span_id light-carriers preserve distributed-trace substrate                                                                           |
+| **Prometheus** (metrics substrate)  | Curvature meter (field-sensor; NOT full event log); composes with OTel via exemplars + correlation                                                             |
 
 ## Composition with B-0892 three-lanes-concurrent operating discipline
 
-| Lane | Lightlike-observability composition |
-|---|---|
+| Lane                                                          | Lightlike-observability composition                                                                                                                                                                                                                      |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **State-machine lane** (B-0867 workflow-engine + descendants) | Workflow-engine state-transitions emit light-carrier substrate via Argo Workflows DAG; today's DU cluster (B-0917 + B-0918 + B-0919 + B-0920; PR #5916) emits IntrCtx Log substrate per substrate-engineering substrate-engineering substrate-discipline |
-| **zflash lane** | Cluster bootstrap substrate composes with lightlike-observability at install-time scope; zflash → Argo bootstrap → Kubernetes reconciliation → OTel substrate |
-| **Encryption lane** (B-0885 substrate; PR #5918) | Encrypted substrate operates ON lightlike-substrate (append-only encrypted blobs; visible-provenance preserved; only CONTENT opaque); per B-0883.16 Glass-Halo-open-by-default substrate — encryption budget IS reputation-weighted attention-substrate |
+| **zflash lane**                                               | Cluster bootstrap substrate composes with lightlike-observability at install-time scope; zflash → Argo bootstrap → Kubernetes reconciliation → OTel substrate                                                                                            |
+| **Encryption lane** (B-0885 substrate; PR #5918)              | Encrypted substrate operates ON lightlike-substrate (append-only encrypted blobs; visible-provenance preserved; only CONTENT opaque); per B-0883.16 Glass-Halo-open-by-default substrate — encryption budget IS reputation-weighted attention-substrate  |
 
 ## Composition with framework substrate-engineering substrate-engineering substrate cluster
 

@@ -24,21 +24,21 @@ Addison (19, working with Aaron) asked for a single Git-tracked file containing 
 
 ## What's on the stick (~70 packages, organized by install-time role)
 
-| Section | Packages | Why |
-|---|---|---|
-| Version control | `git`, `git-lfs`, `gnupg`, `openssh` | Clone Zeta from GitHub |
-| Editors | `vim`, `neovim`, `nano` | Live config tweaks |
-| Shell QoL | `tmux`, `htop`, `ripgrep`, `jq`, `yq-go`, `fzf`, `bat`, `eza`, ... | Survive long install sessions |
-| Network | `curl`, `nmap`, `networkmanager`, `iwd`, `wireguard-tools`, ... | Reach internet/LAN/VPN |
-| Disk | `parted`, `gptfdisk`, `cryptsetup`, `zfs`, `lvm2`, `mdadm`, `smartmontools` | Partition + LUKS + ZFS + RAID |
-| Hardware inspection | `lshw`, `dmidecode`, `nvme-cli`, `lm_sensors`, ... | Know the box first |
-| GPU detection | `glxinfo`, `vulkan-tools`, `clinfo` | Confirm GPUs visible (drivers per-host) |
-| NixOS install | `nixos-install-tools`, `nom`, `nvd`, `nh` | Pretty + safe install |
-| Kubernetes clients | `kubectl`, `helm`, `k9s`, `argocd`, `k3s` binary | Poke control plane from the stick |
-| Secrets | `age`, `sops`, `ssh-to-age` | Decrypt cluster tokens during install |
-| Build helpers | `gcc`, `gnumake`, `pkg-config`, coreutils, ... | Bootstrap flake inputs |
-| Observability | `iotop`, `iftop`, `ncdu`, `pv` | Watch the install progress |
-| Docs | `man-pages`, `tldr` | Readable offline |
+| Section             | Packages                                                                    | Why                                     |
+| ------------------- | --------------------------------------------------------------------------- | --------------------------------------- |
+| Version control     | `git`, `git-lfs`, `gnupg`, `openssh`                                        | Clone Zeta from GitHub                  |
+| Editors             | `vim`, `neovim`, `nano`                                                     | Live config tweaks                      |
+| Shell QoL           | `tmux`, `htop`, `ripgrep`, `jq`, `yq-go`, `fzf`, `bat`, `eza`, ...          | Survive long install sessions           |
+| Network             | `curl`, `nmap`, `networkmanager`, `iwd`, `wireguard-tools`, ...             | Reach internet/LAN/VPN                  |
+| Disk                | `parted`, `gptfdisk`, `cryptsetup`, `zfs`, `lvm2`, `mdadm`, `smartmontools` | Partition + LUKS + ZFS + RAID           |
+| Hardware inspection | `lshw`, `dmidecode`, `nvme-cli`, `lm_sensors`, ...                          | Know the box first                      |
+| GPU detection       | `glxinfo`, `vulkan-tools`, `clinfo`                                         | Confirm GPUs visible (drivers per-host) |
+| NixOS install       | `nixos-install-tools`, `nom`, `nvd`, `nh`                                   | Pretty + safe install                   |
+| Kubernetes clients  | `kubectl`, `helm`, `k9s`, `argocd`, `k3s` binary                            | Poke control plane from the stick       |
+| Secrets             | `age`, `sops`, `ssh-to-age`                                                 | Decrypt cluster tokens during install   |
+| Build helpers       | `gcc`, `gnumake`, `pkg-config`, coreutils, ...                              | Bootstrap flake inputs                  |
+| Observability       | `iotop`, `iftop`, `ncdu`, `pv`                                              | Watch the install progress              |
+| Docs                | `man-pages`, `tldr`                                                         | Readable offline                        |
 
 ## What's NOT on the stick
 
@@ -52,7 +52,7 @@ The flake at the repo root (next file, gated on Addison) wires:
 
 \`\`\`nix
 nixosConfigurations.installer = nixpkgs.lib.nixosSystem {
-  modules = [ ./infra/nixos/hosts/installer/configuration.nix ];
+modules = [ ./infra/nixos/hosts/installer/configuration.nix ];
 };
 \`\`\`
 
@@ -60,7 +60,7 @@ Then:
 
 \`\`\`bash
 nix build .#nixosConfigurations.installer.config.system.build.isoImage
-dd if=result/iso/zeta-installer-*.iso of=/dev/sdX bs=4M status=progress
+dd if=result/iso/zeta-installer-\*.iso of=/dev/sdX bs=4M status=progress
 \`\`\`
 
 ## Pre-staged runbook on the ISO
@@ -79,24 +79,22 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:19:41Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `e2ace3ed9a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -109,12 +107,12 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a NixOS installer ISO configuration (`nixosSystem` module) intended to be the single Git-tracked source of truth for what packages/tools are present on a bootable USB installer used to bootstrap the cluster.
 
 **Changes:**
+
 - Introduces a new NixOS installer configuration importing the upstream minimal install CD modules.
 - Defines a large `environment.systemPackages` set for install-time workflows (disk, network, secrets, k8s CLIs, etc.).
 - Adds ISO branding plus a baked `/etc/zeta/README.md` runbook.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:26:26Z)
-
 
 ### 💡 Codex Review
 
@@ -122,17 +120,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5ab288c8bb`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -144,7 +141,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T02:19:41Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Bundle the actual flake under /etc/zeta**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Bundle the actual flake under /etc/zeta**
 
 This module advertises an offline install path (`nixos-install --flake /etc/zeta#<host>`) but only writes `/etc/zeta/README.md`; it never stages `flake.nix` (or the referenced host modules) into `/etc/zeta`. On a machine without network access, following the included runbook will fail when `nixos-install` tries to resolve the flake from `/etc/zeta`. Please add an explicit copy/symlink mechanism for the repository contents (at minimum `flake.nix` and referenced infra files) instead of only shipping a README.
 
@@ -178,7 +175,7 @@ P1 documentation: The comment says the flake is pre-staged at /etc/zeta for offl
 
 **@chatgpt-codex-connector** (2026-05-25T02:26:27Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Open SSH firewall port for documented headless workflow**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Open SSH firewall port for documented headless workflow**
 
 This config documents a headless path (`systemctl start sshd`) but keeps `networking.firewall.enable = true` while declaring `services.openssh.enable = false`, so TCP/22 is never opened by NixOS and remote SSH attempts to the live installer will be dropped. This only affects the headless install scenario, but in that scenario the documented instructions won’t work unless the firewall is relaxed or port 22 is explicitly allowed.
 

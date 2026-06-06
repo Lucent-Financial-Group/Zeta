@@ -29,17 +29,9 @@ interface ReviewLifetime extends LifetimeState {
   readonly kind: "pending" | "in-review" | "merged";
 }
 
-const workflowUniverse: WorkflowLifetime[] = [
-  { kind: "draft" },
-  { kind: "submitted" },
-  { kind: "approved" },
-];
+const workflowUniverse: WorkflowLifetime[] = [{ kind: "draft" }, { kind: "submitted" }, { kind: "approved" }];
 
-const reviewUniverse: ReviewLifetime[] = [
-  { kind: "pending" },
-  { kind: "in-review" },
-  { kind: "merged" },
-];
+const reviewUniverse: ReviewLifetime[] = [{ kind: "pending" }, { kind: "in-review" }, { kind: "merged" }];
 
 describe("world substrate + reusable lifetime composition helpers", () => {
   it("EMPTY_WORLD has zero registered pairs", () => {
@@ -50,11 +42,7 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     const matrix = new Map<ComposedKey<WorkflowLifetime, ReviewLifetime>, StandardVerdict>([
       ["draft:pending", { kind: "advance" }],
     ]);
-    const world = registerLifetimePair(
-      EMPTY_WORLD,
-      "workflow-review",
-      matrix,
-    );
+    const world = registerLifetimePair(EMPTY_WORLD, "workflow-review", matrix);
     expect(world.registry.size).toBe(1);
     expect(world.registry.has("workflow-review")).toBe(true);
     // Immutable: original unchanged
@@ -65,30 +53,20 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     const matrix = new Map<ComposedKey<WorkflowLifetime, ReviewLifetime>, StandardVerdict>([
       ["draft:pending", { kind: "advance" }],
     ]);
-    const world = registerLifetimePair(
-      EMPTY_WORLD,
-      "workflow-review",
-      matrix,
-    );
-    const found = lookupLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
-      world,
-      "workflow-review",
-    );
+    const world = registerLifetimePair(EMPTY_WORLD, "workflow-review", matrix);
+    const found = lookupLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(world, "workflow-review");
     expect(found).toBeDefined();
     expect(found?.get("draft:pending")?.kind).toBe("advance");
   });
 
   it("lookupLifetimePair: undefined for unregistered pair", () => {
-    const found = lookupLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
-      EMPTY_WORLD,
-      "nonexistent",
-    );
+    const found = lookupLifetimePair<WorkflowLifetime, ReviewLifetime, StandardVerdict>(EMPTY_WORLD, "nonexistent");
     expect(found).toBeUndefined();
   });
 
   it("defaultAdvanceMatrix: every-cell defaults to advance", () => {
     const matrix = defaultAdvanceMatrix(workflowUniverse, reviewUniverse);
-    expect(matrix.size).toBe(9);  // 3 × 3
+    expect(matrix.size).toBe(9); // 3 × 3
     for (const verdict of matrix.values()) {
       expect(verdict.kind).toBe("advance");
     }
@@ -103,7 +81,7 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     expect(matrix.size).toBe(9);
     expect(matrix.get("draft:in-review")?.kind).toBe("block");
     expect(matrix.get("approved:merged")?.kind).toBe("complete");
-    expect(matrix.get("draft:pending")?.kind).toBe("advance");  // not overridden
+    expect(matrix.get("draft:pending")?.kind).toBe("advance"); // not overridden
   });
 
   it("terminalMatrix: terminal cell is complete; other cells from terminal A are block", () => {
@@ -154,11 +132,7 @@ describe("world substrate + reusable lifetime composition helpers", () => {
 
   it("dispatchInWorld: looks up registered pair + dispatches", () => {
     const matrix = defaultAdvanceMatrix(workflowUniverse, reviewUniverse);
-    const world = registerLifetimePair(
-      EMPTY_WORLD,
-      "workflow-review",
-      matrix,
-    );
+    const world = registerLifetimePair(EMPTY_WORLD, "workflow-review", matrix);
     const result = dispatchInWorld<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
       world,
       "workflow-review",
@@ -214,22 +188,22 @@ describe("world substrate + reusable lifetime composition helpers", () => {
       if (a.kind === "submitted" && b.kind === "merged") return { kind: "block", reason: "not approved" };
       return { kind: "advance" };
     });
-    const world = registerLifetimePair(
-      EMPTY_WORLD,
-      "workflow-review",
-      matrix,
-    );
+    const world = registerLifetimePair(EMPTY_WORLD, "workflow-review", matrix);
 
     // Test multiple dispatch lookups
     const advanceResult = dispatchInWorld<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
-      world, "workflow-review",
-      { kind: "submitted" } as WorkflowLifetime, { kind: "in-review" } as ReviewLifetime,
+      world,
+      "workflow-review",
+      { kind: "submitted" } as WorkflowLifetime,
+      { kind: "in-review" } as ReviewLifetime,
     );
     expect(advanceResult.ok).toBe(true);
 
     const completeResult = dispatchInWorld<WorkflowLifetime, ReviewLifetime, StandardVerdict>(
-      world, "workflow-review",
-      { kind: "approved" } as WorkflowLifetime, { kind: "merged" } as ReviewLifetime,
+      world,
+      "workflow-review",
+      { kind: "approved" } as WorkflowLifetime,
+      { kind: "merged" } as ReviewLifetime,
     );
     expect(completeResult.ok).toBe(true);
   });
@@ -238,20 +212,14 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     interface EncryptionLifetime extends LifetimeState {
       readonly kind: "plain" | "encrypted" | "sealed";
     }
-    const encryptionUniverse: EncryptionLifetime[] = [
-      { kind: "plain" }, { kind: "encrypted" }, { kind: "sealed" },
-    ];
+    const encryptionUniverse: EncryptionLifetime[] = [{ kind: "plain" }, { kind: "encrypted" }, { kind: "sealed" }];
 
     const wrMatrix = defaultAdvanceMatrix(workflowUniverse, reviewUniverse);
     const weMatrix = defaultAdvanceMatrix(workflowUniverse, encryptionUniverse);
 
     let world = EMPTY_WORLD;
-    world = registerLifetimePair(
-      world, "workflow-review", wrMatrix,
-    );
-    world = registerLifetimePair(
-      world, "workflow-encryption", weMatrix,
-    );
+    world = registerLifetimePair(world, "workflow-review", wrMatrix);
+    world = registerLifetimePair(world, "workflow-encryption", weMatrix);
 
     expect(world.registry.size).toBe(2);
     expect(world.registry.has("workflow-review")).toBe(true);
@@ -296,10 +264,14 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     // Exhaustive switch over WorldTransitionFeedback variants
     const summarize = (fb: WorldTransitionFeedback): string => {
       switch (fb.kind) {
-        case "UnregisteredPair": return `unregistered:${fb.pairName}`;
-        case "UndefinedComposedTransition": return `undefined-composed:${fb.composedKey}`;
-        case "InvalidStateA": return `invalid-a:${fb.reason}`;
-        case "InvalidStateB": return `invalid-b:${fb.reason}`;
+        case "UnregisteredPair":
+          return `unregistered:${fb.pairName}`;
+        case "UndefinedComposedTransition":
+          return `undefined-composed:${fb.composedKey}`;
+        case "InvalidStateA":
+          return `invalid-a:${fb.reason}`;
+        case "InvalidStateB":
+          return `invalid-b:${fb.reason}`;
       }
     };
     expect(summarize(result.feedback)).toBe("unregistered:nonexistent-pair");

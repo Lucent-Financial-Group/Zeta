@@ -72,9 +72,7 @@ switch (command) {
       "00:00:30",
     ]);
     run("dotnet-trace", ["convert", "--format", "speedscope", "trace.nettrace"]);
-    process.stdout.write(
-      "Open trace.speedscope.json at https://www.speedscope.app\n",
-    );
+    process.stdout.write("Open trace.speedscope.json at https://www.speedscope.app\n");
     break;
   }
 
@@ -112,17 +110,13 @@ switch (command) {
         "/p:CollectCoverage=true",
         "/p:CoverletOutputFormat=cobertura",
         "/p:CoverletOutput=./TestResults/",
-        '/p:Exclude=[Dbsp.Tests.*]*',
+        "/p:Exclude=[Dbsp.Tests.*]*",
       ],
       repoRoot(),
     );
     run(
       "reportgenerator",
-      [
-        "-reports:tests/**/TestResults/coverage.cobertura.xml",
-        "-targetdir:./coverage-report",
-        "-reporttypes:Html",
-      ],
+      ["-reports:tests/**/TestResults/coverage.cobertura.xml", "-targetdir:./coverage-report", "-reporttypes:Html"],
       repoRoot(),
     );
     process.stdout.write("Coverage HTML at ./coverage-report/index.html\n");
@@ -138,7 +132,6 @@ switch (command) {
   bun tools/profile.ts bench [filter]     # BenchmarkDotNet run with memory diagnoser
   bun tools/profile.ts coverage           # run tests with coverage, emit HTML
 `);
-    if (command !== "" && command !== "-h" && command !== "--help")
-      process.exit(64);
+    if (command !== "" && command !== "-h" && command !== "--help") process.exit(64);
     break;
 }

@@ -4,6 +4,7 @@ description: Session-open check — is /loop running? If not and user hasn't exp
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 The Zeta software factory should **always have `/loop` running** unless
 Aaron has explicitly requested it off. The factory should check at
 session-open / round-open and prompt to turn it on if it's off.
@@ -15,6 +16,7 @@ for autonomous execution; loop-off is the exception that requires an
 explicit ask.
 
 **How to apply:**
+
 - At session open / round open, **call `CronList` first** to see
   whether the loop is already running (it usually is — a prior
   session may have armed it). Only take action if no autonomous /
@@ -30,9 +32,9 @@ explicit ask.
   - `ScheduleWakeup` with `prompt: "<<autonomous-loop-dynamic>>"` —
     one-shot self-pacing (each fire reschedules). Also session-
     bounded.
-  Verified 2026-04-20: runtime accepts both sentinels without
-  governance or rule-level block. My earlier claim "agents cannot
-  start it themselves" was wrong — I hadn't tried.
+    Verified 2026-04-20: runtime accepts both sentinels without
+    governance or rule-level block. My earlier claim "agents cannot
+    start it themselves" was wrong — I hadn't tried.
 - If Aaron has durable-policy-said "loop off" in this session,
   respect that — do not re-prompt every turn.
 - Treat "is loop on?" as a cold-start question on the same level as

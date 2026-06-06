@@ -44,6 +44,7 @@ A single tick shard at `docs/hygiene-history/ticks/2026/05/14/0052Z.md` document
 Docs-only PR adding a per-tick hygiene-history shard capturing the 2026-05-14 00:52Z autonomous-loop tick, including the discovery that PR #3074 review fixes had already landed via a concurrent tick and the resulting “real-dependency-wait” status for PRs #3074 and #3075.
 
 **Changes:**
+
 - Added a new tick shard documenting refresh state, triage rationale, and the concurrent-landing outcome.
 - Recorded the cron sentinel arming + post-landing holding status guidance for the next tick.
 
@@ -53,4 +54,4 @@ Docs-only PR adding a per-tick hygiene-history shard capturing the 2026-05-14 00
 
 **@copilot-pull-request-reviewer** (2026-05-14T00:58:39Z):
 
-P1: This tick shard uses YAML frontmatter + headings, but repo tooling/docs still treat tick shards as single-row pipe tables. For example, `tools/hygiene/check-tick-history-shard-schema.ts` and `tools/hygiene/check-no-op-cadence-pattern.ts` both read the *first non-empty line* and expect it to be a `| ... |` row; starting the file with `---` will make this shard fail the schema checker and be misclassified as a minimal-observation shard. Either convert this shard back to the pipe-row format, or update the schema/tooling to explicitly support frontmatter+body shards (e.g., have the tools skip YAML frontmatter and locate the first `|` row).
+P1: This tick shard uses YAML frontmatter + headings, but repo tooling/docs still treat tick shards as single-row pipe tables. For example, `tools/hygiene/check-tick-history-shard-schema.ts` and `tools/hygiene/check-no-op-cadence-pattern.ts` both read the _first non-empty line_ and expect it to be a `| ... |` row; starting the file with `---` will make this shard fail the schema checker and be misclassified as a minimal-observation shard. Either convert this shard back to the pipe-row format, or update the schema/tooling to explicitly support frontmatter+body shards (e.g., have the tools skip YAML frontmatter and locate the first `|` row).

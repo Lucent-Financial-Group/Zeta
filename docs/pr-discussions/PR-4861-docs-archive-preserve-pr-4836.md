@@ -27,6 +27,7 @@ This PR preserves the discussion from PR #4836.
 This PR adds preserved PR-discussion archives under `docs/pr-discussions/`, intended to keep the discussion and review context from PR #4836 available in-repo for future auditing.
 
 **Changes:**
+
 - Adds a new preserved discussion archive for PR #4836 (tick 2026-05-24/1608Z).
 - Adds an additional preserved discussion archive for PR #4853 (shard 2026-05-24/1902Z).
 
@@ -34,9 +35,9 @@ This PR adds preserved PR-discussion archives under `docs/pr-discussions/`, inte
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | Adds a PR-discussion archive for PR #4853, including metadata and preserved review threads. |
+| File                                                                                        | Description                                                                                      |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | Adds a PR-discussion archive for PR #4853, including metadata and preserved review threads.      |
 | docs/pr-discussions/PR-4836-tick-2026-05-24-1608z-dotgit-saturation-15th-observation-2nd.md | Adds a PR-discussion archive for PR #4836, including metadata and preserved Codex review thread. |
 
 ### COMMENTED — @AceHack (2026-05-25T08:57:41Z)

@@ -10,14 +10,14 @@ load-bearing claim that what survives the process is **by
 definition anti-fragile AND canonical** — not two separate
 properties, one property described two ways.
 
-> *"what is canonical you may ask what ever is left after
+> _"what is canonical you may ask what ever is left after
 > anchoring to human lineage and then categorizing and
 > ontological mapping and all those other dimensional mapping
 > techniques then use rodney razor to simplify to it's root
-> essence."*
+> essence."_
 > — Aaron 2026-04-30
 
-> *"what's left is by definition anti-fragile and canonical."*
+> _"what's left is by definition anti-fragile and canonical."_
 > — Aaron 2026-04-30 (immediate extension)
 
 ## The three-step derivation process
@@ -66,7 +66,7 @@ operating Rodney's Razor on shipped artifacts and Quantum
 Rodney's Razor on pending decisions) cuts away the accidental
 complexity, leaving only the essential. From the
 `maintainability-reviewer` and `reducer` substrate:
-*"essential vs. accidental cut."*
+_"essential vs. accidental cut."_
 
 Applied to a candidate concept post-mapping:
 
@@ -103,7 +103,7 @@ remains).
 
 That same survivor IS the canonical form. There is no
 separate property "is canonical" beyond having survived the
-derivation. Canonicity is the *trace*, not a *label*.
+derivation. Canonicity is the _trace_, not a _label_.
 
 This is per Taleb (anti-fragility lineage anchor): things
 that gain from disorder. Canonical-via-this-process is exactly
@@ -139,7 +139,7 @@ absorbed the new stress).
 ## What this rule does NOT mean
 
 - Does NOT mean every concept gets the full three-step
-  treatment. The derivation is for *load-bearing* concepts
+  treatment. The derivation is for _load-bearing_ concepts
   that will be substrate. Routine implementation choices
   don't need the full ceremony.
 - Does NOT mean external lineage is the only valid source.
@@ -147,7 +147,7 @@ absorbed the new stress).
   explicitly-flagged-as-novel, with the synthesis path
   documented in lieu of pre-existing lineage.
 - Does NOT mean Rodney's Razor cuts everything to one-liners.
-  The razor cuts *accidental* complexity; essential
+  The razor cuts _accidental_ complexity; essential
   complexity (e.g., the multi-step nature of this rule
   itself) survives.
 - Does NOT replace the canon-not-doctrine vocabulary
@@ -168,8 +168,8 @@ absorbed the new stress).
   derivation.
 - `memory/feedback_best_practices_evidence_lineage_survival_substrate_aaron_amara_2026_04_29.md`
   — best-practices = evidence + human lineage + Zeta-native
-  + enforcement + teaching. The lineage component of that
-  rule is exactly step 1 here.
+  - enforcement + teaching. The lineage component of that
+    rule is exactly step 1 here.
 - `memory/feedback_otto_362_doctrine_memory_expansion_refresh_stale_statements_same_edit_2026_04_29.md`
   — same-tick refresh for stale statements. Canonical-drift
   detection (step 5 of "How to apply") composes with that
@@ -186,14 +186,14 @@ absorbed the new stress).
 
 ## Carved sentences
 
-*"Canonical is derived, not declared. The trace is the
+_"Canonical is derived, not declared. The trace is the
 substrate; the label without the trace is a claim, not a
-demonstration."*
+demonstration."_
 
-*"Anchor to human lineage. Map ontologically. Apply Rodney's
+_"Anchor to human lineage. Map ontologically. Apply Rodney's
 Razor. What survives is by definition anti-fragile AND
-canonical — one property, described two ways."*
+canonical — one property, described two ways."_
 
-*"Anti-fragility is the certification, not the goal. The
+_"Anti-fragility is the certification, not the goal. The
 goal is survival of the derivation; anti-fragility is what
-that survival looks like under future stressors."*
+that survival looks like under future stressors."_

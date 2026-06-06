@@ -26,11 +26,11 @@ discipline: persona-scope archive — homelab-first gh-auth-login device registr
 
 **Production mode (LATER)**: ship USB with a very restricted "bootstrap key" / "registration key" scoped to register-only. Immediately after first registration succeeds, rotate to per-node identity with correct limited permissions.
 
-The two modes use DIFFERENT USBs (different flakes / different installer ISOs) — Aaron explicitly: *"No, it doesn't have to be the same USB. We could totally have different flakes. I mean, different USBs for different, um, different audiences. But home lab is what I'm going for first, not production."*
+The two modes use DIFFERENT USBs (different flakes / different installer ISOs) — Aaron explicitly: _"No, it doesn't have to be the same USB. We could totally have different flakes. I mean, different USBs for different, um, different audiences. But home lab is what I'm going for first, not production."_
 
 ## Aaron's standing direction for next iteration
 
-> *"we should do it like this for gh and device registration the simple homelab way first but like prod later"*
+> _"we should do it like this for gh and device registration the simple homelab way first but like prod later"_
 
 This is the directive — implement homelab-mode gh-auth-login + self-registration substrate next; defer production-mode bootstrap-key-rotation pattern.
 
@@ -158,7 +158,7 @@ The substrate landed today is THE foundation the homelab-mode-first registration
 
 ## Substrate-honest framing
 
-This conversation IS the architectural input for iter-5.4 implementation work. Aaron's standing direction (*"we should do it like this for gh and device registration the simple homelab way first but like prod later"*) is the authorization for shipping the homelab-mode gh-auth-login substrate as the next iteration AFTER the current iter-5.x USB substrate validates empirically on PC1.
+This conversation IS the architectural input for iter-5.4 implementation work. Aaron's standing direction (_"we should do it like this for gh and device registration the simple homelab way first but like prod later"_) is the authorization for shipping the homelab-mode gh-auth-login substrate as the next iteration AFTER the current iter-5.x USB substrate validates empirically on PC1.
 
 Order of operations:
 

@@ -25,13 +25,13 @@ The launchd daemon configuration plists (under `~/Library/LaunchAgents/com.zeta-
 
 The background runner logic for all active personas must follow this standard handoff loop:
 
-| Stage | Action | Rationale |
-|---|---|---|
-| **Daemon Boot** | macOS launchd invokes `bun <isolated_clone>/.<agent>/bin/<agent>-loop-tick.ts` | Branch checkouts in the primary directory `/Users/acehack/Documents/src/repos/Zeta` will never overwrite the script file on disk. |
-| **Workspace Isolation** | `WorkingDirectory` is set to `<isolated_clone>` | Ensures all relative process lookups and execution scopes default to the sandboxed clone. |
-| **Handoff & Verification** | Daemon polls GitHub API for open PRs and issues (`gh pr list`) | Reads live status directly from the remote origin rather than local status. |
-| **PR & Comment Resolution** | Create/Update branch via isolated detached worktree (`git worktree add --detach <path> origin/main`) | Keeps the sandboxed clone clean and ensures zero state leaks or branch locks on the primary checkout. |
-| **Auto-Merge Settlement** | Commits pushed to origin to trigger CI and auto-merge | Eliminates PR approval friction and bypasses local self-modification blocks. |
+| Stage                       | Action                                                                                               | Rationale                                                                                                                         |
+| --------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Daemon Boot**             | macOS launchd invokes `bun <isolated_clone>/.<agent>/bin/<agent>-loop-tick.ts`                       | Branch checkouts in the primary directory `/Users/acehack/Documents/src/repos/Zeta` will never overwrite the script file on disk. |
+| **Workspace Isolation**     | `WorkingDirectory` is set to `<isolated_clone>`                                                      | Ensures all relative process lookups and execution scopes default to the sandboxed clone.                                         |
+| **Handoff & Verification**  | Daemon polls GitHub API for open PRs and issues (`gh pr list`)                                       | Reads live status directly from the remote origin rather than local status.                                                       |
+| **PR & Comment Resolution** | Create/Update branch via isolated detached worktree (`git worktree add --detach <path> origin/main`) | Keeps the sandboxed clone clean and ensures zero state leaks or branch locks on the primary checkout.                             |
+| **Auto-Merge Settlement**   | Commits pushed to origin to trigger CI and auto-merge                                                | Eliminates PR approval friction and bypasses local self-modification blocks.                                                      |
 
 ## Consequences
 

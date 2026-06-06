@@ -9,10 +9,10 @@ created: 2026-05-17T08:20Z
 
 ## The data point
 
-| Source | Timestamp | Edges | Unique dangling | Surfaces with edges |
-|---|---|---|---|---|
-| Catalog memo (PR #4046 substrate) | 2026-05-17T04:30Z | 47 | (n/a) | 6 (including `.claude/agents`) |
-| Audit tool run (autonomous-loop, this session) | 2026-05-17T08:17Z | 49 | 35 | 5 (`.claude/agents` now 0) |
+| Source                                         | Timestamp         | Edges | Unique dangling | Surfaces with edges            |
+| ---------------------------------------------- | ----------------- | ----- | --------------- | ------------------------------ |
+| Catalog memo (PR #4046 substrate)              | 2026-05-17T04:30Z | 47    | (n/a)           | 6 (including `.claude/agents`) |
+| Audit tool run (autonomous-loop, this session) | 2026-05-17T08:17Z | 49    | 35              | 5 (`.claude/agents` now 0)     |
 
 **Net change**: +2 edges, ~3.5h elapsed. One surface emptied; new edges
 appeared in other surfaces. The 35-unique-dangling headline from the
@@ -20,14 +20,14 @@ B-0611 row remains accurate at session-current state.
 
 ## By-surface breakdown (audit tool, 08:17Z)
 
-| Surface | Edges | Unique dangling | Files scanned |
-|---|---|---|---|
-| `.claude/skills` | 1 | 1 | 262 |
-| `.claude/rules` | 5 | 5 | 56 |
-| `docs/research` | 9 | 8 | 355 |
-| `docs/backlog` | 24 | 17 | 675 |
-| `memory/persona` | 10 | 4 | 288 |
-| **Total** | **49** | **35** | **1636** |
+| Surface          | Edges  | Unique dangling | Files scanned |
+| ---------------- | ------ | --------------- | ------------- |
+| `.claude/skills` | 1      | 1               | 262           |
+| `.claude/rules`  | 5      | 5               | 56            |
+| `docs/research`  | 9      | 8               | 355           |
+| `docs/backlog`   | 24     | 17              | 675           |
+| `memory/persona` | 10     | 4               | 288           |
+| **Total**        | **49** | **35**          | **1636**      |
 
 `docs/backlog` carries the largest share (17 / 35 = 49% of unique
 dangling refs) — consistent with slice 4 of the recipe memos

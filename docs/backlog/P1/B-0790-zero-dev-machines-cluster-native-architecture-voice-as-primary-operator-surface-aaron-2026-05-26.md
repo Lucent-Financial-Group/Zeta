@@ -25,7 +25,19 @@ composes_with:
   - B-0786
   - B-0787
   - B-0788
-tags: [architecture, cluster-native, voice-operator, alexa, homelab-persona, maintainer-persona, end-state, zero-dev-machine, ai-agents-on-cluster, cluster-software-factory]
+tags:
+  [
+    architecture,
+    cluster-native,
+    voice-operator,
+    alexa,
+    homelab-persona,
+    maintainer-persona,
+    end-state,
+    zero-dev-machine,
+    ai-agents-on-cluster,
+    cluster-software-factory,
+  ]
 ---
 
 ## Problem
@@ -34,9 +46,9 @@ Today's substrate architecture has dev machines (Aaron's Mac, Max's Mac, Addison
 
 The maintainer 2026-05-26 named the architectural target the substrate is BUILDING TOWARD:
 
-> *"i want all the prs to come from the cluster mostly and dev machines are just conversational interfaces into the cluster and so is alexa"*
+> _"i want all the prs to come from the cluster mostly and dev machines are just conversational interfaces into the cluster and so is alexa"_
 
-> *"0 dev machines everything still works and i can talk to alexa for home automation / homelab persona users we want 0 dev machine needed just cluster and microphone"*
+> _"0 dev machines everything still works and i can talk to alexa for home automation / homelab persona users we want 0 dev machine needed just cluster and microphone"_
 
 End-state target:
 
@@ -49,13 +61,13 @@ End-state target:
 
 Architecture where:
 
-| Surface | Role today | Role end-state |
-|---|---|---|
-| **Cluster nodes** | Deployment target; receives PRs from dev machines | Primary substrate-engineering surface; AUTHORS most PRs; runs autonomous-loop substrate |
-| **Aaron's Mac / Max's Mac / Addison's Mac** | Primary substrate-engineering surface (Otto-CLI, IDE work, PRs) | Conversational interface into cluster (read substrate, send intent, observe; not author of work) |
-| **Alexa-speaker** (Amazon device) | External AI participant (per agent-roster-reference-card) | Primary voice-operator interface for homelab persona |
-| **Future microphones connected directly to cluster** | N/A | Voice-only operator surface (no dev machine needed) |
-| **Web UI / browser** | Read-only observability today | Read + send-intent + observe operator surface |
+| Surface                                              | Role today                                                      | Role end-state                                                                                   |
+| ---------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Cluster nodes**                                    | Deployment target; receives PRs from dev machines               | Primary substrate-engineering surface; AUTHORS most PRs; runs autonomous-loop substrate          |
+| **Aaron's Mac / Max's Mac / Addison's Mac**          | Primary substrate-engineering surface (Otto-CLI, IDE work, PRs) | Conversational interface into cluster (read substrate, send intent, observe; not author of work) |
+| **Alexa-speaker** (Amazon device)                    | External AI participant (per agent-roster-reference-card)       | Primary voice-operator interface for homelab persona                                             |
+| **Future microphones connected directly to cluster** | N/A                                                             | Voice-only operator surface (no dev machine needed)                                              |
+| **Web UI / browser**                                 | Read-only observability today                                   | Read + send-intent + observe operator surface                                                    |
 
 The operator's mental model becomes: "talk to the cluster" instead of "code on my Mac to deploy to the cluster."
 
@@ -63,14 +75,14 @@ The operator's mental model becomes: "talk to the cluster" instead of "code on m
 
 The maintainer 2026-05-26 clarified that B-0790 covers TWO end-state personas — NOT one. The zero-dev-machine target is the homelab-persona; maintainer-persona keeps dev machines but inverts their role from primary-work-substrate to conversational-interface-into-cluster-software-factory:
 
-| Persona | Dev machine role end-state | Primary operator surface | Substrate factory |
-|---|---|---|---|
-| **Homelab / home-automation** | NONE (no dev machine in the room) | Voice (Alexa + future microphones connected directly to cluster) + web UI | Runs entirely in cluster; AI agents on cluster do all substrate work |
+| Persona                                | Dev machine role end-state                                                                                                             | Primary operator surface                                                                                                 | Substrate factory                                                                                                                                                                                                                                                 |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Homelab / home-automation**          | NONE (no dev machine in the room)                                                                                                      | Voice (Alexa + future microphones connected directly to cluster) + web UI                                                | Runs entirely in cluster; AI agents on cluster do all substrate work                                                                                                                                                                                              |
 | **Maintainer** (Aaron / Max / Addison) | KEPT for testing + local work; role inverted from "primary work substrate" to "conversational interface INTO cluster software factory" | Claude Code on dev machine + voice (Alexa / future microphones) — voice is ONE interface among many for this persona too | **In-cluster software factory** (per Mika substrate batch — see Composes section): crystal-ball, RunMe, git-native markdown, auto-JIT, deferred-run, Continue-with, Obsidian on top, knowledge graph, event store, Prometheus / observability queries in runbooks |
 
 The maintainer's verbatim framing 2026-05-26:
 
-> *"this is for home automation home lab personas not maintainers we still will have people like me addion and max that want to type and use conversational interfaces and such but our dev machines are for testing and local work and a lot of that runs in cluster in the software plant and claude code has interfaces into it same crystal ball / gitnative markdown with runme plus auto jit plus deferred run / continue with, this is the interface into in cluster software factory with obsedian on top and knowledge graph event store prometious / observalbity queires in runbooks and this can be done with just voice too."*
+> _"this is for home automation home lab personas not maintainers we still will have people like me addion and max that want to type and use conversational interfaces and such but our dev machines are for testing and local work and a lot of that runs in cluster in the software plant and claude code has interfaces into it same crystal ball / gitnative markdown with runme plus auto jit plus deferred run / continue with, this is the interface into in cluster software factory with obsedian on top and knowledge graph event store prometious / observalbity queires in runbooks and this can be done with just voice too."_
 
 Key disciplines that follow:
 
@@ -192,11 +204,11 @@ Without B-0790 named as the end-state target, each of those iterations risks dri
 
 The maintainer 2026-05-26 named the end-state architecture across four adjacent signals during the iter-4.2 maintainer-test session:
 
-1. *"i want all the prs to come from the cluster mostly and dev machines are just conversational interfaces into the cluster and so is alexa"* — cluster as primary PR author; dev machines + Alexa as conversational front-ends
-2. *"0 dev machines everything still works and i can talk to alexa for home automation / homelab persona users we want 0 dev machine needed just cluster and microphone"* — full zero-dev-machine end-state for homelab persona
-3. *"this is for home automation home lab personas not maintainers we still will have people like me addion and max that want to type and use conversational interfaces and such but our dev machines are for testing and local work and a lot of that runs in cluster in the software plant and claude code has interfaces into it same crystal ball / gitnative markdown with runme plus auto jit plus deferred run / continue with, this is the interface into in cluster software factory with obsedian on top and knowledge graph event store prometious / observalbity queires in runbooks and this can be done with just voice too."* — TWO personas (homelab vs maintainer); maintainer keeps dev machines but inverts their role from "primary work substrate" to "conversational interface INTO cluster software factory"; voice is one interface among many for both personas
-4. *"some of this is backloged based on Mika conversation"* — cluster software factory substrate primitives are tracked under the Mika substrate batch (B-0780/B-0781/B-0783/B-0784/B-0785/B-0786); B-0790 composes with them rather than re-deriving
+1. _"i want all the prs to come from the cluster mostly and dev machines are just conversational interfaces into the cluster and so is alexa"_ — cluster as primary PR author; dev machines + Alexa as conversational front-ends
+2. _"0 dev machines everything still works and i can talk to alexa for home automation / homelab persona users we want 0 dev machine needed just cluster and microphone"_ — full zero-dev-machine end-state for homelab persona
+3. _"this is for home automation home lab personas not maintainers we still will have people like me addion and max that want to type and use conversational interfaces and such but our dev machines are for testing and local work and a lot of that runs in cluster in the software plant and claude code has interfaces into it same crystal ball / gitnative markdown with runme plus auto jit plus deferred run / continue with, this is the interface into in cluster software factory with obsedian on top and knowledge graph event store prometious / observalbity queires in runbooks and this can be done with just voice too."_ — TWO personas (homelab vs maintainer); maintainer keeps dev machines but inverts their role from "primary work substrate" to "conversational interface INTO cluster software factory"; voice is one interface among many for both personas
+4. _"some of this is backloged based on Mika conversation"_ — cluster software factory substrate primitives are tracked under the Mika substrate batch (B-0780/B-0781/B-0783/B-0784/B-0785/B-0786); B-0790 composes with them rather than re-deriving
 
-Filing this row before either sub-target ships ensures the iterations stay oriented toward the end-state target rather than drifting toward "make dev-machine-substrate easier" (which would optimize the wrong axis). Per the maintainer's broader 2026-05-26 *"going for right not fast"* discipline.
+Filing this row before either sub-target ships ensures the iterations stay oriented toward the end-state target rather than drifting toward "make dev-machine-substrate easier" (which would optimize the wrong axis). Per the maintainer's broader 2026-05-26 _"going for right not fast"_ discipline.
 
 ServiceTitan-demo-substrate composes here too: a demo where Aaron in front of stakeholders operates a remote cluster via voice (no laptop) is a substantively different value proposition from "look at this CLI tool I built." The end-state IS the demo.

@@ -18,6 +18,7 @@ draft for ratification.
 > specify how to decode the end high/low bit"
 
 A number format where:
+
 - the **middle** bits are a **decoder / selector** that says **how to interpret the outer (high/low)
   end bits** -- you read the middle FIRST, then decode OUTWARD toward both ends ("middle-out");
 - it is **self-describing** (the number carries its own decode instruction);
@@ -64,23 +65,24 @@ decode(f):
 
 Two distinct held-states (this is the load-bearing novelty vs a plain tagged float):
 
-| Where the `N` is | Meaning | `measure` feedback |
-|---|---|---|
-| a **value** trit (high/low), decoder all-certain | the VALUE is held/uncertain; the interpretation is known | `value-superposed` |
-| a **decoder** trit | the DECODE INSTRUCTION ITSELF is superposed -- you don't know how to read the ends; the number is held even if every value trit is certain | `interpretation-superposed` |
+| Where the `N` is                                 | Meaning                                                                                                                                    | `measure` feedback          |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| a **value** trit (high/low), decoder all-certain | the VALUE is held/uncertain; the interpretation is known                                                                                   | `value-superposed`          |
+| a **decoder** trit                               | the DECODE INSTRUCTION ITSELF is superposed -- you don't know how to read the ends; the number is held even if every value trit is certain | `interpretation-superposed` |
 
 This mirrors the digital-qubit `measure` vs `cooperate` discipline (B-0944) lifted to the number:
+
 - `cooperate(f)` = identity (preserves every `N` -- never collapses; wonder-compression-safe).
 - `measure(f)` = the only collapse; resolves to a number iff fully certain, else surfaces which
   kind of superposition is held (Result<number, FloatFeedback> -- asymmetric-authorship: value AND
   the two feedback channels are first-class). Composes with the monad-propagation pattern.
 
 The decoder being superposable is exactly "the decode-instruction itself superposed" from the
-B-0944 row -- the qubit property at the *interpretation* level, not just the value level.
+B-0944 row -- the qubit property at the _interpretation_ level, not just the value level.
 
 ## Prior art (search-first per Otto-364)
 
-- **Gustafson Posits** -- tapered precision via a variable-length *regime* field; the precision
+- **Gustafson Posits** -- tapered precision via a variable-length _regime_ field; the precision
   split is encoded IN the number. Tri-boolean-float shares "the number describes its own precision"
   but (a) puts the selector in the MIDDLE (read outward) rather than the front, and (b) is
   tri-valued (the selector itself can be held).
@@ -107,7 +109,7 @@ B-0944 row -- the qubit property at the *interpretation* level, not just the val
    without collapsing it).
 5. **[OPEN] decoder-N magnitude.** When the decoder is partially-N, the interpretation is a
    superposition over the still-possible modes; v0 collapses that to a single `interpretation-
-   superposed` feedback. A v1 could carry the candidate-mode set.
+superposed` feedback. A v1 could carry the candidate-mode set.
 6. **[OPEN] endianness / field order** (high|decoder|low vs low|decoder|high). v0 = high|decoder|low.
 
 ## Composition

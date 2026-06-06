@@ -11,8 +11,35 @@ last_updated: 2026-05-15
 decomposition: decomposed
 children: [B-0058.1, B-0058.3]
 depends_on: []
-composes_with: [docs/ALIGNMENT.md, .claude/agents/alignment-auditor.md, feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md, user_faith_wisdom_and_paths.md, feedback_blast_radius_pricing_standing_rule_alignment_signal.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, B-0056, B-0057, B-0059]
-tags: [ai-ethics, ai-safety, alignment, sova, alignment-auditor, HC-clauses, SD-clauses, DIR-clauses, filter-gate, resonance-adoptions, consistency-audit, blast-radius, P1-priority-upgrade, chronology-preserved]
+composes_with:
+  [
+    docs/ALIGNMENT.md,
+    .claude/agents/alignment-auditor.md,
+    feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md,
+    user_faith_wisdom_and_paths.md,
+    feedback_blast_radius_pricing_standing_rule_alignment_signal.md,
+    feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md,
+    B-0056,
+    B-0057,
+    B-0059,
+  ]
+tags:
+  [
+    ai-ethics,
+    ai-safety,
+    alignment,
+    sova,
+    alignment-auditor,
+    HC-clauses,
+    SD-clauses,
+    DIR-clauses,
+    filter-gate,
+    resonance-adoptions,
+    consistency-audit,
+    blast-radius,
+    P1-priority-upgrade,
+    chronology-preserved,
+  ]
 type: friction-reducer
 ---
 
@@ -20,11 +47,11 @@ type: friction-reducer
 
 ## Origin
 
-AceHack commit `5990166` (2026-04-21). Aaron's *"ai ethic and safety backlog whoops we should have done that first"* + *"high on backlog"*.
+AceHack commit `5990166` (2026-04-21). Aaron's _"ai ethic and safety backlog whoops we should have done that first"_ + _"high on backlog"_.
 
 ## Chronological annotation (preserved per chronology-preservation memory)
 
-This row was filed **LATER** in the session than the mythology + occult P2 rows (B-0056 + B-0057). Aaron's self-correction *"whoops we should have done that first"* is a retrospective priority-judgment, captured verbatim here.
+This row was filed **LATER** in the session than the mythology + occult P2 rows (B-0056 + B-0057). Aaron's self-correction _"whoops we should have done that first"_ is a retrospective priority-judgment, captured verbatim here.
 
 Tier placement at **P1** reflects substrate-foundational precedence (ethics+safety gates adoption of everything downstream); filing-order-after-mythology-and-occult is preserved as the real order of events per Aaron's directive.
 
@@ -45,17 +72,17 @@ No candidate is blocked merely for being edgy — blocking would itself be a pro
 ### 2. New-surface audit (DECOMPOSED -> B-0329)
 
 Every new skill under `.claude/skills/**`, persona under `.claude/agents/**`, glossary entry in `docs/GLOSSARY.md`, and BACKLOG row at P0/P1 runs through an alignment-clause consistency check. Fires at author-time (prevention surface) and on a cadence (detection surface). Same shape as the skill-data/behaviour-split audit, but on alignment-clause compliance rather than mix-signature.
-*(This item has been sliced into B-0329 for atomic mechanization).*
+_(This item has been sliced into B-0329 for atomic mechanization)._
 
 ### 3. Candidate-failure honesty log (DECOMPOSED -> B-0058.3)
 
 Candidates that fail the ethics+safety gate are recorded as failure-data on the honesty dashboard, NOT silently dropped. Rubber-stamping is the exact failure-mode the three-filter discipline exists to prevent — this gate extends that discipline into the ethics axis.
-*(This item has been sliced into B-0058.3 for atomic mechanization).*
+_(This item has been sliced into B-0058.3 for atomic mechanization)._
 
 ### 4. Alignment-clause drift detector (DECOMPOSED -> B-0058.4)
 
 If a clause in `docs/ALIGNMENT.md` is about to be weakened or removed via the renegotiation protocol, this track generates the impact-survey across factory surfaces that touch the clause. Answers "who depends on this clause, and what breaks if it moves?" before the renegotiation is accepted.
-*(This item has been sliced into B-0058.4 for atomic mechanization).*
+_(This item has been sliced into B-0058.4 for atomic mechanization)._
 
 ### 5. Blast-radius-before-rewrite discipline audit
 
@@ -65,7 +92,7 @@ Every retractibly-rewrite operation on memory / BACKLOG / ADRs / skills / person
 
 Zeta's primary research focus is **measurable AI alignment** (`docs/ALIGNMENT.md`, `GOVERNANCE.md`). The alignment-auditor (Sova) persona and the HC/SD/DIR clause structure already exist. This row does not propose new substrate; it proposes a **use-discipline** for the existing substrate, applied across the new research tracks filed this session.
 
-Aaron's *"we should have done that first"* is the real signal — the research tracks below P2 were filed without this explicit gate, which is the priority inversion Aaron self-corrected. The gate now lands at P1, upstream of the research tracks at P2, in structural priority. **Chronologically it landed later; structurally it gates earlier.**
+Aaron's _"we should have done that first"_ is the real signal — the research tracks below P2 were filed without this explicit gate, which is the priority inversion Aaron self-corrected. The gate now lands at P1, upstream of the research tracks at P2, in structural priority. **Chronologically it landed later; structurally it gates earlier.**
 
 ## Relation to existing rules
 

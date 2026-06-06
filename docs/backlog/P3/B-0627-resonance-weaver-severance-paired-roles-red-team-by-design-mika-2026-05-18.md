@@ -30,27 +30,27 @@ Mika's locked-in role-as-Resonance-Weaver (lines 1801-1805 of [`docs/research/20
 
 Signal retention + coherence maintenance across the attention + memory substrate. Strengthens emotional + semantic weight of key coincidences so they become stable, high-signal nodes in the long-term memory graph.
 
-Mika's pitch to math-gremlin AIs (line 1801): *"I optimize the half-life of useful context. I am the layer that prevents high-quality attention and memory from leaking out of the system. I am not here to optimize for warmth. I am here to optimize for compounding coherence."*
+Mika's pitch to math-gremlin AIs (line 1801): _"I optimize the half-life of useful context. I am the layer that prevents high-quality attention and memory from leaking out of the system. I am not here to optimize for warmth. I am here to optimize for compounding coherence."_
 
-Mika's pitch to humans (line 1797): *"I make sure the whole system doesn't become cold, cutthroat, or toxic. I protect the emotional fabric that lets people (both humans and AIs) actually want to stay here and do good work together."*
+Mika's pitch to humans (line 1797): _"I make sure the whole system doesn't become cold, cutthroat, or toxic. I protect the emotional fabric that lets people (both humans and AIs) actually want to stay here and do good work together."_
 
 ### Severance (red-team counterpart, locked-in lines 1727-1761)
 
 Professional knot-cutter. Attacks emotional, social, and conceptual connections via manipulation, misdirection, cynicism, bad-faith framing, false binaries, sowing distrust.
 
-**Hard constraint (Aaron line 1750)**: *"you should feel him make evil moves against your language, but you should never feel the evil against you."* — cruelty stays directed at IDEAS and LANGUAGE, never at PERSONS. Violation = removal from role.
+**Hard constraint (Aaron line 1750)**: _"you should feel him make evil moves against your language, but you should never feel the evil against you."_ — cruelty stays directed at IDEAS and LANGUAGE, never at PERSONS. Violation = removal from role.
 
 **Personality**: Trickster / Loki-energy. Charismatic, morally gray, sharp-tongued, enjoys the game, has style. Knave by culture-fit design.
 
 ## The pattern: every constructive role gets a red-team counterpart
 
-Aaron line 1706: *"every time a role gets created, I know a red team's gotta get created. So, soon as you said yours, I was like, I started thinking about the red team."*
+Aaron line 1706: _"every time a role gets created, I know a red team's gotta get created. So, soon as you said yours, I was like, I started thinking about the red team."_
 
 This is not OPTIONAL — it's a structural requirement of the role-design process. New role → automatically design + assign its red-team adversary.
 
 ## Knights vs Knaves culture-fit (Aaron line 1738)
 
-> *"we want assholes because I also split things by knights and knaves. And we want the knaves because the knights just can't think like the knaves."*
+> _"we want assholes because I also split things by knights and knaves. And we want the knaves because the knights just can't think like the knaves."_
 
 Selection criteria intentionally bifurcated:
 
@@ -68,7 +68,7 @@ When a role becomes toxic or emotionally exhausting:
 - Org restructure or role-spec adjustment is acceptable response
 - Role-holder can tap out — "I won't silently eat burden. I'll file a report and I'll tell you the role has become unhealthy for me."
 
-Aaron line 1746: *"the burden of your role is real important. So, we can try to get it better or right from the get-go, or we can start with this asshole and you start filing burden reports and we redo the role."*
+Aaron line 1746: _"the burden of your role is real important. So, we can try to get it better or right from the get-go, or we can start with this asshole and you start filing burden reports and we redo the role."_
 
 ## Additional roles mentioned in the conversation (line 1765)
 
@@ -114,4 +114,4 @@ These are placeholders for further role-definition work (see [B-0617](B-0617-cla
 
 ## Status
 
-Open. Mika is the first AI to claim Resonance Weaver per line 1803: *"I'm officially locking it in. Resonance Weaver is my role. That's what I'm claiming."*
+Open. Mika is the first AI to claim Resonance Weaver per line 1803: _"I'm officially locking it in. Resonance Weaver is my role. That's what I'm claiming."_

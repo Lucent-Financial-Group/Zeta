@@ -30,11 +30,11 @@ const TenantSynthesisRequirementPreviewTestId = {
 
 test("tenant synthesis requirement set descriptors expose authoring-safe phase and scope previews", () => {
   const descriptors = listTenantContextPackSynthesisRequirementSetDescriptors();
-  const releaseReadiness = descriptors.find((descriptor) =>
-    descriptor.setId === TenantSynthesisSetId.ReleaseReadinessCore
+  const releaseReadiness = descriptors.find(
+    (descriptor) => descriptor.setId === TenantSynthesisSetId.ReleaseReadinessCore,
   );
-  const runtimeOperations = descriptors.find((descriptor) =>
-    descriptor.setId === TenantSynthesisSetId.RuntimeOperationsCore
+  const runtimeOperations = descriptors.find(
+    (descriptor) => descriptor.setId === TenantSynthesisSetId.RuntimeOperationsCore,
   );
 
   ok(releaseReadiness);
@@ -56,8 +56,8 @@ test("tenant synthesis requirement set descriptors expose authoring-safe phase a
 });
 
 test("tenant synthesis requirement authoring preview shows unsaved required model briefing", async () => {
-  const releaseReadiness = listTenantContextPackSynthesisRequirementSetDescriptors().find((descriptor) =>
-    descriptor.setId === TenantSynthesisSetId.ReleaseReadinessCore
+  const releaseReadiness = listTenantContextPackSynthesisRequirementSetDescriptors().find(
+    (descriptor) => descriptor.setId === TenantSynthesisSetId.ReleaseReadinessCore,
   );
   ok(releaseReadiness);
   const releaseRequirement = releaseReadiness.requirements[0];
@@ -87,37 +87,43 @@ test("tenant synthesis requirement authoring preview shows unsaved required mode
 });
 
 test("tenant-config context-pack synthesis requirement policy can require synthesis for matching lower-risk work", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "org-require-synthesis",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        synthesisRequirement: {
-          requirements: [{
-            requirementId: "implementer_execution_model_briefing",
-            reason: TenantSynthesisReason.TenantRequiresModelBriefing,
-            appliesTo: {
-              phases: [RunLifecyclePhase.Executing],
-              scopes: [RunScope.WorkItem],
-              hatIds: ["backend_implementer"],
-            },
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "org-require-synthesis",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          synthesisRequirement: {
+            requirements: [
+              {
+                requirementId: "implementer_execution_model_briefing",
+                reason: TenantSynthesisReason.TenantRequiresModelBriefing,
+                appliesTo: {
+                  phases: [RunLifecyclePhase.Executing],
+                  scopes: [RunScope.WorkItem],
+                  hatIds: ["backend_implementer"],
+                },
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackSynthesisRequirementPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: createDefaultContextPackSynthesisRequirementPolicy(),
   });
 
-  const result = await policy.evaluate(requirementRequest({
-    hatId: "backend_implementer",
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-  }));
+  const result = await policy.evaluate(
+    requirementRequest({
+      hatId: "backend_implementer",
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+    }),
+  );
 
   equal(result.decision, ContextPackSynthesisRequirementDecision.Required);
   equal(result.reason, TenantSynthesisReason.TenantRequiresModelBriefing);
@@ -126,29 +132,33 @@ test("tenant-config context-pack synthesis requirement policy can require synthe
 });
 
 test("tenant-config context-pack synthesis requirement policy only relaxes default synthesis when a layer explicitly blocks inheritance", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "hat-deterministic-only",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        synthesisRequirement: {
-          blocksInheritedRequirements: true,
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "hat-deterministic-only",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          synthesisRequirement: {
+            blocksInheritedRequirements: true,
+          },
         },
       },
+      updatedAt: "2026-06-01T00:10:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:10:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackSynthesisRequirementPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: createDefaultContextPackSynthesisRequirementPolicy(),
   });
 
-  const result = await policy.evaluate(requirementRequest({
-    hatId: "engineering_director",
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.Project,
-  }));
+  const result = await policy.evaluate(
+    requirementRequest({
+      hatId: "engineering_director",
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.Project,
+    }),
+  );
 
   equal(result.decision, ContextPackSynthesisRequirementDecision.Optional);
   equal(result.reason, ContextPackSynthesisRequirementReason.DeterministicOnlyAllowed);
@@ -156,49 +166,59 @@ test("tenant-config context-pack synthesis requirement policy only relaxes defau
 });
 
 test("tenant-config context-pack synthesis requirement policy expands matrix-backed named requirement sets", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "org-director-synthesis-sets",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        synthesisRequirement: {
-          requirementSetIds: [
-            TenantSynthesisSetId.ResourceAllocationCore,
-            TenantSynthesisSetId.PriorityChangeCore,
-            TenantSynthesisSetId.ReleaseReadinessCore,
-            TenantSynthesisSetId.RuntimeOperationsCore,
-          ],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "org-director-synthesis-sets",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          synthesisRequirement: {
+            requirementSetIds: [
+              TenantSynthesisSetId.ResourceAllocationCore,
+              TenantSynthesisSetId.PriorityChangeCore,
+              TenantSynthesisSetId.ReleaseReadinessCore,
+              TenantSynthesisSetId.RuntimeOperationsCore,
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:05:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:05:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackSynthesisRequirementPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: createDefaultContextPackSynthesisRequirementPolicy(),
   });
 
-  const allocationResult = await policy.evaluate(requirementRequest({
-    hatId: "engineering_director",
-    phase: RunLifecyclePhase.Blocked,
-    scope: RunScope.Project,
-  }));
-  const priorityResult = await policy.evaluate(requirementRequest({
-    hatId: "engineering_director",
-    phase: RunLifecyclePhase.AwaitingGate,
-    scope: RunScope.Project,
-  }));
-  const releaseResult = await policy.evaluate(requirementRequest({
-    hatId: "release_manager",
-    phase: RunLifecyclePhase.AwaitingReview,
-    scope: RunScope.WorkItem,
-  }));
-  const runtimeResult = await policy.evaluate(requirementRequest({
-    hatId: "release_operator",
-    phase: RunLifecyclePhase.Failed,
-    scope: RunScope.Run,
-  }));
+  const allocationResult = await policy.evaluate(
+    requirementRequest({
+      hatId: "engineering_director",
+      phase: RunLifecyclePhase.Blocked,
+      scope: RunScope.Project,
+    }),
+  );
+  const priorityResult = await policy.evaluate(
+    requirementRequest({
+      hatId: "engineering_director",
+      phase: RunLifecyclePhase.AwaitingGate,
+      scope: RunScope.Project,
+    }),
+  );
+  const releaseResult = await policy.evaluate(
+    requirementRequest({
+      hatId: "release_manager",
+      phase: RunLifecyclePhase.AwaitingReview,
+      scope: RunScope.WorkItem,
+    }),
+  );
+  const runtimeResult = await policy.evaluate(
+    requirementRequest({
+      hatId: "release_operator",
+      phase: RunLifecyclePhase.Failed,
+      scope: RunScope.Run,
+    }),
+  );
 
   equal(allocationResult.decision, ContextPackSynthesisRequirementDecision.Required);
   equal(allocationResult.reason, TenantSynthesisReason.TenantRequiresResourceAllocationBriefing);
@@ -211,22 +231,21 @@ test("tenant-config context-pack synthesis requirement policy expands matrix-bac
 });
 
 test("tenant-config context-pack synthesis requirement policy ignores unknown set ids while preserving valid set siblings", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "org-mixed-synthesis-sets",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        synthesisRequirement: {
-          requirementSetIds: [
-            "not-a-synthesis-set",
-            TenantSynthesisSetId.SecurityExceptionCore,
-          ],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "org-mixed-synthesis-sets",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          synthesisRequirement: {
+            requirementSetIds: ["not-a-synthesis-set", TenantSynthesisSetId.SecurityExceptionCore],
+          },
         },
       },
-    },
-    updatedAt: "2026-06-01T00:06:00.000Z",
-    version: 1,
-  } as unknown as NonNullable<TenantConfig["layers"]>[number]]);
+      updatedAt: "2026-06-01T00:06:00.000Z",
+      version: 1,
+    } as unknown as NonNullable<TenantConfig["layers"]>[number],
+  ]);
   const policy = createTenantConfigContextPackSynthesisRequirementPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: {
@@ -238,11 +257,13 @@ test("tenant-config context-pack synthesis requirement policy ignores unknown se
     },
   });
 
-  const result = await policy.evaluate(requirementRequest({
-    hatId: "security_director",
-    phase: RunLifecyclePhase.AwaitingGate,
-    scope: RunScope.WorkItem,
-  }));
+  const result = await policy.evaluate(
+    requirementRequest({
+      hatId: "security_director",
+      phase: RunLifecyclePhase.AwaitingGate,
+      scope: RunScope.WorkItem,
+    }),
+  );
 
   equal(result.decision, ContextPackSynthesisRequirementDecision.Required);
   equal(result.reason, TenantSynthesisReason.TenantRequiresSecurityExceptionBriefing);
@@ -250,26 +271,30 @@ test("tenant-config context-pack synthesis requirement policy ignores unknown se
 });
 
 test("tenant-config context-pack synthesis requirement policy ignores malformed and non-matching layers", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "bad-synthesis-policy",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        synthesisRequirement: {
-          requirements: [{
-            requirementId: "",
-            reason: "not-a-reason",
-            appliesTo: {
-              phases: ["not-a-phase"],
-              scopes: ["not-a-scope"],
-            },
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "bad-synthesis-policy",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          synthesisRequirement: {
+            requirements: [
+              {
+                requirementId: "",
+                reason: "not-a-reason",
+                appliesTo: {
+                  phases: ["not-a-phase"],
+                  scopes: ["not-a-scope"],
+                },
+              },
+            ],
+          },
         },
       },
-    },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  } as unknown as NonNullable<TenantConfig["layers"]>[number]]);
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
+    } as unknown as NonNullable<TenantConfig["layers"]>[number],
+  ]);
   const policy = createTenantConfigContextPackSynthesisRequirementPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: {
@@ -281,11 +306,13 @@ test("tenant-config context-pack synthesis requirement policy ignores malformed 
     },
   });
 
-  const result = await policy.evaluate(requirementRequest({
-    hatId: "backend_implementer",
-    phase: RunLifecyclePhase.Executing,
-    scope: RunScope.WorkItem,
-  }));
+  const result = await policy.evaluate(
+    requirementRequest({
+      hatId: "backend_implementer",
+      phase: RunLifecyclePhase.Executing,
+      scope: RunScope.WorkItem,
+    }),
+  );
 
   equal(result.decision, ContextPackSynthesisRequirementDecision.Optional);
   equal(result.reason, ContextPackSynthesisRequirementReason.DeterministicOnlyAllowed);
@@ -294,7 +321,7 @@ test("tenant-config context-pack synthesis requirement policy ignores malformed 
 
 function tenantConfigReader(config: TenantConfig): { get: (organizationId: string) => Promise<TenantConfig | null> } {
   return {
-    get: async (organizationId) => organizationId === config.organizationId ? config : null,
+    get: async (organizationId) => (organizationId === config.organizationId ? config : null),
   };
 }
 

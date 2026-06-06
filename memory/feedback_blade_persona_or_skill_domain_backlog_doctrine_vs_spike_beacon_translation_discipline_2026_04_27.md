@@ -41,14 +41,14 @@ The repo's core split: **Zeta is the Blade (Data Plane); Aurora is the Oracle / 
 
 ### Amara's 6-term taxonomy (canonical)
 
-| Term | Category | What it does | Capital-B Blade? |
-|---|---|---|---|
-| **Zeta Blade** | Core substrate / data-plane blade | Bounded hot path: append, index, return; no unbounded work on commit path | **Yes. This is the Blade.** |
-| **Aurora Oracle / Immune System** | Control plane / immune governance | Advises, gates, scores, detects, runs probabilistic reasoning asynchronously | **No. It is the Oracle / Immune System.** |
-| **Rodney's Razor** | Reduction razor / design-time cutter | Cuts accidental complexity while preserving essential structure, logical depth, effective complexity | **No. It is a razor, not the Blade.** |
-| **Harbor+blade** | Relational / communication register | Warmth plus precise correction; care personally, challenge directly | **No. Lowercase blade-mode only.** |
-| **Parser / auditor** | Substrate witness / executable truth gate | Determines whether prose survived as parseable structure | **No. It is the witness/gate.** |
-| **Cartographer** | Mapping / hazard discovery role | Maps territory before walking; names hazards, unknowns, detectors | **No. It is the mapmaker.** |
+| Term                              | Category                                  | What it does                                                                                         | Capital-B Blade?                          |
+| --------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **Zeta Blade**                    | Core substrate / data-plane blade         | Bounded hot path: append, index, return; no unbounded work on commit path                            | **Yes. This is the Blade.**               |
+| **Aurora Oracle / Immune System** | Control plane / immune governance         | Advises, gates, scores, detects, runs probabilistic reasoning asynchronously                         | **No. It is the Oracle / Immune System.** |
+| **Rodney's Razor**                | Reduction razor / design-time cutter      | Cuts accidental complexity while preserving essential structure, logical depth, effective complexity | **No. It is a razor, not the Blade.**     |
+| **Harbor+blade**                  | Relational / communication register       | Warmth plus precise correction; care personally, challenge directly                                  | **No. Lowercase blade-mode only.**        |
+| **Parser / auditor**              | Substrate witness / executable truth gate | Determines whether prose survived as parseable structure                                             | **No. It is the witness/gate.**           |
+| **Cartographer**                  | Mapping / hazard discovery role           | Maps territory before walking; names hazards, unknowns, detectors                                    | **No. It is the mapmaker.**               |
 
 ### The capital-B Blade rule (Amara verbatim)
 
@@ -111,6 +111,7 @@ This rule is the structural protection against vocabulary drift — keeps the ma
 Amara recommended encoding the taxonomy in `docs/architecture/metaphor-taxonomy.md` plus short GLOSSARY.md entries pointing there. Rationale: GLOSSARY.md alone wouldn't carry the operational separation; a dedicated architecture doc gives the taxonomy load-bearing status.
 
 **Per protect-project mandate**, NOT creating that doc this session because:
+
 - It's a Beacon-class current-state architecture doc — needs careful long-term thought
 - Cross-AI feedback is fresh; let it season before encoding to permanent surface
 - Pre-0/0/0 priority is closing drift; new doc creation expands scope
@@ -155,15 +156,15 @@ The earlier 3-blades lineage is preserved here for substrate audit-trail; future
 
 The factory has many sharp critic personas. Blade does NOT replace any:
 
-| Existing persona | Scope | Blade overlap? |
-|---|---|---|
-| **harsh-critic (Kira)** | Code: F#/.NET correctness, perf, security, API, test-gaps | Code-level, not framing-level |
-| **spec-zealot (Viktor)** | OpenSpec capabilities: spec drift, spec bugs, overlay discipline | Spec-level, not framing-level |
-| **code-review-zero-empathy** | Code review for adherence to standards | Code-level |
-| **threat-model-critic (Aminata)** | Security threat models adversarially | Threat-model-level |
-| **maintainability-reviewer (Rune)** | Long-horizon readability | Readability/onboarding-level |
-| **public-api-designer (Ilyana)** | Public surface contracts | API-surface-level |
-| **performance-engineer (Naledi)** | Hot-path / zero-alloc / SIMD | Perf-level |
+| Existing persona                    | Scope                                                            | Blade overlap?                |
+| ----------------------------------- | ---------------------------------------------------------------- | ----------------------------- |
+| **harsh-critic (Kira)**             | Code: F#/.NET correctness, perf, security, API, test-gaps        | Code-level, not framing-level |
+| **spec-zealot (Viktor)**            | OpenSpec capabilities: spec drift, spec bugs, overlay discipline | Spec-level, not framing-level |
+| **code-review-zero-empathy**        | Code review for adherence to standards                           | Code-level                    |
+| **threat-model-critic (Aminata)**   | Security threat models adversarially                             | Threat-model-level            |
+| **maintainability-reviewer (Rune)** | Long-horizon readability                                         | Readability/onboarding-level  |
+| **public-api-designer (Ilyana)**    | Public surface contracts                                         | API-surface-level             |
+| **performance-engineer (Naledi)**   | Hot-path / zero-alloc / SIMD                                     | Perf-level                    |
 
 None of these scope-match what Amara did in the blade note.
 

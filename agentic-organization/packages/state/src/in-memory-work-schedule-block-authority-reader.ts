@@ -12,7 +12,8 @@ export function createInMemoryWorkScheduleBlockAuthorityReader(
   input: CreateInMemoryWorkScheduleBlockAuthorityReaderInput,
 ): WorkScheduleBlockAuthorityReaderPort {
   return {
-    findAuthorizingScheduleBlocks: async (lookup) => findAuthorizingScheduleBlocks(input.getWorkScheduleBlocks(), lookup),
+    findAuthorizingScheduleBlocks: async (lookup) =>
+      findAuthorizingScheduleBlocks(input.getWorkScheduleBlocks(), lookup),
   };
 }
 
@@ -23,10 +24,7 @@ function findAuthorizingScheduleBlocks(
   return workScheduleBlocks.filter((block) => isAuthorizingScheduleBlock(block, lookup)).map(cloneWorkScheduleBlock);
 }
 
-function isAuthorizingScheduleBlock(
-  block: WorkScheduleBlock,
-  lookup: WorkScheduleBlockAuthorityLookup,
-): boolean {
+function isAuthorizingScheduleBlock(block: WorkScheduleBlock, lookup: WorkScheduleBlockAuthorityLookup): boolean {
   return (
     block.assignedAgentId === lookup.agentId &&
     block.assignedHatAssignmentId === lookup.hatAssignmentId &&

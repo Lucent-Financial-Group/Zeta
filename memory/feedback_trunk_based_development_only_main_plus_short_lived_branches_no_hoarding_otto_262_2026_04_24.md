@@ -4,6 +4,7 @@ description: Aaron Otto-262 branch-hygiene directive. Sharpens the "keep things 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Only `main` is long-lived. All other branches are
@@ -12,25 +13,25 @@ in-flight work, merge, and die.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"we can cleanup branches we only need main and short
+> _"we can cleanup branches we only need main and short
 > lives branches that dont violate trunkbased
-> development, we don't want to keep every branch"*
+> development, we don't want to keep every branch"_
 
 ## The composition triad — why TBD specifically
 
 Aaron 2026-04-24 addendum:
 
-> *"all this is post drain but we talked about this
+> _"all this is post drain but we talked about this
 > already and github flow if we are hosted on github
 > and branch deploy for our ops setup if we are on
 > github host but also git native everyting first
-> that's why trunkbased."*
+> that's why trunkbased."_
 
 Three patterns compose:
 
 1. **Trunk-based development (TBD)** — short-lived
    branches, main is the only long-lived trunk.
-   *This memory.*
+   _This memory._
 2. **GitHub Flow** — the natural workflow for
    GitHub-hosted repos: branch from main → push →
    PR → auto-merge → auto-delete-head-branch. The
@@ -78,8 +79,8 @@ resolved):
   Either force-drain (close threads, rebase, merge)
   or prune.
 - **No associated PR** — drift. If content is unique
-  + valuable, file roll-forward PR from fresh branch;
-  else prune.
+  - valuable, file roll-forward PR from fresh branch;
+    else prune.
 - **PR closed-not-merged, branch still exists** —
   drift. Per Otto-257, decide: unique-content-worth-
   recovery → fresh roll-forward branch, OR
@@ -91,9 +92,10 @@ resolved):
 ## Applies to the 19 LOST recovery set
 
 Per Otto-257's re-audit, 14 LOST-CLOSED-NOT-MERGED
-+ 5 LOST-ORPHAN branches hold unmerged content.
-Otto-262 says: don't preserve them as branches.
-Decision tree per branch:
+
+- 5 LOST-ORPHAN branches hold unmerged content.
+  Otto-262 says: don't preserve them as branches.
+  Decision tree per branch:
 
 1. **Is the content unique + valuable?** (Per
    Otto-257 smell triage.)
@@ -106,7 +108,7 @@ Decision tree per branch:
 3. **If NO** → prune. The branch was drift, not
    lost work.
 4. **Either way, the old branch dies** — only main
-   + the new short-lived recovery branch survive.
+   - the new short-lived recovery branch survive.
 
 ## Composition with prior memory
 
@@ -142,6 +144,7 @@ Decision tree per branch:
 ## Factory-level implementation (backlog-owed)
 
 Phase 1 — one-time sweep:
+
 - Execute Otto-257 smell audit on existing 19 LOST
   branches. For each: triage (recover vs prune).
 - Recover candidates → new short-lived branches
@@ -150,6 +153,7 @@ Phase 1 — one-time sweep:
   worktree.
 
 Phase 2 — standing hygiene:
+
 - `tools/hygiene/tbd-branch-audit.sh` — weekly
   cron / FACTORY-HYGIENE row. Lists branches
   by age; flags > 7d with no active merge signal.
@@ -157,6 +161,7 @@ Phase 2 — standing hygiene:
   BACKLOG row.
 
 Phase 3 — default automation:
+
 - Auto-delete-head-branches: already on (verify).
 - Auto-merge armed at PR open: already on (verify).
 - Branch-age notification on PR dashboard: future.
@@ -169,7 +174,7 @@ Phase 3 — default automation:
   merged-to-main-behind-flag OR pruned when done.
 - Does NOT require nuking a branch with active
   review in progress, even past 7 days. The
-  *signal* fires at 7 days to PROMPT review of
+  _signal_ fires at 7 days to PROMPT review of
   whether the branch is structurally-stuck vs
   just in late-cycle review. Review-as-a-process
   can legitimately take > 1 week for a large PR.
@@ -212,9 +217,9 @@ recover or prune.
 
 ## Direct Aaron quote to preserve
 
-> *"we can cleanup branches we only need main and
+> _"we can cleanup branches we only need main and
 > short lives branches that dont violate trunkbased
-> development, we don't want to keep every branch"*
+> development, we don't want to keep every branch"_
 
 Future Otto: the default for any branch in the
 repo is "will this merge within ~3 days?" If no,

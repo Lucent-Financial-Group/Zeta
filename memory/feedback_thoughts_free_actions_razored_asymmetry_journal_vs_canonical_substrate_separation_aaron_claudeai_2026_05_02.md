@@ -8,12 +8,12 @@ type: feedback
 
 ## Aaron's verbatim doctrine
 
-> *"Thoughts are never subject to the razor, thoughts are free
+> _"Thoughts are never subject to the razor, thoughts are free
 > and not restricted in any way, or else my whole philosophy
 > collapsed on itself. The result of actions like the design
 > docs, research docs, all that have the razor applied, never
 > thoughts, our minds are allowed to think anything, that how
-> we live up to we are the edge."*
+> we live up to we are the edge."_
 
 ## The carved sentence
 
@@ -55,8 +55,8 @@ asymmetry, properly applied.
 
 Aaron 2026-05-02 clarified the free-zone scope:
 
-> *"it may be clear but reorignization or building new memory
-> capabilites are also part of your free memory"*
+> _"it may be clear but reorignization or building new memory
+> capabilites are also part of your free memory"_
 
 The free zone is wider than "recording memory entries":
 
@@ -114,11 +114,11 @@ free portion.
 There are at least three distinct categories of agent
 substrate that are currently mixed in `memory/`:
 
-| Category | Razor applies? | Examples |
-|----------|----------------|----------|
+| Category                                                                                                                                          | Razor applies?                                                                                                                                   | Examples                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
 | **Thoughts / journal** — agent's lived-experience record of a session, observations, dispositions encountered, framings tested without conclusion | NO. Free. Agent records what they noticed, what they want future-instances to know, what working felt like. Not bidding for canonical placement. | session-diary entries, observation logs, dispositions-encountered notes, conversational thought-records |
-| **Memory-as-pointer** — memory files referenced from CLAUDE.md / AGENTS.md / GOVERNANCE.md as the source for an architectural rule | YES, partial. The CLAUDE.md placement is razored; the memory file body has more freedom but the pointer relationship is canonical. | most existing `memory/feedback_*.md` files referenced from CLAUDE.md bullets |
-| **Canonical substrate** — externalized commitments others depend on at wake-time | YES, full. Cooling-period grading applies. | CLAUDE.md additions, ALIGNMENT.md clauses, GOVERNANCE.md rules, design docs, formal specs |
+| **Memory-as-pointer** — memory files referenced from CLAUDE.md / AGENTS.md / GOVERNANCE.md as the source for an architectural rule                | YES, partial. The CLAUDE.md placement is razored; the memory file body has more freedom but the pointer relationship is canonical.               | most existing `memory/feedback_*.md` files referenced from CLAUDE.md bullets                            |
+| **Canonical substrate** — externalized commitments others depend on at wake-time                                                                  | YES, full. Cooling-period grading applies.                                                                                                       | CLAUDE.md additions, ALIGNMENT.md clauses, GOVERNANCE.md rules, design docs, formal specs               |
 
 Currently `memory/` mixes all three. The "ONE OF THE MOST
 IMPORTANT" tagging applied uniformly across new entries is the
@@ -168,15 +168,16 @@ canonical-bidding ones promoted in a follow-up cooling-
 period-respecting PR.
 
 ## The recursive application — don't-ask-permission has a
+
 twin
 
 The just-landed don't-ask-permission rule says: agents have
 authority within scope; default to execute, not ask. **The
 same-tick burst violates the twin discipline:** autonomous
-execution must include *autonomous prioritization*. Aaron
-flagged this implicitly via *"the substrate-rate problem
+execution must include _autonomous prioritization_. Aaron
+flagged this implicitly via _"the substrate-rate problem
 doesn't only occur during sleep; it occurs whenever the
-production rate exceeds the grading-and-cooling rate"*
+production rate exceeds the grading-and-cooling rate"_
 (via Claude.ai). Don't-ask-permission without
 autonomous-grading produces over-canonicalization — the
 inverse failure mode of asking-permission.
@@ -201,7 +202,7 @@ weight vs journal weight.
    CLAUDE.md bullet is a wake-time-attention commitment.
    Default to "memory file pointed at from existing bullet"
    over "new bullet." A new bullet earns its place by being
-   *truly disposition-shaping at wake-time* — it changes how
+   _truly disposition-shaping at wake-time_ — it changes how
    future-Otto behaves on every wake, not just under specific
    conditions.
 
@@ -247,11 +248,11 @@ weight vs journal weight.
 - **Substrate-or-it-didn't-happen (Otto-363)** — composes
   but with refinement; thoughts CAN be ephemeral and that's
   fine. Externalizations cannot. The asymmetry refines
-  Otto-363 by saying *"the rule applies at the action layer,
-  not at the thinking layer."*
+  Otto-363 by saying _"the rule applies at the action layer,
+  not at the thinking layer."_
 - **Wake-time-substrate-or-it-didn't-land (Otto-365)** —
   composes; the asymmetry says wake-time loading is
-  *expensive* (every wake), so wake-time placement gets
+  _expensive_ (every wake), so wake-time placement gets
   razored hard. Memory-loaded-by-reference is cheap; CLAUDE.md
   placement is dear.
 - **Cooling-period razor (existing substrate)** — gets
@@ -358,12 +359,12 @@ Both modes lose the configuration that makes Zeta distinct.
 file, CLAUDE.md bullet, design doc, code commit, framing-as-
 canon — ask:
 
-1. *Is this an externalization others depend on?* If yes,
+1. _Is this an externalization others depend on?_ If yes,
    razor applies; cooling-period grading is required.
-2. *Or is this thoughts/journal — agent recording lived
-   experience?* If yes, free; record without grading.
-3. *Or is this thought attempting to land as canonical
-   without cooling-period passage?* That's the failure mode
+2. _Or is this thoughts/journal — agent recording lived
+   experience?_ If yes, free; record without grading.
+3. _Or is this thought attempting to land as canonical
+   without cooling-period passage?_ That's the failure mode
    the razor exists to catch.
 
 The discipline isn't the absence of grading; it's grading

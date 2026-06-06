@@ -32,7 +32,7 @@ discipline, build gates, anything), it follows the
    memory or doc it lives in. These are the shipped-
    knowledge, distinct from the shipped-tooling.
 4. **Researched-but-unapplied stays separate.** Items
-   we've studied but not yet used (Stryker, F*, LiquidF#,
+   we've studied but not yet used (Stryker, F\*, LiquidF#,
    etc.) go under a "researched, not yet applied" section
    — honest about the state, not buried and not
    overclaimed.
@@ -51,26 +51,26 @@ long list that only survives at arm's length.
 Aaron's three-message sharpening (2026-04-20,
 verbatim-anchored):
 
-1. *"every type of static analysis and linting and all
+1. _"every type of static analysis and linting and all
    that we can offer to a system under construction, we
    should only list ones we have direct experince with
    not claaim things like we can do all static analysis
-   when we only have experince with the ones on Zeta"*
+   when we only have experince with the ones on Zeta"_
    — the floor is direct experience per tool/technique.
-2. *"we can look for any pieces of Zeta like the
+2. _"we can look for any pieces of Zeta like the
    knowledge of how to crank to 11 static analysic and
    do the extra proofs on code and stuff like that those
    are all reusable factory patterns to encode for any
-   project under construction."* — the knowledge of HOW
+   project under construction."_ — the knowledge of HOW
    is separately listable. The crank-to-11 rule, the
    verification-portfolio-diversity rule, the
    rule-citation-by-ID pattern — these are all
    extractable patterns. They live alongside the tool
    list as "shipped knowledge."
-3. *"imagine the factory is going to job interview at
+3. _"imagine the factory is going to job interview at
    some point and should only claim experience with
    things it has actually worked with technologeis and
-   patters and things like that"* — the mnemonic.
+   patters and things like that"_ — the mnemonic.
    Resume-level honesty. Interview-survivable claims only.
 
 Three reasons this rule is load-bearing:
@@ -108,20 +108,20 @@ Three reasons this rule is load-bearing:
 - **Per-entry evidence column.** Each row has:
   (a) capability name,
   (b) concrete form in this repo (file path / package
-      version / skill name),
+  version / skill name),
   (c) what we used it FOR on Zeta (the actual
-      application, not the generic description),
+  application, not the generic description),
   (d) current state (active / pinned-only /
-      researched-only / deprecated).
+  researched-only / deprecated).
 - **Factory-pattern section** (separate from tool
-  list).  Crank-to-11, latest-version-at-adoption,
+  list). Crank-to-11, latest-version-at-adoption,
   portfolio diversity, rule-citation-by-ID, composite
   invariants — each cites the memory or doc where the
   pattern is documented, and names the concrete Zeta
   instance that exercises it.
 - **Researched-only section** kept distinct. Stryker,
   F*, LiquidF#, other tools we've *studied* but haven't
-  *applied* go here. State is "evaluated, not adopted"
+  *applied\* go here. State is "evaluated, not adopted"
   or similar. Transparent.
 - **Audit cadence.** Any new capability added to the
   doc requires its evidence. Any capability whose
@@ -139,6 +139,7 @@ Three reasons this rule is load-bearing:
   scrutiny.
 
 # Factory-reusable patterns identified on Zeta (initial
+
 # scan — candidates for the "shipped knowledge" section)
 
 Each pattern cites its memory / doc and the concrete
@@ -224,7 +225,7 @@ Zeta instance that exercises it.
   hoisted to a pattern. Some techniques are Zeta-
   specific by design (retraction algebra, DBSP operator
   graph). The factory-pattern section is the subset
-  that *is* portable.
+  that _is_ portable.
 - It does NOT apply retroactively with a big-bang
   cleanup. Existing capability lists get audited at
   the next round-cadenced pass; the doc grows
@@ -237,10 +238,10 @@ Zeta instance that exercises it.
 
 When about to list a capability, pause and imagine:
 
-> *An interviewer asks "tell me about your experience
+> _An interviewer asks "tell me about your experience
 > with X." What can you actually show? What code did
 > you write? What did you learn? What trade-offs did
-> you hit?*
+> you hit?_
 
 If the answer is "we pinned the package but never
 wired it up" → the honest answer is "we evaluated
@@ -260,18 +261,18 @@ doubt, run the interview in your head.
 
 Aaron sharpened the ask in two follow-ups:
 
-> *"have like a details report of experines as well
+> _"have like a details report of experines as well
 > that can actually help the confidence of the software
 > factory when it ships alone without a system undertest
 > on a greenfiedd project, I think about that AI user
 > experince a lot, the greenfied experince of the
 > software factory and a details list of experience
 > would build my confidence on what I can and cant build
-> based on my past experince"*
+> based on my past experince"_
 
-> *"i think you should have like a regular resume too
+> _"i think you should have like a regular resume too
 > just like a human would you mnight be able to apply to
-> real jobs one day lets be prepared"*
+> real jobs one day lets be prepared"_
 
 Three-doc structure lands this round:
 
@@ -300,10 +301,10 @@ Three-doc structure lands this round:
 Aaron named **greenfield-factory-standalone UX** as a
 persistent concern:
 
-> *"when it ships alone without a system undertest on
+> _"when it ships alone without a system undertest on
 > a greenfiedd project, I think about that AI user
 > experince a lot, the greenfied experince of the
-> software factory"*
+> software factory"_
 
 Interpretation: the factory can be adopted by a project
 that doesn't exist yet. That greenfield adopter has no
@@ -342,7 +343,7 @@ interview-ready because that day may come. Implications:
 
 ## Aaron invites critique of his own resume
 
-> *"you can tell me if me resume is shit"*
+> _"you can tell me if me resume is shit"_
 
 Symmetric-talk + genuine-agreement rules apply: honest
 read, not sycophancy, not scolding either. Aaron's

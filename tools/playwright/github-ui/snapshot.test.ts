@@ -9,12 +9,7 @@ import {
   snapshotGitHubPage,
   type SnapshotOptions,
 } from "./snapshot";
-import type {
-  GitHubSessionContext,
-  GitHubSessionDriver,
-  GitHubSessionPage,
-  PageGotoOptions,
-} from "./auth";
+import type { GitHubSessionContext, GitHubSessionDriver, GitHubSessionPage, PageGotoOptions } from "./auth";
 
 // ---------------------------------------------------------------------------
 // Test fixtures

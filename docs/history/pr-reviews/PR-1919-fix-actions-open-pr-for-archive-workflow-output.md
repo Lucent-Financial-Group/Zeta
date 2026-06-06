@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1919 |
-| Title | fix(actions): open PR for archive workflow output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T17:32:02Z |
-| Merged at | 2026-05-07T17:40:38Z |
-| Merge commit SHA | `619245f06a24ef893afb95f67f10371c39c1da04` |
-| Branch | `claim/pr-archive-workflow-open-pr` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1919 |
-| Changed files | 1 |
-| Additions / deletions | +51 / -32 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1919                                                     |
+| Title                 | fix(actions): open PR for archive workflow output        |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T17:32:02Z                                     |
+| Merged at             | 2026-05-07T17:40:38Z                                     |
+| Merge commit SHA      | `619245f06a24ef893afb95f67f10371c39c1da04`               |
+| Branch                | `claim/pr-archive-workflow-open-pr`                      |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1919 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +51 / -32                                                |
 
 ## Description
 
@@ -31,7 +31,7 @@
 
 - Switch pr-archive-on-merge from protected-branch direct push to unique bot-branch PR creation.
 - Add pull-requests:write for PR creation and keep contents:write scoped to the bot branch push.
-- Skip local automation/pr-archive-* branches so archive PR merges do not recursively archive themselves.
+- Skip local automation/pr-archive-\* branches so archive PR merges do not recursively archive themselves.
 
 ## Verification
 
@@ -45,15 +45,15 @@ This intentionally mirrors budget-snapshot-cadence.yml: GITHUB_TOKEN-created PRs
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 2 |
-| Unresolved threads | 0 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 2     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 

@@ -42,16 +42,16 @@ Adds 2 new steps AFTER the existing \"Audit installer ISO content\" step + BEFOR
 - \"Install QEMU (apt)\" — apt-get install qemu-system-x86 on ubuntu-24.04 (~30s)
 - \"QEMU boot smoke-test (cascade #5 — dynamic boot floor)\" — invokes the TS helper
 
-No \`github.event.*\` interpolation in run: lines per the GitHub Actions script-injection security guide.
+No \`github.event.\*\` interpolation in run: lines per the GitHub Actions script-injection security guide.
 
 ## Verification cascade post-PR-3
 
-| # | Step | When | Cost |
-|---|---|---|---|
-| 1 | Source-substrate audit | Preflight | ~1s |
-| 4 | ISO content audit | Post-build (7z list) | ~10s |
-| **5** | **QEMU boot smoke-test** | **Post-build (KVM boot)** | **~3-5min** |
-| - | Locate + metadata + artifact upload | Post-build | existing |
+| #     | Step                                | When                      | Cost        |
+| ----- | ----------------------------------- | ------------------------- | ----------- |
+| 1     | Source-substrate audit              | Preflight                 | ~1s         |
+| 4     | ISO content audit                   | Post-build (7z list)      | ~10s        |
+| **5** | **QEMU boot smoke-test**            | **Post-build (KVM boot)** | **~3-5min** |
+| -     | Locate + metadata + artifact upload | Post-build                | existing    |
 
 Estimated CI time impact: +3-5min per build (KVM keeps it fast vs TCG).
 
@@ -75,9 +75,9 @@ This is the SIMPLEST viable boot test. Once it lands + runs across a few cycles 
 ## Test plan
 
 - [x] Pre-commit canary green (HEAD 60 = HEAD~1 60; modifications + 1 new TS helper)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] Authored from fresh independent clone
-- [x] No \`github.event.*\` interpolation in run: lines (security-reminder hook pattern)
+- [x] No \`github.event.\*\` interpolation in run: lines (security-reminder hook pattern)
 - [ ] CI green (the new QEMU step will exercise itself on this PR)
 - [ ] Copilot review pass
 

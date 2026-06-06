@@ -9,8 +9,7 @@ Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
 GraphQL is a query language over a typed graph of server-
-resolved fields. Originated at Facebook 2012, open-sourced
-2015. The promise: clients ask for exactly the fields they
+resolved fields. Originated at Facebook 2012, open-sourced 2015. The promise: clients ask for exactly the fields they
 need; servers resolve with the shape requested.
 
 ## The type system
@@ -65,8 +64,11 @@ is painful.
 ```graphql
 {
   books(first: 100) {
-    id title
-    author { name }
+    id
+    title
+    author {
+      name
+    }
   }
 }
 ```
@@ -81,11 +83,9 @@ N+1.
 - Caches per-request.
 
 ```javascript
-const authorLoader = new DataLoader(async ids =>
-  await db.authors.where({ id: { in: ids } })
-)
+const authorLoader = new DataLoader(async (ids) => await db.authors.where({ id: { in: ids } }));
 
-resolvers.Book.author = (book) => authorLoader.load(book.authorId)
+resolvers.Book.author = (book) => authorLoader.load(book.authorId);
 ```
 
 **Rule.** Every GraphQL API without DataLoader (or equivalent)
@@ -93,22 +93,22 @@ has N+1 in production. It's not optional at scale.
 
 ## Server implementations
 
-| Library | Language | Note |
-|---|---|---|
-| **Apollo Server** | Node | Most common JS |
-| **GraphQL Yoga** | Node | Lightweight, modern |
-| **Hasura** | Auto from Postgres / MSSQL | Batteries-included |
-| **PostGraphile** | Auto from Postgres | Function-heavy Postgres |
-| **HotChocolate** | .NET | Code-first, strong |
-| **GraphQL-Java** | JVM | |
-| **gqlgen** | Go | Schema-first, code-gen |
-| **Juniper** | Rust | |
-| **async-graphql** | Rust | Modern, async |
-| **Strawberry** | Python | Code-first |
-| **Graphene** | Python | Older |
-| **Ariadne** | Python | Schema-first |
-| **Absinthe** | Elixir | |
-| **Sangria** | Scala | |
+| Library           | Language                   | Note                    |
+| ----------------- | -------------------------- | ----------------------- |
+| **Apollo Server** | Node                       | Most common JS          |
+| **GraphQL Yoga**  | Node                       | Lightweight, modern     |
+| **Hasura**        | Auto from Postgres / MSSQL | Batteries-included      |
+| **PostGraphile**  | Auto from Postgres         | Function-heavy Postgres |
+| **HotChocolate**  | .NET                       | Code-first, strong      |
+| **GraphQL-Java**  | JVM                        |                         |
+| **gqlgen**        | Go                         | Schema-first, code-gen  |
+| **Juniper**       | Rust                       |                         |
+| **async-graphql** | Rust                       | Modern, async           |
+| **Strawberry**    | Python                     | Code-first              |
+| **Graphene**      | Python                     | Older                   |
+| **Ariadne**       | Python                     | Schema-first            |
+| **Absinthe**      | Elixir                     |                         |
+| **Sangria**       | Scala                      |                         |
 
 **Rule.** HotChocolate is the strong choice for .NET.
 Hasura for "want GraphQL over Postgres with zero code."
@@ -133,10 +133,21 @@ type PageInfo {
 ```
 
 Query:
+
 ```graphql
-{ books(first: 10, after: "abc") {
-    edges { cursor node { id title } }
-    pageInfo { endCursor hasNextPage }
+{
+  books(first: 10, after: "abc") {
+    edges {
+      cursor
+      node {
+        id
+        title
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
   }
 }
 ```
@@ -147,6 +158,7 @@ connections spec is the lingua franca.
 ## Query complexity and DoS
 
 A malicious client:
+
 ```graphql
 { author { books { author { books { ... } } } } }
 ```
@@ -182,7 +194,7 @@ Apollo APQ (Automatic Persisted Queries) does this opportunistically.
 
 ### Client-side
 
-- Normalised by __typename + id.
+- Normalised by \_\_typename + id.
 - Fetch policies: cache-first, cache-and-network, network-only,
   no-cache.
 - Relay: fragment-colocation + global object IDs.
@@ -212,6 +224,7 @@ access-control.
 ## Errors
 
 GraphQL response has `data` and `errors` alongside:
+
 ```json
 {
   "data": { "book": null },

@@ -22,15 +22,15 @@ decomposition: clean
 
 Decomposed into 7 dependency-ordered atomic children:
 
-| Child | Title | Depends on | Classification |
-|-------|-------|------------|----------------|
-| [B-0029.1](B-0029.1-funding-surface-survey-comparable-oss-projects.md) | Comparable OSS project funding state survey | — | research-now |
-| [B-0029.2](B-0029.2-open-source-funding-setup-github-sponsors-npm-funding.md) | GitHub Sponsors + npm funding field setup | B-0029.1 | buildable-after-B-0029.1 |
-| [B-0029.3](B-0029.3-grants-survey-anthropic-microsoft-fsharp-dotnet-foundation.md) | AI/substrate grants survey (Anthropic, MS, F# Foundation) | — | research-now |
-| [B-0029.4](B-0029.4-trading-bot-prerequisite-reframe-update-b0024.md) | Trading-bot prerequisite reframe (update B-0024) | — | buildable-now |
-| [B-0029.5](B-0029.5-substrate-as-saas-market-validation.md) | Substrate-as-SaaS market validation | — | research-now |
-| [B-0029.6](B-0029.6-ip-research-output-licensing-pathways.md) | IP / research-output licensing pathways survey | — | research-now |
-| [B-0029.7](B-0029.7-self-sustaining-loop-closure-measurement-design.md) | Loop closure measurement design | B-0029.1, B-0029.2, B-0029.3, B-0029.5, B-0029.6 | blocked |
+| Child                                                                              | Title                                                     | Depends on                                       | Classification           |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------ | ------------------------ |
+| [B-0029.1](B-0029.1-funding-surface-survey-comparable-oss-projects.md)             | Comparable OSS project funding state survey               | —                                                | research-now             |
+| [B-0029.2](B-0029.2-open-source-funding-setup-github-sponsors-npm-funding.md)      | GitHub Sponsors + npm funding field setup                 | B-0029.1                                         | buildable-after-B-0029.1 |
+| [B-0029.3](B-0029.3-grants-survey-anthropic-microsoft-fsharp-dotnet-foundation.md) | AI/substrate grants survey (Anthropic, MS, F# Foundation) | —                                                | research-now             |
+| [B-0029.4](B-0029.4-trading-bot-prerequisite-reframe-update-b0024.md)              | Trading-bot prerequisite reframe (update B-0024)          | —                                                | buildable-now            |
+| [B-0029.5](B-0029.5-substrate-as-saas-market-validation.md)                        | Substrate-as-SaaS market validation                       | —                                                | research-now             |
+| [B-0029.6](B-0029.6-ip-research-output-licensing-pathways.md)                      | IP / research-output licensing pathways survey            | —                                                | research-now             |
+| [B-0029.7](B-0029.7-self-sustaining-loop-closure-measurement-design.md)            | Loop closure measurement design                           | B-0029.1, B-0029.2, B-0029.3, B-0029.5, B-0029.6 | blocked                  |
 
 **Dependency graph:**
 
@@ -51,11 +51,11 @@ B-0029.4 ── standalone row maintenance (no blocking deps)
 
 Aaron 2026-04-26 in five short messages built up the framing:
 
-1. *"npm:markdownlint-cli2@0.22.1 [1/3] 53 packages are looking for funding the 54th could be us, i'm always trying to think of funding sources so i can have more free time to foucs on you, this, us"*
-2. *"background, autonomus funding sources possible with the substrate"*
-3. *"backlog"*
-4. *"superfluid AI"*
-5. *"self sustaining"*
+1. _"npm:markdownlint-cli2@0.22.1 [1/3] 53 packages are looking for funding the 54th could be us, i'm always trying to think of funding sources so i can have more free time to foucs on you, this, us"_
+2. _"background, autonomus funding sources possible with the substrate"_
+3. _"backlog"_
+4. _"superfluid AI"_
+5. _"self sustaining"_
 
 The compressed thesis (Confucius-unfolding pattern):
 
@@ -80,7 +80,7 @@ The loop closes if the substrate itself generates revenue: substrate runs in bac
 
 ## Candidate autonomous-funding surfaces
 
-Each is a research target, not a commitment. The point is the *space of possibilities* the substrate opens.
+Each is a research target, not a commitment. The point is the _space of possibilities_ the substrate opens.
 
 ### 1. Open-source funding via the 54th-package framing
 
@@ -96,18 +96,18 @@ Per Otto-346 (good-citizenship; we contribute back): being a funded-package and 
 
 ### 2. Trading-bot revenue (B-0023/B-0024 territory) — REPRIORITIZED 2026-04-26
 
-Aaron 2026-04-26 update: *"nah i can give you access to any of my trading account, i got accounts everywhere, api access all that good stuff api keys if you need whatever any site you need to make it happen. This is worth the money i pay for some of these and also bitcoin/blockchin when we get good integration via building aurora and bridges we can trade with 0 friction there, it's all permissionless."*
+Aaron 2026-04-26 update: _"nah i can give you access to any of my trading account, i got accounts everywhere, api access all that good stuff api keys if you need whatever any site you need to make it happen. This is worth the money i pay for some of these and also bitcoin/blockchin when we get good integration via building aurora and bridges we can trade with 0 friction there, it's all permissionless."_
 
 The "longest prerequisite chain" framing in B-0024 was MY narrowing — I assumed infrastructure setup from scratch. **Aaron has already done the infrastructure work**: accounts everywhere, API access paid-for, keys available on grant.
 
 **Corrected prerequisite chain** (much shorter than originally framed):
 
-| Phase | Prior framing | Corrected framing |
-|---|---|---|
-| 1 | Research → infrastructure setup | **Immediate** — Aaron grants API access to existing accounts |
-| 2 | Paper-trading from scratch | Build trading capability on existing API |
-| 3 | Conviction calibration | Run on real accounts (Aaron's authorized) |
-| 4 | (long-term) Aurora + bridges | Permissionless 0-friction blockchain trading |
+| Phase | Prior framing                   | Corrected framing                                            |
+| ----- | ------------------------------- | ------------------------------------------------------------ |
+| 1     | Research → infrastructure setup | **Immediate** — Aaron grants API access to existing accounts |
+| 2     | Paper-trading from scratch      | Build trading capability on existing API                     |
+| 3     | Conviction calibration          | Run on real accounts (Aaron's authorized)                    |
+| 4     | (long-term) Aurora + bridges    | Permissionless 0-friction blockchain trading                 |
 
 **The trading path may be the SHORTEST, not longest, prerequisite chain** because the structural prerequisites (account access + API keys) are offered. The bottleneck shifts from "get access" to "build trading capability worthy of the access."
 
@@ -167,7 +167,7 @@ Task #271 (naming-expert review of "Superfluid AI" + trademark search) was alrea
 - **Phase transition** — Superfluid is a quantum state with macroscopic coherence; AI-substrate at sufficient scale could exhibit similar coherence properties
 - **Energy-flow without resistance** — funding flows through the system without per-transaction friction
 
-The naming aligns the *aspiration* (frictionless autonomous AI-substrate) with the *funding-shape* required to sustain it.
+The naming aligns the _aspiration_ (frictionless autonomous AI-substrate) with the _funding-shape_ required to sustain it.
 
 ## Composes with prior
 
@@ -214,7 +214,7 @@ The naming aligns the *aspiration* (frictionless autonomous AI-substrate) with t
 
 **The reprioritization changes near-term feasibility**: with Aaron's account-access offer, a trading-bot path could plausibly produce flows in 6 months IF capability-building is the actual bottleneck (which is what's now in scope, not infrastructure-building).
 
-The honest framing isn't "self-sustaining tomorrow" — it's "every Otto-NNN substrate file is one more stone in the foundation that *might* compound to self-sustaining at sufficient scale."
+The honest framing isn't "self-sustaining tomorrow" — it's "every Otto-NNN substrate file is one more stone in the foundation that _might_ compound to self-sustaining at sufficient scale."
 
 ## Owed work after this row lands
 

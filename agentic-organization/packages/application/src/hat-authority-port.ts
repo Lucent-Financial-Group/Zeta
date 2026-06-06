@@ -1,8 +1,4 @@
-import {
-  CommandType,
-  HatAssignmentAuthorityState,
-  type HatDefinition,
-} from "../../domain/src/index.ts";
+import { CommandType, HatAssignmentAuthorityState, type HatDefinition } from "../../domain/src/index.ts";
 import {
   HatAuthorityDecisionStatus,
   type HatAuthorityDecision,
@@ -56,9 +52,7 @@ export function createHatAuthorityPort(input: CreateHatAuthorityPortInput): HatA
   return {
     evaluateHatAuthority: async (request) => {
       const decisionId = input.createId("hat-authority-decision");
-      const authority = await input.hatAssignmentAuthorityReader.findHatAssignmentAuthority(
-        request.hatAssignmentId,
-      );
+      const authority = await input.hatAssignmentAuthorityReader.findHatAssignmentAuthority(request.hatAssignmentId);
 
       if (authority === undefined) {
         return denied(HatAuthorityDecisionStatus.Missing, decisionId, policyVersion);

@@ -4,6 +4,7 @@ description: 2026-04-19 Aaron clarified the scope of "lets build some stuff" —
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Anomaly detection AND creation — paired feature
 
 ## Verbatim
@@ -22,12 +23,12 @@ Aaron's naming is deliberate: detection AND creation. Same
 sentence, same feature. This composes with the "more
 duality!!" clause already in the coined-term cluster:
 
-| Duality pair | Negative / catch | Positive / emit |
-|---|---|---|
-| FFT / Beacon | Filter Termination | Beacon readiness |
-| Eve / Delta (in ECRP) | threshold-before | change-operator |
-| Plot-hole / coinage | detect incoherence | emit new coherence |
-| **Anomaly (detection)** | **catch drift** | **create novelty** |
+| Duality pair            | Negative / catch   | Positive / emit    |
+| ----------------------- | ------------------ | ------------------ |
+| FFT / Beacon            | Filter Termination | Beacon readiness   |
+| Eve / Delta (in ECRP)   | threshold-before   | change-operator    |
+| Plot-hole / coinage     | detect incoherence | emit new coherence |
+| **Anomaly (detection)** | **catch drift**    | **create novelty** |
 
 The pair carries the same structural commitment as DBSP's
 retraction-native algebra — adds and retractions are

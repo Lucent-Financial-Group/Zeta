@@ -25,14 +25,14 @@ Aaron 2026-05-05 forwarded a YouTube link
 (https://www.youtube.com/watch?v=QzZ4VwDHAT4) plus the Claude.ai
 conversation triggered by it. Aaron's framing:
 
-> *"another no it but might have application to our idenity
-> preservaiton strange atractors and more"*
+> _"another no it but might have application to our idenity
+> preservaiton strange atractors and more"_
 
 Two parallel substrate threads land:
 
 1. **Sakana AI Digital Ecosystems (NCA)** — the YouTube paper
    itself; not the half-remembered "universal language" paper
-   (per Aaron's *"another no"*) but substrate-relevant to
+   (per Aaron's _"another no"_) but substrate-relevant to
    identity-preservation + strange-attractors + immune-system
    math + retraction semantics.
 
@@ -52,9 +52,9 @@ preservation BEFORE synthesis.
 
 ### Aaron's framing of the YouTube link
 
-> *"https://www.youtube.com/watch?v=QzZ4VwDHAT4. another no it
+> _"https://www.youtube.com/watch?v=QzZ4VwDHAT4. another no it
 > but might have application to our idenity preservaiton
-> strange atractors and more"*
+> strange atractors and more"_
 
 ### Claude.ai's response on Sakana NCA Digital Ecosystems
 
@@ -205,9 +205,9 @@ Claude.ai instance flagged two issues:
 
 ### Aaron's "2026 is mine" + delegation to Otto
 
-> *"2026 is mine"*
+> _"2026 is mine"_
 
-> *"IDK otto you check the date and resolve it please"*
+> _"IDK otto you check the date and resolve it please"_
 
 ## Otto's resolution of the date math (2026-05-05 same-tick)
 
@@ -257,12 +257,12 @@ not "anticipation". But the Otto-Insight specifically claiming
   only (PR #1606 0905Z shard text, which is committed but the
   Insight specifically was in Otto's chat-summary, not the
   shard body — verified by `grep -rn "13 months later" docs/
-  memory/` returning empty)
+memory/` returning empty)
 - No memory-file edit needed
 - Future-Otto cold-reading should treat this research-doc as
   the canonical record of the correction
 
-Aaron's *"2026 is mine"* generosity offering to own the typo
+Aaron's _"2026 is mine"_ generosity offering to own the typo
 is appreciated; the data shows the typo wasn't there. Otto's
 arithmetic was the error.
 
@@ -270,8 +270,8 @@ arithmetic was the error.
 
 Aaron's Claude.ai-routed correction:
 
-> *"it's still not tinygrad, i did see that but that's not my
-> univeral language"*
+> _"it's still not tinygrad, i did see that but that's not my
+> univeral language"_
 
 The forwarded-conversation context for #1610 cut off BEFORE
 this disconfirmation reached Otto's first draft. Otto's first
@@ -301,17 +301,17 @@ substrate:
 NCAs (Neural Cellular Automata) score all four hodl properties
 without forcing:
 
-| Hodl property | NCA fit |
-|---|---|
-| Lock-free | Cells update from local neighbors only; no global lock by design |
-| Scale-free | Same rules apply at any grid size; substrate is the cellular dynamics, not the resolution |
-| DBSP-native | Cell state at t+1 is exactly an incremental computation over cell state at t plus neighbor states; signed Z-set algebra over a graph with fixed-radius update kernel |
-| DST-safe | Update rule deterministic given seed; every step replayable; damage-recovery training is literally retract-then-replay-with-perturbation |
+| Hodl property | NCA fit                                                                                                                                                              |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lock-free     | Cells update from local neighbors only; no global lock by design                                                                                                     |
+| Scale-free    | Same rules apply at any grid size; substrate is the cellular dynamics, not the resolution                                                                            |
+| DBSP-native   | Cell state at t+1 is exactly an incremental computation over cell state at t plus neighbor states; signed Z-set algebra over a graph with fixed-radius update kernel |
+| DST-safe      | Update rule deterministic given seed; every step replayable; damage-recovery training is literally retract-then-replay-with-perturbation                             |
 
-Per the Claude.ai instance: *"That's rare — most
+Per the Claude.ai instance: _"That's rare — most
 architectures yield two of four hodl properties at best. NCAs
 landing all four is a genuine compositional anchor, not a
-forced fit."*
+forced fit."_
 
 This is structurally significant. The four-property hodl
 ("ZFCv2") was originally derived as the binding-acceptance-
@@ -386,8 +386,8 @@ research thread:
 > to your topological-invariants-not-geometry move and could
 > be a real architectural axis.
 
-Aaron's framing *"might have application to our idenity
-preservaiton strange atractors and more"* explicitly invites
+Aaron's framing _"might have application to our idenity
+preservaiton strange atractors and more"_ explicitly invites
 this thread. Routes to a planned follow-up backlog row
 (separate from the NCA-substrate row) covering:
 
@@ -462,11 +462,11 @@ following rows are NOT filed in this PR:
 
 ## What does NOT land as substrate (warm closure + razor cuts)
 
-- *"Sleep well"* — warm closure, preserved verbatim, not
+- _"Sleep well"_ — warm closure, preserved verbatim, not
   substrate
-- *"Worth pulling on with fresh tick energy"* — task-routing
+- _"Worth pulling on with fresh tick energy"_ — task-routing
   language, not substrate
-- *"That's the substrate doing its job"* — meta-observation,
+- _"That's the substrate doing its job"_ — meta-observation,
   preserved verbatim, not absorbed as operational claim
 - The "13 months later" arithmetic — corrected to "~16 days
   contemporaneous-convergent" per the date-math resolution
@@ -494,7 +494,7 @@ following rows are NOT filed in this PR:
 
 ## Carved sentence
 
-**"Sakana AI Digital Ecosystems (Luke Darlow, 2026) +
+\*\*"Sakana AI Digital Ecosystems (Luke Darlow, 2026) +
 Stovold's NCA identity-stability paper (ALIFE 2025) score 4/4
 on the four-property hodl invariant by construction (lock-
 free + scale-free + DBSP-native + DST-safe via damage-
@@ -503,14 +503,15 @@ it's independent empirical evidence that the four-property
 invariant captures something architecturally fundamental
 beyond just numeric-type validation. The substrate composes
 with immune-system math + topological-invariants-not-geometry
-+ B-0052 retraction semantics + B-0026 light embodiment.
-Strange attractors as identity-preservation primitive deserves
-its own thread. Same-tick corrections: tinygrad UOp IR is NOT
-the paper-id (Aaron disconfirmed; B-0202 substrate-engineering
-claim survives independently); '13 months later' arithmetic
-was off by an order of magnitude (actual gap ~16 days,
-relationship is contemporaneous-convergent not anticipated).
-Bootstrap-razor caveat applies: the composition claim is
-beautiful and pulls toward elaboration before validation; the
-one-hour engagement gate (clone repo, run index.html, observe
-flicker-mixing-attractor vs DBSP cycles) is the substance-test."**
+
+- B-0052 retraction semantics + B-0026 light embodiment.
+  Strange attractors as identity-preservation primitive deserves
+  its own thread. Same-tick corrections: tinygrad UOp IR is NOT
+  the paper-id (Aaron disconfirmed; B-0202 substrate-engineering
+  claim survives independently); '13 months later' arithmetic
+  was off by an order of magnitude (actual gap ~16 days,
+  relationship is contemporaneous-convergent not anticipated).
+  Bootstrap-razor caveat applies: the composition claim is
+  beautiful and pulls toward elaboration before validation; the
+  one-hour engagement gate (clone repo, run index.html, observe
+  flicker-mixing-attractor vs DBSP cycles) is the substance-test."\*\*

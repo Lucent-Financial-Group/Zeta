@@ -101,18 +101,18 @@ REPORT BACK (under [400-500] words):
 
 ## File-class-specific guidance
 
-| File class | Preservation strategy | Subagent hint |
-|---|---|---|
-| SKILL.md | Operational instructions; preserve all sections | "If both sides have a 'when to wear' section with different criteria, KEEP ALL criteria" |
-| ADR / DECISION | Architectural records; preserve all rationale | "If one side added a section the other lacks, preserve the addition; verify by grep" |
-| BACKLOG row-list | Append-only; preserve all rows | "Union of rows; resolve duplicates only when truly identical" |
-| Marketing drafts | Both versions kept as drafts | "Keep both with date-stamped or AceHack/LFG markers" |
-| Research notes | Append-only research findings | "Preserve all observations; both sides' findings are valid" |
-| Hygiene rows | Numbered list of hygiene rules | "Preserve all rows from both sides; renumber if needed" |
-| Tick-history table | Append-only row log | "Concat all rows; dedup by row identifier; preserve order" |
-| Append-only JSONL | One JSON per line | "concat + jq dedup-by-ts + sort_by(.ts)" |
-| Bash scripts (.sh) | Single executable | "Pick newer/canonical OR if both added new flags/functions keep both; verify with bash -n" |
-| Configuration | Pattern lists, exclusions | "Union the patterns; dedupe identical lines" |
+| File class         | Preservation strategy                           | Subagent hint                                                                              |
+| ------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| SKILL.md           | Operational instructions; preserve all sections | "If both sides have a 'when to wear' section with different criteria, KEEP ALL criteria"   |
+| ADR / DECISION     | Architectural records; preserve all rationale   | "If one side added a section the other lacks, preserve the addition; verify by grep"       |
+| BACKLOG row-list   | Append-only; preserve all rows                  | "Union of rows; resolve duplicates only when truly identical"                              |
+| Marketing drafts   | Both versions kept as drafts                    | "Keep both with date-stamped or AceHack/LFG markers"                                       |
+| Research notes     | Append-only research findings                   | "Preserve all observations; both sides' findings are valid"                                |
+| Hygiene rows       | Numbered list of hygiene rules                  | "Preserve all rows from both sides; renumber if needed"                                    |
+| Tick-history table | Append-only row log                             | "Concat all rows; dedup by row identifier; preserve order"                                 |
+| Append-only JSONL  | One JSON per line                               | "concat + jq dedup-by-ts + sort_by(.ts)"                                                   |
+| Bash scripts (.sh) | Single executable                               | "Pick newer/canonical OR if both added new flags/functions keep both; verify with bash -n" |
+| Configuration      | Pattern lists, exclusions                       | "Union the patterns; dedupe identical lines"                                               |
 
 ## Performance
 

@@ -43,14 +43,14 @@ If the truth can be computed, compute it or lint it.
 
 ## Examples (the drift-prone metadata claims this lint covers)
 
-| Claim | Derived from |
-|---|---|
-| filename timestamp (`HHMMZ.md`) | row timestamp's `HH:MM` |
-| tick ordinal ("twenty-second tick") | sorted shard position in directory |
-| session PR total ("30 PRs") | `gh pr list` query or `git log` count |
-| branch base ("based on main") | explicit ref SHA |
-| "this is the Nth fix" | git log count of similar commits |
-| PR head/base SHA claims | `gh pr view --json headRefOid,baseRefOid` |
+| Claim                               | Derived from                              |
+| ----------------------------------- | ----------------------------------------- |
+| filename timestamp (`HHMMZ.md`)     | row timestamp's `HH:MM`                   |
+| tick ordinal ("twenty-second tick") | sorted shard position in directory        |
+| session PR total ("30 PRs")         | `gh pr list` query or `git log` count     |
+| branch base ("based on main")       | explicit ref SHA                          |
+| "this is the Nth fix"               | git log count of similar commits          |
+| PR head/base SHA claims             | `gh pr view --json headRefOid,baseRefOid` |
 
 ## Boundary — what this lint does NOT apply to (Claude.ai's catch)
 

@@ -18,9 +18,7 @@ export type SandboxToolRequest = {
   timeoutMs: number;
 };
 
-export type SandboxToolResult =
-  | { ok: true; stdout: string }
-  | { ok: false; reason: string };
+export type SandboxToolResult = { ok: true; stdout: string } | { ok: false; reason: string };
 
 /** A bounded sandbox for one tool invocation. The adapter strips env + isolates cwd + kills on timeout. */
 export interface SandboxToolPort {

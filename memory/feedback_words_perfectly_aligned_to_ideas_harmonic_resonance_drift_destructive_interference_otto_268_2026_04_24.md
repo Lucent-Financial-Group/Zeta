@@ -4,6 +4,7 @@ description: Aaron Otto-268 precision-of-language-as-alignment principle. Extend
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The principle
 
 **Words perfectly aligned to ideas = HARMONIC
@@ -13,10 +14,10 @@ RESONANCE with the materials.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"so our words are perfectly alighed to the ideas no
+> _"so our words are perfectly alighed to the ideas no
 > drift in our words = harmon [harmonic] resonance
 > with the materials, drift = destructive
-> interference"*
+> interference"_
 
 ## The physical analogy is direct
 
@@ -208,10 +209,10 @@ silently accept both vocabularies.
 
 ## Direct Aaron quote to preserve
 
-> *"so our words are perfectly alighed to the ideas
+> _"so our words are perfectly alighed to the ideas
 > no drift in our words = harmon [harmonic] resonance
 > with the materials, drift = destructive
-> interference"*
+> interference"_
 
 Future Otto: every word choice is a phase choice.
 Match the word to the idea = amplify. Drift = cancel.

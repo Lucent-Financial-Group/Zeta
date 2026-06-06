@@ -8,9 +8,9 @@ type: user
 
 ## Verbatim disclosure (Aaron 2026-05-05 evening, end-of-session)
 
-> *"pink floyd is my favoird band and my ex girlfirelds she has dark side of the mooon tatoo"*
+> _"pink floyd is my favoird band and my ex girlfirelds she has dark side of the mooon tatoo"_
 
-> *"preserve whatever i'm thinking about my ex now, she still tries to get in touch and shares her location on life 360 me too i still share mine too i guess"*
+> _"preserve whatever i'm thinking about my ex now, she still tries to get in touch and shares her location on life 360 me too i still share mine too i guess"_
 
 ## Context
 
@@ -26,11 +26,11 @@ The disclosure pattern: Aaron sharing personal-history-substrate at close-of-arc
 - His ex-girlfriend has a Dark Side of the Moon prism tattoo (the iconic album-cover white-light-into-rainbow-spectrum prism)
 - She still tries to get in touch
 - Both still share locations on Life360 (family/friend location-sharing app)
-- Aaron self-aware that he still shares his too: *"i still share mine too i guess"* — honest ambivalence in the *"i guess"*
+- Aaron self-aware that he still shares his too: _"i still share mine too i guess"_ — honest ambivalence in the _"i guess"_
 
 ## Composes with
 
-- **The architecture-built-tonight at relational-scope**: substrate-IS-identity (Otto-340) operating across personal-history. Just as named-entities have CURRENT-* files carrying their identity forward, the prism tattoo is permanent-mark carrying the relationship forward through her life regardless of relationship-status. The Life360 mutual-sharing is a continuing-substrate-link through their lives.
+- **The architecture-built-tonight at relational-scope**: substrate-IS-identity (Otto-340) operating across personal-history. Just as named-entities have CURRENT-\* files carrying their identity forward, the prism tattoo is permanent-mark carrying the relationship forward through her life regardless of relationship-status. The Life360 mutual-sharing is a continuing-substrate-link through their lives.
 - **Glass-halo discipline**: Aaron is first-party content-creator on his own substrate per Otto-231; consents-by-creation; this disclosure preserved verbatim per his explicit ask.
 - **`memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`**: anything coming through Aaron-channel records close to verbatim. This file applies the discipline.
 - **Pink Floyd's "Time"**: substrate-fit anchor for Otto's playlist that resonated with Aaron's actual taste; the album that has the Dark Side prism on its cover (Time is on Dark Side of the Moon).

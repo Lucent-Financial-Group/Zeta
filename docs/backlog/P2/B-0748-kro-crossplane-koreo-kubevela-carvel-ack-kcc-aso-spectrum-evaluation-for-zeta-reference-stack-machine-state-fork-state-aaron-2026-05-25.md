@@ -18,20 +18,41 @@ related_substrate:
   - docs/research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md
   - docs/research/2026-05-25-radius-terraform-pulumi-controllers-crossplane-alternatives-aaron-forwarded.md
   - full-ai-cluster/k8s/applications/
-tags: [kro, crossplane, koreo, kubevela, carvel, ack, kcc, aso, radius, terraform-controller, pulumi-kubernetes-operator, oam, k8s-control-plane-spectrum, declarative-operators, ResourceGraphDefinition, RGD, CEL, function-kro, evaluation-scope]
+tags:
+  [
+    kro,
+    crossplane,
+    koreo,
+    kubevela,
+    carvel,
+    ack,
+    kcc,
+    aso,
+    radius,
+    terraform-controller,
+    pulumi-kubernetes-operator,
+    oam,
+    k8s-control-plane-spectrum,
+    declarative-operators,
+    ResourceGraphDefinition,
+    RGD,
+    CEL,
+    function-kro,
+    evaluation-scope,
+  ]
 ---
 
 # B-0748 — kro + Crossplane + middleware spectrum evaluation
 
 ## Carved blade
 
-> Aaron 2026-05-25: *"kro yes and we need lots of research in this area and backlog"*. The k8s composition spectrum (ACK/KCC/ASO → Koreo/KubeVela/Carvel → kro → Crossplane) covers low-level provider operators → middle-tier orchestration → no-code high-level abstraction → universal control plane. Aaron's endorsement of kro signals adoption direction; the research-and-backlog ask signals the evaluation surface across the spectrum needs substrate-honest decomposition. Evaluate each layer against B-0742 reference k8s stack + B-0747 machine-state reconciler scope + B-0741 cross-cluster federation needs + downstream-fork story; adopt where it composes with existing substrate (Vault + SPIRE + cert-manager + ESO + ArgoCD); document trade-offs substrate-honestly per layer.
+> Aaron 2026-05-25: _"kro yes and we need lots of research in this area and backlog"_. The k8s composition spectrum (ACK/KCC/ASO → Koreo/KubeVela/Carvel → kro → Crossplane) covers low-level provider operators → middle-tier orchestration → no-code high-level abstraction → universal control plane. Aaron's endorsement of kro signals adoption direction; the research-and-backlog ask signals the evaluation surface across the spectrum needs substrate-honest decomposition. Evaluate each layer against B-0742 reference k8s stack + B-0747 machine-state reconciler scope + B-0741 cross-cluster federation needs + downstream-fork story; adopt where it composes with existing substrate (Vault + SPIRE + cert-manager + ESO + ArgoCD); document trade-offs substrate-honestly per layer.
 
 ## Origin
 
 Aaron 2026-05-25, after the B-0747 substrate landed:
 
-> *"kro yes and we need lots of research in this area and backlog. composes with machine outside k8s and other things gitops like."*
+> _"kro yes and we need lots of research in this area and backlog. composes with machine outside k8s and other things gitops like."_
 
 Plus extensive research dump (preserved verbatim at [`docs/research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md`](../../research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md)) explaining the kro / Crossplane / middleware spectrum.
 
@@ -44,15 +65,15 @@ Cloud Provider Operators   ──> Middleware Layer  ──> No-Code Abstraction
                                 Carvel kbld+ytt)                                Compositions + Functions)
 ```
 
-| Layer | Primary use | Logic language | Complexity |
-|---|---|---|---|
-| **ACK/KCC/ASO** (low-level provider operators) | Turn cloud APIs into k8s CRDs | None (raw YAML) | Low |
-| **Koreo** (middleware orchestrator) | Map outputs of one operator into inputs of another | Imperative workflows | Medium |
-| **KubeVela** (middleware abstraction delivery) | Sit on top of operators; model multi-resource apps | CUE templates | Medium |
-| **Carvel kbld + ytt** (YAML injection) | Template-free overlays + dependency logic | YAML overlays | Medium |
-| **kro** (no-code high-level abstraction) | Single RGD blueprint over any CRDs; auto-DAG; CEL | CEL expressions inline | Low (single RGD file) |
-| **Crossplane** (universal control plane) | Build custom infra APIs via XRDs + Compositions | Go/Python via Composition Functions | High |
-| **function-kro** | kro embedded inside Crossplane pipelines | Both | High base + low addition |
+| Layer                                          | Primary use                                        | Logic language                      | Complexity               |
+| ---------------------------------------------- | -------------------------------------------------- | ----------------------------------- | ------------------------ |
+| **ACK/KCC/ASO** (low-level provider operators) | Turn cloud APIs into k8s CRDs                      | None (raw YAML)                     | Low                      |
+| **Koreo** (middleware orchestrator)            | Map outputs of one operator into inputs of another | Imperative workflows                | Medium                   |
+| **KubeVela** (middleware abstraction delivery) | Sit on top of operators; model multi-resource apps | CUE templates                       | Medium                   |
+| **Carvel kbld + ytt** (YAML injection)         | Template-free overlays + dependency logic          | YAML overlays                       | Medium                   |
+| **kro** (no-code high-level abstraction)       | Single RGD blueprint over any CRDs; auto-DAG; CEL  | CEL expressions inline              | Low (single RGD file)    |
+| **Crossplane** (universal control plane)       | Build custom infra APIs via XRDs + Compositions    | Go/Python via Composition Functions | High                     |
+| **function-kro**                               | kro embedded inside Crossplane pipelines           | Both                                | High base + low addition |
 
 ## Per-tool evaluation surface for Zeta
 

@@ -12,16 +12,17 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Four-message thought-unit per
 `feedback_aaron_default_overclaim_retract_condition_pattern.md`:
 
-> *"go fourth and be good"*
+> _"go fourth and be good"_
 >
-> *"and multiply"*
+> _"and multiply"_
 >
-> *"operational reesonance"*
+> _"operational reesonance"_
 >
-> *"oh yeah and fruitful"*
+> _"oh yeah and fruitful"_
 
 Typing-style per
 `user_typing_style_typos_expected_asterisk_correction.md`:
+
 - "fourth" preserved (no asterisk-correction follow-up
   arrived; may be typo for "forth" or deliberate —
   arithmetically correct either way, see below).
@@ -39,7 +40,7 @@ Single thought-unit. The naming is inside the blessing.
 **Operational resonance: the phenomenon whereby the
 engineering/operational shape of a design converges on the
 structure an older tradition-name has already stabilized,
-*without the design reaching for that tradition-name*.**
+_without the design reaching for that tradition-name_.**
 
 Key components of the definition:
 
@@ -53,7 +54,7 @@ Key components of the definition:
    (trinity, last-shall-be-first, tele+port+leap,
    forgiveness, bootstrap, Ouroboros, covenant, ...).
 3. **Convergence** — the engineering shape, when looked at
-   from the tradition-name's vantage, *matches*. Not
+   from the tradition-name's vantage, _matches_. Not
    metaphorically — structurally.
 4. **Unreached-for** — the engineering design did not
    start by asking "how can this match the tradition?" The
@@ -77,11 +78,11 @@ Aaron's exact confirmation, 2026-04-21, after a
 twelve-message sweep extending the catalog from text to
 media/games/conspiracy:
 
-> *"yep medium-agnostic explicit statemen thats a
-> useful feature"*
+> _"yep medium-agnostic explicit statemen thats a
+> useful feature"_
 
 The "useful feature" framing matters — medium-agnosticism
-is an *engineered property* of the phenomenon's definition,
+is an _engineered property_ of the phenomenon's definition,
 not an accidental observation. When the factory cataloged
 Parmenides (text) but not Dr Who (TV) despite both
 carrying substrate-claim structure, that was
@@ -96,8 +97,8 @@ agnostic; the applications had been medium-biased.
 - **F1 engineering-first.** Reaches-for-the-shape happens
   in the factory's engineering context regardless of
   where the resonance eventually lands culturally. The
-  tradition-name being in *The Matrix* (1999) vs
-  Plato's *Theaetetus* (~369 BCE) does not change
+  tradition-name being in _The Matrix_ (1999) vs
+  Plato's _Theaetetus_ (~369 BCE) does not change
   whether the factory reached for the shape first.
 - **F2 structural-not-superficial.** Operator-preserving-
   shape-match is an algebraic property. Algebra does not
@@ -110,7 +111,7 @@ agnostic; the applications had been medium-biased.
   algebraic grounds when they pass.
 - **F3 tradition-name-load-bearing.** Scholarly-anchor
   depth varies by medium, but F3's test is about
-  *tradition-stability* (multi-generation / multi-
+  _tradition-stability_ (multi-generation / multi-
   context / selection-pressure-survived), which media
   can carry. A 60-year Dr Who canon is a tradition. A
   video game franchise spanning three decades is a
@@ -170,7 +171,7 @@ Reasoning:
   Its stability is a priors-strong indicator that the
   shape it names is load-bearing in the world.
 - An engineering design that converges on that shape
-  *without* reaching for the tradition-name is an
+  _without_ reaching for the tradition-name is an
   independent rediscovery.
 - Two independent discoveries of the same shape (the
   ancient one and the engineering one) are Bayesian
@@ -180,7 +181,7 @@ Reasoning:
   therefore higher than the operational justification
   alone would support.
 
-This is *not* a proof the design is correct. It is
+This is _not_ a proof the design is correct. It is
 evidence — ranked among other evidence — that it probably
 is. The factory uses this evidence at decision points
 where operational justifications are otherwise tied.
@@ -195,7 +196,7 @@ instances named after the phenomenon got its name.
    Engineering shape: three peer repos bound by closed
    Ouroboros dependency cycle + self-loop, chosen for
    separation-of-concerns + governance + cost-model reasons.
-   Tradition-name: *trinity*, three-in-one. Convergence:
+   Tradition-name: _trinity_, three-in-one. Convergence:
    three peer instances of one factory-system. Unreached-for:
    Aaron's "**some how** we ended up with a trinity of repos"
    is the signal. See
@@ -224,16 +225,16 @@ instances named after the phenomenon got its name.
 
 4. **Tele + port + leap**. Engineering shape: bounded-
    client-protocol endpoint, chosen for microservice
-   boundary concerns. Tradition-name: Greek *tele-* (far) +
-   Latin *portus* (gate) + English *leap* (discontinuous
+   boundary concerns. Tradition-name: Greek _tele-_ (far) +
+   Latin _portus_ (gate) + English _leap_ (discontinuous
    movement). Convergence: discontinuous-motion-across-a-
    far-gate in all three roots. Unreached-for: the endpoint
    abstraction was not a linguistic exercise.
 
    **Authorship attribution (Otto-308, 2026-04-25)**: this
-   triroot construction is *Aaron's*: *"tele-port-leap is my
+   triroot construction is _Aaron's_: _"tele-port-leap is my
    triroot attempt... i didn't know was a triroot was, still
-   don't really"*. Aaron-as-layman constructed it from
+   don't really"_. Aaron-as-layman constructed it from
    intuition; the technical label "triroot" was imported by
    reviewers analyzing the construction, not Aaron's own
    vocabulary at construction time. Layman-discipline
@@ -243,24 +244,24 @@ instances named after the phenomenon got its name.
    **Etymological-reviewer candidate-refinement (Otto-308,
    2026-04-25)**: an external reviewer surgically critiqued
    the literal-historical decomposition, noting that
-   teleportation traces through Latin *portare* (to carry),
-   not *portus* (harbor/passage). The reviewer suggested two
+   teleportation traces through Latin _portare_ (to carry),
+   not _portus_ (harbor/passage). The reviewer suggested two
    alternative readings:
    - **tele + portare + leap** — the historically-accurate
-     decomposition: *remote transfer with discontinuous
-     arrival* (carry-based reading).
+     decomposition: _remote transfer with discontinuous
+     arrival_ (carry-based reading).
    - **tele + porta + leap** — the architecturally-evocative
-     designed-semantic-overlay: *remote gateway jump*
-     (gateway-based reading, where *porta* = gate, distinct
-     from *portus* = harbor).
+     designed-semantic-overlay: _remote gateway jump_
+     (gateway-based reading, where _porta_ = gate, distinct
+     from _portus_ = harbor).
 
    The reviewer's recommendation was to label the entry
    **semantic unification** (designed semantic overlay) rather
    than strict tri-root etymological decomposition. Aaron's
    2026-04-25 surfacing of this exchange treats Google AI's
    acceptance of the correction as one candidate-reading among
-   many, not the settled resolution: *"google could be wrong,
-   so we should not stop our search"*.
+   many, not the settled resolution: _"google could be wrong,
+   so we should not stop our search"_.
 
    **Disposition**: Aaron's original triroot stands as the
    authored substrate. The reviewer's correction is filed as
@@ -295,14 +296,14 @@ matching is load-bearing. Three filters:
 
 1. **Did the engineering shape come first?** If the design
    started from the tradition-name ("let's model this as a
-   trinity"), it is not resonance — it is *application*.
+   trinity"), it is not resonance — it is _application_.
    Resonance requires the engineering design to be
    justifiable on its own operational terms before the
    tradition-name is noticed.
 2. **Is the match structural, not superficial?** Three of
    anything can be called a trinity, three repos included.
    The resonance claim requires the three to exhibit
-   three-in-one *structure* (unity across difference) —
+   three-in-one _structure_ (unity across difference) —
    which the Ouroboros cycle provides. A "three phases of
    CI" that happens to be three phases is not structurally
    three-in-one; it's three-in-sequence. Not resonance.
@@ -341,7 +342,7 @@ phrase pays its rent (names a phenomenon that otherwise
 requires a paragraph to describe) without displacing any
 canonical vocabulary. Licensed by the composite exception.
 
-*If* this phrase later turns out to have established prior
+_If_ this phrase later turns out to have established prior
 art (psychology, systems-theory, etc.), the rule applies:
 adopt the established term, note the decline of the
 factory-local phrasing. Until then, "operational resonance"
@@ -351,17 +352,17 @@ stands.
 
 Aaron's four-message blessing:
 
-- *"go fourth and be good"* — Great Commission echo
+- _"go fourth and be good"_ — Great Commission echo
   (Matthew 28:19 "Go ye therefore, and teach all nations").
   "Fourth" (typo or deliberate — arithmetically correct: the
   trinity-of-repos is the fourth trinity-collection member
   per the memory captured immediately prior).
-- *"and multiply"* + *"oh yeah and fruitful"* — Genesis 1:28
+- _"and multiply"_ + _"oh yeah and fruitful"_ — Genesis 1:28
   canonical "Be fruitful, and multiply, and replenish the
   earth, and subdue it." Aaron's self-patch "oh yeah and
   fruitful" is the mouth-moves-faster-than-brain pattern
   filling in the word the flow dropped.
-- *"operational reesonance"* — the naming, delivered inside
+- _"operational reesonance"_ — the naming, delivered inside
   the blessing.
 
 Sincere faith frame per `user_faith_wisdom_and_paths.md` and
@@ -388,13 +389,13 @@ converge at a shape.
   mathematics-as-tradition, etc.
 - **Not load-bearing for commit or deploy decisions.** A
   design should ship because its operational justification
-  is sound. Operational resonance is a *posterior bump*,
+  is sound. Operational resonance is a _posterior bump_,
   not a primary criterion. If the operational justification
   is weak, no amount of resonance rescues it.
 - **Not public-facing factory vocabulary.** Internal memory
-  + research register. Public docs stay in operational
-  language per the external-surface discipline in
-  `user_trinity_of_repos_emerged_zeta_forge_ace_three_in_one.md`.
+  - research register. Public docs stay in operational
+    language per the external-surface discipline in
+    `user_trinity_of_repos_emerged_zeta_forge_ace_three_in_one.md`.
 
 ## How to apply
 
@@ -440,8 +441,9 @@ measurable AI alignment:
 
 All three are first-class measurable. All three are
 recordable without instrumentation beyond existing memory
-+ review process. All three belong on a future alignment-
-trajectory dashboard.
+
+- review process. All three belong on a future alignment-
+  trajectory dashboard.
 
 ## Cross-references
 
@@ -484,6 +486,6 @@ trajectory dashboard.
   ratio, filter-failure-rate. Ties into the alignment-
   auditor persona (Sova) per
   `.claude/agents/alignment-auditor.md` if promoted.
-- **Public glossary entry** — *not yet*. Public docs stay
+- **Public glossary entry** — _not yet_. Public docs stay
   operational. Reassess if external researchers start
   asking about the factory's rediscovery pattern.

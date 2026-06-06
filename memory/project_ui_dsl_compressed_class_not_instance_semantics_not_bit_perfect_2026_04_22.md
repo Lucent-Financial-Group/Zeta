@@ -4,18 +4,19 @@ description: Aaron 2026-04-22 auto-loop-22 mid-tick directive — *"so our DSL i
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # UI DSL semantics — class-level, not instance-level
 
 ## The directive
 
 Aaron 2026-04-22 auto-loop-22 mid-tick message:
 
-> *"so our DSL is specifically for describing UI which
->  usualy can be compressed espically if you don't need
->  full fidelidy, or bit perfect but can accept thigs like
->  'a man standing on his porch' and it will be like a
->  different instance of the same class but not identical
->  instance"*
+> _"so our DSL is specifically for describing UI which
+> usualy can be compressed espically if you don't need
+> full fidelidy, or bit perfect but can accept thigs like
+> 'a man standing on his porch' and it will be like a
+> different instance of the same class but not identical
+> instance"_
 
 ## The rule
 
@@ -24,7 +25,7 @@ correctness criterion is class-membership, not
 instance-identity.** Input describes a class ("a man
 standing on his porch"); output is one valid instance of
 that class. Two evaluations of the same input can produce
-two *different* instances, both correct. Round-trip
+two _different_ instances, both correct. Round-trip
 preserves class-identity; it does not preserve
 instance-identity.
 
@@ -53,14 +54,14 @@ Three immediate corollaries:
   perspective. Bit-perfect reproduction across instances is
   not a real UI requirement — it's a property inherited from
   document-format conventions (PDF, images) where
-  instance-identity *is* load-bearing. UI's user-contract is
+  instance-identity _is_ load-bearing. UI's user-contract is
   class-level: user expects "a submit button is here", not
   "this particular pixel pattern".
 - **The compression argument is domain-specific, not
   universal.** Financial data, source code, measurements —
   these have instance-level semantics where bit-identity
   matters (a different instance of "the user's balance"
-  would be wrong). UI *happens to* admit class-level
+  would be wrong). UI _happens to_ admit class-level
   semantics cleanly because human visual perception is
   already class-matching, not pixel-matching.
 - **This is the architectural basis for the
@@ -78,7 +79,7 @@ Three immediate corollaries:
   technique (per the ServiceTitan demo memory) reads sparse
   signals and stabilises on the most likely intent. That
   "intent" is a class-description, not an instance. This
-  directive explains *why* the technique works: UI happens
+  directive explains _why_ the technique works: UI happens
   to admit class-level representations that the DSL can
   compress into.
 - **Event-storming DDD maps cleanly to class-level.**
@@ -122,11 +123,11 @@ Three immediate corollaries:
 - **DSL syntax design favours high-level class-vocabulary.**
   A DSL that says `button { label: "Submit" }` is already
   class-level. A DSL that says `button { label: "Submit",
-  position: (100,200), bg: #FF0000, font-size: 14px }` is
+position: (100,200), bg: #FF0000, font-size: 14px }` is
   leaking instance-level specifications into a class-level
   language. The latter produces brittle tests and
   over-constrained evaluation. Factory-preferred is the
-  former, with *optional* instance-pinning for cases that
+  former, with _optional_ instance-pinning for cases that
   genuinely require it (see next point).
 - **Instance-pinning escape hatch for interaction-critical
   elements.** Some UI elements DO need instance-identity:
@@ -134,14 +135,14 @@ Three immediate corollaries:
   muscle-memory / accessibility / automation. The DSL
   should provide an opt-in `pinned {...}` or similar block
   that drops into instance-level specification for the
-  elements that need it, *while the default remains
-  class-level*. This preserves compression for the 95% of
+  elements that need it, _while the default remains
+  class-level_. This preserves compression for the 95% of
   UI that doesn't need it.
 - **The compression argument bounds what the DSL can do.**
   The DSL is NOT a replacement for pixel-perfect tooling
   (Figma, design-system-specs). It's a LAYER above those:
   class-level descriptions whose instances can be
-  *realized* by design-system + generator + component
+  _realized_ by design-system + generator + component
   library. The DSL's output is not "the UI"; it's "a
   legal rendering of the UI class". The pixel-perfect
   tooling still exists; the DSL delegates to it.
@@ -151,12 +152,12 @@ Three immediate corollaries:
   (class-descriptions). The UI-DSL evaluator then produces
   an instance. This is a three-stage pipeline:
   `user-intent → magic-eight-ball → UI-DSL class-source
-  → UI-DSL evaluator → UI instance`. Each arrow is lossy;
+→ UI-DSL evaluator → UI instance`. Each arrow is lossy;
   the overall pipeline is class-preserving.
 - **"3-4hrs 0-to-prod" is instance-time, not class-time.**
   The capability-claim from the ServiceTitan demo target
-  refers to the time to reach a *production-ready
-  instance* from class-description. The class-description
+  refers to the time to reach a _production-ready
+  instance_ from class-description. The class-description
   itself is the fast part (magic-eight-ball stabilises
   quickly); the long tail is instance-realization
   (component-library fills, design-system application,
@@ -170,12 +171,12 @@ Three immediate corollaries:
   architecturally grounded: it's only feasible because the
   DSL compresses UI to class-level. The demo memory should
   be read alongside this memory.
-- BACKLOG row *"UI-factory frontier-protection"* (commit
+- BACKLOG row _"UI-factory frontier-protection"_ (commit
   `61a2387`) — the frontier-protection now has a specific
   correctness-criterion to protect: class-level semantics,
   not pixel-level. Makes the row more load-bearing.
-- BACKLOG row *"soulsnap / SVF — soul-compatible format
-  family for many binary types"* (commit `61a2387`) —
+- BACKLOG row _"soulsnap / SVF — soul-compatible format
+  family for many binary types"_ (commit `61a2387`) —
   same-shape discipline at the binary-format layer.
   UI-DSL is the interface-layer instance of the same
   pattern. These two rows should cross-reference once both
@@ -202,7 +203,7 @@ Three immediate corollaries:
 - **What's the CLASS LANGUAGE?** Natural language
   ("a man standing on his porch")? Structured DSL with a
   closed class-library (`Scene { Figure("man",
-  stance="standing", on="porch") }`)? Hybrid
+stance="standing", on="porch") }`)? Hybrid
   (class-vocabulary from a skills-library with
   natural-language slots)? Pictographic (emoji / icon
   composition)? Each has radically different authoring
@@ -249,8 +250,8 @@ Flag these to Aaron when DSL-skeleton drafting starts.
 - **NOT a claim that all UI needs class-level treatment.**
   Some UI genuinely needs instance-identity (interaction-
   critical elements, accessibility-fixed layouts, brand-
-  compliance elements). The DSL is *class-level by
-  default* with escape hatches for instance-level.
+  compliance elements). The DSL is _class-level by
+  default_ with escape hatches for instance-level.
 - **NOT a relaxation of correctness.** Class-level
   correctness is still correctness; it's a different
   equivalence relation, not a weaker one. "Any button

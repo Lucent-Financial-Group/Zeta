@@ -13,16 +13,35 @@ import {
 
 function tc(id: string): TestCase {
   return {
-    testCaseId: id, suiteId: "s1", organizationId: "org-lfg", projectId: "p1", initiativeId: "i1",
-    brdId: "brd1", title: id, scenario: "x", steps: [], executionMode: TestExecutionMode.BrowserAutomation,
-    authoredByHatId: "qa_verifier", status: TestCaseStatus.Active, createdAt: "2026-05-30T00:00:00.000Z",
+    testCaseId: id,
+    suiteId: "s1",
+    organizationId: "org-lfg",
+    projectId: "p1",
+    initiativeId: "i1",
+    brdId: "brd1",
+    title: id,
+    scenario: "x",
+    steps: [],
+    executionMode: TestExecutionMode.BrowserAutomation,
+    authoredByHatId: "qa_verifier",
+    status: TestCaseStatus.Active,
+    createdAt: "2026-05-30T00:00:00.000Z",
   };
 }
 function run(id: string, testCaseId: string, outcome: TestRunOutcome, finishedAt: string): TestRun {
   return {
-    testRunId: id, testCaseId, suiteId: "s1", organizationId: "org-lfg", initiativeBranch: "feat/x",
-    executorHatId: "browser_automation_qa", agentId: "a1", mode: TestExecutionMode.BrowserAutomation,
-    outcome, evidence: [], startedAt: finishedAt, finishedAt,
+    testRunId: id,
+    testCaseId,
+    suiteId: "s1",
+    organizationId: "org-lfg",
+    initiativeBranch: "feat/x",
+    executorHatId: "browser_automation_qa",
+    agentId: "a1",
+    mode: TestExecutionMode.BrowserAutomation,
+    outcome,
+    evidence: [],
+    startedAt: finishedAt,
+    finishedAt,
   };
 }
 

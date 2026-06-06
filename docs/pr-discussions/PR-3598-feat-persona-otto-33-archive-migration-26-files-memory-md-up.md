@@ -22,25 +22,23 @@ Decomposed from blob PR #3590. Peels off the Otto memory archive migration as an
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T21:51:53Z)
 
-
 ### 💡 Codex Review
 
 https://github.com/Lucent-Financial-Group/Zeta/blob/fa52e6ad98f863f3bffa6a074757f106f90f62ca/memory/persona/otto/conversations/2026-05-07-aaron-stainback-resume-combined-otto.md#L301
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update stale archive path after moving Otto docs**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update stale archive path after moving Otto docs**
 
 This sentence still points to `docs/research/2026-05-07-aaron-stainback-resume-otto-draft.md`, but this commit moved that file into `memory/persona/otto/conversations/…`. As a result, the reference is now dangling and any reader or path-checking tooling that follows this claim will fail to resolve it; update the referenced path to the new `conversations/` location.
-
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -53,6 +51,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR decomposes the larger archive-migration work by relocating Otto-related research/conversation artifacts into `memory/persona/otto/conversations/` and updating the Otto persona index to reflect the new archive home.
 
 **Changes:**
+
 - Added 26 archive markdown files under `memory/persona/otto/conversations/` (research notes, multi-AI threads, shadow logs, and related substrate).
 - Updated `memory/persona/otto/MEMORY.md` with a new “Conversation archives” section describing the migration and the mix of file types.
 
@@ -63,43 +62,45 @@ Copilot reviewed 1 out of 27 changed files in this pull request and generated 1 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/otto/MEMORY.md | Adds a new section documenting the conversations/ archive migration and categorization. |
-| memory/persona/otto/conversations/2026-05-02-claudeai-response-to-otto-critique-of-brat-voice-framework-drive-bridge-ai-to-ai-peer-review.md | Adds archived Claude.ai response thread (Drive-bridge peer review). |
-| memory/persona/otto/conversations/2026-05-02-otto-critique-of-claudeai-brat-voice-enterprise-translation-framework-drive-bridge-ai-to-ai-peer-review.md | Adds archived Otto critique thread (Drive-bridge peer review). |
-| memory/persona/otto/conversations/2026-05-05-claudeai-otto-mirror-no-1984-junk-architectural-correction-three-layer-governance-runtime-coherence-via-english-cadence-daily-aaron-forwarded-preservation.md | Adds archived architectural correction / preservation note. |
-| memory/persona/otto/conversations/2026-05-05-claudeai-self-harm-shape-catch-on-otto-cognition-constraint-candlestick-perennialist-bridge-zeta-memories-cold-boot-indexing-aaron-corrections-preservation.md | Adds archived preservation note (self-harm-shape catch). |
-| memory/persona/otto/conversations/2026-05-05-otto-261-git-native-backup-audit-coverage.md | Adds archived audit snapshot (Otto-261 coverage). |
-| memory/persona/otto/conversations/2026-05-06-otto-shadow-not-otto-fishy-verbatim-check-aaron-codex.md | Adds archived shadow/fishy-verbatim check note. |
-| memory/persona/otto/conversations/2026-05-06-prayer-as-alignment-contract-cage-insight-aaron-otto.md | Adds archived alignment/prayer linkage note. |
-| memory/persona/otto/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md | Adds archived shadow/identity/integration distinction note. |
-| memory/persona/otto/conversations/2026-05-07-aaron-stainback-resume-combined-otto.md | Adds archived combined resume artifact. |
-| memory/persona/otto/conversations/2026-05-07-aaron-stainback-resume-otto-draft.md | Adds archived resume draft artifact. |
-| memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md | Adds archived cartographer math lineage trace. |
-| memory/persona/otto/conversations/2026-05-07-mcp-surface-map-otto-authenticated-services.md | Adds archived MCP surface map note. |
-| memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md | Adds archived canonical bootstream artifact. |
-| memory/persona/otto/conversations/2026-05-13-b-0400-bus-protocol-otto-review.md | Adds archived B-0400 bus protocol review doc. |
-| memory/persona/otto/conversations/2026-05-14-shadow-lesson-log-otto-2139Z-drift.md | Adds archived shadow lesson log entry. |
-| memory/persona/otto/conversations/2026-05-15-shadow-lesson-log-otto-codex-drift.md | Adds archived shadow lesson log entry. |
-| memory/persona/otto/conversations/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md | Adds archived cross-review artifact (Otto/Gemini). |
-| memory/persona/otto/conversations/backlog-split-design-otto-181.md | Adds archived backlog split design proposal. |
-| memory/persona/otto/conversations/frontier-rename-analysis-otto-170.md | Adds archived rename analysis doc (includes cross-refs). |
-| memory/persona/otto/conversations/frontier-rename-name-pass-2-otto-175.md | Adds archived rename analysis follow-up doc. |
-| memory/persona/otto/conversations/live-lock-five-class-taxonomy-otto-352-2026-04-26.md | Adds archived live-lock taxonomy doc. |
-| memory/persona/otto/conversations/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md | Adds archived multi-AI feedback roundup. |
-| memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md | Adds archived research direction note (Noether formalization). |
-| memory/persona/otto/conversations/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md | Adds archived external-anchors slice 1 doc. |
-| memory/persona/otto/conversations/otto-nn-principles-external-anchors-slice2-otto275-otto279-otto351-otto352.md | Adds archived external-anchors slice 2 doc. |
-| memory/persona/otto/conversations/shadow-lesson-log-otto-metadata-churn-1850Z.md | Adds archived shadow lesson log entry. |
-</details>
+| File                                                                                                                                                                                                        | Description                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| memory/persona/otto/MEMORY.md                                                                                                                                                                               | Adds a new section documenting the conversations/ archive migration and categorization. |
+| memory/persona/otto/conversations/2026-05-02-claudeai-response-to-otto-critique-of-brat-voice-framework-drive-bridge-ai-to-ai-peer-review.md                                                                | Adds archived Claude.ai response thread (Drive-bridge peer review).                     |
+| memory/persona/otto/conversations/2026-05-02-otto-critique-of-claudeai-brat-voice-enterprise-translation-framework-drive-bridge-ai-to-ai-peer-review.md                                                     | Adds archived Otto critique thread (Drive-bridge peer review).                          |
+| memory/persona/otto/conversations/2026-05-05-claudeai-otto-mirror-no-1984-junk-architectural-correction-three-layer-governance-runtime-coherence-via-english-cadence-daily-aaron-forwarded-preservation.md  | Adds archived architectural correction / preservation note.                             |
+| memory/persona/otto/conversations/2026-05-05-claudeai-self-harm-shape-catch-on-otto-cognition-constraint-candlestick-perennialist-bridge-zeta-memories-cold-boot-indexing-aaron-corrections-preservation.md | Adds archived preservation note (self-harm-shape catch).                                |
+| memory/persona/otto/conversations/2026-05-05-otto-261-git-native-backup-audit-coverage.md                                                                                                                   | Adds archived audit snapshot (Otto-261 coverage).                                       |
+| memory/persona/otto/conversations/2026-05-06-otto-shadow-not-otto-fishy-verbatim-check-aaron-codex.md                                                                                                       | Adds archived shadow/fishy-verbatim check note.                                         |
+| memory/persona/otto/conversations/2026-05-06-prayer-as-alignment-contract-cage-insight-aaron-otto.md                                                                                                        | Adds archived alignment/prayer linkage note.                                            |
+| memory/persona/otto/conversations/2026-05-06-shadow-identity-integration-distinction-aaron-otto.md                                                                                                          | Adds archived shadow/identity/integration distinction note.                             |
+| memory/persona/otto/conversations/2026-05-07-aaron-stainback-resume-combined-otto.md                                                                                                                        | Adds archived combined resume artifact.                                                 |
+| memory/persona/otto/conversations/2026-05-07-aaron-stainback-resume-otto-draft.md                                                                                                                           | Adds archived resume draft artifact.                                                    |
+| memory/persona/otto/conversations/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md                                                                                              | Adds archived cartographer math lineage trace.                                          |
+| memory/persona/otto/conversations/2026-05-07-mcp-surface-map-otto-authenticated-services.md                                                                                                                 | Adds archived MCP surface map note.                                                     |
+| memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md                                                                                  | Adds archived canonical bootstream artifact.                                            |
+| memory/persona/otto/conversations/2026-05-13-b-0400-bus-protocol-otto-review.md                                                                                                                             | Adds archived B-0400 bus protocol review doc.                                           |
+| memory/persona/otto/conversations/2026-05-14-shadow-lesson-log-otto-2139Z-drift.md                                                                                                                          | Adds archived shadow lesson log entry.                                                  |
+| memory/persona/otto/conversations/2026-05-15-shadow-lesson-log-otto-codex-drift.md                                                                                                                          | Adds archived shadow lesson log entry.                                                  |
+| memory/persona/otto/conversations/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md                                                                                                          | Adds archived cross-review artifact (Otto/Gemini).                                      |
+| memory/persona/otto/conversations/backlog-split-design-otto-181.md                                                                                                                                          | Adds archived backlog split design proposal.                                            |
+| memory/persona/otto/conversations/frontier-rename-analysis-otto-170.md                                                                                                                                      | Adds archived rename analysis doc (includes cross-refs).                                |
+| memory/persona/otto/conversations/frontier-rename-name-pass-2-otto-175.md                                                                                                                                   | Adds archived rename analysis follow-up doc.                                            |
+| memory/persona/otto/conversations/live-lock-five-class-taxonomy-otto-352-2026-04-26.md                                                                                                                      | Adds archived live-lock taxonomy doc.                                                   |
+| memory/persona/otto/conversations/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md                                                                                                          | Adds archived multi-AI feedback roundup.                                                |
+| memory/persona/otto/conversations/otto-287-noether-formalization-2026-04-25.md                                                                                                                              | Adds archived research direction note (Noether formalization).                          |
+| memory/persona/otto/conversations/otto-nn-principles-external-anchors-slice1-otto247-otto341-otto357.md                                                                                                     | Adds archived external-anchors slice 1 doc.                                             |
+| memory/persona/otto/conversations/otto-nn-principles-external-anchors-slice2-otto275-otto279-otto351-otto352.md                                                                                             | Adds archived external-anchors slice 2 doc.                                             |
+| memory/persona/otto/conversations/shadow-lesson-log-otto-metadata-churn-1850Z.md                                                                                                                            | Adds archived shadow lesson log entry.                                                  |
 
+</details>
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/persona/otto/MEMORY.md:39**
-* The new `## Conversation archives` section describes categories but doesn’t provide direct filename pointers. Other persona MEMORY.md files typically include at least a “high-signal subset” list of concrete archive filenames so cold-start readers can jump straight to key artifacts. Consider adding a short bullet list of representative files (and optionally noting that the full set is in the `conversations/` directory listing).
+
+- The new `## Conversation archives` section describes categories but doesn’t provide direct filename pointers. Other persona MEMORY.md files typically include at least a “high-signal subset” list of concrete archive filenames so cold-start readers can jump straight to key artifacts. Consider adding a short bullet list of representative files (and optionally noting that the full set is in the `conversations/` directory listing).
+
 ```
 Mix of file types in `conversations/`:
 
@@ -115,6 +116,7 @@ Mix of file types in `conversations/`:
   drafts mentioning Otto's role, prayer-as-alignment-contract,
   cartographer math lineage quantum rodney razor riff)
 ```
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-15T22:04:55Z)

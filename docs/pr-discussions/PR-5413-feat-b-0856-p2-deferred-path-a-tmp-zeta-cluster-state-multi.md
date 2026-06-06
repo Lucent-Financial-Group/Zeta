@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Filed in response to Aaron 2026-05-27 catch: *"backlog rows should alwasy be filed you are forgetful we dont have to work on it yet until after we boot with one."*
+Filed in response to Aaron 2026-05-27 catch: _"backlog rows should alwasy be filed you are forgetful we dont have to work on it yet until after we boot with one."_
 
 Path A is the sibling/alternative to B-0855 Path B (Otto-pushes-PR-across-finish-line) for multi-agent per-node cluster coordination via `/tmp/zeta-cluster-state/` marker files.
 
@@ -64,6 +64,7 @@ Memory landed at user-scope: `feedback_aaron_backlog_rows_always_filed_immediate
 Adds a new P2 backlog row (B-0856) documenting a deferred “Path A” proposal for multi-agent, per-node coordination via marker files under `/tmp/zeta-cluster-state/`, and surfaces it in the generated backlog index for visibility.
 
 **Changes:**
+
 - Introduces `docs/backlog/P2/B-0856-…md` defining the proposed `/tmp/zeta-cluster-state/` schema, invariants, and future sub-rows (implementation explicitly deferred).
 - Updates `docs/BACKLOG.md` to include the new B-0856 row in the P2 section.
 
@@ -71,10 +72,10 @@ Adds a new P2 backlog row (B-0856) documenting a deferred “Path A” proposal 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                              | Description                                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0856-path-a-tmp-zeta-cluster-state-coordination-standard-per-node-marker-files-for-multi-agent-coordination-aaron-2026-05-27.md | New backlog row specifying the proposed `/tmp/zeta-cluster-state/` coordination marker-file surface and implementation triggers/sub-rows. |
-| docs/BACKLOG.md | Adds the B-0856 entry to the P2 index list. |
+| docs/BACKLOG.md                                                                                                                                   | Adds the B-0856 entry to the P2 index list.                                                                                               |
 
 ### COMMENTED — @AceHack (2026-05-27T07:13:30Z)
 
@@ -93,6 +94,7 @@ P1: `composes_with` references `B-0855`, but there is no `docs/backlog/**/B-0855
 No-op resolution per `.claude/rules/blocked-green-ci-investigate-threads.md` stale-but-fresh-looking findings pattern:
 
 **Verified state**:
+
 - B-0855 row landed on `origin/main` via PR #5412 (commit `36103443f`) — `docs/backlog/P1/B-0855-self-registration-fires-LAST-...-aaron-2026-05-27.md` exists on main as of this writing
 - After this PR (#5413) squash-merges, the resulting commit will sit atop #5412 → `composes_with: B-0855` cross-reference becomes navigable on main
 

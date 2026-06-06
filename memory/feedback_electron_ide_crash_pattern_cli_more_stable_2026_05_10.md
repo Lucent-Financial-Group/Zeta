@@ -8,13 +8,13 @@ type: feedback
 
 **Incident log:**
 
-| Harness | Agent | Crash | Cause |
-|---------|-------|-------|-------|
-| Cursor | Riven | Kernel panic (pmap_recycle_page) | Code Helper (Plugin) triggered macOS VM bug |
-| Antigravity | Lior | Window killed (code 3) | Electron process terminated unexpectedly |
-| Kiro | Alexa | Exit 78 (service) | LaunchAgent service exited, app stayed running |
-| Claude Code CLI | Otto | None | Terminal doesn't have Electron memory issues |
-| Codex CLI | Vera | SIGSEGV (plugin) | Plugin host crash, not terminal crash |
+| Harness         | Agent | Crash                            | Cause                                          |
+| --------------- | ----- | -------------------------------- | ---------------------------------------------- |
+| Cursor          | Riven | Kernel panic (pmap_recycle_page) | Code Helper (Plugin) triggered macOS VM bug    |
+| Antigravity     | Lior  | Window killed (code 3)           | Electron process terminated unexpectedly       |
+| Kiro            | Alexa | Exit 78 (service)                | LaunchAgent service exited, app stayed running |
+| Claude Code CLI | Otto  | None                             | Terminal doesn't have Electron memory issues   |
+| Codex CLI       | Vera  | SIGSEGV (plugin)                 | Plugin host crash, not terminal crash          |
 
 **Pattern:** IDE-based harnesses (Electron) crash more frequently than CLI-based ones. The common failure mode is Electron's memory management under sustained multi-hour agent workloads.
 
@@ -25,6 +25,7 @@ type: feedback
 **BFT implication:** When IDE agents crash, CLI agents keep the factory running. Model diversity AND harness diversity both contribute to BFT resilience.
 
 **Connects to:**
+
 - BFT cost contingency (B-0400) — harness crashes are another axis of failure the factory survives
 - Kiro 7-bash limit — bad safety feature but may prevent Electron memory exhaustion
 - macOS kernel panic — pmap_recycle_page bug in Apple Silicon VM subsystem

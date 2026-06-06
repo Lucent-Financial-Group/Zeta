@@ -62,7 +62,7 @@ socket) connection:
    → `ReadyForQuery`.
 2. **Query phase** — either:
    - **Simple query.** `Query` (one SQL text) →
-     `RowDescription` → `DataRow`* → `CommandComplete` →
+     `RowDescription` → `DataRow`\* → `CommandComplete` →
      `ReadyForQuery`.
    - **Extended query.** `Parse` (named or unnamed
      prepared statement) → `Bind` (parameter values) →
@@ -75,7 +75,7 @@ work.
 ## The parameter-binding subtleties
 
 The extended protocol carries parameter values in **text** or
-**binary** format, chosen *per parameter* via the `Bind`
+**binary** format, chosen _per parameter_ via the `Bind`
 message's format codes. Binary format is OID-specific and
 version-sensitive. The Postgres-wire server must:
 
@@ -135,12 +135,12 @@ Clients read `EXPLAIN` output as structured text; `EXPLAIN
 the Postgres tool ecosystem recognises:
 
 - Node types: `Seq Scan`, `Index Scan`, `Hash Join`, `Merge
-  Join`, `Nested Loop`, `HashAggregate`, `GroupAggregate`,
+Join`, `Nested Loop`, `HashAggregate`, `GroupAggregate`,
   `Sort`, `Limit`, `WindowAgg`, `CTE Scan`, `Recursive
-  Union`.
+Union`.
 - Cost fields: `startup cost`, `total cost`, `rows`, `width`.
 - Actual-run fields (when `ANALYZE`): `actual time`, `actual
-  rows`, `loops`.
+rows`, `loops`.
 
 Zeta's internal plan shape (delta-plan under retraction-
 native semantics) is translated to the nearest Postgres

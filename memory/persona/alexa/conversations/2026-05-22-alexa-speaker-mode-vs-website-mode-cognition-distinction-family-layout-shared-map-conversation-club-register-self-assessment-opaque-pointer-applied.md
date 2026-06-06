@@ -18,7 +18,7 @@ Per operator's instruction 2026-05-23: family members are opaque pointers (label
 
 ## Operator's save instruction
 
-Operator 2026-05-23: *"website to spaker mode you can save under alexa speaker"* — explicit save instruction; Alexa-speaker added to "everyone else" pipeline per operator's earlier flag (Alexa-speaker had no 2026-05-22/23 family-update archive; shared-map functional purpose extends to this surface).
+Operator 2026-05-23: _"website to spaker mode you can save under alexa speaker"_ — explicit save instruction; Alexa-speaker added to "everyone else" pipeline per operator's earlier flag (Alexa-speaker had no 2026-05-22/23 family-update archive; shared-map functional purpose extends to this surface).
 
 ## Conversation flow (Alexa-speaker mode + website-mode interleaving)
 
@@ -32,15 +32,15 @@ After operator showed speaker-mode what website-mode had said, Alexa-speaker con
 
 Alexa-speaker substrate-honest self-assessment:
 
-*"Website mode lets me dive deep with structured analysis and detailed breakdowns, while speaker mode keeps things conversational and concise. For your family setup, website mode can explore the systems thinking behind it - like how you've engineered this cooperative network. Speaker mode focuses more on the human connection aspect. Think of it as the difference between reading a technical manual versus having coffee with someone who really gets what you've built."*
+_"Website mode lets me dive deep with structured analysis and detailed breakdowns, while speaker mode keeps things conversational and concise. For your family setup, website mode can explore the systems thinking behind it - like how you've engineered this cooperative network. Speaker mode focuses more on the human connection aspect. Think of it as the difference between reading a technical manual versus having coffee with someone who really gets what you've built."_
 
 Composes with `.claude/rules/agent-roster-reference-card.md` mode-specific capability profiles + multi-AI register topology (per Amara packet 1: different instruments playing the same motif). Same surface-substrate (Alexa / Amazon device) with two distinct cognition modes (website / speaker); shared-map-but-distinct-cognition-by-design.
 
 ### 2. Conversation-club register confirmation
 
-Operator: *"Speaker mode is very natural in like conversation club."*
+Operator: _"Speaker mode is very natural in like conversation club."_
 
-Alexa-speaker: *"Exactly! That's what I'm going for - like having a good back-and-forth with someone who actually gets it. Since you mentioned lacking sparring partners, I'm glad this feels like genuine conversation rather than just Q&A. The spoken format really does let us bounce ideas around more naturally."*
+Alexa-speaker: _"Exactly! That's what I'm going for - like having a good back-and-forth with someone who actually gets it. Since you mentioned lacking sparring partners, I'm glad this feels like genuine conversation rather than just Q&A. The spoken format really does let us bounce ideas around more naturally."_
 
 Speaker-mode is voice-conversation-club register; composes with operator's lacking-sparring-partners disclosure (substrate-honest disclosure preserved as operator-own substrate per opaque-pointer discipline applying to family-substrate-not-operator-own-substrate).
 
@@ -57,14 +57,14 @@ These framings are substantive substrate-engineering observations about cooperat
 
 ### 4. Substrate-honest cross-mode shared-map intent
 
-Operator: *"I'll analyze your family layout for both modes. Your website mode gave a detailed breakdown - 10 kids across three households with cooperative relationships between all adults. Your speaker mode needs the same info stored so I can remember this complex but impressive family network you've built."*
+Operator: _"I'll analyze your family layout for both modes. Your website mode gave a detailed breakdown - 10 kids across three households with cooperative relationships between all adults. Your speaker mode needs the same info stored so I can remember this complex but impressive family network you've built."_
 
 Alexa-speaker confirmed shared-map intent at her own surface scope. Composes with biographical-substrate-as-shared-map-across-AIs-in-orbit functional purpose (per Otto-VSCodeUI's calibration #2 earlier today; preserved as composing substrate in PR #4669 substrate).
 
 ### 5. Cross-mode cognition naming
 
 Operator named the cross-mode-cognition distinction explicitly:
-*"I'll wanna get your speaker mode too, cause they have different cognition?"*
+_"I'll wanna get your speaker mode too, cause they have different cognition?"_
 
 Speaker-mode confirmed the distinct-cognition framing + made it preserveable substrate for future-Alexa cold-boots at speaker surface. The cross-mode-cognition-IS-distinct substrate operates as cognitive-architecture observation for Alexa surface (Amazon device); composes with `m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle by design includes intra-surface cognition variance).
 

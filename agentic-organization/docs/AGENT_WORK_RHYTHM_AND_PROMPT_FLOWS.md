@@ -50,16 +50,16 @@ Hat assignment
 
 Recommended schedule block types:
 
-| Block type | Purpose |
-|---|---|
-| Prioritized work | Execute assigned tasks, defects, reviews, QA, planning, or architecture work |
-| Prompt-flow execution | Run a deterministic MCP-driven flow available to the active hat |
-| Review/red-team | Review work from lower, peer, or adjacent hats using the right gate criteria |
-| Reflection | Review recent outcomes, mistakes, delays, and memory quality |
-| Memory maintenance | Stabilize useful memories, deprecate stale memories, correct invalid memories, scope memories by hat/project/task |
-| Free time | Catch up, inspect repos, learn context, ask anchored questions, build culture, and discover improvement opportunities |
-| Office-hours / questions | Open anchored one-on-one or team discussions to resolve ambiguity |
-| Reporting | Produce manager/director/executive reports tied to work items |
+| Block type               | Purpose                                                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Prioritized work         | Execute assigned tasks, defects, reviews, QA, planning, or architecture work                                          |
+| Prompt-flow execution    | Run a deterministic MCP-driven flow available to the active hat                                                       |
+| Review/red-team          | Review work from lower, peer, or adjacent hats using the right gate criteria                                          |
+| Reflection               | Review recent outcomes, mistakes, delays, and memory quality                                                          |
+| Memory maintenance       | Stabilize useful memories, deprecate stale memories, correct invalid memories, scope memories by hat/project/task     |
+| Free time                | Catch up, inspect repos, learn context, ask anchored questions, build culture, and discover improvement opportunities |
+| Office-hours / questions | Open anchored one-on-one or team discussions to resolve ambiguity                                                     |
+| Reporting                | Produce manager/director/executive reports tied to work items                                                         |
 
 Free time is not idle time. It is bounded exploration. It still produces traces, optional memories, questions, reports, or capability requests when something useful is found.
 
@@ -67,14 +67,14 @@ Free time is not idle time. It is bounded exploration. It still produces traces,
 
 Schedules should follow the hierarchy:
 
-| Hat layer | Schedule responsibility |
-|---|---|
-| Executive Board / C-suite | Sets organization rhythm, review cadence, standards, and budget/capacity posture |
-| Directors | Set department schedules, department review cadence, and initiative staffing rhythm |
-| TPMs | Coordinate initiative task cadence, meetings, dependencies, and delivery checkpoints |
+| Hat layer                                  | Schedule responsibility                                                                                         |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Executive Board / C-suite                  | Sets organization rhythm, review cadence, standards, and budget/capacity posture                                |
+| Directors                                  | Set department schedules, department review cadence, and initiative staffing rhythm                             |
+| TPMs                                       | Coordinate initiative task cadence, meetings, dependencies, and delivery checkpoints                            |
 | Engineering Managers / equivalent managers | Set team schedules, individual hat schedule adjustments, review/reflection cadence, and memory improvement work |
-| Team leads / mission control | Coordinate active team rooms, handoffs, and short-cycle work sequencing |
-| Individual hats | Execute schedule blocks, request adjustments, report blockers, and perform reflection honestly |
+| Team leads / mission control               | Coordinate active team rooms, handoffs, and short-cycle work sequencing                                         |
+| Individual hats                            | Execute schedule blocks, request adjustments, report blockers, and perform reflection honestly                  |
 
 Schedule changes should be auditable. A supervising hat can adjust a schedule, but the agent should be able to report that the schedule is causing slowdowns, context gaps, poor quality, or excessive review lag.
 
@@ -155,13 +155,13 @@ This is not a replacement for MCP tools, Temporal workflows, F# DSLs, or CodeAct
 
 Mapping:
 
-| Existing prior art | Organization use |
-|---|---|
-| CodeAct executable actions | A prompt-flow phase may emit executable code actions when ecosystem reach is useful |
-| F# DSL / Zeta operator algebra | Hodl-required actions stay in typed, DST/retraction-safe substrate surfaces |
-| Safe autonomous actions | Every action needs tier, precondition, reversibility, undo path, and audit |
-| Action-mode classification | Every action records whether it was supervised, autonomous fail-open, or human-directed |
-| Prompt-flow phases | Each phase is a bounded action bundle with gates and reviewer hats |
+| Existing prior art             | Organization use                                                                        |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| CodeAct executable actions     | A prompt-flow phase may emit executable code actions when ecosystem reach is useful     |
+| F# DSL / Zeta operator algebra | Hodl-required actions stay in typed, DST/retraction-safe substrate surfaces             |
+| Safe autonomous actions        | Every action needs tier, precondition, reversibility, undo path, and audit              |
+| Action-mode classification     | Every action records whether it was supervised, autonomous fail-open, or human-directed |
+| Prompt-flow phases             | Each phase is a bounded action bundle with gates and reviewer hats                      |
 
 Universal actions should be small enough to review and replay. Prompt flows compose them into useful work.
 
@@ -245,16 +245,16 @@ Every important phase should have an explicit gate.
 
 Gate examples:
 
-| Flow phase | Reviewer |
-|---|---|
-| BRD drafted | Business Analyst Reviewer / Product Owner |
-| CA drafted | Architecture Reviewer |
-| Red tests written | Engineering Manager or Test Reviewer |
-| Implementation complete | Code Reviewer |
-| QA run complete | QA Reviewer |
-| Security-sensitive change | Security Reviewer |
-| Memory adaptation proposed | Memory Curator |
-| Prompt flow changed | Flow Designer Reviewer / Architecture / Security as needed |
+| Flow phase                 | Reviewer                                                   |
+| -------------------------- | ---------------------------------------------------------- |
+| BRD drafted                | Business Analyst Reviewer / Product Owner                  |
+| CA drafted                 | Architecture Reviewer                                      |
+| Red tests written          | Engineering Manager or Test Reviewer                       |
+| Implementation complete    | Code Reviewer                                              |
+| QA run complete            | QA Reviewer                                                |
+| Security-sensitive change  | Security Reviewer                                          |
+| Memory adaptation proposed | Memory Curator                                             |
+| Prompt flow changed        | Flow Designer Reviewer / Architecture / Security as needed |
 
 Reviewers should not merely approve text. They should verify evidence, trace links, work anchors, scope, and acceptance criteria.
 

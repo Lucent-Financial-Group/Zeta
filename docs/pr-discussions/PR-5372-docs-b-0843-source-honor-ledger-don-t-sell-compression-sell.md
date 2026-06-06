@@ -23,13 +23,13 @@ Amara 3rd ferry 2026-05-26 (preserved verbatim in this PR) extends B-0841 (Short
 ## Key substrate landings
 
 1. **Rights-lane discipline (5 lanes)**: unlicensed/internal research / public fair-use / licensed creator / escrow / partner
-2. **5-clause permission keeper**: *Permission when possible. Escrow when unresolved. Attribution always. Revenue share by default. Takedown fast.*
+2. **5-clause permission keeper**: _Permission when possible. Escrow when unresolved. Attribution always. Revenue share by default. Takedown fast._
 3. **Aaron's 2+ sources sharpening**: synthesize 2+ sources every time during compression
-4. **Amara's deeper rule**: 2+ sources helps but isn't a magic shield; *"never make the output a substitute for any one source"*
+4. **Amara's deeper rule**: 2+ sources helps but isn't a magic shield; _"never make the output a substitute for any one source"_
 5. **"Don't sell compression. Sell readout."** — names the Zeta moat
-6. **Aaron's substrate-engineering extension**: *"we still pay the OGs we synthized from even if we don't have to by law"*
+6. **Aaron's substrate-engineering extension**: _"we still pay the OGs we synthized from even if we don't have to by law"_
 7. **Source Honor Ledger / Basis Royalty Pool** — operational mechanism (weights based on semantic contribution + amount referenced + user clicks/saves + creator partnership status + manual curator override)
-8. **Customer-facing keeper**: *"We pay contributors by design, not by compulsion"* (NOT "even if we don't have to by law" framing)
+8. **Customer-facing keeper**: _"We pay contributors by design, not by compulsion"_ (NOT "even if we don't have to by law" framing)
 
 ## 4-phase B-0843 target
 
@@ -60,7 +60,7 @@ Same rule, two scopes. Substrate-engineering meta-pattern.
 - \`.claude/rules/glass-halo-bidirectional.md\` ("Glass Halo for IP")
 - \`.claude/rules/honor-those-that-came-before.md\` (Source Honor Ledger IS the operational form)
 - \`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md\` (end-user-invariant-set at creator-relationship scope)
-- \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (new \`_fair_use_acceptance\` extension)
+- \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (new \`\_fair_use_acceptance\` extension)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

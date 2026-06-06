@@ -28,7 +28,7 @@ engineering org.
 
 > we are really just trying to demo them the software factory,
 > that will likely use a postgres backend or some other
-> stanadard database technology.  The database still is a
+> stanadard database technology. The database still is a
 > phase next kind of thing for service titan.
 
 > If they see a bunch of suggestions to change thier database
@@ -62,7 +62,7 @@ lead to deeper ServiceTitan partnership. The demo is not
 
 - **Algebraic kernel sample landed** as `samples/ServiceTitanCrm/Program.fs`
   (180 lines, single file, console output). **PR #141 open.**
-  *Note:* this sample is internal-facing — it demonstrates the
+  _Note:_ this sample is internal-facing — it demonstrates the
   algebraic layer to factory agents and Zeta library users,
   not to ServiceTitan. The factory-facing demo is a separate
   artifact built on a standard DB backend.
@@ -77,8 +77,8 @@ lead to deeper ServiceTitan partnership. The demo is not
 
 A browser-accessible CRM application that ServiceTitan
 engineering leadership can click through in 15 minutes and
-walk away thinking *"the factory built all of this in less
-time than it would have taken our team to scope it."*
+walk away thinking _"the factory built all of this in less
+time than it would have taken our team to scope it."_
 
 What a visitor should see:
 
@@ -92,7 +92,7 @@ What a visitor should see:
    short recorded session showing the agents working, a
    commit-history walkthrough, or a side panel showing which
    agent authored which piece. The format is TBD with Aaron,
-   but the *effect* is: "look how fast this moved and how
+   but the _effect_ is: "look how fast this moved and how
    quality was enforced."
 3. **Quality-discipline evidence** — the demo surfaces the
    factory's built-in quality enforcement as a feature: "this
@@ -109,7 +109,7 @@ What a visitor should see:
 What a visitor does NOT need to see:
 
 - Any mention of DBSP, retraction-native semantics, Z-sets, or
-  delta algebra. These are the *internal* implementation
+  delta algebra. These are the _internal_ implementation
   layer; pitching them here confuses the factory story and
   risks triggering the database-migration alarm bells.
 - Zeta-the-database marketing. The database is whatever's
@@ -140,8 +140,8 @@ What a visitor does NOT need to see:
   visible alongside the code / app, so ServiceTitan sees the
   quality floor.
 - **One-command launch** — `dotnet run --project <this>`
-  + a docker-compose for Postgres, and the browser opens to
-  a working demo.
+  - a docker-compose for Postgres, and the browser opens to
+    a working demo.
 
 ### OUT of scope for v1
 
@@ -150,8 +150,8 @@ What a visitor does NOT need to see:
   whatever they already use or Postgres — done.
 - **Retraction-native / Z-set / DBSP language in the demo's
   user-facing surface.** Internal implementation may still
-  use Zeta (*the factory chooses its own tools*), but the
-  *user-facing demo* surface is standard CRUD.
+  use Zeta (_the factory chooses its own tools_), but the
+  _user-facing demo_ surface is standard CRUD.
 - **Multi-user / concurrent editing.** Single-user session
   for v1.
 - **Mobile UI.** Desktop browser only.
@@ -218,12 +218,12 @@ demo. It lives on for:
   in a CRM-shaped scenario.
 - Zeta library users (when Zeta ships as a library) seeing a
   CRM-adjacent end-to-end example.
-- Future phase-2 conversations with ServiceTitan *after*
+- Future phase-2 conversations with ServiceTitan _after_
   factory adoption, when the database-layer story can be
   pitched without threatening the factory story.
 
-The factory-adoption demo (this doc's scope) is a *different
-artifact* built on *standard DB technology*. Both exist. They
+The factory-adoption demo (this doc's scope) is a _different
+artifact_ built on _standard DB technology_. Both exist. They
 do not mix.
 
 ---
@@ -249,6 +249,6 @@ do not mix.
 
 ## Aaron's edits / deltas
 
-*(Intentionally left empty for Aaron to append notes, edits,
+_(Intentionally left empty for Aaron to append notes, edits,
 scope corrections, or additional requirements. Claude keeps
-everything above in sync with the latest Aaron-annotated state.)*
+everything above in sync with the latest Aaron-annotated state.)_

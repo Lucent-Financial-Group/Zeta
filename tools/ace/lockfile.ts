@@ -19,7 +19,7 @@ export function buildLockfile(root: AcePackage, order: AcePackage[], registry: R
   // A kind-omitted edge is untrusted-shaped (not in the AceDependency DU); read url defensively.
   const inlineUrls = new Map<string, string>();
   for (const p of order) {
-    for (const edge of (p.manifest.dependencies ?? [])) {
+    for (const edge of p.manifest.dependencies ?? []) {
       if (edge.kind === "inline" || edge.kind === undefined) {
         const url = (edge as { kind?: unknown; url?: unknown }).url;
         if (typeof url === "string") inlineUrls.set(`${edge.name}@${edge.version}`, url);
@@ -52,27 +52,45 @@ export function serializeLockfile(lf: Lockfile): string {
 /** Parse + shape-guard an untrusted lockfile string. Never throws — malformed input → {error}. */
 export function parseLockfile(json: string): Lockfile | { error: string } {
   let v: unknown;
-  try { v = JSON.parse(json); } catch (e) { return { error: `not valid JSON: ${(e as Error).message}` }; }
+  try {
+    v = JSON.parse(json);
+  } catch (e) {
+    return { error: `not valid JSON: ${(e as Error).message}` };
+  }
   if (typeof v !== "object" || v === null) return { error: "lockfile is not an object" };
   const o = v as Record<string, unknown>;
   if (o.format_version !== 1) return { error: `unsupported format_version: ${JSON.stringify(o.format_version)}` };
   const root = o.root as Record<string, unknown> | null | undefined;
-  if (typeof root !== "object" || root === null
-      || typeof root.name !== "string" || typeof root.version !== "string" || typeof root.package_hash !== "string") {
+  if (
+    typeof root !== "object" ||
+    root === null ||
+    typeof root.name !== "string" ||
+    typeof root.version !== "string" ||
+    typeof root.package_hash !== "string"
+  ) {
     return { error: "malformed lockfile root" };
   }
   if (!Array.isArray(o.nodes)) return { error: "lockfile nodes is not an array" };
   const nodes: LockNode[] = [];
   for (const n of o.nodes) {
     const e = n as Record<string, unknown> | null;
-    if (typeof e !== "object" || e === null
-        || typeof e.name !== "string" || typeof e.version !== "string"
-        || typeof e.url !== "string" || typeof e.package_hash !== "string") {
+    if (
+      typeof e !== "object" ||
+      e === null ||
+      typeof e.name !== "string" ||
+      typeof e.version !== "string" ||
+      typeof e.url !== "string" ||
+      typeof e.package_hash !== "string"
+    ) {
       return { error: "malformed lockfile node" };
     }
     nodes.push({ name: e.name, version: e.version, url: e.url, package_hash: e.package_hash });
   }
-  return { format_version: 1, root: { name: root.name, version: root.version, package_hash: root.package_hash }, nodes };
+  return {
+    format_version: 1,
+    root: { name: root.name, version: root.version, package_hash: root.package_hash },
+    nodes,
+  };
 }
 
 /** Drift gate for --frozen: the provided root must be byte-identical to the locked root. */

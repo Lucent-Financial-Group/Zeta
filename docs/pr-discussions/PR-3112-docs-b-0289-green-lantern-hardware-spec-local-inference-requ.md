@@ -25,19 +25,19 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## What changed
 
-| File | Change |
-|------|--------|
-| `docs/research/2026-05-14-b0289-green-lantern-hardware-spec-local-inference.md` | New — hardware spec research doc |
-| `docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md` | Updated — pre-start checklist + research doc pointer, status → in-progress |
+| File                                                                            | Change                                                                     |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `docs/research/2026-05-14-b0289-green-lantern-hardware-spec-local-inference.md` | New — hardware spec research doc                                           |
+| `docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md`              | Updated — pre-start checklist + research doc pointer, status → in-progress |
 
 ## Candidates compared
 
-| # | Device | Tier | LLM class | Tok/s (3B Q4) | Power |
-|---|--------|------|-----------|---------------|-------|
-| A | Jetson Orin Nano 8GB | Gateway (best) | 7B–8B Q4 | ~70 | 10–15 W |
-| B | RPi 5 8GB | Gateway (recommended) | 3B–7B Q4 | ~15 | 8–12 W |
-| C | RPi 5 4GB | Gateway (budget) | 1B–3B Q4 | ~15 | 8–11 W |
-| D | ESP32-S3 | Ring MCU | micro/none | N/A | <33 mW |
+| #   | Device               | Tier                  | LLM class  | Tok/s (3B Q4) | Power   |
+| --- | -------------------- | --------------------- | ---------- | ------------- | ------- |
+| A   | Jetson Orin Nano 8GB | Gateway (best)        | 7B–8B Q4   | ~70           | 10–15 W |
+| B   | RPi 5 8GB            | Gateway (recommended) | 3B–7B Q4   | ~15           | 8–12 W  |
+| C   | RPi 5 4GB            | Gateway (budget)      | 1B–3B Q4   | ~15           | 8–11 W  |
+| D   | ESP32-S3             | Ring MCU              | micro/none | N/A           | <33 mW  |
 
 **Recommended starting config:** ESP32-S3 ring MCU + RPi 5 8GB gateway running Llama 3.2 3B Q4_K_M via llama.cpp.
 
@@ -64,24 +64,22 @@ Closes B-0289.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T07:53:45Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a1860d9bd6`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -94,6 +92,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Docs-only PR delivering the research deliverable for B-0289: a hardware spec evaluating local-inference candidates for the Green Lantern ring. Recommends a two-tier architecture (ESP32-S3 ring MCU + RPi 5 8GB inference gateway running Llama 3.2 3B Q4_K_M), with a Jetson Orin Nano upgrade path. Backlog row is updated with the pre-start checklist and a pointer to the research doc.
 
 **Changes:**
+
 - New research doc comparing 4 hardware candidates (Jetson Orin Nano 8GB, RPi 5 8GB, RPi 5 4GB, ESP32-S3) across compute, power, and connectivity, plus a recommended starting config and 5 open questions feeding B-0290.
 - Backlog row flipped to `status: in-progress`, `last_updated` bumped, `pr: pending` added, and pre-start checklist + research-doc pointer appended.
 
@@ -101,10 +100,10 @@ Docs-only PR delivering the research deliverable for B-0289: a hardware spec eva
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                            | Description                                                                                  |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `docs/research/2026-05-14-b0289-green-lantern-hardware-spec-local-inference.md` | New research doc: candidates A–D, matrix, recommended config, open questions, prior-art log. |
-| `docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md` | Status → in-progress; adds pre-start checklist, claim ref, and research-doc pointer. |
+| `docs/backlog/P1/B-0289-green-lantern-hardware-spec-2026-05-08.md`              | Status → in-progress; adds pre-start checklist, claim ref, and research-doc pointer.         |
 
 ### COMMENTED — @AceHack (2026-05-14T07:59:46Z)
 
@@ -116,24 +115,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T08:03:06Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `d27f2eacb0`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -145,7 +142,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-14T07:53:46Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove impossible NVMe requirement from ring MCU spec**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove impossible NVMe requirement from ring MCU spec**
 
 This requirement is not implementable on the stated ring hardware: an ESP32-S3 module has SPI flash/PSRAM but no NVMe interface or PCIe lane, so specifying policy cache storage in an NVMe partition makes the recommended Tier-1 design physically inconsistent and blocks downstream firmware/storage planning. Please replace this with a storage target the ESP32-S3 can actually host (for example encrypted SPI flash/FRAM) or move NVMe-backed cache responsibility to the gateway tier.
 
@@ -159,7 +156,7 @@ Fixed. Replaced the impossible NVMe partition reference with encrypted SPI flash
 
 **@chatgpt-codex-connector** (2026-05-14T07:53:46Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Fix ESP32 inference table to avoid impossible model fit**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Fix ESP32 inference table to avoid impossible model fit**
 
 The table claims TinyLlama 1.1B Q2_K can run with an ESP32-S3 configuration that has only 8 MB PSRAM, but even ideal 2-bit weights alone for a 1.1B model are hundreds of MB before runtime buffers, so this benchmark line is physically unattainable and can misdirect hardware and latency expectations for B-0290 follow-on work. The MCU section should use model sizes that can actually fit within the documented memory envelope.
 
@@ -173,7 +170,7 @@ Fixed. Replaced the impossible TinyLlama 1.1B Q2_K benchmark with an accurate me
 
 **@chatgpt-codex-connector** (2026-05-14T08:03:06Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove unsupported Ed25519 hardware-acceleration claim**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove unsupported Ed25519 hardware-acceleration claim**
 
 This line states that ESP32-S3 receipt signing is `Ed25519` with hardware acceleration via ESP-IDF mbedTLS, but on ESP32-S3 the hardware signature peripheral accelerates RSA-based signing while Ed25519 runs in software. That mismatch can materially skew ring-side CPU, latency, and battery budgeting if downstream work assumes signing is hardware-offloaded; please reword this as software Ed25519 (or switch the algorithm claim to one the hardware actually accelerates).
 

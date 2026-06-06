@@ -342,7 +342,7 @@ signer:
   type: <session_key | master_eoa>
   address: <0x...>
   authority_source: <smart-account-address + EIP-7702 delegate ref>
-tx:  # Optional block — null when pre_flight_retracted = true
+tx: # Optional block — null when pre_flight_retracted = true
   hash: <0x... | null>
   chain: <Base | other | null>
   block_number: <int | null>
@@ -671,9 +671,9 @@ EAT packet §6 names AP2 as the architectural-target mandate framework. AP2 is G
 
 **Decision:** **Custom semantic-AP2-compatible format for v0.**
 
-**Rationale:** AP2 is emerging — Google's reference implementation is not yet widely deployed and its surface is still moving. v0 is research-grade scaffold; blocking on AP2's deployment timeline adds external coupling that doesn't earn its keep at v0 scale. A custom mandate format that is *semantically* AP2-compatible (same data shapes, same authorization predicates, same revocation semantics) keeps v0 drop-in-portable to AP2 once it matures. The cost of refactor-to-AP2-later is bounded by the semantic compatibility (it's a serializer-swap, not a rewrite).
+**Rationale:** AP2 is emerging — Google's reference implementation is not yet widely deployed and its surface is still moving. v0 is research-grade scaffold; blocking on AP2's deployment timeline adds external coupling that doesn't earn its keep at v0 scale. A custom mandate format that is _semantically_ AP2-compatible (same data shapes, same authorization predicates, same revocation semantics) keeps v0 drop-in-portable to AP2 once it matures. The cost of refactor-to-AP2-later is bounded by the semantic compatibility (it's a serializer-swap, not a rewrite).
 
-Relationship to EAT §6: this deviation is annotated explicitly as *operational vs architectural*. The EAT packet states AP2 as the *architectural target*; this v0 spec implements a semantically-equivalent custom format as the *operational shim* until AP2 is ready. The EAT packet's promise to converge on AP2 is preserved; only the timing of the convergence is deferred.
+Relationship to EAT §6: this deviation is annotated explicitly as _operational vs architectural_. The EAT packet states AP2 as the _architectural target_; this v0 spec implements a semantically-equivalent custom format as the _operational shim_ until AP2 is ready. The EAT packet's promise to converge on AP2 is preserved; only the timing of the convergence is deferred.
 
 **Operational implication for v0:** Phase 1 defines the custom mandate format inline as `mandate-schema.md` in the sibling-repo monitor (per §12.5). The format mirrors AP2's `subject` / `permissions` / `expires_at` / `signature` triple structure verbatim, just without AP2's reference-impl dependency. Phase 1+ (post-AP2-maturity): swap the serializer; the semantic layer survives unchanged.
 
@@ -681,7 +681,7 @@ Relationship to EAT §6: this deviation is annotated explicitly as *operational 
 
 **Not information asymmetry; hierarchical principal-agent scoping.**
 
-Per Aaron 2026-04-27: *"these will be subagents/subclis launch without access or knowing more money exists."*
+Per Aaron 2026-04-27: _"these will be subagents/subclis launch without access or knowing more money exists."_
 
 The working subagent/subCLI instance is launched with a $100-scoped mandate. It LITERALLY cannot see or address the larger ~$10k authority because that authority is outside its scope. Standard hierarchical principal-agent. The agent has full information about its own granted authority.
 
@@ -750,9 +750,9 @@ eight §12 questions are RESOLVED:
   (retraction-window=60s), §12.4 (caps confirmed as proposed),
   §12.5 (monitor form factor=sibling repo), §12.6 (mandate
   framework=custom semantic-AP2-compatible) — RESOLVED-BY-OTTO
-  2026-04-28 per Aaron's autonomy extension (*"you can get these
+  2026-04-28 per Aaron's autonomy extension (_"you can get these
   answers for them, or spin up some others clis/harnesses, you
-  don't have to wait on me, you track your decsions already"*);
+  don't have to wait on me, you track your decsions already"_);
   each decision carries documented rationale and is revisable
   via the standard not-bound-by-past-self protocol.
 - §12.7 (hierarchical scoping), §12.8 (disclosure timing) —
@@ -762,8 +762,8 @@ All §12 questions are now resolved on the spec side, so the
 architecture is ready for multi-CLI review (Gemini + Codex +
 Ani + Amara via `tools/peer-call/`) at Otto's discretion per
 EAT §21.e. **Aaron's final v0 spec acceptance is deferred to
-real-money phase per EAT §21.e** — *"i'll look later once we
-have some real money involve."* Phase 1 scaffolding does NOT
+real-money phase per EAT §21.e** — _"i'll look later once we
+have some real money involve."_ Phase 1 scaffolding does NOT
 proceed until that acceptance gate opens; this section reflects
 spec-side readiness, not implementation green-light.
 

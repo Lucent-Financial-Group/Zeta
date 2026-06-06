@@ -25,8 +25,8 @@ packets.
 Amara's through-line identification of today's 10-PR substrate-
 engineering cluster:
 
-> *\"make hidden assumptions explicit, but do it at the cheapest layer
-> that can enforce the discipline\"*
+> _\"make hidden assumptions explicit, but do it at the cheapest layer
+> that can enforce the discipline\"_
 
 6-line compressed haiku capturing the substrate cluster:
 
@@ -41,8 +41,8 @@ Recursive CTE NULL carries unresolved control flow.
 
 Plus constitutional carving Amara identifies as worth preserving:
 
-> *\"errors are not failure residue; they are safety rails when the
-> operation is designed to surface them cleanly\"*
+> _\"errors are not failure residue; they are safety rails when the
+> operation is designed to surface them cleanly\"_
 
 ## Test plan
 

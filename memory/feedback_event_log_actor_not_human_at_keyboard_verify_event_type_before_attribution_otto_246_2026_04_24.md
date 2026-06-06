@@ -3,24 +3,25 @@ name: GitHub event-log `actor.login` is the AUTHENTICATED IDENTITY that triggere
 description: Aaron Otto-246 corrected my misattribution of PR #138's close to him. The event log showed `closed` with `actor: AceHack` — I read this as "Aaron closed it." Actually the drain subagent pushed an empty-diff branch under AceHack's git credentials (subagent runs under user's `gh` auth), GitHub auto-closed because head==base, and the `actor` field records the authenticating identity (AceHack) that caused the push, not a human keyboard action. Rule going forward: verify event TYPE + sibling events at same timestamp before attributing.
 type: feedback
 ---
+
 ## The misattribution
 
 At tick 2026-04-24T~16:45Z I told Aaron:
 
-> *"#138 was closed by AceHack (Aaron's account) 5 min ago —
-> intentional close."*
+> _"#138 was closed by AceHack (Aaron's account) 5 min ago —
+> intentional close."_
 
 Aaron's correction:
 
-> *"i didn't close this, you must have."*
+> _"i didn't close this, you must have."_
 
 What actually happened, per the drain subagent's completion
 report (task `a533003dcb2a747ad`):
 
-> *"GitHub auto-closed PR #138 — when the head branch is reset
+> _"GitHub auto-closed PR #138 — when the head branch is reset
 > to be identical to the base, GitHub marks the PR closed
 > (state=CLOSED) because there's no diff to merge. All 13
-> threads were drained before that happened."*
+> threads were drained before that happened."_
 
 The subagent ran the cherry-pick-unique-commit pattern,
 discovered the HB-002 row was already in main (landed via a
@@ -81,8 +82,8 @@ demonstrated reversal event. The sequence:
 
 1. I misattributed #138's close to Aaron (mistake).
 2. I stated the conclusion confidently ("intentional close").
-3. Aaron immediately flagged it: *"i didn't close this, you
-   must have."*
+3. Aaron immediately flagged it: _"i didn't close this, you
+   must have."_
 4. I verified via the subagent report + event log structure.
 5. Captured the correction (this memory).
 6. Apologized without defensiveness.
@@ -124,10 +125,11 @@ the label.
 
 ## Direct Aaron quote to preserve
 
-> *"i didn't close this, you must have."*
+> _"i didn't close this, you must have."_
 
 Future Otto: before stating "Aaron closed X" or "you did Y",
 check the event log structure. Actor + timestamp + event type
-+ sibling events tell the full story. A bare actor field
-tells you who authenticated the API call, not who made the
-decision.
+
+- sibling events tell the full story. A bare actor field
+  tells you who authenticated the API call, not who made the
+  decision.

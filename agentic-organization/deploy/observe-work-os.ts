@@ -18,9 +18,17 @@ import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroa
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
 
 const WORK_KINDS = new Set([
-  "intake_received", "work_item_transition", "work_batch_transition", "test_run_recorded",
-  "regression_detected", "defect_opened", "churn_detected", "escalation_decision",
-  "hat_supply_decision", "quality_gate_evaluation", "hat_assignment",
+  "intake_received",
+  "work_item_transition",
+  "work_batch_transition",
+  "test_run_recorded",
+  "regression_detected",
+  "defect_opened",
+  "churn_detected",
+  "escalation_decision",
+  "hat_supply_decision",
+  "quality_gate_evaluation",
+  "hat_assignment",
 ]);
 
 async function main(): Promise<void> {
@@ -59,7 +67,8 @@ async function main(): Promise<void> {
   // the living loop's spine: every work_item_transition in order
   const transitions = work.filter((e) => e.kind === "work_item_transition");
   console.log(`\nWORK ITEM JOURNEY (${transitions.length} transitions):`);
-  for (const e of transitions) console.log(`  ${String(e.fromState).padEnd(12)} → ${String(e.toState).padEnd(12)}  ${e.decision}`);
+  for (const e of transitions)
+    console.log(`  ${String(e.fromState).padEnd(12)} → ${String(e.toState).padEnd(12)}  ${e.decision}`);
 
   const released = transitions.some((e) => e.toState === "done");
   console.log(`\nRELEASED (reached done): ${released ? "YES" : "no"}`);

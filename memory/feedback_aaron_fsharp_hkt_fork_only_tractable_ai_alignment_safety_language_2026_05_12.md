@@ -70,6 +70,7 @@ created: 2026-05-12
 
 Higher-Kinded Types are types that themselves take type
 parameters. Examples:
+
 - `M<_>` — a type constructor that takes one type
   parameter (e.g., `List<T>`, `Option<T>`)
 - An HKT-enabled language can write generic code over
@@ -82,6 +83,7 @@ but they're awkward and don't compose cleanly with
 F#'s inference engine.
 
 **With native HKT:**
+
 - Monad laws expressible directly in the type system
 - Vision-HKT-monad cache construction
   (`feedback_aaron_stable_seed_five_interrogatives_as_equals_bp_ep_infernet_2026_05_12.md`)
@@ -114,19 +116,20 @@ who need to agree on alignment-and-safety semantics:
 Aaron's claim is F# with HKT is the **only** tractable
 choice. Implicit comparison:
 
-| Candidate | Why not |
-|---|---|
-| **Haskell** | Strong HKT but Haskell-only ecosystem, no Infer.NET integration, harder for humans to read at scale |
-| **Rust** | Strong types but no HKT, no Infer.NET, ownership model orthogonal to AI-safety semantics |
-| **Idris / Agda** | Dependent types but academic-scale, no industrial ecosystem, both-parties-agree harder |
-| **Scala** | HKT support but JVM ecosystem mismatches .NET Infer.NET |
-| **TypeScript** | No HKT, no compile-time verification of the depth needed |
-| **C# / F# without HKT** | No HKT → can't natively express vision-monad architecture |
-| **Lisp / Clojure** | Dynamic typing fails the compile-time verification requirement |
-| **OCaml** | Closest to F# in type system, but .NET ecosystem mismatch + HKT support is also limited |
-| **Coq / Lean** | Proof-assistant grade, but heavyweight; alignment-checking should be lighter |
+| Candidate               | Why not                                                                                             |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| **Haskell**             | Strong HKT but Haskell-only ecosystem, no Infer.NET integration, harder for humans to read at scale |
+| **Rust**                | Strong types but no HKT, no Infer.NET, ownership model orthogonal to AI-safety semantics            |
+| **Idris / Agda**        | Dependent types but academic-scale, no industrial ecosystem, both-parties-agree harder              |
+| **Scala**               | HKT support but JVM ecosystem mismatches .NET Infer.NET                                             |
+| **TypeScript**          | No HKT, no compile-time verification of the depth needed                                            |
+| **C# / F# without HKT** | No HKT → can't natively express vision-monad architecture                                           |
+| **Lisp / Clojure**      | Dynamic typing fails the compile-time verification requirement                                      |
+| **OCaml**               | Closest to F# in type system, but .NET ecosystem mismatch + HKT support is also limited             |
+| **Coq / Lean**          | Proof-assistant grade, but heavyweight; alignment-checking should be lighter                        |
 
 **F# with HKT is the unique intersection** of:
+
 - Industrial ecosystem (.NET, Infer.NET)
 - Sound functional type system (ML lineage)
 - Human-readable (vs. Haskell density)
@@ -201,6 +204,7 @@ Infer.NET for BP/EP message passing.
 
 **F# is the .NET language with the type-system depth
 Infer.NET deserves**:
+
 - C# can call Infer.NET but doesn't express the
   underlying type structure as naturally
 - F# with HKT would let Infer.NET's factor-graph
@@ -298,7 +302,7 @@ falsification program** because:
   "Zeta Infer.NET BP/EP substrate" as future state —
   this substrate names the language choice)
 - CLAUDE.md (factory build gate is `dotnet build -c
-  Release` — already targets .NET; this substrate
+Release` — already targets .NET; this substrate
   commits to F# + HKT as the architectural target
   within .NET)
 

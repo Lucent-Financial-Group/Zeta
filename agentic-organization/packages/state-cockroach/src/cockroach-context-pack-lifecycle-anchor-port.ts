@@ -84,19 +84,14 @@ async function loadLifecycleAnchors(
     return { items: [], graphRootSeeds: [] };
   }
 
-  const [
-    discussionAnchors,
-    decisionRecords,
-    qualityGateEvaluations,
-    workScheduleBlocks,
-    supervisorSignals,
-  ] = await Promise.all([
-    listDiscussionAnchors(executor, scope),
-    listDecisionRecords(executor, scope),
-    listQualityGateEvaluations(executor, scope),
-    listWorkScheduleBlocks(executor, scope),
-    listSupervisorSignals(executor, scope),
-  ]);
+  const [discussionAnchors, decisionRecords, qualityGateEvaluations, workScheduleBlocks, supervisorSignals] =
+    await Promise.all([
+      listDiscussionAnchors(executor, scope),
+      listDecisionRecords(executor, scope),
+      listQualityGateEvaluations(executor, scope),
+      listWorkScheduleBlocks(executor, scope),
+      listSupervisorSignals(executor, scope),
+    ]);
 
   return createInMemoryContextPackLifecycleAnchorPort({
     discussionAnchors,

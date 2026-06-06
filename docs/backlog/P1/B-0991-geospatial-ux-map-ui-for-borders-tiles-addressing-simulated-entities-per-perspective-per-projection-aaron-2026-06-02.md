@@ -9,7 +9,23 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0989]
 composes_with: [B-0989, B-0988, B-0986, B-0990, B-0985, B-0954, B-0703]
-tags: [geospatial, ux, ui, map, visualization, asciisphere, borders, tiles, addressing, perspective, projection, h3, observability, aaron]
+tags:
+  [
+    geospatial,
+    ux,
+    ui,
+    map,
+    visualization,
+    asciisphere,
+    borders,
+    tiles,
+    addressing,
+    perspective,
+    projection,
+    h3,
+    observability,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,15 +33,15 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim): *"geospatial ux."* In the same stream as the geospatial-core (B-0989) + world-borders (B-0988) + the Itron *"see our billing ... with UI"* dev-experience (B-0990). The geospatial work needs a **UX**: a map UI to *see* the borders / tiles / addressing / simulated-entities — the visible layer over the geospatial core, the spatial instance of the "see it on a UI" dev-experience.
+Aaron 2026-06-02 (verbatim): _"geospatial ux."_ In the same stream as the geospatial-core (B-0989) + world-borders (B-0988) + the Itron _"see our billing ... with UI"_ dev-experience (B-0990). The geospatial work needs a **UX**: a map UI to _see_ the borders / tiles / addressing / simulated-entities — the visible layer over the geospatial core, the spatial instance of the "see it on a UI" dev-experience.
 
 ## What it is
 
 A map UI/visualization over the geospatial core (B-0989) + world-borders (B-0988) + orientation-tile addressing (B-0986):
 
 - **See the borders** — world borders rendered on a map; disputed regions shown as **overlapping claims** (multi-oracle, not a single line).
-- **Per-perspective toggle** — switch the querying frame (B-0988 perspective-parameterized): a disputed border renders differently per perspective; the UI makes "they all disagree" *visible*.
-- **Per-projection toggle** — switch the map projection (B-0988 project-on-query: Mercator/UTM/Albers/Robinson/…); no neutral projection, so the UI lets you *choose* and *compare*.
+- **Per-perspective toggle** — switch the querying frame (B-0988 perspective-parameterized): a disputed border renders differently per perspective; the UI makes "they all disagree" _visible_.
+- **Per-projection toggle** — switch the map projection (B-0988 project-on-query: Mercator/UTM/Albers/Robinson/…); no neutral projection, so the UI lets you _choose_ and _compare_.
 - **See the tiles + addressing** — the orientation-tile / H3-hexagonal cells (B-0985/B-0988 O(1) grid) + E911 street-segment addressing (B-0986) drawn on the map; click a point → its cell + jurisdiction-claim-set.
 - **See simulated entities** — the B-0990 simulated entities (agents/wallets/meters/tiles) plotted live on the map (the spatial instance of "see our billing of simulated meters on UI").
 - **ASCIIsphere + real map** — composes the ASCIIsphere visible-layer ("where the life is seen") with a real geospatial map renderer.

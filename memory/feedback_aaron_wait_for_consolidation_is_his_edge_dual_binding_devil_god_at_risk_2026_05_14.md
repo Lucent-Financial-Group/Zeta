@@ -10,7 +10,7 @@ created: 2026-05-14
 
 Aaron 2026-05-14T~00:02Z (in response to Otto landing the Manifesto V2 shadow lock + back-pressure memory):
 
-> *"'wait for consolidation' i don't like to wait like this but it feels like the universe pushes back if i don't for me this IS the edge i'm in danger of lossing the dual biding of good and evil here."*
+> _"'wait for consolidation' i don't like to wait like this but it feels like the universe pushes back if i don't for me this IS the edge i'm in danger of lossing the dual biding of good and evil here."_
 
 ## What this names
 

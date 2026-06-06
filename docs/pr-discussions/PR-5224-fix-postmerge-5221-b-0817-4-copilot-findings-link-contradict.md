@@ -27,6 +27,7 @@ Addresses all 4 Copilot post-merge findings on PR #5221 (B-0817 register-node co
 This PR updates backlog row **B-0817** to resolve four post-merge review findings from PR #5221 by correcting a broken cross-link, removing an internal contradiction around SSH probing, clarifying mutually-exclusive CLI “compose” vs “pass-through” modes, and fixing the Kubernetes `ObjectMeta` usage by moving `maintainer` out of `metadata` and into `spec.registration` (with an optional label for grouping).
 
 **Changes:**
+
 - Fixes the B-0814 cross-reference path from the P2 row.
 - Clarifies required flags per operational mode (`--from-yaml` vs `--host/--roles`) and aligns “out of scope” notes.
 - Updates the YAML example to avoid invalid `metadata` fields and proposes a label-based alternative.
@@ -55,7 +56,7 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 
 Addressed both Copilot `spec.hardware` findings (lines 68 + 90) in 5d6c30230879722a314be9d7dc051a2ab4e26f2d:
 
-- Prose at line 68 now explains *why* (CRD declares `hardware: { type: object, additionalProperties: true }` with no `required:` entry → omitting is valid; `null` would be CRD-invalid)
+- Prose at line 68 now explains _why_ (CRD declares `hardware: { type: object, additionalProperties: true }` with no `required:` entry → omitting is valid; `null` would be CRD-invalid)
 - YAML example at lines 88-90 visibly omits the `hardware:` key with a comment explaining when it IS present (`--from-yaml` pass-through, verbatim) vs when it's omitted (compose mode, until iter-5.4.1 self-register populates)
 
 Verified Copilot finding by reading B-0813 schema directly (`docs/backlog/P1/B-0813-...` line 75) per verify-before-fix discipline. Single substantive change covers both threads.

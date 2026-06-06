@@ -75,9 +75,9 @@ review chain landing.
 
 2. **Compound-substrate row but no loss**: even though this row had
    compound substrate value (Otto-289 verify success + task #276 gating
-   + #602 MD032 fix), the supersession path absorbed it cleanly because
-   #613 was a one-shot consolidated-backfill that didn't undergo the
-   #618→#620 hallucinated-mental-model failure.
+   - #602 MD032 fix), the supersession path absorbed it cleanly because
+     #613 was a one-shot consolidated-backfill that didn't undergo the
+     #618→#620 hallucinated-mental-model failure.
 
 3. **The 2nd-agent audit saved time + cost** by confirming this case
    was clean: the audit ran in ~2 min and verified the byte-identical

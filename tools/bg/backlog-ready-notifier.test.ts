@@ -51,7 +51,7 @@ function fakeAdapters(
       };
     },
     agentPatterns: {
-      "testagent": ["testagent"],
+      testagent: ["testagent"],
     },
     execGitLog: () => gitLogStr,
     execGhPrList: () => ghPrListStr,
@@ -253,10 +253,7 @@ title: only a title
 
   describe("pollOnce with injected adapters", () => {
     test("flags rows with no dependencies as ready", () => {
-      const result = pollOnce(
-        DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS]),
-      );
+      const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS]));
       expect(result.totalOpenRows).toBe(1);
       expect(result.readyRowsFound).toBe(1);
       expect(result.candidateIds).toEqual(["B-9001"]);
@@ -265,10 +262,7 @@ title: only a title
     test("flags rows with all deps closed as ready", () => {
       const result = pollOnce(
         DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T18:00:00Z", [
-          ROW_CLOSED,
-          ROW_OPEN_DEPS_SATISFIED,
-        ]),
+        fakeAdapters("2026-05-13T18:00:00Z", [ROW_CLOSED, ROW_OPEN_DEPS_SATISFIED]),
       );
       expect(result.totalOpenRows).toBe(1);
       expect(result.readyRowsFound).toBe(1);
@@ -280,10 +274,7 @@ title: only a title
       // So B-9003 should NOT be ready. B-9999 has no deps so IT is ready.
       const result = pollOnce(
         DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T18:00:00Z", [
-          ROW_OPEN_DEPS_UNSATISFIED,
-          ROW_OPEN_DEPS_PENDING,
-        ]),
+        fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_DEPS_UNSATISFIED, ROW_OPEN_DEPS_PENDING]),
       );
       expect(result.totalOpenRows).toBe(2);
       expect(result.readyRowsFound).toBe(1);
@@ -298,19 +289,13 @@ title: only a title
         dependsOn: [],
         filename: `B-${String(8000 + i).padStart(4, "0")}.md`,
       }));
-      const result = pollOnce(
-        DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T18:00:00Z", rows),
-      );
+      const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", rows));
       expect(result.readyRowsFound).toBe(15);
       expect(result.candidateIds).toHaveLength(10);
     });
 
     test("returns 0 when no open rows exist", () => {
-      const result = pollOnce(
-        DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T18:00:00Z", [ROW_CLOSED]),
-      );
+      const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [ROW_CLOSED]));
       expect(result.totalOpenRows).toBe(0);
       expect(result.readyRowsFound).toBe(0);
       expect(result.candidateIds).toEqual([]);
@@ -347,10 +332,7 @@ title: only a title
         dependsOn: ["B-NONEXISTENT"],
         filename: "B-8002.md",
       };
-      const result = pollOnce(
-        DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T18:00:00Z", [openWithDanglingDep]),
-      );
+      const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", [openWithDanglingDep]));
       expect(result.readyRowsFound).toBe(0);
       expect(result.note).toContain("dangling dep ref");
       expect(result.note).toContain("B-NONEXISTENT");
@@ -381,11 +363,7 @@ title: only a title
       const captured: FakeAssignmentCall[] = [];
       const result = pollOnce(
         { ...DEFAULT_CONFIG, maxAssignments: 2 },
-        fakeAdapters(
-          "2026-05-13T18:00:00Z",
-          [ROW_OPEN_NO_DEPS, ROW_CLOSED, ROW_OPEN_DEPS_SATISFIED],
-          captured,
-        ),
+        fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS, ROW_CLOSED, ROW_OPEN_DEPS_SATISFIED], captured),
       );
       expect(result.readyRowsFound).toBe(2);
       expect(result.publishedEnvelopeIds).toHaveLength(2);
@@ -445,9 +423,9 @@ title: only a title
       // "testagent" has commit pattern "testagent". Set git log to contain it.
       const adapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured, "commit by testagent");
       const config = { ...DEFAULT_CONFIG, targetAgent: "testagent" };
-      
+
       const result = pollOnce(config, adapters);
-      
+
       expect(result.queueBusy).toBe(true);
       expect(result.publishedEnvelopeIds).toHaveLength(0);
       expect(captured).toHaveLength(0);
@@ -493,14 +471,7 @@ title: only a title
         written: [],
       };
       // Poll at T+15min.
-      const adapters = fakeAdapters(
-        "2026-05-13T18:15:00.000Z",
-        [ROW_OPEN_NO_DEPS],
-        captured,
-        "",
-        "",
-        history,
-      );
+      const adapters = fakeAdapters("2026-05-13T18:15:00.000Z", [ROW_OPEN_NO_DEPS], captured, "", "", history);
       const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
       expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
       expect(result.publishedEnvelopeIds).toHaveLength(0);
@@ -515,36 +486,20 @@ title: only a title
         written: [],
       };
       // Poll at T+35min — entry is expired (older than 30min cooldown).
-      const adapters = fakeAdapters(
-        "2026-05-13T18:35:00.000Z",
-        [ROW_OPEN_NO_DEPS],
-        captured,
-        "",
-        "",
-        history,
-      );
+      const adapters = fakeAdapters("2026-05-13T18:35:00.000Z", [ROW_OPEN_NO_DEPS], captured, "", "", history);
       const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
       expect(result.skippedDueToCooldown).toEqual([]);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
       expect(captured).toHaveLength(1);
       // History rewritten: pruned the stale entry, appended fresh entry.
       expect(history.written).toHaveLength(1);
-      expect(history.written[0]!.entries).toEqual([
-        { rowId: "B-9001", publishedAt: "2026-05-13T18:35:00.000Z" },
-      ]);
+      expect(history.written[0]!.entries).toEqual([{ rowId: "B-9001", publishedAt: "2026-05-13T18:35:00.000Z" }]);
     });
 
     test("history file absent → first assignment proceeds normally and writes history", () => {
       const captured: FakeAssignmentCall[] = [];
       const history: HistoryStore = { read: null, written: [] };
-      const adapters = fakeAdapters(
-        "2026-05-13T18:00:00.000Z",
-        [ROW_OPEN_NO_DEPS],
-        captured,
-        "",
-        "",
-        history,
-      );
+      const adapters = fakeAdapters("2026-05-13T18:00:00.000Z", [ROW_OPEN_NO_DEPS], captured, "", "", history);
       const result = pollOnce(DEFAULT_CONFIG, adapters);
       expect(result.skippedDueToCooldown).toEqual([]);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
@@ -580,7 +535,7 @@ title: only a title
       const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 10, cooldownMin: 30 }, adapters);
       expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
-      expect(captured.map(c => c.rowId)).toEqual(["B-9002"]);
+      expect(captured.map((c) => c.rowId)).toEqual(["B-9002"]);
     });
 
     test("history pruning: entries older than cooldownMin removed on write", () => {
@@ -596,29 +551,19 @@ title: only a title
         written: [],
       };
       const rowNew: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "B-NEW" };
-      const adapters = fakeAdapters(
-        "2026-05-13T18:00:00.000Z",
-        [rowNew],
-        captured,
-        "",
-        "",
-        history,
-      );
+      const adapters = fakeAdapters("2026-05-13T18:00:00.000Z", [rowNew], captured, "", "", history);
       const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
       // Written history should NOT include B-OLD (pruned) but should keep B-RECENT and add B-NEW.
       expect(history.written).toHaveLength(1);
-      const writtenIds = history.written[0]!.entries.map(e => e.rowId);
+      const writtenIds = history.written[0]!.entries.map((e) => e.rowId);
       expect(writtenIds).not.toContain("B-OLD");
       expect(writtenIds).toContain("B-RECENT");
       expect(writtenIds).toContain("B-NEW");
     });
 
     test("--history-file and --cooldown-min flags parse correctly", () => {
-      const config = parseArgs([
-        "--history-file", "/custom/path/assignment-history.json",
-        "--cooldown-min", "60",
-      ]);
+      const config = parseArgs(["--history-file", "/custom/path/assignment-history.json", "--cooldown-min", "60"]);
       expect(config.historyFile).toBe("/custom/path/assignment-history.json");
       expect(config.cooldownMin).toBe(60);
     });
@@ -651,17 +596,10 @@ title: only a title
         { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-3" },
       ];
       // Poll at T+15min — cooldown 30min still active for COOLED-* rows.
-      const adapters = fakeAdapters(
-        "2026-05-13T18:15:00.000Z",
-        rows,
-        captured,
-        "",
-        "",
-        history,
-      );
+      const adapters = fakeAdapters("2026-05-13T18:15:00.000Z", rows, captured, "", "", history);
       const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 3, cooldownMin: 30 }, adapters);
       expect(result.publishedEnvelopeIds).toHaveLength(3);
-      expect(captured.map(c => c.rowId)).toEqual(["B-ELIG-1", "B-ELIG-2", "B-ELIG-3"]);
+      expect(captured.map((c) => c.rowId)).toEqual(["B-ELIG-1", "B-ELIG-2", "B-ELIG-3"]);
       expect(result.skippedDueToCooldown).toEqual(["B-COOLED-1", "B-COOLED-2", "B-COOLED-3"]);
     });
 
@@ -708,11 +646,7 @@ title: only a title
       };
       let readIdx = 0;
       const writtenHistory: AssignmentHistory[] = [];
-      const baseAdapters = fakeAdapters(
-        "2026-05-13T18:00:00.000Z",
-        [{ ...ROW_OPEN_NO_DEPS, id: "B-OURS" }],
-        captured,
-      );
+      const baseAdapters = fakeAdapters("2026-05-13T18:00:00.000Z", [{ ...ROW_OPEN_NO_DEPS, id: "B-OURS" }], captured);
       const adapters: Adapters = {
         ...baseAdapters,
         readHistoryFile: () => {
@@ -729,7 +663,7 @@ title: only a title
       expect(result.publishedEnvelopeIds).toHaveLength(1);
       expect(captured[0]!.rowId).toBe("B-OURS");
       expect(writtenHistory).toHaveLength(1);
-      const writtenIds = writtenHistory[0]!.entries.map(e => e.rowId).sort();
+      const writtenIds = writtenHistory[0]!.entries.map((e) => e.rowId).sort();
       expect(writtenIds).toEqual(["B-OURS", "B-PEER"]);
     });
   });
@@ -752,10 +686,14 @@ title: only a title
     test("--no-publish + --agent + --to + --max-assignments + --target-agent", () => {
       const config = parseArgs([
         "--no-publish",
-        "--agent", "vera",
-        "--to", "lior",
-        "--max-assignments", "5",
-        "--target-agent", "riven",
+        "--agent",
+        "vera",
+        "--to",
+        "lior",
+        "--max-assignments",
+        "5",
+        "--target-agent",
+        "riven",
       ]);
       expect(config.noPublish).toBe(true);
       expect(config.fromAgent).toBe("vera");

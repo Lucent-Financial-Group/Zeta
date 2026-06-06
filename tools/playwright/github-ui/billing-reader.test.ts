@@ -3,12 +3,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { readOrgBillingUsage, type BillingReaderOptions } from "./billing-reader";
-import type {
-  GitHubSessionContext,
-  GitHubSessionDriver,
-  GitHubSessionPage,
-  PageGotoOptions,
-} from "./auth";
+import type { GitHubSessionContext, GitHubSessionDriver, GitHubSessionPage, PageGotoOptions } from "./auth";
 
 // ---------------------------------------------------------------------------
 // Fake Playwright driver (mirrors snapshot.test.ts pattern)
@@ -66,14 +61,22 @@ function makePage(username: string, targetUrl: string, targetHtml: string): Mult
 
 class FakeContext implements GitHubSessionContext {
   private readonly page: MultiUrlFakePage;
-  constructor(page: MultiUrlFakePage) { this.page = page; }
-  newPage(): Promise<MultiUrlFakePage> { return Promise.resolve(this.page); }
-  close(): Promise<void> { return Promise.resolve(); }
+  constructor(page: MultiUrlFakePage) {
+    this.page = page;
+  }
+  newPage(): Promise<MultiUrlFakePage> {
+    return Promise.resolve(this.page);
+  }
+  close(): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 class FakeDriver implements GitHubSessionDriver {
   private readonly page: MultiUrlFakePage;
-  constructor(page: MultiUrlFakePage) { this.page = page; }
+  constructor(page: MultiUrlFakePage) {
+    this.page = page;
+  }
   newContext(_storageStatePath: string): Promise<FakeContext> {
     return Promise.resolve(new FakeContext(this.page));
   }

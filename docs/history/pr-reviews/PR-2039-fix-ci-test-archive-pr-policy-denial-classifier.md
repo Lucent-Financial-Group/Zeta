@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2039 |
-| Title | fix(ci): test archive PR policy-denial classifier |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-08T05:06:45Z |
-| Merged at | 2026-05-08T05:14:11Z |
-| Merge commit SHA | `60d9cf9d67c7b84bcf9195ed7aa94be9f23940df` |
-| Branch | `codex/pr-create-policy-denial-classifier` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2039 |
-| Changed files | 3 |
-| Additions / deletions | +55 / -3 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2039                                                     |
+| Title                 | fix(ci): test archive PR policy-denial classifier        |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-08T05:06:45Z                                     |
+| Merged at             | 2026-05-08T05:14:11Z                                     |
+| Merge commit SHA      | `60d9cf9d67c7b84bcf9195ed7aa94be9f23940df`               |
+| Branch                | `codex/pr-create-policy-denial-classifier`               |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2039 |
+| Changed files         | 3                                                        |
+| Additions / deletions | +55 / -3                                                 |
 
 ## Description
 
@@ -43,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 1 |
-| Unresolved threads | 0 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 1     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -67,7 +67,7 @@
 
   <pre>
   P2 (nit): This tools/github script defines a CLI `main` but doesn’t export it. Other tools/github scripts consistently `export async function main(argv: ...)` (e.g. tools/github/check-github-status.ts) which makes the entrypoint easy to reuse/invoke from tests or other tooling. Consider exporting `main` (and optionally using `readonly string[]` for argv) for consistency.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

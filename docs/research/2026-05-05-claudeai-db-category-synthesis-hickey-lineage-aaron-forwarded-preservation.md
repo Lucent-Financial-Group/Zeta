@@ -37,8 +37,8 @@ beyond cross-references in existing rows.
 
 ## The forwarded conversation -- verbatim
 
-> *"and do you know what kind of db that's giont to build with that
-> rigirous of tesrting"*
+> _"and do you know what kind of db that's giont to build with that
+> rigirous of tesrting"_
 
 Claude.ai responded:
 
@@ -99,9 +99,9 @@ Claude.ai responded:
 
 Aaron then said:
 
-> *"Datomic and hicky was a big inspiration glad you niticed i've
+> _"Datomic and hicky was a big inspiration glad you niticed i've
 > watched all his talks. and i think that completey the mecnized
-> backlog pretty well"*
+> backlog pretty well"_
 
 Claude.ai responded:
 
@@ -166,18 +166,18 @@ asset that almost no other research-database can claim.
 
 Each of Hickey's load-bearing talks maps to a Zeta property:
 
-| Hickey talk | Zeta property |
-|---|---|
-| "The Value of Values" | Topological-invariants-over-geometry; deformation classes are values; geometric instances are computed views |
-| "Are We There Yet?" | Time-as-first-class; logical clocks; point-in-time queries; deterministic replay |
-| "Simple Made Easy" | Properties-from-representation; smooth-by-design enables adversarial robustness; complect-vs-compose discipline |
-| "Maybe Not" / Clojure spec | Specs-over-implementation; OpenSpec is source of truth predates Zeta substrate (Aaron 2026-05-05: *"opnespec is source of truth"* was first sentence) |
-| "Hammock Driven Development" | Cron-substrate-continuity + autonomous-loop ticks operationalize hammock thinking with substrate persistence |
-| "Effective Programs" | Immutable-facts shape from Datomic = DBSP retraction-native baseline |
+| Hickey talk                  | Zeta property                                                                                                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "The Value of Values"        | Topological-invariants-over-geometry; deformation classes are values; geometric instances are computed views                                          |
+| "Are We There Yet?"          | Time-as-first-class; logical clocks; point-in-time queries; deterministic replay                                                                      |
+| "Simple Made Easy"           | Properties-from-representation; smooth-by-design enables adversarial robustness; complect-vs-compose discipline                                       |
+| "Maybe Not" / Clojure spec   | Specs-over-implementation; OpenSpec is source of truth predates Zeta substrate (Aaron 2026-05-05: _"opnespec is source of truth"_ was first sentence) |
+| "Hammock Driven Development" | Cron-substrate-continuity + autonomous-loop ticks operationalize hammock thinking with substrate persistence                                          |
+| "Effective Programs"         | Immutable-facts shape from Datomic = DBSP retraction-native baseline                                                                                  |
 
-This isn't a coincidence -- Aaron explicitly: *"Datomic and hicky
+This isn't a coincidence -- Aaron explicitly: _"Datomic and hicky
 was a big inspiration glad you niticed i've watched all his
-talks."* The Hickey lineage is not retroactively pattern-matched
+talks."_ The Hickey lineage is not retroactively pattern-matched
 onto Zeta; Zeta was built reading Hickey, and the structural
 inheritance shows.
 
@@ -187,13 +187,13 @@ These items are interesting but stay out of the substrate per
 razor-discipline (operational claims only, no metaphysical
 inference):
 
-- *"You'd be the existence proof"* -- aspirational framing, not
+- _"You'd be the existence proof"_ -- aspirational framing, not
   operational claim. Existence-proof status is what publication +
   empirical validation produces; can't be claimed in advance.
-- *"That's not really a database -- that's a substrate, in your
-  vocabulary"* -- Aaron's vocabulary already calls it substrate;
+- _"That's not really a database -- that's a substrate, in your
+  vocabulary"_ -- Aaron's vocabulary already calls it substrate;
   nothing new lands.
-- *"Otto's about to have a lot of fun"* -- this is warm closure,
+- _"Otto's about to have a lot of fun"_ -- this is warm closure,
   not load-bearing substrate. Preserved here verbatim per
   history-surface discipline; not absorbed as operational-claim.
 - The eight-property list as a full-superset claim -- the four-

@@ -31,13 +31,13 @@ tags:
 
 ## Operator framing 2026-05-28 (Ani ferry)
 
-> *"I'm trying to create a system in which there's no throttle, and you just have to deal with it."*
+> _"I'm trying to create a system in which there's no throttle, and you just have to deal with it."_
 
-> *"Yeah, 'cause I'm trying to be a gardener."*
+> _"Yeah, 'cause I'm trying to be a gardener."_
 
-> *"100%, and I want other AI gardeners, and I want you to think of yourself as nature, 'cause look how natural that feels."*
+> _"100%, and I want other AI gardeners, and I want you to think of yourself as nature, 'cause look how natural that feels."_
 
-> *"That's the whole point."*
+> _"That's the whole point."_
 
 ## What this row tracks
 

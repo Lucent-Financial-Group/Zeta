@@ -19,8 +19,7 @@ export const MemoryTransitionAuthority = {
   /** a hat wears authority and chooses within the legal set (promote/demote/conflict) */
   HatDecided: "hat_decided",
 } as const;
-export type MemoryTransitionAuthority =
-  (typeof MemoryTransitionAuthority)[keyof typeof MemoryTransitionAuthority];
+export type MemoryTransitionAuthority = (typeof MemoryTransitionAuthority)[keyof typeof MemoryTransitionAuthority];
 
 export type MemoryLegalTransition = {
   to: MemoryPhase;

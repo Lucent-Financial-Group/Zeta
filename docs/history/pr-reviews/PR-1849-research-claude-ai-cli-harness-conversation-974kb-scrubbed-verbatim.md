@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1849 |
-| Title | research: Claude.ai CLI harness conversation — 974KB SCRUBBED VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T09:33:28Z |
-| Merged at | 2026-05-07T09:35:47Z |
-| Merge commit SHA | `4e9096795fd7cd0df6dca09dc7dea60fbcc041d8` |
-| Branch | `research/claudeai-cli-harness-conversation-scrubbed` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1849 |
-| Changed files | 1 |
-| Additions / deletions | +9597 / -0 |
+| Field                 | Value                                                                  |
+| --------------------- | ---------------------------------------------------------------------- |
+| Number                | 1849                                                                   |
+| Title                 | research: Claude.ai CLI harness conversation — 974KB SCRUBBED VERBATIM |
+| Author                | `AceHack` (human)                                                      |
+| State                 | MERGED                                                                 |
+| Created at            | 2026-05-07T09:33:28Z                                                   |
+| Merged at             | 2026-05-07T09:35:47Z                                                   |
+| Merge commit SHA      | `4e9096795fd7cd0df6dca09dc7dea60fbcc041d8`                             |
+| Branch                | `research/claudeai-cli-harness-conversation-scrubbed`                  |
+| Base branch           | `main`                                                                 |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1849               |
+| Changed files         | 1                                                                      |
+| Additions / deletions | +9597 / -0                                                             |
 
 ## Description
 
 ## Summary
+
 - Full Claude.ai conversation extracted via osascript/Chrome (974KB, 9597 lines)
 - "CLI harness autonomous operation guidance" — the conversation that includes alignment pushback, Ace architecture, patent provenance
 - All sensitive names scrubbed per naming-consent rules
 - Extracted using Aaron's authenticated Chrome session via AppleScript JS execution
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Zero sensitive names remaining (verified: grep returns 0)
 - [ ] Verbatim preservation verified (minus name scrubs)
@@ -42,15 +44,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

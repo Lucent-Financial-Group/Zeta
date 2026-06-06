@@ -9,8 +9,25 @@ ask: Aaron 2026-04-21 — *"all company information on all compaanies on earth a
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0046, feedback_capture_everything_including_failure_aspirational_honesty.md, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, docs/ALIGNMENT.md]
-tags: [aspirational, broad-scope, institutional-landscape, opencorporates, gleif, openownership, alignment-trajectory-denominator, scoping-first, license-gated]
+composes_with:
+  [
+    B-0046,
+    feedback_capture_everything_including_failure_aspirational_honesty.md,
+    user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md,
+    docs/ALIGNMENT.md,
+  ]
+tags:
+  [
+    aspirational,
+    broad-scope,
+    institutional-landscape,
+    opencorporates,
+    gleif,
+    openownership,
+    alignment-trajectory-denominator,
+    scoping-first,
+    license-gated,
+  ]
 type: feature
 ---
 
@@ -18,7 +35,7 @@ type: feature
 
 ## Origin
 
-AceHack commit `fd0ac50` (2026-04-21). Aaron's *"all company information on all compaanies on earth all governements too backlog"*. Logged under capture-everything discipline; **status: aspirational, not confirmed or scheduled**.
+AceHack commit `fd0ac50` (2026-04-21). Aaron's _"all company information on all compaanies on earth all governements too backlog"_. Logged under capture-everything discipline; **status: aspirational, not confirmed or scheduled**.
 
 ## Scope-as-captured (maximalist, pre-filter)
 
@@ -43,7 +60,7 @@ Scope alone sends this to P3. "All companies on Earth" = ~300M registered entiti
 - **OECD Orbis** (commercial)
 - **S&P Capital IQ** (commercial)
 - **Refinitiv** (commercial)
-- *Government-level:* Wikipedia's List of sovereign states, CIA World Factbook, UN Member States registry, PARLINE (parliamentary data), V-Dem (democracy indicators), Freedom House
+- _Government-level:_ Wikipedia's List of sovereign states, CIA World Factbook, UN Member States registry, PARLINE (parliamentary data), V-Dem (democracy indicators), Freedom House
 
 Aggregation gaps are large; cross-registry entity-resolution is an unsolved problem at scale.
 

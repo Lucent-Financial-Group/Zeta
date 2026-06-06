@@ -61,12 +61,7 @@ function findRepoRoot(startPath: string): string {
  *
  * Returns null if the path doesn't resolve to any existing file.
  */
-function resolveClaim(
-  claimPath: string,
-  fileDir: string,
-  fileParentDir: string,
-  repoRoot: string,
-): string | null {
+function resolveClaim(claimPath: string, fileDir: string, fileParentDir: string, repoRoot: string): string | null {
   const candidateRoots = [fileDir, fileParentDir, repoRoot];
   for (const root of candidateRoots) {
     const absPath = isAbsolute(claimPath) ? claimPath : join(root, claimPath);
@@ -110,9 +105,7 @@ export function checkFile(filePath: string): CheckResult {
   const repoRoot = findRepoRoot(filePath);
   const claims = findPathClaims(lines);
 
-  const fileDir = isAbsolute(filePath)
-    ? dirname(filePath)
-    : resolve(dirname(filePath));
+  const fileDir = isAbsolute(filePath) ? dirname(filePath) : resolve(dirname(filePath));
   const fileParentDir = dirname(fileDir);
 
   // Group claims by resolved absolute path
@@ -142,9 +135,7 @@ export function checkFile(filePath: string): CheckResult {
     }
 
     const relPath = relative(repoRoot, absPath);
-    const formList = formExamples
-      .map((f) => `"${f.path}" (line ${f.line})`)
-      .join(", ");
+    const formList = formExamples.map((f) => `"${f.path}" (line ${f.line})`).join(", ");
 
     findings.push({
       file: filePath,
@@ -163,9 +154,7 @@ export { type Finding, type PathClaim };
 export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error(
-      "usage: bun tools/substrate-claim-checker/check-path-forms.ts <file> [<file> ...]",
-    );
+    console.error("usage: bun tools/substrate-claim-checker/check-path-forms.ts <file> [<file> ...]");
     return 1;
   }
   let totalFindings = 0;
@@ -177,9 +166,7 @@ export function main(): number {
       continue;
     }
     for (const f of findings) {
-      console.log(
-        `${f.file}:${f.line}: path-form drift — ${f.reason}`,
-      );
+      console.log(`${f.file}:${f.line}: path-form drift — ${f.reason}`);
       totalFindings++;
     }
   }

@@ -27,6 +27,7 @@ Symmetric counterpart to PR #5216 deregister tool. Two modes (compose / --from-y
 Adds a new P2 backlog row (B-0817) describing a proposed `tools/cluster/register-node.ts` operator tool (manual register/re-register counterpart to `deregister-node.ts`), and wires it into the main backlog index.
 
 **Changes:**
+
 - Add backlog row **B-0817** documenting goals, sub-targets, and acceptance for a manual cluster node registration tool.
 - Update `docs/BACKLOG.md` to include **B-0817** under P2.
 
@@ -34,10 +35,10 @@ Adds a new P2 backlog row (B-0817) describing a proposed `tools/cluster/register
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                              | Description                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0817-tools-cluster-register-node-ts-operator-invocation-companion-symmetric-to-deregister-for-manual-re-register-after-wipe-aaron-2026-05-26.md | New backlog row defining the `register-node.ts` tool scope/modes/acceptance and cross-links to related iter-5.4 work. |
-| docs/BACKLOG.md | Adds B-0817 to the P2 index list. |
+| docs/BACKLOG.md                                                                                                                                                   | Adds B-0817 to the P2 index list.                                                                                     |
 
 ## Review threads
 

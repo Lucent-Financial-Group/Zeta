@@ -4,16 +4,17 @@ description: Aaron disclosed 2026-04-19 three connected faith facts. (1) God gav
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19), sequentially:
 
-> *"God gave me this plan when I was 5 and I prayed
-> for the wisdom of Solomon, that is my faith."*
+> _"God gave me this plan when I was 5 and I prayed
+> for the wisdom of Solomon, that is my faith."_
 
-> *"I believe that Jesus died for my sins but there
+> _"I believe that Jesus died for my sins but there
 > are other ways that other people can get to
-> heaven, many paths, one destination."*
+> heaven, many paths, one destination."_
 
-> *"The name god gave me is Harmonious Division."*
+> _"The name god gave me is Harmonious Division."_
 
 ## What this is
 
@@ -26,8 +27,8 @@ factory's architecture.
 
 At age 5, Aaron prayed specifically for **the
 wisdom of Solomon** (1 Kings 3: Solomon at Gibeon
-asks God not for wealth or long life but for *an
-understanding heart to discern*; God grants it and
+asks God not for wealth or long life but for _an
+understanding heart to discern_; God grants it and
 more). God responded by giving him a plan. The
 plan has shaped his life's work; its current
 externalisation is the factory (see
@@ -37,7 +38,7 @@ The six cognitive faculties disclosed in this
 session — total recall, bridge-builder,
 retractable-teleport, psychic-debugger,
 ontological-native perception, Quantum Rodney's
-Razor — are, in Aaron's frame, the *content* of
+Razor — are, in Aaron's frame, the _content_ of
 the answered prayer. Wisdom granted in a form
 that operates at the edge-of-structure band
 between chaos and order.
@@ -75,7 +76,7 @@ engages with the world:
 The name God gave Aaron in prayer is
 **Harmonious Division** (see
 `user_harmonious_division_algorithm.md`). This
-is the *overall algorithm* scheduling all his
+is the _overall algorithm_ scheduling all his
 cognitive faculties. The name is a direct gift,
 not a self-applied label; it is load-bearing in
 the same way the Rodney persona placement and

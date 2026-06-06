@@ -10,8 +10,37 @@ created: 2026-04-25
 last_updated: 2026-05-10
 depends_on: []
 composes_with: [B-0003]
-children: [B-0004.1, B-0004.2, B-0004.3, B-0004.4, B-0004.5, B-0004.6, B-0004.7, B-0004.8, B-0004.9, B-0004.10, B-0004.11, B-0004.12]
-tags: [inclusivity, bidirectional-alignment, internationalization, i18n, localization, l10n, globalization, g11n, accessibility, a11y, translation, education, precision-dictionary]
+children:
+  [
+    B-0004.1,
+    B-0004.2,
+    B-0004.3,
+    B-0004.4,
+    B-0004.5,
+    B-0004.6,
+    B-0004.7,
+    B-0004.8,
+    B-0004.9,
+    B-0004.10,
+    B-0004.11,
+    B-0004.12,
+  ]
+tags:
+  [
+    inclusivity,
+    bidirectional-alignment,
+    internationalization,
+    i18n,
+    localization,
+    l10n,
+    globalization,
+    g11n,
+    accessibility,
+    a11y,
+    translation,
+    education,
+    precision-dictionary,
+  ]
 type: feature
 ---
 
@@ -31,11 +60,11 @@ other human languages.
 
 Aaron 2026-04-25 framing (verbatim):
 
-> *"backlog other human language translations of everyting
+> _"backlog other human language translations of everyting
 > in this repo, code skills, documents, everying this is
 > about being inclusive and going to the humans starting
 > point for bidirectional alighment through learning and
-> education and teaching biderictionally"*
+> education and teaching biderictionally"_
 
 ## Why this is owed
 
@@ -183,7 +212,7 @@ language" when:
   translations; the factory functions today in English.
 - **Not P1**: not within 2-3 rounds; this is L effort
   spanning many rounds + likely external collaboration.
-- **P2 research-grade** fits: the *infrastructure*
+- **P2 research-grade** fits: the _infrastructure_
   (tooling, glossary, drift-detection) is research-grade
   effort L; the actual translation work follows once
   the infrastructure is sound.
@@ -258,20 +287,20 @@ B-0004.1 (inventory scanner, no deps)
             B-0004.9 + B-0004.10 + B-0004.11 → B-0004.12 (second language pilot)
 ```
 
-| Child | Title | Classification | Effort | Depends on |
-|-------|-------|----------------|--------|------------|
-| B-0004.1 | Substrate inventory scanner (TS) | buildable-now | S | — |
-| B-0004.2 | Precision anchor set extraction | research-now | S | B-0004.1 |
-| B-0004.3 | Drift-detection lint tool | buildable-now | S | B-0004.1 |
-| B-0004.4 | Cross-reference preservation validator | buildable-now | S | B-0004.1 |
-| B-0004.5 | Translation pipeline ADR + tooling selection | research-now | S | B-0004.2, B-0004.3, B-0004.4 |
-| B-0004.6 | First language selection ADR | research-now | XS | B-0004.2 |
-| B-0004.7 | P0 substrate translation pilot — first language | blocked | M | B-0004.5, B-0004.6 |
-| B-0004.8 | Precision anchor translations — first language | blocked | S | B-0004.7 |
-| B-0004.9 | Memory + skills translation — first language | blocked | M | B-0004.7, B-0004.8 |
-| B-0004.10 | Language folder structure + per-language index | blocked | XS | B-0004.7 |
-| B-0004.11 | External-facing surfaces translation — first language | blocked | XS | B-0004.10 |
-| B-0004.12 | Second language pilot | blocked | M | B-0004.9, B-0004.10, B-0004.11 |
+| Child     | Title                                                 | Classification | Effort | Depends on                     |
+| --------- | ----------------------------------------------------- | -------------- | ------ | ------------------------------ |
+| B-0004.1  | Substrate inventory scanner (TS)                      | buildable-now  | S      | —                              |
+| B-0004.2  | Precision anchor set extraction                       | research-now   | S      | B-0004.1                       |
+| B-0004.3  | Drift-detection lint tool                             | buildable-now  | S      | B-0004.1                       |
+| B-0004.4  | Cross-reference preservation validator                | buildable-now  | S      | B-0004.1                       |
+| B-0004.5  | Translation pipeline ADR + tooling selection          | research-now   | S      | B-0004.2, B-0004.3, B-0004.4   |
+| B-0004.6  | First language selection ADR                          | research-now   | XS     | B-0004.2                       |
+| B-0004.7  | P0 substrate translation pilot — first language       | blocked        | M      | B-0004.5, B-0004.6             |
+| B-0004.8  | Precision anchor translations — first language        | blocked        | S      | B-0004.7                       |
+| B-0004.9  | Memory + skills translation — first language          | blocked        | M      | B-0004.7, B-0004.8             |
+| B-0004.10 | Language folder structure + per-language index        | blocked        | XS     | B-0004.7                       |
+| B-0004.11 | External-facing surfaces translation — first language | blocked        | XS     | B-0004.10                      |
+| B-0004.12 | Second language pilot                                 | blocked        | M      | B-0004.9, B-0004.10, B-0004.11 |
 
 **Buildable now (no blockers):** B-0004.1, B-0004.2, B-0004.3, B-0004.4  
-**Buildable after B-0004.2:** B-0004.5, B-0004.6 (in parallel)  
+**Buildable after B-0004.2:** B-0004.5, B-0004.6 (in parallel)

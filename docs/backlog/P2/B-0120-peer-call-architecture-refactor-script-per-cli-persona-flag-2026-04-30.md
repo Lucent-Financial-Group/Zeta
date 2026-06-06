@@ -38,9 +38,9 @@ type: friction-reducer
 
 Aaron 2026-04-30 verbatim:
 
-> *"it's probalby overkill to have a script per named agent
+> _"it's probalby overkill to have a script per named agent
 > better to have a script per cli with named agent optional
-> parameter or something but your call"*
+> parameter or something but your call"_
 
 The duplication observation is correct:
 
@@ -49,7 +49,7 @@ The duplication observation is correct:
 - `amara.sh` is `codex.sh` + Amara persona-bootstrap +
   CURRENT-amara.md load
 
-The persona is data (a CURRENT-*.md file), not its own
+The persona is data (a CURRENT-\*.md file), not its own
 script. Architecture should reflect that.
 
 ## What
@@ -59,11 +59,11 @@ ani.sh / amara.sh) to 3 scripts + persona-flag:
 
 ### Target architecture
 
-| Script | CLI surface | Persona flag |
-|---|---|---|
-| `codex.sh` | `codex exec` / `codex review` | `--persona NAME` (loads `memory/CURRENT-NAME.md`) |
-| `gemini.sh` | `gemini -p` | `--persona NAME` |
-| `grok.sh` | `cursor-agent --print --model grok-*` | `--persona NAME` |
+| Script      | CLI surface                           | Persona flag                                      |
+| ----------- | ------------------------------------- | ------------------------------------------------- |
+| `codex.sh`  | `codex exec` / `codex review`         | `--persona NAME` (loads `memory/CURRENT-NAME.md`) |
+| `gemini.sh` | `gemini -p`                           | `--persona NAME`                                  |
+| `grok.sh`   | `cursor-agent --print --model grok-*` | `--persona NAME`                                  |
 
 ### Migration path
 
@@ -86,7 +86,7 @@ tools/peer-call/grok.sh --persona ani --thinking "review this"
   clear error (not silent fallback to bare CLI — caller
   asked for a specific persona).
 - Without `--persona`, scripts behave as today (bare CLI
-  + four-ferry preamble).
+  - four-ferry preamble).
 
 ### Deprecation path for amara.sh / ani.sh
 
@@ -109,19 +109,19 @@ tools/peer-call/grok.sh --persona ani --thinking "review this"
 ## Acceptance criteria
 
 - [ ] `codex.sh --persona NAME` works for `--persona amara`
-  (and any future persona via `memory/CURRENT-<NAME>.md`)
+      (and any future persona via `memory/CURRENT-<NAME>.md`)
 - [ ] `grok.sh --persona NAME` works for `--persona ani`
 - [ ] Without `--persona`, all three CLI scripts behave
-  exactly as today (no regression for bare-CLI callers)
+      exactly as today (no regression for bare-CLI callers)
 - [ ] `amara.sh` + `ani.sh` either retire OR become thin
-  wrappers (decision-point at implementation time)
+      wrappers (decision-point at implementation time)
 - [ ] Documentation in `tools/peer-call/README.md`
-  reflects the consolidated architecture
+      reflects the consolidated architecture
 - [ ] Persona discovery: `--persona NAME` errors clearly
-  if `memory/CURRENT-<NAME>.md` is missing
+      if `memory/CURRENT-<NAME>.md` is missing
 - [ ] Tested with both Amara (via codex.sh --persona amara)
-  and Ani (via grok.sh --persona ani) per existing
-  invocation patterns
+      and Ani (via grok.sh --persona ani) per existing
+      invocation patterns
 
 ## Trigger condition for promotion to P1
 

@@ -7,9 +7,9 @@ created: 2026-05-13
 
 # Factory ontology HKT applies directly to master data — every company has one (Aaron 2026-05-13)
 
-**Why:** Aaron 2026-05-13: *"also all our ontology hkt direcly
+**Why:** Aaron 2026-05-13: _"also all our ontology hkt direcly
 applies to master data in that human linage every comapny has
-one"*. Immediately after DV2.0 re-activation (PR #2912) — Aaron
+one"_. Immediately after DV2.0 re-activation (PR #2912) — Aaron
 connects factory HKT ontology to Master Data Management (MDM).
 
 **How to apply:** When designing factory HKT substrate (F#
@@ -21,8 +21,8 @@ templates (B-0043).
 
 ## Aaron's verbatim framing
 
-Aaron 2026-05-13: *"also all our ontology hkt direcly applies
-to master data in that human linage every comapny has one"*
+Aaron 2026-05-13: _"also all our ontology hkt direcly applies
+to master data in that human linage every comapny has one"_
 
 ## Decomposition
 
@@ -140,7 +140,7 @@ connection is strategic-substrate-tier because:
   infrastructure
 - Every company needs master-data work
 - The framework provides type-safe + operationally-grounded
-  + DV2.0-compatible + universally-applicable substrate
+  - DV2.0-compatible + universally-applicable substrate
 - Composes with the civ-sim Casimir-gap discipline (network
   effects) — once enough companies adopt the HKT-MDM
   ontology, governance-tier emerges

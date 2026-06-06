@@ -14,7 +14,7 @@ tags: [peer-call, firewall, kiro, claude, self-call]
 type: friction-reducer
 ---
 
-# Add KIRO + CLAUDE firewall trigger lists to _firewall.ts
+# Add KIRO + CLAUDE firewall trigger lists to \_firewall.ts
 
 Add `KIRO_SUBSTANTIVE_TRIGGERS` and `CLAUDE_SUBSTANTIVE_TRIGGERS`
 exported arrays to `tools/peer-call/_firewall.ts`, following the

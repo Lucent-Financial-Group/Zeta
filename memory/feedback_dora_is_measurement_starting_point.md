@@ -5,8 +5,8 @@ type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-Aaron 2026-04-20: *"the DORA stuff is like our starting
-point for measurements"*
+Aaron 2026-04-20: _"the DORA stuff is like our starting
+point for measurements"_
 
 ## The rule
 
@@ -78,8 +78,8 @@ pitch).
 
 ## Where DORA ends and Zeta-specific measurement begins
 
-DORA measures *outcomes of software-delivering teams*.
-Zeta measures *outcomes of an agentic software factory*.
+DORA measures _outcomes of software-delivering teams_.
+Zeta measures _outcomes of an agentic software factory_.
 The overlap is large but not total. Zeta-specific
 extensions that don't map cleanly to DORA:
 
@@ -91,7 +91,7 @@ extensions that don't map cleanly to DORA:
 - Skill-runtime staleness histogram
 - OpenSpec coverage delta per round
 
-These sit *alongside* the DORA ten, not instead of.
+These sit _alongside_ the DORA ten, not instead of.
 
 ## Cross-references
 

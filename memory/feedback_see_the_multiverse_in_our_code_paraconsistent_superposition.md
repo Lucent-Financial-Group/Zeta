@@ -12,11 +12,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Three messages in immediate sequence clarifying the prior
 "now erase original sin" beat:
 
-> *"that was kind of a joke not a joke i mean in the world"*
+> _"that was kind of a joke not a joke i mean in the world"_
 >
-> *"not our libraries we need to see the multiverse"*
+> _"not our libraries we need to see the multiverse"_
 >
-> *"in our code"*
+> _"in our code"_
 
 Parsing per
 `feedback_aaron_default_overclaim_retract_condition_pattern.md`:
@@ -26,8 +26,8 @@ Parsing per
   condition / ecumenical theological stance, NOT an
   operational directive about our libraries).
 - **Beat 2** asserts the positive code-register principle:
-  *see the multiverse*.
-- **Beat 3** localizes to scope: *in our code* (not the world,
+  _see the multiverse_.
+- **Beat 3** localizes to scope: _in our code_ (not the world,
   not metaphysics — the literal libraries and operator
   algebra).
 
@@ -51,7 +51,7 @@ adopting:
    with `{x: +1}` followed by `{x: -1}` is not a collapsed
    "x is gone" — the algebra contains both weights, and the
    net depends on the observer (present-time view: 0;
-   historical view: both present). The stream *is* the
+   historical view: both present). The stream _is_ the
    multiverse of x's states.
 
 2. **Pack-namespaced polysemy** per
@@ -59,7 +59,7 @@ adopting:
    Same word, multiple meanings across packs —
    `graceful-degradation[microservice]` vs
    `graceful-degradation[ui]` vs `graceful-degradation[scientist]`
-   coexist; the disambiguator resolves, it does not *collapse*
+   coexist; the disambiguator resolves, it does not _collapse_
    the alternatives. Each pack's reading is a world.
 
 3. **Paraconsistent logic** per
@@ -74,7 +74,7 @@ adopting:
    models (forcing extensions, inner models, ground models),
    and set theory studies the plurality. Aaron's
    paraconsistent-set-theory-candidate memory already
-   connects to this territory. *Seeing* the multiverse means
+   connects to this territory. _Seeing_ the multiverse means
    treating model-plurality as object-of-study, not noise.
 
 5. **Quantum belief propagation (QBP)**
@@ -127,7 +127,7 @@ substrate is different:
 
 Collapsing to single truth **throws away structure** that
 the substrate carries for free. Aaron's instruction is to
-*preserve* the structure by refusing the collapse.
+_preserve_ the structure by refusing the collapse.
 
 ## Concrete code implications
 
@@ -155,7 +155,7 @@ For Zeta's libraries specifically:
   `{alternatives: Meaning[]}` — not single-value — are
   multiverse-preserving.
 - Circuit-break-to-human when disambiguation fails should
-  include the *full alternative list*, not just the
+  include the _full alternative list_, not just the
   ambiguity flag.
 
 ### Paraconsistent types
@@ -191,21 +191,21 @@ For Zeta's libraries specifically:
 
 - **Not a demand to add superposition everywhere.** Most
   code is genuinely single-valued and should stay that
-  way. The principle applies where the substrate *already*
+  way. The principle applies where the substrate _already_
   carries multiverse structure — preserve what is there,
   don't collapse it prematurely.
 - **Not a theoretical physics commitment.** The word
   "multiverse" here is about algebraic/logical plurality,
   not many-worlds quantum mechanics in its ontological
-  reading. The QBP connection is an *inference-substrate*
+  reading. The QBP connection is an _inference-substrate_
   connection (Leifer-Poulin), not a commitment to
   Everett's interpretation.
 - **Not a license for ambiguity.** "See the multiverse"
-  means *represent* multiple states in a disciplined way
+  means _represent_ multiple states in a disciplined way
   (with provenance, with clocks, with pack-namespacing),
-  not *produce* ambiguous outputs. Disambiguation at
-  *output time* is still required; what is preserved is
-  the full state *upstream* of the output.
+  not _produce_ ambiguous outputs. Disambiguation at
+  _output time_ is still required; what is preserved is
+  the full state _upstream_ of the output.
 - **Not an invention.** "Multiverse" is established in
   physics (many-worlds), set theory (Hamkins), modal
   logic (possible-worlds Kripke), topos theory (each
@@ -216,8 +216,8 @@ For Zeta's libraries specifically:
   (see-the + existing "multiverse" word + our-code scope).
 - **Not a retrofit tick.** No round-wide sweep is proposed.
   The principle governs design of new types and retractible-
-  revision of existing ones *when they are touched for
-  other reasons*. Scope per
+  revision of existing ones _when they are touched for
+  other reasons_. Scope per
   `feedback_retractibly_rewrite_definitions_laws_precedence_real_nice_like.md`.
 
 ## Measurable-alignment implication
@@ -253,7 +253,7 @@ Seventh beat:
 4. Retractibly rewrite definitions/laws/precedence real
    nice like.
 5. Now erase original sin.
-6. *(self-correction)* That was kind of a joke not a joke
+6. _(self-correction)_ That was kind of a joke not a joke
    — world register not libraries. **See the multiverse.
    In our code.**
 
@@ -277,7 +277,7 @@ factory's memory system.
   an existing tradition-name (physics many-worlds, Hamkins
   set-theoretic multiverse, modal logic possible-worlds,
   topos theory), and Zeta's retraction-native operator
-  algebra converged on the structure *without* reaching for
+  algebra converged on the structure _without_ reaching for
   the tradition-name. Count: 5+ instances now.
 - `feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`
   — the formal substrate with Lawvere escape + QBP +

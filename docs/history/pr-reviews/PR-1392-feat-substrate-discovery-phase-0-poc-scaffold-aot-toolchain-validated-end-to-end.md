@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1392 |
-| Title | feat(substrate-discovery): Phase 0 PoC scaffold — AOT toolchain validated end-to-end on osx-arm64 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T12:05:16Z |
-| Merged at | 2026-05-03T12:13:14Z |
-| Merge commit SHA | `018a184fd8b3ec150762d469baef0366c9e3cef3` |
-| Branch | `feat/substrate-discovery-phase-0-poc-scaffold` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1392 |
-| Changed files | 4 |
-| Additions / deletions | +209 / -6 |
+| Field                 | Value                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| Number                | 1392                                                                                              |
+| Title                 | feat(substrate-discovery): Phase 0 PoC scaffold — AOT toolchain validated end-to-end on osx-arm64 |
+| Author                | `AceHack` (human)                                                                                 |
+| State                 | MERGED                                                                                            |
+| Created at            | 2026-05-03T12:05:16Z                                                                              |
+| Merged at             | 2026-05-03T12:13:14Z                                                                              |
+| Merge commit SHA      | `018a184fd8b3ec150762d469baef0366c9e3cef3`                                                        |
+| Branch                | `feat/substrate-discovery-phase-0-poc-scaffold`                                                   |
+| Base branch           | `main`                                                                                            |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1392                                          |
+| Changed files         | 4                                                                                                 |
+| Additions / deletions | +209 / -6                                                                                         |
 
 ## Description
 
@@ -33,14 +33,14 @@ Phase 0 PoC of substrate-discovery per the [scoping doc](../blob/main/docs/resea
 
 ## Empirical evidence (osx-arm64)
 
-| Metric | Result |
-|---|---|
-| `dotnet build -c Release` | 0 warnings, 0 errors |
-| `dotnet publish -p:PublishAot=true` | Clean compile, no link errors |
-| Binary size | **3.8 MB** single self-contained AOT executable |
-| `--version` cold start | ~219 ms (mostly OS process spawn) |
-| `--smoke` (Zeta.Core IVM circuit build + step) | ~14 ms |
-| `dotnet build Zeta.sln` | Still 0 warnings, 0 errors |
+| Metric                                         | Result                                          |
+| ---------------------------------------------- | ----------------------------------------------- |
+| `dotnet build -c Release`                      | 0 warnings, 0 errors                            |
+| `dotnet publish -p:PublishAot=true`            | Clean compile, no link errors                   |
+| Binary size                                    | **3.8 MB** single self-contained AOT executable |
+| `--version` cold start                         | ~219 ms (mostly OS process spawn)               |
+| `--smoke` (Zeta.Core IVM circuit build + step) | ~14 ms                                          |
+| `dotnet build Zeta.sln`                        | Still 0 warnings, 0 errors                      |
 
 The 3.8 MB binary is much smaller than the "30-50MB est." I had in the scoping doc — Zeta.Core AOT-compiles cleanly without dragging unnecessary surface. Strong positive signal that the zero-install external-agent delivery use case is feasible.
 
@@ -70,15 +70,15 @@ The 3.8 MB binary is much smaller than the "30-50MB est." I had in the scoping d
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 4 |
-| Resolved threads | 4 |
-| Unresolved threads | 0 |
-| Total review comments | 8 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 4     |
+| Resolved threads                          | 4     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 8     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -91,16 +91,16 @@ The 3.8 MB binary is much smaller than the "30-50MB est." I had in the scoping d
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T12:07:56Z on `tools/substrate-discovery/Program.fs`:50 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Run one circuit tick in the `--smoke` path**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Run one circuit tick in the `--smoke` path**
+
   The `--smoke` branch claims to validate "build + step once," but it only calls `circuit.Build()` and exits. That means any AOT/runtime incompatibility in the tick execution path (`Step`/`StepAsync`) will go undetected while the command still reports success, so this smoke check does not actually cover the behavior described in the comments and README.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T12:11:50Z on `tools/substrate-discovery/Program.fs`:50 (association: MEMBER)
-    Addressed in 310848e — `--smoke` now feeds [1; 2; 3] as Z-set deltas, calls `StepAsync()`, and observes the output ZSet. Verified locally: tick advances 0→1, output entries = 3, AOT publish (osx-arm64) clean at 4.0 MB.
+- **`AceHack` (human)** at 2026-05-03T12:11:50Z on `tools/substrate-discovery/Program.fs`:50 (association: MEMBER)
+  Addressed in 310848e — `--smoke` now feeds [1; 2; 3] as Z-set deltas, calls `StepAsync()`, and observes the output ZSet. Verified locally: tick advances 0→1, output entries = 3, AOT publish (osx-arm64) clean at 4.0 MB.
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -112,12 +112,11 @@ The 3.8 MB binary is much smaller than the "30-50MB est." I had in the scoping d
 
 - **`Copilot` (bot)** at 2026-05-03T12:09:38Z on `Zeta.sln`:2 (association: NONE)
   The solution file now has a standalone BOM/blank first line, pushing the required header (`Microsoft Visual Studio Solution File, Format Version ...`) to line 2. Some tooling expects the header to be the first line; remove the leading empty line so the header is line 1 (the BOM can remain, but it should prefix the header text).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T12:11:51Z on `Zeta.sln`:2 (association: MEMBER)
-    Verified the BOM + blank-line pre-existed in Zeta.sln before this PR (`git show HEAD~1:Zeta.sln | od -c` confirms). My `dotnet sln add` did not introduce it. Leaving as-is to preserve minimal git change; reformat to BOM-only-no-newline (or no-BOM) is a separate cleanup PR scope.
+- **`AceHack` (human)** at 2026-05-03T12:11:51Z on `Zeta.sln`:2 (association: MEMBER)
+  Verified the BOM + blank-line pre-existed in Zeta.sln before this PR (`git show HEAD~1:Zeta.sln | od -c` confirms). My `dotnet sln add` did not introduce it. Leaving as-is to preserve minimal git change; reformat to BOM-only-no-newline (or no-BOM) is a separate cleanup PR scope.
 
 ### Thread 3 -- resolved [collapsed]
 
@@ -129,12 +128,11 @@ The 3.8 MB binary is much smaller than the "30-50MB est." I had in the scoping d
 
 - **`Copilot` (bot)** at 2026-05-03T12:09:38Z on `tools/substrate-discovery/Program.fs`:53 (association: NONE)
   `--smoke` claims to "step once" but the implementation only calls `circuit.Build()` and never advances the circuit (`Step()` / `StepAsync()`), so it doesn't actually validate the tick-advance runtime path (and `Tick` will remain 0). Either perform a single step (prefer the sync `Step()` fast-path since this circuit has no async ops) or adjust the smoke-test description/comments to match what it does.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T12:11:51Z on `tools/substrate-discovery/Program.fs`:53 (association: MEMBER)
-    Addressed in 310848e — same fix as the sibling thread: `--smoke` now feeds + StepAsyncs + observes; tick advances 0→1; output ZSet has 3 entries; AOT-clean.
+- **`AceHack` (human)** at 2026-05-03T12:11:51Z on `tools/substrate-discovery/Program.fs`:53 (association: MEMBER)
+  Addressed in 310848e — same fix as the sibling thread: `--smoke` now feeds + StepAsyncs + observes; tick advances 0→1; output ZSet has 3 entries; AOT-clean.
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -146,12 +144,11 @@ The 3.8 MB binary is much smaller than the "30-50MB est." I had in the scoping d
 
 - **`Copilot` (bot)** at 2026-05-03T12:09:38Z on `tools/substrate-discovery/README.md`:20 (association: NONE)
   The README says `--smoke` "steps once", but the current implementation only builds the circuit and exits. Please keep the README in sync with the actual smoke behavior (either update the text or update the implementation to step once).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T12:11:52Z on `tools/substrate-discovery/README.md`:20 (association: MEMBER)
-    Addressed in 310848e — README is now in sync because the implementation matches what the README claims (`--smoke` actually steps the circuit + observes output).
+- **`AceHack` (human)** at 2026-05-03T12:11:52Z on `tools/substrate-discovery/README.md`:20 (association: MEMBER)
+  Addressed in 310848e — README is now in sync because the implementation matches what the README claims (`--smoke` actually steps the circuit + observes output).
 
 ## Fix commits (touching thread paths)
 

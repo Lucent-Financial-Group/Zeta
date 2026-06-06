@@ -77,7 +77,11 @@ query {
   repository(owner: "...", name: "...") {
     pullRequest(number: NN) {
       reviewThreads(first: 50) {
-        nodes { isResolved isOutdated path }
+        nodes {
+          isResolved
+          isOutdated
+          path
+        }
       }
     }
   }
@@ -92,8 +96,10 @@ Filter for `isResolved == false` (regardless of `isOutdated`). All such threads 
 
 ```graphql
 mutation {
-  resolveReviewThread(input: {threadId: "<thread_id>"}) {
-    thread { isResolved }
+  resolveReviewThread(input: { threadId: "<thread_id>" }) {
+    thread {
+      isResolved
+    }
   }
 }
 ```

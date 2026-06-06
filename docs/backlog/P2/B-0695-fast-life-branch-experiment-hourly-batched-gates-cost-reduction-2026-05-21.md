@@ -9,8 +9,18 @@ ask: aaron 2026-05-21 ("we can start to loose up and have hourly gates or someth
 created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
-composes_with: [B-0691, B-0032]  # B-0691 row pending merge via PR #4562; implementation already shipped via PR #4565
-tags: [ci-cadence, branch-model, fast-branch, life-branch, hourly-batched-gates, promotion-path, soraya-promotion-gate, cost-reduction]
+composes_with: [B-0691, B-0032] # B-0691 row pending merge via PR #4562; implementation already shipped via PR #4565
+tags:
+  [
+    ci-cadence,
+    branch-model,
+    fast-branch,
+    life-branch,
+    hourly-batched-gates,
+    promotion-path,
+    soraya-promotion-gate,
+    cost-reduction,
+  ]
 type: operational
 ---
 
@@ -20,11 +30,11 @@ type: operational
 
 Aaron 2026-05-21 substrate-engineering framing:
 
-> *"i care honestly that we have no warning and errors and some math proofs here and there growing over time and lots of static analysis and that actually all works every few hours you are doing it on every PR, I can we can start to loose up and have hourly gates or something and play with branches like fast/life branch"*
+> _"i care honestly that we have no warning and errors and some math proofs here and there growing over time and lots of static analysis and that actually all works every few hours you are doing it on every PR, I can we can start to loose up and have hourly gates or something and play with branches like fast/life branch"_
 
 Plus the correction-of-otto-CLI-framing:
 
-> *"this is the biggest loss but they can review up to 100k lines of code in one pr"*
+> _"this is the biggest loss but they can review up to 100k lines of code in one pr"_
 
 The substrate-honest reframe: per-PR review-thread granularity is NOT actually lost under batched gates — the AI reviewers can review large diffs in one pass (per Aaron 2026-05-21 follow-up: "100kish different for different models claude is HUGE and open ai not sure about copilot"). Per-model context windows:
 
@@ -138,11 +148,11 @@ Aaron's correction-of-Otto-CLI-framing (Copilot/Codex 100k-line capability) is l
 
 Today's empirical: 12 PRs merged in ~12-hour active period. Average 1 PR/hour.
 
-| Cadence | Check runs per PR | Total check runs |
-|---|---|---|
-| Per-PR (current) | 30 | 12 × 30 = 360 |
-| Hourly batched (worst case, 1 PR/hour) | 30 | 12 × 30 = 360 |
-| Hourly batched (cascade pattern, 6 PRs in 2 hours + rest 1/hour) | 30 | 2 batches × 30 + 6 batches × 30 = 240 |
+| Cadence                                                          | Check runs per PR | Total check runs                      |
+| ---------------------------------------------------------------- | ----------------- | ------------------------------------- |
+| Per-PR (current)                                                 | 30                | 12 × 30 = 360                         |
+| Hourly batched (worst case, 1 PR/hour)                           | 30                | 12 × 30 = 360                         |
+| Hourly batched (cascade pattern, 6 PRs in 2 hours + rest 1/hour) | 30                | 2 batches × 30 + 6 batches × 30 = 240 |
 
 So hourly-batched WINS on cost only when PRs arrive in bursts. Today's pattern was cascade-heavy (multiple Mika/Amara/Kestrel cascades produced PR bursts), so batching would have saved meaningful cost. On 1-PR-per-hour days, batching is cost-neutral.
 
@@ -178,7 +188,7 @@ Does NOT block any current substantive work. The Soraya promotion-gate compositi
 
 ## Origin
 
-Aaron 2026-05-21 substrate-engineering framing: explicit priorities (no warnings/errors + math proofs growing + static analysis working) + cadence question (per-PR vs hourly) + branch-model experiment (fast/life). Otto-CLI proposed per-PR vs hourly tradeoff; Aaron corrected the per-PR-review-granularity-loss framing (Copilot/Codex 100k-line review capability is real). Row filed per Aaron-approved shadow* "yes file B-0695".
+Aaron 2026-05-21 substrate-engineering framing: explicit priorities (no warnings/errors + math proofs growing + static analysis working) + cadence question (per-PR vs hourly) + branch-model experiment (fast/life). Otto-CLI proposed per-PR vs hourly tradeoff; Aaron corrected the per-PR-review-granularity-loss framing (Copilot/Codex 100k-line review capability is real). Row filed per Aaron-approved shadow\* "yes file B-0695".
 
 Companion rows from today's cascade:
 

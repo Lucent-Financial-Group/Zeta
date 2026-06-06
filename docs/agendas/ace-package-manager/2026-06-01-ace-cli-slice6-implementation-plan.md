@@ -37,11 +37,11 @@ Strict gate: `bun --bun tsc --noEmit -p tsconfig.json`. markdownlint on SKILL.md
   `VerifyResult`. Index functions mirror these exactly (only the canonical-bytes builder
   differs — reuse the same private `canonicalize`).
 - `store.ts`: `RegistryEntry { url, package_hash }`, `Registry = Map<string, Map<string,
-  RegistryEntry>>`, `loadRegistry(bundled, user)` (sync, untouched), `registryPath()` /
+RegistryEntry>>`, `loadRegistry(bundled, user)` (sync, untouched), `registryPath()` /
   `trustStorePath()` resolve home as `process.env.HOME ?? process.env.USERPROFILE ?? "."`
   then `join(home, ".ace", <file>)`. `loadTrustStore()` returns the trust store Map used by
   `verifySignature`. Imports already present: `chmodSync, existsSync, mkdirSync, readFileSync,
-  writeFileSync` from `node:fs`; `join, dirname` from `node:path`.
+writeFileSync` from `node:fs`; `join, dirname` from `node:path`.
 - `resolve.ts` exports `canonicalJson` + `packageHash`.
 - `ace.ts`: `registry` command parse at the `if (command === "registry")` block (sub =
   `argv[1]`; `list` / `add`); handler at `if (parsed.command === "registry")`. Install +
@@ -54,17 +54,17 @@ Strict gate: `bun --bun tsc --noEmit -p tsconfig.json`. markdownlint on SKILL.md
 
 ## File structure
 
-| File | Responsibility | Task |
-| --- | --- | --- |
-| `tools/ace/signing.ts` | + `IndexSignableContent`, `canonicalIndexBytes`, `signIndex`, `verifyIndexSignature` | 1 |
-| `tools/ace/signing.test.ts` (or `*.test` sibling) | index sign/verify unit tests | 1 |
-| `tools/ace/store.ts` | + remote-registry config types, paths, read/write, cache dir | 2 |
-| `tools/ace/store.test.ts` | config read/write unit tests | 2 |
-| `tools/ace/registry-remote.ts` (**new**) | index types, `parseIndex`, `verifyIndex`, cache I/O, `fetchRemoteIndex`, `loadRegistries` | 3–7 |
-| `tools/ace/registry-remote.test.ts` (**new**) | unit tests for the above | 3–7 |
-| `tools/ace/ace.ts` | `registry remote add/list/rm`, `--offline`, async registry load | 8–9 |
-| `tools/ace/ace.test.ts` | remote-registry integration tests | 9 |
-| `.claude/skills/ace/SKILL.md` | document remote registries | 10 |
+| File                                              | Responsibility                                                                            | Task |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---- |
+| `tools/ace/signing.ts`                            | + `IndexSignableContent`, `canonicalIndexBytes`, `signIndex`, `verifyIndexSignature`      | 1    |
+| `tools/ace/signing.test.ts` (or `*.test` sibling) | index sign/verify unit tests                                                              | 1    |
+| `tools/ace/store.ts`                              | + remote-registry config types, paths, read/write, cache dir                              | 2    |
+| `tools/ace/store.test.ts`                         | config read/write unit tests                                                              | 2    |
+| `tools/ace/registry-remote.ts` (**new**)          | index types, `parseIndex`, `verifyIndex`, cache I/O, `fetchRemoteIndex`, `loadRegistries` | 3–7  |
+| `tools/ace/registry-remote.test.ts` (**new**)     | unit tests for the above                                                                  | 3–7  |
+| `tools/ace/ace.ts`                                | `registry remote add/list/rm`, `--offline`, async registry load                           | 8–9  |
+| `tools/ace/ace.test.ts`                           | remote-registry integration tests                                                         | 9    |
+| `.claude/skills/ace/SKILL.md`                     | document remote registries                                                                | 10   |
 
 Constants (define in `registry-remote.ts`): `DEFAULT_MAX_STALENESS_DAYS = 30`,
 `MAX_FUTURE_SKEW_MS = 5 * 60 * 1000`.
@@ -88,7 +88,9 @@ import { generateKeypair, signIndex, verifyIndexSignature, type IndexSignableCon
 import type { TrustEntry } from "./signing.ts";
 
 const content: IndexSignableContent = {
-  format_version: 1, sequence: 3, issued_at: "2026-06-01T12:00:00Z",
+  format_version: 1,
+  sequence: 3,
+  issued_at: "2026-06-01T12:00:00Z",
   packages: { leaf: { "1.0.0": { url: "https://x/leaf-1.0.0.json", package_hash: "sha256:aa" } } },
 };
 
@@ -159,7 +161,9 @@ export function signIndex(content: IndexSignableContent, privatePem: string): Ac
 }
 
 export function verifyIndexSignature(
-  content: IndexSignableContent, signature: AceSignature, trustStore: Map<string, TrustEntry>,
+  content: IndexSignableContent,
+  signature: AceSignature,
+  trustStore: Map<string, TrustEntry>,
 ): VerifyResult {
   if (signature.algo !== "ed25519") return { ok: false, reason: "unsupported-algo" };
   const entry = trustStore.get(signature.key_id);
@@ -168,7 +172,9 @@ export function verifyIndexSignature(
   try {
     const pub = createPublicKey({ key: Buffer.from(entry.public_key, "base64"), format: "der", type: "spki" });
     verified = nodeVerify(null, canonicalIndexBytes(content), pub, Buffer.from(signature.sig, "base64"));
-  } catch { verified = false; }
+  } catch {
+    verified = false;
+  }
   if (!verified) return { ok: false, reason: "bad-signature" };
   const result: VerifyResult = { ok: true, key_id: signature.key_id };
   if (entry.label !== undefined) (result as { ok: true; key_id: string; label?: string }).label = entry.label;
@@ -204,16 +210,33 @@ import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { mkdtempSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { readRegistriesConfig, writeRegistryRemote, removeRegistryRemote, registriesPath, registryCacheDir } from "./store.ts";
+import {
+  readRegistriesConfig,
+  writeRegistryRemote,
+  removeRegistryRemote,
+  registriesPath,
+  registryCacheDir,
+} from "./store.ts";
 
 describe("remote-registry config", () => {
   let home: string, savedHome: string | undefined, savedUP: string | undefined;
-  beforeEach(() => { savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
-    home = mkdtempSync(join(tmpdir(), "ace-cfg-")); process.env.HOME = home; process.env.USERPROFILE = home; });
-  afterEach(() => { if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
-    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+  beforeEach(() => {
+    savedHome = process.env.HOME;
+    savedUP = process.env.USERPROFILE;
+    home = mkdtempSync(join(tmpdir(), "ace-cfg-"));
+    process.env.HOME = home;
+    process.env.USERPROFILE = home;
+  });
+  afterEach(() => {
+    if (savedHome !== undefined) process.env.HOME = savedHome;
+    else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP;
+    else delete process.env.USERPROFILE;
+  });
 
-  test("empty/missing → { remotes: [] }", () => { expect(readRegistriesConfig().remotes).toEqual([]); });
+  test("empty/missing → { remotes: [] }", () => {
+    expect(readRegistriesConfig().remotes).toEqual([]);
+  });
   test("add → read round-trips; key_id required", () => {
     writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:abc" });
     const c = readRegistriesConfig();
@@ -223,12 +246,17 @@ describe("remote-registry config", () => {
     writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:abc" });
     const r = writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 });
     expect(r.updated).toBe(true);
-    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 }]);
+    expect(readRegistriesConfig().remotes).toEqual([
+      { url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 },
+    ]);
   });
   test("malformed entries dropped (no key_id)", () => {
     const p = registriesPath();
     require("node:fs").mkdirSync(require("node:path").dirname(p), { recursive: true });
-    require("node:fs").writeFileSync(p, JSON.stringify({ remotes: [{ url: "https://r/x" }, { url: "https://r/y", key_id: "ed25519:k" }] }));
+    require("node:fs").writeFileSync(
+      p,
+      JSON.stringify({ remotes: [{ url: "https://r/x" }, { url: "https://r/y", key_id: "ed25519:k" }] }),
+    );
     expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/y", key_id: "ed25519:k" }]);
   });
   test("remove", () => {
@@ -237,7 +265,9 @@ describe("remote-registry config", () => {
     expect(readRegistriesConfig().remotes).toEqual([]);
     expect(removeRegistryRemote("https://nope").removed).toBe(false);
   });
-  test("cacheDir under ~/.ace", () => { expect(registryCacheDir()).toBe(join(home, ".ace", "registry-cache")); });
+  test("cacheDir under ~/.ace", () => {
+    expect(registryCacheDir()).toBe(join(home, ".ace", "registry-cache"));
+  });
 });
 ```
 
@@ -251,8 +281,14 @@ Append (mirrors `registryPath` home-resolution + `addRegistryEntry` chmod discip
 
 ```ts
 // ---- Remote registries (slice 6) ----
-export interface RemoteRegistryConfig { readonly url: string; readonly key_id: string; readonly max_staleness_days?: number; }
-export interface RegistriesConfig { readonly remotes: RemoteRegistryConfig[]; }
+export interface RemoteRegistryConfig {
+  readonly url: string;
+  readonly key_id: string;
+  readonly max_staleness_days?: number;
+}
+export interface RegistriesConfig {
+  readonly remotes: RemoteRegistryConfig[];
+}
 
 /** ~/.ace/registries.json — operator-managed ordered remote list (sibling of registry.json). */
 export function registriesPath(): string {
@@ -269,7 +305,11 @@ export function registryCacheDir(): string {
 /** Untrusted-input discipline: malformed → { remotes: [] }; drop entries missing url OR key_id. */
 export function readRegistriesConfig(p: string = registriesPath()): RegistriesConfig {
   let raw: unknown;
-  try { raw = JSON.parse(readFileSync(p, "utf8")); } catch { return { remotes: [] }; }
+  try {
+    raw = JSON.parse(readFileSync(p, "utf8"));
+  } catch {
+    return { remotes: [] };
+  }
   if (!raw || typeof raw !== "object" || !Array.isArray((raw as { remotes?: unknown }).remotes)) return { remotes: [] };
   const remotes: RemoteRegistryConfig[] = [];
   for (const r of (raw as { remotes: unknown[] }).remotes) {
@@ -283,15 +323,26 @@ export function readRegistriesConfig(p: string = registriesPath()): RegistriesCo
   return { remotes };
 }
 
-export function writeRegistryRemote(entry: RemoteRegistryConfig, p: string = registriesPath()): { added: boolean; updated: boolean } {
+export function writeRegistryRemote(
+  entry: RemoteRegistryConfig,
+  p: string = registriesPath(),
+): { added: boolean; updated: boolean } {
   mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
-  try { chmodSync(dirname(p), 0o700); } catch { /* best-effort */ }
+  try {
+    chmodSync(dirname(p), 0o700);
+  } catch {
+    /* best-effort */
+  }
   const cfg = readRegistriesConfig(p);
   const remotes = cfg.remotes.filter((r) => r.url !== entry.url);
   const updated = remotes.length !== cfg.remotes.length;
   remotes.push(entry);
   writeFileSync(p, JSON.stringify({ remotes }, null, 2));
-  try { chmodSync(p, 0o600); } catch { /* best-effort */ }
+  try {
+    chmodSync(p, 0o600);
+  } catch {
+    /* best-effort */
+  }
   return { added: !updated, updated };
 }
 
@@ -301,7 +352,11 @@ export function removeRegistryRemote(url: string, p: string = registriesPath()):
   if (remotes.length === cfg.remotes.length) return { removed: false };
   mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
   writeFileSync(p, JSON.stringify({ remotes }, null, 2));
-  try { chmodSync(p, 0o600); } catch { /* best-effort */ }
+  try {
+    chmodSync(p, 0o600);
+  } catch {
+    /* best-effort */
+  }
   return { removed: true };
 }
 ```
@@ -327,7 +382,9 @@ import { describe, expect, test } from "bun:test";
 import { parseIndex } from "./registry-remote.ts";
 
 const good = JSON.stringify({
-  format_version: 1, sequence: 2, issued_at: "2026-06-01T12:00:00Z",
+  format_version: 1,
+  sequence: 2,
+  issued_at: "2026-06-01T12:00:00Z",
   packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
   signature: { algo: "ed25519", key_id: "ed25519:k", sig: "BASE64" },
 });
@@ -336,15 +393,57 @@ describe("parseIndex", () => {
   test("parses a well-formed index", () => {
     const r = parseIndex(good);
     expect("error" in r).toBe(false);
-    if (!("error" in r)) { expect(r.sequence).toBe(2); expect(r.packages.leaf!["1.0.0"]!.url).toBe("https://x/l.json"); }
+    if (!("error" in r)) {
+      expect(r.sequence).toBe(2);
+      expect(r.packages.leaf!["1.0.0"]!.url).toBe("https://x/l.json");
+    }
   });
   test.each([
     ["not json", "{"],
-    ["bad format_version", JSON.stringify({ format_version: 2, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: {}, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
-    ["negative sequence", JSON.stringify({ format_version: 1, sequence: -1, issued_at: "2026-06-01T12:00:00Z", packages: {}, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
-    ["unparseable issued_at", JSON.stringify({ format_version: 1, sequence: 1, issued_at: "nope", packages: {}, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
-    ["missing signature", JSON.stringify({ format_version: 1, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: {} })],
-    ["non-string url", JSON.stringify({ format_version: 1, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: { a: { "1.0.0": { url: 5, package_hash: "h" } } }, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
+    [
+      "bad format_version",
+      JSON.stringify({
+        format_version: 2,
+        sequence: 1,
+        issued_at: "2026-06-01T12:00:00Z",
+        packages: {},
+        signature: { algo: "ed25519", key_id: "k", sig: "s" },
+      }),
+    ],
+    [
+      "negative sequence",
+      JSON.stringify({
+        format_version: 1,
+        sequence: -1,
+        issued_at: "2026-06-01T12:00:00Z",
+        packages: {},
+        signature: { algo: "ed25519", key_id: "k", sig: "s" },
+      }),
+    ],
+    [
+      "unparseable issued_at",
+      JSON.stringify({
+        format_version: 1,
+        sequence: 1,
+        issued_at: "nope",
+        packages: {},
+        signature: { algo: "ed25519", key_id: "k", sig: "s" },
+      }),
+    ],
+    [
+      "missing signature",
+      JSON.stringify({ format_version: 1, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: {} }),
+    ],
+    [
+      "non-string url",
+      JSON.stringify({
+        format_version: 1,
+        sequence: 1,
+        issued_at: "2026-06-01T12:00:00Z",
+        packages: { a: { "1.0.0": { url: 5, package_hash: "h" } } },
+        signature: { algo: "ed25519", key_id: "k", sig: "s" },
+      }),
+    ],
   ])("rejects %s (no throw)", (_label, json) => {
     const r = parseIndex(json);
     expect("error" in r).toBe(true);
@@ -375,25 +474,37 @@ export const MAX_FUTURE_SKEW_MS = 5 * 60 * 1000;
 export type IndexDoc = IndexSignableContent & { signature: AceSignature };
 
 function isEntry(e: unknown): e is RegistryEntry {
-  return !!e && typeof e === "object"
-    && typeof (e as RegistryEntry).url === "string"
-    && typeof (e as RegistryEntry).package_hash === "string";
+  return (
+    !!e &&
+    typeof e === "object" &&
+    typeof (e as RegistryEntry).url === "string" &&
+    typeof (e as RegistryEntry).package_hash === "string"
+  );
 }
 function isSig(s: unknown): s is AceSignature {
-  return !!s && typeof s === "object"
-    && (s as AceSignature).algo === "ed25519"
-    && typeof (s as AceSignature).key_id === "string"
-    && typeof (s as AceSignature).sig === "string";
+  return (
+    !!s &&
+    typeof s === "object" &&
+    (s as AceSignature).algo === "ed25519" &&
+    typeof (s as AceSignature).key_id === "string" &&
+    typeof (s as AceSignature).sig === "string"
+  );
 }
 
 export function parseIndex(json: string): IndexDoc | { error: string } {
   let raw: unknown;
-  try { raw = JSON.parse(json); } catch { return { error: "index is not valid JSON" }; }
+  try {
+    raw = JSON.parse(json);
+  } catch {
+    return { error: "index is not valid JSON" };
+  }
   if (!raw || typeof raw !== "object") return { error: "index is not an object" };
   const o = raw as Record<string, unknown>;
   if (o.format_version !== 1) return { error: "unsupported index format_version" };
-  if (typeof o.sequence !== "number" || !Number.isInteger(o.sequence) || o.sequence < 0) return { error: "index sequence must be a non-negative integer" };
-  if (typeof o.issued_at !== "string" || Number.isNaN(Date.parse(o.issued_at))) return { error: "index issued_at must be RFC3339" };
+  if (typeof o.sequence !== "number" || !Number.isInteger(o.sequence) || o.sequence < 0)
+    return { error: "index sequence must be a non-negative integer" };
+  if (typeof o.issued_at !== "string" || Number.isNaN(Date.parse(o.issued_at)))
+    return { error: "index issued_at must be RFC3339" };
   if (!o.packages || typeof o.packages !== "object") return { error: "index packages must be an object" };
   const packages: Record<string, Record<string, RegistryEntry>> = {};
   for (const [name, versions] of Object.entries(o.packages as Record<string, unknown>)) {
@@ -433,15 +544,24 @@ import { verifyIndex, type CacheMeta } from "./registry-remote.ts";
 
 function mk(seq: number, issuedAtMs: number) {
   const kp = generateKeypair();
-  const content = { format_version: 1 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
-    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+  const content = {
+    format_version: 1 as const,
+    sequence: seq,
+    issued_at: new Date(issuedAtMs).toISOString(),
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
+  };
   const doc = { ...content, signature: signIndex(content, kp.privatePem) };
   const trust = new Map<string, TrustEntry>([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
   return { kp, doc, trust };
 }
 const remoteOf = (keyId: string) => ({ url: "https://x/index.json", key_id: keyId });
 const NOW = Date.parse("2026-06-01T12:00:00Z");
-const meta0: CacheMeta = { url: "https://x/index.json", sequence_high_water: 0, index_content_hash: "", fetched_at: "" };
+const meta0: CacheMeta = {
+  url: "https://x/index.json",
+  sequence_high_water: 0,
+  index_content_hash: "",
+  fetched_at: "",
+};
 
 describe("verifyIndex (three gates)", () => {
   test("all gates pass", () => {
@@ -494,23 +614,35 @@ describe("verifyIndex (three gates)", () => {
 
 ```ts
 export interface CacheMeta {
-  url: string; etag?: string; last_modified?: string;
-  sequence_high_water: number; index_content_hash: string; fetched_at: string;
+  url: string;
+  etag?: string;
+  last_modified?: string;
+  sequence_high_water: number;
+  index_content_hash: string;
+  fetched_at: string;
 }
-export interface VerifyOpts { offline?: boolean }
+export interface VerifyOpts {
+  offline?: boolean;
+}
 
 /** The three gates, in order: signature (mandatory pin) → anti-rollback → freshness (two-sided). */
 export function verifyIndex(
-  doc: IndexDoc, remote: RemoteRegistryConfig, trustStore: Map<string, TrustEntry>,
-  cacheMeta: CacheMeta, now: number, opts: VerifyOpts,
+  doc: IndexDoc,
+  remote: RemoteRegistryConfig,
+  trustStore: Map<string, TrustEntry>,
+  cacheMeta: CacheMeta,
+  now: number,
+  opts: VerifyOpts,
 ): { ok: true } | { ok: false; reason: string } {
   const { signature, ...content } = doc;
   // 1. signature — mandatory pin: signer must equal remote.key_id AND be trusted (no fallback).
-  if (signature.key_id !== remote.key_id) return { ok: false, reason: `index not signed by the registry's pinned key ${remote.key_id}` };
+  if (signature.key_id !== remote.key_id)
+    return { ok: false, reason: `index not signed by the registry's pinned key ${remote.key_id}` };
   const sv = verifyIndexSignature(content, signature, trustStore);
   if (!sv.ok) return { ok: false, reason: `index signature ${sv.reason}` };
   // 2. anti-rollback — monotonic sequence high-water.
-  if (doc.sequence < cacheMeta.sequence_high_water) return { ok: false, reason: `index rollback: sequence ${doc.sequence} < seen ${cacheMeta.sequence_high_water}` };
+  if (doc.sequence < cacheMeta.sequence_high_water)
+    return { ok: false, reason: `index rollback: sequence ${doc.sequence} < seen ${cacheMeta.sequence_high_water}` };
   // 3. freshness — two-sided window. Future-skew ALWAYS enforced; past-staleness skipped offline on cache.
   const issued = Date.parse(doc.issued_at);
   if (issued - now > MAX_FUTURE_SKEW_MS) return { ok: false, reason: `index issued_at is in the future beyond skew` };
@@ -546,14 +678,27 @@ import { readCache, writeCache } from "./registry-remote.ts";
 
 describe("cache I/O", () => {
   let savedHome: string | undefined, savedUP: string | undefined;
-  beforeEach(() => { savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
-    const h = mkdtempSync(pjoin(tmpdir(), "ace-cache-")); process.env.HOME = h; process.env.USERPROFILE = h; });
-  afterEach(() => { if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
-    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+  beforeEach(() => {
+    savedHome = process.env.HOME;
+    savedUP = process.env.USERPROFILE;
+    const h = mkdtempSync(pjoin(tmpdir(), "ace-cache-"));
+    process.env.HOME = h;
+    process.env.USERPROFILE = h;
+  });
+  afterEach(() => {
+    if (savedHome !== undefined) process.env.HOME = savedHome;
+    else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP;
+    else delete process.env.USERPROFILE;
+  });
 
   test("write then read round-trips meta + body", () => {
     const body = '{"hello":"world"}';
-    const meta = writeCache("https://x/index.json", body, { etag: '"e1"', last_modified: "lm", sequence_high_water: 3 });
+    const meta = writeCache("https://x/index.json", body, {
+      etag: '"e1"',
+      last_modified: "lm",
+      sequence_high_water: 3,
+    });
     expect(meta.index_content_hash).toMatch(/^sha256:/);
     const got = readCache("https://x/index.json");
     expect(got).not.toBeNull();
@@ -561,7 +706,9 @@ describe("cache I/O", () => {
     expect(got!.meta.etag).toBe('"e1"');
     expect(got!.meta.sequence_high_water).toBe(3);
   });
-  test("missing → null", () => { expect(readCache("https://nope")).toBeNull(); });
+  test("missing → null", () => {
+    expect(readCache("https://nope")).toBeNull();
+  });
 });
 ```
 
@@ -589,18 +736,23 @@ export function readCache(url: string): { meta: CacheMeta; body: string } | null
     if (typeof meta.index_content_hash !== "string") return null;
     const body = readFileSync(blobPath(meta.index_content_hash), "utf8");
     return { meta, body };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export function writeCache(
-  url: string, body: string,
+  url: string,
+  body: string,
   fields: { etag?: string; last_modified?: string; sequence_high_water: number },
 ): CacheMeta {
   const ch = indexContentHash(body);
   mkdirSync(join(registryCacheDir(), "blobs"), { recursive: true });
   writeFileSync(blobPath(ch), body);
   const meta: CacheMeta = {
-    url, sequence_high_water: fields.sequence_high_water, index_content_hash: ch,
+    url,
+    sequence_high_water: fields.sequence_high_water,
+    index_content_hash: ch,
     fetched_at: new Date().toISOString(),
     ...(fields.etag !== undefined ? { etag: fields.etag } : {}),
     ...(fields.last_modified !== undefined ? { last_modified: fields.last_modified } : {}),
@@ -631,30 +783,48 @@ import { generateKeypair as gkp, signIndex as sidx } from "./signing.ts";
 import { fetchRemoteIndex } from "./registry-remote.ts";
 
 function indexJson(kp: { privatePem: string }, seq: number, issuedAtMs: number) {
-  const content = { format_version: 1 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
-    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+  const content = {
+    format_version: 1 as const,
+    sequence: seq,
+    issued_at: new Date(issuedAtMs).toISOString(),
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
+  };
   return JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
 }
 
 describe("fetchRemoteIndex", () => {
   let savedFetch: typeof globalThis.fetch, savedHome: string | undefined, savedUP: string | undefined;
-  beforeEach(() => { savedFetch = globalThis.fetch; savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
-    const h = mkdtempSync(pjoin(tmpdir(), "ace-fetch-")); process.env.HOME = h; process.env.USERPROFILE = h; });
-  afterEach(() => { globalThis.fetch = savedFetch;
-    if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
-    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+  beforeEach(() => {
+    savedFetch = globalThis.fetch;
+    savedHome = process.env.HOME;
+    savedUP = process.env.USERPROFILE;
+    const h = mkdtempSync(pjoin(tmpdir(), "ace-fetch-"));
+    process.env.HOME = h;
+    process.env.USERPROFILE = h;
+  });
+  afterEach(() => {
+    globalThis.fetch = savedFetch;
+    if (savedHome !== undefined) process.env.HOME = savedHome;
+    else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP;
+    else delete process.env.USERPROFILE;
+  });
 
   test("200 verifies + returns entries + caches", async () => {
-    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
-    globalThis.fetch = (async () => new Response(indexJson(kp, 1, now), { status: 200, headers: { ETag: '"e1"' } })) as typeof fetch;
+    const kp = gkp();
+    const now = Date.parse("2026-06-01T12:00:00Z");
+    globalThis.fetch = (async () =>
+      new Response(indexJson(kp, 1, now), { status: 200, headers: { ETag: '"e1"' } })) as typeof fetch;
     const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
     const r = await fetchRemoteIndex({ url: "https://x/index.json", key_id: kp.keyId }, trust, { now });
     expect("entries" in r).toBe(true);
     if ("entries" in r) expect(r.entries.get("leaf")!.get("1.0.0")!.url).toBe("https://x/l.json");
   });
   test("304 uses cached body", async () => {
-    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
-    globalThis.fetch = (async () => new Response(indexJson(kp, 2, now), { status: 200, headers: { ETag: '"e2"' } })) as typeof fetch;
+    const kp = gkp();
+    const now = Date.parse("2026-06-01T12:00:00Z");
+    globalThis.fetch = (async () =>
+      new Response(indexJson(kp, 2, now), { status: 200, headers: { ETag: '"e2"' } })) as typeof fetch;
     const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
     const remote = { url: "https://x/index.json", key_id: kp.keyId };
     await fetchRemoteIndex(remote, trust, { now });
@@ -663,29 +833,35 @@ describe("fetchRemoteIndex", () => {
     expect("entries" in r).toBe(true);
   });
   test("network error → cache-fallback", async () => {
-    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const kp = gkp();
+    const now = Date.parse("2026-06-01T12:00:00Z");
     globalThis.fetch = (async () => new Response(indexJson(kp, 1, now), { status: 200 })) as typeof fetch;
     const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
     const remote = { url: "https://x/index.json", key_id: kp.keyId };
     await fetchRemoteIndex(remote, trust, { now });
-    globalThis.fetch = (async () => { throw new Error("net"); }) as typeof fetch;
+    globalThis.fetch = (async () => {
+      throw new Error("net");
+    }) as typeof fetch;
     const r = await fetchRemoteIndex(remote, trust, { now });
     expect("entries" in r).toBe(true);
   });
   test("network error + no cache → skipped", async () => {
     const kp = gkp();
-    globalThis.fetch = (async () => { throw new Error("net"); }) as typeof fetch;
+    globalThis.fetch = (async () => {
+      throw new Error("net");
+    }) as typeof fetch;
     const r = await fetchRemoteIndex({ url: "https://x/index.json", key_id: kp.keyId }, new Map(), { now: Date.now() });
     expect("skipped" in r).toBe(true);
   });
   test("rollback on 200 → error (hard refusal)", async () => {
-    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const kp = gkp();
+    const now = Date.parse("2026-06-01T12:00:00Z");
     const remote = { url: "https://x/index.json", key_id: kp.keyId };
     const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
     globalThis.fetch = (async () => new Response(indexJson(kp, 5, now), { status: 200 })) as typeof fetch;
-    await fetchRemoteIndex(remote, trust, { now });           // high-water = 5
+    await fetchRemoteIndex(remote, trust, { now }); // high-water = 5
     globalThis.fetch = (async () => new Response(indexJson(kp, 2, now), { status: 200 })) as typeof fetch;
-    const r = await fetchRemoteIndex(remote, trust, { now });  // seq 2 < 5
+    const r = await fetchRemoteIndex(remote, trust, { now }); // seq 2 < 5
     expect("error" in r).toBe(true);
   });
 });
@@ -696,7 +872,10 @@ describe("fetchRemoteIndex", () => {
 - [ ] **Step 3: Implement** (append to `registry-remote.ts`)
 
 ```ts
-export interface FetchOpts { offline?: boolean; now?: number }
+export interface FetchOpts {
+  offline?: boolean;
+  now?: number;
+}
 
 function toRegistryFragment(doc: IndexDoc): Registry {
   const m: Registry = new Map();
@@ -709,11 +888,18 @@ function toRegistryFragment(doc: IndexDoc): Registry {
 }
 
 export async function fetchRemoteIndex(
-  remote: RemoteRegistryConfig, trustStore: Map<string, TrustEntry>, opts: FetchOpts = {},
+  remote: RemoteRegistryConfig,
+  trustStore: Map<string, TrustEntry>,
+  opts: FetchOpts = {},
 ): Promise<{ entries: Registry } | { error: string } | { skipped: string }> {
   const now = opts.now ?? Date.now();
   const cached = readCache(remote.url);
-  const cacheMeta: CacheMeta = cached?.meta ?? { url: remote.url, sequence_high_water: 0, index_content_hash: "", fetched_at: "" };
+  const cacheMeta: CacheMeta = cached?.meta ?? {
+    url: remote.url,
+    sequence_high_water: 0,
+    index_content_hash: "",
+    fetched_at: "",
+  };
 
   // Validate a CACHED body through the three gates; on pass, return entries (never writes —
   // the fresh-200 path below does its own cache write with the captured ETag/Last-Modified).
@@ -792,16 +978,31 @@ import { loadRegistries } from "./registry-remote.ts";
 
 describe("loadRegistries merge precedence", () => {
   let savedFetch: typeof globalThis.fetch, savedHome: string | undefined, savedUP: string | undefined;
-  beforeEach(() => { savedFetch = globalThis.fetch; savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
-    const h = mkdtempSync(pjoin(tmpdir(), "ace-load-")); process.env.HOME = h; process.env.USERPROFILE = h; });
-  afterEach(() => { globalThis.fetch = savedFetch;
-    if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
-    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+  beforeEach(() => {
+    savedFetch = globalThis.fetch;
+    savedHome = process.env.HOME;
+    savedUP = process.env.USERPROFILE;
+    const h = mkdtempSync(pjoin(tmpdir(), "ace-load-"));
+    process.env.HOME = h;
+    process.env.USERPROFILE = h;
+  });
+  afterEach(() => {
+    globalThis.fetch = savedFetch;
+    if (savedHome !== undefined) process.env.HOME = savedHome;
+    else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP;
+    else delete process.env.USERPROFILE;
+  });
 
   test("remote entries appear; user overrides remote on conflict", async () => {
-    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
-    const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
-      packages: { leaf: { "1.0.0": { url: "https://REMOTE/l.json", package_hash: "sha256:rr" } } } };
+    const kp = gkp();
+    const now = Date.parse("2026-06-01T12:00:00Z");
+    const content = {
+      format_version: 1 as const,
+      sequence: 1,
+      issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: "https://REMOTE/l.json", package_hash: "sha256:rr" } } },
+    };
     const body = JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
     globalThis.fetch = (async () => new Response(body, { status: 200 })) as typeof fetch;
     // configure remote + a user-local override of the SAME name@version
@@ -814,7 +1015,8 @@ describe("loadRegistries merge precedence", () => {
     expect(r.registry.get("leaf")!.get("1.0.0")!.url).toBe("https://LOCAL/l.json"); // user wins
   });
   test("a verify failure on a remote → errors (hard)", async () => {
-    const kp = gkp(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const kp = gkp();
+    const now = Date.parse("2026-06-01T12:00:00Z");
     const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(), packages: {} };
     const body = JSON.stringify({ ...content, signature: sidx(content, kp.privatePem) });
     globalThis.fetch = (async () => new Response(body, { status: 200 })) as typeof fetch;
@@ -832,17 +1034,25 @@ describe("loadRegistries merge precedence", () => {
 - [ ] **Step 3: Implement** (append to `registry-remote.ts`)
 
 ```ts
-export interface LoadRegistriesOpts { trustStore: Map<string, TrustEntry>; offline?: boolean; now?: number }
+export interface LoadRegistriesOpts {
+  trustStore: Map<string, TrustEntry>;
+  offline?: boolean;
+  now?: number;
+}
 
 /** Merge: remotes (reverse listed order) ∪ bundled ∪ user → user > bundled > remote[0] > … */
 export async function loadRegistries(
   opts: LoadRegistriesOpts,
 ): Promise<{ registry: Registry; warnings: string[]; errors: string[] }> {
-  const warnings: string[] = []; const errors: string[] = [];
+  const warnings: string[] = [];
+  const errors: string[] = [];
   const remotes = readRegistriesConfig().remotes;
   const fragments: Registry[] = [];
   for (const remote of remotes) {
-    const r = await fetchRemoteIndex(remote, opts.trustStore, { offline: opts.offline === true, ...(opts.now !== undefined ? { now: opts.now } : {}) });
+    const r = await fetchRemoteIndex(remote, opts.trustStore, {
+      offline: opts.offline === true,
+      ...(opts.now !== undefined ? { now: opts.now } : {}),
+    });
     if ("error" in r) errors.push(r.error);
     else if ("skipped" in r) warnings.push(r.skipped);
     else fragments.push(r.entries);
@@ -894,7 +1104,9 @@ describe("ace registry remote (slice 6)", () => {
     expect("error" in a).toBe(true);
   });
   test("add with --max-staleness-days", async () => {
-    expect(await main(["registry", "remote", "add", "https://r/i.json", "--key", "ed25519:k", "--max-staleness-days", "7"])).toBe(0);
+    expect(
+      await main(["registry", "remote", "add", "https://r/i.json", "--key", "ed25519:k", "--max-staleness-days", "7"]),
+    ).toBe(0);
     expect(readRegistriesConfig().remotes[0]!.max_staleness_days).toBe(7);
   });
 });
@@ -925,29 +1137,36 @@ interface RegistryArgs {
 `return { error: "registry requires 'add' or 'list'" };`, add the `remote` sub-verb:
 
 ```ts
-    if (sub === "remote") {
-      const action = argv[2];
-      if (action === "list") return { command: "registry", sub: "remote-list" };
-      if (action === "rm") {
-        const url = argv[3];
-        if (!url || url.startsWith("-")) return { error: "registry remote rm requires <url>" };
-        return { command: "registry", sub: "remote-rm", remoteUrl: url };
-      }
-      if (action === "add") {
-        const url = argv[3];
-        if (!url || url.startsWith("-")) return { error: "registry remote add requires <url> --key <keyid>" };
-        let key: string | undefined; let msd: number | undefined;
-        for (let i = 4; i < argv.length; i++) {
-          if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
-          else if (argv[i] === "--max-staleness-days") { const v = argv[++i]; if (!v || v.startsWith("-")) return { error: "--max-staleness-days requires a value" }; msd = Number(v); if (!Number.isInteger(msd) || msd <= 0) return { error: "--max-staleness-days must be a positive integer" }; }
-          else return { error: `Unknown option for registry remote add: ${argv[i]}` };
-        }
-        if (!key) return { error: "registry remote add requires --key <keyid>" }; // Codex #6424 P1: pin mandatory
-        const r: RegistryArgs = { command: "registry", sub: "remote-add", remoteUrl: url, remoteKey: key };
-        return msd !== undefined ? { ...r, remoteMaxStaleness: msd } : r;
-      }
-      return { error: "registry remote requires 'add', 'list', or 'rm'" };
+if (sub === "remote") {
+  const action = argv[2];
+  if (action === "list") return { command: "registry", sub: "remote-list" };
+  if (action === "rm") {
+    const url = argv[3];
+    if (!url || url.startsWith("-")) return { error: "registry remote rm requires <url>" };
+    return { command: "registry", sub: "remote-rm", remoteUrl: url };
+  }
+  if (action === "add") {
+    const url = argv[3];
+    if (!url || url.startsWith("-")) return { error: "registry remote add requires <url> --key <keyid>" };
+    let key: string | undefined;
+    let msd: number | undefined;
+    for (let i = 4; i < argv.length; i++) {
+      if (argv[i] === "--key") {
+        key = argv[++i];
+        if (!key || key.startsWith("-")) return { error: "--key requires a value" };
+      } else if (argv[i] === "--max-staleness-days") {
+        const v = argv[++i];
+        if (!v || v.startsWith("-")) return { error: "--max-staleness-days requires a value" };
+        msd = Number(v);
+        if (!Number.isInteger(msd) || msd <= 0) return { error: "--max-staleness-days must be a positive integer" };
+      } else return { error: `Unknown option for registry remote add: ${argv[i]}` };
     }
+    if (!key) return { error: "registry remote add requires --key <keyid>" }; // Codex #6424 P1: pin mandatory
+    const r: RegistryArgs = { command: "registry", sub: "remote-add", remoteUrl: url, remoteKey: key };
+    return msd !== undefined ? { ...r, remoteMaxStaleness: msd } : r;
+  }
+  return { error: "registry remote requires 'add', 'list', or 'rm'" };
+}
 ```
 
 (c) Add the import: extend the `from "./store.ts"` import to include
@@ -957,25 +1176,30 @@ interface RegistryArgs {
 local handling, add:
 
 ```ts
-    if (parsed.sub === "remote-list") {
-      const remotes = readRegistriesConfig().remotes;
-      if (remotes.length === 0) { console.log("No remote registries. (add: ace registry remote add <url> --key <keyid>)"); return 0; }
-      for (const r of remotes) console.log(`  ${r.url}  key=${r.key_id}${r.max_staleness_days ? `  max-staleness=${r.max_staleness_days}d` : ""}`);
-      return 0;
-    }
-    if (parsed.sub === "remote-rm") {
-      const { removed } = removeRegistryRemote(parsed.remoteUrl!);
-      console.log(removed ? `ace: removed remote ${parsed.remoteUrl}` : `ace: no such remote ${parsed.remoteUrl}`);
-      return 0;
-    }
-    if (parsed.sub === "remote-add") {
-      const entry = parsed.remoteMaxStaleness !== undefined
-        ? { url: parsed.remoteUrl!, key_id: parsed.remoteKey!, max_staleness_days: parsed.remoteMaxStaleness }
-        : { url: parsed.remoteUrl!, key_id: parsed.remoteKey! };
-      const { added, updated } = writeRegistryRemote(entry);
-      console.log(`ace: ${updated ? "updated" : added ? "added" : "noop"} remote ${parsed.remoteUrl}`);
-      return 0;
-    }
+if (parsed.sub === "remote-list") {
+  const remotes = readRegistriesConfig().remotes;
+  if (remotes.length === 0) {
+    console.log("No remote registries. (add: ace registry remote add <url> --key <keyid>)");
+    return 0;
+  }
+  for (const r of remotes)
+    console.log(`  ${r.url}  key=${r.key_id}${r.max_staleness_days ? `  max-staleness=${r.max_staleness_days}d` : ""}`);
+  return 0;
+}
+if (parsed.sub === "remote-rm") {
+  const { removed } = removeRegistryRemote(parsed.remoteUrl!);
+  console.log(removed ? `ace: removed remote ${parsed.remoteUrl}` : `ace: no such remote ${parsed.remoteUrl}`);
+  return 0;
+}
+if (parsed.sub === "remote-add") {
+  const entry =
+    parsed.remoteMaxStaleness !== undefined
+      ? { url: parsed.remoteUrl!, key_id: parsed.remoteKey!, max_staleness_days: parsed.remoteMaxStaleness }
+      : { url: parsed.remoteUrl!, key_id: parsed.remoteKey! };
+  const { added, updated } = writeRegistryRemote(entry);
+  console.log(`ace: ${updated ? "updated" : added ? "added" : "noop"} remote ${parsed.remoteUrl}`);
+  return 0;
+}
 ```
 
 (e) Update the usage text block: add the lines `ace registry remote add <url> --key
@@ -1003,11 +1227,16 @@ import { generateKeypair as gkpA, signIndex as sidxA } from "./signing.ts";
 
 describe("ace install via remote registry (slice 6)", () => {
   let savedFetch: typeof globalThis.fetch;
-  beforeEach(() => { savedFetch = globalThis.fetch; });
-  afterEach(() => { globalThis.fetch = savedFetch; });
+  beforeEach(() => {
+    savedFetch = globalThis.fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = savedFetch;
+  });
 
   test("resolves + installs a package from a signed remote index", async () => {
-    const kp = gkpA(); const now = Date.now();
+    const kp = gkpA();
+    const now = Date.now();
     // a signed leaf PACKAGE the index points at (reuse the existing signed-package helper shape)
     const files = { "leaf.txt": "hi" };
     const filesJson = JSON.stringify(files);
@@ -1019,19 +1248,32 @@ describe("ace install via remote registry (slice 6)", () => {
     const pkgHash = packageHash(pkg as any);
     const pkgUrl = "https://pkgs/leaf-1.0.0.json";
     // signed index pointing at it
-    const idxContent = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
-      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } } };
+    const idxContent = {
+      format_version: 1 as const,
+      sequence: 1,
+      issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } },
+    };
     const idxJson = JSON.stringify({ ...idxContent, signature: sidxA(idxContent, kp.privatePem) });
-    globalThis.fetch = (async (u: string) => new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as typeof fetch;
+    globalThis.fetch = (async (u: string) =>
+      new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as typeof fetch;
     // trust BOTH the index signer and the package signer; configure the remote (pinned)
-    await main(["trust", "add", kp.publicSpkiB64]);        // index signer
-    await main(["trust", "add", pkgKp.publicSpkiB64]);     // package signer
+    await main(["trust", "add", kp.publicSpkiB64]); // index signer
+    await main(["trust", "add", pkgKp.publicSpkiB64]); // package signer
     await main(["registry", "remote", "add", "https://x/index.json", "--key", kp.keyId]);
     // a root that depends on leaf via range
-    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
-      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
-      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
-    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+        dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(tempHome, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const code = await main(["install", rootPath, "--allow-no-signature"]);
     expect(code).toBe(0);
     expect(listInstalled(join(tempHome, ".ace", "store")).some((p) => p.manifest.name === "leaf")).toBe(true);
@@ -1046,7 +1288,7 @@ describe("ace install via remote registry (slice 6)", () => {
 
 > **Implementer note:** mirror the exact `trust add` / store-path conventions the existing
 > `ace.test.ts` install tests use (the store path is `~/.ace/store`; `--allow-no-signature`
-> waives the *root*'s missing signature; the leaf package IS signed by `pkgKp`). Adapt the
+> waives the _root_'s missing signature; the leaf package IS signed by `pkgKp`). Adapt the
 > assertion helpers to whatever the file already imports.
 
 - [ ] **Step 2: Run** → FAIL.
@@ -1063,11 +1305,15 @@ parse branches (mirror the existing `--frozen` / `--allow-no-signature` boolean 
 `const registry = loadRegistry();` with:
 
 ```ts
-    const { registry, warnings, errors } = await loadRegistries({
-      trustStore: loadTrustStore(), offline: parsed.offline ?? false,
-    });
-    for (const w of warnings) console.error(`ace: ${w}`);
-    if (errors.length > 0) { for (const e of errors) console.error(`ace: install refused: ${e}`); return 1; }
+const { registry, warnings, errors } = await loadRegistries({
+  trustStore: loadTrustStore(),
+  offline: parsed.offline ?? false,
+});
+for (const w of warnings) console.error(`ace: ${w}`);
+if (errors.length > 0) {
+  for (const e of errors) console.error(`ace: install refused: ${e}`);
+  return 1;
+}
 ```
 
 (Do the identical swap in the **update** handler. Leave `--frozen` untouched — the frozen
@@ -1120,4 +1366,4 @@ git commit -m "docs(ace): document remote registries (slice 6 task 10)"
 - [ ] Final holistic code-review subagent over `git diff origin/main..HEAD -- tools/ace/ .claude/skills/ace/SKILL.md`.
 - [ ] Open the impl PR; arm auto-merge; run the PR-gate loop.
 - [ ] File deferred sub-rows: mirror/failover, incremental index, full TUF roles,
-  `ace registry publish` tooling, per-registry key rotation.
+      `ace registry publish` tooling, per-registry key rotation.

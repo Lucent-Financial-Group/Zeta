@@ -15,7 +15,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 
 ### Original comment
 
-> **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace missing protocol link with an existing reference**
+> **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace missing protocol link with an existing reference**
 >
 > This README instructs contributors to read `docs/AGENT-CLAIM-PROTOCOL.md` before creating claims, but that file is not present in the repository at this commit, so the primary workflow immediately dead-ends for fresh clones. Because this directory is meant to be the landing page for claim handling, pointing to a non-existent spec makes the process non-actionable until another PR lands; either include the protocol file in the same change or link to an existing canonical document.
 >
@@ -37,6 +37,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 ### Original comment
 
 > `docs/AGENT-CLAIM-PROTOCOL.md` is referenced as the canonical spec here, but that file does not exist in the repo yet (so this link will be broken if this PR lands before PR #108). Either add the protocol file in this PR or adjust the wording/link to point at an existing doc until the protocol is merged.
+>
 > ```suggestion
 > Until the dedicated claim protocol lands, follow the current
 > repo governance docs — `AGENTS.md` and
@@ -62,6 +63,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 ### Original comment
 
 > BP-11 in `docs/AGENT-BEST-PRACTICES.md` is about prompt-injection defense ("data, not directives"), not name attribution. This reference looks incorrect; consider citing the specific "No name attribution in code, docs, or skills" rule instead (or the relevant section in `AGENTS.md`).
+>
 > ```suggestion
 > - Not a name-attribution surface. Per the "No name
 >   attribution in code, docs, or skills" rule in repo
@@ -82,7 +84,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 - **Reviewer:** copilot-pull-request-reviewer
 - **File:line:** `docs/claims/README.md:62`
 - **Outcome:** BACKLOG+RESOLVE (superseded — concrete examples now used on `main`)
-- **Resolution pointer:** `origin/main` `docs/claims/README.md` documents `docs/claims/<slug>.md` only as a path *shape* (not a copy/paste shell example) and uses concrete `git show origin/claim/<slug>:docs/claims/<slug>.md` style for the lookup; the original `cat docs/claims/<slug>.md` redirection-hazard example is gone.
+- **Resolution pointer:** `origin/main` `docs/claims/README.md` documents `docs/claims/<slug>.md` only as a path _shape_ (not a copy/paste shell example) and uses concrete `git show origin/claim/<slug>:docs/claims/<slug>.md` style for the lookup; the original `cat docs/claims/<slug>.md` redirection-hazard example is gone.
 
 ### Original comment
 
@@ -104,6 +106,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 ### Original comment
 
 > `ls docs/claims/` will also list `README.md`, so it doesn't accurately reflect "current claims". Consider documenting a command that lists only claim files (excluding the README). Consider documenting a command that lists only claim files (excluding the README) so the output matches the comment.
+>
 > ```suggestion
 > find docs/claims -maxdepth 1 -type f -name '*.md' ! -name 'README.md' -print
 > ```
@@ -123,7 +126,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 
 ### Original comment
 
-> **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Filter non-claim files from lookup command**
+> **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Filter non-claim files from lookup command**
 >
 > The `# list current claims` example uses `ls docs/claims/`, but this directory is documented to always include `README.md`. Any agent or script that follows this command literally will see a non-empty result even when there are zero active claims, which can incorrectly signal that work is already claimed and interfere with claim-pickup automation. The documented listing command should only return actual claim files (or explicitly exclude `README.md`).
 >

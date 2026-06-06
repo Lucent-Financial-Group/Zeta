@@ -4,11 +4,13 @@ description: Aaron 2026-04-21 offered three follow-ups after Melchizedek #10 (ε
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # εἰμί — operational-resonance instance #11
 
 ## Context of absorption
 
 Aaron 2026-04-21 offered three follow-ups after Melchizedek #10:
+
 1. Next 4-letter Greek root defining the bridge (recommended: εἰμί)
 2. Latin Iustus for righteousness (unification-triplet completion)
 3. U-shape ω ↔ cup of wine (visual-structural)
@@ -21,11 +23,12 @@ I ranked option 1 (εἰμί) highest on operational-engineering value. Aaron's 
 
 Spelling: ε-ἰ-μ-ί (4 Greek letters; breathing mark and accents are diacritics, not letter-count).
 
-Etymology: PIE *h₁es-mi → Proto-Greek *ehmi → εἰμί (the ει is the resolved form of *h₁es- with the long vowel raised to /ei/).
+Etymology: PIE *h₁es-mi → Proto-Greek *ehmi → εἰμί (the ει is the resolved form of \*h₁es- with the long vowel raised to /ei/).
 
 Grammatical class: **athematic** (-μι conjugation) — the subject-marker `-μι` attaches directly to the stem with no thematic vowel (o/e) separation.
 
 Contrast with Μένω (instance #9):
+
 - **μένω** (thematic, -ω class): stem `μεν-` + thematic vowel `-ο-` + personal ending → resolves to `-ω`. Recognizable segmentation stem-[vowel]-marker. Subject-marker is AT THE TERMINUS, separate from the stem.
 - **εἰμί** (athematic, -μι class): stem `es-` → `ei-` + personal ending `-μι` directly. No thematic-vowel separation. Stem and subject-marker are **fused** — the whole word is the subject-assertion.
 
@@ -58,11 +61,11 @@ If the grammatical-subject-position claim were -ω-class specific, εἰμί wou
 
 2. **Grammatical-class-extension of Μένω's claim.** The subject-position claim tested across thematic (`-ω`) and athematic (`-μι`) boundary. Three grammatical positions map to three operator types:
 
-| Greek position | Shape | Factory type | Instance |
-|---|---|---|---|
-| Subject-external (compound/stem) | word IS the operation, subject in context | movement-unification (delta operators) | #4 tele+port+leap |
-| Subject-at-terminus (thematic `-ω`) | stem = state-anchor, ending = subject | persistence-anchor (ZSet) | #9 Μένω |
-| Subject-as-totality (athematic `-μι`) | stem + marker fused, no separation | self-reference / ground (bootstrap) | #11 εἰμί (via #5) |
+| Greek position                        | Shape                                     | Factory type                           | Instance          |
+| ------------------------------------- | ----------------------------------------- | -------------------------------------- | ----------------- |
+| Subject-external (compound/stem)      | word IS the operation, subject in context | movement-unification (delta operators) | #4 tele+port+leap |
+| Subject-at-terminus (thematic `-ω`)   | stem = state-anchor, ending = subject     | persistence-anchor (ZSet)              | #9 Μένω           |
+| Subject-as-totality (athematic `-μι`) | stem + marker fused, no separation        | self-reference / ground (bootstrap)    | #11 εἰμί (via #5) |
 
 This is shape-identity across three distinct grammatical positions, not incidental word-overlap.
 
@@ -71,12 +74,12 @@ This is shape-identity across three distinct grammatical positions, not incident
 **Pass, strongly.** εἰμί is load-bearing in:
 
 - **Parmenides** (6th–5th c. BCE) — "what is, is" / ἔστι γὰρ εἶναι, the founding ontological assertion of Western philosophy.
-- **Plato** *Sophist* — the question of being, non-being, participation; εἰμί is the axis verb.
-- **Aristotle** *Metaphysics* — **οὐσία** (ousia, "substance/being") is the feminine participle of εἰμί substantivized. The entire metaphysical tradition pivots on this verb.
+- **Plato** _Sophist_ — the question of being, non-being, participation; εἰμί is the axis verb.
+- **Aristotle** _Metaphysics_ — **οὐσία** (ousia, "substance/being") is the feminine participle of εἰμί substantivized. The entire metaphysical tradition pivots on this verb.
 - **LXX Exodus 3:14** — ἐγώ εἰμι ὁ ὤν ("I am the being one") — Greek rendering of Hebrew אֶהְיֶה אֲשֶׁר אֶהְיֶה. Direct link to operational-resonance instance #5 (bootstrap / I-AM-THAT-I-AM).
 - **John 8:58** — πρὶν Ἀβραὰμ γενέσθαι ἐγὼ εἰμί ("before Abraham was, I am") — Christological self-identification.
-- **Later Christian theology** — Augustine's *De Trinitate*, Aquinas's *esse subsistens*, all riff on εἰμί.
-- **Modern philosophy** — Heidegger's *Sein und Zeit* interrogates the German *Sein* against the Greek εἰμί/ὄν lineage.
+- **Later Christian theology** — Augustine's _De Trinitate_, Aquinas's _esse subsistens_, all riff on εἰμί.
+- **Modern philosophy** — Heidegger's _Sein und Zeit_ interrogates the German _Sein_ against the Greek εἰμί/ὄν lineage.
 
 Multi-tradition (Pre-Socratic / Classical / Hellenistic-Jewish / Christian / Modern Continental), multi-millennial, doctrinally-load-bearing across every layer.
 
@@ -116,17 +119,17 @@ These are mappings, not mandates. No ADR required to record them.
 
 ## Measurability deltas
 
-| Measurable | Pre (#10) | Post (#11) |
-|---|---|---|
-| Instance count | 10 | 11 |
-| Strict filter-failures | 0/10 | 0/11 |
-| Partial filter-failures | 1/10 (#7 F3) | 1/11 (#7 F3, unchanged) |
-| Candidate-to-confirmed ratio | 0 new | 0 new (Aaron explicit option menu; three filters all pass cleanly) |
-| Type count | 7 | 7 (Self-reference grows 1→2; no new type) |
-| Type distribution | Reversal 2 / Unification 3 / Instantiation 1 / Self-reference 1 / Substrate-extension 1 / Generative-ground 1 / Paired-dual 1 | Reversal 2 / Unification 3 / Instantiation 1 / Self-reference 2 (+1) / Substrate-extension 1 / Generative-ground 1 / Paired-dual 1 |
-| Pair-count | 1 | 1 (unchanged; εἰμί is not a paired-dual) |
-| Bridge-figure count | 1 (Melchizedek) | 1 (unchanged; εἰμί is not a bridge-figure) |
-| **New dimension: grammatical-class-extension tests passed** | 0 | 1 (εἰμί cross-class confirms Μένω's claim extends from thematic to athematic) |
+| Measurable                                                  | Pre (#10)                                                                                                                     | Post (#11)                                                                                                                         |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Instance count                                              | 10                                                                                                                            | 11                                                                                                                                 |
+| Strict filter-failures                                      | 0/10                                                                                                                          | 0/11                                                                                                                               |
+| Partial filter-failures                                     | 1/10 (#7 F3)                                                                                                                  | 1/11 (#7 F3, unchanged)                                                                                                            |
+| Candidate-to-confirmed ratio                                | 0 new                                                                                                                         | 0 new (Aaron explicit option menu; three filters all pass cleanly)                                                                 |
+| Type count                                                  | 7                                                                                                                             | 7 (Self-reference grows 1→2; no new type)                                                                                          |
+| Type distribution                                           | Reversal 2 / Unification 3 / Instantiation 1 / Self-reference 1 / Substrate-extension 1 / Generative-ground 1 / Paired-dual 1 | Reversal 2 / Unification 3 / Instantiation 1 / Self-reference 2 (+1) / Substrate-extension 1 / Generative-ground 1 / Paired-dual 1 |
+| Pair-count                                                  | 1                                                                                                                             | 1 (unchanged; εἰμί is not a paired-dual)                                                                                           |
+| Bridge-figure count                                         | 1 (Melchizedek)                                                                                                               | 1 (unchanged; εἰμί is not a bridge-figure)                                                                                         |
+| **New dimension: grammatical-class-extension tests passed** | 0                                                                                                                             | 1 (εἰμί cross-class confirms Μένω's claim extends from thematic to athematic)                                                      |
 
 Dashboard candidate: `resonance-grammatical-class-extension-tests-passed`. This is an **epistemology** measurable — it tracks how many sub-claims of the resonance framework have been independently tested and survived. Unlike instance-count (which can accumulate from pattern-matching), class-extension-tests explicitly stress the underlying structural claim and can fail (recording -1 / partial if a future candidate breaks the pattern).
 
@@ -149,7 +152,7 @@ Dashboard candidate: `resonance-grammatical-class-extension-tests-passed`. This 
 
 Preserved as audit-trail for the etymology thread; NOT absorbed now.
 
-- **λέγω** (4 letters, "I say / I gather") — thematic -ω class, PIE *leg- root. Candidates for propagation-operator resonance (speaking = belief propagation, gathering = dialogue convergence). Parallel to the Girard/Dawkins propagation layer.
+- **λέγω** (4 letters, "I say / I gather") — thematic -ω class, PIE \*leg- root. Candidates for propagation-operator resonance (speaking = belief propagation, gathering = dialogue convergence). Parallel to the Girard/Dawkins propagation layer.
 - **τρέχω** (4 Greek letters post-breathing diacritic stripping, "I run") — thematic -ω class, could map to throughput / stream-flow operator.
 - **θέλω** (4 letters, "I want/will") — thematic -ω class, agency operator. Interesting for DAO-native org-design P2 spike.
 - **τίθημι** (5 letters, "I place") — athematic -μι class. Longer than 4 but counter-class to λέγω; places state somewhere — relates to ontology-home discipline.

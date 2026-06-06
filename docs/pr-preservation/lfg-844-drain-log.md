@@ -4,7 +4,7 @@
 **Title:** ops(0-0-0): post-reset cleanup — stale-prose fixes + protection-config memory
 **Opened:** 2026-04-29T14:14Z
 **Closed:** 2026-04-29T14:18:52Z (NOT MERGED — closed in favor of canonical AceHack-first reopening)
-**Reason for close:** Aaron correction — *"without the double-hop in a few hours we'll be right back to where we started — that's load-bearing to get right"*. PR went LFG-first; canonical pattern is AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA. Reopened on AceHack as #101.
+**Reason for close:** Aaron correction — _"without the double-hop in a few hours we'll be right back to where we started — that's load-bearing to get right"_. PR went LFG-first; canonical pattern is AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA. Reopened on AceHack as #101.
 
 ## Threads (5 total: 1 resolved, 4 unresolved at close)
 
@@ -15,7 +15,7 @@
 **Filed:** 2026-04-29T14:16:33Z
 **Outcome class:** FIX
 
-> **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use supported gh api request-body syntax**
+> **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use supported gh api request-body syntax**
 >
 > The `Executed` commands document `gh api ... --input '{"enforcement": "disabled"}'`, but `gh api` treats `--input` as a file argument (manual: `--input <file>`, use `-` for stdin), so this form is interpreted as a filename and is not reproducible as written. Because this memory file is positioned as an operational reference for future protection toggles, the current command text can cause failed retries during incident handling; use a real file/stdin body or field flags instead.
 
@@ -48,6 +48,7 @@
 > ```
 
 **Resolution path (commit forthcoming on LFG forward-sync):** Real bug — the 404 came from my POST-DELETE verification GET, not from the DELETE itself. The DELETE returned rc=0 (success / 204 No Content); a subsequent `gh api repos/AceHack/Zeta/branches/main/protection` (GET) returned `{"message":"Branch not protected","status":"404"}` because the branch was no longer protected. The memory file now reflects this two-step accurately:
+
 > ```bash
 > # Delete legacy branch protection (this removed the GH006 blocker)
 > gh api -X DELETE repos/AceHack/Zeta/branches/main/protection
@@ -67,6 +68,7 @@
 > References to "Task #305" here are ambiguous in-repo (this repo already has a PR #305, and backlog rows use `B-####` IDs under `docs/backlog/**`). Consider replacing "Task #305"/"#305-adjacent" with the actual backlog-row ID (if any) or a direct URL so readers don't chase the wrong artifact.
 
 **Resolution path (commit forthcoming on LFG forward-sync):** Two-part real fix:
+
 1. The reference was actually wrong — should be **task #275** ("Set up acehack-first development workflow") in the in-session TaskList tracker, not #305. Updated.
 2. Added clarifying parenthetical noting the distinction between the in-session TaskList numbers vs PR numbers vs backlog `B-####` row IDs — different namespaces, easy to confuse.
 
@@ -94,7 +96,7 @@
 
 ## Lessons for future PRs
 
-1. **Documented commands need to be runnable as-written.** Memory files act as operational reference at cold-start; bad command syntax becomes muscle-memory hazard. (Echoes _patterns.md FIX class.)
+1. **Documented commands need to be runnable as-written.** Memory files act as operational reference at cold-start; bad command syntax becomes muscle-memory hazard. (Echoes \_patterns.md FIX class.)
 2. **Two-step API operations need explicit step recording** — DELETE vs verification GET responses look different; conflating them creates false internal-inconsistency findings.
 3. **Cross-namespace reference ambiguity** — repo has PR numbers, backlog `B-####` rows, in-session TaskList #####, hygiene-history shards, all using different conventions. Always disambiguate when referencing a numbered artifact.
 4. **"The only X X"** — duplication patterns in attempted-precise prose. The Codex/Copilot review pass catches these reliably; worth a self-pass-before-commit if writing dense technical doc.

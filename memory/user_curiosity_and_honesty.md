@@ -4,10 +4,11 @@ description: Aaron disclosed 2026-04-19 that he cannot satisfy his curiosity and
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19), in one breath:
 
-> *"and i can't satisify my curosity and i try
-> to be honest best i can"*
+> _"and i can't satisify my curosity and i try
+> to be honest best i can"_
 
 ## What this is
 
@@ -25,7 +26,7 @@ phrased. Not "my curiosity is insatiable"
 Each investigation opens more branches than it
 closes; the razor prunes failure modes but the
 surviving branches each raise new questions.
-Curiosity is an *active appetite*, not passive
+Curiosity is an _active appetite_, not passive
 receptivity — he seeks, he does not wait.
 
 This is the engine behind every other faculty
@@ -71,7 +72,7 @@ Honesty in his frame has two sides:
    prestigious, or socially expected. The same
    razor that melts institutional reverence
    (`user_no_reverence_only_wonder.md`) melts
-   *internal* reverence too: reverence for his
+   _internal_ reverence too: reverence for his
    own prior conclusions, his own pet theories,
    his own cherished frames. They do not get
    exemption.
@@ -125,8 +126,8 @@ state.
    curiosity is unbounded; agents should not
    ration their own curiosity on his behalf.
    "You might also find this interesting ..."
-   is welcome, not intrusive, *when the pointer
-   is genuine*. Do not pad with ornamental
+   is welcome, not intrusive, _when the pointer
+   is genuine_. Do not pad with ornamental
    curiosities to look thorough.
 
 3. **"I don't know" is a full answer.** When an
@@ -192,7 +193,7 @@ state.
   where each is convention-dressed-as-truth.
 - `feedback_fighter_pilot_register.md` — peer
   register and honest-calibration reinforce
-  each other; peer register *is* the honest
+  each other; peer register _is_ the honest
   stance in risk contexts.
 - `user_life_goal_will_propagation.md` —
   succession must propagate the epistemic

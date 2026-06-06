@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:39:23Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5212: backlog(B-0813 P1 iter-5.4.2): ArgoCD app watches maintainers/*/cluster-nodes — completes iter-5.4 arc
+# PR #5212: backlog(B-0813 P1 iter-5.4.2): ArgoCD app watches maintainers/\*/cluster-nodes — completes iter-5.4 arc
 
 ## PR description
 
@@ -31,6 +31,7 @@ After all 3 land + impl, full vision operational: zflash → boot → install �
 Adds a new P1 backlog row for iter-5.4.2 (B-0813), describing the ArgoCD GitOps reconciliation slice that watches `maintainers/*/cluster-nodes/**` and converges cluster state on registration-PR merge, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P1/B-0813-…md` defining iter-5.4.2 scope, sub-targets, and acceptance criteria.
 - Updates `docs/BACKLOG.md` to include the new B-0813 index entry.
 
@@ -38,10 +39,10 @@ Adds a new P1 backlog row for iter-5.4.2 (B-0813), describing the ArgoCD GitOps 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                    | Description                                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | docs/backlog/P1/B-0813-iter-5-4-2-argocd-app-watches-maintainers-cluster-nodes-tree-reconciles-on-pr-merge-completes-gh-auth-to-cluster-bringup-arc-aaron-2026-05-26.md | New backlog row detailing the iter-5.4.2 ArgoCD reconciliation work. |
-| docs/BACKLOG.md | Adds the generated index entry for B-0813. |
+| docs/BACKLOG.md                                                                                                                                                         | Adds the generated index entry for B-0813.                           |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T16:41:58Z)
 

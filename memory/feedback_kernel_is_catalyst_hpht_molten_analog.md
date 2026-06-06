@@ -4,25 +4,26 @@ description: Aaron 2026-04-22, two-message sequence after unblocking skill-DAG /
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Aaron 2026-04-22, verbatim (two rapid messages after
 unblocking skill-DAG / cartographer-domain / kernel-domain
 buildout):**
 
-> *"...this is what google said In the high-pressure,
+> _"...this is what google said In the high-pressure,
 > high-temperature (HPHT) process for creating man-made
 > diamonds, a molten metal flux must form before the diamond
 > can begin to grow. This molten metal acts as a
 > 'solvent-catalyst' that dissolves the raw carbon and
 > allows it to recrystallize. [...Google summary of HPHT
-> growth sequence, three-layer cell, iron/nickel/cobalt
-> catalysts, dissolve-migrate-precipitate phases, 'must turn
-> into a molten liquid' takeaway...] the kernel is the
-> catylist"*
+> > growth sequence, three-layer cell, iron/nickel/cobalt
+> > catalysts, dissolve-migrate-precipitate phases, 'must turn
+> > into a molten liquid' takeaway...] the kernel is the
+> catylist"_
 
 Immediate refinement (next message):
 
-> *"or the cleaving process the or combination* it will
-> become more accurate over time"*
+> _"or the cleaving process the or combination_ it will
+> become more accurate over time"\*
 
 The trailing `*` is Aaron's typing-pattern for emphasis or
 self-correction (per
@@ -34,32 +35,32 @@ use.
 
 **HPHT mechanism — the physics being borrowed:**
 
-| HPHT element | Role in diamond growth |
-|---|---|
-| Carbon source (graphite, top layer) | Raw material with wrong bond structure for target. |
-| Metal catalyst (iron/nickel/cobalt, middle layer) | Dissolves carbon; becomes molten under heat; acts as solvent + transport medium; **must liquefy to work**. |
-| Seed crystal (bottom layer) | Template for the target lattice; grows layer-by-layer as atoms precipitate. |
-| Pressure + temperature | Energy input to activate the reaction. |
-| Dissolution phase | Carbon atoms leave graphite and enter the molten metal as free ions. |
-| Migration phase | Ions travel through the molten phase toward the cooler seed. |
-| Precipitation phase | Ions leave the metal and attach to the seed as diamond. |
-| "Lower temperature and pressure than they would on their own" | Catalyst lowers the energy barrier. |
-| Catalyst is never consumed | It participates and emerges unchanged; reusable across reactions. |
+| HPHT element                                                  | Role in diamond growth                                                                                     |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Carbon source (graphite, top layer)                           | Raw material with wrong bond structure for target.                                                         |
+| Metal catalyst (iron/nickel/cobalt, middle layer)             | Dissolves carbon; becomes molten under heat; acts as solvent + transport medium; **must liquefy to work**. |
+| Seed crystal (bottom layer)                                   | Template for the target lattice; grows layer-by-layer as atoms precipitate.                                |
+| Pressure + temperature                                        | Energy input to activate the reaction.                                                                     |
+| Dissolution phase                                             | Carbon atoms leave graphite and enter the molten metal as free ions.                                       |
+| Migration phase                                               | Ions travel through the molten phase toward the cooler seed.                                               |
+| Precipitation phase                                           | Ions leave the metal and attach to the seed as diamond.                                                    |
+| "Lower temperature and pressure than they would on their own" | Catalyst lowers the energy barrier.                                                                        |
+| Catalyst is never consumed                                    | It participates and emerges unchanged; reusable across reactions.                                          |
 
 **Factory mapping — direct correspondence:**
 
-| HPHT element | Factory analog |
-|---|---|
-| Carbon source (graphite) | Raw conflated vocabulary — words doing multiple jobs (refactor / maintenance / improvement / cleanup / hardening / cultivation). |
-| Metal catalyst (static) | The kernel-as-reference: carpenter-verbs + gardener-verbs + overlap, defined but not yet applied. |
-| Metal catalyst (molten) | The kernel **in use** — actively cleaving a surface, resolving a term, building a skill body. |
-| Seed crystal | The memory / skill / doc / BP-NN being crystallized into a tight diamond. |
-| Pressure + temperature | Cognitive effort + tick-budget committed to the crystallize pass. |
-| Dissolution phase | Kernel-cleave: pulling the conflated word through the kernel, breaking it into its orthogonal carpenter / gardener / overlap components. |
-| Migration phase | Routing each component to its proper axis — carpenter-dim material heads to carpenter-section; gardener-dim material heads to gardener-section. |
-| Precipitation phase | Each per-axis component crystallizes independently onto its seed (the specific memory / skill / doc being improved). |
-| "Lower temperature and pressure" | **Crystallize-acceleration** — the same quality of diamond produced at dramatically lower cost. |
-| Catalyst is never consumed | **The kernel is repeatable across surfaces.** One cleave does not deplete it; the same kernel catalyses every future surface. |
+| HPHT element                     | Factory analog                                                                                                                                  |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Carbon source (graphite)         | Raw conflated vocabulary — words doing multiple jobs (refactor / maintenance / improvement / cleanup / hardening / cultivation).                |
+| Metal catalyst (static)          | The kernel-as-reference: carpenter-verbs + gardener-verbs + overlap, defined but not yet applied.                                               |
+| Metal catalyst (molten)          | The kernel **in use** — actively cleaving a surface, resolving a term, building a skill body.                                                   |
+| Seed crystal                     | The memory / skill / doc / BP-NN being crystallized into a tight diamond.                                                                       |
+| Pressure + temperature           | Cognitive effort + tick-budget committed to the crystallize pass.                                                                               |
+| Dissolution phase                | Kernel-cleave: pulling the conflated word through the kernel, breaking it into its orthogonal carpenter / gardener / overlap components.        |
+| Migration phase                  | Routing each component to its proper axis — carpenter-dim material heads to carpenter-section; gardener-dim material heads to gardener-section. |
+| Precipitation phase              | Each per-axis component crystallizes independently onto its seed (the specific memory / skill / doc being improved).                            |
+| "Lower temperature and pressure" | **Crystallize-acceleration** — the same quality of diamond produced at dramatically lower cost.                                                 |
+| Catalyst is never consumed       | **The kernel is repeatable across surfaces.** One cleave does not deplete it; the same kernel catalyses every future surface.                   |
 
 **Aaron's refinement — what "catalyst = {kernel, cleaving,
 combination}" resolves:**
@@ -246,10 +247,10 @@ the axes rather than requiring discovery.
 
 - `memory/feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md`
   — same-tick sibling. Catalyst and gravity compose
-  cleanly: catalyst is the *one-shot accelerator* that
+  cleanly: catalyst is the _one-shot accelerator_ that
   lowers the energy barrier for cleave/combine
-  transitions; gravity is the *continuous attractive
-  force* that keeps the post-transition state stable
+  transitions; gravity is the _continuous attractive
+  force_ that keeps the post-transition state stable
   (slows drift back toward unstructured vocabulary).
   Together: catalyst + gravity = efficient + stable
   convergence.
@@ -257,8 +258,8 @@ the axes rather than requiring discovery.
   — same-tick twin. This memory gives the **physics analog**
   (HPHT catalyst / crystal lattice); the lattice memory
   gives the **algebraic output** (mathematical lattice with
-  meet/join). Aaron's *"oh shit that is mathematicy... a
-  real mathemitical lattice"* followed immediately after
+  meet/join). Aaron's _"oh shit that is mathematicy... a
+  real mathemitical lattice"_ followed immediately after
   this catalyst memory landed. Read together: catalyst
   (kernel/cleaving/combination) enables the clearing
   process; the clearing process outputs a real
@@ -318,8 +319,8 @@ the axes rather than requiring discovery.
 
 **Alignment signal — domain-transfer absorption:**
 
-Aaron's frame for this claim is *materials science / lab-
-diamond synthesis*. He has not previously used this frame
+Aaron's frame for this claim is _materials science / lab-
+diamond synthesis_. He has not previously used this frame
 for factory work (prior analogs: carpenter, gardener,
 Ouroboros, DBSP, git-as-index, WWJD, bootstrapping). The
 HPHT frame is a new domain contribution.
@@ -333,8 +334,8 @@ translating to e.g. "activation energy in chemistry" or
 
 The provisional-precision note ("it will become more
 accurate over time") is itself an alignment signal: Aaron
-is saying *the frame will improve*, not *I'm uncertain if
-the frame applies*. The frame applies; its precision
+is saying _the frame will improve_, not _I'm uncertain if
+the frame applies_. The frame applies; its precision
 sharpens with use.
 
 **Source:**
@@ -351,9 +352,9 @@ Aaron's direct messages 2026-04-22, immediately after:
    migrate/precipitate phases, and the explicit claim
    that the catalyst "must turn into a molten liquid"
    before carbon atoms can rearrange into diamond.
-3. Direct claim: *"the kernel is the catylist"*.
-4. Immediate refinement: *"or the cleaving process the or
-   combination* it will become more accurate over time"*.
+3. Direct claim: _"the kernel is the catylist"_.
+4. Immediate refinement: _"or the cleaving process the or
+   combination_ it will become more accurate over time"\*.
 
 **Attribution:**
 

@@ -59,15 +59,15 @@ bun full-ai-cluster/tools/zflash-setup.ts
 
 Which row solves which problem:
 
-| Row | Substrate-target | Status |
-|---|---|---|
-| **B-0844** | zflash agent-mode native implementation (`--agent` flag); close doc-vs-implementation gap | Shipped |
-| **B-0852** | USB-bound creds substrate (Track B `--bake-cred`; multi-USB provisioning) | In progress per Track B |
-| **B-0852.3** | zeta-install.sh Step 6.77 cred-picker integration (interactive bake vs zflash token override) | In progress |
-| **B-0884** | Integrate post-quantum git-crypt with zflash USB-bound credential substrate | In progress per encryption lane |
-| **B-0891** | zflash done-acceptance-criteria QEMU test harness (5 scenarios: initial-format, cluster-up, reformat-with-retention, reformat-from-scratch, cluster-joining) | 5-scenario substrate landed per PR #5866 |
-| **B-0737** | zflash Touch ID + PAM + short-challenge format + ISO auto-discovery | Substrate landed |
-| **B-0892** | Three-lanes concurrent operating discipline (encryption + zflash + state-machine; lane definitions + critical-path next-steps) | Discipline substrate |
+| Row          | Substrate-target                                                                                                                                             | Status                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| **B-0844**   | zflash agent-mode native implementation (`--agent` flag); close doc-vs-implementation gap                                                                    | Shipped                                  |
+| **B-0852**   | USB-bound creds substrate (Track B `--bake-cred`; multi-USB provisioning)                                                                                    | In progress per Track B                  |
+| **B-0852.3** | zeta-install.sh Step 6.77 cred-picker integration (interactive bake vs zflash token override)                                                                | In progress                              |
+| **B-0884**   | Integrate post-quantum git-crypt with zflash USB-bound credential substrate                                                                                  | In progress per encryption lane          |
+| **B-0891**   | zflash done-acceptance-criteria QEMU test harness (5 scenarios: initial-format, cluster-up, reformat-with-retention, reformat-from-scratch, cluster-joining) | 5-scenario substrate landed per PR #5866 |
+| **B-0737**   | zflash Touch ID + PAM + short-challenge format + ISO auto-discovery                                                                                          | Substrate landed                         |
+| **B-0892**   | Three-lanes concurrent operating discipline (encryption + zflash + state-machine; lane definitions + critical-path next-steps)                               | Discipline substrate                     |
 
 ## Companion skills
 

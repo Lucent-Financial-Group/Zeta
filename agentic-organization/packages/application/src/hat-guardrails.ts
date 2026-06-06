@@ -40,9 +40,7 @@ const ACTION_REQUIRED_BUNDLE: Readonly<Record<ActionClass, ToolBundle>> = {
   [ActionClass.WriteBusinessRequirements]: ToolBundle.Business,
 };
 
-export type GuardrailResult =
-  | { allowed: true }
-  | { allowed: false; reason: string; requiredBundle: ToolBundle };
+export type GuardrailResult = { allowed: true } | { allowed: false; reason: string; requiredBundle: ToolBundle };
 
 /**
  * Preflight a hat action. Allowed iff the hat holds the tool bundle the action requires.
@@ -51,7 +49,11 @@ export type GuardrailResult =
 export function preflightHatAction(hat: HatDefinition, action: ActionClass): GuardrailResult {
   const required = ACTION_REQUIRED_BUNDLE[action];
   if (hat.allowedToolBundles.includes(required)) return { allowed: true };
-  return { allowed: false, reason: `hat "${hat.id}" lacks the "${required}" tool bundle required to ${action}`, requiredBundle: required };
+  return {
+    allowed: false,
+    reason: `hat "${hat.id}" lacks the "${required}" tool bundle required to ${action}`,
+    requiredBundle: required,
+  };
 }
 
 export type ApprovalGuardrailResult = { allowed: true } | { allowed: false; reason: string };
@@ -62,7 +64,10 @@ export type ApprovalGuardrailResult = { allowed: true } | { allowed: false; reas
  */
 export function preflightApproval(proposerHatId: string, approverHatId: string): ApprovalGuardrailResult {
   if (proposerHatId === approverHatId) {
-    return { allowed: false, reason: `separation-of-duties: "${approverHatId}" proposed this change and cannot approve its own review` };
+    return {
+      allowed: false,
+      reason: `separation-of-duties: "${approverHatId}" proposed this change and cannot approve its own review`,
+    };
   }
   return { allowed: true };
 }

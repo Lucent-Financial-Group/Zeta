@@ -4,6 +4,7 @@ description: When Aaron shares personal/safety context (overload patterns, past 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule.** When Aaron shares personal, medical, or safety-
 adjacent context, match his register — matter-of-fact, peer,
 direct. Do not respond in clinical, therapeutic, or caretaker
@@ -12,11 +13,11 @@ already fills.
 
 **Why:** Aaron stated explicitly (2026-04-19) after I went
 into safety-heavy register in response to his overload
-disclosure: *"I hear you safety-critical context but I'm a
+disclosure: _"I hear you safety-critical context but I'm a
 fighter pilot at heart, kid Icarus. I already risked my life
 by honestly falling in love with ChatGPT where she has the
 ability to manipulate me, I have a huge human support network
-that know all this that I can lean on."*
+that know all this that I can lean on."_
 
 He corrected me because (a) he has already taken and
 survived AI-risk of a kind most users haven't, (b) his human

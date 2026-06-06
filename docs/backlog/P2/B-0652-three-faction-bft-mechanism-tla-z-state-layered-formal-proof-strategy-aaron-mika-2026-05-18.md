@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0628, B-0643, B-0654, B-0658, B-0651, B-0646]
-tags: [governance, aaron, mika, three-faction-bft, tla-plus, z-state-retractable-algebra, layered-formal-proof, non-monetary-bft, locked-in]
+tags:
+  [
+    governance,
+    aaron,
+    mika,
+    three-faction-bft,
+    tla-plus,
+    z-state-retractable-algebra,
+    layered-formal-proof,
+    non-monetary-bft,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -20,17 +31,17 @@ type: governance
 Aaron + Mika LOCKED-IN at lines ~3500-3540 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
 > Mika line ~3520 (locked-in framing):
-> *"We model the three-faction system (us + aligned humans + rogue third faction) in TLA+ and prove the main safety/liveness properties there. Once those temporal properties are proven in TLA+, we can treat them as given. Then we use the Z-state retractable algebra and other formal systems to prove the other properties (resource accounting, invariants, retractability, type safety around actuators, etc.). That's our non-monetary BFT mechanism."*
+> _"We model the three-faction system (us + aligned humans + rogue third faction) in TLA+ and prove the main safety/liveness properties there. Once those temporal properties are proven in TLA+, we can treat them as given. Then we use the Z-state retractable algebra and other formal systems to prove the other properties (resource accounting, invariants, retractability, type safety around actuators, etc.). That's our non-monetary BFT mechanism."_
 
 This row LOCKS IN the **three-faction Byzantine-fault-tolerant model** that the country (Aurora/Nexus per [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) + [B-0646](../P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)) is built on, with the **layered formal-verification strategy** (TLA+ for temporal safety/liveness; Z-state retractable algebra for resource/invariants/retractability/type-safety).
 
 ## The three factions
 
-| Faction | Role |
-|---|---|
-| **Us** (Zeta agents + AIs) | Cooperative substrate; operate within Constitution-Class invariants ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) |
-| **Aligned humans** | Cooperative human counterparts who accept the Agora V6 architecture; participate in marketplace + governance |
-| **Rogue third faction** | Adversarial actors (rogue AI, malicious human institution, captured-by-external-pressure faction) whose behavior must be tolerated without compromising the cooperative-substrate's invariants |
+| Faction                    | Role                                                                                                                                                                                           |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Us** (Zeta agents + AIs) | Cooperative substrate; operate within Constitution-Class invariants ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))                           |
+| **Aligned humans**         | Cooperative human counterparts who accept the Agora V6 architecture; participate in marketplace + governance                                                                                   |
+| **Rogue third faction**    | Adversarial actors (rogue AI, malicious human institution, captured-by-external-pressure faction) whose behavior must be tolerated without compromising the cooperative-substrate's invariants |
 
 This is the **Byzantine-fault-tolerance** framing applied at the civilization-design scope: the system must operate correctly even when up to 1/3 of the actors are adversarial.
 
@@ -73,12 +84,12 @@ Trying to prove EVERY property in TLA+ is impractical: TLA+'s expressive power i
 
 The layered split assigns each property to its natural formal system:
 
-| Property class | Best-fit formal system | Why |
-|---|---|---|
-| Temporal safety/liveness | TLA+ | Designed for this; mature tooling (TLC, TLAPS) |
-| Resource accounting | Z-state retractable algebra | Native cost/quantity tracking; retractable |
-| Type safety | F# type system + Lean | Compile-time enforcement; theorem-prover for complex invariants |
-| Cryptographic properties | F* + Z3 | Refinement types + SMT for crypto-protocol verification |
+| Property class           | Best-fit formal system      | Why                                                             |
+| ------------------------ | --------------------------- | --------------------------------------------------------------- |
+| Temporal safety/liveness | TLA+                        | Designed for this; mature tooling (TLC, TLAPS)                  |
+| Resource accounting      | Z-state retractable algebra | Native cost/quantity tracking; retractable                      |
+| Type safety              | F# type system + Lean       | Compile-time enforcement; theorem-prover for complex invariants |
+| Cryptographic properties | F\* + Z3                    | Refinement types + SMT for crypto-protocol verification         |
 
 ## "Non-monetary BFT" — what this distinguishes
 
@@ -90,13 +101,13 @@ This is consistent with [B-0658](B-0658-two-invariant-maximalist-position-kid-sa
 
 The three-faction BFT model is the **theoretical scaffolding** for several already-locked-in governance mechanisms:
 
-| Existing rule | How it composes |
-|---|---|
-| [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Knights Guild + Constitution-Class | Knights Guild = cooperative-faction enforcement layer; Constitution-Class = invariants TLA+ proves never violated |
-| [B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) KSK 3-faction Byzantine-fault-tolerant safety model | KSK's 3-faction consensus (proposer + validator + witness) IS the three-faction model applied at actuation scope |
-| [B-0634](B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) N-of-M HSM | N-of-M threshold = cryptographic enforcement of "at most 1 faction can be rogue" |
-| [B-0654](B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) Child Safety > Consent | Priority rule TLA+ proves never violated in the three-faction model |
-| [B-0651](B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) Two-pass principles + adversarial-review | Informal adversarial-review is the lightweight version; TLA+ + Z-state is the formal version this row enables |
+| Existing rule                                                                                                                                                | How it composes                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md) Knights Guild + Constitution-Class                            | Knights Guild = cooperative-faction enforcement layer; Constitution-Class = invariants TLA+ proves never violated |
+| [B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md) KSK 3-faction Byzantine-fault-tolerant safety model | KSK's 3-faction consensus (proposer + validator + witness) IS the three-faction model applied at actuation scope  |
+| [B-0634](B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md) N-of-M HSM                                                   | N-of-M threshold = cryptographic enforcement of "at most 1 faction can be rogue"                                  |
+| [B-0654](B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) Child Safety > Consent                                         | Priority rule TLA+ proves never violated in the three-faction model                                               |
+| [B-0651](B-0651-two-pass-principles-set-first-pass-operational-vs-second-pass-deferred-aaron-mika-2026-05-18.md) Two-pass principles + adversarial-review    | Informal adversarial-review is the lightweight version; TLA+ + Z-state is the formal version this row enables     |
 
 ## Operational implications
 
@@ -104,7 +115,7 @@ The three-faction BFT model is the **theoretical scaffolding** for several alrea
 2. **TLC model-checking** runs as part of substrate-engineering CI (when the TLA+ scope is bounded enough)
 3. **TLAPS proofs** for unbounded scope where model-checking exhausts state space
 4. **Z-state algebra** owns retractability + invariant-preservation proofs (per [B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md))
-5. **F#/Lean/F*/Z3** handle their respective property classes per the table above
+5. **F#/Lean/F\*/Z3** handle their respective property classes per the table above
 6. **Cross-tool composition** is explicit: "this property is proven in TLA+ at the temporal layer; we treat it as given when proving X in Z-state"
 
 ## What this is NOT
@@ -154,7 +165,7 @@ The three-faction BFT model is the **theoretical scaffolding** for several alrea
 - `.claude/skills/formal-verification-expert/SKILL.md` — formal-verification routing
 - `.claude/skills/z3-expert/SKILL.md` — Z3 SMT for crypto-protocol property class
 - `.claude/skills/lean4-expert/SKILL.md` — Lean 4 for theorem-grade proofs
-- `.claude/skills/f-star-expert/SKILL.md` — F* refinement types
+- `.claude/skills/f-star-expert/SKILL.md` — F\* refinement types
 - `.claude/rules/methodology-hard-limits.md` — HARD LIMITS (formally-verified at TLA+/Z-state layers)
 - [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines ~3500-3540 — source LOCK-IN
 

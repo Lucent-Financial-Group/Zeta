@@ -4,10 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { extractPaceInstructions, type PaceInstruction } from "./pace-extractor.ts";
 
-function instructionAt(
-  instructions: PaceInstruction[],
-  index: number,
-): PaceInstruction {
+function instructionAt(instructions: PaceInstruction[], index: number): PaceInstruction {
   const instruction = instructions[index];
   expect(instruction).toBeDefined();
   return instruction!;
@@ -302,13 +299,7 @@ describe("extractPaceInstructions", () => {
     const root = makeTempRoot();
     writeFileSync(
       join(root, "memory", "CURRENT-aaron.md"),
-      [
-        "# CURRENT-aaron.md",
-        "",
-        "## Pace",
-        "",
-        'Aaron 2026-05-07: *"keep grinding through backlog"*',
-      ].join("\n"),
+      ["# CURRENT-aaron.md", "", "## Pace", "", 'Aaron 2026-05-07: *"keep grinding through backlog"*'].join("\n"),
     );
 
     const result = await extractPaceInstructions(root);
@@ -323,11 +314,7 @@ describe("extractPaceInstructions", () => {
     const root = makeTempRoot();
     writeFileSync(
       join(root, "docs", "active-trajectory.md"),
-      [
-        "# Active trajectory",
-        "",
-        'Aaron 2026-05-06: *"go hard on B-0160 decomposition"*',
-      ].join("\n"),
+      ["# Active trajectory", "", 'Aaron 2026-05-06: *"go hard on B-0160 decomposition"*'].join("\n"),
     );
 
     const result = await extractPaceInstructions(root);
@@ -364,11 +351,7 @@ describe("extractPaceInstructions", () => {
     );
     writeFileSync(
       join(root, "memory", "CURRENT-aaron.md"),
-      [
-        "# CURRENT-aaron.md",
-        "",
-        'Aaron 2026-05-04: *"keep working on the backlog"*',
-      ].join("\n"),
+      ["# CURRENT-aaron.md", "", 'Aaron 2026-05-04: *"keep working on the backlog"*'].join("\n"),
     );
 
     const result = await extractPaceInstructions(root);
@@ -403,13 +386,7 @@ describe("extractPaceInstructions", () => {
     const root = makeTempRoot();
     writeFileSync(
       join(root, "CLAUDE.md"),
-      [
-        "# CLAUDE.md",
-        "",
-        "Aaron 2026-05-02:",
-        "",
-        '> *"go hard, you don\'t have to do minimum action"*',
-      ].join("\n"),
+      ["# CLAUDE.md", "", "Aaron 2026-05-02:", "", '> *"go hard, you don\'t have to do minimum action"*'].join("\n"),
     );
 
     const result = await extractPaceInstructions(root);

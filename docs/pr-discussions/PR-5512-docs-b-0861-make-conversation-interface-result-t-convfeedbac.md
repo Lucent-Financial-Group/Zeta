@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Operator-directed substrate-engineering target row:
 
-> *\"yeah we should make it first class that's a great idea otto\"*
+> _\"yeah we should make it first class that's a great idea otto\"_
 
 Following PR #5511 monad-propagation-pattern-cross-language-substrate-
 shape rule with NCI-at-conversation-interface section sketching
@@ -58,6 +58,7 @@ Priority: P2 (substrate-engineering target; future work).
 Adds a new P2 backlog row (B-0861) proposing a “conversation-interface as `Result<T, ConvFeedback>`” substrate shape to make NCI-relevant signals explicit and mechanically acknowledgeable in operator–Otto interaction.
 
 **Changes:**
+
 - Introduces backlog row B-0861 with a proposed ConvFeedback variant taxonomy, emission discipline, and operator acknowledgment scheme.
 - Defines an implementation decomposition into 6 future sub-rows and a rule-to-variant composition table.
 

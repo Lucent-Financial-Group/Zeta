@@ -19,15 +19,15 @@ type: feature
 
 Aaron 2026-05-16, after Otto tried to fire `gh auth refresh` blindly via Bash tool and got blocked on the interactive Y/n prompt:
 
-> *"we need a skill around this"*
+> _"we need a skill around this"_
 
 Then, when describing the maintainer-side experience:
 
-> *"you have to hit enter once i think to make it pop open"*
+> _"you have to hit enter once i think to make it pop open"_
 
 And after I confirmed the operational pattern:
 
-> *"when we work on that backlog item i can be he human that clicks the screen to test it"*
+> _"when we work on that backlog item i can be he human that clicks the screen to test it"_
 
 The empirical artifact that triggered the row: a successful gh auth refresh run that surfaced the operational flow:
 
@@ -79,14 +79,14 @@ Plus the canonical memory file: `feedback_aaron_fine_grained_pat_workflow_for_ot
 
 ## Decomposition into implementation slices
 
-| Slice | Description | Effort | Status |
-|-------|-------------|--------|--------|
-| 1 | `tools/auth/gh-auth-refresh-wrapper.ts` — spawn gh + stdin pump + stdout regex for code capture | S | open |
-| 2 | Code-surfacing UI: stdout banner + `pbcopy` + `osascript` notification | XS | open |
-| 3 | Post-approval scope-status polling loop with timeout | XS | open |
-| 4 | Registry write: `~/.local/share/zeta/scope-grants.jsonl` append on success | XS | open |
-| 5 | `.claude/skills/gh-auth-refresh-wrapper/SKILL.md` — invoke procedure, carved sentence | XS | open |
-| 6 | Tests with injected stdin/stdout streams (success / refusal / timeout / regex) | S | open |
+| Slice | Description                                                                                     | Effort | Status |
+| ----- | ----------------------------------------------------------------------------------------------- | ------ | ------ |
+| 1     | `tools/auth/gh-auth-refresh-wrapper.ts` — spawn gh + stdin pump + stdout regex for code capture | S      | open   |
+| 2     | Code-surfacing UI: stdout banner + `pbcopy` + `osascript` notification                          | XS     | open   |
+| 3     | Post-approval scope-status polling loop with timeout                                            | XS     | open   |
+| 4     | Registry write: `~/.local/share/zeta/scope-grants.jsonl` append on success                      | XS     | open   |
+| 5     | `.claude/skills/gh-auth-refresh-wrapper/SKILL.md` — invoke procedure, carved sentence           | XS     | open   |
+| 6     | Tests with injected stdin/stdout streams (success / refusal / timeout / regex)                  | S      | open   |
 
 Total: S (small overall — one short evening's work)
 
@@ -94,7 +94,7 @@ Total: S (small overall — one short evening's work)
 
 **Aaron volunteered to be the human-in-the-loop for testing**:
 
-> *"when we work on that backlog item i can be he human that clicks the screen to test it"*
+> _"when we work on that backlog item i can be he human that clicks the screen to test it"_
 
 So when this row gets picked up:
 

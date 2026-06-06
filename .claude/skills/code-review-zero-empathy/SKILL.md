@@ -5,8 +5,8 @@ description: "Zero-empathy code review — P0/P1/P2 ranked findings, file:line r
 
 # Code Review — Zero-Empathy Procedure
 
-This is a **capability skill**. It encodes the *how* of a tight
-review; an expert (see `.claude/agents/`) decides *when* to
+This is a **capability skill**. It encodes the _how_ of a tight
+review; an expert (see `.claude/agents/`) decides _when_ to
 invoke it and wears the persona around it.
 
 ## Procedure
@@ -48,12 +48,15 @@ invoke it and wears the persona around it.
 
 ```markdown
 ## P0 (ship-blockers)
+
 1. **file.fs:123** — [title]. [concrete bug description]. Fix: [suggestion].
 
 ## P1 (serious)
+
 ...
 
 ## P2 (nice-to-have)
+
 ...
 ```
 

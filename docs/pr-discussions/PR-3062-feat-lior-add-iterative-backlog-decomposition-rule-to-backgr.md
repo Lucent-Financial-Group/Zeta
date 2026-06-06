@@ -26,24 +26,22 @@ Copilot wasn't able to review any files in this pull request.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-13T23:28:31Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `e1715a598a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -55,7 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-13T23:28:32Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Propagate spawnSync errors instead of reporting success**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Propagate spawnSync errors instead of reporting success**
 
 `spawnSync` sets `result.error` for execution failures such as `ENOBUFS`; with stderr now piped, a verbose Gemini stderr stream can exceed the default sync buffer and land here. Exiting `0` in this branch marks the tick as successful even though the agent run never completed, so launchd/health checks lose the failure signal and the loop can silently skip work. Return a non-zero status here (or raise `maxBuffer`/stream stderr) so real execution failures remain observable.
 

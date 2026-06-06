@@ -12,7 +12,14 @@ import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 import { Pool } from "pg";
 
-import { OrgEventKind, ReactionPlanStatus, ScheduleBlockState, ScheduleBlockType, WorkItemState, WorkItemType } from "../packages/domain/src/index.ts";
+import {
+  OrgEventKind,
+  ReactionPlanStatus,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  WorkItemState,
+  WorkItemType,
+} from "../packages/domain/src/index.ts";
 import {
   createCockroachCoreStateMigrations,
   createCockroachOrgEventStore,
@@ -70,8 +77,9 @@ async function main(): Promise<void> {
       laneResults.push({ lane: lane.name, result: await lane.runOnce() });
     }
 
-    const events = (await orgEvents.listByOrganization(organizationId, 100)).filter((event) =>
-      event.kind === OrgEventKind.RecoveryIncidentDetected || event.kind === OrgEventKind.RecoveryScanCompleted
+    const events = (await orgEvents.listByOrganization(organizationId, 100)).filter(
+      (event) =>
+        event.kind === OrgEventKind.RecoveryIncidentDetected || event.kind === OrgEventKind.RecoveryScanCompleted,
     );
     const incidentCount = events.filter((event) => event.kind === OrgEventKind.RecoveryIncidentDetected).length;
     const completionCount = events.filter((event) => event.kind === OrgEventKind.RecoveryScanCompleted).length;
@@ -88,13 +96,19 @@ async function main(): Promise<void> {
       incidentCount === 4 &&
       completionCount === 4;
 
-    console.log(JSON.stringify({
-      track: "G3 recovery scanners",
-      organizationId,
-      laneResults,
-      recoveryEvents: { incidentCount, completionCount },
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "G3 recovery scanners",
+          organizationId,
+          laneResults,
+          recoveryEvents: { incidentCount, completionCount },
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();

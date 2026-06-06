@@ -23,18 +23,18 @@ to use confidence scores (`float` in [0.0, 1.0]) as the
 primitive. Bool is a special case — a degenerate Bernoulli
 distribution with mass at 0 or 1 — not the default return type.
 
-Aaron 2026-05-09: *"imagine we are redesigning — bools don't
+Aaron 2026-05-09: _"imagine we are redesigning — bools don't
 exist, they are just a special case of a distribution that is
-either 0 or 1."*
+either 0 or 1."_
 
 ### Current sharp APIs
 
-| Module | Function | Returns |
-|--------|----------|---------|
-| Veridicality | `validateProvenance` | `bool` |
-| Veridicality | `validateClaim` | `bool` |
+| Module        | Function             | Returns                              |
+| ------------- | -------------------- | ------------------------------------ |
+| Veridicality  | `validateProvenance` | `bool`                               |
+| Veridicality  | `validateClaim`      | `bool`                               |
 | SignalQuality | `falsifiabilityWith` | `float` (but takes `string -> bool`) |
-| SignalQuality | `groundingWith` | `float` (but takes `string -> bool`) |
+| SignalQuality | `groundingWith`      | `float` (but takes `string -> bool`) |
 
 ### Proposed round APIs
 

@@ -32,22 +32,22 @@ When operating in the conversation window or autonomous-loop tick:
 
 Aaron 2026-05-01 (verbatim):
 
-> *"also you have a lot of red bash / pwsh failures becasue of
+> _"also you have a lot of red bash / pwsh failures becasue of
 > unexpected things if you tried to restrict where you alwasy
 > called ts and didn't do any dynamic commands in this window
 > expect when prototyping would keep the user experience in here
 > on the high trust no red text and you could have detaied
 > output from ts and do great formatting much easier than from
 > ancient legacy bash, DST is bascically impossible there, not
-> in ts."*
+> in ts."_
 
 Three composing reasons:
 
 ## Why-1: Red text erodes user trust (for most humans, not Aaron specifically)
 
-Aaron 2026-05-01 follow-up: *"yeah for most humans read error
+Aaron 2026-05-01 follow-up: _"yeah for most humans read error
 text in the harness = erosion of trust, not me but i'm not
-most."*
+most."_
 
 So the trust-erosion claim is calibrated:
 
@@ -75,8 +75,8 @@ would be.
 
 ## Why-2: TS gives better output + formatting
 
-Aaron's framing: *"detaied output from ts and do great
-formatting much easier than from ancient legacy bash."*
+Aaron's framing: _"detaied output from ts and do great
+formatting much easier than from ancient legacy bash."_
 
 Bash + jq + sed + awk + grep is hard to format consistently.
 Output bleeds across pipelines; error messages mix stdout +
@@ -98,8 +98,8 @@ the conversation window than equivalent bash output.
 
 ## Why-3: DST is basically impossible in bash; achievable in TS
 
-This is the load-bearing claim. Aaron's framing: *"DST is
-bascically impossible there, not in ts."*
+This is the load-bearing claim. Aaron's framing: _"DST is
+bascically impossible there, not in ts."_
 
 DST (deterministic-simulation-testing per Otto-272 +
 DST grade-A per Aaron 2026-05-01) requires:
@@ -152,10 +152,10 @@ coverage on.
 
 ## Why-3.5: install.sh is the closest-to-DST in bash (declarative-bootstrap exception)
 
-Aaron 2026-05-01 follow-up: *"install.sh with the
+Aaron 2026-05-01 follow-up: _"install.sh with the
 declarative bootstrap from ../scratch like called out in
 the backlog is the closest to DST for dependency management
-i can think of our ace package management."*
+i can think of our ace package management."_
 
 Important refinement of Why-3: bash is NOT universally
 DST-blocked. The narrow exception is **declarative bootstrap
@@ -171,7 +171,7 @@ this shape:
 - `install.sh` reads manifests + invokes platform-specific
   package managers
 - Outcome is reproducible because the manifests are pinned
-  + version-locked
+  - version-locked
 
 Aaron names this "our ace package management" — positive
 framing, well-designed pattern. The "closest to DST"
@@ -193,15 +193,15 @@ When about to run a command in the conversation window or an
 autonomous tick:
 
 1. **Check if a TS sibling exists**: `find tools -name
-   "$(basename "$cmd" .sh).ts" -o -path "*/tools/.../$cmd.ts"`
+"$(basename "$cmd" .sh).ts" -o -path "*/tools/.../$cmd.ts"`
 2. **If TS sibling exists**: use it. `bun ./tools/foo.ts`
    instead of `bash ./tools/foo.sh`.
 3. **If TS sibling doesn't exist** AND the operation is
    recurring (twice or more): file a B-0156 phase row to
    port that specific script.
 4. **If the operation is a one-off prototype**: bash + jq +
-   pipeline is fine. Aaron's explicit carve-out: *"expect
-   when prototyping."*
+   pipeline is fine. Aaron's explicit carve-out: _"expect
+   when prototyping."_
 5. **When piping `gh api` output for non-trivial transforms
    (more than 2 jq stages)**: write a small TS script
    (`tools/scratch/explore-foo.ts`) instead. The script can
@@ -254,7 +254,7 @@ future-self-not-bound, never-be-idle, version-currency,
 substrate-or-it-didn't-happen) was Otto repeatedly running
 inline bash like `gh pr view N --json mergeStateStatus,
 statusCheckRollup,reviewThreads | jq …` for tick-wake state
-queries — *while* `tools/github/poll-pr-gate.ts` already
+queries — _while_ `tools/github/poll-pr-gate.ts` already
 existed (v1 from 2026-04-30, 5-AI peer convergence) and did
 exactly that job with structured JSON output, required-vs-
 non-required check classification, and fixture-supported
@@ -262,14 +262,14 @@ testing.
 
 Aaron 2026-05-01 (verbatim, three-message clarification):
 
-> *"thdse look good but are dynamic not ts shaped"*
-> *"dynamic bash is forgotten bash once useful but never
-> amotorized"*
-> *"write a bactch version of the ts that calls this one —
-> not bash, not .sh, not .ps1, not dyanamic bash"*
+> _"thdse look good but are dynamic not ts shaped"_
+> _"dynamic bash is forgotten bash once useful but never
+> amotorized"_
+> _"write a bactch version of the ts that calls this one —
+> not bash, not .sh, not .ps1, not dyanamic bash"_
 
-The carved blade is *"dynamic bash is forgotten bash, once
-useful but never amortized."* The amortization horizon is
+The carved blade is _"dynamic bash is forgotten bash, once
+useful but never amortized."_ The amortization horizon is
 **1000s of PR-gate queries across the autonomous loop's
 lifetime**; per-command bash burns the cost every time
 (re-author, re-test, re-debug, no fixture reuse). Named TS
@@ -294,9 +294,9 @@ exists to prevent.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Bash is a DST-exempt zone by structural necessity. Every
+_"Bash is a DST-exempt zone by structural necessity. Every
 recurring bash command is a DST-grade-A coverage gap. TS is
-the migration target."*
+the migration target."_
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not
@@ -304,7 +304,7 @@ by maintainer fiat.)
 
 # Second carved sentence (candidate)
 
-*"Dynamic bash is forgotten bash — once useful but never
+_"Dynamic bash is forgotten bash — once useful but never
 amortized. The named TS script pays the amortization cost
-once; the named TS script is the substrate."* (Aaron
+once; the named TS script is the substrate."_ (Aaron
 2026-05-01.)

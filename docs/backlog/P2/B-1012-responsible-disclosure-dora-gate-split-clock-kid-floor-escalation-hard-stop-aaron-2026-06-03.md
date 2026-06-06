@@ -18,7 +18,7 @@ type: design
 ## Origin (Aaron 2026-06-03, forwarded Kestrel × maintainer session)
 
 Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-source-ethic-floor-governance-jurisdiction-relative-opa-federation-nexus-meta-jurisdiction-conflict-resolution-aaron-forwarded.md` §2.
-The *discipline* lands as a rule (`.claude/rules/responsible-disclosure-private-window-prompt-to-vendor-never-hoard-kid-floor-escalation`); this row is the **gate implementation**.
+The _discipline_ lands as a rule (`.claude/rules/responsible-disclosure-private-window-prompt-to-vendor-never-hoard-kid-floor-escalation`); this row is the **gate implementation**.
 
 ## What to build
 

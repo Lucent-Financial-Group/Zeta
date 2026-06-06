@@ -81,7 +81,7 @@ Per the substrate-check-before-worry-deployment discipline + Kestrel's pre-clean
 
 - [x] Pre-cleanup grep audit: 0 non-historical references after deletion
 - [x] Post-commit canary green (HEAD 60 = HEAD~1 60; 3 files deleted from existing trees + 1 new file under existing tree)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] Authored from fresh independent clone (per B-0828)
 - [ ] CI green (flake.nix changes evaluate; build-ai-cluster-iso.yml still works)
 - [ ] Copilot review pass
@@ -95,6 +95,7 @@ Per the substrate-check-before-worry-deployment discipline + Kestrel's pre-clean
 This PR retires the legacy root-flake installer ISO path and leaves the `full-ai-cluster/usb-nixos-installer/` substrate as the canonical ISO build path.
 
 **Changes:**
+
 - Deleted the legacy NixOS installer host config and `build-installer-iso.yml` workflow.
 - Removed root-flake `installer` / `installer-iso` outputs and updated visible build guidance.
 - Added B-0830 to track re-adding release-asset upload support to the canonical workflow.
@@ -106,13 +107,14 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| `infra/nixos/hosts/installer/configuration.nix` | Deletes the retired legacy installer host configuration. |
-| `.github/workflows/build-installer-iso.yml` | Deletes the retired legacy ISO build/release workflow. |
-| `flake.nix` | Removes root-flake installer outputs and updates comments/devShell guidance to canonical path. |
-| `docs/backlog/P3/B-0830-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md` | Adds follow-up backlog row for canonical workflow release attachment. |
-| `docs/BACKLOG.md` | Adds B-0830 to the generated backlog index. |
+| File                                                                                                                                   | Description                                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `infra/nixos/hosts/installer/configuration.nix`                                                                                        | Deletes the retired legacy installer host configuration.                                       |
+| `.github/workflows/build-installer-iso.yml`                                                                                            | Deletes the retired legacy ISO build/release workflow.                                         |
+| `flake.nix`                                                                                                                            | Removes root-flake installer outputs and updates comments/devShell guidance to canonical path. |
+| `docs/backlog/P3/B-0830-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md` | Adds follow-up backlog row for canonical workflow release attachment.                          |
+| `docs/BACKLOG.md`                                                                                                                      | Adds B-0830 to the generated backlog index.                                                    |
+
 </details>
 
 ## Review threads

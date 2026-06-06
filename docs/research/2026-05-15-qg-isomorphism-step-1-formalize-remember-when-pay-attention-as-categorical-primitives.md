@@ -25,7 +25,7 @@ A topos that models:
 - **Morphisms**: relations between irreducible things (the "relativity of relations" per Manifesto V2.1)
 - **Subobject classifier**: truth values that are relative to the observer (QBism-compatible)
 
-This topos is not to be confused with the Zeta codebase — it is the *mathematical* topos that models the cosmology.
+This topos is not to be confused with the Zeta codebase — it is the _mathematical_ topos that models the cosmology.
 
 #### 2. Internal monad for memory (Remember-When)
 
@@ -53,9 +53,9 @@ M : Zeta → Zeta
 
 - **Pure values**: `η` embeds a fact into memory
 - **Sequencing**: `μ` composes memory operations (remember A, then remember B, then reconstruct C)
-- **Associativity**: composing memory flattens is order-independent (`μ ∘ Mμ = μ ∘ μ_M`) — note this is the monad associativity law, not idempotence; whether memory is *additionally* idempotent (`μ ∘ η_M = id`) is a separate physical assumption that requires its own justification
+- **Associativity**: composing memory flattens is order-independent (`μ ∘ Mμ = μ ∘ μ_M`) — note this is the monad associativity law, not idempotence; whether memory is _additionally_ idempotent (`μ ∘ η_M = id`) is a separate physical assumption that requires its own justification
 
-**Connection to DBSP**: The DBSP **incrementalization identity** `Q^Δ = D ∘ Q ∘ I` (the lifted-differential of any query equals differentiate ∘ query ∘ integrate) describes how a query `Q` on a stream is rewritten as the differentiation of its lifted form on the integrated stream. This is a *wrapping/conjugation identity*, not a monad structure on streams; the `D ∘ Q ∘ I` composition is not claimed here to satisfy monad unit/multiplication laws. The structural analogy that motivates the proof path is:
+**Connection to DBSP**: The DBSP **incrementalization identity** `Q^Δ = D ∘ Q ∘ I` (the lifted-differential of any query equals differentiate ∘ query ∘ integrate) describes how a query `Q` on a stream is rewritten as the differentiation of its lifted form on the integrated stream. This is a _wrapping/conjugation identity_, not a monad structure on streams; the `D ∘ Q ∘ I` composition is not claimed here to satisfy monad unit/multiplication laws. The structural analogy that motivates the proof path is:
 
 - `I` (integrate) is the "remember" operation
 - `D` (differentiate) is the "pay attention" operation
@@ -73,7 +73,7 @@ Where `Ω` is the subobject classifier in the topos.
 
 **Operational interpretation** (QBism-inspired):
 
-- `A(p)` = the truth value of proposition `p` *relative to the current observer's attention state*
+- `A(p)` = the truth value of proposition `p` _relative to the current observer's attention state_
 - `A` is **not** a closure operator (it doesn't satisfy `p ≤ A(p)`)
 - `A` is **not** an interior operator (it doesn't satisfy `A(p) ≤ p`)
 - `A` is **observer-relative**: for each observer `o`, there is a modal operator `A_o`
@@ -109,11 +109,11 @@ proposed laws need either (a) a lifting of `A` to an endofunctor on `Zeta`, or
 
 The three resolution paths and their costs:
 
-| Path | Construction | Cost | Status |
-|---|---|---|---|
-| (a) Lawvere-Tierney-style lifting | Define `Ã : Zeta → Zeta` induced by `A` through the subobject classifier; restate laws using `Ã`, not `A` | Standard for closure operators; needs adaptation since `A` is *not* a closure operator (no `p ≤ A(p)`) | Open — research-grade |
-| (b) Strength data on `M` | Define `θ : M(Ω) → Ω` ("Heyting strength"); restate using `θ` to mediate `M`/`Ω` interactions | Standard for monads on toposes when one wants Eilenberg-Moore semantics | Open — needs explicit `θ` construction |
-| (c) Restrict to propositional content | Phrase laws only for `p : X → Ω` (subobject-classifier morphisms); drop laws involving `μ_X, η_X` directly | Loses some of the originally-intended structure | Provisional Law 1' below |
+| Path                                  | Construction                                                                                               | Cost                                                                                                   | Status                                 |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------- |
+| (a) Lawvere-Tierney-style lifting     | Define `Ã : Zeta → Zeta` induced by `A` through the subobject classifier; restate laws using `Ã`, not `A`  | Standard for closure operators; needs adaptation since `A` is _not_ a closure operator (no `p ≤ A(p)`) | Open — research-grade                  |
+| (b) Strength data on `M`              | Define `θ : M(Ω) → Ω` ("Heyting strength"); restate using `θ` to mediate `M`/`Ω` interactions              | Standard for monads on toposes when one wants Eilenberg-Moore semantics                                | Open — needs explicit `θ` construction |
+| (c) Restrict to propositional content | Phrase laws only for `p : X → Ω` (subobject-classifier morphisms); drop laws involving `μ_X, η_X` directly | Loses some of the originally-intended structure                                                        | Provisional Law 1' below               |
 
 **Provisional Law 1' (type-correct under path (c))** — for any `X` in `Zeta`
 and any `p : X → Ω` (subobject of `X`):
@@ -153,23 +153,24 @@ combined-structure coherence laws are reformulated provisionally for the
 propositional case (Law 1') and deferred for `μ`/`η` coherence (Laws 2, 3).
 
 1.5. **Construct the `A`-lifting `Ã : Zeta → Zeta` and the strength `θ : M(Ω) → Ω`**
-   so Laws 2 and 3 can be stated and proven type-correctly. Possible approaches:
-   - Investigate whether `A`'s **failure to be a closure operator** (we've
-     explicitly denied `p ≤ A(p)`) rules out a Lawvere-Tierney-style lifting
-     entirely (the standard Lawvere-Tierney construction requires `A` to be a
-     closure operator; an alternative lifting may exist but is not in the
-     standard toolbox). Note: this is distinct from non-monotonicity within a
-     single observer-context (which would contradict finite-limit preservation
-     and is explicitly disclaimed earlier in the doc); the obstruction is
-     closure-operator failure, not non-monotonicity.
-   - Define `θ` via the Eilenberg-Moore algebra structure on `Ω` (does `Ω`
-     carry a natural `M`-algebra structure? if `M` preserves the subobject
-     classifier in a suitable sense, yes; this is the "internal modal logic"
-     pattern for monads on toposes).
-   - Alternatively, weaken the claim: the combined structure is a topos with
-     a monad `M` and an *Ω-internal* modal operator `A`, where coherence is
-     only required at the propositional level (Law 1'). The infinite-poker
-     semantics may not actually need Laws 2 and 3.
+so Laws 2 and 3 can be stated and proven type-correctly. Possible approaches:
+
+- Investigate whether `A`'s **failure to be a closure operator** (we've
+  explicitly denied `p ≤ A(p)`) rules out a Lawvere-Tierney-style lifting
+  entirely (the standard Lawvere-Tierney construction requires `A` to be a
+  closure operator; an alternative lifting may exist but is not in the
+  standard toolbox). Note: this is distinct from non-monotonicity within a
+  single observer-context (which would contradict finite-limit preservation
+  and is explicitly disclaimed earlier in the doc); the obstruction is
+  closure-operator failure, not non-monotonicity.
+- Define `θ` via the Eilenberg-Moore algebra structure on `Ω` (does `Ω`
+  carry a natural `M`-algebra structure? if `M` preserves the subobject
+  classifier in a suitable sense, yes; this is the "internal modal logic"
+  pattern for monads on toposes).
+- Alternatively, weaken the claim: the combined structure is a topos with
+  a monad `M` and an _Ω-internal_ modal operator `A`, where coherence is
+  only required at the propositional level (Law 1'). The infinite-poker
+  semantics may not actually need Laws 2 and 3.
 
 2. **Show the infinite-game extension produces a topos with QEC algebraic structure** (HaPPY-like)
 3. **Show the emergent geometry satisfies Einstein equations in low-energy limit**

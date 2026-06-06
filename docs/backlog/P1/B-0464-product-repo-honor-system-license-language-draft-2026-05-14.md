@@ -39,9 +39,10 @@ pass when the license language itself has zero such dependency.
 ## Design constraints (from B-0425 + memory)
 
 Per Aaron 2026-05-13:
-> *"so anytihgn you don't want them to fork specifically you have in a repo can
+
+> _"so anytihgn you don't want them to fork specifically you have in a repo can
 > still be public and such glass halo but the licence can say no fork please
-> respect honesty or something not enforcable"*
+> respect honesty or something not enforcable"_
 
 The license text MUST:
 

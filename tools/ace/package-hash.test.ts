@@ -29,8 +29,14 @@ describe("packageHash", () => {
   });
 
   test("EXCLUDES signature — two different signatures yield the same hash", () => {
-    const sigA: AcePackage = { manifest: { ...base.manifest, signature: { algo: "ed25519", key_id: "ed25519:aaaa", sig: "AAAA" } }, files: base.files };
-    const sigB: AcePackage = { manifest: { ...base.manifest, signature: { algo: "ed25519", key_id: "ed25519:bbbb", sig: "BBBB" } }, files: base.files };
+    const sigA: AcePackage = {
+      manifest: { ...base.manifest, signature: { algo: "ed25519", key_id: "ed25519:aaaa", sig: "AAAA" } },
+      files: base.files,
+    };
+    const sigB: AcePackage = {
+      manifest: { ...base.manifest, signature: { algo: "ed25519", key_id: "ed25519:bbbb", sig: "BBBB" } },
+      files: base.files,
+    };
     expect(packageHash(sigA)).toBe(packageHash(sigB));
   });
 

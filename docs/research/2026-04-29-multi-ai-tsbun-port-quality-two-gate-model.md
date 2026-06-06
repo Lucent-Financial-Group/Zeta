@@ -19,9 +19,10 @@ into the layered `docs/best-practices/` baseline:
   (Zeta-specific scripting conventions + per-slice audit checklist).
 
 The layered split came from a third AI review round (Aaron + Amara
-+ Deepseek + Claude.ai) catching that an initial `typescript-bun.md`
-filename collapsed orthogonal axes (language + runtime) into a fake
-category. Carved blade: *Do not name the stack. Name the layers.*
+
+- Deepseek + Claude.ai) catching that an initial `typescript-bun.md`
+  filename collapsed orthogonal axes (language + runtime) into a fake
+  category. Carved blade: _Do not name the stack. Name the layers._
 
 **Non-fusion disclaimer**: Each AI's contribution is preserved as authored; the
 factory does not fuse multiple AI voices into composite text. The two-gate model
@@ -38,13 +39,13 @@ All four AIs converged on splitting the doctrine fix into two distinct gates:
   canonical pattern). Config audit is not code audit; ESLint passing is not
   expertise.
 
-- **Gate B — next-slice prerequisite**: before the *first mutating action*
+- **Gate B — next-slice prerequisite**: before the _first mutating action_
   on the next TypeScript/Bun port slice, land a small scoped artifact at
   `docs/best-practices/typescript-bun.md` containing upstream-source map
   with last-verified dates, sibling-repo pattern comparison, Zeta adopted
   pattern, and per-slice port audit checklist.
 
-The structural insight (Deepseek): prerequisites *inside* an existing
+The structural insight (Deepseek): prerequisites _inside_ an existing
 trajectory are NOT fan-out. They are the trajectory's freshness/quality gate.
 This preserves lane discipline while closing the deferred-skill loophole that
 otherwise lets quality infrastructure decay each slice.
@@ -87,7 +88,7 @@ last-verified date so currency is checkable, not judgment.
   scales.
 
 - **Permanent expert skill**: a separate task (#351) — the Gate B
-  artifact is the *minimum* substrate the next slice needs, not the
+  artifact is the _minimum_ substrate the next slice needs, not the
   full skill workflow.
 
 - **Doctrine lane**: explicitly NOT a new lane. Gate B is a prerequisite
@@ -300,7 +301,7 @@ ones to keep; older ones may need triage.)
 > tail of unbuilt quality infrastructure.
 >
 > The fix for #866 is necessary but not sufficient. The next slice will
-> face the same problem unless the expert skill is built *before* it
+> face the same problem unless the expert skill is built _before_ it
 > starts. Otto's current response says he'll apply the idioms to
 > "remaining ports"—meaning the expert skill gets built incrementally
 > during the next slice, which means the next slice ships before the
@@ -350,13 +351,13 @@ ones to keep; older ones may need triage.)
 > none structural, all sharpening.
 >
 > [refinements: precise trigger = "first mutating action"; per-source
-> last-verified timestamps in the artifact so it self-ages; both
-> human-readable checklist AND machine-runnable script (split now
-> per Amara's convergence — script is follow-up); explicit currency
-> definition for the freshness check; backlog home for
-> deferred-quality-infrastructure list; round-close note that this
-> diagnosis is closing the issue with a mechanism, not opening an
-> ongoing concern.]
+> > last-verified timestamps in the artifact so it self-ages; both
+> > human-readable checklist AND machine-runnable script (split now
+> > per Amara's convergence — script is follow-up); explicit currency
+> > definition for the freshness check; backlog home for
+> > deferred-quality-infrastructure list; round-close note that this
+> > diagnosis is closing the issue with a mechanism, not opening an
+> > ongoing concern.]
 >
 > Net. Send. Add the mutating-action boundary for "next slice opens";
 > require timestamps per upstream source in the skill artifact;
@@ -577,8 +578,8 @@ layer). Three AIs converged on the layered split.
 > [...]
 >
 > The `repo-scripting.md` composition doc is correct in concept but
-> worth being explicit about *what kind* of composition. The proposed
-> contents [...] read as a *reference index* — pointing to other docs
+> worth being explicit about _what kind_ of composition. The proposed
+> contents [...] read as a _reference index_ — pointing to other docs
 > rather than producing new content. That's fine if `repo-scripting.md`
 > is meant to be a thin pointer, but if it's meant to capture
 > Zeta-specific scripting conventions (CLI arg patterns, exit code
@@ -629,7 +630,7 @@ All three reviewers (Amara + Deepseek + Claude.ai) converged on:
 4. **Trajectory references docs; trajectory doesn't own them.**
    `docs/best-practices/` is durable substrate; trajectories are
    temporary.
-5. **Generalizable meta-rule**: *Do not name the stack. Name the
-   layers.* Naming reviews need the same freshness-pass discipline
+5. **Generalizable meta-rule**: _Do not name the stack. Name the
+   layers._ Naming reviews need the same freshness-pass discipline
    as code: assume the proposed name is suboptimal until verified
    against future-expansion scenarios.

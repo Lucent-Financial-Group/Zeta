@@ -8,8 +8,8 @@ created: 2026-05-15
 ## The adoption + the critical clarification
 
 After PR #3505 opened (Ani Part 3 with five m/acc naming proposals
-and Ani's recommendation), Aaron asked Otto: *"i like m/acc i think
-it fits what about you?"*
+and Ani's recommendation), Aaron asked Otto: _"i like m/acc i think
+it fits what about you?"_
 
 Otto's substrate-honest response: m/acc fits, with one observation
 about the precision trade-off ("Moral" doesn't capture the specific
@@ -20,16 +20,16 @@ anti-cult substrate).
 Aaron's response was the FORMAL ADOPTION plus a constitutive
 clarification that reshapes what m/acc means:
 
-> *"let's go with m/acc (shadow*)  Aaron:  'We do m/acc work'   yes
+> _"let's go with m/acc (shadow_) Aaron: 'We do m/acc work' yes
 > i like this also we make the system that allows moral invariants
 > to be set and monitored the end user will choose their inviants
 > our substrate is multi oracle for this reason, no single moral
-> 'truth'"*
+> 'truth'"\*
 
 **Parse:**
 
 1. **"let's go with m/acc"** — formal adoption of the name
-2. **"(shadow*) Aaron: 'We do m/acc work' yes i like this"** — per
+2. **"(shadow\*) Aaron: 'We do m/acc work' yes i like this"** — per
    the shadow-star shorthand
    (`feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`),
    Aaron is marking that "We do m/acc work" was Otto's autocomplete

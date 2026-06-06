@@ -33,17 +33,17 @@ maintainer's review.
 
 ## Summary table
 
-| # | File | AceHack commits | LFG commits | Recommended direction | Risk | Effort |
-|---|------|----------------:|------------:|-----------------------|------|--------|
-| 1 | `tools/setup/linux.sh` | 1 | 1 | **3-way merge** (LFG security wins, AceHack helper kept) | M | M |
-| 2 | `tools/setup/common/elan.sh` | 1 | 1 | **AceHack→LFG** (helper unification cleanly replaces inline) | S | S |
-| 3 | `tools/setup/common/verifiers.sh` | 2 | 1 | **AceHack→LFG** (helper retry subsumes inline retry) | S | S |
-| 4 | `.mise.toml` | 1 | 5 | **LFG→AceHack** (LFG has dotnet 10.0.203 + node + version-pin) | S | S |
-| 5 | `.markdownlint-cli2.jsonc` | 3 | 5 | **3-way merge** (both directions have meaningful additions) | S | S |
-| 6 | `.github/workflows/codeql.yml` | 1 | 2 | **LFG→AceHack** (LFG has final per-PR matrix) | S | S |
-| 7 | `.github/workflows/scorecard.yml` | 2 | 2 | **AceHack→LFG** (cache + retry + ubuntu-24.04 newer than original) | S | S |
-| 8 | `.github/workflows/resume-diff.yml` | 2 | 2 | **AceHack→LFG** (cache + retry + ubuntu-24.04 newer) | S | S |
-| 9 | `.github/workflows/gate.yml` | 4 | 5 | **3-way merge** (AceHack #80 cache + LFG semgrep routing both load-bearing) | M | M |
+| #   | File                                | AceHack commits | LFG commits | Recommended direction                                                       | Risk | Effort |
+| --- | ----------------------------------- | --------------: | ----------: | --------------------------------------------------------------------------- | ---- | ------ |
+| 1   | `tools/setup/linux.sh`              |               1 |           1 | **3-way merge** (LFG security wins, AceHack helper kept)                    | M    | M      |
+| 2   | `tools/setup/common/elan.sh`        |               1 |           1 | **AceHack→LFG** (helper unification cleanly replaces inline)                | S    | S      |
+| 3   | `tools/setup/common/verifiers.sh`   |               2 |           1 | **AceHack→LFG** (helper retry subsumes inline retry)                        | S    | S      |
+| 4   | `.mise.toml`                        |               1 |           5 | **LFG→AceHack** (LFG has dotnet 10.0.203 + node + version-pin)              | S    | S      |
+| 5   | `.markdownlint-cli2.jsonc`          |               3 |           5 | **3-way merge** (both directions have meaningful additions)                 | S    | S      |
+| 6   | `.github/workflows/codeql.yml`      |               1 |           2 | **LFG→AceHack** (LFG has final per-PR matrix)                               | S    | S      |
+| 7   | `.github/workflows/scorecard.yml`   |               2 |           2 | **AceHack→LFG** (cache + retry + ubuntu-24.04 newer than original)          | S    | S      |
+| 8   | `.github/workflows/resume-diff.yml` |               2 |           2 | **AceHack→LFG** (cache + retry + ubuntu-24.04 newer)                        | S    | S      |
+| 9   | `.github/workflows/gate.yml`        |               4 |           5 | **3-way merge** (AceHack #80 cache + LFG semgrep routing both load-bearing) | M    | M      |
 
 **Risk levels:** S = additive / formatter-only / no security path; M =
 load-bearing logic change with security or correctness implications;
@@ -90,7 +90,7 @@ download-to-temp-then-extract pattern. This is the very pattern that
 B-0063 (streamed-installer download-to-temp hardening) tracks for the
 remaining streamed installers. AceHack's #75 helper-unification is
 useful for the macos.sh (Homebrew streamed) and elan.sh (Lean toolchain
-streamed) cases, but applying it to mise install on Linux *replaced* a
+streamed) cases, but applying it to mise install on Linux _replaced_ a
 secure form with the unsafe form.
 
 **Recommended merge result:** keep LFG's pinned-tarball + SHA256-verify

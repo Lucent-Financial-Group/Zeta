@@ -12,7 +12,7 @@ Scope walked: Lean 4 (`tools/lean4/**/*.lean`), TLA+
 (`tools/tla/specs/**/*.tla`), Z3 / SMT
 (`docs/formal/**/z3-*.md`, `**/*.smt2`), FsCheck
 (`tests/**/*.fs` with `///` paper citations). Other
-portfolio tools (Alloy, F*) have no citing artifacts yet.
+portfolio tools (Alloy, F\*) have no citing artifacts yet.
 
 ---
 
@@ -27,8 +27,8 @@ portfolio tools (Alloy, F*) have no citing artifacts yet.
 - **Class.** Class 1 (name drift) + Class 3 (statement
   drift) + Class 4 (definition drift).
 - **Source.** Budiu et al.,
-  *DBSP: Automatic Incremental View Maintenance for Rich
-  Query Languages*, PVLDB Vol 16(7) 2023,
+  _DBSP: Automatic Incremental View Maintenance for Rich
+  Query Languages_, PVLDB Vol 16(7) 2023,
   `arXiv:2203.16684v1`.
 - **Paper statement (Proposition 3.2, chain clause).**
   `(Q1 ∘ Q2)^Δ = Q1^Δ ∘ Q2^Δ`, where
@@ -42,7 +42,7 @@ portfolio tools (Alloy, F*) have no citing artifacts yet.
   "chain rule" reduced under preconditions to
   `D ∘ f ∘ g = f ∘ D ∘ g`, which is the Theorem-3.3
   commutation `D ∘ f = f ∘ D` for LTI `f`, composed with
-  `g` — a *corollary* of Theorem 3.3, not Proposition 3.2.
+  `g` — a _corollary_ of Theorem 3.3, not Proposition 3.2.
 - **Fix (landed this round).**
   1. Renamed the original theorem `chain_rule` →
      `Dop_LTI_commute`. Kept a `@[deprecated]` alias so

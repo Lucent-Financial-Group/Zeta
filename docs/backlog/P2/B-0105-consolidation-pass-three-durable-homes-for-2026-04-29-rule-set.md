@@ -18,8 +18,8 @@ type: friction-reducer
 
 Amara's round-4 directive (2026-04-29):
 
-> *"No new conceptual substrate until a consolidation pass
-> maps each new rule to a durable home."*
+> _"No new conceptual substrate until a consolidation pass
+> maps each new rule to a durable home."_
 
 The 2026-04-29 session arc produced 7+ promotable rules across
 three families. Without consolidation, they remain fragmented

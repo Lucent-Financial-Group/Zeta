@@ -105,7 +105,7 @@ yield).**
 
 1. **first-PR walk-through** on current `main`. Start from
    the GitHub repo page; time every step to `dotnet build`
-   + first PR opened. Baseline for trend.
+   - first PR opened. Baseline for trend.
 2. **Install-loop felt experience** — paired with Dejan's
    three-way-parity work. Dejan's round-29 CI design has
    the mechanical correctness view; Bodhi needs the felt

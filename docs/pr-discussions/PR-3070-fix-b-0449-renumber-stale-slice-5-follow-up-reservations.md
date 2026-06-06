@@ -29,6 +29,7 @@ Aspirational slot reservations in B-0449 (B-0450/0451/0452) were allocated by th
 Renumbers the slice-5 follow-up reservations in B-0449 from B-0450/0451/0452 (which were claimed by a 2026-05-13 collision-renumber cascade) to the next-available IDs B-0459/0460/0461, with an explanatory note documenting the reservation history.
 
 **Changes:**
+
 - Updates the three follow-up row IDs in the per-topic handler list to B-0459/0460/0461
 - Adds a parenthetical history note explaining the original B-0450/0451/0452 reservations and where those slots were actually allocated
 

@@ -36,12 +36,12 @@ tags:
 
 ## Why (operator 2026-05-31)
 
-> Aaron: *"somewhere in the workitem stuff we need the deferred-to-human label … we
+> Aaron: _"somewhere in the workitem stuff we need the deferred-to-human label … we
 > generically need labels/tags on every zset/gset, and even OTel needs to pass many like
 > DI logging scopes via OTel-like propagation … we should also backlog label/tag design and
 > scopes, cause i'm guessing policies are going to come in here next … tie in decentralized
 > identity eventually where good-actor/bad-actor is defined at the individual node level —
-> the root of zero-trust identity policy."*
+> the root of zero-trust identity policy."_
 
 Every entity in the DB design (the ZetaId-keyed event log → G-Set/Bag/Z-set folds, ADR
 2026-05-31) needs **first-class metadata facets** — and that metadata is the layer
@@ -50,12 +50,12 @@ the metadata layer; it sets up (does not yet build) the policy + identity trajec
 
 ## Labels vs tags (the distinction, with human CS lineage)
 
-| | Tag | Label |
-|---|---|---|
-| Shape | flat **membership** marker (a bare string) | **key→value facet** (a dimension) |
-| Question | "is it tagged X?" | "what's its `state`? `deferred-to-human`" |
-| Algebra | a **G-Set of strings** (add +1; remove → Z-set) | a **Z-set / Map of `(key,value)`** facets |
-| Lineage | **folksonomy** (uncontrolled, user-generated tags) | **faceted classification** — Ranganathan **Colon Classification (1933)** + **PMEST**; mutually-exclusive collectively-exhaustive *facets* (the ancestor of K8s/Prometheus labels) |
+|          | Tag                                                | Label                                                                                                                                                                             |
+| -------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Shape    | flat **membership** marker (a bare string)         | **key→value facet** (a dimension)                                                                                                                                                 |
+| Question | "is it tagged X?"                                  | "what's its `state`? `deferred-to-human`"                                                                                                                                         |
+| Algebra  | a **G-Set of strings** (add +1; remove → Z-set)    | a **Z-set / Map of `(key,value)`** facets                                                                                                                                         |
+| Lineage  | **folksonomy** (uncontrolled, user-generated tags) | **faceted classification** — Ranganathan **Colon Classification (1933)** + **PMEST**; mutually-exclusive collectively-exhaustive _facets_ (the ancestor of K8s/Prometheus labels) |
 
 Usage is inconsistent across systems (Gmail "labels" are tags; Git "tags" are pointers;
 K8s/AWS "labels"/"tags" are key-value) — the load-bearing split is **flat-membership (tag) vs
@@ -72,7 +72,7 @@ at once (West Key-Number controlled taxonomy ≈ faceted labels; Shepard's ≈ c
 
 Labels/tags must **propagate** with the logical operation, not just sit on one entity:
 
-- **OTel Baggage** = key-values propagated *across* boundaries (W3C Baggage header).
+- **OTel Baggage** = key-values propagated _across_ boundaries (W3C Baggage header).
 - **.NET `ILogger.BeginScope`** = AsyncLocal ambient key-values every log line within inherits.
 
 Same shape: a **scope** is an ambient label-context that flows through the fold pipeline, so a
@@ -84,7 +84,7 @@ trajectory, session). This is the **Tempo / trace-context leg** of the git-nativ
 
 `deferred-to-human` is a **state-label** (`state=deferred-to-human`) — the work-item twin of
 the GitHub `deferred-to-human` PR label ([`pr-triage-tiers.md`](../../../.claude/rules/pr-triage-tiers.md) Tier 5). Per the type-vs-state
-model (B-0956): it's a *state* value, not a type. (Operator 2026-05-31 prefers
+model (B-0956): it's a _state_ value, not a type. (Operator 2026-05-31 prefers
 `deferred-to-human` over `waiting-on-human`.)
 
 ## Forward trajectory — what this sets up (operator 2026-05-31; "circling the core")
@@ -122,7 +122,7 @@ identity); decentralized identity makes the actor verifiable + the trust-decisio
 
 ## Composes with
 
-- **B-0668** (compositional-DBSP meta-tagged *dimensions*) — this row is the entity-metadata
+- **B-0668** (compositional-DBSP meta-tagged _dimensions_) — this row is the entity-metadata
   level; B-0668 is the dimensional-frame level; they compose (dims × entity-facets)
 - **B-0956** (work-items) — the first consumer (`deferred-to-human` state-label)
 - the [DB-design ADR](../../DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md) (2026-05-31) + git-native LGTM (#6289) — labels-as-folds + baggage=Tempo

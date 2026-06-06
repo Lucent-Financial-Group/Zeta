@@ -3,11 +3,11 @@
 Two composing pieces give the cluster precise, queryable hardware
 inventory:
 
-| Component | Where it runs | Surface |
-|-----------|---------------|---------|
-| Node Feature Discovery (NFD) | every node, DaemonSet | `kubectl get nodes --show-labels` |
-| `hwloc` / `lstopo` | every node, baked into `common.nix` | XML / SVG diagrams |
-| `capture.ts` | maintainer laptop, on demand | `docs/cluster-hardware/<node>/` |
+| Component                    | Where it runs                       | Surface                           |
+| ---------------------------- | ----------------------------------- | --------------------------------- |
+| Node Feature Discovery (NFD) | every node, DaemonSet               | `kubectl get nodes --show-labels` |
+| `hwloc` / `lstopo`           | every node, baked into `common.nix` | XML / SVG diagrams                |
+| `capture.ts`                 | maintainer laptop, on demand        | `docs/cluster-hardware/<node>/`   |
 
 ## What you get from NFD (zero effort, automatic)
 
@@ -73,7 +73,7 @@ visible in PR review.
 - **Hat system** can constrain hats by hardware: `hat.spec.authority`
   could reference NFD labels via OPA constraints
   (`feature.node.kubernetes.io/pci-10de.present` → "this hat needs a
-   GPU node")
+  GPU node")
 - **Longhorn** already uses our `zeta.io/longhorn-disks=N` label; NFD
   adds the disk-type and capacity dimensions
 - **Disko shape** picks disk by `/dev/disk/by-id`; cluster-inventory
@@ -86,11 +86,11 @@ visible in PR review.
 The maintainer's workstation fleet has Paragon's filesystem
 drivers installed end-to-end:
 
-| Host OS | Paragon driver | Reads + writes |
-|---------|----------------|----------------|
-| macOS | extFS for Mac + NTFS for Mac | ext2/3/4, NTFS |
-| Windows | ExtFS for Windows | ext2/3/4, btrfs (selected) |
-| Linux | (Paragon for Linux + native ntfs3) | NTFS |
+| Host OS | Paragon driver                     | Reads + writes             |
+| ------- | ---------------------------------- | -------------------------- |
+| macOS   | extFS for Mac + NTFS for Mac       | ext2/3/4, NTFS             |
+| Windows | ExtFS for Windows                  | ext2/3/4, btrfs (selected) |
+| Linux   | (Paragon for Linux + native ntfs3) | NTFS                       |
 
 Net effect: any disk pulled from any cluster node mounts read+write
 on any maintainer machine, regardless of which OS the disk came

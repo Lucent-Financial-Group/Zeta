@@ -83,7 +83,7 @@ Use when operator says "drive it" / "you flash" / "do the USB" and they're at th
    '
    ```
 
-3. **What still requires the operator**: Touch ID. The agent's auto-typed `yes <nonce>` is the *consent-token* gate; the *physical-presence* gate is the operator's actual finger on the actual trackpad. The agent cannot bypass that even if it wanted to — the PAM stack reads the Touch ID sensor directly. This is the "I execute, you fingerprint" pattern (B-0743 rule).
+3. **What still requires the operator**: Touch ID. The agent's auto-typed `yes <nonce>` is the _consent-token_ gate; the _physical-presence_ gate is the operator's actual finger on the actual trackpad. The agent cannot bypass that even if it wanted to — the PAM stack reads the Touch ID sensor directly. This is the "I execute, you fingerprint" pattern (B-0743 rule).
 
 ### Future-state: `--bake-cred` flag (NOT YET IMPLEMENTED; tracked at B-0884 + B-0852.3b)
 
@@ -121,17 +121,17 @@ Read this output carefully BEFORE typing back the challenge. If the partition li
 
 Per B-0728 destructive-tool authoring contract:
 
-| Rail | What it catches |
-|---|---|
-| Platform = macOS | Won't run on Linux/Windows (use manual `dd` flow there) |
-| ISO extension + size 100MB–8GB | Catches wrong-file-as-ISO |
-| Bus protocol = USB / USB-C | Won't flash external SSDs or internal disks |
-| `Internal === false` | Won't flash internal storage |
-| Size 1GB–512GB | Won't flash an external 4TB SSD by mistake |
-| Boot-disk identifier check | Won't overwrite the OS disk if user is mid-recovery |
-| Random per-run 4-hex nonce | Agent can't pre-bake the consent token |
+| Rail                                                | What it catches                                           |
+| --------------------------------------------------- | --------------------------------------------------------- |
+| Platform = macOS                                    | Won't run on Linux/Windows (use manual `dd` flow there)   |
+| ISO extension + size 100MB–8GB                      | Catches wrong-file-as-ISO                                 |
+| Bus protocol = USB / USB-C                          | Won't flash external SSDs or internal disks               |
+| `Internal === false`                                | Won't flash internal storage                              |
+| Size 1GB–512GB                                      | Won't flash an external 4TB SSD by mistake                |
+| Boot-disk identifier check                          | Won't overwrite the OS disk if user is mid-recovery       |
+| Random per-run 4-hex nonce                          | Agent can't pre-bake the consent token                    |
 | Strict flag allowlist (`--short`, `-h/--help` only) | Won't silently accept `--dry-run` typo and proceed anyway |
-| Touch ID PAM gate on sudo | Physical-presence proof at flash time |
+| Touch ID PAM gate on sudo                           | Physical-presence proof at flash time                     |
 
 If any rail trips, the tool exits non-zero with a specific message. Do NOT add `--force` flags or sudo-bypass wrappers. If a rail is wrong for a legitimate case, fix the rail logic — don't disable it.
 
@@ -164,9 +164,9 @@ Not in this skill. B-0738 (Linux: `pam_fprintd` / fingerprint readers) + B-0739 
 
 ## Files
 
-| Path | Role |
-|---|---|
-| `full-ai-cluster/tools/zflash.ts` | Operator-facing wrapper; auto-discovers ISO + invokes flash-usb with `--short` |
-| `full-ai-cluster/tools/zflash-setup.ts` | One-time idempotent installer for PAM Touch ID + zsh alias |
-| `full-ai-cluster/tools/flash-usb.ts` | Core flasher with all safety rails, per-run nonce, sudo dd + diskutil orchestration |
-| `full-ai-cluster/tools/README-flash-usb.md` | Long-form documentation |
+| Path                                        | Role                                                                                |
+| ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `full-ai-cluster/tools/zflash.ts`           | Operator-facing wrapper; auto-discovers ISO + invokes flash-usb with `--short`      |
+| `full-ai-cluster/tools/zflash-setup.ts`     | One-time idempotent installer for PAM Touch ID + zsh alias                          |
+| `full-ai-cluster/tools/flash-usb.ts`        | Core flasher with all safety rails, per-run nonce, sudo dd + diskutil orchestration |
+| `full-ai-cluster/tools/README-flash-usb.md` | Long-form documentation                                                             |

@@ -8,7 +8,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: cockroachdb
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -36,10 +36,10 @@ spec:
               enabled: true
               caProvided: false
         prometheus:
-          enabled: true   # for kube-prometheus-stack scrape
+          enabled: true # for kube-prometheus-stack scrape
   destination:
     server: https://kubernetes.default.svc
     namespace: cockroachdb
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

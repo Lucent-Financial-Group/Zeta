@@ -25,7 +25,7 @@ describe("B-0914.1 pure-TS TrueSkill 1v1 substrate", () => {
   it("default params match paper convention (beta=mu/6 tau=mu/300 drawProb=0.10)", () => {
     expect(DEFAULT_PARAMS.beta).toBeCloseTo(25 / 6, 6);
     expect(DEFAULT_PARAMS.tau).toBeCloseTo(25 / 300, 6);
-    expect(DEFAULT_PARAMS.drawProbability).toBe(0.10);
+    expect(DEFAULT_PARAMS.drawProbability).toBe(0.1);
   });
 
   it("conservativeSkill returns mu - 3*sigma", () => {

@@ -6,14 +6,14 @@ This document sets the **floor** — what Zeta commits to shipping
 at v1.0, what explicitly waits for post-v1, and the rule for
 deciding.
 
-Aaron, 2026-04-18: *"we don't need hardware side-channel level
+Aaron, 2026-04-18: _"we don't need hardware side-channel level
 compliance in v1.0 or we will never release. Let's try to target
 realistic security goals for a 0.x release, soon to be 1.0
-release."* Authoritative.
+release."_ Authoritative.
 
 ## Decision rule
 
-A control is **v1.0-required** if *all three* hold:
+A control is **v1.0-required** if _all three_ hold:
 
 1. **Adversary is plausible at the Zeta consumer's threat level.**
    v1.0 consumers are F# / .NET library users embedding DBSP in
@@ -139,7 +139,7 @@ new control obligation, or does it satisfy an existing one?
   this doc already names): update SDL-CHECKLIST.md status cell
   from 🔜 → ✅ and delete the DEBT entry.
 
-No round ever *weakens* a v1.0-required control silently. A
+No round ever _weakens_ a v1.0-required control silently. A
 downgrade is a design-doc event with Aaron sign-off, same
 ceremony as a rule-weakening lint change.
 

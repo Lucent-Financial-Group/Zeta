@@ -5,7 +5,7 @@ description: Round planning — parallel-agent dispatch, synthesis, close-out at
 
 # Round Management — Procedure
 
-This is a **capability skill**. It encodes the *how* of coordinating
+This is a **capability skill**. It encodes the _how_ of coordinating
 a Zeta.Core build/knockdown round: classifying the round, sizing
 the reviewer pass, dispatching parallel agents with self-contained
 prompts, synthesising returns, closing the round honestly. The
@@ -91,9 +91,9 @@ Rules the architect applies when dispatching:
    - Any `cargo build` (Feldera).
    - Any script the human maintainer has flagged as "slow"
      (e.g. `../scratch/scripts/*`).
-   Dispatch prompts for any of the above declare the command up-
-   front; the architect sequences them so at most one is in
-   flight at a time.
+     Dispatch prompts for any of the above declare the command up-
+     front; the architect sequences them so at most one is in
+     flight at a time.
 3. **Network politeness.** Concurrent web searches are fine;
    concurrent large-downloads (Mathlib update, NuGet bulk
    restore) are not — serialise.
@@ -115,8 +115,8 @@ Before round-close can record as clean, every round that
 touched code or behavioural specs dispatches the
 three-slot reviewer pass:
 
-**Slot 1 — design-phase specialists** — run *before or
-during* implementation, not after. Scope-triggered:
+**Slot 1 — design-phase specialists** — run _before or
+during_ implementation, not after. Scope-triggered:
 
 - Public API change → `public-api-designer`.
 - Algebra / operator / chain-rule touch → `algebra-owner`.
@@ -202,10 +202,12 @@ note in the ROUND-HISTORY entry.
 (bug_count + backlog_count = W; ceil(20/W) = Z, clamped [2,16])
 
 **Dispatches (parallel):**
+
 1. <agent/subagent> — <one-line goal>
 2. ...
 
 **Architect direct work:**
+
 - <item>
 - <item>
 ```
@@ -216,17 +218,19 @@ note in the ROUND-HISTORY entry.
 # Round N — close
 
 **Landed (by area):**
+
 - <area 1>: <bullets>
 - <area 2>: <bullets>
 
 **Still queued:**
+
 - <item> — owner, effort
 - <item> — owner, effort
 
 **Factory metric:** tests / agent files added / doc edits /
 new BP rules / research deliverables.
 
-mu-eno.  (transliterated; notebook ASCII-only per BP-09)
+mu-eno. (transliterated; notebook ASCII-only per BP-09)
 ```
 
 ## What this skill does NOT do

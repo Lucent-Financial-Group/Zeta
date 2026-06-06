@@ -2,10 +2,7 @@ import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import { HatLevel, type HatBinding, type OrgEvent } from "../../domain/src/index.ts";
-import {
-  runOrgCycle,
-  type OrgCycleRmoCandidateSource,
-} from "../src/org-runtime.ts";
+import { runOrgCycle, type OrgCycleRmoCandidateSource } from "../src/org-runtime.ts";
 import { createDemoOrgCycleRmoCandidateSource } from "../src/org-runtime-demo.ts";
 import { PipelineStage } from "../src/pipeline.ts";
 
@@ -14,7 +11,8 @@ function harness() {
   const bindings = new Map<string, HatBinding>();
   let n = 0;
   return {
-    events, bindings,
+    events,
+    bindings,
     deps: {
       organizationId: "org-lfg",
       workItemId: "wi-customer-goal-1",

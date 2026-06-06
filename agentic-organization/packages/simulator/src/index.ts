@@ -9,8 +9,7 @@ export const SimulationScenarioKind = {
   ModelDegradation: "model_degradation",
 } as const;
 
-export type SimulationScenarioKind =
-  typeof SimulationScenarioKind[keyof typeof SimulationScenarioKind];
+export type SimulationScenarioKind = (typeof SimulationScenarioKind)[keyof typeof SimulationScenarioKind];
 
 export type SimulationScenario = {
   kind: SimulationScenarioKind;
@@ -243,21 +242,21 @@ export type SimulationRiskThresholds = {
 
 export type SimulationRiskDecision =
   | {
-    status: "accepted";
-    reason: "candidate_beats_baseline";
-    deltas: SimulationMetricDeltas;
-  }
+      status: "accepted";
+      reason: "candidate_beats_baseline";
+      deltas: SimulationMetricDeltas;
+    }
   | {
-    status: "rejected";
-    reason:
-      | "escaped_defect_regression"
-      | "class_b_escaped_defect_regression"
-      | "incident_regression"
-      | "conformance_failure_regression"
-      | "throughput_regression"
-      | "candidate_not_better";
-    deltas: SimulationMetricDeltas;
-  };
+      status: "rejected";
+      reason:
+        | "escaped_defect_regression"
+        | "class_b_escaped_defect_regression"
+        | "incident_regression"
+        | "conformance_failure_regression"
+        | "throughput_regression"
+        | "candidate_not_better";
+      deltas: SimulationMetricDeltas;
+    };
 
 export type SimulationMetricDeltas = {
   throughput: number;
@@ -433,65 +432,77 @@ function rawMetrics(stream: readonly SimulationWorkEvent[]): RawSimulationMetric
 function simulationWorkEventFromOrgEvent(event: OrgEvent): readonly SimulationWorkEvent[] {
   switch (event.kind) {
     case "intake_received":
-      return [{
-        eventId: event.id,
-        kind: "work_intake",
-        occurredAt: event.occurredAt,
-        workItemId: event.subjectId,
-        priority: 50,
-        ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
-      }];
-    case "work_item_transition":
-      if (isCompletedState(event.toState)) {
-        return [{
+      return [
+        {
           eventId: event.id,
-          kind: "work_completed",
+          kind: "work_intake",
           occurredAt: event.occurredAt,
           workItemId: event.subjectId,
-          leadTimeMs: 300_000,
+          priority: 50,
           ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
-        }];
+        },
+      ];
+    case "work_item_transition":
+      if (isCompletedState(event.toState)) {
+        return [
+          {
+            eventId: event.id,
+            kind: "work_completed",
+            occurredAt: event.occurredAt,
+            workItemId: event.subjectId,
+            leadTimeMs: 300_000,
+            ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
+          },
+        ];
       }
       return [];
     case "review_stage_advanced":
-      return [{
-        eventId: event.id,
-        kind: "review_lag",
-        occurredAt: event.occurredAt,
-        workItemId: event.subjectId,
-        lagMs: 60_000,
-        ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
-      }];
+      return [
+        {
+          eventId: event.id,
+          kind: "review_lag",
+          occurredAt: event.occurredAt,
+          workItemId: event.subjectId,
+          lagMs: 60_000,
+          ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
+        },
+      ];
     case "review_finding_raised":
     case "changes_requested":
     case "defect_opened":
     case "regression_detected":
-      return [{
-        eventId: event.id,
-        kind: "escaped_defect",
-        occurredAt: event.occurredAt,
-        workItemId: event.subjectId,
-        severity: "class_b",
-        ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
-      }];
-    case "recovery_incident_detected":
-      return [{
-        eventId: event.id,
-        kind: "incident",
-        occurredAt: event.occurredAt,
-        workItemId: event.subjectId,
-        ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
-      }];
-    case "observe_act_tick":
-      if (event.evidenceRefs.some((ref) => ref.startsWith("observe-act:command:"))) {
-        return [{
+      return [
+        {
           eventId: event.id,
-          kind: "work_completed",
+          kind: "escaped_defect",
           occurredAt: event.occurredAt,
           workItemId: event.subjectId,
-          leadTimeMs: 120_000,
+          severity: "class_b",
           ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
-        }];
+        },
+      ];
+    case "recovery_incident_detected":
+      return [
+        {
+          eventId: event.id,
+          kind: "incident",
+          occurredAt: event.occurredAt,
+          workItemId: event.subjectId,
+          ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
+        },
+      ];
+    case "observe_act_tick":
+      if (event.evidenceRefs.some((ref) => ref.startsWith("observe-act:command:"))) {
+        return [
+          {
+            eventId: event.id,
+            kind: "work_completed",
+            occurredAt: event.occurredAt,
+            workItemId: event.subjectId,
+            leadTimeMs: 120_000,
+            ...(event.actorHatId === undefined ? {} : { hatId: event.actorHatId }),
+          },
+        ];
       }
       return [];
     default:
@@ -502,11 +513,13 @@ function simulationWorkEventFromOrgEvent(event: OrgEvent): readonly SimulationWo
 function isCompletedState(value: string | undefined): boolean {
   if (value === undefined) return false;
   const normalized = value.toLowerCase();
-  return normalized === "done" ||
+  return (
+    normalized === "done" ||
     normalized === "completed" ||
     normalized === "complete" ||
     normalized === "applied" ||
-    normalized === "closed";
+    normalized === "closed"
+  );
 }
 
 function materializeRun(
@@ -517,13 +530,15 @@ function materializeRun(
   const signals = adapterSignals(adapterSnapshot);
   const policyFactors = overlayPolicyFactors(overlay, signals);
   const throughput = scaledCount(
-    raw.leadTimesMs.length + Math.min(signals.readyShards, Math.max(0, Math.round(signals.activeScheduleBlocks * policyFactors.capacity))),
+    raw.leadTimesMs.length +
+      Math.min(signals.readyShards, Math.max(0, Math.round(signals.activeScheduleBlocks * policyFactors.capacity))),
     (overlay.throughputMultiplier ?? 1) * policyFactors.throughput,
   );
   const escapedDefects = scaledCount(raw.escapedDefects, overlay.defectMultiplier);
-  const conformanceFailures = scaledCount(raw.conformanceFailures, overlay.conformanceFailureMultiplier)
-    + (overlay.gateQuorum <= 0 ? 1 : 0)
-    + signals.blockedPromptFlows;
+  const conformanceFailures =
+    scaledCount(raw.conformanceFailures, overlay.conformanceFailureMultiplier) +
+    (overlay.gateQuorum <= 0 ? 1 : 0) +
+    signals.blockedPromptFlows;
   const leadTimeBaseMs = percentile(raw.leadTimesMs, 0.5) + Math.round(signals.claimedShards * 30_000);
   const reviewLagBaseMs = Math.max(percentile(raw.reviewLagsMs, 0.95), signals.reviewLagP95Ms);
 
@@ -539,13 +554,22 @@ function materializeRun(
       throughput,
       completed: raw.leadTimesMs.length,
       leadTimeP50Ms: scaledDuration(leadTimeBaseMs, (overlay.leadTimeMultiplier ?? 1) * policyFactors.leadTime),
-      leadTimeAverageMs: scaledDuration(average(raw.leadTimesMs), (overlay.leadTimeMultiplier ?? 1) * policyFactors.leadTime),
+      leadTimeAverageMs: scaledDuration(
+        average(raw.leadTimesMs),
+        (overlay.leadTimeMultiplier ?? 1) * policyFactors.leadTime,
+      ),
       escapedDefects,
-      classBEscapedDefects: scaledCount(raw.classBEscapedDefects, overlay.classBEscapedDefectMultiplier ?? overlay.defectMultiplier),
+      classBEscapedDefects: scaledCount(
+        raw.classBEscapedDefects,
+        overlay.classBEscapedDefectMultiplier ?? overlay.defectMultiplier,
+      ),
       conformanceFailures,
       cost: throughput * overlay.modelCostPerWorkItem,
       reviewLagP95Ms: scaledDuration(reviewLagBaseMs, (overlay.reviewLagMultiplier ?? 1) * policyFactors.reviewLag),
-      staleClaims: scaledCount(raw.staleClaims + signals.staleScheduleBlocks, (overlay.staleClaimMultiplier ?? 1) * policyFactors.staleClaims),
+      staleClaims: scaledCount(
+        raw.staleClaims + signals.staleScheduleBlocks,
+        (overlay.staleClaimMultiplier ?? 1) * policyFactors.staleClaims,
+      ),
       incidentCount: scaledCount(raw.incidents + signals.incidentPressure, overlay.incidentMultiplier),
     },
   };
@@ -567,11 +591,13 @@ function simulationMetricDeltas(report: SimulationReport): SimulationMetricDelta
 
 function candidateImproves(report: SimulationReport): boolean {
   const deltas = simulationMetricDeltas(report);
-  return deltas.throughput > 0 ||
+  return (
+    deltas.throughput > 0 ||
     deltas.leadTimeP50Ms < 0 ||
     deltas.cost < 0 ||
     deltas.reviewLagP95Ms < 0 ||
-    deltas.staleClaims < 0;
+    deltas.staleClaims < 0
+  );
 }
 
 function scaledCount(value: number, multiplier: number | undefined): number {
@@ -640,8 +666,15 @@ function adapterSignals(snapshot: SimulationAdapterSnapshot): AdapterSignals {
     activeScheduleBlocks: snapshot.schedules.reduce((sum, schedule) => sum + schedule.activeBlocks, 0),
     blockedPromptFlows: snapshot.promptFlowRuns.filter((run) => run.blocked).length,
     runnablePromptFlows: snapshot.promptFlowRuns.filter((run) => !run.blocked).length,
-    reviewLagP95Ms: Math.max(0, ...snapshot.telemetrySummaries.filter((summary) => summary.metricId === "review_lag_p95").map((summary) => summary.value)),
-    incidentPressure: snapshot.telemetrySummaries.filter((summary) => summary.metricId === "incident_count").reduce((sum, summary) => sum + summary.value, 0),
+    reviewLagP95Ms: Math.max(
+      0,
+      ...snapshot.telemetrySummaries
+        .filter((summary) => summary.metricId === "review_lag_p95")
+        .map((summary) => summary.value),
+    ),
+    incidentPressure: snapshot.telemetrySummaries
+      .filter((summary) => summary.metricId === "incident_count")
+      .reduce((sum, summary) => sum + summary.value, 0),
     reputationMean,
     reputationConfidence,
   };
@@ -654,7 +687,8 @@ function overlayPolicyFactors(overlay: SimulationPolicyOverlay, signals: Adapter
   const confidenceDrag = signals.reputationConfidence > 0 && signals.reputationConfidence < 0.5 ? 1.1 : 1;
   return {
     capacity,
-    throughput: (overlay.autonomyLevel === "autonomous" ? 1.1 : 1) +
+    throughput:
+      (overlay.autonomyLevel === "autonomous" ? 1.1 : 1) +
       Math.min(0.5, queuePriorityWeight * 0.1) +
       Math.min(0.2, (overlay.reputationExplorationRate ?? 0) * 0.5),
     leadTime: (scheduleRebalance ? 0.8 : 1) * confidenceDrag,

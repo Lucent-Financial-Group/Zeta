@@ -23,28 +23,26 @@ describe("B-0914.6 proximity-dedup substrate", () => {
   it("clusterByCanonical groups items with same canonical form", () => {
     const corpus: Hypothesis[] = [
       { mechanism: "ER-stress", drugCandidate: "cur-6", evidence: 0.8 },
-      { mechanism: "ER-Stress", drugCandidate: "Cur-6", evidence: 0.7 },  // case-only diff
+      { mechanism: "ER-Stress", drugCandidate: "Cur-6", evidence: 0.7 }, // case-only diff
       { mechanism: "kinase", drugCandidate: "drug-x", evidence: 0.6 },
     ];
-    const result = clusterByCanonical(corpus, (h) =>
-      `${h.mechanism.toLowerCase()}|${h.drugCandidate.toLowerCase()}`,
-    );
+    const result = clusterByCanonical(corpus, (h) => `${h.mechanism.toLowerCase()}|${h.drugCandidate.toLowerCase()}`);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.uniqueCount).toBe(2);
-    expect(result.clusters[0]!.members.length).toBe(2);  // ER-stress + ER-Stress
-    expect(result.clusters[1]!.members.length).toBe(1);  // kinase
+    expect(result.clusters[0]!.members.length).toBe(2); // ER-stress + ER-Stress
+    expect(result.clusters[1]!.members.length).toBe(1); // kinase
   });
 
   it("clusterByCanonical: first-seen is representative", () => {
     const corpus: Hypothesis[] = [
-      { mechanism: "x", drugCandidate: "a", evidence: 0.5 },  // first
-      { mechanism: "x", drugCandidate: "a", evidence: 0.9 },  // duplicate
+      { mechanism: "x", drugCandidate: "a", evidence: 0.5 }, // first
+      { mechanism: "x", drugCandidate: "a", evidence: 0.9 }, // duplicate
     ];
     const result = clusterByCanonical(corpus, (h) => `${h.mechanism}|${h.drugCandidate}`);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.clusters[0]!.representative.evidence).toBe(0.5);  // first-seen
+    expect(result.clusters[0]!.representative.evidence).toBe(0.5); // first-seen
   });
 
   it("clusterByCanonical empty corpus → EmptyCorpus", () => {
@@ -103,20 +101,20 @@ describe("B-0914.6 proximity-dedup substrate", () => {
     const tokens = defaultTokenize("The quick BROWN fox jumps over the lazy dog");
     expect(tokens.has("quick")).toBe(true);
     expect(tokens.has("brown")).toBe(true);
-    expect(tokens.has("the")).toBe(false);  // stop word
+    expect(tokens.has("the")).toBe(false); // stop word
     expect(tokens.has("over")).toBe(true);
   });
 
   it("clusterBySimilarity: threshold catches near-duplicates", () => {
     const corpus = [
       "ER-stress inhibition via cur-6 targeting unfolded protein response",
-      "ER-stress inhibition via cur-6 mechanism",  // shares 'ER-stress', 'inhibition', 'via', 'cur-6'
+      "ER-stress inhibition via cur-6 mechanism", // shares 'ER-stress', 'inhibition', 'via', 'cur-6'
       "kinase inhibition via drug-x targeting cellular signaling",
     ];
     const result = clusterBySimilarity({
       corpus,
       extractTokens: defaultTokenize,
-      threshold: 0.4,  // moderate threshold
+      threshold: 0.4, // moderate threshold
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -129,7 +127,7 @@ describe("B-0914.6 proximity-dedup substrate", () => {
     const result = clusterBySimilarity({
       corpus,
       extractTokens: defaultTokenize,
-      threshold: 1.0,  // unanimous-only
+      threshold: 1.0, // unanimous-only
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;

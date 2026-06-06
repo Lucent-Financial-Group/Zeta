@@ -29,8 +29,8 @@ himself. Every line in `src/**`, `tools/**`, `docs/**`,
 `.claude/**` (skills, agents, commands, rules) is
 agent-authored. The maintainer commits the agent-produced
 substrate; he does not author it. Per the maintainer
-2026-05-03 chat extension: *"i didn't write any code all is
-written by you"* — confirming `.claude/skills/` content sits
+2026-05-03 chat extension: _"i didn't write any code all is
+written by you"_ — confirming `.claude/skills/` content sits
 under the same vibe-coded scope as the originally-named
 `src/**`/`tools/**`/`docs/**` roots. The project's explicit
 research hypothesis:
@@ -46,7 +46,7 @@ This matters to agents for three operational reasons:
    agent-authored code looks wrong, don't assume an earlier
    human writer had a hidden reason. Investigate.
 2. **Every reviewer role is load-bearing.** The verification
-   layer *is* the quality backstop. A gate that fires rarely
+   layer _is_ the quality backstop. A gate that fires rarely
    may still be catching the one thing no other gate would
    catch. See `docs/VISION.md` §"The vibe-coded hypothesis".
 3. **Research-paper validation is not optional.** Because no
@@ -85,7 +85,7 @@ Maintainer directive, 2026-04-22:
 ## The three load-bearing values
 
 > **Prior art (radical honesty / total observability / no hidden reasoning):**
-> Dalio (2017) *Principles: Life and Work* (Simon & Schuster) — organisational
+> Dalio (2017) _Principles: Life and Work_ (Simon & Schuster) — organisational
 > "radical transparency": all decisions visible to all parties; no hidden moves;
 > findings surface accurately, not diplomatically softened. Grounds "truth over
 > politeness" at the code-review layer. Also: Brundage et al. (2020) "Toward
@@ -112,11 +112,11 @@ in `docs/CONFLICT-RESOLUTION.md`.
 
 ## The alignment contract
 
-Zeta's *primary research focus* is measurable AI
+Zeta's _primary research focus_ is measurable AI
 alignment. The factory + memory folder + git history
 together form the experimental substrate; the loop
 between the human maintainer and the agents working
-on this repository *is* the experiment. The
+on this repository _is_ the experiment. The
 alignment contract that governs that loop lives in
 [`docs/ALIGNMENT.md`](docs/ALIGNMENT.md). Every
 harness is expected to read it at session / round
@@ -183,7 +183,7 @@ These apply to any AI harness.
   / TigerBeetle grid blocks / SlateDB's writer-epoch
   CAS — **latest and best**, not donated-legacy.
 - **All user-visible errors are `Result<_,
-  DbspError>` or `AppendResult`-style**, not
+DbspError>` or `AppendResult`-style**, not
   exceptions. This is a hard rule — exceptions
   break the referentially-transparent reasoning the
   whole algebra depends on.
@@ -333,7 +333,7 @@ These apply to any AI harness.
   provenance; the promotion is the ratification.
 - **Substrate or it didn't happen — no invisible
   directives (Otto-363).** Before declaring work
-  *"done,"* identify its durability surface. Chat,
+  _"done,"_ identify its durability surface. Chat,
   TaskUpdate, `/tmp`, `/var/tmp`, and loop todos are
   NOT durable project substrate. If a directive /
   decision / packet matters after compaction, it
@@ -344,28 +344,28 @@ These apply to any AI harness.
   ephemeral (chat, TaskUpdate, temp dirs — weather)
   / local-parked (named stash, local WIP) /
   remote-parked (pushed WIP branch like
-  `wip/<topic>-<date>`, draft PR — *"if it matters
-  enough to come back to, it deserves a git ref"*) /
+  `wip/<topic>-<date>`, draft PR — _"if it matters
+  enough to come back to, it deserves a git ref"_) /
   host-durable-not-git-canonical (GitHub Issues, PR
   comments) / git-native-preserved (committed +
   reachable-from-long-lived-ref + indexed repo
   files). Vocabulary discipline (6 mutually-
-  exclusive classes): *captured* (TaskUpdate / chat
-  — ephemeral) ≠ *parked* (pushed WIP branch like
+  exclusive classes): _captured_ (TaskUpdate / chat
+  — ephemeral) ≠ _parked_ (pushed WIP branch like
   `wip/<topic>-<date>`, optionally with draft PR —
-  git-ref-backed) ≠ *host-durable-not-git-canonical*
+  git-ref-backed) ≠ _host-durable-not-git-canonical_
   (GitHub Issues, PR comments — durable on host but
-  not in git-canonical form) ≠ *preserved* (git-
+  not in git-canonical form) ≠ _preserved_ (git-
   native repo, committed + reachable-from-long-lived-
-  ref + indexed) ≠ *canonical* (accepted spec) ≠
-  *operational* (enforced by tooling). When
+  ref + indexed) ≠ _canonical_ (accepted spec) ≠
+  _operational_ (enforced by tooling). When
   uncertain about preservation route, default to
   `docs/research/` first; promotion to
   memory/canonical is cheaper than demotion. Cross-
   harness rule: applies to all harnesses, not just
-  Claude Code. Carved blade: *"A directive that
+  Claude Code. Carved blade: _"A directive that
   lives only in a conversation is not a directive.
-  It is weather. Substrate or it didn't happen."*
+  It is weather. Substrate or it didn't happen."_
   Full reasoning:
   `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`.
 - **Dependency-status surface — `docs/dependency-status.md`.**
@@ -375,8 +375,8 @@ These apply to any AI harness.
   answers three cold-start questions in under 30
   seconds (watched dependencies; current state via
   programmatic poll snippet; known concern classes).
-  Composes with the *BLOCKED-with-green-CI means
-  investigate review threads first* discipline — that
+  Composes with the _BLOCKED-with-green-CI means
+  investigate review threads first_ discipline — that
   rule presupposes the API is reporting truth; this
   surface verifies the precondition. Consult before
   arming auto-merge or classifying a "wait" — degraded
@@ -398,7 +398,7 @@ dotnet build -c Release
 
 Must end with `0 Warning(s)` and `0 Error(s)`.
 `TreatWarningsAsErrors` is on in
-`Directory.Build.props` — a warning *is* a build
+`Directory.Build.props` — a warning _is_ a build
 break.
 
 **Full test suite:**
@@ -465,7 +465,7 @@ Detail lives in:
   goes into a feature branch, not `main`.
 - PRs summarise **what changed + why** in the
   description. "Why" beats "what" because `git
-  diff` already carries the "what".
+diff` already carries the "what".
 
 ### Commit attribution — harness-specific trailers
 
@@ -480,14 +480,14 @@ impossible.
 
 **Required trailers by harness:**
 
-| Harness | Trailer |
-|---------|---------|
+| Harness                                  | Trailer                                          |
+| ---------------------------------------- | ------------------------------------------------ |
 | Claude Code — Otto (Claude Opus 4.7 max) | `Co-Authored-By: Claude <noreply@anthropic.com>` |
-| OpenAI Codex — Vera (GPT 5.5 max) | `Co-Authored-By: Codex <noreply@openai.com>` |
-| Cursor — Riven (Grok 4.3 max) | `Co-Authored-By: Grok <noreply@x.ai>` |
-| Gemini CLI | `Co-Authored-By: Gemini <noreply@google.com>` |
-| Kiro — Alexa (Qwen Coder max) | `Co-Authored-By: Kiro <noreply@kiro.dev>` |
-| Human contributor | git author is sufficient |
+| OpenAI Codex — Vera (GPT 5.5 max)        | `Co-Authored-By: Codex <noreply@openai.com>`     |
+| Cursor — Riven (Grok 4.3 max)            | `Co-Authored-By: Grok <noreply@x.ai>`            |
+| Gemini CLI                               | `Co-Authored-By: Gemini <noreply@google.com>`    |
+| Kiro — Alexa (Qwen Coder max)            | `Co-Authored-By: Kiro <noreply@kiro.dev>`        |
+| Human contributor                        | git author is sufficient                         |
 
 The model version may be appended for precision
 (e.g. `Claude Opus 4.6 (1M context)`) but the

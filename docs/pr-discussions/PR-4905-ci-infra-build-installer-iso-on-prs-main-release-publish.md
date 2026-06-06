@@ -28,15 +28,15 @@ Anyone reviewing a flake-touching PR can now grab the rebuilt ISO from the workf
 
 ## Pipeline
 
-| Step | What |
-|---|---|
-| Checkout | Full history (reproducible flake.lock pinning) |
-| Install Nix | \`DeterminateSystems/nix-installer-action@v22\` |
-| Cache | \`magic-nix-cache-action@v13\` for /nix/store reuse |
-| Eval check | \`nix flake check --no-build\` fail-fast |
-| Build | \`nix build .#installer-iso --print-build-logs\` |
-| Metadata | path/name/size/sha256 → step summary |
-| Upload | Workflow artifact, 90d retention, no re-compression |
+| Step        | What                                                |
+| ----------- | --------------------------------------------------- |
+| Checkout    | Full history (reproducible flake.lock pinning)      |
+| Install Nix | \`DeterminateSystems/nix-installer-action@v22\`     |
+| Cache       | \`magic-nix-cache-action@v13\` for /nix/store reuse |
+| Eval check  | \`nix flake check --no-build\` fail-fast            |
+| Build       | \`nix build .#installer-iso --print-build-logs\`    |
+| Metadata    | path/name/size/sha256 → step summary                |
+| Upload      | Workflow artifact, 90d retention, no re-compression |
 
 A second job (\`attach-to-release\`) fires only on release-publish events: rebuilds the ISO at the tag and uploads it + its SHA256 to the release assets.
 
@@ -71,6 +71,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Adds a dedicated GitHub Actions workflow to build the Nix flake `.#installer-iso` output on Ubuntu CI for PRs/pushes, with an additional release-only path intended to attach the built ISO to GitHub Releases.
 
 **Changes:**
+
 - Introduces `.github/workflows/build-installer-iso.yml` to build the installer ISO on PRs (path-filtered), pushes to `main`, manual dispatch, and release publish.
 - Uploads the ISO as a workflow artifact for PR/main runs.
 - Adds a release-only job intended to rebuild and upload the ISO + SHA256 as release assets.
@@ -83,24 +84,22 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T03:47:00Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `920b691fb8`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -166,7 +165,7 @@ Header comment says the workflow runs “on tag push” to attach the ISO to a r
 
 **@chatgpt-codex-connector** (2026-05-25T03:47:00Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove skipped dependency from release upload job**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove skipped dependency from release upload job**
 
 On `release` events, `build` is explicitly skipped (`if: github.event_name != 'release'`), but `attach-to-release` still declares `needs: build`. In GitHub Actions, a job whose dependency is skipped is skipped as well unless you override with an `always()`-style condition, so the release-upload path never runs and no ISO/SHA assets are attached to published releases.
 

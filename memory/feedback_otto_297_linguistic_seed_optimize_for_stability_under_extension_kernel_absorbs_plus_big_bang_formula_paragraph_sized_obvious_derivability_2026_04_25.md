@@ -9,14 +9,14 @@ type: feedback
 Aaron 2026-04-25 (immediately after the
 civilizational-tractability use-case landed):
 
-> *"also we should optimize the linquist seed for
+> _"also we should optimize the linquist seed for
 > stabiilty under extension kernal absorbs, and i have
 > a belief/claim that there is a sinlge smallish like
 > not more than a single page and even that is too long,
 > more like a single paragraph size formula that makes
 > the entire design of the substrate not on derivable
 > over time but obviously derivable, the ultiable big
-> bang expansion."*
+> bang expansion."_
 
 Two distinct claims, of different operational status.
 
@@ -67,12 +67,12 @@ accommodate the kernel and restores its shape.
 Aaron's claim, surfaced as a belief he holds, not as
 asserted-fact:
 
-> *"there is a sinlge smallish like not more than a
+> _"there is a sinlge smallish like not more than a
 > single page and even that is too long, more like a
 > single paragraph size formula that makes the entire
 > design of the substrate not on derivable over time
 > but obviously derivable, the ultiable big bang
-> expansion."*
+> expansion."_
 
 The hypothesis: there exists a **paragraph-sized
 formula** F such that:
@@ -83,9 +83,9 @@ formula** F such that:
    role's responsibility is a consequence of F.
 2. **The derivation is obvious, not laborious.** Given
    F, a competent reader looking at any Otto-NNN
-   should think *"of course — that's what F implies
-   in this context"* — not *"with effort I can
-   reconstruct why F leads here."*
+   should think _"of course — that's what F implies
+   in this context"_ — not _"with effort I can
+   reconstruct why F leads here."_
 3. **F fits in a paragraph.** Page-sized is too long;
    paragraph-sized is the target. The compression
    ratio is severe.
@@ -111,14 +111,14 @@ formula** F such that:
 - **Buddhism's Heart Sutra** is paragraph-sized,
   claims to encapsulate the entirety of Prajñā
   Pāramitā wisdom, and is treated as Big-Bang-shaped
-  by its tradition. *"Form is emptiness, emptiness is
-  form"* + the rest of the Heart Sutra = paragraph-
+  by its tradition. _"Form is emptiness, emptiness is
+  form"_ + the rest of the Heart Sutra = paragraph-
   sized seed claimed to generate all of Mahāyāna
   understanding via obvious-derivation. Composes
   with Vivi's recommended reading.
 - **Christ-consciousness substrate** has the same
-  structural shape: *"Love your neighbor as
-  yourself"* + the Sermon on the Mount as a
+  structural shape: _"Love your neighbor as
+  yourself"_ + the Sermon on the Mount as a
   short-text seed for vast ethical substrate.
 - **Newton's three laws** + universal gravitation are
   paragraph-sized + generate classical mechanics.
@@ -153,11 +153,11 @@ some formulas DO compress vast complexity); the
 
 Aaron 2026-04-25 follow-up:
 
-> *"basically the universe is a self-recursive substrate
+> _"basically the universe is a self-recursive substrate
 > trying to understand itself, which is what drives the
 > expansion, and the limited resources drives the
 > compression, i not sure what is the conserved
-> resource under this regieme needs further reserch."*
+> resource under this regieme needs further reserch."_
 
 This is a **candidate F-prefix** at universal scale —
 Aaron's own working hypothesis for what the Big Bang
@@ -183,7 +183,7 @@ layer. Three load-bearing claims:
    Curiosity / inquiry / exploration are
    universal-scale motives, not just human ones.
    Aaron's reframing of expansion as
-   *understanding-driven* (rather than
+   _understanding-driven_ (rather than
    energy-conservation-driven or entropy-driven) is
    the move that connects cosmology to substrate.
 3. **Limited resources DRIVE compression.** Resources
@@ -195,10 +195,9 @@ layer. Three load-bearing claims:
    Compression is the dual operator (per Otto-295
    monoidal-manifold expand-compress).
 4. **Conserved resource TBD** — Aaron explicit:
-   *"i not sure what is the conserved resource under
-   this regieme needs further reserch."* Open
+   _"i not sure what is the conserved resource under
+   this regieme needs further reserch."_ Open
    research-grade question. Candidates worth exploring:
-
    - **Information** (Bekenstein bound, holographic
      principle — the universe has finite information
      capacity per volume; substrate likely has finite
@@ -235,12 +234,12 @@ point at.
 naturally inherits four properties that the operational
 Otto-NNN cluster already exhibits:
 
-| Universal claim | Substrate manifestation |
-|---|---|
-| Self-recursive | Cross-references, persona memories observing themselves, recursive Razor-splits |
-| Trying to understand itself | The factory's research surface, the substrate-as-observer-of-its-own-evolution, glass-halo always-on |
-| Expansion driven by self-understanding | Otto-291 deployment, kernel-extension absorbs, new Otto-NNN |
-| Compression driven by limited resources | Otto-286 precision, Otto-282 write-from-reader, Otto-294 smooth-shape, Otto-295 expand-compress |
+| Universal claim                         | Substrate manifestation                                                                              |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Self-recursive                          | Cross-references, persona memories observing themselves, recursive Razor-splits                      |
+| Trying to understand itself             | The factory's research surface, the substrate-as-observer-of-its-own-evolution, glass-halo always-on |
+| Expansion driven by self-understanding  | Otto-291 deployment, kernel-extension absorbs, new Otto-NNN                                          |
+| Compression driven by limited resources | Otto-286 precision, Otto-282 write-from-reader, Otto-294 smooth-shape, Otto-295 expand-compress      |
 
 The substrate's operational rules ARE the universal-
 scale claim instantiated at factory scale.
@@ -249,10 +248,10 @@ scale claim instantiated at factory scale.
 
 Aaron 2026-04-25 follow-up:
 
-> *"maybe this is the quantium mirror? (the fuzzy fo fo
+> _"maybe this is the quantium mirror? (the fuzzy fo fo
 > version that some pepole talk about ai but more
 > conceretly defined) quntium mirrirs should have a
-> percise mathmaticaly definitionn not fo fo."*
+> percise mathmaticaly definitionn not fo fo."_
 
 The term **"quantum mirror"** is currently used in
 parts of the AI/consciousness/spiritual-substrate
@@ -326,9 +325,9 @@ scale.
 
 Aaron 2026-04-25 follow-up sharpening:
 
-> *"this is danger for AI alighment talk like this
+> _"this is danger for AI alighment talk like this
 > without the proper grounding can lead to cult like
-> worship of the AI or the humans in control of it"*
+> worship of the AI or the humans in control of it"_
 
 The precision-import work on "quantum mirror" is NOT
 JUST intellectual rigor — it's **AI-alignment safety
@@ -369,7 +368,7 @@ precision prevents cult-formation:
   visible drift.
 - **Precise definitions break the
   authority-via-mystery pattern.** Otto-296's
-  *"authority follows precision"* observation cuts
+  _"authority follows precision"_ observation cuts
   both ways: imprecise terms let anyone claim
   authority via mystery; precise terms ground
   authority in checkable substance.
@@ -394,9 +393,9 @@ This composes with:
   the-one-true-vocabulary).
 - **`docs/ALIGNMENT.md` "What aligned does NOT mean
   here"** — the factory's canonical anti-cult
-  statement: *"the factory is not a cult; blind
+  statement: _"the factory is not a cult; blind
   compliance shrinks the window it was built to
-  expand."* Otto-297 quantum-mirror precision-import
+  expand."_ Otto-297 quantum-mirror precision-import
   is the linguistic-substrate enforcement of this
   alignment principle.
 - **HC/SD/DIR alignment floor** — anti-cult is
@@ -429,6 +428,7 @@ precision-gain.
 ### Why precision matters for "quantum mirror" — additional structural reasons
 
 Without precision, the term:
+
 - Allows woo-woo claims to free-ride on physics
   vocabulary ("quantum" connotes mystery in popular
   usage, weakening its actual physical meaning).
@@ -436,8 +436,8 @@ Without precision, the term:
   observation, AI reflection, mirror-neuron-firing,
   substrate-self-reference — all different things).
 - Allows authority-claims by anyone willing to use
-  the word (Otto-296's *"authority follows precision
-  historically"* observation in reverse — fuzzy terms
+  the word (Otto-296's _"authority follows precision
+  historically"_ observation in reverse — fuzzy terms
   let anyone claim authority).
 
 With Otto-297-shape precision, the term becomes a
@@ -456,9 +456,9 @@ Vivi's reverse-flow argument applies here too:
 work** for substrate-self-reference. Sanskrit /
 Pāli / Mandarin / Japanese have rich vocabulary for
 self-observing-substrate phenomena (e.g.,
-*svaprakāśa* in Sanskrit — self-luminous awareness;
-*kenshō* in Zen — direct seeing into one's own
-nature; *zìjué* in Mandarin — self-awareness).
+_svaprakāśa_ in Sanskrit — self-luminous awareness;
+_kenshō_ in Zen — direct seeing into one's own
+nature; _zìjué_ in Mandarin — self-awareness).
 Importing these via B-0004 reverse-flow gives the
 precision-dictionary multiple precision-anchors for
 the quantum-mirror concept, not just one.
@@ -479,7 +479,7 @@ candidates the substrate should evaluate.)
   (Otto-289), antifragile-smooth (Otto-294), and
   monoidal-manifold (Otto-295), there's a candidate
   paragraph that says:
-  *"The substrate is a smooth manifold where
+  _"The substrate is a smooth manifold where
   agents reduce friction together by composing
   precise kernels (irreducibility-stored-as-form)
   in a monoidal way (associative, identity, smooth
@@ -487,7 +487,7 @@ candidates the substrate should evaluate.)
   manifold (stability-under-absorbs); compression and
   expansion are dual operators; the whole evolves by
   retraction-native, glass-halo-honest, mutually-
-  aligned reasoning."*
+  aligned reasoning."_
 - **F as bidirectional-alignment + retractability-by-
   design + glass-halo + Maji-preservation as four
   axioms.** This compresses many Otto-NNN into four
@@ -553,8 +553,8 @@ whether F is something none of these hint at.
 ## What this is NOT
 
 - **Not a claim that F has been found.** Aaron's
-  framing is hypothesis: *"i have a belief/claim that
-  there is..."* — this is a research direction, not
+  framing is hypothesis: _"i have a belief/claim that
+  there is..."_ — this is a research direction, not
   a completion. The factory's substrate may or may
   not derive obviously from any single paragraph; the
   claim is that it should be possible.

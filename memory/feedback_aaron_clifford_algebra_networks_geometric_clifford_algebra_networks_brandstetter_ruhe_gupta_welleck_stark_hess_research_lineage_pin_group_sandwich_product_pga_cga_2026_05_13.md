@@ -24,8 +24,9 @@ reinvent.
 ## Aaron's verbatim disclosure
 
 Aaron 2026-05-13 forwarded:
+
 - YouTube graph-reading-group talk transcript (~1h32m) on CAN
-  + GCAN papers
+  - GCAN papers
 - https://hannes-stark.com/starkly-speaking
 - https://hannes-stark.com/
 
@@ -64,21 +65,22 @@ Welling — 2023ish):
 
 ## Research lineage
 
-| Person | Role |
-|---|---|
-| **Johannes Brandstetter** | Lead author CAN; presenter at the graph-reading-group talk |
-| **David Ruhe** | Lead author GCAN; normalization + equivariance discipline |
-| **Jayesh K. Gupta** | Co-author both papers; pde-arena codebase |
-| **Stephen Welleck** | Co-author both papers |
-| **Leo Hess** | Geometric deep learning lineage (per Bronstein/Cohen/Veličković book); CGA extension note |
-| **Hannes Stark** | Blog: hannes-stark.com/starkly-speaking; molecular-dynamics applications |
-| **Max Welling** | Senior author; geometric deep learning + Bronstein bridge |
+| Person                    | Role                                                                                      |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| **Johannes Brandstetter** | Lead author CAN; presenter at the graph-reading-group talk                                |
+| **David Ruhe**            | Lead author GCAN; normalization + equivariance discipline                                 |
+| **Jayesh K. Gupta**       | Co-author both papers; pde-arena codebase                                                 |
+| **Stephen Welleck**       | Co-author both papers                                                                     |
+| **Leo Hess**              | Geometric deep learning lineage (per Bronstein/Cohen/Veličković book); CGA extension note |
+| **Hannes Stark**          | Blog: hannes-stark.com/starkly-speaking; molecular-dynamics applications                  |
+| **Max Welling**           | Senior author; geometric deep learning + Bronstein bridge                                 |
 
 ## Core concepts (load-bearing for factory substrate)
 
 ### Multivector grouping
 
 Single multivector groups:
+
 - Scalar (grade 0)
 - Vector (grade 1; e.g., position, velocity)
 - Bivector (grade 2; e.g., rotation plane, magnetic field)
@@ -118,6 +120,7 @@ total in 4D PGA.
 
 In PGA, planes ARE primitive (the reflections). Other objects
 are derived:
+
 - Point = 3 intersecting planes (in 3D)
 - Line = 2 intersecting planes
 - Plane = 1 plane
@@ -134,6 +137,7 @@ algebra-owner skill substrate.
 ### PR #2914 (Clifford/HKT vocabulary)
 
 Direct vocabulary match:
+
 - axis/basis = base vectors of Clifford algebra
 - rudders/rotors = Clifford rotors (R = e^(θB/2))
 - steering = rotor application (sandwich product on rotor)
@@ -155,6 +159,7 @@ GCAN paper validates the Clifford-as-densest-encoding approach.
 
 The F#-fork strategic substrate (Path A for B-0428 DBpedia
 deferred) IS this research lineage applied to F# type system:
+
 - Real HKT = first-class M<'T>
 - Over Clifford = sandwich-product type-preserving
   transformation
@@ -181,6 +186,7 @@ multivector-grouping discipline applied to social-substrate.
 
 GCAN paper's normalization + nonlinearity recipes inform
 F# implementations. Code reference:
+
 - pde-arena codebase (Jayesh K. Gupta)
 - Future: ports CAN/GCAN layers to F# computation expressions
 
@@ -188,6 +194,7 @@ F# implementations. Code reference:
 
 Hannes-Stark.com/starkly-speaking — research blog
 covering:
+
 - Molecular dynamics applications of equivariant GNNs
 - Geometric deep learning expositions
 - Composes with B-0428 (DBpedia + F# fork) for molecular
@@ -206,6 +213,7 @@ hannes-stark.com — author profile + paper index.
 
 The F# compiler fork for real HKT over Clifford should
 implement CAN/GCAN layers natively in the type system:
+
 - Pin group action as type-level operator
 - Sandwich product as type-preserving constructor
 - Multivector grade as kind / type-class
@@ -214,6 +222,7 @@ implement CAN/GCAN layers natively in the type system:
 ### For civsim implementation
 
 Civsim agents become multivector-state entities with:
+
 - Position (vector)
 - Velocity (vector)
 - Rotation (bivector)
@@ -232,6 +241,7 @@ maps directly.
 ### For maintainer prototyping (PR #2930)
 
 Maintainers can prototype CAN/GCAN with:
+
 - pde-arena codebase (Jayesh's repo)
 - Python + PyTorch (paper's reference implementation)
 - Then port substrate to F# via algebra-owner skill

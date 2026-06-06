@@ -19,7 +19,7 @@ type: feature
 
 Aaron 2026-05-16, immediately after creating a "light default" enterprise-level ruleset at <https://github.com/enterprises/lucent-financial-group/settings/policies/code/16490134>:
 
-> *"we should backlog enterpirse ruleselt managment now we had started decomposing those too for our repo split later, they were smell we have backlog around this. but now enterpirse too not just individiual and team github mapping"*
+> _"we should backlog enterpirse ruleselt managment now we had started decomposing those too for our repo split later, they were smell we have backlog around this. but now enterpirse too not just individiual and team github mapping"_
 
 Two reframings here:
 
@@ -71,13 +71,13 @@ A tracked work-stream for managing GitHub rulesets coherently across the three l
 
 ## Decomposition into implementation slices
 
-| Slice | Description | Effort | Status |
-|-------|-------------|--------|--------|
-| 1 | `tools/github/list-rulesets.ts` — REST enumeration at all 3 layers | S | open |
-| 2 | Manual audit: what's in `16490134`? + any LFG org rulesets? + Zeta repo rulesets? | S | open |
-| 3 | `tools/github/audit-ruleset-divergence.ts` — diff layers, flag conflicts | M | open |
-| 4 | `docs/governance/RULESETS.md` — authoritative policy doc | S | open |
-| 5 | Optional: `tools/github/apply-rulesets.ts` — policy-as-code apply | L | open (deferred) |
+| Slice | Description                                                                       | Effort | Status          |
+| ----- | --------------------------------------------------------------------------------- | ------ | --------------- |
+| 1     | `tools/github/list-rulesets.ts` — REST enumeration at all 3 layers                | S      | open            |
+| 2     | Manual audit: what's in `16490134`? + any LFG org rulesets? + Zeta repo rulesets? | S      | open            |
+| 3     | `tools/github/audit-ruleset-divergence.ts` — diff layers, flag conflicts          | M      | open            |
+| 4     | `docs/governance/RULESETS.md` — authoritative policy doc                          | S      | open            |
+| 5     | Optional: `tools/github/apply-rulesets.ts` — policy-as-code apply                 | L      | open (deferred) |
 
 ## Open questions
 
@@ -148,11 +148,11 @@ Slices 1+2 implementation is now well-understood (one `gh api` call each); codin
 
 ### Updated answers to Open questions
 
-| Open Q | Answer (2026-05-16 first-discovery) |
-|---|---|
-| 1. What's in `16490134`? | See JSON above — 3 rules: deletion, non_fast_forward, copilot_code_review |
-| 2. Other enterprise rulesets? | NO — `16490134` is the only one currently |
-| 3. LFG org-level rulesets? | (Still open — needs separate `gh api orgs/Lucent-Financial-Group/rulesets` call) |
-| 4. AceHack rulesets | Out of scope; documented in `mirror-sync` skill |
-| 5. Authority gradient for `non_fast_forward` | EMPIRICALLY at enterprise tier (`16490134`). Cascades to all member orgs/repos. |
-| 6. Policy-as-code adoption | Still deferred to Slice 5; UI-clickthrough is the current surface for enterprise rulesets (read API works; write API surface for some operations may still need investigation) |
+| Open Q                                       | Answer (2026-05-16 first-discovery)                                                                                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. What's in `16490134`?                     | See JSON above — 3 rules: deletion, non_fast_forward, copilot_code_review                                                                                                      |
+| 2. Other enterprise rulesets?                | NO — `16490134` is the only one currently                                                                                                                                      |
+| 3. LFG org-level rulesets?                   | (Still open — needs separate `gh api orgs/Lucent-Financial-Group/rulesets` call)                                                                                               |
+| 4. AceHack rulesets                          | Out of scope; documented in `mirror-sync` skill                                                                                                                                |
+| 5. Authority gradient for `non_fast_forward` | EMPIRICALLY at enterprise tier (`16490134`). Cascades to all member orgs/repos.                                                                                                |
+| 6. Policy-as-code adoption                   | Still deferred to Slice 5; UI-clickthrough is the current surface for enterprise rulesets (read API works; write API surface for some operations may still need investigation) |

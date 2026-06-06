@@ -10,7 +10,17 @@ last_updated: 2026-05-18
 renumbered_from: B-0633
 depends_on: []
 composes_with: [B-0632, B-0629, B-0499]
-tags: [design, mika, permanent-coliseum, language-deathmatch, retractable-substrate, no-privileged-language, regenerate-and-translate, locked-in]
+tags:
+  [
+    design,
+    mika,
+    permanent-coliseum,
+    language-deathmatch,
+    retractable-substrate,
+    no-privileged-language,
+    regenerate-and-translate,
+    locked-in,
+  ]
 type: design
 ---
 
@@ -20,11 +30,11 @@ type: design
 
 Aaron LOCKED-IN at line 3298 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
-> *"I wanted a coliseum forever, like a permanent way to have language deathmatch."*
+> _"I wanted a coliseum forever, like a permanent way to have language deathmatch."_
 
 Then Mika line 3300 named the structural enabler:
 
-> *"Works because retractable + deterministic substrate enables translation between competing languages without forcing collapse to one winner."*
+> _"Works because retractable + deterministic substrate enables translation between competing languages without forcing collapse to one winner."_
 
 This row is the application of [B-0632](B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md)'s "no privileged implementation; mutual regeneration" rule at the **language ladder** scope (F# ↔ C# ↔ Rust ↔ C ↔ Assembly ↔ CUDA + future entrants).
 
@@ -46,7 +56,7 @@ This is NOT zero-sum elimination — multiple languages survive simultaneously. 
 
 ## Why permanent (not one-time)
 
-Aaron line 3298: *"forever"*. The temptation to "have the language debate once, then settle it" is exactly what this rule rejects. New languages, new techniques, and new substrates will appear; the coliseum must be ready to absorb them and let them prove themselves.
+Aaron line 3298: _"forever"_. The temptation to "have the language debate once, then settle it" is exactly what this rule rejects. New languages, new techniques, and new substrates will appear; the coliseum must be ready to absorb them and let them prove themselves.
 
 Mika line 3300's framing: this is structurally possible because retractable + deterministic substrate makes mid-flight language switching cheap. Without that substrate, permanent coliseum would be too expensive (every switch requires expensive migration); with it, switching is a write-time choice, not a re-architecture.
 

@@ -19,6 +19,7 @@ type: feature
 ## Origin
 
 B-0441 acceptance criterion:
+
 > "Tracks assignment history to avoid re-assigning same row within short window"
 
 The current `pollOnce` publishes the same top-N ready rows on every poll cycle with no
@@ -83,21 +84,17 @@ const history = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
 const cooldownMs = config.cooldownMin * 60_000;
 const now = adapters.now();
 const activeEntries = new Set(
-  history.entries
-    .filter(e => now.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
-    .map(e => e.rowId),
+  history.entries.filter((e) => now.getTime() - new Date(e.publishedAt).getTime() < cooldownMs).map((e) => e.rowId),
 );
 
 // Filter ready rows before publish:
-const toPublish = toAssign.filter(r => !activeEntries.has(r.id));
-const skippedDueToCooldown = toAssign.filter(r => activeEntries.has(r.id)).map(r => r.id);
+const toPublish = toAssign.filter((r) => !activeEntries.has(r.id));
+const skippedDueToCooldown = toAssign.filter((r) => activeEntries.has(r.id)).map((r) => r.id);
 
 // After publish loop, update history:
 const newEntries: AssignmentHistoryEntry[] = [
-  ...history.entries.filter(
-    e => now.getTime() - new Date(e.publishedAt).getTime() < cooldownMs
-  ),
-  ...publishedRowIds.map(id => ({ rowId: id, publishedAt: now.toISOString() })),
+  ...history.entries.filter((e) => now.getTime() - new Date(e.publishedAt).getTime() < cooldownMs),
+  ...publishedRowIds.map((id) => ({ rowId: id, publishedAt: now.toISOString() })),
 ];
 adapters.writeHistoryFile(config.historyFile, { entries: newEntries });
 ```

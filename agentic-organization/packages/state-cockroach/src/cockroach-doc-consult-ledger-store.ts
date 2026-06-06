@@ -30,8 +30,7 @@ export type CreateCockroachDocConsultLedgerStoreInput = {
   executor: CockroachGenericSqlTransactionExecutor;
 };
 
-export type CockroachDocConsultLedgerStore =
-  ContextPackDocConsultLedgerPort &
+export type CockroachDocConsultLedgerStore = ContextPackDocConsultLedgerPort &
   ContextPackDocConsultOutcomeReaderPort &
   ContextPackDocConsultOutcomeWriterPort;
 
@@ -222,12 +221,7 @@ function stampOutcomeStatement(stamp: ContextPackDocConsultOutcomeStamp): {
     stamp.agentId,
     stamp.hatAssignmentId,
   ];
-  const clauses = [
-    "organization_id = $3",
-    "consulted_at <= $4",
-    "agent_id = $5",
-    "hat_assignment_id = $6",
-  ];
+  const clauses = ["organization_id = $3", "consulted_at <= $4", "agent_id = $5", "hat_assignment_id = $6"];
   const filters: readonly StampFilter[] = [
     { column: CockroachDocConsultOutcomeStampFilterColumn.ProjectId, value: stamp.projectId },
     { column: CockroachDocConsultOutcomeStampFilterColumn.WorkItemId, value: stamp.workItemId },

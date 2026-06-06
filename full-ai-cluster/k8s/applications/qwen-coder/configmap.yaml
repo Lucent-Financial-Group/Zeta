@@ -7,6 +7,6 @@ data:
   model: "qwen2.5-coder:32b"
   served-by: "ollama|vllm"
   endpoint-ollama: "http://ollama.ollama.svc.cluster.local:11434"
-  endpoint-vllm:   "http://vllm.vllm.svc.cluster.local:8000"
+  endpoint-vllm: "http://vllm.vllm.svc.cluster.local:8000"
   size-vram-gb: "24"
   license: "tongyi-qianwen-license"

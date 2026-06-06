@@ -74,8 +74,7 @@ export function scanOne(shardPath: string): ScanResult {
     return {
       path: pathRel,
       ok: false,
-      violation:
-        "filename does not match HHMMZ.md, HHMMZ-<hex>.md, or HHMMSSZ-<hex>.md",
+      violation: "filename does not match HHMMZ.md, HHMMZ-<hex>.md, or HHMMSSZ-<hex>.md",
     };
   }
 
@@ -137,8 +136,7 @@ function findShards(dir: string): string[] {
       try {
         const stat = statSync(full);
         if (stat.isDirectory()) walk(full);
-        else if (entry.endsWith(".md") && entry !== "README.md")
-          results.push(full);
+        else if (entry.endsWith(".md") && entry !== "README.md") results.push(full);
       } catch {
         /* skip unreadable */
       }
@@ -192,9 +190,7 @@ export function main(argv: string[]): number {
     }
   }
 
-  process.stderr.write(
-    `checked ${shards.length} shard files; ${violations} violations\n`,
-  );
+  process.stderr.write(`checked ${shards.length} shard files; ${violations} violations\n`);
   return violations > 0 ? 1 : 0;
 }
 

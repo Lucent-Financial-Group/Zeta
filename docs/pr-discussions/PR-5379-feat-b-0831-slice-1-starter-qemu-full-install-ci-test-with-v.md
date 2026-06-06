@@ -18,9 +18,10 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## What
 
-B-0831 Slice 1 starter per Aaron 2026-05-26 authorization: *"moving testing of zflash and the iso/usb and cluster join would be great while i test on the pc again"*.
+B-0831 Slice 1 starter per Aaron 2026-05-26 authorization: _"moving testing of zflash and the iso/usb and cluster join would be great while i test on the pc again"_.
 
 Extends \`qemu-boot-test.ts\` (cascade #5) by:
+
 - Attaching virtual hard disk (qcow2; 20GB sparse) as install target
 - NAT'd internet (zeta-install needs git clone + nix substitution)
 - Waits for \`[iter-5.3]\` marker in serial log
@@ -28,6 +29,7 @@ Extends \`qemu-boot-test.ts\` (cascade #5) by:
 ## Success marker
 
 \`[iter-5.3]\` — appears at the zeta-install.sh password-prompt line. Reaching it proves install completed:
+
 - Boot
 - Partition + format
 - nixos-install
@@ -74,6 +76,7 @@ The password prompt is the first operator-stdin requirement; we can't proceed pa
 Adds a starter QEMU full-install CI layer for the AI-cluster installer ISO, extending the existing boot smoke test toward B-0831 by attaching a virtual disk, enabling NAT networking, and wiring the new helper into the ISO workflow.
 
 **Changes:**
+
 - Adds `tools/ci/qemu-full-install-test.ts` for QEMU disk-backed install progress testing.
 - Installs `qemu-utils` alongside `qemu-system-x86` for qcow2 disk creation.
 - Adds a gated, non-blocking workflow step for the cascade #6 starter test.
@@ -82,10 +85,10 @@ Adds a starter QEMU full-install CI layer for the AI-cluster installer ISO, exte
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `tools/ci/qemu-full-install-test.ts` | New Bun/TypeScript QEMU helper that creates a virtual disk, boots the installer ISO, and polls serial output for install progress. |
-| `.github/workflows/build-ai-cluster-iso.yml` | Adds `qemu-utils` and wires the new full-install test into the AI-cluster ISO workflow on push/workflow dispatch. |
+| File                                         | Description                                                                                                                        |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/ci/qemu-full-install-test.ts`         | New Bun/TypeScript QEMU helper that creates a virtual disk, boots the installer ISO, and polls serial output for install progress. |
+| `.github/workflows/build-ai-cluster-iso.yml` | Adds `qemu-utils` and wires the new full-install test into the AI-cluster ISO workflow on push/workflow dispatch.                  |
 
 ## Review threads
 

@@ -72,7 +72,7 @@ is deliberate and partial; KSK is not any of the following:
 
 - **DNSSEC KSK (Key Signing Key).** DNSSEC uses a "KSK" to sign
   zone keys in a hierarchical trust ceremony. Zeta's KSK
-  acronym is the same three letters *by coincidence of naming*
+  acronym is the same three letters _by coincidence of naming_
   — the ceremony-based-authority intuition carries over
   (high-assurance key-use with a small trusted set of
   signers), but DNSSEC KSK signs DNS zone records; Zeta KSK
@@ -84,8 +84,8 @@ is deliberate and partial; KSK is not any of the following:
   MULTICS ring-protection).** The "small trusted core that
   mediates all access" discipline is where the "Kernel"
   portion of the name comes from. Security kernels are
-  designed to be *small enough to verify*, *minimal enough
-  to not grow feature creep*, and *complete in mediation*
+  designed to be _small enough to verify_, _minimal enough
+  to not grow feature creep_, and _complete in mediation_
   (no operation can bypass it). KSK aspires to the same
   three properties.
 - **Aviation safety kernels / medical-device safety-critical
@@ -116,7 +116,7 @@ collapse "KSK" onto whichever of these they already know.
   revocable budgets, not hierarchical descent from a single
   root.
 - **NOT a blockchain / distributed ledger.** Optional
-  anchoring *to* a ledger is supported; KSK itself is not a
+  anchoring _to_ a ledger is supported; KSK itself is not a
   ledger and does not require distributed consensus to
   function.
 - **NOT a policy engine like OPA Rego or XACML.** Policy
@@ -202,7 +202,7 @@ Verified in-repo references:
 - `docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md`
   Aurora-aligned KSK design research; formal authorization
   rule `Authorize(a, t) = ¬RedLine ∧ BudgetActive ∧
-  ScopeAllowed ∧ QuorumSatisfied ∧ OraclePass`; BLAKE3
+ScopeAllowed ∧ QuorumSatisfied ∧ OraclePass`; BLAKE3
   receipt hashing; KSK-as-Zeta-module proposal.
 - `docs/aurora/2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md`
   adjacent validation pass on substrate framing.

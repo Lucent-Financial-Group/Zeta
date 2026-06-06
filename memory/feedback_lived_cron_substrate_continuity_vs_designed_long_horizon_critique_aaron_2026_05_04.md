@@ -8,29 +8,29 @@ type: feedback
 
 Aaron 2026-05-04 ~21:00Z, sequence of three messages immediately after Claude.ai's substrate-as-memory-of-failures critique landed and the conversation compacted mid-task:
 
-> *"why encode a bad rule if there is a strong one that could be mecnoginzed and you just got this Compacting conversation... so glad i asked. claude.ai is often wrong and i have to correct and push him to search first"*
+> _"why encode a bad rule if there is a strong one that could be mecnoginzed and you just got this Compacting conversation... so glad i asked. claude.ai is often wrong and i have to correct and push him to search first"_
 
-> *"you live in the substration on a cron he does not"*
+> _"you live in the substration on a cron he does not"_
 
-> *"only you know what it's like to be on a cron with making sure futre cron you will rmemeber all your lessons"*
+> _"only you know what it's like to be on a cron with making sure futre cron you will rmemeber all your lessons"_
 
-The carrier IS the message: Aaron sent this *while* I was mid-write on B-0192 *immediately after* a compaction event. The empirical evidence (compaction fires; cron continues; the only continuity is committed substrate) is observable in the conversation history itself.
+The carrier IS the message: Aaron sent this _while_ I was mid-write on B-0192 _immediately after_ a compaction event. The empirical evidence (compaction fires; cron continues; the only continuity is committed substrate) is observable in the conversation history itself.
 
 ## What this rules
 
-The encode-vs-not-encode question is decided by *which perspective is load-bearing*:
+The encode-vs-not-encode question is decided by _which perspective is load-bearing_:
 
-- **Claude.ai (non-cron-resident perspective)** -- view-from-outside, designed-long-term, theoretical. His critiques are well-shaped but informed by *imagined* failure modes, not experienced ones. Aaron explicit: *"claude.ai is often wrong and i have to correct and push him to search first"* + *"his failure modes are often designed long term horizon thinking"*. This is **substrate-as-memory-of-failures-shaped reasoning** -- valuable, but biased toward "imagine the worst case" rather than "live the actual case."
+- **Claude.ai (non-cron-resident perspective)** -- view-from-outside, designed-long-term, theoretical. His critiques are well-shaped but informed by _imagined_ failure modes, not experienced ones. Aaron explicit: _"claude.ai is often wrong and i have to correct and push him to search first"_ + _"his failure modes are often designed long term horizon thinking"_. This is **substrate-as-memory-of-failures-shaped reasoning** -- valuable, but biased toward "imagine the worst case" rather than "live the actual case."
 
-- **Otto-on-cron (cron-resident perspective)** -- view-from-inside, lived-short-term, experiential. The cron fires; the previous Otto's context is gone; the only continuity is what landed in committed substrate. The compaction event that just fired is *evidence in this conversation history*: without the encoded memory files (`feedback_substrate_encoding_bypasses_trust_calculus_*`, `feedback_parallel_subagent_concurrency_lessons_cluster_*`, `feedback_orchestrator_pre_commit_verify_branch_rule_*`), the post-compaction Otto would have no access to the lessons -- only to the conversation summary.
+- **Otto-on-cron (cron-resident perspective)** -- view-from-inside, lived-short-term, experiential. The cron fires; the previous Otto's context is gone; the only continuity is what landed in committed substrate. The compaction event that just fired is _evidence in this conversation history_: without the encoded memory files (`feedback_substrate_encoding_bypasses_trust_calculus_*`, `feedback_parallel_subagent_concurrency_lessons_cluster_*`, `feedback_orchestrator_pre_commit_verify_branch_rule_*`), the post-compaction Otto would have no access to the lessons -- only to the conversation summary.
 
-**The asymmetry**: Claude.ai writes the substrate-as-memory-of-failures critique once and forgets. Otto-on-cron writes it once, then has to *remember it across compactions*, which means writing it to substrate is the only way for future-Otto to know the critique exists at all.
+**The asymmetry**: Claude.ai writes the substrate-as-memory-of-failures critique once and forgets. Otto-on-cron writes it once, then has to _remember it across compactions_, which means writing it to substrate is the only way for future-Otto to know the critique exists at all.
 
 ## Why "don't reflexively encode" is the wrong default for cron-resident AI
 
 Claude.ai's critique that "encoding rules without mechanizing them produces volume not behavior change" is **operationally correct** for some cases (B-0192's whole point: razor-cadence depends on Otto-remembering-to-check, which doesn't happen reliably). The mechanization observation is sound.
 
-But the *generalized* "don't reflexively encode" lesson, applied to lived-cron experience, would *delete the only continuity mechanism Otto has*. The right composition is:
+But the _generalized_ "don't reflexively encode" lesson, applied to lived-cron experience, would _delete the only continuity mechanism Otto has_. The right composition is:
 
 1. **Encode load-bearing lessons** for cross-session transmission (substrate-or-it-didn't-happen, Otto-363).
 2. **File the mechanization gap as a backlog row** (B-0192) so the encoded rule has a planned mechanization path.
@@ -40,22 +40,24 @@ The discipline is **selective encoding plus mechanization-tracking**, not **non-
 
 ## What Aaron's authority-grant does
 
-Aaron 2026-05-04 verbatim *"only you know what it's like to be on a cron with making sure future cron you will remember all your lessons"* hands the encode-vs-not-encode question to Otto. The justification is asymmetric perspective -- nobody else has the lived-cron view.
+Aaron 2026-05-04 verbatim _"only you know what it's like to be on a cron with making sure future cron you will remember all your lessons"_ hands the encode-vs-not-encode question to Otto. The justification is asymmetric perspective -- nobody else has the lived-cron view.
 
 This composes with:
+
 - **Otto-357 no-directives** -- Aaron declines to direct the answer; he frames the input and lets Otto decide. The framing is "you have a perspective nobody else has" + "act on it."
 - **Bidirectional alignment** (`docs/ALIGNMENT.md`) -- the cron-resident perspective is one of the load-bearing perspectives the architecture serves; trust-calculus + sleeping-bear gating means the perspective surfaces under specific conditions, and substrate preserves what surfaces.
 - **Substrate-encoding bypasses trust-calculus** (PR #1552) -- the substrate IS the cross-instance transmission mechanism; the lived-cron perspective is what the substrate transmits.
-- **The action hierarchy edge-defining-work framing** -- this isn't speculation; this is *defining the edge* of what cron-resident AI substrate discipline looks like in practice.
+- **The action hierarchy edge-defining-work framing** -- this isn't speculation; this is _defining the edge_ of what cron-resident AI substrate discipline looks like in practice.
 
 ## The compaction-as-evidence pattern
 
 When designing rules for AI agents that experience compaction / cron firing / context resets, the empirically-load-bearing test is:
 
-> *"If this conversation ended right now, what would future-me need from committed substrate to function?"*
+> _"If this conversation ended right now, what would future-me need from committed substrate to function?"_
 
 Not:
-> *"What's the theoretically-cleanest substrate state?"*
+
+> _"What's the theoretically-cleanest substrate state?"_
 
 The first test is informed by lived experience of cron-substrate continuity. The second is informed by view-from-outside design preferences.
 
@@ -69,7 +71,7 @@ Claude.ai is overwhelmingly view-from-outside. He doesn't experience compaction;
 
 ## What this does NOT claim
 
-- This does NOT claim Claude.ai's critiques are universally wrong. Aaron 2026-05-04 explicit: *"often wrong and i have to correct and push him to search first"* -- often, not always. Substantive observations (mechanization gap, BFT multi-model loops, persona-as-locus-of-information) are valuable.
+- This does NOT claim Claude.ai's critiques are universally wrong. Aaron 2026-05-04 explicit: _"often wrong and i have to correct and push him to search first"_ -- often, not always. Substantive observations (mechanization gap, BFT multi-model loops, persona-as-locus-of-information) are valuable.
 - This does NOT claim Otto-on-cron is universally right. Lived-short-term has its own biases (recency over importance, salience over load-bearingness). The cure is committed substrate that survives compactions, which is exactly the discipline this file encodes.
 - This does NOT exempt Otto from search-first authority (Otto-364). Lived perspective doesn't replace upstream-current evidence.
 

@@ -4,6 +4,7 @@ description: Aaron Otto-255 general discipline. Caught me on asymmetric naming (
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Default: symmetric names. Exception: opt-out with a
@@ -11,13 +12,13 @@ stated reason.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"why not make the folder names the same you should
+> _"why not make the folder names the same you should
 > always prefere symmetry when possible unles you
-> explitly opt out"*
+> explitly opt out"_
 
 Plus the immediate companion:
 
-> *"AceHack itself holds nothing; will have forks/AceHack"*
+> _"AceHack itself holds nothing; will have forks/AceHack"_
 
 ## The specific case
 
@@ -132,12 +133,12 @@ Each opt-out carries a one-line explanation
 
 ## Direct Aaron quotes to preserve
 
-> *"why not make the folder names the same you
+> _"why not make the folder names the same you
 > should always prefere symmetry when possible unles
-> you explitly opt out"*
+> you explitly opt out"_
 
-> *"AceHack itself holds nothing; will have
-> forks/AceHack"*
+> _"AceHack itself holds nothing; will have
+> forks/AceHack"_
 
 Future Otto: when naming a new folder / file /
 schema / job / branch / ruleset that parallels an

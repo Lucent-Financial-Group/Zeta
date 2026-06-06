@@ -7,12 +7,7 @@
  */
 
 import { describe, expect, it } from "bun:test";
-import {
-  evolveSurvivors,
-  evolveTopN,
-  type EvolutionStrategy,
-  type Survivor,
-} from "./evolution";
+import { evolveSurvivors, evolveTopN, type EvolutionStrategy, type Survivor } from "./evolution";
 
 interface Hypothesis extends Record<string, unknown> {
   mechanism: string;
@@ -30,16 +25,8 @@ const survivor = (id: string, substrate: Hypothesis, skill: number): Survivor<Hy
 
 describe("B-0914.5 evolution agent substrate (mash + refine)", () => {
   it("simple-merge: top survivor's substrate as base + fills gaps from next", () => {
-    const top = survivor(
-      "h1",
-      { mechanism: "ER-stress-inhibition", drugCandidate: "cur-6", evidence: 0.8 },
-      30,
-    );
-    const next = survivor(
-      "h2",
-      { mechanism: "kinase-inhibition", pathway: "PI3K-mTOR", evidence: 0.6 },
-      20,
-    );
+    const top = survivor("h1", { mechanism: "ER-stress-inhibition", drugCandidate: "cur-6", evidence: 0.8 }, 30);
+    const next = survivor("h2", { mechanism: "kinase-inhibition", pathway: "PI3K-mTOR", evidence: 0.6 }, 20);
     const result = evolveSurvivors({ survivors: [top, next], strategy: "simple-merge" });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -56,16 +43,8 @@ describe("B-0914.5 evolution agent substrate (mash + refine)", () => {
   });
 
   it("cross-pollinate: interleaves attributes between top 2", () => {
-    const top = survivor(
-      "a",
-      { mechanism: "A-mech", drugCandidate: "A-drug", pathway: "A-path", evidence: 0.9 },
-      30,
-    );
-    const next = survivor(
-      "b",
-      { mechanism: "B-mech", drugCandidate: "B-drug", pathway: "B-path", evidence: 0.7 },
-      20,
-    );
+    const top = survivor("a", { mechanism: "A-mech", drugCandidate: "A-drug", pathway: "A-path", evidence: 0.9 }, 30);
+    const next = survivor("b", { mechanism: "B-mech", drugCandidate: "B-drug", pathway: "B-path", evidence: 0.7 }, 20);
     const result = evolveSurvivors({ survivors: [top, next], strategy: "cross-pollinate" });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -80,11 +59,7 @@ describe("B-0914.5 evolution agent substrate (mash + refine)", () => {
   });
 
   it("mutate: applies caller-supplied transformer to top survivor", () => {
-    const top = survivor(
-      "h1",
-      { mechanism: "ER-stress", evidence: 0.8 },
-      30,
-    );
+    const top = survivor("h1", { mechanism: "ER-stress", evidence: 0.8 }, 30);
     const result = evolveSurvivors({
       survivors: [top],
       strategy: "mutate",

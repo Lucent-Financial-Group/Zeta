@@ -19,8 +19,8 @@ look hairy; it can be in NP-hard yet look small. Using the
 wrong definition sinks arguments silently.
 
 This skill carries the precise definitions, their
-relationships, and the consumer advice: *given your question,
-which definition is the right tool?*
+relationships, and the consumer advice: _given your question,
+which definition is the right tool?_
 
 ## The seven (or so) definitions worth knowing
 
@@ -31,9 +31,9 @@ Given a random variable X with distribution p:
 H(X) = − Σ p(x) log p(x)
 
 Units are bits if log₂, nats if ln. Shannon entropy measures
-*unpredictability of the source*. Key facts:
+_unpredictability of the source_. Key facts:
 
-- H(X) is a property of the *distribution*, not of a specific
+- H(X) is a property of the _distribution_, not of a specific
   outcome. A specific string has no entropy; its source does.
 - H(X) = lossless-compression lower bound: you cannot
   compress samples from X below H(X) bits per symbol on
@@ -45,16 +45,16 @@ Units are bits if log₂, nats if ln. Shannon entropy measures
   invariance issues (not scale-invariant), so don't treat it
   like the discrete version.
 
-Canonical source: Shannon, *A Mathematical Theory of
-Communication* (1948). Cover & Thomas, *Elements of
-Information Theory* (2006) is the standard textbook.
+Canonical source: Shannon, _A Mathematical Theory of
+Communication_ (1948). Cover & Thomas, _Elements of
+Information Theory_ (2006) is the standard textbook.
 
 ### 2. Kolmogorov (descriptive) complexity — information content of an object
 
 K(x) = length of the shortest program p such that U(p) = x,
 where U is a fixed universal Turing machine.
 
-- K(x) is a property of a *specific object x*, not a
+- K(x) is a property of a _specific object x_, not a
   distribution. This is the key difference from Shannon.
 - Up to an additive constant (invariance theorem),
   definition is universal — the choice of U matters only
@@ -62,17 +62,17 @@ where U is a fixed universal Turing machine.
 - K(x) is **uncomputable** — the halting problem lives at
   its core. Approximable by compressed-size proxies
   (gzip, bzip2, xz), with the caveat that any specific
-  compressor is an *upper bound*, not the true value.
+  compressor is an _upper bound_, not the true value.
 - Randomness test: x is Kolmogorov-random if K(x) ≥ |x| − c.
   Most strings are random; specific random strings cannot
   be exhibited constructively (this is the punchline of
   Chaitin's constant Ω).
 - Conditional: K(x|y) = shortest program p with U(p, y) = x.
 
-Canonical source: Li & Vitányi, *An Introduction to
-Kolmogorov Complexity and Its Applications* (2019, 4th ed.).
+Canonical source: Li & Vitányi, _An Introduction to
+Kolmogorov Complexity and Its Applications_ (2019, 4th ed.).
 
-### 3. Bennett's logical depth — *time* to reconstruct
+### 3. Bennett's logical depth — _time_ to reconstruct
 
 Kolmogorov complexity doesn't distinguish "complex because
 random" from "complex because calculated into existence". A
@@ -93,8 +93,8 @@ to produce x, measured in Turing-machine steps.
 - Low K, high D → profound: short description, enormous
   calculation. Think: the Mandelbrot set's structure.
 
-Canonical source: Bennett, *Logical Depth and Physical
-Complexity* (1988).
+Canonical source: Bennett, _Logical Depth and Physical
+Complexity_ (1988).
 
 ### 4. Sophistication — structure vs noise
 
@@ -104,7 +104,7 @@ regular pattern and the instance describes the remaining
 "noise" relative to that pattern. **Sophistication** is the
 length of the schema.
 
-- Sophistication aligns with Brooks' *essential complexity*:
+- Sophistication aligns with Brooks' _essential complexity_:
   the schema is what cannot be reduced without changing the
   problem; the instance is accidental.
 - Random x has low sophistication (all bits are noise; no
@@ -112,14 +112,14 @@ length of the schema.
 - Highly structured x (a cleanly-written program) has high
   sophistication.
 
-Canonical source: Koppel, *Complexity, depth, and
-sophistication* (1987).
+Canonical source: Koppel, _Complexity, depth, and
+sophistication_ (1987).
 
 ### 5. Gell-Mann's effective complexity — length of the regularity-describing schema
 
 Similar to sophistication but framed from the complex-adaptive-
 systems side. **Effective complexity** = length of the
-minimum schema describing the system's *regularities*, treating
+minimum schema describing the system's _regularities_, treating
 everything else as random.
 
 - A perfect crystal: low effective complexity (short schema
@@ -132,9 +132,9 @@ everything else as random.
 
 Peaks between pure order and pure noise — the
 "edge of chaos" region. This gives the reducer a guide for
-*how much* structure is right, not just "less is better".
+_how much_ structure is right, not just "less is better".
 
-Canonical source: Gell-Mann, *The Quark and the Jaguar*
+Canonical source: Gell-Mann, _The Quark and the Jaguar_
 (1994), ch. 3.
 
 ### 6. Computational complexity — resource classes
@@ -163,9 +163,9 @@ oracles) allowed to a Turing machine to decide membership.
   quantifiers layered on NP / coNP. PH ⊆ PSPACE; collapse
   of PH is a famous open question.
 
-Canonical source: Arora & Barak, *Computational Complexity:
-A Modern Approach* (2009). Sipser, *Introduction to the
-Theory of Computation* (3rd ed., 2013) is the gentler entry.
+Canonical source: Arora & Barak, _Computational Complexity:
+A Modern Approach_ (2009). Sipser, _Introduction to the
+Theory of Computation_ (3rd ed., 2013) is the gentler entry.
 
 ### 7. Communication complexity — information cost of coordination
 
@@ -179,8 +179,8 @@ complexity** is the minimum bits exchanged.
   crossing a shard boundary to compute a join, for example,
   has a lower bound derivable from the function's CC.
 
-Canonical source: Kushilevitz & Nisan, *Communication
-Complexity* (1997).
+Canonical source: Kushilevitz & Nisan, _Communication
+Complexity_ (1997).
 
 ### 8. Cell-probe complexity — memory-access lower bounds
 
@@ -194,16 +194,16 @@ STOC / FOCS.
 
 ## Which definition for which question
 
-| Question | Right tool |
-|---|---|
-| How compressible is this source? | Shannon entropy |
-| How much "information" is in this specific object? | Kolmogorov complexity |
-| Is this object random or complex? | Kolmogorov + logical depth |
-| How much essential structure does this object have? | Sophistication / effective complexity |
-| Can this problem be solved quickly? | P / NP / EXPTIME class |
-| What's the minimum cross-shard bandwidth? | Communication complexity |
-| How many probes must this data structure take? | Cell-probe complexity |
-| Is this code hard for a human? | *Applied* metrics (cyclomatic / cognitive) — not this skill; consult complexity-reviewer / reducer |
+| Question                                            | Right tool                                                                                         |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| How compressible is this source?                    | Shannon entropy                                                                                    |
+| How much "information" is in this specific object?  | Kolmogorov complexity                                                                              |
+| Is this object random or complex?                   | Kolmogorov + logical depth                                                                         |
+| How much essential structure does this object have? | Sophistication / effective complexity                                                              |
+| Can this problem be solved quickly?                 | P / NP / EXPTIME class                                                                             |
+| What's the minimum cross-shard bandwidth?           | Communication complexity                                                                           |
+| How many probes must this data structure take?      | Cell-probe complexity                                                                              |
+| Is this code hard for a human?                      | _Applied_ metrics (cyclomatic / cognitive) — not this skill; consult complexity-reviewer / reducer |
 
 **Rule.** Naming the right definition is usually the hard
 part. Once named, lower-bound techniques follow from the
@@ -229,15 +229,15 @@ textbook.
 - Shannon and Kolmogorov are related: for a typical sample
   from a distribution with entropy H, Kolmogorov complexity
   is ≈ nH with high probability. But Shannon is about
-  *distribution*; Kolmogorov is about *instance*. The
+  _distribution_; Kolmogorov is about _instance_. The
   relationship is asymptotic, not pointwise.
-- Low Kolmogorov does *not* imply easy computation —
+- Low Kolmogorov does _not_ imply easy computation —
   logical depth separates them.
-- NP-hardness is *worst-case*; a problem can be NP-hard
+- NP-hardness is _worst-case_; a problem can be NP-hard
   yet have polynomial-time algorithms for all practical
   inputs (SAT in practice, via CDCL solvers).
 - Computational and descriptive complexity are orthogonal:
-  the Kolmogorov complexity of a problem's *description*
+  the Kolmogorov complexity of a problem's _description_
   tells you nothing about its computational-complexity class.
 
 ## What this skill does NOT do
@@ -265,21 +265,21 @@ points applied consumers for concrete actions.
 
 ## Reading list
 
-- Li & Vitányi, *An Introduction to Kolmogorov Complexity
-  and Its Applications* (4th ed., 2019).
-- Cover & Thomas, *Elements of Information Theory* (2nd ed.,
+- Li & Vitányi, _An Introduction to Kolmogorov Complexity
+  and Its Applications_ (4th ed., 2019).
+- Cover & Thomas, _Elements of Information Theory_ (2nd ed.,
   2006).
-- Arora & Barak, *Computational Complexity: A Modern
-  Approach* (2009).
-- Sipser, *Introduction to the Theory of Computation* (3rd
+- Arora & Barak, _Computational Complexity: A Modern
+  Approach_ (2009).
+- Sipser, _Introduction to the Theory of Computation_ (3rd
   ed., 2013).
-- Kushilevitz & Nisan, *Communication Complexity* (1997).
-- Shannon, *A Mathematical Theory of Communication* (1948).
-- Bennett, *Logical Depth and Physical Complexity* (1988).
-- Gell-Mann, *The Quark and the Jaguar* (1994).
-- Chaitin, *Algorithmic Information Theory* (1987).
-- Goldreich, *Computational Complexity: A Conceptual
-  Perspective* (2008).
+- Kushilevitz & Nisan, _Communication Complexity_ (1997).
+- Shannon, _A Mathematical Theory of Communication_ (1948).
+- Bennett, _Logical Depth and Physical Complexity_ (1988).
+- Gell-Mann, _The Quark and the Jaguar_ (1994).
+- Chaitin, _Algorithmic Information Theory_ (1987).
+- Goldreich, _Computational Complexity: A Conceptual
+  Perspective_ (2008).
 
 ## Reference patterns
 

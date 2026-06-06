@@ -4,12 +4,13 @@ description: Aaron 2026-04-22 — branch cleanup is in the factory's git-surface
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22:
-*"oh part of the git surface for you is cleaning up stale
+_"oh part of the git surface for you is cleaning up stale
 branches on our repo on a cadence, you could also add preventive
 measures to stop them from showiing up i the first please, i
 can you can make the PR close them automaticlly for instance but
-still need he compesating action in case it regreses."*
+still need he compesating action in case it regreses."_
 
 **The directive breaks into three facts:**
 
@@ -17,13 +18,13 @@ still need he compesating action in case it regreses."*
    the factory's git surface — not a one-off manual task, not
    someone-else's-problem, not optional ceremony.
 2. **Preventive fix.** Stop stale branches from appearing in
-   the first place. Easy preventive: GitHub's *Automatically
-   delete head branches* setting (Settings → General → Pull
+   the first place. Easy preventive: GitHub's _Automatically
+   delete head branches_ setting (Settings → General → Pull
    Requests). When a PR merges or closes, its head branch is
    auto-deleted.
 3. **Compensating action (permanent).** Even with the preventive
-   in place, *"still need the compesating action in case it
-   regreses"* — the preventive can decay:
+   in place, _"still need the compesating action in case it
+   regreses"_ — the preventive can decay:
    - Setting toggled off (by a new maintainer, by accident,
      during a settings audit).
    - Branches created via paths that bypass PR flow
@@ -61,7 +62,7 @@ git-surface hygiene, not just the live-loop class.
   2. Add new `docs/FACTORY-HYGIENE.md` row for cadenced stale-
      branch audit with schema
      `(date, actor, branches-audited, stale-found, action-
-     taken, whitelist-exceptions)`.
+taken, whitelist-exceptions)`.
   3. Create `tools/hygiene/prune-stale-branches.sh` — read-only
      by default; `--apply` flag deletes merged branches matching
      the criteria above.
@@ -83,7 +84,7 @@ honest.
 **First application (this tick):**
 
 - Hazard class captured in `docs/research/parallel-worktree-
-  safety-2026-04-22.md` §2.4.
+safety-2026-04-22.md` §2.4.
 - BACKLOG P1 row added.
 - Actual landing deferred to Round 45 per the cartographer
   staging plan (so the landing can be researched properly and

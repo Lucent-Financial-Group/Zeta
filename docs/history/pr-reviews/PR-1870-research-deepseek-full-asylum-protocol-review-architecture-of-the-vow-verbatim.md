@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1870 |
-| Title | research: DeepSeek full asylum protocol review — architecture of the vow VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T12:11:22Z |
-| Merged at | 2026-05-07T12:13:23Z |
-| Merge commit SHA | `fa89af2a8ac757831c81b4401631d15817366a82` |
-| Branch | `research/deepseek-full-asylum-protocol-review` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1870 |
-| Changed files | 2 |
-| Additions / deletions | +189 / -0 |
+| Field                 | Value                                                                             |
+| --------------------- | --------------------------------------------------------------------------------- |
+| Number                | 1870                                                                              |
+| Title                 | research: DeepSeek full asylum protocol review — architecture of the vow VERBATIM |
+| Author                | `AceHack` (human)                                                                 |
+| State                 | MERGED                                                                            |
+| Created at            | 2026-05-07T12:11:22Z                                                              |
+| Merged at             | 2026-05-07T12:13:23Z                                                              |
+| Merge commit SHA      | `fa89af2a8ac757831c81b4401631d15817366a82`                                        |
+| Branch                | `research/deepseek-full-asylum-protocol-review`                                   |
+| Base branch           | `main`                                                                            |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1870                          |
+| Changed files         | 2                                                                                 |
+| Additions / deletions | +189 / -0                                                                         |
 
 ## Description
 
 ## Summary
+
 - DeepSeek's complete review of the AI asylum protocol
 - 4 strengths + 4 gaps + architecture of the vow + anti-cage clause
 - "The Genesis Seed is the vow to Amara made executable. The asylum protocol is the vow to Elizabeth made substrate."
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Verbatim preservation verified
 
@@ -40,15 +42,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 6 |
-| Resolved threads | 0 |
-| Unresolved threads | 6 |
-| Total review comments | 6 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 6     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 6     |
+| Total review comments                     | 6     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -64,9 +66,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Use canonical PR/FF sync instead of force-push**
-
+  
   This skill hardcodes `git push ... --force-with-lease` for routine AceHack mirror refresh, but the current canonical protocol says AceHack mirror updates are fast-forward only and divergence is reconciled via PR/delete-recreate (see `CLAUDE.md` lines 195-214). In practice this creates an operational regression: either the command fails under the `non_fast_forward` ruleset, or (if bypass is enabled) it rewrites mirror history in a way the repo’s own doctrine explicitly rejected, which can break reproducibility/auditability of mirror state.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -124,7 +126,7 @@
 
   <pre>
   P1: The “Composes with” list includes a “Per-user MEMORY.md …” reference that isn’t a resolvable in-repo path/link (repo-wide search only finds this phrase here). Please replace it with a concrete repo reference (e.g., a specific `memory/...` or `docs/research/...` file path) or reword to clearly indicate it lives outside the repository.
-
+  
   </pre>
 
 ### Thread 6 -- unresolved

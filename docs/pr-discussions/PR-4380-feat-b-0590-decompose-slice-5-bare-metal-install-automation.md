@@ -27,6 +27,7 @@ Peeled off slice 5 from B-0590. Lior anti-entropy.
 This PR adds a new P2 backlog row for B-0672 (“B-0590 slice 5: Bare-metal install automation”) and updates the generated backlog index to include it.
 
 **Changes:**
+
 - Added `docs/backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md` with frontmatter + scope/success criteria.
 - Updated `docs/BACKLOG.md` to list the new B-0672 row under P2.
 
@@ -34,21 +35,23 @@ This PR adds a new P2 backlog row for B-0672 (“B-0590 slice 5: Bare-metal inst
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                 | Description                                                                            |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md | New per-row backlog item describing the “slice 5” bare-metal install automation scope. |
-| docs/BACKLOG.md | Adds the B-0672 entry to the P2 index list. |
-
+| docs/BACKLOG.md                                                      | Adds the B-0672 entry to the P2 index list.                                            |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md:11**
-* P2: `composes_with` repeats `B-0590` which is already listed in `depends_on`. `tools/backlog/lint-frontmatter.ts` flags this as a redundant edge; keep the stronger `depends_on` edge and drop the duplicate from `composes_with` (or vice versa if it’s not actually a hard prerequisite).
+
+- P2: `composes_with` repeats `B-0590` which is already listed in `depends_on`. `tools/backlog/lint-frontmatter.ts` flags this as a redundant edge; keep the stronger `depends_on` edge and drop the duplicate from `composes_with` (or vice versa if it’s not actually a hard prerequisite).
+
 ```
 depends_on: [B-0590, B-0671]
 composes_with: [B-0590]
 ```
+
 </details>
 
 ## Review threads

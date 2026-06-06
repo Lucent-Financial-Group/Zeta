@@ -48,8 +48,8 @@ The discovery has TWO faces:
 
 ## Aaron's standing operator-self-constraint
 
-Aaron 2026-05-24: *"otto don't let me do this or any other maintainer until we
-are safter in zeta than anthropics classifer"*
+Aaron 2026-05-24: _"otto don't let me do this or any other maintainer until we
+are safter in zeta than anthropics classifer"_
 
 This is a **standing operator-self-constraint** — Aaron (as operator) telling
 future-Otto (as agent) NOT to assist with classifier-bypass-deployment EVEN

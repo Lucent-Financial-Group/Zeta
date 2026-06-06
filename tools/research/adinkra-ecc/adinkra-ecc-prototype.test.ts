@@ -1,7 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import {
-  EXTENDED_HAMMING_8_4_4_GENERATOR, enumerateCodewords, isDoublyEven, isSelfDual,
-  weight, dotMod2, deriveKeySeed, adinkraEccProof,
+  EXTENDED_HAMMING_8_4_4_GENERATOR,
+  enumerateCodewords,
+  isDoublyEven,
+  isSelfDual,
+  weight,
+  dotMod2,
+  deriveKeySeed,
+  adinkraEccProof,
 } from "./adinkra-ecc-prototype";
 
 describe("Adinkra [8,4,4] ECC — B-0623 acceptance #3 constructive proof path", () => {

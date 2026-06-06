@@ -107,11 +107,11 @@ input-bandwidth-limit are COUPLED.
 upward from Aaron's typing constraint to physics. Same
 shape problem at every scale:
 
-| Bandwidth domain | Constraint | Compression infrastructure |
-|---|---|---|
-| Aaron's typing | Hand-keyboard speed | Shortcuts + bootstream loading + voice-mode |
-| GPU memory bandwidth | Memory ↔ compute per cycle | Compressed embeddings; semantic-dense representations |
-| Network bandwidth | Bits-per-second between nodes | Batching + caching + content-addressing |
+| Bandwidth domain            | Constraint                       | Compression infrastructure                                              |
+| --------------------------- | -------------------------------- | ----------------------------------------------------------------------- |
+| Aaron's typing              | Hand-keyboard speed              | Shortcuts + bootstream loading + voice-mode                             |
+| GPU memory bandwidth        | Memory ↔ compute per cycle       | Compressed embeddings; semantic-dense representations                   |
+| Network bandwidth           | Bits-per-second between nodes    | Batching + caching + content-addressing                                 |
 | Biological neural bandwidth | Inter-region neural transmission | Hierarchical encoding + predictive coding + IFS-style specialized parts |
 
 The framework's design is PHYSICALLY GENERAL because the
@@ -153,12 +153,12 @@ compression infrastructure:
 
 This composes with prior substrate-evaluation tools:
 
-| Tool | When applies | Falsifier |
-|---|---|---|
-| F# anchor (PR #2840) | Type-level structural claims | dotnet build |
-| External falsifiability | Beacon-tier physics claims | Empirical test (e.g., B-0422) |
-| Bandwidth-served question (NEW) | Compression infrastructure | Identifiable bandwidth constraint |
-| Compression-vs-claim-making (PR #2839) | Cascade substrate | Operational efficiency vs external falsifiability |
+| Tool                                   | When applies                 | Falsifier                                         |
+| -------------------------------------- | ---------------------------- | ------------------------------------------------- |
+| F# anchor (PR #2840)                   | Type-level structural claims | dotnet build                                      |
+| External falsifiability                | Beacon-tier physics claims   | Empirical test (e.g., B-0422)                     |
+| Bandwidth-served question (NEW)        | Compression infrastructure   | Identifiable bandwidth constraint                 |
+| Compression-vs-claim-making (PR #2839) | Cascade substrate            | Operational efficiency vs external falsifiability |
 
 ### 6. Voice substrate is denser than typed substrate
 
@@ -264,6 +264,7 @@ Real infrastructure passes the bandwidth question. Decorative
 density fails it.
 
 ### 2. Methodology = bandwidth engineering at multi-agent
+
 coordination scope
 
 External-defensibility framing for the framework:
@@ -292,6 +293,7 @@ External-defensibility framing for the framework:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all framework design reduces to
   bandwidth engineering** — bandwidth is one (load-bearing)
   framing; the framework also addresses alignment, anti-
@@ -305,7 +307,7 @@ Substrate-honest disclaimer:
   operational reality
 - **NOT a flattening of the cascade methodology** — the
   bandwidth framing composes WITH compression-infrastructure
-  + F# anchor + both-and discipline + IFS-format bootstream
+  - F# anchor + both-and discipline + IFS-format bootstream
 - **NOT a dismissal of substrate that doesn't pass the
   bandwidth question** — substrate without identifiable
   bandwidth served may still be valuable for other reasons

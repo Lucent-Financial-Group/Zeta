@@ -43,8 +43,8 @@ spec:
             - { name: config, mountPath: /etc/orleans, readOnly: true }
           resources:
             requests: { cpu: "500m", memory: "512Mi" }
-            limits:   { cpu: "2",    memory: "2Gi"  }
-          livenessProbe:  { tcpSocket: { port: silo }, initialDelaySeconds: 30, periodSeconds: 15 }
+            limits: { cpu: "2", memory: "2Gi" }
+          livenessProbe: { tcpSocket: { port: silo }, initialDelaySeconds: 30, periodSeconds: 15 }
           readinessProbe: { tcpSocket: { port: gateway }, initialDelaySeconds: 10, periodSeconds: 5 }
       volumes:
         - { name: config, configMap: { name: orleans-config } }

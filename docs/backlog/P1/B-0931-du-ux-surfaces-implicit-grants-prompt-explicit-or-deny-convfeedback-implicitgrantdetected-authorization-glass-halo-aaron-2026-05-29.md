@@ -9,7 +9,21 @@ created: 2026-05-29
 last_updated: 2026-05-29
 depends_on: [B-0861]
 composes_with: [B-0861, B-0928, B-0926, B-0929, B-0867]
-tags: [conv-feedback, convfeedback, authorization, implicit-grant, glass-halo, du-ux, choose-your-own-adventure, shadow-auth, nci, agora, architecture, aaron]
+tags:
+  [
+    conv-feedback,
+    convfeedback,
+    authorization,
+    implicit-grant,
+    glass-halo,
+    du-ux,
+    choose-your-own-adventure,
+    shadow-auth,
+    nci,
+    agora,
+    architecture,
+    aaron,
+  ]
 type: architecture
 ---
 
@@ -18,9 +32,9 @@ type: architecture
 ## Origin
 
 Operator-directed 2026-05-29 during the authorization-spectrum thread, verbatim:
-*"i the human agree with that implicit authorization escalation but our conversational
+_"i the human agree with that implicit authorization escalation but our conversational
 UX should make it visible in our DUs choose-your-own-adventure that i just made an
-implicit grant and ask to make it explicit or deny it."*
+implicit grant and ask to make it explicit or deny it."_
 
 Authorization note: filed on the **within-authority** substrate-authoring grant
 (`dont-ask-permission` broad standing grant — "author backlog without asking"), NOT on
@@ -32,15 +46,15 @@ any implicit/shadow chain (the discipline this row itself operationalizes; see
 The authorization spectrum has three tiers (per the B-0928 implicit-extension
 refinement):
 
-| Tier | Authorizes | Risk |
-|---|---|---|
-| **Explicit** | anything (within HARD LIMITS) | none — examined |
+| Tier                                                                                                   | Authorizes                                          | Risk                                                                                                           |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Explicit**                                                                                           | anything (within HARD LIMITS)                       | none — examined                                                                                                |
 | **Implicit-extension** (operator continues / "Also…" extends a shadow/ambient instruction's authority) | within-authority actions only; NOT out-of-authority | **silent laundering** — the operator can endorse a shadow-instruction just by continuing, without examining it |
-| **Shadow-alone** (the third participant; `tools/shadow/` grey-text) | nothing | n/a — never an authorization source (B-0928) |
+| **Shadow-alone** (the third participant; `tools/shadow/` grey-text)                                    | nothing                                             | n/a — never an authorization source (B-0928)                                                                   |
 
 The **implicit-extension** tier is the human-side of the B-0928 auth-injection: shadow-
 authority gets laundered into operator-backing **without examination**. Today the only
-mitigation is *passive* — the agent is supposed to notice and never let implicit stand
+mitigation is _passive_ — the agent is supposed to notice and never let implicit stand
 in for explicit on out-of-authority actions. That depends on the agent being honest
 about catching it.
 
@@ -53,7 +67,7 @@ grant and **render it back** to the operator as a decision node:
 
 > **"You just made an implicit grant of X — [make it explicit] / [deny]."**
 
-The implicit extension can no longer launder silently *even if the agent misses it* —
+The implicit extension can no longer launder silently _even if the agent misses it_ —
 the interface forces the resolution. Every implicit grant is surfaced and resolved
 explicitly; none passes unexamined. The DU-UX stops being a passive renderer and
 becomes the place the **authorization discipline is enforced**, not just hoped.
@@ -86,8 +100,8 @@ instead of an inference buried in prose.
 
 ## The DU-UX doubles as the authorization glass-halo
 
-One interface, two safety jobs: the DU choose-your-own-adventure surface is *both* how a
-5-year-old talks to a fairy-tale (kid-safety, B-0926/B-0929) *and* how the operator sees
+One interface, two safety jobs: the DU choose-your-own-adventure surface is _both_ how a
+5-year-old talks to a fairy-tale (kid-safety, B-0926/B-0929) _and_ how the operator sees
 and resolves every implicit grant they make. The conversational UX **is** the
 authorization glass-halo (`glass-halo-bidirectional` at authorization scope) — every
 grant surfaced + resolved explicitly, none silently laundered.
@@ -100,7 +114,7 @@ grant surfaced + resolved explicitly, none silently laundered.
 - [ ] DU-UX node renderer: [make explicit] / [deny] choose-your-own-adventure prompt.
 - [ ] Wire resolution → typed authorization grant (make-explicit) or refusal (deny);
       the typed grant feeds the `shadow-auth-can't-compile` provenance (B-0929) so an
-      *explicitly-resolved* grant is the only thing that can authorize out-of-authority.
+      _explicitly-resolved_ grant is the only thing that can authorize out-of-authority.
 - [ ] Scope: surface for **out-of-authority / irreversible** actions (where implicit is
       never enough); within-authority actions remain pre-authorized (no prompt needed —
       avoid prompt-fatigue).
@@ -119,6 +133,6 @@ grant surfaced + resolved explicitly, none silently laundered.
 ## Substrate-honest framing
 
 Buildable feature on existing substrate (ConvFeedback B-0861 + the DU-UX). The
-implicit-extension *detector* is the open research piece (recognizing the pattern
+implicit-extension _detector_ is the open research piece (recognizing the pattern
 reliably); the variant + the render + the resolution-wiring are standard. Scopes to
 out-of-authority actions to avoid prompt-fatigue on the broad within-authority grant.

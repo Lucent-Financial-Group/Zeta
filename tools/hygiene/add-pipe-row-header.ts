@@ -30,14 +30,7 @@
 //   1   one or more files could not be processed
 //   2   tick shard directory missing
 
-import {
-  readdirSync,
-  readFileSync,
-  renameSync,
-  statSync,
-  unlinkSync,
-  writeFileSync,
-} from "node:fs";
+import { readdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 
 const ROOT = resolve(process.env["REPO_ROOT"] ?? process.cwd());
@@ -185,13 +178,7 @@ function isFile(p: string): boolean {
 
 interface Action {
   rel: string;
-  status:
-    | "skip-already-compliant"
-    | "skip-unparseable-name"
-    | "skip-empty"
-    | "would-prepend"
-    | "prepended"
-    | "error";
+  status: "skip-already-compliant" | "skip-unparseable-name" | "skip-empty" | "would-prepend" | "prepended" | "error";
   detail?: string;
 }
 
@@ -289,9 +276,7 @@ export function main(argv: string[]): number {
   }
 
   if (unknownFlags.length > 0) {
-    process.stderr.write(
-      `error: unrecognized flag(s): ${unknownFlags.join(", ")}; known flags: --write, --files\n`,
-    );
+    process.stderr.write(`error: unrecognized flag(s): ${unknownFlags.join(", ")}; known flags: --write, --files\n`);
     return 1;
   }
 
@@ -307,9 +292,7 @@ export function main(argv: string[]): number {
   // across all non-compliant shards from a caller typo or an empty
   // dynamically-generated file list. Treat as explicit error.
   if (filesFlagSeen && files.length === 0) {
-    process.stderr.write(
-      "error: --files specified but no paths provided; refusing to fall back to full-tree scan\n",
-    );
+    process.stderr.write("error: --files specified but no paths provided; refusing to fall back to full-tree scan\n");
     return 1;
   }
 
@@ -323,11 +306,7 @@ export function main(argv: string[]): number {
     shards = [];
     for (const { input, abs } of resolvedInputs) {
       const rel = repoRelative(abs);
-      const keep =
-        rel.startsWith(SHARD_PREFIX) &&
-        rel.endsWith(".md") &&
-        basename(abs) !== "README.md" &&
-        isFile(abs);
+      const keep = rel.startsWith(SHARD_PREFIX) && rel.endsWith(".md") && basename(abs) !== "README.md" && isFile(abs);
       if (keep) shards.push(abs);
       else droppedInputs.push(input);
     }
@@ -363,9 +342,7 @@ export function main(argv: string[]): number {
     if (action.status === "would-prepend" || action.status === "prepended") {
       process.stdout.write(`${action.status}: ${action.rel}\n`);
     } else if (action.status === "error") {
-      process.stderr.write(
-        `error: ${action.rel} — ${action.detail ?? "unknown"}\n`,
-      );
+      process.stderr.write(`error: ${action.rel} — ${action.detail ?? "unknown"}\n`);
     }
   }
 

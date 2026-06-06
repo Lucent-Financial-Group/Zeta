@@ -47,7 +47,7 @@ spec:
                   properties:
                     spiffeID:
                       type: string
-                      pattern: '^spiffe://[^/]+/.+$'
+                      pattern: "^spiffe://[^/]+/.+$"
                       description: SPIFFE ID of the workload binding the hat.
                     serviceAccountRef:
                       type: object

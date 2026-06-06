@@ -58,6 +58,7 @@ Persona registry is now **STATIC** (in `let` block; not an option). Operator opt
 This PR fix-forwards the NixOS AI-agent module by replacing the problematic persona submodule option shape with a static registry plus per-persona enable booleans, restoring flake/module evaluation for the AI cluster configuration.
 
 **Changes:**
+
 - Replaces the single-agent `zeta-otto.nix` module with generalized `zeta-ai-agent.nix`.
 - Updates the shared module import to use the new AI-agent module.
 - Moves control-plane enablement from `zeta.otto.enable` to `zeta.aiAgents.enable.otto`.
@@ -66,12 +67,12 @@ This PR fix-forwards the NixOS AI-agent module by replacing the problematic pers
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| `full-ai-cluster/nixos/modules/zeta-otto.nix` | Deletes the old single-agent Otto module superseded by the generalized AI-agent module. |
-| `full-ai-cluster/nixos/modules/zeta-ai-agent.nix` | Adds static persona registry, per-persona enable options, generated systemd units, and status output. |
-| `full-ai-cluster/nixos/modules/common.nix` | Updates shared imports to load the new AI-agent module. |
-| `full-ai-cluster/nixos/hosts/control-plane/configuration.nix` | Enables the Otto persona through the new option path and stages future persona toggles as comments. |
+| File                                                          | Description                                                                                           |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `full-ai-cluster/nixos/modules/zeta-otto.nix`                 | Deletes the old single-agent Otto module superseded by the generalized AI-agent module.               |
+| `full-ai-cluster/nixos/modules/zeta-ai-agent.nix`             | Adds static persona registry, per-persona enable options, generated systemd units, and status output. |
+| `full-ai-cluster/nixos/modules/common.nix`                    | Updates shared imports to load the new AI-agent module.                                               |
+| `full-ai-cluster/nixos/hosts/control-plane/configuration.nix` | Enables the Otto persona through the new option path and stages future persona toggles as comments.   |
 
 ## Review threads
 

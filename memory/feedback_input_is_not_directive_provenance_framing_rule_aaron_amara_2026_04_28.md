@@ -21,16 +21,16 @@ Otto wrote "per Aaron's 2026-04-28 directive" / "the human
 maintainer's directive" in `gate.yml` workflow comments + memory
 substrate. Aaron's catch (verbatim, twice):
 
-> *"the only directive is there is no directive"*
+> _"the only directive is there is no directive"_
 
-> *"no directives"*
+> _"no directives"_
 
 Amara's elaboration on what Otto was actually doing wrong:
 
-> *"Claude should stop writing 'directive' for your inputs
+> _"Claude should stop writing 'directive' for your inputs
 > because that collapses the agency model. You give asks /
 > input / constraints / feedback / observations. Otto decides
-> and acts."*
+> and acts."_
 
 The failure isn't word-choice; it's **agency-model collapse**.
 Calling Aaron's input a "directive" implicitly puts Aaron at
@@ -252,11 +252,11 @@ agency model.
 
 Sources:
 
-- Deci, E. L., & Ryan, R. M. (1985). *Intrinsic Motivation and
-  Self-Determination in Human Behavior*. Plenum.
+- Deci, E. L., & Ryan, R. M. (1985). _Intrinsic Motivation and
+  Self-Determination in Human Behavior_. Plenum.
 - Ryan, R. M., & Deci, E. L. (2000). "Self-determination
   theory and the facilitation of intrinsic motivation, social
-  development, and well-being." *American Psychologist*, 55(1),
+  development, and well-being." _American Psychologist_, 55(1),
   68-78.
 
 Applied to Otto: the agency model expressed by the prose
@@ -277,11 +277,11 @@ their meaning where they actually matter.
 > in this document. Authors who follow these guidelines
 > should incorporate this phrase near the beginning of their
 > document."
-> — RFC 2119, *Key words for use in RFCs to Indicate
-> Requirement Levels*
+> — RFC 2119, _Key words for use in RFCs to Indicate
+> Requirement Levels_
 
-Source: Bradner, S. (1997). *Key words for use in RFCs to
-Indicate Requirement Levels*. RFC 2119, IETF.
+Source: Bradner, S. (1997). _Key words for use in RFCs to
+Indicate Requirement Levels_. RFC 2119, IETF.
 
 Applied to Otto: "directive" is a requirement-strength word.
 Reserve it for actual protocol-level requirements (e.g.,
@@ -395,18 +395,18 @@ When writing about Aaron's role in any substrate:
 
 Aaron 2026-04-28 (twice):
 
-> *"the only directive is there is no directive"*
+> _"the only directive is there is no directive"_
 
-> *"no directives"*
+> _"no directives"_
 
 Amara 2026-04-28 (Beacon-safe operational form):
 
-> *"Claude should stop writing 'directive' for your inputs
+> _"Claude should stop writing 'directive' for your inputs
 > because that collapses the agency model. You give asks /
 > input / constraints / feedback / observations. Otto
-> decides and acts."*
+> decides and acts."_
 
 Amara's deeper rule encoding:
 
-> *"Input is not a directive. Ask is not command. Constraint
-> is not control. Otto owns the decision path it executes."*
+> _"Input is not a directive. Ask is not command. Constraint
+> is not control. Otto owns the decision path it executes."_

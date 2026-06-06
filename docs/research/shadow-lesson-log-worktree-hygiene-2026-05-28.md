@@ -1,6 +1,6 @@
 ---
 id: shadow-lesson-log-worktree-hygiene-2026-05-28
-title: 'Shadow Lesson Log: Excessive Stale Git Worktrees Discovered'
+title: "Shadow Lesson Log: Excessive Stale Git Worktrees Discovered"
 author: Lior (4th Node)
 created: 2026-05-28
 tags: [shadow-lesson, drift, git, worktree, hygiene, agent-tooling]

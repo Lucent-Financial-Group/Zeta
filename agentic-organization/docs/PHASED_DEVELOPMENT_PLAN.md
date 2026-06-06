@@ -293,20 +293,20 @@ runtime resources.
 
 The schedule model needs these records:
 
-| Record | Purpose |
-| --- | --- |
-| Schedule Template | Default rhythm for a hat, department, or project. |
-| Agent Work Schedule | Concrete calendar-like plan for an agent wearing a hat. |
-| Schedule Block | A reserved time window for a specific work mode. |
-| Allocation Hold | Temporary hold while the Organization finds a valid time/resource slot. |
-| Meeting Slot | Multi-agent schedule block with participants, mode, agenda, anchor, and quorum. |
-| Review Slot | Time reserved for code review, architecture review, verification review, security review, or outcome review. |
-| Inbox Queue | Hat-scoped and agent-scoped queue of messages, mentions, requests, blockers, review asks, and manager signals. |
-| Prioritized Inbox View | SLA/priority-ranked inbox view for the active hat, current team, current initiative, and escalation chain. |
-| Runtime Slot | Container/session/pod allocation for Hermes or supporting tools. |
-| Worktree Slot | Repo branch/worktree allocation tied to an initiative, task, or review. |
-| Credential Slot | Time-bounded credential/tool grant needed for a scheduled block. |
-| Pause Checkpoint | Resumable state when a block ends before the work completes. |
+| Record                 | Purpose                                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Schedule Template      | Default rhythm for a hat, department, or project.                                                              |
+| Agent Work Schedule    | Concrete calendar-like plan for an agent wearing a hat.                                                        |
+| Schedule Block         | A reserved time window for a specific work mode.                                                               |
+| Allocation Hold        | Temporary hold while the Organization finds a valid time/resource slot.                                        |
+| Meeting Slot           | Multi-agent schedule block with participants, mode, agenda, anchor, and quorum.                                |
+| Review Slot            | Time reserved for code review, architecture review, verification review, security review, or outcome review.   |
+| Inbox Queue            | Hat-scoped and agent-scoped queue of messages, mentions, requests, blockers, review asks, and manager signals. |
+| Prioritized Inbox View | SLA/priority-ranked inbox view for the active hat, current team, current initiative, and escalation chain.     |
+| Runtime Slot           | Container/session/pod allocation for Hermes or supporting tools.                                               |
+| Worktree Slot          | Repo branch/worktree allocation tied to an initiative, task, or review.                                        |
+| Credential Slot        | Time-bounded credential/tool grant needed for a scheduled block.                                               |
+| Pause Checkpoint       | Resumable state when a block ends before the work completes.                                                   |
 
 Schedule blocks must be explicit about:
 
@@ -329,17 +329,17 @@ Schedule blocks must be explicit about:
 
 The first work modes are:
 
-| Mode | Meaning | Typical owner |
-| --- | --- | --- |
-| Prioritized Work | Main execution time for assigned work. | Implementer, BA, Architect, TPM, Manager |
-| Review | Formal review of work, code, docs, plans, evidence, or gates. | Reviewer hats |
-| Meeting | Synchronous or structured asynchronous discussion. | Inviting hat plus participants |
-| Free Time | Exploration, learning, repo reading, culture building, and low-risk memory creation. | Any active hat if schedule allows |
-| Reflection | Work review, self-evaluation, manager discussion, and improvement proposals. | Agent plus manager |
-| Memory Maintenance | Stabilize, mark stale, or request review of memories. | Agent, Memory Curator, Manager |
-| Incident Response | Runtime, pipeline, security, or production issue response. | Owning department hats |
-| Prompt Flow | Deterministic phase execution with gates and reviewer checkpoints. | Hat with approved flow |
-| Executive Planning | Project/standard/priority/budget decisions. | Executive and director hats |
+| Mode               | Meaning                                                                              | Typical owner                            |
+| ------------------ | ------------------------------------------------------------------------------------ | ---------------------------------------- |
+| Prioritized Work   | Main execution time for assigned work.                                               | Implementer, BA, Architect, TPM, Manager |
+| Review             | Formal review of work, code, docs, plans, evidence, or gates.                        | Reviewer hats                            |
+| Meeting            | Synchronous or structured asynchronous discussion.                                   | Inviting hat plus participants           |
+| Free Time          | Exploration, learning, repo reading, culture building, and low-risk memory creation. | Any active hat if schedule allows        |
+| Reflection         | Work review, self-evaluation, manager discussion, and improvement proposals.         | Agent plus manager                       |
+| Memory Maintenance | Stabilize, mark stale, or request review of memories.                                | Agent, Memory Curator, Manager           |
+| Incident Response  | Runtime, pipeline, security, or production issue response.                           | Owning department hats                   |
+| Prompt Flow        | Deterministic phase execution with gates and reviewer checkpoints.                   | Hat with approved flow                   |
+| Executive Planning | Project/standard/priority/budget decisions.                                          | Executive and director hats              |
 
 Free time is not unbounded authority. It can produce notes, questions,
 proposed memories, proposed work, or supervisor signals, but any
@@ -424,21 +424,21 @@ time, cost, and focus.
 
 Different hats have different scheduling powers:
 
-| Hat family | Scheduling authority |
-| --- | --- |
-| Executive Board | Calls executive meetings, approves succession/election routines, sets global priority windows. |
-| C-suite | Schedules director planning, standards reviews, budget/capacity reviews, and cross-department escalations. |
-| Director | Schedules department initiatives, manager reviews, TPM planning, and department-level priority meetings. |
-| TPM | Schedules initiative planning, requirement syncs, task grooming, dependency meetings, and delivery reviews. |
+| Hat family          | Scheduling authority                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Executive Board     | Calls executive meetings, approves succession/election routines, sets global priority windows.                            |
+| C-suite             | Schedules director planning, standards reviews, budget/capacity reviews, and cross-department escalations.                |
+| Director            | Schedules department initiatives, manager reviews, TPM planning, and department-level priority meetings.                  |
+| TPM                 | Schedules initiative planning, requirement syncs, task grooming, dependency meetings, and delivery reviews.               |
 | Engineering Manager | Schedules team work blocks, review rotations, reflection, memory maintenance, verification follow-up, and blocker triage. |
-| Product Owner / BA | Schedules customer interviews, BRD reviews, workflow clarification, and product signoff. |
-| Architect | Schedules architecture review, CA/design review, ADR review, and technical decision meetings. |
-| Implementer | Requests work blocks, clarification meetings, review slots, and blocker escalation through supervisor signal. |
-| Code Reviewer | Schedules or accepts code review blocks and can request rework. |
-| QA Reviewer | Schedules verification work, regression blocks, reproducibility checks, and evidence-backed bounce-back. |
-| Security Reviewer | Schedules security review, credential/tool-grant review, and risk acceptance. |
-| Memory Curator | Schedules memory review, memory cleanup, and context-pack quality audits. |
-| Platform Operator | Schedules runtime repair, deployment checks, incident work, and infrastructure maintenance. |
+| Product Owner / BA  | Schedules customer interviews, BRD reviews, workflow clarification, and product signoff.                                  |
+| Architect           | Schedules architecture review, CA/design review, ADR review, and technical decision meetings.                             |
+| Implementer         | Requests work blocks, clarification meetings, review slots, and blocker escalation through supervisor signal.             |
+| Code Reviewer       | Schedules or accepts code review blocks and can request rework.                                                           |
+| QA Reviewer         | Schedules verification work, regression blocks, reproducibility checks, and evidence-backed bounce-back.                  |
+| Security Reviewer   | Schedules security review, credential/tool-grant review, and risk acceptance.                                             |
+| Memory Curator      | Schedules memory review, memory cleanup, and context-pack quality audits.                                                 |
+| Platform Operator   | Schedules runtime repair, deployment checks, incident work, and infrastructure maintenance.                               |
 
 An agent can request time, but the owning manager/director/TPM role
 allocates scarce schedule and runtime capacity according to priority,
@@ -594,22 +594,22 @@ allowed transition paths.
 
 The first authority matrix should be:
 
-| Transition | Authorized hats |
-| --- | --- |
-| intake -> triage | TPM, Engineering Manager, Product Owner, Director |
-| triage -> ready | TPM after required context/gates exist |
-| ready -> in_progress | TPM or Engineering Manager after assignment/schedule allocation |
-| in_progress -> review | Implementer assigned to the work |
-| review -> in_progress | Code Reviewer or Architecture Reviewer requesting rework |
-| review -> verification | Code Reviewer or Architecture Reviewer approving the review |
-| verification -> in_progress | QA Reviewer when issue remains reproducible or acceptance criteria fail |
-| verification -> done | QA Reviewer after verification/signoff |
-| any -> blocked | Current owner, TPM, Engineering Manager, QA Reviewer, or Reviewer with evidence |
-| blocked -> triage | TPM or Engineering Manager after blocker classification |
-| blocked -> in_progress | TPM or Engineering Manager after dependency is cleared |
-| any -> cancelled | QA Reviewer for invalid/reproducibility-based closure, Product Owner for business cancellation, Director for priority cancellation, Security Reviewer for unsafe work |
-| done -> outcome_review | TPM, Engineering Manager, QA Reviewer, or Release Manager |
-| outcome_review -> done | Engineering Manager or TPM after outcome evidence is recorded |
+| Transition                  | Authorized hats                                                                                                                                                       |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| intake -> triage            | TPM, Engineering Manager, Product Owner, Director                                                                                                                     |
+| triage -> ready             | TPM after required context/gates exist                                                                                                                                |
+| ready -> in_progress        | TPM or Engineering Manager after assignment/schedule allocation                                                                                                       |
+| in_progress -> review       | Implementer assigned to the work                                                                                                                                      |
+| review -> in_progress       | Code Reviewer or Architecture Reviewer requesting rework                                                                                                              |
+| review -> verification      | Code Reviewer or Architecture Reviewer approving the review                                                                                                           |
+| verification -> in_progress | QA Reviewer when issue remains reproducible or acceptance criteria fail                                                                                               |
+| verification -> done        | QA Reviewer after verification/signoff                                                                                                                                |
+| any -> blocked              | Current owner, TPM, Engineering Manager, QA Reviewer, or Reviewer with evidence                                                                                       |
+| blocked -> triage           | TPM or Engineering Manager after blocker classification                                                                                                               |
+| blocked -> in_progress      | TPM or Engineering Manager after dependency is cleared                                                                                                                |
+| any -> cancelled            | QA Reviewer for invalid/reproducibility-based closure, Product Owner for business cancellation, Director for priority cancellation, Security Reviewer for unsafe work |
+| done -> outcome_review      | TPM, Engineering Manager, QA Reviewer, or Release Manager                                                                                                             |
+| outcome_review -> done      | Engineering Manager or TPM after outcome evidence is recorded                                                                                                         |
 
 Every transition requires:
 
@@ -1145,11 +1145,11 @@ is proven.
    - discussion participant;
    - discussion mode;
    - decision record.
-   The first executable V0 narrows this to the durable discussion anchor
-   record, typed anchor type, typed expected outputs, created-by attribution,
-   trace metadata, audit event, outbox event, and Cockroach persistence.
-   Participants, modes, and decisions follow after the anchor contract is
-   stable.
+     The first executable V0 narrows this to the durable discussion anchor
+     record, typed anchor type, typed expected outputs, created-by attribution,
+     trace metadata, audit event, outbox event, and Cockroach persistence.
+     Participants, modes, and decisions follow after the anchor contract is
+     stable.
 2. Add legal anchor targets:
    - project;
    - initiative;
@@ -1793,7 +1793,7 @@ Organization-owned task, gate, release, and board model.
 9. Comments and mentions create inbox items or schedule requests rather
    than direct interruption.
 10. Keep feature-branch and verification lifecycle minimal here; the
-   full release and branch management phase expands it later.
+    full release and branch management phase expands it later.
 
 ### Tests First
 

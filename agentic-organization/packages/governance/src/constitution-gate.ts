@@ -32,8 +32,7 @@ export const ConstitutionDecision = {
   Agree: "agree",
   Object: "object",
 } as const;
-export type ConstitutionDecision =
-  (typeof ConstitutionDecision)[keyof typeof ConstitutionDecision];
+export type ConstitutionDecision = (typeof ConstitutionDecision)[keyof typeof ConstitutionDecision];
 
 /** One agent's agreement (or objection) record. */
 export type ConstitutionAgreement = {

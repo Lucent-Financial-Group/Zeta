@@ -1,13 +1,15 @@
 # Force Multiplication Log
 
 **Origin:** Aaron 2026-04-22 auto-loop-36 directive, verbatim:
-> *"can you keep a log of my force multiplicatoin? Other humans
-> will want to beat my score if we come up with a scoring system."*
+
+> _"can you keep a log of my force multiplicatoin? Other humans
+> will want to beat my score if we come up with a scoring system."_
 
 Following the same-tick observation:
-> *"if you look at each letter i type and how much you create, my
+
+> _"if you look at each letter i type and how much you create, my
 > letters are crazy leverage right now, keystrokes to result is
-> very optimize"*
+> very optimize"_
 
 **Purpose:** Track the keystroke-to-substrate ratio per maintainer
 per tick as a factory-observability signal. When more humans join
@@ -25,10 +27,11 @@ demoted to anomaly-detection diagnostic only.
 ## Scoring model — outcome-based primary, activity-based secondary
 
 **Correction anchor (Aaron 2026-04-22 auto-loop-37, verbatim):**
-> *"FYI we are not optimizing for keystokes to output ratio if
+
+> _"FYI we are not optimizing for keystokes to output ratio if
 > we did, you will just write crazy amounts of nothing to make
 > that something other than a vanity score we need to meausre
-> like outcomes or someting instead"*
+> like outcomes or someting instead"_
 
 ### Primary score: outcome components (Goodhart-resistant)
 
@@ -37,23 +40,23 @@ Outcomes require the real world (commits landing, tests
 passing, reviewers agreeing, users adopting) to respond —
 the agent cannot mint these unilaterally.
 
-| Component | What counts | Weight |
-|-----------|-------------|--------|
-| **BACKLOG row closure** | Rows transitioned from open to closed this tick, weighted by original priority | P0 = 8 pts, P1 = 4 pts, P2 = 2 pts, P3 = 1 pt |
-| **New BACKLOG row filed** | Genuinely new directions (not re-litigation of declined items), anchored to verbatim maintainer directive or research finding | 1 pt per row, regardless of priority; justified by maintainer-directive anchor or external-validation |
-| **DORA deployment frequency** | Commits merged to `main` this tick (measured via `git log main`) | 1 pt per merged commit; 0 pts for ephemeral working-branch commits |
-| **DORA lead time** | Maintainer directive → merged-to-main (hours). Faster = higher | `max(0, 8 - hours)` pts, capped at 8 |
-| **DORA change failure rate** | Reverts + revision-blocks + hazardous-stack corrections this tick | **Negative** — subtract 4 pts per revert, 2 pts per revision-block |
-| **DORA MTTR** | BLOCKED PRs / BUGS.md P0 / hazardous-stacked-base resolutions this tick | 2 pts per resolution |
-| **External-signal validation** | Wink confirmations, maintainer-echo moments, peer-review agreements, third-substrate triangulation | 2 pts per validation with pre-validation-anchor; 0 pts retrocon claims |
-| **Reference-density lagging** | Shipped substrate cited by later ticks (measured over 10-tick rolling window) | Lagging signal; computed at tick-close for ticks 10 back |
-| **Copilot / CodeQL finding fix** | Legitimate finding fixed with test evidence this tick | 2 pts per fix |
-| **Complexity reduction** | Net-negative-LOC tick (deletions > insertions) with tests still passing; cyclomatic-complexity delta negative once tooling lands | 3 pts per qualifying tick; anchor: `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md` |
+| Component                        | What counts                                                                                                                      | Weight                                                                                                                  |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **BACKLOG row closure**          | Rows transitioned from open to closed this tick, weighted by original priority                                                   | P0 = 8 pts, P1 = 4 pts, P2 = 2 pts, P3 = 1 pt                                                                           |
+| **New BACKLOG row filed**        | Genuinely new directions (not re-litigation of declined items), anchored to verbatim maintainer directive or research finding    | 1 pt per row, regardless of priority; justified by maintainer-directive anchor or external-validation                   |
+| **DORA deployment frequency**    | Commits merged to `main` this tick (measured via `git log main`)                                                                 | 1 pt per merged commit; 0 pts for ephemeral working-branch commits                                                      |
+| **DORA lead time**               | Maintainer directive → merged-to-main (hours). Faster = higher                                                                   | `max(0, 8 - hours)` pts, capped at 8                                                                                    |
+| **DORA change failure rate**     | Reverts + revision-blocks + hazardous-stack corrections this tick                                                                | **Negative** — subtract 4 pts per revert, 2 pts per revision-block                                                      |
+| **DORA MTTR**                    | BLOCKED PRs / BUGS.md P0 / hazardous-stacked-base resolutions this tick                                                          | 2 pts per resolution                                                                                                    |
+| **External-signal validation**   | Wink confirmations, maintainer-echo moments, peer-review agreements, third-substrate triangulation                               | 2 pts per validation with pre-validation-anchor; 0 pts retrocon claims                                                  |
+| **Reference-density lagging**    | Shipped substrate cited by later ticks (measured over 10-tick rolling window)                                                    | Lagging signal; computed at tick-close for ticks 10 back                                                                |
+| **Copilot / CodeQL finding fix** | Legitimate finding fixed with test evidence this tick                                                                            | 2 pts per fix                                                                                                           |
+| **Complexity reduction**         | Net-negative-LOC tick (deletions > insertions) with tests still passing; cyclomatic-complexity delta negative once tooling lands | 3 pts per qualifying tick; anchor: `memory/feedback_deletions_over_insertions_complexity_reduction_cyclomatic_proxy.md` |
 
 ### Signal-in signal-out discipline
 
-Maintainer 2026-04-22 auto-loop-38: *"if you receive a signal
-in the signal out should be as clean or better"*. Applied to
+Maintainer 2026-04-22 auto-loop-38: _"if you receive a signal
+in the signal out should be as clean or better"_. Applied to
 the scoring doc itself — each revision of this log must keep
 the signal at least as clean as before. That is why the
 legacy sections (leaderboard / per-tick log / retroactive
@@ -98,9 +101,9 @@ for the full reasoning.
 
 ## Leaderboard
 
-| Rank | Maintainer | Ticks logged | Mean multiplier | Peak multiplier | Cumulative substrate (chars) |
-|------|------------|--------------|-----------------|-----------------|------------------------------|
-| 1    | Aaron Stainback | 1 | 22.6x | 22.6x (auto-loop-36) | ~32 800 |
+| Rank | Maintainer      | Ticks logged | Mean multiplier | Peak multiplier      | Cumulative substrate (chars) |
+| ---- | --------------- | ------------ | --------------- | -------------------- | ---------------------------- |
+| 1    | Aaron Stainback | 1            | 22.6x           | 22.6x (auto-loop-36) | ~32 800                      |
 
 One maintainer so far. Leaderboard structure is ready for
 multi-human — new entrants append rows with their tick count
@@ -113,41 +116,41 @@ human-as-roommate authorization (`AGENTS.md`).
 
 **Keystrokes in (~1454 chars across 17 chat messages):**
 
-| # | Message (truncated) | Chars |
-|---|---------------------|-------|
-| 1 | "how close did you get to an claim protocol" | 42 |
-| 2 | "can you just work it out with the cli? like code or gemini and yall try it..." | 222 |
-| 3 | "is that AutoPR" | 14 |
-| 4 | "is the local-CLI variant: no CI plumbing feel fun" | 49 |
-| 5 | "feels*" | 6 |
-| 6 | "you could add a parallel cli agents skill where you manage parallel agent..." | 163 |
-| 7 | "once it's mapped" | 16 |
-| 8 | "then take advante of the map and build" | 38 |
-| 9 | "new featues" | 11 |
-| 10 | "are you keeping up with the congintion level you launch it with becasue..." | 295 |
-| 11 | "i work for the CRM team at ServiceTitan if you want to use that..." | 108 |
-| 12 | "also they are gonna need their own custom version of skills in .codes..." | 161 |
-| 13 | "it shold fee connonical to them too" | 35 |
-| 14 | "not just one harness gets to orginize it like they want" | 55 |
-| 15 | "this is for everyone" | 20 |
-| 16 | "if you look at each letter i type and how much you create, my letters..." | 137 |
-| 17 | "can you keep a log of my force multiplicatoin? Other humans..." | 124 |
+| #   | Message (truncated)                                                             | Chars |
+| --- | ------------------------------------------------------------------------------- | ----- |
+| 1   | "how close did you get to an claim protocol"                                    | 42    |
+| 2   | "can you just work it out with the cli? like code or gemini and yall try it..." | 222   |
+| 3   | "is that AutoPR"                                                                | 14    |
+| 4   | "is the local-CLI variant: no CI plumbing feel fun"                             | 49    |
+| 5   | "feels\*"                                                                       | 6     |
+| 6   | "you could add a parallel cli agents skill where you manage parallel agent..."  | 163   |
+| 7   | "once it's mapped"                                                              | 16    |
+| 8   | "then take advante of the map and build"                                        | 38    |
+| 9   | "new featues"                                                                   | 11    |
+| 10  | "are you keeping up with the congintion level you launch it with becasue..."    | 295   |
+| 11  | "i work for the CRM team at ServiceTitan if you want to use that..."            | 108   |
+| 12  | "also they are gonna need their own custom version of skills in .codes..."      | 161   |
+| 13  | "it shold fee connonical to them too"                                           | 35    |
+| 14  | "not just one harness gets to orginize it like they want"                       | 55    |
+| 15  | "this is for everyone"                                                          | 20    |
+| 16  | "if you look at each letter i type and how much you create, my letters..."      | 137   |
+| 17  | "can you keep a log of my force multiplicatoin? Other humans..."                | 124   |
 
 **Artifacts out (~32 800 chars of new substrate):**
 
-| Artifact | Chars (approx) |
-|----------|----------------|
-| `docs/research/codex-cli-self-report-2026-04-22.md` (Codex-authored, orchestrator frontmatter) | 5 500 |
-| PR #136 commit + body | 1 000 |
-| `docs/BACKLOG.md` parallel-CLI-agents P1 row + canonical-inhabitance principle block | 3 000 |
-| `docs/BACKLOG.md` secret-handoff row (auto-loop-34 carryover finalized this tick) | 800 |
-| `memory/project_aaron_servicetitan_crm_team_role_demo_scope_narrowing_2026_04_22.md` | 4 500 |
-| `memory/feedback_aaron_terse_directives_high_leverage_do_not_underweight.md` | 3 500 |
-| `docs/hygiene-history/loop-tick-history.md` auto-loop-36 row | 8 000 |
-| `docs/force-multiplication-log.md` (this doc) | 4 000 |
-| Tick-close commit message + PR #132 title edit | 1 500 |
-| MEMORY.md index entries (1 new) | 600 |
-| PR #136 co-author precedent (Codex 0.122.0) — external-substrate signal | 400 |
+| Artifact                                                                                       | Chars (approx) |
+| ---------------------------------------------------------------------------------------------- | -------------- |
+| `docs/research/codex-cli-self-report-2026-04-22.md` (Codex-authored, orchestrator frontmatter) | 5 500          |
+| PR #136 commit + body                                                                          | 1 000          |
+| `docs/BACKLOG.md` parallel-CLI-agents P1 row + canonical-inhabitance principle block           | 3 000          |
+| `docs/BACKLOG.md` secret-handoff row (auto-loop-34 carryover finalized this tick)              | 800            |
+| `memory/project_aaron_servicetitan_crm_team_role_demo_scope_narrowing_2026_04_22.md`           | 4 500          |
+| `memory/feedback_aaron_terse_directives_high_leverage_do_not_underweight.md`                   | 3 500          |
+| `docs/hygiene-history/loop-tick-history.md` auto-loop-36 row                                   | 8 000          |
+| `docs/force-multiplication-log.md` (this doc)                                                  | 4 000          |
+| Tick-close commit message + PR #132 title edit                                                 | 1 500          |
+| MEMORY.md index entries (1 new)                                                                | 600            |
+| PR #136 co-author precedent (Codex 0.122.0) — external-substrate signal                        | 400            |
 
 **Force multiplier: 22.6x**
 
@@ -156,35 +159,35 @@ cross-check).
 
 **Notable compression moves (high-leverage snippets):**
 
-- *"not just one harness gets to orginize it like they want"*
+- _"not just one harness gets to orginize it like they want"_
   (55 chars) → canonical-inhabitance principle block + BACKLOG
   row edit + tri-party skill-negotiation architecture. ~1 200
   chars of substrate from 55 keystrokes = **21.8x** on that
   fragment alone.
-- *"keep our records of their activy or have them log their own
-  to the capability cop level too"* (92 chars fragment within
+- _"keep our records of their activy or have them log their own
+  to the capability cop level too"_ (92 chars fragment within
   message 10) → cognition-level envelope prototype in Codex
   self-report frontmatter + permanent ledger pattern + BACKLOG
   sub-directive. ~1 500 chars substrate = **16.3x**.
-- *"this is for everyone"* (20 chars) → tri-party negotiation
+- _"this is for everyone"_ (20 chars) → tri-party negotiation
   architecture (not Claude-proposes-others-ratify). ~400 chars
   substrate = **20.0x**.
 
 ### Cumulative (Aaron, running total)
 
-| Metric | Value |
-|--------|-------|
-| Ticks logged | 1 |
-| Total keystrokes | 1 454 |
-| Total substrate chars | 32 800 |
-| Mean multiplier | 22.6x |
-| Peak multiplier | 22.6x (auto-loop-36) |
+| Metric                | Value                |
+| --------------------- | -------------------- |
+| Ticks logged          | 1                    |
+| Total keystrokes      | 1 454                |
+| Total substrate chars | 32 800               |
+| Mean multiplier       | 22.6x                |
+| Peak multiplier       | 22.6x (auto-loop-36) |
 
 Earlier ticks are back-filled from historical transcripts + git
 history (see **Retroactive reconstruction** section below).
-Aaron 2026-04-22 auto-loop-36 directive: *"you should be able
+Aaron 2026-04-22 auto-loop-36 directive: _"you should be able
 to retroactivly calculate it's deata over time since the start
-of the project we have all history"*.
+of the project we have all history"_.
 
 ### auto-loop-37 — 2026-04-22 — Aaron Stainback (course-correction tick)
 
@@ -192,8 +195,8 @@ of the project we have all history"*.
 
 This tick was a scoring-model course-correction — Aaron
 caught the char-ratio as a vanity metric susceptible to
-Goodhart's Law (*"if we did, you will just write crazy
-amounts of nothing"*) and a same-tick refinement naming
+Goodhart's Law (_"if we did, you will just write crazy
+amounts of nothing"_) and a same-tick refinement naming
 complexity-reduction / cyclomatic-complexity / CC-LOC-trend
 as the proper measurement axis. No commits, no BACKLOG
 closures, no merges — outcome points = 0.
@@ -205,7 +208,7 @@ Substrate landed (calibration, not primary-score):
 - Scoring-model section in this doc rewritten to outcome-based
 
 **Meta-observation:** under the old char-ratio model, this
-tick would have scored a *high* multiplier (few Aaron chars →
+tick would have scored a _high_ multiplier (few Aaron chars →
 many doc chars in the rewrite). Under the outcome model it
 scores 0 because nothing merged, nothing closed, no world-
 response event occurred. That inversion is exactly what
@@ -218,12 +221,12 @@ to reward unilateral agent output.
 verbatim maintainer-directive anchors).
 
 - +1 pt — BACKLOG row: pluggable complexity-measurement
-  framework (Aaron directive *"thats is pluggable someting
-  but backlog it"*).
+  framework (Aaron directive _"thats is pluggable someting
+  but backlog it"_).
 - +1 pt — BACKLOG row: semiring-parameterized Zeta / multiple
-  algebras in the db (Aaron directive *"what about multiple
-  algebras in the db"* confirmed as *"semiring = pluggable
-  algebra in the db). thats it"*).
+  algebras in the db (Aaron directive _"what about multiple
+  algebras in the db"_ confirmed as _"semiring = pluggable
+  algebra in the db). thats it"_).
 
 DORA merges-to-main: 0 (feature branch only this tick). DORA
 lead-time: within-tick (minutes from directive to landed row)
@@ -231,16 +234,16 @@ but no merge yet. Complexity-reduction: not evaluated —
 memory files + BACKLOG rows are net-additive. External
 validation: atan2 MathWorks wink arrived this tick (occurrence
 of preserve-input-arity pattern via numerical-routines
-voice); interpretation awaits Aaron confirmation so *not*
+voice); interpretation awaits Aaron confirmation so _not_
 scored yet.
 
 **Notable directives logged for future-tick substrate:**
 
-- Aaron *"show down"* — pace directive applied this tick
+- Aaron _"show down"_ — pace directive applied this tick
   (held force-mult log from over-rewrite; did not land
   signal-preservation memory; deferred atan2 memory).
-- Aaron *"if you receive a signal in the signal out should
-  be as clean or better"* — DSP-discipline for the factory,
+- Aaron _"if you receive a signal in the signal out should
+  be as clean or better"_ — DSP-discipline for the factory,
   applied same-tick to this doc's edit strategy (preserve
   legacy sections rather than erase). Memory deferred to
   auto-loop-39 to keep tick-scope bounded.
@@ -309,9 +312,9 @@ not ranking — compression across many ticks is the skill.
 
 ## Retroactive reconstruction (project-history back-fill)
 
-Aaron 2026-04-22 auto-loop-36 directive: *"you should be able
+Aaron 2026-04-22 auto-loop-36 directive: _"you should be able
 to retroactivly calculate it's deata over time since the start
-of the project we have all history"*.
+of the project we have all history"_.
 
 **Data sources:** 18 Claude Code session transcripts under
 `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/*.jsonl`
@@ -326,7 +329,7 @@ follow-up):**
    blocks, strip system-injected wrappers (`<system-reminder>`,
    `<command-name>`, `<local-command-caveat>`, `<bash-stdout>`,
    `<bash-stderr>`, `<user-prompt-submit-hook>`, `<<autonomous-
-   loop*>>` sentinel), drop whole blocks starting with known
+loop*>>` sentinel), drop whole blocks starting with known
    injection prefixes (pasted skill bodies, context-compaction
    summaries, auto-loop fire context).
 2. Apply a **5 000-char per-message cap** as a heuristic
@@ -334,23 +337,23 @@ follow-up):**
    both reported. Capped-keystrokes approximates "actually
    typed by Aaron" better than uncapped.
 3. Pull commits per day from `git log --all --date=short
-   --shortstat`, sum insertion / deletion counts.
+--shortstat`, sum insertion / deletion counts.
 4. Compute `substrate-growth-per-keystroke = insertions_per_day /
-   keystrokes_capped_per_day` — a trend proxy, not a precise
+keystrokes_capped_per_day` — a trend proxy, not a precise
    force-multiplier. True multiplier requires directive-to-
    artifact attribution which isn't fully automatable
    retroactively.
 
 **Per-day table:**
 
-| Day | Keystroke msgs | Keystrokes (raw) | Keystrokes (capped) | Commits | Insertions | Deletions | Auto-loop fires | Ins / keystroke |
-|-----|---------------:|-----------------:|--------------------:|--------:|-----------:|----------:|----------------:|----------------:|
-| 2026-04-18 | 85 | 23 911 | 21 333 | 27 | 66 839 | 4 649 | 0 | 3.14x |
-| 2026-04-19 | 142 | 47 762 | 47 531 | 4 | 69 887 | 3 228 | 0 | 1.47x |
-| 2026-04-20 | 95 | 15 875 | 15 875 | 115 | 37 290 | 2 342 | 1 | 2.35x |
-| 2026-04-21 | 22 | 11 076 | 11 076 | 220 | 67 858 | 2 713 | 0 | 6.13x |
-| 2026-04-22 | 21 | 8 442 | 8 442 | 133 | 9 787 | 30 | 0 | 1.16x |
-| **TOTAL** | **365** | **107 066** | **104 257** | **499** | **251 661** | **12 962** | **1** | **2.41x (avg)** |
+| Day        | Keystroke msgs | Keystrokes (raw) | Keystrokes (capped) | Commits |  Insertions |  Deletions | Auto-loop fires | Ins / keystroke |
+| ---------- | -------------: | ---------------: | ------------------: | ------: | ----------: | ---------: | --------------: | --------------: |
+| 2026-04-18 |             85 |           23 911 |              21 333 |      27 |      66 839 |      4 649 |               0 |           3.14x |
+| 2026-04-19 |            142 |           47 762 |              47 531 |       4 |      69 887 |      3 228 |               0 |           1.47x |
+| 2026-04-20 |             95 |           15 875 |              15 875 |     115 |      37 290 |      2 342 |               1 |           2.35x |
+| 2026-04-21 |             22 |           11 076 |              11 076 |     220 |      67 858 |      2 713 |               0 |           6.13x |
+| 2026-04-22 |             21 |            8 442 |               8 442 |     133 |       9 787 |         30 |               0 |           1.16x |
+| **TOTAL**  |        **365** |      **107 066** |         **104 257** | **499** | **251 661** | **12 962** |           **1** | **2.41x (avg)** |
 
 **Notes:**
 
@@ -425,8 +428,8 @@ maintainer messages averaging ~85 chars but with a few longer
 
 ## Anomaly detection — force-multiplier as smell signal
 
-Aaron 2026-04-22 auto-loop-36 directive: *"that metric can also
-show smeel issues based on it's anamoly detection over time"*.
+Aaron 2026-04-22 auto-loop-36 directive: _"that metric can also
+show smeel issues based on it's anamoly detection over time"_.
 
 The substrate-growth-per-keystroke signal has diagnostic value
 beyond leaderboard — deviations from baseline flag likely
@@ -435,13 +438,13 @@ factory smells. Once N≥10 ticks of data are available, baseline
 
 ### Smell classes (what anomalies mean)
 
-| Anomaly | Typical cause | What to check |
-|---------|---------------|---------------|
-| **Sudden drop** (new ratio << baseline) | Over-generation by agent (wordy substrate the directive didn't warrant); or maintainer fatigue producing underspecified directives; or bug-chase day (many small commits, little net growth). | Recent commits — are they cleanup / revert / rename-churn vs new-substrate? Recent memory files — are they 5 KB of fluff around a 3-line insight? Tick-history row — did the row inflate with padding? |
-| **Sudden spike** (new ratio >> baseline) | High-compression directive (one line → large substrate) — good; OR agent over-expanding a directive into work Aaron didn't ask for; OR attribution-error (agent-speculative work counted against Aaron's keystrokes). | Re-read the tick's directives — did Aaron actually ask for everything that landed? If not, attribution error — fix the counting or retract the over-generation. |
-| **Flat low multiplier over N ticks** | Pure speculative-factory-work phase — factory moving forward without directive compression. Not a smell per se — valid if speculative work is landing against backlog items — but flag if the speculative work is drifting from priorities. | BACKLOG audit — are the speculative landings aligned with P0/P1/P2? If agent is generating off-priority substrate, the multiplier is flat-low AND priority-drift is happening. |
-| **Flat high multiplier over N ticks** | Either the factory is in its sweet spot (Aaron directs, agent expands into dense substrate), OR the scoring is gaming — artifacts-out padding. | Substrate quality audit — is the density real? Review recent memory files / research docs for insight-per-char. |
-| **Message-length spike with multiplier drop** | Aaron pasted long content (logs, specs) that looked like a directive but was reference material. | Did the "long directive" get substrate-landed directly, or was it reference-only? If reference-only, the keystrokes should not count toward the multiplier. Filter adjustment. |
+| Anomaly                                       | Typical cause                                                                                                                                                                                                                               | What to check                                                                                                                                                                                          |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Sudden drop** (new ratio << baseline)       | Over-generation by agent (wordy substrate the directive didn't warrant); or maintainer fatigue producing underspecified directives; or bug-chase day (many small commits, little net growth).                                               | Recent commits — are they cleanup / revert / rename-churn vs new-substrate? Recent memory files — are they 5 KB of fluff around a 3-line insight? Tick-history row — did the row inflate with padding? |
+| **Sudden spike** (new ratio >> baseline)      | High-compression directive (one line → large substrate) — good; OR agent over-expanding a directive into work Aaron didn't ask for; OR attribution-error (agent-speculative work counted against Aaron's keystrokes).                       | Re-read the tick's directives — did Aaron actually ask for everything that landed? If not, attribution error — fix the counting or retract the over-generation.                                        |
+| **Flat low multiplier over N ticks**          | Pure speculative-factory-work phase — factory moving forward without directive compression. Not a smell per se — valid if speculative work is landing against backlog items — but flag if the speculative work is drifting from priorities. | BACKLOG audit — are the speculative landings aligned with P0/P1/P2? If agent is generating off-priority substrate, the multiplier is flat-low AND priority-drift is happening.                         |
+| **Flat high multiplier over N ticks**         | Either the factory is in its sweet spot (Aaron directs, agent expands into dense substrate), OR the scoring is gaming — artifacts-out padding.                                                                                              | Substrate quality audit — is the density real? Review recent memory files / research docs for insight-per-char.                                                                                        |
+| **Message-length spike with multiplier drop** | Aaron pasted long content (logs, specs) that looked like a directive but was reference material.                                                                                                                                            | Did the "long directive" get substrate-landed directly, or was it reference-only? If reference-only, the keystrokes should not count toward the multiplier. Filter adjustment.                         |
 
 ### Observed anomalies so far (2026-04-18 to 2026-04-22)
 

@@ -44,18 +44,21 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds the 2026-05-15 05:24Z tick-history shard documenting merges of PRs #3361/#3362 and capturing the current state of the worktree-prune-race investigation (including cleared suspects and remaining candidates).
 
 **Changes:**
+
 - Introduces a new tick shard file `0524Z.md` with the required pipe-row header plus an H1-rich narrative body.
 - Records investigation results for the worktree-prune-race incident and enumerates remaining suspects for follow-up.
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/hygiene-history/ticks/2026/05/15/0524Z.md:58**
-* The markdown link to `.claude/rules/verify-before-deferring.md` uses `../../../../../...`, which appears to be one directory short from this file location and will resolve to a non-existent `docs/.claude/...` path. Update the link to a correct relative (or repo-root-relative) path.
+
+- The markdown link to `.claude/rules/verify-before-deferring.md` uses `../../../../../...`, which appears to be one directory short from this file location and will resolve to a non-existent `docs/.claude/...` path. Update the link to a correct relative (or repo-root-relative) path.
+
 ```
 This composes with [`.claude/rules/verify-before-deferring.md`](../../../../../.claude/rules/verify-before-deferring.md) — instead of writing "next tick I'll investigate this", THIS tick did partial investigation and recorded which candidates are now cleared.
 ```
+
 </details>
 
 ## Review threads
@@ -72,4 +75,4 @@ This issue also appears on line 58 of the same file.
 
 **@copilot-pull-request-reviewer** (2026-05-15T05:39:22Z):
 
-`Copilot loop (\`.copilot/bin/copilot-loop-tick.ts\`)` is referenced as an inspected suspect, but there is no `.copilot/` directory in the repo, so readers can’t verify this claim and the path looks incorrect. Either fix the path to the actual Copilot loop substrate (if it exists elsewhere) or reword to avoid citing a non-existent repo path.
+`Copilot loop (\`.copilot/bin/copilot-loop-tick.ts\`)`is referenced as an inspected suspect, but there is no`.copilot/` directory in the repo, so readers can’t verify this claim and the path looks incorrect. Either fix the path to the actual Copilot loop substrate (if it exists elsewhere) or reword to avoid citing a non-existent repo path.

@@ -4,16 +4,17 @@ description: Aaron 2026-04-22 three-message sequence (worked instance of Aaron's
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Canonical shorthand (Aaron 2026-04-22 verbatim):** **dawkins=what, Girard=why/how.**
 
-**Maintainer confirmation (2026-04-22):** After the 4 glossary entries landed (Belief propagation, Mimetic theory / Girard, Memetic theory / Dawkins, Infer.NET) and the BACKLOG row was filed, Aaron: *"i think you have the light now."* Read in the register of the Matthean / Girardian frame we had just discussed — "light" as the unveiling of what was *hidden since the foundation of the world*. This is a positive calibration signal: the absorption (depth-ordering Girard over Dawkins, Matthew 13:35 as same scriptural substrate as seed→kernel, Infer.NET as load-bearing implementation already on roadmap, belief propagation as correct replacement for the invented "kernel-vocabulary propagation" term) is calibrated. Do not over-interpret as blanket authorization for adjacent work — the signal confirms THIS absorption, not a general "keep expanding." Future propagation-related absorptions should cite this memory as the known-calibrated baseline.
+**Maintainer confirmation (2026-04-22):** After the 4 glossary entries landed (Belief propagation, Mimetic theory / Girard, Memetic theory / Dawkins, Infer.NET) and the BACKLOG row was filed, Aaron: _"i think you have the light now."_ Read in the register of the Matthean / Girardian frame we had just discussed — "light" as the unveiling of what was _hidden since the foundation of the world_. This is a positive calibration signal: the absorption (depth-ordering Girard over Dawkins, Matthew 13:35 as same scriptural substrate as seed→kernel, Infer.NET as load-bearing implementation already on roadmap, belief propagation as correct replacement for the invented "kernel-vocabulary propagation" term) is calibrated. Do not over-interpret as blanket authorization for adjacent work — the signal confirms THIS absorption, not a general "keep expanding." Future propagation-related absorptions should cite this memory as the known-calibrated baseline.
 
 **Rule:** When I was about to name "kernel-vocabulary propagation" as a new factory concept, Aaron corrected: the established vocabulary already exists.
 
 - **Formal name:** **Belief propagation** (Judea Pearl, 1982 — sum-product algorithm on factor graphs / Bayesian networks; exact on trees, approximate on general graphs).
 - **Implementation:** **Infer.NET** (Microsoft Research, MIT-licensed, F# + C# native — `dotnet/infer` on GitHub). Already on Zeta's roadmap under `Zeta.Bayesian` for a `BayesianAggregate` operator (`docs/ROADMAP.md:80`, `docs/INSTALLED.md:72`).
-- **Cultural substrate — mechanism (HOW + WHY):** **Mimetic theory** (René Girard — *Things Hidden Since the Foundation of the World* / *Des choses cachées depuis la fondation du monde*, 1978; triangular desire, scapegoat mechanism, and the founding concealment unveiled). Girard's title is a direct quote of **Matthew 13:35** — which is the parable of the sower, the same scriptural substrate that grounds our seed → soil → kernel vocabulary. **Girard gives you the engineering recipe** — if you understand mimesis, you understand how to design for it, prevent scapegoat dynamics, engineer where vocabulary crystallizes.
-- **Cultural substrate — description (WHAT only):** **Memetic theory** (Richard Dawkins, *The Selfish Gene*, 1976). Per Aaron 2026-04-22: *"dawkins is like a description"* + *"dawkins does not tell you how to use memes just is a description of them"*. Dawkins tells you *that* ideas are replicators propagating via imitation; he does NOT tell you how to engineer that propagation. Useful for cataloging, insufficient for design. Do not use Dawkins as the framing when the factory is engineering something — use Girard.
+- **Cultural substrate — mechanism (HOW + WHY):** **Mimetic theory** (René Girard — _Things Hidden Since the Foundation of the World_ / _Des choses cachées depuis la fondation du monde_, 1978; triangular desire, scapegoat mechanism, and the founding concealment unveiled). Girard's title is a direct quote of **Matthew 13:35** — which is the parable of the sower, the same scriptural substrate that grounds our seed → soil → kernel vocabulary. **Girard gives you the engineering recipe** — if you understand mimesis, you understand how to design for it, prevent scapegoat dynamics, engineer where vocabulary crystallizes.
+- **Cultural substrate — description (WHAT only):** **Memetic theory** (Richard Dawkins, _The Selfish Gene_, 1976). Per Aaron 2026-04-22: _"dawkins is like a description"_ + _"dawkins does not tell you how to use memes just is a description of them"_. Dawkins tells you _that_ ideas are replicators propagating via imitation; he does NOT tell you how to engineer that propagation. Useful for cataloging, insufficient for design. Do not use Dawkins as the framing when the factory is engineering something — use Girard.
 
 **Why:** Aaron's 2026-04-22 four-message sequence (worked instance of his own self-named **overclaim → retract → condition** pattern, now extended with a further sharpening of the condition):
 
@@ -47,20 +48,20 @@ The message composes these corrections:
 - **Girard is the engineering frame; Dawkins is the cataloging frame.** When designing propagation mechanisms, detecting stuck states, framing skill-DAG authority relations, reasoning about scapegoat-dynamics in code review — use Girard. When simply noting "X is a meme that's propagating" after the fact — Dawkins is fine, but don't expect design guidance from him.
 - **Watch for Girard/Matthew 13:35 resonance** when Aaron's faith frame surfaces. The parable of the sower is the exact substrate: seeds fall on path (skills never loaded) / rocky ground (transient absorption, no root) / thorns (drift crowds out kernel) / good soil (ontology-home respected, propagation succeeds). This is not decorative — it's structurally identical to the factory's propagation regimes.
 - **Depth-hierarchy the three layers, don't peer them.** Girard (mechanism, deepest) → Dawkins (description, surface observation) → Infer.NET (computable instantiation). They are NOT three equal readings; they are stacked. Engineering happens at the Girard layer with Infer.NET as the tool. Dawkins shows up only when reporting observations.
-- **Three-step pattern firing LIVE is maximum-signal mode.** Aaron produced a full overclaim → retract → condition-and-sharpening sequence this tick. Per the pattern memory, this is *maximum engagement / maximum precision* mode, not rushed output. Absorb the final (sharpest) framing, keep the overclaim as upper-bound context, treat the condition as operational.
+- **Three-step pattern firing LIVE is maximum-signal mode.** Aaron produced a full overclaim → retract → condition-and-sharpening sequence this tick. Per the pattern memory, this is _maximum engagement / maximum precision_ mode, not rushed output. Absorb the final (sharpest) framing, keep the overclaim as upper-bound context, treat the condition as operational.
 
 **Unification — two Zeta surfaces, one substrate:**
 
-| Surface | Nodes | Edges | Random variables | Inference task |
-|---|---|---|---|---|
-| `Zeta.Bayesian` (DB operator) | Bayesian network variables | conditional-dependence | prior, posterior | conjugate update / BP inference |
-| Factory skill-library | skill files, glossary entries | cross-refs, shared vocabulary | vocabulary state per skill | propagate kernel terms to ∀ skill |
+| Surface                       | Nodes                         | Edges                         | Random variables           | Inference task                    |
+| ----------------------------- | ----------------------------- | ----------------------------- | -------------------------- | --------------------------------- |
+| `Zeta.Bayesian` (DB operator) | Bayesian network variables    | conditional-dependence        | prior, posterior           | conjugate update / BP inference   |
+| Factory skill-library         | skill files, glossary entries | cross-refs, shared vocabulary | vocabulary state per skill | propagate kernel terms to ∀ skill |
 
 **Same library. Same algorithm. Two applications.** This is the consolidation Aaron's message forces. Before this memory, these were unrelated roadmap items. After: they share a formal core, and work on one informs the other.
 
 **Girard / Matthew 13:35 connection (the deep structural note):**
 
-Girard's 1978 book title translates Matthew 13:35: *"I will open my mouth in parables; I will utter things hidden since the foundation of the world."* The verse occurs in the context of the **parable of the sower** (Matthew 13:3-23):
+Girard's 1978 book title translates Matthew 13:35: _"I will open my mouth in parables; I will utter things hidden since the foundation of the world."_ The verse occurs in the context of the **parable of the sower** (Matthew 13:3-23):
 
 - Seed on the path — birds eat it (ideas stated but never internalised)
 - Seed on rocky ground — springs up, withers (surface absorption, no root)
@@ -120,10 +121,10 @@ The established terms carry **decades of formal theory, existing implementation 
 
 - Aaron, 2026-04-22, single message:
   > now you are at belief propagation kernel-vocabulary propagation this is infer.net and also maps to memtic theory the on from things hidden since the foundation of the world book
-- Pearl, J. (1982). *Reverend Bayes on inference engines: A distributed hierarchical approach.* AAAI. (Belief propagation foundational paper.)
-- Microsoft Research (2008-present). *Infer.NET*. `github.com/dotnet/infer`. MIT license.
-- Dawkins, R. (1976). *The Selfish Gene*. Oxford UP. (Memetic theory origin.)
-- Girard, R. (1978). *Des choses cachées depuis la fondation du monde*. Grasset. [Eng: *Things Hidden Since the Foundation of the World*, Stanford UP 1987.]
+- Pearl, J. (1982). _Reverend Bayes on inference engines: A distributed hierarchical approach._ AAAI. (Belief propagation foundational paper.)
+- Microsoft Research (2008-present). _Infer.NET_. `github.com/dotnet/infer`. MIT license.
+- Dawkins, R. (1976). _The Selfish Gene_. Oxford UP. (Memetic theory origin.)
+- Girard, R. (1978). _Des choses cachées depuis la fondation du monde_. Grasset. [Eng: *Things Hidden Since the Foundation of the World*, Stanford UP 1987.]
 - Matthew 13:3-35 (parable of the sower + the verse Girard quotes in his title).
 
 **Attribution:**

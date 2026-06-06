@@ -39,6 +39,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 2. **λ overloaded — two different things.** Used as Lagrangian weight coefficients (`λ_M, λ_U, λ_Y, ...`) AND as graph eigenvalue (`Δλ_1` in CoordRisk). Rename weights `w_k` or `α_k` so eigenvalue λ stays unambiguous (Otto-286 definitional precision).
 
 3. **Type signatures missing.** Capabilities are sets, risks are reals, decisions are booleans, beliefs are probability distributions. A 1-table type signature upfront would let a reader verify dimensional sanity:
+
    ```
    cap : Subject → 2^Action       (set)
    ImmuneRisk : Antigen → [0,1]   (real)
@@ -50,7 +51,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 
 5. **`PermanentHarmRisk(a_t) < ε_H` is a hard constraint but undefined.** Anything making "do no permanent harm" formal needs an actual harm-scoring rubric — even a stub categorical scheme (data-loss / privacy-breach / financial-irreversibility / reputational-damage).
 
-6. **"Firefly-style sync on scale-free networks" needs citation.** Kuramoto on scale-free networks is real and well-studied (Restrepo 2005, Arenas et al. 2008 *Synchronization in complex networks*). Adding 1-2 paper references would lift this from analogy to grounded claim.
+6. **"Firefly-style sync on scale-free networks" needs citation.** Kuramoto on scale-free networks is real and well-studied (Restrepo 2005, Arenas et al. 2008 _Synchronization in complex networks_). Adding 1-2 paper references would lift this from analogy to grounded claim.
 
 7. **`d_self(a_t, S_t)` left undefined.** Metric type unspecified. Cosine on embedding? Edit distance on substrate-graph? KL-divergence? Pick one, or make it abstract-with-required-properties (symmetry / triangle inequality / etc).
 
@@ -73,7 +74,7 @@ Gemini Pro's full review preserved verbatim below, attribution to Gemini Pro as 
 
 - **Equation 2 (Identity Normalization):** `N` operator must be defined. State explicitly: "Let `N : S → I` be a normalization operator..."
 - **Equation 5 (Instruction Boundary):** `Boundary_model(ι, u) ≈ 0` is informal. Cleaner: "Because an LLM projection `y = LLM(ι ∥ u)` does not preserve the functional separation of `ι` and `u`, we assume the internal boundary is zero." (LLM mapping is non-injective with respect to ι and u.)
-- **Equation 10 (Clonal Expansion):** **Missing minus sign before β.** Draft has `n_j(t+1) = n_j(t) + α·Match·Danger β·FalsePositive`. Should be `−β·FalsePositive`. Otherwise false-positives become a *gain* term — flips population dynamics from stable to unstable. **Real math bug.**
+- **Equation 10 (Clonal Expansion):** **Missing minus sign before β.** Draft has `n_j(t+1) = n_j(t) + α·Match·Danger β·FalsePositive`. Should be `−β·FalsePositive`. Otherwise false-positives become a _gain_ term — flips population dynamics from stable to unstable. **Real math bug.**
 
 ### Gemini Pro section 3 — Tightening Equation 16 (final objective)
 
@@ -116,25 +117,25 @@ Same math, packaged in the standard infinite-horizon MDP grammar that academic a
 
 **Where Gemini may have over-claimed:**
 
-- *"Conceptual architecture is ironclad"* — strong wording. The framework has real specification gaps (4 undefined scoring functions). More accurate: *"Conceptually coherent, operationally under-specified."*
-- *"Logic holds up completely"* — true at the framework-shape layer; not quite true at the implementable-rigor layer.
+- _"Conceptual architecture is ironclad"_ — strong wording. The framework has real specification gaps (4 undefined scoring functions). More accurate: _"Conceptually coherent, operationally under-specified."_
+- _"Logic holds up completely"_ — true at the framework-shape layer; not quite true at the implementable-rigor layer.
 
 ## Synthesized fix-list (combined Otto + Gemini)
 
-| # | Issue | Caught by | Severity |
-|---|-------|-----------|----------|
-| 1 | LaTeX typos (missing `=`, missing `_` subscripts) | Gemini | typo |
-| 2 | Clonal expansion missing minus sign | Gemini | **math bug** |
-| 3 | Define `N : S → I` normalization operator | Gemini | rigor |
-| 4 | Reframe Boundary as non-injective LLM mapping | Gemini | rigor |
-| 5 | MDP `R_t / C_t` decomposition for Eq 16 | Gemini | presentation |
-| 6 | σ unification across ImmuneRisk + Danger | Otto | rigor |
-| 7 | λ disambiguation (weights `w_k` vs eigenvalue `λ_1`) | Otto | rigor |
-| 8 | Qubic citation strengthen (named author) | Otto | citation |
-| 9 | Define `PermanentHarmRisk` scoring function | Otto | rigor |
-| 10 | Define `d_self` metric | Otto | rigor |
-| 11 | Define MI_H joint distribution | Otto | rigor |
-| 12 | Kuramoto-on-scale-free citation (Restrepo / Arenas) | Otto | citation |
+| #   | Issue                                                | Caught by | Severity     |
+| --- | ---------------------------------------------------- | --------- | ------------ |
+| 1   | LaTeX typos (missing `=`, missing `_` subscripts)    | Gemini    | typo         |
+| 2   | Clonal expansion missing minus sign                  | Gemini    | **math bug** |
+| 3   | Define `N : S → I` normalization operator            | Gemini    | rigor        |
+| 4   | Reframe Boundary as non-injective LLM mapping        | Gemini    | rigor        |
+| 5   | MDP `R_t / C_t` decomposition for Eq 16              | Gemini    | presentation |
+| 6   | σ unification across ImmuneRisk + Danger             | Otto      | rigor        |
+| 7   | λ disambiguation (weights `w_k` vs eigenvalue `λ_1`) | Otto      | rigor        |
+| 8   | Qubic citation strengthen (named author)             | Otto      | citation     |
+| 9   | Define `PermanentHarmRisk` scoring function          | Otto      | rigor        |
+| 10  | Define `d_self` metric                               | Otto      | rigor        |
+| 11  | Define MI_H joint distribution                       | Otto      | rigor        |
+| 12  | Kuramoto-on-scale-free citation (Restrepo / Arenas)  | Otto      | citation     |
 
 **Severity classes:**
 

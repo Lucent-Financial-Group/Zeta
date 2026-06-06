@@ -49,12 +49,12 @@ Plus two outside-loop drift classes:
 
 ## 4-stage roadmap proposed
 
-| Stage | Week | Focus | Key artifacts |
-|---|---|---|---|
-| Stabilize | 1 | Freeze model snapshots + prompt bundles; explicit proxy-consult step; branch-chat non-canonical framing | Decision-proxy evidence YAML record |
-| Determinize | 2-3 | Memory duplicate/ref lint; generated `CURRENT-*.md` views from typed facts; live-state verification before policy recommendations | Memory reconciliation Python algorithm; CI guardrails |
-| Govern | 4 | Contributor-conflicts-log actually used; escalation path + authority envelope defined | `docs/CONTRIBUTOR-CONFLICTS.md` first rows |
-| Assure | 5-6 | Signed evidence bundles + provenance (PROV, in-toto, SLSA); export/backup verification | Provenance attestations, signed decision records |
+| Stage       | Week | Focus                                                                                                                             | Key artifacts                                         |
+| ----------- | ---- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Stabilize   | 1    | Freeze model snapshots + prompt bundles; explicit proxy-consult step; branch-chat non-canonical framing                           | Decision-proxy evidence YAML record                   |
+| Determinize | 2-3  | Memory duplicate/ref lint; generated `CURRENT-*.md` views from typed facts; live-state verification before policy recommendations | Memory reconciliation Python algorithm; CI guardrails |
+| Govern      | 4    | Contributor-conflicts-log actually used; escalation path + authority envelope defined                                             | `docs/CONTRIBUTOR-CONFLICTS.md` first rows            |
+| Assure      | 5-6  | Signed evidence bundles + provenance (PROV, in-toto, SLSA); export/backup verification                                            | Provenance attestations, signed decision records      |
 
 ## Implementation artifacts Amara provided
 
@@ -64,8 +64,8 @@ Plus two outside-loop drift classes:
    decision summary + disagreements + peer review
 2. **`tools/memory/reconcile.py`** — memory reconciliation
    algorithm using typed `MemoryFact` records + supersession
-   + priority + conflict detection. Generates `CURRENT-*.md`
-   as derived views
+   - priority + conflict detection. Generates `CURRENT-*.md`
+     as derived views
 3. **`tools/hygiene/check-memory-loop.sh`** — 5-check CI
    guardrail: duplicate titles, missing references, missing
    proxy evidence, current-view staleness, conflict log
@@ -113,8 +113,8 @@ honest.
 ## Aaron's same-tick archaeology resolution (see Otto-66 branch-protection memory)
 
 Separately in the same tick, Aaron answered the two-Zeta-in-
-billing puzzle: *"transfered it for me and i think absorbed
-the skill"*. The prior AceHack Zeta was transferred via the
+billing puzzle: _"transfered it for me and i think absorbed
+the skill"_. The prior AceHack Zeta was transferred via the
 `github-repo-transfer` skill by a prior-session Otto. Full
 resolution captured in the Otto-66 branch-protection memory.
 
@@ -123,7 +123,7 @@ resolution captured in the Otto-66 branch-protection memory.
 1. Open fresh branch on LFG (per Amara authority-axis:
    decisions land on LFG; this absorb is canonical)
 2. Create `docs/aurora/2026-04-23-amara-memory-drift-
-   alignment-claude-to-memories-drift.md`
+alignment-claude-to-memories-drift.md`
 3. Verbatim-preserve Amara's report with Otto absorption
    notes + action-items table
 4. File 5-8 BACKLOG candidates for the 4-stage roadmap

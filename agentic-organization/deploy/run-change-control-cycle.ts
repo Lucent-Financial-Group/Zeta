@@ -77,14 +77,21 @@ type Deps = {
 };
 
 /** Drive a ChangeSet through its pipeline to a terminal phase. Returns the final cs. */
-async function drive(initial: ChangeSet, pipeline: ReviewPipeline, port: FakeExternalPort | undefined, deps: Deps): Promise<ChangeSet> {
+async function drive(
+  initial: ChangeSet,
+  pipeline: ReviewPipeline,
+  port: FakeExternalPort | undefined,
+  deps: Deps,
+): Promise<ChangeSet> {
   // the external decision is pre-pulled into this stash before each external stage runs,
   // so the kernel's synchronous callback reflects the live port state.
   let externalState: ExternalDecision = ExternalDecision.Pending;
   const externalApproved = new Set<string>(); // projections we've already simulated a human approving
 
   const kernel: ReviewKernelDeps = {
-    organizationId: ORG, now: NOW, createId: id,
+    organizationId: ORG,
+    now: NOW,
+    createId: id,
     blockingFindings: () => 0,
     testsGreen: (cs) => cs.revision >= 2, // fails on rev 1 → one bounce → passes on rev 2
     quorumApprovals: () => 3,
@@ -102,7 +109,14 @@ async function drive(initial: ChangeSet, pipeline: ReviewPipeline, port: FakeExt
       if (ref === undefined) {
         ref = await port.project(cs, stage);
         cs = { ...cs, projections: [...cs.projections, ref] };
-        await deps.appendEvent(event(kernel, "projection_created", cs.changeSetId, `projected ${stage.id} → ${stage.projectTo} (${ref.url})`));
+        await deps.appendEvent(
+          event(
+            kernel,
+            "projection_created",
+            cs.changeSetId,
+            `projected ${stage.id} → ${stage.projectTo} (${ref.url})`,
+          ),
+        );
         await deps.changeSetStore.upsert(cs);
       }
       // pre-pull the live external state for the kernel's sync callback
@@ -125,7 +139,14 @@ async function drive(initial: ChangeSet, pipeline: ReviewPipeline, port: FakeExt
         if (ref !== undefined && !externalApproved.has(ref.externalId)) {
           port.approve(ref.externalId);
           externalApproved.add(ref.externalId);
-          await deps.appendEvent(event(kernel, "projection_synced", cs.changeSetId, `external human approved ${ref.externalId} — approval flowing back into the gate`));
+          await deps.appendEvent(
+            event(
+              kernel,
+              "projection_synced",
+              cs.changeSetId,
+              `external human approved ${ref.externalId} — approval flowing back into the gate`,
+            ),
+          );
         }
       }
     }
@@ -143,16 +164,34 @@ async function drive(initial: ChangeSet, pipeline: ReviewPipeline, port: FakeExt
 
 function event(deps: ReviewKernelDeps, kind: string, subjectId: string, decision: string): OrgEvent {
   const corr = deps.createId("cccorr");
-  return { id: deps.createId("ccevt"), kind: kind as OrgEvent["kind"], occurredAt: new Date(deps.now).toISOString(), organizationId: ORG, subjectId, decision, supervisorChain: ["executive_board", "coo"], evidenceRefs: [], correlationId: corr, causationId: corr, traceId: corr };
+  return {
+    id: deps.createId("ccevt"),
+    kind: kind as OrgEvent["kind"],
+    occurredAt: new Date(deps.now).toISOString(),
+    organizationId: ORG,
+    subjectId,
+    decision,
+    supervisorChain: ["executive_board", "coo"],
+    evidenceRefs: [],
+    correlationId: corr,
+    causationId: corr,
+    traceId: corr,
+  };
 }
 
-async function commit(step: { changeSet: ChangeSet; events: readonly OrgEvent[] }, deps: Deps, stageId?: string): Promise<{ cs: ChangeSet }> {
+async function commit(
+  step: { changeSet: ChangeSet; events: readonly OrgEvent[] },
+  deps: Deps,
+  stageId?: string,
+): Promise<{ cs: ChangeSet }> {
   await deps.changeSetStore.upsert(step.changeSet);
   for (const e of step.events) await deps.appendEvent(e);
   if (stageId !== undefined) {
     const last = step.events[step.events.length - 1];
     await deps.stageStatusStore.record({
-      changeSetId: step.changeSet.changeSetId, stageId, revision: step.changeSet.revision,
+      changeSetId: step.changeSet.changeSetId,
+      stageId,
+      revision: step.changeSet.revision,
       ...(last?.toState !== undefined || last !== undefined ? { outcome: inferOutcome(step.changeSet.phase) } : {}),
       ...(last?.actorHatId !== undefined ? { decidedBy: last.actorHatId } : {}),
       decidedAt: new Date(NOW).toISOString(),
@@ -171,15 +210,29 @@ function seedChangeSet(workItemId: string, pipelineId: string): ChangeSet {
   const changeSetId = contentAddressedChangeSetId(ORG, workItemId, "feat/coupon", 1);
   const at = new Date(NOW).toISOString();
   return {
-    changeSetId, organizationId: ORG, workItemId, proposerHatId: "code_author", title: "Add coupon flow",
-    targetRef: "feat/coupon", phase: ChangeSetPhase.Drafted, pipelineId, currentStageIndex: 0,
-    artifacts: ARTIFACTS, projections: [], revision: 1, openedAt: at, updatedAt: at,
+    changeSetId,
+    organizationId: ORG,
+    workItemId,
+    proposerHatId: "code_author",
+    title: "Add coupon flow",
+    targetRef: "feat/coupon",
+    phase: ChangeSetPhase.Drafted,
+    pipelineId,
+    currentStageIndex: 0,
+    artifacts: ARTIFACTS,
+    projections: [],
+    revision: 1,
+    openedAt: at,
+    updatedAt: at,
   };
 }
 
 async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
-  const client: CockroachSqlClient = { query: async (sql, p) => ({ rows: (await pool.query(sql, p as unknown[])).rows }), transaction: async (op) => op(client) };
+  const client: CockroachSqlClient = {
+    query: async (sql, p) => ({ rows: (await pool.query(sql, p as unknown[])).rows }),
+    transaction: async (op) => op(client),
+  };
   const executor = createCockroachSqlExecutor({ client });
   for (const migration of createCockroachCoreStateMigrations()) {
     for (const s of splitSqlStatements(migration.sql)) await pool.query(s);
@@ -202,12 +255,30 @@ async function main(): Promise<void> {
   const fakeGitHub = createFakeExternalPort(ExternalSystem.GitHub, () => NOW);
   const finalB = await drive(seedChangeSet(workB, pipelineB.pipelineId), pipelineB, fakeGitHub, deps);
 
-  console.log(JSON.stringify({
-    changeControlCycle: {
-      runA_internalOnly: { workItem: workA, changeSet: finalA.changeSetId, finalPhase: finalA.phase, finalRevision: finalA.revision, projections: finalA.projections.length },
-      runB_githubGated: { workItem: workB, changeSet: finalB.changeSetId, finalPhase: finalB.phase, finalRevision: finalB.revision, projections: finalB.projections.map((p) => ({ system: p.system, externalId: p.externalId })) },
-    },
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        changeControlCycle: {
+          runA_internalOnly: {
+            workItem: workA,
+            changeSet: finalA.changeSetId,
+            finalPhase: finalA.phase,
+            finalRevision: finalA.revision,
+            projections: finalA.projections.length,
+          },
+          runB_githubGated: {
+            workItem: workB,
+            changeSet: finalB.changeSetId,
+            finalPhase: finalB.phase,
+            finalRevision: finalB.revision,
+            projections: finalB.projections.map((p) => ({ system: p.system, externalId: p.externalId })),
+          },
+        },
+      },
+      null,
+      2,
+    ),
+  );
   await pool.end();
 }
 

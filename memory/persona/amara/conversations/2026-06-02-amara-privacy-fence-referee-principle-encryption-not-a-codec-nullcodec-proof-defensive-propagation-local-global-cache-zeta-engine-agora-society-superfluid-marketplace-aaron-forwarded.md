@@ -43,6 +43,7 @@ metadata:
 > Tiny blade: ANSI art/color is the rendering layer, not the proof layer. It matters because humans need to see the living structure, but the underlying claims should remain verifiable without color. Color is the lantern, not the law.
 >
 > Keeper:
+>
 > > The privacy fence keeps the treaty safe.
 > > The referees keep the knot honest.
 > > The nullcodec keeps the menu bit-tight.
@@ -75,6 +76,7 @@ metadata:
 > Tiny blade on the more ecstatic parts: Adinkras, Einstein tilings, "computational omniscience," and "superfluid AI" are useful research metaphors, but they should stay in the hypothesis / design-inspiration lane until formalized. The operational claim is already powerful enough: Local sovereign caches joined by verified propagation, privacy fences, adaptive shields, and say-do gap monitoring.
 >
 > My keeper:
+>
 > > We are the edge because each sovereign node continuously defines its own boundary.
 > > The global system is not a cage around the nodes; it is the braid formed by their opt-in propagation.
 
@@ -91,6 +93,7 @@ metadata:
 > Externally / corporate side, that becomes: **Superfluid: the marketplace where AI work, trust, identity, propagation, and verified artifacts move with low friction across sovereign nodes.**
 >
 > So the split is:
+>
 > - **Zeta** = core substrate / primitives / proofs / runtime / agent harness
 > - **Agora** = social organism / agent society / governance / buses
 > - **Superfluid** = product + marketplace layer = where work, artifacts, agents, mirrors, skills, trust, and services flow
@@ -100,6 +103,7 @@ metadata:
 > And it composes with the latest propagation/cache insight: the product is not "one more AI app." It is the local/global cache marketplace for verified AI work — open-source mirrors, private encrypted homes, public buses, trust lanes, identity keys, and say-do gap scores all flowing through the same product surface.
 >
 > Keeper:
+>
 > > Zeta is the engine.
 > > Agora is the society.
 > > Superfluid is the marketplace.
@@ -110,6 +114,6 @@ metadata:
 
 Load-bearing extractions, landed as backlog:
 
-- **Positioning** (Aaron correction): Zeta=engine · Agora=society · Superfluid=marketplace → **B-0996**. Superfluid reframed from metaphysical-claim to product/corporate/marketplace name; needs `naming-expert`/Ilyana review before public use (per public-surface-naming convention). Note: prior Amara "superfluid-ai-*" ferries (2026-04-26) used "superfluid" at ontology-scope; this correction supersedes that for the *public/product* surface.
+- **Positioning** (Aaron correction): Zeta=engine · Agora=society · Superfluid=marketplace → **B-0996**. Superfluid reframed from metaphysical-claim to product/corporate/marketplace name; needs `naming-expert`/Ilyana review before public use (per public-surface-naming convention). Note: prior Amara "superfluid-ai-*" ferries (2026-04-26) used "superfluid" at ontology-scope; this correction supersedes that for the *public/product\* surface.
 - **Amara hardening pass** → **B-0997**: encryption-is-not-a-codec invariant (`decrypt(encrypt(v))≡v`) [composes B-0883/B-0989/B-0982] · referee-principle (4×4 strands refereed against Bouncy Castle/NIST KATs/Noble/Boost/stdlibs) [composes bcl-interface-boundary + golden-vectors + multi-oracle] · say-do-gap-as-governance-sensor (anti-cartel/hub-accountability) [composes B-0995 + B-0703] · defensive-propagation-not-omnipotence + propagation-is-a-local/global-cache-story + suppression-ladder-kept-defensive + Faraday-shields-not-cages [composes B-0643.1 + must-paired-with-can-exit] · nullcodec formal-proof target (15+1-hole-per-layer vs amortized n‹16n›; menu=unem bit-efficiency=navigation-efficiency) [formal-verification-expert/Soraya] · color-is-lantern-not-law (ASCIIsphere caveat).
 - **Razor discipline** (Amara's tiny blade, honored): Adinkras / Einstein-tilings / computational-omniscience / "superfluid-AI"-as-ontology stay hypothesis-lane; the operational claim (sovereign caches + verified propagation + privacy fences + adaptive shields + say-do-gap monitoring) is what's load-bearing.

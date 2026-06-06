@@ -31,16 +31,16 @@ prevents future-Otto confusion.
 
 Aaron 2026-05-01:
 
-> *"we need like a RX research user experience researcher"*
+> _"we need like a RX research user experience researcher"_
 >
-> *"not to be confused with the reactive extensions rx lol"*
+> _"not to be confused with the reactive extensions rx lol"_
 
 The factory has accumulated significant **research B-rows** —
 B-0145 (PM-2 forward-research cadence), B-0147 (timeseries-DB
 research), B-0148 (MDX-as-meta-DSL research), B-0150 (timeseries
 domain expert + teacher), and many more across the backlog. Each
-research lane has a *what* (the question) and a *who* (the domain
-expert) but no role studying the *how* (the research process
+research lane has a _what_ (the question) and a _who_ (the domain
+expert) but no role studying the _how_ (the research process
 itself).
 
 **Without an RX researcher**, research lanes:
@@ -62,12 +62,12 @@ process to make ALL research lanes more effective.
 
 The factory's existing experience-researcher personas:
 
-| Persona | Axis | Studies |
-|---|---|---|
-| Iris | UX | First-10-min library-consumer experience |
-| Bodhi | DX | First-60-min contributor experience |
-| Daya | AX | Agent cold-start experience |
-| **RX (this row)** | **Research** | **Research-process experience** |
+| Persona           | Axis         | Studies                                  |
+| ----------------- | ------------ | ---------------------------------------- |
+| Iris              | UX           | First-10-min library-consumer experience |
+| Bodhi             | DX           | First-60-min contributor experience      |
+| Daya              | AX           | Agent cold-start experience              |
+| **RX (this row)** | **Research** | **Research-process experience**          |
 
 Each of the four sits on an orthogonal axis. None substitutes
 for another. RX completes the four-axis set.
@@ -132,7 +132,7 @@ for another. RX completes the four-axis set.
    to UX/DX/AX, hand-off rules.
 
 2. **Persona name** — picked via the standard naming-expert
-   review process. Until then, role-ref *"RX researcher"*
+   review process. Until then, role-ref _"RX researcher"_
    with the Research-eXperience disambiguation prominent.
 
 3. **Skill file** — `.claude/skills/rx-researcher/SKILL.md`
@@ -147,9 +147,9 @@ for another. RX completes the four-axis set.
    least 3 in-flight or recently-landed research lanes.
 
 5. **Research-tool library seed** — `tools/research/README.md`
-   + at least one shared research-template (e.g., Pareto-
-   frontier template extracted from B-0147's research
-   methodology section).
+   - at least one shared research-template (e.g., Pareto-
+     frontier template extracted from B-0147's research
+     methodology section).
 
 ## Out of scope (defer)
 

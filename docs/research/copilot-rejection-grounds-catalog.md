@@ -5,7 +5,7 @@ reviewer findings on PRs in this repo. Companion to
 `docs/copilot-wins.md` (accepted-finding log). This doc is a
 **taxonomy**, not a log of rejections — `copilot-wins.md`
 §"Fails aren't tracked" remains in force for individual
-rejection-cases; what is tracked here is the *class* of
+rejection-cases; what is tracked here is the _class_ of
 rejection-ground with detection rule + response template.
 
 Grounds are extracted from observed auto-loop-tick PR-triage
@@ -28,9 +28,9 @@ acceptance-grounds).
 Without a named taxonomy, each tick re-derives rejection
 reasoning from first principles, duplicating thought-work
 across ticks and losing cross-tick cumulative learning.
-With a named taxonomy, a tick can respond *"rejection-ground
+With a named taxonomy, a tick can respond _"rejection-ground
 3 (grammatical-attributive-adjective), detection via [rule],
-cross-reference [canonical-source]"* and move on in under a
+cross-reference [canonical-source]"_ and move on in under a
 minute.
 
 Copilot is a good reviewer (`docs/copilot-wins.md` logs
@@ -141,7 +141,7 @@ English style (Chicago Manual of Style §7.89), not a typo.
 in the tree using the same pattern. Example:
 
 > `reviewer robot` (noun phrase, L234) and `reviewer-robot
-> contract` (attributive compound, L456) follow English
+contract` (attributive compound, L456) follow English
 > attributive-adjective convention — the same pattern used
 > in `docs/HARNESS-SURFACES.md`. Applying the suggestion
 > would produce ungrammatical `reviewer robot contract`.
@@ -161,7 +161,7 @@ in the tree using the same pattern. Example:
 rename / move / etc." where the hardcode is load-bearing
 to the identifier's semantic role — every alternative
 (boolean-flag, config-var, separate-file) has equivalent
-or worse brittleness profile. The hardcode *is* the
+or worse brittleness profile. The hardcode _is_ the
 design, not an accident.
 
 **Response template:** enumerate the alternatives considered,
@@ -212,7 +212,7 @@ preservation discipline. Example:
 
 - **PR #97** (auto-loop-10, row 119): `ideass -> ideas` typo
   suggestion on a quoted maintainer directive
-  *"absorb not her but the ideass"*; rejected with
+  _"absorb not her but the ideass"_; rejected with
   verbatim-preservation reasoning.
 - **PR #99** (auto-loop-10, row 119): same `ideass`
   suggestion inherited through stacked-dependency PR-branch;
@@ -229,7 +229,7 @@ preservation discipline. Example:
   merit. The catalog does not create a bias toward rejection;
   it creates citable reasoning when rejection is warranted.
 - **Does NOT critique Copilot** — the catalog documents
-  classes of *mismatch between reviewer and context*, not
+  classes of _mismatch between reviewer and context_, not
   classes of reviewer error. Copilot is a good reviewer;
   this catalog is the factory's side of the review-response
   contract.

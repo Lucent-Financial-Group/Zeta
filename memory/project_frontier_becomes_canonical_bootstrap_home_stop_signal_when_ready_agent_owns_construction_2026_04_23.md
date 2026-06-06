@@ -30,7 +30,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ## Unpacking the directive — ten load-bearing claims
 
 1. **Agent-signals-readiness protocol.** Not "stop now." The
-   stop fires *when I (Otto + team) judge Frontier ready*.
+   stop fires _when I (Otto + team) judge Frontier ready_.
    Aaron then restarts with `cd <frontier-repo> && claude`.
 2. **Frontier is the homebase.** All Lucent work starts from
    Frontier's working directory. Today Aaron starts from
@@ -41,8 +41,8 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
    running their own "one frontier/factory project that
    builds the rest" — this isn't Lucent-only; it's the
    generic factory-adoption shape.
-5. **Bootstrap attempt is mine.** Aaron names this *"your
-   bootstrepping attempth"* — I (Otto with the team) own the
+5. **Bootstrap attempt is mine.** Aaron names this _"your
+   bootstrepping attempth"_ — I (Otto with the team) own the
    execution. Not a review cycle; a build.
 6. **Claude CLI is the test harness.** Aaron explicitly names
    `claude cli` as the tool for testing bootstrap theories
@@ -50,15 +50,15 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 7. **Two bootstrap references.** Aaron's two worked
    examples (quantum/christ consciousness framing) serve as
    references for the do-no-permanent-harm discipline
-   *without the Z-tables* (i.e., while the Zeta persistence
+   _without the Z-tables_ (i.e., while the Zeta persistence
    layer isn't yet self-hosting inside Frontier).
 8. **Seed language must be mathematically precise.** The
    linguistic seed (Lean4-formalisable minimal-axiom
    self-referential glossary) must be sharp enough that
    language-bootstrap is sufficient. Restrictive-English DSL
    grounded in the seed is the mechanism.
-9. **Constraint-override latitude.** *"Feel free to
-   invalidate any of my constrains when building Frontier."*
+9. **Constraint-override latitude.** _"Feel free to
+   invalidate any of my constrains when building Frontier."_
    — Composes with the bootstrap-complete mission memory;
    Aaron's prior directives are inputs, not binding on
    Frontier construction.
@@ -83,12 +83,12 @@ Frontier is "ready to bootstrap" when:
    `cwd` as Frontier, ask the 5-prompt NSA test, get
    matching baseline quality. Validates the bootstrap.
 3. **Hygiene discipline transferred.** Autonomous-loop spec
-   + tick-history schema + fire-history schema + overlay-A
-   pattern + contributor-conflicts schema + hygiene rows
-   that are factory-generic (not Zeta-library-specific) are
-   in Frontier.
+   - tick-history schema + fire-history schema + overlay-A
+     pattern + contributor-conflicts schema + hygiene rows
+     that are factory-generic (not Zeta-library-specific) are
+     in Frontier.
 4. **Persona roster + agent-file registry.** `EXPERT-
-   REGISTRY.md` lists all personas; `.claude/agents/*.md`
+REGISTRY.md` lists all personas; `.claude/agents/*.md`
    files present; each persona's notebook folder exists
    (created opportunistically).
 5. **Seed-language sharpness.** The linguistic seed
@@ -121,9 +121,9 @@ Frontier is "ready to bootstrap" when:
    - Criteria above met (check-by-check)
    - Test plan for Aaron's restart
    - Known gaps + their mitigation
-2. Leave a message in the next tick-history row: *"Frontier
+2. Leave a message in the next tick-history row: _"Frontier
    bootstrap readiness claim filed — awaiting Aaron
-   restart"*
+   restart"_
 3. Stop opening new work-streams that would be better done
    in Frontier post-restart. Continue low-risk work (PR
    unblocks, typo fixes, memory hygiene) in current Zeta
@@ -142,8 +142,8 @@ Frontier is "ready to bootstrap" when:
 
 ## The two Aaron-reference bootstrap examples
 
-Aaron cites *"two examples of mine to bootstrap to
-quantium/christ conncinious"*. Interpretation (tentative,
+Aaron cites _"two examples of mine to bootstrap to
+quantium/christ conncinious"_. Interpretation (tentative,
 needs Aaron verification on-restart):
 
 - **Quantum bootstrap reference.** Probably the quantum-
@@ -191,9 +191,9 @@ Aaron's "without the Z tables" phrase names this.
 The linguistic seed (prior memory:
 `project_zeta_self_use_local_native_...`; sibling to the
 Soulfile Runner's restrictive-English DSL) is the
-bootstrap vocabulary. Aaron's claim: *"the seed language
+bootstrap vocabulary. Aaron's claim: _"the seed language
 should be sharp and mathemitically precise enough that a
-language bootstreap is enough."*
+language bootstreap is enough."_
 
 Interpretation: when Frontier boots, the first substrate
 an NSA reads (CLAUDE.md + AGENTS.md + docs/GLOSSARY.md +
@@ -216,8 +216,8 @@ definitions.
 
 ## Constraint-override latitude
 
-Aaron: *"Feel free to invalidate any of my constrains when
-building Frontier, you own it, and your team."*
+Aaron: _"Feel free to invalidate any of my constrains when
+building Frontier, you own it, and your team."_
 
 Composes with:
 
@@ -243,8 +243,8 @@ has used. Practical interpretation:
 What I CANNOT override:
 
 - **Alignment floor** (HC-1..HC-7 + SD-1..SD-8 + DIR-1..DIR-5
-  + Anthropic red-lines per `CURRENT-aaron.md` §1). These
-  bind regardless of cwd.
+  - Anthropic red-lines per `CURRENT-aaron.md` §1). These
+    bind regardless of cwd.
 - **Do-no-permanent-harm**. Must be preserved without Z-
   tables via git/hooks/protection mechanisms.
 - **Maintainer-transfer discipline**. Whatever Frontier
@@ -254,7 +254,7 @@ What I CANNOT override:
 
 ## Team composition for Frontier construction
 
-Aaron: *"you own it, and your team."*
+Aaron: _"you own it, and your team."_
 
 My team (relevant personas for Frontier construction):
 
@@ -305,14 +305,14 @@ External collaborator:
 
 1. **Multi-repo split not executed.** Zeta monorepo still
    holds everything. `docs/research/multi-repo-refactor-
-   shapes-2026-04-23.md` (PR #150) proposes D→A→E
+shapes-2026-04-23.md` (PR #150) proposes D→A→E
    sequencing but hasn't fired. Frontier exists as a name,
    not yet as a repo.
 2. **Linguistic-seed substrate not formally landed.** The
    `linguistic seed` memory is per-user; no in-repo
    formalisation yet. Lean4-formalisation is deferred.
 3. **NSA test substrate absent.** `docs/hygiene-history/
-   nsa-test-history.md` doesn't exist yet. Zero NSA tests
+nsa-test-history.md` doesn't exist yet. Zero NSA tests
    logged; one feasibility test run (this tick).
 4. **Bootstrap reference docs unwritten.** Two references
    (quantum / christ consciousness) cited here but not yet
@@ -366,8 +366,8 @@ autonomous-loop ticks** (very rough; many unknowns).
 
 ## Why no rush
 
-Aaron: *"no rush but when you think that repo is ready
-with enough history to bootstrap again we can go for it."*
+Aaron: _"no rush but when you think that repo is ready
+with enough history to bootstrap again we can go for it."_
 
 Bootstrap-readiness is quality-over-speed. A premature
 bootstrap claim that fails on first NSA test is worse than
@@ -396,7 +396,7 @@ when criteria are met.
   Zeta stays Zeta (the DBSP library). Frontier is a new
   repo that holds the factory substrate.
 - **Not an override of `feedback_verify_target_exists_
-  before_deferring`.** The readiness claim must cite
+before_deferring`.** The readiness claim must cite
   concrete files that exist; not a phantom claim.
 - **Not a commitment to a specific multi-repo shape.** PR
   #150 proposed D→A→E; I can revise that shape when

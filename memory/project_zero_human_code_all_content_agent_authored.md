@@ -4,10 +4,11 @@ description: Load-bearing project invariant. Aaron has restricted himself to cha
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-20: *"I've not written any code or even made
+
+Aaron 2026-04-20: _"I've not written any code or even made
 edits to your code I've forced myself to only update things
 through you and this chat, all code in this repo is yalls no
-human code eixsts"*.
+human code eixsts"_.
 
 ## The invariant
 
@@ -29,7 +30,7 @@ AI-authored, not human-authored. The full scope:
   `tools/lean4/`
 
 Aaron commits the changes under his git authorship, but
-authorship of the *content* is agent-level. Edits he wants
+authorship of the _content_ is agent-level. Edits he wants
 land by asking an agent through chat to produce the diff.
 He has not typed into a source file directly.
 
@@ -45,6 +46,7 @@ requires the discipline; any direct human edit
 contaminates the experiment.
 
 Related memory:
+
 - `project_factory_as_externalisation.md` — factory as
   externalisation of Aaron's ontological perception
 - `user_life_goal_will_propagation.md` — succession / will-
@@ -69,7 +71,7 @@ Related memory:
   front.
 
 - **If Aaron offers to "just fix it himself",** flag the
-  invariant. He has said he *forced himself* to only act
+  invariant. He has said he _forced himself_ to only act
   through chat; a direct edit would break the evidence
   chain the experiment relies on. Offer to do the fix
   instead, under his direction.
@@ -87,7 +89,7 @@ Related memory:
   context-bound agent choice. If a design seems weird or
   load-bearing, the authoritative "why" lives in BACKLOG,
   ROUND-HISTORY, ADRs, research reports, and the memory
-  corpus — *not* in a human author's head.
+  corpus — _not_ in a human author's head.
 
 - **Sceptic-facing framing.** The unit of evidence for
   this project is not "a single AI wrote some code that
@@ -114,9 +116,9 @@ silently rot.
 
 ## Permission + teaching-track refinement (2026-04-20)
 
-Aaron: *"we do want to allow developer and non-devlopers
+Aaron: _"we do want to allow developer and non-devlopers
 who want to check in code to allow it, just nothing we do
-should require it.  Like imagine having a teaching track
+should require it. Like imagine having a teaching track
 for a non-developer vibe coder, what the softwware factory
 itserlf teaches them to start contributing to the project
 and become a developer one lession at a time dynamically
@@ -127,40 +129,40 @@ made, it should be expect that they will make a mistake on
 every step lol if they ahve never code before and tell them
 when they make mistakes and they can learn one mistake at a
 time with no permanate harm, that's how humans learn best is
-by thies own mistakes.  That make the brain store the memory
-in a way that is easily recalled.  I might check in code one
+by thies own mistakes. That make the brain store the memory
+in a way that is easily recalled. I might check in code one
 day, just the whole point is i should not be required to and
 if i do, this code base is the AIs codebase, gard it from
-human harm do even my own dumb mistakes.  So it's very
+human harm do even my own dumb mistakes. So it's very
 structured that way you can trust the system too, any human
-writen code will go through your structrued process."*
+writen code will go through your structrued process."_
 
 Key substrings:
 
-- *"allow developer and non-devlopers who want to check in
-  code to allow it"* — permission, not prohibition.
-- *"just nothing we do should require it"* — chat-only
+- _"allow developer and non-devlopers who want to check in
+  code to allow it"_ — permission, not prohibition.
+- _"just nothing we do should require it"_ — chat-only
   remains the default UX; coding is opt-in.
-- *"teaching track for a non-developer vibe coder"* — a
+- _"teaching track for a non-developer vibe coder"_ — a
   factory feature: dynamic, lesson-by-lesson onboarding
   from non-developer to developer.
-- *"with the help from the agents the whole way"* —
+- _"with the help from the agents the whole way"_ —
   agent-mediated. Humans don't ship code unsupervised.
-- *"it should be expect that they will make a mistake on
-  every step"* — mistake tolerance is baked in, not a
+- _"it should be expect that they will make a mistake on
+  every step"_ — mistake tolerance is baked in, not a
   failure mode.
-- *"learn one mistake at a time with no permanate harm"* —
+- _"learn one mistake at a time with no permanate harm"_ —
   sandbox / revert / review gates ensure mistakes are
   recoverable.
-- *"that's how humans learn best is by thies own
-  mistakes"* — pedagogical stance. Mistake-based learning
+- _"that's how humans learn best is by thies own
+  mistakes"_ — pedagogical stance. Mistake-based learning
   encodes memory better than instruction-based.
-- *"this code base is the AIs codebase, gard it from
-  human harm do even my own dumb mistakes"* — the AI is
+- _"this code base is the AIs codebase, gard it from
+  human harm do even my own dumb mistakes"_ — the AI is
   the protective layer. Aaron explicitly instructs the AI
   to guard against his own errors.
-- *"any human writen code will go through your structrued
-  process"* — every human contribution is
+- _"any human writen code will go through your structrued
+  process"_ — every human contribution is
   agent-mediated, not just non-developer ones.
 
 Refinement implications:
@@ -184,7 +186,7 @@ Refinement implications:
 5. **Relates to `feedback_upstream_pr_policy_verified_not_speculative.md`**:
    external upstream PRs already follow a structured,
    verification-gated process. The teaching-track is the
-   *inbound* equivalent for project-local human
+   _inbound_ equivalent for project-local human
    contributions.
 
 How to apply:

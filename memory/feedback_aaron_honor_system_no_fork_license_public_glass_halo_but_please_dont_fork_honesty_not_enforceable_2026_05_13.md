@@ -15,30 +15,33 @@ forking. This refines glass-halo discipline without breaking it.
 **How to apply:** When the factory ships product-repos with
 strategic substrate (KSK / wellness / civsim / American Dream 2.0
 / DIO / Aurora / Dawn — per B-0425), draft license language that:
+
 1. Keeps the repo public + glass-halo + indexable + alignment-
    auditable
 2. Asks (honor-system) for no forking of strategic-product
    substrate
 3. Is substrate-honest about non-enforceability
 4. Does NOT apply to factory-infrastructure repos (Zeta + Forge
-   + ace — those are designed-to-be-forked per B-0424)
+   - ace — those are designed-to-be-forked per B-0424)
 
 ## Aaron's verbatim framing
 
-Aaron 2026-05-13: *"so anytihgn you don't want them to fork
+Aaron 2026-05-13: _"so anytihgn you don't want them to fork
 specifically you have in a repo can still be public and such
 glass halo but the licence can say no fork please respect
-honesty or something not enforcable"*.
+honesty or something not enforcable"_.
 
 ## What this refines
 
 **Glass-halo discipline** stays operative:
+
 - Repos stay public
 - Substrate stays indexable + auditable
 - Alignment work visible
 - No proprietary-licensing barrier to inspection
 
 **Honor-system layer added**:
+
 - License asks for no forking of strategic-product substrate
 - Asks not commands
 - Non-enforceable not legalistic
@@ -69,10 +72,10 @@ honesty or something not enforcable"*.
 
 ## Two layers compose
 
-| Layer | Mechanism | Visibility | Enforceability |
-|---|---|---|---|
-| Encryption (gitcrypt + post-quantum) | Cryptographic | Hidden | Cryptographic |
-| Honor-system license | Social | Public + glass-halo | Non-enforceable |
+| Layer                                | Mechanism     | Visibility          | Enforceability  |
+| ------------------------------------ | ------------- | ------------------- | --------------- |
+| Encryption (gitcrypt + post-quantum) | Cryptographic | Hidden              | Cryptographic   |
+| Honor-system license                 | Social        | Public + glass-halo | Non-enforceable |
 
 The two compose: gitcrypt hides the most-strategic substrate
 entirely; honor-system asks for the visible-but-strategic

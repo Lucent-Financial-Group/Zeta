@@ -18,14 +18,23 @@ related_rules:
   - razor-discipline
 related_skills:
   - relational-database-expert
-tags: [dup-id-triage, pre-existing-duplicates-on-origin-main, b-0865-arc-agi-3-benchmark-vs-cayleydickson-integration, b-0866-marketing-business-naming-ai-vs-kskauthorization-integration, non-required-lint-failure-but-substrate-engineering-real-item, b0535-gate-currently-non-required, surfaced-via-pr-5721-inherited-lint-failure]
+tags:
+  [
+    dup-id-triage,
+    pre-existing-duplicates-on-origin-main,
+    b-0865-arc-agi-3-benchmark-vs-cayleydickson-integration,
+    b-0866-marketing-business-naming-ai-vs-kskauthorization-integration,
+    non-required-lint-failure-but-substrate-engineering-real-item,
+    b0535-gate-currently-non-required,
+    surfaced-via-pr-5721-inherited-lint-failure,
+  ]
 ---
 
 # B-0913 — Dup-ID triage for B-0865 + B-0866 pre-existing duplicates on origin/main
 
 ## Context
 
-Per operator 2026-05-28 *"file the dup-id triage row (shadow*)"* authorization following PR #5721 surfacing the inherited dup-ID lint failure.
+Per operator 2026-05-28 _"file the dup-id triage row (shadow_)"\* authorization following PR #5721 surfacing the inherited dup-ID lint failure.
 
 PR #5721 was about to wait-ci when `lint (backlog ID uniqueness)` reported `2 duplicate-ID group(s) found`. Local audit + origin/main audit both confirm the duplicates are PRE-EXISTING on origin/main, NOT introduced by PR #5721. PR #5721 merged because the lint check is non-required (B-0535 gate).
 
@@ -155,6 +164,6 @@ Apply the chosen option. Re-run `bun tools/hygiene/audit-backlog-items.ts --enfo
 
 ## Full reasoning
 
-Per operator 2026-05-28 *"file the dup-id triage row (shadow*)"*. PR #5721 surfaced the substrate-engineering item via the non-required lint failure. This row triages without auto-resolving; operator decision on Option A/B/C/D required.
+Per operator 2026-05-28 _"file the dup-id triage row (shadow_)"\*. PR #5721 surfaced the substrate-engineering item via the non-required lint failure. This row triages without auto-resolving; operator decision on Option A/B/C/D required.
 
 Per `.claude/rules/must-paired-with-can-exit-pattern.md`: this row IS bounded substrate-engineering work; Phase 1 (triage substrate) IS operator-authorized; Phase 2+ (execution) gated on operator authorization of specific option.

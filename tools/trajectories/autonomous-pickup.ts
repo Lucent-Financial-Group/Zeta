@@ -360,7 +360,9 @@ function readPacket(repoRoot: string, slug: string): TrajectoryPacket | null {
     const closedRefs = new Set(closedActionBacklogRefs);
     const nextAction =
       explicitNextAction ??
-      childCandidates.find((candidate) => !isPlaceholderAction(candidate) && !textRefsAreResolved(candidate, closedRefs)) ??
+      childCandidates.find(
+        (candidate) => !isPlaceholderAction(candidate) && !textRefsAreResolved(candidate, closedRefs),
+      ) ??
       (childCandidates.length > 0 ? (childCandidates[0] ?? null) : null);
 
     return {

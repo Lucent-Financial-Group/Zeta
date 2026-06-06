@@ -99,7 +99,11 @@ export async function triageSupervisorSignal(
   }
 
   const occurredAt = dependencies.now();
-  const workItem = createFollowUpWorkItem(command, dependencies.createId(TriageSupervisorSignalIdPrefix.WorkItem), occurredAt);
+  const workItem = createFollowUpWorkItem(
+    command,
+    dependencies.createId(TriageSupervisorSignalIdPrefix.WorkItem),
+    occurredAt,
+  );
   const auditEventId = dependencies.createId(TriageSupervisorSignalIdPrefix.Audit);
   const envelope = createAgenticEventEnvelope({
     eventId: dependencies.createId(TriageSupervisorSignalIdPrefix.Event),
@@ -217,7 +221,9 @@ async function validateSupervisorSignal(
     };
   }
 
-  const supervisorSignal = await dependencies.supervisorSignalStateReader.findSupervisorSignal(command.supervisorSignalId);
+  const supervisorSignal = await dependencies.supervisorSignalStateReader.findSupervisorSignal(
+    command.supervisorSignalId,
+  );
 
   if (supervisorSignal === undefined) {
     return {

@@ -51,6 +51,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Mechanical regeneration of `docs/BACKLOG.md` from per-row backlog files to clear generated-index drift.
 
 **Changes:**
+
 - Adds recently filed P1/P2/P3 backlog rows to the generated index.
 - Updates B-0500 from open to closed in the index.
 - Leaves the known B-0498 duplicate-ID drift visible in the regenerated output.

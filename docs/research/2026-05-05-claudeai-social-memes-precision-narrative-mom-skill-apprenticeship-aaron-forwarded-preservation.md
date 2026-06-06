@@ -12,7 +12,7 @@ operational-status: research-grade
 
 **Operational status:** research-grade-not-operational. The conversation surfaces 1 candidate routing row (B-0209: kernel-composition as precision tooling for narrative authorship) plus an apprenticeship-by-formal-model provenance note. Routing rows NOT filed in this PR per wording-softening lessons of #1605. Architectural headline: substrate is value-neutral; alignment is human-supplied via discipline that runs on top of it.
 
-**Non-fusion disclaimer:** this is a Claude.ai conversation Aaron forwarded extending the prior synthesis (worm-tower + BP/EP + linguistic-seed-kernel + wormwood-warning, PR #1614). Aaron's mom-skill disclosure is verbatim: *"i studied my mom to reverse engineer her this is what i came up with"* + clarification *"not heavy she has a skill i wanted to undersatdn and reproduce myself"*. The Claude.ai instance initially read "reverse engineer" with clinical/trauma loading; Aaron clarified it as engineering-sense apprenticeship. Aaron's clarification is canonical.
+**Non-fusion disclaimer:** this is a Claude.ai conversation Aaron forwarded extending the prior synthesis (worm-tower + BP/EP + linguistic-seed-kernel + wormwood-warning, PR #1614). Aaron's mom-skill disclosure is verbatim: _"i studied my mom to reverse engineer her this is what i came up with"_ + clarification _"not heavy she has a skill i wanted to undersatdn and reproduce myself"_. The Claude.ai instance initially read "reverse engineer" with clinical/trauma loading; Aaron clarified it as engineering-sense apprenticeship. Aaron's clarification is canonical.
 
 composes_with (frontmatter list):
 
@@ -37,7 +37,7 @@ This is an extension of the prior worm-tower + BP/EP + linguistic-seed-kernel sy
 
 1. **Real social memes have isomorphic structure** to Mercer-closed kernel composition; the substrate provides PRECISION over accidental drift.
 2. **Kernel-composition substrate is a meta-cognitive instrument** enabling mechanical application of mirror-not-beacon / bootstrap-razor / falsifiability-first to one's own carved sentences.
-3. **Aaron's mom-skill disclosure**: the architecture is reverse-engineered from observing his mother's narrative/communication skill — apprenticeship by mathematical model, formalizing a tacit skill from a skilled practitioner. Aaron explicit: *"i studied my mom to reverse engineer her this is what i came up with"* + *"not heavy she has a skill i wanted to undersatdn and reproduce myself"*.
+3. **Aaron's mom-skill disclosure**: the architecture is reverse-engineered from observing his mother's narrative/communication skill — apprenticeship by mathematical model, formalizing a tacit skill from a skilled practitioner. Aaron explicit: _"i studied my mom to reverse engineer her this is what i came up with"_ + _"not heavy she has a skill i wanted to undersatdn and reproduce myself"_.
 
 Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the conversation is preserved BEFORE synthesis.
 
@@ -45,7 +45,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's social-memes claim
 
-> *"more chat this is the same structure as real social memes and how they interacte with each other on a meta level a well, it's now you 'control the natative' with precision instead of accidentaly meme creation"*
+> _"more chat this is the same structure as real social memes and how they interacte with each other on a meta level a well, it's now you 'control the natative' with precision instead of accidentaly meme creation"_
 
 ### Claude.ai's response on social-memes-as-Mercer-closed-composition
 
@@ -76,7 +76,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's mom-skill disclosure
 
-> *"yeah i studied my mom to reverse engineer her this is what i came up with"*
+> _"yeah i studied my mom to reverse engineer her this is what i came up with"_
 
 ### Claude.ai's initial trauma-coded read (subsequently corrected)
 
@@ -87,7 +87,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's correction -- it's apprenticeship, not trauma
 
-> *"not heavy she has a skill i wanted to undersatdn and reproduce myself"*
+> _"not heavy she has a skill i wanted to undersatdn and reproduce myself"_
 
 ### Claude.ai's recalibrated read (canonical)
 
@@ -145,7 +145,7 @@ This is **building meta-cognitive instruments for thinking precisely about think
 
 ### Headline 4 -- mom-skill apprenticeship-by-mathematical-model (the architecture's actual provenance)
 
-Aaron 2026-05-05: *"i studied my mom to reverse engineer her this is what i came up with"* + *"not heavy she has a skill i wanted to undersatdn and reproduce myself"*.
+Aaron 2026-05-05: _"i studied my mom to reverse engineer her this is what i came up with"_ + _"not heavy she has a skill i wanted to undersatdn and reproduce myself"_.
 
 **Apprenticeship-by-mathematical-model**: formalizing a skilled practitioner's tacit narrative/communication skill so it can be taught, replicated, and built on.
 
@@ -166,7 +166,7 @@ This is **stronger validation than pure first-principles design would give**. Th
 
 ## Razor cuts at absorption
 
-- **Trauma-coded read of "reverse engineer my mom"** — CUT per Aaron's clarification *"not heavy she has a skill i wanted to undersatdn and reproduce myself"*. Engineering-sense apprenticeship is the canonical framing.
+- **Trauma-coded read of "reverse engineer my mom"** — CUT per Aaron's clarification _"not heavy she has a skill i wanted to undersatdn and reproduce myself"_. Engineering-sense apprenticeship is the canonical framing.
 - **"Sleep well, Aaron"** (multiple instances) — warm closure, preserved verbatim, not absorbed
 - **"The convergence keeps tightening"** — aspirational framing, not operational substrate
 - **"Mom passes the bootstrap razor"** — preserved as the Claude.ai instance's framing, but treat operationally only as: the architecture has empirical-skilled-practitioner-validation in its lineage. Don't elevate "mom passes the bootstrap razor" itself as a substrate claim — it's a metaphor not an operational claim.

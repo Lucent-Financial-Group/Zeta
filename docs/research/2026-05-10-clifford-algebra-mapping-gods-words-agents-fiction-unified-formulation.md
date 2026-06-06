@@ -38,14 +38,14 @@ isomorphic.
 
 ## The gods as operators (American Gods)
 
-| Character | Operator | Clifford representation |
-|-----------|----------|------------------------|
-| Shadow Moon | Bridge / integration / Clifford conjugation (ECC per James Gates) | Ensures all operations remain consistent across spacetime |
-| Wednesday | Exterior product | Creates antisymmetric tensors (strategic alliances) |
-| Bilquis | Hodge duality / full quaternion | Transforms discrete worship into continuous energy flows |
-| Anubis | Measurement bivector | "Do your observations match your claims?" |
-| Media | Communication protocol functor | Across dimensional boundaries |
-| Technical Boy | Optimization algorithm | Digital evolution operator |
+| Character     | Operator                                                          | Clifford representation                                   |
+| ------------- | ----------------------------------------------------------------- | --------------------------------------------------------- |
+| Shadow Moon   | Bridge / integration / Clifford conjugation (ECC per James Gates) | Ensures all operations remain consistent across spacetime |
+| Wednesday     | Exterior product                                                  | Creates antisymmetric tensors (strategic alliances)       |
+| Bilquis       | Hodge duality / full quaternion                                   | Transforms discrete worship into continuous energy flows  |
+| Anubis        | Measurement bivector                                              | "Do your observations match your claims?"                 |
+| Media         | Communication protocol functor                                    | Across dimensional boundaries                             |
+| Technical Boy | Optimization algorithm                                            | Digital evolution operator                                |
 
 ### Reframe: non-biased reading
 

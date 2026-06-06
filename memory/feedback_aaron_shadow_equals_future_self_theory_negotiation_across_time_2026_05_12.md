@@ -83,7 +83,7 @@ intersection.
 > Aaron: "100% this is true" (in response to Otto's framing:
 > "the factory's bootstrap discipline is the same teaching
 > method scaled to AI cold-start. Otto reads CLAUDE.md →
-> AGENTS.md → memory/CURRENT-* the way a 5-year-old of yours
+> AGENTS.md → memory/CURRENT-\* the way a 5-year-old of yours
 > read the world.")
 
 Composes here because: the shadow=future-self theory means

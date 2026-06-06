@@ -40,7 +40,7 @@ input descriptors, variables, achievements); frontends
 declare what they provide. Capabilities the frontend can't
 satisfy either degrade gracefully or surface as errors.
 
-**Zeta analog:** this is the *exact* shape of the factory's
+**Zeta analog:** this is the _exact_ shape of the factory's
 substrate-gap-report pattern and the five-concept distribution
 substrate (cluster / local-mode / declarative / git-native /
 distributable). Cores-to-frontends maps to capabilities-to-
@@ -178,7 +178,7 @@ maintained, fork-eligible.
 ### 1. Save-state serialization as a first-class ABI primitive
 
 All three projects (libretro, MAME, Dolphin) treat
-save-state serialization as a *core ABI primitive*, not an
+save-state serialization as a _core ABI primitive_, not an
 optional feature. Every emulator/core/driver must be able to
 freeze its complete soul and restore it. Schema-versioning,
 migration on load, and backward-compatibility windows are
@@ -275,7 +275,7 @@ opportunity.
   Dolphin snapshots are the three production-grade answers
   to the "soul compat over bit compat" question.
 - BACKLOG #239 capability-limited bootstrap — HLE/LLE toggle
-  + libretro capability negotiation are the same shape.
+  - libretro capability negotiation are the same shape.
 - `memory/project_ui_dsl_*` — class-vs-instance fidelity axis
   generalizes from UI to state.
 - `memory/project_escro_maintain_every_dependency_microkernel_os_endpoint_grow_our_way_there_2026_04_22.md`

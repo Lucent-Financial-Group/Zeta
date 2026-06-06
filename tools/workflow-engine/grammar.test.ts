@@ -36,44 +36,30 @@ describe("B-0867.3 action grammar parser/composer", () => {
   });
 
   it("rejects unknown classes and gates as grammar errors", () => {
-    expect(
-      parseActionGrammarLine(
-        "x | unknown-class | append-only | x | x | B-0867.3 | X",
-      ),
-    ).toEqual({ ok: false, error: "unknown action class: unknown-class" });
-    expect(
-      parseActionGrammarLine(
-        "x | transition | unknown-gate | x | x | B-0867.3 | X",
-      ),
-    ).toEqual({ ok: false, error: "unknown action gate: unknown-gate" });
+    expect(parseActionGrammarLine("x | unknown-class | append-only | x | x | B-0867.3 | X")).toEqual({
+      ok: false,
+      error: "unknown action class: unknown-class",
+    });
+    expect(parseActionGrammarLine("x | transition | unknown-gate | x | x | B-0867.3 | X")).toEqual({
+      ok: false,
+      error: "unknown action gate: unknown-gate",
+    });
   });
 
   it("rejects malformed field counts and missing feedback variants", () => {
     expect(parseActionGrammarLine("too | short").ok).toBe(false);
-    expect(
-      parseActionGrammarLine(
-        "x | transition | append-only | x | x | B-0867.3 | ",
-      ),
-    ).toEqual({
+    expect(parseActionGrammarLine("x | transition | append-only | x | x | B-0867.3 | ")).toEqual({
       ok: false,
       error: "feedbackVariants requires at least one item",
     });
   });
 
   it("rejects empty CSV items instead of silently normalizing ambiguity", () => {
-    expect(
-      parseActionGrammarLine(
-        "x | transition | append-only | x | x | B-0867.3,,B-0914 | X",
-      ),
-    ).toEqual({
+    expect(parseActionGrammarLine("x | transition | append-only | x | x | B-0867.3,,B-0914 | X")).toEqual({
       ok: false,
       error: "composesWith contains an empty item",
     });
-    expect(
-      parseActionGrammarLine(
-        "x | transition | append-only | x | x | B-0867.3 | X,",
-      ),
-    ).toEqual({
+    expect(parseActionGrammarLine("x | transition | append-only | x | x | B-0867.3 | X,")).toEqual({
       ok: false,
       error: "feedbackVariants contains an empty item",
     });

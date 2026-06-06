@@ -125,7 +125,7 @@ Rules of thumb:
 
 ## Builtin wrappers — use them
 
-FsCheck ships wrappers that constrain the domain *and* ship
+FsCheck ships wrappers that constrain the domain _and_ ship
 a matching shrinker:
 
 - **`NonNegativeInt`** — wraps `int` ≥ 0.
@@ -177,7 +177,7 @@ parameter-type level. Equivalent, slightly more declarative.
 ## Paper-cited properties — the Zeta convention
 
 Every property in `Properties/Math.Invariants.Tests.fs` and
-`Properties/Fuzz.Tests.fs` is an algebraic *law* from a
+`Properties/Fuzz.Tests.fs` is an algebraic _law_ from a
 cited paper. The file header says so explicitly:
 
 > THIS FILE IS THE MACHINE-CHECKED MATHEMATICAL SPECIFICATION
@@ -186,7 +186,7 @@ cited paper. The file header says so explicitly:
 When adding a property:
 
 1. State the law in the test name (e.g. `identity: D ∘ I =
-   id (scalar form)`).
+id (scalar form)`).
 2. Add a section-level comment citing the source (paper,
    theorem number).
 3. If the citation is to an external source, add a row to
@@ -275,14 +275,14 @@ coverage that's pulling weight.
   relies on reproducibility for shrinking.
 - **Properties that never fail on the default size.** Rare
   bugs may need a wider search. Add `[<Property(MaxTest =
-  1000)>]` for a "wide but slow" property, or hand-craft a
+1000)>]` for a "wide but slow" property, or hand-craft a
   Gen that biases toward the edge.
 - **`Gen.sized` ignored.** If your Gen doesn't respect the
   `size` parameter, every test case is the same size —
   shrinking works, but FsCheck's size-increase strategy
   doesn't.
 - **Shared mutable state between test cases.** A `let
-  mutable` at module level is shared across the 100 test
+mutable` at module level is shared across the 100 test
   cases; this breaks the expectation that each case is
   independent. Put mutable state inside the property.
 
@@ -329,6 +329,6 @@ coverage that's pulling weight.
   `.claude/skills/lean4-expert/SKILL.md`,
   `.claude/skills/tla-expert/SKILL.md`,
   `.claude/skills/alloy-expert/SKILL.md` — sibling hats.
-- Claessen & Hughes, *QuickCheck: A Lightweight Tool for
-  Random Testing of Haskell Programs* (ICFP 2000) — the
+- Claessen & Hughes, _QuickCheck: A Lightweight Tool for
+  Random Testing of Haskell Programs_ (ICFP 2000) — the
   canonical paper FsCheck ports.

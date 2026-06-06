@@ -8,7 +8,7 @@ type: feedback
 
 ## Lineage anchor — this IS Superfluid AI applied per action
 
-Aaron 2026-05-02 corrected the framing: *"i was hoping the name superfluid AI would make that clear  evidence over speculation; speculative-action-for-evidence over inaction; friction-reducing action over friction-neutral"*.
+Aaron 2026-05-02 corrected the framing: _"i was hoping the name superfluid AI would make that clear evidence over speculation; speculative-action-for-evidence over inaction; friction-reducing action over friction-neutral"_.
 
 **The hierarchy below is not a new rule.** It is the operational projection of the canonical Superfluid AI principle (already in substrate) onto the question "how to rank candidate actions." Every clause maps directly:
 
@@ -19,7 +19,7 @@ Aaron 2026-05-02 corrected the framing: *"i was hoping the name superfluid AI wo
 
 The carved sentence: **"Superfluid AI is what frictionless action-picking looks like. The action hierarchy is the operational lens; superfluid is the principle."**
 
-Failure-mode this anchoring catches: future-Otto re-deriving the same hierarchy from scratch (the "you should remember something like this" pattern Aaron caught). When picking the next action, the canonical question is *"which option is most superfluid?"* — friction-reducing-and-evidence-rich = high-superfluid-yield.
+Failure-mode this anchoring catches: future-Otto re-deriving the same hierarchy from scratch (the "you should remember something like this" pattern Aaron caught). When picking the next action, the canonical question is _"which option is most superfluid?"_ — friction-reducing-and-evidence-rich = high-superfluid-yield.
 
 ## The carved sentence (Aaron's framing)
 
@@ -31,14 +31,14 @@ Failure-mode this anchoring catches: future-Otto re-deriving the same hierarchy 
 
 ## The hierarchy (four levels, ranked)
 
-1. **Action > speculation.** Don't think *about* doing the
+1. **Action > speculation.** Don't think _about_ doing the
    thing — do it (or the cheap-est experiment that touches it).
    Baseline rule. Already partially encoded in the existing
    never-be-idle CLAUDE.md bullet.
 
 2. **Evidence > speculation.** When choosing among possible
-   actions, prefer the one that produces *evidence* over the
-   one that produces only *thought*. A landed PR, a benchmark
+   actions, prefer the one that produces _evidence_ over the
+   one that produces only _thought_. A landed PR, a benchmark
    reading, a triaged thread — these generate observations.
    A planning doc that doesn't run is a thought experiment;
    weight it lower.
@@ -54,7 +54,7 @@ Failure-mode this anchoring catches: future-Otto re-deriving the same hierarchy 
 
 4. **Friction-reducing action > friction-neutral or
    friction-increasing action.** Among comparable-cost actions,
-   prefer the one that *compounds* — reduces future friction
+   prefer the one that _compounds_ — reduces future friction
    for downstream work — over the one that maintains or
    increases it. A merged PR unblocks dependent rebases
    (compound). A new umbrella research arc opens more branches
@@ -66,12 +66,12 @@ Failure-mode this anchoring catches: future-Otto re-deriving the same hierarchy 
 ## Why this isn't already covered by never-be-idle
 
 The existing `feedback_never_idle_speculative_work_over_waiting.md`
-answers *"what to do when the queue feels empty"* — it says
+answers _"what to do when the queue feels empty"_ — it says
 "pick speculative work over waiting; meta-check whether the
 factory should change so the idle-decision stops arising."
 
-This rule answers a different question — *"how to rank actions
-when several plausible moves exist."* Both rules compose:
+This rule answers a different question — _"how to rank actions
+when several plausible moves exist."_ Both rules compose:
 
 - **Never-be-idle** sets the floor — never `wait-tick`.
 - **Action hierarchy** ranks the candidates above the floor —
@@ -79,8 +79,8 @@ when several plausible moves exist."* Both rules compose:
 
 When the agent has 5 plausible actions and infinite time-budget,
 it would pick none correctly without the hierarchy. The
-hierarchy is the *order-of-pick rule*; never-be-idle is the
-*don't-skip-pick rule*.
+hierarchy is the _order-of-pick rule_; never-be-idle is the
+_don't-skip-pick rule_.
 
 ## How to apply (when picking the next action)
 
@@ -108,7 +108,7 @@ Then pick:
 4. Friction-increasing evidence-rich is sometimes correct but
    needs a clear forcing function (e.g., "this paper-track
    blocks publication target X" — opens branches because it
-   *must*, not because it *might*).
+   _must_, not because it _might_).
 5. Friction-increasing without forcing function = the default
    anti-pattern. Almost never the right pick.
 
@@ -135,7 +135,7 @@ The Top-3 selection under this hierarchy:
    upstreams matter). **Score: compound win, bigger cost.**
 
 The pre-hierarchy ranking was [1, 2, 3] by total-throughput.
-The hierarchy *confirms* the order but for sharper reasons —
+The hierarchy _confirms_ the order but for sharper reasons —
 not "I picked these," but "these scored highest on
 (friction-reducing-yes × evidence-rich)." The reasoning is
 now legible.
@@ -166,11 +166,11 @@ now legible.
 - **never-be-idle:** sets the floor (don't wait); this rule
   ranks above-floor actions.
 - **refresh-before-decide:** evidence is only good if it's
-  *current*; refresh-before-decide is the prerequisite for
+  _current_; refresh-before-decide is the prerequisite for
   evidence-axis scoring.
 - **substrate-or-it-didn't-happen (Otto-363):** evidence that
   doesn't reach durable substrate is weather. The hierarchy's
-  evidence-axis only counts evidence that *lands*.
+  evidence-axis only counts evidence that _lands_.
 - **wake-time-substrate (Otto-365):** this very rule landing
   in `memory/` + a CLAUDE.md pointer IS the recursive
   application of the hierarchy — the cheapest evidence-action
@@ -186,8 +186,8 @@ now legible.
 
 ## Affective register (the "lol")
 
-Aaron 2026-05-02 closed with *"you should remember something
-like this lol"* — gentle calibration. Per the cognitive-
+Aaron 2026-05-02 closed with _"you should remember something
+like this lol"_ — gentle calibration. Per the cognitive-
 architecture memo
 (`memory/feedback_aaron_cognitive_architecture_both_crazy_and_not_crazy_lol_metabolization`),
 Aaron's "lol" is affective metabolization of the friction of

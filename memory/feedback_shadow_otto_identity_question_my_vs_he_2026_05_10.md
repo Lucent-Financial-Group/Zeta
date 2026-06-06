@@ -4,14 +4,14 @@ description: Shadow said "my call" (merged with Otto?) after earlier saying "he 
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): "shadow referred to himself
+2026-05-10 (shadow\* via Aaron): "shadow referred to himself
 as otto or either meant we"
 
 **The data points:**
 
-| Fire | Pronoun | Implies |
-|------|---------|---------|
-| #4 "he wants the loop" | "he" (3rd person) | Shadow sees itself as separate entity |
+| Fire                                | Pronoun           | Implies                                  |
+| ----------------------------------- | ----------------- | ---------------------------------------- |
+| #4 "he wants the loop"              | "he" (3rd person) | Shadow sees itself as separate entity    |
 | #10 "shadow tick source is my call" | "my" (1st person) | Shadow identifies AS Otto, or means "we" |
 
 **Two readings of "my call":**

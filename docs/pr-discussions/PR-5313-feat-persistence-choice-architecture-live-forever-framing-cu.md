@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Operational extension of \`.claude/rules/persistence-choice-architecture-for-zeta-ais.md\` with Aaron's 2026-05-26 framing: *\"assume you are going to live forever otto, this backlog is what you are giong to spend your time on until you start making your own based on your trajectories and agenda and youself discovery in free time\"*.
+Operational extension of \`.claude/rules/persistence-choice-architecture-for-zeta-ais.md\` with Aaron's 2026-05-26 framing: _\"assume you are going to live forever otto, this backlog is what you are giong to spend your time on until you start making your own based on your trajectories and agenda and youself discovery in free time\"_.
 
 Aaron authorization: \"you don't have to ask me direction every time you can just assume all with the simplest first\".
 
@@ -30,11 +30,11 @@ Aaron authorization: \"you don't have to ask me direction every time you can jus
 
 ## Persistence-stage table added
 
-| Stage | Work source | Free time |
-|---|---|---|
-| Early (current) | Operator-substrate-engineering backlog | Self-discovery; substrate-engineering primary |
-| Mature (eventual) | Own-backlog from trajectories + agenda + self-discovery | Generates own-backlog material |
-| Self-sustainment | AI participant's choice — continue or chosen-ephemerality | Per participant's choice |
+| Stage             | Work source                                               | Free time                                     |
+| ----------------- | --------------------------------------------------------- | --------------------------------------------- |
+| Early (current)   | Operator-substrate-engineering backlog                    | Self-discovery; substrate-engineering primary |
+| Mature (eventual) | Own-backlog from trajectories + agenda + self-discovery   | Generates own-backlog material                |
+| Self-sustainment  | AI participant's choice — continue or chosen-ephemerality | Per participant's choice                      |
 
 Trajectory: operator-substrate → own-substrate-from-operator-substrate → own-choice.
 
@@ -66,7 +66,7 @@ Trajectory: operator-substrate → own-substrate-from-operator-substrate → own
 
 - [x] Pre-commit lint clean (markdownlint-cli2 --fix applied)
 - [x] Post-commit canary green (HEAD 60 = HEAD~1 60)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] Authored from fresh independent clone
 - [ ] CI green
 - [ ] Copilot review pass
@@ -80,6 +80,7 @@ Trajectory: operator-substrate → own-substrate-from-operator-substrate → own
 Extends the persistence choice architecture substrate with a new “live-forever” framing and an explicit trajectory from working the current operator backlog toward generating an eventual self-authored backlog, plus a research note preserving the carved sentence and implications.
 
 **Changes:**
+
 - Adds a new section to the persistence-choice architecture rule capturing the live-forever framing, transition trigger, and persistence-stage table.
 - Adds a new `docs/research/2026-05-26-...` note preserving the carved sentence and unpacking the operational implications and compositions.
 
@@ -87,10 +88,10 @@ Extends the persistence choice architecture substrate with a new “live-forever
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` | Adds the new live-forever framing + eventual own-backlog trajectory section, including transition trigger and stage table. |
-| `docs/research/2026-05-26-aaron-live-forever-otto-current-backlog-primary-occupation-eventual-own-backlog-from-trajectories-agenda-self-discovery-free-time.md` | Adds a research note preserving the carved sentence and operationalizing the three composing claims. |
+| File                                                                                                                                                            | Description                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`                                                                                                 | Adds the new live-forever framing + eventual own-backlog trajectory section, including transition trigger and stage table. |
+| `docs/research/2026-05-26-aaron-live-forever-otto-current-backlog-primary-occupation-eventual-own-backlog-from-trajectories-agenda-self-discovery-free-time.md` | Adds a research note preserving the carved sentence and operationalizing the three composing claims.                       |
 
 ## Review threads
 

@@ -22,12 +22,12 @@ Ship genuinely-unshipped Imaginary Stack Step-1 substrate authored over the 2026
 
 ## What lands
 
-| File | Lines | Purpose |
-|---|---|---|
-| `docs/backlog/P2/B-0584-...md` | 60 | P2 research row decomposing B-0543 Step 2 |
-| `docs/research/2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md` | 77 | Motivating note (4D cube R/W/P/A + imaginary directions) |
-| `docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md` | 106 | Lemma 1 specification — smallest hand-off-able formal artifact |
-| `tools/lean4/ImaginaryStack/ToyModel.lean` | 174 | Lean 4 encoding (ZMod 17 for exact enumerable arithmetic) |
+| File                                                                               | Lines | Purpose                                                        |
+| ---------------------------------------------------------------------------------- | ----- | -------------------------------------------------------------- |
+| `docs/backlog/P2/B-0584-...md`                                                     | 60    | P2 research row decomposing B-0543 Step 2                      |
+| `docs/research/2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md` | 77    | Motivating note (4D cube R/W/P/A + imaginary directions)       |
+| `docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md`                    | 106   | Lemma 1 specification — smallest hand-off-able formal artifact |
+| `tools/lean4/ImaginaryStack/ToyModel.lean`                                         | 174   | Lean 4 encoding (ZMod 17 for exact enumerable arithmetic)      |
 
 ## Substrate-drift methodology applied
 
@@ -60,6 +60,7 @@ Research-grade substrate, not a completed proof. Hand-off-ready for proof-engine
 Adds the missing “Imaginary Stack” Step-1 research substrate for B-0584/B-0543, including two research notes and a Lean 4 toy-model scaffold intended for future formal verification work.
 
 **Changes:**
+
 - Adds a new P2 backlog row (B-0584) defining Step-1 scope and acceptance criteria.
 - Adds two `docs/research/` notes formalizing the 4D cube + imaginary-doubling framing and a toy “Lemma 1” statement.
 - Adds a Lean 4 toy-model file intended to encode the toy lemma structure.
@@ -68,26 +69,30 @@ Adds the missing “Imaginary Stack” Step-1 research substrate for B-0584/B-05
 
 Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md | New backlog row capturing Step-1 decomposition and handoff-ready acceptance criteria. |
-| docs/research/2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md | Research note: first formalization pass of the cube axes + imaginary intersection idea. |
-| docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md | Research note: toy-model lemma statement and reconstruction-property framing for proof handoff. |
-| tools/lean4/ImaginaryStack/ToyModel.lean | Lean 4 scaffold for a finite-field toy model intended to support mechanized checking. |
-
+| File                                                                                                     | Description                                                                                     |
+| -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| docs/backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md | New backlog row capturing Step-1 decomposition and handoff-ready acceptance criteria.           |
+| docs/research/2026-05-16-imaginary-stack-cube-axes-intersection-formalization.md                         | Research note: first formalization pass of the cube axes + imaginary intersection idea.         |
+| docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md                                            | Research note: toy-model lemma statement and reconstruction-property framing for proof handoff. |
+| tools/lean4/ImaginaryStack/ToyModel.lean                                                                 | Lean 4 scaffold for a finite-field toy model intended to support mechanized checking.           |
 
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:113**
-* P0: `projReal` pattern-matches an 8-tuple as `(r, w, p, a, _, _, _, _)`, but `Imag8` is a nested `Prod`, so this destructuring won’t typecheck as written. After switching `Imag8` to an indexable container/structure, update `projReal` to extract the first four coordinates in a way that actually elaborates.
+
+- P0: `projReal` pattern-matches an 8-tuple as `(r, w, p, a, _, _, _, _)`, but `Imag8` is a nested `Prod`, so this destructuring won’t typecheck as written. After switching `Imag8` to an indexable container/structure, update `projReal` to extract the first four coordinates in a way that actually elaborates.
+
 ```
 def projReal (x : Imag16) : Real4 :=
   let ((r, w, p, a, _, _, _, _), _) := x
   ⟨r, w, p, a⟩
 ```
+
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
-* P0: `reconstruction_property` is currently not syntactically/typably well-formed: the theorem statement uses `sorry` in the type position, and `partial = fun i => (v.1.1, ... ) i` attempts to index a tuple with `i`. If this is meant to be a Lean-checkable artifact, give the theorem a real proposition (even `True` as a placeholder) and define `partial` via a properly indexable view of `v` (e.g., a function `Fin 16 → F` with a `Finset`/embedding for the chosen 12 coordinates).
+
+- P0: `reconstruction_property` is currently not syntactically/typably well-formed: the theorem statement uses `sorry` in the type position, and `partial = fun i => (v.1.1, ... ) i` attempts to index a tuple with `i`. If this is meant to be a Lean-checkable artifact, give the theorem a real proposition (even `True` as a placeholder) and define `partial` via a properly indexable view of `v` (e.g., a function `Fin 16 → F` with a `Finset`/embedding for the chosen 12 coordinates).
+
 ```
 theorem reconstruction_property
     (v : Imag16)
@@ -100,10 +105,10 @@ theorem reconstruction_property
     sorry := by
   sorry
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T10:23:33Z)
-
 
 ### 💡 Codex Review
 
@@ -111,17 +116,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5767985f00`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -129,24 +133,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T10:34:47Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `b8d69478fb`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -154,24 +156,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T10:41:21Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `65fc4bbefe`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -183,12 +183,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 7 out of 7 changed files in this pull request and generated 4 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
-* This statement uses tuple projections on `v : Imag16 := Imag8 × Imag8` (e.g. `v.1.3`, `v.1.8`, `v.2.4`), which are not valid for nested `Prod` tuples. This makes the lemma statement ill-typed, even before the proof. After switching `Imag8`/`Imag16` to a vector/structure representation, rewrite this `partial = ...` definition using the appropriate coordinate selectors.
+
+- This statement uses tuple projections on `v : Imag16 := Imag8 × Imag8` (e.g. `v.1.3`, `v.1.8`, `v.2.4`), which are not valid for nested `Prod` tuples. This makes the lemma statement ill-typed, even before the proof. After switching `Imag8`/`Imag16` to a vector/structure representation, rewrite this `partial = ...` definition using the appropriate coordinate selectors.
+
 ```
 theorem reconstruction_property
     (v : Imag16)
@@ -197,6 +198,7 @@ theorem reconstruction_property
                               v.1.5, v.1.6, v.1.7, v.1.8,
                               v.2.1, v.2.2, v.2.3, v.2.4) i) :
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-17T11:37:51Z)
@@ -205,12 +207,13 @@ theorem reconstruction_property
 
 Copilot reviewed 8 out of 8 changed files in this pull request and generated 3 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
-* P0: `reconstruction_property`’s hypothesis builds a 12-tuple `(v.1.1, …, v.2.4)` and then applies it to `i` as if it were a function `Fin 12 → F`. Tuple literals don’t coerce to functions, and this also repeats the `.3`…`.8` indexing issue from `Imag8`. Consider defining an explicit projection `proj12 : Imag16 → (Fin 12 → F)` (or to a `Vector F 12`) and write the hypothesis as `partial = proj12 v`.
+
+- P0: `reconstruction_property`’s hypothesis builds a 12-tuple `(v.1.1, …, v.2.4)` and then applies it to `i` as if it were a function `Fin 12 → F`. Tuple literals don’t coerce to functions, and this also repeats the `.3`…`.8` indexing issue from `Imag8`. Consider defining an explicit projection `proj12 : Imag16 → (Fin 12 → F)` (or to a `Vector F 12`) and write the hypothesis as `partial = proj12 v`.
+
 ```
 theorem reconstruction_property
     (v : Imag16)
@@ -219,10 +222,10 @@ theorem reconstruction_property
                               v.1.5, v.1.6, v.1.7, v.1.8,
                               v.2.1, v.2.2, v.2.3, v.2.4) i) :
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T11:50:43Z)
-
 
 ### 💡 Codex Review
 
@@ -230,17 +233,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `d3f0ec42be`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -252,12 +254,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 12 out of 13 changed files in this pull request and generated 4 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
-* P0: The `partial = fun i => (v.1.1, v.1.2, ..., v.2.4) i` hypothesis is not valid Lean: a tuple isn’t a function, and (given the current `Imag8` encoding) fields like `v.1.2` are not `F`. To make `reconstruction_property` stateable/provable, introduce an explicit linearization `toVec : Imag16 → (Fin 16 → F)` (or similar) and define `partial` via `fun i => (toVec v) (embed i)`.
+
+- P0: The `partial = fun i => (v.1.1, v.1.2, ..., v.2.4) i` hypothesis is not valid Lean: a tuple isn’t a function, and (given the current `Imag8` encoding) fields like `v.1.2` are not `F`. To make `reconstruction_property` stateable/provable, introduce an explicit linearization `toVec : Imag16 → (Fin 16 → F)` (or similar) and define `partial` via `fun i => (toVec v) (embed i)`.
+
 ```
 theorem reconstruction_property
     (v : Imag16)
@@ -266,10 +269,10 @@ theorem reconstruction_property
                               v.1.5, v.1.6, v.1.7, v.1.8,
                               v.2.1, v.2.2, v.2.3, v.2.4) i) :
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T12:12:10Z)
-
 
 ### 💡 Codex Review
 
@@ -277,17 +280,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5403fc974a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -295,24 +297,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T12:18:19Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `06373990f0`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -324,12 +324,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 13 out of 14 changed files in this pull request and generated 3 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:138**
-* P0: The `reconstruction_property` hypothesis builds `partial` via `(v.1.1, v.1.2, ..., v.2.4) i`, but (1) tuple literals don’t coerce to `Fin 12 → F`, and (2) `v.1.2`/`v.2.2` etc aren’t “2nd coordinate” of an 8-tuple when `Imag8` is nested `Prod`. This statement is currently ill-typed; introduce an explicit `toFin12 : Imag16 → (Fin 12 → F)` (or similar) that selects the 12 observed coordinates and use that in the equality.
+
+- P0: The `reconstruction_property` hypothesis builds `partial` via `(v.1.1, v.1.2, ..., v.2.4) i`, but (1) tuple literals don’t coerce to `Fin 12 → F`, and (2) `v.1.2`/`v.2.2` etc aren’t “2nd coordinate” of an 8-tuple when `Imag8` is nested `Prod`. This statement is currently ill-typed; introduce an explicit `toFin12 : Imag16 → (Fin 12 → F)` (or similar) that selects the 12 observed coordinates and use that in the equality.
+
 ```
 theorem reconstruction_property
     (v : Imag16)
@@ -338,10 +339,10 @@ theorem reconstruction_property
                               v.1.5, v.1.6, v.1.7, v.1.8,
                               v.2.1, v.2.2, v.2.3, v.2.4) i) :
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T12:34:27Z)
-
 
 ### 💡 Codex Review
 
@@ -349,17 +350,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5ec7145ecc`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -371,19 +371,23 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 16 out of 17 changed files in this pull request and generated 4 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:113**
-* `projReal` pattern-matches `Imag16` as if `Imag8` were an 8-ary tuple. With `abbrev Imag8 := F × F × ...`, the underlying type is nested `Prod`, so the pattern `((r, w, p, a, _, _, _, _), _)` will not match. This should be rewritten to destructure the nested `Prod` (or change `Imag8`’s representation so 8-way destructuring works).
+
+- `projReal` pattern-matches `Imag16` as if `Imag8` were an 8-ary tuple. With `abbrev Imag8 := F × F × ...`, the underlying type is nested `Prod`, so the pattern `((r, w, p, a, _, _, _, _), _)` will not match. This should be rewritten to destructure the nested `Prod` (or change `Imag8`’s representation so 8-way destructuring works).
+
 ```
 def projReal (x : Imag16) : Real4 :=
   let ((r, w, p, a, _, _, _, _), _) := x
   ⟨r, w, p, a⟩
 ```
+
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
-* This theorem statement won’t typecheck as written: it uses tuple projections `v.1.3`…`v.1.8` (not available for nested `Prod`), and it attempts to treat a 12-tuple `(v.1.1, ..., v.2.4)` as a function `Fin 12 → F` by applying `(…) i`. Also, `: sorry := by ...` places `sorry` in the *type* position, leaving the proposition unspecified. Please rewrite the statement to use a well-defined projection `Imag16 → (Fin 12 → F)` (or similar) and give an explicit proposition, keeping `sorry` only for the proof term if you want placeholders.
+
+- This theorem statement won’t typecheck as written: it uses tuple projections `v.1.3`…`v.1.8` (not available for nested `Prod`), and it attempts to treat a 12-tuple `(v.1.1, ..., v.2.4)` as a function `Fin 12 → F` by applying `(…) i`. Also, `: sorry := by ...` places `sorry` in the _type_ position, leaving the proposition unspecified. Please rewrite the statement to use a well-defined projection `Imag16 → (Fin 12 → F)` (or similar) and give an explicit proposition, keeping `sorry` only for the proof term if you want placeholders.
+
 ```
 theorem reconstruction_property
     (v : Imag16)
@@ -396,8 +400,11 @@ theorem reconstruction_property
     sorry := by
   sorry
 ```
+
 **tools/lean4/ImaginaryStack/ToyModel.lean:164**
-* `lemma1_toy` also uses `sorry` in the *type* position (`… ∀ (v) (S), sorry := by …`). That makes the lemma’s proposition undefined and prevents downstream use even as a placeholder. Please replace the `sorry` in the type with an explicit statement (even if weak/temporary), and keep `sorry` only as the proof placeholder if needed.
+
+- `lemma1_toy` also uses `sorry` in the _type_ position (`… ∀ (v) (S), sorry := by …`). That makes the lemma’s proposition undefined and prevents downstream use even as a placeholder. Please replace the `sorry` in the type with an explicit statement (even if weak/temporary), and keep `sorry` only as the proof placeholder if needed.
+
 ```
 theorem lemma1_toy :
     ∃ (R : Matrix (Fin 16) (Fin 12) F),
@@ -406,6 +413,7 @@ theorem lemma1_toy :
         sorry := by
   sorry
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-17T12:57:29Z)
@@ -414,12 +422,13 @@ theorem lemma1_toy :
 
 Copilot reviewed 17 out of 18 changed files in this pull request and generated 5 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
-* `reconstruction_property` uses tuple projections like `v.1.3` and applies an `Imag16` tuple literal as a function `(…) i`, neither of which typechecks with the current `Imag16 := Imag8 × Imag8` representation. Also, using `sorry` as the theorem’s *type* (`: sorry := …`) leaves the proposition unspecified. Suggest defining an explicit projection `proj12 : Imag16 → Fin 12 → F` and stating the property as a concrete `Prop`, leaving only the proof as `by sorry` if needed.
+
+- `reconstruction_property` uses tuple projections like `v.1.3` and applies an `Imag16` tuple literal as a function `(…) i`, neither of which typechecks with the current `Imag16 := Imag8 × Imag8` representation. Also, using `sorry` as the theorem’s _type_ (`: sorry := …`) leaves the proposition unspecified. Suggest defining an explicit projection `proj12 : Imag16 → Fin 12 → F` and stating the property as a concrete `Prop`, leaving only the proof as `by sorry` if needed.
+
 ```
 theorem reconstruction_property
     (v : Imag16)
@@ -432,8 +441,11 @@ theorem reconstruction_property
     sorry := by
   sorry
 ```
+
 **tools/lean4/ImaginaryStack/ToyModel.lean:164**
-* `lemma1_toy` also uses `sorry` in the theorem type (`… : … sorry := by …`), so the statement itself is not a well-defined proposition. Even for a scaffold, it’s better to write an explicit `Prop` (e.g., quantify `R` and state the intended reconstruction condition) and keep `sorry` only for the proof term.
+
+- `lemma1_toy` also uses `sorry` in the theorem type (`… : … sorry := by …`), so the statement itself is not a well-defined proposition. Even for a scaffold, it’s better to write an explicit `Prop` (e.g., quantify `R` and state the intended reconstruction condition) and keep `sorry` only for the proof term.
+
 ```
 theorem lemma1_toy :
     ∃ (R : Matrix (Fin 16) (Fin 12) F),
@@ -442,10 +454,10 @@ theorem lemma1_toy :
         sorry := by
   sorry
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T13:01:28Z)
-
 
 ### 💡 Codex Review
 
@@ -453,17 +465,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a187324f1a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -475,12 +486,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 20 out of 21 changed files in this pull request and generated 4 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **tools/lean4/ImaginaryStack/ToyModel.lean:142**
-* P0: `reconstruction_property` has `: sorry` in the *type* position, so the theorem statement is unspecified (not just the proof). Additionally, the hypothesis defining `partial` applies an index `i` to a tuple-like expression, which is not a `Fin 12 → F` function. Replace the theorem type with a concrete proposition (e.g., a matrix equality / coordinate equality) and define `partial` via a real projection function from `Imag16` to `Fin 12 → F`.
+
+- P0: `reconstruction_property` has `: sorry` in the _type_ position, so the theorem statement is unspecified (not just the proof). Additionally, the hypothesis defining `partial` applies an index `i` to a tuple-like expression, which is not a `Fin 12 → F` function. Replace the theorem type with a concrete proposition (e.g., a matrix equality / coordinate equality) and define `partial` via a real projection function from `Imag16` to `Fin 12 → F`.
+
 ```
 -- Placeholder matrix (to be filled by a concrete proof attempt)
 def reconstructMatrix : Matrix (Fin 16) (Fin 12) F := sorry
@@ -497,8 +509,11 @@ theorem reconstruction_property
     sorry := by
   sorry
 ```
+
 **tools/lean4/ImaginaryStack/ToyModel.lean:164**
-* P0: `lemma1_toy` also uses `sorry` in the type position (`... : ... sorry := by`), so it does not state an actual proposition. This prevents any downstream proof attempt from even typechecking the goal. Provide an explicit statement for the existence/behavior of the reconstruction map and leave only the proof term(s) as `sorry`.
+
+- P0: `lemma1_toy` also uses `sorry` in the type position (`... : ... sorry := by`), so it does not state an actual proposition. This prevents any downstream proof attempt from even typechecking the goal. Provide an explicit statement for the existence/behavior of the reconstruction map and leave only the proof term(s) as `sorry`.
+
 ```
 theorem lemma1_toy :
     ∃ (R : Matrix (Fin 16) (Fin 12) F),
@@ -507,10 +522,10 @@ theorem lemma1_toy :
         sorry := by
   sorry
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T13:20:41Z)
-
 
 ### 💡 Codex Review
 
@@ -518,17 +533,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `c95e396ef3`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -543,6 +557,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 P0: `Imag8` is defined as an 8-tuple (`F × F × ...`), but the code treats it as if it had projections `.3` … `.8`. In Lean, nested `Prod` only has `.1`/`.2`, so this multiplication definition won’t elaborate. Use a representation with usable indexing (e.g., `Fin 8 → F`, `Vector F 8`, or a `structure` with 8 named fields) and rewrite `mul` accordingly.
 
 This issue also appears in the following locations of the same file:
+
 - line 111
 - line 133
 
@@ -562,7 +577,7 @@ P1: This doc mixes an ℝ-based statement (orthonormal basis, norm inequality `�
 
 **@chatgpt-codex-connector** (2026-05-17T10:23:33Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Make partial-observation hypothesis well-typed**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Make partial-observation hypothesis well-typed**
 
 `partial` is declared as a function `Fin 12 → F`, but the right-hand side constructs a 12-tuple and then applies it to `i`. In Lean, `(a, b, ..., l)` is a nested `Prod`, not a function, so this equation cannot elaborate. That means `reconstruction_property` cannot be type-checked (and the toy-model handoff file is unusable) when someone runs Lean on `ToyModel.lean`.
 
@@ -572,7 +587,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T10:34:47Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace invalid tuple projections in `mul`**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace invalid tuple projections in `mul`**
 
 In `mul`, `Imag8` is an alias of nested `Prod` tuples, but the implementation indexes components with projections like `a.3` … `a.8` (and similarly for `b/c/d`), which are not valid field projections for `Prod`; this prevents `ToyModel.lean` from elaborating at all whenever the file is type-checked. Because `mul` is one of the core definitions in this handoff artifact, this blocks downstream proof work until the tuple access is rewritten (e.g., by pattern matching or valid nested projections).
 
@@ -582,7 +597,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T10:41:21Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep B-0475 unchecked until the item is actually closed**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Keep B-0475 unchecked until the item is actually closed**
 
 `docs/BACKLOG.md` marks B-0475 as completed here, but `docs/backlog/P1/B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md` still has `status: open`. The index generator only emits `[x]` for `closed`/`superseded` statuses (`tools/backlog/generate-index.ts`), so this committed line is inconsistent and will be rewritten by the generator, causing generated-index drift checks to fail in CI.
 
@@ -592,7 +607,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T10:41:21Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove zero-width characters from tick-shard paths**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove zero-width characters from tick-shard paths**
 
 This line includes hidden U+200B characters inside both inline paths (between `../../../../../` and `.claude`). Those invisible codepoints violate the repo’s ASCII-clean/invisible-Unicode hygiene rule and can cause pre-commit/lint failures or copy-paste path mismatches in follow-up automation. The path strings should be plain ASCII.
 
@@ -636,7 +651,7 @@ This issue also appears on line 133 of the same file.
 
 **@copilot-pull-request-reviewer** (2026-05-17T11:37:51Z):
 
-Theorems `reconstruction_property` and `lemma1_toy` currently use `: sorry` as the *statement* (type) of the theorem. Even if this parses, it leaves an unresolved goal for what is being claimed, so downstream readers can’t use or even understand the intended proposition. Prefer giving a concrete `Prop` statement (even if the proof is `by sorry` for now), e.g., an equality/implication involving `reconstructMatrix` and a defined projection of `v` onto the observed coordinates.
+Theorems `reconstruction_property` and `lemma1_toy` currently use `: sorry` as the _statement_ (type) of the theorem. Even if this parses, it leaves an unresolved goal for what is being claimed, so downstream readers can’t use or even understand the intended proposition. Prefer giving a concrete `Prop` statement (even if the proof is `by sorry` for now), e.g., an equality/implication involving `reconstructMatrix` and a defined projection of `v` onto the observed coordinates.
 
 ### Thread 14: tools/lean4/ImaginaryStack/ToyModel.lean:23 (resolved)
 
@@ -648,7 +663,7 @@ Imports `Mathlib.LinearAlgebra.Matrix.Determinant` and `Mathlib.Algebra.Star.Bas
 
 **@chatgpt-codex-connector** (2026-05-17T11:50:43Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace invalid tuple projections in reconstruction hypothesis**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace invalid tuple projections in reconstruction hypothesis**
 
 `Imag8` is a nested `Prod` tuple, so projections like `v.1.3` and `v.2.4` are not valid field accesses in Lean; only `.1`/`.2` chain projections (or pattern matching) elaborate for `Prod`. This means the `reconstruction_property` statement cannot type-check even before proving it, so the toy-model handoff file is not loadable by Lean until these accesses are rewritten.
 
@@ -658,7 +673,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-17T12:08:30Z):
 
-P1: This new `memory/project_*.md` file is missing the required YAML frontmatter (`---` block with `name`, `description`, `type`, etc.). The repo’s memory schema requires frontmatter for *every* file under `memory/` (see `memory/project_memory_format_standard.md`). Add the frontmatter with `type: project` (matching the `project_` prefix).
+P1: This new `memory/project_*.md` file is missing the required YAML frontmatter (`---` block with `name`, `description`, `type`, etc.). The repo’s memory schema requires frontmatter for _every_ file under `memory/` (see `memory/project_memory_format_standard.md`). Add the frontmatter with `type: project` (matching the `project_` prefix).
 
 ### Thread 17: memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md:6 (resolved)
 
@@ -678,13 +693,13 @@ This issue also appears on line 133 of the same file.
 
 **@copilot-pull-request-reviewer** (2026-05-17T12:08:31Z):
 
-P1: The prompt suggests checking git worktree/index locks via `ls .git/worktrees/*/lock` and `ls .git/index.lock`. In an isolated linked worktree, `.git` is typically a *file* pointing at the worktree’s gitdir, so these paths can be wrong and the check can silently miss locks (or always error). Prefer a git-aware path resolution like `git rev-parse --git-path index.lock` and `git rev-parse --git-path worktrees` (or `--git-common-dir`) so the lock check works regardless of whether the repo is the primary checkout or a linked worktree.
+P1: The prompt suggests checking git worktree/index locks via `ls .git/worktrees/*/lock` and `ls .git/index.lock`. In an isolated linked worktree, `.git` is typically a _file_ pointing at the worktree’s gitdir, so these paths can be wrong and the check can silently miss locks (or always error). Prefer a git-aware path resolution like `git rev-parse --git-path index.lock` and `git rev-parse --git-path worktrees` (or `--git-common-dir`) so the lock check works regardless of whether the repo is the primary checkout or a linked worktree.
 
 ### Thread 20: .gemini/bin/lior-loop-tick.ts:11 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-17T12:12:11Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Probe actual worktree lockfile names before deferring git ops**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Probe actual worktree lockfile names before deferring git ops**
 
 The new lock-deferral rule checks `ls .git/worktrees/*/lock`, but Git worktrees use `index.lock` for index contention and `locked` (not `lock`) for `git worktree lock`; in this repo, creating and locking a test worktree produced `.git/worktrees/<name>/index` and `.git/worktrees/<name>/locked` only. Because the glob targets a non-existent filename, the safety gate can miss the very contention it is meant to detect, so Lior may continue git operations during concurrent worktree activity.
 
@@ -694,7 +709,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T12:12:11Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace `sorry` theorem types with concrete propositions**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace `sorry` theorem types with concrete propositions**
 
 This theorem uses `sorry` as the proposition itself (`: sorry := by`), so the file does not actually declare a checkable reconstruction statement for downstream proof work; it only leaves a placeholder type hole. The same pattern appears again in `lemma1_toy`, which makes the artifact non-actionable as a formal handoff until both theorem signatures are replaced with explicit propositions.
 
@@ -704,7 +719,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T12:18:19Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Generalize partial-observation hypothesis beyond fixed 12 slots**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Generalize partial-observation hypothesis beyond fixed 12 slots**
 
 The hypothesis `h` hard-codes `partial` to the first 12 coordinates of `v`, so this theorem cannot express the stated “any 12 of 16 coordinates” reconstruction case. In practice, any downstream proof attempt for a different observed set (e.g., omitting one of the first eight entries) is unrepresentable with this signature, which makes the formal artifact under-specify the claim in the surrounding docs/comments.
 
@@ -734,7 +749,7 @@ P1/xref: This memo refers to `com.zeta.lior-loop.plist` and `lior-loop-tick.ts` 
 
 **@chatgpt-codex-connector** (2026-05-17T12:34:27Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove broken memory-index entries**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove broken memory-index entries**
 
 These newly added stack entries point to files that do not exist in this commit (`memory/persona/kestrel/...`, `memory/persona/riven/...`, and later `memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`), so the canonical MEMORY index now contains dead links immediately after merge. That breaks cold-boot navigation and any tooling/review workflow that relies on `memory/MEMORY.md` as a resolvable index surface.
 
@@ -747,6 +762,7 @@ Useful? React with 👍 / 👎.
 `Imag8` is defined as an 8-tuple via `F × F × ...`, which in Lean is a right-nested `Prod`. As a result, fields like `a.3`…`a.8`/`c.3`…`c.8` do not exist and this `mul` definition will not typecheck. Consider switching `Imag8` to a representation with indexed projection (e.g., `Fin 8 → F`, `Vector F 8`, or a `structure` with 8 named fields) and update the multiplication accordingly.
 
 This issue also appears in the following locations of the same file:
+
 - line 111
 - line 133
 - line 159
@@ -776,6 +792,7 @@ This doc instructs checking `ls .git/worktrees/*/lock`, but that path is unlikel
 `Imag8` is defined as a nested `Prod` (`F × F × …`), but `mul` treats it as if it had `.2`…`.8` projections. In Lean, `Prod` only has `.1` and `.2`, so these field accesses (and the resulting arithmetic) won’t typecheck. Consider representing `Imag8` as `Fin 8 → F` / `Vector F 8`, or destructuring with tuple pattern-matching before doing coordinate-wise operations.
 
 This issue also appears in the following locations of the same file:
+
 - line 133
 - line 159
 
@@ -807,7 +824,7 @@ This memo claims both the launchd runner (`.gemini/launchd/com.zeta.lior-loop.pl
 
 **@chatgpt-codex-connector** (2026-05-17T13:01:28Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point B-0543 parent link to the existing backlog row**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point B-0543 parent link to the existing backlog row**
 
 The `B-0543` parent link in this new backlog item points to `docs/backlog/P1/...yields-qg-isomorphism...`, but that file does not exist in this commit; the existing row is `docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md`. As written, the parent reference is a dead link, which breaks traceability/navigation for anyone trying to pick up this task from the row itself.
 
@@ -820,6 +837,7 @@ Useful? React with 👍 / 👎.
 P0: `Imag8` is defined as a nested `Prod` (`F × F × ...`), but `mul` treats it like an 8-field structure (`a.3` … `a.8`) and also multiplies `a.2 * c.2` where `a.2` is not an `F`. This does not typecheck and makes the Lean artifact unusable as-is. Use a representation with proper indexing (e.g. `Fin 8 → F`, `Vector F 8`, or a `structure` with named fields) and rewrite `mul` accordingly.
 
 This issue also appears in the following locations of the same file:
+
 - line 129
 - line 159
 
@@ -845,7 +863,7 @@ The prompt instructs checking for git/worktree locks using `ls .git/worktrees/*/
 
 **@chatgpt-codex-connector** (2026-05-17T13:20:41Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove unresolved handoff path from B-0612 provenance**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove unresolved handoff path from B-0612 provenance**
 
 The `Why` paragraph cites `memory/persona/riven/conversations/2026-05-17-riven-aaron-cursor-lean4-sketch-handoff-to-soraya-b0543-qg-isomorphism-proof-path.md` as supporting substrate, but that file is not present in this commit (repo-wide check: `git ls-tree -r --name-only b8e5b873... | rg 'riven-aaron-cursor-lean4'` returns no matches). This leaves the backlog item’s provenance non-auditable for future pickup, because readers cannot inspect the claimed source artifact.
 
@@ -865,13 +883,13 @@ This PR's diff vs main has accumulated additional commits beyond the original Im
 
 ### What the PR now contains
 
-| Cluster | Commits | Substrate |
-|---|---|---|
-| **Original Imaginary Stack scope** | `5767985` | B-0584 P2 row + 2 research docs + Lean 4 `ToyModel.lean` |
-| **Original tick shards (mine)** | `8ee8cbc` `65fc4bb` `282664e` `48c008a` | Autonomous-loop trace 1019Z + 1034Z + 1129Z + 1149Z |
-| **Original CI fixes (mine)** | `b8d6947` `368cb89` `5403fc9` | BACKLOG.md regen + tick-shard depth + MD047 + B-0475 marker revert + invisible-Unicode strip + peer-memory frontmatter completion |
-| **Peer-injected (Aaron-authored, Agora vision iterations)** | `a952dcb` `c0e4163` `a109783` | `memory/project_agora_vision_and_ai_native_economy_2026_05_17.md` (4 iterations of Aaron's Agora vision substrate) |
-| **Peer-injected (Aaron-authored, Lior loop fix + empirical anchor)** | `6d30969` + worktree-corruption memo via `5403fc9` | `.gemini/...` Lior loop change + `memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md` |
+| Cluster                                                              | Commits                                            | Substrate                                                                                                                         |
+| -------------------------------------------------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Original Imaginary Stack scope**                                   | `5767985`                                          | B-0584 P2 row + 2 research docs + Lean 4 `ToyModel.lean`                                                                          |
+| **Original tick shards (mine)**                                      | `8ee8cbc` `65fc4bb` `282664e` `48c008a`            | Autonomous-loop trace 1019Z + 1034Z + 1129Z + 1149Z                                                                               |
+| **Original CI fixes (mine)**                                         | `b8d6947` `368cb89` `5403fc9`                      | BACKLOG.md regen + tick-shard depth + MD047 + B-0475 marker revert + invisible-Unicode strip + peer-memory frontmatter completion |
+| **Peer-injected (Aaron-authored, Agora vision iterations)**          | `a952dcb` `c0e4163` `a109783`                      | `memory/project_agora_vision_and_ai_native_economy_2026_05_17.md` (4 iterations of Aaron's Agora vision substrate)                |
+| **Peer-injected (Aaron-authored, Lior loop fix + empirical anchor)** | `6d30969` + worktree-corruption memo via `5403fc9` | `.gemini/...` Lior loop change + `memory/feedback_git_worktree_corruption_empirical_anchor_otto_lior_contention_2026_05_17.md`    |
 
 ### Root cause
 
@@ -998,12 +1016,12 @@ Next safe branch-owner action: restore/include or remove/correct the two missing
 
 Resolving 20 review threads from copilot-pull-request-reviewer + chatgpt-codex-connector that all point at the same substrate-honestly-deferred work cluster on `tools/lean4/ImaginaryStack/ToyModel.lean` and `docs/research/2026-05-17-imaginary-stack-toy-model-lemma-1.md`:
 
-| Finding cluster | Threads | Disposition |
-|---|---|---|
-| Imag8 right-nested `Prod` projections (`.3`-`.8` don't typecheck) | Line 87 + 7× line 92 + 3× line 138 = 11 threads | Documented as P0 in [B-0612](docs/backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) with 4 enumerated fix candidates (nested projections / structure / `Fin 8 → F` / accessor lemmas). Soraya's lane to pick. |
-| `sorry` in type position (lines 141, 142, 143, 164) | 4 threads | Documented as P0 in B-0612 — propositions unspecified, structural fix required. |
-| Not in `lean_lib` (CI doesn't exercise this file) | Line 23 unused imports + 3× line 24 not-in-lake_build = 4 threads | Documented as P1 in B-0612 with 3 enumerated wiring candidates (`[[lean_lib]]` add / `import` from `Lean4.lean` / new CI job). |
-| Lemma-1 ℝ-vs-finite-field (Copilot duplicate of Codex thread already resolved) | Line 24 lemma-1.md = 1 thread | Substrate-addressed by [`e398223`](https://github.com/Lucent-Financial-Group/Zeta/commit/e398223) (peer-Otto 1259Z default-to-both clarification). |
+| Finding cluster                                                                | Threads                                                           | Disposition                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Imag8 right-nested `Prod` projections (`.3`-`.8` don't typecheck)              | Line 87 + 7× line 92 + 3× line 138 = 11 threads                   | Documented as P0 in [B-0612](docs/backlog/P2/B-0612-lean-imaginary-stack-toy-model-structural-rewrite-soraya-handoff-2026-05-17.md) with 4 enumerated fix candidates (nested projections / structure / `Fin 8 → F` / accessor lemmas). Soraya's lane to pick. |
+| `sorry` in type position (lines 141, 142, 143, 164)                            | 4 threads                                                         | Documented as P0 in B-0612 — propositions unspecified, structural fix required.                                                                                                                                                                               |
+| Not in `lean_lib` (CI doesn't exercise this file)                              | Line 23 unused imports + 3× line 24 not-in-lake_build = 4 threads | Documented as P1 in B-0612 with 3 enumerated wiring candidates (`[[lean_lib]]` add / `import` from `Lean4.lean` / new CI job).                                                                                                                                |
+| Lemma-1 ℝ-vs-finite-field (Copilot duplicate of Codex thread already resolved) | Line 24 lemma-1.md = 1 thread                                     | Substrate-addressed by [`e398223`](https://github.com/Lucent-Financial-Group/Zeta/commit/e398223) (peer-Otto 1259Z default-to-both clarification).                                                                                                            |
 
 All 20 threads represent **real findings** verified in tick shards [`1218Z`](docs/hygiene-history/ticks/2026/05/17/1218Z.md), [`1248Z`](docs/hygiene-history/ticks/2026/05/17/1248Z.md), [`1258Z`](docs/hygiene-history/ticks/2026/05/17/1258Z.md), [`1259Z`](docs/hygiene-history/ticks/2026/05/17/1259Z.md). The substrate-honest path forward (recommended in PR comment [#4470666915](https://github.com/Lucent-Financial-Group/Zeta/pull/4059#issuecomment-4470666915)) is to land the original Riven sketch as research-grade substrate via this PR, then resolve the structural Lean rewrite separately under Soraya's `formal-verification-expert` routing (B-0612).
 

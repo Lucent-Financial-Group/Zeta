@@ -8,15 +8,8 @@
  * identical (numbers, booleans, arrays, number-looking strings).
  */
 
-import {
-  parseFrontmatterDocument,
-  serializeFrontmatterDocument,
-} from "./frontmatter-codec.ts";
-import {
-  EventOp,
-  asZetaIdDecimal,
-  type FrontmatterEvent,
-} from "./event.ts";
+import { parseFrontmatterDocument, serializeFrontmatterDocument } from "./frontmatter-codec.ts";
+import { EventOp, asZetaIdDecimal, type FrontmatterEvent } from "./event.ts";
 import type { FrontmatterValue } from "./schema.ts";
 
 const Reserved = {
@@ -36,8 +29,7 @@ export const EventCodecFeedbackReason = {
   BadId: "bad_id",
 } as const;
 
-export type EventCodecFeedbackReason =
-  (typeof EventCodecFeedbackReason)[keyof typeof EventCodecFeedbackReason];
+export type EventCodecFeedbackReason = (typeof EventCodecFeedbackReason)[keyof typeof EventCodecFeedbackReason];
 
 export type EventParseResult =
   | { outcome: "ok"; event: FrontmatterEvent }
@@ -68,7 +60,10 @@ export function serializeEvent(event: FrontmatterEvent): string {
 export function parseEvent(text: string): EventParseResult {
   const parsed = parseFrontmatterDocument(text);
   if (parsed.outcome === "feedback") {
-    return { outcome: "feedback", feedback: { reason: EventCodecFeedbackReason.ParseFailed, message: parsed.feedback.message } };
+    return {
+      outcome: "feedback",
+      feedback: { reason: EventCodecFeedbackReason.ParseFailed, message: parsed.feedback.message },
+    };
   }
 
   const fm = parsed.document.frontmatter;
@@ -78,14 +73,34 @@ export function parseEvent(text: string): EventParseResult {
   const opRaw = fm[Reserved.Op];
   const versionRaw = fm[Reserved.SchemaVersion];
 
-  if (typeof idRaw !== "string" || typeof tableRaw !== "string" || typeof aggRaw !== "string" || typeof opRaw !== "string") {
-    return { outcome: "feedback", feedback: { reason: EventCodecFeedbackReason.MissingReserved, message: "event is missing one or more reserved metadata keys" } };
+  if (
+    typeof idRaw !== "string" ||
+    typeof tableRaw !== "string" ||
+    typeof aggRaw !== "string" ||
+    typeof opRaw !== "string"
+  ) {
+    return {
+      outcome: "feedback",
+      feedback: {
+        reason: EventCodecFeedbackReason.MissingReserved,
+        message: "event is missing one or more reserved metadata keys",
+      },
+    };
   }
   if (!VALID_OPS.has(opRaw)) {
-    return { outcome: "feedback", feedback: { reason: EventCodecFeedbackReason.BadOp, message: `event op '${opRaw}' is not a known EventOp` } };
+    return {
+      outcome: "feedback",
+      feedback: { reason: EventCodecFeedbackReason.BadOp, message: `event op '${opRaw}' is not a known EventOp` },
+    };
   }
   if (!/^[0-9]+$/.test(idRaw) || !/^[0-9]+$/.test(aggRaw)) {
-    return { outcome: "feedback", feedback: { reason: EventCodecFeedbackReason.BadId, message: "event id and aggregate id must be base-10 ZetaIds" } };
+    return {
+      outcome: "feedback",
+      feedback: {
+        reason: EventCodecFeedbackReason.BadId,
+        message: "event id and aggregate id must be base-10 ZetaIds",
+      },
+    };
   }
 
   const schemaVersion = typeof versionRaw === "number" ? versionRaw : 1;

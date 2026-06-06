@@ -1,18 +1,20 @@
 import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  computeRestoreDrillChecksum,
-  verifyRestoreDrill,
-  type RestoreDrillSnapshot,
-} from "../src/index.ts";
+import { computeRestoreDrillChecksum, verifyRestoreDrill, type RestoreDrillSnapshot } from "../src/index.ts";
 
 test("restore drill checksum is stable across projection and row ordering", () => {
   const before: RestoreDrillSnapshot = {
     organizationId: "org-lfg",
     capturedAt: "2026-05-31T20:00:00.000Z",
     projections: [
-      { name: "work_items", rows: [{ id: "wi-2", state: "ready" }, { state: "done", id: "wi-1" }] },
+      {
+        name: "work_items",
+        rows: [
+          { id: "wi-2", state: "ready" },
+          { state: "done", id: "wi-1" },
+        ],
+      },
       { name: "org_events", rows: [{ id: "evt-1", subjectId: "wi-1" }] },
     ],
   };
@@ -21,7 +23,13 @@ test("restore drill checksum is stable across projection and row ordering", () =
     capturedAt: "2026-05-31T20:05:00.000Z",
     projections: [
       { name: "org_events", rows: [{ subjectId: "wi-1", id: "evt-1" }] },
-      { name: "work_items", rows: [{ id: "wi-1", state: "done" }, { id: "wi-2", state: "ready" }] },
+      {
+        name: "work_items",
+        rows: [
+          { id: "wi-1", state: "done" },
+          { id: "wi-2", state: "ready" },
+        ],
+      },
     ],
   };
 

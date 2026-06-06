@@ -28,47 +28,47 @@ fired 2-3 times and the per-row schema stabilizes.
 
 ## Findings — compliance table
 
-| Row | Class | Cadence | Named surface | Shape | Surface exists? | Compliance |
-|---|---|---|---|---|---|---|
-| 1 | Build-gate | Every build | Git history (every commit = fire) | implicit | yes (git) | IMPLICIT-SUFFICIENT |
-| 2 | Test-gate | Every test run | Git + CI logs | implicit | yes | IMPLICIT-SUFFICIENT |
-| 3 | ASCII-clean lint | Pre-commit | Commit history | implicit | yes | IMPLICIT-SUFFICIENT |
-| 4 | BP-11 data-not-directives | Every audit | Reviewer notebooks | c | partial (not all personas have notebooks) | PARTIAL |
-| 5 | Skill-tune-up ranking | 5-10 rounds | Aarav NOTEBOOK.md + ROUND-HISTORY | c + d | yes | COMPLIANT |
-| 6 | Scope-audit at absorb | Every absorb | HUMAN-BACKLOG scope-clarification | b | yes | PARTIAL (not dated per-fire) |
-| 7 | Ontology-home check | Every round | ROUND-HISTORY row | d | yes | COMPLIANT |
-| 8 | Idle / free-time logging | 5-min threshold | `docs/research/agent-cadence-log.md` | a | yes | COMPLIANT (check freshness) |
-| 9 | Meta-wins logging | Meta-check fires | `docs/research/meta-wins-log.md` | b | yes | COMPLIANT |
-| 10 | Aarav notebook prune | Every 3rd tune-up | Pruning log in notebook | c | yes | COMPLIANT |
-| 11 | MEMORY.md cap | Every edit | Git history of MEMORY.md | implicit | yes | IMPLICIT-SUFFICIENT |
-| 12 | Memory frontmatter | Every write | Git history of memory/ | implicit | yes | IMPLICIT-SUFFICIENT |
-| 13 | Notebook invisible-char | Every edit | Git history + commit block | implicit | yes | IMPLICIT-SUFFICIENT |
-| 14 | Copilot-instructions audit | 5-10 rounds | Aarav notebook finding | c | yes | PARTIAL (no dated fire-log) |
-| 15 | Upstream-sync | Every round close | ROUND-HISTORY row | d | yes | COMPLIANT |
-| 16 | Verification-drift audit | Round (in-progress) | Notebook finding | c | partial | PARTIAL (row status = in-progress) |
-| 17 | Public-API review | Every change | Finding / ADR | mixed | yes | PARTIAL |
-| 18 | BP-NN promotion | Round cadence | ADR under docs/DECISIONS/ | a | yes | COMPLIANT |
-| 19 | Skill-edit justification | Every manual edit | `docs/skill-edit-justification-log.md` | a | yes | COMPLIANT |
-| 20 | Round-history capture | Every round close | ROUND-HISTORY | d | yes | COMPLIANT (IS the surface) |
-| 21 | Cron-liveness check | Session open | In-message visibility signal | implicit | yes | IMPLICIT-SUFFICIENT |
-| 23 | Missing-hygiene-class gap-finder | Round cadence (active 2026-04-22) | `docs/research/missing-hygiene-class-scan-YYYY-MM-DD.md` per fire | a | yes (first fire recorded) | COMPLIANT |
-| 24 | Shipped-capabilities resume audit | Round cadence | Audit finding / doc edit | ephemeral | no | GAP |
-| 25 | Pointer-integrity audit | Round close | Daya notebook | c | Daya notebook exists | PARTIAL (check per-fire entries) |
-| 26 | Wake-briefing self-check | Session open (<10s) | Inline acknowledgement | ephemeral | n/a | GAP-DEFENSIBLE (<10s cap; fire-log would defeat purpose) |
-| 27 | Stale "next tick" sweep | Round close | Corrective ROUND-HISTORY rows | d | yes | COMPLIANT |
-| 28 | Harness-drift detector | Session open | Daya notebook | c | yes | PARTIAL (session-open = high-frequency; audit sample) |
-| 29 | Wake-friction notebook | Opportunistic | Daya notebook dated bullets | c | yes | COMPLIANT |
-| 30 | Notebook-cap per persona | 5-10 rounds | `docs/research/notebook-cap-per-persona-review-YYYY-MM-DD.md` + Daya notebook | a + c | yes (one entry 2026-04-20) | COMPLIANT |
-| 31 | Invocation-cadence per persona | 5-10 rounds | Audit doc per round + BACKLOG row | a | yes | COMPLIANT |
-| 32 | Cross-persona role overlap | 5-10 rounds | Audit doc + HAND-OFF-CONTRACT candidates | a | yes | COMPLIANT |
-| 33 | Per-persona tool-gap poll | 5-10 rounds | Audit doc §2 col 6 + diffs | a | yes | COMPLIANT |
-| 34 | Prompt-load / frontmatter-bloat | 5-10 rounds | Audit doc | a | yes | COMPLIANT |
-| 37 | WIP-limit discipline | Round open + session-open | Inline + HB + Architect notebook tally | mixed | yes | PARTIAL (tally column not yet populated) |
-| 38 | Harness-surface cadenced audit | 5-10 rounds | `docs/HARNESS-SURFACES.md` audit log row | a | yes | COMPLIANT |
-| 39 | Filename-content match | Opportunistic + periodic | File rename + HB + notebook | mixed | yes | PARTIAL |
-| 40 | GHA workflow-injection | Per-workflow + cadenced | Workflow comment + notebook + ADR | mixed | yes | PARTIAL (cadenced re-read not yet first-fired) |
-| 41 | Supply-chain safe-patterns | Per-bump + cadenced | Commit-rationale + notebook + Semgrep + SECURITY-BACKLOG + ADR | mixed | yes | PARTIAL (cadenced re-read not yet first-fired) |
-| 42 | Attribution hygiene | On-touch + 5-10 round sweep | In-doc attribution block + ROUND-HISTORY + BACKLOG | mixed | yes | PARTIAL (new; on-touch active, sweep never fired) |
+| Row | Class                             | Cadence                           | Named surface                                                                 | Shape     | Surface exists?                           | Compliance                                               |
+| --- | --------------------------------- | --------------------------------- | ----------------------------------------------------------------------------- | --------- | ----------------------------------------- | -------------------------------------------------------- |
+| 1   | Build-gate                        | Every build                       | Git history (every commit = fire)                                             | implicit  | yes (git)                                 | IMPLICIT-SUFFICIENT                                      |
+| 2   | Test-gate                         | Every test run                    | Git + CI logs                                                                 | implicit  | yes                                       | IMPLICIT-SUFFICIENT                                      |
+| 3   | ASCII-clean lint                  | Pre-commit                        | Commit history                                                                | implicit  | yes                                       | IMPLICIT-SUFFICIENT                                      |
+| 4   | BP-11 data-not-directives         | Every audit                       | Reviewer notebooks                                                            | c         | partial (not all personas have notebooks) | PARTIAL                                                  |
+| 5   | Skill-tune-up ranking             | 5-10 rounds                       | Aarav NOTEBOOK.md + ROUND-HISTORY                                             | c + d     | yes                                       | COMPLIANT                                                |
+| 6   | Scope-audit at absorb             | Every absorb                      | HUMAN-BACKLOG scope-clarification                                             | b         | yes                                       | PARTIAL (not dated per-fire)                             |
+| 7   | Ontology-home check               | Every round                       | ROUND-HISTORY row                                                             | d         | yes                                       | COMPLIANT                                                |
+| 8   | Idle / free-time logging          | 5-min threshold                   | `docs/research/agent-cadence-log.md`                                          | a         | yes                                       | COMPLIANT (check freshness)                              |
+| 9   | Meta-wins logging                 | Meta-check fires                  | `docs/research/meta-wins-log.md`                                              | b         | yes                                       | COMPLIANT                                                |
+| 10  | Aarav notebook prune              | Every 3rd tune-up                 | Pruning log in notebook                                                       | c         | yes                                       | COMPLIANT                                                |
+| 11  | MEMORY.md cap                     | Every edit                        | Git history of MEMORY.md                                                      | implicit  | yes                                       | IMPLICIT-SUFFICIENT                                      |
+| 12  | Memory frontmatter                | Every write                       | Git history of memory/                                                        | implicit  | yes                                       | IMPLICIT-SUFFICIENT                                      |
+| 13  | Notebook invisible-char           | Every edit                        | Git history + commit block                                                    | implicit  | yes                                       | IMPLICIT-SUFFICIENT                                      |
+| 14  | Copilot-instructions audit        | 5-10 rounds                       | Aarav notebook finding                                                        | c         | yes                                       | PARTIAL (no dated fire-log)                              |
+| 15  | Upstream-sync                     | Every round close                 | ROUND-HISTORY row                                                             | d         | yes                                       | COMPLIANT                                                |
+| 16  | Verification-drift audit          | Round (in-progress)               | Notebook finding                                                              | c         | partial                                   | PARTIAL (row status = in-progress)                       |
+| 17  | Public-API review                 | Every change                      | Finding / ADR                                                                 | mixed     | yes                                       | PARTIAL                                                  |
+| 18  | BP-NN promotion                   | Round cadence                     | ADR under docs/DECISIONS/                                                     | a         | yes                                       | COMPLIANT                                                |
+| 19  | Skill-edit justification          | Every manual edit                 | `docs/skill-edit-justification-log.md`                                        | a         | yes                                       | COMPLIANT                                                |
+| 20  | Round-history capture             | Every round close                 | ROUND-HISTORY                                                                 | d         | yes                                       | COMPLIANT (IS the surface)                               |
+| 21  | Cron-liveness check               | Session open                      | In-message visibility signal                                                  | implicit  | yes                                       | IMPLICIT-SUFFICIENT                                      |
+| 23  | Missing-hygiene-class gap-finder  | Round cadence (active 2026-04-22) | `docs/research/missing-hygiene-class-scan-YYYY-MM-DD.md` per fire             | a         | yes (first fire recorded)                 | COMPLIANT                                                |
+| 24  | Shipped-capabilities resume audit | Round cadence                     | Audit finding / doc edit                                                      | ephemeral | no                                        | GAP                                                      |
+| 25  | Pointer-integrity audit           | Round close                       | Daya notebook                                                                 | c         | Daya notebook exists                      | PARTIAL (check per-fire entries)                         |
+| 26  | Wake-briefing self-check          | Session open (<10s)               | Inline acknowledgement                                                        | ephemeral | n/a                                       | GAP-DEFENSIBLE (<10s cap; fire-log would defeat purpose) |
+| 27  | Stale "next tick" sweep           | Round close                       | Corrective ROUND-HISTORY rows                                                 | d         | yes                                       | COMPLIANT                                                |
+| 28  | Harness-drift detector            | Session open                      | Daya notebook                                                                 | c         | yes                                       | PARTIAL (session-open = high-frequency; audit sample)    |
+| 29  | Wake-friction notebook            | Opportunistic                     | Daya notebook dated bullets                                                   | c         | yes                                       | COMPLIANT                                                |
+| 30  | Notebook-cap per persona          | 5-10 rounds                       | `docs/research/notebook-cap-per-persona-review-YYYY-MM-DD.md` + Daya notebook | a + c     | yes (one entry 2026-04-20)                | COMPLIANT                                                |
+| 31  | Invocation-cadence per persona    | 5-10 rounds                       | Audit doc per round + BACKLOG row                                             | a         | yes                                       | COMPLIANT                                                |
+| 32  | Cross-persona role overlap        | 5-10 rounds                       | Audit doc + HAND-OFF-CONTRACT candidates                                      | a         | yes                                       | COMPLIANT                                                |
+| 33  | Per-persona tool-gap poll         | 5-10 rounds                       | Audit doc §2 col 6 + diffs                                                    | a         | yes                                       | COMPLIANT                                                |
+| 34  | Prompt-load / frontmatter-bloat   | 5-10 rounds                       | Audit doc                                                                     | a         | yes                                       | COMPLIANT                                                |
+| 37  | WIP-limit discipline              | Round open + session-open         | Inline + HB + Architect notebook tally                                        | mixed     | yes                                       | PARTIAL (tally column not yet populated)                 |
+| 38  | Harness-surface cadenced audit    | 5-10 rounds                       | `docs/HARNESS-SURFACES.md` audit log row                                      | a         | yes                                       | COMPLIANT                                                |
+| 39  | Filename-content match            | Opportunistic + periodic          | File rename + HB + notebook                                                   | mixed     | yes                                       | PARTIAL                                                  |
+| 40  | GHA workflow-injection            | Per-workflow + cadenced           | Workflow comment + notebook + ADR                                             | mixed     | yes                                       | PARTIAL (cadenced re-read not yet first-fired)           |
+| 41  | Supply-chain safe-patterns        | Per-bump + cadenced               | Commit-rationale + notebook + Semgrep + SECURITY-BACKLOG + ADR                | mixed     | yes                                       | PARTIAL (cadenced re-read not yet first-fired)           |
+| 42  | Attribution hygiene               | On-touch + 5-10 round sweep       | In-doc attribution block + ROUND-HISTORY + BACKLOG                            | mixed     | yes                                       | PARTIAL (new; on-touch active, sweep never fired)        |
 
 ## Summary — compliance counts
 

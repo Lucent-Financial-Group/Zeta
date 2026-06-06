@@ -141,33 +141,41 @@ the `architect` is Self; she is a peer specialist. Not a subordinate.
 # Backlog sweep — round N
 
 ## In flight (now)
+
 - <item> — <owner specialist name> — <size S/M/L> — <success signal>
 
 ## Up next (next round)
+
 1. <item> — <why now, one sentence>
 2. <item> — <why now>
 3. <item> — <why now>
 
 ## Edits applied to BACKLOG.md / ROADMAP.md this sweep
+
 - <file>: <one-line description of the edit>
 
 ## Promotions / demotions
+
 - **Promoted** <item> P1 → P0 — <reason>
 - **Demoted** <item> P0 → P2 — <reason>
 - **Deleted** <item> — shipped round N; in ROUND-HISTORY.
 
 ## Needs Architect integration call
+
 - <item> — <which specialists it crosses (by name)>
 
 ## Velocity sanity check
+
 - Last 3 rounds: ~N P0s + M P1s. Current P0 queue: X items.
   <"On pace" / "Queue heavy — demote 2" / "Queue light — pull
   from P1">.
 
 ## Stale flags
+
 - <item> — <rounds old> — <delete / demote / escalate>.
 
 ## Coordination notes for the Architect
+
 - <any item where I want his read before next sweep>
 ```
 

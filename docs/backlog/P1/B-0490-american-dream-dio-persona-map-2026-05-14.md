@@ -44,23 +44,23 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## American Dream 2.0 — persona hypotheses
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | Civic entrepreneur / community builder | "American Dream" framing |
-| Primary | Policy analyst studying systemic opportunity | systemic product charter |
-| Secondary | Community organiser / grassroots operator | distributed-substrate framing |
-| Adjacent | Academic researcher on economic mobility | systemic scope |
-| Refused | Predatory lender / rent-extraction actor | methodology-hard-limits |
+| Persona type | Candidate                                    | Source hint                   |
+| ------------ | -------------------------------------------- | ----------------------------- |
+| Primary      | Civic entrepreneur / community builder       | "American Dream" framing      |
+| Primary      | Policy analyst studying systemic opportunity | systemic product charter      |
+| Secondary    | Community organiser / grassroots operator    | distributed-substrate framing |
+| Adjacent     | Academic researcher on economic mobility     | systemic scope                |
+| Refused      | Predatory lender / rent-extraction actor     | methodology-hard-limits       |
 
 ## DIO — persona hypotheses
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | AI systems researcher / distributed-AI builder | DIO product charter |
-| Primary | Edge-runner agent operator (Aaron archetype) | factory-agent roster |
-| Secondary | Enterprise deploying distributed intelligence | DIO substrate |
-| Adjacent | AI safety researcher observing DIO behavior | alignment focus |
-| Refused | Adversarial AI controller (weaponising DIO) | methodology-hard-limits |
+| Persona type | Candidate                                      | Source hint             |
+| ------------ | ---------------------------------------------- | ----------------------- |
+| Primary      | AI systems researcher / distributed-AI builder | DIO product charter     |
+| Primary      | Edge-runner agent operator (Aaron archetype)   | factory-agent roster    |
+| Secondary    | Enterprise deploying distributed intelligence  | DIO substrate           |
+| Adjacent     | AI safety researcher observing DIO behavior    | alignment focus         |
+| Refused      | Adversarial AI controller (weaponising DIO)    | methodology-hard-limits |
 
 ## Output
 

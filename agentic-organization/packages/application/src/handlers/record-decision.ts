@@ -218,8 +218,7 @@ const FollowUpWorkValidationStatus = {
   Rejected: "rejected",
 } as const;
 
-type FollowUpWorkValidationStatus =
-  (typeof FollowUpWorkValidationStatus)[keyof typeof FollowUpWorkValidationStatus];
+type FollowUpWorkValidationStatus = (typeof FollowUpWorkValidationStatus)[keyof typeof FollowUpWorkValidationStatus];
 
 type FollowUpWorkValidationResult =
   | {
@@ -375,9 +374,7 @@ function validateRecordDecisionCommand(
   return undefined;
 }
 
-function validateDocConsultOutcome(
-  command: RecordDecisionCommand,
-): RecordDecisionValidationErrorMessage | undefined {
+function validateDocConsultOutcome(command: RecordDecisionCommand): RecordDecisionValidationErrorMessage | undefined {
   const { docConsultOutcome } = command;
 
   if (docConsultOutcome === undefined) {
@@ -399,7 +396,11 @@ function validateDocConsultOutcome(
   return undefined;
 }
 
-function createDecisionRecord(command: RecordDecisionCommand, decisionRecordId: string, occurredAt: string): DecisionRecord {
+function createDecisionRecord(
+  command: RecordDecisionCommand,
+  decisionRecordId: string,
+  occurredAt: string,
+): DecisionRecord {
   return {
     decisionRecordId,
     organizationId: command.organizationId,
@@ -487,9 +488,9 @@ function createOptionalTeamScope(command: Pick<RecordDecisionCommand, "teamId">)
   return command.teamId === undefined ? {} : { teamId: command.teamId };
 }
 
-function createOptionalDocConsultOutcomePayload(
-  command: Pick<RecordDecisionCommand, "docConsultOutcome">,
-): { docConsultOutcome?: RecordDecisionDocConsultOutcome } {
+function createOptionalDocConsultOutcomePayload(command: Pick<RecordDecisionCommand, "docConsultOutcome">): {
+  docConsultOutcome?: RecordDecisionDocConsultOutcome;
+} {
   if (command.docConsultOutcome === undefined) {
     return {};
   }

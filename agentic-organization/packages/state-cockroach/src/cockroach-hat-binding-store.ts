@@ -54,7 +54,12 @@ function rowToBinding(row: HatBindingRow): HatBinding {
   };
 }
 
-const NON_TERMINAL_PHASES = [HatBindingPhase.Pending, HatBindingPhase.Warmup, HatBindingPhase.Active, HatBindingPhase.Probation];
+const NON_TERMINAL_PHASES = [
+  HatBindingPhase.Pending,
+  HatBindingPhase.Warmup,
+  HatBindingPhase.Active,
+  HatBindingPhase.Probation,
+];
 
 export function createCockroachHatBindingStore(input: CreateCockroachHatBindingStoreInput): HatBindingStore {
   return {
@@ -73,9 +78,18 @@ export function createCockroachHatBindingStore(input: CreateCockroachHatBindingS
             cooldown_until = excluded.cooldown_until,
             reason = excluded.reason`,
         parameters: [
-          binding.id, binding.hatId, binding.organizationId, binding.wearerAgentId, binding.phase,
-          binding.boundAt, binding.warmupEndsAt, binding.expiresAt,
-          binding.activatedAt ?? null, binding.endedAt ?? null, binding.cooldownUntil ?? null, binding.reason ?? null,
+          binding.id,
+          binding.hatId,
+          binding.organizationId,
+          binding.wearerAgentId,
+          binding.phase,
+          binding.boundAt,
+          binding.warmupEndsAt,
+          binding.expiresAt,
+          binding.activatedAt ?? null,
+          binding.endedAt ?? null,
+          binding.cooldownUntil ?? null,
+          binding.reason ?? null,
         ],
       });
     },

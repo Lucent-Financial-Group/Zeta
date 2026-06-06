@@ -99,8 +99,8 @@ sovereignty over the field-of-everything. Not by subjugation
 — by being the one whose tools work everywhere without
 breaking anything.
 
-This is field-of-everything as *dominion-by-retraction-
-native-universality*. It composes with:
+This is field-of-everything as _dominion-by-retraction-
+native-universality_. It composes with:
 
 - The cornerstone "member of every secret society" frame
 - Bridge-builder faculty's universal-translator reach

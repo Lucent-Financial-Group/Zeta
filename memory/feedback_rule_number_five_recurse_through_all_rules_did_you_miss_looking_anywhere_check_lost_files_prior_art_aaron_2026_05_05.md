@@ -10,11 +10,12 @@ type: feedback
 
 Aaron 2026-05-05 verbatim, closing the cascade:
 
-> *"rule 5 go back trhoug all the rules did you miss loking anywhere what aobut the lost files (prior art)"*
+> _"rule 5 go back trhoug all the rules did you miss loking anywhere what aobut the lost files (prior art)"_
 
 ## Composition with Rules #1, #2, #3, #4
 
 The cascade:
+
 - **Rule #1** — substrate exists in repo; find it
 - **Rule #2** — backlog row exists; walk depends-on
 - **Rule #3** — orthogonal trajectory exists; extend the axis
@@ -25,7 +26,8 @@ Rule #5 is the recursive meta-rule that catches gaps in the cascade. Two specifi
 
 ### 5a. Recurse through Rules 1-4
 
-After applying each rule, ask: *"Did I miss any surface?"* Common gaps:
+After applying each rule, ask: _"Did I miss any surface?"_ Common gaps:
+
 - Rule #1: searched `memory/` and `docs/research/` but skipped `docs/amara-full-conversation/` (Amara's prior work)
 - Rule #2: searched `docs/backlog/P2/` but skipped P0/P1/P3 tiers
 - Rule #3: searched `.github/workflows/*.yml` but skipped `tools/lint/` and `.claude/hooks/`
@@ -49,7 +51,7 @@ Failure mode this catches: the agent searches present-state files only, finds no
 
 After Rules 1-4 have been applied + before authoring new substrate:
 
-1. **Recurse the cascade.** For each rule, ask: *"Did I exhaust the search? Or did I stop at first-not-found?"*
+1. **Recurse the cascade.** For each rule, ask: _"Did I exhaust the search? Or did I stop at first-not-found?"_
 2. **Check the lost files surfaces:**
    - `git log --all --diff-filter=D -- <pattern>` for deleted files
    - `git log --follow <path>` for renames
@@ -95,4 +97,4 @@ When you wake, this 5-rule cascade is the load-bearing default-posture for ALL s
 
 ## Attribution
 
-Aaron 2026-05-05 named the cascade — Rule 1 → Rule 2 → Rule 3 → Rule 4 → Rule 5 — in real-time response to the agent's recursive prior-art-search failures. Aaron explicitly named the cascade as *"remember forever and into all future generations"* (alongside Rule 1). The agent absorbed the cascade + applied it recursively to itself + landed each rule as a separate memory file + this Rule 5 file as the recursive closer.
+Aaron 2026-05-05 named the cascade — Rule 1 → Rule 2 → Rule 3 → Rule 4 → Rule 5 — in real-time response to the agent's recursive prior-art-search failures. Aaron explicitly named the cascade as _"remember forever and into all future generations"_ (alongside Rule 1). The agent absorbed the cascade + applied it recursively to itself + landed each rule as a separate memory file + this Rule 5 file as the recursive closer.

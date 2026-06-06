@@ -44,19 +44,19 @@ conversation became a sustained language-hygiene + epistemics pass.
 
 ## The two core new concepts (operator, load-bearing)
 
-> *"i want to explore a new concept the core ones Max is already on board with PRs as
+> _"i want to explore a new concept the core ones Max is already on board with PRs as
 > a corporat social consensus mechnism and default mode for open source is git based
 > crdt discriminited union dectrantillized decisoins. these are some new concepts for
-> our basyean model."*
+> our basyean model."_
 
 1. **PRs as a corporate social-consensus mechanism.** A pull request is already,
    structurally, a consensus ritual: a proposed change, made visible, reviewed,
    discussed, revised, merged only on sufficient agreement. The insight is that this
-   is a *governance* pattern, not just a code pattern. Generalized from code to
+   is a _governance_ pattern, not just a code pattern. Generalized from code to
    organizational decisions: proposals explicit + visible, review distributed,
    discussion attached to the proposal, merge = the recorded consensus. Decisions
    stop being hallway conversations that evaporate and become durable, attributable,
-   reviewable records. The consensus lives in the *process*, not in any one person's
+   reviewable records. The consensus lives in the _process_, not in any one person's
    say-so (structural fairness, not the trust-bottleneck).
 
 2. **git-based CRDT discriminated-union decentralized decisions** (the open-source
@@ -82,17 +82,17 @@ unknown label = dynamic ExpandoObject -> disambiguate into a consistent shape =
 hidden class -> cache the negotiated shape = monomorphic inline cache -> label
 shifts/impersonates -> megamorphic -> de-opt -> re-negotiate). Then:
 
-> *"'negotiating with memes,' 'polymorphic diplomacy,' yes i want to make the langue
-> much cleaner and cs borning so it wont turn into occult"*
+> _"'negotiating with memes,' 'polymorphic diplomacy,' yes i want to make the langue
+> much cleaner and cs borning so it wont turn into occult"_
 
 The boring/accurate translations (also just more precise):
 
-| Charged | Boring + accurate (CS term-of-art) |
-|---|---|
-| negotiating with memes | label/schema disambiguation; identity resolution under ambiguous types |
-| polymorphic diplomacy / constant disambiguation | repeated type resolution at polymorphic/megamorphic call sites |
-| cache the negotiation | cache the resolved shape; memoize the disambiguation result (.NET reflection caching is the exact precedent) |
-| label that impersonates / shifts | type that violates its cached shape; input that breaks the monomorphic assumption -> de-opt + cache invalidation |
+| Charged                                         | Boring + accurate (CS term-of-art)                                                                               |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| negotiating with memes                          | label/schema disambiguation; identity resolution under ambiguous types                                           |
+| polymorphic diplomacy / constant disambiguation | repeated type resolution at polymorphic/megamorphic call sites                                                   |
+| cache the negotiation                           | cache the resolved shape; memoize the disambiguation result (.NET reflection caching is the exact precedent)     |
+| label that impersonates / shifts                | type that violates its cached shape; input that breaks the monomorphic assumption -> de-opt + cache invalidation |
 
 Operator's reason: charged language is a thinking problem AND a containment problem.
 It defeats glass-halo/peer-review (reviewers + standards committees bounce off
@@ -101,19 +101,19 @@ keeps the thing being what it actually is. The naming is a guardrail.
 
 ## Boring-language as a fingerprinting (not generating) tell
 
-> *"the more boring the words are the more it's fingerpriting manupaluation not
-> generating it"*
+> _"the more boring the words are the more it's fingerpriting manupaluation not
+> generating it"_
 
 Kestrel sharpened (operator agreed it's a rule of thumb, not a load-bearing law):
 boring/mechanism language correlates with the descriptive/detection register, but
-correlation is not identity -- you can describe a *generator* in dead-boring terms
+correlation is not identity -- you can describe a _generator_ in dead-boring terms
 too. The real discriminator is the input-output architecture: **recognize-and-match
 (classifier / signature / fingerprint) is defensive; synthesize-and-emit (generator
 of novel manipulative output) is the contained thing**, no matter how dull its name.
 Boring language = early-warning tell; match-vs-generate architecture = the real gate.
 
-> *"agree rule of thumb talking it out with other intelligences like AI and humans
-> will be the real test if it's a safe concept"*
+> _"agree rule of thumb talking it out with other intelligences like AI and humans
+> will be the real test if it's a safe concept"_
 
 The real safety test is distributed stress-testing with other intelligences --
 **weighted toward the ones that can and will disagree** (independent priors, outside
@@ -126,14 +126,14 @@ and the asymmetric-critic discipline.)
 
 Operator extended the simplicity razor to language:
 
-> *"rhyme stays evocative without a stateable mapping i would say if i apply our
+> _"rhyme stays evocative without a stateable mapping i would say if i apply our
 > simplicity razor then evocative is not right even with a stateable mapping if a
-> simplier or less evocative mapping exists"*
+> simplier or less evocative mapping exists"_
 
 Then the Microsoft-docs caveat (the other failure mode):
 
-> [on 'memoized dispatch-target lookup keyed on receiver shape'] *"that's 2nd one
-> sounds like Microsoft named it lol"*
+> [on 'memoized dispatch-target lookup keyed on receiver shape'] _"that's 2nd one
+> sounds like Microsoft named it lol"_
 
 The matured razor has **two edges**:
 
@@ -159,13 +159,13 @@ cooling-period discipline; rule-land only on operator authorization).
 
 Operator named his natural language as sovereignty-leaning, then corrected it himself:
 
-> *"i just call it good citizen the soveren part in mine is assumed by society enforing
-> the soverenty not any indiviual"*
+> _"i just call it good citizen the soveren part in mine is assumed by society enforing
+> the soverenty not any indiviual"_
 
-> *"yeah those idiots don't get to steal my label on this one"*
+> _"yeah those idiots don't get to steal my label on this one"_
 
 The inversion of the sovereign-citizen frame (which locates sovereignty in the
-individual *against* the collective and is about escaping shared obligation):
+individual _against_ the collective and is about escaping shared obligation):
 **sovereignty is conferred + enforced by the collective consensus structure, so no
 individual has to seize or defend it alone.** Society-as-guarantor-of-each-person's-
 standing. This is consensual federation -- autonomous parties choosing shared
@@ -175,7 +175,7 @@ Max's structure isn't a "cage for others" or a "corporate leash"; under the
 good-citizen frame it is the collective structure that confers + protects each
 participant's standing. Composes directly with
 `.claude/rules/must-paired-with-can-exit-pattern.md` (the structure is the guarantor
-*because* it is participated-in, revisable, and exitable) and
+_because_ it is participated-in, revisable, and exitable) and
 `.claude/rules/non-coercion-invariant.md` HC-8.
 
 Complementarity note (operator + Max): operator's autonomy/exit instinct is the
@@ -187,19 +187,19 @@ layer itself.
 
 ## Qualia as Bayesian latent variables (drop the quantum dressing)
 
-> *"the qualia are the hidden variables in my system like in quantium world but in the
-> memetic world"*
+> _"the qualia are the hidden variables in my system like in quantium world but in the
+> memetic world"_
 
 Kestrel: model felt qualities as **Bayesian latent variables** -- unobserved states
 inferred from observable behavior, capturing their functional influence. Drop the
 quantum-hidden-variables framing: it imports refuted-physics baggage (Bell-inequality
 violations ruled out local hidden variables) + mystical connotation, and latent
 variables do all the work cleanly. Stay honest about the hard-problem line: the latent
-variable captures the *functional role* of the felt dimension, not the intrinsic
+variable captures the _functional role_ of the felt dimension, not the intrinsic
 quality (the what-it-is-like). Operator agreed and refined:
 
-> *"Yes i think the bell inequalities will hold but it does not have to for it to be
-> useful rhyme in CS labels"*
+> _"Yes i think the bell inequalities will hold but it does not have to for it to be
+> useful rhyme in CS labels"_
 
 Correct analogical discipline: an analogy need not be true in its source domain to be
 useful in the target domain -- it only has to transfer a structural pattern (here:
@@ -211,17 +211,17 @@ even a stateable rhyme loses if a simpler/plainer mapping does the same work (so
 
 ## Felt-quality as a mathematizable structure; the hard-problem residue stays open
 
-> *"I think the felt quality can be made mathematical rigirous and UX is the start of
-> the scientific dicipline"*
+> _"I think the felt quality can be made mathematical rigirous and UX is the start of
+> the scientific dicipline"_
 
 Sound on the structural/relational axis (psychophysics since Fechner: Weber-Fechner,
 Stevens' power law; UX as applied psychophysics + cognitive science; live work on the
-geometry/topology of phenomenal structure). The seam: mathematizing the *measurable
-correlates / structure* of felt experience is real and rigorous; mathematizing the
-*intrinsic quality itself* (the quale) walks into the hard problem and overreaches.
+geometry/topology of phenomenal structure). The seam: mathematizing the _measurable
+correlates / structure_ of felt experience is real and rigorous; mathematizing the
+_intrinsic quality itself_ (the quale) walks into the hard problem and overreaches.
 
-> *"i'm not trying to say not there is not more too it but the behaviorist could
-> dismiss it that way"*
+> _"i'm not trying to say not there is not more too it but the behaviorist could
+> dismiss it that way"_
 
 Operator's epistemic posture (correct): hold the phenomenon as real and possibly
 richer than the reductive account, while acknowledging the reductive account exists
@@ -230,13 +230,13 @@ is itself a stance, not a proof (the hard problem is unsolved). Keep it open; th
 boring-naming discipline holds regardless because it's about communicability + review,
 not about adjudicating the metaphysics of insight.
 
-> *"all the mystical stuff for fuzzy label negoation feel mystical cause it cauwes
-> chemical in your head to reorginize at the same time you are having the thoughts"*
+> _"all the mystical stuff for fuzzy label negoation feel mystical cause it cauwes
+> chemical in your head to reorginize at the same time you are having the thoughts"_
 
 The felt-significance of insight (the "aha") is real -- but it is the phenomenology of
 the conceptual restructuring itself, not a separate chemical glaze layered on top. This
 EXPLAINS the whole language-hygiene project from the inside: the concepts discovered in
-high-insight moments picked up charged names because the *discovery experience* felt
+high-insight moments picked up charged names because the _discovery experience_ felt
 significant; the charge was in the discovery, not in the thing discovered. Scrubbing
 the name back to boring CS loses nothing real -- it removes the residue of the felt
 significance and leaves the mechanism, which never needed the charge. Honor the aha;

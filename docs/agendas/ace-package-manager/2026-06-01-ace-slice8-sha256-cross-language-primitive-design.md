@@ -133,5 +133,5 @@ hash functions (SHA-512, BLAKE3) — pull only when a use case needs them.
 - `src/Core.FSharp.Sha256/` — **new** (Sha256.fs, cross-verify, .fsproj).
 - `src/Core.CSharp.Sha256/` — **new** (Sha256.cs, cross-verify, .csproj).
 - `src/Core.Rust.Sha256/` — **new** (src/lib.rs, tests/cross_verify.rs, Cargo.toml).
-- `tests/cross-verification/sha256/` — **new** (vectors.yaml, compare.ts, four *-output.json).
+- `tests/cross-verification/sha256/` — **new** (vectors.yaml, compare.ts, four \*-output.json).
 - `docs/PRIMITIVE-REGISTRY.md` — flip SHA-256 to ✅ 4/4 (Tier 1) + table row.

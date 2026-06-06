@@ -14,7 +14,20 @@ composes_with:
   - B-0832
   - B-0833
   - B-0835
-tags: [installer, nixos-install, wifi-reproducibility, cache-nixos-org, closure-baking, substituters, cachix, network-resilience, physical-hardware-support-test, empirical-anchor, operator-ux]
+tags:
+  [
+    installer,
+    nixos-install,
+    wifi-reproducibility,
+    cache-nixos-org,
+    closure-baking,
+    substituters,
+    cachix,
+    network-resilience,
+    physical-hardware-support-test,
+    empirical-anchor,
+    operator-ux,
+  ]
 ---
 
 ## Problem
@@ -24,7 +37,7 @@ Empirical 2026-05-26 physical hardware-support test (Aaron over WiFi):
 
 Operator framing 2026-05-26:
 
-> *"any ideas is it stuck?"* → *"yeah i want to make it reproducable over wifi it's moving forward i just got 5 more warnings"* → *"i got timeouts on the same 5 files"* → *"twices in a row"* → *"after 300 seconds"*
+> _"any ideas is it stuck?"_ → _"yeah i want to make it reproducable over wifi it's moving forward i just got 5 more warnings"_ → _"i got timeouts on the same 5 files"_ → _"twices in a row"_ → _"after 300 seconds"_
 
 This is the OPERATOR-NAMED target: **WiFi-reproducible install**. Current bounded-fix (this PR's other commit to `zeta-install.sh` invocation) adds `--fallback` + tuned timeouts so the install no longer loops on the same files — it falls back to local build when cache.nixos.org stalls. That fix UNBLOCKS the install but doesn't solve the underlying reproducibility-over-WiFi problem; for that we need closure-baking + alternate substituters.
 

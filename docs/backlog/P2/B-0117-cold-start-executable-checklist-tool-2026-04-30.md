@@ -34,23 +34,22 @@ tags: [ani-2026-04-30, deepseek-2026-04-30, cold-start, tooling, mechanism-not-v
 **Ani / Grok peer review 2026-04-30** (Review 9 in
 `docs/research/2026-04-30-session-end-peer-ai-reviews-verbatim.md`):
 
-> *"Cold-start big-picture-first is excellent — consider
+> _"Cold-start big-picture-first is excellent — consider
 > making the 8-step checklist executable. Right now it's
 > prose. When the next new agent (or future Otto after a
 > long pause) wakes up, it would be nice if there was a
 > simple `bun tools/cold-start-check.ts` or similar that
 > prints the current big-picture state. That would turn the
-> rule into tooling the same way poll-pr-gate.ts did."*
+> rule into tooling the same way poll-pr-gate.ts did."_
 
 **Deepseek peer review 2026-04-30 reinforcement** (Review
 10):
 
-> *"Ani's 'cold-start executable tool' recommendation (item
-> 2) was noted as 'Backlog candidate' but no B-NNNN was
+> _"Ani's 'cold-start executable tool' recommendation (item 2) was noted as 'Backlog candidate' but no B-NNNN was
 > filed. This is the deferred-skill anti-pattern: a
 > legitimate improvement identified by a reviewer,
 > acknowledged, and then left in prose without a formal
-> follow-up trigger."*
+> follow-up trigger."_
 
 ## What
 
@@ -69,7 +68,7 @@ The 8 steps from the memory file (per the cold-start rule):
 4. Authority scope (two-ask-Aaron items: WONT-DO + budget)
 5. Operating disciplines currently in force
 6. Current trajectory (recent rounds, in-flight work)
-7. CURRENT-* files for each maintainer
+7. CURRENT-\* files for each maintainer
 8. Then prompt
 
 Output should be terse — fits on one screen — and
@@ -93,12 +92,12 @@ poll-the-gate operationalization that landed under the same
 ## Acceptance criteria
 
 - [ ] `bun tools/cold-start-check.ts` runs and prints all
-  8 steps with current values
+      8 steps with current values
 - [ ] Output is terse (single screen, ~30-50 lines)
 - [ ] Sources of truth are verifiable (CURRENT-aaron.md +
-  CURRENT-amara.md + recent commits + recent PRs)
+      CURRENT-amara.md + recent commits + recent PRs)
 - [ ] Fresh-Otto cold-start with no project-context can
-  read the output and know what to ground in
+      read the output and know what to ground in
 - [ ] Tested on the four-shell target (Otto-235)
 - [ ] Documented in `tools/cold-start-check.md`
 

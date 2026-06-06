@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 explicit praise — "this is great standing rules 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron's exact words 2026-04-21, right after three sequential
 messages green-lighting the org transfer:
 
@@ -34,10 +35,10 @@ workflows, and proposing a scorecard before executing.
    `Result`-over-exception + do-no-permanent-harm posture all
    connect here. Whatever shape Zeta's end-user surface takes,
    "price the blast radius before acting" should be something
-   the library *teaches* its consumers.
+   the library _teaches_ its consumers.
 
 3. **Pricing, not just naming.** The word "pricing" is load-
-   bearing. Don't just state *that* an action is high-blast-
+   bearing. Don't just state _that_ an action is high-blast-
    radius — enumerate the concrete reversibility cost:
    - What needs to be un-done if it goes wrong?
    - How hard is the rollback?
@@ -75,8 +76,8 @@ workflows, and proposing a scorecard before executing.
   without pricing the reversibility — that's a gap class worth
   flagging to the relevant owner. Especially the
   retractable-contract ledger (Ouroboros L3, "do no permanent
-  harm") — blast-radius pricing is *literally its product
-  thesis*.
+  harm") — blast-radius pricing is _literally its product
+  thesis_.
 
 - **Don't let auto-mode erode the discipline.** Auto mode's
   "minimize interruptions / prefer action" rules must not
@@ -96,7 +97,7 @@ workflows, and proposing a scorecard before executing.
   permission safe to exercise.
 - `feedback_strengthen_the_check_not_the_manual_gate.md` —
   related: auto-merge + strong checks over manual pause + weak
-  checks. Blast-radius pricing is the *narration* step that
+  checks. Blast-radius pricing is the _narration_ step that
   lets the human audit the judgment behind "safe to auto-act".
 - CLAUDE.md §"Executing actions with care" / §"When Claude is
   unsure" — this memory supplies the vocabulary + Aaron's

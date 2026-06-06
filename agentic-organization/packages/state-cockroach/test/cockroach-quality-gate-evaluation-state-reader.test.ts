@@ -1,11 +1,7 @@
 import { deepEqual } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  BusinessRuleEvaluationStatus,
-  QualityGateKind,
-  QualityGateOutcome,
-} from "../../domain/src/index.ts";
+import { BusinessRuleEvaluationStatus, QualityGateKind, QualityGateOutcome } from "../../domain/src/index.ts";
 import {
   CockroachQualityGateEvaluationStateReaderStatement,
   createCockroachQualityGateEvaluationStateReader,
@@ -25,9 +21,10 @@ describe("cockroach quality gate evaluation state reader", () => {
       workItemId: "work-runtime-001",
     });
 
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachQualityGateEvaluationStateReaderStatement.ListQualityGateEvaluationsForWorkItem,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachQualityGateEvaluationStateReaderStatement.ListQualityGateEvaluationsForWorkItem],
+    );
     deepEqual(executor.statements[0]?.parameters, [
       "org-lfg",
       "project-agentic-org",

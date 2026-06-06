@@ -55,7 +55,7 @@ M — GitHub API integration + file copying logic.
 **Prior-art search (surfaces + queries):**
 
 - `tools/**/*.ts` grep for `"gh api"`, `"dry-run"`, `"seed"`, `"bootstrap"` → hits in create-branch-safety-ruleset.ts (dry-run gh), migrations/b0267*.ts (gh child_process), hygiene/*.ts (gh api error handling). Rule 0 TS confirmed.
-- docs/backlog/P1/B-034* → sibling B-0341 closed, B-0342 recent.
+- docs/backlog/P1/B-034\* → sibling B-0341 closed, B-0342 recent.
 - No pre-existing tools/bootstrap-razor/ or seed-test-repo.ts.
 
 **Dependency-restructure:**

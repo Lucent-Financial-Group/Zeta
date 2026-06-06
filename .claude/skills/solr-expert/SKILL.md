@@ -30,11 +30,11 @@ into **shards**, each with a **leader** + **replicas**.
 
 ## Replica types
 
-| Type | Indexing | Searching | Use case |
-|---|---|---|---|
-| **NRT** | Yes | Yes | Default; near-real-time |
-| **TLOG** | Via leader | Yes | Less local indexing cost |
-| **PULL** | No | Yes | Read-heavy replica; pulls from leader |
+| Type     | Indexing   | Searching | Use case                              |
+| -------- | ---------- | --------- | ------------------------------------- |
+| **NRT**  | Yes        | Yes       | Default; near-real-time               |
+| **TLOG** | Via leader | Yes       | Less local indexing cost              |
+| **PULL** | No         | Yes       | Read-heavy replica; pulls from leader |
 
 **Rule.** PULL replicas scale reads cheaply. TLOG reduces
 replica CPU. Pure NRT is the simplest default.
@@ -123,7 +123,9 @@ Custom request handlers via `solrconfig.xml`:
 {
   "facet": {
     "categories": {
-      "type": "terms", "field": "category", "limit": 10,
+      "type": "terms",
+      "field": "category",
+      "limit": 10,
       "facet": { "avg_price": "avg(price)" }
     }
   }
@@ -181,7 +183,7 @@ external ingest.
 {
   "id": "42",
   "price": { "set": 19.99 },
-  "tags":  { "add": ["featured"] },
+  "tags": { "add": ["featured"] },
   "_version_": 1234567890
 }
 ```
@@ -288,9 +290,9 @@ Solr remains load-bearing in:
 
 ## Reference patterns
 
-- Grainger & Potter — *Solr in Action* (2014; dated but
+- Grainger & Potter — _Solr in Action_ (2014; dated but
   authoritative).
-- Smiley et al. — *Apache Solr Enterprise Search Server*.
+- Smiley et al. — _Apache Solr Enterprise Search Server_.
 - Solr Ref Guide (`solr.apache.org/guide`).
 - Lucidworks engineering blog.
 - Bloomberg's LTR-on-Solr talks (SIGIR, Berlin Buzzwords).

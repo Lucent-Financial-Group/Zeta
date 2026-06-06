@@ -40,14 +40,14 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Persona hypotheses
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | Mom / primary family caregiver | PR #2894 Center-First Playbook |
-| Primary | Health-conscious individual (Aaron archetype) | Wellness-as-killer-app framing |
-| Secondary | Family member (child, partner) as secondary user | PR #2893 Imagination Circle |
-| Secondary | Healthcare practitioner adjacent (not primary) | wellness domain |
-| Adjacent | Aaron as product builder / tester | maintainer persona |
-| Refused | Data broker / health-data harvester | methodology-hard-limits |
+| Persona type | Candidate                                        | Source hint                    |
+| ------------ | ------------------------------------------------ | ------------------------------ |
+| Primary      | Mom / primary family caregiver                   | PR #2894 Center-First Playbook |
+| Primary      | Health-conscious individual (Aaron archetype)    | Wellness-as-killer-app framing |
+| Secondary    | Family member (child, partner) as secondary user | PR #2893 Imagination Circle    |
+| Secondary    | Healthcare practitioner adjacent (not primary)   | wellness domain                |
+| Adjacent     | Aaron as product builder / tester                | maintainer persona             |
+| Refused      | Data broker / health-data harvester              | methodology-hard-limits        |
 
 ## Output
 

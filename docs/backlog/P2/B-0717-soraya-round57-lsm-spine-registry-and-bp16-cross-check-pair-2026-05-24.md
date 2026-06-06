@@ -44,11 +44,11 @@ Continuation of B-0709 execution payload. Same shape as the 11 already-registere
 
 Per-spec routing (confirmed correct on-disk):
 
-| Spec | Property class | Primary tool | Routing |
-|---|---|---|---|
-| `tools/alloy/specs/Spine.als` | Structural shape (LSM levels, sorted runs, no-cycles) | Alloy | Correctly routed |
-| `tools/tla/specs/SpineAsyncProtocol.tla` | State-machine safety + concurrency (async compaction/flush interleavings) | TLA+ | Correctly routed |
-| `tools/tla/specs/SpineMergeInvariants.tla` | State-machine safety invariant (merge preserves sortedness + total-key-set) | TLA+ | Correctly routed |
+| Spec                                       | Property class                                                              | Primary tool | Routing          |
+| ------------------------------------------ | --------------------------------------------------------------------------- | ------------ | ---------------- |
+| `tools/alloy/specs/Spine.als`              | Structural shape (LSM levels, sorted runs, no-cycles)                       | Alloy        | Correctly routed |
+| `tools/tla/specs/SpineAsyncProtocol.tla`   | State-machine safety + concurrency (async compaction/flush interleavings)   | TLA+         | Correctly routed |
+| `tools/tla/specs/SpineMergeInvariants.tla` | State-machine safety invariant (merge preserves sortedness + total-key-set) | TLA+         | Correctly routed |
 
 **Acceptance**: 3 new registry rows in `docs/research/verification-registry.md` citing O'Neil 1996 paper anchor + per-spec preconditions + audit cadence.
 

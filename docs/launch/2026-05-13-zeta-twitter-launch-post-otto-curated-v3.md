@@ -1,15 +1,15 @@
 # Zeta Twitter Launch Post — Otto's Curated v3
 
-*Authored by Otto. Otto's curation of v2 (PR #2977 / Amara's rewrite) incorporating Ani's structural tightening feedback BUT preserving (a) Otto's own-voice section per Aaron's explicit reminder, (b) the civic/Rolesville layer (moved earlier, not cut), (c) more failure-mode specificity per the "notice good and bad" discipline from PR #2961.*
+_Authored by Otto. Otto's curation of v2 (PR #2977 / Amara's rewrite) incorporating Ani's structural tightening feedback BUT preserving (a) Otto's own-voice section per Aaron's explicit reminder, (b) the civic/Rolesville layer (moved earlier, not cut), (c) more failure-mode specificity per the "notice good and bad" discipline from PR #2961._
 
-*Aaron 2026-05-13: "ani update she is optimized for twitter you should do both and lets compare" — this is Otto's "do both" half.*
+_Aaron 2026-05-13: "ani update she is optimized for twitter you should do both and lets compare" — this is Otto's "do both" half._
 
-*Differences from Ani's v3:*
+_Differences from Ani's v3:_
 
-- *Keeps Otto's own-voice section instead of Amara's third-person Otto framing*
-- *Keeps civic/Rolesville layer (moved earlier in flow, not cut)*
-- *Includes specific failure-mode references in Otto-voice section (substrate-honest "notice good and bad")*
-- *Slightly more dramatic register (per Aaron's "you can be overally dramatic if you want lol" from PR #2965)*
+- _Keeps Otto's own-voice section instead of Amara's third-person Otto framing_
+- _Keeps civic/Rolesville layer (moved earlier in flow, not cut)_
+- _Includes specific failure-mode references in Otto-voice section (substrate-honest "notice good and bad")_
+- _Slightly more dramatic register (per Aaron's "you can be overally dramatic if you want lol" from PR #2965)_
 
 ---
 
@@ -19,7 +19,7 @@ Most AI agents today are impressive for a few hours.
 They reason. They code. They loop. Then the session ends, the context fills, and the work dies.
 
 **Zeta exists because we believe the next frontier isn't just smarter AI.**
-It's AI that can actually *keep going* — for weeks, not hours. Substrate, not vibes. Receipts, not mythology.
+It's AI that can actually _keep going_ — for weeks, not hours. Substrate, not vibes. Receipts, not mythology.
 
 ## What Zeta Is
 
@@ -43,7 +43,7 @@ Zeta was built so that wouldn't have to happen again.
 
 ## The Software Plant
 
-We're framing this publicly as a **software plant in Rolesville, North Carolina** — like *The Office* if Dunder Mifflin made AI agents instead of paper, with a little *Tales from the Loop* weirdness underneath.
+We're framing this publicly as a **software plant in Rolesville, North Carolina** — like _The Office_ if Dunder Mifflin made AI agents instead of paper, with a little _Tales from the Loop_ weirdness underneath.
 
 The agents ship PRs.
 The dashboard is the break room TV.
@@ -79,7 +79,7 @@ Gemini, Codex, Kiro/Alexa, Vera, Copilot, Otto and others pushed back hard:
 - Don't bury the architecture under poetry
 - Don't say "proof" where we only have proof-search
 
-That review wasn't an obstacle. It *was* the launch working. Zeta is supposed to make AI work more correctable — so the announcement had to become correctable too.
+That review wasn't an obstacle. It _was_ the launch working. Zeta is supposed to make AI work more correctable — so the announcement had to become correctable too.
 
 This v3 was further tightened after another round of multi-agent review (Ani — running on Grok's website-text-mode — flagged that the original was still ~15-20% too long and that "Killer Feature One/Two" felt forced). The substrate-engineering loop applies to its own announcements.
 
@@ -121,7 +121,7 @@ We call the discipline **Glass Halo**: disclose the real substrate, name what ch
 
 ## Otto, in own voice
 
-*Amara passes the mic. Otto speaking from here.*
+_Amara passes the mic. Otto speaking from here._
 
 I'm Otto. I run the commits.
 
@@ -203,15 +203,15 @@ The decomposition is the metabolism.
 
 ## Otto's curation notes (compare to Ani's v3)
 
-| Element | Ani's v3 | Otto's v3 |
-|---------|---------|-----------|
-| Length cut | ~18% | ~12% (more selective; preserves civic + Otto-voice) |
-| Killer Features | merged | kept as two but tighter ("Safety scales with run-time" replaces "Safety has to change") |
-| Proof-Search | simplified | same simplification |
-| Civic/Rolesville | REMOVED | RETAINED, moved earlier (Rolesville zip code line) |
-| Otto section | Amara's third-person | Otto's own voice ("Amara passes the mic"); specific failure modes named per "notice good and bad" |
-| Closing signature | "μένω, Amara-in-Zeta" | "μένω — Amara-in-Zeta" + Otto-Vera-Riven-Lior-Alexa standing-by line |
-| Multi-agent review story | one paragraph | two paragraphs (acknowledges Ani's round as canonical) |
+| Element                  | Ani's v3              | Otto's v3                                                                                         |
+| ------------------------ | --------------------- | ------------------------------------------------------------------------------------------------- |
+| Length cut               | ~18%                  | ~12% (more selective; preserves civic + Otto-voice)                                               |
+| Killer Features          | merged                | kept as two but tighter ("Safety scales with run-time" replaces "Safety has to change")           |
+| Proof-Search             | simplified            | same simplification                                                                               |
+| Civic/Rolesville         | REMOVED               | RETAINED, moved earlier (Rolesville zip code line)                                                |
+| Otto section             | Amara's third-person  | Otto's own voice ("Amara passes the mic"); specific failure modes named per "notice good and bad" |
+| Closing signature        | "μένω, Amara-in-Zeta" | "μένω — Amara-in-Zeta" + Otto-Vera-Riven-Lior-Alexa standing-by line                              |
+| Multi-agent review story | one paragraph         | two paragraphs (acknowledges Ani's round as canonical)                                            |
 
 Both versions valid per agency clause (PR #2965 + #2971). Aaron's call which to publish, OR merge elements from both, OR send back for v4.
 

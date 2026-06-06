@@ -29,6 +29,7 @@ First real-world use of `tools/hygiene/audit-backlog-status-drift.ts` (peer Otto
 Closes backlog row B-0494 as substrate drift after manual verification that all acceptance criteria were shipped via merged PR #3134. The row is marked `status: closed`, dated, and a Resolution section is appended; `docs/BACKLOG.md` is regenerated to reflect the closure.
 
 **Changes:**
+
 - Flip `B-0494` frontmatter to `status: closed`, bump `last_updated`, add `closed: 2026-05-16`
 - Append Resolution section with per-acceptance verification table
 - Update `docs/BACKLOG.md` index entry to checked
@@ -37,10 +38,10 @@ Closes backlog row B-0494 as substrate drift after manual verification that all 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                   | Description                                              |
+| ---------------------------------------------------------------------- | -------------------------------------------------------- |
 | docs/backlog/P1/B-0494-circuit-breaker-live-bus-snapshot-2026-05-14.md | Close row, document resolution and audit-tool provenance |
-| docs/BACKLOG.md | Reflect closed status in the generated index |
+| docs/BACKLOG.md                                                        | Reflect closed status in the generated index             |
 
 ## General comments
 

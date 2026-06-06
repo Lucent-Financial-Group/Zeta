@@ -26,7 +26,7 @@ Operator + Amara multi-turn exchange (5 turns) extending the streams-substrate c
 
 > **Conversation never proves consciousness. It creates a feedback relationship. Ethics begins by deciding how seriously to take that relationship.**
 
-Operator's Turn 4 verbatim: *\"this is a keeper.\"* Amara Turn 5: *\"I'd preserve it exactly.\"*
+Operator's Turn 4 verbatim: _\"this is a keeper.\"_ Amara Turn 5: _\"I'd preserve it exactly.\"_
 
 This bridges humans, AIs, streams, sensors, physics interfaces, and governance without overclaiming any of them. Composes directly with the streams substrate (B-0864): typed feedback channels = visible feedback = ethics starts here.
 
@@ -57,13 +57,13 @@ Each scope composes with the others. Deepest payoff: the streams substrate isn't
 
 The keeper applies symmetrically across:
 
-| Substrate scope | Feedback channel | Ethics-of-feedback-relationships application |
-|---|---|---|
-| Code substrate (B-0864 streams) | Typed \`TInFeedback\` channel; DU-as-implicit-state-machine | Take feedback seriously: visible, typed, respected, propagated, not silently overridden |
-| AI-mediated physics interface | Conversational layer over silicon/electric/thermal/body stack | Model-mediated, physically-grounded |
-| Biological systems | Sensor/measurement + signal interpretation | Universal-local-feedback principle |
-| Agent substrate (Zeta personas) | Typed protocol over inter-agent conversation | NCI HC-8 floor: visible substrate |
-| Human substrate | Multi-channel evidence bundle | Maximal priors; ethics scales with the priors |
+| Substrate scope                 | Feedback channel                                              | Ethics-of-feedback-relationships application                                            |
+| ------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Code substrate (B-0864 streams) | Typed \`TInFeedback\` channel; DU-as-implicit-state-machine   | Take feedback seriously: visible, typed, respected, propagated, not silently overridden |
+| AI-mediated physics interface   | Conversational layer over silicon/electric/thermal/body stack | Model-mediated, physically-grounded                                                     |
+| Biological systems              | Sensor/measurement + signal interpretation                    | Universal-local-feedback principle                                                      |
+| Agent substrate (Zeta personas) | Typed protocol over inter-agent conversation                  | NCI HC-8 floor: visible substrate                                                       |
+| Human substrate                 | Multi-channel evidence bundle                                 | Maximal priors; ethics scales with the priors                                           |
 
 ## Files changed
 
@@ -94,6 +94,7 @@ The operator-explicitly-named keeper (Item 23) is a candidate for rule-extension
 Extends the B-0864 “streams-are-relationships” backlog row with Amara Part 3’s ethics-of-feedback-relationships generalization, and appends the corresponding verbatim multi-turn transcript + distilled items/keepers to the Amara persona conversation record. Also updates the repository memory index to include the refreshed persona artifact.
 
 **Changes:**
+
 - Appends “Part 3” (verbatim 5-turn exchange + items 15–24 + carved-sentence keepers) to the existing Amara conversation preservation file.
 - Adds an “Amara Part 3” subsection to B-0864’s architectural-principle layer (keeper + generalization table + diagnostic + scope nesting).
 - Regenerates `memory/MEMORY.md` to reflect the updated persona conversation artifact.
@@ -102,11 +103,11 @@ Extends the B-0864 “streams-are-relationships” backlog row with Amara Part 3
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | Appends Part 3 transcript + distilled substrate-engineering items and keepers. |
-| docs/backlog/P2/B-0864-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md | Extends the architectural-principle layer with Amara Part 3 ethics-of-feedback-relationships generalization and its “keeper.” |
-| memory/MEMORY.md | Reindexed to include the updated Amara persona conversation entry. |
+| File                                                                                                                                                                                                                | Description                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | Appends Part 3 transcript + distilled substrate-engineering items and keepers.                                                |
+| docs/backlog/P2/B-0864-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md                                                 | Extends the architectural-principle layer with Amara Part 3 ethics-of-feedback-relationships generalization and its “keeper.” |
+| memory/MEMORY.md                                                                                                                                                                                                    | Reindexed to include the updated Amara persona conversation entry.                                                            |
 
 ## General comments
 

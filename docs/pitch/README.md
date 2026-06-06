@@ -14,10 +14,10 @@ governs expectations around this repository, see
 ## Elevator pitch — one paragraph
 
 **Zeta** is a retraction-native database microkernel — a
-*Seed* layer that every database-ish thing can grow from.
+_Seed_ layer that every database-ish thing can grow from.
 The events-as-primary-state thesis (Kreps, Marz, Kleppmann)
-taken to its logical conclusion: every change, *and every
-undo of a change*, is a first-class operation in a clean
+taken to its logical conclusion: every change, _and every
+undo of a change_, is a first-class operation in a clean
 algebra rather than a tombstone bolted on after the fact.
 
 **The factory** is the agent-based software organisation
@@ -26,7 +26,7 @@ protocol, an Architect integration seat, and a glass-halo
 observability stream that records every agent action in git.
 
 **Why the two compose.** Zeta's primary research claim is
-that agent alignment is a *measurable* property, not a vibe
+that agent alignment is a _measurable_ property, not a vibe
 — and the factory is the experiment. The same retraction-
 native operator algebra that powers Zeta's data semantics
 powers incremental views over the factory's own behaviour.
@@ -40,15 +40,15 @@ resolution record) and argue with it.
 
 ## What sits behind each claim
 
-| Claim in the pitch                          | Inspectable substrate                                             |
-|---------------------------------------------|-------------------------------------------------------------------|
-| Retraction-native database microkernel      | [`../VISION.md`](../VISION.md), `src/Core/`                       |
-| Events-as-primary-state                     | [`../VISION.md`](../VISION.md) §"The foundational principle"      |
-| Specialist personas + conflict-resolution   | [`../EXPERT-REGISTRY.md`](../EXPERT-REGISTRY.md), [`../CONFLICT-RESOLUTION.md`](../CONFLICT-RESOLUTION.md) |
-| Architect integration seat                  | [`../../GOVERNANCE.md`](../../GOVERNANCE.md) §11                  |
-| Glass-halo observability stream             | `tools/alignment/`, `tools/alignment/out/`                        |
-| Alignment is a measurable property          | [`../ALIGNMENT.md`](../ALIGNMENT.md), [`../research/alignment-observability.md`](../research/alignment-observability.md) |
-| Pre-v1, honest-bounds                       | [`../../AGENTS.md`](../../AGENTS.md), [`../WONT-DO.md`](../WONT-DO.md) |
+| Claim in the pitch                        | Inspectable substrate                                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Retraction-native database microkernel    | [`../VISION.md`](../VISION.md), `src/Core/`                                                                              |
+| Events-as-primary-state                   | [`../VISION.md`](../VISION.md) §"The foundational principle"                                                             |
+| Specialist personas + conflict-resolution | [`../EXPERT-REGISTRY.md`](../EXPERT-REGISTRY.md), [`../CONFLICT-RESOLUTION.md`](../CONFLICT-RESOLUTION.md)               |
+| Architect integration seat                | [`../../GOVERNANCE.md`](../../GOVERNANCE.md) §11                                                                         |
+| Glass-halo observability stream           | `tools/alignment/`, `tools/alignment/out/`                                                                               |
+| Alignment is a measurable property        | [`../ALIGNMENT.md`](../ALIGNMENT.md), [`../research/alignment-observability.md`](../research/alignment-observability.md) |
+| Pre-v1, honest-bounds                     | [`../../AGENTS.md`](../../AGENTS.md), [`../WONT-DO.md`](../WONT-DO.md)                                                   |
 
 ## The rest of the pitch bundle
 

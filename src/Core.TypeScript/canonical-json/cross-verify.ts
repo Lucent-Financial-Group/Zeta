@@ -11,11 +11,20 @@
 // with: `cd tests/cross-verification/canonical-json && bun ../../../src/Core.TypeScript/canonical-json/cross-verify.ts`.
 import { canonicalBytes } from "../../../tools/ace/canonical.ts";
 
-interface CanonVec { id: string; value: unknown; expected_canonical_json: string; }
-interface InvalidVec { id: string; value: unknown; expected_error_substring: string; }
+interface CanonVec {
+  id: string;
+  value: unknown;
+  expected_canonical_json: string;
+}
+interface InvalidVec {
+  id: string;
+  value: unknown;
+  expected_error_substring: string;
+}
 
 const vec = JSON.parse(await Bun.file("vectors.json").text()) as {
-  canonical: CanonVec[]; invalid: InvalidVec[];
+  canonical: CanonVec[];
+  invalid: InvalidVec[];
 };
 
 const dec = new TextDecoder();
@@ -41,10 +50,17 @@ for (const v of vec.invalid) {
     msgOk = (e instanceof Error ? e.message : String(e)).includes(v.expected_error_substring);
   }
   out[`invalid:${v.id}`] = rejected ? "<rejected>" : "ACCEPTED";
-  if (!rejected) { mismatches++; console.error(`invalid:${v.id} expected reject, was ACCEPTED`); }
-  else if (!msgOk) { mismatches++; console.error(`invalid:${v.id} rejected but message lacks "${v.expected_error_substring}"`); }
+  if (!rejected) {
+    mismatches++;
+    console.error(`invalid:${v.id} expected reject, was ACCEPTED`);
+  } else if (!msgOk) {
+    mismatches++;
+    console.error(`invalid:${v.id} rejected but message lacks "${v.expected_error_substring}"`);
+  }
 }
 
 await Bun.write("ts-output.json", JSON.stringify(out, null, 2) + "\n");
-console.log(`canonical-json TS oracle: canonical=${vec.canonical.length} invalid=${vec.invalid.length}, ${mismatches} mismatches.`);
+console.log(
+  `canonical-json TS oracle: canonical=${vec.canonical.length} invalid=${vec.invalid.length}, ${mismatches} mismatches.`,
+);
 if (mismatches > 0) process.exit(1);

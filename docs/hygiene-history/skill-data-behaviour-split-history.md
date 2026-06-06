@@ -59,9 +59,9 @@ Each row contains:
 
 ## Rows
 
-| Date | Agent | Skills scanned | Multi-sig hits | Genuine splits | Landed splits this fire | Follow-up BACKLOG row |
-|---|---|---|---|---|---|---|
-| 2026-04-22 | architect (kenji), first fire | 234 | 6 | 4 + 1 borderline | 0 (queued) | BACKLOG P1 row *"Retrospective split of four data-heavy expert skills"* |
+| Date       | Agent                         | Skills scanned | Multi-sig hits | Genuine splits   | Landed splits this fire | Follow-up BACKLOG row                                                   |
+| ---------- | ----------------------------- | -------------- | -------------- | ---------------- | ----------------------- | ----------------------------------------------------------------------- |
+| 2026-04-22 | architect (kenji), first fire | 234            | 6              | 4 + 1 borderline | 0 (queued)              | BACKLOG P1 row _"Retrospective split of four data-heavy expert skills"_ |
 
 ## Fire 1 — 2026-04-22 first fire, full audit
 
@@ -105,15 +105,15 @@ rubric is roughly 4-5x tighter than the initial one.
 1. **`performance-analysis-expert`** (642 lines, score
    3).
    - Mix sections: `## Core background — the
-     catalogue` (~130 lines: queueing theory, USE/RED,
+catalogue` (~130 lines: queueing theory, USE/RED,
      Amdahl, Dean's numbers, tail latency,
      microarchitecture); `## Profiler-tool catalogue
-     — read these, know these` (~80 lines: Linux /
+— read these, know these` (~80 lines: Linux /
      Windows / macOS / .NET / cross-platform profiler
      index).
    - Routine content: `## When to wear`, `## When to
-     defer`, `## Zeta use`, `## AOT analysis
-     procedure`, `## Capacity-planning procedure`.
+defer`, `## Zeta use`, `## AOT analysis
+procedure`, `## Capacity-planning procedure`.
    - Split target: routine stays; background +
      profiler catalogue move to
      `docs/PERFORMANCE-ANALYSIS-REFERENCE.md`.
@@ -123,13 +123,13 @@ rubric is roughly 4-5x tighter than the initial one.
 2. **`serialization-and-wire-format-expert`** (478
    lines, score 2).
    - Mix sections: `## Format catalogue — read this,
-     know these` (~60 lines: Protobuf, FlatBuffers,
+know these` (~60 lines: Protobuf, FlatBuffers,
      Cap'n Proto, Arrow, MessagePack, JSON, etc.);
      `## Decision matrix — which format` (borderline
      — could be routine or data).
    - Routine content: `## Procedure for introducing a
-     new serialization surface`, `## Schema
-     evolution`, `## Canonical-form discipline`,
+new serialization surface`, `## Schema
+evolution`, `## Canonical-form discipline`,
      `## Fuzzing and parser safety`.
    - Split target: routine + decision matrix stays;
      format catalogue moves to
@@ -144,8 +144,8 @@ rubric is roughly 4-5x tighter than the initial one.
      hazards are reference-material, not
      decision-flow).
    - Routine content: `## Introduction procedure —
-     adding a codec to Zeta`, `## .NET-specific
-     choices`, `## Decision matrix`.
+adding a codec to Zeta`, `## .NET-specific
+choices`, `## Decision matrix`.
    - Split target: routine stays; core background +
      hazards catalogue move to
      `docs/COMPRESSION-REFERENCE.md`.
@@ -158,8 +158,8 @@ rubric is roughly 4-5x tighter than the initial one.
      `## Hazards — read these once, remember forever`
      (~55 lines: catalog).
    - Routine content: `## Procedure for introducing a
-     new hashed surface`, `## Decision trees`, `## Key
-     / seed discipline`.
+new hashed surface`, `## Decision trees`, `## Key
+/ seed discipline`.
    - Split target: routine + decision-trees stays;
      hash catalogue + hazards move to
      `docs/HASHING-REFERENCE.md`.
@@ -169,11 +169,11 @@ rubric is roughly 4-5x tighter than the initial one.
 
 1. **`consent-ux-researcher`** (448 lines, score 2).
    - Mix section: `## Dark-pattern catalog — what to
-     never design` (~60 lines). The rest of the body
+never design` (~60 lines). The rest of the body
      is procedural (`## The five preconditions of real
-     consent`, `## Comprehension-bar operational
-     test`, `## Layered disclosure`, `## Revocation UX
-     pattern`, `## How to review a consent flow`).
+consent`, `## Comprehension-bar operational
+test`, `## Layered disclosure`, `## Revocation UX
+pattern`, `## How to review a consent flow`).
    - Signal: single catalog section embedded in
      otherwise-procedural content. Dark-pattern
      awareness is arguably part of the consent-UX
@@ -214,9 +214,9 @@ rubric is roughly 4-5x tighter than the initial one.
 
 ### Follow-up landings (this tick)
 
-- BACKLOG row *"Retrospective split of four data-heavy
+- BACKLOG row _"Retrospective split of four data-heavy
   expert skills (performance-analysis, serialization,
-  compression, hashing)"* added to P1 architectural
+  compression, hashing)"_ added to P1 architectural
   hygiene, cross-referenced to this fire.
 - Rubric refinement (require > 3 catalog-style
   sub-items for gotcha/pitfall sections to trigger the

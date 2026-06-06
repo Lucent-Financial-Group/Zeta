@@ -13,7 +13,16 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
-import type { AgentId, SenderAgentId, MessageEnvelope, Topic, BusMessage, HeartbeatPayload, ClaimPayload, ReviewRequestPayload } from "./types.ts";
+import type {
+  AgentId,
+  SenderAgentId,
+  MessageEnvelope,
+  Topic,
+  BusMessage,
+  HeartbeatPayload,
+  ClaimPayload,
+  ReviewRequestPayload,
+} from "./types.ts";
 import { TTL_MS, SENDER_IDS, AGENT_IDS } from "./types.ts";
 
 export const BUS_DIR = process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
@@ -34,8 +43,11 @@ function envelopePath(id: string): string {
 }
 
 function msgMtimeMs(id: string): number {
-  try { return statSync(envelopePath(id)).mtimeMs; }
-  catch { return 0; }
+  try {
+    return statSync(envelopePath(id)).mtimeMs;
+  } catch {
+    return 0;
+  }
 }
 
 // ── publish ───────────────────────────────────────────────────────────────────
@@ -73,10 +85,14 @@ export function list(opts: { topic?: Topic; to?: AgentId; includeExpired?: boole
       const raw = readFileSync(join(BUS_DIR, f), "utf-8");
       const env = JSON.parse(raw) as MessageEnvelope;
       if (
-        typeof env.id !== "string" || typeof env.topic !== "string" ||
-        typeof env.timestamp !== "string" || typeof env.expiresAt !== "string" ||
-        typeof env.from !== "string" || typeof env.to !== "string"
-      ) continue;
+        typeof env.id !== "string" ||
+        typeof env.topic !== "string" ||
+        typeof env.timestamp !== "string" ||
+        typeof env.expiresAt !== "string" ||
+        typeof env.from !== "string" ||
+        typeof env.to !== "string"
+      )
+        continue;
       if (!opts.includeExpired && new Date(env.expiresAt) < now) continue;
       if (opts.topic && env.topic !== opts.topic) continue;
       if (opts.to && env.to !== opts.to && env.to !== "*") continue;
@@ -226,9 +242,15 @@ function main(): void {
 
     case "read": {
       const id = positional[0];
-      if (!id) { console.error("Error: message id required"); process.exit(1); }
+      if (!id) {
+        console.error("Error: message id required");
+        process.exit(1);
+      }
       const env = readMessage(id);
-      if (!env) { console.error(`Error: message ${id} not found`); process.exit(1); }
+      if (!env) {
+        console.error(`Error: message ${id} not found`);
+        process.exit(1);
+      }
       if (asJson) {
         console.log(JSON.stringify(env, null, 2));
       } else {
@@ -345,9 +367,7 @@ function main(): void {
         }
       }
       // Extract shape-valid envelopes only.
-      const agentMap = new Map<SenderAgentId, MessageEnvelope>(
-        [...hbDedup.entries()].map(([k, v]) => [k, v.envelope]),
-      );
+      const agentMap = new Map<SenderAgentId, MessageEnvelope>([...hbDedup.entries()].map(([k, v]) => [k, v.envelope]));
 
       // All active claim and review-request messages (raw — for authoritative
       // claim ownership, use `claim.ts check` which handles release tombstones).
@@ -355,8 +375,7 @@ function main(): void {
       const reviewMsgs = list({ topic: "review-request" });
       const shadowCount = list({ topic: "shadow-catch" }).length;
 
-      const isObj = (v: unknown): v is Record<string, unknown> =>
-        !!v && typeof v === "object" && !Array.isArray(v);
+      const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
       const isValidClaim = (p: unknown): p is ClaimPayload =>
         isObj(p) && typeof (p as ClaimPayload).action === "string" && typeof (p as ClaimPayload).itemId === "string";
       const isValidReview = (p: unknown): p is ReviewRequestPayload =>

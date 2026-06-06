@@ -52,9 +52,7 @@ describe("eval-set fixtures / existence drift", () => {
     expect(result.findings.length).toBe(1);
     const finding = result.findings[0]!;
     expect(finding.line).toBe(24);
-    expect(finding.pathClaim).toBe(
-      "docs/_fixture_existence_drift_target_b0170_2026_05_15.md",
-    );
+    expect(finding.pathClaim).toBe("docs/_fixture_existence_drift_target_b0170_2026_05_15.md");
     expect(finding.severity).toBe("drift");
   });
 });
@@ -98,14 +96,9 @@ describe("eval-set fixtures / path-form drift", () => {
     // sub-class via a synthetic exemplar; instance #15's literal substance
     // is captured in a follow-on fixture (B-0170.4.1).
     expect(finding.line).toBe(28);
-    expect(finding.resolvedPath).toBe(
-      "tools/substrate-claim-checker/check-counts.ts",
-    );
+    expect(finding.resolvedPath).toBe("tools/substrate-claim-checker/check-counts.ts");
     const forms = finding.forms.map((f) => f.path).sort();
-    expect(forms).toEqual([
-      "check-counts.ts",
-      "tools/substrate-claim-checker/check-counts.ts",
-    ]);
+    expect(forms).toEqual(["check-counts.ts", "tools/substrate-claim-checker/check-counts.ts"]);
   });
 });
 
@@ -126,9 +119,7 @@ describe("eval-set fixtures / convention drift", () => {
     // the fixture; pinning the line catches regressions where the
     // checker's logical-line scanner drifts off the physical line.
     expect(finding.line).toBe(36);
-    expect(finding.target).toBe(
-      "tools/substrate-claim-checker/fixtures/_convention-drift-target-adr.md",
-    );
+    expect(finding.target).toBe("tools/substrate-claim-checker/fixtures/_convention-drift-target-adr.md");
     expect(finding.reason).toContain("not reciprocated");
     expect(finding.reason).toContain("Superseded by");
   });

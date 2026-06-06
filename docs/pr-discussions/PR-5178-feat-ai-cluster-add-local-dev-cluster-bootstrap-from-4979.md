@@ -27,6 +27,7 @@ This is a decomposition of #4979, containing only the local dev cluster changes.
 Adds/updates the local k3d-based “dev cluster” bootstrap script under `full-ai-cluster/` to bring up a local cluster, install core components (Cilium + ArgoCD), and apply the repo’s root App-of-Apps pointing at a chosen git ref.
 
 **Changes:**
+
 - Updates the dev-cluster bring-up flow for Cilium installation and ArgoCD/bootstrap sequencing.
 - Extends the end-of-run “next steps” output for accessing ArgoCD and retrieving the initial admin password.
 
@@ -75,18 +76,21 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 Per [`.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md):
 
 **Discriminator results**:
+
 - Branch prefix: `lior/decompose-4979-dev-cluster-manual-...` → **peer Lior**
 - Commit author: `Lior <lior@zeta.dev>` → **peer Lior**
 - Last activity: 2026-05-26T13:40Z (last commit) + 13:44Z (Copilot review)
 - No follow-up commits in ~4 hours
 
 **Situation**: 5 Copilot review threads, all flagging real substrate issues in `full-ai-cluster/dev-cluster/up.sh`:
+
 - 3 sets of unresolved git merge conflict markers (`<<<<<<<` / `=======` / `>>>>>>>`) committed into the file (line 77, line 77 helm-install stanza, line 120 application-CRD wait)
 - Duplicated help block + extra `EOF` heredoc terminator (line 188 ×2)
 
 These are correctness blockers — the bash script will fail to parse with the markers in place.
 
 **Two viable resolution paths**:
+
 1. **Peer Lior re-commit with conflicts resolved** (resolves to Cilium 1.16.5 per the alignment comment with `full-ai-cluster/k8s/bootstrap/cilium-install.yaml`)
 2. **Operator decision to cherry-pick the substantive intent** into a clean branch off current `origin/main`
 
@@ -100,11 +104,11 @@ Tagging for visibility. If this PR is intended to be picked up by another agent 
 
 Per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix:
 
-| Thread | Finding | Verified at HEAD |
-|---|---|---|
-| 1-3 | merge conflict markers (`<<<<<<<` / `=======` / `>>>>>>>`) in up.sh | ✗ no markers present (clean) |
-| 4 | duplicated help block + stray `443:443` line | ✗ `443:443` is correct `kubectl port-forward svc/argocd-server 8443:443` syntax |
-| 5 | duplicate `Tear down: ./down.sh` + second `EOF` at line 180 | ✗ file is 169 lines; two `EOF`s close two distinct heredocs (ArgoCD spec at L153 + help-text at L169) |
+| Thread | Finding                                                             | Verified at HEAD                                                                                      |
+| ------ | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 1-3    | merge conflict markers (`<<<<<<<` / `=======` / `>>>>>>>`) in up.sh | ✗ no markers present (clean)                                                                          |
+| 4      | duplicated help block + stray `443:443` line                        | ✗ `443:443` is correct `kubectl port-forward svc/argocd-server 8443:443` syntax                       |
+| 5      | duplicate `Tear down: ./down.sh` + second `EOF` at line 180         | ✗ file is 169 lines; two `EOF`s close two distinct heredocs (ArgoCD spec at L153 + help-text at L169) |
 
 All 5 are `outdated=true` and verified clean at HEAD. Resolving as substrate-honest no-op.
 

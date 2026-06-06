@@ -104,15 +104,9 @@ describe("classifyCommit", () => {
   });
 
   test("multi-lane commit returns mixed + distinct lanes", () => {
-    const r = classifyCommit(makeCommit([
-      "src/foo.fs",
-      "docs/backlog/P1/B-0867-x.md",
-    ]));
+    const r = classifyCommit(makeCommit(["src/foo.fs", "docs/backlog/P1/B-0867-x.md"]));
     expect(r.lane).toBe("mixed");
-    expect([...r.distinctLanes].sort()).toEqual([
-      "backlog-row",
-      "operational",
-    ]);
+    expect([...r.distinctLanes].sort()).toEqual(["backlog-row", "operational"]);
   });
 
   test("empty changedFiles → substrate-cascade", () => {
@@ -121,19 +115,19 @@ describe("classifyCommit", () => {
   });
 
   test("verbatim-preservation single-lane", () => {
-    const r = classifyCommit(makeCommit([
-      "memory/persona/kestrel/conversations/2026-05-27-x.md",
-      "memory/persona/mika/conversations/2026-05-27-y.md",
-    ]));
+    const r = classifyCommit(
+      makeCommit([
+        "memory/persona/kestrel/conversations/2026-05-27-x.md",
+        "memory/persona/mika/conversations/2026-05-27-y.md",
+      ]),
+    );
     expect(r.lane).toBe("verbatim-preservation");
   });
 
   test("preserves per-file lane assignment for audit", () => {
-    const r = classifyCommit(makeCommit([
-      "src/foo.fs",
-      "docs/backlog/P1/B-0867-x.md",
-      "memory/persona/otto/conversations/foo.md",
-    ]));
+    const r = classifyCommit(
+      makeCommit(["src/foo.fs", "docs/backlog/P1/B-0867-x.md", "memory/persona/otto/conversations/foo.md"]),
+    );
     expect(r.perFileLanes).toHaveLength(3);
     expect(r.perFileLanes[0]?.lane).toBe("operational");
     expect(r.perFileLanes[1]?.lane).toBe("backlog-row");

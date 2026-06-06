@@ -14,11 +14,7 @@ import type {
 } from "../../observability/src/index.ts";
 import { contentAddressedChangeSetId } from "./change-control-id.ts";
 import { isContentAddressedEvidenceRef } from "./content-addressed-evidence.ts";
-import {
-  ReputationOutcomeClass,
-  createReputationOutcomeOrgEvent,
-  type ReputationObservation,
-} from "./reputation.ts";
+import { ReputationOutcomeClass, createReputationOutcomeOrgEvent, type ReputationObservation } from "./reputation.ts";
 
 export const TelemetryImprovementMetricKind = {
   ReviewP95Ms: "review_p95_ms",
@@ -43,16 +39,16 @@ export type TelemetryImprovementProposalMode =
 
 export type TelemetryImprovementProposedChange =
   | {
-    readonly kind: "config" | "model" | "policy" | "prompt_flow";
-    readonly summary: string;
-    readonly before: string;
-    readonly after: string;
-  }
+      readonly kind: "config" | "model" | "policy" | "prompt_flow";
+      readonly summary: string;
+      readonly before: string;
+      readonly after: string;
+    }
   | {
-    readonly kind: "rollback";
-    readonly summary: string;
-    readonly rolledOutChangeSetId: string;
-  };
+      readonly kind: "rollback";
+      readonly summary: string;
+      readonly rolledOutChangeSetId: string;
+    };
 
 export type TelemetryImprovementExpectedMetricMovement = {
   readonly metric: string;
@@ -68,7 +64,10 @@ export type TelemetryImprovementTrigger = {
   readonly minimumRelativeChange: number;
   readonly direction: "increase_bad" | "decrease_bad";
   readonly suspectedCause: string;
-  readonly proposedChange: Extract<TelemetryImprovementProposedChange, { kind: "config" | "model" | "policy" | "prompt_flow" }>;
+  readonly proposedChange: Extract<
+    TelemetryImprovementProposedChange,
+    { kind: "config" | "model" | "policy" | "prompt_flow" }
+  >;
   readonly expectedMetricMovement: TelemetryImprovementExpectedMetricMovement;
   readonly rollbackCondition: string;
 };
@@ -110,25 +109,25 @@ export type RunTelemetryImprovementOptimizerInput = {
 
 export type TelemetryImprovementOptimizerResult =
   | {
-    readonly kind: "proposed";
-    readonly hypothesis: ImprovementHypothesis;
-    readonly changeSet: ChangeSet;
-    readonly event: OrgEvent;
-  }
+      readonly kind: "proposed";
+      readonly hypothesis: ImprovementHypothesis;
+      readonly changeSet: ChangeSet;
+      readonly event: OrgEvent;
+    }
   | {
-    readonly kind: "no_proposal";
-    readonly reason:
-      | "missing_evidence"
-      | "missing_simulation_evidence"
-      | "simulation_rejected"
-      | "telemetry_degraded"
-      | "telemetry_empty"
-      | "below_change_threshold"
-      | "missing_causal_evidence"
-      | "missing_rollback_target";
-    readonly degradedSources?: readonly string[] | undefined;
-    readonly observedRelativeChange?: number | undefined;
-  };
+      readonly kind: "no_proposal";
+      readonly reason:
+        | "missing_evidence"
+        | "missing_simulation_evidence"
+        | "simulation_rejected"
+        | "telemetry_degraded"
+        | "telemetry_empty"
+        | "below_change_threshold"
+        | "missing_causal_evidence"
+        | "missing_rollback_target";
+      readonly degradedSources?: readonly string[] | undefined;
+      readonly observedRelativeChange?: number | undefined;
+    };
 
 export type EvaluateTelemetryImprovementOutcomeInput = {
   readonly organizationId: string;
@@ -145,21 +144,24 @@ export type EvaluateTelemetryImprovementOutcomeInput = {
 
 export type TelemetryImprovementOutcomeEvaluation =
   | {
-    readonly kind: "reputation_observed";
-    readonly expectedMovementMet: boolean;
-    readonly observedRelativeMovement: number;
-    readonly observation: ReputationObservation;
-    readonly event: OrgEvent;
-  }
+      readonly kind: "reputation_observed";
+      readonly expectedMovementMet: boolean;
+      readonly observedRelativeMovement: number;
+      readonly observation: ReputationObservation;
+      readonly event: OrgEvent;
+    }
   | {
-    readonly kind: "no_reputation_observation";
-    readonly reason: "missing_evidence" | "zero_reference_metric";
-  };
+      readonly kind: "no_reputation_observation";
+      readonly reason: "missing_evidence" | "zero_reference_metric";
+    };
 
 export async function runTelemetryImprovementOptimizer(
   input: RunTelemetryImprovementOptimizerInput,
 ): Promise<TelemetryImprovementOptimizerResult> {
-  if (!isContentAddressedEvidenceRef(input.telemetryEvidenceRef) || !isContentAddressedEvidenceRef(input.simulationEvidenceRef)) {
+  if (
+    !isContentAddressedEvidenceRef(input.telemetryEvidenceRef) ||
+    !isContentAddressedEvidenceRef(input.simulationEvidenceRef)
+  ) {
     return { kind: "no_proposal", reason: "missing_evidence" };
   }
   if (input.simulationDecision === undefined) {
@@ -189,7 +191,8 @@ export async function runTelemetryImprovementOptimizer(
     return { kind: "no_proposal", reason: "telemetry_empty" };
   }
   const { symptom, rawRelativeChange } = symptomResult;
-  const thresholdCleared = Math.abs(rawRelativeChange) >= input.trigger.minimumRelativeChange &&
+  const thresholdCleared =
+    Math.abs(rawRelativeChange) >= input.trigger.minimumRelativeChange &&
     ((input.trigger.direction === "increase_bad" && rawRelativeChange > 0) ||
       (input.trigger.direction === "decrease_bad" && rawRelativeChange < 0));
   if (!thresholdCleared) {
@@ -204,15 +207,15 @@ export async function runTelemetryImprovementOptimizer(
     return { kind: "no_proposal", reason: "missing_causal_evidence" };
   }
 
-  const mode = input.rolledOutChangeSetId !== undefined
-    ? TelemetryImprovementProposalMode.Rollback
-    : input.mode ?? TelemetryImprovementProposalMode.Improvement;
+  const mode =
+    input.rolledOutChangeSetId !== undefined
+      ? TelemetryImprovementProposalMode.Rollback
+      : (input.mode ?? TelemetryImprovementProposalMode.Improvement);
   if (mode === TelemetryImprovementProposalMode.Rollback && input.rolledOutChangeSetId === undefined) {
     return { kind: "no_proposal", reason: "missing_rollback_target" };
   }
-  const proposedChange = mode === TelemetryImprovementProposalMode.Rollback
-    ? rollbackChange(input)
-    : input.trigger.proposedChange;
+  const proposedChange =
+    mode === TelemetryImprovementProposalMode.Rollback ? rollbackChange(input) : input.trigger.proposedChange;
   const evidenceRefs = [input.telemetryEvidenceRef, input.simulationEvidenceRef];
   const hypothesisId = contentAddressedChangeSetId(
     input.organizationId,
@@ -300,19 +303,17 @@ export function evaluateTelemetryImprovementOutcome(
 
 type TelemetryCollection =
   | {
-    readonly status: "ok";
-    readonly series: readonly MetricSeries[];
-    readonly sampleCount: number;
-    readonly causalEvidenceCount: number;
-  }
+      readonly status: "ok";
+      readonly series: readonly MetricSeries[];
+      readonly sampleCount: number;
+      readonly causalEvidenceCount: number;
+    }
   | {
-    readonly status: "degraded";
-    readonly degradedSources: readonly string[];
-  };
+      readonly status: "degraded";
+      readonly degradedSources: readonly string[];
+    };
 
-async function collectTelemetryForTrigger(
-  input: RunTelemetryImprovementOptimizerInput,
-): Promise<TelemetryCollection> {
+async function collectTelemetryForTrigger(input: RunTelemetryImprovementOptimizerInput): Promise<TelemetryCollection> {
   const degraded: string[] = [];
   let causalEvidenceCount = 0;
   const metricResult = await input.queryPort.queryMetrics(input.trigger.metricQuery, input.range);
@@ -348,7 +349,9 @@ function metricSymptom(
   trigger: TelemetryImprovementTrigger,
   series: readonly MetricSeries[],
 ): { symptom: ImprovementHypothesis["symptom"]; rawRelativeChange: number } | undefined {
-  const points = series.flatMap((entry) => entry.points).sort((left, right) => left.timestamp.localeCompare(right.timestamp));
+  const points = series
+    .flatMap((entry) => entry.points)
+    .sort((left, right) => left.timestamp.localeCompare(right.timestamp));
   if (points.length < 2) {
     return undefined;
   }
@@ -376,15 +379,21 @@ function improvementChangeSet(
   mode: TelemetryImprovementProposalMode,
 ): ChangeSet {
   const revision = 1;
-  const changeSetId = contentAddressedChangeSetId(input.organizationId, input.workItemId, `${input.targetRef}:${hypothesis.hypothesisId}`, revision);
+  const changeSetId = contentAddressedChangeSetId(
+    input.organizationId,
+    input.workItemId,
+    `${input.targetRef}:${hypothesis.hypothesisId}`,
+    revision,
+  );
   return {
     changeSetId,
     organizationId: input.organizationId,
     workItemId: input.workItemId,
     proposerHatId: input.proposerHatId,
-    title: mode === TelemetryImprovementProposalMode.Rollback && input.rolledOutChangeSetId !== undefined
-      ? `Rollback ${input.rolledOutChangeSetId} after telemetry regression`
-      : `Improve ${hypothesis.symptom.metricKind} from telemetry regression`,
+    title:
+      mode === TelemetryImprovementProposalMode.Rollback && input.rolledOutChangeSetId !== undefined
+        ? `Rollback ${input.rolledOutChangeSetId} after telemetry regression`
+        : `Improve ${hypothesis.symptom.metricKind} from telemetry regression`,
     targetRef: input.targetRef,
     phase: ChangeSetPhase.Drafted,
     pipelineId: "internal-only",

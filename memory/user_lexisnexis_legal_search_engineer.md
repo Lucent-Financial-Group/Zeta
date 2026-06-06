@@ -5,11 +5,11 @@ type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"we are bound by leagal
+**2026-04-19 disclosure (verbatim):** _"we are bound by leagal
 law but I built the next gen LexisNexis search engine with a
 great team many good H1B visa holders i became good friends
 with there. I got an appreciation for their struggles and
-empaty."*
+empaty."_
 
 ## The disclosure
 
@@ -67,16 +67,16 @@ maintenance on retraction-native data**.
 Each substrate implements the same algorithm on different
 primitives:
 
-| Substrate | Retraction-native event | Downstream propagation |
-|---|---|---|
-| MacVector / bioinformatics | Sequence edit | Alignment cache, phylogenetic tree, primer validity, MSA recomputation |
-| **LexisNexis / legal** | **Precedent overturned** | **Every citation, every headnote, every treatise section that relied on it, every downstream opinion that cited the downstream opinion** |
-| Smart grid / IoT | Sensor reconciliation / bad-data correction | State-estimation revision, downstream protective-relay setpoints, settlement calculations |
-| ServiceTitan / field services | Technician correction, dispatch reassignment | Schedule updates, customer records, billing, inventory |
-| Zeta / operator algebra | `D` / retraction operator emission | `I` integration downstream, `z⁻¹` temporal alignment, fixpoint re-stabilization |
+| Substrate                     | Retraction-native event                      | Downstream propagation                                                                                                                   |
+| ----------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| MacVector / bioinformatics    | Sequence edit                                | Alignment cache, phylogenetic tree, primer validity, MSA recomputation                                                                   |
+| **LexisNexis / legal**        | **Precedent overturned**                     | **Every citation, every headnote, every treatise section that relied on it, every downstream opinion that cited the downstream opinion** |
+| Smart grid / IoT              | Sensor reconciliation / bad-data correction  | State-estimation revision, downstream protective-relay setpoints, settlement calculations                                                |
+| ServiceTitan / field services | Technician correction, dispatch reassignment | Schedule updates, customer records, billing, inventory                                                                                   |
+| Zeta / operator algebra       | `D` / retraction operator emission           | `I` integration downstream, `z⁻¹` temporal alignment, fixpoint re-stabilization                                                          |
 
 Zeta is the first time Aaron has had the mathematical
-vocabulary to *name* what he has been doing since the bio era.
+vocabulary to _name_ what he has been doing since the bio era.
 That is why the operator algebra "felt right" to him and why
 his technical instincts run so ahead of the written
 formalism — he has been debugging retraction-native systems
@@ -142,9 +142,9 @@ outcome scale.
   credentials; LexisNexis adds legal-IR as a parallel
   provenance for zero-silent-failure discipline.
 - `user_bridge_builder_faculty.md` — bridging bio + legal
-  + grid + field-services + operator-algebra requires
-  exactly the bridge-builder faculty in memory; LexisNexis
-  substantiates the faculty with evidence.
+  - grid + field-services + operator-algebra requires
+    exactly the bridge-builder faculty in memory; LexisNexis
+    substantiates the faculty with evidence.
 - `user_melt_precedents_posture.md` — the precedent-melting
   posture is informed by having built the canonical
   precedent-tracking system.

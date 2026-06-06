@@ -41,14 +41,14 @@ Discoverable at
 
 **Scripts** (`scripts/`):
 
-| Script | Purpose | LLM cost |
-|---|---|---|
-| `quick_validate.py` | Syntax + frontmatter sanity check on a SKILL.md | Free (regex + YAML) |
-| `improve_description.py` | Description-tuning via Claude extended thinking + eval results | Expensive |
-| `run_eval.py` | Behavioural eval runner — compares with-skill vs baseline subagents | Medium |
-| `aggregate_benchmark.py` | Metrics aggregation (pass rate, tokens, time) across eval runs | Free |
-| `generate_report.py` | HTML review viewer for human feedback on eval outputs | Free |
-| `package_skill.py` | Distribution bundle | Free |
+| Script                   | Purpose                                                             | LLM cost            |
+| ------------------------ | ------------------------------------------------------------------- | ------------------- |
+| `quick_validate.py`      | Syntax + frontmatter sanity check on a SKILL.md                     | Free (regex + YAML) |
+| `improve_description.py` | Description-tuning via Claude extended thinking + eval results      | Expensive           |
+| `run_eval.py`            | Behavioural eval runner — compares with-skill vs baseline subagents | Medium              |
+| `aggregate_benchmark.py` | Metrics aggregation (pass rate, tokens, time) across eval runs      | Free                |
+| `generate_report.py`     | HTML review viewer for human feedback on eval outputs               | Free                |
+| `package_skill.py`       | Distribution bundle                                                 | Free                |
 
 **Agents** (`agents/`): `analyzer.md` (benchmark pattern
 surfacing), `comparator.md` (paired-run comparison),
@@ -62,7 +62,7 @@ surfacing), `comparator.md` (paired-run comparison),
 **Scope: factory-level (universal).** These additions are
 what any project adopting this factory kit inherits — they
 are not Zeta-specific. Zeta is the current reference
-implementation; the *scope* of each row below is the
+implementation; the _scope_ of each row below is the
 factory kit as reusable infrastructure. When the factory
 gets adopted by another project, these wraps come with it;
 only the persona roster and the BP-NN content list change.
@@ -71,20 +71,20 @@ only the persona roster and the BP-NN content list change.
 
 What our bespoke workflow adds on top of the plugin:
 
-| Addition | What it protects | Factory surface |
-|---|---|---|
-| Prompt-Protector review | Injection resistance, invisible-char lint, over-broad `description:` | `.claude/skills/prompt-protector/SKILL.md` |
-| Portability declaration | Factory-reuse-beyond-host-project constraint | `project: <name>` frontmatter + §1 of skill-tune-up ranker |
-| BP-NN citation pattern | Stable rule traceability | `docs/AGENT-BEST-PRACTICES.md` |
-| Persona-registry cross-check | No orphan skills; no unregistered persona hats | `docs/EXPERT-REGISTRY.md` |
-| Standard-sections checklist | Consistency across the skill population | §"Standard sections checklist" in skill-creator |
-| Scope-audit at absorb-time | Factory-default-scope bias enforcement | `feedback_scope_audit_skill_gap_human_backlog_resolution.md` |
-| Skill-edit justification log | Visibility into manual edits | `docs/skill-edit-justification-log.md` |
-| Retirement pattern | `git rm` the SKILL.md; preserve memory folder | `feedback_honor_those_that_came_before.md` |
-| Conflict-resolution hand-off | Specialist coverage map | `docs/CONFLICT-RESOLUTION.md` |
+| Addition                     | What it protects                                                     | Factory surface                                              |
+| ---------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Prompt-Protector review      | Injection resistance, invisible-char lint, over-broad `description:` | `.claude/skills/prompt-protector/SKILL.md`                   |
+| Portability declaration      | Factory-reuse-beyond-host-project constraint                         | `project: <name>` frontmatter + §1 of skill-tune-up ranker   |
+| BP-NN citation pattern       | Stable rule traceability                                             | `docs/AGENT-BEST-PRACTICES.md`                               |
+| Persona-registry cross-check | No orphan skills; no unregistered persona hats                       | `docs/EXPERT-REGISTRY.md`                                    |
+| Standard-sections checklist  | Consistency across the skill population                              | §"Standard sections checklist" in skill-creator              |
+| Scope-audit at absorb-time   | Factory-default-scope bias enforcement                               | `feedback_scope_audit_skill_gap_human_backlog_resolution.md` |
+| Skill-edit justification log | Visibility into manual edits                                         | `docs/skill-edit-justification-log.md`                       |
+| Retirement pattern           | `git rm` the SKILL.md; preserve memory folder                        | `feedback_honor_those_that_came_before.md`                   |
+| Conflict-resolution hand-off | Specialist coverage map                                              | `docs/CONFLICT-RESOLUTION.md`                                |
 
-**Observation:** every factory-level addition is *pre-* or
-*post-behaviour-eval*. None of them replace the eval loop;
+**Observation:** every factory-level addition is _pre-_ or
+_post-behaviour-eval_. None of them replace the eval loop;
 they wrap around it. So the plugin's eval-driven inner loop is
 exactly what we should keep delegating to it; our wrap is the
 outer governance layer. The wrap is **cheap-but-factory-wide**
@@ -105,8 +105,7 @@ lists three exceptions to the full workflow:
 **Everything else** — the unqualified word "else" — must go
 through the 6-step workflow:
 
-1. Proposal → 2. Draft → 3. Prompt-Protector review →
-   4. Dry-run → 5. Commit → 6. Tune-up follow-up
+1. Proposal → 2. Draft → 3. Prompt-Protector review → 4. Dry-run → 5. Commit → 6. Tune-up follow-up
 
 For a 3-line edit replacing `.claude/skills/_retired/…` with
 `git show <commit>^:<path>`, steps 1, 4, 6 are overhead that
@@ -202,7 +201,7 @@ Examples:
 4. **Justification log row** citing the observed
    false-positive or clarity gap that motivated the edit.
 
-**Why this gate:** content edits *can* change behaviour
+**Why this gate:** content edits _can_ change behaviour
 (a rewritten procedure step may subtly redirect the
 agent), so a dry-run is warranted — but the plugin's full
 eval-with-baseline benchmark is overkill for a
@@ -244,7 +243,7 @@ trigger-surface, authority, or behavioural envelope.
 That's exactly what the plugin's eval-driven iteration
 was built for, and what our Prompt-Protector + portability
 
-+ BP-NN wraps were built to scope-guard.
+- BP-NN wraps were built to scope-guard.
 
 ---
 
@@ -257,9 +256,9 @@ tiered envelope makes the log more useful:
 **Proposed log-row schema extension:**
 
 ```markdown
-| Date | Skill | Tier | What | Why | Landing commit |
-|------|-------|------|------|-----|----------------|
-| 2026-04-20 | skill-tune-up | 1 | RETIRE action wording | Propagate bd9e09c scope fix | bd9e09c |
+| Date       | Skill         | Tier | What                  | Why                         | Landing commit |
+| ---------- | ------------- | ---- | --------------------- | --------------------------- | -------------- |
+| 2026-04-20 | skill-tune-up | 1    | RETIRE action wording | Propagate bd9e09c scope fix | bd9e09c        |
 ```
 
 The **Tier** column makes tier-drift auditable — if a
@@ -290,7 +289,7 @@ The round-44 BACKLOG row queued three skill files needing the
    → **Tier 1** (convention-update, cite bd9e09c).
 2. `skill-creator/SKILL.md` — retirement workflow paragraph
    → **Tier 1** for the paragraph update, but
-   incorporating *this* design doc into the skill itself
+   incorporating _this_ design doc into the skill itself
    (adding the tiered envelope) is **Tier 3** (new
    responsibility: tier classification).
 3. `skill-documentation-standard/SKILL.md` — five
@@ -344,7 +343,7 @@ responsibility.
 - `~/.claude/plugins/cache/claude-plugins-official/skill-creator/`
   — upstream plugin we're wrapping
 - `docs/FACTORY-HYGIENE.md` row 19 (justification log)
-  + row 25 (pointer-integrity audit)
+  - row 25 (pointer-integrity audit)
 - `docs/skill-edit-justification-log.md` — ledger of
   manual skill edits
 - `memory/feedback_skill_edits_justification_log_and_tune_up_cadence.md`

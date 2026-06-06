@@ -11,7 +11,7 @@ Append-only. Same discipline as
 ## Schema — one row per on-reply discussion action or round-cadence sweep
 
 | date (UTC ISO8601) | agent | discussion | shape | action | link | notes |
-|---|---|---|---|---|---|---|
+| ------------------ | ----- | ---------- | ----- | ------ | ---- | ----- |
 
 Shapes (per `docs/AGENT-GITHUB-SURFACES.md`): respond-inline /
 convert-to-issue / close-as-answered / archive-as-historical.

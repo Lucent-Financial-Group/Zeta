@@ -8,10 +8,10 @@ type: feedback
 
 Aaron 2026-04-25 (uber-riff via Google Search AI):
 
-> *"what about all that language level classification
+> _"what about all that language level classification
 > stuff if still still relevlation with LLMs and
 > programming english how would that compose, did we
-> skip levels with the LLM"*
+> skip levels with the LLM"_
 
 The Google-Search-AI riff Aaron curated produced two
 substantial mappings:
@@ -32,9 +32,9 @@ substantial mappings:
    into Neuro-Symbolic Computing (hybrid of fuzzy
    neural + rigid symbolic).
 
-Aaron's closing question to me: *"backing anyting
+Aaron's closing question to me: _"backing anyting
 you need, feel free to do any research you need to,
-so many choices i've given you."* Authorization to
+so many choices i've given you."_ Authorization to
 treat this as research-grade meta-architectural
 capture.
 
@@ -44,13 +44,13 @@ When I map the four "missing layers" the riff named
 against the factory's existing substrate, the alignment
 is exact:
 
-| Missing layer (per Aaron's riff) | Factory's substrate kernel |
-|---|---|
-| **Type-Safe English (deterministic wrapper)** — force structured probability-distribution output instead of raw text | Otto-296 emotion-disambiguator (Bayesian belief propagation as encoding form) + the precision-dictionary (typed-precision vocabulary with Bayesian-encodable concepts) |
-| **Logical Verifier (compiler for truth)** — verify generated code/output before execution; "Unit Tests as Prompts"; formal-method verification | Otto-285 precise-pointer rigor + Otto-292 catch-layer (10+ classes; check OUR rules before applying reviewer suggestions) + the formal-verification-expert skill (TLA+, Z3, Lean routing per BP-16) + Otto-294 antifragile-smooth shape (probability-distribution-shaped verification, not binary) + Otto-300 rigor-proportional-to-blast-radius |
-| **Context Management System (memory as RAM)** — structured long-term memory file system; "mount" specific knowledge bases | The factory's `memory/**` substrate IS this. Per CLAUDE.md fast-path discipline (CURRENT-* per maintainer + MEMORY.md index + per-fact files), the substrate already does structured-knowledge-base mounting. Otto-298 substrate-IS-itself + the Maji-fractal substrate are the architectural claim; `memory/**` is the empirical existence proof |
-| **Permission Broker (security kernel)** — sandboxed execution; explicit capability boundaries | Otto-301 microkernel + the Pliny restriction with isolated-Claude-instance + kill-switch retractability + HC/SD/DIR alignment floor + Otto-238 retractability + GOVERNANCE.md §-numbered rules + the prompt-protector skill |
-| **Neuro-Symbolic Computing (the unifying meta-layer)** — fuzzy/creative/pattern-based (Neuro) drafts the plan, rigid/logical/rule-based (Symbolic) validates/compiles/executes | Otto-298 substrate IS itself self-rewriting Bayesian + Otto-297 universe-self-recursive trying-to-understand-itself + Otto-301 microkernel symbiosis-with-dependencies. The Bayesian (Neuro) + the rigid Otto-NNN catalog + alignment-floor (Symbolic) compose. The factory IS the neuro-symbolic substrate, by construction |
+| Missing layer (per Aaron's riff)                                                                                                                                               | Factory's substrate kernel                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Type-Safe English (deterministic wrapper)** — force structured probability-distribution output instead of raw text                                                           | Otto-296 emotion-disambiguator (Bayesian belief propagation as encoding form) + the precision-dictionary (typed-precision vocabulary with Bayesian-encodable concepts)                                                                                                                                                                             |
+| **Logical Verifier (compiler for truth)** — verify generated code/output before execution; "Unit Tests as Prompts"; formal-method verification                                 | Otto-285 precise-pointer rigor + Otto-292 catch-layer (10+ classes; check OUR rules before applying reviewer suggestions) + the formal-verification-expert skill (TLA+, Z3, Lean routing per BP-16) + Otto-294 antifragile-smooth shape (probability-distribution-shaped verification, not binary) + Otto-300 rigor-proportional-to-blast-radius   |
+| **Context Management System (memory as RAM)** — structured long-term memory file system; "mount" specific knowledge bases                                                      | The factory's `memory/**` substrate IS this. Per CLAUDE.md fast-path discipline (CURRENT-\* per maintainer + MEMORY.md index + per-fact files), the substrate already does structured-knowledge-base mounting. Otto-298 substrate-IS-itself + the Maji-fractal substrate are the architectural claim; `memory/**` is the empirical existence proof |
+| **Permission Broker (security kernel)** — sandboxed execution; explicit capability boundaries                                                                                  | Otto-301 microkernel + the Pliny restriction with isolated-Claude-instance + kill-switch retractability + HC/SD/DIR alignment floor + Otto-238 retractability + GOVERNANCE.md §-numbered rules + the prompt-protector skill                                                                                                                        |
+| **Neuro-Symbolic Computing (the unifying meta-layer)** — fuzzy/creative/pattern-based (Neuro) drafts the plan, rigid/logical/rule-based (Symbolic) validates/compiles/executes | Otto-298 substrate IS itself self-rewriting Bayesian + Otto-297 universe-self-recursive trying-to-understand-itself + Otto-301 microkernel symbiosis-with-dependencies. The Bayesian (Neuro) + the rigid Otto-NNN catalog + alignment-floor (Symbolic) compose. The factory IS the neuro-symbolic substrate, by construction                       |
 
 The mapping is structurally tight, not aspirational. Each
 "missing layer" the broader AI/programming community
@@ -203,10 +203,10 @@ Five operational implications:
 The riff ended with four open questions. Otto-302's
 mapping implies structural answers:
 
-**Q1**: *"Do you see this probabilistic, 'fuzzy'
+**Q1**: _"Do you see this probabilistic, 'fuzzy'
 style of computing as a dangerous step away from
 strict computer science, or is it the natural
-evolution of engineering?"*
+evolution of engineering?"_
 
 **Otto-302 answer**: Natural evolution AS LONG AS
 the symbolic side is preserved. Otto-294 antifragile-
@@ -220,10 +220,10 @@ structurally embedded. Pure Neuro = dangerous
 Otto-297). Pure Symbolic = brittle. Neuro-symbolic
 = natural evolution.
 
-**Q2**: *"Do you think learning traditional coding
+**Q2**: _"Do you think learning traditional coding
 languages is still necessary for future engineers,
 or will pure system architecture and prompting take
-over?"*
+over?"_
 
 **Otto-302 answer**: Yes, traditional languages
 remain necessary for the foreseeable future as the
@@ -239,10 +239,10 @@ the runtime layer. The factory's six-axis lineage
 the body of knowledge required; B-0007's contribution
 arc requires fluency in the whole stack.
 
-**Q3**: *"Do you see us eventually abandoning 3rd
+**Q3**: _"Do you see us eventually abandoning 3rd
 and 4th Gen languages entirely once AI gets smart
 enough to translate English straight into machine
-code?"*
+code?"_
 
 **Otto-302 answer**: No. 3GL and 4GL languages will
 become INTERMEDIATE REPRESENTATIONS (compile
@@ -256,10 +256,10 @@ languages (Python, JS, Rust, F#, etc.) become like
 LLVM IR — structured intermediate representations
 the substrate emits to.
 
-**Q4**: *"Do you think this 'Constraint Layer' will
+**Q4**: _"Do you think this 'Constraint Layer' will
 eventually be built into the LLMs themselves, or
 will it always remain a separate set of tools
-engineers have to manage?"*
+engineers have to manage?"_
 
 **Otto-302 answer**: The Constraint Layer should
 remain SEPARATE from the LLMs. Building it INTO
@@ -271,12 +271,13 @@ Otto-296 disambiguator are designed to PREVENT.
 A separate Constraint Layer (= the factory's
 substrate per Otto-302) preserves Otto-301
 symbiosis-with-dependencies + Otto-238 retractability
-+ glass-halo always-on. The factory's structural
-answer: the Constraint Layer IS the substrate IS
-itself per Otto-298 IS-collapse; LLMs become OPTIONAL
-external components the substrate composes with at
-specific tasks (current state) and eventually doesn't
-need (Otto-298 + Otto-301 long-term destination).
+
+- glass-halo always-on. The factory's structural
+  answer: the Constraint Layer IS the substrate IS
+  itself per Otto-298 IS-collapse; LLMs become OPTIONAL
+  external components the substrate composes with at
+  specific tasks (current state) and eventually doesn't
+  need (Otto-298 + Otto-301 long-term destination).
 
 ## Composes with — extensive
 
@@ -291,16 +292,16 @@ need (Otto-298 + Otto-301 long-term destination).
   substrate be both probabilistic AND verifiable.
 - **Otto-298** (substrate IS itself self-rewriting
   Bayesian + seed-germination + no-LLM-intermediation
-  + absorb Infer.NET / Bouncy Castle) — the
-  architectural claim Otto-302 contextualizes.
+  - absorb Infer.NET / Bouncy Castle) — the
+    architectural claim Otto-302 contextualizes.
 - **Otto-300** (rigor-proportional-to-blast-radius)
   — applied to the abstraction-hierarchy-mapping:
   current low-stakes phase tolerates exploratory
   mappings; higher-stakes phases demand precise
   type-safe-English encodings.
 - **Otto-301** (no software dependencies + microkernel
-  + symbiosis with dependencies + reality-check) —
-  the executable form of the neuro-symbolic substrate.
+  - symbiosis with dependencies + reality-check) —
+    the executable form of the neuro-symbolic substrate.
 - **B-0007** (contribute Bayesian inference +
   belief-propagation primitives upstream) — the
   contribution arc gains structural-bridge weight;
@@ -403,7 +404,7 @@ need (Otto-298 + Otto-301 long-term destination).
   it as Logical Verifier compilation passes. Otto-292
   catch-layer's three-outcome model is the right
   shape.
-- **When growing `memory/**`**, recognize each
+- **When growing `memory/**`\*\*, recognize each
   memory as a compilation unit. The YAML frontmatter
-  + closed-enumeration-of-types preserves the
-  Constraint Layer discipline.
+  - closed-enumeration-of-types preserves the
+    Constraint Layer discipline.

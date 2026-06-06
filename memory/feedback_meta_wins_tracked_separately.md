@@ -4,13 +4,14 @@ description: 2026-04-20; Aaron explicit durable policy. Meta-wins (never-idle st
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Meta-wins get their own log
 
 ## Rule
 
 When the never-idle **meta-check** (step 2 of
 `feedback_never_idle_speculative_work_over_waiting.md`)
-fires and I make a structural factory change *instead of*
+fires and I make a structural factory change _instead of_
 speculative fill, append a row to
 `docs/research/meta-wins-log.md`.
 
@@ -27,12 +28,12 @@ The row captures:
    - Depth 3+ = metametameta and up: nested compounding.
 4. **Next-round effect** — the concrete speculative →
    directed conversion the fix produces.
-5. **Retrospective** — *clean* / *partial* / *false*
+5. **Retrospective** — _clean_ / _partial_ / _false_
    meta-win.
 
 This is **separate** from `agent-cadence-log.md`. The
 cadence log is idle/free-time/work-continuation telemetry;
-the meta-wins log is *factory-self-improvement* telemetry.
+the meta-wins log is _factory-self-improvement_ telemetry.
 Different research variables, different readers, different
 cadences.
 
@@ -45,7 +46,7 @@ cadences.
 - **Meta-cognition is the research substrate he most
   enjoys** (see
   `user_meta_cognition_favorite_thinking_surface.md`). A
-  dedicated artifact makes the substrate *observable* —
+  dedicated artifact makes the substrate _observable_ —
   rate, depth, compounding.
 - **Different signal class from idle-tracking.** The
   cadence log measures "did the agent stop when it
@@ -53,10 +54,10 @@ cadences.
   agent recognise a factory shape-bug and fix it instead
   of patching around it." Mixing them loses resolution.
 - **Compounding-depth is load-bearing.** Depth 2+ events
-  are evidence the agent is noticing *second-order*
+  are evidence the agent is noticing _second-order_
   factory shape-bugs during a first-order fix — the
   factory debugging its own debugger. That pattern is
-  what the factory-as-experiment framing is *for*. The
+  what the factory-as-experiment framing is _for_. The
   depth column exists to expose compounding over time.
 - **Honesty preserves the signal.** Padding depth or
   relabelling partial as clean destroys the research
@@ -73,7 +74,7 @@ cadences.
   Depth-0 cases (no meta-check, just normal work) do
   not go in this log.
 - **When to claim depth > 1.** Only when a second
-  meta-check actually fired *while* the first
+  meta-check actually fired _while_ the first
   structural fix was being made. If the second fix was
   a separate independent decision later in the same
   tick, log them as two rows with depth 1 each.
@@ -98,7 +99,7 @@ cadences.
   log and Aaron's filter for performed-meta is sharp.
 - **Cross-reference discipline.** The never-idle memory
   step (2) already names the meta-check. This policy
-  memory adds the *log destination*. The log file
+  memory adds the _log destination_. The log file
   itself carries the full format. Three files, one
   loop.
 
@@ -124,7 +125,7 @@ cadences.
   — the parent policy; this memory is the
   tracking-instrument extension.
 - `user_meta_cognition_favorite_thinking_surface.md`
-  — the *why this matters to Aaron specifically*;
+  — the _why this matters to Aaron specifically_;
   explains why the dedicated log exists.
 - `feedback_idle_tracking_and_free_time_as_research.md`
   — sibling log policy; meta-wins log is the

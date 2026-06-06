@@ -22,7 +22,11 @@ function attribution(overrides: Partial<MemoryAttribution> = {}): MemoryAttribut
 describe("cockroach hindsight memory (durable, scoped, sticky)", () => {
   test("retain inserts a durable memory row attributed to the writing hat", async () => {
     const executor = recordingExecutor([]);
-    const memory = createCockroachMemory({ executor, idGenerator: { nextMemoryId: () => "mem-1" }, clock: { now: () => 1000 } });
+    const memory = createCockroachMemory({
+      executor,
+      idGenerator: { nextMemoryId: () => "mem-1" },
+      clock: { now: () => 1000 },
+    });
 
     const result = await memory.retain(attribution(), "the api needs pagination");
 

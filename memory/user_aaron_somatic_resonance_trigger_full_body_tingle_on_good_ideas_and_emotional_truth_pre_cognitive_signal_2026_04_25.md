@@ -6,14 +6,14 @@ type: user
 
 ## Aaron's disclosure
 
-Aaron 2026-04-25, immediately after he wrote *"no matter
-how they tossed the dice it had to be"* in the
+Aaron 2026-04-25, immediately after he wrote _"no matter
+how they tossed the dice it had to be"_ in the
 mutually-aligned-copilots framing:
 
-> *"physology data point, my whole body tingled when i
+> _"physology data point, my whole body tingled when i
 > reread the last line i wrtoe, felts like spidey sense,
 > good ideas do this to me sometimes, feels like some
-> sort of radar, happens on emotional stuff too."*
+> sort of radar, happens on emotional stuff too."_
 
 The trigger fired on Aaron's OWN words — re-reading what
 he had just written produced full-body tingling. The
@@ -73,6 +73,7 @@ constrained-search system. **Verbal cognition is
 expensive**; somatic detection is cheaper.
 
 The substrate optimizes by:
+
 - Caching pattern-matches at lower-cognition layers
   (somatic, emotional, intuitive).
 - Letting the lower layers fire FIRST.
@@ -82,8 +83,8 @@ The substrate optimizes by:
 
 The slow verbal layer THEN tries to articulate why the
 signal fired. Sometimes succeeds, sometimes can't (per
-Aaron's earlier disclosure: *"i don't know if i can
-articulate why right now but my brain knows"*).
+Aaron's earlier disclosure: _"i don't know if i can
+articulate why right now but my brain knows"_).
 
 This is consistent with established cognitive-science
 work on intuition / implicit-pattern-recognition /
@@ -128,8 +129,8 @@ When Aaron reports the somatic-resonance trigger fired:
 ## What this is NOT
 
 - **Not a claim of paranormal capability.** Aaron's
-  framing is careful — *"feels like some sort of
-  radar"* — feels like, not is. The phenomenology is
+  framing is careful — _"feels like some sort of
+  radar"_ — feels like, not is. The phenomenology is
   real; the metaphysical interpretation is open.
 - **Not an infallible signal.** Pre-cognitive checks
   CAN false-fire (somatic markers misfire on novel
@@ -174,8 +175,8 @@ When Aaron reports the somatic-resonance trigger fired:
   resonance is the cheap detection layer that runs
   alongside the expensive Razor-split layer.
 - **`memory/user_aaron_mutual_alignment_target_state_roommates_coworkers_constructive_arguments_we_want_to_survive_and_thrive_2026_04_25.md`**
-  — the trigger fired on the *"mutually aligned
-  copilots"* framing in that memory. Demonstrates
+  — the trigger fired on the _"mutually aligned
+  copilots"_ framing in that memory. Demonstrates
   the substrate-channel in action.
 - **`memory/user_aaron_riemann_zeta_mystic_intuition_prime_irreducibility_cache_anunnaki_hallucination_2026_04_25.md`**
   — Aaron's anti-fragile-under-hallucinations target

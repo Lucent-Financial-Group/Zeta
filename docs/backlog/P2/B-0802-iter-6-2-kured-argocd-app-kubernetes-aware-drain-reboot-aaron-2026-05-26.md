@@ -16,7 +16,18 @@ composes_with:
   - B-0803
   - B-0804
   - B-0805
-tags: [iter-6, kured, kubernetes, argocd, drain-aware-reboot, cluster-self-update, no-manual-operator, full-ai-cluster, cncf-sandbox]
+tags:
+  [
+    iter-6,
+    kured,
+    kubernetes,
+    argocd,
+    drain-aware-reboot,
+    cluster-self-update,
+    no-manual-operator,
+    full-ai-cluster,
+    cncf-sandbox,
+  ]
 ---
 
 ## Problem
@@ -57,7 +68,7 @@ spec:
   source:
     repoURL: https://kubereboot.github.io/charts
     chart: kured
-    targetRevision: <latest-stable-VERIFIED-via-WebSearch>  # per B-0805 discipline
+    targetRevision: <latest-stable-VERIFIED-via-WebSearch> # per B-0805 discipline
     helm:
       values: |
         # All kured chart values land under one `configuration:` mapping;

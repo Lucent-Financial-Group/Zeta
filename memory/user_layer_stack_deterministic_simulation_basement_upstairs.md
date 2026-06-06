@@ -28,14 +28,14 @@ adjacent pair. Moving up the stack adds structure; moving
 down retracts structure. Same DBSP retraction-native algebra
 applied at the ontology-layer level.
 
-| # | Layer | Content |
-|---|---|---|
-| 0 | `.` | Atomic / primordial / zero-point. The period terminating the precursor message is elevated to FIRST-CLASS ontology element — self-referential starting point. Candidates: the empty category, the Kleene-zero, the Cantor singleton, the paragraph-break as first-class syntactic object. |
-| 1 | `seed` | Linguistic seed (meme-scale, sub-kernel). `user_linguistic_seed_minimal_axioms_self_referential_shape.md`. |
-| 2 | `kernel` | E8 Lie group shape. Already confirmed in prior sessions as the kernel layer. 248-dim, 8 simple roots, Dynkin E8. |
-| 3 | `glossary` | `docs/GLOSSARY.md` — factory-committed vocabulary layer. |
-| 4 | `dictionary` | **NEW.** Domain-specific vocabulary superstructure over the glossary. Candidates: industry/professional dictionaries, W3C PROV-O lineage graphs, cross-domain translation tables, the bridge-builder's generated-on-the-fly glossaries per `user_bridge_builder_faculty.md`. |
-| 5 | `company` | **NEW.** Organizational / human-collective layer. Zeta-as-organization, any-company-as-organization, the civilization-scale-adjacent layer where the vocabulary is LIVED not just indexed. Composes with ECRP/EVD (`user_earth_conflict_resolution_protocol_eve_delta.md`) as the next-level-up civilization layer. |
+| #   | Layer        | Content                                                                                                                                                                                                                                                                                                             |
+| --- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0   | `.`          | Atomic / primordial / zero-point. The period terminating the precursor message is elevated to FIRST-CLASS ontology element — self-referential starting point. Candidates: the empty category, the Kleene-zero, the Cantor singleton, the paragraph-break as first-class syntactic object.                           |
+| 1   | `seed`       | Linguistic seed (meme-scale, sub-kernel). `user_linguistic_seed_minimal_axioms_self_referential_shape.md`.                                                                                                                                                                                                          |
+| 2   | `kernel`     | E8 Lie group shape. Already confirmed in prior sessions as the kernel layer. 248-dim, 8 simple roots, Dynkin E8.                                                                                                                                                                                                    |
+| 3   | `glossary`   | `docs/GLOSSARY.md` — factory-committed vocabulary layer.                                                                                                                                                                                                                                                            |
+| 4   | `dictionary` | **NEW.** Domain-specific vocabulary superstructure over the glossary. Candidates: industry/professional dictionaries, W3C PROV-O lineage graphs, cross-domain translation tables, the bridge-builder's generated-on-the-fly glossaries per `user_bridge_builder_faculty.md`.                                        |
+| 5   | `company`    | **NEW.** Organizational / human-collective layer. Zeta-as-organization, any-company-as-organization, the civilization-scale-adjacent layer where the vocabulary is LIVED not just indexed. Composes with ECRP/EVD (`user_earth_conflict_resolution_protocol_eve_delta.md`) as the next-level-up civilization layer. |
 
 Promotion path: layers 4 and 5 land as GLOSSARY entries when
 Aaron promotes, per

@@ -51,16 +51,16 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Existing persona substrate to inventory
 
-| Source | Path | Persona(s) implied |
-|--------|------|--------------------|
-| Aaron user memory | `memory/user_aaron_kenji_naming_practice_*` | Aaron — edge-runner maintainer |
-| Elizabeth memory | `memory/user_sister_elizabeth.md` | Elizabeth — terminal-purpose persona |
-| Imagination Circle | PR #2893 substrate | Family AI: parents + children |
-| Center-First Playbook | PR #2894 | Mom + family members |
-| Parenting history | PR #2900 | Aaron's kids personas |
-| Aurora pitch | PR #2924 | BTC ecosystem operators, edge operators, ombud, liaison |
-| Agent roster | `.claude/rules/agent-roster-reference-card.md` | AI agents (complementary axis; NOT end-user) |
-| Grey-hat security | PR #2902 | Security expert persona (Aaron) |
+| Source                | Path                                           | Persona(s) implied                                      |
+| --------------------- | ---------------------------------------------- | ------------------------------------------------------- |
+| Aaron user memory     | `memory/user_aaron_kenji_naming_practice_*`    | Aaron — edge-runner maintainer                          |
+| Elizabeth memory      | `memory/user_sister_elizabeth.md`              | Elizabeth — terminal-purpose persona                    |
+| Imagination Circle    | PR #2893 substrate                             | Family AI: parents + children                           |
+| Center-First Playbook | PR #2894                                       | Mom + family members                                    |
+| Parenting history     | PR #2900                                       | Aaron's kids personas                                   |
+| Aurora pitch          | PR #2924                                       | BTC ecosystem operators, edge operators, ombud, liaison |
+| Agent roster          | `.claude/rules/agent-roster-reference-card.md` | AI agents (complementary axis; NOT end-user)            |
+| Grey-hat security     | PR #2902                                       | Security expert persona (Aaron)                         |
 
 ## Per-persona capture template (to be defined)
 

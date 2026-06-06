@@ -3,7 +3,7 @@
 Carved sentence (operator 2026-05-31):
 
 > **Anything numerical or algebra-shaped, try to get it into the generic-math
-> interface** — implement the *subset of the structure it actually has*
+> interface** — implement the _subset of the structure it actually has_
 > (additive monoid / group / ring / field / `INumber`), in **each language's own
 > generic-math idiom**: C# `System.Numerics` IWSAM (`IAdditiveIdentity` /
 > `IAdditionOperators` / `IMultiplyOperators` / `INumber<T>`), F# native `Zero` +
@@ -11,7 +11,7 @@ Carved sentence (operator 2026-05-31):
 > fight the language.
 
 > **Whys-first** (per `a-rule-without-a-why-is-dogma`): each clause carries its
-> reasoning so a newcomer can challenge the *logic*, not just the conclusion.
+> reasoning so a newcomer can challenge the _logic_, not just the conclusion.
 
 ## Operational content
 
@@ -22,27 +22,27 @@ platform's **generic-math interface** for the structure it genuinely has.
 
 ### The per-language idiom (own the interface in each language's own terms)
 
-| Language | Generic-math idiom | Example (additive monoid) |
-|---|---|---|
-| **C# / .NET** | `System.Numerics` **IWSAM** (interfaces with static abstract members; .NET 7+) | `: IAdditiveIdentity<T,T>, IAdditionOperators<T,T,T>` |
-| **F#** | **native** `static member Zero` + `static member (+)` (recognized by SRTP / `List.sum` / `LanguagePrimitives.GenericZero`) | `static member Zero` + `static member (+)` |
-| **Rust** | `std::ops` traits + `num-traits`-style (`Add`, `Zero`) | `impl Add` + a `Zero`-style assoc const |
-| **TS** | a small `Monoid<T>`/`Semigroup<T>` record (no native generic-math) | `{ empty, concat }` |
+| Language      | Generic-math idiom                                                                                                         | Example (additive monoid)                             |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **C# / .NET** | `System.Numerics` **IWSAM** (interfaces with static abstract members; .NET 7+)                                             | `: IAdditiveIdentity<T,T>, IAdditionOperators<T,T,T>` |
+| **F#**        | **native** `static member Zero` + `static member (+)` (recognized by SRTP / `List.sum` / `LanguagePrimitives.GenericZero`) | `static member Zero` + `static member (+)`            |
+| **Rust**      | `std::ops` traits + `num-traits`-style (`Add`, `Zero`)                                                                     | `impl Add` + a `Zero`-style assoc const               |
+| **TS**        | a small `Monoid<T>`/`Semigroup<T>` record (no native generic-math)                                                         | `{ empty, concat }`                                   |
 
 **WHY per-language-idiom, not one transplanted interface** (challenge it): C#
 generic-math is IWSAM; F# generic-math is SRTP `Zero`/`(+)`. Forcing C#'s IWSAM
-*into* F# trips the **FS3535 "advanced feature" advisory**, which fails under our
+_into_ F# trips the **FS3535 "advanced feature" advisory**, which fails under our
 `TreatWarningsAsErrors` — i.e. fighting the language. "Own the interface in each
 language's own idiom" (the BCL-interface-boundary rule) means using the platform's
-*native* generic-math surface, not transplanting one platform's into another.
+_native_ generic-math surface, not transplanting one platform's into another.
 Empirically: this is exactly why the B-0867.28 observe-fold monoid used C# IWSAM
-*and* F# `Zero`/`(+)` — and the F# side was the cleaner of the two.
+_and_ F# `Zero`/`(+)` — and the F# side was the cleaner of the two.
 
 ### Implement only the structure that is TRUE (additive-monoidal only, etc.)
 
 **WHY** (challenge it): implementing `INumber<T>` on a type that is only an
 additive monoid invents arithmetic that doesn't exist (multiplication, ordering,
-negatives). Implement the *subset* the type genuinely has — additive-monoid
+negatives). Implement the _subset_ the type genuinely has — additive-monoid
 interfaces for a free monoid (the event log), full `INumber` only for an actual
 number. (This is the B-0867.28 "additive-monoidal only, not `INumber<T>`"
 decision for the tri-state/held-capable TriFloat + the event-log.)
@@ -51,7 +51,7 @@ decision for the tri-state/held-capable TriFloat + the event-log.)
 
 1. **Composability with generic numeric code** — `List.sum`, SRTP-constrained
    helpers, generic-math algorithms all work on a type that declares the interface.
-   The structure becomes *reusable* instead of bespoke. **WHY load-bearing:** it's
+   The structure becomes _reusable_ instead of bespoke. **WHY load-bearing:** it's
    the difference between "a number with a name" and "a value the whole numeric
    ecosystem can fold/aggregate/compose."
 2. **The interface IS the algebraic contract, machine-recognized + testable** —
@@ -59,8 +59,8 @@ decision for the tri-state/held-capable TriFloat + the event-log.)
    the laws to the compiler + to property tests (the laws hold through `==`/`+`,
    not just in prose). **WHY:** an asserted-in-docs law decays; a law on the
    generic-math interface is checkable.
-3. **C# IWSAM is powerful for a WASM runtime** (operator 2026-05-31: *"i love the
-   c# IWSAM stuff that will be powerful for a wasm runtime"*) — static-abstract
+3. **C# IWSAM is powerful for a WASM runtime** (operator 2026-05-31: _"i love the
+   c# IWSAM stuff that will be powerful for a wasm runtime"_) — static-abstract
    generic-math monomorphizes to efficient, allocation-light code that compiles
    well to WASM (the Rust low-level + WASM target lane). **WHY note this:** it
    makes generic-math a forward investment for the WASM runtime, not just an
@@ -71,15 +71,15 @@ decision for the tri-state/held-capable TriFloat + the event-log.)
 
 ## Discriminator — what counts as "numerical / algebra-shaped"
 
-| Shape | Interface to implement |
-|---|---|
-| Has identity + associative op (monoid) | additive-monoid interfaces (`IAdditiveIdentity` + `IAdditionOperators` / `Zero` + `(+)`) |
-| + inverse (group) | + subtraction / negation operators |
-| + second operation distributing over the first (ring/field) | + multiply operators / `IMultiplicativeIdentity` |
-| Full field-like number (total order, etc.) | `INumber<T>` family |
-| NOT algebra-shaped (stateful machinery, I/O, effects) | **does not apply** — use `Result<T, TFeedback>` / ports (monad-propagation + asymmetric-authorship), not generic-math |
+| Shape                                                       | Interface to implement                                                                                                |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Has identity + associative op (monoid)                      | additive-monoid interfaces (`IAdditiveIdentity` + `IAdditionOperators` / `Zero` + `(+)`)                              |
+| + inverse (group)                                           | + subtraction / negation operators                                                                                    |
+| + second operation distributing over the first (ring/field) | + multiply operators / `IMultiplicativeIdentity`                                                                      |
+| Full field-like number (total order, etc.)                  | `INumber<T>` family                                                                                                   |
+| NOT algebra-shaped (stateful machinery, I/O, effects)       | **does not apply** — use `Result<T, TFeedback>` / ports (monad-propagation + asymmetric-authorship), not generic-math |
 
-**WHY the negative case:** generic-math is for *values with algebraic structure*,
+**WHY the negative case:** generic-math is for _values with algebraic structure_,
 not for effectful machinery. Stateful/effectful types belong in the
 `Result<T, TFeedback>` / ports-and-adapters substrate, not the numeric interface.
 
@@ -95,7 +95,7 @@ not for effectful machinery. Stateful/effectful types belong in the
 
 - `bcl-interface-boundary-own-your-interfaces-hexagonal.md` — own the interface per
   language; generic-math is BCL-tier (`System.Numerics` / F# core / Rust `std`)
-- `monad-propagation-pattern-cross-language-substrate-shape.md` — the *non*-algebra
+- `monad-propagation-pattern-cross-language-substrate-shape.md` — the _non_-algebra
   (effectful) counterpart: `Result<T, TFeedback>`; this rule is the algebra side
 - `attention-as-currency-...-fsharp-uom-...md` — F# UoM is the units layer that
   composes with generic-math (a unit-carrying number is still a number)
@@ -113,7 +113,7 @@ not for effectful machinery. Stateful/effectful types belong in the
 
 B-0867.28 (observe-fold additive monoid, PR #6259): the C# `EventLog` implements
 `IAdditiveIdentity` plus `IAdditionOperators` (IWSAM), and the F# `EventLog` uses
-`Zero` plus `(+)` — the *same* monoid in *each* language's native generic-math
+`Zero` plus `(+)` — the _same_ monoid in _each_ language's native generic-math
 idiom; additive-monoidal only (not `INumber`, because the log/TriFloat is a free
 monoid, not a field). The F# native idiom was the cleaner side (no IWSAM advisory
 to fight). The governance ADR records
@@ -122,7 +122,7 @@ F# as the correctness/spec layer.
 ## Why this rule auto-loads
 
 Per `wake-time-substrate.md`: this is a cross-cutting authoring discipline that
-fires at *type-design time* (every time a numerical/algebra-shaped type is written
+fires at _type-design time_ (every time a numerical/algebra-shaped type is written
 or reviewed, in any language). Auto-loading puts the "into the generic-math
 interface, per-language idiom, only-the-true-structure" decision in working memory
 before the type is written without it.
@@ -140,8 +140,8 @@ why; compose with the BCL-boundary + monad-propagation + governance-ADR substrat
 
 ## Full reasoning
 
-Operator 2026-05-31: *"general meta rule anyting numerica/algerba shaped we want to
+Operator 2026-05-31: _"general meta rule anyting numerica/algerba shaped we want to
 try to get in into that interface and i love the c# IWASM [IWSAM] stuff that will
-be powerfull for a wasm runtime."* Generalizes the B-0867.28 monoid retrofit (the
+be powerfull for a wasm runtime."_ Generalizes the B-0867.28 monoid retrofit (the
 "don't fight the language" / own-the-interface-per-language lesson) into a standing
 authoring discipline, with the C#-IWSAM-for-WASM forward note recorded.

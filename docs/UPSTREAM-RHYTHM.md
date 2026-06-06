@@ -19,8 +19,8 @@ Two of the three come from git (the repo axis):
   repo. Where releases, stable URLs, issue numbers, the
   canonical commit history, and the social / governance
   edge live. GitHub's API confirms the relation:
-  `POST /repos/AceHack/Zeta/merge-upstream` pulls *from*
-  LFG *into* AceHack.
+  `POST /repos/AceHack/Zeta/merge-upstream` pulls _from_
+  LFG _into_ AceHack.
 - **fork** — `AceHack/Zeta`. The fork the human maintainer
   develops on day-to-day. The downstream copy where the
   daily agent loop lands intermediate PRs so the billed
@@ -39,7 +39,7 @@ The third comes from testing/QA vocabulary (the role axis):
   `.claude/**`, agents, skills, most of `tools/**`,
   `docs/hygiene-history/**`). Both upstream and fork contain
   SUT content and factory content; the SUT/factory distinction
-  is *not* about which repo or directory hosts the bits but
+  is _not_ about which repo or directory hosts the bits but
   about what role the bits play. (Worked example: TLA+ specs
   live under `tools/` by location but are SUT by role; most
   of the rest of `tools/` is factory by role.)
@@ -55,11 +55,11 @@ The fork exists to feed into upstream. When fork-vs-upstream
 disagree on anything (scope, contents, governance), upstream
 wins.
 
-Operationally, the agent loop *targets* the fork for most PRs
+Operationally, the agent loop _targets_ the fork for most PRs
 (see next section); that is a cost-optimization, not a
 redefinition. Upstream is still the repo-of-record.
 
-Lineage: this section adapts AceHack commit `268100a` (Round 44 — *"3 surfaces, not 2"*) into the upstream LFG version per the option-c rewrite-into-current-architecture sync discipline (`docs/sync/acehack-to-lfg-cherry-pick-audit-2026-04-26.md`). The AceHack commit's substantive contribution was the three-surfaces vocabulary; this version preserves LFG's existing wording around upstream/fork while adding the SUT/factory orthogonality framing.
+Lineage: this section adapts AceHack commit `268100a` (Round 44 — _"3 surfaces, not 2"_) into the upstream LFG version per the option-c rewrite-into-current-architecture sync discipline (`docs/sync/acehack-to-lfg-cherry-pick-audit-2026-04-26.md`). The AceHack commit's substantive contribution was the three-surfaces vocabulary; this version preserves LFG's existing wording around upstream/fork while adding the SUT/factory orthogonality framing.
 
 ## Zeta's choice: batched fork-first rhythm
 
@@ -105,11 +105,11 @@ today because:
   `memory/feedback_lfg_budgets_set_permits_free_experimentation.md`,
   LFG has budget caps. The caps protect the human
   maintainer's wallet; the risk they don't protect against
-  is *build-grinds-to-a-halt when the free allowance
-  exhausts.*
+  is _build-grinds-to-a-halt when the free allowance
+  exhausts._
 - **Poor-man's setup.** The human maintainer's framing
-  2026-04-22: *"This is the poor mans setup got to bet money
-  concious"*. The batched rhythm is an explicit
+  2026-04-22: _"This is the poor mans setup got to bet money
+  concious"_. The batched rhythm is an explicit
   cost-amortization overlay, not a discipline failure.
 
 If Zeta ever gets a contributor budget or a sponsor, this
@@ -206,8 +206,8 @@ Six named exceptions where a change goes direct to LFG
 2. **External-contributor dependency** — a change an
    external contributor is actively waiting on. Zeta is
    pre-v1 so this is rare, but possible.
-3. **Human maintainer explicit request** — *"push this one
-   direct to LFG"* overrides the rhythm. (AceHack-side
+3. **Human maintainer explicit request** — _"push this one
+   direct to LFG"_ overrides the rhythm. (AceHack-side
    wording: "Aaron explicit request" — same rule, named
    maintainer.)
 4. **CI-repair to LFG** — when LFG's gate is broken and
@@ -220,7 +220,7 @@ Six named exceptions where a change goes direct to LFG
    Teams plan, merge queue, larger Actions runners) but not
    on AceHack. The whole point is to exercise LFG. Cadence
    is throttled per `docs/research/lfg-only-capabilities-
-   scout.md`. Not every round.
+scout.md`. Not every round.
 
 Outside these cases, default to AceHack. If in doubt, ask.
 
@@ -245,7 +245,8 @@ A candidate FACTORY-HYGIENE row to track:
 > Bulk-sync cadence monitor — every round close, run
 > `gh api /repos/AceHack/Zeta/compare/main...Lucent-Financial-Group:main`
 > and flag if AceHack is >15 commits ahead (over-threshold) or
-> >30 days since last sync (stale-threshold).
+>
+> > 30 days since last sync (stale-threshold).
 
 Not yet filed; flag in a later round if the rhythm proves
 unstable in practice.
@@ -264,11 +265,11 @@ shape described above.
 
 ## Source memories
 
-*(AceHack-side: explicit memory-file references for the
+_(AceHack-side: explicit memory-file references for the
 underlying directives. LFG-side keeps these out of the
 in-repo doc per the per-user-agent-memory split described in
 Provenance above; preserved here so the memory pointers are
-not lost during sync.)*
+not lost during sync.)_
 
 - `memory/feedback_fork_pr_cost_model_prs_land_on_acehack_sync_to_lfg_in_bulk.md`
   — 2026-04-22 Aaron correction on misunderstood cost model

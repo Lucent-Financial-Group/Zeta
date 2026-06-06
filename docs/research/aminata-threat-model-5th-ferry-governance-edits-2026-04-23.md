@@ -29,7 +29,7 @@ output is data, not evidence of unity.
 - The **staging-to-policy smuggler.** Nothing in the proposed
   clause defines what "separate promotion step" or "current-
   state artifact" means in policy terms. An adversary (or a
-  fatigued Otto wake) can cite a research-grade doc *as if*
+  fatigued Otto wake) can cite a research-grade doc _as if_
   it were operational, because "staging" and "ratified" are
   not machine-checkable states. Compare the existing §26
   classifier (active / landed / obsolete) — that has
@@ -44,7 +44,7 @@ output is data, not evidence of unity.
   notes — the mechanism is already visible in the corpus.
 
 **Unsound mitigations.** The clause mitigates nothing on its
-own — it is a *norm*, not a check. "They do not become
+own — it is a _norm_, not a check. "They do not become
 operational policy until a separate promotion step" is
 wishful grammar unless a linter enforces "no operational doc
 cites `docs/research/**` as normative." No such linter is
@@ -75,7 +75,7 @@ only).
 
 - The **carrier-laundering adversary.** SD-9 asks the author
   to "downgrade independence weight" when carrier exposure
-  exists. There is no mechanism to *detect* carrier exposure.
+  exists. There is no mechanism to _detect_ carrier exposure.
   Otto prompting Amara, Amara reading Zeta docs, Aaron
   pasting ferries into Otto-sessions — all three are already
   carrier-exposure vectors and all three are invisible to
@@ -123,7 +123,7 @@ to treat as a control).
 
 - The **partial-header adversary.** The clause lists four
   fields but does not require them in any particular
-  *syntax*. A doc with `Scope: research` as prose in
+  _syntax_. A doc with `Scope: research` as prose in
   paragraph 3 technically complies. A grep-based lint
   cannot distinguish.
 - The **fake-header adversary.** An import with all four
@@ -154,7 +154,7 @@ it as such; (c) "non-fusion disclaimer" means the same thing
 to every reader (it does not — see Amara's own longer
 formulation vs. this diff's compressed one).
 
-**Composition risks.** Does not contradict §§1-32. *Does*
+**Composition risks.** Does not contradict §§1-32. _Does_
 compose poorly with §2 (docs read as current state): a
 research-grade archive header tells readers "this is not
 current state" — that is exactly what §2 warns against for
@@ -179,24 +179,24 @@ but §33 landing without Artifact C is a half-measure).
   Every added bullet burns cold-load tokens. The bullet
   duplicates §33 (GOVERNANCE) without adding a Claude-Code-
   specific mechanism. CLAUDE.md's own ground-rules section
-  explicitly says *"Rules do not live in this file. Rules
-  live in `GOVERNANCE.md`..."* — this diff violates that
+  explicitly says _"Rules do not live in this file. Rules
+  live in `GOVERNANCE.md`..."_ — this diff violates that
   ground rule.
-- The **stop-and-add adversary.** *"If absent, stop and add
-  them first"* — stop means halt the tick. In autonomous-
+- The **stop-and-add adversary.** _"If absent, stop and add
+  them first"_ — stop means halt the tick. In autonomous-
   loop mode (CLAUDE.md tick-must-never-stop rule), "stop"
   has a specific meaning that conflicts with the six-step
   tick checklist. An adversarial ferry whose headers are
   technically absent can now halt the tick.
-- The **what-counts-as-ingest adversary.** *"Ingesting any
-  external conversation"* — does reading a ferry doc to
+- The **what-counts-as-ingest adversary.** _"Ingesting any
+  external conversation"_ — does reading a ferry doc to
   write a review (what Aminata is doing right now) count as
   ingest? If yes, the rule triggers on review, not just on
   persistence.
 
 **Unsound mitigations.** Adding a bullet to CLAUDE.md does
-not cause header-verification to happen. It causes *load-
-time reading* of a reminder to verify headers. The check is
+not cause header-verification to happen. It causes _load-
+time reading_ of a reminder to verify headers. The check is
 still manual.
 
 **Unstated assumptions.** (a) The reader of CLAUDE.md is the
@@ -297,8 +297,8 @@ review and DP-NNN evidence record are the named next gates.
   — composition-check references.
 - [`docs/ALIGNMENT.md`](../ALIGNMENT.md) SD-1..SD-8, HC-3,
   DIR-5 — composition-check references.
-- [`CLAUDE.md`](../../CLAUDE.md) — meta-rule *"Rules do not
-  live in this file"*.
+- [`CLAUDE.md`](../../CLAUDE.md) — meta-rule _"Rules do not
+  live in this file"_.
 - [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) — PR #238,
   auto-merge armed; this review follows the same promotion
   pattern for the 4 governance edits.

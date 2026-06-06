@@ -68,24 +68,30 @@ before/after row.
 # Perf audit — <target>, round N
 
 ## Baseline
+
 - Throughput: <N ops/sec>
 - Allocation: <N bytes / op>
 - Measurement variance: <sigma>
 
 ## Hypothesis
+
 <one sentence, falsifiable>
 
 ## Intervention
+
 <file:line>: <change>
+
 - Lines of code delta: +<N> / -<M>
 - API break: <yes/no>
 
 ## Result
+
 - Throughput: <N ops/sec> (delta <X%>)
 - Allocation: <N bytes / op> (delta <Y%>)
 - Confidence: <sigma against variance>
 
 ## Recommendation
+
 [ship | more-investigation | dismiss]
 ```
 

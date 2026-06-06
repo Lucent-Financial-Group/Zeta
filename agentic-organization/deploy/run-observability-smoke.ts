@@ -1,5 +1,8 @@
 import { createOtlpTelemetry, type OtlpFetch } from "../apps/workers/src/adapters/otlp-telemetry.ts";
-import { TelemetryMetricKind, type TelemetryMetricKind as TelemetryMetricKindValue } from "../packages/observability/src/index.ts";
+import {
+  TelemetryMetricKind,
+  type TelemetryMetricKind as TelemetryMetricKindValue,
+} from "../packages/observability/src/index.ts";
 
 export type ObservabilitySmokeFetchResponse = {
   ok: boolean;
@@ -113,14 +116,22 @@ export async function runObservabilitySmoke(input: RunObservabilitySmokeInput): 
     traceId,
     spanExported,
     metricPostsAccepted,
-    metricKindMappings: SmokeMetricKindMappings.map(({ kind, otlpShape, metricName }) => ({ kind, otlpShape, metricName })),
+    metricKindMappings: SmokeMetricKindMappings.map(({ kind, otlpShape, metricName }) => ({
+      kind,
+      otlpShape,
+      metricName,
+    })),
     traceQueryable,
     dashboardConfigured,
     PROOF: spanExported && metricPostsAccepted && traceQueryable && dashboardConfigured ? "PASS" : "FAIL",
   };
 }
 
-async function queryTempoForProbe(input: RunObservabilitySmokeInput, probeId: string, traceId: string): Promise<boolean> {
+async function queryTempoForProbe(
+  input: RunObservabilitySmokeInput,
+  probeId: string,
+  traceId: string,
+): Promise<boolean> {
   const url = `${input.tempoApiUrl.replace(/\/+$/, "")}/api/search?tags=${encodeURIComponent(`agentic.probe.id=${probeId}`)}`;
   const maxAttempts = input.tempoQueryMaxAttempts ?? 20;
   const retryDelayMs = input.tempoQueryRetryDelayMs ?? 250;
@@ -266,7 +277,9 @@ async function main(): Promise<void> {
     otlpEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? "http://otel-collector:4318",
     tempoApiUrl: process.env.TEMPO_API_URL ?? "http://tempo:3200",
     grafanaApiUrl: process.env.GRAFANA_API_URL ?? "http://grafana:3000",
-    ...(process.env.GRAFANA_BASIC_AUTH === undefined ? {} : { grafanaBasicAuth: parseGrafanaBasicAuth(process.env.GRAFANA_BASIC_AUTH) }),
+    ...(process.env.GRAFANA_BASIC_AUTH === undefined
+      ? {}
+      : { grafanaBasicAuth: parseGrafanaBasicAuth(process.env.GRAFANA_BASIC_AUTH) }),
     now: () => new Date().toISOString(),
     fetch: async (url, init) => {
       const response = await fetch(url, init);

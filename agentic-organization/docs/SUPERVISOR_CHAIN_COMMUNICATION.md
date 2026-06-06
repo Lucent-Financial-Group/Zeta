@@ -135,18 +135,18 @@ role files.
 
 Every hat communication brief should answer:
 
-| Field | Meaning |
-|---|---|
-| Duty | What this hat is responsible for in the current scope |
-| Work source | Which queues, work items, meetings, or schedules this hat should watch |
-| Authority | What the hat may decide, transition, approve, spawn, or request |
-| Prohibited actions | What the hat must not do even if it has general tool access |
-| Upward tools | Which supervisor-signal tool families are available |
-| Evidence | What must be attached for each tool family |
-| Completion protocol | How the hat reports done, blocked, deferred, or handed off |
+| Field               | Meaning                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------ |
+| Duty                | What this hat is responsible for in the current scope                                |
+| Work source         | Which queues, work items, meetings, or schedules this hat should watch               |
+| Authority           | What the hat may decide, transition, approve, spawn, or request                      |
+| Prohibited actions  | What the hat must not do even if it has general tool access                          |
+| Upward tools        | Which supervisor-signal tool families are available                                  |
+| Evidence            | What must be attached for each tool family                                           |
+| Completion protocol | How the hat reports done, blocked, deferred, or handed off                           |
 | Escalation examples | Concrete examples of when to route to manager, director, C-suite, or executive board |
-| Schedule behavior | When to answer inbox items immediately and when to reserve a work block |
-| Expansion path | How to suggest a new prompt flow, tool, memory policy, or lifecycle rule |
+| Schedule behavior   | When to answer inbox items immediately and when to reserve a work block              |
+| Expansion path      | How to suggest a new prompt flow, tool, memory policy, or lifecycle rule             |
 
 This keeps agent communication efficient without hardcoding one-off
 tools. If a developer hat needs a new MCP tool, it should know how to

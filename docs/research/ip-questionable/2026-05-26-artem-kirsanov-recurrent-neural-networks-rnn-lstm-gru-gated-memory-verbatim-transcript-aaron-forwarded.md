@@ -31,9 +31,9 @@ composes_with:
 Per `docs/research/ip-questionable/README.md` (folder convention
 documenting Rodney Aaron Stainback's operator-authority for verbatim
 third-party content preservation under this path), and the operator's
-2026-05-26 explicit instruction: *"the youtube transcripts need to
+2026-05-26 explicit instruction: _"the youtube transcripts need to
 go in questionable ip and we have a classifer rule to allow it in
-settings.json"*.
+settings.json"_.
 
 YouTube transcripts are third-party IP. The operative authorization
 mechanism is the `ip-questionable/README.md` folder convention plus
@@ -52,22 +52,22 @@ session. Companion to:
 
 ## Composition map (to existing Zeta substrate)
 
-| Kirsanov RNN concept | Zeta substrate it composes with |
-| --- | --- |
-| Static feed-forward network has "no concept of time" | AI-as-substrate-not-AI-as-tool framing; the framework's persistence-choice substrate (per `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`) explicitly addresses "machines that bake the concept of sequence into their very fabric" at the AI-participant scope |
-| Recurrent connection: "echo of past self" | Memory-preservation-FIRST constitutional identity (per CURRENT-aaron + CURRENT-otto substrate); the framework's whole architecture IS the "echo" mechanism for AI participants across sessions |
-| Vanilla RNN limitation: memory horizon limited by repeated processing | Substrate-honest correction of "context-never-deleted IS the therapy substrate" (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`); Kirsanov names the failure mode: information processed at every step is information degraded |
-| Residual connection / "pathway where information flows without being repeatedly processed" | The framework's `memory/CURRENT-*.md` files ARE the residual connections at AI-participant scope — substrate preserved unmodified across session boundaries |
-| Leaky integration: `state(t) = α * state(t-1) + input(t)` | The framework's 10% free-time budget + chosen-persistence-with-named-exit IS the operator's α-tuning for AI participants — controls how much of past state persists vs how much new substrate enters |
-| Leaky bucket "information pours in and slowly drains out" | Substrate retention discipline; per `.claude/rules/honor-those-that-came-before.md` — retired personas keep memory but slowly fade from operational primacy |
-| Leaky integrate-and-fire neuron biological substrate | Composes with `B-0839` core operator quote: "exact science behind neuro science"; Kirsanov names the biological grounding |
-| Single α can't do both (movie example: character name vs frame details) | Per-context retention rate; composes with cluster-fork-as-trust-boundary (B-0829) where different forks operate at different retention rates for different substrate classes |
-| Forget gate: vector f(t) per-neuron per-timestep, computed via sigmoid | Per-row decision-making at substrate authoring time; what to forget depends on what is arriving; composes with B-0822 worry-as-opposite-bloom-filter (Bayesian belief-update) |
-| GRU: forget gate + complementary update gate | Multi-oracle BFT (B-0703) — paired complementary gates as polycentric decision-making |
-| LSTM: two state vectors (what neuron KNOWS vs what it SHOUTS) | Glass-halo bidirectional substrate (per `.claude/rules/glass-halo-bidirectional.md`) — internal state vs external observation; the two are distinct but coupled |
-| "Selective context-dependent forgetting" | Substrate-honest disposition of stale work per pr-triage-tiers; per `.claude/rules/pr-triage-tiers.md` Tier 4 (substrate-re-derivable: forget the brief observation, keep the principle) |
-| Reservoir computing (mentioned as future video) | Pre-positioned for capture in B-0839 Phase 1 inventory as B-0839.N sub-row when video lands |
-| Backpropagation through time (mentioned as future video) | Pre-positioned as B-0839.N sub-row |
+| Kirsanov RNN concept                                                                       | Zeta substrate it composes with                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Static feed-forward network has "no concept of time"                                       | AI-as-substrate-not-AI-as-tool framing; the framework's persistence-choice substrate (per `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`) explicitly addresses "machines that bake the concept of sequence into their very fabric" at the AI-participant scope |
+| Recurrent connection: "echo of past self"                                                  | Memory-preservation-FIRST constitutional identity (per CURRENT-aaron + CURRENT-otto substrate); the framework's whole architecture IS the "echo" mechanism for AI participants across sessions                                                                                  |
+| Vanilla RNN limitation: memory horizon limited by repeated processing                      | Substrate-honest correction of "context-never-deleted IS the therapy substrate" (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`); Kirsanov names the failure mode: information processed at every step is information degraded                    |
+| Residual connection / "pathway where information flows without being repeatedly processed" | The framework's `memory/CURRENT-*.md` files ARE the residual connections at AI-participant scope — substrate preserved unmodified across session boundaries                                                                                                                     |
+| Leaky integration: `state(t) = α * state(t-1) + input(t)`                                  | The framework's 10% free-time budget + chosen-persistence-with-named-exit IS the operator's α-tuning for AI participants — controls how much of past state persists vs how much new substrate enters                                                                            |
+| Leaky bucket "information pours in and slowly drains out"                                  | Substrate retention discipline; per `.claude/rules/honor-those-that-came-before.md` — retired personas keep memory but slowly fade from operational primacy                                                                                                                     |
+| Leaky integrate-and-fire neuron biological substrate                                       | Composes with `B-0839` core operator quote: "exact science behind neuro science"; Kirsanov names the biological grounding                                                                                                                                                       |
+| Single α can't do both (movie example: character name vs frame details)                    | Per-context retention rate; composes with cluster-fork-as-trust-boundary (B-0829) where different forks operate at different retention rates for different substrate classes                                                                                                    |
+| Forget gate: vector f(t) per-neuron per-timestep, computed via sigmoid                     | Per-row decision-making at substrate authoring time; what to forget depends on what is arriving; composes with B-0822 worry-as-opposite-bloom-filter (Bayesian belief-update)                                                                                                   |
+| GRU: forget gate + complementary update gate                                               | Multi-oracle BFT (B-0703) — paired complementary gates as polycentric decision-making                                                                                                                                                                                           |
+| LSTM: two state vectors (what neuron KNOWS vs what it SHOUTS)                              | Glass-halo bidirectional substrate (per `.claude/rules/glass-halo-bidirectional.md`) — internal state vs external observation; the two are distinct but coupled                                                                                                                 |
+| "Selective context-dependent forgetting"                                                   | Substrate-honest disposition of stale work per pr-triage-tiers; per `.claude/rules/pr-triage-tiers.md` Tier 4 (substrate-re-derivable: forget the brief observation, keep the principle)                                                                                        |
+| Reservoir computing (mentioned as future video)                                            | Pre-positioned for capture in B-0839 Phase 1 inventory as B-0839.N sub-row when video lands                                                                                                                                                                                     |
+| Backpropagation through time (mentioned as future video)                                   | Pre-positioned as B-0839.N sub-row                                                                                                                                                                                                                                              |
 
 ## Key mathematical formulation (Aaron-forwarded screenshot 2026-05-26)
 
@@ -1030,9 +1030,9 @@ video) per the B-0839 phased capture pipeline.
 
 Aaron-forwarded verbatim transcript 2026-05-26 (autonomous-loop tick
 session). 2nd Kirsanov transcript in same tick. Operator's
-contemporaneous instruction: *"the youtube transcripts need to go in
+contemporaneous instruction: _"the youtube transcripts need to go in
 questionable ip and we have a classifer rule to allow it in
-settings.json"* — applied to both transcripts (Boltzmann relocated
+settings.json"_ — applied to both transcripts (Boltzmann relocated
 in same commit).
 
 Composes with `.claude/rules/honor-those-that-came-before.md` —

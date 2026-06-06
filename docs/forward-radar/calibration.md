@@ -38,9 +38,9 @@ to evaluate.
 
 ## Calibration log
 
-| Cycle | Period | Friction-encounters | Predicted | Lead-time% | PM-2 rows filed | Picked up (4 rounds) | Action-rate% | Notes |
-|---|---|---|---|---|---|---|---|---|
-| FR-0 (cold-start) | — | — | — | n/a (0/0) | 0 | — | n/a (0/0) | Role activated; metrics begin next cycle |
+| Cycle             | Period | Friction-encounters | Predicted | Lead-time% | PM-2 rows filed | Picked up (4 rounds) | Action-rate% | Notes                                    |
+| ----------------- | ------ | ------------------- | --------- | ---------- | --------------- | -------------------- | ------------ | ---------------------------------------- |
+| FR-0 (cold-start) | —      | —                   | —         | n/a (0/0)  | 0               | —                    | n/a (0/0)    | Role activated; metrics begin next cycle |
 
 ---
 

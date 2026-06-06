@@ -23,9 +23,9 @@ type: friction-reducer
 
 ## Origin
 
-Aaron 2026-05-29, after the B-0936 hub/satellite split landed: *"we can likly
+Aaron 2026-05-29, after the B-0936 hub/satellite split landed: _"we can likly
 start having redudantacy checks across satalites across rules and such and you
-can get ideas on how to structure you actual memories."*
+can get ideas on how to structure you actual memories."_
 
 The hub/satellite split (B-0936) creates a new surface class (companion
 satellites). As the pattern propagates, content can drift into multiple

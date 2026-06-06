@@ -50,7 +50,7 @@ justification separately actually rest on THIS foundation:
    wrong, retractable.
 4. **Frontier UI as future batch-review** (Otto-63:
    `project_frontier_burn_rate_ui_first_class_git_native_
-   for_private_repo_adopters_...`) — Aaron reviews later,
+for_private_repo_adopters_...`) — Aaron reviews later,
    in batch, via dashboard. Safe because every decision
    surfaced there is retractable.
 
@@ -60,7 +60,7 @@ foundation explicit: the whole architecture rests on
 retractability as a design property, not on
 "I'll trust Otto because he's reliable" or
 "I'll approve later because I'll get to it". The
-*structural* reason is retractability.
+_structural_ reason is retractability.
 
 ## Retractability shows up at every layer
 
@@ -137,8 +137,8 @@ design.
 Before Otto-73, I was treating each of the
 trust/authorization/don't-wait/Frontier-UI framings as
 separate judgments Aaron made. After Otto-73, they are
-one judgment expressed multiple ways: *the factory is
-retraction-native, so batch-review is safe*. Which
+one judgment expressed multiple ways: _the factory is
+retraction-native, so batch-review is safe_. Which
 means:
 
 - **Don't over-deliberate on reversible decisions.**
@@ -165,24 +165,24 @@ Multiple prior memories noted Zeta-as-model-of-
 substrate:
 
 - `project_zeta_db_is_the_model_custom_built_differently_
-  regime_reframe_...` — Zeta IS the model, not a
+regime_reframe_...` — Zeta IS the model, not a
   model-of
 - `project_zeta_is_agent_coherence_substrate_all_physics_
-  in_one_db_stabilization_goal_...` — Zeta is the
+in_one_db_stabilization_goal_...` — Zeta is the
   agent-coherence substrate
 - Aaron's earlier framing: Zeta is what keeps the factory
   coherent at scale
 
 Otto-73 is another data point. The factory's governance
 layer exhibits the same retraction-native primitive as
-Zeta's data layer. This is not *"Zeta influenced the
-factory's design"* — it's *"the factory and Zeta are
-isomorphic at the retraction-native level"*. The same
+Zeta's data layer. This is not _"Zeta influenced the
+factory's design"_ — it's _"the factory and Zeta are
+isomorphic at the retraction-native level"_. The same
 primitive scales.
 
-Rodney's Razor (complexity reduction) applies: *one
-primitive, multiple surfaces* is strictly simpler than
-*different primitives at each surface*. Aaron's Otto-73
+Rodney's Razor (complexity reduction) applies: _one
+primitive, multiple surfaces_ is strictly simpler than
+_different primitives at each surface_. Aaron's Otto-73
 confirms the reduction has been operating silently
 and is now visible.
 
@@ -197,7 +197,7 @@ and is now visible.
   (PRs merged, memories read by new sessions, choices
   that other decisions have been built on). Retractable
   ≠ costless to retract. The discipline is that
-  retraction is *possible*, not that it's *free*.
+  retraction is _possible_, not that it's _free_.
 - **Not a retroactive apology for prior self-throttling.**
   Otto-71's "queue saturated, stop" framing had some
   legitimate concern (reviewer throughput matters for
@@ -225,18 +225,18 @@ and is now visible.
   (Otto-72) — don't-wait licensed by retractability +
   logged-decisions-for-audit
 - `project_frontier_burn_rate_ui_first_class_git_native_
-  for_private_repo_adopters_...` (Otto-63) — Frontier
+for_private_repo_adopters_...` (Otto-63) — Frontier
   UI as batch-review surface licensed by retractability
 - `docs/decision-proxy-evidence/` (PR #222) —
   `retraction_of:` field is the explicit machinery for
   decision-level retraction
 - `feedback_deterministic_reconciliation_endorsed_
-  naming_for_closure_gap_not_philosophy_gap_
-  2026_04_23.md` (Otto-67) — deterministic
+naming_for_closure_gap_not_philosophy_gap_
+2026_04_23.md` (Otto-67) — deterministic
   reconciliation IS the mechanism by which retractions
   compose cleanly; both concepts rhyme
 - `memory/feedback_deletions_over_insertions_complexity_
-  reduction_cyclomatic_proxy.md` — deletion as signal;
+reduction_cyclomatic_proxy.md` — deletion as signal;
   retraction extends this to non-code substrate
 - Zeta's ZSet algebra (src/Core/ZSet.fs) — data-layer
   retraction; same primitive as governance-layer

@@ -1,10 +1,7 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  MemoryPhase,
-  MemoryTier,
-} from "../../domain/src/index.ts";
+import { MemoryPhase, MemoryTier } from "../../domain/src/index.ts";
 import {
   CockroachMemoryStateStoreStatement,
   createCockroachContextPackMemoryEnvelopeReader,
@@ -82,10 +79,7 @@ function recordingExecutor(rows: readonly Record<string, unknown>[]): CockroachG
   };
 }
 
-function memoryStateRow(
-  memoryId: string,
-  overrides: Partial<Record<string, unknown>> = {},
-): Record<string, unknown> {
+function memoryStateRow(memoryId: string, overrides: Partial<Record<string, unknown>> = {}): Record<string, unknown> {
   return {
     memory_id: memoryId,
     organization_id: "org-1",

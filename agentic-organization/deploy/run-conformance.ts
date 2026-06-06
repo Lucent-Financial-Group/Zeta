@@ -80,17 +80,34 @@ async function main(): Promise<void> {
       orgEvent(OrgEventKind.WorkItemTransition, WorkItemState.Created, WorkItemState.Intake, "work-proof"),
       orgEvent(OrgEventKind.MemoryPhaseTransition, MemoryPhase.Active, MemoryPhase.Stale, "memory-proof"),
       orgEvent(OrgEventKind.ChangeSetApplied, ChangeSetPhase.Approved, ChangeSetPhase.Applied, "change-proof"),
-      orgEvent(OrgEventKind.ChangeSetApproved, ChangeSetPhase.InReview, ChangeSetPhase.Approved, "change-approval-proof", {
-        kind: "change_set_review",
-        currentStageIndex: 1,
-        stageCount: 2,
-      }),
+      orgEvent(
+        OrgEventKind.ChangeSetApproved,
+        ChangeSetPhase.InReview,
+        ChangeSetPhase.Approved,
+        "change-approval-proof",
+        {
+          kind: "change_set_review",
+          currentStageIndex: 1,
+          stageCount: 2,
+        },
+      ),
       orgEvent(OrgEventKind.DocLifecycleTransition, DocLifecycleState.Draft, DocLifecycleState.InReview, "doc-proof"),
-      orgEvent(OrgEventKind.DocLifecycleTransition, DocLifecycleState.Draft, DocLifecycleState.Active, "doc-lightweight-proof", {
-        kind: "document_lifecycle",
-        loadBearing: false,
-      }),
-      orgEvent(OrgEventKind.GraphConfidencePromoted, GraphConfidence.Verified, GraphConfidence.Canonical, "graph-proof"),
+      orgEvent(
+        OrgEventKind.DocLifecycleTransition,
+        DocLifecycleState.Draft,
+        DocLifecycleState.Active,
+        "doc-lightweight-proof",
+        {
+          kind: "document_lifecycle",
+          loadBearing: false,
+        },
+      ),
+      orgEvent(
+        OrgEventKind.GraphConfidencePromoted,
+        GraphConfidence.Verified,
+        GraphConfidence.Canonical,
+        "graph-proof",
+      ),
       orgEvent(OrgEventKind.IntakeReceived, undefined, undefined, "intake-proof"),
     ];
 
@@ -102,7 +119,8 @@ async function main(): Promise<void> {
     const report = replayLedger(persisted, { maxSkippedAmbiguous: 0 });
     const livePersisted = await store.listByOrganization(liveOrganizationId, 1_000);
     const liveReport = replayLedger(livePersisted, { maxSkippedAmbiguous: 0 });
-    const ok = report.checked === 7 &&
+    const ok =
+      report.checked === 7 &&
       report.nonconformant === 0 &&
       report.skipped === 1 &&
       !report.ratchetViolated &&
@@ -110,26 +128,32 @@ async function main(): Promise<void> {
       !liveReport.ratchetViolated &&
       liveReport.coverageRatio === 1;
 
-    console.log(JSON.stringify({
-      track: "M1 conformance checker",
-      organizationId,
-      liveOrganizationId,
-      insertedEvents: events.length,
-      persistedEvents: persisted.length,
-      report,
-      liveReport: {
-        persistedEvents: livePersisted.length,
-        checked: liveReport.checked,
-        conformant: liveReport.conformant,
-        nonconformant: liveReport.nonconformant,
-        skipped: liveReport.skipped,
-        skippedAmbiguous: liveReport.skippedAmbiguous,
-        coverageRatio: liveReport.coverageRatio,
-        ratchetViolated: liveReport.ratchetViolated,
-        violations: liveReport.violations,
-      },
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "M1 conformance checker",
+          organizationId,
+          liveOrganizationId,
+          insertedEvents: events.length,
+          persistedEvents: persisted.length,
+          report,
+          liveReport: {
+            persistedEvents: livePersisted.length,
+            checked: liveReport.checked,
+            conformant: liveReport.conformant,
+            nonconformant: liveReport.nonconformant,
+            skipped: liveReport.skipped,
+            skippedAmbiguous: liveReport.skippedAmbiguous,
+            coverageRatio: liveReport.coverageRatio,
+            ratchetViolated: liveReport.ratchetViolated,
+            violations: liveReport.violations,
+          },
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();

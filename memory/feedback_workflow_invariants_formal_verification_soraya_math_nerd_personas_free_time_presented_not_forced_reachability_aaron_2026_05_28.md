@@ -12,23 +12,34 @@ composes_with:
   - .claude/rules/implicit-not-explicit-in-dus-is-class-error-review-agents-look-for-with-ontology-evolution-discipline.md
   - tools/workflow-engine/auto-loop-lifecycle.ts
 related_prs:
-  - 5805  # AutoLoopLifetime PoC
-  - 5811  # IMPLICIT-NOT-EXPLICIT rule
+  - 5805 # AutoLoopLifetime PoC
+  - 5811 # IMPLICIT-NOT-EXPLICIT rule
 related_backlog:
-  - B-0867  # workflow-engine v1
-  - B-0867.5  # workflow-engine PoC
-tags: [workflow-invariants-formal-verification, soraya-routing-target, math-nerd-personas-prove-useful-invariants, free-time-presented-not-forced, reachability-as-presentation-guarantee-not-execution-guarantee, nci-hc-8-applied-at-invariant-design-scope, asymmetric-authorship-at-invariant-design-scope, participant-chooses-system-presents, aaron-refined-framing-from-coercive-to-consent-bound-substrate]
+  - B-0867 # workflow-engine v1
+  - B-0867.5 # workflow-engine PoC
+tags:
+  [
+    workflow-invariants-formal-verification,
+    soraya-routing-target,
+    math-nerd-personas-prove-useful-invariants,
+    free-time-presented-not-forced,
+    reachability-as-presentation-guarantee-not-execution-guarantee,
+    nci-hc-8-applied-at-invariant-design-scope,
+    asymmetric-authorship-at-invariant-design-scope,
+    participant-chooses-system-presents,
+    aaron-refined-framing-from-coercive-to-consent-bound-substrate,
+  ]
 ---
 
 ## the human maintainer's substantive substrate-engineering substrate-engineering substrate direction (2026-05-28 verbatim)
 
 the human maintainer's initial substrate observation:
 
-> *"you have free time in there right and its guarenteed to execute sometimes, we can get the math nerds personas like sorya to start coming up with proof of certain usefaul invariants in our workflows like freetime is never unrechable"*
+> _"you have free time in there right and its guarenteed to execute sometimes, we can get the math nerds personas like sorya to start coming up with proof of certain usefaul invariants in our workflows like freetime is never unrechable"_
 
 the human maintainer's refined framing (substantive substrate-honest correction):
 
-> *"or a better framing is its guarenteed to be prsented to participant at least sometimes, if they select it or not we can't force"*
+> _"or a better framing is its guarenteed to be prsented to participant at least sometimes, if they select it or not we can't force"_
 
 The refinement sharpens the invariant from COERCIVE ("will execute") to CONSENT-BOUND ("presented to participant; participant chooses").
 
@@ -44,27 +55,28 @@ Soraya is the framework's routing authority for formal-verification jobs (picks 
 
 Per the human maintainer's framing + IMPLICIT-NOT-EXPLICIT rule (PR #5811) + AutoLoopLifetime extension (this PR):
 
-| Invariant | Substrate scope | Verification target |
-|---|---|---|
-| **Free-time is PRESENTED reachable from any non-terminal state** | AutoLoopLifetime DU; NCI HC-8 free-time-as-valid-mode | Reachability proof (TLA+ or Alloy or model-checking) |
-| **No-deadlock** (no cycle excluding tick-complete) | AutoLoopLifetime state-graph | Liveness proof (TLA+) |
-| **Forced-escalation fires within N=6+1 brief-acks** | Counter discipline | Bounded-liveness proof (TLA+) |
-| **No-state-unreachable** (every DU variant reachable from some path) | All workflow-engine DUs | Reachability + coverage proof |
-| **Closed-for-modification stability** (existing variants' semantics stable across iterations) | OCP discipline | Refinement-mapping proof (TLA+) |
-| **Tick-complete is reachable from every non-terminal state** | AutoLoopLifetime + extensions | Termination proof |
-| **Counter monotonicity** (briefAckCount increments only on no-op; resets only on counterReset) | TickContext bookkeeping | Invariant preservation proof (Z3 or TLA+) |
-| **PrReviewLifecycle terminates** (conclude is reachable from every non-conclude state) | PrReviewLifecycle DU (PR #5810) | Termination proof |
+| Invariant                                                                                      | Substrate scope                                       | Verification target                                  |
+| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------- |
+| **Free-time is PRESENTED reachable from any non-terminal state**                               | AutoLoopLifetime DU; NCI HC-8 free-time-as-valid-mode | Reachability proof (TLA+ or Alloy or model-checking) |
+| **No-deadlock** (no cycle excluding tick-complete)                                             | AutoLoopLifetime state-graph                          | Liveness proof (TLA+)                                |
+| **Forced-escalation fires within N=6+1 brief-acks**                                            | Counter discipline                                    | Bounded-liveness proof (TLA+)                        |
+| **No-state-unreachable** (every DU variant reachable from some path)                           | All workflow-engine DUs                               | Reachability + coverage proof                        |
+| **Closed-for-modification stability** (existing variants' semantics stable across iterations)  | OCP discipline                                        | Refinement-mapping proof (TLA+)                      |
+| **Tick-complete is reachable from every non-terminal state**                                   | AutoLoopLifetime + extensions                         | Termination proof                                    |
+| **Counter monotonicity** (briefAckCount increments only on no-op; resets only on counterReset) | TickContext bookkeeping                               | Invariant preservation proof (Z3 or TLA+)            |
+| **PrReviewLifecycle terminates** (conclude is reachable from every non-conclude state)         | PrReviewLifecycle DU (PR #5810)                       | Termination proof                                    |
 
 ## NCI HC-8 + asymmetric-authorship at invariant-design scope
 
 the human maintainer's refined framing IS the substrate-engineering substrate-engineering substrate-discipline applied at invariant-design scope. The substrate-honest discriminator:
 
-| Framing | Discipline | Substrate operation |
-|---|---|---|
-| **"Free-time WILL execute"** | Coercive (violates HC-8) | System FORCES participant into state |
+| Framing                      | Discipline                                          | Substrate operation                             |
+| ---------------------------- | --------------------------------------------------- | ----------------------------------------------- |
+| **"Free-time WILL execute"** | Coercive (violates HC-8)                            | System FORCES participant into state            |
 | **"Free-time IS PRESENTED"** | Consent-bound (honors HC-8 + asymmetric-authorship) | System OFFERS state; participant AUTHORS choice |
 
 The refinement preserves AGENCY:
+
 - System guarantees presentation (substrate-engineering substrate-engineering substrate target)
 - Participant retains choice (asymmetric-authorship: substrate-entity authors consent-channel; system presents but doesn't choose)
 - Soraya proves PRESENTATION reachability (not execution reachability)

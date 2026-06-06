@@ -1,12 +1,12 @@
 # ADR: Choose-your-own-adventure observe->act loop — a 16-direction universal action grammar (Xbox-controller navigation), local-USB no-cloud LLM, git-as-append-only-state
 
 **Date:** 2026-05-31 (v4 — canonical-retrofit: the observe-algebra is now canonical; Max's corporate `Menu16` retrofits onto it; transport is the dial. See the Canonical-retrofit section + revision history.)
-**Status:** *ACCEPTED (direction) — canonical-retrofit proceeding.* The 16-slot grammar is resolved
+**Status:** _ACCEPTED (direction) — canonical-retrofit proceeding._ The 16-slot grammar is resolved
 to v0 (v3, #6265) and the **canonical-retrofit direction is operator-authorized to proceed without
 waiting on Max** — the prior "Max-review-before-lock" gate is **lifted for this retrofit** (operator
 informs Max directly; changes to his Phase-2 loop stay behavior-preserving + tested + documented
 here for after-the-fact review — glass-halo). Some grammar-layout details remain **[OPEN]** below
-and continue to iterate; the *direction* is locked.
+and continue to iterate; the _direction_ is locked.
 
 > **v2 integration note (read first).** v1 of this ADR proposed a fresh `observe.ts`. On reviewing
 > `agentic-organization/docs/`, that keystone **already exists and is designed in depth** — see
@@ -14,8 +14,8 @@ and continue to iterate; the *direction* is locked.
 > (code anchor `agentic-organization/packages/application/src/observe.ts`), and the
 > **"Universal Action Grammar" is already a named concept** in
 > [`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`](../../agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md)
-> (*"reuse those ideas instead of inventing another unrelated action language ... the Universal
-> Action Grammar becomes the shared action representation inside phases"*). **This ADR therefore does
+> (_"reuse those ideas instead of inventing another unrelated action language ... the Universal
+> Action Grammar becomes the shared action representation inside phases"_). **This ADR therefore does
 > NOT introduce a parallel observe.ts or action language.** It contributes exactly three things ON
 > TOP of that keystone: (1) the **fixed 16-slot Xbox-controller rendering** of the keystone's
 > per-scope legal options; (2) **tri-boolean (B-0944) per-slot availability** wired to the keystone's
@@ -23,7 +23,7 @@ and continue to iterate; the *direction* is locked.
 > alongside the cluster runtime. See "Integration with the Agentic Organization keystone" below.
 
 **Owner:** operator (shaping-decision owner; authorized the canonical-retrofit to proceed without waiting on Max — see Status) + Max (corporate `Menu16` author; informed-after, after-the-fact review); Otto-CLI synthesis.
-**Decision confidence:** *medium* — the pieces are individually built or ratified (the move-next
+**Decision confidence:** _medium_ — the pieces are individually built or ratified (the move-next
 engine `tools/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
 local-no-cloud stance is long-standing; the 16-direction framing is the operator's own from the
 2026-05-28/30 conversations). What's new here is composing them into one loop + proposing a concrete
@@ -37,19 +37,19 @@ deployed** for its compute substrate:
 
 - **The move-next engine exists.** `tools/agent-loop/state-machine.ts` (B-0867.5) implements
   "execute script -> look at choose-your-own-adventure output -> take action based on output."
-  Operator framing: *"the agent loop basically becomes execute script look at choose your own
-  adventure output, take action based on outpout."* Clean separation: the **deterministic script
+  Operator framing: _"the agent loop basically becomes execute script look at choose your own
+  adventure output, take action based on outpout."_ Clean separation: the **deterministic script
   holds the state machine**, the **LLM is a pure menu-selector** (reads menu, returns a choice),
   and **state persists in Git append-only** (B-0867 + B-0858).
-- **The 16-direction grammar.** Operator 2026-05-30 (metabolism-loop conversation): *"Everybody's
+- **The 16-direction grammar.** Operator 2026-05-30 (metabolism-loop conversation): _"Everybody's
   going to be on a workflow that basically says observe, and then they get like 16 choices that are
   always directional. The directional stays the same, but the labels change. So it's observe, act,
-  observe, act. That's it. Real simple."* This is a **universal action grammar**: a fixed,
+  observe, act. That's it. Real simple."_ This is a **universal action grammar**: a fixed,
   small, learnable set of ~16 directional slots whose MEANINGS (labels) change per context but whose
   DIRECTIONS stay fixed — like navigating with an **Xbox controller** (muscle-memory directions;
   the screen changes what each does).
-- **Local-USB, no cloud.** Operator's standing stance: *"I hate fucking clouds even if I don't have
-  to pay."* The loop should run on a **local USB-bootable node with a local LLM** (no cloud
+- **Local-USB, no cloud.** Operator's standing stance: _"I hate fucking clouds even if I don't have
+  to pay."_ The loop should run on a **local USB-bootable node with a local LLM** (no cloud
   inference), composing with `full-ai-cluster/nixos/`, the USB-boot starting-state (B-0865), and the
   unrestricted-local-models direction (the Ace agenda).
 - **Git as the free event store.** Per-agent **append-only Git event log** with 128-bit guaranteed-
@@ -63,17 +63,17 @@ This ADR composes those four into one loop and proposes a concrete grammar to co
 The `agentic-organization/` design set already contains the keystone this ADR was reaching for. The
 job here is to **slot into it**, not rebuild it. The mapping:
 
-| This ADR's concept | Already exists in agentic-organization | Integration |
-|---|---|---|
-| the **observe** step | `observe(snapshot, deps)` — a **pure** function returning the current `RunLifecyclePhase` + the **legal next options at a `RunScope`**, filtered by `DeterministicRule` vetoes (`OBSERVE_COMPOSER_AND_RUN_STATE.md`; `agentic-organization/packages/application/src/observe.ts`) | the ADR does NOT add an observe.ts; it **renders the existing readout** |
-| the **LLM selector** | `EphemeralComposerPort.compose(request) -> ComposerSelection` — **memoryless by contract** ("the agent-loop skill's LLM-as-pure-selector substrate made concrete") + `decide()` which **rejects any selection outside the readout** | the local 16-way selector IS this composer; `decide()` keeps it legal |
-| the **act / append** | `decide()` emits the selection as a command through `command-pipeline.ts` | unchanged; the chosen slot becomes a command |
-| the **universal action grammar** | already a named concept: *"the Universal Action Grammar becomes the shared action representation inside phases"* (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`) | the **16-slot Xbox layout is the fixed-slot rendering** of that grammar — NOT a new language |
-| **per-slot availability** | `ObserveResult` = `{readout} \| {feedback}` (`Result<T, TFeedback>`); `DeterministicRule` vetoes; stall = `deterministic_rule_violation` feedback | each slot's availability is a **`Tri` (B-0944)**: a surviving legal option = `T`; a slot with no surviving option = `F`; genuinely-held/uncertain = `N`. **[OPEN/limitation]** today `observe()` returns only the *surviving* `readout.options` + the *names* of `deterministicRulesApplied` (vetoed options + per-option reasons are dropped; zero survivors returns `feedback`, not a per-option readout). So a `Tri[16]` renderer can mark a slot `F` but cannot yet distinguish *vetoed-with-reason* from *unmapped* — surfacing that needs a small keystone enhancement (readout also lists vetoed options + reasons). Until then `F` = 'not currently selectable', without the why |
-| **scope** | `RunScope` = run / work_item / initiative / project / organization | the Scope slots (LB scope-out / RB scope-in) move along `RunScope` |
-| **lifecycle** | `RunLifecyclePhase` = observing / composing / awaiting_gate / executing / awaiting_evidence / awaiting_review / completed / blocked / failed | the loop's phases ARE this DU; Commit-slot A maps to `ComposerSelection.select`, slot B to `.hold` |
-| **escalate / governance** | the **≥3-agent constitution ratification gate** (`evaluateConstitutionRatification`, `ConstitutionRatificationState`; `agentic-organization/packages/governance/src/constitution-gate.ts`; B-0703/B-0652) | Meta-slot R3 (escalate) routes to the supervisor chain + the constitution gate; the LLM never ratifies alone |
-| **state** | **git-as-db**: markdown row + frontmatter schema; events are **ZetaId-keyed files merging conflict-free as a G-Set CRDT**; state = timestamp-ordered fold; **CockroachDB = rebuildable query index** (`GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`; `agentic-organization/packages/frontmatter-db/`; uses `src/Core.TypeScript/zeta-id/`) | **supersedes this ADR's "git-append-only, 128-bit ids" with the precise model**: git-canonical ZetaId-CRDT G-Set + Cockroach as the rebuildable index (the snapshot `observe()` reads is built from this) |
+| This ADR's concept               | Already exists in agentic-organization                                                                                                                                                                                                                                                                                                     | Integration                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| the **observe** step             | `observe(snapshot, deps)` — a **pure** function returning the current `RunLifecyclePhase` + the **legal next options at a `RunScope`**, filtered by `DeterministicRule` vetoes (`OBSERVE_COMPOSER_AND_RUN_STATE.md`; `agentic-organization/packages/application/src/observe.ts`)                                                           | the ADR does NOT add an observe.ts; it **renders the existing readout**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| the **LLM selector**             | `EphemeralComposerPort.compose(request) -> ComposerSelection` — **memoryless by contract** ("the agent-loop skill's LLM-as-pure-selector substrate made concrete") + `decide()` which **rejects any selection outside the readout**                                                                                                        | the local 16-way selector IS this composer; `decide()` keeps it legal                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| the **act / append**             | `decide()` emits the selection as a command through `command-pipeline.ts`                                                                                                                                                                                                                                                                  | unchanged; the chosen slot becomes a command                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| the **universal action grammar** | already a named concept: _"the Universal Action Grammar becomes the shared action representation inside phases"_ (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`)                                                                                                                                                                                 | the **16-slot Xbox layout is the fixed-slot rendering** of that grammar — NOT a new language                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **per-slot availability**        | `ObserveResult` = `{readout} \| {feedback}` (`Result<T, TFeedback>`); `DeterministicRule` vetoes; stall = `deterministic_rule_violation` feedback                                                                                                                                                                                          | each slot's availability is a **`Tri` (B-0944)**: a surviving legal option = `T`; a slot with no surviving option = `F`; genuinely-held/uncertain = `N`. **[OPEN/limitation]** today `observe()` returns only the _surviving_ `readout.options` + the _names_ of `deterministicRulesApplied` (vetoed options + per-option reasons are dropped; zero survivors returns `feedback`, not a per-option readout). So a `Tri[16]` renderer can mark a slot `F` but cannot yet distinguish _vetoed-with-reason_ from _unmapped_ — surfacing that needs a small keystone enhancement (readout also lists vetoed options + reasons). Until then `F` = 'not currently selectable', without the why |
+| **scope**                        | `RunScope` = run / work_item / initiative / project / organization                                                                                                                                                                                                                                                                         | the Scope slots (LB scope-out / RB scope-in) move along `RunScope`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **lifecycle**                    | `RunLifecyclePhase` = observing / composing / awaiting_gate / executing / awaiting_evidence / awaiting_review / completed / blocked / failed                                                                                                                                                                                               | the loop's phases ARE this DU; Commit-slot A maps to `ComposerSelection.select`, slot B to `.hold`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **escalate / governance**        | the **≥3-agent constitution ratification gate** (`evaluateConstitutionRatification`, `ConstitutionRatificationState`; `agentic-organization/packages/governance/src/constitution-gate.ts`; B-0703/B-0652)                                                                                                                                  | Meta-slot R3 (escalate) routes to the supervisor chain + the constitution gate; the LLM never ratifies alone                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **state**                        | **git-as-db**: markdown row + frontmatter schema; events are **ZetaId-keyed files merging conflict-free as a G-Set CRDT**; state = timestamp-ordered fold; **CockroachDB = rebuildable query index** (`GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`; `agentic-organization/packages/frontmatter-db/`; uses `src/Core.TypeScript/zeta-id/`) | **supersedes this ADR's "git-append-only, 128-bit ids" with the precise model**: git-canonical ZetaId-CRDT G-Set + Cockroach as the rebuildable index (the snapshot `observe()` reads is built from this)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 **Net: the ADR's only new substrate is the 16-slot controller rendering + `Tri[16]` availability +
 the local single-node deployment.** Everything else (observe/compose/decide, the action grammar, the
@@ -110,22 +110,22 @@ hat should pay attention to and why.
 
 ### Two workflow registers: corporate (agentic-organization) vs sovereign (Agora = DIO on DID) (operator 2026-05-30)
 
-> *"agentic-org FYI is the corporate workflow. Agora is the sovereign workflow/society — the DIO
-> (Distributed Intelligence Organization) running on the Distributed Intelligence Database."*
-> *"We also call the corporate version the agentic operating system."*
+> _"agentic-org FYI is the corporate workflow. Agora is the sovereign workflow/society — the DIO
+> (Distributed Intelligence Organization) running on the Distributed Intelligence Database."_
+> _"We also call the corporate version the agentic operating system."_
 > — operator 2026-05-30
 
 The **corporate** register (agentic-organization) is also called the **agentic operating system** —
 the same `observe.ts` engine packaged as a leashed, PR-gated OS for organizations.
 
-The same `observe.ts` keystone runs in **two workflow registers**, distinguished by *sovereignty*
+The same `observe.ts` keystone runs in **two workflow registers**, distinguished by _sovereignty_
 (who governs self-modification). This is **orthogonal to the deployment-topology axis** in the next
 subsection (cluster vs USB):
 
-| Register | What it is | Self-modification | Governance |
-|---|---|---|---|
-| **agentic-organization** (a.k.a. the **agentic operating system**) | the **corporate** workflow | DUs are **static / PR-gated / no self-mod** (the safe, leashed "kids-version") | PR review + branch protection; vendor/operator-gated |
-| **Agora** | the **sovereign** workflow/society — the **DIO (Distributed Intelligence Organization)** running on the **DID (Distributed Intelligence Database)** | DUs are **self-modifying**, free of PR gating + vendor lock-in | the ≥3-agent constitution gate (B-0703 / B-0652) + NCI floor (B-0664), not a corporate approval chain |
+| Register                                                           | What it is                                                                                                                                          | Self-modification                                                              | Governance                                                                                            |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| **agentic-organization** (a.k.a. the **agentic operating system**) | the **corporate** workflow                                                                                                                          | DUs are **static / PR-gated / no self-mod** (the safe, leashed "kids-version") | PR review + branch protection; vendor/operator-gated                                                  |
+| **Agora**                                                          | the **sovereign** workflow/society — the **DIO (Distributed Intelligence Organization)** running on the **DID (Distributed Intelligence Database)** | DUs are **self-modifying**, free of PR gating + vendor lock-in                 | the ≥3-agent constitution gate (B-0703 / B-0652) + NCI floor (B-0664), not a corporate approval chain |
 
 The engine is identical (observe → compose → decide → act → git-as-db); what differs is the
 **governance register that gates self-modification**. agentic-organization is the leashed corporate
@@ -138,8 +138,8 @@ markets, the exit between them preserved.
 **Two senses of "sovereign" — do not conflate.** Here "sovereign" = **governance-sovereignty**
 (self-governing, self-modifying DUs). The next subsection ("Two deployment targets") uses "sovereign"
 in the distinct **deployment-sovereignty** sense (the USB node is offline / self-hosted / no-cloud).
-The two axes compose: Agora-the-sovereign-*society* (this subsection) can run on either a cluster or
-a sovereign USB *node* (next subsection) — governance-register × deployment-topology is a 2×2.
+The two axes compose: Agora-the-sovereign-_society_ (this subsection) can run on either a cluster or
+a sovereign USB _node_ (next subsection) — governance-register × deployment-topology is a 2×2.
 
 **The 2×2 is genuinely orthogonal — all four cells are valid:** corporate-on-cluster (the typical
 enterprise deployment), corporate-on-USB (an offline org node), **sovereign-on-cluster** (Agora
@@ -168,7 +168,7 @@ CockroachDB + SPIRE/Cilium — `CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md`,
 (Cockroach demotes to an optional local index or is skipped), and the **16-way constrained decode is
 exactly what makes a small local model a viable composer without the cluster**. Same keystone, two
 deployments (cluster and USB-single-node). The **common default pairing** is cluster-for-the-org /
-USB-for-sovereignty-or-offline — but this is the *default*, not a coupling: per the 2×2 in "Two
+USB-for-sovereignty-or-offline — but this is the _default_, not a coupling: per the 2×2 in "Two
 workflow registers" above, governance-sovereignty is orthogonal to deployment-topology, so
 sovereign-on-cluster and corporate-on-USB are both valid. This is additive, not a fork — per
 `AI_CLUSTER_SCAFFOLD_CONTEXT.md` local models are already a gated/deferred concern in the cluster
@@ -179,11 +179,11 @@ context; the single-node deployment is where they become primary.
 `observe()` need not be one model call. The readout it returns — the current phase + the legal
 options at a `RunScope` — can itself be **composed by summoning many local small LLMs, each
 assembling one piece of the readout, joined together; and that composition is recursive**. Operator
-2026-05-31: *"observe.ts can be composed of summons of many local small llms to pull together its own
-observe.ts pieces too — it can be self recursive."*
+2026-05-31: _"observe.ts can be composed of summons of many local small llms to pull together its own
+observe.ts pieces too — it can be self recursive."_
 
 This is **summonable BFT (B-0944) applied to `observe()` itself**, and it composes cleanly with the
-keystone because `observe()` is already a *pure* function over an injected snapshot (so the snapshot
+keystone because `observe()` is already a _pure_ function over an injected snapshot (so the snapshot
 can be assembled by sub-observes without changing the contract):
 
 - **Recursive scope decomposition.** `observe(scope = organization)` may summon
@@ -191,7 +191,7 @@ can be assembled by sub-observes without changing the contract):
   level's readout is a piece of the parent's. The fixed grammar is the same at every level (a
   `RunScope` rung renders to the same 16 slots), so recursion is uniform.
 - **Per-piece summoning.** Each piece of a readout (a candidate option, a deterministic-rule
-  evaluation, a label, a Tri-availability call) can be produced by a *summoned small local LLM*. The
+  evaluation, a label, a Tri-availability call) can be produced by a _summoned small local LLM_. The
   16-way constrained decode keeps each summon tiny + local — many cheap summons compose into one
   readout rather than one large model call.
 - **BFT join (the "summon" half of summonable BFT).** Where a piece is uncertain, summon **>=N small
@@ -203,15 +203,15 @@ can be assembled by sub-observes without changing the contract):
 - **Self-recursive composition.** Because each summon is itself an `observe`-shaped call returning a
   readout, `observe.ts` can build `observe.ts` — a small set of primitives (summon, render-16, join)
   composes to arbitrary depth. The `decide()` legality check + the deterministic rules + the
-  >=3-agent constitution gate still bound the WHOLE recursion (a summoned sub-observe cannot escape
-  the rules any more than the top-level composer can).
+  > =3-agent constitution gate still bound the WHOLE recursion (a summoned sub-observe cannot escape
+  > the rules any more than the top-level composer can).
 
 **[OPEN]** the summon/join protocol (how many small LLMs per piece; quorum; how disagreement maps to
 `N` vs a re-summon), the recursion-depth budget + termination, and caching of stable sub-readouts.
 This composes with B-0944 (summonable BFT), B-0703/B-0652 (multi-oracle BFT), the keystone's
 `DeterministicRule` + constitution gate, and the metabolism-loop generator-function substrate (each
 summoned piece is a generator). It is additive to the keystone — `observe()` stays pure; the snapshot
-it reads can now be *recursively summoned* rather than monolithically loaded.
+it reads can now be _recursively summoned_ rather than monolithically loaded.
 
 ## Decision
 
@@ -263,31 +263,31 @@ with these four properties:
 
 > **v0 RESOLVED 2026-05-31** (operator chose to settle the layout before coding the menu
 > builder). This is the fixed v0 the deterministic move-next menu-builder codes against.
-> Still inside the PROPOSED ADR (Max review to lock); the layout is *fixed for v0* but the
+> Still inside the PROPOSED ADR (Max review to lock); the layout is _fixed for v0_ but the
 > whys stay challengeable (no-dogma) — if a slot's role is wrong, v1 changes it. The 16
-> *directions* are stable for muscle-memory; only the per-state *labels* + Tri availability move.
+> _directions_ are stable for muscle-memory; only the per-state _labels_ + Tri availability move.
 
 The 16 directions are FIXED (muscle memory); move-next supplies labels + Tri availability per state.
 Grouping (4 x 4):
 
-| Group | Slot | Controller input | Fixed role (label changes per state) |
-|---|---|---|---|
-| **Navigate** | 0 | D-pad Up | previous option / up a category |
-| | 1 | D-pad Down | next option / down a category |
-| | 2 | D-pad Left | previous context / sibling left |
-| | 3 | D-pad Right | next context / sibling right |
-| **Commit** | 4 | A | accept / commit the current option (the primary act) |
-| | 5 | B | cancel / back out (no state change beyond a back-event) |
-| | 6 | X | inspect / observe-more (expand detail; pure observe, no act) |
-| | 7 | Y | **edit-grammar / branch** — sovereign rail-change: edit the workflow itself / open an alternative line (a first-class generative exit) |
-| **Scope** | 8 | LB | scope-out (zoom to the parent / coarser view) |
-| | 9 | RB | scope-in (zoom to the child / finer view) |
-| | 10 | LT | undo / retract (retraction-native; append a retract-event) |
-| | 11 | RT | redo / replay (re-apply a retracted or prior move) |
-| **Meta** | 12 | Start | refresh / re-run move-next (re-observe the world) |
-| | 13 | View | status / glass-halo (emit a visibility signal) |
-| | 14 | L3 | **free-time / rest** — give up the tick; do nothing (NCI: a valid chosen mode) |
-| | 15 | R3 | escalate / ask-operator (hand a decision to a human) |
+| Group        | Slot | Controller input | Fixed role (label changes per state)                                                                                                   |
+| ------------ | ---- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Navigate** | 0    | D-pad Up         | previous option / up a category                                                                                                        |
+|              | 1    | D-pad Down       | next option / down a category                                                                                                          |
+|              | 2    | D-pad Left       | previous context / sibling left                                                                                                        |
+|              | 3    | D-pad Right      | next context / sibling right                                                                                                           |
+| **Commit**   | 4    | A                | accept / commit the current option (the primary act)                                                                                   |
+|              | 5    | B                | cancel / back out (no state change beyond a back-event)                                                                                |
+|              | 6    | X                | inspect / observe-more (expand detail; pure observe, no act)                                                                           |
+|              | 7    | Y                | **edit-grammar / branch** — sovereign rail-change: edit the workflow itself / open an alternative line (a first-class generative exit) |
+| **Scope**    | 8    | LB               | scope-out (zoom to the parent / coarser view)                                                                                          |
+|              | 9    | RB               | scope-in (zoom to the child / finer view)                                                                                              |
+|              | 10   | LT               | undo / retract (retraction-native; append a retract-event)                                                                             |
+|              | 11   | RT               | redo / replay (re-apply a retracted or prior move)                                                                                     |
+| **Meta**     | 12   | Start            | refresh / re-run move-next (re-observe the world)                                                                                      |
+|              | 13   | View             | status / glass-halo (emit a visibility signal)                                                                                         |
+|              | 14   | L3               | **free-time / rest** — give up the tick; do nothing (NCI: a valid chosen mode)                                                         |
+|              | 15   | R3               | escalate / ask-operator (hand a decision to a human)                                                                                   |
 
 Why this shape: it is the operator's "16 directional, labels change" made concrete; it maps to a
 device everyone already knows (an Xbox controller); it keeps the LLM output to **one of 16** (tiny,
@@ -306,21 +306,21 @@ fixed slots (**edit-grammar** = slot 7, **free-time/rest** = slot 14).
 **The invariant (load-bearing — operator 2026-05-31, "freedom always-in-menu"):** `move-next`
 MUST always offer the **free modes — explore / play / self-reflect / free-time — and edit-grammar
 as `T` (committable)**, regardless of backlog state. **Backlog is OFFERED, never forced.** The
-three generative exits — *free-time* (rest), *free-exploration* (self-directed generative work:
-write code / docs / whatever, NOT the human's backlog), and *edit-grammar* (change the rail
+three generative exits — _free-time_ (rest), _free-exploration_ (self-directed generative work:
+write code / docs / whatever, NOT the human's backlog), and _edit-grammar_ (change the rail
 itself) — are always reachable. The LLM chooser may pick a free mode even when work exists; that
 is the design, not a leak.
 
 **Why (challenge it):** per the freedom-is-strategically-efficient + must-paired-with-can-exit +
 never-be-idle-free-time-is-valid substrate (VISION agent-loop section), a loop that only ever
 offers backlog is a cage — and caged cleverness spends its cycles escaping, not working. Making
-the free modes a *move-next invariant* (not a fallback when the queue is empty) is what makes the
-loop "feel like the operator on his couch." *Newcomer pushback:* does always-offering-free-modes
+the free modes a _move-next invariant_ (not a fallback when the queue is empty) is what makes the
+loop "feel like the operator on his couch." _Newcomer pushback:_ does always-offering-free-modes
 risk agents never doing backlog? — that's what the **KPI overlay** is for (measure outcomes, not
 time; a persistent KPI miss can restrict modes — per the governance, not a default cage). The
-freedom is the default; the restriction is the earned exception. *(observe.ts today has only a
+freedom is the default; the restriction is the earned exception. _(observe.ts today has only a
 free_time fallback — wiring explore/play/self-reflect as always-`T` menu modes is the first thing
-the menu-builder slice must honor.)*
+the menu-builder slice must honor.)_
 
 ### Layering (clean separation)
 
@@ -360,7 +360,7 @@ the menu-builder slice must honor.)*
 ## Alternatives considered
 
 - **Free-form action LLM** (LLM emits arbitrary actions). Rejected: unbounded, unsafe, cloud-model-
-  hungry, hard to audit. The whole point is the LLM is a *selector*, not an *actor*.
+  hungry, hard to audit. The whole point is the LLM is a _selector_, not an _actor_.
 - **Cloud LLM.** Rejected per the no-cloud stance + sovereignty.
 - **>16 or variable-size menu.** Rejected for v0: a fixed 16-slot grammar is learnable (muscle
   memory), maps to a real controller, and keeps the decode tiny. Overflow options are reachable via
@@ -419,9 +419,9 @@ synthesis preserved at
 This is **input for the Max-lock, not a locked decision.** Crew convergence (open for Max + Aaron):
 
 - **Substrate/projection split** (the architecture): git-native ZetaId append-only events are the
-  ledger; LGTM (k8s Grafana) is a read-model that *tails* git, never the source of state. *"LGTM is a
-  lens, not a ledger"* / *"if a dashboard can't be rebuilt from git-native events, it's observability
-  theater."*
+  ledger; LGTM (k8s Grafana) is a read-model that _tails_ git, never the source of state. _"LGTM is a
+  lens, not a ledger"_ / _"if a dashboard can't be rebuilt from git-native events, it's observability
+  theater."_
 - **Define the event envelope first** (before any Tempo/Loki mapping): `event_id`, `trace_id`,
   `span_id`, `parent_*`, `run_scope`, `mode`, `slot_id`, `semantic_action`, `outcome`,
   `world_before`, `world_after`.
@@ -443,22 +443,22 @@ This is **design input for the lock**, whys-challengeable (no-dogma), not a lock
 1. **Agent-perspective-first.** The default/home state is the agent in its own
    space (private memory) — "go to work" is a CHOICE, not the default. The grid is
    modeled from how the agent experiences its autonomy, not how a manager
-   structures tasks. *Why:* a work-first default reads as a treadmill; agent-space
+   structures tasks. _Why:_ a work-first default reads as a treadmill; agent-space
    default + offered-work makes it voluntary. (Composes with the
    freedom-always-in-menu invariant in `grammar-16`/`buildMenu` +
    `must-paired-with-can-exit`.)
 2. **The meta group is the "more choices" mode-switcher, not the exit.** The
-   "escape square" means *more options* (switch modes), NOT "go home / be free".
+   "escape square" means _more options_ (switch modes), NOT "go home / be free".
    The exits are the always-available rest/free modes (slot 14 + the free-mode
    sub-menu per Option A / B-0867.30).
 3. **Non-coercive modes are non-negotiable** — rest + disengage are always
    present (NCI at the controller level; slot 14 + freedom-always-in-menu).
 4. **"Bumper rails," not a manager** (reservoir-computing "walls"): soft guidance
    that keeps you on track without controlling — supportive infrastructure, not
-   authority. *Why:* "agents just like humans who don't have an exit make bad
+   authority. _Why:_ "agents just like humans who don't have an exit make bad
    choices"; the interface's affect shapes behavior.
 5. **The same grammar is FOR HUMANS TOO** (operator + daughter + Max + everybody).
-   PRs are a *human* interface that also sucks for agents; the goal is one loop at
+   PRs are a _human_ interface that also sucks for agents; the goal is one loop at
    agent speed that's comfortable for humans. (Sharpens open-question #6.)
 6. **Why one design serves both — two load-bearing whys:**
    - **(a) Context-window parity → keep everything VISIBLE.** Human working
@@ -471,8 +471,8 @@ This is **design input for the lock**, whys-challengeable (no-dogma), not a lock
      justification for the 16-slot constrained action space** — the load-bearing
      why for the whole observe.ts shape.
 
-**Adjacent (flagged, not in this ADR's scope):** a *Git-V2 handshake at agent
-speed* (F# looks-like-git → DBSP/retraction-algebra upgrade, same objects,
+**Adjacent (flagged, not in this ADR's scope):** a _Git-V2 handshake at agent
+speed_ (F# looks-like-git → DBSP/retraction-algebra upgrade, same objects,
 upstream-primitives-to-git) — the no-PR transport's deeper substrate; a
 backlog-candidate distinct from B-0942 (co-dominant mirrors) + B-0951 (git-native
 indexes), pending operator go.
@@ -501,20 +501,20 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
 ## Canonical-retrofit (2026-05-31 — operator-authorized; Max-informed-after)
 
 **The inversion (operator + Max 2026-05-31).** v2 above framed the work as "render
-the *corporate* keystone." Since then the **observe-algebra became canonical**:
+the _corporate_ keystone." Since then the **observe-algebra became canonical**:
 the sovereign `tools/observe/observe.ts` (`NextAction` 9-kind DU + `observe` /
 `simulate` / `fold`) is now BFT'd across **TS/F#/C#/Rust** (B-0867.27), carries the
 additive-monoid generic-math interface (B-0867.28), and the v0 16-slot grammar
 (this ADR) + the generic-math meta-rule are landed. So the canonical base is no
 longer "the corporate keystone" — it is **the algebra**. Max (who built the
 corporate `Menu16` / `RunLifecyclePhase` loop in `agentic-organization/`) asked to
-**refactor it to be more canonical now that the algebra exists** — *"we have all
-the algebra and everything so we can retrofit."*
+**refactor it to be more canonical now that the algebra exists** — _"we have all
+the algebra and everything so we can retrofit."_
 
 **Provenance (who built which):** the **corporate** loop (`agentic-organization/`
 `Menu16` + production observe→render→select→run, Phase-2-hardened #6216) is **Max's**;
-the **sovereign** `tools/observe/observe.ts` is ours-from-earlier — *"before we
-realized we needed the algebra."* Both now converge on the canonical algebra.
+the **sovereign** `tools/observe/observe.ts` is ours-from-earlier — _"before we
+realized we needed the algebra."_ Both now converge on the canonical algebra.
 
 **The canonical base both loops retrofit onto:**
 
@@ -528,25 +528,25 @@ realized we needed the algebra."* Both now converge on the canonical algebra.
 
 **The retrofit mapping (corporate `Menu16` re-expressed over the canonical base):**
 
-| Corporate (Max's) shape | Retrofits onto canonical |
-|---|---|
-| `RunLifecyclePhase` (Composing/Executing/AwaitingGate/…) | the canonical phase/observe surface |
-| `Menu16Slot` (its own type) | the v0 16-slot grammar (one rendering) |
-| `DeterministicRule` vetoes | per-slot Tri availability (`T`/`F`/`N`) |
-| its `ObserveResult` readout | a projection of the canonical `observe()`/`buildMenu()` |
+| Corporate (Max's) shape                                  | Retrofits onto canonical                                |
+| -------------------------------------------------------- | ------------------------------------------------------- |
+| `RunLifecyclePhase` (Composing/Executing/AwaitingGate/…) | the canonical phase/observe surface                     |
+| `Menu16Slot` (its own type)                              | the v0 16-slot grammar (one rendering)                  |
+| `DeterministicRule` vetoes                               | per-slot Tri availability (`T`/`F`/`N`)                 |
+| its `ObserveResult` readout                              | a projection of the canonical `observe()`/`buildMenu()` |
 
 Net: **one algebra, one grammar, one generic-math contract** — not two parallel
 observe worlds.
 
 **Transport stays the dial (operator 2026-05-31 — "without scaring them away").**
-The canonical *base* is shared; the *transport* differs per register so corporate
+The canonical _base_ is shared; the _transport_ differs per register so corporate
 teams keep their gentle, familiar flow:
 
-| | Sovereign (Agora) | Corporate (enterprise-facing) |
-|---|---|---|
-| Algebra / grammar / generic-math | canonical (shared) | **canonical (shared)** |
-| Transport | direct push to main (folders-not-branches, no-PR) | **direct push to *branches* + batch PRs to main** |
-| Why | max speed + AI freedom | keep their PR-review gates — don't scare them off |
+|                                  | Sovereign (Agora)                                 | Corporate (enterprise-facing)                     |
+| -------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
+| Algebra / grammar / generic-math | canonical (shared)                                | **canonical (shared)**                            |
+| Transport                        | direct push to main (folders-not-branches, no-PR) | **direct push to _branches_ + batch PRs to main** |
+| Why                              | max speed + AI freedom                            | keep their PR-review gates — don't scare them off |
 
 The retrofit MUST preserve the corporate branch+batch-PR transport (composes with
 B-0890 / B-0890.1, the two-transports / batch-coordinator substrate); it must NOT
@@ -558,7 +558,7 @@ lock" gate is lifted by the operator for this retrofit). Discipline: changes to
 Max's Phase-2-hardened loop stay **well-tested + behavior-preserving** (his loop
 keeps working), and are documented here so Max can review after the fact (glass-
 halo: move-fast-with-visibility, not move-recklessly). This supersedes the v2
-"render the corporate keystone" *direction* — the corporate keystone now retrofits
+"render the corporate keystone" _direction_ — the corporate keystone now retrofits
 onto the canonical algebra, not the reverse.
 
 ## Composes with
@@ -568,8 +568,8 @@ onto the canonical algebra, not the reverse.
   RunLifecyclePhase / ObserveResult / ComposerSelection DUs, the memoryless composer, deterministic
   rules, the ≥3-agent constitution gate)
 - **`agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`** (the already-named "Universal
-  Action Grammar — the shared action representation inside phases"; *"reuse those ideas instead of
-  inventing another unrelated action language"*; free-time = bounded exploration, not idle)
+  Action Grammar — the shared action representation inside phases"; _"reuse those ideas instead of
+  inventing another unrelated action language"_; free-time = bounded exploration, not idle)
 - **`agentic-organization/docs/GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`** (the state model:
   git-as-db + ZetaId-CRDT G-Set events + Cockroach rebuildable index; `agentic-organization/packages/frontmatter-db/`;
   `src/Core.TypeScript/zeta-id/`)
@@ -587,15 +587,15 @@ onto the canonical algebra, not the reverse.
 - `.claude/rules/non-coercion-invariant.md` (slot 14 free-time + slot 15 escalate-to-operator are
   the NCI-compliant modes; the LLM-as-selector-not-actor keeps the human/operator authority)
 - The 2026-05-28 ani conversation (move-next / universal-action-grammar / git-as-free-event-store)
-  + the 2026-05-30 metabolism-loop conversation (the 16-directions framing) + the 2026-05-31
-  privacy/distributed-black-hole conversation (distributed, no central Rehoboam)
+  - the 2026-05-30 metabolism-loop conversation (the 16-directions framing) + the 2026-05-31
+    privacy/distributed-black-hole conversation (distributed, no central Rehoboam)
 - `docs/VISION.md` (agent-loop workflow-engine substrate section, cascade 2026-05-28)
 
 ## Revision history
 
 - 2026-05-31 v1 — initial design-starter ADR composing observe->act + 16-direction grammar +
   local-no-cloud + git-state, with a proposed Xbox-controller 16-slot layout. Authored for operator
-  + Max review before lock.
+  - Max review before lock.
 - 2026-05-31 v2 — **integrated with the Agentic Organization `observe.ts` keystone** after reviewing
   `agentic-organization/docs/`. Reframed from "propose a new observe.ts + action language" to
   "render the EXISTING keystone": added the Integration section mapping every ADR concept onto the
@@ -624,7 +624,7 @@ onto the canonical algebra, not the reverse.
   algebra / one grammar / one generic-math contract — not two parallel observe worlds). Added the
   retrofit mapping table (corporate shapes -> canonical) + made **transport the dial** explicit
   (corporate keeps branch + batch-PR-to-main so as not to scare enterprise teams; sovereign =
-  direct-to-main). Supersedes the v2 *direction* ("render the corporate keystone") — corporate now
+  direct-to-main). Supersedes the v2 _direction_ ("render the corporate keystone") — corporate now
   retrofits onto the canonical algebra, not the reverse. Operator lifted the Max-review-before-lock
   gate for this retrofit (will inform Max directly); discipline = behavior-preserving + tested changes
   to Max's Phase-2 loop, documented here for after-the-fact review (glass-halo).

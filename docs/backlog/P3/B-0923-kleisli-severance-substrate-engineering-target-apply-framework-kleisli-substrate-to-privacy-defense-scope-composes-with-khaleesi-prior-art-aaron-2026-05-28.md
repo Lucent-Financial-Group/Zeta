@@ -8,19 +8,19 @@ last_updated: 2026-05-28
 ask: operator 2026-05-28
 authors: [operator, otto]
 composes_with:
-  - B-0917  # interrupt substrate in monad space + Kleisli arrows
-  - B-0918  # WalletLifetime + ConsentEvent integrity
-  - B-0703  # Aurora multi-oracle BFT trust-calculus
-  - B-0867  # workflow-engine v1 parent
-  - B-0664  # NCI HC-8 consent-floor
+  - B-0917 # interrupt substrate in monad space + Kleisli arrows
+  - B-0918 # WalletLifetime + ConsentEvent integrity
+  - B-0703 # Aurora multi-oracle BFT trust-calculus
+  - B-0867 # workflow-engine v1 parent
+  - B-0664 # NCI HC-8 consent-floor
 depends_on: []
 ---
 
 ## Operator framing (2026-05-28 verbatim)
 
-> *"This is severing the kleisli"* (sharing KHALEESI USENIX '22 paper)
+> _"This is severing the kleisli"_ (sharing KHALEESI USENIX '22 paper)
 
-> *"preserve as research note and we should probably backlog very low priority. Also it's one of those cowidences winks that the names are so similar that usually ends up meaning something in my experience lol"*
+> _"preserve as research note and we should probably backlog very low priority. Also it's one of those cowidences winks that the names are so similar that usually ends up meaning something in my experience lol"_
 
 Substrate-engineering substrate-recognition: web tracking IS Kleisli-shaped substrate at network-protocol scope. KHALEESI's substrate-engineering work breaks Kleisli composition at privacy-protection scope. Framework's Kleisli substrate composes at same architectural scope.
 

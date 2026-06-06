@@ -89,13 +89,7 @@ describe("findPathClaims", () => {
   });
 
   test("skips fenced code blocks", () => {
-    const lines = [
-      "Real path: `docs/foo.md`",
-      "```bash",
-      "ls `path/inside/fence.md`",
-      "```",
-      "After: `docs/bar.md`",
-    ];
+    const lines = ["Real path: `docs/foo.md`", "```bash", "ls `path/inside/fence.md`", "```", "After: `docs/bar.md`"];
     const claims = findPathClaims(lines);
     expect(claims).toHaveLength(2);
     expect(claims.map((c) => c.path).sort()).toEqual(["docs/bar.md", "docs/foo.md"]);
@@ -120,17 +114,18 @@ describe("checkFile", () => {
     const dir = mkdtempSync(join(tmpdir(), "check-existence-"));
     const tmpFile = join(dir, "test.md");
     try {
-      writeFileSync(
-        tmpFile,
-        `# Test\n\nSee \`docs/this/path/does/not/exist/${Date.now()}.md\` for details.\n`,
-      );
+      writeFileSync(tmpFile, `# Test\n\nSee \`docs/this/path/does/not/exist/${Date.now()}.md\` for details.\n`);
       const result = checkFile(tmpFile);
       expect(result.ok).toBe(true);
       expect(result.findings.length).toBeGreaterThan(0);
       expect(result.findings[0]?.pathClaim).toContain("does/not/exist");
     } finally {
-      try { unlinkSync(tmpFile); } catch {}
-      try { rmdirSync(dir); } catch {}
+      try {
+        unlinkSync(tmpFile);
+      } catch {}
+      try {
+        rmdirSync(dir);
+      } catch {}
     }
   });
 
@@ -141,7 +136,9 @@ describe("checkFile", () => {
       expect(result.ok).toBe(false);
       expect(result.findings).toEqual([]);
     } finally {
-      try { rmdirSync(dir); } catch {}
+      try {
+        rmdirSync(dir);
+      } catch {}
     }
   });
 
@@ -152,7 +149,9 @@ describe("checkFile", () => {
       expect(result.ok).toBe(false);
       expect(result.findings).toEqual([]);
     } finally {
-      try { rmdirSync(dir); } catch {}
+      try {
+        rmdirSync(dir);
+      } catch {}
     }
   });
 
@@ -165,8 +164,12 @@ describe("checkFile", () => {
       expect(result.ok).toBe(true);
       expect(result.findings).toEqual([]);
     } finally {
-      try { unlinkSync(tmpFile); } catch {}
-      try { rmdirSync(dir); } catch {}
+      try {
+        unlinkSync(tmpFile);
+      } catch {}
+      try {
+        rmdirSync(dir);
+      } catch {}
     }
   });
 
@@ -182,8 +185,12 @@ describe("checkFile", () => {
       expect(result.ok).toBe(true);
       expect(result.findings).toEqual([]);
     } finally {
-      try { unlinkSync(tmpFile); } catch {}
-      try { rmdirSync(dir); } catch {}
+      try {
+        unlinkSync(tmpFile);
+      } catch {}
+      try {
+        rmdirSync(dir);
+      } catch {}
     }
   });
 });
@@ -243,9 +250,7 @@ describe("findPathClaims - angle-bracket link targets", () => {
   });
 
   test("regular links still work alongside angle-bracket variant", () => {
-    const lines = [
-      "[a](docs/normal.md) and [b](<docs/angled.md>)",
-    ];
+    const lines = ["[a](docs/normal.md) and [b](<docs/angled.md>)"];
     const claims = findPathClaims(lines);
     expect(claims).toHaveLength(2);
     expect(claims.map((c) => c.path).sort()).toEqual(["docs/angled.md", "docs/normal.md"]);
@@ -273,7 +278,9 @@ describe("checkFile - v0.6 gitignore awareness", () => {
       repoRoot,
       mdFile,
       cleanup: () => {
-        try { require("node:fs").rmSync(repoRoot, { recursive: true, force: true }); } catch {}
+        try {
+          require("node:fs").rmSync(repoRoot, { recursive: true, force: true });
+        } catch {}
       },
     };
   }
@@ -281,10 +288,7 @@ describe("checkFile - v0.6 gitignore awareness", () => {
   test("flags exists-on-disk-but-gitignored as warning", () => {
     const fx = setupGitignoreFixture();
     try {
-      writeFileSync(
-        fx.mdFile,
-        "# Test\n\nSee `ignored-dir/ghosts.md` for the canonical pattern.\n",
-      );
+      writeFileSync(fx.mdFile, "# Test\n\nSee `ignored-dir/ghosts.md` for the canonical pattern.\n");
       const result = checkFile(fx.mdFile);
       expect(result.ok).toBe(true);
       const gitignoredFindings = result.findings.filter(
@@ -299,10 +303,7 @@ describe("checkFile - v0.6 gitignore awareness", () => {
   test("git-tracked path produces no findings", () => {
     const fx = setupGitignoreFixture();
     try {
-      writeFileSync(
-        fx.mdFile,
-        "# Test\n\nSee `tracked.md` for the implementation.\n",
-      );
+      writeFileSync(fx.mdFile, "# Test\n\nSee `tracked.md` for the implementation.\n");
       const result = checkFile(fx.mdFile);
       expect(result.ok).toBe(true);
       expect(result.findings).toEqual([]);
@@ -351,7 +352,9 @@ describe("main CLI - v0.6 exit codes", () => {
       repoRoot,
       mdFile,
       cleanup: () => {
-        try { require("node:fs").rmSync(repoRoot, { recursive: true, force: true }); } catch {}
+        try {
+          require("node:fs").rmSync(repoRoot, { recursive: true, force: true });
+        } catch {}
       },
     };
   }

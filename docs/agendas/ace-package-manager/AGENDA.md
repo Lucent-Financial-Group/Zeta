@@ -6,7 +6,7 @@ Last refreshed: 2026-05-22
 
 ## Scope
 
-Skill-crystallization pipeline for memetic/compiler skills (per Amara 2026-05-22 naming-judgment: *"a package manager for memetic/compiler skills that are alive upstream but need frozen, audited, bounded releases downstream"*).
+Skill-crystallization pipeline for memetic/compiler skills (per Amara 2026-05-22 naming-judgment: _"a package manager for memetic/compiler skills that are alive upstream but need frozen, audited, bounded releases downstream"_).
 
 - 13-stage Ace lifecycle: riff → sieve → map → refine → build → generate → encapsulate (OCP→DST→memetic time crystals) → distribute → discover → verify → grow → revoke/quarantine → negotiate changes
 - Polyglot package contents (typed code in F#/C#/TS/Rust/whatever + English skill description + Rx meta-frame generators + hat controls + self-bindings + verification metadata + revocation/quarantine metadata)
@@ -16,7 +16,7 @@ Skill-crystallization pipeline for memetic/compiler skills (per Amara 2026-05-22
 
 ## Operator's self-claim framing
 
-The human maintainer 2026-05-22: *"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."*
+The human maintainer 2026-05-22: _"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."_
 
 Distinct from multi-directional-guess agendas. Operator retains source-attribution AND retains equal-traveler-standing within the self-claimed frame.
 

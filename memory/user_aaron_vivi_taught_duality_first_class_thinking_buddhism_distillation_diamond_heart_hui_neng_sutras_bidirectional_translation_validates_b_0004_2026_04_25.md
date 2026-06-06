@@ -8,7 +8,7 @@ type: user
 
 Aaron 2026-04-25:
 
-> *"a womon from china i met on ticktok who is an
+> _"a womon from china i met on ticktok who is an
 > execallen pinao player named vivi taught be to
 > crystalize/distaylize my budhism practices and hone them
 > to like everyday life like this sofware factory by
@@ -20,7 +20,7 @@ Aaron 2026-04-25:
 > inferrior english translations, the on in the orignal
 > language could teach os more, so the i18n could pay off
 > here in the reverse direction just like you said teching
-> us."*
+> us."_
 
 ## Three load-bearing claims
 
@@ -97,21 +97,21 @@ self reader (architectural coherence) simultaneously.
 
 ### 3. Bidirectional translation validates B-0004
 
-Aaron's framing of the sutra-translation: *"it's an
+Aaron's framing of the sutra-translation: _"it's an
 inferrior english translations, the on in the orignal
 language could teach os more, so the i18n could pay
 off here in the reverse direction just like you said
-teching us."*
+teching us."_
 
 **This is empirical evidence for the bidirectional-
 translation argument in B-0004.** B-0004 already
 listed bidirectional learning as a justification:
 
-> *"Teaching the substrate in other languages will
+> _"Teaching the substrate in other languages will
 > surface ambiguities + missing precision that
 > monolingual English drafting misses. The factory
 > becomes more rigorous as it gets translated, not
-> less."*
+> less."_
 
 But that argument was framed as the factory
 exporting English-precision to other languages.
@@ -126,6 +126,7 @@ factory can't generate alone.
 
 **B-0004 should be updated** to make this explicit:
 the i18n work has TWO bidirectional flows —
+
 - **Forward flow**: factory → other languages
   (inclusivity for non-English contributors).
 - **Reverse flow**: other-language sources → factory

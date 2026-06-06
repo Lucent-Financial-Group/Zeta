@@ -420,15 +420,10 @@ export function main(argv: readonly string[]): number {
   //     → write self-documenting failure marker
   //   - Otherwise → write stdout buffer (success path; preserves
   //     existing JSON / stream-json contracts)
-  const isFailureCase =
-    stdoutBuf.length === 0 &&
-    (exitCode !== 0 || spawnError !== undefined || spawnSignal !== null);
+  const isFailureCase = stdoutBuf.length === 0 && (exitCode !== 0 || spawnError !== undefined || spawnSignal !== null);
   let fileContent: Buffer;
   if (isFailureCase) {
-    const stderrText =
-      stderrBuf.length > 0
-        ? stderrBuf.toString("utf8")
-        : "(empty — cursor-agent produced no stderr)";
+    const stderrText = stderrBuf.length > 0 ? stderrBuf.toString("utf8") : "(empty — cursor-agent produced no stderr)";
     const errorMessage = spawnError !== undefined ? spawnError.message : "";
     const promptBytes = Buffer.byteLength(fullPromptResult.value, "utf8");
     // Emit the marker in a format that matches parsed.outputFormat
@@ -497,9 +492,7 @@ export function main(argv: readonly string[]): number {
     process.stderr.write("\n");
     process.stderr.write(`cursor-agent exited with code ${exitCodeDisplay}\n`);
     if (isFailureCase) {
-      process.stderr.write(
-        `cursor-agent produced empty stdout; B-0421 failure marker written to ${outputFile}\n`,
-      );
+      process.stderr.write(`cursor-agent produced empty stdout; B-0421 failure marker written to ${outputFile}\n`);
     }
     return 2;
   }

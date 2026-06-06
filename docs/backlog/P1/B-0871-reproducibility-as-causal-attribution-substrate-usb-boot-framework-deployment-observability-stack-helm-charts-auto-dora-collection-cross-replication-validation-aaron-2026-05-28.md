@@ -28,7 +28,7 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"not once we have the zflash usb you are working on it's going to be a breeze we have ai booting on a full k8s cluster with argocd and gitops managed by ai native from the start and you can join new machines with just a usb boot on another computer. The dora metrics write itself it has a full observablity stack built in helm charts. anyone can repeate the experiment themselves at home on their own equiment."*
+> _"not once we have the zflash usb you are working on it's going to be a breeze we have ai booting on a full k8s cluster with argocd and gitops managed by ai native from the start and you can join new machines with just a usb boot on another computer. The dora metrics write itself it has a full observablity stack built in helm charts. anyone can repeate the experiment themselves at home on their own equiment."_
 
 ## Why this row exists
 
@@ -68,7 +68,7 @@ The composition resolves the causal-attribution concern: framework's RUN IS the 
 - **B-0871.7** — Replication-evidence aggregation substrate (when external validators report results, where do they go; how do they accumulate into the evangelism evidence-base)
 - **B-0871.8** — ServiceTitan-internal-baseline DORA capture pre-framework-deployment (so before-after comparison has substrate-honest baseline)
 - **B-0871.9** — Framework-deployment-event tracking (when framework is deployed, observability captures the deployment-event so DORA-deltas align temporally; supports causal-attribution via interrupted-time-series at substrate-engineering scope)
-- **B-0871.10** — Anti-skeptic substrate (operator 2026-05-28: *"the usb is how you silence the haters"*). The USB-boot reproducibility removes the credibility moat that defenders of single-PR-flows have. Pre-USB: skeptics dismiss claims as "Aaron's special setup; doesn't replicate." Post-USB: skeptics boot the USB themselves; dismissal becomes incoherent if framework works for them. The reproducibility substrate IS the structural defense against bad-faith skepticism. Composes with marketing-strategy (B-0866) at the credibility-moat-removal scope: anyone claiming "this won't work for normal teams" has to either boot the USB and demonstrate failure or stop making the claim. Bad-faith skepticism becomes substrate-honestly verifiable, not narrative-dismissable.
+- **B-0871.10** — Anti-skeptic substrate (operator 2026-05-28: _"the usb is how you silence the haters"_). The USB-boot reproducibility removes the credibility moat that defenders of single-PR-flows have. Pre-USB: skeptics dismiss claims as "Aaron's special setup; doesn't replicate." Post-USB: skeptics boot the USB themselves; dismissal becomes incoherent if framework works for them. The reproducibility substrate IS the structural defense against bad-faith skepticism. Composes with marketing-strategy (B-0866) at the credibility-moat-removal scope: anyone claiming "this won't work for normal teams" has to either boot the USB and demonstrate failure or stop making the claim. Bad-faith skepticism becomes substrate-honestly verifiable, not narrative-dismissable.
 
 Order suggestion: 1 + 2 (substrate-honest inventory + hardware-minimum) → 4 (naming review) → 8 (baseline capture) → 9 (deployment-event tracking) → 3 + 5 (cross-replication + internal-vs-external attribution) → 6 + 7 (cluster naming + replication-evidence aggregation) → 10 (anti-skeptic substrate framing in marketing surface).
 

@@ -1,11 +1,7 @@
 import { deepEqual, equal, ok } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  CommandType,
-  WorkItemState,
-  WorkItemType,
-} from "../../domain/src/index.ts";
+import { CommandType, WorkItemState, WorkItemType } from "../../domain/src/index.ts";
 import {
   CommandErrorCode,
   CommandResultArtifactType,
@@ -63,22 +59,27 @@ describe("author context-pack inbox anchor handler", () => {
     equal(result.contextPackInboxAnchor?.status, ContextPackInboxAnchorStatus.Unread);
     equal(result.contextPackInboxAnchor?.deliveredAt, "2026-06-03T14:00:00.000Z");
     deepEqual(outcome.effects.contextPackInboxAnchors, [result.contextPackInboxAnchor]);
-    deepEqual(result.artifacts, [{
-      artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
-      artifactId: "context-pack-inbox-anchor-001",
-      label: command.title,
-    }]);
+    deepEqual(result.artifacts, [
+      {
+        artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
+        artifactId: "context-pack-inbox-anchor-001",
+        label: command.title,
+      },
+    ]);
   });
 
   test("supports target-hat inbox anchors without active work provenance", async () => {
-    const outcome = await authorContextPackInboxAnchor({
-      ...command,
-      teamId: undefined,
-      workItemId: undefined,
-    }, {
-      now: () => "2026-06-03T14:00:00.000Z",
-      createId: (prefix) => `${prefix}-001`,
-    });
+    const outcome = await authorContextPackInboxAnchor(
+      {
+        ...command,
+        teamId: undefined,
+        workItemId: undefined,
+      },
+      {
+        now: () => "2026-06-03T14:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+      },
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Accepted);
@@ -88,13 +89,16 @@ describe("author context-pack inbox anchor handler", () => {
   });
 
   test("rejects malformed priority before emitting effects", async () => {
-    const outcome = await authorContextPackInboxAnchor({
-      ...command,
-      priority: "panic",
-    } as unknown as AuthorContextPackInboxAnchorCommand, {
-      now: () => "2026-06-03T14:00:00.000Z",
-      createId: (prefix) => `${prefix}-001`,
-    });
+    const outcome = await authorContextPackInboxAnchor(
+      {
+        ...command,
+        priority: "panic",
+      } as unknown as AuthorContextPackInboxAnchorCommand,
+      {
+        now: () => "2026-06-03T14:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+      },
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Rejected);

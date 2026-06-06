@@ -4,9 +4,9 @@
 **Round:** 41 opener
 **Author:** Architect (Kenji) — dispatched inventory; spec-zealot
 (Viktor) to review adversarially post-land.
-**Triggering question:** human maintainer, 2026-04-20 — *"opensepcs,
+**Triggering question:** human maintainer, 2026-04-20 — _"opensepcs,
 if I deleted all the code right now how easy to recreate based on the
-openspecs"*.
+openspecs"_.
 
 ## TL;DR
 
@@ -81,17 +81,17 @@ Load-bearing for every query. Without these, there is no query
 engine to recover; the disaster-recovery contract fails at the
 first paragraph.
 
-| Module | Lines | Disaster-recovery role |
-|---|---|---|
-| `ZSet.fs` | 563 | The canonical data structure; nothing else compiles without it. |
-| `BloomFilter.fs` | 533 | Shipped with Adopt tech-radar status Round 40; now publicly committed, needs a spec to match. |
-| `Circuit.fs` | 285 | `Op` base type + clock + tick + delay semantics. |
-| `DiskSpine.fs` | 259 | Pluggable backing store; abstracts in-memory vs disk-swap. |
-| `Spine.fs` | 132 | LSM trace over Z-set batches; O(log n) amortised insert. |
-| `NestedCircuit.fs` | 125 | Nested sub-circuit with inner clock; recursive query / transitive-closure substrate. |
-| `BalancedSpine.fs` | 123 | MaxSAT-inspired merge scheduler for bounded per-insert latency. |
-| `SpineAsync.fs` | 85 | Async-merging LSM spine; defers merge to background worker. |
-| `SpineSelector.fs` | 57 | Auto-select spine mode based on workload size. |
+| Module             | Lines | Disaster-recovery role                                                                        |
+| ------------------ | ----- | --------------------------------------------------------------------------------------------- |
+| `ZSet.fs`          | 563   | The canonical data structure; nothing else compiles without it.                               |
+| `BloomFilter.fs`   | 533   | Shipped with Adopt tech-radar status Round 40; now publicly committed, needs a spec to match. |
+| `Circuit.fs`       | 285   | `Op` base type + clock + tick + delay semantics.                                              |
+| `DiskSpine.fs`     | 259   | Pluggable backing store; abstracts in-memory vs disk-swap.                                    |
+| `Spine.fs`         | 132   | LSM trace over Z-set batches; O(log n) amortised insert.                                      |
+| `NestedCircuit.fs` | 125   | Nested sub-circuit with inner clock; recursive query / transitive-closure substrate.          |
+| `BalancedSpine.fs` | 123   | MaxSAT-inspired merge scheduler for bounded per-insert latency.                               |
+| `SpineAsync.fs`    | 85    | Async-merging LSM spine; defers merge to background worker.                                   |
+| `SpineSelector.fs` | 57    | Auto-select spine mode based on workload size.                                                |
 
 Note: `BloomFilter.fs` (533 lines) is listed here because
 TECH-RADAR flipped it to Adopt in Round 40, and Adopt rows
@@ -157,14 +157,14 @@ One capability per round, two if small. Prioritise Band 1 first;
 Band 2 interleaves when a Band 1 capability ships in under a
 full round.
 
-| Round | Capability | Modules spanned | LOC | Rationale |
-|---|---|---|---|---|
-| 41 | **`operator-algebra` — extension pass** | `ZSet`, `Circuit`, `Incremental` added to existing spec | 979 | Close the largest semantic gap in the existing spec. Sets the pattern for every subsequent capability. |
-| 42 | **`lsm-spine-family`** (new) | `Spine`, `DiskSpine`, `BalancedSpine`, `SpineAsync`, `SpineSelector` | 656 | Whole family; they co-depend. |
-| 43 | **`circuit-recursion`** (new) | `NestedCircuit`, `Recursive`, `RecursiveSigned` | 542 | Recursive-query substrate; pairs with `retraction-safe-recursion`. |
-| 44 | **`sketches-probabilistic`** (new) | `BloomFilter`, `Sketch`, `CountMin` | 795 | Bloom is Adopt on TECH-RADAR — must have spec-contract. |
-| 45 | **`content-integrity`** (new) | `Merkle`, `HardwareCrc`, `FastCdc` | 477 | Checkpoint dedup + integrity primitives. |
-| 46 | **`crdt-family`** (new) | `Crdt`, `DeltaCrdt`, `ConsistentHash` | 495 | Convergence + shard-assignment primitives. |
+| Round | Capability                              | Modules spanned                                                      | LOC | Rationale                                                                                              |
+| ----- | --------------------------------------- | -------------------------------------------------------------------- | --- | ------------------------------------------------------------------------------------------------------ |
+| 41    | **`operator-algebra` — extension pass** | `ZSet`, `Circuit`, `Incremental` added to existing spec              | 979 | Close the largest semantic gap in the existing spec. Sets the pattern for every subsequent capability. |
+| 42    | **`lsm-spine-family`** (new)            | `Spine`, `DiskSpine`, `BalancedSpine`, `SpineAsync`, `SpineSelector` | 656 | Whole family; they co-depend.                                                                          |
+| 43    | **`circuit-recursion`** (new)           | `NestedCircuit`, `Recursive`, `RecursiveSigned`                      | 542 | Recursive-query substrate; pairs with `retraction-safe-recursion`.                                     |
+| 44    | **`sketches-probabilistic`** (new)      | `BloomFilter`, `Sketch`, `CountMin`                                  | 795 | Bloom is Adopt on TECH-RADAR — must have spec-contract.                                                |
+| 45    | **`content-integrity`** (new)           | `Merkle`, `HardwareCrc`, `FastCdc`                                   | 477 | Checkpoint dedup + integrity primitives.                                                               |
+| 46    | **`crdt-family`** (new)                 | `Crdt`, `DeltaCrdt`, `ConsistentHash`                                | 495 | Convergence + shard-assignment primitives.                                                             |
 
 After Round 46: 5 new capabilities + 1 extension pass →
 **9 capabilities / ~3,944 lines of spec.md estimated** (scaling
@@ -178,7 +178,7 @@ SIMD dispatch) and Band 3 infrastructure.
 A subsequent spec-zealot (Viktor) audit — run every round
 on the freshly-landed capability — answers "if `src/Core/` were
 deleted today, could I rebuild this module from this spec
-alone?" with a clear **yes**. If the answer is *no*, the
+alone?" with a clear **yes**. If the answer is _no_, the
 capability is re-opened and the round counts as half-credit
 for cadence purposes.
 

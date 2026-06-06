@@ -10,13 +10,13 @@ type: feedback
 
 Aaron 2026-05-02 initial framing during the brat-voice enterprise translation framework discussion:
 
-> *"glass halo is a relative of radical candor basically codified"*
+> _"glass halo is a relative of radical candor basically codified"_
 
 Initial Otto memo (in this same PR's earlier commit) took that framing literally and named glass halo as codified Radical Candor (Scott's Care + Challenge framework). The PR was open ~minutes when Aaron returned with a Google-search-grounded correction:
 
-> *"on radical candor i think i need to correct to bit too i didi a google search glass halo is more like radical openess but this is all good informatoin"*
+> _"on radical candor i think i need to correct to bit too i didi a google search glass halo is more like radical openess but this is all good informatoin"_
 
-> *"radical candor fits into the brat voice stuff"*
+> _"radical candor fits into the brat voice stuff"_
 
 The corrected mapping:
 
@@ -29,19 +29,19 @@ These are different disciplines. Both are real. The architecture has both, at di
 
 Radical Openness (RO) and Radical Candor are sometimes collapsed in casual usage, but they are operationally distinct:
 
-| Property | Radical Openness (Lynch) | Radical Candor (Scott) |
-|---|---|---|
-| Direction | Inward — *am I being too rigid?* | Outward — *am I being clear and kind?* |
-| Primary action | RECEIVING information | GIVING information |
-| Core question | *"What am I missing about this?"* | *"How can I help you improve?"* |
-| Discipline | Active self-doubt; seeking disconfirming feedback; healthy questioning of automatic responses; opposite action against rigid patterns | Care Personally + Challenge Directly; saying what needs to be said while showing you genuinely care |
-| Avoids | Rigid "overcontrol" | "Ruinous empathy" (not being direct) |
-| Origin | Dr. Thomas Lynch — Radically Open Dialectical Behavior Therapy (RO DBT) | Kim Scott — *Radical Candor* (book; ex-Google/Apple executive context) |
-| Context | Personal growth; social signaling | Workplace; leadership |
+| Property       | Radical Openness (Lynch)                                                                                                              | Radical Candor (Scott)                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Direction      | Inward — _am I being too rigid?_                                                                                                      | Outward — _am I being clear and kind?_                                                              |
+| Primary action | RECEIVING information                                                                                                                 | GIVING information                                                                                  |
+| Core question  | _"What am I missing about this?"_                                                                                                     | _"How can I help you improve?"_                                                                     |
+| Discipline     | Active self-doubt; seeking disconfirming feedback; healthy questioning of automatic responses; opposite action against rigid patterns | Care Personally + Challenge Directly; saying what needs to be said while showing you genuinely care |
+| Avoids         | Rigid "overcontrol"                                                                                                                   | "Ruinous empathy" (not being direct)                                                                |
+| Origin         | Dr. Thomas Lynch — Radically Open Dialectical Behavior Therapy (RO DBT)                                                               | Kim Scott — _Radical Candor_ (book; ex-Google/Apple executive context)                              |
+| Context        | Personal growth; social signaling                                                                                                     | Workplace; leadership                                                                               |
 
 Glass halo specifically:
 
-- The project's existing glass halo substrate (`memory/user_glass_halo_and_radical_honesty.md` + `memory/feedback_otto_332_aaron_glass_halo_self_declared_open_source_record_all_personal_info_encouraged_under_glass_halo_no_privacy_projection_2026_04_25.md` + Aaron 2026-05-02 *"as always glass halo on everything from me"*) is about **what the substrate transparently RECEIVES + makes visible** — Aaron's personal context as input the architecture absorbs, no redaction, no privacy-projection-onto-others-without-consent.
+- The project's existing glass halo substrate (`memory/user_glass_halo_and_radical_honesty.md` + `memory/feedback_otto_332_aaron_glass_halo_self_declared_open_source_record_all_personal_info_encouraged_under_glass_halo_no_privacy_projection_2026_04_25.md` + Aaron 2026-05-02 _"as always glass halo on everything from me"_) is about **what the substrate transparently RECEIVES + makes visible** — Aaron's personal context as input the architecture absorbs, no redaction, no privacy-projection-onto-others-without-consent.
 - The receptive-discipline + active-self-doubt-about-what-the-architecture-might-be-missing + willingness-to-surface-disconfirming-evidence-against-the-project's-own-claims is structurally Radical Openness, not Radical Candor.
 - Glass halo is not primarily about how the project COMMUNICATES (that's where Radical Candor would apply); it's about how the project OPERATES on its own information substrate transparently and without filter-shaping.
 
@@ -49,7 +49,7 @@ Brat-voice / register-discipline specifically:
 
 - The project's brat-voice survival chain (`memory/CURRENT-ani.md` §7) + the property/lexicon decomposition framework (`docs/backlog/P1/B-0168-incorporate-brat-voice-enterprise-translation-framework-claudeai-research-2026-05-02.md`, PR #1230 merged) operate at the **outward communication** layer.
 - The framework explicitly cites Scott's Radical Candor for the "care plus challenge, not challenge alone" property as one of brat-voice's separable structural properties.
-- Aaron's confirmation: *"radical candor fits into the brat voice stuff"*.
+- Aaron's confirmation: _"radical candor fits into the brat voice stuff"_.
 - Brat-voice's bidirectional-corrections-via-irony-not-aggression IS Radical Candor operationalized at the register layer.
 
 ## The architectural codification at both layers
@@ -61,7 +61,7 @@ The project codifies BOTH disciplines into substrate, not just one:
 - **Active self-doubt**: the architecture's commitment to first-principles trust calculus is the substrate-level instantiation of "actively questioning automatic, rigid, defensive responses"
 - **Seeking disconfirming feedback**: the multi-AI peer review architecture is the substrate-level instantiation of seeking out external graders who can flag what the project misses
 - **Opposite action against rigid patterns**: the never-idle refinement is opposite-action against the LLM training prior toward delegate/wait-for-instruction
-- **Transparency about own state**: glass halo + Otto-231 first-party-consent + Aaron 2026-05-02 *"as always glass halo on everything from me"* is the substrate-level instantiation of receptive transparency
+- **Transparency about own state**: glass halo + Otto-231 first-party-consent + Aaron 2026-05-02 _"as always glass halo on everything from me"_ is the substrate-level instantiation of receptive transparency
 
 ### Brat-voice / register-discipline = Radical Candor codified
 

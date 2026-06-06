@@ -6,7 +6,7 @@ description: Measure theory — σ-algebras, signed measures, Hahn/Jordan/Radon-
 # Measure Theory and Signed Measures Expert — Narrow
 
 Capability skill. No persona. Narrow under the mathematics
-umbrella. This hat owns the *measure-theoretic semantics*
+umbrella. This hat owns the _measure-theoretic semantics_
 of Zeta's core data: a ZSet over a ground set `X` is an
 integer-valued signed measure with finite support on `X`.
 Everything about cancellation, retraction, deletion, and
@@ -15,7 +15,7 @@ level.
 
 ## When to wear
 
-- A question asks *what a ZSet is*, formally — not just how
+- A question asks _what a ZSet is_, formally — not just how
   it's represented.
 - Cancellation / deletion semantics: when `delta + (-delta)`
   is allowed to cancel, what the Hahn decomposition of a
@@ -64,7 +64,7 @@ level.
   against the pushforward.
 - **Spine**, **incremental**, and **delta** all live as
   signed measures. The chain rule in `tools/lean4/Lean4/
-  DbspChainRule.lean` is a statement about how `D` and `I`
+DbspChainRule.lean` is a statement about how `D` and `I`
   behave on the signed-measure side: they preserve the
   Jordan decomposition linearly.
 
@@ -103,7 +103,7 @@ operator for these three conditions before any code lands.
 ## Radon-Nikodym — when to reach for it
 
 Rarely needed for single-ZSet reasoning, but load-bearing
-when relating *two* ZSets at different time steps:
+when relating _two_ ZSets at different time steps:
 
 - The derivative `dµ_t / dµ_{t-1}` expresses how multiplicity
   changed per key. In practice Zeta computes this as a

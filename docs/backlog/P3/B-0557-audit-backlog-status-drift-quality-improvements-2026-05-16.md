@@ -26,7 +26,7 @@ Follow-up to [B-0553](B-0553-audit-backlog-status-drift-detection-2026-05-16.md)
 
 > Do not skip the entire line when an inline cross-reference token appears.
 
-Current behaviour: `INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))` skips the WHOLE line. This is correct for pure cross-reference bullets like `- Composes with \`tools/x.ts\`` but is overly aggressive for mixed bullets like `- Add \`tools/new.ts\` per [B-0123] convention` — the path `tools/new.ts` is a deliverable, the `per [B-0123]` is just a citation.
+Current behaviour: `INLINE_CROSSREF_PATTERNS.some((re) => re.test(line))` skips the WHOLE line. This is correct for pure cross-reference bullets like `- Composes with \`tools/x.ts\``but is overly aggressive for mixed bullets like`- Add \`tools/new.ts\` per [B-0123] convention`— the path`tools/new.ts`is a deliverable, the`per [B-0123]` is just a citation.
 
 **Proposed fix**: only skip the line if the cross-ref keyword appears at the START of the bullet (after `^[\s*-]+\s+`). Mid-line cross-refs allow extraction.
 
@@ -82,12 +82,12 @@ Tick 15 of the 2026-05-16 session. PR #3758 review-cycle 2 produced these 4 find
 
 All four slices shipped within the same 2026-05-16 session that filed this row:
 
-| Slice | Finding | PR | Merge commit |
-|---|---|---|---|
-| 1 | `--check` flag for CI integration | [#3783](https://github.com/Lucent-Financial-Group/Zeta/pull/3783) | `0a57a814` |
-| 2 | try/catch on FS reads (don't abort on bad file) | [#3788](https://github.com/Lucent-Financial-Group/Zeta/pull/3788) | `6809f6e3` |
-| 3 | chdir to repo root via `git rev-parse` (cwd-independent) + 2 regression tests | [#3790](https://github.com/Lucent-Financial-Group/Zeta/pull/3790) | `472024dc` |
-| 4 | Mixed-bullet extraction (paths before cross-ref tokens are deliverables) + tsc-strict guard | [#3809](https://github.com/Lucent-Financial-Group/Zeta/pull/3809) | `eb04e3d` |
+| Slice | Finding                                                                                     | PR                                                                | Merge commit |
+| ----- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------ |
+| 1     | `--check` flag for CI integration                                                           | [#3783](https://github.com/Lucent-Financial-Group/Zeta/pull/3783) | `0a57a814`   |
+| 2     | try/catch on FS reads (don't abort on bad file)                                             | [#3788](https://github.com/Lucent-Financial-Group/Zeta/pull/3788) | `6809f6e3`   |
+| 3     | chdir to repo root via `git rev-parse` (cwd-independent) + 2 regression tests               | [#3790](https://github.com/Lucent-Financial-Group/Zeta/pull/3790) | `472024dc`   |
+| 4     | Mixed-bullet extraction (paths before cross-ref tokens are deliverables) + tsc-strict guard | [#3809](https://github.com/Lucent-Financial-Group/Zeta/pull/3809) | `eb04e3d`    |
 
 **Acceptance bullets**: every bullet in the Acceptance section has a corresponding merged PR. Verified per `.claude/rules/backlog-item-start-gate.md` step 0 partial-vs-drift discriminator.
 

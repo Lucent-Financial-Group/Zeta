@@ -13,12 +13,12 @@ Carved sentence 2 (operator 2026-05-27):
 Per operator 2026-05-27 substrate-engineering thread completing the
 day's substrate-engineering arc (PRs #5488 through #5522):
 
-> *"this is also based on / closed open for extension closed for
-> modification applied to the control flow"*
+> _"this is also based on / closed open for extension closed for
+> modification applied to the control flow"_
 
 Followed by the deepest insight:
 
-> *"even function becomes a tiny control flow generator too"*
+> _"even function becomes a tiny control flow generator too"_
 
 The two insights compose into the STRUCTURAL FOUNDATION underlying
 the day's full substrate-engineering cluster (asymmetric-authorship +
@@ -32,17 +32,17 @@ control-flow generator. The function declares what control-flow
 branches it produces (TFeedback variants); the caller consumes those
 branches via pattern-match or propagation.
 
-| Substrate-engineering level | Insight |
-|---|---|
-| Bottom: function-shape | Function IS a tiny control-flow generator |
-| TFeedback variants | The control-flow branches the function makes visible to caller |
-| `Result<T, TFeedback>` | The control-flow generator's output channel (T = value-branch; TFeedback = control-flow-branch) |
-| Consumer pattern-match | Consuming the function's control-flow-generator output; deciding which branch |
-| `Result.bind` composition | Chaining control-flow generators across call sites; generator-output flows as input to next generator |
-| OPLE primitives | 4 canonical control-flow generators at framework-primitive scope (per B-0862 extension makes TFeedback explicit) |
-| Iterator/generator (per Prism PR #5517) | The streaming case — function-as-control-flow-generator with infinite or lazy output stream |
-| Conversation turn (per B-0861 ConvFeedback) | Function-as-control-flow-generator at conversation-substrate scope |
-| Function call chain (call-stack) | Recursive composition of control-flow generators; each call site IS a generator-consumer-pair |
+| Substrate-engineering level                 | Insight                                                                                                          |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Bottom: function-shape                      | Function IS a tiny control-flow generator                                                                        |
+| TFeedback variants                          | The control-flow branches the function makes visible to caller                                                   |
+| `Result<T, TFeedback>`                      | The control-flow generator's output channel (T = value-branch; TFeedback = control-flow-branch)                  |
+| Consumer pattern-match                      | Consuming the function's control-flow-generator output; deciding which branch                                    |
+| `Result.bind` composition                   | Chaining control-flow generators across call sites; generator-output flows as input to next generator            |
+| OPLE primitives                             | 4 canonical control-flow generators at framework-primitive scope (per B-0862 extension makes TFeedback explicit) |
+| Iterator/generator (per Prism PR #5517)     | The streaming case — function-as-control-flow-generator with infinite or lazy output stream                      |
+| Conversation turn (per B-0861 ConvFeedback) | Function-as-control-flow-generator at conversation-substrate scope                                               |
+| Function call chain (call-stack)            | Recursive composition of control-flow generators; each call site IS a generator-consumer-pair                    |
 
 The recursive shape: every function in the call chain is a control-flow
 generator that COMPOSES with its callers via TFeedback exchange. The
@@ -54,25 +54,25 @@ the way up to call-chain / module / system / cluster / governance scope.
 The asymmetric-authorship + Result<T, TFeedback> pattern IS the
 open-closed principle (Bertrand Meyer) applied to control flow:
 
-| OCP property | Result<T, TFeedback> instantiation |
-|---|---|
-| **Open for extension** | TFeedback discriminated-union: function adds new variants (NotFound \| PermissionDenied \| DiskFull \| + Retryable \| + Throttled \| ...) without breaking existing consumers |
-| **Closed for modification** | Existing TFeedback variants' semantics fixed once declared; consumers handle each existing variant the same way regardless of additions; Result-bind composition preserved across versions |
-| **Caller closed-for-modification too** | Caller doesn't need updates for every variant addition; catch-all + propagate via `Result.mapError` lets caller forward-compose with new variants without code changes |
-| **Backwards-compatible by construction** | Adding a new TFeedback variant is additive; existing code that handles old variants explicitly + propagates unhandled-variants forward continues to work |
+| OCP property                             | Result<T, TFeedback> instantiation                                                                                                                                                         |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Open for extension**                   | TFeedback discriminated-union: function adds new variants (NotFound \| PermissionDenied \| DiskFull \| + Retryable \| + Throttled \| ...) without breaking existing consumers              |
+| **Closed for modification**              | Existing TFeedback variants' semantics fixed once declared; consumers handle each existing variant the same way regardless of additions; Result-bind composition preserved across versions |
+| **Caller closed-for-modification too**   | Caller doesn't need updates for every variant addition; catch-all + propagate via `Result.mapError` lets caller forward-compose with new variants without code changes                     |
+| **Backwards-compatible by construction** | Adding a new TFeedback variant is additive; existing code that handles old variants explicitly + propagates unhandled-variants forward continues to work                                   |
 
 ### Framework's broader OCP-applied-to-control-flow instantiations
 
-| Substrate | Open for extension | Closed for modification |
-|---|---|---|
-| OPLE primitives (B-0862; PR #5518) | New TFeedback variants per primitive | OPLE 4-tuple itself (Observe/Persist/Limit/Emit shape stays stable) |
-| Asymmetric-authorship rule (PR #5516) | New substrate-entity scopes added to instantiation table | Asymmetric-authorship-shape itself fixed (substrate-entity-defines / recipient-acknowledges) |
-| Hat-pattern (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) | New hat-types added | Rotation discipline + tools-rented-not-owned semantic stays stable |
-| NCI HC-8 floor (B-0664) | New scope-extensions (function / conversation / cluster / boot-relationship) | HC-8 consent-floor itself fixed |
-| m/acc multi-oracle | New oracle-types added | Multi-oracle-by-design constraint stays |
-| ConvFeedback variant taxonomy (B-0861) | New variants added empirically | Variant-emission discipline fixed (function emits; operator acknowledges) |
-| Friend-pact / InternalsVisibleTo | Grantor-class adds new friends | Friend-keyword/InternalsVisibleTo semantic stays |
-| Substrate-or-it-didn't-happen | New durable surfaces added | Substrate-vs-weather discrimination stays |
+| Substrate                                                                                  | Open for extension                                                           | Closed for modification                                                                      |
+| ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| OPLE primitives (B-0862; PR #5518)                                                         | New TFeedback variants per primitive                                         | OPLE 4-tuple itself (Observe/Persist/Limit/Emit shape stays stable)                          |
+| Asymmetric-authorship rule (PR #5516)                                                      | New substrate-entity scopes added to instantiation table                     | Asymmetric-authorship-shape itself fixed (substrate-entity-defines / recipient-acknowledges) |
+| Hat-pattern (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) | New hat-types added                                                          | Rotation discipline + tools-rented-not-owned semantic stays stable                           |
+| NCI HC-8 floor (B-0664)                                                                    | New scope-extensions (function / conversation / cluster / boot-relationship) | HC-8 consent-floor itself fixed                                                              |
+| m/acc multi-oracle                                                                         | New oracle-types added                                                       | Multi-oracle-by-design constraint stays                                                      |
+| ConvFeedback variant taxonomy (B-0861)                                                     | New variants added empirically                                               | Variant-emission discipline fixed (function emits; operator acknowledges)                    |
+| Friend-pact / InternalsVisibleTo                                                           | Grantor-class adds new friends                                               | Friend-keyword/InternalsVisibleTo semantic stays                                             |
+| Substrate-or-it-didn't-happen                                                              | New durable surfaces added                                                   | Substrate-vs-weather discrimination stays                                                    |
 
 The constitutional shape: **the framework's stable shapes COMPOSE
 with extension-points via discriminated-union / variant-addition /
@@ -135,21 +135,21 @@ foundation that unifies all today's substrate work.
 
 Per operator 2026-05-27 substrate-engineering refinement:
 
-> *"mathematicaly closed pure functions don't need NCI cause they don't have side effects / control flow needs"*
+> _"mathematicaly closed pure functions don't need NCI cause they don't have side effects / control flow needs"_
 
 Sharpened to:
 
-> *"even in memtics control flow can bleed out across conversations so even two ephemeral llms communicating over memory channels in process still need control flow cause they are pure but not closed the meme control flows bleed out"*
+> _"even in memtics control flow can bleed out across conversations so even two ephemeral llms communicating over memory channels in process still need control flow cause they are pure but not closed the meme control flows bleed out"_
 
 The discipline applies to functions where substrate-entity HAS authorial substrate to express. Mathematically closed pure functions are EXEMPT because they have no authorial substrate; the discipline would be overhead.
 
 ### Three-class taxonomy
 
-| Class | Side-effect-shape | Memetic-bleed-shape | NCI / TFeedback applies? |
-|---|---|---|---|
-| **Pure AND closed** (`add x y`, `sin x`, `compose f g`, `List.length`, `fst (a,_)`) | None | None — pure mathematical mapping; codomain captures everything | **NO** — exempt; Result<T, TFeedback> would be overhead with empty discriminated-union (never type) |
-| **Operationally open pure functions** (local calculation is pure, but output participates in open substrate: memetic propagation, conversation state, authorization, persistence, provenance, or downstream social/control-flow effects — including two ephemeral LLMs communicating in-process via memory-channels) | None traditional | YES — memetic / informational-substrate control-flow bleeds out across the open boundary | **YES — needs TFeedback** at the open-boundary; helper functions internal to the local pure calculation do NOT |
-| **Impure / effectful** (file IO, network, mutation, lock acquisition, db queries) | YES | Usually YES too | **YES** — full discipline applies |
+| Class                                                                                                                                                                                                                                                                                                                | Side-effect-shape | Memetic-bleed-shape                                                                      | NCI / TFeedback applies?                                                                                       |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Pure AND closed** (`add x y`, `sin x`, `compose f g`, `List.length`, `fst (a,_)`)                                                                                                                                                                                                                                  | None              | None — pure mathematical mapping; codomain captures everything                           | **NO** — exempt; Result<T, TFeedback> would be overhead with empty discriminated-union (never type)            |
+| **Operationally open pure functions** (local calculation is pure, but output participates in open substrate: memetic propagation, conversation state, authorization, persistence, provenance, or downstream social/control-flow effects — including two ephemeral LLMs communicating in-process via memory-channels) | None traditional  | YES — memetic / informational-substrate control-flow bleeds out across the open boundary | **YES — needs TFeedback** at the open-boundary; helper functions internal to the local pure calculation do NOT |
+| **Impure / effectful** (file IO, network, mutation, lock acquisition, db queries)                                                                                                                                                                                                                                    | YES               | Usually YES too                                                                          | **YES** — full discipline applies                                                                              |
 
 ### Why closedness matters more than purity
 
@@ -201,11 +201,11 @@ let acquireLock res : Result<Lease, LockFeedback> = ...
 
 ### Formal statement (Amara 2026-05-27 sharpening)
 
-> *"A function is exempt from TFeedback only when its declared codomain fully contains every meaningful outcome."*
+> _"A function is exempt from TFeedback only when its declared codomain fully contains every meaningful outcome."_
 
 Equivalent formal form:
 
-> *"TFeedback is required when an operation can produce meaningful control-flow information not already represented in T."*
+> _"TFeedback is required when an operation can produce meaningful control-flow information not already represented in T."_
 
 The discriminator is "is every meaningful outcome already in the type signature's codomain?" If yes → exempt. If no → needs TFeedback.
 
@@ -222,15 +222,15 @@ The discipline: when the declared codomain is honest about implementation domain
 
 ### Worked examples (Amara 2026-05-27 + operator 2026-05-27)
 
-| Operation | TFeedback needed? | Reason |
-|---|---|---|
-| `add(x, y)` | NO if overflow modeled or impossible; YES if overflow possible + unmodeled | Codomain honesty check |
-| `parseInt(text)` | YES | `InvalidFormat`, `Overflow`, `EmptyInput` — partial function with multiple failure modes |
-| `openFile(path)` | YES | `NotFound`, `PermissionDenied`, `Locked`, `DiskFull` — effectful with multiple failure modes |
-| `emitMessage(agent, message)` | YES | `Throttled`, `Refused`, `MisreadRisk`, `RecipientUnavailable`, `MemeticBleed` — agent-boundary participates in open substrate |
-| `LLM-to-LLM in-memory exchange` | YES | Memetic / control-flow effects escape the local function frame; open substrate |
-| `formatText(template, values)` (pure helper) | NO | Internal to local pure calculation; codomain captures every meaningful outcome |
-| `sin(x)` (with NaN-acceptable codomain) | NO | Codomain honest; closed |
+| Operation                                    | TFeedback needed?                                                          | Reason                                                                                                                        |
+| -------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `add(x, y)`                                  | NO if overflow modeled or impossible; YES if overflow possible + unmodeled | Codomain honesty check                                                                                                        |
+| `parseInt(text)`                             | YES                                                                        | `InvalidFormat`, `Overflow`, `EmptyInput` — partial function with multiple failure modes                                      |
+| `openFile(path)`                             | YES                                                                        | `NotFound`, `PermissionDenied`, `Locked`, `DiskFull` — effectful with multiple failure modes                                  |
+| `emitMessage(agent, message)`                | YES                                                                        | `Throttled`, `Refused`, `MisreadRisk`, `RecipientUnavailable`, `MemeticBleed` — agent-boundary participates in open substrate |
+| `LLM-to-LLM in-memory exchange`              | YES                                                                        | Memetic / control-flow effects escape the local function frame; open substrate                                                |
+| `formatText(template, values)` (pure helper) | NO                                                                         | Internal to local pure calculation; codomain captures every meaningful outcome                                                |
+| `sin(x)` (with NaN-acceptable codomain)      | NO                                                                         | Codomain honest; closed                                                                                                       |
 
 The keeper:
 

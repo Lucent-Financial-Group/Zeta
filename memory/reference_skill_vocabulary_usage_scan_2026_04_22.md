@@ -4,6 +4,7 @@ description: Reference snapshot taken 2026-04-22 immediately after the kernel+ca
 type: reference
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Scan parameters:**
 
 - Date: 2026-04-22 (extended same-tick to full glossary)
@@ -24,75 +25,75 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **Raw counts — full 67-term scan (sorted descending):**
 
-| Term | Skill files mentioning | Tier |
-|---|---|---|
-| Hat | 234 / 234 | kernel (⊥ — universal) |
-| Skill | 232 / 234 | kernel |
-| Persona (overloaded — always qualify) | 200 / 234 | kernel |
-| Expert | 196 / 234 | near-kernel |
-| Round (as in "round N") | 163 / 234 | near-kernel |
-| Agent (not "bot") | 148 / 234 | near-kernel |
-| AX (agent experience) | 144 / 234 | near-kernel (surprise) |
-| Operator | 112 / 234 | domain-kernel |
-| Retraction | 106 / 234 | domain-kernel |
-| Delta | 86 / 234 | domain-mid |
-| DBSP | 71 / 234 | domain-mid |
-| Role | 52 / 234 | structural-mid |
-| Z3 | 44 / 234 | domain-mid |
-| UX (user experience) | 40 / 234 | structural-mid |
-| Notebook | 39 / 234 | structural-mid |
-| Z-set | 36 / 234 | domain-mid |
-| OpenSpec | 36 / 234 | structural-mid |
-| Retire | 31 / 234 | structural-mid |
-| Spine | 30 / 234 | domain-low |
-| ACL (access control list) | 23 / 234 | structural-low |
-| Permission | 19 / 234 | structural-low |
-| Hook | 19 / 234 | structural-low |
-| Frontmatter | 18 / 234 | structural-low |
-| Circuit | 18 / 234 | domain-low |
-| Evolve | 15 / 234 | structural-low |
-| Checkpoint | 13 / 234 | domain-low |
-| HyperLogLog (HLL) | 12 / 234 | domain-low |
-| DX (developer experience) | 11 / 234 | structural-low |
-| fsync | 10 / 234 | domain-low |
-| WDC (Witness-Durable Commit) | 9 / 234 | leaf |
-| LFP (least fixed point) | 7 / 234 | leaf |
-| IVM (incremental view maintenance) | 7 / 234 | leaf (**see fragmentation note**) |
-| Bloom filter | 6 / 234 | leaf |
-| Spawn | 5 / 234 | leaf |
-| Formal spec | 5 / 234 | leaf |
-| Feature flag | 5 / 234 | leaf |
-| Idle (agent time-use class) | 4 / 234 | leaf |
-| Cold-start cost | 4 / 234 | leaf |
-| TLA+ / TLC | 3 / 234 | leaf (**drop from 54** — see note) |
-| Lean 4 + Mathlib | 3 / 234 | leaf |
-| Harmonious Division | 3 / 234 | leaf |
-| FsCheck property test | 3 / 234 | leaf |
-| RBAC (role-based access control) | 2 / 234 | leaf |
-| Holistic view | 2 / 234 | leaf |
-| Backing store | 2 / 234 | leaf |
-| Profile / overlay | 1 / 234 | leaf |
-| Orphan skill | 1 / 234 | leaf |
-| Durability mode | 1 / 234 | leaf |
-| Count-Min sketch | 1 / 234 | leaf |
-| Zeta=heaven-on-earth (internal framing) | 0 / 234 | absent |
-| Zeta's alignment claim (external framing) | 0 / 234 | absent |
-| Wake / Wake-up | 0 / 234 | absent (**ontology-home violation**) |
-| User persona | 0 / 234 | absent (**subsumed by Persona**) |
-| Unretire | 0 / 234 | absent (CLAUDE.md-only concept) |
-| Tick / step | 0 / 234 | absent (**Round wins this axis**) |
-| Semi-naïve evaluation | 0 / 234 | absent (DBSP-technical tail) |
-| Research preview | 0 / 234 | absent |
-| Recursive query | 0 / 234 | absent (DBSP-technical tail) |
-| Merkle tree / Merkle root | 0 / 234 | absent (DBSP-technical tail) |
-| KLL quantile sketch | 0 / 234 | absent (sketch cluster) |
-| Harsh critic / spec zealot / storage specialist / … | 0 / 234 | absent (**persona names win**) |
-| Gap-monotone / signed-delta semi-naïve | 0 / 234 | absent |
-| Free time | 0 / 234 | absent (**possibly retired**) |
-| CQF (Counting Quotient Filter) | 0 / 234 | absent (sketch cluster) |
-| Counting Bloom filter | 0 / 234 | absent (sketch cluster) |
-| Counting algorithm | 0 / 234 | absent |
-| AMQ (approximate membership query) | 0 / 234 | absent (sketch cluster) |
+| Term                                                | Skill files mentioning | Tier                                 |
+| --------------------------------------------------- | ---------------------- | ------------------------------------ |
+| Hat                                                 | 234 / 234              | kernel (⊥ — universal)               |
+| Skill                                               | 232 / 234              | kernel                               |
+| Persona (overloaded — always qualify)               | 200 / 234              | kernel                               |
+| Expert                                              | 196 / 234              | near-kernel                          |
+| Round (as in "round N")                             | 163 / 234              | near-kernel                          |
+| Agent (not "bot")                                   | 148 / 234              | near-kernel                          |
+| AX (agent experience)                               | 144 / 234              | near-kernel (surprise)               |
+| Operator                                            | 112 / 234              | domain-kernel                        |
+| Retraction                                          | 106 / 234              | domain-kernel                        |
+| Delta                                               | 86 / 234               | domain-mid                           |
+| DBSP                                                | 71 / 234               | domain-mid                           |
+| Role                                                | 52 / 234               | structural-mid                       |
+| Z3                                                  | 44 / 234               | domain-mid                           |
+| UX (user experience)                                | 40 / 234               | structural-mid                       |
+| Notebook                                            | 39 / 234               | structural-mid                       |
+| Z-set                                               | 36 / 234               | domain-mid                           |
+| OpenSpec                                            | 36 / 234               | structural-mid                       |
+| Retire                                              | 31 / 234               | structural-mid                       |
+| Spine                                               | 30 / 234               | domain-low                           |
+| ACL (access control list)                           | 23 / 234               | structural-low                       |
+| Permission                                          | 19 / 234               | structural-low                       |
+| Hook                                                | 19 / 234               | structural-low                       |
+| Frontmatter                                         | 18 / 234               | structural-low                       |
+| Circuit                                             | 18 / 234               | domain-low                           |
+| Evolve                                              | 15 / 234               | structural-low                       |
+| Checkpoint                                          | 13 / 234               | domain-low                           |
+| HyperLogLog (HLL)                                   | 12 / 234               | domain-low                           |
+| DX (developer experience)                           | 11 / 234               | structural-low                       |
+| fsync                                               | 10 / 234               | domain-low                           |
+| WDC (Witness-Durable Commit)                        | 9 / 234                | leaf                                 |
+| LFP (least fixed point)                             | 7 / 234                | leaf                                 |
+| IVM (incremental view maintenance)                  | 7 / 234                | leaf (**see fragmentation note**)    |
+| Bloom filter                                        | 6 / 234                | leaf                                 |
+| Spawn                                               | 5 / 234                | leaf                                 |
+| Formal spec                                         | 5 / 234                | leaf                                 |
+| Feature flag                                        | 5 / 234                | leaf                                 |
+| Idle (agent time-use class)                         | 4 / 234                | leaf                                 |
+| Cold-start cost                                     | 4 / 234                | leaf                                 |
+| TLA+ / TLC                                          | 3 / 234                | leaf (**drop from 54** — see note)   |
+| Lean 4 + Mathlib                                    | 3 / 234                | leaf                                 |
+| Harmonious Division                                 | 3 / 234                | leaf                                 |
+| FsCheck property test                               | 3 / 234                | leaf                                 |
+| RBAC (role-based access control)                    | 2 / 234                | leaf                                 |
+| Holistic view                                       | 2 / 234                | leaf                                 |
+| Backing store                                       | 2 / 234                | leaf                                 |
+| Profile / overlay                                   | 1 / 234                | leaf                                 |
+| Orphan skill                                        | 1 / 234                | leaf                                 |
+| Durability mode                                     | 1 / 234                | leaf                                 |
+| Count-Min sketch                                    | 1 / 234                | leaf                                 |
+| Zeta=heaven-on-earth (internal framing)             | 0 / 234                | absent                               |
+| Zeta's alignment claim (external framing)           | 0 / 234                | absent                               |
+| Wake / Wake-up                                      | 0 / 234                | absent (**ontology-home violation**) |
+| User persona                                        | 0 / 234                | absent (**subsumed by Persona**)     |
+| Unretire                                            | 0 / 234                | absent (CLAUDE.md-only concept)      |
+| Tick / step                                         | 0 / 234                | absent (**Round wins this axis**)    |
+| Semi-naïve evaluation                               | 0 / 234                | absent (DBSP-technical tail)         |
+| Research preview                                    | 0 / 234                | absent                               |
+| Recursive query                                     | 0 / 234                | absent (DBSP-technical tail)         |
+| Merkle tree / Merkle root                           | 0 / 234                | absent (DBSP-technical tail)         |
+| KLL quantile sketch                                 | 0 / 234                | absent (sketch cluster)              |
+| Harsh critic / spec zealot / storage specialist / … | 0 / 234                | absent (**persona names win**)       |
+| Gap-monotone / signed-delta semi-naïve              | 0 / 234                | absent                               |
+| Free time                                           | 0 / 234                | absent (**possibly retired**)        |
+| CQF (Counting Quotient Filter)                      | 0 / 234                | absent (sketch cluster)              |
+| Counting Bloom filter                               | 0 / 234                | absent (sketch cluster)              |
+| Counting algorithm                                  | 0 / 234                | absent                               |
+| AMQ (approximate membership query)                  | 0 / 234                | absent (sketch cluster)              |
 
 **Note on TLA+ drop (54 → 3):** The original 29-term sample
 measured `"TLA+"` (literal plus). The full scan uses the
@@ -186,14 +187,14 @@ adds these findings:
    - Separation-of-concerns (algorithm/sketch vocab
      appropriately outside the skill layer)
    - Retirement candidates (concept no longer used)
-   **Gravity's drift-slowing effect
-   (`feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md`)
-   is strongest at the kernel (Hat/Skill/Persona near 100%)
-   and weakest at the DBSP-technical tail (sketch-cluster at
-   0%).** This is expected and structurally correct — the
-   factory's self-referential kernel is where gravity
-   concentrates; specialized technical vocabulary should be
-   loosely coupled to the skill library.
+     **Gravity's drift-slowing effect
+     (`feedback_seed_kernel_glossary_orthogonal_decider_is_information_density_gravity.md`)
+     is strongest at the kernel (Hat/Skill/Persona near 100%)
+     and weakest at the DBSP-technical tail (sketch-cluster at
+     0%).** This is expected and structurally correct — the
+     factory's self-referential kernel is where gravity
+     concentrates; specialized technical vocabulary should be
+     loosely coupled to the skill library.
 
 **Interpretation through the lattice lens
 (`feedback_kernel_structure_is_real_mathematical_lattice.md`):**
@@ -204,7 +205,7 @@ adds these findings:
    skill-element in the library joins up through at least
    one of them. This matches the factory's theoretical frame
    (skills are hats worn by personas) and confirms it is
-   *empirically* load-bearing, not just conceptually.
+   _empirically_ load-bearing, not just conceptually.
 
 2. **Near-kernel tier {Expert, Round, Agent}** (148-196).
    These are the cross-cutting structural terms — governance
@@ -213,7 +214,7 @@ adds these findings:
 
 3. **Domain-kernel tier {Operator, Retraction, Delta,
    DBSP}** (71-112). The DBSP-math kernel — these are the
-   load-bearing *technical* terms for the database-research
+   load-bearing _technical_ terms for the database-research
    work. Their mid-tier position matches their role: widely
    referenced, but only by skills working the DBSP surface
    (not every skill is DBSP-domain).
@@ -221,7 +222,7 @@ adds these findings:
 4. **New kernel candidates from 2026-04-22 = zero
    coverage.** Carpenter, gardener, kernel (in the factory
    sense), lattice, cleave, combine, The Map — NONE appear
-   in any SKILL.md yet. This is *expected* (the vocabulary
+   in any SKILL.md yet. This is _expected_ (the vocabulary
    landed this tick via three memories) but represents
    **propagation work**: future `skill-creator` passes and
    `skill-improver` passes should gradually migrate skill
@@ -231,11 +232,10 @@ adds these findings:
    after the glossary introduces them.
 
 5. **Leaf anomalies flagged:**
-
    - **IVM at 2/237** — suspicious. IVM is the top-of-glossary
      concept ("what DBSP actually does"), yet only 2 skills
      mention it by name. Almost certainly skills reference
-     *DBSP* (71) where they could reference IVM; DBSP is the
+     _DBSP_ (71) where they could reference IVM; DBSP is the
      algorithm, IVM is the technique. In lattice terms:
      `DBSP ≤ IVM` (DBSP is a specific element, IVM is its
      parent in the partial order). Keeping them separate is
@@ -246,8 +246,8 @@ adds these findings:
 
    - **Harsh critic at 2/237** — suspicious for a different
      reason. Harsh critic is a PERSONA NAME (Kira). Skills
-     probably reference *Kira* by name rather than the
-     glossary term *harsh critic*. In lattice terms: the
+     probably reference _Kira_ by name rather than the
+     glossary term _harsh critic_. In lattice terms: the
      persona-name is the concrete instance; the glossary
      term is the role. The 2-vs-many mismatch indicates
      vocabulary fragmentation — which is the PROBLEM the
@@ -255,7 +255,6 @@ adds these findings:
      kernel-cleave is meant to resolve.
 
 6. **Structural observations:**
-
    - **No single term is at 237/237.** Even "Skill" (the
      most universal glossary concept) misses 5 skill files
      (232/237). The 5 non-mentioning SKILL.md files are
@@ -341,7 +340,7 @@ adds these findings:
 - **GLOSSARY entries themselves.** The glossary is both a
   vocabulary source and a consumer; skills that reference
   the glossary are its downstream, but the glossary entries
-  *also* reference each other (inline links). Those internal
+  _also_ reference each other (inline links). Those internal
   edges are not captured here.
 
 **How to re-run this scan (reproducible):**
@@ -366,21 +365,22 @@ the skill-library's moving parts.
 
 After the initial scan, Aaron's 5-message Girard reframe landed 4 more kernel-domain glossary entries (`Belief propagation`, `Mimetic theory (Girard)`, `Memetic theory (Dawkins)`, `Infer.NET`). A targeted re-scan of the 234 skill files for those terms, plus their mechanism vocabulary:
 
-| Term | Skill files mentioning | Notes |
-|---|---|---|
-| Belief propagation | 1 / 234 | `ml-researcher` only — ML-research-skill context, **not** factory-substrate usage. Effective genuine coverage: 0. |
-| Mimetic | 0 / 234 | Girard-side vocabulary, expected zero — landed this tick. |
-| Memetic | 0 / 234 | Dawkins-side vocabulary, expected zero — landed this tick. |
-| Girard | 0 / 234 | Canonical authority name — expected zero pre-propagation. |
-| Dawkins | 0 / 234 | Description-layer name — expected zero. |
-| Infer.NET | 0 / 234 | Microsoft Research .NET BP framework — on `Zeta.Bayesian` roadmap per `docs/ROADMAP.md:80`, `docs/INSTALLED.md:72`, not yet skill-surface-referenced. |
-| Pearl | 1 / 234 | `ml-researcher` only — same file as Belief propagation match, adjacent ML context, **not** factory usage of Pearl 1982. |
-| sum-product | 0 / 234 | BP mechanism vocabulary, expected zero. |
-| factor graph | 0 / 234 | BP substrate vocabulary — the skill-library-as-factor-graph reframe is the propagation target. |
+| Term               | Skill files mentioning | Notes                                                                                                                                                 |
+| ------------------ | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Belief propagation | 1 / 234                | `ml-researcher` only — ML-research-skill context, **not** factory-substrate usage. Effective genuine coverage: 0.                                     |
+| Mimetic            | 0 / 234                | Girard-side vocabulary, expected zero — landed this tick.                                                                                             |
+| Memetic            | 0 / 234                | Dawkins-side vocabulary, expected zero — landed this tick.                                                                                            |
+| Girard             | 0 / 234                | Canonical authority name — expected zero pre-propagation.                                                                                             |
+| Dawkins            | 0 / 234                | Description-layer name — expected zero.                                                                                                               |
+| Infer.NET          | 0 / 234                | Microsoft Research .NET BP framework — on `Zeta.Bayesian` roadmap per `docs/ROADMAP.md:80`, `docs/INSTALLED.md:72`, not yet skill-surface-referenced. |
+| Pearl              | 1 / 234                | `ml-researcher` only — same file as Belief propagation match, adjacent ML context, **not** factory usage of Pearl 1982.                               |
+| sum-product        | 0 / 234                | BP mechanism vocabulary, expected zero.                                                                                                               |
+| factor graph       | 0 / 234                | BP substrate vocabulary — the skill-library-as-factor-graph reframe is the propagation target.                                                        |
 
 **Interpretation:** the 4 Girard-reframe glossary entries join the 6 prior kernel-domain entries (carpenter, gardener, lattice, cleave, combine, The Map, catalyst) at zero genuine factory coverage — all **10** new kernel-domain entries are zero/adjacent-ML coverage at this baseline. This is structurally correct (they landed this tick via memory + GLOSSARY entries) and matches the propagation-work claim in the belief-propagation BACKLOG row (P1 Factory/static-analysis). Future scans should show non-zero coverage on ≥6 of 10 after ~5 rounds of `skill-improver` / `skill-creator` passes — that is the acceptance criterion the BACKLOG row commits to.
 
 **False-positive flags for future re-scans:**
+
 - `Belief propagation` — `ml-researcher` is the adjacent-ML-context source, not factory BP. Filter it out when counting propagation progress.
 - `Pearl` — same file, filter out when using as BP-authority-citation count.
 - `The Map` — generic English phrase (5 raw hits, 0 case-sensitive on prior scan). Use `"The Map"` exact-phrase-quoted + context grep.
@@ -415,7 +415,7 @@ Run at any future tick; delta from this baseline (0/234 genuine across all terms
   and matches the memory's claim that this is future
   propagation work.
 - `memory/feedback_crystallize_everything_lossless_compression_except_memory.md`
-  — this scan is the *pre-cleave baseline*; a post-cleave
+  — this scan is the _pre-cleave baseline_; a post-cleave
   scan (after kernel-domain glossary buildout propagates)
   should show reduced fragmentation (IVM/DBSP, Harsh
   critic/Kira gaps tighten).

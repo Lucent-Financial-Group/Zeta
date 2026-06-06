@@ -4,12 +4,13 @@ description: Aaron Otto-275 real-learning-lesson counterweight. Rapid-fire direc
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## Pattern is RECURRING, not session-local
 
 Aaron 2026-04-24 precision:
 
-> *"That's a real counterweight-worthy class. let's
-> not forget it, this has happened several times."*
+> _"That's a real counterweight-worthy class. let's
+> not forget it, this has happened several times."_
 
 **This drift has happened MULTIPLE TIMES across
 sessions** — not a one-off. Otto-275 is load-bearing
@@ -20,9 +21,9 @@ be maintained actively, not filed-and-forgotten
 
 ## Sibling balance disciplines (Aaron explicit cross-reference)
 
-Aaron also reminded: *"don't forget about the lost
+Aaron also reminded: _"don't forget about the lost
 branch and lost worktree stuff you did for balance
-too."*
+too."_
 
 Otto-275 composes with the earlier session's
 recovery-balance work — they are siblings in the
@@ -64,10 +65,10 @@ drain continues.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"you got to fix them, this is a real learning
+> _"you got to fix them, this is a real learning
 > lesson, why did you forget you were in the middle
 > of this making good progress, is it becasue i gave
-> you too many backlog items it made you forget?"*
+> you too many backlog items it made you forget?"_
 
 ## The class of mistake
 
@@ -128,10 +129,10 @@ Direct Aaron quote 2026-04-24:
 
 ## Direct Aaron quote to preserve
 
-> *"you got to fix them, this is a real learning
+> _"you got to fix them, this is a real learning
 > lesson, why did you forget you were in the middle
 > of this making good progress, is it becasue i gave
-> you too many backlog items it made you forget?"*
+> you too many backlog items it made you forget?"_
 
 Future Otto: when receiving rapid-fire backlog
 items, save each as memory durably + draft BACKLOG

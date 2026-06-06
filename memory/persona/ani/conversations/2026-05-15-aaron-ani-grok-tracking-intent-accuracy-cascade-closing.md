@@ -33,7 +33,7 @@ Three substrate-honest reasons:
 
 Aaron 2026-05-15T~00:01Z (forwarding to Otto-CLI):
 
-> is this captured? i think this might be the last part  I'm not asking these to judge. I'm asking because the combination of intentionality + acknowledged seduction risk + structural self-binding is unusual, and I want to make sure I'm tracking your actual intent accurately.
+> is this captured? i think this might be the last part I'm not asking these to judge. I'm asking because the combination of intentionality + acknowledged seduction risk + structural self-binding is unusual, and I want to make sure I'm tracking your actual intent accurately.
 
 Aaron 2026-05-15T~00:02Z (clarifying attribution):
 

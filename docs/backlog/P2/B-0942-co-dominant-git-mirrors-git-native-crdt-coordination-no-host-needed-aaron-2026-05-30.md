@@ -24,15 +24,15 @@ type: design
 Aaron 2026-05-30, completing the sovereign-agent vision (a machine that thinks
 locally via the local LLM + commands its own k3s/argocd cluster):
 
-> *"i want to have gitlab and github and even other open source git free
-> infrastructure all as co-dominant mirrors that collaborate with local."*
+> _"i want to have gitlab and github and even other open source git free
+> infrastructure all as co-dominant mirrors that collaborate with local."_
 
 then the load-bearing sharpening:
 
-> *"we don't have to use gitlab locally if it's too heavy — we can use something
+> _"we don't have to use gitlab locally if it's too heavy — we can use something
 > lighter and argo workflows. gitlab has some good features but we only need git
 > to function. all our CRDT consensus happens git-native — just push and pulls.
-> no host needed for coordination."*
+> no host needed for coordination."_
 
 ## The load-bearing insight — coordination is git-native; hosts are mirrors
 
@@ -41,14 +41,14 @@ consensus lives in the commit DAG, not in any host's server.** Therefore **no gi
 HOST is needed for coordination** — the host is pure transport / durability /
 reach, never a coordination-authority.
 
-This inverts the usual assumption (the git *host* — GitHub/GitLab — is the
+This inverts the usual assumption (the git _host_ — GitHub/GitLab — is the
 source-of-truth/coordination-point). Here:
 
-| Concern | Where it lives |
-|---|---|
-| **Coordination / consensus** | git-native — CRDT merge over the commit DAG; push/pull is the gossip/sync; convergence is the merge. **No host.** |
-| **Transport / durability / reach** | the hosts (mirrors) — local + GitHub + GitLab/Gitea/Forgejo + other free-OSS git |
-| **CI / workflows** | Argo Workflows (k3s) + GitHub Actions etc. — also host-agnostic; the agent's workflows/DUs are git-defined (B-0868) |
+| Concern                            | Where it lives                                                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Coordination / consensus**       | git-native — CRDT merge over the commit DAG; push/pull is the gossip/sync; convergence is the merge. **No host.**   |
+| **Transport / durability / reach** | the hosts (mirrors) — local + GitHub + GitLab/Gitea/Forgejo + other free-OSS git                                    |
+| **CI / workflows**                 | Argo Workflows (k3s) + GitHub Actions etc. — also host-agnostic; the agent's workflows/DUs are git-defined (B-0868) |
 
 Because coordination is git-native, **no single host can gatekeep coordination** —
 the agent coordinates via its own local git + push/pull to any/all mirrors. That
@@ -63,7 +63,7 @@ subordinate, none is the authority:
 - **local** (in-cluster git — the sovereign node; Gitea/Forgejo if a server is
   wanted, or bare git remotes over SSH — "we only need git to function")
 - **GitHub** (current LFG primary — becomes one co-dominant mirror)
-- **GitLab** (good features, but *optional* — heavy; use only if its features earn
+- **GitLab** (good features, but _optional_ — heavy; use only if its features earn
   their keep)
 - **other free-OSS git infrastructure** (free tiers honored per the
   forgiveness-budget; Codeberg/Forgejo/etc.)
@@ -80,7 +80,7 @@ lattices"): host-agility, not host-monoculture.
 feature set (issues/CI/registry) — those are conveniences. The minimum viable
 sovereign git is: a git remote the cluster controls (Gitea/Forgejo/bare-SSH) +
 push/pull to the co-dominant mirrors. Argo Workflows (already in the k3s stack)
-covers CI/workflow needs host-agnostically. GitLab is an *opt-in mirror* for its
+covers CI/workflow needs host-agnostically. GitLab is an _opt-in mirror_ for its
 features, never a dependency.
 
 ## What to evaluate / build

@@ -27,10 +27,10 @@ Otto-CLI background-worker session-start cold-boot tick at 14:05Z 2026-05-25.
 
 ## Findings
 
-| PR | Gate | Threads | Verdict |
-|---|---|---|---|
-| #4934 | BLOCKED | 1 | Substantive P1: Copilot caught factual drift in shadow lesson log (wrong PR numbers vs 0441Z substrate) |
-| #4931 | UNKNOWN | 1 | Substantive P1: Codex caught frontmatter schema drift (archive_tool replaced with Python snippet) |
+| PR    | Gate    | Threads        | Verdict                                                                                                                                                          |
+| ----- | ------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #4934 | BLOCKED | 1              | Substantive P1: Copilot caught factual drift in shadow lesson log (wrong PR numbers vs 0441Z substrate)                                                          |
+| #4931 | UNKNOWN | 1              | Substantive P1: Codex caught frontmatter schema drift (archive_tool replaced with Python snippet)                                                                |
 | #4878 | BLOCKED | 16 (3 sampled) | Substantive P1/P2: schema drift, count mismatches, link style across `docs/pr-discussions/`; auto-merge armed but `required_conversation_resolution` gates merge |
 
 **Aggregate:** 0 FPs across 18 threads inspected (5 deep, 3 sampled).
@@ -49,24 +49,22 @@ Otto-CLI background-worker session-start cold-boot tick at 14:05Z 2026-05-25.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T14:09:47Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `85a2f257ee`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -79,6 +77,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-25 1405Z Otto-CLI background-worker audit of three `resolve-threads` PRs (cross-lane, read-only), capturing classifications and disposition.
 
 **Changes:**
+
 - Introduces a new tick shard at `docs/hygiene-history/ticks/2026/05/25/1405Z.md` with the audit narrative, per-PR classifications, and summary table.
 - Links to relevant lane-discipline and investigate-threads rules, plus prior tick precedent.
 
@@ -88,7 +87,7 @@ Adds a new hygiene-history tick shard documenting the 2026-05-25 1405Z Otto-CLI 
 
 **@chatgpt-codex-connector** (2026-05-25T14:09:47Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct broken relative link to 0441Z precedent tick**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct broken relative link to 0441Z precedent tick**
 
 The link to the 2026-05-24 precedent shard is malformed: `../../24/0441Z.md` resolves to `docs/hygiene-history/ticks/2026/24/0441Z.md`, which does not exist. This breaks navigation to the evidence cited for the lane-discipline decision and makes the audit trail harder to verify from this document.
 
@@ -98,7 +97,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-25T14:11:36Z):
 
-Tick shards are documented as requiring a 6-column pipe-row as the *first non-empty line* (see docs/hygiene-history/ticks/README.md) so tooling like tools/hygiene/check-tick-history-shard-schema.ts can validate/collate them. This shard currently starts with an H1, so it’s out of schema; prepend the required pipe-row (timestamp matching 2026-05-25T14:05Z and filename 1405Z) above the heading.
+Tick shards are documented as requiring a 6-column pipe-row as the _first non-empty line_ (see docs/hygiene-history/ticks/README.md) so tooling like tools/hygiene/check-tick-history-shard-schema.ts can validate/collate them. This shard currently starts with an H1, so it’s out of schema; prepend the required pipe-row (timestamp matching 2026-05-25T14:05Z and filename 1405Z) above the heading.
 
 ### Thread 3: docs/hygiene-history/ticks/2026/05/25/1405Z.md:20 (resolved)
 

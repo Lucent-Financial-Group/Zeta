@@ -48,12 +48,7 @@ import { closeSync, mkdirSync, openSync, readSync, statSync, writeSync } from "n
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import {
-  formatBypassMessage,
-  formatRejectionMessage,
-  GROK_SUBSTANTIVE_TRIGGERS,
-  peerFirewallCheck,
-} from "./_firewall";
+import { formatBypassMessage, formatRejectionMessage, GROK_SUBSTANTIVE_TRIGGERS, peerFirewallCheck } from "./_firewall";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;

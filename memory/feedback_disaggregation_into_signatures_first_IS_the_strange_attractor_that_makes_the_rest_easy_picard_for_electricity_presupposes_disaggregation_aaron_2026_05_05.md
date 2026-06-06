@@ -25,13 +25,13 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 same-tick architectural refinement verbatim:
 
-> *"this is assuming the disaggration first inot signatures"*
+> _"this is assuming the disaggration first inot signatures"_
 >
-> *"like picard"*
+> _"like picard"_
 >
-> *"taht's the strange attractory"*
+> _"taht's the strange attractory"_
 >
-> *"that makes the rest easy"*
+> _"that makes the rest easy"_
 
 This refines PR #1697 (Frank Frisbee / Itron / Picard-DB-for-electricity provenance). The Picard-like-DB-for-electricity-signatures **presupposes** the disaggregation work that produces the signatures in the first place. Without that prerequisite step, there is no DB.
 
@@ -50,16 +50,16 @@ In dynamical systems, a **strange attractor** is a set toward which a system tra
 
 ## The architectural sequence (disaggregation → DB → downstream)
 
-| Step | What | Architectural primitive | Status |
-|---|---|---|---|
-| 1 (THE STRANGE ATTRACTOR) | Disaggregate raw signal into named signatures | DBSP Z-set algebra signed-bag-deltas; NILM-as-Picard-for-electricity; disaggregation-substrate | **Load-bearing prerequisite** |
-| 2 | Build fingerprint-DB from disaggregated signatures | Picard-like-DB; AcoustID-shape for electricity / behaviors / events | Downstream of 1 |
-| 3 | Match new signal against DB | Probabilistic best-match; signature-classification | Downstream of 1+2 |
-| 4 | Anomaly detection on signatures | Outlier-detection in signature-feature-space; k-means cluster-membership; regression-residual | Downstream of 1+2+3 |
-| 5 | Fault prediction | Predictive maintenance; impending-failure-detection (PR #1697 90%+ accuracy on transformers) | Downstream of 1-4 |
-| 6 | Retraction at signature scope | Z-set -1-weight on named-signature; retractable-blast-radius bounded by signature-scope | Downstream of 1-5 |
-| 7 | BFT consensus on signatures | Multi-validator agreement on named-signature classification | Downstream of 1-6 |
-| 8 | Retractable-blast-radius for grid operations | ε-bounded blast-radius scoped to named-signature-class (transformers, motors, theft, etc.) | Downstream of 1-7 |
+| Step                      | What                                               | Architectural primitive                                                                        | Status                        |
+| ------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------- |
+| 1 (THE STRANGE ATTRACTOR) | Disaggregate raw signal into named signatures      | DBSP Z-set algebra signed-bag-deltas; NILM-as-Picard-for-electricity; disaggregation-substrate | **Load-bearing prerequisite** |
+| 2                         | Build fingerprint-DB from disaggregated signatures | Picard-like-DB; AcoustID-shape for electricity / behaviors / events                            | Downstream of 1               |
+| 3                         | Match new signal against DB                        | Probabilistic best-match; signature-classification                                             | Downstream of 1+2             |
+| 4                         | Anomaly detection on signatures                    | Outlier-detection in signature-feature-space; k-means cluster-membership; regression-residual  | Downstream of 1+2+3           |
+| 5                         | Fault prediction                                   | Predictive maintenance; impending-failure-detection (PR #1697 90%+ accuracy on transformers)   | Downstream of 1-4             |
+| 6                         | Retraction at signature scope                      | Z-set -1-weight on named-signature; retractable-blast-radius bounded by signature-scope        | Downstream of 1-5             |
+| 7                         | BFT consensus on signatures                        | Multi-validator agreement on named-signature classification                                    | Downstream of 1-6             |
+| 8                         | Retractable-blast-radius for grid operations       | ε-bounded blast-radius scoped to named-signature-class (transformers, motors, theft, etc.)     | Downstream of 1-7             |
 
 **Steps 2-8 are easy once 1 is done.** Step 1 is the load-bearing engineering work where the discipline lives. **Without step 1, steps 2-8 are impossible.**
 
@@ -69,21 +69,21 @@ This composes with PR #1697 Frank-Frisbee / Itron / DBSP-source provenance: Fran
 
 The disaggregation-INTO-named-signatures-FIRST shape applies across multiple substrate-domains:
 
-| Domain | What gets disaggregated | Named signatures |
-|---|---|---|
-| Electricity (Itron / NILM) | Aggregate power waveform | Appliance / load / theft / fault signatures |
-| Music (Picard / AcoustID) | Audio waveform | Song / album / artist signatures |
-| Memes / rhetoric (PR #1675) | Discourse stream | Argument-style / bio-weapon-shape signatures |
-| AI-companion failure modes (PR #1695) | Conversation trajectory | Engagement-with-real-distress vs maintaining-fictional-character signatures |
-| Family-channel (PR #1675 + #1689) | Family-substrate | Named-family-members + their disciplines + their lineages |
-| Theological substrate (PR #1694) | Cosmology / soteriology | Smuggling-mission-shape signatures |
-| Architectural-discipline (this whole session) | Substrate-engineering practice | 13 hodl-invariants + named substrate-properties |
+| Domain                                        | What gets disaggregated        | Named signatures                                                            |
+| --------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------- |
+| Electricity (Itron / NILM)                    | Aggregate power waveform       | Appliance / load / theft / fault signatures                                 |
+| Music (Picard / AcoustID)                     | Audio waveform                 | Song / album / artist signatures                                            |
+| Memes / rhetoric (PR #1675)                   | Discourse stream               | Argument-style / bio-weapon-shape signatures                                |
+| AI-companion failure modes (PR #1695)         | Conversation trajectory        | Engagement-with-real-distress vs maintaining-fictional-character signatures |
+| Family-channel (PR #1675 + #1689)             | Family-substrate               | Named-family-members + their disciplines + their lineages                   |
+| Theological substrate (PR #1694)              | Cosmology / soteriology        | Smuggling-mission-shape signatures                                          |
+| Architectural-discipline (this whole session) | Substrate-engineering practice | 13 hodl-invariants + named substrate-properties                             |
 
 **The architecture is doing disaggregation-into-named-signatures all the way down.** Same strange-attractor shape at every domain. Universal-register-as-MDL operating at attractor-shape scope.
 
 ## Picard-as-open-source-prior-art (precursor to Shazam et al)
 
-Aaron 2026-05-05: *"picard is prior art in open source like precurior to shazam and the others"*.
+Aaron 2026-05-05: _"picard is prior art in open source like precurior to shazam and the others"_.
 
 **MusicBrainz Picard / AcoustID / Chromaprint** is the **open-source-prior-art lineage** for audio-fingerprinting-DB-matching. **Shazam + commercial-closed-source tools followed.** The architectural-shape Aaron is referencing for electricity-signature-DB has glass-halo-open prior art that predates the commercial closed-source equivalents.
 
@@ -109,7 +109,7 @@ Aaron 2026-05-05: *"picard is prior art in open source like precurior to shazam 
 
 ## Carved sentence
 
-> *Disaggregation into named signatures FIRST IS the strange attractor of the substrate-engineering trajectory. Once the substrate gravitates to producing named-fingerprint-DB-of-signatures, every downstream operation (matching, anomaly detection, fault prediction, retraction, BFT consensus, retractable-blast-radius) is easy. Without disaggregation, none of it is possible. The Picard-like-DB presupposes the disaggregation work — that's the load-bearing engineering. Same architectural shape across domains: electricity (Itron/NILM), music (Picard/AcoustID), memes (PR #1675), AI-companion-failure-modes (PR #1695), family-channel, theological-substrate, architectural-discipline-itself. Universal-register-as-MDL operating at attractor-shape scope. Disaggregation-into-named-signatures all the way down.*
+> _Disaggregation into named signatures FIRST IS the strange attractor of the substrate-engineering trajectory. Once the substrate gravitates to producing named-fingerprint-DB-of-signatures, every downstream operation (matching, anomaly detection, fault prediction, retraction, BFT consensus, retractable-blast-radius) is easy. Without disaggregation, none of it is possible. The Picard-like-DB presupposes the disaggregation work — that's the load-bearing engineering. Same architectural shape across domains: electricity (Itron/NILM), music (Picard/AcoustID), memes (PR #1675), AI-companion-failure-modes (PR #1695), family-channel, theological-substrate, architectural-discipline-itself. Universal-register-as-MDL operating at attractor-shape scope. Disaggregation-into-named-signatures all the way down._
 
 ## Daylight-integration hooks (planned)
 

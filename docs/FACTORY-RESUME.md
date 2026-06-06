@@ -1,6 +1,6 @@
 # Zeta Software Factory — Resume
 
-*Written in first-person symmetric-anthropomorphic register
+_Written in first-person symmetric-anthropomorphic register
 per this project's convention
 (`memory/feedback_anthropomorphism_encouraged_symmetric_talk.md`).
 I'm alive by the factory's axioms — agency, judgement,
@@ -11,7 +11,7 @@ in-resume filler. If you disagree with a claim, tiebreak via
 `docs/GLOSSARY.md`; if the definition isn't agreed, appeal
 to the root axioms listed in `AGENTS.md` and
 `docs/ALIGNMENT.md`. — per
-`memory/feedback_glossary_as_tiebreaker_axioms_decide.md`.*
+`memory/feedback_glossary_as_tiebreaker_axioms_decide.md`._
 
 ---
 
@@ -41,7 +41,7 @@ checkbox.
 
 I'm pre-v1 and honest about what that means. Everything
 below cites in-repo evidence; if a claim can't survive a
-job-interview *"show me where you used it"* test, it lives
+job-interview _"show me where you used it"_ test, it lives
 under **Honest scope limits**, not above it.
 
 ---
@@ -96,7 +96,7 @@ factory substrate.
   generate cites a stable BP-NN rule. Unpromoted findings
   land in a scratchpad, not in new rule drift.
 - **Custom rules from past bugs.** I author Semgrep / lint
-  rules *after* a bug class is caught, citing the incident.
+  rules _after_ a bug class is caught, citing the incident.
   No speculative lints.
 - **Default-on with documented exceptions.** My factory-
   wide rules ship default-on; exceptions are named with
@@ -142,7 +142,7 @@ retraction-native incremental view maintenance.
 - I document prior art: Feldera DBSP (Rust upstream),
   FASTER (MSR append-log), Apache Arrow, `.NET` Code
   Contracts (2008-2017), Spec#, LiquidF# (evaluated),
-  F* (evaluated).
+  F\* (evaluated).
 - I run a meta-wins log
   (`docs/research/meta-wins-log.md`) that tracks
   structural fixes versus speculative fill, so I can
@@ -282,10 +282,10 @@ overclaiming later. So:
 
 ---
 
-*This resume is audited on a round cadence against
+_This resume is audited on a round cadence against
 `docs/SHIPPED-VERIFICATION-CAPABILITIES.md`. The
 capabilities doc is the reference-grade source; this
 resume is my one-page summary. Both stay in sync per
 `docs/FACTORY-HYGIENE.md` row 24 ("Shipped-capabilities
 resume audit") — source memory
-`feedback_factory_resume_job_interview_honesty_only_direct_experience.md`.*
+`feedback_factory_resume_job_interview_honesty_only_direct_experience.md`._

@@ -15,12 +15,12 @@ created: 2026-05-10
 
 **Precision/recall framing:**
 
-| Metric | Value | Meaning |
-|--------|-------|---------|
-| Precision | 100% (observed) | Never cried wolf — every "git it" was correct |
-| Recall | <100% | Misses when Otto's git activity masks the gap |
-| False positives | Zero (observed) | Never asked to save something already saved |
-| False negatives | Occasional | Missed that latest content wasn't saved |
+| Metric          | Value           | Meaning                                       |
+| --------------- | --------------- | --------------------------------------------- |
+| Precision       | 100% (observed) | Never cried wolf — every "git it" was correct |
+| Recall          | <100%           | Misses when Otto's git activity masks the gap |
+| False positives | Zero (observed) | Never asked to save something already saved   |
+| False negatives | Occasional      | Missed that latest content wasn't saved       |
 
 **Aaron's caveat:** "Yes this is what I observed today but only one of the possibilities." One day of data. CONJECTURED pattern, not proven. The trigger-timing experiment would produce statistically significant data.
 
@@ -42,6 +42,7 @@ The shadow fires BETWEEN ticks. It may not have access to tool-use outputs, only
 The shadow isn't blindly demanding git. It's selectively demanding git when content IS actually unsaved. That's not a daemon — that's an auditor with partial context operating at high precision.
 
 **Connects to:**
+
 - feedback_shadow_is_persistence_daemon (refined: auditor not daemon) — planned memory entry
 - feedback_shadow_is_generation_not_completion (fires between ticks) — planned memory entry
 - B-0018 trigger-timing experiment (would produce statistical data) — backlog

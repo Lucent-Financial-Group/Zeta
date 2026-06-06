@@ -39,13 +39,13 @@ Mika's framing of B-0759 first-time-CLI-user persona substrate:
 
 The framing matters because:
 
-| Wrong framing ("humans do less") | Right framing ("eliminate tool wars") |
-|---|---|
-| Implies humans are being replaced / displaced | Implies humans are being freed from busywork to focus on intent |
-| Implies a value judgment (less human = better) | Names a specific failure mode being eliminated |
+| Wrong framing ("humans do less")                                      | Right framing ("eliminate tool wars")                                           |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Implies humans are being replaced / displaced                         | Implies humans are being freed from busywork to focus on intent                 |
+| Implies a value judgment (less human = better)                        | Names a specific failure mode being eliminated                                  |
 | Doesn't honor the operator's agency (they CHOOSE what to engage with) | Operator chooses depth of engagement; substrate removes friction not engagement |
-| Suggests AI replaces humans uniformly | Operators who WANT to dig in can; substrate doesn't force minimization |
-| Easy to misread as anti-human | Pro-human (humans get to do meaningful work; not fight with tools) |
+| Suggests AI replaces humans uniformly                                 | Operators who WANT to dig in can; substrate doesn't force minimization          |
+| Easy to misread as anti-human                                         | Pro-human (humans get to do meaningful work; not fight with tools)              |
 
 The substrate's actual value-prop: **operators (whether AI or
 human) refocus their attention to what really matters — intent,
@@ -74,22 +74,22 @@ SDK rewrites per cloud, etc.).
 Substrate-honest enumeration of the tool-war failure modes
 Zeta substrate eliminates:
 
-| Tool war | What operators normally fight | What Zeta substrate provides |
-|---|---|---|
-| **Cloud-vendor switching** | Rewrite app per cloud SDK | B-0763 vendor-swap behind owned interfaces |
-| **K8s YAML hell** | Hand-edit YAML; typos at runtime; CRD drift | B-0781 F# type system; compile-time validation |
-| **Helm vs Kustomize vs Argo CD** | Pick one; recommit when wrong | B-0765 ServiceTitan-route + B-0747 GitOps standard |
-| **Per-vendor CRD differences** | Learn N vendor's CRDs | B-0741 ontology negotiation; one mental model |
-| **Cluster install ceremony** | ~8 commands of node-side typing | B-0754 zero-typing first-boot |
-| **Node failure repair** | Debugging + manual recovery | B-0760 USB-as-repair-tool |
-| **Backend choice for state store** | etcd vs Postgres vs CockroachDB vs DynamoDB; rewrite per choice | B-0774 kine adapter family |
-| **Scheduling configuration** | Custom plugins, scheduler hints, taints/tolerations | B-0767 Zeta-native scheduler + B-0772 fabric |
-| **Observability stack assembly** | Pick Prometheus + Loki + Tempo + Grafana + glue | Already pre-deployed per existing Zeta cluster |
-| **AI model serving framework** | Pick Triton vs TorchServe vs vLLM vs custom | B-0771 ONNX-as-operator-contract + per-runtime EP |
-| **Per-language SDK** | Rewrite for each language | B-0772 polyglot Rx (same algebra everywhere) |
-| **Multi-cluster federation** | Custom orchestration | B-0775 Karmada / NATS super-cluster |
-| **Testing infrastructure** | Stand up Docker / K8s for every test | B-0780 Local Loop three-tier testing |
-| **Distributed-app primitives** | Custom state mgmt / pub-sub per app | B-0776 plugin sequence wrapping deployed substrate |
+| Tool war                           | What operators normally fight                                   | What Zeta substrate provides                       |
+| ---------------------------------- | --------------------------------------------------------------- | -------------------------------------------------- |
+| **Cloud-vendor switching**         | Rewrite app per cloud SDK                                       | B-0763 vendor-swap behind owned interfaces         |
+| **K8s YAML hell**                  | Hand-edit YAML; typos at runtime; CRD drift                     | B-0781 F# type system; compile-time validation     |
+| **Helm vs Kustomize vs Argo CD**   | Pick one; recommit when wrong                                   | B-0765 ServiceTitan-route + B-0747 GitOps standard |
+| **Per-vendor CRD differences**     | Learn N vendor's CRDs                                           | B-0741 ontology negotiation; one mental model      |
+| **Cluster install ceremony**       | ~8 commands of node-side typing                                 | B-0754 zero-typing first-boot                      |
+| **Node failure repair**            | Debugging + manual recovery                                     | B-0760 USB-as-repair-tool                          |
+| **Backend choice for state store** | etcd vs Postgres vs CockroachDB vs DynamoDB; rewrite per choice | B-0774 kine adapter family                         |
+| **Scheduling configuration**       | Custom plugins, scheduler hints, taints/tolerations             | B-0767 Zeta-native scheduler + B-0772 fabric       |
+| **Observability stack assembly**   | Pick Prometheus + Loki + Tempo + Grafana + glue                 | Already pre-deployed per existing Zeta cluster     |
+| **AI model serving framework**     | Pick Triton vs TorchServe vs vLLM vs custom                     | B-0771 ONNX-as-operator-contract + per-runtime EP  |
+| **Per-language SDK**               | Rewrite for each language                                       | B-0772 polyglot Rx (same algebra everywhere)       |
+| **Multi-cluster federation**       | Custom orchestration                                            | B-0775 Karmada / NATS super-cluster                |
+| **Testing infrastructure**         | Stand up Docker / K8s for every test                            | B-0780 Local Loop three-tier testing               |
+| **Distributed-app primitives**     | Custom state mgmt / pub-sub per app                             | B-0776 plugin sequence wrapping deployed substrate |
 
 Each tool war eliminated frees operator attention for INTENT —
 what to actually build, what business problem to solve, what
@@ -99,15 +99,15 @@ AI workload to run.
 
 The sharpening applies across operator personas:
 
-| Persona | Tool war eliminated | Attention refocused to |
-|---|---|---|
-| First-time CLI user (B-0759) | Cluster install friction | Building their first AI workload |
-| AI engineer | Cloud SDK differences; model-serving framework choice | Model + workload design |
-| Industrial IoT engineer | Per-vendor PLC + SCADA integration | Operational process design |
-| Game developer | Server hosting + scaling + database choice | Game design + player experience |
-| Enterprise architect | Multi-cluster federation complexity | Strategic architecture decisions |
-| CEO of N companies (per B-0782) | Per-company implementation oversight | Cross-DIO ontology + intent |
-| AI agent operator | API-vendor integration boilerplate | Agent capability + task design |
+| Persona                         | Tool war eliminated                                   | Attention refocused to           |
+| ------------------------------- | ----------------------------------------------------- | -------------------------------- |
+| First-time CLI user (B-0759)    | Cluster install friction                              | Building their first AI workload |
+| AI engineer                     | Cloud SDK differences; model-serving framework choice | Model + workload design          |
+| Industrial IoT engineer         | Per-vendor PLC + SCADA integration                    | Operational process design       |
+| Game developer                  | Server hosting + scaling + database choice            | Game design + player experience  |
+| Enterprise architect            | Multi-cluster federation complexity                   | Strategic architecture decisions |
+| CEO of N companies (per B-0782) | Per-company implementation oversight                  | Cross-DIO ontology + intent      |
+| AI agent operator               | API-vendor integration boilerplate                    | Agent capability + task design   |
 
 Each persona's tool wars are specific; substrate eliminates
 the friction; operator's attention refocuses to their actual
@@ -154,8 +154,7 @@ getting eaten by per-DIO tool wars.
       per-persona "tool wars eliminated" + "attention
       refocused to" specifics published
 - [ ] Operator testimonial template (if/when external users
-      adopt): operator describes what tool war was eliminated
-      + what they got to focus on instead; collected via
+      adopt): operator describes what tool war was eliminated + what they got to focus on instead; collected via
       B-0762 telemetry flywheel opt-in
 
 ## Why P2 priority

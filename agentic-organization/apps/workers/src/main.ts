@@ -5,10 +5,7 @@ import { fileURLToPath } from "node:url";
 import type { AgenticEventEnvelope } from "../../../packages/domain/src/index.ts";
 import type { EventPublisher } from "../../../packages/messaging/src/index.ts";
 import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
-import type {
-  NatsDeadLetterPublisher,
-  NatsJetStreamPullConsumer,
-} from "../../../packages/messaging-nats/src/index.ts";
+import type { NatsDeadLetterPublisher, NatsJetStreamPullConsumer } from "../../../packages/messaging-nats/src/index.ts";
 import {
   ReactionPlanExecutionStatus,
   type EventPayloadHashCalculator,
@@ -86,10 +83,7 @@ import {
   type WorkerEntrypointSignalSubscription,
   type WorkerEntrypointSleeper,
 } from "./worker-process-entrypoint.ts";
-import {
-  WorkerProcessLoopEventName,
-  type WorkerProcessLoopObserver,
-} from "./worker-process-loop.ts";
+import { WorkerProcessLoopEventName, type WorkerProcessLoopObserver } from "./worker-process-loop.ts";
 import { createWorkerProcess, type WorkerProcessShutdownPort } from "./worker-process.ts";
 
 export const WorkerMainDefault = {
@@ -390,7 +384,13 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
         record: (record) =>
           deps.logger.log({
             stream: WorkerMainLogStream.Stdout,
-            message: JSON.stringify({ eventName: "agentic.worker.org_cadence.tick", lane: record.lane, tick: record.tick, status: record.status, failureCount: record.failureCount }),
+            message: JSON.stringify({
+              eventName: "agentic.worker.org_cadence.tick",
+              lane: record.lane,
+              tick: record.tick,
+              status: record.status,
+              failureCount: record.failureCount,
+            }),
           }),
       },
     });
@@ -441,9 +441,7 @@ function createWorkerTelemetryPort(config: WorkerProcessConfig): TelemetryPort |
   });
 }
 
-function observeActDriverFor(
-  mode: AgentLoopMode,
-): { workOsDriver?: "observe-act-shadow" | "observe-act-primary" } {
+function observeActDriverFor(mode: AgentLoopMode): { workOsDriver?: "observe-act-shadow" | "observe-act-primary" } {
   switch (mode) {
     case AgentLoopMode.Legacy:
       return {};

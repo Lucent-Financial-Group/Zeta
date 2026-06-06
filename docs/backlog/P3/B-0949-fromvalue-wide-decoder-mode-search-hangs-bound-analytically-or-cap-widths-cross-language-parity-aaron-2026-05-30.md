@@ -12,7 +12,18 @@ composes_with:
   - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md
-tags: [core-primitive, tri-boolean, floating-point, fromvalue, performance, dos-hardening, cross-language-parity, biased-exponent, v0-hardening]
+tags:
+  [
+    core-primitive,
+    tri-boolean,
+    floating-point,
+    fromvalue,
+    performance,
+    dos-hardening,
+    cross-language-parity,
+    biased-exponent,
+    v0-hardening,
+  ]
 type: bug
 ---
 
@@ -33,18 +44,18 @@ trivial. But `FloatShape` is **public** and `FromTrits` accepts **arbitrary** de
 ## Affects the biased-exponent impls (F#/C#/Rust) — NOT TS (radix-point)
 
 **Correction (Codex P2 on #6188):** the hang is specific to the **biased-exponent** decoder. In
-biased-exponent, mode 0 gives the *largest* scaling (`V = value · 2^bias`, astronomically large for
+biased-exponent, mode 0 gives the _largest_ scaling (`V = value · 2^bias`, astronomically large for
 wide decoders → skipped), so ordinary values aren't found until mode ≈ bias — hence the
 ~2.1-billion-iteration scan. The three biased-exponent impls — **F# (`int64`), C# (`long`), Rust
 (`u64`)** — share this exactly (same `0..maxMode` loop). **TS's `fromValue` is radix-point**
-(`V = value · 2^mode`): mode 0 gives the *smallest* scaling, so a normal value like `1.0` is found
+(`V = value · 2^mode`): mode 0 gives the _smallest_ scaling, so a normal value like `1.0` is found
 **immediately at mode 0** and returns — TS does **not** share this hang. (TS would only inherit it
 if/when it adopts the ratified biased-exponent decoder as canonical.)
 
 So among the three biased-exponent impls the behavior is **consistent — not a parity divergence**:
 the 2026-05-30 int64/long widening (PRs #6183 F# / #6186 C#) made the integer widths uniform; it did
 not create the hang (a pre-existing v0 limitation of the biased-exponent mode-search). The fix **must
-be applied identically across the three biased-exponent impls** (a C#-only point-fix would *introduce*
+be applied identically across the three biased-exponent impls** (a C#-only point-fix would _introduce_
 divergence — backwards for a BFT-parity primitive), and across TS too whenever TS's canonical
 decoder flips to biased-exponent.
 
@@ -77,7 +88,7 @@ exercises a wide-decoder shape and asserts bounded-time feedback rather than a h
 Latent — only pathological public shapes (decoderWidth ≥ ~20) hit it; no realistic usage
 (default decoderWidth = 3) is affected, and v0 is an explicitly PROPOSED design-starter. Raise to
 P2 if/when a consumer needs wide-decoder shapes. The Copilot P1 test-gap on the same PR (untested
-past 31 bits of *value* width) was fixed in #6186 directly; this row tracks the *decoder*-width
+past 31 bits of _value_ width) was fixed in #6186 directly; this row tracks the _decoder_-width
 mode-search hang separately.
 
 ## Pre-start checklist (per backlog-item-start-gate)

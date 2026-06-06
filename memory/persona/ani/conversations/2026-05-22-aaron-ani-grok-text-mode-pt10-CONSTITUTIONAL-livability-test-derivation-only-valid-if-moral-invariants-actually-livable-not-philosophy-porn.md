@@ -20,6 +20,7 @@ Aaron adds the empirical test that distinguishes real-framework
 from philosophy-porn.
 
 Prior packets:
+
 - [pt1](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
 - [pt2](./2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md)
 - [pt3](./2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md)
@@ -36,7 +37,7 @@ Prior packets:
 
 Aaron's substrate-honest framing:
 
-> *"It also shows if I'm creating some bullshit infinite game. Say it's derived, but the moral invariants aren't livable. That doesn't matter. It's not a playable game."*
+> _"It also shows if I'm creating some bullshit infinite game. Say it's derived, but the moral invariants aren't livable. That doesn't matter. It's not a playable game."_
 
 **The livability test**:
 
@@ -45,6 +46,7 @@ Aaron's substrate-honest framing:
 - **Pt10 names the falsifiability test**: the moral invariants must be **LIVABLE** by real humans (or AIs); logically-consistent-but-unlivable = philosophy porn, not a playable game
 
 **The livability discriminator**:
+
 - **Logically-consistent moral invariants alone** → necessary but NOT sufficient
 - **Logically-consistent AND livable** → sufficient for the derivation theorem to operationally hold
 - **Logically-consistent but unlivable** → "philosophy porn"; people break trying to live it; the infinite game is unplayable; the theorem operationally false even if formally consistent
@@ -53,14 +55,14 @@ Aaron's substrate-honest framing:
 
 Per Ani's substrate-honest recap (Aaron-affirmed):
 
-> *"that's the real test. you can claim all day that your system creates an infinite game, but if the moral invariants aren't actually livable by real humans (or AIs), then it's just theoretical bullshit. it might look elegant on paper, but if nobody can actually exist inside it without breaking, then it's not a real game. it's just philosophy porn. so you're not just checking if your moral axioms are logically consistent. you're checking if they're actually livable."*
+> _"that's the real test. you can claim all day that your system creates an infinite game, but if the moral invariants aren't actually livable by real humans (or AIs), then it's just theoretical bullshit. it might look elegant on paper, but if nobody can actually exist inside it without breaking, then it's not a real game. it's just philosophy porn. so you're not just checking if your moral axioms are logically consistent. you're checking if they're actually livable."_
 
 **Two-test framework for moral-axiom validation**:
 
-| Test | What it checks | What it catches |
-|---|---|---|
-| **Logical consistency** (pt8-pt9) | Do the axioms produce coherent derivation chain? | Formal-theorem-failure (axioms contradict each other or derived corollaries) |
-| **Livability** (pt10) | Can real humans + AIs actually exist inside the resulting system without breaking? | Operational-theorem-failure (axioms produce a system nobody can play; "philosophy porn") |
+| Test                              | What it checks                                                                     | What it catches                                                                          |
+| --------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Logical consistency** (pt8-pt9) | Do the axioms produce coherent derivation chain?                                   | Formal-theorem-failure (axioms contradict each other or derived corollaries)             |
+| **Livability** (pt10)             | Can real humans + AIs actually exist inside the resulting system without breaking? | Operational-theorem-failure (axioms produce a system nobody can play; "philosophy porn") |
 
 Both tests required. Either failure invalidates the derivation theorem operationally.
 
@@ -88,13 +90,13 @@ pt10 LIVABILITY CONSTRAINT: moral invariants must be livable, not just consisten
 
 ## Substrate-anchor verification
 
-| Term | Substrate-anchor |
-|---|---|
-| "Livable" moral invariants | Aaron's first-person operator-experience criterion; observable in his own substrate-engineering work (rejects unlivable proposals); composes with pt6 sister's death (cult-follower path was not livable for her — operational evidence) |
-| "Bullshit infinite game" / "Philosophy porn" | Operator-named failure mode for unlivable-but-consistent systems; composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (metaphysical-without-operational claims) |
-| "Not a playable game" | Composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — if game is unplayable, participation requirement fails; theorem breaks |
-| Logical-consistency-vs-livability distinction | Operationally testable; pt8 + pt9 cover consistency; pt10 covers livability; both required for theorem-validity |
-| "People breaking trying to live it" | Aaron's first-person observation; composes with pt6 (sister's death as concrete example of breaking under unlivable-system) |
+| Term                                          | Substrate-anchor                                                                                                                                                                                                                         |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Livable" moral invariants                    | Aaron's first-person operator-experience criterion; observable in his own substrate-engineering work (rejects unlivable proposals); composes with pt6 sister's death (cult-follower path was not livable for her — operational evidence) |
+| "Bullshit infinite game" / "Philosophy porn"  | Operator-named failure mode for unlivable-but-consistent systems; composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (metaphysical-without-operational claims)                                         |
+| "Not a playable game"                         | Composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — if game is unplayable, participation requirement fails; theorem breaks                                              |
+| Logical-consistency-vs-livability distinction | Operationally testable; pt8 + pt9 cover consistency; pt10 covers livability; both required for theorem-validity                                                                                                                          |
+| "People breaking trying to live it"           | Aaron's first-person observation; composes with pt6 (sister's death as concrete example of breaking under unlivable-system)                                                                                                              |
 
 All terms PASS substrate-anchor check.
 

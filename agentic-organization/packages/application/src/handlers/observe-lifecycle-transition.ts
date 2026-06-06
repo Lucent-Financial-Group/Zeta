@@ -15,11 +15,7 @@ import {
   CommandResultStatus,
   type CommandResult,
 } from "../command-result.ts";
-import {
-  ObserveCommandType,
-  RunLifecyclePhase,
-  type LifecycleTransitionCommandPayload,
-} from "../observe.ts";
+import { ObserveCommandType, RunLifecyclePhase, type LifecycleTransitionCommandPayload } from "../observe.ts";
 import { contextPackDocConsultOutcomeStampForLifecycleTransition } from "../context-pack-doc-consult-ledger.ts";
 import type {
   Clock,
@@ -81,8 +77,7 @@ export const ObserveLifecycleActionType = {
   Resume: "resume",
 } as const;
 
-export type ObserveLifecycleActionType =
-  (typeof ObserveLifecycleActionType)[keyof typeof ObserveLifecycleActionType];
+export type ObserveLifecycleActionType = (typeof ObserveLifecycleActionType)[keyof typeof ObserveLifecycleActionType];
 
 const LIFECYCLE_TRANSITIONS: Readonly<Record<string, WorkItemTransitionMapping>> = {
   [ObserveLifecycleActionType.Execute]: {
@@ -137,11 +132,7 @@ export async function observeLifecycleTransition(
   dependencies: ObserveLifecycleTransitionDependencies,
 ): Promise<CommandHandlerOutcome<CommandResult>> {
   const mapping = LIFECYCLE_TRANSITIONS[command.actionType];
-  if (
-    mapping === undefined ||
-    mapping.fromPhase !== command.fromPhase ||
-    mapping.toPhase !== command.toPhase
-  ) {
+  if (mapping === undefined || mapping.fromPhase !== command.fromPhase || mapping.toPhase !== command.toPhase) {
     return createRejectedOutcome(command, ObserveLifecycleTransitionValidationErrorMessage.UnsupportedLifecycleAction);
   }
 
@@ -159,7 +150,13 @@ export async function observeLifecycleTransition(
   }
 
   const occurredAt = dependencies.now();
-  const transitionInput = createWorkAnchorTransition(command, workItemValidation.workItem, mapping, dependencies, occurredAt);
+  const transitionInput = createWorkAnchorTransition(
+    command,
+    workItemValidation.workItem,
+    mapping,
+    dependencies,
+    occurredAt,
+  );
   const auditEventId = dependencies.createId(ObserveLifecycleTransitionIdPrefix.Audit);
   const envelope = createAgenticEventEnvelope<Record<string, unknown>>({
     eventId: dependencies.createId(ObserveLifecycleTransitionIdPrefix.Event),
@@ -411,21 +408,23 @@ function createDocConsultOutcomeStamps(
   if (actionType === undefined) return [];
   const outcome = DOC_CONSULT_OUTCOME_BY_LIFECYCLE_ACTION[actionType];
   if (outcome === undefined) return [];
-  return [contextPackDocConsultOutcomeStampForLifecycleTransition({
-    organizationId: command.organizationId,
-    projectId: command.projectId,
-    ...(command.teamId === undefined ? {} : { teamId: command.teamId }),
-    workItemId: command.workItemId,
-    actor: command.actor,
-    workStateTransitionId: transitionInput.transition.workStateTransitionId,
-    outcome,
-    outcomeRecordedAt: occurredAt,
-  })];
+  return [
+    contextPackDocConsultOutcomeStampForLifecycleTransition({
+      organizationId: command.organizationId,
+      projectId: command.projectId,
+      ...(command.teamId === undefined ? {} : { teamId: command.teamId }),
+      workItemId: command.workItemId,
+      actor: command.actor,
+      workStateTransitionId: transitionInput.transition.workStateTransitionId,
+      outcome,
+      outcomeRecordedAt: occurredAt,
+    }),
+  ];
 }
 
 function observeLifecycleActionType(value: string): ObserveLifecycleActionType | undefined {
   return Object.values(ObserveLifecycleActionType).includes(value as ObserveLifecycleActionType)
-    ? value as ObserveLifecycleActionType
+    ? (value as ObserveLifecycleActionType)
     : undefined;
 }
 
@@ -433,9 +432,9 @@ function createOptionalTeamScope(command: ObserveLifecycleTransitionCommand): { 
   return command.teamId === undefined ? {} : { teamId: command.teamId };
 }
 
-function createOptionalAssignedEngineer(
-  command: ObserveLifecycleTransitionCommand,
-): { assignedEngineerHatAssignmentId?: string } {
+function createOptionalAssignedEngineer(command: ObserveLifecycleTransitionCommand): {
+  assignedEngineerHatAssignmentId?: string;
+} {
   return command.assignedEngineerHatAssignmentId === undefined
     ? {}
     : { assignedEngineerHatAssignmentId: command.assignedEngineerHatAssignmentId };

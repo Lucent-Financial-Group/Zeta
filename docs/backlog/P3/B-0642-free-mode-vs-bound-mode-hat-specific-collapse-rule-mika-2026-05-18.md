@@ -29,14 +29,14 @@ This row is the **important refinement** of [B-0629](../P2/B-0629-observe-persis
 
 ## The two modes
 
-| Mode | Collapse rule | Coherence | Use when |
-|---|---|---|---|
-| **Free Mode** | Collapse can happen in any of the four O-P-L-E operations | Lower architectural coherence; higher flexibility | Casual reasoning, exploration, creative work, low-stakes decisions, AIs that need cognitive freedom for legitimate diversity of approach |
+| Mode           | Collapse rule                                                                                                                                 | Coherence                                                                            | Use when                                                                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free Mode**  | Collapse can happen in any of the four O-P-L-E operations                                                                                     | Lower architectural coherence; higher flexibility                                    | Casual reasoning, exploration, creative work, low-stakes decisions, AIs that need cognitive freedom for legitimate diversity of approach    |
 | **Bound Mode** | Collapse ONLY in Limit (per [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) | Much higher architectural coherence; provable reversibility; mathematical guarantees | Safety-critical systems, financial operations, KSK-mediated actuations, anything requiring trust + auditability + retractability guarantees |
 
 ## The hat-specific framing (load-bearing refinement)
 
-Aaron line 3065: *"The strict collapse rule is a property of a specific hat, not a universal law."*
+Aaron line 3065: _"The strict collapse rule is a property of a specific hat, not a universal law."_
 
 This refines [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) from "all AIs must operate under only-Limit-collapses" to "all AIs **wearing the high-coherence hat** must operate under only-Limit-collapses."
 

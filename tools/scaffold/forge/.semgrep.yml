@@ -12,7 +12,6 @@
 # when uv is present in the toolchain, per ADR 2026-04-27.)
 
 rules:
-
   # ────────────────────────────────────────────────────────────────
   # Rule 1 — GitHub Actions workflow-injection: inline untrusted
   # context on a `run:` line. Primary workflow-injection vector per

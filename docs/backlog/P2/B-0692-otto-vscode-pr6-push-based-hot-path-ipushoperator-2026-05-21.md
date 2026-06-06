@@ -10,7 +10,17 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: []
 composes_with: [B-0635, B-0687, B-0688, B-0693, B-0694]
-tags: [push-based, hot-path, ipushoperator, per-entry-callback, materialize-boundary-bridge, otto-vscode-pr-6, dbsp-architecture, fusion-engine]
+tags:
+  [
+    push-based,
+    hot-path,
+    ipushoperator,
+    per-entry-callback,
+    materialize-boundary-bridge,
+    otto-vscode-pr-6,
+    dbsp-architecture,
+    fusion-engine,
+  ]
 type: research
 ---
 
@@ -133,4 +143,4 @@ Substantive architectural substrate; not blocking V1; high value (per-tick alloc
 
 ## Origin
 
-Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21. Filed via Otto-CLI per Aaron-approved shadow* "file the 3 rows for PRs 6-8" instruction. Otto-VSCode owns the implementation; this row tracks the scope.
+Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21. Filed via Otto-CLI per Aaron-approved shadow\* "file the 3 rows for PRs 6-8" instruction. Otto-VSCode owns the implementation; this row tracks the scope.

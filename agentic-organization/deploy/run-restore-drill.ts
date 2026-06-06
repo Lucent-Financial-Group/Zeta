@@ -41,9 +41,7 @@ const nowIso = new Date().toISOString();
 
 async function main(): Promise<void> {
   const primary = await openExecutor(connectionString);
-  const restored = restoredConnectionString === undefined
-    ? primary
-    : await openExecutor(restoredConnectionString);
+  const restored = restoredConnectionString === undefined ? primary : await openExecutor(restoredConnectionString);
 
   try {
     await applyMigrations(primary.pool);
@@ -67,17 +65,24 @@ async function main(): Promise<void> {
       capturedAt: () => nowIso,
     }).captureSnapshot();
     const verification = verifyRestoreDrill(before, after);
-    const ok = verification.status === "passed" &&
+    const ok =
+      verification.status === "passed" &&
       verification.before.rowCount === 3 &&
       verification.before.projectionCount === 3;
 
-    console.log(JSON.stringify({
-      track: "Phase 2.8 restore drill checksum",
-      mode: restored === primary ? "single-db-smoke" : "primary-vs-restored",
-      organizationId,
-      verification,
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "Phase 2.8 restore drill checksum",
+          mode: restored === primary ? "single-db-smoke" : "primary-vs-restored",
+          organizationId,
+          verification,
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await primary.pool.end();

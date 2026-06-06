@@ -4,10 +4,11 @@ description: Aaron Otto-112 "we are going to name it better right? bullshit, it 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-112 (verbatim):
 
-*"we are going to name it better right?  bullshit, it was in
-our conversation history too, not just her ferry."*
+_"we are going to name it better right? bullshit, it was in
+our conversation history too, not just her ferry."_
 
 ## Two directives in one
 
@@ -21,13 +22,13 @@ shorthand, not the intended public-interface name.
 
 **Proposed replacement: `Veridicality`.**
 
-- **Etymology:** `veridical` (from Latin *veridicus*,
+- **Etymology:** `veridical` (from Latin _veridicus_,
   "truth-telling") is a philosophical / cognitive-science
   term for a statement that corresponds to reality. The
   score `V(c)` in Amara's 7th ferry formula
   `V(c) = σ(β₀ + β₁(1-P) + β₂(1-F) + β₃(1-K) + β₄D_t + β₅G + β₆H)`
   is explicitly a **veridicality score**.
-- **Semantics:** Veridicality is the *scorable* quantity
+- **Semantics:** Veridicality is the _scorable_ quantity
   (how true-to-reality a claim looks given evidence,
   provenance, falsifiability, coherence, drift, and
   compression-gap signals). Bullshit is `1 - V(c)` in
@@ -43,6 +44,7 @@ shorthand, not the intended public-interface name.
   morally truthful (intentional non-deception).
 
 **Primary surface (when shipped):**
+
 - `src/Core/Veridicality.fs`
 - `Veridicality.score : Claim<'T> -> double option` in
   `[0.0, 1.0]` where high = grounded.
@@ -50,6 +52,7 @@ shorthand, not the intended public-interface name.
   possibly `OracleVector` from the 10th ferry.
 
 **Secondary surfaces likely needed around it:**
+
 - `src/Core/SemanticCanonicalization.fs` — the "rainbow
   table" canonical-claim-form lookup (K(c) in Amara's
   notation). Separate module; composes with Veridicality.
@@ -59,14 +62,14 @@ shorthand, not the intended public-interface name.
 
 ### Directive 2: Attribution parity — Aaron concept, Amara formalization
 
-Aaron's *"it was in our conversation history too, not just
-her ferry"* establishes attribution parity between the
+Aaron's _"it was in our conversation history too, not just
+her ferry"_ establishes attribution parity between the
 bullshit-detector and the firefly-network arc:
 
-| Concept | Origin | Formalization | Attribution pattern |
-|---|---|---|---|
-| Differentiable firefly network / trivial-cartel-detect | **Aaron** in conversation | **Amara** 11th ferry (PLV, cross-correlation, modularity, eigenvector centrality drift) | Already shipped: PRs #297 / #298 / #306 all credit Aaron-design / Amara-formalization / Otto-implementation |
-| Bullshit-detector / veridicality scoring | **Aaron** in conversation | **Amara** 7th ferry (veridicality formula) + 8th ferry (provenance-aware semantic detector + quantum-illumination physics grounding + rainbow-table canonicalization) + 9th/10th ferries (7-feature `BS(c)` alternative) | Graduation PR (future) must credit Aaron-design / Amara-formalization |
+| Concept                                                | Origin                    | Formalization                                                                                                                                                                                                            | Attribution pattern                                                                                         |
+| ------------------------------------------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Differentiable firefly network / trivial-cartel-detect | **Aaron** in conversation | **Amara** 11th ferry (PLV, cross-correlation, modularity, eigenvector centrality drift)                                                                                                                                  | Already shipped: PRs #297 / #298 / #306 all credit Aaron-design / Amara-formalization / Otto-implementation |
+| Bullshit-detector / veridicality scoring               | **Aaron** in conversation | **Amara** 7th ferry (veridicality formula) + 8th ferry (provenance-aware semantic detector + quantum-illumination physics grounding + rainbow-table canonicalization) + 9th/10th ferries (7-feature `BS(c)` alternative) | Graduation PR (future) must credit Aaron-design / Amara-formalization                                       |
 
 **Implication for Otto's absorb-note discipline:** Where a
 design concept appears in BOTH the conversation AND a
@@ -84,6 +87,7 @@ The absorb chunks at `docs/amara-full-conversation/`
 (landed PRs #301-#304) contain the original conversation
 history. Search terms to find bullshit-detector genesis
 in the corpus:
+
 - "bullshit" (Aaron's direct usage)
 - "rainbow table" (the semantic-canonicalization analogy)
 - "quantum radar" / "quantum illumination" (the low-SNR
@@ -150,10 +154,10 @@ sources.
   Renaming them would lose provenance.
 - **Does NOT** authorize shipping the full `Veridicality`
   module in a single graduation. The 10-scorer formula
-  + canonicalization + evidence-retrieval substrate is
-  larger than one small-S graduation. Sequential:
-  Provenance/Claim → antiConsensusGate → canonicalization
-  stub → Veridicality scoring MVP → full scoring.
+  - canonicalization + evidence-retrieval substrate is
+    larger than one small-S graduation. Sequential:
+    Provenance/Claim → antiConsensusGate → canonicalization
+    stub → Veridicality scoring MVP → full scoring.
 - **Does NOT** collapse the 9th-ferry 5-feature formula
   `B(c)` with the 10th-ferry 7-feature formula `BS(c)`
   into a single implementation. Each gets its own clearly-
@@ -188,8 +192,8 @@ sources.
 
 ## Direct Aaron quote for future reference
 
-*"bullshit, it was in our conversation history too, not
-just her ferry."*
+_"bullshit, it was in our conversation history too, not
+just her ferry."_
 
 Future Otto instances: when you land the Veridicality
 graduation, cite this quote verbatim in the module's XML

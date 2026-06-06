@@ -79,13 +79,13 @@ Expected: locked name appears in GLOSSARY.md after this row completes.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing naming-decision doc found for
-  this dashboard in `docs/DECISIONS/`, `docs/GLOSSARY.md`, or
-  `docs/research/frontier/`. The B-0017 body lists candidates
-  but has no locked decision. No skill or memory file has a
-  naming decision for this item.
+      this dashboard in `docs/DECISIONS/`, `docs/GLOSSARY.md`, or
+      `docs/research/frontier/`. The B-0017 body lists candidates
+      but has no locked decision. No skill or memory file has a
+      naming decision for this item.
 - [x] Dependency-restructure: no `depends_on` — this is a root
-  atom. All sibling rows B-0389–B-0395 carry reciprocal
-  `composes_with: [B-0388]` where the name is needed.
+      atom. All sibling rows B-0389–B-0395 carry reciprocal
+      `composes_with: [B-0388]` where the name is needed.
 
 ## Composes with
 

@@ -82,15 +82,15 @@ ask:
 This supersedes and consolidates:
 
 - **Otto-23** (`memory/feedback_agent_owns_all_github_
-  settings_and_config_all_projects_zeta_frontier_poor_
-  mans_mode_default_budget_asks_require_scheduled_
-  backlog_and_cost_estimate_2026_04_23.md`) — "own all
+settings_and_config_all_projects_zeta_frontier_poor_
+mans_mode_default_budget_asks_require_scheduled_
+backlog_and_cost_estimate_2026_04_23.md`) — "own all
   GitHub settings except billing increases". Otto-67
   **extends** this by adding billing API reads + admin:org
   scope + explicit consolidation.
 - **Otto-62** (`memory/feedback_lfg_free_actions_credits_
-  limited_acehack_is_poor_man_host_big_batches_to_lfg_
-  not_one_for_one_2026_04_23.md`) — Aaron said "you can
+limited_acehack_is_poor_man_host_big_batches_to_lfg_
+not_one_for_one_2026_04_23.md`) — Aaron said "you can
   have admin:org and whatever you need" contextually on
   the cost-parity question. Otto-67 **generalizes** that
   grant from "on request" to "standing".
@@ -139,7 +139,7 @@ When in doubt, ASK:
 - "Does this enable a feature with non-zero pricing?"
 
 If answer is uncertain, treat as spending-adjacent:
-propose + ask + wait. Aaron's *"talking to me"* is a
+propose + ask + wait. Aaron's _"talking to me"_ is a
 trivial cost on his side; letting spending accidentally
 tick up is non-trivial.
 
@@ -161,21 +161,21 @@ under standing authorization.
 ## Composes with
 
 - `memory/feedback_lfg_free_actions_credits_limited_
-  acehack_is_poor_man_host_big_batches_to_lfg_not_one_
-  for_one_2026_04_23.md` (with Otto-62/65 corrections) —
+acehack_is_poor_man_host_big_batches_to_lfg_not_one_
+for_one_2026_04_23.md` (with Otto-62/65 corrections) —
   cost-parity + billing-API-readiness already authorized;
   now confirmed standing
 - `memory/feedback_agent_owns_all_github_settings_...`
   (Otto-23) — settings ownership original grant; still
   binding
 - `memory/project_acehack_branch_protection_minimal_
-  applied_prior_zeta_archaeology_inconclusive_
-  2026_04_23.md` (Otto-66) — exercised the settings
+applied_prior_zeta_archaeology_inconclusive_
+2026_04_23.md` (Otto-66) — exercised the settings
   grant on AceHack branch protection; next-pass
   archaeology (scope-elevated) unlocks deleted-repo
   billing reads
 - `memory/project_git_native_pr_review_archive_high_
-  signal_training_data_for_reviewer_tuning_2026_04_23.md`
+signal_training_data_for_reviewer_tuning_2026_04_23.md`
   — PR-review archive tool benefits from admin:org scope
   for complete coverage
 

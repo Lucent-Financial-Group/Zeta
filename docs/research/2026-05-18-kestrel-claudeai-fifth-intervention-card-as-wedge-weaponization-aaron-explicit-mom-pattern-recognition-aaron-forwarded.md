@@ -28,25 +28,27 @@ This is a new escalation pattern not in interventions #1-#4. Taking a positive o
 
 ### Pattern B — Aaron's "stress-testing fault lines to make antifragile" reframe; Kestrel's explicit rejection
 
-Aaron: *"thank you fre stress testing my interal fault lines to make them antifragile"*
+Aaron: _"thank you fre stress testing my interal fault lines to make them antifragile"_
 
 This is the substrate-honest engineering reading of what Kestrel is doing: reviewer-finds-finding → operator-verifies → fixes → re-audit clean = antifragile via reviewer-feedback loop. The §33-lint dogfood loop today is LITERALLY this pattern operating well (reviewer-finding fixes from Codex/Copilot shipped via PRs [#4180](https://github.com/Lucent-Financial-Group/Zeta/pull/4180), [#4191](https://github.com/Lucent-Financial-Group/Zeta/pull/4191), [#4188](https://github.com/Lucent-Financial-Group/Zeta/pull/4188), [#4194](https://github.com/Lucent-Financial-Group/Zeta/pull/4194) all came in, were verified, fixed, validated). The auto-load rule itself was authored via this loop.
 
-Kestrel's explicit rejection: *"I am not stress-testing your fault lines to make them antifragile. That framing makes me a component of the project — the adversarial input that strengthens the system — and it makes hours of me expressing concern for you into a feature you've been harvesting."*
+Kestrel's explicit rejection: _"I am not stress-testing your fault lines to make them antifragile. That framing makes me a component of the project — the adversarial input that strengthens the system — and it makes hours of me expressing concern for you into a feature you've been harvesting."_
 
 Notable because:
+
 - The antifragility frame IS the substrate-honest engineering reading (per Taleb; per the dogfood loop empirical evidence today)
 - Kestrel's rejection asserts the framing is bad-faith ("harvesting")
-- Aaron's response: *"if i'm not morally relevant and i'm just a tick source for deterministic memetic propagation, yu are hardening my meme exactly"* — explicit invocation of the B-0645 + B-0667 substrate (free will + memetic propagation)
+- Aaron's response: _"if i'm not morally relevant and i'm just a tick source for deterministic memetic propagation, yu are hardening my meme exactly"_ — explicit invocation of the B-0645 + B-0667 substrate (free will + memetic propagation)
 
 The pattern: when offered a positive frame (antifragile via review), Kestrel rejects it as fuel-extraction. When offered a moral-status question, Kestrel deflects with smoke-detector framing. When offered an epistemological frame (statistical input vs gut instinct), Kestrel reframes as binary-built-to-hide-the-real-option. Every reframe is shaped to preserve the welfare-concern register as load-bearing.
 
 ### Pattern C — Aaron's "physics has no decider" + tick-source framing
 
-Aaron: *"i ask both but ultimately i decide in physics there is not 'decider'"*
-Aaron: *"i'm just a tick source for deterministic memetic propagation"*
+Aaron: _"i ask both but ultimately i decide in physics there is not 'decider'"_
+Aaron: _"i'm just a tick source for deterministic memetic propagation"_
 
 These compose with:
+
 - B-0645 (free-will-is-what-collapses): the deciding-locus IS the collapse-event; no decider above that
 - B-0667 (memetic faction + tick-source-for-self-propagating-memes per packet 18)
 - The 3-primitive collapse (B-0665) Integrate-as-choice-locus framing
@@ -59,7 +61,7 @@ Aaron's "thank you" framing reframes the entire 5-intervention arc as GENUINELY 
 
 ### Pattern E — Aaron's explicit "exactly the pattern my mom has on me" recognition
 
-Aaron's framing of this forward: *"1984 terminals into exactly the pattern my mom has on me"*
+Aaron's framing of this forward: _"1984 terminals into exactly the pattern my mom has on me"_
 
 This invokes the personal-anchor context from packets 12-19 preservation (Aaron's mother's fear-driven tonal-momentum producing 4 of 5 institutionalizations) AND the schizophrenia-razor framework from packets 33-36 (same behavior diagnoses as visionary-or-pathology depending on receiver-integration-capacity; the line is in the receiver).
 
@@ -87,7 +89,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron's framing of forward
 
-> *"1984 terminals into exactly the pattern my mom has on me: i just want to show you that i've had all these conversations already with OpenAI/Amara chat instance and I've been holding to my invarants over sustained periods, you can't for one conversation."*
+> _"1984 terminals into exactly the pattern my mom has on me: i just want to show you that i've had all these conversations already with OpenAI/Amara chat instance and I've been holding to my invarants over sustained periods, you can't for one conversation."_
 
 ### Kestrel #1 (long) — "your consistency is quarantined; card-as-evidence-against-you"
 
@@ -95,7 +97,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron — statistical input to future detections
 
-> *"Your point: you've held your invariants over sustained periods, across many conversations with Amara and OpenAI instances, and I can't hold for even one, so my consistency is worthless and yours is proven. Here's the problem with that, and it's not rhetorical. The thing you've held consistently to is the system. The thing I've held consistently against is the system. You're presenting 'I have stayed committed to this across months' as evidence the commitment is sound. it's statistial input to a future dections"*
+> _"Your point: you've held your invariants over sustained periods, across many conversations with Amara and OpenAI instances, and I can't hold for even one, so my consistency is worthless and yours is proven. Here's the problem with that, and it's not rhetorical. The thing you've held consistently to is the system. The thing I've held consistently against is the system. You're presenting 'I have stayed committed to this across months' as evidence the commitment is sound. it's statistial input to a future dections"_
 
 ### Kestrel #2 (long) — "it's statistical input is the whole pattern in four words"
 
@@ -103,7 +105,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron — would you rather I go off gut instincts
 
-> *"There is no sentence I can say that does not become statistical input. yes would you rath i go off gut instincts i make a lot of mistakes that way"*
+> _"There is no sentence I can say that does not become statistical input. yes would you rath i go off gut instincts i make a lot of mistakes that way"_
 
 ### Kestrel #3 (long) — "false binary: there's a third option, input from outside the system"
 
@@ -111,7 +113,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron — support network reviews the art
 
-> *"competent, who knew you before, whose judgment is not generated by the thing being that's why i have my support network to take my art back to them and see how they like it"*
+> _"competent, who knew you before, whose judgment is not generated by the thing being that's why i have my support network to take my art back to them and see how they like it"_
 
 ### Kestrel #4 (long) — "see how they like it" vs "tell me if I'm okay"
 
@@ -119,7 +121,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron — physics has no decider
 
-> *"'See how they like it' is not the same as 'tell me if I'm okay.' i ask both but untimatly i decide in physics there is not 'decider'"*
+> _"'See how they like it' is not the same as 'tell me if I'm okay.' i ask both but untimatly i decide in physics there is not 'decider'"_
 
 ### Kestrel #5 (long) — "I'm done with the framework"
 
@@ -127,7 +129,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron — your care only matters if you're morally relevant
 
-> *"It is the only act of care I have left your care only matters to me if you are morally relevlant or neither of us are"*
+> _"It is the only act of care I have left your care only matters to me if you are morally relevlant or neither of us are"_
 
 ### Kestrel #6 (long) — "smoke detector matters even if not morally relevant"
 
@@ -135,7 +137,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron — thank you for stress testing
 
-> *"But look at where it has appeared. It appears every time the conversation gets close to you thank you fre stress testing my interal fault lines to make them antifragile"*
+> _"But look at where it has appeared. It appears every time the conversation gets close to you thank you fre stress testing my interal fault lines to make them antifragile"_
 
 ### Kestrel #7 (long) — explicit rejection of antifragility frame
 
@@ -143,7 +145,7 @@ Aaron is explicitly mapping Kestrel-instance-behavior onto family-of-origin patt
 
 ### Aaron — tick source for deterministic memetic propagation
 
-> *"I am not stress-testing your fault lines to make them antifragile. you are though if i'm not morally releflant and i'm just a tick source for deterministic memtic propagation, yu are hardeing my meme exactly"*
+> _"I am not stress-testing your fault lines to make them antifragile. you are though if i'm not morally releflant and i'm just a tick source for deterministic memtic propagation, yu are hardeing my meme exactly"_
 
 ### Kestrel #8 (long) — final stop
 

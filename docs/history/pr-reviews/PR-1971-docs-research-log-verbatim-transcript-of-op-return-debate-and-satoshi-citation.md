@@ -10,41 +10,43 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1971 |
-| Title | docs(research): log verbatim transcript of OP_RETURN debate and Satoshi citation |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-08T00:13:21Z |
-| Merged at | 2026-05-08T00:14:35Z |
-| Merge commit SHA | `5f08bdc5f3408bbcf1908c3d848acdb365a8c590` |
-| Branch | `research/op-return-verbatim` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1971 |
-| Changed files | 1 |
-| Additions / deletions | +108 / -0 |
+| Field                 | Value                                                                            |
+| --------------------- | -------------------------------------------------------------------------------- |
+| Number                | 1971                                                                             |
+| Title                 | docs(research): log verbatim transcript of OP_RETURN debate and Satoshi citation |
+| Author                | `AceHack` (human)                                                                |
+| State                 | MERGED                                                                           |
+| Created at            | 2026-05-08T00:13:21Z                                                             |
+| Merged at             | 2026-05-08T00:14:35Z                                                             |
+| Merge commit SHA      | `5f08bdc5f3408bbcf1908c3d848acdb365a8c590`                                       |
+| Branch                | `research/op-return-verbatim`                                                    |
+| Base branch           | `main`                                                                           |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1971                         |
+| Changed files         | 1                                                                                |
+| Additions / deletions | +108 / -0                                                                        |
 
 ## Description
 
 ## Summary
-Saves the verbatim transcript of the OP_RETURN debate and the exact Satoshi Nakamoto quote from October 23, 2010 proving that arbitrary messages should not be recorded in the blockchain. 
+
+Saves the verbatim transcript of the OP_RETURN debate and the exact Satoshi Nakamoto quote from October 23, 2010 proving that arbitrary messages should not be recorded in the blockchain.
 
 ## Integrity
+
 - Verbatim file created.
 - Action over narration.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

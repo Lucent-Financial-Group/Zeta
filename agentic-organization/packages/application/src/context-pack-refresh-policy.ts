@@ -1,7 +1,4 @@
-import {
-  ContextPackStatus,
-  type AgentObserveSnapshot,
-} from "./observe.ts";
+import { ContextPackStatus, type AgentObserveSnapshot } from "./observe.ts";
 import type { ContextPackSnapshotRecord } from "./context-pack-snapshot-store.ts";
 
 export const ContextPackRefreshReason = {
@@ -14,8 +11,7 @@ export const ContextPackRefreshReason = {
   Reusable: "reusable",
 } as const;
 
-export type ContextPackRefreshReason =
-  (typeof ContextPackRefreshReason)[keyof typeof ContextPackRefreshReason];
+export type ContextPackRefreshReason = (typeof ContextPackRefreshReason)[keyof typeof ContextPackRefreshReason];
 
 export type DecideContextPackRefreshInput = {
   current: AgentObserveSnapshot;

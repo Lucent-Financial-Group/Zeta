@@ -65,11 +65,11 @@ Vera (Codex) authored the original proofs (PR #2175, merged
 - [x] Lemmas 13 and 14 replaced with non-trivial Z3 proofs
 - [x] New proofs pass the 4-step tautology check (shadow catch #30):
       (1) conclusion not entailed by assumptions alone — verified by SAT
-          without the threshold/range ordering constraint
+      without the threshold/range ordering constraint
       (2) no P AND NOT P — contradiction derived via 3-way transitivity
-          chain, not direct self-negation
+      chain, not direct self-negation
       (3) different variable names don't change the proof — arithmetic
-          structure is independent of identifier choice
+      structure is independent of identifier choice
       (4) adversarial reviewer: B-0357 backlog item from shadow catch #30
 - [x] Tests updated in Z3.Laws.Tests.fs (20/20 pass)
 - [x] Old lemmas preserved as [TEACHING] comments in Program.fs

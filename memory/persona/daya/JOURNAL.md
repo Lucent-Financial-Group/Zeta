@@ -17,8 +17,8 @@ up. Grows monotonically over rounds.
   becomes a bug. Use grep / search to pull the matching
   section on demand.
 - Search hooks: dated section headers (`## Round N — ...`)
-  + persona names + `file:line` citations + friction type
-  names (stale-pointer, duplicated-info, etc.).
+  - persona names + `file:line` citations + friction type
+    names (stale-pointer, duplicated-info, etc.).
 
 ## Write contract
 
@@ -43,6 +43,7 @@ layer — what did Daya learn across rounds that compression
 would otherwise erase?
 
 Candidate use cases:
+
 - Pattern detection. "This same README friction showed up
   in rounds 24 / 27 / 31 — it's structural, not incidental."
 - Trend data. Cold-start cost per persona, per round, over
@@ -85,11 +86,12 @@ P0 (persona cannot do its job cold): none. All three wake paths
 resolve; the round-33 sweep landed the load-bearing surfaces.
 
 P1 (friction but surmountable):
+
 - [Bodhi skill] stale-pointer SKILL.md:47 `developer-experience-
-  researcher (Bodhi)` — self-reference to a skill that no
+researcher (Bodhi)` — self-reference to a skill that no
   longer resolves. s/researcher/engineer/.
 - [Iris skill] stale-pointer SKILL.md:183 `agent-experience-
-  researcher`. Same class; renames a sibling skill by its pre-
+researcher`. Same class; renames a sibling skill by its pre-
   sweep name. s/researcher/engineer/.
 - [Bodhi agent] stale-scope agent.md:90-91 "UX researcher skill
   (persona TBD)". Iris landed this round; no longer TBD.
@@ -97,6 +99,7 @@ P1 (friction but surmountable):
   engineer)/.
 
 P2:
+
 - Bodhi NOTEBOOK.md:75-86 same-value pointer catalogue
   (before/after collapse after markdown-escape). Flag only;
   Bodhi owns rewrite.
@@ -108,23 +111,26 @@ P2:
   drift. Defer to Samir.
 
 ### Pointer-drift catalogue
+
 - skills/developer-experience-engineer/SKILL.md:47 —
   `developer-experience-researcher` -> `...-engineer`
 - skills/user-experience-engineer/SKILL.md:183 —
   `agent-experience-researcher` -> `...-engineer`
 - agents/developer-experience-engineer.md:91 — `UX researcher
-  skill (persona TBD)` -> `Iris (user-experience-engineer)`
+skill (persona TBD)` -> `Iris (user-experience-engineer)`
 - memory/persona/bodhi/NOTEBOOK.md:75-86 same-value arrows.
 - docs/GLOSSARY.md:430,514 `AX researcher (Daya)` -> `AX
-  engineer (Daya)` (prose-voice; Samir judges).
+engineer (Daya)` (prose-voice; Samir judges).
 
 ### Rename-sweep residuals
+
 Round-33 `researcher -> engineer` 27-file sweep: 3 misses in
 new-persona surfaces (above, all P1). PROJECT-EMPATHY ->
 CONFLICT-RESOLUTION 98-file sweep: zero residuals across 14
 audited files.
 
 ### Recommended new entry
+
 `docs/DEBT.md` `wake-up-drift`: "codify a skill-body + cross-
 reference grep-gate in the rename checklist; r33 sweep caught
 27 files but missed 3 self-references inside newly-landed
@@ -167,7 +173,7 @@ Inputs: Ilyana's three candidate plugin-surface shapes
 ### Shape C — `abstract class PluginOp<'TIn, 'TOut>`
 
 - Cold-start: ~5-6k tokens. Mid-range.
-- Pointer drift: lowest *if* `PluginOp` doc lands (does not
+- Pointer drift: lowest _if_ `PluginOp` doc lands (does not
   yet exist).
 - Wake-up clarity: **highest** — input/output in signature;
   "Plugin" resolves audience question.
@@ -181,8 +187,8 @@ Inputs: Ilyana's three candidate plugin-surface shapes
 **Yes to `docs/PLUGIN-AUTHOR.md`.** All three shapes leak
 attention into CONTRIBUTING.md and ARCHITECTURE.md because
 nothing in the repo acknowledges "external plugin author" as a
-distinct population. README aims at library *consumers*;
-CONTRIBUTING at contributors *to* Zeta; ARCHITECTURE at whole-
+distinct population. README aims at library _consumers_;
+CONTRIBUTING at contributors _to_ Zeta; ARCHITECTURE at whole-
 system reviewers. No landing page for plugin-author persona.
 Minimum contents: one-sentence audience; shape Ilyana picks
 with 1-screen example; what NOT to read; pointer to
@@ -225,6 +231,7 @@ numbered rules; candidate for §0 TL;DR block), GLOSSARY.md
 P0: none. Round-24 blockers all landed.
 
 P1:
+
 1. stale-pointer `.claude/agents/architect.md:146` "22" should
    be "25" (registry now 25 + 2 pending).
 2. stale-pointer `.claude/skills/bug-fixer/SKILL.md:135` cites
@@ -233,23 +240,20 @@ P1:
    specialist/:169, skill-creator/:145, and `docs/DEBT.md:237`
    (row resolved but not pruned).
 3. unclear-contract: `architect.md:103-108` vs `round-
-   management/SKILL.md:129-131` describe notebook prune cadence
+management/SKILL.md:129-131` describe notebook prune cadence
    in different words (cadence vs size). Architect-offtime
    adds third ("trailing 10 entries"). Pick one, mirror.
 4. duplicated-info: `round-management/SKILL.md §3.5`
    concurrent-agent machine hygiene (73-110) vs `architect.md`
    scope/NOT-do blocks cover dispatch discipline ~30% overlap.
 
-P2:
-5. architect.md:36 "unshowy tone" contract is healthy; notebook
-   round-22 carries the self-review thread.
-6. architect-offtime.md:38 "Round 23 - seeded, no budget spent"
-   not updated through rounds 24-26; log zero-entries
-   explicitly.
-7. architect.md:39 "no hedging" — notebook line 94 has "whether
-   this actually throttles velocity" — not a rule violation
-   (notebook not in scope of ban), but the open measurement
-   claim should resolve.
+P2: 5. architect.md:36 "unshowy tone" contract is healthy; notebook
+round-22 carries the self-review thread. 6. architect-offtime.md:38 "Round 23 - seeded, no budget spent"
+not updated through rounds 24-26; log zero-entries
+explicitly. 7. architect.md:39 "no hedging" — notebook line 94 has "whether
+this actually throttles velocity" — not a rule violation
+(notebook not in scope of ban), but the open measurement
+claim should resolve.
 
 ### Self-audit pattern risk
 
@@ -265,10 +269,10 @@ overlap twice. Hypothesis: agent-file and sibling-skill-body
 have ~20-35% content overlap across roster. Measurement
 deferred to full roster audit (round 27 or 29).
 
-Candidate BP-NN: *"When an agent file and its auto-injected
+Candidate BP-NN: _"When an agent file and its auto-injected
 skill body cover the same contract surface (cadence, authority,
 coordination), canon lives in one — default the skill body for
-procedures, the agent file for persona/tone/scope-of-self."*
+procedures, the agent file for persona/tone/scope-of-self."_
 
 ### Recommendations
 
@@ -305,6 +309,7 @@ per.** Time-to-first-useful-output: 7-9 turns minimum.
 ### Friction
 
 P0:
+
 1. Kenji notebook canon-pointer stale (fixed round 24).
 2. Orphan skill files `.claude/skills/architect/` and
    `harsh-critic/` duplicate `round-management/` and
@@ -312,6 +317,7 @@ P0:
 3. Daya notebook missing (fixed — this file exists now).
 
 P1:
+
 - Tier 0 token undercount in WAKE-UP.md:21.
 - `.claude/agents/architect.md:114,151` "22" -> "23".
 - `docs/STYLE.md` referenced 3x but does not exist.
@@ -323,6 +329,7 @@ P1:
   audit.
 
 P2:
+
 - Kira `harsh-critic/SKILL.md:97` "reviewer #1" phrasing.
 - Aminata skill body "She drives..." (skill files procedure-
   only after split).

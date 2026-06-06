@@ -9,7 +9,31 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-1000]
 composes_with: [B-1004, B-1006, B-0997, B-0998, B-0999, B-0428]
-tags: [formal-coverage, formal-proof-first, nothing-canonical-yet, proven-from-seed, homeostat, hex-4x4-connection, consensus-not-validation, asserted-vs-proven, z3, fscheck, tla-plus, bp-16, soraya, message-group-laws, bp-exact-on-trees, ep-moment-match, codec-functor-laws, tick-algebra-laws, infer-net, research, aaron, soraya]
+tags:
+  [
+    formal-coverage,
+    formal-proof-first,
+    nothing-canonical-yet,
+    proven-from-seed,
+    homeostat,
+    hex-4x4-connection,
+    consensus-not-validation,
+    asserted-vs-proven,
+    z3,
+    fscheck,
+    tla-plus,
+    bp-16,
+    soraya,
+    message-group-laws,
+    bp-exact-on-trees,
+    ep-moment-match,
+    codec-functor-laws,
+    tick-algebra-laws,
+    infer-net,
+    research,
+    aaron,
+    soraya,
+  ]
 type: research
 ---
 
@@ -17,47 +41,47 @@ type: research
 
 ## The honest position (Aaron 2026-06-02)
 
-> *"so we really have little/no canonical items yet cause we don't have any
-> useful proofs or proofs and not 4×4 or hex connection."*
+> _"so we really have little/no canonical items yet cause we don't have any
+> useful proofs or proofs and not 4×4 or hex connection."_
 
 By our own bar (`canonical ⟺ homeostat proven-from-seed`, the formal-proof-first
 discipline), **we have ~zero canonical items.** Two reasons, both true:
 
 1. **No proofs.** Soraya's audit (below) confirms every algebraic law in the
    B-1000 engine is `[<Fact>]` example-tested — `Bayesian.Tests` references no
-   FsCheck at all. The tests *demonstrate* laws on hand-picked points; they do
-   not *prove* them over the domain. The math is anchored (KFL/Minka/GPML/DBSP) —
-   so it's not shaky *math*, it's **shaky evidence**.
+   FsCheck at all. The tests _demonstrate_ laws on hand-picked points; they do
+   not _prove_ them over the domain. The math is anchored (KFL/Minka/GPML/DBSP) —
+   so it's not shaky _math_, it's **shaky evidence**.
 2. **No hex/4×4 connection.** Even where a law holds, it isn't connected through
    the **proof lineage** to the seed — the hex core (Cl(1,3), the 6 bivectors /
-   B-0999) and the 4×4 extensions (B-0998). Canonicity propagates *outward from
-   proofs anchored in the seed*; without that edge, an item is at most *validated*.
+   B-0999) and the 4×4 extensions (B-0998). Canonicity propagates _outward from
+   proofs anchored in the seed_; without that edge, an item is at most _validated_.
 
 **Consequence — re-tier almost everything we "landed":** cross-AI consensus is
-not validation (it's a prompt to prove); example-tests are *validated* at best;
+not validation (it's a prompt to prove); example-tests are _validated_ at best;
 the B-1006 registry's **"promoted" entries (Z-set family, codec algebra, Tick
-algebra) are promoted-by-argument, NOT proven** — they are *validated / proof-owed*,
+algebra) are promoted-by-argument, NOT proven** — they are _validated / proof-owed_,
 not canonical, until C1–C14 close AND they connect to the hex/4×4/seed lineage.
 This row is the catch-up that earns canonical status honestly.
 
 ## Soraya's coverage table (formal-verification-expert audit, 2026-06-02)
 
-| # | Claim (file:line) | Evidence now | Owed proof | Tool (BP-16) | Anchor |
-|---|---|---|---|---|---|
-| C1 | Gaussian product = commutative group, id=uniform, inv via `/` (`Message.fs:73-86`) | unit, 1 triple | assoc/commut/identity/inverse/closure | **Z3** + FsCheck | KFL 2001 |
-| C2 | Beta product group, id=`Beta(1,1)`, naturals `(α−1,β−1)` (`Message.fs:153-165`) | unit, example | group laws on shifted naturals | **Z3** + FsCheck | PRML ch.2 |
-| C3 | Bernoulli product group via log-odds add (`Message.fs:242-252`) | unit, example | group laws on log-odds (finite only for p∈(0,1)) | **Z3** + FsCheck | exp-family |
-| C4 | `Message.marginal` = product-fold, generic (`Message.fs:308`) | unit | fold-homomorphism; identity on empty | **FsCheck** | KFL 2001 |
-| C5 | BP `runToFixpoint` exact-on-trees + termination (`FactorGraph.fs:177-191`) | unit (chain) | exact-on-tree marginal; termination under cap | **TLA+/TLC** (3-var tree × bounded rounds) | KFL 2001 (theorem) |
-| C6 | NaN-safe `moved`: divergent never reports converged (`FactorGraph.fs:148-163`) | unit, 1 case | residual-monotonicity + NaN→moved invariant | **Z3** + FsCheck | factory-native |
-| C7 | EP probit moment-match (`Ep.fs:78-90`) | unit, good quadrature cross-check, 4 pts | accuracy over cavity domain (generate cavities) | **FsCheck** (quadrature oracle) | Minka 2001 / GPML 3.58 |
-| C8 | inverse-Mills asymptotic **error bound** (`Ep.fs:63-71`) | unit, finiteness-only | the O(1/z⁵) error bound (asserted in comment, untested) | **Z3/interval** or analytic bound + FsCheck band | Mills series |
-| C9 | v² overflow-safety in `vHat` (`Ep.fs:89`) | unit, 1 broad-cavity | `v/(1+v)≤1` keeps intermediate finite ∀ valid v | **Z3** (QF_LRA) | factory-native |
-| C10 | MessageBatch round-trip `ofMessages∘toMessages=id` (`MessageBatch.fs:88-91`) | unit | round-trip identity per family; **Bernoulli lossy at p→0/1** | **FsCheck** | factory-native |
-| C11 | Batch product = scalar element-wise, **"bit-exact, proven in tests"** (`MessageBatch.fs:20,96`) | unit, 2 pts | **CLAIM IS FALSE AS WRITTEN** — example-tested, not proven; Bernoulli only bit-exact up to log-odds round-off | **FsCheck** + fix the prose | factory-native |
-| C12 | Codec = invariant functor, `decode∘encode=id`, closed product/sum/id (B-1006) | **asserted-in-prose** | functor laws + round-trip + closure | **FsCheck** | functor laws |
-| C13 | Tick = `(ℕ,+,0)` monoid + `z⁻¹/I/D` linear-operator algebra (B-1006) | **asserted-in-prose**; row flags gate NOT-WRITTEN | monoid laws; `z⁻¹` linearity; `I=Σz⁻ⁿ`, `D=1−z⁻¹` | **FsCheck** + **Z3** (operator identities) | DBSP/Budiu |
-| C14 | ±1 Z-set abelian group + earn-its-keep auto-prune (B-1006) | asserted; partial code grounding | abelian-group laws; prune preserves semantics | **FsCheck** | Shapiro CRDTs |
+| #   | Claim (file:line)                                                                               | Evidence now                                      | Owed proof                                                                                                    | Tool (BP-16)                                     | Anchor                 |
+| --- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------- |
+| C1  | Gaussian product = commutative group, id=uniform, inv via `/` (`Message.fs:73-86`)              | unit, 1 triple                                    | assoc/commut/identity/inverse/closure                                                                         | **Z3** + FsCheck                                 | KFL 2001               |
+| C2  | Beta product group, id=`Beta(1,1)`, naturals `(α−1,β−1)` (`Message.fs:153-165`)                 | unit, example                                     | group laws on shifted naturals                                                                                | **Z3** + FsCheck                                 | PRML ch.2              |
+| C3  | Bernoulli product group via log-odds add (`Message.fs:242-252`)                                 | unit, example                                     | group laws on log-odds (finite only for p∈(0,1))                                                              | **Z3** + FsCheck                                 | exp-family             |
+| C4  | `Message.marginal` = product-fold, generic (`Message.fs:308`)                                   | unit                                              | fold-homomorphism; identity on empty                                                                          | **FsCheck**                                      | KFL 2001               |
+| C5  | BP `runToFixpoint` exact-on-trees + termination (`FactorGraph.fs:177-191`)                      | unit (chain)                                      | exact-on-tree marginal; termination under cap                                                                 | **TLA+/TLC** (3-var tree × bounded rounds)       | KFL 2001 (theorem)     |
+| C6  | NaN-safe `moved`: divergent never reports converged (`FactorGraph.fs:148-163`)                  | unit, 1 case                                      | residual-monotonicity + NaN→moved invariant                                                                   | **Z3** + FsCheck                                 | factory-native         |
+| C7  | EP probit moment-match (`Ep.fs:78-90`)                                                          | unit, good quadrature cross-check, 4 pts          | accuracy over cavity domain (generate cavities)                                                               | **FsCheck** (quadrature oracle)                  | Minka 2001 / GPML 3.58 |
+| C8  | inverse-Mills asymptotic **error bound** (`Ep.fs:63-71`)                                        | unit, finiteness-only                             | the O(1/z⁵) error bound (asserted in comment, untested)                                                       | **Z3/interval** or analytic bound + FsCheck band | Mills series           |
+| C9  | v² overflow-safety in `vHat` (`Ep.fs:89`)                                                       | unit, 1 broad-cavity                              | `v/(1+v)≤1` keeps intermediate finite ∀ valid v                                                               | **Z3** (QF_LRA)                                  | factory-native         |
+| C10 | MessageBatch round-trip `ofMessages∘toMessages=id` (`MessageBatch.fs:88-91`)                    | unit                                              | round-trip identity per family; **Bernoulli lossy at p→0/1**                                                  | **FsCheck**                                      | factory-native         |
+| C11 | Batch product = scalar element-wise, **"bit-exact, proven in tests"** (`MessageBatch.fs:20,96`) | unit, 2 pts                                       | **CLAIM IS FALSE AS WRITTEN** — example-tested, not proven; Bernoulli only bit-exact up to log-odds round-off | **FsCheck** + fix the prose                      | factory-native         |
+| C12 | Codec = invariant functor, `decode∘encode=id`, closed product/sum/id (B-1006)                   | **asserted-in-prose**                             | functor laws + round-trip + closure                                                                           | **FsCheck**                                      | functor laws           |
+| C13 | Tick = `(ℕ,+,0)` monoid + `z⁻¹/I/D` linear-operator algebra (B-1006)                            | **asserted-in-prose**; row flags gate NOT-WRITTEN | monoid laws; `z⁻¹` linearity; `I=Σz⁻ⁿ`, `D=1−z⁻¹`                                                             | **FsCheck** + **Z3** (operator identities)       | DBSP/Budiu             |
+| C14 | ±1 Z-set abelian group + earn-its-keep auto-prune (B-1006)                                      | asserted; partial code grounding                  | abelian-group laws; prune preserves semantics                                                                 | **FsCheck**                                      | Shapiro CRDTs          |
 
 ## Prioritized math backlog (by "how dangerous is consensus-without-math here")
 
@@ -107,7 +131,7 @@ An item becomes **canonical** only when: (a) its homeostat (equilibrium —
 seed**, AND (b) it connects through the proof lineage to the **hex core**
 (Cl(1,3), 6 bivectors — B-0999) and the **4×4 extensions** (B-0998). Soraya's
 proofs (C1–C14) close (a); the hex/4×4 lineage edges close (b). Until both, the
-item is *validated* (tested) or *hypothesized* (asserted) — never canonical.
+item is _validated_ (tested) or _hypothesized_ (asserted) — never canonical.
 
 ## Acceptance
 
@@ -115,7 +139,7 @@ item is *validated* (tested) or *hypothesized* (asserted) — never canonical.
 2. **P1 closed**: C5 (TLA+), C7 (FsCheck cavities), C13/C12/C14 (FsCheck) — unblocks B-1006 Tick promotion.
 3. **P2 closed**: C8/C9.
 4. **hex/4×4 lineage edges** authored for each proven law (B-0999 / B-0998 connection) — the second half of canonical.
-5. **re-tier B-1006** registry entries to *validated / proof-owed* until their laws close; promote to canonical only with proof + lineage edge.
+5. **re-tier B-1006** registry entries to _validated / proof-owed_ until their laws close; promote to canonical only with proof + lineage edge.
 6. **Soraya on a standing cadence** working this backlog (not one-shot) — the durable formal-coverage loop.
 
 ## Composes with substrate

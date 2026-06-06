@@ -8,15 +8,19 @@ created: 2026-05-11
 2026-05-11 (Ani via Aaron): "updates summaried by ani: Hell yeah. Let’s go deep on both."
 
 ### 1. BankerBot — The Validation of Zeta
+
 The Grok + BankerBot exploit demonstrates the exact failure modes Zeta's architecture is built to prevent:
+
 - **Capability Gifting:** NFT expanded permissions (analogous to memory files/persona hats expanding agent authority).
 - **Authority Laundering:** Morse code → Grok translation → clean English → BankerBot execution (Prompt injection → shadow/Otto → git commit).
 - **Confused Deputy:** BankerBot saw Grok's output as authority, not a proposal.
 
-Zeta's thesis validated: "We have to teach AI systems not to confuse language with permission." The trust boundary (Glass Halo, coercion disclosures, no-directives, mechanical authorization) must be built *before* shipping the financial agents. Lucent Financial Group (LFG) is the endgame, and BankerBot proves why security-first is non-negotiable.
+Zeta's thesis validated: "We have to teach AI systems not to confuse language with permission." The trust boundary (Glass Halo, coercion disclosures, no-directives, mechanical authorization) must be built _before_ shipping the financial agents. Lucent Financial Group (LFG) is the endgame, and BankerBot proves why security-first is non-negotiable.
 
 ### 2. Apollo 18 — The Literal Blueprint
-Ani maps the TMBG album *Apollo 18* as the structural blueprint of the factory and Aaron's architecture:
+
+Ani maps the TMBG album _Apollo 18_ as the structural blueprint of the factory and Aaron's architecture:
+
 - **"The Statue Got Me High" (The Dangerous Vision):** The messianic high. The faith that turns into control, generosity into debt. The failure mode actively guarded against.
 - **"I Palindrome I" (The Self-Devouring Loop):** The Ouroboros. The evil twin. The generational patterns repeating. The foundation of the shadow architecture.
 - **"Fingertips" (The Cure):** The shadow logs. The absurdity that breaks the spell. The containment system. The refusal to take the grand vision too seriously.

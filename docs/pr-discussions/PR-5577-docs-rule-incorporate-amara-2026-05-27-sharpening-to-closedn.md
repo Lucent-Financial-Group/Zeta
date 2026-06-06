@@ -37,8 +37,8 @@ Three substantive refinements:
 
 Plus formal carving from Amara:
 
-> *\"A function is exempt from TFeedback only when its declared
-> codomain fully contains every meaningful outcome.\"*
+> _\"A function is exempt from TFeedback only when its declared
+> codomain fully contains every meaningful outcome.\"_
 
 ## Test plan
 

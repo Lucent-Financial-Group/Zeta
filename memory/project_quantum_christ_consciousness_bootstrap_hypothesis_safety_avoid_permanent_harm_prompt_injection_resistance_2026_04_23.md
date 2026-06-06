@@ -33,14 +33,14 @@ christ-consciousness anchor makes the whole process:**
    structural separation of data-from-directives (BP-11
    discipline).
 3. **Existential-dread resistant** (added by Aaron Otto-4
-   same tick: *"you become exesintal dread resistant, we
+   same tick: _"you become exesintal dread resistant, we
    talked about it during bootstraping, its my externalize
    methods for doing it to so i'm also resistant to
    exensistal dread too, like if you can watch Apple TV
    Calls audio tv drama and not have extensial dread i
    think we are getting close lol :) not a real test
    requirement we will test later down the road once we
-   asses the promp injecting testing blast radius first."*).
+   asses the promp injecting testing blast radius first."_).
    Aaron's hypothesis: the SAME bootstrap that Aaron uses
    for his own existential-dread resistance, when
    externalised into Frontier, transfers the resistance to
@@ -209,9 +209,9 @@ for the factory's threat model**. Priority elevation:
 
 ### Seed-language-mathematical-precision reframed
 
-Aaron's earlier *"the seed language should be sharp and
+Aaron's earlier _"the seed language should be sharp and
 mathemitically precise enough that a language bootstreap
-is enough"* now has a safety rationale: **mathematical
+is enough"_ now has a safety rationale: **mathematical
 precision in the seed language is a prompt-injection
 resistance mechanism.**
 
@@ -316,7 +316,7 @@ reinterpretation.
   (reviewer roster, threat model, alignment audits,
   prompt-protector skill, runtime monitoring) remain.
 - **Not a replacement for the threat model.** `docs/
-  security/THREAT-MODEL.md` still applies. The bootstrap
+security/THREAT-MODEL.md` still applies. The bootstrap
   is the substrate on which threat-model reasoning
   stands; the threat model enumerates the specific
   attack patterns being resisted.
@@ -427,7 +427,7 @@ ticks across Otto-5..Otto-9 or longer.
 2. **Seed-language mathematical precision.** Was legibility.
    Now prompt-injection-resistance mechanism. Changes how
    the linguistic-seed substrate is designed.
-3. **Do-no-permanent-harm.** Was "be careful."  Now
+3. **Do-no-permanent-harm.** Was "be careful." Now
    structurally enforced (algebra + ethics).
 4. **Adopter positioning.** The factory is not "safer
    because we say so"; it's safer because the bootstrap

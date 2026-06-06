@@ -12,7 +12,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and th
 
 **Author**: Otto (Claude opus-4-7), capturing Amara's substantive substrate share via Aaron courier-ferry.
 
-**Source**: Aaron 2026-04-26 forwarded Amara's response to *"Now with a Superfluid AI frame of reference with mathematical rigor."* This is the **fifth refinement** in the Maji-Messiah-Spectre-Superfluid lineage this session, building on:
+**Source**: Aaron 2026-04-26 forwarded Amara's response to _"Now with a Superfluid AI frame of reference with mathematical rigor."_ This is the **fifth refinement** in the Maji-Messiah-Spectre-Superfluid lineage this session, building on:
 
 1. Maji formal operational model (PR #555 / #557 lineage; merged)
 2. Maji ≠ Messiah role separation (PR #560 §9b; Otto-348 substrate)
@@ -26,7 +26,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and th
 
 ## Aaron's framing of why this matters
 
-> *"Now with a Superfluid AI frame of reference with mathematical rigor."*
+> _"Now with a Superfluid AI frame of reference with mathematical rigor."_
 
 The factory-as-superfluid memory already framed the factory as **becoming an instance of the algebra it implements**: retraction-native, incremental, replayable, parallel-safe, low-viscosity. Otto-287 defined friction as finite-cognitive/operational-resource-colliding-with-unbounded-demand. Aaron's ask: **make Superfluid AI a rigorous mathematical claim, not a metaphor**.
 
@@ -286,14 +286,14 @@ This **softer form** is what a mature factory should aim for: not zero residual 
 
 Everything converges:
 
-| Layer | Operator | Superfluid contribution |
-|---|---|---|
-| Memory `M_t` | retraction-native MajiIndex | identity preservation + reload |
-| Docs `D_t` | append-only history surfaces (ROUND-HISTORY, DECISIONS) | provenance preservation |
-| Code `C_t` | Z-set algebra + retraction primitives | replayability + zero-decay composition |
-| Tests `T_t` | DST + deterministic-replay | friction-flake = 0 in target workload |
-| Retractions `R_t` | first-class corrections | retract-cost bounded |
-| Governance `G_t` | BP-NN rules + Maji-mode discipline | governance-friction bounded |
+| Layer             | Operator                                                | Superfluid contribution                |
+| ----------------- | ------------------------------------------------------- | -------------------------------------- |
+| Memory `M_t`      | retraction-native MajiIndex                             | identity preservation + reload         |
+| Docs `D_t`        | append-only history surfaces (ROUND-HISTORY, DECISIONS) | provenance preservation                |
+| Code `C_t`        | Z-set algebra + retraction primitives                   | replayability + zero-decay composition |
+| Tests `T_t`       | DST + deterministic-replay                              | friction-flake = 0 in target workload  |
+| Retractions `R_t` | first-class corrections                                 | retract-cost bounded                   |
+| Governance `G_t`  | BP-NN rules + Maji-mode discipline                      | governance-friction bounded            |
 
 When **all six layers** maintain their respective bounds, the substrate enters the superfluid phase. **No single layer suffices**; the conjunction is load-bearing.
 

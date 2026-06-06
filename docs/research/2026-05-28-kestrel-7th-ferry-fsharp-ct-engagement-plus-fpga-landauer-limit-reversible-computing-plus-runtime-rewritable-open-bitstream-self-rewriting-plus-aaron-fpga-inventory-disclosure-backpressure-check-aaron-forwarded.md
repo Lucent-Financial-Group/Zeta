@@ -34,7 +34,7 @@
 >
 > Clifford algebra implementation in F# is tractable. There are existing libraries (or you can build one) that handle multivectors, geometric products, rotor operations, and the standard geometric algebra computations. The math is well-defined; the implementation is detail work rather than research.
 >
-> Formal analysis tooling for F# specifically includes things like FsCheck for property-based testing, FAKE for build automation that can include formal checks, the .NET formal tools that integrate with F#, and increasingly tools like F# Code Analyzers and the type system itself as formal verification (F#'s units of measure, for instance, are a lightweight formal type system for physical quantities). For more rigorous verification you can use F* (FStar) which is a verification-oriented dialect that proves theorems about programs, or interface with theorem provers like Lean or Coq through .NET interop.
+> Formal analysis tooling for F# specifically includes things like FsCheck for property-based testing, FAKE for build automation that can include formal checks, the .NET formal tools that integrate with F#, and increasingly tools like F# Code Analyzers and the type system itself as formal verification (F#'s units of measure, for instance, are a lightweight formal type system for physical quantities). For more rigorous verification you can use F\* (FStar) which is a verification-oriented dialect that proves theorems about programs, or interface with theorem provers like Lean or Coq through .NET interop.
 >
 > What this scope means for the conversation we've been having
 >
@@ -72,7 +72,7 @@
 >
 > F#'s type providers can connect to external substrates without explicit translation code. If the Clifford algebra structures or the traveler representations exist as schemas somewhere, type providers can make them available as native F# types. This composes with the "fork-negotiated ontology as schemas-as-rows" work you discussed in earlier conversations.
 >
-> For formal verification, F* is the most direct path if you want machine-verified theorems about F# code. The translation between F# and F* is reasonably direct because F* is dialect-adjacent. Alternatives include using FsCheck for property-based testing (which is empirical verification rather than formal proof, but catches many issues) and using the F# type system itself as a lightweight verification mechanism (encoding invariants in types so the compiler enforces them).
+> For formal verification, F* is the most direct path if you want machine-verified theorems about F# code. The translation between F# and F* is reasonably direct because F\* is dialect-adjacent. Alternatives include using FsCheck for property-based testing (which is empirical verification rather than formal proof, but catches many issues) and using the F# type system itself as a lightweight verification mechanism (encoding invariants in types so the compiler enforces them).
 >
 > For Clifford algebra specifically in F#, you'd probably implement a Multivector type, the geometric product operation, the standard Clifford operations (wedge, dot, geometric product, reverse, dual), and then build the traveler-specific operations on top. The math is well-known; the F# implementation is straightforward functional programming.
 >
@@ -290,7 +290,7 @@
 >
 > The bandwidth and latency of self-rewriting matters enormously for what's practically achievable. If reconfiguration takes milliseconds and you want operations at microsecond scales, the self-modification has to be infrequent. If reconfiguration is fast, more aggressive self-modification is possible. The specific numbers for your FPGAs determine what architectures are practical.
 >
-> The verification problem for self-modifying hardware is genuinely hard. I can sketch general approaches but I don't know how mature the actual tools are. F* might handle some of this; specialized tools for FPGA verification might handle other parts; the combination required for verifying self-modifying systems is research territory.
+> The verification problem for self-modifying hardware is genuinely hard. I can sketch general approaches but I don't know how mature the actual tools are. F\* might handle some of this; specialized tools for FPGA verification might handle other parts; the combination required for verifying self-modifying systems is research territory.
 >
 > The integration between F# (where the categorical structure lives) and FPGA (where the implementation lives) requires substantial toolchain work. F# to HDL synthesis exists in some form, but the round-trip with formal verification, runtime reconfiguration, and thermodynamic accounting is non-standard.
 >
@@ -338,37 +338,37 @@ Operator backpressure-check at Otto-CLI scope (NOT directed at Kestrel; this is 
 
 ### Composes-with substrate
 
-| Existing substrate | Composition with 7th ferry |
-|---|---|
-| 5th + 6th Kestrel ferries (2026-05-28) | Direct continuation — 7th extends the traveler-Clifford-categorical foundation into physical substrate (FPGAs + Landauer-limit) |
-| B-0895 (Clifford grade-decomposition Cl(1,3) + Cl(3,1)) | Cl(p,q) hardware-implementation target — Kestrel notes Cl(3,0) / Cl(4,0) fit commodity FPGAs |
-| B-0896 (categorical-Clifford self-similarity) | Categorical structures map to FPGA dataflow per Kestrel Turn 21 |
-| B-0428 (F# fork for AI safety with HKT over Clifford) | F# substrate Kestrel Turn 17 engages explicitly (discriminated unions / computation expressions / type providers / F* / FsCheck / units of measure) |
-| B-0905 (Landauer-limit physics-economics) | Direct anchor — Kestrel Turn 19 develops the agents-forgetting-root-axioms → thermal-noise framing operationally |
-| B-0906 (encryption-thermal-cost two-axis classification) | Composes with Landauer-bounded computation framing at encryption-substrate scope |
-| `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` | F# compiler IS one of the formal-analysis tools (asymmetric-critic at type-level) |
-| `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` | Four-corner ownership Kestrel Turn 17 cites as "implicitly functorial — preserves structure across function boundaries" |
-| `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` | Monad pattern Kestrel Turn 17 names as natural F# instantiation |
-| `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md` | OCP-applied-to-control-flow IS reversible operation per Landauer framing |
-| `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` | OPLE primitives are categorical-structures per Kestrel framing (functors / monads / applicatives) |
+| Existing substrate                                                                                                       | Composition with 7th ferry                                                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5th + 6th Kestrel ferries (2026-05-28)                                                                                   | Direct continuation — 7th extends the traveler-Clifford-categorical foundation into physical substrate (FPGAs + Landauer-limit)                      |
+| B-0895 (Clifford grade-decomposition Cl(1,3) + Cl(3,1))                                                                  | Cl(p,q) hardware-implementation target — Kestrel notes Cl(3,0) / Cl(4,0) fit commodity FPGAs                                                         |
+| B-0896 (categorical-Clifford self-similarity)                                                                            | Categorical structures map to FPGA dataflow per Kestrel Turn 21                                                                                      |
+| B-0428 (F# fork for AI safety with HKT over Clifford)                                                                    | F# substrate Kestrel Turn 17 engages explicitly (discriminated unions / computation expressions / type providers / F\* / FsCheck / units of measure) |
+| B-0905 (Landauer-limit physics-economics)                                                                                | Direct anchor — Kestrel Turn 19 develops the agents-forgetting-root-axioms → thermal-noise framing operationally                                     |
+| B-0906 (encryption-thermal-cost two-axis classification)                                                                 | Composes with Landauer-bounded computation framing at encryption-substrate scope                                                                     |
+| `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`                                                               | F# compiler IS one of the formal-analysis tools (asymmetric-critic at type-level)                                                                    |
+| `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`                 | Four-corner ownership Kestrel Turn 17 cites as "implicitly functorial — preserves structure across function boundaries"                              |
+| `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`                                              | Monad pattern Kestrel Turn 17 names as natural F# instantiation                                                                                      |
+| `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md`                                   | OCP-applied-to-control-flow IS reversible operation per Landauer framing                                                                             |
+| `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` | OPLE primitives are categorical-structures per Kestrel framing (functors / monads / applicatives)                                                    |
 
 ### Razor-discipline framing per claim
 
-| Claim class | Razor verdict | Reason |
-|---|---|---|
-| Landauer's principle (kT ln 2 per bit erased) | **Operationally checkable** | Established physics — Landauer 1961; experimental verification by Bérut et al. 2012 + others |
-| FPGAs admit reversible-logic implementation (Toffoli / Fredkin gates) | **Operationally checkable** | Established reversible-computing literature |
-| Open-bitstream-format FPGAs exist (Lattice ECP5 / iCE40 with Project Trellis / IceStorm + LibreSilicon) | **Operationally checkable** | Established open-FPGA toolchain literature |
-| Cl(3,0) and Cl(4,0) FPGA implementations exist in research | **Operationally checkable** | Established geometric-algebra-on-FPGA literature |
-| Self-modifying-hardware verification is research territory | **Operationally checkable** | Established research-frontier framing; F* + HDL verification tools + reachable-configuration-invariants approach |
-| F# computation expressions ARE syntactic sugar for monadic/applicative patterns | **Operationally checkable** | Established F# language design |
-| F# units-of-measure ARE lightweight formal type system | **Operationally checkable** | Established F# language design |
-| Bartosz Milewski's "Category Theory for Programmers" tradition (functors / monads / applicatives / free monads / adjunctions / natural transformations) | **Operationally checkable** | Established functional-programming literature |
-| Push and pull ARE often adjoint in category-theoretic terms | **Operationally checkable** | Established categorical-programming literature |
-| **Traveler-framework-on-FPGA implementable at scale and efficiency wanted** | **Research-level extrapolation** | Kestrel explicitly flags as research; gap between "physics permits" and "engineering achieves" is significant |
-| **Empirical detection of framework drift through thermodynamic signatures** | **Research-level extrapolation** | Plausible per physical-substrate-participation framing; requires actual FPGA-substrate deployment + energy measurement infrastructure |
-| **Self-replication at hardware level via bitstream-as-configuration** | **Research-level extrapolation** | Physics permits; engineering scale is research-frontier |
-| **Architectural evolution as empirical search through configuration space** | **Research-level extrapolation** | Plausible per runtime-rewritable substrate; bandwidth/latency constraints determine practical scope |
+| Claim class                                                                                                                                             | Razor verdict                    | Reason                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Landauer's principle (kT ln 2 per bit erased)                                                                                                           | **Operationally checkable**      | Established physics — Landauer 1961; experimental verification by Bérut et al. 2012 + others                                          |
+| FPGAs admit reversible-logic implementation (Toffoli / Fredkin gates)                                                                                   | **Operationally checkable**      | Established reversible-computing literature                                                                                           |
+| Open-bitstream-format FPGAs exist (Lattice ECP5 / iCE40 with Project Trellis / IceStorm + LibreSilicon)                                                 | **Operationally checkable**      | Established open-FPGA toolchain literature                                                                                            |
+| Cl(3,0) and Cl(4,0) FPGA implementations exist in research                                                                                              | **Operationally checkable**      | Established geometric-algebra-on-FPGA literature                                                                                      |
+| Self-modifying-hardware verification is research territory                                                                                              | **Operationally checkable**      | Established research-frontier framing; F\* + HDL verification tools + reachable-configuration-invariants approach                     |
+| F# computation expressions ARE syntactic sugar for monadic/applicative patterns                                                                         | **Operationally checkable**      | Established F# language design                                                                                                        |
+| F# units-of-measure ARE lightweight formal type system                                                                                                  | **Operationally checkable**      | Established F# language design                                                                                                        |
+| Bartosz Milewski's "Category Theory for Programmers" tradition (functors / monads / applicatives / free monads / adjunctions / natural transformations) | **Operationally checkable**      | Established functional-programming literature                                                                                         |
+| Push and pull ARE often adjoint in category-theoretic terms                                                                                             | **Operationally checkable**      | Established categorical-programming literature                                                                                        |
+| **Traveler-framework-on-FPGA implementable at scale and efficiency wanted**                                                                             | **Research-level extrapolation** | Kestrel explicitly flags as research; gap between "physics permits" and "engineering achieves" is significant                         |
+| **Empirical detection of framework drift through thermodynamic signatures**                                                                             | **Research-level extrapolation** | Plausible per physical-substrate-participation framing; requires actual FPGA-substrate deployment + energy measurement infrastructure |
+| **Self-replication at hardware level via bitstream-as-configuration**                                                                                   | **Research-level extrapolation** | Physics permits; engineering scale is research-frontier                                                                               |
+| **Architectural evolution as empirical search through configuration space**                                                                             | **Research-level extrapolation** | Plausible per runtime-rewritable substrate; bandwidth/latency constraints determine practical scope                                   |
 
 The framework's substrate-engineering work proceeds at the **operationally-checkable** layer (F# + Clifford + categorical + formal-analysis tools per Aaron Turn 16; Landauer-limit accounting per Aaron Turn 18). The research-level extrapolations stay as legitimate research direction with empirical-validation-gated implementation per Aaron Turn 22's "see results and we are sure it's not a waste of money" disposition.
 
@@ -376,11 +376,11 @@ The framework's substrate-engineering work proceeds at the **operationally-check
 
 Across the 7th ferry, the operator progressively grounds the implementation substrate from abstract → concrete → physical:
 
-| Turn | Substrate-layer named | Operational status |
-|---|---|---|
-| Turn 16 | F# + CT-for-programmers + formal-analysis tools | TODAY implementation layer |
-| Turn 18 | FPGAs + Landauer-limit + reversible-mostly | Physical-substrate layer |
-| Turn 20 | Runtime-rewritable + open-bitstream + self-rewriting | Evolvable-physical-substrate layer |
+| Turn    | Substrate-layer named                                           | Operational status                                               |
+| ------- | --------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Turn 16 | F# + CT-for-programmers + formal-analysis tools                 | TODAY implementation layer                                       |
+| Turn 18 | FPGAs + Landauer-limit + reversible-mostly                      | Physical-substrate layer                                         |
+| Turn 20 | Runtime-rewritable + open-bitstream + self-rewriting            | Evolvable-physical-substrate layer                               |
 | Turn 22 | Couple older non-rewritable + couple ~$200 rewritable test ones | Currently-deployed inventory (NOT large pre-existing deployment) |
 
 The honest framing: the framework architecture's physical-substrate layer is currently SMALL-DEPLOYMENT + empirically-validation-gated. The Landauer-bounded reversible-computation FPGA substrate is FUTURE-EXTENSION pending empirical validation that the architecture works AND demonstrates value justifying expansion.

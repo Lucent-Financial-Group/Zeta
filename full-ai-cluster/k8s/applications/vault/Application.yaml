@@ -9,7 +9,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-60"
   name: vault
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -21,7 +21,7 @@ spec:
       valuesObject:
         global:
           enabled: true
-          tlsDisable: false   # generate TLS via cert-manager or self-signed
+          tlsDisable: false # generate TLS via cert-manager or self-signed
         server:
           ha:
             enabled: true
@@ -48,4 +48,4 @@ spec:
     namespace: vault
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

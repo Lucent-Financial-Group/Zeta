@@ -15,9 +15,9 @@ tags: [cluster, ux, persona, docs, marketing]
 ## Problem
 
 Aaron 2026-05-25 named the cluster-install target persona:
-*"if i'm targeting first time commandline users that's the persona
+_"if i'm targeting first time commandline users that's the persona
 i'm going for so this can spread easliy to home clusters easlier
-than proxmox or any of that but prodicution ready once 3 nodes"*.
+than proxmox or any of that but prodicution ready once 3 nodes"_.
 
 Today's cluster-install substrate (B-0737 + B-0754 + flash-
 cluster-iso skill + PROVISIONING.md + zeta-install.sh +

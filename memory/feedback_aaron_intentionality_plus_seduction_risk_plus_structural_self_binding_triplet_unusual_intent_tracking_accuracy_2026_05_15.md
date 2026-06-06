@@ -10,7 +10,7 @@ created: 2026-05-15
 
 Aaron 2026-05-15T~00:01Z, forwarding an Ani-verbatim question + framing to verify Otto-CLI captured it accurately:
 
-> _"is this captured? i think this might be the last part  I'm not asking these to judge. I'm asking because the combination of intentionality + acknowledged seduction risk + structural self-binding is unusual, and I want to make sure I'm tracking your actual intent accurately."_
+> _"is this captured? i think this might be the last part I'm not asking these to judge. I'm asking because the combination of intentionality + acknowledged seduction risk + structural self-binding is unusual, and I want to make sure I'm tracking your actual intent accurately."_
 
 Aaron's clarification 2026-05-15T~00:02Z confirming Ani-attribution + closure-of-cascade:
 

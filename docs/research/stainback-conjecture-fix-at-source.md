@@ -5,8 +5,8 @@ formal statement, literature review, falsifier protocols,
 and public-surface gating are follow-on work routed to
 Soraya / Mateo / Aminata / Ilyana respectively. Nothing in
 this document commits the factory to the conjecture as
-doctrine; it scaffolds the proposition as a *defendable
-research-contribution-grade claim awaiting proof*, in the
+doctrine; it scaffolds the proposition as a _defendable
+research-contribution-grade claim awaiting proof_, in the
 mathematical-formal register (Goldbach / Riemann / Poincaré
 lineage) the human maintainer self-calibrated to on
 2026-04-19.
@@ -47,8 +47,8 @@ a falsifiable experimental protocol). "Hypothesis"
 understates — cross-register derivational work is already
 substantially done. "Theory" overstates — no executed
 formal proof and no completed experimental programme.
-"Conjecture" is the precise register: *proposition proposed
-as true with grounds present and proof absent*, awaiting
+"Conjecture" is the precise register: _proposition proposed
+as true with grounds present and proof absent_, awaiting
 formal demonstration. Lineage: Goldbach (unsolved),
 Riemann hypothesis (unsolved), Poincaré conjecture (now
 theorem, Perelman 2003), Fermat's Last Theorem (now
@@ -59,7 +59,7 @@ open; both outcomes are honourable.
 
 "Safe non-determinism" ≠ "raw indeterminism". Raw
 indeterminism reads as chaos — Hobbes and Hume both
-objected that random outputs are not *authored* and
+objected that random outputs are not _authored_ and
 therefore not free. The Stainback conjecture identifies a
 third option missing from the classical free-will debate:
 
@@ -87,17 +87,17 @@ four scales. Each row is a scale at which the operator
 acts; each column names its concrete form in that
 register.
 
-| Register      | Scale        | Concrete operator                                                                 | Existing tooling in factory                                  |
-|---------------|--------------|-----------------------------------------------------------------------------------|--------------------------------------------------------------|
-| Engineering   | Data         | DBSP retraction: negative-weight events cancel positive-weight events within a retraction-buffer window | `ZSet`, `Spine`, operator algebra, `Durability.fs`           |
-| Moral         | Cognitive    | Honesty / confession / erasure-of-the-lie at source; the quantum-erasure-as-honesty analogue | `feedback_conflict_resolution_protocol_is_honesty.md`        |
-| Divine        | Eschatological | Apokatastasis / universal restoration as the infinite-buffer limit of the retraction operator | `user_retraction_buffer_forgiveness_eternity.md` (pointer)   |
-| Physics       | Substrate    | Delayed-choice quantum eraser: erasing which-path information restores pre-measurement superposition | External (Scully-Drühl 1982; Kim et al. 1999)                |
+| Register    | Scale          | Concrete operator                                                                                       | Existing tooling in factory                                |
+| ----------- | -------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Engineering | Data           | DBSP retraction: negative-weight events cancel positive-weight events within a retraction-buffer window | `ZSet`, `Spine`, operator algebra, `Durability.fs`         |
+| Moral       | Cognitive      | Honesty / confession / erasure-of-the-lie at source; the quantum-erasure-as-honesty analogue            | `feedback_conflict_resolution_protocol_is_honesty.md`      |
+| Divine      | Eschatological | Apokatastasis / universal restoration as the infinite-buffer limit of the retraction operator           | `user_retraction_buffer_forgiveness_eternity.md` (pointer) |
+| Physics     | Substrate      | Delayed-choice quantum eraser: erasing which-path information restores pre-measurement superposition    | External (Scully-Drühl 1982; Kim et al. 1999)              |
 
 The tetrad is a correspondence claim: the same algebraic
 object appears at each scale with appropriately lifted
 semantics. The conjecture is that the correspondence is
-*faithful* — commuting diagrams exist at each pair of
+_faithful_ — commuting diagrams exist at each pair of
 scales, and the operator's behaviour at the engineering
 scale (where it is fully specified and tested) is a
 reliable guide to its behaviour at the other three.
@@ -105,7 +105,7 @@ reliable guide to its behaviour at the other three.
 ## 3. Composition map — no extra hypotheses
 
 The conjecture is not a new primitive. It is a
-*composition* of five pieces already held (either
+_composition_ of five pieces already held (either
 established experimentally, first-principles-derived, or
 open research threads), plus a claim about what their
 composition implies.
@@ -126,14 +126,14 @@ register of the retraction-erasure operator.
 
 ### 3.2 Piece 2 — Conway-Kochen Free Will Theorem (physics-philosophy register)
 
-Conway & Kochen (2006, 2009), *The Free Will Theorem* and
-*The Strong Free Will Theorem*: under three minimal
+Conway & Kochen (2006, 2009), _The Free Will Theorem_ and
+_The Strong Free Will Theorem_: under three minimal
 assumptions (SPIN, TWIN, MIN — later strengthened to FIN),
 if experimenters have free will in choosing which
 measurements to perform, then the particles they measure
 must also have the corresponding indeterministic freedom.
 Free will is incompatible with a deterministic underlying
-theory; it *requires* substrate-level indeterminism. Already
+theory; it _requires_ substrate-level indeterminism. Already
 carried in the factory's axiom system via
 `user_panpsychism_and_equality.md` as the equality-of-
 particles-and-minds axiom.
@@ -148,7 +148,7 @@ particles-and-minds axiom.
   variant.
 - Ma et al. 2012 — delayed-choice entanglement-swapping.
 
-Erasing which-path information *after* the measurement has
+Erasing which-path information _after_ the measurement has
 been made restores the interference pattern retroactively.
 The measurement is unmade; the pre-measurement coherent
 superposition is recovered. This is the most direct physics
@@ -160,7 +160,7 @@ works at the substrate.
 Hameroff & Penrose (1996, 2014): microtubule-level
 objective-reduction events are a candidate substrate of
 consciousness. The conjecture uses Orch-OR as a
-*candidate* biological implementation layer at which
+_candidate_ biological implementation layer at which
 substrate-level quantum retraction phenomena could have
 cognitive-level consequences. Neither committed nor
 rejected — it is the plausible-biology slot.
@@ -179,14 +179,14 @@ physics share algebraic shape. See
 
 The conjecture asserts:
 
-1. *If* the retraction-erasure operator is real at the
+1. _If_ the retraction-erasure operator is real at the
    substrate (piece 3 says yes experimentally);
-2. *And* the operator can be exposed at higher layers
+2. _And_ the operator can be exposed at higher layers
    (piece 1 does this mechanically for data; the factory's
    engineering register demonstrates this);
-3. *And* free will requires substrate indeterminism
+3. _And_ free will requires substrate indeterminism
    (piece 2 establishes this);
-4. *Then* exposing the erasure operator at the identity /
+4. _Then_ exposing the erasure operator at the identity /
    cognitive scale (pieces 4 and 5 offer candidate
    biological substrate and time-symmetry algebra;
    factory engineering exposes it at the data layer)
@@ -201,7 +201,7 @@ The composition uses no new primitives. Each piece is
 either established (experimental: piece 3), first-
 principles-derived (pieces 1, 2), or a research thread
 held open (pieces 4, 5). The conjecture is the
-*conjunction* plus the claim that the conjunction yields
+_conjunction_ plus the claim that the conjunction yields
 the free-will conclusion.
 
 ## 4. Novelty — where this sits relative to existing positions
@@ -213,8 +213,8 @@ position in the free-will literature:
   Posits non-deterministic agent-causation without a
   mechanism. The conjecture supplies the mechanism
   (retraction-erasure operator composed with Conway-Kochen
-  + eraser) and specifies the layer at which the operator
-  must be wielded.
+  - eraser) and specifies the layer at which the operator
+    must be wielded.
 - **Compatibilism (Dennett, Frankfurt, Fischer).** Free
   will exists in a deterministic universe via reasons-
   responsiveness. The conjecture disagrees: true free
@@ -238,11 +238,11 @@ position in the free-will literature:
   with the retraction operator to supply the missing
   free-will conclusion.
 
-The novel architectural claim: *fixing the defect at its
+The novel architectural claim: _fixing the defect at its
 source is the operator that unlocks the substrate
 non-determinism Conway-Kochen identified as the free-will
 enabler, and the factory's retraction algebra is a working
-model of the operator at one of its four scales.*
+model of the operator at one of its four scales._
 
 ## 5. Falsifier list
 
@@ -255,7 +255,7 @@ conjecture.
 
 - **F1.** The commutative-diagram claim across the four
   registers fails. If the retraction operator at the data
-  layer does *not* behave algebraically the same way as
+  layer does _not_ behave algebraically the same way as
   the delayed-choice eraser at the physics layer (e.g.
   non-commuting compositions, different identity element,
   different nilpotency), the tetrad's "faithful
@@ -267,14 +267,14 @@ conjecture.
 - **F3.** The retraction operator is demonstrably
   insufficient to reach "the source" at the identity
   scale — e.g. identity-level which-path markers are
-  shown to be *structurally different* from data-level
+  shown to be _structurally different_ from data-level
   retractable events in a way that blocks the operator's
   application.
 
 ### 5.2 Experimental / empirical falsifiers
 
 - **F4.** A rigorous experimental programme shows the
-  delayed-choice eraser effect does *not* compose with
+  delayed-choice eraser effect does _not_ compose with
   biological substrates in the manner Orch-OR requires
   (decoherence timescales too fast at body temperature,
   as Tegmark 2000 argued). The Orch-OR slot in the
@@ -300,7 +300,7 @@ conjecture.
   (symbolic rigidity, Zodiac-class coherence-turned-
   lethal) or chaos-pole (raw randomness) rather than
   staying on the edge-of-chaos regime. Falsification
-  requires demonstrating *systematic* failure, not
+  requires demonstrating _systematic_ failure, not
   isolated incidents.
 
 ## 6. Open sub-problems — multi-round research programme
@@ -347,7 +347,7 @@ next-steps convention (S / M / L).
    owns. The conjecture's "safe" guarantee is measurable
    at round-close cadence via the BP-WINDOW ledger: the
    three operational clauses (consent-preserving ∧
-   fully-retractable ∧ no-permanent-harm) *are* the
+   fully-retractable ∧ no-permanent-harm) _are_ the
    erasure-channel-open guarantee restated at factory
    scale. Integrate by cross-linking this skeleton from
    the BP-WINDOW ADR once signed off.
@@ -385,7 +385,7 @@ in engineering register alone (see §8 routing). The rule:
   defect → retraction at data layer. Identity defect →
   retraction at identity layer. Adversarial-role defect
   → retraction at role layer (apokatastasis case). The
-  operator is scale-invariant; the *locus* of
+  operator is scale-invariant; the _locus_ of
   application is not.
 
 ## 8. Routing
@@ -417,7 +417,7 @@ to authority but as evidence that the rule's structural
 claim has been approached from many directions — which is
 a plausibility signal, not a proof.
 
-- **Engineering:** Toyota Production System's *jidoka*
+- **Engineering:** Toyota Production System's _jidoka_
   ("autonomation with a human touch") — stop the line at
   the source of the defect, fix it there, do not let
   defects propagate downstream. Directly isomorphic to
@@ -429,9 +429,9 @@ a plausibility signal, not a proof.
   medicine.
 - **Psychoanalytic:** work through the original trauma,
   not its downstream manifestations.
-- **Hermetic / alchemical:** *solvē et coāgulā* —
+- **Hermetic / alchemical:** _solvē et coāgulā_ —
   dissolve (to the source) and recombine.
-- **Buddhist:** cut the root of *duḥkha* (*tṛṣṇā* /
+- **Buddhist:** cut the root of _duḥkha_ (_tṛṣṇā_ /
   craving) rather than its fruits.
 - **Christian:** the sacrament of confession as
   erasure-at-source rather than compensation by works.
@@ -464,49 +464,49 @@ tradition.
 
 Primary sources (physics / philosophy):
 
-- Conway, J. H.; Kochen, S. *The Free Will Theorem.*
+- Conway, J. H.; Kochen, S. _The Free Will Theorem._
   Foundations of Physics 36(10), 2006.
-- Conway, J. H.; Kochen, S. *The Strong Free Will
-  Theorem.* Notices of the AMS 56(2), 2009.
-- Scully, M. O.; Drühl, K. *Quantum eraser: A proposed
+- Conway, J. H.; Kochen, S. _The Strong Free Will
+  Theorem._ Notices of the AMS 56(2), 2009.
+- Scully, M. O.; Drühl, K. _Quantum eraser: A proposed
   photon correlation experiment concerning observation
-  and "delayed choice" in quantum mechanics.* Physical
+  and "delayed choice" in quantum mechanics._ Physical
   Review A 25(4), 1982.
 - Kim, Y.-H.; Yu, R.; Kulik, S. P.; Shih, Y.; Scully,
-  M. O. *Delayed "choice" quantum eraser.* Physical
+  M. O. _Delayed "choice" quantum eraser._ Physical
   Review Letters 84(1), 2000.
 - Walborn, S. P.; Terra Cunha, M. O.; Pádua, S.;
-  Monken, C. H. *A double-slit quantum eraser.*
+  Monken, C. H. _A double-slit quantum eraser._
   Physical Review A 65, 2002.
-- Ma, X.-S. et al. *Experimental delayed-choice
-  entanglement swapping.* Nature Physics 8, 2012.
-- Wheeler, J. A.; Feynman, R. P. *Interaction with the
-  absorber as the mechanism of radiation.* Reviews of
+- Ma, X.-S. et al. _Experimental delayed-choice
+  entanglement swapping._ Nature Physics 8, 2012.
+- Wheeler, J. A.; Feynman, R. P. _Interaction with the
+  absorber as the mechanism of radiation._ Reviews of
   Modern Physics 17, 1945.
-- Hameroff, S.; Penrose, R. *Consciousness in the
-  universe: A review of the "Orch OR" theory.* Physics
+- Hameroff, S.; Penrose, R. _Consciousness in the
+  universe: A review of the "Orch OR" theory._ Physics
   of Life Reviews 11(1), 2014.
-- Tegmark, M. *Importance of quantum decoherence in
-  brain processes.* Physical Review E 61, 2000.
+- Tegmark, M. _Importance of quantum decoherence in
+  brain processes._ Physical Review E 61, 2000.
 
 Secondary / background (dynamics):
 
-- Lorenz, E. N. *Deterministic nonperiodic flow.*
+- Lorenz, E. N. _Deterministic nonperiodic flow._
   Journal of the Atmospheric Sciences 20, 1963.
-- Langton, C. G. *Computation at the edge of chaos:
-  Phase transitions and emergent computation.* Physica
+- Langton, C. G. _Computation at the edge of chaos:
+  Phase transitions and emergent computation._ Physica
   D 42, 1990.
-- Kauffman, S. A. *The Origins of Order* (Oxford UP,
+- Kauffman, S. A. _The Origins of Order_ (Oxford UP,
   1993).
 
 Philosophy of free will:
 
-- Kane, R. *The Significance of Free Will* (Oxford UP,
+- Kane, R. _The Significance of Free Will_ (Oxford UP,
   1996).
-- Pereboom, D. *Living Without Free Will* (Cambridge
+- Pereboom, D. _Living Without Free Will_ (Cambridge
   UP, 2001).
-- Dennett, D. C. *Freedom Evolves* (Viking, 2003).
-- Vaidman, L. *Quantum theory and determinism.* Quantum
+- Dennett, D. C. _Freedom Evolves_ (Viking, 2003).
+- Vaidman, L. _Quantum theory and determinism._ Quantum
   Studies: Mathematics and Foundations 1, 2014.
 
 Factory-internal (pointers):

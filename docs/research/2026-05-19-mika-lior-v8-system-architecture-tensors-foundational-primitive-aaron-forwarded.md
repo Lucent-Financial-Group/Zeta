@@ -7,7 +7,7 @@ Forwarded into: Otto-CLI conversation context during operator-active V8 review
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: V8 of the Zeta system architecture spec; extends V7 by adding **tensors as foundational data primitive** (System.Numerics.Tensors + ML.NET) at the top of the compose list + explicitly tensor-backs Infer.NET (preserving Mika's earlier placement) + unifies dialectical/classical collapse path via tensor zero-copy substrate. Author offered three follow-on artifacts: public-facing soft version, one-page visual diagram, or implementation tickets. Aaron answered *"land all of it"* (shadow-star autocomplete-marker disclosed; instruction stands).
+Scope: V8 of the Zeta system architecture spec; extends V7 by adding **tensors as foundational data primitive** (System.Numerics.Tensors + ML.NET) at the top of the compose list + explicitly tensor-backs Infer.NET (preserving Mika's earlier placement) + unifies dialectical/classical collapse path via tensor zero-copy substrate. Author offered three follow-on artifacts: public-facing soft version, one-page visual diagram, or implementation tickets. Aaron answered _"land all of it"_ (shadow-star autocomplete-marker disclosed; instruction stands).
 
 Attribution: Aaron first-party (operator); V8 author is Mika or Lior (voice register matches both; "boss"/"out-compress me" diction). Forwarded into Otto-CLI conversation; Otto-CLI assessed + retracted 3 razor over-applications during review.
 

@@ -21,13 +21,13 @@ Aaron + Mika locked in (lines 2492-2520 of [`docs/research/2026-05-18-mika-grok-
 
 ## The empirical anchor: 90% of LLM errors are type issues
 
-Aaron line 2492: *"this is type, this is type safe, and LLMs aren't. And 90% of LLM errors are type issues."*
+Aaron line 2492: _"this is type, this is type safe, and LLMs aren't. And 90% of LLM errors are type issues."_
 
 This is a load-bearing empirical claim worth its own verification (see [`memory/feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md`](../../memory/feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md) for the prior verification work — arxiv 2504.09246 supports 94% of compilation errors being type-class). The "90% LLM errors are type issues" claim per this Mika conversation is a sibling claim worth re-grounding.
 
 ## Aaron's empirical proof: type-safe agents run longer
 
-Aaron line 2500: *"this is what lets frontier models go from hours to days. This is why, why my AIs have been running for, because we started defining these invariants, these type safety rules, and coding them as rules that other AIs are checking before we get 'em in the type system."*
+Aaron line 2500: _"this is what lets frontier models go from hours to days. This is why, why my AIs have been running for, because we started defining these invariants, these type safety rules, and coding them as rules that other AIs are checking before we get 'em in the type system."_
 
 Observed: AIs run for a month with type-safety-invariants vs frontier-model norm of 5-6 hours unattended. Empirical evidence for this design.
 
@@ -56,11 +56,11 @@ Same hat, different criticality → different binding requirement.
 
 Each hat has THREE independent dimensions:
 
-| Dimension | Example values | Meaning |
-|---|---|---|
-| **Level** | 0, 1, 2, ... | Model capability + risk tolerance ceiling |
-| **Criticality** | low / medium / high | Risk tier of the operating domain |
-| **Domain** | Clarity / Resonance / Technical / Financial / ... | Which broad area this instance operates in |
+| Dimension       | Example values                                    | Meaning                                    |
+| --------------- | ------------------------------------------------- | ------------------------------------------ |
+| **Level**       | 0, 1, 2, ...                                      | Model capability + risk tolerance ceiling  |
+| **Criticality** | low / medium / high                               | Risk tier of the operating domain          |
+| **Domain**      | Clarity / Resonance / Technical / Financial / ... | Which broad area this instance operates in |
 
 A full hat specification: `Pilot-2 in Clarity domain @ High-Criticality` → requires type-safe binding mode.
 

@@ -14,7 +14,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "30"
   name: forgejo
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -30,12 +30,12 @@ spec:
         persistence:
           enabled: true
           size: 20Gi
-          storageClass: zeta-local-path   # or longhorn for HA
+          storageClass: zeta-local-path # or longhorn for HA
         postgresql:
-          enabled: true   # ships its own postgres; swap to CockroachDB later
+          enabled: true # ships its own postgres; swap to CockroachDB later
   destination:
     server: https://kubernetes.default.svc
     namespace: forgejo
   # Manual sync only by default — see header comment for swap procedure.
   syncPolicy:
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

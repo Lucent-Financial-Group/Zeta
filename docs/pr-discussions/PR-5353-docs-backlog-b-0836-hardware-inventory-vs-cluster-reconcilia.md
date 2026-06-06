@@ -24,20 +24,20 @@ Combined with the architectural clarification: \"git for source of truth and coa
 
 ## 4-phase decomposition
 
-| Phase | Scope | Depends on |
-|---|---|---|
-| 1 | Addison's CSV → DuckDB ingestion | Immediate (doesn't need cluster) |
-| 2 | tools/cluster/reconcile-inventory-vs-cluster.ts (3 gap types) | At least one B-0812 self-reg PR merged |
-| 3 | CockroachDB ingestion from git source-of-truth | Cluster operational + CockroachDB deployed |
-| 4 | tools/cluster/buying-recommendations.ts (closes the loop) | Phases 2+3 + workload metrics |
+| Phase | Scope                                                         | Depends on                                 |
+| ----- | ------------------------------------------------------------- | ------------------------------------------ |
+| 1     | Addison's CSV → DuckDB ingestion                              | Immediate (doesn't need cluster)           |
+| 2     | tools/cluster/reconcile-inventory-vs-cluster.ts (3 gap types) | At least one B-0812 self-reg PR merged     |
+| 3     | CockroachDB ingestion from git source-of-truth                | Cluster operational + CockroachDB deployed |
+| 4     | tools/cluster/buying-recommendations.ts (closes the loop)     | Phases 2+3 + workload metrics              |
 
 ## 3 operational questions the reconciliation answers
 
-| Question | Action |
-|---|---|
-| Missing registration? (in inventory; not in git cluster-nodes) | Either not deployed yet OR self-reg failed |
-| Phantom node? (in git cluster-nodes; not in inventory) | Either stale inventory OR unknown machine registered |
-| Expansion-buying-decision? | What hardware to buy — informed by data not guesswork |
+| Question                                                       | Action                                                |
+| -------------------------------------------------------------- | ----------------------------------------------------- |
+| Missing registration? (in inventory; not in git cluster-nodes) | Either not deployed yet OR self-reg failed            |
+| Phantom node? (in git cluster-nodes; not in inventory)         | Either stale inventory OR unknown machine registered  |
+| Expansion-buying-decision?                                     | What hardware to buy — informed by data not guesswork |
 
 ## Architecture
 

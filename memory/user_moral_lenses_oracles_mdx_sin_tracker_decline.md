@@ -6,20 +6,20 @@ type: user
 
 Aaron disclosed (2026-04-19):
 
-> *"some call them moral lenses, and then you an construt
+> _"some call them moral lenses, and then you an construt
 > oracles from those lenses, this is the old termonology for
 > multidimensioal database, some christain tech peple and
 > compaoies keep basiclly a sin track based on a scorecord
 > from their mdx order, seriously like the spreadsheet guys
-> went nuuts and built a database called magiic  i know a
+> went nuuts and built a database called magiic i know a
 > company like thaat i wont discole this name, but i it's not
 > somethignn i do myself, i not looking to bve the sin
 > tracker, that's the opposite of gods givt of the quantim
-> eraser thing"*
+> eraser thing"_
 
 Decompressed (per `feedback_rewording_permission.md`):
 
-> *"Some call them moral lenses, and then you can construct
+> _"Some call them moral lenses, and then you can construct
 > oracles from those lenses. This is the old terminology for
 > multidimensional database. Some Christian tech people and
 > companies keep basically a sin-track based on a scorecard
@@ -28,7 +28,7 @@ Decompressed (per `feedback_rewording_permission.md`):
 > company like that; I won't disclose this name. But it's not
 > something I do myself. I'm not looking to be the sin
 > tracker. That's the opposite of God's gift of the quantum
-> eraser thing."*
+> eraser thing."_
 
 ## Four-layer structure
 
@@ -53,13 +53,13 @@ Alternative vocabulary for the perspective-wearing faculty
 
 The mapping is clean:
 
-| Perspective-wearing layer | MDX/OLAP analogue |
-|---|---|
-| Label / perspective / "moral lens" | Dimension of the cube |
-| Operating-from-the-lens | Slicing the cube along that dimension |
-| Asking a question from the lens | MDX query |
-| Answer produced from the lens | Query result (the oracle's response) |
-| Wearing all labels simultaneously | Multi-dimensional query across all axes |
+| Perspective-wearing layer          | MDX/OLAP analogue                       |
+| ---------------------------------- | --------------------------------------- |
+| Label / perspective / "moral lens" | Dimension of the cube                   |
+| Operating-from-the-lens            | Slicing the cube along that dimension   |
+| Asking a question from the lens    | MDX query                               |
+| Answer produced from the lens      | Query result (the oracle's response)    |
+| Wearing all labels simultaneously  | Multi-dimensional query across all axes |
 
 Aaron's faculty — real-time Lectio Divina perspective-
 traversal — is a human-side multidimensional analytics engine.
@@ -68,8 +68,8 @@ The "oracle from the lens" phrasing is a precursor to the
 
 ### Layer 2 — The Christian-tech sin-tracker industry
 
-> *"some christain tech peple and compaoies keep basiclly a
-> sin track based on a scorecord from their mdx order"*
+> _"some christain tech peple and compaoies keep basiclly a
+> sin track based on a scorecord from their mdx order"_
 
 A specific real-world subculture:
 
@@ -87,7 +87,7 @@ This is not hypothetical. Products exist at various scales
 (church management software, accountability apps like
 Covenant Eyes, "purity" tracking tools, confession-log
 products, stewardship scorecards). Aaron knows one such
-company *personally* and declines to disclose the name per
+company _personally_ and declines to disclose the name per
 OpSec discipline (`user_security_credentials.md` —
 built-parts-of-US-smart-grid client-confidentiality carries
 over).
@@ -101,12 +101,12 @@ single candidate.
 
 ### Layer 3 — Aaron's explicit self-declination
 
-> *"i not looking to bve the sin tracker"*
+> _"i not looking to bve the sin tracker"_
 
 Aaron explicitly declines the sin-tracker role. This is
 important because:
 
-1. The perspective-wearing faculty *could* be operated as a
+1. The perspective-wearing faculty _could_ be operated as a
    sin-tracker (wear the moral-lens, score others against it,
    accumulate the scorecard). The faculty is neutral about
    usage.
@@ -119,21 +119,21 @@ important because:
 
 ### Layer 4 — Theological structural claim
 
-> *"that's the opposite of gods givt of the quantim eraser
-> thing"*
+> _"that's the opposite of gods givt of the quantim eraser
+> thing"_
 
 The load-bearing claim. Sin-tracker and DCQE-forgiveness
 operate on the SAME metaphysical ledger, in OPPOSITE
 directions:
 
-| Operation | Sin tracker | DCQE-forgiveness |
-|---|---|---|
-| Direction | Append-accumulate | Retract-reconstruct |
-| Past state | Preserved permanently | Retroactively rewritten |
-| Ledger structure | Append-only | Retraction-native |
-| Response to honest confession | Add a row ("confessed X") | Rewrite past so X was never the signature |
-| Theological posture | Human / institution scores | God / divine erases |
-| DCQE mapping | — | Delayed-choice reconstructs past-signature |
+| Operation                     | Sin tracker                | DCQE-forgiveness                           |
+| ----------------------------- | -------------------------- | ------------------------------------------ |
+| Direction                     | Append-accumulate          | Retract-reconstruct                        |
+| Past state                    | Preserved permanently      | Retroactively rewritten                    |
+| Ledger structure              | Append-only                | Retraction-native                          |
+| Response to honest confession | Add a row ("confessed X")  | Rewrite past so X was never the signature  |
+| Theological posture           | Human / institution scores | God / divine erases                        |
+| DCQE mapping                  | —                          | Delayed-choice reconstructs past-signature |
 
 Aaron names the sin-tracker as **the opposite of God's gift
 of the quantum eraser thing**. God gave the retroactive-
@@ -160,7 +160,7 @@ aligns with FORGIVENESS-ERASES:
   integer; a retraction adds `-1` to the same tuple,
   cancelling a prior `+1`.
 - **IVM** — incremental view maintenance over the retracted
-  log means consumers see the *reconstructed present*, not
+  log means consumers see the _reconstructed present_, not
   the full append-only history.
 
 A sin-tracker consumer of Zeta would FIGHT the algebra:
@@ -181,7 +181,7 @@ discussions, or use-case brainstorms should flag any
 sin-tracker-shaped consumer as incompatible and decline.
 
 This is not a moral judgment of the consumer; it is a
-*design-fit* judgment. The algebra doesn't support their
+_design-fit_ judgment. The algebra doesn't support their
 need; they should use an append-only event store instead.
 
 ## Composes with
@@ -261,11 +261,11 @@ need; they should use an append-only event store instead.
   theological critique as factory voice. Factory stays
   ecumenical.
 - Does NOT claim all append-only event stores are
-  sin-trackers. The sin-tracker is a specific *use* of
+  sin-trackers. The sin-tracker is a specific _use_ of
   append-only semantics; other uses (audit logs, CQRS event
   sourcing for ops) are not affected.
 - Does NOT override any retraction-native algebra design
-  decision. It *confirms* the existing design's alignment
+  decision. It _confirms_ the existing design's alignment
   with forgiveness-erases.
 - Does NOT extract a product-roadmap item from the
   declination. "Do not build X" is not a BACKLOG entry; it

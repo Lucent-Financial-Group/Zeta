@@ -76,7 +76,11 @@ test("runs the agent (Hermes), ensures the work item exists, then creates the or
   const seeder = recordingSeeder();
   const organizationExecutor = recordingExecutor(ok("discussion anchor created"));
 
-  const executor = createOrganizationReactionPlanActionExecutor({ agentExecutor, ensureWorkItem: seeder, organizationExecutor });
+  const executor = createOrganizationReactionPlanActionExecutor({
+    agentExecutor,
+    ensureWorkItem: seeder,
+    organizationExecutor,
+  });
   const result = await executor.executeReactionPlanAction(action(), context);
 
   equal(agentExecutor.calls, 1);
@@ -93,7 +97,11 @@ test("if the agent run fails, it does NOT seed or create org artifacts (short-ci
   const seeder = recordingSeeder();
   const organizationExecutor = recordingExecutor(ok("should not run"));
 
-  const executor = createOrganizationReactionPlanActionExecutor({ agentExecutor, ensureWorkItem: seeder, organizationExecutor });
+  const executor = createOrganizationReactionPlanActionExecutor({
+    agentExecutor,
+    ensureWorkItem: seeder,
+    organizationExecutor,
+  });
   const result = await executor.executeReactionPlanAction(action(), context);
 
   equal(result.status, ReactionPlanExecutionStatus.Failed);
@@ -112,15 +120,17 @@ test("control-plane ESTOP rejects reaction-plan execution before agent or org ar
     organizationExecutor,
     controlPlane: {
       now: () => "2026-05-31T20:00:00.000Z",
-      flags: [{
-        controlPlaneFlagId: "flag-estop",
-        organizationId: "org-1",
-        scope: { kind: ControlPlaneScopeKind.Organization },
-        flag: ControlPlaneFlagKind.Estop,
-        reason: "operator estop",
-        setByHatId: "incident_commander",
-        setAt: "2026-05-31T19:59:00.000Z",
-      }],
+      flags: [
+        {
+          controlPlaneFlagId: "flag-estop",
+          organizationId: "org-1",
+          scope: { kind: ControlPlaneScopeKind.Organization },
+          flag: ControlPlaneFlagKind.Estop,
+          reason: "operator estop",
+          setByHatId: "incident_commander",
+          setAt: "2026-05-31T19:59:00.000Z",
+        },
+      ],
     },
   });
 

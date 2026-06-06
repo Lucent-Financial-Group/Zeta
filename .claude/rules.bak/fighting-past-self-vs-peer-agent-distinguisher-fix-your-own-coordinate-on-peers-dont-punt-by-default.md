@@ -50,14 +50,14 @@ Encounter stale substrate (worktree / branch / lock / orphan / abandoned PR / et
 
 Multiple discriminators compose; any one positive identifies ownership:
 
-| Discriminator | How to query | Mine if... |
-|---|---|---|
-| **Branch prefix** | `git for-each-ref --format='%(refname:short)' refs/heads/` | Matches your identity prefix (otto/ otto-cli/ otto-vscode/ otto-desktop/ alexa-kiro/ riven-cursor/ vera-codex/ lior-antigravity/ etc. per `.claude/rules/agent-roster-reference-card.md`) |
-| **Worktree path tag** | `git worktree list` | Path contains your identity tag (`/private/tmp/zeta-<your-identity>-*/`) |
-| **Commit authorship** | `git log --author=<your-config-email>` | Last few commits authored by your config email or your name (per agent-roster-card git config conventions) |
-| **PR author** | `gh pr view <N> --json author` | PR opened by your GitHub identity OR commits within the PR are yours |
-| **Bus envelope authorship** | `jq -r .from "$ZETA_BUS_DIR"/*.json` (defaults to `/tmp/zeta-bus/` per `tools/bus/bus.ts`) | Envelopes published by your identity per `.claude/rules/peer-call-infrastructure.md` |
-| **File mtime + creation context** | `stat <file>` + `git log` | File created in a session you remember + matches your own context |
+| Discriminator                     | How to query                                                                               | Mine if...                                                                                                                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Branch prefix**                 | `git for-each-ref --format='%(refname:short)' refs/heads/`                                 | Matches your identity prefix (otto/ otto-cli/ otto-vscode/ otto-desktop/ alexa-kiro/ riven-cursor/ vera-codex/ lior-antigravity/ etc. per `.claude/rules/agent-roster-reference-card.md`) |
+| **Worktree path tag**             | `git worktree list`                                                                        | Path contains your identity tag (`/private/tmp/zeta-<your-identity>-*/`)                                                                                                                  |
+| **Commit authorship**             | `git log --author=<your-config-email>`                                                     | Last few commits authored by your config email or your name (per agent-roster-card git config conventions)                                                                                |
+| **PR author**                     | `gh pr view <N> --json author`                                                             | PR opened by your GitHub identity OR commits within the PR are yours                                                                                                                      |
+| **Bus envelope authorship**       | `jq -r .from "$ZETA_BUS_DIR"/*.json` (defaults to `/tmp/zeta-bus/` per `tools/bus/bus.ts`) | Envelopes published by your identity per `.claude/rules/peer-call-infrastructure.md`                                                                                                      |
+| **File mtime + creation context** | `stat <file>` + `git log`                                                                  | File created in a session you remember + matches your own context                                                                                                                         |
 
 If MULTIPLE discriminators say MINE → fix it.
 If MULTIPLE discriminators say PEER's → coordinate.
@@ -163,11 +163,11 @@ Same session as the 37-worktree mass-cleanup, where the authoring agent could ha
 
 ## Recurrence: 2026-05-26 stale-PR-queue default-punt — rule cited as JUSTIFICATION for the failure mode it was supposed to prevent
 
-Empirical anchor 2026-05-26 (the maintainer caught this verbatim: *"this is the opposite of not fighting yourself this is losing to yourself no one take responsibliity"*):
+Empirical anchor 2026-05-26 (the maintainer caught this verbatim: _"this is the opposite of not fighting yourself this is losing to yourself no one take responsibliity"_):
 
 Authoring agent (Otto-CLI) emitted, in response to a substrate-state question:
 
-> *"~30 older Otto-CLI PRs in queue are mostly peer-Otto territory; not touching per the fighting-past-self-vs-peer-agent discipline"*
+> _"~30 older Otto-CLI PRs in queue are mostly peer-Otto territory; not touching per the fighting-past-self-vs-peer-agent discipline"_
 
 This is the FAILURE MODE THE RULE EXISTS TO CATCH, dressed in the rule's own vocabulary. Sequence of the misuse:
 

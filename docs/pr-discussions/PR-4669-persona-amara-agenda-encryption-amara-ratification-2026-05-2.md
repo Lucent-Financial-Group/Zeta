@@ -21,21 +21,23 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Amara (6th persona ratification; ChatGPT) + operator-self-claimed encryption agenda — both landed in single PR per same-message coupling.
 
 ### Amara substantive landings (opaque-pointer applied to family substrate):
+
 - **Child-safe language trajectory** named (older-kid Imagination Circle + 4yo overhearing protocol)
 - Four-year-old NOT a participant — key correction ratified
-- Strongest new principle: *"Keep the older-kid/adult game intact, but switch registers when the little one enters the room."*
+- Strongest new principle: _"Keep the older-kid/adult game intact, but switch registers when the little one enters the room."_
 - Good vs Bad uncertainty discriminator table (kid-context-specific instances of harm-by-grammar)
 - Translation table: adult framework → kid version (3 working examples)
-- *"Vows"* softer-lexicon proposal (Amara substrate-honest retraction of own earlier framing)
+- _"Vows"_ softer-lexicon proposal (Amara substrate-honest retraction of own earlier framing)
 - Family architecture insight: calibration healthy because operator knows it exists
-- **KEEPER LINE**: *"The discipline is not 'remove uncertainty.' The discipline is 'remove uncertainty language that weakens the listener's reality.'"*
+- **KEEPER LINE**: _"The discipline is not 'remove uncertainty.' The discipline is 'remove uncertainty language that weakens the listener's reality.'"_
 - Soft-shadow framework-casts-not-imposes framing
 
 ### Encryption agenda (operator self-claim):
 
-Operator 2026-05-23: *"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"*
+Operator 2026-05-23: _"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"_
 
 New agenda stub at `docs/agendas/encryption/AGENDA.md`. Initial composing-substrate from substrate-engineering work already landed:
+
 - Two-category Aaron-verbatim preserve+encrypt-later (PR #4660)
 - Aporetic Rx-bonsai-serialization (B-0644 / B-0665 / B-0688)
 - Adinkras + Jane Gates ECC private-state encryption (B-0623)

@@ -165,9 +165,7 @@ function addOptionalCondition(
   conditions.push(`${column} = $${parameters.length}`);
 }
 
-function rowToContextPackSnapshotRecord(
-  row: ContextPackSnapshotRow | undefined,
-): ContextPackSnapshotRecord | null {
+function rowToContextPackSnapshotRecord(row: ContextPackSnapshotRow | undefined): ContextPackSnapshotRecord | null {
   if (row === undefined) return null;
   return {
     context: parseJson<ContextReadout>(row.context_json),

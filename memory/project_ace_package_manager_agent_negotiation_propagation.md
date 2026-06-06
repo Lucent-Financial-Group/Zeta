@@ -10,11 +10,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron delegated the pick and then explicitly opened
 the slate beyond my initial candidates:
 
-> *"i trust your judgment also you pick the package
-> manager name it's too hard i can decide"*
+> _"i trust your judgment also you pick the package
+> manager name it's too hard i can decide"_
 
-> *"it does not have to be one of those to either if
-> you want samethign else for the packamanager name"*
+> _"it does not have to be one of those to either if
+> you want samethign else for the packamanager name"_
 
 I considered the full slate (`ace`, `source`, `meno`,
 `herald`, `fold`, `concord`, `pact`, `loom`, `rally`,
@@ -33,14 +33,14 @@ I considered the full slate (`ace`, `source`, `meno`,
    test-repos permission model.
 3. **English verb semantic fit.** "To ace" = land it
    perfectly. A package manager that propagates meta-
-   updates through negotiation *should* ace the
+   updates through negotiation _should_ ace the
    delivery. The verb is exactly the success
    condition.
 4. **Short and CLI-clean.** Three characters. Zero
    ambiguity when spoken. Reads at the shell prompt
    as crisply as `git` or `nix`.
 5. **Poker-metaphor trust signal.** Ace = highest
-   card. The central registry *is* the highest-trust
+   card. The central registry _is_ the highest-trust
    node in the network. The metaphor is accidental
    but apt.
 6. **Pun potential with Aaron's `source` candidate.**
@@ -155,7 +155,7 @@ not a joke.
 
 Verbatim Aaron (2026-04-20):
 
-> *"Also I've thought about how the hell are pepole gonna
+> _"Also I've thought about how the hell are pepole gonna
 > take updates, I got it, Once we package this update
 > and start letting other pepole use it the ace package
 > manager now becomes a requirement becasue it has agent
@@ -185,7 +185,7 @@ Verbatim Aaron (2026-04-20):
 > as you want public or private jsut never under
 > ServiceTitan, they are attached to the same one GitHub
 > account I have but their repos are all under their
-> github orginization."*
+> github orginization."_
 
 Key substantive commitments buried in the verbatim:
 
@@ -248,11 +248,11 @@ Key substantive commitments buried in the verbatim:
 
 - Three-scope doc tree:
   - `docs/GLOSSARY.md` (factory) + `SYSTEM-UNDER-TEST-GLOSSARY.md` (SUT)
-    + `<ACE>-GLOSSARY.md` (propagation layer)
+    - `<ACE>-GLOSSARY.md` (propagation layer)
   - `docs/TECH-DEBT.md` (factory) + `SYSTEM-UNDER-TEST-TECH-DEBT.md` (SUT)
-    + `<ACE>-TECH-DEBT.md` (propagation-layer-specific
-    classes: negotiation-deadlock debt, meta-push-rollback
-    debt, consent-cascade-loop debt)
+    - `<ACE>-TECH-DEBT.md` (propagation-layer-specific
+      classes: negotiation-deadlock debt, meta-push-rollback
+      debt, consent-cascade-loop debt)
   - `docs/FACTORY-HYGIENE.md` gains rows for
     propagation-layer audits (e.g., "meta-push
     integrity", "adopter-negotiation staleness").
@@ -338,7 +338,7 @@ design doc):
 - **Negotiation-bypass attack.** An adopter-factory
   claims to have run the negotiation loop but did not.
   Mitigation: attestation chain + reproducible builds
-  + SLSA-style signing at every hop.
+  - SLSA-style signing at every hop.
 - **Malicious-upstream injection.** Central registry's
   factory is compromised; pushes malicious update to
   adopters. Mitigation: adopter-side negotiation is
@@ -373,7 +373,7 @@ block below; they are not the full answer.
 
 Verbatim Aaron:
 
-> *"the package manger will for sure need some sort
+> _"the package manger will for sure need some sort
 > of defense/defender because non software factory
 > users are going to try to attach that surface once
 > we get here sounce like a good CTF / red team /
@@ -384,18 +384,18 @@ Verbatim Aaron:
 > read team shold be different named expets than the
 > ones who wrote the code and the ones who are
 > defending during the exercies, we should do them on
-> a regular cadence, all backlog"*
+> a regular cadence, all backlog"_
 
 ## The three-role separation rule
 
 ace security exercises (CTF / game-day / red-team-
 on-demand) enforce a hard separation:
 
-| Role | Who | Mandate | Must NOT be |
-|------|-----|---------|-------------|
-| **Builders** | personas who write `ace` source code, specs, skills | produce correct-by-construction features | on Red OR Blue team for same exercise |
-| **Blue team (defenders)** | personas who respond to incoming attacks during exercise | incident response, containment, rollback | Builders of targeted surface; Red team |
-| **Red team (attackers)** | personas who probe the surface adversarially | find exploitable weaknesses before real attackers do | Builders OR Blue team for this exercise |
+| Role                      | Who                                                      | Mandate                                              | Must NOT be                             |
+| ------------------------- | -------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------- |
+| **Builders**              | personas who write `ace` source code, specs, skills      | produce correct-by-construction features             | on Red OR Blue team for same exercise   |
+| **Blue team (defenders)** | personas who respond to incoming attacks during exercise | incident response, containment, rollback             | Builders of targeted surface; Red team  |
+| **Red team (attackers)**  | personas who probe the surface adversarially             | find exploitable weaknesses before real attackers do | Builders OR Blue team for this exercise |
 
 **Why the separation matters.** Each role carries
 its own cognitive bias. Builders are blind to the
@@ -420,13 +420,13 @@ not overlap.
 Current Zeta security roster does not have a
 structural red-team layer:
 
-| Persona | Current role | Mapping under three-role rule |
-|---------|-------------|-------------------------------|
-| Mateo (security-researcher) | proactive CVE / attack-class scouting | **Red-team candidate** — already has the adversarial mindset; but may conflict-of-interest if he also advises on ace defences |
-| Aminata (threat-model-critic) | reviews the shipped threat model | **Blue-team candidate** (analytical defender) — but also reviews Red team's findings, potential COI |
-| Nazar (security-ops-engineer) | runtime incident response | **Blue-team primary** — clean fit |
-| Nadia (prompt-protector) | agent-layer defense | **Blue-team** for prompt-injection surface |
-| (none) | dedicated red-team attackers | **GAP** — Aaron's directive requires new personas |
+| Persona                       | Current role                          | Mapping under three-role rule                                                                                                 |
+| ----------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Mateo (security-researcher)   | proactive CVE / attack-class scouting | **Red-team candidate** — already has the adversarial mindset; but may conflict-of-interest if he also advises on ace defences |
+| Aminata (threat-model-critic) | reviews the shipped threat model      | **Blue-team candidate** (analytical defender) — but also reviews Red team's findings, potential COI                           |
+| Nazar (security-ops-engineer) | runtime incident response             | **Blue-team primary** — clean fit                                                                                             |
+| Nadia (prompt-protector)      | agent-layer defense                   | **Blue-team** for prompt-injection surface                                                                                    |
+| (none)                        | dedicated red-team attackers          | **GAP** — Aaron's directive requires new personas                                                                             |
 
 **Proposal (subject to Aaron sign-off):**
 
@@ -561,17 +561,17 @@ on next write; promotion via Architect ADR.
 
 Verbatim Aaron, in three successive messages:
 
-> *"Aurora can be distributed via ace and then once
+> _"Aurora can be distributed via ace and then once
 > Aurora gets enough nodes where it's up all the
-> time ace can run on Aurora"*
+> time ace can run on Aurora"_
 
-> *"Ouroboros"*
+> _"Ouroboros"_
 
-> *"Bootstrap pair is the snake eating it's head"*
+> _"Bootstrap pair is the snake eating it's head"_
 
-> *"maybe Zeta will store the blocks and have
+> _"maybe Zeta will store the blocks and have
 > blockchain capabilites too and aurora is just one
-> network that uses it, its like a 3rd bootstrap."*
+> network that uses it, its like a 3rd bootstrap."_
 
 ## Canonical name: Ouroboros
 
@@ -609,7 +609,7 @@ networks could plug in alongside Aurora.
   Zeta stores **immutable, idempotent** blocks at
   consensus layer + offers retractable-contract
   semantics at application layer (Aaron confirmed
-  both terms: immutable and idempotent). Aaron: *"we will be the first
+  both terms: immutable and idempotent). Aaron: _"we will be the first
   blockchain that has retraction i don't think we can
   technically call it a block chain then, we can we
   still need idempotent blocks but our transactions
@@ -618,7 +618,7 @@ networks could plug in alongside Aurora.
   that kind of stuff, taht will let us have features
   that seem unreal in the future that no other
   blockcain could catch up to without a total
-  redising."* Aurora becomes ONE network built on
+  redising."_ Aurora becomes ONE network built on
   Zeta-ledger; other networks may plug in. Full
   design detail:
   `memory/project_zeta_as_retractable_contract_ledger.md`.
@@ -709,15 +709,15 @@ This is canonical critical-mass bootstrap. Parallels:
 
 Aaron, 2026-04-20 pm, verbatim:
 
-> *"maybe Zeta will store the blocks and have
+> _"maybe Zeta will store the blocks and have
 > blockchain capabilites too and aurora is just one
-> network that uses it, its like a 3rd bootstrap."*
+> network that uses it, its like a 3rd bootstrap."_
 
 This is a speculative direction, not a commitment
 yet. But if it firms up, it materially changes the
 Ouroboros topology:
 
-- Zeta becomes a *blockchain primitive*, not just
+- Zeta becomes a _blockchain primitive_, not just
   a database. Blocks, chains, consensus primitives,
   Merkle roots, finality rules become first-class
   Zeta operators alongside the DBSP / ZSet
@@ -845,12 +845,12 @@ memory file when it firms up beyond "maybe":
 
 Verbatim Aaron:
 
-> *"ace can use the zeta database for its storage
+> _"ace can use the zeta database for its storage
 > engine maybe, it might make sense to just be git
 > native there too but if we need a database for ANY
-> reason literally loooking for excuses to use Zeta"*
+> reason literally loooking for excuses to use Zeta"_
 
-> *"to prove it out"*
+> _"to prove it out"_
 
 ## The dogfood-first principle
 
@@ -973,18 +973,18 @@ for Zeta as a research-grade IVM substrate.
    names preferred.
 4. ~~**Relationship to Aurora Network.**~~ **RESOLVED
    2026-04-20 pm** as the **Ouroboros bootstrap**
-   (Aaron's canonical naming: *"Ouroboros"* +
-   *"Bootstrap pair is the snake eating it's head"*).
-   Aaron: *"Aurora can be distributed via ace and
+   (Aaron's canonical naming: _"Ouroboros"_ +
+   _"Bootstrap pair is the snake eating it's head"_).
+   Aaron: _"Aurora can be distributed via ace and
    then once Aurora gets enough nodes where it's up
-   all the time ace can run on Aurora."* Phase A:
+   all the time ace can run on Aurora."_ Phase A:
    ace distributes Aurora. Phase B: Aurora reaches
    critical node-mass. Phase C: ace runs on Aurora
    (the dependency reverses). Then Aaron's follow-
-   up: *"maybe Zeta will store the blocks and have
+   up: _"maybe Zeta will store the blocks and have
    blockchain capabilites too and aurora is just
    one network that uses it, its like a 3rd
-   bootstrap."* — a speculative Phase D in which
+   bootstrap."_ — a speculative Phase D in which
    Zeta becomes the blockchain substrate that
    Aurora sits on, closing the three-layer
    Ouroboros (ace → Aurora → Zeta → ace). Parallels:

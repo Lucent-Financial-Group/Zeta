@@ -53,9 +53,9 @@ decides which to land.
 
 Aaron's verbatim (2026-04-20):
 
-> *"we should probably have like a missing hygene class
+> _"we should probably have like a missing hygene class
 > that loss for new classes of hygene we could add to the
-> factory that we don't alreay have to imporve it."*
+> factory that we don't alreay have to imporve it."_
 
 This is the gap-of-gaps pattern
 (`feedback_gap_of_gaps_audit.md`) applied to the hygiene
@@ -63,9 +63,9 @@ surface specifically. That memory's claim — "the factory
 should look for unexpected gap CLASSES, not just gaps
 within known classes" — has a direct instantiation here:
 the symmetry-audit and hygiene-list we just landed look
-for gaps *within* the hygiene surface (missing symmetry,
+for gaps _within_ the hygiene surface (missing symmetry,
 missing documentation of an item); the missing-hygiene-
-class gap-finder looks for gaps *of* the hygiene surface
+class gap-finder looks for gaps _of_ the hygiene surface
 (classes of hygiene that aren't listed at all because
 nobody thought of them yet).
 
@@ -157,7 +157,7 @@ hygiene surface):**
 - **Dependency freshness / CVE audit.** No current
   cadenced audit flags outdated dependencies or
   open CVEs against them. (Upstream-sync row #15
-  watches *upstream repos*, not this repo's own
+  watches _upstream repos_, not this repo's own
   deps.)
   **Evidence:** OWASP A06 (vulnerable components).
 
@@ -226,8 +226,8 @@ into FACTORY-HYGIENE.md row #23+.
 - **`docs/FACTORY-HYGIENE.md`** — the index this
   memory feeds into via BACKLOG-routed adds.
 - **`skill-tune-up`** — Aarav's portability-drift and
-  BP-drift criteria are *within-item* sweeps;
-  missing-hygiene-class is *between-items*. Possibly
+  BP-drift criteria are _within-item_ sweeps;
+  missing-hygiene-class is _between-items_. Possibly
   extends Aarav's scope; possibly a sibling skill.
 
 # What this rule does NOT do

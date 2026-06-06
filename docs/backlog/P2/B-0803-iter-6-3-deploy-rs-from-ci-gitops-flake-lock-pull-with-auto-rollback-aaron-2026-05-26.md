@@ -15,21 +15,33 @@ composes_with:
   - B-0802
   - B-0804
   - B-0805
-tags: [iter-6, deploy-rs, gitops, ci-driven, auto-rollback, nixos, cluster-self-update, no-manual-operator, full-ai-cluster, alternative-shape]
+tags:
+  [
+    iter-6,
+    deploy-rs,
+    gitops,
+    ci-driven,
+    auto-rollback,
+    nixos,
+    cluster-self-update,
+    no-manual-operator,
+    full-ai-cluster,
+    alternative-shape,
+  ]
 ---
 
 ## Problem
 
 [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) `system.autoUpgrade` is the pull-from-cluster shape: each node fetches its own flake + rebuilds locally. Tradeoffs:
 
-| Concern | autoUpgrade (B-0801) | deploy-rs (this row) |
-|---|---|---|
-| Auth | Public repo needed (or per-node SSH key) | CI auth only; cluster nodes need no upstream auth |
-| Rollback on health-check failure | NixOS auto-rollback if rebuild fails; NOT auto-rollback if rebuild succeeds but workload health fails | deploy-rs probes a configurable health-check post-switch; rolls back if check fails |
-| Per-node ordering | Random / jittered timer; multi-node simultaneously possible (kured serializes reboots but not rebuilds) | CI controls order; explicit canary-then-fleet |
-| Operator visibility | journalctl per node | CI logs centralized |
-| Cadence | Scheduled (weekly default) | Triggered (every CI run = potential deploy) |
-| Private-repo support | Hard (cluster needs auth) | Easy (CI has the auth) |
+| Concern                          | autoUpgrade (B-0801)                                                                                    | deploy-rs (this row)                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Auth                             | Public repo needed (or per-node SSH key)                                                                | CI auth only; cluster nodes need no upstream auth                                   |
+| Rollback on health-check failure | NixOS auto-rollback if rebuild fails; NOT auto-rollback if rebuild succeeds but workload health fails   | deploy-rs probes a configurable health-check post-switch; rolls back if check fails |
+| Per-node ordering                | Random / jittered timer; multi-node simultaneously possible (kured serializes reboots but not rebuilds) | CI controls order; explicit canary-then-fleet                                       |
+| Operator visibility              | journalctl per node                                                                                     | CI logs centralized                                                                 |
+| Cadence                          | Scheduled (weekly default)                                                                              | Triggered (every CI run = potential deploy)                                         |
+| Private-repo support             | Hard (cluster needs auth)                                                                               | Easy (CI has the auth)                                                              |
 
 deploy-rs is the right choice IF:
 

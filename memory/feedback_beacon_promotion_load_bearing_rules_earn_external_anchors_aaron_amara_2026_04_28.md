@@ -29,20 +29,20 @@ graduations as natural side-effects of the substrate work:
 
 ### 1. Input-is-not-directive
 
-| Mirror form | Beacon anchor |
-|---|---|
+| Mirror form                              | Beacon anchor                                                                                                                                                                       |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | "we don't say directive in this factory" | **Self-Determination Theory** (Deci & Ryan; controlling-vs-autonomy-supportive language) **+ RFC 2119** (IETF; reserve requirement-strength words for actual protocol requirements) |
 
-Canonical bridge rule that emerged: *"Use requirement words
+Canonical bridge rule that emerged: _"Use requirement words
 for protocol constraints. Use feedback words for human
-provenance."* That sentence reads cleanly to both alignment-
+provenance."_ That sentence reads cleanly to both alignment-
 research-shaped and software-engineering-shaped audiences
 because each anchor speaks to one of those audiences.
 
 ### 2. Public-company contributor compliance
 
-| Mirror form | Beacon anchor |
-|---|---|
+| Mirror form                                                 | Beacon anchor                                                                                                                                                                     |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | "ServiceTitan is publicly-traded; don't share insider info" | **SEC Rule 10b-5** (insider-trading prohibition) **+ Regulation FD** (selective disclosure rules) **+ Sarbanes-Oxley §404 + §806** (internal controls + whistleblower protection) |
 
 The graduation produced operational precision: the rule isn't
@@ -52,16 +52,16 @@ for company-specific claims."
 
 ### 3. Metric ladder + Goodhart corrections
 
-| Mirror form | Beacon anchor |
-|---|---|
+| Mirror form                                                                               | Beacon anchor                                                                                                                                |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | "commit count is wrong; tree-numstat is better; content-equivalence is the actual target" | **Goodhart's Law** (Goodhart 1975, Strathern 1997 reframing) **+ Campbell's Law** (Campbell 1976; quantitative indicators distort decisions) |
 
 Catch #1 through #5 from this session all sit on this lineage.
 
 ### 4. Evidence lattice
 
-| Mirror form | Beacon anchor |
-|---|---|
+| Mirror form                                            | Beacon anchor                                                                                                                   |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | "metric ladder of increasingly precise reset evidence" | **Lattice / semilattice theory** (partially-ordered sets with join + meet operations; product lattices for combined attributes) |
 
 The graduation gave the operational ladder a formal structure
@@ -72,8 +72,8 @@ substrate**.
 
 ### 5. Commit-graph vs tree-content distinction
 
-| Mirror form | Beacon anchor |
-|---|---|
+| Mirror form                                                | Beacon anchor                                                                                                                                         |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | "the 145-commits-ahead panic dissolved into 23-files-diff" | **Git internals**: `git rev-list --left-right --count` (graph reachability) vs `git diff-tree` (content/mode of blobs) — these are different surfaces |
 
 Citing git's own glossary distinction made the metric correction
@@ -179,18 +179,18 @@ Both inform the alignment trajectory.
 
 ## Direct Claude.ai framing (verbatim)
 
-> *"This round had multiple 'Mirror → Beacon' upgrades:
+> _"This round had multiple 'Mirror → Beacon' upgrades:
 > input-is-not-directive → SDT + RFC 2119; public-company
 > compliance → SEC / Reg FD / SOX; metric corrections →
 > Goodhart / Campbell; evidence lattice → lattice theory;
-> commit-vs-tree → Git internals."*
+> commit-vs-tree → Git internals."_
 
-> *"Worth a memory entry beyond the BP-WINDOW ledger. Not
+> _"Worth a memory entry beyond the BP-WINDOW ledger. Not
 > 'we did Beacon-promotion in round N' but 'the round
 > demonstrated that load-bearing factory rules consistently
 > earn external anchors when they're correct, and the absence
 > of an external anchor on a long-running internal rule is
-> itself a useful drift signal.'"*
+> itself a useful drift signal.'"_
 
 ## Rendering-side specification — anchors stay for observer legibility (Aaron 2026-04-29 addendum)
 
@@ -205,11 +205,11 @@ promotion shows up in prose once an anchor is earned.
 Aaron 2026-04-29 (mid-tick correction, reversing one
 direction of an Amara round-4 push to drop Conway-Kochen):
 
-> *"The human lineage link is always important like the The
+> _"The human lineage link is always important like the The
 > Conway-Kochen parity intuition we might have engineering on
 > our side like Amara says but we still need to link to human
 > lineage so external observerse have a frame of references
-> without fully understading our engineering"*
+> without fully understading our engineering"_
 
 (Typos preserved per the channel-verbatim-preservation rule.)
 

@@ -28,11 +28,11 @@ The installer's zeta-first-boot service auto-launches nmtui when no ethernet is 
 
 ## 3-layer mitigation (smallest first)
 
-| Approach | Scope | Code change |
-|---|---|---|
-| A | Documentation banner before nmtui launch (F5 rescan + Esc re-launch paths) | Banner text in zeta-first-boot.sh |
-| B | Pre-scan + post-nmtui re-launch loop in zeta-first-boot.sh | Small loop addition |
-| C | Bypass nmtui entirely; prompt-driven nmcli flow | Larger refactor; 0-human-typing-aligned |
+| Approach | Scope                                                                      | Code change                             |
+| -------- | -------------------------------------------------------------------------- | --------------------------------------- |
+| A        | Documentation banner before nmtui launch (F5 rescan + Esc re-launch paths) | Banner text in zeta-first-boot.sh       |
+| B        | Pre-scan + post-nmtui re-launch loop in zeta-first-boot.sh                 | Small loop addition                     |
+| C        | Bypass nmtui entirely; prompt-driven nmcli flow                            | Larger refactor; 0-human-typing-aligned |
 
 P2 priority — UX friction, not hard blocker (operator continued the test via \"moving forward\" workaround).
 
@@ -57,6 +57,7 @@ This row IS what B-0831 predicted: physical hardware-support test surfaces real-
 Adds a new backlog row (B-0832) capturing empirical operator feedback from a physical hardware-support test: dense WiFi environments can cause `nmtui` to miss the target SSID on initial scan, and the installer needs a visible rescan/refresh path.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/B-0832...md` describing the issue and outlining three mitigation approaches (A banner, B rescan/relaunch loop, C `nmcli` flow).
 - Regenerates/updates `docs/BACKLOG.md` to include the new B-0832 entry.
 
@@ -64,10 +65,10 @@ Adds a new backlog row (B-0832) capturing empirical operator feedback from a phy
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                | Description                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0832-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md | New P2 backlog row documenting the dense-WiFi `nmtui` rescan UX gap and candidate mitigations. |
-| docs/BACKLOG.md | Adds the generated index entry for B-0832 under P2. |
+| docs/BACKLOG.md                                                                                                                                     | Adds the generated index entry for B-0832 under P2.                                            |
 
 ## Review threads
 

@@ -28,10 +28,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildReport, loadFixture, type GateReport } from "./poll-pr-gate";
 
-const FIXTURES_DIR = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-  "fixtures",
-);
+const FIXTURES_DIR = resolve(dirname(fileURLToPath(import.meta.url)), "fixtures");
 
 function classifyFixture(name: string): GateReport {
   return buildReport(loadFixture(resolve(FIXTURES_DIR, name)));

@@ -1,5 +1,15 @@
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
+import {
+  chmodSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  writeFileSync,
+  closeSync,
+  openSync,
+  statSync,
+  existsSync,
+} from "node:fs";
 import { join, relative, isAbsolute } from "node:path";
 import { tmpdir } from "node:os";
 import { generateKeyPairSync, createHash } from "node:crypto";
@@ -327,7 +337,10 @@ describe("listInstalled", () => {
 
   test("sorts by name", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
-    for (const pair of [["h2", "zebra"], ["h1", "alpha"]]) {
+    for (const pair of [
+      ["h2", "zebra"],
+      ["h1", "alpha"],
+    ]) {
       const pkgDir = join(dir, pair[0]!);
       mkdirSync(pkgDir);
       writeFileSync(
@@ -472,7 +485,6 @@ describe("main", () => {
     expect(listCode).toBe(0);
   });
 
-
   // ---- trust add: invalid key validation ----
 
   test("trust add with .pub JSON missing public_key field exits 64 or 65 (NOT a fatal throw)", async () => {
@@ -519,7 +531,7 @@ describe("main", () => {
     const code = await main(["trust", "add", padded.toString("base64")]);
     expect(code).toBe(0);
     const ids = listTrustedKeys().map((r) => r.key_id);
-    expect(ids).toContain(canonKeyId);      // stored under the canonical key_id
+    expect(ids).toContain(canonKeyId); // stored under the canonical key_id
     expect(ids).not.toContain(paddedKeyId); // NOT the raw padded bytes' id
   });
 
@@ -632,27 +644,96 @@ describe("main", () => {
   test("e2e: install a small graph (root->A->B) installs all three", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
-    writeFileSync(join(dir,"B.json"), JSON.stringify(B));
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }), dependencies:[{ kind: "inline" as const, name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "a.txt":"a" } };
-    writeFileSync(join(dir,"A.json"), JSON.stringify(A));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind: "inline" as const, name:"A", version:"1.0.0", url: join(dir,"A.json"), package_hash: packageHash(A as any) }] }, files: { "r.txt":"r" } };
-    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
-    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const B = {
+      manifest: { format_version: 1, name: "B", version: "1.0.0", content_hash: h({ "b.txt": "b" }) },
+      files: { "b.txt": "b" },
+    };
+    writeFileSync(join(dir, "B.json"), JSON.stringify(B));
+    const A = {
+      manifest: {
+        format_version: 1,
+        name: "A",
+        version: "1.0.0",
+        content_hash: h({ "a.txt": "a" }),
+        dependencies: [
+          {
+            kind: "inline" as const,
+            name: "B",
+            version: "1.0.0",
+            url: join(dir, "B.json"),
+            package_hash: packageHash(B as any),
+          },
+        ],
+      },
+      files: { "a.txt": "a" },
+    };
+    writeFileSync(join(dir, "A.json"), JSON.stringify(A));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [
+          {
+            kind: "inline" as const,
+            name: "A",
+            version: "1.0.0",
+            url: join(dir, "A.json"),
+            package_hash: packageHash(A as any),
+          },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    writeFileSync(join(dir, "root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir, "root.json"), "--store", store, "--allow-no-signature"]);
     expect(code).toBe(0);
-    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["A","B","root"]);
+    expect(
+      listInstalled(store)
+        .map((p) => p.manifest.name)
+        .sort(),
+    ).toEqual(["A", "B", "root"]);
   });
 
   test("atomic: a graph with an unsafe-path node installs NOTHING (preflight)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const bad = { manifest: { format_version:1, name:"BAD", version:"1.0.0", content_hash: h({ "../escape":"x" }) }, files: { "../escape":"x" } };
-    writeFileSync(join(dir,"BAD.json"), JSON.stringify(bad));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind: "inline" as const, name:"BAD", version:"1.0.0", url: join(dir,"BAD.json"), package_hash: packageHash(bad as any) }] }, files: { "r.txt":"r" } };
-    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
-    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const bad = {
+      manifest: { format_version: 1, name: "BAD", version: "1.0.0", content_hash: h({ "../escape": "x" }) },
+      files: { "../escape": "x" },
+    };
+    writeFileSync(join(dir, "BAD.json"), JSON.stringify(bad));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [
+          {
+            kind: "inline" as const,
+            name: "BAD",
+            version: "1.0.0",
+            url: join(dir, "BAD.json"),
+            package_hash: packageHash(bad as any),
+          },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    writeFileSync(join(dir, "root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir, "root.json"), "--store", store, "--allow-no-signature"]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
@@ -660,12 +741,36 @@ describe("main", () => {
   test("atomic: a graph whose ROOT has a bad content_hash installs NOTHING", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
-    writeFileSync(join(dir,"B.json"), JSON.stringify(B));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: "sha256:deadbeef", dependencies:[{ kind: "inline" as const, name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B as any) }] }, files: { "r.txt":"r" } };
-    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
-    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const B = {
+      manifest: { format_version: 1, name: "B", version: "1.0.0", content_hash: h({ "b.txt": "b" }) },
+      files: { "b.txt": "b" },
+    };
+    writeFileSync(join(dir, "B.json"), JSON.stringify(B));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: "sha256:deadbeef",
+        dependencies: [
+          {
+            kind: "inline" as const,
+            name: "B",
+            version: "1.0.0",
+            url: join(dir, "B.json"),
+            package_hash: packageHash(B as any),
+          },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    writeFileSync(join(dir, "root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir, "root.json"), "--store", store, "--allow-no-signature"]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
@@ -673,18 +778,49 @@ describe("main", () => {
   test("store-collision: two distinct packages with identical files install NOTHING", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
     const sharedFiles = { "same.txt": "identical" };
-    const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
-    const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
-    writeFileSync(join(dir,"X.json"), JSON.stringify(X));
-    writeFileSync(join(dir,"Y.json"), JSON.stringify(Y));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
-      { kind: "inline" as const, name:"X", version:"1.0.0", url: join(dir,"X.json"), package_hash: packageHash(X as any) },
-      { kind: "inline" as const, name:"Y", version:"1.0.0", url: join(dir,"Y.json"), package_hash: packageHash(Y as any) },
-    ] }, files: { "r.txt":"r" } };
-    writeFileSync(join(dir,"root.json"), JSON.stringify(root));
-    const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+    const X = {
+      manifest: { format_version: 1, name: "X", version: "1.0.0", content_hash: h(sharedFiles) },
+      files: sharedFiles,
+    };
+    const Y = {
+      manifest: { format_version: 1, name: "Y", version: "1.0.0", content_hash: h(sharedFiles) },
+      files: sharedFiles,
+    };
+    writeFileSync(join(dir, "X.json"), JSON.stringify(X));
+    writeFileSync(join(dir, "Y.json"), JSON.stringify(Y));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [
+          {
+            kind: "inline" as const,
+            name: "X",
+            version: "1.0.0",
+            url: join(dir, "X.json"),
+            package_hash: packageHash(X as any),
+          },
+          {
+            kind: "inline" as const,
+            name: "Y",
+            version: "1.0.0",
+            url: join(dir, "Y.json"),
+            package_hash: packageHash(Y as any),
+          },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    writeFileSync(join(dir, "root.json"), JSON.stringify(root));
+    const code = await main(["install", join(dir, "root.json"), "--store", store, "--allow-no-signature"]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
@@ -695,9 +831,17 @@ describe("main", () => {
 describe("registry commands", () => {
   test("ace registry add fetches + computes hash + stores; registry list shows it", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
-    const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const D = {
+      manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) },
+      files: { "d.txt": "d" },
+    };
+    const dPath = join(dir, "D.json");
+    writeFileSync(dPath, JSON.stringify(D));
     expect(await main(["registry", "add", "D", "1.0.0", dPath])).toBe(0);
     const reg = loadRegistry();
     expect(reg.get("D")?.get("1.0.0")?.package_hash).toBe(packageHash(D as any));
@@ -706,8 +850,15 @@ describe("registry commands", () => {
 
   test("registry add normalizes a relative local path to absolute (cwd-independent install)", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const D = { manifest: { format_version: 1, name: "Drel", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const D = {
+      manifest: { format_version: 1, name: "Drel", version: "1.0.0", content_hash: h({ "d.txt": "d" }) },
+      files: { "d.txt": "d" },
+    };
     const absPath = join(dir, "Drel.json");
     writeFileSync(absPath, JSON.stringify(D));
     const relPath = relative(process.cwd(), absPath);
@@ -724,8 +875,15 @@ describe("registry commands", () => {
   });
   test("registry add refuses a package whose identity != the CLI name/version with exit 65", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string, string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const D = { manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) }, files: { "d.txt": "d" } };
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const D = {
+      manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) },
+      files: { "d.txt": "d" },
+    };
     const p = join(dir, "D.json");
     writeFileSync(p, JSON.stringify(D));
     expect(await main(["registry", "add", "WRONGNAME", "1.0.0", p])).toBe(65);
@@ -735,32 +893,78 @@ describe("registry commands", () => {
     const p = join(dir, "mal.json");
     // Well-formed SHAPE + matching identity, but a float manifest field makes packageHash throw;
     // safePackageHash must turn that into a clean exit 65, not the generic ace: fatal: catch-all.
-    writeFileSync(p, JSON.stringify({ manifest: { format_version: 1, name: "M", version: "1.0.0", content_hash: "sha256:deadbeef", bogus: 1.5 }, files: { "a.txt": "x" } }));
+    writeFileSync(
+      p,
+      JSON.stringify({
+        manifest: { format_version: 1, name: "M", version: "1.0.0", content_hash: "sha256:deadbeef", bogus: 1.5 },
+        files: { "a.txt": "x" },
+      }),
+    );
     expect(await main(["registry", "add", "M", "1.0.0", p])).toBe(65);
   });
   test("e2e: install a root with a registry dep resolves via the registry", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
-    const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const D = {
+      manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) },
+      files: { "d.txt": "d" },
+    };
+    const dPath = join(dir, "D.json");
+    writeFileSync(dPath, JSON.stringify(D));
     await main(["registry", "add", "D", "1.0.0", dPath]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry", name:"D", version:"1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry", name: "D", version: "1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
     expect(code).toBe(0);
-    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["D","root"]);
+    expect(
+      listInstalled(store)
+        .map((p) => p.manifest.name)
+        .sort(),
+    ).toEqual(["D", "root"]);
   });
 
   test("e2e: graph install writes ./ace.lock pinning the installed deps", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const aPath = join(dir, "A.json");
+    writeFileSync(aPath, JSON.stringify(A));
     await main(["registry", "add", "A", "1.0.0", aPath]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: "1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lockPath = join(dir, "ace.lock");
     const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath]);
     expect(code).toBe(0);
@@ -777,9 +981,23 @@ describe("registry commands", () => {
   test("e2e: install with a registry dep missing from the registry -> exit 1, store empty", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry", name:"MISSING", version:"1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry", name: "MISSING", version: "1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
@@ -789,17 +1007,37 @@ describe("registry commands", () => {
 // ---- frozen lockfile replay (slice 5.3) ----
 
 describe("install --frozen (slice 5.3)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
 
   // Builds an inline root->A graph in a temp dir, installs it once with --lockfile to
   // generate the lock (the lock's node url points at the temp A.json — registry never used),
   // then returns paths so a --frozen run can replay it against an EMPTY registry.
   function buildInlineGraph() {
     const dir = mkdtempSync(join(tmpdir(), "ace-frozen-pkgs-"));
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: packageHash(A as any) }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const aPath = join(dir, "A.json");
+    writeFileSync(aPath, JSON.stringify(A));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [
+          { kind: "inline" as const, name: "A", version: "1.0.0", url: aPath, package_hash: packageHash(A as any) },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lockPath = join(dir, "ace.lock");
     return { dir, A, aPath, root, rootPath, lockPath };
   }
@@ -808,26 +1046,64 @@ describe("install --frozen (slice 5.3)", () => {
     const g = buildInlineGraph();
     const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
     // 1. Generate the lock via a normal install (inline graph; no registry add ever happens).
-    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    expect(
+      await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath]),
+    ).toBe(0);
     expect(existsSync(g.lockPath)).toBe(true);
     // 2. Replay into a fresh store with --frozen. Registry is empty (no registry add); the
     //    replay must install entirely from the lock's pinned url, never consulting the registry.
     expect(loadRegistry().size).toBe(0);
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-replay-"));
-    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      g.rootPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      g.lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(0);
-    expect(listInstalled(frozenStore).map((p)=>p.manifest.name).sort()).toEqual(["A","root"]);
+    expect(
+      listInstalled(frozenStore)
+        .map((p) => p.manifest.name)
+        .sort(),
+    ).toEqual(["A", "root"]);
   });
 
   test("--frozen with a drifted root (deps changed vs the lock) is refused", async () => {
     const g = buildInlineGraph();
     const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
-    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    expect(
+      await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath]),
+    ).toBe(0);
     // Mutate the root's dep set after the lock was written -> root packageHash drifts.
-    const drifted = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"2.0.0", url: g.aPath, package_hash: packageHash(g.A as any) }] }, files: { "r.txt":"r" } };
-    const driftedPath = join(g.dir, "root-drifted.json"); writeFileSync(driftedPath, JSON.stringify(drifted));
+    const drifted = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [
+          { kind: "inline" as const, name: "A", version: "2.0.0", url: g.aPath, package_hash: packageHash(g.A as any) },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    const driftedPath = join(g.dir, "root-drifted.json");
+    writeFileSync(driftedPath, JSON.stringify(drifted));
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-drift-"));
-    const code = await main(["install", driftedPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      driftedPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      g.lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
@@ -836,7 +1112,16 @@ describe("install --frozen (slice 5.3)", () => {
     const g = buildInlineGraph();
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-nolock-"));
     const missingLock = join(g.dir, "does-not-exist.lock");
-    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", missingLock, "--frozen"]);
+    const code = await main([
+      "install",
+      g.rootPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      missingLock,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
@@ -844,12 +1129,26 @@ describe("install --frozen (slice 5.3)", () => {
   test("--frozen with a tampered locked node (bytes at url != lock pin) is refused", async () => {
     const g = buildInlineGraph();
     const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
-    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    expect(
+      await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath]),
+    ).toBe(0);
     // Tamper the bytes at A's url AFTER the lock pinned A's package_hash.
-    const tamperedA = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"TAMPERED" }) }, files: { "a.txt":"TAMPERED" } };
+    const tamperedA = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "TAMPERED" }) },
+      files: { "a.txt": "TAMPERED" },
+    };
     writeFileSync(g.aPath, JSON.stringify(tamperedA));
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-tamper-"));
-    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      g.rootPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      g.lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
@@ -867,19 +1166,40 @@ describe("install --frozen (slice 5.3)", () => {
     const aManifestBase = { format_version: 1, name: "A", version: "1.0.0", content_hash: h(aFiles) };
     const signature = signManifest(aManifestBase, untrustedKp.privatePem);
     const signedA = { manifest: { ...aManifestBase, signature }, files: aFiles };
-    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(signedA));
+    const aPath = join(dir, "A.json");
+    writeFileSync(aPath, JSON.stringify(signedA));
     const aHash = packageHash(signedA as any);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "inline" as const, name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     // Build the lock directly (pin A's SIGNED package_hash) so replay reaches the signature gate.
     const lock = {
       format_version: 1 as const,
       root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
       nodes: [{ name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
     };
-    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const lockPath = join(dir, "ace.lock");
+    writeFileSync(lockPath, JSON.stringify(lock));
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-untrusted-store-"));
-    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      rootPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
@@ -890,15 +1210,33 @@ describe("install --frozen (slice 5.3)", () => {
     // the first verified node (A) would already be on disk by the time B's pin check fails; the two-pass
     // restructure verifies the WHOLE graph before any extract, so a B failure leaves A NOT installed.
     const dir = mkdtempSync(join(tmpdir(), "ace-frozen-atomic-"));
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
-    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
-    const bPath = join(dir, "B.json"); writeFileSync(bPath, JSON.stringify(B));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
-      { kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: packageHash(A as any) },
-      { kind:"inline" as const, name:"B", version:"1.0.0", url: bPath, package_hash: packageHash(B as any) },
-    ] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const B = {
+      manifest: { format_version: 1, name: "B", version: "1.0.0", content_hash: h({ "b.txt": "b" }) },
+      files: { "b.txt": "b" },
+    };
+    const aPath = join(dir, "A.json");
+    writeFileSync(aPath, JSON.stringify(A));
+    const bPath = join(dir, "B.json");
+    writeFileSync(bPath, JSON.stringify(B));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [
+          { kind: "inline" as const, name: "A", version: "1.0.0", url: aPath, package_hash: packageHash(A as any) },
+          { kind: "inline" as const, name: "B", version: "1.0.0", url: bPath, package_hash: packageHash(B as any) },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     // Build the lock directly so A is node[0] (verifies clean) and B is node[1] (will fail after tamper).
     const lock = {
       format_version: 1 as const,
@@ -908,12 +1246,25 @@ describe("install --frozen (slice 5.3)", () => {
         { name: "B", version: "1.0.0", url: bPath, package_hash: packageHash(B as any) },
       ],
     };
-    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const lockPath = join(dir, "ace.lock");
+    writeFileSync(lockPath, JSON.stringify(lock));
     // Tamper B's bytes AFTER the lock pinned B's package_hash -> B fails the pin check in pass 1.
-    const tamperedB = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"TAMPERED" }) }, files: { "b.txt":"TAMPERED" } };
+    const tamperedB = {
+      manifest: { format_version: 1, name: "B", version: "1.0.0", content_hash: h({ "b.txt": "TAMPERED" }) },
+      files: { "b.txt": "TAMPERED" },
+    };
     writeFileSync(bPath, JSON.stringify(tamperedB));
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-atomic-store-"));
-    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      rootPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     // The load-bearing assertion: A (the first, fully-verifiable node) is NOT on disk -> verify-all-then-install.
     expect(listInstalled(frozenStore).length).toBe(0);
@@ -926,15 +1277,33 @@ describe("install --frozen (slice 5.3)", () => {
     // before installing either, exactly like the default-path store-collision test.
     const dir = mkdtempSync(join(tmpdir(), "ace-frozen-collision-"));
     const sharedFiles = { "same.txt": "identical" };
-    const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
-    const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
-    const xPath = join(dir, "X.json"); writeFileSync(xPath, JSON.stringify(X));
-    const yPath = join(dir, "Y.json"); writeFileSync(yPath, JSON.stringify(Y));
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
-      { kind:"inline" as const, name:"X", version:"1.0.0", url: xPath, package_hash: packageHash(X as any) },
-      { kind:"inline" as const, name:"Y", version:"1.0.0", url: yPath, package_hash: packageHash(Y as any) },
-    ] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const X = {
+      manifest: { format_version: 1, name: "X", version: "1.0.0", content_hash: h(sharedFiles) },
+      files: sharedFiles,
+    };
+    const Y = {
+      manifest: { format_version: 1, name: "Y", version: "1.0.0", content_hash: h(sharedFiles) },
+      files: sharedFiles,
+    };
+    const xPath = join(dir, "X.json");
+    writeFileSync(xPath, JSON.stringify(X));
+    const yPath = join(dir, "Y.json");
+    writeFileSync(yPath, JSON.stringify(Y));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [
+          { kind: "inline" as const, name: "X", version: "1.0.0", url: xPath, package_hash: packageHash(X as any) },
+          { kind: "inline" as const, name: "Y", version: "1.0.0", url: yPath, package_hash: packageHash(Y as any) },
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lock = {
       format_version: 1 as const,
       root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
@@ -943,9 +1312,19 @@ describe("install --frozen (slice 5.3)", () => {
         { name: "Y", version: "1.0.0", url: yPath, package_hash: packageHash(Y as any) },
       ],
     };
-    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const lockPath = join(dir, "ace.lock");
+    writeFileSync(lockPath, JSON.stringify(lock));
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-collision-store-"));
-    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      rootPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
@@ -958,24 +1337,45 @@ describe("install --frozen (slice 5.3)", () => {
     // Mirrors the untrusted-signature/atomicity tests: build the lock directly to reach the gate.
     const dir = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-"));
     const malformed = {}; // valid JSON, no manifest/files — hits PASS-1 shape guard before packageHash runs
-    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(malformed));
+    const aPath = join(dir, "A.json");
+    writeFileSync(aPath, JSON.stringify(malformed));
     // Any pin value works: the PASS-1 shape guard refuses the malformed node BEFORE the pin check,
     // so the value is never compared. (packageHash now excludes the signature and throws on a
     // manifest-less payload, so it can no longer be called on `malformed` to derive the pin —
     // a placeholder hash exercises the same guard.) slice 8.2.
     const aHash = "sha256:" + "0".repeat(64);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "inline" as const, name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lock = {
       format_version: 1 as const,
       root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
       nodes: [{ name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
     };
-    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const lockPath = join(dir, "ace.lock");
+    writeFileSync(lockPath, JSON.stringify(lock));
     const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-store-"));
     // The load-bearing assertion: this MUST NOT throw (the unguarded bug is a TypeError on
     // np.manifest.content_hash). await directly so any throw fails the test loudly; exit 1 = refused.
-    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      rootPath,
+      "--store",
+      frozenStore,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(frozenStore).length).toBe(0);
   });
@@ -987,24 +1387,66 @@ describe("install — semver ranges (slice 5.2)", () => {
   test("e2e: ranged registry dep resolves to newest satisfying version", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const mkA = (v: string) => ({ manifest: { format_version:1, name:"A", version:v, content_hash: h({ "a.txt":v }) }, files: { "a.txt":v } });
-    for (const v of ["1.0.0","1.5.0","1.9.0"]) { const p = join(dir, `A-${v}.json`); writeFileSync(p, JSON.stringify(mkA(v))); await main(["registry","add","A",v,p]); }
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const mkA = (v: string) => ({
+      manifest: { format_version: 1, name: "A", version: v, content_hash: h({ "a.txt": v }) },
+      files: { "a.txt": v },
+    });
+    for (const v of ["1.0.0", "1.5.0", "1.9.0"]) {
+      const p = join(dir, `A-${v}.json`);
+      writeFileSync(p, JSON.stringify(mkA(v)));
+      await main(["registry", "add", "A", v, p]);
+    }
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     expect(await main(["install", rootPath, "--store", store, "--allow-no-signature"])).toBe(0);
-    const names = listInstalled(store).map((p)=>`${p.manifest.name}@${p.manifest.version}`).sort();
+    const names = listInstalled(store)
+      .map((p) => `${p.manifest.name}@${p.manifest.version}`)
+      .sort();
     expect(names).toEqual(["A@1.9.0", "root@1.0.0"]);
   });
 
   test("e2e: unsatisfiable range → exit 1, store empty", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A)); await main(["registry","add","A","1.0.0",ap]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:">=2.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const ap = join(dir, "A.json");
+    writeFileSync(ap, JSON.stringify(A));
+    await main(["registry", "add", "A", "1.0.0", ap]);
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: ">=2.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     expect(await main(["install", rootPath, "--store", store, "--allow-no-signature"])).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
@@ -1012,88 +1454,239 @@ describe("install — semver ranges (slice 5.2)", () => {
   test("e2e: inline-only graph still installs (empty registry, no registry-miss)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const ap = join(dir, "A.json");
+    writeFileSync(ap, JSON.stringify(A));
     const aHash = packageHash(A as any);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: ap, package_hash: aHash }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "inline" as const, name: "A", version: "1.0.0", url: ap, package_hash: aHash }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     expect(await main(["install", rootPath, "--store", store, "--allow-no-signature"])).toBe(0);
-    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["A","root"]);
+    expect(
+      listInstalled(store)
+        .map((p) => p.manifest.name)
+        .sort(),
+    ).toEqual(["A", "root"]);
   });
 
   test("e2e: --print-resolution prints the solved graph", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-    const A = { manifest: { format_version:1, name:"A", version:"1.2.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const ap = join(dir, "A.json"); writeFileSync(ap, JSON.stringify(A)); await main(["registry","add","A","1.2.0",ap]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const h = (files: Record<string, string>) =>
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.2.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const ap = join(dir, "A.json");
+    writeFileSync(ap, JSON.stringify(A));
+    await main(["registry", "add", "A", "1.2.0", ap]);
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     expect(await main(["install", rootPath, "--store", store, "--allow-no-signature", "--print-resolution"])).toBe(0);
   });
 });
 
 describe("install --locked graph (slice 5.4)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
 
   test("--locked installs when the on-disk lock matches a fresh solve", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-locked-pkgs-"));
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A)); await main(["registry","add","A","1.0.0",aPath]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const aPath = join(dir, "A.json");
+    writeFileSync(aPath, JSON.stringify(A));
+    await main(["registry", "add", "A", "1.0.0", aPath]);
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lockPath = join(dir, "ace.lock");
     // 1. Normal install writes the lock.
-    expect(await main(["install", rootPath, "--store", mkdtempSync(join(tmpdir(),"ace-locked-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(
+      await main([
+        "install",
+        rootPath,
+        "--store",
+        mkdtempSync(join(tmpdir(), "ace-locked-gen-")),
+        "--allow-no-signature",
+        "--lockfile",
+        lockPath,
+      ]),
+    ).toBe(0);
     expect(existsSync(lockPath)).toBe(true);
     // 2. --locked with the SAME registry + matching lock → installs.
     const store = mkdtempSync(join(tmpdir(), "ace-locked-ok-"));
-    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--locked"]);
+    const code = await main([
+      "install",
+      rootPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--locked",
+    ]);
     expect(code).toBe(0);
-    expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["A","root"]);
+    expect(
+      listInstalled(store)
+        .map((p) => p.manifest.name)
+        .sort(),
+    ).toEqual(["A", "root"]);
   });
 
   test("--locked refuses + installs nothing when the lock is stale", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-locked-stale-"));
-    const A1 = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a1" }) }, files: { "a.txt":"a1" } };
-    const a1Path = join(dir, "A-1.0.0.json"); writeFileSync(a1Path, JSON.stringify(A1)); await main(["registry","add","A","1.0.0",a1Path]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const A1 = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a1" }) },
+      files: { "a.txt": "a1" },
+    };
+    const a1Path = join(dir, "A-1.0.0.json");
+    writeFileSync(a1Path, JSON.stringify(A1));
+    await main(["registry", "add", "A", "1.0.0", a1Path]);
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lockPath = join(dir, "ace.lock");
     // 1. Normal install locks A@1.0.0.
-    expect(await main(["install", rootPath, "--store", mkdtempSync(join(tmpdir(),"ace-locked-stale-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(
+      await main([
+        "install",
+        rootPath,
+        "--store",
+        mkdtempSync(join(tmpdir(), "ace-locked-stale-gen-")),
+        "--allow-no-signature",
+        "--lockfile",
+        lockPath,
+      ]),
+    ).toBe(0);
     // 2. Add A@1.1.0 (in-range) — the fresh solve now picks A@1.1.0, so the lock is stale.
-    const A11 = { manifest: { format_version:1, name:"A", version:"1.1.0", content_hash: h({ "a.txt":"a11" }) }, files: { "a.txt":"a11" } };
-    const a11Path = join(dir, "A-1.1.0.json"); writeFileSync(a11Path, JSON.stringify(A11)); await main(["registry","add","A","1.1.0",a11Path]);
+    const A11 = {
+      manifest: { format_version: 1, name: "A", version: "1.1.0", content_hash: h({ "a.txt": "a11" }) },
+      files: { "a.txt": "a11" },
+    };
+    const a11Path = join(dir, "A-1.1.0.json");
+    writeFileSync(a11Path, JSON.stringify(A11));
+    await main(["registry", "add", "A", "1.1.0", a11Path]);
     // 3. --locked → refuse, store unchanged.
     const store = mkdtempSync(join(tmpdir(), "ace-locked-stale-store-"));
-    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--locked"]);
+    const code = await main([
+      "install",
+      rootPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--locked",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
 
   test("--locked with NO lockfile → refused", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-locked-nolock-"));
-    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
-    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A)); await main(["registry","add","A","1.0.0",aPath]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const A = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a" }) },
+      files: { "a.txt": "a" },
+    };
+    const aPath = join(dir, "A.json");
+    writeFileSync(aPath, JSON.stringify(A));
+    await main(["registry", "add", "A", "1.0.0", aPath]);
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const store = mkdtempSync(join(tmpdir(), "ace-locked-nolock-store-"));
-    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", join(dir, "missing.lock"), "--locked"]);
+    const code = await main([
+      "install",
+      rootPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      join(dir, "missing.lock"),
+      "--locked",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
 });
 
 describe("leaf-install lockfiles (slice 5.4)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
 
   // Builds a no-dependency (leaf) package file in a temp dir; returns { dir, pkg, pkgPath }.
-  function leafFixture(files: Record<string,string> = { "leaf.txt": "v1" }) {
+  function leafFixture(files: Record<string, string> = { "leaf.txt": "v1" }) {
     const dir = mkdtempSync(join(tmpdir(), "ace-leaf-pkgs-"));
-    const pkg = { manifest: { format_version:1, name:"leaf", version:"1.0.0", content_hash: h(files) }, files };
-    const pkgPath = join(dir, "leaf.json"); writeFileSync(pkgPath, JSON.stringify(pkg));
+    const pkg = { manifest: { format_version: 1, name: "leaf", version: "1.0.0", content_hash: h(files) }, files };
+    const pkgPath = join(dir, "leaf.json");
+    writeFileSync(pkgPath, JSON.stringify(pkg));
     return { dir, pkg, pkgPath };
   }
 
@@ -1103,7 +1696,7 @@ describe("leaf-install lockfiles (slice 5.4)", () => {
     const lockPath = join(dir, "ace.lock");
     const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath]);
     expect(code).toBe(0);
-    expect(listInstalled(store).map((p)=>p.manifest.name)).toEqual(["leaf"]);
+    expect(listInstalled(store).map((p) => p.manifest.name)).toEqual(["leaf"]);
     expect(existsSync(lockPath)).toBe(true);
     const lf = parseLockfile(readFileSync(lockPath, "utf8"));
     expect("error" in lf).toBe(false);
@@ -1118,24 +1711,66 @@ describe("leaf-install lockfiles (slice 5.4)", () => {
     const { dir, pkgPath } = leafFixture();
     const lockPath = join(dir, "ace.lock");
     // 1. Normal leaf install writes the lock.
-    expect(await main(["install", pkgPath, "--store", mkdtempSync(join(tmpdir(),"ace-leaf-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(
+      await main([
+        "install",
+        pkgPath,
+        "--store",
+        mkdtempSync(join(tmpdir(), "ace-leaf-gen-")),
+        "--allow-no-signature",
+        "--lockfile",
+        lockPath,
+      ]),
+    ).toBe(0);
     // 2. --frozen leaf with the matching lock → installs.
     const store = mkdtempSync(join(tmpdir(), "ace-leaf-frozen-"));
-    const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      pkgPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(0);
-    expect(listInstalled(store).map((p)=>p.manifest.name)).toEqual(["leaf"]);
+    expect(listInstalled(store).map((p) => p.manifest.name)).toEqual(["leaf"]);
   });
 
   test("--frozen leaf with a drifted root → refused, installs nothing", async () => {
     const { dir, pkgPath } = leafFixture({ "leaf.txt": "v1" });
     const lockPath = join(dir, "ace.lock");
     // 1. Lock leaf@1.0.0 with the original files.
-    expect(await main(["install", pkgPath, "--store", mkdtempSync(join(tmpdir(),"ace-leaf-drift-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(
+      await main([
+        "install",
+        pkgPath,
+        "--store",
+        mkdtempSync(join(tmpdir(), "ace-leaf-drift-gen-")),
+        "--allow-no-signature",
+        "--lockfile",
+        lockPath,
+      ]),
+    ).toBe(0);
     // 2. A DIFFERENT root (same name/version, changed files → different packageHash) under --frozen → refused.
-    const drifted = { manifest: { format_version:1, name:"leaf", version:"1.0.0", content_hash: h({ "leaf.txt": "v2-CHANGED" }) }, files: { "leaf.txt": "v2-CHANGED" } };
-    const driftedPath = join(dir, "leaf-drift.json"); writeFileSync(driftedPath, JSON.stringify(drifted));
+    const drifted = {
+      manifest: { format_version: 1, name: "leaf", version: "1.0.0", content_hash: h({ "leaf.txt": "v2-CHANGED" }) },
+      files: { "leaf.txt": "v2-CHANGED" },
+    };
+    const driftedPath = join(dir, "leaf-drift.json");
+    writeFileSync(driftedPath, JSON.stringify(drifted));
     const store = mkdtempSync(join(tmpdir(), "ace-leaf-drift-store-"));
-    const code = await main(["install", driftedPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      driftedPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
@@ -1143,17 +1778,45 @@ describe("leaf-install lockfiles (slice 5.4)", () => {
   test("--locked leaf passes when the lock matches", async () => {
     const { dir, pkgPath } = leafFixture();
     const lockPath = join(dir, "ace.lock");
-    expect(await main(["install", pkgPath, "--store", mkdtempSync(join(tmpdir(),"ace-leaf-locked-gen-")), "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(
+      await main([
+        "install",
+        pkgPath,
+        "--store",
+        mkdtempSync(join(tmpdir(), "ace-leaf-locked-gen-")),
+        "--allow-no-signature",
+        "--lockfile",
+        lockPath,
+      ]),
+    ).toBe(0);
     const store = mkdtempSync(join(tmpdir(), "ace-leaf-locked-ok-"));
-    const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--locked"]);
+    const code = await main([
+      "install",
+      pkgPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--locked",
+    ]);
     expect(code).toBe(0);
-    expect(listInstalled(store).map((p)=>p.manifest.name)).toEqual(["leaf"]);
+    expect(listInstalled(store).map((p) => p.manifest.name)).toEqual(["leaf"]);
   });
 
   test("--locked leaf with NO lockfile → refused", async () => {
     const { dir, pkgPath } = leafFixture();
     const store = mkdtempSync(join(tmpdir(), "ace-leaf-locked-nolock-"));
-    const code = await main(["install", pkgPath, "--store", store, "--allow-no-signature", "--lockfile", join(dir, "missing.lock"), "--locked"]);
+    const code = await main([
+      "install",
+      pkgPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      join(dir, "missing.lock"),
+      "--locked",
+    ]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
   });
@@ -1165,7 +1828,10 @@ describe("parseArgs — update", () => {
   });
   test("update parses source + default lockfile", () => {
     const a = parseArgs(["update", "pkg.json"]);
-    if ("command" in a && a.command === "update") { expect(a.source).toBe("pkg.json"); expect(a.lockfile).toBe("ace.lock"); }
+    if ("command" in a && a.command === "update") {
+      expect(a.source).toBe("pkg.json");
+      expect(a.lockfile).toBe("ace.lock");
+    }
   });
   test("update --lockfile override", () => {
     const a = parseArgs(["update", "pkg.json", "--lockfile", "x.lock"]);
@@ -1174,42 +1840,78 @@ describe("parseArgs — update", () => {
 });
 
 describe("ace update (slice 5.4)", () => {
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const h = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
 
   test("update rewrites ./ace.lock to the freshly-solved graph + installs NOTHING", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-update-pkgs-"));
-    const A1 = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a1" }) }, files: { "a.txt":"a1" } };
-    const a1Path = join(dir, "A-1.0.0.json"); writeFileSync(a1Path, JSON.stringify(A1)); await main(["registry","add","A","1.0.0",a1Path]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const A1 = {
+      manifest: { format_version: 1, name: "A", version: "1.0.0", content_hash: h({ "a.txt": "a1" }) },
+      files: { "a.txt": "a1" },
+    };
+    const a1Path = join(dir, "A-1.0.0.json");
+    writeFileSync(a1Path, JSON.stringify(A1));
+    await main(["registry", "add", "A", "1.0.0", a1Path]);
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "A", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lockPath = join(dir, "ace.lock");
     const genStore = mkdtempSync(join(tmpdir(), "ace-update-gen-"));
     // 1. Normal install locks A@1.0.0.
-    expect(await main(["install", rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(await main(["install", rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", lockPath])).toBe(
+      0,
+    );
     const before = parseLockfile(readFileSync(lockPath, "utf8"));
     expect("error" in before).toBe(false);
-    if (!("error" in before)) expect(before.nodes.map((n)=>`${n.name}@${n.version}`)).toEqual(["A@1.0.0"]);
-    const installedBefore = listInstalled(genStore).map((p)=>p.manifest.name).sort();
+    if (!("error" in before)) expect(before.nodes.map((n) => `${n.name}@${n.version}`)).toEqual(["A@1.0.0"]);
+    const installedBefore = listInstalled(genStore)
+      .map((p) => p.manifest.name)
+      .sort();
     // 2. Add A@1.1.0 (in-range) → a fresh solve now picks A@1.1.0.
-    const A11 = { manifest: { format_version:1, name:"A", version:"1.1.0", content_hash: h({ "a.txt":"a11" }) }, files: { "a.txt":"a11" } };
-    const a11Path = join(dir, "A-1.1.0.json"); writeFileSync(a11Path, JSON.stringify(A11)); await main(["registry","add","A","1.1.0",a11Path]);
+    const A11 = {
+      manifest: { format_version: 1, name: "A", version: "1.1.0", content_hash: h({ "a.txt": "a11" }) },
+      files: { "a.txt": "a11" },
+    };
+    const a11Path = join(dir, "A-1.1.0.json");
+    writeFileSync(a11Path, JSON.stringify(A11));
+    await main(["registry", "add", "A", "1.1.0", a11Path]);
     // 3. ace update → rewrites the lock to A@1.1.0, extracts NOTHING (no --store; gen-store unchanged).
     const code = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature"]);
     expect(code).toBe(0);
     const after = parseLockfile(readFileSync(lockPath, "utf8"));
     expect("error" in after).toBe(false);
     if (!("error" in after)) {
-      expect(after.nodes.map((n)=>`${n.name}@${n.version}`)).toEqual(["A@1.1.0"]);
+      expect(after.nodes.map((n) => `${n.name}@${n.version}`)).toEqual(["A@1.1.0"]);
       expect(after.nodes[0]!.package_hash).toBe(packageHash(A11 as any));
     }
     // The gen-store is unchanged — update never extracted A@1.1.0.
-    expect(listInstalled(genStore).map((p)=>p.manifest.name).sort()).toEqual(installedBefore);
+    expect(
+      listInstalled(genStore)
+        .map((p) => p.manifest.name)
+        .sort(),
+    ).toEqual(installedBefore);
   });
 
   test("update on a leaf writes an empty-nodes lock", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-update-leaf-"));
-    const pkg = { manifest: { format_version:1, name:"leaf", version:"1.0.0", content_hash: h({ "leaf.txt":"v1" }) }, files: { "leaf.txt":"v1" } };
-    const pkgPath = join(dir, "leaf.json"); writeFileSync(pkgPath, JSON.stringify(pkg));
+    const pkg = {
+      manifest: { format_version: 1, name: "leaf", version: "1.0.0", content_hash: h({ "leaf.txt": "v1" }) },
+      files: { "leaf.txt": "v1" },
+    };
+    const pkgPath = join(dir, "leaf.json");
+    writeFileSync(pkgPath, JSON.stringify(pkg));
     const lockPath = join(dir, "ace.lock");
     const code = await main(["update", pkgPath, "--lockfile", lockPath, "--allow-no-signature"]);
     expect(code).toBe(0);
@@ -1225,10 +1927,25 @@ describe("ace update (slice 5.4)", () => {
   test("update refuses (no lock written) when a freshly-solved node fails preflight", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-update-bad-"));
     // A dep with an unsafe file path → preflightGraph fails → no lock written (preflight-before-write).
-    const bad = { manifest: { format_version:1, name:"BAD", version:"1.0.0", content_hash: h({ "../escape":"x" }) }, files: { "../escape":"x" } };
-    const badPath = join(dir, "BAD.json"); writeFileSync(badPath, JSON.stringify(bad)); await main(["registry","add","BAD","1.0.0",badPath]);
-    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"BAD", version:"^1.0.0" }] }, files: { "r.txt":"r" } };
-    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const bad = {
+      manifest: { format_version: 1, name: "BAD", version: "1.0.0", content_hash: h({ "../escape": "x" }) },
+      files: { "../escape": "x" },
+    };
+    const badPath = join(dir, "BAD.json");
+    writeFileSync(badPath, JSON.stringify(bad));
+    await main(["registry", "add", "BAD", "1.0.0", badPath]);
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: h({ "r.txt": "r" }),
+        dependencies: [{ kind: "registry" as const, name: "BAD", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(dir, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lockPath = join(dir, "ace.lock");
     const code = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature"]);
     expect(code).toBe(1);
@@ -1240,8 +1957,12 @@ describe("ace update (slice 5.4)", () => {
     // A leaf (no deps) with an unsafe file path → validatePackagePaths fails → no lock written.
     // Parity with the graph path; otherwise update could commit an unreplayable leaf lock that
     // installPackage/--frozen would reject (Codex #6416).
-    const bad = { manifest: { format_version:1, name:"BADLEAF", version:"1.0.0", content_hash: h({ "../escape":"x" }) }, files: { "../escape":"x" } };
-    const badPath = join(dir, "BADLEAF.json"); writeFileSync(badPath, JSON.stringify(bad));
+    const bad = {
+      manifest: { format_version: 1, name: "BADLEAF", version: "1.0.0", content_hash: h({ "../escape": "x" }) },
+      files: { "../escape": "x" },
+    };
+    const badPath = join(dir, "BADLEAF.json");
+    writeFileSync(badPath, JSON.stringify(bad));
     const lockPath = join(dir, "ace.lock");
     const code = await main(["update", badPath, "--lockfile", lockPath, "--allow-no-signature"]);
     expect(code).toBe(1);
@@ -1252,8 +1973,18 @@ describe("ace update (slice 5.4)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-update-nonarr-"));
     // dependencies as a string must NOT route through solve (would iterate chars / crash);
     // the Array.isArray guard routes it to the leaf path instead.
-    const pkg = { manifest: { format_version:1, name:"weird", version:"1.0.0", content_hash: h({ "f.txt":"v" }), dependencies: "notanarray" }, files: { "f.txt":"v" } };
-    const pkgPath = join(dir, "weird.json"); writeFileSync(pkgPath, JSON.stringify(pkg));
+    const pkg = {
+      manifest: {
+        format_version: 1,
+        name: "weird",
+        version: "1.0.0",
+        content_hash: h({ "f.txt": "v" }),
+        dependencies: "notanarray",
+      },
+      files: { "f.txt": "v" },
+    };
+    const pkgPath = join(dir, "weird.json");
+    writeFileSync(pkgPath, JSON.stringify(pkg));
     const lockPath = join(dir, "ace.lock");
     const code = await main(["update", pkgPath, "--lockfile", lockPath, "--allow-no-signature"]);
     expect(code).toBe(0);
@@ -1275,18 +2006,25 @@ describe("ace registry remote (slice 6)", () => {
     expect("error" in parseArgs(["registry", "remote", "add", "https://r/index.json"])).toBe(true);
   });
   test("add with --max-staleness-days", async () => {
-    expect(await main(["registry", "remote", "add", "https://r/i.json", "--key", "ed25519:k", "--max-staleness-days", "7"])).toBe(0);
+    expect(
+      await main(["registry", "remote", "add", "https://r/i.json", "--key", "ed25519:k", "--max-staleness-days", "7"]),
+    ).toBe(0);
     expect(readRegistriesConfig().remotes[0]!.max_staleness_days).toBe(7);
   });
 });
 
 describe("ace install via remote registry (slice 6)", () => {
   let savedFetch: typeof globalThis.fetch;
-  beforeEach(() => { savedFetch = globalThis.fetch; });
-  afterEach(() => { globalThis.fetch = savedFetch; });
+  beforeEach(() => {
+    savedFetch = globalThis.fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = savedFetch;
+  });
 
   test("resolves + installs a package from a signed remote index", async () => {
-    const idxKp = gkpA(); const now = Date.now();
+    const idxKp = gkpA();
+    const now = Date.now();
     const files = { "leaf.txt": "hi" };
     const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const pkgKp = generateKeypair();
@@ -1295,17 +2033,30 @@ describe("ace install via remote registry (slice 6)", () => {
     const pkgJson = JSON.stringify(pkg);
     const pkgHash = packageHash(pkg as unknown as Parameters<typeof packageHash>[0]);
     const pkgUrl = "https://pkgs/leaf-1.0.0.json";
-    const idxContent = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
-      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } } };
+    const idxContent = {
+      format_version: 1 as const,
+      sequence: 1,
+      issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } },
+    };
     const idxJson = JSON.stringify({ ...idxContent, signature: sidxA(idxContent, idxKp.privatePem) });
-    globalThis.fetch = (async (u: string) => new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as unknown as typeof fetch;
+    globalThis.fetch = (async (u: string) =>
+      new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as unknown as typeof fetch;
     await main(["trust", "add", idxKp.publicSpkiB64]);
     await main(["trust", "add", pkgKp.publicSpkiB64]);
     await main(["registry", "remote", "add", "https://x/index.json", "--key", idxKp.keyId]);
-    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
-      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
-      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
-    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+        dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(tempHome, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const code = await main(["install", rootPath, "--allow-no-signature"]);
     expect(code).toBe(0);
     expect(listInstalled(join(tempHome, ".ace", "store")).some((p) => p.manifest.name === "leaf")).toBe(true);
@@ -1319,7 +2070,8 @@ describe("ace install via remote registry (slice 6)", () => {
 
   test("update --offline uses cached registry-index (no index fetch) + writes lockfile", async () => {
     // Setup: a signed remote index + signed package, mirroring the install test above.
-    const idxKp = gkpA(); const now = Date.now();
+    const idxKp = gkpA();
+    const now = Date.now();
     const files = { "leaf.txt": "hi" };
     const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
     const pkgKp = generateKeypair();
@@ -1329,8 +2081,12 @@ describe("ace install via remote registry (slice 6)", () => {
     const pkgHash = packageHash(pkg as unknown as Parameters<typeof packageHash>[0]);
     const pkgUrl = "https://pkgs/leaf-1.0.0.json";
     const idxUrl = "https://x/index.json";
-    const idxContent = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
-      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } } };
+    const idxContent = {
+      format_version: 1 as const,
+      sequence: 1,
+      issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } },
+    };
     const idxJson = JSON.stringify({ ...idxContent, signature: sidxA(idxContent, idxKp.privatePem) });
 
     // Trust both keys and register the remote.
@@ -1339,10 +2095,18 @@ describe("ace install via remote registry (slice 6)", () => {
     await main(["registry", "remote", "add", idxUrl, "--key", idxKp.keyId]);
 
     // Build a root with a registry dep on "leaf".
-    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
-      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
-      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
-    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+        dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(tempHome, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     const lockPath = join(tempHome, "ace.lock");
 
     // === PASS 1 (ONLINE): prime the registry-index cache ===
@@ -1360,7 +2124,9 @@ describe("ace install via remote registry (slice 6)", () => {
     rmSync(registryCacheDir(), { recursive: true, force: true });
     rmSync(lockPath, { force: true });
     // Fetch throws for everything — no index cache, offline update cannot resolve.
-    globalThis.fetch = (() => { throw new Error("network disabled"); }) as unknown as typeof fetch;
+    globalThis.fetch = (() => {
+      throw new Error("network disabled");
+    }) as unknown as typeof fetch;
     const failCode = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature", "--offline"]);
     expect(failCode).not.toBe(0); // no cache -> must fail (false-green check)
 
@@ -1402,9 +2168,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
     writeFileSync(join(pkgDir, "not-a-package.json"), JSON.stringify({ hello: "world" }));
-    const keyPath = join(tempHome, "registry.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "registry.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     expect("error" in doc).toBe(false);
@@ -1412,7 +2190,18 @@ describe("ace registry publish (slice 6.1)", () => {
       expect(doc.sequence).toBe(1);
       expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
     }
-    const code2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code2 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code2).toBe(0);
     const doc2 = parseIndex(readFileSync(outPath, "utf8"));
     if (!("error" in doc2)) expect(doc2.sequence).toBe(2);
@@ -1431,9 +2220,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const bkp = generateKeypair();
     const badPkg = { manifest: { ...bm, signature: signManifest(bm, bkp.privatePem) }, files: badFiles };
     writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
-    const keyPath = join(tempHome, "registry-fv.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "registry-fv.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "index-fv.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     expect("error" in doc).toBe(false);
@@ -1461,9 +2262,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const dupM = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: dupCh };
     const dupPkg = { manifest: { ...dupM, signature: signManifest(dupM, dupKp.privatePem) }, files: dupFiles };
     writeFileSync(join(pkgDir, "leaf-dup.json"), JSON.stringify(dupPkg));
-    const keyPath = join(tempHome, "dup.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "dup.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "dup-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     if (!("error" in doc)) {
@@ -1476,9 +2289,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const { existsSync: existsSyncLocal } = await import("node:fs");
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badkey-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "bad.pem"); writeFileSync(keyPath, "not a pem at all");
+    const keyPath = join(tempHome, "bad.pem");
+    writeFileSync(keyPath, "not a pem at all");
     const outPath = join(tempHome, "badkey-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(1);
     expect(existsSyncLocal(outPath)).toBe(false);
   });
@@ -1487,10 +2312,24 @@ describe("ace registry publish (slice 6.1)", () => {
     const { existsSync: existsLocal } = await import("node:fs");
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-rsa-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const rsa = generateKeyPairSync("rsa", { modulusLength: 2048 }).privateKey.export({ type: "pkcs8", format: "pem" }).toString();
-    const keyPath = join(tempHome, "rsa.pem"); writeFileSync(keyPath, rsa);
+    const rsa = generateKeyPairSync("rsa", { modulusLength: 2048 })
+      .privateKey.export({ type: "pkcs8", format: "pem" })
+      .toString();
+    const keyPath = join(tempHome, "rsa.pem");
+    writeFileSync(keyPath, rsa);
     const outPath = join(tempHome, "rsa-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(1);
     expect(existsLocal(outPath)).toBe(false);
   });
@@ -1499,9 +2338,22 @@ describe("ace registry publish (slice 6.1)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-corrupt-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "ck.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const outPath = join(tempHome, "corrupt-index.json"); writeFileSync(outPath, "{ truncated");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const keyPath = join(tempHome, "ck.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "corrupt-index.json");
+    writeFileSync(outPath, "{ truncated");
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(1);
   });
 
@@ -1515,12 +2367,27 @@ describe("ace registry publish (slice 6.1)", () => {
     const m = { format_version: 1, name: "bad", version: "1.0.0", content_hash: "sha256:deadbeef" };
     const bad = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files: { "bad.txt": "x" } };
     writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(bad));
-    const keyPath = join(tempHome, "bh.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "bh.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "badhash-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
-    if (!("error" in doc)) { expect(doc.packages.good).toBeDefined(); expect(doc.packages.bad).toBeUndefined(); }
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
   });
 
   test("tampered existing --out (signature flipped) → publish refused; index unchanged", async () => {
@@ -1528,10 +2395,22 @@ describe("ace registry publish (slice 6.1)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-tamper-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "tk.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "tk.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "tamper-index.json");
     // publish a valid index once
-    const code1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code1 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code1).toBe(0);
     // tamper: lower sequence (still parseable, but sequence is signed so signature no longer verifies)
     const tampered = JSON.parse(readFileSync(outPath, "utf8")) as { sequence: number };
@@ -1539,7 +2418,18 @@ describe("ace registry publish (slice 6.1)", () => {
     const tamperedBytes = JSON.stringify(tampered, null, 2);
     writeFileSync(outPath, tamperedBytes);
     // republish with same key + packages → refused (signature does not verify under --key)
-    const code2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code2 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code2).toBe(1);
     // on-disk index unchanged (publish must not overwrite on refusal)
     expect(existsSyncLocal(outPath)).toBe(true);
@@ -1559,9 +2449,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const oM = { format_version: 1, name: "other", version: "2.0.0", content_hash: oCh };
     const oPkg = { manifest: { ...oM, signature: signManifest(oM, oKp.privatePem) }, files: oFiles };
     writeFileSync(join(pkgDir, "mypkg.json"), JSON.stringify(oPkg));
-    const keyPath = join(tempHome, "mm.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "mm.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "mismatch-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     if (!("error" in doc)) {
@@ -1581,9 +2483,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const fM = { format_version: 1, name: "foo", version: "1.0.0", content_hash: fCh };
     const fPkg = { manifest: { ...fM, signature: signManifest(fM, fKp.privatePem) }, files: fFiles };
     writeFileSync(join(pkgDir, "mypkg.json"), JSON.stringify(fPkg));
-    const keyPath = join(tempHome, "am.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "am.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "allmismatch-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(1);
     expect(existsSyncLocal(outPath)).toBe(false);
   });
@@ -1603,9 +2517,21 @@ describe("ace registry publish (slice 6.1)", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const badPkg = { manifest: { ...badM, dependencies: "not-an-array" as any, signature: badSig }, files: badFiles };
     writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
-    const keyPath = join(tempHome, "bd.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "bd.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "baddeps-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     expect("error" in doc).toBe(false);
@@ -1629,9 +2555,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const badPkg = { manifest: { ...badM, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
     // filename matches <name>-<version>.json so it clears the basename guard, but name is URL-unsafe
     writeFileSync(join(pkgDir, `${badName}-1.0.0.json`), JSON.stringify(badPkg));
-    const keyPath = join(tempHome, "urlbad.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "urlbad.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "urlbad-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     expect("error" in doc).toBe(false);
@@ -1652,11 +2590,30 @@ describe("ace registry publish (slice 6.1)", () => {
     const badKp = generateKeypair();
     const badM = { format_version: 1, name: "bad", version: "1.0.0", content_hash: badCh };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const badPkg = { manifest: { ...badM, dependencies: [{ kind: "registry", name: "dep" }] as any, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
+    const badPkg = {
+      manifest: {
+        ...badM,
+        dependencies: [{ kind: "registry", name: "dep" }] as any,
+        signature: signManifest(badM, badKp.privatePem),
+      },
+      files: badFiles,
+    };
     writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
-    const keyPath = join(tempHome, "baddep.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "baddep.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "baddep-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     expect("error" in doc).toBe(false);
@@ -1678,9 +2635,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const badM = { format_version: 1, name: "bad", version: "1.0.0", content_hash: badCh };
     const badPkg = { manifest: { ...badM, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
     writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
-    const keyPath = join(tempHome, "unsafe.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "unsafe.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "unsafe-index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     expect("error" in doc).toBe(false);
@@ -1704,10 +2673,22 @@ describe("ace registry publish (slice 6.1)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-url-"));
     writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf-v1.json"); // NOT canonical basename
-    writeSignedPkg(pkgDir, "other", "2.0.0");                                       // canonical, no url
-    const keyPath = join(tempHome, "r-url.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    writeSignedPkg(pkgDir, "other", "2.0.0"); // canonical, no url
+    const keyPath = join(tempHome, "r-url.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "i-url.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     if ("error" in doc) throw new Error(doc.error);
@@ -1720,17 +2701,45 @@ describe("ace registry publish (slice 6.1)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-fn-"));
     // bad: leaf.json, no url → filename guard skips it
-    const files = { "leaf.txt": "hi" }; const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
-    const kp = generateKeypair(); const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
-    writeFileSync(join(pkgDir, "leaf.json"), JSON.stringify({ manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files }));
-    const keyPath = join(tempHome, "r-fn.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const files = { "leaf.txt": "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const kp = generateKeypair();
+    const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
+    writeFileSync(
+      join(pkgDir, "leaf.json"),
+      JSON.stringify({ manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files }),
+    );
+    const keyPath = join(tempHome, "r-fn.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const out1 = join(tempHome, "i-fn1.json");
-    const c1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", out1]);
+    const c1 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      out1,
+    ]);
     expect(c1).toBe(1); // no valid packages (leaf.json skipped by filename guard)
     // now add url → indexed
     writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf.json");
     const out2 = join(tempHome, "i-fn2.json");
-    const c2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", out2]);
+    const c2 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      out2,
+    ]);
     expect(c2).toBe(0);
     const doc = parseIndex(readFileSync(out2, "utf8"));
     if ("error" in doc) throw new Error(doc.error);
@@ -1741,9 +2750,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badurl-"));
     writeUrlPkg(pkgDir, "leaf-1.0.0.json", "leaf", "1.0.0", "leaf#x"); // not absolute
-    const keyPath = join(tempHome, "r-bu.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-bu.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "i-bu.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(1); // only package skipped → no valid packages
   });
 
@@ -1754,9 +2775,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const dirB = mkdtempSync(join(tmpdir(), "ace-pub-b-"));
     writeSignedPkg(dirA, "aa", "1.0.0");
     writeSignedPkg(dirB, "bb", "1.0.0");
-    const keyPath = join(tempHome, "r-md.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-md.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "i-md.json");
-    const code = await main(["registry", "publish", "--packages", `${dirA},${dirB}`, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      `${dirA},${dirB}`,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     if ("error" in doc) throw new Error(doc.error);
@@ -1765,7 +2798,18 @@ describe("ace registry publish (slice 6.1)", () => {
     // cross-dir duplicate
     writeSignedPkg(dirB, "aa", "1.0.0");
     const out2 = join(tempHome, "i-md2.json");
-    const dup = await main(["registry", "publish", "--packages", `${dirA},${dirB}`, "--base-url", "https://pkgs", "--key", keyPath, "--out", out2]);
+    const dup = await main([
+      "registry",
+      "publish",
+      "--packages",
+      `${dirA},${dirB}`,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      out2,
+    ]);
     expect(dup).toBe(1);
   });
 
@@ -1773,9 +2817,21 @@ describe("ace registry publish (slice 6.1)", () => {
     const idxKp = generateKeypair();
     const dirA = mkdtempSync(join(tmpdir(), "ace-pub-ok-"));
     writeSignedPkg(dirA, "aa", "1.0.0");
-    const keyPath = join(tempHome, "r-ud.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-ud.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "i-ud.json");
-    const code = await main(["registry", "publish", "--packages", `${dirA},/no/such/dir/xyz`, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      `${dirA},/no/such/dir/xyz`,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(1);
   });
 
@@ -1784,26 +2840,85 @@ describe("ace registry publish (slice 6.1)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-seq-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-seq.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-seq.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "i-seq.json");
-    const c1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath, "--sequence", "5"]);
+    const c1 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+      "--sequence",
+      "5",
+    ]);
     expect(c1).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     if ("error" in doc) throw new Error(doc.error);
     expect(doc.sequence).toBe(5);
     // rollback against prev (5)
-    const c2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath, "--sequence", "3"]);
+    const c2 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+      "--sequence",
+      "3",
+    ]);
     expect(c2).toBe(1);
     // bad values → parse error
-    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "0"])).toBe(true);
-    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "abc"])).toBe(true);
+    expect(
+      "error" in
+        parseArgs([
+          "registry",
+          "publish",
+          "--packages",
+          "d",
+          "--base-url",
+          "https://x",
+          "--key",
+          "k",
+          "--sequence",
+          "0",
+        ]),
+    ).toBe(true);
+    expect(
+      "error" in
+        parseArgs([
+          "registry",
+          "publish",
+          "--packages",
+          "d",
+          "--base-url",
+          "https://x",
+          "--key",
+          "k",
+          "--sequence",
+          "abc",
+        ]),
+    ).toBe(true);
   });
 });
 
 describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
   let savedFetch: typeof globalThis.fetch;
-  beforeEach(() => { savedFetch = globalThis.fetch; });
-  afterEach(() => { globalThis.fetch = savedFetch; });
+  beforeEach(() => {
+    savedFetch = globalThis.fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = savedFetch;
+  });
 
   // Producer helper: write a signed package file named <name>-<version>.json in dir.
   function writeSignedPkg(dir: string, name: string, version: string) {
@@ -1822,11 +2937,37 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-rev-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-rev.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-rev.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "rev-index.json");
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
-    const before = readIndexFile(outPath); expect(before.sequence).toBe(1); expect(before.format_version).toBe(1);
-    const code = await main(["registry", "revoke", "leaf@1.0.0", "--reason", "key compromise", "--key", keyPath, "--out", outPath]);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        outPath,
+      ]),
+    ).toBe(0);
+    const before = readIndexFile(outPath);
+    expect(before.sequence).toBe(1);
+    expect(before.format_version).toBe(1);
+    const code = await main([
+      "registry",
+      "revoke",
+      "leaf@1.0.0",
+      "--reason",
+      "key compromise",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const after = readIndexFile(outPath);
     expect(after.format_version).toBe(2);
@@ -1840,10 +2981,25 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const otherKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-rev-otherkey-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-own.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-own.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "rev-otherkey-index.json");
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
-    const otherPath = join(tempHome, "r-other.pem"); writeFileSync(otherPath, otherKp.privatePem);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        outPath,
+      ]),
+    ).toBe(0);
+    const otherPath = join(tempHome, "r-other.pem");
+    writeFileSync(otherPath, otherKp.privatePem);
     const code = await main(["registry", "revoke", "leaf@1.0.0", "--key", otherPath, "--out", outPath]);
     expect(code).toBe(1);
     const after = readIndexFile(outPath);
@@ -1853,8 +3009,17 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
 
   test("revoke with a missing --out (no existing index) is refused", async () => {
     const idxKp = generateKeypair();
-    const keyPath = join(tempHome, "r-noidx.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const code = await main(["registry", "revoke", "leaf@1.0.0", "--key", keyPath, "--out", join(tempHome, "does-not-exist.json")]);
+    const keyPath = join(tempHome, "r-noidx.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
+    const code = await main([
+      "registry",
+      "revoke",
+      "leaf@1.0.0",
+      "--key",
+      keyPath,
+      "--out",
+      join(tempHome, "does-not-exist.json"),
+    ]);
     expect(code).toBe(1);
   });
 
@@ -1862,9 +3027,23 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-q-on-rev-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-qrev.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-qrev.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "qrev-index.json");
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        outPath,
+      ]),
+    ).toBe(0);
     expect(await main(["registry", "revoke", "leaf@1.0.0", "--key", keyPath, "--out", outPath])).toBe(0);
     const code = await main(["registry", "quarantine", "leaf@1.0.0", "--key", keyPath, "--out", outPath]);
     expect(code).toBe(1);
@@ -1874,9 +3053,23 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-unq-non-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-unqnon.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-unqnon.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "unqnon-index.json");
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        outPath,
+      ]),
+    ).toBe(0);
     const code = await main(["registry", "unquarantine", "leaf@1.0.0", "--key", keyPath, "--out", outPath]);
     expect(code).toBe(1);
   });
@@ -1885,10 +3078,26 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-q-then-rev-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-qmove.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-qmove.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "qmove-index.json");
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
-    expect(await main(["registry", "quarantine", "leaf@1.0.0", "--reason", "review", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        outPath,
+      ]),
+    ).toBe(0);
+    expect(
+      await main(["registry", "quarantine", "leaf@1.0.0", "--reason", "review", "--key", keyPath, "--out", outPath]),
+    ).toBe(0);
     let doc = readIndexFile(outPath);
     expect(doc.quarantined?.leaf?.["1.0.0"]).toBeDefined();
     expect(doc.revoked?.leaf?.["1.0.0"]).toBeUndefined();
@@ -1902,11 +3111,40 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const idxKp = generateKeypair();
     const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-after-rev-"));
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-cf.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-cf.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "cf-index.json");
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
-    expect(await main(["registry", "revoke", "leaf@0.9.0", "--reason", "old", "--key", keyPath, "--out", outPath])).toBe(0);
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        outPath,
+      ]),
+    ).toBe(0);
+    expect(
+      await main(["registry", "revoke", "leaf@0.9.0", "--reason", "old", "--key", keyPath, "--out", outPath]),
+    ).toBe(0);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        outPath,
+      ]),
+    ).toBe(0);
     const doc = readIndexFile(outPath);
     expect(doc.format_version).toBe(2);
     expect(doc.revoked?.leaf?.["0.9.0"]).toBeDefined();
@@ -1930,23 +3168,67 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const pkg = { manifest: { ...m, signature: signManifest(m, pkgKp.privatePem) }, files };
     const pkgJson = JSON.stringify(pkg);
     writeFileSync(join(pkgDir, "leaf-1.0.0.json"), pkgJson);
-    const keyPath = join(tempHome, "r-cons.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "r-cons.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const idxPath = join(tempHome, "cons-index.json");
-    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", idxPath])).toBe(0);
+    expect(
+      await main([
+        "registry",
+        "publish",
+        "--packages",
+        pkgDir,
+        "--base-url",
+        "https://pkgs",
+        "--key",
+        keyPath,
+        "--out",
+        idxPath,
+      ]),
+    ).toBe(0);
     if (opts.mark === "revoke") {
-      expect(await main(["registry", "revoke", "leaf@1.0.0", ...(opts.reason ? ["--reason", opts.reason] : []), "--key", keyPath, "--out", idxPath])).toBe(0);
+      expect(
+        await main([
+          "registry",
+          "revoke",
+          "leaf@1.0.0",
+          ...(opts.reason ? ["--reason", opts.reason] : []),
+          "--key",
+          keyPath,
+          "--out",
+          idxPath,
+        ]),
+      ).toBe(0);
     } else if (opts.mark === "quarantine") {
-      expect(await main(["registry", "quarantine", "leaf@1.0.0", ...(opts.reason ? ["--reason", opts.reason] : []), "--key", keyPath, "--out", idxPath])).toBe(0);
+      expect(
+        await main([
+          "registry",
+          "quarantine",
+          "leaf@1.0.0",
+          ...(opts.reason ? ["--reason", opts.reason] : []),
+          "--key",
+          keyPath,
+          "--out",
+          idxPath,
+        ]),
+      ).toBe(0);
     }
     const serve = (u: string) => new Response(u === PKG_URL ? pkgJson : readFileSync(idxPath, "utf8"), { status: 200 });
     globalThis.fetch = (async (u: string) => serve(u)) as unknown as typeof fetch;
     await main(["trust", "add", idxKp.publicSpkiB64]);
     await main(["trust", "add", pkgKp.publicSpkiB64]);
     await main(["registry", "remote", "add", IDX_URL, "--key", idxKp.keyId]);
-    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
-      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
-      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
-    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "root",
+        version: "1.0.0",
+        content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+        dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+    const rootPath = join(tempHome, "root.json");
+    writeFileSync(rootPath, JSON.stringify(root));
     return { rootPath, idxPath, keyPath, pkgJson, serve, store: () => join(tempHome, ".ace", "store") };
   }
 
@@ -1989,10 +3271,31 @@ describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
     const lockPath = join(tempHome, "ace.lock");
     expect(await main(["install", c.rootPath, "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
     expect(existsSync(lockPath)).toBe(true);
-    expect(await main(["registry", "revoke", "leaf@1.0.0", "--reason", "compromise", "--key", c.keyPath, "--out", c.idxPath])).toBe(0);
+    expect(
+      await main([
+        "registry",
+        "revoke",
+        "leaf@1.0.0",
+        "--reason",
+        "compromise",
+        "--key",
+        c.keyPath,
+        "--out",
+        c.idxPath,
+      ]),
+    ).toBe(0);
     await freshFetchAfterCacheWipe(c.serve);
     const store = mkdtempSync(join(tmpdir(), "ace-lock-rev-store-"));
-    const code = await main(["install", c.rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    const code = await main([
+      "install",
+      c.rootPath,
+      "--store",
+      store,
+      "--allow-no-signature",
+      "--lockfile",
+      lockPath,
+      "--frozen",
+    ]);
     expect(code).toBe(1);
   });
 });

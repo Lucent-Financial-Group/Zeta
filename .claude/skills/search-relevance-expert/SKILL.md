@@ -45,14 +45,14 @@ normalisation.
 
 ## Boosting — the taxonomy
 
-| Kind | When | Where |
-|---|---|---|
-| **Document-level static boost** | Per-doc quality score | Index time |
-| **Field-level boost** | Some fields matter more | Query time (qf) |
-| **Term-level boost** | Query weighted | Query time |
-| **Phrase-match boost** | Reward exact phrase | Query time (pf) |
-| **Function boost** | Recency, popularity | Query time (function_score) |
-| **Rank feature** | Sparse per-doc signal | Index time (rank_feature field) |
+| Kind                            | When                    | Where                           |
+| ------------------------------- | ----------------------- | ------------------------------- |
+| **Document-level static boost** | Per-doc quality score   | Index time                      |
+| **Field-level boost**           | Some fields matter more | Query time (qf)                 |
+| **Term-level boost**            | Query weighted          | Query time                      |
+| **Phrase-match boost**          | Reward exact phrase     | Query time (pf)                 |
+| **Function boost**              | Recency, popularity     | Query time (function_score)     |
+| **Rank feature**                | Sparse per-doc signal   | Index time (rank_feature field) |
 
 **Rule.** Static boosts at index time are cheap. Dynamic
 (personalised) boosts at query time are expensive but
@@ -63,15 +63,15 @@ necessary.
 For recency / geo / numeric-proximity:
 
 ```json
-{ "function_score": {
+{
+  "function_score": {
     "functions": [
-      { "gauss": { "date":
-          { "origin": "now", "scale": "10d", "decay": 0.5 } } },
-      { "gauss": { "location":
-          { "origin": "40,-73", "scale": "10km" } } }
+      { "gauss": { "date": { "origin": "now", "scale": "10d", "decay": 0.5 } } },
+      { "gauss": { "location": { "origin": "40,-73", "scale": "10km" } } }
     ],
     "score_mode": "multiply"
-} }
+  }
+}
 ```
 
 - **gauss** — smooth bell.
@@ -190,13 +190,13 @@ beat — used by Elastic, OpenSearch, Vespa.
   language ("under $50 red shoes").
 - **Spell correction.** Before retrieval.
 
-**Rule.** Query understanding sits *between* the user
+**Rule.** Query understanding sits _between_ the user
 query and the retrieval engine. Often the biggest
 relevance lever outside scoring itself.
 
 ## Synonyms — the precision cost
 
-Adding synonyms increases recall, but *decreases*
+Adding synonyms increases recall, but _decreases_
 precision:
 
 - `phone` ⇒ `phone, telephone, cell, mobile` expands
@@ -245,11 +245,11 @@ registered metrics.
 
 - **IR theory** → `full-text-search-expert`.
 - **Engine knobs** → `elasticsearch-expert` / `solr-
-  expert` / `lucene-expert`.
+expert` / `lucene-expert`.
 - **Tokeniser-driven recall** → `text-analysis-expert`.
 - **DSL syntax** → `search-query-language-expert`.
 - **Novel retrieval models** → `information-retrieval-
-  research`.
+research`.
 - **LTR training infra** → `ml-engineering-expert`.
 
 ## Hazards
@@ -276,13 +276,13 @@ registered metrics.
 
 ## Reference patterns
 
-- Turnbull & Berryman — *Relevant Search* (2016).
-- Bast, Buchhold, Haussmann — *Semantic Search on Text and
-  Knowledge Bases* (2016).
-- Croft, Metzler, Strohman — *Search Engines* (2015).
+- Turnbull & Berryman — _Relevant Search_ (2016).
+- Bast, Buchhold, Haussmann — _Semantic Search on Text and
+  Knowledge Bases_ (2016).
+- Croft, Metzler, Strohman — _Search Engines_ (2015).
 - Elastic "Practical BM25" series.
-- Grainger et al. — *AI-Powered Search* (2024).
-- Burges — *From RankNet to LambdaRank to LambdaMART*
+- Grainger et al. — _AI-Powered Search_ (2024).
+- Burges — _From RankNet to LambdaRank to LambdaMART_
   (2010).
 - `.claude/skills/full-text-search-expert/SKILL.md`.
 - `.claude/skills/elasticsearch-expert/SKILL.md`.

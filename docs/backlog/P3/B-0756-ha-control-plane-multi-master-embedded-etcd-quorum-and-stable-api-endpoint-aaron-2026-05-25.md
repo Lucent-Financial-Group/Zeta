@@ -15,8 +15,8 @@ labels: [cluster, k3s, etcd, ha, networking]
 
 Current `modules/k3s-server.nix` configures a single-node
 control-plane (default k3s backend = embedded SQLite). Aaron
-2026-05-25: *"that sounds good also if we support mutiple control
-plane nodes when i have two or more how is etcd involved?"*.
+2026-05-25: _"that sounds good also if we support mutiple control
+plane nodes when i have two or more how is etcd involved?"_.
 
 Single-node control-plane = single point of failure for cluster
 API + scheduler + controller-manager. Plus the API endpoint
@@ -37,9 +37,9 @@ opt-in via a new module surface.
       `zeta.cluster.controlPlane.mode` with values:
       `single` (default; embedded SQLite, current behavior)
       `ha-init` (first control-plane node; `--cluster-init`,
-        embedded etcd)
+      embedded etcd)
       `ha-join` (additional control-plane nodes; joins via
-        `--server https://<bootstrap-cp>:6443`)
+      `--server https://<bootstrap-cp>:6443`)
 - [ ] Documented even-count refusal: config-time error if HA
       mode is requested but the cluster would end up with 2, 4,
       6 control-planes; force operator to choose odd
@@ -47,14 +47,14 @@ opt-in via a new module surface.
       auto-generates; secret material rotated by operator)
 - [ ] Stable API endpoint via one of:
       a. **DNS round-robin** — `control-plane.zeta.local` A
-         records for all control-plane IPs (cheap; client-side
-         retry handles dead nodes)
+      records for all control-plane IPs (cheap; client-side
+      retry handles dead nodes)
       b. **kube-vip / keepalived virtual IP** — single VIP
-         floats across control-planes; requires NixOS module +
-         config for kube-vip or keepalived (declarative)
+      floats across control-planes; requires NixOS module +
+      config for kube-vip or keepalived (declarative)
       c. **External load balancer** — out of scope (assumes
-         existing HAProxy / nginx / cloud LB; document the
-         k3s --tls-san flag needed for cert SAN)
+      existing HAProxy / nginx / cloud LB; document the
+      k3s --tls-san flag needed for cert SAN)
 - [ ] PROVISIONING.md updated with HA section
 - [ ] B-0754 v1 first-boot role keystroke prompt extended to
       include 'h' for `ha-init` (first node) and 'j' for
@@ -70,10 +70,10 @@ opt-in via a new module surface.
   Longhorn replication on this path is NOT recommended (etcd
   has its own replication; double-replicating is worse)
 - Snapshot strategy: k3s built-in `--etcd-snapshot-schedule-cron`
-  + retention; ship to S3 / local NFS / wherever the cluster
-  has off-cluster storage
+  - retention; ship to S3 / local NFS / wherever the cluster
+    has off-cluster storage
 - Joining: `k3s server --server https://<existing-cp>:6443
-  --token <node-token>` — token is at
+--token <node-token>` — token is at
   `/var/lib/rancher/k3s/server/node-token` on the bootstrap node
 - Removing a control-plane: must use `k3s etcd-snapshot` +
   `k3s server --cluster-reset` if quorum is lost; standard

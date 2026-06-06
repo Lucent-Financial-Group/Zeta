@@ -27,8 +27,7 @@ export type SupervisorSignalToolType = (typeof SupervisorSignalToolType)[keyof t
 
 export function isSupervisorSignalToolType(value: unknown): value is SupervisorSignalToolType {
   return (
-    typeof value === "string" &&
-    Object.values(SupervisorSignalToolType).includes(value as SupervisorSignalToolType)
+    typeof value === "string" && Object.values(SupervisorSignalToolType).includes(value as SupervisorSignalToolType)
   );
 }
 

@@ -198,9 +198,10 @@ export function projectReputationReadModel(input: ProjectReputationReadModelInpu
     const existing = buckets.get(key);
     const latestObservedAt = laterIso(existing?.latestObservedAt, observation.observedAt);
     if (observation.signal.kind === "binary") {
-      const bucket = existing?.kind === "binary"
-        ? existing
-        : { kind: "binary" as const, successes: 0, failures: 0, sampleCount: 0, evidenceRefs: [] };
+      const bucket =
+        existing?.kind === "binary"
+          ? existing
+          : { kind: "binary" as const, successes: 0, failures: 0, sampleCount: 0, evidenceRefs: [] };
       const success = normalizeBinarySuccess(observation);
       if (success) bucket.successes += weight;
       else bucket.failures += weight;
@@ -211,15 +212,16 @@ export function projectReputationReadModel(input: ProjectReputationReadModelInpu
       continue;
     }
 
-    const bucket = existing?.kind === "continuous"
-      ? existing
-      : {
-          kind: "continuous" as const,
-          values: [],
-          lowerIsBetter: observation.signal.lowerIsBetter,
-          unit: observation.signal.unit,
-          evidenceRefs: [],
-        };
+    const bucket =
+      existing?.kind === "continuous"
+        ? existing
+        : {
+            kind: "continuous" as const,
+            values: [],
+            lowerIsBetter: observation.signal.lowerIsBetter,
+            unit: observation.signal.unit,
+            evidenceRefs: [],
+          };
     if (weight > 0) bucket.values.push({ value: observation.signal.value, weight });
     bucket.lowerIsBetter = observation.signal.lowerIsBetter;
     bucket.unit = observation.signal.unit;
@@ -234,7 +236,9 @@ export function projectReputationReadModel(input: ProjectReputationReadModelInpu
   };
 }
 
-export function projectReputationReadModelFromOrgEvents(input: ProjectReputationReadModelFromOrgEventsInput): ReputationReadModel {
+export function projectReputationReadModelFromOrgEvents(
+  input: ProjectReputationReadModelFromOrgEventsInput,
+): ReputationReadModel {
   return projectReputationReadModel({
     observations: input.events.flatMap((event) => {
       const observation = reputationObservationFromOrgEvent(event);
@@ -274,7 +278,8 @@ export function materializeRmoCandidateReputation(input: MaterializeRmoCandidate
   const scheduleScore = Math.max(summaryScore(scheduleReliability), latencyScore);
   const evidenceCount = evidenceRefs.length;
   const reviewReversalUncertainty = reviewReversal.evidenceRefs.length === 0 ? 0 : reviewReversal.uncertainty;
-  const incidentContributionUncertainty = incidentContribution.evidenceRefs.length === 0 ? 0 : incidentContribution.uncertainty;
+  const incidentContributionUncertainty =
+    incidentContribution.evidenceRefs.length === 0 ? 0 : incidentContribution.uncertainty;
   const uncertainty = Math.max(
     quality.uncertainty,
     reviewReversalUncertainty * 0.75,
@@ -312,13 +317,16 @@ export function materializeRmoCandidateReputation(input: MaterializeRmoCandidate
   };
 }
 
-export function selectRmoCandidateWithExploration(input: SelectRmoCandidateWithExplorationInput): RmoExplorationSelection {
+export function selectRmoCandidateWithExploration(
+  input: SelectRmoCandidateWithExplorationInput,
+): RmoExplorationSelection {
   if (input.rankedCandidates.length === 0) {
     return { outcome: "no_legal_candidate", reason: "no ranked candidates" };
   }
 
   if (input.riskTier === ReputationRiskTier.High || input.riskTier === ReputationRiskTier.Critical) {
-    const threshold = input.minimumLowerConfidenceBound ?? (input.riskTier === ReputationRiskTier.Critical ? 0.7 : 0.55);
+    const threshold =
+      input.minimumLowerConfidenceBound ?? (input.riskTier === ReputationRiskTier.Critical ? 0.7 : 0.55);
     const eligible = input.rankedCandidates.filter((candidate) => qualityLowerConfidenceBound(candidate) >= threshold);
     if (eligible.length === 0) {
       return {
@@ -342,8 +350,10 @@ export function selectRmoCandidateWithExploration(input: SelectRmoCandidateWithE
     };
   }
 
-  const explorationCandidates = input.rankedCandidates.filter((candidate) =>
-    candidate.reasonCodes.includes("exploration_candidate") && qualityLowerConfidenceBound(candidate) >= 0.2);
+  const explorationCandidates = input.rankedCandidates.filter(
+    (candidate) =>
+      candidate.reasonCodes.includes("exploration_candidate") && qualityLowerConfidenceBound(candidate) >= 0.2,
+  );
   if (explorationCandidates.length === 0) {
     return {
       outcome: "selected",
@@ -415,13 +425,22 @@ export function reputationObservationFromOrgEvent(event: OrgEvent): ReputationOb
   };
 }
 
-function summarizeBucket(outcomeClass: ReputationOutcomeClass, bucket: ReputationBucket | undefined): ReputationPosteriorSummary {
+function summarizeBucket(
+  outcomeClass: ReputationOutcomeClass,
+  bucket: ReputationBucket | undefined,
+): ReputationPosteriorSummary {
   if (bucket === undefined) {
     if (BinaryOutcomeClasses.has(outcomeClass)) return betaSummary(1, 1, 0, undefined, []);
     return normalSummary([], true, undefined, undefined, []);
   }
   if (bucket.kind === "binary") {
-    return betaSummary(1 + bucket.successes, 1 + bucket.failures, bucket.sampleCount, bucket.latestObservedAt, bucket.evidenceRefs);
+    return betaSummary(
+      1 + bucket.successes,
+      1 + bucket.failures,
+      bucket.sampleCount,
+      bucket.latestObservedAt,
+      bucket.evidenceRefs,
+    );
   }
   return normalSummary(bucket.values, bucket.lowerIsBetter, bucket.unit, bucket.latestObservedAt, bucket.evidenceRefs);
 }
@@ -478,7 +497,8 @@ function normalSummary(
     };
   }
   const mean = values.reduce((acc, value) => acc + value.value * value.weight, 0) / sampleWeight;
-  const variance = values.reduce((acc, value) => acc + value.weight * (value.value - mean) ** 2, 0) / Math.max(1, sampleWeight - 1);
+  const variance =
+    values.reduce((acc, value) => acc + value.weight * (value.value - mean) ** 2, 0) / Math.max(1, sampleWeight - 1);
   const priorMu = mean;
   const priorKappa = 1;
   const priorAlpha = 1;
@@ -488,10 +508,8 @@ function normalSummary(
   const sumSquaredDeviation = values.reduce((acc, value) => acc + value.weight * (value.value - mean) ** 2, 0);
   const posteriorAlpha = priorAlpha + sampleWeight / 2;
   const posteriorBeta =
-    priorBeta +
-    0.5 * sumSquaredDeviation +
-    (priorKappa * sampleWeight * (mean - priorMu) ** 2) / (2 * posteriorKappa);
-  const posteriorPredictiveVariance = posteriorBeta * (posteriorKappa + 1) / (posteriorAlpha * posteriorKappa);
+    priorBeta + 0.5 * sumSquaredDeviation + (priorKappa * sampleWeight * (mean - priorMu) ** 2) / (2 * posteriorKappa);
+  const posteriorPredictiveVariance = (posteriorBeta * (posteriorKappa + 1)) / (posteriorAlpha * posteriorKappa);
   const predictiveStdDev = Math.sqrt(posteriorPredictiveVariance);
   return {
     kind: "normal_gamma",
@@ -563,7 +581,9 @@ function summaryScore(summary: ReputationPosteriorSummary): number {
 function continuousLowerIsBetterScore(summary: ReputationPosteriorSummary, scale: number): number {
   if (summary.kind !== "normal_gamma") return summaryScore(summary);
   if (summary.sampleCount === 0) return 0.5;
-  const score = summary.lowerIsBetter ? 1 / (1 + Math.max(0, summary.mean) / scale) : summary.mean / (summary.mean + scale);
+  const score = summary.lowerIsBetter
+    ? 1 / (1 + Math.max(0, summary.mean) / scale)
+    : summary.mean / (summary.mean + scale);
   return clamp01(score);
 }
 
@@ -615,7 +635,9 @@ function reputationEvidenceRef(observation: ReputationObservation): string {
   return `reputation:${observation.outcomeClass}:continuous:${observation.signal.unit}`;
 }
 
-function isReputationObservationContext(context: OrgEventTransitionContext | undefined): context is Extract<OrgEventTransitionContext, { kind: "reputation_observation" }> {
+function isReputationObservationContext(
+  context: OrgEventTransitionContext | undefined,
+): context is Extract<OrgEventTransitionContext, { kind: "reputation_observation" }> {
   return context?.kind === "reputation_observation";
 }
 

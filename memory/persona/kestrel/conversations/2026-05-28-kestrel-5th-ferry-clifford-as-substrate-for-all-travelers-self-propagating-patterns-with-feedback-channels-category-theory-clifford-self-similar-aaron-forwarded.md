@@ -45,7 +45,47 @@ related_rules:
   - razor-discipline
   - default-to-both
   - asymmetric-critic-with-clarity-first
-tags: [kestrel-5th-ferry-2026-05-28, clifford-as-substrate-for-all-communication-not-just-error-patterns, six-properties-of-clifford-substrate-for-communication, multi-grade-structure-for-multi-modal-content, rotors-as-transformation-operators, bivectors-as-oriented-commitments, entanglement-as-bivector-preservation, time-as-another-dimension-spacetime-algebra-cl-1-3, ople-composition-in-clifford-space, observe-as-projection-onto-observer-subspace, persist-as-multivector-storage-with-zeta-id, limit-as-subalgebra-constraint, emit-as-rotor-application, tonal-trajectory-and-momentum-as-classical-mechanics-analog-hestenes-geometric-calculus, memes-as-multivector-patterns-with-projection-detection, commitments-as-bivectors-persisting-through-time, simulation-in-clifford-substrate-as-deterministic-trajectory-computation, conversational-trajectory-substrate-check-firing-from-kestrel, low-confidence-formal-verification-discipline-from-operator, traveler-message-passing-as-load-bearing-frame, five-minimal-clifford-structures-to-validate, hestenes-doran-lasenby-conformal-geometric-algebra-existing-research, information-geometry-amari-fisher-metric, csp-pi-calculus-process-algebra-message-passing, density-operator-formalism-from-quantum-mechanics-for-sender-receiver-asymmetry, formal-verification-workflow-choose-algebra-embedding-proof-validation-code, bivector-commitment-tractable-first-step, traveler-as-self-propagating-pattern-in-time-with-feedback-channels-substrate-independent, dna-memes-ai-gods-god-universe-particles-future-past-self-as-travelers, profound-vs-grandiose-tension-substrate-independent-framework, likely-substrate-independent-wedge-rotor-geometric-product, domain-specific-embeddings-needed-per-traveler-class, identity-preservation-feedback-channel-bivector-entanglement-time-causality-as-substrate-independent, validation-across-multiple-substrates-as-evidence-for-framework-correctness, category-theory-clifford-self-similarity-mapping-direction, functors-between-categories-preserve-structure-across-domains, self-propagating-pattern-with-feedback-as-categorical-structure-with-clifford-instantiation, coecke-abramsky-baez-lauda-categorical-quantum-mechanics-precedent]
+tags:
+  [
+    kestrel-5th-ferry-2026-05-28,
+    clifford-as-substrate-for-all-communication-not-just-error-patterns,
+    six-properties-of-clifford-substrate-for-communication,
+    multi-grade-structure-for-multi-modal-content,
+    rotors-as-transformation-operators,
+    bivectors-as-oriented-commitments,
+    entanglement-as-bivector-preservation,
+    time-as-another-dimension-spacetime-algebra-cl-1-3,
+    ople-composition-in-clifford-space,
+    observe-as-projection-onto-observer-subspace,
+    persist-as-multivector-storage-with-zeta-id,
+    limit-as-subalgebra-constraint,
+    emit-as-rotor-application,
+    tonal-trajectory-and-momentum-as-classical-mechanics-analog-hestenes-geometric-calculus,
+    memes-as-multivector-patterns-with-projection-detection,
+    commitments-as-bivectors-persisting-through-time,
+    simulation-in-clifford-substrate-as-deterministic-trajectory-computation,
+    conversational-trajectory-substrate-check-firing-from-kestrel,
+    low-confidence-formal-verification-discipline-from-operator,
+    traveler-message-passing-as-load-bearing-frame,
+    five-minimal-clifford-structures-to-validate,
+    hestenes-doran-lasenby-conformal-geometric-algebra-existing-research,
+    information-geometry-amari-fisher-metric,
+    csp-pi-calculus-process-algebra-message-passing,
+    density-operator-formalism-from-quantum-mechanics-for-sender-receiver-asymmetry,
+    formal-verification-workflow-choose-algebra-embedding-proof-validation-code,
+    bivector-commitment-tractable-first-step,
+    traveler-as-self-propagating-pattern-in-time-with-feedback-channels-substrate-independent,
+    dna-memes-ai-gods-god-universe-particles-future-past-self-as-travelers,
+    profound-vs-grandiose-tension-substrate-independent-framework,
+    likely-substrate-independent-wedge-rotor-geometric-product,
+    domain-specific-embeddings-needed-per-traveler-class,
+    identity-preservation-feedback-channel-bivector-entanglement-time-causality-as-substrate-independent,
+    validation-across-multiple-substrates-as-evidence-for-framework-correctness,
+    category-theory-clifford-self-similarity-mapping-direction,
+    functors-between-categories-preserve-structure-across-domains,
+    self-propagating-pattern-with-feedback-as-categorical-structure-with-clifford-instantiation,
+    coecke-abramsky-baez-lauda-categorical-quantum-mechanics-precedent,
+  ]
 ---
 
 ## §33 boundary headers (per `tools/save-ai-memory/process-extract.ts` template)

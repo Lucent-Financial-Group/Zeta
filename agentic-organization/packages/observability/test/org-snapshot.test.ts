@@ -13,19 +13,39 @@ const NOW = 2_000_000;
 
 function binding(id: string, hatId: string, agent: string, phase: HatBindingPhase, expiresInS: number): HatBinding {
   return {
-    id, hatId, organizationId: "org-1", wearerAgentId: agent, phase,
+    id,
+    hatId,
+    organizationId: "org-1",
+    wearerAgentId: agent,
+    phase,
     boundAt: new Date(NOW - 1000).toISOString(),
     warmupEndsAt: new Date(NOW - 500).toISOString(),
     expiresAt: new Date(NOW + expiresInS * 1000).toISOString(),
   };
 }
 
-function ev(kind: OrgEventKind, actorHatId: string | undefined, subjectId: string, toState: string, decision: string, atMs: number): OrgEvent {
+function ev(
+  kind: OrgEventKind,
+  actorHatId: string | undefined,
+  subjectId: string,
+  toState: string,
+  decision: string,
+  atMs: number,
+): OrgEvent {
   return {
-    id: `e-${atMs}`, kind, occurredAt: new Date(atMs).toISOString(), organizationId: "org-1",
+    id: `e-${atMs}`,
+    kind,
+    occurredAt: new Date(atMs).toISOString(),
+    organizationId: "org-1",
     ...(actorHatId !== undefined ? { actorHatId } : {}),
-    subjectId, toState, decision, supervisorChain: [], evidenceRefs: [],
-    correlationId: "c", causationId: "c", traceId: "t",
+    subjectId,
+    toState,
+    decision,
+    supervisorChain: [],
+    evidenceRefs: [],
+    correlationId: "c",
+    causationId: "c",
+    traceId: "t",
   };
 }
 
@@ -67,7 +87,14 @@ test("active bindings roll up per department and show time-to-expiry", () => {
 test("pipeline stage, priority, and supply are folded from the event stream", () => {
   const events: OrgEvent[] = [
     ev(OrgEventKind.PipelineStageTransition, "product_owner", "wi-1", "awaiting_brd_approval", "advanced", NOW - 2000),
-    ev(OrgEventKind.PipelineStageTransition, "brd_reviewer", "wi-1", "awaiting_architecture_approval", "advanced", NOW - 1000), // later wins
+    ev(
+      OrgEventKind.PipelineStageTransition,
+      "brd_reviewer",
+      "wi-1",
+      "awaiting_architecture_approval",
+      "advanced",
+      NOW - 1000,
+    ), // later wins
     ev(OrgEventKind.PriorityDecision, "engineering_director", "wi-1", "high", "priority", NOW - 1500),
     ev(OrgEventKind.HatSupplyDecision, undefined, "backend_implementer", "expand", "supply", NOW - 1200),
   ];
@@ -82,19 +109,36 @@ test("the fold is order-independent: newest-state wins even when events arrive D
   // store returns rows (ORDER BY occurred_at DESC). A naive last-write-wins fold
   // would pick the OLDEST stage; the correct fold keeps the newest by timestamp.
   const stages = [
-    "awaiting_brd_approval", "awaiting_architecture_approval", "awaiting_implementation_review",
-    "awaiting_runtime_validation", "awaiting_final_business_validation", "awaiting_release_readiness", "merged",
+    "awaiting_brd_approval",
+    "awaiting_architecture_approval",
+    "awaiting_implementation_review",
+    "awaiting_runtime_validation",
+    "awaiting_final_business_validation",
+    "awaiting_release_readiness",
+    "merged",
   ];
   const ascending: OrgEvent[] = stages.map((s, i) =>
     ev(OrgEventKind.PipelineStageTransition, "product_owner", "wi-9", s, "advanced", NOW - (stages.length - i) * 1000),
   );
   const descending = [...ascending].reverse(); // newest first, as the store returns them
-  const snap = buildOrgSnapshot({ hats, bindings: [], events: descending, nowMs: NOW, nowIso: new Date(NOW).toISOString() });
+  const snap = buildOrgSnapshot({
+    hats,
+    bindings: [],
+    events: descending,
+    nowMs: NOW,
+    nowIso: new Date(NOW).toISOString(),
+  });
   equal(snap.pipeline.find((p) => p.workItemId === "wi-9")?.stage, "merged");
 });
 
 test("renderOrgSnapshot produces a readable report", () => {
-  const snap = buildOrgSnapshot({ hats, bindings: [binding("b-1", "ceo", "agent-A", HatBindingPhase.Active, 100)], events: [], nowMs: NOW, nowIso: new Date(NOW).toISOString() });
+  const snap = buildOrgSnapshot({
+    hats,
+    bindings: [binding("b-1", "ceo", "agent-A", HatBindingPhase.Active, 100)],
+    events: [],
+    nowMs: NOW,
+    nowIso: new Date(NOW).toISOString(),
+  });
   const report = renderOrgSnapshot(snap);
   ok(report.includes("ORG SNAPSHOT"));
   ok(report.includes("HIERARCHY ACTIVITY"));

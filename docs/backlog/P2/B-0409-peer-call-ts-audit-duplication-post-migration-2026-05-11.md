@@ -31,7 +31,7 @@ Child of B-0120. Rule 0 (TS over bash) + trajectory shows peer-call cluster comp
 
 One-pass read-only audit of the three .ts peer-call entrypoints. Identify:
 
-- Persona bootstrap code (CURRENT-*.md load, four-ferry preamble)
+- Persona bootstrap code (CURRENT-\*.md load, four-ferry preamble)
 - Invocation sites inside tools/ and .github/
 - Exact duplication points between grok/gemini/codex
 

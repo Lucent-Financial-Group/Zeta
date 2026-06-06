@@ -4,15 +4,16 @@ description: Aaron 2026-04-21 proposal — "this will be the home of the repo bu
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Fork-based PR workflow for the LFG repo
 
 Aaron's 2026-04-21 proposal, in the round immediately after
 the org-transfer landed:
 
-1. *"how about this, this will be the home of the repo but
+1. _"how about this, this will be the home of the repo but
    the fork to my private account and that's how we submit
-   PRs then I can get all the checks right?"*
-2. *"But we wont get the merge queu"* — his own
+   PRs then I can get all the checks right?"_
+2. _"But we wont get the merge queu"_ — his own
    follow-up objection, to be addressed.
 
 **Why:** Post-transfer, LFG/Zeta is a separate billing
@@ -34,7 +35,7 @@ explicitly choosing to eat his own dogfood.
 
 ## The merge-queue concern
 
-*"But we wont get the merge queu"* — Aaron's own counter.
+_"But we wont get the merge queu"_ — Aaron's own counter.
 Answer: **merge queue and fork-based PRs are compatible.**
 
 - Merge queue runs on the **base repo** (LFG/Zeta), not the
@@ -89,9 +90,9 @@ executed yet." Nothing about fork-based PRs changes that.
    git remote add origin git@github.com:AceHack/Zeta.git   # personal fork = origin
    ```
    Now `git push` lands branches on the fork; `git fetch
-   upstream` pulls LFG/Zeta's state.
+upstream` pulls LFG/Zeta's state.
 3. PRs are opened fork -> LFG/Zeta via `gh pr create --repo
-   Lucent-Financial-Group/Zeta --head AceHack:branch-name`
+Lucent-Financial-Group/Zeta --head AceHack:branch-name`
    (or the web UI equivalent).
 
 ### What agents do
@@ -136,7 +137,7 @@ executed yet." Nothing about fork-based PRs changes that.
 - **Don't enable auto-fork-sync** on the AceHack fork
   without Aaron approving — auto-sync can overwrite
   in-flight fork branches. Manual `git fetch upstream &&
-  git merge upstream/main` is safer for Aaron's personal
+git merge upstream/main` is safer for Aaron's personal
   cadence.
 
 ## Cross-references

@@ -32,12 +32,12 @@ type: feature
 
 **Decomposition into atomic child rows:**
 
-| Row | Slice | Status | Branch |
-|-----|-------|--------|--------|
+| Row    | Slice                                                                                    | Status       | Branch                                 |
+| ------ | ---------------------------------------------------------------------------------------- | ------------ | -------------------------------------- |
 | B-0434 | Alignment invariant dashboard tab (HC/SD/DIR clause coverage panel in `demo/index.html`) | shipped → PR | feat/b-0401-demo-alignment-tab-slice-1 |
-| B-0435 | Circuit breaker visualization panel (mock data → live bus data) | open | — |
-| B-0436 | Hamiltonian-to-git visualization (git history → phase-space rendering) | open | — |
-| B-0437 | UX-of-math panel (bivector fingerprints, partial-credit scoring) | open | — |
+| B-0435 | Circuit breaker visualization panel (mock data → live bus data)                          | open         | —                                      |
+| B-0436 | Hamiltonian-to-git visualization (git history → phase-space rendering)                   | open         | —                                      |
+| B-0437 | UX-of-math panel (bivector fingerprints, partial-credit scoring)                         | open         | —                                      |
 
 # Demo surface — circuit breaker + Hamiltonian-to-git + alignment UI
 

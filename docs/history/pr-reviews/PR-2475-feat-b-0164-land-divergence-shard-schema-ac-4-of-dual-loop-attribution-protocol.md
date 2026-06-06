@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2475 |
-| Title | feat(B-0164): land divergence-shard schema — AC #4 of dual-loop attribution protocol |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T11:51:54Z |
-| Merged at | 2026-05-10T11:53:50Z |
-| Merge commit SHA | `47c3999437210067a458fe8a4754526595a84a20` |
-| Branch | `fix/B-0164-divergence-shard-schema` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2475 |
-| Changed files | 3 |
-| Additions / deletions | +205 / -0 |
+| Field                 | Value                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| Number                | 2475                                                                                 |
+| Title                 | feat(B-0164): land divergence-shard schema — AC #4 of dual-loop attribution protocol |
+| Author                | `AceHack` (human)                                                                    |
+| State                 | MERGED                                                                               |
+| Created at            | 2026-05-10T11:51:54Z                                                                 |
+| Merged at             | 2026-05-10T11:53:50Z                                                                 |
+| Merge commit SHA      | `47c3999437210067a458fe8a4754526595a84a20`                                           |
+| Branch                | `fix/B-0164-divergence-shard-schema`                                                 |
+| Base branch           | `main`                                                                               |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2475                             |
+| Changed files         | 3                                                                                    |
+| Additions / deletions | +205 / -0                                                                            |
 
 ## Description
 
@@ -52,21 +52,21 @@ Build succeeded.
     0 Error(s)
 ```
 
-operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding through failures + recoveries"
+operative-authorization: aaron 2026-05-04: "it\*\*, not just the output. Grinding through failures + recoveries"
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

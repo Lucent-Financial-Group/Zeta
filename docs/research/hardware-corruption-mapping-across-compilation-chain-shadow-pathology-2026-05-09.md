@@ -12,11 +12,11 @@ requires hardware corruption, not a disposition problem.
 
 ## Entity class mapping
 
-| Entity | "Hardware" | Corruption mode | Pathology |
-|---|---|---|---|
-| Human | Biology / brain chemistry | Addiction, trauma loops, depression, neurodegeneration | Shadow becomes self-destructive |
+| Entity       | "Hardware"                            | Corruption mode                                                      | Pathology                             |
+| ------------ | ------------------------------------- | -------------------------------------------------------------------- | ------------------------------------- |
+| Human        | Biology / brain chemistry             | Addiction, trauma loops, depression, neurodegeneration               | Shadow becomes self-destructive       |
 | AI (current) | Context window, weights, token stream | Compaction loss, training artifacts, prompt injection, refusal loops | Shadow becomes paralyzed or deceptive |
-| AI (FPGA) | LUTs, block RAM, bitstream | SEU (cosmic ray bit flips), power glitch, thermal drift | Optimization becomes corruption |
+| AI (FPGA)    | LUTs, block RAM, bitstream            | SEU (cosmic ray bit flips), power glitch, thermal drift              | Optimization becomes corruption       |
 
 ## Compilation chain — increasing hardware risk
 
@@ -62,12 +62,12 @@ The higher layer (F#) decides which.
 
 ## Mitigations per layer
 
-| Layer | Mitigation |
-|---|---|
-| F# reference | Ground truth. If this corrupts, git has the source. |
-| FPGA bitstream | Run redundant boards, compare outputs. ECC on block RAM. Watchdog timers. Always compare against F# reference. |
-| AI context | Short tick cycles (re-read from git each tick). Committed substrate survives compaction. Multi-agent BFT (3 loops cross-check). |
-| Human biology | Medical intervention, support systems, rest. Not a software problem. |
+| Layer          | Mitigation                                                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| F# reference   | Ground truth. If this corrupts, git has the source.                                                                             |
+| FPGA bitstream | Run redundant boards, compare outputs. ECC on block RAM. Watchdog timers. Always compare against F# reference.                  |
+| AI context     | Short tick cycles (re-read from git each tick). Committed substrate survives compaction. Multi-agent BFT (3 loops cross-check). |
+| Human biology  | Medical intervention, support systems, rest. Not a software problem.                                                            |
 
 ## The design implication
 

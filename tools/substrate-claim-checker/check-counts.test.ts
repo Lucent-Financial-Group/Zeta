@@ -34,14 +34,7 @@ function write(dir: string, name: string, content: string): string {
 
 describe("findTables", () => {
   test("counts data rows in a basic table", () => {
-    const lines = [
-      "before",
-      "| a | b |",
-      "|---|---|",
-      "| 1 | 2 |",
-      "| 3 | 4 |",
-      "after",
-    ];
+    const lines = ["before", "| a | b |", "|---|---|", "| 1 | 2 |", "| 3 | 4 |", "after"];
     const tables = findTables(lines);
     expect(tables).toHaveLength(1);
     expect(tables[0]!.rowCount).toBe(2);
@@ -117,12 +110,7 @@ describe("findClaims", () => {
   });
 
   test("skips claims inside fenced code blocks", () => {
-    const lines = [
-      "```",
-      "// 5 rows in this example",
-      "```",
-      "narrative claims 7 rows.",
-    ];
+    const lines = ["```", "// 5 rows in this example", "```", "narrative claims 7 rows."];
     const claims = findClaims(lines);
     expect(claims).toHaveLength(1);
     expect(claims[0]!.n).toBe(7);

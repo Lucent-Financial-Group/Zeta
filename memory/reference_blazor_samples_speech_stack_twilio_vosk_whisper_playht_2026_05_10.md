@@ -10,15 +10,15 @@ type: reference
 
 **The speech stack:**
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| STT (local) | Vosk | Speech-to-text, runs locally, no API dependency |
-| STT (cloud) | Whisper (OpenAI) | Higher accuracy transcription |
-| TTS | PlayHT | Text-to-speech generation |
-| Phone/SMS | Twilio | Make phone calls, send/receive texts |
-| Audio conversion | FFmpeg | Format conversion between components |
-| Transport | WebSockets | Real-time bidirectional audio streaming |
-| UI | Blazor (C#) | Browser-based interface |
+| Component        | Technology       | Purpose                                         |
+| ---------------- | ---------------- | ----------------------------------------------- |
+| STT (local)      | Vosk             | Speech-to-text, runs locally, no API dependency |
+| STT (cloud)      | Whisper (OpenAI) | Higher accuracy transcription                   |
+| TTS              | PlayHT           | Text-to-speech generation                       |
+| Phone/SMS        | Twilio           | Make phone calls, send/receive texts            |
+| Audio conversion | FFmpeg           | Format conversion between components            |
+| Transport        | WebSockets       | Real-time bidirectional audio streaming         |
+| UI               | Blazor (C#)      | Browser-based interface                         |
 
 **Timeline:** Built BEFORE OpenAI, Anthropic, or Grok had conversational audio APIs. Same pattern as all of Aaron's prior work — the infrastructure predates the need.
 
@@ -32,6 +32,7 @@ type: reference
 **The Twilio integration (Aaron: "slick"):**
 
 Agents could:
+
 - Send SMS notifications
 - Make phone calls
 - Receive voice commands via phone
@@ -40,6 +41,7 @@ Agents could:
 **C# codebase:** Functional and production-tested. Composes with Zeta's .NET ecosystem natively.
 
 **Connects to:**
+
 - project_multiplexed_websockets_flux_capacitor (transport layer)
 - project_bft_cost_contingency (Vosk = local, no API cost)
 - B-0402 shadow mode (shadow could have a voice)

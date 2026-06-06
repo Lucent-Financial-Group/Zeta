@@ -27,20 +27,20 @@ composes_with:
 
 ## Aaron's directive
 
-Aaron 2026-05-13: *"we should also likely start to split based
+Aaron 2026-05-13: _"we should also likely start to split based
 on code vs english except some docs belong in repo via best
 enginerring practices, maybe even formal verificatino is split
 out, kind of like if they need diffeent rulesets in github its
 likely a smell for a differnt repo split and time savings and
-it will help with composablity of our depdendies."*
+it will help with composablity of our depdendies."_
 
 ## Three-axis repo-split design space (running)
 
-| Axis | Values | Origin |
-|---|---|---|
-| **Axis 1** | Factory / Product / Owner-only | B-0424 + B-0425 + PR #2905 |
-| **Axis 2** | Mirror / Beacon | B-0426 + PR #2910 |
-| **Axis 3** | Code / English (+ formal-verification sub-axis) | THIS / B-0427 |
+| Axis       | Values                                          | Origin                     |
+| ---------- | ----------------------------------------------- | -------------------------- |
+| **Axis 1** | Factory / Product / Owner-only                  | B-0424 + B-0425 + PR #2905 |
+| **Axis 2** | Mirror / Beacon                                 | B-0426 + PR #2910          |
+| **Axis 3** | Code / English (+ formal-verification sub-axis) | THIS / B-0427              |
 
 All three axes apply simultaneously per
 `.claude/rules/default-to-both.md`.
@@ -152,12 +152,12 @@ B-0475 (prior-art gate, no deps)
     └── B-0478 (FV sub-axis evaluation)     ─┘
 ```
 
-| Row | Title | Type | Deps |
-|-----|-------|------|------|
-| [B-0475](B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md) | Axis-3 prior-art audit | research | none |
-| [B-0476](B-0476-github-ruleset-divergence-audit-2026-05-14.md) | GitHub ruleset divergence audit | research | B-0475 |
-| [B-0477](B-0477-axis3-code-english-classification-matrix-2026-05-14.md) | Code/English classification matrix | research | B-0475 |
-| [B-0478](B-0478-formal-verification-repo-split-evaluation-2026-05-14.md) | FV sub-axis per-property-class evaluation | research | B-0475 |
-| [B-0479](B-0479-axis3-adr-code-english-formal-verification-design-2026-05-14.md) | Axis-3 ADR (terminal) | adr | B-0476, B-0477, B-0478 |
+| Row                                                                              | Title                                     | Type     | Deps                   |
+| -------------------------------------------------------------------------------- | ----------------------------------------- | -------- | ---------------------- |
+| [B-0475](B-0475-axis3-prior-art-substrate-consistency-audit-2026-05-14.md)       | Axis-3 prior-art audit                    | research | none                   |
+| [B-0476](B-0476-github-ruleset-divergence-audit-2026-05-14.md)                   | GitHub ruleset divergence audit           | research | B-0475                 |
+| [B-0477](B-0477-axis3-code-english-classification-matrix-2026-05-14.md)          | Code/English classification matrix        | research | B-0475                 |
+| [B-0478](B-0478-formal-verification-repo-split-evaluation-2026-05-14.md)         | FV sub-axis per-property-class evaluation | research | B-0475                 |
+| [B-0479](B-0479-axis3-adr-code-english-formal-verification-design-2026-05-14.md) | Axis-3 ADR (terminal)                     | adr      | B-0476, B-0477, B-0478 |
 
 B-0476, B-0477, and B-0478 can be worked in parallel after B-0475 closes.

@@ -66,8 +66,7 @@ type ParseResult =
 
 const LINK_RE = /\]\(([a-zA-Z_0-9./-]+\.md)\)/g;
 
-const HELP_TEXT =
-  "Usage: audit-memory-references.ts [--file PATH] [--base DIR] [--enforce]\n";
+const HELP_TEXT = "Usage: audit-memory-references.ts [--file PATH] [--base DIR] [--enforce]\n";
 
 function parseArgs(argv: readonly string[]): ParseResult {
   let target = "memory/MEMORY.md";
@@ -167,33 +166,25 @@ export function main(argv: readonly string[]): AuditExitCode {
   try {
     content = readFileSync(target, "utf8");
   } catch (err: unknown) {
-    process.stderr.write(
-      `error: unable to read target file: ${target} (${describeIoError(err)})\n`,
-    );
+    process.stderr.write(`error: unable to read target file: ${target} (${describeIoError(err)})\n`);
     return 64;
   }
 
   // Same atomic pattern for base directory.
   try {
     if (!statSync(baseDir).isDirectory()) {
-      process.stderr.write(
-        `error: base directory is not a directory: ${baseDir}\n`,
-      );
+      process.stderr.write(`error: base directory is not a directory: ${baseDir}\n`);
       return 64;
     }
   } catch (err: unknown) {
-    process.stderr.write(
-      `error: unable to stat base directory: ${baseDir} (${describeIoError(err)})\n`,
-    );
+    process.stderr.write(`error: unable to stat base directory: ${baseDir} (${describeIoError(err)})\n`);
     return 64;
   }
 
   const { total, okCount, broken } = audit(content, baseDir);
 
   if (total === 0) {
-    process.stderr.write(
-      `no memory-index link targets in ${target}; nothing to check\n`,
-    );
+    process.stderr.write(`no memory-index link targets in ${target}; nothing to check\n`);
     return 0;
   }
 
@@ -205,9 +196,7 @@ export function main(argv: readonly string[]): AuditExitCode {
   if (broken.length === 0) {
     process.stderr.write(`  broken:       0\n`);
     process.stderr.write("\n");
-    process.stderr.write(
-      "all memory-index link targets resolve to existing files\n",
-    );
+    process.stderr.write("all memory-index link targets resolve to existing files\n");
     return 0;
   }
 
@@ -219,19 +208,11 @@ export function main(argv: readonly string[]): AuditExitCode {
     process.stderr.write(`  ${ref} -> ${tried} (not found)\n`);
   }
   process.stderr.write("\n");
-  process.stderr.write(
-    `These link targets in ${target} do not resolve to files\n`,
-  );
-  process.stderr.write(
-    `under ${baseDir}/. Either the file was renamed / moved /\n`,
-  );
-  process.stderr.write(
-    "deleted, or the path was typed incorrectly at index-add time.\n",
-  );
+  process.stderr.write(`These link targets in ${target} do not resolve to files\n`);
+  process.stderr.write(`under ${baseDir}/. Either the file was renamed / moved /\n`);
+  process.stderr.write("deleted, or the path was typed incorrectly at index-add time.\n");
   process.stderr.write("\n");
-  process.stderr.write(
-    "To fix: either restore the file, correct the path, or\n",
-  );
+  process.stderr.write("To fix: either restore the file, correct the path, or\n");
   process.stderr.write("remove the broken row from the index.\n");
 
   return enforce ? 2 : 0;

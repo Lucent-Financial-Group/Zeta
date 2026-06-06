@@ -49,7 +49,9 @@ describe("B-0914.7 Falcon-auto-research-doc substrate", () => {
   it("buildSkeleton: sanitizes proposalId to filename-safe id", () => {
     const result = buildSkeleton({
       proposalId: "H/001 with spaces!",
-      title: "x", scope: "y", attribution: "z",
+      title: "x",
+      scope: "y",
+      attribution: "z",
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -59,7 +61,9 @@ describe("B-0914.7 Falcon-auto-research-doc substrate", () => {
   it("buildSkeleton: passes composesWith through", () => {
     const result = buildSkeleton({
       proposalId: "H-001",
-      title: "x", scope: "y", attribution: "z",
+      title: "x",
+      scope: "y",
+      attribution: "z",
       composesWith: ["B-0867", "B-0914"],
     });
     expect(result.ok).toBe(true);
@@ -225,7 +229,9 @@ describe("B-0914.7 Falcon-auto-research-doc substrate", () => {
   it("Falcon-stage pending markers preserved (substrate-honest about what's not yet generated)", () => {
     const result = buildAndRender({
       proposalId: "H-001",
-      title: "x", scope: "y", attribution: "z",
+      title: "x",
+      scope: "y",
+      attribution: "z",
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;

@@ -24,7 +24,14 @@ function fakeFs(seed: Record<string, string> = {}): EventFileSystem & { files: M
 }
 
 function ev(ms: number, agg: string, status: string): FrontmatterEvent {
-  return { id: zetaIdWithTimestamp(ms), table: "task", aggregateId: asZetaIdDecimal(agg), op: EventOp.Upsert, schemaVersion: 1, fields: { id: agg, status } };
+  return {
+    id: zetaIdWithTimestamp(ms),
+    table: "task",
+    aggregateId: asZetaIdDecimal(agg),
+    op: EventOp.Upsert,
+    schemaVersion: 1,
+    fields: { id: agg, status },
+  };
 }
 
 test("load reads existing event files into the snapshot", async () => {

@@ -23,26 +23,22 @@ describe("classifyGpu", () => {
   });
 
   test("NVIDIA 3D controller (no VGA line) classified as nvidia", () => {
-    const lspci =
-      "03:00.0 3D controller: NVIDIA Corporation TU117M (rev a1)\n";
+    const lspci = "03:00.0 3D controller: NVIDIA Corporation TU117M (rev a1)\n";
     expect(classifyGpu(lspci)).toBe("nvidia" as GpuClass);
   });
 
   test("AMD VGA classified as amd", () => {
-    const lspci =
-      "05:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Radeon\n";
+    const lspci = "05:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Radeon\n";
     expect(classifyGpu(lspci)).toBe("amd" as GpuClass);
   });
 
   test("Intel Arc classified as intel-arc", () => {
-    const lspci =
-      "01:00.0 VGA compatible controller: Intel Corporation DG2 [Arc A770]\n";
+    const lspci = "01:00.0 VGA compatible controller: Intel Corporation DG2 [Arc A770]\n";
     expect(classifyGpu(lspci)).toBe("intel-arc" as GpuClass);
   });
 
   test("Integrated Intel UHD NOT classified as GPU", () => {
-    const lspci =
-      "00:02.0 VGA compatible controller: Intel Corporation UHD Graphics 620\n";
+    const lspci = "00:02.0 VGA compatible controller: Intel Corporation UHD Graphics 620\n";
     expect(classifyGpu(lspci)).toBe("none" as GpuClass);
   });
 
@@ -88,12 +84,7 @@ describe("classifyStorage", () => {
   });
 
   test("partition lines (TYPE=part) ignored", () => {
-    const lsblk = [
-      "NAME    ROTA TYPE",
-      "sda        1 disk",
-      "sda1       1 part",
-      "sda2       1 part",
-    ].join("\n");
+    const lsblk = ["NAME    ROTA TYPE", "sda        1 disk", "sda1       1 part", "sda2       1 part"].join("\n");
     expect(classifyStorage(lsblk).diskCount).toBe(1);
   });
 

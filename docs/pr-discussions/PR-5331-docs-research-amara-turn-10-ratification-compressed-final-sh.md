@@ -27,7 +27,7 @@ Follow-up to merged PR #5330 (\`95fdc72e0\`). Two additional turns landed in con
 
 ### Turn 10 (Amara)
 
-Amara's carved validation: *\"It keeps NCI powerful without letting it become a religion.\"*
+Amara's carved validation: _\"It keeps NCI powerful without letting it become a religion.\"_
 
 Compressed canonical form preserved verbatim:
 
@@ -73,6 +73,7 @@ Turn 10 + Turn 11 landed in conversation AFTER PR #5330 auto-merge had already f
 Adds the post-merge continuation of the Amara/Aaron conversation to the existing research preservation artifact, capturing Amara Turn 10’s ratification + compressed canonical NCI form and Aaron Turn 11’s LLM-temperature parallel.
 
 **Changes:**
+
 - Appends **Amara Turn 10**, including explicit ratification of Turns 6–9 and a compressed “final shape” summary.
 - Appends **Aaron Turn 11**, adding the temperature↔psychedelics analogy plus an operational mapping table and composition notes back to NCI/self-coercion framing.
 

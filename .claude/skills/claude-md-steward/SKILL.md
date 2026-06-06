@@ -56,7 +56,7 @@ are proposed.
 
 **Mental model — the three-file taxonomy.**
 
-Zeta has *three* related files that often get confused,
+Zeta has _three_ related files that often get confused,
 each under a different control surface:
 
 - **`AGENTS.md` (committed, authoritative onboarding
@@ -72,8 +72,8 @@ each under a different control surface:
   in CLAUDE.md or MEMORY.md.
 - **`CLAUDE.md` (committed, session-bootstrap pointer
   tree).** Short. Loaded every session upfront. Its
-  job is to say: *"read AGENTS.md first, then
-  CONFLICT-RESOLUTION, then GLOSSARY, ..."* — it
+  job is to say: _"read AGENTS.md first, then
+  CONFLICT-RESOLUTION, then GLOSSARY, ..."_ — it
   **points at** the authoritative docs in the right
   order. Plus a few session-bootstrap ground rules
   (agents-not-bots, no elder-plinius, skills-through-
@@ -126,7 +126,7 @@ dumping ground for project rules.**
   `docs/CONFLICT-RESOLUTION.md`, `docs/GLOSSARY.md`,
   `docs/WONT-DO.md`, `docs/AGENT-BEST-PRACTICES.md`,
   `GOVERNANCE.md`, `docs/DECISIONS/` — `CLAUDE.md`
-  *points* at them, it does not duplicate them.
+  _points_ at them, it does not duplicate them.
 
 - **`MEMORY.md` (user's auto-memory, per-project).**
   Not in-repo. Lives under the user's Claude Code
@@ -154,7 +154,7 @@ dumping ground for project rules.**
    `docs/CONFLICT-RESOLUTION.md`, `docs/WONT-DO.md`,
    `docs/DECISIONS/` (ADRs). **Neither CLAUDE.md nor
    MEMORY.md is where rules live.** CLAUDE.md may
-   *point to* the rule; MEMORY.md may record that the
+   _point to_ the rule; MEMORY.md may record that the
    user values it; but the rule itself lives in the
    committed doc where it is reviewed and versioned.
 2. **CLAUDE.md points; it does not duplicate.**
@@ -185,7 +185,7 @@ dumping ground for project rules.**
 5. **Memory entries that are project-scoped
    conventions** (e.g. "public API changes go through
    public-api-designer") are borderline — they document
-   a user-observed *practice* even if the authoritative
+   a user-observed _practice_ even if the authoritative
    source is a committed doc. These are acceptable in
    MEMORY.md only when they capture a preference,
    pattern, or correction the user has given; the
@@ -198,8 +198,8 @@ dumping ground for project rules.**
    committed doc and leave CLAUDE.md as a pointer.
    Before landing a change to MEMORY.md that restates
    a committed rule, ask whether the note is really
-   a user-observed *preference* (save) or a
-   *repetition* (don't save — the committed doc is the
+   a user-observed _preference_ (save) or a
+   _repetition_ (don't save — the committed doc is the
    source of truth).
 
 **Why this matters.** Without this discipline, both
@@ -302,26 +302,32 @@ opening intact). One commit per meaningful change.
 # CLAUDE.md Steward — <date> — <target>
 
 ## Plugin run summary
+
 - Plugin: claude-md-management <version>
 - Files discovered: <list>
 - Plugin quality score (root CLAUDE.md): <N/100>
 
 ## Proposed additions (plugin)
+
 - <item>
 
 ## Zeta guards applied
+
 - Pointer tree: <preserved | violated -> rejected>
 - Ground rules: <preserved | violated -> rejected>
 - Build gate: <preserved | violated -> rejected>
 - Scope-guard block: <preserved | violated -> rejected>
 
 ## Classification
+
 - <Pointer-tree add | Ground-rule add | Build-gate change | Housekeeping>
 
 ## Diff
+
 <unified diff>
 
 ## Open questions / follow-ups
+
 - <optional>
 ```
 

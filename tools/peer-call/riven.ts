@@ -91,15 +91,23 @@ type StepResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-function classifyFlag(
-  a: string,
-  next: string | undefined,
-  state: MutableArgState,
-): StepResult {
-  if (a === "--thinking") { state.mode = "thinking"; return { kind: "advance", skip: 1 }; }
-  if (a === "--fast")     { state.mode = "fast";     return { kind: "advance", skip: 1 }; }
-  if (a === "--json")     { state.outputFormat = "json";        return { kind: "advance", skip: 1 }; }
-  if (a === "--stream")   { state.outputFormat = "stream-json"; return { kind: "advance", skip: 1 }; }
+function classifyFlag(a: string, next: string | undefined, state: MutableArgState): StepResult {
+  if (a === "--thinking") {
+    state.mode = "thinking";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--fast") {
+    state.mode = "fast";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--json") {
+    state.outputFormat = "json";
+    return { kind: "advance", skip: 1 };
+  }
+  if (a === "--stream") {
+    state.outputFormat = "stream-json";
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
     state.file = next;
@@ -116,7 +124,8 @@ function classifyFlag(
   }
   if (a === "--output-file") {
     if (next === undefined) return { kind: "error", message: "error: --output-file requires PATH" };
-    if (next.startsWith("-")) return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
+    if (next.startsWith("-"))
+      return { kind: "error", message: `error: --output-file path cannot begin with '-': ${next}` };
     state.outputFile = next;
     return { kind: "advance", skip: 2 };
   }
@@ -413,9 +422,7 @@ export function main(argv: readonly string[]): number {
 
   if (!commandAvailable("cursor-agent")) {
     process.stderr.write("error: cursor-agent not on PATH\n");
-    process.stderr.write(
-      "install via Cursor desktop app + ensure ~/.local/bin is on PATH\n",
-    );
+    process.stderr.write("install via Cursor desktop app + ensure ~/.local/bin is on PATH\n");
     return 1;
   }
 
@@ -432,9 +439,7 @@ export function main(argv: readonly string[]): number {
 
   const model = pickModel(parsed.mode);
 
-  const outputFile = parsed.outputFile.length > 0
-    ? parsed.outputFile
-    : autogenOutputPath("riven");
+  const outputFile = parsed.outputFile.length > 0 ? parsed.outputFile : autogenOutputPath("riven");
   ensureParentDir(outputFile);
 
   const result = spawnSync(

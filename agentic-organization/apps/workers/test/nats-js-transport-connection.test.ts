@@ -34,7 +34,7 @@ describe("NATS JS transport connection adapter", () => {
 
     await connection.publish({
       subject: "agentic-org.dev.org-lfg.supervisor_signal.sent",
-      payload: "{\"eventId\":\"evt-001\"}",
+      payload: '{"eventId":"evt-001"}',
       messageId: "evt-001",
       headers: {
         [NatsHeaderName.EventId]: "evt-001",
@@ -45,7 +45,7 @@ describe("NATS JS transport connection adapter", () => {
     deepEqual(library.jetStreamClient.publishedMessages, [
       {
         subject: "agentic-org.dev.org-lfg.supervisor_signal.sent",
-        payload: "{\"eventId\":\"evt-001\"}",
+        payload: '{"eventId":"evt-001"}',
         options: {
           msgID: "evt-001",
           headers: {
@@ -62,7 +62,7 @@ describe("NATS JS transport connection adapter", () => {
       messages: [
         createRecordingNatsJsMessage({
           subject: "agentic-org.dev.org-lfg.supervisor_signal.sent",
-          payload: "{\"eventId\":\"evt-001\"}",
+          payload: '{"eventId":"evt-001"}',
           headers: {
             [NatsHeaderName.EventId]: "evt-001",
           },
@@ -91,7 +91,7 @@ describe("NATS JS transport connection adapter", () => {
       [
         {
           subject: "agentic-org.dev.org-lfg.supervisor_signal.sent",
-          payload: "{\"eventId\":\"evt-001\"}",
+          payload: '{"eventId":"evt-001"}',
           headers: {
             [NatsHeaderName.EventId]: "evt-001",
           },
@@ -107,7 +107,7 @@ describe("NATS JS transport connection adapter", () => {
       messages: [
         createRecordingNatsJsMessage({
           subject: "agentic-org.dev.org-lfg.supervisor_signal.sent",
-          payload: "{\"eventId\":\"evt-001\"}",
+          payload: '{"eventId":"evt-001"}',
         }),
       ],
     });
@@ -307,7 +307,10 @@ type RecordingNatsJsJetStreamClient = {
   }[];
   publish: (subject: string, payload: string, options: { msgID: string; headers: NatsJsHeaderBag }) => Promise<void>;
   consumers: {
-    get: (streamName: string, durableName: string) => Promise<{
+    get: (
+      streamName: string,
+      durableName: string,
+    ) => Promise<{
       fetch: (input: { max_messages: number; expires: number }) => Promise<NatsJsConsumerMessages>;
     }>;
   };
@@ -347,10 +350,7 @@ function createRecordingNatsJsMessage(input: {
   };
 }
 
-function createNatsJsConsumerMessages(
-  messages: RecordingNatsJsMessage[],
-  closeResult?: Error,
-): NatsJsConsumerMessages {
+function createNatsJsConsumerMessages(messages: RecordingNatsJsMessage[], closeResult?: Error): NatsJsConsumerMessages {
   return {
     async *[Symbol.asyncIterator]() {
       for (const message of messages) {

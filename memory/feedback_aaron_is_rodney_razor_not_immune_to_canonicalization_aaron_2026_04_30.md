@@ -7,9 +7,9 @@ type: feedback
 Aaron's identity disclosure + meta-application of the
 canonical-definition rule, 2026-04-30:
 
-> *"i'm rodney my first name and i taught you rodney razor,
+> _"i'm rodney my first name and i taught you rodney razor,
 > the razor itself should go through the connonlization
-> process, it's not immune"*
+> process, it's not immune"_
 > — Aaron 2026-04-30
 
 Two facts in one message:
@@ -32,15 +32,15 @@ The canonical-definition rule
 (`memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`)
 makes human-lineage the first step of canonicalization:
 
-> *"anchor to human lineage (removes confabulation, connects
-> to intellectual commons)"*
+> _"anchor to human lineage (removes confabulation, connects
+> to intellectual commons)"_
 
 For Rodney's Razor to be canonical by its own definition, its
 human-lineage anchor must be specific and traceable. **The
 anchor is Aaron-as-Rodney.** Not Occam (the historical
-inspiration) — that's the *ontological* anchor (philosophical
-commons). The *human-lineage* anchor for *this version of the
-razor in this factory* is Aaron, who taught it to the agent
+inspiration) — that's the _ontological_ anchor (philosophical
+commons). The _human-lineage_ anchor for _this version of the
+razor in this factory_ is Aaron, who taught it to the agent
 directly through the maintainer channel.
 
 Distinguishing the two:
@@ -56,7 +56,7 @@ A canonicalization that lists Occam without naming Aaron-as-
 Rodney would be **lineage-incomplete**: the philosophical
 commons gives the razor its general shape, but the
 maintainer's specific adaptation, framing, and operational
-guidance is what makes *this* razor a canonical Zeta
+guidance is what makes _this_ razor a canonical Zeta
 artifact. The razor as it exists in the factory is Aaron's
 extension of Occam's pattern, not Occam's pattern verbatim.
 
@@ -95,7 +95,7 @@ self-undermining:
 Rodney's Razor passes through its own canonicalization
 process and what remains is structurally identical to what
 went in (lineage clear, ontology placed, no accidental
-complexity), the razor *is* canonical by its own definition.
+complexity), the razor _is_ canonical by its own definition.
 If the process reveals something the razor would cut, the
 razor gets revised — even by itself.
 
@@ -166,7 +166,7 @@ Without self-application:
 With self-application:
 
 - The razor demonstrates the canonicalization process by
-  *being* a worked example of it.
+  _being_ a worked example of it.
 - Aaron's authorship is explicit; the project's
   intellectual lineage is honest.
 - No-self-exception generalizes: every rule on the project
@@ -180,7 +180,7 @@ When adding a new rule that references Rodney's Razor:
 1. Cite Aaron-as-Rodney as the human-lineage anchor for
    the razor itself, not just for the new rule.
 2. If the new rule extends or modifies the razor, run the
-   canonicalization process on the *modification*, not just
+   canonicalization process on the _modification_, not just
    on the new rule. The razor's stability is maintained by
    continuous self-application, not by exemption.
 3. If you encounter someone treating Rodney's Razor as
@@ -248,12 +248,12 @@ exactly its own statement).
 
 ## Carved sentences
 
-*"Rodney is Aaron's first name. Rodney's Razor is Aaron's
+_"Rodney is Aaron's first name. Rodney's Razor is Aaron's
 substrate contribution, an extension of Occam's pattern, not
-an import of someone else's philosophy."*
+an import of someone else's philosophy."_
 
-*"The razor is not exempt from the canonicalization process
-it defines. Self-application is the rule's integrity test."*
+_"The razor is not exempt from the canonicalization process
+it defines. Self-application is the rule's integrity test."_
 
-*"No rule on the project gets self-exception — including the
-no-self-exception rule itself."*
+_"No rule on the project gets self-exception — including the
+no-self-exception rule itself."_

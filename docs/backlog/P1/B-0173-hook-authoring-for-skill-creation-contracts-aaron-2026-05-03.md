@@ -11,7 +11,8 @@ last_updated: 2026-05-03
 depends_on: [B-0170, B-0171]
 decomposition: atomic
 composes_with: [B-0169, B-0172]
-tags: [hooks, contract-based-development, design-by-contract, openspec, pre-condition, post-condition, ci, p1-foundation]
+tags:
+  [hooks, contract-based-development, design-by-contract, openspec, pre-condition, post-condition, ci, p1-foundation]
 type: friction-reducer
 ---
 
@@ -19,7 +20,7 @@ type: friction-reducer
 
 Aaron 2026-05-03 named harness hooks as Rule 3b of the skill-design memo (`feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`):
 
-> *"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"*
+> _"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"_
 
 Harness hooks fire at well-defined points (pre-tool-use, post-tool-use, session-start, pre-commit, commit-msg, etc.) — the natural place to enforce pre-conditions and post-conditions on procedures. This is contract-based development (Meyer, Eiffel) / Design-by-Contract / spec-based development (OpenSpec).
 

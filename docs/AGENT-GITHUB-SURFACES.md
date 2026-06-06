@@ -3,7 +3,7 @@
 Umbrella playbook for the ten GitHub-side surfaces the factory
 owns or monitors. Peer to
 [`docs/AGENT-ISSUE-WORKFLOW.md`](AGENT-ISSUE-WORKFLOW.md) (which
-covers the *abstract dual-track principle* and the three concrete
+covers the _abstract dual-track principle_ and the three concrete
 adapter choices for issues). This doc is the concrete
 **GitHub-as-current-adapter** playbook: cadence, classification,
 actions, and fire-history for every surface Aaron has named as
@@ -41,24 +41,24 @@ surface-assignment):
 > maybe static pages is enough? you can figure out what works
 > good with bun. [research on backlog for that i mean]
 
-The "we need skills" directive is the meta-rule: codify *once*
+The "we need skills" directive is the meta-rule: codify _once_
 so future agents don't rediscover. Skill is at
 [`.claude/skills/github-surface-triage/SKILL.md`](../.claude/skills/github-surface-triage/SKILL.md).
 
 ## The ten surfaces at a glance
 
-| # | Surface | Shape | Factory posture | Skill ownership |
-|---|---|---|---|---|
-| 1 | Pull Requests | Seven-shape triage | Own + triage + merge | Kenji on round-cadence; all agents on on-touch |
-| 2 | Issues | Four-shape triage | Own + triage + resolve | Kenji on round-cadence; all agents on on-touch |
-| 3 | Wiki | Three-shape sync (drift / in-sync / orphaned) | Own + published-mirror of in-repo docs | Kenji on round-cadence; Daya on adopter UX |
-| 4 | Discussions | Four-shape response (six categories) | Respond + convert-to-issue | Kenji on round-cadence; all agents on on-touch |
-| 5 | Repo Settings (general) | ADR-gated declarative config | Own; audit-trail required | Kenji; Aaron sign-off for policy changes |
-| 6 | Copilot coding-agent settings (sub-surface of 5) | ADR-gated | Own; scope matches `.github/copilot-instructions.md` | Kenji; Aaron sign-off |
-| 7 | Agents tab (GitHub Agents, Jan-2026 feature) | Session dashboard — Copilot / Claude / Codex | Monitor; dispatch + observe | Kenji; session-level |
-| 8 | Security (advisories / code-scanning / Dependabot) | Alert-triage + policy | Own + remediate | Mateo (security-researcher); Nazar (sec-ops); Aaron for policy |
-| 9 | Pulse / Insights | Read-only data source | **Verification substrate** — DORA signals, velocity sanity-check | Kenji + alignment-observability (Sova) consume; no write |
-| 10 | Pages (`/settings/pages`) | Research-gated; unpublished | Evaluate Jekyll vs. static-HTML vs. bun-built output before adopting | Kenji owns research row; Aaron sign-off to enable |
+| #   | Surface                                            | Shape                                         | Factory posture                                                      | Skill ownership                                                |
+| --- | -------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 1   | Pull Requests                                      | Seven-shape triage                            | Own + triage + merge                                                 | Kenji on round-cadence; all agents on on-touch                 |
+| 2   | Issues                                             | Four-shape triage                             | Own + triage + resolve                                               | Kenji on round-cadence; all agents on on-touch                 |
+| 3   | Wiki                                               | Three-shape sync (drift / in-sync / orphaned) | Own + published-mirror of in-repo docs                               | Kenji on round-cadence; Daya on adopter UX                     |
+| 4   | Discussions                                        | Four-shape response (six categories)          | Respond + convert-to-issue                                           | Kenji on round-cadence; all agents on on-touch                 |
+| 5   | Repo Settings (general)                            | ADR-gated declarative config                  | Own; audit-trail required                                            | Kenji; Aaron sign-off for policy changes                       |
+| 6   | Copilot coding-agent settings (sub-surface of 5)   | ADR-gated                                     | Own; scope matches `.github/copilot-instructions.md`                 | Kenji; Aaron sign-off                                          |
+| 7   | Agents tab (GitHub Agents, Jan-2026 feature)       | Session dashboard — Copilot / Claude / Codex  | Monitor; dispatch + observe                                          | Kenji; session-level                                           |
+| 8   | Security (advisories / code-scanning / Dependabot) | Alert-triage + policy                         | Own + remediate                                                      | Mateo (security-researcher); Nazar (sec-ops); Aaron for policy |
+| 9   | Pulse / Insights                                   | Read-only data source                         | **Verification substrate** — DORA signals, velocity sanity-check     | Kenji + alignment-observability (Sova) consume; no write       |
+| 10  | Pages (`/settings/pages`)                          | Research-gated; unpublished                   | Evaluate Jekyll vs. static-HTML vs. bun-built output before adopting | Kenji owns research row; Aaron sign-off to enable              |
 
 Surfaces 1-4 have full sections below. Surfaces 5-10 have
 compact sections — they will be "beefed up" over rounds per
@@ -121,9 +121,10 @@ higher-in-list wins (severity-then-specificity order).
    `docs/research/<slug>.md`. Merge or close per test plan.
 
 6. **Large-surface (split-before-merge).** > 50 commits,
+
    > 10k added LoC, or > 3 orthogonal concerns.
-   -> Split into topic-scoped PRs. If infeasible, merge with
-   extra reviewer pass + split-waiver in PR description.
+   > -> Split into topic-scoped PRs. If infeasible, merge with
+   > extra reviewer pass + split-waiver in PR description.
 
 7. **Stale / abandoned.** No activity > 14 days, author gone.
    -> Post revive-or-close comment. Wait 7 days. Close with
@@ -166,7 +167,7 @@ Zero open issues.
 
 ### Factory position
 
-Aaron 2026-04-22: *"you own the wiki too"*.
+Aaron 2026-04-22: _"you own the wiki too"_.
 
 The wiki is a **published-surface mirror** of selected in-repo
 docs. It is factory-owned, factory-authored, and factory-synced.
@@ -196,8 +197,8 @@ from in-repo docs:
    gate + pointer to `CLAUDE.md` and the
    `.github/copilot-instructions.md` reviewer contract.
 
-Each page ends with a **freshness footer**: *"Last synced from
-repo commit `<SHA>` on `<date>`."* This is the drift-detector.
+Each page ends with a **freshness footer**: _"Last synced from
+repo commit `<SHA>` on `<date>`."_ This is the drift-detector.
 A wiki page whose footer SHA is behind main by > 20 commits
 triggers a sync. The "20" is a guess; tune after observation.
 
@@ -223,14 +224,14 @@ date / agent / page / shape / action / source-commit-SHA.
 Wiki is a GitHub-specific surface. Adopters on GitLab use its
 Wiki feature (same git-backed mechanics); adopters on other
 platforms pick a mirror target (Confluence / Notion / static
-site). The *discipline* (source-of-truth in repo, drift
+site). The _discipline_ (source-of-truth in repo, drift
 detector in footer, fire-history surface) is adapter-agnostic.
 
 ## Surface 4 — Discussions
 
 ### Factory position
 
-Aaron 2026-04-22: *"and discussions"* — same ownership as the
+Aaron 2026-04-22: _"and discussions"_ — same ownership as the
 other three surfaces.
 
 Discussions is a **community-ingress** surface distinct from
@@ -358,7 +359,7 @@ sessions — Copilot coding agent plus third-party agents
 and navigate to resulting PRs from one page. Calls itself
 "mission control" for agent work.
 
-**Factory posture.** *Watch before adopt.* Adoption lands via
+**Factory posture.** _Watch before adopt._ Adoption lands via
 ADR once the factory has observed how Agents-tab sessions
 interact with the round-cadence loop and the `autonomous-loop`
 cron. Key open questions:
@@ -401,8 +402,8 @@ Fire-history: `docs/hygiene-history/security-triage-history.md`
 
 ## Surface 9 — Pulse / Insights (verification substrate)
 
-Aaron's note: *"might want to map it out for quick lookups and
-maybe it can help with some of our verifactions"*.
+Aaron's note: _"might want to map it out for quick lookups and
+maybe it can help with some of our verifactions"_.
 
 Pulse is the most **quantitative** GitHub surface. Read-only,
 factory-wide, machine-accessible via:
@@ -445,11 +446,11 @@ signals available.
 
 ## Surface 10 — Pages (research-gated)
 
-Aaron 2026-04-22: *"we should start experiting with
+Aaron 2026-04-22: _"we should start experiting with
 [/settings/pages] Jekyll seems like we could push the
 boundaries if needed, maybe static pages is enough? you can
-figure out what works good with bun."* Follow-up clarification:
-*"like research on backlog for that i mean"* — scope is
+figure out what works good with bun."_ Follow-up clarification:
+_"like research on backlog for that i mean"_ — scope is
 **research, not implementation**.
 
 **Current state.** Pages is unpublished (`gh api
@@ -560,12 +561,12 @@ surface.
 This doc uses GitHub as the concrete adapter because Zeta is on
 GitHub. Adopters on other platforms map the four surfaces:
 
-| GitHub | GitLab | Gitea | Bitbucket |
-|---|---|---|---|
-| Pull Requests | Merge Requests | Pull Requests | Pull Requests |
-| Issues | Issues | Issues | Issues |
-| Wiki | Wiki | Wiki | Wiki |
-| Discussions | — (use Matrix / Discourse) | — (use Matrix) | — (use Jira Service Desk) |
+| GitHub        | GitLab                     | Gitea          | Bitbucket                 |
+| ------------- | -------------------------- | -------------- | ------------------------- |
+| Pull Requests | Merge Requests             | Pull Requests  | Pull Requests             |
+| Issues        | Issues                     | Issues         | Issues                    |
+| Wiki          | Wiki                       | Wiki           | Wiki                      |
+| Discussions   | — (use Matrix / Discourse) | — (use Matrix) | — (use Jira Service Desk) |
 
 The classification taxonomies (seven PR shapes / four issue
 shapes / three wiki shapes / four discussion shapes) are
@@ -573,7 +574,7 @@ platform-agnostic.
 
 ## Beef-up clause
 
-Aaron 2026-04-22: *"we can beef up our stuff over time"*. The
+Aaron 2026-04-22: _"we can beef up our stuff over time"_. The
 taxonomies are declared **non-final**. First 5-10 rounds of
 fire-history feed a taxonomy-revision pass. New shapes get
 appended; ambiguous shapes get split; obsolete shapes get

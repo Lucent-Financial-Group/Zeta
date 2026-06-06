@@ -47,7 +47,14 @@ export type DocMaintenanceResult = {
   conflicts: readonly { a: DocUnit; b: DocUnit }[];
 };
 
-function evt(config: DocMaintenanceConfig, kind: OrgEventKind, unit: DocUnit, from: DocLifecycleState, to: DocLifecycleState, decision: string): OrgEvent {
+function evt(
+  config: DocMaintenanceConfig,
+  kind: OrgEventKind,
+  unit: DocUnit,
+  from: DocLifecycleState,
+  to: DocLifecycleState,
+  decision: string,
+): OrgEvent {
   return {
     id: config.createId("evt"),
     kind,
@@ -94,7 +101,8 @@ export function runDocMaintenanceCycle(units: readonly DocUnit[], config: DocMai
   for (const unit of units) {
     if (unit.status !== DocLifecycleState.Active) continue;
     if (config.now - Date.parse(unit.freshnessAt) > config.stalenessFloorMs) {
-      if (move(unit, DocLifecycleState.Stale, OrgEventKind.DocStaleFlagged, "freshness below floor -> stale")) staleFlagged += 1;
+      if (move(unit, DocLifecycleState.Stale, OrgEventKind.DocStaleFlagged, "freshness below floor -> stale"))
+        staleFlagged += 1;
     }
   }
 
@@ -108,7 +116,15 @@ export function runDocMaintenanceCycle(units: readonly DocUnit[], config: DocMai
       if (conflictIds.has(old.docUnitId)) continue; // load-bearing disagreement → human decides
       const cur = byId.get(old.docUnitId)!;
       if (nextStatusOf.get(old.docUnitId) !== DocLifecycleState.Active) continue;
-      if (move(cur, DocLifecycleState.Superseded, OrgEventKind.DocSuperseded, `superseded by canonical ${g.canonical.docUnitId}`)) superseded += 1;
+      if (
+        move(
+          cur,
+          DocLifecycleState.Superseded,
+          OrgEventKind.DocSuperseded,
+          `superseded by canonical ${g.canonical.docUnitId}`,
+        )
+      )
+        superseded += 1;
     }
   }
 
@@ -117,13 +133,23 @@ export function runDocMaintenanceCycle(units: readonly DocUnit[], config: DocMai
     const status = nextStatusOf.get(unit.docUnitId)!;
     if (status !== DocLifecycleState.Stale && status !== DocLifecycleState.Superseded) continue;
     if (config.now - Date.parse(unit.updatedAt) > config.archiveFloorMs) {
-      if (move(unit, DocLifecycleState.Archived, OrgEventKind.DocArchived, `${status} past archive floor -> archived`)) archived += 1;
+      if (move(unit, DocLifecycleState.Archived, OrgEventKind.DocArchived, `${status} past archive floor -> archived`))
+        archived += 1;
     }
   }
 
   const conflicts = groups.flatMap((g) => g.conflicts);
   for (const c of conflicts) {
-    events.push(evt(config, OrgEventKind.DocLifecycleTransition, c.a, c.a.status, c.a.status, `conflict with ${c.b.docUnitId} on the same topic — flagged for documentation_reviewer (not auto-resolved)`));
+    events.push(
+      evt(
+        config,
+        OrgEventKind.DocLifecycleTransition,
+        c.a,
+        c.a.status,
+        c.a.status,
+        `conflict with ${c.b.docUnitId} on the same topic — flagged for documentation_reviewer (not auto-resolved)`,
+      ),
+    );
   }
 
   events.push({

@@ -32,19 +32,19 @@ winget/choco fallback). Language/runtime tools stay identical to Unix — mise (
 > package source outside of like npm and such; we will use mise and all that just the same;
 > keep the tools in sync and symmetric."
 
-| Layer | Unix (apt/brew) | Windows | Symmetric? |
-|---|---|---|---|
-| System CLI tools | `manifests/apt`, `manifests/brew` | `manifests/windows` (scoop→winget→choco) | same manifest concept, per-OS source |
-| Runtimes (dotnet/python/java/bun/uv) | `.mise.toml` via mise | `.mise.toml` via mise | **identical file** |
-| dotnet global tools | `manifests/dotnet-tools` | `manifests/dotnet-tools` | **identical file** |
-| uv Python tools | `manifests/uv-tools` | `manifests/uv-tools` | **identical file** |
-| claude-code | `bun install --global` | `bun install --global` | **identical** |
-| background loop | launchd LaunchAgent | schtasks (`install-scheduled-task.ts`) | parity, per-OS mechanism |
+| Layer                                | Unix (apt/brew)                   | Windows                                  | Symmetric?                           |
+| ------------------------------------ | --------------------------------- | ---------------------------------------- | ------------------------------------ |
+| System CLI tools                     | `manifests/apt`, `manifests/brew` | `manifests/windows` (scoop→winget→choco) | same manifest concept, per-OS source |
+| Runtimes (dotnet/python/java/bun/uv) | `.mise.toml` via mise             | `.mise.toml` via mise                    | **identical file**                   |
+| dotnet global tools                  | `manifests/dotnet-tools`          | `manifests/dotnet-tools`                 | **identical file**                   |
+| uv Python tools                      | `manifests/uv-tools`              | `manifests/uv-tools`                     | **identical file**                   |
+| claude-code                          | `bun install --global`            | `bun install --global`                   | **identical**                        |
+| background loop                      | launchd LaunchAgent               | schtasks (`install-scheduled-task.ts`)   | parity, per-OS mechanism             |
 
 **Package-source priority (operator 2026-05-30): cross-platform first.** Prefer **mise** (runtimes
 and CLI tools via its aqua / ubi / cargo / npm / pipx / go backends) and **npm / `bun --global`**
-(node-ecosystem CLIs) — these install *identically* on every OS, so they maximize symmetry. Drop to
-an OS-specific source (**scoop → winget → choco** on Windows; brew/apt on Unix) *only* for the
+(node-ecosystem CLIs) — these install _identically_ on every OS, so they maximize symmetry. Drop to
+an OS-specific source (**scoop → winget → choco** on Windows; brew/apt on Unix) _only_ for the
 irreducible remainder no cross-platform source provides. So `manifests/windows` should stay
 **minimal** — most tools belong in `.mise.toml` / a shared npm-global manifest (identical across
 OSes). The symmetry test (Slice 2a Step 6) asserts `manifests/windows` covers the same logical
@@ -55,14 +55,14 @@ the cross-platform (mise/npm) layer.
 
 ## Coverage matrix (the shield — what asserts what)
 
-| Surface | Editions | Covers | Does NOT cover | Where |
-|---|---|---|---|---|
-| Server-Core Docker | Windows Server | scoop/winget resolve, system tools, mise runtime pins, claude install | user-mode scheduled task (no interactive session in a container) | `windows-2022` hosted runner (free, ephemeral, fork-PR-safe) |
-| Desktop loop-smoke | Win 10/11 client | full graph **incl.** `ZetaOttoLoop` registration + per-minute auto-fire | nothing additional — complete check | this laptop, loop-driven, `origin/main`-only |
-| Restricted self-hosted runner (later) | Win 10/11 client | same as loop-smoke, PR-gated | n/a | this laptop, `workflow_dispatch`/main-push only, **never** fork `pull_request` |
+| Surface                               | Editions         | Covers                                                                  | Does NOT cover                                                   | Where                                                                          |
+| ------------------------------------- | ---------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Server-Core Docker                    | Windows Server   | scoop/winget resolve, system tools, mise runtime pins, claude install   | user-mode scheduled task (no interactive session in a container) | `windows-2022` hosted runner (free, ephemeral, fork-PR-safe)                   |
+| Desktop loop-smoke                    | Win 10/11 client | full graph **incl.** `ZetaOttoLoop` registration + per-minute auto-fire | nothing additional — complete check                              | this laptop, loop-driven, `origin/main`-only                                   |
+| Restricted self-hosted runner (later) | Win 10/11 client | same as loop-smoke, PR-gated                                            | n/a                                                              | this laptop, `workflow_dispatch`/main-push only, **never** fork `pull_request` |
 
 Neither surface pretends to cover the other (shield-honesty): the container's loop-task gap is a
-documented *printed* skip-with-reason, never a silent green.
+documented _printed_ skip-with-reason, never a silent green.
 
 ---
 
@@ -169,7 +169,7 @@ if (-not $SkipLoopRegister) { & bun "$RepoRoot\tools\persistence\windows\install
 
 ## Slice 2d — restricted self-hosted runner (LATER, your go)
 
-- [ ] **Step 1 — Doc** the registration + hard guard: runner labeled `windows-desktop`; desktop-CI workflow triggers **only** `workflow_dispatch` + main-repo `push`; **never** fork `pull_request` (GitHub's public-repo self-hosted footgun). Note: ServiceTitan is pro-OSS — this guard is about the GitHub fork-PR *mechanic*, not company stance; still respects the AV/EDR/NAC boundary.
+- [ ] **Step 1 — Doc** the registration + hard guard: runner labeled `windows-desktop`; desktop-CI workflow triggers **only** `workflow_dispatch` + main-repo `push`; **never** fork `pull_request` (GitHub's public-repo self-hosted footgun). Note: ServiceTitan is pro-OSS — this guard is about the GitHub fork-PR _mechanic_, not company stance; still respects the AV/EDR/NAC boundary.
 - [ ] **Step 2 — Hold** for explicit authorization before registering anything.
 
 ---
@@ -178,7 +178,7 @@ if (-not $SkipLoopRegister) { & bun "$RepoRoot\tools\persistence\windows\install
 
 - **Spec coverage:** declarative + scoop→winget→choco + symmetric (2a, symmetry principle) ✓; approach 1 / both mechanisms (2b now, 2d later) ✓; Server coverage (2c) ✓; install.ps1 exists before its tests (2a first) ✓.
 - **Shield rule:** every test asserts + fails loud; container loop-task gap is a documented printed skip ✓; symmetry test fails on tool drift ✓.
-- **Symmetry:** runtimes/dotnet/uv/claude use the *identical* Unix files; only `manifests/windows` is net-new; symmetry test guards drift ✓.
+- **Symmetry:** runtimes/dotnet/uv/claude use the _identical_ Unix files; only `manifests/windows` is net-new; symmetry test guards drift ✓.
 - **Public-repo/corporate constraint:** Server on ephemeral hosted runner; desktop on `origin/main`-only loop; self-hosted gated + fork-PR-excluded ✓.
 - **Rule-0:** `.ps1` = sanctioned Windows install-graph analog; all tooling/tests `.ts` ✓.
 

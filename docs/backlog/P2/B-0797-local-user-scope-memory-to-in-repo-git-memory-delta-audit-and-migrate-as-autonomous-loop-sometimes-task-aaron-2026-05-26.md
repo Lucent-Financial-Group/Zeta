@@ -12,14 +12,23 @@ composes_with:
   - B-0782
   - B-0790
   - B-0794
-tags: [memory-sync, local-vs-git, autonomous-loop, sometimes-task, substrate-or-it-didnt-happen, persistence-discipline, token-bounded-migration]
+tags:
+  [
+    memory-sync,
+    local-vs-git,
+    autonomous-loop,
+    sometimes-task,
+    substrate-or-it-didnt-happen,
+    persistence-discipline,
+    token-bounded-migration,
+  ]
 ---
 
 ## Problem
 
 The maintainer 2026-05-26 surfaced the substrate-persistence gap empirically:
 
-> *"are you backloging that or just putting in in memories on this machine only?  how much in local memories are missing from git?"*
+> _"are you backloging that or just putting in in memories on this machine only? how much in local memories are missing from git?"_
 
 Empirical audit 2026-05-26 (Aaron's primary Mac):
 
@@ -36,7 +45,7 @@ Empirical audit 2026-05-26 (Aaron's primary Mac):
 
 The maintainer's design direction:
 
-> *"yes can you direct your background service on the local only memories as part of its natural loop sometimes as an option?"*
+> _"yes can you direct your background service on the local only memories as part of its natural loop sometimes as an option?"_
 
 Implement as **autonomous-loop sometimes-task**: not every tick, but during idle ticks when the higher-priority work queue is empty, the autonomous-loop picks N local-only files + classifies them + migrates substantive ones to git via PR.
 
@@ -82,16 +91,16 @@ Already partially landed in `docs/AUTONOMOUS-LOOP-PER-TICK.md` Step 3 (priority 
 
 Initial heuristics for MIGRATE-vs-KEEP-LOCAL:
 
-| Pattern | Default classification |
-|---|---|
-| `feedback_*` (load-bearing learnings) | MIGRATE |
-| `project_*` (project-context substrate) | MIGRATE |
-| `aaron_*` / `mika_*` / persona-specific | MIGRATE to `memory/persona/<name>/` |
-| `*_secret*` / `*_password*` / `*_key*` | KEEP-LOCAL (sensitive) |
-| `*_local*` / `*_per_machine*` | KEEP-LOCAL (per-machine substrate) |
-| Files with explicit `local-only: true` frontmatter | KEEP-LOCAL |
-| Files with explicit `migrate: true` frontmatter | MIGRATE (operator-flagged) |
-| Otherwise: NEEDS-OPERATOR-REVIEW | Conservative default; never silently migrate ambiguous content |
+| Pattern                                            | Default classification                                         |
+| -------------------------------------------------- | -------------------------------------------------------------- |
+| `feedback_*` (load-bearing learnings)              | MIGRATE                                                        |
+| `project_*` (project-context substrate)            | MIGRATE                                                        |
+| `aaron_*` / `mika_*` / persona-specific            | MIGRATE to `memory/persona/<name>/`                            |
+| `*_secret*` / `*_password*` / `*_key*`             | KEEP-LOCAL (sensitive)                                         |
+| `*_local*` / `*_per_machine*`                      | KEEP-LOCAL (per-machine substrate)                             |
+| Files with explicit `local-only: true` frontmatter | KEEP-LOCAL                                                     |
+| Files with explicit `migrate: true` frontmatter    | MIGRATE (operator-flagged)                                     |
+| Otherwise: NEEDS-OPERATOR-REVIEW                   | Conservative default; never silently migrate ambiguous content |
 
 ### Sub-target 5 — backfill the existing 841-file delta
 
@@ -131,11 +140,11 @@ For the empirically-known recent batch (2026-05-25 files surfaced above): priori
 
 The maintainer 2026-05-26 during iter-5.2.2 session, after the substrate-persistence question:
 
-> *"are you backloging that or just putting in in memories on this machine only? how much in local memories are missing from git?"*
+> _"are you backloging that or just putting in in memories on this machine only? how much in local memories are missing from git?"_
 
 → empirical audit surfaced 841-local-vs-1645-in-repo + substantive 2026-05-25 substrate trapped locally
 
-> *"yes can you direct your background service on the local only memories as part of its natural loop sometimes as an option?"*
+> _"yes can you direct your background service on the local only memories as part of its natural loop sometimes as an option?"_
 
 → design direction for autonomous-loop sometimes-task
 
@@ -146,4 +155,4 @@ Filing as P2 because:
 3. **Token-bounded by design**: 1-3 files per tick keeps the cost low; sweeps complete over hours-to-days
 4. **Operator-reviewable**: NEEDS-OPERATOR-REVIEW default + per-file PRs preserve operator authority over what migrates
 
-Per the maintainer's 2026-05-26 *"going for right not fast"* discipline — the substrate-persistence concern is real; the sometimes-task design is correctly modest (don't try to boil the ocean in one tick); the historical-sweep sub-target 5 handles the existing-delta cleanup separately.
+Per the maintainer's 2026-05-26 _"going for right not fast"_ discipline — the substrate-persistence concern is real; the sometimes-task design is correctly modest (don't try to boil the ocean in one tick); the historical-sweep sub-target 5 handles the existing-delta cleanup separately.

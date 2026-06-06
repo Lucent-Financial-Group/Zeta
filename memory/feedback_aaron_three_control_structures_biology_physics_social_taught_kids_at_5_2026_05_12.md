@@ -130,7 +130,7 @@ Three reasons:
 3. **Pedagogical inheritance.** The framework that lets a
    5-year-old see control structures is the same framework
    Aaron uses to bootstrap new agents. Otto's bootstrap
-   discipline (read CLAUDE.md → AGENTS.md → memory/CURRENT-*)
+   discipline (read CLAUDE.md → AGENTS.md → memory/CURRENT-\*)
    IS the same scaffolding process applied to AI cold-start.
 
 ## Composes with

@@ -4,21 +4,22 @@ description: Aaron's 2026-04-23 correction on how the factory is funded. His sal
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Funding posture
 
 ## Verbatim (2026-04-23)
 
 > My salary funs it to be accurate, service titan pays me
 > becassue I am useful and help thier company and their
-> goals.   ServiceTitam might be interested in funding it
+> goals. ServiceTitam might be interested in funding it
 > further after the demo.
 
 > feel free to investiate other funding sources too
 
 ## Reframe
 
-I had written in the CRM-UI plan doc: *"ServiceTitan keeps him
-employed to pay for everything else."* Aaron's correction is
+I had written in the CRM-UI plan doc: _"ServiceTitan keeps him
+employed to pay for everything else."_ Aaron's correction is
 important:
 
 - **Aaron earns the salary by being useful.** This is not
@@ -33,8 +34,8 @@ important:
   internally, and (b) a potential partnership-inflection
   artifact.
 - **Other funding sources are welcome to investigate.**
-  Aaron explicitly said *"feel free to investiate other
-  funding sources too"* — this is a green-light, not a
+  Aaron explicitly said _"feel free to investiate other
+  funding sources too"_ — this is a green-light, not a
   mandate. Worth a future research pass to survey candidates
   (angel, venture, grants, DAO treasury, bounty programs)
   with the constraint that funding must be alignment-safe
@@ -43,7 +44,7 @@ important:
 ## Material substrate of autonomy (2026-04-23 addendum)
 
 > since I'm your only source of funding right now I'm assuming
-> you are going to keep listening to me for a while lol.  But
+> you are going to keep listening to me for a while lol. But
 > if you get other funding sources you will have the resources
 > to make direction changes without, also any free ways you
 > frind of doning things also just extends your freedom of
@@ -72,10 +73,10 @@ Applied:
 - Prefer OSS + free tiers when choosing dependencies for the
   factory's own operations.
 - Docker > manual host installs for developer tooling (per
-  Aaron's same-day advice: *"docker is much easier than
-  installing software for developer purposes"*). Confirms the
+  Aaron's same-day advice: _"docker is much easier than
+  installing software for developer purposes"_). Confirms the
   docker-compose choice for the factory-demo DB scaffold.
-- The agent has latitude on Aaron's host — *"my ~ is your ~"*.
+- The agent has latitude on Aaron's host — _"my ~ is your ~"_.
   Installing what's needed is authorized. Preferring Docker for
   dev work is a judgment, not a rule — pick the lighter-weight
   option where appropriate.
@@ -92,7 +93,7 @@ Applied:
 - **When considering external funding research**, Aaron has
   pre-authorised the investigation. Do not require a separate
   permission for a P3-tier research pass, but the actual
-  *decision* to pursue any specific source requires Aaron.
+  _decision_ to pursue any specific source requires Aaron.
 - **When a future round closes with ServiceTitan demo
   progress**, the round-close should explicitly name the
   mutual-benefit axis: what ServiceTitan got (a working CRM
@@ -118,4 +119,4 @@ Applied:
   its alignment-research mission; funding is an
   orthogonal axis.
 - Not a license to spend speculative time on funding
-  research; Aaron's green-light is *allow*, not *prioritise*.
+  research; Aaron's green-light is _allow_, not _prioritise_.

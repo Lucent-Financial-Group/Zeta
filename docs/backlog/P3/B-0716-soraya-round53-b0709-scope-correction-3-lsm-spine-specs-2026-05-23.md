@@ -27,13 +27,13 @@ Soraya's eighth autonomous routing tick (2026-05-23 — round 53, post-PR #4790 
 
 ## Finding
 
-B-0709 (round 42) enumerated **11 unregistered specs**. Soraya round 53 re-audit identified **14 unregistered**: B-0709 missed the **LSM-tree Spine cluster** — three artifacts with established literature anchor (O'Neil, Cheng, Gawlick, O'Neil 1996 *Acta Informatica* LSM paper):
+B-0709 (round 42) enumerated **11 unregistered specs**. Soraya round 53 re-audit identified **14 unregistered**: B-0709 missed the **LSM-tree Spine cluster** — three artifacts with established literature anchor (O'Neil, Cheng, Gawlick, O'Neil 1996 _Acta Informatica_ LSM paper):
 
-| Spec | Tool | Target | Anchor |
-|---|---|---|---|
-| `tools/alloy/specs/Spine.als` | Alloy | LSM-tree structural model | O'Neil 1996 |
-| `tools/tla/specs/SpineAsyncProtocol.tla` | TLA+ | Spine async protocol behavioural model | O'Neil 1996 |
-| `tools/tla/specs/SpineMergeInvariants.tla` | TLA+ | Spine merge invariants safety | O'Neil 1996 |
+| Spec                                       | Tool  | Target                                 | Anchor      |
+| ------------------------------------------ | ----- | -------------------------------------- | ----------- |
+| `tools/alloy/specs/Spine.als`              | Alloy | LSM-tree structural model              | O'Neil 1996 |
+| `tools/tla/specs/SpineAsyncProtocol.tla`   | TLA+  | Spine async protocol behavioural model | O'Neil 1996 |
+| `tools/tla/specs/SpineMergeInvariants.tla` | TLA+  | Spine merge invariants safety          | O'Neil 1996 |
 
 None of the 3 appear in `docs/research/verification-registry.md`; none appear in B-0709's enumeration list.
 

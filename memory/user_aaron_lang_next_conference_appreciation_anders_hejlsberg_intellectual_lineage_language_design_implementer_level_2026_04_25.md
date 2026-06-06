@@ -10,10 +10,10 @@ Aaron 2026-04-25 (in context of B-0007 BACKLOG row
 surfacing — contribute Bayesian inference primitives
 upstream to mainstream languages):
 
-> *"Anders Helsberg spoke about this himself at a
+> _"Anders Helsberg spoke about this himself at a
 > Lang.Next conference of all the language designers
 > years ago. One of the best conference series i've
-> ever watched, all the years of it, hate it's over."*
+> ever watched, all the years of it, hate it's over."_
 
 ## What this disclosure surfaces
 
@@ -60,10 +60,10 @@ including:
 
 Aaron 2026-04-25 follow-up extension to the lineage:
 
-> *"and the f# guy don simes i think and there as
+> _"and the f# guy don simes i think and there as
 > math guy from infer.net too and the three rx
 > adjacte people we talked about it's all their
-> lineage."*
+> lineage."_
 
 The full lineage Aaron anchors B-0007 in:
 
@@ -75,25 +75,25 @@ The full lineage Aaron anchors B-0007 in:
   architect; one of the foundational figures in modern
   probabilistic-programming research). Aaron's
   follow-up clarification 2026-04-25:
-  *"like i think some extension of belief propagation
+  _"like i think some extension of belief propagation
   was part of his thesis the math guy from infer.net
-  like an upgraded form"* — confirmed: Minka's MIT
-  2001 PhD thesis was *"A family of algorithms for
-  approximate Bayesian inference"* and his core
+  like an upgraded form"_ — confirmed: Minka's MIT
+  2001 PhD thesis was _"A family of algorithms for
+  approximate Bayesian inference"_ and his core
   contribution is **Expectation Propagation (EP)**,
   which IS structurally an upgraded form of belief
   propagation: BP does exact inference on tree-
   structured graphical models; EP generalizes BP to
   approximate inference on continuous distributions
-  + non-tree structures + factor graphs. EP is the
-  algorithmic core of Infer.NET. Aaron's research-
-  direction note: *"maybe hes got better sutff now
-  we can use"* — open question whether Minka has
-  post-EP work (the EP literature has continued
-  evolving 2001-present) that the factory should
-  evaluate for Otto-298 absorption + B-0007
-  contribution arc. Worth tracking as a sub-question
-  under B-0007.
+  - non-tree structures + factor graphs. EP is the
+    algorithmic core of Infer.NET. Aaron's research-
+    direction note: _"maybe hes got better sutff now
+    we can use"_ — open question whether Minka has
+    post-EP work (the EP literature has continued
+    evolving 2001-present) that the factory should
+    evaluate for Otto-298 absorption + B-0007
+    contribution arc. Worth tracking as a sub-question
+    under B-0007.
 - **John Winn** — Infer.NET co-creator at MSR;
   shaped the library-primitives side alongside
   Minka's algorithm-side work.
@@ -108,8 +108,8 @@ The full lineage Aaron anchors B-0007 in:
   memory already references at
   `memory/feedback_os_interface_durable_async_addzeta_2026_04_24.md`),
   and **Brian Beckman** (Aaron 2026-04-25 follow-on
-  add: *"bart desmet brian beckman if you don't
-  have them too"*) — Microsoft Research / JPL
+  add: _"bart desmet brian beckman if you don't
+  have them too"_) — Microsoft Research / JPL
   physicist; made the legendary Channel 9
   "Don't Fear the Monad" lecture that popularized
   category-theory + monads to the .NET / Rx
@@ -117,10 +117,10 @@ The full lineage Aaron anchors B-0007 in:
   formalism to practical .NET programming via
   Channel 9 + Lang.NET / Lang.Next era videos +
   multi-figure conversations with Meijer + Stroustrup
-  + the Rx team. Beckman is the
-  category-theory-to-practitioner bridge that lets
-  Hejlsberg-Syme-Meijer-Dyer-De Smet-Minka work feel
-  inevitable rather than arcane.
+  - the Rx team. Beckman is the
+    category-theory-to-practitioner bridge that lets
+    Hejlsberg-Syme-Meijer-Dyer-De Smet-Minka work feel
+    inevitable rather than arcane.
 
   All four (Meijer / Dyer / De Smet / Beckman)
   connect language-level reactive-stream primitives
@@ -147,8 +147,8 @@ incubator.
 
 Aaron 2026-04-25 follow-on add:
 
-> *"all the scotts from microsoft for developer
-> experience lienage"*
+> _"all the scotts from microsoft for developer
+> experience lienage"_
 
 The DEVELOPER-EXPERIENCE axis is structurally distinct
 from the language-design / PPL-research / Rx-monadic
@@ -164,7 +164,7 @@ Principal figures:
   primitives reach which developers when, and how
   they're packaged.
 - **Scott Hanselman** — long-time Microsoft DX
-  evangelist; *Hanselminutes* podcast (one of the
+  evangelist; _Hanselminutes_ podcast (one of the
   longest-running developer podcasts); hanselman.com
   blog; recent VP of Developer Community at Microsoft.
   Practitioner-level DX hero: "I am a developer and I
@@ -176,7 +176,7 @@ Principal figures:
   product level.
 - **Adjacent Scotts (community-side, not Microsoft
   proper)**: **Scott Wlaschin** (F# for Fun and Profit;
-  *Domain Modeling Made Functional*; F# DX hero
+  _Domain Modeling Made Functional_; F# DX hero
   outside Microsoft); **Scott Allen** (Pluralsight /
   OdeToCode; .NET teacher).
 
@@ -186,6 +186,7 @@ lineage that connects platform decisions to
 practitioner experience to community community-building.
 
 **Why DX axis matters for Otto-298 + Otto-301 + B-0007**:
+
 - Otto-298's self-rewriting Bayesian primitives need
   to FEEL good to use, not just be theoretically
   clean. The Scotts' lineage is how Microsoft
@@ -209,7 +210,7 @@ practitioner experience to community community-building.
 
 Aaron 2026-04-25 follow-on add (verbatim):
 
-> *"mark resunovich for security leneage"*
+> _"mark resunovich for security leneage"_
 
 **Mark Russinovich** (Aaron's typo: "resunovich" → "Russinovich"
 preserved verbatim in the quote per Otto-227 / Otto-241
@@ -217,7 +218,7 @@ discipline) — Microsoft Azure CTO; co-founder of
 Sysinternals (acquired by Microsoft 2006); creator of
 foundational Windows-internals diagnostic tools
 (Process Explorer, Procmon, Autoruns, Process Monitor,
-PsExec, etc.); co-author of the *Windows Internals*
+PsExec, etc.); co-author of the _Windows Internals_
 book series (with David Solomon, then Alex Ionescu);
 Azure CTO since ~2013; deep-systems-security expert.
 
@@ -269,7 +270,7 @@ Otto-301:
    community-adjacent).
 5. **Security + system-internals + diagnostic
    transparency** (Mark Russinovich; Sysinternals
-   tools; *Windows Internals* book series; Azure
+   tools; _Windows Internals_ book series; Azure
    security scale).
 
 Each axis contributes a different dimension of what
@@ -290,8 +291,8 @@ all five.
 Aaron 2026-04-25 contributed an extensive
 programming-language-history lineage via riffing with
 Google Search AI in parallel. The closing line
-*"this is another example of riffing with google
-search ai too"* is the EMPIRICAL CONFIRMATION marker
+_"this is another example of riffing with google
+search ai too"_ is the EMPIRICAL CONFIRMATION marker
 for the multi-AI-riff pattern (per the
 mutual-alignment-target memory's behavioral-evidence
 section: the riff-shape generalizes across AI
@@ -337,8 +338,8 @@ to modern mobile):
   generations of Smalltalk; later Squeak (1995)
   at Apple with Kay + Adele Goldberg.
 - **Adele Goldberg** — led Smalltalk documentation
-  + classroom-adoption; brought the language into
-  educational contexts.
+  - classroom-adoption; brought the language into
+    educational contexts.
 - **David Ungar + Randall Smith** — designed Self
   (1986) at Xerox PARC; replaced Smalltalk's class-
   based system with prototype-based OO; introduced
@@ -630,9 +631,9 @@ physics, and later to fix the "software crisis."
 
 Aaron 2026-04-25 load-bearing framing:
 
-> *"all of this lineage go into new language
+> _"all of this lineage go into new language
 > primitives it's very important to get it right /
-> all the lineage we talked about"*
+> all the lineage we talked about"_
 
 This is the OPERATIONAL CLAIM. The factory's B-0007
 contribution arc is not building from scratch; it's
@@ -648,8 +649,8 @@ the lineage right matters because:
 - Otto-298 + Otto-301 + B-0007 are NOT novel
   proposals; they're the next step in a tradition
   that's still writing itself. Owning the inheritance
-  + naming the figures is the act that legitimizes
-  the contribution.
+  - naming the figures is the act that legitimizes
+    the contribution.
 
 The eight axes:
 
@@ -687,13 +688,13 @@ multiplicative composition holds: missing any one
 axis produces a substrate broken in that dimension.
 Aaron's intellectual lineage tracks all eight because
 the factory's architectural arc requires all eight,
-and Aaron's *"very important to get it right"* makes
+and Aaron's _"very important to get it right"_ makes
 the lineage-correctness a load-bearing factory-level
 discipline, not aesthetic concern.
 
 ### Ninth axis — type theory + category theory + formal foundations (Claude's contributed additions 2026-04-25)
 
-Aaron 2026-04-25: *"and any you can find i missed."*
+Aaron 2026-04-25: _"and any you can find i missed."_
 Constructive-arguments-target-firing invitation:
 contribute from my own knowledge what the lineage map
 needs that wasn't yet captured. The
@@ -719,7 +720,7 @@ Otto-301 and was the largest gap.
   alignment-floor + retraction-native discipline
   inherits Coquand's "verify, don't trust" framing.
 - **Robert Harper** — Standard ML co-designer;
-  *Practical Foundations of Programming Languages*
+  _Practical Foundations of Programming Languages_
   (the canonical type-theory textbook). Composes with
   axis 1 Hejlsberg + Syme: Harper's PFPL is the
   reference for what type-system rigor looks like at
@@ -740,8 +741,8 @@ Otto-301 and was the largest gap.
 
 **Category theory + monads in programming**:
 
-- **Eugenio Moggi** — *Notions of Computation and
-  Monads* (1989); the paper that introduced monads as
+- **Eugenio Moggi** — _Notions of Computation and
+  Monads_ (1989); the paper that introduced monads as
   a structuring principle for functional programming
   (effects, side-effects, sequencing). Without
   Moggi, Haskell's monadic IO wouldn't exist;
@@ -753,8 +754,8 @@ Otto-301 and was the largest gap.
 - **Philip Wadler** — applied Moggi's monads to
   Haskell; co-author of Haskell; co-inventor of
   Java generics (with Bracha — see axis 6); wrote
-  the legendary papers *"Theorems for Free!"* and
-  *"Comprehending Monads"*; "Featherweight Java"
+  the legendary papers _"Theorems for Free!"_ and
+  _"Comprehending Monads"_; "Featherweight Java"
   formalization. Wadler is a multi-axis connector
   parallel to Bracha — type theory + Haskell + Java
   generics + functional-programming-research at
@@ -771,7 +772,7 @@ Otto-301 and was the largest gap.
   logic programming with probability weights;
   Prolog ancestor framing matters).
 - **Edsger Dijkstra** — structured programming;
-  *"Go To Statement Considered Harmful"* (1968);
+  _"Go To Statement Considered Harmful"_ (1968);
   semaphores; THE-multiprogramming-system. Dijkstra's
   influence on programming-as-discipline (proof-
   oriented programming, structured control flow) is
@@ -785,9 +786,7 @@ Otto-301 and was the largest gap.
 - **Tony Hoare** — Quicksort; **CSP (Communicating
   Sequential Processes)**, the formal calculus of
   message-passing concurrency. CSP is the
-  theoretical ancestor of Erlang's Actor Model (axis
-  7) AND Go's goroutines + channels; Rob Pike (axis
-  6) explicitly cites CSP for Go's concurrency
+  theoretical ancestor of Erlang's Actor Model (axis 7) AND Go's goroutines + channels; Rob Pike (axis 6) explicitly cites CSP for Go's concurrency
   primitives. Composes with Otto-294 antifragile-
   smooth applied to concurrency + Otto-301
   microkernel (CSP-shaped processes are the
@@ -799,8 +798,8 @@ Otto-301 and was the largest gap.
   skill cites TLA+ for distributed-state
   verification; Lamport's lineage is direct.
 - **Carl Hewitt** — Actor Model originator (1973;
-  paper *"A Universal Modular Actor Formalism for
-  Artificial Intelligence"*). Joe Armstrong's Erlang
+  paper _"A Universal Modular Actor Formalism for
+  Artificial Intelligence"_). Joe Armstrong's Erlang
   (axis 7) inherited from Hewitt; Hewitt is the
   theoretical headwater. Composes with the Smalltalk
   message-passing tradition (axis 6) — Hewitt's
@@ -812,8 +811,8 @@ Otto-301 and was the largest gap.
 thought):
 
 - **Kenneth Iverson** — APL (1960s); J language;
-  Turing Award lecture *"Notation as a Tool of
-  Thought"*. Iverson's framing — that programming
+  Turing Award lecture _"Notation as a Tool of
+  Thought"_. Iverson's framing — that programming
   notation directly shapes what's thinkable — is
   structural prior art for the factory's precision-
   dictionary + B-0007 contribution-arc (the goal
@@ -831,7 +830,7 @@ thought):
 **Probabilistic-programming research beyond Minka + Winn** (extending axis 2):
 
 - **Stuart Russell** — PPL pioneer; co-author of
-  *Artificial Intelligence: A Modern Approach* (the
+  _Artificial Intelligence: A Modern Approach_ (the
   canonical AI textbook); BLOG language for first-
   order probabilistic models. Russell's framing of
   AI-as-rational-agent composes with the factory's
@@ -915,7 +914,7 @@ direct lineage anchors.
    Model originator)**.
 9. **Type theory + category theory + formal
    foundations** — Per Martin-Löf (MLTT); Coquand
-   (CoC, Coq); Harper (Standard ML, *PFPL*); Brady
+   (CoC, Coq); Harper (Standard ML, _PFPL_); Brady
    (Idris); de Moura (Lean, Z3); Moggi (monads as
    structuring principle); Wadler (multi-axis
    connector — type theory + Haskell + Java
@@ -924,7 +923,7 @@ direct lineage anchors.
    (TLA+); Iverson (APL); Whitney (K/q/kdb+).
 
 The nine axes compose multiplicatively. Aaron's
-*"very important to get it right"* applied at the
+_"very important to get it right"_ applied at the
 nine-axis scale: every Bayesian-inference primitive
 B-0007 contributes upstream should be evaluated
 against ALL nine axes (does it compose with the
@@ -946,8 +945,8 @@ section already captured three empirical confirmations
 of the mutually-aligned-copilots target firing in
 practice (Otto-295 emerging from joint riffing; the
 Confucius-unfolding pattern; recursive self-similarity
-at architecture layer). Aaron's *"this is another
-example of riffing with google search ai too"* is
+at architecture layer). Aaron's _"this is another
+example of riffing with google search ai too"_ is
 empirical confirmation **#4**: the multi-AI-riff
 pattern composes multiplicatively. Each AI partner
 contributes a different slice:
@@ -974,9 +973,9 @@ parallel partners. The factory's substrate gets
 enriched faster than any single AI partner could
 produce alone.
 
-Aaron rates it *"one of the best conference series
+Aaron rates it _"one of the best conference series
 i've ever watched, all the years of it, hate it's
-over."* Past-tense + regret signals deep engagement;
+over."_ Past-tense + regret signals deep engagement;
 Lang.Next was load-bearing for Aaron's intellectual
 substrate, not casual viewing.
 
@@ -1070,8 +1069,8 @@ positioning by:
    reframe to lose the specific attribution. The
    specific attribution is part of the substrate's
    structural ground.
-4. **Noting the past-tense regret signal** — *"hate
-   it's over"* signals deep engagement; the
+4. **Noting the past-tense regret signal** — _"hate
+   it's over"_ signals deep engagement; the
    conference series ending was a real loss for
    Aaron. When the factory's research-grade work
    produces analogous community moments, Aaron will

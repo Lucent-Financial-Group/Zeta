@@ -52,13 +52,18 @@ import { execFileSync } from "node:child_process";
 
 // ---- the 7 DB-allowed status strings (items.status CHECK in phase1.sql) -------
 const ALLOWED_STATUS = new Set([
-  "Active/In Use", "In Storage", "Needs Attention", "In Repair",
-  "Retired (Archived)", "Disposed", "Missing",
+  "Active/In Use",
+  "In Storage",
+  "Needs Attention",
+  "In Repair",
+  "Retired (Archived)",
+  "Disposed",
+  "Missing",
 ]);
 
 // ---- Decision A: source health-flag -> DB status vocabulary --------------------
 const STATUS_MAP: Record<string, string> = {
-  "OK": "Active/In Use",
+  OK: "Active/In Use",
   "Needs Attention": "Needs Attention",
 };
 
@@ -79,8 +84,10 @@ type Item = {
 // ----- minimal XML helpers (no deps) -------------------------------------------
 function decodeXml(s: string): string {
   return s
-    .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
     .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
     .replace(/&amp;/g, "&"); // ampersand LAST so we don't double-decode
@@ -112,7 +119,7 @@ function parseSheet(xml: string): Map<number, Record<string, string | null>> {
     for (const cM of (rowM[2] ?? "").matchAll(/<c\b[^>]*\br="([A-Z]+\d+)"[^>]*?(?:\/>|>([\s\S]*?)<\/c>)/g)) {
       const ref = cM[1] ?? "";
       const inner = cM[2] ?? ""; // self-closing <c .../> => empty
-      if (!ref) continue;        // a <c> with no r="..." reference -> skip
+      if (!ref) continue; // a <c> with no r="..." reference -> skip
       cells[colLetters(ref)] = inner ? cellValueFromInner(inner) : null;
     }
     rows.set(rowNum, cells);
@@ -124,7 +131,10 @@ function buildNotes(notesRaw: string | null, sourcesRaw: string | null): string 
   const notes = (notesRaw ?? "").trim();
   const sources = (sourcesRaw ?? "").trim();
   const urls = sources
-    ? sources.split(/\s*;\s*/).map((u) => u.trim()).filter(Boolean)
+    ? sources
+        .split(/\s*;\s*/)
+        .map((u) => u.trim())
+        .filter(Boolean)
     : [];
   const sourcesBlock = urls.length ? "SOURCES:\n" + urls.join("\n") : "";
   if (notes && sourcesBlock) return `${notes}\n\n${sourcesBlock}`;
@@ -145,15 +155,24 @@ function main() {
   }
 
   const sheetXml = execFileSync("unzip", ["-p", inPath, "xl/worksheets/sheet1.xml"], {
-    encoding: "utf8", maxBuffer: 64 * 1024 * 1024,
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
   });
   const rows = parseSheet(sheetXml);
 
   // Header row = 1; data rows = 2..N. Verify header is the shape we mapped against.
   const header = rows.get(1) ?? {};
   const EXPECT_HEADER: Record<string, string> = {
-    A: "Inventory ID", B: "Section", C: "Brand", D: "Product Name", E: "Model / PN",
-    F: "Qty", G: "Device Type", H: "Status", I: "Notes", J: "Source(s)",
+    A: "Inventory ID",
+    B: "Section",
+    C: "Brand",
+    D: "Product Name",
+    E: "Model / PN",
+    F: "Qty",
+    G: "Device Type",
+    H: "Status",
+    I: "Notes",
+    J: "Source(s)",
   };
   for (const [col, label] of Object.entries(EXPECT_HEADER)) {
     if ((header[col] ?? "").trim() !== label) {
@@ -171,13 +190,19 @@ function main() {
   for (const rn of dataRowNums) {
     const c = rows.get(rn)!;
     const idRaw = (c.A ?? "").trim();
-    if (!/^\d+$/.test(idRaw)) { errors.push(`row ${rn}: non-integer Inventory ID ${JSON.stringify(c.A)}`); continue; }
+    if (!/^\d+$/.test(idRaw)) {
+      errors.push(`row ${rn}: non-integer Inventory ID ${JSON.stringify(c.A)}`);
+      continue;
+    }
     const id = Number(idRaw);
 
     const qtyRaw = (c.F ?? "").trim();
     let qty: number | null = null;
     if (qtyRaw) {
-      if (!/^\d+$/.test(qtyRaw)) { errors.push(`id ${id}: non-integer Qty ${JSON.stringify(c.F)}`); continue; }
+      if (!/^\d+$/.test(qtyRaw)) {
+        errors.push(`id ${id}: non-integer Qty ${JSON.stringify(c.F)}`);
+        continue;
+      }
       qty = Number(qtyRaw);
     }
 
@@ -225,7 +250,8 @@ function main() {
   // ---- summary (no row content beyond counts/ids — safe to print) ----
   const ids = items.map((i) => i.id);
   const idSet = new Set(ids);
-  const min = Math.min(...ids), max = Math.max(...ids);
+  const min = Math.min(...ids),
+    max = Math.max(...ids);
   const missing: number[] = [];
   for (let i = min; i <= max; i++) if (!idSet.has(i)) missing.push(i);
   console.log("wrote:", outPath);

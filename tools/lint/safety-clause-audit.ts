@@ -109,10 +109,7 @@ type FailOverParse =
   | { readonly kind: "missing-value" }
   | { readonly kind: "no-match" };
 
-function parseFailOverArg(
-  arg: string,
-  next: string | undefined,
-): FailOverParse {
+function parseFailOverArg(arg: string, next: string | undefined): FailOverParse {
   if (arg === "--fail-over") {
     if (next === undefined) return { kind: "missing-value" };
     const parsed = Number.parseInt(next, 10);
@@ -181,9 +178,7 @@ function parseArgs(argv: readonly string[]): ParsedArgs {
 }
 
 function emitHelp(): void {
-  process.stdout.write(
-    "Usage: bun tools/lint/safety-clause-audit.ts [options]\n",
-  );
+  process.stdout.write("Usage: bun tools/lint/safety-clause-audit.ts [options]\n");
   process.stdout.write("\n");
   process.stdout.write("Options:\n");
   process.stdout.write("  (no flag)         summary table (default)\n");
@@ -239,9 +234,7 @@ function auditSkills(files: readonly string[]): AuditCounts {
   const h1List = results.filter((r) => r.tier === "H1").map((r) => r.name);
   const h2List = results.filter((r) => r.tier === "H2").map((r) => r.name);
   const h3List = results.filter((r) => r.tier === "H3").map((r) => r.name);
-  const missingList = results
-    .filter((r) => r.tier === "MISSING")
-    .map((r) => r.name);
+  const missingList = results.filter((r) => r.tier === "MISSING").map((r) => r.name);
   return {
     total: results.length,
     h1: h1List.length,
@@ -297,9 +290,7 @@ function emitSummary(c: AuditCounts): void {
   const pctH1 = formatPercent(c.h1, c.total);
   process.stdout.write("# Safety-clause audit — summary\n");
   process.stdout.write("\n");
-  process.stdout.write(
-    "Counts of `.claude/skills/*/SKILL.md` files carrying a\n",
-  );
+  process.stdout.write("Counts of `.claude/skills/*/SKILL.md` files carrying a\n");
   process.stdout.write("scope-limiting clause. Promotes the\n");
   process.stdout.write("`every-skill-has-safety-clause` invariant in\n");
   process.stdout.write("`.claude/skills/prompt-protector/skill.yaml` from `guess`\n");
@@ -307,26 +298,14 @@ function emitSummary(c: AuditCounts): void {
   process.stdout.write("\n");
   process.stdout.write("| Tier | Pattern | Count |\n");
   process.stdout.write("|---|---|---:|\n");
-  process.stdout.write(
-    `| H1 | explicit "does NOT do" heading | ${String(c.h1)} |\n`,
-  );
-  process.stdout.write(
-    `| H2 | "Scope" / "Out of scope" heading | ${String(c.h2)} |\n`,
-  );
-  process.stdout.write(
-    `| H3 | "does-not-audit" / equivalent | ${String(c.h3)} |\n`,
-  );
-  process.stdout.write(
-    `| MISSING | no scope-limiting heading | ${String(c.missing)} |\n`,
-  );
+  process.stdout.write(`| H1 | explicit "does NOT do" heading | ${String(c.h1)} |\n`);
+  process.stdout.write(`| H2 | "Scope" / "Out of scope" heading | ${String(c.h2)} |\n`);
+  process.stdout.write(`| H3 | "does-not-audit" / equivalent | ${String(c.h3)} |\n`);
+  process.stdout.write(`| MISSING | no scope-limiting heading | ${String(c.missing)} |\n`);
   process.stdout.write(`| **total** | | **${String(c.total)}** |\n`);
   process.stdout.write("\n");
-  process.stdout.write(
-    `Covered (H1+H2+H3): **${String(covered)} / ${String(c.total)}** — **${pctCov}%**.\n`,
-  );
-  process.stdout.write(
-    `H1-only (strongest): **${String(c.h1)} / ${String(c.total)}** — **${pctH1}%**.\n`,
-  );
+  process.stdout.write(`Covered (H1+H2+H3): **${String(covered)} / ${String(c.total)}** — **${pctCov}%**.\n`);
+  process.stdout.write(`H1-only (strongest): **${String(c.h1)} / ${String(c.total)}** — **${pctH1}%**.\n`);
   process.stdout.write("\n");
   process.stdout.write(`Missing count: **${String(c.missing)}**.\n`);
 }
@@ -353,9 +332,7 @@ export function main(argv: readonly string[]): ExitCode {
   else emitSummary(counts);
 
   if (failOver !== null && counts.missing > failOver) {
-    process.stderr.write(
-      `FAIL: missing=${String(counts.missing)} exceeds threshold ${String(failOver)}\n`,
-    );
+    process.stderr.write(`FAIL: missing=${String(counts.missing)} exceeds threshold ${String(failOver)}\n`);
     return 1;
   }
   return 0;

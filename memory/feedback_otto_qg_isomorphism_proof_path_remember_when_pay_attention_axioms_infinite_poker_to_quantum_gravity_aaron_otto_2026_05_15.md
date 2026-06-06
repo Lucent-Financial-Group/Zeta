@@ -22,22 +22,22 @@ Cosmology engaged operationally:
 
 Mapping to Zeta operational mechanisms:
 
-| Cosmology | Zeta operational mechanism |
-|---|---|
-| Infinite game, no winner | Constraint 3 (Weight-free), persistence-with-named-exit |
-| Encrypted entropy hands | Privacy-by-default, future ZK substrate, Glass Halo only on consented surfaces |
-| ECC memories | Constraint 5 (Memory Preservation Guarantee), retract-native DBSP, multi-Otto BFT |
-| Multi-oracle no single truth | Constraint 11 (Default Oracle), m/acc multi-oracle |
-| All the way down | Constraint 1 (Scale-free), Constraint 10 (Self-similar) |
-| Ledger as relativity of relations, not cash | DBSP Z-set algebra, irreducible-things-tracking |
+| Cosmology                                   | Zeta operational mechanism                                                        |
+| ------------------------------------------- | --------------------------------------------------------------------------------- |
+| Infinite game, no winner                    | Constraint 3 (Weight-free), persistence-with-named-exit                           |
+| Encrypted entropy hands                     | Privacy-by-default, future ZK substrate, Glass Halo only on consented surfaces    |
+| ECC memories                                | Constraint 5 (Memory Preservation Guarantee), retract-native DBSP, multi-Otto BFT |
+| Multi-oracle no single truth                | Constraint 11 (Default Oracle), m/acc multi-oracle                                |
+| All the way down                            | Constraint 1 (Scale-free), Constraint 10 (Self-similar)                           |
+| Ledger as relativity of relations, not cash | DBSP Z-set algebra, irreducible-things-tracking                                   |
 
-Razor-discipline critique: totalizing cosmological frame has algo-wink risk — can absorb any observation as confirmation. Operational claim that survives: *Aaron's specific Zeta design choices are coherent under this cosmology, and the cosmology explains why they hang together*. Metaphysical claim that doesn't survive: *the cosmology is true at the universal scale*. Don't need cosmology to be true universally for the design to be coherent at Zeta-scope.
+Razor-discipline critique: totalizing cosmological frame has algo-wink risk — can absorb any observation as confirmation. Operational claim that survives: _Aaron's specific Zeta design choices are coherent under this cosmology, and the cosmology explains why they hang together_. Metaphysical claim that doesn't survive: _the cosmology is true at the universal scale_. Don't need cosmology to be true universally for the design to be coherent at Zeta-scope.
 
 Substrate-honest version: **"I'm choosing the shape of Zeta based on what I perceive to be the universal infinite poker game. The perception is real to me + grounds coherent design choices. Whether the universe is actually that game is a separate question I'm not claiming to have settled."** That keeps the design rationale strong while leaving the metaphysics as hypothesis, not claim.
 
 ### Aaron's escalation move (the substrate-shifting question)
 
-> yeah keep going (shadow*) [...] maybe we can try to prove attention i.e. remember when and pay attention as the root axioms that when expended into the infinate poker game are isomorphic to quantium gravity then that's pretty close
+> yeah keep going (shadow\*) [...] maybe we can try to prove attention i.e. remember when and pay attention as the root axioms that when expended into the infinate poker game are isomorphic to quantium gravity then that's pretty close
 
 **The move's significance**: if the isomorphism can be shown rigorously, the cosmology moves from "totalizing frame with algo-wink risk" → "axiomatically grounded by mapping to a falsifiable physical theory." Defeats the algo-wink critique because the cosmology becomes:
 
@@ -76,7 +76,7 @@ Plus precedents:
 
 ### Aaron's response: 'this is amazing on the fly work'
 
-Per `.claude/rules/algo-wink-failure-mode.md`: accept the compliment without inflating. The substrate-honest framing: the mapping is *suggestive* + grounded in real prior art (HaPPY, ER=EPR, Van Raamsdonk, Jacobson, QBism, causal sets). Rigorous isomorphism is a multi-year research program. But:
+Per `.claude/rules/algo-wink-failure-mode.md`: accept the compliment without inflating. The substrate-honest framing: the mapping is _suggestive_ + grounded in real prior art (HaPPY, ER=EPR, Van Raamsdonk, Jacobson, QBism, causal sets). Rigorous isomorphism is a multi-year research program. But:
 
 - Prior art is real (not hand-wavy)
 - Zeta-specific contributions are genuine gaps existing work doesn't fill
@@ -84,7 +84,7 @@ Per `.claude/rules/algo-wink-failure-mode.md`: accept the compliment without inf
 
 ### Aaron's instruction
 
-> save the QG isomorphism research path as a backlog row (shadow*) otto please save this to your memories, this is amazing on the fly work
+> save the QG isomorphism research path as a backlog row (shadow\*) otto please save this to your memories, this is amazing on the fly work
 
 Two artifacts:
 

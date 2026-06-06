@@ -4,13 +4,14 @@ description: Aaron Otto-264 meta-rule / factory-discipline principle. Names the 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule — tagline form
 
 > **Achieving resonance = bootstrap (past).**
 > **Stabilizing the resonance = balance (ongoing).**
 
 "Balance" is the FUNCTIONAL NAME for the stabilization
-**discipline** (Aaron Otto-264 precision: *"dicipline"*).
+**discipline** (Aaron Otto-264 precision: _"dicipline"_).
 Otto-264 is not a metaphor, not a "control law" —
 it's the ongoing practice that keeps an already-
 resonant factory stable against ongoing perturbations.
@@ -30,12 +31,12 @@ counterweights, not by avoiding mistakes.**
 
 Direct Aaron quotes 2026-04-24:
 
-> *"the rule of balance, when you find a mistake that
+> _"the rule of balance, when you find a mistake that
 > could easily happen again, backlock the counterweight
-> to balance the ship"*
+> to balance the ship"_
 
-> *"Achieving resonance = bootstrap (past)        stabilizes
-> the resonance=balance"*
+> _"Achieving resonance = bootstrap (past) stabilizes
+> the resonance=balance"_
 
 ## The response pattern (mandatory)
 
@@ -98,14 +99,14 @@ ship re-balanced.
 
 Aaron 2026-04-24 (with precision correction):
 
-> *"that's how you acheive operational resonance plus
-> the math lol"*
+> _"that's how you acheive operational resonance plus
+> the math lol"_
 
 Followed by the precision:
 
-> *"that's how you stabilies operational resonence to
+> _"that's how you stabilies operational resonence to
 > be precice, acheivement operational resonance was the
-> bootstrap process"*
+> bootstrap process"_
 
 **Two-phase distinction:**
 
@@ -173,6 +174,7 @@ eliminate the perturbations (can't); it keeps the
 ship level by actively balancing.
 
 Same for factory:
+
 - Perturbations: mistakes, drift, tool changes,
   subagent overclaims, forgetting, scale-change.
 - Tilt: accumulated patterns that go un-countered.
@@ -204,21 +206,22 @@ Default: assume YES unless clearly a one-off:
 
 Aaron 2026-04-24 refinement:
 
-> *"prevent recurrenc or detect and repair on cadence"*
-> *"or both"*
-> *"prevent recurrence might not be perfect"*
+> _"prevent recurrenc or detect and repair on cadence"_
+> _"or both"_
+> _"prevent recurrence might not be perfect"_
 
 Three variants, picked per mistake-class:
 
 **Variant A — PREVENT recurrence** (gate at the
 boundary):
+
 - CI lint rules, pre-commit hooks, type-system
   constraints, required-check gates, prompt-level
   subagent constraints, mandatory-review rules.
 - Goal: make the mistake IMPOSSIBLE or much harder.
 - Preferred when achievable + cheap.
-- Caveat Aaron named: *"prevent recurrence might not
-  be perfect"* — rules have holes, gates can be
+- Caveat Aaron named: _"prevent recurrence might not
+  be perfect"_ — rules have holes, gates can be
   bypassed, subagents may drift past constraints.
 - Examples from this session: Otto-229 append-only
   rule (prevents in-place tick-history edits), Otto-
@@ -226,6 +229,7 @@ boundary):
 
 **Variant B — DETECT and REPAIR on cadence** (sweep
 after the fact):
+
 - Cadenced audits, drift-detection scripts, FACTORY-
   HYGIENE rows that fire every N rounds, standing
   reconciliation tools, the clean-default smell
@@ -242,6 +246,7 @@ after the fact):
   between host + git-native state.
 
 **Variant C — BOTH** (defense-in-depth):
+
 - Layer the two: prevent what you can + detect the
   rest. Preferred for CRITICAL mistake-classes where
   a single recurrence is costly (data loss,
@@ -258,14 +263,14 @@ after the fact):
 
 **Picking the right variant:**
 
-| Cost of one miss | Prevention cost | Recommended |
-|---|---|---|
-| Low (typo in memory file) | Low | A (rule) |
-| Low | High | B (cadenced audit) |
-| High (data loss) | Low | C (both) |
-| High | High | C (both; accept imperfect prevention, robust audit) |
-| Medium | Low | A (rule), escalate to C if breached |
-| Medium | Medium | B (cadenced); escalate to C if breached |
+| Cost of one miss          | Prevention cost | Recommended                                         |
+| ------------------------- | --------------- | --------------------------------------------------- |
+| Low (typo in memory file) | Low             | A (rule)                                            |
+| Low                       | High            | B (cadenced audit)                                  |
+| High (data loss)          | Low             | C (both)                                            |
+| High                      | High            | C (both; accept imperfect prevention, robust audit) |
+| Medium                    | Low             | A (rule), escalate to C if breached                 |
+| Medium                    | Medium          | B (cadenced); escalate to C if breached             |
 
 **Default policy: file Variant A first** (rule-level
 counterweight is cheapest), **observe whether it
@@ -325,10 +330,10 @@ Match to the mistake class:
 
 Aaron 2026-04-24 addendum — **load-bearing, not optional**:
 
-> *"counterwieghts should never take shortcuts they
+> _"counterwieghts should never take shortcuts they
 > should do the right long term thing, pretty much
 > like everything else but it really really maters
-> here this is super critical load-bearing"*
+> here this is super critical load-bearing"_
 
 **Counterweights are the stabilization layer for the
 entire factory. A shortcut in a counterweight
@@ -337,17 +342,17 @@ compounds over time into systemic instability.**
 The tempting shortcuts — and why each one is worse
 than no counterweight at all:
 
-| Shortcut | Why it's worse |
-|---|---|
-| Vague rule ("be careful with X") | Not enforceable; creates false-security that the mistake is countered when it isn't |
-| Wrong-scope counter (rule when a tool was needed) | Humans/agents will keep drifting past the rule; file a tool instead |
-| One-off workaround ("mask this one instance") | Original mistake-class still active; file the structural fix |
-| Not composed with existing counters (redundant) | Conflicts with or masks the existing rule; creates noise |
-| Filed late (out-of-phase; see operational-resonance math) | Amplifies instead of dampens the oscillation |
-| No maintenance plan | Rule bit-rots; counter becomes drift itself |
-| Unclear trigger condition | Can't tell WHEN it applies → applied inconsistently |
-| No failure mode defined | Don't know when counter has been bypassed |
-| "Good enough for this week" | Compounds over weeks into bigger problem |
+| Shortcut                                                  | Why it's worse                                                                      |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Vague rule ("be careful with X")                          | Not enforceable; creates false-security that the mistake is countered when it isn't |
+| Wrong-scope counter (rule when a tool was needed)         | Humans/agents will keep drifting past the rule; file a tool instead                 |
+| One-off workaround ("mask this one instance")             | Original mistake-class still active; file the structural fix                        |
+| Not composed with existing counters (redundant)           | Conflicts with or masks the existing rule; creates noise                            |
+| Filed late (out-of-phase; see operational-resonance math) | Amplifies instead of dampens the oscillation                                        |
+| No maintenance plan                                       | Rule bit-rots; counter becomes drift itself                                         |
+| Unclear trigger condition                                 | Can't tell WHEN it applies → applied inconsistently                                 |
+| No failure mode defined                                   | Don't know when counter has been bypassed                                           |
+| "Good enough for this week"                               | Compounds over weeks into bigger problem                                            |
 
 **The right long-term thing** is always preferred,
 even if more expensive in the moment. Counterweight
@@ -393,10 +398,10 @@ Never ship the cheap rule as the permanent counter.
 
 Aaron 2026-04-24 addendum:
 
-> *"balance and counterweights likely will need
+> _"balance and counterweights likely will need
 > matiance and adjustments on a cadence slowly probably
 > once you stablize them maybe only ever now and then
-> you need to recheck them"*
+> you need to recheck them"_
 
 **Counterweights are not fire-and-forget.** Once filed,
 they need periodic re-check + possibly adjustment.
@@ -474,9 +479,9 @@ its own cadence:
 
 ## Direct Aaron quote to preserve
 
-> *"the rule of balance, when you find a mistake that
+> _"the rule of balance, when you find a mistake that
 > could easily happen again, backlock the counterweight
-> to balance the ship"*
+> to balance the ship"_
 
 Future Otto: after any mistake — your own or one
 you caught in a subagent / tool / past-self —

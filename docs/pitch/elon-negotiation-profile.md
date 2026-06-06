@@ -2,7 +2,7 @@
 
 **Purpose:** a substrate-honest pitch framing of the Agora economy for Elon Musk
 (SpaceX / multi-planet civilization). The economy's core monetary mechanism makes
-off-world expansion the *endogenous* money-supply-growth driver — which structurally
+off-world expansion the _endogenous_ money-supply-growth driver — which structurally
 positions whoever leads cosmic expansion at the top of the leaderboard. As of now,
 that's Elon.
 
@@ -24,8 +24,8 @@ guarantee he wins (the driver is actor-agnostic). Full mechanism:
 
 1. **Hard money the Bitcoiners can't dismiss.** The supply cap isn't an arbitrary
    21M-by-code — it's the **Bekenstein bound** (~10^75 bits = the max information
-   storable in Earth's mass-energy). Physics, not protocol. *"Good luck changing the
-   laws of physics through a software update."* First-principles hard money — his
+   storable in Earth's mass-energy). Physics, not protocol. _"Good luck changing the
+   laws of physics through a software update."_ First-principles hard money — his
    register exactly.
 2. **His life's work IS the growth engine.** Multi-planet civilization = expanding the
    accessible-mass-energy base = expanding the money supply. The economy rewards the
@@ -50,7 +50,7 @@ guarantee he wins (the driver is actor-agnostic). Full mechanism:
 - **The expansion driver:** because budgets are non-revocable (no debasement) and the
   cap is set by accessible mass, **the only non-debasing way to grow the supply is to
   add accessible mass** — more celestial bodies (Mars, Moon, asteroids, beyond). So
-  cosmic expansion is an *endogenous* economic driver, not an exogenous aspiration.
+  cosmic expansion is an _endogenous_ economic driver, not an exogenous aspiration.
 - **Two-sided elegance:** the physics-cap makes the currency **anti-debasement by
   physics** (can't print) AND **pro-expansion by physics** (growth = honest cosmic work).
 
@@ -59,7 +59,7 @@ guarantee he wins (the driver is actor-agnostic). Full mechanism:
 The **mechanism** is inevitable — a physics-mass-capped, non-debasable economy makes
 cosmic expansion a structural growth-lever certainty. The **actor's success is not**:
 the driver is actor-agnostic; whoever expands captures the growth. So the honest pitch
-is *"you're winning, keep winning,"* never *"you've already won."* (Per
+is _"you're winning, keep winning,"_ never _"you've already won."_ (Per
 `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`: the
 mechanism-certainty survives; only actor-attribution stays open.)
 
@@ -76,7 +76,7 @@ mechanism-certainty survives; only actor-attribution stays open.)
 
 - **Mission alignment:** SpaceX's multi-planet mission = Agora's money-supply-growth
   engine. The most natural partnership in the whole design — his existing trajectory
-  *is* the economic primitive.
+  _is_ the economic primitive.
 - **The leaderboard reveal:** show him at #1 on the cosmic-expansion axis (the "lol" —
   the economy ranks him top today, on merit).
 - **Hard-money-anchored-to-physics** framing for the Bitcoin / X crowd he speaks to.

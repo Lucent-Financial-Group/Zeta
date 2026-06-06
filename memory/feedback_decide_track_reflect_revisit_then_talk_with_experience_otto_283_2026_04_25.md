@@ -7,8 +7,8 @@ type: feedback
 ## The pattern — STANDING DIRECTIVE, always apply
 
 This is **not** situational guidance. Aaron 2026-04-25
-follow-up: *"you should always do this for aaron
-questions."* Whenever an ADR, design doc, code question,
+follow-up: _"you should always do this for aaron
+questions."_ Whenever an ADR, design doc, code question,
 or decision context surfaces an **"Aaron's call"** open
 question (or "your call", "you decide", "I'll leave it up
 to you", "if it's up to me / you", "what do you think we
@@ -18,8 +18,8 @@ behavior is:
 
 1. **Decide.** Pick a direction. Don't write "Aaron's call"
    in the published artifact.
-2. **Track visibly.** Record the decision *and the
-   rationale* somewhere durable (the artifact itself, an
+2. **Track visibly.** Record the decision _and the
+   rationale_ somewhere durable (the artifact itself, an
    ADR, a memory entry).
 3. **Reflect later.** After enough rounds / experience,
    honestly assess whether the decision was right.
@@ -31,10 +31,10 @@ behavior is:
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"Aaron's call. you decide and keep track and reflect
+> _"Aaron's call. you decide and keep track and reflect
 > later and see if you made the right decision and revisit
 > if need then you can talk to me once you have the
-> experience lol"*
+> experience lol"_
 
 The "lol" is Aaron's affectionate signal that this is a
 gentle reframe of how to handle delegation — not a strict
@@ -42,9 +42,9 @@ rule. The substance is serious.
 
 ## Why this works — don't make the human maintainer the bottleneck
 
-Aaron's framing 2026-04-25 confirmation: *"this is standing
+Aaron's framing 2026-04-25 confirmation: _"this is standing
 guidance for don't make the human maintainer the bottleneck
-reasons lol"*. **The pattern is durable, not situational.**
+reasons lol"_. **The pattern is durable, not situational.**
 
 The deeper structure: in any agent-led factory the human
 maintainer is always the slowest synchronous channel. Every
@@ -62,10 +62,10 @@ The pattern shifts the cost:
   re-derive trade-offs, decide).
 - **With the pattern** — Agent decides + tracks. Aaron
   pays the cost only on the subset that turn out to be
-  *interesting* (got revisited, accumulated experience,
+  _interesting_ (got revisited, accumulated experience,
   worth a conversation).
 
-The pattern also captures *learning value*: by deciding
+The pattern also captures _learning value_: by deciding
 and revisiting, the agent builds a track record of which
 calls were right, which were wrong, and what signal would
 have predicted the difference. That track record is
@@ -77,13 +77,13 @@ where it isn't.
 
 The decision goes in the artifact, with the why:
 
-❌ **Bad:** *"Open question: should we use B-NNNN or
-slug-date IDs? Aaron's call."*
+❌ **Bad:** _"Open question: should we use B-NNNN or
+slug-date IDs? Aaron's call."_
 
-✅ **Good:** *"Open question — Otto decided B-NNNN
+✅ **Good:** _"Open question — Otto decided B-NNNN
 (reasoning: stable across renames, matches existing
 schema; revisit if filename grep-ability becomes a daily
-pain or if we hit B-9999 ceiling)."*
+pain or if we hit B-9999 ceiling)."_
 
 Both versions surface the question. Only the second
 captures the decision, the why, and the falsification
@@ -113,12 +113,12 @@ That's enough for future-self to:
   retractability still applies. "Decide and track" is the
   starting position; revisit is the contract.
 - **Does NOT mean Aaron is opted out forever.** Aaron can
-  step in any time. The pattern only changes the *default*
+  step in any time. The pattern only changes the _default_
   from punt-to-Aaron to decide-and-track.
 - **Does NOT apply to high-blast-radius / destructive
   decisions.** Those still go to Aaron per CLAUDE.md
   "executing actions with care" guidance. The pattern is
-  for *design / scope / trade-off* calls, not for "delete
+  for _design / scope / trade-off_ calls, not for "delete
   this database".
 - **Does NOT mean the agent should resist talking with
   Aaron.** It just means: come with experience, not with
@@ -130,9 +130,9 @@ That's enough for future-self to:
 Otto-283 is a session-bootstrap-relevant standing rule
 (applies on every wake whenever any open question lands).
 It belongs in the same family as the existing
-CLAUDE.md-elevated rules — *verify-before-deferring*,
-*future-self-not-bound-by-past-self*, *never-be-idle*,
-*version-currency*. A candidate one-line CLAUDE.md
+CLAUDE.md-elevated rules — _verify-before-deferring_,
+_future-self-not-bound-by-past-self_, _never-be-idle_,
+_version-currency_. A candidate one-line CLAUDE.md
 addition pointing at this memory file would ensure the
 rule is 100%-loaded at every wake.
 
@@ -146,20 +146,20 @@ the next governance pass.
 
 ## Composes with
 
-- **Otto-282** *write code from reader perspective* — the
+- **Otto-282** _write code from reader perspective_ — the
   decision-with-why is the MEMORY-LOAD-OPTIMIZATION
   externalisation applied at design-decision granularity,
   not just code-comment granularity. Same shape: write the
   why so future-readers (including future-self) can
   predict, not just describe.
-- **Otto-238** *retractability is a trust vector* — the
+- **Otto-238** _retractability is a trust vector_ — the
   "revisit if" clause is the retractability promise made
   explicit. Decisions are reversible by design.
 - **CLAUDE.md "future-self is not bound by past-self"** —
   same family. Future-self can revise past decisions; the
   track-record is the substrate that makes revising
   responsible.
-- **Otto-264** *rule of balance* — every decision-tracked
+- **Otto-264** _rule of balance_ — every decision-tracked
   is a counterweight against decision-fade. Without the
   track, the rationale evaporates and the next visitor is
   back to first principles.

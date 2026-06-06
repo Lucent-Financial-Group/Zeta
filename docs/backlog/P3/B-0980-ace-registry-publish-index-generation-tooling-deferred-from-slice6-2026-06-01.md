@@ -26,7 +26,7 @@ counterpart to the consumer-side trust gates.
 ## Scope sketch
 
 - `ace registry publish --packages <dir-or-list> --key <privkey> [--out index.json]
-  [--prev <prior-index>]`: scan the packages, compute each `package_hash` + resolve its
+[--prev <prior-index>]`: scan the packages, compute each `package_hash` + resolve its
   `url`, assemble `packages: name→version→{url,package_hash}`, set the new
   `sequence` to `prev.sequence + 1` (monotonic — read `--prev` to avoid accidental rollback), set `issued_at = now`,
   and `signIndex` with the registry private key.
@@ -40,8 +40,8 @@ counterpart to the consumer-side trust gates.
 
 The consumer side is what slice 6 needed to resolve against a hosted catalog; an index can
 be hand-assembled + signed with the test helper for now. First-class publish tooling is
-ergonomics for registry operators, not a consumer capability gap. Operator: *"everything
-we skipped lets slice off for further enhancements."*
+ergonomics for registry operators, not a consumer capability gap. Operator: _"everything
+we skipped lets slice off for further enhancements."_
 
 ## Resolution (2026-06-01 — slice 6.1 core shipped via PR #6439, merge `2d662dbb`)
 
@@ -51,10 +51,10 @@ Core `ace registry publish` shipped. Spec: `docs/agendas/ace-package-manager/202
 
 - `ace registry publish --packages <dir> --base-url <url> --key <pem> [--out index.json]` —
   scans `<dir>` for `*.json` packages, derives each `url = <base-url>/<name>-<version>.json`
-  + `package_hash = packageHash(pkg)`, assembles + Ed25519-signs the index, sets `issued_at`,
-  auto-bumps `sequence` from an existing `--out` (read as prev), and **round-trip self-verifies**
-  (consumer `parseIndex` + `verifyIndexSignature` under the signing key's own public key)
-  before writing — never writes a non-self-verifying index.
+  - `package_hash = packageHash(pkg)`, assembles + Ed25519-signs the index, sets `issued_at`,
+    auto-bumps `sequence` from an existing `--out` (read as prev), and **round-trip self-verifies**
+    (consumer `parseIndex` + `verifyIndexSignature` under the signing key's own public key)
+    before writing — never writes a non-self-verifying index.
 - **Publish-side anti-rollback:** refuses to auto-bump from an existing `--out` whose
   signature does not verify under `--key`, and refuses an unparseable `--out` (no silent
   sequence reset that would look like a rollback to consumers).

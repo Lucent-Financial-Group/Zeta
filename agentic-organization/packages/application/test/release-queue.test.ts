@@ -1,21 +1,10 @@
 import { deepEqual, equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  ChangeArtifactKind,
-  ChangeSetPhase,
-  type ChangeSet,
-} from "../../domain/src/index.ts";
-import {
-  ReleaseQueueActionKind,
-  ReleaseQueueState,
-  planReleaseQueue,
-} from "../src/release-queue.ts";
+import { ChangeArtifactKind, ChangeSetPhase, type ChangeSet } from "../../domain/src/index.ts";
+import { ReleaseQueueActionKind, ReleaseQueueState, planReleaseQueue } from "../src/release-queue.ts";
 
-function changeSet(
-  changeSetId: string,
-  input: Partial<ChangeSet> = {},
-): ChangeSet {
+function changeSet(changeSetId: string, input: Partial<ChangeSet> = {}): ChangeSet {
   return {
     changeSetId,
     organizationId: "org-release",
@@ -26,12 +15,14 @@ function changeSet(
     phase: ChangeSetPhase.Approved,
     pipelineId: "internal-only",
     currentStageIndex: 0,
-    artifacts: [{
-      kind: ChangeArtifactKind.CodeDiff,
-      path: `src/${changeSetId}.ts`,
-      diff: "+ok",
-      language: "typescript",
-    }],
+    artifacts: [
+      {
+        kind: ChangeArtifactKind.CodeDiff,
+        path: `src/${changeSetId}.ts`,
+        diff: "+ok",
+        language: "typescript",
+      },
+    ],
     projections: [],
     revision: 1,
     openedAt: "2026-01-01T00:00:00.000Z",
@@ -51,9 +42,15 @@ test("release queue applies a green approved batch in priority order", () => {
   });
 
   equal(result.state, ReleaseQueueState.BatchGreen);
-  deepEqual(result.actions.map((action) => action.changeSetId), ["old", "new"]);
+  deepEqual(
+    result.actions.map((action) => action.changeSetId),
+    ["old", "new"],
+  );
   ok(result.actions.every((action) => action.kind === ReleaseQueueActionKind.Apply));
-  deepEqual(result.actions.flatMap((action) => action.evidenceRefs), ["test-run:green", "test-run:green"]);
+  deepEqual(
+    result.actions.flatMap((action) => action.evidenceRefs),
+    ["test-run:green", "test-run:green"],
+  );
 });
 
 test("release queue prioritizes retry pressure before age", () => {
@@ -67,7 +64,10 @@ test("release queue prioritizes retry pressure before age", () => {
     evaluateBatch: () => ({ green: true, evidenceRefs: ["test-run:green"] }),
   });
 
-  deepEqual(result.batch.map((cs) => cs.changeSetId), ["retried", "older"]);
+  deepEqual(
+    result.batch.map((cs) => cs.changeSetId),
+    ["retried", "older"],
+  );
 });
 
 test("release queue bisects a red batch and requests changes only for the culprit", () => {
@@ -81,11 +81,14 @@ test("release queue bisects a red batch and requests changes only for the culpri
   });
 
   equal(result.state, ReleaseQueueState.BatchBisected);
-  deepEqual(result.actions.map((action) => [action.kind, action.changeSetId]), [
-    [ReleaseQueueActionKind.Apply, "a"],
-    [ReleaseQueueActionKind.RequestChanges, "b"],
-    [ReleaseQueueActionKind.Apply, "c"],
-  ]);
+  deepEqual(
+    result.actions.map((action) => [action.kind, action.changeSetId]),
+    [
+      [ReleaseQueueActionKind.Apply, "a"],
+      [ReleaseQueueActionKind.RequestChanges, "b"],
+      [ReleaseQueueActionKind.Apply, "c"],
+    ],
+  );
 });
 
 test("release queue does not apply both halves of an interaction-red stack", () => {
@@ -99,10 +102,13 @@ test("release queue does not apply both halves of an interaction-red stack", () 
   });
 
   equal(result.state, ReleaseQueueState.BatchBisected);
-  deepEqual(result.actions.map((action) => [action.kind, action.changeSetId]), [
-    [ReleaseQueueActionKind.Apply, "a"],
-    [ReleaseQueueActionKind.RequestChanges, "b"],
-  ]);
+  deepEqual(
+    result.actions.map((action) => [action.kind, action.changeSetId]),
+    [
+      [ReleaseQueueActionKind.Apply, "a"],
+      [ReleaseQueueActionKind.RequestChanges, "b"],
+    ],
+  );
 });
 
 test("release queue reuses a known red result instead of reevaluating it", () => {
@@ -121,10 +127,13 @@ test("release queue reuses a known red result instead of reevaluating it", () =>
   });
 
   equal(wholeBatchEvaluations, 1);
-  deepEqual(result.actions.map((action) => [action.kind, action.changeSetId]), [
-    [ReleaseQueueActionKind.Apply, "a"],
-    [ReleaseQueueActionKind.RequestChanges, "b"],
-  ]);
+  deepEqual(
+    result.actions.map((action) => [action.kind, action.changeSetId]),
+    [
+      [ReleaseQueueActionKind.Apply, "a"],
+      [ReleaseQueueActionKind.RequestChanges, "b"],
+    ],
+  );
 });
 
 test("release queue idles when no approved change sets are ready", () => {

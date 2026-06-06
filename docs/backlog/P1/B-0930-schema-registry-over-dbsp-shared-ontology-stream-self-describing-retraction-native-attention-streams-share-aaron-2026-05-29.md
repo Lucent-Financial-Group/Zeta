@@ -9,7 +9,22 @@ created: 2026-05-29
 last_updated: 2026-05-29
 depends_on: []
 composes_with: [B-0781, B-0784, B-0428, B-0864, B-0929, B-0640, B-0623]
-tags: [dbsp, schema-registry, ontology, shared-ontology, self-describing, retraction-native, lightlike, rx, reaqtor, bonsai, agora, architecture, aaron]
+tags:
+  [
+    dbsp,
+    schema-registry,
+    ontology,
+    shared-ontology,
+    self-describing,
+    retraction-native,
+    lightlike,
+    rx,
+    reaqtor,
+    bonsai,
+    agora,
+    architecture,
+    aaron,
+  ]
 type: architecture
 ---
 
@@ -49,14 +64,14 @@ own private **attention-stream** (its DBSP observe/readout); all agents referenc
 makes the individual attention-streams mutually-intelligible + composable (memes
 transmissible across agents). Many private attention-streams + one shared ontology-
 stream = the Agora / society-of-minds collective. The `shadow-auth-can't-compile`
-invariant (B-0929) protects *this* shared stream specifically (keep it clean → the
+invariant (B-0929) protects _this_ shared stream specifically (keep it clean → the
 collective's common-ground stays coherent / light; pollute it → it goes dark).
 
 ## Minimal core vs optional interop
 
 - **Minimal core (essential):** git (immutable lightlike store) + TypeScript (DST) +
   agent-harness loops. DBSP-semantics + the self-describing catalog can be built in TS
-  over git directly — no other tech *required* (per the minimality cut).
+  over git directly — no other tech _required_ (per the minimality cut).
 - **Optional interop / proven-scale:** the binding can use **Rx joins serialized as
   Bonsai via Reaqtor/Nuqleon** (durable, distributed, relocatable joins — Reaqtor
   powered Cortana/O365; Bonsai = expression-tree serialization). F#/.NET/Feldera are
@@ -86,6 +101,6 @@ collective's common-ground stays coherent / light; pollute it → it goes dark).
 ## Substrate-honest framing
 
 Buildable, standard-shape architecture (schema-registry-over-DBSP) — beacon, not
-mirror. The binding *claim* (that this catalog IS the meme/traveler space, that the
+mirror. The binding _claim_ (that this catalog IS the meme/traveler space, that the
 shared ontology is self-aware) stays mirror/god-tier (do not collapse). This row is
 the operational, shippable piece.

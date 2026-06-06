@@ -10,7 +10,7 @@ Aaron 2026-04-25 (substrate-body prose now uses
 mutual-alignment vocabulary per Otto-293; "catch" /
 "surfacing" / "framing" replaces "directive"):
 
-> *"can't you make the copilot do better to not see our
+> _"can't you make the copilot do better to not see our
 > history files and correct them? that is the common
 > source of this mistake, copilot tell you to fix it and
 > you don't check your own rules just assme copilot is
@@ -18,7 +18,7 @@ mutual-alignment vocabulary per Otto-293; "catch" /
 > he never gives you the bad advice if that's not possible
 > you need to catch known classes of bad advice given by
 > copilit, that's probalby a good balanceing method anyways
-> for the substrate."*
+> for the substrate."_
 
 Two-layer fix: (1) reduce reviewer error rate at source,
 (2) catch what slips through.
@@ -30,7 +30,7 @@ whether the suggestion contradicts a Zeta rule.** External
 reviewers (GitHub Copilot review, Codex review, Sonar,
 Meziantou, Gemini Code Assist, harsh-critic dispatch,
 spec-zealot dispatch, ChatGPT cross-review pastes, any
-courier-ferry import) optimise for *common-case* code-style
+courier-ferry import) optimise for _common-case_ code-style
 norms. Zeta has carve-outs that override common-case norms;
 external reviewers do not always see them.
 
@@ -53,8 +53,8 @@ the Zeta rule, resolve the thread, do not apply**.
   stripped IP MENTIONS thinking the rule said ADOPTION)
   and Otto-279's original case (subagent stripped names
   from research docs). The error class is:
-  *external-reviewer applies literal rule X, agent applies
-  blindly, internal carve-out Y is ignored*.
+  _external-reviewer applies literal rule X, agent applies
+  blindly, internal carve-out Y is ignored_.
 - "Trust-then-apply" externalises Zeta's review discipline
   to a tool that doesn't have full context. Agency stays
   with us; the reviewer is advisory.
@@ -75,12 +75,11 @@ proposing a change, before applying:
    known-bad-advice classes.
 4. **Decide: apply / decline-with-citation / narrow-fix.**
    Three-outcome model from Otto-236:
-
    - **Apply**: rule applies cleanly. Make the fix, reply
      with SHA, resolve.
    - **Decline-with-citation**: rule contradicts a Zeta
      carve-out. Reply with Zeta rule citation (file path
-     + Otto-NNN if applicable), resolve. Do NOT apply.
+     - Otto-NNN if applicable), resolve. Do NOT apply.
    - **Narrow-fix**: partial validity. Apply the narrow
      part, file BACKLOG row for the deeper issue, reply
      with SHA + BACKLOG link, resolve.
@@ -226,6 +225,7 @@ than amending" rule + retractability discipline (visible
 revision, not silent rewrite).
 
 ### B-8. Suppress analyzer finding via `_ = Send(...)` /
+
 `Assert.True(true)` / empty `catch (Exception) { }`
 
 **Pattern:** "discard the return value to silence
@@ -281,8 +281,8 @@ halt; the rule becomes a halt-on-self bomb.
 rule's text necessarily mentions the forbidden
 pattern by reference (so PR-author and reviewer can
 identify the target class), but the halt clause
-fails to distinguish *content-echo* from
-*reference-mention*. Self-ref halt triggers on the
+fails to distinguish _content-echo_ from
+_reference-mention_. Self-ref halt triggers on the
 policy text itself, on memory files documenting the
 policy, on PR diffs that touch any of those
 surfaces.
@@ -318,8 +318,8 @@ new row referencing the earlier one.
 
 ## Why this is BALANCING for the substrate
 
-Aaron's framing: *"that's probably a good balancing method
-anyways for the substrate."* External reviewers introduce
+Aaron's framing: _"that's probably a good balancing method
+anyways for the substrate."_ External reviewers introduce
 **diversity-of-perspective** that internal review cannot
 match (different priors, different blind spots, different
 heuristics). This catch-layer preserves diversity while
@@ -348,7 +348,7 @@ both/and: keep the reviewer, filter the known errors.
   was structural (FACTORY-DISCIPLINE.md stop-gap +
   memory-sync). External-reviewer fix is the same shape:
   surface the carve-outs in `.github/copilot-instructions.md`
-  + maintain the catch-layer catalog.
+  - maintain the catch-layer catalog.
 
 ## What this rule does NOT do
 

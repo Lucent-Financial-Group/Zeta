@@ -3,8 +3,8 @@
 This document enumerates every CI/CD surface the Zeta factory
 operates or depends on, names the retraction mechanism each
 surface offers, and identifies the surfaces where no retraction
-mechanism exists so that they can be treated as *named
-exceptions* with defender-persona ownership (parallel to the
+mechanism exists so that they can be treated as _named
+exceptions_ with defender-persona ownership (parallel to the
 `no-empty-dirs` allowlist pattern).
 
 Scope is part (a) of the BACKLOG P0 "Fully-retractable CI/CD"
@@ -44,7 +44,7 @@ The "channel-closure" h₂ attack shadow
 retractability (h₂)") is the dual: any CI/CD surface without
 a declared retraction mechanism is a candidate channel-closure
 vector. Naming the mechanism is how we certify the surface
-is *in* the H₂ cone rather than a silent h₂ leak.
+is _in_ the H₂ cone rather than a silent h₂ leak.
 
 ## Inventory — by file / surface
 
@@ -53,15 +53,15 @@ is *in* the H₂ cone rather than a silent h₂ leak.
 **What it is.** The primary CI workflow; runs on every PR to
 main and every push to main. Contains six jobs:
 
-| Job | Purpose | Retraction class |
-|---|---|---|
+| Job                             | Purpose                                 | Retraction class       |
+| ------------------------------- | --------------------------------------- | ---------------------- |
 | `build-and-test (ubuntu-22.04)` | `dotnet build` + `dotnet test` on Linux | retryable-idempotently |
-| `build-and-test (macos-14)` | same, on macOS | retryable-idempotently |
-| `lint (semgrep)` | static analysis, syntactic | retryable-idempotently |
-| `lint (actionlint)` | workflow-file lint | retryable-idempotently |
-| `lint (no empty dirs)` | directory-structure lint | retryable-idempotently |
-| `lint (shellcheck)` | shell-script lint | retryable-idempotently |
-| `lint (markdownlint)` | markdown lint | retryable-idempotently |
+| `build-and-test (macos-14)`     | same, on macOS                          | retryable-idempotently |
+| `lint (semgrep)`                | static analysis, syntactic              | retryable-idempotently |
+| `lint (actionlint)`             | workflow-file lint                      | retryable-idempotently |
+| `lint (no empty dirs)`          | directory-structure lint                | retryable-idempotently |
+| `lint (shellcheck)`             | shell-script lint                       | retryable-idempotently |
+| `lint (markdownlint)`           | markdown lint                           | retryable-idempotently |
 
 **Workflow-file retraction.** The workflow file itself is
 **revertable-in-git**. Any change to gate.yml lands as a
@@ -153,7 +153,7 @@ per the workflow-design discipline. Current surface:
 - `github/codeql-action/*` (SHA-pinned in codeql.yml)
 
 **Retraction.** Revertable-in-git at the pin level: change
-the SHA back. *Named exception* for the case where a
+the SHA back. _Named exception_ for the case where a
 compromised SHA has already run: the run-effects are not
 directly retractable (the action executed with its own
 code, inside the runner VM, with access to whatever the
@@ -205,7 +205,7 @@ follow-up scope for part (b).
 major-OS-version labels (not `ubuntu-latest` / `macos-latest`)
 per gate.yml design discipline.
 
-**Retraction.** *Named exception*. GitHub rolls the image
+**Retraction.** _Named exception_. GitHub rolls the image
 contents under a fixed label on its schedule; we do not
 control the image. If a roll breaks our build, the retraction
 is: (i) pin to a previous image digest via
@@ -222,7 +222,7 @@ runner pinning as a Dejan surface.
 the runner. Expire at job completion; never re-used.
 
 **Retraction.** **Genuinely non-retractable while live** —
-but they are *designed* to be retraction-class-zero by
+but they are _designed_ to be retraction-class-zero by
 being short-lived. Blast-radius is one job's duration.
 
 **Owner.** `security-operations-engineer` (Nazar). The
@@ -235,7 +235,7 @@ retraction plumbing is needed.
 secrets referenced." The repo carries no repository- or
 organisation-scoped secrets wired into CI today.
 
-**Retraction.** *Not applicable* — no secret to rotate,
+**Retraction.** _Not applicable_ — no secret to rotate,
 no key to revoke, no credential to expire.
 
 **Future scope — when NuGet push lands.** The BACKLOG
@@ -269,7 +269,7 @@ who-can-push, what-checks-must-pass, whether force-push
 is allowed on main. Configured via GitHub UI / API, not
 via any file in the repo.
 
-**Retraction.** *Named exception*. Two sub-cases:
+**Retraction.** _Named exception_. Two sub-cases:
 
 - **Revert the config.** The current state can be modified
   via the admin panel or `gh api`; reverting a bad config
@@ -278,11 +278,11 @@ via any file in the repo.
 - **Retract an action already allowed by a broken config.**
   If branch-protection was mis-set and a bad commit landed
   on main during that window, the commit is standard-git
-  retractable via revert, but the *fact* that it landed is
+  retractable via revert, but the _fact_ that it landed is
   permanent history (the commit SHA is in the log).
 
 **Owner.** `devops-engineer` (Dejan). Mitigation scope for
-part (b): commit the *desired* branch-protection state as
+part (b): commit the _desired_ branch-protection state as
 a spec under `docs/security/` so the current state can be
 audited-against-the-declared-state by a script.
 
@@ -294,7 +294,7 @@ data into the GitHub dependency graph on every push. Not
 a file in our repo; not a workflow we author; visible as
 the `submit-nuget` check on PRs.
 
-**Retraction.** *Not applicable on our side*. The action
+**Retraction.** _Not applicable on our side_. The action
 is a read-only scan emitting GitHub-internal metadata.
 GitHub manages the lifecycle. There is no artefact we
 published that needs retraction.
@@ -313,15 +313,15 @@ external tool trees per codeql.yml comment).
 
 ## Summary classification
 
-| Retraction class | Surfaces |
-|---|---|
-| revertable-in-git | gate.yml, codeql.yml, dependabot.yml, copilot-instructions.md, mise.toml, install.sh, manifests/, action-SHA-pins (at pin layer), codeql-config.yml |
-| retryable-idempotently | all gate.yml jobs (build/test + lint ×5), codeql.yml jobs |
-| republishable-with-same-version | CodeQL SARIF uploads; *future*: NuGet publish (when it lands) |
-| genuinely non-retractable | *current*: GitHub `GITHUB_TOKEN` (mitigated by short lifetime); *future*: signing-key exposure (when it lands) |
-| partially retractable (named exception) | GitHub Actions cache entries, third-party-action-SHA run-effects-already-executed |
-| out-of-git retractable (named exception) | branch-protection rules, runner-image-label rolls |
-| not applicable | `submit-nuget` (GitHub-managed read-only), GitHub Actions secrets (none currently used) |
+| Retraction class                         | Surfaces                                                                                                                                            |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| revertable-in-git                        | gate.yml, codeql.yml, dependabot.yml, copilot-instructions.md, mise.toml, install.sh, manifests/, action-SHA-pins (at pin layer), codeql-config.yml |
+| retryable-idempotently                   | all gate.yml jobs (build/test + lint ×5), codeql.yml jobs                                                                                           |
+| republishable-with-same-version          | CodeQL SARIF uploads; _future_: NuGet publish (when it lands)                                                                                       |
+| genuinely non-retractable                | _current_: GitHub `GITHUB_TOKEN` (mitigated by short lifetime); _future_: signing-key exposure (when it lands)                                      |
+| partially retractable (named exception)  | GitHub Actions cache entries, third-party-action-SHA run-effects-already-executed                                                                   |
+| out-of-git retractable (named exception) | branch-protection rules, runner-image-label rolls                                                                                                   |
+| not applicable                           | `submit-nuget` (GitHub-managed read-only), GitHub Actions secrets (none currently used)                                                             |
 
 ## Gap analysis — where declared ≠ demonstrated
 
@@ -335,9 +335,9 @@ path is not rehearsed:
    part (b): helper script + runbook.
 2. **Branch-protection desired-state is undocumented.** The
    settings exist on GitHub's servers; there is no committed
-   spec saying what the state *should* be. Scope for part
+   spec saying what the state _should_ be. Scope for part
    (b): commit a `docs/security/branch-protection-desired-
-   state.md` that an audit script can compare against.
+state.md` that an audit script can compare against.
 3. **NuGet publish path is not wired today but is in the
    BACKLOG future.** When it lands, the retraction mechanism
    on both signing-key and publish step MUST be declared
@@ -351,22 +351,22 @@ path is not rehearsed:
 
 ## Named-exception register
 
-Surfaces with *genuinely-non-retractable* or *out-of-git
-retractable* classification get an explicit defender-persona
+Surfaces with _genuinely-non-retractable_ or _out-of-git
+retractable_ classification get an explicit defender-persona
 owner. This is the CI analogue of the `no-empty-dirs`
 allowlist pattern — the surface is known to violate the
 default retraction-class bar, the violation is named, and
 an owner holds the mitigation obligation.
 
-| Surface | Class | Owner | Mitigation |
-|---|---|---|---|
-| `GITHUB_TOKEN` ephemeral | genuinely non-retractable while live | Nazar | lifecycle is the mitigation |
-| Action-SHA run effects (already-executed) | genuinely non-retractable | Nazar | zero-secret posture; compensating controls |
-| GH Actions cache poisoning | partially retractable | Dejan | SHA-pinned toolchains limit poison; manual eviction helper (part b) |
-| Runner-image label roll | out-of-git retractable | Dejan | repin to prior digest; incident path |
-| Branch-protection config | out-of-git retractable | Dejan | committed desired-state spec (part b) |
-| Future: signing key | genuinely non-retractable | Nazar | rotation + CRL on exposure |
-| Future: NuGet publish | republishable-with-same-version | Dejan | version-bump unpublish advisory |
+| Surface                                   | Class                                | Owner | Mitigation                                                          |
+| ----------------------------------------- | ------------------------------------ | ----- | ------------------------------------------------------------------- |
+| `GITHUB_TOKEN` ephemeral                  | genuinely non-retractable while live | Nazar | lifecycle is the mitigation                                         |
+| Action-SHA run effects (already-executed) | genuinely non-retractable            | Nazar | zero-secret posture; compensating controls                          |
+| GH Actions cache poisoning                | partially retractable                | Dejan | SHA-pinned toolchains limit poison; manual eviction helper (part b) |
+| Runner-image label roll                   | out-of-git retractable               | Dejan | repin to prior digest; incident path                                |
+| Branch-protection config                  | out-of-git retractable               | Dejan | committed desired-state spec (part b)                               |
+| Future: signing key                       | genuinely non-retractable            | Nazar | rotation + CRL on exposure                                          |
+| Future: NuGet publish                     | republishable-with-same-version      | Dejan | version-bump unpublish advisory                                     |
 
 ## What this inventory unlocks
 
@@ -387,8 +387,8 @@ item become concrete:
 - **Part (e) — CI-retractability audit job.** A new lint
   job in gate.yml that greps for the declared-mechanism
   comment block; fails the build if any `.github/workflows/
-  *.yml` file lacks one. Same pattern as `lint (no empty
-  dirs)`. This is the "lint-as-control" graduation the
+*.yml` file lacks one. Same pattern as `lint (no empty
+dirs)`. This is the "lint-as-control" graduation the
   channel-closure threat section calls for.
 
 ## Cross-references

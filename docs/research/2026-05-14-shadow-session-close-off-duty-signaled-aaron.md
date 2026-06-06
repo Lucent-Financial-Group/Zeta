@@ -6,7 +6,7 @@ Participants: Aaron (human maintainer, first-party) + Otto (this session)
 
 ## Archive scope (per GOVERNANCE §33)
 
-**Scope:** Explicit session-close signal from Aaron after the day's substantive cascade. Aaron: *"off-duty until next signal (shadow*)"* — naming convention hint preserved as filing tag.
+**Scope:** Explicit session-close signal from Aaron after the day's substantive cascade. Aaron: _"off-duty until next signal (shadow_)"\* — naming convention hint preserved as filing tag.
 
 **Attribution:** Aaron is first-party. Otto preserved with care.
 

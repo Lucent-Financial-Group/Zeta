@@ -42,7 +42,10 @@ interface Args {
   readonly dryRun: boolean;
 }
 
-export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = process.env): Args | { readonly error: string } {
+export function parseArgs(
+  argv: readonly string[],
+  env: NodeJS.ProcessEnv = process.env,
+): Args | { readonly error: string } {
   let repo = env.ZETA_AGENT_REPO ?? "Lucent-Financial-Group/Zeta";
   let head = env.ZETA_AGENT_BRANCH ?? "agent-heartbeats";
   let base = "main";
@@ -109,7 +112,11 @@ export function isUpToDate(repo: string, base: string, head: string): boolean | 
  * idempotent (GitHub returns 422 "A pull request already exists" on dup
  * create; we'd rather re-use the existing PR + re-arm auto-merge).
  */
-export function findExistingPR(repo: string, head: string, base: string): { readonly found: { readonly number: number; readonly url: string } | null } | { readonly error: string } {
+export function findExistingPR(
+  repo: string,
+  head: string,
+  base: string,
+): { readonly found: { readonly number: number; readonly url: string } | null } | { readonly error: string } {
   const owner = repo.split("/")[0]!;
   const result = gh(["api", `repos/${repo}/pulls?state=open&head=${owner}:${head}&base=${base}`]);
   if (result.status !== 0) return { error: `list pulls failed: ${result.stderr || result.stdout}` };
@@ -131,7 +138,9 @@ export function openMergePR(
   base: string,
   title: string,
   body: string,
-): { readonly ok: { readonly number: number; readonly url: string; readonly reused: boolean } } | { readonly error: string; readonly code: 3 } {
+):
+  | { readonly ok: { readonly number: number; readonly url: string; readonly reused: boolean } }
+  | { readonly error: string; readonly code: 3 } {
   // Idempotency: re-use existing open PR if one is already open head→base
   const existing = findExistingPR(repo, head, base);
   if ("error" in existing) {
@@ -164,7 +173,10 @@ export function openMergePR(
   // Safe to re-arm on already-armed PRs (idempotent).
   const armResult = gh(["pr", "merge", String(prNumber), "--auto", "--squash", "--repo", repo]);
   if (armResult.status !== 0) {
-    return { error: `arm auto-merge failed (PR #${prNumber}${reused ? " reused" : " opened"}): ${armResult.stderr || armResult.stdout}`, code: 3 };
+    return {
+      error: `arm auto-merge failed (PR #${prNumber}${reused ? " reused" : " opened"}): ${armResult.stderr || armResult.stdout}`,
+      code: 3,
+    };
   }
   return { ok: { number: prNumber, url: prUrl, reused } };
 }
@@ -178,7 +190,9 @@ async function main(): Promise<number> {
   }
   const ts = new Date().toISOString();
   if (parsed.dryRun) {
-    console.log(`DRY RUN — would check ${parsed.base}..${parsed.head} on ${parsed.repo}; if behind, open PR + arm squash auto-merge`);
+    console.log(
+      `DRY RUN — would check ${parsed.base}..${parsed.head} on ${parsed.repo}; if behind, open PR + arm squash auto-merge`,
+    );
     return 0;
   }
   const upToDate = isUpToDate(parsed.repo, parsed.base, parsed.head);
@@ -203,7 +217,9 @@ async function main(): Promise<number> {
     console.error(`merge-heartbeats-to-main: ${result.error}`);
     return result.code;
   }
-  console.log(`${result.ok.reused ? "re-used" : "opened"}: PR #${result.ok.number} (${result.ok.url}); auto-merge re-armed (squash)`);
+  console.log(
+    `${result.ok.reused ? "re-used" : "opened"}: PR #${result.ok.number} (${result.ok.url}); auto-merge re-armed (squash)`,
+  );
   return 0;
 }
 

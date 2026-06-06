@@ -37,10 +37,7 @@ async function runCmd(cmd: readonly string[]): Promise<SpawnResult> {
     stdout: "pipe",
     stderr: "pipe",
   });
-  const [stdout, stderr] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-  ]);
+  const [stdout, stderr] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
   const exitCode = await proc.exited;
   return { stdout, stderr, exitCode };
 }
@@ -202,7 +199,16 @@ export async function main(argv: readonly string[]): Promise<number> {
 
     // Run diff — exit 0 = identical, 1 = differences, 2 = error
     // Use --label so output shows real paths, not temp paths.
-    const diffResult = await runCmd(["diff", "-u", "--label", expected, "--label", "(live from gh api)", tmpExp, tmpLive]);
+    const diffResult = await runCmd([
+      "diff",
+      "-u",
+      "--label",
+      expected,
+      "--label",
+      "(live from gh api)",
+      tmpExp,
+      tmpLive,
+    ]);
 
     if (diffResult.exitCode === 0) {
       process.stderr.write(`github-settings-drift: no drift (repo=${repo})\n`);

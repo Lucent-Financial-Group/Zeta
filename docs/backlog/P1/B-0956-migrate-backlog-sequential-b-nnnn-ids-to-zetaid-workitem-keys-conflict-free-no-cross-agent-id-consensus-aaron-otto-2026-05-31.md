@@ -34,8 +34,8 @@ tags:
 
 ## Problem (the does-not-scale pain, operator-named 2026-05-31)
 
-> Aaron: *"do we have a backlog migration row to workitems with zeta ids ... so you don't
-> have to fumble over ID consensus across agents that does not scale"*
+> Aaron: _"do we have a backlog migration row to workitems with zeta ids ... so you don't
+> have to fumble over ID consensus across agents that does not scale"_
 
 Allocating a sequential **`B-NNNN`** id requires **cross-agent consensus**: check the
 highest id on `origin/main` **and** scan in-flight PRs for the next free number, and hope
@@ -49,8 +49,8 @@ cost this row removes.
 
 ## Prior art — an incrementing ID is a hidden consensus (operator 2026-05-31)
 
-> Aaron: *"incrementing IDs are a hidden consensus most don't think of unless you are
-> designing a sharded database — which we are lol"*
+> Aaron: _"incrementing IDs are a hidden consensus most don't think of unless you are
+> designing a sharded database — which we are lol"_
 
 A monotonic/auto-increment id (`B-NNNN`, SQL `AUTO_INCREMENT`, Postgres `SERIAL`) needs a
 **single source of truth for "the next number"** — that source IS a consensus point. It's
@@ -67,17 +67,17 @@ distributed-ID migration every sharded system does**, applied to our work-item t
 
 ## The model (operator correction 2026-05-31 — type vs state)
 
-> Aaron: *"backlog is a state of a workitem not it's type — types are tasks and bugs"*
+> Aaron: _"backlog is a state of a workitem not it's type — types are tasks and bugs"_
 
 A **work-item** has:
 
 - an **identity** — today `B-NNNN` (consensus-allocated); → a `Category.WorkItem` **ZetaId**
   (crypto-minted, conflict-free, no consensus).
-- a **type** (kind) — **`task` | `bug`** (the `WorkItem: 8` comment: *"tasks + bugs"*); the
+- a **type** (kind) — **`task` | `bug`** (the `WorkItem: 8` comment: _"tasks + bugs"_); the
   type does not change over the item's life.
 - a **state** (lifecycle) — **`backlog` | `in-progress` | `done` | `closed` | …**.
-  **"Backlog" is a STATE** (the queued/open state), *not* a type and *not* the entity. The
-  thing we migrate is the **work-item identity**; "the backlog" is a *view* of items whose
+  **"Backlog" is a STATE** (the queued/open state), _not_ a type and _not_ the entity. The
+  thing we migrate is the **work-item identity**; "the backlog" is a _view_ of items whose
   state is open.
 
 ## Where work-items sit in the G-Set / Bag / Z-set / DORA ladder
@@ -85,12 +85,12 @@ A **work-item** has:
 Same substrate as the bus (B-0954) + the git-native LGTM observability (event-sourced-obs
 ADR addendum, #6289). The four rungs map cleanly:
 
-| Layer | What | Algebra |
-|---|---|---|
-| **Work-item events** (created / typed / state-changed / closed) | ZetaId-keyed, append-only event files | **G-Set** (base; events never deleted — like the bus) |
-| **A work-item's current state** | fold of its own events → current `{type, state, …}` | a **fold** over the G-Set |
-| **"The backlog"** (open items) | items netted to an open state: `created − closed/superseded` | **Z-set view** (add = +1, close/retract = −1; the net is "open") — a *state-filter*, not a type; same shape as Ace deps |
-| **Metrics / DORA** (open bugs, tasks closed/week, lead-time, MTTR) | count/aggregate folds over the events | **Bag-folds** (the "M"imir of the git-native LGTM) |
+| Layer                                                              | What                                                         | Algebra                                                                                                                 |
+| ------------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **Work-item events** (created / typed / state-changed / closed)    | ZetaId-keyed, append-only event files                        | **G-Set** (base; events never deleted — like the bus)                                                                   |
+| **A work-item's current state**                                    | fold of its own events → current `{type, state, …}`          | a **fold** over the G-Set                                                                                               |
+| **"The backlog"** (open items)                                     | items netted to an open state: `created − closed/superseded` | **Z-set view** (add = +1, close/retract = −1; the net is "open") — a _state-filter_, not a type; same shape as Ace deps |
+| **Metrics / DORA** (open bugs, tasks closed/week, lead-time, MTTR) | count/aggregate folds over the events                        | **Bag-folds** (the "M"imir of the git-native LGTM)                                                                      |
 
 So:
 
@@ -98,7 +98,7 @@ So:
   not a type;
 - **type (task/bug)** is a field on the item, set at creation;
 - **DORA observability** (lead time = fold over `created→done` timestamps; throughput =
-  Bag-count by state/type) rides the *same* event G-Set — work-items feed the metrics layer
+  Bag-count by state/type) rides the _same_ event G-Set — work-items feed the metrics layer
   the git-native LGTM addendum (#6289) describes, no separate store.
 
 This is the unifying point: **bus, Ace, work-items, and observability are all folds over
@@ -106,8 +106,8 @@ one git-native ZetaId-keyed event substrate** — G-Set base, Z-set/Bag views.
 
 ## What already exists (verify-existing-substrate)
 
-- `Category.WorkItem = 8` — reserved ZetaId category (comment: *"tasks + bugs; B-xxxxx →
-  ZetaId migration"*). Design intent in the type; no row owned the migration until this one.
+- `Category.WorkItem = 8` — reserved ZetaId category (comment: _"tasks + bugs; B-xxxxx →
+  ZetaId migration"_). Design intent in the type; no row owned the migration until this one.
 - **B-0954** (agent-bus, landed #6283) — the proven git-native ZetaId G-Set the work-item
   event store mirrors (disjoint files, no-PR, conflict-free, cross-machine).
 - **B-0867** (workflow-engine v1) — work-items are its lifecycle objects (the state machine).
@@ -121,7 +121,7 @@ one git-native ZetaId-keyed event substrate** — G-Set base, Z-set/Bag views.
    **slug + title** alongside (ZetaId not memorable). Filename shape TBD
    (`workitems/<zetaid>.md` + slug index? `<slug>.<zetaid-short>.md`?).
 2. **type / state as first-class fields** — `type: task|bug`, `state: backlog|in-progress|
-   done|closed`; the lifecycle is the B-0867 state machine; "backlog" = a `state` value.
+done|closed`; the lifecycle is the B-0867 state machine; "backlog" = a `state` value.
 3. **Cross-references.** `depends_on`/`composes_with` move from `B-NNNN` to ZetaId or stable slug.
 4. **Backward-compat.** ~950 existing `B-NNNN` rows: **alias-and-keep** (new items ZetaId-keyed,
    legacy keep `B-NNNN` as their stable slug) — low-risk, incremental, not big-bang.

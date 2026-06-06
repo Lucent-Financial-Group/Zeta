@@ -34,7 +34,7 @@ A single question with a single answer:
 > instruction about pace, and has it been explicitly rescinded?
 
 The answer is found by searching conversation context,
-CLAUDE.md, memory files, and CURRENT-*.md files for the most
+CLAUDE.md, memory files, and CURRENT-\*.md files for the most
 recent maintainer pace instruction. The decision becomes
 mechanical:
 
@@ -43,7 +43,7 @@ mechanical:
 - Most-recent says "rest / hold / cooling period" AND not
   rescinded --> cooling-period applies; hold.
 - Unclear or competing framings --> err toward the most recent
-  *explicit* instruction from the human maintainer, not the
+  _explicit_ instruction from the human maintainer, not the
   average across framings.
 
 ## Source-filter rule
@@ -51,11 +51,11 @@ mechanical:
 Not all voices carry authorization for all decision classes.
 Filter by **authorization source** before applying recency:
 
-| Decision class | Authorized source |
-|---|---|
-| Project pace during maintainer absence | Human maintainer only |
-| Proof correctness | Formal-verification roles |
-| PR-level merge gating | CI workflow + merge queue |
+| Decision class                         | Authorized source         |
+| -------------------------------------- | ------------------------- |
+| Project pace during maintainer absence | Human maintainer only     |
+| Proof correctness                      | Formal-verification roles |
+| PR-level merge gating                  | CI workflow + merge queue |
 
 Peer-AI framings (Claude.ai, Codex, Gemini, Grok instances)
 are **ambient context** for project-pace decisions. They
@@ -101,7 +101,7 @@ from the same authorized source:
   saying "done for now" in a conversational sign-off, then
   walking it back, then saying "done for now" again, requires
   the agent to resolve which statement is the most recent
-  *pace instruction* vs. conversational leave-taking. When
+  _pace instruction_ vs. conversational leave-taking. When
   ambiguous, favor the most recent explicit pace instruction
   over conversational signals.
 
@@ -209,8 +209,8 @@ agent's disposition.
   are named in the source-filter table as future candidates,
   not current scope.
 - Does NOT replace per-tick judgment for work selection.
-  It replaces judgment-under-uncertainty about *which*
-  operative authorization applies, not *what work to do*
+  It replaces judgment-under-uncertainty about _which_
+  operative authorization applies, not _what work to do_
   once authorization is resolved.
 - Does NOT abandon the introspective check documentation
   (PR #1198). The introspective check stays as historical

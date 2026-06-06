@@ -6,8 +6,8 @@ new workflow authors (human or agent) don't have to rediscover
 the pattern every time. This doc is the **pre-write checklist**
 and the authoritative reference for reviewer gates on CI YAML.
 
-**Primary source:** GitHub Security Lab, *How to catch GitHub
-Actions workflow injections before attackers do*
+**Primary source:** GitHub Security Lab, _How to catch GitHub
+Actions workflow injections before attackers do_
 (<https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/>).
 Audit against the blog's current revision on the same cadence as
 the rest of the harness-surface audit (FACTORY-HYGIENE #38).
@@ -18,7 +18,7 @@ Any `${{ ... }}` expression expanded directly into a `run:` shell
 script can execute attacker-controlled strings if the value
 originates from an untrusted context (PR title, issue body, branch
 name, commit message, …). The expression is expanded as raw text
-*before* the shell runs, so embedded backticks / `$( )` /
+_before_ the shell runs, so embedded backticks / `$( )` /
 newlines-plus-command are evaluated as shell even if the field
 looks like plain data.
 
@@ -33,20 +33,20 @@ prevention. Everything else on this page is defence in depth.
 
 ## Untrusted context — treat as attacker-controlled
 
-| Context | Notes |
-|---|---|
-| `github.event.issue.title` / `.body` | Comes from any GitHub user. |
-| `github.event.pull_request.title` / `.body` | Comes from the PR author (often a forker). |
-| `github.event.pull_request.head_ref`, `github.head_ref` | Branch name on the PR's head. Forks control it. |
-| `github.event.pull_request.base_ref` | Less risky but still user-influenced via PR retargeting. |
-| `github.event.head_commit.message` | Commit message. Author-controlled. |
-| `github.event.commits[*].message` | Same, for push events. |
-| `github.event.comment.body` | Issue / PR / review comments. |
-| `github.event.review.body` | PR review body. |
-| `github.event.pull_request.head.label`, `.repo.html_url` | Fork-controlled strings. |
-| `github.event.workflow_run.head_branch` | Cross-workflow triggers inherit the same risk. |
-| Tag names (`github.ref` on `push` tag events) | Tag authors may be external. |
-| `workflow_dispatch` / `workflow_call` inputs | Trusted only if the caller is trusted *and* inputs are typed+validated. |
+| Context                                                  | Notes                                                                   |
+| -------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `github.event.issue.title` / `.body`                     | Comes from any GitHub user.                                             |
+| `github.event.pull_request.title` / `.body`              | Comes from the PR author (often a forker).                              |
+| `github.event.pull_request.head_ref`, `github.head_ref`  | Branch name on the PR's head. Forks control it.                         |
+| `github.event.pull_request.base_ref`                     | Less risky but still user-influenced via PR retargeting.                |
+| `github.event.head_commit.message`                       | Commit message. Author-controlled.                                      |
+| `github.event.commits[*].message`                        | Same, for push events.                                                  |
+| `github.event.comment.body`                              | Issue / PR / review comments.                                           |
+| `github.event.review.body`                               | PR review body.                                                         |
+| `github.event.pull_request.head.label`, `.repo.html_url` | Fork-controlled strings.                                                |
+| `github.event.workflow_run.head_branch`                  | Cross-workflow triggers inherit the same risk.                          |
+| Tag names (`github.ref` on `push` tag events)            | Tag authors may be external.                                            |
+| `workflow_dispatch` / `workflow_call` inputs             | Trusted only if the caller is trusted _and_ inputs are typed+validated. |
 
 Anything reaching a `run:` from these contexts without the
 env-block buffer is an injection sink.
@@ -76,7 +76,7 @@ most but not all.
       genuinely required and with extra scrutiny of every
       interpolation.
 - [ ] **Permissions minimized.** Workflow-level `permissions:
-      contents: read`. Per-job elevations only where needed
+    contents: read`. Per-job elevations only where needed
       (`pull-requests: write` for comment posters,
       `security-events: write` for SARIF uploaders, …). No
       `write-all`.
@@ -95,9 +95,8 @@ most but not all.
       pushes — every main commit deserves a record).
 - [ ] **Timeout set.** Every job declares a `timeout-minutes`. A
       stuck job is a cost and availability risk.
-- [ ] **Header comment block.** Starts with a one-paragraph purpose
-      + a `SECURITY NOTE` section enumerating *which* contexts the
-      workflow reads and *where* they are consumed. This is the
+- [ ] **Header comment block.** Starts with a one-paragraph purpose + a `SECURITY NOTE` section enumerating _which_ contexts the
+      workflow reads and _where_ they are consumed. This is the
       reviewer's first stop.
 - [ ] **No secrets in `run:` strings.** `secrets.*` is fine in
       `env:` blocks; never interpolated into a shell command.
@@ -125,15 +124,15 @@ the linters are the safety net.
    precise of the three, but also the slowest feedback loop.
 3. **Semgrep** (`lint (semgrep)` job). Fires on every PR via
    `.semgrep.yml`. Two GitHub-Actions rules:
-     - `gha-action-mutable-tag` — catches `uses: foo@v1` / `@main`
-       instead of a 40-char SHA (supply-chain vector).
-     - `gha-untrusted-in-run-line` — catches single-line
-       `run: ... ${{ github.<unsafe-path> }} ...` forms for the
-       attacker-controlled context list enumerated above (PR
-       titles, issue bodies, branch refs, commit messages, etc.).
-       Runs ahead of CodeQL, so injection is caught at PR time even
-       when CodeQL is on its weekly cadence. Multi-line `run: |`
-       blocks are left to actionlint's YAML-aware parser.
+   - `gha-action-mutable-tag` — catches `uses: foo@v1` / `@main`
+     instead of a 40-char SHA (supply-chain vector).
+   - `gha-untrusted-in-run-line` — catches single-line
+     `run: ... ${{ github.<unsafe-path> }} ...` forms for the
+     attacker-controlled context list enumerated above (PR
+     titles, issue bodies, branch refs, commit messages, etc.).
+     Runs ahead of CodeQL, so injection is caught at PR time even
+     when CodeQL is on its weekly cadence. Multi-line `run: |`
+     blocks are left to actionlint's YAML-aware parser.
 
 If all three pass, the workflow is compliant with the
 author-checkable slice of this document — the env-block buffer and

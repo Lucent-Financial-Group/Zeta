@@ -4,6 +4,7 @@ description: Aaron Otto-104 mid-tick paste of Amara's next live ferry. Dropped t
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-104 paste (verbatim preserved in full
 in the verbatim-content section below). Scheduling per
 Otto-102 scheduling-memory pattern and CC-002 discipline.
@@ -11,12 +12,14 @@ Otto-102 scheduling-memory pattern and CC-002 discipline.
 ## Why NOT inline-absorbed Otto-104
 
 Otto-104 tick already held:
+
 - 9th ferry retroactive absorb (PR #293 landing)
 - Aaron's 3 review-scope + plugin-marketplace corrections
 - Memory save for the corrections (substantial; 2nd Otto-82-
   pattern correction in one session)
 
 Adding an 11th-ferry inline absorb would:
+
 - Regress CC-002 close-on-existing discipline
 - Truncate Otto's ability to do the overlap-analysis +
   Otto-notes + scope-limits that prior ferries got (PRs
@@ -27,13 +30,13 @@ Adding an 11th-ferry inline absorb would:
 ## Schedule
 
 - **Otto-105:** absorb `drop/aurora-integration-deep-
-  research-report.md` as 10th retroactive ferry (per
+research-report.md` as 10th retroactive ferry (per
   Otto-102 scheduling memory). This finishes the drop/
   cleanup per Aaron's Otto-102 directive.
 - **Otto-106:** absorb THIS ferry (11th in absorb-sequence)
   as `docs/aurora/2026-04-24-amara-temporal-coordination-
-  detection-cartel-graph-influence-surface-ksk-11th-
-  ferry.md` with §33 archive-header format + Otto's
+detection-cartel-graph-influence-surface-ksk-11th-
+ferry.md` with §33 archive-header format + Otto's
   substantive notes + scope limits + overlap analysis
   with 5th-7th ferries (KSK material) and 8th ferry
   (adversarial/detection themes).
@@ -60,32 +63,32 @@ Adding an 11th-ferry inline absorb would:
 >
 > Core idea:
 >
-> * Honest networks = *noisy, partially independent timing*
-> * Coordinated actors = *phase alignment*
+> - Honest networks = _noisy, partially independent timing_
+> - Coordinated actors = _phase alignment_
 >
 > What you're building (implicitly) is:
 >
 > **Signal model**
 >
-> * Each node → emits event stream ( E_i(t) )
-> * Look at:
->   * cross-correlation ( C_{ij}(\tau) )
->   * phase-locking value (PLV)
->   * burst alignment windows
+> - Each node → emits event stream ( E_i(t) )
+> - Look at:
+>   - cross-correlation ( C\_{ij}(\tau) )
+>   - phase-locking value (PLV)
+>   - burst alignment windows
 >
 > **Firefly detection =**
 >
-> * Identify clusters where:
+> - Identify clusters where:
 >   [
->   \exists S \subset N \text{ such that } \forall i,j \in S,; \text{corr}(E_i, E_j) \gg \text{baseline}
->   ]
+>   > \exists S \subset N \text{ such that } \forall i,j \in S,; \text{corr}(E_i, E_j) \gg \text{baseline}
+>   > ]
 >
 > This catches:
 >
-> * oracle manipulation timing
-> * coordinated voting / slashing dodges
-> * MEV cartel timing
-> * governance brigading
+> - oracle manipulation timing
+> - coordinated voting / slashing dodges
+> - MEV cartel timing
+> - governance brigading
 >
 > ---
 >
@@ -95,8 +98,8 @@ Adding an 11th-ferry inline absorb would:
 >
 > ### A. Graph-theoretic signals
 >
-> * Build dynamic graph ( G_t = (V, E_t) )
-> * Watch for:
+> - Build dynamic graph ( G_t = (V, E_t) )
+> - Watch for:
 >
 > **Modularity spikes** — Sudden increase in tightly
 > connected subgraphs
@@ -115,16 +118,16 @@ Adding an 11th-ferry inline absorb would:
 > Cartels don't just connect — they **co-move
 > economically**. Look for:
 >
-> * stake reallocation patterns
-> * synchronized bonding/unbonding
-> * shared slashing exposure hedging
+> - stake reallocation patterns
+> - synchronized bonding/unbonding
+> - shared slashing exposure hedging
 >
 > You can model:
 >
 > [
-> \text{Cartel likelihood} \sim f(\text{temporal sync},
-> \text{graph density}, \text{economic covariance})
-> ]
+> > \text{Cartel likelihood} \sim f(\text{temporal sync},
+> > \text{graph density}, \text{economic covariance})
+> > ]
 >
 > ---
 >
@@ -141,28 +144,29 @@ Adding an 11th-ferry inline absorb would:
 > Formal-ish:
 >
 > [
-> \frac{\partial \text{ConsensusOutput}}{\partial N_i}
-> ]
+> > \frac{\partial \text{ConsensusOutput}}{\partial N_i}
+> > ]
 >
 > But more realistically:
 >
-> * Remove or perturb node ( i )
-> * Measure delta in:
->   * consensus result
->   * oracle outputs
->   * adjudication outcomes
+> - Remove or perturb node ( i )
+> - Measure delta in:
+>   - consensus result
+>   - oracle outputs
+>   - adjudication outcomes
 >
 > ### What you get:
 >
-> * **Influence map**
-> * Detection of:
->   * hidden kingmakers
->   * cartel cores
->   * fragile consensus zones
+> - **Influence map**
+> - Detection of:
+>   - hidden kingmakers
+>   - cartel cores
+>   - fragile consensus zones
 >
 > ---
 >
 > ## 4. Zeta / ZSet Integration (this is where you're
+>
 > ahead)
 >
 > Because you're using **retraction-native structures**,
@@ -170,16 +174,16 @@ Adding an 11th-ferry inline absorb would:
 >
 > ### You can:
 >
-> * simulate removal of subgraphs instantly
-> * recompute state under:
->   * node removal
->   * edge weakening
->   * stake redistribution
+> - simulate removal of subgraphs instantly
+> - recompute state under:
+>   - node removal
+>   - edge weakening
+>   - stake redistribution
 >
 > That means:
 >
-> * **cartel detection isn't just observational**
-> * it becomes **counterfactual + testable**
+> - **cartel detection isn't just observational**
+> - it becomes **counterfactual + testable**
 >
 > ---
 >
@@ -203,16 +207,17 @@ Adding an 11th-ferry inline absorb would:
 > ---
 >
 > ## 6. Governance Visibility (your Mirror / Window /
+>
 > Porch / Beacon)
 >
 > This is actually very strong conceptually.
 >
 > You're creating **layers of observability**:
 >
-> * **Mirror** → raw truth (internal metrics)
-> * **Window** → filtered system view
-> * **Porch** → participant-facing insights
-> * **Beacon** → global alerts / signals
+> - **Mirror** → raw truth (internal metrics)
+> - **Window** → filtered system view
+> - **Porch** → participant-facing insights
+> - **Beacon** → global alerts / signals
 >
 > Key insight: You don't expose raw detection; you expose
 > **interpretable projections**.
@@ -222,16 +227,18 @@ Adding an 11th-ferry inline absorb would:
 > ## 7. Current Operational Model
 >
 > ### **LFG = Canonical State**
-> * production truth
-> * validated invariants
-> * stable APIs
-> * deterministic outputs
+>
+> - production truth
+> - validated invariants
+> - stable APIs
+> - deterministic outputs
 >
 > ### **AceHack = Experimental Layer**
-> * adversarial experiments
-> * detection model iteration
-> * new heuristics
-> * unsafe / exploratory PRs
+>
+> - adversarial experiments
+> - detection model iteration
+> - new heuristics
+> - unsafe / exploratory PRs
 >
 > ### Flow:
 >
@@ -251,13 +258,15 @@ Adding an 11th-ferry inline absorb would:
 > ## 8. Claude Operational Alignment (current reality)
 >
 > Claude is now much better at:
-> * structured diffs
-> * large PR reasoning
-> * multi-file invariants
+>
+> - structured diffs
+> - large PR reasoning
+> - multi-file invariants
 >
 > Still weaker at:
-> * long-horizon architectural consistency
-> * adversarial reasoning unless explicitly prompted
+>
+> - long-horizon architectural consistency
+> - adversarial reasoning unless explicitly prompted
 >
 > Best current pattern:
 >
@@ -286,60 +295,63 @@ Adding an 11th-ferry inline absorb would:
 > ## 10. Where You Can Push Further
 >
 > ### A. Move from detection → prediction
-> * not just "cartel exists"
-> * but: "cartel is forming"; "these nodes will converge
+>
+> - not just "cartel exists"
+> - but: "cartel is forming"; "these nodes will converge
 >   in 3 epochs"
 >
 > ### B. Introduce **adversarial simulation loops**
-> * generate synthetic cartels
-> * test if system detects them
-> * auto-tune detection thresholds
+>
+> - generate synthetic cartels
+> - test if system detects them
+> - auto-tune detection thresholds
 >
 > ### C. Define a **Cartel Cost Function**
 >
 > Make coordination expensive:
 >
 > [
-> \text{Cost}_{cartel} > \text{Expected Gain}
-> ]
+> > \text{Cost}_{cartel} > \text{Expected Gain}
+> > ]
 >
 > ---
 >
 > If you want, I can next:
-> * turn this into a **formal spec doc matching your
+>
+> - turn this into a **formal spec doc matching your
 >   repo structure**
-> * or map it directly to **modules / files / PR
+> - or map it directly to **modules / files / PR
 >   structure for LFG vs AceHack**
-> * or go deeper on **network differentiability math +
+> - or go deeper on **network differentiability math +
 >   implementation approach**
 >
 > Just tell me which direction you want to lock in.
 
 ## Aaron Otto-105 attribution note (VERBATIM preserve)
 
-*"when you pull in her 11th the diffenrencable firefly
+_"when you pull in her 11th the diffenrencable firefly
 network with trivial cartel detect was my design i'm very
-interested in that."*
+interested in that."_
 
 **Attribution implication for Otto-106 absorb:**
 
 - The "differentiable firefly network" + "trivia cartel
   detect" concepts are **Aaron's design**, not Amara's
   origination.
-- Amara's 11th-ferry opener *"Got it — I'll drop that term"*
+- Amara's 11th-ferry opener _"Got it — I'll drop that term"_
   confirms Aaron asked her to drop the meme-y "Firefly"
   label; Amara's reframe to "Temporal Coordination
   Detection Layer" is her formalization of Aaron's
   existing design, not new-invention.
-- Amara's framing throughout section §1 uses *"you're
-  building"* and *"what you're referring to"* — she is
+- Amara's framing throughout section §1 uses _"you're
+  building"_ and _"what you're referring to"_ — she is
   analysing Aaron's work, not originating it.
 - Otto-106 absorb doc §Attribution MUST credit:
   - **Aaron** = designer of differentiable-firefly-network +
     trivia-cartel-detect (original concepts)
   - **Amara** = formalizer / analyst / reframing-to-
     Temporal-Coordination-Detection-Layer language
-- Aaron's *"i'm very interested in that"* flags this as
+- Aaron's _"i'm very interested in that"_ flags this as
   a priority substrate arc — not just an absorbable
   research item but a DESIGN Aaron is actively invested
   in. Otto-106 absorb should treat it as operationalization-
@@ -367,7 +379,7 @@ interested in that."*
 Per Aaron Otto-105 graduation-cadence directive + this
 attribution note: the **differentiable-firefly-network +
 trivia-cartel-detect** concept IS on the operationalization
-queue. Aaron's *"very interested"* + the Amara 11th-ferry
+queue. Aaron's _"very interested"_ + the Amara 11th-ferry
 formal framework (PLV / cross-correlation / modularity /
 eigenvector-drift / spectral-anomalies) gives both the
 design intent (Aaron) and the technical vocabulary (Amara)
@@ -376,6 +388,7 @@ for implementation.
 Scope reality-check: full implementation requires multi-
 node foundation Zeta doesn't have today. But the
 **foundational primitives** can ship incrementally:
+
 - Signal-model `E_i(t)` event-stream types (F# records)
 - Cross-correlation `C_{ij}(τ)` function (pure)
 - Phase-locking value (PLV) calculation (pure)
@@ -390,6 +403,7 @@ Zeta's ZSet substrate. Each is a graduation candidate.
 ## Otto-104 notes (compact; full notes at Otto-106 absorb)
 
 **Immediately notable:**
+
 - Amara's "drop that term" opener confirms Aaron asked
   Amara to drop "Firefly" branding; reframes as formal
   Temporal Coordination Detection Layer. No branding
@@ -418,6 +432,7 @@ routes back to Aaron at Otto-106 absorb.
 
 **Likely overlap with prior ferries (to be analysed
 fully at Otto-106):**
+
 - 5th ferry (PR #235): KSK=authorization-revocation
   membrane — §5 of this ferry ratifies with anti-cartel
   framing.
@@ -434,6 +449,7 @@ fully at Otto-106):**
   and gap #5 (provenance tooling).
 
 **NOT yet in existing ferries (genuine novelty):**
+
 - Temporal coordination detection (PLV / cross-correlation
   / burst alignment / MEV cartel timing)
 - Graph-theoretic cartel detection (modularity spikes /
@@ -446,6 +462,7 @@ fully at Otto-106):**
 - Cartel Cost Function (Cost_cartel > Expected Gain)
 
 **Composes with:**
+
 - PR #284 / Aminata 4th-pass adversarial-validity
   findings on bullshit-detector
 - Otto-102 drop/ cleanup trajectory
@@ -455,10 +472,12 @@ fully at Otto-106):**
   Claude-operational)
 
 ## Aaron's Otto-104 correction context (relevant at
+
 absorb time)
 
 Per `memory/feedback_phase_3_review_queue_narrower_than_
 otto_framing_*_2026_04_24.md` (just saved this tick):
+
 - Aaron's direction-lock-in ask at end of this ferry is
   Amara→Aaron; Otto routes back with recommendation, not
   unilateral decision.
@@ -487,10 +506,10 @@ otto_framing_*_2026_04_24.md` (just saved this tick):
 ## Otto-106 absorb plan
 
 1. Create `docs/aurora/2026-04-24-amara-temporal-
-   coordination-detection-cartel-graph-influence-surface-
-   ksk-11th-ferry.md` with §33 archive-header + verbatim
+coordination-detection-cartel-graph-influence-surface-
+ksk-11th-ferry.md` with §33 archive-header + verbatim
    content (from this memory) + Otto's substantive notes
-   + overlap analysis + scope limits.
+   - overlap analysis + scope limits.
 2. Route the direction-lock-in ask back to Aaron in the
    absorb-doc summary, with Otto's recommendation (likely
    "module map" as highest-payoff / lowest-coupling

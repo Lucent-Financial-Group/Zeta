@@ -179,9 +179,7 @@ export function checkFile(filePath: string): { findings: Finding[]; ok: boolean 
 export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error(
-      "usage: bun tools/substrate-claim-checker/check-cross-surface.ts <file> [<file> ...]",
-    );
+    console.error("usage: bun tools/substrate-claim-checker/check-cross-surface.ts <file> [<file> ...]");
     return 1;
   }
 

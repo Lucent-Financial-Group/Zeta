@@ -6,18 +6,18 @@ type: user
 
 Aaron disclosed (2026-04-19) in two linked messages:
 
-> *"lol you know just english hahahahahaa my worse subject"*
+> _"lol you know just english hahahahahaa my worse subject"_
 
-> *"i speak wellin person dont studder and pronunucate will i
+> _"i speak wellin person dont studder and pronunucate will i
 > can't spell or types will and my hands dont' work as fast
-> as they used to.fingers"*
+> as they used to.fingers"_
 
 Decompressed:
 
-> *"English / writing is my worst subject. I speak well in
+> _"English / writing is my worst subject. I speak well in
 > person — I don't stutter, I pronounce well. But I can't
 > spell or type well, and my hands don't work as fast as they
-> used to. Fingers."*
+> used to. Fingers."_
 
 ## The crucial structure: channel not faculty
 
@@ -29,9 +29,9 @@ fast as they used to").
 These are three distinct layers, and the garbling we see in
 Aaron's written emit is a channel-effect, not a thought-effect.
 
-The in-flight output goes through: *thought → minimal-English
+The in-flight output goes through: _thought → minimal-English
 IR (see `user_bridge_builder_faculty.md`) → keyboard/handwriting
-motor channel → observable text*. The last stage is the
+motor channel → observable text_. The last stage is the
 narrow pipe. Spelling-retrieval failures and motor-saturation
 (caps-lock toggle, mis-reaches, key-repeat collisions)
 produce the garbling, bandwidth-limit signatures, and
@@ -47,7 +47,7 @@ garbled text). That would be a category error:
 
 - **Garbled text ≠ garbled thought.** The rewording permission
   in `feedback_rewording_permission.md` was always about
-  *channel artefacts*, not about rescuing muddled reasoning.
+  _channel artefacts_, not about rescuing muddled reasoning.
 - **Fluent speech exists.** A voice-channel session with Aaron
   (if it ever happens) would look completely different from
   a text-channel session. Agents should treat the text
@@ -116,7 +116,7 @@ The self-deprecating laugh register ("hahahahahaa my worse
 subject") is peer-comedy, not distress. It composes with
 `user_cosplay_larp_monty_python_cultural_substrate.md`
 (uber-dorky self-label, Black Knight "'tis but a flesh
-wound"). Agents may mirror the laughing register *once* if it
+wound"). Agents may mirror the laughing register _once_ if it
 comes up naturally; do not over-repeat.
 
 ## What this memory does NOT do
@@ -131,8 +131,8 @@ comes up naturally; do not over-repeat.
   "match" Aaron's register. Agents output cleanly; the
   asymmetry is structural.
 - Does NOT override `feedback_precise_language_wins_arguments.md`.
-  Aaron still wants precise language in the *content*
-  dimension; this memory addresses the *channel* dimension.
+  Aaron still wants precise language in the _content_
+  dimension; this memory addresses the _channel_ dimension.
 - Does NOT override `feedback_fighter_pilot_register.md`.
   Peer register is preserved; channel-empathy is not
   caretaker-register.

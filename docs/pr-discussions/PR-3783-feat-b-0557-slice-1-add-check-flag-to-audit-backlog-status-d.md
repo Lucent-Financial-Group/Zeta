@@ -46,6 +46,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a CI-oriented `--check` mode to the backlog status-drift auditor and records a related hygiene tick shard.
 
 **Changes:**
+
 - Adds `--check` flag validation, help text, and exit code 65 when drift candidates exist.
 - Adds a 2026-05-16 hygiene-history tick shard documenting first real-world use of the auditor.
 
@@ -53,26 +54,31 @@ Adds a CI-oriented `--check` mode to the backlog status-drift auditor and record
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `tools/hygiene/audit-backlog-status-drift.ts` | Adds `--check` CLI handling and CI failure exit behavior. |
+| File                                             | Description                                                                   |
+| ------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `tools/hygiene/audit-backlog-status-drift.ts`    | Adds `--check` CLI handling and CI failure exit behavior.                     |
 | `docs/hygiene-history/ticks/2026/05/16/0638Z.md` | Adds a tick-history shard describing audit-tool usage and follow-up workflow. |
-
 
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/0638Z.md:32**
-* This workflow step says the B-0494 row was closed and BACKLOG regenerated, but those changes are not present in this PR: B-0494 remains open in its row file and in `docs/BACKLOG.md`. The shard should either include/land after the close-row update or avoid recording the close as completed.
+
+- This workflow step says the B-0494 row was closed and BACKLOG regenerated, but those changes are not present in this PR: B-0494 remains open in its row file and in `docs/BACKLOG.md`. The shard should either include/land after the close-row update or avoid recording the close as completed.
+
 ```
 5. **Close**: status: open → closed + Resolution section + BACKLOG.md regen
 6. **Open PR**: [PR #3781](https://github.com/Lucent-Financial-Group/Zeta/pull/3781) + arm auto-merge
 ```
+
 **docs/hygiene-history/ticks/2026/05/16/0638Z.md:53**
-* This visibility signal repeats that B-0494 was closed, but the reviewed tree still has B-0494 open. That makes the new history shard inconsistent with the repository state unless the close-row PR is merged first.
+
+- This visibility signal repeats that B-0494 was closed, but the reviewed tree still has B-0494 open. That makes the new history shard inconsistent with the repository state unless the close-row PR is merged first.
+
 ```
 - B-0494 closed via PR #3781 (first real-world use of new audit tool; pure-drift confirmed)
 ```
+
 </details>
 
 ## Review threads
@@ -102,6 +108,7 @@ This new tick shard starts with an H1, but the canonical shard schema requires t
 This records B-0494 as already closed via PR #3781, but in the reviewed tree B-0494 is still `status: open` and `docs/BACKLOG.md` still lists it as open. If the close-row PR is a separate branch, this shard should not land before that PR or it will introduce historical/status drift.
 
 This issue also appears in the following locations of the same file:
+
 - line 31
 - line 53
 

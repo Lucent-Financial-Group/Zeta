@@ -20,34 +20,34 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-27 (verbatim):
 
-> *\"we should end up shipping with one service per surface i think outside k8s and have at least 3 different vendors\"*
+> _\"we should end up shipping with one service per surface i think outside k8s and have at least 3 different vendors\"_
 
-> *\"so they can fix each other and the k8s cluster even when it's down.\"*
+> _\"so they can fix each other and the k8s cluster even when it's down.\"_
 
-> *\"the mutual repair is critical too becasue of you can see your own future self boot script failures\"*
+> _\"the mutual repair is critical too becasue of you can see your own future self boot script failures\"_
 
-> *\"yeah lets move all forward however and i can do as many iterations testing as possible before we move to pc two we should have three systemd agents and the cluster running on bootup\"*
+> _\"yeah lets move all forward however and i can do as many iterations testing as possible before we move to pc two we should have three systemd agents and the cluster running on bootup\"_
 
 Parameterizes the Phase 1 zeta-otto.nix shape (PR #5392) into a multi-vendor multi-persona substrate. Each persona = separate systemd unit; per-persona opt-in via NixOS module option.
 
 ## Refactor
 
-| File | Change |
-|---|---|
-| zeta-otto.nix | DELETED (superseded) |
-| zeta-ai-agent.nix | NEW — parameterized over persona |
-| common.nix | imports zeta-ai-agent.nix |
+| File                            | Change                                      |
+| ------------------------------- | ------------------------------------------- |
+| zeta-otto.nix                   | DELETED (superseded)                        |
+| zeta-ai-agent.nix               | NEW — parameterized over persona            |
+| common.nix                      | imports zeta-ai-agent.nix                   |
 | control-plane/configuration.nix | `zeta.aiAgents.personas.otto.enable = true` |
 
 ## Default personas (per agent-roster-reference-card)
 
-| Persona | Vendor | Binary | Sub-row |
-|---|---|---|---|
-| otto | anthropic | claude | shipped this PR |
-| alexa | alibaba-qwen | kiro | B-0850.3a (pending) |
-| riven | xai-grok | grok | B-0850.3b (pending) |
-| vera | openai | codex | B-0850.3c (pending) |
-| lior | google-gemini | gemini | B-0850.3d (pending) |
+| Persona | Vendor        | Binary | Sub-row             |
+| ------- | ------------- | ------ | ------------------- |
+| otto    | anthropic     | claude | shipped this PR     |
+| alexa   | alibaba-qwen  | kiro   | B-0850.3a (pending) |
+| riven   | xai-grok      | grok   | B-0850.3b (pending) |
+| vera    | openai        | codex  | B-0850.3c (pending) |
+| lior    | google-gemini | gemini | B-0850.3d (pending) |
 
 Each persona enable lines pre-staged + commented in control-plane/configuration.nix with sub-row IDs.
 
@@ -80,6 +80,7 @@ iter-5.5.0 substrate (PRs #5388 + #5389) · [B-0848](docs/backlog/P2/B-0848-...)
 Refactors the NixOS “Otto as systemd service” module into a parameterized, multi-persona scaffold so multiple AI agents (potentially from different vendors) can be enabled as independent systemd units outside k8s.
 
 **Changes:**
+
 - Deleted the Phase 1 single-persona module (`zeta-otto.nix`) and introduced a generalized module (`zeta-ai-agent.nix`) that generates one systemd unit per enabled persona.
 - Updated the shared NixOS module import list to pull in the new generalized module.
 - Updated the control-plane host config to enable `otto` via the new option path.
@@ -88,11 +89,11 @@ Refactors the NixOS “Otto as systemd service” module into a parameterized, m
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/nixos/modules/zeta-otto.nix | Removed the Phase 1 single-agent NixOS module (superseded by generalized module). |
-| full-ai-cluster/nixos/modules/zeta-ai-agent.nix | Added generalized NixOS module to generate per-persona AI agent systemd services. |
-| full-ai-cluster/nixos/modules/common.nix | Switched imports from the deleted module to the new generalized module. |
+| File                                                        | Description                                                                                |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| full-ai-cluster/nixos/modules/zeta-otto.nix                 | Removed the Phase 1 single-agent NixOS module (superseded by generalized module).          |
+| full-ai-cluster/nixos/modules/zeta-ai-agent.nix             | Added generalized NixOS module to generate per-persona AI agent systemd services.          |
+| full-ai-cluster/nixos/modules/common.nix                    | Switched imports from the deleted module to the new generalized module.                    |
 | full-ai-cluster/nixos/hosts/control-plane/configuration.nix | Updated host config to enable the `otto` persona via `zeta.aiAgents.personas.otto.enable`. |
 
 ## Review threads

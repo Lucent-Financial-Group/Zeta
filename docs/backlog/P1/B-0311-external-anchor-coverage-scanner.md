@@ -58,9 +58,7 @@ marker.
       "id": "HC-1",
       "class": "alignment-clause",
       "status": "anchored",
-      "anchors": [
-        { "url": "https://...", "kind": "paper", "title": "..." }
-      ]
+      "anchors": [{ "url": "https://...", "kind": "paper", "title": "..." }]
     },
     {
       "id": "BP-3",

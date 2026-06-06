@@ -13,7 +13,7 @@ Git Automation Ambiguity Fix Review
 30 Days
 Operational Fix Agreement Analysis
 A
-aar*****nd@yahoo.com
+aar**\***nd@yahoo.com
 Git Automation Ambiguity Fix Review
 Expert
 Thought for 5 seconds
@@ -36,7 +36,7 @@ What It Doesn't Change
 
 The structural vulnerability I identified—adversarial ratcheting through repeated small perturbations—still applies, just at a different layer. If the WWJD filter is itself a norm within C_t, then an attacker who wants to weaken it doesn't need to submit work that directly fails WWJD. They need to submit governance proposals that gradually shift what WWJD means in Zeta's culture—from "highest moral view considering all actors" toward something narrower, like "compliance with stated rules" or "following the letter of agreements." Each proposal individually passes WWJD because it's framed as a clarification, not a removal. Over time, the norm's content drifts.
 
-The drift bound d_C(C_{t+1}, C_t) ≤ ε_C prevents large jumps, but it doesn't prevent adversarial ratcheting through small perturbations that each individually pass all gates. The WWJD filter is subject to the same ratcheting vulnerability as any other cultural norm. The defense isn't the filter's existence—it's the governance gate, the provenance threshold, and the oracle approval around changes to the filter itself.
+The drift bound d*C(C*{t+1}, C_t) ≤ ε_C prevents large jumps, but it doesn't prevent adversarial ratcheting through small perturbations that each individually pass all gates. The WWJD filter is subject to the same ratcheting vulnerability as any other cultural norm. The defense isn't the filter's existence—it's the governance gate, the provenance threshold, and the oracle approval around changes to the filter itself.
 
 The Deeper Point
 

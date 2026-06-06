@@ -53,6 +53,7 @@ docs/backlog/P2/B-0543-...md  +1/-1 (last_updated, preemptive)
 This PR resolves three previously-raised P1 review threads by tightening the mathematical phrasing around why a Lawvere–Tierney-style lifting is obstructed (closure-operator failure, not “non-monotonicity within a context”) and by bringing backlog row frontmatter back into schema compliance via `last_updated` bumps.
 
 **Changes:**
+
 - Rewords Step 1.5 text in the research doc and its paired memory note to correctly attribute the obstruction to `A` not being a closure operator (`p ≤ A(p)` not assumed), explicitly distinguishing this from within-context monotonicity (finite-limit preservation) and from observer-context shifts.
 - Bumps `last_updated` on B-0544 to reflect a prior content edit, per backlog schema.
 - Preemptively bumps `last_updated` on B-0543 for the same schema-violation class.
@@ -61,9 +62,9 @@ This PR resolves three previously-raised P1 review threads by tightening the mat
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md | Aligns Step 1.5 obstruction wording to “closure-operator failure” and clarifies it’s distinct from within-context non-monotonicity. |
-| docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md | Replaces “observer-relative non-monotonicity” framing with precise closure-operator failure explanation, consistent with the doc’s earlier disclaimer. |
-| docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md | Updates `last_updated` to satisfy per-row backlog frontmatter rules. |
-| docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md | Updates `last_updated` preemptively for the same schema requirement. |
+| File                                                                                                                       | Description                                                                                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md   | Aligns Step 1.5 obstruction wording to “closure-operator failure” and clarifies it’s distinct from within-context non-monotonicity.                    |
+| docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md          | Replaces “observer-relative non-monotonicity” framing with precise closure-operator failure explanation, consistent with the doc’s earlier disclaimer. |
+| docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md | Updates `last_updated` to satisfy per-row backlog frontmatter rules.                                                                                   |
+| docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md       | Updates `last_updated` preemptively for the same schema requirement.                                                                                   |

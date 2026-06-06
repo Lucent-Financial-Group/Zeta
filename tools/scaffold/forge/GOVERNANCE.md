@@ -7,8 +7,8 @@ Full rationale in AGENTS.md; numbered rules here are stable references.
 
 ## §1 Scope
 
-Forge governs the *factory* (how Zeta and ace are built), not the
-*product* (what Zeta stores or what ace distributes). When a rule
+Forge governs the _factory_ (how Zeta and ace are built), not the
+_product_ (what Zeta stores or what ace distributes). When a rule
 governs product behavior, it lives in the relevant product repo.
 
 ## §2 Ownership
@@ -41,13 +41,13 @@ Every AI-authored commit must include a `Co-Authored-By` trailer
 identifying the model and harness. Without distinct trailers,
 multi-loop coordination and audit are impossible.
 
-| Harness | Trailer |
-|---------|---------|
-| Claude Code | `Co-Authored-By: Claude <noreply@anthropic.com>` |
-| OpenAI Codex | `Co-Authored-By: Codex <noreply@openai.com>` |
-| Cursor (Grok) | `Co-Authored-By: Grok <noreply@x.ai>` |
-| Kiro (Qwen) | `Co-Authored-By: Kiro <noreply@kiro.dev>` |
-| Human | git author is sufficient |
+| Harness       | Trailer                                          |
+| ------------- | ------------------------------------------------ |
+| Claude Code   | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| OpenAI Codex  | `Co-Authored-By: Codex <noreply@openai.com>`     |
+| Cursor (Grok) | `Co-Authored-By: Grok <noreply@x.ai>`            |
+| Kiro (Qwen)   | `Co-Authored-By: Kiro <noreply@kiro.dev>`        |
+| Human         | git author is sufficient                         |
 
 ## §7 PR discipline
 
@@ -72,6 +72,6 @@ move touching alignment routes through the human maintainer.
 
 ---
 
-*Numbered rules here are the stable reference targets. Full rationale
+_Numbered rules here are the stable reference targets. Full rationale
 lives in the Forge repo's `docs/` and the Zeta repo's
-[ADR 2026-04-22](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md).*
+[ADR 2026-04-22](https://github.com/Lucent-Financial-Group/Zeta/blob/main/docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md)._

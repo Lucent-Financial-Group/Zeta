@@ -53,7 +53,7 @@ Both must be snapshotted; missing either gives an incomplete picture and re-crea
 4. **Copilot has REVIEWED the latest push** (`copilot_code_review.review_on_push: true`)
 5. **Linear history** (squash only)
 
-**Human review approval is EXPLICITLY NOT required.** Both API surfaces agree: rulesets have `required_approving_review_count: 0`, and classic protection has a `required_pull_request_reviews` block (in `branch-protection-lfg-main-classic.json` lines 47-53) with the *same* `required_approving_review_count: 0`. The block exists; the count it requires is zero. Either way, no human review approval is gated. This is non-standard for typical GitHub repos.
+**Human review approval is EXPLICITLY NOT required.** Both API surfaces agree: rulesets have `required_approving_review_count: 0`, and classic protection has a `required_pull_request_reviews` block (in `branch-protection-lfg-main-classic.json` lines 47-53) with the _same_ `required_approving_review_count: 0`. The block exists; the count it requires is zero. Either way, no human review approval is gated. This is non-standard for typical GitHub repos.
 
 **Strict mode — live vs canonical divergence.** The live snapshot in `branch-protection-lfg-main-classic.json` line 5 reports `"strict": false`, so right now out-of-date branches are NOT auto-blocked from merging — "BLOCKED with green checks" is NOT a strict-mode-stale-branch issue at this point in time. However, the canonical baseline at `tools/hygiene/github-settings.expected.json` line 142 declares `default_branch_protection.required_status_checks.strict: true`. This is **settings drift** — live state diverges from the declared baseline. Two implications for triage:
 

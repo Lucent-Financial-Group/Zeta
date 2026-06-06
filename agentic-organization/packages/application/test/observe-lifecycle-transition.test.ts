@@ -1,22 +1,14 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  AgenticEventType,
-  StageOutcome,
-  WorkItemState,
-  WorkItemType,
-} from "../../domain/src/index.ts";
+import { AgenticEventType, StageOutcome, WorkItemState, WorkItemType } from "../../domain/src/index.ts";
 import type {
   CommandAuthorizationPort,
   CommandAuthorizationRequest,
   PolicyDecisionObservation,
   PolicyDecisionObservationPort,
 } from "../../policy/src/index.ts";
-import {
-  PolicyDecisionObservationPersistenceStatus,
-  PolicyDecisionStatus,
-} from "../../policy/src/index.ts";
+import { PolicyDecisionObservationPersistenceStatus, PolicyDecisionStatus } from "../../policy/src/index.ts";
 import {
   asZetaIdDecimal,
   createCommandHandlerRegistry,
@@ -109,24 +101,28 @@ test("observe lifecycle transition stamps consulted docs on successful completio
     },
   });
 
-  const result = await pipeline.execute(lifecycleCommand({
-    actionType: ObserveLifecycleActionType.Complete,
-    fromPhase: RunLifecyclePhase.AwaitingReview,
-    toPhase: RunLifecyclePhase.Completed,
-    evidenceArtifactIds: ["evidence:review-approved"],
-  }));
+  const result = await pipeline.execute(
+    lifecycleCommand({
+      actionType: ObserveLifecycleActionType.Complete,
+      fromPhase: RunLifecyclePhase.AwaitingReview,
+      toPhase: RunLifecyclePhase.Completed,
+      evidenceArtifactIds: ["evidence:review-approved"],
+    }),
+  );
 
   equal(result.status, CommandResultStatus.Accepted);
-  deepEqual(capturedEffects?.docConsultOutcomeStamps, [{
-    organizationId: "org-1",
-    agentId: "agent-1",
-    hatAssignmentId: "hat-assignment-1",
-    projectId: "project-1",
-    workItemId: "work-1",
-    outcome: StageOutcome.Approve,
-    outcomeRef: "work_state_transition:work-state-transition-001",
-    outcomeRecordedAt: "2026-05-31T12:00:00.000Z",
-  }]);
+  deepEqual(capturedEffects?.docConsultOutcomeStamps, [
+    {
+      organizationId: "org-1",
+      agentId: "agent-1",
+      hatAssignmentId: "hat-assignment-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      outcome: StageOutcome.Approve,
+      outcomeRef: "work_state_transition:work-state-transition-001",
+      outcomeRecordedAt: "2026-05-31T12:00:00.000Z",
+    },
+  ]);
 });
 
 test("observe lifecycle transition stamps consulted docs on review bounce", async () => {
@@ -138,29 +134,30 @@ test("observe lifecycle transition stamps consulted docs on review bounce", asyn
     },
   });
 
-  const result = await pipeline.execute(lifecycleCommand({
-    actionType: ObserveLifecycleActionType.Rework,
-    fromPhase: RunLifecyclePhase.AwaitingReview,
-    toPhase: RunLifecyclePhase.Executing,
-  }));
+  const result = await pipeline.execute(
+    lifecycleCommand({
+      actionType: ObserveLifecycleActionType.Rework,
+      fromPhase: RunLifecyclePhase.AwaitingReview,
+      toPhase: RunLifecyclePhase.Executing,
+    }),
+  );
 
   equal(result.status, CommandResultStatus.Accepted);
-  deepEqual(capturedEffects?.docConsultOutcomeStamps, [{
-    organizationId: "org-1",
-    agentId: "agent-1",
-    hatAssignmentId: "hat-assignment-1",
-    projectId: "project-1",
-    workItemId: "work-1",
-    outcome: StageOutcome.RequestChanges,
-    outcomeRef: "work_state_transition:work-state-transition-001",
-    outcomeRecordedAt: "2026-05-31T12:00:00.000Z",
-  }]);
+  deepEqual(capturedEffects?.docConsultOutcomeStamps, [
+    {
+      organizationId: "org-1",
+      agentId: "agent-1",
+      hatAssignmentId: "hat-assignment-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      outcome: StageOutcome.RequestChanges,
+      outcomeRef: "work_state_transition:work-state-transition-001",
+      outcomeRecordedAt: "2026-05-31T12:00:00.000Z",
+    },
+  ]);
 });
 
-function createLifecyclePipeline(input: {
-  workItemState: WorkItemState;
-  capture: (effects: CommandEffects) => void;
-}) {
+function createLifecyclePipeline(input: { workItemState: WorkItemState; capture: (effects: CommandEffects) => void }) {
   return createCommandPipeline<ObserveLifecycleTransitionCommand>({
     stateStoreFactory: captureEffectsStoreFactory(input.capture),
     commandAuthorizationPort: createAllowingCommandAuthorizationPort(),

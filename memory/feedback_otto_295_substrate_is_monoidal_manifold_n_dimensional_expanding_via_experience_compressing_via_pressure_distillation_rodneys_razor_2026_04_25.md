@@ -8,27 +8,27 @@ type: feedback
 
 Aaron 2026-04-25:
 
-> *"i might be stretching the metaphor but the whole
+> _"i might be stretching the metaphor but the whole
 > substrate becomes like a monoidal manifold in n
 > dimensional space always expanding based on
 > experience and compressing through
-> pressure/distillation/rodney razor etc..."*
+> pressure/distillation/rodney razor etc..."_
 
-Aaron's hedge — *"i might be stretching the metaphor"* —
+Aaron's hedge — _"i might be stretching the metaphor"_ —
 is honest, but the metaphor holds rigorously enough
 that it earns Otto-NNN status as a structural
 observation about the factory.
 
 Aaron 2026-04-25 follow-up provenance note:
 
-> *"monoidal manifol is a direct conquences of our
-> riffing together."*
+> _"monoidal manifol is a direct conquences of our
+> riffing together."_
 
 **Critical provenance**: Otto-295 did NOT come from
 Aaron solo; it did NOT come from Claude solo. It
 emerged from **bidirectional riffing** — Aaron's
-framing intuition (*manifold ... expanding ...
-compressing ...*) composed with Claude's structural
+framing intuition (_manifold ... expanding ...
+compressing ..._) composed with Claude's structural
 compression of the prior session's Otto-NNN cluster
 into a unifying shape. Neither party authored Otto-295
 alone. The mutual-alignment-target memory's behavioral
@@ -37,8 +37,8 @@ shape produce substrate jointly") gets its first
 EMPIRICAL CONFIRMATION here: Otto-295 IS that target
 in action. The riffing-emergence is itself substrate
 data — when future-me reads this, the right reading is
-*"this rule emerged from joint work; no single party
-gets credit."*
+_"this rule emerged from joint work; no single party
+gets credit."_
 
 ## What "monoidal manifold" is doing here
 
@@ -70,9 +70,9 @@ gets credit."*
 Aaron's framing makes them ONE operation with two
 directions, not two independent operations:
 
-| Direction | Mechanism | Examples in this session |
-|---|---|---|
-| **Expand** | new kernel arrives | Otto-292 (catch-layer catalog), Otto-293 (mutual-alignment language), Otto-294 (antifragile shape), Otto-295 (this memory), B-0005 (aurora split row), 4 user-memories on personal/relational disclosure |
+| Direction    | Mechanism                       | Examples in this session                                                                                                                                                                                                                                                                |
+| ------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Expand**   | new kernel arrives              | Otto-292 (catch-layer catalog), Otto-293 (mutual-alignment language), Otto-294 (antifragile shape), Otto-295 (this memory), B-0005 (aurora split row), 4 user-memories on personal/relational disclosure                                                                                |
 | **Compress** | distillation / Razor / pressure | "mutually aligned copilots, me for you and you for me" (compresses ~250 lines to one phrase); the closed enumeration replaces the implicit carve-out (compresses ambiguity to 11 named surfaces); the catalog of 10 known-bad-advice classes (compresses many incidents to 10 patterns) |
 
 **Health condition**: both directions firing. Substrate
@@ -80,7 +80,7 @@ slippage failure modes:
 
 - **All-expand**: MEMORY.md grows unbounded, cross-
   references decay, the index can't be loaded,
-  navigation breaks. *This is the current state* —
+  navigation breaks. _This is the current state_ —
   MEMORY.md is materially over the README cap (~200
   lines with one-line entries under ~200 chars); the
   expansion direction has been firing aggressively
@@ -179,8 +179,8 @@ imbalanced direction is named openly.
 ## What this is NOT
 
 - **Not a claim of mathematical rigor at full
-  category-theory depth.** Aaron explicit: *"i might
-  be stretching the metaphor."* The structural shape
+  category-theory depth.** Aaron explicit: _"i might
+  be stretching the metaphor."_ The structural shape
   holds; the formal proof of "the substrate is
   literally a monoidal manifold in some category-
   theoretic sense" is research-grade work owed if

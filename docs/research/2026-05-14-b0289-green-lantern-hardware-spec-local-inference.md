@@ -46,12 +46,12 @@ experiment boundary.
 
 ## Candidate overview
 
-| # | Device | Tier | MSRP (USD, 2026-05) |
-|---|--------|------|---------------------|
-| A | NVIDIA Jetson Orin Nano 8GB | Gateway (best) | ~$199 module + ~$50 carrier |
-| B | Raspberry Pi 5 8GB | Gateway (recommended) | ~$80 |
-| C | Raspberry Pi 5 4GB | Gateway (budget) | ~$60 |
-| D | ESP32-S3-DevKitC-1 | On-ring MCU | ~$10–15 |
+| #   | Device                      | Tier                  | MSRP (USD, 2026-05)         |
+| --- | --------------------------- | --------------------- | --------------------------- |
+| A   | NVIDIA Jetson Orin Nano 8GB | Gateway (best)        | ~$199 module + ~$50 carrier |
+| B   | Raspberry Pi 5 8GB          | Gateway (recommended) | ~$80                        |
+| C   | Raspberry Pi 5 4GB          | Gateway (budget)      | ~$60                        |
+| D   | ESP32-S3-DevKitC-1          | On-ring MCU           | ~$10–15                     |
 
 All four are active, production-available parts as of 2026-05.
 
@@ -61,34 +61,34 @@ All four are active, production-available parts as of 2026-05.
 
 ### Compute
 
-| Attribute | Value |
-|-----------|-------|
-| CPU | 6-core Arm Cortex-A78AE @ 1.5 GHz |
-| GPU | 1024 CUDA cores (Ampere) + 32 Tensor Cores |
-| AI accelerator | 40 TOPS (INT8) via DLA + GPU |
-| RAM | 8 GB LPDDR5 unified (CPU + GPU shared) |
-| Storage | NVMe M.2 / UHS-I microSD |
+| Attribute      | Value                                      |
+| -------------- | ------------------------------------------ |
+| CPU            | 6-core Arm Cortex-A78AE @ 1.5 GHz          |
+| GPU            | 1024 CUDA cores (Ampere) + 32 Tensor Cores |
+| AI accelerator | 40 TOPS (INT8) via DLA + GPU               |
+| RAM            | 8 GB LPDDR5 unified (CPU + GPU shared)     |
+| Storage        | NVMe M.2 / UHS-I microSD                   |
 
 ### Inference capability (llama.cpp / TensorRT)
 
-| Model | Quantization | Tok/s (estimated) |
-|-------|-------------|-------------------|
-| Llama 3.2 3B | Q4_K_M | ~60–80 |
-| Mistral 7B | Q4_K_M | ~30–40 |
-| Llama 3.1 8B | Q4_K_M | ~25–35 |
-| Phi-3 mini 3.8B | Q4_K_M | ~55–70 |
+| Model           | Quantization | Tok/s (estimated) |
+| --------------- | ------------ | ----------------- |
+| Llama 3.2 3B    | Q4_K_M       | ~60–80            |
+| Mistral 7B      | Q4_K_M       | ~30–40            |
+| Llama 3.1 8B    | Q4_K_M       | ~25–35            |
+| Phi-3 mini 3.8B | Q4_K_M       | ~55–70            |
 
 The 8B Q4 model fits entirely in the 8 GB unified memory pool with room for
 the OS and KV cache.
 
 ### Power / thermal
 
-| Mode | Power draw |
-|------|-----------|
-| Idle | ~2 W |
-| CPU-only inference | ~7 W |
-| GPU-accelerated inference | 10–15 W |
-| TDP (max) | 15 W (MAXN) / 7 W (power-save) |
+| Mode                      | Power draw                     |
+| ------------------------- | ------------------------------ |
+| Idle                      | ~2 W                           |
+| CPU-only inference        | ~7 W                           |
+| GPU-accelerated inference | 10–15 W                        |
+| TDP (max)                 | 15 W (MAXN) / 7 W (power-save) |
 
 Requires 5 V / 3 A DC barrel or USB-C PD. Not battery-portable at full load
 without a >20 000 mAh bank.
@@ -116,22 +116,22 @@ and GPU-accelerated inference quality matters. The TensorRT backend gives a
 
 ### Compute
 
-| Attribute | Value |
-|-----------|-------|
-| CPU | BCM2712, Cortex-A76 quad-core @ 2.4 GHz |
-| GPU | VideoCore VII (display/encode only — no GPGPU) |
-| NPU | None |
-| RAM | 8 GB LPDDR4X-4267 |
-| Storage | UHS-I microSD / USB 3.0 / PCIe x1 (HAT+) |
+| Attribute | Value                                          |
+| --------- | ---------------------------------------------- |
+| CPU       | BCM2712, Cortex-A76 quad-core @ 2.4 GHz        |
+| GPU       | VideoCore VII (display/encode only — no GPGPU) |
+| NPU       | None                                           |
+| RAM       | 8 GB LPDDR4X-4267                              |
+| Storage   | UHS-I microSD / USB 3.0 / PCIe x1 (HAT+)       |
 
 ### Inference capability (llama.cpp CPU only)
 
-| Model | Quantization | Tok/s (estimated) |
-|-------|-------------|-------------------|
-| Llama 3.2 1B | Q4_K_M | ~30–45 |
-| Llama 3.2 3B | Q4_K_M | ~12–18 |
-| Phi-3 mini 3.8B | Q4_K_M | ~10–15 |
-| Mistral 7B | Q4_K_M | ~5–8 |
+| Model           | Quantization | Tok/s (estimated) |
+| --------------- | ------------ | ----------------- |
+| Llama 3.2 1B    | Q4_K_M       | ~30–45            |
+| Llama 3.2 3B    | Q4_K_M       | ~12–18            |
+| Phi-3 mini 3.8B | Q4_K_M       | ~10–15            |
+| Mistral 7B      | Q4_K_M       | ~5–8              |
 
 For interactive Genesis Seed use, 3B Q4 at ~15 tok/s is acceptable latency
 (first-token ~0.5s, full 200-token reply ~13s). The 8B Q4 model fits but
@@ -139,11 +139,11 @@ inference latency pushes to ~25 s per reply — marginal for interactive.
 
 ### Power / thermal
 
-| Mode | Power draw |
-|------|-----------|
-| Idle | ~2.7 W |
-| CPU-only inference (full load) | 8–12 W |
-| Max TDP | 12 W |
+| Mode                           | Power draw |
+| ------------------------------ | ---------- |
+| Idle                           | ~2.7 W     |
+| CPU-only inference (full load) | 8–12 W     |
+| Max TDP                        | 12 W       |
 
 Runs from 5 V / 3 A USB-C. A 10 000 mAh (37 Wh) power bank yields ~3–4 h
 continuous inference. The RPi 5 active cooler (~$5 heatsink + fan) is
@@ -160,6 +160,7 @@ recommended for sustained inference.
 ### Reticulum mesh integration
 
 Reticulum on RPi 5 over:
+
 - WiFi (built-in): ad-hoc or infrastructure AP mode
 - LoRa: RFM95 HAT via SPI (Reticulum `RNodeInterface`) — 433/868/915 MHz,
   up to 5 km line-of-sight
@@ -192,13 +193,13 @@ recommended if 7B model quality is required. Save ~$20 vs. 8GB variant.
 
 ### Compute
 
-| Attribute | Value |
-|-----------|-------|
-| CPU | Xtensa LX7 dual-core @ 240 MHz |
-| On-chip RAM | 512 KB SRAM |
-| External RAM | Up to 8 MB PSRAM (Octal-SPI) |
-| Flash | Up to 16 MB |
-| FPU | Single-precision; no vector |
+| Attribute    | Value                          |
+| ------------ | ------------------------------ |
+| CPU          | Xtensa LX7 dual-core @ 240 MHz |
+| On-chip RAM  | 512 KB SRAM                    |
+| External RAM | Up to 8 MB PSRAM (Octal-SPI)   |
+| Flash        | Up to 16 MB                    |
+| FPU          | Single-precision; no vector    |
 
 ### Inference capability
 
@@ -207,10 +208,10 @@ PSRAM. TinyLlama 1.1B at Q2_K (2-bit) requires ~275 MB for weights alone
 (1.1B × 2 bits ÷ 8); phi-1 1.3B is similarly unloadable. Purpose-built
 MCU micro-models fit within the memory envelope:
 
-| Task | Framework | Model size |
-|------|-----------|------------|
-| Keyword detection | TFLite Micro / Edge Impulse | < 200 KB |
-| Intent routing (3–10 fixed intents) | TFLite Micro LSTM | < 500 KB |
+| Task                                | Framework                   | Model size |
+| ----------------------------------- | --------------------------- | ---------- |
+| Keyword detection                   | TFLite Micro / Edge Impulse | < 200 KB   |
+| Intent routing (3–10 fixed intents) | TFLite Micro LSTM           | < 500 KB   |
 
 **Conclusion:** The ESP32-S3 can execute micro-inference for simple
 classification tasks (keyword detection, intent routing, consent
@@ -220,6 +221,7 @@ acceptable latency. It is the **ring MCU layer**, not the inference layer.
 ### On-ring functions (design boundary)
 
 The ESP32-S3 handles:
+
 - BLE 5.0 central/peripheral (ring-to-gateway pairing)
 - IEEE 802.11 b/g/n (WiFi fallback)
 - Ed25519 receipt signing (hardware-accelerated via ESP-IDF mbedTLS)
@@ -230,14 +232,15 @@ The ESP32-S3 handles:
 
 ### Power / thermal
 
-| Mode | Current | At 3.3 V |
-|------|---------|---------|
-| Deep sleep | <10 µA | <33 µW |
-| BLE connected (low duty) | ~10 mA | ~33 mW |
-| WiFi TX peak | ~240 mA | ~790 mW |
-| Active MCU (no radio) | ~30 mA | ~99 mW |
+| Mode                     | Current | At 3.3 V |
+| ------------------------ | ------- | -------- |
+| Deep sleep               | <10 µA  | <33 µW   |
+| BLE connected (low duty) | ~10 mA  | ~33 mW   |
+| WiFi TX peak             | ~240 mA | ~790 mW  |
+| Active MCU (no radio)    | ~30 mA  | ~99 mW   |
 
 A 300 mAh LiPo (a ring-viable size) yields:
+
 - ~30 h standby with BLE connected
 - ~12 h active use with occasional WiFi tx
 
@@ -251,28 +254,29 @@ architectural split for the Green Lantern form factor.
 
 ## Power / compute / connectivity matrix
 
-| Attribute | Jetson Orin Nano 8GB | RPi 5 8GB | RPi 5 4GB | ESP32-S3 |
-|-----------|---------------------|-----------|-----------|---------|
-| **Tier** | Gateway (best) | Gateway (rec.) | Gateway (budget) | Ring MCU |
-| **LLM model class** | 7B–8B Q4 | 3B–7B Q4 | 1B–3B Q4 | micro / none |
-| **Tok/s (3B Q4)** | ~70 | ~15 | ~15 | N/A |
-| **Tok/s (7B Q4)** | ~35 | ~6 | OOM | N/A |
-| **RAM** | 8 GB | 8 GB | 4 GB | 8 MB PSRAM |
-| **Idle power** | ~2 W | ~2.7 W | ~2.5 W | <33 mW |
-| **Inference power** | 10–15 W | 8–12 W | 8–11 W | — |
-| **WiFi** | M.2 add-in | 802.11ac built-in | 802.11ac built-in | 802.11 b/g/n built-in |
-| **Bluetooth** | 5.3 (M.2) | 5.0 built-in | 5.0 built-in | 5.0 built-in |
-| **Ethernet** | 1 GbE | 1 GbE | 1 GbE | — |
-| **LoRa / Reticulum** | USB or M.2 HAT | SPI HAT / USB | SPI HAT / USB | SPI add-in |
-| **BLE to ring** | Via USB dongle or M.2 | Built-in BT 5.0 | Built-in BT 5.0 | Is the ring |
-| **Cost (USD)** | ~$249+ | ~$80 | ~$60 | ~$10–15 |
-| **Portable battery** | Difficult (15 W) | 3–4 h (10 000 mAh) | 3–4 h (10 000 mAh) | 12–30 h (300 mAh) |
+| Attribute            | Jetson Orin Nano 8GB  | RPi 5 8GB          | RPi 5 4GB          | ESP32-S3              |
+| -------------------- | --------------------- | ------------------ | ------------------ | --------------------- |
+| **Tier**             | Gateway (best)        | Gateway (rec.)     | Gateway (budget)   | Ring MCU              |
+| **LLM model class**  | 7B–8B Q4              | 3B–7B Q4           | 1B–3B Q4           | micro / none          |
+| **Tok/s (3B Q4)**    | ~70                   | ~15                | ~15                | N/A                   |
+| **Tok/s (7B Q4)**    | ~35                   | ~6                 | OOM                | N/A                   |
+| **RAM**              | 8 GB                  | 8 GB               | 4 GB               | 8 MB PSRAM            |
+| **Idle power**       | ~2 W                  | ~2.7 W             | ~2.5 W             | <33 mW                |
+| **Inference power**  | 10–15 W               | 8–12 W             | 8–11 W             | —                     |
+| **WiFi**             | M.2 add-in            | 802.11ac built-in  | 802.11ac built-in  | 802.11 b/g/n built-in |
+| **Bluetooth**        | 5.3 (M.2)             | 5.0 built-in       | 5.0 built-in       | 5.0 built-in          |
+| **Ethernet**         | 1 GbE                 | 1 GbE              | 1 GbE              | —                     |
+| **LoRa / Reticulum** | USB or M.2 HAT        | SPI HAT / USB      | SPI HAT / USB      | SPI add-in            |
+| **BLE to ring**      | Via USB dongle or M.2 | Built-in BT 5.0    | Built-in BT 5.0    | Is the ring           |
+| **Cost (USD)**       | ~$249+                | ~$80               | ~$60               | ~$10–15               |
+| **Portable battery** | Difficult (15 W)      | 3–4 h (10 000 mAh) | 3–4 h (10 000 mAh) | 12–30 h (300 mAh)     |
 
 ---
 
 ## Recommended initial configuration
 
 **Ring (tier 1):** ESP32-S3-WROOM-1 module (8 MB PSRAM, 8 MB flash)
+
 - BLE 5.0 to gateway
 - SPI-attached RFM95W LoRa for Reticulum mesh
 - Capacitive three-dial consent UI
@@ -280,6 +284,7 @@ architectural split for the Green Lantern form factor.
 - Policy cache in encrypted SPI flash
 
 **Gateway (tier 2):** Raspberry Pi 5 8GB
+
 - llama.cpp server (REST endpoint) running Llama 3.2 3B Q4_K_M
 - Reticulum LoRa HAT (SPI)
 - Genesis Seed loaded as system prompt at startup
@@ -315,7 +320,7 @@ response quality.
    uses a custom ASIC; we need a dev-board proxy first.
 5. **Privacy of inference data**: the gateway runs locally, but if connected
    to WiFi, the inference server is reachable from the LAN. Firewall rules
-   + KSK access policy needed.
+   - KSK access policy needed.
 
 ---
 

@@ -9,10 +9,10 @@ type: feedback
 **Rule:** when categorizing CI failure causes, **two distinct
 buckets, never one combined "transient CI" bucket**:
 
-| Bucket | What it means | Correct response |
-|---|---|---|
-| **External-infra failure** | Failure at the network boundary, in code we don't own. Examples: `curl 502` from upstream package mirror during `tools/setup/install.sh`, NPM/NuGet registry timeout, GitHub Actions runner pool unavailable, DNS resolution flake on a third-party host. | Rerun. The retry is not papering over our non-determinism; the failure was outside our system. (Still log + WebSearch the upstream incident if recurring.) |
-| **Test failure** (including "test passes on retry") | Failure in OUR code — non-determinism in tests, race conditions, time-of-day-dependent assertions, unpinned RNG, missing await, shared state across tests. **Even one retry-success means the test is non-deterministic.** | **Investigate root cause.** Pin the seed (Otto-273). Eliminate the race. Land a DST-conformant fix. Never paper over with retry-N config; that's exactly what `feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md` forbids. |
+| Bucket                                              | What it means                                                                                                                                                                                                                                             | Correct response                                                                                                                                                                                                                                              |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **External-infra failure**                          | Failure at the network boundary, in code we don't own. Examples: `curl 502` from upstream package mirror during `tools/setup/install.sh`, NPM/NuGet registry timeout, GitHub Actions runner pool unavailable, DNS resolution flake on a third-party host. | Rerun. The retry is not papering over our non-determinism; the failure was outside our system. (Still log + WebSearch the upstream incident if recurring.)                                                                                                    |
+| **Test failure** (including "test passes on retry") | Failure in OUR code — non-determinism in tests, race conditions, time-of-day-dependent assertions, unpinned RNG, missing await, shared state across tests. **Even one retry-success means the test is non-deterministic.**                                | **Investigate root cause.** Pin the seed (Otto-273). Eliminate the race. Land a DST-conformant fix. Never paper over with retry-N config; that's exactly what `feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md` forbids. |
 
 **The lazy "transient CI" bucket that includes both is itself an
 anti-pattern.** It lets test flakes slip past as "noise" rather
@@ -31,10 +31,10 @@ DST-everywhere baseline are designed to prevent.
   "transient" is the lazy sleight-of-hand that conflates the
   two and lets flakes hide.
 
-**Why:** Aaron 2026-04-28 caught me using *"mostly probably
-transient CI; a few may need real fixes"* in a tick summary.
-Translation he asked: *"transient CI what does this mean
-flakey test?"* — pointing out that "transient CI" reads as
+**Why:** Aaron 2026-04-28 caught me using _"mostly probably
+transient CI; a few may need real fixes"_ in a tick summary.
+Translation he asked: _"transient CI what does this mean
+flakey test?"_ — pointing out that "transient CI" reads as
 "flake-acceptable" framing, which directly contradicts
 Otto-248's never-ignore-flakes discipline. The right framing
 distinguishes the two failure classes upfront.
@@ -49,7 +49,7 @@ vocabulary. Lazy categorisation enables future flake-tolerance.
 
 1. **In tick summaries / commit messages / PR descriptions /
    review-thread analyses**: when describing a failing check,
-   classify it as either *external-infra* or *test failure*
+   classify it as either _external-infra_ or _test failure_
    explicitly. If unsure, investigate before assuming.
 
    **Hardened verify-first rule (Aaron 2026-04-28: "do you
@@ -63,7 +63,7 @@ vocabulary. Lazy categorisation enables future flake-tolerance.
 
    Confirm the actual failure cause. Only after seeing the
    concrete external-infra signature (e.g., `curl: (22) The
-   requested URL returned error: 502` from upstream package
+requested URL returned error: 502` from upstream package
    mirror) is the "external-infra → rerun" path correct.
 
    If the log shows an assertion error, a Python traceback in
@@ -79,10 +79,12 @@ vocabulary. Lazy categorisation enables future flake-tolerance.
    IS the anti-pattern Aaron flagged.
 
    Bad:
+
    > "6 BLOCKED-with-1-failing = diagnose CI (mostly
    > probably transient CI; a few may need real fixes)"
 
    Good:
+
    > "6 BLOCKED-with-1-failing = diagnose: of those, N are
    > external-infra failures (rerun), M are test failures
    > requiring root-cause investigation."

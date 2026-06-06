@@ -26,11 +26,11 @@ tags: [multi-ai, parallelism, experiments, event-store, projections, cqrs, names
 
 Aaron 2026-05-25 mid-iter-3-test-wait, sharpening B-0784 +
 B-0785 + B-0773 composition into a specific operational
-claim: *"this also lets AIs have experiments without stepping
+claim: _"this also lets AIs have experiments without stepping
 on each others foots and event store means experiments are
 just different views so not steeping on each other from db
 either so maxium velocity so this wiill be required soon when
-we grow."*
+we grow."_
 
 The "will be required soon when we grow" signal makes this
 operationally load-bearing — not aspirational. As Zeta AI
@@ -45,13 +45,13 @@ etc.).
 
 The substrate that eliminates the stepping-on-feet:
 
-| Layer | Substrate | Anti-stepping-on-feet property |
-|---|---|---|
-| **Per-AI namespace** (B-0784 mirror tier) | Each AI has personal mirror namespace; no consensus required to experiment | Each AI iterates freely; no peer-AI contention at type-definition layer |
-| **Per-AI experiment-ID routing** (B-0785) | Each AI's requests route to their own namespace via header | No cross-AI request interference; AI's experiment runs against AI's namespace |
-| **Event-store-native digital twin** (B-0773) | Experiments are PROJECTIONS over shared event stream; CQRS read-model fork | No DB-level interference; experiments share underlying events; differ in projection (read model) only |
-| **Per-AI branch + git-native state** (B-0747) | Each AI's work in own git branch; rebase / merge per consensus | Standard git-level isolation; well-trodden pattern |
-| **Per-AI claim coordinator** (existing B-0400 bus) | Each AI claim-acquires backlog items before working | No double-allocation of substrate work |
+| Layer                                              | Substrate                                                                  | Anti-stepping-on-feet property                                                                        |
+| -------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Per-AI namespace** (B-0784 mirror tier)          | Each AI has personal mirror namespace; no consensus required to experiment | Each AI iterates freely; no peer-AI contention at type-definition layer                               |
+| **Per-AI experiment-ID routing** (B-0785)          | Each AI's requests route to their own namespace via header                 | No cross-AI request interference; AI's experiment runs against AI's namespace                         |
+| **Event-store-native digital twin** (B-0773)       | Experiments are PROJECTIONS over shared event stream; CQRS read-model fork | No DB-level interference; experiments share underlying events; differ in projection (read model) only |
+| **Per-AI branch + git-native state** (B-0747)      | Each AI's work in own git branch; rebase / merge per consensus             | Standard git-level isolation; well-trodden pattern                                                    |
+| **Per-AI claim coordinator** (existing B-0400 bus) | Each AI claim-acquires backlog items before working                        | No double-allocation of substrate work                                                                |
 
 The combination = **maximum velocity for multi-AI parallel
 experimentation** with substrate-honest isolation at every
@@ -64,18 +64,18 @@ require COPYING DATA per experiment (separate DBs / separate
 clusters / separate schemas / etc.). The event-store-native twin
 (per B-0773) means:
 
-| Without event-store-native | With event-store-native |
-|---|---|
-| Per-experiment full data copy | Per-experiment read-model projection over shared event stream |
-| Storage cost grows linearly with N experiments | Storage cost approximately constant (one event log + N projections) |
-| Data drift between experiments | All experiments see consistent event history; differ in HOW they project |
-| New experiment = clone DB + populate | New experiment = define new projection over existing events |
-| Stopping experiment = drop DB | Stopping experiment = drop projection (events stay; can rebuild any time) |
-| Cross-experiment comparison = export-then-diff | Cross-experiment comparison = SQL-style query joining projections |
-| Time travel per experiment = restore from backup | Time travel per experiment = replay events to any timestamp |
+| Without event-store-native                       | With event-store-native                                                   |
+| ------------------------------------------------ | ------------------------------------------------------------------------- |
+| Per-experiment full data copy                    | Per-experiment read-model projection over shared event stream             |
+| Storage cost grows linearly with N experiments   | Storage cost approximately constant (one event log + N projections)       |
+| Data drift between experiments                   | All experiments see consistent event history; differ in HOW they project  |
+| New experiment = clone DB + populate             | New experiment = define new projection over existing events               |
+| Stopping experiment = drop DB                    | Stopping experiment = drop projection (events stay; can rebuild any time) |
+| Cross-experiment comparison = export-then-diff   | Cross-experiment comparison = SQL-style query joining projections         |
+| Time travel per experiment = restore from backup | Time travel per experiment = replay events to any timestamp               |
 
 For multi-AI parallel experimentation at scale (N AIs running
-M experiments each = N*M experimental branches), the event-
+M experiments each = N\*M experimental branches), the event-
 store-native projection approach is the only operationally-
 viable substrate. Aaron's existing DBSP + retraction-native
 substrate (per B-0746 + B-0428) IS exactly the event-store-

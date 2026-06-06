@@ -73,7 +73,7 @@ ID-allocation section: "do NOT use `find docs/backlog -name B-*.md`
 on the local worktree. The local working tree may be on a stale
 HEAD." That precedent is scoped to ID-allocation queries (find on
 the backlog tree); this extension generalizes the same principle to
-*any* working-tree file read post-fetch, and lands it on the
+_any_ working-tree file read post-fetch, and lands it on the
 `refresh-before-decide` surface where it auto-loads at every cold-boot.
 Substrate inventory performed per
 [`verify-existing-substrate-before-authoring.md`](verify-existing-substrate-before-authoring.md):

@@ -14,12 +14,23 @@ composes_with:
   - B-0851
   - B-0400
   - B-0812
-tags: [cluster-coordination, tmp-folder-standard, per-node-state, multi-agent, marker-files, deferred-until-needed, bus-envelope-composition, ipc, lockfile-pattern]
+tags:
+  [
+    cluster-coordination,
+    tmp-folder-standard,
+    per-node-state,
+    multi-agent,
+    marker-files,
+    deferred-until-needed,
+    bus-envelope-composition,
+    ipc,
+    lockfile-pattern,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
-Filed per operator catch on backlog discipline: *"backlog rows should alwasy be filed you are forgetful we dont have to work on it yet until after we boot with one."*
+Filed per operator catch on backlog discipline: _"backlog rows should alwasy be filed you are forgetful we dont have to work on it yet until after we boot with one."_
 
 This row is the Path A alternative B-0855 explicitly deferred. Filed NOW (not when needed) because:
 
@@ -57,13 +68,13 @@ Per Aaron's framing — `/tmp` is the agent-coordination surface (ephemeral; per
 
 ### Composes with substrate (NOT competes with)
 
-| Substrate | Composes how |
-|---|---|
+| Substrate                           | Composes how                                                                                                                                         |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Path B (Otto-pushes per B-0855)** | Path B is the SIMPLER form (single-source-of-truth for PR lifecycle); Path A adds per-node visibility for multi-agent cases without replacing Path B |
-| **Bus envelopes** (`tools/bus/`) | Bus does cross-node coordination at scope; `/tmp` does per-node state surface; bus reads/writes marker files for state propagation across nodes |
-| **B-0850 multi-vendor systemd** | Each systemd service can write its own marker; sibling services read for coordination |
-| **B-0851 persona-first scheduler** | Persona's current assignment can be advertised via `persona-<name>.state` |
-| **B-0400 claim coordinator** | The bus claim-coordinator already exists at cross-process scope; this row adds per-node-state scope as sibling |
+| **Bus envelopes** (`tools/bus/`)    | Bus does cross-node coordination at scope; `/tmp` does per-node state surface; bus reads/writes marker files for state propagation across nodes      |
+| **B-0850 multi-vendor systemd**     | Each systemd service can write its own marker; sibling services read for coordination                                                                |
+| **B-0851 persona-first scheduler**  | Persona's current assignment can be advertised via `persona-<name>.state`                                                                            |
+| **B-0400 claim coordinator**        | The bus claim-coordinator already exists at cross-process scope; this row adds per-node-state scope as sibling                                       |
 
 ## Sub-rows to file when implementing
 
@@ -80,7 +91,7 @@ Order suggestion: 1 (schema) → 2 (TS helpers) → 4 (heartbeat — simplest us
 
 ## When to implement (NOT this row's commitment)
 
-Per Aaron: *"we dont have to work on it yet until after we boot with one."*
+Per Aaron: _"we dont have to work on it yet until after we boot with one."_
 
 Trigger conditions:
 
@@ -124,7 +135,7 @@ Future-Otto cold-boots will see B-0855 (Path B; in-flight per PR #5412) AND B-08
 
 Aaron 2026-05-27 catch on backlog discipline:
 
-> *"backlog rows should alwasy be filed you are forgetful we dont have to work on it yet until after we boot with one."*
+> _"backlog rows should alwasy be filed you are forgetful we dont have to work on it yet until after we boot with one."_
 
 This row IS the application of that discipline at substrate-engineering scope. Composes with the new memory landed alongside this row:
 

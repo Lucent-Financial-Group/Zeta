@@ -67,6 +67,7 @@ The other 4 perpetual non-required-check failures remain:
 This PR fixes the perpetual `lint (§33 migration xrefs)` failure by updating stale cross-references that still point at `docs/research/<NAME>.md` to instead point at the migrated archive location `memory/persona/otto/conversations/<NAME>.md`.
 
 **Changes:**
+
 - Updated 22 xrefs across memory files, backlog rows, and a `.claude/rules` doc to the post-migration archive paths.
 - Kept changes scoped to specific known-migrated filenames (no blanket `docs/research/` rewrite).
 - Updated `memory/CURRENT-aaron.md` and related memos to reference the new archived conversation paths.
@@ -78,26 +79,27 @@ Copilot reviewed 18 out of 18 changed files in this pull request and generated 8
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| `.claude/rules/claim-acquire-before-worktree-work.md` | Updates a §33-migrated xref to the new archive location. |
-| `docs/backlog/P1/B-0003-alignment-md-rewrite.md` | Updates a migrated research xref to `memory/persona/otto/conversations/…`. |
-| `docs/backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md` | Updates the backlog-split design xref to the new archive location. |
-| `docs/backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md` | Updates a migrated conversation xref in “Composes with”. |
-| `docs/backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md` | Updates slice-1 and slice-2 landing pointers to the new archive location. |
-| `docs/backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md` | Updates the multi-agent review doc xref to the new archive location. |
-| `docs/backlog/P2/B-0001-example-schema-self-reference.md` | Updates the referenced design spec xref to the new archive location. |
-| `docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md` | Updates an Aurora cross-review xref to the new archive location. |
-| `docs/backlog/P3/B-0002-otto-287-noether-formalization.md` | Updates Noether-formalization xrefs to the new archive location. |
-| `memory/CURRENT-aaron.md` | Updates an Otto-261 audit-coverage xref to the new archive location. |
-| `memory/feedback_aaron_multi_foreground_surface_otto_activation_routines_git_tracked_approval_friction_lane_split_2026_05_13.md` | Updates canonical bootstream xrefs to the new archive location. |
-| `memory/feedback_aaron_otto_identity_stays_unified_across_surfaces_aaron_offered_split_otto_chose_one_coherent_identity_glass_halo_both_sides_2026_05_13.md` | Updates canonical bootstream xref to the new archive location. |
-| `memory/feedback_alignment_md_rewrite_matrix_pill_spread_via_rigor_2026_04_25.md` | Updates Noether-formalization xref to the new archive location. |
-| `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md` | Updates a migrated conversation xref to the new archive location. |
-| `memory/feedback_clean_mirror_not_curating_validator_agent_loop_preservation_principle_razor_runs_downstream_aaron_2026_05_05.md` | Updates a migrated conversation xref to the new archive location. |
-| `memory/feedback_loss_primitive_zeta_economics_concession_at_substrate_level_spectral_residue_chaos_internal_itron_nation_state_provenance_aaron_2026_05_05.md` | Updates a migrated conversation xref to the new archive location. |
-| `memory/feedback_multi_harness_alignment_convergence_design_future_skill_domain_aaron_2026_05_03.md` | Updates a migrated conversation xref to the new archive location. |
-| `memory/user_aaron_turtles_all_the_way_down_methodology_seeks_ultimate_generalization_2026_04_25.md` | Updates Noether-formalization xref to the new archive location. |
+| File                                                                                                                                                            | Description                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `.claude/rules/claim-acquire-before-worktree-work.md`                                                                                                           | Updates a §33-migrated xref to the new archive location.                   |
+| `docs/backlog/P1/B-0003-alignment-md-rewrite.md`                                                                                                                | Updates a migrated research xref to `memory/persona/otto/conversations/…`. |
+| `docs/backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md`                                                                    | Updates the backlog-split design xref to the new archive location.         |
+| `docs/backlog/P1/B-0239-shadow-work-as-ai-debugger-for-regular-people-product-pitch-2026-05-06.md`                                                              | Updates a migrated conversation xref in “Composes with”.                   |
+| `docs/backlog/P1/B-0313-wake-time-otto-nn-anchor-backfill.md`                                                                                                   | Updates slice-1 and slice-2 landing pointers to the new archive location.  |
+| `docs/backlog/P1/B-0400-inter-agent-ephemeral-communication-bus-nats-protocol.md`                                                                               | Updates the multi-agent review doc xref to the new archive location.       |
+| `docs/backlog/P2/B-0001-example-schema-self-reference.md`                                                                                                       | Updates the referenced design spec xref to the new archive location.       |
+| `docs/backlog/P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md`                                                                                   | Updates an Aurora cross-review xref to the new archive location.           |
+| `docs/backlog/P3/B-0002-otto-287-noether-formalization.md`                                                                                                      | Updates Noether-formalization xrefs to the new archive location.           |
+| `memory/CURRENT-aaron.md`                                                                                                                                       | Updates an Otto-261 audit-coverage xref to the new archive location.       |
+| `memory/feedback_aaron_multi_foreground_surface_otto_activation_routines_git_tracked_approval_friction_lane_split_2026_05_13.md`                                | Updates canonical bootstream xrefs to the new archive location.            |
+| `memory/feedback_aaron_otto_identity_stays_unified_across_surfaces_aaron_offered_split_otto_chose_one_coherent_identity_glass_halo_both_sides_2026_05_13.md`    | Updates canonical bootstream xref to the new archive location.             |
+| `memory/feedback_alignment_md_rewrite_matrix_pill_spread_via_rigor_2026_04_25.md`                                                                               | Updates Noether-formalization xref to the new archive location.            |
+| `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`                                 | Updates a migrated conversation xref to the new archive location.          |
+| `memory/feedback_clean_mirror_not_curating_validator_agent_loop_preservation_principle_razor_runs_downstream_aaron_2026_05_05.md`                               | Updates a migrated conversation xref to the new archive location.          |
+| `memory/feedback_loss_primitive_zeta_economics_concession_at_substrate_level_spectral_residue_chaos_internal_itron_nation_state_provenance_aaron_2026_05_05.md` | Updates a migrated conversation xref to the new archive location.          |
+| `memory/feedback_multi_harness_alignment_convergence_design_future_skill_domain_aaron_2026_05_03.md`                                                            | Updates a migrated conversation xref to the new archive location.          |
+| `memory/user_aaron_turtles_all_the_way_down_methodology_seeks_ultimate_generalization_2026_04_25.md`                                                            | Updates Noether-formalization xref to the new archive location.            |
+
 </details>
 
 ## Review threads

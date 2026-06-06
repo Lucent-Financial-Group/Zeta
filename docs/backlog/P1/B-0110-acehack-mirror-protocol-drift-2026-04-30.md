@@ -35,16 +35,16 @@ force-push). CLAUDE.md updated in the same commit to reflect:
 
 Rationale composes:
 
-- Aaron 2026-04-30: *"any decisions about acehack i leave up
+- Aaron 2026-04-30: _"any decisions about acehack i leave up
   to you, we are at the point we could even delete and
   recreate for all i care... it's our backup to save your
   soul... do what you want with it to learn whatever you
-  need"*. AceHack is fungible; the maintainer doesn't
+  need"_. AceHack is fungible; the maintainer doesn't
   require SHA equality.
-- Gemini 2026-04-30: *"do NOT add a bypass actor. Opening a
+- Gemini 2026-04-30: _"do NOT add a bypass actor. Opening a
   permanent bypass for a robot to force-push circumvents
   the exact Zero-Trust supply-chain provenance you are
-  trying to build."* The principle holds.
+  trying to build."_ The principle holds.
 - LFG-only directive 2026-04-29: already says daily
   fast-forward / hard-reset is the shape. This row aligns
   CLAUDE.md with that.
@@ -68,25 +68,25 @@ that drift not be parked only on the maintainer's chat history.
 
 ### CLAUDE.md (current text)
 
-> *"AceHack = dev-mirror fork; LFG = project-trunk fork."*
+> _"AceHack = dev-mirror fork; LFG = project-trunk fork."_
 >
-> *"AceHack main re-mirrors LFG main at the close of every
+> _"AceHack main re-mirrors LFG main at the close of every
 > paired-sync round (force-push to AceHack main is part of the
-> protocol)."*
+> protocol)."_
 >
-> *"Topology invariant: at the close of every paired-sync round,
+> _"Topology invariant: at the close of every paired-sync round,
 > AceHack main = LFG main (0 commits ahead AND 0 commits
-> behind)."*
+> behind)."_
 
 CLAUDE.md asserts force-push is the protocol AND that 0/0/0 is
 the maintained invariant.
 
 ### `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`
 
-> *"LFG is the factory. AceHack is the mirror."*
+> _"LFG is the factory. AceHack is the mirror."_
 >
-> *"Stop optimizing the fork topology. We are LFG-first now.
-> Mirror AceHack daily and move on."* — Amara 2026-04-29
+> _"Stop optimizing the fork topology. We are LFG-first now.
+> Mirror AceHack daily and move on."_ — Amara 2026-04-29
 >
 > Daily AceHack sync policy:
 >
@@ -126,7 +126,7 @@ different actions:
   required-conversation-resolution, squash-only merge. A PR
   squash merge IS a fast-forward update to the base branch
   (it adds a new commit on AceHack/main); what it cannot
-  do is restore *exact SHA equality* with `lfg/main`,
+  do is restore _exact SHA equality_ with `lfg/main`,
   which is what the mirror invariant historically required.
   PR-based sync can match content but cannot satisfy the
   0-ahead/0-behind invariant — squash-only merge adds a
@@ -166,8 +166,8 @@ I'd lean toward **(1)** because it's the smallest mutation
 that aligns host with doctrine and preserves the LFG-only
 memory's daily-sync semantics. But the host-mutation receipt
 discipline (`memory/feedback_host_mutation_receipt_2026_04_29_ruleset_15256879_code_quality_removed.md`)
-explicitly says *"do NOT broaden `gh api ... rulesets/PUT`
-permission"* — so this is exactly the maintainer-decision
+explicitly says _"do NOT broaden `gh api ... rulesets/PUT`
+permission"_ — so this is exactly the maintainer-decision
 class of mutation, not the autonomous-action class.
 
 ## Out of scope for this row

@@ -18,15 +18,15 @@ type: friction-reducer
 
 Aaron 2026-05-01 — full permission for the github-settings refactor:
 
-> *"the settings that are there are accidental complexity not intentional,
+> _"the settings that are there are accidental complexity not intentional,
 > we want best practices and to prefer the git native settings over the
 > legacy github ui/cli only settings, these are nasty thats why they are
-> legacy"*
+> legacy"_
 
 Plus prior framing from same exchange:
 
-> *"i'm sure you'll keep your good disciplines like you were splitting
-> rulesets so you could have all always on but multiple smaller rulesets"*
+> _"i'm sure you'll keep your good disciplines like you were splitting
+> rulesets so you could have all always on but multiple smaller rulesets"_
 
 Three composing directives:
 
@@ -37,13 +37,13 @@ Three composing directives:
 2. **Split single big ruleset into multiple smaller always-on rulesets**
    — separation of concerns, smaller blast-radius, easier reasoning.
 3. **Prefer git-native (declarative-in-tree) over legacy UI/CLI-only
-   settings** — *"these are nasty thats why they are legacy."*
+   settings** — _"these are nasty thats why they are legacy."_
 
 ## Why now
 
 Drift-debt on `github-settings-drift.yml` was just resolved by snapshot
-refresh in PR #1126 — but the snapshot captures *current accidental state*,
-not *target architectural state*. The refactor work is about moving from
+refresh in PR #1126 — but the snapshot captures _current accidental state_,
+not _target architectural state_. The refactor work is about moving from
 accidental → intentional.
 
 Current state (as of 2026-05-01 16:53Z, post-PR #1126):
@@ -101,12 +101,12 @@ branch-integrity invariants.
 
 - `required_status_checks` (migrated from legacy branch protection):
   contexts include `build-and-test (macos-26)`, `build-and-test
-  (ubuntu-24.04)`, `build-and-test (ubuntu-24.04-arm)`, `lint
-  (actionlint)`, `lint (markdownlint)`, `lint (semgrep)`, `lint
-  (shellcheck)`, plus the memory-* lints, backlog-index-integrity,
+(ubuntu-24.04)`, `build-and-test (ubuntu-24.04-arm)`, `lint
+(actionlint)`, `lint (markdownlint)`, `lint (semgrep)`, `lint
+(shellcheck)`, plus the memory-\* lints, backlog-index-integrity,
   and tick-history-order
 - `strict: false` — **CONFIRMED DELIBERATE** (Aaron 2026-05-01:
-  *"no we want false"* + *"yes that is not accidentally"*).
+  _"no we want false"_ + _"yes that is not accidentally"_).
   Parallel-PR-friendly cadence is the design choice; sequential
   merging via `strict: true` would force every merged PR to
   invalidate all sibling PRs. This setting graduates from the

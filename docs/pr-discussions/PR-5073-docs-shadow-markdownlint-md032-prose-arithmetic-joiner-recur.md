@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per Aaron 2026-05-25 framing — *"reoccuring failures belong in shadow logs for class identification"* — this PR lands the shadow-lesson log for the markdownlint MD032 prose-arithmetic-joiner failure class observed on PR #5068.
+Per Aaron 2026-05-25 framing — _"reoccuring failures belong in shadow logs for class identification"_ — this PR lands the shadow-lesson log for the markdownlint MD032 prose-arithmetic-joiner failure class observed on PR #5068.
 
 ## Empirical anchor
 

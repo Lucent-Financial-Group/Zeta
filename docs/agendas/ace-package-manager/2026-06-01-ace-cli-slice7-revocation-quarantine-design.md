@@ -182,18 +182,18 @@ slice 7.
 
 ## Error handling
 
-| Situation | Behavior |
-| --- | --- |
-| Missing `<name>@<version>` or `--key` | Parse error |
-| `<name>@<version>` not splittable (no `@`, empty part) | Parse error |
-| `--out` missing / unparseable | Hard error (cannot mark; no silent reset) |
-| `--out` signature does not verify under `--key` | Hard error (not your index) |
-| `quarantine` a version already `revoked` | Hard error (revoked is terminal) |
-| `unquarantine` a version not currently quarantined | Hard error |
-| Round-trip self-verify fails | Hard error — index NOT written |
-| Consumer: resolve/install a `revoked` version | Refuse (`"revoked"`; always) |
-| Consumer: resolve/install a `quarantined` version | Refuse (`"quarantined"`) unless `--allow-quarantined` |
-| Consumer: lockfile pins a now-`revoked` version | `ace install` refuses (revocation overrides pin) |
+| Situation                                              | Behavior                                              |
+| ------------------------------------------------------ | ----------------------------------------------------- |
+| Missing `<name>@<version>` or `--key`                  | Parse error                                           |
+| `<name>@<version>` not splittable (no `@`, empty part) | Parse error                                           |
+| `--out` missing / unparseable                          | Hard error (cannot mark; no silent reset)             |
+| `--out` signature does not verify under `--key`        | Hard error (not your index)                           |
+| `quarantine` a version already `revoked`               | Hard error (revoked is terminal)                      |
+| `unquarantine` a version not currently quarantined     | Hard error                                            |
+| Round-trip self-verify fails                           | Hard error — index NOT written                        |
+| Consumer: resolve/install a `revoked` version          | Refuse (`"revoked"`; always)                          |
+| Consumer: resolve/install a `quarantined` version      | Refuse (`"quarantined"`) unless `--allow-quarantined` |
+| Consumer: lockfile pins a now-`revoked` version        | `ace install` refuses (revocation overrides pin)      |
 
 ## Testing
 
@@ -241,6 +241,6 @@ Out of scope:
 - `tools/ace/registry-remote.ts` — `parseIndex` v2 + `loadRegistries` mark union-merge.
 - `tools/ace/resolve.ts` — revoked/quarantined gates + reasons + `allowQuarantined`.
 - `tools/ace/ace.ts` — revoke/quarantine/unquarantine subcommands; install `--allow-quarantined`
-  + lockfile re-check; publish carry-forward wiring.
+  - lockfile re-check; publish carry-forward wiring.
 - `tools/ace/{ace,registry-publish,registry-remote,resolve}.test.ts` — tests above.
 - `.claude/skills/ace/SKILL.md` — document slice 7.

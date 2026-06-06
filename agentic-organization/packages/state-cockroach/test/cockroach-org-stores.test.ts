@@ -17,14 +17,32 @@ function fakeExecutor(): {
   const bindings = new Map<string, Record<string, unknown>>();
   const statements: { name: string; sql: string; parameters: readonly unknown[] }[] = [];
 
-  const execute = async <Row = Record<string, unknown>>(s: { name: string; sql: string; parameters: readonly unknown[] }): Promise<{ rows: readonly Row[] }> => {
+  const execute = async <Row = Record<string, unknown>>(s: {
+    name: string;
+    sql: string;
+    parameters: readonly unknown[];
+  }): Promise<{ rows: readonly Row[] }> => {
     statements.push(s);
     const p = s.parameters;
     if (s.name === "append_org_event") {
       orgEvents.push({
-        org_event_id: p[0], kind: p[1], organization_id: p[2], actor_hat_id: p[3], actor_agent_id: p[4], department_id: p[5],
-        subject_id: p[6], from_state: p[7], to_state: p[8], transition_context: p[9], decision: p[10], supervisor_chain: p[11], evidence_refs: p[12],
-        correlation_id: p[13], causation_id: p[14], trace_id: p[15], occurred_at: p[16],
+        org_event_id: p[0],
+        kind: p[1],
+        organization_id: p[2],
+        actor_hat_id: p[3],
+        actor_agent_id: p[4],
+        department_id: p[5],
+        subject_id: p[6],
+        from_state: p[7],
+        to_state: p[8],
+        transition_context: p[9],
+        decision: p[10],
+        supervisor_chain: p[11],
+        evidence_refs: p[12],
+        correlation_id: p[13],
+        causation_id: p[14],
+        trace_id: p[15],
+        occurred_at: p[16],
       });
       return { rows: [] };
     }
@@ -36,14 +54,33 @@ function fakeExecutor(): {
     }
     if (s.name === "upsert_hat_binding") {
       bindings.set(String(p[0]), {
-        binding_id: p[0], hat_id: p[1], organization_id: p[2], wearer_agent_id: p[3], phase: p[4],
-        bound_at: p[5], warmup_ends_at: p[6], expires_at: p[7], activated_at: p[8], ended_at: p[9], cooldown_until: p[10], reason: p[11],
+        binding_id: p[0],
+        hat_id: p[1],
+        organization_id: p[2],
+        wearer_agent_id: p[3],
+        phase: p[4],
+        bound_at: p[5],
+        warmup_ends_at: p[6],
+        expires_at: p[7],
+        activated_at: p[8],
+        ended_at: p[9],
+        cooldown_until: p[10],
+        reason: p[11],
       });
       return { rows: [] };
     }
     if (s.name === "list_active_hat_bindings") {
-      const nonTerminal = new Set<string>([HatBindingPhase.Pending, HatBindingPhase.Warmup, HatBindingPhase.Active, HatBindingPhase.Probation]);
-      return { rows: [...bindings.values()].filter((b) => b.organization_id === p[0] && nonTerminal.has(String(b.phase))) as Row[] };
+      const nonTerminal = new Set<string>([
+        HatBindingPhase.Pending,
+        HatBindingPhase.Warmup,
+        HatBindingPhase.Active,
+        HatBindingPhase.Probation,
+      ]);
+      return {
+        rows: [...bindings.values()].filter(
+          (b) => b.organization_id === p[0] && nonTerminal.has(String(b.phase)),
+        ) as Row[],
+      };
     }
     if (s.name === "list_all_hat_bindings") {
       return { rows: [...bindings.values()].filter((b) => b.organization_id === p[0]) as Row[] };
@@ -51,16 +88,30 @@ function fakeExecutor(): {
     return { rows: [] };
   };
 
-  return { executor: { execute, executeTransaction: async (op) => op({ execute }) } as CockroachGenericSqlExecutor, orgEvents, statements };
+  return {
+    executor: { execute, executeTransaction: async (op) => op({ execute }) } as CockroachGenericSqlExecutor,
+    orgEvents,
+    statements,
+  };
 }
 
 function sampleEvent(): OrgEvent {
   return {
-    id: "evt-1", kind: OrgEventKind.PriorityDecision, occurredAt: "2026-05-30T09:00:00.000Z", organizationId: "org-1",
-    actorHatId: "engineering_director", departmentId: "engineering", subjectId: "wi-1", toState: "high",
+    id: "evt-1",
+    kind: OrgEventKind.PriorityDecision,
+    occurredAt: "2026-05-30T09:00:00.000Z",
+    organizationId: "org-1",
+    actorHatId: "engineering_director",
+    departmentId: "engineering",
+    subjectId: "wi-1",
+    toState: "high",
     transitionContext: { kind: "document_lifecycle", loadBearing: false },
-    decision: "director set wi-1 to high", supervisorChain: ["executive_board_member", "cto", "engineering_director"],
-    evidenceRefs: ["evidence-A"], correlationId: "c", causationId: "c", traceId: "t",
+    decision: "director set wi-1 to high",
+    supervisorChain: ["executive_board_member", "cto", "engineering_director"],
+    evidenceRefs: ["evidence-A"],
+    correlationId: "c",
+    causationId: "c",
+    traceId: "t",
   };
 }
 
@@ -201,11 +252,23 @@ test("hat bindings upsert and list-active excludes terminal phases", async () =>
   const { executor } = fakeExecutor();
   const store = createCockroachHatBindingStore({ executor });
   const base: HatBinding = {
-    id: "b-1", hatId: "backend_implementer", organizationId: "org-1", wearerAgentId: "agent-A",
-    phase: HatBindingPhase.Active, boundAt: "2026-05-30T09:00:00.000Z", warmupEndsAt: "2026-05-30T09:00:05.000Z", expiresAt: "2026-05-30T09:02:00.000Z",
+    id: "b-1",
+    hatId: "backend_implementer",
+    organizationId: "org-1",
+    wearerAgentId: "agent-A",
+    phase: HatBindingPhase.Active,
+    boundAt: "2026-05-30T09:00:00.000Z",
+    warmupEndsAt: "2026-05-30T09:00:05.000Z",
+    expiresAt: "2026-05-30T09:02:00.000Z",
   };
   await store.upsert(base);
-  await store.upsert({ ...base, id: "b-2", phase: HatBindingPhase.Expired, endedAt: "2026-05-30T09:02:00.000Z", cooldownUntil: "2026-05-30T09:02:20.000Z" });
+  await store.upsert({
+    ...base,
+    id: "b-2",
+    phase: HatBindingPhase.Expired,
+    endedAt: "2026-05-30T09:02:00.000Z",
+    cooldownUntil: "2026-05-30T09:02:20.000Z",
+  });
 
   const active = await store.listActive("org-1");
   equal(active.length, 1); // expired excluded
@@ -221,8 +284,14 @@ test("upsert transitions a binding's phase in place", async () => {
   const { executor } = fakeExecutor();
   const store = createCockroachHatBindingStore({ executor });
   const b: HatBinding = {
-    id: "b-1", hatId: "ceo", organizationId: "org-1", wearerAgentId: "agent-A",
-    phase: HatBindingPhase.Warmup, boundAt: "2026-05-30T09:00:00.000Z", warmupEndsAt: "2026-05-30T09:00:15.000Z", expiresAt: "2026-05-30T09:06:00.000Z",
+    id: "b-1",
+    hatId: "ceo",
+    organizationId: "org-1",
+    wearerAgentId: "agent-A",
+    phase: HatBindingPhase.Warmup,
+    boundAt: "2026-05-30T09:00:00.000Z",
+    warmupEndsAt: "2026-05-30T09:00:15.000Z",
+    expiresAt: "2026-05-30T09:06:00.000Z",
   };
   await store.upsert(b);
   await store.upsert({ ...b, phase: HatBindingPhase.Active, activatedAt: "2026-05-30T09:00:15.000Z" });

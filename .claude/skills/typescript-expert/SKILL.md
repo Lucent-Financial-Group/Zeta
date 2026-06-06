@@ -54,24 +54,30 @@ of that line.
 
 ### Structural typing, not nominal
 
-Two types are compatible when their *shapes* match, not
-their *names*. This is a blessing (duck-typing works
+Two types are compatible when their _shapes_ match, not
+their _names_. This is a blessing (duck-typing works
 "correctly" with compile-time safety) and a curse
 (accidental compatibility — two unrelated types happen
 to have the same fields — compiles cleanly).
 
 ```typescript
-interface Point2D { x: number; y: number }
-interface Vec2    { x: number; y: number }
-const p: Point2D = { x: 1, y: 2 }
-const v: Vec2 = p   // fine — structurally identical
+interface Point2D {
+  x: number;
+  y: number;
+}
+interface Vec2 {
+  x: number;
+  y: number;
+}
+const p: Point2D = { x: 1, y: 2 };
+const v: Vec2 = p; // fine — structurally identical
 ```
 
 Nominal discipline when you need it: "branding" via
 phantom type tags.
 
 ```typescript
-type UserId = string & { readonly _brand: unique symbol }
+type UserId = string & { readonly _brand: unique symbol };
 ```
 
 ### `strict` is not optional for new code
@@ -99,14 +105,14 @@ silently wrong" that is not worth the productivity of the
 ### Discriminated unions + narrowing
 
 ```typescript
-type Shape =
-  | { kind: "circle"; radius: number }
-  | { kind: "square"; side:   number }
+type Shape = { kind: "circle"; radius: number } | { kind: "square"; side: number };
 
 function area(s: Shape): number {
   switch (s.kind) {
-    case "circle": return Math.PI * s.radius ** 2
-    case "square": return s.side ** 2
+    case "circle":
+      return Math.PI * s.radius ** 2;
+    case "square":
+      return s.side ** 2;
   }
 }
 ```
@@ -123,7 +129,7 @@ the TS equivalent of F# discriminated-union warnings.
 
 ### `satisfies` — the 4.9 addition
 
-Validates a value against a type *without* widening the
+Validates a value against a type _without_ widening the
 value to the type. Preserves literal types for later
 inference.
 
@@ -131,7 +137,7 @@ inference.
 const config = {
   port: 8080,
   mode: "dev",
-} satisfies Config   // type inferred narrowly; validated against Config
+} satisfies Config; // type inferred narrowly; validated against Config
 ```
 
 ### Template literal + conditional + mapped types
@@ -151,7 +157,7 @@ like a Haskell prelude, retreat.
 
 ## Structural variance — where TS diverges from `C#`
 
-TypeScript computes variance *structurally* based on how
+TypeScript computes variance _structurally_ based on how
 a type parameter is used. There are no `in` / `out`
 declarations. This means:
 
@@ -224,7 +230,7 @@ When it lands, this skill is the hat.
   tags where identity matters (`UserId`, `OrderId`).
 - **Bivariant method parameters.** Methods, not function
   properties; still bivariant. Prefer `readonly fn: (x:
-  T) => U` over `fn(x: T): U` when variance matters.
+T) => U` over `fn(x: T): U` when variance matters.
 - **`as` casts silently.** `as` is a compile-time lie;
   `unknown` + runtime check is honest.
 - **`noUncheckedIndexedAccess` off** produces
@@ -246,12 +252,15 @@ When this skill is on a review:
 ## TypeScript Findings
 
 ### P0 (`any` / cast escapes / unsound variance)
+
 - <finding> — <file:line>.
 
 ### P1 (tsconfig / module-resolution / declaration)
+
 - <finding> — <file:line>.
 
 ### P2 (idiom / readability / narrowing opportunity)
+
 - <finding>.
 ```
 
@@ -277,9 +286,9 @@ When this skill is on a review:
 
 ## Reference patterns
 
-- *TypeScript Handbook* (typescriptlang.org/docs).
-- *Effective TypeScript* — Dan Vanderkam.
-- *Type-level TypeScript* — Gabriel Vergnaud.
+- _TypeScript Handbook_ (typescriptlang.org/docs).
+- _Effective TypeScript_ — Dan Vanderkam.
+- _Type-level TypeScript_ — Gabriel Vergnaud.
 - TypeScript release notes (each minor version adds
   meaningful type-level machinery; skim every release).
 - `@total-typescript/ts-reset` — opinionated runtime

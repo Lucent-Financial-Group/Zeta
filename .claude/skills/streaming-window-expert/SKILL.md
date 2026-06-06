@@ -84,7 +84,7 @@ T₀, drop with a side-output for audit.
 
 ## Session-window specifics
 
-Session windows are *dynamic* — boundaries emerge from
+Session windows are _dynamic_ — boundaries emerge from
 data. Two complications:
 
 - **Merging.** A new event can merge two previously-
@@ -163,9 +163,9 @@ refuses.
 
 ## Reference patterns
 
-- Akidau et al. 2015, *The Dataflow Model* (Google).
+- Akidau et al. 2015, _The Dataflow Model_ (Google).
 - Apache Flink windowing docs.
-- Apache Beam *Streaming Systems* by Akidau, Chernyak,
+- Apache Beam _Streaming Systems_ by Akidau, Chernyak,
   Lax.
 - Materialize windowing docs.
 - `.claude/skills/streaming-incremental-expert/SKILL.md` —

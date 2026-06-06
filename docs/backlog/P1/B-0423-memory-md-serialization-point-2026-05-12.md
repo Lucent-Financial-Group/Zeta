@@ -35,7 +35,7 @@ cadence could drain it.
 
 The rest of the factory substrate is append-only / merge-
 tolerant by design (memory files, docs/research, backlog,
-ticks). MEMORY.md is uniquely *top-of-file-prepend*, which
+ticks). MEMORY.md is uniquely _top-of-file-prepend_, which
 forces serialization.
 
 ## Architectural fix candidates
@@ -164,7 +164,7 @@ cluster); document the pattern in tick shards.
 ## Aaron 2026-05-12 calibration
 
 Aaron 2026-05-12 acknowledged the architectural observation:
-*"exceptional insight this is WHY max effort"* — confirming
+_"exceptional insight this is WHY max effort"_ — confirming
 both the depth of the architectural critique and the
 justification for the substrate-grade max-effort work needed
 to resolve it correctly (rather than papering over with

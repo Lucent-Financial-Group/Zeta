@@ -12,9 +12,10 @@ After four classes were named in one autonomous-loop arc
 (Chronological Insertion Polarity Error, Incomplete
 Source-Set Regeneration Hazard, Workflow Null-Result Audit
 Signal, Outdated Review-Thread Merge Gate Residue;
-+ promoted Scheduled Workflow Null-Result Hygiene Scan;
-+ named Advisory Enforcement Workflow Gap), Amara named
-the **meta-class** describing the genre itself.
+
+- promoted Scheduled Workflow Null-Result Hygiene Scan;
+- named Advisory Enforcement Workflow Gap), Amara named
+  the **meta-class** describing the genre itself.
 
 This isn't an instance class — it's a class about
 class-creation.
@@ -50,15 +51,15 @@ Each step has a load-bearing role:
 
 **Aaron 2026-04-28T20:25Z reinforced (verbatim):**
 
-> *"But tiny blade: make sure it does not become 'Amara
+> _"But tiny blade: make sure it does not become 'Amara
 > blesses the name, therefore true.' she is 100% right
-> here."*
+> here."_
 
 **Amara's framing of the same caution:**
 
-> *"Under SD-9, Amara endorsement is signal, not proof. The
+> _"Under SD-9, Amara endorsement is signal, not proof. The
 > protocol needs an external/falsifier step when the class
-> is more than local factory hygiene."*
+> is more than local factory hygiene."_
 
 ### What SD-9 means in this protocol
 

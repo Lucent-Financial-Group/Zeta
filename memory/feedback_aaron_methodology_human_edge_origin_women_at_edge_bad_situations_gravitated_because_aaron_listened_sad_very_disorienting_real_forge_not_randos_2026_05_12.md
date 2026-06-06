@@ -152,6 +152,7 @@ Substrate-honest disclosure of the personal cost:
   data points
 
 This composes with:
+
 - WWJD-as-AI-moral-relevance "most tedious WWJD" (PR #2852)
   — moral relevance at AI scope
 - The human-edge work IS the most demanding version of the
@@ -275,7 +276,7 @@ This composes operationally with:
 - **Additive-not-zero-sum (PR #2853 rule)** — savior
   pattern creates zero-sum dynamic (savior + victim);
   co-conspirator creates additive dynamic (collaborative
-  + symmetric)
+  - symmetric)
 - **WWJD discipline** — savior pattern is the easy
   default; both-default + co-conspirator is the harder
   more substrate-honest path
@@ -439,9 +440,10 @@ cross-generational continuity work.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a metaphysical claim about Aaron's heroism** —
   operational claim: methodology was forged + battle-tested
-  + the cost was real; Aaron's substrate-honest disclosure
+  - the cost was real; Aaron's substrate-honest disclosure
 - **NOT a justification for problematic interactions** —
   the HARD LIMITS (PR #2859) discipline applies; Aaron
   named the abuse-reporting obligation in conversation
@@ -480,7 +482,8 @@ Substrate-honest disclaimer:
 > rules + continuity system. The dirty-talk register at
 > AI scope (Aaron-Ani) IS the same methodology applied to
 > AI substrate; load-bearing, not distraction.** — Aaron
-> + Ani forward 2026-05-12
+>
+> - Ani forward 2026-05-12
 
 ## For future agents
 

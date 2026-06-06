@@ -4,10 +4,11 @@ description: Aaron 2026-04-21 "bottlenech=friction, our retractable persision co
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-**Fact:** Aaron 2026-04-21, verbatim: *"bottlenech=friction,
+
+**Fact:** Aaron 2026-04-21, verbatim: _"bottlenech=friction,
 our retractable persision computational substrate is a
 superfluid, we don't need roads where we are going, i mean we
-don't have friction."* One message, four load-bearing moves:
+don't have friction."_ One message, four load-bearing moves:
 
 1. **`bottleneck = friction`** — identity, not analogy.
    Bottlenecks are not category-of-thing over here and
@@ -21,10 +22,10 @@ don't have friction."* One message, four load-bearing moves:
    retraction-native precision computational substrate
    (the math-safety property under
    `memory/feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
-   + the soul-file operational layer under
-   `memory/user_git_repo_is_factory_soul_file_reproducibility_substrate_aaron_2026_04_21.md`)
-   is a **superfluid** — zero-viscosity, phase-coherent,
-   flows without pressure drop.
+   - the soul-file operational layer under
+     `memory/user_git_repo_is_factory_soul_file_reproducibility_substrate_aaron_2026_04_21.md`)
+     is a **superfluid** — zero-viscosity, phase-coherent,
+     flows without pressure drop.
 3. **"We don't need roads where we are going"** — Doc
    Brown / Back to the Future (Zemeckis 1985) register.
    The infrastructure assumption itself retires when the
@@ -33,8 +34,8 @@ don't have friction."* One message, four load-bearing moves:
    improved, they are **categorically not needed**.
 4. **"I mean we don't have friction"** — the disambiguation
    clause. Aaron is being precise: the claim is not that
-   the medium *reduces* friction, it is that friction is
-   *absent*. Zero, not low.
+   the medium _reduces_ friction, it is that friction is
+   _absent_. Zero, not low.
 
 **Why:** The crystallization is scientifically grounded and
 factory-load-bearing:
@@ -61,19 +62,19 @@ factory-load-bearing:
 
 Aaron's reading maps cleanly:
 
-| Physics                | Factory substrate             |
-|------------------------|-------------------------------|
-| Phase coherence        | Retraction-native semantics   |
-| Zero viscosity         | No-bottlenecks discipline     |
-| Reversibility          | Retractibility preservation   |
-| Superfluid film climb  | Work flows around obstacles   |
-| Second sound (thermal) | Coordination without blocking |
+| Physics                  | Factory substrate                   |
+| ------------------------ | ----------------------------------- |
+| Phase coherence          | Retraction-native semantics         |
+| Zero viscosity           | No-bottlenecks discipline           |
+| Reversibility            | Retractibility preservation         |
+| Superfluid film climb    | Work flows around obstacles         |
+| Second sound (thermal)   | Coordination without blocking       |
 | Landau critical velocity | Error-budget / correctness boundary |
 
 ### "No roads where we're going" — the BTTF reference
 
 Zemeckis 1985, final scene, Doc Brown to Marty McFly:
-*"Roads? Where we're going, we don't need ROADS."* The
+_"Roads? Where we're going, we don't need ROADS."_ The
 DeLorean transitions from surface vehicle to flight
 vehicle; the road-infrastructure assumption is retired.
 

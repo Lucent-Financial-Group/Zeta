@@ -25,11 +25,7 @@
 import { spawnSync } from "node:child_process";
 import { publish } from "../bus/bus";
 import { AGENT_IDS, SENDER_IDS, type AgentId, type MessageEnvelope, type SenderAgentId } from "../bus/types";
-import {
-  openRecoveryPR,
-  type RecoveryAdapters,
-  type RecoveryResult,
-} from "./missed-substrate-recovery";
+import { openRecoveryPR, type RecoveryAdapters, type RecoveryResult } from "./missed-substrate-recovery";
 
 export type DetectorConfig = {
   pollIntervalMin: number;
@@ -102,11 +98,7 @@ export type Adapters = {
    * sub-adapters (see `REAL_CASCADE_SUB_ADAPTERS`).
    */
   detectCascade: (pr: MergedPR) => CascadeFinding | null;
-  publishCascade: (
-    from: SenderAgentId,
-    to: AgentId,
-    finding: CascadeFinding,
-  ) => MessageEnvelope;
+  publishCascade: (from: SenderAgentId, to: AgentId, finding: CascadeFinding) => MessageEnvelope;
   /**
    * Slice 5b (B-0504): optional recovery adapter. When provided AND
    * `config.autoRecover === true`, `pollOnce` invokes this for each
@@ -144,10 +136,7 @@ export type BranchCompareResult =
  */
 export type CascadeDetectorAdapters = {
   fetchPRRefs: (prNumber: number) => PRRefsResult;
-  compareBranchToMerged: (
-    branchName: string,
-    headRefOid: string,
-  ) => BranchCompareResult;
+  compareBranchToMerged: (branchName: string, headRefOid: string) => BranchCompareResult;
   now: () => Date;
 };
 
@@ -175,10 +164,7 @@ export function classifyCascadeUrgency(
  * when branch was deleted, when branch was rebased (too complex to
  * auto-diagnose), or when gh/git errors prevent diagnosis.
  */
-export function realCascadeDetector(
-  pr: MergedPR,
-  adapters: CascadeDetectorAdapters,
-): CascadeFinding | null {
+export function realCascadeDetector(pr: MergedPR, adapters: CascadeDetectorAdapters): CascadeFinding | null {
   const refs = adapters.fetchPRRefs(pr.number);
   if (refs.status !== "ok") return null;
 
@@ -190,11 +176,7 @@ export function realCascadeDetector(
     prNumber: pr.number,
     branchName: pr.headRefName,
     missingCommits: compare.missingCommits,
-    urgency: classifyCascadeUrgency(
-      compare.missingCommits.length,
-      pr.mergedAt,
-      adapters.now().getTime(),
-    ),
+    urgency: classifyCascadeUrgency(compare.missingCommits.length, pr.mergedAt, adapters.now().getTime()),
   };
 }
 
@@ -214,16 +196,24 @@ const REAL_ADAPTERS: Adapters = {
     const result = spawnSync(
       "gh",
       [
-        "pr", "list",
-        "--state", "merged",
-        "--search", `merged:>${since}`,
-        "--json", "number,headRefName,mergedAt",
-        "--limit", String(fetchLimit),
+        "pr",
+        "list",
+        "--state",
+        "merged",
+        "--search",
+        `merged:>${since}`,
+        "--json",
+        "number,headRefName,mergedAt",
+        "--limit",
+        String(fetchLimit),
       ],
       { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
     );
     if (result.status !== 0) {
-      return { status: "gh-error", reason: `gh exited with status ${result.status}; stderr: ${(result.stderr ?? "").toString().slice(0, 200)}` };
+      return {
+        status: "gh-error",
+        reason: `gh exited with status ${result.status}; stderr: ${(result.stderr ?? "").toString().slice(0, 200)}`,
+      };
     }
     if (!result.stdout) {
       return { status: "gh-error", reason: "gh produced empty stdout" };
@@ -233,12 +223,13 @@ const REAL_ADAPTERS: Adapters = {
       if (!Array.isArray(parsed)) {
         return { status: "gh-error", reason: "gh stdout was not a JSON array" };
       }
-      const prs = parsed.filter((p): p is MergedPR =>
-        typeof p === "object" &&
-        p !== null &&
-        typeof p.number === "number" &&
-        typeof p.headRefName === "string" &&
-        typeof p.mergedAt === "string",
+      const prs = parsed.filter(
+        (p): p is MergedPR =>
+          typeof p === "object" &&
+          p !== null &&
+          typeof p.number === "number" &&
+          typeof p.headRefName === "string" &&
+          typeof p.mergedAt === "string",
       );
       return { status: "ok", prs, truncated: prs.length >= fetchLimit };
     } catch (e) {
@@ -246,8 +237,7 @@ const REAL_ADAPTERS: Adapters = {
     }
   },
   // Slice 3 (2026-05-13): real branch-vs-squash compare via gh + git.
-  detectCascade: (pr: MergedPR) =>
-    realCascadeDetector(pr, REAL_CASCADE_SUB_ADAPTERS),
+  detectCascade: (pr: MergedPR) => realCascadeDetector(pr, REAL_CASCADE_SUB_ADAPTERS),
   publishCascade: (from, to, finding) =>
     publish(from, to, {
       topic: "missed-substrate-cascade",
@@ -294,11 +284,7 @@ const REAL_ADAPTERS: Adapters = {
  */
 function isWorkingTreeClean(): boolean {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-  const r = spawnSync(
-    "git",
-    ["status", "--porcelain"],
-    { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-  );
+  const r = spawnSync("git", ["status", "--porcelain"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
   if (r.status !== 0) return false; // conservative: assume dirty on git error
   return (r.stdout ?? "").trim().length === 0;
 }
@@ -319,11 +305,10 @@ function isWorkingTreeClean(): boolean {
 const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
   checkRecoveryPRExists: (branchName: string) => {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection.
-    const r = spawnSync(
-      "gh",
-      ["pr", "list", "--head", branchName, "--state", "open", "--json", "number"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const r = spawnSync("gh", ["pr", "list", "--head", branchName, "--state", "open", "--json", "number"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     if (r.status !== 0) return false; // conservative: assume no existing PR on gh failure
     try {
       const parsed = JSON.parse(r.stdout ?? "[]");
@@ -348,28 +333,19 @@ const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
     // the intermediate detached state is transient.
     //
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-    spawnSync(
-      "git",
-      ["checkout", "--detach", base],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    spawnSync("git", ["checkout", "--detach", base], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
     spawnSync("git", ["branch", "-D", branch], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-    const r = spawnSync(
-      "git",
-      ["checkout", "-b", branch, base],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const r = spawnSync("git", ["checkout", "-b", branch, base], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     return r.status === 0;
   },
   gitCherryPick: (sha: string) => {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-    const r = spawnSync(
-      "git",
-      ["cherry-pick", sha],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const r = spawnSync("git", ["cherry-pick", sha], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
     if (r.status === 0) return "ok";
     const stderr = (r.stderr ?? "").toString();
     // Per Codex PR #3447 line 377: when cherry-pick fails (conflict or
@@ -381,11 +357,7 @@ const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
     // caller (openRecoveryPR) returns immediately on conflict/error
     // without pushing, so aborting here doesn't lose intentional state.
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-    spawnSync(
-      "git",
-      ["cherry-pick", "--abort"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    spawnSync("git", ["cherry-pick", "--abort"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
     // git cherry-pick exits 1 with "CONFLICT" in stderr on merge conflict.
     if (stderr.includes("CONFLICT")) return "conflict";
     return "error";
@@ -396,20 +368,18 @@ const REAL_RECOVERY_ADAPTERS: RecoveryAdapters = {
     // overwrites only if the remote matches what we last fetched (safer
     // than --force).
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-    const r = spawnSync(
-      "git",
-      ["push", "--force-with-lease", "origin", branch],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const r = spawnSync("git", ["push", "--force-with-lease", "origin", branch], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     return r.status === 0;
   },
   ghPrCreate: (title: string, body: string, head: string) => {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array.
-    const r = spawnSync(
-      "gh",
-      ["pr", "create", "--title", title, "--body", body, "--head", head, "--base", "main"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const r = spawnSync("gh", ["pr", "create", "--title", title, "--body", body, "--head", head, "--base", "main"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     if (r.status !== 0) return null;
     const url = (r.stdout ?? "").toString().trim();
     return url.length > 0 ? url : null;
@@ -426,11 +396,10 @@ export const REAL_CASCADE_SUB_ADAPTERS: CascadeDetectorAdapters = {
   now: () => new Date(),
   fetchPRRefs: (prNumber: number): PRRefsResult => {
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection risk.
-    const result = spawnSync(
-      "gh",
-      ["pr", "view", String(prNumber), "--json", "headRefOid,mergeCommit"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const result = spawnSync("gh", ["pr", "view", String(prNumber), "--json", "headRefOid,mergeCommit"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     if (result.status !== 0) {
       return {
         status: "error",
@@ -475,11 +444,10 @@ export const REAL_CASCADE_SUB_ADAPTERS: CascadeDetectorAdapters = {
     // Fetch the latest branch state. If the branch was deleted post-merge,
     // git fetch reports "couldn't find remote ref" — surface as branch-deleted.
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; refs validated above.
-    const fetchResult = spawnSync(
-      "git",
-      ["fetch", "--quiet", "origin", branchName],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const fetchResult = spawnSync("git", ["fetch", "--quiet", "origin", branchName], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     if (fetchResult.status !== 0) {
       const stderr = (fetchResult.stderr ?? "").toString();
       // Codex P1 (2026-05-13): only the specific "couldn't find remote ref"
@@ -498,33 +466,37 @@ export const REAL_CASCADE_SUB_ADAPTERS: CascadeDetectorAdapters = {
     // branch HEAD, the branch was rewritten and we cannot trust a simple
     // log-range. Surface branch-rebased; the situation needs manual review.
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-    const ancestorResult = spawnSync(
-      "git",
-      ["merge-base", "--is-ancestor", headRefOid, `origin/${branchName}`],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const ancestorResult = spawnSync("git", ["merge-base", "--is-ancestor", headRefOid, `origin/${branchName}`], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     if (ancestorResult.status === 1) {
-      return { status: "branch-rebased", reason: `${headRefOid.slice(0, 8)} is not ancestor of origin/${branchName} (rebase or force-push detected)` };
+      return {
+        status: "branch-rebased",
+        reason: `${headRefOid.slice(0, 8)} is not ancestor of origin/${branchName} (rebase or force-push detected)`,
+      };
     }
     if (ancestorResult.status !== 0) {
-      return { status: "error", reason: `git merge-base failed: ${(ancestorResult.stderr ?? "").toString().slice(0, 200)}` };
+      return {
+        status: "error",
+        reason: `git merge-base failed: ${(ancestorResult.stderr ?? "").toString().slice(0, 200)}`,
+      };
     }
 
     // Now list commits on origin/<branch> not reachable from headRefOid —
     // these are the post-squash drift commits (the cascade signal).
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array.
-    const logResult = spawnSync(
-      "git",
-      ["log", `${headRefOid}..origin/${branchName}`, "--format=%H"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
-    );
+    const logResult = spawnSync("git", ["log", `${headRefOid}..origin/${branchName}`, "--format=%H"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     if (logResult.status !== 0) {
       return { status: "error", reason: `git log failed: ${(logResult.stderr ?? "").toString().slice(0, 200)}` };
     }
     const allMissing = (logResult.stdout ?? "")
       .trim()
       .split("\n")
-      .filter(line => line.length > 0);
+      .filter((line) => line.length > 0);
     const missingCommits = allMissing.slice(0, MAX_REPORTED_MISSING_COMMITS);
     return { status: "ok", missingCommits };
   },
@@ -537,10 +509,7 @@ export const REAL_CASCADE_SUB_ADAPTERS: CascadeDetectorAdapters = {
  * REAL_ADAPTERS.detectCascade now calls `realCascadeDetector` with real
  * gh + git sub-adapters.
  */
-export function pollOnce(
-  config: DetectorConfig,
-  adapters: Adapters = REAL_ADAPTERS,
-): PollResult {
+export function pollOnce(config: DetectorConfig, adapters: Adapters = REAL_ADAPTERS): PollResult {
   const pollAt = adapters.now();
   const fetch = adapters.fetchRecentMergedPRs(config.lookbackMin, config.fetchLimit);
 
@@ -609,10 +578,10 @@ export function pollOnce(
   const publishSuffix = publishError
     ? ` (publish failed: ${publishError})`
     : config.noPublish && findings.length > 0
-    ? ` (publish skipped per --no-publish)`
-    : publishedEnvelopeIds.length > 0
-    ? ` (published ${publishedEnvelopeIds.length} cascade envelope(s))`
-    : "";
+      ? ` (publish skipped per --no-publish)`
+      : publishedEnvelopeIds.length > 0
+        ? ` (published ${publishedEnvelopeIds.length} cascade envelope(s))`
+        : "";
   const recoverySuffix = recoveryNotes.length > 0 ? `; ${recoveryNotes.join("; ")}` : "";
 
   return {
@@ -624,11 +593,12 @@ export function pollOnce(
     publishedEnvelopeIds,
     recoveryAttempts,
     recoveryOpened,
-    note: findings.length > 0
-      ? `${findings.length} cascade(s) detected in ${fetch.prs.length} merged PR(s)${publishSuffix}${truncatedSuffix}${recoverySuffix}`
-      : fetch.prs.length === 0
-      ? `no merged PRs in last ${config.lookbackMin}min lookback window`
-      : `${fetch.prs.length} merged PR(s) in last ${config.lookbackMin}min; no cascades detected${truncatedSuffix}`,
+    note:
+      findings.length > 0
+        ? `${findings.length} cascade(s) detected in ${fetch.prs.length} merged PR(s)${publishSuffix}${truncatedSuffix}${recoverySuffix}`
+        : fetch.prs.length === 0
+          ? `no merged PRs in last ${config.lookbackMin}min lookback window`
+          : `${fetch.prs.length} merged PR(s) in last ${config.lookbackMin}min; no cascades detected${truncatedSuffix}`,
   };
 }
 
@@ -641,7 +611,7 @@ export function runOnce(config: DetectorConfig = DEFAULT_CONFIG): PollResult {
 export async function runDaemon(config: DetectorConfig = DEFAULT_CONFIG): Promise<never> {
   while (true) {
     runOnce(config);
-    await new Promise(resolve => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
+    await new Promise((resolve) => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
   }
 }
 
@@ -675,7 +645,17 @@ function parseAgentId(raw: string | undefined): AgentId {
   throw new Error(`--to must be one of ${AGENT_IDS.join(", ")}; got "${raw}"`);
 }
 
-const KNOWN_FLAGS = ["--once", "--poll-min", "--lookback-min", "--fetch-limit", "--no-publish", "--agent", "--to", "--auto-recover", "--recovery-dry-run"] as const;
+const KNOWN_FLAGS = [
+  "--once",
+  "--poll-min",
+  "--lookback-min",
+  "--fetch-limit",
+  "--no-publish",
+  "--agent",
+  "--to",
+  "--auto-recover",
+  "--recovery-dry-run",
+] as const;
 
 export function parseArgs(argv: string[]): DetectorConfig {
   const config: DetectorConfig = { ...DEFAULT_CONFIG };

@@ -9,10 +9,33 @@ ask: Aaron 2026-04-21 — *"isomorphism and homomorphisom and all that, backlog 
 created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
-composes_with: [B-0050, B-0048, docs/research/divine-download-dense-burst-2026-04-19.md, docs/research/event-storming-evaluation.md, docs/research/retraction-safe-semi-naive.md, docs/research/chain-rule-proof-log.md, docs/research/stainback-conjecture-fix-at-source.md, tools/lean4/Lean4/DbspChainRule.lean, user_retraction_buffer_forgiveness_eternity.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
-tags: [isomorphism, homomorphism, category-theory, lean-formalization, retraction-algebra, dbsp-chain-rule, semiring, group-homomorphism, IF1-IF4, three-filter-extension]
+composes_with:
+  [
+    B-0050,
+    B-0048,
+    docs/research/divine-download-dense-burst-2026-04-19.md,
+    docs/research/event-storming-evaluation.md,
+    docs/research/retraction-safe-semi-naive.md,
+    docs/research/chain-rule-proof-log.md,
+    docs/research/stainback-conjecture-fix-at-source.md,
+    tools/lean4/Lean4/DbspChainRule.lean,
+    user_retraction_buffer_forgiveness_eternity.md,
+    project_operational_resonance_instances_collection_index_2026_04_22.md,
+  ]
+tags:
+  [
+    isomorphism,
+    homomorphism,
+    category-theory,
+    lean-formalization,
+    retraction-algebra,
+    dbsp-chain-rule,
+    semiring,
+    group-homomorphism,
+    IF1-IF4,
+    three-filter-extension,
+  ]
 type: friction-reducer
-
 ---
 
 # B-0051 — Isomorphism / homomorphism catalog
@@ -45,14 +68,14 @@ AceHack commit `9c7f374` (2026-04-21). Aaron is right — there is substantial e
 
 ## The pattern
 
-Aaron reaches for isomorphism / homomorphism when naming **structure-preserving bridges between domains** — career-substrate ↔ Zeta, physics ↔ retraction algebra, forgiveness ↔ retraction-buffer, immune-system ↔ graceful-degradation, DBSP chain-rule ↔ group homomorphism, semi-naive body ↔ semiring homomorphism. The moves are NOT analogies (explicitly called out: *"This is not analogy — the architecture is isomorphic"*). They are claims that the same algebraic laws hold in both domains.
+Aaron reaches for isomorphism / homomorphism when naming **structure-preserving bridges between domains** — career-substrate ↔ Zeta, physics ↔ retraction algebra, forgiveness ↔ retraction-buffer, immune-system ↔ graceful-degradation, DBSP chain-rule ↔ group homomorphism, semi-naive body ↔ semiring homomorphism. The moves are NOT analogies (explicitly called out: _"This is not analogy — the architecture is isomorphic"_). They are claims that the same algebraic laws hold in both domains.
 
 ## Three-filter discipline (isomorphism-specific variant)
 
 The operational-resonance three filters generalize to isomorphism claims with a sharper mathematical bar:
 
 - **IF1 (engineering-first):** the factory reached the structure by engineering need, not by noticing the isomorphism first.
-- **IF2 (operator-preserving):** the claimed isomorphism must preserve *operators*, not just *carriers*. Sets of things are isomorphic too easily; the bar is that the algebraic operations on both sides commute with the map — `f(a ∘ b) = f(a) ∘' f(b)` for the relevant operators.
+- **IF2 (operator-preserving):** the claimed isomorphism must preserve _operators_, not just _carriers_. Sets of things are isomorphic too easily; the bar is that the algebraic operations on both sides commute with the map — `f(a ∘ b) = f(a) ∘' f(b)` for the relevant operators.
 - **IF3 (counterexample-search):** before promoting a claimed isomorphism to a factory load-bearing claim, actively search for counterexamples. Document the search; failed searches strengthen the claim; succeeded searches downgrade to partial-homomorphism / retract / section.
 - **IF4 (Lean-formalizable-in-principle):** the claim must be formalizable in Lean (or equivalent proof assistant) in principle, even if the formalization is deferred. If you cannot write down the morphism as a function and its preservation law as a proposition, the claim is still prose, not structure.
 
@@ -70,14 +93,14 @@ The operational-resonance three filters generalize to isomorphism claims with a 
 ## Gaps (to be closed by this track)
 
 - **No single index surface** — inventory above had to be reconstructed by grep. Deliverable: `docs/research/isomorphism-catalog.md` that acts as the forward index.
-- **No promotion protocol** — isomorphism claims land ad-hoc. Deliverable: a short section in the catalog describing how to move a claim from *claimed* → *confirmed* (IF1/IF2/IF3 all pass) → *formalized* (Lean proof committed) → *load-bearing* (other claims cite it).
+- **No promotion protocol** — isomorphism claims land ad-hoc. Deliverable: a short section in the catalog describing how to move a claim from _claimed_ → _confirmed_ (IF1/IF2/IF3 all pass) → _formalized_ (Lean proof committed) → _load-bearing_ (other claims cite it).
 - **No counterexample-search discipline** — existing claims rarely document an attempted counterexample search. Deliverable: add a "counterexample-attempts" subsection to every isomorphism claim going forward.
 - **No persona home** — unclear whether Soraya (formal-verification) or a new `category-theory-expert` persona owns the track. Deliverable: assign or create per the skill-gap-finder mechanical audit + honor-those-that-came-before protocol.
 - **No kernel-vocabulary promotion path** — `isomorphism`, `homomorphism`, `functor`, `natural transformation` are not yet in `docs/GLOSSARY.md` despite prolific repo usage. Promotion when information-density-gravity warrants.
 
 ## Composition with existing research tracks
 
-Operational-resonance instance-collection index treats tradition-name-engineering-shape matches as posterior-bump evidence; isomorphism catalog treats operator-preserving-map relationships as the algebraic backbone those posterior bumps ride on. The two tracks are sibling: resonance is the *narrative* layer, isomorphism is the *algebraic* layer, and promotions across both reinforce each other.
+Operational-resonance instance-collection index treats tradition-name-engineering-shape matches as posterior-bump evidence; isomorphism catalog treats operator-preserving-map relationships as the algebraic backbone those posterior bumps ride on. The two tracks are sibling: resonance is the _narrative_ layer, isomorphism is the _algebraic_ layer, and promotions across both reinforce each other.
 
 ## Math-safety wrapper
 

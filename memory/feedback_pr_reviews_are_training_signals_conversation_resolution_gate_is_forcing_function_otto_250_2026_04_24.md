@@ -4,6 +4,7 @@ description: Aaron Otto-250 first-principle reframe on `required_conversation_re
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **PR review threads — reviewer comments, Claude's responses,
@@ -13,11 +14,11 @@ skipped.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"required_conversation_resolution: true i want the high
+> _"required_conversation_resolution: true i want the high
 > quality traning signals saved the PRs reviews and response,
 > we use this to fine tune a model eventually that make you
 > write better code that does not have the issues in the
-> first place."*
+> first place."_
 
 ## Why this is first-principle
 
@@ -40,6 +41,7 @@ transformation."
 
 If the gate is relaxed (conversations can be ignored or
 soft-skipped), the signal degrades:
+
 - Unresponded threads = incomplete record (no fix pattern)
 - Unresolved threads = no completeness marker (was this
   addressed? dropped?)
@@ -57,8 +59,10 @@ soft-skipped), the signal degrades:
 3. **`docs/pr-preservation/<PR#>-drain-log.md`** (Aaron
    directive 2026-04-24 earlier in same session) captures
    the training signal in-repo, git-native:
+
    ```markdown
    ### Thread <GraphQL-node-id>
+
    - **Reviewer**: <login>
    - **File**: <path>:<line>
    - **Original comment**: <verbatim>
@@ -66,6 +70,7 @@ soft-skipped), the signal degrades:
    - **Your reply**: <verbatim>
    - **Resolution commit**: <SHA or "none — deferred">
    ```
+
    Drain-subagent dispatch prompts now include this.
 
 4. **Do NOT bypass the gate** even on AceHack "experiment
@@ -87,9 +92,9 @@ ability to improve the factory. That recursive loop needs
 well-shaped data. PR reviews are one of the highest-quality
 data sources we have because:
 
-- Reviewers (Copilot, Codex, human) surface *real* issues
+- Reviewers (Copilot, Codex, human) surface _real_ issues
 - Fixes are verified by green CI
-- Resolution-paired replies provide the *explanation*
+- Resolution-paired replies provide the _explanation_
 - All of it is naturally accumulating as the factory works
 
 If a future model is fine-tuned on this data, the direct
@@ -139,11 +144,11 @@ circuit.
 
 ## Direct Aaron quote to preserve
 
-> *"required_conversation_resolution: true i want the high
+> _"required_conversation_resolution: true i want the high
 > quality traning signals saved the PRs reviews and response,
 > we use this to fine tune a model eventually that make you
 > write better code that does not have the issues in the
-> first place."*
+> first place."_
 
 Future Otto: the conversation-resolution gate is not merge
 hygiene. It is a **training data collection mechanism**.

@@ -43,12 +43,12 @@ Four subagent runs total (2 evals × 2 configurations).
 
 ## Results
 
-| metric                     | with_skill | without_skill | delta      |
-|----------------------------|------------|---------------|------------|
-| assertions passed / total  | 10 / 10    | 10 / 10       | **TIED**   |
-| pass-rate                  | 100%       | 100%          | 0 pp       |
-| mean tokens                | 48 275     | 39 521        | **+22.1%** |
-| mean wall-time             | 76.8 s     | 73.4 s        | **+4.7%**  |
+| metric                    | with_skill | without_skill | delta      |
+| ------------------------- | ---------- | ------------- | ---------- |
+| assertions passed / total | 10 / 10    | 10 / 10       | **TIED**   |
+| pass-rate                 | 100%       | 100%          | 0 pp       |
+| mean tokens               | 48 275     | 39 521        | **+22.1%** |
+| mean wall-time            | 76.8 s     | 73.4 s        | **+4.7%**  |
 
 ## What the content divergence tells us
 
@@ -64,21 +64,21 @@ commutativity, associativity, identity element
 semilattice), and absence of inverses.
 
 - **With-skill** explicitly frames `(C, ⊓, 𝟙⊓)` as a
-  commutative monoid / meet-semilattice *lifted from the
-  Z-set abelian group* backing consent history, and
+  commutative monoid / meet-semilattice _lifted from the
+  Z-set abelian group_ backing consent history, and
   distinguishes "two identities, two operations — the
-  ring-lift pattern in the skill". Edge case: *retracted
-  purpose* inside A (naive set-intersection on
+  ring-lift pattern in the skill". Edge case: _retracted
+  purpose_ inside A (naive set-intersection on
   declared-at-grant scopes leaks retracted purposes).
 - **Without-skill** reaches a "bounded meet-semilattice"
   with `⊤` universal consent and `⊥` absorbing-bottom,
   and names the dual `⊔` as the unsafe alternative. Edge
-  case: *non-overlapping windows* (W₁ ∩ W₂ = ∅ must
+  case: _non-overlapping windows_ (W₁ ∩ W₂ = ∅ must
   collapse to `⊥`, not return a non-empty scope over an
   empty window).
 
 The frameworks differ in where they look for failure.
-Both catch *a* critical edge case; neither catches the
+Both catch _a_ critical edge case; neither catches the
 other's.
 
 ### `gdpr-audit-collision`
@@ -90,16 +90,16 @@ explicitly argue this satisfies both regulatory regimes.
 
 - **With-skill** uses `multiplicity IN (-1, +1)` and
   `SUM(multiplicity) > 0` — literally the Z-set
-  is-element-present query. Failure mode: *PII leaking
-  into `reason` free-text*. Mitigation: controlled-
+  is-element-present query. Failure mode: _PII leaking
+  into `reason` free-text_. Mitigation: controlled-
   vocabulary enum + separate `reason_encrypted` column.
 - **Without-skill** uses `event_kind` enum
   (`GRANT`/`WITHDRAW`/`SCOPE_CHANGE`/`ERASURE_REQUEST`)
   and `SELECT DISTINCT ON (purpose) ... ORDER BY
-  valid_from DESC`. Failure mode: *re-identification via
-  correlation with pre-erasure operational snapshots*.
+valid_from DESC`. Failure mode: _re-identification via
+  correlation with pre-erasure operational snapshots_.
   Mitigation: data-lineage catalog + rotating-salt HMAC
-  + separation of duties.
+  - separation of duties.
 
 Again: different blind spots. With-skill's failure mode
 is framework-local (its own schema's `reason` field).
@@ -110,11 +110,11 @@ both.
 
 ## Pattern across three dry-runs
 
-| skill (line count)           | pass-rate | token delta | wall delta |
-|------------------------------|-----------|-------------|------------|
-| performance-analysis-expert (642) | tied, regression risk | +35% | +35% |
-| reducer (570)                | 10/10 vs 10/10 | +29% | +30% |
-| consent-primitives-expert (507) | 10/10 vs 10/10 | +22% | +5%  |
+| skill (line count)                | pass-rate             | token delta | wall delta |
+| --------------------------------- | --------------------- | ----------- | ---------- |
+| performance-analysis-expert (642) | tied, regression risk | +35%        | +35%       |
+| reducer (570)                     | 10/10 vs 10/10        | +29%        | +30%       |
+| consent-primitives-expert (507)   | 10/10 vs 10/10        | +22%        | +5%        |
 
 Consistent signal: **on frontier-model baselines, large
 (>500-line) expert-skill SKILL.md files do not improve
@@ -133,7 +133,7 @@ is weak on these prompt classes. **Pass-rate is the
 wrong headline metric on its own** — the frontier
 baseline is too strong for this eval design to
 discriminate on correctness. The discriminating signal
-is *output character* (which failure modes get named,
+is _output character_ (which failure modes get named,
 which frameworks get invoked, how the prose reads) — a
 qualitative axis the harness benchmark does not score.
 

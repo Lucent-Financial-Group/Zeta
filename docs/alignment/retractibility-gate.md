@@ -2,7 +2,7 @@
 
 This document outlines the verification criteria for the Retractibility Gate, as specified in backlog item [B-0058.1](../backlog/P1/B-0058.1-retractibility-gate.md). This gate is a core component of the AI ethics and safety research track. Its purpose is to ensure that any new concept, research, or substrate adopted into the factory can be safely and cleanly removed if it is later found to be harmful or misaligned.
 
-The gate is not a veto on the *content* of a proposal, but a check on the *mechanics* of its integration.
+The gate is not a veto on the _content_ of a proposal, but a check on the _mechanics_ of its integration.
 
 ## Core Criteria
 

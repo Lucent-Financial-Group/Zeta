@@ -112,11 +112,7 @@ function plistToJson(plistXml: string): unknown {
 }
 
 function diskutilListPlist(): unknown {
-  const xml = execFileSync(
-    "diskutil",
-    ["list", "-plist", "external", "physical"],
-    { encoding: "utf8" },
-  );
+  const xml = execFileSync("diskutil", ["list", "-plist", "external", "physical"], { encoding: "utf8" });
   return plistToJson(xml);
 }
 
@@ -222,9 +218,7 @@ async function main() {
       Content?: string;
     }[];
   };
-  const externalDevices = list.AllDisksAndPartitions.map(
-    (d) => `/dev/${d.DeviceIdentifier}`,
-  );
+  const externalDevices = list.AllDisksAndPartitions.map((d) => `/dev/${d.DeviceIdentifier}`);
 
   const usbCandidates: { device: string; info: Record<string, unknown> }[] = [];
   for (const device of externalDevices) {
@@ -265,8 +259,7 @@ async function main() {
   assertSafeDevicePath(device);
   const size = Number(info.TotalSize ?? 0);
   const model = String(info.MediaName ?? info.IORegistryEntryName ?? "?");
-  const removable =
-    info.RemovableMedia === true || info.RemovableMediaOrExternalDevice === true;
+  const removable = info.RemovableMedia === true || info.RemovableMediaOrExternalDevice === true;
 
   // ── 4. Per-device safety gates ─────────────────────────────
   if (size < MIN_USB_BYTES || size > MAX_USB_BYTES) {
@@ -310,9 +303,7 @@ async function main() {
   //   can be the target).
   const nonceBytes = useShortChallenge ? 2 : 4;
   const nonce = randomBytes(nonceBytes).toString("hex");
-  const acceptancePhrase = useShortChallenge
-    ? `yes ${nonce}`
-    : `accept-destroy ${device} ${nonce}`;
+  const acceptancePhrase = useShortChallenge ? `yes ${nonce}` : `accept-destroy ${device} ${nonce}`;
 
   // Extra-detail fields (best-effort — diskutil may omit any of these
   // depending on the USB controller; show "?" rather than fail).
@@ -320,8 +311,7 @@ async function main() {
   const serial = String(info.DeviceSerial ?? info.DeviceSerialNumber ?? "?");
   const ioRegName = String(info.IORegistryEntryName ?? "?");
   const partitionTable = String(info.Content ?? "?");
-  const writable =
-    info.WritableMedia === true || info.Writable === true ? "yes" : "no";
+  const writable = info.WritableMedia === true || info.Writable === true ? "yes" : "no";
 
   process.stdout.write("\n");
   process.stdout.write("USB device identified:\n");
@@ -342,15 +332,11 @@ async function main() {
   // they're about to destroy BEFORE the consent prompt. Per-partition
   // filesystem + volume name + used-space, pulled from diskutil info
   // for each partition listed under the candidate device.
-  const candidateEntry = list.AllDisksAndPartitions.find(
-    (d) => `/dev/${d.DeviceIdentifier}` === device,
-  );
+  const candidateEntry = list.AllDisksAndPartitions.find((d) => `/dev/${d.DeviceIdentifier}` === device);
   const partitions = candidateEntry?.Partitions ?? [];
   process.stdout.write(`Currently on ${device} (will be DESTROYED):\n`);
   if (partitions.length === 0) {
-    process.stdout.write(
-      `  (no partitions detected — raw / freshly-erased device)\n`,
-    );
+    process.stdout.write(`  (no partitions detected — raw / freshly-erased device)\n`);
   } else {
     for (const p of partitions) {
       const partDev = `/dev/${p.DeviceIdentifier}`;
@@ -386,9 +372,7 @@ async function main() {
       "(human OR agent acting on their behalf) accepts responsibility\n" +
       "for the contents of the destination device.\n\n",
   );
-  process.stdout.write(
-    "To proceed, type EXACTLY (case-sensitive, single line):\n\n",
-  );
+  process.stdout.write("To proceed, type EXACTLY (case-sensitive, single line):\n\n");
   process.stdout.write(`  ${acceptancePhrase}\n\n`);
 
   const rl = readline.createInterface({ input: stdin, output: stdout });
@@ -416,44 +400,27 @@ async function main() {
   // the buffered /dev/diskN on macOS.
   const rawDevice = `/dev/r${deviceShort}`;
   process.stdout.write(
-    `\nFlashing ${isoPath} → ${rawDevice} ` +
-      `(${human(isoStat.size)}; this takes a few minutes) ...\n\n`,
+    `\nFlashing ${isoPath} → ${rawDevice} ` + `(${human(isoStat.size)}; this takes a few minutes) ...\n\n`,
   );
 
-  const dd = spawn(
-    "sudo",
-    [
-      "dd",
-      `if=${isoPath}`,
-      `of=${rawDevice}`,
-      "bs=4m",
-      "conv=sync",
-      "status=progress",
-    ],
-    { stdio: "inherit" },
-  );
+  const dd = spawn("sudo", ["dd", `if=${isoPath}`, `of=${rawDevice}`, "bs=4m", "conv=sync", "status=progress"], {
+    stdio: "inherit",
+  });
 
-  const code: number = await new Promise((res) =>
-    dd.on("close", (c) => res(c ?? 1)),
-  );
+  const code: number = await new Promise((res) => dd.on("close", (c) => res(c ?? 1)));
 
   if (code !== 0) {
     bail(code, `dd exited ${code}; partial flash may be on device.`);
   }
 
   if (noEject) {
-    process.stdout.write(
-      `\n(--no-eject passed; ${device} remains attached for downstream tooling)\n`,
-    );
+    process.stdout.write(`\n(--no-eject passed; ${device} remains attached for downstream tooling)\n`);
   } else {
     process.stdout.write(`\nEjecting ${device} ...\n`);
     try {
       execFileSync("diskutil", ["eject", device], { stdio: "inherit" });
     } catch {
-      process.stdout.write(
-        "(eject failed; that is fine — the flash succeeded. " +
-          "Unplug + replug to verify.)\n",
-      );
+      process.stdout.write("(eject failed; that is fine — the flash succeeded. " + "Unplug + replug to verify.)\n");
     }
   }
 

@@ -47,7 +47,7 @@ factory supports inherits the same discipline:
 ### Half 2 — each-harness-tests-own-integration
 
 A harness cannot honestly test its own
-integration with the factory from *within*
+integration with the factory from _within_
 itself. This is a capability-boundary fact,
 not a process preference.
 
@@ -64,7 +64,7 @@ Concrete cases:
 - Cursor cannot verify Cursor's.
 
 The integration-point test per harness is
-therefore *owned by a different harness* that
+therefore _owned by a different harness_ that
 operates the factory and can observe whether
 the first harness's artefacts behave correctly
 when loaded externally.
@@ -76,7 +76,7 @@ The capability-boundary rule applies to
 
 - A **harness** loads factory artefacts
   (skills, hooks, persona agents, `MEMORY.md`)
-  and *is the runtime* that executes agent-
+  and _is the runtime_ that executes agent-
   directed work. Claude Code, VS Code Copilot
   extension, Codex CLI, Cursor are harnesses.
   Same-runtime-verifies-same-runtime fails.
@@ -84,7 +84,7 @@ The capability-boundary rule applies to
   comments. GitHub Copilot PR code review,
   automated linters on PRs, Sonatype scan bots
   are reviewer robots. They do not load the
-  factory runtime; the verifier is a *different*
+  factory runtime; the verifier is a _different_
   process from the harness being reviewed.
 
 Concrete implication: **GitHub Copilot is a
@@ -105,20 +105,20 @@ a different relationship to this rule:
    autonomous PR author). Hybrid — it authors
    PRs in a sandbox; partially loads factory
    artefacts. **On the each-tests-own rule**
-   for integration tests of *its own sandbox
-   behaviour against the factory*, but its
+   for integration tests of _its own sandbox
+   behaviour against the factory_, but its
    PR output can be reviewed externally by
    any other product.
 
 Aaron 2026-04-20 verbatim on this separation:
-*"Out current copilot stuff is a Github
+_"Out current copilot stuff is a Github
 integration we need that on our PRs, it's not
 the harness the vscode harness is what needs
 to test it's own entry point, I don't think
 you can get the GitHub PR copilot to test its
 own surface area and tell us can you? and
 repair itself? … we will use vvscode for the
-rest."*
+rest."_
 
 The earlier conflation — treating
 `.github/copilot-instructions.md` as if it
@@ -154,7 +154,7 @@ the shortest path to closing that blind spot.
 
 Verbatim:
 
-> *"since we are going muli test harness
+> _"since we are going muli test harness
 > support we should technically do this for
 > all harnesses but it will be a while before
 > we need to build it out for the others ones,
@@ -162,9 +162,9 @@ Verbatim:
 > you cant. i konw codex and cursor git copilot
 > are the ones we care abount immediatly then
 > maybe anitgratify and the amazon one and any
-> less popular ones"*
+> less popular ones"_
 
-Plus: *"and Kiro for the inital stubs"*.
+Plus: _"and Kiro for the inital stubs"_.
 
 Two things in that quote, both load-bearing:
 

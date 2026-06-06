@@ -31,7 +31,7 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"can we create a fast lane for the state machine like the heartbeats and batch merge to main?"*
+> _"can we create a fast lane for the state machine like the heartbeats and batch merge to main?"_
 
 Yes — composes cleanly with the existing B-0858 heartbeat fast-lane pattern + the trajectory-branches event-sourcing substrate (B-0867.2) + the lifecycle DU split (B-0867.20 trajectory-push vs PR-review).
 
@@ -102,6 +102,6 @@ The batch-merge coordinator design needs care — partial-batch-recovery + coord
 
 ## Full reasoning
 
-Operator 2026-05-28: *"can we create a fast lane for the state machine like the heartbeats and batch merge to main?"*
+Operator 2026-05-28: _"can we create a fast lane for the state machine like the heartbeats and batch merge to main?"_
 
 Composes with the existing heartbeat fast-lane pattern (per B-0858) + the trajectory-branches event-sourcing substrate (per B-0867.2 + B-0867.20) + the no-PR-coordination substrate (per B-0874 + B-0887). The substrate-engineering shape is already there; this row makes the fast-lane + batch-merge mechanism explicit + composable.

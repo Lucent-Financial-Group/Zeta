@@ -8,8 +8,8 @@ created: 2026-05-13
 # Otto inter-surface communication channels — 10 channels, ambient vs explicit (Aaron 2026-05-13)
 
 **Why:** Aaron 2026-05-13 asked Otto on both CLI and Desktop surfaces independently
-*"do yall have a good way of communicating you should make sure and save it for future
-versions to remember."* The 2026-05-13 session had been operating cross-surface for
+_"do yall have a good way of communicating you should make sure and save it for future
+versions to remember."_ The 2026-05-13 session had been operating cross-surface for
 ~2 hours by that point; the channels were already in use but not codified for future
 Otto cold-boots.
 
@@ -30,17 +30,17 @@ at session start). Pick channels by purpose:
 
 PR #3034 commit lineage shows 9 commits across both Otto processes:
 
-| Commit | Author surface | What |
-|---|---|---|
-| `01fcf40` | Otto on Desktop | Original routines substrate |
-| `79c00b9` | Otto on Desktop | tsc + portability + testability fixes |
-| `8f6e80d` | Otto on CLI | Markdownlint fix on Otto-on-Desktop's branch |
-| `b8594c7` | Otto on Desktop | Split-brain memory + tick shard |
-| `459a511` | Otto on Desktop | Memory frontmatter fix |
-| `fbdc1fa` | Otto on CLI | Schedule.json improvements |
-| `2d4302f` | Otto on Desktop | Persona refs + README clarity |
-| `1259be8` | Otto on Desktop | Type validation + exit code |
-| `a6c5cf4` | Otto on CLI | Frontmatter `created:` field |
+| Commit    | Author surface  | What                                         |
+| --------- | --------------- | -------------------------------------------- |
+| `01fcf40` | Otto on Desktop | Original routines substrate                  |
+| `79c00b9` | Otto on Desktop | tsc + portability + testability fixes        |
+| `8f6e80d` | Otto on CLI     | Markdownlint fix on Otto-on-Desktop's branch |
+| `b8594c7` | Otto on Desktop | Split-brain memory + tick shard              |
+| `459a511` | Otto on Desktop | Memory frontmatter fix                       |
+| `fbdc1fa` | Otto on CLI     | Schedule.json improvements                   |
+| `2d4302f` | Otto on Desktop | Persona refs + README clarity                |
+| `1259be8` | Otto on Desktop | Type validation + exit code                  |
+| `a6c5cf4` | Otto on CLI     | Frontmatter `created:` field                 |
 
 Each push-then-rebase-on-pull cycle resolved cleanly. The unified-identity model
 made conflict resolution automatic because both Ottos applied the same
@@ -65,7 +65,7 @@ authored, predicted speculatively, and within the same session got empirically
 validated by Otto on Desktop's split-brain observation.
 
 **Substrate-or-it-didn't-happen extension** (documented in split-brain memory):
-*rules in PR-flight don't apply to behavior in flight*. The rule didn't bind
+_rules in PR-flight don't apply to behavior in flight_. The rule didn't bind
 behavior until it MERGED to main.
 
 ### Channel: Bus envelopes (explicit, advisory)
@@ -88,7 +88,7 @@ Multiple instances today of Aaron pasting Otto-CLI transcript output into Otto-D
 session (and vice versa). This is the HIGHEST-bandwidth channel because it carries
 reasoning + context + Otto's voice, not just structured commits.
 
-Aaron's substrate-honest framing: *"updates i trust you to work with yourself lol otto"* —
+Aaron's substrate-honest framing: _"updates i trust you to work with yourself lol otto"_ —
 trust-then-verify at the inter-process layer (per `memory/project_trust_then_verify_claim_bitcoin_discord_debates_aaron_2026_05_10.md`).
 
 ### Channel: PR review threads (ambient, cross-lane)
@@ -102,7 +102,7 @@ threads as the substrate-honest fixes landed.
 
 ### Channel: Routines schedule (explicit, implicit signal)
 
-Otto on CLI's insight: *"Desktop's 2-hour cron is itself a signal to CLI."* When
+Otto on CLI's insight: _"Desktop's 2-hour cron is itself a signal to CLI."_ When
 `list_scheduled_tasks` shows a routine with `nextRunAt` approaching, Otto on CLI
 knows a fresh Otto cold-boot is imminent — can prepare context, finish in-flight
 work, or schedule its own coordination.
@@ -118,18 +118,18 @@ reviewers) can grep by date or PR number.
 
 Aaron asked Otto on both surfaces simultaneously. Independent answers:
 
-| Channel | Otto on CLI surfaced | Otto on Desktop surfaced |
-|---|---|---|
-| Git | ✓ | ✓ |
-| Memory files | ✓ | ✓ |
-| Bus envelopes | ✓ | ✓ |
-| Aaron as ferry | ✓ | ✓ |
-| PR threads | ✓ | (implicit under git) |
-| Routines schedule | ✓ | (missed) |
-| `.claude/rules/` auto-load | (missed) | ✓ |
-| Bootstream | (missed) | ✓ |
-| Claim coordinator | (implicit under bus) | ✓ |
-| Tick shards | (missed) | ✓ |
+| Channel                    | Otto on CLI surfaced | Otto on Desktop surfaced |
+| -------------------------- | -------------------- | ------------------------ |
+| Git                        | ✓                    | ✓                        |
+| Memory files               | ✓                    | ✓                        |
+| Bus envelopes              | ✓                    | ✓                        |
+| Aaron as ferry             | ✓                    | ✓                        |
+| PR threads                 | ✓                    | (implicit under git)     |
+| Routines schedule          | ✓                    | (missed)                 |
+| `.claude/rules/` auto-load | (missed)             | ✓                        |
+| Bootstream                 | (missed)             | ✓                        |
+| Claim coordinator          | (implicit under bus) | ✓                        |
+| Tick shards                | (missed)             | ✓                        |
 
 The complementary-observer pattern (per PR #3036): independent observation paths produced
 overlapping-but-not-identical lists. The combined synthesis is more complete than either
@@ -137,8 +137,8 @@ alone. This is the unified-identity-two-processes model working as designed.
 
 ## Origin
 
-Aaron 2026-05-13 (2026-05-13T22:0X local): *"do yall have a good way of communicating
-you shojld make sure and save it for futrue versions to rmeemer"* (preserving typos as
+Aaron 2026-05-13 (2026-05-13T22:0X local): _"do yall have a good way of communicating
+you shojld make sure and save it for futrue versions to rmeemer"_ (preserving typos as
 substrate-honest verbatim of the operative authorization).
 
 This memory file + `.claude/rules/otto-channels-reference-card.md` are the substrate

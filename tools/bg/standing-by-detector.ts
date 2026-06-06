@@ -70,12 +70,7 @@ export type Adapters = {
    * is unavailable OR there are no PRs.
    */
   lastPrActivityIso: () => string | null;
-  publishNudge: (
-    from: SenderAgentId,
-    to: AgentId,
-    idleMinutes: number,
-    rationale: string,
-  ) => MessageEnvelope;
+  publishNudge: (from: SenderAgentId, to: AgentId, idleMinutes: number, rationale: string) => MessageEnvelope;
 };
 
 const REAL_ADAPTERS: Adapters = {
@@ -94,16 +89,10 @@ const REAL_ADAPTERS: Adapters = {
     // gh pr list --state all --json updatedAt --limit 1
     // Repo-level: any PR activity counts (factory agents share AceHack account).
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- gh invoked as explicit args array; no shell, no injection risk.
-    const result = spawnSync(
-      "gh",
-      [
-        "pr", "list",
-        "--state", "all",
-        "--json", "updatedAt",
-        "--limit", "1",
-      ],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
-    );
+    const result = spawnSync("gh", ["pr", "list", "--state", "all", "--json", "updatedAt", "--limit", "1"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
     if (result.status !== 0 || !result.stdout) return null;
     try {
       const parsed = JSON.parse(result.stdout);
@@ -135,10 +124,7 @@ const REAL_ADAPTERS: Adapters = {
  * version only checked commit-history and produced false negatives on
  * non-commit agent activity.
  */
-export function pollOnce(
-  config: DetectorConfig,
-  adapters: Adapters = REAL_ADAPTERS,
-): PollResult {
+export function pollOnce(config: DetectorConfig, adapters: Adapters = REAL_ADAPTERS): PollResult {
   const pollAt = adapters.now();
   const lastCommitIso = adapters.lastCommitIso();
   const lastPrActivityIso = adapters.lastPrActivityIso();
@@ -193,10 +179,10 @@ export function pollOnce(
           lastPublishError
             ? ` (publish failed: ${lastPublishError})`
             : publishedEnvelopeId
-            ? ` (nudge published; envelope=${publishedEnvelopeId})`
-            : config.noPublish
-            ? " (publish skipped per --no-publish)"
-            : ""
+              ? ` (nudge published; envelope=${publishedEnvelopeId})`
+              : config.noPublish
+                ? " (publish skipped per --no-publish)"
+                : ""
         }`
       : `last activity ${idleMinutes.toFixed(1)}min ago (commit=${lastCommitIso ?? "n/a"}, pr=${lastPrActivityIso ?? "n/a"}); under threshold ${config.idleThresholdMin}min`,
   };
@@ -216,7 +202,7 @@ export function runOnce(config: DetectorConfig = DEFAULT_CONFIG): PollResult {
 export async function runDaemon(config: DetectorConfig = DEFAULT_CONFIG): Promise<never> {
   while (true) {
     runOnce(config);
-    await new Promise(resolve => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
+    await new Promise((resolve) => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
   }
 }
 

@@ -3,15 +3,9 @@ import { describe, test } from "node:test";
 
 import type { AgenticEventEnvelope } from "../../../packages/domain/src/index.ts";
 import type { EventPublication } from "../../../packages/messaging/src/index.ts";
-import type {
-  NatsDeadLetterMessage,
-  NatsJetStreamInboundMessage,
-} from "../../../packages/messaging-nats/src/index.ts";
+import type { NatsDeadLetterMessage, NatsJetStreamInboundMessage } from "../../../packages/messaging-nats/src/index.ts";
 import { ReactionPlanExecutionStatus } from "../../../packages/runtime/src/index.ts";
-import type {
-  CockroachAnySqlResult,
-  CockroachSqlClient,
-} from "../../../packages/state-cockroach/src/index.ts";
+import type { CockroachAnySqlResult, CockroachSqlClient } from "../../../packages/state-cockroach/src/index.ts";
 import {
   WorkerDependencyName,
   WorkerDependencyReadinessStatus,
@@ -80,8 +74,7 @@ describe("worker main composition entrypoint", () => {
     equal(natsAdapters.shutdownCount, 1);
     ok(
       logger.records.some(
-        (record) =>
-          record.stream === WorkerMainLogStream.Stdout && record.message.includes("shutdown_completed"),
+        (record) => record.stream === WorkerMainLogStream.Stdout && record.message.includes("shutdown_completed"),
       ),
     );
   });
@@ -105,8 +98,7 @@ describe("worker main composition entrypoint", () => {
     equal(constructorsInvoked.count, 0);
     ok(
       logger.records.some(
-        (record) =>
-          record.stream === WorkerMainLogStream.Stderr && record.message.includes("worker startup aborted"),
+        (record) => record.stream === WorkerMainLogStream.Stderr && record.message.includes("worker startup aborted"),
       ),
     );
   });

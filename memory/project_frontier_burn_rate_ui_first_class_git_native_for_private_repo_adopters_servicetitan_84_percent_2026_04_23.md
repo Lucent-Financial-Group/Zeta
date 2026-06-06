@@ -43,11 +43,11 @@ that class of adopters.
   billing pages; surfaced in the factory's default
   operational views
 - **Git-native dashboard** — consumed from `gh api`
-  + local git state, not dependent on any specific host
-  (though GitHub is first host per Otto-54 positioning)
+  - local git state, not dependent on any specific host
+    (though GitHub is first host per Otto-54 positioning)
 - **Consider in demos** — adopters evaluating Frontier
   should see cost-awareness as a differentiator; Aaron's
-  *"maybe in demos?"* names this explicitly
+  _"maybe in demos?"_ names this explicitly
 
 ## Copilot billing clarification (from the shared page)
 
@@ -90,21 +90,21 @@ surface Frontier adopters need. A burn-rate UI ideally:
 ## How this composes with existing substrate
 
 - `project_factory_is_git_native_github_first_host_hygiene_
-  cadences_for_frictionless_operation_2026_04_23.md` —
+cadences_for_frictionless_operation_2026_04_23.md` —
   burn-rate UI is the concrete Frontier implementation
   of the git-native-first-host positioning. Cost-awareness
   is part of frictionless operation.
 - `feedback_lfg_free_actions_credits_limited_acehack_is_
-  poor_man_host_big_batches_to_lfg_not_one_for_one_
-  2026_04_23.md` — session-level cost awareness; this
+poor_man_host_big_batches_to_lfg_not_one_for_one_
+2026_04_23.md` — session-level cost awareness; this
   extends to adopter-level.
 - `project_frontier_ux_zora_star_trek_computer_with_
-  personality_research_ux_evolution_backlog_2026_04_24.md`
+personality_research_ux_evolution_backlog_2026_04_24.md`
   — Frontier UX roadmap. Burn-rate dashboard is a
   concrete UI element within the Zora-style substrate-
   visibility pattern.
 - `feedback_servicetitan_demo_sells_software_factory_not_
-  zeta_database_2026_04_23.md` — demo discipline. If
+zeta_database_2026_04_23.md` — demo discipline. If
   burn-rate is in demos, it demonstrates the factory's
   ops-awareness not Zeta's algebra.
 - Otto-62 cost-parity audit (PR #11 on AceHack) —
@@ -132,11 +132,13 @@ dashboard as first-class feature
 5. Cadence — daily / per-tick / per-session
 
 **Effort:** M-L (research + prototype + Frontier integration
-+ demo framing)
+
+- demo framing)
 
 **Owner:** Dejan (DevOps / git-surface) drives prototype;
 Iris (UX) + Kai (positioning) own the Frontier integration
-+ demo framing; Kenji synthesizes.
+
+- demo framing; Kenji synthesizes.
 
 **File against:** AceHack initially (experimentation-frontier
 per Amara authority-axis); graduates to LFG via batch when
@@ -147,7 +149,7 @@ validated.
 - **Not immediate execution.** BACKLOG row to be filed;
   research + prototype are multi-round.
 - **Not a commitment to expose in demos uncritically.**
-  Aaron's *"maybe in demos?"* is exploratory. Demo
+  Aaron's _"maybe in demos?"_ is exploratory. Demo
   inclusion requires adopter-value analysis (is burn-rate
   compelling vs. distracting for the demo narrative?).
 - **Not an authorization to scrape competitor usage

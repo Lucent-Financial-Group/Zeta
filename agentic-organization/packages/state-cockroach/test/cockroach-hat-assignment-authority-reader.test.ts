@@ -16,9 +16,10 @@ describe("cockroach hat assignment authority reader", () => {
 
     const authority = await reader.findHatAssignmentAuthority("hat-assignment-dev-001");
 
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachHatAssignmentAuthorityReaderStatement.FindHatAssignmentAuthority,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachHatAssignmentAuthorityReaderStatement.FindHatAssignmentAuthority],
+    );
     deepEqual(executor.statements[0]?.parameters, ["hat-assignment-dev-001"]);
     deepEqual(authority, {
       hatAssignmentId: "hat-assignment-dev-001",

@@ -4,6 +4,7 @@ description: Anything a developer runs BEFORE their toolchain is installed (setu
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The boundary — two distinct regimes:**
 
 1. **Pre-setup (constrained).** Anything a developer runs
@@ -19,7 +20,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
    scripting language is a **free choice** — the factory
    should pick the best tool for each task, on the merits.
    Picking bash post-setup is fine but must be
-   *intentional* (because bash fits the task, because it
+   _intentional_ (because bash fits the task, because it
    matches sibling-project prior art, because the ROI
    doesn't justify a second runtime, etc.), not default
    inertia.
@@ -31,21 +32,22 @@ rule is what carves out the pre-setup surface as
 non-negotiable.
 
 **Why:** Aaron 2026-04-20 (two messages, pasted intact):
-*"the pre install scripting we are forced into bash and
+_"the pre install scripting we are forced into bash and
 powershell because we have to go to our developer where
 they live for their best user experience we don't want
 them to have to have any prereqs installed or pre-setup
-before running our developer machine setup process."* Then
-the sharpening: *"so just to be clear before we install
+before running our developer machine setup process."_ Then
+the sharpening: _"so just to be clear before we install
 upgrade bash/powershell we are constrained into, after we
 run the developer setup after that it is intentional, our
 choice, we should make the best choices for this project
 we are unconstrained at that point because we can install
 whatever we need during the developer setup/build machine
-setup."* Same rationale as SQLSharp's `.sh` / `.ps1`
+setup."_ Same rationale as SQLSharp's `.sh` / `.ps1`
 portability discipline.
 
 **How to apply:**
+
 - `tools/setup/**` — bash + PowerShell only, no
   exceptions. Never require a .NET/bun/Node/Python
   runtime to run a setup script.
@@ -68,6 +70,6 @@ portability discipline.
   semantics with graceful degradation on Windows
   PowerShell 5.1 where the user base still lives.
 - No embedded Python/Node/F# shims in these entry
-  points. SQLSharp's rule carries: *"Keep committed
+  points. SQLSharp's rule carries: _"Keep committed
   `.sh` and `.ps1` entry points free of ad hoc inline
-  Node/Python parser shims for their core behavior."*
+  Node/Python parser shims for their core behavior."_

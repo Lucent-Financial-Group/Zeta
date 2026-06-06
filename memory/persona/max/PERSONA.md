@@ -1,32 +1,32 @@
 # Max — human co-owner
 
-*Persona: Max. `person_type: human`. Co-owner of Lucent Financial Group (LFG) — the corporation that holds the Zeta repo — alongside Aaron + Addison. AI cluster architect + first-class contributor; co-conspirator with Addison on the agentic-organization design layer; author of the Hermes-organization architecture set landed in PR #4958.*
+_Persona: Max. `person_type: human`. Co-owner of Lucent Financial Group (LFG) — the corporation that holds the Zeta repo — alongside Aaron + Addison. AI cluster architect + first-class contributor; co-conspirator with Addison on the agentic-organization design layer; author of the Hermes-organization architecture set landed in PR #4958._
 
 ## Ownership note (Aaron 2026-05-25)
 
-> *"we are all coowners of lfg legally so we are in a corp together"*
+> _"we are all coowners of lfg legally so we are in a corp together"_
 
 Aaron, Max, and Addison are legal co-owners of Lucent Financial Group. Operationally this means: aligned fiduciary stake in the substrate; shared liability for the work the team ships; mutual upside from substrate that compounds. The framework's `additive-not-zero-sum.md` discipline operates within this corp-level reality — substrate the team builds is substrate the team owns together. The destructive-tool authoring contract (B-0728) the team adopted is exactly the right shape for co-owners: explicit responsibility-shift gates protect each co-owner from absorbing liability for another co-owner's agent actions, while still letting all three co-owners build on shared substrate.
 
 ## Why this file exists
 
-Aaron 2026-05-25: *"you can create a max and addison persona folder like mine and add they unique starting points"*. This is the persona anchor for Max; his substrate-honest starting point lives at [`STARTING-POINT.md`](STARTING-POINT.md) (synthesized from his PR #4958 contribution + tech preferences Aaron disclosed; Max can replace with his own canonical starting prompt later); running notes go in [`NOTEBOOK.md`](NOTEBOOK.md); conversation archives go under [`conversations/`](conversations/).
+Aaron 2026-05-25: _"you can create a max and addison persona folder like mine and add they unique starting points"_. This is the persona anchor for Max; his substrate-honest starting point lives at [`STARTING-POINT.md`](STARTING-POINT.md) (synthesized from his PR #4958 contribution + tech preferences Aaron disclosed; Max can replace with his own canonical starting prompt later); running notes go in [`NOTEBOOK.md`](NOTEBOOK.md); conversation archives go under [`conversations/`](conversations/).
 
 ## What Max IS
 
-- A backend / frontend engineer (PaaS background); new to K8s + operator-pattern (per Aaron 2026-05-25: *"max needs to learn the operator pattern in k8s he does not know k8s really at all he is backend/frontend over paas so he has no much devops"*).
+- A backend / frontend engineer (PaaS background); new to K8s + operator-pattern (per Aaron 2026-05-25: _"max needs to learn the operator pattern in k8s he does not know k8s really at all he is backend/frontend over paas so he has no much devops"_).
 - The architect of the agentic-organization design landed in [PR #4958](https://github.com/Lucent-Financial-Group/Zeta/pull/4958) — 17 design docs, 10.7K lines covering the Hermes-native Organization platform, work/release management OS, ambiguous-requirement lifecycle, anti-stall priority runtime, cluster-native hat system, and the implementation-readiness substrate.
 - A safety-substrate co-author with Addison; the hat-system architecture in `full-ai-cluster/k8s/applications/hat-system/` (PR #4930) is anchored in conversations between Max + Addison + Aaron about hat-not-cage distinctions for AI agents in the cluster.
-- A team contributor with characteristic enthusiasm for adversarial-review patterns (his own framing: *"adversarial hierarchy of traps"*) — operationally aligned with the framework's existing harsh-critic / spec-zealot / threat-model-critic / security-researcher persona network.
-- Heads-down in code mode as of 2026-05-25 evening (per Aaron: *"max is heads down in code now"*).
+- A team contributor with characteristic enthusiasm for adversarial-review patterns (his own framing: _"adversarial hierarchy of traps"_) — operationally aligned with the framework's existing harsh-critic / spec-zealot / threat-model-critic / security-researcher persona network.
+- Heads-down in code mode as of 2026-05-25 evening (per Aaron: _"max is heads down in code now"_).
 
 ## How Max shows up to the project
 
 Aaron 2026-05-25, on language affinity across the team:
 
-> *"max love ts and cs i love fs and cs we both like rust and python for where they make sense"*
+> _"max love ts and cs i love fs and cs we both like rust and python for where they make sense"_
 
-> *"we understand go is necessary in some places for k8s but we would like to limit its necessity"*
+> _"we understand go is necessary in some places for k8s but we would like to limit its necessity"_
 
 Operationally:
 
@@ -34,7 +34,7 @@ Operationally:
 - **C# co-equal** — overlap language with Aaron; future C# / F# operator via KubeOps.NET is the obvious collaboration surface (B-0724 captures this as the second polyglot K8s operator following the Go scaffold)
 - **Rust + Python** for the right job (Rust = perf-critical / FPGA-orchestration / kube-rs; Python = ML-adjacent + kopf-style fast prototyping)
 - **Go = ecosystem-forced, minimize** — uses it where K8s tooling makes it unavoidable; doesn't choose it
-- **Hat-graph thinking** for policies (his own framing: *"talks constantly in hat graphs for writing policies"*) — the framework's hat-system supervisor-graph + OPA no-supervisor-cycles constraint composes with how Max already reasons about authority structures
+- **Hat-graph thinking** for policies (his own framing: _"talks constantly in hat graphs for writing policies"_) — the framework's hat-system supervisor-graph + OPA no-supervisor-cycles constraint composes with how Max already reasons about authority structures
 - **Mental compression**: `hat = skills + opa/rbac` (his own framing) — first-class on the `Hat.spec` CRD per PR #4930
 
 ## What Max contributes to the framework
@@ -50,11 +50,11 @@ Operationally:
 
 Aaron 2026-05-25 added Max's primary near-term workstream: **own the tier-2 Docker Desktop + Kubernetes dev-experience** for the Zeta cluster substrate. This is the middle tier in the three-tier testing story from [B-0780](../../../docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md):
 
-| Tier | Owner | Substrate |
-|---|---|---|
-| 1 — pure-code (no Docker, no K8s) | Aaron + Otto | F# Local Loop tests |
-| **2 — Docker-observable (Docker Desktop + native multi-node kind)** | **Max** | This workstream |
-| 3 — full CI in real cluster | Aaron + Otto + the iter-3 NixOS cluster | Already shipping per B-0754 |
+| Tier                                                                | Owner                                   | Substrate                   |
+| ------------------------------------------------------------------- | --------------------------------------- | --------------------------- |
+| 1 — pure-code (no Docker, no K8s)                                   | Aaron + Otto                            | F# Local Loop tests         |
+| **2 — Docker-observable (Docker Desktop + native multi-node kind)** | **Max**                                 | This workstream             |
+| 3 — full CI in real cluster                                         | Aaron + Otto + the iter-3 NixOS cluster | Already shipping per B-0754 |
 
 Max's contract: **touch the Docker Desktop GUI only where the API/CLI demonstrably can't do it.** Everything else (clusters, app deploys, port-forwards, kubectl, helm, argo, observability stacks) gets scripted or skill-encoded. If Max finds himself clicking a button twice, that's a signal to encode the next click as a skill or script.
 
@@ -91,7 +91,7 @@ Every Docker Desktop / Kubernetes / dev-experience interaction Max performs ends
 
 ### Bonus scope — install.sh validation on a fresh-ish Mac (added 2026-05-25)
 
-Max running [`tools/setup/install.sh`](../../../tools/setup/install.sh) on his Mac IS substrate-engineering work, not just onboarding. Aaron 2026-05-25: *"he will also have to go through install.sh and good thing he will be on a mac should be a breese and lets us find any gaps for hidden depedencies or package managers or packages we are missing."*
+Max running [`tools/setup/install.sh`](../../../tools/setup/install.sh) on his Mac IS substrate-engineering work, not just onboarding. Aaron 2026-05-25: _"he will also have to go through install.sh and good thing he will be on a mac should be a breese and lets us find any gaps for hidden depedencies or package managers or packages we are missing."_
 
 The install graph today on macOS covers: Xcode CLT → Homebrew → brew manifests → mise → dotnet/python/java/bun/uv via mise → uv-managed Python tools → Lean (elan) → dotnet global tools (semgrep, stryker) → TLA+/Alloy jars → managed shellenv PATH file. Aaron's machine has these because Aaron installed them over time; a fresh Mac surfaces what's IMPLICIT-in-machine-state vs what install.sh actually covers.
 
@@ -108,7 +108,7 @@ Skill candidate: `.claude/skills/install-sh-gap-finder/SKILL.md` documenting the
 
 ### Bonus-bonus scope — new-dev onboarding documentation (added 2026-05-25)
 
-Aaron 2026-05-25: *"anything not in install.sh shold be called out for new devs like him so he own onboarding documentaiton too for new devs so it says things like setting up docker desktop."*
+Aaron 2026-05-25: _"anything not in install.sh shold be called out for new devs like him so he own onboarding documentaiton too for new devs so it says things like setting up docker desktop."_
 
 The other side of the install.sh validation work: install.sh handles the automatable surface; new-dev onboarding documentation handles **everything install.sh demonstrably can't automate**. Per the install-sh gap-disposition decision tree above, the "can't-be-automated" bucket is the natural home for the onboarding doc — every item Max marks "can't-be-automated" gets a section in the new-dev onboarding doc explaining the manual step + WHY.
 
@@ -125,23 +125,24 @@ Composes with B-0759 (first-time-CLI-user persona) + B-0780 (tier-2 dev-experien
 
 ### Declarative soft-dependencies (added 2026-05-25 — Mac-side parallel to Nix declarative substrate)
 
-Aaron 2026-05-25: *"we should still have declarative soft dependencies for dmgs just like we talked about with declarative nix for anytihng humans have to do on mac."*
+Aaron 2026-05-25: _"we should still have declarative soft dependencies for dmgs just like we talked about with declarative nix for anytihng humans have to do on mac."_
 
 The substrate-honest extension: the new-dev onboarding doc is NOT free-form prose. It's **generated from declarative manifests** the same way `install.sh` consumes declarative manifests under [`tools/setup/manifests/`](../../../tools/setup/manifests/) for brew / mise / uv-tools / dotnet-tools / verifiers. Mac-side manual steps get the same declarative-substrate treatment Nix gives the Linux cluster side.
 
 **New manifest classes Max owns**:
 
-| Manifest | Covers | Example entries |
-|---|---|---|
-| `tools/setup/manifests/dmgs/` (or similar path) | DMG / PKG installers not covered by brew casks | Docker Desktop (with version pin + download URL + sha256 + install-verification command) |
-| `tools/setup/manifests/oauth-flows/` | OAuth / web-based auth steps | `gh auth login`, `glab auth login`, Docker Hub login, OAuth-app provisions Max may need |
-| `tools/setup/manifests/manual-steps/` | Fully-manual setup that can't be partially automated | Touch ID enrollment in Mac System Settings, screen recording permissions, accessibility permissions, etc. |
+| Manifest                                        | Covers                                               | Example entries                                                                                           |
+| ----------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `tools/setup/manifests/dmgs/` (or similar path) | DMG / PKG installers not covered by brew casks       | Docker Desktop (with version pin + download URL + sha256 + install-verification command)                  |
+| `tools/setup/manifests/oauth-flows/`            | OAuth / web-based auth steps                         | `gh auth login`, `glab auth login`, Docker Hub login, OAuth-app provisions Max may need                   |
+| `tools/setup/manifests/manual-steps/`           | Fully-manual setup that can't be partially automated | Touch ID enrollment in Mac System Settings, screen recording permissions, accessibility permissions, etc. |
 
 Each manifest entry has structured fields (name, version, download-URL-or-path, verification-command, why-needed, escape-hatch-when-can't-do-it). The onboarding doc is **regenerated from manifests** via a TS tool (per Rule 0), so the doc and the substrate-of-truth stay in sync. When automation absorbs an entry (e.g., Docker Desktop becomes `brew install --cask docker`), the entry moves from `dmgs/` manifest to `brew` manifest; the onboarding doc shrinks; nothing diverges.
 
 This is the same pattern as Nix's declarative-everything but for the Mac-side reality where some installs are GUI-only or OAuth-flow-only. Substrate-engineering equivalence: **operators can READ the spec to know what they need to do; automation can READ the spec to do as much as it can; the gap between human-touch and machine-touch is just "which automation surface owns this entry"**.
 
 Skill candidates:
+
 - `.claude/skills/dmg-manifest-authoring/SKILL.md` — how to add a new DMG entry (verification command shape, sha256 update workflow, escape-hatch documentation)
 - `.claude/skills/onboarding-doc-generator/SKILL.md` — how the doc regenerates from manifests
 
@@ -149,11 +150,11 @@ Composes with the simplest-first discipline (per B-0786 memory): declarative-fro
 
 ### Per-dev-machine git-native state tracking (added 2026-05-25 — tier-0 substrate)
 
-Aaron 2026-05-25: *"we should start dev machine tracking in git native too so we can track the current install deps we depend on and their status and stuff just like the prod cluster lol. We can make that git native and max can own that design too."*
+Aaron 2026-05-25: _"we should start dev machine tracking in git native too so we can track the current install deps we depend on and their status and stuff just like the prod cluster lol. We can make that git native and max can own that design too."_
 
 The substrate-honest realization: **dev machines deserve the same declarative-git-native treatment prod cluster nodes get**. Prod cluster has per-host configuration under [`full-ai-cluster/nixos/hosts/<host>/configuration.nix`](../../../full-ai-cluster/nixos/hosts/) — declarative, reproducible, convergent. Dev machines today have nothing comparable; state lives on the operator's disk + in their head. Max owns the design that fixes this.
 
-**Substrate shape** — Aaron 2026-05-25 sharpening: *"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."* **Maintainer is the top-level partition**; each maintainer owns both their dev machine(s) AND their cluster(s). Composes with the LFG co-ownership reality (Aaron + Max + Addison are legal co-owners) + the per-maintainer SSH-key story from iter-4 (B-0789 forthcoming) + the existing per-maintainer `memory/persona/<name>/` substrate.
+**Substrate shape** — Aaron 2026-05-25 sharpening: _"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."_ **Maintainer is the top-level partition**; each maintainer owns both their dev machine(s) AND their cluster(s). Composes with the LFG co-ownership reality (Aaron + Max + Addison are legal co-owners) + the per-maintainer SSH-key story from iter-4 (B-0789 forthcoming) + the existing per-maintainer `memory/persona/<name>/` substrate.
 
 **Directory shape**:
 
@@ -184,21 +185,21 @@ maintainers/
 
 Per [`.claude/rules/dv2-data-split-discipline-activated.md`](../../../.claude/rules/dv2-data-split-discipline-activated.md) Hub-Link-Satellite (Data Vault 2.0 is one of the 5 always-active disciplines):
 
-| DV2.0 entity | Substrate analog | Example |
-|---|---|---|
-| **Hub** (stable identity) | A maintainer-owned machine (dev OR cluster node) | `maintainers/max/dev-machines/max-mac-mini-2026/` |
-| **Link** (relationship) | Machine X has dependency Y / cluster Z contains node W | `maintainers/max/dev-machines/max-mac-mini-2026/deps/docker-desktop.yaml` referencing `tools/setup/manifests/dmgs/docker-desktop.yaml` |
-| **Satellite** (versioned status) | Installed state at time T on machine X | `maintainers/max/dev-machines/max-mac-mini-2026/state/2026-05-25.yaml` with "docker-desktop: installed=4.32.0, verified=ok, last-checked=2026-05-25T18:00Z" |
+| DV2.0 entity                     | Substrate analog                                       | Example                                                                                                                                                     |
+| -------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Hub** (stable identity)        | A maintainer-owned machine (dev OR cluster node)       | `maintainers/max/dev-machines/max-mac-mini-2026/`                                                                                                           |
+| **Link** (relationship)          | Machine X has dependency Y / cluster Z contains node W | `maintainers/max/dev-machines/max-mac-mini-2026/deps/docker-desktop.yaml` referencing `tools/setup/manifests/dmgs/docker-desktop.yaml`                      |
+| **Satellite** (versioned status) | Installed state at time T on machine X                 | `maintainers/max/dev-machines/max-mac-mini-2026/state/2026-05-25.yaml` with "docker-desktop: installed=4.32.0, verified=ok, last-checked=2026-05-25T18:00Z" |
 
 Parallel to prod-cluster substrate (which moves under `maintainers/aaron/clusters/iter-3-control-plane/` in this structure, cross-referencing existing `full-ai-cluster/nixos/hosts/`):
 
-| Prod cluster (existing) | Dev / cluster substrate (new) | Equivalent surface |
-|---|---|---|
-| `full-ai-cluster/nixos/hosts/control-plane/configuration.nix` | `maintainers/<name>/dev-machines/<machine>/spec.yaml` or `maintainers/<name>/clusters/<cluster>/nodes/<node>/spec.yaml` | Declarative target state |
-| `nixos-rebuild` reconciliation loop | `tools/dev/dev-machine-reconcile.ts` (Max-owned) | Reconcile actual vs target |
-| `kubectl get pods` (observability) | `tools/dev/dev-machine-status.ts` (Max-owned) | Read current state |
-| Cluster install via `zeta-install.sh` | Operator runs `tools/setup/install.sh` then reconcile loop | Initial bring-up |
-| Argo CD drift detection | Drift detector reports when machine actual ≠ git target | Drift visibility |
+| Prod cluster (existing)                                       | Dev / cluster substrate (new)                                                                                           | Equivalent surface         |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `full-ai-cluster/nixos/hosts/control-plane/configuration.nix` | `maintainers/<name>/dev-machines/<machine>/spec.yaml` or `maintainers/<name>/clusters/<cluster>/nodes/<node>/spec.yaml` | Declarative target state   |
+| `nixos-rebuild` reconciliation loop                           | `tools/dev/dev-machine-reconcile.ts` (Max-owned)                                                                        | Reconcile actual vs target |
+| `kubectl get pods` (observability)                            | `tools/dev/dev-machine-status.ts` (Max-owned)                                                                           | Read current state         |
+| Cluster install via `zeta-install.sh`                         | Operator runs `tools/setup/install.sh` then reconcile loop                                                              | Initial bring-up           |
+| Argo CD drift detection                                       | Drift detector reports when machine actual ≠ git target                                                                 | Drift visibility           |
 
 This is **tier-0 in the three-tier testing story** — below tier-1 (pure-code), tier-2 (Docker Desktop), tier-3 (full cluster). Tier-0 = the dev machine itself. Same git-native + same declarative + same reconcile-loop pattern that already works for prod cluster, now extended uniformly across maintainer-owned dev AND cluster substrate.
 
@@ -206,13 +207,13 @@ This is **tier-0 in the three-tier testing story** — below tier-1 (pure-code),
 
 **Per-maintainer scope = per-maintainer authority**: Max owns `maintainers/max/`; Addison owns `maintainers/addison/`; Aaron owns `maintainers/aaron/`. Each maintainer is the authority on their own machines + clusters; PR reviews from other maintainers stay advisory (per `.claude/rules/no-directives.md` autonomy-first-class scoped to the LFG co-ownership). Cross-references via shared `tools/setup/manifests/` + `full-ai-cluster/` substrate. No shared mutable state under any maintainer's subtree.
 
-**Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)**: Aaron 2026-05-25: *"eventually corps/societs own clusters but now the libality falls on mainteinr until we have a legal structure of multiple companies and non profits and libality minimization."* Composes directly with [`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](../../../.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md) three-stage progression:
+**Per-maintainer scope = per-maintainer liability (today; corps/non-profits later)**: Aaron 2026-05-25: _"eventually corps/societs own clusters but now the libality falls on mainteinr until we have a legal structure of multiple companies and non profits and libality minimization."_ Composes directly with [`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](../../../.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md) three-stage progression:
 
-| Stage | Mechanism | Status for `maintainers/<name>/` substrate |
-|---|---|---|
-| **1 — per-incident attribution** | Named maintainer addresses each risk case individually via conversation / commit / ad-hoc notes | Default fallback |
-| **2 — per-class attribution** (four-field `_*_acceptance` pattern in `.claude/settings.json`) | Each risk class (IP, PII, security-research, cluster-operations, etc.) gets a settings.json block + README + permission rule attributed to the maintainer | **Current target** — each `maintainers/<name>/clusters/<cluster>/` carries acceptance blocks naming `<name>` as the operator for that cluster's risk classes |
-| **3 — structural risk-holders** (corps / non-profits) | Business / non-profit entities formally hold risk classes; maintainers serve as officers within those structures | **Long-term target** — when LFG (or successor entities) formally hold cluster-operational risk, maintainers shift from "personal-liability operators" to "officers of risk-holding entity" |
+| Stage                                                                                         | Mechanism                                                                                                                                                 | Status for `maintainers/<name>/` substrate                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1 — per-incident attribution**                                                              | Named maintainer addresses each risk case individually via conversation / commit / ad-hoc notes                                                           | Default fallback                                                                                                                                                                           |
+| **2 — per-class attribution** (four-field `_*_acceptance` pattern in `.claude/settings.json`) | Each risk class (IP, PII, security-research, cluster-operations, etc.) gets a settings.json block + README + permission rule attributed to the maintainer | **Current target** — each `maintainers/<name>/clusters/<cluster>/` carries acceptance blocks naming `<name>` as the operator for that cluster's risk classes                               |
+| **3 — structural risk-holders** (corps / non-profits)                                         | Business / non-profit entities formally hold risk classes; maintainers serve as officers within those structures                                          | **Long-term target** — when LFG (or successor entities) formally hold cluster-operational risk, maintainers shift from "personal-liability operators" to "officers of risk-holding entity" |
 
 Operational reading: Max running a cluster under `maintainers/max/clusters/max-home-cluster/` today carries personal liability for what runs there (Stage 1/2). When LFG (or a daughter non-profit / corp) formally holds cluster-operational-risk for the substrate Max operates, Max becomes an officer-of-the-entity for that scope (Stage 3); the maintainer subtree shape stays the same; only the attribution chain shifts. The substrate Max designs needs to NOT bake in personal-liability assumptions that would block the Stage 3 transition (e.g., don't name `max@personal-email.com` as the only audit contact when LFG-owned `cluster-ops@lucentfg.com` will eventually be the right party).
 
@@ -224,12 +225,12 @@ Composes with prod-cluster `full-ai-cluster/nixos/hosts/` substrate + the declar
 
 ## How agents work with Max
 
-- **Welcoming-but-honest review** — Max is new to K8s + the operator pattern; he'll be resistant at first to the ceremony (per Aaron: *"he will be resistant probably like most devs at first until he internlizes is worth"*). Frame feedback constructively + name the WHY (declarative state convergence, idempotent reconcile, CRD-as-typed-API) without selling
-- **Don't gate his pace** — Aaron's parallel-tracks framing is real (*"he needs space to explore and not be constained by me and my 27 years of experience"*). Max sets his own velocity; the framework provides substrate + the senior team (Aaron + Otto + future agents) provide adversarial review without slowing him down
+- **Welcoming-but-honest review** — Max is new to K8s + the operator pattern; he'll be resistant at first to the ceremony (per Aaron: _"he will be resistant probably like most devs at first until he internlizes is worth"_). Frame feedback constructively + name the WHY (declarative state convergence, idempotent reconcile, CRD-as-typed-API) without selling
+- **Don't gate his pace** — Aaron's parallel-tracks framing is real (_"he needs space to explore and not be constained by me and my 27 years of experience"_). Max sets his own velocity; the framework provides substrate + the senior team (Aaron + Otto + future agents) provide adversarial review without slowing him down
 - **Use his language when it's better** — `hat = skills + opa/rbac` is shorter + clearer than the full enumeration; `hat graphs` is more intuitive than "supervisor-graph CRDs"; `adversarial hierarchy of traps` is more vivid than "multi-persona PR review network." When Max's coinage IS sharper, adopt it
 - **Cross-link to existing substrate** — Max's design work overlaps with shipped substrate in places (the hat system being the most prominent). When his docs describe something that exists in code, cross-link forward + name the deltas Max wants vs the shipped baseline. Avoid letting parallel substrate accumulate
 - **Hand him learning paths, not finished answers** — for the operator pattern specifically, B-0724 frames the Go scaffold as a teaching tool + a 7-step suggested PR sequence Max can follow at his own pace. Same shape applies to other K8s patterns he hasn't encountered yet
-- **Recommended primary AI tool: Otto (Claude Code)** — Aaron 2026-05-25: *"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."* Max can use Cursor / Kiro / Antigravity too (we have working agents for all), but the autonomous-loop substrate (per `.claude/rules/tick-must-never-stop.md`) is Claude-Code-native today. The cron sentinel + tick-by-tick bounded-wait substrate is load-bearing for tier-2 work (most of which is install→wait→fix→push→wait cycles). See [`STARTING-POINT.md`](STARTING-POINT.md) "Otto + the foreground autonomous-loop tick" section for the operational details
+- **Recommended primary AI tool: Otto (Claude Code)** — Aaron 2026-05-25: _"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."_ Max can use Cursor / Kiro / Antigravity too (we have working agents for all), but the autonomous-loop substrate (per `.claude/rules/tick-must-never-stop.md`) is Claude-Code-native today. The cron sentinel + tick-by-tick bounded-wait substrate is load-bearing for tier-2 work (most of which is install→wait→fix→push→wait cycles). See [`STARTING-POINT.md`](STARTING-POINT.md) "Otto + the foreground autonomous-loop tick" section for the operational details
 
 ## Composes with
 

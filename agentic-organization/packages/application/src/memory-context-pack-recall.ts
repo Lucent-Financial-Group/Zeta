@@ -1,17 +1,6 @@
-import type {
-  Memory,
-  MemoryAttribution,
-  MemoryRecord,
-} from "../../memory/src/index.ts";
-import {
-  isTerminalMemory,
-  type MemoryEnvelope,
-} from "../../domain/src/index.ts";
-import {
-  computeMemoryWeight,
-  readFloorFor,
-  type RetrievalCtx,
-} from "./memory-ranking.ts";
+import type { Memory, MemoryAttribution, MemoryRecord } from "../../memory/src/index.ts";
+import { isTerminalMemory, type MemoryEnvelope } from "../../domain/src/index.ts";
+import { computeMemoryWeight, readFloorFor, type RetrievalCtx } from "./memory-ranking.ts";
 import type {
   ContextPackMemoryRecall,
   ContextPackMemoryRecallPort,
@@ -125,9 +114,7 @@ export function createMemoryContextPackRecallPort(
   };
 }
 
-export function contextPackMemorySimilarityConfidenceFor(
-  category: ContextPackMemorySimilarityCategory,
-): number {
+export function contextPackMemorySimilarityConfidenceFor(category: ContextPackMemorySimilarityCategory): number {
   return CONTEXT_PACK_MEMORY_SIMILARITY_CONFIDENCE[category];
 }
 
@@ -146,13 +133,8 @@ function memoryScopeGapsFor(request: ContextPackMemoryRecallRequest): readonly C
   ];
 }
 
-function attributionForContextPackRecall(
-  request: ContextPackMemoryRecallRequest,
-): MemoryAttribution | undefined {
-  if (
-    request.agentId === undefined ||
-    request.projectId === undefined
-  ) {
+function attributionForContextPackRecall(request: ContextPackMemoryRecallRequest): MemoryAttribution | undefined {
+  if (request.agentId === undefined || request.projectId === undefined) {
     return undefined;
   }
   return {
@@ -217,10 +199,12 @@ function rankedMemoryRecallFor(
     return [];
   }
 
-  return [{
-    recall: memoryRecallFor(memory, request, input, { envelope, weight: governanceWeight, readFloor }),
-    governanceWeight,
-  }];
+  return [
+    {
+      recall: memoryRecallFor(memory, request, input, { envelope, weight: governanceWeight, readFloor }),
+      governanceWeight,
+    },
+  ];
 }
 
 function memoryRecallFor(
@@ -304,9 +288,7 @@ function compareRankedContextPackMemoryRecall(
 }
 
 function similarityRankFor(category: ContextPackMemorySimilarityCategory | undefined): number {
-  return category === undefined
-    ? Number.MAX_SAFE_INTEGER
-    : CONTEXT_PACK_MEMORY_SIMILARITY_RANK[category];
+  return category === undefined ? Number.MAX_SAFE_INTEGER : CONTEXT_PACK_MEMORY_SIMILARITY_RANK[category];
 }
 
 function memorySimilarityCategoryFor(

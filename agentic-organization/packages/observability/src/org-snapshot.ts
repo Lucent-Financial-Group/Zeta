@@ -149,7 +149,11 @@ export function buildOrgSnapshot(input: BuildOrgSnapshotInput): OrgSnapshot {
   const priorityMap = new Map<string, string>();
   const supplyMap = new Map<string, string>();
   const latestAt = new Map<string, number>(); // key = `${kind}:${subjectId}`
-  const keepLatest = (map: Map<string, string>, kind: string, e: { subjectId: string; toState?: string; occurredAt: string }): void => {
+  const keepLatest = (
+    map: Map<string, string>,
+    kind: string,
+    e: { subjectId: string; toState?: string; occurredAt: string },
+  ): void => {
     if (e.toState === undefined) return;
     const key = `${kind}:${e.subjectId}`;
     const at = Date.parse(e.occurredAt);
@@ -172,7 +176,12 @@ export function buildOrgSnapshot(input: BuildOrgSnapshotInput): OrgSnapshot {
   const recentEvents: RecentEventView[] = [...input.events]
     .sort((a, b) => Date.parse(b.occurredAt) - Date.parse(a.occurredAt))
     .slice(0, recentLimit)
-    .map((e) => ({ kind: e.kind, occurredAt: e.occurredAt, ...(e.actorHatId !== undefined ? { actorHatId: e.actorHatId } : {}), decision: e.decision }));
+    .map((e) => ({
+      kind: e.kind,
+      occurredAt: e.occurredAt,
+      ...(e.actorHatId !== undefined ? { actorHatId: e.actorHatId } : {}),
+      decision: e.decision,
+    }));
 
   return {
     generatedAt: input.nowIso,

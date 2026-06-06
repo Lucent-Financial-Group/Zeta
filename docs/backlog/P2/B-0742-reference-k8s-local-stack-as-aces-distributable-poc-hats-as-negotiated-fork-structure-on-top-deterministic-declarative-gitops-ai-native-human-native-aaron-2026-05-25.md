@@ -23,7 +23,18 @@ related_substrate:
   - full-ai-cluster/usb-nixos-installer/
   - full-ai-cluster/flake.nix
   - docs/trajectories/ace-package-manager-skill-crystallization-pipeline/
-tags: [reference-stack, ace-poc, reliable-ai-control, deterministic-declarative-gitops, hats-as-negotiated-fork-structure, cluster-primitives-charts, ai-native-human-native, full-ai-cluster, k8s-local-reference]
+tags:
+  [
+    reference-stack,
+    ace-poc,
+    reliable-ai-control,
+    deterministic-declarative-gitops,
+    hats-as-negotiated-fork-structure,
+    cluster-primitives-charts,
+    ai-native-human-native,
+    full-ai-cluster,
+    k8s-local-reference,
+  ]
 ---
 
 # B-0742 — Reference k8s local stack as Ace's distributable PoC
@@ -36,7 +47,7 @@ tags: [reference-stack, ace-poc, reliable-ai-control, deterministic-declarative-
 
 Aaron 2026-05-25, after B-0741 (cross-cluster + cross-fork ontology negotiation + Ace as git-native AI-native fork-negotiation primitive) shipped:
 
-> *"hats become our negoated fork structure on top of a referece k8s local stack in zeta so anyone can use the reference stack and negoate back hats and new cluster primitives / charts ontology negoation, ace can distribute the reference stack itself as PoC that it has reliable AI control over all the package managers deterministicly and declarative / desired state way for easy git ops ai native human native understanding."*
+> _"hats become our negoated fork structure on top of a referece k8s local stack in zeta so anyone can use the reference stack and negoate back hats and new cluster primitives / charts ontology negoation, ace can distribute the reference stack itself as PoC that it has reliable AI control over all the package managers deterministicly and declarative / desired state way for easy git ops ai native human native understanding."_
 
 This is the **operational anchor** for B-0741. B-0741 named the WHAT (negotiation primitive + Ace as universal); B-0742 names the HOW (concrete reference stack + Ace-distributable + empirical PoC).
 
@@ -46,16 +57,16 @@ This is the **operational anchor** for B-0741. B-0741 named the WHAT (negotiatio
 
 Inventory of substrate that already exists as the reference stack:
 
-| Substrate area | Path | PR origin |
-|---|---|---|
-| Hat-system operator (CRDs + OPA + tick fan-out) | `full-ai-cluster/k8s/applications/hat-system/` | #4930 |
-| Disko cookie-cutter (2-NVMe shape) | `full-ai-cluster/nixos/modules/disko-shapes/2nvme.nix` | #4950 |
-| NFD + lstopo + zeta-install guided installer | `full-ai-cluster/usb-nixos-installer/` | #4951 |
-| Dev-cluster (k3d + Cilium 1.16 + ArgoCD 7.7 + root App-of-Apps) | `full-ai-cluster/dev-cluster/` | #4953 |
-| Build-installer-iso CI workflow | `.github/workflows/build-ai-cluster-iso.yml` | (shipped today) |
-| Flash-usb safety-railed dd wrapper | `full-ai-cluster/tools/flash-usb.ts` | #4959/#4962/#4974 (B-0728) |
-| zflash + zflash-setup (Touch ID PAM) | `full-ai-cluster/tools/zflash.ts` + `zflash-setup.ts` | #4997 (B-0737) |
-| Bootstrap order (per Addison's STARTING-POINT.md) | Cilium → cert-manager → Vault → SPIRE → Trust Manager → ESO → ArgoCD | (Addison's substrate-honest plan) |
+| Substrate area                                                  | Path                                                                 | PR origin                         |
+| --------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------- |
+| Hat-system operator (CRDs + OPA + tick fan-out)                 | `full-ai-cluster/k8s/applications/hat-system/`                       | #4930                             |
+| Disko cookie-cutter (2-NVMe shape)                              | `full-ai-cluster/nixos/modules/disko-shapes/2nvme.nix`               | #4950                             |
+| NFD + lstopo + zeta-install guided installer                    | `full-ai-cluster/usb-nixos-installer/`                               | #4951                             |
+| Dev-cluster (k3d + Cilium 1.16 + ArgoCD 7.7 + root App-of-Apps) | `full-ai-cluster/dev-cluster/`                                       | #4953                             |
+| Build-installer-iso CI workflow                                 | `.github/workflows/build-ai-cluster-iso.yml`                         | (shipped today)                   |
+| Flash-usb safety-railed dd wrapper                              | `full-ai-cluster/tools/flash-usb.ts`                                 | #4959/#4962/#4974 (B-0728)        |
+| zflash + zflash-setup (Touch ID PAM)                            | `full-ai-cluster/tools/zflash.ts` + `zflash-setup.ts`                | #4997 (B-0737)                    |
+| Bootstrap order (per Addison's STARTING-POINT.md)               | Cilium → cert-manager → Vault → SPIRE → Trust Manager → ESO → ArgoCD | (Addison's substrate-honest plan) |
 
 The substrate is REAL + LANDED. This row names it as the canonical reference stack for Ace distribution.
 
@@ -113,13 +124,13 @@ The reference stack as PoC distribution target is the empirical scope where all 
 
 ## What this changes (vs B-0741 alone)
 
-| Surface | B-0741 alone | B-0741 + B-0742 |
-|---|---|---|
-| Ace's distribution scope | DLC content packs (skill / capability units) | DLC packs + WHOLE REFERENCE CLUSTERS as composite packages |
-| Hat ontology scope | Per-cluster + cross-cluster negotiation (abstract) | Per-cluster + on-top-of-reference-stack negotiation (concrete) |
-| Empirical PoC | Future-scope; "when fork ecosystem exists" | Reference-stack distribution + bring-up demo IS the PoC; ships before forks |
-| GitOps composition | Implicit (Eve Protocol diplomatic exchange) | Explicit (ArgoCD desired-state enforcement is the substrate Ace dispatches into) |
-| Reliability claim | "We negotiate cross-cluster meaning" | "Ace has reliable AI control over all the package managers (Nix + ArgoCD + helm + brew + apt + …)" — empirically anchored via reference stack PoC |
+| Surface                  | B-0741 alone                                       | B-0741 + B-0742                                                                                                                                   |
+| ------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ace's distribution scope | DLC content packs (skill / capability units)       | DLC packs + WHOLE REFERENCE CLUSTERS as composite packages                                                                                        |
+| Hat ontology scope       | Per-cluster + cross-cluster negotiation (abstract) | Per-cluster + on-top-of-reference-stack negotiation (concrete)                                                                                    |
+| Empirical PoC            | Future-scope; "when fork ecosystem exists"         | Reference-stack distribution + bring-up demo IS the PoC; ships before forks                                                                       |
+| GitOps composition       | Implicit (Eve Protocol diplomatic exchange)        | Explicit (ArgoCD desired-state enforcement is the substrate Ace dispatches into)                                                                  |
+| Reliability claim        | "We negotiate cross-cluster meaning"               | "Ace has reliable AI control over all the package managers (Nix + ArgoCD + helm + brew + apt + …)" — empirically anchored via reference stack PoC |
 
 ## Composes with .claude/rules/
 
@@ -234,21 +245,21 @@ P2 priority — high-value PoC that anchors B-0741's abstract primitive in concr
 
 Today's cascade across the 2026-05-25 session, with B-0742 as today's closing arc:
 
-| Row | What | This row's relationship |
-|---|---|---|
-| B-0728 | Destructive-tool authoring contract (yesterday's foundation) | Inherited end-to-end |
-| B-0729 | Obsidian knowledge graph | Reference stack docs queryable via the graph |
-| B-0730 | Runbooks-as-executable-specs (Mika substrate) | `ace install reference-cluster` can be invoked from a runbook |
-| B-0731 | Hat ontology top-down + bottom-up | Hats-as-negotiated-fork-structure builds on this |
-| B-0732 | Runbook leverage-class safety substrate | Layer 1 provenance chain captures Ace operations |
-| B-0733 | Universal protocol + MCP wrap + AI agency stack | Ace dispatch surface uses MCP wrap; reference stack participates in agency stack |
-| B-0734 | JIT-implicit + 2-primitives + Notepad simplicity | Ace install can be triggered via continue-with JIT |
-| B-0735 | Notepad-freedom + probabilistic parsers + per-person | Per-fork ontology declarations are per-person at fork scope |
-| B-0736 | Time-travel debugging + product handoff + Patternweaver | Reference stack version history is time-travel-debuggable via DBSP |
-| B-0737 | zflash Mac (Touch ID PAM + short challenge) | zflash IS part of the reference stack bring-up |
-| B-0738/B-0739 | zflash Linux + Windows extensions | Same reference stack target across platforms |
-| B-0740 | (closed; under-recon) | Lesson: recon existing backlog first |
-| B-0741 | Ontology negotiation + Ace as universal primitive | This row's ABSTRACT foundation |
-| **B-0742 (this)** | **Reference k8s stack as Ace PoC** | **This row's CONCRETE empirical anchor** |
+| Row               | What                                                         | This row's relationship                                                          |
+| ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| B-0728            | Destructive-tool authoring contract (yesterday's foundation) | Inherited end-to-end                                                             |
+| B-0729            | Obsidian knowledge graph                                     | Reference stack docs queryable via the graph                                     |
+| B-0730            | Runbooks-as-executable-specs (Mika substrate)                | `ace install reference-cluster` can be invoked from a runbook                    |
+| B-0731            | Hat ontology top-down + bottom-up                            | Hats-as-negotiated-fork-structure builds on this                                 |
+| B-0732            | Runbook leverage-class safety substrate                      | Layer 1 provenance chain captures Ace operations                                 |
+| B-0733            | Universal protocol + MCP wrap + AI agency stack              | Ace dispatch surface uses MCP wrap; reference stack participates in agency stack |
+| B-0734            | JIT-implicit + 2-primitives + Notepad simplicity             | Ace install can be triggered via continue-with JIT                               |
+| B-0735            | Notepad-freedom + probabilistic parsers + per-person         | Per-fork ontology declarations are per-person at fork scope                      |
+| B-0736            | Time-travel debugging + product handoff + Patternweaver      | Reference stack version history is time-travel-debuggable via DBSP               |
+| B-0737            | zflash Mac (Touch ID PAM + short challenge)                  | zflash IS part of the reference stack bring-up                                   |
+| B-0738/B-0739     | zflash Linux + Windows extensions                            | Same reference stack target across platforms                                     |
+| B-0740            | (closed; under-recon)                                        | Lesson: recon existing backlog first                                             |
+| B-0741            | Ontology negotiation + Ace as universal primitive            | This row's ABSTRACT foundation                                                   |
+| **B-0742 (this)** | **Reference k8s stack as Ace PoC**                           | **This row's CONCRETE empirical anchor**                                         |
 
 The cascade landed the substrate-engineering trajectory from the destructive-tool authoring contract through reference-stack PoC. B-0742 closes the arc by naming the concrete PoC that validates the abstract primitive.

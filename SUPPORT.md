@@ -23,7 +23,7 @@ Practically, this means:
   pull requests may sit for days or weeks when the
   maintainer's day job is busy.
 - **Round cadence governs throughput.** The factory
-  operates in *rounds* (see
+  operates in _rounds_ (see
   [`docs/ROUND-HISTORY.md`](docs/ROUND-HISTORY.md));
   a round's worth of work lands roughly weekly, with
   variance. A contribution that arrives mid-round

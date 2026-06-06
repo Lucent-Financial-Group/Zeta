@@ -72,7 +72,15 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
     const arg = args[index]!;
     if (arg === "-h" || arg === "--help") return { kind: "help" };
 
-    if (arg === "--iso" || arg === "--output" || arg === "--esp-offset-bytes" || arg === "--ssh-key" || arg === "--host" || arg === "--credential-blob" || arg === "--inline-staging-dir") {
+    if (
+      arg === "--iso" ||
+      arg === "--output" ||
+      arg === "--esp-offset-bytes" ||
+      arg === "--ssh-key" ||
+      arg === "--host" ||
+      arg === "--credential-blob" ||
+      arg === "--inline-staging-dir"
+    ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
       if (arg === "--iso") isoPath = value;
@@ -144,7 +152,8 @@ export function runFileBackedZflashCli(
 
   const needsInlineStaging = planned.value.espWrites.some((write) => write.content !== undefined);
   const inlineStagingDirectory = needsInlineStaging
-    ? options.inlineStagingDirectory ?? (deps.createInlineStagingDirectory ?? createNodeFileBackedZflashInlineStagingDirectory)()
+    ? (options.inlineStagingDirectory ??
+      (deps.createInlineStagingDirectory ?? createNodeFileBackedZflashInlineStagingDirectory)())
     : options.inlineStagingDirectory;
   const executionPlan = planFileBackedZflashImageExecution({
     plan: planned.value,
@@ -184,7 +193,9 @@ function main(): void {
     process.exit(1);
   }
 
-  process.stdout.write(`ZFLASH_QEMU_RETENTION_BOOT_IMAGE=${result.value.retentionBootImageEnvironment.ZFLASH_QEMU_RETENTION_BOOT_IMAGE}\n`);
+  process.stdout.write(
+    `ZFLASH_QEMU_RETENTION_BOOT_IMAGE=${result.value.retentionBootImageEnvironment.ZFLASH_QEMU_RETENTION_BOOT_IMAGE}\n`,
+  );
   if (result.value.inlineStagingDirectory !== undefined) {
     process.stdout.write(`ZFLASH_INLINE_STAGING_DIR=${result.value.inlineStagingDirectory}\n`);
   }

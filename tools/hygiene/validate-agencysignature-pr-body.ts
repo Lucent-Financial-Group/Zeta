@@ -46,8 +46,7 @@ const REQUIRED_KEYS: readonly string[] = [
 
 const FENCE_RE = /^[\t ]*```[A-Za-z]*[\t ]*$/;
 const BLANK_RE = /^[\t ]*$/;
-const TASK_RE =
-  /^(?:none|Otto-\d+|task-#?\d+|#?\d+|[A-Za-z][A-Za-z0-9]*-\d+)$/;
+const TASK_RE = /^(?:none|Otto-\d+|task-#?\d+|#?\d+|[A-Za-z][A-Za-z0-9]*-\d+)$/;
 
 const ENUMS: readonly { readonly key: string; readonly allowed: readonly string[] }[] = [
   { key: "Agency-Signature-Version", allowed: ["1"] },
@@ -167,124 +166,56 @@ function getValue(trailers: string, key: string): string {
 
 function emitParseFailure(): ExitCode {
   process.stdout.write("FAIL: no parseable git trailers found in PR body\n");
-  process.stdout.write(
-    "  Class:  Trailer Contiguity Survival Failure\n",
-  );
-  process.stdout.write(
-    "  Cause:  AgencySignature trailer block missing OR blank-line discipline broken\n",
-  );
-  process.stdout.write(
-    "  Fix:    ensure the trailer block at PR body bottom has exactly ONE blank\n",
-  );
-  process.stdout.write(
-    "          line preceding it and ZERO blank lines within it\n",
-  );
-  process.stdout.write(
-    "  Maxim:  A governance convention is not shipped when humans can read it.\n",
-  );
-  process.stdout.write(
-    "          It is shipped when the target substrate can parse it.\n",
-  );
-  process.stdout.write(
-    `  Spec:   ${SPEC_DOC} Section 7.4 (canonical shape) + Section 4 (blank-line guardrail)\n`,
-  );
+  process.stdout.write("  Class:  Trailer Contiguity Survival Failure\n");
+  process.stdout.write("  Cause:  AgencySignature trailer block missing OR blank-line discipline broken\n");
+  process.stdout.write("  Fix:    ensure the trailer block at PR body bottom has exactly ONE blank\n");
+  process.stdout.write("          line preceding it and ZERO blank lines within it\n");
+  process.stdout.write("  Maxim:  A governance convention is not shipped when humans can read it.\n");
+  process.stdout.write("          It is shipped when the target substrate can parse it.\n");
+  process.stdout.write(`  Spec:   ${SPEC_DOC} Section 7.4 (canonical shape) + Section 4 (blank-line guardrail)\n`);
   return 1;
 }
 
 function emitLookupFailure(): ExitCode {
-  process.stdout.write(
-    "FAIL: terminal-block check could not locate trailer tail in PR body\n",
-  );
-  process.stdout.write(
-    "  Class:    Validator-Lookup Failure (fail-closed per codex P1 review on PR #24)\n",
-  );
-  process.stdout.write(
-    "  Cause:    parsed trailer line did not match any stripped-input line\n",
-  );
-  process.stdout.write(
-    "            via either exact-match or key-prefix-match strategy.\n",
-  );
-  process.stdout.write(
-    "            Likely cause: parser normalized the trailer (multi-line\n",
-  );
-  process.stdout.write(
-    "            continuation, non-ASCII whitespace, case-fold collision).\n",
-  );
-  process.stdout.write(
-    "  Fix:      simplify PR-body trailer block (single-line trailers,\n",
-  );
-  process.stdout.write(
-    "            literal Key: value, ASCII whitespace) OR extend this\n",
-  );
-  process.stdout.write(
-    "            validator's lookup-fallback chain. Do NOT silently skip.\n",
-  );
+  process.stdout.write("FAIL: terminal-block check could not locate trailer tail in PR body\n");
+  process.stdout.write("  Class:    Validator-Lookup Failure (fail-closed per codex P1 review on PR #24)\n");
+  process.stdout.write("  Cause:    parsed trailer line did not match any stripped-input line\n");
+  process.stdout.write("            via either exact-match or key-prefix-match strategy.\n");
+  process.stdout.write("            Likely cause: parser normalized the trailer (multi-line\n");
+  process.stdout.write("            continuation, non-ASCII whitespace, case-fold collision).\n");
+  process.stdout.write("  Fix:      simplify PR-body trailer block (single-line trailers,\n");
+  process.stdout.write("            literal Key: value, ASCII whitespace) OR extend this\n");
+  process.stdout.write("            validator's lookup-fallback chain. Do NOT silently skip.\n");
   return 1;
 }
 
 function emitNonTrailerAfterFailure(after: readonly string[]): ExitCode {
-  process.stdout.write(
-    "FAIL: non-trailer content found after the trailer block in PR body\n",
-  );
-  process.stdout.write(
-    "  Class:    Trailer Contiguity Survival Failure (Substrate Truth Principle invariant)\n",
-  );
-  process.stdout.write(
-    "  Cause:    text after the trailer block can push trailers out of the\n",
-  );
-  process.stdout.write(
-    "            terminal-block position when GitHub squash-merge inherits\n",
-  );
-  process.stdout.write(
-    "            the PR description as the squash commit body\n",
-  );
-  process.stdout.write(
-    "  Fix:      move the trailer block to the very END of the PR body;\n",
-  );
-  process.stdout.write(
-    "            no non-trailer non-whitespace content may follow it\n",
-  );
+  process.stdout.write("FAIL: non-trailer content found after the trailer block in PR body\n");
+  process.stdout.write("  Class:    Trailer Contiguity Survival Failure (Substrate Truth Principle invariant)\n");
+  process.stdout.write("  Cause:    text after the trailer block can push trailers out of the\n");
+  process.stdout.write("            terminal-block position when GitHub squash-merge inherits\n");
+  process.stdout.write("            the PR description as the squash commit body\n");
+  process.stdout.write("  Fix:      move the trailer block to the very END of the PR body;\n");
+  process.stdout.write("            no non-trailer non-whitespace content may follow it\n");
   process.stdout.write("  Found after trailer block:\n");
   for (const line of after.slice(0, 5)) process.stdout.write(`    ${line}\n`);
   process.stdout.write("  Principle: Substrate Truth Principle\n");
-  process.stdout.write(
-    "             A governance convention has not shipped until the parser\n",
-  );
-  process.stdout.write(
-    "             extracts the expected trailers as a contiguous terminal block.\n",
-  );
+  process.stdout.write("             A governance convention has not shipped until the parser\n");
+  process.stdout.write("             extracts the expected trailers as a contiguous terminal block.\n");
   process.stdout.write(`  Spec:      ${SPEC_DOC} Section 7.5 (Squash-Merge Invariant)\n`);
   return 1;
 }
 
 function emitMissingKeys(missing: readonly string[]): ExitCode {
-  process.stdout.write(
-    `FAIL: missing required AgencySignature v1 trailer keys: ${missing.join(" ")}\n`,
-  );
-  process.stdout.write(
-    "  Class:    Trailer Contiguity Survival Failure — likely cause\n",
-  );
-  process.stdout.write(
-    "            when keys appear textually but blank-line breaks parsing\n",
-  );
-  process.stdout.write(
-    "  Cause:    PR body trailer block is incomplete OR a blank line splits the\n",
-  );
-  process.stdout.write(
-    "            block such that only the final contiguous group parses\n",
-  );
-  process.stdout.write(
-    "  Fix:      add the missing trailers at the PR body bottom OR remove the\n",
-  );
-  process.stdout.write(
-    "            blank line that splits the contiguous block\n",
-  );
-  process.stdout.write(
-    "  Principle: Substrate Truth Principle — text presence is\n",
-  );
-  process.stdout.write(
-    "             insufficient; the parser is the witness\n",
-  );
+  process.stdout.write(`FAIL: missing required AgencySignature v1 trailer keys: ${missing.join(" ")}\n`);
+  process.stdout.write("  Class:    Trailer Contiguity Survival Failure — likely cause\n");
+  process.stdout.write("            when keys appear textually but blank-line breaks parsing\n");
+  process.stdout.write("  Cause:    PR body trailer block is incomplete OR a blank line splits the\n");
+  process.stdout.write("            block such that only the final contiguous group parses\n");
+  process.stdout.write("  Fix:      add the missing trailers at the PR body bottom OR remove the\n");
+  process.stdout.write("            blank line that splits the contiguous block\n");
+  process.stdout.write("  Principle: Substrate Truth Principle — text presence is\n");
+  process.stdout.write("             insufficient; the parser is the witness\n");
   process.stdout.write(`  Spec:     ${SPEC_DOC} Section 7.4 (canonical 10-trailer block)\n`);
   return 1;
 }
@@ -317,9 +248,7 @@ function checkRequiredKeys(trailers: string): ExitCode | null {
   const missing: string[] = [];
   for (const key of REQUIRED_KEYS) {
     const prefix = `${key.toLowerCase()}:`;
-    const found = trailers
-      .split("\n")
-      .some((l) => l.toLowerCase().startsWith(prefix));
+    const found = trailers.split("\n").some((l) => l.toLowerCase().startsWith(prefix));
     if (!found) missing.push(key);
   }
   if (missing.length === 0) return null;
@@ -339,9 +268,7 @@ function checkTaskPattern(trailers: string): ExitCode | null {
   if (TASK_RE.test(value)) return null;
   process.stdout.write("FAIL: invalid Task value\n");
   process.stdout.write(`  Found:    '${value}'\n`);
-  process.stdout.write(
-    "  Expected: a ticket-id (e.g. Otto-NN, task-#NNN, #NNN, FOO-NN)\n",
-  );
+  process.stdout.write("  Expected: a ticket-id (e.g. Otto-NN, task-#NNN, #NNN, FOO-NN)\n");
   process.stdout.write("            or the literal 'none' fallback\n");
   process.stdout.write(`  Spec:     ${SPEC_DOC} Section 9.2 (Task: none fallback)\n`);
   return 1;
@@ -351,33 +278,19 @@ function checkHumanReviewConsistency(trailers: string): ExitCode | null {
   const hr = getValue(trailers, "Human-Review");
   const hre = getValue(trailers, "Human-Review-Evidence");
   if (hr !== "explicit" && hre !== "none") {
-    process.stdout.write(
-      "FAIL: Human-Review-Evidence must be 'none' when Human-Review is not 'explicit'\n",
-    );
+    process.stdout.write("FAIL: Human-Review-Evidence must be 'none' when Human-Review is not 'explicit'\n");
     process.stdout.write(`  Human-Review:          '${hr}'\n`);
     process.stdout.write(`  Human-Review-Evidence: '${hre}'\n`);
     process.stdout.write(`  Spec:                  ${SPEC_DOC} Section 5.3 / 7.6\n`);
-    process.stdout.write(
-      "  Reason: the evidence pointer attaches to actual review claims;\n",
-    );
-    process.stdout.write(
-      "          a non-explicit review state has no evidence to point at\n",
-    );
+    process.stdout.write("  Reason: the evidence pointer attaches to actual review claims;\n");
+    process.stdout.write("          a non-explicit review state has no evidence to point at\n");
     return 1;
   }
   if (hr === "explicit" && hre === "none") {
-    process.stdout.write(
-      "FAIL: Human-Review: explicit requires Human-Review-Evidence != 'none'\n",
-    );
-    process.stdout.write(
-      "  Reason: an explicit review claim must cite where the evidence lives\n",
-    );
-    process.stdout.write(
-      "  Fix:    set Human-Review-Evidence to chat | pr-review | pr-comment | signed-policy\n",
-    );
-    process.stdout.write(
-      `  Spec:   ${SPEC_DOC} Section 5.3 (closes the 'explicit according to whom' gap)\n`,
-    );
+    process.stdout.write("FAIL: Human-Review: explicit requires Human-Review-Evidence != 'none'\n");
+    process.stdout.write("  Reason: an explicit review claim must cite where the evidence lives\n");
+    process.stdout.write("  Fix:    set Human-Review-Evidence to chat | pr-review | pr-comment | signed-policy\n");
+    process.stdout.write(`  Spec:   ${SPEC_DOC} Section 5.3 (closes the 'explicit according to whom' gap)\n`);
     return 1;
   }
   return null;
@@ -385,31 +298,15 @@ function checkHumanReviewConsistency(trailers: string): ExitCode | null {
 
 function emitPass(trailers: string): ExitCode {
   process.stdout.write("PASS: AgencySignature v1 trailer block valid\n");
-  process.stdout.write(
-    `  Agency-Signature-Version: ${getValue(trailers, "Agency-Signature-Version")}\n`,
-  );
+  process.stdout.write(`  Agency-Signature-Version: ${getValue(trailers, "Agency-Signature-Version")}\n`);
   process.stdout.write(`  Agent:                    ${getValue(trailers, "Agent")}\n`);
-  process.stdout.write(
-    `  Agent-Runtime:            ${getValue(trailers, "Agent-Runtime")}\n`,
-  );
-  process.stdout.write(
-    `  Agent-Model:              ${getValue(trailers, "Agent-Model")}\n`,
-  );
-  process.stdout.write(
-    `  Credential-Identity:      ${getValue(trailers, "Credential-Identity")}\n`,
-  );
-  process.stdout.write(
-    `  Credential-Mode:          ${getValue(trailers, "Credential-Mode")}\n`,
-  );
-  process.stdout.write(
-    `  Human-Review:             ${getValue(trailers, "Human-Review")}\n`,
-  );
-  process.stdout.write(
-    `  Human-Review-Evidence:    ${getValue(trailers, "Human-Review-Evidence")}\n`,
-  );
-  process.stdout.write(
-    `  Action-Mode:              ${getValue(trailers, "Action-Mode")}\n`,
-  );
+  process.stdout.write(`  Agent-Runtime:            ${getValue(trailers, "Agent-Runtime")}\n`);
+  process.stdout.write(`  Agent-Model:              ${getValue(trailers, "Agent-Model")}\n`);
+  process.stdout.write(`  Credential-Identity:      ${getValue(trailers, "Credential-Identity")}\n`);
+  process.stdout.write(`  Credential-Mode:          ${getValue(trailers, "Credential-Mode")}\n`);
+  process.stdout.write(`  Human-Review:             ${getValue(trailers, "Human-Review")}\n`);
+  process.stdout.write(`  Human-Review-Evidence:    ${getValue(trailers, "Human-Review-Evidence")}\n`);
+  process.stdout.write(`  Action-Mode:              ${getValue(trailers, "Action-Mode")}\n`);
   process.stdout.write(`  Task:                     ${getValue(trailers, "Task")}\n`);
   return 0;
 }

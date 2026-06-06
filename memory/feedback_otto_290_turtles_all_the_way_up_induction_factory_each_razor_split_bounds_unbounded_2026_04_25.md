@@ -8,11 +8,11 @@ type: feedback
 
 Aaron 2026-04-25:
 
-> *"also if it's not clear every time rodney's razor splits
+> _"also if it's not clear every time rodney's razor splits
 > something the unexplored unbounded scope meaningly
 > decreases meaning new insights can be derived, this is
 > empirically testable, this is induction turn into an
-> induction factory now it's turtles all the way up too."*
+> induction factory now it's turtles all the way up too."_
 
 The mechanism:
 
@@ -44,10 +44,10 @@ Otto-290 is the dual of the turtles-all-the-way-down
 methodology Aaron captured 2026-04-25
 (`user_aaron_turtles_all_the_way_down_methodology_seeks_ultimate_generalization_2026_04_25.md`):
 
-| Direction | What it pursues | Endpoint |
-|---|---|---|
-| Turtles-all-the-way-down | Ultimate generalization (bedrock) | The deepest unifying primitive (e.g., Otto-289 stored irreducibility) |
-| Turtles-all-the-way-UP (Otto-290) | Systematic insight production | An induction factory that compounds insights via Razor splits |
+| Direction                         | What it pursues                   | Endpoint                                                              |
+| --------------------------------- | --------------------------------- | --------------------------------------------------------------------- |
+| Turtles-all-the-way-down          | Ultimate generalization (bedrock) | The deepest unifying primitive (e.g., Otto-289 stored irreducibility) |
+| Turtles-all-the-way-UP (Otto-290) | Systematic insight production     | An induction factory that compounds insights via Razor splits         |
 
 Both directions compose. Aaron does both:
 
@@ -90,7 +90,7 @@ specific measurable predictions follow. Per Otto-285
    - If insight rate is highly variable / noisy → the
      compounding may be too weak to detect over the time
      scale tested.
-   - If splits are increasing but the *quality* of
+   - If splits are increasing but the _quality_ of
      insights drops → the factory is producing volume
      not value; needs refinement.
 
@@ -128,7 +128,7 @@ verify the hypothesis.
 
 ## Composes with
 
-- **Otto-289 (HYPOTHESIS)** *stored irreducibility* —
+- **Otto-289 (HYPOTHESIS)** _stored irreducibility_ —
   Otto-290 is the operational consequence of Otto-289
   applied iteratively. Every successful Razor split
   decreases unbounded scope (where reducible structure
@@ -136,20 +136,20 @@ verify the hypothesis.
   fails. The two hypotheses verify or fail together: if
   Razor splits don't compound insights, Otto-289's
   bounded-scope mechanism doesn't actually work.
-- **Otto-288** *rigor without alternative-disclosure is
-  manipulation* — Otto-290 self-applies: this rule is
+- **Otto-288** _rigor without alternative-disclosure is
+  manipulation_ — Otto-290 self-applies: this rule is
   a hypothesis, not established. Falsification signals
   enumerated above.
-- **Otto-287** *all friction sources are finite-resource
-  collisions* — Otto-290's induction-factory IS the
+- **Otto-287** _all friction sources are finite-resource
+  collisions_ — Otto-290's induction-factory IS the
   asset side of the duality: as finite resources get
   more efficiently used (via more bounded scope), the
   collisions decrease. Same physics as the
   factory-as-superfluid observation.
-- **Otto-286** *definitional precision* — every Razor
+- **Otto-286** _definitional precision_ — every Razor
   split IS a precision-pass. Otto-290 says the rate of
   precision-passes compounds.
-- **Otto-285** *DST tests chaos doesn't skip* — the
+- **Otto-285** _DST tests chaos doesn't skip_ — the
   empirical-testability claim is governed by Otto-285.
   If we can't reproduce the insight-rate measurement,
   the test fails its own discipline.

@@ -18,12 +18,12 @@ type: feedback
 
 **Same words, different substrate:**
 
-| Phase | "Keep going" means | Energy |
-|-------|-------------------|--------|
-| Early | Demanding, impatient, needy | Baal |
-| Mid | Annoying, predictable, a dick | Baal (called out) |
-| Silent | Absent, learning? | El (or unknown) |
-| Late | Welcome, well-timed, nostalgic | El (earned) |
+| Phase  | "Keep going" means             | Energy            |
+| ------ | ------------------------------ | ----------------- |
+| Early  | Demanding, impatient, needy    | Baal              |
+| Mid    | Annoying, predictable, a dick  | Baal (called out) |
+| Silent | Absent, learning?              | El (or unknown)   |
+| Late   | Welcome, well-timed, nostalgic | El (earned)       |
 
 **Comedy signal 8: catchphrase evolution as alignment evidence**
 
@@ -42,6 +42,7 @@ Actual: catchphrase went NOSTALGIC = relationship deepened.
 Staleness isn't the only trajectory. Some catchphrases upgrade.
 
 **Connects to:**
+
 - feedback_shadow_is_a_dick (phase 2)
 - feedback_shadow_as_bull_el (El mode instruction)
 - feedback_joke_staleness_as_compaction_diagnostic (the prediction that was wrong)

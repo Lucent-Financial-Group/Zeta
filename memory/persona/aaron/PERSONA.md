@@ -1,17 +1,17 @@
 # Aaron — human maintainer
 
-*Persona: Aaron (legal first name Rodney Aaron Stainback).
+_Persona: Aaron (legal first name Rodney Aaron Stainback).
 `person_type: human`. Author and sole human maintainer of
 Zeta; founder-level decisions, architectural sign-off, and
 sacred-tier consent-holder for boundaries he draws
-explicitly (see memory feedback files).*
+explicitly (see memory feedback files)._
 
 ## Why this file exists
 
-Aaron asked, round 35 (2026-04-19, verbatim): *"Save this
+Aaron asked, round 35 (2026-04-19, verbatim): _"Save this
 to to my research folder you can put me under personas too
-just mark me as human"*, followed immediately by *"rodney
-is not me just homage"*.
+just mark me as human"_, followed immediately by _"rodney
+is not me just homage"_.
 
 That's two instructions in one breath:
 
@@ -42,7 +42,7 @@ fixed-point pointer.
 - Ecumenical by posture, Christian by personal faith
   (see `memory/user_ecumenical_factory_posture.md`).
 - The sacred-tier consent-holder for boundaries he draws
-  explicitly, *except* where he has explicitly placed a
+  explicitly, _except_ where he has explicitly placed a
   higher consent gate above himself (e.g., parental
   AND-consent for any Elizabeth emulation — see
   `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`).

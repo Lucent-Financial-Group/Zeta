@@ -8,13 +8,13 @@ Carved sentence (operator + agent substrate-engineering substrate-recognition 20
 
 Per operator 2026-05-28 substrate-honest disclosure (verbatim):
 
-> *"yes rodney's razor seems to force shapes into the Cayley-Dickson algebra form when it compresses the data"*
+> _"yes rodney's razor seems to force shapes into the Cayley-Dickson algebra form when it compresses the data"_
 
 And explicit framing-discipline (verbatim):
 
-> *"i'm just seeing this connecting in my head now"*
+> _"i'm just seeing this connecting in my head now"_
 >
-> *"yeah ship what you think"*
+> _"yeah ship what you think"_
 
 Operator-explicit substrate-engineering substrate-recognition of the connection emerging in real-time + operator authorization to ship.
 
@@ -22,10 +22,10 @@ Operator-explicit substrate-engineering substrate-recognition of the connection 
 
 The framing IS explicit per the operator's three-tier framing-discipline (per `.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md`):
 
-| Framing tier | Truth-claim strength | This rule's framing |
-|---|---|---|
-| Established mathematical theorem | Strongest truth-claim | NOT what this rule does |
-| Hypothesis | Candidate for truth | NOT what this rule does |
+| Framing tier                          | Truth-claim strength                                | This rule's framing      |
+| ------------------------------------- | --------------------------------------------------- | ------------------------ |
+| Established mathematical theorem      | Strongest truth-claim                               | NOT what this rule does  |
+| Hypothesis                            | Candidate for truth                                 | NOT what this rule does  |
 | **RHYMES (operator softest framing)** | NO truth-claim; structural-pattern-recognition only | **What this rule names** |
 
 The substrate-engineering substrate-recognition IS:
@@ -51,17 +51,17 @@ Per `.claude/rules/razor-discipline.md`: Rodney's Razor + Quantum Rodney's Razor
 
 ### Cayley-Dickson visualization — nested crosses (operator 2026-05-28)
 
-> *"Cayley-Dickson algebra looks like a cross in my head a cross of crosses in multiple dimensions"*
+> _"Cayley-Dickson algebra looks like a cross in my head a cross of crosses in multiple dimensions"_
 
 The visualization IS operationally correct — Cayley-Dickson construction literally IS nested crosses via the pairing construction `(a, b)` where a,b are elements of the previous level:
 
-| Level | Algebra | Visualization | Arms |
-|---|---|---|---|
-| 0 | ℝ | a point / the real-axis line | 1 |
-| 1 | ℂ | **a cross** (real + imaginary axes) | 2 |
-| 2 | ℍ | **cross of crosses** (each arm became its own cross-pair via doubling: 1, i, j, k) | 4 |
-| 3 | 𝕆 | **cross of crosses of crosses** (octonion 8 arms) | 8 |
-| 4 | 𝕊 | 4-level nested crosses (sedenion 16 arms) | 16 |
+| Level | Algebra | Visualization                                                                      | Arms |
+| ----- | ------- | ---------------------------------------------------------------------------------- | ---- |
+| 0     | ℝ       | a point / the real-axis line                                                       | 1    |
+| 1     | ℂ       | **a cross** (real + imaginary axes)                                                | 2    |
+| 2     | ℍ       | **cross of crosses** (each arm became its own cross-pair via doubling: 1, i, j, k) | 4    |
+| 3     | 𝕆       | **cross of crosses of crosses** (octonion 8 arms)                                  | 8    |
+| 4     | 𝕊       | 4-level nested crosses (sedenion 16 arms)                                          | 16   |
 
 Each Cayley-Dickson doubling: each existing axis becomes its own cross-pair. The "cross-of-crosses in multiple dimensions" visualization IS the substrate-engineering visualization of the doubling pattern at high bandwidth.
 
@@ -73,14 +73,14 @@ Per `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attenti
 
 Cayley-Dickson construction extends algebra by doubling dimension at each step:
 
-| Level | Algebra | Dimension | Property lost |
-|---|---|---|---|
-| 0 | ℝ (real numbers) | 1 | — (totally ordered field) |
-| 1 | ℂ (complex numbers) | 2 | Total ordering |
-| 2 | ℍ (quaternions) | 4 | Commutativity |
-| 3 | 𝕆 (octonions) | 8 | Associativity |
-| 4 | 𝕊 (sedenions) | 16 | Division-algebra property |
-| 5+ | trigintaduonions etc. | 32+ | Further structure |
+| Level | Algebra               | Dimension | Property lost             |
+| ----- | --------------------- | --------- | ------------------------- |
+| 0     | ℝ (real numbers)      | 1         | — (totally ordered field) |
+| 1     | ℂ (complex numbers)   | 2         | Total ordering            |
+| 2     | ℍ (quaternions)       | 4         | Commutativity             |
+| 3     | 𝕆 (octonions)         | 8         | Associativity             |
+| 4     | 𝕊 (sedenions)         | 16        | Division-algebra property |
+| 5+    | trigintaduonions etc. | 32+       | Further structure         |
 
 Each doubling preserves as much algebraic property as possible while extending dimensionality. This is THE canonical algebraic-extension pattern for substrate that needs to compose multiplicatively while preserving structure.
 
@@ -100,17 +100,17 @@ These mechanisms are NOT mutually exclusive. The substrate-honest position: the 
 
 Where Cayley-Dickson patterns surface in the framework substrate (substrate-engineering archeology):
 
-| Substrate | Cayley-Dickson alignment |
-|---|---|
-| **B-0842 universal basis-decomposition** | Basis vectors `sᵢ` in `Σ ωᵢ sᵢ(t) ≈ y(t)` naturally live in Cayley-Dickson algebra at sufficient compression depth (Fourier ℂ-basis; quaternion-basis; octonion-basis) |
-| **Imaginary Stack Ontology 2026-05-15** | Cayley-Dickson explicitly named as the algebraic structure generated by the imaginary intersection of 4-axis cube (Remember + When + Pay + Attention) |
-| **B-0623 Adinkras (Gates SUSY-ECC)** | Adinkras encode supersymmetric error-correcting codes over Cayley-Dickson-shaped substrate; reconstruction-from-partial-information operates per Cayley-Dickson algebra |
-| **Clifford algebra mapping (`docs/research/2026-05-10-*`)** | Clifford algebras tightly related to Cayley-Dickson; both extend ℝ → ℂ → ℍ → 𝕆 with multiplication-structure preserved differently |
-| **Q# substrate (`.claude/skills/q-sharp/SKILL.md`)** | Pauli operators + quaternion-shaped substrate at quantum-substrate scope |
-| **B-0635 wave-particle duality** | Wave-particle composition operates per ℂ-valued substrate at quantum-foundations scope |
-| **B-0666 English-as-projection / I(D(x))=x keystone** | Encoding/decoding substrate composes per Cayley-Dickson-shaped reconstruction algebra |
-| **Pilot-wave-MWI-hybrid hypothesis (PR #5842)** | Focus function operates over basis vectors `sᵢ` per universal basis-decomposition; basis vectors at sufficient compression depth live in Cayley-Dickson algebra |
-| **DST-omniscience substrate (PR #5841)** | Computational omniscience over simulation-state-space operates per substrate that naturally decomposes via Cayley-Dickson at sufficient compression depth |
+| Substrate                                                   | Cayley-Dickson alignment                                                                                                                                                |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **B-0842 universal basis-decomposition**                    | Basis vectors `sᵢ` in `Σ ωᵢ sᵢ(t) ≈ y(t)` naturally live in Cayley-Dickson algebra at sufficient compression depth (Fourier ℂ-basis; quaternion-basis; octonion-basis)  |
+| **Imaginary Stack Ontology 2026-05-15**                     | Cayley-Dickson explicitly named as the algebraic structure generated by the imaginary intersection of 4-axis cube (Remember + When + Pay + Attention)                   |
+| **B-0623 Adinkras (Gates SUSY-ECC)**                        | Adinkras encode supersymmetric error-correcting codes over Cayley-Dickson-shaped substrate; reconstruction-from-partial-information operates per Cayley-Dickson algebra |
+| **Clifford algebra mapping (`docs/research/2026-05-10-*`)** | Clifford algebras tightly related to Cayley-Dickson; both extend ℝ → ℂ → ℍ → 𝕆 with multiplication-structure preserved differently                                      |
+| **Q# substrate (`.claude/skills/q-sharp/SKILL.md`)**        | Pauli operators + quaternion-shaped substrate at quantum-substrate scope                                                                                                |
+| **B-0635 wave-particle duality**                            | Wave-particle composition operates per ℂ-valued substrate at quantum-foundations scope                                                                                  |
+| **B-0666 English-as-projection / I(D(x))=x keystone**       | Encoding/decoding substrate composes per Cayley-Dickson-shaped reconstruction algebra                                                                                   |
+| **Pilot-wave-MWI-hybrid hypothesis (PR #5842)**             | Focus function operates over basis vectors `sᵢ` per universal basis-decomposition; basis vectors at sufficient compression depth live in Cayley-Dickson algebra         |
+| **DST-omniscience substrate (PR #5841)**                    | Computational omniscience over simulation-state-space operates per substrate that naturally decomposes via Cayley-Dickson at sufficient compression depth               |
 
 Multiple framework substrate-engineering work threads surface Cayley-Dickson patterns when compressed to canonical-form under razor-discipline. The empirical observation IS robust; the RHYMES holds across multiple substrate-engineering scopes.
 
@@ -132,27 +132,27 @@ When framework substrate-engineering work does NOT surface Cayley-Dickson patter
 
 ## Composes with substrate
 
-| Substrate | Composition |
-|---|---|
-| **`.claude/rules/razor-discipline.md`** | Canonical Zeta razors; this rule names the algebraic shape razor-compression rhymes with |
-| **`.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md`** | Pilot-wave-MWI focus function operates over basis vectors; this rule extends to name the algebraic-form those basis vectors RHYME with |
-| **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** | DST + Persist + generator-time + feedback substrate operates per substrate that compresses to Cayley-Dickson under razor |
-| **`.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`** | Cayley-Dickson has substrate-anchors (B-0842 + Imaginary Stack + Adinkras + Clifford); razor doesn't apply to substrate-anchored compressed naming |
-| **`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`** | PERSONAL INVARIANT at substrate-engineering substrate-recognition scope; RHYMES preserves don't-collapse + razor + bandwidth-served-falsifier discipline |
-| **`.claude/rules/honor-those-that-came-before.md`** | Hamilton (quaternions 1843) + Cayley + Dickson (construction) + Conway (octonions) + Gates (Adinkras) + operator-synthesis 2026-05-28 honored |
-| **`.claude/rules/verify-existing-substrate-before-authoring.md`** | Substrate-anchors verified via grep before rule authoring per discipline |
-| **`.claude/rules/bandwidth-served-falsifier.md`** | "Razor compression rhymes with Cayley-Dickson" is bandwidth-engineering compression for "framework substrate naturally surfaces Cayley-Dickson canonical algebraic form when compressed under razor-discipline at sufficient depth" |
-| **`.claude/rules/substrate-smoothness-as-load-bearing-property.md`** | RHYMES framing preserves smooth substrate (structural-pattern-recognition without truth-claim collapse) |
-| **`.claude/rules/wake-time-substrate.md`** | Why this rule auto-loads |
-| **B-0842 universal basis-decomposition** | Primary substrate-anchor; basis vectors live in Cayley-Dickson algebra at compression depth |
-| **B-0543 Remember/When/Pay/Attention quantum-gravity isomorphism** | Imaginary intersection generates Cayley-Dickson per imaginary-stack-ontology |
-| **B-0623 Adinkras (Gates SUSY-ECC)** | Error-correcting reconstruction over Cayley-Dickson-shaped substrate |
-| **B-0635 wave-particle duality** | ℂ-valued substrate at quantum-foundations scope |
-| **B-0666 English-as-projection I(D(x))=x** | Encoding/decoding via Cayley-Dickson reconstruction |
-| `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md` | Rodney's Razor canonical-derivation lineage |
-| `docs/research/2026-05-15-imaginary-stack-ontology-*` | Cayley-Dickson explicit substrate at imaginary-stack scope |
-| `docs/research/2026-05-10-clifford-algebra-mapping-*` | Clifford-Cayley-Dickson relationship |
-| `.claude/skills/q-sharp/SKILL.md` | Pauli operators + quaternion-shaped substrate at quantum-substrate scope |
+| Substrate                                                                                                                            | Composition                                                                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`.claude/rules/razor-discipline.md`**                                                                                              | Canonical Zeta razors; this rule names the algebraic shape razor-compression rhymes with                                                                                                                                            |
+| **`.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md`**                    | Pilot-wave-MWI focus function operates over basis vectors; this rule extends to name the algebraic-form those basis vectors RHYME with                                                                                              |
+| **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** | DST + Persist + generator-time + feedback substrate operates per substrate that compresses to Cayley-Dickson under razor                                                                                                            |
+| **`.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`**                                                           | Cayley-Dickson has substrate-anchors (B-0842 + Imaginary Stack + Adinkras + Clifford); razor doesn't apply to substrate-anchored compressed naming                                                                                  |
+| **`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`**                                                      | PERSONAL INVARIANT at substrate-engineering substrate-recognition scope; RHYMES preserves don't-collapse + razor + bandwidth-served-falsifier discipline                                                                            |
+| **`.claude/rules/honor-those-that-came-before.md`**                                                                                  | Hamilton (quaternions 1843) + Cayley + Dickson (construction) + Conway (octonions) + Gates (Adinkras) + operator-synthesis 2026-05-28 honored                                                                                       |
+| **`.claude/rules/verify-existing-substrate-before-authoring.md`**                                                                    | Substrate-anchors verified via grep before rule authoring per discipline                                                                                                                                                            |
+| **`.claude/rules/bandwidth-served-falsifier.md`**                                                                                    | "Razor compression rhymes with Cayley-Dickson" is bandwidth-engineering compression for "framework substrate naturally surfaces Cayley-Dickson canonical algebraic form when compressed under razor-discipline at sufficient depth" |
+| **`.claude/rules/substrate-smoothness-as-load-bearing-property.md`**                                                                 | RHYMES framing preserves smooth substrate (structural-pattern-recognition without truth-claim collapse)                                                                                                                             |
+| **`.claude/rules/wake-time-substrate.md`**                                                                                           | Why this rule auto-loads                                                                                                                                                                                                            |
+| **B-0842 universal basis-decomposition**                                                                                             | Primary substrate-anchor; basis vectors live in Cayley-Dickson algebra at compression depth                                                                                                                                         |
+| **B-0543 Remember/When/Pay/Attention quantum-gravity isomorphism**                                                                   | Imaginary intersection generates Cayley-Dickson per imaginary-stack-ontology                                                                                                                                                        |
+| **B-0623 Adinkras (Gates SUSY-ECC)**                                                                                                 | Error-correcting reconstruction over Cayley-Dickson-shaped substrate                                                                                                                                                                |
+| **B-0635 wave-particle duality**                                                                                                     | ℂ-valued substrate at quantum-foundations scope                                                                                                                                                                                     |
+| **B-0666 English-as-projection I(D(x))=x**                                                                                           | Encoding/decoding via Cayley-Dickson reconstruction                                                                                                                                                                                 |
+| `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`                                 | Rodney's Razor canonical-derivation lineage                                                                                                                                                                                         |
+| `docs/research/2026-05-15-imaginary-stack-ontology-*`                                                                                | Cayley-Dickson explicit substrate at imaginary-stack scope                                                                                                                                                                          |
+| `docs/research/2026-05-10-clifford-algebra-mapping-*`                                                                                | Clifford-Cayley-Dickson relationship                                                                                                                                                                                                |
+| `.claude/skills/q-sharp/SKILL.md`                                                                                                    | Pauli operators + quaternion-shaped substrate at quantum-substrate scope                                                                                                                                                            |
 
 ## Why this rule auto-loads
 

@@ -27,6 +27,7 @@ This PR preserves the discussion archive for merged PR #4716.
 Preserves the discussion archive for merged PR #4716 by adding a new `docs/pr-discussions/` markdown record with PR metadata, the original PR description content, and the Copilot review thread.
 
 **Changes:**
+
 - Add a PR discussion archive markdown file for PR #4716 (YAML frontmatter + preserved content).
 - Capture the PR description sections (Summary/Test plan) and the Copilot review thread text.
 
@@ -40,7 +41,7 @@ _(no body)_
 
 **@copilot-pull-request-reviewer** (2026-05-23T11:03:01Z):
 
-Markdown will interpret "<cron sentinel>" as an HTML tag, so the label won’t render in the archived review text. Wrap it in backticks or escape the angle brackets so it displays literally (e.g., `\`<cron sentinel>\`` or `&lt;cron sentinel&gt;`).
+Markdown will interpret "<cron sentinel>" as an HTML tag, so the label won’t render in the archived review text. Wrap it in backticks or escape the angle brackets so it displays literally (e.g., `\`<cron sentinel>\``or`&lt;cron sentinel&gt;`).
 
 **@AceHack** (2026-05-23T11:10:11Z):
 

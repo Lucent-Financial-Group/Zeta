@@ -4,8 +4,9 @@ description: Aaron Otto-86 refinement extending PR #236 Codex-parallel progressi
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-86 (verbatim):
-*"You can experiment with claude code cli for multi agent
+_"You can experiment with claude code cli for multi agent
 peer-harness mode before codex, once codex has built out
 everything it needs and you trust it and the testes for
 peer-harness mode with claude goes good then you can test
@@ -17,7 +18,7 @@ of you going but i wont do it until you tell me we are ready.
 maybe we use codex harness to do the windows support
 eventually since that will test the entire perr-harness
 transfer learning all the way to the end, the last one the in
-telepohone line, lol."*
+telepohone line, lol."_
 
 ## The rule — progression now has more stepping stones
 
@@ -47,7 +48,7 @@ telepohone line, lol."*
 
 ## Otto is the readiness-signaller
 
-*"i wont do it until you tell me we are ready"* — Aaron is
+_"i wont do it until you tell me we are ready"_ — Aaron is
 waiting for Otto's explicit "ready" signal. This is
 meaningful:
 
@@ -69,7 +70,7 @@ meaningful:
 
 ## The "telephone line" imagery
 
-*"the last one the in telepohone line, lol"* — reference to
+_"the last one the in telepohone line, lol"_ — reference to
 the children's game where a message is whispered from
 person to person and the final version is often hilariously
 distorted from the original. Aaron's point: **peer-harness
@@ -116,8 +117,8 @@ tests operationalise that.
 
 ## All options available
 
-*"so all of the options are avialbe with a single
-coordinator and multi corrdinator"* — both single-
+_"so all of the options are avialbe with a single
+coordinator and multi corrdinator"_ — both single-
 coordinator-at-a-time AND multi-coordinator modes are on
 the table. The progression is:
 
@@ -139,13 +140,13 @@ necessarily both simultaneously.
 ## How this composes with prior memories
 
 - **Otto-79 peer-harness memory** (`feedback_peer_harness_
-  progression_codex_named_loop_agent_cross_review_not_edit_
-  otto_dispatches_async_work_2026_04_23.md`) — this memory
+progression_codex_named_loop_agent_cross_review_not_edit_
+otto_dispatches_async_work_2026_04_23.md`) — this memory
   refines that one's 3-stage progression into a 4-stage
   progression with the multi-Claude intermediate.
 - **Otto-82 authority-inflation-drift memory** (`feedback_
-  aaron_signoff_scope_narrower_than_otto_treating_
-  governance_edits_within_standing_authority_2026_04_23.md`)
+aaron_signoff_scope_narrower_than_otto_treating_
+governance_edits_within_standing_authority_2026_04_23.md`)
   — the readiness-signal for spinning up a second harness
   IS one of the "specifically-asked-for design reviews"
   that requires explicit Aaron approval. Multi-harness
@@ -153,8 +154,8 @@ necessarily both simultaneously.
   and (b); stage (c) tripwire is when Otto needs to signal
   readiness explicitly.
 - **Otto-75 first-class-Codex memory** (`project_first_
-  class_codex_cli_session_experience_parallel_to_nsa_
-  harness_roster_portability_by_design_2026_04_23.md`) —
+class_codex_cli_session_experience_parallel_to_nsa_
+harness_roster_portability_by_design_2026_04_23.md`) —
   this memory tells Otto WHEN Codex first-class work
   matures into a handoff-ready state (when Otto can trust
   it for stage (c)).
@@ -169,10 +170,10 @@ necessarily both simultaneously.
   without stages (b) and (c) completing first.
 - **Does NOT authorize skipping multi-Claude test** to
   jump straight to Claude-Codex. Aaron's framing is
-  sequential: *"before codex ... once codex has built out
+  sequential: _"before codex ... once codex has built out
   everything it needs and you trust it and the testes for
   peer-harness mode with claude goes good THEN you can
-  test peer-harness mode with codex too."*
+  test peer-harness mode with codex too."_
 - **Does NOT authorize claiming readiness prematurely.**
   Readiness-signal is load-bearing; Aaron acts on it.
   False-readiness breaks trust.

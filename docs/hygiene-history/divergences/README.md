@@ -57,18 +57,18 @@ content are forbidden — they erase divergence evidence.
 
 ```yaml
 ---
-tick: "2026-05-10T11:48:00Z"     # ISO 8601 UTC, seconds precision
+tick: "2026-05-10T11:48:00Z" # ISO 8601 UTC, seconds precision
 type: divergence
 loop-a:
-  agent: otto                     # named agent identifier (e.g., otto, vera)
-  model: "claude-opus-4-7"        # model ID string
+  agent: otto # named agent identifier (e.g., otto, vera)
+  model: "claude-opus-4-7" # model ID string
   harness: claude-code
 loop-b:
-  agent: codex-loop               # named agent identifier
-  model: "gpt-5.5"               # model ID string
+  agent: codex-loop # named agent identifier
+  model: "gpt-5.5" # model ID string
   harness: codex
-topic: "memory/feedback_xyz.md"   # the substrate path or topic in conflict
-operative-authorization: "aaron 2026-05-04: \"it**, not just the output. Grinding through failures + recoveries\""
+topic: "memory/feedback_xyz.md" # the substrate path or topic in conflict
+operative-authorization: 'aaron 2026-05-04: "it**, not just the output. Grinding through failures + recoveries"'
 ---
 ```
 

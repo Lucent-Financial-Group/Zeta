@@ -42,7 +42,10 @@ function rowTo(row: Row): ReviewStageStatusRecord {
     ...(row.outcome !== null ? { outcome: row.outcome as StageOutcome } : {}),
     ...(row.decided_by !== null ? { decidedBy: row.decided_by } : {}),
     ...(row.decided_at !== null
-      ? { decidedAt: row.decided_at instanceof Date ? row.decided_at.toISOString() : new Date(row.decided_at).toISOString() }
+      ? {
+          decidedAt:
+            row.decided_at instanceof Date ? row.decided_at.toISOString() : new Date(row.decided_at).toISOString(),
+        }
       : {}),
   };
 }
@@ -63,8 +66,12 @@ export function createCockroachReviewStageStatusStore(
             decided_by = excluded.decided_by,
             decided_at = excluded.decided_at`,
         parameters: [
-          status.changeSetId, status.stageId, status.revision,
-          status.outcome ?? null, status.decidedBy ?? null, status.decidedAt ?? null,
+          status.changeSetId,
+          status.stageId,
+          status.revision,
+          status.outcome ?? null,
+          status.decidedBy ?? null,
+          status.decidedAt ?? null,
         ],
       });
     },

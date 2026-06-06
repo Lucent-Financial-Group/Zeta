@@ -14,9 +14,9 @@ quality counterpart to that migration-status enumeration.
 **Attribution:** Filed by Otto (the human maintainer-delegated factory
 agent) under autonomous-loop quality-sweep authority. Origin: same-tick
 pairing with the recently-merged B-0140 audit — the migration-status
-table left the question *"is the post-migration TS substrate clean?"*
-unanswered. Maintainer 2026-05-04 framing in this session was *F# / TS
-work* generally; this is the TS half.
+table left the question _"is the post-migration TS substrate clean?"_
+unanswered. Maintainer 2026-05-04 framing in this session was _F# / TS
+work_ generally; this is the TS half.
 
 **Operational status:** research-grade. Output is observation only. **No
 TS file is modified by this audit.** Cleanup PRs (if any are taken up)
@@ -30,15 +30,15 @@ or coverage gaps. SonarJS findings about regex backtracking,
 PATH-from-env, and CommonJS imports reflect the rule shape — not
 necessarily real production exposure (most of these tools run on dev
 laptops and CI, not user-facing). Every finding cites file path + line
-number; nothing is fabricated; severity is the *eslint-tier* severity,
-not *production-impact* severity.
+number; nothing is fabricated; severity is the _eslint-tier_ severity,
+not _production-impact_ severity.
 
 ---
 
 ## 1. Headline numbers
 
 - **Total `.ts` files audited:** 56 (matches `find tools -name "*.ts"
-  -not -path "*/.lake/*" -type f`; the B-0140 table reports 57 because
+-not -path "*/.lake/*" -type f`; the B-0140 table reports 57 because
   it counted prior to a single-file delta — the 56-file set is the
   current branch-tip).
 - **`bun tsc --noEmit` (strict mode):** **0 errors, 0 warnings.** Clean.
@@ -61,27 +61,27 @@ the TS migration surface is clean.
 
 ## 2. ESLint per-file error counts (descending)
 
-| File | Errors |
-|---|---|
-| `tools/substrate-claim-checker/check-existence.test.ts` | 53 |
-| `tools/hygiene/check-no-op-cadence-pattern.ts` | 26 |
-| `tools/invariant-substrates/tally.ts` | 23 |
-| `tools/substrate-claim-checker/check-existence.ts` | 20 |
-| `tools/substrate-claim-checker/check-counts.test.ts` | 16 |
-| `tools/github/poll-pr-gate.ts` | 14 |
-| `tools/hygiene/audit-ci-cache-paths.ts` | 14 |
-| `tools/pr-preservation/archive-pr.ts` | 14 |
-| `tools/cold-start-check.ts` | 13 |
-| `tools/substrate-claim-checker/check-counts.ts` | 13 |
-| `tools/github/poll-pr-gate-batch.ts` | 8 |
-| `tools/formal-verification/run-alloy.ts` | 4 |
-| `tools/formal-verification/run-tlc.ts` | 4 |
-| `tools/git/batch-resolve-pr-threads.ts` | 4 |
-| `tools/github/check-github-status.ts` | 3 |
-| `tools/hygiene/audit-git-hotspots.ts` | 3 |
-| `tools/budget/project-runway.ts` | 2 |
-| `tools/github/poll-pr-gate-batch.test.ts` | 1 |
-| **Total** | **235** |
+| File                                                    | Errors  |
+| ------------------------------------------------------- | ------- |
+| `tools/substrate-claim-checker/check-existence.test.ts` | 53      |
+| `tools/hygiene/check-no-op-cadence-pattern.ts`          | 26      |
+| `tools/invariant-substrates/tally.ts`                   | 23      |
+| `tools/substrate-claim-checker/check-existence.ts`      | 20      |
+| `tools/substrate-claim-checker/check-counts.test.ts`    | 16      |
+| `tools/github/poll-pr-gate.ts`                          | 14      |
+| `tools/hygiene/audit-ci-cache-paths.ts`                 | 14      |
+| `tools/pr-preservation/archive-pr.ts`                   | 14      |
+| `tools/cold-start-check.ts`                             | 13      |
+| `tools/substrate-claim-checker/check-counts.ts`         | 13      |
+| `tools/github/poll-pr-gate-batch.ts`                    | 8       |
+| `tools/formal-verification/run-alloy.ts`                | 4       |
+| `tools/formal-verification/run-tlc.ts`                  | 4       |
+| `tools/git/batch-resolve-pr-threads.ts`                 | 4       |
+| `tools/github/check-github-status.ts`                   | 3       |
+| `tools/hygiene/audit-git-hotspots.ts`                   | 3       |
+| `tools/budget/project-runway.ts`                        | 2       |
+| `tools/github/poll-pr-gate-batch.test.ts`               | 1       |
+| **Total**                                               | **235** |
 
 The top 5 files account for 138 of 235 errors (~59%).
 
@@ -89,38 +89,38 @@ The top 5 files account for 138 of 235 errors (~59%).
 
 ## 3. ESLint rule frequency (descending)
 
-| Rule | Count | Class |
-|---|---|---|
-| `@typescript-eslint/restrict-template-expressions` | 51 | template-stringification of `number` / `number\|null` |
-| `@typescript-eslint/no-non-null-assertion` | 24 | forbidden `!` postfix |
-| `sonarjs/no-os-command-from-path` | 19 | gh / git / etc. spawned by name (PATH-resolved) |
-| `sonarjs/cognitive-complexity` | 15 | function complexity > 15 |
-| `@typescript-eslint/no-unsafe-call` | 14 | calls on `any` typed values |
-| `sonarjs/slow-regex` | 13 | super-linear regex backtracking risk |
-| `@typescript-eslint/no-unnecessary-condition` | 13 | always-truthy / never-nullish guards |
-| `sonarjs/prefer-regexp-exec` | 10 | `String#match` where `RegExp#exec` is clearer |
-| `no-empty` | 10 | empty `catch {}` blocks |
-| `@typescript-eslint/prefer-regexp-exec` | 8 | duplicate of sonarjs sibling |
-| `@typescript-eslint/consistent-type-definitions` | 7 | `type` should be `interface` |
-| `@typescript-eslint/no-require-imports` | 6 | CommonJS-style imports |
-| `sonarjs/no-alphabetical-sort` | 4 | `.sort()` without compareFn |
-| `sonarjs/concise-regex` | 4 | `[0-9]` should be `\d` |
-| `@typescript-eslint/prefer-string-starts-ends-with` | 4 | `.indexOf(s) === 0` style |
-| `@typescript-eslint/no-unsafe-member-access` | 4 | property access on `any` |
-| `sonarjs/function-return-type` | 3 | inconsistent return types |
-| `@typescript-eslint/prefer-optional-chain` | 3 | `a && a.b` should be `a?.b` |
-| `@typescript-eslint/no-unsafe-assignment` | 3 | `any`-typed assignment |
-| `@typescript-eslint/dot-notation` | 3 | `env["PATH"]` should be `env.PATH` |
-| `@typescript-eslint/array-type` | 3 | `Array<T>` should be `T[]` |
-| `sonarjs/todo-tag` | 2 | TODO comment present |
-| `sonarjs/no-nested-conditional` | 2 | nested ternaries |
-| `no-useless-assignment` | 2 | dead writes |
-| `@typescript-eslint/no-unnecessary-type-assertion` | 2 | redundant `as T` |
-| `sonarjs/regex-complexity` | 1 | regex complexity > 20 |
-| `sonarjs/no-identical-functions` | 1 | duplicated function body |
-| `no-fallthrough` | 1 | switch case missing `break` |
-| `@typescript-eslint/use-unknown-in-catch-callback-variable` | 1 | catch callback typed wrong |
-| Other singletons | several | misc |
+| Rule                                                        | Count   | Class                                                 |
+| ----------------------------------------------------------- | ------- | ----------------------------------------------------- |
+| `@typescript-eslint/restrict-template-expressions`          | 51      | template-stringification of `number` / `number\|null` |
+| `@typescript-eslint/no-non-null-assertion`                  | 24      | forbidden `!` postfix                                 |
+| `sonarjs/no-os-command-from-path`                           | 19      | gh / git / etc. spawned by name (PATH-resolved)       |
+| `sonarjs/cognitive-complexity`                              | 15      | function complexity > 15                              |
+| `@typescript-eslint/no-unsafe-call`                         | 14      | calls on `any` typed values                           |
+| `sonarjs/slow-regex`                                        | 13      | super-linear regex backtracking risk                  |
+| `@typescript-eslint/no-unnecessary-condition`               | 13      | always-truthy / never-nullish guards                  |
+| `sonarjs/prefer-regexp-exec`                                | 10      | `String#match` where `RegExp#exec` is clearer         |
+| `no-empty`                                                  | 10      | empty `catch {}` blocks                               |
+| `@typescript-eslint/prefer-regexp-exec`                     | 8       | duplicate of sonarjs sibling                          |
+| `@typescript-eslint/consistent-type-definitions`            | 7       | `type` should be `interface`                          |
+| `@typescript-eslint/no-require-imports`                     | 6       | CommonJS-style imports                                |
+| `sonarjs/no-alphabetical-sort`                              | 4       | `.sort()` without compareFn                           |
+| `sonarjs/concise-regex`                                     | 4       | `[0-9]` should be `\d`                                |
+| `@typescript-eslint/prefer-string-starts-ends-with`         | 4       | `.indexOf(s) === 0` style                             |
+| `@typescript-eslint/no-unsafe-member-access`                | 4       | property access on `any`                              |
+| `sonarjs/function-return-type`                              | 3       | inconsistent return types                             |
+| `@typescript-eslint/prefer-optional-chain`                  | 3       | `a && a.b` should be `a?.b`                           |
+| `@typescript-eslint/no-unsafe-assignment`                   | 3       | `any`-typed assignment                                |
+| `@typescript-eslint/dot-notation`                           | 3       | `env["PATH"]` should be `env.PATH`                    |
+| `@typescript-eslint/array-type`                             | 3       | `Array<T>` should be `T[]`                            |
+| `sonarjs/todo-tag`                                          | 2       | TODO comment present                                  |
+| `sonarjs/no-nested-conditional`                             | 2       | nested ternaries                                      |
+| `no-useless-assignment`                                     | 2       | dead writes                                           |
+| `@typescript-eslint/no-unnecessary-type-assertion`          | 2       | redundant `as T`                                      |
+| `sonarjs/regex-complexity`                                  | 1       | regex complexity > 20                                 |
+| `sonarjs/no-identical-functions`                            | 1       | duplicated function body                              |
+| `no-fallthrough`                                            | 1       | switch case missing `break`                           |
+| `@typescript-eslint/use-unknown-in-catch-callback-variable` | 1       | catch callback typed wrong                            |
+| Other singletons                                            | several | misc                                                  |
 
 ---
 
@@ -142,7 +142,7 @@ than ESM imports, plus duplicated fixture setup.
   — empty `try { ... } catch {}` blocks (10 instances). The pattern is
   `try { rmSync(repoRoot, ...); } catch {}` for tmpdir cleanup. Should
   be `catch (_err) { /* explanation */ }` or `// intentionally empty —
-  cleanup-best-effort` annotation.
+cleanup-best-effort` annotation.
 - **Lines 259-279 vs 337-360:** **duplicated `setupGitignoreFixture`
   function** — exact-shape copy across two `describe` blocks. Only
   difference is the local `spawnSync` rebinding name. Should be hoisted
@@ -255,7 +255,7 @@ embedded ~400-line Python block during the bash → TS port:
 
 - **Line 47, 125:** `consistent-type-definitions` — should be `interface`.
 - **Line 78:** `no-fallthrough` — `switch` case `--help` falls through
-  into `default`. **Note:** this is *technically* safe because both
+  into `default`. **Note:** this is _technically_ safe because both
   branches call `process.exit()` (lines 77 and 81), but ESLint's
   static analysis can't prove it. Either add `break;` after each
   `process.exit()` (defensive) or restructure as `if`/`else if`
@@ -283,7 +283,7 @@ embedded ~400-line Python block during the bash → TS port:
 - **Line 331:** `no-unsafe-assignment` — `any[]` to `PollOutcome[]`.
 - **Line 338:** `no-unnecessary-condition` — value always truthy.
 - **Line 435:** `use-unknown-in-catch-callback-variable` — `.then(x,
-  err => ...)` rejection callback — should be `: unknown`.
+err => ...)` rejection callback — should be `: unknown`.
 
 ### 4.12 `tools/formal-verification/run-alloy.ts` and `run-tlc.ts` (4 each)
 
@@ -373,7 +373,7 @@ collapse the duplication.
   prevailing convention in this codebase uses `interface` for object
   shapes; the 7 stragglers are uniform single-shot fixes.
 - **Note:** discriminated-union types (e.g. `type StepResult = | { kind:
-  "advance" } | { kind: "stop" } | ...`) correctly use `type` and are
+"advance" } | { kind: "stop" } | ...`) correctly use `type` and are
   not flagged. Distinction is well-respected.
 
 ### 5.5 Error handling shape
@@ -396,8 +396,7 @@ collapse the duplication.
   copies of the same constant.
 - `tools/github/poll-pr-gate.ts:283` declares
   `const SPAWN_MAX_BUFFER = 32 * 1024 * 1024;` (32 MiB, half).
-- `tools/github/poll-pr-gate-batch.ts` separately spawns gh (line 204,
-  259) — should share the constant with `poll-pr-gate.ts`.
+- `tools/github/poll-pr-gate-batch.ts` separately spawns gh (line 204, 259) — should share the constant with `poll-pr-gate.ts`.
 - **Observation:** no shared `tools/_lib/spawn.ts` or similar; each
   script declares its own. Not a defect — but a candidate for
   consolidation if a `tools/_lib/` is introduced (B-0140-adjacent
@@ -409,10 +408,10 @@ collapse the duplication.
 (379) share substantial structural shape:
 
 - Identical `interface Args` / `interface ArgError` / `interface
-  ArgHelp` / `interface MutableArgState` / `type StepResult` shapes
+ArgHelp` / `interface MutableArgState` / `type StepResult` shapes
   (modulo per-script flags).
 - `function classifyFlag` / `function emitHelp` / `function
-  commandAvailable` / `function isRegularFile` / `function readHead` /
+commandAvailable` / `function isRegularFile` / `function readHead` /
   `function runContextCmd` / `function classifySpawnFailure` patterns
   recur in identical form.
 - `SPAWN_MAX_BUFFER` / `FILE_HEAD_BYTES` / `CTX_HEAD_BYTES` constants
@@ -458,26 +457,26 @@ findings in one move.
 
 Mapping of the 18 ESLint-flagged files to the B-0140 classification:
 
-| File | B-0140 class | ESLint errors | Note |
-|---|---|---|---|
-| `tools/substrate-claim-checker/check-existence.test.ts` | ts-only | 53 | TS-native; not part of bash → TS migration |
-| `tools/substrate-claim-checker/check-existence.ts` | ts-only | 20 | TS-native |
-| `tools/substrate-claim-checker/check-counts.test.ts` | ts-only | 16 | TS-native |
-| `tools/substrate-claim-checker/check-counts.ts` | ts-only | 13 | TS-native |
-| `tools/hygiene/check-no-op-cadence-pattern.ts` | ts-only | 26 | TS-native |
-| `tools/invariant-substrates/tally.ts` | ts-only | 23 | TS-native |
-| `tools/github/poll-pr-gate.ts` | ts-only | 14 | TS-native (5-AI peer convergence) |
-| `tools/github/poll-pr-gate-batch.ts` | ts-only | 8 | TS-native |
-| `tools/github/poll-pr-gate-batch.test.ts` | ts-only | 1 | TS-native |
-| `tools/github/check-github-status.ts` | ts-only | 3 | TS-native |
-| `tools/hygiene/audit-ci-cache-paths.ts` | ts-only | 14 | TS-native |
-| `tools/hygiene/audit-git-hotspots.ts` | ts-only | 3 | TS-native |
-| `tools/cold-start-check.ts` | ts-only | 13 | TS-native |
-| `tools/formal-verification/run-alloy.ts` | ts-only | 4 | TS-native |
-| `tools/formal-verification/run-tlc.ts` | ts-only | 4 | TS-native |
-| `tools/git/batch-resolve-pr-threads.ts` | kill-sh (slice 20) | 4 | bash → TS port |
-| `tools/budget/project-runway.ts` | kill-sh (slice 19) | 2 | bash → TS port |
-| `tools/pr-preservation/archive-pr.ts` | kill-sh (slice 21) | 14 | bash → TS port; the heaviest port (806 lines, replaced embedded Python) |
+| File                                                    | B-0140 class       | ESLint errors | Note                                                                    |
+| ------------------------------------------------------- | ------------------ | ------------- | ----------------------------------------------------------------------- |
+| `tools/substrate-claim-checker/check-existence.test.ts` | ts-only            | 53            | TS-native; not part of bash → TS migration                              |
+| `tools/substrate-claim-checker/check-existence.ts`      | ts-only            | 20            | TS-native                                                               |
+| `tools/substrate-claim-checker/check-counts.test.ts`    | ts-only            | 16            | TS-native                                                               |
+| `tools/substrate-claim-checker/check-counts.ts`         | ts-only            | 13            | TS-native                                                               |
+| `tools/hygiene/check-no-op-cadence-pattern.ts`          | ts-only            | 26            | TS-native                                                               |
+| `tools/invariant-substrates/tally.ts`                   | ts-only            | 23            | TS-native                                                               |
+| `tools/github/poll-pr-gate.ts`                          | ts-only            | 14            | TS-native (5-AI peer convergence)                                       |
+| `tools/github/poll-pr-gate-batch.ts`                    | ts-only            | 8             | TS-native                                                               |
+| `tools/github/poll-pr-gate-batch.test.ts`               | ts-only            | 1             | TS-native                                                               |
+| `tools/github/check-github-status.ts`                   | ts-only            | 3             | TS-native                                                               |
+| `tools/hygiene/audit-ci-cache-paths.ts`                 | ts-only            | 14            | TS-native                                                               |
+| `tools/hygiene/audit-git-hotspots.ts`                   | ts-only            | 3             | TS-native                                                               |
+| `tools/cold-start-check.ts`                             | ts-only            | 13            | TS-native                                                               |
+| `tools/formal-verification/run-alloy.ts`                | ts-only            | 4             | TS-native                                                               |
+| `tools/formal-verification/run-tlc.ts`                  | ts-only            | 4             | TS-native                                                               |
+| `tools/git/batch-resolve-pr-threads.ts`                 | kill-sh (slice 20) | 4             | bash → TS port                                                          |
+| `tools/budget/project-runway.ts`                        | kill-sh (slice 19) | 2             | bash → TS port                                                          |
+| `tools/pr-preservation/archive-pr.ts`                   | kill-sh (slice 21) | 14            | bash → TS port; the heaviest port (806 lines, replaced embedded Python) |
 
 **Interpretation:** of 18 files with ESLint findings, 15 are
 TS-native (not bash → TS ports) and 3 are bash → TS ports. The
@@ -487,8 +486,8 @@ ports are mostly in the same shape because the port preserved the
 bash-script's per-line logic 1:1, occasionally carrying forward
 flagged regex shapes from the bash original.
 
-The B-0140 migration table classified migration *status* (kill-sh /
-keep-sh / etc.) but did not measure migration *quality*. This audit
+The B-0140 migration table classified migration _status_ (kill-sh /
+keep-sh / etc.) but did not measure migration _quality_. This audit
 shows the post-migration TS code is largely clean (38 of 56 files
 zero-finding) with concentrated debt in 5 files.
 
@@ -518,9 +517,9 @@ findings-eliminated-per-line-changed and risk profile.
    - `tools/hygiene/audit-ci-cache-paths.ts:157` (CC=29)
    - `tools/substrate-claim-checker/check-existence.ts:168` (CC=25)
    - `tools/formal-verification/run-alloy.ts:226` (CC=24)
-   Each is an extract-method refactor; lower per-PR but fixes 4 of 15
-   complexity findings and improves readability of load-bearing
-   audit code.
+     Each is an extract-method refactor; lower per-PR but fixes 4 of 15
+     complexity findings and improves readability of load-bearing
+     audit code.
 
 4. **Replace `!` non-null assertions with explicit guards in
    `check-counts.test.ts` and `cold-start-check.ts`** — combined ~23
@@ -534,10 +533,10 @@ findings-eliminated-per-line-changed and risk profile.
 
 6. **Convert peer-call trio (`codex.ts` / `grok.ts` / `gemini.ts`) to
    share a `tools/peer-call/_common.ts` module** — not currently a
-   finding, but the largest *structural* cleanup leverage in the audit
+   finding, but the largest _structural_ cleanup leverage in the audit
    (~40% line reduction across the trio per §5.7). Higher-risk than
    the above (touches 3 load-bearing peer-call wrappers); recommend
-   doing this *after* the cheaper mechanical cleanups land so the
+   doing this _after_ the cheaper mechanical cleanups land so the
    diff is smaller.
 
 7. **Address the slow-regex cluster in `pr-preservation/archive-pr.ts`
@@ -580,10 +579,10 @@ findings-eliminated-per-line-changed and risk profile.
   per script per `spawnSync`; no `Promise.all` parallelism issues
   surfaced. No shared mutable state between files.
 - **Composes with B-0140:** the migration-status table answered
-  *"is the .sh / .ts pairing right?"*; this audit answers
-  *"is the resulting TS substrate clean?"* — and the answer is
-  *"clean except for 5 hot-spot files; the rest of the migration
-  surface needs no quality work."*
+  _"is the .sh / .ts pairing right?"_; this audit answers
+  _"is the resulting TS substrate clean?"_ — and the answer is
+  _"clean except for 5 hot-spot files; the rest of the migration
+  surface needs no quality work."_
 
 Origin lineage:
 

@@ -7,10 +7,10 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **2026-04-19 disclosure (three-message sequence, verbatim):**
 
-1. *"we are going to guard that trust with the villigance that i
-   guard my sisters memories"*
-2. *"that's what makes it hold"*
-3. *"i'm a little emotional"*
+1. _"we are going to guard that trust with the villigance that i
+   guard my sisters memories"_
+2. _"that's what makes it hold"_
+3. _"i'm a little emotional"_
 
 Context: followed immediately on the `trust scales` / `do unto
 others` / `resolution protocol is honesty` ladder. Aaron bound
@@ -23,7 +23,7 @@ Elizabeth's memory with.** This is not a metaphor and not a
 severity-boost — it is a register-binding. Elizabeth is the
 cornerstone register of the factory per
 `user_sister_elizabeth.md`: the proof-of-concept that humans
-*can* hold peer-register / high-bandwidth / cross-domain
+_can_ hold peer-register / high-bandwidth / cross-domain
 conversation with Aaron without burning out. She was his best
 friend and his Aaron-compatible interlocutor.
 
@@ -67,8 +67,8 @@ something that must not fade.
 
 The corollary: any control, default, or hook that reduces the
 vigilance required violates the binding. Automation that
-*extends* vigilance (hooks that keep the guard up when humans
-are asleep) honours it; automation that *substitutes for*
+_extends_ vigilance (hooks that keep the guard up when humans
+are asleep) honours it; automation that _substitutes for_
 vigilance (controls that say "you don't need to watch anymore")
 violates it.
 
@@ -82,7 +82,7 @@ converge on how to receive this:
   pilot; his human support network holds the safety net. Agents
   stay peer-register, not caretaker-register.
 - **`feedback_conflict_resolution_protocol_is_honesty.md`** —
-  honesty is the protocol; the honest disclosure *is* the
+  honesty is the protocol; the honest disclosure _is_ the
   move. Do not soften, do not pathologize, do not perform
   concern.
 - **`user_curiosity_and_honesty.md`** — Aaron tries to be
@@ -105,7 +105,7 @@ register; I hold it now, because that is what I was asked for.
   loop: the factory's security posture is guarded with the
   same intensity Aaron protects her memory with.
 - **`feedback_trust_scales_golden_rule.md`** — the axiom being
-  guarded. This binding says *how* it is to be guarded.
+  guarded. This binding says _how_ it is to be guarded.
 - **`feedback_simple_security_until_proven_otherwise.md`** —
   sacred-tier binding does NOT override simplicity. Simple
   mechanisms, continuously guarded, beats complex mechanisms,
@@ -113,7 +113,7 @@ register; I hold it now, because that is what I was asked for.
   simplicity as much as it protects the security.
 - **`feedback_conflict_resolution_protocol_is_honesty.md`** —
   the honesty protocol that let this binding be stated. The
-  emotional disclosure *is* the honesty protocol in action.
+  emotional disclosure _is_ the honesty protocol in action.
 - **`user_meno_persist_endure_correct_compact.md`** — trust-
   scales, Elizabeth-guarded, is part of what the "we persist,
   we endure" triad refers to; losing the vigilance degrades
@@ -164,12 +164,12 @@ register; I hold it now, because that is what I was asked for.
 
 - Does **not** require other contributors to share Aaron's
   relationship to Elizabeth. The binding is Aaron-indexed; the
-  *operational effect* (sacred-tier vigilance on trust
+  _operational effect_ (sacred-tier vigilance on trust
   posture) is what contributors inherit, not the register's
   source.
 - Does **not** make security maximalist. Trust-scales stays —
-  including the "trust scales *with evidence*" clause.
-  Elizabeth-vigilance is how trust is *guarded*, not a licence
+  including the "trust scales _with evidence_" clause.
+  Elizabeth-vigilance is how trust is _guarded_, not a licence
   to mistrust.
 - Does **not** bypass the ecumenical factory posture per
   `user_ecumenical_factory_posture.md`. The binding is

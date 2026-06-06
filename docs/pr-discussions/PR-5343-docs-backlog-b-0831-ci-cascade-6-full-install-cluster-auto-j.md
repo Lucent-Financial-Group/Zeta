@@ -22,11 +22,11 @@ Files B-0831 as P1 substrate-engineering target capturing operator direction 202
 
 ## 3-slice decomposition
 
-| Slice | Scope | Latency cost |
-|---|---|---|
-| 1 | Full-install-in-QEMU: boot installer ISO → first-boot service fires → greedy N-disk install → reboot → verify login banner | +5-10 min PR-build |
-| 2 | Cluster-auto-join verification via mock cluster control-plane (capture + verify B-0812 self-registration payload) | +<1 min |
-| 3 | ArgoCD reconciliation verification (most coupled to live cluster state; deferrable to push-to-main only) | TBD; possibly push-only |
+| Slice | Scope                                                                                                                      | Latency cost            |
+| ----- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| 1     | Full-install-in-QEMU: boot installer ISO → first-boot service fires → greedy N-disk install → reboot → verify login banner | +5-10 min PR-build      |
+| 2     | Cluster-auto-join verification via mock cluster control-plane (capture + verify B-0812 self-registration payload)          | +<1 min                 |
+| 3     | ArgoCD reconciliation verification (most coupled to live cluster state; deferrable to push-to-main only)                   | TBD; possibly push-only |
 
 Each slice ships independently. Overall acceptance: human physical-USB-test is no longer the routine gate for substrate landings.
 
@@ -54,6 +54,7 @@ Each slice ships independently. Overall acceptance: human physical-USB-test is n
 Adds a new P1 backlog row (B-0831) capturing the planned CI “cascade #6” work to validate a full installer run in QEMU plus post-boot cluster auto-join, with the goal of eliminating routine physical USB testing as the substrate gate.
 
 **Changes:**
+
 - Adds new backlog row **B-0831** describing a 3-slice CI verification plan (full install, mock join verification, optional ArgoCD reconciliation verification).
 - Updates `docs/BACKLOG.md` index to include **B-0831**.
 
@@ -61,10 +62,10 @@ Adds a new P1 backlog row (B-0831) capturing the planned CI “cascade #6” wor
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                  | Description                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0831-ci-cascade-6-full-install-plus-cluster-auto-join-eliminate-routine-human-physical-usb-test-aaron-2026-05-26.md | New backlog row defining the problem statement, slices, acceptance criteria, and cross-references for CI cascade #6. |
-| docs/BACKLOG.md | Adds B-0831 to the P1 backlog index list. |
+| docs/BACKLOG.md                                                                                                                       | Adds B-0831 to the P1 backlog index list.                                                                            |
 
 ## Review threads
 

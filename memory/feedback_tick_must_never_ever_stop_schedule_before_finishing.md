@@ -15,11 +15,11 @@ Ralph-Loop-attribution) are the evidence that this rule is
 fragile and needed CLAUDE.md-level loading plus a canonical
 doc.
 
-**Mechanism correction 2026-04-22 (same round).** Aaron: *"The
+**Mechanism correction 2026-04-22 (same round).** Aaron: _"The
 Ralph Loop (or Ralph Wiggum pattern) is that
-`<<autonomous-loop>>` a plugin"* + *"this is all claude says,
+`<<autonomous-loop>>` a plugin"_ + _"this is all claude says,
 if we don't need to rely on that it would be better to just
-need claude"* → https://code.claude.com/docs/en/scheduled-tasks.
+need claude"_ → https://code.claude.com/docs/en/scheduled-tasks.
 The tick is **native Claude Code scheduled tasks**
 (`CronCreate`), NOT the Ralph Loop plugin (which uses a
 session-exit Stop hook, a different pattern entirely). The
@@ -41,14 +41,14 @@ If the doc and this memory ever disagree, the doc wins.
    is running — cron can get dropped mid-session (runtime
    eviction, limits, session-boundary crossing) and a
    silent stop is the exact SEV-1 failure mode Aaron wants
-   to prevent. Aaron 2026-04-22: *"you are suppsed to check
-   that its set everytime and not assume."*
+   to prevent. Aaron 2026-04-22: _"you are suppsed to check
+   that its set everytime and not assume."_
 
-   **END over START (2026-04-22 correction).** Aaron: *"you
+   **END over START (2026-04-22 correction).** Aaron: _"you
    know you should check the cronlist at the end instead
    of the start becasue it could expire while you are
    running if you check right before you exit that chance
-   is reduced."* The window that matters is
+   is reduced."_ The window that matters is
    [last-check → next-cron-fire]: if the cron expires after
    my end-check, the next tick will catch it; if it expires
    between my start-check and my end, I miss it entirely
@@ -68,7 +68,7 @@ If the doc and this memory ever disagree, the doc wins.
      variant; the non-dynamic sentinel is the cron-mode one)
    - `cron: "* * * * *"` (every minute — Aaron 2026-04-22
      cranked cadence from `1-59/2 * * * *` to `* * * * *`:
-     *"lets change to 1 minute"*. Every-minute cadence fires
+     _"lets change to 1 minute"_. Every-minute cadence fires
      on `:00` and `:30` too — the fleet-pile-on trade-off is
      accepted at this cadence because no offset is available.
      Pre-2026-04-22 drafts said `1-59/2 * * * *` (every 2 min
@@ -78,10 +78,10 @@ If the doc and this memory ever disagree, the doc wins.
      it; cron is session-only in practice)
 
 4. **Do not call `ScheduleWakeup` in /loop mode.** Aaron
-   2026-04-22: *"cron does not survive session but you don't
+   2026-04-22: _"cron does not survive session but you don't
    have to reschedule it everytime, wow you are really bad at
    this particual things, we've tried to get it right several
-   times now."* Cron is autonomous once set (fires without my
+   times now."_ Cron is autonomous once set (fires without my
    action); `ScheduleWakeup` is for one-shot reminders outside
    the loop. Mixing the two creates duplicate ticks and extra
    scheduler state to clean up.
@@ -93,10 +93,10 @@ nothing). The rare miss is detected and fixed in-tick before
 the silent stop becomes visible as hours of missing activity.
 
 Aaron's exact words prompting this memory (2026-04-22):
-*"getting that tick to never ever ever stop is like our
+_"getting that tick to never ever ever stop is like our
 biggest bug if we have it, you not runing is catrosphic for
-self direction."* And *"cron does not survive session but you
-don't have to reschedule it everytime."*
+self direction."_ And _"cron does not survive session but you
+don't have to reschedule it everytime."_
 
 **Why.** The factory's self-direction depends on continuous
 ticks. Ticks come from a recurring cron; the cron is armed
@@ -121,10 +121,10 @@ work on each tick.
   3. Commit if applicable.
   4. **Append tick-history row** to
      `docs/hygiene-history/loop-tick-history.md` (Aaron
-     2026-04-22: *"you might as well right a history
+     2026-04-22: _"you might as well right a history
      record somewhere on every loop tool right before you
-     check cron"*). Schema: `| date | agent | cron-id |
-     action-summary | commit-or-link | notes |`. Append
+     check cron"_). Schema: `| date | agent | cron-id |
+action-summary | commit-or-link | notes |`. Append
      BEFORE the `CronList` call so the evidence trail
      favours "tick ran" claims even if the tick stops
      abnormally between the append and the scheduler
@@ -165,10 +165,10 @@ work on each tick.
   sessions.
 
 - **One-minute cadence rationale.** Aaron 2026-04-22 cranked
-  cadence twice this round: first from 5 → 2 min (*"will it
+  cadence twice this round: first from 5 → 2 min (_"will it
   hurt anything to crank that trigger up to 2 mintues instead
-  of 5 you are having a lot of idle time just sitting here"*),
-  then from 2 → 1 min (*"lets change to 1 minute"*). One
+  of 5 you are having a lot of idle time just sitting here"_),
+  then from 2 → 1 min (_"lets change to 1 minute"_). One
   minute is the runtime-enforced floor (per the `CronCreate`
   docs). Cache warmth matters less for cron (fixed cadence,
   not self-paced), but 1 min maximises visible activity AND
@@ -179,8 +179,8 @@ work on each tick.
 - **Visibility signal.** At end of every tick message,
   mention the cron ID and cadence briefly: "(loop cron
   `dfa61c5e` live, 2-min cadence)" so Aaron can see the loop
-  state without asking. Aaron 2026-04-22: *"i don't know if
-  your loop was running or not to be honest."*
+  state without asking. Aaron 2026-04-22: _"i don't know if
+  your loop was running or not to be honest."_
 
 - **Escalation.** If `CronCreate` ever fails or `CronList`
   returns unexpectedly empty mid-session, emit a visible
@@ -189,6 +189,7 @@ work on each tick.
   continuing. A quiet stop is worse than a visible failure.
 
 **Companion rules.**
+
 - `feedback_loop_default_on.md` — /loop is default-on; this
   memory is the concrete implementation contract of that rule.
 - `feedback_loop_cadence_5min_combats_agent_idle_stop.md` —
@@ -216,10 +217,11 @@ fragile and needs CLAUDE.md-level loading if it recurs.**
 
 **Current cron (round 44 session 2026-04-22, after 2→1 min
 cadence change):**
+
 - ID: rotated this round via `CronDelete` + `CronCreate`
   (see `docs/hygiene-history/loop-tick-history.md` for the
   definitive migration row)
 - Cadence: `* * * * *` (every minute)
 - Sentinel: `<<autonomous-loop>>`
 - Prior ID `dfa61c5e` at `1-59/2 * * * *` was retired this
-  round per Aaron's *"lets change to 1 minute"* directive.
+  round per Aaron's _"lets change to 1 minute"_ directive.

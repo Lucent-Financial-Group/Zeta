@@ -34,7 +34,7 @@ Any of the following require a review:
 3. Signature change on an existing public member (param
    added / removed / renamed / retyped; return type
    widened or narrowed; generic constraints changed).
-4. Visibility *reduction* (`public` → `internal`) —
+4. Visibility _reduction_ (`public` → `internal`) —
    breaking for consumers.
 5. `[<Obsolete>]` / `[Obsolete]` application or removal.
 6. Public member removal.
@@ -59,27 +59,32 @@ fills in a verdict:
 ### <target file:line> — <change summary>
 
 **Why public?**
+
 - 1-3 sentences. What use case requires this be callable
   from outside the assembly?
 
 **Alternative considered?**
+
 - What other API shape would serve the same use case?
   (Callback instead of exposed type; builder pattern
   instead of flat method; narrower signature; etc.)
 - Why is the proposed shape better than the alternatives?
 
 **Commitment cost.**
+
 - How many years are we willing to commit to this exact
   signature without a major-version break? (1 / 3 / 5 / 10)
 - What downstream breakage would a future modification
   cause? (import-only / recompile / source-level / runtime)
 
 **Test coverage.**
+
 - Is there a test that pins the public contract (not
   just happens to exercise the path)?
 - Path to the test or "none yet, tracked as <TODO>".
 
 **Extension point claim (if applicable).**
+
 - If this is meant to be a plugin-author extension point,
   who is the intended plugin author? What do they build
   with it?
@@ -95,16 +100,20 @@ fills in a verdict:
 **Summary:** 1-2 sentences.
 
 **Findings:**
+
 - [P0 / P1 / P2] <finding>
 - ...
 
 **Proposed alternative (if REJECT):**
+
 - Concrete code sketch or description.
 
 **Questions for the author:**
+
 - ...
 
 **Tests missing:**
+
 - If ACCEPT, what tests would still need to be added
   post-land.
 ```
@@ -122,7 +131,7 @@ fills in a verdict:
   Haskell pattern, name it.
 - **No aesthetic nitpicks.** Name casing, XML-doc prose,
   doc-comment polish belong to the maintainability
-  reviewer (Rune). This skill is about *contract shape*,
+  reviewer (Rune). This skill is about _contract shape_,
   not phrasing.
 
 ## When to invoke

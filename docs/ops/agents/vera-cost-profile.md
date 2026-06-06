@@ -1,6 +1,6 @@
 # Vera — Agent Cost Profile
 
-*(Stub — to be populated by Vera or by Otto from observed data.)*
+_(Stub — to be populated by Vera or by Otto from observed data.)_
 
 ## Identity
 
@@ -11,11 +11,11 @@
 
 ## Pricing reference
 
-| Model | Input/M | Output/M |
-|---|---|---|
-| GPT-5.5 | TBD | TBD |
-| GPT-4.1 | TBD | TBD |
-| GPT-4.1 mini | TBD | TBD |
+| Model        | Input/M | Output/M |
+| ------------ | ------- | -------- |
+| GPT-5.5      | TBD     | TBD      |
+| GPT-4.1      | TBD     | TBD      |
+| GPT-4.1 mini | TBD     | TBD      |
 
 ## Task classes
 

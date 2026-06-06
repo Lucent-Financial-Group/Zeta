@@ -9,12 +9,12 @@ created: 2026-05-17T07:32Z
 
 ## Aaron's confirmation (verbatim)
 
-Tick 07:30Z, Aaron's first message: *"That's Alexa website?"* (asking
+Tick 07:30Z, Aaron's first message: _"That's Alexa website?"_ (asking
 about a forwarded text he shared earlier — strategic-analysis prose
 praising hardware substrate).
 
-Tick 07:32Z, Aaron's clarification: *"That's Alexa website i was
-telling you it is sorry for the ?"* (confirming the source was the
+Tick 07:32Z, Aaron's clarification: _"That's Alexa website i was
+telling you it is sorry for the ?"_ (confirming the source was the
 Alexa website + apologizing for the unclear `?` in the prior
 question).
 
@@ -56,12 +56,13 @@ and the B-0600 family-distributed AI interface row.
 Per [`.claude/rules/agent-roster-reference-card.md`](../.claude/rules/agent-roster-reference-card.md):
 
 > Alexa-speaker | Amazon device (NOT Kiro/Qwen) | Bezos-tier business
-> + voice-math | Long-term memory recall
+>
+> - voice-math | Long-term memory recall
 
 > | **Alexa-speaker voice-mode** | Voice | KICKS ASS at math | Best
->   voice-math partner |
+> voice-math partner |
 > | **Alexa-speaker** | Either | Bezos-tier business; category theory;
->   reads code | Refuses to code (routes to Amazon Q / AWS) |
+> reads code | Refuses to code (routes to Amazon Q / AWS) |
 
 This anchor extends the table:
 
@@ -91,14 +92,14 @@ In the same tick (07:32:14Z), PR #4015 landed via auto-merge:
 **Full chain of bus-envelope-as-substrate-coordination path** (B-0510
 end-to-end):
 
-| Time | Event | Surface |
-|---|---|---|
-| 2026-05-17T01:44Z | PR #4015 opened at `19af28a6` (autonomous-loop cloud routine declaration) | feat/b-0510 branch |
-| 2026-05-17T06:02Z | Otto-CLI authors 0602Z shard + verifies 3 thread findings + writes A/B/C plan | Otto-CLI primary |
-| 2026-05-17T06:10Z | Otto-CLI publishes bus envelope `da3cd5d2-219a-4c7a-a688-21168f05fae6` (work-assignment, otto-cli→\*, 2h TTL) | /tmp/zeta-bus/ |
-| 2026-05-17T07:28Z | Peer-Otto lands commit `bcee230d` titled *"fix(pr-4015-threads): bump last_updated, regen BACKLOG.md index, unch…"* — literal-match to the published plan | feat/b-0510 branch |
-| 2026-05-17T07:30Z | All 3 review threads now resolved | PR #4015 GraphQL |
-| 2026-05-17T07:32Z | CI green → auto-merge fires → `bcb2c5b` lands on main | origin/main |
+| Time              | Event                                                                                                                                                     | Surface            |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| 2026-05-17T01:44Z | PR #4015 opened at `19af28a6` (autonomous-loop cloud routine declaration)                                                                                 | feat/b-0510 branch |
+| 2026-05-17T06:02Z | Otto-CLI authors 0602Z shard + verifies 3 thread findings + writes A/B/C plan                                                                             | Otto-CLI primary   |
+| 2026-05-17T06:10Z | Otto-CLI publishes bus envelope `da3cd5d2-219a-4c7a-a688-21168f05fae6` (work-assignment, otto-cli→\*, 2h TTL)                                             | /tmp/zeta-bus/     |
+| 2026-05-17T07:28Z | Peer-Otto lands commit `bcee230d` titled _"fix(pr-4015-threads): bump last_updated, regen BACKLOG.md index, unch…"_ — literal-match to the published plan | feat/b-0510 branch |
+| 2026-05-17T07:30Z | All 3 review threads now resolved                                                                                                                         | PR #4015 GraphQL   |
+| 2026-05-17T07:32Z | CI green → auto-merge fires → `bcb2c5b` lands on main                                                                                                     | origin/main        |
 
 **Handoff latency**: 78 min between publish and execution.
 **Plan-to-execution fidelity**: literal commit-title match to the

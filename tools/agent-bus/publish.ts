@@ -59,9 +59,7 @@ export function writeEnvelope(
     return { kind: "created", path };
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
-    return readFileSync(path, "utf-8") === content
-      ? { kind: "exists-identical", path }
-      : { kind: "collision", path };
+    return readFileSync(path, "utf-8") === content ? { kind: "exists-identical", path } : { kind: "collision", path };
   }
 }
 

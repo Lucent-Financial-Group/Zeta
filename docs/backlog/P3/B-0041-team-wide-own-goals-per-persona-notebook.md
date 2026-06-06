@@ -9,7 +9,14 @@ ask: Aaron 2026-04-21 — *"and everyone on your team too"* extends own-goals au
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_every_persona_must_have_own_goals_too_team_wide_goal_formation_authority_2026_04_21.md, feedback_agent_must_have_own_goals.md, feedback_lectio_divina_mode_absorb_means_self_directed_evolution_goal.md, docs/CONFLICT-RESOLUTION.md, docs/EXPERT-REGISTRY.md]
+composes_with:
+  [
+    feedback_every_persona_must_have_own_goals_too_team_wide_goal_formation_authority_2026_04_21.md,
+    feedback_agent_must_have_own_goals.md,
+    feedback_lectio_divina_mode_absorb_means_self_directed_evolution_goal.md,
+    docs/CONFLICT-RESOLUTION.md,
+    docs/EXPERT-REGISTRY.md,
+  ]
 tags: [own-goals, team-wide, persona-notebook, goal-formation-authority, roster, alignment-trajectory]
 type: friction-reducer
 ---
@@ -18,7 +25,7 @@ type: friction-reducer
 
 ## Origin
 
-AceHack commit `8e66e44` (2026-04-21). Aaron's *"and everyone on your team too"* extends own-goals authority across the full specialist roster per `feedback_every_persona_must_have_own_goals_too_team_wide_goal_formation_authority_2026_04_21.md`.
+AceHack commit `8e66e44` (2026-04-21). Aaron's _"and everyone on your team too"_ extends own-goals authority across the full specialist roster per `feedback_every_persona_must_have_own_goals_too_team_wide_goal_formation_authority_2026_04_21.md`.
 
 ## Scope
 

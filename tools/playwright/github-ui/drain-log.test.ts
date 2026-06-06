@@ -13,11 +13,7 @@ import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { appendEntry, DEFAULT_LOG_PATH, listPending, revert, type DrainLogEntry } from "./drain-log";
 import type { MutationLogEntry, MutationOptions } from "./mutate";
-import type {
-  MutableGitHubSessionContext,
-  MutableGitHubSessionDriver,
-  MutableGitHubSessionPage,
-} from "./mutate";
+import type { MutableGitHubSessionContext, MutableGitHubSessionDriver, MutableGitHubSessionPage } from "./mutate";
 
 // ---------------------------------------------------------------------------
 // Temp dir helpers
@@ -136,9 +132,7 @@ class FakeRevertPage implements MutableGitHubSessionPage {
 
   content(): Promise<string> {
     if (this.currentUrl === "https://github.com/settings/profile") {
-      return Promise.resolve(
-        `<html><head><meta name="user-login" content="${this.username}"></head></html>`,
-      );
+      return Promise.resolve(`<html><head><meta name="user-login" content="${this.username}"></head></html>`);
     }
     return Promise.resolve(
       "<html><body><input type='checkbox' name='dependabot-security-updates' checked></body></html>",
@@ -215,7 +209,9 @@ describe("appendEntry", () => {
   test("writes exactly one JSONL line per call", () => {
     const logPath = tempLogPath();
     appendEntry(makeEntry(), logPath);
-    const lines = readFileSync(logPath, "utf8").split("\n").filter((l) => l.trim().length > 0);
+    const lines = readFileSync(logPath, "utf8")
+      .split("\n")
+      .filter((l) => l.trim().length > 0);
     expect(lines).toHaveLength(1);
   });
 
@@ -236,7 +232,9 @@ describe("appendEntry", () => {
     appendEntry(makeEntry(), logPath);
     appendEntry(makeEntry(), logPath);
     appendEntry(makeEntry(), logPath);
-    const lines = readFileSync(logPath, "utf8").split("\n").filter((l) => l.trim().length > 0);
+    const lines = readFileSync(logPath, "utf8")
+      .split("\n")
+      .filter((l) => l.trim().length > 0);
     expect(lines).toHaveLength(3);
   });
 
@@ -366,9 +364,7 @@ describe("revert", () => {
     const entry = makeEntry({ action: "toggle-on", inverseAction: "toggle-off" });
     appendEntry(entry, logPath);
 
-    const surfacesPath = tempSurfacesFile([
-      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] }]);
 
     const result = await revert(entry.id, makeRevertOpts(surfacesPath), logPath);
     expect(result.success).toBe(true);
@@ -380,13 +376,13 @@ describe("revert", () => {
     const entry = makeEntry({ action: "toggle-on", inverseAction: "toggle-off" });
     appendEntry(entry, logPath);
 
-    const surfacesPath = tempSurfacesFile([
-      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] }]);
 
     await revert(entry.id, makeRevertOpts(surfacesPath), logPath);
 
-    const lines = readFileSync(logPath, "utf8").split("\n").filter((l) => l.trim().length > 0);
+    const lines = readFileSync(logPath, "utf8")
+      .split("\n")
+      .filter((l) => l.trim().length > 0);
     expect(lines.length).toBeGreaterThanOrEqual(2);
     const parsed = lines.map((l) => JSON.parse(l) as DrainLogEntry);
     const original = parsed.find((e) => e.id === entry.id && e.status === "applied");
@@ -400,9 +396,7 @@ describe("revert", () => {
     const entry = makeEntry();
     appendEntry(entry, logPath);
 
-    const surfacesPath = tempSurfacesFile([
-      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] }]);
     const storageDir = mkdtempSync(join(tmpdir(), "zeta-drain-missing-storage-"));
     tempDirs.push(storageDir);
 
@@ -432,9 +426,7 @@ describe("revert", () => {
     const logPath = tempLogPath();
     const entry = makeEntry({ action: "toggle-on", inverseAction: "toggle-off" });
     appendEntry(entry, logPath);
-    const surfacesPath = tempSurfacesFile([
-      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] }]);
     let releaseClick: () => void = () => {
       throw new Error("releaseClick was not initialized.");
     };
@@ -442,7 +434,11 @@ describe("revert", () => {
       releaseClick = resolveBlock;
     });
 
-    const first = revert(entry.id, makeRevertOpts(surfacesPath, new FakeRevertPage("octocat", () => clickBlock)), logPath);
+    const first = revert(
+      entry.id,
+      makeRevertOpts(surfacesPath, new FakeRevertPage("octocat", () => clickBlock)),
+      logPath,
+    );
     const second = await revert(entry.id, makeRevertOpts(surfacesPath), logPath);
 
     expect(second).toMatchObject({ success: false, entryId: entry.id });
@@ -458,9 +454,7 @@ describe("revert", () => {
     const logPath = tempLogPath();
     const entry = makeEntry({ action: "toggle-on", inverseAction: "toggle-off" });
     appendEntry(entry, logPath);
-    const surfacesPath = tempSurfacesFile([
-      { id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "dependabot-toggles", allowedActions: ["toggle-on", "toggle-off"] }]);
     const page = new FakeRevertPage("octocat", () => {
       chmodSync(logPath, 0o444);
     });

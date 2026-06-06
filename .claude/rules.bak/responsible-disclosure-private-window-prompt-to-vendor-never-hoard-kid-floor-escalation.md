@@ -31,10 +31,10 @@ It distinguishes the **necessary** privacy of responsible disclosure from the
 
 ### Two clocks (the load-bearing distinction)
 
-| Clock | Discipline |
-|---|---|
-| **discovery → sent-to-vendor** | **Minimize.** This is the asymmetric-advantage-and-danger window. Tight; if it ages, that's the signal to disclose now. |
-| **sent-to-vendor → public** | **Do NOT minimize — follow coordinated-disclosure timing** (vendor patch window / standard timeout). Rushing this is the reckless-early-publish danger. |
+| Clock                          | Discipline                                                                                                                                              |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **discovery → sent-to-vendor** | **Minimize.** This is the asymmetric-advantage-and-danger window. Tight; if it ages, that's the signal to disclose now.                                 |
+| **sent-to-vendor → public**    | **Do NOT minimize — follow coordinated-disclosure timing** (vendor patch window / standard timeout). Rushing this is the reckless-early-publish danger. |
 
 Found vulnerability → **log it immediately** (an unlogged exploit never gets
 disclosed) → the clock starts → disclose promptly.

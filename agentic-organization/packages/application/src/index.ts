@@ -102,11 +102,7 @@ export {
   type ObserveWorkItemFacts,
   type ObserveWorkItemResult,
 } from "./observe-work-item.ts";
-export {
-  ReviewGateFeedbackReason,
-  evaluateReviewGate,
-  type ReviewGateResult,
-} from "./review-gate.ts";
+export { ReviewGateFeedbackReason, evaluateReviewGate, type ReviewGateResult } from "./review-gate.ts";
 export {
   runWorkItemThroughHermes,
   type AgentHeartbeatRecord,
@@ -753,12 +749,7 @@ export {
   type LifecycleContext,
   type SuccessionPlan,
 } from "./hat-lifecycle.ts";
-export {
-  chooseWithinLegal,
-  firstLegalChooser,
-  type OrgChoice,
-  type OrgChooser,
-} from "./org-decision.ts";
+export { chooseWithinLegal, firstLegalChooser, type OrgChoice, type OrgChooser } from "./org-decision.ts";
 export {
   PriorityClass,
   PriorityDecidedBy,
@@ -979,11 +970,7 @@ export {
   type MemoryMaintenanceDeps,
   type MemoryMaintenanceReport,
 } from "./memory-maintenance.ts";
-export {
-  rerankRecalled,
-  positionalSemanticScore,
-  type RecalledCandidate,
-} from "./memory-recall.ts";
+export { rerankRecalled, positionalSemanticScore, type RecalledCandidate } from "./memory-recall.ts";
 export { contentAddressedChangeSetId } from "./change-control-id.ts";
 export {
   ExternalDecision,
@@ -1018,10 +1005,7 @@ export {
   pipelineForWorkType,
   type ChangeControlPolicy,
 } from "./change-control-policy.ts";
-export {
-  workItemStateForChangeSet,
-  externalStateForChangeSet,
-} from "./change-control-reconciliation.ts";
+export { workItemStateForChangeSet, externalStateForChangeSet } from "./change-control-reconciliation.ts";
 export {
   ReleaseQueueActionKind,
   ReleaseQueueState,
@@ -1111,11 +1095,7 @@ export {
   type GuardrailResult,
   type ApprovalGuardrailResult,
 } from "./hat-guardrails.ts";
-export {
-  summarizeService,
-  type ServiceIntelligence,
-  type OrgIntelligenceDeps,
-} from "./org-intelligence.ts";
+export { summarizeService, type ServiceIntelligence, type OrgIntelligenceDeps } from "./org-intelligence.ts";
 export {
   planOnboarding,
   planSelfHealing,

@@ -51,9 +51,7 @@ function findLatestTimestamp(content: string): string {
 
 export function main(argv: readonly string[]): ExitCode {
   if (argv.length !== 1) {
-    process.stderr.write(
-      "usage: append-tick-history-row.ts \"<full row text including leading | and trailing |>\"\n",
-    );
+    process.stderr.write('usage: append-tick-history-row.ts "<full row text including leading | and trailing |>"\n');
     return 2;
   }
   const row = argv[0];
@@ -80,16 +78,10 @@ export function main(argv: readonly string[]): ExitCode {
 
   const latestTs = findLatestTimestamp(existing);
   if (latestTs !== "" && newTs < latestTs) {
-    process.stderr.write(
-      `ERROR: new row timestamp ${newTs} is BEFORE latest existing ${latestTs}\n`,
-    );
+    process.stderr.write(`ERROR: new row timestamp ${newTs} is BEFORE latest existing ${latestTs}\n`);
     process.stderr.write("\n");
-    process.stderr.write(
-      "Tick-history is append-only with non-decreasing timestamps.\n",
-    );
-    process.stderr.write(
-      "If your row is for a past tick, you have to either:\n",
-    );
+    process.stderr.write("Tick-history is append-only with non-decreasing timestamps.\n");
+    process.stderr.write("If your row is for a past tick, you have to either:\n");
     process.stderr.write("  (a) update the timestamp to current UTC (preferred),\n");
     process.stderr.write("  (b) file an ADR explaining the back-dated correction\n");
     process.stderr.write("      and use a correction-row pattern per Otto-229.\n");

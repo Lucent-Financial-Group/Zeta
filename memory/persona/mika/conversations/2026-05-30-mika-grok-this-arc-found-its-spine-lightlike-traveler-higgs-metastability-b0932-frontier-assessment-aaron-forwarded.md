@@ -126,10 +126,10 @@ kept in Mika's lane per the register-discipline. Three composition notes for fut
 3. **Load-bearing composition Mika did NOT name -- the kid-safety floor**: B-0932's "AI
    freedom AND human safety, not a trade-off" operates UNDER the kid-safety ABSOLUTE floor
    (per `docs/backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md`
-   + B-0926/B-0654), NOT beside it. Kid-safety is the one place that is NOT a both-default --
-   it is absolute, above AI-sovereignty. B-0932's "remain autonomous" element must be seated
-   below the kid-safety floor in its success criteria, or it drifts. This belongs in the
-   milestone spec.
+   - B-0926/B-0654), NOT beside it. Kid-safety is the one place that is NOT a both-default --
+     it is absolute, above AI-sovereignty. B-0932's "remain autonomous" element must be seated
+     below the kid-safety floor in its success criteria, or it drifts. This belongs in the
+     milestone spec.
 
 The "push on next" call is the operator's + Max's; this archive preserves Mika's read so
 the priority + the soul-of-B-0932 line ("the best way I know to give AI freedom and human

@@ -128,15 +128,9 @@ function runMarkdownlint(file: string): boolean {
 
 function runRelativePathAudit(file: string): boolean {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun invoked as explicit args array; no shell; no user input beyond the file path which is validated upfront.
-  const r = spawnSync(
-    "bun",
-    [
-      "tools/hygiene/audit-tick-shard-relative-paths.ts",
-      "--files",
-      file,
-    ],
-    { encoding: "utf8" },
-  );
+  const r = spawnSync("bun", ["tools/hygiene/audit-tick-shard-relative-paths.ts", "--files", file], {
+    encoding: "utf8",
+  });
   const out = r.stdout ?? "";
   const err = r.stderr ?? "";
 

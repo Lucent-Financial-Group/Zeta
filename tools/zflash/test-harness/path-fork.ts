@@ -8,10 +8,7 @@
  * executor and identity comparison proof consume the plan.
  */
 
-import {
-  DEFAULT_PATH_FORK,
-  type PathForkVariant,
-} from "./extensions";
+import { DEFAULT_PATH_FORK, type PathForkVariant } from "./extensions";
 import {
   INITIAL_INSTALL_SERIAL_MARKERS,
   RETENTION_ABSENT_TERMINAL_MARKERS,
@@ -57,16 +54,13 @@ export interface PathForkRuntimePlan {
   readonly forks: readonly PathForkRuntimeForkPlan[];
 }
 
-export type PathForkRuntimeFeedback =
-  | {
-      readonly kind: "invalid-input";
-      readonly field: keyof PathForkRuntimeInput;
-      readonly reason: string;
-    };
+export type PathForkRuntimeFeedback = {
+  readonly kind: "invalid-input";
+  readonly field: keyof PathForkRuntimeInput;
+  readonly reason: string;
+};
 
-export type PathForkRuntimeResult =
-  | { readonly ok: PathForkRuntimePlan }
-  | { readonly error: PathForkRuntimeFeedback };
+export type PathForkRuntimeResult = { readonly ok: PathForkRuntimePlan } | { readonly error: PathForkRuntimeFeedback };
 
 export interface PathForkSerialMarkerAssertion {
   readonly forkId: PathForkId;
@@ -156,28 +150,19 @@ interface NormalizedPathForkRuntimeInput {
 function requiredMarkers(forkId: PathForkId): readonly string[] {
   return [
     ...INITIAL_INSTALL_SERIAL_MARKERS,
-    ...(forkId === "migrate-existing-creds"
-      ? MIGRATE_EXISTING_CREDS_SERIAL_MARKERS
-      : FRESH_CLUSTER_SERIAL_MARKERS),
+    ...(forkId === "migrate-existing-creds" ? MIGRATE_EXISTING_CREDS_SERIAL_MARKERS : FRESH_CLUSTER_SERIAL_MARKERS),
   ];
 }
 
 function forbiddenMarkers(forkId: PathForkId): readonly string[] {
-  return forkId === "migrate-existing-creds"
-    ? FRESH_CLUSTER_SERIAL_MARKERS
-    : MIGRATE_EXISTING_CREDS_SERIAL_MARKERS;
+  return forkId === "migrate-existing-creds" ? FRESH_CLUSTER_SERIAL_MARKERS : MIGRATE_EXISTING_CREDS_SERIAL_MARKERS;
 }
 
 function serialLogPathForFork(input: NormalizedPathForkRuntimeInput, forkId: PathForkId): string {
-  return forkId === "migrate-existing-creds"
-    ? input.migrateSerialLogPath
-    : input.freshSerialLogPath;
+  return forkId === "migrate-existing-creds" ? input.migrateSerialLogPath : input.freshSerialLogPath;
 }
 
-function bootCommandForFork(
-  input: NormalizedPathForkRuntimeInput,
-  forkId: PathForkId,
-): QemuCommand | undefined {
+function bootCommandForFork(input: NormalizedPathForkRuntimeInput, forkId: PathForkId): QemuCommand | undefined {
   const serialLogPath = serialLogPathForFork(input, forkId);
   if (forkId === "migrate-existing-creds") {
     const bootImagePath = input.bootImagePath;
@@ -230,9 +215,7 @@ function forkPlan(input: NormalizedPathForkRuntimeInput, fork: PathForkVariant):
       bin: "qemu-img",
       args: ["snapshot", "-a", input.snapshotName, input.startingDiskPath],
     },
-    ...(qemuBootCommand === undefined
-      ? {}
-      : { qemuBootCommand }),
+    ...(qemuBootCommand === undefined ? {} : { qemuBootCommand }),
     stopCondition: {
       serialLogPath,
       successMarkers: forkRequiredMarkers,

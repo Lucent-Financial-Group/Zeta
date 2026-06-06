@@ -6,7 +6,7 @@ the retraction-native discipline of `operator-algebra`. It defines the
 observable contract of four spine variants — a baseline synchronous cascade
 spine, a bounded-latency variant, a backing-store variant, and an async-
 producer variant — plus the dispatcher that selects among them. This spec is
-language-agnostic: it pins *what* the spine promises to any caller, not the F#
+language-agnostic: it pins _what_ the spine promises to any caller, not the F#
 or C# surface through which the promise is delivered.
 
 The spine is the engine behind `IntegrateOp` over Z-sets: it is the concrete
@@ -45,10 +45,10 @@ batches through the Z-set group operation in any order.
 ### Requirement: cascade merge bounded-depth invariant
 
 A spine MUST maintain the invariant that no two live batches occupy the same
-size class *at the end of a completed settle-point* (`Consolidate` return,
+size class _at the end of a completed settle-point_ (`Consolidate` return,
 an eager variant's post-insert state, or a bounded-latency variant's
 post-`Tick` state once the pending queue has drained). Bounded-latency
-variants MAY carry multiple live batches at a given size class *between*
+variants MAY carry multiple live batches at a given size class _between_
 ticks — that is the core mechanic of bounded-latency scheduling — provided
 they drain to the single-batch-per-size-class invariant before
 `Consolidate` returns. On insert, a collision at a size class MUST be
@@ -91,7 +91,7 @@ wrap the backing-store variant in their own depth check.
 
 ### Requirement: spine-equivalence is observable only through `Consolidate`
 
-Two spines that have received the same *multiset* of insert calls MUST produce
+Two spines that have received the same _multiset_ of insert calls MUST produce
 equal `Consolidate` outputs, even when their internal tier layouts differ.
 This equivalence is the spine's only guaranteed external contract: internal
 tier counts, batch sizes, and merge schedules are implementation details a
@@ -187,7 +187,7 @@ whether the store is in-memory or disk-backed. The abstraction MUST permit
 any implementation whose `Save/Load/Release` triple behaves as an
 **identity-keyed opaque-handle store** over Z-set batches: each `Save`
 returns a fresh handle distinct from every other live handle, regardless
-of whether the saved batch's *value* equals a previously-saved batch. The
+of whether the saved batch's _value_ equals a previously-saved batch. The
 abstraction is NOT content-addressable; callers that require deduplication
 MUST implement it above this layer.
 
@@ -339,14 +339,14 @@ responsible for converting the mode to a concrete spine.
 
 ### Requirement: observable state machine
 
-Every spine variant MUST present the same *core* observable state-machine
-to its caller: *construction* (no tiers, no batches), *insert* (a batch
-is accepted; zero or more cascade merges may occur), and *consolidate*
+Every spine variant MUST present the same _core_ observable state-machine
+to its caller: _construction_ (no tiers, no batches), _insert_ (a batch
+is accepted; zero or more cascade merges may occur), and _consolidate_
 (every live batch is group-summed into one output Z-set; consolidation
 MUST be idempotent in that a second `Consolidate` with no intervening
 `Insert` produces the same output).
 
-A *clear* operation that returns the spine to the construction state is
+A _clear_ operation that returns the spine to the construction state is
 an **optional** state-machine extension: variants that expose `Clear`
 MUST satisfy the clear-return-to-construction scenario below, but a
 variant MAY omit `Clear` entirely (the async-producer variant omits it

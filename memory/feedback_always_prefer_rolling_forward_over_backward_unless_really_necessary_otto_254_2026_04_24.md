@@ -4,6 +4,7 @@ description: Aaron Otto-254 general discipline. After I offered revert vs leave 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Default: roll forward. Exception: revert only when
@@ -11,8 +12,8 @@ really necessary.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"always prefere rolling foward rather than backwards
-> unless it's really necessary"*
+> _"always prefere rolling foward rather than backwards
+> unless it's really necessary"_
 
 ## Applies to
 
@@ -85,8 +86,8 @@ harm than the revert:
 
 ## Direct Aaron quote to preserve
 
-> *"always prefere rolling foward rather than backwards
-> unless it's really necessary"*
+> _"always prefere rolling foward rather than backwards
+> unless it's really necessary"_
 
 Future Otto: when offered a revert-vs-leave choice, default
 to leave + forward-fix. When offered a `git reset --hard`-

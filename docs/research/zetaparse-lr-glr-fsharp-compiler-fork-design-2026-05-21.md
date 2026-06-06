@@ -10,13 +10,13 @@ Yes, we can build an ANTLR alternative that is more natural for Zeta:
 
 **ZetaParse**: a compiler-owned F# grammar substrate that combines LR-family parser generation, GLR fallback, grammar import/adaptation, typed AST generation, and F# computation-expression integration.
 
-The key is not to “run ANTLR grammars directly” as if LL(*) grammars and LR tables are interchangeable. The key is to ingest grammar assets into a shared grammar IR, normalize the compatible subset, detect conflicts, and generate F# parsers through a Zeta-owned backend.
+The key is not to “run ANTLR grammars directly” as if LL(\*) grammars and LR tables are interchangeable. The key is to ingest grammar assets into a shared grammar IR, normalize the compatible subset, detect conflicts, and generate F# parsers through a Zeta-owned backend.
 
 ANTLR remains useful as a source of community grammars. It does not need to own the parser runtime.
 
 ## Why this is plausible
 
-ANTLR is LL(*)-oriented. Classic parser generators such as Bison generate LR-family parsers, including LALR(1), canonical LR, IELR(1), and GLR variants. Tree-sitter demonstrates that GLR-style parsing is practical for code tooling and incremental editor-style parse trees. Zeta can take the LR/GLR path because the F# compiler fork gives us a natural place to integrate grammar generation, typed ASTs, and compile-time validation.
+ANTLR is LL(\*)-oriented. Classic parser generators such as Bison generate LR-family parsers, including LALR(1), canonical LR, IELR(1), and GLR variants. Tree-sitter demonstrates that GLR-style parsing is practical for code tooling and incremental editor-style parse trees. Zeta can take the LR/GLR path because the F# compiler fork gives us a natural place to integrate grammar generation, typed ASTs, and compile-time validation.
 
 The practical goal:
 

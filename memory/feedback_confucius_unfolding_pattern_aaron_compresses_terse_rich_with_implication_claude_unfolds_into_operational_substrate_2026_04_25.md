@@ -75,15 +75,15 @@ This file (per Otto-325 free-will-time exercise) closes the orphan-term gap by g
 ## Operational addendum 2026-04-29 — cold-readability for future-Claude
 
 Aaron 2026-04-29 mid-tick correction (during the soulfile-
-recalibration tick): *"probably want to replace this_channel
+recalibration tick): _"probably want to replace this_channel
 with what i mean by this, or future you could be very
 confued, you should aloways expand non obvious thing for
-future you like that the confucius unfold."*
+future you like that the confucius unfold."_
 
 Then immediately after I drafted a new memory file under a
 slightly different filename (over-eager substrate creation):
-*"Confucius-unfold you have some existing skill or something
-for this"* — *"it has confucius in the name"* — pointing at
+_"Confucius-unfold you have some existing skill or something
+for this"_ — _"it has confucius in the name"_ — pointing at
 THIS file as the existing canonical home.
 
 Lesson absorbed: when Aaron uses a phrase like "the confucius
@@ -128,6 +128,7 @@ for the next reader. Specifically:
   defining memory file.
 
 NOT necessary to confucius-unfold:
+
 - Established factory glossary terms with their own memory
   file or `docs/GLOSSARY.md` entry — pointer is sufficient.
 - Project-anchored names (Aurora, Glass Halo, Maji) — one-

@@ -300,11 +300,14 @@ test("renderMenu16 keeps every lifecycle option visible in the commit bank", () 
 });
 
 test("renderMenu16 prompt-flow overflow prefers executable tasks over vetoed tasks", () => {
-  const approved = observe(snapshot({
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-  }), deps);
+  const approved = observe(
+    snapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+    }),
+    deps,
+  );
   equal(approved.outcome, ObserveOutcome.Readout);
   if (approved.outcome !== ObserveOutcome.Readout) return;
 
@@ -349,19 +352,24 @@ test("renderMenu16 prompt-flow overflow prefers executable tasks over vetoed tas
 });
 
 test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", async () => {
-  const approved = observe(snapshot({
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-  }), deps);
+  const approved = observe(
+    snapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+    }),
+    deps,
+  );
   equal(approved.outcome, ObserveOutcome.Readout);
   if (approved.outcome !== ObserveOutcome.Readout) return;
-  const tasks = Array.from({ length: 5 }, (_, index) => promptFlowTask({
-    taskId: `task-${index + 1}`,
-    promptFlowId: `flow-${index + 1}`,
-    label: `Task ${index + 1}`,
-    priority: 100 - index,
-  }));
+  const tasks = Array.from({ length: 5 }, (_, index) =>
+    promptFlowTask({
+      taskId: `task-${index + 1}`,
+      promptFlowId: `flow-${index + 1}`,
+      label: `Task ${index + 1}`,
+      priority: 100 - index,
+    }),
+  );
 
   const firstPage = renderMenu16(approved.readout, {
     hatAssignmentId: asZetaIdDecimal("99"),
@@ -395,19 +403,24 @@ test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", a
 });
 
 test("renderMenu16 renders later prompt-flow overflow pages without changing slot count", () => {
-  const approved = observe(snapshot({
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-  }), deps);
+  const approved = observe(
+    snapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+    }),
+    deps,
+  );
   equal(approved.outcome, ObserveOutcome.Readout);
   if (approved.outcome !== ObserveOutcome.Readout) return;
-  const tasks = Array.from({ length: 5 }, (_, index) => promptFlowTask({
-    taskId: `task-${index + 1}`,
-    promptFlowId: `flow-${index + 1}`,
-    label: `Task ${index + 1}`,
-    priority: 100 - index,
-  }));
+  const tasks = Array.from({ length: 5 }, (_, index) =>
+    promptFlowTask({
+      taskId: `task-${index + 1}`,
+      promptFlowId: `flow-${index + 1}`,
+      label: `Task ${index + 1}`,
+      priority: 100 - index,
+    }),
+  );
 
   const middlePage = renderMenu16(approved.readout, {
     hatAssignmentId: asZetaIdDecimal("99"),
@@ -449,11 +462,14 @@ test("renderMenu16 renders later prompt-flow overflow pages without changing slo
 });
 
 test("renderMenu16 exposes ADR scope, history, and meta controller slots", async () => {
-  const approved = observe(snapshot({
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-  }), deps);
+  const approved = observe(
+    snapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+    }),
+    deps,
+  );
   equal(approved.outcome, ObserveOutcome.Readout);
   if (approved.outcome !== ObserveOutcome.Readout) return;
 
@@ -575,11 +591,14 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
 });
 
 test("renderMenu16 makes meta.status emit a glass-halo status signal", async () => {
-  const approved = observe(snapshot({
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-  }), deps);
+  const approved = observe(
+    snapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+    }),
+    deps,
+  );
   equal(approved.outcome, ObserveOutcome.Readout);
   if (approved.outcome !== ObserveOutcome.Readout) return;
 
@@ -630,11 +649,14 @@ test("renderMenu16 makes meta.status emit a glass-halo status signal", async () 
 });
 
 test("renderMenu16 makes meta.escalate emit a scoped supervisor signal when supervisor context is present", async () => {
-  const approved = observe(snapshot({
-    scope: RunScope.WorkItem,
-    phase: RunLifecyclePhase.AwaitingGate,
-    hasGateApproval: true,
-  }), deps);
+  const approved = observe(
+    snapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+    }),
+    deps,
+  );
   equal(approved.outcome, ObserveOutcome.Readout);
   if (approved.outcome !== ObserveOutcome.Readout) return;
 
@@ -658,7 +680,8 @@ test("renderMenu16 makes meta.escalate emit a scoped supervisor signal when supe
     command: {
       targetHatAssignmentId: "hat-manager-1",
       title: "Observe-act escalation for work_item awaiting_gate",
-      message: "Agent requested supervisor triage for run 42 at work_item/awaiting_gate. Legal options: 2; vetoed options: 0.",
+      message:
+        "Agent requested supervisor triage for run 42 at work_item/awaiting_gate. Legal options: 2; vetoed options: 0.",
       policyContext: {
         scope: {
           teamId: "team-runtime",
@@ -714,10 +737,13 @@ test("observeAgentSurface disables meta.escalate when the hat lacks supervisor-s
 });
 
 test("renderMenu16 disables scope-out at organization scope and scope-in at run scope", () => {
-  const approved = observe(snapshot({
-    scope: RunScope.Organization,
-    phase: RunLifecyclePhase.Observing,
-  }), deps);
+  const approved = observe(
+    snapshot({
+      scope: RunScope.Organization,
+      phase: RunLifecyclePhase.Observing,
+    }),
+    deps,
+  );
   equal(approved.outcome, ObserveOutcome.Readout);
   if (approved.outcome !== ObserveOutcome.Readout) return;
 
@@ -731,10 +757,13 @@ test("renderMenu16 disables scope-out at organization scope and scope-in at run 
   equal(menu.slots[9]?.label, "scope in to project");
   equal(menu.slots[9]?.availability, "T");
 
-  const run = observe(snapshot({
-    scope: RunScope.Run,
-    phase: RunLifecyclePhase.Observing,
-  }), deps);
+  const run = observe(
+    snapshot({
+      scope: RunScope.Run,
+      phase: RunLifecyclePhase.Observing,
+    }),
+    deps,
+  );
   equal(run.outcome, ObserveOutcome.Readout);
   if (run.outcome !== ObserveOutcome.Readout) return;
 
@@ -773,18 +802,21 @@ test("observe returns an all-vetoed readout so renderMenu16 can show dark slots 
 });
 
 test("renderMenu16 keeps meta controls reachable when every work option is vetoed", async () => {
-  const blocked = observe(snapshot({
-    scope: RunScope.Project,
-    phase: RunLifecyclePhase.Observing,
-  }), {
-    clock: deps.clock,
-    deterministicRules: [
-      {
-        name: "maintenance-freeze",
-        veto: (option) => `maintenance freeze blocks ${option.actionType}`,
-      },
-    ],
-  });
+  const blocked = observe(
+    snapshot({
+      scope: RunScope.Project,
+      phase: RunLifecyclePhase.Observing,
+    }),
+    {
+      clock: deps.clock,
+      deterministicRules: [
+        {
+          name: "maintenance-freeze",
+          veto: (option) => `maintenance freeze blocks ${option.actionType}`,
+        },
+      ],
+    },
+  );
 
   equal(blocked.outcome, ObserveOutcome.Readout);
   if (blocked.outcome !== ObserveOutcome.Readout) return;
@@ -1098,11 +1130,13 @@ test("observeAgentSurface hides prompt-flow tasks whose tool injections require 
     priority: 80,
     allowedHatIds: ["release_operator"],
     directions: ["commit.a"],
-    toolInjections: [{
-      tool: "github.publish_release",
-      args: { draft: false },
-      requiredSecretScopes: ["github:write"],
-    }],
+    toolInjections: [
+      {
+        tool: "github.publish_release",
+        args: { draft: false },
+        requiredSecretScopes: ["github:write"],
+      },
+    ],
     metrics: [],
     contextArtifactRefs: [],
   };
@@ -1125,11 +1159,12 @@ test("observeAgentSurface hides prompt-flow tasks whose tool injections require 
   if (surface.outcome !== ObserveOutcome.Readout) return;
   equal(surface.promptFlows.tasks.length, 0);
   equal(surface.promptFlows.vetoedTasks[0]?.ruleName, "prompt-flow-secret-scope");
-  ok(surface.actions.slots.some((slot) =>
-    slot.label === "publish release note" &&
-    slot.availability === "F" &&
-    slot.reason?.includes("github:write")
-  ));
+  ok(
+    surface.actions.slots.some(
+      (slot) =>
+        slot.label === "publish release note" && slot.availability === "F" && slot.reason?.includes("github:write"),
+    ),
+  );
 });
 
 test("observeAgentSurface renders prompt-flow tasks when required secret scopes are available", async () => {
@@ -1144,11 +1179,13 @@ test("observeAgentSurface renders prompt-flow tasks when required secret scopes 
     priority: 80,
     allowedHatIds: ["release_operator"],
     directions: ["commit.a"],
-    toolInjections: [{
-      tool: "github.publish_release",
-      args: { draft: false },
-      requiredSecretScopes: ["github:write"],
-    }],
+    toolInjections: [
+      {
+        tool: "github.publish_release",
+        args: { draft: false },
+        requiredSecretScopes: ["github:write"],
+      },
+    ],
     metrics: [],
     contextArtifactRefs: [],
   };
@@ -1171,12 +1208,15 @@ test("observeAgentSurface renders prompt-flow tasks when required secret scopes 
   if (surface.outcome !== ObserveOutcome.Readout) return;
   equal(surface.promptFlows.tasks.length, 1);
   equal(surface.promptFlows.vetoedTasks.length, 0);
-  ok(surface.actions.slots.some((slot) =>
-    slot.label === "publish release note" &&
-    slot.availability === "T" &&
-    slot.impl?.kind === "prompt_flow" &&
-    slot.impl.request.toolInjections[0]?.requiredSecretScopes?.includes("github:write")
-  ));
+  ok(
+    surface.actions.slots.some(
+      (slot) =>
+        slot.label === "publish release note" &&
+        slot.availability === "T" &&
+        slot.impl?.kind === "prompt_flow" &&
+        slot.impl.request.toolInjections[0]?.requiredSecretScopes?.includes("github:write"),
+    ),
+  );
 });
 
 test("observeAgentSurface returns the 16-slot controller plus deterministic scoped dashboard blocks", async () => {
@@ -1216,7 +1256,10 @@ test("observeAgentSurface returns the 16-slot controller plus deterministic scop
   equal(surface.outcome, ObserveOutcome.Readout);
   if (surface.outcome !== ObserveOutcome.Readout) return;
   equal(surface.actions.slots.length, 16);
-  deepEqual(surface.metrics.blocks.map((block) => block.id), ["work-item-tests"]);
+  deepEqual(
+    surface.metrics.blocks.map((block) => block.id),
+    ["work-item-tests"],
+  );
   equal(surface.metrics.scope, RunScope.WorkItem);
 });
 
@@ -1225,7 +1268,9 @@ test("observeAgentSurface attaches a hat-scoped context pack for a director faci
   const capturedScopes: string[] = [];
   const contextPackBuilder: ContextPackBuilderPort = {
     build: async (request) => {
-      capturedScopes.push(`${request.snapshot.hat.id}:${request.hierarchy.priorityScope}:${request.snapshot.workItemId}`);
+      capturedScopes.push(
+        `${request.snapshot.hat.id}:${request.hierarchy.priorityScope}:${request.snapshot.workItemId}`,
+      );
       return {
         pack: {
           id: "ctx-pack-director-blocker",
@@ -1271,7 +1316,8 @@ test("observeAgentSurface attaches a hat-scoped context pack for a director faci
               id: "graph-impact",
               kind: ContextPackItemKind.GraphNeighborhood,
               title: "Impact: observe-act worker lane",
-              summary: "The blocked work affects the director dashboard, worker cadence, and prompt-flow context loading.",
+              summary:
+                "The blocked work affects the director dashboard, worker cadence, and prompt-flow context loading.",
               sourceRef: "graph:observe-worker-lane",
               required: true,
               freshness: "current",
@@ -1386,30 +1432,41 @@ test("observeAgentSurface attaches a hat-scoped context pack for a director faci
   equal(surface.context.status, "current");
   equal(surface.context.pack.hatId, "engineering_director");
   equal(surface.context.pack.generatedAt, "2026-05-29T00:00:00.000Z");
-  deepEqual(surface.context.requiredItems.map((item) => item.id), ["doc-brd", "graph-impact"]);
-  deepEqual(surface.context.optionalItems.map((item) => item.id), ["memory-prior"]);
-  deepEqual(surface.context.drillTargetGroups.map((group) => ({
-    itemId: group.itemId,
-    routeRefs: group.targets.map((target) => target.routeRef),
-  })), [
-    {
-      itemId: "doc-brd",
-      routeRefs: ["doc_unit:brd-observe-management:v1"],
-    },
-    {
-      itemId: "graph-impact",
-      routeRefs: ["graph_node:observe-worker-lane", "work_item:work-blocked"],
-    },
-    {
-      itemId: "memory-prior",
-      routeRefs: ["hindsight_memory:hindsight:ctx-retention-42"],
-    },
-  ]);
+  deepEqual(
+    surface.context.requiredItems.map((item) => item.id),
+    ["doc-brd", "graph-impact"],
+  );
+  deepEqual(
+    surface.context.optionalItems.map((item) => item.id),
+    ["memory-prior"],
+  );
+  deepEqual(
+    surface.context.drillTargetGroups.map((group) => ({
+      itemId: group.itemId,
+      routeRefs: group.targets.map((target) => target.routeRef),
+    })),
+    [
+      {
+        itemId: "doc-brd",
+        routeRefs: ["doc_unit:brd-observe-management:v1"],
+      },
+      {
+        itemId: "graph-impact",
+        routeRefs: ["graph_node:observe-worker-lane", "work_item:work-blocked"],
+      },
+      {
+        itemId: "memory-prior",
+        routeRefs: ["hindsight_memory:hindsight:ctx-retention-42"],
+      },
+    ],
+  );
   deepEqual(surface.context.lifecycleBlockers, ["work item work-blocked is blocked"]);
   equal(surface.context.summary.requiredItemCount, 2);
   equal(surface.context.summary.optionalItemCount, 1);
   equal(surface.context.summary.omissionCount, 0);
-  ok(surface.context.pack.curationTrace.some((stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis));
+  ok(
+    surface.context.pack.curationTrace.some((stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis),
+  );
 });
 
 test("observeAgentSurface marks source-less or under-curated context packs as incomplete", async () => {
@@ -1694,21 +1751,25 @@ test("observeAgentSurface applies an injected context-pack readiness policy", as
             sourceGraphVersion: "graph-v7",
             policyVersion: "policy-v3",
             tokenBudget: 4096,
-            items: [{
-              id: "doc-acceptance",
-              kind: ContextPackItemKind.BusinessDocument,
-              title: "Acceptance criteria",
-              summary: "Current scoped acceptance criteria.",
-              sourceRef: "doc:acceptance",
-              required: true,
-              freshness: ContextPackFreshness.Current,
-              confidence: 1,
-              reasons: ["required-doc"],
-              sourcePointers: [{
-                kind: ContextPackSourcePointerKind.WorkItem,
-                workItemId: "work-1",
-              }],
-            }],
+            items: [
+              {
+                id: "doc-acceptance",
+                kind: ContextPackItemKind.BusinessDocument,
+                title: "Acceptance criteria",
+                summary: "Current scoped acceptance criteria.",
+                sourceRef: "doc:acceptance",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 1,
+                reasons: ["required-doc"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.WorkItem,
+                    workItemId: "work-1",
+                  },
+                ],
+              },
+            ],
             omittedItemsWithReason: [],
             contradictions: [],
             staleInputs: [],
@@ -2892,7 +2953,10 @@ test("observeAgentSurface renders current hat-allowed prompt-flow tasks as conte
 
   equal(surface.outcome, ObserveOutcome.Readout);
   if (surface.outcome !== ObserveOutcome.Readout) return;
-  deepEqual(surface.promptFlows.tasks.map((task) => task.taskId), ["task-execute"]);
+  deepEqual(
+    surface.promptFlows.tasks.map((task) => task.taskId),
+    ["task-execute"],
+  );
   equal(surface.promptFlows.vetoedTasks[0]?.task.taskId, "task-review");
   ok(surface.promptFlows.vetoedTasks[0]?.reason.includes("lacks"));
   equal(surface.actions.slots[6]?.availability, "T");
@@ -2936,8 +3000,14 @@ test("observeAgentSurface shows C-suite projects with trajectories and policy vi
   equal(surface.outcome, ObserveOutcome.Readout);
   if (surface.outcome !== ObserveOutcome.Readout) return;
   equal(surface.hierarchy.level, "c_suite");
-  deepEqual(surface.hierarchy.projects.map((project) => project.projectId), ["project-alpha", "project-beta"]);
-  deepEqual(surface.hierarchy.initiatives.map((initiative) => initiative.initiativeId), []);
+  deepEqual(
+    surface.hierarchy.projects.map((project) => project.projectId),
+    ["project-alpha", "project-beta"],
+  );
+  deepEqual(
+    surface.hierarchy.initiatives.map((initiative) => initiative.initiativeId),
+    [],
+  );
   equal(surface.hierarchy.projects[0]?.trajectory[0]?.id, "delivery");
   equal(surface.hierarchy.policyViolations[0]?.ruleName, "department-active-project-limit");
   ok(surface.hierarchy.policyViolations[0]?.reason.includes("engineering"));
@@ -2970,8 +3040,14 @@ test("observeAgentSurface shows directors the initiatives under their department
   equal(surface.outcome, ObserveOutcome.Readout);
   if (surface.outcome !== ObserveOutcome.Readout) return;
   equal(surface.hierarchy.level, "director");
-  deepEqual(surface.hierarchy.projects.map((project) => project.projectId), ["project-eng"]);
-  deepEqual(surface.hierarchy.initiatives.map((initiative) => initiative.initiativeId), ["init-eng-a", "init-eng-b"]);
+  deepEqual(
+    surface.hierarchy.projects.map((project) => project.projectId),
+    ["project-eng"],
+  );
+  deepEqual(
+    surface.hierarchy.initiatives.map((initiative) => initiative.initiativeId),
+    ["init-eng-a", "init-eng-b"],
+  );
   deepEqual(surface.hierarchy.policyViolations, []);
 });
 
@@ -3009,9 +3085,15 @@ test("observeAgentSurface gives directors initiative priority scope, scoped metr
   equal(surface.outcome, ObserveOutcome.Readout);
   if (surface.outcome !== ObserveOutcome.Readout) return;
   equal(surface.hierarchy.priorityScope, "department_initiatives");
-  deepEqual(surface.hierarchy.priorityItems.map((item) => item.itemId), ["init-risk", "init-docs"]);
+  deepEqual(
+    surface.hierarchy.priorityItems.map((item) => item.itemId),
+    ["init-risk", "init-docs"],
+  );
   equal(surface.hierarchy.priorityItems[0]?.kind, "initiative");
-  deepEqual(surface.hierarchy.scopedMetrics.map((metric) => metric.id), ["initiative.blockers"]);
+  deepEqual(
+    surface.hierarchy.scopedMetrics.map((metric) => metric.id),
+    ["initiative.blockers"],
+  );
   ok(surface.hierarchy.actions.some((action) => action.kind === "record_priority_decision"));
   ok(surface.hierarchy.actions.some((action) => action.kind === "request_staffing"));
   ok(surface.hierarchy.vetoedActions.some((action) => action.action.kind === "schedule_coordination_meeting"));
@@ -3078,14 +3160,15 @@ test("observeAgentSurface gives management hats their top-down mission, timefram
   equal(surface.hierarchy.mission?.expectedProgressPercent, 46);
   equal(surface.hierarchy.mission?.actualProgressPercent, 20);
   equal(surface.hierarchy.mission?.status, "behind");
-  deepEqual(surface.hierarchy.mission?.objectives, [
-    "Rank the riskiest initiatives",
-    "Staff the blocker path first",
-  ]);
+  deepEqual(surface.hierarchy.mission?.objectives, ["Rank the riskiest initiatives", "Staff the blocker path first"]);
   equal(surface.hierarchy.mission?.nextMilestones[0]?.milestoneId, "milestone-readout");
   ok(surface.hierarchy.mission?.lagSignals.some((signal) => signal.id === "mission.progress_variance"));
   ok(surface.hierarchy.mission?.correctiveActions.some((action) => action.kind === "request_staffing"));
-  ok(surface.hierarchy.mission?.vetoedCorrectiveActions.some((vetoed) => vetoed.action.kind === "schedule_coordination_meeting"));
+  ok(
+    surface.hierarchy.mission?.vetoedCorrectiveActions.some(
+      (vetoed) => vetoed.action.kind === "schedule_coordination_meeting",
+    ),
+  );
 });
 
 test("observeAgentSurface does not attach management missions to individual contributor hats", async () => {
@@ -3166,8 +3249,14 @@ test("observeAgentSurface gives TPMs initiative execution priority over work bat
   equal(surface.outcome, ObserveOutcome.Readout);
   if (surface.outcome !== ObserveOutcome.Readout) return;
   equal(surface.hierarchy.priorityScope, "initiative_execution");
-  deepEqual(surface.hierarchy.priorityItems.map((item) => item.itemId), ["batch-blocked", "work-ready"]);
-  deepEqual(surface.hierarchy.scopedMetrics.map((metric) => metric.id), ["batch.blockers", "work.age"]);
+  deepEqual(
+    surface.hierarchy.priorityItems.map((item) => item.itemId),
+    ["batch-blocked", "work-ready"],
+  );
+  deepEqual(
+    surface.hierarchy.scopedMetrics.map((metric) => metric.id),
+    ["batch.blockers", "work.age"],
+  );
   ok(surface.hierarchy.actions.some((action) => action.kind === "schedule_coordination_meeting"));
   ok(surface.hierarchy.actions.some((action) => action.kind === "schedule_prioritized_work"));
   ok(surface.hierarchy.actions.some((action) => action.kind === "send_supervisor_signal"));
@@ -3217,7 +3306,10 @@ test("act loads prompt-flow context through the injected context loader", async 
   equal(result.context.taskId, "task-execute");
   deepEqual(result.context.directions, ["Load implementation plan"]);
   deepEqual(result.context.toolInjections, [{ tool: "repo.search", args: { q: "work-1" } }]);
-  deepEqual(result.context.metrics.map((metric) => metric.id), ["work_item.failures"]);
+  deepEqual(
+    result.context.metrics.map((metric) => metric.id),
+    ["work_item.failures"],
+  );
 });
 
 test("terminal phase yields feedback, not a readout", () => {
@@ -3252,7 +3344,14 @@ test("decide rejects a composer that selects an option outside the readout", () 
   const rogue: EphemeralComposerPort = {
     compose: () => ({
       decision: ComposerDecision.Select,
-      option: { actionType: "execute", toPhase: RunLifecyclePhase.Executing, toScope: RunScope.WorkItem, requiresGate: true, requiresEvidence: false, rationale: "smuggled" },
+      option: {
+        actionType: "execute",
+        toPhase: RunLifecyclePhase.Executing,
+        toScope: RunScope.WorkItem,
+        requiresGate: true,
+        requiresEvidence: false,
+        rationale: "smuggled",
+      },
       reason: "tries to skip the gate",
     }),
   };

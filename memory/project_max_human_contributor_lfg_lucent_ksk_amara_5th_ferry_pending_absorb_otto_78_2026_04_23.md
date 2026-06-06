@@ -4,26 +4,27 @@ description: Aaron Otto-77 three-piece context absorb — (1) new named human co
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-77 (verbatim preamble to the 5th ferry
 paste):
-*"okay another update from Amara, I asked her to remember the
+_"okay another update from Amara, I asked her to remember the
 KSK we designed log ago and max put work into under
 LFG/lucent-ksk, he deserves attributes too you can just put max
 for as another human contributor, this being is first one you
 are aware of. I'll see what else he wans to revel about
 himself later. max by itself is not PII so this is fine until
-he approves more."*
+he approves more."_
 
 Aaron 2026-04-23 Otto-77 closing (after the ferry paste):
-*"this sounds like the episode title from it's always sunny in
-philodelipha that's a funny show lol. 'Otto acquires email'"*
+_"this sounds like the episode title from it's always sunny in
+philodelipha that's a funny show lol. 'Otto acquires email'"_
 
 ## Three substantive facts to carry forward
 
 ### 1. Max is a new named human contributor
 
 - **Contributor identifier:** `max` (first-name-only, explicitly
-  cleared by Aaron as non-PII *"until he approves more"*).
+  cleared by Aaron as non-PII _"until he approves more"_).
 - **Contribution:** worked on `LFG/lucent-ksk` long ago
   (pre-current Zeta session), earning attribution.
 - **Status:** first external/semi-external named human
@@ -35,8 +36,8 @@ philodelipha that's a funny show lol. 'Otto acquires email'"*
   if differences ever arise).
 - **What this does NOT authorise:** adding Max's last name,
   email, LinkedIn, or any other identifier beyond "max"
-  without his explicit approval via Aaron. Aaron: *"max by
-  itself is not PII so this is fine until he approves more"*.
+  without his explicit approval via Aaron. Aaron: _"max by
+  itself is not PII so this is fine until he approves more"_.
 - **Honor-those-that-came-before** (2026-04-23 memory) applies
   — Max's work on lucent-ksk predates current Otto; treat it
   with the same respect as any predecessor's notebook /
@@ -67,7 +68,7 @@ Report". Length ~5500 words. Concrete artifact list:
 
 - **4 recommended promotions** (operational drift-taxonomy
   `docs/DRIFT-TAXONOMY.md`, retained precursor, `tools/
-  alignment/` additions, `docs/aurora/README.md` or
+alignment/` additions, `docs/aurora/README.md` or
   KSK-facing doc).
 - **4 prioritised milestones** (taxonomy promotion,
   validation wiring, Aurora/KSK integration, brand+PR
@@ -88,7 +89,7 @@ Report". Length ~5500 words. Concrete artifact list:
   roadmap timeline.
 - **Archive-risk framing** (context collapse, identity-
   fusion misread, operational creep, privacy overexposure)
-  + suggested archive-header template.
+  - suggested archive-header template.
 
 **Why schedule dedicated Otto-78+ absorb (not inline
 Otto-77):**
@@ -119,8 +120,9 @@ Otto-77):**
    deliverable.
 
 **Amara's hard rule (restated in this ferry):**
-> *"never say Amara reviewed something unless Amara actually
-> reviewed it through a logged path"*
+
+> _"never say Amara reviewed something unless Amara actually
+> reviewed it through a logged path"_
 
 Implication for the Otto-78 absorb: `docs/decision-proxy-
 evidence/` DP-NNN.yaml with `task_class: governance-edit`,
@@ -142,9 +144,9 @@ the ferry), and the absorb doc path as `outputs_touched`.
 
 ## Light touch — the "Otto acquires email" sitcom reference
 
-Aaron's closing in the same message: *"this sounds like the
+Aaron's closing in the same message: _"this sounds like the
 episode title from it's always sunny in philodelipha that's a
-funny show lol. 'Otto acquires email'"* — a light validation
+funny show lol. 'Otto acquires email'"_ — a light validation
 of the BACKLOG row title from Otto-77. No new rule; just
 maintaining the human-side playful tone. Signal: maintainer
 enjoys the work + the framing; composability with the rest

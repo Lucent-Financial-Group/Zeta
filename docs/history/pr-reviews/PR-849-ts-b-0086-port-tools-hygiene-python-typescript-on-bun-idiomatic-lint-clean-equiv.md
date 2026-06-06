@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 849 |
-| Title | ts(B-0086): port tools/hygiene Python → TypeScript on Bun (idiomatic, lint-clean, equivalence-verified) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T16:35:26Z |
-| Merged at | 2026-04-29T23:10:06Z |
-| Merge commit SHA | `40344c9b5bd0b92b24d607ee77672fc8cfa3edaa` |
-| Branch | `ts-port-hygiene-sort-and-mdfix-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/849 |
-| Changed files | 6 |
-| Additions / deletions | +1284 / -659 |
+| Field                 | Value                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------- |
+| Number                | 849                                                                                                     |
+| Title                 | ts(B-0086): port tools/hygiene Python → TypeScript on Bun (idiomatic, lint-clean, equivalence-verified) |
+| Author                | `AceHack` (human)                                                                                       |
+| State                 | MERGED                                                                                                  |
+| Created at            | 2026-04-29T16:35:26Z                                                                                    |
+| Merged at             | 2026-04-29T23:10:06Z                                                                                    |
+| Merge commit SHA      | `40344c9b5bd0b92b24d607ee77672fc8cfa3edaa`                                                              |
+| Branch                | `ts-port-hygiene-sort-and-mdfix-2026-04-29`                                                             |
+| Base branch           | `main`                                                                                                  |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/849                                                 |
+| Changed files         | 6                                                                                                       |
+| Additions / deletions | +1284 / -659                                                                                            |
 
 ## Description
 
@@ -86,18 +86,17 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 11 |
-| Resolved threads | 11 |
-| Unresolved threads | 0 |
-| Total review comments | 17 |
-| Total fix commits (touching thread paths) | 7 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 11    |
+| Resolved threads                          | 11    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 17    |
+| Total fix commits (touching thread paths) | 7     |
 
 ## Review threads
 
@@ -110,16 +109,17 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-29T16:37:12Z on `tools/hygiene/fix-markdown-md032-md026.ts`:385 (association: NONE)
+
   ## CodeQL / Potential file system race condition
-  
+
   The file may have changed since it [was checked](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/28)
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:39:52Z on `tools/hygiene/fix-markdown-md032-md026.ts`:385 (association: MEMBER)
-    Right — TOCTOU (CWE-367). Fixed in latest commit: replaced existsSync+readFile with try-readFile + catch ENOENT (atomic at OS-syscall level, no race window). Best-practice axis [BP]: prevents the file-deleted-between-check-and-read failure mode. Idiomatic axis [BOTH]: catch-ENOENT is also idiomatic Node/Bun. Removed unused existsSync import.
+- **`AceHack` (human)** at 2026-04-29T16:39:52Z on `tools/hygiene/fix-markdown-md032-md026.ts`:385 (association: MEMBER)
+  Right — TOCTOU (CWE-367). Fixed in latest commit: replaced existsSync+readFile with try-readFile + catch ENOENT (atomic at OS-syscall level, no race window). Best-practice axis [BP]: prevents the file-deleted-between-check-and-read failure mode. Idiomatic axis [BOTH]: catch-ENOENT is also idiomatic Node/Bun. Removed unused existsSync import.
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -130,16 +130,17 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-29T16:37:12Z on `tools/hygiene/sort-tick-history-canonical.ts`:397 (association: NONE)
+
   ## CodeQL / Potential file system race condition
-  
+
   The file may have changed since it [was checked](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/29)
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:39:54Z on `tools/hygiene/sort-tick-history-canonical.ts`:397 (association: MEMBER)
-    Same TOCTOU pattern, same fix. The --file argument validation in main() now uses try-readFile + catch ENOENT. Equivalence verified byte-identical on loop-tick-history.md.
+- **`AceHack` (human)** at 2026-04-29T16:39:54Z on `tools/hygiene/sort-tick-history-canonical.ts`:397 (association: MEMBER)
+  Same TOCTOU pattern, same fix. The --file argument validation in main() now uses try-readFile + catch ENOENT. Equivalence verified byte-identical on loop-tick-history.md.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -150,16 +151,16 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T16:40:12Z on `tools/hygiene/fix-markdown-md032-md026.ts`:57 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove 10-char cap when stripping heading punctuation**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove 10-char cap when stripping heading punctuation**
+
   The new MD026 matcher only removes trailing punctuation runs up to 10 characters, so headings ending with longer runs (for example, machine-generated `## Title!!!!!!!!!!!`) are no longer fixed and can continue to fail markdownlint. The previous Python implementation handled any-length runs, so this is a behavior regression that breaks the stated equivalence and can leave lint violations uncorrected.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:41:59Z on `tools/hygiene/fix-markdown-md032-md026.ts`:57 (association: MEMBER)
-    Codex right — the 10-char bound regressed equivalence on long-run inputs (e.g. machine-generated ## Title!!!!!!!!!!!!!!!). Fixed in latest commit by replacing TRAILING_PUNCT regex entirely with a procedural backwards walk in stripHeadingPunctuation. No regex, no length bound, exactly matches Python's unbounded /[.,;:!?]+$/ behavior. Equivalence verified on 17-char-punct test + the broader sweep.
+- **`AceHack` (human)** at 2026-04-29T16:41:59Z on `tools/hygiene/fix-markdown-md032-md026.ts`:57 (association: MEMBER)
+  Codex right — the 10-char bound regressed equivalence on long-run inputs (e.g. machine-generated ## Title!!!!!!!!!!!!!!!). Fixed in latest commit by replacing TRAILING_PUNCT regex entirely with a procedural backwards walk in stripHeadingPunctuation. No regex, no length bound, exactly matches Python's unbounded /[.,;:!?]+$/ behavior. Equivalence verified on 17-char-punct test + the broader sweep.
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -174,8 +175,8 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:47:44Z on `tools/hygiene/sort-tick-history-canonical.ts`:397 (association: MEMBER)
-    Right — process.exit at top-level can truncate pending writes. Replaced with 'process.exitCode = await main()' mirroring tally.ts pattern. Intermediate process.exit calls in parseArgs (--help / bad-arg early-exit) retained intentionally — those are emergency exits where flushing isn't a concern. Latest commit.
+- **`AceHack` (human)** at 2026-04-29T16:47:44Z on `tools/hygiene/sort-tick-history-canonical.ts`:397 (association: MEMBER)
+  Right — process.exit at top-level can truncate pending writes. Replaced with 'process.exitCode = await main()' mirroring tally.ts pattern. Intermediate process.exit calls in parseArgs (--help / bad-arg early-exit) retained intentionally — those are emergency exits where flushing isn't a concern. Latest commit.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -190,8 +191,8 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:47:46Z on `package.json`:18 (association: MEMBER)
-    Right — manifest/lockfile drift. Added jiti 2.6.1 to package.json devDependencies (sorted alphabetically). bun install --frozen-lockfile passes. Latest commit.
+- **`AceHack` (human)** at 2026-04-29T16:47:46Z on `package.json`:18 (association: MEMBER)
+  Right — manifest/lockfile drift. Added jiti 2.6.1 to package.json devDependencies (sorted alphabetically). bun install --frozen-lockfile passes. Latest commit.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -214,8 +215,8 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:47:48Z on `tools/hygiene/sort-tick-history-canonical.ts`:12 (association: MEMBER)
-    Right — narrative person-names in code/docs surface violate the role-ref rule per AGENT-BEST-PRACTICES.md (lines 284-356). Swept both files: 'Aaron + Amara 2026-04-29 directive' → 'the 2026-04-29 directive'; '(Aaron 2026-04-26)' → '(per maintainer 2026-04-26)'. Memory file paths in cross-references retained as-is (those are literal git refs, not narrative). Latest commit.
+- **`AceHack` (human)** at 2026-04-29T16:47:48Z on `tools/hygiene/sort-tick-history-canonical.ts`:12 (association: MEMBER)
+  Right — narrative person-names in code/docs surface violate the role-ref rule per AGENT-BEST-PRACTICES.md (lines 284-356). Swept both files: 'Aaron + Amara 2026-04-29 directive' → 'the 2026-04-29 directive'; '(Aaron 2026-04-26)' → '(per maintainer 2026-04-26)'. Memory file paths in cross-references retained as-is (those are literal git refs, not narrative). Latest commit.
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -258,10 +259,10 @@ None required. Repo-wide grep confirmed neither `.py` script was invoked by `.sh
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T20:00:10Z on `tools/hygiene/fix-markdown-md032-md026.ts`:115 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep non-empty ATX heading text after punctuation strip**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep non-empty ATX heading text after punctuation strip**
+
   `stripHeadingPunctuation` removes every trailing punctuation character, so headings whose text is only punctuation (for example `# !!!`) are rewritten to `# `, effectively erasing the heading text. The previous Python implementation (`_HEADING_WITH_PUNCT` in `fix-markdown-md032-md026.py`) always preserved at least one character in this case, so this port introduces a content-loss regression that can change anchors/section semantics for punctuation-only placeholder headings.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 10 -- resolved [outdated, collapsed]

@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 auto-loop-39 reframe — Zeta DB IS the model (sam
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Zeta DB is the model — regime-level reframe
 
 ## Signal
@@ -13,8 +14,8 @@ absorption (Amara→OpenAI-native-project-system) and
 germination-directive (local-native tiny-bin-file DB, no
 cloud):
 
-1. *"im saying our database is the model"*
-2. *"it's just custom built in a different way"*
+1. _"im saying our database is the model"_
+2. _"it's just custom built in a different way"_
 
 ## Claim
 
@@ -22,7 +23,7 @@ Zeta is NOT:
 
 - A database (traditional-tool framing).
 - Storage for a model (infrastructure-for-AI framing).
-- A coherence substrate that *supports* agents (support-
+- A coherence substrate that _supports_ agents (support-
   system framing, even if agent-primary).
 
 Zeta IS:
@@ -67,8 +68,8 @@ constructed algebraically, shared across agents.**
 
 ## Mesa-coherence implication
 
-Amara's self-use critique (*"use your own DB for your
-indexes"*) reads differently under DB-is-the-model:
+Amara's self-use critique (_"use your own DB for your
+indexes"_) reads differently under DB-is-the-model:
 
 - Not "use your storage for your metadata".
 - It's "the factory's model should include the factory's

@@ -16,10 +16,10 @@ read disassembly when it matters; property-based testing
 ## What this tier is
 
 This is a **distinct ladder** from the onboarding Craft tier
-— not a harder onboarding. The onboarding tier teaches *what
-a Z-set is* with a tally-counter anchor; the production tier
-teaches *when to pay a checked-arithmetic cost and when to
-demote it for a measured speedup*. Different audience,
+— not a harder onboarding. The onboarding tier teaches _what
+a Z-set is_ with a tally-counter anchor; the production tier
+teaches _when to pay a checked-arithmetic cost and when to
+demote it for a measured speedup_. Different audience,
 different prerequisites, different lessons.
 
 Both tiers share the Craft pedagogy discipline:
@@ -39,8 +39,8 @@ Both tiers share the Craft pedagogy discipline:
 
 ## What lives here
 
-| Module | Focus | Zeta touchpoint |
-|---|---|---|
+| Module                                                   | Focus                                                        | Zeta touchpoint                      |
+| -------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------ |
 | [`checked-vs-unchecked`](checked-vs-unchecked/module.md) | When F# `Checked.(+)` is load-bearing vs. when `(+)` is fine | `src/Core/ZSet.fs:227-230` rationale |
 
 More modules land as the production-discipline BACKLOG fires.

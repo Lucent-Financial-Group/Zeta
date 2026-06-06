@@ -7,16 +7,17 @@ created: 2026-05-13
 
 # Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence-is-smell (Aaron 2026-05-13)
 
-**Why:** Aaron 2026-05-13: *"we should also likely start to
+**Why:** Aaron 2026-05-13: _"we should also likely start to
 split based on code vs english except some docs belong in repo
 via best enginerring practices, maybe even formal verificatino
 is split out, kind of like if they need diffeent rulesets in
 github its likely a smell for a differnt repo split and time
-savings and it will help with composablity of our depdendies."*
+savings and it will help with composablity of our depdendies."_
 Adds THIRD orthogonal axis to repo-split design space.
 
 **How to apply:** When designing repo splits, classify each
 substrate file on THREE axes:
+
 - **Axis 1** — Factory / Product / Owner-only (per B-0424 +
   B-0425 + PR #2905)
 - **Axis 2** — Mirror / Beacon (per B-0426 + PR #2910)
@@ -30,20 +31,20 @@ divergence IS the signal they should live in DIFFERENT repos.
 
 ## Aaron's verbatim framing
 
-Aaron 2026-05-13: *"we should also likely start to split based
+Aaron 2026-05-13: _"we should also likely start to split based
 on code vs english except some docs belong in repo via best
 enginerring practices, maybe even formal verificatino is split
 out, kind of like if they need diffeent rulesets in github its
 likely a smell for a differnt repo split and time savings and
-it will help with composablity of our depdendies."*
+it will help with composablity of our depdendies."_
 
 ## Decomposition
 
 ### 1. Code vs English (primary cut)
 
-| Class | Examples |
-|---|---|
-| **Code** | F#/C#/TypeScript/Python source, build scripts, tests, F# computation expressions, peer-call wrappers, hooks, validators |
+| Class       | Examples                                                                                                                                                               |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Code**    | F#/C#/TypeScript/Python source, build scripts, tests, F# computation expressions, peer-call wrappers, hooks, validators                                                |
 | **English** | Research docs (`docs/research/`), philosophy substrate, narrative substrate, memory files, persona notebooks, conversation absorbs, GLOSSARY.md philosophical sections |
 
 ### 2. Engineering-docs exception (some docs STAY with code)
@@ -142,11 +143,11 @@ signal for different repos.
 
 Each repo gets a position-vector across THREE axes:
 
-| Axis | Values | Default? |
-|---|---|---|
-| **Axis 1** (B-0424+B-0425+PR #2905) | Factory / Product / Owner-only | per substrate-fit |
-| **Axis 2** (B-0426+PR #2910) | Mirror / Beacon | per maturity-tier |
-| **Axis 3** (THIS / B-0427) | Code / English | per substrate-type |
+| Axis                                | Values                         | Default?           |
+| ----------------------------------- | ------------------------------ | ------------------ |
+| **Axis 1** (B-0424+B-0425+PR #2905) | Factory / Product / Owner-only | per substrate-fit  |
+| **Axis 2** (B-0426+PR #2910)        | Mirror / Beacon                | per maturity-tier  |
+| **Axis 3** (THIS / B-0427)          | Code / English                 | per substrate-type |
 
 Examples:
 

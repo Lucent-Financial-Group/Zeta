@@ -75,7 +75,7 @@ Privacy: task-relevant, consented signals only
 
 Cohort aggregates; rotate/delete keys
 
-> *"We don't tame the edge; we shelter it."*
+> _"We don't tame the edge; we shelter it."_
 
 ---
 
@@ -118,7 +118,7 @@ peer_entropy, err_1m, signature`
 - Auditability
 - Tiny Miner trickle to fund the agent's work
 
-> *"We interoperate; we don't fragment."*
+> _"We interoperate; we don't fragment."_
 
 ---
 
@@ -172,7 +172,7 @@ post-mortem
 
 **Aurora**
 
-> *"Anchor in proof; open in care; we outlast storms."*
+> _"Anchor in proof; open in care; we outlast storms."_
 
 **Next Steps**:
 

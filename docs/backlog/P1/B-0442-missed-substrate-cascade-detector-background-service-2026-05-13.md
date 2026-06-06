@@ -23,8 +23,8 @@ type: feature
 Companion mechanization to B-0440 + B-0441. The substrate-honest
 architectural challenge from the human maintainer 2026-05-13:
 
-> *"you need to imagine how would you survive without this foreground
-> loop and you background should be strong enough to do that"*
+> _"you need to imagine how would you survive without this foreground
+> loop and you background should be strong enough to do that"_
 
 Operational example that surfaced this row: my Otto-section-missed-PR-#2980-by-3-min
 cascade — a feature-branch commit landed AFTER its parent PR squash-merged,
@@ -36,14 +36,14 @@ on a branch but missing from main due to merge-timing race conditions.
 
 ## The failure-class pattern
 
-| Step | What happened | What should be caught |
-|------|---------------|----------------------|
-| 1 | Branch B has commits C1, C2 | (normal state) |
-| 2 | PR #N opens against main | (normal state) |
-| 3 | Auto-merge armed on PR #N | (normal state) |
-| 4 | New commit C3 lands on B (after squash plan formed) | DETECT: C3 not in #N's squash |
-| 5 | PR #N squash-merges (lacks C3) | DETECT: C3 orphaned from main |
-| 6 | Branch B deleted post-merge | DETECT: C3 about to be lost |
+| Step | What happened                                       | What should be caught         |
+| ---- | --------------------------------------------------- | ----------------------------- |
+| 1    | Branch B has commits C1, C2                         | (normal state)                |
+| 2    | PR #N opens against main                            | (normal state)                |
+| 3    | Auto-merge armed on PR #N                           | (normal state)                |
+| 4    | New commit C3 lands on B (after squash plan formed) | DETECT: C3 not in #N's squash |
+| 5    | PR #N squash-merges (lacks C3)                      | DETECT: C3 orphaned from main |
+| 6    | Branch B deleted post-merge                         | DETECT: C3 about to be lost   |
 
 The cascade can be caught at any step 4-6 by comparing:
 
@@ -60,13 +60,12 @@ a branch, the service catches it BEFORE branch deletion.
 - [x] Background service `tools/bg/missed-substrate-detector.ts` exists (slices 1+2+4 — earlier)
 - [x] Runs under existing launchd / cron infrastructure (slice 6 — landed 2026-05-13)
 - [x] On PR merge events (poll or webhook), checks if branch HEAD ==
-      merge commit content (slice 3 — landed 2026-05-13 via `gh pr view --json headRefOid`
-      + `git log <headRefOid>..origin/<branch>`)
+      merge commit content (slice 3 — landed 2026-05-13 via `gh pr view --json headRefOid` + `git log <headRefOid>..origin/<branch>`)
 - [x] When branch HEAD has commits the merged PR didn't include,
       publishes cascade-detected message via bus (B-0400):
       `{ topic: "missed-substrate-cascade", to: <agent>,
-         payload: { branchName, missingCommits, recommendedAction:
-         "open-recovery-PR" } }` (slice 4 — earlier)
+       payload: { branchName, missingCommits, recommendedAction:
+       "open-recovery-PR" } }` (slice 4 — earlier)
 - [x] Optionally auto-opens recovery PR with the missing commits
       (gated by configuration) (slice 5 — landed 2026-05-15 via
       B-0503 (`openRecoveryPR` core + `RecoveryAdapters` contract) +
@@ -103,17 +102,15 @@ floods when the branch is being reused for follow-up work (not a cascade).
 interface MergedPRState {
   prNumber: number;
   branchName: string;
-  squashCommit: string;       // SHA on main after squash
-  branchHead: string;          // SHA on the feature branch
-  branchCommits: string[];     // all commits on the branch
-  squashIncludedCommits: string[];  // commits included in the squash
+  squashCommit: string; // SHA on main after squash
+  branchHead: string; // SHA on the feature branch
+  branchCommits: string[]; // all commits on the branch
+  squashIncludedCommits: string[]; // commits included in the squash
 }
 
 async function findMissedSubstrate(pr: MergedPRState): Promise<string[]> {
   // Find branch commits NOT included in the squash merge
-  return pr.branchCommits.filter(
-    sha => !pr.squashIncludedCommits.includes(sha)
-  );
+  return pr.branchCommits.filter((sha) => !pr.squashIncludedCommits.includes(sha));
 }
 
 async function watchRecentMerges(bus: BusClient): Promise<void> {

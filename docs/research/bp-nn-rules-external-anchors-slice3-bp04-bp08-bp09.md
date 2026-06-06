@@ -32,10 +32,10 @@ beacon-blocked terminology. No vocabulary collisions found.
 ## BP-04 — Tone is declared as a contract
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Tone is declared as a contract (e.g. 'zero-empathy, advisory-only',
+_"Tone is declared as a contract (e.g. 'zero-empathy, advisory-only',
 'empathetic, edits silently by default'). Rationale: persona drift is
 measurable — self-consistency degrades ~30% after 8–12 dialogue turns
-even when context is intact. Naming the contract is the cheapest anchor."*
+even when context is intact. Naming the contract is the cheapest anchor."_
 
 **Core claim:** LLM persona self-consistency degrades measurably over
 multi-turn dialogue, even with context intact. Explicitly naming the
@@ -77,7 +77,7 @@ Agents" (arXiv 2412.00804, December 2024)**
 - Relevance: Examines identity consistency across nine LLMs in multi-turn
   conversations on personal themes, analysed both qualitatively and
   quantitatively. Key findings: (1) larger, more capable models experience
-  *greater* identity drift than smaller ones; (2) model family differences
+  _greater_ identity drift than smaller ones; (2) model family differences
   exist but parameter-count effect dominates; (3) "assigning a persona may
   not help to maintain identity" — an assigned persona without a compact
   contract anchor does not prevent drift. Directly motivates BP-04: the
@@ -120,9 +120,9 @@ paragraph of prose that itself risks losing attention).
 ## BP-08 — Frontmatter is canon
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Frontmatter is canon. On any disagreement between frontmatter and
+_"Frontmatter is canon. On any disagreement between frontmatter and
 notebook, frontmatter wins. Rationale: mutable state must never override
-the peer-reviewed contract."*
+the peer-reviewed contract."_
 
 **Core claim:** The statically-declared contract (frontmatter) must
 govern runtime behaviour (notebook state); runtime-accumulated mutable
@@ -138,9 +138,9 @@ the skill/agent design space.
 - Author: Bertrand Meyer
 - Venue: IEEE Computer, 25(10):40–51, October 1992
 - Relevance: Foundational computer science paper coining the phrase
-  "Design by Contract." Central principle: a *class invariant* holds
+  "Design by Contract." Central principle: a _class invariant_ holds
   before and after every operation on an object, regardless of
-  intermediate state transitions. The invariant is the *contract* —
+  intermediate state transitions. The invariant is the _contract_ —
   established at design time, peer-reviewed, and invariant to runtime
   accumulation. Runtime behaviour that would violate the invariant is
   a bug in the runtime, not a reason to relax the invariant. BP-08
@@ -180,7 +180,7 @@ the skill/agent design space.
 - Relevance: SDD principle: "a single schema definition serves as the
   foundational blueprint for all aspects of an application … every data
   element is stored exactly once." The schema is the source of truth;
-  runtime state *reflects* the schema, it does not *override* it.
+  runtime state _reflects_ the schema, it does not _override_ it.
   This is the contemporary DevOps/platform-engineering restatement of
   Meyer's 1992 Design by Contract invariant. BP-08 is the skill-layer
   implementation: frontmatter (schema) > notebook (runtime state).
@@ -199,9 +199,9 @@ principle to the skill/agent domain.
 ## BP-09 — All state is git-diffable ASCII
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"All state is git-diffable ASCII. No binary blobs, no opaque artefacts,
+_"All state is git-diffable ASCII. No binary blobs, no opaque artefacts,
 no embedded base64. Rationale: reviewability is the only mitigation for
-a writable prompt. If a human can't diff it, a reviewer can't protect it."*
+a writable prompt. If a human can't diff it, a reviewer can't protect it."_
 
 **Core claim:** Plain-text, diff-friendly formats are the foundational
 prerequisite for human review and security auditing of any writable

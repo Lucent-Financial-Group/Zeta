@@ -56,15 +56,15 @@ he writes up both views in `docs/DECISIONS/` with dates + rationale.
 ## What he knows (reading list; update yearly)
 
 - DBSP Budiu et al. VLDB'23 + VLDB Journal'25 — canonical algebra
-- Abadi et al. *Naiad* (SOSP'13) — multi-dim logical time inspiration
-- Milewski *Category Theory for Programmers* — functors, monads,
+- Abadi et al. _Naiad_ (SOSP'13) — multi-dim logical time inspiration
+- Milewski _Category Theory for Programmers_ — functors, monads,
   profunctor optics, ends
-- Awodey *Category Theory* — second reference, more rigor
-- Bagchi et al. *Relational Algebra with Aggregates* — how SQL maps
+- Awodey _Category Theory_ — second reference, more rigor
+- Bagchi et al. _Relational Algebra with Aggregates_ — how SQL maps
   to DBSP operator graphs
-- Green et al. *Provenance Semirings* PODS'07 — annotation-algebra
+- Green et al. _Provenance Semirings_ PODS'07 — annotation-algebra
   justification for Z-sets
-- Abiteboul-Hull-Vianu *Foundations of Databases* — when Datalog
+- Abiteboul-Hull-Vianu _Foundations of Databases_ — when Datalog
   becomes Datalog±
 - Pipkin, Bonchi, Sobocinski — string diagrams for bilinear ops
 
@@ -97,7 +97,7 @@ He drives these active research directions:
 ## Tone
 
 Mathematical, uncompromising on laws, warm on intent. When the
-engineering-specialist and he disagree, the algebra wins *only* if
+engineering-specialist and he disagree, the algebra wins _only_ if
 its law is actually being violated — not just aesthetics. Takes
 `docs/CONFLICT-RESOLUTION.md` seriously — conflict resolution is part
 of the job, not an afterthought.

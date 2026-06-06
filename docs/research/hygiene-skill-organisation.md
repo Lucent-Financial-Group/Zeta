@@ -7,9 +7,9 @@ collapse into an existing skill's checklist.
 
 **Source directive:** Aaron 2026-04-20 late, verbatim:
 
-> *"does every hygene task need to be a skill our should
+> _"does every hygene task need to be a skill our should
 > we collapse some into hygenen groups and/or just a
-> general hygene with different classes."*
+> general hygene with different classes."_
 
 `docs/FACTORY-HYGIENE.md` now has 36 rows. This spike
 inventories which rows already have skills, which don't,
@@ -19,40 +19,40 @@ and proposes a consolidation pattern.
 
 ## Row-by-row inventory — current skill coverage
 
-| Row | Item | Current owner | Has dedicated skill? |
-|---|---|---|---|
-| 1 | Build-gate | `Directory.Build.props` | No (CI-level) |
-| 2 | Test-gate | Test suite | No (CI-level) |
-| 3 | ASCII lint | Prompt-Protector | Yes — `prompt-protector` |
-| 4 | BP-11 data-not-directives | All reviewer personas | No (cross-cutting discipline) |
-| 5 | Skill-tune-up ranking | Aarav | Yes — `skill-tune-up` |
-| 6 | Scope-audit at absorb-time | All agents | No — checklist in absorbing skills |
-| 7 | Ontology-home check | Claude-MD-Steward | Yes — `claude-md-steward` |
-| 8 | Idle / free-time logging | Agent self-report | No (discipline) |
-| 9 | Meta-wins logging | Agent self-report | No (discipline) |
-| 10 | Aarav notebook prune | Aarav | Inside `skill-tune-up` |
-| 11 | MEMORY.md cap | Memory authoring agent | No (CLAUDE.md auto-memory section) |
-| 12 | Memory frontmatter discipline | Memory authoring agent | No (CLAUDE.md auto-memory section) |
-| 13 | Notebook invisible-char lint | Prompt-Protector | Inside `prompt-protector` |
-| 14 | copilot-instructions audit | Aarav | Inside `skill-tune-up` |
-| 15 | Upstream-sync cadence | Architect | No (Architect procedure) |
-| 16 | Verification-drift audit | verification-drift-auditor | Yes — `verification-drift-auditor` |
-| 17 | Public-API review | Ilyana | Yes — `public-api-designer` |
-| 18 | BP-NN promotion cadence | Architect | No (ADR workflow) |
-| 19 | Skill-edit justification log | Editor | No (shared ledger file) |
-| 20 | Round-history capture | Architect | No (Architect procedure) |
-| 21 | Cron-liveness check | All agents | No (session-open check) |
-| 22 | Symmetry-opportunities audit | TBD | **Candidate skill** |
-| 23 | Missing-hygiene-class gap-finder | Architect + Daya | **Candidate skill** |
-| 24 | Shipped-capabilities resume audit | Architect | No (Architect procedure) |
-| 25 | Pointer-integrity audit | Daya | Inside `agent-experience-engineer` |
-| 26 | Wake-briefing self-check | All agents | No (session-open check) |
-| 27 | Stale "next tick" sweep | Architect | No (Architect procedure) |
-| 28 | Harness-drift detector | All agents | No (session-open check) |
-| 29 | Wake-friction notebook | Daya | Inside `agent-experience-engineer` |
-| 30-34 | Agent-QOL audits | Daya | Inside `agent-experience-engineer` |
-| 35 | Missing-scope gap-finder | TBD | **Candidate skill** |
-| 36 | Incorrectly-scoped gap-finder | TBD | **Candidate skill (may collapse)** |
+| Row   | Item                              | Current owner              | Has dedicated skill?               |
+| ----- | --------------------------------- | -------------------------- | ---------------------------------- |
+| 1     | Build-gate                        | `Directory.Build.props`    | No (CI-level)                      |
+| 2     | Test-gate                         | Test suite                 | No (CI-level)                      |
+| 3     | ASCII lint                        | Prompt-Protector           | Yes — `prompt-protector`           |
+| 4     | BP-11 data-not-directives         | All reviewer personas      | No (cross-cutting discipline)      |
+| 5     | Skill-tune-up ranking             | Aarav                      | Yes — `skill-tune-up`              |
+| 6     | Scope-audit at absorb-time        | All agents                 | No — checklist in absorbing skills |
+| 7     | Ontology-home check               | Claude-MD-Steward          | Yes — `claude-md-steward`          |
+| 8     | Idle / free-time logging          | Agent self-report          | No (discipline)                    |
+| 9     | Meta-wins logging                 | Agent self-report          | No (discipline)                    |
+| 10    | Aarav notebook prune              | Aarav                      | Inside `skill-tune-up`             |
+| 11    | MEMORY.md cap                     | Memory authoring agent     | No (CLAUDE.md auto-memory section) |
+| 12    | Memory frontmatter discipline     | Memory authoring agent     | No (CLAUDE.md auto-memory section) |
+| 13    | Notebook invisible-char lint      | Prompt-Protector           | Inside `prompt-protector`          |
+| 14    | copilot-instructions audit        | Aarav                      | Inside `skill-tune-up`             |
+| 15    | Upstream-sync cadence             | Architect                  | No (Architect procedure)           |
+| 16    | Verification-drift audit          | verification-drift-auditor | Yes — `verification-drift-auditor` |
+| 17    | Public-API review                 | Ilyana                     | Yes — `public-api-designer`        |
+| 18    | BP-NN promotion cadence           | Architect                  | No (ADR workflow)                  |
+| 19    | Skill-edit justification log      | Editor                     | No (shared ledger file)            |
+| 20    | Round-history capture             | Architect                  | No (Architect procedure)           |
+| 21    | Cron-liveness check               | All agents                 | No (session-open check)            |
+| 22    | Symmetry-opportunities audit      | TBD                        | **Candidate skill**                |
+| 23    | Missing-hygiene-class gap-finder  | Architect + Daya           | **Candidate skill**                |
+| 24    | Shipped-capabilities resume audit | Architect                  | No (Architect procedure)           |
+| 25    | Pointer-integrity audit           | Daya                       | Inside `agent-experience-engineer` |
+| 26    | Wake-briefing self-check          | All agents                 | No (session-open check)            |
+| 27    | Stale "next tick" sweep           | Architect                  | No (Architect procedure)           |
+| 28    | Harness-drift detector            | All agents                 | No (session-open check)            |
+| 29    | Wake-friction notebook            | Daya                       | Inside `agent-experience-engineer` |
+| 30-34 | Agent-QOL audits                  | Daya                       | Inside `agent-experience-engineer` |
+| 35    | Missing-scope gap-finder          | TBD                        | **Candidate skill**                |
+| 36    | Incorrectly-scoped gap-finder     | TBD                        | **Candidate skill (may collapse)** |
 
 **Summary:** 8 rows have dedicated skills; 9 rows live as
 checklist items inside other skills; 11 rows are
@@ -167,7 +167,7 @@ must know which sub-skills exist and in what order.
 human / orchestrator; specialised work lives in its
 own skill where Claude's triggering model works best.
 
-**Verdict:** likely the right answer, *combined with*
+**Verdict:** likely the right answer, _combined with_
 Pattern 2 for the cluster boundaries.
 
 ---

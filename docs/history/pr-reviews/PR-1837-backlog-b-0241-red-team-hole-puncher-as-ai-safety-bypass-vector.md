@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1837 |
-| Title | backlog(B-0241): red team hole puncher as AI safety bypass vector |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T08:07:16Z |
-| Merged at | 2026-05-07T08:14:42Z |
-| Merge commit SHA | `1baf9eb745383107a15197a52fd6669fb5a0cbb5` |
-| Branch | `backlog/b0241-hole-puncher-ai-safety-red-team` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1837 |
-| Changed files | 2 |
-| Additions / deletions | +115 / -0 |
+| Field                 | Value                                                             |
+| --------------------- | ----------------------------------------------------------------- |
+| Number                | 1837                                                              |
+| Title                 | backlog(B-0241): red team hole puncher as AI safety bypass vector |
+| Author                | `AceHack` (human)                                                 |
+| State                 | MERGED                                                            |
+| Created at            | 2026-05-07T08:07:16Z                                              |
+| Merged at             | 2026-05-07T08:14:42Z                                              |
+| Merge commit SHA      | `1baf9eb745383107a15197a52fd6669fb5a0cbb5`                        |
+| Branch                | `backlog/b0241-hole-puncher-ai-safety-red-team`                   |
+| Base branch           | `main`                                                            |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1837          |
+| Changed files         | 2                                                                 |
+| Additions / deletions | +115 / -0                                                         |
 
 ## Description
 
 ## Summary
+
 - Files B-0241: red-team the hole puncher primitive applied to AI safety layers
 - Structural question: can capability-layer encoding bypass content-layer filters?
 - Defense-first — find the defense before someone finds the attack
 - Routed to security-researcher + threat-model-critic + formal-verification-expert
 
 ## Test plan
+
 - [ ] Backlog item well-formed (id/status/title frontmatter)
 - [ ] BACKLOG.md index regenerated
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 3 |
-| Resolved threads | 3 |
-| Unresolved threads | 0 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 3     |
+| Resolved threads                          | 3     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -65,19 +67,19 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Reference the correct defense backlog item**
-
+  
   This line links the proposed defense to `B-0240`, but `B-0240` is currently the "Structure recognizer" task, not an Ace/Itron capability-gating defense ticket. That mismatch breaks backlog traceability: a reviewer or assignee following this dependency will validate against the wrong artifact and can falsely conclude the bypass defense exists or was tested. Please point this section to the actual defense item (or create one) so B-0241 has an actionable, verifiable dependency.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T08:10:17Z on `docs/backlog/P1/B-0241-hole-puncher-ai-safety-red-team-capability-layer-bypass-2026-05-07.md`:52 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T08:10:17Z on `docs/backlog/P1/B-0241-hole-puncher-ai-safety-red-team-capability-layer-bypass-2026-05-07.md`:52 (association: MEMBER)
 
-    <pre>
-    Fixed in d8f53ff — removed incorrect B-0240 reference. Ace defense lives in per-user memory, not a backlog item.
-    </pre>
+  <pre>
+  Fixed in d8f53ff — removed incorrect B-0240 reference. Ace defense lives in per-user memory, not a backlog item.
+  </pre>
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -105,9 +107,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Remove universal port-443 assumption from threat model**
-
+  
   The threat model currently treats HTTPS egress as universally available (`"Port 443 is ALWAYS open"`), but that assumption is false in many real deployments (e.g., restricted egress, proxy-only allowlists, or no external network path at all). Because this backlog item is defining the attack preconditions, the over-broad claim can mis-scope red-team work and produce false confidence/false alarms about where the bypass applies; the wording should be narrowed to conditional environments where an allowed output channel actually exists.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

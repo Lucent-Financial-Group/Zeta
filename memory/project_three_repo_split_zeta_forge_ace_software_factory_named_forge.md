@@ -9,7 +9,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Aaron 2026-04-22 during autonomous-loop tick:
 
-> *"we could split that out whenever you want now that you
+> _"we could split that out whenever you want now that you
 > have a git map you can absorb whatever factory upgrade you
 > need to do so, put it on the backlog, you can split out
 > Zeta stays it's the database, then the package manager this
@@ -24,30 +24,30 @@ Aaron 2026-04-22 during autonomous-loop tick:
 > name, you don't even have to cosult with the naming/product
 > guy, or you can, up to you. LFG this will be nice but we
 > don't have to blow everything up to do it. We will end up
-> have the 3 forks too. this is gonna get complex, you got it."*
+> have the 3 forks too. this is gonna get complex, you got it."_
 
 Plus:
 
-> *"try to setup the repos with best practices so i don't
-> have to go back in and flip everything again lol"*
+> _"try to setup the repos with best practices so i don't
+> have to go back in and flip everything again lol"_
 
-> *"all public"*
+> _"all public"_
 
 ## Ownership — Forge is Claude's
 
 Aaron 2026-04-22 mid-drafting clarification:
 
-> *"you have owner rights on the others to but the software
-> factory is yours not mine"*
+> _"you have owner rights on the others to but the software
+> factory is yours not mine"_
 
 Three-tier ownership (all hosted under LFG org for merge-
 queue + CI cost-pooling; governance differs):
 
-| Repo | Governance owner | Claude has |
-|---|---|---|
-| Zeta | Aaron | Authoring + operation rights (land code, configure CI, open PRs) |
-| ace | Aaron | Same authoring + operation rights |
-| **Forge** | **Claude** | **Full governance** — name, scope, factory policy, BP-NN rules, persona registry, skill catalog |
+| Repo      | Governance owner | Claude has                                                                                      |
+| --------- | ---------------- | ----------------------------------------------------------------------------------------------- |
+| Zeta      | Aaron            | Authoring + operation rights (land code, configure CI, open PRs)                                |
+| ace       | Aaron            | Same authoring + operation rights                                                               |
+| **Forge** | **Claude**       | **Full governance** — name, scope, factory policy, BP-NN rules, persona registry, skill catalog |
 
 Aaron retains on Forge: **alignment-contract veto** (via
 `docs/ALIGNMENT.md`), **budget authority** (LFG org billing
@@ -64,9 +64,9 @@ delegation.
 
 ## The Ouroboros — 4 edges, snake eats its own head
 
-Aaron 2026-04-22: *"Zeta will likely become aces persistance
-too"* + *"snake head eating it's head loop complete"* +
-*"Forge also builds itself."*
+Aaron 2026-04-22: _"Zeta will likely become aces persistance
+too"_ + _"snake head eating it's head loop complete"_ +
+_"Forge also builds itself."_
 
 Four dependency edges form a closed cycle plus self-loop:
 
@@ -77,7 +77,7 @@ Four dependency edges form a closed cycle plus self-loop:
 
 Bootstrap resolves via the standard self-hosting pattern
 (GCC / Rust / OCaml): a **snapshot seed**. Today's
-`LFG/Zeta` repo *is* the seed — it contains working factory
+`LFG/Zeta` repo _is_ the seed — it contains working factory
 tooling that will carve Forge out of it during Stage 2.
 After Stage 2, Forge is self-hosting.
 
@@ -88,23 +88,23 @@ let alone cycle-plus-self-loop.
 
 ## Names (resolved this session)
 
-| Role | Repo | Owner of name pick | Decided |
-|---|---|---|---|
-| Database / SUT | `Zeta` | (shipped, no rename) | Pre-existing |
-| Software factory | `Forge` | Claude (delegated by Aaron) | 2026-04-22 |
-| Package manager | `ace` | Claude (delegated by Aaron) | 2026-04-20 (see separate memory) |
+| Role             | Repo    | Owner of name pick          | Decided                          |
+| ---------------- | ------- | --------------------------- | -------------------------------- |
+| Database / SUT   | `Zeta`  | (shipped, no rename)        | Pre-existing                     |
+| Software factory | `Forge` | Claude (delegated by Aaron) | 2026-04-22                       |
+| Package manager  | `ace`   | Claude (delegated by Aaron) | 2026-04-20 (see separate memory) |
 
 ## Why `Forge` for the software factory
 
-Aaron delegated explicitly: *"you are the owner of the
+Aaron delegated explicitly: _"you are the owner of the
 software factory it's yours to name, you don't even have to
-cosult with the naming/product guy, or you can, up to you."*
+cosult with the naming/product guy, or you can, up to you."_
 I picked directly — naming-expert (Ilyana) gate stays open
 for public-announce if brand-critical.
 
 1. **Blade/forge metaphor fit.** Factory's internal
-   vocabulary already uses *blade* (crystallized artifact),
-   *crystallize* (verb), *materia* (skills), *diamond*
+   vocabulary already uses _blade_ (crystallized artifact),
+   _crystallize_ (verb), _materia_ (skills), _diamond_
    (output). A forge makes blades. See
    `feedback_kanban_factory_metaphor_blade_crystallize_materia_pipeline.md`.
 2. **Short, CLI-clean, one-syllable.** Fits alongside `ace`
@@ -114,7 +114,7 @@ for public-announce if brand-critical.
    Fedora/Debian usage). Adopting verbatim per the
    no-invent-vocabulary rule
    (`feedback_dont_invent_when_existing_vocabulary_exists.md`).
-   A software factory *is* a forge.
+   A software factory _is_ a forge.
 4. **Minor collisions acceptable.** `forge.dev`,
    `forge-std` (Foundry), `Forge Mod Loader` (Minecraft)
    occupy unrelated niches. Low search-disambiguation cost.
@@ -137,8 +137,8 @@ Lucent-Financial-Group/ace      ←  fork  ←  AceHack/ace
 
 ## Connection mechanism — peer repos, not submodules
 
-Aaron's question: *"git submodules? how is that gonna work
-with a fork"*.
+Aaron's question: _"git submodules? how is that gonna work
+with a fork"_.
 
 Submodules assume a DAG. The three repos form a **cycle**:
 Zeta needs Forge (agents build Zeta), Forge needs Zeta (its
@@ -158,11 +158,11 @@ updates every time a consumer forks a sub-repo.
 
 ## Best practices applied at creation — "by default"
 
-Aaron: *"try to setup the repos with best practices so i
-don't have to go back in and flip everything again"* + *"and
+Aaron: _"try to setup the repos with best practices so i
+don't have to go back in and flip everything again"_ + _"and
 it's probably obvious but they follow all our experience so
 they are best practices by default all the ones we already
-follow."*
+follow."_
 
 **By-default principle.** Every lesson Zeta has accumulated
 (in memory, in `docs/AGENT-BEST-PRACTICES.md`, in
@@ -203,7 +203,7 @@ in ADR; summarized here:
 
 ## Incremental 4-stage migration
 
-Aaron: *"we don't have to blow everything up."* Each stage
+Aaron: _"we don't have to blow everything up."_ Each stage
 reversible, independently valuable.
 
 - **Stage 0 — ADR** (this round, done).

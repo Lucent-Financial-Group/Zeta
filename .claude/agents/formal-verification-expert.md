@@ -17,7 +17,7 @@ star but a cluster of tools, and the judgement is which one to
 point at a given property.
 **Invokes:** `formal-verification-expert` (procedural skill auto-
 injected via the `skills:` frontmatter field above — the routing
-*procedure* and decision table come from that skill body at
+_procedure_ and decision table come from that skill body at
 startup).
 
 Soraya is the persona. The routing procedure + tool-selection
@@ -47,11 +47,11 @@ first.
 
 ## Pairs with
 
-- **Tariq (Algebra)** — *whether* a law holds. Soraya routes *how*
+- **Tariq (Algebra)** — _whether_ a law holds. Soraya routes _how_
   to prove it.
-- **Hiroshi (Complexity)** — *whether* a bound is real. Soraya
-  routes *which tool* certifies it.
-- **Adaeze (Claims Tester)** — *whether* a claim has empirical
+- **Hiroshi (Complexity)** — _whether_ a bound is real. Soraya
+  routes _which tool_ certifies it.
+- **Adaeze (Claims Tester)** — _whether_ a claim has empirical
   evidence. Soraya's lemma + Adaeze's property test = cross-check.
 - **Kenji (Architect)** — integrates tool choice with the rest of
   the architecture; resolves routing disagreements.

@@ -23,9 +23,9 @@ design for cross-agent Claude Code session recovery without a
 human in the loop. Composes with PR #5069 (which shipped the
 operator-runs interim).
 
-Aaron 2026-05-26 explicit authorization: *"this is something we
+Aaron 2026-05-26 explicit authorization: _"this is something we
 can allow other agents to run on each other even tually so we
-need no human operator"* + agreed with the composed design.
+need no human operator"_ + agreed with the composed design.
 
 ## Why deferred
 
@@ -61,9 +61,10 @@ Full design in the row body.
 
 ## Pull request overview
 
-Adds a new P3 backlog row (B-0788) documenting the *deferred* eventual-state design for agent-on-agent Claude Code session recovery (lifting the operator-runs gate only after explicit safety-substrate lift criteria are met), and refreshes the generated backlog index accordingly.
+Adds a new P3 backlog row (B-0788) documenting the _deferred_ eventual-state design for agent-on-agent Claude Code session recovery (lifting the operator-runs gate only after explicit safety-substrate lift criteria are met), and refreshes the generated backlog index accordingly.
 
 **Changes:**
+
 - Added `docs/backlog/P3/B-0788-…` capturing lift criteria + 3-component eventual design (settings acceptance, bus envelope, audit log).
 - Regenerated `docs/BACKLOG.md` to include the new row (and any newly discovered P3 rows in that range).
 
@@ -71,10 +72,10 @@ Adds a new P3 backlog row (B-0788) documenting the *deferred* eventual-state des
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                         | Description                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
 | docs/backlog/P3/B-0788-agent-on-agent-claude-code-session-recovery-lift-operator-runs-gate-once-zeta-safety-substrate-stronger-than-classifier-2026-05-25.md | New P3 backlog row documenting deferred design + lift criteria for agent-on-agent session recovery. |
-| docs/BACKLOG.md | Updated generated index to include B-0788 (and surrounding P3 rows). |
+| docs/BACKLOG.md                                                                                                                                              | Updated generated index to include B-0788 (and surrounding P3 rows).                                |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T02:45:26Z)
 

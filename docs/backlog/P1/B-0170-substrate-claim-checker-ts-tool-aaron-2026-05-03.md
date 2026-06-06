@@ -43,16 +43,16 @@ V0 limitations documented in `tools/substrate-claim-checker/README.md`:
 
 Per the verify-then-claim catalogue:
 
-| Sub-class | v0? | Description |
-|---|---|---|
-| Count drift | ✓ shipped | "N rows / instances / items" vs actual count |
-| Existence drift | ✓ shipped | "file/dir/tool exists" claim vs `ls` / `test -e` |
-| Semantic-equivalence drift | v0.9 | command substitution equivalence claims |
-| Empirical-output drift | v0.9 | "command returns X" vs actual output |
-| Convention drift | v0.9 | recommended pattern matches canonical convention |
-| Path-form drift | ✓ shipped | fully-qualified vs bare paths consistent across document |
-| Self-recursive drift | ✓ shipped (v0.9.1 — count + existence topics via `self-check:` frontmatter directive; path-forms / cross-surface / convention deferred) | the memo about X contains its own X |
-| Cross-surface count drift (frontmatter ↔ body ↔ section heading ↔ carved sentence ↔ MEMORY.md) | ✓ shipped (v0.8 — frontmatter description vs body table; full cross-surface v0.9) | five surfaces should match consistent N |
+| Sub-class                                                                                      | v0?                                                                                                                                     | Description                                              |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Count drift                                                                                    | ✓ shipped                                                                                                                               | "N rows / instances / items" vs actual count             |
+| Existence drift                                                                                | ✓ shipped                                                                                                                               | "file/dir/tool exists" claim vs `ls` / `test -e`         |
+| Semantic-equivalence drift                                                                     | v0.9                                                                                                                                    | command substitution equivalence claims                  |
+| Empirical-output drift                                                                         | v0.9                                                                                                                                    | "command returns X" vs actual output                     |
+| Convention drift                                                                               | v0.9                                                                                                                                    | recommended pattern matches canonical convention         |
+| Path-form drift                                                                                | ✓ shipped                                                                                                                               | fully-qualified vs bare paths consistent across document |
+| Self-recursive drift                                                                           | ✓ shipped (v0.9.1 — count + existence topics via `self-check:` frontmatter directive; path-forms / cross-surface / convention deferred) | the memo about X contains its own X                      |
+| Cross-surface count drift (frontmatter ↔ body ↔ section heading ↔ carved sentence ↔ MEMORY.md) | ✓ shipped (v0.8 — frontmatter description vs body table; full cross-surface v0.9)                                                       | five surfaces should match consistent N                  |
 
 ## Hooks integration (planned, not v0)
 
@@ -76,7 +76,7 @@ This row closes when:
 
 ## Composes with
 
-- **B-0169** (decision-archaeology skill) — same author per Aaron 2026-05-03 *"skills are carved sentences ... knowledge is in docs and can be referred to by skills, skills don't need updating as much"*; substrate-claim-checker is a tooling-class hub that the eventual decision-archaeology SKILL.md will call
+- **B-0169** (decision-archaeology skill) — same author per Aaron 2026-05-03 _"skills are carved sentences ... knowledge is in docs and can be referred to by skills, skills don't need updating as much"_; substrate-claim-checker is a tooling-class hub that the eventual decision-archaeology SKILL.md will call
 - `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md` — the discipline this tool mechanizes
 - `memory/feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md` — rule 2 (no dynamic commands in skills; use TS files); this tool IS one of the TS files
 - `memory/feedback_prefer_ts_scripts_over_dynamic_bash_for_conversation_ux_dst_in_ts_aaron_2026_05_01.md` — TS-script preference; same shape
@@ -95,7 +95,7 @@ This row closes when:
 **Prior-art search completed (surfaces logged):**
 
 - wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology (B-0169), lost-files at `tools/hygiene/LOST-FILES-LOCATIONS.md`
-- Used Glob/Read/Grep equivalents on trajectories, memory/feedback_*, tools/substrate-claim-checker/*, docs/REVIEW-AGENTS.md, docs/AGENT-BEST-PRACTICES.md BP-11/23/24/25
+- Used Glob/Read/Grep equivalents on trajectories, memory/feedback\__, tools/substrate-claim-checker/_, docs/REVIEW-AGENTS.md, docs/AGENT-BEST-PRACTICES.md BP-11/23/24/25
 - Results: no duplicate implementation; this row is the canonical mechanization hub; related B-0169 decision-archaeology is downstream consumer. No conflicting prior art found. (Focused check run: `check-counts.ts` on canonical memo emitted 1 count-drift "6 sub-classes" vs 20 rows — confirms ongoing empirical need.)
 
 **Dependency-restructure completed:**

@@ -14,10 +14,10 @@ generated from it via `bun tools/routines/install.ts`.
 
 ## Two-layer architecture
 
-| Layer | Path | Authority |
-|---|---|---|
-| **Canonical** (this directory) | `tools/routines/<id>/` | git-tracked, PR-reviewed, diffable, shareable across maintainer machines |
-| **Runtime** | `~/.claude/scheduled-tasks/<id>/` | what the Desktop "Routines" panel + MCP server read at fire time |
+| Layer                          | Path                              | Authority                                                                |
+| ------------------------------ | --------------------------------- | ------------------------------------------------------------------------ |
+| **Canonical** (this directory) | `tools/routines/<id>/`            | git-tracked, PR-reviewed, diffable, shareable across maintainer machines |
+| **Runtime**                    | `~/.claude/scheduled-tasks/<id>/` | what the Desktop "Routines" panel + MCP server read at fire time         |
 
 Edit canonical; sync to runtime. Never edit runtime directly without mirroring
 back — runtime drift is the failure mode this two-layer split prevents.
@@ -33,7 +33,7 @@ back — runtime drift is the failure mode this two-layer split prevents.
    ---
 
    <prompt body — fully self-contained, no prior conversation context.
-    Each fire is a fresh Claude session cold-boot.>
+   Each fire is a fresh Claude session cold-boot.>
    ```
 
 2. (Optional) Create `tools/routines/<id>/schedule.json` for cron-scheduled routines:
@@ -74,10 +74,10 @@ source of truth, the runtime is generated, divergence is detectable.
 
 ## CLI vs Desktop tick — when to use which
 
-| Surface | Mechanism | Cadence sweet-spot | Cost per fire | Persistence |
-|---|---|---|---|---|
-| **CLI Claude Code** | `CronCreate` sentinel `<<autonomous-loop>>` | `* * * * *` (every minute) | Cheap — re-prompts same session | Session-only, dies on exit, 7-day auto-expire |
-| **Desktop Claude** | These routines | `0 */2 * * *` (every 2hr) or hourly | Full cold-boot per fire | Persistent on disk, survives app restart |
+| Surface             | Mechanism                                   | Cadence sweet-spot                  | Cost per fire                   | Persistence                                   |
+| ------------------- | ------------------------------------------- | ----------------------------------- | ------------------------------- | --------------------------------------------- |
+| **CLI Claude Code** | `CronCreate` sentinel `<<autonomous-loop>>` | `* * * * *` (every minute)          | Cheap — re-prompts same session | Session-only, dies on exit, 7-day auto-expire |
+| **Desktop Claude**  | These routines                              | `0 */2 * * *` (every 2hr) or hourly | Full cold-boot per fire         | Persistent on disk, survives app restart      |
 
 Both can run in parallel — they're complementary, not competing. The CLI cron
 is the primary every-minute tick; the Desktop routine is the every-2-hour

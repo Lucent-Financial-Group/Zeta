@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2476 |
-| Title | fix(B-0164): add reciprocal ticks↔divergences pointer + mark AC status |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T12:00:05Z |
-| Merged at | 2026-05-10T12:01:56Z |
-| Merge commit SHA | `6f3c605b8e285edb8bd93a505bf114ea223a9289` |
-| Branch | `fix/B-0164-ticks-readme-divergence-pointer` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2476 |
-| Changed files | 3 |
-| Additions / deletions | +47 / -6 |
+| Field                 | Value                                                                  |
+| --------------------- | ---------------------------------------------------------------------- |
+| Number                | 2476                                                                   |
+| Title                 | fix(B-0164): add reciprocal ticks↔divergences pointer + mark AC status |
+| Author                | `AceHack` (human)                                                      |
+| State                 | MERGED                                                                 |
+| Created at            | 2026-05-10T12:00:05Z                                                   |
+| Merged at             | 2026-05-10T12:01:56Z                                                   |
+| Merge commit SHA      | `6f3c605b8e285edb8bd93a505bf114ea223a9289`                             |
+| Branch                | `fix/B-0164-ticks-readme-divergence-pointer`                           |
+| Base branch           | `main`                                                                 |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2476               |
+| Changed files         | 3                                                                      |
+| Additions / deletions | +47 / -6                                                               |
 
 ## Description
 
@@ -52,21 +52,21 @@ git diff --stat          →  3 files, 47 insertions, 6 deletions ✅
 - AC #5 (tooling: multi-loop attribution in append-tick-history) — gated by B-0163
 - AC #6 (cron-tick coordination) — requires dual-loop testing
 
-operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding through failures + recoveries"
+operative-authorization: aaron 2026-05-04: "it\*\*, not just the output. Grinding through failures + recoveries"
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

@@ -40,15 +40,29 @@ test("CHECK ... IN (...) maps to an enum with values", () => {
 test("REFERENCES maps to fk; TYPE[] REFERENCES maps to fk_array", () => {
   const result = parseCreateTable(SQL);
   if (result.outcome !== "schema") throw new Error("expected schema");
-  deepEqual(findColumn(result.schema, "project_id"), { name: "project_id", type: ColumnType.Fk, required: false, references: "project" });
-  deepEqual(findColumn(result.schema, "reviewer_ids"), { name: "reviewer_ids", type: ColumnType.FkArray, required: false, references: "hat_assignment" });
+  deepEqual(findColumn(result.schema, "project_id"), {
+    name: "project_id",
+    type: ColumnType.Fk,
+    required: false,
+    references: "project",
+  });
+  deepEqual(findColumn(result.schema, "reviewer_ids"), {
+    name: "reviewer_ids",
+    type: ColumnType.FkArray,
+    required: false,
+    references: "hat_assignment",
+  });
 });
 
 test("scalar types and NOT NULL map through", () => {
   const result = parseCreateTable(SQL);
   if (result.outcome !== "schema") throw new Error("expected schema");
   deepEqual(findColumn(result.schema, "estimate"), { name: "estimate", type: ColumnType.Int, required: false });
-  deepEqual(findColumn(result.schema, "created_at"), { name: "created_at", type: ColumnType.Timestamp, required: true });
+  deepEqual(findColumn(result.schema, "created_at"), {
+    name: "created_at",
+    type: ColumnType.Timestamp,
+    required: true,
+  });
   equal(findColumn(result.schema, "title")?.required, true);
 });
 

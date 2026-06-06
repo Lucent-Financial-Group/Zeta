@@ -24,9 +24,9 @@ PR; lands here as composable extension to the merged rule.
 
 Operator's substrate-engineering insight:
 
-> *\"it also give a nice kind of monad like if the function could declar
+> _\"it also give a nice kind of monad like if the function could declar
 > every tfeedback type like java exceptions in the type signature then
-> you can make sure consumer handle every case or pass it up\"*
+> you can make sure consumer handle every case or pass it up\"_
 
 Completes the rule's 4-layer substrate:
 

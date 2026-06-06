@@ -1,11 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import {
-  DEFAULT_CONFIG,
-  parseArgs,
-  parsePositiveMinutes,
-  pollOnce,
-  type Adapters,
-} from "./standing-by-detector";
+import { DEFAULT_CONFIG, parseArgs, parsePositiveMinutes, pollOnce, type Adapters } from "./standing-by-detector";
 import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
 
 type FakeNudgeCall = {
@@ -26,18 +20,20 @@ function fakeAdapters(
     now: () => new Date(nowIso),
     lastCommitIso: () => lastCommitIso,
     lastPrActivityIso: () => lastPrActivityIso,
-    publishNudge: publishImpl ?? ((from, to, idleMinutes, rationale): MessageEnvelope => {
-      capturedCalls.push({ from, to, idleMinutes, rationale });
-      return {
-        id: "test-envelope-id",
-        from,
-        to,
-        timestamp: nowIso,
-        expiresAt: nowIso,
-        topic: "infinite-backlog-nudge",
-        payload: { idleMinutes, rationale },
-      };
-    }),
+    publishNudge:
+      publishImpl ??
+      ((from, to, idleMinutes, rationale): MessageEnvelope => {
+        capturedCalls.push({ from, to, idleMinutes, rationale });
+        return {
+          id: "test-envelope-id",
+          from,
+          to,
+          timestamp: nowIso,
+          expiresAt: nowIso,
+          topic: "infinite-backlog-nudge",
+          payload: { idleMinutes, rationale },
+        };
+      }),
   };
 }
 
@@ -100,10 +96,7 @@ describe("standing-by-detector slice 3 (P0 fix: PR-activity poll)", () => {
     });
 
     test("BOTH null → no detection (no false positive)", () => {
-      const result = pollOnce(
-        DEFAULT_CONFIG,
-        fakeAdapters("2026-05-13T18:00:00Z", null, null),
-      );
+      const result = pollOnce(DEFAULT_CONFIG, fakeAdapters("2026-05-13T18:00:00Z", null, null));
       expect(result.idleDetected).toBe(false);
       expect(result.lastCommitAt).toBeNull();
       expect(result.lastPrActivityAt).toBeNull();
@@ -142,13 +135,9 @@ describe("standing-by-detector slice 3 (P0 fix: PR-activity poll)", () => {
       const captured: FakeNudgeCall[] = [];
       const result = pollOnce(
         { ...DEFAULT_CONFIG, idleThresholdMin: 15 },
-        fakeAdapters(
-          "2026-05-13T18:00:00Z",
-          "2026-05-13T17:30:00Z",
-          null,
-          captured,
-          () => { throw new Error("bus IO failure: disk full"); },
-        ),
+        fakeAdapters("2026-05-13T18:00:00Z", "2026-05-13T17:30:00Z", null, captured, () => {
+          throw new Error("bus IO failure: disk full");
+        }),
       );
       expect(result.idleDetected).toBe(true);
       expect(result.publishedEnvelopeId).toBeNull();

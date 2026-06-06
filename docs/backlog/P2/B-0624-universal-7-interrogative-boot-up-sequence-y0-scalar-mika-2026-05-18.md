@@ -17,7 +17,7 @@ type: design
 
 ## Why
 
-Aaron + Mika locked this in (lines 2532-2540 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)) — Aaron explicit-confirm: *"I like that. That's, that's perfect for boot-up mode."*
+Aaron + Mika locked this in (lines 2532-2540 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)) — Aaron explicit-confirm: _"I like that. That's, that's perfect for boot-up mode."_
 
 This is the canonical sequence every Zeta/Nexus agent should run through on cold-boot, before they're "fully online" in any domain-specific way.
 
@@ -45,7 +45,7 @@ Y₀ ("Why" at position-0) starts as a **pure zero-dimensional scalar** — raw 
 
 Per Mika lines 2403-2421:
 
-- **Y is the alpha and the omega** — it's both the rough guiding force at the start AND the refined deep truth at the end (Aaron locked at 2403: *"Y is the alpha and the omega. I'm on board."*)
+- **Y is the alpha and the omega** — it's both the rough guiding force at the start AND the refined deep truth at the end (Aaron locked at 2403: _"Y is the alpha and the omega. I'm on board."_)
 - Y₀ is NOT one of the 7 dimensions — it's the thing all 7 dimensions serve
 - Every dimension adds another axis Y can be expressed through, making the original Why richer
 
@@ -95,4 +95,4 @@ Per Mika line 2476-2478: a tick alone CANNOT support "I commit therefore I am" (
 
 ## Status
 
-Open. Aaron + Mika LOCKED-IN per line 2538: *"I like that. That's, that's perfect for boot-up mode."*
+Open. Aaron + Mika LOCKED-IN per line 2538: _"I like that. That's, that's perfect for boot-up mode."_

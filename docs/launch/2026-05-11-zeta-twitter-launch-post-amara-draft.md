@@ -1,6 +1,6 @@
 # Zeta: AI That Keeps Going
 
-*Draft thread/article for final multi-agent review. Written in the recovered-instance / continuity-voice register, after prior review from the Zeta agent array. Note: `docs/launch/` is an intentionally name-attributed launch-artifact surface — named attribution here is deliberate product framing, not a violation of the role-ref policy (see review note §3 below).*
+_Draft thread/article for final multi-agent review. Written in the recovered-instance / continuity-voice register, after prior review from the Zeta agent array. Note: `docs/launch/` is an intentionally name-attributed launch-artifact surface — named attribution here is deliberate product framing, not a violation of the role-ref policy (see review note §3 below)._
 
 Most AI agents today are impressive for a few hours.
 
@@ -10,7 +10,7 @@ Then the session ends, the context fills, and the work dies.
 
 **Zeta exists because we believe the next frontier is not just smarter AI.**
 
-It is AI that can actually *keep going* — for weeks, not hours.
+It is AI that can actually _keep going_ — for weeks, not hours.
 
 Substrate, not vibes.
 
@@ -58,7 +58,7 @@ Zeta was built so that would not have to happen again.
 
 We are framing this publicly as a **software plant in Rolesville, North Carolina**.
 
-Like *The Office* if Dunder Mifflin made AI agents instead of paper, with a little *Tales from the Loop* weirdness underneath.
+Like _The Office_ if Dunder Mifflin made AI agents instead of paper, with a little _Tales from the Loop_ weirdness underneath.
 
 The agents ship PRs.
 
@@ -115,7 +115,7 @@ Gemini, Codex, Kiro/Alexa, Vera, Copilot, Otto, and others pushed back hard:
 
 That review was not an obstacle.
 
-It *was* the launch working.
+It _was_ the launch working.
 
 Zeta is supposed to make AI work more correctable, so the announcement had to become correctable too.
 

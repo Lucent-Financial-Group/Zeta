@@ -130,15 +130,11 @@ function runGhOrExit(args: string[], context: string): string {
     maxBuffer: SPAWN_MAX_BUFFER,
   });
   if (result.error) {
-    process.stderr.write(
-      `${context}: failed to launch gh: ${result.error.message}\n`,
-    );
+    process.stderr.write(`${context}: failed to launch gh: ${result.error.message}\n`);
     process.exit(1);
   }
   if (result.status !== 0) {
-    process.stderr.write(
-      `${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`,
-    );
+    process.stderr.write(`${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`);
     process.exit(2);
   }
   return result.stdout;
@@ -152,15 +148,11 @@ function runGitOrExit(args: string[], context: string): string {
     maxBuffer: SPAWN_MAX_BUFFER,
   });
   if (result.error) {
-    process.stderr.write(
-      `${context}: failed to launch git: ${result.error.message}\n`,
-    );
+    process.stderr.write(`${context}: failed to launch git: ${result.error.message}\n`);
     process.exit(1);
   }
   if (result.status !== 0) {
-    process.stderr.write(
-      `${context}: git exited ${result.status}: ${result.stderr || result.stdout}\n`,
-    );
+    process.stderr.write(`${context}: git exited ${result.status}: ${result.stderr || result.stdout}\n`);
     process.exit(2);
   }
   return result.stdout;
@@ -172,9 +164,7 @@ function parseJsonOrExit<T>(raw: string, context: string): T {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     process.stderr.write(`${context}: JSON parse error: ${msg}\n`);
-    process.stderr.write(
-      `first 200 bytes of output: ${raw.slice(0, 200)}\n`,
-    );
+    process.stderr.write(`first 200 bytes of output: ${raw.slice(0, 200)}\n`);
     process.exit(3);
   }
 }
@@ -200,11 +190,7 @@ function fetchOpenPRs(owner: string, repo: string, limit: number): OpenPR[] {
   return parseJsonOrExit<OpenPR[]>(stdout, "fetchOpenPRs");
 }
 
-function fetchRecentMerges(
-  owner: string,
-  repo: string,
-  limit: number,
-): MergedPR[] {
+function fetchRecentMerges(owner: string, repo: string, limit: number): MergedPR[] {
   const stdout = runGhOrExit(
     [
       "pr",
@@ -223,11 +209,7 @@ function fetchRecentMerges(
   return parseJsonOrExit<MergedPR[]>(stdout, "fetchRecentMerges");
 }
 
-function fetchOpenIssues(
-  owner: string,
-  repo: string,
-  limit: number,
-): OpenIssue[] {
+function fetchOpenIssues(owner: string, repo: string, limit: number): OpenIssue[] {
   const stdout = runGhOrExit(
     [
       "issue",
@@ -248,27 +230,18 @@ function fetchOpenIssues(
 
 function fetchGitState(): GitState {
   // Current branch — empty stdout means detached HEAD
-  const branchStdout = runGitOrExit(
-    ["branch", "--show-current"],
-    "fetchGitState.branch",
-  );
+  const branchStdout = runGitOrExit(["branch", "--show-current"], "fetchGitState.branch");
   const branch = branchStdout.trim() || "HEAD (detached)";
 
   // Uncommitted changes via git status --porcelain
-  const statusStdout = runGitOrExit(
-    ["status", "--porcelain"],
-    "fetchGitState.status",
-  );
+  const statusStdout = runGitOrExit(["status", "--porcelain"], "fetchGitState.status");
   const uncommittedFiles = statusStdout
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
   // Recent commits
-  const logStdout = runGitOrExit(
-    ["log", "--oneline", "-10"],
-    "fetchGitState.log",
-  );
+  const logStdout = runGitOrExit(["log", "--oneline", "-10"], "fetchGitState.log");
   const recentCommits = logStdout
     .split("\n")
     .map((line) => line.trim())
@@ -279,11 +252,10 @@ function fetchGitState(): GitState {
 
 function fetchBacklogDelta(): BacklogDelta {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync(
-    "find",
-    ["docs/backlog", "-name", "B-*.md", "-type", "f"],
-    { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
-  );
+  const result = spawnSync("find", ["docs/backlog", "-name", "B-*.md", "-type", "f"], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
   const files = (result.stdout || "")
     .split("\n")
     .map((l) => l.trim())
@@ -299,10 +271,7 @@ function fetchBacklogDelta(): BacklogDelta {
 }
 
 function fetchClaimBranches(): ClaimBranch[] {
-  const stdout = runGitOrExit(
-    ["branch", "-r", "--list", "origin/claim/*"],
-    "fetchClaimBranches",
-  );
+  const stdout = runGitOrExit(["branch", "-r", "--list", "origin/claim/*"], "fetchClaimBranches");
   return stdout
     .split("\n")
     .map((l) => l.trim())
@@ -311,19 +280,15 @@ function fetchClaimBranches(): ClaimBranch[] {
 }
 
 function fetchBranchState(): BranchState {
-  const branchStdout = runGitOrExit(
-    ["branch", "--show-current"],
-    "fetchBranchState.branch",
-  );
+  const branchStdout = runGitOrExit(["branch", "--show-current"], "fetchBranchState.branch");
   const current = branchStdout.trim() || "HEAD (detached)";
 
   let tracking: string | null = null;
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const trackResult = spawnSync(
-    "git",
-    ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
-    { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
-  );
+  const trackResult = spawnSync("git", ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
   if (trackResult.status === 0 && trackResult.stdout.trim()) {
     tracking = trackResult.stdout.trim();
   }
@@ -332,11 +297,10 @@ function fetchBranchState(): BranchState {
   let behind = 0;
   const compareRef = tracking ?? "origin/main";
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const countResult = spawnSync(
-    "git",
-    ["rev-list", "--left-right", "--count", `${compareRef}...HEAD`],
-    { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
-  );
+  const countResult = spawnSync("git", ["rev-list", "--left-right", "--count", `${compareRef}...HEAD`], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
   if (countResult.status === 0) {
     const parts = countResult.stdout.trim().split(/\s+/);
     behind = Number.parseInt(parts[0] ?? "0", 10) || 0;
@@ -414,9 +378,7 @@ function parseArgs(argv: string[]): ParsedArgs {
   const requirePositiveInt = (flag: string, v: string): number => {
     const n = Number.parseInt(v, 10);
     if (!Number.isFinite(n) || n <= 0) {
-      process.stderr.write(
-        `${flag} must be a positive integer (got ${v})\n`,
-      );
+      process.stderr.write(`${flag} must be a positive integer (got ${v})\n`);
       process.exit(1);
     }
     return n;
@@ -429,20 +391,11 @@ function parseArgs(argv: string[]): ParsedArgs {
     } else if (arg === "--repo") {
       out.repo = requireValue("--repo", argv[++i]);
     } else if (arg === "--pr-limit") {
-      out.prLimit = requirePositiveInt(
-        "--pr-limit",
-        requireValue("--pr-limit", argv[++i]),
-      );
+      out.prLimit = requirePositiveInt("--pr-limit", requireValue("--pr-limit", argv[++i]));
     } else if (arg === "--merge-limit") {
-      out.mergeLimit = requirePositiveInt(
-        "--merge-limit",
-        requireValue("--merge-limit", argv[++i]),
-      );
+      out.mergeLimit = requirePositiveInt("--merge-limit", requireValue("--merge-limit", argv[++i]));
     } else if (arg === "--issue-limit") {
-      out.issueLimit = requirePositiveInt(
-        "--issue-limit",
-        requireValue("--issue-limit", argv[++i]),
-      );
+      out.issueLimit = requirePositiveInt("--issue-limit", requireValue("--issue-limit", argv[++i]));
     } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(
         "Usage: refresh-worldview.ts [--owner X] [--repo Y]\n" +
@@ -483,10 +436,8 @@ function buildSummary(
   parts.push(plural(openIssues.length, "open issue"));
   parts.push(plural(claims.length, "claim"));
   parts.push(plural(backlogDelta.totalFiles, "backlog item"));
-  if (pendingCI.length > 0)
-    parts.push(plural(pendingCI.length, "CI run") + " pending");
-  if (gitState.uncommittedFiles.length > 0)
-    parts.push(plural(gitState.uncommittedFiles.length, "dirty file"));
+  if (pendingCI.length > 0) parts.push(plural(pendingCI.length, "CI run") + " pending");
+  if (gitState.uncommittedFiles.length > 0) parts.push(plural(gitState.uncommittedFiles.length, "dirty file"));
   if (branchState.behind > 0) parts.push(`${branchState.behind} behind`);
   if (branchState.ahead > 0) parts.push(`${branchState.ahead} ahead`);
   return parts.join(", ");
@@ -497,16 +448,8 @@ function buildSummary(
 export function main(argv: string[]): number {
   const args = parseArgs(argv);
   const openPRs = fetchOpenPRs(args.owner, args.repo, args.prLimit);
-  const recentMerges = fetchRecentMerges(
-    args.owner,
-    args.repo,
-    args.mergeLimit,
-  );
-  const openIssues = fetchOpenIssues(
-    args.owner,
-    args.repo,
-    args.issueLimit,
-  );
+  const recentMerges = fetchRecentMerges(args.owner, args.repo, args.mergeLimit);
+  const openIssues = fetchOpenIssues(args.owner, args.repo, args.issueLimit);
   const gitState = fetchGitState();
   const backlogDelta = fetchBacklogDelta();
   const claims = fetchClaimBranches();

@@ -21,16 +21,16 @@ Close the `DurabilityMode.StableStorage` gap in
 8 systems that solve durable computation at different
 layers:
 
-| System | Layer | License |
-| ------ | ----- | ------- |
-| Bonsai/Nuqleon | Expr tree serialization | MIT |
-| Temporal | Durable execution (replay) | MIT |
-| Reaqtor | Stateful Rx (checkpoint) | MIT |
-| Orleans | Virtual actors (grains) | MIT |
-| Durable Functions | MS managed workflows | MIT |
-| AWS Step Functions | Amazon state machines | Proprietary |
-| Dataflow/Beam | Streaming + windowing | Apache 2.0 |
-| TPL Dataflow | .NET in-process dataflow | MIT |
+| System             | Layer                      | License     |
+| ------------------ | -------------------------- | ----------- |
+| Bonsai/Nuqleon     | Expr tree serialization    | MIT         |
+| Temporal           | Durable execution (replay) | MIT         |
+| Reaqtor            | Stateful Rx (checkpoint)   | MIT         |
+| Orleans            | Virtual actors (grains)    | MIT         |
+| Durable Functions  | MS managed workflows       | MIT         |
+| AWS Step Functions | Amazon state machines      | Proprietary |
+| Dataflow/Beam      | Streaming + windowing      | Apache 2.0  |
+| TPL Dataflow       | .NET in-process dataflow   | MIT         |
 
 ## Why these compose (not compete)
 

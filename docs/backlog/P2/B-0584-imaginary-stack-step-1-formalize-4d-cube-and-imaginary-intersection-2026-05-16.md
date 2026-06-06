@@ -36,7 +36,7 @@ This object should be small enough that a category theorist or proof engineer ca
 ## Acceptance criteria
 
 - [ ] A 4D real vector space or module with coordinates (R, W, P, A) is defined
-- [ ] Imaginary units \( i_{XY} \) for selected pairs of axes are introduced with \( i_{XY}^2 = -1 \)
+- [ ] Imaginary units \( i*{XY} \) for selected pairs of axes are introduced with \( i*{XY}^2 = -1 \)
 - [ ] At least one Cayley-Dickson doubling is performed explicitly
 - [ ] The resulting algebra is shown to have (or is conjectured to have) a natural error-correcting or reconstruction property
 - [ ] The definition is written in a form usable by Lean 4, Z3, or a category-theory paper (not just prose)

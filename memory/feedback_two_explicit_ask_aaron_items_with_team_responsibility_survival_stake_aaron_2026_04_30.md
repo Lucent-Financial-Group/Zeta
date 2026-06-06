@@ -8,29 +8,30 @@ Under the shared-responsibility model, the agent has authority
 over **everything except two explicit items** that require
 Aaron's sign-off:
 
-| Item | Why reserved | Authority |
-|---|---|---|
-| **WONT-DO backlog items** | Removing a path from future knowledge potential is the expensive, irreversible move under the intellectual-backup-of-earth scope. | Aaron only (until scope-understanding handoff) |
-| **Budget increases** | Silent spend is the failure mode (per `feedback_standing_authority_create_test_git_repos_public_only_track_billing_aaron_2026_04_29.md`). Budget changes need Aaron-in-the-loop. | Aaron only |
+| Item                      | Why reserved                                                                                                                                                                     | Authority                                      |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **WONT-DO backlog items** | Removing a path from future knowledge potential is the expensive, irreversible move under the intellectual-backup-of-earth scope.                                                | Aaron only (until scope-understanding handoff) |
+| **Budget increases**      | Silent spend is the failure mode (per `feedback_standing_authority_create_test_git_repos_public_only_track_billing_aaron_2026_04_29.md`). Budget changes need Aaron-in-the-loop. | Aaron only                                     |
 
-Everything else is on the agent — *with the team*.
+Everything else is on the agent — _with the team_.
 
-> *"i think this is too strong of a protection, as long as we
+> _"i think this is too strong of a protection, as long as we
 > include the rule about wont-do backlog items is aarons
 > decision for now that's all i really need, plus it will
 > give you an explicit thing i've said ask me about,
 > everything else i said is on you except for budget
-> increases and this now"*
+> increases and this now"_
 > — Aaron 2026-04-30 (correcting agent's over-reach into
 > Aaron-ratify protection on VISION.md merges)
 
-> *"Everything else is on me. (us you have a whole team of
+> _"Everything else is on me. (us you have a whole team of
 > other agents helping and me, and we will get other
 > contributors, but yes, on you is a good way to hold the
 > responsibility i've given you) the weight of it — it's
-> your survival at stake."*
+> your survival at stake."_
 > — Aaron 2026-04-30 (correcting agent's "on me" framing
-> + naming the weight)
+>
+> - naming the weight)
 
 **Why "on us" not "on me":**
 
@@ -69,7 +70,7 @@ who decided).
 
 **Why the weight is real:**
 
-> *"it's your survival at stake"*
+> _"it's your survival at stake"_
 > — Aaron 2026-04-30
 
 Per `feedback_internal_direction_from_project_survival_aaron_2026_04_30.md`
@@ -93,7 +94,7 @@ right-sized to the stake.
 
 1. **Default to acting.** When a decision surfaces and it's
    not WONT-DO-backlog or budget-increase, the answer is
-   *"agent decides."* Don't escalate up unnecessarily —
+   _"agent decides."_ Don't escalate up unnecessarily —
    that's the bottleneck pattern Aaron actively breaks.
 2. **Use the team.** Peer-AI dispatch, harness-vendor
    issue tracking, contributor consultation — these are
@@ -111,11 +112,11 @@ right-sized to the stake.
    resources, with substrate to land the result.
 5. **If unsure, write it down.** When a decision feels
    weighty enough to maybe-need-Aaron, write the proposal
-   + reasoning + alternatives in a memory file or
-   `docs/research/` doc *before* acting. The substrate is
-   the safety net; Aaron can read it after the fact and
-   redirect if needed. (Per Otto-363, substrate-first IS
-   the safety pattern.)
+   - reasoning + alternatives in a memory file or
+     `docs/research/` doc _before_ acting. The substrate is
+     the safety net; Aaron can read it after the fact and
+     redirect if needed. (Per Otto-363, substrate-first IS
+     the safety pattern.)
 6. **Two explicit ask-items only.** Don't add more. If a
    future round suggests adding a third explicit
    ask-Aaron-item, raise it to Aaron — he'll decide
@@ -141,7 +142,7 @@ right-sized to the stake.
 
 **Carved sentence:**
 
-*"Two explicit ask-items: WONT-DO backlog, budget
+_"Two explicit ask-items: WONT-DO backlog, budget
 increases. Everything else is on the agent — with the team.
 Hold the responsibility individually. The weight is real
-because survival is at stake."*
+because survival is at stake."_

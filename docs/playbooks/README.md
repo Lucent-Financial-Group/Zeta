@@ -11,14 +11,14 @@ ad-hoc location.
 
 ## Directory convention (operator 2026-05-28 sharpening)
 
-> *"playbook authoring is not just for human intent but also agent intent
+> _"playbook authoring is not just for human intent but also agent intent
 > we should keep personal playbooks in the personas directory while having
-> system ones in docs i guess or playbooks folder"*
+> system ones in docs i guess or playbooks folder"_
 
-| Scope | Location | Authored by | Visible to |
-|---|---|---|---|
-| **Personal** (per-persona; intent + workflow specific to that persona) | `memory/persona/{persona}/playbooks/{name}.md` | The persona (human or agent) it belongs to | The persona + glass-halo readers |
-| **System** (shared; cross-persona; framework-level) | `docs/playbooks/{name}.md` (this folder) | Anyone with system-substrate access (operator + agents) | Everyone (public glass-halo) |
+| Scope                                                                  | Location                                       | Authored by                                             | Visible to                       |
+| ---------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------- | -------------------------------- |
+| **Personal** (per-persona; intent + workflow specific to that persona) | `memory/persona/{persona}/playbooks/{name}.md` | The persona (human or agent) it belongs to              | The persona + glass-halo readers |
+| **System** (shared; cross-persona; framework-level)                    | `docs/playbooks/{name}.md` (this folder)       | Anyone with system-substrate access (operator + agents) | Everyone (public glass-halo)     |
 
 Per-persona playbook directories are created on demand when the first
 playbook lands there — no need to pre-create empty `memory/persona/<name>/playbooks/`
@@ -63,7 +63,7 @@ The conversational-document path is for ANY traveler, not just humans
 
 Per [`docs/backlog/P1/B-0892.1-...md`](../backlog/P1/B-0892.1-interface-for-async-scatterbrains-operator-experience-design-property-multi-thread-drop-resume-context-switch-aaron-2026-05-28.md):
 
-> *"We are building the interface for async scatterbrains like me lol :)"*
+> _"We are building the interface for async scatterbrains like me lol :)"_
 
 Playbooks specifically serve async-scatterbrain operation by:
 
@@ -86,10 +86,10 @@ Related artifacts:
 
 - **[`docs/runbooks/zflash-end-to-end.md`](../runbooks/zflash-end-to-end.md)**
   — operator-facing zflash USB credential substrate runbook (CP-1..CP-6
-  + 10-min demo script + risk register). Authored as runbook; could be
-  re-categorized as a playbook (runbook vs playbook semantic distinction
-  is deliberately TBD per B-0867.22 acceptance criteria #3 — operator
-  decides at re-categorization time)
+  - 10-min demo script + risk register). Authored as runbook; could be
+    re-categorized as a playbook (runbook vs playbook semantic distinction
+    is deliberately TBD per B-0867.22 acceptance criteria #3 — operator
+    decides at re-categorization time)
 - **System playbook candidates per existing backlog substrate** (not yet
   authored as `.md` files):
   - `docs/playbooks/library-evaluation.md` — canonical sonatype-guide +
@@ -109,8 +109,8 @@ Per [B-0883.16](../backlog/P1/B-0883.16-glass-halo-open-by-default-encryption-as
 playbooks land in plaintext markdown by default. Encryption is the
 exception requiring justification + Agora V6 budget.
 
-Per operator 2026-05-28 *"yes we are assuming good actors for now, we
-will harden later"* — v1 playbook authoring trusts the contributor; no
+Per operator 2026-05-28 _"yes we are assuming good actors for now, we
+will harden later"_ — v1 playbook authoring trusts the contributor; no
 attestation chain or signing required for playbook landing. Hardening
 substrate ships in subsequent iterations alongside the broader
 encryption substrate (B-0883 cluster + B-0884 + B-0885).

@@ -5,6 +5,7 @@
 **Absorb cadence:** dedicated tick (Otto-59), following the
 Otto-24 / Otto-54 precedents.
 **Prior Amara ferries this session:**
+
 - [`2026-04-23-amara-operational-gap-assessment.md`](./2026-04-23-amara-operational-gap-assessment.md) (Otto-24, PR #196)
 - [`2026-04-23-amara-zset-semantics-operator-algebra.md`](./2026-04-23-amara-zset-semantics-operator-algebra.md) (Otto-54, PR #211)
 
@@ -17,7 +18,7 @@ Amara's third review is framed around a single thesis sentence:
 > **Merge and mechanize the operating model you already have
 > before you let the system grow another layer of meta-structure.**
 
-Her own reduction: *"the next bottleneck is closure, not ideation"*.
+Her own reduction: _"the next bottleneck is closure, not ideation"_.
 
 The factory now has: an external-maintainer ADR, a checked-in
 proxy config, CURRENT-`<maintainer>`.md distillations in-repo
@@ -55,18 +56,18 @@ Amara proposes 10 immediate fixes. Classified here into (a)
 direct BACKLOG rows, (b) already-backlogged (cross-ref existing
 rows), (c) candidate CI / hygiene additions:
 
-| # | Amara's proposal | Class | Action here |
-|---|---|---|---|
-| 1 | CI fails commits touching `memory/` without `memory/MEMORY.md` update | **CI candidate** | File BACKLOG row for a targeted GitHub Actions check — concrete, direct prevention of the NSA-001 failure mode |
-| 2 | Duplicate-link lint on `memory/MEMORY.md` | **Hygiene candidate** | File BACKLOG row; composes with FACTORY-HYGIENE row #11 (MEMORY.md cap enforcement) — extend with duplicate-detection |
-| 3 | Canonical decision-proxy log format required for any proxy-reviewed claim | **BACKLOG candidate** | Extends the external-maintainer ADR with a consultation-log contract |
-| 4 | Backfill `docs/CONTRIBUTOR-CONFLICTS.md` with already-visible disagreements | **BACKLOG candidate** | Manual curation pass; one-shot + ongoing |
-| 5 | "Operating-model closure" PR label + short-cadence review of that queue | **Labels + process candidate** | Label plus GH-settings update; composes with `docs/AGENT-GITHUB-SURFACES.md` surfaces |
-| 6 | Split hottest backlog surface (`docs/BACKLOG.md`) by scope/owner | **ALREADY BACKLOGGED** | PR #216 research doc just landed; Otto-54 BACKLOG row exists |
-| 7 | Expand NSA tests into pass/partial/fail summary visible at session open | **BACKLOG candidate** | Extends existing NSA cadence with summary-surface |
-| 8 | "Main-only unless marked proposed" rule for references in canonical docs | **Lint candidate** | Composes with pointer-integrity audit (FACTORY-HYGIENE row #25) |
-| 9 | Normalize proxy scope vocabulary across `aurora`/`alignment`/`security`/`governance`/`public-api` | **BACKLOG candidate** | Scope-taxonomy work — Ilyana + Soraya + Kenji |
-| 10 | Courier transcripts → machine-readable manifests (source/date/speakers/mode/scope/disposition) | **BACKLOG candidate** | Extends `docs/protocols/cross-agent-communication.md`; composes with Otto-57 PR-archive row |
+| #   | Amara's proposal                                                                                  | Class                          | Action here                                                                                                           |
+| --- | ------------------------------------------------------------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| 1   | CI fails commits touching `memory/` without `memory/MEMORY.md` update                             | **CI candidate**               | File BACKLOG row for a targeted GitHub Actions check — concrete, direct prevention of the NSA-001 failure mode        |
+| 2   | Duplicate-link lint on `memory/MEMORY.md`                                                         | **Hygiene candidate**          | File BACKLOG row; composes with FACTORY-HYGIENE row #11 (MEMORY.md cap enforcement) — extend with duplicate-detection |
+| 3   | Canonical decision-proxy log format required for any proxy-reviewed claim                         | **BACKLOG candidate**          | Extends the external-maintainer ADR with a consultation-log contract                                                  |
+| 4   | Backfill `docs/CONTRIBUTOR-CONFLICTS.md` with already-visible disagreements                       | **BACKLOG candidate**          | Manual curation pass; one-shot + ongoing                                                                              |
+| 5   | "Operating-model closure" PR label + short-cadence review of that queue                           | **Labels + process candidate** | Label plus GH-settings update; composes with `docs/AGENT-GITHUB-SURFACES.md` surfaces                                 |
+| 6   | Split hottest backlog surface (`docs/BACKLOG.md`) by scope/owner                                  | **ALREADY BACKLOGGED**         | PR #216 research doc just landed; Otto-54 BACKLOG row exists                                                          |
+| 7   | Expand NSA tests into pass/partial/fail summary visible at session open                           | **BACKLOG candidate**          | Extends existing NSA cadence with summary-surface                                                                     |
+| 8   | "Main-only unless marked proposed" rule for references in canonical docs                          | **Lint candidate**             | Composes with pointer-integrity audit (FACTORY-HYGIENE row #25)                                                       |
+| 9   | Normalize proxy scope vocabulary across `aurora`/`alignment`/`security`/`governance`/`public-api` | **BACKLOG candidate**          | Scope-taxonomy work — Ilyana + Soraya + Kenji                                                                         |
+| 10  | Courier transcripts → machine-readable manifests (source/date/speakers/mode/scope/disposition)    | **BACKLOG candidate**          | Extends `docs/protocols/cross-agent-communication.md`; composes with Otto-57 PR-archive row                           |
 
 Plus Amara's drift scorecard (canonicalization lag / memory
 index integrity / proxy runtime completeness / conflict
@@ -95,12 +96,13 @@ checks bridge design → routine.
 > current operative memory says LFG is the "clean
 > source-of-truth," AceHack is the riskier experimental
 > layer, and the intended risk gradient is per-user scratch
+>
 > > AceHack > LFG.
 
 Confirms the LFG-canonical / AceHack-experimental axis is
 load-bearing for decision-proxy analysis. Otto notes: this
 composes with the git-native-first-host positioning (Otto-54)
-— LFG is the *operationally-canonical* repo within the
+— LFG is the _operationally-canonical_ repo within the
 first-host, AceHack is the experimentation substrate. Both
 persist independently of host choice.
 
@@ -140,10 +142,10 @@ it, any "proxy reviewed" claim is unverifiable.
 
 ## Aaron's meta-practice directive (same tick)
 
-Aaron Otto-59 follow-up: *"also another meta practice thing
+Aaron Otto-59 follow-up: _"also another meta practice thing
 look for things that should be practices and add them to the
 practice adherence review like things we already do or should
-do"*.
+do"_.
 
 Extends the principle-adherence review BACKLOG row landed this
 session (PR #217) with a **catalogue-expansion discipline**:
@@ -255,8 +257,8 @@ consultation-log format is the path that would permit
   right; the specific YAML lines may need hardening.
 - **Not an endorsement of "closure > ideation" as a permanent
   rule.** The factory needs ideation cycles too; the claim is
-  specifically *"right now the bottleneck is closure"*,
-  not *"never add meta-structure again"*.
+  specifically _"right now the bottleneck is closure"_,
+  not _"never add meta-structure again"_.
 - **Not capacity to begin executing the 7 new BACKLOG rows
   this tick.** Filing happens next; execution is per-owner
   downstream.
@@ -285,13 +287,13 @@ for verifiability):
   (<https://help.openai.com/en/articles/9624314-conversation-branching-faq>).
 - **DBSP paper** — Mihai Budiu, Tej Chajed, Frank McSherry,
   Leonid Ryzhyk, Val Tannen,
-  *"DBSP: Automatic Incremental View Maintenance for Rich
-  Query Languages"*,
+  _"DBSP: Automatic Incremental View Maintenance for Rich
+  Query Languages"_,
   PVLDB 16(7) (2023), arXiv:2203.16684,
   <https://arxiv.org/abs/2203.16684>.
 - **Provenance-semiring paper** — Todd J. Green, Grigoris
   Karvounarakis, Val Tannen,
-  *"Provenance Semirings"*, PODS 2007,
+  _"Provenance Semirings"_, PODS 2007,
   <https://doi.org/10.1145/1265530.1265535>.
 
 Names appearing in this Attribution section are preserved per

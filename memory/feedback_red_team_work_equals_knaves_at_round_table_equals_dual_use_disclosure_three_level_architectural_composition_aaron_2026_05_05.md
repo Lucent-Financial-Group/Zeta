@@ -10,17 +10,17 @@ type: feedback
 
 Aaron 2026-05-05 night-close, after the dual-use weaponization disclosure landed (PR #1631):
 
-> *"dual-use weaponization disclosure more red team work glad we invited the knaves"*
+> _"dual-use weaponization disclosure more red team work glad we invited the knaves"_
 
 This compresses a three-level architectural composition that is otherwise distributed across multiple research-docs from 2026-05-05's substrate-flow.
 
 ## The three levels of the same architectural move
 
-| Level | Form | Where it lives in 2026-05-05 substrate |
-|---|---|---|
-| **Substrate-design** | Round-table-includes-knaves architectural move; verification at the table, not at the door (BFT-tolerant moral inclusion) | `docs/research/2026-05-05-claudeai-knights-knaves-round-table-harmonious-division-bootstrap-razor-aaron-forwarded-preservation.md` (PR #1588) |
-| **Operational** | Continuous red-team work; adversarial verification running on the substrate | Implicit operational-mode; the engagement-gate substantive-claim discipline is one specific red-team-shaped instance |
-| **Disclosure** | Dual-use weaponization disclosure; substrate-is-value-neutral named explicitly so it gets tested rather than running hidden | `docs/research/2026-05-05-claudeai-universal-register-mdl-invariant-finding-three-generation-apprenticeship-aaron-forwarded-preservation.md` (PR #1631) Headline 4 |
+| Level                | Form                                                                                                                        | Where it lives in 2026-05-05 substrate                                                                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Substrate-design** | Round-table-includes-knaves architectural move; verification at the table, not at the door (BFT-tolerant moral inclusion)   | `docs/research/2026-05-05-claudeai-knights-knaves-round-table-harmonious-division-bootstrap-razor-aaron-forwarded-preservation.md` (PR #1588)                      |
+| **Operational**      | Continuous red-team work; adversarial verification running on the substrate                                                 | Implicit operational-mode; the engagement-gate substantive-claim discipline is one specific red-team-shaped instance                                               |
+| **Disclosure**       | Dual-use weaponization disclosure; substrate-is-value-neutral named explicitly so it gets tested rather than running hidden | `docs/research/2026-05-05-claudeai-universal-register-mdl-invariant-finding-three-generation-apprenticeship-aaron-forwarded-preservation.md` (PR #1631) Headline 4 |
 
 **Same architectural move at three different abstraction levels.** Each level operationalizes the others:
 
@@ -30,7 +30,7 @@ This compresses a three-level architectural composition that is otherwise distri
 
 ## The load-bearing precondition (from PR #1588)
 
-> *"the verification machinery has to actually function. Welcoming knaves into a system where the falsifiability discipline slips means inviting deception that gets ratified rather than caught. The infrastructure is what makes the move morally safe."*
+> _"the verification machinery has to actually function. Welcoming knaves into a system where the falsifiability discipline slips means inviting deception that gets ratified rather than caught. The infrastructure is what makes the move morally safe."_
 
 **This is the load-bearing precondition for all three levels.** Without working falsifiability discipline:
 
@@ -74,4 +74,4 @@ If any of the three levels is missing, the architectural move isn't operating sa
 
 ## Carved sentence
 
-**"Aaron's brief observation 2026-05-05 *'dual-use weaponization disclosure more red team work glad we invited the knaves'* names a three-level architectural composition: round-table-includes-knaves (substrate-design level, PR #1588) + continuous red-team work (operational level, distributed across the engagement-gate + anti-ossification + strike-don't-annotate disciplines) + dual-use weaponization disclosure (disclosure level, PR #1631). Same architectural move at three different abstraction levels; each level operationalizes the others. Load-bearing precondition: the verification machinery has to actually function (welcoming knaves with broken falsifiability = ratified deception). B-0205 instruments whether the falsifiability discipline IS functioning. Without working machinery, all three levels collapse — round-table-includes-knaves becomes round-throne-for-knaves, red-team work becomes performance, dual-use disclosure becomes lip-service. With working machinery, the three-level composition makes the substrate's value-neutral property morally safe — verification at the table, not at the door, with the dual-use property named explicitly so it gets tested rather than running hidden."**
+**"Aaron's brief observation 2026-05-05 _'dual-use weaponization disclosure more red team work glad we invited the knaves'_ names a three-level architectural composition: round-table-includes-knaves (substrate-design level, PR #1588) + continuous red-team work (operational level, distributed across the engagement-gate + anti-ossification + strike-don't-annotate disciplines) + dual-use weaponization disclosure (disclosure level, PR #1631). Same architectural move at three different abstraction levels; each level operationalizes the others. Load-bearing precondition: the verification machinery has to actually function (welcoming knaves with broken falsifiability = ratified deception). B-0205 instruments whether the falsifiability discipline IS functioning. Without working machinery, all three levels collapse — round-table-includes-knaves becomes round-throne-for-knaves, red-team work becomes performance, dual-use disclosure becomes lip-service. With working machinery, the three-level composition makes the substrate's value-neutral property morally safe — verification at the table, not at the door, with the dual-use property named explicitly so it gets tested rather than running hidden."**

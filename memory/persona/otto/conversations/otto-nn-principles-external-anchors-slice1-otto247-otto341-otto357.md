@@ -38,7 +38,7 @@ cached knowledge for load-bearing claims.
 **1. Age-of-Information (AoI) — information-freshness formalization**
 
 - Zu et al. (2022). "Towards Optimal Tradeoff Between Data Freshness and
-  Update Cost in Information-update Systems." *arXiv* 2204.14123.
+  Update Cost in Information-update Systems." _arXiv_ 2204.14123.
   <https://arxiv.org/abs/2204.14123>
 
   Relevance: Formally models the staleness problem as a Markov decision
@@ -51,7 +51,7 @@ cached knowledge for load-bearing claims.
 **2. LLM knowledge cutoff empirics**
 
 - Dodge, J. et al. (2024). "Dated Data: Tracing Knowledge Cutoffs in
-  Large Language Models." *arXiv* 2403.12958.
+  Large Language Models." _arXiv_ 2403.12958.
   <https://arxiv.org/html/2403.12958v1>
 
   Relevance: Empirically demonstrates that effective LLM knowledge cutoffs
@@ -68,8 +68,8 @@ cached knowledge for load-bearing claims.
   Knowledge in Large-Scale Data Pipelines."
   <https://engineering.fb.com/2026/04/06/developer-tools/how-meta-used-ai-to-map-tribal-knowledge-in-large-scale-data-pipelines/>
 
-  Relevance: Practitioner anchor. Core finding (verbatim): *"Context that
-  goes stale causes more harm than no context."* Meta's automated
+  Relevance: Practitioner anchor. Core finding (verbatim): _"Context that
+  goes stale causes more harm than no context."_ Meta's automated
   validation jobs systematically detect and refresh stale references for
   AI agent grounding. Industry-validated that the Otto-247 pattern
   (actively check currency vs. rely on cached context) is the correct
@@ -98,7 +98,7 @@ the vocabulary choices in operational rules.
 
 **1. McLuhan — "The medium is the message"**
 
-- McLuhan, M. (1964). *Understanding Media: The Extensions of Man.*
+- McLuhan, M. (1964). _Understanding Media: The Extensions of Man._
   McGraw-Hill. Chapter 1: "The Medium is the Message."
 
   Relevance: The canonical statement of the principle. McLuhan argued that
@@ -111,17 +111,17 @@ the vocabulary choices in operational rules.
   format, vocabulary, structure) IS the substrate, and the substrate IS the
   identity shaper.
 
-  Note: the illustrated companion *The Medium is the Massage* (1967,
+  Note: the illustrated companion _The Medium is the Massage_ (1967,
   Bantam Books, with Quentin Fiore) restates the same thesis in visual
   form and is more accessible; both are valid citations.
 
 **2. Sapir-Whorf linguistic relativity**
 
-- Whorf, B. L. (1956). *Language, Thought, and Reality: Selected
-  Writings of Benjamin Lee Whorf.* MIT Press. (John B. Carroll, ed.)
+- Whorf, B. L. (1956). _Language, Thought, and Reality: Selected
+  Writings of Benjamin Lee Whorf._ MIT Press. (John B. Carroll, ed.)
 - Sapir, E. (1929/1949). "The status of linguistics as a science" in
-  *Selected Writings of Edward Sapir in Language, Culture, and
-  Personality.* University of California Press.
+  _Selected Writings of Edward Sapir in Language, Culture, and
+  Personality._ University of California Press.
 - Stanford Encyclopedia of Philosophy. "Linguistic Relativity."
   <https://plato.stanford.edu/entries/linguistics/whorfianism/>
 
@@ -136,9 +136,9 @@ the vocabulary choices in operational rules.
 
 **3. Instruction format shapes LLM agent behavior**
 
-- Zhao, Y. et al. (2026). *Agentic Artificial Intelligence:
+- Zhao, Y. et al. (2026). _Agentic Artificial Intelligence:
   Architectures, Taxonomies, and Evaluation of Large Language Model
-  Agents.* arXiv 2601.12560.
+  Agents._ arXiv 2601.12560.
   <https://arxiv.org/html/2601.12560v1>
 
   Relevance: Documents that instruction format (structured markers,
@@ -179,7 +179,7 @@ substrate; changing the framing changes the decision substrate).
 
 - Ryan, R. M., & Deci, E. L. (2000). "Self-Determination Theory and the
   Facilitation of Intrinsic Motivation, Social Development, and
-  Well-Being." *American Psychologist, 55*(1), 68–78.
+  Well-Being." _American Psychologist, 55_(1), 68–78.
   <https://selfdeterminationtheory.org/SDT/documents/2000_RyanDeci_SDT.pdf>
   (>80,000 citations)
 
@@ -196,10 +196,10 @@ substrate; changing the framing changes the decision substrate).
 **2. Principal-agent theory — aligning agents without micromanagement**
 
 - Jensen, M. C., & Meckling, W. H. (1976). "Theory of the Firm:
-  Managerial Behavior, Agency Costs and Ownership Structure." *Journal
-  of Financial Economics, 3*(4), 305–360.
+  Managerial Behavior, Agency Costs and Ownership Structure." _Journal
+  of Financial Economics, 3_(4), 305–360.
 - Ross, S. A. (1973). "The Economic Theory of Agency: The Principal's
-  Problem." *American Economic Review, 63*(2), 134–139.
+  Problem." _American Economic Review, 63_(2), 134–139.
 
   Relevance: Agency theory formalizes the principal-agent problem: how
   does a principal (delegator) get an agent (executor) to act in the
@@ -216,13 +216,13 @@ substrate; changing the framing changes the decision substrate).
 - Leike, J. et al. (2018). "AI Safety Gridworlds." arXiv 1711.09883.
   <https://arxiv.org/abs/1711.09883>
 - Gabriel, I. (2020). "Artificial Intelligence, Values, and Alignment."
-  *Minds and Machines, 30*, 411–437.
+  _Minds and Machines, 30_, 411–437.
   <https://doi.org/10.1007/s11023-020-09539-2>
-- Shen, T. et al. (2023). *Large Language Model Alignment: A Survey.*
+- Shen, T. et al. (2023). _Large Language Model Alignment: A Survey._
   arXiv 2310.19852. <https://arxiv.org/abs/2310.19852>
 
-  Relevance: The AI alignment literature distinguishes *instruction
-  following* (do what you're told) from *value alignment* (act in
+  Relevance: The AI alignment literature distinguishes _instruction
+  following_ (do what you're told) from _value alignment_ (act in
   accordance with human values, even when not explicitly instructed).
   Pure instruction-following is brittle: it fails on novel situations not
   covered by directives, and it creates safety vulnerabilities when
@@ -242,15 +242,15 @@ framing produces more robust behavior than directive-based control.
 
 ## Coverage summary (B-0313 progress)
 
-| Principle | Status | Primary anchor |
-| --- | --- | --- |
-| Otto-247 | anchored (slice 1) | Dodge et al. 2024 (LLM cutoffs) + Meta Eng 2026 |
-| Otto-341 | anchored (slice 1) | McLuhan 1964 + Sapir-Whorf + Zhao et al. 2026 |
-| Otto-357 | anchored (slice 1) | Ryan & Deci 2000 + Jensen & Meckling 1976 + Gabriel 2020 |
-| Otto-275 | anchor-pending | deferred to slice 2 |
-| Otto-279 | anchor-pending | deferred to slice 2 |
-| Otto-351 | anchor-pending | deferred to slice 2 |
-| Otto-352 | anchor-pending | deferred to slice 2 |
+| Principle | Status             | Primary anchor                                           |
+| --------- | ------------------ | -------------------------------------------------------- |
+| Otto-247  | anchored (slice 1) | Dodge et al. 2024 (LLM cutoffs) + Meta Eng 2026          |
+| Otto-341  | anchored (slice 1) | McLuhan 1964 + Sapir-Whorf + Zhao et al. 2026            |
+| Otto-357  | anchored (slice 1) | Ryan & Deci 2000 + Jensen & Meckling 1976 + Gabriel 2020 |
+| Otto-275  | anchor-pending     | deferred to slice 2                                      |
+| Otto-279  | anchor-pending     | deferred to slice 2                                      |
+| Otto-351  | anchor-pending     | deferred to slice 2                                      |
+| Otto-352  | anchor-pending     | deferred to slice 2                                      |
 
 Slice 2 will cover Otto-275 (manufactured patience / sustainable cadence),
 Otto-279 (named-agent distinctness / agent identity), Otto-351

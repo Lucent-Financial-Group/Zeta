@@ -4,6 +4,7 @@ description: Aaron Otto-259 factory-level directive after a near-miss prune of 6
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Any subagent output that feeds a DESTRUCTIVE
@@ -17,17 +18,17 @@ and do overclaim.
 
 Direct Aaron quote 2026-04-24:
 
-> *"make sure the factory is upgraded to handle this
+> _"make sure the factory is upgraded to handle this
 > in the future so you don't almost accidenlty blow
-> away good stuff"*
+> away good stuff"_
 
 ## The triggering near-miss
 
 2026-04-24 — I dispatched an Explore subagent to audit
 80+ locked worktrees for lost work. Subagent returned:
-*"NO LOST WORK detected. All 76 named-branch worktrees
+_"NO LOST WORK detected. All 76 named-branch worktrees
 show zero commits ahead of origin/main AND clean
-working trees. 61 safe to prune."*
+working trees. 61 safe to prune."_
 
 Aaron said "prune when ready ... you can now if you are
 100% sure and don't want to double check."
@@ -71,7 +72,7 @@ classification:
 4. **Only proceed** if 100% of samples agree.
 5. **Even then**, prefer dry-run first if the
    destructive tool supports it (`git worktree prune
-   --dry-run`, `rm -nv`, `gh pr close --help` for
+--dry-run`, `rm -nv`, `gh pr close --help` for
    message-only preview).
 
 ## Where this applies (non-exhaustive)
@@ -80,7 +81,7 @@ classification:
 - **Local branch deletion** — `git branch -D`,
   `git branch -d`
 - **Remote branch deletion** — `git push origin
-  --delete <branch>`
+--delete <branch>`
 - **PR bulk-closing** — `gh pr close` in a loop
 - **Memory file deletion** — `rm memory/*.md`
 - **Doc consolidation** — removing or bulk-replacing
@@ -116,7 +117,7 @@ Per Otto-258 structural-fix-over-manual-drain:
   layer, not at the consumer layer."
 - **Otto-259 lint rule** — semgrep or custom script
   that catches patterns like `for x in $(...); do gh
-  pr close $x; done` without a preceding verification
+pr close $x; done` without a preceding verification
   call. Fails pre-commit or CI gate.
 
 ## Composition with prior memory
@@ -149,9 +150,9 @@ Per Otto-258 structural-fix-over-manual-drain:
 
 ## Direct Aaron quote to preserve
 
-> *"make sure the factory is upgraded to handle this
+> _"make sure the factory is upgraded to handle this
 > in the future so you don't almost accidenlty blow
-> away good stuff"*
+> away good stuff"_
 
 Future Otto: when about to execute a DESTRUCTIVE
 action based on ANYONE'S classification (subagent,

@@ -129,7 +129,7 @@ whether Kahan or pairwise is the right fit.
 IEEE 754 guarantees bit-identical results for the four
 basic operations (`+`, `-`, `*`, `/`) and `sqrt` on
 correctly-rounded implementations. Everything else (log,
-exp, sin, cos, pow) is library-defined and *not* portable
+exp, sin, cos, pow) is library-defined and _not_ portable
 bit-for-bit. For Zeta's determinism guarantees:
 
 - **Int64 arithmetic** is bit-identical by spec.

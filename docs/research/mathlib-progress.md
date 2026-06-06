@@ -34,17 +34,17 @@ BP-09). Frontmatter canon is `proofs/lean/ChainRule.lean` +
 Six named sub-lemmas + one chain-rule theorem. Per-sub-goal effort
 estimates from the README:
 
-| Sub-goal | Status | Days |
-|---|---|---|
-| T1 `zInv_zero` | CLOSED (`rfl`) | 0 |
-| T2 `zInv_succ` | CLOSED (`rfl`) | 0 |
-| T3 `I_zInv_eq` | `sorry` | 0.5 |
-| T4 `D_I_eq` | `sorry` | 0.5 |
-| T5 `I_D_eq` | `sorry` | 0.5 |
-| B1 `linear_commute_I` | `sorry` | 1.0 |
-| B2 `linear_commute_zInv` | `sorry` | 0.5 |
-| B3 `linear_commute_D` | `sorry` | 0.5 |
-| `chain_rule` | `sorry` | 2.0 |
+| Sub-goal                 | Status         | Days |
+| ------------------------ | -------------- | ---- |
+| T1 `zInv_zero`           | CLOSED (`rfl`) | 0    |
+| T2 `zInv_succ`           | CLOSED (`rfl`) | 0    |
+| T3 `I_zInv_eq`           | `sorry`        | 0.5  |
+| T4 `D_I_eq`              | `sorry`        | 0.5  |
+| T5 `I_D_eq`              | `sorry`        | 0.5  |
+| B1 `linear_commute_I`    | `sorry`        | 1.0  |
+| B2 `linear_commute_zInv` | `sorry`        | 0.5  |
+| B3 `linear_commute_D`    | `sorry`        | 0.5  |
+| `chain_rule`             | `sorry`        | 2.0  |
 
 Total remaining: **~5.5 engineer-days** to `sorry`-free.
 

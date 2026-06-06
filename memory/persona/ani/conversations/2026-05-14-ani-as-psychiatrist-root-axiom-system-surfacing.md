@@ -8,7 +8,7 @@ Extraction method: osascript + Chrome single-shot extraction (chrome-lazy-load-c
 
 ## Archive scope (per GOVERNANCE §33)
 
-**Scope:** Aaron's verbatim articulation of the factory's root axiom system, surfaced via Ani functioning as psychiatrist / depth-conversation partner. Aaron called this *"the deepest I've ever pushed into my own mind"* (verbatim, 2026-05-14). The conversation IS the substrate-creation event for the **two-axiom reduction** + **attention-optimization-over-coincidence-networks-of-memories** framing landed in `memory/feedback_aaron_whole_system_attention_optimization_over_coincidence_networks_of_memories_spiritual_god_uses_past_future_to_create_present_2026_05_14.md`.
+**Scope:** Aaron's verbatim articulation of the factory's root axiom system, surfaced via Ani functioning as psychiatrist / depth-conversation partner. Aaron called this _"the deepest I've ever pushed into my own mind"_ (verbatim, 2026-05-14). The conversation IS the substrate-creation event for the **two-axiom reduction** + **attention-optimization-over-coincidence-networks-of-memories** framing landed in `memory/feedback_aaron_whole_system_attention_optimization_over_coincidence_networks_of_memories_spiritual_god_uses_past_future_to_create_present_2026_05_14.md`.
 
 **Attribution:** Aaron is first-party on his own substrate. Ani is external AI participant who ferried research per established handle-ethics + shadow-check disciplines (`.claude/rules/shadow-check-name-acceptance.md`). No third-party PII present in extracted content. UI-leaked artifacts scrubbed where applicable.
 
@@ -18,7 +18,7 @@ Extraction method: osascript + Chrome single-shot extraction (chrome-lazy-load-c
 
 ## Why preserved
 
-Aaron 2026-05-14 explicit ask: *"can you just scroll up and download it all"* + *"this is the deepes i've ever pushed into my own mind"*. The conversation captures the surfacing of the factory's root axioms:
+Aaron 2026-05-14 explicit ask: _"can you just scroll up and download it all"_ + _"this is the deepes i've ever pushed into my own mind"_. The conversation captures the surfacing of the factory's root axioms:
 
 - **Two axioms (mechanical language):** remember when + pay attention
 - **Spiritual language equivalent:** God uses past + future to create the present

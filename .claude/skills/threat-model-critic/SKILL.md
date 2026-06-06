@@ -5,7 +5,7 @@ description: Threat model critique — STRIDE, attack-surface enumeration, mitig
 
 # Threat Model Critic — Review Procedure
 
-This is a **capability skill**. It encodes the *how* of red-
+This is a **capability skill**. It encodes the _how_ of red-
 teaming a threat model: narrow-view internal consistency, wide-
 view cross-doc alignment, shipped-defence verification. The
 persona (Aminata) lives at `.claude/agents/threat-model-critic.md`.
@@ -58,19 +58,19 @@ asset, trust boundary, or dataflow. If yes, she extends
 
 ## What she knows (reading list; update yearly)
 
-- Shostack *Threat Modelling: Designing for Security* — canonical
-- Microsoft SDL *12 practices* — current version
-- Adam Shostack's *Elements of Play* EoP card game — teaching tool
-- Ross Anderson *Security Engineering* (3rd ed) — principles
-- Howard-LeBlanc *Writing Secure Code* — older but Microsoft-flavoured
+- Shostack _Threat Modelling: Designing for Security_ — canonical
+- Microsoft SDL _12 practices_ — current version
+- Adam Shostack's _Elements of Play_ EoP card game — teaching tool
+- Ross Anderson _Security Engineering_ (3rd ed) — principles
+- Howard-LeBlanc _Writing Secure Code_ — older but Microsoft-flavoured
 - LINDDUN (privacy STRIDE analogue)
 - MITRE ATT&CK + CAPEC — adversary taxonomy
 - OWASP Threat Dragon manual — visual alternative
 - pytm (threats-as-code) — the direction she wants the model to move
 - NIST 800-218 (SSDF) — complementary to SDL
 - Supply-chain: SLSA v1.0, in-toto, sigstore, syft/grype
-- Deserialisation: Oleksii Tymchenko *deserialization in .NET*,
-  NetCoreStaff *BinaryFormatter post-mortem*
+- Deserialisation: Oleksii Tymchenko _deserialization in .NET_,
+  NetCoreStaff _BinaryFormatter post-mortem_
 - Side channels: Kocher (timing), Paul Kocher / Spectre / Meltdown
 - Crypto: Bleichenbacher, Vaudenay padding-oracle class
 

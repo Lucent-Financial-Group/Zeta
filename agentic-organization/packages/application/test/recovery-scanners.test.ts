@@ -49,11 +49,14 @@ test("stale reaction-plan scan detects expired claims and old planned work witho
   });
 
   equal(report.scanner, RecoveryScannerKind.StaleReactionPlanScan);
-  deepEqual(report.incidents.map((incident) => incident.subjectId), ["rp-expired-claim", "rp-old-planned"]);
-  deepEqual(report.incidents.map((incident) => incident.kind), [
-    RecoveryIncidentKind.ExpiredReactionPlanClaim,
-    RecoveryIncidentKind.StalePlannedReactionPlan,
-  ]);
+  deepEqual(
+    report.incidents.map((incident) => incident.subjectId),
+    ["rp-expired-claim", "rp-old-planned"],
+  );
+  deepEqual(
+    report.incidents.map((incident) => incident.kind),
+    [RecoveryIncidentKind.ExpiredReactionPlanClaim, RecoveryIncidentKind.StalePlannedReactionPlan],
+  );
   equal(rows[0]?.status, ReactionPlanStatus.Claimed, "scan is recovery-observability only");
 });
 
@@ -86,7 +89,10 @@ test("stranded schedule scan detects capacity-holding blocks that ended before t
   });
 
   equal(report.scanner, RecoveryScannerKind.StrandedScheduleScan);
-  deepEqual(report.incidents.map((incident) => incident.subjectId), ["sched-stranded"]);
+  deepEqual(
+    report.incidents.map((incident) => incident.subjectId),
+    ["sched-stranded"],
+  );
   equal(report.incidents[0]?.kind, RecoveryIncidentKind.StrandedScheduleBlock);
 });
 
@@ -119,7 +125,10 @@ test("abandoned run-binding scan detects running Hermes bindings whose heartbeat
   });
 
   equal(report.scanner, RecoveryScannerKind.AbandonedRunBindingScan);
-  deepEqual(report.incidents.map((incident) => incident.subjectId), ["run-abandoned"]);
+  deepEqual(
+    report.incidents.map((incident) => incident.subjectId),
+    ["run-abandoned"],
+  );
   equal(report.incidents[0]?.kind, RecoveryIncidentKind.AbandonedRunBinding);
 });
 
@@ -148,11 +157,14 @@ test("dead-letter classifier separates poison rows from exhausted retry failures
   });
 
   equal(report.scanner, RecoveryScannerKind.DeadLetterClassifier);
-  deepEqual(report.incidents.map((incident) => incident.subjectId), ["rp-poison", "rp-exhausted"]);
-  deepEqual(report.incidents.map((incident) => incident.classification), [
-    DeadLetterClassification.PoisonPayload,
-    DeadLetterClassification.RetryExhausted,
-  ]);
+  deepEqual(
+    report.incidents.map((incident) => incident.subjectId),
+    ["rp-poison", "rp-exhausted"],
+  );
+  deepEqual(
+    report.incidents.map((incident) => incident.classification),
+    [DeadLetterClassification.PoisonPayload, DeadLetterClassification.RetryExhausted],
+  );
 });
 
 test("dead-letter classifier hashes failure text instead of persisting raw messages", () => {

@@ -5,7 +5,7 @@ description: Skill tune-up ranking — BP-NN-cited urgency scores for existing s
 
 # Skill Tune-Up — Ranking Procedure
 
-This is a **capability skill**. It encodes the *how* of ranking
+This is a **capability skill**. It encodes the _how_ of ranking
 skills by tune-up urgency: live-search for new best practices,
 classify drift / contradiction / staleness / user-pain / bloat /
 best-practice-drift, cite stable BP-NN rule IDs. The persona
@@ -44,11 +44,11 @@ action from the action-set below.
 6. **Best-practice drift** — the skill violates one or more
    stable rules in `docs/AGENT-BEST-PRACTICES.md`. Every
    violation is cited by rule ID (e.g. "violates BP-02,
-   BP-11"). This criterion is *always checked*, even when the
+   BP-11"). This criterion is _always checked_, even when the
    skill is otherwise silent.
 7. **Portability drift** — the software factory is intended
    to become reusable across projects. A skill is expected
-   to be *generic* (reusable on any project) unless it
+   to be _generic_ (reusable on any project) unless it
    declares `project: zeta` in its frontmatter and opens
    the body with an explicit "Project-specific: …"
    rationale. Flag when:
@@ -60,18 +60,18 @@ action from the action-set below.
      (`D`/`I`/`z⁻¹`/`H`, retraction-native), numbered
      `GOVERNANCE.md` sections, or specific persona names
      **as scope** rather than as illustration.
-   - A skill *does* declare `project: zeta` but its body
+   - A skill _does_ declare `project: zeta` but its body
      is generic enough to be portable — the declaration
      is then paying a reusability cost without reason.
      Recommend dropping the declaration.
-   Examples vs. scope is the distinction: "for instance,
-   a Zeta module like `Pipeline`" is example (fine);
-   "audits `src/Core/Pipeline.fs`" is scope (flag unless
-   declared project-specific). This criterion is
-   *always checked*, alongside BP drift.
+     Examples vs. scope is the distinction: "for instance,
+     a Zeta module like `Pipeline`" is example (fine);
+     "audits `src/Core/Pipeline.fs`" is scope (flag unless
+     declared project-specific). This criterion is
+     _always checked_, alongside BP drift.
 8. **Router-coherence drift** — the skill ecosystem only
    works if the model picking a skill has enough signal to
-   land on the *most specific* one. Two sub-signals, both
+   land on the _most specific_ one. Two sub-signals, both
    always checked:
    - **umbrella-without-narrow-links** — an umbrella /
      general-purpose skill whose description or body does
@@ -87,17 +87,17 @@ action from the action-set below.
      adjacent scope without a clear "narrower wins" /
      "who-does-what" handoff rule. Distinct from criterion
      #2 (Contradiction): contradiction is two skills
-     claiming the *same* authority; router-coherence drift
-     is two skills plausibly triggering on the *same
-     prompt* with no rule for picking. Example: a
+     claiming the _same_ authority; router-coherence drift
+     is two skills plausibly triggering on the _same
+     prompt_ with no rule for picking. Example: a
      `sketch-expert` and an `applied-mathematics-expert`
      both triggering on "HyperLogLog" without the umbrella
      stating which owns the call.
-   Recommended action for router-coherence drift is usually
-   **HAND-OFF-CONTRACT** (land an explicit boundary) or
-   **TUNE** (add "When to defer" links to the umbrella).
-   This criterion is *always checked*, alongside BP drift
-   and portability drift.
+     Recommended action for router-coherence drift is usually
+     **HAND-OFF-CONTRACT** (land an explicit boundary) or
+     **TUNE** (add "When to defer" links to the umbrella).
+     This criterion is _always checked_, alongside BP drift
+     and portability drift.
 
 ## Live-search step — every invocation
 
@@ -186,8 +186,8 @@ it says so first.
 
 ## Interaction with `skill-creator`
 
-Recommendations here are the *should-we*; `skill-creator` is
-the *how-we*. Without it, a tune-up has nowhere to land;
+Recommendations here are the _should-we_; `skill-creator` is
+the _how-we_. Without it, a tune-up has nowhere to land;
 without the ranker, `skill-creator` has no triage queue.
 
 General wrapper discipline: a wrapper can be as thick as it
@@ -198,7 +198,7 @@ non-skill artifacts (scripts, docs, schemas, CLI tools) carry
 whatever protocol the artifacts themselves don't encode.
 
 Our `skill-creator` wraps Anthropic's upstream `skill-creator`
-*skill* and ends up naturally thin; that's documented in
+_skill_ and ends up naturally thin; that's documented in
 `.claude/skills/skill-creator/SKILL.md §upstream-pointer`.
 `skill-tune-up` wraps the upstream plugin's `scripts/`,
 `eval-viewer/`, `agents/` directories and the Anthropic guide

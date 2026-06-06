@@ -10,7 +10,11 @@
  * The token is read from env (mounted from a k8s Secret in the cluster) and never logged.
  */
 
-import { createGitHubHttpClient, createGitHubPrPort, type ChangeControlPort } from "../../../packages/application/src/index.ts";
+import {
+  createGitHubHttpClient,
+  createGitHubPrPort,
+  type ChangeControlPort,
+} from "../../../packages/application/src/index.ts";
 
 export const GitHubPortEnvName = {
   Token: "GITHUB_TOKEN",

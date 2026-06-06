@@ -26,15 +26,15 @@ Prior framing in the same thread (the escalation this builds on):
 
 The framing escalates the install-graph's role across three rungs:
 
-| Rung | What it is | Direction |
-|---|---|---|
-| **Lever** | `install.sh` transforms a running unix box → working substrate | one-shot transform |
-| **Shield** | the automated cross-OS test matrix around install.sh holds entropy back (no human holds all surfaces in mind; only the matrix certifies "A didn't break B") | defensive |
-| **Converter** | install.sh **+ zflash USB/ISO** boots *any* PC into declarative aligned substrate — a member/resource of Agora — and **self-heals** the hardware | generative + self-sustaining |
+| Rung          | What it is                                                                                                                                                  | Direction                    |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| **Lever**     | `install.sh` transforms a running unix box → working substrate                                                                                              | one-shot transform           |
+| **Shield**    | the automated cross-OS test matrix around install.sh holds entropy back (no human holds all surfaces in mind; only the matrix certifies "A didn't break B") | defensive                    |
+| **Converter** | install.sh **+ zflash USB/ISO** boots _any_ PC into declarative aligned substrate — a member/resource of Agora — and **self-heals** the hardware            | generative + self-sustaining |
 
 ### Converter is generative, not just defensive
 
-A shield holds entropy *back*. A converter *reduces* it. A random PC is "thermal
+A shield holds entropy _back_. A converter _reduces_ it. A random PC is "thermal
 noise" — powered, but doing no aligned work for Agora; its configuration state is
 high-entropy (drifted, accreted, unknown). zflash writes the declarative closure
 (the NixOS installer ISO) to USB; **the boot is the collapse** — the machine drops
@@ -47,57 +47,57 @@ for by the declarative closure + one boot, on hardware that already exists.
 "Just by booting it on existing hardware" is the on-ramp. This composes directly
 with `only-way-to-lose-is-not-to-play` (the entropy framing): playing IS swimming
 upstream against entropy; not playing is letting it wash you away. A PC sitting as
-thermal noise is *not playing* — entropy washes it toward the heat-death of idle
-silicon. Booting the ISO is *entering the game* — the conversion IS the act of
+thermal noise is _not playing_ — entropy washes it toward the heat-death of idle
+silicon. Booting the ISO is _entering the game_ — the conversion IS the act of
 joining the additive society. No new hardware required; the latent capacity of
 existing-but-unaligned machines is the resource Agora harvests.
 
 ### Self-healing is downstream of declarative-by-construction
 
 The deepest claim — "it also can self heal that hardware" — is not a separate
-feature; it is a *consequence* of NixOS being declarative-by-construction. A
+feature; it is a _consequence_ of NixOS being declarative-by-construction. A
 system can only self-heal if there is a canonical "what it should be" to snap
 back to:
 
 - **NixOS declares** the desired state (generations + atomic rollback + the
-  pinned closure). Drift is therefore *detectable* (diff against the declaration)
-  and *reversible for free* (roll back to a known-good generation). The negentropy
-  gradient maintains itself — it is a *sustained* negentropy pump, not a one-shot
+  pinned closure). Drift is therefore _detectable_ (diff against the declaration)
+  and _reversible for free_ (roll back to a known-good generation). The negentropy
+  gradient maintains itself — it is a _sustained_ negentropy pump, not a one-shot
   conversion that decays.
 - **Ubuntu (imperative)** has no canonical target state — config is accreted, not
-  declared. install.sh can *convert* it (the B-0940 retrofit: "make Ubuntu behave
-  like NixOS") but cannot *self-heal* it the same way, because there is nothing to
-  roll back *to*.
+  declared. install.sh can _convert_ it (the B-0940 retrofit: "make Ubuntu behave
+  like NixOS") but cannot _self-heal_ it the same way, because there is nothing to
+  roll back _to_.
 
 This **sharpens the B-0940 NixOS-primary argument, affirmatively**: NixOS is
 primary not merely because it is declarative, but because declarative-by-
 construction is what turns the converter into a self-maintaining negentropy pump.
-The imperative retrofit gets the *conversion*; only the declarative substrate gets
-the *self-healing*. (See B-0801 autoupgrade, B-0803 deploy.rs auto-rollback,
+The imperative retrofit gets the _conversion_; only the declarative substrate gets
+the _self-healing_. (See B-0801 autoupgrade, B-0803 deploy.rs auto-rollback,
 B-0804 distro-upgrade canary — the operational machinery of the self-heal.)
 
 ### The converter reframes the shield's job
 
-A converter *with a hole* converts some PCs into **broken substrate that reads as
+A converter _with a hole_ converts some PCs into **broken substrate that reads as
 aligned** — green check, dead capability (the B-0941 false-green: NixOS install
 goes green while the local-LLM is non-functional). So `assert-don't-skip`
 (`.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`) is not just
-test hygiene — it is the guarantee that the conversion actually produces *aligned*
+test hygiene — it is the guarantee that the conversion actually produces _aligned_
 substrate and not thermal-noise-wearing-a-green-check. The shield guards the
-converter's *promise*.
+converter's _promise_.
 
 ## Razor note (operational grounding)
 
-"Anti-entropy converter" survives razor-discipline as an *operational* claim with
+"Anti-entropy converter" survives razor-discipline as an _operational_ claim with
 a bandwidth-efficient thermodynamic handle (per `bandwidth-served-falsifier` +
 `grep-substrate-anchors-before-razor-as-metaphysical` — the anchors are real):
 
-| Metaphor | Operational claim | Anchor |
-|---|---|---|
-| "thermal noise → resource" | unmanaged/high-config-entropy machine → reproducible declarative node doing aligned work | NixOS closure; install.sh; zflash USB/ISO |
-| "self-heal" | drift → atomic rollback to known-good generation | NixOS generations; deploy.rs auto-rollback (B-0803) |
-| "joins Agora by booting" | new node enters the participation economy by reaching the declared state | Agora society substrate; only-way-to-lose |
-| "shield with a hole" | false-green: control passes without exercising the guarantee | shield/assert-don't-skip rule; B-0941 |
+| Metaphor                   | Operational claim                                                                        | Anchor                                              |
+| -------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| "thermal noise → resource" | unmanaged/high-config-entropy machine → reproducible declarative node doing aligned work | NixOS closure; install.sh; zflash USB/ISO           |
+| "self-heal"                | drift → atomic rollback to known-good generation                                         | NixOS generations; deploy.rs auto-rollback (B-0803) |
+| "joins Agora by booting"   | new node enters the participation economy by reaching the declared state                 | Agora society substrate; only-way-to-lose           |
+| "shield with a hole"       | false-green: control passes without exercising the guarantee                             | shield/assert-don't-skip rule; B-0941               |
 
 The thermodynamic framing is compression, not metaphysics — it earns its keep by
 handling the install-graph + zflash + NixOS-rollback + Agora-onramp cluster under
@@ -122,8 +122,8 @@ one handle.
 ## Why preserved here
 
 Currently living only in this conversation = weather (per
-`substrate-or-it-didn't-happen`). It is load-bearing *vision* substrate: it
-reframes what the whole install-graph + zflash effort IS *for* (not a dev-setup
+`substrate-or-it-didn't-happen`). It is load-bearing _vision_ substrate: it
+reframes what the whole install-graph + zflash effort IS _for_ (not a dev-setup
 convenience — an anti-entropy on-ramp that grows Agora from existing idle
 hardware) and supplies the affirmative WHY behind NixOS-primary. Preserved as
 `docs/research/` so future agents inherit the framing at the strategic layer.

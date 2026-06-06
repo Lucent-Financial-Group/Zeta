@@ -22,16 +22,16 @@ substrate-or-it-didn't-happen).
 
 ## The keystone
 
-**Non-interrupting attention-summon changes the *cost structure* of consensus —
+**Non-interrupting attention-summon changes the _cost structure_ of consensus —
 which is why "consensus can be local" is true for agents and false for humans.**
 
-| | Humans | Agents |
-|---|---|---|
-| Attention | serial, singular | forkable (summon ≠ interrupt) |
+|                       | Humans                                                                                    | Agents                                                                                              |
+| --------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Attention             | serial, singular                                                                          | forkable (summon ≠ interrupt)                                                                       |
 | Getting a 2nd opinion | interrupts someone else's primary layer (meeting / async wait / context-switch both ends) | non-interrupting fork: primary layer keeps running; summoned agent runs isolated, returns a verdict |
-| Consensus cost | `O(interrupt-everyone)`, serialized, expensive | `O(local-fork)`, parallel-isolated, cheap |
-| Rational response | **minimize** consensus — decide solo, escalate rarely, batch into meetings | **maximize** consensus — run a local quorum before every uncertain/non-reversible action, routinely |
-| Consensus is | a heavyweight protocol invoked sparingly | a lightweight primitive invoked by default |
+| Consensus cost        | `O(interrupt-everyone)`, serialized, expensive                                            | `O(local-fork)`, parallel-isolated, cheap                                                           |
+| Rational response     | **minimize** consensus — decide solo, escalate rarely, batch into meetings                | **maximize** consensus — run a local quorum before every uncertain/non-reversible action, routinely |
+| Consensus is          | a heavyweight protocol invoked sparingly                                                  | a lightweight primitive invoked by default                                                          |
 
 The 2nd-opinion-before-non-reversible-action discipline is **only viable because
 the fork is non-interrupting.** If summoning interrupted the primary attention
@@ -40,12 +40,12 @@ because it doesn't, it is cheap enough to be the default.
 
 ## Two edges
 
-### It changes the *topology* of consensus, not just the cost
+### It changes the _topology_ of consensus, not just the cost
 
 Multi-oracle / BFT consensus is usually pictured as distributed long-lived agents
 voting over a bus (B-0703, m-acc — the **standing-governance** form). The keystone
-adds the **local-transient** form: a single agent convenes a quorum *in its own
-decision context*, on demand, then dissolves it. Both are valid:
+adds the **local-transient** form: a single agent convenes a quorum _in its own
+decision context_, on demand, then dissolves it. Both are valid:
 
 - **Distributed / standing** — for governance that must persist (moral invariants,
   cross-fork ratification, Knights-Guild-class decisions).
@@ -57,8 +57,8 @@ consensus; agent societies can afford it per-action.
 
 ### The local-transient form is MULTI-ORACLE but NOT BFT (the human maintainer 2026-05-30)
 
-> *"it's multi oracle but not bft — locally you can lie and not call the consensus;
-> it relies on a good actor, for now."*
+> _"it's multi oracle but not bft — locally you can lie and not call the consensus;
+> it relies on a good actor, for now."_
 
 Critical trust-model caveat — do not conflate the local-transient form with
 Byzantine-fault-tolerance. The local form has the **multi-oracle** property (it
@@ -66,12 +66,12 @@ convenes multiple independent oracle-perspectives — the summoned LLMs) but it 
 **NOT BFT**: the summoning agent can **lie** (fabricate the quorum / misreport the
 verdicts) or **skip the summon entirely**, so it **relies on a good actor**.
 
-| Property | Local-transient (this form) | Distributed-standing BFT (B-0703) |
-|---|---|---|
-| Multi-oracle (multiple perspectives) | ✓ | ✓ |
-| Byzantine-fault-tolerant (survives lying actors) | ✗ — good-actor-dependent | ✓ — no single actor controls the quorum |
-| Trust model | trust-the-summoner | trust-no-one |
-| Can the convener fake / skip it? | yes | no (independent nodes + attestation) |
+| Property                                         | Local-transient (this form) | Distributed-standing BFT (B-0703)       |
+| ------------------------------------------------ | --------------------------- | --------------------------------------- |
+| Multi-oracle (multiple perspectives)             | ✓                           | ✓                                       |
+| Byzantine-fault-tolerant (survives lying actors) | ✗ — good-actor-dependent    | ✓ — no single actor controls the quorum |
+| Trust model                                      | trust-the-summoner          | trust-no-one                            |
+| Can the convener fake / skip it?                 | yes                         | no (independent nodes + attestation)    |
 
 DST-determinism (temp 0 + fixed seed) gives the local form
 **replayability-if-honestly-recorded** (audit), **NOT** Byzantine-tolerance — a
@@ -99,10 +99,10 @@ distributed-standing form (B-0703) is BFT. Composes with `razor-discipline.md`
 
 Composes straight back into "declarative + self-healing = anti-entropy" (the
 2026-05-30 anti-entropy-converter doc): before `emit` (the action), summon a local
-quorum to reconcile "is this safe/correct?" against the desired invariant, *then*
+quorum to reconcile "is this safe/correct?" against the desired invariant, _then_
 emit. It is a **self-healing check on the agent's own decisions** — catch the bad
 action before it lands. The reconciler pattern runs OS → cluster → agent → and now
-→ the agent's *decision loop itself*.
+→ the agent's _decision loop itself_.
 
 ## The rule it justifies
 
@@ -110,9 +110,9 @@ Aaron's class boundary — **"a non-reversible action happens, get a 2nd opinion
 lands as `.claude/rules/non-reversible-action-get-a-second-opinion.md`. It
 generalizes the force-push-with-lease policy (force-push = the canonical
 "closest-to-irreversible" action, already requiring operator-or-peer confirm) to
-*all* non-reversible actions. The summon mechanism is already built (native
+_all_ non-reversible actions. The summon mechanism is already built (native
 subagents via the `Agent` tool; cross-harness via the 9 `tools/peer-call/`
-wrappers) — the discipline is *using* it, not building it.
+wrappers) — the discipline is _using_ it, not building it.
 
 ## Empirical anchor (this session)
 
@@ -121,9 +121,9 @@ solo; Aaron asked "are you sure it's safe?"; Otto summoned an independent native
 subagent to audit. The audit ran **without interrupting Otto's primary attention**
 (Otto kept composing the response while it ran ~44s), returned a verdict
 (prune was safe + reversible), AND **corrected** a misclassification (a detached
-worktree Otto had marked "uncertain" was a *peer* commit — leave it). That is the
+worktree Otto had marked "uncertain" was a _peer_ commit — leave it). That is the
 keystone in action: a local, cheap, non-interrupting consensus that improved the
-decision. Note the prune itself was *reversible* (branch refs preserved, content
+decision. Note the prune itself was _reversible_ (branch refs preserved, content
 on main), so under Aaron's class boundary it did not strictly require the opinion —
 but the value of getting it (the correction) shows why agents can afford to summon
 even on the margin.

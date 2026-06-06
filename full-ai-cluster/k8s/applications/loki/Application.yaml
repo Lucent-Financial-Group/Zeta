@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: loki
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -35,7 +35,7 @@ spec:
             # object-storage backend.
             bucketNames: { chunks: loki-chunks, ruler: loki-ruler }
         write: { replicas: 2 }
-        read:  { replicas: 2 }
+        read: { replicas: 2 }
         backend: { replicas: 2 }
         chunksCache: { enabled: true }
         resultsCache: { enabled: true }
@@ -44,4 +44,4 @@ spec:
     namespace: loki
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

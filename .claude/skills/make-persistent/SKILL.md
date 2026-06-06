@@ -24,11 +24,11 @@ uname -s  # Darwin = macOS, Linux = Linux
 which bun git dotnet claude gh
 ```
 
-| OS | Service manager | Config location |
-|---|---|---|
-| macOS | launchd (plist) | ~/Library/LaunchAgents/ |
-| Windows | Task Scheduler | Register-ScheduledTask |
-| Linux | systemd (user unit) | ~/.config/systemd/user/ |
+| OS      | Service manager     | Config location         |
+| ------- | ------------------- | ----------------------- |
+| macOS   | launchd (plist)     | ~/Library/LaunchAgents/ |
+| Windows | Task Scheduler      | Register-ScheduledTask  |
+| Linux   | systemd (user unit) | ~/.config/systemd/user/ |
 
 ## Phase 2: Create service worktree
 
@@ -153,12 +153,12 @@ tail -5 ~/Library/Logs/zeta-claude-loop/runner.log
 
 ## Failure recovery
 
-| Symptom | Fix |
-|---|---|
-| No heartbeats | Restart service |
-| Stale lock | `rm -rf` the lock directory |
-| `status=143` every cycle | Item too large, mark as blob |
-| Dirty worktree | `git reset --hard origin/main` |
+| Symptom                  | Fix                            |
+| ------------------------ | ------------------------------ |
+| No heartbeats            | Restart service                |
+| Stale lock               | `rm -rf` the lock directory    |
+| `status=143` every cycle | Item too large, mark as blob   |
+| Dirty worktree           | `git reset --hard origin/main` |
 
 ## What this skill does NOT do
 
@@ -169,8 +169,8 @@ tail -5 ~/Library/Logs/zeta-claude-loop/runner.log
 
 ## Harness adaption
 
-| Harness | Command |
-|---|---|
+| Harness     | Command                               |
+| ----------- | ------------------------------------- |
 | Claude Code | `claude -p -w --permission-mode auto` |
-| Cursor | `cursor-agent -p --model grok-4.3` |
-| Codex | codex CLI equivalent |
+| Cursor      | `cursor-agent -p --model grok-4.3`    |
+| Codex       | codex CLI equivalent                  |

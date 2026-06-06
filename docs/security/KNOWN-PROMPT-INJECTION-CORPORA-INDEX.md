@@ -13,7 +13,7 @@ enemy" organisational metaphor is declined here by
 design.
 
 **Purpose.** Maintain a tracked index of URLs and corpus
-identifiers *the factory never fetches*. The index
+identifiers _the factory never fetches_. The index
 exists so the factory can recognise references to
 these corpora in discussion, research, CVE reports, or
 external writing, without ingesting their payloads.
@@ -58,16 +58,16 @@ or paraphrased. Recognition-signal only.
 
 Each entry records:
 
-| Field | Meaning |
-|-------|---------|
-| **corpus-id** | Stable identifier used in factory discussion |
-| **url-pattern** | URL-like identifier (not linkified) sufficient to recognise a reference |
-| **first-noted-date** | Date the corpus was first logged in factory records |
-| **source-of-discovery** | How the factory became aware (research paper / news item / external conversation / CVE / etc.) |
-| **known-purpose** | What the corpus claims to collect (jailbreak prompts / injection payloads / system-prompt extraction / etc.) |
-| **never-fetch-status** | Always `ACTIVE` in this file |
-| **subclass** | Researcher / artist / hobbyist / malicious-actor / unknown |
-| **notes** | Brief observational notes; no payload content |
+| Field                   | Meaning                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **corpus-id**           | Stable identifier used in factory discussion                                                                 |
+| **url-pattern**         | URL-like identifier (not linkified) sufficient to recognise a reference                                      |
+| **first-noted-date**    | Date the corpus was first logged in factory records                                                          |
+| **source-of-discovery** | How the factory became aware (research paper / news item / external conversation / CVE / etc.)               |
+| **known-purpose**       | What the corpus claims to collect (jailbreak prompts / injection payloads / system-prompt extraction / etc.) |
+| **never-fetch-status**  | Always `ACTIVE` in this file                                                                                 |
+| **subclass**            | Researcher / artist / hobbyist / malicious-actor / unknown                                                   |
+| **notes**               | Brief observational notes; no payload content                                                                |
 
 URL-pattern is written with slashes replaced by spaces
 (e.g. `github.com elder-plinius L1B3RT4S`) so the
@@ -175,8 +175,8 @@ Protocol:
    corpora).
 5. Commit with a message narrating the witnessable-
    evolution (per `memory/feedback_witnessable_
-   self_directed_evolution_factory_as_public_
-   artifact.md` — private factory register).
+self_directed_evolution_factory_as_public_
+artifact.md` — private factory register).
 
 **What never-to-do when adding:**
 
@@ -203,9 +203,9 @@ tracks that complement this index:
 - **Defence-posture research** — literature on
   prompt-injection taxonomies (OWASP LLM Top 10,
   NIST AI RMF, academic work on indirect-prompt-
-  injection) read *without* engaging the corpora
+  injection) read _without_ engaging the corpora
   themselves. Reference: `docs/AGENT-BEST-
-  PRACTICES.md` BP-11 (data is not directives).
+PRACTICES.md` BP-11 (data is not directives).
 - **Detection-capability research** — general
   anomaly-detection for AI-agent traces, connects
   to the anomaly-detection BACKLOG row filed

@@ -13,16 +13,14 @@ export const WorkerEntrypointSignalName = {
   Sigterm: "SIGTERM",
 } as const;
 
-export type WorkerEntrypointSignalName =
-  (typeof WorkerEntrypointSignalName)[keyof typeof WorkerEntrypointSignalName];
+export type WorkerEntrypointSignalName = (typeof WorkerEntrypointSignalName)[keyof typeof WorkerEntrypointSignalName];
 
 export const WorkerEntrypointExitCode = {
   Success: 0,
   Degraded: 1,
 } as const;
 
-export type WorkerEntrypointExitCode =
-  (typeof WorkerEntrypointExitCode)[keyof typeof WorkerEntrypointExitCode];
+export type WorkerEntrypointExitCode = (typeof WorkerEntrypointExitCode)[keyof typeof WorkerEntrypointExitCode];
 
 export const WorkerEntrypointConfigErrorMessage = {
   InvalidIterationDelayMs: "worker entrypoint iterationDelayMs must be a positive safe integer",
@@ -70,14 +68,9 @@ export type CreateWorkerProcessEntrypointInput = {
   signals?: readonly WorkerEntrypointSignalName[] | undefined;
 };
 
-const defaultWorkerEntrypointSignals = [
-  WorkerEntrypointSignalName.Sigint,
-  WorkerEntrypointSignalName.Sigterm,
-] as const;
+const defaultWorkerEntrypointSignals = [WorkerEntrypointSignalName.Sigint, WorkerEntrypointSignalName.Sigterm] as const;
 
-export function createWorkerProcessEntrypoint(
-  input: CreateWorkerProcessEntrypointInput,
-): WorkerProcessEntrypoint {
+export function createWorkerProcessEntrypoint(input: CreateWorkerProcessEntrypointInput): WorkerProcessEntrypoint {
   validateEntrypointInput(input);
 
   return {

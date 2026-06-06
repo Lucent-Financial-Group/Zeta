@@ -23,6 +23,7 @@ Follow-up to [#4812](https://github.com/Lucent-Financial-Group/Zeta/pull/4812) (
 **Substrate-honest correction**: original shard was timestamped \`02:40Z\` based on agent-side wall-clock estimate. After opening PR #4812, \`date -u\` returned \`2026-05-24T04:16Z\` — the actual session UTC was ~1h36min later than estimated. Auto-merge fired before the correction could land in the same PR.
 
 This PR:
+
 - Renames \`docs/hygiene-history/ticks/2026/05/24/0240Z.md\` → \`0416Z.md\`
 - Corrects all internal timestamps (header \`02:40Z\` → \`04:16Z\`, sentinel timestamp, descent interval \`~30min\` → \`~2h7min\`)
 - Recomputes the resolution-gate ETA (\`~04:00Z\` → \`~05:30Z–06:30Z\`)
@@ -38,6 +39,7 @@ Per \`.claude/rules/substrate-or-it-didnt-happen.md\` + \`.claude/rules/glass-ha
 Composes with \`.claude/rules/refresh-before-decide.md\` at the per-timestamp scope — the cheap \`date -u\` query IS the refresh that catches this class of error.
 
 ## Test plan
+
 - [x] File renamed: \`0240Z.md\` → \`0416Z.md\` (single git rename, R-status)
 - [x] All internal timestamp references updated
 - [x] Substrate-honest disclosure section added at top of shard body
@@ -50,24 +52,22 @@ Composes with \`.claude/rules/refresh-before-decide.md\` at the per-timestamp sc
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T04:21:35Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `640f19c72e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -79,7 +79,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-24T04:21:35Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update anchor-9 references to corrected 04:16Z timestamp**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update anchor-9 references to corrected 04:16Z timestamp**
 
 This line still describes anchor 9 as `02:40Z`, even though the same shard was corrected to `04:16Z` (table above and header). That leaves the analysis internally inconsistent (for example, the “~4.5h” span and subsequent hypothesis text are now based on the old timestamp), which can skew downstream interpretation of the rolling-series evidence this tick is meant to preserve.
 

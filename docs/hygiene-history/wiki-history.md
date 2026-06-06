@@ -11,7 +11,7 @@ Append-only. Same discipline as
 ## Schema — one row per on-sync wiki action or round-cadence sweep
 
 | date (UTC ISO8601) | agent | page | shape | action | link | notes |
-|---|---|---|---|---|---|---|
+| ------------------ | ----- | ---- | ----- | ------ | ---- | ----- |
 
 Shapes (per `docs/AGENT-GITHUB-SURFACES.md`): `in-sync` /
 `drifted` / `orphaned`.

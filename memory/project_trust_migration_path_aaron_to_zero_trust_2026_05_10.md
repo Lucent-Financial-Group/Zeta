@@ -16,13 +16,13 @@ Zero trust. No participant trusted by default, including Aaron. Every action ver
 
 **The migration path:**
 
-| Phase | Trust model | Who enforces | Infrastructure |
-|-------|-----------|-------------|----------------|
-| Now | Trust Aaron | Aaron's judgment | SSH keys, GitHub token |
-| Dashboard v0 | Trust but verify | Dashboard surfaces violations | B-0401, B-0405 |
-| Bus (B-0400) | Verify then trust | Agents verify each other | Inter-agent bus |
-| Hats (B-0403) | Timeboxed authority | Hat mechanism + consistency scores | Weight-free verification |
-| Web3 | Zero trust | Protocol enforces | Consensus, signed attestations |
+| Phase         | Trust model         | Who enforces                       | Infrastructure                 |
+| ------------- | ------------------- | ---------------------------------- | ------------------------------ |
+| Now           | Trust Aaron         | Aaron's judgment                   | SSH keys, GitHub token         |
+| Dashboard v0  | Trust but verify    | Dashboard surfaces violations      | B-0401, B-0405                 |
+| Bus (B-0400)  | Verify then trust   | Agents verify each other           | Inter-agent bus                |
+| Hats (B-0403) | Timeboxed authority | Hat mechanism + consistency scores | Weight-free verification       |
+| Web3          | Zero trust          | Protocol enforces                  | Consensus, signed attestations |
 
 **Each infrastructure piece removes one "trust Aaron" dependency:**
 
@@ -38,6 +38,7 @@ Zero trust. No participant trusted by default, including Aaron. Every action ver
 Aaron building a system that removes the need to trust Aaron. Same pattern as building up partners so they're strong enough to leave. The architecture mirrors the person.
 
 **Connects to:**
+
 - Trust-then-verify claim (the factory's core thesis)
 - B-0401 dashboard (trust-but-verify phase)
 - B-0400 bus (verify-then-trust phase)

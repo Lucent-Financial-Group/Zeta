@@ -1,30 +1,54 @@
 import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  MemoryPhase,
-  MemoryTier,
-  type MemoryEnvelope,
-  type MemoryState,
-} from "../../domain/src/index.ts";
+import { MemoryPhase, MemoryTier, type MemoryEnvelope, type MemoryState } from "../../domain/src/index.ts";
 import type { RetrievalCtx } from "../src/memory-ranking.ts";
 import { rerankRecalled, positionalSemanticScore, type RecalledCandidate } from "../src/memory-recall.ts";
 
 const NOW = Date.parse("2026-05-30T00:00:00Z");
-const ctx: RetrievalCtx = { now: NOW, organizationId: "org-lfg", hatId: "release-manager", agentId: "agent-7", workItemId: "work-1" };
+const ctx: RetrievalCtx = {
+  now: NOW,
+  organizationId: "org-lfg",
+  hatId: "release-manager",
+  agentId: "agent-7",
+  workItemId: "work-1",
+};
 
 function env(
-  memoryId: string, tier: MemoryTier, scope: string, confidence: number,
+  memoryId: string,
+  tier: MemoryTier,
+  scope: string,
+  confidence: number,
   kpi: { successCount?: number; failureCount?: number; injectedCount?: number; citedCount?: number } = {},
 ): MemoryEnvelope {
   const state: MemoryState = {
-    memoryId, organizationId: "org-lfg", phase: MemoryPhase.Active, confidence, weight: 0,
-    freshnessAt: "2026-05-30T00:00:00Z", reinforcementCount: 1,
-    outcome: { successCount: kpi.successCount ?? 6, failureCount: kpi.failureCount ?? 0, inconclusiveCount: 0, workItemsObserved: [] },
+    memoryId,
+    organizationId: "org-lfg",
+    phase: MemoryPhase.Active,
+    confidence,
+    weight: 0,
+    freshnessAt: "2026-05-30T00:00:00Z",
+    reinforcementCount: 1,
+    outcome: {
+      successCount: kpi.successCount ?? 6,
+      failureCount: kpi.failureCount ?? 0,
+      inconclusiveCount: 0,
+      workItemsObserved: [],
+    },
     utility: { injectedCount: kpi.injectedCount ?? 6, citedCount: kpi.citedCount ?? 5 },
     crossScope: { distinctScopes: [], firstObservedAt: "2026-05-30T00:00:00Z", lastObservedAt: "2026-05-30T00:00:00Z" },
   };
-  return { memoryId, organizationId: "org-lfg", tier, scope, key: "k", protected: false, writtenBy: "system", writtenAt: "2026-05-30T00:00:00Z", state };
+  return {
+    memoryId,
+    organizationId: "org-lfg",
+    tier,
+    scope,
+    key: "k",
+    protected: false,
+    writtenBy: "system",
+    writtenAt: "2026-05-30T00:00:00Z",
+    state,
+  };
 }
 
 test("positional semantic score rewards earlier recall positions", () => {
@@ -37,7 +61,15 @@ test("rerankRecalled joins candidates to envelopes and re-ranks by OUR weight, p
   const envs = new Map<string, MemoryEnvelope>([
     ["m-strong", env("m-strong", MemoryTier.Hat, "release-manager", 0.95)],
     // m-weak: low confidence + bad KPI + never cited — semantically close but governance-weak
-    ["m-weak", env("m-weak", MemoryTier.Agent, "agent-7", 0.2, { successCount: 2, failureCount: 6, injectedCount: 10, citedCount: 1 })],
+    [
+      "m-weak",
+      env("m-weak", MemoryTier.Agent, "agent-7", 0.2, {
+        successCount: 2,
+        failureCount: 6,
+        injectedCount: 10,
+        citedCount: 1,
+      }),
+    ],
   ]);
   // Hindsight returned m-weak FIRST (higher semantic), m-strong second — but our
   // weight should still surface m-strong above (KPI + confidence + scope boost).

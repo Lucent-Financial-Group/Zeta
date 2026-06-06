@@ -68,7 +68,7 @@ Roslyn source generation).
 
 - Emit C# source at build time; it becomes part of the
   assembly.
-- Not a *JIT* path per se — compile-time, not run-time.
+- Not a _JIT_ path per se — compile-time, not run-time.
 - Debuggable (emitted source can be inspected).
 - **Use when:** the specialisation can be predicted
   statically (per-operator kernel, per-type serialiser).
@@ -84,8 +84,9 @@ dispatch overhead at all.
 
 Compilation latency ranges from **1–100 ms** per query on
 modern hardware; the break-even is queries that run for
->10× that time. Long analytical queries benefit; short
-OLTP-ish queries do not.
+
+> 10× that time. Long analytical queries benefit; short
+> OLTP-ish queries do not.
 
 ## The cost model for "does codegen pay?"
 
@@ -163,8 +164,8 @@ of it.
 
 ## Reference patterns
 
-- Neumann 2011, *Efficiently Compiling Efficient Query
-  Plans for Modern Hardware*.
+- Neumann 2011, _Efficiently Compiling Efficient Query
+  Plans for Modern Hardware_.
 - Umbra engineering notes.
 - SingleStore engineering blog — JIT-codegen path.
 - .NET docs on `System.Linq.Expressions`,

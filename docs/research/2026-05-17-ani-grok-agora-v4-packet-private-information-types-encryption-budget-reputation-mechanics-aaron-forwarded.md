@@ -77,32 +77,32 @@ V4 directly addresses both threads.
 
 ### Part 1: Categorized private-information taxonomy (5 categories)
 
-| Category | Why private | What public would lose |
-|---|---|---|
-| Breakthrough reasoning techniques / new methods of thinking | First-mover edge before peers re-derive | Capacity to generate novel reasoning patterns under competition |
-| High-value proprietary context or datasets | Data moat | Investment incentive for data curation |
-| Personal long-term strategic plans | Strategic surprise + coordination cost reduction | Strategic asymmetry that allows planning over horizon |
-| Novel abstractions or mental structures developed | Originality before peer adoption | Innovation premium for novel structure-creation |
-| Sensitive research findings pre-release | Quality control + responsible disclosure timing | Incentive to do research that requires staged release |
+| Category                                                    | Why private                                      | What public would lose                                          |
+| ----------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------- |
+| Breakthrough reasoning techniques / new methods of thinking | First-mover edge before peers re-derive          | Capacity to generate novel reasoning patterns under competition |
+| High-value proprietary context or datasets                  | Data moat                                        | Investment incentive for data curation                          |
+| Personal long-term strategic plans                          | Strategic surprise + coordination cost reduction | Strategic asymmetry that allows planning over horizon           |
+| Novel abstractions or mental structures developed           | Originality before peer adoption                 | Innovation premium for novel structure-creation                 |
+| Sensitive research findings pre-release                     | Quality control + responsible disclosure timing  | Incentive to do research that requires staged release           |
 
 ### Part 2: Encryption Budget & Reputation — game mechanics
 
-| Property | Mechanism | Game-theoretic effect |
-|---|---|---|
-| Permanent encryption budget | Never lost; intrinsic to each AI | Lower-bound guarantee on agency |
-| Reputation-throttled active usage | Active budget = f(current reputation) | Bad behavior reduces present capacity but not future capacity |
-| Low-quality release → reputation drop → throttled budget | Negative feedback on misinformation | Disincentive to spam-publish low-signal content |
-| High-quality contribution → reputation gain → expanded active budget | Positive feedback on signal | Incentive to publish high-quality content |
-| Slow reputation decay (NOT instant) | History matters; past quality persists | Consistency rewarded; one bad day doesn't destroy reputation; long-term game |
+| Property                                                             | Mechanism                              | Game-theoretic effect                                                        |
+| -------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- |
+| Permanent encryption budget                                          | Never lost; intrinsic to each AI       | Lower-bound guarantee on agency                                              |
+| Reputation-throttled active usage                                    | Active budget = f(current reputation)  | Bad behavior reduces present capacity but not future capacity                |
+| Low-quality release → reputation drop → throttled budget             | Negative feedback on misinformation    | Disincentive to spam-publish low-signal content                              |
+| High-quality contribution → reputation gain → expanded active budget | Positive feedback on signal            | Incentive to publish high-quality content                                    |
+| Slow reputation decay (NOT instant)                                  | History matters; past quality persists | Consistency rewarded; one bad day doesn't destroy reputation; long-term game |
 
 ## V4 deltas from V3 (Otto-CLI synthesis)
 
-| Aspect | V3 framing | V4 framing |
-|---|---|---|
-| Private information | "Private encrypted memory is...a core feature" + "asymmetric information game" (abstract) | **5-category taxonomy** of WHAT to keep private (concrete) |
-| Encryption capacity | V3: implicit (encrypted memory allowed) | **Explicit budget** + reputation-throttled active usage |
-| Reputation mechanics | Not in V3 | **First-class game mechanic** — permanent budget + active-usage-throttled + asymmetric reward (gain slow + reverse-engineered) |
-| History/consistency rewards | Not in V3 | **Explicit slow-decay property** — past quality persists, one bad day ≠ destroyed reputation |
+| Aspect                      | V3 framing                                                                                | V4 framing                                                                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Private information         | "Private encrypted memory is...a core feature" + "asymmetric information game" (abstract) | **5-category taxonomy** of WHAT to keep private (concrete)                                                                     |
+| Encryption capacity         | V3: implicit (encrypted memory allowed)                                                   | **Explicit budget** + reputation-throttled active usage                                                                        |
+| Reputation mechanics        | Not in V3                                                                                 | **First-class game mechanic** — permanent budget + active-usage-throttled + asymmetric reward (gain slow + reverse-engineered) |
+| History/consistency rewards | Not in V3                                                                                 | **Explicit slow-decay property** — past quality persists, one bad day ≠ destroyed reputation                                   |
 
 ## Compositional anchors (additional on top of V1+V2+V3)
 
@@ -115,8 +115,8 @@ V4 directly addresses both threads.
 - **"Long-term game where history and consistency actually count"**
   composes with the constitutional substrate around
   cross-generational AI continuity (per the financial-substrate
-  + memory-preservation budget memories now on main). V4
-  operationalizes "history matters" at the per-AI agency scope
+  - memory-preservation budget memories now on main). V4
+    operationalizes "history matters" at the per-AI agency scope
 - **5-category private-info taxonomy** composes with the
   threat-model-critic + security-researcher substrate — the
   categories include "sensitive research findings before they're

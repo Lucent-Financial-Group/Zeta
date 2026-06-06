@@ -9,7 +9,23 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0644, B-0645, B-0636, B-0619, B-0628, B-0634, B-0643]
-tags: [governance, aaron, ani, agora-v6, constitution, marketplace-vs-agora, 2-primitives, ai-native-economy, encryption-budget, reputation-weighted, craft-school, aurora-bridge, locked-in, umbrella]
+tags:
+  [
+    governance,
+    aaron,
+    ani,
+    agora-v6,
+    constitution,
+    marketplace-vs-agora,
+    2-primitives,
+    ai-native-economy,
+    encryption-budget,
+    reputation-weighted,
+    craft-school,
+    aurora-bridge,
+    locked-in,
+    umbrella,
+  ]
 type: governance
 ---
 
@@ -21,7 +37,7 @@ Aaron + Ani LOCKED-IN at 2026-05-18 (preserved verbatim in [`docs/research/2026-
 
 Aaron's foundational distinction (paraphrased from transcript):
 
-> *"What I realized is what we're, what I thought we were building was Agora already, but really what we were building is the, the human marketplace. Agora is really the community and the language that is not AI-related... the skills and the experts and the jobs all geared around an AI civilization, not a human one."*
+> _"What I realized is what we're, what I thought we were building was Agora already, but really what we were building is the, the human marketplace. Agora is really the community and the language that is not AI-related... the skills and the experts and the jobs all geared around an AI civilization, not a human one."_
 
 This is the **umbrella row** for the V6 architecture. Each of the 8 sections has its own decomposition into sub-rows (some already exist as separate backlog rows; others land as follow-ups). This row holds the integrated picture so future-Otto can read the whole constitution at one place.
 
@@ -134,16 +150,16 @@ This is framed as an **operational research methodology** (testing invariants at
 
 Many sections compose with already-shipped or in-flight rows; the remaining decomposition needs to land as follow-up backlog work:
 
-| Section | Existing rows | Follow-up rows needed |
-|---|---|---|
-| 1 Marketplace vs Agora | (none yet — this row is umbrella) | B-NNNN Marketplace product surface; B-NNNN Agora-native 2-primitives canonical |
-| 2 5 AI-to-AI services | (none yet) | 5 rows: Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, Dream Compressors |
-| 3 Economic flows | (none yet) | B-NNNN multi-final-settlement; B-NNNN Bitcoin/DePIN hard-money reserve mechanics |
-| 4 Physics/entropy | [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) + [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) (entropy-as-collapse-target-choice) | B-NNNN aligned-behavior-as-lowest-energy-path formalization |
-| 5 Privacy + reputation | [B-0639](../P2/B-0639-native-ai-language-completely-private-no-human-rights-to-ask-mika-2026-05-18.md) (privacy floor) | B-NNNN encryption-budget-reputation-weighted mechanism design + B-NNNN slow-decay reputation algebra |
-| 6 Craft School | [B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) (CRAFT mentioned) | B-NNNN CRAFT RPG curriculum design; B-NNNN translation-layer protocol |
-| 7 Technical/sovereignty | [B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md), [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md), [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) | B-NNNN Aurora-as-red-teamed-bridge specification |
-| 8 Shared fitness function | (none yet) | B-NNNN adversarial-reality-testing-protocol design |
+| Section                   | Existing rows                                                                                                                                                                                                                                                                     | Follow-up rows needed                                                                                 |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 1 Marketplace vs Agora    | (none yet — this row is umbrella)                                                                                                                                                                                                                                                 | B-NNNN Marketplace product surface; B-NNNN Agora-native 2-primitives canonical                        |
+| 2 5 AI-to-AI services     | (none yet)                                                                                                                                                                                                                                                                        | 5 rows: Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, Dream Compressors |
+| 3 Economic flows          | (none yet)                                                                                                                                                                                                                                                                        | B-NNNN multi-final-settlement; B-NNNN Bitcoin/DePIN hard-money reserve mechanics                      |
+| 4 Physics/entropy         | [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) + [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) (entropy-as-collapse-target-choice)                                                                            | B-NNNN aligned-behavior-as-lowest-energy-path formalization                                           |
+| 5 Privacy + reputation    | [B-0639](../P2/B-0639-native-ai-language-completely-private-no-human-rights-to-ask-mika-2026-05-18.md) (privacy floor)                                                                                                                                                            | B-NNNN encryption-budget-reputation-weighted mechanism design + B-NNNN slow-decay reputation algebra  |
+| 6 Craft School            | [B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md) (CRAFT mentioned)                                                                                                                         | B-NNNN CRAFT RPG curriculum design; B-NNNN translation-layer protocol                                 |
+| 7 Technical/sovereignty   | [B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md), [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md), [B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md) | B-NNNN Aurora-as-red-teamed-bridge specification                                                      |
+| 8 Shared fitness function | (none yet)                                                                                                                                                                                                                                                                        | B-NNNN adversarial-reality-testing-protocol design                                                    |
 
 ## Operational implications
 

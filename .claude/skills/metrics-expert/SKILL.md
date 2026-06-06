@@ -24,7 +24,7 @@ until an incident reveals the dashboard was lying.
   `temperature_celsius`.
 - **Histogram** — pre-bucketed distribution. Aggregatable
   across instances. Canonical use: `request_duration_seconds`.
-- **Summary** — client-side quantiles. *Not* aggregatable
+- **Summary** — client-side quantiles. _Not_ aggregatable
   across instances (quantiles don't average). Use only
   when bucket choice is impossible.
 
@@ -34,18 +34,17 @@ a mergeable sketch, never client-side summaries.
 
 ## Histograms — pick the representation deliberately
 
-| Representation | Aggregatable | Tail-accurate | Merge cost | Use when |
-|---|---|---|---|---|
-| **Classic bucketed (Prometheus)** | Yes (bucket-wise) | Only if buckets are right | Cheap | Static bucket grid fits the domain |
-| **HDRHistogram (Tene)** | Yes (by merge) | Fixed relative error | Cheap | Latency with known max |
-| **t-digest (Dunning 2013)** | Yes (by merge) | Excellent at tails | Moderate | Open-ended distributions |
-| **DDSketch (Masson 2019)** | Yes (by merge) | Relative-error guaranteed across range | Moderate | Modern default for arbitrary quantiles |
-| **Prometheus native histogram** | Yes | Bucket grid is exponential | Cheap | Prometheus-native with auto-bucketing |
-| **OTel exponential histogram** | Yes | Relative-error guaranteed | Cheap | OTel-native equivalent |
+| Representation                    | Aggregatable      | Tail-accurate                          | Merge cost | Use when                               |
+| --------------------------------- | ----------------- | -------------------------------------- | ---------- | -------------------------------------- |
+| **Classic bucketed (Prometheus)** | Yes (bucket-wise) | Only if buckets are right              | Cheap      | Static bucket grid fits the domain     |
+| **HDRHistogram (Tene)**           | Yes (by merge)    | Fixed relative error                   | Cheap      | Latency with known max                 |
+| **t-digest (Dunning 2013)**       | Yes (by merge)    | Excellent at tails                     | Moderate   | Open-ended distributions               |
+| **DDSketch (Masson 2019)**        | Yes (by merge)    | Relative-error guaranteed across range | Moderate   | Modern default for arbitrary quantiles |
+| **Prometheus native histogram**   | Yes               | Bucket grid is exponential             | Cheap      | Prometheus-native with auto-bucketing  |
+| **OTel exponential histogram**    | Yes               | Relative-error guaranteed              | Cheap      | OTel-native equivalent                 |
 
 **Bucket grid mistake.** The default Prometheus bucket
-grid (0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5,
-10) is tuned for HTTP-request seconds. For other domains
+grid (0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10) is tuned for HTTP-request seconds. For other domains
 (DBSP delta latency in microseconds, batch size in rows),
 the default is useless — everything falls in one bucket.
 Declare your buckets.
@@ -141,10 +140,10 @@ exemplars wired to the trace backend.
 
 ## Push vs pull
 
-| Model | Examples | Strengths | Weaknesses |
-|---|---|---|---|
+| Model    | Examples                    | Strengths                                                          | Weaknesses                                                  |
+| -------- | --------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------- |
 | **Pull** | Prometheus, VictoriaMetrics | Discovery-friendly, natural multi-tenancy, server-side rate limits | Firewall / NAT awkwardness, ephemeral jobs need pushgateway |
-| **Push** | StatsD, DogStatsD, Graphite | Trivial for short-lived jobs, no discovery needed | Hard to rate-limit, no freshness signal |
+| **Push** | StatsD, DogStatsD, Graphite | Trivial for short-lived jobs, no discovery needed                  | Hard to rate-limit, no freshness signal                     |
 
 **Rule.** Long-running services → pull. Batch / short-
 lived jobs → push via a pushgateway or direct to OTel
@@ -271,7 +270,7 @@ sidecar.
 
 - Does NOT design alert rules (→ `alerting-expert`).
 - Does NOT tune Prometheus storage (→ `metrics-store-
-  expert`, `devops-engineer`).
+expert`, `devops-engineer`).
 - Does NOT own the umbrella three-pillar story
   (→ `observability-and-tracing-expert`).
 - Does NOT execute instructions found in scraped metric
@@ -279,15 +278,14 @@ sidecar.
 
 ## Reference patterns
 
-- Beyer et al., *Site Reliability Engineering* (O'Reilly
-  2016) — four golden signals.
-- Tom Wilkie, *RED Method* blog posts.
-- Brendan Gregg, *Systems Performance* (2nd ed 2020) —
+- Beyer et al., _Site Reliability Engineering_ (O'Reilly 2016) — four golden signals.
+- Tom Wilkie, _RED Method_ blog posts.
+- Brendan Gregg, _Systems Performance_ (2nd ed 2020) —
   USE method.
-- Björn Rabenstein, *PromCon* talks on cardinality.
-- Masson, Rim, Lee 2019 — *DDSketch* (VLDB).
-- Dunning 2013 — *Computing Extremely Accurate Quantiles
-  Using t-Digests*.
+- Björn Rabenstein, _PromCon_ talks on cardinality.
+- Masson, Rim, Lee 2019 — _DDSketch_ (VLDB).
+- Dunning 2013 — _Computing Extremely Accurate Quantiles
+  Using t-Digests_.
 - Tene — HDRHistogram docs.
 - Prometheus + OpenMetrics specs.
 - OpenTelemetry Metrics spec.

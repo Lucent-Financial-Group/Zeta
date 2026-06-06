@@ -13,15 +13,15 @@ created: 2026-05-15
 
 ## Cost breakdown
 
-| Source | Cost (gh-pr-view calls) | Frequency |
-|---|---|---|
-| `bun tools/github/poll-pr-gate-batch.ts --all-open` | ~37 (one per open PR) | Per `--all-open` invocation |
-| `bun tools/github/poll-pr-gate.ts <PR>` | 1 | Per PR poll |
-| `gh pr view <N> --json ...` | 1 | Per direct call |
-| `gh pr merge --auto --squash` | 1-2 | Per arm |
-| `gh pr create` | 1-2 | Per PR open |
-| `gh pr list ...` | 1 | Per filter query |
-| `gh api graphql ...` (direct) | 1 (cost varies) | Per call |
+| Source                                              | Cost (gh-pr-view calls) | Frequency                   |
+| --------------------------------------------------- | ----------------------- | --------------------------- |
+| `bun tools/github/poll-pr-gate-batch.ts --all-open` | ~37 (one per open PR)   | Per `--all-open` invocation |
+| `bun tools/github/poll-pr-gate.ts <PR>`             | 1                       | Per PR poll                 |
+| `gh pr view <N> --json ...`                         | 1                       | Per direct call             |
+| `gh pr merge --auto --squash`                       | 1-2                     | Per arm                     |
+| `gh pr create`                                      | 1-2                     | Per PR open                 |
+| `gh pr list ...`                                    | 1                       | Per filter query            |
+| `gh api graphql ...` (direct)                       | 1 (cost varies)         | Per call                    |
 
 Cumulative session draw, 2026-05-15T18:00Z–22:21Z (about 4 hours):
 

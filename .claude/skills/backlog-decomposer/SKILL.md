@@ -79,7 +79,7 @@ Do not use it for ordinary priority grooming; use
    - `parent: B-NNNN`,
    - precise `depends_on` edges,
    - `classification: buildable-now | blocked-on-... |
-     research-needed`,
+research-needed`,
    - `decomposition: atomic | clean | blob` when known,
    - tight acceptance criteria,
    - explicit out-of-scope text when needed.

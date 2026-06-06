@@ -15,20 +15,33 @@ composes_with:
   - B-0831
   - B-0847
   - B-0851
-tags: [installer, credentials, gh-auth, esp-write, encrypted-blob, boot-sequence, auth-method-picker, multi-vendor, phase-1, operator-passphrase, usb-uuid-binding]
+tags:
+  [
+    installer,
+    credentials,
+    gh-auth,
+    esp-write,
+    encrypted-blob,
+    boot-sequence,
+    auth-method-picker,
+    multi-vendor,
+    phase-1,
+    operator-passphrase,
+    usb-uuid-binding,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
 After flashing the 3-vendor 25.11 ISO and booting the USB 3 times to test, Aaron hit a GitHub login rate-limit:
 
-> *"gh has throttled me for loggin in"* + *"we dident even git to those just gh login failed cause this is the 3rd time i booted"*
+> _"gh has throttled me for loggin in"_ + _"we dident even git to those just gh login failed cause this is the 3rd time i booted"_
 
 Root cause: each re-boot of the live USB triggers a fresh `gh auth login` (device-flow) because the live overlay (tmpfs) discards `~/.config/gh/hosts.yml` on shutdown. 3 boots in one day → 3 device-flow logins → GitHub throttle.
 
 Operator-authorized fix:
 
-> *"key bound to uuid and operator passphrase seems best for an easy phase one lets get that going and also change the boot sequence and i can create github token and the bootup can ask which method github is required for now."*
+> _"key bound to uuid and operator passphrase seems best for an easy phase one lets get that going and also change the boot sequence and i can create github token and the bootup can ask which method github is required for now."_
 
 ## Phase 1 scope (this row's bounded slice)
 
@@ -36,7 +49,7 @@ Three composing sub-targets all land together as the smallest end-to-end working
 
 ### Sub-target 1 — Encrypted cred-blob on USB ESP (declarative cred-manifest, NOT imperative cred-list)
 
-Per Aaron 2026-05-27: *"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."*
+Per Aaron 2026-05-27: _"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."_
 
 The cred-persistence substrate operates over a DECLARATIVE MANIFEST of which credentials Zeta tracks — NOT an imperatively-hardcoded list. Composes with B-0854 (Ace migration) at the manifest-shape scope: same declarative discipline applies to cred-tracking as to install-step tracking.
 
@@ -47,11 +60,11 @@ Cred-manifest shape (Phase 1 schema candidate; subject to Ace schema convergence
 credentials:
   - id: gh-cli
     paths: ["~/.config/gh/hosts.yml"]
-    persona-scoped: false  # one gh identity per host today; per-AI identity is B-0847 future
+    persona-scoped: false # one gh identity per host today; per-AI identity is B-0847 future
     required: true
   - id: claude
     paths: ["~/.config/claude/credentials.json"]
-    persona-scoped: true   # per-persona slot (otto / alexa / riven / vera / lior)
+    persona-scoped: true # per-persona slot (otto / alexa / riven / vera / lior)
     required: true
   - id: gemini
     paths: ["~/.gemini/oauth_creds.json"]
@@ -64,11 +77,11 @@ credentials:
   - id: ssh-host-keys
     paths: ["/etc/ssh/ssh_host_*"]
     persona-scoped: false
-    required: false  # regen on first boot is acceptable for fresh installs
+    required: false # regen on first boot is acceptable for fresh installs
   - id: ssh-operator-pubkey
     paths: ["/etc/zeta-authorized-keys.pub"]
     persona-scoped: false
-    required: true   # composes with iter-4.2 ESP pubkey inject
+    required: true # composes with iter-4.2 ESP pubkey inject
 ```
 
 Operation:
@@ -85,30 +98,30 @@ The manifest IS the substrate-honest catalog of what creds Zeta needs. Future cr
 
 Current `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step layout (verified on origin/main `1740eead6`):
 
-| Step | Owner | What it does |
-|---|---|---|
-| 6.5 | iter-4.2 | probe boot USB for operator SSH pubkey |
-| 6.55 | iter-5.3 (B-0792) | prompt-for-initial-password |
-| 6.6 | iter-5.2 (B-0792) | hostname injection |
-| 6.7 | iter-5.1 (B-0792) | wifi persistence |
-| 6.8 | iter-5.4.0 | homelab gh-auth + operator pubkey copy |
-| 6.9 | iter-5.4.1 (B-0812) | self-registration commit+push |
-| 7 | iter-4 (B-0789) | print initial credentials |
+| Step | Owner               | What it does                           |
+| ---- | ------------------- | -------------------------------------- |
+| 6.5  | iter-4.2            | probe boot USB for operator SSH pubkey |
+| 6.55 | iter-5.3 (B-0792)   | prompt-for-initial-password            |
+| 6.6  | iter-5.2 (B-0792)   | hostname injection                     |
+| 6.7  | iter-5.1 (B-0792)   | wifi persistence                       |
+| 6.8  | iter-5.4.0          | homelab gh-auth + operator pubkey copy |
+| 6.9  | iter-5.4.1 (B-0812) | self-registration commit+push          |
+| 7    | iter-4 (B-0789)     | print initial credentials              |
 
 **Critical architecture (per Copilot P0 review on PR #5403)**: the picker MUST run BEFORE Step 6.8 so that Step 6.8's `gh auth login` device-flow is CONDITIONAL on the picker's auth-method choice. If the picker runs after Step 6.8, the gh-quota burns BEFORE restore is offered — defeats the zero-device-flow-on-reboot acceptance criterion.
 
 Correct layout (new sub-range BEFORE Step 6.8):
 
-| Step | Owner | What it does |
-|---|---|---|
-| 6.7 | iter-5.1 | wifi persistence (unchanged) |
-| **6.75** | **B-0852 (NEW)** | **cred-detection probe (USB blob? operator-passphrase derivable?)** |
-| **6.76** | **B-0852 (NEW)** | **5-second escape-hatch banner with countdown** |
-| **6.77** | **B-0852 (NEW)** | **auth-method picker — 4 options; captures choice** |
-| 6.8 | iter-5.4.0 | gh-auth + pubkey copy — **NOW CONDITIONAL** on picker choice (runs only if option 2 fresh-login chosen OR no detected source AND operator picked fresh) |
-| **6.85** | **B-0852 (NEW)** | **persist cred-blob to ESP after successful auth (if option 1/2/3 chose persist-on)** |
-| 6.9 | iter-5.4.1 (B-0812) | self-registration (unchanged; runs after whichever auth path completed) |
-| 7 | iter-4 (B-0789) | print initial credentials (unchanged) |
+| Step     | Owner               | What it does                                                                                                                                            |
+| -------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.7      | iter-5.1            | wifi persistence (unchanged)                                                                                                                            |
+| **6.75** | **B-0852 (NEW)**    | **cred-detection probe (USB blob? operator-passphrase derivable?)**                                                                                     |
+| **6.76** | **B-0852 (NEW)**    | **5-second escape-hatch banner with countdown**                                                                                                         |
+| **6.77** | **B-0852 (NEW)**    | **auth-method picker — 4 options; captures choice**                                                                                                     |
+| 6.8      | iter-5.4.0          | gh-auth + pubkey copy — **NOW CONDITIONAL** on picker choice (runs only if option 2 fresh-login chosen OR no detected source AND operator picked fresh) |
+| **6.85** | **B-0852 (NEW)**    | **persist cred-blob to ESP after successful auth (if option 1/2/3 chose persist-on)**                                                                   |
+| 6.9      | iter-5.4.1 (B-0812) | self-registration (unchanged; runs after whichever auth path completed)                                                                                 |
+| 7        | iter-4 (B-0789)     | print initial credentials (unchanged)                                                                                                                   |
 
 Picker menu shape (Step 6.77):
 
@@ -188,7 +201,7 @@ This satisfies the acceptance criterion of ZERO device-flow calls on reboot when
 
 ## Future phases (NOT this row's scope)
 
-- **Phase 2**: Path B (look at PC before formatting + try to recover creds from existing install; operator-supervised boot menu option). Composes with Phase 1 — operator confirmed: *"we can do both like you said this will be nice together"*. Phase 2 security model per Aaron 2026-05-27: *"for option b we need to do something to make sure we protect against with like some encryption or someting like you say so randos with physicall access cant get acess we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid, we can go hard on security over time but just enough to so i can iterate quickly for now."* Design constraints:
+- **Phase 2**: Path B (look at PC before formatting + try to recover creds from existing install; operator-supervised boot menu option). Composes with Phase 1 — operator confirmed: _"we can do both like you said this will be nice together"_. Phase 2 security model per Aaron 2026-05-27: _"for option b we need to do something to make sure we protect against with like some encryption or someting like you say so randos with physicall access cant get acess we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid, we can go hard on security over time but just enough to so i can iterate quickly for now."_ Design constraints:
   - Recovered creds encrypted at-rest on USB (NOT plaintext on FAT32 ESP)
   - Optional UUID-bound key on USB so blob can't be defeated by copying to a different-UUID USB (attacker copying ESP contents to another stick doesn't unlock; the unlock derivation requires the original USB UUID)
   - **Iterate-quickly-not-paranoia floor** — Phase 2 ships with enough security to prevent casual physical-access leaks; full hardware-bound + tamper-resistant work defers to Phase 3+ when load-bearing
@@ -200,7 +213,7 @@ This satisfies the acceptance criterion of ZERO device-flow calls on reboot when
 
 ## Phase 1 + Phase 2 composition (operator-confirmed)
 
-Aaron 2026-05-27: *"we can do both like you said this will be nice together"*. The two phases compose into a full credential-lifecycle substrate:
+Aaron 2026-05-27: _"we can do both like you said this will be nice together"_. The two phases compose into a full credential-lifecycle substrate:
 
 ```
 Boot menu (after Phase 1 + 2 both land):
@@ -224,7 +237,7 @@ The same UUID-bound-key + operator-passphrase derivation protects both Path A (w
 
 Operator-confirmed extension to the picker semantics — the boot-menu picker shouldn't ASK every boot; it should DETECT + RECOVER as default behavior, with explicit Esc-to-cancel window:
 
-> *"it will be very nice when i reformat if it starts picking up previous answers and reapplies them so i don't have to for passwords and secrets and such we can make it seucre over time but this will help with testing and self healing, we just need an override escape hatch so we get a chance to say don't recover start fresh but recover is the default."*
+> _"it will be very nice when i reformat if it starts picking up previous answers and reapplies them so i don't have to for passwords and secrets and such we can make it seucre over time but this will help with testing and self healing, we just need an override escape hatch so we get a chance to say don't recover start fresh but recover is the default."_
 
 Refined boot flow (replaces the always-prompt menu shape above for the default path):
 
@@ -254,7 +267,7 @@ Sub-target shift in implementation: B-0852.3 picker substrate becomes Steps 6.75
 
 Operator refinement to the auth-method placement:
 
-> *"i think if we do token we should do at zflash time and human interactive at setup time what do you think?"*
+> _"i think if we do token we should do at zflash time and human interactive at setup time what do you think?"_
 
 The right placement matches each auth method to the operator-UX phase that fits it best:
 
@@ -262,7 +275,7 @@ The right placement matches each auth method to the operator-UX phase that fits 
 
 `bun full-ai-cluster/tools/zflash.ts --agent` prompts BEFORE the dd-flash:
 
-- *(optional)* Inject GitHub PAT into ESP at flash time
+- _(optional)_ Inject GitHub PAT into ESP at flash time
   - Operator pastes PAT from `github.com/settings/tokens` (clipboard available)
   - Operator types encryption passphrase (used by B-0852.1 crypto module via scrypt+HKDF+AES-GCM)
   - PAT + other available creds → encrypted blob written to USB ESP alongside SSH pubkey (iter-4.2 channel reuse)
@@ -272,30 +285,30 @@ The right placement matches each auth method to the operator-UX phase that fits 
 
 `zeta-install.sh` Steps 6.75 → 6.77 (per Sub-target 2 above) present:
 
-| Option | When to choose | Source |
-|---|---|---|
-| 1) Restore from encrypted USB blob | Blob present (typed passphrase decrypts; contains zflash-baked PAT) | iter-4.2 + zflash-time write |
-| 2) Fresh device-flow login | Blob absent OR operator wants fresh auth | Console + operator phone at `github.com/login/device` |
-| 3) Operator-provided PAT (paste at console) | RARE — operator forgot to inject at zflash + doesn't want device-flow | Operator types/pastes at target console |
-| 4) Skip | Cluster operates degraded; no GitHub-side substrate | (intentional ephemerality) |
+| Option                                      | When to choose                                                        | Source                                                |
+| ------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------- |
+| 1) Restore from encrypted USB blob          | Blob present (typed passphrase decrypts; contains zflash-baked PAT)   | iter-4.2 + zflash-time write                          |
+| 2) Fresh device-flow login                  | Blob absent OR operator wants fresh auth                              | Console + operator phone at `github.com/login/device` |
+| 3) Operator-provided PAT (paste at console) | RARE — operator forgot to inject at zflash + doesn't want device-flow | Operator types/pastes at target console               |
+| 4) Skip                                     | Cluster operates degraded; no GitHub-side substrate                   | (intentional ephemerality)                            |
 
 Default: option (1) when blob present (per auto-recover-by-default escape-hatch semantics above).
 
 ### Why this phase-split is better than picker-only-at-install-time
 
-| Property | All-at-install-time (prior framing) | Phase-split (this refinement) |
-|---|---|---|
-| PAT UX | Type long PAT at target console (painful) | Paste PAT at Mac with clipboard (easy) |
-| Device-flow UX | Operator at target console (same as before) | Operator at target console (unchanged) |
-| Substrate-engineering compose | Picker-only invention | Composes with existing iter-4.2 ESP-write channel + zflash --agent flow |
-| First-boot-no-interaction path | Requires blob from prior boot OR operator at console | Available immediately if PAT injected at zflash time |
-| Operator-test-loop friction | Re-boot USB = re-auth at console | Re-boot USB = restore blob; no re-auth |
+| Property                       | All-at-install-time (prior framing)                  | Phase-split (this refinement)                                           |
+| ------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| PAT UX                         | Type long PAT at target console (painful)            | Paste PAT at Mac with clipboard (easy)                                  |
+| Device-flow UX                 | Operator at target console (same as before)          | Operator at target console (unchanged)                                  |
+| Substrate-engineering compose  | Picker-only invention                                | Composes with existing iter-4.2 ESP-write channel + zflash --agent flow |
+| First-boot-no-interaction path | Requires blob from prior boot OR operator at console | Available immediately if PAT injected at zflash time                    |
+| Operator-test-loop friction    | Re-boot USB = re-auth at console                     | Re-boot USB = restore blob; no re-auth                                  |
 
 ### Edge case: "same USB → multiple machines = same PAT"
 
 Operator-substrate-honest behavior to surface:
 
-- One USB flashed with one PAT-blob → boots on N machines → SAME PAT goes to all N (USB-UUID-bound; per the binding Aaron named 2026-05-27 *"we can put a key on the usb too if wnated tied to the uuid"*)
+- One USB flashed with one PAT-blob → boots on N machines → SAME PAT goes to all N (USB-UUID-bound; per the binding Aaron named 2026-05-27 _"we can put a key on the usb too if wnated tied to the uuid"_)
 - This is a FEATURE for fleet-USB workflows (one flash → N nodes share one identity per the agent-roster registration)
 - It's a FOOTGUN for per-machine-isolation workflows (operator should flash one USB per machine in that case)
 - Phase-split makes the trade-off explicit; operator picks at flash time which model fits
@@ -313,9 +326,9 @@ The phase-split changes WHERE encrypt fires (zflash time AND/OR install time AND
 
 Aaron 2026-05-27 named the design space first as a prompt loop, then sharpened to CLI override (better for AI-callable + scriptable):
 
-> *"then zflash script and/or skill can make sure it asks what declared creds you want to bake in vs go through device flow."*
+> _"then zflash script and/or skill can make sure it asks what declared creds you want to bake in vs go through device flow."_
 
-> *"maybe instead of loop in zflash you just allow command line override of any declared cred as token well at least the ones we support that way, might need custom code per cred type for this idk. the would probably be easier for the ai to call."*
+> _"maybe instead of loop in zflash you just allow command line override of any declared cred as token well at least the ones we support that way, might need custom code per cred type for this idk. the would probably be easier for the ai to call."_
 
 CLI shape (canonical):
 
@@ -337,11 +350,11 @@ bun full-ai-cluster/tools/zflash.ts --agent /dev/disk6 \
 
 Value-source syntax (per-cred type handler):
 
-| Syntax | Semantics | Use case |
-|---|---|---|
-| `--bake-cred <id>=<literal>` | Literal string value | PATs / tokens / short strings |
-| `--bake-cred <id>=@<path>` | Read file contents | JSON cred files / SSH pubkeys (curl/git `@file` convention) |
-| `--bake-cred <id>=env:<VAR>` | Read from env var | Avoid PAT in shell history; CI-friendly |
+| Syntax                       | Semantics            | Use case                                                    |
+| ---------------------------- | -------------------- | ----------------------------------------------------------- |
+| `--bake-cred <id>=<literal>` | Literal string value | PATs / tokens / short strings                               |
+| `--bake-cred <id>=@<path>`   | Read file contents   | JSON cred files / SSH pubkeys (curl/git `@file` convention) |
+| `--bake-cred <id>=env:<VAR>` | Read from env var    | Avoid PAT in shell history; CI-friendly                     |
 
 ### Per-cred type handler discipline
 
@@ -351,14 +364,14 @@ Each declared cred-type in B-0852.5 manifest has a per-type handler that knows:
 - What VALIDATION to apply at parse time (e.g., gh PAT format check; JSON parse for vendor creds)
 - Whether `@file` / `env:` sources are supported for this type
 
-| Cred id | Expected value shape | Validation | Sources |
-|---|---|---|---|
-| `gh-cli` | PAT string | non-empty; optional `ghp_/gho_/ghu_` prefix check | literal / env: (recommended) / `@file` |
-| `claude` | credentials.json contents | JSON parse + required fields | `@file` (canonical) / literal JSON |
-| `gemini` | oauth_creds.json contents | JSON parse + required fields | `@file` (canonical) |
-| `codex` | auth.json contents | JSON parse + required fields | `@file` (canonical) |
-| `ssh-operator-pubkey` | OpenSSH pubkey text | starts with `ssh-rsa` / `ssh-ed25519` / etc. | `@file` (canonical) / literal |
-| `ssh-host-keys` | (deferred; multi-file) | TBD | TBD |
+| Cred id               | Expected value shape      | Validation                                        | Sources                                |
+| --------------------- | ------------------------- | ------------------------------------------------- | -------------------------------------- |
+| `gh-cli`              | PAT string                | non-empty; optional `ghp_/gho_/ghu_` prefix check | literal / env: (recommended) / `@file` |
+| `claude`              | credentials.json contents | JSON parse + required fields                      | `@file` (canonical) / literal JSON     |
+| `gemini`              | oauth_creds.json contents | JSON parse + required fields                      | `@file` (canonical)                    |
+| `codex`               | auth.json contents        | JSON parse + required fields                      | `@file` (canonical)                    |
+| `ssh-operator-pubkey` | OpenSSH pubkey text       | starts with `ssh-rsa` / `ssh-ed25519` / etc.      | `@file` (canonical) / literal          |
+| `ssh-host-keys`       | (deferred; multi-file)    | TBD                                               | TBD                                    |
 
 If `--bake-cred` arg references an `<id>` not in manifest → hard error at parse time. If value-source syntax unsupported for that cred type → hard error with usage hint.
 
@@ -372,14 +385,14 @@ Passphrase never echoed to shell history:
 
 ### Why CLI override > prompt loop
 
-| Property | Prompt loop (prior framing) | CLI override (refined) |
-|---|---|---|
-| AI-callable | hard (stdin interactive) | yes (pure args) |
-| Scriptable | hard (expect/spawn dance) | yes (composable in CI / shell scripts) |
-| Composable | one big interactive session | one flag per cred; combine as needed |
-| Per-cred customization | uniform loop UX | per-cred handler validates shape + parses source |
-| Operator UX | slower (per-cred prompt round-trip) | faster (one command, multiple flags) |
-| Documentation | UI screen layout | `--help` text + manifest-driven |
+| Property               | Prompt loop (prior framing)         | CLI override (refined)                           |
+| ---------------------- | ----------------------------------- | ------------------------------------------------ |
+| AI-callable            | hard (stdin interactive)            | yes (pure args)                                  |
+| Scriptable             | hard (expect/spawn dance)           | yes (composable in CI / shell scripts)           |
+| Composable             | one big interactive session         | one flag per cred; combine as needed             |
+| Per-cred customization | uniform loop UX                     | per-cred handler validates shape + parses source |
+| Operator UX            | slower (per-cred prompt round-trip) | faster (one command, multiple flags)             |
+| Documentation          | UI screen layout                    | `--help` text + manifest-driven                  |
 
 The prompt loop framing was Otto's earlier intermediate. CLI override per Aaron's sharpening is the operationally-better fit; prompt loop deferred unless operator-UX-test reveals need.
 
@@ -428,16 +441,16 @@ Per `.claude/rules/non-coercion-invariant.md` HC-8 floor — operator authority 
 
 Aaron 2026-05-27 conversation arc (verbatim):
 
-1. *"gh has throttled me for loggin in"*
-2. *"we dident even git to those just gh login failed cause this is the 3rd time i booted"*
-3. *"unless we have it testing in ci or something"* (CI ruled out; clean)
-4. *"if i leave usb in computer can it save a copy there after login and/or look at pc before formatting and try to recover credentials that already exist?"*
-5. *"key bound to uuid and operator passphrase seems best for an easy phase one lets get that going and also change the boot sequence and i can create github token and the bootup can ask which method github is required for now."*
-6. *"i have a new usb in there we can try too next time you need to format"* (Phase 1 test target queued)
-7. *"for option b we need to do something to make sure we protect against with like some encryption ... we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid, we can go hard on security over time but just enough to so i can iterate quickly for now."* (Phase 2 security model)
-8. *"we can do both like you said this will be nice together"* (Phase 1 + 2 composition confirmed)
-9. *"it will be very nice when i reformat if it starts picking up previous answers and reapplies them so i don't have to ... we just need an override escape hatch so we get a chance to say don't recover start fresh but recover is the default."* (auto-recover-by-default + escape-hatch picker semantics)
-10. *"i can wait for next usb to have this and gh token option instead my logins are still throttled and the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."* (declarative-cred-manifest discipline + PAT-as-immediate-unblock for current throttled state + next-ISO test target)
+1. _"gh has throttled me for loggin in"_
+2. _"we dident even git to those just gh login failed cause this is the 3rd time i booted"_
+3. _"unless we have it testing in ci or something"_ (CI ruled out; clean)
+4. _"if i leave usb in computer can it save a copy there after login and/or look at pc before formatting and try to recover credentials that already exist?"_
+5. _"key bound to uuid and operator passphrase seems best for an easy phase one lets get that going and also change the boot sequence and i can create github token and the bootup can ask which method github is required for now."_
+6. _"i have a new usb in there we can try too next time you need to format"_ (Phase 1 test target queued)
+7. _"for option b we need to do something to make sure we protect against with like some encryption ... we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid, we can go hard on security over time but just enough to so i can iterate quickly for now."_ (Phase 2 security model)
+8. _"we can do both like you said this will be nice together"_ (Phase 1 + 2 composition confirmed)
+9. _"it will be very nice when i reformat if it starts picking up previous answers and reapplies them so i don't have to ... we just need an override escape hatch so we get a chance to say don't recover start fresh but recover is the default."_ (auto-recover-by-default + escape-hatch picker semantics)
+10. _"i can wait for next usb to have this and gh token option instead my logins are still throttled and the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."_ (declarative-cred-manifest discipline + PAT-as-immediate-unblock for current throttled state + next-ISO test target)
 
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
 

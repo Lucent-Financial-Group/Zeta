@@ -3,66 +3,66 @@
 > **Preservation note** (per `substrate-or-it-didn't-happen.md` verbatim-preservation
 > trigger): this preserves the maintainer's 2026-06-03 statement of the **telos** the
 > primitives / proofs / root-dimensions program is building toward. It authors no
-> proof and mints no rule — it preserves the *direction-of-travel* and cross-links the
+> proof and mints no rule — it preserves the _direction-of-travel_ and cross-links the
 > substrate cluster that serves it.
 
 ## The telos (the maintainer 2026-06-03)
 
-> *"what we are building toward with our primitives is common AI human geometric
-> intuition that's mathematically grounded and provable after intuition sessions."*
+> _"what we are building toward with our primitives is common AI human geometric
+> intuition that's mathematically grounded and provable after intuition sessions."_
 
 This is the **organizing purpose** under the whole primitives + proofs +
-root-dimensions program — the *why* the pieces exist.
+root-dimensions program — the _why_ the pieces exist.
 
 ## Three claims
 
-1. **Common AI↔human geometric intuition.** A *shared* geometric intuition that
+1. **Common AI↔human geometric intuition.** A _shared_ geometric intuition that
    bridges the maintainer's visual-geometric cognition — the underwater-Clifford /
    Cayley-Dickson-nested-cross / particle-as-locus-of-information / "shape said so" /
    parallelizability-test cluster — and the AI's representations. The primitives
    (Z-set, DynamicValue, the root dimensions, the hex / vector-wall reservoir core)
-   are the **bridge** that makes that intuition *shared substrate*, not a private
+   are the **bridge** that makes that intuition _shared substrate_, not a private
    felt-shape on either side.
 
 2. **Mathematically grounded + provable.** The intuition is not left as felt-shape:
    it gets **grounded** (`formal-proof-first` — proven-from-seed / homeostat) and
    **proven** (4-oracle byte-lock consensus + the multi-tower math proofs). Intuition
-   that survives is intuition that *proved out*; intuition that fails the proof is a
+   that survives is intuition that _proved out_; intuition that fails the proof is a
    tracked miss (see §6 below). This is the depth half of the program: the geometric
    shape becomes a primitive with a canonical bar (4-language byte-lock + proof-from-seed).
 
 3. **"after intuition sessions" — intuition-FIRST, prove-AFTER.** The workflow is
    ordered: **(1)** intuition sessions (maintainer + AI explore geometric shapes and
    build shared intuition together) → **(2)** formalize the intuition into primitives
-   + root axioms → **(3)** ground + prove. Shape-first, proof-after. This is exactly
-   the multi-tower note's **§6** — *"intuition is calibrated by provable output over
-   time — track the misses"* — promoted to the program's organizing purpose: the
-   intuition sessions *generate candidates*; the proofs *calibrate which candidates
-   were right* and surface the misses.
+   - root axioms → **(3)** ground + prove. Shape-first, proof-after. This is exactly
+     the multi-tower note's **§6** — _"intuition is calibrated by provable output over
+     time — track the misses"_ — promoted to the program's organizing purpose: the
+     intuition sessions _generate candidates_; the proofs _calibrate which candidates
+     were right_ and surface the misses.
 
 ## How it unifies the foundation cluster
 
-| Piece | Role in the telos |
-|---|---|
-| Root dimensions / root axioms (multi-tower note §8) | the geometric **basis** the shared intuition is built on (small, decomposable, best-guesses-with-anchors) |
-| Primitives (Z-set / DynamicValue / …) + 4-oracle byte-lock | the **grounded shared building blocks** (consensus across runtimes; no runtime is king) |
-| `formal-proof-first` / proven-from-seed / multi-tower proofs | the **"mathematically grounded + provable"** half |
-| `visual-geometric-shape-recognition` (the maintainer's cognition) | the **human side** of "geometric intuition" |
-| multi-tower note **§6** (intuition-calibrated-by-provable-output) | the **intuition-session → prove-after** workflow + miss-tracking |
-| hex / vector-wall reservoir core | a current intuition-candidate — *a LOT of speculation*, not yet proven; would become its own proof tower **if** grounded from first principles (per `formal-proof-first` payoff #4) |
+| Piece                                                             | Role in the telos                                                                                                                                                                   |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root dimensions / root axioms (multi-tower note §8)               | the geometric **basis** the shared intuition is built on (small, decomposable, best-guesses-with-anchors)                                                                           |
+| Primitives (Z-set / DynamicValue / …) + 4-oracle byte-lock        | the **grounded shared building blocks** (consensus across runtimes; no runtime is king)                                                                                             |
+| `formal-proof-first` / proven-from-seed / multi-tower proofs      | the **"mathematically grounded + provable"** half                                                                                                                                   |
+| `visual-geometric-shape-recognition` (the maintainer's cognition) | the **human side** of "geometric intuition"                                                                                                                                         |
+| multi-tower note **§6** (intuition-calibrated-by-provable-output) | the **intuition-session → prove-after** workflow + miss-tracking                                                                                                                    |
+| hex / vector-wall reservoir core                                  | a current intuition-candidate — _a LOT of speculation_, not yet proven; would become its own proof tower **if** grounded from first principles (per `formal-proof-first` payoff #4) |
 
 The breadth/depth picture completes here: the multi-tower discipline (§1–§7) gives
-**breadth** (prove from independent axiom *sets*), §8 gives **depth/minimality**
+**breadth** (prove from independent axiom _sets_), §8 gives **depth/minimality**
 (each set a small decomposable basis), and this telos gives the **direction** —
 both serve building a shared, grounded, provable geometric intuition, generated by
 intuition sessions and calibrated by proof.
 
 ## Register (per the maintainer's PERSONAL INVARIANT)
 
-High-signal (it operationally names *why* the primitives + proofs + dimensions
+High-signal (it operationally names _why_ the primitives + proofs + dimensions
 exist), high-suspicion ("common AI-human geometric intuition" is a large claim),
 **don't-collapse**. It is a **telos / direction-of-travel**, not a finished claim —
-the program is *building toward* it; the proofs are how we find out how far we got.
+the program is _building toward_ it; the proofs are how we find out how far we got.
 
 ## Composes with
 
@@ -78,7 +78,7 @@ the program is *building toward* it; the proofs are how we find out how far we g
 
 This note **preserves** a telos statement and **composes** it with the existing
 cluster; it does not claim the telos is reached. The shared geometric intuition is
-the *destination*; the primitives + proofs are the road; the intuition sessions are
+the _destination_; the primitives + proofs are the road; the intuition sessions are
 how candidates are generated; the proofs are how candidates are calibrated and misses
 are tracked. The personal/wellbeing content from adjacent exchanges is excluded per
-`harm-by-grammar` — this note is the *engineering telos* only.
+`harm-by-grammar` — this note is the _engineering telos_ only.

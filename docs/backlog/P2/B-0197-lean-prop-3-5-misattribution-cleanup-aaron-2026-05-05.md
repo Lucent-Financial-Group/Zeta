@@ -29,8 +29,8 @@ the right correction).
 But the same cross-check ALSO found that the **"Prop 3.5
 unspoken precondition" framing is misattributed**. There is NO
 Proposition 3.5 in arXiv:2203.16684 (Budiu et al., the DBSP
-paper). The closest candidate is **Theorem 3.3** -- *"For an
-LTI operator Q we have Q^Delta = Q"* -- and Theorem 3.3 states
+paper). The closest candidate is **Theorem 3.3** -- _"For an
+LTI operator Q we have Q^Delta = Q"_ -- and Theorem 3.3 states
 time-invariance EXPLICITLY in its statement (the LTI
 qualifier is right there in the theorem's body), contradicting
 the Lean header's prose framing it as "unspoken premise" /
@@ -47,21 +47,21 @@ the paper left it implicit, which is false.
 The misattribution propagates to two files at three locations:
 
 - `tools/lean4/Lean4/DbspChainRule.lean` line 51 (Round-35
-  landmarks bullet: *"`IsTimeInvariant` predicate, elevated to
+  landmarks bullet: _"`IsTimeInvariant` predicate, elevated to
   an axiom matching the DBSP paper's unspoken premise (Budiu
-  et al. Prop. 3.5)"*)
+  et al. Prop. 3.5)"_)
 - `tools/lean4/Lean4/DbspChainRule.lean` line 203 (Time-
   invariance bullet inside the `IsTimeInvariant` motivation:
-  *"In DBSP literature this is the unspoken premise of Budiu
-  et al. Proposition 3.5"*)
+  _"In DBSP literature this is the unspoken premise of Budiu
+  et al. Proposition 3.5"_)
 - `docs/research/chain-rule-proof-log.md` lines 113-115
-  (*"At the DBSP paper level this is smuggled in as a
+  (_"At the DBSP paper level this is smuggled in as a
   convention (Budiu et al. Proposition 3.5 uses it without
-  naming it)"*)
+  naming it)"_)
 
 The third audited file (`docs/research/verification-drift-audit-2026-04-19.md`)
-already cites Theorem 3.3 correctly at line 45 -- *"a corollary
-of Theorem 3.3, not Proposition 3.2"* -- so no cleanup needed
+already cites Theorem 3.3 correctly at line 45 -- _"a corollary
+of Theorem 3.3, not Proposition 3.2"_ -- so no cleanup needed
 there. Confirmed by full-file grep run while filing this row.
 
 ## Acceptance criteria
@@ -72,13 +72,13 @@ Either cite Theorem 3.3 directly with a note about which prose
 the actual issue is, OR drop the paper-citation entirely and
 cite the paper's LTI vocabulary directly. Suggested form:
 
-> *"`IsTimeInvariant` predicate, elevated to an axiom matching
+> _"`IsTimeInvariant` predicate, elevated to an axiom matching
 > what DBSP literature names as the LTI condition (Budiu et al.
 > Theorem 3.3 states `Q^Delta = Q` for LTI operators; the
 > formalization separates the bundled `IsLinear` to make
-> explicit which sub-property closes B2)."*
+> explicit which sub-property closes B2)."_
 
-- **Verifier**: grep for *"Prop. 3.5"* / *"Proposition 3.5"* in
+- **Verifier**: grep for _"Prop. 3.5"_ / _"Proposition 3.5"_ in
   `tools/lean4/Lean4/DbspChainRule.lean` returns zero results
   after the fix.
 
@@ -87,13 +87,13 @@ cite the paper's LTI vocabulary directly. Suggested form:
 Same correction, in the time-invariance motivation paragraph.
 Suggested form:
 
-> *"In DBSP literature this corresponds to the LTI condition
+> _"In DBSP literature this corresponds to the LTI condition
 > Theorem 3.3 (`Q^Delta = Q`) names explicitly. The formalization
 > is not making implicit-explicit; it is separating which
 > sub-property of LTI (`map_add` alone vs commutation with
-> delay) closes which proof obligation."*
+> delay) closes which proof obligation."_
 
-- **Verifier**: grep for *"Proposition 3.5"* in
+- **Verifier**: grep for _"Proposition 3.5"_ in
   `tools/lean4/Lean4/DbspChainRule.lean` returns zero results
   after the fix.
 
@@ -101,22 +101,22 @@ Suggested form:
 
 Same correction. Suggested form:
 
-> *"B2 is the statement that linear stream operators commute
+> _"B2 is the statement that linear stream operators commute
 > with delay. The DBSP paper names this as the LTI condition
 > (Budiu et al. Theorem 3.3: `Q^Delta = Q` for LTI operators);
 > in Lean it must be a separate predicate from `IsLinear`
-> because `map_add` alone does not force the commutation."*
+> because `map_add` alone does not force the commutation."_
 
-- **Verifier**: grep for *"Proposition 3.5"* in
+- **Verifier**: grep for _"Proposition 3.5"_ in
   `docs/research/chain-rule-proof-log.md` returns zero results
   after the fix.
 
 ### (d) Witnessable-evolution discipline
 
 Add a dated revision note in each updated file. Preserve the
-original prose with strikethrough or *"[corrected 2026-05-05:
+original prose with strikethrough or _"[corrected 2026-05-05:
 the paper's Theorem 3.3 states LTI explicitly; earlier prose
-called this "unspoken" which was wrong]"* annotation. Do NOT
+called this "unspoken" which was wrong]"_ annotation. Do NOT
 silently rewrite the history -- the misattribution is itself
 useful evidence of how a formalization-grade claim about a
 paper's prose can be wrong, and the correction is itself
@@ -129,7 +129,7 @@ trail.
 
 ## Falsifiability
 
-Each cleanup is falsified if a **bare** *"Prop 3.5"* / *"Proposition 3.5"*
+Each cleanup is falsified if a **bare** _"Prop 3.5"_ / _"Proposition 3.5"_
 reference remains in the audited files after the cleanup PR
 merges -- where "bare" means NOT wrapped in `~~...~~` strikethrough
 markup AND NOT preceded by a `[corrected 2026-05-05: ...]` annotation
@@ -189,19 +189,19 @@ because the grep targets bare-only.
   operationalizes only the cleanup of the misattribution
   finding. B-0195 separately needs its (c) writeup-format
   decision (which, per this row's findings, should now be
-  *"Lean-file artifact only / internal substrate"* since the
+  _"Lean-file artifact only / internal substrate"_ since the
   paper is correct -- but that decision belongs to B-0195's
   closure, not B-0197).
 
 ## Carved sentence
 
-*A formalization that claims to make a paper's "unspoken"
+_A formalization that claims to make a paper's "unspoken"
 precondition explicit must verify the precondition is in fact
 unspoken. If the paper states it explicitly, the
 formalization is separating sub-properties of an explicit
 condition, not surfacing an implicit one. Citation hygiene
 matters because the wrong citation reframes a correct
-structural decision as a research-grade discovery it isn't.*
+structural decision as a research-grade discovery it isn't._
 
 Falsifiability hooks: any future agent that accepts a
 formalization's "implicit precondition" framing without

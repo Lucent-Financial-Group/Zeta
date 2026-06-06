@@ -66,10 +66,7 @@ describe("company Work OS policy", () => {
   });
 });
 
-function createQualityGateEvaluation(
-  gateKind: QualityGateKind,
-  outcome: QualityGateOutcome,
-): QualityGateEvaluation {
+function createQualityGateEvaluation(gateKind: QualityGateKind, outcome: QualityGateOutcome): QualityGateEvaluation {
   return {
     qualityGateEvaluationId: `quality-gate-evaluation-${gateKind}`,
     organizationId: "org-lfg",

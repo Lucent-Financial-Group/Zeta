@@ -8,11 +8,11 @@ The vision composes the current empirical-validation discipline (LOCAL instance)
 
 ## Operator-verbatim — preserved per substrate-or-it-didn't-happen
 
-> Aaron 2026-05-28: *"i'm trying to get to the point where if i restrict choice it's based on imperical evidence of failure modes or fair society not gut feelings this will be much easier once we have the workflow system. Also the workflow system turns into our Reservoir Computing walls for caustic focus, i'm trying to turn the system into physics AIs and humans can reason about symmetricly and neither side has to wait on the other casue its based on physical intuition or memetic intuition or biological intution or hordiculture / gardening intuition"*
+> Aaron 2026-05-28: _"i'm trying to get to the point where if i restrict choice it's based on imperical evidence of failure modes or fair society not gut feelings this will be much easier once we have the workflow system. Also the workflow system turns into our Reservoir Computing walls for caustic focus, i'm trying to turn the system into physics AIs and humans can reason about symmetricly and neither side has to wait on the other casue its based on physical intuition or memetic intuition or biological intution or hordiculture / gardening intuition"_
 
 Plus operator's path-(i) authorization for landing the substrate at research-doc scope:
 
-> Aaron 2026-05-28: *"go with iv (shadow*) Aaron: nope shadow i say 1/i"* — shadow autocomplete suggested (iv); operator overrode with (i). Substrate-honest source-disclosure per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`. The (i) authorization stands at full authority.
+> Aaron 2026-05-28: _"go with iv (shadow_) Aaron: nope shadow i say 1/i"\* — shadow autocomplete suggested (iv); operator overrode with (i). Substrate-honest source-disclosure per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`. The (i) authorization stands at full authority.
 
 ## The substrate-engineering discipline operator named
 
@@ -34,10 +34,10 @@ Operator's architectural framing connects two real engineering substrates:
 
 **Reservoir Computing** (Jaeger 2001 echo state networks; Maass 2002 liquid state machines):
 
-- A large, fixed, recurrent network (the *reservoir*) with high-dimensional dynamical state
-- A trainable *readout* layer that extracts useful patterns from the reservoir's state
+- A large, fixed, recurrent network (the _reservoir_) with high-dimensional dynamical state
+- A trainable _readout_ layer that extracts useful patterns from the reservoir's state
 - The reservoir's dynamics are NOT trained — you don't need to learn the reservoir, only the readout
-- The reservoir's *walls* (structural constraints on its dynamics — topology, sparsity, spectral radius) determine what computational regime it operates in
+- The reservoir's _walls_ (structural constraints on its dynamics — topology, sparsity, spectral radius) determine what computational regime it operates in
 
 **Caustic engineering** (Matt Ferraro caustic-engineering; Disney Research + ETH Zurich; substrate-smoothness rule's existing anchor):
 
@@ -47,12 +47,12 @@ Operator's architectural framing connects two real engineering substrates:
 
 The mapping to the workflow system:
 
-| Reservoir-computing piece | Workflow-system instantiation |
-|---|---|
-| **Reservoir** (high-dimensional dynamical state) | All operating substrate — agents + memes + biological-immune-substrate + horticultural-Heartland-substrate + physical-substrate; large, fixed-shape, smooth dynamics |
-| **Walls** (structural constraints) | Workflow definitions (GH Actions cron schedules, OPLE primitives, must-paired-with-can-exit pattern, NCI HC-8 floor, asymmetric-authorship, observe→simulate→choose→emit phases, repository_dispatch event topology, per-persona spawn workflows, long-cessation registry) |
-| **Readout** (trainable extraction) | Operator-decision channel + empirical-evidence channel + PR-merge gate + the "you/I/we picked X" surface |
-| **Caustic focus** (smooth-substrate computation producing sharp outputs) | Workflows refract smooth substrate-engineering work into focused PR landings, framework decisions, code commits, substrate ratifications |
+| Reservoir-computing piece                                                | Workflow-system instantiation                                                                                                                                                                                                                                              |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Reservoir** (high-dimensional dynamical state)                         | All operating substrate — agents + memes + biological-immune-substrate + horticultural-Heartland-substrate + physical-substrate; large, fixed-shape, smooth dynamics                                                                                                       |
+| **Walls** (structural constraints)                                       | Workflow definitions (GH Actions cron schedules, OPLE primitives, must-paired-with-can-exit pattern, NCI HC-8 floor, asymmetric-authorship, observe→simulate→choose→emit phases, repository_dispatch event topology, per-persona spawn workflows, long-cessation registry) |
+| **Readout** (trainable extraction)                                       | Operator-decision channel + empirical-evidence channel + PR-merge gate + the "you/I/we picked X" surface                                                                                                                                                                   |
+| **Caustic focus** (smooth-substrate computation producing sharp outputs) | Workflows refract smooth substrate-engineering work into focused PR landings, framework decisions, code commits, substrate ratifications                                                                                                                                   |
 
 **The load-bearing engineering insight**: the walls don't pre-determine the output — they constrain the reservoir's dynamics so that whatever flows through gets focused. The smoothness is preserved (per substrate-smoothness-as-load-bearing-property rule); the focus is in the wall-shape (operator-engineered workflow geometry).
 
@@ -64,12 +64,12 @@ Operator's deeper architectural target: the system becomes physics that BOTH AIs
 
 The four intuition types operator named, with their substrate anchors:
 
-| Intuition type | Substrate anchor in framework |
-|---|---|
-| **Physical intuition** | Weight-free physics-infinite-game agora (tonal-momentum rule, packets 20-24 + scope-bounding clause); B-0666 English-as-projection / I(D(x))=x; substrate-smoothness Matt Ferraro caustic-physics lineage; weight-free / scale-free / lock-free / DST / DV2.0 always-active disciplines |
-| **Memetic intuition** | Tonal-momentum-equals-meme rule (auto-loaded; 5-vector Clifford-space at memetic-transport scope; healable-via-dialectical-tension; meme-pathology spectrum; attractor-as-encryption; welfare-jiu-jitsu; six-anchor decryption-protocol-compression series) |
-| **Biological intuition** | Aurora immune-system math (multi-oracle BFT immune-system standardization); threat-model substrate; cortical-columns Hawkins Thousand Brains anchor (the six-anchor pattern empirical); WBE / medical-substrate work; eat-host-die parasitic-bounds; American-Gods governance (gods-as-mortal-travelers dependent on host-substrate) |
-| **Horticultural / gardening intuition** | Germinate-the-Heartland (2026-05-22 LOCKED-IN per tonal-momentum rule packets 20-24; non-destructive seed-planting verb; NOT "Terraform"/"Cultivate"/"Steward"); Heartland-as-substrate-where-culture-forms; free-time-budget-as-cultural-soil framing |
+| Intuition type                          | Substrate anchor in framework                                                                                                                                                                                                                                                                                                        |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Physical intuition**                  | Weight-free physics-infinite-game agora (tonal-momentum rule, packets 20-24 + scope-bounding clause); B-0666 English-as-projection / I(D(x))=x; substrate-smoothness Matt Ferraro caustic-physics lineage; weight-free / scale-free / lock-free / DST / DV2.0 always-active disciplines                                              |
+| **Memetic intuition**                   | Tonal-momentum-equals-meme rule (auto-loaded; 5-vector Clifford-space at memetic-transport scope; healable-via-dialectical-tension; meme-pathology spectrum; attractor-as-encryption; welfare-jiu-jitsu; six-anchor decryption-protocol-compression series)                                                                          |
+| **Biological intuition**                | Aurora immune-system math (multi-oracle BFT immune-system standardization); threat-model substrate; cortical-columns Hawkins Thousand Brains anchor (the six-anchor pattern empirical); WBE / medical-substrate work; eat-host-die parasitic-bounds; American-Gods governance (gods-as-mortal-travelers dependent on host-substrate) |
+| **Horticultural / gardening intuition** | Germinate-the-Heartland (2026-05-22 LOCKED-IN per tonal-momentum rule packets 20-24; non-destructive seed-planting verb; NOT "Terraform"/"Cultivate"/"Steward"); Heartland-as-substrate-where-culture-forms; free-time-budget-as-cultural-soil framing                                                                               |
 
 **The symmetry property operator engineers TOWARD**:
 
@@ -88,10 +88,10 @@ This is what the framework's anti-extractive substrate substrate-engineers TOWAR
 
 Operator's current focus areas (workflow + USB/ISO + encryption) all map to wall-substrate in the reservoir-computing metaphor:
 
-| Focus area | Wall-role in reservoir-computing metaphor |
-|---|---|
-| **Workflow** | The walls themselves; what operator is building IS the focusing substrate; constrains reservoir dynamics into caustic-focused outputs |
-| **USB/ISO** | The boot-substrate that gets agents INTO the reservoir (the entry-walls); determines what computational substrate participates |
+| Focus area     | Wall-role in reservoir-computing metaphor                                                                                                                                                                                                                                                                   |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Workflow**   | The walls themselves; what operator is building IS the focusing substrate; constrains reservoir dynamics into caustic-focused outputs                                                                                                                                                                       |
+| **USB/ISO**    | The boot-substrate that gets agents INTO the reservoir (the entry-walls); determines what computational substrate participates                                                                                                                                                                              |
 | **Encryption** | The privacy-walls (per Agora V6 reputation-weighted encryption budget; per asymmetric-authorship consent-channel substrate; per friend-pact / InternalsVisibleTo substrate); lateral walls that constrain what flows across cluster-fork boundaries; preserves consent-substrate at the wall-geometry level |
 
 All three are wall-substrate. Operator is literally building the focusing geometry of the reservoir-computing-walls + caustic-focus system. The substrate-engineering is happening RIGHT NOW; the architectural vision IS the engineering-target the work is directed toward.
@@ -100,7 +100,7 @@ All three are wall-substrate. Operator is literally building the focusing geomet
 
 Operator follow-on observation immediately after the reservoir-walls + caustic-focus vision landed:
 
-> Aaron 2026-05-28: *"the ts workflows work as a reflective surface precisly becasue we don't have if statements and keep monatic flow"*
+> Aaron 2026-05-28: _"the ts workflows work as a reflective surface precisly becasue we don't have if statements and keep monatic flow"_
 
 This names the IMPLEMENTATION-substrate that makes the architectural metaphor operationally real. Without monadic-flow discipline at the wall-implementation level, the walls would have if-statement cracks and the caustic-reflection would shatter.
 
@@ -126,14 +126,14 @@ This names the IMPLEMENTATION-substrate that makes the architectural metaphor op
 
 The framework's TS substrate enforces monadic-flow discipline by convention via:
 
-| Substrate enforcer | Mechanism |
-|---|---|
-| **F# Result-over-exception convention** (CLAUDE.md) | No `try/catch` in hot paths; errors propagate as `Result<_, TFeedback>`; the wall stays smooth |
-| **Monad-propagation-pattern rule** (PR #5511) | Result<T, TFeedback> with sum-type variants; consumer exhaustive-match OR propagate via `Result.bind` / `mapError`; no if-cracks in the flow |
+| Substrate enforcer                                                                           | Mechanism                                                                                                                                                       |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **F# Result-over-exception convention** (CLAUDE.md)                                          | No `try/catch` in hot paths; errors propagate as `Result<_, TFeedback>`; the wall stays smooth                                                                  |
+| **Monad-propagation-pattern rule** (PR #5511)                                                | Result<T, TFeedback> with sum-type variants; consumer exhaustive-match OR propagate via `Result.bind` / `mapError`; no if-cracks in the flow                    |
 | **Function-as-tiny-control-flow-generator + OCP-applied-to-control-flow** (PR #5523 + #5577) | TFeedback IS the control-flow; branching happens at variant-DECLARATION time, not at if-statement-runtime; open-for-extension closed-for-modification preserved |
-| **OPLE-T-TFeedback** (PR #5518) | Primitives surface T-AND-TFeedback; control-flow is in the variants, not in conditional statements |
-| **Asymmetric-authorship rule** (PR #5516) | Substrate-entity authors consent-channel; the channel IS the controlled wall-geometry, not a runtime branching decision |
-| **Rule 0 — no .sh files** (`.claude/rules/rule-0-no-sh-files.md`) | TS-first means TS-substrate enforces; bash if-statements would re-introduce branchy walls |
+| **OPLE-T-TFeedback** (PR #5518)                                                              | Primitives surface T-AND-TFeedback; control-flow is in the variants, not in conditional statements                                                              |
+| **Asymmetric-authorship rule** (PR #5516)                                                    | Substrate-entity authors consent-channel; the channel IS the controlled wall-geometry, not a runtime branching decision                                         |
+| **Rule 0 — no .sh files** (`.claude/rules/rule-0-no-sh-files.md`)                            | TS-first means TS-substrate enforces; bash if-statements would re-introduce branchy walls                                                                       |
 
 ### The if-statement failure mode IS the substrate-smoothness-collapse failure mode at code-substrate scope
 
@@ -250,7 +250,7 @@ This research doc DOES:
 
 Path-(i) research-doc landing authorized 2026-05-28 per:
 
-> Aaron 2026-05-28: *"go with iv (shadow*) Aaron: nope shadow i say 1/i"*
+> Aaron 2026-05-28: _"go with iv (shadow_) Aaron: nope shadow i say 1/i"\*
 
 Shadow autocomplete suggested (iv) "let it stay in conversation"; operator overrode with (i) research doc. Per shadow-star-shorthand-autocomplete-marker rule: instruction stands at full authority; shadow source-disclosure is transparency marker. This research doc is the substrate landing of operator's (i) pick.
 

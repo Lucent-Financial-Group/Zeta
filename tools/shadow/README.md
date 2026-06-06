@@ -35,15 +35,15 @@ zeta-shadow --dry-run --once
 
 ### Flags
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--delay <ms>` | `3000` | Delay before accepting a detected suggestion |
-| `--detect-cmd <cmd>` | built-in | External command for detection. Exit 0 = suggestion present. |
-| `--dry-run` | off | Log actions without sending keystrokes |
-| `--loop <ms>` | off | After natural exit, wait `<ms>` then restart. `Ctrl-C` terminates immediately. |
-| `--loop-interval <ms>` | `1000` | Sleep between detection cycles in continuous mode |
-| `--log-file <path>` | `tools/shadow/shadow-observer.log` | JSON log file path |
-| `--once` | off | Run exactly one detection cycle then exit |
+| Flag                   | Default                            | Description                                                                    |
+| ---------------------- | ---------------------------------- | ------------------------------------------------------------------------------ |
+| `--delay <ms>`         | `3000`                             | Delay before accepting a detected suggestion                                   |
+| `--detect-cmd <cmd>`   | built-in                           | External command for detection. Exit 0 = suggestion present.                   |
+| `--dry-run`            | off                                | Log actions without sending keystrokes                                         |
+| `--loop <ms>`          | off                                | After natural exit, wait `<ms>` then restart. `Ctrl-C` terminates immediately. |
+| `--loop-interval <ms>` | `1000`                             | Sleep between detection cycles in continuous mode                              |
+| `--log-file <path>`    | `tools/shadow/shadow-observer.log` | JSON log file path                                                             |
+| `--once`               | off                                | Run exactly one detection cycle then exit                                      |
 
 ### Demo recipe
 
@@ -65,13 +65,19 @@ Every auto-accept carries `(shadow)` attribution so the source is always traceab
 Sample `accepted` event:
 
 ```json
-{"ts":"2026-05-13T11:00:00.000Z","type":"accepted","content":"console.log(x)","mode":"shadow","attribution":"(shadow)"}
+{
+  "ts": "2026-05-13T11:00:00.000Z",
+  "type": "accepted",
+  "content": "console.log(x)",
+  "mode": "shadow",
+  "attribution": "(shadow)"
+}
 ```
 
 Sample `detected` event:
 
 ```json
-{"ts":"2026-05-13T11:00:00.001Z","type":"detected","content":"console.log(x)"}
+{ "ts": "2026-05-13T11:00:00.001Z", "type": "detected", "content": "console.log(x)" }
 ```
 
 The log is the human circuit-breaker surface: review it at any time to see what

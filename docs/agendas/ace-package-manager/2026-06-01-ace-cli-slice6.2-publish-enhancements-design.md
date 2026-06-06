@@ -100,8 +100,8 @@ A package file may carry a publish-only `url` sibling:
 
 ### Interaction with the filename guard (load-bearing)
 
-Slice 6.1 requires the on-disk basename to equal `<name>-<version>.json` *specifically so the
-derived URL points at a file the operator actually hosts*. A `url` override removes that
+Slice 6.1 requires the on-disk basename to equal `<name>-<version>.json` _specifically so the
+derived URL points at a file the operator actually hosts_. A `url` override removes that
 coupling — the URL is explicit, so the on-disk filename no longer needs to encode it.
 Therefore:
 
@@ -193,15 +193,15 @@ build + self-verify + write:  unchanged from 6.1
 
 ## Error handling (deltas)
 
-| Situation | Behavior |
-| --- | --- |
-| `--sequence` not a positive integer | Parse error |
-| `--sequence N` with `--out` prev where `N <= prev.sequence` | Hard error (anti-rollback) |
-| One of the comma-listed dirs unreadable | Hard error (names the dir) |
-| Empty `--packages` after trim/drop-empty (e.g. `","`) | Parse/hard error ("requires a value") |
-| Package `url` present but not a non-empty absolute URL | Skip + warn |
-| Duplicate `name@version` across dirs | Hard error (ambiguous; existing guard) |
-| (unchanged 6.1 cases) | (unchanged) |
+| Situation                                                   | Behavior                               |
+| ----------------------------------------------------------- | -------------------------------------- |
+| `--sequence` not a positive integer                         | Parse error                            |
+| `--sequence N` with `--out` prev where `N <= prev.sequence` | Hard error (anti-rollback)             |
+| One of the comma-listed dirs unreadable                     | Hard error (names the dir)             |
+| Empty `--packages` after trim/drop-empty (e.g. `","`)       | Parse/hard error ("requires a value")  |
+| Package `url` present but not a non-empty absolute URL      | Skip + warn                            |
+| Duplicate `name@version` across dirs                        | Hard error (ambiguous; existing guard) |
+| (unchanged 6.1 cases)                                       | (unchanged)                            |
 
 ## Testing
 
@@ -214,7 +214,7 @@ build + self-verify + write:  unchanged from 6.1
   - **per-package url:** a package file named `leaf.json` (NOT `leaf-1.0.0.json`) carrying
     `url: "https://cdn/leaf-v1.json"` + a normal `other-2.0.0.json` → publish exit 0; index
     `leaf@1.0.0.url === "https://cdn/leaf-v1.json"`, `other@2.0.0.url ===
-    "<base>/other-2.0.0.json"`; `leaf`'s `package_hash` equals `packageHash` of its
+"<base>/other-2.0.0.json"`; `leaf`'s `package_hash` equals `packageHash` of its
     `{manifest,files}` (override didn't perturb the hash).
   - **url override relaxes filename guard:** `leaf.json` WITHOUT a `url` field → skipped
     (filename guard); WITH a valid `url` → indexed. (Confirms the interaction both ways.)

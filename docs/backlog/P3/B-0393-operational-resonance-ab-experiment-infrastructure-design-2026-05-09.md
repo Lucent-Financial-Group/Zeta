@@ -11,7 +11,8 @@ last_updated: 2026-05-09
 depends_on: [B-0390, B-0391]
 composes_with: [B-0017, B-0388, B-0389, B-0390, B-0391, B-0392, B-0394, B-0395]
 parent: B-0017
-tags: [frontier, a-b-experiments, event-capture, experiment-infrastructure, dashboard, git-native, operational-resonance]
+tags:
+  [frontier, a-b-experiments, event-capture, experiment-infrastructure, dashboard, git-native, operational-resonance]
 type: engineering
 ---
 
@@ -25,25 +26,26 @@ dashboard interaction feeds into. This is a **design doc first**
 
 The infrastructure must satisfy:
 
-> *"Every interaction with the UI should be feeding into multiple
-> UI experiments to improve the UI UX at all times."* — B-0017
+> _"Every interaction with the UI should be feeding into multiple
+> UI experiments to improve the UI UX at all times."_ — B-0017
 
-> *"Every pixel and list and other elements count — make them earn
-> their way through ongoing experiments."* — B-0017
+> _"Every pixel and list and other elements count — make them earn
+> their way through ongoing experiments."_ — B-0017
 
 ### Infrastructure components to design
 
 **1. Event schema** (TypeScript types)
 
 Minimal event shape:
+
 ```typescript
 type DashboardEvent = {
-  sessionId: string;       // per-visit UUID
-  experimentId: string;    // which experiment is active
-  variantId: string;       // which variant of the experiment
-  eventType: string;       // "page-load" | "tier-click" | "resolve" | ...
-  timestamp: number;       // Unix ms
-  durationMs?: number;     // time-to-answer proxy where applicable
+  sessionId: string; // per-visit UUID
+  experimentId: string; // which experiment is active
+  variantId: string; // which variant of the experiment
+  eventType: string; // "page-load" | "tier-click" | "resolve" | ...
+  timestamp: number; // Unix ms
+  durationMs?: number; // time-to-answer proxy where applicable
   metadata: Record<string, unknown>;
 };
 ```
@@ -133,12 +135,12 @@ Expected: tools directory and design doc both present.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing A/B experiment infrastructure
-  for this dashboard found in `tools/`, `docs/research/frontier/`,
-  or memory files. The experiment-tracking concept is in B-0017
-  but not yet designed. Check `tools/` for any existing analytics
-  or event-capture tooling before creating new structure.
+      for this dashboard found in `tools/`, `docs/research/frontier/`,
+      or memory files. The experiment-tracking concept is in B-0017
+      but not yet designed. Check `tools/` for any existing analytics
+      or event-capture tooling before creating new structure.
 - [x] Dependency-restructure: `depends_on: [B-0390, B-0391]` —
-  needs metric definition and host model. B-0394 depends on this.
+      needs metric definition and host model. B-0394 depends on this.
 
 ## Composes with
 

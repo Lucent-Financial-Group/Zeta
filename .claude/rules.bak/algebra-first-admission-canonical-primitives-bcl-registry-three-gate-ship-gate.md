@@ -5,12 +5,12 @@ Carved sentence (Aaron 2026-06-02):
 > Before minting any new structure, run the **algebra-first admission procedure**;
 > only **quality + uniqueness + composability** gate entry; the registry **IS our
 > cross-language BCL** and is the **ship gate** — we don't ship what's not in it
-> except named asymmetric exceptions. Everything earns its place by *not* being
+> except named asymmetric exceptions. Everything earns its place by _not_ being
 > needed: prefer express-as-algebra > already-covered > use-existing > add-new.
 
 ## Operational content
 
-When about to author *any* new primitive / collection class / "special index" /
+When about to author _any_ new primitive / collection class / "special index" /
 container / structure, run this **before** writing it. (Full treatment + worked
 examples + the registry itself: [`docs/backlog/P1/B-1006-*`](../../docs/backlog/P1/).)
 
@@ -26,7 +26,7 @@ examples + the registry itself: [`docs/backlog/P1/B-1006-*`](../../docs/backlog/
 
 Algebra-first by design: every step before the last is a reason **not** to grow the
 registry. This is `earn-its-keep` / `all-complexity-is-accidental-in-greenfield` /
-`razor-discipline` at *primitive* scope.
+`razor-discipline` at _primitive_ scope.
 
 ### 2. The three gates — the only barriers to entry
 
@@ -48,13 +48,13 @@ no taste, no seniority, no politics):
   We don't ship what's not in the registry. Goal: everything in it eventually —
   "or else what's it for."
 - **Only off-ramp: a named asymmetric exception** (host adapter / interop shim /
-  bootstrap that *can't* be cross-language-guaranteed) — shipped as a flagged
+  bootstrap that _can't_ be cross-language-guaranteed) — shipped as a flagged
   exception with the waived guarantee stated, per the human-audit risk-acceptance
   attribution pattern, **not** a silent bypass.
 - The cross-language guarantee **compounds**: each promoted primitive ships its
   cross-language contract (per-language algebra + byte-lock vectors), so the more we
   ship the larger the provably-identical-across-languages surface. Minimality is
-  *why* it's trustworthy — every entry is a contract Ace maintains across every
+  _why_ it's trustworthy — every entry is a contract Ace maintains across every
   target language.
 
 ### 4. What registers vs what adapts — the closed four-bucket sort (Amara 2026-06-02)
@@ -65,14 +65,14 @@ no taste, no seniority, no politics):
 
 Every candidate sorts into exactly one bucket — only the first is the registry/BCL:
 
-| Bucket | What | Examples |
-|---|---|---|
-| **registers** | atoms + laws = **algebras** | Z-set family · codec algebra · Tick algebra · generic-math base |
-| **adapts** | **sources · views · transports** | `TickSource*` (Manual/Timer/CircuitStep/WebSocket/GitEvent) · Rx + event-index (views) · the wire under the codec (transports) |
-| **executes** | **runtimes** | the DBSP Circuit step-loop |
-| **waives** | named **asymmetric exceptions** | host adapters that can't be cross-language-guaranteed |
+| Bucket        | What                             | Examples                                                                                                                       |
+| ------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **registers** | atoms + laws = **algebras**      | Z-set family · codec algebra · Tick algebra · generic-math base                                                                |
+| **adapts**    | **sources · views · transports** | `TickSource*` (Manual/Timer/CircuitStep/WebSocket/GitEvent) · Rx + event-index (views) · the wire under the codec (transports) |
+| **executes**  | **runtimes**                     | the DBSP Circuit step-loop                                                                                                     |
+| **waives**    | named **asymmetric exceptions**  | host adapters that can't be cross-language-guaranteed                                                                          |
 
-So when a candidate is a *source* (it emits values), register the **algebra it
+So when a candidate is a _source_ (it emits values), register the **algebra it
 emits**, not the source — e.g. register the **Tick algebra** (`Tick`/`Delta`/`zero`/
 `advance`/`order`/`monotonicity`/`z⁻¹`); `WallClock`/`Timer`/`CircuitStep`/`WebSocket`/
 `GitEvent` tick-sources are adapters. The algebra-first procedure is the registry's
@@ -84,7 +84,7 @@ algebras.
 Per [`wake-time-substrate.md`](wake-time-substrate.md): this fires at
 **authoring time** — the moment before a new structure is written, in any language.
 Auto-load puts the algebra-first procedure + three gates + ship-gate in working
-memory *before* the special-class is minted, not after it leaks in. Aaron 2026-06-02:
+memory _before_ the special-class is minted, not after it leaks in. Aaron 2026-06-02:
 "any rules [that] are minimal like that we should likely save."
 
 ## Composes with

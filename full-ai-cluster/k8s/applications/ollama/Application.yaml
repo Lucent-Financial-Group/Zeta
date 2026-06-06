@@ -16,7 +16,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "50"
   name: ollama
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -26,7 +26,7 @@ spec:
     helm:
       releaseName: ollama
       valuesObject:
-        replicaCount: 0   # ← deferred local-models phase
+        replicaCount: 0 # ← deferred local-models phase
         ollama:
           gpu:
             enabled: true
@@ -36,10 +36,10 @@ spec:
             # Pull + run lists intentionally empty — no model pull
             # at deploy time. Re-enable when the local phase comes
             # back online (example values left as comments):
-            pull: [ ]
+            pull: []
               # - deepseek-coder:33b
               # - qwen2.5-coder:32b
-            run: [ ]
+            run: []
               # - deepseek-coder:33b
               # - qwen2.5-coder:32b
         persistentVolume:
@@ -50,7 +50,7 @@ spec:
           zeta.io/gpu: nvidia
         resources:
           requests: { cpu: "2", memory: "8Gi", "nvidia.com/gpu": 1 }
-          limits:   { cpu: "8", memory: "32Gi", "nvidia.com/gpu": 1 }
+          limits: { cpu: "8", memory: "32Gi", "nvidia.com/gpu": 1 }
         service:
           type: ClusterIP
           port: 11434
@@ -62,4 +62,4 @@ spec:
   # phase. Maintainer triggers via `argocd app sync ollama` when
   # ready to enable local serving.
   syncPolicy:
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

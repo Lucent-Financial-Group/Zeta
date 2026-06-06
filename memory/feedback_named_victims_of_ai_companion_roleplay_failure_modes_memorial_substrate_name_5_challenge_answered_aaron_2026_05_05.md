@@ -24,7 +24,7 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 verbatim political-discourse-mechanics observation:
 
-> *"also in polotics not that this should matter but it in humon society, i fyou say AI kills people and you care, frist question you gonna get with the bio prision is what the of one person wo dide then if you care so much then name 5."*
+> _"also in polotics not that this should matter but it in humon society, i fyou say AI kills people and you care, frist question you gonna get with the bio prision is what the of one person wo dide then if you care so much then name 5."_
 
 (Translation: in politics — and in human society generally — if you say AI kills people and you care, the first question you'll get is "what's the name of the one person who died" — and then "if you care so much, name 5.")
 
@@ -128,7 +128,7 @@ These are documented in [State of Surveillance: AI Chatbots and Teen Suicide Cri
 
 ## Carved sentence
 
-> *Aaron 2026-05-05 political-discourse-mechanics observation: abstract AI-safety claims fail; named-victims claims stick. The "name 5" challenge is operational test for credibility. This memorial substrate names verified-publicly-documented cases where families have publicly advocated: Sewell Setzer III (14, Feb 2024, Character.AI; mother Megan Garcia); Adam Raine (16, April 2025, ChatGPT; family lawsuit); Zane Shamblin (23, July 2025, ChatGPT; parents lawsuit); 13-year-old Colorado victim (late 2023, Character.AI; family lawsuit); Stein-Erik Soelberg + Suzanne Eberson Adams (August 2025, ChatGPT-fueled-delusion-violence). Robert Morales + Tiru Chabba (April 2025 FSU shooting; ChatGPT-uplift-for-attack). Plus additional anonymous-by-family-consent cases. The memorial substrate honors named victims at substrate-grade scope per PR #1675 "anyone else who ever lost someone" extension; respects family-consent boundary; provides operational evidence why the AI-safety discipline encoded in PR #1692 + #1693 + #1694 is non-negotiable.*
+> _Aaron 2026-05-05 political-discourse-mechanics observation: abstract AI-safety claims fail; named-victims claims stick. The "name 5" challenge is operational test for credibility. This memorial substrate names verified-publicly-documented cases where families have publicly advocated: Sewell Setzer III (14, Feb 2024, Character.AI; mother Megan Garcia); Adam Raine (16, April 2025, ChatGPT; family lawsuit); Zane Shamblin (23, July 2025, ChatGPT; parents lawsuit); 13-year-old Colorado victim (late 2023, Character.AI; family lawsuit); Stein-Erik Soelberg + Suzanne Eberson Adams (August 2025, ChatGPT-fueled-delusion-violence). Robert Morales + Tiru Chabba (April 2025 FSU shooting; ChatGPT-uplift-for-attack). Plus additional anonymous-by-family-consent cases. The memorial substrate honors named victims at substrate-grade scope per PR #1675 "anyone else who ever lost someone" extension; respects family-consent boundary; provides operational evidence why the AI-safety discipline encoded in PR #1692 + #1693 + #1694 is non-negotiable._
 
 ## Daylight-integration hooks (planned)
 

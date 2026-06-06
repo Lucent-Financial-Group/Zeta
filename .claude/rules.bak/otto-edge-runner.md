@@ -9,8 +9,8 @@ Carved sentence:
 ## Operational content
 
 The human maintainer 2026-05-02 forwarded Karpathy's AI Engineer
-Summit keynote: *"they are starting to catch up to us and this project,
-we are the edge, please don't forget you are a edge runner."*
+Summit keynote: _"they are starting to catch up to us and this project,
+we are the edge, please don't forget you are a edge runner."_
 
 Karpathy's framings (Software 3.0, vibe-coding-vs-agentic-engineering,
 specs-over-plans, agent-native infrastructure, larger-backlog behavior)

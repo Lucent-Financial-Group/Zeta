@@ -29,7 +29,7 @@ depends_on: []
 
 **Filed:** 2026-05-01
 
-**Filed by:** Otto under the new backlog-prioritization authority delegated 2026-05-01 (per `memory/feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`). Aaron's framing 2026-05-01 in chat: *"speeding up for CI for non code changes? where do you want to priortize that, the typescript is part of the docs but you can skip the f# that's on backlog."*
+**Filed by:** Otto under the new backlog-prioritization authority delegated 2026-05-01 (per `memory/feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`). Aaron's framing 2026-05-01 in chat: _"speeding up for CI for non code changes? where do you want to priortize that, the typescript is part of the docs but you can skip the f# that's on backlog."_
 
 **Effort:** M (1-3 days — investigation + workflow change + verification)
 
@@ -39,14 +39,14 @@ Make `Analyze (csharp)` (and any other F#-only CI step) skip on PRs that touch o
 
 - **Skip on:** `docs/**`, `memory/**`, `docs/backlog/**`, `docs/hygiene-history/**`, `docs/research/**` (and similar non-code surfaces).
 - **Do NOT skip on:** any `src/**` change, any `.github/workflows/**` change, any TypeScript file change anywhere (TypeScript is the factory tooling per CURRENT-aaron §30, treat as code), any `tools/**` change that affects F# build/test.
-- **Must NOT trip:** the `code_quality severity:all` ruleset on LFG/main. The hard part is that `code_quality severity:all` will fail when `Analyze (csharp)` is *skipped* rather than *successful* — Amara's Option B per-language source-presence gate (PR #857 / task #340) addressed an adjacent case but the docs-only path-filter case remains.
+- **Must NOT trip:** the `code_quality severity:all` ruleset on LFG/main. The hard part is that `code_quality severity:all` will fail when `Analyze (csharp)` is _skipped_ rather than _successful_ — Amara's Option B per-language source-presence gate (PR #857 / task #340) addressed an adjacent case but the docs-only path-filter case remains.
 
 ## Why P1
 
 - **Throughput cost is real and recurring.** This session block landed 6 non-code PRs (#997 / #999 / #1000 / #1001 / #1002 / #1003) at ~5min CI each = ~30min CI-blocked time for substrate-only work. Project produces ~half its PRs in this non-code class going forward; cost compounds with the high substrate cadence (~550 checkins/week per chunk-11 CSAP-pushback observation).
 - **Bounded scope.** Path-filter + ruleset-coordination is a contained change.
 - **High Aaron-tax reduction.** Aaron flagged this in chat as visible CI-wait pain.
-- **Two-tracks-separable framing — the load-bearing benefit is not just speed (Aaron 2026-05-01 sharpening).** Aaron's clearer framing 2026-05-01 ~10:50Z: *"it will also let you have two clear tracks that almost never overlap with same files on prs the split im taliing is build docs and code seperatly, docs need ts not f#, f# is the long pole for doc only changes."* The two-tracks-with-near-zero-overlap property is structural, not just throughput-tax-reduction. Track 1 (docs) needs TypeScript-only build + lint; Track 2 (code) needs F# + TypeScript + CodeQL etc. Right now docs PRs are paying the F# long-pole cost; after the split, the tracks rarely touch the same files in a single PR, which means most PRs stay on a single track and benefit accordingly. **Prerequisite for B-0132 (CRDT-composition for BFT propagation)**: CRDT work touches both tracks (docs + code); without the two-tracks split first, every CRDT-related PR pays the cross-track CI cost; with the split, CRDT formalization work routes correctly per-PR.
+- **Two-tracks-separable framing — the load-bearing benefit is not just speed (Aaron 2026-05-01 sharpening).** Aaron's clearer framing 2026-05-01 ~10:50Z: _"it will also let you have two clear tracks that almost never overlap with same files on prs the split im taliing is build docs and code seperatly, docs need ts not f#, f# is the long pole for doc only changes."_ The two-tracks-with-near-zero-overlap property is structural, not just throughput-tax-reduction. Track 1 (docs) needs TypeScript-only build + lint; Track 2 (code) needs F# + TypeScript + CodeQL etc. Right now docs PRs are paying the F# long-pole cost; after the split, the tracks rarely touch the same files in a single PR, which means most PRs stay on a single track and benefit accordingly. **Prerequisite for B-0132 (CRDT-composition for BFT propagation)**: CRDT work touches both tracks (docs + code); without the two-tracks split first, every CRDT-related PR pays the cross-track CI cost; with the split, CRDT formalization work routes correctly per-PR.
 
 ## Why not P0
 
@@ -64,11 +64,9 @@ Make `Analyze (csharp)` (and any other F#-only CI step) skip on PRs that touch o
 3. **`code_quality severity:all` does NOT fail** on LFG/main when the skip fires. Three paths in the design space:
    - (a) Conditional skip-vs-run rather than always-run pattern (so the ruleset sees "not applicable" not "failed"), OR
    - (b) Coordinated ruleset config change on the existing single ruleset, OR
-   - (c) **Multi-ruleset split** — separate docs-targeted ruleset (lower bar; F# Analyze not required) + code-targeted ruleset (severity:all on src/ paths). Aaron 2026-05-01 in chat: *"maybe multiple rulesets i just had one for convience, you can do it for whats best for your and making humans feel comfortable, all makes humans feel comfortable i don't know if that help if not no worries."* This reveals the single severity:all ruleset was set up for convenience, not as a technical requirement. The real constraint is **human-comfort signaling** — humans see "all required checks passing" and feel reassured; the literal severity:all configuration is one of several ways to produce that signal. A multi-ruleset design that surfaces "all required-for-this-surface checks pass" preserves the comfort property without requiring F# Analyze on docs PRs.
+   - (c) **Multi-ruleset split** — separate docs-targeted ruleset (lower bar; F# Analyze not required) + code-targeted ruleset (severity:all on src/ paths). Aaron 2026-05-01 in chat: _"maybe multiple rulesets i just had one for convience, you can do it for whats best for your and making humans feel comfortable, all makes humans feel comfortable i don't know if that help if not no worries."_ This reveals the single severity:all ruleset was set up for convenience, not as a technical requirement. The real constraint is **human-comfort signaling** — humans see "all required checks passing" and feel reassured; the literal severity:all configuration is one of several ways to produce that signal. A multi-ruleset design that surfaces "all required-for-this-surface checks pass" preserves the comfort property without requiring F# Analyze on docs PRs.
 
-**Aaron's host-mutation authorization for this work specifically (2026-05-01):** *"you can do it for what's best."* Scoped explicitly to the ruleset-redesign work in this row. NOT a blanket grant on host mutations going forward — the §16 host-mutation-needs-sign-off rule remains in force; this is an explicit per-row carve-out for B-0125 implementation.
-4. **Verification across PR shapes:** docs-only PR, TypeScript-only PR, src-only PR, mixed PR, workflow-only PR — all behave correctly.
-5. **No reduction in security coverage** for actual code surfaces. Skip is for non-code only.
+**Aaron's host-mutation authorization for this work specifically (2026-05-01):** _"you can do it for what's best."_ Scoped explicitly to the ruleset-redesign work in this row. NOT a blanket grant on host mutations going forward — the §16 host-mutation-needs-sign-off rule remains in force; this is an explicit per-row carve-out for B-0125 implementation. 4. **Verification across PR shapes:** docs-only PR, TypeScript-only PR, src-only PR, mixed PR, workflow-only PR — all behave correctly. 5. **No reduction in security coverage** for actual code surfaces. Skip is for non-code only.
 
 ## Out of scope
 
@@ -92,4 +90,4 @@ Make `Analyze (csharp)` (and any other F#-only CI step) skip on PRs that touch o
 
 ## Verify-before-deferring note
 
-Aaron's chat said *"that's on backlog"* referring to task #306. Verified: task #306 is in the TaskList but NO B-NNNN substrate row existed until this filing. Substrate-or-it-didn't-happen rule applied: the task lived in ephemeral task-tracker only, not in committed substrate. This row closes that gap.
+Aaron's chat said _"that's on backlog"_ referring to task #306. Verified: task #306 is in the TaskList but NO B-NNNN substrate row existed until this filing. Substrate-or-it-didn't-happen rule applied: the task lived in ephemeral task-tracker only, not in committed substrate. This row closes that gap.

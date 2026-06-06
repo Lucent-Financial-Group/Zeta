@@ -188,9 +188,7 @@ function readRecentMerges(range: string): RecentMerge[] {
 
 export function main(): 0 {
   const repository =
-    process.env.ZETA_GITHUB_REPOSITORY ??
-    process.env.GITHUB_REPOSITORY ??
-    "Lucent-Financial-Group/Zeta";
+    process.env.ZETA_GITHUB_REPOSITORY ?? process.env.GITHUB_REPOSITORY ?? "Lucent-Financial-Group/Zeta";
   const recentMergeRange = process.env.ZETA_WORLDVIEW_RECENT_RANGE ?? "origin/main";
 
   const snapshot: WorldviewSnapshot = {

@@ -10,13 +10,13 @@ type: feedback
 
 Aaron 2026-05-03, in autonomous-loop maintainer channel after Otto observed a TS-vs-bash generator divergence on docs/BACKLOG.md (the bash generator and TS generator produced slightly different output; CI used bash, so the TS-generated output failed the drift check):
 
-> *"to back up my bash is lower quality claim i offer the difficlut of proper Deterministic Simulation in bash vs ts, this is where my quality assesment comes from. i don't think we need git hooks harness hooks are good vibe coders will never be without a harness of some kind"*
+> _"to back up my bash is lower quality claim i offer the difficlut of proper Deterministic Simulation in bash vs ts, this is where my quality assesment comes from. i don't think we need git hooks harness hooks are good vibe coders will never be without a harness of some kind"_
 
 Plus same-message-cluster affirmations:
 
-> *"ts is great"*
+> _"ts is great"_
 
-> *"that's aweseom"*
+> _"that's aweseom"_
 
 This memo captures two architectural insights from the exchange.
 
@@ -37,7 +37,7 @@ Composes with:
 
 ## Insight 2 — vibe-coders always have a harness; harness hooks suffice (git hooks are antipattern)
 
-Aaron 2026-05-03: *"vibe coders will never be without a harness of some kind"* + *"i don't think we need git hooks harness hooks are good"* + *"many consider git hooks an antipatter, i tend to love antipattern when they are used in the non antipatter way lol, i dont know if we have any non antipatter use cases that harness hook counld not handle but git hooks could."*.
+Aaron 2026-05-03: _"vibe coders will never be without a harness of some kind"_ + _"i don't think we need git hooks harness hooks are good"_ + _"many consider git hooks an antipatter, i tend to love antipattern when they are used in the non antipatter way lol, i dont know if we have any non antipatter use cases that harness hook counld not handle but git hooks could."_.
 
 **The antipattern argument**: many consider git hooks an antipattern because they (a) tie repo policy to client-side configuration that's easily bypassed, (b) require platform-specific scripts (bash + ps1 + shebangs), (c) silently fail when missing or misconfigured, (d) don't compose with modern agentic-engineering workflows.
 
@@ -53,9 +53,9 @@ Aaron 2026-05-03: *"vibe coders will never be without a harness of some kind"* +
 
 ### Contributor scope vs skill-bundle scope (Aaron 2026-05-03 refinement)
 
-Aaron 2026-05-03: *"can we count on our install/setup has run for contributors and/or maintainers, yes, so we can count on bun here too then, not for skills we send out via skill bundles for pepole who only resued they have cluade hooks, we maintiners and contributors can have both and both on ts."*.
+Aaron 2026-05-03: _"can we count on our install/setup has run for contributors and/or maintainers, yes, so we can count on bun here too then, not for skills we send out via skill bundles for pepole who only resued they have cluade hooks, we maintiners and contributors can have both and both on ts."_.
 
-**Persona vocabulary distinction (Aaron 2026-05-03 — *"now we have ai agents that are named and personas that are end user ai and human personas"*)**:
+**Persona vocabulary distinction (Aaron 2026-05-03 — _"now we have ai agents that are named and personas that are end user ai and human personas"_)**:
 
 There are two distinct persona axes:
 
@@ -64,17 +64,17 @@ There are two distinct persona axes:
 
 This memo's table covers **end-user personas** (axis 2). Internal named-agent personas are tracked separately (per the Otto-279 history-surface attribution carve-out + persona notebooks under `memory/persona/`).
 
-**Tracked end-user personas (per Aaron 2026-05-03 — *"we should start keeping us with our end user persona contrbutor maintainer skill bundle user, there will be more over time"* + *"the pr copilot ... yes that's a first class personal any any exteranl ai like that that could benefit from our runtime"*)**:
+**Tracked end-user personas (per Aaron 2026-05-03 — _"we should start keeping us with our end user persona contrbutor maintainer skill bundle user, there will be more over time"_ + _"the pr copilot ... yes that's a first class personal any any exteranl ai like that that could benefit from our runtime"_)**:
 
-| Persona | Type | Bun availability | What they execute |
-|---|---|---|---|
-| **Contributor** (runs `tools/setup/install.sh`) | Human | Yes (installed bun) | Could run git hooks + harness hooks, both in TS |
-| **Maintainer** (also runs install) | Human | Yes | Same as contributor |
-| **Skill-bundle user** (uses plugins via harness) | Human | Only via harness's runtime | Harness hooks only |
-| **PR Copilot reviewer** (default static) | AI | N/A — doesn't execute | Static analysis only; reads + flags issues |
-| **PR Copilot reviewer** (HYPOTHETICAL — if we adopt `.github/workflows/copilot-setup-steps.yml` with the GitHub-required `copilot-setup-steps` job name; not currently in the repo. Canonical pattern documented at GitHub's official docs: `https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment`.) | AI | Yes (via our setup, IF that workflow exists) | Both bash + TS would be executable; could verify findings by running tools |
-| **Other external-AI PR reviewers** (Codex, Cursor, Aider, Gemini-CLI, etc.) | AI | Conditional per their integration | Static or executable depending on setup |
-| *(more personas over time)* | TBD | TBD | TBD |
+| Persona                                                                                                                                                                                                                                                                                                                                                    | Type  | Bun availability                             | What they execute                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | -------------------------------------------- | -------------------------------------------------------------------------- |
+| **Contributor** (runs `tools/setup/install.sh`)                                                                                                                                                                                                                                                                                                            | Human | Yes (installed bun)                          | Could run git hooks + harness hooks, both in TS                            |
+| **Maintainer** (also runs install)                                                                                                                                                                                                                                                                                                                         | Human | Yes                                          | Same as contributor                                                        |
+| **Skill-bundle user** (uses plugins via harness)                                                                                                                                                                                                                                                                                                           | Human | Only via harness's runtime                   | Harness hooks only                                                         |
+| **PR Copilot reviewer** (default static)                                                                                                                                                                                                                                                                                                                   | AI    | N/A — doesn't execute                        | Static analysis only; reads + flags issues                                 |
+| **PR Copilot reviewer** (HYPOTHETICAL — if we adopt `.github/workflows/copilot-setup-steps.yml` with the GitHub-required `copilot-setup-steps` job name; not currently in the repo. Canonical pattern documented at GitHub's official docs: `https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment`.) | AI    | Yes (via our setup, IF that workflow exists) | Both bash + TS would be executable; could verify findings by running tools |
+| **Other external-AI PR reviewers** (Codex, Cursor, Aider, Gemini-CLI, etc.)                                                                                                                                                                                                                                                                                | AI    | Conditional per their integration            | Static or executable depending on setup                                    |
+| _(more personas over time)_                                                                                                                                                                                                                                                                                                                                | TBD   | TBD                                          | TBD                                                                        |
 
 **Architectural commitment**: external AI reviewers that could benefit from our runtime are first-class personas, not afterthoughts. When designing infrastructure (CI workflows, install scripts, distribution mechanisms), include rows for external-AI personas in the planning table.
 

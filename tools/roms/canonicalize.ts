@@ -11,15 +11,7 @@
 // --apply: renames matched files to their canonical names.
 
 import { createHash } from "node:crypto";
-import {
-  closeSync,
-  openSync,
-  readdirSync,
-  readFileSync,
-  readSync,
-  renameSync,
-  existsSync,
-} from "node:fs";
+import { closeSync, openSync, readdirSync, readFileSync, readSync, renameSync, existsSync } from "node:fs";
 import { basename, dirname, extname, join } from "node:path";
 
 // --- Datfile parsing (Logiqx XML) ---
@@ -61,31 +53,28 @@ const ROM_EXTENSIONS = new Set([
 ]);
 
 function decodeXmlAttributeValue(value: string): string {
-  return value.replace(
-    /&(#x[0-9a-fA-F]+|#[0-9]+|amp|lt|gt|quot|apos);/g,
-    (_match, entity: string) => {
-      switch (entity) {
-        case "amp":
-          return "&";
-        case "lt":
-          return "<";
-        case "gt":
-          return ">";
-        case "quot":
-          return '"';
-        case "apos":
-          return "'";
-        default:
-          if (entity.startsWith("#x")) {
-            return String.fromCodePoint(parseInt(entity.slice(2), 16));
-          }
-          if (entity.startsWith("#")) {
-            return String.fromCodePoint(parseInt(entity.slice(1), 10));
-          }
-          return `&${entity};`;
-      }
-    },
-  );
+  return value.replace(/&(#x[0-9a-fA-F]+|#[0-9]+|amp|lt|gt|quot|apos);/g, (_match, entity: string) => {
+    switch (entity) {
+      case "amp":
+        return "&";
+      case "lt":
+        return "<";
+      case "gt":
+        return ">";
+      case "quot":
+        return '"';
+      case "apos":
+        return "'";
+      default:
+        if (entity.startsWith("#x")) {
+          return String.fromCodePoint(parseInt(entity.slice(2), 16));
+        }
+        if (entity.startsWith("#")) {
+          return String.fromCodePoint(parseInt(entity.slice(1), 10));
+        }
+        return `&${entity};`;
+    }
+  });
 }
 
 function isSafeCanonicalName(name: string): boolean {
@@ -208,9 +197,7 @@ export function matchAndReport(
     if (apply && !alreadyCorrect) {
       const dir = dirname(filePath);
       if (!isSafeCanonicalName(canonicalName)) {
-        process.stderr.write(
-          `skip: unsafe canonical name from datfile: ${canonicalName}\n`,
-        );
+        process.stderr.write(`skip: unsafe canonical name from datfile: ${canonicalName}\n`);
         usedNames.add(canonicalName);
         results.push({
           file: filePath,
@@ -223,9 +210,7 @@ export function matchAndReport(
       }
       const target = join(dir, canonicalName);
       if (existsSync(target) || usedNames.has(canonicalName)) {
-        process.stderr.write(
-          `skip: target already exists: ${target}\n`,
-        );
+        process.stderr.write(`skip: target already exists: ${target}\n`);
       } else {
         renameSync(filePath, target);
         renamed = true;
@@ -349,9 +334,7 @@ export function main(argv: readonly string[]): number {
   process.stdout.write(JSON.stringify(results, null, 2) + "\n");
 
   process.stderr.write(
-    `\nsummary: ${matched.length} matched, ` +
-      `${unmatched.length} unmatched, ` +
-      `${renamed.length} renamed\n`,
+    `\nsummary: ${matched.length} matched, ` + `${unmatched.length} unmatched, ` + `${renamed.length} renamed\n`,
   );
 
   return 0;

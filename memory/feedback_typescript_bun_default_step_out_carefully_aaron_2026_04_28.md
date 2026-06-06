@@ -8,10 +8,10 @@ type: feedback
 
 ## The rule (Aaron verbatim 2026-04-28T19:56Z)
 
-> *"sort-tick-history-canonical.py eventually we are going to use the
+> _"sort-tick-history-canonical.py eventually we are going to use the
 > typescript like ../scratch unless this is AL/ML AND is a better fit
 > for python? typescript/bun being our default, we need to decide when
-> to step out on typescript carefully."*
+> to step out on typescript carefully."_
 
 ## What this codifies
 
@@ -63,6 +63,7 @@ Bar is high. Justify with one of:
 If none of those apply: write TypeScript on Bun.
 
 ## When NOT to step out (i.e. default to TypeScript even though
+
 Python feels easier)
 
 - "It's a quick script" — quick scripts compound. Today's
@@ -94,8 +95,8 @@ Python."
 ## Composes with
 
 - `package.json` — `tally:substrates` script + `bun@1.3.13` pin
-  + existing TypeScript tooling pattern at
-  `tools/invariant-substrates/tally.ts`.
+  - existing TypeScript tooling pattern at
+    `tools/invariant-substrates/tally.ts`.
 - `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
   — same tier of substrate-discipline (defaults Aaron sets that
   agents respect without re-litigating each occurrence).

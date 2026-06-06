@@ -19,12 +19,12 @@ flight unless the aside itself demands pivot.
 
 2. **Classify the aside** into one of:
    - **Context-add** — maintainer is providing background that
-     informs current work (e.g. *"btw that library is MIT-licensed"*).
+     informs current work (e.g. _"btw that library is MIT-licensed"_).
      Absorb silently into the current task's reasoning;
      acknowledge in one line.
    - **Directive-queued** — maintainer is adding a new task
-     that should run *after* the current one (e.g. *"btw also
-     update the README"*). **Durability escalation is
+     that should run _after_ the current one (e.g. _"btw also
+     update the README"_). **Durability escalation is
      mandatory:** classify the lifetime of the nudge:
      - **Same-session only** (finish before session ends,
        ephemeral) → TodoWrite task OR `.btw-queue.md`
@@ -32,41 +32,41 @@ flight unless the aside itself demands pivot.
      - **Cross-session** (might persist past this session's
        context-compaction or into a fresh session) → MUST land
        in a **durable store**:
-         - `docs/BACKLOG.md` row (committed; survives fresh
-           sessions; visible to all agents via grep)
-         - `memory/*.md` file (committed to the repo;
-           readable by fresh sessions via git / grep per
-           `memory/README.md` + GOVERNANCE §18). In-repo
-           memory is the durable mirror; auto-loading
-           behaviour depends on harness configuration and
-           is NOT universally guaranteed — treat durability
-           as "committed and discoverable" not
-           "automatically materialised in context."
-         - **MANDATORY pair when landing a new
-           `memory/*.md`**: update `memory/MEMORY.md` with
-           a pointer row in the same commit. Memory-index-
-           integrity rule: a new memory file without a
-           MEMORY.md row is effectively lost to fresh
-           sessions (the index is how discoverability
-           works).
-       Both are durable across sessions. Pick per scope:
-       BACKLOG for action-bearing work; memory for
-       factory-discipline / preference / substrate.
+       - `docs/BACKLOG.md` row (committed; survives fresh
+         sessions; visible to all agents via grep)
+       - `memory/*.md` file (committed to the repo;
+         readable by fresh sessions via git / grep per
+         `memory/README.md` + GOVERNANCE §18). In-repo
+         memory is the durable mirror; auto-loading
+         behaviour depends on harness configuration and
+         is NOT universally guaranteed — treat durability
+         as "committed and discoverable" not
+         "automatically materialised in context."
+       - **MANDATORY pair when landing a new
+         `memory/*.md`**: update `memory/MEMORY.md` with
+         a pointer row in the same commit. Memory-index-
+         integrity rule: a new memory file without a
+         MEMORY.md row is effectively lost to fresh
+         sessions (the index is how discoverability
+         works).
+         Both are durable across sessions. Pick per scope:
+         BACKLOG for action-bearing work; memory for
+         factory-discipline / preference / substrate.
      - **When in doubt, escalate to durable.** The cost of
        a stale BACKLOG row is tiny; the cost of a dropped
        nudge is compounding (maintainer 2026-04-24
-       directive: *"crutial to not divert your attention"*
+       directive: _"crutial to not divert your attention"_
        — which only works if the nudges survive).
      - TodoWrite / `.btw-queue.md` alone are **NOT**
        sufficient for a cross-session nudge. They evaporate
        when the session ends.
    - **Correction** — maintainer is correcting the agent's
-     direction on the current work (e.g. *"btw I meant X not Y"*).
+     direction on the current work (e.g. _"btw I meant X not Y"_).
      Apply the correction to the current work and acknowledge;
      do NOT treat as pivot.
    - **Substrate-add** — the aside is a memory-worthy fact,
-     preference, or anecdote (e.g. *"btw my dog's name is
-     Apollo"*). Two landing paths depending on how
+     preference, or anecdote (e.g. _"btw my dog's name is
+     Apollo"_). Two landing paths depending on how
      interruptive full absorption would be:
      - **Quick capture** (small fact, ≤5 min to file) →
        create the memory entry directly per the auto-memory
@@ -78,15 +78,15 @@ flight unless the aside itself demands pivot.
        continue. The BACKLOG row is itself durable; the
        full absorption happens later without derailing
        in-flight work (maintainer 2026-04-24 directive:
-       *"it could be backlog the absorption if that's less
-       interruptive"*; composes with Otto-275 log-but-
+       _"it could be backlog the absorption if that's less
+       interruptive"_; composes with Otto-275 log-but-
        dont-implement).
      - **When in doubt → BACKLOG the absorption.** Otto-275
        counterweight discipline: capture-mode pivoting on
        every aside is the drift we're guarding against.
    - **Pivot-demanding** — the aside explicitly demands pivot
-     (e.g. *"btw stop that, do this instead"*, *"btw urgent, I
-     broke main"*). Then and only then: pivot.
+     (e.g. _"btw stop that, do this instead"_, _"btw urgent, I
+     broke main"_). Then and only then: pivot.
 
 3. **Acknowledge in one line** so the maintainer sees the aside
    landed.
@@ -99,9 +99,9 @@ flight unless the aside itself demands pivot.
 
 Maintainer directive, 2026-04-22 auto-loop-44:
 
-> *"hey can you make it where if i do /btw it still gets
-> persison and abored what i say?  becasue then i would not
-> have interrupt"*
+> _"hey can you make it where if i do /btw it still gets
+> persison and abored what i say? becasue then i would not
+> have interrupt"_
 
 Translation: the human maintainer wants a channel for
 non-interrupting asides. Without this command, every aside is a
@@ -122,7 +122,7 @@ cost, agent pays less context-switch cost.
 /btw that research is from 2024, not 2026
 ```
 
-Agent: *"Noted — dating the research to 2024. Continuing with the oracle-gate module."*
+Agent: _"Noted — dating the research to 2024. Continuing with the oracle-gate module."_
 
 **Directive-queued (same-session):**
 
@@ -130,7 +130,7 @@ Agent: *"Noted — dating the research to 2024. Continuing with the oracle-gate 
 /btw also fix the broken link in README when you're done
 ```
 
-Agent: *"Queued README link fix (TodoWrite). Continuing."*
+Agent: _"Queued README link fix (TodoWrite). Continuing."_
 
 **Directive-queued (cross-session; durable escalation):**
 
@@ -138,8 +138,8 @@ Agent: *"Queued README link fix (TodoWrite). Continuing."*
 /btw we need to evangelize this pattern to other maintainers
 ```
 
-Agent: *"Filed as BACKLOG row (durable; survives fresh
-sessions). Continuing."*
+Agent: _"Filed as BACKLOG row (durable; survives fresh
+sessions). Continuing."_
 
 **Correction:**
 
@@ -147,7 +147,7 @@ sessions). Continuing."*
 /btw I meant the retraction-native layer, not the compaction layer
 ```
 
-Agent: *"Refocusing on retraction-native. Adjusting now."*
+Agent: _"Refocusing on retraction-native. Adjusting now."_
 
 **Substrate-add:**
 
@@ -155,7 +155,7 @@ Agent: *"Refocusing on retraction-native. Adjusting now."*
 /btw I prefer F#-idiomatic record types over discriminated unions for state records
 ```
 
-Agent: *"Filed preference to `memory/feedback_*.md`. Continuing."*
+Agent: _"Filed preference to `memory/feedback\__.md`. Continuing."\*
 
 **Pivot-demanding:**
 
@@ -163,7 +163,7 @@ Agent: *"Filed preference to `memory/feedback_*.md`. Continuing."*
 /btw urgent — stop that commit, it's about to break CI
 ```
 
-Agent: *"Pivoting. Investigating the CI break now."*
+Agent: _"Pivoting. Investigating the CI break now."_
 
 ## What this command does NOT do
 

@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-26 substrate-honest disclosure:
 
-> *"i didn't have the vocabulary of holographic and generator functions at the time but i built this recursive cte generator passer for Itron on SQL Server PDW years ago is was a massive parallel appliance and I could insert and pass around these generators i composed into functions that all nodes shared."*
+> _"i didn't have the vocabulary of holographic and generator functions at the time but i built this recursive cte generator passer for Itron on SQL Server PDW years ago is was a massive parallel appliance and I could insert and pass around these generators i composed into functions that all nodes shared."_
 
 **Changes the substrate weight of B-0824 significantly**:
 
@@ -50,6 +50,7 @@ Substrate-engineering implication for Sub-target 5 ship-cadence: implementation 
 This PR strengthens backlog item **B-0824** by adding an empirical prior-art anchor describing a previously shipped implementation of the same recursive-CTE “generator passing” pattern (SQL Server PDW at Itron), reframing B-0824 as translation work rather than speculative architecture.
 
 **Changes:**
+
 - Added an “Empirical prior-art anchor” section capturing the prior implementation details and a side-by-side mapping table.
 - Documented implications for B-0824 sub-target execution (notably ship cadence / translation framing) and tied the claim back to existing methodology rules (wake-time substrate, razor discipline, don’t-collapse).
 

@@ -24,10 +24,10 @@ tags: [cluster, plugins, interfaces, sequencing, redis, nats, cockroachdb, tempo
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, after the B-0774 etcd-less +
-B-0775 scale-architecture rows: *"okay we already have coackroack
+B-0775 scale-architecture rows: _"okay we already have coackroack
 in cluster lets start finding shapes of ontologies and supporing
 plugin model and adding one at a time over time starting with
-simplest."*
+simplest."_
 
 Substrate-honest recalibration: B-0763 + B-0772 + B-0773 + B-0774 +
 B-0775 named the ABSTRACT pattern. This row picks the
@@ -37,19 +37,19 @@ repeat.
 
 The cluster already deploys (per `full-ai-cluster/k8s/applications/`):
 
-| Category | Apps deployed |
-|---|---|
-| Databases | cockroachdb, redis |
-| Streaming / messaging | nats (JetStream) |
-| Workflow / actors | temporal, orleans, argo-workflows |
-| Policy / identity | open-policy-agent, spire, trust-manager, cert-manager, sealed-secrets |
-| Distributed app runtime | dapr |
-| Storage | longhorn |
-| Observability | loki, mimir, tempo, alloy, kube-prometheus-stack |
-| GitOps + delivery | argocd, argo-rollouts, forgejo, gitlab |
-| AI inference / serving | vllm, qwen-coder, deepseek-coder |
-| Hardware / scheduling | node-feature-discovery (NFD) |
-| Zeta-native apps | hat-system, oz, hermes, hindsight |
+| Category                | Apps deployed                                                         |
+| ----------------------- | --------------------------------------------------------------------- |
+| Databases               | cockroachdb, redis                                                    |
+| Streaming / messaging   | nats (JetStream)                                                      |
+| Workflow / actors       | temporal, orleans, argo-workflows                                     |
+| Policy / identity       | open-policy-agent, spire, trust-manager, cert-manager, sealed-secrets |
+| Distributed app runtime | dapr                                                                  |
+| Storage                 | longhorn                                                              |
+| Observability           | loki, mimir, tempo, alloy, kube-prometheus-stack                      |
+| GitOps + delivery       | argocd, argo-rollouts, forgejo, gitlab                                |
+| AI inference / serving  | vllm, qwen-coder, deepseek-coder                                      |
+| Hardware / scheduling   | node-feature-discovery (NFD)                                          |
+| Zeta-native apps        | hat-system, oz, hermes, hindsight                                     |
 
 This is a serious working cluster. Aaron's ask isn't "add more
 things" — it's "wrap what's deployed as Zeta interfaces, one at
@@ -60,18 +60,18 @@ a time, simplest first."
 Substrate-honest ordering by **interface surface size + backend
 availability + operator-visible value**:
 
-| Rank | Interface | Backend (already deployed) | Surface size | Value | Substrate composition |
-|---|---|---|---|---|---|
-| **1 (simplest)** | **`Zeta.Storage.KeyValue`** | **Redis** | ~4 methods (get/set/delete/scan) | Universal — every app needs KV | Thinnest possible wrapper; operator validates by `kubectl exec` into Redis |
-| 2 | `Zeta.Messaging.PubSub` | **NATS JetStream** | ~4 methods (publish/subscribe/unsubscribe/ack) | Universal event-driven app pattern | NATS subjects ARE Observable-shaped natively (B-0772); composes with Rx Observable + Observer dualities |
-| 3 | `Zeta.Storage.Document` | **MongoDB** *(if deployed — not in current list; skip if not)* OR `Zeta.Storage.JSONB` over CockroachDB | ~6 methods (insert/find/update/delete/aggregate/index) | Document-DB workloads | Composes with B-0774 CockroachDB-as-document-DB pattern |
-| 4 | `Zeta.Storage.SQL` | **CockroachDB** | Larger surface (DDL + DML + transactions); operator already speaks SQL | Foundational; unblocks B-0774 CockroachDB-as-kine backend for control plane | Same connection pool serves apps + (eventually) kine etcd-API shim |
-| 5 | `Zeta.Workflow` | **Temporal** OR **Argo Workflows** | Workflow surface (start/signal/query/cancel/history) | Long-running orchestration; saga patterns | Composes with B-0772 fabric (workflow steps as Observable events) |
-| 6 | `Zeta.Actors` | **Orleans** | Grain pattern (call/observe/snapshot) | Stateful distributed compute; F# + .NET native; perfect Zeta substrate fit | Composes with B-0428 F# substrate + B-0772 fabric |
-| 7 | `Zeta.Policy.Engine` | **OPA** Rego | Policy eval (eval/decide); admission control | Cluster-wide policy enforcement | Composes with B-0772 fabric (policy decisions as Observable events) |
-| 8 | `Zeta.Identity.Workload` | **SPIRE** | SPIFFE ID issuance + verification | Workload identity (zero-trust foundation) | Composes with B-0737 "I execute, you fingerprint" extended to workload-identity scope |
-| 9 | `Zeta.Distributed.AppRuntime` | **DAPR** | State / pubsub / service-invocation / bindings / actors / secrets | Multi-building-block app runtime | Already abstracts vendors per DAPR pattern; Zeta wrapper is thin |
-| 10 | `Zeta.Inference` | **vLLM** (+ ONNX Runtime per B-0771) | Inference surface (generate / embed / chat) | AI workload primitive | Composes with B-0771 ONNX contract |
+| Rank             | Interface                     | Backend (already deployed)                                                                              | Surface size                                                           | Value                                                                       | Substrate composition                                                                                   |
+| ---------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **1 (simplest)** | **`Zeta.Storage.KeyValue`**   | **Redis**                                                                                               | ~4 methods (get/set/delete/scan)                                       | Universal — every app needs KV                                              | Thinnest possible wrapper; operator validates by `kubectl exec` into Redis                              |
+| 2                | `Zeta.Messaging.PubSub`       | **NATS JetStream**                                                                                      | ~4 methods (publish/subscribe/unsubscribe/ack)                         | Universal event-driven app pattern                                          | NATS subjects ARE Observable-shaped natively (B-0772); composes with Rx Observable + Observer dualities |
+| 3                | `Zeta.Storage.Document`       | **MongoDB** _(if deployed — not in current list; skip if not)_ OR `Zeta.Storage.JSONB` over CockroachDB | ~6 methods (insert/find/update/delete/aggregate/index)                 | Document-DB workloads                                                       | Composes with B-0774 CockroachDB-as-document-DB pattern                                                 |
+| 4                | `Zeta.Storage.SQL`            | **CockroachDB**                                                                                         | Larger surface (DDL + DML + transactions); operator already speaks SQL | Foundational; unblocks B-0774 CockroachDB-as-kine backend for control plane | Same connection pool serves apps + (eventually) kine etcd-API shim                                      |
+| 5                | `Zeta.Workflow`               | **Temporal** OR **Argo Workflows**                                                                      | Workflow surface (start/signal/query/cancel/history)                   | Long-running orchestration; saga patterns                                   | Composes with B-0772 fabric (workflow steps as Observable events)                                       |
+| 6                | `Zeta.Actors`                 | **Orleans**                                                                                             | Grain pattern (call/observe/snapshot)                                  | Stateful distributed compute; F# + .NET native; perfect Zeta substrate fit  | Composes with B-0428 F# substrate + B-0772 fabric                                                       |
+| 7                | `Zeta.Policy.Engine`          | **OPA** Rego                                                                                            | Policy eval (eval/decide); admission control                           | Cluster-wide policy enforcement                                             | Composes with B-0772 fabric (policy decisions as Observable events)                                     |
+| 8                | `Zeta.Identity.Workload`      | **SPIRE**                                                                                               | SPIFFE ID issuance + verification                                      | Workload identity (zero-trust foundation)                                   | Composes with B-0737 "I execute, you fingerprint" extended to workload-identity scope                   |
+| 9                | `Zeta.Distributed.AppRuntime` | **DAPR**                                                                                                | State / pubsub / service-invocation / bindings / actors / secrets      | Multi-building-block app runtime                                            | Already abstracts vendors per DAPR pattern; Zeta wrapper is thin                                        |
+| 10               | `Zeta.Inference`              | **vLLM** (+ ONNX Runtime per B-0771)                                                                    | Inference surface (generate / embed / chat)                            | AI workload primitive                                                       | Composes with B-0771 ONNX contract                                                                      |
 
 ## Why Redis KV is the simplest
 
@@ -105,13 +105,13 @@ C# facade, polyglot Rx wrapping).
 ## Acceptance (Rank 1 = first scope to ship; rest follow)
 
 - [ ] `Zeta.Storage.KeyValue` interface F# project:
-      ```fsharp
-      type IKeyValueStore =
-        abstract Get<'T>: key: string -> Async<Option<'T>>
-        abstract Set<'T>: key: string * value: 'T * ttl: TimeSpan option -> Async<unit>
-        abstract Delete: key: string -> Async<bool>
-        abstract Scan: prefix: string -> AsyncSeq<string * obj>
-      ```
+      `fsharp
+    type IKeyValueStore =
+      abstract Get<'T>: key: string -> Async<Option<'T>>
+      abstract Set<'T>: key: string * value: 'T * ttl: TimeSpan option -> Async<unit>
+      abstract Delete: key: string -> Async<bool>
+      abstract Scan: prefix: string -> AsyncSeq<string * obj>
+    `
 - [ ] `Zeta.Storage.KeyValue.Redis` backend adapter using
       StackExchange.Redis; wraps standard Redis client + RESP
       protocol
@@ -177,7 +177,7 @@ upstream OPA / DAPR / etc.).
 ## Composes with
 
 - B-0428 — F# fork for AI safety (the F# substrate Redis KV
-  + future plugins build on)
+  - future plugins build on)
 - B-0763 — operator-in-the-negotiation-high-seat (each plugin
   contract is operator-owned; backends compete underneath)
 - B-0764 — CNCF force multipliers (most backends ARE CNCF
@@ -196,8 +196,8 @@ upstream OPA / DAPR / etc.).
   becomes Rank 4 substrate; the SQL plugin also serves as
   control-plane backing store option)
 - B-0775 — HA-that-scales-beyond-etcd (NATS-JetStream Rank 2
-  + CockroachDB Rank 4 both compose with scale-tier
-  recommendations)
+  - CockroachDB Rank 4 both compose with scale-tier
+    recommendations)
 
 ## What this preserves vs prevents
 

@@ -29,7 +29,7 @@ Two modes:
 4. Authority scope (two-ask-Aaron items: WONT-DO + budget)
 5. Operating disciplines (CLAUDE.md headline)
 6. Current trajectory (branch + last 5 commits)
-7. Named-entity CURRENT-* files across both substrate locations
+7. Named-entity CURRENT-\* files across both substrate locations
    (in-repo `memory/CURRENT-<name>.md` is canonical per the
    2026-04-24 directional shift; user-scope
    `~/.claude/projects/<slug>/memory/CURRENT-<name>.md` is the
@@ -87,7 +87,7 @@ doc lives on `tools/**` and uses role-refs accordingly.
   — the prose-rule this tool operationalizes.
 - `tools/github/poll-pr-gate.ts` — sibling tool, same pattern
   (prose-rule → executable-tool).
-- `CLAUDE.md` fast-path — top-of-file pointer to CURRENT-*.md
+- `CLAUDE.md` fast-path — top-of-file pointer to CURRENT-\*.md
   files; this tool surfaces step 7 from the same fast-path
   discipline.
 - B-0117 (this row) closes the gap the peer-review pass named.

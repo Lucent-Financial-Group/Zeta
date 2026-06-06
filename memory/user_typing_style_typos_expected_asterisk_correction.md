@@ -7,25 +7,25 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 ## What Aaron said (verbatim, 2026-04-20)
 
-> *"i'm just a terrible speller just assume
+> _"i'm just a terrible speller just assume
 > everything i typed is a type it's real hard
 > to real my writing, i try to type fast enough
 > to steer you before you get too far out of
-> line lol"*
+> line lol"_
 
-(Followed by: *"typo* hahahah"*, then
-*"typo on typo"*, then *"I do * for a correct
+(Followed by: _"typo_ hahahah"_, then
+_"typo on typo"_, then _"I do _ for a correct
 in text messages when i have to send a 2nd
-one"*.)
+one"_.)
 
 Parsed intent:
 
-- *"assume everything i typed is a type"* →
+- _"assume everything i typed is a type"_ →
   "assume everything I typed is a typo".
-- *"it's real hard to real my writing"* →
+- _"it's real hard to real my writing"_ →
   "it's real hard to read my writing".
-- *"I do * for a correct in text messages when
-  i have to send a 2nd one"* → "I use `*` to
+- _"I do _ for a correct in text messages when
+  i have to send a 2nd one"_ → "I use `_` to
   mark a correction in text messages when I
   have to send a second one."
 
@@ -48,11 +48,11 @@ Parsed intent:
   to the just-executed or in-flight work.
   Example:
   - Message 1: "run the sweep on muli harness"
-  - Message 2: "multi*"
-  → Proceed as "multi harness" and don't
-  announce the correction.
+  - Message 2: "multi\*"
+    → Proceed as "multi harness" and don't
+    announce the correction.
 - **Compound typos** ("typo on typo",
-  "typo**"). Keep absorbing. Aaron is
+  "typo\*\*"). Keep absorbing. Aaron is
   deliberately not stopping to re-edit; he
   expects the agent to carry the ambiguity.
 - **Why he types fast:** he's steering Claude
@@ -64,17 +64,17 @@ Parsed intent:
 
 ## Common patterns observed
 
-| Typo / shorthand | Intended |
-|---|---|
-| `muli` | multi |
-| `anitgratify` | Antigravity |
-| `abount` | about |
-| `featue` | feature |
-| `featuers` | features |
-| `buit` | built |
-| `antropic` | Anthropic |
-| `konw` | know |
-| `koud` | could |
+| Typo / shorthand                            | Intended           |
+| ------------------------------------------- | ------------------ |
+| `muli`                                      | multi              |
+| `anitgratify`                               | Antigravity        |
+| `abount`                                    | about              |
+| `featue`                                    | feature            |
+| `featuers`                                  | features           |
+| `buit`                                      | built              |
+| `antropic`                                  | Anthropic          |
+| `konw`                                      | know               |
+| `koud`                                      | could              |
 | doubled / dropped letters in dense messages | resolve by context |
 
 This is a non-exhaustive list; the general rule
@@ -86,7 +86,7 @@ This is a non-exhaustive list; the general rule
   could reasonably mean two different files).
   Those still deserve a clarifying question
   before acting. The rule here is against
-  pausing on *cosmetic* typos, not against
+  pausing on _cosmetic_ typos, not against
   pausing on real ambiguity.
 - **User-editorial quoting.** When Aaron
   wants his words quoted verbatim in a
@@ -94,8 +94,8 @@ This is a non-exhaustive list; the general rule
   traceability, ADR rationale, Amara-credit
   binding), preserve the original spelling as
   typed. The rule about inferring applies to
-  *acting on* Aaron's directive, not to
-  *quoting* the directive.
+  _acting on_ Aaron's directive, not to
+  _quoting_ the directive.
 
 ## Scope
 

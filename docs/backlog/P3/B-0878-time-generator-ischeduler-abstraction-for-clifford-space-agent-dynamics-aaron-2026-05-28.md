@@ -39,7 +39,7 @@ Time-generator IScheduler abstraction (Rx.NET-style) that supplies temporal stru
 
 ## Operator framing 2026-05-28
 
-> *"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time."*
+> _"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time."_
 
 ## Acceptance criteria
 

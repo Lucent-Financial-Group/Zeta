@@ -32,8 +32,8 @@ The hash varies per build, so exact-path lookup IS impossible by construction.
 Converted \`REQUIRED_KERNEL_ANY\` + \`REQUIRED_INITRD_ANY\` from exact-path to **suffix-pattern matching**:
 
 \`\`\`typescript
-{prefix: \"boot/\", suffix: \"/bzImage\"}   // matches any boot/...path.../bzImage
-{prefix: \"boot/\", suffix: \"/initrd\"}    // matches any boot/...path.../initrd
+{prefix: \"boot/\", suffix: \"/bzImage\"} // matches any boot/...path.../bzImage
+{prefix: \"boot/\", suffix: \"/initrd\"} // matches any boot/...path.../initrd
 \`\`\`
 
 Handles both legacy (24.11 \`boot/bzImage\` at top-level) AND new (25.11 store-hashed \`boot/nix/store/<hash>-linux-<ver>/bzImage\`) layouts uniformly.
@@ -63,6 +63,7 @@ The diagnostic dump pattern (from #5251) worked as designed — revealed actual 
 Updates the installer ISO content audit to tolerate nixpkgs 25.11’s store-hashed kernel/initrd paths by switching from exact-path checks to prefix+suffix pattern matching, so CI can still assert the ISO is bootable across channel bumps.
 
 **Changes:**
+
 - Converted kernel/initrd “any-of” checks from exact `path` matches to `{ prefix, suffix }` pattern candidates.
 - Added a local `matchesAny()` helper to check ISO entries via `startsWith(prefix) && endsWith(suffix)`.
 - Updated failure messages to report pattern candidates (e.g., `boot/*/bzImage`) instead of exact paths.

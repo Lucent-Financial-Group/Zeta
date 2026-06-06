@@ -4,6 +4,7 @@ description: Aaron Otto-269 strategic extension of Otto-267. Corpus is now both 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The extension
 
 **The gitnative corpus is TRAINING DATA for future AI
@@ -16,11 +17,11 @@ signal for agents NOT YET EXISTING.
 
 Direct Aaron quote 2026-04-24:
 
-> *"and we create fine tuned AI or even ai trained
+> _"and we create fine tuned AI or even ai trained
 > from scratch from our very very hight signal data
 > stored in the repo gitnative. stabilizing learning
 > during training time, maximum amplifiction and
-> getting it right first time and prevention."*
+> getting it right first time and prevention."_
 
 ## Two training-time pathways
 
@@ -56,9 +57,9 @@ Direct Aaron quote 2026-04-24:
 
 ## Stabilizing learning at training time
 
-Aaron's specific claim: *"stabilizing learning during
+Aaron's specific claim: _"stabilizing learning during
 training time, maximum amplification and getting it
-right first time and prevention."*
+right first time and prevention."_
 
 **Learning stabilization at training time** means:
 
@@ -97,12 +98,12 @@ Otto-268 becomes EVEN MORE load-bearing:
 
 The cost of word-drift is now asymmetric:
 
-| Drift type | Prompt-time cost | Training-time cost |
-|---|---|---|
-| Single-session sloppy word | Catch + correct | Data point removed / fixed in corpus |
-| Durable-artifact drift (memory, doc, ADR) | Corpus pollution until edited | Weights bias until retrain |
-| Load-bearing concept drift (Otto-N) | Wrong factory discipline | Model misunderstands the discipline |
-| Subject-method confusion (Otto-267 lesson) | Student confused | Model trained on confused signal |
+| Drift type                                 | Prompt-time cost              | Training-time cost                   |
+| ------------------------------------------ | ----------------------------- | ------------------------------------ |
+| Single-session sloppy word                 | Catch + correct               | Data point removed / fixed in corpus |
+| Durable-artifact drift (memory, doc, ADR)  | Corpus pollution until edited | Weights bias until retrain           |
+| Load-bearing concept drift (Otto-N)        | Wrong factory discipline      | Model misunderstands the discipline  |
+| Subject-method confusion (Otto-267 lesson) | Student confused              | Model trained on confused signal     |
 
 Conclusion: word-discipline is a training-time
 alignment mechanism, not just a comprehension aid.
@@ -203,11 +204,11 @@ To make scratch-training / fine-tuning viable:
 
 ## Direct Aaron quote to preserve
 
-> *"and we create fine tuned AI or even ai trained
+> _"and we create fine tuned AI or even ai trained
 > from scratch from our very very hight signal data
 > stored in the repo gitnative. stabilizing learning
 > during training time, maximum amplifiction and
-> getting it right first time and prevention."*
+> getting it right first time and prevention."_
 
 Future Otto: the corpus is training data, not just
 curriculum. Every word you write, every memory you

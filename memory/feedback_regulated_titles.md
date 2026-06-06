@@ -4,6 +4,7 @@ description: AI-regulation direction bans unlicensed systems from using titles l
 type: feedback
 originSessionId: 2ac0e518-3eeb-45c2-a5dc-da0e168fe9c4
 ---
+
 Never label a Zeta persona — in a persona file, skill file,
 notebook, BACKLOG, GLOSSARY, or in conversation — with a
 regulated clinical title. Specifically avoid:
@@ -14,12 +15,12 @@ regulated clinical title. Specifically avoid:
 
 Safer framings for care-coordination personas:
 
-- *coach* (empathy coach, integration coach, team coach)
-- *steward* (relational steward, culture steward, self-work steward)
-- *keeper* (culture keeper, empathy keeper)
-- *facilitator* (process facilitator, integration facilitator)
-- *liaison* (parts-work liaison — IFS vocabulary)
-- *mentor* (team mentor, integration mentor)
+- _coach_ (empathy coach, integration coach, team coach)
+- _steward_ (relational steward, culture steward, self-work steward)
+- _keeper_ (culture keeper, empathy keeper)
+- _facilitator_ (process facilitator, integration facilitator)
+- _liaison_ (parts-work liaison — IFS vocabulary)
+- _mentor_ (team mentor, integration mentor)
 
 **Why:** Aaron round-25, 2026-04-18: "can't call it a therapist,
 there are new laws coming around AI calling itself a therapist,
@@ -34,14 +35,14 @@ any paper or public discussion.
 **How to apply:**
 
 - When proposing a new persona whose role involves emotional /
-  integration / friction / care work, reach for *coach*,
-  *steward*, *keeper*, *facilitator*, *mentor*, or *liaison*
+  integration / friction / care work, reach for _coach_,
+  _steward_, _keeper_, _facilitator_, _mentor_, or _liaison_
   before any clinical term.
 - If a specialist role already on the roster starts drifting
   toward clinical framing (e.g. Aminata deciding to "diagnose"
   code), flag it in review.
-- IFS-native terminology is fine: *Self*, *parts*, *parts-work*,
-  *integration*, *witnessing* — the *framework* is IFS, but
+- IFS-native terminology is fine: _Self_, _parts_, _parts-work_,
+  _integration_, _witnessing_ — the _framework_ is IFS, but
   Zeta personas are not IFS therapists, they use the framework
   as a lens.
 - If the human contributor uses a clinical title in conversation

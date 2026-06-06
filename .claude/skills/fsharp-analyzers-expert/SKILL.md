@@ -95,10 +95,10 @@ Key pieces:
 
 ## `CliContext` vs `EditorContext`
 
-| Context | When it runs | Input |
-| --- | --- | --- |
-| `CliContext` | CI, batch | full project graph |
-| `EditorContext` | LSP server | active file, fast feedback |
+| Context         | When it runs | Input                      |
+| --------------- | ------------ | -------------------------- |
+| `CliContext`    | CI, batch    | full project graph         |
+| `EditorContext` | LSP server   | active file, fast feedback |
 
 An analyzer can register one or both. The CLI analyzer
 typically runs the heavier checks; the editor analyzer
@@ -125,7 +125,7 @@ Every F# AST node carries a `range` of `(start, end)` lines
 and columns. An analyzer's `Message.Range` drives the
 editor underline.
 
-Discipline: point at the *smallest* span that expresses the
+Discipline: point at the _smallest_ span that expresses the
 problem. A whole-let-binding range overwhelms the editor;
 a single identifier range is actionable.
 

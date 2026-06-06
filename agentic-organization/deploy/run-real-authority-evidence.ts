@@ -36,9 +36,7 @@ import {
   createCommandAuthorizationPort,
   createPolicyDecisionObservationPort,
 } from "../packages/policy/src/index.ts";
-import {
-  ActionClass,
-} from "../packages/application/src/hat-guardrails.ts";
+import { ActionClass } from "../packages/application/src/hat-guardrails.ts";
 import {
   createCommandHandlerRegistry,
   createCommandPipeline,
@@ -67,10 +65,7 @@ import {
 } from "../packages/state-cockroach/src/index.ts";
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 import { CommandResultStatus } from "../packages/application/src/command-result.ts";
-import {
-  ReactionPlanExecutionStatus,
-  type ReactionPlanActionExecutorPort,
-} from "../packages/runtime/src/index.ts";
+import { ReactionPlanExecutionStatus, type ReactionPlanActionExecutorPort } from "../packages/runtime/src/index.ts";
 import { composeOrganizationReactionPlanActionExecutor } from "../apps/workers/src/organization-executor-composition.ts";
 
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
@@ -147,11 +142,13 @@ async function main(): Promise<void> {
       createId,
     });
 
-    const deniedWriteCode = await pipeline.execute(createWorkCommand({
-      suffix: "tpm-denied",
-      actorAgentId: "agent-tpm-proof",
-      hatAssignmentId: "hat-assignment-tpm-proof",
-    }));
+    const deniedWriteCode = await pipeline.execute(
+      createWorkCommand({
+        suffix: "tpm-denied",
+        actorAgentId: "agent-tpm-proof",
+        hatAssignmentId: "hat-assignment-tpm-proof",
+      }),
+    );
     const observedDenials = await adapters.policyDecisionObservationStore.findPolicyDecisionObservations({
       organizationId,
       projectId,
@@ -160,18 +157,22 @@ async function main(): Promise<void> {
       decisionStatus: PolicyDecisionStatus.Denied,
       limit: 10,
     });
-    const allowedWriteCode = await pipeline.execute(createWorkCommand({
-      suffix: "release-allowed",
-      actorAgentId: "agent-release-proof",
-      hatAssignmentId: "hat-assignment-release-proof",
-    }));
+    const allowedWriteCode = await pipeline.execute(
+      createWorkCommand({
+        suffix: "release-allowed",
+        actorAgentId: "agent-release-proof",
+        hatAssignmentId: "hat-assignment-release-proof",
+      }),
+    );
 
     const plainContext = await prepareQualityGateContext(pipeline, "plain-evidence");
-    const plainGate = await pipeline.execute(createQualityGateCommand({
-      suffix: "plain-evidence",
-      ...plainContext,
-      evidenceRefs: ["plain-qa-report"],
-    }));
+    const plainGate = await pipeline.execute(
+      createQualityGateCommand({
+        suffix: "plain-evidence",
+        ...plainContext,
+        evidenceRefs: ["plain-qa-report"],
+      }),
+    );
     const evidenceArtifact = createContentAddressedEvidenceArtifact("qa-report", {
       organizationId,
       proofRunId,
@@ -179,12 +180,14 @@ async function main(): Promise<void> {
     });
     const evidenceRef = evidenceArtifact.ref;
     const contentAddressedContext = await prepareQualityGateContext(pipeline, "content-addressed-evidence");
-    const acceptedGate = await pipeline.execute(createQualityGateCommand({
-      suffix: "content-addressed-evidence",
-      ...contentAddressedContext,
-      evidenceRefs: [evidenceRef],
-      evidenceArtifacts: [evidenceArtifact],
-    }));
+    const acceptedGate = await pipeline.execute(
+      createQualityGateCommand({
+        suffix: "content-addressed-evidence",
+        ...contentAddressedContext,
+        evidenceRefs: [evidenceRef],
+        evidenceArtifacts: [evidenceArtifact],
+      }),
+    );
 
     const stageEvidenceRef = createContentAddressedEvidenceRef("review-stage", {
       organizationId,
@@ -205,28 +208,34 @@ async function main(): Promise<void> {
       changeProof.persistedEvidenceRefs.includes(stageEvidenceRef) &&
       workerCompositionProof.status === ReactionPlanExecutionStatus.Succeeded;
 
-    console.log(JSON.stringify({
-      track: "E2 real authority + content-addressed evidence",
-      organizationId,
-      deniedWriteCode: {
-        status: deniedWriteCode.status,
-        reason: deniedWriteCode.policy?.reason,
-        observedDenials: observedDenials.length,
-      },
-      allowedWriteCode: {
-        status: allowedWriteCode.status,
-        artifactId: allowedWriteCode.artifacts?.[0]?.artifactId,
-      },
-      qualityGateEvidence: {
-        plainStatus: plainGate.status,
-        plainError: plainGate.error?.message,
-        contentAddressedStatus: acceptedGate.status,
-        evidenceRef,
-      },
-      reviewStageEvidence: changeProof,
-      workerCompositionProof,
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "E2 real authority + content-addressed evidence",
+          organizationId,
+          deniedWriteCode: {
+            status: deniedWriteCode.status,
+            reason: deniedWriteCode.policy?.reason,
+            observedDenials: observedDenials.length,
+          },
+          allowedWriteCode: {
+            status: allowedWriteCode.status,
+            artifactId: allowedWriteCode.artifacts?.[0]?.artifactId,
+          },
+          qualityGateEvidence: {
+            plainStatus: plainGate.status,
+            plainError: plainGate.error?.message,
+            contentAddressedStatus: acceptedGate.status,
+            evidenceRef,
+          },
+          reviewStageEvidence: changeProof,
+          workerCompositionProof,
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();
@@ -428,11 +437,13 @@ async function prepareQualityGateContext(
   pipeline: ReturnType<typeof createCommandPipeline<ProofCommand>>,
   suffix: string,
 ): Promise<{ workItemId: string; discussionAnchorId: string }> {
-  const workItem = await pipeline.execute(createWorkCommand({
-    suffix: `quality-context-${suffix}`,
-    actorAgentId: "agent-release-proof",
-    hatAssignmentId: "hat-assignment-release-proof",
-  }));
+  const workItem = await pipeline.execute(
+    createWorkCommand({
+      suffix: `quality-context-${suffix}`,
+      actorAgentId: "agent-release-proof",
+      hatAssignmentId: "hat-assignment-release-proof",
+    }),
+  );
   if (workItem.status !== CommandResultStatus.Accepted || workItem.artifacts?.[0]?.artifactId === undefined) {
     throw new Error(`failed to seed quality-gate work item: ${workItem.error?.message ?? workItem.status}`);
   }
@@ -449,10 +460,7 @@ async function prepareQualityGateContext(
   };
 }
 
-function createDiscussionAnchorCommand(input: {
-  suffix: string;
-  workItemId: string;
-}): CreateDiscussionAnchorCommand {
+function createDiscussionAnchorCommand(input: { suffix: string; workItemId: string }): CreateDiscussionAnchorCommand {
   return {
     commandId: `cmd-discussion-anchor-${input.suffix}-${proofRunId}`,
     type: CommandType.CreateDiscussionAnchor,
@@ -523,10 +531,11 @@ async function proveReviewStageEvidence(
   for (const event of reviewed.events) await orgEventStore.append(event);
 
   const events = await orgEventStore.listByOrganization(organizationId, 100);
-  const stageEvent = events.find((event) =>
-    (event.kind === OrgEventKind.StageApproved || event.kind === OrgEventKind.ChangeSetApproved) &&
-    event.subjectId === initial.changeSetId &&
-    event.evidenceRefs.includes(stageEvidenceRef)
+  const stageEvent = events.find(
+    (event) =>
+      (event.kind === OrgEventKind.StageApproved || event.kind === OrgEventKind.ChangeSetApproved) &&
+      event.subjectId === initial.changeSetId &&
+      event.evidenceRefs.includes(stageEvidenceRef),
   );
 
   return {

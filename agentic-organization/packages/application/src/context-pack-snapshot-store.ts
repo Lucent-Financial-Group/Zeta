@@ -1,8 +1,4 @@
-import type {
-  ContextReadout,
-  RunLifecyclePhase,
-  RunTrace,
-} from "./observe.ts";
+import type { ContextReadout, RunLifecyclePhase, RunTrace } from "./observe.ts";
 
 export type ContextPackSnapshotRecord = {
   context: ContextReadout;

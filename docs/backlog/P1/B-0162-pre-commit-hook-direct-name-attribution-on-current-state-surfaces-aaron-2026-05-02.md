@@ -55,7 +55,7 @@ AGENTS.md, GOVERNANCE.md, behavioural docs) use role-refs
 ("the human maintainer", "the architect", "the
 maintainability-reviewer"); persona / first names are reserved
 for history surfaces (memory/, ROUND-HISTORY, DECISIONS,
-docs/research/**, commit messages, hygiene-history).
+docs/research/\*\*, commit messages, hygiene-history).
 
 The 3-recurrence-in-one-branch signal (Otto-352
 manufactured-patience-as-discipline cousin: "if it fires twice,
@@ -114,7 +114,7 @@ trust calculus rule)
      Ilyana / Sova / Rodney / Nazar / Mateo and any future
      additions). Hard-coding goes stale as the registry
      evolves; parsing keeps the detector in sync.
-   - Plus human first-names from CURRENT-*.md filenames
+   - Plus human first-names from CURRENT-\*.md filenames
      (Aaron, Max, future maintainers).
    - Plus external-AI-instance names that appear as
      attribution (`Claude.ai`, `Codex`, `Gemini`, etc. when

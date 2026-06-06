@@ -41,7 +41,10 @@ parse + resolve (`registry-remote.ts`, `resolve.ts`); C = `ace.ts` integration +
 Add to `tools/ace/signing.ts` near `IndexSignableContent`:
 
 ```ts
-export interface RevocationEntry { reason?: string; at: string }
+export interface RevocationEntry {
+  reason?: string;
+  at: string;
+}
 export type RevocationMap = Record<string, Record<string, RevocationEntry>>;
 ```
 
@@ -70,12 +73,15 @@ import type { IndexSignableContent, RevocationMap, RevocationEntry } from "./sig
 // format_version is 2 iff a mark remains, else 1.
 function withFmt(c: IndexSignableContent): IndexSignableContent {
   const hasMarks = (m?: RevocationMap) => !!m && Object.keys(m).length > 0;
-  return { ...c, format_version: (hasMarks(c.revoked) || hasMarks(c.quarantined)) ? 2 : 1 };
+  return { ...c, format_version: hasMarks(c.revoked) || hasMarks(c.quarantined) ? 2 : 1 };
 }
 function clone(m: RevocationMap | undefined): RevocationMap {
   // deep-ish clone (own keys only; null-proto to avoid prototype pollution)
   const out: RevocationMap = Object.create(null);
-  for (const n of Object.keys(m ?? {})) { out[n] = Object.create(null); for (const v of Object.keys(m![n]!)) out[n]![v] = { ...m![n]![v]! }; }
+  for (const n of Object.keys(m ?? {})) {
+    out[n] = Object.create(null);
+    for (const v of Object.keys(m![n]!)) out[n]![v] = { ...m![n]![v]! };
+  }
   return out;
 }
 function has(m: RevocationMap | undefined, name: string, version: string): boolean {
@@ -85,22 +91,42 @@ function add(m: RevocationMap, name: string, version: string, entry: RevocationE
   (m[name] ?? (m[name] = Object.create(null)))[version] = entry;
 }
 function remove(m: RevocationMap, name: string, version: string): void {
-  if (m[name]) { delete m[name]![version]; if (Object.keys(m[name]!).length === 0) delete m[name]; }
+  if (m[name]) {
+    delete m[name]![version];
+    if (Object.keys(m[name]!).length === 0) delete m[name];
+  }
 }
 
-export function applyRevoke(prev: IndexSignableContent, name: string, version: string, reason: string | undefined, at: string): IndexSignableContent {
-  const revoked = clone(prev.revoked); const quarantined = clone(prev.quarantined);
-  remove(quarantined, name, version);                 // revoke supersedes quarantine
+export function applyRevoke(
+  prev: IndexSignableContent,
+  name: string,
+  version: string,
+  reason: string | undefined,
+  at: string,
+): IndexSignableContent {
+  const revoked = clone(prev.revoked);
+  const quarantined = clone(prev.quarantined);
+  remove(quarantined, name, version); // revoke supersedes quarantine
   add(revoked, name, version, reason !== undefined ? { reason, at } : { at });
   return withFmt({ ...prev, revoked, quarantined });
 }
-export function applyQuarantine(prev: IndexSignableContent, name: string, version: string, reason: string | undefined, at: string): IndexSignableContent | { error: string } {
+export function applyQuarantine(
+  prev: IndexSignableContent,
+  name: string,
+  version: string,
+  reason: string | undefined,
+  at: string,
+): IndexSignableContent | { error: string } {
   if (has(prev.revoked, name, version)) return { error: `${name}@${version} is revoked (terminal); cannot quarantine` };
   const quarantined = clone(prev.quarantined);
   add(quarantined, name, version, reason !== undefined ? { reason, at } : { at });
   return withFmt({ ...prev, quarantined });
 }
-export function applyUnquarantine(prev: IndexSignableContent, name: string, version: string): IndexSignableContent | { error: string } {
+export function applyUnquarantine(
+  prev: IndexSignableContent,
+  name: string,
+  version: string,
+): IndexSignableContent | { error: string } {
   if (!has(prev.quarantined, name, version)) return { error: `${name}@${version} is not quarantined` };
   const quarantined = clone(prev.quarantined);
   remove(quarantined, name, version);
@@ -120,11 +146,16 @@ Extend `buildIndexDoc`'s args with optional `revoked?: RevocationMap; quarantine
 After building `content`, attach them when non-empty and set `format_version` accordingly:
 
 ```ts
-  const hasMarks = (m?: RevocationMap) => !!m && Object.keys(m).length > 0;
-  const fmt = (hasMarks(args.revoked) || hasMarks(args.quarantined)) ? 2 : 1;
-  const content: IndexSignableContent = { format_version: fmt, sequence: args.sequence, issued_at: args.issuedAt, packages };
-  if (hasMarks(args.revoked)) content.revoked = args.revoked;
-  if (hasMarks(args.quarantined)) content.quarantined = args.quarantined;
+const hasMarks = (m?: RevocationMap) => !!m && Object.keys(m).length > 0;
+const fmt = hasMarks(args.revoked) || hasMarks(args.quarantined) ? 2 : 1;
+const content: IndexSignableContent = {
+  format_version: fmt,
+  sequence: args.sequence,
+  issued_at: args.issuedAt,
+  packages,
+};
+if (hasMarks(args.revoked)) content.revoked = args.revoked;
+if (hasMarks(args.quarantined)) content.quarantined = args.quarantined;
 ```
 
 (Import `RevocationMap`. Existing `format_version: 1` literal is replaced by `fmt`.) Extend
@@ -132,8 +163,8 @@ After building `content`, attach them when non-empty and set `format_version` ac
 omitting them yields v1 as before.
 
 - [ ] **Step A4: verify + commit** — `bun test tools/ace/registry-revoke.test.ts tools/ace/registry-publish.test.ts`
-  pass; `bun --bun tsc --noEmit` exit 0; Python CR=0 on the 4 touched/new files; canary 67.
-  Commit `tools/ace/signing.ts tools/ace/registry-revoke.ts tools/ace/registry-revoke.test.ts tools/ace/registry-publish.ts tools/ace/registry-publish.test.ts`.
+      pass; `bun --bun tsc --noEmit` exit 0; Python CR=0 on the 4 touched/new files; canary 67.
+      Commit `tools/ace/signing.ts tools/ace/registry-revoke.ts tools/ace/registry-revoke.test.ts tools/ace/registry-publish.ts tools/ace/registry-publish.test.ts`.
 
 ---
 
@@ -184,23 +215,33 @@ After a registry edge resolves to a concrete `name@concrete`, before/with the ex
 registry-entry + signature gates:
 
 ```ts
-        if (revoked && revoked[edge.name]?.[concrete] !== undefined) {
-          const r = revoked[edge.name]![concrete]!;
-          return { ok: false, reason: "revoked", detail: `${edge.name}@${concrete} is revoked${r.reason ? ": " + r.reason : ""}`, path: here };
-        }
-        if (!opts.allowQuarantined && quarantined && quarantined[edge.name]?.[concrete] !== undefined) {
-          const q = quarantined[edge.name]![concrete]!;
-          return { ok: false, reason: "quarantined", detail: `${edge.name}@${concrete} is quarantined${q.reason ? ": " + q.reason : ""} (use --allow-quarantined)`, path: here };
-        }
+if (revoked && revoked[edge.name]?.[concrete] !== undefined) {
+  const r = revoked[edge.name]![concrete]!;
+  return {
+    ok: false,
+    reason: "revoked",
+    detail: `${edge.name}@${concrete} is revoked${r.reason ? ": " + r.reason : ""}`,
+    path: here,
+  };
+}
+if (!opts.allowQuarantined && quarantined && quarantined[edge.name]?.[concrete] !== undefined) {
+  const q = quarantined[edge.name]![concrete]!;
+  return {
+    ok: false,
+    reason: "quarantined",
+    detail: `${edge.name}@${concrete} is quarantined${q.reason ? ": " + q.reason : ""} (use --allow-quarantined)`,
+    path: here,
+  };
+}
 ```
 
 (Match the exact local names already used at the resolve site — read resolve.ts for `concrete`,
 `edge`, `here`, the opts object, and how the registry is threaded; adapt accordingly.)
 
 - [ ] **Step B4: tests + verify + commit** — extend `registry-remote.test.ts` (v2 parse;
-  v1-with-marks rejected; bad-mark shape rejected; union-merge) + `resolve.test.ts` (revoked →
-  `"revoked"`; quarantined → `"quarantined"` without `allowQuarantined`, resolves with it).
-  `bun test tools/ace/` green; tsc 0; CR=0; canary 67. Commit the two files + tests.
+      v1-with-marks rejected; bad-mark shape rejected; union-merge) + `resolve.test.ts` (revoked →
+      `"revoked"`; quarantined → `"quarantined"` without `allowQuarantined`, resolves with it).
+      `bun test tools/ace/` green; tsc 0; CR=0; canary 67. Commit the two files + tests.
 
 ---
 
@@ -212,14 +253,14 @@ Read first: the `registry` parse block + `RegistryArgs` type; the `publish` hand
 `registry remote`/`publish` subcommand dispatch.
 
 - [ ] **Step C1: e2e tests (RED)** — add to `ace.test.ts` (reuse `writeSignedPkg`, `main`,
-  `parseIndex`, `generateKeypair`, temp dirs). Cover, per the spec's Testing section: publish →
-  `revoke` makes the index v2 + marks + bumps sequence + self-verifies; consumer resolve of a
-  revoked version refuses; `quarantine` refuses without `--allow-quarantined`, installs with
-  it; `unquarantine` restores; `revoke` on a quarantined version moves it (out of quarantined,
-  into revoked); `publish` after a revoke preserves the mark; `revoke`/`quarantine` against an
-  index signed by a different key → refused; `quarantine` of an already-revoked version →
-  error; `unquarantine` of a non-quarantined → error; lockfile-pinned-then-revoked →
-  `ace install` refuses.
+      `parseIndex`, `generateKeypair`, temp dirs). Cover, per the spec's Testing section: publish →
+      `revoke` makes the index v2 + marks + bumps sequence + self-verifies; consumer resolve of a
+      revoked version refuses; `quarantine` refuses without `--allow-quarantined`, installs with
+      it; `unquarantine` restores; `revoke` on a quarantined version moves it (out of quarantined,
+      into revoked); `publish` after a revoke preserves the mark; `revoke`/`quarantine` against an
+      index signed by a different key → refused; `quarantine` of an already-revoked version →
+      error; `unquarantine` of a non-quarantined → error; lockfile-pinned-then-revoked →
+      `ace install` refuses.
 
 - [ ] **Step C2: parse — three subcommands + `--allow-quarantined`**
 
@@ -240,19 +281,19 @@ round-trip self-verify (`parseIndex` + `verifyIndexSignature`); `writeFileSync` 
 `ace: <verb> <name>@<version> → <out> (sequence n)`.
 
 - [ ] **Step C4: publish carry-forward wiring** — in the `publish` handler, pass
-  `revoked: prev?.revoked, quarantined: prev?.quarantined` into `buildIndexDoc` (only when
-  prev exists). (`buildIndexDoc` already handles non-empty → v2 from Task A.)
+      `revoked: prev?.revoked, quarantined: prev?.quarantined` into `buildIndexDoc` (only when
+      prev exists). (`buildIndexDoc` already handles non-empty → v2 from Task A.)
 
 - [ ] **Step C5: install enforcement** — thread the loaded registry's merged
-  `revoked`/`quarantined` + `allowQuarantined` into the resolve call. Add the **lockfile
-  re-check**: before installing from a lockfile, for each pinned `name@version`, refuse if
-  revoked (always) or quarantined (unless `--allow-quarantined`; warn when allowed). Match the
-  existing install/lockfile code structure.
+      `revoked`/`quarantined` + `allowQuarantined` into the resolve call. Add the **lockfile
+      re-check**: before installing from a lockfile, for each pinned `name@version`, refuse if
+      revoked (always) or quarantined (unless `--allow-quarantined`; warn when allowed). Match the
+      existing install/lockfile code structure.
 
 - [ ] **Step C6: usage text** — add the three subcommands + `--allow-quarantined` to the help.
 
 - [ ] **Step C7: verify + commit** — `bun test tools/ace/` ALL green; tsc 0; CR=0 on ace.ts +
-  ace.test.ts; canary 67; no `_patch_*`. Commit.
+      ace.test.ts; canary 67; no `_patch_*`. Commit.
 
 ---
 
@@ -261,10 +302,10 @@ round-trip self-verify (`parseIndex` + `verifyIndexSignature`); `writeFileSync` 
 **Files:** Modify `.claude/skills/ace/SKILL.md`.
 
 - [ ] **Step D1** — document the marks (two-state, in the signed v2 index), the three
-  subcommands (`revoke`/`quarantine`/`unquarantine`), consumer refusal at resolve+install,
-  revocation-overrides-lockfile, and `--allow-quarantined`. Keep existing content. Watch
-  markdownlint: no nested backticks in inline code spans; blank lines around lists + fenced
-  blocks.
+      subcommands (`revoke`/`quarantine`/`unquarantine`), consumer refusal at resolve+install,
+      revocation-overrides-lockfile, and `--allow-quarantined`. Keep existing content. Watch
+      markdownlint: no nested backticks in inline code spans; blank lines around lists + fenced
+      blocks.
 - [ ] **Step D2** — `bunx markdownlint-cli2 .claude/skills/ace/SKILL.md` exit 0; CR=0; canary 67. Commit.
 
 ---

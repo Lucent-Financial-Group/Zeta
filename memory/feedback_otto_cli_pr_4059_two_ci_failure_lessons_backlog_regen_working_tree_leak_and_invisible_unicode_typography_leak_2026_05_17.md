@@ -131,7 +131,7 @@ This is one specific projection of the more general principle that **commit boun
 When shipping a CI-touched artifact (BACKLOG.md, tick shard, generated index):
 
 1. Run the CI's exact verification command locally first (`--check` mode, lint scans).
-2. If working tree has uncommitted mods that *might* affect the verification, stash them, re-run, restore.
+2. If working tree has uncommitted mods that _might_ affect the verification, stash them, re-run, restore.
 3. For tick shards specifically: run `python3 -c "..."` invisible-Unicode scan on the new file before commit.
 4. The semgrep rule is a friend, not an obstacle — `prompt-protector` lineage is load-bearing under the methodology-hard-limits rule.
 

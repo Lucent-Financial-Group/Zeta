@@ -19,7 +19,7 @@ metadata:
     zeta.io/distributed-chron: "true"
 spec:
   serviceName: orleans-silo
-  replicas: 0  # bump after publishing a real silo image
+  replicas: 0 # bump after publishing a real silo image
   selector:
     matchLabels:
       app.kubernetes.io/name: orleans-silo

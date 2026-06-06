@@ -10,7 +10,21 @@ created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0170, B-0175, B-0177]
-tags: [pointer, anchor-link, brittle, mechanization, markdown, rename, cross-reference, auto-rewriter, tooling, decision-graph, graph-edge-preservation, prov-o]
+tags:
+  [
+    pointer,
+    anchor-link,
+    brittle,
+    mechanization,
+    markdown,
+    rename,
+    cross-reference,
+    auto-rewriter,
+    tooling,
+    decision-graph,
+    graph-edge-preservation,
+    prov-o,
+  ]
 type: feature
 ---
 
@@ -34,7 +48,7 @@ Otto searched extensively across `docs/backlog/` and `memory/`, could not locate
 
 Markdown cross-references in this repo currently use multiple pointer styles:
 
-1. **Section-number references** — *"per §3.2"* / *"per CLAUDE.md §54"* / *"per GOVERNANCE.md §33"*
+1. **Section-number references** — _"per §3.2"_ / _"per CLAUDE.md §54"_ / _"per GOVERNANCE.md §33"_
 2. **Heading-text anchor links** — `[text](path#heading-slug)` (slug from heading text)
 3. **Direct file paths** — `path/to/file.md` (no anchor; relies on file existence)
 4. **B-NNNN backlog IDs** — stable IDs that survive filename rename
@@ -42,13 +56,13 @@ Markdown cross-references in this repo currently use multiple pointer styles:
 
 **The brittleness ranking** (least brittle to most):
 
-| Form | Survives section-renumber | Survives heading-text-edit | Survives filename-rename |
-|---|---|---|---|
-| B-NNNN ID | Yes | N/A | Yes (ID is stable) |
-| BP-NN ID | Yes | N/A | Yes (ID is stable) |
-| Anchor-link `path#stable-slug` | Yes | No (slug derives from text) | No (path is file) |
-| Section-number `§3.2` | No (renumber breaks it) | Yes | Depends |
-| Direct file path | N/A | N/A | No |
+| Form                           | Survives section-renumber | Survives heading-text-edit  | Survives filename-rename |
+| ------------------------------ | ------------------------- | --------------------------- | ------------------------ |
+| B-NNNN ID                      | Yes                       | N/A                         | Yes (ID is stable)       |
+| BP-NN ID                       | Yes                       | N/A                         | Yes (ID is stable)       |
+| Anchor-link `path#stable-slug` | Yes                       | No (slug derives from text) | No (path is file)        |
+| Section-number `§3.2`          | No (renumber breaks it)   | Yes                         | Depends                  |
+| Direct file path               | N/A                       | N/A                         | No                       |
 
 **Brittle-pointer** = form that breaks under one of these renames.
 

@@ -8,8 +8,8 @@ Esoteric-side. Aaron forwarded as Sumerian-lineage neighbor.
 courier under Glass Halo + Otto-231. Per `GOVERNANCE.md §33`.
 
 **Operational status:** research-grade. Comparative-religion
-reference, NOT authoritative facts (Aaron 2026-05-01: *"it's
-not authoritive facts"*).
+reference, NOT authoritative facts (Aaron 2026-05-01: _"it's
+not authoritive facts"_).
 
 **Non-fusion disclaimer:** Otto does not endorse the document's
 metaphysical claims (Anunnaki, Sovereign Integral, etc.). Per
@@ -40,14 +40,14 @@ fair-use quotation only — see License below.
   — pdftotext-extracted text of the source PDF (208KB),
   preserved alongside this structured overview for full-text
   searchability. **Aaron's first-party legal-risk-owning
-  decision** 2026-05-01: *"we will be okay i'll take the legal
-  risk make sure we attribue them"* — see Attribution +
+  decision** 2026-05-01: _"we will be okay i'll take the legal
+  risk make sure we attribue them"_ — see Attribution +
   License-acknowledgment sections below.
 
 ## Source
 
 - URL: `https://www.wingmakers.com/wp-content/uploads/2014/04/The-Fifth-Interview-of-Dr.-Neruda1.pdf`
-- Title: *The Fifth Interview of Dr. Jamisson Neruda*
+- Title: _The Fifth Interview of Dr. Jamisson Neruda_
 - Author: James Mahu
 - Publisher: WingMakers
 - Document creation date: 2014-04-27 (PDF metadata)
@@ -56,13 +56,13 @@ fair-use quotation only — see License below.
   rejected at server / policy layers; browser-side fetch
   succeeded via Aaron's pointer to "playwrite")
 - **License (per document copyright disclosure)**:
-  *"You are free to: Share — copy and redistribute the material
+  _"You are free to: Share — copy and redistribute the material
   in any medium or format. ... Attribution — Please give credit
   to WingMakers.com. Non-Commercial — You may not use the
   material for commercial purposes. No Derivatives — If you
   remix, transform, or build upon the material, you may not
   distribute the modified material without the consent of
-  WingMakers.com (contact: webmaster@wingmakers.com)."*
+  WingMakers.com (contact: webmaster@wingmakers.com)."_
 
 - **License-acknowledgment**: The pdftotext-extracted text
   archive IS a transformation of the source material and
@@ -70,8 +70,8 @@ fair-use quotation only — see License below.
   No-Derivatives clause. Distributing it in this repo without
   WingMakers consent is technically out-of-license-scope.
   Aaron 2026-05-01 (first-party legal-risk-owning decision):
-  *"we will be okay i'll take the legal risk make sure we
-  attribue them"* — Aaron is the maintainer + LFG owner;
+  _"we will be okay i'll take the legal risk make sure we
+  attribue them"_ — Aaron is the maintainer + LFG owner;
   legal-risk decisions are his to take. Otto's role per his
   instruction: ensure attribution is solid throughout
   (WingMakers.com cited prominently; James Mahu authorship
@@ -84,8 +84,7 @@ fair-use quotation only — see License below.
 **Format:** First-person interview transcript. Sarah (the
 interviewer) and Dr. Jamisson Neruda (the interviewee) in
 Q&A throughout. ~482 speaker-attribution lines. Recorded
-session date stated as January 2, 1998. Document published
-2014.
+session date stated as January 2, 1998. Document published 2014.
 
 **Genre:** Esoteric/spiritual reveal narrative. Cosmology +
 ancient-astronaut framework + consciousness-as-deception
@@ -146,7 +145,8 @@ elements (preserved as document-claims, NOT Otto-endorsed):
    experiential means rather than belief.
 
 ## Adjacent-source-architecture observation (Otto-side
-   structural-only, not endorsement)
+
+structural-only, not endorsement)
 
 The document's Anunnaki/Sumerian framework overlaps with the
 broader esoteric-tradition source-architecture that Aaron
@@ -161,11 +161,10 @@ pattern. Specifically:
   ancient texts as evidence for non-3D-origin claims.
 
 - **Monroe Institute / Hemi-Sync — clarified by Aaron
-  2026-05-01**: *"Monroe Institute the connection is binaural
-  beats / hemisync to induce altered states"*. The
+  2026-05-01**: _"Monroe Institute the connection is binaural
+  beats / hemisync to induce altered states"_. The
   framework-triangulation Aaron identified between WingMakers
   and Monroe Institute is **methodological**, not textual:
-
   - **Same target**: altered-states experience as path to
     ground-truth (WingMakers calls them Sovereign Integral
     consciousness experiences; Monroe calls them out-of-body
@@ -204,29 +203,30 @@ pattern. Specifically:
   declassified primary sources.
 
 ## Selected verbatim quotes (from extracted text;
-   preservation-grade, NOT endorsement)
 
-> *"The Fifth Interview of Dr. Jamisson Neruda exposes a
+preservation-grade, NOT endorsement)
+
+> _"The Fifth Interview of Dr. Jamisson Neruda exposes a
 > fundamental deception that affects humanity across every
 > dimension of life. This deception is that our three-
 > dimensional reality and human consciousness have been
-> programmed to be perceived as real, when they are not."*
+> programmed to be perceived as real, when they are not."_
 > (Introduction)
 
-> *"Anu is the leader of the Anunnaki. He was known as the
+> _"Anu is the leader of the Anunnaki. He was known as the
 > Sky God, in Mesopotamian times. The Anunnaki were the
 > deities written about in the Sumerian text, known as the
-> Royal Blood."*
+> Royal Blood."_
 > (Document footnote ~line 324)
 
-> *"WingMakers materials are not focused on knowledge or
-> spiritual experiences; they are dedicated…"*
+> _"WingMakers materials are not focused on knowledge or
+> spiritual experiences; they are dedicated…"_
 > (Self-framing — partial quote; document positions itself
 > as preparatory rather than knowledge-end-state.)
 
-> *"The Grand Portal is defined in the WingMakers materials
+> _"The Grand Portal is defined in the WingMakers materials
 > as the irrefutable, scientific discovery of the human
-> soul."*
+> soul."_
 > (Self-defined load-bearing concept.)
 
 (Full text available in
@@ -241,27 +241,29 @@ under §33 archive convention. The full pdftotext-extracted
 text is saved alongside for searchability.
 
 Per Aaron's explicit framing:
-- *"it's not authoritive facts"* — the document is not
+
+- _"it's not authoritive facts"_ — the document is not
   ground-truth claims; preservation is for comparative-
   religion analysis
-- *"it's free from the makers"* — the document is freely
+- _"it's free from the makers"_ — the document is freely
   distributed by WingMakers under their stated license
   (Attribution + Non-Commercial + No-Derivatives — see
   "License" + "License-acknowledgment" sections above; the
   pdftotext archive is technically out-of-license-scope on
   the No-Derivatives clause; Aaron 2026-05-01 owns the
-  legal-risk decision: *"we will be okay i'll take the legal
-  risk make sure we attribue them"*)
-- *"as long as you can do comparative religion you'll be
-  fine"* — Otto operates in comparative-religion mode:
+  legal-risk decision: _"we will be okay i'll take the legal
+  risk make sure we attribue them"_)
+- _"as long as you can do comparative religion you'll be
+  fine"_ — Otto operates in comparative-religion mode:
   parse claims structurally, compare with adjacent
   esoteric traditions, hold without endorsing or rejecting
 
 The pause-class-discovery commitment from PRs #1096 + #1097
-+ #1102 continues to hold. This preservation is a direct
-first-person operational instruction from Aaron ("save it")
-+ third-party content captured under §33 archive convention,
-not a v2/v3 class addition or Insight-block-promotion.
+
+- #1102 continues to hold. This preservation is a direct
+  first-person operational instruction from Aaron ("save it")
+- third-party content captured under §33 archive convention,
+  not a v2/v3 class addition or Insight-block-promotion.
 
 Aaron noted there are likely the **first 4 interviews of
 Dr. Neruda** also on wingmakers.com. Those are queued for

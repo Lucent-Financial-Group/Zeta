@@ -40,10 +40,10 @@ spec:
           domain: argocd.zeta.local
         server:
           service:
-            type: ClusterIP   # ingress lands separately
+            type: ClusterIP # ingress lands separately
         configs:
           params:
-            server.insecure: true   # TLS terminated upstream once ingress lands
+            server.insecure: true # TLS terminated upstream once ingress lands
         notifications:
           enabled: false
   destination:
@@ -51,7 +51,7 @@ spec:
     namespace: argocd
   syncPolicy:
     automated:
-      prune: false        # never let ArgoCD prune itself
+      prune: false # never let ArgoCD prune itself
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

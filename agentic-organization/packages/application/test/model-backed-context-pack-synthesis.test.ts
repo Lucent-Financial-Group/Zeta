@@ -37,31 +37,39 @@ test("model-backed context-pack synthesis sends bounded hat-scoped evidence and 
             reasons: ["director-decision", "blocked-work"],
           },
           curationEvidenceRefs: ["doc:billing-brd", "graph:work-billing"],
-          rankedContextRefs: [{
-            itemId: "doc:billing-brd",
-            reason: "Business requirements govern this blocker.",
-            evidenceRefs: ["doc:billing-brd"],
-            uncertaintyExplanation: "BRD is governing context, but it does not name the recovery owner.",
-          }],
-          gapHypotheses: [{
-            message: "Owner decision may be missing.",
-            evidenceRefs: ["graph:work-billing"],
-            suggestedNextStep: "Ask the engineering manager for the owner record.",
-            uncertaintyExplanation: "Graph evidence points to missing ownership rather than proving it.",
-          }],
-          questions: [{
-            audienceHatLevel: "manager",
-            question: "Who owns invoice recovery?",
-            evidenceRefs: ["doc:billing-brd"],
-            uncertaintyExplanation: "The question is needed because the BRD omits the assignee.",
-          }],
-          recommendedActionRefs: [{
-            actionType: "meta.escalate",
-            direction: "Open a manager escalation.",
-            reason: "Ownership is not present in the supplied context.",
-            evidenceRefs: ["doc:billing-brd", "graph:work-billing"],
-            uncertaintyExplanation: "Escalation is advisory until manager-owned owner evidence is returned.",
-          }],
+          rankedContextRefs: [
+            {
+              itemId: "doc:billing-brd",
+              reason: "Business requirements govern this blocker.",
+              evidenceRefs: ["doc:billing-brd"],
+              uncertaintyExplanation: "BRD is governing context, but it does not name the recovery owner.",
+            },
+          ],
+          gapHypotheses: [
+            {
+              message: "Owner decision may be missing.",
+              evidenceRefs: ["graph:work-billing"],
+              suggestedNextStep: "Ask the engineering manager for the owner record.",
+              uncertaintyExplanation: "Graph evidence points to missing ownership rather than proving it.",
+            },
+          ],
+          questions: [
+            {
+              audienceHatLevel: "manager",
+              question: "Who owns invoice recovery?",
+              evidenceRefs: ["doc:billing-brd"],
+              uncertaintyExplanation: "The question is needed because the BRD omits the assignee.",
+            },
+          ],
+          recommendedActionRefs: [
+            {
+              actionType: "meta.escalate",
+              direction: "Open a manager escalation.",
+              reason: "Ownership is not present in the supplied context.",
+              evidenceRefs: ["doc:billing-brd", "graph:work-billing"],
+              uncertaintyExplanation: "Escalation is advisory until manager-owned owner evidence is returned.",
+            },
+          ],
         });
       },
     },
@@ -81,16 +89,29 @@ test("model-backed context-pack synthesis sends bounded hat-scoped evidence and 
   equal(calls[0]?.user.includes("doc:billing-brd"), true);
   equal(calls[0]?.user.includes("graph:work-billing"), true);
   equal(calls[0]?.user.includes("title=Extra memory"), true);
-  equal(calls[0]?.user.includes("may cite omission node refs only when they also cite at least one supplied evidence item ref"), true);
+  equal(
+    calls[0]?.user.includes(
+      "may cite omission node refs only when they also cite at least one supplied evidence item ref",
+    ),
+    true,
+  );
   equal(calls[0]?.user.includes("Never report confidence above the weakest cited evidence item confidence"), true);
   equal(calls[0]?.user.includes("Uncertainty signals:"), true);
   equal(calls[0]?.user.includes("kind=low_confidence_evidence | severity=medium | refs=memory:extra"), true);
-  equal(calls[0]?.user.includes("Treat uncertainty signals as deterministic bounds; do not resolve them from model judgment."), true);
+  equal(
+    calls[0]?.user.includes(
+      "Treat uncertainty signals as deterministic bounds; do not resolve them from model judgment.",
+    ),
+    true,
+  );
   equal(calls[0]?.user.includes("Deterministic curation plan:"), true);
   equal(calls[0]?.user.includes(`profile=${ContextPackCurationProfileId.ManagementBlocker}`), true);
   equal(calls[0]?.user.includes(`policyVersion=${DEFAULT_CONTEXT_PACK_CURATION_PROFILE_POLICY_VERSION}`), true);
   equal(calls[0]?.user.includes(`lane=${ContextPackAttentionLaneKind.RequiredDocuments}`), true);
-  equal(calls[0]?.user.includes("objective=Resolve the blocker against approved business and architecture context."), true);
+  equal(
+    calls[0]?.user.includes("objective=Resolve the blocker against approved business and architecture context."),
+    true,
+  );
   equal(calls[0]?.user.includes(`instruction=${ContextPackCurationProfileInstruction.ManagementBlocker}`), true);
   equal(calls[0]?.user.includes("rankedContextRefs"), true);
   equal(calls[0]?.user.includes("gapHypotheses"), true);
@@ -98,33 +119,44 @@ test("model-backed context-pack synthesis sends bounded hat-scoped evidence and 
   equal(calls[0]?.user.includes("legalAction=meta.escalate"), true);
   equal(result.summary, "Director should resolve ownership using the BRD and graph evidence.");
   equal(result.briefing?.title, "Director blocker brief");
-  equal(result.briefing?.uncertaintyExplanation, "BRD and graph evidence are current, but owner data is still indirect.");
+  equal(
+    result.briefing?.uncertaintyExplanation,
+    "BRD and graph evidence are current, but owner data is still indirect.",
+  );
   deepEqual(result.briefing?.evidenceRefs, ["doc:billing-brd", "graph:work-billing"]);
-  deepEqual(result.rankedContextRefs, [{
-    itemId: "doc:billing-brd",
-    reason: "Business requirements govern this blocker.",
-    evidenceRefs: ["doc:billing-brd"],
-    uncertaintyExplanation: "BRD is governing context, but it does not name the recovery owner.",
-  }]);
-  deepEqual(result.gapHypotheses, [{
-    message: "Owner decision may be missing.",
-    evidenceRefs: ["graph:work-billing"],
-    suggestedNextStep: "Ask the engineering manager for the owner record.",
-    uncertaintyExplanation: "Graph evidence points to missing ownership rather than proving it.",
-  }]);
-  deepEqual(result.questions, [{
-    audienceHatLevel: HatLevel.Manager,
-    question: "Who owns invoice recovery?",
-    evidenceRefs: ["doc:billing-brd"],
-    uncertaintyExplanation: "The question is needed because the BRD omits the assignee.",
-  }]);
-  deepEqual(result.recommendedActionRefs, [{
-    actionType: "meta.escalate",
-    direction: "Open a manager escalation.",
-    reason: "Ownership is not present in the supplied context.",
-    evidenceRefs: ["doc:billing-brd", "graph:work-billing"],
-    uncertaintyExplanation: "Escalation is advisory until manager-owned owner evidence is returned.",
-  }]);
+  deepEqual(result.rankedContextRefs, [
+    {
+      itemId: "doc:billing-brd",
+      reason: "Business requirements govern this blocker.",
+      evidenceRefs: ["doc:billing-brd"],
+      uncertaintyExplanation: "BRD is governing context, but it does not name the recovery owner.",
+    },
+  ]);
+  deepEqual(result.gapHypotheses, [
+    {
+      message: "Owner decision may be missing.",
+      evidenceRefs: ["graph:work-billing"],
+      suggestedNextStep: "Ask the engineering manager for the owner record.",
+      uncertaintyExplanation: "Graph evidence points to missing ownership rather than proving it.",
+    },
+  ]);
+  deepEqual(result.questions, [
+    {
+      audienceHatLevel: HatLevel.Manager,
+      question: "Who owns invoice recovery?",
+      evidenceRefs: ["doc:billing-brd"],
+      uncertaintyExplanation: "The question is needed because the BRD omits the assignee.",
+    },
+  ]);
+  deepEqual(result.recommendedActionRefs, [
+    {
+      actionType: "meta.escalate",
+      direction: "Open a manager escalation.",
+      reason: "Ownership is not present in the supplied context.",
+      evidenceRefs: ["doc:billing-brd", "graph:work-billing"],
+      uncertaintyExplanation: "Escalation is advisory until manager-owned owner evidence is returned.",
+    },
+  ]);
   deepEqual(result.curationEvidenceRefs, ["doc:billing-brd", "graph:work-billing"]);
 });
 
@@ -144,14 +176,15 @@ test("model-backed context-pack synthesis rejects malformed model output", async
 test("model-backed context-pack synthesis rejects briefings without evidence", async () => {
   const port = createModelBackedContextPackSynthesisPort({
     chat: {
-      complete: async () => JSON.stringify({
-        summary: "A summary exists.",
-        briefing: {
-          title: "No citations",
-          summary: "This should not enter context.",
-          evidenceRefs: [],
-        },
-      }),
+      complete: async () =>
+        JSON.stringify({
+          summary: "A summary exists.",
+          briefing: {
+            title: "No citations",
+            summary: "This should not enter context.",
+            evidenceRefs: [],
+          },
+        }),
     },
   });
 
@@ -164,50 +197,69 @@ test("model-backed context-pack synthesis rejects briefings without evidence", a
 test("model-backed context-pack synthesis caps advisory arrays from model output", async () => {
   const port = createModelBackedContextPackSynthesisPort({
     chat: {
-      complete: async () => JSON.stringify({
-        summary: "Capped advisories.",
-        rankedContextRefs: [
-          { itemId: "doc:billing-brd", reason: "first", evidenceRefs: ["doc:billing-brd"] },
-          { itemId: "graph:work-billing", reason: "second", evidenceRefs: ["graph:work-billing"] },
-        ],
-        gapHypotheses: [
-          { message: "first gap", evidenceRefs: ["doc:billing-brd"] },
-          { message: "second gap", evidenceRefs: ["graph:work-billing"] },
-        ],
-        questions: [
-          { question: "first question", evidenceRefs: ["doc:billing-brd"] },
-          { question: "second question", evidenceRefs: ["graph:work-billing"] },
-        ],
-        recommendedActionRefs: [
-          { actionType: "meta.escalate", direction: "first action", reason: "first reason", evidenceRefs: ["doc:billing-brd"] },
-          { actionType: "work.merge", direction: "second action", reason: "second reason", evidenceRefs: ["graph:work-billing"] },
-        ],
-      }),
+      complete: async () =>
+        JSON.stringify({
+          summary: "Capped advisories.",
+          rankedContextRefs: [
+            { itemId: "doc:billing-brd", reason: "first", evidenceRefs: ["doc:billing-brd"] },
+            { itemId: "graph:work-billing", reason: "second", evidenceRefs: ["graph:work-billing"] },
+          ],
+          gapHypotheses: [
+            { message: "first gap", evidenceRefs: ["doc:billing-brd"] },
+            { message: "second gap", evidenceRefs: ["graph:work-billing"] },
+          ],
+          questions: [
+            { question: "first question", evidenceRefs: ["doc:billing-brd"] },
+            { question: "second question", evidenceRefs: ["graph:work-billing"] },
+          ],
+          recommendedActionRefs: [
+            {
+              actionType: "meta.escalate",
+              direction: "first action",
+              reason: "first reason",
+              evidenceRefs: ["doc:billing-brd"],
+            },
+            {
+              actionType: "work.merge",
+              direction: "second action",
+              reason: "second reason",
+              evidenceRefs: ["graph:work-billing"],
+            },
+          ],
+        }),
     },
     maxAdvisoryItems: 1,
   });
 
   const result = await port.synthesize(request());
 
-  deepEqual(result.rankedContextRefs, [{
-    itemId: "doc:billing-brd",
-    reason: "first",
-    evidenceRefs: ["doc:billing-brd"],
-  }]);
-  deepEqual(result.gapHypotheses, [{
-    message: "first gap",
-    evidenceRefs: ["doc:billing-brd"],
-  }]);
-  deepEqual(result.questions, [{
-    question: "first question",
-    evidenceRefs: ["doc:billing-brd"],
-  }]);
-  deepEqual(result.recommendedActionRefs, [{
-    actionType: "meta.escalate",
-    direction: "first action",
-    reason: "first reason",
-    evidenceRefs: ["doc:billing-brd"],
-  }]);
+  deepEqual(result.rankedContextRefs, [
+    {
+      itemId: "doc:billing-brd",
+      reason: "first",
+      evidenceRefs: ["doc:billing-brd"],
+    },
+  ]);
+  deepEqual(result.gapHypotheses, [
+    {
+      message: "first gap",
+      evidenceRefs: ["doc:billing-brd"],
+    },
+  ]);
+  deepEqual(result.questions, [
+    {
+      question: "first question",
+      evidenceRefs: ["doc:billing-brd"],
+    },
+  ]);
+  deepEqual(result.recommendedActionRefs, [
+    {
+      actionType: "meta.escalate",
+      direction: "first action",
+      reason: "first reason",
+      evidenceRefs: ["doc:billing-brd"],
+    },
+  ]);
 });
 
 function errorMessageIncludes(expected: string): (error: unknown) => boolean {
@@ -258,9 +310,7 @@ function request(): ContextPackEphemeralSynthesisRequest {
           refs: [{ kind: ContextPackAttentionLaneRefKind.Item, itemId: "memory:extra" }],
         },
       ],
-      deterministicInstructions: [
-        ContextPackCurationProfileInstruction.ManagementBlocker,
-      ],
+      deterministicInstructions: [ContextPackCurationProfileInstruction.ManagementBlocker],
     },
     items: [
       {
@@ -274,14 +324,16 @@ function request(): ContextPackEphemeralSynthesisRequest {
         confidence: 1,
         reasons: ["business requirement"],
         citationRefs: ["doc:billing-brd"],
-        sourcePointers: [{
-          kind: ContextPackSourcePointerKind.DocUnit,
-          docUnitId: "billing-brd",
-          contentRef: "git://docs/billing-brd.md",
-          contentHash: "hash-brd",
-          sourceId: "source-main",
-          version: 1,
-        }],
+        sourcePointers: [
+          {
+            kind: ContextPackSourcePointerKind.DocUnit,
+            docUnitId: "billing-brd",
+            contentRef: "git://docs/billing-brd.md",
+            contentHash: "hash-brd",
+            sourceId: "source-main",
+            version: 1,
+          },
+        ],
       },
       {
         id: "graph:work-billing",
@@ -307,21 +359,25 @@ function request(): ContextPackEphemeralSynthesisRequest {
         confidence: 0.7,
         reasons: ["memory"],
         citationRefs: ["memory:extra"],
-        sourcePointers: [{
-          kind: ContextPackSourcePointerKind.HindsightMemory,
-          providerId: "hindsight",
-          memoryId: "extra",
-          advisory: true,
-        }],
+        sourcePointers: [
+          {
+            kind: ContextPackSourcePointerKind.HindsightMemory,
+            providerId: "hindsight",
+            memoryId: "extra",
+            advisory: true,
+          },
+        ],
       },
     ],
     omissions: [],
     contradictions: [],
-    uncertaintySignals: [{
-      kind: ContextPackUncertaintySignalKind.LowConfidenceEvidence,
-      severity: ContextPackUncertaintySeverity.Medium,
-      evidenceRefs: ["memory:extra"],
-      message: "Memory is useful but below the strong-evidence threshold.",
-    }],
+    uncertaintySignals: [
+      {
+        kind: ContextPackUncertaintySignalKind.LowConfidenceEvidence,
+        severity: ContextPackUncertaintySeverity.Medium,
+        evidenceRefs: ["memory:extra"],
+        message: "Memory is useful but below the strong-evidence threshold.",
+      },
+    ],
   };
 }

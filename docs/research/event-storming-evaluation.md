@@ -13,16 +13,16 @@ so our project feels like we started with it in the first place."
 
 ## TL;DR
 
-Event Storming (ES) is a workshop technique for *discovering*
+Event Storming (ES) is a workshop technique for _discovering_
 event-driven domains, authored by Alberto Brandolini (≈ 2013,
-popularised by his 2019 Leanpub book *Introducing EventStorming*).
+popularised by his 2019 Leanpub book _Introducing EventStorming_).
 It is not a technology, has no runtime artefact, and is not
 tied to a programming paradigm. Its primitives are coloured
 sticky notes on a wall representing **domain events**,
 **commands**, **aggregates**, **policies**, **read models**,
 and **bounded contexts**.
 
-**Verdict:** *strong fit*, and the primary customer is the
+**Verdict:** _strong fit_, and the primary customer is the
 **software-factory part of Zeta** (the generic, reusable part
 — not Zeta the DBSP database). ES's vocabulary is deliberately
 **more generic than Zeta's operator algebra**, which is
@@ -33,9 +33,9 @@ separable from Zeta-the-product.
 A secondary (and still strong) fit — Zeta itself is **already
 event-sourced by construction**. The DBSP paper's delta semantics
 are isomorphic to Event Sourcing's event log; Z-set `+k` / `-k`
-entries *are* domain events + retractions; operators *are*
+entries _are_ domain events + retractions; operators _are_
 commands; state-carrying operators (`IntegrateOp`, `FeedbackOp`)
-*are* aggregates; `Nest` sub-circuits *are* bounded contexts.
+_are_ aggregates; `Nest` sub-circuits _are_ bounded contexts.
 
 What Event Storming gives the **software factory** (primary
 customer) that it does not already have:
@@ -51,8 +51,8 @@ customer) that it does not already have:
 2. **A greenfield-onboarding protocol.** ES's Big-Picture
    workshop is explicitly designed for the "we have an idea,
    now what?" moment — it ships with playbooks of
-   *questions to ask when you don't know what questions to
-   ask*. That is exactly the gap new-project bootstrap
+   _questions to ask when you don't know what questions to
+   ask_. That is exactly the gap new-project bootstrap
    currently has: Aaron and a factory agent can describe a
    domain vaguely, but the factory has no structured prompt
    ladder to turn vague-intent into a spec. ES provides it.
@@ -65,7 +65,7 @@ customer) that it does not already have:
    hell of a UI"** (Aaron, 2026-04-20 late). This is a
    differentiator for the factory-as-product.
 4. **Factory-skill / Zeta-skill separation leverage.** ES
-   vocabulary reads *zero* like Zeta. Adopting it inside
+   vocabulary reads _zero_ like Zeta. Adopting it inside
    factory skills makes the seam between "factory
    (portable)" and "Zeta (database-specific)" obvious in
    the text — every skill that uses the word "event" or
@@ -78,7 +78,7 @@ customer) that it does not already have:
    place"), ES gives us an ordering: events → commands →
    aggregates → bounded contexts → read models.
 
-**Recommendation:** adopt as a *strategy* (per Aaron's Matrix-
+**Recommendation:** adopt as a _strategy_ (per Aaron's Matrix-
 mode framing), absorb via an expert / teacher / auditor
 skill-group at the **factory level** (not Zeta level), and
 then layer a Zeta-vocabulary bridge on top. Factory skills
@@ -98,7 +98,7 @@ Sources cited below in §4. This section is the synthesis.
   community, early collaborator with Eric Evans, Vaughn Vernon,
   Greg Young.
 - **First named:** ≈ 2013 (blog posts). Book-length treatment:
-  *Introducing EventStorming* (Leanpub, 2019 — self-published,
+  _Introducing EventStorming_ (Leanpub, 2019 — self-published,
   still in continuous revision).
 - **License / IP:** book is copyrighted but the technique itself
   is open and has been taught under many licenses. Brandolini
@@ -108,27 +108,27 @@ Sources cited below in §4. This section is the synthesis.
 
 ES is not one workshop — it is a family of three.
 
-| Level              | Audience                          | Duration | Deliverable                                     |
-|--------------------|-----------------------------------|----------|-------------------------------------------------|
-| **Big Picture**    | Whole org; business + technical   | 2-4 h    | Shared map of the domain's events over time     |
-| **Process-Level**  | Single process team + stakeholder | 1 day    | Process decomposed into commands + policies     |
-| **Software Design**| Engineering team                  | 1-3 d    | Aggregates + bounded contexts + read models     |
+| Level               | Audience                          | Duration | Deliverable                                 |
+| ------------------- | --------------------------------- | -------- | ------------------------------------------- |
+| **Big Picture**     | Whole org; business + technical   | 2-4 h    | Shared map of the domain's events over time |
+| **Process-Level**   | Single process team + stakeholder | 1 day    | Process decomposed into commands + policies |
+| **Software Design** | Engineering team                  | 1-3 d    | Aggregates + bounded contexts + read models |
 
 ### 1.3 The sticky-note colour palette
 
 Brandolini's canonical colours. (Any legible colour set works;
 these are just widely recognised.)
 
-| Colour        | Primitive           | Semantics                                                           |
-|---------------|---------------------|---------------------------------------------------------------------|
-| **Orange**    | Domain Event        | Something that happened. Past tense. Immutable. The primary artefact.|
-| **Blue**      | Command             | Intent to cause an event. Present tense.                            |
-| **Yellow**    | Actor / User        | Who issued the command.                                             |
-| **Lilac/Pink**| External System     | Upstream / downstream actor outside our bounded context.            |
-| **Pink (dark)**| Aggregate          | State-holder that commands act on and events emerge from.           |
-| **Purple**    | Policy              | Reactive rule: "when event X, then command Y."                      |
-| **Green**     | Read Model / View   | Projected state a user reads.                                       |
-| **Red**       | Hot-spot / Problem  | Question, contradiction, pain-point, assumption to verify.          |
+| Colour          | Primitive          | Semantics                                                             |
+| --------------- | ------------------ | --------------------------------------------------------------------- |
+| **Orange**      | Domain Event       | Something that happened. Past tense. Immutable. The primary artefact. |
+| **Blue**        | Command            | Intent to cause an event. Present tense.                              |
+| **Yellow**      | Actor / User       | Who issued the command.                                               |
+| **Lilac/Pink**  | External System    | Upstream / downstream actor outside our bounded context.              |
+| **Pink (dark)** | Aggregate          | State-holder that commands act on and events emerge from.             |
+| **Purple**      | Policy             | Reactive rule: "when event X, then command Y."                        |
+| **Green**       | Read Model / View  | Projected state a user reads.                                         |
+| **Red**         | Hot-spot / Problem | Question, contradiction, pain-point, assumption to verify.            |
 
 ### 1.4 Facilitation practices (2026 best-practice synthesis)
 
@@ -144,7 +144,7 @@ these are just widely recognised.)
   domain experts.
 - **Hot-spots are first-class.** When nobody knows the answer,
   a red sticky goes up. The workshop output is allowed to have
-  unknowns; it is *better* when it does.
+  unknowns; it is _better_ when it does.
 - **Progressive refinement.** Big Picture first; resist drilling
   into implementation until the timeline is complete.
 - **Avoid rushing to technical solutions.** A recurring failure
@@ -159,19 +159,19 @@ This is where the research pays off. Zeta's DBSP substrate is
 isomorphic to event-sourcing-in-the-small; the table below
 shows the mapping formally.
 
-| ES primitive        | Zeta primitive                                                                  | Notes                                                                                          |
-|---------------------|---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
-| Domain Event        | `ZSet<K>` delta entry with weight `+k` (`k > 0`)                                | Past-tense, immutable, append-only within a tick. The canonical ES citizen.                    |
-| **Retraction event**| `ZSet<K>` delta entry with weight `-k` (`k > 0`)                                | **Zeta-native extension ES does not name.** A first-class un-event. Ordinary ES has no vocabulary for this; Zeta does. |
-| Command             | Operator invocation (`StepAsync`) that produces a delta downstream               | Imperative in conventional ES; in Zeta, commands are the operators themselves.                 |
-| Aggregate           | State-carrying operator: `IntegrateOp`, `DelayOp`, `FeedbackOp`                  | The state-holder whose invariants the aggregate enforces.                                      |
-| Policy              | Composite operator reacting to an input delta by emitting another delta         | E.g. `circuit.Map(f, s)` producing a new stream is a policy in ES terms.                       |
-| Read Model / View   | Integrated stream (`Integrate` at a graph sink)                                  | The "materialised" side; ES calls this a projection.                                           |
-| Bounded Context     | `Nest` sub-circuit (inner-clock scope)                                           | Inner-clock tick-0 reset = bounded-context lifecycle boundary.                                 |
-| External System     | External input stream registered at the circuit root                             | `ScalarInput<T>.Set` or upstream-fed sources.                                                  |
-| Hot-spot (red)      | OpenSpec spec gap, BUGS.md row, harsh-critic finding, `red-flag` tag             | Zeta has many; ES just gives them a single colour.                                             |
-| Actor / User        | Agent persona, human maintainer, or external caller                              | Zeta's `docs/EXPERT-REGISTRY.md` is effectively the actor list.                                |
-| Workshop artefact   | `openspec/specs/*/spec.md` + `docs/GLOSSARY.md` + `docs/CONFLICT-RESOLUTION.md` | Zeta's post-hoc output already matches the *artefacts* ES produces — we just did not call them that. |
+| ES primitive         | Zeta primitive                                                                  | Notes                                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Domain Event         | `ZSet<K>` delta entry with weight `+k` (`k > 0`)                                | Past-tense, immutable, append-only within a tick. The canonical ES citizen.                                            |
+| **Retraction event** | `ZSet<K>` delta entry with weight `-k` (`k > 0`)                                | **Zeta-native extension ES does not name.** A first-class un-event. Ordinary ES has no vocabulary for this; Zeta does. |
+| Command              | Operator invocation (`StepAsync`) that produces a delta downstream              | Imperative in conventional ES; in Zeta, commands are the operators themselves.                                         |
+| Aggregate            | State-carrying operator: `IntegrateOp`, `DelayOp`, `FeedbackOp`                 | The state-holder whose invariants the aggregate enforces.                                                              |
+| Policy               | Composite operator reacting to an input delta by emitting another delta         | E.g. `circuit.Map(f, s)` producing a new stream is a policy in ES terms.                                               |
+| Read Model / View    | Integrated stream (`Integrate` at a graph sink)                                 | The "materialised" side; ES calls this a projection.                                                                   |
+| Bounded Context      | `Nest` sub-circuit (inner-clock scope)                                          | Inner-clock tick-0 reset = bounded-context lifecycle boundary.                                                         |
+| External System      | External input stream registered at the circuit root                            | `ScalarInput<T>.Set` or upstream-fed sources.                                                                          |
+| Hot-spot (red)       | OpenSpec spec gap, BUGS.md row, harsh-critic finding, `red-flag` tag            | Zeta has many; ES just gives them a single colour.                                                                     |
+| Actor / User         | Agent persona, human maintainer, or external caller                             | Zeta's `docs/EXPERT-REGISTRY.md` is effectively the actor list.                                                        |
+| Workshop artefact    | `openspec/specs/*/spec.md` + `docs/GLOSSARY.md` + `docs/CONFLICT-RESOLUTION.md` | Zeta's post-hoc output already matches the _artefacts_ ES produces — we just did not call them that.                   |
 
 ### 2.1 Two places where the mapping is stronger in Zeta than in vanilla ES
 
@@ -183,7 +183,7 @@ shows the mapping formally.
    has the algebra.
 2. **Inner-clock scopes.** ES's Bounded Context is a social
    boundary (team + ubiquitous language). Zeta's `Nest` sub-
-   circuit is the *same idea made executable*: an inner clock,
+   circuit is the _same idea made executable_: an inner clock,
    a cross-scope reset obligation (Viktor P0-2, just landed),
    and a typed integration boundary. Zeta could contribute this
    back to the ES / DDD community as "executable bounded
@@ -192,8 +192,8 @@ shows the mapping formally.
 ### 2.2 One place where ES is stronger than Zeta currently
 
 **Discovery-phase vocabulary.** Zeta's spec + glossary workflow
-kicks in *after* a feature exists. Aaron and a factory agent
-working on a new capability currently have no *named protocol*
+kicks in _after_ a feature exists. Aaron and a factory agent
+working on a new capability currently have no _named protocol_
 for the Big-Picture → Process → Software-Design transition. ES
 gives us that protocol. The conversational-bootstrap UX
 (`memory/project_factory_conversational_bootstrap_two_persona_ux.md`)
@@ -231,19 +231,19 @@ Following
 strategies (not just technologies) trigger skill-group
 absorption (Aaron's explicit framing from this ask).
 
-| Role                       | Responsibility                                                                                      | Notebook                                  |
-|----------------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------|
-| `event-storming-expert`    | Runs or advises on Big-Picture / Process / Software-Design workshops; maps outputs to Zeta primitives. | `memory/persona/<name>/NOTEBOOK.md`       |
-| `event-storming-teacher`   | Onboarding explainer: ES vocabulary, colour palette, facilitation patterns, common failure modes. | Shared skill file; no per-round notebook. |
-| `event-storming-auditor`   | Reviews specs + glossary for ES-vocabulary misuse (present-tense events, confused aggregates, hidden policies). | `memory/persona/<name>/NOTEBOOK.md`       |
-| `event-storming` capability| Procedure-body skill: how to actually run a workshop in this factory's one-human-plus-agents setting. | `.claude/skills/event-storming/SKILL.md`  |
+| Role                        | Responsibility                                                                                                  | Notebook                                  |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `event-storming-expert`     | Runs or advises on Big-Picture / Process / Software-Design workshops; maps outputs to Zeta primitives.          | `memory/persona/<name>/NOTEBOOK.md`       |
+| `event-storming-teacher`    | Onboarding explainer: ES vocabulary, colour palette, facilitation patterns, common failure modes.               | Shared skill file; no per-round notebook. |
+| `event-storming-auditor`    | Reviews specs + glossary for ES-vocabulary misuse (present-tense events, confused aggregates, hidden policies). | `memory/persona/<name>/NOTEBOOK.md`       |
+| `event-storming` capability | Procedure-body skill: how to actually run a workshop in this factory's one-human-plus-agents setting.           | `.claude/skills/event-storming/SKILL.md`  |
 
 Persona names deferred to the naming-expert per GOVERNANCE.md.
 
 ### 3.3 Retroactive adoption plan — factory-first, Zeta-second
 
-Aaron (2026-04-20 late): *"The factory-vs-Zeta separation
-becomes the load-bearing concern."* Adoption sequencing
+Aaron (2026-04-20 late): _"The factory-vs-Zeta separation
+becomes the load-bearing concern."_ Adoption sequencing
 must honour this. ES vocabulary lands **first in factory
 surfaces**, then bridges into Zeta surfaces — never the
 other way around.
@@ -273,9 +273,9 @@ vocabulary is native here.
    Zeta↔factory seam and flags leakage in either
    direction.
 
-**Phase B — Bridge surfaces.** Docs that serve *both*
+**Phase B — Bridge surfaces.** Docs that serve _both_
 factory consumers and Zeta consumers. ES vocabulary
-goes here as a *bridge layer* — named explicitly as such.
+goes here as a _bridge layer_ — named explicitly as such.
 
 1. **`docs/GLOSSARY.md`** — ES primitives listed as
    factory-generic vocabulary; Zeta-specific terms
@@ -285,11 +285,11 @@ goes here as a *bridge layer* — named explicitly as such.
 2. **`docs/ALIGNMENT.md`** — alignment contract framed
    as a governance event log using ES vocabulary;
    consent-primitive instances = domain events; the
-   *factory* is the bounded context, Zeta is one of
+   _factory_ is the bounded context, Zeta is one of
    its aggregates.
 
 **Phase C — Zeta-specific surfaces.** ES vocabulary
-only where it adds precision *on top of* the existing
+only where it adds precision _on top of_ the existing
 operator-algebra vocabulary. Zeta's native vocabulary
 wins by default here.
 
@@ -298,14 +298,14 @@ wins by default here.
    downstream specs can use "domain event," "aggregate,"
    "bounded context" without redefining — but the spec
    body continues to speak operator algebra.
-2. **`docs/VISION.md`** — note that Zeta *is* an
+2. **`docs/VISION.md`** — note that Zeta _is_ an
    event-sourcing-with-retractions engine (ES vocabulary
    used deliberately as a one-line bridge).
 
 Nothing is rewritten wholesale. ES vocabulary is
 additive; where current prose is precise, it stays.
 The factory-vs-Zeta separation is preserved by the
-*phasing*, not by vocabulary gymnastics.
+_phasing_, not by vocabulary gymnastics.
 
 ### 3.4 BACKLOG items
 
@@ -383,7 +383,7 @@ Three WebSearch passes run on 2026-04-20, summarised here
 
 - **Pass 1 — "Event Storming Alberto Brandolini 2026 best practices":**
   - Brandolini's own site (eventstorming.com) as canonical.
-  - Leanpub book *Introducing EventStorming* continuous-revision
+  - Leanpub book _Introducing EventStorming_ continuous-revision
     notes through 2024.
   - 2025-2026 practitioner articles emphasising past-tense
     events, hot-spot discipline, facilitator-led-not-driven
@@ -418,7 +418,7 @@ results decay; the synthesis above is the durable artefact.
 - Does ES-expert belong in `docs/EXPERT-REGISTRY.md` with
   scope "strategy" rather than a technology? Per
   `memory/feedback_new_tech_triggers_skill_gap_closure.md`
-  this is the first *strategy* absorption — schema generalisation
+  this is the first _strategy_ absorption — schema generalisation
   pending.
 - Can we contribute "executable bounded contexts" back to
   Brandolini's community, or does that require a paper first?
@@ -444,7 +444,7 @@ If the generalisation lands, log row candidate:
 
 - Speculative surface: Event Storming skill-group authoring.
 - Structural fix: generalise Matrix-mode to strategies.
-- Depth: 2 — the generalisation *itself* predicts that future
+- Depth: 2 — the generalisation _itself_ predicts that future
   strategy absorptions (e.g. Wardley mapping, Domain Storytelling,
   OKRs-as-strategy) will follow the same pattern, converting
   them to directed work in turn.

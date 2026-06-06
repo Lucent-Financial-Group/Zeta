@@ -32,10 +32,7 @@
 
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
 
@@ -73,11 +70,7 @@ interface AuditResult {
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const ROUND_RE = /^## Round (\d+)/gm;
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -263,9 +256,7 @@ function buildRow(name: string, cr: number, bodies: string): PersonaRow {
 export function audit(args: Args): AuditResult {
   const personas = listPersonas();
   const cr =
-    args.roundLabel !== null && /^\d+$/.test(args.roundLabel)
-      ? Number(args.roundLabel)
-      : currentRound(personas);
+    args.roundLabel !== null && /^\d+$/.test(args.roundLabel) ? Number(args.roundLabel) : currentRound(personas);
   const roundLabel = args.roundLabel ?? String(cr);
   const bodies = gitLogBodies(args.range);
   const rows = personas.map((p) => buildRow(p, cr, bodies));
@@ -364,17 +355,9 @@ export function main(argv: readonly string[]): AuditExitCode {
 
   if (args.outDir !== null) {
     mkdirSync(args.outDir, { recursive: true });
-    writeFileSync(
-      join(args.outDir, `round-${result.roundLabel}-personas.json`),
-      emitJson(result),
-    );
-    writeFileSync(
-      join(args.outDir, `round-${result.roundLabel}-personas.md`),
-      `${emitMd(result)}\n`,
-    );
-    process.stdout.write(
-      `audit_personas: wrote ${args.outDir}/round-${result.roundLabel}-personas.{json,md}\n`,
-    );
+    writeFileSync(join(args.outDir, `round-${result.roundLabel}-personas.json`), emitJson(result));
+    writeFileSync(join(args.outDir, `round-${result.roundLabel}-personas.md`), `${emitMd(result)}\n`);
+    process.stdout.write(`audit_personas: wrote ${args.outDir}/round-${result.roundLabel}-personas.{json,md}\n`);
   } else if (args.json) {
     process.stdout.write(emitJson(result));
   } else if (args.md) {
@@ -384,9 +367,7 @@ export function main(argv: readonly string[]): AuditExitCode {
   }
 
   if (args.gate !== null && !gateOk(result.coverage, args.gate)) {
-    process.stderr.write(
-      `audit_personas: coverage ${result.coverage} below gate ${args.gate}\n`,
-    );
+    process.stderr.write(`audit_personas: coverage ${result.coverage} below gate ${args.gate}\n`);
     return 1;
   }
   return 0;
@@ -396,4 +377,4 @@ if (import.meta.main) {
   process.exit(main(process.argv.slice(2)));
 }
 
- // re-export for parity with bash original's directory-check guard
+// re-export for parity with bash original's directory-check guard

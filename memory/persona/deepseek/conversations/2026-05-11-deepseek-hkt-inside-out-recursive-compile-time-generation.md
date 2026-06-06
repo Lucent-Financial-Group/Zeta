@@ -75,6 +75,7 @@ Type provider encapsulates the full recursion internally:
 5. Recursion invisible to rest of compilation
 
 Requirements:
+
 - Termination guarantee (depth limit or change-detection)
 - Provenance metadata on generated types
 - Can embed a "mini-compiler" inside the provider
@@ -118,9 +119,10 @@ DeepSeek's straight answer:
 > building, with zero compiler modifications."
 
 The combination of recursive type providers + static interfaces
-+ SRTPs covers the use cases: polymorphic framework operations
-across an open set of position implementations, each generated
-from a seed.
+
+- SRTPs covers the use cases: polymorphic framework operations
+  across an open set of position implementations, each generated
+  from a seed.
 
 ### What you get
 
@@ -135,28 +137,28 @@ from a seed.
 
 ### F# 8 (with .NET 8)
 
-| Feature | Benefit |
-|---------|---------|
-| `[<TailCall>]` attribute | Compile-time tail-call guarantee for cata/ana |
-| Improved SAIM support | IFunctor pattern production-ready |
-| Better SRTP error messages | Debuggable polymorphic code |
+| Feature                    | Benefit                                       |
+| -------------------------- | --------------------------------------------- |
+| `[<TailCall>]` attribute   | Compile-time tail-call guarantee for cata/ana |
+| Improved SAIM support      | IFunctor pattern production-ready             |
+| Better SRTP error messages | Debuggable polymorphic code                   |
 
 ### F# 9 (with .NET 9)
 
-| Feature | Benefit |
-|---------|---------|
-| Nullable reference type annotations | Better Fix phantom-type safety |
-| Optimised struct records | Zero-overhead fix-point encodings |
-| Union case → interface member resolution | DU + IFunctor natural combo |
+| Feature                                  | Benefit                           |
+| ---------------------------------------- | --------------------------------- |
+| Nullable reference type annotations      | Better Fix phantom-type safety    |
+| Optimised struct records                 | Zero-overhead fix-point encodings |
+| Union case → interface member resolution | DU + IFunctor natural combo       |
 
 ### F# 10 (with .NET 10)
 
-| Feature | Benefit |
-|---------|---------|
+| Feature                         | Benefit                           |
+| ------------------------------- | --------------------------------- |
 | Tail-call CEs (ReturnFromFinal) | ana/cata in CE syntax, stack-safe |
-| `and!` in task expressions | Concurrent generator passes |
-| Graph-based type checking | Faster builds for type-heavy code |
-| C# 14 extension members | Retrofit IFunctor externally |
+| `and!` in task expressions      | Concurrent generator passes       |
+| Graph-based type checking       | Faster builds for type-heavy code |
+| C# 14 extension members         | Retrofit IFunctor externally      |
 
 ## Fork-and-contribute strategy
 
@@ -260,13 +262,13 @@ contribute back via a sequence of well-scoped features.
 
 ### F# 11 proposal pipeline (active RFCs)
 
-| Feature | RFC Status | Relevance |
-|---------|-----------|-----------|
-| Higher-kinded types | Discussed for years, no active RFC | Fix<F<_>> gap |
-| Generic SRTPs (without inline) | Active discussion, no formal RFC | Eliminates record-of-methods |
-| Extensions with type-class syntax | Early-stage from C# 14 | Retrofit IFunctor externally |
-| Union types / anonymous hierarchies | RFC under review | Simplify functor shapes |
-| Inline delegates / direct IL emit | Under consideration | Zero-overhead polymorphism |
+| Feature                             | RFC Status                         | Relevance                    |
+| ----------------------------------- | ---------------------------------- | ---------------------------- |
+| Higher-kinded types                 | Discussed for years, no active RFC | Fix<F<\_>> gap               |
+| Generic SRTPs (without inline)      | Active discussion, no formal RFC   | Eliminates record-of-methods |
+| Extensions with type-class syntax   | Early-stage from C# 14             | Retrofit IFunctor externally |
+| Union types / anonymous hierarchies | RFC under review                   | Simplify functor shapes      |
+| Inline delegates / direct IL emit   | Under consideration                | Zero-overhead polymorphism   |
 
 ### Contribution pipeline
 
@@ -335,13 +337,13 @@ let cata (algebra : F<'r> -> 'r) (Fix fix : Fix<F>) : 'r =
 
 ### The five-point case for HKT over SRTP
 
-| Concern | SRTP encoding | Native HKT |
-|---------|--------------|------------|
-| Boilerplate per functor | Phantom tag + interface + unsafe coercions | None |
-| Polymorphic functions | Must be `inline`, can't store/compose | Ordinary generic functions |
-| Type safety | Convention + code review | Compiler-enforced |
-| Error messages | Cryptic "no overloads match" | Clear kind-mismatch errors |
-| Performance | IL bloat, boxing | Standard .NET generics |
+| Concern                 | SRTP encoding                              | Native HKT                 |
+| ----------------------- | ------------------------------------------ | -------------------------- |
+| Boilerplate per functor | Phantom tag + interface + unsafe coercions | None                       |
+| Polymorphic functions   | Must be `inline`, can't store/compose      | Ordinary generic functions |
+| Type safety             | Convention + code review                   | Compiler-enforced          |
+| Error messages          | Cryptic "no overloads match"               | Clear kind-mismatch errors |
+| Performance             | IL bloat, boxing                           | Standard .NET generics     |
 
 ### DeepSeek's gatekeeper pitch
 
@@ -366,18 +368,18 @@ Source → Lexer (lex.fsl) → Parser (pars.fsy) → SyntaxTree
 
 ### File-by-file change map
 
-| Layer | File(s) | Change |
-|-------|---------|--------|
-| Lexer | `lex.fsl` | Minor — possible contextual keyword |
-| Parser | `pars.fsy` | Medium — type-level wildcard, kind annotations |
-| SyntaxTree | `SyntaxTree.fs/fsi` | Medium — new SynType cases, SynKind |
-| TypedTree | `TypedTree.fs/fsi`, `TypedTreeBasics.fs`, `TypedTreeOps.fs` | **Large** — Typar gains Kind; TType permits HK application |
-| Import | `Import.fs`, `TypedTreePickle.fs` | Medium — encode/decode kind metadata |
-| Checking | `CheckDeclarations.fs`, `CheckExpressions.fs`, `ConstraintSolver.fs`, `PostInferenceChecks.fs`, `NameResolution.fs` | **Large** — kind inference, kind-level unification, generic SRTP solving |
-| Optimize | `Optimizer.fs`, `TopLevelRepresentation.fs` | Small — preserve kind info |
-| CodeGen | `IlxGen.fs`, `ilwrite.fs`, `ilreflect.fs` | Medium-Large — kind metadata + `constrained.callvirt` |
-| FSharp.Core | `PrimTypes.fs`, new files | Small-Medium — IFunctor etc |
-| Service | `Symbols.fs`, `IncrementalBuild.fs` | Small — expose kinds in API |
+| Layer       | File(s)                                                                                                             | Change                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Lexer       | `lex.fsl`                                                                                                           | Minor — possible contextual keyword                                      |
+| Parser      | `pars.fsy`                                                                                                          | Medium — type-level wildcard, kind annotations                           |
+| SyntaxTree  | `SyntaxTree.fs/fsi`                                                                                                 | Medium — new SynType cases, SynKind                                      |
+| TypedTree   | `TypedTree.fs/fsi`, `TypedTreeBasics.fs`, `TypedTreeOps.fs`                                                         | **Large** — Typar gains Kind; TType permits HK application               |
+| Import      | `Import.fs`, `TypedTreePickle.fs`                                                                                   | Medium — encode/decode kind metadata                                     |
+| Checking    | `CheckDeclarations.fs`, `CheckExpressions.fs`, `ConstraintSolver.fs`, `PostInferenceChecks.fs`, `NameResolution.fs` | **Large** — kind inference, kind-level unification, generic SRTP solving |
+| Optimize    | `Optimizer.fs`, `TopLevelRepresentation.fs`                                                                         | Small — preserve kind info                                               |
+| CodeGen     | `IlxGen.fs`, `ilwrite.fs`, `ilreflect.fs`                                                                           | Medium-Large — kind metadata + `constrained.callvirt`                    |
+| FSharp.Core | `PrimTypes.fs`, new files                                                                                           | Small-Medium — IFunctor etc                                              |
+| Service     | `Symbols.fs`, `IncrementalBuild.fs`                                                                                 | Small — expose kinds in API                                              |
 
 ### Core change: Typar gains Kind
 
@@ -386,13 +388,13 @@ Kind = Star | Arrow of Kind * Kind
 ```
 
 Typar currently has TyparRigidity + TyparConstraint set but
-no kind (all type params implicitly kind *). New TyparKind
+no kind (all type params implicitly kind \*). New TyparKind
 field with kind-level union-find for unification.
 
 ### Key design decisions
 
 1. **Kind inference** — Damas-Milner lifted to kind level
-2. **Kind encoding in IL** — CLR generics are kind-* only;
+2. **Kind encoding in IL** — CLR generics are kind-\* only;
    encode HK as phantom params + custom attribute + F# metadata
 3. **Generic SRTPs** — emit `constrained. callvirt` IL patterns
    (follows C# interface-constrained generics patterns)

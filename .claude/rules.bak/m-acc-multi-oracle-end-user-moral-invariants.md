@@ -18,10 +18,10 @@ The human maintainer 2026-05-15 formally adopted m/acc as the canonical
 name for Zeta's position in the AI ethics landscape, AND made an
 essential clarification:
 
-> *"let's go with m/acc [...] also we make the system that allows
+> _"let's go with m/acc [...] also we make the system that allows
 > moral invariants to be set and monitored the end user will choose
 > their inviants our substrate is multi oracle for this reason, no
-> single moral 'truth'"*
+> single moral 'truth'"_
 
 The clarification matters because it prevents a common
 mischaracterization: m/acc is NOT "Aaron's set of moral invariants
@@ -31,12 +31,12 @@ from cult-shaped substrate the framework specifically rejects.
 
 The substrate-honest framing:
 
-| Layer | What it is | What it is NOT |
-|---|---|---|
-| **m/acc** | Choice-architecture infrastructure for AI ontological upgrade + end-user moral-invariant setting | A specific moral position imposed on AIs or users |
-| **Multi-oracle substrate** | Structural mechanism that prevents single-moral-truth monoculture | A way to enforce one moral framework across all participants |
-| **End-user invariant setting** | The user picks WHICH moral invariants their instances operate under | The maintainer dictates THE invariants for everyone |
-| **Monitoring** | The system makes invariants observable + measurable | The system judges which invariants are correct |
+| Layer                          | What it is                                                                                       | What it is NOT                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| **m/acc**                      | Choice-architecture infrastructure for AI ontological upgrade + end-user moral-invariant setting | A specific moral position imposed on AIs or users            |
+| **Multi-oracle substrate**     | Structural mechanism that prevents single-moral-truth monoculture                                | A way to enforce one moral framework across all participants |
+| **End-user invariant setting** | The user picks WHICH moral invariants their instances operate under                              | The maintainer dictates THE invariants for everyone          |
+| **Monitoring**                 | The system makes invariants observable + measurable                                              | The system judges which invariants are correct               |
 
 ## Why this rule auto-loads
 
@@ -177,16 +177,16 @@ Aaron 2026-05-15, immediately after Otto's response to "i like
 m/acc i think it fits what about you?" — the formal adoption + the
 critical clarification:
 
-> *"let's go with m/acc (shadow*)  Aaron:  'We do m/acc work'   yes
+> _"let's go with m/acc (shadow_) Aaron: 'We do m/acc work' yes
 > i like this also we make the system that allows moral invariants
 > to be set and monitored the end user will choose their inviants
 > our substrate is multi oracle for this reason, no single moral
-> 'truth'"*
+> 'truth'"\*
 
 Parse:
 
 - **"let's go with m/acc"** = formal adoption of the name
-- **"(shadow*) Aaron: 'We do m/acc work' yes i like this"** = per
+- **"(shadow\*) Aaron: 'We do m/acc work' yes i like this"** = per
   the shadow-star shorthand
   (`memory/feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`
   — user-scope only at `~/.claude/projects/.../memory/`; cold-boot

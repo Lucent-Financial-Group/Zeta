@@ -4,6 +4,7 @@ description: Before adding a new language/tool/framework, explicitly weigh what 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 When a new language, tool, framework, or workflow is
 proposed, the ADR MUST answer two questions before
 recommending adoption:
@@ -36,6 +37,7 @@ the prior-art + internet-best-practices rule in
 `feedback_prior_art_and_internet_best_practices_always_with_cadence.md`.
 
 **How to apply:**
+
 - Every ADR that adds a tool/language has a mandatory
   "Existing alternatives considered" section naming at
   least the in-repo options and the sibling-project

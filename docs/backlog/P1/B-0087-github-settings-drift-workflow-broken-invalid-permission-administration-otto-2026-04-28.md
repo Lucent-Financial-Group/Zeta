@@ -11,7 +11,16 @@ last_updated: 2026-05-03
 depends_on: []
 composes_with:
   - B-0085
-tags: [otto-2026-04-28, github-actions, workflow-startup-failure, invalid-permission, drift-detector-broken, factory-hygiene, option-a-landed]
+tags:
+  [
+    otto-2026-04-28,
+    github-actions,
+    workflow-startup-failure,
+    invalid-permission,
+    drift-detector-broken,
+    factory-hygiene,
+    option-a-landed,
+  ]
 ---
 
 # B-0087 — github-settings-drift.yml broken since PR #45
@@ -55,8 +64,8 @@ require a PAT with explicit org/repo admin rights.
 ## Has been broken since
 
 - **First commit**: PR #45 (`f92f1d4 Resolve HB-001: transfer
-  to Lucent-Financial-Group; land GitHub-settings-as-code +
-  drift detector`) introduced the invalid permission.
+to Lucent-Financial-Group; land GitHub-settings-as-code +
+drift detector`) introduced the invalid permission.
 - **Most recent edit**: PR #375 (round-44 final per-PR matrix)
   did NOT fix the permission.
 - **Net duration**: broken for the entire history of the
@@ -122,7 +131,7 @@ for security audits.
 ## Why P1 (not P2)
 
 - Active false-failure noise pollutes every PR's CI summary
-  + the daily budget snapshots.jsonl.
+  - the daily budget snapshots.jsonl.
 - The discipline this row demonstrates (workflow-null-result
   audit class) just paid out concretely on its first
   application — keeping the row visible motivates the audit's

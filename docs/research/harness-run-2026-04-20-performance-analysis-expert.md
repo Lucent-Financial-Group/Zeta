@@ -3,9 +3,9 @@
 **Date:** 2026-04-20 (round 43)
 **Candidate:** `.claude/skills/performance-analysis-expert/SKILL.md` (642 lines;
 2.14x BP-03 cap)
-**Trigger:** Aaron's round-42 correction *"make sure we are using those
+**Trigger:** Aaron's round-42 correction _"make sure we are using those
 bad performance skill tools where it makes sense instead of trying to
-guess"* → memory rule
+guess"_ → memory rule
 `feedback_skill_tune_up_uses_eval_harness_not_static_line_count.md` →
 first candidate from Aarav's static-signal top-5 gets empirical harness
 data.
@@ -27,15 +27,15 @@ condition answered the prompt independently; outputs graded against
 
 ## Results
 
-| Metric | with-skill | without-skill | delta |
-| --- | --- | --- | --- |
-| Pass rate (eval-0) | 4/5 (80%) | 5/5 (100%) | **−20pp** |
-| Pass rate (eval-1) | 5/5 (100%) | 5/5 (100%) | 0pp |
-| Aggregate pass rate | 9/10 (90%) | 10/10 (100%) | **−10pp** |
-| Tokens (eval-0) | 55019 | 40076 | +37% |
-| Tokens (eval-1) | 51856 | 38798 | +34% |
-| Wall-time (eval-0) | 126.2s | 85.7s | +47% |
-| Wall-time (eval-1) | 78.9s | 66.2s | +19% |
+| Metric              | with-skill | without-skill | delta     |
+| ------------------- | ---------- | ------------- | --------- |
+| Pass rate (eval-0)  | 4/5 (80%)  | 5/5 (100%)    | **−20pp** |
+| Pass rate (eval-1)  | 5/5 (100%) | 5/5 (100%)    | 0pp       |
+| Aggregate pass rate | 9/10 (90%) | 10/10 (100%)  | **−10pp** |
+| Tokens (eval-0)     | 55019      | 40076         | +37%      |
+| Tokens (eval-1)     | 51856      | 38798         | +34%      |
+| Wall-time (eval-0)  | 126.2s     | 85.7s         | +47%      |
+| Wall-time (eval-1)  | 78.9s      | 66.2s         | +19%      |
 
 ## Findings
 
@@ -91,7 +91,7 @@ condition answered the prompt independently; outputs graded against
 2. Architect decides SPLIT vs SHRINK vs OBSERVE after seeing
    these numbers.
 3. Ledger row `2026-04-20 (round 42) — Aarav ranked skills by
-   static BP-03 line-count only` gets a progress note but stays
+static BP-03 line-count only` gets a progress note but stays
    open; 4 more static-top-5 candidates still need harness runs.
 
 ## Reference

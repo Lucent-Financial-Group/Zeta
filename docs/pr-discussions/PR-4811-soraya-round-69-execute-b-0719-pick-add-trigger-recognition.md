@@ -57,6 +57,7 @@ Via REST git-data API bypass (dotgit-saturation persists).
 This PR implements the B-0719 Option 1 landing: a per-round “Trigger Recognition Log” in Soraya’s persona NOTEBOOK, and updates the formal-verification skill’s reference patterns to point to that new canonical landing surface for trigger-fired-but-row-not-filed events.
 
 **Changes:**
+
 - Append a `## Trigger Recognition Log` section to `memory/persona/soraya/NOTEBOOK.md` with backfilled rounds 59/66/69 entries.
 - Update `.claude/skills/formal-verification-expert/SKILL.md` to reference the new NOTEBOOK section as the canonical substrate for these events.
 
@@ -64,10 +65,10 @@ This PR implements the B-0719 Option 1 landing: a per-round “Trigger Recogniti
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/soraya/NOTEBOOK.md | Adds the new Trigger Recognition Log section and initial backfill entries. |
-| .claude/skills/formal-verification-expert/SKILL.md | Updates reference patterns to point at the new NOTEBOOK log section. |
+| File                                               | Description                                                                |
+| -------------------------------------------------- | -------------------------------------------------------------------------- |
+| memory/persona/soraya/NOTEBOOK.md                  | Adds the new Trigger Recognition Log section and initial backfill entries. |
+| .claude/skills/formal-verification-expert/SKILL.md | Updates reference patterns to point at the new NOTEBOOK log section.       |
 
 ## Review threads
 

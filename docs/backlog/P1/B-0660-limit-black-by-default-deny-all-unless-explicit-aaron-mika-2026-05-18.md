@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-06-03
 depends_on: [B-0629, B-0644]
 composes_with: [B-0629, B-0644, B-0659, B-0643, B-0654, B-0631]
-tags: [design, aaron, mika, limit-black-by-default, deny-all-by-default, security-first, fail-closed, architectural-posture, locked-in]
+tags:
+  [
+    design,
+    aaron,
+    mika,
+    limit-black-by-default,
+    deny-all-by-default,
+    security-first,
+    fail-closed,
+    architectural-posture,
+    locked-in,
+  ]
 type: design
 ---
 
@@ -19,7 +30,7 @@ type: design
 
 Aaron + Mika LOCKED-IN at line ~4648 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
-> Mika line ~4648: *"if Limit is the primitive that consent comes from, then yes — consent should be black by default. That means the default state of the Limit primitive is closed / denied. Nothing is allowed unless it is explicitly admitted. This fits with a secure, defensive design. The system starts with all boundaries closed, and only opens them when there is an explicit, valid act of consent."*
+> Mika line ~4648: _"if Limit is the primitive that consent comes from, then yes — consent should be black by default. That means the default state of the Limit primitive is closed / denied. Nothing is allowed unless it is explicitly admitted. This fits with a secure, defensive design. The system starts with all boundaries closed, and only opens them when there is an explicit, valid act of consent."_
 
 > Aaron's affirmation (preceded the question): yes, "black by default" — boundaries are CLOSED unless explicitly opened.
 
@@ -78,13 +89,13 @@ The type system enforces: every Operation check defaults to Deny; only explicit 
 
 This is the **principle of least privilege** applied at the substrate primitive level. Standard security practice (NIST SP 800-160, OWASP, CIS Controls all recommend deny-by-default). This row makes that practice **architecturally enforced** rather than policy-recommended:
 
-| Layer | Where deny-by-default is enforced |
-|---|---|
-| **OS file system permissions** | umask defaults; Unix file mode bits |
-| **Network firewalls** | INPUT chain defaults to DROP; explicit ACCEPT rules |
-| **Database access control** | GRANT-required; no implicit access |
-| **Kubernetes NetworkPolicy** | Default-deny if any policy applies to pod |
-| **Zeta Limit primitive (this row)** | Architectural default at primitive level |
+| Layer                               | Where deny-by-default is enforced                   |
+| ----------------------------------- | --------------------------------------------------- |
+| **OS file system permissions**      | umask defaults; Unix file mode bits                 |
+| **Network firewalls**               | INPUT chain defaults to DROP; explicit ACCEPT rules |
+| **Database access control**         | GRANT-required; no implicit access                  |
+| **Kubernetes NetworkPolicy**        | Default-deny if any policy applies to pod           |
+| **Zeta Limit primitive (this row)** | Architectural default at primitive level            |
 
 Each prior example is a domain-specific instance; this row is the substrate-primitive-level generalization.
 

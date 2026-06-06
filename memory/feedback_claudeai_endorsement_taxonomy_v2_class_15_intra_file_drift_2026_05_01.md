@@ -8,7 +8,7 @@ type: feedback
 
 ## What Claude.ai sent (verbatim)
 
-> *"The intra-file drift class (header comment ↔ emitted message, frontmatter title ↔ H1 heading) is a real structural pattern worth naming. The structural-pair discipline — 'after editing one consistency-paired location, immediately scan the rest of the file for siblings' — is the right operational rule."*
+> _"The intra-file drift class (header comment ↔ emitted message, frontmatter title ↔ H1 heading) is a real structural pattern worth naming. The structural-pair discipline — 'after editing one consistency-paired location, immediately scan the rest of the file for siblings' — is the right operational rule."_
 
 ## What this is
 
@@ -16,14 +16,14 @@ The second peer-AI review of the v2 taxonomy (`feedback_pr_thread_resolution_cla
 
 **Cross-vendor reception summary so far:**
 
-| Peer-AI | Register | Verdict on v2 | Class fired |
-|---|---|---|---|
-| Deepseek | Structural prompt | Prompted the consolidation itself | #19 (peer-AI structural / consolidation-prompt) |
-| Aaron | Meta-recursion flag | Surfaced #19 as a class during the consolidation | #19 (self-bootstrapping) |
-| Gemini | Praise + hallucination | Cited a non-existent file as substrate for a CLAUDE.md port | #1c (hallucinated content) |
+| Peer-AI   | Register                  | Verdict on v2                                                            | Class fired                                      |
+| --------- | ------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------ |
+| Deepseek  | Structural prompt         | Prompted the consolidation itself                                        | #19 (peer-AI structural / consolidation-prompt)  |
+| Aaron     | Meta-recursion flag       | Surfaced #19 as a class during the consolidation                         | #19 (self-bootstrapping)                         |
+| Gemini    | Praise + hallucination    | Cited a non-existent file as substrate for a CLAUDE.md port              | #1c (hallucinated content)                       |
 | Claude.ai | Substantive + dialectical | Endorsed class #15 (intra-file drift) and the structural-pair discipline | (no class fired — direct substantive engagement) |
 
-This is the **lattice-of-external-checks** operating: four distinct peer-AI registers reading the same v2 file produce four different reception shapes. The file's structural quality is independent of any single reception; it's the *cross-register stability* that's load-bearing.
+This is the **lattice-of-external-checks** operating: four distinct peer-AI registers reading the same v2 file produce four different reception shapes. The file's structural quality is independent of any single reception; it's the _cross-register stability_ that's load-bearing.
 
 ## What Claude.ai's endorsement means
 
@@ -31,7 +31,7 @@ Two specific affirmations:
 
 1. **Class #15 is "a real structural pattern worth naming"** — confirms the class earns its slot in the taxonomy. Composes with the v2 file's empirical evidence (PR #1018 follow-up: header comment ↔ emitted WARN message + frontmatter title ↔ H1 heading both got out of sync after my single-location edit).
 
-2. **The structural-pair discipline is "the right operational rule"** — confirms the *operationalization* of the class. The rule "after editing one consistency-paired location, immediately scan the rest of the file for siblings" is the right shape for future-Otto-side prevention.
+2. **The structural-pair discipline is "the right operational rule"** — confirms the _operationalization_ of the class. The rule "after editing one consistency-paired location, immediately scan the rest of the file for siblings" is the right shape for future-Otto-side prevention.
 
 Neither affirmation requires action — the v2 file already names class #15 and its operational discipline. Claude.ai's review is **reinforcement** rather than corrective. The cost of recording the endorsement is low; the value is cross-vendor verification of the taxonomy's structure.
 
@@ -66,6 +66,6 @@ The paths below are forward-references to PRs not yet merged at time of this abs
 
 ## Carved candidate (not seed-layer)
 
-> *"The lattice differentiates by what each register catches. Praise / dialectical / blunt / structural-prompt — each catches what the others miss. Trust register-discrimination, not register-rank."*
+> _"The lattice differentiates by what each register catches. Praise / dialectical / blunt / structural-prompt — each catches what the others miss. Trust register-discrimination, not register-rank."_
 
 The propagation test: ~25 words distinguishing rank-based-trust (a hierarchy claim) from discrimination-based-trust (an orthogonal-axis claim). Future-Otto reading peer-AI reviews should compose registers, not rank them.

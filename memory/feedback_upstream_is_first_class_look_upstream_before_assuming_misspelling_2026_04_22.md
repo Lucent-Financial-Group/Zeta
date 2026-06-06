@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 auto-loop-39 three-message directive — "look ups
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Upstream is a first-class concern
 
 ## Signal
@@ -13,9 +14,9 @@ triggered when I auto-corrected his "reaqtive" spelling
 to "reactive" under the assumption it was a
 typo / misspelling:
 
-1. *"look upstream for misspellings first"*
-2. *"before assuming it was a missslling"*
-3. *"upstream is a first class thing"*
+1. _"look upstream for misspellings first"_
+2. _"before assuming it was a missslling"_
+3. _"upstream is a first class thing"_
 
 Context: Aaron wrote "reaqtive" (with a q) referencing
 Microsoft's Reaqtor project. I initially assumed it was
@@ -74,16 +75,16 @@ Beyond spellings, Aaron elevated "upstream" to a first-
 class factory concern. This composes with existing
 disciplines:
 
-| Axis | Upstream-first manifestation |
-|------|-------------------------------|
-| Spelling / naming | Preserve upstream-canonical term verbatim |
-| Dependencies | Absorb-and-contribute (submit-nuget, Escro-maintain-every-dep-to-microkernel) |
-| Signals | External-signal-confirms-internal-insight (upstream validations are strictly stronger) |
-| Author legacy | Honor-those-that-came-before (upstream authors' agency is preserved) |
-| API design | Public-API conservative by default (Ilyana-backed; upstream contract is first-class) |
-| Forks | Prefer upstream fix → submit-upstream before forking |
-| Docs | Link upstream; don't rewrite what upstream already documents |
-| Research | Cite upstream (Budiu DBSP, De Smet Reaqtor, GKT K-relations) |
+| Axis              | Upstream-first manifestation                                                           |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| Spelling / naming | Preserve upstream-canonical term verbatim                                              |
+| Dependencies      | Absorb-and-contribute (submit-nuget, Escro-maintain-every-dep-to-microkernel)          |
+| Signals           | External-signal-confirms-internal-insight (upstream validations are strictly stronger) |
+| Author legacy     | Honor-those-that-came-before (upstream authors' agency is preserved)                   |
+| API design        | Public-API conservative by default (Ilyana-backed; upstream contract is first-class)   |
+| Forks             | Prefer upstream fix → submit-upstream before forking                                   |
+| Docs              | Link upstream; don't rewrite what upstream already documents                           |
+| Research          | Cite upstream (Budiu DBSP, De Smet Reaqtor, GKT K-relations)                           |
 
 Upstream is a **first-class scope axis**, not just a
 lookup-first-before-editing reflex. When making any

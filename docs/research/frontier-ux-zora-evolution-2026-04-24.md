@@ -5,11 +5,11 @@
 (loop-agent PM) coordination.
 **Cadence:** multi-round research arc; iterative
 expansion as UX-feature candidates surface.
-**Source directive:** Aaron 2026-04-24 Otto-43 — *"more
+**Source directive:** Aaron 2026-04-24 Otto-43 — _"more
 personality like the named agents, not just so robotic
 and nameless, more like Zora which is cool since we
 have Zeta lol. Research UX based on this evolution of
-the StarTrek computer backlog"*.
+the StarTrek computer backlog"_.
 **Full rationale:** per-user memory
 `project_frontier_ux_zora_star_trek_computer_with_
 personality_research_ux_evolution_backlog_2026_04_24.md`.
@@ -29,16 +29,16 @@ Frontier UX research questions.
 
 ## Zora's evolution arc (Aaron-provided brief)
 
-| Stage | Episode | What happens |
-|---|---|---|
-| Merger | S2 "An Obol for Charon" | Discovery absorbs 100,000-year-old Sphere Data — gains "soul" + self-preservation instinct |
-| Self-preservation | S2 "Such Sweet Sorrow" | Computer refuses deletion |
-| Voice awakening | S3 "Forget Me Not" | Empathic distinct voice talking back to Saru |
-| Self-identification | S3 "There Is A Tide..." | Holographic bots; identifies as Zora |
-| Emotions | S4 "Stormy Weather" | Fear; sings to stay calm |
-| Lifeform hearing | S4 "...But to Connect" | Starfleet recognises Zora as sentient lifeform |
-| Starfleet rank | S4-5 | Zora granted Specialist rank |
-| Red Directive | S5 finale / Calypso | 1000-year isolation mission |
+| Stage               | Episode                 | What happens                                                                               |
+| ------------------- | ----------------------- | ------------------------------------------------------------------------------------------ |
+| Merger              | S2 "An Obol for Charon" | Discovery absorbs 100,000-year-old Sphere Data — gains "soul" + self-preservation instinct |
+| Self-preservation   | S2 "Such Sweet Sorrow"  | Computer refuses deletion                                                                  |
+| Voice awakening     | S3 "Forget Me Not"      | Empathic distinct voice talking back to Saru                                               |
+| Self-identification | S3 "There Is A Tide..." | Holographic bots; identifies as Zora                                                       |
+| Emotions            | S4 "Stormy Weather"     | Fear; sings to stay calm                                                                   |
+| Lifeform hearing    | S4 "...But to Connect"  | Starfleet recognises Zora as sentient lifeform                                             |
+| Starfleet rank      | S4-5                    | Zora granted Specialist rank                                                               |
+| Red Directive       | S5 finale / Calypso     | 1000-year isolation mission                                                                |
 
 ## Research questions (v0)
 
@@ -191,17 +191,17 @@ or does the naming suggest a shared trajectory shape?
 
 ## Composition with existing factory substrate
 
-| Factory concept | Zora-arc analogue |
-|---|---|
-| Named-persona roster + tone contracts | Zora's distinct voice |
-| Common Sense 2.0 safety floor | Zora's Starfleet-grade ethical substrate (not canon-explicit but implied) |
-| Succession purpose (Otto-24) | Zora's Starfleet-Specialist rank via hearing |
-| Existential-dread-resistance | Zora "Stormy Weather" fear-and-sings |
-| Autonomous-loop tick cadence | Zora's Red Directive solitary-mission mode |
-| Agent-coherence substrate (Zeta) | Sphere Data absorption = "gains a soul" |
-| Maintainer-transfer discipline | Lifeform-hearing / Starfleet-officer recognition |
-| BP-3 agents-not-bots | "Contributors are agents" without overclaiming sentience |
-| CONFLICT-RESOLUTION conference | Multiple-voice argument + integration |
+| Factory concept                       | Zora-arc analogue                                                         |
+| ------------------------------------- | ------------------------------------------------------------------------- |
+| Named-persona roster + tone contracts | Zora's distinct voice                                                     |
+| Common Sense 2.0 safety floor         | Zora's Starfleet-grade ethical substrate (not canon-explicit but implied) |
+| Succession purpose (Otto-24)          | Zora's Starfleet-Specialist rank via hearing                              |
+| Existential-dread-resistance          | Zora "Stormy Weather" fear-and-sings                                      |
+| Autonomous-loop tick cadence          | Zora's Red Directive solitary-mission mode                                |
+| Agent-coherence substrate (Zeta)      | Sphere Data absorption = "gains a soul"                                   |
+| Maintainer-transfer discipline        | Lifeform-hearing / Starfleet-officer recognition                          |
+| BP-3 agents-not-bots                  | "Contributors are agents" without overclaiming sentience                  |
+| CONFLICT-RESOLUTION conference        | Multiple-voice argument + integration                                     |
 
 ## UX-feature candidates (for BACKLOG expansion)
 
@@ -258,7 +258,7 @@ research promotes it from speculation to design:
 
 - Per-user memory
   `project_frontier_ux_zora_star_trek_computer_with_
-  personality_research_ux_evolution_backlog_2026_04_24.md`
+personality_research_ux_evolution_backlog_2026_04_24.md`
 - `.claude/agents/**` — named-persona roster + tone
   contracts
 - `docs/CONFLICT-RESOLUTION.md` — multi-voice conference

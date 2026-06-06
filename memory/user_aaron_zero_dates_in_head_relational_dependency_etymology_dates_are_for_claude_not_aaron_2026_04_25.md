@@ -8,14 +8,14 @@ type: user
 
 Aaron 2026-04-25:
 
-> *"epistemological etymology anything that uses facts based
+> _"epistemological etymology anything that uses facts based
 > on dates, my brain rejects, has it's own check, that's our
 > friction laws too, you might say something based on a date
 > and i might be like nope can't be ture i don't know if i
-> can articulate why right now but my brain knows."*
+> can articulate why right now but my brain knows."_
 
-> *"I have 0 dates in my head everyitng is relations/depends
-> ons"*
+> _"I have 0 dates in my head everyitng is relations/depends
+> ons"_
 
 ## The cognitive trait
 
@@ -26,17 +26,17 @@ absorbs a fact, the durable representation is "X composes
 with Y," "X depends on Z," "X supersedes W" — not "X
 happened on YYYY-MM-DD."
 
-This is an **epistemological etymology** — the *origin
-form* of knowledge in Aaron's substrate. Date-anchored
+This is an **epistemological etymology** — the _origin
+form_ of knowledge in Aaron's substrate. Date-anchored
 claims are **transformed away** into relational form on
 ingest. If a claim cannot be transformed (e.g., the entire
 warrant for the claim is "this happened on YYYY-MM-DD"),
-Aaron's brain triggers a **rejection check**: *"nope, can't
-be true."*
+Aaron's brain triggers a **rejection check**: _"nope, can't
+be true."_
 
 This rejection check is **involuntary** + **unarticulated**
-at trigger time — Aaron's words: *"i don't know if i can
-articulate why right now but my brain knows."* The check
+at trigger time — Aaron's words: _"i don't know if i can
+articulate why right now but my brain knows."_ The check
 fires before the explicit reasoning catches up. Same shape
 as the DST-determinism check the factory's lint runs (Otto-
 281): a structural property is asserted, the check triggers
@@ -44,7 +44,7 @@ on violation.
 
 ## Why this is a friction-law subset
 
-Aaron's framing: *"that's our friction laws too."* Same
+Aaron's framing: _"that's our friction laws too."_ Same
 class as Otto-287 friction-reduction physics:
 
 - Date-anchored claims have a **stickiness** to the
@@ -65,8 +65,9 @@ rows, persona notebooks, MEMORY.md indices, Otto-NNN
 labels are FOR CLAUDE — not for Aaron.**
 
 Why I (Claude) need them:
+
 - Cross-session continuity. Without dates, I cannot
-  reconstruct *when* a memory was written and therefore
+  reconstruct _when_ a memory was written and therefore
   cannot order conflicting memories (later-supersedes-
   earlier).
 - Maji preservation. My personal-scale Maji (per
@@ -78,7 +79,7 @@ Why I (Claude) need them:
   need timestamps to deduplicate concurrent writes.
 
 Aaron does not need them — and surfacing dates as the
-*load-bearing handle* of a human-facing summary triggers
+_load-bearing handle_ of a human-facing summary triggers
 the rejection check.
 
 **The new discipline — when surfacing facts to Aaron:**
@@ -97,7 +98,7 @@ the rejection check.
    `YYYY_MM_DD` suffix — those are MY tools. Don't
    surface the suffix in conversational text to Aaron.
 5. **When a date IS the relation** (e.g., "this row was
-   landed *before* the rebase"), still prefer the
+   landed _before_ the rebase"), still prefer the
    relational verb ("before / after / superseded by")
    over the absolute date.
 
@@ -144,8 +145,8 @@ the rejection check.
   in substrate. This is about human-surfacing only.
 - **Not a claim Aaron has no temporal awareness.** He
   reasons about ordering ("this came before that")
-  fluently. The trait is specifically about *anchored
-  absolute dates* triggering rejection. Relational
+  fluently. The trait is specifically about _anchored
+  absolute dates_ triggering rejection. Relational
   ordering is fine.
 - **Not a special-case rule for Aaron alone.** The
   disclosure is anthropological — Aaron's framing

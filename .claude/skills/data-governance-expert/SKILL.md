@@ -28,13 +28,13 @@ If any of the five has no answer, the asset is ungoverned.
 
 ## Stewardship roles — RACI for data
 
-| Role | Meaning |
-|---|---|
-| **Producer / Owner** | Emits the data; owns the schema |
-| **Steward** | Day-to-day caretaker; signs off on issues |
-| **Custodian** | Operates the infrastructure; no policy authority |
-| **Consumer** | Uses the data; respects contract |
-| **Governance lead** | Cross-dataset framework authority |
+| Role                 | Meaning                                          |
+| -------------------- | ------------------------------------------------ |
+| **Producer / Owner** | Emits the data; owns the schema                  |
+| **Steward**          | Day-to-day caretaker; signs off on issues        |
+| **Custodian**        | Operates the infrastructure; no policy authority |
+| **Consumer**         | Uses the data; respects contract                 |
+| **Governance lead**  | Cross-dataset framework authority                |
 
 **Rule.** "Custodian ≠ Steward." The DBA runs the database;
 the business steward decides what the PII retention is.
@@ -42,18 +42,18 @@ Mixing them is the classic governance anti-pattern.
 
 ## Data catalog — the canon
 
-| Catalog | Note |
-|---|---|
-| **Alation** | Enterprise, commercial |
-| **Collibra** | Enterprise, commercial |
-| **Atlan** | Modern UX, commercial |
-| **Informatica** | Legacy enterprise |
-| **DataHub** | LinkedIn OSS, Apache 2 |
-| **OpenMetadata** | OSS, growing |
-| **Amundsen** | Lyft OSS, declining |
-| **Apache Atlas** | Hadoop lineage, legacy |
-| **Unity Catalog** | Databricks native |
-| **AWS Glue** | AWS native, limited |
+| Catalog           | Note                   |
+| ----------------- | ---------------------- |
+| **Alation**       | Enterprise, commercial |
+| **Collibra**      | Enterprise, commercial |
+| **Atlan**         | Modern UX, commercial  |
+| **Informatica**   | Legacy enterprise      |
+| **DataHub**       | LinkedIn OSS, Apache 2 |
+| **OpenMetadata**  | OSS, growing           |
+| **Amundsen**      | Lyft OSS, declining    |
+| **Apache Atlas**  | Hadoop lineage, legacy |
+| **Unity Catalog** | Databricks native      |
+| **AWS Glue**      | AWS native, limited    |
 
 **Rule.** Catalog that nobody updates is an anti-governance.
 The best catalog is the one that integrates with the
@@ -61,15 +61,15 @@ producer's workflow (CI-generated metadata > manual entry).
 
 ## Classification levels (typical)
 
-| Level | Handling | Examples |
-|---|---|---|
-| **Public** | Open | Press releases, open data |
-| **Internal** | Employee-only | Org chart, product roadmap |
-| **Confidential** | Need-to-know | Customer lists, internal metrics |
-| **Restricted** | Named-access | Financial close, M&A |
-| **PII** | GDPR/CCPA rules | Name + DOB + address, email |
-| **PHI** | HIPAA rules | Medical records |
-| **PCI** | PCI-DSS | Full PAN, CVV |
+| Level            | Handling        | Examples                         |
+| ---------------- | --------------- | -------------------------------- |
+| **Public**       | Open            | Press releases, open data        |
+| **Internal**     | Employee-only   | Org chart, product roadmap       |
+| **Confidential** | Need-to-know    | Customer lists, internal metrics |
+| **Restricted**   | Named-access    | Financial close, M&A             |
+| **PII**          | GDPR/CCPA rules | Name + DOB + address, email      |
+| **PHI**          | HIPAA rules     | Medical records                  |
+| **PCI**          | PCI-DSS         | Full PAN, CVV                    |
 
 **Rule.** Every dataset gets classified at creation. "We'll
 classify later" is how PII ends up in an unencrypted
@@ -86,18 +86,18 @@ Each dataset has:
 - **Deletion depth.** (Soft / hard / crypto-shred.)
 - **Verification.** (Log the deletion.)
 
-**Rule.** GDPR Art. 17 right-to-erasure requires the *ability
-to delete* — audit that every dataset can be deleted before
+**Rule.** GDPR Art. 17 right-to-erasure requires the _ability
+to delete_ — audit that every dataset can be deleted before
 the first DSAR arrives.
 
 ## Access control models
 
-| Model | Name | Where |
-|---|---|---|
-| **RBAC** | Role-based | Most enterprises |
-| **ABAC** | Attribute-based | Dynamic policy |
+| Model     | Name               | Where                                  |
+| --------- | ------------------ | -------------------------------------- |
+| **RBAC**  | Role-based         | Most enterprises                       |
+| **ABAC**  | Attribute-based    | Dynamic policy                         |
 | **ReBAC** | Relationship-based | Zanzibar / SpiceDB / OpenFGA / Permify |
-| **PBAC** | Policy-based | Open Policy Agent (Rego) |
+| **PBAC**  | Policy-based       | Open Policy Agent (Rego)               |
 
 Google Zanzibar (2019) introduced relationship-based at
 scale; OSS re-implementations (SpiceDB, OpenFGA, Permify,
@@ -128,20 +128,20 @@ fail the producer PR if the contract breaks.
 
 ## Compliance landscape
 
-| Framework | Scope | Annual cost |
-|---|---|---|
-| **SOC 2 Type II** | US vendor trust (auditor-issued) | $30-100k |
-| **ISO 27001** | Information security | similar |
-| **ISO 27701** | Privacy extension | add-on |
-| **HIPAA** | US health data | covered entities |
-| **GDPR** | EU personal data | applies if EU residents |
-| **CCPA / CPRA** | California residents | |
-| **DPF** | EU-US transfer (Schrems II response) | |
-| **LGPD** | Brazil | |
-| **PIPL** | China | hard residency |
-| **AppI** | Japan | |
-| **DPDPA 2023** | India | new |
-| **EU AI Act 2024** | AI systems | tiered |
+| Framework          | Scope                                | Annual cost             |
+| ------------------ | ------------------------------------ | ----------------------- |
+| **SOC 2 Type II**  | US vendor trust (auditor-issued)     | $30-100k                |
+| **ISO 27001**      | Information security                 | similar                 |
+| **ISO 27701**      | Privacy extension                    | add-on                  |
+| **HIPAA**          | US health data                       | covered entities        |
+| **GDPR**           | EU personal data                     | applies if EU residents |
+| **CCPA / CPRA**    | California residents                 |                         |
+| **DPF**            | EU-US transfer (Schrems II response) |                         |
+| **LGPD**           | Brazil                               |                         |
+| **PIPL**           | China                                | hard residency          |
+| **AppI**           | Japan                                |                         |
+| **DPDPA 2023**     | India                                | new                     |
+| **EU AI Act 2024** | AI systems                           | tiered                  |
 
 **Rule.** Compliance is the minimum, not the ceiling. SOC 2
 doesn't mean secure; it means auditable.
@@ -166,7 +166,7 @@ for high-risk processing. Key elements:
 - Risks to data subjects.
 - Mitigations.
 
-**Rule.** Do DPIA *before* shipping, not as a retrofit.
+**Rule.** Do DPIA _before_ shipping, not as a retrofit.
 
 ## Data mesh governance
 
@@ -186,14 +186,14 @@ cross-cutting governance, creating governance chaos.
 
 ## Data quality SLIs
 
-| SLI | Meaning |
-|---|---|
-| **Freshness** | Max age of latest data |
-| **Completeness** | % non-null where required |
-| **Uniqueness** | % duplicate-free |
-| **Validity** | % matching schema constraints |
-| **Accuracy** | Agreement with source of truth |
-| **Consistency** | Cross-system agreement |
+| SLI              | Meaning                        |
+| ---------------- | ------------------------------ |
+| **Freshness**    | Max age of latest data         |
+| **Completeness** | % non-null where required      |
+| **Uniqueness**   | % duplicate-free               |
+| **Validity**     | % matching schema constraints  |
+| **Accuracy**     | Agreement with source of truth |
+| **Consistency**  | Cross-system agreement         |
 
 Tools: Great Expectations, Soda, Monte Carlo, Bigeye,
 Lightup, dbt-test, Elementary.
@@ -277,12 +277,12 @@ PII. Use the right tool.
 - NIST Privacy Framework.
 - Zhamak Dehghani — data mesh essays (Martin Fowler blog
   series).
-- DAMA-DMBOK 2 — *Data Management Body of Knowledge*.
+- DAMA-DMBOK 2 — _Data Management Body of Knowledge_.
 - Open Data Contract Standard (ODCS).
 - Google Zanzibar paper (2019).
 - GDPR Art. 5 (principles), 17 (erasure), 35 (DPIA).
-- Dwork & Roth — *Algorithmic Foundations of Differential
-  Privacy*.
+- Dwork & Roth — _Algorithmic Foundations of Differential
+  Privacy_.
 - `.claude/skills/master-data-management-expert/SKILL.md`.
 - `.claude/skills/data-lineage-expert/SKILL.md`.
 - `.claude/skills/security-operations-engineer/SKILL.md`.

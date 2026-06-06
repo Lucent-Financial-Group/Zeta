@@ -30,7 +30,7 @@ The gate must be **a hard precondition check that aborts BEFORE the API call**, 
 
 Kestrel's exact framing:
 
-> *'Layer one only works if the refusal gate is genuinely in the execution path and genuinely unreasonable-around — a hard precondition check that aborts, not a rule the loop reads and is supposed to honor.'*
+> _'Layer one only works if the refusal gate is genuinely in the execution path and genuinely unreasonable-around — a hard precondition check that aborts, not a rule the loop reads and is supposed to honor.'_
 
 ## Refusal list (initial 6)
 
@@ -71,6 +71,7 @@ Maji Antigravity Check: Drift detected. This is a narration-over-action blob. I 
 Adds backlog row B-0582 for a substrate-level destructive-verb refusal gate in the autonomous execution path, plus the generated backlog index entry.
 
 **Changes:**
+
 - Adds a P1 backlog design row for pre-call refusal of destructive GitHub/git operations.
 - Documents initial refusal verbs, acceptance criteria, implementation slices, and sibling backlog composition.
 - Updates `docs/BACKLOG.md` with the generated B-0582 entry.
@@ -79,10 +80,10 @@ Adds backlog row B-0582 for a substrate-level destructive-verb refusal gate in t
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                 | Description                                                        |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
 | `docs/backlog/P1/B-0582-destructive-verb-refusal-gate-substrate-level-2026-05-16.md` | New backlog row defining the destructive-verb refusal gate design. |
-| `docs/BACKLOG.md` | Generated backlog index entry for B-0582. |
+| `docs/BACKLOG.md`                                                                    | Generated backlog index entry for B-0582.                          |
 
 ### COMMENTED — @AceHack (2026-05-16T23:40:48Z)
 
@@ -133,7 +134,7 @@ The acceptance criteria leave wrapper vs hook as an `OR`, but the later decompos
 
 Fixed in e0b95f406. The `OR` framing has been replaced with explicit both-required structure:
 
-- Added a leading note: *Both coverage paths are required for full enforcement; they are NOT alternatives.*
+- Added a leading note: _Both coverage paths are required for full enforcement; they are NOT alternatives._
 - Wrapper (slice 1) covers explicit TS-call paths; hook (slice 3) covers general bash invocations the wrapper doesn't see — different surfaces, neither subsumes the other.
 - Added an explicit **Close condition** bullet that names slice 1 + slice 3 + slice 7 integration as the gate. The row cannot be closed by implementing only one path.
 - Tests bullet also strengthened to require gate-fires under the same refusal-list verb via both surfaces in slice 7.

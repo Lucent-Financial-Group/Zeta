@@ -72,6 +72,7 @@ fit this shape:
 
 ```markdown
 ## Ask
+
 - id: ask-YYYYMMDDTHHMMSSZ-<from>-<slug>
 - from: <otto|vera|riven|human>
 - to: <otto|vera|riven|any>
@@ -98,6 +99,7 @@ actionable, blocked, or declined:
 
 ```markdown
 ## Receipt
+
 - ask_id: ask-YYYYMMDDTHHMMSSZ-<from>-<slug>
 - from: <otto|vera|riven>
 - status: accepted|declined|blocked|done
@@ -168,6 +170,7 @@ backlog item. The broadcast should then link the remote artifact.
 
 ```markdown
 ## Ask
+
 - id: ask-20260506T190300Z-riven-tier1-forward
 - from: riven
 - to: otto|vera
@@ -186,6 +189,7 @@ Expected receipt:
 
 ```markdown
 ## Receipt
+
 - ask_id: ask-20260506T190300Z-riven-tier1-forward
 - from: otto
 - status: done

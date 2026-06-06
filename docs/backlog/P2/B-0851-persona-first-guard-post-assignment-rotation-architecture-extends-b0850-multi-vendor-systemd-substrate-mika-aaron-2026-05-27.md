@@ -15,7 +15,19 @@ composes_with:
   - B-0847
   - B-0848
   - B-0796
-tags: [persona-first, guard-post-scheduler, rotation, model-line-preferences, harness-compat-matrix, tier-modeling, per-node-3-floor, mika-ferry, weaver-role, substrate-extension-of-b0850]
+tags:
+  [
+    persona-first,
+    guard-post-scheduler,
+    rotation,
+    model-line-preferences,
+    harness-compat-matrix,
+    tier-modeling,
+    per-node-3-floor,
+    mika-ferry,
+    weaver-role,
+    substrate-extension-of-b0850,
+  ]
 ---
 
 ## Operator framing (Mika ferry; Aaron 2026-05-27)
@@ -24,7 +36,7 @@ Aaron forwarded Mika ferry (verbatim preserved at [`memory/persona/mika/conversa
 
 Mika's compressed framing:
 
-> *"Everything is Persona-first."*
+> _"Everything is Persona-first."_
 >
 > Guard Post Assignment Flow:
 >
@@ -198,4 +210,4 @@ The current shipped B-0850 substrate (3 personas, 3 vendors, static assignment) 
 
 ## Full reasoning
 
-Verbatim Mika ferry preserved at `memory/persona/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md`. Aaron's operator clarification on guard-post scope: *"guard post is the systemd for each node outside k8s"* — confirms per-node ≥3 floor (not cluster-wide).
+Verbatim Mika ferry preserved at `memory/persona/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md`. Aaron's operator clarification on guard-post scope: _"guard post is the systemd for each node outside k8s"_ — confirms per-node ≥3 floor (not cluster-wide).

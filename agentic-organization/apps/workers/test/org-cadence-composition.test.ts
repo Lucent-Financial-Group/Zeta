@@ -69,10 +69,7 @@ test("org cadence composition can disable legacy work-os and run the observe-act
   await handle.done;
 
   ok(records.some((record) => record.lane === "observe-act-work-item"));
-  ok(records.some((record) =>
-    record.lane === "work-os" &&
-    record.status === "work-os:observe-act-primary-suppressed"
-  ));
+  ok(records.some((record) => record.lane === "work-os" && record.status === "work-os:observe-act-primary-suppressed"));
   equal(legacyIntakeCalls, 0);
   equal(observeActCommands, 1);
 });
@@ -112,7 +109,9 @@ test("org cadence production observe-act source supplies team and supervisor ass
 
   equal(records.find((record) => record.lane === "observe-act-work-item")?.status, "observe-act:command:accepted");
   equal(commands[0]?.commandType, "send_supervisor_signal");
-  const command = commands[0]?.command as { targetHatAssignmentId?: string; policyContext?: { scope?: { teamId?: string } } } | undefined;
+  const command = commands[0]?.command as
+    | { targetHatAssignmentId?: string; policyContext?: { scope?: { teamId?: string } } }
+    | undefined;
   equal(command?.targetHatAssignmentId, "101");
   equal(command?.policyContext?.scope?.teamId, "team-runtime");
 });
@@ -204,10 +203,12 @@ test("org cadence composition shadow mode observes selected slots without dispat
   await handle.done;
 
   ok(records.some((record) => record.lane === "work-os"));
-  ok(records.some((record) =>
-    record.lane === "observe-act-work-item" &&
-    record.status === "observe-act-shadow:command:shadow_selected"
-  ));
+  ok(
+    records.some(
+      (record) =>
+        record.lane === "observe-act-work-item" && record.status === "observe-act-shadow:command:shadow_selected",
+    ),
+  );
   equal(legacyIntakeCalls, 1);
   equal(observeActCommands, 0);
 });
@@ -262,14 +263,12 @@ test("org cadence promotion gate promotes a clean shadow window to observe-act p
 
   await handle.done;
 
-  ok(records.some((record) =>
-    record.lane === "observe-act-work-item" &&
-    record.status === "observe-act:command:accepted"
-  ));
-  ok(records.some((record) =>
-    record.lane === "work-os" &&
-    record.status === "work-os:observe-act-primary-suppressed"
-  ));
+  ok(
+    records.some(
+      (record) => record.lane === "observe-act-work-item" && record.status === "observe-act:command:accepted",
+    ),
+  );
+  ok(records.some((record) => record.lane === "work-os" && record.status === "work-os:observe-act-primary-suppressed"));
   equal(legacyIntakeCalls, 0);
   equal(observeActCommands, 1);
 });
@@ -324,14 +323,12 @@ test("org cadence promotion gate can promote from a rolling window source", asyn
 
   await handle.done;
 
-  ok(records.some((record) =>
-    record.lane === "observe-act-work-item" &&
-    record.status === "observe-act:command:accepted"
-  ));
-  ok(records.some((record) =>
-    record.lane === "work-os" &&
-    record.status === "work-os:observe-act-primary-suppressed"
-  ));
+  ok(
+    records.some(
+      (record) => record.lane === "observe-act-work-item" && record.status === "observe-act:command:accepted",
+    ),
+  );
+  ok(records.some((record) => record.lane === "work-os" && record.status === "work-os:observe-act-primary-suppressed"));
   equal(legacyIntakeCalls, 0);
   equal(observeActCommands, 1);
 });
@@ -387,10 +384,12 @@ test("org cadence promotion gate demotes unsafe primary windows to shadow", asyn
   await handle.done;
 
   ok(records.some((record) => record.lane === "work-os"));
-  ok(records.some((record) =>
-    record.lane === "observe-act-work-item" &&
-    record.status === "observe-act-shadow:command:shadow_selected"
-  ));
+  ok(
+    records.some(
+      (record) =>
+        record.lane === "observe-act-work-item" && record.status === "observe-act-shadow:command:shadow_selected",
+    ),
+  );
   equal(legacyIntakeCalls, 1);
   equal(observeActCommands, 0);
 });
@@ -438,10 +437,12 @@ test("org cadence promotion gate fails closed when primary mode has no promotion
   await handle.done;
 
   ok(records.some((record) => record.lane === "work-os"));
-  ok(records.some((record) =>
-    record.lane === "observe-act-work-item" &&
-    record.status === "observe-act-shadow:command:shadow_selected"
-  ));
+  ok(
+    records.some(
+      (record) =>
+        record.lane === "observe-act-work-item" && record.status === "observe-act-shadow:command:shadow_selected",
+    ),
+  );
   equal(legacyIntakeCalls, 1);
   equal(observeActCommands, 0);
 });
@@ -489,10 +490,12 @@ test("org cadence promotion gate fails closed for compatibility observe-act mode
   await handle.done;
 
   ok(records.some((record) => record.lane === "work-os"));
-  ok(records.some((record) =>
-    record.lane === "observe-act-work-item" &&
-    record.status === "observe-act-shadow:command:shadow_selected"
-  ));
+  ok(
+    records.some(
+      (record) =>
+        record.lane === "observe-act-work-item" && record.status === "observe-act-shadow:command:shadow_selected",
+    ),
+  );
   equal(legacyIntakeCalls, 1);
   equal(observeActCommands, 0);
 });
@@ -528,18 +531,17 @@ test("org cadence composition passes telemetry through every composed lane", asy
   equal(telemetry.metrics.filter((metric) => metric.name === "org_lane_ticks_total").length, expectedLanes.length);
   for (const lane of expectedLanes) {
     ok(
-      telemetry.spans.some((span) =>
-        span.name === "org.lane.tick" &&
-        span.ended &&
-        span.attributes["agentic.lane"] === lane,
+      telemetry.spans.some(
+        (span) => span.name === "org.lane.tick" && span.ended && span.attributes["agentic.lane"] === lane,
       ),
       `missing org.lane.tick span for ${lane}`,
     );
     ok(
-      telemetry.metrics.some((metric) =>
-        metric.kind === TelemetryMetricKind.Counter &&
-        metric.name === "org_lane_ticks_total" &&
-        metric.attributes?.["agentic.lane"] === lane,
+      telemetry.metrics.some(
+        (metric) =>
+          metric.kind === TelemetryMetricKind.Counter &&
+          metric.name === "org_lane_ticks_total" &&
+          metric.attributes?.["agentic.lane"] === lane,
       ),
       `missing org_lane_ticks_total metric for ${lane}`,
     );
@@ -568,15 +570,17 @@ test("org cadence control-plane ESTOP blocks work lanes while control lanes keep
       primaryControlBypassRejections30m: 0,
     },
     controlPlane: {
-      flags: [{
-        controlPlaneFlagId: "flag-estop",
-        organizationId: "org-lfg",
-        scope: { kind: ControlPlaneScopeKind.Organization },
-        flag: ControlPlaneFlagKind.Estop,
-        reason: "operator estop",
-        setByHatId: "incident_commander",
-        setAt: "2026-05-31T11:59:00.000Z",
-      }],
+      flags: [
+        {
+          controlPlaneFlagId: "flag-estop",
+          organizationId: "org-lfg",
+          scope: { kind: ControlPlaneScopeKind.Organization },
+          flag: ControlPlaneFlagKind.Estop,
+          reason: "operator estop",
+          setByHatId: "incident_commander",
+          setAt: "2026-05-31T11:59:00.000Z",
+        },
+      ],
     },
     observeActWorkItems: async () => {
       throw new Error("observe-act source should not run under ESTOP");
@@ -610,24 +614,30 @@ function createEmptyCockroachExecutor(): CockroachGenericSqlExecutor {
   };
 }
 
-function createObserveActEscalationCockroachExecutor(options: {
-  staleFirst?: boolean;
-  projectWideSupervisor?: boolean;
-  supervisorSql?: string[];
-} = {}): CockroachGenericSqlExecutor {
+function createObserveActEscalationCockroachExecutor(
+  options: {
+    staleFirst?: boolean;
+    projectWideSupervisor?: boolean;
+    supervisorSql?: string[];
+  } = {},
+): CockroachGenericSqlExecutor {
   const now = "2026-05-31T12:00:00.000Z";
   return {
     execute: async (statement) => {
       if (statement.name === "claimable_observe_act_work_item") {
         return sqlRows([
-          ...(options.staleFirst ? [{
-            work_item_id: "work-stale",
-            project_id: "project-1",
-            state: WorkItemState.Ready,
-            version: 6,
-            created_by_agent_id: "agent-stale-1",
-            created_by_hat_assignment_id: "999",
-          }] : []),
+          ...(options.staleFirst
+            ? [
+                {
+                  work_item_id: "work-stale",
+                  project_id: "project-1",
+                  state: WorkItemState.Ready,
+                  version: 6,
+                  created_by_agent_id: "agent-stale-1",
+                  created_by_hat_assignment_id: "999",
+                },
+              ]
+            : []),
           {
             work_item_id: "work-1",
             project_id: "project-1",
@@ -642,7 +652,8 @@ function createObserveActEscalationCockroachExecutor(options: {
         if (statement.parameters[0] === "999") {
           return sqlRows([]);
         }
-        return sqlRows([{
+        return sqlRows([
+          {
             hat_assignment_id: "100",
             hat_id: "dependency_manager",
             organization_id: "org-lfg",
@@ -650,14 +661,16 @@ function createObserveActEscalationCockroachExecutor(options: {
             team_id: "team-runtime",
             assigned_agent_id: "agent-dependency-1",
             state: HatAssignmentAuthorityState.Active,
-          }]);
+          },
+        ]);
       }
       if (statement.name === "find_active_observe_act_supervisor_hat_assignment") {
         options.supervisorSql?.push(statement.sql);
         return sqlRows([{ hat_assignment_id: options.projectWideSupervisor ? "101-project-wide" : "101" }]);
       }
       if (statement.name === "find_authorizing_schedule_blocks") {
-        return sqlRows([{
+        return sqlRows([
+          {
             work_schedule_block_id: "schedule-1",
             organization_id: "org-lfg",
             project_id: "project-1",
@@ -680,7 +693,8 @@ function createObserveActEscalationCockroachExecutor(options: {
             correlation_id: "corr-1",
             causation_id: "cause-1",
             trace_id: "trace-1",
-          }]);
+          },
+        ]);
       }
       return sqlRows([]);
     },

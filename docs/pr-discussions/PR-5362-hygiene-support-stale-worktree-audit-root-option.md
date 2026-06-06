@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add `--root PATH` to `audit-stale-worktrees` so callers can inspect a control clone without changing cwd
 - route list/prune through `git -C <root>` and cover argument parsing
 - handle `spawnSync` launch errors explicitly in `audit()` + `runPrune()` (per Copilot review on this PR)
@@ -25,6 +26,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 - claim was released per AGENT-CLAIM-PROTOCOL.md §TL;DR step 5 (no claim file shipped with this PR; coordination artifact deleted on landing)
 
 ## Checks
+
 - `bun test tools/hygiene/audit-stale-worktrees.test.ts` (12 pass)
 - `bun tools/hygiene/audit-stale-worktrees.ts --root /Users/acehack/.local/share/zeta-codex-loop/Zeta`
 - `bun tools/hygiene/audit-stale-worktrees.ts --root /tmp/__nonexistent` → exit 128 with clean error
@@ -42,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a `--root PATH` option to the stale worktree audit tool so callers can audit a specific repo without changing the current working directory, routing `list`/`prune` through `git -C <root>` and adding argument-parsing tests.
 
 **Changes:**
+
 - Add `--root PATH` CLI flag and thread it through `git worktree list/prune` via `git -C`.
 - Export and test `parseArgs` to cover the new flag and combinations with `--report`/`--prune`.
 - Add a new claim file for the work.
@@ -50,18 +53,19 @@ Adds a `--root PATH` option to the stale worktree audit tool so callers can audi
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/hygiene/audit-stale-worktrees.ts | Adds `--root` parsing + `git -C` routing and exports `parseArgs`. |
-| tools/hygiene/audit-stale-worktrees.test.ts | Adds unit tests covering `--root` argument parsing. |
+| File                                                          | Description                                                                |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| tools/hygiene/audit-stale-worktrees.ts                        | Adds `--root` parsing + `git -C` routing and exports `parseArgs`.          |
+| tools/hygiene/audit-stale-worktrees.test.ts                   | Adds unit tests covering `--root` argument parsing.                        |
 | docs/claims/codex-loop-stale-worktree-root-option-20260527.md | Adds a live claim file documenting scope/acceptance checks for this slice. |
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/audit-stale-worktrees.ts:84**
-* P1: `--root`/`--report` consume the next token as a path even when the next token is another flag (e.g. `--root --prune`), which silently mis-parses the CLI and can cause `git -C --prune ...` failures. Treat known flags as missing-value errors to keep behavior predictable.
+
+- P1: `--root`/`--report` consume the next token as a path even when the next token is another flag (e.g. `--root --prune`), which silently mis-parses the CLI and can cause `git -C --prune ...` failures. Treat known flags as missing-value errors to keep behavior predictable.
+
 ```
     if (a === "--root") {
       const next = argv[i + 1];
@@ -74,6 +78,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
       report = next;
       i += 2;
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-27T00:36:43Z)
@@ -112,13 +117,13 @@ P1: Same as above: add the standard `sonarjs/no-os-command-from-path` suppressio
 
 **@copilot-pull-request-reviewer** (2026-05-27T00:13:41Z):
 
-P1: Claim files under `docs/claims/` are intended to be *live* coordination artifacts and should be deleted in the same PR that lands the work (per `docs/AGENT-CLAIM-PROTOCOL.md` §TL;DR step 5 and `docs/claims/README.md`). This PR adds a new claim file but does not release it, which will leave a stale claim on `main` after merge.
+P1: Claim files under `docs/claims/` are intended to be _live_ coordination artifacts and should be deleted in the same PR that lands the work (per `docs/AGENT-CLAIM-PROTOCOL.md` §TL;DR step 5 and `docs/claims/README.md`). This PR adds a new claim file but does not release it, which will leave a stale claim on `main` after merge.
 
 ### Thread 4: tools/hygiene/audit-stale-worktrees.ts:72 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-05-27T00:36:42Z):
 
-`hasFlagValue` only rejects *known* flags as the value for `--root/--report`, so a typo/unknown flag like `--report --verbose` will be silently accepted as a filename instead of producing the expected "Unknown argument" error. Rejecting any dash-prefixed token avoids swallowing flags as values (paths that start with `-` can still be passed with an explicit `./` prefix).
+`hasFlagValue` only rejects _known_ flags as the value for `--root/--report`, so a typo/unknown flag like `--report --verbose` will be silently accepted as a filename instead of producing the expected "Unknown argument" error. Rejecting any dash-prefixed token avoids swallowing flags as values (paths that start with `-` can still be passed with an explicit `./` prefix).
 
 ### Thread 5: tools/hygiene/audit-stale-worktrees.ts:137 (resolved)
 

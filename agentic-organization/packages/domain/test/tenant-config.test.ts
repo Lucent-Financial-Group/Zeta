@@ -13,7 +13,11 @@ import {
 test("the autonomy dial is data: an explicit pin always requires a human", () => {
   const policy = { level: AutonomyLevel.Autonomous, humanGatedStageIds: ["human-qa-signoff"] };
   equal(stageRequiresHuman(policy, "human-qa-signoff"), true, "a pinned stage is human-gated even when autonomous");
-  equal(stageRequiresHuman(policy, "internal-code-review"), false, "an unpinned stage is agent-decided when autonomous");
+  equal(
+    stageRequiresHuman(policy, "internal-code-review"),
+    false,
+    "an unpinned stage is agent-decided when autonomous",
+  );
 });
 
 test("Manual gates every stage; Autonomous gates nothing extra", () => {
@@ -66,7 +70,10 @@ test("layered tenant config can block inherited directives", () => {
     hatId: "code_reviewer",
     layers: [
       layer(ConfigLayerScopeKind.Organization, "org-lfg", { directives: ["use small model"] }),
-      layer(ConfigLayerScopeKind.Hat, "code_reviewer", { blocksInheritedDirectives: true, directives: ["review strictly"] }),
+      layer(ConfigLayerScopeKind.Hat, "code_reviewer", {
+        blocksInheritedDirectives: true,
+        directives: ["review strictly"],
+      }),
     ],
   });
 
@@ -74,16 +81,26 @@ test("layered tenant config can block inherited directives", () => {
 });
 
 test("same-specificity layers resolve deterministically by timestamp, version, then id", () => {
-  const older = layer(ConfigLayerScopeKind.Hat, "code_reviewer", { model: "qwen2:1.5b" }, {
-    layerId: "hat-old",
-    updatedAt: "2026-05-30T00:00:00Z",
-    version: 1,
-  });
-  const newer = layer(ConfigLayerScopeKind.Hat, "code_reviewer", { model: "qwen2:7b" }, {
-    layerId: "hat-new",
-    updatedAt: "2026-05-30T01:00:00Z",
-    version: 2,
-  });
+  const older = layer(
+    ConfigLayerScopeKind.Hat,
+    "code_reviewer",
+    { model: "qwen2:1.5b" },
+    {
+      layerId: "hat-old",
+      updatedAt: "2026-05-30T00:00:00Z",
+      version: 1,
+    },
+  );
+  const newer = layer(
+    ConfigLayerScopeKind.Hat,
+    "code_reviewer",
+    { model: "qwen2:7b" },
+    {
+      layerId: "hat-new",
+      updatedAt: "2026-05-30T01:00:00Z",
+      version: 2,
+    },
+  );
 
   const left = resolveLayeredTenantConfig({
     organizationId: "org-lfg",

@@ -98,80 +98,98 @@ const EMPTY_SYNTHESIS_REQUIREMENT_APPLIES_TO: NormalizedSynthesisRequirementAppl
   workItemIds: [],
 };
 
-const TENANT_CONTEXT_PACK_SYNTHESIS_REQUIREMENT_SETS:
-  Readonly<Record<TenantContextPackSynthesisRequirementSetId, readonly TenantContextPackSynthesisRequirementRule[]>> = {
-    [TenantContextPackSynthesisRequirementSetId.HighStakesReviewCore]: [{
+const TENANT_CONTEXT_PACK_SYNTHESIS_REQUIREMENT_SETS: Readonly<
+  Record<TenantContextPackSynthesisRequirementSetId, readonly TenantContextPackSynthesisRequirementRule[]>
+> = {
+  [TenantContextPackSynthesisRequirementSetId.HighStakesReviewCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.HighStakesReviewModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresHighStakesReviewBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.AwaitingReview],
         scopes: [RunScope.WorkItem],
       },
-    }],
-    [TenantContextPackSynthesisRequirementSetId.ResourceAllocationCore]: [{
+    },
+  ],
+  [TenantContextPackSynthesisRequirementSetId.ResourceAllocationCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.ResourceAllocationModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresResourceAllocationBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.Blocked],
         scopes: [RunScope.Project, RunScope.Initiative],
       },
-    }],
-    [TenantContextPackSynthesisRequirementSetId.PriorityChangeCore]: [{
+    },
+  ],
+  [TenantContextPackSynthesisRequirementSetId.PriorityChangeCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.PriorityChangeModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresPriorityChangeBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.AwaitingGate, RunLifecyclePhase.Blocked],
         scopes: [RunScope.Project, RunScope.Initiative],
       },
-    }],
-    [TenantContextPackSynthesisRequirementSetId.ArchitectureTradeoffCore]: [{
+    },
+  ],
+  [TenantContextPackSynthesisRequirementSetId.ArchitectureTradeoffCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.ArchitectureTradeoffModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresArchitectureTradeoffBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.AwaitingGate, RunLifecyclePhase.AwaitingReview, RunLifecyclePhase.Blocked],
         scopes: [RunScope.WorkItem, RunScope.Project],
       },
-    }],
-    [TenantContextPackSynthesisRequirementSetId.ReleaseReadinessCore]: [{
+    },
+  ],
+  [TenantContextPackSynthesisRequirementSetId.ReleaseReadinessCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.ReleaseReadinessModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresReleaseReadinessBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.AwaitingReview],
         scopes: [RunScope.WorkItem, RunScope.Project],
       },
-    }],
-    [TenantContextPackSynthesisRequirementSetId.SecurityExceptionCore]: [{
+    },
+  ],
+  [TenantContextPackSynthesisRequirementSetId.SecurityExceptionCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.SecurityExceptionModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresSecurityExceptionBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.AwaitingGate, RunLifecyclePhase.Blocked],
         scopes: [RunScope.WorkItem, RunScope.Project],
       },
-    }],
-    [TenantContextPackSynthesisRequirementSetId.CustomerBusinessScopeCore]: [{
+    },
+  ],
+  [TenantContextPackSynthesisRequirementSetId.CustomerBusinessScopeCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.CustomerBusinessScopeModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresCustomerScopeBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.AwaitingGate, RunLifecyclePhase.Blocked],
         scopes: [RunScope.WorkItem, RunScope.Project],
       },
-    }],
-    [TenantContextPackSynthesisRequirementSetId.RuntimeOperationsCore]: [{
+    },
+  ],
+  [TenantContextPackSynthesisRequirementSetId.RuntimeOperationsCore]: [
+    {
       requirementId: TenantSynthesisRequirementId.RuntimeOperationsModelBriefing,
       reason: TenantContextPackSynthesisRequirementReason.TenantRequiresRuntimeOperationsBriefing,
       appliesTo: {
         phases: [RunLifecyclePhase.Failed, RunLifecyclePhase.Blocked],
         scopes: [RunScope.Run, RunScope.WorkItem],
       },
-    }],
-  };
+    },
+  ],
+};
 
-export function listTenantContextPackSynthesisRequirementSetDescriptors():
-  readonly TenantContextPackSynthesisRequirementSetDescriptor[] {
-  return (Object.entries(TENANT_CONTEXT_PACK_SYNTHESIS_REQUIREMENT_SETS) as [
-    TenantContextPackSynthesisRequirementSetId,
-    readonly TenantContextPackSynthesisRequirementRule[],
-  ][]).map(([setId, requirements]) => ({
+export function listTenantContextPackSynthesisRequirementSetDescriptors(): readonly TenantContextPackSynthesisRequirementSetDescriptor[] {
+  return (
+    Object.entries(TENANT_CONTEXT_PACK_SYNTHESIS_REQUIREMENT_SETS) as [
+      TenantContextPackSynthesisRequirementSetId,
+      readonly TenantContextPackSynthesisRequirementRule[],
+    ][]
+  ).map(([setId, requirements]) => ({
     setId,
     requirements: requirements.map(cloneTenantSynthesisRequirementRule),
   }));
@@ -293,8 +311,10 @@ function tenantSynthesisRequirementLayer(
   };
 }
 
-function tenantContextPackSynthesisRequirementPolicy(value: unknown): TenantContextPackSynthesisRequirementPolicy | null {
-  return isRecord(value) ? value as TenantContextPackSynthesisRequirementPolicy : null;
+function tenantContextPackSynthesisRequirementPolicy(
+  value: unknown,
+): TenantContextPackSynthesisRequirementPolicy | null {
+  return isRecord(value) ? (value as TenantContextPackSynthesisRequirementPolicy) : null;
 }
 
 function requirementSetRulesFrom(
@@ -379,8 +399,10 @@ function tenantSynthesisRequirementReason(value: unknown): ContextPackSynthesisR
 
 function tenantSynthesisRequirementSetId(value: unknown): TenantContextPackSynthesisRequirementSetId | null {
   return typeof value === "string" &&
-      Object.values(TenantContextPackSynthesisRequirementSetId).includes(value as TenantContextPackSynthesisRequirementSetId)
-    ? value as TenantContextPackSynthesisRequirementSetId
+    Object.values(TenantContextPackSynthesisRequirementSetId).includes(
+      value as TenantContextPackSynthesisRequirementSetId,
+    )
+    ? (value as TenantContextPackSynthesisRequirementSetId)
     : null;
 }
 
@@ -389,13 +411,15 @@ function requirementApplies(
   request: ContextPackSynthesisRequirementPolicyRequest,
 ): boolean {
   const snapshot = request.request.snapshot;
-  return filterMatches(requirement.appliesTo.hatIds, snapshot.hat.id) &&
+  return (
+    filterMatches(requirement.appliesTo.hatIds, snapshot.hat.id) &&
     filterMatches(requirement.appliesTo.departmentIds, snapshot.hat.departmentId) &&
     filterMatches(requirement.appliesTo.phases, snapshot.phase) &&
     filterMatches(requirement.appliesTo.scopes, snapshot.scope) &&
     filterMatches(requirement.appliesTo.projectIds, snapshot.projectId) &&
     filterMatches(requirement.appliesTo.teamIds, snapshot.teamId) &&
-    filterMatches(requirement.appliesTo.workItemIds, snapshot.workItemId);
+    filterMatches(requirement.appliesTo.workItemIds, snapshot.workItemId)
+  );
 }
 
 function normalizedAppliesTo(
@@ -431,8 +455,8 @@ function tenantConfigLayerMatches(
 }
 
 function compareTenantConfigLayers(left: TenantConfigLayer, right: TenantConfigLayer): number {
-  const specificity = TenantContextPackLayerSpecificity[left.scope.kind] -
-    TenantContextPackLayerSpecificity[right.scope.kind];
+  const specificity =
+    TenantContextPackLayerSpecificity[left.scope.kind] - TenantContextPackLayerSpecificity[right.scope.kind];
   if (specificity !== 0) return specificity;
   const updatedAt = left.updatedAt.localeCompare(right.updatedAt);
   if (updatedAt !== 0) return updatedAt;
@@ -467,24 +491,28 @@ function filterMatches<T extends string>(allowedValues: readonly T[], value: T |
 
 function runLifecyclePhasesFrom(input: readonly string[] | undefined): readonly RunLifecyclePhase[] {
   if (!Array.isArray(input)) return [];
-  return uniqueStrings(input.flatMap((value) =>
-    Object.values(RunLifecyclePhase).includes(value as RunLifecyclePhase) ? [value as RunLifecyclePhase] : []
-  ));
+  return uniqueStrings(
+    input.flatMap((value) =>
+      Object.values(RunLifecyclePhase).includes(value as RunLifecyclePhase) ? [value as RunLifecyclePhase] : [],
+    ),
+  );
 }
 
 function runScopesFrom(input: readonly string[] | undefined): readonly RunScope[] {
   if (!Array.isArray(input)) return [];
-  return uniqueStrings(input.flatMap((value) =>
-    Object.values(RunScope).includes(value as RunScope) ? [value as RunScope] : []
-  ));
+  return uniqueStrings(
+    input.flatMap((value) => (Object.values(RunScope).includes(value as RunScope) ? [value as RunScope] : [])),
+  );
 }
 
 function nonEmptyStrings(input: readonly string[] | undefined): readonly string[] {
   if (!Array.isArray(input)) return [];
-  return uniqueStrings(input.flatMap((value) => {
-    const normalized = optionalString(value);
-    return normalized === undefined ? [] : [normalized];
-  }));
+  return uniqueStrings(
+    input.flatMap((value) => {
+      const normalized = optionalString(value);
+      return normalized === undefined ? [] : [normalized];
+    }),
+  );
 }
 
 function optionalString(value: unknown): string | undefined {

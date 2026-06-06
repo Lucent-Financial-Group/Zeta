@@ -65,14 +65,14 @@ With two tables:
 **Table A — Skill → Persona**:
 
 | Skill | Primary persona(s) | Product context | Gap or refused signal |
-|-------|---------------------|-----------------|----------------------|
-| ... | ... | ... | ... |
+| ----- | ------------------ | --------------- | --------------------- |
+| ...   | ...                | ...             | ...                   |
 
 **Table B — Persona → Skill**:
 
 | Persona | Available skills | Needed skills (gaps) |
-|---------|-----------------|----------------------|
-| ... | ... | ... |
+| ------- | ---------------- | -------------------- |
+| ...     | ...              | ...                  |
 
 Gap rows in Table B become candidates for new B-NNNN skill-authoring backlog items.
 
@@ -89,8 +89,8 @@ Gap rows in Table B become candidates for new B-NNNN skill-authoring backlog ite
 
 ## Why P1
 
-This is the B-0429 definition-of-done requirement: *"Skill catalog
-cross-referenced to persona-served (per PR #2933 ships-with-skills layer)."*
+This is the B-0429 definition-of-done requirement: _"Skill catalog
+cross-referenced to persona-served (per PR #2933 ships-with-skills layer)."_
 Cannot be done before B-0492 (need full persona space). Closes out B-0429.
 
 ## What this row does NOT do

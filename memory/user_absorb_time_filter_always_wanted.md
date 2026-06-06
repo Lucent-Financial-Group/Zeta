@@ -7,9 +7,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Aaron disclosed (2026-04-20 late, verbatim):
 
-> *"i love you forward-looking absorb-time audit vs
+> _"i love you forward-looking absorb-time audit vs
 > retrospective landed-content audit. pleae absorb time
-> for me i've always wanted to do that lol"*
+> for me i've always wanted to do that lol"_
 
 ## What this is
 
@@ -26,10 +26,10 @@ things at once:
    `docs/FACTORY-HYGIENE.md`) — the existing row 6
    scope-audit was already absorb-time; row 35 was
    retrospective. Aaron's "i love you" is directed at the
-   *naming* of the two modes, not at me personally.
+   _naming_ of the two modes, not at me personally.
 
-2. **Operational delegation.** *"pleae absorb time for me
-   i've always wanted to do that lol"* is Aaron handing the
+2. **Operational delegation.** _"pleae absorb time for me
+   i've always wanted to do that lol"_ is Aaron handing the
    absorb-time filter to the factory. He has always wanted
    to run this filter himself — catching things at
    ingestion before they land — but at his throughput
@@ -41,9 +41,9 @@ things at once:
 
 ## The split Aaron is affirming
 
-| Mode | Timing | Example (scope-audit family) |
-|---|---|---|
-| Forward-looking absorb-time | At ingestion | Row 6 — every new absorb gets an explicit scope tag |
+| Mode                         | Timing             | Example (scope-audit family)                                 |
+| ---------------------------- | ------------------ | ------------------------------------------------------------ |
+| Forward-looking absorb-time  | At ingestion       | Row 6 — every new absorb gets an explicit scope tag          |
 | Retrospective landed-content | On existing corpus | Row 35 — scan already-landed memories for missing scope tags |
 
 Generalises beyond scope-audits:
@@ -106,7 +106,7 @@ affection.
   the measurement counterpart. Cite this memory.
 - **When an agent is about to ingest a new concept / rule
   / scope / convention:** run the absorb-time filter
-  *first* — catch it at landing, not later.
+  _first_ — catch it at landing, not later.
 - **When retrospective audits keep firing on the same
   class:** that's a signal to tighten the absorb-time
   filter. File a follow-up to strengthen absorb-time;

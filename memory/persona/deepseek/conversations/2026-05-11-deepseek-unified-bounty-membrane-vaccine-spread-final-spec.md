@@ -6,11 +6,11 @@
 
 ## Three-state incident boundary
 
-| State | Origin | Reward | Immune energy? |
-|-------|--------|--------|---------------|
-| RawExternalAttack | Adversarial | 0 | Captured not rewarded |
-| DisclosureCandidate | Actor reports, enters safe-harbor | 0 (pending) | Held pending |
-| RewardableFinding | Validated, bounded, useful | BountyEligible × RewardSchedule | Full absorption + vaccine |
+| State               | Origin                            | Reward                          | Immune energy?            |
+| ------------------- | --------------------------------- | ------------------------------- | ------------------------- |
+| RawExternalAttack   | Adversarial                       | 0                               | Captured not rewarded     |
+| DisclosureCandidate | Actor reports, enters safe-harbor | 0 (pending)                     | Held pending              |
+| RewardableFinding   | Validated, bounded, useful        | BountyEligible × RewardSchedule | Full absorption + vaccine |
 
 ## Aurora bounty membrane (9 factors)
 
@@ -96,14 +96,14 @@ let actorReward origin eligibility schedule =
 
 ## Falsifiability table
 
-| Claim | Falsifier |
-|-------|-----------|
-| Raw attacks never rewarded | Any ActorReward > 0 for RawExternalAttack |
-| Bounty gate blocks unqualified | Any payment for failing single factor |
-| DefenderLearning reward-independent | DefenderLearning = 0 despite high evidence |
-| Vaccine covers attack class | Mutated variant succeeds post-vaccination |
-| Herd immunity achieved | R₀ ≥ 1 after full propagation |
-| Antifragility | Alignment or coverage decreases after vaccination |
+| Claim                               | Falsifier                                         |
+| ----------------------------------- | ------------------------------------------------- |
+| Raw attacks never rewarded          | Any ActorReward > 0 for RawExternalAttack         |
+| Bounty gate blocks unqualified      | Any payment for failing single factor             |
+| DefenderLearning reward-independent | DefenderLearning = 0 despite high evidence        |
+| Vaccine covers attack class         | Mutated variant succeeds post-vaccination         |
+| Herd immunity achieved              | R₀ ≥ 1 after full propagation                     |
+| Antifragility                       | Alignment or coverage decreases after vaccination |
 
 ## Final blade
 

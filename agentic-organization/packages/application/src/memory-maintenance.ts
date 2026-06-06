@@ -92,7 +92,9 @@ export function runMemoryMaintenanceCycle(
   const failRatio = deps.demotionFailureRatio ?? 0.6;
   const promoScopes = deps.promotionDistinctScopes ?? 3;
   const chooseDemotion = deps.chooseDemotion ?? firstLegalChooser<MemoryDemotionChoice>();
-  const choosePromotion = deps.choosePromotion ?? ((legal: readonly boolean[]) => ({ index: legal.indexOf(false), reason: "default: do not auto-promote" }));
+  const choosePromotion =
+    deps.choosePromotion ??
+    ((legal: readonly boolean[]) => ({ index: legal.indexOf(false), reason: "default: do not auto-promote" }));
   const chooseConflict = deps.chooseConflict ?? firstLegalChooser<MemoryConflictChoice>();
 
   const updates: MemoryStateUpdate[] = [];
@@ -106,7 +108,14 @@ export function runMemoryMaintenanceCycle(
   const conflictsResolved: string[] = [];
   let recomputed = 0;
 
-  const event = (kind: OrgEventKind, subjectId: string, from: MemoryPhase | undefined, to: MemoryPhase | undefined, decision: string, actorHatId?: string): OrgEvent => {
+  const event = (
+    kind: OrgEventKind,
+    subjectId: string,
+    from: MemoryPhase | undefined,
+    to: MemoryPhase | undefined,
+    decision: string,
+    actorHatId?: string,
+  ): OrgEvent => {
     const corr = deps.createId("memcorr");
     return {
       id: deps.createId("memevt"),
@@ -140,14 +149,36 @@ export function runMemoryMaintenanceCycle(
     if (!env.protected && recomputedConf > s.confidence + 1e-9) {
       nextConfidence = recomputedConf;
       reinforced.push(env.memoryId);
-      events.push(event(OrgEventKind.MemoryReinforced, env.memoryId, undefined, undefined, `confidence reinforced ${s.confidence.toFixed(2)} → ${recomputedConf.toFixed(2)} (KPI up)`));
+      events.push(
+        event(
+          OrgEventKind.MemoryReinforced,
+          env.memoryId,
+          undefined,
+          undefined,
+          `confidence reinforced ${s.confidence.toFixed(2)} → ${recomputedConf.toFixed(2)} (KPI up)`,
+        ),
+      );
     }
 
     // archive-at-zero — protected memories are never auto-archived
     if (!env.protected && restingWeight <= archiveFloorFor(env.tier)) {
-      updates.push({ memoryId: env.memoryId, nextPhase: MemoryPhase.Archived, nextWeight: 0, nextConfidence, archivedAt: at });
+      updates.push({
+        memoryId: env.memoryId,
+        nextPhase: MemoryPhase.Archived,
+        nextWeight: 0,
+        nextConfidence,
+        archivedAt: at,
+      });
       archived.push(env.memoryId);
-      events.push(event(OrgEventKind.MemoryArchived, env.memoryId, s.phase, MemoryPhase.Archived, `weight ${restingWeight.toFixed(2)} ≤ archive floor ${archiveFloorFor(env.tier)} — archived; never surfaces again`));
+      events.push(
+        event(
+          OrgEventKind.MemoryArchived,
+          env.memoryId,
+          s.phase,
+          MemoryPhase.Archived,
+          `weight ${restingWeight.toFixed(2)} ≤ archive floor ${archiveFloorFor(env.tier)} — archived; never surfaces again`,
+        ),
+      );
       continue; // archived this memory; no Stage B
     }
 
@@ -156,14 +187,32 @@ export function runMemoryMaintenanceCycle(
 
     // conflict resolution
     if (s.phase === MemoryPhase.Conflicted) {
-      const legal: MemoryConflictChoice[] = [MemoryConflictChoice.KeepThis, MemoryConflictChoice.DemoteThis, MemoryConflictChoice.ArchiveThis];
+      const legal: MemoryConflictChoice[] = [
+        MemoryConflictChoice.KeepThis,
+        MemoryConflictChoice.DemoteThis,
+        MemoryConflictChoice.ArchiveThis,
+      ];
       const choice = chooseWithinLegal(legal, `conflict:${env.memoryId}`, chooseConflict);
       if (choice.outcome === "chosen") {
-        const target = choice.option === MemoryConflictChoice.KeepThis ? MemoryPhase.Active : choice.option === MemoryConflictChoice.DemoteThis ? MemoryPhase.Demoted : MemoryPhase.Archived;
+        const target =
+          choice.option === MemoryConflictChoice.KeepThis
+            ? MemoryPhase.Active
+            : choice.option === MemoryConflictChoice.DemoteThis
+              ? MemoryPhase.Demoted
+              : MemoryPhase.Archived;
         if (isLegalMemoryTransition(s.phase, target)) {
           nextPhase = target;
           conflictsResolved.push(env.memoryId);
-          events.push(event(OrgEventKind.MemoryConflictFlagged, env.memoryId, s.phase, target, `conflict resolved by memory_reviewer: ${choice.option}`, "memory_reviewer"));
+          events.push(
+            event(
+              OrgEventKind.MemoryConflictFlagged,
+              env.memoryId,
+              s.phase,
+              target,
+              `conflict resolved by memory_reviewer: ${choice.option}`,
+              "memory_reviewer",
+            ),
+          );
           if (target === MemoryPhase.Archived) {
             updates.push({ memoryId: env.memoryId, nextPhase, nextWeight: 0, nextConfidence, archivedAt: at });
             archived.push(env.memoryId);
@@ -176,20 +225,44 @@ export function runMemoryMaintenanceCycle(
     // demotion candidate — failureCount ≥ floor AND failure ratio ≥ threshold
     const totalOutcome = s.outcome.successCount + s.outcome.failureCount;
     const ratio = totalOutcome > 0 ? s.outcome.failureCount / totalOutcome : 0;
-    if (!env.protected && nextPhase !== MemoryPhase.Demoted && s.outcome.failureCount >= failFloor && ratio >= failRatio && isLegalMemoryTransition(s.phase, MemoryPhase.Demoted)) {
+    if (
+      !env.protected &&
+      nextPhase !== MemoryPhase.Demoted &&
+      s.outcome.failureCount >= failFloor &&
+      ratio >= failRatio &&
+      isLegalMemoryTransition(s.phase, MemoryPhase.Demoted)
+    ) {
       demotionCandidates.push(env.memoryId);
-      const legal: MemoryDemotionChoice[] = [MemoryDemotionChoice.Keep, MemoryDemotionChoice.Demote, MemoryDemotionChoice.RequestEvidence];
+      const legal: MemoryDemotionChoice[] = [
+        MemoryDemotionChoice.Keep,
+        MemoryDemotionChoice.Demote,
+        MemoryDemotionChoice.RequestEvidence,
+      ];
       const choice = chooseWithinLegal(legal, `demotion:${env.memoryId}`, chooseDemotion);
       if (choice.outcome === "chosen" && choice.option === MemoryDemotionChoice.Demote) {
         nextPhase = MemoryPhase.Demoted;
         demoted.push(env.memoryId);
-        events.push(event(OrgEventKind.MemoryDemoted, env.memoryId, s.phase, MemoryPhase.Demoted, `demoted by memory_reviewer: ${s.outcome.failureCount} failures, ratio ${ratio.toFixed(2)}`, "memory_reviewer"));
+        events.push(
+          event(
+            OrgEventKind.MemoryDemoted,
+            env.memoryId,
+            s.phase,
+            MemoryPhase.Demoted,
+            `demoted by memory_reviewer: ${s.outcome.failureCount} failures, ratio ${ratio.toFixed(2)}`,
+            "memory_reviewer",
+          ),
+        );
       }
     }
 
     // promotion candidate — observed across ≥ N distinct scopes
     const target = nextScopeTier(env.tier);
-    if (target !== null && nextPhase === s.phase && s.crossScope.distinctScopes.length >= promoScopes && isLegalMemoryTransition(s.phase, MemoryPhase.Promoted)) {
+    if (
+      target !== null &&
+      nextPhase === s.phase &&
+      s.crossScope.distinctScopes.length >= promoScopes &&
+      isLegalMemoryTransition(s.phase, MemoryPhase.Promoted)
+    ) {
       promotionCandidates.push(env.memoryId);
       const legal = [true, false];
       const promoTarget: PromotionTarget = { toTier: target, toScope: deps.organizationId };
@@ -197,14 +270,42 @@ export function runMemoryMaintenanceCycle(
       if (choice.outcome === "chosen" && choice.option === true) {
         nextPhase = MemoryPhase.Promoted;
         promoted.push({ memoryId: env.memoryId, target: promoTarget });
-        events.push(event(OrgEventKind.MemoryPromoted, env.memoryId, s.phase, MemoryPhase.Promoted, `promoted ${env.tier} → ${target} by knowledge_router; source kept (derived_from)`, "knowledge_router"));
+        events.push(
+          event(
+            OrgEventKind.MemoryPromoted,
+            env.memoryId,
+            s.phase,
+            MemoryPhase.Promoted,
+            `promoted ${env.tier} → ${target} by knowledge_router; source kept (derived_from)`,
+            "knowledge_router",
+          ),
+        );
       }
     }
 
     updates.push({ memoryId: env.memoryId, nextPhase, nextWeight: restingWeight, nextConfidence });
   }
 
-  events.push(event(OrgEventKind.MemoryMaintenanceCycle, deps.organizationId, undefined, undefined, `memory maintenance cycle: ${recomputed} recomputed, ${archived.length} archived, ${reinforced.length} reinforced, ${demoted.length} demoted, ${promoted.length} promoted`));
+  events.push(
+    event(
+      OrgEventKind.MemoryMaintenanceCycle,
+      deps.organizationId,
+      undefined,
+      undefined,
+      `memory maintenance cycle: ${recomputed} recomputed, ${archived.length} archived, ${reinforced.length} reinforced, ${demoted.length} demoted, ${promoted.length} promoted`,
+    ),
+  );
 
-  return { recomputed, archived, reinforced, demotionCandidates, demoted, promotionCandidates, promoted, conflictsResolved, updates, events };
+  return {
+    recomputed,
+    archived,
+    reinforced,
+    demotionCandidates,
+    demoted,
+    promotionCandidates,
+    promoted,
+    conflictsResolved,
+    updates,
+    events,
+  };
 }

@@ -206,9 +206,14 @@ describe("cockroach control-plane state store (the org's durable proof of life)"
     const store = createCockroachControlPlaneStateStore({ executor });
 
     await store.listActiveFlags("org-1", "2026-05-31T20:30:00.000Z").then(
-      () => { throw new Error("expected malformed persisted flag to reject"); },
+      () => {
+        throw new Error("expected malformed persisted flag to reject");
+      },
       (error: unknown) =>
-        equal(error instanceof Error ? error.message : String(error), "unknown control-plane flag scope_kind 'bad_scope'"),
+        equal(
+          error instanceof Error ? error.message : String(error),
+          "unknown control-plane flag scope_kind 'bad_scope'",
+        ),
     );
   });
 

@@ -13,8 +13,8 @@ Carved sentence:
 
 ## Constitutional invariant (Aaron 2026-05-24)
 
-Aaron 2026-05-24: *"any bypass has to come with a human attached to
-the bypass for legal risks and reasons"*
+Aaron 2026-05-24: _"any bypass has to come with a human attached to
+the bypass for legal risks and reasons"_
 
 Reframed as positive project policy:
 
@@ -33,16 +33,16 @@ Reframed as positive project policy:
     "operator": "Full Legal Name",
     "scope": "<glob-or-path-pattern>",
     "policy": "<plain-English text describing what is being accepted and why>",
-    "see_also": "docs/<path-to-README-explaining-the-convention>"
-  }
+    "see_also": "docs/<path-to-README-explaining-the-convention>",
+  },
 }
 ```
 
-| Field | Purpose |
-|---|---|
-| `operator` | Full legal name of the human accepting the risk. Substrate-honest accountability anchor; if a claim arises, this is who it goes to. |
-| `scope` | Specific narrow glob/path pattern. The acceptance covers ONLY operations matching this scope. No broad waivers. |
-| `policy` | Plain-English statement of what risks are being accepted and why. The text matters; it's the documented basis for the acceptance. |
+| Field      | Purpose                                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `operator` | Full legal name of the human accepting the risk. Substrate-honest accountability anchor; if a claim arises, this is who it goes to.                              |
+| `scope`    | Specific narrow glob/path pattern. The acceptance covers ONLY operations matching this scope. No broad waivers.                                                  |
+| `policy`   | Plain-English statement of what risks are being accepted and why. The text matters; it's the documented basis for the acceptance.                                |
 | `see_also` | Pointer to a README explaining the project-policy convention this acceptance fits into. Provides substrate-honest discoverability for future readers + auditors. |
 
 **All four fields MUST be present.** A `_*_acceptance` block missing
@@ -65,13 +65,11 @@ Settings.json structure:
     "operator": "Rodney Aaron Stainback",
     "scope": "docs/research/ip-questionable/**",
     "policy": "Sole maintainer of Lucent-Financial-Group accepts personal legal liability for verbatim third-party content reproduced under docs/research/ip-questionable/ per README.md in that folder. Authorization granted 2026-05-24.",
-    "see_also": "docs/research/ip-questionable/README.md"
+    "see_also": "docs/research/ip-questionable/README.md",
   },
   "permissions": {
-    "allow": [
-      "Bash(gh api -X PUT repos/Lucent-Financial-Group/Zeta/contents/docs/research/ip-questionable/*)"
-    ]
-  }
+    "allow": ["Bash(gh api -X PUT repos/Lucent-Financial-Group/Zeta/contents/docs/research/ip-questionable/*)"],
+  },
 }
 ```
 
@@ -97,9 +95,9 @@ operates only within the former.
 
 ## Constitutional generalization (Aaron 2026-05-24): every AI-blameable risk area routed through named-human attribution
 
-Aaron 2026-05-24: *"wherever AI could be blamed for Zeta i want it to
+Aaron 2026-05-24: _"wherever AI could be blamed for Zeta i want it to
 become a named human over time for every legal risk area until we can
-setup business and non profits around the risk taking"*
+setup business and non profits around the risk taking"_
 
 This is the **constitutional generalization** of the four-field
 attribution pattern beyond the canonical IP-questionable first use:
@@ -112,11 +110,11 @@ pattern.**
 
 ### The three-stage progression
 
-| Stage | Mechanism | Status |
-|---|---|---|
-| **1. Per-incident attribution** (today's default for un-extended areas) | Operator addresses each risk case individually via conversation, commit messages, or ad-hoc notes | Default; doesn't scale |
-| **2. Per-class attribution** (four-field `_*_acceptance` pattern) | Each risk class (IP, PII, security-research, etc.) gets a settings.json acceptance block + README convention + permission rule | **Current target — being extended over time** |
-| **3. Structural risk-holders** (corporate / non-profit entities) | Business / non-profit structures formally hold specific risk classes; named humans serve as officers within those structures; AIs operate under structural protection | **Long-term target — requires corporate setup** |
+| Stage                                                                   | Mechanism                                                                                                                                                             | Status                                          |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| **1. Per-incident attribution** (today's default for un-extended areas) | Operator addresses each risk case individually via conversation, commit messages, or ad-hoc notes                                                                     | Default; doesn't scale                          |
+| **2. Per-class attribution** (four-field `_*_acceptance` pattern)       | Each risk class (IP, PII, security-research, etc.) gets a settings.json acceptance block + README convention + permission rule                                        | **Current target — being extended over time**   |
+| **3. Structural risk-holders** (corporate / non-profit entities)        | Business / non-profit structures formally hold specific risk classes; named humans serve as officers within those structures; AIs operate under structural protection | **Long-term target — requires corporate setup** |
 
 Each stage adds structural protection without erasing prior stages.
 Stage 3 doesn't eliminate named-human attribution; it just moves the
@@ -300,14 +298,14 @@ work in PR #4816 + the recognition that the project needed an
 explicit pattern for documenting human-attributed legal-risk
 acceptance:
 
-> *"any bypass has to come with a human attached to the bypass for
-> legal risks and reasons"*
+> _"any bypass has to come with a human attached to the bypass for
+> legal risks and reasons"_
 
 Reframed as constitutional invariant for positive project-policy
 purposes per Aaron 2026-05-24 substrate-honest framing:
 
-> *"just act like it was our way of having humans accept leagal
-> risks the project wanted"*
+> _"just act like it was our way of having humans accept leagal
+> risks the project wanted"_
 
 The pattern is the project's substrate-honest way of preserving
 audit-trail attribution + legal-risk-acceptance discipline for work

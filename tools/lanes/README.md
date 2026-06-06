@@ -31,8 +31,8 @@ Companion CI work that landed first:
   PRs as docs-only vs code-touching and skips the F# build steps
   on docs-only PRs. The build/CI side of the lane split. This
   protocol is the **agent-dispatch side** of the same split:
-  not just *"the build skips when files don't overlap"* but also
-  *"the agents themselves work in parallel without overlap."*
+  not just _"the build skips when files don't overlap"_ but also
+  _"the agents themselves work in parallel without overlap."_
 
 ## When to dispatch two lanes vs single lane
 
@@ -43,8 +43,8 @@ Examples:
 - Updating documentation that also requires a behavioral spec
   edit + an F# implementation tweak.
 - Adding a new lint script (code-lane: `tools/hygiene/*.sh`)
-  + documenting it in the backlog row + skill body
-  (doc-lane: `docs/`, `.claude/skills/`).
+  - documenting it in the backlog row + skill body
+    (doc-lane: `docs/`, `.claude/skills/`).
 - Backfilling a research preservation (doc-lane:
   `docs/research/*.md`) while a sibling-PR migrates a tool to
   TypeScript (code-lane: `tools/**/*.ts`).
@@ -66,15 +66,15 @@ coordinator follows for every two-lane dispatch:
 
 1. **Allocate BOTH worktrees BEFORE dispatching EITHER subagent.**
    This is the load-bearing invariant from the maintainer's
-   2026-04-29 rule: *"coordinator must allocate worktrees
-   before allocating agents"*. Allocating in this order
+   2026-04-29 rule: _"coordinator must allocate worktrees
+   before allocating agents"_. Allocating in this order
    prevents the failure mode where a subagent's first
    git-write collides with main because its worktree wasn't
    ready.
 
 2. **Dispatch both subagents in the SAME tool call** (parallel
-   block). This is what makes them *parallel* rather than
-   *sequential* — the coordinator emits a single message
+   block). This is what makes them _parallel_ rather than
+   _sequential_ — the coordinator emits a single message
    containing two `Agent` tool calls, and the harness runs
    them concurrently.
 
@@ -198,13 +198,13 @@ the coordinator passes to each subagent. The templates encode:
 
 ## Risks and mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Worktree allocation slips and one subagent collides with main | Mechanical worktree-allocation rule (allocate BOTH before dispatching EITHER); 4-criterion mandatory in the protocol |
-| Formatter bleed-through (e.g., `prettier --write` running repo-wide from one lane) | Lane-allowlist enforcement; prefer `--check` mode for cross-cutting tools |
-| Reviewer load doubling (two PRs to review) | Mechanized best-practice toolchain (lint/CI/agent-reviewers) handles 80%+ of review surface automatically; per the rung-4 scaling ladder |
-| Coordinator complexity | This protocol codifies the steps so coordination becomes mechanical |
-| Docs PR introduces a code-surface dependency that breaks the code lane | Lane-allowlist disallows the cross-write at write-time; if the work *requires* it, fall back to single-lane |
+| Risk                                                                               | Mitigation                                                                                                                               |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Worktree allocation slips and one subagent collides with main                      | Mechanical worktree-allocation rule (allocate BOTH before dispatching EITHER); 4-criterion mandatory in the protocol                     |
+| Formatter bleed-through (e.g., `prettier --write` running repo-wide from one lane) | Lane-allowlist enforcement; prefer `--check` mode for cross-cutting tools                                                                |
+| Reviewer load doubling (two PRs to review)                                         | Mechanized best-practice toolchain (lint/CI/agent-reviewers) handles 80%+ of review surface automatically; per the rung-4 scaling ladder |
+| Coordinator complexity                                                             | This protocol codifies the steps so coordination becomes mechanical                                                                      |
+| Docs PR introduces a code-surface dependency that breaks the code lane             | Lane-allowlist disallows the cross-write at write-time; if the work _requires_ it, fall back to single-lane                              |
 
 ## Lessons-mechanization (rung-4 feedback loop)
 
@@ -239,8 +239,8 @@ that would have blocked them at rung-2 is already absorbed.
   vendors running simultaneously on different lanes). That's
   rung-5 / agent-orchestra (#324–#339).
 - Does NOT replace per-PR quality. The hard guardrail from the
-  parallelism-scaling-ladder rule: *"never sacrifice per-PR
-  quality for throughput"*. Two-lane dispatch is a throughput
+  parallelism-scaling-ladder rule: _"never sacrifice per-PR
+  quality for throughput"_. Two-lane dispatch is a throughput
   multiplier, not a quality compromise.
 
 ## Status

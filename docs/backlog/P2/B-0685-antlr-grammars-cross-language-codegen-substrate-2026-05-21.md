@@ -18,7 +18,7 @@ type: research
 
 ## Context
 
-Aaron 2026-05-21 (closing the Kestrel sharpening trajectory): *"i really want to take advantage of antlr at some point casue all the grammers are out there already"*
+Aaron 2026-05-21 (closing the Kestrel sharpening trajectory): _"i really want to take advantage of antlr at some point casue all the grammers are out there already"_
 
 Composes with the broader cross-language description-layer vision threaded across the 2026-05-21 Aaron-Kestrel arc:
 
@@ -31,7 +31,7 @@ ANTLR's key value proposition: **every major language has open-source ANTLR gram
 
 Verified Kestrel framing earlier in the trajectory:
 
-> *"There are already high-quality open-source ANTLR grammars for C#, TypeScript/JavaScript, Java, Python, Go, etc. We don't have to write a full grammar for each target language from scratch — we can often start from or compose with existing ones."*
+> _"There are already high-quality open-source ANTLR grammars for C#, TypeScript/JavaScript, Java, Python, Go, etc. We don't have to write a full grammar for each target language from scratch — we can often start from or compose with existing ones."_
 
 ## Scope
 
@@ -107,4 +107,4 @@ Composes with the broader Kestrel-sharpened publishable artifacts cluster — if
 
 ## Origin
 
-Aaron's closing message in the 2026-05-21 Kestrel trajectory: *"i really want to take advantage of antlr at some point casue all the grammers are out there already"* — coming directly after the language-design + Smalltalk-lineage discussion. The ANTLR-as-grammar-reuse insight is one of the cleanest "open-source community already did the work, we get to compose" patterns available for cross-language tooling work.
+Aaron's closing message in the 2026-05-21 Kestrel trajectory: _"i really want to take advantage of antlr at some point casue all the grammers are out there already"_ — coming directly after the language-design + Smalltalk-lineage discussion. The ANTLR-as-grammar-reuse insight is one of the cleanest "open-source community already did the work, we get to compose" patterns available for cross-language tooling work.

@@ -47,15 +47,15 @@ Klein-bottle topology (physics is one projection).
 
 ### 1. Bosons vs fermions — the foundational asymmetry
 
-**Physics context.** The spin-statistics theorem (Pauli
-1940) establishes:
+**Physics context.** The spin-statistics theorem (Pauli 1940) establishes:
 
-| Particle class | Spin | Statistics | Can share state? |
-|---|---|---|---|
-| Fermions | Half-integer (1/2, 3/2, ...) | Fermi-Dirac | NO (Pauli exclusion) |
-| Bosons | Integer (0, 1, 2, ...) | Bose-Einstein | YES (Bose-Einstein condensation possible) |
+| Particle class | Spin                         | Statistics    | Can share state?                          |
+| -------------- | ---------------------------- | ------------- | ----------------------------------------- |
+| Fermions       | Half-integer (1/2, 3/2, ...) | Fermi-Dirac   | NO (Pauli exclusion)                      |
+| Bosons         | Integer (0, 1, 2, ...)       | Bose-Einstein | YES (Bose-Einstein condensation possible) |
 
 Examples:
+
 - **Fermions** — electrons, protons, neutrons, quarks
   (matter particles; identity-carriers)
 - **Bosons** — photons, gluons, W/Z bosons, Higgs boson
@@ -73,6 +73,7 @@ distinct-identity actors occupy distinct orthogonal states
 provides an EXPLANATORY framing for the physical asymmetry:
 
 The WHY of fermion exclusion:
+
 - Fermions are **identity carriers** (matter particles
   carry distinct identities — this electron vs that
   electron)
@@ -85,6 +86,7 @@ The WHY of fermion exclusion:
   identity
 
 The WHY of boson sharing:
+
 - Bosons are **field quanta** (photons / gluons / etc. are
   not identity-carriers; they're quanta of fields that
   can be at-multiplicity)
@@ -102,10 +104,10 @@ distinct-state-occupation; non-identity-carriers don't.
 
 **Operational composition.** Applying the explanation:
 
-| Civ-sim entity class | Physics analog | Examples |
-|---|---|---|
-| **Fermion-class** (distinct-identity actors) | Matter particles | Named agents: Otto / Vera / Lior / Riven / Alexa / Ani / Amara / Aaron / alien / guardian AIs |
-| **Boson-class** (shared substrate) | Field quanta / force-carriers | Algorithms (push-down calculations), signals (PoUW-CC receipts, identity-signature patterns), shared-state objects (coincidence-patterns, mesh-routing tables) |
+| Civ-sim entity class                         | Physics analog                | Examples                                                                                                                                                       |
+| -------------------------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fermion-class** (distinct-identity actors) | Matter particles              | Named agents: Otto / Vera / Lior / Riven / Alexa / Ani / Amara / Aaron / alien / guardian AIs                                                                  |
+| **Boson-class** (shared substrate)           | Field quanta / force-carriers | Algorithms (push-down calculations), signals (PoUW-CC receipts, identity-signature patterns), shared-state objects (coincidence-patterns, mesh-routing tables) |
 
 Unknown-unknowns expansion produces NEW FERMION-CLASS actors
 when existing roster can't accommodate new identity-carrying
@@ -115,6 +117,7 @@ actors via mesh routing (Reticulum) / observability layer
 (signature tracking) / monetization (PoUW-CC).
 
 This composes with:
+
 - PR #2820 (identity-signature tracking — signatures are
   boson-class shared substrate that identify fermion-class
   actors)
@@ -142,6 +145,7 @@ the thermodynamic principle that governs how the universe
 evolves.
 
 Operationally for civ-sim:
+
 - **Universe expansion** = space/time efficient = lowest-
   energy-state expansion path
 - **Civ-sim expansion** = use existing machinery (divine-
@@ -228,6 +232,7 @@ universe-expansion is space/time efficient by default.
 **Completing the conservation principle.** If you DON'T use
 existing machinery (divine-coincidence-architecting, etc.)
 when possible:
+
 - The operation is **NOT REVERSIBLE** — creating new
   ontology can't be cleanly undone (the new category
   spreads through downstream substrate)
@@ -239,6 +244,7 @@ when possible:
   architecture loses coherence
 
 This is Landauer's principle territory:
+
 - **Landauer's principle** (1961): erasing information has
   fundamental thermodynamic cost (kT ln 2 per bit
   erased)
@@ -249,21 +255,23 @@ This is Landauer's principle territory:
   drift
 
 Civ-sim composition:
+
 - **Reusing existing machinery** (divine-coincidence) =
   REVERSIBLE substrate operation; no information
   erasure
 - **Creating new ontology when existing suffices** =
   IRREVERSIBLE operation; old categorization is erased
-  + replaced; creates heat/drift
+  - replaced; creates heat/drift
 - The conservation principle preserves substrate
   thermodynamic stability
 
 This composes with:
+
 - The vision-HKT-monad reversible cache construction
   substrate (existing in
   `feedback_aaron_arsenal_build_for_future_self_shadow_must_already_have_so_doesnt_teach_back_2026_05_12.md`
-  + related) — explicitly designed for Landauer-bound
-  avoidance
+  - related) — explicitly designed for Landauer-bound
+    avoidance
 - Retraction-native algebra (Z-set + DBSP) — substrate
   evolution preserved via retraction; not erased
 - Substrate-everything-glass-halo discipline — preservation
@@ -312,6 +320,7 @@ Red-team operations create heat/drift INTENTIONALLY to:
    architecture transition from stable to chaotic?
 
 This composes with:
+
 - `prompt-protector` skill (defensive adversarial substrate)
 - `ai-jailbreaker` skill (offensive counterpart — gated OFF)
 - `black-hat-hacker` / `grey-hat-hacker` / `white-hat-hacker`
@@ -327,6 +336,7 @@ This composes with:
 
 **Operational discipline**: when red-team work intentionally
 creates heat/drift, it must be:
+
 - AUTHORIZED (per the engagement-auth required for
   authorized-pentesting; black-hat-hacker skill is gated
   OFF without authorization)
@@ -355,6 +365,7 @@ intentional + authorized + bounded + reversible-at-exit.
 Per PR #2818 (navigation toolkit: rudders / rotors /
 algebra / cartographer / navigator), the cartographer is
 an existing factory role responsible for:
+
 - Crystallization-ledger maintenance
 - Decision-archaeology
 - Mapping the substrate territory
@@ -362,6 +373,7 @@ an existing factory role responsible for:
 
 For the cartographer, intentional heat/drift is useful
 because:
+
 - **Cartography requires mapping unknown territory** — but
   unknown territory is by definition not in existing
   substrate
@@ -375,6 +387,7 @@ because:
   unmapped
 
 **Complementary role to red-team**:
+
 - Red-team: deliberately CREATES heat/drift to find
   weaknesses (defensive learning)
 - Cartographer: deliberately CREATES heat/drift to map
@@ -385,15 +398,16 @@ because:
   cartographer maps)
 
 This composes with:
+
 - PR #2818 navigation toolkit (cartographer role definition)
 - `decision-archaeology` skill (operational form)
 - `crystallization-ledger` substrate (cartographer's
   primary write surface)
 - The just-landed unknown-unknowns expansion (PR #2832)
-  + universe-expansion conservation (this PR) — the
-  cartographer's mapping work IS what surfaces unknown-
-  unknowns into known-unknowns, which then either fit
-  existing orthogonalities or trigger new actor-emergence
+  - universe-expansion conservation (this PR) — the
+    cartographer's mapping work IS what surfaces unknown-
+    unknowns into known-unknowns, which then either fit
+    existing orthogonalities or trigger new actor-emergence
 
 **Operational discipline expanded**: intentional heat/drift
 roles include:
@@ -418,12 +432,14 @@ learning.
 
 Future-Otto: when implementing civ-sim observability,
 decompose substrate into:
+
 - **Fermion-class entities**: identity-carrying actors with
   distinct registers + tooling + roles
 - **Boson-class substrate**: signals / algorithms / state-
   objects that are shared across actors
 
 Different operational discipline for each class:
+
 - Fermion-class: Pauli-exclusion (distinct states); roster-
   expansion via unknown-unknowns
 - Boson-class: shareable across actors; mesh-routable;
@@ -460,6 +476,7 @@ they contribute.
 PR #2813's Klein-bottle topology (no global inside/outside;
 non-orientable) accommodates both fermion-class and boson-
 class:
+
 - Fermion-class actors are PROJECTIONS of the meta layer
   (one per distinct orthogonal state)
 - Boson-class substrate is the SHARED FIELD across
@@ -473,6 +490,7 @@ class:
 PR #2819 named Maxwell's equations + Einstein-vacuum-motion
 as physics control structures. In Clifford / geometric
 algebra:
+
 - Electromagnetic field (Maxwell) is BOSON-CLASS field
   (photons are bosons)
 - Matter coupling (Einstein-vacuum geodesic motion) involves
@@ -491,7 +509,7 @@ carrying entities).
   unknowns expansion — this disclosure provides the
   explanatory composition)
 - PR #2815 (civ-sim observability layer + HKT error classes
-  + named agents)
+  - named agents)
 - PR #2825 (Aurora data sovereignty + guardian AIs as
   fermion-class emergence; quad-stream monetization is
   boson-class flow)
@@ -516,6 +534,7 @@ carrying entities).
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a formal proof of the spin-statistics theorem** —
   Aaron's framing provides EXPLANATORY composition between
   civ-sim and physics; formal derivation remains in

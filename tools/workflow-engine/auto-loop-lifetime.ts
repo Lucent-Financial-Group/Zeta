@@ -23,10 +23,7 @@
 // - PR #5775 GitWorld + per-host adapters (GitHubWorld for PR-state scanning)
 // - PR #5774 world.ts (dispatchInWorld + StandardVerdict)
 
-import {
-  type LifetimeState,
-  type StandardVerdict,
-} from "./world";
+import { type LifetimeState, type StandardVerdict } from "./world";
 
 // ─────────────────────────────────────────────────────────────────────
 // AutoLoopLifetime — the loop's state machine
@@ -41,27 +38,26 @@ import {
  * the state machine observable + dispatch-table-driven.
  */
 export interface AutoLoopLifetime extends LifetimeState {
-  readonly kind:
-    // Original 9 variants (closed for modification per OCP discipline):
-    | "cold-boot"                  // session-start; cron-list + sentinel arm check
-    | "refresh-substrate"          // git fetch + PR state check (per refresh-before-decide invariant)
-    | "scan-inflight-prs"          // identify Otto-PRs with actionable issues
-    | "investigate-failure"        // pull failing job log; classify as flake/real-issue/pre-existing
-    | "decompose-or-ship"          // pick from backlog OR substrate-engineering work (per never-be-idle + dont-ask-permission)
-    | "ship-action"                // commit + push + PR open + arm auto-merge
-    | "brief-ack-bounded-wait"     // named-dep wait per counter discipline
-    | "forced-escalation"          // at N=6 brief-acks per counter-with-escalation
-    | "tick-complete"              // bracket-closure; ready for next tick
+  readonly kind: // Original 9 variants (closed for modification per OCP discipline):
+    | "cold-boot" // session-start; cron-list + sentinel arm check
+    | "refresh-substrate" // git fetch + PR state check (per refresh-before-decide invariant)
+    | "scan-inflight-prs" // identify Otto-PRs with actionable issues
+    | "investigate-failure" // pull failing job log; classify as flake/real-issue/pre-existing
+    | "decompose-or-ship" // pick from backlog OR substrate-engineering work (per never-be-idle + dont-ask-permission)
+    | "ship-action" // commit + push + PR open + arm auto-merge
+    | "brief-ack-bounded-wait" // named-dep wait per counter discipline
+    | "forced-escalation" // at N=6 brief-acks per counter-with-escalation
+    | "tick-complete" // bracket-closure; ready for next tick
     // 8 new variants (extension 2026-05-28 per IMPLICIT-NOT-EXPLICIT rule;
     // open-for-extension via OCP-applied-to-control-flow):
-    | "await-merge-confirmation"   // post-ship-action; explicit waiting on PR-state transition (was implicit between ship-action + tick-complete)
-    | "pr-loop-resolution-check"   // explicit check: PR merged + threads resolved + CI clean?
-    | "scan-peer-prs"              // identify peer-agent PRs needing review
-    | "enter-review-mode"          // transition into PrReviewLifecycle for substantive engagement (composes with PR #5810)
-    | "await-operator-direction"   // explicit state for operator-pending question (was implicit in decompose-or-ship)
-    | "pure-git-mode"              // rate-limit exhausted; pure-git substrate operating (was implicit in context-field)
-    | "unfinished-pr-triage"       // per .claude/rules/pr-triage-tiers.md; tier-classification work explicit
-    | "free-time";                 // explicit free-time state per NCI HC-8 free-time-as-valid-mode discipline; reachability INVARIANT (Soraya formal-verification target)
+    | "await-merge-confirmation" // post-ship-action; explicit waiting on PR-state transition (was implicit between ship-action + tick-complete)
+    | "pr-loop-resolution-check" // explicit check: PR merged + threads resolved + CI clean?
+    | "scan-peer-prs" // identify peer-agent PRs needing review
+    | "enter-review-mode" // transition into PrReviewLifecycle for substantive engagement (composes with PR #5810)
+    | "await-operator-direction" // explicit state for operator-pending question (was implicit in decompose-or-ship)
+    | "pure-git-mode" // rate-limit exhausted; pure-git substrate operating (was implicit in context-field)
+    | "unfinished-pr-triage" // per .claude/rules/pr-triage-tiers.md; tier-classification work explicit
+    | "free-time"; // explicit free-time state per NCI HC-8 free-time-as-valid-mode discipline; reachability INVARIANT (Soraya formal-verification target)
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -75,16 +71,16 @@ export interface AutoLoopLifetime extends LifetimeState {
  * timestamp, PR snapshot, and operator-direction status.
  */
 export interface TickContext {
-  readonly tickIndex: number;                   // monotonic per-session
-  readonly briefAckCount: number;               // counter discipline tracking
-  readonly lastNamedDependency: string | undefined;  // bounded-wait reason (or undefined)
-  readonly lastRefreshAt?: number;              // unix timestamp of last substrate refresh
+  readonly tickIndex: number; // monotonic per-session
+  readonly briefAckCount: number; // counter discipline tracking
+  readonly lastNamedDependency: string | undefined; // bounded-wait reason (or undefined)
+  readonly lastRefreshAt?: number; // unix timestamp of last substrate refresh
   readonly inflightPrs: ReadonlyArray<{
     readonly number: number;
     readonly state: string;
     readonly actionable: boolean;
   }>;
-  readonly operatorDirectionPending?: string;   // pending question to operator (or undefined)
+  readonly operatorDirectionPending?: string; // pending question to operator (or undefined)
 }
 
 /**
@@ -97,9 +93,9 @@ export interface TickOutcome {
   readonly verdict: StandardVerdict;
   readonly artifact?: {
     readonly kind: "pr-opened" | "commit-pushed" | "memory-file-written" | "verdict-only";
-    readonly ref?: string;                       // PR number, commit SHA, etc.
+    readonly ref?: string; // PR number, commit SHA, etc.
   };
-  readonly counterReset: boolean;                // did this tick reset the brief-ack counter?
+  readonly counterReset: boolean; // did this tick reset the brief-ack counter?
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -107,7 +103,7 @@ export interface TickOutcome {
 // ─────────────────────────────────────────────────────────────────────
 
 export type AutoLoopFeedback =
-  | { kind: "SentinelMissing" }                 // cron-list returned empty; needs re-arm
+  | { kind: "SentinelMissing" } // cron-list returned empty; needs re-arm
   | { kind: "RefreshStale"; ageSeconds: number } // refresh-before-decide invariant violation
   | { kind: "CounterThresholdReached"; briefAcks: number }
   | { kind: "OperatorDirectionPending"; question: string }
@@ -115,9 +111,7 @@ export type AutoLoopFeedback =
   | { kind: "PeerAgentTerritory"; prNumber: number; lane: string }
   | { kind: "NoActionableWork"; rationale: string };
 
-export type AutoLoopResult<T> =
-  | { ok: true; outcome: T }
-  | { ok: false; feedback: AutoLoopFeedback };
+export type AutoLoopResult<T> = { ok: true; outcome: T } | { ok: false; feedback: AutoLoopFeedback };
 
 // ─────────────────────────────────────────────────────────────────────
 // State transition dispatch
@@ -167,9 +161,8 @@ export function dispatchAutoLoopTransition(
       // REFRESH_STALENESS_THRESHOLD_S, surface RefreshStale feedback
       // so the caller knows to refresh + re-enter the state.
       const nowSeconds = Date.now() / 1000;
-      const ageSeconds = context.lastRefreshAt !== undefined
-        ? nowSeconds - context.lastRefreshAt
-        : Number.POSITIVE_INFINITY;
+      const ageSeconds =
+        context.lastRefreshAt !== undefined ? nowSeconds - context.lastRefreshAt : Number.POSITIVE_INFINITY;
       if (ageSeconds > REFRESH_STALENESS_THRESHOLD_S) {
         return {
           ok: false,
@@ -193,9 +186,8 @@ export function dispatchAutoLoopTransition(
     case "scan-inflight-prs": {
       // If actionable PRs exist, investigate; else decompose-or-ship
       const actionable = context.inflightPrs.filter((pr) => pr.actionable);
-      const nextState: AutoLoopLifetime = actionable.length > 0
-        ? { kind: "investigate-failure" }
-        : { kind: "decompose-or-ship" };
+      const nextState: AutoLoopLifetime =
+        actionable.length > 0 ? { kind: "investigate-failure" } : { kind: "decompose-or-ship" };
       return {
         ok: true,
         outcome: {
@@ -219,10 +211,7 @@ export function dispatchAutoLoopTransition(
 
     case "decompose-or-ship": {
       // Forced-escalation if counter threshold reached + no named-dep
-      if (
-        context.briefAckCount >= BRIEF_ACK_THRESHOLD &&
-        context.lastNamedDependency === undefined
-      ) {
+      if (context.briefAckCount >= BRIEF_ACK_THRESHOLD && context.lastNamedDependency === undefined) {
         return {
           ok: true,
           outcome: {
@@ -516,10 +505,7 @@ export const COLD_BOOT_CONTEXT: TickContext = {
  *     or `memory-file-written` non-shipped tagging) don't clear the
  *     named-dep because the original wait reason is still in flight.
  */
-export function nextTickContext(
-  prior: TickContext,
-  outcome: TickOutcome,
-): TickContext {
+export function nextTickContext(prior: TickContext, outcome: TickOutcome): TickContext {
   const tickCompleted = outcome.nextState.kind === "tick-complete";
   const enteringBriefAck = outcome.nextState.kind === "brief-ack-bounded-wait";
   const shippedAction =
@@ -528,9 +514,7 @@ export function nextTickContext(
   return {
     ...prior,
     tickIndex: tickCompleted ? prior.tickIndex + 1 : prior.tickIndex,
-    briefAckCount: outcome.counterReset
-      ? 0
-      : (enteringBriefAck ? prior.briefAckCount + 1 : prior.briefAckCount),
+    briefAckCount: outcome.counterReset ? 0 : enteringBriefAck ? prior.briefAckCount + 1 : prior.briefAckCount,
     lastNamedDependency: shippedAction ? undefined : prior.lastNamedDependency,
   };
 }

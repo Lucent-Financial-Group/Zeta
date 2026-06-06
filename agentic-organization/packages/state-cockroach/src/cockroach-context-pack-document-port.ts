@@ -30,18 +30,13 @@ export function createCockroachContextPackDocumentPort(
   return {
     async retrieve(request): Promise<ContextPackDocumentReadResult> {
       const corpus = await loadRetrievalCorpus(input.docUnits, request);
-      const entities = input.docEntities === undefined
-        ? []
-        : await input.docEntities.listByOrg(request.retrievalContext.organizationId);
+      const entities =
+        input.docEntities === undefined
+          ? []
+          : await input.docEntities.listByOrg(request.retrievalContext.organizationId);
       const retrievalDeps = await retrievalDepsFor(input, request.retrievalContext);
       return {
-        retrieval: runRetrieval(
-          request.query,
-          request.retrievalContext,
-          corpus,
-          entities,
-          retrievalDeps,
-        ),
+        retrieval: runRetrieval(request.query, request.retrievalContext, corpus, entities, retrievalDeps),
         sourceGraphVersion: input.sourceGraphVersion ?? COCKROACH_CONTEXT_PACK_SOURCE_GRAPH_VERSION,
       };
     },
@@ -80,7 +75,7 @@ function optionalScopeLookup<Key extends "projectId" | "teamId">(
   key: Key,
 ): { [K in Key]?: string } {
   const id = context.scopes.find((scope) => scope.kind === kind)?.id;
-  return id === undefined ? {} : { [key]: id } as { [K in Key]?: string };
+  return id === undefined ? {} : ({ [key]: id } as { [K in Key]?: string });
 }
 
 async function loadRetrievalCorpus(
@@ -89,7 +84,7 @@ async function loadRetrievalCorpus(
 ): Promise<readonly DocUnit[]> {
   const scoped = await Promise.all(
     request.retrievalContext.scopes.map((scope) =>
-      docUnits.listByOrgScope(request.retrievalContext.organizationId, scope.kind, scope.id)
+      docUnits.listByOrgScope(request.retrievalContext.organizationId, scope.kind, scope.id),
     ),
   );
   const boundConsults = await docUnits.listBoundConsults(
@@ -97,10 +92,7 @@ async function loadRetrievalCorpus(
     request.retrievalContext.hatId,
     request.retrievalContext.stageId,
   );
-  return uniqueDocUnits([
-    ...scoped.flat(),
-    ...boundConsults,
-  ]);
+  return uniqueDocUnits([...scoped.flat(), ...boundConsults]);
 }
 
 function uniqueDocUnits(units: readonly DocUnit[]): readonly DocUnit[] {

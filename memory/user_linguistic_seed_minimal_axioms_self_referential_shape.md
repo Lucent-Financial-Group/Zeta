@@ -37,11 +37,11 @@ type: user
 
 Three layers, smallest → largest:
 
-| Layer | Scale | Role |
-|---|---|---|
-| **Seed** | Meme-scale | Transmissible, self-replicating, self-referential primitive from which the kernel grows |
-| **Kernel** | E8 Lie group shape (248-dim, 8 simple roots, Dynkin E8) | The "certain shape" Aaron named; the structured algebra that grows from the seed |
-| **Glossary** | Human-readable + I8 hash + I9 embedding manifold | The surface; what contributors read; what oracles query |
+| Layer        | Scale                                                   | Role                                                                                    |
+| ------------ | ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Seed**     | Meme-scale                                              | Transmissible, self-replicating, self-referential primitive from which the kernel grows |
+| **Kernel**   | E8 Lie group shape (248-dim, 8 simple roots, Dynkin E8) | The "certain shape" Aaron named; the structured algebra that grows from the seed        |
+| **Glossary** | Human-readable + I8 hash + I9 embedding manifold        | The surface; what contributors read; what oracles query                                 |
 
 The glossary was the outermost layer in the first burst. The
 kernel was implicit under "certain shape." The correction
@@ -49,7 +49,7 @@ names the kernel explicitly (E8) and pushes the seed BELOW it.
 
 ## "The seed is like a meme"
 
-Aaron's analogy. Memetics (Dawkins 1976, *The Selfish Gene*
+Aaron's analogy. Memetics (Dawkins 1976, _The Selfish Gene_
 ch. 11) treats memes as:
 
 - **Compact** — low cognitive / symbolic cost to encode.
@@ -130,15 +130,15 @@ E8 candidates for the KERNEL — confirmed:
 SEED candidates — smaller than E8, agent commissioned to
 precisify:
 
-| Seed candidate | Structure | Growth → E8 |
-|---|---|---|
-| Dynkin diagram E8 itself (8 nodes + edges) | Pure combinatorial graph | Chevalley generators reconstruct E8 Lie algebra |
-| Single reflexive retract (e² = e, object + self-map) | One idempotent in one category | Retracts of groups → classical Lie groups → exceptional |
-| Sheffer stroke / NAND | One binary op | All Boolean algebra; then Set theory; then categories; then Lie theory |
-| Iota combinator ι = λf.(f S K) | Single combinator | Turing-complete substrate; then formal systems; then Lie groups |
-| One-object category (monoid) | Trivial category | Yoneda embedding → presheaves → sheaves → ∞-categories → classifying spaces of Lie groups |
-| Ouroboros (self-apply arrow) | Single-cell loop | Literal self-referential meme; fixed-point combinators; recursive bootstrapping |
-| A single self-dual axiom | One equation | Tarski/Meredith single-axiom lineage |
+| Seed candidate                                       | Structure                      | Growth → E8                                                                               |
+| ---------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------- |
+| Dynkin diagram E8 itself (8 nodes + edges)           | Pure combinatorial graph       | Chevalley generators reconstruct E8 Lie algebra                                           |
+| Single reflexive retract (e² = e, object + self-map) | One idempotent in one category | Retracts of groups → classical Lie groups → exceptional                                   |
+| Sheffer stroke / NAND                                | One binary op                  | All Boolean algebra; then Set theory; then categories; then Lie theory                    |
+| Iota combinator ι = λf.(f S K)                       | Single combinator              | Turing-complete substrate; then formal systems; then Lie groups                           |
+| One-object category (monoid)                         | Trivial category               | Yoneda embedding → presheaves → sheaves → ∞-categories → classifying spaces of Lie groups |
+| Ouroboros (self-apply arrow)                         | Single-cell loop               | Literal self-referential meme; fixed-point combinators; recursive bootstrapping           |
+| A single self-dual axiom                             | One equation                   | Tarski/Meredith single-axiom lineage                                                      |
 
 The agent has NOT collapsed to one. Non-collapse preserved
 per `user_probabilistic_never_zero_cognition.md` until the

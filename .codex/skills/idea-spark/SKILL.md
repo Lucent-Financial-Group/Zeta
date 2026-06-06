@@ -28,17 +28,21 @@ Use this flexible format unless the user asks for something else:
 
 ```markdown
 ## Read on the idea
+
 [one-sentence interpretation]
 
 ## Three directions
+
 **Safe:** [practical direction]
 **Sharp:** [more distinctive direction]
 **Weird:** [unexpected direction]
 
 ## Best bet
+
 [recommendation with a brief reason]
 
 ## Next move
+
 [one concrete action]
 ```
 

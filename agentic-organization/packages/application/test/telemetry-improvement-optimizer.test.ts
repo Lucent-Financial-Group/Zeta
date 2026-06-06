@@ -19,15 +19,17 @@ const SimulationEvidenceRef = createContentAddressedEvidenceRef("simulation-repo
 
 test("synthetic telemetry latency regression produces an evidence-backed improvement ChangeSet", async () => {
   const queryPort = new RecordingTelemetryQueryPort({
-    metrics: [{
-      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
-      points: [
-        { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:00:00.000Z", value: 110 },
-        { timestamp: "2026-05-31T18:30:00.000Z", value: 340 },
-        { timestamp: "2026-05-31T18:45:00.000Z", value: 360 },
-      ],
-    }],
+    metrics: [
+      {
+        labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+        points: [
+          { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:00:00.000Z", value: 110 },
+          { timestamp: "2026-05-31T18:30:00.000Z", value: 340 },
+          { timestamp: "2026-05-31T18:45:00.000Z", value: 360 },
+        ],
+      },
+    ],
     logs: [{ timestamp: NOW, line: "review p95 rose after queue policy change", labels: { hat: "code_reviewer" } }],
     traces: [{ traceId: "trace-review-p95", rootName: "org.review", spanCount: 7 }],
   });
@@ -46,8 +48,8 @@ test("synthetic telemetry latency regression produces an evidence-backed improve
     trigger: {
       metricKind: TelemetryImprovementMetricKind.ReviewP95Ms,
       metricQuery: "histogram_quantile(0.95, org_review_duration_ms)",
-      logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"",
-      traceQuery: "{ name = \"org.review\" }",
+      logQuery: '{app="agentic-org-worker"} |= "review p95"',
+      traceQuery: '{ name = "org.review" }',
       minimumRelativeChange: 1,
       direction: "increase_bad",
       suspectedCause: "review queue saturation",
@@ -69,7 +71,10 @@ test("synthetic telemetry latency regression produces an evidence-backed improve
   equal(result.hypothesis.symptom.metricKind, TelemetryImprovementMetricKind.ReviewP95Ms);
   equal(result.hypothesis.symptom.relativeChange >= 2, true);
   deepEqual(result.event.evidenceRefs, [TelemetryEvidenceRef, SimulationEvidenceRef]);
-  deepEqual(queryPort.calls.map((call) => call.kind), ["metrics", "logs", "traces"]);
+  deepEqual(
+    queryPort.calls.map((call) => call.kind),
+    ["metrics", "logs", "traces"],
+  );
 });
 
 test("telemetry backend outage blocks telemetry-driven proposal with degraded evidence", async () => {
@@ -107,15 +112,17 @@ test("telemetry backend outage blocks telemetry-driven proposal with degraded ev
 
 test("noisy metric fluctuation below threshold does not produce a proposal", async () => {
   const queryPort = new RecordingTelemetryQueryPort({
-    metrics: [{
-      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
-      points: [
-        { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:00:00.000Z", value: 105 },
-        { timestamp: "2026-05-31T18:30:00.000Z", value: 112 },
-        { timestamp: "2026-05-31T18:45:00.000Z", value: 108 },
-      ],
-    }],
+    metrics: [
+      {
+        labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+        points: [
+          { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:00:00.000Z", value: 105 },
+          { timestamp: "2026-05-31T18:30:00.000Z", value: 112 },
+          { timestamp: "2026-05-31T18:45:00.000Z", value: 108 },
+        ],
+      },
+    ],
   });
 
   const result = await runTelemetryImprovementOptimizer({
@@ -141,16 +148,20 @@ test("noisy metric fluctuation below threshold does not produce a proposal", asy
 
 test("post-change regression produces a rollback proposal instead of another rollout", async () => {
   const queryPort = new RecordingTelemetryQueryPort({
-    metrics: [{
-      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
-      points: [
-        { timestamp: "2026-05-31T17:45:00.000Z", value: 180 },
-        { timestamp: "2026-05-31T18:00:00.000Z", value: 170 },
-        { timestamp: "2026-05-31T18:30:00.000Z", value: 390 },
-        { timestamp: "2026-05-31T18:45:00.000Z", value: 410 },
-      ],
-    }],
-    logs: [{ timestamp: NOW, line: "post-change review p95 regression after cs-123", labels: { changeSetId: "cs-123" } }],
+    metrics: [
+      {
+        labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+        points: [
+          { timestamp: "2026-05-31T17:45:00.000Z", value: 180 },
+          { timestamp: "2026-05-31T18:00:00.000Z", value: 170 },
+          { timestamp: "2026-05-31T18:30:00.000Z", value: 390 },
+          { timestamp: "2026-05-31T18:45:00.000Z", value: 410 },
+        ],
+      },
+    ],
+    logs: [
+      { timestamp: NOW, line: "post-change review p95 regression after cs-123", labels: { changeSetId: "cs-123" } },
+    ],
   });
 
   const result = await runTelemetryImprovementOptimizer({
@@ -165,7 +176,7 @@ test("post-change regression produces a rollback proposal instead of another rol
     simulationEvidenceRef: SimulationEvidenceRef,
     simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
     rolledOutChangeSetId: "cs-123",
-    trigger: { ...defaultTrigger(), logQuery: "{app=\"agentic-org-worker\"} |= \"post-change review p95\"" },
+    trigger: { ...defaultTrigger(), logQuery: '{app="agentic-org-worker"} |= "post-change review p95"' },
   });
 
   equal(result.kind, "proposed");
@@ -177,15 +188,17 @@ test("post-change regression produces a rollback proposal instead of another rol
 
 test("post-change rollback is rejected without an explicit rolled-out ChangeSet target", async () => {
   const queryPort = new RecordingTelemetryQueryPort({
-    metrics: [{
-      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
-      points: [
-        { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
-        { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
-      ],
-    }],
+    metrics: [
+      {
+        labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+        points: [
+          { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
+          { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
+        ],
+      },
+    ],
     logs: [{ timestamp: NOW, line: "post-change review p95 regression", labels: { changeSetId: "cs-123" } }],
   });
 
@@ -201,7 +214,7 @@ test("post-change rollback is rejected without an explicit rolled-out ChangeSet 
     simulationEvidenceRef: SimulationEvidenceRef,
     simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
     mode: TelemetryImprovementProposalMode.Rollback,
-    trigger: { ...defaultTrigger(), logQuery: "{app=\"agentic-org-worker\"} |= \"post-change review p95\"" },
+    trigger: { ...defaultTrigger(), logQuery: '{app="agentic-org-worker"} |= "post-change review p95"' },
   });
 
   deepEqual(result, { kind: "no_proposal", reason: "missing_rollback_target" });
@@ -209,15 +222,17 @@ test("post-change rollback is rejected without an explicit rolled-out ChangeSet 
 
 test("corroborating log or trace evidence is required before proposing a telemetry improvement", async () => {
   const queryPort = new RecordingTelemetryQueryPort({
-    metrics: [{
-      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
-      points: [
-        { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
-        { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
-      ],
-    }],
+    metrics: [
+      {
+        labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+        points: [
+          { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
+          { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
+        ],
+      },
+    ],
     logs: [],
     traces: [],
   });
@@ -235,8 +250,8 @@ test("corroborating log or trace evidence is required before proposing a telemet
     simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
     trigger: {
       ...defaultTrigger(),
-      logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"",
-      traceQuery: "{ name = \"org.review\" }",
+      logQuery: '{app="agentic-org-worker"} |= "review p95"',
+      traceQuery: '{ name = "org.review" }',
     },
   });
 
@@ -245,15 +260,17 @@ test("corroborating log or trace evidence is required before proposing a telemet
 
 test("threshold decisions use raw relative change before rounding", async () => {
   const queryPort = new RecordingTelemetryQueryPort({
-    metrics: [{
-      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
-      points: [
-        { timestamp: "2026-05-31T17:45:00.000Z", value: 10000 },
-        { timestamp: "2026-05-31T18:00:00.000Z", value: 10000 },
-        { timestamp: "2026-05-31T18:30:00.000Z", value: 19995 },
-        { timestamp: "2026-05-31T18:45:00.000Z", value: 19995 },
-      ],
-    }],
+    metrics: [
+      {
+        labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+        points: [
+          { timestamp: "2026-05-31T17:45:00.000Z", value: 10000 },
+          { timestamp: "2026-05-31T18:00:00.000Z", value: 10000 },
+          { timestamp: "2026-05-31T18:30:00.000Z", value: 19995 },
+          { timestamp: "2026-05-31T18:45:00.000Z", value: 19995 },
+        ],
+      },
+    ],
     logs: [{ timestamp: NOW, line: "review p95 nearly doubled", labels: { hat: "code_reviewer" } }],
   });
 
@@ -268,7 +285,7 @@ test("threshold decisions use raw relative change before rounding", async () => 
     telemetryEvidenceRef: TelemetryEvidenceRef,
     simulationEvidenceRef: SimulationEvidenceRef,
     simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
-    trigger: { ...defaultTrigger(), logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"" },
+    trigger: { ...defaultTrigger(), logQuery: '{app="agentic-org-worker"} |= "review p95"' },
   });
 
   deepEqual(result, {
@@ -286,22 +303,27 @@ test("multiple telemetry proposals for one work target get distinct durable ids"
     targetRef: "tenant-config/org-lfg.json",
     now: NOW,
     queryPort: new RecordingTelemetryQueryPort({
-      metrics: [{
-        labels: { hat: "code_reviewer" },
-        points: [
-          { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
-          { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
-          { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
-          { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
-        ],
-      }],
+      metrics: [
+        {
+          labels: { hat: "code_reviewer" },
+          points: [
+            { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
+            { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
+            { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
+            { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
+          ],
+        },
+      ],
       logs: [{ timestamp: NOW, line: "review p95 doubled", labels: { hat: "code_reviewer" } }],
     }),
     range: RANGE,
-    telemetryEvidenceRef: createContentAddressedEvidenceRef("telemetry-regression", { metric: "review_p95", window: 1 }),
+    telemetryEvidenceRef: createContentAddressedEvidenceRef("telemetry-regression", {
+      metric: "review_p95",
+      window: 1,
+    }),
     simulationEvidenceRef: SimulationEvidenceRef,
     simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
-    trigger: { ...defaultTrigger(), logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"" },
+    trigger: { ...defaultTrigger(), logQuery: '{app="agentic-org-worker"} |= "review p95"' },
   });
   const second = await runTelemetryImprovementOptimizer({
     organizationId: "org-lfg",
@@ -310,22 +332,27 @@ test("multiple telemetry proposals for one work target get distinct durable ids"
     targetRef: "tenant-config/org-lfg.json",
     now: NOW,
     queryPort: new RecordingTelemetryQueryPort({
-      metrics: [{
-        labels: { hat: "code_reviewer" },
-        points: [
-          { timestamp: "2026-05-31T17:45:00.000Z", value: 200 },
-          { timestamp: "2026-05-31T18:00:00.000Z", value: 200 },
-          { timestamp: "2026-05-31T18:30:00.000Z", value: 500 },
-          { timestamp: "2026-05-31T18:45:00.000Z", value: 500 },
-        ],
-      }],
+      metrics: [
+        {
+          labels: { hat: "code_reviewer" },
+          points: [
+            { timestamp: "2026-05-31T17:45:00.000Z", value: 200 },
+            { timestamp: "2026-05-31T18:00:00.000Z", value: 200 },
+            { timestamp: "2026-05-31T18:30:00.000Z", value: 500 },
+            { timestamp: "2026-05-31T18:45:00.000Z", value: 500 },
+          ],
+        },
+      ],
       logs: [{ timestamp: NOW, line: "review p95 doubled again", labels: { hat: "code_reviewer" } }],
     }),
     range: RANGE,
-    telemetryEvidenceRef: createContentAddressedEvidenceRef("telemetry-regression", { metric: "review_p95", window: 2 }),
+    telemetryEvidenceRef: createContentAddressedEvidenceRef("telemetry-regression", {
+      metric: "review_p95",
+      window: 2,
+    }),
     simulationEvidenceRef: SimulationEvidenceRef,
     simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
-    trigger: { ...defaultTrigger(), logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"" },
+    trigger: { ...defaultTrigger(), logQuery: '{app="agentic-org-worker"} |= "review p95"' },
   });
 
   equal(first.kind, "proposed");
@@ -337,15 +364,17 @@ test("multiple telemetry proposals for one work target get distinct durable ids"
 
 test("post-rollout metric improvement emits optimizer reputation evidence", async () => {
   const queryPort = new RecordingTelemetryQueryPort({
-    metrics: [{
-      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
-      points: [
-        { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
-        { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
-        { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
-      ],
-    }],
+    metrics: [
+      {
+        labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+        points: [
+          { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
+          { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
+          { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
+        ],
+      },
+    ],
     logs: [{ timestamp: NOW, line: "review p95 doubled", labels: { hat: "code_reviewer" } }],
   });
   const proposal = await runTelemetryImprovementOptimizer({
@@ -359,7 +388,7 @@ test("post-rollout metric improvement emits optimizer reputation evidence", asyn
     telemetryEvidenceRef: TelemetryEvidenceRef,
     simulationEvidenceRef: SimulationEvidenceRef,
     simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
-    trigger: { ...defaultTrigger(), logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"" },
+    trigger: { ...defaultTrigger(), logQuery: '{app="agentic-org-worker"} |= "review p95"' },
   });
   equal(proposal.kind, "proposed");
   if (proposal.kind !== "proposed") throw new Error("expected telemetry improvement proposal");

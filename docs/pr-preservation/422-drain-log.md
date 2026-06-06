@@ -42,7 +42,7 @@ timestamp — never an in-place edit of the merged row.
 - Severity: P2
 - Finding: parent row narrated SIX sub-actions but said "three-thread
   day" in summary text. "Three-thread day" referred informally to
-  three drain *PRs* in flight (#282, #398, #401) plus three new
+  three drain _PRs_ in flight (#282, #398, #401) plus three new
   BACKLOG / refinement landings — NOT three discrete tick threads.
   Read the (a)-(f) enumeration as the canonical per-action list.
 - Outcome: **APPEND-ONLY CORRECTION-ROW** — disambiguation captured

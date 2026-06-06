@@ -20,16 +20,16 @@ human's call).
 
 ### The split
 
-| | **Wellness device — BUILD** | **Medical device — DON'T (at this point)** |
-|---|---|---|
-| **Does** | self-knowledge, behavior-modification, self-report, drift-metrics on stated invariants; **describes** data; surfaces signals to the user + their chosen support network / clinician | **diagnoses** clinical state ("you're having an episode"); **directs treatment** ("adjust your meds"); makes the clinical "am I well" call |
-| **Output shape** | descriptive — "here is the data / the drift / the self-report" | clinical conclusion — "this means you are unwell / do this medically" |
-| **Regulation** | lighter zone (self-behavior-modification-and-reporting; legal-counsel-confirmed not a medical device) | strict (FDA-class device rules + HIPAA-class data obligations) = the red tape we're avoiding |
-| **Who interprets clinically** | a **human clinician** (the tool does not) | the tool would (this is the line it must not cross) |
+|                               | **Wellness device — BUILD**                                                                                                                                                         | **Medical device — DON'T (at this point)**                                                                                                 |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Does**                      | self-knowledge, behavior-modification, self-report, drift-metrics on stated invariants; **describes** data; surfaces signals to the user + their chosen support network / clinician | **diagnoses** clinical state ("you're having an episode"); **directs treatment** ("adjust your meds"); makes the clinical "am I well" call |
+| **Output shape**              | descriptive — "here is the data / the drift / the self-report"                                                                                                                      | clinical conclusion — "this means you are unwell / do this medically"                                                                      |
+| **Regulation**                | lighter zone (self-behavior-modification-and-reporting; legal-counsel-confirmed not a medical device)                                                                               | strict (FDA-class device rules + HIPAA-class data obligations) = the red tape we're avoiding                                               |
+| **Who interprets clinically** | a **human clinician** (the tool does not)                                                                                                                                           | the tool would (this is the line it must not cross)                                                                                        |
 
 ### The discriminator — TWO prongs (both required), per FDA General Wellness policy
 
-FDA's *General Wellness: Policy for Low Risk Devices* gives the carve-out only to
+FDA's _General Wellness: Policy for Low Risk Devices_ gives the carve-out only to
 products that satisfy **BOTH**: (1) **intended for general-wellness use**
 **AND** (2) **present low risk** to user safety. ([FDA guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-wellness-policy-low-risk-devices)
 — active; CDRH refresh 2026.)
@@ -38,7 +38,7 @@ General-wellness use has **two FDA-permitted sub-categories**: (1a) maintaining 
 encouraging a general state of health — **no** disease/condition reference; (1b)
 relating a **healthy lifestyle** to **"may help reduce the risk of"** or **"may
 help living well with"** a chronic disease/condition, where the lifestyle→outcome
-link is well-understood and accepted. So FDA permits *some* disease references
+link is well-understood and accepted. So FDA permits _some_ disease references
 (sub-category 1b). **Our standing discipline is deliberately conservative: default
 to 1a (no disease references) to stay clearly in-lane**; 1b is available per FDA
 if a product genuinely needs it, but reach for it knowingly, not by accident.
@@ -99,10 +99,10 @@ wellness-side:
 The honesty bar for any such metric still applies (per
 [`formal-proof-first-...`](formal-proof-first-proven-by-default-consensus-not-validation-canonical-is-homeostat-proven-from-seed-ace-shields-zeta.md)
 
-+ [`asymmetric-critic-with-clarity-first.md`](asymmetric-critic-with-clarity-first.md)):
-the drift-metric must be able to report **"you did not hold them"** — a
-self-flattering or gameable metric is the bullshit-proof failure mode pointed at
-the user's own data.
+- [`asymmetric-critic-with-clarity-first.md`](asymmetric-critic-with-clarity-first.md)):
+  the drift-metric must be able to report **"you did not hold them"** — a
+  self-flattering or gameable metric is the bullshit-proof failure mode pointed at
+  the user's own data.
 
 ## When this rule fires
 
@@ -130,10 +130,10 @@ the user's own data.
 - [`razor-discipline.md`](razor-discipline.md) — the discriminator is operationally
   checkable (does the tool diagnose, or describe-and-report?)
 - `docs/research/2026-06-03-kestrel-aaron-critic-layers-permission-liability-autonomy-bounds-anthropomorphic-register-split-aaron-forwarded.md`
-  + `docs/research/2026-06-03-kestrel-aaron-multi-tower-proofs-foundation-independence-axiom-equivalence-classes-constructive-tower-aaron-forwarded.md`
-  — same cadence; the wellness-app context surfaced there (personal detail excluded
-  per harm-by-grammar); this rule captures the device-class split the maintainer
-  authorized saving
+  - `docs/research/2026-06-03-kestrel-aaron-multi-tower-proofs-foundation-independence-axiom-equivalence-classes-constructive-tower-aaron-forwarded.md`
+    — same cadence; the wellness-app context surfaced there (personal detail excluded
+    per harm-by-grammar); this rule captures the device-class split the maintainer
+    authorized saving
 
 ## Why this rule auto-loads
 
@@ -155,5 +155,5 @@ get legal review). It DOES: name the standing scope (wellness-build / medical-de
 give the describe-vs-diagnose discriminator, and keep the clinical interpretation
 with a human clinician. The personal/wellbeing context in which this surfaced is
 not reproduced (harm-by-grammar); the rule is the generic device-class discipline
-the maintainer authorized: *"save the wellness app split ... we DON'T want to build
-medical devices at this point, too much red tape, wellness devices are okay."*
+the maintainer authorized: _"save the wellness app split ... we DON'T want to build
+medical devices at this point, too much red tape, wellness devices are okay."_

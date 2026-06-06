@@ -101,7 +101,7 @@ temp-dir handling.
 ## Non-goals
 
 - End-to-end LaunchAgent install tests requiring a real `launchctl
-  bootstrap` (would need a macOS runner + sudo + cleanup of system
+bootstrap` (would need a macOS runner + sudo + cleanup of system
   state — out of scope; cover with the `--bootstrap` smoke test
   document only)
 - Refactoring `install-launchagent.ts` for testability beyond the

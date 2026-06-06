@@ -26,24 +26,22 @@ Copilot wasn't able to review any files in this pull request.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T20:18:18Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `b8c34c96aa`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -55,7 +53,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-11T20:18:18Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Escape backticks in the new prompt instruction**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Escape backticks in the new prompt instruction**
 
 The added line uses raw backticks around `bun run ...` inside a backtick-delimited template literal, which terminates the string early and makes this script syntactically invalid. As a result, `.gemini/bin/lior-loop-tick.ts` fails to parse before any runtime logic executes, so the Lior background loop cannot start at all in environments that run this file.
 

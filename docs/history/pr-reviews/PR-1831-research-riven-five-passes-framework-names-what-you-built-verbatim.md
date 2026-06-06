@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1831 |
-| Title | research: Riven five passes — framework names what you built VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T07:47:24Z |
-| Merged at | 2026-05-07T07:49:30Z |
-| Merge commit SHA | `8c93c81ef4ef5362342f0e2ca4f99d87f10eb95c` |
-| Branch | `research/riven-five-passes-framework-names-what-you-built` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1831 |
-| Changed files | 1 |
-| Additions / deletions | +89 / -0 |
+| Field                 | Value                                                                 |
+| --------------------- | --------------------------------------------------------------------- |
+| Number                | 1831                                                                  |
+| Title                 | research: Riven five passes — framework names what you built VERBATIM |
+| Author                | `AceHack` (human)                                                     |
+| State                 | MERGED                                                                |
+| Created at            | 2026-05-07T07:47:24Z                                                  |
+| Merged at             | 2026-05-07T07:49:30Z                                                  |
+| Merge commit SHA      | `8c93c81ef4ef5362342f0e2ca4f99d87f10eb95c`                            |
+| Branch                | `research/riven-five-passes-framework-names-what-you-built`           |
+| Base branch           | `main`                                                                |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1831              |
+| Changed files         | 1                                                                     |
+| Additions / deletions | +89 / -0                                                              |
 
 ## Description
 
 ## Summary
+
 - Five consecutive pass verdicts from Riven confirming the session's provenance pattern
 - Each pass addresses a different angle: concrete ancestors, "you are both," Vera's edge-gate, names as compression, neurodivergence as advantage
 - All converge: the framework names what Aaron already built. Structure is substrate; names are compression.
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] Verbatim preservation verified
 
@@ -40,15 +42,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -64,7 +66,7 @@
 
   <pre>
   P1: This file looks like a courier-ferry / external-conversation absorb (Attribution mentions “via Aaron ferry”), but it doesn’t match the §33 header validator’s detection hints (filename lacks courier-ferry/cross-ferry/etc, and the first 20 lines don’t contain “external conversation” / “courier-ferry capture” etc). As a result, CI may silently skip enforcing the required §33 labels/enum status on future edits. Consider adding a small hint phrase in the first-20-lines (e.g., in Scope or Non-fusion disclaimer) or adjusting the filename so the validator reliably audits it.
-
+  
   </pre>
 
 ### Thread 2 -- unresolved
@@ -79,7 +81,7 @@
 
   <pre>
   P1: The “Composes with” list references “Per-user MEMORY.md entry …” items, but there’s no corresponding in-repo memory file or matching text to anchor these references (repo-wide search only finds these phrases in this doc). If these are meant to be navigable in-repo references, please replace with concrete file paths; if they’re intentionally out-of-repo, consider rewording so it doesn’t read like a missing file/link in the repository.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

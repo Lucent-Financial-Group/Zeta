@@ -27,11 +27,11 @@ composes_with:
 
 ## Aaron's directive
 
-Aaron 2026-05-13: *"Also there is backlog for repo split on
-products too"* + (new framing) *"so anytihgn you don't want them
+Aaron 2026-05-13: _"Also there is backlog for repo split on
+products too"_ + (new framing) _"so anytihgn you don't want them
 to fork specifically you have in a repo can still be public and
 such glass halo but the licence can say no fork please respect
-honesty or something not enforcable"*.
+honesty or something not enforcable"_.
 
 The three-repo split (Zeta + Forge + ace per B-0424) covers
 **factory infrastructure**. This backlog row covers
@@ -39,9 +39,9 @@ The three-repo split (Zeta + Forge + ace per B-0424) covers
 
 ## Two distinct repo-split axes
 
-| Axis | Repos | Forkability |
-|---|---|---|
-| **Factory** (B-0424) | Zeta + Forge + ace | Open / designed-to-be-forked |
+| Axis                    | Repos                                                       | Forkability                                                               |
+| ----------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Factory** (B-0424)    | Zeta + Forge + ace                                          | Open / designed-to-be-forked                                              |
 | **Products** (this row) | KSK / wellness / civsim / American Dream 2.0 / DIO / Aurora | Public + glass-halo BUT honor-system "please don't fork" license language |
 
 ## Honor-system "please don't fork" license framing
@@ -130,13 +130,13 @@ B-0424 ──────→ B-0467
 
 ### Child row summary
 
-| Row | Title | Depends on | Type |
-|-----|-------|------------|------|
-| **B-0464** | Honor-system "please don't fork" license language draft | none | design |
-| **B-0465** | Per-product substrate inventory — 7 candidates, repo-ready eval | none | research |
-| **B-0466** | Naming-expert review for product repo names | B-0465 | design |
-| **B-0467** | Product-repo cross-ref glue mechanism design | B-0465, B-0424 | design |
-| **B-0468** | ADR — product-repo split decisions (closes B-0425) | B-0464, B-0465, B-0466, B-0467 | design |
+| Row        | Title                                                           | Depends on                     | Type     |
+| ---------- | --------------------------------------------------------------- | ------------------------------ | -------- |
+| **B-0464** | Honor-system "please don't fork" license language draft         | none                           | design   |
+| **B-0465** | Per-product substrate inventory — 7 candidates, repo-ready eval | none                           | research |
+| **B-0466** | Naming-expert review for product repo names                     | B-0465                         | design   |
+| **B-0467** | Product-repo cross-ref glue mechanism design                    | B-0465, B-0424                 | design   |
+| **B-0468** | ADR — product-repo split decisions (closes B-0425)              | B-0464, B-0465, B-0466, B-0467 | design   |
 
 ### What can start immediately (no blockers)
 

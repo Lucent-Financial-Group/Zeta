@@ -13,24 +13,36 @@ composes_with:
   - B-0824
   - B-0835
   - B-0848
-tags: [ci-test-harness, docker, nixos, install-sh, fast-iteration, mise-bootstrap, runtime-version-validation, three-way-parity-extended-to-nixos, operator-iteration-cost, complements-qemu-full-install]
+tags:
+  [
+    ci-test-harness,
+    docker,
+    nixos,
+    install-sh,
+    fast-iteration,
+    mise-bootstrap,
+    runtime-version-validation,
+    three-way-parity-extended-to-nixos,
+    operator-iteration-cost,
+    complements-qemu-full-install,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
-> *"we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile"*
+> _"we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile"_
 
 Direct response after PR #5389 (the fix-fwd for PR #5388 which added NixOS detection to linux.sh) — operator named the iteration-cost problem: every change to install.sh / linux.sh / common/mise.sh on NixOS currently requires a full ISO build + USB flash + physical install cycle (B-0831 QEMU cascade #6 is the substrate-level fix, but it's a full-VM boot which takes minutes). Docker-based testing of JUST the install.sh script (not the full ISO/boot cycle) gives seconds-per-iteration.
 
 ## Why this is bounded + valuable
 
-| Test surface | Validates | Cycle time | Today |
-|---|---|---|---|
-| Operator physical USB install | End-to-end (BIOS + disko + nixos-install + iter-5.x + reboot) | ~30+ min | only-after-full-PR-cascade |
-| B-0831 cascade #6 QEMU full-install | End-to-end virtualized | ~15 min | iter-5.2 STARTER landed; full slices pending |
-| **B-0849 Docker install.sh harness** (this row) | Just `tools/setup/install.sh` on NixOS userspace | **~30-60 sec** | not yet exists |
+| Test surface                                    | Validates                                                     | Cycle time     | Today                                        |
+| ----------------------------------------------- | ------------------------------------------------------------- | -------------- | -------------------------------------------- |
+| Operator physical USB install                   | End-to-end (BIOS + disko + nixos-install + iter-5.x + reboot) | ~30+ min       | only-after-full-PR-cascade                   |
+| B-0831 cascade #6 QEMU full-install             | End-to-end virtualized                                        | ~15 min        | iter-5.2 STARTER landed; full slices pending |
+| **B-0849 Docker install.sh harness** (this row) | Just `tools/setup/install.sh` on NixOS userspace              | **~30-60 sec** | not yet exists                               |
 
-Docker testing is the FASTEST iteration loop for the linux.sh + mise.sh + common/* substrate. Aaron's catch ("we've drifted for nixos for some reason for bun") is exactly the class of bug Docker-fast-iteration would catch BEFORE it ships to a real install.
+Docker testing is the FASTEST iteration loop for the linux.sh + mise.sh + common/\* substrate. Aaron's catch ("we've drifted for nixos for some reason for bun") is exactly the class of bug Docker-fast-iteration would catch BEFORE it ships to a real install.
 
 ## Proposed mitigation
 
@@ -130,7 +142,7 @@ Both run on CI; Docker fires more often (faster), QEMU runs on every PR that tou
 
 ## Full reasoning
 
-Aaron 2026-05-27 immediately after seeing PR #5389 ship the linux.sh NixOS-detection branch + zeta-install.sh delegation to tools/setup/install.sh. The substrate-engineering target: "we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile" + "nixos*" (correcting typo from "mixos").
+Aaron 2026-05-27 immediately after seeing PR #5389 ship the linux.sh NixOS-detection branch + zeta-install.sh delegation to tools/setup/install.sh. The substrate-engineering target: "we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile" + "nixos\*" (correcting typo from "mixos").
 
 The empirical case for fast-iteration is strong:
 

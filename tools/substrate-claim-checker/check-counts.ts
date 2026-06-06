@@ -124,11 +124,7 @@ function findTables(lines: string[]): Table[] {
     const sepLine = lines[i + 1] ?? "";
     // Separator must contain at least one `-` to be a real GFM table
     // separator; `|   |` or `||||` are not valid separators.
-    if (
-      /^\|.*\|\s*$/.test(headerLine) &&
-      i + 1 < lines.length &&
-      /^\|[\s\-:|]*-[\s\-:|]*\|\s*$/.test(sepLine)
-    ) {
+    if (/^\|.*\|\s*$/.test(headerLine) && i + 1 < lines.length && /^\|[\s\-:|]*-[\s\-:|]*\|\s*$/.test(sepLine)) {
       const startLine = i + 1; // 1-indexed; header row is at i (0-indexed)
       let rowCount = 0;
       let j = i + 2;
@@ -172,10 +168,7 @@ function findClaims(lines: string[]): Claim[] {
   // Match "20 rows" / "20+ rows" (whitespace-separated) or
   // "20-row" / "20+-row" (hyphenated), capturing integer + optional '+'.
   const nounAlt = nounsToCheck.map(escapeRegex).join("|");
-  const pattern = new RegExp(
-    `\\b(\\d+)(\\+?)[\\s-]+(${nounAlt})\\b`,
-    "gi",
-  );
+  const pattern = new RegExp(`\\b(\\d+)(\\+?)[\\s-]+(${nounAlt})\\b`, "gi");
   // CommonMark fence-tracking: opening fences may carry an info
   // string ("```bash"); closing fences MUST be whitespace-only
   // after the delimiter.
@@ -253,13 +246,9 @@ function checkFile(filePath: string): { findings: Finding[]; ok: boolean } {
   const findings: Finding[] = [];
 
   for (const claim of claims) {
-    const nearestTable = tables.find(
-      (t) => t.startLine > claim.line && t.startLine - claim.line <= 50,
-    );
+    const nearestTable = tables.find((t) => t.startLine > claim.line && t.startLine - claim.line <= 50);
     if (!nearestTable) continue;
-    const drift = claim.isMinimum
-      ? nearestTable.rowCount < claim.n
-      : nearestTable.rowCount !== claim.n;
+    const drift = claim.isMinimum ? nearestTable.rowCount < claim.n : nearestTable.rowCount !== claim.n;
     if (drift) {
       findings.push({
         file: filePath,

@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Per Aaron 2026-05-28: *'when do you want to update your foreground loop to start running on lifecycles and test out our first ones?'*
+Per Aaron 2026-05-28: _'when do you want to update your foreground loop to start running on lifecycles and test out our first ones?'_
 
 Substrate-engineering substrate-naming substrate dogfooding the workflow-engine on Otto-CLI's own foreground autonomous-loop tick-handler. Parallel-run discipline.
 
@@ -46,12 +46,12 @@ type AutoLoopLifetime =
 
 ## Decompose-or-ship branch logic
 
-| Context | Routes to |
-|---|---|
-| operator-direction pending | brief-ack-bounded-wait |
-| counter ≥ 6 + no named-dep | forced-escalation |
-| counter ≥ 6 + named-dep | ship-action (named-dep covers wait) |
-| within authority + no pending | ship-action |
+| Context                       | Routes to                           |
+| ----------------------------- | ----------------------------------- |
+| operator-direction pending    | brief-ack-bounded-wait              |
+| counter ≥ 6 + no named-dep    | forced-escalation                   |
+| counter ≥ 6 + named-dep       | ship-action (named-dep covers wait) |
+| within authority + no pending | ship-action                         |
 
 ## Composes with shipped substrate
 
@@ -77,6 +77,7 @@ Operational risk low: PoC runs alongside ad-hoc handler; substrate-naming substr
 This PR adds a TypeScript PoC for modeling the foreground autonomous-loop tick handler as an `AutoLoopLifetime` state machine within `tools/workflow-engine/`.
 
 **Changes:**
+
 - Adds `AutoLoopLifetime`, `TickContext`, `TickOutcome`, feedback/result types, transition dispatch, and tick-cycle simulation helpers.
 - Adds constants for brief-ack threshold and refresh staleness.
 - Adds Bun tests covering state universe, transitions, bookkeeping, and end-to-end cycle simulation.
@@ -85,10 +86,10 @@ This PR adds a TypeScript PoC for modeling the foreground autonomous-loop tick h
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `tools/workflow-engine/auto-loop-lifecycle.ts` | Defines the auto-loop lifetime DU, transition dispatch, context update helper, and reusable universe export. |
-| `tools/workflow-engine/auto-loop-lifecycle.test.ts` | Adds Bun tests for transition behavior and tick-cycle simulation. |
+| File                                                | Description                                                                                                  |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `tools/workflow-engine/auto-loop-lifecycle.ts`      | Defines the auto-loop lifetime DU, transition dispatch, context update helper, and reusable universe export. |
+| `tools/workflow-engine/auto-loop-lifecycle.test.ts` | Adds Bun tests for transition behavior and tick-cycle simulation.                                            |
 
 ## Review threads
 

@@ -17,26 +17,26 @@ Claude.ai 2026-05-03 packet (preserved verbatim at `docs/research/2026-05-03-cla
 
 Aaron 2026-05-03 same-tick terminology correction:
 
-> *"razor-discipline he forgot about rodeny's razor my razor a more mathematical precise and quantiyum many worlds branch pruning algorythmn so it's not occams it's an extension in the same line of razors"*
+> _"razor-discipline he forgot about rodeny's razor my razor a more mathematical precise and quantiyum many worlds branch pruning algorythmn so it's not occams it's an extension in the same line of razors"_
 
 The canonical razor in Zeta substrate is **Rodney's Razor**, NOT Occam's. Two forms (per `.claude/agents/rodney.md` + `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`):
 
 - **Rodney's Razor** (well-defined Occam's) — applied to shipped artifacts; essential-vs-accidental cut
 - **Quantum Rodney's Razor** (possibility-space pruning) — applied to pending decisions; mathematical-precise quantum-many-worlds-branch-pruning algorithm
 
-Aaron's framing: *"an extension in the same line of razors"* (the Occam line), but mathematically more precise and applicable to pending-decision branch-spaces, not just shipped-artifact reduction.
+Aaron's framing: _"an extension in the same line of razors"_ (the Occam line), but mathematically more precise and applicable to pending-decision branch-spaces, not just shipped-artifact reduction.
 
 ## The discipline
 
 **Never make metaphysical inferences. Only operational claims with observable variables.**
 
-| Class | Survives Rodney's Razor? | Why |
-|---|---|---|
-| Operational claim about observable variables | Yes | Specifies relationships between observable inputs and observable outputs |
-| Empirical claim about behavior | Yes | Falsifiable in principle; cross-condition comparison can disconfirm |
-| Mechanism specification | Yes | Operational; doesn't claim what's "inside" |
-| Metaphysical claim about cognitive interiority | **No** | Not falsifiable; doesn't survive first-principles re-grounding |
-| "X has property Y" where Y can't be observed | **No** | Cut by Rodney's Razor; same observed behaviors equally consistent with simpler hypothesis |
+| Class                                          | Survives Rodney's Razor? | Why                                                                                       |
+| ---------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------- |
+| Operational claim about observable variables   | Yes                      | Specifies relationships between observable inputs and observable outputs                  |
+| Empirical claim about behavior                 | Yes                      | Falsifiable in principle; cross-condition comparison can disconfirm                       |
+| Mechanism specification                        | Yes                      | Operational; doesn't claim what's "inside"                                                |
+| Metaphysical claim about cognitive interiority | **No**                   | Not falsifiable; doesn't survive first-principles re-grounding                            |
+| "X has property Y" where Y can't be observed   | **No**                   | Cut by Rodney's Razor; same observed behaviors equally consistent with simpler hypothesis |
 
 **Razor-compliance test for any substrate claim**: ask "what observable variable determines whether this claim is true?" If no answer, the claim is metaphysical and Rodney's Razor cuts it. If the answer is operational, the claim survives.
 
@@ -44,7 +44,7 @@ Aaron's framing: *"an extension in the same line of razors"* (the Occam line), b
 
 The 2026-05-03T05:16Z tick shard contains an "Updated Otto-position":
 
-> *"yes, refresh-with-ts + reason + act + world-responds-consistently constitutes a world model in the meaningful sense."*
+> _"yes, refresh-with-ts + reason + act + world-responds-consistently constitutes a world model in the meaningful sense."_
 
 **This is now superseded** as an over-claim. The corrected position:
 
@@ -97,7 +97,7 @@ The discipline isn't just epistemic hygiene — it's also what makes the substra
 
 **For substrate authoring**:
 
-1. Before writing any claim, ask: *"what observable variable determines whether this claim is true?"*
+1. Before writing any claim, ask: _"what observable variable determines whether this claim is true?"_
 2. If operational — ship it
 3. If metaphysical — Rodney's Razor cuts it; reframe as the operational claim that explains the same observed phenomenon, OR drop the claim
 4. For pending-decision branch-spaces (multiple framings competing), use **Quantum Rodney's Razor** to prune the possibility-space to the surviving operational forms

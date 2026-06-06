@@ -40,7 +40,7 @@ For every finding, produce exactly one of:
 
 - Read the rule documentation end-to-end before touching
   code. Sonar and Meziantou rule pages name the motivating
-  pattern; understand *why* the rule exists before deciding
+  pattern; understand _why_ the rule exists before deciding
   whether this case actually matches.
 - If the rule's motivation applies to this code, do the
   real fix — the refactor that removes the actual defect,
@@ -74,7 +74,7 @@ For every finding, produce exactly one of:
   in preference order:
   1. **`[SuppressMessage]` attribute on the specific
      type / member** — `[SuppressMessage("Design",
-     "MA0048:...", Justification = "...")]` directly on
+"MA0048:...", Justification = "...")]` directly on
      the offending class / interface / method. Preferred
      for almost every case. File-level rationale (e.g.,
      "why four related types live in one file") goes as
@@ -82,7 +82,7 @@ For every finding, produce exactly one of:
      carries its own attribute referencing the header.
   2. **`GlobalSuppressions.cs` at project root** with
      `[assembly: SuppressMessage(..., Justification = "...",
-     Scope, Target)]`. Scaling fallback. Best fit when a
+Scope, Target)]`. Scaling fallback. Best fit when a
      single suppression targets N types or members the
      way `Scope` / `Target` can express cleanly, and
      repeating the per-target attribute N times would

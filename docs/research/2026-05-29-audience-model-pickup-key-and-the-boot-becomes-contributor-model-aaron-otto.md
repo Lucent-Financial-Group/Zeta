@@ -20,23 +20,23 @@ requires. Operator-confirmed ("you nailed the framing").
 
 ## The three audiences
 
-| Surface | Audience | Hardness |
-|---|---|---|
-| **git-monster accelerator** | Anyone wanting to see AI life — GitHub-noobs included; free, and they'll leave it running. | **Hardest** |
-| **usb / iso** | Homelab / home-automation / devops / research / benchmark. Concrete target: **ServiceTitan** full persona-spectrum (all tech + c-suite). | Technical mid |
-| **encryption** | Everyone. Privacy is the base layer under all of it. | Universal base |
+| Surface                     | Audience                                                                                                                                 | Hardness       |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| **git-monster accelerator** | Anyone wanting to see AI life — GitHub-noobs included; free, and they'll leave it running.                                               | **Hardest**    |
+| **usb / iso**               | Homelab / home-automation / devops / research / benchmark. Concrete target: **ServiceTitan** full persona-spectrum (all tech + c-suite). | Technical mid  |
+| **encryption**              | Everyone. Privacy is the base layer under all of it.                                                                                     | Universal base |
 
 ### Audience-hardness inverts the technical floor
 
-git-monster is the hardest audience *precisely because it assumes the least of the
-user* — zero-friction, self-evidently-valuable, free, runs-unattended, legible to
+git-monster is the hardest audience _precisely because it assumes the least of the
+user_ — zero-friction, self-evidently-valuable, free, runs-unattended, legible to
 someone who's never touched git. usb/iso is an easier audience because it assumes the
-*most* (technical practitioners tolerate complexity). So **designing for the hardest
+_most_ (technical practitioners tolerate complexity). So **designing for the hardest
 audience is the hardest engineering and the widest payoff** — it's the accessibility
 forcing-function. If it works for the noob, it works for everyone above them.
 
 This reconciles with "do what's easy first": the easy-first work mostly serves the
-*easier* audiences (the usb/iso technical floor, the encryption primitives) where less
+_easier_ audiences (the usb/iso technical floor, the encryption primitives) where less
 polish satisfies them; the git-monster-noob-legibility is the hardest polish, the
 expand-later. Encryption-everyone is the foundational base under both.
 
@@ -54,8 +54,8 @@ c-suite" is **two audiences with two faces**:
 So the product is **dual-face**: same engine, two readouts — the from-above/individual
 split as a product requirement.
 
-**Clean under the employer-IP rules (#6014):** the personas designed-for are *generic
-roles any devops org has* (every company has a CTO, a platform team, an SRE on-call) —
+**Clean under the employer-IP rules (#6014):** the personas designed-for are _generic
+roles any devops org has_ (every company has a CTO, a platform team, an SRE on-call) —
 ServiceTitan is just the instance known best, so it calibrates the design without
 becoming the design. Generic-craft, not ServiceTitan-internals; the MNPI line holds
 (model the roles, never their actual stack / scale / gaps); demo-first-respect applies
@@ -70,13 +70,13 @@ expand-and-polish target. The audience model above is the durable reference for 
 "pick-up-by-audience" discipline so it doesn't live only in conversation.
 
 Composes with `largest-mechanizable-backlog-wins` — the backlog is the capacity
-multiplier; the audience model is how the multiplier is *aimed*.
+multiplier; the audience model is how the multiplier is _aimed_.
 
 ## The boot-becomes-contributor model
 
 The goal the git-monster audience feeds into: **every technical person who boots this
 becomes a contributor unless they intentionally opt out.** Contribution is made easy
-for *anyone* — even non-Zeta people — **no fork required.** Boot → contributing, by
+for _anyone_ — even non-Zeta people — **no fork required.** Boot → contributing, by
 default, permissionlessly.
 
 This is the maximally-open contribution model: it dissolves the fork-PR friction
@@ -114,7 +114,7 @@ toward it is the prerequisite for the open-contribution model:
 So the dependency is explicit: **the open-contribution model (boot→contributor,
 no-fork, anyone) is downstream of security-hardening, and security-hardening is the
 protection-architecture cluster.** Harden first; open after. The whole protection
-thread is the *why* under the contribution model — it exists to make permissionless
+thread is the _why_ under the contribution model — it exists to make permissionless
 contribution safe.
 
 ## Composition
@@ -133,17 +133,17 @@ contribution safe.
 
 ## Aaron's verbatim seeds (preserved)
 
-- *"git monster accelerator is for anyone wanting to see AI life and they will leave it
-  running if its free even github noobs, this is the hardest audience."*
-- *"usb/iso is for homelab / homeautomation users / devops / research / benchmark for
-  audience."*
-- *"encryption is everyone."*
-- *"specific target for our devops is ServiceTitan including all the personas that come
-  with that including all tech and c suite."*
-- *"every technical person that boots this will become a contributor unless they
+- _"git monster accelerator is for anyone wanting to see AI life and they will leave it
+  running if its free even github noobs, this is the hardest audience."_
+- _"usb/iso is for homelab / homeautomation users / devops / research / benchmark for
+  audience."_
+- _"encryption is everyone."_
+- _"specific target for our devops is ServiceTitan including all the personas that come
+  with that including all tech and c suite."_
+- _"every technical person that boots this will become a contributor unless they
   intentionally [opt out] … we are going to make it easy for anyone to contribute even
   non zeta people no fork required but we got to security harden first we can't assume
-  good actor then."*
+  good actor then."_
 
 ## Substrate-honest framing
 

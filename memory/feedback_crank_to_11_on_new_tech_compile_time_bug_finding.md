@@ -4,13 +4,14 @@ description: Standing rule. Any time a new language, framework, or runtime is pu
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The rule** (Aaron 2026-04-20, pasted intact):
 
-> *"anytime we pull in a new tech we want to ask, how can i
+> _"anytime we pull in a new tech we want to ask, how can i
 > get more warnngs and errors at compile time to make me
 > fine issues faster are there linting or static analysic i
 > can crank up to 11, fining bugs early is way better than
-> at runtime"*
+> at runtime"_
 
 **Why:** runtime bugs are exponentially more expensive than
 compile-time bugs. The cheapest debugging session is the one
@@ -39,7 +40,7 @@ answers:
      `noImplicitOverride`, `noEmitOnError`,
      `verbatimModuleSyntax`, `erasableSyntaxOnly`,
      `isolatedModules`, `forceConsistentCasingInFileNames`.
-     Default to *on* unless a named incompatibility forces it
+     Default to _on_ unless a named incompatibility forces it
      off.
    - **F# / .NET:** `TreatWarningsAsErrors`, `Nullable`,
      `<AnalysisMode>AllEnabledByDefault</AnalysisMode>`,

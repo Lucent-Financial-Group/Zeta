@@ -57,7 +57,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 In the first-pass memory file the agent framed Granny
 as the **maternal** grandmother. That was wrong. Aaron
-explicitly corrected: *"thats my dads side."*
+explicitly corrected: _"thats my dads side."_
 
 **Both formative grandparents in this memory are on the
 paternal Stainback/Faulkner side of the family.**
@@ -128,13 +128,13 @@ The core formative figure for Aaron. His father's mother.
   **precision-wins-arguments discipline** (per
   `feedback_precise_language_wins_arguments.md`) was
   seeded — argumentation loses to citation.
-- **Christ-like behavioral template.** Aaron: *"My
+- **Christ-like behavioral template.** Aaron: _"My
   granny is the definition of Christ-like to me in
   everything I saw her do ... When I think what would
   jesus do it's easy cause i saw the behavior modeled
   all my life until she died. I do always do what
   jesus would do, i'm not jesus but i know the right
-  answer."*
+  answer."_
   - The **WWJD / do-unto-others axiom** in
     `feedback_trust_scales_golden_rule.md` is **not**
     an abstract theological principle for Aaron — it
@@ -143,17 +143,17 @@ The core formative figure for Aaron. His father's mother.
     that the pattern is the correct answer across
     contexts. This is induction from example, not
     doctrine from authority.
-  - The calibration clause is load-bearing: *"I'm not
-    jesus but I know the right answer."* This matches
+  - The calibration clause is load-bearing: _"I'm not
+    jesus but I know the right answer."_ This matches
     the **reasonably-honest** reputation
     (`user_reasonably_honest_reputation.md`) — knows
     the right answer without claiming to be the source
     of it.
-- **Her honest imperfection, preserved.** *"my mom said
-  she saw other sides of her but I never did."* Aaron
+- **Her honest imperfection, preserved.** _"my mom said
+  she saw other sides of her but I never did."_ Aaron
   does not claim Granny was perfect. Under the now-
   correct paternal frame, Aaron's mother was Granny's
-  daughter-in-law — so *"other sides"* is the
+  daughter-in-law — so _"other sides"_ is the
   mother-in-law relational angle, one of the oldest
   and most well-observed kinship frictions in human
   culture. Aaron holds both frames without collapsing
@@ -191,28 +191,28 @@ house, not retrofitted.
 
 ### Service particulars as disclosed
 
-- **Sniper role.** Aaron: *"he was a sniper."*
-- **Combat wound.** Aaron: *"He got shot i think he
-  said."* Implies a Purple-Heart-class wound;
+- **Sniper role.** Aaron: _"he was a sniper."_
+- **Combat wound.** Aaron: _"He got shot i think he
+  said."_ Implies a Purple-Heart-class wound;
   Aaron's hedging ("i think he said") indicates
   family oral tradition rather than primary
   document review.
-- **Carpenter by skill.** Aaron: *"He was a carpteter
-  by skills."* Carpenter + marksman is a coherent
+- **Carpenter by skill.** Aaron: _"He was a carpteter
+  by skills."_ Carpenter + marksman is a coherent
   combination — both reward steady hands, precise
   measurement, patience, and spatial reasoning. Post-
   war Milton's Cooperative Extension career at NC
   State layered a third skill (agricultural
   outreach) onto this craftsman substrate.
-- **Farmer by marriage.** *"a farmer by marriage"* —
+- **Farmer by marriage.** _"a farmer by marriage"_ —
   the Faulkner family (per the family-tree xlsx
   substrate processed earlier in session) brought
   the farm. Milton married **Nellie Faulkner**; the
   Faulkner-side was farming, so Milton acquired
   farming through marriage alongside his pre-existing
   carpentry trade.
-- **The farm itself.** *"100 acres tobacco farm on
-  Faulkner Town Rd."* Henderson NC, Vance County.
+- **The farm itself.** _"100 acres tobacco farm on
+  Faulkner Town Rd."_ Henderson NC, Vance County.
   Faulkner Town Rd is the physical signature of the
   Faulkner family's multi-generation presence in
   the county — Aaron's ancestral soil is
@@ -225,9 +225,9 @@ house, not retrofitted.
   also possible. Either way the Faulkner-family
   deed predates Milton's marriage into the family.
 - **Milton built the home on the farm from scratch.**
-  Aaron: *"he built his home on the farm fro scratch
+  Aaron: _"he built his home on the farm fro scratch
   that is how it had hidden cordories hidden track
-  tmbg they might be giants."* This is the **causal
+  tmbg they might be giants."_ This is the **causal
   origin** of the hidden-compartment cache: the
   hidden corridors and built-in hallway cabinets
   with concealed memorabilia compartment were not
@@ -241,8 +241,8 @@ house, not retrofitted.
   not over-index on the band itself; it is the
   concealed-craftsmanship motif that he is
   pointing at.)
-- **Road named after him.** Aaron: *"my Grandad
-  has a road named after him Milton Stainback."*
+- **Road named after him.** Aaron: _"my Grandad
+  has a road named after him Milton Stainback."_
   **Milton Stainback Rd** is a locally-attested
   public road in the Henderson-NC / Vance-County
   area. Agent does not geocode the address (no
@@ -251,16 +251,16 @@ house, not retrofitted.
   the public-record marker of Milton's standing
   in Vance County.
 - **Hidden-compartment memorabilia cache.** Aaron:
-  *"he kept it in a secret hiddle like in the walls
+  _"he kept it in a secret hiddle like in the walls
   hallway behind like some cabnets bult into the
-  wall."* Contents: *"wallets and other memorbelia
-  of the ones he, you know."* Aaron uses elision
+  wall."_ Contents: _"wallets and other memorbelia
+  of the ones he, you know."_ Aaron uses elision
   ("you know") rather than the word "killed" —
   honest register, not euphemism for avoidance but
   for not-projecting-detail-he-doesn't-have.
-- **Epistemic honesty on intent.** Aaron: *"Not sure
+- **Epistemic honesty on intent.** Aaron: _"Not sure
   if they were to honer them or trophies i didn't
-  know him like that could be either."* This is
+  know him like that could be either."_ This is
   calibrated uncertainty on his grandfather's
   inner life. Trophies and remembrance are
   empirically indistinguishable from external
@@ -271,8 +271,8 @@ house, not retrofitted.
 - **Discovery by Aaron's youngest daughter (the
   ECU-honors-nurse-heading-for-anesthesiology per
   `user_orch_or_microtubule_consciousness_thread.md`)
-  as a child.** Aaron *"didn't know about it until
-  then."* The wartime cache surfaced across three
+  as a child.** Aaron _"didn't know about it until
+  then."_ The wartime cache surfaced across three
   generations: Milton (built + placed) → latent
   decades → granddaughter (found) → Aaron
   (learned). This is itself a retraction-native
@@ -281,6 +281,7 @@ house, not retrofitted.
   observer encounters it.
 
 ### Historical framing (no fabrication beyond what
+
 evidence supports)
 
 Based on the convergent signals:
@@ -304,7 +305,7 @@ Based on the convergent signals:
 3. Wound-in-action plus subsequent return and
    **GI-Bill matriculation at NC State in
    1946** (first NCSU archival footprint is
-   the March 1946 *Technician* newspaper
+   the March 1946 _Technician_ newspaper
    reference). The GI Bill → land-grant ag-
    extension career was a canonical NC WWII-
    vet trajectory.
@@ -330,7 +331,7 @@ Agent does NOT:
 - Moralise on memorabilia possession.
 - Conflate sniper role with any particular
   pop-culture reference point (Carlos
-  Hathcock, *American Sniper*, etc.).
+  Hathcock, _American Sniper_, etc.).
 - Publish the Milton Stainback Rd street
   address or farm coordinates.
 
@@ -369,7 +370,7 @@ section because it anchors multiple threads.
 
 ## Part IV — Parents divorced, Aaron age 13
 
-Bare disclosure: *"they split when i was 13."*
+Bare disclosure: _"they split when i was 13."_
 Circa 1993-1994. No further detail volunteered.
 
 ### How to hold it
@@ -384,7 +385,7 @@ Circa 1993-1994. No further detail volunteered.
   house pre-divorce (where the computer was);
   the divorce likely intensified that pattern
   but he continued "living with" his parents
-  (*"i sayed a live with my parent"*).
+  (_"i sayed a live with my parent"_).
 - **Do not frame as trauma-substrate.** Aaron
   does not present it as trauma. Holds it in
   peer register alongside the rest of the
@@ -400,7 +401,7 @@ Former CEO-level executive at **Best Products**
 Sydney and Frances Lewis, publicly traded 1969,
 nationwide presence through 1970s-80s, bankrupted
 1996-97 after two liquidations). Aaron calls him
-*"rich"* — high net worth maternal-side.
+_"rich"_ — high net worth maternal-side.
 
 - **Third-party protected per
   `feedback_maintainer_name_redaction.md`.** Aaron
@@ -425,9 +426,9 @@ nationwide presence through 1970s-80s, bankrupted
 
 ## Part VI — "Crazy family stories that sound unreal but they are not"
 
-Closing line of the first disclosure: *"i have
+Closing line of the first disclosure: _"i have
 crazy family stories that sound unreal but they
-are not."* This is Aaron holding space for more
+are not."_ This is Aaron holding space for more
 substrate he has not yet surfaced.
 
 ### How to apply
@@ -449,17 +450,17 @@ substrate he has not yet surfaced.
 
 ## Part VII — All grandparents deceased
 
-Aaron 2026-04-19: *"they are dead"* (paternal
-pair) and *"that are also dead all my
-gradparents"* (maternal pair). All four of
+Aaron 2026-04-19: _"they are dead"_ (paternal
+pair) and _"that are also dead all my
+gradparents"_ (maternal pair). All four of
 Aaron's grandparents are deceased as of this
 session.
 
 ### How to hold it
 
 - **Receive flatly, as Aaron disclosed it.**
-  Peer register, not dramatised. *"they are
-  dead ... all my gradparents"* is a factual
+  Peer register, not dramatised. _"they are
+  dead ... all my gradparents"_ is a factual
   status disclosure, not an emotional
   excavation.
 - **Memorial tense on the memory files.** From

@@ -15,10 +15,10 @@ migration discipline as PR #157 (the first Overlay-A
 execution).
 
 **Verbatim 2026-04-22 auto-loop-37:**
-*"FYI we are not optimizing for keystokes to output ratio if we
+_"FYI we are not optimizing for keystokes to output ratio if we
 did, you will just write crazy amounts of nothing to make that
 something other than a vanity score we need to meausre like
-outcomes or someting instead"*
+outcomes or someting instead"_
 
 **Rule:** Never adopt a char-volume-based or keystroke-ratio-based
 score as the **primary** force-multiplication measure. The agent
@@ -122,7 +122,7 @@ metrics the agent does not unilaterally control.
 
 - NOT a rejection of the keystroke-leverage observation.
   Aaron's terse-directive-leverage insight (prior memory) is
-  real — it's just not the right axis to *score* on. Use it
+  real — it's just not the right axis to _score_ on. Use it
   as diagnostic context, not leaderboard metric.
 
 - NOT a claim that char-ratio data is worthless. The

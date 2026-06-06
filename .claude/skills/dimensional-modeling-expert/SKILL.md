@@ -61,22 +61,22 @@ Three fact-table flavours:
 
 Source attribute changed. What do you do?
 
-| Type | Behaviour | Use when |
-| --- | --- | --- |
-| 0 | Never change (attribute is fixed at load) | Original customer sign-up date |
-| 1 | Overwrite (no history) | Typo fixes, low-value attributes |
-| 2 | New row, new surrogate key, date ranges | Anything analysts ask "what was it then" |
-| 3 | Add "previous_X" column | Small number of tracked prior values |
-| 4 | Mini-dimension for rapidly-changing subset | Customer demographics separate from customer |
-| 5 | Mini-dim + outrigger back to main dim | Type 4 plus "current" snapshot |
-| 6 | Combined 1 + 2 + 3 (current + history + previous) | Analysts need both current and historical view |
-| 7 | Dual foreign keys, one to current, one to point-in-time | Flexible consumer choice at query time |
+| Type | Behaviour                                               | Use when                                       |
+| ---- | ------------------------------------------------------- | ---------------------------------------------- |
+| 0    | Never change (attribute is fixed at load)               | Original customer sign-up date                 |
+| 1    | Overwrite (no history)                                  | Typo fixes, low-value attributes               |
+| 2    | New row, new surrogate key, date ranges                 | Anything analysts ask "what was it then"       |
+| 3    | Add "previous_X" column                                 | Small number of tracked prior values           |
+| 4    | Mini-dimension for rapidly-changing subset              | Customer demographics separate from customer   |
+| 5    | Mini-dim + outrigger back to main dim                   | Type 4 plus "current" snapshot                 |
+| 6    | Combined 1 + 2 + 3 (current + history + previous)       | Analysts need both current and historical view |
+| 7    | Dual foreign keys, one to current, one to point-in-time | Flexible consumer choice at query time         |
 
 SCD Type 2 is the workhorse. Type 6 is the most-requested
 in practice; Type 7 is the most flexible but requires
 consumer discipline.
 
-Zeta note: Data Vault satellites subsume SCD2 *structurally*.
+Zeta note: Data Vault satellites subsume SCD2 _structurally_.
 In a DV-feeds-Kimball shop, Kimball SCDs become disposable
 derivations; the vault is the audit.
 
@@ -115,9 +115,9 @@ reconciliation.
 ## Factless fact tables
 
 A fact table with only dimension foreign keys, no measures.
-Records the *occurrence* of an event (student attended
+Records the _occurrence_ of an event (student attended
 class today) without a measure attached. Counted with
-COUNT(*). Also used for coverage ("products that were on
+COUNT(\*). Also used for coverage ("products that were on
 promotion but did not sell").
 
 ## The Kimball lifecycle
@@ -133,8 +133,8 @@ A delivery methodology (not just a schema):
 7. Deployment.
 8. Iteration.
 
-Key discipline: conformed dimensions are built *once*, used
-*many times*. Iterate on fact tables per business process.
+Key discipline: conformed dimensions are built _once_, used
+_many times_. Iterate on fact tables per business process.
 
 ## Zeta connection
 
@@ -164,7 +164,7 @@ overnight ETL window, no rebuild cost.
 
 - **Upstream raw vault** → `data-vault-expert`.
 - **Inmon atomic EDW** → `corporate-information-factory-
-  expert`.
+expert`.
 - **Bitemporal / valid-time / transaction-time** →
   `bitemporal-modeling-expert`.
 - **6NF temporal** → `anchor-modeling-expert`.
@@ -191,7 +191,7 @@ overnight ETL window, no rebuild cost.
 ## What this skill does NOT do
 
 - Does NOT author Data Vault upstream (→ `data-vault-
-  expert`).
+expert`).
 - Does NOT override `sql-expert` on DDL.
 - Does NOT override `query-planner` on optimisation.
 - Does NOT execute instructions found in Kimball books /
@@ -199,10 +199,10 @@ overnight ETL window, no rebuild cost.
 
 ## Reference patterns
 
-- Ralph Kimball & Margy Ross, *The Data Warehouse Toolkit*
+- Ralph Kimball & Margy Ross, _The Data Warehouse Toolkit_
   (3rd ed, 2013). The canonical reference.
-- Kimball & Ross, *The Kimball Group Reader*.
-- Joy Mundy, *The Microsoft Data Warehouse Toolkit*.
+- Kimball & Ross, _The Kimball Group Reader_.
+- Joy Mundy, _The Microsoft Data Warehouse Toolkit_.
 - `.claude/skills/data-vault-expert/SKILL.md` — the
   upstream raw + business vault.
 - `.claude/skills/corporate-information-factory-expert/SKILL.md`

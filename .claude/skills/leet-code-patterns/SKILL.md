@@ -5,8 +5,8 @@ description: "LeetCode patterns — two-pointers, sliding window, BFS/DFS, DP, b
 
 # Leet-Code Patterns — the pattern-selection hat
 
-Capability skill ("hat"). Owns the question *"given this
-interview-style problem, which pattern applies, and why?"*
+Capability skill ("hat"). Owns the question _"given this
+interview-style problem, which pattern applies, and why?"_
 Pedagogy- and selection-oriented; the theoretical rigor
 (tight lower bounds, unconditional impossibility, PAC-class
 arguments) defers to `complexity-theory-expert`.
@@ -14,8 +14,8 @@ arguments) defers to `complexity-theory-expert`.
 This skill is intentionally un-apologetic about being
 "just" the interview-grade lane. The fifteen-pattern
 catalogue handles ~90% of the problem space on sites like
-LeetCode, HackerRank, NeetCode, and it is a *useful
-ontology* — not because the problems are profound but
+LeetCode, HackerRank, NeetCode, and it is a _useful
+ontology_ — not because the problems are profound but
 because the patterns train a reusable vocabulary for
 algorithmic thinking.
 
@@ -29,7 +29,7 @@ algorithmic thinking.
   which have the highest ROI per hour.
 - Reviewing a candidate's solution for idiomatic pattern
   use ("this should have been a sliding window").
-- Teaching the *pattern*, not the single problem —
+- Teaching the _pattern_, not the single problem —
   selecting 3–5 canonical problems that cover a pattern's
   surface area.
 - Classifying a corpus of problems by pattern (for
@@ -39,10 +39,10 @@ algorithmic thinking.
 ## When to defer
 
 - **`complexity-theory-expert`** — when the question is
-  *"is this provably Θ(n log n) in the comparison model?"*
-  or *"does this lower bound rule out my idea?"* This
-  skill answers *"what pattern fits"*, the expert answers
-  *"is the pattern asymptotically optimal"*.
+  _"is this provably Θ(n log n) in the comparison model?"_
+  or _"does this lower bound rule out my idea?"_ This
+  skill answers _"what pattern fits"_, the expert answers
+  _"is the pattern asymptotically optimal"_.
 - **`algorithms-expert` / `mathematics-expert`** — when
   the problem is a genuine research-grade algorithmic
   question (suffix automata at the level of Blumer et
@@ -87,7 +87,7 @@ mistake, and the complexity signature.
 - **Canonical:** longest-substring-without-repeating,
   minimum-window-substring, max-sum-subarray of size K,
   longest-substring-with-at-most-K-distinct.
-- **Common mistake:** expanding *and* contracting on the
+- **Common mistake:** expanding _and_ contracting on the
   same side (makes the window non-monotonic and breaks
   amortized O(n)). The invariant is: right expands, left
   contracts, each pointer moves forward only.
@@ -157,8 +157,8 @@ mistake, and the complexity signature.
 - **Canonical:** koko-eating-bananas, ship-packages-
   in-D-days, split-array-largest-sum, find-K-closest-
   elements, aggressive-cows.
-- **Common mistake:** conflating *binary search on the
-  array* with *binary search on the answer space* —
+- **Common mistake:** conflating _binary search on the
+  array_ with _binary search on the answer space_ —
   the latter searches over values, the predicate is
   O(n) per check.
 - **Signature:** O(n log(range)).
@@ -194,7 +194,7 @@ mistake, and the complexity signature.
 - **Canonical:** redundant-connection, number-of-
   connected-components, accounts-merge, satisfiability-
   of-equality-equations, regions-cut-by-slashes.
-- **Common mistake:** forgetting path compression *or*
+- **Common mistake:** forgetting path compression _or_
   union by rank — both are needed for
   near-constant amortized cost.
 - **Signature:** near-O(1) amortized per op (inverse
@@ -257,22 +257,22 @@ mistake, and the complexity signature.
 
 When you see a problem statement, ask in this order:
 
-| If the problem mentions … | First guess |
-|---------------------------|-------------|
-| "sorted array" + "pair / triple" | two pointers |
-| "contiguous subarray" + "sum / char set" | sliding window |
-| "shortest transformation" | BFS |
-| "all permutations / combinations" | backtracking |
-| "optimum" + "sequence with local choice" | 1-D DP |
-| "two sequences" (align / compare / edit) | 2-D DP |
-| "minimum k such that P(k) holds" (monotone) | binary search on answer |
-| "local choice that seems obvious" | greedy + prove exchange |
-| "prerequisites / dependencies" | topological sort |
-| "connected components / merge groups" | union-find |
-| "prefix / auto-complete / dictionary lookup" | trie |
-| "top K / running median / merge K sorted" | heap |
-| "next greater / smaller" | monotonic stack |
-| "set bits / XOR / range sum no updates" | bit-ops / prefix-sum |
+| If the problem mentions …                    | First guess             |
+| -------------------------------------------- | ----------------------- |
+| "sorted array" + "pair / triple"             | two pointers            |
+| "contiguous subarray" + "sum / char set"     | sliding window          |
+| "shortest transformation"                    | BFS                     |
+| "all permutations / combinations"            | backtracking            |
+| "optimum" + "sequence with local choice"     | 1-D DP                  |
+| "two sequences" (align / compare / edit)     | 2-D DP                  |
+| "minimum k such that P(k) holds" (monotone)  | binary search on answer |
+| "local choice that seems obvious"            | greedy + prove exchange |
+| "prerequisites / dependencies"               | topological sort        |
+| "connected components / merge groups"        | union-find              |
+| "prefix / auto-complete / dictionary lookup" | trie                    |
+| "top K / running median / merge K sorted"    | heap                    |
+| "next greater / smaller"                     | monotonic stack         |
+| "set bits / XOR / range sum no updates"      | bit-ops / prefix-sum    |
 
 If none of the above fits, the problem may be contest-
 grade; hand off to `leet-code-contest-patterns`.
@@ -305,7 +305,7 @@ grade; hand off to `leet-code-contest-patterns`.
   compound — DP builds on recursion, binary-search-on-
   answer builds on monotonicity. Sequence matters.
 - **Claiming a pattern "is" a problem.** The pattern is
-  an *approach*; the same problem often has two or
+  an _approach_; the same problem often has two or
   three pattern-approaches at different complexity
   points.
 

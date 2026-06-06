@@ -41,8 +41,7 @@ import { spawnSync } from "node:child_process";
 
 const POSITIVE_INT_RE = /^\d+$/;
 
-const TRANSIENT_5XX_RE =
-  /(500|502|503|504|Internal Server Error|Bad Gateway|Service Unavailable|Gateway Timeout)/;
+const TRANSIENT_5XX_RE = /(500|502|503|504|Internal Server Error|Bad Gateway|Service Unavailable|Gateway Timeout)/;
 
 interface Validated {
   readonly maxAttempts: number;
@@ -136,11 +135,7 @@ function runOnce(args: readonly string[]): {
   if (stderr.length > 0) {
     process.stderr.write(stderr);
   }
-  const classified = classifySpawnFailure(
-    result.status,
-    result.signal,
-    result.error as SpawnError | undefined,
-  );
+  const classified = classifySpawnFailure(result.status, result.signal, result.error as SpawnError | undefined);
   if (classified.note.length > 0) {
     process.stderr.write(`push-with-retry: ${classified.note}\n`);
   }

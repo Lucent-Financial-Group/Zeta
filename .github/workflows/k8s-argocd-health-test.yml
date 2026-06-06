@@ -18,27 +18,27 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - 'tools/cluster/argocd-health-test.ts'
-      - 'tools/cluster/argocd-health-test.test.ts'
-      - 'full-ai-cluster/dev-cluster/**'
-      - 'full-ai-cluster/k8s/applications/**/Application.yaml'
-      - 'docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md'
-      - '.github/workflows/k8s-argocd-health-test.yml'
-      - '.mise.toml'
-      - 'package.json'
-      - 'bun.lock'
+      - "tools/cluster/argocd-health-test.ts"
+      - "tools/cluster/argocd-health-test.test.ts"
+      - "full-ai-cluster/dev-cluster/**"
+      - "full-ai-cluster/k8s/applications/**/Application.yaml"
+      - "docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md"
+      - ".github/workflows/k8s-argocd-health-test.yml"
+      - ".mise.toml"
+      - "package.json"
+      - "bun.lock"
   push:
     branches: [main]
     paths:
-      - 'tools/cluster/argocd-health-test.ts'
-      - 'tools/cluster/argocd-health-test.test.ts'
-      - 'full-ai-cluster/dev-cluster/**'
-      - 'full-ai-cluster/k8s/applications/**/Application.yaml'
-      - 'docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md'
-      - '.github/workflows/k8s-argocd-health-test.yml'
-      - '.mise.toml'
-      - 'package.json'
-      - 'bun.lock'
+      - "tools/cluster/argocd-health-test.ts"
+      - "tools/cluster/argocd-health-test.test.ts"
+      - "full-ai-cluster/dev-cluster/**"
+      - "full-ai-cluster/k8s/applications/**/Application.yaml"
+      - "docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md"
+      - ".github/workflows/k8s-argocd-health-test.yml"
+      - ".mise.toml"
+      - "package.json"
+      - "bun.lock"
   workflow_dispatch:
 
 permissions:

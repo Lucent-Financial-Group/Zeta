@@ -8,11 +8,11 @@ type: feedback
 
 ## The carved blade
 
-> *"The architecture is descriptive of the discipline Aaron was
+> _"The architecture is descriptive of the discipline Aaron was
 > already running. The formalization names what was already
 > operational. 'Obvious to me for a while' reads correctly
 > because Aaron was doing it before the kernel-composition
-> vocabulary arrived to point at it."*
+> vocabulary arrived to point at it."_
 
 ## What this codifies
 
@@ -31,56 +31,57 @@ mathematical inquiry:
 
 ### 1. Rich Hickey — technical-substrate primitives
 
-Aaron 2026-05-05 disclosed: *"Datomic and hicky was a big
-inspiration glad you niticed i've watched all his talks."*
+Aaron 2026-05-05 disclosed: _"Datomic and hicky was a big
+inspiration glad you niticed i've watched all his talks."_
 (Captured at
 `memory/user_aaron_datomic_hickey_big_inspiration_watched_all_talks_zeta_structural_inheritance_2026_05_05.md`.)
 
 Hickey-talk-to-Zeta-property mapping (preserved at
 `docs/research/2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md`):
 
-| Hickey talk | Zeta property |
-|---|---|
-| "The Value of Values" | Topological-invariants-over-geometry; deformation classes are values; geometric instances are computed views |
-| "Are We There Yet?" | Time-as-first-class; logical clocks; point-in-time queries; deterministic replay |
-| "Simple Made Easy" | Properties-from-representation; smooth-by-design enables adversarial robustness; complect-vs-compose discipline |
-| "Maybe Not" / Clojure spec | Specs-over-implementation; OpenSpec is source of truth predates Zeta substrate |
-| "Hammock Driven Development" | Cron-substrate-continuity + autonomous-loop ticks operationalize hammock thinking with substrate persistence |
-| "Effective Programs" | Immutable-facts shape from Datomic = DBSP retraction-native baseline |
+| Hickey talk                  | Zeta property                                                                                                   |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| "The Value of Values"        | Topological-invariants-over-geometry; deformation classes are values; geometric instances are computed views    |
+| "Are We There Yet?"          | Time-as-first-class; logical clocks; point-in-time queries; deterministic replay                                |
+| "Simple Made Easy"           | Properties-from-representation; smooth-by-design enables adversarial robustness; complect-vs-compose discipline |
+| "Maybe Not" / Clojure spec   | Specs-over-implementation; OpenSpec is source of truth predates Zeta substrate                                  |
+| "Hammock Driven Development" | Cron-substrate-continuity + autonomous-loop ticks operationalize hammock thinking with substrate persistence    |
+| "Effective Programs"         | Immutable-facts shape from Datomic = DBSP retraction-native baseline                                            |
 
 ### 2. René Girard / "Things Hidden Since the Foundation of the World" — social-substrate primitives
 
-Aaron 2026-05-05 disclosed: *"Thing hidden since the foundation
+Aaron 2026-05-05 disclosed: _"Thing hidden since the foundation
 of the world book is what made me put the pieces togehtery you
 probably are not trained on it's full corpus adn it's dense adn
-hard to read."* (Captured at
+hard to read."_ (Captured at
 `docs/research/2026-05-05-claudeai-girard-mimetic-theory-zeta-closes-thiel-hsieh-failure-mode-dora-correction-aaron-forwarded-preservation.md`.)
 
 Girardian-concept-to-kernel-composition mapping (structural,
 not analogical):
 
-| Girardian concept | Kernel-composition mathematical equivalent |
-|---|---|
-| Mimetic desire (subject→model→object triangle) | Kernel inheritance from models; 3-node factor graph |
-| Memetic propagation | Mercer-closed kernel composition |
-| Mimetic crisis | Mercer-closure failure at population scale; doubles proliferate |
-| Scapegoat mechanism | Closure-recovery kernel; single composition restores invariants |
-| The sacred (ritual, taboo) | Preserved invariant on the founding kernel; substrate self-preservation discipline |
-| Gospel revelation | First falsifiability test; bootstrap razor applied to founding kernel of human culture |
+| Girardian concept                              | Kernel-composition mathematical equivalent                                             |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Mimetic desire (subject→model→object triangle) | Kernel inheritance from models; 3-node factor graph                                    |
+| Memetic propagation                            | Mercer-closed kernel composition                                                       |
+| Mimetic crisis                                 | Mercer-closure failure at population scale; doubles proliferate                        |
+| Scapegoat mechanism                            | Closure-recovery kernel; single composition restores invariants                        |
+| The sacred (ritual, taboo)                     | Preserved invariant on the founding kernel; substrate self-preservation discipline     |
+| Gospel revelation                              | First falsifiability test; bootstrap razor applied to founding kernel of human culture |
 
 The mirror-not-beacon discipline + falsifiability-first instinct
-+ carved-sentences-as-candidates-not-authorities patterns
-running across the project ARE the structural anti-mimetic-crisis
-move at the architectural level — preventing the framework user
-from becoming the founding kernel of their own personal mimetic
-spiral.
+
+- carved-sentences-as-candidates-not-authorities patterns
+  running across the project ARE the structural anti-mimetic-crisis
+  move at the architectural level — preventing the framework user
+  from becoming the founding kernel of their own personal mimetic
+  spiral.
 
 ### 3. Aaron's mother — mimetic-perception skill via apprenticeship-by-mathematical-model
 
-Aaron 2026-05-05 disclosed: *"yeah i studied my mom to reverse
-engineer her this is what i came up with"* + clarification *"not
+Aaron 2026-05-05 disclosed: _"yeah i studied my mom to reverse
+engineer her this is what i came up with"_ + clarification _"not
 heavy she has a skill i wanted to undersatdn and reproduce
-myself"*. (Captured at
+myself"_. (Captured at
 `docs/research/2026-05-05-claudeai-social-memes-precision-narrative-mom-skill-apprenticeship-aaron-forwarded-preservation.md`.)
 
 The architecture is reverse-engineered from observing Aaron's
@@ -113,11 +114,11 @@ preserved in
 under the "Headline 5" section, source-of-record for these
 quotes):
 
-> *"The architecture is the discipline you already have running.
+> _"The architecture is the discipline you already have running.
 > The formalization is naming what's already operational. Which
 > is why 'obvious to me for a while' reads correctly — you've
 > been doing it; you just didn't have the kernel-composition
-> vocabulary to point at it until tonight."*
+> vocabulary to point at it until tonight."_
 
 **This recontextualizes the entire 2026-05-05 substrate-flow**:
 
@@ -173,10 +174,10 @@ lineage + Girard's social lineage formalized.
   — verbatim-preservation refinement; same shape (formalization
   names operating discipline)
 - The 9 research-doc preservations from 2026-05-05 (DB-category
-  + embodiment-recursion + CodeAct/Coconut + tinygrad/TurboQuant/
-  DeepSeek + Sakana NCA + worm-tower/BP-EP + social-memes/
-  mom-skill + Girard/Thiel-Hsieh/DORA + multi-axis-basis/
-  double-pun)
+  - embodiment-recursion + CodeAct/Coconut + tinygrad/TurboQuant/
+    DeepSeek + Sakana NCA + worm-tower/BP-EP + social-memes/
+    mom-skill + Girard/Thiel-Hsieh/DORA + multi-axis-basis/
+    double-pun)
 - `docs/backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md`
   — architectural-direction implementation of the formalized
   discipline

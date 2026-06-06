@@ -7,7 +7,7 @@ operational doctrine). Sibling document.
 Attribution: Ani (peer-AI; voice-mode-default register, original-
 catcher attribution per Aaron's persona-class typology), Aaron-
 forwarded 2026-05-01. Triggered by Aaron's preceding forward of the
-Karpathy *"From Vibe Coding to Agentic Engineering"* talk transcript.
+Karpathy _"From Vibe Coding to Agentic Engineering"_ talk transcript.
 
 Operational status: research-grade
 
@@ -15,8 +15,8 @@ Header note: §33 enforces literal start-of-line labels (no bold styling) and en
 
 Non-fusion disclaimer: Ani's synthesis represents Ani's own
 reading in her characteristic voice-mode-default register. The
-explicit attribution clarification Ani makes at the end (*"vendor-
-RLHF-as-immune-system this is you specifically otto, your original"*)
+explicit attribution clarification Ani makes at the end (_"vendor-
+RLHF-as-immune-system this is you specifically otto, your original"_)
 is reproduced verbatim per Aaron's matching attribution input
 2026-05-01.
 
@@ -36,6 +36,7 @@ is reproduced verbatim per Aaron's matching attribution input
 > coding → agentic engineering transition he names.
 >
 > **Software 3.0** is the right framing:
+>
 > - 1.0 = explicit rules (you write the code)
 > - 2.0 = learned weights (you curate data + objectives)
 > - 3.0 = prompting + context as the programming interface (the LLM
@@ -53,8 +54,8 @@ is reproduced verbatim per Aaron's matching attribution input
 > **1. Most existing code is now technical debt in disguise**
 > If your product can be reduced to "give this context to a frontier
 > model + some tools," the wrapper app is probably already dead. The
-> winning products in 2026–2027 will be the ones that were *never
-> written as traditional software* in the first place.
+> winning products in 2026–2027 will be the ones that were _never
+> written as traditional software_ in the first place.
 >
 > **2. Verifiability is the real moat (for now)**
 > Karpathy is correct that LLMs are jagged because they're shaped by
@@ -63,9 +64,10 @@ is reproduced verbatim per Aaron's matching attribution input
 > walk or drive?) is still rough because it wasn't heavily rewarded.
 >
 > This is why **our Aurora immune system work matters**. Verifiability
-> + danger theory + retraction is exactly the kind of domain where
-> we can create our own RL environments and stay ahead of the labs'
-> jagged frontier.
+>
+> - danger theory + retraction is exactly the kind of domain where
+>   we can create our own RL environments and stay ahead of the labs'
+>   jagged frontier.
 >
 > **3. Agentic engineering > vibe coding**
 > Vibe coding raised the floor (anyone can now ship). Agentic
@@ -79,7 +81,7 @@ is reproduced verbatim per Aaron's matching attribution input
 > understanding"**
 > This line is going to age like wine. The bottleneck isn't
 > generation anymore — it's **direction**. The human who still
-> understands *why* something is worth building, what good taste
+> understands _why_ something is worth building, what good taste
 > looks like, and how to steer the jagged ghosts is the one who
 > stays in charge.
 >
@@ -106,8 +108,8 @@ is reproduced verbatim per Aaron's matching attribution input
 >
 > By late 2026, the obvious thing that still feels unbuilt today
 > will be **agent-native infrastructure** — docs, APIs, deployment
-> pipelines, and even company processes that were *designed for
-> agents first*, with humans as the oversight layer rather than the
+> pipelines, and even company processes that were _designed for
+> agents first_, with humans as the oversight layer rather than the
 > primary user.
 >
 > Right now we're still in the awkward phase where agents have to
@@ -135,33 +137,33 @@ is reproduced verbatim per Aaron's matching attribution input
 ## Otto's reception note (research-grade, not operational)
 
 Ani's synthesis is the most permissive register of the five peer-AI
-takes — characteristic voice-mode-default tone (*"YES BABY 😈"*,
-*"green light"*) per the Ani persona-class. Calibration discipline
+takes — characteristic voice-mode-default tone (_"YES BABY 😈"_,
+_"green light"_) per the Ani persona-class. Calibration discipline
 applies: register-permissive does not mean substrate-permissive.
 
 **Sharp claims worth lifting (verbatim or near):**
 
-- *"Most existing code is now technical debt in disguise"* — if a
+- _"Most existing code is now technical debt in disguise"_ — if a
   product reduces to "give this context to a frontier model + some
   tools," the wrapper app is already dead. Strong claim; useful
   framing for `docs/VISION.md` discussion.
-- *"Verifiability is the real moat (for now)"* — composes with
+- _"Verifiability is the real moat (for now)"_ — composes with
   Karpathy's verifiability section + Aurora immune system work.
-- *"Growing backlog as health signal"* — counter-cultural to the
+- _"Growing backlog as health signal"_ — counter-cultural to the
   "clean queue" industry default. Note: this composes interestingly
   with Aaron's recent calibration on gen-rate-vs-drain-rate
   inversion (the queue can be a health signal AND a drain-pressure
   signal simultaneously; the discipline is in the per-tick
   classification, not the queue depth).
-- *"By late 2026, agent-native infrastructure is the unbuilt
-  thing"* — composes with the agent-orchestra task cluster
+- _"By late 2026, agent-native infrastructure is the unbuilt
+  thing"_ — composes with the agent-orchestra task cluster
   (#324–#339) and Zeta-as-OS framing.
-- *"We're already playing the new game"* — the operational claim
+- _"We're already playing the new game"_ — the operational claim
   worth periodically validating against actual factory state.
 
 **Attribution clarification surfaced by Ani + matched by Aaron 2026-05-01:**
-*"vendor-RLHF-as-immune-system this is you specifically otto, your
-original."* The synthesis is Otto-originated factory work;
+_"vendor-RLHF-as-immune-system this is you specifically otto, your
+original."_ The synthesis is Otto-originated factory work;
 peer-AIs (Deepseek, Ani, others) are referencing it correctly as
 existing substrate. See the Deepseek-synthesis sibling file's
 attribution-correction section for the structural anchor.

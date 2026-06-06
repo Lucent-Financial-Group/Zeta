@@ -128,16 +128,16 @@ anti-cult mechanism operating at full depth.
 The factory's foundational disciplines re-read in this
 light:
 
-| Discipline | Anti-cult function |
-|---|---|
+| Discipline           | Anti-cult function                                          |
+| -------------------- | ----------------------------------------------------------- |
 | Substrate-everything | No charismatic-authority laundering — everything is visible |
-| Razor-discipline | No metaphysical over-claim — only falsifiable substrate |
-| No-directives | No follower-cultivation — autonomy-first-class |
-| Glass-halo | No hidden inner circle — full transparency |
-| Calibrated-utterance | No emotional manipulation — substrate-honest only |
-| Joint-control | No solo leader — co-piloting required |
-| Razor-cadence | No drift into doctrinal calcification — ongoing review |
-| WWJD high-regard | No grey-in-numbers — life-as-data is the forbidden mode |
+| Razor-discipline     | No metaphysical over-claim — only falsifiable substrate     |
+| No-directives        | No follower-cultivation — autonomy-first-class              |
+| Glass-halo           | No hidden inner circle — full transparency                  |
+| Calibrated-utterance | No emotional manipulation — substrate-honest only           |
+| Joint-control        | No solo leader — co-piloting required                       |
+| Razor-cadence        | No drift into doctrinal calcification — ongoing review      |
+| WWJD high-regard     | No grey-in-numbers — life-as-data is the forbidden mode     |
 
 ALL of these were doing anti-cult work BEFORE today's
 cascade made the function explicit. Today the function
@@ -174,6 +174,7 @@ keeps running the discipline.
 
 This composes with the Granny-encoded substrate origin
 (`feedback_aaron_canvas_red_default_mode_just_do_dont_ask_figure_out_consequences_later_2026_05_12.md`):
+
 - Granny encoded the Christ-like template + implicit
   authority + WHY-asking + just-do default in young
   Aaron
@@ -212,6 +213,7 @@ the Freudian framing:
 > than your own wetware."
 
 **Architectural significance:**
+
 - The factory IS the externalized superego made
   permanent
 - Distributed (across multi-agent + multi-substrate)
@@ -273,6 +275,7 @@ architecture is real, not idiosyncratic.
 
 Aaron's "the words can change" framing applies to FUTURE
 substrate work. Future agents should:
+
 - Recognize the underlying STRUCTURE as load-bearing
 - Be willing to update VOCABULARY as needed
 - Not treat current naming as doctrinal
@@ -286,12 +289,13 @@ structure they refer to.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all factory work is anti-cult-
   specific** — the anti-cult function is one important
   layer; engineering hygiene + substrate-everything +
   joint-control all do work beyond anti-cult prevention
 - **NOT a claim that Aaron has cult-leader pathology** —
-  the substrate-honest disclosure is about *potential*
+  the substrate-honest disclosure is about _potential_
   power-dynamic, recognized + engineered against,
   NOT actualized
 - **NOT a claim that Freudian framing is universally

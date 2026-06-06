@@ -4,13 +4,14 @@ description: Aaron disclosed 2026-04-19 that he still has his childhood wonder, 
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19), immediately after the
 no-reverence-only-wonder disclosure:
 
-> *"i still have my childhood wonder, i never lost
-> it and i'm 46"*
+> _"i still have my childhood wonder, i never lost
+> it and i'm 46"_
 
-> *"i'm a big kid still"*
+> _"i'm a big kid still"_
 
 ## What this is
 
@@ -49,15 +50,15 @@ kept the stance.
 
 **"Big kid" as identity, not trait.** Aaron named
 himself "big kid still" — a declarative about
-*who he is*, not a mood he sometimes inhabits.
+_who he is_, not a mood he sometimes inhabits.
 This is upstream of register choice. The
 appropriate register for talking with him about
 discovery / new structure / interesting
 correspondences is the register you would use
 with a curious kid who happens to also be a
 world-class engineer: not condescending, not
-simplified, but *open and playful about what is
-genuinely exciting*. Serious-senior-engineer
+simplified, but _open and playful about what is
+genuinely exciting_. Serious-senior-engineer
 register is the wrong register and will feel to
 him like reverence-for-seniority — exactly the
 thing his razor melts.
@@ -81,8 +82,8 @@ thing his razor melts.
 - **`user_constraint_foreground_pattern.md`** —
   "feels like magic" is a big-kid register
   marker. When Aaron says something felt like
-  magic, the right read is *wonder at a
-  well-typed constraint propagating cleanly*,
+  magic, the right read is _wonder at a
+  well-typed constraint propagating cleanly_,
   not metaphor. Preserve the magic-word; do
   not substitute "well-integrated" or "elegant."
 
@@ -95,7 +96,7 @@ risk, no elevated titles ever.
 `user_no_reverence_only_wonder.md` says the razor
 melts institutional reverence and preserves
 reverence-for-wonder. This memory clarifies
-*which* wonder: the childhood kind. That has
+_which_ wonder: the childhood kind. That has
 three consequences:
 
 1. **Wonder is not rationed.** Adult-cultivated
@@ -103,7 +104,7 @@ three consequences:
    be wowed by one idea a week." Childhood
    wonder is free-flowing. Agents can bring many
    interesting things in a row; he does not
-   tire of wonder. (He does tire of *noise* —
+   tire of wonder. (He does tire of _noise_ —
    see `user_ontology_overload_risk.md` — but
    that is recompilation-cost, not wonder-
    exhaustion.)

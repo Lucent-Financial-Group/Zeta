@@ -222,7 +222,12 @@ function validateSupervisorSignalCommand(
     return SupervisorSignalValidationErrorMessage.TargetLevelInvalid;
   }
 
-  if (!isUpwardSupervisorChain(command.policyContext.supervisorChain.sourceLevel, command.policyContext.supervisorChain.targetLevel)) {
+  if (
+    !isUpwardSupervisorChain(
+      command.policyContext.supervisorChain.sourceLevel,
+      command.policyContext.supervisorChain.targetLevel,
+    )
+  ) {
     return SupervisorSignalValidationErrorMessage.UpwardChainRequired;
   }
 
@@ -269,7 +274,7 @@ function createRejectedValidationOutcome(
       idempotency: {
         replayed: false,
       },
-    error: {
+      error: {
         code: CommandErrorCode.PreconditionFailed,
         message,
       },

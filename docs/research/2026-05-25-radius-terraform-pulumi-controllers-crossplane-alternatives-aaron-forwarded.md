@@ -7,7 +7,19 @@ discipline: research substrate; preserves verbatim per substrate-or-it-didnt-hap
 substrate_landings:
   - B-0748 (kro/Crossplane spectrum evaluation — this research extends the spectrum surface)
 prior_research: docs/research/2026-05-25-kro-crossplane-koreo-kubevela-carvel-ack-kcc-aso-spectrum-aaron-forwarded.md
-tags: [radius, terraform-controller, pulumi-kubernetes-operator, kubevela-oam, crossplane-alternatives, application-centric-cnap, iac-inside-k8s, recipes, microsoft-radius, flux-terraform-controller]
+tags:
+  [
+    radius,
+    terraform-controller,
+    pulumi-kubernetes-operator,
+    kubevela-oam,
+    crossplane-alternatives,
+    application-centric-cnap,
+    iac-inside-k8s,
+    recipes,
+    microsoft-radius,
+    flux-terraform-controller,
+  ]
 ---
 
 # Radius + Terraform Controller + Pulumi K8s Operator + KubeVela OAM — Crossplane alternatives (Aaron-forwarded research 2026-05-25)
@@ -48,12 +60,12 @@ KubeVela is a CNCF project based on the Open Application Model (OAM).
 
 ### Summary of Competitors
 
-| Tool | Approach to Resource Management | Best For... |
-|---|---|---|
-| **Radius** | Recipes (Application-centric abstraction). | Teams who want developers to self-serve "app dependencies" without managing infrastructure CRDs. |
-| **Terraform Controller** | HCL / Modules running inside K8s. | Teams with a massive existing investment in Terraform who want GitOps. |
-| **Google KCC / AWS ACK** | Native CRDs (1:1 mapping to cloud API). | Teams who want raw access to cloud resources in K8s without Crossplane's abstraction layer. |
-| **KubeVela** | OAM (Model-driven delivery). | Platform engineers building a "Heroku-like" experience on top of K8s. |
+| Tool                     | Approach to Resource Management            | Best For...                                                                                      |
+| ------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **Radius**               | Recipes (Application-centric abstraction). | Teams who want developers to self-serve "app dependencies" without managing infrastructure CRDs. |
+| **Terraform Controller** | HCL / Modules running inside K8s.          | Teams with a massive existing investment in Terraform who want GitOps.                           |
+| **Google KCC / AWS ACK** | Native CRDs (1:1 mapping to cloud API).    | Teams who want raw access to cloud resources in K8s without Crossplane's abstraction layer.      |
+| **KubeVela**             | OAM (Model-driven delivery).               | Platform engineers building a "Heroku-like" experience on top of K8s.                            |
 
 If you were thinking of a tool specifically designed to avoid writing Go controllers while keeping the Kubernetes feel, it might have been **kro** (from the previous discussion) or **Radius** if the focus was on the application layer.
 
@@ -79,12 +91,12 @@ The spectrum becomes more like a **competitive landscape** at the high-abstracti
 
 ### Composition with Zeta substrate
 
-| Tool | Composition vector with Zeta |
-|---|---|
-| **Radius** | Microsoft-backed; recipes-as-abstraction matches Zeta's substrate-engineering posture (declarative + ontology-aware). Composes with B-0741 (Recipes COULD be the per-fork ontology declaration format). |
-| **Terraform Controller** | Useful IF Zeta needs to wrap existing Terraform substrate (probably won't; Zeta is Nix + ArgoCD first; if forks bring Terraform investment, this composes). |
-| **Pulumi K8s Operator** | TS support is a Zeta substrate match (Rule 0; bun + TS first). Could compose if Zeta wants TS-defined k8s resources alongside YAML manifests. Substrate-honest concern: dual-encoding YAML + TS may add complexity vs single-source RGD. |
-| **KubeVela (OAM)** | Already evaluated in prior spectrum research; reframed here as Crossplane alternative. Substrate-honest stance unchanged: CUE adds another language; evaluate per scope. |
+| Tool                     | Composition vector with Zeta                                                                                                                                                                                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Radius**               | Microsoft-backed; recipes-as-abstraction matches Zeta's substrate-engineering posture (declarative + ontology-aware). Composes with B-0741 (Recipes COULD be the per-fork ontology declaration format).                                  |
+| **Terraform Controller** | Useful IF Zeta needs to wrap existing Terraform substrate (probably won't; Zeta is Nix + ArgoCD first; if forks bring Terraform investment, this composes).                                                                              |
+| **Pulumi K8s Operator**  | TS support is a Zeta substrate match (Rule 0; bun + TS first). Could compose if Zeta wants TS-defined k8s resources alongside YAML manifests. Substrate-honest concern: dual-encoding YAML + TS may add complexity vs single-source RGD. |
+| **KubeVela (OAM)**       | Already evaluated in prior spectrum research; reframed here as Crossplane alternative. Substrate-honest stance unchanged: CUE adds another language; evaluate per scope.                                                                 |
 
 ### B-0748 scope extension
 
@@ -96,7 +108,7 @@ B-0748 (kro + Crossplane + middleware spectrum evaluation) extends to include:
 
 ### Aaron's substrate-engineering posture (preserved at preservation time)
 
-Aaron's previous-message framing: *"kro yes"* signals he leans toward kro for the no-code declarative layer. This research dump suggests he wants the FULL evaluation surface — including alternatives that might fit specific scopes better. Substrate-honest stance: kro is the primary evaluation target (per Aaron's "kro yes"); alternatives evaluated for specific scopes where they outperform kro.
+Aaron's previous-message framing: _"kro yes"_ signals he leans toward kro for the no-code declarative layer. This research dump suggests he wants the FULL evaluation surface — including alternatives that might fit specific scopes better. Substrate-honest stance: kro is the primary evaluation target (per Aaron's "kro yes"); alternatives evaluated for specific scopes where they outperform kro.
 
 For Radius specifically: Microsoft-backed + application-centric Recipes-based approach could fit some Zeta scopes (e.g., per-fork application-level deployments where the FORK declares "needs Redis cache" + Recipe maps to LFG-cluster's Redis vs Healthcare-fork's encrypted-PHI Redis variant). Worth evaluation per Scope item 7.
 

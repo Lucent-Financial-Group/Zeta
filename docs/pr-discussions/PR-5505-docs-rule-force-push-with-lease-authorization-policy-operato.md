@@ -21,9 +21,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Lands `.claude/rules/force-push-with-lease-authorization-policy.md`
 operationalizing operator's 2026-05-27 substrate-honest sharpening:
 
-> *\"there are certain sistuaion where force push lease is acceptable
+> _\"there are certain sistuaion where force push lease is acceptable
 > without operator but we should start making a list also if you run
-> it by a 2nd agent that's enough too\"*
+> it by a 2nd agent that's enough too\"_
 
 Three-path authorization framework:
 
@@ -62,6 +62,7 @@ also documented.
 Adds a new operational rule under `.claude/rules/` defining when `git push --force-with-lease` is authorized (operator confirm by default, peer-agent confirmation as substitute, and a bounded starter list of pre-authorized autonomous situations), plus a decision tree for cold-boot application.
 
 **Changes:**
+
 - Introduces a three-path authorization framework for force-push-with-lease decisions.
 - Documents a starter list of acceptable autonomous scenarios and a “NOT acceptable autonomous” list.
 - Adds an operational decision tree and composition links to related rules/tools.

@@ -30,11 +30,11 @@ captured in
 
 Aaron 2026-05-01:
 
-> *"we can emulate quantium under this frameing very efficently
+> _"we can emulate quantium under this frameing very efficently
 > with the newest lineage on infer.net and baseyan inferance
 > and trating the zero modes....... arrrrr i don't have the
 > right words, like a mirror with a trampline under beacon
-> protocol."*
+> protocol."_
 
 Composes with B-0147 (timeseries-DB / multi-DSL meta-DSL
 research) + B-0148 (MDX-as-meta-DSL) under the broader
@@ -48,7 +48,6 @@ filesystem, and timeseries.
 1. **Three-layer-stack design doc** at
    `docs/research/2026-XX-topological-quantum-emulation-three-layer-stack.md`
    covering:
-
    - **Layer 1 (Mirror)**: how to encode non-local
      information storage in a Bayesian factor graph. Map
      Majorana Zero Modes properties (information stored in
@@ -68,12 +67,11 @@ filesystem, and timeseries.
    preferred citation source per
    `feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`,
    forward-ref to PR #1117). Cite at minimum:
-
    - Microsoft Quantum / Station Q research on Majorana
      Zero Modes + topoconductors
    - Q# language + simulator semantics
    - Infer.NET probabilistic programming lineage (Don Syme
-     + collaborators)
+     - collaborators)
    - Supersingular Isogeny + FrodoKEM (for the orthogonal
      crypto axis; verify per Otto-364)
 

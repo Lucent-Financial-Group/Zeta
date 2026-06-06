@@ -54,7 +54,7 @@ After Otto-72:
 2. **Continue shipping substantive work** — the BLOCKED
    count is normal operation, not a saturation signal
 3. **Log each decision** in `docs/decision-proxy-evidence/
-   DP-NNN.yaml` (PR #222 schema) so when Aaron reviews
+DP-NNN.yaml` (PR #222 schema) so when Aaron reviews
    via the Frontier UI (Otto-63), he sees the trail
    without per-PR context-load
 
@@ -110,26 +110,26 @@ in decision-proxy-evidence; move on.
 ## Composes with
 
 - `feedback_aaron_trust_based_approval_pattern_approves_
-  without_comprehending_details_2026_04_23.md` (Otto-51)
+without_comprehending_details_2026_04_23.md` (Otto-51)
   — Aaron batches; this directive sharpens: Otto stops
   pre-emptively slowing to match imagined batch cadence
 - `feedback_aaron_long_term_solutions_are_quick_enough_
-  no_need_for_quick_fix_category_2026_04_23.md`
+no_need_for_quick_fix_category_2026_04_23.md`
   (Otto-59) — baseline pace is already fine; this
   directive removes the rationalization-to-slow-down
 - `feedback_aaron_full_github_access_authorization_all_
-  acehack_lfg_only_restriction_no_spending_increase_
-  2026_04_23.md` (Otto-67) — the standing authority Otto
+acehack_lfg_only_restriction_no_spending_increase_
+2026_04_23.md` (Otto-67) — the standing authority Otto
   is told to exercise; "just mark down" IS how to
   exercise it responsibly
 - `feedback_codex_as_substantive_reviewer_teamwork_
-  pattern_address_findings_honestly_aaron_endorsed_
-  2026_04_23.md` (Otto-51) — Codex/Copilot are the
+pattern_address_findings_honestly_aaron_endorsed_
+2026_04_23.md` (Otto-51) — Codex/Copilot are the
   substantive reviewers to engage with; they ARE the gate
   that matters
 - `project_frontier_burn_rate_ui_first_class_git_native_
-  for_private_repo_adopters_servicetitan_84_percent_
-  2026_04_23.md` (Otto-63) — Frontier UI is the review
+for_private_repo_adopters_servicetitan_84_percent_
+2026_04_23.md` (Otto-63) — Frontier UI is the review
   surface Aaron names here explicitly for the first time
 - `docs/decision-proxy-evidence/` (PR #222) — the
   logging format; "mark down your decisions" has a place

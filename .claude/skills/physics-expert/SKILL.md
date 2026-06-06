@@ -12,7 +12,7 @@ several load-bearing constructions have honest physics
 origins (tropical algebra as a stat-mech / Maslov
 dequantisation limit, anti-entropy as non-equilibrium
 convergence, Shannon entropy as information). This umbrella
-exists to keep those connections *rigorous* and stop physics
+exists to keep those connections _rigorous_ and stop physics
 metaphors from sliding into rhetoric.
 
 ## When to wear
@@ -20,9 +20,9 @@ metaphors from sliding into rhetoric.
 - Reviewing a paper draft under `docs/research/` that reaches
   for a physics analogy (partition function, entropy,
   phase transition, conservation law).
-- Deciding whether a proposed metaphor is *load-bearing*
+- Deciding whether a proposed metaphor is _load-bearing_
   (the analogy carries a quantitative prediction) or
-  *rhetorical* (the analogy is just a storytelling device).
+  _rhetorical_ (the analogy is just a storytelling device).
 - A prompt crosses subfields — e.g. "is the tropical-
   semiring result connected to the min-plus algebra limit
   of statistical mechanics?" — and needs routing.
@@ -32,7 +32,7 @@ metaphors from sliding into rhetoric.
 ## When to defer (this is load-bearing)
 
 Defer to the narrow skill or split whenever a prompt cleanly
-lands in its lane. The umbrella exists to *route*, not to
+lands in its lane. The umbrella exists to _route_, not to
 compete:
 
 - **Numerical / computational** physics content (simulation,
@@ -60,10 +60,10 @@ The honest list — not speculative, all in the code:
 - **Tropical semiring** in `src/Core/NovelMath.fs`. Min-plus
   arithmetic arises as the `β → ∞` (zero-temperature) limit
   of the log-partition function `log Z_β(x, y) = -(1/β) log
-  (e^{-βx} + e^{-βy})`. At `β → ∞` this becomes `min(x, y)`.
+(e^{-βx} + e^{-βy})`. At `β → ∞` this becomes `min(x, y)`.
   The connection is Maslov dequantisation / idempotent
   analysis (Litvinov, Maslov); references in `docs/UPSTREAM-
-  LIST.md`. This hat owns whether a paper claim invokes that
+LIST.md`. This hat owns whether a paper claim invokes that
   limit correctly.
 - **Tropical LFP closure** in `src/Core/Hierarchy.fs`. The
   least-fixed-point iteration over a min-plus algebra is the
@@ -109,7 +109,7 @@ metaphor is better than a misleading one).
 Every quantity in a paper draft should have either:
 
 1. A stated unit (seconds, bits, operations, bytes).
-2. An explicit statement that it's dimensionless and *why*
+2. An explicit statement that it's dimensionless and _why_
    (ratio, probability, count).
 
 Mixing dimensions (adding seconds to bits) is a bug, not a
@@ -142,7 +142,7 @@ metaphor.
 - Does NOT override `applied-mathematics-expert` on tropical
   algebra as pure math.
 - Does NOT override `probability-and-bayesian-inference-
-  expert` on information-theoretic entropy of random
+expert` on information-theoretic entropy of random
   variables.
 - Does NOT decide tool routing for a physics claim — that
   remains `formal-verification-expert`.

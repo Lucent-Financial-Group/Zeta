@@ -11,21 +11,12 @@ import {
   type GitEventSink,
   type IdGenerator,
 } from "../src/sync.ts";
-import {
-  EventOp,
-  asZetaIdDecimal,
-  type FrontmatterEvent,
-  type ZetaIdDecimal,
-} from "../src/event.ts";
+import { EventOp, asZetaIdDecimal, type FrontmatterEvent, type ZetaIdDecimal } from "../src/event.ts";
 import type { FrontmatterRow } from "../src/schema.ts";
 
 const TABLE = "task";
 
-function upsertEvent(
-  eventId: string,
-  aggregateId: string,
-  fields: Record<string, string>,
-): FrontmatterEvent {
+function upsertEvent(eventId: string, aggregateId: string, fields: Record<string, string>): FrontmatterEvent {
   return {
     id: asZetaIdDecimal(eventId),
     table: TABLE,
@@ -162,9 +153,7 @@ test("syncIndexToGit emits an Upsert event per changed row", () => {
 });
 
 test("syncIndexToGit returns row_missing_id feedback for a row without id", () => {
-  const source = new FakeIndexSource([
-    { table: TABLE, values: { title: "no-id" } },
-  ]);
+  const source = new FakeIndexSource([{ table: TABLE, values: { title: "no-id" } }]);
   const sink = new FakeGitSink();
   const ids = new FakeIdGenerator();
   const result = syncIndexToGit(TABLE, { source, sink, ids });
@@ -175,9 +164,7 @@ test("syncIndexToGit returns row_missing_id feedback for a row without id", () =
 });
 
 test("syncIndexToGit returns row_missing_id feedback for an empty id", () => {
-  const source = new FakeIndexSource([
-    { table: TABLE, values: { id: "", title: "empty-id" } },
-  ]);
+  const source = new FakeIndexSource([{ table: TABLE, values: { id: "", title: "empty-id" } }]);
   const sink = new FakeGitSink();
   const ids = new FakeIdGenerator();
   const result = syncIndexToGit(TABLE, { source, sink, ids });

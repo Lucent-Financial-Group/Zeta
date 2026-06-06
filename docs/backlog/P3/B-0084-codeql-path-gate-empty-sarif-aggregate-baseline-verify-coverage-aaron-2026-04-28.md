@@ -9,7 +9,18 @@ ask: maintainer Aaron 2026-04-28 (SASTID alert investigation — speculation-vs-
 created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
-tags: [aaron-2026-04-28, scorecard, sastid, codeql, path-gate, do-the-right-long-term-thing, mostly-implemented, verify-only, P3-downgraded-from-P1-on-finding-already-done]
+tags:
+  [
+    aaron-2026-04-28,
+    scorecard,
+    sastid,
+    codeql,
+    path-gate,
+    do-the-right-long-term-thing,
+    mostly-implemented,
+    verify-only,
+    P3-downgraded-from-P1-on-finding-already-done,
+  ]
 ---
 
 # B-0084 — CodeQL path-gate emit-empty-SARIF for Scorecard SAST coverage
@@ -18,11 +29,11 @@ tags: [aaron-2026-04-28, scorecard, sastid, codeql, path-gate, do-the-right-long
 
 Aaron 2026-04-28T19:01Z verbatim:
 
-> *"SASTID dismissed ✅ did you fix what it was complaining about?"*
+> _"SASTID dismissed ✅ did you fix what it was complaining about?"_
 
 Aaron 2026-04-28T19:02Z verbatim:
 
-> *"it also voilates do the right long term thing when making suggested fixes"*
+> _"it also voilates do the right long term thing when making suggested fixes"_
 
 Two compounding corrections caught my dismissal as the wrong move:
 
@@ -139,14 +150,14 @@ workflow for the actual matrix-loop implementation.
 ## Acceptance criteria
 
 - [ ] `.github/workflows/codeql.yml` modified to emit empty SARIF
-  on path-gate skip
+      on path-gate skip
 - [ ] Empty SARIF passes GitHub Code Scanning validation
 - [ ] After the next 2-3 doc-only PRs land, Scorecard SASTID metric
-  reads 30/30 (or whatever the recent-N-commits ratio shows)
+      reads 30/30 (or whatever the recent-N-commits ratio shows)
 - [ ] Per-PR Actions minutes cost increases by ~5 seconds (empty-
-  SARIF upload), within budget
+      SARIF upload), within budget
 - [ ] Otto-247 version-currency: upload-sarif action SHA-pinned to
-  latest stable (not `@v3` or similar)
+      latest stable (not `@v3` or similar)
 
 ## Why P1 (not deferred to after 0/0/0)
 

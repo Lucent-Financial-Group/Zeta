@@ -7,33 +7,33 @@
 
 ## Ranking
 
-| file | touches | unique authors | PR count |
-|---|---:|---:|---:|
-| docs/BACKLOG.md | 34 | 1 | 26 |
-| docs/ROUND-HISTORY.md | 18 | 1 | 12 |
-| docs/VISION.md | 14 | 1 | 3 |
-| docs/CURRENT-ROUND.md | 13 | 1 | 5 |
-| docs/WINS.md | 11 | 1 | 7 |
-| memory/MEMORY.md | 10 | 1 | 10 |
-| docs/DEBT.md | 10 | 1 | 6 |
-| .github/workflows/gate.yml | 9 | 2 | 6 |
-| docs/security/THREAT-MODEL.md | 8 | 1 | 5 |
-| .gitignore | 8 | 1 | 6 |
-| .claude/skills/round-management/SKILL.md | 8 | 1 | 5 |
-| GOVERNANCE.md | 7 | 1 | 5 |
-| docs/WONT-DO.md | 7 | 1 | 5 |
-| docs/TECH-RADAR.md | 7 | 1 | 5 |
-| docs/GLOSSARY.md | 7 | 1 | 5 |
-| docs/FACTORY-HYGIENE.md | 7 | 1 | 10 |
-| AGENTS.md | 7 | 1 | 6 |
-| .claude/skills/security-researcher/SKILL.md | 7 | 1 | 4 |
-| memory/persona/best-practices-scratch.md | 6 | 1 | 6 |
-| docs/research/proof-tool-coverage.md | 6 | 1 | 4 |
-| .claude/skills/skill-improver/SKILL.md | 6 | 1 | 3 |
-| .claude/skills/skill-creator/SKILL.md | 6 | 1 | 4 |
-| .claude/skills/prompt-protector/SKILL.md | 6 | 1 | 4 |
-| .claude/skills/backlog-scrum-master/SKILL.md | 6 | 1 | 4 |
-| .claude/skills/algebra-owner/SKILL.md | 6 | 1 | 4 |
+| file                                         | touches | unique authors | PR count |
+| -------------------------------------------- | ------: | -------------: | -------: |
+| docs/BACKLOG.md                              |      34 |              1 |       26 |
+| docs/ROUND-HISTORY.md                        |      18 |              1 |       12 |
+| docs/VISION.md                               |      14 |              1 |        3 |
+| docs/CURRENT-ROUND.md                        |      13 |              1 |        5 |
+| docs/WINS.md                                 |      11 |              1 |        7 |
+| memory/MEMORY.md                             |      10 |              1 |       10 |
+| docs/DEBT.md                                 |      10 |              1 |        6 |
+| .github/workflows/gate.yml                   |       9 |              2 |        6 |
+| docs/security/THREAT-MODEL.md                |       8 |              1 |        5 |
+| .gitignore                                   |       8 |              1 |        6 |
+| .claude/skills/round-management/SKILL.md     |       8 |              1 |        5 |
+| GOVERNANCE.md                                |       7 |              1 |        5 |
+| docs/WONT-DO.md                              |       7 |              1 |        5 |
+| docs/TECH-RADAR.md                           |       7 |              1 |        5 |
+| docs/GLOSSARY.md                             |       7 |              1 |        5 |
+| docs/FACTORY-HYGIENE.md                      |       7 |              1 |       10 |
+| AGENTS.md                                    |       7 |              1 |        6 |
+| .claude/skills/security-researcher/SKILL.md  |       7 |              1 |        4 |
+| memory/persona/best-practices-scratch.md     |       6 |              1 |        6 |
+| docs/research/proof-tool-coverage.md         |       6 |              1 |        4 |
+| .claude/skills/skill-improver/SKILL.md       |       6 |              1 |        3 |
+| .claude/skills/skill-creator/SKILL.md        |       6 |              1 |        4 |
+| .claude/skills/prompt-protector/SKILL.md     |       6 |              1 |        4 |
+| .claude/skills/backlog-scrum-master/SKILL.md |       6 |              1 |        4 |
+| .claude/skills/algebra-owner/SKILL.md        |       6 |              1 |        4 |
 
 ## Suggested actions
 
@@ -70,29 +70,29 @@ BACKLOG touch per PR opened).
 
 ### Per-file suggested action
 
-| file | action | rationale |
-|---|---|---|
-| `docs/BACKLOG.md` | **split** | Matches the Otto-54 BACKLOG-per-swim-lane row. 26 PRs in 30 days touching one file is the paradigmatic serialization bottleneck. |
-| `docs/ROUND-HISTORY.md` | **freeze-then-watch** | Historical narrative by design; candidate for "freeze older rounds to archive" pattern per GOVERNANCE.md §2. |
-| `docs/VISION.md` | **audit** | 14 touches but only 3 PRs — high commit-density per PR is unusual; likely legitimate iteration during pre-v1 scope shaping, not pathological. |
-| `docs/CURRENT-ROUND.md` | **watch** | Per-round update is normal; current touches match cadence. |
-| `docs/WINS.md` | **watch** | Append-only; touches track round cadence. |
-| `memory/MEMORY.md` | **cadence** | Matches the Otto-54 CURRENT-maintainer-freshness row. 10 touches / 10 PRs = one index update per absorb. Directly addressed by the freshness audit row already backlogged. |
-| `docs/DEBT.md` | **watch** | Per-round update; normal cadence. |
-| `.github/workflows/gate.yml` | **audit** | 2 unique authors suggests this is where CI changes get proposed by contributors beyond Otto — the only entry with >1 author. Healthy signal, not a split candidate. |
-| `docs/security/THREAT-MODEL.md` | **watch** | Security scaffolding is still maturing. |
-| `.gitignore` | **watch** | Routine updates as tools + artifacts accumulate. |
-| `.claude/skills/round-management/SKILL.md` | **audit** | High touch for a skill file; candidate for skill-tune-up review. |
-| `GOVERNANCE.md` | **watch** | Governance rule additions; append-with-context is correct. |
-| `docs/WONT-DO.md` | **watch** | Declined-features log grows monotonically; expected. |
-| `docs/TECH-RADAR.md` | **watch** | Quarterly radar; touches track band graduations. |
-| `docs/GLOSSARY.md` | **watch** | Vocabulary expansion with each new research arc. |
-| `docs/FACTORY-HYGIENE.md` | **watch** | Meta-hygiene file; self-reference is OK. This very audit adds one row. |
-| `AGENTS.md` | **watch** | Universal onboarding handbook; occasional updates. |
-| `.claude/skills/security-researcher/SKILL.md` | **audit** | High touch for a single skill; candidate for skill-tune-up. |
-| `memory/persona/best-practices-scratch.md` | **watch** | Scratchpad by design. |
-| `.claude/skills/backlog-scrum-master/SKILL.md` | **audit** | Skill touches suggest tune-up cycle underway. |
-| `.claude/skills/algebra-owner/SKILL.md` | **audit** | Same as above. |
+| file                                           | action                | rationale                                                                                                                                                                  |
+| ---------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/BACKLOG.md`                              | **split**             | Matches the Otto-54 BACKLOG-per-swim-lane row. 26 PRs in 30 days touching one file is the paradigmatic serialization bottleneck.                                           |
+| `docs/ROUND-HISTORY.md`                        | **freeze-then-watch** | Historical narrative by design; candidate for "freeze older rounds to archive" pattern per GOVERNANCE.md §2.                                                               |
+| `docs/VISION.md`                               | **audit**             | 14 touches but only 3 PRs — high commit-density per PR is unusual; likely legitimate iteration during pre-v1 scope shaping, not pathological.                              |
+| `docs/CURRENT-ROUND.md`                        | **watch**             | Per-round update is normal; current touches match cadence.                                                                                                                 |
+| `docs/WINS.md`                                 | **watch**             | Append-only; touches track round cadence.                                                                                                                                  |
+| `memory/MEMORY.md`                             | **cadence**           | Matches the Otto-54 CURRENT-maintainer-freshness row. 10 touches / 10 PRs = one index update per absorb. Directly addressed by the freshness audit row already backlogged. |
+| `docs/DEBT.md`                                 | **watch**             | Per-round update; normal cadence.                                                                                                                                          |
+| `.github/workflows/gate.yml`                   | **audit**             | 2 unique authors suggests this is where CI changes get proposed by contributors beyond Otto — the only entry with >1 author. Healthy signal, not a split candidate.        |
+| `docs/security/THREAT-MODEL.md`                | **watch**             | Security scaffolding is still maturing.                                                                                                                                    |
+| `.gitignore`                                   | **watch**             | Routine updates as tools + artifacts accumulate.                                                                                                                           |
+| `.claude/skills/round-management/SKILL.md`     | **audit**             | High touch for a skill file; candidate for skill-tune-up review.                                                                                                           |
+| `GOVERNANCE.md`                                | **watch**             | Governance rule additions; append-with-context is correct.                                                                                                                 |
+| `docs/WONT-DO.md`                              | **watch**             | Declined-features log grows monotonically; expected.                                                                                                                       |
+| `docs/TECH-RADAR.md`                           | **watch**             | Quarterly radar; touches track band graduations.                                                                                                                           |
+| `docs/GLOSSARY.md`                             | **watch**             | Vocabulary expansion with each new research arc.                                                                                                                           |
+| `docs/FACTORY-HYGIENE.md`                      | **watch**             | Meta-hygiene file; self-reference is OK. This very audit adds one row.                                                                                                     |
+| `AGENTS.md`                                    | **watch**             | Universal onboarding handbook; occasional updates.                                                                                                                         |
+| `.claude/skills/security-researcher/SKILL.md`  | **audit**             | High touch for a single skill; candidate for skill-tune-up.                                                                                                                |
+| `memory/persona/best-practices-scratch.md`     | **watch**             | Scratchpad by design.                                                                                                                                                      |
+| `.claude/skills/backlog-scrum-master/SKILL.md` | **audit**             | Skill touches suggest tune-up cycle underway.                                                                                                                              |
+| `.claude/skills/algebra-owner/SKILL.md`        | **audit**             | Same as above.                                                                                                                                                             |
 
 ### Synthesis
 

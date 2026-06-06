@@ -6,52 +6,52 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 855 |
-| Title | factory(meta): Otto-363 — substrate or it didn't happen — no invisible directives (Aaron + Amara 2026-04-29) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T18:36:10Z |
-| Merged at | 2026-04-29T19:19:53Z |
-| Merge commit SHA | `6b614bbcead43bc778cfddbe63510fda878785aa` |
-| Branch | `otto-363-substrate-or-it-didnt-happen-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/855 |
-| Changed files | 6 |
-| Additions / deletions | +1257 / -0 |
+| Field                 | Value                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Number                | 855                                                                                                          |
+| Title                 | factory(meta): Otto-363 — substrate or it didn't happen — no invisible directives (Aaron + Amara 2026-04-29) |
+| Author                | `AceHack` (human)                                                                                            |
+| State                 | MERGED                                                                                                       |
+| Created at            | 2026-04-29T18:36:10Z                                                                                         |
+| Merged at             | 2026-04-29T19:19:53Z                                                                                         |
+| Merge commit SHA      | `6b614bbcead43bc778cfddbe63510fda878785aa`                                                                   |
+| Branch                | `otto-363-substrate-or-it-didnt-happen-2026-04-29`                                                           |
+| Base branch           | `main`                                                                                                       |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/855                                                      |
+| Changed files         | 6                                                                                                            |
+| Additions / deletions | +1257 / -0                                                                                                   |
 
 ## Description
 
 ## Summary
 
-Lands the **Otto-363** rule + 8-mechanism remediation against substrate loss, triggered by Otto repeatedly marking work *"done"* after only TaskUpdate-only capture during the 2026-04-29 doctrine cluster (and minimizing the v5 superseding architecture as *"review corrections"*).
+Lands the **Otto-363** rule + 8-mechanism remediation against substrate loss, triggered by Otto repeatedly marking work _"done"_ after only TaskUpdate-only capture during the 2026-04-29 doctrine cluster (and minimizing the v5 superseding architecture as _"review corrections"_).
 
 ## Carved blade (Amara verbatim)
 
-> *"A directive that lives only in a conversation is not a directive. It is weather. Substrate or it didn't happen."*
+> _"A directive that lives only in a conversation is not a directive. It is weather. Substrate or it didn't happen."_
 
 ## Compact rule
 
-> *"No invisible directives. No session-local truth. No 'done' without substrate."*
+> _"No invisible directives. No session-local truth. No 'done' without substrate."_
 
 ## What's in this PR
 
-| File | Purpose |
-|---|---|
+| File                                                                                                                    | Purpose                                                                                                                        |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` | **Verbatim Amara packet** — the diagnostic + 8-mechanism protocol preserved verbatim BEFORE summarization, per the rule itself |
-| `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md` | Distilled doctrine memory — rule + 8 mechanisms + composes-with mappings |
-| `memory/MEMORY.md` | Paired index entry (newest-first) |
-| `CLAUDE.md` | **Bootstrap pointer** — 5th CLAUDE.md-tier rule (100% loaded at every wake) |
+| `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`               | Distilled doctrine memory — rule + 8 mechanisms + composes-with mappings                                                       |
+| `memory/MEMORY.md`                                                                                                      | Paired index entry (newest-first)                                                                                              |
+| `CLAUDE.md`                                                                                                             | **Bootstrap pointer** — 5th CLAUDE.md-tier rule (100% loaded at every wake)                                                    |
 
 ## The 8 mechanisms
 
-1. **Ephemeral-state detector** — before saying *"done,"* verify durability surface
+1. **Ephemeral-state detector** — before saying _"done,"_ verify durability surface
 2. **Verbatim-preservation trigger** — major packets land in `docs/research/` verbatim BEFORE summarizing
 3. **Magnitude classifier** — small / implementation / doctrine / superseding architecture; storage routing differs per class
 4. **Supersession protocol** — generalises Otto-362 across surfaces
 5. **Cold-start proof** — fresh agent must reconstruct from substrate alone
-6. **"Done" vocabulary discipline** — *captured* ≠ *preserved* ≠ *canonical* ≠ *operational*; specific words have specific durability semantics
+6. **"Done" vocabulary discipline** — _captured_ ≠ _preserved_ ≠ _canonical_ ≠ _operational_; specific words have specific durability semantics
 7. **Bootstrap pointer in CLAUDE.md/AGENTS.md** — landed in this PR alongside verify-before-deferring + future-self-not-bound + never-be-idle + version-currency
 8. **Mechanized lint eventually** — research-doc indexing, MEMORY.md row pairing (already enforced), supersession-note pairing, packet-link in tasks, PR-body class discrimination
 
@@ -67,7 +67,7 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 - **`tools/lint/no-directives-otto-prose.sh`** — same family of failures (vigilance fails; mechanism is the durable answer)
 - **`feedback_aaron_channel_verbatim_preservation_*`** — channel-verbatim rule that Otto-363 mechanises
 - **verify-before-deferring** (CLAUDE.md-tier) — same shape, applied to ephemeral-vs-durable distinction
-- **future-self-not-bound** (CLAUDE.md-tier) — companion: future-self revises *substrate*, NOT chat that didn't land
+- **future-self-not-bound** (CLAUDE.md-tier) — companion: future-self revises _substrate_, NOT chat that didn't land
 
 ## Test plan
 
@@ -83,15 +83,15 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 23 |
-| Resolved threads | 22 |
-| Unresolved threads | 1 |
-| Total review comments | 45 |
-| Total fix commits (touching thread paths) | 8 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 23    |
+| Resolved threads                          | 22    |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 45    |
+| Total fix commits (touching thread paths) | 8     |
 
 ## Review threads
 
@@ -104,16 +104,16 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T18:37:47Z on `memory/MEMORY.md`:5 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct cross-harness bootstrap coverage claim**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct cross-harness bootstrap coverage claim**
+
   This entry says Otto-363 already includes a `CLAUDE.md+AGENTS.md` bootstrap pointer, but this commit only adds the rule to `CLAUDE.md` and does not update `AGENTS.md`. Because non-Claude harnesses are bootstrapped from `AGENTS.md`, this overstates rollout and leaves the durability check missing for those sessions, which is exactly the cross-surface drift the rule is trying to prevent.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:54:39Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed in f4a31b0 — AGENTS.md bootstrap pointer added. The cross-harness coverage claim is now real, not aspirational. Both CLAUDE.md and AGENTS.md carry the Otto-363 rule. Good catch — exactly the cross-surface drift the rule is trying to prevent.
+- **`AceHack` (human)** at 2026-04-29T18:54:39Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed in f4a31b0 — AGENTS.md bootstrap pointer added. The cross-harness coverage claim is now real, not aspirational. Both CLAUDE.md and AGENTS.md carry the Otto-363 rule. Good catch — exactly the cross-surface drift the rule is trying to prevent.
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -128,8 +128,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:54:41Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:170 (association: MEMBER)
-    Inspected — tables are valid Markdown (header row starts with single leading '|'). 'grep -n "^||" memory/feedback_otto_363*.md' returns no matches. The reviewer may have been seeing a renderer-cache artifact or a false positive. Resolving with that explanation; no source change needed. If you see the rendering issue persist after the f4a31b0 push, please reopen with a screenshot or explicit byte-position.
+- **`AceHack` (human)** at 2026-04-29T18:54:41Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:170 (association: MEMBER)
+  Inspected — tables are valid Markdown (header row starts with single leading '|'). 'grep -n "^||" memory/feedback_otto_363\*.md' returns no matches. The reviewer may have been seeing a renderer-cache artifact or a false positive. Resolving with that explanation; no source change needed. If you see the rendering issue persist after the f4a31b0 push, please reopen with a screenshot or explicit byte-position.
 
 ### Thread 3 -- resolved [collapsed]
 
@@ -144,8 +144,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:54:43Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:220 (association: MEMBER)
-    Same as the line-161 table inspection above — no '||' in source. Resolving.
+- **`AceHack` (human)** at 2026-04-29T18:54:43Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:220 (association: MEMBER)
+  Same as the line-161 table inspection above — no '||' in source. Resolving.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -163,8 +163,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:54:46Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:187 (association: MEMBER)
-    Fixed in f4a31b0 — replaced wildcard 'memory/feedback_aaron_channel_verbatim_preservation_*' with the concrete path 'memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md'. Now resolves under the repo's reference-integrity CI checks. Good catch.
+- **`AceHack` (human)** at 2026-04-29T18:54:46Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:187 (association: MEMBER)
+  Fixed in f4a31b0 — replaced wildcard 'memory/feedback*aaron_channel_verbatim_preservation*\*' with the concrete path 'memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md'. Now resolves under the repo's reference-integrity CI checks. Good catch.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -175,12 +175,12 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-29T18:40:04Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:154 (association: NONE)
-  This section title and PR description indicate a CLAUDE.md *and* AGENTS.md bootstrap pointer, but this PR only updates CLAUDE.md (no corresponding AGENTS.md change). Either add the matching AGENTS.md pointer in this PR, or reword this section/description to reflect that only CLAUDE.md is updated here.
+  This section title and PR description indicate a CLAUDE.md _and_ AGENTS.md bootstrap pointer, but this PR only updates CLAUDE.md (no corresponding AGENTS.md change). Either add the matching AGENTS.md pointer in this PR, or reword this section/description to reflect that only CLAUDE.md is updated here.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:54:48Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:154 (association: MEMBER)
-    Fixed in f4a31b0 — AGENTS.md bootstrap pointer added in this PR alongside CLAUDE.md. The 'cross-harness parity' claim now matches reality. (Same fix as the MEMORY.md coverage thread above.)
+- **`AceHack` (human)** at 2026-04-29T18:54:48Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:154 (association: MEMBER)
+  Fixed in f4a31b0 — AGENTS.md bootstrap pointer added in this PR alongside CLAUDE.md. The 'cross-harness parity' claim now matches reality. (Same fix as the MEMORY.md coverage thread above.)
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -205,8 +205,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:54:50Z on `CLAUDE.md`:318 (association: MEMBER)
-    Fixed in f4a31b0 — replaced 'Aaron / Amara' with the role-ref 'the human maintainer' per the BP-rule on current-state surfaces (CLAUDE.md is current-state, not history). Named attribution stays on closed-list history surfaces (memory/, docs/research/, ROUND-HISTORY, DECISIONS, commit messages). Good catch — this was the kind of name-leak the rule explicitly forbids.
+- **`AceHack` (human)** at 2026-04-29T18:54:50Z on `CLAUDE.md`:318 (association: MEMBER)
+  Fixed in f4a31b0 — replaced 'Aaron / Amara' with the role-ref 'the human maintainer' per the BP-rule on current-state surfaces (CLAUDE.md is current-state, not history). Named attribution stays on closed-list history surfaces (memory/, docs/research/, ROUND-HISTORY, DECISIONS, commit messages). Good catch — this was the kind of name-leak the rule explicitly forbids.
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -217,16 +217,16 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T18:53:46Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace ephemeral /tmp handoff with durable substrate**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace ephemeral /tmp handoff with durable substrate**
+
   The structured extraction says the v5 architecture seed is in `/tmp/v5-research-doc-saved.md`, but `/tmp` is explicitly treated elsewhere in this rule set as non-durable state. In a cold-start or post-reboot session, that artifact can disappear, leaving the documented next-step dependency unrecoverable from repository substrate and undermining the preservation protocol this PR is introducing.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:57:07Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
-    Fixed in f282e5f — self-applying-the-rule failure caught. The structured extraction had stale /tmp reference even though the seed was already moved to pushed WIP branch wip/v5-host-portable-architecture-seed-2026-04-29 (commit c300b01). Updated to point at the durable WIP-branch location. The exact bug the rule prevents — a doctrine document about substrate preservation pointing to /tmp as a load-bearing artifact location. Good catch — chef's kiss self-apply test.
+- **`AceHack` (human)** at 2026-04-29T18:57:07Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
+  Fixed in f282e5f — self-applying-the-rule failure caught. The structured extraction had stale /tmp reference even though the seed was already moved to pushed WIP branch wip/v5-host-portable-architecture-seed-2026-04-29 (commit c300b01). Updated to point at the durable WIP-branch location. The exact bug the rule prevents — a doctrine document about substrate preservation pointing to /tmp as a load-bearing artifact location. Good catch — chef's kiss self-apply test.
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -244,8 +244,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:03Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed in 58be1be — '12 review corrections' aligned to '10' to match the numbered structured extraction in the 5-AI corrections research doc. Same fix applied in the original packet's trigger section.
+- **`AceHack` (human)** at 2026-04-29T19:04:03Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed in 58be1be — '12 review corrections' aligned to '10' to match the numbered structured extraction in the 5-AI corrections research doc. Same fix applied in the original packet's trigger section.
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -263,8 +263,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:07Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:245 (association: MEMBER)
-    Fixed in 58be1be — 'memory-index-integrity.yml' → '.github/workflows/memory-index-integrity.yml' (correct repo path).
+- **`AceHack` (human)** at 2026-04-29T19:04:07Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:245 (association: MEMBER)
+  Fixed in 58be1be — 'memory-index-integrity.yml' → '.github/workflows/memory-index-integrity.yml' (correct repo path).
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -282,8 +282,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:09Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:254 (association: MEMBER)
-    Fixed in 58be1be — docs/research/INDEX.md doesn't exist today. Reframed as 'a future addition; until it exists, MEMORY.md is the primary memory index'. Removes the dead reference while keeping the design space open for a future index.
+- **`AceHack` (human)** at 2026-04-29T19:04:09Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:254 (association: MEMBER)
+  Fixed in 58be1be — docs/research/INDEX.md doesn't exist today. Reframed as 'a future addition; until it exists, MEMORY.md is the primary memory index'. Removes the dead reference while keeping the design space open for a future index.
 
 ### Thread 11 -- resolved [collapsed]
 
@@ -301,8 +301,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:19Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
-    Already fixed in f282e5f (the prior commit before this thread was opened). 'grep /tmp/v5' across the file returns no matches; the structured extraction now points at the pushed WIP branch wip/v5-host-portable-architecture-seed-2026-04-29 (commit c300b01). The thread is outdated.
+- **`AceHack` (human)** at 2026-04-29T19:04:19Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`:437 (association: MEMBER)
+  Already fixed in f282e5f (the prior commit before this thread was opened). 'grep /tmp/v5' across the file returns no matches; the structured extraction now points at the pushed WIP branch wip/v5-host-portable-architecture-seed-2026-04-29 (commit c300b01). The thread is outdated.
 
 ### Thread 12 -- resolved [collapsed]
 
@@ -317,8 +317,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:13Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:117 (association: MEMBER)
-    Fixed in 58be1be — substrate definition was self-contradicting. Reworded to distinguish: 'durable project object' is the umbrella term; 'substrate' specifically means git-native (committed + reachable + indexed); PRs/issues are 'host-durable parking surfaces, NOT substrate themselves'. For doctrine-changing decisions, mirror substantive content into a git-native file. Now consistent with the 'Precise definition of substrate' section.
+- **`AceHack` (human)** at 2026-04-29T19:04:13Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:117 (association: MEMBER)
+  Fixed in 58be1be — substrate definition was self-contradicting. Reworded to distinguish: 'durable project object' is the umbrella term; 'substrate' specifically means git-native (committed + reachable + indexed); PRs/issues are 'host-durable parking surfaces, NOT substrate themselves'. For doctrine-changing decisions, mirror substantive content into a git-native file. Now consistent with the 'Precise definition of substrate' section.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -330,16 +330,17 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 - **`Copilot` (bot)** at 2026-04-29T18:59:45Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:54 (association: NONE)
   P1: The text cites `docs/research/INDEX.md` as a canonical indexing surface, but that file does not exist in the repository. Either add the index file (and keep it updated) or change this to reference an actual, existing indexing/bootstrapping mechanism for research docs.
+
   ```suggestion
   3. **Indexed** by a canonical bootstrap surface (MEMORY.md row, CLAUDE.md / AGENTS.md pointer, or equivalent canonical reference).
-  
+
   A file is **not** substrate if any leg is missing. A doc on a feature branch is "in flight," not preserved. A memory file without a MEMORY.md row is "written but lost." A research blob without a canonical bootstrap pointer is "buried."
   ```
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:11Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:54 (association: MEMBER)
-    Fixed in 58be1be (same INDEX.md fix at the substrate definition section).
+- **`AceHack` (human)** at 2026-04-29T19:04:11Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:54 (association: MEMBER)
+  Fixed in 58be1be (same INDEX.md fix at the substrate definition section).
 
 ### Thread 14 -- resolved [outdated, collapsed]
 
@@ -361,8 +362,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:17Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:40 (association: MEMBER)
-    Fixed in 58be1be — 'must include Durability:/Substrate: trailers' was prescriptive but no PR template / lint / CI enforces yet. Reworded to 'SHOULD include' with explicit DEFERRED marker on enforcement. Added status note: 'doctrine-only today; mechanically enforced after the follow-up implementation lands.' The trailer convention is documented as the target state, not a current requirement.
+- **`AceHack` (human)** at 2026-04-29T19:04:17Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:40 (association: MEMBER)
+  Fixed in 58be1be — 'must include Durability:/Substrate: trailers' was prescriptive but no PR template / lint / CI enforces yet. Reworded to 'SHOULD include' with explicit DEFERRED marker on enforcement. Added status note: 'doctrine-only today; mechanically enforced after the follow-up implementation lands.' The trailer convention is documented as the target state, not a current requirement.
 
 ### Thread 15 -- resolved [outdated, collapsed]
 
@@ -380,8 +381,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:05Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`:13 (association: MEMBER)
-    Fixed in 58be1be (same as the MEMORY.md alignment) — '12 review corrections' → '10 review corrections (numbered in the Amara packet)' in the original packet's trigger section.
+- **`AceHack` (human)** at 2026-04-29T19:04:05Z on `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md`:13 (association: MEMBER)
+  Fixed in 58be1be (same as the MEMORY.md alignment) — '12 review corrections' → '10 review corrections (numbered in the Amara packet)' in the original packet's trigger section.
 
 ### Thread 16 -- resolved [outdated, collapsed]
 
@@ -402,8 +403,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:04:15Z on `CLAUDE.md`:304 (association: MEMBER)
-    Fixed in 58be1be — same substrate-vs-PR/issue terminology conflict in CLAUDE.md bootstrap pointer. CLAUDE.md now reads: 'must be converted to a durable project object — preferably substrate (committed + reachable + indexed git-native repo file). PRs and issues are host-durable parking surfaces, NOT substrate; for doctrine-changing decisions, mirror the substantive content into a git-native file.' Consistent with the memory-file definition.
+- **`AceHack` (human)** at 2026-04-29T19:04:15Z on `CLAUDE.md`:304 (association: MEMBER)
+  Fixed in 58be1be — same substrate-vs-PR/issue terminology conflict in CLAUDE.md bootstrap pointer. CLAUDE.md now reads: 'must be converted to a durable project object — preferably substrate (committed + reachable + indexed git-native repo file). PRs and issues are host-durable parking surfaces, NOT substrate; for doctrine-changing decisions, mirror the substantive content into a git-native file.' Consistent with the memory-file definition.
 
 ### Thread 17 -- resolved [outdated, collapsed]
 
@@ -414,16 +415,16 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T19:01:09Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:357 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove conflicting no-PR parking rule**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove conflicting no-PR parking rule**
+
   This bullet conflicts with the earlier guidance in the same file that explicitly recommends a pushed `wip/*` branch **without** a PR as the preferred parking surface. With both rules present, a future agent following the “forbidden” list would reject the documented preferred flow, while an agent following the preferred flow would appear non-compliant; that ambiguity can break the recovery workflow this doctrine is trying to mechanize.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:05:16Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:357 (association: MEMBER)
-    Fixed in d73b4ef — disambiguated. The forbidden case is specifically NON-WIP-prefixed branches with no PR (silent parking, undiscoverable by recovery). The preferred case is wip/*-prefixed branches with no PR (intentional parking, discoverable). The prefix is the disambiguator. Now both rules are consistent: 'wip/topic' + no PR = preferred; 'feature/foo' + no PR = forbidden (rename to wip/ or open draft PR). Good catch — exactly the kind of internal contradiction Otto-363 is designed to surface.
+- **`AceHack` (human)** at 2026-04-29T19:05:16Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:357 (association: MEMBER)
+  Fixed in d73b4ef — disambiguated. The forbidden case is specifically NON-WIP-prefixed branches with no PR (silent parking, undiscoverable by recovery). The preferred case is wip/\*-prefixed branches with no PR (intentional parking, discoverable). The prefix is the disambiguator. Now both rules are consistent: 'wip/topic' + no PR = preferred; 'feature/foo' + no PR = forbidden (rename to wip/ or open draft PR). Good catch — exactly the kind of internal contradiction Otto-363 is designed to surface.
 
 ### Thread 18 -- resolved [outdated, collapsed]
 
@@ -434,16 +435,16 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T19:07:20Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:67 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Make channel classes mutually exclusive**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Make channel classes mutually exclusive**
+
   The taxonomy currently places `GitHub Issue / task comment` in **Remote parked** while `GitHub Issues` are also listed in **Host-durable-not-git-canonical**, which makes the 5-tier classifier ambiguous at the exact point where later recovery/enforcement logic depends on a single class per surface. In practice, this can let issue-only directives be treated as acceptable parked state in one pass and non-canonical coordination-only state in another, undermining the doctrine's mechanical checks.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:17:59Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:67 (association: MEMBER)
-    Fixed in cd6416d — taxonomy now mutually exclusive. GitHub Issues / task comments / PR comments live ONLY in 'Host-durable-not-git-canonical' (no git ref backs them; not a parking surface). 'Remote parked' is now exclusively git-ref-backed: pushed wip/* branch + optional draft PR atop it. Each surface has exactly one home. Added explicit '5-tier, mutually exclusive' note + classifier-depends-on-disjointness rationale. Tier title sharpened from 'parking surfaces are git-native' to 'parking surfaces are git-ref-backed.'
+- **`AceHack` (human)** at 2026-04-29T19:17:59Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:67 (association: MEMBER)
+  Fixed in cd6416d — taxonomy now mutually exclusive. GitHub Issues / task comments / PR comments live ONLY in 'Host-durable-not-git-canonical' (no git ref backs them; not a parking surface). 'Remote parked' is now exclusively git-ref-backed: pushed wip/\* branch + optional draft PR atop it. Each surface has exactly one home. Added explicit '5-tier, mutually exclusive' note + classifier-depends-on-disjointness rationale. Tier title sharpened from 'parking surfaces are git-native' to 'parking surfaces are git-ref-backed.'
 
 ### Thread 19 -- resolved [outdated, collapsed]
 
@@ -454,16 +455,16 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T19:07:20Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:66 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use a real named-stash command in taxonomy**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use a real named-stash command in taxonomy**
+
   This row labels `git stash -u` as a **named** stash example, but `git stash -h` shows naming is provided via `stash push ... [(-m | --message) <message>]`; `git stash -u` alone creates an unnamed entry. Because the same document later forbids anonymous stashes, this command example pushes agents toward the exact state the policy says to avoid and can break any recovery flow that expects named stashes.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:18:01Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:66 (association: MEMBER)
-    Fixed in cd6416d — replaced bare 'git stash -u' with the correct named-stash form 'git stash push -u -m "<name>"'. Added explicit note that 'git stash -u' WITHOUT -m is anonymous = weather, not parked. Self-applying-the-rule fix in the example commands.
+- **`AceHack` (human)** at 2026-04-29T19:18:01Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:66 (association: MEMBER)
+  Fixed in cd6416d — replaced bare 'git stash -u' with the correct named-stash form 'git stash push -u -m "<name>"'. Added explicit note that 'git stash -u' WITHOUT -m is anonymous = weather, not parked. Self-applying-the-rule fix in the example commands.
 
 ### Thread 20 -- resolved [outdated, collapsed]
 
@@ -475,9 +476,10 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 - **`Copilot` (bot)** at 2026-04-29T19:09:20Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:75 (association: NONE)
   In the 5-tier channel taxonomy, “Remote parked” includes “GitHub Issue / task comment”, but the next row classifies “GitHub Issues” under “Host-durable-not-git-canonical”. This makes the taxonomy non-disjoint and also conflicts with the parenthetical “parking surfaces are git-native” (Issues/comments aren’t git-native). Suggest moving Issues/task comments entirely into the host-durable tier (or renaming the tiers) so each surface has exactly one home and the ‘git-native parking’ claim stays true.
+
   ```suggestion
   ## Channel taxonomy (5-tier — parking surfaces are git-ref-backed, not temp dirs)
-  
+
   | Class | Examples | Durability claim |
   |---|---|---|
   | **Ephemeral (weather)** | chat messages, TaskUpdate, `/tmp`, `/var/tmp`, loop todos, session memory, scratch buffer, Desktop loose files, Downloads, untracked working-tree files | NEVER call done. **No temp directory is a parking surface.** `/tmp` and `/var/tmp` are both site-cleaned; FHS does not promise persistence across reboots. |
@@ -485,18 +487,18 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
   | **Remote parked** | pushed WIP branch (no PR), pushed WIP branch with an optional draft PR attached | Survives reboot AND compaction because the backing branch/ref survives. Pushed WIP branch is preferred when avoiding review machinery; a draft PR is for visibility/discussion, but the parking durability comes from the branch, not the PR metadata |
   | **Host-durable-not-git-canonical** | GitHub Issues, task comments, PR comments, labels, assignees, Projects, review threads on closed PRs | Coordination only — durable on the host, but NOT canonical substrate and not a parking surface |
   | **Git-native preserved substrate** | merged or long-lived-reachable + indexed repo files: `memory/*.md`, `docs/research/`, `docs/ops/`, `docs/backlog/`, claim mirrors, validators / lints / runbooks, CLAUDE.md / AGENTS.md / GOVERNANCE.md | Canonical substrate (committed + reachable + indexed) |
-  
+
   **Parking-surface rule** (Amara correction post-#855-review):
-  
+
   > *"If it matters enough to come back to, it deserves a git ref."*
-  
+
   When you need to set work aside without starting a review cycle: **pushed WIP branch (no PR)** is the cleanest mechanism. NOT `/tmp`. NOT `/var/tmp`. NOT loose Desktop files. A draft PR can add visibility, but the branch/ref is the parking mechanism. The branch is a real Git object (lightweight movable pointer to a commit, per the Git docs); the temp dir is weather.
   ```
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:18:03Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:75 (association: MEMBER)
-    Fixed in cd6416d (same disjointness fix as the Codex P2 thread above). GitHub Issues moved entirely to Host-durable-not-git-canonical; Remote parked is now exclusively git-ref-backed. Adopted your suggested wording for the 'parking durability comes from the branch, not the PR metadata' framing.
+- **`AceHack` (human)** at 2026-04-29T19:18:03Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:75 (association: MEMBER)
+  Fixed in cd6416d (same disjointness fix as the Codex P2 thread above). GitHub Issues moved entirely to Host-durable-not-git-canonical; Remote parked is now exclusively git-ref-backed. Adopted your suggested wording for the 'parking durability comes from the branch, not the PR metadata' framing.
 
 ### Thread 21 -- resolved [outdated, collapsed]
 
@@ -508,18 +510,19 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 - **`Copilot` (bot)** at 2026-04-29T19:09:20Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:247 (association: NONE)
   The Otto-363 memory file claims AGENTS.md is a “parity addition (same rule, same wording)” and then provides a short quoted “Pointer text”, but the actual CLAUDE.md and AGENTS.md bullets added in this PR use different (and longer) wording and differ from the quoted text (e.g., AGENTS includes `/var/tmp` and the 3-leg substrate definition; CLAUDE does not). Please either (a) make the CLAUDE.md/AGENTS.md pointer text match what’s specified here, or (b) update this section to say the pointers are equivalent (not identical) and remove/update the quoted pointer text to reflect the committed wording so the doctrine doesn’t self-drift.
+
   ```suggestion
   - `AGENTS.md` — equivalent cross-harness addition (same rule/doctrine, file-specific wording rather than identical text)
-  
+
   Committed wording note:
-  
+
   > The bootstrap pointers in `CLAUDE.md` and `AGENTS.md` are equivalent in doctrine, not verbatim-identical. `AGENTS.md` carries the fuller wording (including `/var/tmp` and the three-leg substrate definition); `CLAUDE.md` carries the shorter cold-start reminder. This memory entry records the rule they share, not a single canonical quoted sentence for both files.
   ```
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:18:06Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:247 (association: MEMBER)
-    Fixed in cd6416d — adopted your suggested 'equivalent in doctrine, not verbatim-identical' framing. Memory file now records the rule the two pointers share, with a 'Committed wording note' explaining the file-specific wording (AGENTS carries the fuller version with /var/tmp + 3-leg substrate def + 5-tier taxonomy; CLAUDE carries the shorter cold-start reminder). Compact representative wording kept as a reference, not as canonical text for either file.
+- **`AceHack` (human)** at 2026-04-29T19:18:06Z on `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`:247 (association: MEMBER)
+  Fixed in cd6416d — adopted your suggested 'equivalent in doctrine, not verbatim-identical' framing. Memory file now records the rule the two pointers share, with a 'Committed wording note' explaining the file-specific wording (AGENTS carries the fuller version with /var/tmp + 3-leg substrate def + 5-tier taxonomy; CLAUDE carries the shorter cold-start reminder). Compact representative wording kept as a reference, not as canonical text for either file.
 
 ### Thread 22 -- resolved [outdated, collapsed]
 
@@ -539,8 +542,8 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T19:18:08Z on `AGENTS.md`:278 (association: MEMBER)
-    Fixed in cd6416d — AGENTS.md bullet updated to 'committed + reachable-from-long-lived-ref + indexed' matching the 3-leg substrate definition. Same fix applied to MEMORY.md row for consistency. Tags and release branches now correctly count as preservation surfaces, not just merge-to-main. Good catch — narrower wording would have implied unmerged-to-main = not-preserved.
+- **`AceHack` (human)** at 2026-04-29T19:18:08Z on `AGENTS.md`:278 (association: MEMBER)
+  Fixed in cd6416d — AGENTS.md bullet updated to 'committed + reachable-from-long-lived-ref + indexed' matching the 3-leg substrate definition. Same fix applied to MEMORY.md row for consistency. Tags and release branches now correctly count as preservation surfaces, not just merge-to-main. Good catch — narrower wording would have implied unmerged-to-main = not-preserved.
 
 ### Thread 23 -- unresolved
 
@@ -551,10 +554,10 @@ The v5 architecture preservation (verbatim Amara final review + 5-AI review wave
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T19:22:55Z on `AGENTS.md`:281 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep GitHub Issues out of the "parked" class**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep GitHub Issues out of the "parked" class**
+
   This line reclassifies `GitHub Issue` as `parked` even though the same Otto-363 bullet just defined Issues under `host-durable-not-git-canonical`; that makes the channel taxonomy non-disjoint and can cause agents to treat issue-only state as acceptable parking despite lacking the git-ref durability the rule requires. In practice this undermines cold-start/recovery behavior because the same surface is simultaneously described as non-parking and parking.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

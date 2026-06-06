@@ -41,9 +41,10 @@ describe("cockroach context pack inbox anchor port", () => {
 
     const result = await builder.build(request());
 
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachContextPackInboxAnchorStatement.ListInboxAnchorsForHat,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachContextPackInboxAnchorStatement.ListInboxAnchorsForHat],
+    );
     deepEqual(executor.statements[0]?.parameters, [
       "org-lfg",
       "project-billing",
@@ -58,15 +59,21 @@ describe("cockroach context pack inbox anchor port", () => {
 
     const inboxItem = result.pack.items.find((item) => item.id === "inbox:inbox-billing-blocker");
     equal(inboxItem?.kind, ContextPackItemKind.InboxAnchor);
-    ok(inboxItem?.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.InboxAnchor &&
-      pointer.inboxAnchorId === "inbox-billing-blocker" &&
-      pointer.targetHatAssignmentId === "99" &&
-      pointer.targetAgentId === "agent-director"
-    ));
-    ok(inboxItem?.sourcePointers?.some((pointer) =>
-      pointer.kind === ContextPackSourcePointerKind.WorkItem && pointer.workItemId === "work-billing-blocked"
-    ));
+    ok(
+      inboxItem?.sourcePointers?.some(
+        (pointer) =>
+          pointer.kind === ContextPackSourcePointerKind.InboxAnchor &&
+          pointer.inboxAnchorId === "inbox-billing-blocker" &&
+          pointer.targetHatAssignmentId === "99" &&
+          pointer.targetAgentId === "agent-director",
+      ),
+    );
+    ok(
+      inboxItem?.sourcePointers?.some(
+        (pointer) =>
+          pointer.kind === ContextPackSourcePointerKind.WorkItem && pointer.workItemId === "work-billing-blocked",
+      ),
+    );
     ok(!result.pack.items.some((item) => item.id === "inbox:inbox-other-hat"));
     ok(result.pack.omittedItemsWithReason.some((item) => item.nodeId === "inbox:inbox-other-hat"));
   });
@@ -150,9 +157,10 @@ describe("cockroach context pack inbox anchor port", () => {
       observedAt,
     });
 
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachContextPackInboxAnchorStatement.ListInboxWorkflowAnchorsForHat,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachContextPackInboxAnchorStatement.ListInboxWorkflowAnchorsForHat],
+    );
     deepEqual(executor.statements[0]?.parameters, [
       "org-lfg",
       "project-billing",
@@ -171,18 +179,22 @@ describe("cockroach context pack inbox anchor port", () => {
       snoozedDueCount: 0,
       snoozedFutureCount: 1,
     });
-    deepEqual(view.batches.map((batch) => batch.kind), [
-      ContextPackInboxWorkflowBatchKind.UrgentUnread,
-      ContextPackInboxWorkflowBatchKind.SnoozedFuture,
-      ContextPackInboxWorkflowBatchKind.Read,
-    ]);
-    ok(view.batches.some((batch) =>
-      batch.kind === ContextPackInboxWorkflowBatchKind.SnoozedFuture &&
-      batch.items.some((item) => item.inboxAnchorId === "inbox-snoozed-future")
-    ));
-    ok(!view.batches.some((batch) =>
-      batch.items.some((item) => item.inboxAnchorId === "inbox-dismissed")
-    ));
+    deepEqual(
+      view.batches.map((batch) => batch.kind),
+      [
+        ContextPackInboxWorkflowBatchKind.UrgentUnread,
+        ContextPackInboxWorkflowBatchKind.SnoozedFuture,
+        ContextPackInboxWorkflowBatchKind.Read,
+      ],
+    );
+    ok(
+      view.batches.some(
+        (batch) =>
+          batch.kind === ContextPackInboxWorkflowBatchKind.SnoozedFuture &&
+          batch.items.some((item) => item.inboxAnchorId === "inbox-snoozed-future"),
+      ),
+    );
+    ok(!view.batches.some((batch) => batch.items.some((item) => item.inboxAnchorId === "inbox-dismissed")));
   });
 });
 
@@ -232,13 +244,15 @@ function request(overrides: Partial<ContextPackBuildRequest["snapshot"]> = {}): 
   };
 }
 
-function createRecordingExecutor(input: {
-  workItemId?: string | null | undefined;
-  priority?: unknown;
-  status?: unknown;
-  snoozedUntil?: string | null | undefined;
-  includeWorkflowRows?: boolean | undefined;
-} = {}): CockroachContextPackInboxAnchorSqlExecutor & {
+function createRecordingExecutor(
+  input: {
+    workItemId?: string | null | undefined;
+    priority?: unknown;
+    status?: unknown;
+    snoozedUntil?: string | null | undefined;
+    includeWorkflowRows?: boolean | undefined;
+  } = {},
+): CockroachContextPackInboxAnchorSqlExecutor & {
   statements: CockroachContextPackInboxAnchorSqlStatement[];
 } {
   const statements: CockroachContextPackInboxAnchorSqlStatement[] = [];

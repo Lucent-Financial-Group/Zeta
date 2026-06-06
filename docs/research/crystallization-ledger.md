@@ -13,12 +13,12 @@ the loop-shape design doc that motivates this ledger.
 
 Aaron 2026-04-22, on the reframe from pipeline to loop:
 
-> *"its like a loop with resdiue each time lol or whatever,
+> _"its like a loop with resdiue each time lol or whatever,
 > the backlog and factory uptates that comes out of this
 > will also speed up the whole proces so the next vission
 > crystalize process is even faster, you should notice
 > this converging over time to a very clar and precice
-> vision and roadmap"*
+> vision and roadmap"_
 
 For the loop to be **observably convergent**, each turn's
 residue must be traceable: what research went in, what
@@ -50,7 +50,7 @@ Each turn is one entry with six fields:
    - HUMAN-BACKLOG escalations (direction-shifts only)
 6. **Output size** — a count for the convergence metric:
    `<vision-edits> + <backlog-rows> + <factory-candidates>
-   + <escalations>`.
+   - <escalations>`.
 
 ## Turns
 
@@ -60,10 +60,10 @@ Each turn is one entry with six fields:
 
 **Target region:** `docs/VISION.md` §First-pass confidence +
 gaps (post v2 edits), "Remaining gaps the product-visionary
-walks on first audit (after round 33)", gap 3: *"Naming
+walks on first audit (after round 33)", gap 3: _"Naming
 within the wire-protocol layer — Zeta as 'a PostgreSQL' (we
 emulate) vs 'behind Postgres-shaped endpoint' (we translate
-on ingress/egress)?"*
+on ingress/egress)?"_
 
 **Research input:**
 
@@ -209,7 +209,7 @@ genuinely known to carry pending references.
 
 **Output size:** **2** (2 vision edits + 0 backlog + 0
 factory + 0 escalations). Note: the two edits are on the
-*same semantic topic* (the multi-node control plane TBD),
+_same semantic topic_ (the multi-node control plane TBD),
 just at two parallel file locations. Counting convention:
 each site-edit is one unit, per the ledger's format.
 Same-topic multi-site edits are a sub-pattern worth
@@ -253,8 +253,8 @@ meta-pass.
   with zero external research. Strong signal for the
   `research-vision` skill rule: "FIRST pass is internal-
   consistency across body + ADRs + ROADMAP + ARCHITECTURE
-  + WONT-DO + design docs; external research escalated
-  only when **all** internal sources are silent."
+  - WONT-DO + design docs; external research escalated
+    only when **all** internal sources are silent."
 - **Same-topic multi-site edits** is a new sub-pattern
   (turn 4 first instance). Ledger format counts each site
   as one unit, which is correct for "work done" but
@@ -368,7 +368,7 @@ when the residual is genuinely zero.
   needs refinement: convergence-per-region is not
   measurable with 2-3 edits; the signal is "residual gaps
   per region", and that requires a region-by-region
-  baseline scan *before* crystallization, not just after.
+  baseline scan _before_ crystallization, not just after.
   Candidate factory improvement: a one-shot "residual-gap
   scan" that tallies pending-reference phrases per
   VISION.md section once, establishes a baseline, and
@@ -389,11 +389,11 @@ when the residual is genuinely zero.
 **Target region:** `docs/VISION.md` §First-pass confidence +
 gaps, remaining gaps 1 and 2:
 
-1. *"Wire protocol server: v1 or slip to early post-v1?
-   Scope impact is significant."*
-2. *"Own admin UI: F# + web (Fable? SAFE Stack? Blazor?) or
+1. _"Wire protocol server: v1 or slip to early post-v1?
+   Scope impact is significant."_
+2. _"Own admin UI: F# + web (Fable? SAFE Stack? Blazor?) or
    native GUI (Avalonia?). Far-future but the choice signals
-   the polyglot story."*
+   the polyglot story."_
 
 Both are map-cleanup (same turn-type as turn 1, different
 region of the same appendix section).
@@ -439,7 +439,7 @@ region of the same appendix section).
   abstractions; no new skill or tooling is implied.
 - **HUMAN-BACKLOG escalations:** none. Both gaps resolve via
   internal consistency; neither requires Aaron sign-off.
-  The *design-round outcomes themselves* will need Aaron
+  The _design-round outcomes themselves_ will need Aaron
   input when they fire, but the gap-as-phrased in the
   appendix closes without escalation.
 
@@ -449,11 +449,11 @@ factory + 0 escalations).
 **Convergence note:** Turn 1 = 1; turn 2 = 2. Two data
 points is not yet a curve — need turn 3+ to trend.
 Honest observation: both turns were map-cleanup on the
-*same appendix section*; this is a sparse region and the
+_same appendix section_; this is a sparse region and the
 outputs are small as expected. Denser regions (e.g.
 §Factory north star, §v1.0 subset of the factory) would
 produce larger turn-outputs early. The convergence claim
-is measured *per-region*, not globally — comparing turn 1
+is measured _per-region_, not globally — comparing turn 1
 to turn 2 is like-to-like (both §First-pass gaps cleanup).
 
 **Process note — what this turn taught about the skills:**

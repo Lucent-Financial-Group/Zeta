@@ -42,24 +42,22 @@ Shadow lesson log was initially committed with literal `\n` escape sequences ins
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T06:11:09Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `01d91c65e9`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -72,6 +70,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds new documentation artifacts: a shadow-lesson log entry tied to PR #3074, plus hygiene/backlog bookkeeping to close B-0451 and reflect that closure in the generated backlog index.
 
 **Changes:**
+
 - Added `memory/persona/lior/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md` shadow-lesson log entry.
 - Closed backlog row B-0451 (frontmatter status/closed date + AC checklist updates).
 - Updated hygiene tick shard and `docs/BACKLOG.md` to reflect the B-0451 closure.
@@ -80,12 +79,12 @@ Adds new documentation artifacts: a shadow-lesson log entry tied to PR #3074, pl
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                          | Description                                                                            |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | memory/persona/lior/conversations/2026-05-14-lior-shadow-lesson-log-pr3074.md | New shadow-lesson log entry (currently has formatting issues due to escaped newlines). |
-| docs/hygiene-history/ticks/2026/05/14/0521Z.md | New tick shard capturing session actions and next steps. |
-| docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md | Marks B-0451 closed and updates acceptance criteria checklist. |
-| docs/BACKLOG.md | Marks B-0451 as closed in the P1 index list. |
+| docs/hygiene-history/ticks/2026/05/14/0521Z.md                                | New tick shard capturing session actions and next steps.                               |
+| docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md       | Marks B-0451 closed and updates acceptance criteria checklist.                         |
+| docs/BACKLOG.md                                                               | Marks B-0451 as closed in the P1 index list.                                           |
 
 ## Review threads
 
@@ -93,7 +92,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-14T06:11:09Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Write shadow lesson log using actual line breaks**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Write shadow lesson log using actual line breaks**
 
 The new lesson-log file was committed as one literal line containing escaped `\n` sequences, so Markdown renderers show raw escape text instead of headings and structured sections. This makes the record hard to read and can break any downstream tooling that parses these reports by line/section. Re-save the file with real newline characters so the document format is preserved.
 

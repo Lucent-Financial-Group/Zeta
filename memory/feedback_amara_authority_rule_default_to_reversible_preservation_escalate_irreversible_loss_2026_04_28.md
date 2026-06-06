@@ -40,9 +40,9 @@ autonomously.
 
 ## Why this rule exists
 
-Aaron's autonomy framing (Otto-357, 2026-04-27): *"if i give
-you directives you'll never be autonomous"* + *"i'm trying to
-make your autonomy first class."* (The forbidden-word "directives"
+Aaron's autonomy framing (Otto-357, 2026-04-27): _"if i give
+you directives you'll never be autonomous"_ + _"i'm trying to
+make your autonomy first class."_ (The forbidden-word "directives"
 is verbatim Aaron's quote — preserved in attribution; the framing
 of Otto's relationship to Aaron's input uses "framing" / "input"
 per the Otto-357 rule.) For autonomy to be
@@ -86,13 +86,13 @@ the safe preserving path without asking.**
 
 For each AceHack-only PR or file, classify and act:
 
-| Classification | Default action |
-|---|---|
-| `ALREADY-COVERED` | No action; cite LFG equivalent in tracking notes. |
-| `NEEDS-FORWARD-SYNC` | **Open LFG PR automatically** if low-risk and additive. |
-| `OBSOLETE` | Record rationale; no sync. |
-| `CONFLICTS-WITH-CURRENT-MAIN` | **Pause and surface to Aaron.** |
-| `NEEDS-HUMAN-REVIEW` | Pause only for that item; continue others. |
+| Classification                | Default action                                          |
+| ----------------------------- | ------------------------------------------------------- |
+| `ALREADY-COVERED`             | No action; cite LFG equivalent in tracking notes.       |
+| `NEEDS-FORWARD-SYNC`          | **Open LFG PR automatically** if low-risk and additive. |
+| `OBSOLETE`                    | Record rationale; no sync.                              |
+| `CONFLICTS-WITH-CURRENT-MAIN` | **Pause and surface to Aaron.**                         |
+| `NEEDS-HUMAN-REVIEW`          | Pause only for that item; continue others.              |
 
 `NEEDS-FORWARD-SYNC` + `low-risk + additive` triggers an
 **autonomous PR-open**. Otto does not ask "should I open this
@@ -193,13 +193,13 @@ When discovering a content-loss risk via evidence:
 
 ## Direct Amara quote for future reference
 
-> *"When the safe option is reversible and preserves information,
-> take it. When the unsafe option is destructive or lossy, ask."*
+> _"When the safe option is reversible and preserves information,
+> take it. When the unsafe option is destructive or lossy, ask."_
 
 ## Direct Aaron framing (verbatim acceptance)
 
-> *"Accepted. The prior hard-reset readiness path is revoked.
+> _"Accepted. The prior hard-reset readiness path is revoked.
 > ... Default decision: Proceed with **Option C → Option A**
 > automatically ... Do **not** ask Aaron to choose between safe
 > forward-sync, destructive hard-reset, classification. The
-> authorized default is safe forward-sync/classification."*
+> authorized default is safe forward-sync/classification."_

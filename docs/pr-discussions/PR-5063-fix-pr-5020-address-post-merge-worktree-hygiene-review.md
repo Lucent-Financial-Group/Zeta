@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - remove the not-yet-main-visible B-0751 row from B-0750 frontmatter graph links while keeping PR #5019 as prose substrate
 - make the current-state worktree hygiene rule use role-reference prose for the empirical quote
 - align the main-branch detector comment with its OK-on-success command output
 
 ## Checks
+
 - git diff --check HEAD~1..HEAD
 - bun tools/backlog/generate-index.ts --check
 - bun x markdownlint-cli2 .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md docs/BACKLOG.md
@@ -36,6 +38,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR tightens post-merge worktree hygiene documentation by keeping B-0750’s graph links limited to main-visible backlog rows while preserving PR #5019 as prose context.
 
 **Changes:**
+
 - Removes B-0751 from B-0750 frontmatter `composes_with` while retaining PR #5019 references in prose.
 - Updates the generated backlog index title to match the B-0750 row title.
 - Aligns the worktree hygiene rule’s detector comments and empirical-anchor prose with current-state role-reference wording.
@@ -44,11 +47,11 @@ This PR tightens post-merge worktree hygiene documentation by keeping B-0750’s
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| `docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md` | Updates B-0750 graph/prose references around PR #5019 and B-0751 visibility. |
-| `docs/BACKLOG.md` | Regenerates the B-0750 index entry from the updated row title. |
-| `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` | Clarifies expected command output and replaces direct quote with role-reference current-state prose. |
+| File                                                                                                                                                    | Description                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md` | Updates B-0750 graph/prose references around PR #5019 and B-0751 visibility.                         |
+| `docs/BACKLOG.md`                                                                                                                                       | Regenerates the B-0750 index entry from the updated row title.                                       |
+| `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`                                                    | Clarifies expected command output and replaces direct quote with role-reference current-state prose. |
 
 ## General comments
 

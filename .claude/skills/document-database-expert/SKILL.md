@@ -14,19 +14,19 @@ structure affinity.
 
 ## The document canon
 
-| System | Notes |
-|---|---|
-| **MongoDB** | BSON, the canonical doc DB |
-| **Couchbase** | N1QL SQL-for-JSON, integrated FTS/vector |
-| **Apache CouchDB** | Replication-first, multi-master |
-| **Cosmos DB (Document API)** | Azure, multi-model |
-| **Firestore** | Google, realtime-first |
-| **DocumentDB (AWS)** | Mongo-wire compat, not same engine |
-| **ArangoDB** | Multi-model (doc + graph + KV) |
-| **RavenDB** | .NET-native doc DB |
-| **Aerospike** | Hybrid KV / doc, low latency |
-| **PouchDB / RxDB** | Embedded, sync with Couch |
-| **LiteDB** | Embedded .NET |
+| System                       | Notes                                    |
+| ---------------------------- | ---------------------------------------- |
+| **MongoDB**                  | BSON, the canonical doc DB               |
+| **Couchbase**                | N1QL SQL-for-JSON, integrated FTS/vector |
+| **Apache CouchDB**           | Replication-first, multi-master          |
+| **Cosmos DB (Document API)** | Azure, multi-model                       |
+| **Firestore**                | Google, realtime-first                   |
+| **DocumentDB (AWS)**         | Mongo-wire compat, not same engine       |
+| **ArangoDB**                 | Multi-model (doc + graph + KV)           |
+| **RavenDB**                  | .NET-native doc DB                       |
+| **Aerospike**                | Hybrid KV / doc, low latency             |
+| **PouchDB / RxDB**           | Embedded, sync with Couch                |
+| **LiteDB**                   | Embedded .NET                            |
 
 ## The document model
 
@@ -49,12 +49,12 @@ independently queried or unbounded-growth.
 
 ## Embed vs reference — the fork
 
-| Embed | Reference |
-|---|---|
-| Reads together always | Reads separately |
-| 1:1 or 1:(few) | 1:(many) or N:M |
-| Unbounded growth unlikely | Unbounded |
-| Atomicity wanted | Separate lifecycle |
+| Embed                     | Reference          |
+| ------------------------- | ------------------ |
+| Reads together always     | Reads separately   |
+| 1:1 or 1:(few)            | 1:(many) or N:M    |
+| Unbounded growth unlikely | Unbounded          |
+| Atomicity wanted          | Separate lifecycle |
 
 **Rule.** An embedded array that grows without bound
 (every comment on every post) will hit the 16MB document
@@ -70,8 +70,8 @@ db.orders.aggregate([
   { $unwind: "$items" },
   { $group: { _id: "$items.sku", total: { $sum: "$items.qty" } } },
   { $sort: { total: -1 } },
-  { $limit: 10 }
-])
+  { $limit: 10 },
+]);
 ```
 
 Couchbase N1QL:
@@ -92,18 +92,18 @@ has the performance profile to match.
 
 ## Indexes
 
-| Type | Use |
-|---|---|
-| Single-field | Most common |
-| Compound | Prefix-matching queries |
-| Multikey | Indexes array elements |
-| Text | Simple FTS (not a real search engine) |
-| Hashed | Shard key for even distribution |
-| Wildcard | Unknown fields indexed |
-| Partial | Only documents matching filter |
-| TTL | Auto-expire |
-| Geospatial | 2d / 2dsphere |
-| Unique | Uniqueness constraint |
+| Type         | Use                                   |
+| ------------ | ------------------------------------- |
+| Single-field | Most common                           |
+| Compound     | Prefix-matching queries               |
+| Multikey     | Indexes array elements                |
+| Text         | Simple FTS (not a real search engine) |
+| Hashed       | Shard key for even distribution       |
+| Wildcard     | Unknown fields indexed                |
+| Partial      | Only documents matching filter        |
+| TTL          | Auto-expire                           |
+| Geospatial   | 2d / 2dsphere                         |
+| Unique       | Uniqueness constraint                 |
 
 **Rule.** Compound index order matters: Equality → Sort →
 Range ("ESR"). Violating order defeats the index.
@@ -133,13 +133,13 @@ production. 1-node is dev only.
 
 ## Write concern
 
-| Concern | Semantics |
-|---|---|
-| `w: 0` | Fire-and-forget |
-| `w: 1` | Primary ack |
+| Concern         | Semantics                  |
+| --------------- | -------------------------- |
+| `w: 0`          | Fire-and-forget            |
+| `w: 1`          | Primary ack                |
 | `w: "majority"` | Majority of voting members |
-| `j: true` | fsync'd to journal |
-| `w: N` | N acks |
+| `j: true`       | fsync'd to journal         |
+| `w: N`          | N acks                     |
 
 **Rule.** `w: "majority", j: true` for anything that
 matters. Defaults vary.
@@ -168,7 +168,7 @@ needed — not as a default.
 ## Change streams / CDC
 
 ```javascript
-db.orders.watch([{ $match: { "fullDocument.total": { $gt: 100 } } }])
+db.orders.watch([{ $match: { "fullDocument.total": { $gt: 100 } } }]);
 ```
 
 **Rule.** Change streams replace polling. They're
@@ -182,11 +182,11 @@ db.createCollection("orders", {
     $jsonSchema: {
       required: ["customer", "items", "total"],
       properties: {
-        total: { bsonType: "decimal", minimum: 0 }
-      }
-    }
-  }
-})
+        total: { bsonType: "decimal", minimum: 0 },
+      },
+    },
+  },
+});
 ```
 
 **Rule.** Schemaless is not schema-free. Version your
@@ -252,7 +252,7 @@ to the cost model (RU/s) — it surprises.
 
 - **Cross-model** → `database-systems-expert`.
 - **Relational alternative** → `relational-database-
-  expert`.
+expert`.
 - **N1QL / SQL-for-JSON parsing** → `sql-parser-expert`.
 - **Replication internals** → `raft-expert` (if Mongo) /
   `paxos-expert`.
@@ -283,8 +283,8 @@ to the cost model (RU/s) — it surprises.
 - MongoDB docs.
 - Couchbase N1QL reference.
 - Cosmos DB docs.
-- Chodorow — *MongoDB: The Definitive Guide* (3rd ed).
-- Couchbase *Developing with Couchbase Server*.
+- Chodorow — _MongoDB: The Definitive Guide_ (3rd ed).
+- Couchbase _Developing with Couchbase Server_.
 - `.claude/skills/database-systems-expert/SKILL.md`.
 - `.claude/skills/relational-database-expert/SKILL.md`.
 - `.claude/skills/key-value-store-expert/SKILL.md`.

@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Operator directive 2026-05-27 (end of multi-AI conversation cascade): *"please save this to kestrel persona and good substrate backlog. This is the end of a multi AI conversation if you need context please ask, trying to get base primitives right."*
+Operator directive 2026-05-27 (end of multi-AI conversation cascade): _"please save this to kestrel persona and good substrate backlog. This is the end of a multi AI conversation if you need context please ask, trying to get base primitives right."_
 
 Two substrate landings + BACKLOG.md regen:
 

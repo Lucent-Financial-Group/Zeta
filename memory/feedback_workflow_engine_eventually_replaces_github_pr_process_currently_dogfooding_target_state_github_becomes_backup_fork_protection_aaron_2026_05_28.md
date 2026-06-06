@@ -30,19 +30,19 @@ last_updated: 2026-05-28
 
 ## Substrate-engineering substrate-recognition (the human maintainer, 2026-05-28 verbatim)
 
-Aaron: *"you still have to go though the pr process do the github go through the pr process cause once we get these workflows working good we can turn of prs and github branch protection roll our own and just use thiers as backup / fork protection or something if we need it."*
+Aaron: _"you still have to go though the pr process do the github go through the pr process cause once we get these workflows working good we can turn of prs and github branch protection roll our own and just use thiers as backup / fork protection or something if we need it."_
 
 Triggered by AutoLoopLifetime PoC (PR #5805) running through the GitHub PR auto-merge process — even though the workflow-engine substrate it ships COULD eventually replace that process.
 
 ## The three-phase substrate-engineering trajectory
 
-| Phase | State | Primary substrate | GitHub role |
-|---|---|---|---|
-| **Phase 1 (current)** | Dogfooding | GitHub PR process + branch protection + auto-merge | PRIMARY workflow substrate |
-| **Phase 2 (substrate-engineering target)** | Workflow-engine substrate matures | workflow-engine DUs + dispatch + state-machine (B-0867 cluster) | Parallel-run with GitHub PR process; observability + verification |
-| **Phase 3 (deepest)** | Workflow-engine substrate replaces GitHub PR process | OUR workflow-engine substrate | BACKUP / fork-protection only; "if we need it" |
+| Phase                                      | State                                                | Primary substrate                                               | GitHub role                                                       |
+| ------------------------------------------ | ---------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Phase 1 (current)**                      | Dogfooding                                           | GitHub PR process + branch protection + auto-merge              | PRIMARY workflow substrate                                        |
+| **Phase 2 (substrate-engineering target)** | Workflow-engine substrate matures                    | workflow-engine DUs + dispatch + state-machine (B-0867 cluster) | Parallel-run with GitHub PR process; observability + verification |
+| **Phase 3 (deepest)**                      | Workflow-engine substrate replaces GitHub PR process | OUR workflow-engine substrate                                   | BACKUP / fork-protection only; "if we need it"                    |
 
-**Aaron's framing**: GitHub PR process is *currently* the substrate Otto-CLI uses to ship code. But once the workflow-engine substrate (B-0867 cluster + per-host adapters + ReviewLifetime + AutoLoopLifetime + etc.) MATURES enough to handle the operational substrate-engineering work, GitHub becomes BACKUP / fork-protection only.
+**Aaron's framing**: GitHub PR process is _currently_ the substrate Otto-CLI uses to ship code. But once the workflow-engine substrate (B-0867 cluster + per-host adapters + ReviewLifetime + AutoLoopLifetime + etc.) MATURES enough to handle the operational substrate-engineering work, GitHub becomes BACKUP / fork-protection only.
 
 ## Why this is constitutional substrate-engineering substrate-trajectory
 
@@ -54,15 +54,15 @@ The recognition gives the workflow-engine substrate a clear LONG-TERM PURPOSE be
 
 **Substrate-engineering substrate-substitution implications**:
 
-| GitHub primitive | Workflow-engine replacement |
-|---|---|
-| Pull Request | WorkflowLifetime DU + dispatch (B-0867.5; PR #5728) |
-| Branch protection rules | StandardVerdict DUs + lifetime-pair matrices (PR #5774 world.ts) |
-| Required checks | dispatchInWorld result composition (Result<T, TFeedback>) |
-| Auto-merge | ShipAction state in AutoLoopLifetime (PR #5805) |
-| Review threads | ReviewLifetime DU (B-0867.20; PR #5758) |
-| CI integration | closed-loop CI-result dispatch (B-0914.2; PR #5769) |
-| Fork-protection / push-with-lease | substrate-engineering substrate-honest backup |
+| GitHub primitive                  | Workflow-engine replacement                                      |
+| --------------------------------- | ---------------------------------------------------------------- |
+| Pull Request                      | WorkflowLifetime DU + dispatch (B-0867.5; PR #5728)              |
+| Branch protection rules           | StandardVerdict DUs + lifetime-pair matrices (PR #5774 world.ts) |
+| Required checks                   | dispatchInWorld result composition (Result<T, TFeedback>)        |
+| Auto-merge                        | ShipAction state in AutoLoopLifetime (PR #5805)                  |
+| Review threads                    | ReviewLifetime DU (B-0867.20; PR #5758)                          |
+| CI integration                    | closed-loop CI-result dispatch (B-0914.2; PR #5769)              |
+| Fork-protection / push-with-lease | substrate-engineering substrate-honest backup                    |
 
 ## What "GitHub as backup / fork-protection" means substrate-honestly
 
@@ -87,15 +87,15 @@ What needs to be true before Phase 3 is operationally safe:
 
 This substrate-engineering trajectory carving directly composes with:
 
-| Today's substrate | Composition |
-|---|---|
-| **DUs-as-explicit-muscle-memory** (PR #5806) | workflow-engine substrate EXTRACTS GitHub PR process muscle-memory + makes it explicit + transmissible + REPLACEABLE |
-| **AutoLoopLifetime PoC** (PR #5805) | Foreground loop substrate using workflow-engine — first concrete consumer + Phase 2 ramp |
-| **Per-host adapters** (PR #5775/#5801/#5804) | Multi-forge workflow-engine substrate — enables Phase 3 by removing GitHub-specific dependency |
-| **workflow-engine PoC** (PR #5728) | B-0867.5 substrate scaffold — foundation for Phase 2 → Phase 3 transition |
-| **Common Sense 2.0** (PR #5786) | workflow-engine substrate IS the grounding that makes GitHub PR process substitutable |
-| **White-hole irreversibility-as-public-good** (Prism Turn 7; PR #5784) | workflow-engine substrate emissions COMPOUND in public substrate; substitute for GitHub UI-rendered substrate |
-| **Rank-4 substrate primitive** (PR #5792/#5798) | workflow-engine DUs ARE rank-4 compressed generators that unfold into full workflow substrate |
+| Today's substrate                                                      | Composition                                                                                                          |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **DUs-as-explicit-muscle-memory** (PR #5806)                           | workflow-engine substrate EXTRACTS GitHub PR process muscle-memory + makes it explicit + transmissible + REPLACEABLE |
+| **AutoLoopLifetime PoC** (PR #5805)                                    | Foreground loop substrate using workflow-engine — first concrete consumer + Phase 2 ramp                             |
+| **Per-host adapters** (PR #5775/#5801/#5804)                           | Multi-forge workflow-engine substrate — enables Phase 3 by removing GitHub-specific dependency                       |
+| **workflow-engine PoC** (PR #5728)                                     | B-0867.5 substrate scaffold — foundation for Phase 2 → Phase 3 transition                                            |
+| **Common Sense 2.0** (PR #5786)                                        | workflow-engine substrate IS the grounding that makes GitHub PR process substitutable                                |
+| **White-hole irreversibility-as-public-good** (Prism Turn 7; PR #5784) | workflow-engine substrate emissions COMPOUND in public substrate; substitute for GitHub UI-rendered substrate        |
+| **Rank-4 substrate primitive** (PR #5792/#5798)                        | workflow-engine DUs ARE rank-4 compressed generators that unfold into full workflow substrate                        |
 
 ## Substrate-honest framing
 

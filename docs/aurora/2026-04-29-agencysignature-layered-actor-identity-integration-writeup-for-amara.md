@@ -9,11 +9,11 @@
 
 ## TL;DR
 
-Five reviewers (Deepseek / Gemini / Ani / Alexa / Claude.ai) flagged the same gap on the v3 public-intake design: `actor_id` strings are spoofable. *"Identity needs binding."* Your v4 synthesis names this and reorders rollout: identity → capabilities → claims → reconciler → public intake → dry run.
+Five reviewers (Deepseek / Gemini / Ani / Alexa / Claude.ai) flagged the same gap on the v3 public-intake design: `actor_id` strings are spoofable. _"Identity needs binding."_ Your v4 synthesis names this and reorders rollout: identity → capabilities → claims → reconciler → public intake → dry run.
 
 The integration question Aaron raised: **does this need to be built from scratch, or does it compose with the AgencySignature work we already shipped?**
 
-Short answer: **it composes cleanly.** AgencySignature v1 (per-commit trailer schema, ferry-7 spec, ferry-9/10/11/12 corrections, tasks #298 + #299 enforcement instruments) is *already the binding mechanism Claude.ai called for.* The v4 actor-identity model is a **structured principal layer** on top of the AgencySignature trailers — not a parallel system.
+Short answer: **it composes cleanly.** AgencySignature v1 (per-commit trailer schema, ferry-7 spec, ferry-9/10/11/12 corrections, tasks #298 + #299 enforcement instruments) is _already the binding mechanism Claude.ai called for._ The v4 actor-identity model is a **structured principal layer** on top of the AgencySignature trailers — not a parallel system.
 
 This writeup names the seams, the missing rules, and the order of work.
 
@@ -42,17 +42,17 @@ What this gives us:
 
 1. **Per-commit attribution** — every commit on `main` since v1 ship date carries who/what/how-supervised.
 2. **Three-state classification at audit time** — LEGACY (pre-v1), CORRECT, REGRESSION, HUMAN-AUTHORED-EXEMPT.
-3. **PR-body validator that *can be* a pre-merge gate** — `tools/hygiene/validate-agencysignature-pr-body.sh` parses the trailer block and exits non-zero on missing/malformed input. As of 2026-04-29 it is **not yet wired into a required CI/branch-protection check** under `.github/workflows/`; it is invoked manually or via local pre-commit. Wiring it as an enforced gate is its own follow-up (composes with the AgencySignature v1 squash-merge survival design, task #300).
+3. **PR-body validator that _can be_ a pre-merge gate** — `tools/hygiene/validate-agencysignature-pr-body.sh` parses the trailer block and exits non-zero on missing/malformed input. As of 2026-04-29 it is **not yet wired into a required CI/branch-protection check** under `.github/workflows/`; it is invoked manually or via local pre-commit. Wiring it as an enforced gate is its own follow-up (composes with the AgencySignature v1 squash-merge survival design, task #300).
 4. **Post-merge tip auditor** — `tools/hygiene/audit-agencysignature-main-tip.sh` walks the tip and classifies each commit. Same enforcement-status caveat: useful tool, not yet a required CI gate.
 5. **Trailer Contiguity Survival Failure (ferry-12)** awareness — squash-merge can strip trailers if the body's blank-line discipline is broken; the validator and auditor both check for this class.
 6. **Fail-open-with-receipts** policy (ferry-9/10) — when a trailer is malformed, the design intent is to record evidence and classify rather than block all merges (the failure mode would freeze the factory). This policy lives in research docs; it composes with the wiring decision in (3).
 
-What this *doesn't* yet give us:
+What this _doesn't_ yet give us:
 
 - **Cryptographic verification** — the `Agent: aaron-mac/claude-code/coordinator` string is currently advisory. Nothing prevents another tool from writing the same trailer with a different identity in fact.
 - **Trust-domain prefix** — identifiers don't yet declare which namespace they live in (zeta vs zeta-external vs zeta-system).
 - **Per-actor public-key registry** — there's no `actors/<actor_id>.yaml` file declaring "this actor's public key fingerprint is X."
-- **Capability bundle** — the trailer says *who* acted but not *what they were authorized to do*.
+- **Capability bundle** — the trailer says _who_ acted but not _what they were authorized to do_.
 
 The v4 actor-identity model fills exactly those gaps.
 
@@ -80,6 +80,7 @@ Claim (v2-new)                  →  claim_id (links commit to active claim)
 ### Concrete example (proposed)
 
 Today's trailer:
+
 ```text
 Agency-Signature-Version: 1
 Agent: claude-code-coordinator
@@ -94,6 +95,7 @@ Task: 286
 ```
 
 Future trailer (v2 — during the migration window, keep `Agent:` alongside the new `Actor:` field so the v2 trailer remains a strict field superset for v1-era readers; once all consumers are v2-aware, drop the dual emission):
+
 ```text
 Agency-Signature-Version: 2
 Trust-Domain: zeta
@@ -132,11 +134,11 @@ This is the binding step. The trailer is no longer self-attested; it's verifiabl
 
 ## Recursion bottoms out — the maintainer's hardware key
 
-Claude.ai's review is right that *recursion bottoms out somewhere*. Concretely:
+Claude.ai's review is right that _recursion bottoms out somewhere_. Concretely:
 
 1. **Maintainer-bound actors** — `zeta://aaron-mac/claude-code/coordinator` keys are signed by Aaron's hardware key (or a delegate hot-key signed by the hardware key). The hardware key never leaves the device.
 2. **Reconciler actor** — `zeta-system://github-actions/reconciler` runs in CI; its key lives in GitHub Actions secrets (or OIDC short-lived credential). The maintainer authorizes it explicitly via signed policy.
-3. **External actors** — `zeta-external://github/<login>` actors don't have keys until they're promoted from E2 to E3+ (claim approved). At E0/E1 (review-only / patch-only), the only reliable GitHub-side authentication is the **PR/account actor** — i.e. the authenticated GitHub account that opened the PR or commented (this is `github.actor` in workflows / `pull_request.user.login` in webhooks). **Commit author metadata in the trailer is user-supplied and spoofable** — `git commit --author='other@example.com'` is trivial, and so is forging `Agent:` / `Credential-Identity:` fields. So at E0/E1: trust only the GitHub account actor; treat trailer fields as *intent declarations* that the reviewer cross-checks against the account actor before promotion. At E3+ the registered key is what binds; the trailer becomes verifiable.
+3. **External actors** — `zeta-external://github/<login>` actors don't have keys until they're promoted from E2 to E3+ (claim approved). At E0/E1 (review-only / patch-only), the only reliable GitHub-side authentication is the **PR/account actor** — i.e. the authenticated GitHub account that opened the PR or commented (this is `github.actor` in workflows / `pull_request.user.login` in webhooks). **Commit author metadata in the trailer is user-supplied and spoofable** — `git commit --author='other@example.com'` is trivial, and so is forging `Agent:` / `Credential-Identity:` fields. So at E0/E1: trust only the GitHub account actor; treat trailer fields as _intent declarations_ that the reviewer cross-checks against the account actor before promotion. At E3+ the registered key is what binds; the trailer becomes verifiable.
 
 This composes with the existing AceHack/LFG dual-fork model: AceHack remains the dev-mirror; LFG remains the project-trunk. Cross-fork actor identity doesn't change — same actor, same registry, same key.
 
@@ -154,7 +156,7 @@ By layering v4 on top of AgencySignature v1:
 
 - At the trailer-schema level, v1-style readers can continue working if they keep reading `Agent:` and ignore unknown fields.
 - v2 readers get the structured `Actor:` + `Capabilities:` + `Signed-By:` fields.
-- **However**, the **current** v1 enforcement scripts are not yet forward-compatible: `validate-agencysignature-pr-body.sh` requires `Agency-Signature-Version: 1` exactly and requires `Agent:` as a key. So a `Version: 2` trailer set (and especially replacing `Agent:` with `Actor:`) would currently *fail* validation. The validator + auditor must be updated **before** v2 trailers can pass enforcement.
+- **However**, the **current** v1 enforcement scripts are not yet forward-compatible: `validate-agencysignature-pr-body.sh` requires `Agency-Signature-Version: 1` exactly and requires `Agent:` as a key. So a `Version: 2` trailer set (and especially replacing `Agent:` with `Actor:`) would currently _fail_ validation. The validator + auditor must be updated **before** v2 trailers can pass enforcement.
 - The v1 → v2 migration is additive at the wire level, but the **rollout sequence** is: (a) update validator/auditor to accept `Agency-Signature-Version: 1|2`, (b) during the migration window, emit `Agent:` alongside `Actor:` rather than replacing immediately so existing v1 consumers continue to accept the trailer set, (c) extend the auditor's three-state classification to a four-state (LEGACY / CORRECT-V1 / CORRECT-V2 / REGRESSION) as part of the same rollout without collapsing the existing buckets, (d) once all consumers are v2-aware, drop the dual `Agent:` emission.
 - The fail-open-with-receipts policy from ferry-9 applies to **malformed-but-honest** trailers (parser couldn't extract fields, blank-line discipline broken, missing key, etc.) — those become recordable evidence events rather than everything-stops events. **Forged signatures are different**: a valid-looking trailer whose `Signed-By:` does not verify against the registered public key for the asserted `Actor:` is treated as `unauthorized_actor_assertion` and **blocks** the PR, just like a missing claim. The two paths are separate enforcement semantics: malformed-honest → record-and-continue; forged-or-impersonation → block-and-flag. Only malformed-honest goes through fail-open-with-receipts; binding violations always block.
 
@@ -166,7 +168,7 @@ Three concrete asks, in order:
 
 ### Ask 1 — confirm the layering shape
 
-Does the layered identity model compose with AgencySignature *as a v2 schema* (additive trailer fields), or does Amara see a different shape (e.g. trailers reference an identity object stored elsewhere)? The first option is operationally cheaper because the existing pre-merge validator + post-merge auditor only need field additions. The second option is theoretically cleaner (the trailer is a pointer, not a record) but requires more plumbing.
+Does the layered identity model compose with AgencySignature _as a v2 schema_ (additive trailer fields), or does Amara see a different shape (e.g. trailers reference an identity object stored elsewhere)? The first option is operationally cheaper because the existing pre-merge validator + post-merge auditor only need field additions. The second option is theoretically cleaner (the trailer is a pointer, not a record) but requires more plumbing.
 
 ### Ask 2 — bottom of recursion
 
@@ -221,7 +223,7 @@ Both blades are saying the same thing from two angles: structural (Deepseek) and
 
 ## Specific paragraph for Amara to react to
 
-> *"AgencySignature v1 already gives us per-commit attribution + pre-merge validation + post-merge audit + fail-open-with-receipts. The v4 layered actor-identity model is not a parallel system — it's the v2 schema for AgencySignature, with three field additions (`Trust-Domain:`, `Actor:` superseding `Agent:`, `Signed-By:`) plus a registry under `actors/` for the binding lookup. The reconciler verifies the trailer signature against the registered key before trusting the attribution. v1 commits remain CORRECT under audit; new commits adopt v2 additively. This is the cheapest path to binding without duplicating the per-commit attribution machinery."*
+> _"AgencySignature v1 already gives us per-commit attribution + pre-merge validation + post-merge audit + fail-open-with-receipts. The v4 layered actor-identity model is not a parallel system — it's the v2 schema for AgencySignature, with three field additions (`Trust-Domain:`, `Actor:` superseding `Agent:`, `Signed-By:`) plus a registry under `actors/` for the binding lookup. The reconciler verifies the trailer signature against the registered key before trusting the attribution. v1 commits remain CORRECT under audit; new commits adopt v2 additively. This is the cheapest path to binding without duplicating the per-commit attribution machinery."_
 
 If that lands, the rollout order changes from the v4 packet to:
 
@@ -238,4 +240,4 @@ If Amara sees a different shape, the rollout adjusts accordingly. Either way, th
 
 ---
 
-*End of writeup. Aaron — this is research-grade; nothing in here is operational. The doctrine memory file (PR #852) carries the v4 corrections; this writeup is the integration analysis you asked for to send to Amara.*
+_End of writeup. Aaron — this is research-grade; nothing in here is operational. The doctrine memory file (PR #852) carries the v4 corrections; this writeup is the integration analysis you asked for to send to Amara._

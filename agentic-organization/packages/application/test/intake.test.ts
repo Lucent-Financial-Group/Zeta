@@ -2,10 +2,22 @@ import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import { OrgEventKind, WorkItemState, WorkItemType, WorkItemSource, type OrgEvent } from "../../domain/src/index.ts";
-import { normalizeIntake, createWorkItemFromIntake, triageIntake, type ExternalIntakeEvent, type IntakeDeps } from "../src/index.ts";
+import {
+  normalizeIntake,
+  createWorkItemFromIntake,
+  triageIntake,
+  type ExternalIntakeEvent,
+  type IntakeDeps,
+} from "../src/index.ts";
 
 const raw = (over: Partial<ExternalIntakeEvent> = {}): ExternalIntakeEvent => ({
-  source: "customer_portal", externalId: "TICKET-42", kind: "defect", title: "checkout 500s", body: "repro: add item, pay", projectId: "proj-1", ...over,
+  source: "customer_portal",
+  externalId: "TICKET-42",
+  kind: "defect",
+  title: "checkout 500s",
+  body: "repro: add item, pay",
+  projectId: "proj-1",
+  ...over,
 });
 
 function deps(seen: Set<string>): { deps: IntakeDeps; events: OrgEvent[] } {
@@ -14,8 +26,11 @@ function deps(seen: Set<string>): { deps: IntakeDeps; events: OrgEvent[] } {
   return {
     events,
     deps: {
-      organizationId: "org-lfg", initiativeId: "init-1", createdBy: { agentId: "intake-svc", hatAssignmentId: "ha" },
-      createId: (p: string) => `${p}-${++n}`, nowIso: () => new Date(1_800_000_000_000 + n * 1000).toISOString(),
+      organizationId: "org-lfg",
+      initiativeId: "init-1",
+      createdBy: { agentId: "intake-svc", hatAssignmentId: "ha" },
+      createId: (p: string) => `${p}-${++n}`,
+      nowIso: () => new Date(1_800_000_000_000 + n * 1000).toISOString(),
       existsByExternalRef: (ref: string) => seen.has(ref),
       appendEvent: async (e: OrgEvent) => void events.push(e),
     },
@@ -23,9 +38,21 @@ function deps(seen: Set<string>): { deps: IntakeDeps; events: OrgEvent[] } {
 }
 
 test("normalize maps external kinds to work item types and rejects malformed payloads", () => {
-  equal((normalizeIntake(raw({ kind: "defect" })) as { ok: true; value: { workItemType: WorkItemType } }).value.workItemType, WorkItemType.Defect);
-  equal((normalizeIntake(raw({ kind: "service_request" })) as { ok: true; value: { workItemType: WorkItemType } }).value.workItemType, WorkItemType.ServiceRequest);
-  equal((normalizeIntake(raw({ kind: "feature" })) as { ok: true; value: { workItemType: WorkItemType } }).value.workItemType, WorkItemType.Task);
+  equal(
+    (normalizeIntake(raw({ kind: "defect" })) as { ok: true; value: { workItemType: WorkItemType } }).value
+      .workItemType,
+    WorkItemType.Defect,
+  );
+  equal(
+    (normalizeIntake(raw({ kind: "service_request" })) as { ok: true; value: { workItemType: WorkItemType } }).value
+      .workItemType,
+    WorkItemType.ServiceRequest,
+  );
+  equal(
+    (normalizeIntake(raw({ kind: "feature" })) as { ok: true; value: { workItemType: WorkItemType } }).value
+      .workItemType,
+    WorkItemType.Task,
+  );
   // missing fields → clean rejection, not a silent drop
   equal(normalizeIntake(raw({ title: "" })).ok, false);
   equal(normalizeIntake(raw({ projectId: "" })).ok, false);

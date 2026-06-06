@@ -54,10 +54,10 @@ Only when you have a specific task.
 1. `docs/BUGS.md` — P0 only if just orienting; full read if you
    are in the bug-fix lane.
 2. `docs/DEBT.md` — P0 only for orientation; full for knockdown
-    rounds.
+   rounds.
 3. `docs/BACKLOG.md` — top 3 rows for orientation.
 4. `docs/WINS.md` — last round's entries only, for recent
-    context.
+   context.
 5. The specific file(s) in scope for your task.
 
 ## Tier 3 — on demand
@@ -84,7 +84,7 @@ the default. Example (proposed; not yet landed):
 
 ```yaml
 wake-up:
-  - docs/research/proof-tool-coverage.md  # Soraya only
+  - docs/research/proof-tool-coverage.md # Soraya only
   - docs/TECH-RADAR.md
 ```
 
@@ -128,7 +128,7 @@ These look useful but pay poorly for orientation:
   single-source-of-truth; benefit: no drift between the two
   lists. Pending agent-experience audit.
 - Should every persona notebook include a `## Last-known-good
-  state` top-section that Kenji updates on round-close, giving
+state` top-section that Kenji updates on round-close, giving
   the persona a one-paragraph "what you were doing last" on
   wake-up?
 - Is there a cheaper way to get Tier 0 into context than reading

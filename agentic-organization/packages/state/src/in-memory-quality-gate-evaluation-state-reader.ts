@@ -39,10 +39,7 @@ function hasMatchingWorkItemScope(
   );
 }
 
-function compareQualityGateEvaluationOrder(
-  left: QualityGateEvaluation,
-  right: QualityGateEvaluation,
-): number {
+function compareQualityGateEvaluationOrder(left: QualityGateEvaluation, right: QualityGateEvaluation): number {
   const evaluatedAtOrder = left.evaluatedAt.localeCompare(right.evaluatedAt);
 
   return evaluatedAtOrder === 0

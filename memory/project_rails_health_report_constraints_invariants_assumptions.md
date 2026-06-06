@@ -4,22 +4,23 @@ description: Aaron's forward-looking direction (2026-04-20, no rush). Because Ze
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **PRIORITY — low, moves slowly:** Aaron confirmed
-2026-04-20: *"against this project wide invariant
+2026-04-20: _"against this project wide invariant
 system is low priority and can move slowly there is
-not a rush here"*. Do not sprint on this. Do not
+not a rush here"_. Do not sprint on this. Do not
 sequence rounds around it. Do capture opportunistic
 forward motion as ADRs land (each new ADR can sketch
 its own assumptions in registry-compatible form, no
 cost to the round). Backlog tier is **P3**. The
-rails *registry* is the low-priority construct —
+rails _registry_ is the low-priority construct —
 the individual rules it would contain (latest-
 version, ASCII-clean, etc.) are active today and do
 not wait on the registry.
 
 **The idea** (Aaron 2026-04-20, pasted intact):
 
-> *"what's cool about having the constraints and
+> _"what's cool about having the constraints and
 > invariants evewhere it should be easy to run a
 > report eventually across all areas of our project
 > and see the assumptions (we should probably encode
@@ -34,7 +35,7 @@ not wait on the registry.
 > my user experience and how i know easying and
 > quickly and things are going as expected and our
 > invariants and asumptions are not causing things
-> to go off the rails"*
+> to go off the rails"_
 
 **The framing — rails, not tests:**
 
@@ -42,15 +43,15 @@ Constraints / invariants / assumptions are "the rails
 of the system." A rail is a structural element the
 system rides on. Rails don't pass or fail like tests
 do — they're intact, under load, or visibly bent. The
-right UI is a *health report*, not a red/green board.
+right UI is a _health report_, not a red/green board.
 
 **Three categories — one new:**
 
-| category | today's encoding | where it lives | first-class? |
-|----------|------------------|----------------|--------------|
-| **Invariants** | TLA+ specs, Lean proofs, Z3 SMT, FsCheck properties, Alloy models, runtime `assert` / `Debug.Assert` | `tools/tla/specs/**`, `tools/lean4/**`, `tools/Z3Verify/**`, FsCheck test files | yes — tally.ts already counts |
-| **Constraints** | F# discriminated unions, C# nullable ref types, `TreatWarningsAsErrors`, tsconfig strict flags, eslint rules, `GOVERNANCE.md §N`, OpenSpec behaviour specs | type system + `GOVERNANCE.md` + `openspec/specs/**` + `eslint.config.ts` | partial — no cross-substrate view |
-| **Assumptions** | ADR prose in `docs/DECISIONS/**`, inline comments, README narrative, expert-skill `Why:` lines in memory | prose only, not machine-readable | **no — new category to add** |
+| category        | today's encoding                                                                                                                                           | where it lives                                                                  | first-class?                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------- |
+| **Invariants**  | TLA+ specs, Lean proofs, Z3 SMT, FsCheck properties, Alloy models, runtime `assert` / `Debug.Assert`                                                       | `tools/tla/specs/**`, `tools/lean4/**`, `tools/Z3Verify/**`, FsCheck test files | yes — tally.ts already counts     |
+| **Constraints** | F# discriminated unions, C# nullable ref types, `TreatWarningsAsErrors`, tsconfig strict flags, eslint rules, `GOVERNANCE.md §N`, OpenSpec behaviour specs | type system + `GOVERNANCE.md` + `openspec/specs/**` + `eslint.config.ts`        | partial — no cross-substrate view |
+| **Assumptions** | ADR prose in `docs/DECISIONS/**`, inline comments, README narrative, expert-skill `Why:` lines in memory                                                   | prose only, not machine-readable                                                | **no — new category to add**      |
 
 The new work is promoting assumptions to first-class:
 each one gets a tag (id), a statement ("we assume
@@ -99,7 +100,7 @@ Unknown (no check defined):              57  (6.7%)
 
 - **`tools/invariant-substrates/tally.ts`** —
   already counts substrate usage. This is the
-  *inventory* half.
+  _inventory_ half.
 - **`docs/INVARIANT-SUBSTRATES.md`** — narrative
   glue explaining what each substrate is for.
 - **`docs/AGENT-BEST-PRACTICES.md`** BP-NN rules —
@@ -112,8 +113,8 @@ Unknown (no check defined):              57  (6.7%)
   framing** (memory:
   `feedback_runtime_observability_starting_points.md`,
   `feedback_dora_is_measurement_starting_point.md`)
-  — the *runtime* health half of the measurement
-  spine. Rails health is the *structural* half.
+  — the _runtime_ health half of the measurement
+  spine. Rails health is the _structural_ half.
   Both land in the same dashboard.
 - **The verification-drift-auditor skill** (memory:
   `project_verification_drift_auditor.md`) — audits
@@ -159,10 +160,10 @@ Unknown (no check defined):              57  (6.7%)
 
 **The user experience Aaron is solving for:**
 
-> *"how i know easying and quickly and things are
+> _"how i know easying and quickly and things are
 > going as expected and our invariants and
 > asumptions are not causing things to go off the
-> rails"*
+> rails"_
 
 His UX as maintainer is the first customer, but the
 report is a **factory-level product feature** — any

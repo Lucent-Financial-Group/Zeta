@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 — "we need to keep those settings, its nice havi
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron's two messages 2026-04-21 (right after I wrote a
 pre-transfer scorecard to `/tmp`):
 
@@ -16,7 +17,7 @@ pre-transfer scorecard to `/tmp`):
 Translation: the scorecard doesn't belong in `/tmp` — it
 belongs **in the repo** as a first-class declarative artifact.
 Generalize beyond "pre-transfer verification" to an ongoing
-source-of-truth for what the GitHub settings are *supposed* to
+source-of-truth for what the GitHub settings are _supposed_ to
 be.
 
 ## The pattern
@@ -67,7 +68,7 @@ alongside `GOVERNANCE.md` and `VISION.md` in the tier of
    existing FACTORY-HYGIENE row pattern.
 
 3. **Transfer / migration safety net.** The original use-case.
-   When moving to a new org, the checked-in declaration *IS*
+   When moving to a new org, the checked-in declaration _IS_
    the verification scorecard. Same applies to Disaster
    Recovery scenarios — recreating a lost repo from the
    declaration.
@@ -120,7 +121,7 @@ alongside `GOVERNANCE.md` and `VISION.md` in the tier of
 ## Edge cases to watch
 
 - **Tokens and secrets**: NEVER write actual secret values into
-  the declaration. Write *presence* only. (The `/actions/secrets`
+  the declaration. Write _presence_ only. (The `/actions/secrets`
   API returns names only, not values — follow the same
   discipline in our file.)
 

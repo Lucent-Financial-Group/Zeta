@@ -8,22 +8,22 @@ type: feedback
 
 ## The carved sentences
 
-> *"Best practices are not files to copy. They are evidence-backed decisions
+> _"Best practices are not files to copy. They are evidence-backed decisions
 > with human lineage, Zeta-native interpretation, enforcement, and teaching
-> value."* (Amara 2026-04-29)
+> value."_ (Amara 2026-04-29)
 
-> *"Do not copy. Learn, cite, encode, enforce, teach."* (Amara 2026-04-29)
+> _"Do not copy. Learn, cite, encode, enforce, teach."_ (Amara 2026-04-29)
 
-> *"We are building software that future humans and future agents may need
+> _"We are building software that future humans and future agents may need
 > to repair without the original authors. So code must teach. Docs must
 > explain why. Skills must preserve expert reasoning. Config must enforce
-> what memory forgets."* (Amara 2026-04-29)
+> what memory forgets."_ (Amara 2026-04-29)
 
 ## The mistake this rule prevents
 
-Aaron 2026-04-29 caught Otto interpreting *"use SQLSharp / scratch best
-practices"* as *"port the behavior byte-for-byte"* and *"copy the configs
-verbatim."* Both are wrong:
+Aaron 2026-04-29 caught Otto interpreting _"use SQLSharp / scratch best
+practices"_ as _"port the behavior byte-for-byte"_ and _"copy the configs
+verbatim."_ Both are wrong:
 
 - **Byte-perfect ports** = literal Python→TS transliteration that passes
   equivalence tests but reads like Python in TS syntax and fails idiomatic
@@ -34,18 +34,18 @@ verbatim."* Both are wrong:
 
 Aaron's correction (2026-04-29 verbatim):
 
-> *"we don't ever just want to copy we learn and write best practices config
-> and code forever"*
+> _"we don't ever just want to copy we learn and write best practices config
+> and code forever"_
 
-> *"and idiomatic. ≠ best practices ... we want to be idiomatic and follow
-> best practices"*
+> _"and idiomatic. ≠ best practices ... we want to be idiomatic and follow
+> best practices"_
 
 ## Idiomatic ≠ best-practice (orthogonal axes)
 
-| | Idiomatic ✓ | Idiomatic ✗ |
-|---|---|---|
-| **Best Practice ✓** | win-win (`String#startsWith`, optional chain) | best-practice fights community default (e.g. strict tsconfig flags stricter than tsc default; `noUncheckedIndexedAccess`) |
-| **Best Practice ✗** | community idiom that's actually a foot-gun (e.g. implicit coercion in template literals; `Object.assign({}, x, y)` over `{...x, ...y}` is debatable) | drift |
+|                     | Idiomatic ✓                                                                                                                                          | Idiomatic ✗                                                                                                               |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Best Practice ✓** | win-win (`String#startsWith`, optional chain)                                                                                                        | best-practice fights community default (e.g. strict tsconfig flags stricter than tsc default; `noUncheckedIndexedAccess`) |
+| **Best Practice ✗** | community idiom that's actually a foot-gun (e.g. implicit coercion in template literals; `Object.assign({}, x, y)` over `{...x, ...y}` is debatable) | drift                                                                                                                     |
 
 We want **both** axes satisfied. Each best-practice claim must label
 which axis (or both) it serves.
@@ -94,9 +94,9 @@ Standard schema (per Amara's packet 2026-04-29):
 
 ## Survival principle (load-bearing — Aaron 2026-04-29)
 
-> *"we also have to teach it incasue you ever need help fixing you code
+> _"we also have to teach it incasue you ever need help fixing you code
 > peple are going to need to understand you to fix you, think about
-> survival"*
+> survival"_
 
 Each piece of substrate must be readable by a future human contributor
 or different AI harness who didn't watch us build it. Rules:
@@ -116,8 +116,8 @@ build it. That's a survival risk.
 
 ## The six-question audit (when Zeta touches any tool/language/domain)
 
-Per Amara, *"Any time Zeta uses a tool/language/domain in a durable way,
-even one file, the factory must ask:"*
+Per Amara, _"Any time Zeta uses a tool/language/domain in a durable way,
+even one file, the factory must ask:"_
 
 1. Do we understand the idioms?
 2. Do we understand the best practices?
@@ -131,10 +131,10 @@ that tool/language/domain.
 
 ## Rodney's Razor + ontology integration
 
-Aaron 2026-04-29: *"this is one of the main reasons i hooked up rodneys
+Aaron 2026-04-29: _"this is one of the main reasons i hooked up rodneys
 razor and ontology so you would just expand collapse expand collapse as
 you learn every skill and tool we have as part of our repo in any way
-even if one file like java."*
+even if one file like java."_
 
 The expand/collapse cycle:
 
@@ -227,17 +227,17 @@ For all future projects/repos the factory starts:
 
 Aaron 2026-04-29 sequence:
 
-1. *"make sure you pick up all the best practices from ../SQLSharp and
-   ../scratch i worked very hard to get those just right"*
-2. *"Byte-perfect equivalence on both tools. never that, that's copy paste"*
-3. *"and idiomatic. ≠ best practices"*
-4. *"we want to be idiomatic and follow best practices"*
-5. *"understand the best practices and make sure we always apply them
+1. _"make sure you pick up all the best practices from ../SQLSharp and
+   ../scratch i worked very hard to get those just right"_
+2. _"Byte-perfect equivalence on both tools. never that, that's copy paste"_
+3. _"and idiomatic. ≠ best practices"_
+4. _"we want to be idiomatic and follow best practices"_
+5. _"understand the best practices and make sure we always apply them
    forever to now project the factory starts, to future code we do, kind
    of how we've researched all the other best practices, we don't ever
    just want to copy we learn and write best practices config and code
-   forever"*
-6. *"we basically want evidence based best practices hooked to human
+   forever"_
+6. _"we basically want evidence based best practices hooked to human
    lineage we should have done that and linked to git articles and make
    skills and such that understand git better like do we have a git
    expert, we need to really learn everytime the tools and language we
@@ -250,7 +250,7 @@ Aaron 2026-04-29 sequence:
    collopase expand collapse ase you learn ever skill and tool we have
    as part of our repo in any way even if one file like java. we also
    have to teach it incasue you ever need help fixing you code peple are
-   going to need to understand you to fix you, think about survival"*
+   going to need to understand you to fix you, think about survival"_
 
 Amara synthesis (2026-04-29) added the schema for entries + the survival
 framing + the immediate stabilization rule (parallel agents need isolated

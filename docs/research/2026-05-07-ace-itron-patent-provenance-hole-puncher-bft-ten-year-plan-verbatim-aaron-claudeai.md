@@ -26,7 +26,7 @@ the patent and is free to ship. Aaron: "planned" — 10 years.
 2016 — Aaron + Higgins file hub-and-agent patent (US 10,834,144)
        Capability-locally-controlled. Agent owns execution surface.
        Hub is name-resolver only. "Hole puncher."
-       
+
 ~2017 — IoT ML at the edge + distributed policy cache at the edge
         Same primitive at smaller scale. Aaron built it at Itron.
         Quantum-resistant crypto primitives by hand in firmware.

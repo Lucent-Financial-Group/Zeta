@@ -39,8 +39,8 @@ don't re-invent the survey commands.
 ### Bullet-time-recovery signal
 
 When multiple consecutive maintainer-corrections within a short window point
-at the same discipline-class with escalating framing (*"jr"*, all-caps,
-*"remember forever"*) or contradictions surface in the agent's same-tick
+at the same discipline-class with escalating framing (_"jr"_, all-caps,
+_"remember forever"_) or contradictions surface in the agent's same-tick
 commits:
 
 1. STOP authoring

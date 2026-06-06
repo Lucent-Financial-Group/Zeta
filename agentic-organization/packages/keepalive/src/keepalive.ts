@@ -82,8 +82,20 @@ export type KeepAliveActionKind = (typeof KeepAliveActionKind)[keyof typeof Keep
 export type KeepAliveAction =
   | { kind: typeof KeepAliveActionKind.EmitHeartbeat; ageMs: number }
   | { kind: typeof KeepAliveActionKind.RaiseOrgStallAlert; ageMs: number; deadlineMs: number }
-  | { kind: typeof KeepAliveActionKind.ReassignStaleWork; staleAgentId: string; hatAssignmentId: string; workItemId: string; heartbeatAgeMs: number }
-  | { kind: typeof KeepAliveActionKind.ReapLease; leaseId: string; resource: string; holderAgentId: string; fencingToken: number };
+  | {
+      kind: typeof KeepAliveActionKind.ReassignStaleWork;
+      staleAgentId: string;
+      hatAssignmentId: string;
+      workItemId: string;
+      heartbeatAgeMs: number;
+    }
+  | {
+      kind: typeof KeepAliveActionKind.ReapLease;
+      leaseId: string;
+      resource: string;
+      holderAgentId: string;
+      fencingToken: number;
+    };
 
 export type AgentLivenessResult = {
   agentId: string;

@@ -41,17 +41,17 @@ columnar layout specifics.
 
 ## The compression codec menu
 
-| Codec | Best for | Speed (decompress) | Ratio |
-| --- | --- | --- | --- |
-| **Dictionary** | low-cardinality strings, enums | very fast | very good |
-| **RLE (run-length)** | sorted or skewed columns | very fast | good on runs, poor otherwise |
-| **FOR (frame-of-reference)** | integers clustered near a reference | fast | good |
-| **Delta** | monotonic sequences (timestamps, ids) | fast | very good |
-| **Bit-packed** | integers with known max | fast | good |
-| **Roaring bitmaps** | sparse integer sets | fast set-ops | excellent |
-| **ALP** | float columns with mostly-integer values | fast | good-to-excellent |
-| **LZ4** | general-purpose, fast | fast | moderate |
-| **Zstd** | general-purpose, best ratio | moderate | very good |
+| Codec                        | Best for                                 | Speed (decompress) | Ratio                        |
+| ---------------------------- | ---------------------------------------- | ------------------ | ---------------------------- |
+| **Dictionary**               | low-cardinality strings, enums           | very fast          | very good                    |
+| **RLE (run-length)**         | sorted or skewed columns                 | very fast          | good on runs, poor otherwise |
+| **FOR (frame-of-reference)** | integers clustered near a reference      | fast               | good                         |
+| **Delta**                    | monotonic sequences (timestamps, ids)    | fast               | very good                    |
+| **Bit-packed**               | integers with known max                  | fast               | good                         |
+| **Roaring bitmaps**          | sparse integer sets                      | fast set-ops       | excellent                    |
+| **ALP**                      | float columns with mostly-integer values | fast               | good-to-excellent            |
+| **LZ4**                      | general-purpose, fast                    | fast               | moderate                     |
+| **Zstd**                     | general-purpose, best ratio              | moderate           | very good                    |
 
 Zeta's column-codec choice is **per-column, per-segment,
 based on value-distribution** — not a global default. A
@@ -155,10 +155,10 @@ needed downstream are decompressed.
 
 ## Reference patterns
 
-- Abadi et al. 2008, *Column-Stores vs. Row-Stores*.
-- Ailamaki et al. 2001, *Weaving Relations for Cache
-  Performance* (PAX).
-- Lemire *ALP* encoding paper.
+- Abadi et al. 2008, _Column-Stores vs. Row-Stores_.
+- Ailamaki et al. 2001, _Weaving Relations for Cache
+  Performance_ (PAX).
+- Lemire _ALP_ encoding paper.
 - Apache Arrow / Parquet specs.
 - DuckDB storage docs.
 - `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.

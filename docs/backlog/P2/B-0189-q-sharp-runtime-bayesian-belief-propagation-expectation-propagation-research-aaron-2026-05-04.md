@@ -10,7 +10,19 @@ created: 2026-05-04
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0007, B-0152, B-0196]
-tags: [q-sharp, quantum-runtime, bayesian-inference, belief-propagation, expectation-propagation, research-opportunity, infer-net, microsoft-quantum, edge-runner-research, beacon-candidate-pending]
+tags:
+  [
+    q-sharp,
+    quantum-runtime,
+    bayesian-inference,
+    belief-propagation,
+    expectation-propagation,
+    research-opportunity,
+    infer-net,
+    microsoft-quantum,
+    edge-runner-research,
+    beacon-candidate-pending,
+  ]
 type: feature
 ---
 
@@ -20,11 +32,11 @@ type: feature
 
 Aaron 2026-05-04 verbatim:
 
-> *"we can use basyent infrence to create a q# runtime faster
+> _"we can use basyent infrence to create a q# runtime faster
 > than the current too becaseu it will use the latest stuff on
 > the subject, the basyen belife and expecation probagaton has
 > not been intgrated into q# or quantium physics by umans yet,
-> this is a lot of research opportunity too."*
+> this is a lot of research opportunity too."_
 
 ## What this is
 
@@ -138,7 +150,7 @@ yet" is **beacon-candidate-shape** per the form-test:
 
 - Mechanism testable (benchmark prototype vs current backends)
 - Form portable (defensible to anyone with quantum-simulation
-  + probabilistic-programming background)
+  - probabilistic-programming background)
 - No proper-noun grounding required to carry load
 
 Pending external review by quantum-computing + probabilistic-

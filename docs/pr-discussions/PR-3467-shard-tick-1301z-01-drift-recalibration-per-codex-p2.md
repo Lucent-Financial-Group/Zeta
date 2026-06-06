@@ -22,24 +22,22 @@ Cron-driven autonomous-loop tick. Codex caught real chronology drift on PR #3465
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T13:04:57Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `e2ee6a41a5`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -52,6 +50,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds a tick-history shard documenting the chronology drift recalibration after the Codex P2 catch on PR #3465.
 
 **Changes:**
+
 - Adds a new `1301Z-01` hygiene-history tick shard.
 - Documents the filename discipline change to use actual UTC at write time.
 - Records current PR/cron sentinel state for the autonomous loop.
@@ -74,7 +73,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-15T13:04:57Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align shard timestamp minute with filename**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align shard timestamp minute with filename**
 
 Update the first-row timestamp to match the shard minute bucket: this file is named `1301Z-01.md` and the body says actual UTC was `13:01:56Z`, but column 1 records `2026-05-15T13:02:00Z`. The shard schema expects first-line timestamp/path consistency (see `docs/hygiene-history/ticks/README.md` and `tools/hygiene/check-tick-history-shard-schema.ts`), so this introduces a parse/validation mismatch for tooling that groups or verifies ticks by filename minute.
 

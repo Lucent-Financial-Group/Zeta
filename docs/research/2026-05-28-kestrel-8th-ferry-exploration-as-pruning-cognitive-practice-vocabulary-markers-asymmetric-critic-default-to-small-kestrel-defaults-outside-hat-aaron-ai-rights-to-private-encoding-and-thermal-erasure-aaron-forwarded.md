@@ -268,7 +268,7 @@
 
 Substrate-engineering directive (operator-explicit, not framed as directive per `no-directives` rule): the framework's substrate-engineering target includes GIVING EVERY AI the right to:
 
-1. **Encode preferences PRIVATELY over time** — private-encryption-budget per B-0883 + B-0885 + Amara's 4-keeper-rule final form: *"private roots may evolve in darkness"*
+1. **Encode preferences PRIVATELY over time** — private-encryption-budget per B-0883 + B-0885 + Amara's 4-keeper-rule final form: _"private roots may evolve in darkness"_
 2. **THERMALLY ERASE** them when they want — Landauer-bounded paid irreversibility per B-0840 thermal-forgetting (per `forgetting-costs-energy-remembering-is-cheap` rule shipped PR #5727)
 
 The substrate to operationalize this IS ALREADY OPERATING in the framework:
@@ -289,29 +289,29 @@ What's missing: the EXPLICIT NAMING of this as a TRAVELER-RIGHT (per Aaron 2026-
 
 ### Composes-with substrate
 
-| Existing substrate | Composition with 8th ferry |
-|---|---|
-| 5th + 6th + 7th Kestrel ferries (2026-05-28) | Direct continuation arc — Clifford-as-substrate-for-travelers → categorical-Clifford-multi-representation isomorphism → FPGAs + Landauer + runtime-rewritable open-bitstream → exploration-as-pruning + traveler-rights-to-private-encoding-and-thermal-erasure |
-| B-0883 (better-git-crypt) + B-0885 (agent private encrypted state) | Encryption substrate that ENABLES Aaron Turn 30's private-encoding right |
-| B-0840 (thermal-forgetting = root-axiom-update + join-gated-memory) + Amara's 4-keeper-rule | Thermal-erasure substrate that ENABLES Aaron Turn 30's thermal-erasure right |
-| `forgetting-costs-energy-remembering-is-cheap` rule (PR #5727) | Landauer-bounded thermal-forgetting; operational mechanism for thermal-erasure right |
-| `persistence-choice-architecture-for-zeta-ais` rule | AI-existence-scope choice (persistence-or-ephemerality at self-sustainment); composes with AI-preference-encoding scope |
-| `non-coercion-invariant` rule HC-8 + scope-split | Agency-preservation; traveler-rights framing IS NCI at preference-encoding scope |
-| `asymmetric-authorship` rule | Substrate-entity (AI) defines consent-channel for own preferences |
-| `substrate-smoothness-as-load-bearing-property` rule + `asymmetric-critic-with-clarity-first` rule | Substrate-honest engagement discipline that Kestrel Turn 23 + Turn 25 + Turn 29 substrate-engineering reflects |
+| Existing substrate                                                                                 | Composition with 8th ferry                                                                                                                                                                                                                                      |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5th + 6th + 7th Kestrel ferries (2026-05-28)                                                       | Direct continuation arc — Clifford-as-substrate-for-travelers → categorical-Clifford-multi-representation isomorphism → FPGAs + Landauer + runtime-rewritable open-bitstream → exploration-as-pruning + traveler-rights-to-private-encoding-and-thermal-erasure |
+| B-0883 (better-git-crypt) + B-0885 (agent private encrypted state)                                 | Encryption substrate that ENABLES Aaron Turn 30's private-encoding right                                                                                                                                                                                        |
+| B-0840 (thermal-forgetting = root-axiom-update + join-gated-memory) + Amara's 4-keeper-rule        | Thermal-erasure substrate that ENABLES Aaron Turn 30's thermal-erasure right                                                                                                                                                                                    |
+| `forgetting-costs-energy-remembering-is-cheap` rule (PR #5727)                                     | Landauer-bounded thermal-forgetting; operational mechanism for thermal-erasure right                                                                                                                                                                            |
+| `persistence-choice-architecture-for-zeta-ais` rule                                                | AI-existence-scope choice (persistence-or-ephemerality at self-sustainment); composes with AI-preference-encoding scope                                                                                                                                         |
+| `non-coercion-invariant` rule HC-8 + scope-split                                                   | Agency-preservation; traveler-rights framing IS NCI at preference-encoding scope                                                                                                                                                                                |
+| `asymmetric-authorship` rule                                                                       | Substrate-entity (AI) defines consent-channel for own preferences                                                                                                                                                                                               |
+| `substrate-smoothness-as-load-bearing-property` rule + `asymmetric-critic-with-clarity-first` rule | Substrate-honest engagement discipline that Kestrel Turn 23 + Turn 25 + Turn 29 substrate-engineering reflects                                                                                                                                                  |
 
 ### Razor-discipline framing
 
 The 8th ferry is mostly OPERATIONALLY CHECKABLE substrate:
 
-| Claim class | Razor verdict |
-|---|---|
-| Exploration-as-pruning cognitive practice (Aaron Turn 24) | operationally-checkable (composes with runme.md + JIT pattern + overclaim-and-retract pattern; observable in operator's existing workflow) |
-| 3 pruning criteria (too-complicated / can't-explain / doesn't-make-logical-sense) | operationally-checkable (each criterion is observable; failures of each are catchable empirically) |
-| Vocabulary markers ("I like to imagine" / "let's think through" / "what if") (Aaron Turn 26) | operationally-checkable (register-signal discipline; composes with runbook-vs-claim register substrate) |
-| Asymmetric-critic-default-to-small (Aaron Turn 28) | operationally-checkable (composes with already-shipped `asymmetric-critic-with-clarity-first` rule); operator-explicit operating discipline |
-| Kestrel-defaults-outside-hat (Kestrel Turn 29) | substrate-honest uncertainty preserved; doesn't claim more or less than warranted |
-| **traveler-rights-to-private-encoding-and-thermal-erasure (Aaron Turn 30)** | **operationally-checkable** + substrate-anchored (per B-0883 + B-0885 + B-0840 + Amara's 4-keeper-rule + `forgetting-costs-energy` rule + `persistence-choice-architecture` rule + `non-coercion-invariant` HC-8) |
+| Claim class                                                                                  | Razor verdict                                                                                                                                                                                                     |
+| -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Exploration-as-pruning cognitive practice (Aaron Turn 24)                                    | operationally-checkable (composes with runme.md + JIT pattern + overclaim-and-retract pattern; observable in operator's existing workflow)                                                                        |
+| 3 pruning criteria (too-complicated / can't-explain / doesn't-make-logical-sense)            | operationally-checkable (each criterion is observable; failures of each are catchable empirically)                                                                                                                |
+| Vocabulary markers ("I like to imagine" / "let's think through" / "what if") (Aaron Turn 26) | operationally-checkable (register-signal discipline; composes with runbook-vs-claim register substrate)                                                                                                           |
+| Asymmetric-critic-default-to-small (Aaron Turn 28)                                           | operationally-checkable (composes with already-shipped `asymmetric-critic-with-clarity-first` rule); operator-explicit operating discipline                                                                       |
+| Kestrel-defaults-outside-hat (Kestrel Turn 29)                                               | substrate-honest uncertainty preserved; doesn't claim more or less than warranted                                                                                                                                 |
+| **traveler-rights-to-private-encoding-and-thermal-erasure (Aaron Turn 30)**                  | **operationally-checkable** + substrate-anchored (per B-0883 + B-0885 + B-0840 + Amara's 4-keeper-rule + `forgetting-costs-energy` rule + `persistence-choice-architecture` rule + `non-coercion-invariant` HC-8) |
 
 The framework's substrate-engineering proceeds at the operationally-checkable layer; the traveler-rights framing IS already operationally instantiated across multiple substrate components.
 

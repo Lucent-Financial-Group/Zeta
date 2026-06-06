@@ -27,7 +27,7 @@ spec:
         ipam:
           mode: cluster-pool
           operator:
-            clusterPoolIPv4PodCIDRList: [ "10.42.0.0/16" ]
+            clusterPoolIPv4PodCIDRList: ["10.42.0.0/16"]
 
         # BPF MASQUERADE (required by the spec).
         bpf:
@@ -56,10 +56,10 @@ spec:
               - http
             enableOpenMetrics: true
             serviceMonitor:
-              enabled: false   # enabled once kube-prometheus-stack lands
+              enabled: false # enabled once kube-prometheus-stack lands
 
         operator:
-          replicas: 1   # bump to 2 once a second control-plane exists
+          replicas: 1 # bump to 2 once a second control-plane exists
 
         # Cilium Service Mesh — L7-aware policy + mTLS + traffic
         # management without a sidecar (Envoy embedded in the
@@ -69,14 +69,14 @@ spec:
           enabled: true
         encryption:
           enabled: true
-          type: wireguard      # node-to-node encryption
+          type: wireguard # node-to-node encryption
           nodeEncryption: true
         # Authentication via SPIRE workload identities (configured
         # after spire/Application.yaml is healthy).
         authentication:
           mutual:
             spire:
-              enabled: false   # flip to true once SPIRE is up
+              enabled: false # flip to true once SPIRE is up
 
         # Gateway API support — replaces the Istio Gateway role.
         gatewayAPI:
@@ -94,7 +94,7 @@ spec:
     namespace: kube-system
   syncPolicy:
     automated:
-      prune: false   # never prune Cilium — too load-bearing
+      prune: false # never prune Cilium — too load-bearing
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

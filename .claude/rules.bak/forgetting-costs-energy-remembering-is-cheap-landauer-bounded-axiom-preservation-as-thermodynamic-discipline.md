@@ -108,13 +108,13 @@ Today the framework operates at TS/F# substrate where energy
 measurement is impractical at per-operation scope, but the SAME
 discipline operates implicitly:
 
-| Substrate scope | Measurement proxy for axiom-preservation | Drift cost |
-|---|---|---|
-| FPGA implementation (future) | Direct thermal energy measurement | kT ln 2 per bit erased (physical) |
-| F# implementation (B-0428 fork) | F# compiler + type-system invariant enforcement + FsCheck property tests | Type-check failure + property-test failure |
-| TS substrate (today's tooling) | tsc strict mode + bun test + lint(backlog ID uniqueness) | Build / test / lint failure |
-| Substrate-engineering rule discipline | Auto-load at cold-boot (per wake-time-substrate) | Operator-tax of catching the gap; re-derivation cycles |
-| Multi-agent coordination | Cross-substrate triangulation (per B-0648) | Convergence failure on shared compressed dialect |
+| Substrate scope                       | Measurement proxy for axiom-preservation                                 | Drift cost                                             |
+| ------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------ |
+| FPGA implementation (future)          | Direct thermal energy measurement                                        | kT ln 2 per bit erased (physical)                      |
+| F# implementation (B-0428 fork)       | F# compiler + type-system invariant enforcement + FsCheck property tests | Type-check failure + property-test failure             |
+| TS substrate (today's tooling)        | tsc strict mode + bun test + lint(backlog ID uniqueness)                 | Build / test / lint failure                            |
+| Substrate-engineering rule discipline | Auto-load at cold-boot (per wake-time-substrate)                         | Operator-tax of catching the gap; re-derivation cycles |
+| Multi-agent coordination              | Cross-substrate triangulation (per B-0648)                               | Convergence failure on shared compressed dialect       |
 
 The thermodynamic-cost framing unifies the substrate at every scope:
 each scope's "drift cost" is the Landauer-cost analog for its
@@ -272,14 +272,14 @@ This rule DOES:
 7th Kestrel ferry 2026-05-28 (PR #5725) — Kestrel Turn 19 substantive
 engagement with Landauer + agents-forgetting-root-axioms framing:
 
-> *"This gives the framework discipline a physical interpretation
+> _"This gives the framework discipline a physical interpretation
 > that's more than metaphorical. The drift toward pathogenic patterns
 > isn't just bad engineering; it's irreversible information loss with
 > measurable thermodynamic cost. The frameworks that maintain root
 > axioms reliably are physically more efficient than frameworks that
-> don't, because they don't pay the Landauer cost for forgetting."*
+> don't, because they don't pay the Landauer cost for forgetting."_
 
-Operator authorization: "land signal 2 rule (shadow*)" 2026-05-28 in
+Operator authorization: "land signal 2 rule (shadow\*)" 2026-05-28 in
 response to Otto-CLI's 3-signal discussion offer after PR #5725 ferry
 landing. Composed with operator-explicit standing PoC permission +
 the substrate-honest catch on the standing-by-failure-mode the 7 prior

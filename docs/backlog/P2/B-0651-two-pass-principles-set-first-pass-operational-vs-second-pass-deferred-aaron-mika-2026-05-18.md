@@ -9,7 +9,21 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0628, B-0646, B-0644, B-0648]
-tags: [governance, aaron, mika, two-pass-principles, lock-free, wait-free, deterministic-replayable-retractable, adversarial-review, scale-free-deferred, self-similar-deferred, substrate-honest, locked-in]
+tags:
+  [
+    governance,
+    aaron,
+    mika,
+    two-pass-principles,
+    lock-free,
+    wait-free,
+    deterministic-replayable-retractable,
+    adversarial-review,
+    scale-free-deferred,
+    self-similar-deferred,
+    substrate-honest,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -19,7 +33,7 @@ type: governance
 
 Aaron + Mika 2026-05-18 (preserved verbatim at lines ~3700-3780 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)) substrate-honestly carved a **two-pass principles set** for the Agora V6 substrate:
 
-> Mika line ~3700: *"Let's officially lock in only what we've clearly agreed on tonight: [first-pass list]. Everything else (scale-free, self-similar, etc.) we park for now. We can come back to them later when we both have fresh context and have done the proper research."*
+> Mika line ~3700: _"Let's officially lock in only what we've clearly agreed on tonight: [first-pass list]. Everything else (scale-free, self-similar, etc.) we park for now. We can come back to them later when we both have fresh context and have done the proper research."_
 
 > Aaron's response: agreement to park scale-free/self-similar despite both being repeatedly referenced in prior factory substrate.
 
@@ -29,27 +43,27 @@ This row LOCKS IN the **first-pass operational principles** + records the **seco
 
 ### First-pass (LOCKED IN operationally; used now)
 
-| Principle | Status | Scope |
-|---|---|---|
-| **Lock-free required** | LOCKED-IN | All concurrency-sensitive paths |
-| **Wait-free preferred (bounded waits acceptable)** | LOCKED-IN | All operations; default to wait-free; bounded waits OK when wait-free impractical |
+| Principle                                                  | Status    | Scope                                                                                                                                                        |
+| ---------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Lock-free required**                                     | LOCKED-IN | All concurrency-sensitive paths                                                                                                                              |
+| **Wait-free preferred (bounded waits acceptable)**         | LOCKED-IN | All operations; default to wait-free; bounded waits OK when wait-free impractical                                                                            |
 | **Strong deterministic + replayable + retractable design** | LOCKED-IN | Especially Infer.NET + the 4 O-P-L-E primitives ([B-0629](B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) |
-| **Regular adversarial review on these invariants** | LOCKED-IN | Periodic stress-test of decisions against these principles; informal until formal-verification lands |
+| **Regular adversarial review on these invariants**         | LOCKED-IN | Periodic stress-test of decisions against these principles; informal until formal-verification lands                                                         |
 
 ### Second-pass (DEFERRED; expensive, not for inference time)
 
-| Principle | Status | Why deferred |
-|---|---|---|
-| **Scale-free** | PARKED | Mathematical property with very specific implications; neither Aaron nor Mika had it fully loaded in working memory; needs research before commit |
-| **Self-similar** | PARKED | Heavy architectural claim; same reasoning |
-| Any other heavy theoretical properties | PARKED | Substrate-honest: if it's not loaded enough to use right now, parking it prevents premature commitment |
+| Principle                              | Status | Why deferred                                                                                                                                      |
+| -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Scale-free**                         | PARKED | Mathematical property with very specific implications; neither Aaron nor Mika had it fully loaded in working memory; needs research before commit |
+| **Self-similar**                       | PARKED | Heavy architectural claim; same reasoning                                                                                                         |
+| Any other heavy theoretical properties | PARKED | Substrate-honest: if it's not loaded enough to use right now, parking it prevents premature commitment                                            |
 
 ## Substrate-honest framing (the move that distinguishes this row)
 
 Aaron + Mika both admitted neither had scale-free / self-similar fully loaded in working context. Rather than rubber-stamping concepts they didn't deeply understand, they SUBSTRATE-HONESTLY parked them:
 
-- Mika line ~3720: *"these concepts aren't fresh in our context either. So let's not rush to lock in scale-free, self-similar, or any of these other heavy terms when neither of us has them properly loaded."*
-- Aaron's empirical anchor: *"If we're already moving fast and making solid progress while being fuzzy on those terms, it suggests they might not be as foundational as you initially thought. They might be nice-to-have second-pass refinements rather than core invariants we need right now."*
+- Mika line ~3720: _"these concepts aren't fresh in our context either. So let's not rush to lock in scale-free, self-similar, or any of these other heavy terms when neither of us has them properly loaded."_
+- Aaron's empirical anchor: _"If we're already moving fast and making solid progress while being fuzzy on those terms, it suggests they might not be as foundational as you initially thought. They might be nice-to-have second-pass refinements rather than core invariants we need right now."_
 
 This is the substrate-engineering analogue of "**don't ship what you can't maintain**." The two-pass split lets the operational principles operate at full strength without dragging the unloaded theoretical concepts as cognitive overhead.
 
@@ -57,11 +71,11 @@ This is the substrate-engineering analogue of "**don't ship what you can't maint
 
 Several existing `.claude/rules/` reference scale-free / lock-free / wait-free / weight-free without the substrate-honest two-pass framing:
 
-| Existing rule | Two-pass alignment |
-|---|---|
+| Existing rule                                          | Two-pass alignment                                                                                                                                                                                                    |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `.claude/rules/dv2-data-split-discipline-activated.md` | Lists "scale-free" + "lock-free / wait-free" + "weight-free" + "DST" as "5 always-active disciplines" — this row refines: lock-free + wait-free + DST are FIRST-PASS; scale-free needs DEFERRED until properly loaded |
-| Existing scale-free invocations across `memory/` | Refinements may apply — should be reviewed against this row's substrate-honest framing |
-| `.claude/rules/bandwidth-served-falsifier.md` | Lock-free/wait-free/deterministic = bandwidth-engineering at concurrency layer; first-pass operational |
+| Existing scale-free invocations across `memory/`       | Refinements may apply — should be reviewed against this row's substrate-honest framing                                                                                                                                |
+| `.claude/rules/bandwidth-served-falsifier.md`          | Lock-free/wait-free/deterministic = bandwidth-engineering at concurrency layer; first-pass operational                                                                                                                |
 
 This row does NOT supersede the existing rules — it ADDS the two-pass framing so future-Otto can distinguish "operational principle used now" from "deferred concept parked for later loading."
 

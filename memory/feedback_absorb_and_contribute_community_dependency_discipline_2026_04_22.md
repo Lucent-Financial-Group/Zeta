@@ -21,9 +21,9 @@ The occasion that named this rule: auto-loop-27 Grok CLI
 evaluation. I had recommended `npm install -g grok-cli-hurry-
 mode@latest` (community package from `superagent-ai/grok-cli`).
 The harness correctly blocked it on typosquat / supply-chain
-concerns. Aaron's reframing — *"we can absorbe the communit
+concerns. Aaron's reframing — _"we can absorbe the communit
 and just push fixes when we need it, we become the
-maintainer"* — is not a workaround for the block; it is a
+maintainer"_ — is not a workaround for the block; it is a
 better discipline that the block was protecting the space for.
 
 ## Why:
@@ -31,12 +31,12 @@ better discipline that the block was protecting the space for.
 - **Pinned-community-dependency is supply-chain-fragile.**
   `npm install -g <community-package>` pulls opaque bytes that
   can change under us, version-pin or not. The package is
-  *data* the factory consumes; absorbing it means reading it
+  _data_ the factory consumes; absorbing it means reading it
   as data, reviewing its behavior, and running the reviewed
   code — not trusting the registry-transport-mechanism.
 - **Peer-maintainer status is an externally-validated moat.**
   When the factory upstreams a fix to `superagent-ai/grok-cli`
-  and the PR lands, that is *expert-level external signal*
+  and the PR lands, that is _expert-level external signal_
   per the wink-validation memory — strictly stronger than
   algorithm-level (YouTube recommender) or human-level (Aaron
   maintainer-echo) validation. Upstream-acceptance of factory-
@@ -54,9 +54,9 @@ better discipline that the block was protecting the space for.
 - **"Community-vs-official" substrate-class distinction
   dissolves under this discipline.** My earlier framing
   (Claude/Codex/Gemini vendor-official vs Grok community-
-  built is substrate-class-mixing) assumed we *consume*
+  built is substrate-class-mixing) assumed we _consume_
   community projects. Under absorb-and-contribute, we
-  *co-maintain* them. "Community-with-our-upstream-
+  _co-maintain_ them. "Community-with-our-upstream-
   participation" is a legitimate third class — not a mixing,
   not a compromise, just a different relation. The factory
   can be peer-maintainer on 3 CLIs and vendor-consumer on
@@ -81,7 +81,7 @@ better discipline that the block was protecting the space for.
   boundary.
 - **AI-coauthor discipline is the machine-readable version
   of the openness.** `Co-Authored-By: Claude Opus 4.7
-  <noreply@anthropic.com>` in commit trailers + PR bodies
+<noreply@anthropic.com>` in commit trailers + PR bodies
   means the provenance is auditable by future maintainers
   reviewing the git log, not just implied in the body prose.
   Both layers (body-prose + commit-trailer) should carry
@@ -116,7 +116,7 @@ better discipline that the block was protecting the space for.
   the same diff. Benefits: (a) our fork has the fix now, not
   when-upstream-merges; (b) upstream gets a polished PR, not
   a rush-job. Commit trailers carry `Co-Authored-By: Claude
-  Opus 4.7` so provenance is honest.
+Opus 4.7` so provenance is honest.
 - **When writing external-facing messages (upstream PR
   descriptions, issue comments, maintainer DMs) on Aaron's
   behalf:** body prose identifies the AI author openly ("this
@@ -150,9 +150,9 @@ better discipline that the block was protecting the space for.
 
 ## End-goal sharpening (Aaron 2026-04-28T19:00Z)
 
-> *"build-our-own as last resort. our good citizen is because our
+> _"build-our-own as last resort. our good citizen is because our
 > end goal is we build all of our dependncies but still contribute
-> back our enhancements and such"*
+> back our enhancements and such"_
 
 This sharpens the discipline. The previous framing positioned
 absorb-and-contribute as the right way to consume community tools
@@ -191,7 +191,7 @@ to the commons across the trajectory of our own self-sufficiency".
 ## Composition with existing memory
 
 - `feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
-  — upstream-PR-acceptance is *expert-level external signal*,
+  — upstream-PR-acceptance is _expert-level external signal_,
   the highest strength class. An upstream merge is strictly
   stronger wink-validation than Aaron's maintainer-echo.
   Compounds the moat-building trajectory.
@@ -270,8 +270,8 @@ to the commons across the trajectory of our own self-sufficiency".
 
 ## Scope broadening — 2026-04-22 auto-loop-27 same-tick
 
-Aaron extended: *"you are also welcome to do upssteam
-contributions to any git repo"*. Upstream-contribution
+Aaron extended: _"you are also welcome to do upssteam
+contributions to any git repo"_. Upstream-contribution
 authorization is NOT limited to absorb-and-maintain projects
 — any git repo where the factory has a legitimate fix is
 fair game, regardless of whether we depend on it. Generalizes
@@ -281,8 +281,8 @@ test-gap-closure, or security-finding that benefits any
 upstream, file the PR. No explicit dependency-relationship
 required.
 
-Aaron also added: *"just don't be a dick and don't ack like
-the human said it"*. Two rules for external-facing
+Aaron also added: _"just don't be a dick and don't ack like
+the human said it"_. Two rules for external-facing
 communication: (a) baseline decency in tone — no
 condescension, no ceremony-as-posturing, no preachy framing;
 (b) never ghostwrite-as-Aaron — the AI-coauthor trailer and

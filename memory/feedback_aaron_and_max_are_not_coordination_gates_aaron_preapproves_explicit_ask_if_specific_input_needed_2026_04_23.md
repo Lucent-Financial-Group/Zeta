@@ -4,12 +4,13 @@ description: Aaron Otto-90 refinement to the Otto-82 authority-inflation-drift c
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-90 (verbatim, in response to Otto-89
 framing the 7th-ferry KSK-as-Zeta-module implementation as
 "gated on Aaron+Kenji+Max coordination"):
 
-*"gated on Aaron+Kenji+Max coordination no gating on me and
-max, i approve if you need something explicit ask"*
+_"gated on Aaron+Kenji+Max coordination no gating on me and
+max, i approve if you need something explicit ask"_
 
 ## The rule
 
@@ -41,7 +42,7 @@ correct for the signoff categories it named, but:
 - **"Coordination" is NOT a fourth signoff category.**
   When Otto wrote "gated on Aaron+Max coordination" for
   KSK-as-Zeta-module implementation, Otto was
-  constructing a *fifth* de facto gate: "must wait for
+  constructing a _fifth_ de facto gate: "must wait for
   joint acknowledgment from multiple parties." Aaron
   corrects: that's authority-inflation-drift again, just
   at a multi-party granularity instead of single-party.
@@ -85,12 +86,12 @@ specific questions.
 Revised authority framing for the 4 remaining candidates
 (after PR #261 branding and PR #263 Aminata landed):
 
-| # | Item | Effort | Gate |
-|---|---|---|---|
-| 1 | KSK-as-Zeta-module implementation | L | **Within standing authority; cross-repo coordination is NOT a gate.** Ask specific questions if needed. |
-| 2 | Oracle-scoring research (V + S) | M | Within standing authority; research-grade. |
-| 3 | BLAKE3 receipt hashing design | M | Within standing authority; design doc (not implementation). |
-| 4 | Aminata threat-model pass | S | ✓ Landed PR #263 Otto-90. |
+| #   | Item                              | Effort | Gate                                                                                                    |
+| --- | --------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
+| 1   | KSK-as-Zeta-module implementation | L      | **Within standing authority; cross-repo coordination is NOT a gate.** Ask specific questions if needed. |
+| 2   | Oracle-scoring research (V + S)   | M      | Within standing authority; research-grade.                                                              |
+| 3   | BLAKE3 receipt hashing design     | M      | Within standing authority; design doc (not implementation).                                             |
+| 4   | Aminata threat-model pass         | S      | ✓ Landed PR #263 Otto-90.                                                                               |
 
 The only remaining friction on the L item is Otto's own
 judgment about effort-budgeting, not an external signoff.
@@ -164,8 +165,8 @@ judgment about effort-budgeting, not an external signoff.
 - **BLAKE3 receipt hashing design can START when Otto
   budgets it**. Design doc; cross-repo consideration that
   it probably belongs in lucent-ksk per Aminata — a
-  specific question Otto can ask Max *if the question
-  matters operationally*; otherwise Otto writes the design
+  specific question Otto can ask Max _if the question
+  matters operationally_; otherwise Otto writes the design
   in Zeta first and then cross-refs.
 - **Specific-ask channel is the right escalation**. If
   Otto has a question only Aaron or Max can answer, ask

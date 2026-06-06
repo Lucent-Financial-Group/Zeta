@@ -13,11 +13,7 @@
  *   nextUtility(prev, wasCited)       — the post-turn utility $inc (injected; cited)
  */
 
-import {
-  MemoryTier,
-  type MemoryInjectionRecord,
-  type MemoryUtilityCorrelation,
-} from "../../domain/src/index.ts";
+import { MemoryTier, type MemoryInjectionRecord, type MemoryUtilityCorrelation } from "../../domain/src/index.ts";
 import { createHash } from "node:crypto";
 import type { RankedMemory, RetrievalCtx } from "./memory-ranking.ts";
 
@@ -36,7 +32,10 @@ export type InjectionQueryInput = {
 
 export function composeInjectionQuery(input: InjectionQueryInput): string {
   const turns = input.recentTurns.slice(-4).join(" • ");
-  return [input.roleSentence, input.taskSummary, turns].filter((s) => s.length > 0).join("\n").trim();
+  return [input.roleSentence, input.taskSummary, turns]
+    .filter((s) => s.length > 0)
+    .join("\n")
+    .trim();
 }
 
 export function injectionQueryHash(query: string): string {
@@ -143,7 +142,11 @@ export function nextUtility(
   return {
     injectedCount: prev.injectedCount + (wasInjected ? 1 : 0),
     citedCount: prev.citedCount + (wasCited ? 1 : 0),
-    ...(wasInjected ? { lastInjectedAt: at } : prev.lastInjectedAt !== undefined ? { lastInjectedAt: prev.lastInjectedAt } : {}),
+    ...(wasInjected
+      ? { lastInjectedAt: at }
+      : prev.lastInjectedAt !== undefined
+        ? { lastInjectedAt: prev.lastInjectedAt }
+        : {}),
   };
 }
 

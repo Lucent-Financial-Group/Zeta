@@ -4,6 +4,7 @@ description: Aaron has witnessable public-OSS contribution history with both eng
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-21 across two messages disclosed both poles of
 his public-OSS advocacy history, captured in two sibling
 research docs:

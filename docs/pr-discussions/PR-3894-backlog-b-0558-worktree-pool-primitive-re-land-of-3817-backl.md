@@ -25,6 +25,7 @@ Re-lands the substantive content from [PR #3817](https://github.com/Lucent-Finan
 Worktree-pool primitive — addresses **sub-case 4 (pruned-sidetick race)** of [\`.claude/rules/claim-acquire-before-worktree-work.md\`](.claude/rules/claim-acquire-before-worktree-work.md)'s borrow-on-existing pattern. Composes with B-0506, B-0519, B-0530.
 
 Empirical anchors (from row body):
+
 - Shard PR #3808 (\`docs/hygiene-history/ticks/2026/05/16/0715Z.md\`) — 4-tick-arc evidence
 - Rule PR #3812 — operationalizes sub-cases 1+2; flags 3+4 as substrate-engineer work
 
@@ -49,6 +50,7 @@ Tried at 13:31Z (\`gh pr update-branch --rebase 3817\` → \`X Cannot update PR 
 Re-lands backlog item **B-0558** documenting a proposed “worktree-pool” primitive (pre-allocated sideticks per Otto identity) and adds it to the generated backlog index, to address the pruned-sidetick race (sub-case 4) described in prior operational substrate.
 
 **Changes:**
+
 - Added new backlog row file **B-0558** under `docs/backlog/P3/` describing the problem, proposed design, and acceptance criteria.
 - Updated `docs/BACKLOG.md` to include the new B-0558 index entry.
 
@@ -56,10 +58,10 @@ Re-lands backlog item **B-0558** documenting a proposed “worktree-pool” prim
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                           | Description                                                                             |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
 | docs/backlog/P3/B-0558-worktree-pool-primitive-per-otto-identity-2026-05-16.md | New P3 backlog row specifying the worktree-pool primitive design + acceptance criteria. |
-| docs/BACKLOG.md | Adds the B-0558 row to the backlog index list. |
+| docs/BACKLOG.md                                                                | Adds the B-0558 row to the backlog index list.                                          |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-16T15:15:36Z)
 

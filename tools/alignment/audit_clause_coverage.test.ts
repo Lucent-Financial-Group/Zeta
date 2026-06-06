@@ -6,18 +6,11 @@
 // Run: bun test tools/alignment/audit_clause_coverage.test.ts
 
 import { describe, expect, test } from "bun:test";
-import {
-  ALL_CLAUSES,
-  audit,
-  extractClauses,
-  main,
-} from "./audit_clause_coverage.ts";
+import { ALL_CLAUSES, audit, extractClauses, main } from "./audit_clause_coverage.ts";
 
 describe("extractClauses", () => {
   test("extracts single clause from text", () => {
-    expect(extractClauses("This references HC-1 explicitly.")).toEqual([
-      "HC-1",
-    ]);
+    expect(extractClauses("This references HC-1 explicitly.")).toEqual(["HC-1"]);
   });
 
   test("extracts multiple clauses in canonical order", () => {
@@ -40,11 +33,7 @@ describe("extractClauses", () => {
   });
 
   test("matches clauses at word boundaries", () => {
-    expect(extractClauses("(HC-7) [SD-1] {DIR-5}")).toEqual([
-      "HC-7",
-      "SD-1",
-      "DIR-5",
-    ]);
+    expect(extractClauses("(HC-7) [SD-1] {DIR-5}")).toEqual(["HC-7", "SD-1", "DIR-5"]);
   });
 
   test("returns results ordered by ALL_CLAUSES, not input order", () => {
@@ -114,9 +103,7 @@ describe("audit() integration", () => {
 
   test("totalWithZero equals count of zero-citation surfaces", () => {
     const result = audit();
-    const zeroCount = result.surfaces.filter(
-      (s) => s.clauseCount === 0,
-    ).length;
+    const zeroCount = result.surfaces.filter((s) => s.clauseCount === 0).length;
     expect(result.totalWithZero).toBe(zeroCount);
   });
 

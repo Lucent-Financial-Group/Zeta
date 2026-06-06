@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2492 |
-| Title | docs(memory): add expungement timeline to case study |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T13:23:43Z |
-| Merged at | 2026-05-10T13:25:42Z |
-| Merge commit SHA | `2f138e299f3a4e25b1adc35e7200ad78669bf72d` |
-| Branch | `fix/case-study-expungement-update-2026-05-10` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2492 |
-| Changed files | 1 |
-| Additions / deletions | +7 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2492                                                     |
+| Title                 | docs(memory): add expungement timeline to case study     |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-10T13:23:43Z                                     |
+| Merged at             | 2026-05-10T13:25:42Z                                     |
+| Merge commit SHA      | `2f138e299f3a4e25b1adc35e7200ad78669bf72d`               |
+| Branch                | `fix/case-study-expungement-update-2026-05-10`           |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2492 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +7 / -0                                                  |
 
 ## Description
 
@@ -36,15 +36,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

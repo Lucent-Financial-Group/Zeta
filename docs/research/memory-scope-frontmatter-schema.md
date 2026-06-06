@@ -17,7 +17,7 @@ therefore a **factory-overlay optional addition**
 frontmatter semantics (unknown keys tolerated)
 mean the factory-overlay approach is compatible
 with future Anthropic schema updates. Anthropic-
-schema *changes* (renaming or removing a required
+schema _changes_ (renaming or removing a required
 field) would need to route through an Anthropic
 bug report, not through this ADR.
 
@@ -43,18 +43,18 @@ every memory frontmatter block has:
 
 ```yaml
 ---
-name: {{memory name}}
-description: {{one-line description}}
-type: {{user | feedback | project | reference}}
-originSessionId: {{UUID, autofilled}}
+name: { { memory name } }
+description: { { one-line description } }
+type: { { user | feedback | project | reference } }
+originSessionId: { { UUID, autofilled } }
 ---
 ```
 
-`type` already carries *some* scope signal — a `user`
+`type` already carries _some_ scope signal — a `user`
 memory is implicitly about Aaron, a `project` memory is
 about work items, a `reference` memory points at external
-systems. But `type` is the taxonomy *kind*, not the
-applicability *scope* — a `feedback` memory can apply
+systems. But `type` is the taxonomy _kind_, not the
+applicability _scope_ — a `feedback` memory can apply
 factory-wide or project-only, and today there's no field
 that makes that distinction machine-readable.
 
@@ -66,12 +66,12 @@ that makes that distinction machine-readable.
 
 Closed enumeration:
 
-| Value | Meaning | Example memory |
-|---|---|---|
-| `factory` | Applies to any project using this factory kit (universal). | `feedback_honor_those_that_came_before.md` |
-| `project: <name>` | Applies only to the named project (currently only `zeta`). | `project_zeta_as_retractable_contract_ledger.md` |
-| `user` | About Aaron personally (user-profile memories). | `user_faith_wisdom_and_paths.md` |
-| `hybrid` | Spans factory + project (factory rule with project-specific exception). | `feedback_factory_default_scope_unless_db_specific.md` |
+| Value             | Meaning                                                                 | Example memory                                         |
+| ----------------- | ----------------------------------------------------------------------- | ------------------------------------------------------ |
+| `factory`         | Applies to any project using this factory kit (universal).              | `feedback_honor_those_that_came_before.md`             |
+| `project: <name>` | Applies only to the named project (currently only `zeta`).              | `project_zeta_as_retractable_contract_ledger.md`       |
+| `user`            | About Aaron personally (user-profile memories).                         | `user_faith_wisdom_and_paths.md`                       |
+| `hybrid`          | Spans factory + project (factory rule with project-specific exception). | `feedback_factory_default_scope_unless_db_specific.md` |
 
 ### Optional vs mandatory
 
@@ -84,7 +84,7 @@ is implicit in the type:
 
 - `user_*.md` files: implicit `scope: user`. Adding
   explicit `scope: user` is fine but redundant. Skip it
-  unless the user memory is *also* a factory rule (rare
+  unless the user memory is _also_ a factory rule (rare
   — e.g., a user preference that becomes a universal
   factory constraint).
 - `reference_*.md` files: implicit `scope: reference`
@@ -129,7 +129,7 @@ external adopters" — any free text).
    pattern. Closed enumeration stays bounded.
 3. **Kanban's "explicit policies" practice**
    (`docs/FACTORY-METHODOLOGIES.md`) — the enumeration
-   itself *is* the explicit policy.
+   itself _is_ the explicit policy.
 
 **Handling genuinely complex cases** (e.g., a factory
 rule with a documented exception for one project):
@@ -147,15 +147,15 @@ rule with a documented exception for one project):
 The scope field **does not replace** `type`; it
 **composes** with it:
 
-| `type:` | `scope:` | Common combinations |
-|---|---|---|
-| `user` | (implicit user) | All user memories |
-| `feedback` | `factory` | Most feedback memories (rules, discipline) |
-| `feedback` | `project: zeta` | Feedback about Zeta-specific workflow |
-| `feedback` | `hybrid` | Factory rule with Zeta-specific exception |
-| `project` | `factory` | Factory-level project work (org design, methodology) |
-| `project` | `project: zeta` | Zeta-specific project work (SQL frontend, operator impl) |
-| `reference` | (implicit reference) | External-system pointers |
+| `type:`     | `scope:`             | Common combinations                                      |
+| ----------- | -------------------- | -------------------------------------------------------- |
+| `user`      | (implicit user)      | All user memories                                        |
+| `feedback`  | `factory`            | Most feedback memories (rules, discipline)               |
+| `feedback`  | `project: zeta`      | Feedback about Zeta-specific workflow                    |
+| `feedback`  | `hybrid`             | Factory rule with Zeta-specific exception                |
+| `project`   | `factory`            | Factory-level project work (org design, methodology)     |
+| `project`   | `project: zeta`      | Zeta-specific project work (SQL frontend, operator impl) |
+| `reference` | (implicit reference) | External-system pointers                                 |
 
 The composition makes the audit surface richer — `row 35
 gap-finder` flags feedback/project memories without

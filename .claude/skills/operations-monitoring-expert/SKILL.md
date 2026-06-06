@@ -33,7 +33,7 @@ discipline for data platforms).
 **The error-budget contract.** When the budget is intact,
 feature teams can ship aggressively. When the budget is
 burning, the service enters "reliability mode": no new
-features, all hands on stabilisation. This is a *policy*,
+features, all hands on stabilisation. This is a _policy_,
 not a suggestion.
 
 ## SLI menu — good SLIs and bad SLIs
@@ -66,7 +66,7 @@ gauges are never SLIs.
 ## Burn-rate alerting
 
 A SLO measured over 30 days is slow to violate. Burn-rate
-alerts fire when the *instantaneous* burn rate would
+alerts fire when the _instantaneous_ burn rate would
 exhaust the budget within a short window:
 
 - **Fast burn** (1h window × 14.4× burn): critical page.
@@ -200,7 +200,7 @@ chaos engineering, architecture).
 
 ## Chaos engineering
 
-Casey Rosenthal et al., *Principles of Chaos Engineering*.
+Casey Rosenthal et al., _Principles of Chaos Engineering_.
 
 - **GameDay** — scheduled, rehearsed chaos exercise.
   Whole team present.
@@ -261,13 +261,13 @@ Zeta pipelines get SLIs for free from the operator
 algebra:
 
 - **Freshness SLI** — `fraction of batches applied within
-  time budget`.
+time budget`.
 - **Availability SLI** — `fraction of batches that
-  succeeded`.
+succeeded`.
 - **Correctness SLI** — `fraction of retractions that
-  cancelled cleanly`.
+cancelled cleanly`.
 - **Latency SLI** — `fraction of deltas propagated within
-  p95 budget`.
+p95 budget`.
 
 **DST as chaos engineering.** Deterministic-Simulation-
 Testing is Zeta's chaos platform — injected faults,
@@ -289,14 +289,14 @@ Delegate DST-mode ops semantics to
 ## When to defer
 
 - **Telemetry surface** → `observability-and-tracing-
-  expert`, `metrics-expert`, `logging-expert`.
+expert`, `metrics-expert`, `logging-expert`.
 - **Alert-rule mechanics** → `alerting-expert`.
 - **Security incidents (CSIRT / forensics)** →
   `security-operations-engineer`.
 - **DataOps umbrella** → `data-operations-expert`.
 - **Deploy pipeline mechanics** → `devops-engineer`.
 - **DST-mode chaos** → `deterministic-simulation-theory-
-  expert`.
+expert`.
 
 ## Zeta connection
 
@@ -336,14 +336,14 @@ and the freshness oracle.
 ## Reference patterns
 
 - Betsy Beyer, Chris Jones, Jennifer Petoff, Niall
-  Murphy eds. — *Site Reliability Engineering* (O'Reilly
+  Murphy eds. — _Site Reliability Engineering_ (O'Reilly
   2016).
-- Betsy Beyer et al. — *The Site Reliability Workbook*
+- Betsy Beyer et al. — _The Site Reliability Workbook_
   (O'Reilly 2018).
-- Casey Rosenthal, Nora Jones — *Chaos Engineering*
+- Casey Rosenthal, Nora Jones — _Chaos Engineering_
   (O'Reilly 2020).
-- John Allspaw 2012 — *Blameless Post-Mortems and a
-  Just Culture*.
+- John Allspaw 2012 — _Blameless Post-Mortems and a
+  Just Culture_.
 - Principles of Chaos (principlesofchaos.org).
 - Liz Fong-Jones — burn-rate alerting.
 - ICS (US NIMS) — incident command structure.

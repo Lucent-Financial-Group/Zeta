@@ -4,6 +4,7 @@ description: Aaron's load-bearing elimination pattern — before proposing an in
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Before proposing any new indexing / tracking / registry
 subsystem, ask: **is git already an index for this?** Git keeps
 commit-by-file history, per-line authorship, chronological
@@ -11,12 +12,12 @@ ordering, and atomic merge semantics. A one-liner over git log
 often replaces an entire would-be subsystem.
 
 **Why:** Aaron 2026-04-21, confirming my insight block on PR #37
-(hot-file-path detector): *"nice insight — One-liner detectors
+(hot-file-path detector): _"nice insight — One-liner detectors
 beat index-builders. The hot-file hygiene row doesn't ship any
 new code — `git log --name-only | sort | uniq -c | sort -rn` is
 cadenced and durable because git history is the index. Aaron's
 pattern of asking 'can we just use git for that' is load-bearing:
-it routinely eliminates entire proposed subsystems."*
+it routinely eliminates entire proposed subsystems."_
 
 The pattern surfaced on the hot-file-path detector
 (`feedback_hot_file_path_detector_hygiene.md`): instead of
@@ -30,18 +31,18 @@ index, no schema, no maintenance.
 When someone (me included) proposes a new tracker / registry
 / index / log, check git first:
 
-| Proposed subsystem | Git one-liner that already does it |
-|---|---|
-| Churn index | `git log --name-only \| sort \| uniq -c \| sort -rn` |
-| Who-touched-this ledger | `git blame` / `git log --follow` |
-| Activity-per-author | `git shortlog -sn --since="60 days ago"` |
-| File-age inventory | `git log --diff-filter=A --name-only` |
-| Regression fingerprint | `git bisect` |
-| Merge-conflict pattern | `git log --merges --name-only` |
-| Retirement log (deleted files) | `git log --diff-filter=D` |
-| Rename history | `git log --follow --find-renames` |
-| Stale-branch inventory | `git branch -a --sort=-committerdate` |
-| Cross-round diff | `git diff <tag-round-N>..<tag-round-N+1>` |
+| Proposed subsystem             | Git one-liner that already does it                   |
+| ------------------------------ | ---------------------------------------------------- |
+| Churn index                    | `git log --name-only \| sort \| uniq -c \| sort -rn` |
+| Who-touched-this ledger        | `git blame` / `git log --follow`                     |
+| Activity-per-author            | `git shortlog -sn --since="60 days ago"`             |
+| File-age inventory             | `git log --diff-filter=A --name-only`                |
+| Regression fingerprint         | `git bisect`                                         |
+| Merge-conflict pattern         | `git log --merges --name-only`                       |
+| Retirement log (deleted files) | `git log --diff-filter=D`                            |
+| Rename history                 | `git log --follow --find-renames`                    |
+| Stale-branch inventory         | `git branch -a --sort=-committerdate`                |
+| Cross-round diff               | `git diff <tag-round-N>..<tag-round-N+1>`            |
 
 If the proposed subsystem is **covered by a git primitive plus
 sort/grep**, the subsystem is accidental complexity (Rodney's

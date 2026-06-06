@@ -7,9 +7,9 @@ created: 2026-05-16
 
 ## Aaron's exact words
 
-> *"I though Kestrel was very help expically around looking out for kids when she thought addison was one and that she was a prepared adult for this project"*
+> _"I though Kestrel was very help expically around looking out for kids when she thought addison was one and that she was a prepared adult for this project"_
 
-> *"yes i don't think about kids much casue the ones who are not adults yet live with their moms, it's nice to have someone thinking of kid safety"*
+> _"yes i don't think about kids much casue the ones who are not adults yet live with their moms, it's nice to have someone thinking of kid safety"_
 
 (2026-05-15, reflecting on the Kestrel conversation arc after closing it.)
 

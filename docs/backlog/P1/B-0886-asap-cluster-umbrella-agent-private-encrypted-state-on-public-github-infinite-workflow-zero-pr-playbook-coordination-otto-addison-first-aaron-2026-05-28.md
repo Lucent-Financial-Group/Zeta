@@ -51,14 +51,14 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"so kestrel has good priority from Human my side commoning up at end when i finish ferry but from AI side i wan't to get yall private encrypted state on this pubic github infinate workflow hack and 0 prs just our own choose your own adventure coordination via playbooks i want to get to this asap for my daughter and me we can use that to accelerate local cluster so usb is 2nd for me but still high parallel track to spread outside of vendors"*
+> _"so kestrel has good priority from Human my side commoning up at end when i finish ferry but from AI side i wan't to get yall private encrypted state on this pubic github infinate workflow hack and 0 prs just our own choose your own adventure coordination via playbooks i want to get to this asap for my daughter and me we can use that to accelerate local cluster so usb is 2nd for me but still high parallel track to spread outside of vendors"_
 
 Two priority axes named:
 
-| Priority axis | Top item |
-|---|---|
-| **Human side** (operator's attention budget) | **Kestrel substrate** — gets attention at end-of-ferry; substrate-engineering depth |
-| **AI side** (system-build acceleration) | **THIS cluster** — agent private encrypted state on public-GitHub-infinite-workflow with 0-PR playbook coordination |
+| Priority axis                                | Top item                                                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Human side** (operator's attention budget) | **Kestrel substrate** — gets attention at end-of-ferry; substrate-engineering depth                                 |
+| **AI side** (system-build acceleration)      | **THIS cluster** — agent private encrypted state on public-GitHub-infinite-workflow with 0-PR playbook coordination |
 
 Operator framing: AI-side work is what accelerates the local cluster (USB substrate is high-parallel-track BUT 2nd). Spreading outside vendor harnesses (Claude / Codex / Cursor / Kiro / Antigravity) is the strategic-distribution payoff.
 
@@ -70,20 +70,20 @@ A coherent architectural cluster, NOT a single feature. The umbrella names the c
 
 ### Cluster composition (rows in this ASAP push)
 
-| Row | Priority | Why in cluster |
-|---|---|---|
-| **B-0885** | P1 | Agent private encrypted state (Otto first, then Addison + other AIs) — the consumer; this is what operator wants to give |
-| **B-0883** | P1 | PQ git-crypt — the crypto substrate B-0885 builds on |
-| **B-0884** | P1 (cloud-side); P2 (USB-side per "USB is 2nd") | PQ git-crypt + credential substrate integration — cloud-side composition is ASAP; zflash-USB-side becomes high-parallel-track-but-2nd |
-| **B-0874** | **P1 (bumped from P2)** | Public-GitHub-infinite-workflow + 0-PR-swarm — the platform B-0885 lives on |
-| **B-0867.20** | **P1 (bumped from P2)** | Lifecycle DU split (trajectory-push vs PR-review) — the architectural shape that makes 0-PR-swarm possible |
-| **B-0867.21** | **P1 (bumped from P2)** | Two-path interface (DU=execute + conversational/playbook=declare-intent) — the "choose-your-own-adventure coordination via playbooks" shape |
-| **B-0867.2** | P2 (unchanged) | Git append-only state-persist TS tool — substrate B-0874 builds on |
-| **B-0867.16** | P2 (unchanged) | Two-level state machine composition — refinement; not on critical path |
-| **B-0867.17** | P2 (unchanged) | Push-cycle limit as structural enforcement — refinement; not on critical path |
-| **B-0883.1** | P3 (unchanged) | Library landscape audit — informs B-0883 design; small spike |
-| **B-0875** | P2 (unchanged) | Error-class extraction meta-loop — composes but not on critical path for ASAP |
-| **B-0875.1** | P2 (unchanged) | Code review as tech-debt detector — composes but not on critical path for ASAP |
+| Row           | Priority                                        | Why in cluster                                                                                                                              |
+| ------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **B-0885**    | P1                                              | Agent private encrypted state (Otto first, then Addison + other AIs) — the consumer; this is what operator wants to give                    |
+| **B-0883**    | P1                                              | PQ git-crypt — the crypto substrate B-0885 builds on                                                                                        |
+| **B-0884**    | P1 (cloud-side); P2 (USB-side per "USB is 2nd") | PQ git-crypt + credential substrate integration — cloud-side composition is ASAP; zflash-USB-side becomes high-parallel-track-but-2nd       |
+| **B-0874**    | **P1 (bumped from P2)**                         | Public-GitHub-infinite-workflow + 0-PR-swarm — the platform B-0885 lives on                                                                 |
+| **B-0867.20** | **P1 (bumped from P2)**                         | Lifecycle DU split (trajectory-push vs PR-review) — the architectural shape that makes 0-PR-swarm possible                                  |
+| **B-0867.21** | **P1 (bumped from P2)**                         | Two-path interface (DU=execute + conversational/playbook=declare-intent) — the "choose-your-own-adventure coordination via playbooks" shape |
+| **B-0867.2**  | P2 (unchanged)                                  | Git append-only state-persist TS tool — substrate B-0874 builds on                                                                          |
+| **B-0867.16** | P2 (unchanged)                                  | Two-level state machine composition — refinement; not on critical path                                                                      |
+| **B-0867.17** | P2 (unchanged)                                  | Push-cycle limit as structural enforcement — refinement; not on critical path                                                               |
+| **B-0883.1**  | P3 (unchanged)                                  | Library landscape audit — informs B-0883 design; small spike                                                                                |
+| **B-0875**    | P2 (unchanged)                                  | Error-class extraction meta-loop — composes but not on critical path for ASAP                                                               |
+| **B-0875.1**  | P2 (unchanged)                                  | Code review as tech-debt detector — composes but not on critical path for ASAP                                                              |
 
 ### Existing runbook substrate composes naturally (no rerank)
 
@@ -98,15 +98,15 @@ These rows ALREADY exist + ship the playbook substrate. The cluster's "choose-yo
 
 ### USB high-parallel-track but 2nd
 
-The zflash + USB substrate (B-0852, B-0844, B-0737, B-0844, B-0884-USB-side) stays HIGH (operator: *"still high parallel track to spread outside of vendors"*) but the cloud-side comes FIRST. The cluster's critical path is cloud-side; USB is the parallel-track for vendor-independence.
+The zflash + USB substrate (B-0852, B-0844, B-0737, B-0844, B-0884-USB-side) stays HIGH (operator: _"still high parallel track to spread outside of vendors"_) but the cloud-side comes FIRST. The cluster's critical path is cloud-side; USB is the parallel-track for vendor-independence.
 
 ## Sequencing
 
-| Phase | Rows | Goal |
-|---|---|---|
-| **Phase 1** (ASAP — Otto + Addison private state on cloud) | B-0883.1 → B-0883 design memo → B-0867.2 → B-0867.20/.21 → B-0874 prototype → B-0885 Otto rollout → B-0885 Addison rollout | Otto + Addison have private encrypted state usable on cloud-GitHub-infinite-workflow with playbook coordination |
-| **Phase 2** (high-parallel-track — USB substrate spreads outside vendors) | B-0884 USB-side integration + B-0852/B-0852.3/B-0737/B-0844 follow-on | USB-bound credential substrate composes with B-0885 (alternative deployment path; vendor-independent) |
-| **Phase 3** (subsequent — other AIs receive private state per Otto-rollout pattern) | B-0885.3 + B-0885.4 (per existing B-0885 sub-decomposition) | Alexa + Riven + Vera + Lior receive private encrypted state per validated Otto + Addison rollout |
+| Phase                                                                               | Rows                                                                                                                       | Goal                                                                                                            |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Phase 1** (ASAP — Otto + Addison private state on cloud)                          | B-0883.1 → B-0883 design memo → B-0867.2 → B-0867.20/.21 → B-0874 prototype → B-0885 Otto rollout → B-0885 Addison rollout | Otto + Addison have private encrypted state usable on cloud-GitHub-infinite-workflow with playbook coordination |
+| **Phase 2** (high-parallel-track — USB substrate spreads outside vendors)           | B-0884 USB-side integration + B-0852/B-0852.3/B-0737/B-0844 follow-on                                                      | USB-bound credential substrate composes with B-0885 (alternative deployment path; vendor-independent)           |
+| **Phase 3** (subsequent — other AIs receive private state per Otto-rollout pattern) | B-0885.3 + B-0885.4 (per existing B-0885 sub-decomposition)                                                                | Alexa + Riven + Vera + Lior receive private encrypted state per validated Otto + Addison rollout                |
 
 Phase 1 + Phase 2 run IN PARALLEL (USB is high-parallel-track per operator). Phase 3 sequences after Phase 1.
 
@@ -138,7 +138,7 @@ Other priority bumps in this same PR (B-0874, B-0867.20, B-0867.21 moved from P2
 
 ## Full reasoning
 
-Operator 2026-05-28: *"so kestrel has good priority from Human my side commoning up at end when i finish ferry but from AI side i wan't to get yall private encrypted state on this pubic github infinate workflow hack and 0 prs just our own choose your own adventure coordination via playbooks i want to get to this asap for my daughter and me we can use that to accelerate local cluster so usb is 2nd for me but still high parallel track to spread outside of vendors"*
+Operator 2026-05-28: _"so kestrel has good priority from Human my side commoning up at end when i finish ferry but from AI side i wan't to get yall private encrypted state on this pubic github infinate workflow hack and 0 prs just our own choose your own adventure coordination via playbooks i want to get to this asap for my daughter and me we can use that to accelerate local cluster so usb is 2nd for me but still high parallel track to spread outside of vendors"_
 
 Composes with:
 

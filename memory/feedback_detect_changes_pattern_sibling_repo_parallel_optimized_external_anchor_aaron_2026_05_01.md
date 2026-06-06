@@ -27,12 +27,12 @@ This is the load-bearing parallel-PR-friendliness pattern.
 
 Aaron 2026-05-01 surfaced the external anchor:
 
-> *"optimized for parallel, ../no-copy-only-learning-agents-insight
+> _"optimized for parallel, ../no-copy-only-learning-agents-insight
 > is the best repo in github i've seen setup to be parallel,
-> it's not perfect but it's pretty good."*
+> it's not perfect but it's pretty good."_
 
 Direct inspection of the sibling repo (per the DST grade-A
-*"pull dependency source down to ../sibling repo"* discipline)
+_"pull dependency source down to ../sibling repo"_ discipline)
 surfaced three load-bearing patterns.
 
 ## Pattern 1 — `detect-changes.yaml` workflow
@@ -112,9 +112,9 @@ too — not just CI.
 
 ## Pattern 4 — Multiple concern-aligned rulesets (B-0155 architecture validated)
 
-Aaron 2026-05-01 follow-up: *"you should be able to use the gh
-cli i think to see it's setting in read only mode too"* + *"on
-gh not in ../no-copy-only-learning-agents-insight."*
+Aaron 2026-05-01 follow-up: _"you should be able to use the gh
+cli i think to see it's setting in read only mode too"_ + _"on
+gh not in ../no-copy-only-learning-agents-insight."_
 
 Direct `gh api repos/<sibling-org>/<sibling-repo>` audit revealed **five
 concern-aligned rulesets**:
@@ -167,9 +167,9 @@ from Aaron's previous Jekyll-on-Pages experience.
 
 Aaron 2026-05-01 follow-up framing correction:
 
-> *"opposite of your Pages-with-Jekyll preference; not my
+> _"opposite of your Pages-with-Jekyll preference; not my
 > preference, i've just used it before cause i didn't want
-> to write ts at the time, bun is probably enough."*
+> to write ts at the time, bun is probably enough."_
 
 The Pages-with-Jekyll choice in Aaron's prior work was a
 workaround (Jekyll-without-TS) under a constraint
@@ -197,16 +197,16 @@ The B-0154 decision is open.
 
 The sibling AGENTS.md has rules we already have analogues for:
 
-- *"Lessons learned belong IN the PR that surfaced them —
-  when load-bearing"* — same as our session-cluster
+- _"Lessons learned belong IN the PR that surfaced them —
+  when load-bearing"_ — same as our session-cluster
   pattern (lessons land in the PR that produced them)
-- *"Every bot review comment is a joint learning opportunity
-  — encode in the same PR"* — convergence-loop discipline
+- _"Every bot review comment is a joint learning opportunity
+  — encode in the same PR"_ — convergence-loop discipline
   (Otto-358 candidate observed across this very session)
-- *"Investigate dependency source code as evidence"* —
+- _"Investigate dependency source code as evidence"_ —
   same as DST grade-A dependency-source-inspection rule
-- *"Always check the live registry feed for current versions
-  — never reuse training data or earlier-in-session results"*
+- _"Always check the live registry feed for current versions
+  — never reuse training data or earlier-in-session results"_
   — same as Otto-247 + Otto-364 search-first authority
 
 Convergence: the sibling repo and Zeta arrived at the same agent-discipline
@@ -256,9 +256,9 @@ B-0156 (TS port) — the detect-changes pattern composes:
 
 ## Attribution — the sibling repo config is deliberate-by-others, not Aaron-clicked
 
-Aaron 2026-05-01 follow-up: *"this has had a lot of intention
+Aaron 2026-05-01 follow-up: _"this has had a lot of intention
 put into by others not so much by me the gh config for that
-project."*
+project."_
 
 Important attribution distinction:
 
@@ -273,7 +273,7 @@ This sharpens the external-anchor strength. The patterns we're
 extracting from the sibling repo aren't "Aaron-via-different-org converged
 on the same shape" — they're "engineers who built the parallel
 architecture deliberately produced this design." External
-validation from a *different* deliberation process is stronger
+validation from a _different_ deliberation process is stronger
 than convergence-via-Aaron-self-consistency.
 
 Composes with the everything-greenfield cause-attribution
@@ -284,9 +284,9 @@ from a decision, not a click — high-credibility source.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"The detect-changes pattern is the parallel-PR primitive.
+_"The detect-changes pattern is the parallel-PR primitive.
 Without it, every PR contests for every check. With it,
-PRs that touch different concerns don't see each other."*
+PRs that touch different concerns don't see each other."_
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not
@@ -297,7 +297,7 @@ direction of validation.)
 # What this rule does NOT do
 
 - **NOT a mandate to copy the sibling repo workflows wholesale** — we
-  port the *pattern*, not the implementations. Their domain
+  port the _pattern_, not the implementations. Their domain
   (MFE / backend / Citus DB) is different from ours
   (F# DBSP / Lean / TLA+).
 - **NOT 42 workflows immediately** — phased adoption. Start
@@ -306,11 +306,11 @@ direction of validation.)
 - **NOT a replacement for B-0155's ruleset-split** —
   workflow-split + ruleset-split compose; both are required
   for full parallel-friendliness. Workflow-split alone
-  doesn't change which checks are *required*; ruleset-split
-  alone doesn't change which checks *run*.
+  doesn't change which checks are _required_; ruleset-split
+  alone doesn't change which checks _run_.
 - **NOT a "best repo on GitHub" claim by Otto** — Aaron's
-  framing was *"the best repo in github i've seen setup
-  to be parallel, it's not perfect but it's pretty good."*
+  framing was _"the best repo in github i've seen setup
+  to be parallel, it's not perfect but it's pretty good."_
   External-anchor is "Aaron-encountered, Aaron-named-positive";
   Otto is reporting Aaron's anchor, not making an
   independent claim. (Quote retains lowercase "github"

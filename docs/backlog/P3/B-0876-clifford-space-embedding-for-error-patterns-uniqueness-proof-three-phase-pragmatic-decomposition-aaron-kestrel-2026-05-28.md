@@ -38,9 +38,9 @@ Long-horizon research direction: error patterns occupy positions in a Clifford g
 
 ## Operator's WHY (2026-05-28)
 
-> *"eventually i want a formal analysis and proof that's its shape is unique in our clifford space"*
+> _"eventually i want a formal analysis and proof that's its shape is unique in our clifford space"_
 
-> *"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."*
+> _"emotion, behavior, and expectiation propagation like infer.net geometric relationships can be encoded along with time generator IScheduler like abstractions so the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."_
 
 ## Why Clifford specifically (not just any vector space)
 
@@ -84,7 +84,7 @@ Research project, NOT implementation row. Acceptance = a `docs/research/2026-XX-
 
 ## Substrate-honest framing
 
-POTENTIAL research direction per operator standing direction. P3 because Kestrel's meta-observation applies: *"substrate-engineering temptation is to over-formalize before validating; build simple version first, layer geometric structure as data accumulates."* The simple version is B-0875; this row tracks the long-horizon ambition.
+POTENTIAL research direction per operator standing direction. P3 because Kestrel's meta-observation applies: _"substrate-engineering temptation is to over-formalize before validating; build simple version first, layer geometric structure as data accumulates."_ The simple version is B-0875; this row tracks the long-horizon ambition.
 
 ## Full reasoning
 

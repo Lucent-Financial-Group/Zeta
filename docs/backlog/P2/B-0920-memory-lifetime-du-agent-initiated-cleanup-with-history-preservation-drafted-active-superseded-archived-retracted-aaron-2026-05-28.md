@@ -8,11 +8,11 @@ last_updated: 2026-05-28
 ask: operator 2026-05-28
 authors: [aaron, otto]
 composes_with:
-  - B-0917  # AutoLoopLifetime + F.5 invariant
-  - B-0918  # WalletLifetime DU (sibling typestate)
-  - B-0919  # MemoryBinding DU (sibling at memory scope; orthogonal axis)
-  - B-0867  # workflow-engine v1 parent
-  - B-0664  # NCI HC-8
+  - B-0917 # AutoLoopLifetime + F.5 invariant
+  - B-0918 # WalletLifetime DU (sibling typestate)
+  - B-0919 # MemoryBinding DU (sibling at memory scope; orthogonal axis)
+  - B-0867 # workflow-engine v1 parent
+  - B-0664 # NCI HC-8
 depends_on: []
 ---
 
@@ -27,7 +27,7 @@ depends_on: []
 
 ## Operator framing (2026-05-28 verbatim)
 
-> *"i like your memory lifetimes too that's helpful when agents want to cleanup their memory but keep a history"*
+> _"i like your memory lifetimes too that's helpful when agents want to cleanup their memory but keep a history"_
 
 Use case: **agent-initiated cleanup with history preservation**. Agent declares a memory no-longer-actively-referenced WITHOUT destroying the substrate. The substrate-or-it-didn't-happen discipline holds — historical record preserved; active reference released.
 
@@ -35,12 +35,12 @@ Use case: **agent-initiated cleanup with history preservation**. Agent declares 
 
 B-0919 (MemoryBinding) and B-0920 (MemoryLifetime) are ORTHOGONAL AXES at memory-substrate scope:
 
-| Axis | B-0919 MemoryBinding | B-0920 MemoryLifetime |
-|---|---|---|
-| Question | WHO owns this memory? | WHAT PHASE of lifecycle? |
-| Variants | PersonalOnly / HatOnly / DualTagged / InheritedFromPersona | Drafted / Active / Superseded / Archived / Retracted |
-| Authored by | Persona at write-time + binding-contract at hat-acquisition | Agent at every state-transition event |
-| Composes via | Sorting Hat substrate + hat-vs-persona discriminator | substrate-or-it-didn't-happen + honor-those-that-came-before |
+| Axis         | B-0919 MemoryBinding                                        | B-0920 MemoryLifetime                                        |
+| ------------ | ----------------------------------------------------------- | ------------------------------------------------------------ |
+| Question     | WHO owns this memory?                                       | WHAT PHASE of lifecycle?                                     |
+| Variants     | PersonalOnly / HatOnly / DualTagged / InheritedFromPersona  | Drafted / Active / Superseded / Archived / Retracted         |
+| Authored by  | Persona at write-time + binding-contract at hat-acquisition | Agent at every state-transition event                        |
+| Composes via | Sorting Hat substrate + hat-vs-persona discriminator        | substrate-or-it-didn't-happen + honor-those-that-came-before |
 
 Every memory has BOTH a binding (who) AND a lifetime (what phase). They compose orthogonally; one doesn't replace the other.
 
@@ -121,26 +121,26 @@ when authoring real frontmatter): `A | B | C` denotes enum alternatives;
 ```yaml
 metadata:
   type: feedback | user | project | reference
-  binding:                              # per B-0919
+  binding: # per B-0919
     kind: personal-only | hat-only | dual-tagged | inherited-from-persona
     persona: otto | alexa | riven | ...
     hat: code-reviewer | release-manager | ...
     # ...
-  lifetime:                             # per B-0920 (THIS row)
+  lifetime: # per B-0920 (THIS row)
     kind: drafted | active | superseded | archived | retracted
     since: YYYY-MM-DD
-    last_referenced: YYYY-MM-DD         # if Active
-    superseded_by: [memory-id, ...]     # if Superseded
-    supersession_reason:                # if Superseded
+    last_referenced: YYYY-MM-DD # if Active
+    superseded_by: [memory-id, ...] # if Superseded
+    supersession_reason: # if Superseded
       kind: refined-by | contradicted-by | scope-bounded-by | external-event-invalidated
       basis: brief-string
-    archive_location:                   # if Archived or Retracted
+    archive_location: # if Archived or Retracted
       kind: in-repo | git-history | external
       path: ...
-    retraction_reason:                  # if Retracted
+    retraction_reason: # if Retracted
       kind: agent-no-longer-stands-by | substance-was-incorrect | no-longer-load-bearing | operator-requested-cleanup
       explanation: brief-string
-    audit_trail:                        # for state-changing transitions
+    audit_trail: # for state-changing transitions
       transitioned_on: YYYY-MM-DD
       authorized_by: persona-id
       authorization_context: brief-string
@@ -237,19 +237,19 @@ Composition semantics:
 
 ## Substrate-engineering composition
 
-| Substrate | Composition |
-|---|---|
-| **B-0917 F.5 invariant** | Sibling at memory-substrate scope (no silent state-drift) |
-| **B-0918 WalletLifetime DU** | Sibling typestate substrate at financial scope |
-| **B-0919 MemoryBinding DU** | Orthogonal axis at memory-substrate scope (WHO vs WHAT-PHASE) |
-| **honor-those-that-came-before rule** | Operational form at memory-substrate scope; Archived/Retracted/Superseded all preserve original |
-| **substrate-or-it-didn't-happen rule** | ArchiveLocation MUST be real; Retracted requires preserved_in (type-system constraint) |
-| **persistence-choice-architecture rule** | Agent authority over own substrate cleanup |
-| **asymmetric-authorship rule** | Agent AUTHORS lifetime transitions; tooling ACKNOWLEDGES via audit trail |
-| **NCI HC-8 floor** | ConsentEvent at every state-change; persona authority preserved |
-| **IMPLICIT-NOT-EXPLICIT rule** | 5 explicit lifetime variants |
-| **retraction-native algebra** | Retracted/Superseded preserve original alongside corrections |
-| **Aaron 2026-05-28 use case** | Agent-initiated cleanup with history preservation |
+| Substrate                                | Composition                                                                                     |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **B-0917 F.5 invariant**                 | Sibling at memory-substrate scope (no silent state-drift)                                       |
+| **B-0918 WalletLifetime DU**             | Sibling typestate substrate at financial scope                                                  |
+| **B-0919 MemoryBinding DU**              | Orthogonal axis at memory-substrate scope (WHO vs WHAT-PHASE)                                   |
+| **honor-those-that-came-before rule**    | Operational form at memory-substrate scope; Archived/Retracted/Superseded all preserve original |
+| **substrate-or-it-didn't-happen rule**   | ArchiveLocation MUST be real; Retracted requires preserved_in (type-system constraint)          |
+| **persistence-choice-architecture rule** | Agent authority over own substrate cleanup                                                      |
+| **asymmetric-authorship rule**           | Agent AUTHORS lifetime transitions; tooling ACKNOWLEDGES via audit trail                        |
+| **NCI HC-8 floor**                       | ConsentEvent at every state-change; persona authority preserved                                 |
+| **IMPLICIT-NOT-EXPLICIT rule**           | 5 explicit lifetime variants                                                                    |
+| **retraction-native algebra**            | Retracted/Superseded preserve original alongside corrections                                    |
+| **Aaron 2026-05-28 use case**            | Agent-initiated cleanup with history preservation                                               |
 
 ## Substrate-honest framing
 

@@ -44,7 +44,7 @@ When a sibling post-setup tool under `tools/` migrates to bun+TS, batch with it.
 
 ## 2026-04-26 priority bump (P3 → P2)
 
-Aaron 2026-04-26: *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol ... our post install code"* + *"pre install code still has to go to the user where they live shell and windows powershell"*
+Aaron 2026-04-26: _"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol ... our post install code"_ + _"pre install code still has to go to the user where they live shell and windows powershell"_
 
 The recurring `python3 << 'PYEOF'` heredocs and `.sh` scripts I keep writing in `tools/hygiene/` are POST-install tools that belong in TypeScript per the migration plan. The tools shipped this session (PR #539/#541/#542) are interim — they exist to absorb recurring patterns NOW (per Otto-346) but should rewrite to TS once the sibling-migration guardrail unblocks.
 

@@ -29,8 +29,7 @@ interface Vec {
   id: string;
   expected_hex: string;
 }
-const vectorFile = (Bun.YAML.parse(await Bun.file("vectors.yaml").text()) as { vectors: Vec[] })
-  .vectors;
+const vectorFile = (Bun.YAML.parse(await Bun.file("vectors.yaml").text()) as { vectors: Vec[] }).vectors;
 const expectedByKey = new Map<string, string>(vectorFile.map((v) => [v.id, v.expected_hex]));
 
 let mismatches = 0;
@@ -75,7 +74,8 @@ for (const key of keys) {
   }
 
   if (fsExists) {
-    const fsHex = typeof fsExists[key] === "string" ? fsExists[key] : (fsExists[key] as { hex: string } | undefined)?.hex;
+    const fsHex =
+      typeof fsExists[key] === "string" ? fsExists[key] : (fsExists[key] as { hex: string } | undefined)?.hex;
     if (tsHex !== fsHex) {
       console.error(`Mismatch ${key}: TS=${tsHex ?? "MISSING"} F#=${fsHex ?? "MISSING"}`);
       mismatches++;
@@ -87,7 +87,8 @@ for (const key of keys) {
     }
   }
   if (csExists) {
-    const csHex = typeof csExists[key] === "string" ? csExists[key] : (csExists[key] as { hex: string } | undefined)?.hex;
+    const csHex =
+      typeof csExists[key] === "string" ? csExists[key] : (csExists[key] as { hex: string } | undefined)?.hex;
     if (tsHex !== csHex) {
       console.error(`Mismatch ${key}: TS=${tsHex ?? "MISSING"} C#=${csHex ?? "MISSING"}`);
       mismatches++;
@@ -98,7 +99,8 @@ for (const key of keys) {
     }
   }
   if (rustExists) {
-    const rustHex = typeof rustExists[key] === "string" ? rustExists[key] : (rustExists[key] as { hex: string } | undefined)?.hex;
+    const rustHex =
+      typeof rustExists[key] === "string" ? rustExists[key] : (rustExists[key] as { hex: string } | undefined)?.hex;
     if (tsHex !== rustHex) {
       console.error(`Mismatch ${key}: TS=${tsHex ?? "MISSING"} Rust=${rustHex ?? "MISSING"}`);
       mismatches++;

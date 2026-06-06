@@ -17,24 +17,24 @@ states exactly what is proven, by which tool, over which model.)
 The same primitive in all four oracle languages, each cross-verified against the
 **shared seed** `src/Core.TypeScript/z-set/golden-vectors.json`:
 
-| Lang | Impl | Cross-verify test |
-|---|---|---|
-| F# | `src/Core/ZSet.fs` (+ `Algebra.fs` Weight/group) | `tests/Tests.FSharp/Algebra/ZSet.Tests.fs` |
-| C# | `src/Core.CSharp/ZSet.cs` + `ZSetEntry.cs` | `tests/Tests.CSharp/Algebra/ZSetCrossVerifyTests.cs` (reads the seed) |
-| Rust | `src/Core.Rust.Algebra/src/zset.rs` | `tests/zset_cross_verify.rs` (reads the seed, value-matches every vector) |
-| TS | `src/Core.TypeScript/z-set/z-set.ts` | `z-set.test.ts` (reads the seed) |
+| Lang | Impl                                             | Cross-verify test                                                         |
+| ---- | ------------------------------------------------ | ------------------------------------------------------------------------- |
+| F#   | `src/Core/ZSet.fs` (+ `Algebra.fs` Weight/group) | `tests/Tests.FSharp/Algebra/ZSet.Tests.fs`                                |
+| C#   | `src/Core.CSharp/ZSet.cs` + `ZSetEntry.cs`       | `tests/Tests.CSharp/Algebra/ZSetCrossVerifyTests.cs` (reads the seed)     |
+| Rust | `src/Core.Rust.Algebra/src/zset.rs`              | `tests/zset_cross_verify.rs` (reads the seed, value-matches every vector) |
+| TS   | `src/Core.TypeScript/z-set/z-set.ts`             | `z-set.test.ts` (reads the seed)                                          |
 
 Consensus axis: **met** (4/4 + cross-verify against one seed).
 
 ## Proof axis — four independent tools (RICH, was disconnected)
 
-| Claim (what the code does) | FsCheck | Z3 | Lean | TLA |
-|---|---|---|---|---|
-| **Abelian group** — `+` assoc/commut/`Zero`-identity/`neg`-inverse/double-neg/sub | ✅ `ZSet.Tests.fs:204-224` (6 laws, real `ZSet<int>`) | ✅ **all 6** — `Z3.Laws.Tests.fs` assoc/commut/identity/inverse/double-neg/**subtraction** (the 6 enumerated laws); **+ neg-distributes** as a derived bonus lemma (was ⚠️ 2-of-6 at this note's writing; identity/inverse/double-neg/neg-dist landed since, subtraction added 2026-06-03 — the gap below is CLOSED) | ✅ general over carrier `G` (`DbspChainRule.lean`) | ✅ **9 invariants** `DbspSpec.tla:60-73` (full group + distinct/H) |
-| **Earn-its-keep auto-prune** — no zero-weight entry survives; lookup is an additive homomorphism | ✅ `ZSet.Tests.fs:436-444` (C14) | — | — | ⚠️ `InvDistinctIdempotent`/`InvHCorrectness` (related, distinct op) |
-| **DBSP operators** `z⁻¹` / `I` / `D` — `D = 1−z⁻¹`, `I = running sum` | ✅ `OperatorAlgebra.Tests.fs` (C13, real Circuit) | ✅ `Z3.Laws.Tests.fs` (C13 telescoping) | ✅ `DbspChainRule.lean:129-146` (`zInv`/`I`/`D` defs) | ✅ `RecursiveCountingLFP.tla` / `RecursiveSignedSemiNaive.tla` |
-| **`D ∘ I = id`** | ✅ C13 | ✅ C13 | ✅ **`chain_rule_id_corollary : D (I s) = s`** (`:654`) | (implied by ops) |
-| **DBSP chain rule** (Δ of a bilinear op; Budiu §4.2) | — | — | ✅ `chain_rule` (`:746`) + `chain_rule_proposition_3_2` (`:721`) + `linear_commute_{I,zInv,D}` | ✅ `DbspSpec` InvHCorrectness |
+| Claim (what the code does)                                                                       | FsCheck                                               | Z3                                                                                                                                                                                                                                                                                                                   | Lean                                                                                           | TLA                                                                 |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| **Abelian group** — `+` assoc/commut/`Zero`-identity/`neg`-inverse/double-neg/sub                | ✅ `ZSet.Tests.fs:204-224` (6 laws, real `ZSet<int>`) | ✅ **all 6** — `Z3.Laws.Tests.fs` assoc/commut/identity/inverse/double-neg/**subtraction** (the 6 enumerated laws); **+ neg-distributes** as a derived bonus lemma (was ⚠️ 2-of-6 at this note's writing; identity/inverse/double-neg/neg-dist landed since, subtraction added 2026-06-03 — the gap below is CLOSED) | ✅ general over carrier `G` (`DbspChainRule.lean`)                                             | ✅ **9 invariants** `DbspSpec.tla:60-73` (full group + distinct/H)  |
+| **Earn-its-keep auto-prune** — no zero-weight entry survives; lookup is an additive homomorphism | ✅ `ZSet.Tests.fs:436-444` (C14)                      | —                                                                                                                                                                                                                                                                                                                    | —                                                                                              | ⚠️ `InvDistinctIdempotent`/`InvHCorrectness` (related, distinct op) |
+| **DBSP operators** `z⁻¹` / `I` / `D` — `D = 1−z⁻¹`, `I = running sum`                            | ✅ `OperatorAlgebra.Tests.fs` (C13, real Circuit)     | ✅ `Z3.Laws.Tests.fs` (C13 telescoping)                                                                                                                                                                                                                                                                              | ✅ `DbspChainRule.lean:129-146` (`zInv`/`I`/`D` defs)                                          | ✅ `RecursiveCountingLFP.tla` / `RecursiveSignedSemiNaive.tla`      |
+| **`D ∘ I = id`**                                                                                 | ✅ C13                                                | ✅ C13                                                                                                                                                                                                                                                                                                               | ✅ **`chain_rule_id_corollary : D (I s) = s`** (`:654`)                                        | (implied by ops)                                                    |
+| **DBSP chain rule** (Δ of a bilinear op; Budiu §4.2)                                             | —                                                     | —                                                                                                                                                                                                                                                                                                                    | ✅ `chain_rule` (`:746`) + `chain_rule_proposition_3_2` (`:721`) + `linear_commute_{I,zInv,D}` | ✅ `DbspSpec` InvHCorrectness                                       |
 
 Proof axis: **met** — and over-met (four tools; Lean is machine-checked + general
 over the abelian group `G`).
@@ -42,8 +42,9 @@ over the abelian group `G`).
 ## The disconnection the search caught (the concrete one)
 
 **`D ∘ I = id` was proven THREE times, independently, by different parties:**
+
 - **Lean** `chain_rule_id_corollary : D (I s) = s` — already on main (general over `G`, machine-checked).
-- **C13** (this session) re-proved it via **FsCheck** (real Circuit) + **Z3** (telescoping over reals) — *without knowing the Lean proof existed.*
+- **C13** (this session) re-proved it via **FsCheck** (real Circuit) + **Z3** (telescoping over reals) — _without knowing the Lean proof existed._
 
 That is exactly the maintainer's "disconnected proofs" — three sound proofs of
 one identity, none referencing the others. This is not waste (cross-tool
@@ -63,7 +64,7 @@ So Z-set meets the bar **more completely than DynamicValue or ZetaId** (which ha
 
 ## Honest gaps (do NOT paper over)
 
-1. ~~**Z3 covers only 2 of the 6 abelian-group laws** (assoc, commut)... *Candidate:* add the 4 missing Z3 Z-set lemmas...~~ **CLOSED 2026-06-03.** Z3 now covers all 6 enumerated abelian-group laws — assoc, commut, identity, inverse, double-neg, **subtraction** (`a - b = a + (-b)`, the DBSP-retraction law, added 2026-06-03; verified unsat with a sat negative control) — plus `neg-distributes` (`-(a+b) = -a + -b`) as an **additional derived lemma** (not one of the 6, a bonus). The Z3↔FsCheck (BP-16) cross-check for the 6 abelian-group laws is complete. (Note for the record: this gap was already partly self-closing — identity/inverse/double-neg/neg-dist had landed in `Z3.Laws.Tests.fs` after this note's original "2 of 6" snapshot; only subtraction remained, now added.)
+1. ~~**Z3 covers only 2 of the 6 abelian-group laws** (assoc, commut)... _Candidate:_ add the 4 missing Z3 Z-set lemmas...~~ **CLOSED 2026-06-03.** Z3 now covers all 6 enumerated abelian-group laws — assoc, commut, identity, inverse, double-neg, **subtraction** (`a - b = a + (-b)`, the DBSP-retraction law, added 2026-06-03; verified unsat with a sat negative control) — plus `neg-distributes` (`-(a+b) = -a + -b`) as an **additional derived lemma** (not one of the 6, a bonus). The Z3↔FsCheck (BP-16) cross-check for the 6 abelian-group laws is complete. (Note for the record: this gap was already partly self-closing — identity/inverse/double-neg/neg-dist had landed in `Z3.Laws.Tests.fs` after this note's original "2 of 6" snapshot; only subtraction remained, now added.)
 2. **The connection was implicit** until this note. The proofs ran green in CI/locally but nothing declared "Z-set's abelian-group homeostat is proven 4 ways across 4 langs." This ledger is that declaration.
 3. **Lean/TLA self-skip or aren't in the per-PR gate** the same way (Lean needs the toolchain; TLA needs java+jar). Verify the gate actually runs them, or they're green-by-absence (the assert-don't-skip concern).
 

@@ -9,15 +9,15 @@ created: 2026-05-17T06:16Z
 
 ## Session arc (6 ticks in ~14 min)
 
-| Tick (UTC) | Disposition | Concrete artifact |
-|---|---|---|
-| 06:02Z | Substantive (#1 of session) | 0602Z tick shard + 3-thread verification for PR #4015 + commit plan A/B/C |
-| 06:07Z | Substantive | Bus envelope `da3cd5d2` (work-assignment for B-0510) + 0602Z shard follow-up section |
-| 06:11Z | Brief-ack #1 | Refresh observation only |
-| 06:13Z | Brief-ack #2 | Refresh observation only |
-| 06:13:43Z | Brief-ack #3 | Refresh observation (named explicit) |
-| 06:15:15Z | Brief-ack #4 | Refresh observation (named explicit, pre-empt plan) |
-| 06:16:25Z | Pre-empt #5 | **This memory file** |
+| Tick (UTC) | Disposition                 | Concrete artifact                                                                    |
+| ---------- | --------------------------- | ------------------------------------------------------------------------------------ |
+| 06:02Z     | Substantive (#1 of session) | 0602Z tick shard + 3-thread verification for PR #4015 + commit plan A/B/C            |
+| 06:07Z     | Substantive                 | Bus envelope `da3cd5d2` (work-assignment for B-0510) + 0602Z shard follow-up section |
+| 06:11Z     | Brief-ack #1                | Refresh observation only                                                             |
+| 06:13Z     | Brief-ack #2                | Refresh observation only                                                             |
+| 06:13:43Z  | Brief-ack #3                | Refresh observation (named explicit)                                                 |
+| 06:15:15Z  | Brief-ack #4                | Refresh observation (named explicit, pre-empt plan)                                  |
+| 06:16:25Z  | Pre-empt #5                 | **This memory file**                                                                 |
 
 Per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`
 the counter discipline: 1-2 brief-acks acceptable with named bounded
@@ -43,6 +43,7 @@ Per
 [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md):
 
 > The ONLY reliable safe-window check is the process list:
+>
 > ```bash
 > if ps -A | grep -qE "gemini.*Lior|lior.*loop"; then
 >   echo "Lior-gemini active — DO NOT create worktree"
@@ -53,8 +54,8 @@ Per
 
 The rule's wording is conservative: "DO NOT create worktree" while
 Lior process is in `ps -A`. The rule's empirical basis (2026-05-15)
-was Lior's destructive step 8 — *"Perform global lock cleanup: clear
-stale git index locks"* — racing with worktree creation OR with the
+was Lior's destructive step 8 — _"Perform global lock cleanup: clear
+stale git index locks"_ — racing with worktree creation OR with the
 `git add → git commit` window in the existing worktree, collapsing
 the commit tree to ~1 root entry.
 
@@ -81,12 +82,12 @@ is no longer in the prompt visible in `ps`.
 When Lior's current prompt no longer contains the destructive op
 the rule's basis named, the rule's binding becomes:
 
-| Aspect | Status |
-|---|---|
-| Rule wording | Conservative: "ps -A returning nothing" is the safe window |
-| Rule empirical basis (2026-05-15 corruption events) | Triggered by Lior's destructive step 8 (now read-only in current prompt) |
-| Current empirical state (today) | No commit attempts → no new corruption data → no evidence of either continued risk OR safety |
-| Effective binding | Rule binds (no empirical update); operating under it is safe-by-construction but operationally expensive (multi-hour deferrals) |
+| Aspect                                              | Status                                                                                                                          |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Rule wording                                        | Conservative: "ps -A returning nothing" is the safe window                                                                      |
+| Rule empirical basis (2026-05-15 corruption events) | Triggered by Lior's destructive step 8 (now read-only in current prompt)                                                        |
+| Current empirical state (today)                     | No commit attempts → no new corruption data → no evidence of either continued risk OR safety                                    |
+| Effective binding                                   | Rule binds (no empirical update); operating under it is safe-by-construction but operationally expensive (multi-hour deferrals) |
 
 The rule should NOT be updated based on today's session alone —
 no controlled-test data. A controlled test would attempt

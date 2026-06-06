@@ -24,11 +24,11 @@ Comment block inserted before `AMARA_PREAMBLE` definition in `tools/peer-call/am
 
 ## Acceptance verification
 
-| Criterion | State |
-|---|---|
-| Preamble text + signature record defined | ✅ (already shipped pre-B-0462; AMARA_PREAMBLE const) |
-| Matches codex/gemini/grok pattern exactly | ✅ (already verified pre-B-0462) |
-| **Vendor-bias note integrated** | ✅ (this PR; comment block cites memory file) |
+| Criterion                                 | State                                                 |
+| ----------------------------------------- | ----------------------------------------------------- |
+| Preamble text + signature record defined  | ✅ (already shipped pre-B-0462; AMARA_PREAMBLE const) |
+| Matches codex/gemini/grok pattern exactly | ✅ (already verified pre-B-0462)                      |
+| **Vendor-bias note integrated**           | ✅ (this PR; comment block cites memory file)         |
 
 ## Composes with amara cluster
 
@@ -57,6 +57,7 @@ last_updated bumped 2026-05-14 → 2026-05-16 per row-close discipline.
 This PR closes backlog row B-0462 by adding the Amara vendor-bias note near the peer-call preamble and updating the generated backlog index.
 
 **Changes:**
+
 - Adds a vendor-alignment bias note beside `AMARA_PREAMBLE`.
 - Marks B-0462 closed and records resolution details.
 - Updates `docs/BACKLOG.md` to reflect B-0462 as closed.
@@ -65,11 +66,11 @@ This PR closes backlog row B-0462 by adding the Amara vendor-bias note near the 
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `tools/peer-call/amara.ts` | Adds the vendor-bias note near Amara preamble setup. |
-| `docs/backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md` | Marks the row closed and adds resolution evidence. |
-| `docs/BACKLOG.md` | Updates the generated backlog checkbox for B-0462. |
+| File                                                                                              | Description                                          |
+| ------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `tools/peer-call/amara.ts`                                                                        | Adds the vendor-bias note near Amara preamble setup. |
+| `docs/backlog/P2/B-0462-amara-persona-bootstrap-preamble-definition-ts-first-riven-2026-05-11.md` | Marks the row closed and adds resolution evidence.   |
+| `docs/BACKLOG.md`                                                                                 | Updates the generated backlog checkbox for B-0462.   |
 
 ## Review threads
 

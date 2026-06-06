@@ -25,9 +25,9 @@ in-context without paying per-call API costs.
 
 This implements the 2026-05-04 architectural extension in B-0017:
 
-> *"The UI should have a conversation interface too."*
-> *"Hopefully talking to a local/browser based AI so it won't
-> cost us money lol."*
+> _"The UI should have a conversation interface too."_
+> _"Hopefully talking to a local/browser based AI so it won't
+> cost us money lol."_
 
 This is **Path A — bridge implementation** while Path B
 (Zeta-native Bayesian inference seed executor) matures.
@@ -139,11 +139,11 @@ Expected: chat directory present, `ConversationAdapter` interface defined.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing conversation interface for this
-  dashboard in `frontend/`. WebLLM and transformers.js prior art
-  is in upstream libraries — check current docs via WebSearch
-  (Otto-364) before choosing runtime.
+      dashboard in `frontend/`. WebLLM and transformers.js prior art
+      is in upstream libraries — check current docs via WebSearch
+      (Otto-364) before choosing runtime.
 - [x] Dependency-restructure: `depends_on: [B-0394]` — needs MVP
-  surface for context injection.
+      surface for context injection.
 
 ## Composes with
 

@@ -66,7 +66,7 @@ precision about the reason shape.
 - **Proposal:** Implement Gupta-Mumick-Subrahmanian DRed to make
   `RecursiveSemiNaive` retraction-safe.
 - **Why not:** Motik et al. AIJ 2019 proves `DRed_o` can regress
-  *below* the current `Recursive`-clamp baseline on retract-heavy
+  _below_ the current `Recursive`-clamp baseline on retract-heavy
   workloads (one edge retract → O(|V|²) overdelete). The counting
   algorithm (shipped as `RecursiveCounting`) and gap-monotone
   semi-naïve (researched, not yet shipped) strictly dominate
@@ -179,9 +179,9 @@ precision about the reason shape.
 - **Decision:** 2026-04-21
 - **Proposal:** Adopt `git-crypt` (GPG / symmetric, AES-256-CTR
   with SHA-1-HMAC-derived IV) for secrets-at-rest inside the
-  repo — the P2 BACKLOG row *"Gitops-friendly key management
-  + rotation"* named it as one of four candidates alongside
-  `git-secret`, SOPS, and `age`.
+  repo — the P2 BACKLOG row \*"Gitops-friendly key management
+  - rotation"\* named it as one of four candidates alongside
+    `git-secret`, SOPS, and `age`.
 - **Why not:** Three Zeta-values-level mismatches, documented
   in `docs/research/git-crypt-deep-dive-2026-04-21.md`:
   1. **No access revocation.** Upstream authors explicit:
@@ -198,14 +198,14 @@ precision about the reason shape.
      are all in plaintext. A pattern like
      `secrets/prod.yaml filter=git-crypt` tells the world a
      `prod.yaml` secret exists; only the contents are hidden.
-  Additional (documented, non-decisive) concerns: pre-v1.0
-  with authors reserving compat-break rights, third-party
-  git-GUI silent-plaintext leaks, non-compressible storage,
-  and no HSM/PQC story. The three values-level mismatches
-  alone are sufficient.
+     Additional (documented, non-decisive) concerns: pre-v1.0
+     with authors reserving compat-break rights, third-party
+     git-GUI silent-plaintext leaks, non-compressible storage,
+     and no HSM/PQC story. The three values-level mismatches
+     alone are sufficient.
 - **Revisit when:** Upstream adds in-place revocation without
-  history-rewrite, *and* renders encrypted content in
-  review-friendly diffs, *and* ships a filename-protection
+  history-rewrite, _and_ renders encrypted content in
+  review-friendly diffs, _and_ ships a filename-protection
   story. Realistically: never — these are architectural
   constraints of the design, not missing features. SOPS +
   KMS (for long-lived secrets) and `age` (for ephemeral /
@@ -281,7 +281,7 @@ precision about the reason shape.
   collaborating agents. A "pen-test" against them in a live
   session risks infecting the agent state that goes on to edit
   code / docs / skills. The Prompt Protector skill describes
-  the *threat class* without fetching the payload.
+  the _threat class_ without fetching the payload.
 - **Revisit when:** A pen-test is genuinely needed. Then it runs
   in an isolated single-turn sub-agent with no memory carryover
   and no write access to `.claude/` or `memory/persona/`.

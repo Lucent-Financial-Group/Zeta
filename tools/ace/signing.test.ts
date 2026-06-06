@@ -1,7 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { generateKeyPairSync } from "node:crypto";
 import {
-  generateKeypair, keyId, canonicalManifestBytes, signManifest, verifySignature,
+  generateKeypair,
+  keyId,
+  canonicalManifestBytes,
+  signManifest,
+  verifySignature,
   type TrustEntry,
   publicKeyInfoFromPrivatePem,
 } from "./signing.ts";
@@ -41,7 +45,10 @@ describe("sign + verify", () => {
     const trust: Map<string, TrustEntry> = new Map([[kp.keyId, { public_key: kp.publicSpkiB64, label: "me" }]]);
     const r = verifySignature(signed, trust);
     expect(r.ok).toBe(true);
-    if (r.ok) { expect(r.key_id).toBe(kp.keyId); expect(r.label).toBe("me"); }
+    if (r.ok) {
+      expect(r.key_id).toBe(kp.keyId);
+      expect(r.label).toBe("me");
+    }
   });
 
   test("tampered content_hash -> bad-signature", () => {
@@ -101,8 +108,12 @@ describe("publicKeyInfoFromPrivatePem", () => {
   });
   test("the derived public_key verifies an index this key signed", () => {
     const kp = generateKeypair();
-    const content = { format_version: 1 as const, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
-      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+    const content = {
+      format_version: 1 as const,
+      sequence: 1,
+      issued_at: "2026-06-01T12:00:00Z",
+      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
+    };
     const sig = signIndex(content, kp.privatePem);
     const info = publicKeyInfoFromPrivatePem(kp.privatePem);
     const trust = new Map([[info.keyId, { public_key: info.public_key }]]);

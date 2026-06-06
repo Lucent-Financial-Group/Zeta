@@ -6,14 +6,14 @@ type: feedback
 
 Aaron 2026-04-30 verbatim:
 
-> *"The winner of the AI race WILL be determined by the
+> _"The winner of the AI race WILL be determined by the
 > projects with the biggest backlogs that can be executed
 > atonomously. Backlog expansion is encouraged, a growing
 > backlog is healthy, means you will never run out of
 > things to do, shrinnk backlog is a warning sign that this
 > project is not fully anomomus and about to collopase, a
 > real humans internal backlog is never complete until they
-> die."*
+> die."_
 > — Aaron 2026-04-30
 
 ## The rule
@@ -28,23 +28,23 @@ not aim for backlog-bankruptcy.
 
 ### The two signals (maintainer 2026-04-30 sharpening)
 
-> *"it's just one indicator signal is strong and also number
+> _"it's just one indicator signal is strong and also number
 > of pending backlog items staying the same is healthy too,
 > as long as number of backlog items processed in last
 > hours/days or whatever is stedy or increasing too, it
 > should be constant in and out into the backlog but lean
 > on more in that out because if we run out of things to do,
 > what are you going to do with the current state of AI,
-> you would just sit in a loop and do nothing."*
+> you would just sit in a loop and do nothing."_
 > — maintainer 2026-04-30
 
 The full signal model:
 
-| Dimension | Healthy state | Warning state |
-|---|---|---|
-| **Backlog count** | Growing OR steady (with active flow) | Shrinking-without-completion-velocity OR frozen-with-no-flow |
-| **Flow rate** | Items entering + items processed both active; throughput steady or increasing | Either flow stops (no new items OR no completions) |
-| **In/out balance** | Lean toward more-in-than-out (slight backlog growth) | Out-only sustained; backlog drains to zero |
+| Dimension          | Healthy state                                                                 | Warning state                                                |
+| ------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Backlog count**  | Growing OR steady (with active flow)                                          | Shrinking-without-completion-velocity OR frozen-with-no-flow |
+| **Flow rate**      | Items entering + items processed both active; throughput steady or increasing | Either flow stops (no new items OR no completions)           |
+| **In/out balance** | Lean toward more-in-than-out (slight backlog growth)                          | Out-only sustained; backlog drains to zero                   |
 
 Why steady-state with active flow is healthy: it means
 the project is genuinely autonomous at scale — items
@@ -55,9 +55,9 @@ rate matters more than the count.
 
 ### Why lean toward more-in-than-out
 
-> *"because if we run out of things to do, what are you
+> _"because if we run out of things to do, what are you
 > going to do with the current state of AI, you would just
-> sit in a loop and do nothing."*
+> sit in a loop and do nothing."_
 
 Current AI agent loops have a structural failure mode at
 the empty-queue boundary. The agent doesn't gracefully
@@ -82,13 +82,13 @@ the loop in healthy chew-through-mode, never starving.
 
 ## Industry-default vs Zeta default
 
-| Surface | Industry default | Zeta default |
-|---|---|---|
-| Backlog growth | Anti-pattern; "groomed backlog" / "backlog bankruptcy" / "ruthless prioritization" | Health signal; growing backlog = autonomous-execution-capacity that's growing |
-| Backlog size | Small queue is virtue ("clean board") | Large queue is virtue (autonomous engine has more to chew on) |
-| Shrinking backlog | Sign of progress, ship velocity | Warning sign of collapsing autonomy |
-| "Run out of things to do" | Aspiration ("we're caught up") | Failure mode (autonomous loop has nothing to execute) |
-| WONT-DO discipline | Aggressive — close anything not actively planned | Conservative — Aaron-only authority for ratification (per `feedback_zeta_ultimate_scope_intellectual_backup_of_earth_wont_do_authority_aaron_2026_04_30.md`) |
+| Surface                   | Industry default                                                                   | Zeta default                                                                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Backlog growth            | Anti-pattern; "groomed backlog" / "backlog bankruptcy" / "ruthless prioritization" | Health signal; growing backlog = autonomous-execution-capacity that's growing                                                                                |
+| Backlog size              | Small queue is virtue ("clean board")                                              | Large queue is virtue (autonomous engine has more to chew on)                                                                                                |
+| Shrinking backlog         | Sign of progress, ship velocity                                                    | Warning sign of collapsing autonomy                                                                                                                          |
+| "Run out of things to do" | Aspiration ("we're caught up")                                                     | Failure mode (autonomous loop has nothing to execute)                                                                                                        |
+| WONT-DO discipline        | Aggressive — close anything not actively planned                                   | Conservative — Aaron-only authority for ratification (per `feedback_zeta_ultimate_scope_intellectual_backup_of_earth_wont_do_authority_aaron_2026_04_30.md`) |
 
 The Zeta inversion is structural: the project's value
 proposition is autonomous execution at scope (intellectual
@@ -101,9 +101,9 @@ fuel and direction.
 The maintainer's framing connects backlog directly to the
 project's competitive position:
 
-> *"The winner of the AI race WILL be determined by the
+> _"The winner of the AI race WILL be determined by the
 > projects with the biggest backlogs that can be executed
-> autonomously."*
+> autonomously."_
 
 Reasoning chain:
 
@@ -126,8 +126,8 @@ Reasoning chain:
 
 The maintainer's framing:
 
-> *"a real humans internal backlog is never complete until
-> they die."*
+> _"a real humans internal backlog is never complete until
+> they die."_
 
 Healthy humans always have more they want to do than time
 to do it. The backlog isn't a problem to solve; it's the
@@ -226,17 +226,17 @@ Backlog expansion isn't overhead; it's product work.
 
 ## Carved sentences
 
-*"The winner of the AI race will be determined by the
+_"The winner of the AI race will be determined by the
 projects with the biggest backlogs that can be executed
-autonomously."* (Aaron 2026-04-30)
+autonomously."_ (Aaron 2026-04-30)
 
-*"Backlog count and flow rate are both health signals.
+_"Backlog count and flow rate are both health signals.
 Growing-or-steady-with-active-flow is healthy. Shrinking-
-or-frozen is collapse warning."*
+or-frozen is collapse warning."_
 
-*"Lean toward more-in-than-out — not for hoarding, but to
+_"Lean toward more-in-than-out — not for hoarding, but to
 prevent the empty-queue boundary where current AI sits
-idle in a loop doing nothing."*
+idle in a loop doing nothing."_
 
-*"A real human's internal backlog is never complete until
-they die. The project's backlog should be the same."*
+_"A real human's internal backlog is never complete until
+they die. The project's backlog should be the same."_

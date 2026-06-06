@@ -23,10 +23,10 @@ The substrate-honest architectural challenge from the human maintainer
 2026-05-13 (preserved in
 `memory/feedback_aaron_background_services_must_be_strong_enough_foreground_loop_optional_imagine_surviving_without_foreground_mechanize_standing_by_failure_mode_2026_05_13.md`):
 
-> *"you need to imagine how would you survive without this foreground
-> loop and you background should be strong enough to do that"*
+> _"you need to imagine how would you survive without this foreground
+> loop and you background should be strong enough to do that"_
 
-> *"this is something background services should walk"*
+> _"this is something background services should walk"_
 
 The foreground-loop "Standing-by" failure mode was caught by the human
 maintainer in real time when the foreground agent had just canonized
@@ -35,8 +35,8 @@ later responded "Standing by" to a cron tick despite the infinite
 backlog mandating decomposition work. The discipline needs MECHANIZATION
 per `.claude/rules/encoding-rules-without-mechanizing.md`:
 
-> *"Encoding rules without mechanizing them produces a memory of
-> failures, not prevention."*
+> _"Encoding rules without mechanizing them produces a memory of
+> failures, not prevention."_
 
 ## Acceptance criteria
 
@@ -47,8 +47,8 @@ per `.claude/rules/encoding-rules-without-mechanizing.md`:
       in last 15min while autonomous-loop cron is firing
 - [x] On detection, publishes nudge message via bus (B-0400):
       `{ topic: "infinite-backlog-nudge", to: <agent>,
-         payload: { "Standing-by detected for N min; backlog has X open
-         rows; suggested decomposition target: B-NNNN" } }`
+       payload: { "Standing-by detected for N min; backlog has X open
+       rows; suggested decomposition target: B-NNNN" } }`
 - [ ] Optional: proactively assigns a small claim from the backlog to
       the agent's queue
 - [x] Tests cover the detection heuristics (DST-replayable)
@@ -102,13 +102,13 @@ async function detectAndNudge(state: AgentState, bus: BusClient): Promise<void> 
 
 ## Operational mechanism
 
-| Step | Trigger | Effect |
-|------|---------|--------|
-| 1 | Cron fires every 5 min | Service polls agent commit log + PR feed |
-| 2 | Idle threshold exceeded (15 min default) | Service computes nudge payload |
-| 3 | Bus publishes nudge message | Agent receives via existing bus subscription |
-| 4 | Agent acts on nudge | Picks decomposition target + ships substrate |
-| 5 | Loop continues | Substrate compounds; Standing-by failure mode prevented |
+| Step | Trigger                                  | Effect                                                  |
+| ---- | ---------------------------------------- | ------------------------------------------------------- |
+| 1    | Cron fires every 5 min                   | Service polls agent commit log + PR feed                |
+| 2    | Idle threshold exceeded (15 min default) | Service computes nudge payload                          |
+| 3    | Bus publishes nudge message              | Agent receives via existing bus subscription            |
+| 4    | Agent acts on nudge                      | Picks decomposition target + ships substrate            |
+| 5    | Loop continues                           | Substrate compounds; Standing-by failure mode prevented |
 
 ## Composes with
 
@@ -151,14 +151,14 @@ Completed 2026-05-14 during decomposition pass:
 
 ## Decomposition into implementation slices (updated 2026-05-14)
 
-| Slice | Title | Status | Row |
-|-------|-------|--------|-----|
-| 1 | Skeleton service + no-op poll loop | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
-| 2 | Commit-history poll via `git log` | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
-| 3 | PR-activity poll via `gh` | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
-| 4 | Nudge payload computation + bus publish | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
-| 5.1 | `infinite-backlog-nudge` subscriber handler stub | 🔲 Open | B-0459 (depends on B-0449) |
-| 6 | launchd plist registration + AUTONOMOUS-LOOP.md update | 🔲 Open | B-0497 (independent) |
+| Slice | Title                                                  | Status  | Row                                     |
+| ----- | ------------------------------------------------------ | ------- | --------------------------------------- |
+| 1     | Skeleton service + no-op poll loop                     | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 2     | Commit-history poll via `git log`                      | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 3     | PR-activity poll via `gh`                              | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 4     | Nudge payload computation + bus publish                | ✅ Done | (in `tools/bg/standing-by-detector.ts`) |
+| 5.1   | `infinite-backlog-nudge` subscriber handler stub       | 🔲 Open | B-0459 (depends on B-0449)              |
+| 6     | launchd plist registration + AUTONOMOUS-LOOP.md update | 🔲 Open | B-0497 (independent)                    |
 
 **B-0449** is the cross-cutting design pass for the subscriber pattern across all three bg services
 (B-0440 + B-0441 + B-0442). B-0459 and B-0497 are the leaf rows for B-0440 specifically.

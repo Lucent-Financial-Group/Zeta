@@ -40,7 +40,11 @@ describe("toTagged", () => {
   test("array preserves order, recurses", () => {
     expect(toTagged([1, "a", true])).toEqual({
       t: "arr",
-      v: [{ t: "int", v: "1" }, { t: "str", v: "a" }, { t: "bool", v: true }],
+      v: [
+        { t: "int", v: "1" },
+        { t: "str", v: "a" },
+        { t: "bool", v: true },
+      ],
     });
   });
 
@@ -74,10 +78,10 @@ describe("toTagged", () => {
   });
 
   test("lone surrogates throw (well-formedness — trust-core byte-collision guard)", () => {
-    expect(() => toTagged("\uD800")).toThrow();          // lone high surrogate
-    expect(() => toTagged("\uDC00")).toThrow();          // lone low surrogate
-    expect(() => toTagged("a\uD83Db")).toThrow();        // high not followed by low
-    expect(() => toTagged({ "\uD800": 1 })).toThrow();   // lone surrogate in an object key
+    expect(() => toTagged("\uD800")).toThrow(); // lone high surrogate
+    expect(() => toTagged("\uDC00")).toThrow(); // lone low surrogate
+    expect(() => toTagged("a\uD83Db")).toThrow(); // high not followed by low
+    expect(() => toTagged({ "\uD800": 1 })).toThrow(); // lone surrogate in an object key
   });
 
   test("valid surrogate pairs are accepted (astral code points)", () => {

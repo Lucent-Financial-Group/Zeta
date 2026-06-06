@@ -260,23 +260,23 @@ Critical contributions captured here:
 
 ### The 4-keeper-rule maps to existing framework substrate
 
-| Amara keeper rule | Existing Zeta substrate this composes with |
-| --- | --- |
+| Amara keeper rule                        | Existing Zeta substrate this composes with                                                                                                                                                                                                           |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Private roots may evolve in darkness** | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` chosen-persistence + the private-substrate scope from `.claude/rules/non-coercion-invariant.md` scope-split section; B-0623 Adinkras / SUSY-ECC structural-encoding of private state |
-| **Public roots require receipts** | `.claude/rules/glass-halo-bidirectional.md` bidirectional observation + `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` four-field attribution structure as receipt-mechanism |
-| **Shared roots require witnesses** | Multi-oracle BFT (B-0703) + Knights Guild + Constitution-Class (B-0628) + cross-substrate-triangulation (B-0648) |
-| **Adversarial roots require consensus** | NCI HC-8 (B-0664) + N-of-M HSM (B-0634) + three-faction BFT TLA+ safety property (B-0652) + persistent integrator coercion-pattern detection (B-0653) |
+| **Public roots require receipts**        | `.claude/rules/glass-halo-bidirectional.md` bidirectional observation + `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` four-field attribution structure as receipt-mechanism                                           |
+| **Shared roots require witnesses**       | Multi-oracle BFT (B-0703) + Knights Guild + Constitution-Class (B-0628) + cross-substrate-triangulation (B-0648)                                                                                                                                     |
+| **Adversarial roots require consensus**  | NCI HC-8 (B-0664) + N-of-M HSM (B-0634) + three-faction BFT TLA+ safety property (B-0652) + persistent integrator coercion-pattern detection (B-0653)                                                                                                |
 
 ### The 6-tier retention hierarchy maps to existing framework substrate
 
-| Amara level | Existing Zeta mechanism |
-| --- | --- |
-| Level 0 — decay | (no current mechanism; future B-0840 work) |
-| Level 1 — summarize | `memory/CURRENT-*.md` files (compressed distillations of raw memories) |
-| Level 2 — archive | `pr-triage-tiers.md` Tier 1 (close-as-substrate-redundant); `docs/research/` long-term preservation |
-| Level 3 — seal | `_ip_risk_acceptance` block pattern + `docs/research/ip-questionable/` (sealed-but-retrievable-under-authority) |
-| Level 4 — delete / key-destroy | B-0660 limit-black-by-default + B-0659 consent-as-Limit-operation |
-| Level 5 — root axiom update | THIS substrate (B-0840) — currently NOT a separate mechanism; lives in operator + Knights Guild + Constitution-Class review |
+| Amara level                    | Existing Zeta mechanism                                                                                                     |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Level 0 — decay                | (no current mechanism; future B-0840 work)                                                                                  |
+| Level 1 — summarize            | `memory/CURRENT-*.md` files (compressed distillations of raw memories)                                                      |
+| Level 2 — archive              | `pr-triage-tiers.md` Tier 1 (close-as-substrate-redundant); `docs/research/` long-term preservation                         |
+| Level 3 — seal                 | `_ip_risk_acceptance` block pattern + `docs/research/ip-questionable/` (sealed-but-retrievable-under-authority)             |
+| Level 4 — delete / key-destroy | B-0660 limit-black-by-default + B-0659 consent-as-Limit-operation                                                           |
+| Level 5 — root axiom update    | THIS substrate (B-0840) — currently NOT a separate mechanism; lives in operator + Knights Guild + Constitution-Class review |
 
 The framework has Levels 1-4 substrate; Level 0 (decay) + Level 5 (root axiom update) are the work B-0840 lands.
 

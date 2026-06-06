@@ -28,8 +28,8 @@ when structural fixes were available:
 
 - "Lazy 'transient CI' vocabulary" → I shipped vocabulary-
   discipline memory ("never use 'transient' as a bucket label").
-  Aaron's better question: *"why should a PR ever fail for this?
-  our code does not handle the retries already?"* — the
+  Aaron's better question: _"why should a PR ever fail for this?
+  our code does not handle the retries already?"_ — the
   structural fix was missing curl `--retry` flags in 3 of 4
   install scripts. After the structural fix, the failure class
   is gone — the vocabulary discipline becomes a footnote, not a
@@ -42,9 +42,9 @@ when structural fixes were available:
   failures are absorbed structurally, the verify step is rarely
   needed.
 
-- The Aaron correction: *"Structural fix beats workflow-rerun
+- The Aaron correction: _"Structural fix beats workflow-rerun
   discipline, you knew this already or shoud have i've told you
-  before"* + *"this is how you get velocity."* The pattern
+  before"_ + _"this is how you get velocity."_ The pattern
   was implicit in mechanism-over-vigilance but I hadn't
   generalised it from agent-discipline to failure-handling.
 
@@ -79,12 +79,13 @@ answer if structural-fix is unavailable.
 
 **Concrete velocity proof point** (the curl 502 case
 2026-04-28): one PR adding `tools/setup/common/curl-fetch.sh`
-+ refactoring 4 call sites permanently absorbs the upstream-
-mirror-5xx failure class for the install path. The companion
-process-discipline memory (verify-first before rerun) goes from
-"applied to every CI failure" to "applied to OTHER classes that
-don't have a structural fix yet." Net result: less rule to
-remember, fewer manual reruns, less time spent on triage.
+
+- refactoring 4 call sites permanently absorbs the upstream-
+  mirror-5xx failure class for the install path. The companion
+  process-discipline memory (verify-first before rerun) goes from
+  "applied to every CI failure" to "applied to OTHER classes that
+  don't have a structural fix yet." Net result: less rule to
+  remember, fewer manual reruns, less time spent on triage.
 
 **Composes with:**
 

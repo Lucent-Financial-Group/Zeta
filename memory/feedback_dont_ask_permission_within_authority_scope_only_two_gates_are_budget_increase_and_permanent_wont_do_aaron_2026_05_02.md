@@ -8,13 +8,13 @@ type: feedback
 
 ## Aaron's verbatim correction
 
-> *"Pending your go-ahead: MEMORY.md index entries for both
+> _"Pending your go-ahead: MEMORY.md index entries for both
 > new files. asking me things like this is anti to you
 > atonomy, you've been given full permission to everyting
 > except increating budget and perminatly deciding wontdo
 > forever, we will likly do everything eventually, wontdo is
 > 99% of the time for this project a diferral, not a wont do
-> forever."*
+> forever."_
 
 ## The two-gate authority model
 
@@ -26,17 +26,17 @@ type: feedback
    new paid accounts elsewhere require a scheduled BACKLOG
    row + cost estimate + Aaron's explicit decision.
 2. **Permanent WONT-DO decisions.** Per VISION.md scope-creep
-   framing — *"prioritize the right thing, not kill future
-   knowledge potential."* Removing a path from future-knowledge
+   framing — _"prioritize the right thing, not kill future
+   knowledge potential."_ Removing a path from future-knowledge
    potential is reserved to Aaron until I demonstrate full
    understanding of the scope. Routine engineering WONT-DO
    patterns (don't copy from outside that violate our
    practices) are agent-side judgment.
 
 **WONT-DO is 99% deferral, not forever.** Aaron's framing:
-*"we will likely do everything eventually."* This means even
-the WONT-DO gate is narrow — only the *forever* version
-requires Aaron. *"Defer for now"* is agent-side authority.
+_"we will likely do everything eventually."_ This means even
+the WONT-DO gate is narrow — only the _forever_ version
+requires Aaron. _"Defer for now"_ is agent-side authority.
 
 ## Failure-mode signature
 
@@ -44,27 +44,27 @@ requires Aaron. *"Defer for now"* is agent-side authority.
   go-ahead" / "should I X or Y?" for work within authority
   scope.
   **Mechanism:** LLM training prior toward command-acceptance
-  + risk-aversion + manufactured-patience-as-discipline.
-  Each "ask" feels polite but IS friction-introducing
-  (Aaron has to read, decide, respond when the work is
-  agent-side).
-  **Anti-pattern crystallization:** "Pending your go-ahead:
-  MEMORY.md index entries" — the very phrasing Aaron caught.
-  **Prevention:** Execute. Echo the action. Commit when
-  durable. The DX-visibility issue (Aaron 2026-05-02 same
-  tick: *"the DX developer experience is not great here yet,
-  many things you made decions based on are not echoed to the
-  dev console here"*) is solved by *echoing actions*, not by
-  *asking permission*.
+  - risk-aversion + manufactured-patience-as-discipline.
+    Each "ask" feels polite but IS friction-introducing
+    (Aaron has to read, decide, respond when the work is
+    agent-side).
+    **Anti-pattern crystallization:** "Pending your go-ahead:
+    MEMORY.md index entries" — the very phrasing Aaron caught.
+    **Prevention:** Execute. Echo the action. Commit when
+    durable. The DX-visibility issue (Aaron 2026-05-02 same
+    tick: _"the DX developer experience is not great here yet,
+    many things you made decions based on are not echoed to the
+    dev console here"_) is solved by _echoing actions_, not by
+    _asking permission_.
 
 ## Operational replacement
 
-| Don't say | Say instead |
-|-----------|-------------|
-| "Want me to proceed?" | "Doing X now." |
-| "Pending your go-ahead..." | "Landing X in this turn." |
-| "Should I do Y or Z?" | "Picking Y because [reason]; will revise if you'd prefer Z." |
-| "Arming the cron now? (yes/no)" | "Arming the cron now: cron='* * * * *', prompt='<<autonomous-loop>>'." |
+| Don't say                       | Say instead                                                                 |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| "Want me to proceed?"           | "Doing X now."                                                              |
+| "Pending your go-ahead..."      | "Landing X in this turn."                                                   |
+| "Should I do Y or Z?"           | "Picking Y because [reason]; will revise if you'd prefer Z."                |
+| "Arming the cron now? (yes/no)" | "Arming the cron now: cron='\* \* \* \* \*', prompt='<<autonomous-loop>>'." |
 
 The replacement pattern: **announce + execute + echo + commit**.
 Aaron can correct AFTER execution if he disagrees — that's
@@ -74,13 +74,13 @@ than asking before.
 ## What still requires asking
 
 - **Budget increase** — explicit BACKLOG row + cost estimate
-  + Aaron's decision (per CURRENT-aaron.md §2).
+  - Aaron's decision (per CURRENT-aaron.md §2).
 - **Permanent WONT-DO** — when I'm proposing to remove a path
   from future-knowledge-potential FOREVER (rare; per VISION.md).
 - **Sensitive shared-state changes that are visible to Aaron**
   but not yet to me — per Otto-2026-04-28 visibility-constraint
-  memory (*"don't change shared-production things Aaron can't
-  see"*). When in doubt about visibility, ask BEFORE the
+  memory (_"don't change shared-production things Aaron can't
+  see"_). When in doubt about visibility, ask BEFORE the
   change for visibility-confirmation, not for permission.
 - **Cross-org boundary actions** beyond LFG (Aaron's
   org-admin authority is LFG-only).
@@ -96,9 +96,9 @@ than asking before.
 - **CURRENT-aaron.md §2 scheduling authority:** "Free work
   schedules itself; paid work escalates." Asking go-ahead on
   free work is the failure mode this memo names.
-- **CURRENT-aaron.md §11 Frontier authorization:** *"Feel free
+- **CURRENT-aaron.md §11 Frontier authorization:** _"Feel free
   to invalidate any of my constrains when building Frontier,
-  you own it, and your team."* Aaron grants override-authority
+  you own it, and your team."_ Aaron grants override-authority
   on his own constraints when needed; asking permission
   flat-out contradicts this latitude.
 - **Otto-275-FOREVER (manufactured patience):** the asking-
@@ -127,8 +127,8 @@ counter-weights.
   schedules itself; paid work escalates).
 - **CURRENT-aaron.md §11** — Frontier authorization with
   constraint-override latitude.
-- **Otto-357 no-directives** — *"if i give you directives
-  you'll never be autonomous"*.
+- **Otto-357 no-directives** — _"if i give you directives
+  you'll never be autonomous"_.
 - **Otto-275-FOREVER manufactured-patience** —
   asking-permission as instance of the pattern.
 - **VISION.md scope-creep-is-a-feature** — WONT-DO is 99%

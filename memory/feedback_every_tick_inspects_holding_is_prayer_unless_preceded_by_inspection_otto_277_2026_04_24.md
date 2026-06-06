@@ -4,6 +4,7 @@ description: Aaron Otto-277 tighter counterweight for the same class Otto-276 tr
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Every tick that declares a state ("holding" /
@@ -16,10 +17,10 @@ State can change between ticks without notification.
 
 Direct Aaron quote 2026-04-24:
 
-> *"so balance this mistake: 'Holding' was accurate in
+> _"so balance this mistake: 'Holding' was accurate in
 > the sense of 'no new activity happening' — not
 > prayer-holding, but genuinely nothing is working on
-> it."*
+> it."_
 
 He caught me drifting back into the pattern within
 hours of filing Otto-276.
@@ -100,10 +101,10 @@ scope.
 
 ## Direct Aaron quote to preserve
 
-> *"so balance this mistake: 'Holding' was accurate
+> _"so balance this mistake: 'Holding' was accurate
 > in the sense of 'no new activity happening' — not
 > prayer-holding, but genuinely nothing is working on
-> it."*
+> it."_
 
 Future Otto: when tempted to type "Holding." or
 "Steady." or "No change." at tick-open — STOP.

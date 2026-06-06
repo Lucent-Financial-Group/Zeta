@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.sh"
 
 ## Summary
 
-Per Aaron Otto-175: *"Starboard I guess for now... do one more name pass just in case something else clever comes up other than Starboard. maybe some mythical choices that fit?"* + followup *"what about hindu mythic/religious names that fit or FF7 names that fit too"* + final confirmation *"Starboard okay"*.
+Per Aaron Otto-175: _"Starboard I guess for now... do one more name pass just in case something else clever comes up other than Starboard. maybe some mythical choices that fit?"_ + followup _"what about hindu mythic/religious names that fit or FF7 names that fit too"_ + final confirmation _"Starboard okay"_.
 
 ## Two components
 
@@ -54,24 +54,22 @@ Pass-2 doc under `docs/research/`. Scientology row at END of P2 research-grade s
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T10:05:53Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `40c8793eea`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -84,6 +82,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a second-pass research memo for the Frontier UI rename (mythology/FF7 candidate scan + conflict notes) and records a new BACKLOG item to bound “Scientology thematic research” to public-domain-only, non-adoption scope.
 
 **Changes:**
+
 - Added `docs/research/frontier-rename-name-pass-2-otto-175.md` with additional naming candidates and conflict-scan notes, plus sources/cross-references.
 - Appended a new P2 BACKLOG row specifying scope, non-adoption constraints, and a proposed deliverable memo for the Scientology-themed research.
 
@@ -91,10 +90,10 @@ Adds a second-pass research memo for the Frontier UI rename (mythology/FF7 candi
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/frontier-rename-name-pass-2-otto-175.md | New pass-2 naming analysis doc with candidate lists, conflict findings, and cross-references. |
-| docs/BACKLOG.md | New BACKLOG entry defining scope/constraints and deliverable for public-domain-only Scientology thematic research. |
+| File                                                  | Description                                                                                                        |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| docs/research/frontier-rename-name-pass-2-otto-175.md | New pass-2 naming analysis doc with candidate lists, conflict findings, and cross-references.                      |
+| docs/BACKLOG.md                                       | New BACKLOG entry defining scope/constraints and deliverable for public-domain-only Scientology thematic research. |
 
 ## Review threads
 
@@ -102,7 +101,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-04-24T10:05:53Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Align source scope with public-domain-only boundary**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Align source scope with public-domain-only boundary**
 
 This backlog item is labeled `public-domain-only`, but this bullet explicitly includes mainstream published books (`Jon Atack`, `Lawrence Wright`, `Janet Reitman`, etc.), which are copyrighted works rather than public domain. That contradiction makes the execution scope ambiguous: an agent following the list can violate the stated IP boundary even while trying to comply, which is exactly the risk this row is meant to prevent.
 
@@ -119,6 +118,7 @@ P1: This new research doc repeatedly uses contributor names (e.g., "Aaron") and 
 **@copilot-pull-request-reviewer** (2026-04-24T10:08:03Z):
 
 P1: The cross-reference `docs/definitions/KSK.md` appears to point to a path that doesn’t exist in the repo (there is no `docs/definitions/` directory in-tree). Please update this link to the correct existing location, or rephrase it as a planned deliverable and link to the BACKLOG entry that will create it.
+
 ```suggestion
 - `docs/BACKLOG.md` Otto-168 row — planned deliverable:
   define the factory's Aurora / Zeta / KSK naming

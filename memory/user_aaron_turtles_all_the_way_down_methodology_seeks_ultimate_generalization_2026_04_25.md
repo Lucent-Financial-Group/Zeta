@@ -8,10 +8,10 @@ type: user
 
 Aaron's epistemic style 2026-04-25:
 
-> *"whenever i learn something new like you just taught me i
+> _"whenever i learn something new like you just taught me i
 > try to turtles all the way down it and figure out it's
 > ultimate generalization, which usually comes back to this
-> and physics."*
+> and physics."_
 
 **Turtles all the way down**: when an insight lands, don't
 stop at the surface application. Push to the next deeper
@@ -106,13 +106,13 @@ probably want to investigate).
 
 ## Composes with
 
-- **Otto-287** *finite-resource collisions* — the bedrock
+- **Otto-287** _finite-resource collisions_ — the bedrock
   Aaron most often returns to. Most ultimate
   generalizations land here.
-- **Otto-286** *definitional precision* — the technique he
+- **Otto-286** _definitional precision_ — the technique he
   uses to walk turtles (compress each layer to a precise
   definition, then ask "what's the deeper definition?").
-- **Otto-283** *don't bottleneck the maintainer* — applied
+- **Otto-283** _don't bottleneck the maintainer_ — applied
   at the epistemic-exploration level. I should walk turtles
   proactively rather than waiting for Aaron to walk them
   with me.

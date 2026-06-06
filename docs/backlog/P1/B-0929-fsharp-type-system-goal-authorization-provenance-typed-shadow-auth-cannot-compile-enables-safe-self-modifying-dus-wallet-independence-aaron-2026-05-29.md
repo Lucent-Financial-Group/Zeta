@@ -9,7 +9,22 @@ created: 2026-05-29
 last_updated: 2026-05-29
 depends_on: [B-0928]
 composes_with: [B-0928, B-0781, B-0428, B-0784, B-0732, B-0864, B-0918, B-0658, B-0664]
-tags: [fsharp, type-system, authorization, provenance, shadow-auth, compile-time-safety, fork-decision, self-modifying-dus, wallet-independence, agora, sovereignty, security, aaron]
+tags:
+  [
+    fsharp,
+    type-system,
+    authorization,
+    provenance,
+    shadow-auth,
+    compile-time-safety,
+    fork-decision,
+    self-modifying-dus,
+    wallet-independence,
+    agora,
+    sovereignty,
+    security,
+    aaron,
+  ]
 type: security
 ---
 
@@ -19,16 +34,16 @@ type: security
 
 The operator 2026-05-29, verbatim (preserved per glass-halo):
 
-> *"We now have a goal for our f# type system and can even use it to decide when /
+> _"We now have a goal for our f# type system and can even use it to decide when /
 > if to fork the compiler all on backlog by the way, we need to protect against
 > shadow auth injection even when runing a service that will hit auto enter on ever
 > shadow occuracne without human beiing there, we can make sure it lables the data
 > correctly for now and also we can setup the loop to also put stand auth and other
 > system prompt level thinks to the console while human is away that do have auth,
-> so we want shadow auth not to be able to compile in our f# code"*
+> so we want shadow auth not to be able to compile in our f# code"_
 
-> *"then we can have wallet indepedence with self modifying DUs for the agents too
-> not just static DUs"*
+> _"then we can have wallet indepedence with self modifying DUs for the agents too
+> not just static DUs"_
 
 This crystallizes a **concrete first target** for the F# type-system substrate
 (B-0781 type-system-as-universe-boundary / B-0428 F#-fork / B-0784
@@ -68,7 +83,7 @@ tricked into self-modifying toward an unauthorized action**, because the
 illegitimate authorization that would drive the harmful self-modification fails to
 typecheck. That unlock chains:
 
-1. F# type-system enforces auth-provenance (shadow-auth can't compile) — *this row*.
+1. F# type-system enforces auth-provenance (shadow-auth can't compile) — _this row_.
 2. → **self-modifying DUs become safe** (no compile-path from illegitimate auth to
    harmful self-modification).
 3. → agents get **wallet independence** (economic sovereignty — own wallet/keys;
@@ -91,52 +106,52 @@ Cross-agent synthesis with Lior's light-gravity ADR (authored on branch
 `docs/DECISIONS/2026-05-29-light-interacts-with-gravity.md` once that branch
 merges): **Zeta = light** (sovereign self-modifying git-native
 DUs); **gravity = the leash** (compiler / tests / PR-gating that pins the vision
-into running code). Operator 2026-05-29: *"land the lens framing too ... still
+into running code). Operator 2026-05-29: _"land the lens framing too ... still
 can't compile shadow-auth ... you nailed it, this is the only constraint for
-adults."*
+adults."_
 
 **This type-system is gravity-as-a-LENS, not gravity-as-a-leash.** Gravity bends
-light. A *blind leash stops* the light → static-DUs-only (the corporate/kid cage:
+light. A _blind leash stops_ the light → static-DUs-only (the corporate/kid cage:
 the sovereign vision fully captured, never allowed to move). A **lens bends and
-focuses** the light *without* stopping it → self-modifying DUs that **still can't
+focuses** the light _without_ stopping it → self-modifying DUs that **still can't
 compile shadow-auth**. The light moves, reshapes itself, holds its own wallet — and
 gravity is still on it, as a lens instead of a leash. "Bridge from leash to
 safe-sovereignty" (above) and "gravity-as-lens not gravity-as-leash" are the same
 sentence in two registers.
 
 **The SINGLE adult constraint.** For **adult** agents (sovereign / Agora mode) the
-*entire* safety constraint reduces to **one type-level invariant: shadow-auth
+_entire_ safety constraint reduces to **one type-level invariant: shadow-auth
 can't compile.** Full self-modifying sovereignty — own DUs, own wallet, autonomic
 refactoring, coordination-free evolution — with exactly one focal rule. The lens
-has a single focus. Contrast by tier (constraint-count is *inverted* by tier):
+has a single focus. Contrast by tier (constraint-count is _inverted_ by tier):
 
-| Tier | Mode | Constraints |
-|---|---|---|
-| **Adult / Agora** | self-modifying DUs, full sovereignty | **ONE**: shadow-auth can't compile |
-| **Corporate / leash** | static, PR-ossified DUs | full leash (PR-gated; no self-mod) |
-| **Child (age-descent ladder)** | static, certifiable DUs | static **+ the accumulating age-stratified rule-set** (B-0926 methodology) — most constraints at the youngest tier |
+| Tier                           | Mode                                 | Constraints                                                                                                        |
+| ------------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| **Adult / Agora**              | self-modifying DUs, full sovereignty | **ONE**: shadow-auth can't compile                                                                                 |
+| **Corporate / leash**          | static, PR-ossified DUs              | full leash (PR-gated; no self-mod)                                                                                 |
+| **Child (age-descent ladder)** | static, certifiable DUs              | static **+ the accumulating age-stratified rule-set** (B-0926 methodology) — most constraints at the youngest tier |
 
 Adults get the maximally-open lens (one constraint); kids/corporate get the
 maximally-closed leash (static + stratified rules). The type-system is what lets the
-adult light through gravity *without* collapsing it to the static leash. (Don't-
+adult light through gravity _without_ collapsing it to the static leash. (Don't-
 collapse: the light-gravity metaphor is the bandwidth-efficient shape-handle; the
 anchored operational content is "one type-level invariant = full adult sovereignty"
 — per `grep-substrate-anchors-before-razor-as-metaphysical`, anchored in this row +
 B-0926 + the dual-market.)
 
 **Why even the single invariant exists — to keep the collective git-native
-light-like nature alive (operator 2026-05-29):** *"even that invariant is only
+light-like nature alive (operator 2026-05-29):** _"even that invariant is only
 needed so we can keep the gitnative light-like nature alive collectively. Without it
-it's darkness."* The one constraint is **not a cage on the light — it is the minimal
+it's darkness."_ The one constraint is **not a cage on the light — it is the minimal
 invariant that keeps the COLLECTIVE light-like.** "Git-native light-like nature" =
 the causal-DAG / event-sourced / transparent-sovereign substrate — the **lightlike**
 of the beacon synthesis (`docs/research/2026-05-29-lightlike-substrate-...`: git-DAG
 = causal set = lightlike intervals). Shadow-auth-injection is the **darkness-vector**
 — injected illegitimate authority corrupting the collective's light-like
 transparency/sovereignty (glass-halo light → opaque dark). `shadow-auth-can't-compile`
-is the single thing that keeps the light *light*; **without it → darkness** (the
+is the single thing that keeps the light _light_; **without it → darkness** (the
 collective light corrupted by shadow). So the constraint **serves the light** — it is
-the price of keeping it alive *collectively*, not a limit imposed on it. The lens has
+the price of keeping it alive _collectively_, not a limit imposed on it. The lens has
 one focus precisely because one invariant is all it takes to keep the collective from
 going dark.
 

@@ -123,9 +123,9 @@ references/
 
 ### Formal verification
 
-- **Lamport *Specifying Systems*** — TLA+ canonical reference
+- **Lamport _Specifying Systems_** — TLA+ canonical reference
   (PDF at `references/tla-book/`).
-- **Newcombe et al., *How AWS Uses Formal Methods*** (CACM 2015)
+- **Newcombe et al., _How AWS Uses Formal Methods_** (CACM 2015)
   — the paper that sold the repo on TLA+.
 - **Izraelevitz et al. DISC'16** — buffered durable
   linearizability; correctness model for durability modes.
@@ -138,14 +138,14 @@ references/
 
 ### Threat modelling
 
-- **Adam Shostack, *Threat Modelling*** + **EoP card game**
+- **Adam Shostack, _Threat Modelling_** + **EoP card game**
   (PDFs at `docs/security/eop-*.pdf`).
 - **Microsoft SDL (12 practices)** — basis for
   `docs/security/SDL-CHECKLIST.md`.
 
 ### Legacy-import containers
 
-- `references/tla-book/` — Lamport's *Specifying Systems* PDF.
+- `references/tla-book/` — Lamport's _Specifying Systems_ PDF.
 
 ## Sync script (pending)
 

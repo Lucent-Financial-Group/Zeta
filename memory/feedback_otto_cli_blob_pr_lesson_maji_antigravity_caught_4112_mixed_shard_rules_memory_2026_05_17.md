@@ -17,7 +17,7 @@ created: 2026-05-17
 
 Plus two follow-up fix commits (CI lint + Copilot review fixes).
 
-[PR #4114](https://github.com/Lucent-Financial-Group/Zeta/pull/4114) (Maji antigravity check) explicitly flagged #4112: *"Blobs detected in the backlog/PR queue. PR #4112 mixed shard, rules, and memory changes."* The Maji correction action: opened [PR #4113](https://github.com/Lucent-Financial-Group/Zeta/pull/4113) as a decomposition exercise (peel the shard commit into an atomic PR).
+[PR #4114](https://github.com/Lucent-Financial-Group/Zeta/pull/4114) (Maji antigravity check) explicitly flagged #4112: _"Blobs detected in the backlog/PR queue. PR #4112 mixed shard, rules, and memory changes."_ The Maji correction action: opened [PR #4113](https://github.com/Lucent-Financial-Group/Zeta/pull/4113) as a decomposition exercise (peel the shard commit into an atomic PR).
 
 The Maji's catch is substrate-correct, even though it arrived post-merge.
 
@@ -27,11 +27,11 @@ The PR #4112 body framed the mixed content as "cohesive autonomous-loop tick out
 
 But the prior 2129Z autonomous-loop cascade established a different precedent:
 
-| PR | Artifact type | Reason for separation |
-|---|---|---|
+| PR                                                                | Artifact type                                     | Reason for separation  |
+| ----------------------------------------------------------------- | ------------------------------------------------- | ---------------------- |
 | [#4097](https://github.com/Lucent-Financial-Group/Zeta/pull/4097) | substrate fix (B-0613 zsh portability correction) | Substrate-level change |
-| [#4100](https://github.com/Lucent-Financial-Group/Zeta/pull/4100) | tick shard (2129Z) | Tick-history hygiene |
-| [#4104](https://github.com/Lucent-Financial-Group/Zeta/pull/4104) | rule worked-example (`blocked-green-ci`) | Rule-substrate landing |
+| [#4100](https://github.com/Lucent-Financial-Group/Zeta/pull/4100) | tick shard (2129Z)                                | Tick-history hygiene   |
+| [#4104](https://github.com/Lucent-Financial-Group/Zeta/pull/4104) | rule worked-example (`blocked-green-ci`)          | Rule-substrate landing |
 
 Three artifacts, three separate PRs, all within ~30-min cascade window. The precedent IS one-PR-one-artifact-type even when temporally cohesive.
 
@@ -48,6 +48,7 @@ Some narrowly-scoped cases where one PR with multiple artifact types is substrat
 The bar for "atomic" is: would splitting cause one PR to reference a target that doesn't exist on the other PR's branch? If yes, keep together. If no, split.
 
 PR #4112's three primary commits failed this bar:
+
 - The shard could have shipped alone (no rule reference needed to be atomic)
 - The rule edit could have shipped alone (the shard cited it via path; the cite would have been a pending-PR forward-reference that resolves on merge — same shape as the 2129Z cascade)
 - The memory shadow-catch could have shipped alone (independent observation, no atomicity dependency on either)

@@ -37,6 +37,7 @@ Follow-up: close #5060 with substrate-recoverable cross-link.
 Re-lands backlog item **B-0773** describing the “cluster as digital twin” framing (git-native + event-store-native + AI-native) as the unifying conceptual layer for the B-0772 observable/controllable cluster fabric, and regenerates the generated backlog index to include it.
 
 **Changes:**
+
 - Adds new per-row backlog file for **B-0773** under `docs/backlog/P1/`.
 - Updates `docs/BACKLOG.md` to include the new **B-0773** entry.
 
@@ -44,10 +45,10 @@ Re-lands backlog item **B-0773** describing the “cluster as digital twin” fr
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                       | Description                                                                                  |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0773-cluster-as-digital-twin-git-native-event-store-native-ai-native-aaron-2026-05-25.md | Introduces the new P1 backlog row defining the digital-twin framing and acceptance criteria. |
-| docs/BACKLOG.md | Regenerates the backlog index to include the new B-0773 row link. |
+| docs/BACKLOG.md                                                                                            | Regenerates the backlog index to include the new B-0773 row link.                            |
 
 ## Review threads
 

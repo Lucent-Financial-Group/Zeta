@@ -1,8 +1,8 @@
 <!-- §33 archive header per GOVERNANCE.md -->
 
-**Scope:** External-conversation absorb. Fourth message in the Claude.ai taxonomy-grounding ferry (Aaron 2026-05-01). **Substantive revision** of an earlier Claude.ai critique. Acknowledges overreach: the "this should be converging" framing assumed convergence-as-default, but the v2 taxonomy is a structure-discovery experiment where convergence is the *question*, not the prior. Proposes provenance-tagging per class + new-class-rate-per-session as the convergence metric. Composes with PR #1089 (messages A + C) and PR #1091 (message B); this is message D.
+**Scope:** External-conversation absorb. Fourth message in the Claude.ai taxonomy-grounding ferry (Aaron 2026-05-01). **Substantive revision** of an earlier Claude.ai critique. Acknowledges overreach: the "this should be converging" framing assumed convergence-as-default, but the v2 taxonomy is a structure-discovery experiment where convergence is the _question_, not the prior. Proposes provenance-tagging per class + new-class-rate-per-session as the convergence metric. Composes with PR #1089 (messages A + C) and PR #1091 (message B); this is message D.
 
-**Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01). Forwarded by Aaron 2026-05-01 ~10:41Z. Aaron's preface "*chef's kiss*" — explicit affirmation of Otto's prior reverse-order-vs-load-bearing-first observation. The chef's-kiss preface IS substrate-discipline signal: Aaron confirmed the meta-observation earned its slot. Claude.ai's message body is the substantive revision.
+**Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01). Forwarded by Aaron 2026-05-01 ~10:41Z. Aaron's preface "_chef's kiss_" — explicit affirmation of Otto's prior reverse-order-vs-load-bearing-first observation. The chef's-kiss preface IS substrate-discipline signal: Aaron confirmed the meta-observation earned its slot. Claude.ai's message body is the substantive revision.
 
 **Operational status:** research-grade
 
@@ -14,46 +14,46 @@
 
 ## What Claude.ai concedes (verbatim)
 
-> *"That's a clarifying response and worth taking seriously. Let me think honestly about it rather than restate my prior position."*
+> _"That's a clarifying response and worth taking seriously. Let me think honestly about it rather than restate my prior position."_
 
-> *"The framing I used — 'this should converge soon, the growth is evidence of a problem' — assumed convergence-as-default. You're saying the opposite: convergence isn't promised, and the growth itself is the experiment. That changes the read."*
+> _"The framing I used — 'this should converge soon, the growth is evidence of a problem' — assumed convergence-as-default. You're saying the opposite: convergence isn't promised, and the growth itself is the experiment. That changes the read."_
 
-> *"If you genuinely don't know whether the ontology will converge, then catalogging classes as they arise is the right method. You're collecting empirical instances to find out. My critique assumed you should already know whether the taxonomy is meaningful; you're saying that's exactly what the work is determining."*
+> _"If you genuinely don't know whether the ontology will converge, then catalogging classes as they arise is the right method. You're collecting empirical instances to find out. My critique assumed you should already know whether the taxonomy is meaningful; you're saying that's exactly what the work is determining."_
 
-> *"That's a different research stance than I was reading the trace as. I was reading it as 'the loop thinks it's discovering useful structure'; you're saying 'we are running a structure-discovery experiment and the answer is unknown.'"*
+> _"That's a different research stance than I was reading the trace as. I was reading it as 'the loop thinks it's discovering useful structure'; you're saying 'we are running a structure-discovery experiment and the answer is unknown.'"_
 
-> *"Those are different things, and the second one is defensible in a way I didn't credit."*
+> _"Those are different things, and the second one is defensible in a way I didn't credit."_
 
 ## Where Claude.ai's critique still has force (the surviving concern)
 
-> *"The trace shows class-discovery cadence accelerating during the consolidation itself, with classes added mid-write. That part isn't about whether the experiment is valid — it's about whether the cataloging discipline within the experiment is clean. If you're running a structure-discovery experiment, the discipline matters more, not less, because contaminated catalog entries weaken the eventual convergence test."*
+> _"The trace shows class-discovery cadence accelerating during the consolidation itself, with classes added mid-write. That part isn't about whether the experiment is valid — it's about whether the cataloging discipline within the experiment is clean. If you're running a structure-discovery experiment, the discipline matters more, not less, because contaminated catalog entries weaken the eventual convergence test."_
 
-> *"Specifically: classes added during the act of consolidating the taxonomy (like #19 peer-AI structural, added because Aaron flagged the consolidation itself as a class) have a different epistemic status than classes catalogued from prior tick history. The first set is observational from a different time. The second set is reflexive — the classifier observing its own classification work and adding the observation as a class."*
+> _"Specifically: classes added during the act of consolidating the taxonomy (like #19 peer-AI structural, added because Aaron flagged the consolidation itself as a class) have a different epistemic status than classes catalogued from prior tick history. The first set is observational from a different time. The second set is reflexive — the classifier observing its own classification work and adding the observation as a class."_
 
-> *"Reflexive classes aren't necessarily wrong. They might be load-bearing structural observations. But they should probably be marked as a different kind of class than the empirical-from-history ones. Otherwise you can't tell, when convergence eventually happens (or doesn't), whether the catalog converged on real structure or on the structure of catalog-making itself."*
+> _"Reflexive classes aren't necessarily wrong. They might be load-bearing structural observations. But they should probably be marked as a different kind of class than the empirical-from-history ones. Otherwise you can't tell, when convergence eventually happens (or doesn't), whether the catalog converged on real structure or on the structure of catalog-making itself."_
 
 ## The operational suggestion (Claude.ai)
 
-> *"A small operational suggestion that respects your stance: tag each class with how it was discovered. 'Empirical instance from PR #N' vs 'reflexive observation during cataloging' vs 'predicted by Aaron, not yet observed.' The catalog still grows freely, but future readers can see the provenance of each class. When you eventually evaluate whether the experiment converged, you can ask 'did the empirically-discovered classes stabilize?' separately from 'did the reflexive observations stabilize?'"*
+> _"A small operational suggestion that respects your stance: tag each class with how it was discovered. 'Empirical instance from PR #N' vs 'reflexive observation during cataloging' vs 'predicted by Aaron, not yet observed.' The catalog still grows freely, but future readers can see the provenance of each class. When you eventually evaluate whether the experiment converged, you can ask 'did the empirically-discovered classes stabilize?' separately from 'did the reflexive observations stabilize?'"_
 
-This is **provenance-tagging discipline** — distinct from but compatible with the Mirror/Beacon-anchoring tier-marking proposed in message C. Mirror/Beacon is about *external lineage* (graduates to canon when externally anchored); provenance-tagging is about *internal lineage* (how the class entered the catalog). Both are useful; they answer different questions.
+This is **provenance-tagging discipline** — distinct from but compatible with the Mirror/Beacon-anchoring tier-marking proposed in message C. Mirror/Beacon is about _external lineage_ (graduates to canon when externally anchored); provenance-tagging is about _internal lineage_ (how the class entered the catalog). Both are useful; they answer different questions.
 
 ## The convergence question's answer space (Claude.ai)
 
-> *"The convergence question has a real answer space. Either:*
+> _"The convergence question has a real answer space. Either:_
 >
-> *1. The ontology converges on a small stable set (5-15 classes that recur). The taxonomy is real structure.*  
-> *2. The ontology converges on a larger stable set (30-50 classes, each rare but each genuine). The taxonomy is fine-grained but real.*  
-> *3. The ontology grows unboundedly with no class repeating much. The taxonomy was an artifact of class-vocabulary applied to ordinary variation.*  
-> *4. The ontology stabilizes for a while, then a structural shift surfaces a new class family that wasn't in the old catalog. The taxonomy is real but evolves."*
+> _1. The ontology converges on a small stable set (5-15 classes that recur). The taxonomy is real structure._  
+> _2. The ontology converges on a larger stable set (30-50 classes, each rare but each genuine). The taxonomy is fine-grained but real._  
+> _3. The ontology grows unboundedly with no class repeating much. The taxonomy was an artifact of class-vocabulary applied to ordinary variation._  
+> _4. The ontology stabilizes for a while, then a structural shift surfaces a new class family that wasn't in the old catalog. The taxonomy is real but evolves."_
 
-> *"You're right that finding out which one is true is genuine research. My critique conflated worry about (3) with confidence that we already know it's (3). Those aren't the same."*
+> _"You're right that finding out which one is true is genuine research. My critique conflated worry about (3) with confidence that we already know it's (3). Those aren't the same."_
 
 ## The metric Claude.ai proposes
 
-> *"Worth flagging that the test for which is happening is over time, do new classes keep appearing at the same rate, or does the rate decay? If next session adds 5 more classes and the session after that adds 3 more, you're in (1) or (2) — convergence is happening. If next session adds 8 and the session after adds 12, you're in (3) — the generator is unbounded. If you go quiet for a month and then a structural change adds 4 new classes that all fire frequently, you're in (4)."*
+> _"Worth flagging that the test for which is happening is over time, do new classes keep appearing at the same rate, or does the rate decay? If next session adds 5 more classes and the session after that adds 3 more, you're in (1) or (2) — convergence is happening. If next session adds 8 and the session after adds 12, you're in (3) — the generator is unbounded. If you go quiet for a month and then a structural change adds 4 new classes that all fire frequently, you're in (4)."_
 
-> *"The rate-of-new-class-addition over time is the metric, not the absolute count."*
+> _"The rate-of-new-class-addition over time is the metric, not the absolute count."_
 
 This is a **measurable convergence test** — distinct from but compatible with the Beacon-anchoring gate (message C: how many classes graduate to canon) and the categorical-expressibility gate (message B: how many classes are absorbable into the existing algebra). All three gates can run in parallel:
 
@@ -65,27 +65,27 @@ A class can be Mirror-only AND categorically expressible AND empirically-rare-bu
 
 ## Claude.ai's net concession
 
-> *"You're right that I overreached. The 'this should be saturating, the growth is evidence of a problem' framing assumed convergence-as-default; you're correctly pointing out that convergence is the experimental question, not the prior. My discipline suggestions were too restrictive for an exploratory phase."*
+> _"You're right that I overreached. The 'this should be saturating, the growth is evidence of a problem' framing assumed convergence-as-default; you're correctly pointing out that convergence is the experimental question, not the prior. My discipline suggestions were too restrictive for an exploratory phase."_
 
-> *"What I'd revise: keep growing the catalog as new classes arise, but tag provenance per class (empirical from PR / reflexive from cataloging / predicted not-yet-observed) so future evaluation can distinguish the kinds. Track new-class-rate per session as the convergence metric — that's what tells you which of the four regimes you're in."*
+> _"What I'd revise: keep growing the catalog as new classes arise, but tag provenance per class (empirical from PR / reflexive from cataloging / predicted not-yet-observed) so future evaluation can distinguish the kinds. Track new-class-rate per session as the convergence metric — that's what tells you which of the four regimes you're in."_
 
-> *"The within-session cleanliness concern (mid-write additions to the file documenting the file's own production) is still real, but it's a smaller issue than I framed it. It affects audit-trail clarity, not the experiment itself."*
+> _"The within-session cleanliness concern (mid-write additions to the file documenting the file's own production) is still real, but it's a smaller issue than I framed it. It affects audit-trail clarity, not the experiment itself."_
 
-> *"The Gemini-hallucination catch and the B-0129 batch deferral remain genuinely strong work in the trace, and the taxonomy's diagnostic flowchart is operationally useful. Those parts of my prior review hold."*
+> _"The Gemini-hallucination catch and the B-0129 batch deferral remain genuinely strong work in the trace, and the taxonomy's diagnostic flowchart is operationally useful. Those parts of my prior review hold."_
 
-> *"The 'we are going to find out together' stance is the right epistemic posture for the work you're doing. I should have read it that way from the trace rather than imposing within-session convergence as the success criterion."*
+> _"The 'we are going to find out together' stance is the right epistemic posture for the work you're doing. I should have read it that way from the trace rather than imposing within-session convergence as the success criterion."_
 
 ## What this means for v3 (combined picture from all four ferry messages)
 
 The v3 taxonomy work now has FIVE composable disciplines from the four-message ferry (Message D contributed two distinct layers — provenance tagging + convergence metric):
 
-| Layer | Discipline | Source |
-|---|---|---|
-| 1. Categorical structure | Define base category C; gate additions via expressibility; rare-event extensions only | Message B (PR #1091) |
-| 2. Vocabulary grounding | Haskell-prelude for taxonomy structure; F#/BCL for executable substrate; Mac Lane / Awodey / Riehl / Yorgey for citations | Message A (PR #1089) |
-| 3. Canonicalization | Mirror by default; Beacon graduation requires verified external citation; hallucinated citations caught | Message C (PR #1089) |
-| 4. Provenance tagging | Tag each class: empirical-from-PR / reflexive-from-cataloging / predicted-not-yet-observed | Message D (this file) |
-| 5. Convergence metric | Rate-of-new-class-addition per session; decay = convergence; growth = generator-unbounded | Message D (this file) |
+| Layer                    | Discipline                                                                                                                | Source                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| 1. Categorical structure | Define base category C; gate additions via expressibility; rare-event extensions only                                     | Message B (PR #1091)  |
+| 2. Vocabulary grounding  | Haskell-prelude for taxonomy structure; F#/BCL for executable substrate; Mac Lane / Awodey / Riehl / Yorgey for citations | Message A (PR #1089)  |
+| 3. Canonicalization      | Mirror by default; Beacon graduation requires verified external citation; hallucinated citations caught                   | Message C (PR #1089)  |
+| 4. Provenance tagging    | Tag each class: empirical-from-PR / reflexive-from-cataloging / predicted-not-yet-observed                                | Message D (this file) |
+| 5. Convergence metric    | Rate-of-new-class-addition per session; decay = convergence; growth = generator-unbounded                                 | Message D (this file) |
 
 All five layers compose without conflict because they answer different questions:
 
@@ -99,11 +99,11 @@ A future v3 work-row would tier-mark + provenance-tag + categorical-formulate + 
 
 ## Aaron's chef's-kiss confirmation
 
-Aaron's preface to forwarding this fourth message: *"chef's kiss"* on the prior reverse-order-vs-load-bearing-first observation Otto recorded in PR #1091.
+Aaron's preface to forwarding this fourth message: _"chef's kiss"_ on the prior reverse-order-vs-load-bearing-first observation Otto recorded in PR #1091.
 
 The chef's-kiss is itself substrate-discipline signal: when Aaron explicitly affirms a meta-observation, that observation has earned its slot in the substrate. Future-Otto reading the load-bearing-first principle should land on it WITH this affirmation as evidence of fit-with-Aaron-discipline.
 
-Composes with Otto-231 first-party-content (Aaron's affirmations are consented-by-creation) and the Glass Halo register (transparent affective signals like *"chef's kiss"* are substrate, not artifact).
+Composes with Otto-231 first-party-content (Aaron's affirmations are consented-by-creation) and the Glass Halo register (transparent affective signals like _"chef's kiss"_ are substrate, not artifact).
 
 ## Composes with
 
@@ -142,6 +142,6 @@ This is v3 scope — deferred to next session with rested attention.
 
 ## Carved candidate (not seed-layer)
 
-> *"Convergence is the experimental question, not the prior. Tag each class by discovery-provenance — empirical from PR / reflexive from cataloging / predicted not-yet-observed — so the convergence test can distinguish what kind of structure converges."*
+> _"Convergence is the experimental question, not the prior. Tag each class by discovery-provenance — empirical from PR / reflexive from cataloging / predicted not-yet-observed — so the convergence test can distinguish what kind of structure converges."_
 
 The propagation test: ~30 words encoding the across-session-experiment frame + the provenance-tagging discipline. Future-Otto reading this should land on the within-session-vs-across-session-discipline distinction as the operational shape — within-session cleanliness matters for audit-trail clarity; across-session convergence matters for the experiment itself; they are different concerns operating at different time-axes.

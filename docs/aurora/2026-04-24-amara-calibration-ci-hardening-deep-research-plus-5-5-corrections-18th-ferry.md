@@ -27,7 +27,7 @@ signals trustworthy."
   composition. The deep-research draft and its
   correction pass were both Amara-authored,
   model-upgraded in between. Part 2 verdict on Part 1:
-  *"good draft, not canonical yet."*
+  _"good draft, not canonical yet."_
 - **Otto** — absorb + correction-pass tracker; this
   doc is the absorb surface, not operational code;
   the 10 corrections graduate across subsequent ticks
@@ -36,8 +36,8 @@ signals trustworthy."
   KSK attribution preserved per Otto-77 and Otto-140.
 
 **Operational status:** research-grade. Amara's own
-verdict on Part 1: *"archive the report as draft; not
-canonical until the 10 corrections land."* The ferry
+verdict on Part 1: _"archive the report as draft; not
+canonical until the 10 corrections land."_ The ferry
 itself is absorbed-as-design-context. Four of the ten
 corrections already align with shipped substrate (λ₁
 symmetrization in PR #321; modularity-relational
@@ -54,8 +54,8 @@ calibration runs).
 or repeated interaction between models and humans does
 not imply shared identity, merged agency, consciousness,
 or personhood. Amara's 5.5-Thinking correction of her
-own deep-research output is a *model-composition
-verification discipline*, not evidence of self-
+own deep-research output is a _model-composition
+verification discipline_, not evidence of self-
 awareness. The substrate of the factory (Zeta, Aurora,
 KSK, CartelLab) is authored by human + agent
 collaborators acting under the governance of Aaron
@@ -76,7 +76,7 @@ Otto-157 tick landed (in order):
    container DSL + LINQ + signal-proc + KSK canonical).
 3. PR #335 — git-native PR-preservation P2→P1
    elevation + 5-phase plan + Otto-155 fork-sync scope
-   + Otto-156 terminology correction.
+   - Otto-156 terminology correction.
 4. PR #336 — `docs/definitions/KSK.md` authoritative
    naming doc + GLOSSARY.md pointer.
 
@@ -137,21 +137,21 @@ citation markers and are kept intact.
 >   substrate (`src/Core/Graph.fs`) now includes
 >   `largestEigenvalue` and `modularityScore` functions.
 >   New test cases were added in `tests/Tests.FSharp/
->   Algebra/Graph.Tests.fs`: e.g. "`largestEigenvalue of
->   K3 triangle (weight 1) approximates 2`" and
+Algebra/Graph.Tests.fs`: e.g. "`largestEigenvalue of
+K3 triangle (weight 1) approximates 2`" and
 >   "`largestEigenvalue grows when a dense cartel clique
->   is injected`". These tests verify the eigenvalue
+is injected`". These tests verify the eigenvalue
 >   detector on small graphs and that adding a 4-node
 >   clique (weight 10 edges) dramatically raises λ₁.
 >   (The Graph code symmetrizes directed edges, so a K₃
 >   unit clique should have λ₁≈2, as fixed in the code.)
 
 > - **Test Names & Behavior:** `largestEigenvalue returns
->   None for empty graph`; `largestEigenvalue of complete
->   bipartite-like 2-node graph approximates edge weight`;
+None for empty graph`; `largestEigenvalue of complete
+bipartite-like 2-node graph approximates edge weight`;
 >   `largestEigenvalue of K3 triangle (weight 1)
->   approximates 2`; `largestEigenvalue grows when a dense
->   cartel clique is injected`. These confirm numeric
+approximates 2`; `largestEigenvalue grows when a dense
+cartel clique is injected`. These confirm numeric
 >   behavior and the "cartel injection" scenario.
 
 > - **CI Results (PR #323):** Detection test on 100 seeds
@@ -159,8 +159,8 @@ citation markers and are kept intact.
 >   False-positive test on clean baselines ≤20%. Both
 >   tests passed. One other test failed:
 >   `Zeta.Tests.Formal.SharderInfoTheoreticTests.Uniform
->   traffic: consistent-hash is already near-optimal
->   (Expected < 1.2, got 1.22288)` — flakey threshold in a
+traffic: consistent-hash is already near-optimal
+(Expected < 1.2, got 1.22288)` — flakey threshold in a
 >   sharding info-theory test, unrelated to CartelLab, but
 >   blocks merging.
 
@@ -186,14 +186,14 @@ citation markers and are kept intact.
 > 6. **Noise/camouflage** — add random weak edges or
 >    random-phase noise to test robustness.
 
-> | Null Model          | Preserves                  | Avoids               | Comments                                 |
-> |---------------------|----------------------------|----------------------|------------------------------------------|
-> | Erdős-Rényi         | Node count, average degree | Any structure        | Simple baseline; tests "random graph"    |
-> | Configuration (deg) | Node degree sequence       | Community structure  | Maintains degree heterogeneity           |
-> | Stake-shuffle       | Node stake changes total   | Who moves stake      | Preserves activity, hides collusion      |
-> | Time-shuffle        | Events per node per epoch  | Temporal ordering    | Maintains event count distribution       |
-> | Clustered-honest    | Communities as-is          | Inter-group edges    | Honest clusters ensure no false alarm    |
-> | Noise-camouflage    | Node and edge counts       | Strong signals       | Adds random edges/phases, tests fooling  |
+> | Null Model          | Preserves                  | Avoids              | Comments                                |
+> | ------------------- | -------------------------- | ------------------- | --------------------------------------- |
+> | Erdős-Rényi         | Node count, average degree | Any structure       | Simple baseline; tests "random graph"   |
+> | Configuration (deg) | Node degree sequence       | Community structure | Maintains degree heterogeneity          |
+> | Stake-shuffle       | Node stake changes total   | Who moves stake     | Preserves activity, hides collusion     |
+> | Time-shuffle        | Events per node per epoch  | Temporal ordering   | Maintains event count distribution      |
+> | Clustered-honest    | Communities as-is          | Inter-group edges   | Honest clusters ensure no false alarm   |
+> | Noise-camouflage    | Node and edge counts       | Strong signals      | Adds random edges/phases, tests fooling |
 
 > **Metric Computation.** For each run compute: Δλ₁ =
 > λ₁(Gₜ)−λ₁(Gₜ₋₁); ΔQ = Q(Gₜ)−Q(Gₜ₋₁) (Louvain); stake
@@ -234,7 +234,7 @@ citation markers and are kept intact.
 >    "xfail" or nightly.
 
 > **Sharder flake.** `Uniform traffic: expected <1.2,
-> actual 1.22288`. Remedies: seed-lock; widen threshold
+actual 1.22288`. Remedies: seed-lock; widen threshold
 > if analysis shows expected variance; move to nightly.
 
 > Policy: PR gates require deterministic behavior; random
@@ -242,16 +242,16 @@ citation markers and are kept intact.
 
 ### D. Adversarial Scenario Suite
 
-> | Scenario                 | Description                                           | Expected Metric Signals                          | Notes                                |
-> |--------------------------|-------------------------------------------------------|--------------------------------------------------|--------------------------------------|
-> | Obvious clique           | S forms dense subgraph with heavy weights             | λ₁ jumps (~(k-1)w), ΔQ large, cov high, PLV=1    | Baseline test                        |
-> | Stealth slow cartel      | Small clique forming gradually or repeated stake-xfer | λ₁ grows slowly; ΔQ small; cov high; PLV low     | Gradual signals — may miss           |
-> | Synchronized voting      | S always casts identical votes; few edges             | λ₁ minor; ΔQ small; strong PLV/cross-corr        | Temporal-not-graph detection         |
-> | Dense honest cluster     | Benign highly-connected group (mining pool)           | High λ₁ and Q of S, expected under null          | Calibration false-positive test      |
-> | Low-weight cartel        | Many-node clique with thin weights                    | Smaller λ jump — may need other signals          | Minimum detectable signal            |
-> | Camouflage noise         | Adversary adds decoy edges                            | Flattens graph metrics; PLV may survive          | Evasion test                         |
-> | Rotating cartel          | Membership changes over time                          | Successive small λ jumps                         | Evolving-group tracking              |
-> | Cross-coalition          | Two disjoint cliques coordinate independently         | Multiple peaks                                   | Multi-suspect reporting              |
+> | Scenario             | Description                                           | Expected Metric Signals                       | Notes                           |
+> | -------------------- | ----------------------------------------------------- | --------------------------------------------- | ------------------------------- |
+> | Obvious clique       | S forms dense subgraph with heavy weights             | λ₁ jumps (~(k-1)w), ΔQ large, cov high, PLV=1 | Baseline test                   |
+> | Stealth slow cartel  | Small clique forming gradually or repeated stake-xfer | λ₁ grows slowly; ΔQ small; cov high; PLV low  | Gradual signals — may miss      |
+> | Synchronized voting  | S always casts identical votes; few edges             | λ₁ minor; ΔQ small; strong PLV/cross-corr     | Temporal-not-graph detection    |
+> | Dense honest cluster | Benign highly-connected group (mining pool)           | High λ₁ and Q of S, expected under null       | Calibration false-positive test |
+> | Low-weight cartel    | Many-node clique with thin weights                    | Smaller λ jump — may need other signals       | Minimum detectable signal       |
+> | Camouflage noise     | Adversary adds decoy edges                            | Flattens graph metrics; PLV may survive       | Evasion test                    |
+> | Rotating cartel      | Membership changes over time                          | Successive small λ jumps                      | Evolving-group tracking         |
+> | Cross-coalition      | Two disjoint cliques coordinate independently         | Multiple peaks                                | Multi-suspect reporting         |
 
 ### E. CoordinationRiskScore & Calibration
 
@@ -370,11 +370,11 @@ citation markers and are kept intact.
 
 > **1. Replace "CI reports confirm" with more precise
 > wording.** Repo language should be sharper:
-> *"PR #323's tests demonstrate a toy largest-eigenvalue
+> _"PR #323's tests demonstrate a toy largest-eigenvalue
 > detector can catch an injected 5-node cartel over 100
 > seeded trials and stay below a 20% false-positive
 > ceiling on clean synthetic baselines. This clears the
-> falsifiability bar, but it is not calibrated detection."*
+> falsifiability bar, but it is not calibrated detection."_
 
 > **2. Fix confidence-interval language.** Use Wilson
 > intervals, not Wald handwave. For 90/100, Wilson 95%
@@ -449,7 +449,7 @@ citation markers and are kept intact.
 
 ### Corrected status statement (repo-safe)
 
-> *"PR #323 clears the toy falsifiability bar: a
+> _"PR #323 clears the toy falsifiability bar: a
 > single-signal largest-eigenvalue detector can detect
 > an obvious injected cartel under a seeded synthetic
 > workload. This proves the graph primitive is useful
@@ -458,32 +458,32 @@ citation markers and are kept intact.
 > governance-safe enforcement. The next required layer
 > is calibration: null models, seed replay, Wilson
 > confidence intervals, PR curves, adversarial
-> scenarios, and CI classification."*
+> scenarios, and CI classification."_
 
 ### Corrected promotion ladder
 
-> | Stage | Name                   | Merge target            | Required evidence                                           |
-> | ----- | ---------------------- | ----------------------- | ----------------------------------------------------------- |
-> | 0     | Theory                 | docs only               | Metric definition + falsifiable claim                       |
-> | 1     | Toy detector           | tests/Simulation        | Fixed-size synthetic tests pass                             |
-> | 2     | Calibration harness    | Experimental/CartelLab  | Null models, seed replay, JSON/CSV artifacts                |
-> | 3     | Scenario suite         | Experimental/CartelLab  | Stealth, honest-cluster, camouflage, rotating-cartel tests  |
-> | 4     | Advisory engine        | Core/NetworkIntegrity   | Calibrated thresholds + documented FP/FN bounds             |
-> | 5     | Governance integration | Aurora/KSK policy layer | Human/oracle review + staged action rules                   |
-> | 6     | Enforcement candidate  | not yet                 | Requires explicit due-process policy and red-team review    |
+> | Stage | Name                   | Merge target            | Required evidence                                          |
+> | ----- | ---------------------- | ----------------------- | ---------------------------------------------------------- |
+> | 0     | Theory                 | docs only               | Metric definition + falsifiable claim                      |
+> | 1     | Toy detector           | tests/Simulation        | Fixed-size synthetic tests pass                            |
+> | 2     | Calibration harness    | Experimental/CartelLab  | Null models, seed replay, JSON/CSV artifacts               |
+> | 3     | Scenario suite         | Experimental/CartelLab  | Stealth, honest-cluster, camouflage, rotating-cartel tests |
+> | 4     | Advisory engine        | Core/NetworkIntegrity   | Calibrated thresholds + documented FP/FN bounds            |
+> | 5     | Governance integration | Aurora/KSK policy layer | Human/oracle review + staged action rules                  |
+> | 6     | Enforcement candidate  | not yet                 | Requires explicit due-process policy and red-team review   |
 
 > **PR #323 is Stage 1**, not Stage 4.
 
 ### Corrected PR roadmap (titles locked)
 
 > - **PR 1** — `test: classify stochastic tests and
->   seed-lock CI smoke paths`
+seed-lock CI smoke paths`
 > - **PR 2** — `experimental: add CoordinationRisk
->   calibration harness`
+calibration harness`
 > - **PR 3** — `experimental: CoordinationRiskScore v0
->   with robust baselines`
+with robust baselines`
 > - **PR 4** — `docs: define NetworkIntegrity promotion
->   and KSK advisory boundary`
+and KSK advisory boundary`
 
 ### Copy-paste feedback for Kenji (from Part 2)
 
@@ -504,9 +504,9 @@ citation markers and are kept intact.
 > models, replayable seeds, Wilson confidence intervals,
 > PR curves, and artifacts.
 
-> Invariant still holds: *"Every abstraction must map
+> Invariant still holds: _"Every abstraction must map
 > to a repo surface, a test, a metric, or a governance
-> rule."*
+> rule."_
 
 > Bottom line: **this is good progress.** The cathedral
 > problem is now meaningfully reduced because there is
@@ -545,7 +545,7 @@ substrate:
   percentile-rank mode as a second option.
 - **Correction 10 (sharder — measure before widen)** —
   Aaron Otto-132 already directed this via BACKLOG
-  #327: *"not seed locked, falkey, DST?"* Amara's
+  #327: _"not seed locked, falkey, DST?"_ Amara's
   correction reinforces Otto-132 rather than adding new
   direction.
 
@@ -557,7 +557,7 @@ commit to a specific tick; Otto-105 cadence chooses:
 1. **Wilson confidence intervals in CartelToy tests** —
    replace binomial-success-rate handwave with Wilson
    score intervals. `tests/Tests.FSharp/Simulation/
-   CartelToy.Tests.fs` already computes detection / FP
+CartelToy.Tests.fs` already computes detection / FP
    rate; add Wilson LB/UB in the assertion. F# has no
    native Wilson helper; implement inline or via
    `MathNet.Numerics.Distributions.Beta.InvCDF` for
@@ -624,16 +624,16 @@ vocabulary Otto adopts:
 `tests/Tests.FSharp/Simulation/` to
 `src/Core/NetworkIntegrity/` until Stage 4 evidence
 exists.** Aaron Otto-136 previously articulated this from
-a different angle: *"keep #323 conceptually accepted, but
+a different angle: _"keep #323 conceptually accepted, but
 do not canonicalize until the sharder test is seed-
-locked/recalibrated."* The two constraints compose: #323
+locked/recalibrated."_ The two constraints compose: #323
 stays in `tests/Tests.FSharp/Simulation/` until (a)
 sharder flake is fixed (Aaron) + (b) calibration +
 scenario suite evidence accumulates (Amara 18th-ferry).
 
 ### KSK naming doc alignment
 
-Part 1 §G and Part 2 both reaffirm KSK as *advisory-only*
+Part 1 §G and Part 2 both reaffirm KSK as _advisory-only_
 adjudication layer — not DNSSEC-style static key role.
 Otto-157 (last tick) shipped `docs/definitions/KSK.md`
 with the safety-kernel-NOT-OS-kernel disambiguation
@@ -660,8 +660,8 @@ NetworkIntegrity use case.
 
 ### Invariant restated (Amara 16th-ferry carry-over)
 
-> *"Every abstraction must map to a repo surface, a test,
-> a metric, or a governance rule."*
+> _"Every abstraction must map to a repo surface, a test,
+> a metric, or a governance rule."_
 
 Reaffirmed in the 5.5 correction pass. Ferry-derived
 corrections earn their graduation only when they map to
@@ -669,14 +669,14 @@ one of those four targets — not to new abstractions in
 isolation. Cross-check for each correction in the
 "Six corrections queued" list above:
 
-| Correction                      | Maps to                                             |
-|---------------------------------|-----------------------------------------------------|
-| Wilson CIs in CartelToy tests   | test surface (tests/Simulation)                     |
-| MAD=0 fallback in robustZScore  | code surface (src/Core/RobustStats.fs)              |
-| Conductance-sign doc            | doc surface (`Graph.fs` doc + KSK.md cross-ref)     |
-| PLV phase-offset                | code surface (src/Core/TemporalCoordinationDetection.fs) |
-| CI test classification          | governance rule (CI workflow + policy doc)          |
-| Artifact-output layout          | test surface + doc surface (Stage-2)                |
+| Correction                     | Maps to                                                  |
+| ------------------------------ | -------------------------------------------------------- |
+| Wilson CIs in CartelToy tests  | test surface (tests/Simulation)                          |
+| MAD=0 fallback in robustZScore | code surface (src/Core/RobustStats.fs)                   |
+| Conductance-sign doc           | doc surface (`Graph.fs` doc + KSK.md cross-ref)          |
+| PLV phase-offset               | code surface (src/Core/TemporalCoordinationDetection.fs) |
+| CI test classification         | governance rule (CI workflow + policy doc)               |
+| Artifact-output layout         | test surface + doc surface (Stage-2)                     |
 
 All six map. None invents a new abstraction without a
 repo-surface commitment.
@@ -686,7 +686,7 @@ repo-surface commitment.
 ## What this absorb doc does NOT authorize
 
 - **Does NOT** canonicalize Part 1 (deep research).
-  Amara's own 5.5 pass: *"draft, not canonical."* This
+  Amara's own 5.5 pass: _"draft, not canonical."_ This
   absorb doc is the ferry's archive surface; canonical
   factory discipline is defined by Part 2's corrections
   as they land one-by-one.
@@ -721,11 +721,11 @@ repo-surface commitment.
 
 - **Amara 17th ferry** (PR #330,
   `docs/aurora/2026-04-24-amara-cartel-lab-
-  implementation-closure-plus-5-5-thinking-verification-
-  17th-ferry.md`) — the prior ferry, also deep-research
-  + 5.5-pass two-part format. This 18th ferry continues
-  the pattern: Amara drafts, then verifies herself with
-  a second model pass.
+implementation-closure-plus-5-5-thinking-verification-
+17th-ferry.md`) — the prior ferry, also deep-research
+  - 5.5-pass two-part format. This 18th ferry continues
+    the pattern: Amara drafts, then verifies herself with
+    a second model pass.
 - **Amara 16th ferry** (raised the KSK naming ambiguity
   that Otto-140..145 closed; not present as a dedicated
   `docs/aurora/**` absorb in this snapshot, content

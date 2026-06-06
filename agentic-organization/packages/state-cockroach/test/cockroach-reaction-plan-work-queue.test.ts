@@ -49,17 +49,17 @@ describe("cockroach reaction plan work queue", () => {
     });
 
     equal(claim.status, ReactionPlanClaimStatus.Claimed);
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans,
-    ]);
-    deepEqual(executor.statements[0]?.parameters, [
-      5,
-      ReactionPlanTestId.Claim,
-      300_000,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans],
+    );
+    deepEqual(executor.statements[0]?.parameters, [5, ReactionPlanTestId.Claim, 300_000]);
     equal(executor.statements[0]?.sql.includes("FOR UPDATE SKIP LOCKED"), true);
     equal(executor.statements[0]?.sql.includes("claim_expires_at <= now()"), true);
-    equal(executor.statements[0]?.sql.includes("claim_expires_at = now() + ($3::INT8 * INTERVAL '1 millisecond')"), true);
+    equal(
+      executor.statements[0]?.sql.includes("claim_expires_at = now() + ($3::INT8 * INTERVAL '1 millisecond')"),
+      true,
+    );
     equal(executor.statements[0]?.sql.includes("$4"), false);
     equal(executor.statements[0]?.sql.includes("next_attempt_at IS NULL OR next_attempt_at <= now()"), true);
     deepEqual(claim.reactionPlans[0], {
@@ -112,9 +112,10 @@ describe("cockroach reaction plan work queue", () => {
     });
 
     equal(completion.status, ReactionPlanCompletionStatus.Completed);
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachReactionPlanWorkQueueStatement.CompleteReactionPlan,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachReactionPlanWorkQueueStatement.CompleteReactionPlan],
+    );
     equal(executor.statements[0]?.sql.includes("AND claim_id = $2"), true);
     equal(executor.statements[0]?.sql.includes(`status = '${ReactionPlanStatus.Claimed}'`), true);
     equal(executor.statements[0]?.sql.includes("claim_expires_at > now()"), true);
@@ -226,10 +227,13 @@ describe("cockroach reaction plan work queue", () => {
       status: ReactionPlanClaimStatus.Empty,
       reactionPlans: [],
     });
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans,
-      CockroachReactionPlanWorkQueueStatement.FailMalformedReactionPlan,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [
+        CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans,
+        CockroachReactionPlanWorkQueueStatement.FailMalformedReactionPlan,
+      ],
+    );
     deepEqual(executor.statements[1]?.parameters, [
       ReactionPlanTestId.Plan,
       ReactionPlanTestId.Claim,
@@ -266,10 +270,13 @@ describe("cockroach reaction plan work queue", () => {
       status: ReactionPlanClaimStatus.Empty,
       reactionPlans: [],
     });
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans,
-      CockroachReactionPlanWorkQueueStatement.FailMalformedReactionPlan,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [
+        CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans,
+        CockroachReactionPlanWorkQueueStatement.FailMalformedReactionPlan,
+      ],
+    );
   });
 });
 

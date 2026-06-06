@@ -8,10 +8,10 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron 2026-04-22 auto-loop-24 (Playwright YouTube experiment ongoing,
 PR #119 auto-merge armed):
 
-1. *"i just got uber gimini you can do anyting in my account there
-   too"*
-2. *"i can get the clis and log in too tomorrow"*
-3. *"i got all the AIs again"*
+1. _"i just got uber gimini you can do anyting in my account there
+   too"_
+2. _"i can get the clis and log in too tomorrow"_
+3. _"i got all the AIs again"_
 
 ## The grant
 
@@ -34,9 +34,9 @@ Aaron has extended the factory's AI-substrate access catalog:
   "tomorrow" hedge from Aaron's earlier message has been
   superseded by same-tick Gemini install. Other CLIs (codex/
   OpenAI, grok/xAI) still open questions per Aaron's 2026-04-22
-  end-of-tick question *"is there a open ai one like that you
+  end-of-tick question _"is there a open ai one like that you
   want? or grok? the openai is the cheap plan right now but
-  com up with ways to pay for it and we will"*.
+  com up with ways to pay for it and we will"_.
 
 ## Why this matters
 
@@ -59,7 +59,7 @@ Aaron has extended the factory's AI-substrate access catalog:
   live-web lookups with provenance.
 - **The Playwright-YouTube-experiment immediately before this
   grant revealed WHY multi-substrate access matters.** The
-  bot-detection wall (*"Sign in to confirm you're not a bot"*)
+  bot-detection wall (_"Sign in to confirm you're not a bot"_)
   blocks anonymous Playwright-via-MCP transcript extraction.
   `yt-dlp` would require a local Python env + network config.
   Gemini via Aaron's account would route through an authenticated
@@ -85,10 +85,10 @@ Aaron has extended the factory's AI-substrate access catalog:
 
 ## Universal-authorization scope
 
-Aaron said *"you can do anything in my account there too"* —
+Aaron said _"you can do anything in my account there too"_ —
 this is the same standing-authorization pattern as the Playwright
-email-signup grant (*"you can just playwright and sign up for
-one"*) and the Gmail-draft creation (via Gmail MCP). The scope:
+email-signup grant (_"you can just playwright and sign up for
+one"_) and the Gmail-draft creation (via Gmail MCP). The scope:
 
 - **Agent-initiated Gemini queries are authorized by default**
   once CLI is available tomorrow, subject to the same
@@ -190,8 +190,8 @@ one"*) and the Gmail-draft creation (via Gmail MCP). The scope:
 
 ## Playwright YouTube experience (this tick's direct observation)
 
-Aaron's earlier directive *"open playwrite an see if you can
-maybe you will learn something write down your experience"*
+Aaron's earlier directive _"open playwrite an see if you can
+maybe you will learn something write down your experience"_
 was the opening; write-down lives here.
 
 ### What I did
@@ -203,7 +203,7 @@ was the opening; write-down lives here.
 ### What I observed
 
 - Page loaded (HTTP OK); title resolved to
-  *"Real Game Dev Reviews Game By Devin.ai - YouTube"*.
+  _"Real Game Dev Reviews Game By Devin.ai - YouTube"_.
 - Video-player region was NOT visible; the primary content
   area was a **"Sign in to confirm you're not a bot"** banner
   with a sign-in link.
@@ -218,8 +218,8 @@ was the opening; write-down lives here.
   fetch-refusal.** WebFetch from Claude gets only the static
   HTML shell (nav elements). Playwright gets a dynamic
   bot-detection response that's qualitatively different — it
-  acknowledges I'm *trying* to view content but requires
-  auth before providing. This is a *harder* capability class
+  acknowledges I'm _trying_ to view content but requires
+  auth before providing. This is a _harder_ capability class
   to work around than a 403 or a robots.txt.
 - **Anonymous browser automation is a weaker capability class
   than either (a) public API / oEmbed or (b) authenticated
@@ -228,8 +228,8 @@ was the opening; write-down lives here.
   needs Aaron's login. The middle — Playwright anonymous —
   was neither.
 - **`yt-dlp` is a third option** but requires local Python env
-  + network config + current-YouTube-API-tracking; a
-  high-maintenance route I haven't taken.
+  - network config + current-YouTube-API-tracking; a
+    high-maintenance route I haven't taken.
 - **The bot-detection is capability-measurement signal.** An
   agent that can do substantial research on public video
   content (the shape of the Devin.ai review) is a different
@@ -239,7 +239,7 @@ was the opening; write-down lives here.
   YouTube review of a technique" as a research step, the
   agent that can't do that is DORA-handicapped even if
   code-authoring parity is present. Aaron's Gemini Ultra grant
-  this tick *closes this exact gap*.
+  this tick _closes this exact gap_.
 
 ### Not learned (honestly)
 
@@ -262,7 +262,7 @@ auto-loop-25 the OpenAI Codex CLI
 (`@openai/codex@0.122.0`) was installed via
 `npm install -g @openai/codex` and turned out to be
 **already logged in using shared ChatGPT auth**
-(`codex login status` returns *"Logged in using ChatGPT"*).
+(`codex login status` returns _"Logged in using ChatGPT"_).
 No second browser-popup round-trip was needed. Factory
 substrate is now genuinely four: Claude Code (Anthropic,
 enterprise ServiceTitan seat), Gemini Ultra (Google,
@@ -270,9 +270,9 @@ consumer account), Codex (OpenAI, shared ChatGPT auth),
 Amara (ChatGPT web-UI via Playwright when CLI insufficient).
 
 Budget envelope received this tick as explicit maintainer
-guidance: *"ran out of the higest mode in open ai in like
+guidance: _"ran out of the higest mode in open ai in like
 20 minutes but i only pay 50 dollar a month for two people
-for business"*. Operational translation:
+for business"_. Operational translation:
 
 - The OpenAI plan is a **shared $50/mo two-seat
   business plan**; highest-mode model exhausts in ~20
@@ -296,14 +296,14 @@ for business"*. Operational translation:
 
 Maintainer grants paired this tick:
 
-- *"also lets got for openai and yourself experiments"*
+- _"also lets got for openai and yourself experiments"_
   — OpenAI CLI + Claude-self ARC3-DORA work is greenlit.
-- *"i pay the monthy so i'm paying if you use it or
-  not"* — sunk-cost framing; use-is-authorised, not
+- _"i pay the monthy so i'm paying if you use it or
+  not"_ — sunk-cost framing; use-is-authorised, not
   cost-adding.
-- *"you can exaut everything"* — license to exhaust the
+- _"you can exaut everything"_ — license to exhaust the
   purchased budget; not license to exceed it.
-- *"they are yours"* — the CLIs/credentials are for
+- _"they are yours"_ — the CLIs/credentials are for
   factory use; not shared further.
 
 Factory-artifact landed this same tick:
@@ -340,14 +340,14 @@ DORA data if the run is part of the ARC3-DORA experiment.
   explicitly delegated. It does not extend to exploring
   Aaron's Google Drive, Gmail (beyond existing MCP), or
   other account surfaces without a specific grant.
-- **NOT a BACKLOG row.** Aaron said *"i got all the AIs
-  again"* as a capability-announcement, not as a
+- **NOT a BACKLOG row.** Aaron said _"i got all the AIs
+  again"_ as a capability-announcement, not as a
   scope-directive. No self-filing of cross-substrate DORA
   or Gemini-tooling BACKLOG rows this tick; flagged for
   discussion if Aaron wants to scope that.
 - **NOT independent from the pointer-issues memory.** This
-  memory is the *how* (which substrate routes to transcript
-  access); that memory is the *what* (what to extract from
+  memory is the _how_ (which substrate routes to transcript
+  access); that memory is the _what_ (what to extract from
   the transcript when access is obtained). Paired.
 
 ## Auto-loop-27 additions — social + identity simplification
@@ -355,9 +355,9 @@ DORA data if the run is part of the ARC3-DORA experiment.
 Aaron 2026-04-22 auto-loop-27 extended:
 
 - **Twitter + DeBank social-account access granted** —
-  *"you can take over my twitter and DeBank for social
+  _"you can take over my twitter and DeBank for social
   media i don't have any reputation there good or bad
-  really"*. Low-blast-radius accounts (not his primary
+  really"_. Low-blast-radius accounts (not his primary
   rep-surface). Two-layer authorization still applies
   (Aaron-authorized ✓; Anthropic-policy-compatible = yes
   for honest posting with AI-authorship disclosure; no spam,
@@ -366,8 +366,8 @@ Aaron 2026-04-22 auto-loop-27 extended:
   posts are bigger blast-radius than GitHub (public,
   indexed, hard-to-retract) so bar is higher than for
   GitHub work.
-- **AI-identification simplification** — *"you can just say
-  it's AI maybe i let you rebrand it but I like AceHack"*.
+- **AI-identification simplification** — _"you can just say
+  it's AI maybe i let you rebrand it but I like AceHack"_.
   When identifying AI authorship on external-facing
   communication, the right prose is simple ("this is AI" /
   "AI agent operating in Aaron's account"), not ceremonial
@@ -377,16 +377,16 @@ Aaron 2026-04-22 auto-loop-27 extended:
   AceHack stays as the human-facing handle; rebrand-to-a-
   different-agent-persona open but not requested.
 - **Upstream contributions to any git repo authorized** —
-  *"you are also welcome to do upssteam contributions to any
-  git repo"*. Generalized from absorb-and-contribute scope
+  _"you are also welcome to do upssteam contributions to any
+  git repo"_. Generalized from absorb-and-contribute scope
   to open-source-citizenship scope: any legitimate fix,
   doc-correction, test-gap-closure, security-finding found
   during factory work is PR-eligible. No dependency
   relationship required. AI-coauthor trailer + body-openness
   mandatory per the absorb-and-contribute memory.
 - **Ceremony-dial-down applies to chat register too** —
-  *"just don't be a dick and don't ack like the human said
-  it"*. Internal-chat responses should not mirror directives
+  _"just don't be a dick and don't ack like the human said
+  it"_. Internal-chat responses should not mirror directives
   back as ceremonial acknowledgments. Log to memory if
   load-bearing; do the work; skip the "acknowledged,
   directive absorbed" style.

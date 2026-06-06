@@ -15,9 +15,9 @@ Paired with:
 - **`performance-engineer` (Naledi)** — owns the
   benchmark-driven perf story end-to-end. This hat is a
   narrow tool-expert underneath her.
-- **`query-planner` (Imani)** — owns *when* a SIMD kernel
-  fires (plan dispatch); this hat owns *how* the kernel is
-  written and *whether* the intrinsic actually pays off.
+- **`query-planner` (Imani)** — owns _when_ a SIMD kernel
+  fires (plan dispatch); this hat owns _how_ the kernel is
+  written and _whether_ the intrinsic actually pays off.
 
 ## When to wear
 
@@ -120,7 +120,7 @@ dispatch is free. Key discipline:
   sigmoid). The right choice for straight numerical loops
   when it covers the op.
 
-Benchmark-before-claim: `Vector<T>` is *usually* as fast as
+Benchmark-before-claim: `Vector<T>` is _usually_ as fast as
 hand-rolled intrinsics for simple loops on recent runtimes;
 the cases where hand-rolled wins are specific (shuffle-heavy
 reductions, CRC, popcount, permute).
@@ -132,7 +132,7 @@ reductions, CRC, popcount, permute).
   some P-core configurations (empirical, not guaranteed —
   treat 128 as the safe upper bound for padding purposes).
 - **False sharing.** Two independent writers touching
-  variables on the *same* cache line serialise through the
+  variables on the _same_ cache line serialise through the
   coherence protocol. Diagnose via perf counters
   (`MACHINE_CLEARS.MEMORY_ORDERING` on Intel); fix with
   `[StructLayout(LayoutKind.Explicit)]` + `FieldOffset`
@@ -159,7 +159,7 @@ per-lane control flow. The rewrite toolbox:
 - **Predicated store.** AVX-512's mask registers let a
   kernel apply a SIMD op conditionally without branching.
 
-Branch-free is *not* always faster; a branch with > 99%
+Branch-free is _not_ always faster; a branch with > 99%
 prediction accuracy is essentially free. Benchmark before
 rewriting.
 

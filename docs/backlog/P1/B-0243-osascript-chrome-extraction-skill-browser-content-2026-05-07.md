@@ -42,7 +42,7 @@ skill router so future sessions try it first.
 - [ ] Prerequisite check (JS from Apple Events) included
 - [ ] Name-scrubbing step included as standard post-extraction
 - [ ] Router description triggers on "extract from browser /
-  download conversation / authenticated session"
+      download conversation / authenticated session"
 
 ## Composes with
 

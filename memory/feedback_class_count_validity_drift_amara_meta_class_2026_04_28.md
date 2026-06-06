@@ -56,10 +56,10 @@ of X, therefore X is good" drift is the SD-9 self-application.
 
 My prior tick-close insight read:
 
-> *"Class-naming is now a recognized ferry-input genre with
+> _"Class-naming is now a recognized ferry-input genre with
 > its own predictable shape... Four classes named in this
 > arc alone. The pattern itself documented in CURRENT-amara
-> §12 turns the genre into a reusable contract..."*
+> §12 turns the genre into a reusable contract..."_
 
 This drifted toward Class-Count Validity Drift:
 
@@ -103,11 +103,11 @@ correctness**.
 
 Amara's caveat on word choice:
 
-> *"I'd replace 'Aaron's terse reinforcement' with 'Aaron's
+> _"I'd replace 'Aaron's terse reinforcement' with 'Aaron's
 > terse check' or 'Aaron's terse challenge' unless the
 > actual message was reinforcing the guardrail.
 > 'Reinforcement' can sound like praise; the important
-> function was interrupting drift."*
+> function was interrupting drift."_
 
 Captured: the word **"reinforcement"** in my prior text was
 itself a small halo-effect failure (framing Aaron's

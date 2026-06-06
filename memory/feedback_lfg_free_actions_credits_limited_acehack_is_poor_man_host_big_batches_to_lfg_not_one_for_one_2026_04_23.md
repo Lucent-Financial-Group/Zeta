@@ -53,7 +53,7 @@ conserved for batched decisions.
 The mistake was operating under the framing "LFG is
 canonical so LFG is where work happens", without holding
 the cost-constraint layer. Amara's PR #219 absorb
-correctly named LFG as *operationally-canonical* — but
+correctly named LFG as _operationally-canonical_ — but
 canonical ≠ continuously-updated; it means decisions
 LAND there, not that every iteration flows through there.
 
@@ -98,38 +98,38 @@ main that lands many batched commits at once.
 
 ### Cost-saving operational shape
 
-| Operation | AceHack (poor-man, default) | LFG (canonical, batched) |
-|---|---|---|
-| Per-PR iteration | ✓ | ✗ — only batches |
-| Codex/Copilot per-PR reviews | ✓ | ✓ (at batch time) |
-| Auto-merge armed on open | ✓ | ✗ — deliberate batches |
-| BACKLOG rows, memory, research | ✓ | batched periodically |
-| Decision records (ADRs) | land on AceHack first, then batch | final home on LFG |
-| Production releases (NuGet) | — | ✓ (final surface) |
+| Operation                      | AceHack (poor-man, default)       | LFG (canonical, batched) |
+| ------------------------------ | --------------------------------- | ------------------------ |
+| Per-PR iteration               | ✓                                 | ✗ — only batches         |
+| Codex/Copilot per-PR reviews   | ✓                                 | ✓ (at batch time)        |
+| Auto-merge armed on open       | ✓                                 | ✗ — deliberate batches   |
+| BACKLOG rows, memory, research | ✓                                 | batched periodically     |
+| Decision records (ADRs)        | land on AceHack first, then batch | final home on LFG        |
+| Production releases (NuGet)    | —                                 | ✓ (final surface)        |
 
 ### What this revises in prior memories
 
 - `project_lfg_is_demo_facing_acehack_is_cost_cutting_
-  internal_2026_04_23.md` — earlier framing
+internal_2026_04_23.md` — earlier framing
   ("demo-facing" vs "cost-cutting"). Aaron's current
   framing is sharper: LFG is operationally-canonical +
   credit-limited; AceHack is cost-optimized per-PR
   substrate. Both characterizations compose; the cost-
   constraint layer is the one I missed.
 - `docs/aurora/2026-04-23-amara-decision-proxy-technical-
-  review.md` PR #219 — absorb named
+review.md` PR #219 — absorb named
   "operationally-canonical / experimentation-frontier"
   axis; this memory adds the "credit-limited / poor-
   man-host" axis.
 - `project_factory_is_git_native_github_first_host_
-  hygiene_cadences_for_frictionless_operation_
-  2026_04_23.md` — first-host-positioning is unchanged;
+hygiene_cadences_for_frictionless_operation_
+2026_04_23.md` — first-host-positioning is unchanged;
   the cost-constraint is intra-GitHub (across two repos
   on the same host), not inter-host.
 
 ## Composes with
 
-- Aaron's Otto-23 directive *"poor man mode is default"*
+- Aaron's Otto-23 directive _"poor man mode is default"_
   in `feedback_agent_owns_all_github_settings_...` —
   same frame, explicit now about LFG-vs-AceHack
 - The 11+ in-flight LFG PRs this session — they land
@@ -157,8 +157,8 @@ main that lands many batched commits at once.
   this is a cost-per-host question, not a skip-CI
   license.
 - **Not a commitment to stop all LFG pushes.** Periodic
-  batches still land there. The rule is *"no per-PR
-  mirrors; consolidate first"*.
+  batches still land there. The rule is _"no per-PR
+  mirrors; consolidate first"_.
 - **Not a change to auto-merge discipline.** Arm auto-
   merge on AceHack PRs; arm it on the batch LFG PR at
   batch time.
@@ -177,9 +177,9 @@ distillation. Future-session Otto inherits: push to
 
 ## Otto-61 verification notes (2026-04-23)
 
-After Aaron's clarification *"just not sure how much that
-will cost"* + *"LFG is public but it does not have
-unlimited it seems"*, ran a fact-finding pass:
+After Aaron's clarification _"just not sure how much that
+will cost"_ + _"LFG is public but it does not have
+unlimited it seems"_, ran a fact-finding pass:
 
 **What I could verify:**
 
@@ -189,7 +189,7 @@ unlimited it seems"*, ran a fact-finding pass:
   matrix expression runs macOS-14 ONLY on AceHack, never
   on LFG (line encodes
   `github.repository == 'Lucent-Financial-Group/Zeta' &&
-  '["ubuntu-22.04"]' || '["ubuntu-22.04","macos-14"]'`).
+'["ubuntu-22.04"]' || '["ubuntu-22.04","macos-14"]'`).
   This is a deliberate existing cost-avoidance for the
   macOS runner's 10x multiplier that applies even on
   public repos.
@@ -201,7 +201,7 @@ unlimited it seems"*, ran a fact-finding pass:
 
 - Actual Actions minute usage (org billing API
   `orgs/.../settings/billing/actions` returned 410 moved
-  + requires `admin:org` scope I don't have).
+  - requires `admin:org` scope I don't have).
 - Plan tier (Free / Team / Enterprise) of
   `Lucent-Financial-Group` org.
 - Advanced Security features enabled (paid even on
@@ -223,7 +223,7 @@ against documentation, meaning:
 - OR some feature in use is not in the free tier (most
   likely: Advanced Security components, or Pages with
   Actions-driven deploys)
-- OR Aaron is budgeting against *eventual* cap if the
+- OR Aaron is budgeting against _eventual_ cap if the
   current usage pattern continues (AceHack→LFG batching
   prevents the cap from becoming binding)
 
@@ -264,7 +264,7 @@ Aaron after seeing the Otto-61 verification findings:
    tier — defensive hygiene against future tier changes or
    paid-feature adoption creeping the floor. Candidate
    BACKLOG row: tool that pulls `gh api repos/.../actions/
-   runs` + duration metadata + emits a per-round usage
+runs` + duration metadata + emits a per-round usage
    report. File against AceHack (per the split below) or
    LFG (per the active-work default — now reinstated).
 
@@ -286,13 +286,13 @@ Aaron after seeing the Otto-61 verification findings:
    applies; Aaron updated his mental model. This composes
    with the bidirectional-alignment Craft discipline
    (`project_craft_secret_purpose_agent_continuity_via_
-   human_maintainer_bootstrap_...`) — alignment is
+human_maintainer_bootstrap_...`) — alignment is
    two-way, and verification-based correction is one
    concrete mechanism.
 
 **What this memory RETAINS:**
 
-- The original *"push to correct substrate"* rule, but
+- The original _"push to correct substrate"_ rule, but
   with the correct discriminator: authority/purpose, not
   cost.
 - The defensive usage-tracking directive (Aaron still
@@ -311,13 +311,13 @@ Aaron after seeing the Otto-61 verification findings:
 
 **Go-forward operational rule (final):**
 
-| Surface | AceHack (origin: `acehack`) | LFG (origin: `origin`) |
-|---|---|---|
-| Experiments / prototypes / speculative research | ✓ primary home | — |
-| Decisions + shipped substrate + canonical | — stages here first | ✓ final home |
-| Active per-PR iteration | ✓ for experimentation branches | ✓ for canonical work |
-| Cost awareness | Linux free on both (public) | Linux free (public); track anyway |
-| macOS-14 matrix runs | ✓ (per `gate.yml`) | ✗ (per existing cost-aware config) |
+| Surface                                         | AceHack (origin: `acehack`)    | LFG (origin: `origin`)             |
+| ----------------------------------------------- | ------------------------------ | ---------------------------------- |
+| Experiments / prototypes / speculative research | ✓ primary home                 | —                                  |
+| Decisions + shipped substrate + canonical       | — stages here first            | ✓ final home                       |
+| Active per-PR iteration                         | ✓ for experimentation branches | ✓ for canonical work               |
+| Cost awareness                                  | Linux free on both (public)    | Linux free (public); track anyway  |
+| macOS-14 matrix runs                            | ✓ (per `gate.yml`)             | ✗ (per existing cost-aware config) |
 
 The gate.yml macOS-on-AceHack-only split stays — that's
 genuine cost-avoidance for 10x runner multiplier. Linux-
@@ -334,25 +334,25 @@ correction chain; the overall memory now reads as
 
 ## Cost-parity findings — Otto-61 follow-up 2
 
-Aaron's second correction: *"Wait LFG does not have
+Aaron's second correction: _"Wait LFG does not have
 unlimited copilot right? I think acehack does, we should
 parity check for costs and see if there is really anyting
-AceHack gets us for free that would limit us on LFG."*
+AceHack gets us for free that would limit us on LFG."_
 
 **Observed from read-only API:**
 
-| Feature | LFG (Org, Team plan) | AceHack (User, fork of LFG) |
-|---|---|---|
-| Repo visibility | Public | Public |
-| Linux Actions minutes | Free unlimited | Free unlimited |
-| macOS-14 runner | Avoided via `gate.yml` matrix | Used via `gate.yml` matrix (10x cost applies if non-free tier) |
-| secret_scanning | Enabled | Enabled |
-| secret_scanning_push_protection | Enabled | Enabled |
-| secret_scanning_ai_detection | Disabled (paid) | Not exposed (disabled) |
-| secret_scanning_validity_checks | Disabled (paid) | Disabled |
-| dependabot_security_updates | Enabled | Disabled (free on public if enabled) |
-| Plan tier | Team (2 seats filled) | User-account (tier not visible via read-only API) |
-| Copilot PR reviewer active | ✓ observed in 20+ PRs this session | Not observed (no AceHack PRs this session) |
+| Feature                         | LFG (Org, Team plan)               | AceHack (User, fork of LFG)                                    |
+| ------------------------------- | ---------------------------------- | -------------------------------------------------------------- |
+| Repo visibility                 | Public                             | Public                                                         |
+| Linux Actions minutes           | Free unlimited                     | Free unlimited                                                 |
+| macOS-14 runner                 | Avoided via `gate.yml` matrix      | Used via `gate.yml` matrix (10x cost applies if non-free tier) |
+| secret_scanning                 | Enabled                            | Enabled                                                        |
+| secret_scanning_push_protection | Enabled                            | Enabled                                                        |
+| secret_scanning_ai_detection    | Disabled (paid)                    | Not exposed (disabled)                                         |
+| secret_scanning_validity_checks | Disabled (paid)                    | Disabled                                                       |
+| dependabot_security_updates     | Enabled                            | Disabled (free on public if enabled)                           |
+| Plan tier                       | Team (2 seats filled)              | User-account (tier not visible via read-only API)              |
+| Copilot PR reviewer active      | ✓ observed in 20+ PRs this session | Not observed (no AceHack PRs this session)                     |
 
 **Likely monthly cost structure on LFG:**
 

@@ -46,21 +46,21 @@ own consistency story distinct from user-data consistency.
 Any Postgres-wire client (psql, Npgsql, pgx, EF Core) that
 does catalog introspection expects these tables:
 
-| Table | Purpose | Compat priority |
-| --- | --- | --- |
-| `pg_class` | Table / index / view / matview metadata | P0 |
-| `pg_attribute` | Columns of a relation | P0 |
-| `pg_type` | Types, OIDs | P0 |
-| `pg_namespace` | Schemas | P0 |
-| `pg_index` | Index metadata | P0 |
-| `pg_constraint` | Constraints | P1 |
-| `pg_proc` | Functions | P1 |
-| `pg_database` | Databases | P1 |
-| `pg_roles` / `pg_authid` | Users / roles | P1 |
-| `pg_statistic` | Statistics (histograms, MCV lists) | P2 |
-| `pg_am` | Access methods | P2 |
-| `pg_operator` | Operators | P2 |
-| `pg_description` | Comments | P3 |
+| Table                    | Purpose                                 | Compat priority |
+| ------------------------ | --------------------------------------- | --------------- |
+| `pg_class`               | Table / index / view / matview metadata | P0              |
+| `pg_attribute`           | Columns of a relation                   | P0              |
+| `pg_type`                | Types, OIDs                             | P0              |
+| `pg_namespace`           | Schemas                                 | P0              |
+| `pg_index`               | Index metadata                          | P0              |
+| `pg_constraint`          | Constraints                             | P1              |
+| `pg_proc`                | Functions                               | P1              |
+| `pg_database`            | Databases                               | P1              |
+| `pg_roles` / `pg_authid` | Users / roles                           | P1              |
+| `pg_statistic`           | Statistics (histograms, MCV lists)      | P2              |
+| `pg_am`                  | Access methods                          | P2              |
+| `pg_operator`            | Operators                               | P2              |
+| `pg_description`         | Comments                                | P3              |
 
 P0 tables must return faithful results for the most common
 introspection queries. P1 / P2 / P3 degrade progressively.
@@ -72,7 +72,7 @@ discipline:
 
 - **Standard-type OIDs are fixed.** `int4` is 23; `text`
   is 25; `timestamp` is 1114. These are baked into every
-  client and *cannot* be changed.
+  client and _cannot_ be changed.
 - **User-defined-type OIDs are allocated** from a reserved
   range. Zeta uses a dedicated range so Zeta-native types
   (ZSet, spine-handle) don't collide with any Postgres

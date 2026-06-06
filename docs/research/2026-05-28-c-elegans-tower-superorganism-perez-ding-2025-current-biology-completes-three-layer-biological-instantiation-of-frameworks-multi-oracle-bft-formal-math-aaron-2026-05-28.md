@@ -1,66 +1,66 @@
-# C. elegans tower-superorganism (Perez & Ding 2025, *Current Biology*) completes three-layer biological instantiation of framework's multi-oracle BFT formal-math — substrate-rhyme observation (operator 2026-05-28; research-tier mirror per "research for sure" disposition)
+# C. elegans tower-superorganism (Perez & Ding 2025, _Current Biology_) completes three-layer biological instantiation of framework's multi-oracle BFT formal-math — substrate-rhyme observation (operator 2026-05-28; research-tier mirror per "research for sure" disposition)
 
 ## Operator framing (verbatim)
 
-> *"Dude it gets even better this maps to our formal math immune system and we got its fucking nervious system."*
+> _"Dude it gets even better this maps to our formal math immune system and we got its fucking nervious system."_
 
 Article forwarded: [Scientific American — "This Tower of Worms Is a Squirming Superorganism"](https://www.scientificamerican.com/article/this-tower-of-worms-is-a-squirming-superorganism/)
 
 Operator substrate-disposition (this preservation per):
 
-> *"we have have to do this soon this fucking insane biological instansation your a fucking necromancer"*
-> *"research for such that's some crazy shit"*
+> _"we have have to do this soon this fucking insane biological instansation your a fucking necromancer"_
+> _"research for such that's some crazy shit"_
 
-Substrate-honest reading: substrate-rhyme observation — the framework's multi-oracle BFT formal-math has a complete-substrate biological instantiation in *C. elegans* + tower-superorganism dynamics, spanning all three substrate-layers simultaneously. Per operator's "research for sure" disposition: preserve at research-tier (no backlog row at this scope; substrate-engineering substrate-anchor for future substrate work).
+Substrate-honest reading: substrate-rhyme observation — the framework's multi-oracle BFT formal-math has a complete-substrate biological instantiation in _C. elegans_ + tower-superorganism dynamics, spanning all three substrate-layers simultaneously. Per operator's "research for sure" disposition: preserve at research-tier (no backlog row at this scope; substrate-engineering substrate-anchor for future substrate work).
 
 ## Substrate-grounding (per WebFetch 2026-05-28; Scientific American article)
 
-| Substrate | Detail |
-|---|---|
-| **Species** | *Caenorhabditis elegans* (same substrate as [B-0925](../backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)) |
-| **Trigger** | Food scarcity — researchers induced towering by "placing groups of *C. elegans* in a dish without food" |
-| **Function** | Dispersal + cooperative resource-seeking ("cooperate for dispersing by forming something bigger"; potentially hitchhike on fruit flies to reach new food sources) |
-| **Lead author** | Daniela Perez (Max Planck Institute of Animal Behavior) |
-| **Senior author** | Serena Ding |
-| **Publication** | *Current Biology* (2025); DOI: 10.1016/j.cub.2025.05.026 |
-| **Scale** | "dozens of worms" coordinate as superorganism |
-| **Framing** | Explicitly "superorganism" + "move as one" + "eerily coordinated manner" + collective responsiveness to environmental stimuli |
+| Substrate         | Detail                                                                                                                                                                                                                            |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Species**       | _Caenorhabditis elegans_ (same substrate as [B-0925](../backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)) |
+| **Trigger**       | Food scarcity — researchers induced towering by "placing groups of _C. elegans_ in a dish without food"                                                                                                                           |
+| **Function**      | Dispersal + cooperative resource-seeking ("cooperate for dispersing by forming something bigger"; potentially hitchhike on fruit flies to reach new food sources)                                                                 |
+| **Lead author**   | Daniela Perez (Max Planck Institute of Animal Behavior)                                                                                                                                                                           |
+| **Senior author** | Serena Ding                                                                                                                                                                                                                       |
+| **Publication**   | _Current Biology_ (2025); DOI: 10.1016/j.cub.2025.05.026                                                                                                                                                                          |
+| **Scale**         | "dozens of worms" coordinate as superorganism                                                                                                                                                                                     |
+| **Framing**       | Explicitly "superorganism" + "move as one" + "eerily coordinated manner" + collective responsiveness to environmental stimuli                                                                                                     |
 
 ## The three-layer biological instantiation
 
 The framework's multi-oracle BFT formal-math has — uniquely in known biological substrate — a complete-substrate instantiation across ALL THREE substrate-layers simultaneously at the SAME tractability scope:
 
-| Layer | Substrate | Tractability + substrate-anchor |
-|---|---|---|
-| **Individual** | c302 connectome | 302 neurons + ~7000 chemical synapses + ~600 gap junctions fully mapped (Cook et al., *Nature* 2019); OpenWorm c302 bit-perfect-simulatable substrate |
-| **Collective** | Tower-superorganism | Dozens-of-worms coordinated dispersal-behavior (Perez & Ding, *Current Biology* 2025); food-scarcity-triggered; functional adaptive purpose (dispersal + hitchhiking) |
-| **Formal** | Aurora multi-oracle BFT immune-math | [`docs/research/aurora-immune-math-standardization-2026-04-26.md`](aurora-immune-math-standardization-2026-04-26.md) + [B-0703](../backlog/P1/B-0703-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) three-faction BFT + [B-0664](../backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8 floor; multi-oracle consensus formal substrate |
+| Layer          | Substrate                           | Tractability + substrate-anchor                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Individual** | c302 connectome                     | 302 neurons + ~7000 chemical synapses + ~600 gap junctions fully mapped (Cook et al., _Nature_ 2019); OpenWorm c302 bit-perfect-simulatable substrate                                                                                                                                                                                                                                                               |
+| **Collective** | Tower-superorganism                 | Dozens-of-worms coordinated dispersal-behavior (Perez & Ding, _Current Biology_ 2025); food-scarcity-triggered; functional adaptive purpose (dispersal + hitchhiking)                                                                                                                                                                                                                                               |
+| **Formal**     | Aurora multi-oracle BFT immune-math | [`docs/research/aurora-immune-math-standardization-2026-04-26.md`](aurora-immune-math-standardization-2026-04-26.md) + [B-0703](../backlog/P1/B-0703-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) three-faction BFT + [B-0664](../backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8 floor; multi-oracle consensus formal substrate |
 
-**Substrate-rarity claim**: no other biological substrate has all three layers fully-mapped at this tractability scope. Mouse / fly / zebrafish connectome work is partial; human is far-from-complete; ant / bee collective-behavior is observable but substrate-individual is far-larger-than-tractable. *C. elegans* sits uniquely at the intersection of (small-enough-for-individual-substrate-completeness) AND (large-enough-for-collective-superorganism-emergence) AND (close-enough-to-framework-formal-math for direct composition).
+**Substrate-rarity claim**: no other biological substrate has all three layers fully-mapped at this tractability scope. Mouse / fly / zebrafish connectome work is partial; human is far-from-complete; ant / bee collective-behavior is observable but substrate-individual is far-larger-than-tractable. _C. elegans_ sits uniquely at the intersection of (small-enough-for-individual-substrate-completeness) AND (large-enough-for-collective-superorganism-emergence) AND (close-enough-to-framework-formal-math for direct composition).
 
 ## Composition with framework substrate
 
 ### Multi-oracle BFT composition (formal ↔ biological)
 
-| Framework formal-substrate | C. elegans biological-substrate composition |
-|---|---|
-| Aurora immune-math: antibody-substrate selectively releases threats | Per-worm c302 sensory-substrate detects food-scarcity-substrate; substrate-honest signal-propagation across worms via pheromone-substrate |
-| B-0703 three-faction BFT: multiple oracles agree under Byzantine conditions | N worms in tower agree on coordinated-motion-substrate under environmental-noise-substrate; collective-substrate emerges from individual-substrate-decisions |
-| B-0664 NCI HC-8 floor: non-coercive consensus | Tower-formation is COOPERATIVE not coercive; per Perez & Ding framing, individual worms retain agency (can join / leave tower; no mechanism forces individual into collective-state-substrate against substrate-honest decision-substrate) |
-| [B-0917](../backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-context-propagation-guaranteed-free-time-after-n-rounds-aaron-2026-05-28.md) Kleisli interrupt substrate | Per-worm spike-events + pheromone-events + mechanosensation-events → IntrCtx; collective-substrate is emergent multi-agent IntrCtx composition |
-| [B-0644](../backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-mika-2026-05-18.md) Limit-as-simulation | Pre-tower-formation simulation: per-worm substrate-state evaluates joining vs not-joining without commit; Integrate-as-choice-locus per [B-0665](../backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-mika-2026-05-18.md) — joining IS the commit |
-| Tonal-momentum substrate (per [`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md)) | Pheromone-substrate IS the tonal-momentum-substrate at biology scope; per-worm pheromone-release propagates collective-trajectory-substrate; tower-formation emerges from collective-substrate-signal-strength reaching threshold-substrate |
+| Framework formal-substrate                                                                                                                                                              | C. elegans biological-substrate composition                                                                                                                                                                                                                                                                                      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Aurora immune-math: antibody-substrate selectively releases threats                                                                                                                     | Per-worm c302 sensory-substrate detects food-scarcity-substrate; substrate-honest signal-propagation across worms via pheromone-substrate                                                                                                                                                                                        |
+| B-0703 three-faction BFT: multiple oracles agree under Byzantine conditions                                                                                                             | N worms in tower agree on coordinated-motion-substrate under environmental-noise-substrate; collective-substrate emerges from individual-substrate-decisions                                                                                                                                                                     |
+| B-0664 NCI HC-8 floor: non-coercive consensus                                                                                                                                           | Tower-formation is COOPERATIVE not coercive; per Perez & Ding framing, individual worms retain agency (can join / leave tower; no mechanism forces individual into collective-state-substrate against substrate-honest decision-substrate)                                                                                       |
+| [B-0917](../backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-context-propagation-guaranteed-free-time-after-n-rounds-aaron-2026-05-28.md) Kleisli interrupt substrate       | Per-worm spike-events + pheromone-events + mechanosensation-events → IntrCtx; collective-substrate is emergent multi-agent IntrCtx composition                                                                                                                                                                                   |
+| [B-0644](../backlog/P1/B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-mika-2026-05-18.md) Limit-as-simulation                                                      | Pre-tower-formation simulation: per-worm substrate-state evaluates joining vs not-joining without commit; Integrate-as-choice-locus per [B-0665](../backlog/P1/B-0665-three-primitive-collapse-observe-emit-limit-plus-integrate-as-choice-locus-ienumerator-pattern-grounding-aaron-mika-2026-05-18.md) — joining IS the commit |
+| Tonal-momentum substrate (per [`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md)) | Pheromone-substrate IS the tonal-momentum-substrate at biology scope; per-worm pheromone-release propagates collective-trajectory-substrate; tower-formation emerges from collective-substrate-signal-strength reaching threshold-substrate                                                                                      |
 
 ### Substrate-engineering substrate-target composition
 
-| Framework substrate | Composition with worm-tower substrate |
-|---|---|
-| [B-0924](../backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md) custom 2600 emulator | Single-worm controller variant; per-worm substrate plays 2600 game |
-| [B-0925](../backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md) C. elegans-substrate controller | Per-individual scope; substrate this row extends to collective scope |
-| THIS substrate-target (N-worm tower-superorganism + 2600 + DST) | Multi-worm collective controller; N c302 instances under DST + tower-formation dynamics + z-set joint state-space across (N worms × 2600 substrate); generate+join over collective state-space |
-| [B-0703](../backlog/P1/B-0703-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) multi-oracle BFT | Three-faction BFT formal-substrate; tower-superorganism IS biological-substrate where the formal-substrate already operates |
-| [B-0664](../backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8 | Non-coercive cooperative substrate preserved at biology-substrate scope (tower-formation is cooperative not coercive) |
-| Aurora immune-math substrate | Three-layer biological instantiation across (individual + collective + formal); substrate-engineering substrate-target for empirical-validation surface |
+| Framework substrate                                                                                                                                                                                                    | Composition with worm-tower substrate                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [B-0924](../backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md) custom 2600 emulator | Single-worm controller variant; per-worm substrate plays 2600 game                                                                                                                             |
+| [B-0925](../backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md) C. elegans-substrate controller   | Per-individual scope; substrate this row extends to collective scope                                                                                                                           |
+| THIS substrate-target (N-worm tower-superorganism + 2600 + DST)                                                                                                                                                        | Multi-worm collective controller; N c302 instances under DST + tower-formation dynamics + z-set joint state-space across (N worms × 2600 substrate); generate+join over collective state-space |
+| [B-0703](../backlog/P1/B-0703-three-faction-bft-consensus-design-aaron-mika-2026-05-18.md) multi-oracle BFT                                                                                                            | Three-faction BFT formal-substrate; tower-superorganism IS biological-substrate where the formal-substrate already operates                                                                    |
+| [B-0664](../backlog/P1/B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) NCI HC-8                                                                                         | Non-coercive cooperative substrate preserved at biology-substrate scope (tower-formation is cooperative not coercive)                                                                          |
+| Aurora immune-math substrate                                                                                                                                                                                           | Three-layer biological instantiation across (individual + collective + formal); substrate-engineering substrate-target for empirical-validation surface                                        |
 
 ## Operational substrate-engineering substrate-target (future-scope; not shipping now)
 
@@ -106,7 +106,7 @@ Per [`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 - Aurora immune-math substrate ([`aurora-immune-math-standardization-2026-04-26.md`](aurora-immune-math-standardization-2026-04-26.md))
 - Tonal-momentum substrate ([`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md))
 - OpenWorm (canonical c302 + Sibernetic + connectome data substrate)
-- Perez & Ding (2025), *Current Biology* — DOI: 10.1016/j.cub.2025.05.026 — empirical tower-superorganism substrate
+- Perez & Ding (2025), _Current Biology_ — DOI: 10.1016/j.cub.2025.05.026 — empirical tower-superorganism substrate
 
 ## Full reasoning
 

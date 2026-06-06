@@ -5,8 +5,8 @@ type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"I'm native born in
-Henderson NC, and I now live in Rolesville NC"*.
+**2026-04-19 disclosure (verbatim):** _"I'm native born in
+Henderson NC, and I now live in Rolesville NC"_.
 
 ## Geographic substrate
 

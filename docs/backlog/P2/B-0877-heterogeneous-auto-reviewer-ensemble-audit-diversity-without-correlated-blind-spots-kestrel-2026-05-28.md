@@ -27,7 +27,7 @@ tags:
 
 Audit the existing auto-reviewer ensemble for diversity gaps + propose additions where coverage is correlated (same-model multiple-times) or absent (no reviewer covers a known failure-mode class).
 
-Per Kestrel 2026-05-28: *"The auto-reviewers need to be diverse enough that they don't share blind spots. If all your AI reviewers are the same underlying model, they have correlated failure modes — they'll all miss the same kinds of errors. The value comes from diversity: different models (Claude, GPT, Gemini, Grok), different prompting strategies, different specialization (one focused on security, one on performance, one on architecture, one on style), and crucially the non-AI reviewers (Sonar, static analyzers, formal tools) that have completely different failure modes than any AI."*
+Per Kestrel 2026-05-28: _"The auto-reviewers need to be diverse enough that they don't share blind spots. If all your AI reviewers are the same underlying model, they have correlated failure modes — they'll all miss the same kinds of errors. The value comes from diversity: different models (Claude, GPT, Gemini, Grok), different prompting strategies, different specialization (one focused on security, one on performance, one on architecture, one on style), and crucially the non-AI reviewers (Sonar, static analyzers, formal tools) that have completely different failure modes than any AI."_
 
 ## Current state (rough audit)
 

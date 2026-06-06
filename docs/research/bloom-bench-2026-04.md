@@ -3,9 +3,9 @@
 Round 40 deliverable. Measurements that graduate the
 **Bloom filters (blocked + counting)** row on
 [`../TECH-RADAR.md`](../TECH-RADAR.md) from Trial to
-Adopt per the row's own evidence gate: *"Promote to
+Adopt per the row's own evidence gate: _"Promote to
 Adopt once `bench/Benchmarks/BloomBench.fs` lands with
-measured FP rate + cache-miss numbers."*
+measured FP rate + cache-miss numbers."_
 
 **Outcome: gate PASSES.** Both halves of the Adopt
 gate met:
@@ -20,12 +20,12 @@ gate met:
 
 ## Summary
 
-| Gate half | Claim | Result | Measured |
-|-----------|-------|--------|----------|
-| Throughput | `ns/op(1M) / ns/op(100k) ≤ 1.3` | **PASS** | ≤ 1.08 on all Blocked benchmarks |
-| Throughput | zero managed allocation per op on Blocked paths | **PASS** | `Allocated = -` on every `Blocked*` row |
-| FPR | measured ≤ 2× target at every N | **PASS** (post-fix) | 0.34× / 0.89× / 0.13× at N=10k/100k/1M |
-| Cache-miss counters (Linux/Windows only) | deferred to Linux CI | — | gap declared below |
+| Gate half                                | Claim                                           | Result              | Measured                                |
+| ---------------------------------------- | ----------------------------------------------- | ------------------- | --------------------------------------- |
+| Throughput                               | `ns/op(1M) / ns/op(100k) ≤ 1.3`                 | **PASS**            | ≤ 1.08 on all Blocked benchmarks        |
+| Throughput                               | zero managed allocation per op on Blocked paths | **PASS**            | `Allocated = -` on every `Blocked*` row |
+| FPR                                      | measured ≤ 2× target at every N                 | **PASS** (post-fix) | 0.34× / 0.89× / 0.13× at N=10k/100k/1M  |
+| Cache-miss counters (Linux/Windows only) | deferred to Linux CI                            | —                   | gap declared below                      |
 
 ## Scope
 
@@ -37,7 +37,7 @@ Fourteen benchmark runs across three categories:
    `BlockedMayContain{Int64,String}` at N ∈ {10k, 100k, 1M}.
 2. **Empirical FPR** — `BlockedFpr` at N ∈ {10k, 100k},
    plus a standalone F# script (`/tmp/bloom_fpr_check.fsx`)
-   that reports the actual FP *counts* BDN discards —
+   that reports the actual FP _counts_ BDN discards —
    BDN measures timing only, not return values. The
    script extends coverage to N=1M.
 3. **Allocation profile** — `[<MemoryDiagnoser>]` on
@@ -56,7 +56,7 @@ Fourteen benchmark runs across three categories:
 
 ## Honest-bounds note — cache-miss measurement
 
-The TECH-RADAR row names *cache-miss numbers* as part
+The TECH-RADAR row names _cache-miss numbers_ as part
 of the Adopt gate. BDN's `HardwareCounters` attribute
 supports `CacheMisses` **only on Linux (perf_event) and
 Windows (ETW)**; macOS has no portable perf-counter
@@ -79,15 +79,15 @@ rather than hidden.
 
 ## Measurements — throughput
 
-All numbers are per *operation* inside the benchmark
+All numbers are per _operation_ inside the benchmark
 body; the BDN "Mean" column is divided by `N` (the
 `[<Params>]` array length) because each benchmark
 iterates over all `N` items inside a single
 invocation. **Zero allocation** is reported on every
 Blocked row.
 
-| Benchmark                 | N         | Per-op (ns) | Allocated |
-|---------------------------|----------:|------------:|----------:|
+| Benchmark                 |         N | Per-op (ns) | Allocated |
+| ------------------------- | --------: | ----------: | --------: |
 | `BlockedAddInt64.Add`     |    10,000 |       101.4 |         - |
 | `BlockedAddInt64.Add`     |   100,000 |        10.1 |         - |
 | `BlockedAddInt64.Add`     | 1,000,000 |        10.8 |         - |
@@ -130,10 +130,10 @@ false-positive count by `N`. Target `p = 0.01`.
 ### Post-fix measurements (current code)
 
 | N (inserted) | N (probed) | FP count | Measured FPR | Target | Ratio | Acceptance (≤ 2×) |
-|-------------:|-----------:|---------:|-------------:|-------:|------:|:-----------------:|
-|       10,000 |     10,000 |       34 |      0.00340 |   0.01 | 0.34× | **PASS**          |
-|      100,000 |    100,000 |      888 |      0.00888 |   0.01 | 0.89× | **PASS**          |
-|    1,000,000 |  1,000,000 |    1,286 |      0.00129 |   0.01 | 0.13× | **PASS**          |
+| -----------: | ---------: | -------: | -----------: | -----: | ----: | :---------------: |
+|       10,000 |     10,000 |       34 |      0.00340 |   0.01 | 0.34× |     **PASS**      |
+|      100,000 |    100,000 |      888 |      0.00888 |   0.01 | 0.89× |     **PASS**      |
+|    1,000,000 |  1,000,000 |    1,286 |      0.00129 |   0.01 | 0.13× |     **PASS**      |
 
 All three points strictly below target. The N=10k and
 N=1M rows sit below the `[0.5× target, 2× target]`
@@ -144,7 +144,7 @@ row is right at the analytic target) but because
 `createBlocked` rounds the bucket count up to the
 next power of 2 to let bucket selection collapse to a
 mask. That pow-of-2 padding adds 0–2× headroom at
-boundaries, producing FPR *better* than the requested
+boundaries, producing FPR _better_ than the requested
 target at some N and at the target at others. That is
 a feature (faster indexing, strictly-better-than-gated
 FPR), not a bug.
@@ -156,11 +156,11 @@ FPR), not a bug.
 The first measurement pass failed the Adopt gate at
 every N:
 
-| N (inserted) | N (probed) | FP count | Measured FPR | Target | Ratio   | Acceptance |
-|-------------:|-----------:|---------:|-------------:|-------:|--------:|:----------:|
-|       10,000 |     10,000 |      459 |      0.04590 |   0.01 | 4.59×   | FAIL       |
-|      100,000 |    100,000 |    9,833 |      0.09833 |   0.01 | 9.83×   | FAIL       |
-|    1,000,000 |  1,000,000 |   59,159 |      0.05916 |   0.01 | 5.92×   | FAIL       |
+| N (inserted) | N (probed) | FP count | Measured FPR | Target | Ratio | Acceptance |
+| -----------: | ---------: | -------: | -----------: | -----: | ----: | :--------: |
+|       10,000 |     10,000 |      459 |      0.04590 |   0.01 | 4.59× |    FAIL    |
+|      100,000 |    100,000 |    9,833 |      0.09833 |   0.01 | 9.83× |    FAIL    |
+|    1,000,000 |  1,000,000 |   59,159 |      0.05916 |   0.01 | 5.92× |    FAIL    |
 
 The reduction factor between pre- and post-fix (13.5× /
 11× / 46×) confirms the correlation diagnosis below:
@@ -196,7 +196,7 @@ That's the low **9** bits of `h1`. Bucket index
 **shared bits 0–7**.
 
 Consequence: any two keys that hashed to the same
-bucket *also* hashed to a bit-position sub-cluster of
+bucket _also_ hashed to a bit-position sub-cluster of
 size 2 inside that bucket. The Kirsch–Mitzenmacher
 step `h += h2 + i` spread subsequent probes, but the
 first probe — the most load-bearing for FPR — was

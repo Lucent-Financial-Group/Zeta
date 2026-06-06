@@ -78,7 +78,7 @@ metadata:
     app.kubernetes.io/part-of: zeta
 spec:
   serviceName: orleans-silo
-  replicas: 0  # scaled up by ArgoCD-managed app once an image is published
+  replicas: 0 # scaled up by ArgoCD-managed app once an image is published
   selector:
     matchLabels:
       app.kubernetes.io/name: orleans-silo
@@ -98,11 +98,11 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: silo
-              containerPort: 11111   # Orleans silo-to-silo
+              containerPort: 11111 # Orleans silo-to-silo
             - name: gateway
-              containerPort: 30000   # Orleans client gateway
+              containerPort: 30000 # Orleans client gateway
             - name: dashboard
-              containerPort: 8080    # Optional Orleans dashboard
+              containerPort: 8080 # Optional Orleans dashboard
           env:
             - name: ORLEANS_SERVICE_ID
               value: zeta

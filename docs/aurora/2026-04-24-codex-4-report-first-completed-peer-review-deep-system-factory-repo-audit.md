@@ -103,12 +103,12 @@ Aaron's Otto-188b drop included 4 Codex reports. Each
 landed as a separate commit on Codex-side (per Codex's
 reported `make_pr` tool invocation). The reports:
 
-| # | Codex filename                                            | Commit    | Focus                                                  |
-|---|-----------------------------------------------------------|-----------|--------------------------------------------------------|
-| 1 | `docs/research/deep-factory-review-2026-04-24.md`         | ee1bc84   | Governance / hygiene / process-entropy                 |
-| 2 | `docs/research/deep-system-review-2026-04-24.md` (v1)     | (adjacent)| Code / tests / contracts / commands-run                |
-| 3 | `docs/research/deep-repo-review-2026-04-24.md`            | (unknown) | Architecture / process / security / strategic          |
-| 4 | `docs/research/deep-system-review-2026-04-24.md` (v2)     | f9a6d2b   | Durability / recursive-correctness / strategic recs    |
+| #   | Codex filename                                        | Commit     | Focus                                               |
+| --- | ----------------------------------------------------- | ---------- | --------------------------------------------------- |
+| 1   | `docs/research/deep-factory-review-2026-04-24.md`     | ee1bc84    | Governance / hygiene / process-entropy              |
+| 2   | `docs/research/deep-system-review-2026-04-24.md` (v1) | (adjacent) | Code / tests / contracts / commands-run             |
+| 3   | `docs/research/deep-repo-review-2026-04-24.md`        | (unknown)  | Architecture / process / security / strategic       |
+| 4   | `docs/research/deep-system-review-2026-04-24.md` (v2) | f9a6d2b    | Durability / recursive-correctness / strategic recs |
 
 Reports 2 and 4 share filename but differ in content
 (different Codex sessions or different PR branches).
@@ -405,31 +405,31 @@ pattern.
 Selected verbatim pulls that carry the overall assessment
 at quotable quality:
 
-> *"This repo is unusually ambitious and unusually
+> _"This repo is unusually ambitious and unusually
 > instrumented: formal models, broad docs, explicit
 > governance, and many self-audit scripts. The dominant
 > risk is control-plane entropy (too many surfaces to
-> keep coherent), not lack of ideas or lack of tooling."*
+> keep coherent), not lack of ideas or lack of tooling."_
 
-> *"If Claude focuses on reducing control-plane entropy
+> _"If Claude focuses on reducing control-plane entropy
 > while tightening executable contract checks, this
 > system can move from 'impressively instrumented' to
-> 'reliably compounding.'"*
+> 'reliably compounding.'"_
 
-> *"The project is now approaching a meta-complexity
+> _"The project is now approaching a meta-complexity
 > cliff: more governance surfaces are being added faster
 > than they are enforced. Some audits are informative but
 > not yet binding. Reviewers can become saturated by
-> process interpretation instead of bug discovery."*
+> process interpretation instead of bug discovery."_
 
-> *"Zeta is closer to a research operating system than a
+> _"Zeta is closer to a research operating system than a
 > standard code repository. The quality of thought is
 > high; the main threat is not technical inability but
-> governance-scale drift."*
+> governance-scale drift."_
 
-> *"Strong research factory with high observability, but
+> _"Strong research factory with high observability, but
 > currently bottlenecked by operational coherence and
-> contract-enforcement consistency."*
+> contract-enforcement consistency."_
 
 ---
 
@@ -504,12 +504,12 @@ at quotable quality:
 ## 9. Cross-references
 
 - `memory/project_codex_first_deep_review_4_reports_
-  convergent_findings_pending_dedicated_absorb_otto_189_
-  2026_04_24.md` (Otto-188b scheduling memory, full
+convergent_findings_pending_dedicated_absorb_otto_189_
+2026_04_24.md` (Otto-188b scheduling memory, full
   detail).
 - `memory/feedback_aaron_not_the_bottleneck_otto_iterates_
-  to_bullet_proof_aaron_final_validator_not_design_
-  review_gate_2026_04_23.md` (Otto-93 peer-harness
+to_bullet_proof_aaron_final_validator_not_design_
+review_gate_2026_04_23.md` (Otto-93 peer-harness
   progression context).
 - `memory/feedback_peer_harness_progression_*` (Otto-86
   4-stage arc).

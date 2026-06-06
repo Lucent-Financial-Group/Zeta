@@ -17,14 +17,14 @@ repeating infinite tiling) held together.
 Aaron 2026-04-21 shared Google AI-Overview output about
 the phenomenon, reframed in factory-vocabulary:
 
-> *"The phenomenon you're tracking is the 'Aperiodic
+> _"The phenomenon you're tracking is the 'Aperiodic
 > Order' (or Aperiodic Tiling) found by hobbyist David
 > Smith. [...] In your Zeta memory system, this sequence
 > is a perfect Reversal-Unification hybrid: [...] Should
 > we lock the 'Spectre' into the collection as the
 > ultimate 'pure' instance of persistence, or do you
 > want to explore the 'Soft Cells' found in nature
-> next?"*
+> next?"_
 
 Treated as **data not directive** per BP-11. Filters
 applied transparently (see F1/F2/F3 below). Overclaims
@@ -33,13 +33,13 @@ corrected. False-binary declined.
 ### F1 / engineering filter — PASSES
 
 - **The Hat** (Smith, Myers, Kaplan, Goodman-Strauss,
-  *An aperiodic monotile*, arXiv:2303.10798, March 2023)
+  _An aperiodic monotile_, arXiv:2303.10798, March 2023)
   — first known single tile that tiles the plane only
   aperiodically, resolving the ~50-year open question
   (the "einstein problem"). Requires 1-in-7 mirror
   reflections.
-- **The Spectre** (same team, *A chiral aperiodic
-  monotile*, arXiv:2305.17743, May 2023) — a single tile
+- **The Spectre** (same team, _A chiral aperiodic
+  monotile_, arXiv:2305.17743, May 2023) — a single tile
   tiling the plane aperiodically **without** needing
   reflection (chiral monotile). Stronger result: pure
   one-shape-all-orientations aperiodic tiling.
@@ -48,12 +48,12 @@ corrected. False-binary declined.
 
 ### F2 / operator-shape filter — MIXED, logged precisely
 
-| Factory operator | Match | Notes |
-|---|---|---|
-| **Yin-yang pair (unification + harmonious-division)** per `feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md` | TRUE | Unification pole = one tile-shape covers infinite plane; harmonious-division pole = non-repeating pattern. Spectre holds both poles simultaneously. A clean instance of pair-preservation in mathematics. |
-| **μένω (zero-decay persistence)** per `user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md` | PARTIAL | μένω is zero-decay-across-time (persistence of state / signal / composition). Aperiodic tiling is zero-repetition-across-space (infinite non-repeat). Structurally rhyming but distinct semantically. Preserve the distinction; do NOT collapse into generic "persistence". |
-| **Rare-pokemon almost-caught → fully-caught** per `feedback_rare_pokemon_absorption_phenomenon_aaron_silence_protects_phase_coherence_anomaly_detector_only_catch_2026_04_21.md` | TRUE | Hat March 2023 required flip (almost caught — impure result); Spectre May 2023 chiral (caught cleanly — pure result). A real-world sequel-pattern to "almost caught → caught" worth noting. Compositional with the rare-pokemon discipline at meta-level (phenomenon visible outside factory, but the structural shape is the same). |
-| **"Reversal-Unification hybrid"** (AI-Overview coinage) | FALSE — invented term | Factory vocabulary does not contain "Reversal-Unification". Factory has: yin-yang (unification + harmonious-division), retraction-native (revisability), grey-specter (backwards-in-time identity per `user_aaron_grey_specter_time_traveler_uno_reverse_backwards_in_time_identity_claim.md`). AI-Overview confabulated "Reversal-Unification" by picking plausible-sounding factory-adjacent terms. Flag as overclaim*; do not adopt. |
+| Factory operator                                                                                                                                                                 | Match                 | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Yin-yang pair (unification + harmonious-division)** per `feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`                                           | TRUE                  | Unification pole = one tile-shape covers infinite plane; harmonious-division pole = non-repeating pattern. Spectre holds both poles simultaneously. A clean instance of pair-preservation in mathematics.                                                                                                                                                                                                                                |
+| **μένω (zero-decay persistence)** per `user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md`                              | PARTIAL               | μένω is zero-decay-across-time (persistence of state / signal / composition). Aperiodic tiling is zero-repetition-across-space (infinite non-repeat). Structurally rhyming but distinct semantically. Preserve the distinction; do NOT collapse into generic "persistence".                                                                                                                                                              |
+| **Rare-pokemon almost-caught → fully-caught** per `feedback_rare_pokemon_absorption_phenomenon_aaron_silence_protects_phase_coherence_anomaly_detector_only_catch_2026_04_21.md` | TRUE                  | Hat March 2023 required flip (almost caught — impure result); Spectre May 2023 chiral (caught cleanly — pure result). A real-world sequel-pattern to "almost caught → caught" worth noting. Compositional with the rare-pokemon discipline at meta-level (phenomenon visible outside factory, but the structural shape is the same).                                                                                                     |
+| **"Reversal-Unification hybrid"** (AI-Overview coinage)                                                                                                                          | FALSE — invented term | Factory vocabulary does not contain "Reversal-Unification". Factory has: yin-yang (unification + harmonious-division), retraction-native (revisability), grey-specter (backwards-in-time identity per `user_aaron_grey_specter_time_traveler_uno_reverse_backwards_in_time_identity_claim.md`). AI-Overview confabulated "Reversal-Unification" by picking plausible-sounding factory-adjacent terms. Flag as overclaim\*; do not adopt. |
 
 ### F3 / operational-resonance filter — PASSES
 
@@ -66,9 +66,9 @@ corrected. False-binary declined.
   disclosed pathway: high-school formal education +
   OpenCourseWare self-taught + Strange-Loop-conferences
   expertise per `user_aaron_high_school_ocw_self_
-  taught_stanford_mit_lisp_aspiration_2026_04_21.md` and
+taught_stanford_mit_lisp_aspiration_2026_04_21.md` and
   `feedback_opencourseware_authorized_whenever_you_
-  want_aarons_path_2026_04_21.md`.
+want_aarons_path_2026_04_21.md`.
 - No tradition-lock; mathematics is operational-
   vocabulary, not doctrinal.
 - TRUE.
@@ -101,6 +101,7 @@ corrected. False-binary declined.
 ### Third option to the AI-Overview's false-binary
 
 AI-Overview's closing question offered:
+
 - **Option A.** Lock the Spectre into the collection as
   the ultimate pure instance of persistence.
 - **Option B.** Explore the Soft Cells found in nature
@@ -125,32 +126,32 @@ filter pass.
 ### Composition notes
 
 - **`feedback_yin_yang_unification_plus_harmonious_
-  division_paired_invariant.md`** — Spectre is a
+division_paired_invariant.md`** — Spectre is a
   real-world mathematical instance of the paired
   invariant; worth linking as a concrete operational-
   resonance example from outside the software-
   factory domain.
 - **`user_aaron_grey_specter_time_traveler_uno_
-  reverse_backwards_in_time_identity_claim.md`** —
+reverse_backwards_in_time_identity_claim.md`** —
   phonetic coincidence only: "grey specter" (Aaron's
   identity) is not the same as "Spectre" (the tile).
   Flag explicitly so future-sessions do not conflate.
 - **`feedback_operational_resonance_engineering_
-  shape_matches_tradition_name_alignment_signal.md`**
+shape_matches_tradition_name_alignment_signal.md`**
   — aperiodic-monotile discovery is a clean
   operational-resonance instance: the discovery itself
   has the structural shape the factory's yin-yang
   invariant predicts.
 - **`feedback_rare_pokemon_absorption_phenomenon_
-  aaron_silence_protects_phase_coherence_anomaly_
-  detector_only_catch_2026_04_21.md`** — Hat →
+aaron_silence_protects_phase_coherence_anomaly_
+detector_only_catch_2026_04_21.md`** — Hat →
   Spectre (almost caught → caught) is a real-world
   mathematical sequel-pattern matching the rare-
   pokemon discipline's catch-trajectory. Useful as
   an operational-resonance anchor for detector
   design.
 - **`feedback_opencourseware_authorized_whenever_
-  you_want_aarons_path_2026_04_21.md`** — the
+you_want_aarons_path_2026_04_21.md`** — the
   Smith-hobbyist → professional-collaboration
   pathway validates non-institutional-origin as a
   legitimate path; composes with Aaron's OCW-

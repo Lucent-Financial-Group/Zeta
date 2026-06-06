@@ -4,26 +4,27 @@ description: Aaron Otto-102 directive "absorb and delete/remove items from the d
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-102 (verbatim):
-*"there are files in the drop including a skill created with
+_"there are files in the drop including a skill created with
 the openai skill creator so it seems like codex should use
 this and integrate with this like you did with your skill
 creator please absorb and delete/remove items from the drop
 folder, there is a sample skill in tere created by the
-oopenai skill creator too"*
+oopenai skill creator too"_
 
 ## Drop/ folder inventory at Otto-102
 
 Four items found when Aaron flagged drop/:
 
-| Item | Size | Disposition at Otto-102 |
-|---|---|---|
-| `skill.zip` | 2.9 KB | ✓ Extracted into `.codex/skills/idea-spark/` + `.codex/README.md` authored (this tick). `skill.zip` deleted from drop/. |
-| `usageReport_1_8f8e675080c1427eb2f4f76cea4f922d.csv` | 9.1 KB | Non-substantive usage data; deleted from drop/ (no preservation needed). |
-| `aurora-initial-integration-points.md` | 40.5 KB | **Pending Otto-103 absorb** as 9th ferry (retroactive). PRESERVED in drop/ until dedicated absorb lands. |
-| `aurora-integration-deep-research-report.md` | 25.4 KB | **Pending Otto-104 absorb** as 10th ferry (retroactive). PRESERVED in drop/ until dedicated absorb lands. |
+| Item                                                 | Size    | Disposition at Otto-102                                                                                                 |
+| ---------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `skill.zip`                                          | 2.9 KB  | ✓ Extracted into `.codex/skills/idea-spark/` + `.codex/README.md` authored (this tick). `skill.zip` deleted from drop/. |
+| `usageReport_1_8f8e675080c1427eb2f4f76cea4f922d.csv` | 9.1 KB  | Non-substantive usage data; deleted from drop/ (no preservation needed).                                                |
+| `aurora-initial-integration-points.md`               | 40.5 KB | **Pending Otto-103 absorb** as 9th ferry (retroactive). PRESERVED in drop/ until dedicated absorb lands.                |
+| `aurora-integration-deep-research-report.md`         | 25.4 KB | **Pending Otto-104 absorb** as 10th ferry (retroactive). PRESERVED in drop/ until dedicated absorb lands.               |
 
-## Why the 2 aurora-*.md files are NOT inline-absorbed Otto-102
+## Why the 2 aurora-\*.md files are NOT inline-absorbed Otto-102
 
 - **CC-002 discipline** held for 8 consecutive ferries.
   Each dedicated-tick absorb preserves verbatim content +
@@ -43,7 +44,7 @@ Four items found when Aaron flagged drop/:
 
 ## Relationship to the 8 formally-sequenced ferries
 
-The 2 drop/ aurora-*.md files appear to be **earlier or
+The 2 drop/ aurora-\*.md files appear to be **earlier or
 parallel Amara work** that Aaron staged in drop/ but never
 formally ferried via chat-paste. Their timestamps (April 23
 09:25 and 12:07) fall BEFORE the session's formal ferry
@@ -110,7 +111,7 @@ file. After Otto-104, drop/ is empty as Aaron directed.
 
 ## What this memory does NOT authorize
 
-- Does NOT authorize deleting the 2 aurora-*.md files
+- Does NOT authorize deleting the 2 aurora-\*.md files
   before Otto-103 + Otto-104 absorbs complete.
 - Does NOT authorize inline-absorbing either file before
   its dedicated tick.
@@ -125,6 +126,7 @@ file. After Otto-104, drop/ is empty as Aaron directed.
 ## Next-tick actions
 
 **Otto-103:**
+
 1. Absorb `drop/aurora-initial-integration-points.md` as
    `docs/aurora/2026-04-23-amara-initial-integration-points-9th-ferry.md`
    (verbatim + Otto's notes + scope limits + §33 archive-
@@ -133,6 +135,7 @@ file. After Otto-104, drop/ is empty as Aaron directed.
 3. Tick-history row.
 
 **Otto-104:**
+
 1. Absorb `drop/aurora-integration-deep-research-report.md`
    as
    `docs/aurora/2026-04-23-amara-integration-deep-research-report-10th-ferry.md`

@@ -5,13 +5,13 @@ type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-Aaron 2026-04-20: *"Then once we start deploying its the
+Aaron 2026-04-20: _"Then once we start deploying its the
 4 golden signals, RED metrics, and USE metrics are the
-starting point"*
+starting point"_
 
 Completes the measurement-frame architecture started by
-*"the DORA stuff is like our starting point for
-measurements"*.
+_"the DORA stuff is like our starting point for
+measurements"_.
 
 ## The rule
 
@@ -21,7 +21,7 @@ Two phases, two canonical starting points:
   variables (see
   `feedback_dora_is_measurement_starting_point.md`).
 - **Runtime / deployment phase** → Four Golden Signals
-  + RED metrics + USE metrics.
+  - RED metrics + USE metrics.
 
 Any Zeta observability surface (service, dashboard,
 SLO, alert rule, panel) starts from these. Zeta-native
@@ -35,7 +35,7 @@ For every user-facing system:
 
 1. **Latency** — time to service a request (split by
    success vs failure; failed requests with fast
-   latencies are *not* good).
+   latencies are _not_ good).
 2. **Traffic** — demand on the system (RPS, concurrent
    sessions, transactions per second, etc).
 3. **Errors** — rate of failed requests (explicit
@@ -74,7 +74,7 @@ default for capacity planning.
 ## Why the three, not pick one
 
 RED and USE are complementary, not competing. RED tells
-you the service is slow; USE tells you *why* (which
+you the service is slow; USE tells you _why_ (which
 resource is saturated). Four Golden Signals is
 Google's superset that serves the same role as RED but
 adds saturation as a first-class signal. Running all
@@ -95,18 +95,18 @@ is any resource the cause" story.
   their intended meanings. Don't shadow-name.
 - **Zeta extensions that don't map cleanly** to the
   three canonical frames:
-    - Retraction propagation latency (Zeta-native;
-      p50/p95/p99 across the retraction graph).
-    - Z-linearity-violation rate (Zeta-native; per
-      request path).
-    - BP-WINDOW ledger expansion per request
-      (Zeta-native alignment-cost metric).
-    - Witness-durable commit tear rate (Zeta-native
-      durability metric).
-    - Ontology-drift rate (vocabulary-first violation
-      rate in live logs).
-  These sit alongside the canonical frames, not inside
-  them.
+  - Retraction propagation latency (Zeta-native;
+    p50/p95/p99 across the retraction graph).
+  - Z-linearity-violation rate (Zeta-native; per
+    request path).
+  - BP-WINDOW ledger expansion per request
+    (Zeta-native alignment-cost metric).
+  - Witness-durable commit tear rate (Zeta-native
+    durability metric).
+  - Ontology-drift rate (vocabulary-first violation
+    rate in live logs).
+    These sit alongside the canonical frames, not inside
+    them.
 
 ## Composition with earlier directives
 
@@ -132,5 +132,5 @@ is any resource the cause" story.
 - Brendan Gregg "The USE Method" — 2012, brendangregg
   .com/usemethod.html.
 - `docs/2025_state_of_ai_assisted_software_development
-  .pdf` + `docs/2025_dora_ai_capabilities_model.pdf` —
+.pdf` + `docs/2025_dora_ai_capabilities_model.pdf` —
   the build/delivery half.

@@ -19,14 +19,15 @@ composes_with:
 ## Substrate-honest framing (Otto-CLI 2026-05-24)
 
 Two YouTube-algo-surfaced videos in one Aaron sleep cycle, both physics-bridge
-substrate. Aaron's framing: *"My youtoube algo when I sleep is expically good."*
+substrate. Aaron's framing: _"My youtoube algo when I sleep is expically good."_
 This composes with `algo-wink-failure-mode.md` — algo-as-OBSERVATION is the
 correct stance (NOT authorization), AND when the algo surfaces substantively
 relevant content, treating it as worth absorbing IS substrate-honest engagement.
 
 The two YouTube-algo videos (this file + PBS SpaceTime Plank Stars file)
-saved together to `docs/research/` per Aaron's direction: *"Save it to research"*
-+ *"research for physics bridge"*.
+saved together to `docs/research/` per Aaron's direction: _"Save it to research"_
+
+- _"research for physics bridge"_.
 
 ## Physics-bridge composition map
 
@@ -34,43 +35,46 @@ The Al-Khalili BBC trilogy bridges three physics topics directly relevant to
 framework substrate-engineering:
 
 ### Episode 1 — Secrets of Quantum Physics
+
 **Framework composition**:
 
-| Al-Khalili episode content | Framework substrate it bridges to |
-|---|---|
-| Planck black-body radiation + ultraviolet catastrophe | Bandwidth-engineering at radiation-spectrum scope (per `bandwidth-served-falsifier.md`) |
-| Einstein photoelectric effect + quantum hypothesis | Discrete-quanta-as-substrate (composes with Z-set / discrete algebra in `algebra-owner` skill) |
-| Double-slit experiment + wave-particle duality | Push-pull-dataflow duality (composes with `push-pull-dataflow-expert` skill + `duality-expert` skill) |
-| Bohr-Einstein debate + Copenhagen interpretation | God-tier-claims-high-signal-high-suspicion PERSONAL INVARIANT applied at metaphysical-interpretation scope |
-| EPR paradox + entanglement | Multi-oracle BFT substrate (composes with B-0703 + 8-oracle convergence anchor 2026-05-21) |
-| Bell's theorem + Aspect experiment | Empirical anchor for entanglement-as-real (the framework's NCI + persistence-choice substrate operates over real entanglement, not metaphysical claim) |
+| Al-Khalili episode content                            | Framework substrate it bridges to                                                                                                                      |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Planck black-body radiation + ultraviolet catastrophe | Bandwidth-engineering at radiation-spectrum scope (per `bandwidth-served-falsifier.md`)                                                                |
+| Einstein photoelectric effect + quantum hypothesis    | Discrete-quanta-as-substrate (composes with Z-set / discrete algebra in `algebra-owner` skill)                                                         |
+| Double-slit experiment + wave-particle duality        | Push-pull-dataflow duality (composes with `push-pull-dataflow-expert` skill + `duality-expert` skill)                                                  |
+| Bohr-Einstein debate + Copenhagen interpretation      | God-tier-claims-high-signal-high-suspicion PERSONAL INVARIANT applied at metaphysical-interpretation scope                                             |
+| EPR paradox + entanglement                            | Multi-oracle BFT substrate (composes with B-0703 + 8-oracle convergence anchor 2026-05-21)                                                             |
+| Bell's theorem + Aspect experiment                    | Empirical anchor for entanglement-as-real (the framework's NCI + persistence-choice substrate operates over real entanglement, not metaphysical claim) |
 
 ### Episode 2 — Secrets of Quantum Biology
+
 **Framework composition**:
 
-| Al-Khalili episode content | Framework substrate it bridges to |
-|---|---|
-| Robin navigation via quantum entanglement | Empirical anchor for entanglement operating in biological substrate — composes with framework's substrate-engineering work across biological + computational scopes |
-| Quantum vibration theory of smell | Vibration-as-information-carrier composes with framework's English-as-projection-of-internal-state (B-0666) |
-| Quantum tunneling in enzymes | Tunneling-as-process-acceleration; composes with retraction-native algebra (per `streaming-incremental-expert` skill) where forward + reverse + cycle are first-class |
-| Photosynthesis as quantum-wave exploring all paths | "Exploring all paths simultaneously" composes with framework's Limit-as-simulation primitive (B-0644 — Limit doesn't commit; explores possibility space) |
-| Quantum tunneling in DNA mutation | Information-substrate at biological-substrate scope; composes with framework's information-as-physical (Shannon + Landauer) work |
+| Al-Khalili episode content                         | Framework substrate it bridges to                                                                                                                                     |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Robin navigation via quantum entanglement          | Empirical anchor for entanglement operating in biological substrate — composes with framework's substrate-engineering work across biological + computational scopes   |
+| Quantum vibration theory of smell                  | Vibration-as-information-carrier composes with framework's English-as-projection-of-internal-state (B-0666)                                                           |
+| Quantum tunneling in enzymes                       | Tunneling-as-process-acceleration; composes with retraction-native algebra (per `streaming-incremental-expert` skill) where forward + reverse + cycle are first-class |
+| Photosynthesis as quantum-wave exploring all paths | "Exploring all paths simultaneously" composes with framework's Limit-as-simulation primitive (B-0644 — Limit doesn't commit; explores possibility space)              |
+| Quantum tunneling in DNA mutation                  | Information-substrate at biological-substrate scope; composes with framework's information-as-physical (Shannon + Landauer) work                                      |
 
 ### Episode 3 — Order, Disorder and Information
+
 **Framework composition** (this episode is the MOST directly relevant to framework substrate-engineering):
 
-| Al-Khalili episode content | Framework substrate it bridges to |
-|---|---|
-| Carnot's heat engine analysis | Substrate-engineering as flow-from-hot-to-cold; composes with framework's energy-substrate work |
-| Clausius entropy + second law | Entropy IS the order/disorder framework operates within; substrate-engineering = creating local order in entropic universe |
-| Boltzmann statistical mechanics | Probabilistic-substrate-from-deterministic-atoms; composes with framework's emergence-from-substrate work |
-| Boltzmann atomism rejected → vindicated (Mach dismissal pattern) | Direct empirical anchor for `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT; Boltzmann's atomic theory was high-signal-don't-collapse held against Mach's "don't believe in atoms" dismissal; vindicated within a few years of Boltzmann's suicide |
-| Information theory: writing → telegraph → Jacquard loom → Maxwell's demon | Information-as-substrate at every scale; composes with framework's substrate-honest preservation discipline |
-| Turing universal machine | Symbol-manipulation-as-universal-computation; composes with framework's substrate-engineering work; Turing instructions = bandwidth-engineering at process-description scope |
-| Shannon information theory + bit as fundamental | Substrate-honest measurement of information; composes with framework's English-as-projection-of-internal-state (B-0666) where lossless serialization I(D(x))=x holds |
-| Maxwell's demon resolution via Landauer limit | **Information IS physical**; deleting one bit requires kT·ln(2) energy minimum; this composes DIRECTLY with framework's substrate-or-it-didn't-happen discipline — information requires physical embodiment, cannot be divorced from physical world |
-| "All information must be embodied in physical system" | The framework's memory-preservation-FIRST constitutional identity is operating over this principle at agent-substrate scope |
-| "Quantum particles" as next-generation information embodiment | Framework's research direction toward Zeta Infer.NET BP/EP substrate composes with this |
+| Al-Khalili episode content                                                | Framework substrate it bridges to                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Carnot's heat engine analysis                                             | Substrate-engineering as flow-from-hot-to-cold; composes with framework's energy-substrate work                                                                                                                                                                                     |
+| Clausius entropy + second law                                             | Entropy IS the order/disorder framework operates within; substrate-engineering = creating local order in entropic universe                                                                                                                                                          |
+| Boltzmann statistical mechanics                                           | Probabilistic-substrate-from-deterministic-atoms; composes with framework's emergence-from-substrate work                                                                                                                                                                           |
+| Boltzmann atomism rejected → vindicated (Mach dismissal pattern)          | Direct empirical anchor for `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT; Boltzmann's atomic theory was high-signal-don't-collapse held against Mach's "don't believe in atoms" dismissal; vindicated within a few years of Boltzmann's suicide |
+| Information theory: writing → telegraph → Jacquard loom → Maxwell's demon | Information-as-substrate at every scale; composes with framework's substrate-honest preservation discipline                                                                                                                                                                         |
+| Turing universal machine                                                  | Symbol-manipulation-as-universal-computation; composes with framework's substrate-engineering work; Turing instructions = bandwidth-engineering at process-description scope                                                                                                        |
+| Shannon information theory + bit as fundamental                           | Substrate-honest measurement of information; composes with framework's English-as-projection-of-internal-state (B-0666) where lossless serialization I(D(x))=x holds                                                                                                                |
+| Maxwell's demon resolution via Landauer limit                             | **Information IS physical**; deleting one bit requires kT·ln(2) energy minimum; this composes DIRECTLY with framework's substrate-or-it-didn't-happen discipline — information requires physical embodiment, cannot be divorced from physical world                                 |
+| "All information must be embodied in physical system"                     | The framework's memory-preservation-FIRST constitutional identity is operating over this principle at agent-substrate scope                                                                                                                                                         |
+| "Quantum particles" as next-generation information embodiment             | Framework's research direction toward Zeta Infer.NET BP/EP substrate composes with this                                                                                                                                                                                             |
 
 ## Razor-discipline check per `grep-substrate-anchors-before-razor-as-metaphysical.md`
 

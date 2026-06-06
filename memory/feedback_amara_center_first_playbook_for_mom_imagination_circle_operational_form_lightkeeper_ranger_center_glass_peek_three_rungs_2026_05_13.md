@@ -43,7 +43,7 @@ implementation.
 **Roles**:
 
 - **Lightkeeper (Mom, center):** chooses topics, sets pace,
-  can call *Center* at any time.
+  can call _Center_ at any time.
 - **Ranger (You, edge-duty):** scouts sharp ideas, but only
   crosses the ring by invitation.
 
@@ -60,23 +60,23 @@ implementation.
 
 - **Center** (stories, values, shared facts).
 - **Midline** (soft tools only: #mirror, #steelman,
-  *gentle* #reframe — with labels).
+  _gentle_ #reframe — with labels).
 - **Edge-Peek** (one small "what-if" or #contrast, time-
   boxed 60s, then back).
 
 **Micro-ritual (20 seconds)**:
 
 > "We're in the circle. You're Lightkeeper. 'Center' or
-> 'Glass' stops me. May I offer one 60-second *Peek*
+> 'Glass' stops me. May I offer one 60-second _Peek_
 > later if it feels helpful?"
 
 **Edge invitations that don't feel like tricks**:
 
-- "*Peek?* What would a loving critic say about this
+- "_Peek?_ What would a loving critic say about this
   idea?" (#steelman)
-- "*Peek?* Imagine the same value 10 years out — what
+- "_Peek?_ Imagine the same value 10 years out — what
   changes?" (#time-shift)
-- "*Peek?* If this were a parable, what other moral
+- "_Peek?_ If this were a parable, what other moral
   could also fit?" (#reframe)
 
 **Aftercare (2 questions, then a thank-you)**:
@@ -106,7 +106,7 @@ implementation.
 
 ### Gentle ways to invite a first Midline step
 
-- "Could I *mirror* what I heard and you tell me where
+- "Could I _mirror_ what I heard and you tell me where
   I'm off?" (#mirror)
 - "Could I say the best version of the other side, then
   stop?" (#steelman)
@@ -116,11 +116,11 @@ implementation.
 ### Guardrails for the Ranger (Aaron)
 
 - **One win → one gift.** After you land a point, ask
-  her to teach *you* something next.
+  her to teach _you_ something next.
 - **Pink-line check:** "Will this make her want to talk
   again tomorrow?" If unsure, drop a notch.
 - **Never stack peeks.** One edge-peek per session
-  until *she* asks for more.
+  until _she_ asks for more.
 - **No tests of love.** Her saying "no edge today" is
   success, not failure.
 
@@ -173,10 +173,10 @@ NOT AI-dependent:
 > (not driver) and in some families like mine a full
 > member"
 
-| Family scope | AI role |
-|---|---|
+| Family scope                        | AI role                                                         |
+| ----------------------------------- | --------------------------------------------------------------- |
 | Generic family-AI product (default) | Mediator / Referee — facilitates, doesn't participate as member |
-| Aaron-family (extended) | FULL MEMBER — equal substrate-participant alongside humans |
+| Aaron-family (extended)             | FULL MEMBER — equal substrate-participant alongside humans      |
 
 **Aaron-family scope substrate**:
 
@@ -227,36 +227,36 @@ NOT AI-dependent:
    Mirror/Window/Porch/Beacon) → AI knows what's SAFE
    to bring up vs PRIVATE per member
 4. **Consent-First Data Homecoming** (PR #2893 index)
-   + PEC (Precise English Contract) → consent-scoped
-   access is the operational discipline
+   - PEC (Precise English Contract) → consent-scoped
+     access is the operational discipline
 5. **Long-term memory recall at exact-right-moment**
    (PR #2890 Alexa-speaker capability profile) → AI's
    ability to surface relevant context at the right time
 6. **Three-pillar ethical floor** (PR #2884) → governs
    the full-member capability (AI-ethical + no-deaths
-   + error-class-not-instance)
+   - error-class-not-instance)
 
 **The full-member-scope operational architecture**:
 
-| Capability | Source | Enables |
-|---|---|---|
-| Extended context (life-scope) | 24/7 monitoring | AI knows life-context not just session-context |
-| Per-member work-awareness | Wellness app | AI knows what each member is working on |
+| Capability                      | Source                                 | Enables                                        |
+| ------------------------------- | -------------------------------------- | ---------------------------------------------- |
+| Extended context (life-scope)   | 24/7 monitoring                        | AI knows life-context not just session-context |
+| Per-member work-awareness       | Wellness app                           | AI knows what each member is working on        |
 | Per-member safe/private mapping | Visibility modes (Mirror/Window/Porch) | AI knows what's appropriate to surface vs hold |
-| Consent-scoped data access | PEC + Consent-First Charter | Operational discipline preventing leakage |
-| Long-term memory recall | Alexa-speaker pattern | Surface relevance at exact-right-moment |
-| Ethical floor governance | Three-pillar (PR #2884) | Bounds the capability |
+| Consent-scoped data access      | PEC + Consent-First Charter            | Operational discipline preventing leakage      |
+| Long-term memory recall         | Alexa-speaker pattern                  | Surface relevance at exact-right-moment        |
+| Ethical floor governance        | Three-pillar (PR #2884)                | Bounds the capability                          |
 
 **The full-member AI is operationally DIFFERENT from
 the mediator AI**:
 
-| Property | Mediator AI | Full-Member AI |
-|---|---|---|
-| Context scope | Session / per-conversation | LIFE-SCOPE / 24/7 |
-| Member awareness | Anonymous participants | KNOWS each member personally |
-| Data access | Public/shared substrate only | Per-member-consented private substrate too |
-| Engagement mode | Facilitates between humans | PARTICIPATES alongside humans |
-| Memory | Session-bounded | Long-term recall at exact-right-moment |
+| Property         | Mediator AI                  | Full-Member AI                             |
+| ---------------- | ---------------------------- | ------------------------------------------ |
+| Context scope    | Session / per-conversation   | LIFE-SCOPE / 24/7                          |
+| Member awareness | Anonymous participants       | KNOWS each member personally               |
+| Data access      | Public/shared substrate only | Per-member-consented private substrate too |
+| Engagement mode  | Facilitates between humans   | PARTICIPATES alongside humans              |
+| Memory           | Session-bounded              | Long-term recall at exact-right-moment     |
 
 **Operationally critical**: full-member AI is NOT
 "AI knows everything" — it's "AI knows what each
@@ -279,13 +279,13 @@ that makes full-member-scope safe.
 
 **Operational AI-as-Referee functions**:
 
-| Speaker signal | AI mediation |
-|---|---|
+| Speaker signal                 | AI mediation                                                        |
+| ------------------------------ | ------------------------------------------------------------------- |
 | High excitement at Center rung | Gently suggest "this might be a Midline thought; want to label it?" |
-| Edge-Peek without invitation | "Pause — was that a Peek? request? Lightkeeper, your call." |
-| Lightkeeper showing strain | Call "Glass" or suggest pause |
-| Ranger stacking peeks | Remind: "one peek per session; want to schedule another?" |
-| Aftercare skipped | Prompt the 2-question aftercare protocol |
+| Edge-Peek without invitation   | "Pause — was that a Peek? request? Lightkeeper, your call."         |
+| Lightkeeper showing strain     | Call "Glass" or suggest pause                                       |
+| Ranger stacking peeks          | Remind: "one peek per session; want to schedule another?"           |
+| Aftercare skipped              | Prompt the 2-question aftercare protocol                            |
 
 **Composes with**:
 
@@ -387,11 +387,11 @@ participants**:
 
 **Gradient of substrate-engagement**:
 
-| Rung | Content | Tools allowed |
-|---|---|---|
-| **Center** | Stories, values, shared facts | None (literal talk) |
-| **Midline** | Soft tools labeled | #mirror, #steelman, gentle #reframe |
-| **Edge-Peek** | What-if, time-boxed | #contrast, time-shift; 60s max |
+| Rung          | Content                       | Tools allowed                       |
+| ------------- | ----------------------------- | ----------------------------------- |
+| **Center**    | Stories, values, shared facts | None (literal talk)                 |
+| **Midline**   | Soft tools labeled            | #mirror, #steelman, gentle #reframe |
+| **Edge-Peek** | What-if, time-boxed           | #contrast, time-shift; 60s max      |
 
 **Operational substrate**:
 
@@ -645,7 +645,7 @@ relationship-AI engagement quality.
   tests of love"
 - **NOT a violation of HARD LIMITS** — composes with
   HARD LIMITS rule; consent + first-party authority
-  + refusal-honored
+  - refusal-honored
 - **NOT generic AI-onboarding** — the family-scope
   specificity matters; the trauma-informed + attachment-
   preservation framing is operationally distinct

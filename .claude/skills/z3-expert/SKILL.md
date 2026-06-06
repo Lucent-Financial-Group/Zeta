@@ -56,7 +56,7 @@ Z3 is a satisfiability solver. To prove a claim `P`, you:
 1. Assert `¬P`.
 2. Ask Z3 `(check-sat)`.
 3. If Z3 answers `unsat`, then `¬P` is contradictory — so
-   `P` holds in *every* model of the background theory.
+   `P` holds in _every_ model of the background theory.
 
 ```smt2
 (declare-const a Int)
@@ -73,8 +73,8 @@ budget was exhausted. Treat `unknown` as **proof absent**,
 not as evidence.
 
 Never interpret `sat` as "good" in this idiom. The pattern is
-the mirror image of property-based testing — *refutation*
-instead of *confirmation*, which is why a single `unsat` is
+the mirror image of property-based testing — _refutation_
+instead of _confirmation_, which is why a single `unsat` is
 as strong as infinity-many satisfied test cases.
 
 ## Integer vs bitvector theory
@@ -84,7 +84,7 @@ intent:
 
 - **`Int` (unbounded integer theory, `QF_LIA`).** Use when
   the claim is an algebraic identity that should hold for
-  *every* integer. Example: group-theoretic axioms
+  _every_ integer. Example: group-theoretic axioms
   (associativity, commutativity, `+ 0 = id`). The proof
   extends to all of `int64`, `BigInteger`, anything integer-
   shaped, because the theory is richer than any fixed-width
@@ -181,7 +181,7 @@ without ever running.
    `z3AxiomHolds name claim` (simple case) or inlining a
    full SMT script.
 3. Run locally: `dotnet test tests/Tests.FSharp -c Release
-   --filter "FullyQualifiedName~Z3LawsTests"`.
+--filter "FullyQualifiedName~Z3LawsTests"`.
 4. `dotnet run --project tools/Z3Verify` prints one line
    per lemma; confirm all are `[PROVEN]`.
 5. Add a row to `docs/research/verification-registry.md` if
@@ -223,14 +223,14 @@ without ever running.
   refutes by finding one counterexample, which is the
   dual of "exists a counter-example to `∀`."
 - **Quantifier elimination budget.** `(set-option
-  :smt.qi.eager true)` widens eager instantiation; don't
+:smt.qi.eager true)` widens eager instantiation; don't
   reach for it before you've simplified the claim.
 - **Uninterpreted sort leakage.** Declaring `(declare-sort
-  Foo)` and asserting nothing about `Foo` gives Z3 total
+Foo)` and asserting nothing about `Foo` gives Z3 total
   freedom; claims that "look obvious" over `Foo` may go
   `sat` because Z3 picks a pathological model.
 - **Reused symbols across scripts.** Each `prove name
-  script` in `Program.fs` is a fresh Z3 invocation over
+script` in `Program.fs` is a fresh Z3 invocation over
   stdin; symbol names do not leak. But if you refactor
   into a shared SMT script, `(push)/(pop)` is the
   discipline.
@@ -272,7 +272,6 @@ without ever running.
   for the other formal-methods surfaces.
 - `.claude/skills/fsharp-expert/SKILL.md` — for F# idioms
   in the Z3 driver and its tests.
-- de Moura & Bjørner, *Z3: An Efficient SMT Solver* (TACAS
-  2008) — canonical reference.
-- Barrett, Fontaine, Tinelli, *The SMT-LIB Standard 2.6* —
+- de Moura & Bjørner, _Z3: An Efficient SMT Solver_ (TACAS 2008) — canonical reference.
+- Barrett, Fontaine, Tinelli, _The SMT-LIB Standard 2.6_ —
   the SMT-LIB2 script format Z3 accepts.

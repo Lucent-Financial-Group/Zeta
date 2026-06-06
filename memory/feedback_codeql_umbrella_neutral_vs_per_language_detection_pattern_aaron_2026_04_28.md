@@ -85,14 +85,15 @@ mechanism, verbatim from the umbrella check's own details URL via
 > found:
 >
 > ### Actions workflow (`codeql.yml`)
-> * `/language:java-kotlin`
+>
+> - `/language:java-kotlin`
 
 **EVIDENCE-BASED resolution:**
 
 1. **`tools/alloy/AlloyRunner.java` is first-party Java** that the
    `codeql.yml` workflow's matrix did NOT include — header comment claimed
-   "no Java/Kotlin source" which was wrong (Aaron 2026-04-28: *"we have java
-   in our codebase, it's just a little but it's there"*).
+   "no Java/Kotlin source" which was wrong (Aaron 2026-04-28: _"we have java
+   in our codebase, it's just a little but it's there"_).
 2. **Main has java-kotlin analyses** uploaded by (a) GitHub's default-setup
    runner (older, `analysis_key=dynamic/github-code-scanning/codeql:analyze`,
    non-deletable) and (b) our path-gate's empty-SARIF baseline upload
@@ -101,7 +102,7 @@ mechanism, verbatim from the umbrella check's own details URL via
    alert delta for that configuration → emits NEUTRAL.
 4. **AceHack vs LFG asymmetry:** likely the SAME mechanism on both sides;
    the visible asymmetry was probably a sampling artifact (specific PRs
-   measured) rather than a structural difference. *Speculation flag:* not
+   measured) rather than a structural difference. _Speculation flag:_ not
    tested empirically. What would disconfirm: pull umbrella details URLs
    for matched-pair PRs across forks and compare verbatim summaries.
 

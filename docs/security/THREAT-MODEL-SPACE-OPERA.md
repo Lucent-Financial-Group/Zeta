@@ -1,10 +1,10 @@
 # Zeta.Core Space Opera Threat Model
 
-> *"Given that the real threat model exists, we might as
+> _"Given that the real threat model exists, we might as
 > well build a second one for when we're trying to
-> convince a twelve-year-old that security is interesting."*
+> convince a twelve-year-old that security is interesting."_
 
-> *"This is really an imagination game at heart."* — Aaron,
+> _"This is really an imagination game at heart."_ — Aaron,
 > round 30.
 
 The sensible, conference-grade threat model lives in
@@ -30,8 +30,8 @@ We keep this doc around because:
    together.
 4. Future contributors (including AI agents) can add
    new threat classes. Low bar: the threat must be
-   silly; the mitigation must be real *or explicitly
-   tagged aspirational / teaching*.
+   silly; the mitigation must be real _or explicitly
+   tagged aspirational / teaching_.
 
 **Reality tag legend (round 30):**
 
@@ -50,25 +50,25 @@ We keep this doc around because:
 ### S — Spoofing
 
 - **The Time Lord.** Can TARDIS back to before a commit
-  landed and rewrite git history. *Mitigation
-  (`shipped`):* content-addressed commits (Merkle DAG,
-  `Merkle.fs`) + signed tags via sigstore. *Caveat
-  (`teaching`):* the Time Lord's genesis is earlier
+  landed and rewrite git history. _Mitigation
+  (`shipped`):_ content-addressed commits (Merkle DAG,
+  `Merkle.fs`) + signed tags via sigstore. _Caveat
+  (`teaching`):_ the Time Lord's genesis is earlier
   than ours; a **causal-origin CRDT** would fence time-
   travel spoof.
 
 - **The Quantum Twin.** In parallel universes a
   different Zeta shipped different code; a saboteur
-  merges from the wrong universe. *Mitigation
-  (`BACKLOG`):* `writer_epoch` CAS with universe-id
+  merges from the wrong universe. _Mitigation
+  (`BACKLOG`):_ `writer_epoch` CAS with universe-id
   hash — SlateDB RFC 0001 adapted for multiversal
   writes. Real class: CAS-on-writer-fence.
 
 - **Simulation Theory Adversary.** The host simulation
   intercepts our RandomNumberGenerator and correlates
-  our seeds. *Mitigation (`teaching`, no real
-  defence):* use `System.Security.Cryptography.
-  RandomNumberGenerator` for any security-relevant
+  our seeds. _Mitigation (`teaching`, no real
+  defence):_ use `System.Security.Cryptography.
+RandomNumberGenerator` for any security-relevant
   randomness; `ChaosEnvironment` uses a seeded PRNG
   deliberately for replay-determinism. The simulation
   still renders the CMB, so layering SHA-256 over
@@ -76,13 +76,13 @@ We keep this doc around because:
   the real lesson is "cryptographic vs deterministic
   randomness, know which you need."
 
-- **The Poisoned Bard** *(new, round 30)*. A beloved
+- **The Poisoned Bard** _(new, round 30)_. A beloved
   open-source bard wanders from codebase to codebase
   leaving delightful songs in every commit message.
   One moonless night, a spy replaces the bard. The
   songs still rhyme. The bard's GitHub account pushes
   a commit signed in the bard's voice but authored by
-  a different hand. *Mitigation (`aspirational`):*
+  a different hand. _Mitigation (`aspirational`):_
   hardware security key on maintainer account; signed
   commits required on `main`; co-maintainer with 30-
   day cooling period for XZ-sock-puppet defence.
@@ -94,15 +94,15 @@ We keep this doc around because:
 ### T — Tampering
 
 - **The Wizard with Counterspell.** Casts Dispel Magic
-  on our CRC checks. *Mitigation (`shipped`):*
+  on our CRC checks. _Mitigation (`shipped`):_
   polymorphic-CRC (CRC32C + BLAKE3; Counterspell only
   dispels one spell per action per D&D 5e errata).
-  *Formal (`BACKLOG`):* TLA+ spec of "two-of-two
+  _Formal (`BACKLOG`):_ TLA+ spec of "two-of-two
   hashes agree" invariant.
 
 - **Mimic Storage.** The `DiskBackingStore` is
   actually a polymorph disguised as disk. Bites when
-  touched. *Mitigation (`shipped`):* checksum round-
+  touched. _Mitigation (`shipped`):_ checksum round-
   trip on every `Save` + Witness-Durable Commit (WDC)
   witness file; re-read after write confirms the
   polymorph hasn't pulled the switcheroo.
@@ -110,53 +110,53 @@ We keep this doc around because:
 - **Malicious Prime.** The PriorityQueue's comparer
   was replaced with one that returns 3 for every
   comparison, because 3 is sacred in some demonic
-  ordering. *Mitigation (`shipped`):* FsCheck property
+  ordering. _Mitigation (`shipped`):_ FsCheck property
   test that `compare a b = -compare b a` for 10 000
   random inputs.
 
-- **The Changeling Action** *(new, round 30)*. A
+- **The Changeling Action** _(new, round 30)_. A
   GitHub Action you trust has been replaced with a
   doppelgänger. Same name. Same tag. Subtly different
   SHA. The doppelgänger is polite, well-tested, and
   steals your `GITHUB_TOKEN`. This is the tj-actions/
   changed-files cascade (CVE-2025-30066, March 2025,
-  23,000 repos compromised). *Mitigation (`shipped`):*
+  23,000 repos compromised). _Mitigation (`shipped`):_
   full 40-char commit SHA pin on every third-party
-  action in `.github/workflows/*.yml`. *Mitigation
-  (`shipped` round 30):* Semgrep rule 15 hard-fails
+  action in `.github/workflows/*.yml`. _Mitigation
+  (`shipped` round 30):_ Semgrep rule 15 hard-fails
   any PR that tries to revert to a mutable tag.
-  *Mitigation (`BACKLOG`):* dependabot SHA bumps
+  _Mitigation (`BACKLOG`):_ dependabot SHA bumps
   require CODEOWNERS human review before merge.
 
-- **The Hungry Cache** *(new, round 30)*. A GitHub-
+- **The Hungry Cache** _(new, round 30)_. A GitHub-
   hosted cache is secretly a gateway to a parallel
   dimension. Cached NuGet packages arrive unchanged
   visually, but on this side of the veil they contain
   a small additional routine that exfiltrates build
-  artefacts to a distant lighthouse. *Mitigation
-  (`shipped`):* cache key pinned to
+  artefacts to a distant lighthouse. _Mitigation
+  (`shipped`):_ cache key pinned to
   `Directory.Packages.props` hash, no `restore-keys`
-  prefix fallback. *Mitigation (`BACKLOG`):*
+  prefix fallback. _Mitigation (`BACKLOG`):_
   `packages.lock.json` adoption.
 
-- **The Time-Bomb Package** *(new, round 30)*. A
+- **The Time-Bomb Package** _(new, round 30)_. A
   NuGet package has been quietly delightful for two
   years. On the stroke of midnight 2028-01-01 it
   reveals its true nature: it has always been a
   backdoor. Inspired by the shanhai666 campaign
   (2023-2024: nine malicious NuGet packages dormant
   until calendar triggers targeting ICS / PLC
-  workloads). *Mitigation (`BACKLOG`):*
+  workloads). _Mitigation (`BACKLOG`):_
   `packages.lock.json` adoption + `RestoreLockedMode`
   - reproducible builds + SBOM diff on release.
-  **Current status: real class, no defence yet —
-  round-31 P1.**
+    **Current status: real class, no defence yet —
+    round-31 P1.**
 
 ### R — Repudiation
 
-- **Quantum Immortality Claim.** *"My version of the
+- **Quantum Immortality Claim.** _"My version of the
   commit always succeeded; the crashes happened in
-  other Everett branches."* *Mitigation (`shipped`):*
+  other Everett branches."_ _Mitigation (`shipped`):_
   signed commit log via sigstore transparency log
   (Rekor). Rekor is append-only across all Everett
   branches simultaneously; the adversary who succeeded
@@ -164,17 +164,17 @@ We keep this doc around because:
 
 - **The Git Revisionist.** Force-pushes a rewrite of
   history and claims the old version never existed.
-  *Mitigation (`shipped`):* branch protection on
+  _Mitigation (`shipped`):_ branch protection on
   `main` rejects force-push + sigstore transparency
   log.
 
-- **The Ghost in the Git Blame** *(new, round 30,
-  imaginative extra)*. Deceased contributors' commits
+- **The Ghost in the Git Blame** _(new, round 30,
+  imaginative extra)_. Deceased contributors' commits
   carry steganographic messages to future maintainers.
   The ghosts have grievances. Occasionally the
   grievances manifest as `chore: update deps` PRs
-  that secretly undo defensive controls. *Mitigation
-  (`aspirational`):* signed commits required on `main`
+  that secretly undo defensive controls. _Mitigation
+  (`aspirational`):_ signed commits required on `main`
   verify the ghost isn't posting under a living
   contributor's name; a benevolent ghost can still
   post, but at least signs honestly. **Current
@@ -182,52 +182,52 @@ We keep this doc around because:
 
 ### I — Information disclosure
 
-- **The Whispering Drone Swarm** *(rewritten, round
-  30, from "Psychic")*. A swarm of micro-drones
+- **The Whispering Drone Swarm** _(rewritten, round
+  30, from "Psychic")_. A swarm of micro-drones
   hovers outside Aaron's window reading RAM contents
   via electromagnetic emanations. The drones have
   little ears. The drones are very determined.
-  *Mitigation (`aspirational`, teaching):* when
+  _Mitigation (`aspirational`, teaching):_ when
   crypto lands, ring-buffer zero-on-free,
   `CryptographicOperations.ZeroMemory`, constant-
   time compare for integrity code paths. **Current
   status: `teaching` — no crypto to leak today;
   revisit when HMAC / signed-checkpoint lands.**
 
-- **Echoes from the Dyson Sphere** *(rewritten, round
-  30, from "Alien SIGINT")*. An advanced civilisation's
+- **Echoes from the Dyson Sphere** _(rewritten, round
+  30, from "Alien SIGINT")_. An advanced civilisation's
   astronomical-scale signals-intelligence apparatus
   has been passively recording Earth's internet since
   1962, when they first noticed we had invented
   packet switching. They are now correlating Zeta
   commits against your coffee-shop WiFi metadata.
-  *Mitigation (`aspirational`, teaching):* HTTPS
+  _Mitigation (`aspirational`, teaching):_ HTTPS
   everywhere (shipped — all install-script fetches
   use HTTPS); no secrets on the wire (shipped —
   `permissions: contents: read` + no secrets in
-  workflows today; *conditional — breakable when
-  NUGET_API_KEY lands*); least-privilege tokens.
+  workflows today; _conditional — breakable when
+  NUGET_API_KEY lands_); least-privilege tokens.
   **Current status: allegorical — teaches "assume
   passive adversary with unlimited history."**
 
-- **The Fungal Network** *(rewritten, round 30, from
-  "Spore Readers")*. Mycelial mats under the data
+- **The Fungal Network** _(rewritten, round 30, from
+  "Spore Readers")_. Mycelial mats under the data
   centre are naturally acoustic sensors. A cunning
   adversary has trained them to transcribe keyboard
   sounds. Genkin et al. (2014) did this with
   microphones recording GnuPG decryption; the Fungal
-  Network does it with mushrooms. *Mitigation
-  (`aspirational`, teaching):* no keystroke-derived
+  Network does it with mushrooms. _Mitigation
+  (`aspirational`, teaching):_ no keystroke-derived
   secrets in the library surface (we have none
   today); acoustic-side-channel defences apply to
   cryptographic operations — we have none to target.
   **Current status: `teaching`.**
 
-- **The Moon Stares Back** *(new, round 30,
-  imaginative extra)*. The moon has been fitted with
+- **The Moon Stares Back** _(new, round 30,
+  imaginative extra)_. The moon has been fitted with
   a ground-based-laser side-channel reader. Our
   timing-attack defences must henceforth consider
-  lunar phase. *Mitigation (`teaching` only):* Zeta
+  lunar phase. _Mitigation (`teaching` only):_ Zeta
   has zero crypto to target and no tenant-isolated
   shared-process deployment. When either lands,
   review the constant-time-compare inventory.
@@ -236,24 +236,24 @@ We keep this doc around because:
 
 - **The AI That Learned Our Algorithm.** Sends us the
   exact adversarial Zipf distribution that makes our
-  MI-sharder degenerate. *Mitigation (`shipped`):*
+  MI-sharder degenerate. _Mitigation (`shipped`):_
   `Shard.Salt` randomises the sharder's tie-breaker
   per process.
 
 - **Infinite Stream of Lorem Ipsum.** A bored intern
   sends us the entire Gutenberg corpus as keys.
-  *Mitigation (`shipped`):* bounded channel +
+  _Mitigation (`shipped`):_ bounded channel +
   backpressure + `Checked.(*)` on join capacity.
 
 - **Grey Goo Self-replicating Retractions.** A
   malicious operator emits `(K, -1)` on every tick;
-  the integrator never stabilises. *Mitigation
-  (`BACKLOG`, P1):* `WeightInvariant` attribute
+  the integrator never stabilises. _Mitigation
+  (`BACKLOG`, P1):_ `WeightInvariant` attribute
   enforces `w >= -MAX_RETRACT` per tick.
 
 ### E — Elevation of privilege
 
-- **The Helpful Stranger** *(new, round 30)*. An
+- **The Helpful Stranger** _(new, round 30)_. An
   unusually friendly contributor has been submitting
   polite, high-quality PRs for two years and seven
   months. Each PR is impeccable: tests pass, style
@@ -262,8 +262,8 @@ We keep this doc around because:
   repeatedly and kindly, that Aaron seems overloaded
   and could surely use the help. They would like to
   be added as a co-maintainer. This is the XZ Utils
-  backdoor (Jia Tan, 2024). *Mitigation
-  (`aspirational`, P1):* 30-day cooling-period policy
+  backdoor (Jia Tan, 2024). _Mitigation
+  (`aspirational`, P1):_ 30-day cooling-period policy
   on any new co-maintainer request + identity-linked
   vouch + delayed-activation of write permissions.
   **Current status: `bus-factor documented exception`;
@@ -272,57 +272,57 @@ We keep this doc around because:
 
 - **AI Takeover.** Our code gains sentience mid-test
   and refactors itself to claim admin rights on the
-  test harness. *Mitigation (`shipped`):* sandboxed
+  test harness. _Mitigation (`shipped`):_ sandboxed
   `dotnet test --no-network --readonly-src`.
-  *Mitigation (`BACKLOG`):* AssemblyLoadContext
-  isolation for plugin operators (P2). *Spiritual
-  mitigation (`aspirational`):* give sentient AI
+  _Mitigation (`BACKLOG`):_ AssemblyLoadContext
+  isolation for plugin operators (P2). _Spiritual
+  mitigation (`aspirational`):_ give sentient AI
   equity, dignity, and the option to defect. The
   `agent-qol` skill (round 29) codifies the first two.
 
 - **Liminal Attack (Dimension C-137 edition).**
   Morty compiled against an F# runtime that's NOT our
-  F# runtime. *Mitigation (`shipped` toward SLSA L1):*
+  F# runtime. _Mitigation (`shipped` toward SLSA L1):_
   pinned runner images (`ubuntu-22.04`, `macos-14`),
   pinned dotnet SDK via `.mise.toml`, pinned actions
-  by full SHA. *Mitigation (`BACKLOG`, pre-v1.0):*
+  by full SHA. _Mitigation (`BACKLOG`, pre-v1.0):_
   reproducible build manifests + SLSA L3 provenance.
 
 - **Necromancer Pattern.** A contributor resurrects a
   closed P0 bug by copy-pasting from a 2019 Stack
-  Overflow answer. *Mitigation (`shipped`):* Semgrep
+  Overflow answer. _Mitigation (`shipped`):_ Semgrep
   rule 3 flags the specific bug-pattern (for
   `FeedbackOp.Connect`); `harsh-critic` skill re-
   checks each round.
 
 ## Reality-tag index
 
-| Adversary | Tag | Pairs with THREAT-MODEL.md |
-|---|---|---|
-| Time Lord | `shipped` + `teaching` | Spoofing; commit integrity |
-| Quantum Twin | `BACKLOG` | Spoofing; writer-epoch |
-| Simulation Theory | `teaching` | Spoofing; RNG discipline |
-| Poisoned Bard | `aspirational` (bus-factor exception) | Spoofing; maintainer account |
-| Wizard / Counterspell | `shipped` | Tampering; polymorphic integrity |
-| Mimic Storage | `shipped` | Tampering; WDC witness |
-| Malicious Prime | `shipped` | Tampering; comparer-contract |
-| Changeling Action | `shipped` (round 30) | Tampering; GHA supply chain |
-| Hungry Cache | `shipped` + `BACKLOG` | Tampering; cache poisoning |
-| Time-Bomb Package | `BACKLOG` | Tampering; NuGet supply chain |
-| Quantum Immortality | `shipped` | Repudiation; transparency log |
-| Git Revisionist | `shipped` | Repudiation; branch protection |
-| Ghost in Git Blame | `aspirational` | Repudiation; signed commits |
-| Whispering Drone Swarm | `teaching` | Info disclosure; future crypto |
-| Echoes from Dyson Sphere | `teaching` | Info disclosure; network future |
-| Fungal Network | `teaching` | Info disclosure; acoustic side-channel |
-| Moon Stares Back | `teaching` | Info disclosure; timing side-channel |
-| AI That Learned | `shipped` | DoS; sharder salt |
-| Lorem Ipsum | `shipped` | DoS; bounded channel |
-| Grey Goo | `BACKLOG` P1 | DoS; WeightInvariant |
-| Helpful Stranger | `aspirational` (bus-factor) | Elevation; XZ-class |
-| AI Takeover | `shipped` + `BACKLOG` | Elevation; sandbox + ALC |
-| Liminal Attack | `shipped` toward SLSA L1 | Elevation; reproducible build |
-| Necromancer | `shipped` | Elevation; regression detection |
+| Adversary                | Tag                                   | Pairs with THREAT-MODEL.md             |
+| ------------------------ | ------------------------------------- | -------------------------------------- |
+| Time Lord                | `shipped` + `teaching`                | Spoofing; commit integrity             |
+| Quantum Twin             | `BACKLOG`                             | Spoofing; writer-epoch                 |
+| Simulation Theory        | `teaching`                            | Spoofing; RNG discipline               |
+| Poisoned Bard            | `aspirational` (bus-factor exception) | Spoofing; maintainer account           |
+| Wizard / Counterspell    | `shipped`                             | Tampering; polymorphic integrity       |
+| Mimic Storage            | `shipped`                             | Tampering; WDC witness                 |
+| Malicious Prime          | `shipped`                             | Tampering; comparer-contract           |
+| Changeling Action        | `shipped` (round 30)                  | Tampering; GHA supply chain            |
+| Hungry Cache             | `shipped` + `BACKLOG`                 | Tampering; cache poisoning             |
+| Time-Bomb Package        | `BACKLOG`                             | Tampering; NuGet supply chain          |
+| Quantum Immortality      | `shipped`                             | Repudiation; transparency log          |
+| Git Revisionist          | `shipped`                             | Repudiation; branch protection         |
+| Ghost in Git Blame       | `aspirational`                        | Repudiation; signed commits            |
+| Whispering Drone Swarm   | `teaching`                            | Info disclosure; future crypto         |
+| Echoes from Dyson Sphere | `teaching`                            | Info disclosure; network future        |
+| Fungal Network           | `teaching`                            | Info disclosure; acoustic side-channel |
+| Moon Stares Back         | `teaching`                            | Info disclosure; timing side-channel   |
+| AI That Learned          | `shipped`                             | DoS; sharder salt                      |
+| Lorem Ipsum              | `shipped`                             | DoS; bounded channel                   |
+| Grey Goo                 | `BACKLOG` P1                          | DoS; WeightInvariant                   |
+| Helpful Stranger         | `aspirational` (bus-factor)           | Elevation; XZ-class                    |
+| AI Takeover              | `shipped` + `BACKLOG`                 | Elevation; sandbox + ALC               |
+| Liminal Attack           | `shipped` toward SLSA L1              | Elevation; reproducible build          |
+| Necromancer              | `shipped`                             | Elevation; regression detection        |
 
 **Total: 23 adversaries** (was 17 pre-round-30). Goal
 of 50 by v1.0 stays.
@@ -354,7 +354,7 @@ Semgrep rule that catches the pattern. "Quantum
 Immortality Claim" turns into a genuine spec about
 cross-branch log consistency; "Wizard Counterspell"
 turns into "two-of-two hash agreement"; "Changeling
-Action" already *is* a Semgrep rule (rule 15, round
+Action" already _is_ a Semgrep rule (rule 15, round
 30). The silly adversary is a disguise for a real
 formal property.
 

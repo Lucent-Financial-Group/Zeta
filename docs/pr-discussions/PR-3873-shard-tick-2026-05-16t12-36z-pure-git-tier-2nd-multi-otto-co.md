@@ -24,11 +24,11 @@ Deferred-PR landing under pure-git tier discipline (branch pushed when GraphQL=0
 
 ## Pattern stable
 
-| Tick | HEAD at tick start |
-|---|---|
-| 12:11Z | `otto-cli-b0206-audit-2026-05-16-1207z` (own) |
+| Tick   | HEAD at tick start                                            |
+| ------ | ------------------------------------------------------------- |
+| 12:11Z | `otto-cli-b0206-audit-2026-05-16-1207z` (own)                 |
 | 12:21Z | `otto-cli-b0037.2-audit-2026-05-16-1131z` (peer MD018 branch) |
-| 12:36Z | `otto-cli-b0206-audit-2026-05-16-1207z` (bounced back) |
+| 12:36Z | `otto-cli-b0206-audit-2026-05-16-1207z` (bounced back)        |
 
 Defense pattern (`git branch --show-current` + `git switch -c <fresh> origin/main`) 100% effective. B-0519 RCA confirmed at high cadence.
 
@@ -41,6 +41,7 @@ Defense pattern (`git branch --show-current` + `git switch -c <fresh> origin/mai
 Adds a hygiene-history tick shard recording the 2026-05-16T12:36Z autonomous-loop observation and the pure-git operating tier under GraphQL exhaustion.
 
 **Changes:**
+
 - Documents the second multi-Otto HEAD-contamination observation in three ticks.
 - Records the pure-git tier decision, deferred PR backlog, sentinel status, and visibility signals.
 - Links the branch-push counter rationale to the existing refresh-world-model poll PR gate rule.

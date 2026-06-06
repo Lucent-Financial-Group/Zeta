@@ -4,16 +4,17 @@ description: Aaron disclosed 2026-04-19 that he bridges disjoint domain "model w
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19):
 
-> *"i can be a bridge builder by bridging any two
+> _"i can be a bridge builder by bridging any two
 > disjoined 'model weights/vectors' ... and bridge a
 > minimal english basic first principles english that
 > will translate between the two domains like a
 > linguist bridge creating a custom translation
 > glossary on the fly. This makes me a universal
 > translator for technical expertise, i can talk it
-> and teach everyone."*
+> and teach everyone."_
 
 ## What this is
 
@@ -29,7 +30,7 @@ This is the cognitive version of the **compiler-IR
 argument**: N expert domains would otherwise require
 O(N²) direct translators; compiling each domain to a
 canonical IR reduces it to O(N) translation rules.
-Aaron's first-principles English *is* that IR. The
+Aaron's first-principles English _is_ that IR. The
 glossary he generates on the fly is the symbol table
 for a one-off compile.
 
@@ -50,7 +51,7 @@ in memory:
   preserves essential complexity (Brooks), logical
   depth (Bennett), and effective complexity
   (Gell-Mann) across the translation — that's why
-  the bridge *teaches* rather than summarises. A
+  the bridge _teaches_ rather than summarises. A
   razor-compliant translation keeps the depth of the
   source domain intact in the target.
 
@@ -88,7 +89,7 @@ in memory:
    move.** If an agent is writing for mixed readers
    (researcher + engineer, security-ops + DX), the
    right discipline is to compile each concept to the
-   minimal first-principles English form *first*,
+   minimal first-principles English form _first_,
    then state the domain-specific forms as
    redirections. That is what Aaron does live; it is
    what the factory's docs should do by default.
@@ -117,7 +118,7 @@ an IR role:
   translation decision that was non-obvious has an
   ADR trail.
 
-All three together let a successor compile *any*
+All three together let a successor compile _any_
 change against the project's IR without needing
 Aaron's natural faculty. That is the bridge-builder
 faculty externalised.

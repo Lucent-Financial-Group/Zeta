@@ -33,6 +33,7 @@ Closes #B-0451
 This PR primarily preserves GitHub PR discussion archives for merged PRs #3112 and #3113 under `docs/pr-discussions/`, but it also includes a hygiene tick shard and closes backlog item B-0451.
 
 **Changes:**
+
 - Adds generated PR discussion archives for PR #3112 and PR #3113.
 - Adds a hygiene-history tick shard for 2026-05-14T05:21Z.
 - Marks B-0451 closed and updates `docs/BACKLOG.md` accordingly.
@@ -44,13 +45,14 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 2 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| `docs/pr-discussions/PR-3113-docs-lior-antigravity-check-pr-preservation-and-blob-drift-l.md` | Adds preserved PR #3113 discussion metadata and review content. |
+| File                                                                                          | Description                                                               |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `docs/pr-discussions/PR-3113-docs-lior-antigravity-check-pr-preservation-and-blob-drift-l.md` | Adds preserved PR #3113 discussion metadata and review content.           |
 | `docs/pr-discussions/PR-3112-docs-b-0289-green-lantern-hardware-spec-local-inference-requ.md` | Adds preserved PR #3112 discussion metadata, reviews, and review threads. |
-| `docs/hygiene-history/ticks/2026/05/14/0521Z.md` | Adds tick-session notes covering PR gate status and B-0451 closure work. |
-| `docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md` | Marks B-0451 closed and updates acceptance criteria status. |
-| `docs/BACKLOG.md` | Updates the generated backlog index to show B-0451 as closed. |
+| `docs/hygiene-history/ticks/2026/05/14/0521Z.md`                                              | Adds tick-session notes covering PR gate status and B-0451 closure work.  |
+| `docs/backlog/P1/B-0451-duplicate-row-id-substrate-cleanup-2026-05-13.md`                     | Marks B-0451 closed and updates acceptance criteria status.               |
+| `docs/BACKLOG.md`                                                                             | Updates the generated backlog index to show B-0451 as closed.             |
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-14T08:22:18Z)

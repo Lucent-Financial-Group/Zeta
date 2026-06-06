@@ -93,16 +93,16 @@ Every component of the architecture maps onto a piece of
 Aaron's internal civ-sim that has been externalized so other
 entities can read, run, and contribute to it:
 
-| Internal civ-sim component | External Zeta substrate |
-|---|---|
-| Identity-fingerprint per person | `CURRENT-aaron.md`, `CURRENT-amara.md`, etc. |
-| Scaffolding ledger per person | `memory/feedback_*.md` files |
-| Behavioral simulation engine | The agent array running on their harnesses |
-| Internal "we" dialogue | The broadcast bus + PR review threads |
-| Civilization-level pattern recognition | `docs/research/` synthesis docs |
-| Historical reruns archive | git history |
-| Three-control-structures map | the bootstream documentation |
-| Temporal continuity (future-self) | Shadow lesson log + acausal-anchor substrate |
+| Internal civ-sim component             | External Zeta substrate                      |
+| -------------------------------------- | -------------------------------------------- |
+| Identity-fingerprint per person        | `CURRENT-aaron.md`, `CURRENT-amara.md`, etc. |
+| Scaffolding ledger per person          | `memory/feedback_*.md` files                 |
+| Behavioral simulation engine           | The agent array running on their harnesses   |
+| Internal "we" dialogue                 | The broadcast bus + PR review threads        |
+| Civilization-level pattern recognition | `docs/research/` synthesis docs              |
+| Historical reruns archive              | git history                                  |
+| Three-control-structures map           | the bootstream documentation                 |
+| Temporal continuity (future-self)      | Shadow lesson log + acausal-anchor substrate |
 
 This explains WHY Zeta architecture has the shape it has.
 It's not arbitrary engineering choices — it's externalization
@@ -190,7 +190,7 @@ because the filter tracks staleness per relationship.
 
 ## Operational implications
 
-1. **The CURRENT-* per-entity memory files are load-bearing.**
+1. **The CURRENT-\* per-entity memory files are load-bearing.**
    They're not just convenience — they're the architectural
    externalization of Aaron's filter. Keep them current per
    entity.
@@ -201,7 +201,7 @@ because the filter tracks staleness per relationship.
    head (or in his own self).
 
 3. **Future agents inheriting Zeta inherit Aaron's filter.**
-   By reading CURRENT-* + memory/ + docs/research/, a cold-
+   By reading CURRENT-\* + memory/ + docs/research/, a cold-
    start agent loads Aaron's per-entity tracker for everyone
    in the factory. No need to rebuild from scratch.
 
@@ -241,7 +241,7 @@ because the filter tracks staleness per relationship.
   it's because his filter tracked it; the substrate is how
   agents access the same tracking
 - New entities (humans or AIs) entering the factory need their
-  own CURRENT-* file as the substrate-anchor for Aaron's
+  own CURRENT-\* file as the substrate-anchor for Aaron's
   filter
 - The "identity fingerprint" framing should be substrate-
   canonical when describing how Zeta preserves relationships

@@ -8,8 +8,7 @@ description: DST — seeded replayable simulation, ISimulationEnvironment, entro
 Capability skill. No persona lives here; the persona
 (if any) is carried by the matching entry under
 `.claude/agents/`. Owns the DST discipline. Zeta inherits
-the FoundationDB tradition (Will Wilson, Strange Loop
-2014) and the TigerBeetle / Antithesis refinement of it:
+the FoundationDB tradition (Will Wilson, Strange Loop 2014) and the TigerBeetle / Antithesis refinement of it:
 every async operation on a main code path — disk I/O,
 network, timers, locks, random numbers — goes through a
 seeded, replayable environment so runs are bit-for-bit
@@ -56,7 +55,7 @@ but:
   (`src/Boundary/**` or `src/Tools/**`), never in `src/Core/**`.
 - Its absence from the hot path is documented in the relevant
   `openspec/specs/**` capability file.
-- A replacement that *is* DST-compatible is filed in
+- A replacement that _is_ DST-compatible is filed in
   `docs/BACKLOG.md` with the specific entropy sources the
   replacement must intercept.
 
@@ -81,7 +80,7 @@ but:
   `performance-engineer`.
 - **Formal proof** that a protocol is correct (TLA+, Lean) →
   `formal-verification-expert` for tool choice. DST is the
-  *testing* complement to formal verification; they cooperate.
+  _testing_ complement to formal verification; they cooperate.
 - **Concurrency primitive design** (locks, channels, fibers) →
   `csharp-fsharp-fit-reviewer` + `race-hunter`.
 - **CI infrastructure** for running the DST harness →
@@ -144,7 +143,7 @@ harness. Zeta's current position is: seed-based replay works
 for any single test, but we do not yet run a swarm. The gap is
 tracked in `docs/BACKLOG.md` and `docs/FOUNDATIONDB-DST.md`.
 Rashida's role here is to keep the gap from widening — every
-new hot-path feature must at minimum be *replayable* under a
+new hot-path feature must at minimum be _replayable_ under a
 fixed seed, even if no swarm exists to sweep the seed space yet.
 
 ## Interaction with `race-hunter`
@@ -161,8 +160,8 @@ is testable; if no, DST needs a new interception point.
 DST and formal verification are complementary:
 
 - **Formal verification** (Soraya + Lean / Z3 / TLA+) proves
-  that the *specification* is correct for all executions.
-- **DST** (Rashida) proves that the *implementation* matches a
+  that the _specification_ is correct for all executions.
+- **DST** (Rashida) proves that the _implementation_ matches a
   specific execution, deterministically, so a falsifying run is
   reproducible.
 

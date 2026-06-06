@@ -45,13 +45,21 @@ export async function deriveImpact(
 }
 
 /** The hats that own a node (owned_by edges out of it). */
-export async function deriveOwnership(store: GraphStoreReader, organizationId: string, nodeId: string): Promise<readonly string[]> {
+export async function deriveOwnership(
+  store: GraphStoreReader,
+  organizationId: string,
+  nodeId: string,
+): Promise<readonly string[]> {
   const out = await store.outEdges(organizationId, nodeId);
   return out.filter((e) => e.kind === EdgeKind.OwnedBy).map((e) => e.toNodeId);
 }
 
 /** The ChangeSets that touched a node (changed_by edges → provenance of changes). */
-export async function deriveChangeHistory(store: GraphStoreReader, organizationId: string, nodeId: string): Promise<readonly string[]> {
+export async function deriveChangeHistory(
+  store: GraphStoreReader,
+  organizationId: string,
+  nodeId: string,
+): Promise<readonly string[]> {
   const out = await store.outEdges(organizationId, nodeId);
   return out.filter((e) => e.kind === EdgeKind.ChangedBy && e.changeSetId !== undefined).map((e) => e.changeSetId!);
 }
@@ -64,14 +72,20 @@ export type GraphNeighborhood = {
 };
 
 /** The full neighborhood of a node — the Stage-5 augmentation context for a retrieved unit. */
-export async function deriveNeighborhood(store: GraphStoreReader, organizationId: string, nodeId: string): Promise<GraphNeighborhood> {
+export async function deriveNeighborhood(
+  store: GraphStoreReader,
+  organizationId: string,
+  nodeId: string,
+): Promise<GraphNeighborhood> {
   const out = await store.outEdges(organizationId, nodeId);
   const incoming = await store.inEdges(organizationId, nodeId);
   return {
     nodeId,
     outbound: out.map((e) => ({ kind: e.kind, toNodeId: e.toNodeId })),
     inbound: incoming.map((e) => ({ kind: e.kind, fromNodeId: e.fromNodeId })),
-    changeSets: out.filter((e) => e.kind === EdgeKind.ChangedBy && e.changeSetId !== undefined).map((e) => e.changeSetId!),
+    changeSets: out
+      .filter((e) => e.kind === EdgeKind.ChangedBy && e.changeSetId !== undefined)
+      .map((e) => e.changeSetId!),
   };
 }
 

@@ -57,15 +57,11 @@ function main(): number {
     console.error(`ERROR: Pre-commit branch mismatch.`);
     console.error(`  Expected: ${r.expected}`);
     console.error(`  Current:  ${r.current}`);
-    console.error(
-      `  Run \`git checkout ${r.expected}\` and verify, or unset ZETA_EXPECTED_BRANCH.`,
-    );
+    console.error(`  Run \`git checkout ${r.expected}\` and verify, or unset ZETA_EXPECTED_BRANCH.`);
     return 1;
   }
   if (r.worktreeWarning) {
-    console.error(
-      `INFO: committing on '${r.current}' -- worktree-suffix pattern. Verify this is intentional.`,
-    );
+    console.error(`INFO: committing on '${r.current}' -- worktree-suffix pattern. Verify this is intentional.`);
   }
   return 0;
 }

@@ -4,34 +4,35 @@ description: Aaron 2026-04-22 "When building the forge it's more like being a fa
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Aaron 2026-04-22, verbatim:**
 
-> *"When building the forge it's more like being a farmer or
+> _"When building the forge it's more like being a farmer or
 > gardner you are growing things, but with Zeta its more like
-> building and carpentry and masonry"*
+> building and carpentry and masonry"_
 
 **The distinction — two craft metaphors, assigned per repo:**
 
-| Repo | Metaphor | Mode | Rhythm | Failure shape |
-|---|---|---|---|---|
-| **Forge** (software factory) | Garden / farm | Cultivation | Seasonal, emergent | Barrenness, weeds, drought — recoverable |
-| **Zeta** (database) | Building site | Construction | Planned, measured | Structural failure — catastrophic |
-| **ace** (AI-native client) | *unassigned by Aaron; see §open* | mixed | mixed | mixed |
+| Repo                         | Metaphor                         | Mode         | Rhythm             | Failure shape                            |
+| ---------------------------- | -------------------------------- | ------------ | ------------------ | ---------------------------------------- |
+| **Forge** (software factory) | Garden / farm                    | Cultivation  | Seasonal, emergent | Barrenness, weeds, drought — recoverable |
+| **Zeta** (database)          | Building site                    | Construction | Planned, measured  | Structural failure — catastrophic        |
+| **ace** (AI-native client)   | _unassigned by Aaron; see §open_ | mixed        | mixed              | mixed                                    |
 
 **Why the metaphor matters — five consequential differences:**
 
 1. **Emergence vs. specification.**
-   A garden *tolerates* — often *rewards* — volunteer plants,
+   A garden _tolerates_ — often _rewards_ — volunteer plants,
    self-seeded rows, emergent patterns. A wall tolerates none
    of that: an emergent brick is a defect. Forge absorbs
    emergent principles, skills, memories, BP rules (the whole
    bootstrapping / divine-downloading loop is gardening: seeds
    in the substrate, returns of what took root). Zeta does
    not: the operator algebra and `Directory.Build.props`
-   zero-warning invariant are *built*, not grown.
+   zero-warning invariant are _built_, not grown.
 
 2. **Rhythm and force-tolerance.**
-   You cannot rush a tomato. You *can* schedule a framing crew.
+   You cannot rush a tomato. You _can_ schedule a framing crew.
    Factory work that emerges — skill tune-ups, memory returns,
    principle-absorption — should not be forced on a calendar;
    its cadence is seasonal and round-scoped (every 5-10 rounds
@@ -69,18 +70,18 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 The five-principle craft ethic from
 `memory/feedback_wwjd_carpenter_five_principle_craft_ethic.md`
-(*repair / improve / sharpen-and-harden / recycle / be
-efficient*) composes to both metaphors, but the verbs shift:
+(_repair / improve / sharpen-and-harden / recycle / be
+efficient_) composes to both metaphors, but the verbs shift:
 
-| Principle | Carpenter verb (Zeta) | Gardener verb (Forge) |
-|---|---|---|
-| Repair | Sister the broken joist | Heal the ailing bed, stake the leaning stalk |
-| Improve what's adequate | Plane, sand, align, finish | Tend, side-dress, thin, train |
-| Sharpen and harden useful | Strop the blade, case-harden the steel | Strengthen the rootstock, inoculate, mulch |
-| Recycle where possible | Reuse offcuts, reclaim timber | Compost, save seed, rotate beds |
-| Strive to be efficient | No wasted lumber, no wasted trip | No wasted water, no wasted season |
+| Principle                 | Carpenter verb (Zeta)                  | Gardener verb (Forge)                        |
+| ------------------------- | -------------------------------------- | -------------------------------------------- |
+| Repair                    | Sister the broken joist                | Heal the ailing bed, stake the leaning stalk |
+| Improve what's adequate   | Plane, sand, align, finish             | Tend, side-dress, thin, train                |
+| Sharpen and harden useful | Strop the blade, case-harden the steel | Strengthen the rootstock, inoculate, mulch   |
+| Recycle where possible    | Reuse offcuts, reclaim timber          | Compost, save seed, rotate beds              |
+| Strive to be efficient    | No wasted lumber, no wasted trip       | No wasted water, no wasted season            |
 
-Same ethic. Different grammar. Jesus was a carpenter *and*
+Same ethic. Different grammar. Jesus was a carpenter _and_
 used agrarian parables extensively (sower, vineyard, mustard
 seed, fig tree) — both traditions are authentic to the source
 frame Aaron invoked. The WWJD discipline does not force the
@@ -120,7 +121,7 @@ Before starting a task, ask: **which repo does this live in?**
     to the operator algebra can propagate through the whole
     code-surface.
 
-- **ace (AI-native client)** — Aaron did *not* assign a
+- **ace (AI-native client)** — Aaron did _not_ assign a
   metaphor to ace in this message. Open question: is ace
   building (it is a product with users, a UI surface, code
   that compiles) or gardening (it is about cultivating agent
@@ -137,7 +138,7 @@ Before starting a task, ask: **which repo does this live in?**
   governs Zeta code (e.g., a CLAUDE.md rule about commit
   etiquette) is still factory work done in gardener mode,
   even though it touches Zeta. The disposition matches the
-  *work*, not the repo path alone.
+  _work_, not the repo path alone.
 - **Does not downgrade Forge.** Gardening is not lesser than
   building; a self-sustaining orchard is a greater long-term
   achievement than a wall, if the orchard feeds people for
@@ -148,14 +149,14 @@ Before starting a task, ask: **which repo does this live in?**
 - **Does not forbid construction discipline in Forge.**
   Some Forge work is genuinely structural — GOVERNANCE
   numbered sections, CLAUDE.md-level rules, the alignment
-  contract. Treat *those* as masonry-within-the-garden
+  contract. Treat _those_ as masonry-within-the-garden
   (raised beds, trellises, garden-walls). The metaphor
   composes; it does not exclude.
 - **Does not forbid emergence in Zeta.** Some Zeta work
   genuinely benefits from letting a design breathe before
   codifying — research spikes under `docs/research/`,
   experimental features behind flags, notebooks. These are
-  *nursery beds* within the construction site — tolerated
+  _nursery beds_ within the construction site — tolerated
   because they will be transplanted to proper surfaces once
   the design settles.
 
@@ -166,16 +167,16 @@ Before starting a task, ask: **which repo does this live in?**
   its gardener twin. Same principles, different verbs.
 - `memory/feedback_load_bearing_phrase_is_reinforcement_check.md`
   — the load-bearing / reinforcement discipline is the
-  *carpenter's* framing of identify-and-frame-support; the
-  gardener's framing is *identify-and-stake* (a leaning plant
+  _carpenter's_ framing of identify-and-frame-support; the
+  gardener's framing is _identify-and-stake_ (a leaning plant
   gets staked same-day). Different vocabulary, same same-tick
   discipline.
 - `memory/project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md`
-  — this memory is the *consequence* of that split applied
+  — this memory is the _consequence_ of that split applied
   to disposition: each repo gets its matching metaphor
   because each repo has a matching shape.
 - `memory/feedback_bootstrapping_divine_downloading_factory_learns_from_self.md`
-  — the bootstrapping loop is *literally gardening*:
+  — the bootstrapping loop is _literally gardening_:
   principles seed in the memory substrate, return when
   conditions are right, get promoted (harvest) if they
   flourish. This memory names that loop as the factory-
@@ -221,8 +222,8 @@ default without his word.
 **Alignment signal — bootstrapping, yet again:**
 
 The three-repo split memory (project, Aaron 2026-04-22 earlier)
-stated *what* the three repos are. Later the same day, Aaron
-sent *how to dispose toward each of them*. That is the seed-
+stated _what_ the three repos are. Later the same day, Aaron
+sent _how to dispose toward each of them_. That is the seed-
 absorb-promote loop at work: the earlier memory seeded the
 distinction (Forge vs Zeta vs ace); this later message
 absorbs the structural split into a dispositional rule; the
@@ -233,12 +234,12 @@ dispositions share.
 Three memories authored within hours of each other, composing
 into a single alignment stance:
 
-1. **Three-repo split** (project) — *what* repos exist and
+1. **Three-repo split** (project) — _what_ repos exist and
    why.
 2. **WWJD-carpenter five principles** (feedback) — the
-   *ethic* that governs all craft work.
+   _ethic_ that governs all craft work.
 3. **Forge-gardener / Zeta-builder** (this memory,
-   feedback) — the *disposition* that matches each repo's
+   feedback) — the _disposition_ that matches each repo's
    shape, same ethic, different grammar.
 
 The garden grows the carpenter's shop. The carpenter builds
@@ -248,9 +249,9 @@ the garden's trellises. Both are faithful.
 after the WWJD-carpenter five-principle memory and the
 load-bearing reinforcement memory were authored:
 
-> *"When building the forge it's more like being a farmer or
+> _"When building the forge it's more like being a farmer or
 > gardner you are growing things, but with Zeta its more like
-> building and carpentry and masonry"*
+> building and carpentry and masonry"_
 
 **Attribution:**
 
@@ -263,8 +264,8 @@ load-bearing reinforcement memory were authored:
   the 1990s.
 - **Builder / carpenter / mason for software** — even older;
   standard programming-as-construction metaphor from the
-  structured-programming era onward (Brooks's *Mythical
-  Man-Month*, Hunt & Thomas's *Pragmatic Programmer*).
+  structured-programming era onward (Brooks's _Mythical
+  Man-Month_, Hunt & Thomas's _Pragmatic Programmer_).
 - **Aaron's per-repo assignment** — his composition, 2026-04-22.
   Novel synthesis of the two established metaphor traditions
   across the three-repo split.

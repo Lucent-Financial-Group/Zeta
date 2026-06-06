@@ -6,9 +6,9 @@ description: "DSA interview primitives — union-find, trie, heap, segment tree,
 # Leet-Code DSA Toolbox — the primitives hat
 
 Capability skill ("hat"). Owns the reference-layer beneath
-`leet-code-patterns`. The patterns hat tells you *which
-pattern*; this hat tells you *which primitive inside the
-pattern* and how to implement it idiomatically.
+`leet-code-patterns`. The patterns hat tells you _which
+pattern_; this hat tells you _which primitive inside the
+pattern_ and how to implement it idiomatically.
 
 Distinct from `complexity-theory-expert` (owns theoretical
 bounds); this skill owns the hands-on primitive + its
@@ -241,20 +241,20 @@ gotchas.
 
 ## Primitive-picking decision table
 
-| Scenario | First-pick primitive |
-|----------|---------------------|
-| Online connectivity / components | Union-find |
-| Prefix-keyed queries on strings | Trie |
-| Running max / min in a window | Monotonic deque |
-| Next-greater / next-smaller | Monotonic stack |
-| Top-K running | Heap of size K |
-| Running median on a stream | Two heaps |
-| Prefix-sum query + point update | Fenwick tree |
-| Range update + range query | Segment tree with lazy |
-| Interval scheduling / overlap count | Sweep-line |
-| Batch range updates + single read | Difference array |
-| Most-recently-used eviction | LRU (hashmap + DLL) |
-| Order statistics on dynamic set | Ordered map (balanced BST) |
+| Scenario                            | First-pick primitive       |
+| ----------------------------------- | -------------------------- |
+| Online connectivity / components    | Union-find                 |
+| Prefix-keyed queries on strings     | Trie                       |
+| Running max / min in a window       | Monotonic deque            |
+| Next-greater / next-smaller         | Monotonic stack            |
+| Top-K running                       | Heap of size K             |
+| Running median on a stream          | Two heaps                  |
+| Prefix-sum query + point update     | Fenwick tree               |
+| Range update + range query          | Segment tree with lazy     |
+| Interval scheduling / overlap count | Sweep-line                 |
+| Batch range updates + single read   | Difference array           |
+| Most-recently-used eviction         | LRU (hashmap + DLL)        |
+| Order statistics on dynamic set     | Ordered map (balanced BST) |
 
 ## Common failure modes
 
@@ -287,7 +287,7 @@ gotchas.
 - `.claude/skills/leet-code-contest-patterns/SKILL.md` —
   the contest-grade primitives (persistent segment tree,
   heavy-light, link-cut) that this skill deliberately
-  does *not* cover.
+  does _not_ cover.
 - `.claude/skills/complexity-theory-expert/SKILL.md` —
   theoretical bounds and lower-bound arguments.
 - `.claude/skills/fsharp-expert/SKILL.md`,

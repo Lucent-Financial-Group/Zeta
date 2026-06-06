@@ -8,16 +8,16 @@ type: feedback
 
 Aaron 2026-05-01 (verbatim, between drain-push and tick-close):
 
-> *"oh yeah a refinement i'll also make now on the other system,
+> _"oh yeah a refinement i'll also make now on the other system,
 > a meta-meta-meta rule, when class a problem you found, look if
 > it's similar to existing classes and make sure you are
 > creating a proper ontological orthoganl thing or extend the
-> exsiting one, Rodney's razor will tell you if your wrong."*
+> exsiting one, Rodney's razor will tell you if your wrong."_
 
 ## The rule
 
 When applying Layer 3 of the 4-layer meta-learning pattern (B-0126
-— encode the *class* of error, not the one-off instance), DO NOT
+— encode the _class_ of error, not the one-off instance), DO NOT
 just write the class as a new memory file. First:
 
 1. **Search the existing class library.** Grep memory/, look for
@@ -34,20 +34,20 @@ just write the class as a new memory file. First:
      independent — different mechanism, different domain,
      different invariant — from existing classes. New memory
      file, named to surface the orthogonality, with explicit
-     composes-with notes naming the *adjacent-but-orthogonal*
+     composes-with notes naming the _adjacent-but-orthogonal_
      classes.
 
 3. **Verify with Rodney's Razor.** The razor's test:
-   *can the proposed class be dissolved into an existing one
-   without loss?* If yes, extend instead of create. If no, the
+   _can the proposed class be dissolved into an existing one
+   without loss?_ If yes, extend instead of create. If no, the
    orthogonality is real and the new class earns its place.
 
 **The default is extension.** Creating a new class without an
 orthogonality justification is namespace-pollution; the class
 library loses canonicalization discipline (canonical-definition
 rule) and accumulates redundant rules that overlap silently.
-Future-Otto reading the class library should see a *forest of
-orthogonal trunks*, not a *thicket of overlapping vines*.
+Future-Otto reading the class library should see a _forest of
+orthogonal trunks_, not a _thicket of overlapping vines_.
 
 ## Why this matters
 
@@ -62,7 +62,8 @@ shape with slightly different framings; the operator gets stuck
 trying to figure out which one applies.
 
 With the razor:
-- The class library stays *Confucius-compressing* (per the
+
+- The class library stays _Confucius-compressing_ (per the
   canonical-definition rule's Confucius-mode framing).
 - New findings either deepen existing classes (more substrate
   on a single trunk) OR open new trunks (genuinely new
@@ -80,9 +81,9 @@ When about to encode a Layer-3 class-level rule:
 2. **Read candidates' "Composes with" sections.** Existing
    classes often already enumerate sibling cases; the new
    finding may already be implied.
-3. **Pose the razor question.** *Can the new finding be stated
+3. **Pose the razor question.** _Can the new finding be stated
    as an extension of [candidate parent class] without losing
-   information or precision?* If yes → extend. If no →
+   information or precision?_ If yes → extend. If no →
    continue.
 4. **If creating orthogonal**: name the orthogonality axis
    explicitly in the new file's frontmatter description. ("This
@@ -101,26 +102,26 @@ PR #1023 — pending merge at the time this memory was authored;
 verify on main once #1023 lands) I encoded a class-level
 lesson:
 
-> *"when fixing a scope/vocabulary inconsistency, grep the
+> _"when fixing a scope/vocabulary inconsistency, grep the
 > WHOLE file for the inconsistent term, not just the section
-> that triggered the finding."*
+> that triggered the finding."_
 
 Per Aaron's meta-meta-meta rule, before promoting this to a
 new class, I should have searched for parent classes:
 
 - **`feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`**
   and **`feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`**
-  — these are search-first rules. They cover *upstream-truth-vs-
-  training-data*, not *whole-file-vs-just-the-section-that-
-  triggered*. Different scope (upstream / external) vs
+  — these are search-first rules. They cover _upstream-truth-vs-
+  training-data_, not _whole-file-vs-just-the-section-that-
+  triggered_. Different scope (upstream / external) vs
   (in-file / internal). Adjacent but not parent.
 - **`feedback_verify_target_exists_before_deferring.md`** —
   verify-before-deferring. The grep-whole-file rule has the
-  same shape: *verify-before-X-claim*. Specifically:
-    - verify-before-deferring: claim = "I'll do X next round"; verify = target-exists.
-    - verify-before-fix-complete: claim = "X is fixed"; verify = all-instances-fixed.
-  Same `verify-before-claim` parent shape; different specific
-  claims and verifications.
+  same shape: _verify-before-X-claim_. Specifically:
+  - verify-before-deferring: claim = "I'll do X next round"; verify = target-exists.
+  - verify-before-fix-complete: claim = "X is fixed"; verify = all-instances-fixed.
+    Same `verify-before-claim` parent shape; different specific
+    claims and verifications.
 - **`feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`**
   — substrate-must-be-reachable. Adjacent (both about claim
   verification) but addresses different claim type
@@ -130,7 +131,7 @@ new class, I should have searched for parent classes:
 be dissolved into "verify-before-deferring"? Not directly —
 the parent rule is about deferral specifically, this finding
 is about fix-completion. But they share a parent shape:
-*verify-before-state-claim*.
+_verify-before-state-claim_.
 
 **Decision**: the right move is NOT to create
 `feedback_grep_whole_file_before_declaring_fixed.md`. The
@@ -159,15 +160,15 @@ file.
 - **`docs/backlog/P1/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01.md`**
   — this rule is the meta-meta-meta layer above B-0126's
   Layer 3 (encode the class). Layer 3 says encode the class;
-  this rule says *check existing classes before encoding a
-  new one*. Layer-stacking: Layer 1 (fix instance) → Layer 2
+  this rule says _check existing classes before encoding a
+  new one_. Layer-stacking: Layer 1 (fix instance) → Layer 2
   (encode in same PR) → Layer 3 (encode the class) → **THIS
   RULE** (verify the class is orthogonal or extend existing).
 - **`memory/feedback_orthogonal_axes_factory_hygiene.md`** —
   Aaron's prior framing about orthogonal axes for factory
   rules. The meta-meta-meta rule applies that orthogonality
   discipline to the class library itself, not just the rules
-  *within* the library.
+  _within_ the library.
 - **`memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md`**
   — canonical-definition machinery. Class-level rules ARE
   canonical entries; same razor applies.
@@ -184,7 +185,7 @@ file.
 
 ## Cross-project applicability + maturity-tier split
 
-Aaron noted: *"i'll also make now on the other system"* —
+Aaron noted: _"i'll also make now on the other system"_ —
 implying this rule applies across his projects, not just
 Zeta. The class-level rules in any class library (LFG soulfile,
 sibling repos, peer harness rule sets) need the same
@@ -194,9 +195,9 @@ discipline for sibling repos).
 
 Aaron 2026-05-01 follow-up:
 
-> *"meta-meta-meta rules are the kind of thing [the
-> exploit-side project] is not ready for yet, which is why we
-> have the split"*
+> _"meta-meta-meta rules are the kind of thing [the
+> > exploit-side project] is not ready for yet, which is why we
+> have the split"_
 
 This refines the explore/exploit split (named in chunk-11 of
 the CSAP-pushback import + tracked as B-0124 distill row).
@@ -204,11 +205,12 @@ The split's load-bearing reason: the explore-side (Zeta) is
 where higher-order rule structures (rules-about-rules,
 meta-meta-rules, this orthogonality-discipline) are safe to
 experiment with; the exploit-side requires settled rules with
-known properties. *Same operator, two governors, different
-rule-maturity tiers* — the meta-meta-meta level is one of the
+known properties. _Same operator, two governors, different
+rule-maturity tiers_ — the meta-meta-meta level is one of the
 features that distinguishes the explore-side governor.
 
 The portability constraint cuts both ways:
+
 - The discipline (this rule's content) IS portable —
   exploit-side can adopt it when ready.
 - The specific class library Zeta develops is NOT portable —
@@ -220,10 +222,10 @@ The portability constraint cuts both ways:
 
 Aaron 2026-05-01:
 
-> *"that's like higher kinded types, and you have the book on
+> _"that's like higher kinded types, and you have the book on
 > category theory for programming to close that thought /
 > archetrue loop to make it math precise for everyting your
-> doing in teh PR process"*
+> doing in teh PR process"_
 
 The math-precise framing for "rules-about-rules":
 
@@ -237,7 +239,7 @@ The math-precise framing for "rules-about-rules":
   are HKT-like — the class library is itself a parameterized
   structure, and this rule operates on the structure.
 
-Bartosz Milewski's *Category Theory for Programmers* (the book
+Bartosz Milewski's _Category Theory for Programmers_ (the book
 Aaron names) provides the math-precise vocabulary: functors,
 natural transformations, monads, Kleisli categories,
 free constructions. The PR-process discipline that produces
@@ -255,8 +257,8 @@ formal verification of substrate canonicalization).
 
 Aaron 2026-05-01:
 
-> *"i think you'll find it's a poor mans version of our immune
-> system withing the github enviornment/host"*
+> _"i think you'll find it's a poor mans version of our immune
+> system withing the github enviornment/host"_
 
 The PR-thread-drain process this session has been
 exercising — find suspicious threads (Codex/Copilot findings),
@@ -274,14 +276,14 @@ but at a different abstraction level:
   pair evaluating + repairing; threads as the consensus surface;
   manual-graded right now.
 
-Aaron's framing: the github-layer process is a *poor-man's
-version* of what Aurora will eventually do machine-graded. The
+Aaron's framing: the github-layer process is a _poor-man's
+version_ of what Aurora will eventually do machine-graded. The
 shape is the same; the maturity-tier is different.
 
 This connects to the cross-project maturity-tier split: the
 GitHub-host immune system runs in Zeta's explore-side (where
 higher-order discipline is safe to experiment with); the
-exploit-side benefits from the *output* of the discipline
+exploit-side benefits from the _output_ of the discipline
 (settled class-level rules) without paying the
 discovery-process cost.
 
@@ -293,7 +295,8 @@ machine-graded version will encode this same discipline
 formally.
 
 Composes with `docs/research/aurora-immune-math-standardization-2026-04-26.md`
-+ the chunk-11 explore/exploit framing + B-0124 distill row.
+
+- the chunk-11 explore/exploit framing + B-0124 distill row.
 
 ## What this rule does NOT do
 
@@ -308,7 +311,7 @@ Composes with `docs/research/aurora-immune-math-standardization-2026-04-26.md`
   question," not "did I read every memory file."
 - Does **not** create a hierarchy where extension is always
   preferred. Genuine orthogonality is welcome; the rule is
-  against *unjustified* creation, not against creation itself.
+  against _unjustified_ creation, not against creation itself.
 - Does **not** retroactively merge existing overlapping rules.
   That's a separate hygiene task (cadenced canon-audit per
   the orthogonal-axes rule). This rule is forward-going

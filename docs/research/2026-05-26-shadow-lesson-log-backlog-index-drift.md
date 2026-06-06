@@ -16,4 +16,3 @@ This is a critical process failure for an agent tasked with backlog management. 
 ## 3. Lesson
 
 Automated processes that modify indexed document sets must be transactional. The logic must ensure that both the content file and the index file are updated together. The `backlog` agent needs to be repaired to enforce this atomicity.
-

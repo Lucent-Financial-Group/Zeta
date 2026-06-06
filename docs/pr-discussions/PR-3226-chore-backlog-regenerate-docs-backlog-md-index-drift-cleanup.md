@@ -47,5 +47,6 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Pure regeneration of the auto-generated `docs/BACKLOG.md` index to pick up three on-disk backlog rows (B-0517, B-0518, B-0519) that existed under `docs/backlog/P1/` and `docs/backlog/P3/` but were missing from the rendered index. The drift was surfacing as a non-required CI failure on recent PRs; this restores parity between per-row files and the index.
 
 **Changes:**
+
 - Add B-0518 entry under the P1 section.
 - Add B-0517 and B-0519 entries under the P3 section.

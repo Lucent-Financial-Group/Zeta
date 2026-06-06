@@ -99,14 +99,14 @@ Mechanization shipped 2026-05-14 via **PR [#3134](https://github.com/Lucent-Fina
 
 All 6 acceptance criteria verifiably shipped:
 
-| Acceptance | Status |
-|---|---|
-| `tools/bus/export-cb-snapshot.ts` exists + runs | shipped (203 lines TS) |
-| `demo/circuit-breaker-snapshot.json` committed | shipped (in PR #3134 files) |
+| Acceptance                                                    | Status                                                                                                       |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `tools/bus/export-cb-snapshot.ts` exists + runs               | shipped (203 lines TS)                                                                                       |
+| `demo/circuit-breaker-snapshot.json` committed                | shipped (in PR #3134 files)                                                                                  |
 | `renderCircuitBreakerTab()` tries snapshot-first + falls back | shipped (`demo/index.html:1836` has `await fetch('./circuit-breaker-snapshot.json', { cache: 'no-cache' })`) |
-| Panel renders in both paths | implicit (PR #3134 merged CI green) |
-| `dotnet build -c Release` 0/0 | implicit (PR #3134 merged CI green) |
-| `bun tsc --noEmit` passes | implicit (PR #3134 merged CI green) |
+| Panel renders in both paths                                   | implicit (PR #3134 merged CI green)                                                                          |
+| `dotnet build -c Release` 0/0                                 | implicit (PR #3134 merged CI green)                                                                          |
+| `bun tsc --noEmit` passes                                     | implicit (PR #3134 merged CI green)                                                                          |
 
 Row left open from 2026-05-14 to 2026-05-16 as substrate drift. Caught by **the new `tools/hygiene/audit-backlog-status-drift.ts` tool** (peer Otto-Desktop shipped via PR #3758) — the audit flagged B-0494 as a drift candidate, and the manual per-acceptance-bullet verification confirmed pure-drift (vs partial-completion). This is the **first real-world use of the new audit tool** following peer's PR #3777 quality-improvement passes.
 

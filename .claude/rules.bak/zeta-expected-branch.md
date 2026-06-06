@@ -127,13 +127,13 @@ Composes with [`claim-acquire-before-worktree-work.md`](claim-acquire-before-wor
 
 ## Hook wiring summary
 
-| Component | Path |
-|-----------|------|
-| Core check script | `tools/orchestrator-checks/verify-branch.ts` |
-| Harness hook wrapper | `.claude/hooks/verify-branch-pretooluse.ts` |
-| Wiring | `.claude/settings.json` `hooks.PreToolUse[matcher=Bash]` |
-| Hook README | `.claude/hooks/README.md` |
-| Tests | `tools/orchestrator-checks/verify-branch.test.ts` |
+| Component            | Path                                                     |
+| -------------------- | -------------------------------------------------------- |
+| Core check script    | `tools/orchestrator-checks/verify-branch.ts`             |
+| Harness hook wrapper | `.claude/hooks/verify-branch-pretooluse.ts`              |
+| Wiring               | `.claude/settings.json` `hooks.PreToolUse[matcher=Bash]` |
+| Hook README          | `.claude/hooks/README.md`                                |
+| Tests                | `tools/orchestrator-checks/verify-branch.test.ts`        |
 
 To unset for sessions that legitimately commit on multiple branches:
 

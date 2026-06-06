@@ -53,7 +53,13 @@ export type Frame =
   // computed the test; pick `then`/`els` (in `env`) by its truthiness
   | { readonly k: "branch"; readonly then: Expr; readonly els: Expr; readonly env: Env }
   // evaluating an activity's args left-to-right: `done` are computed, `pending` remain
-  | { readonly k: "evalArgs"; readonly fn: string; readonly pending: readonly Expr[]; readonly done: readonly ConstValue[]; readonly env: Env };
+  | {
+      readonly k: "evalArgs";
+      readonly fn: string;
+      readonly pending: readonly Expr[];
+      readonly done: readonly ConstValue[];
+      readonly env: Env;
+    };
 
 /** The persisted, resumable state of a suspended saga: the continuation + the pending activity. */
 export interface SagaState {
@@ -66,7 +72,11 @@ export interface SagaState {
 /** The outcome of a step: either the saga finished, or it suspended awaiting an activity. */
 export type SagaStep =
   | { readonly kind: "done"; readonly value: ConstValue }
-  | { readonly kind: "suspended"; readonly state: SagaState; readonly activity: { readonly fn: string; readonly args: readonly ConstValue[] } };
+  | {
+      readonly kind: "suspended";
+      readonly state: SagaState;
+      readonly activity: { readonly fn: string; readonly args: readonly ConstValue[] };
+    };
 
 const ok = <T>(value: T): Result<T, ResumeFeedback> => ({ ok: true, value });
 const err = (error: ResumeFeedback): Result<never, ResumeFeedback> => ({ ok: false, error });
@@ -130,7 +140,9 @@ class ResumeFail extends Error {
 
 // ---- the CEK machine ------------------------------------------------------
 
-type Control = { readonly mode: "eval"; readonly expr: Expr; readonly env: Env } | { readonly mode: "ret"; readonly value: ConstValue };
+type Control =
+  | { readonly mode: "eval"; readonly expr: Expr; readonly env: Env }
+  | { readonly mode: "ret"; readonly value: ConstValue };
 
 /** Drive the machine from `control` with continuation `kont` until it finishes or suspends. */
 function run(control: Control, kont: readonly Frame[]): SagaStep {
@@ -148,7 +160,8 @@ function run(control: Control, kont: readonly Frame[]): SagaStep {
         case "param": {
           // own-property check: a name like "toString"/"constructor" must NOT resolve to an
           // inherited Object.prototype member — an unbound param declines Unbound, always
-          if (!Object.prototype.hasOwnProperty.call(env, e.name)) throw new ResumeFail({ kind: "Unbound", name: e.name });
+          if (!Object.prototype.hasOwnProperty.call(env, e.name))
+            throw new ResumeFail({ kind: "Unbound", name: e.name });
           ctrl = { mode: "ret", value: env[e.name]! };
           break;
         }
@@ -162,7 +175,11 @@ function run(control: Control, kont: readonly Frame[]): SagaStep {
           break;
         case "call":
           if (e.args.length === 0) {
-            return { kind: "suspended", state: { kont: stack, awaiting: { fn: e.fn, args: [] } }, activity: { fn: e.fn, args: [] } };
+            return {
+              kind: "suspended",
+              state: { kont: stack, awaiting: { fn: e.fn, args: [] } },
+              activity: { fn: e.fn, args: [] },
+            };
           }
           stack = [...stack, { k: "evalArgs", fn: e.fn, pending: e.args.slice(1), done: [], env }];
           ctrl = { mode: "eval", expr: e.args[0]!, env };
@@ -195,7 +212,11 @@ function run(control: Control, kont: readonly Frame[]): SagaStep {
           const done = [...top.done, value];
           if (top.pending.length === 0) {
             // all args computed → this activity call suspends; `rest` is the continuation
-            return { kind: "suspended", state: { kont: rest, awaiting: { fn: top.fn, args: done } }, activity: { fn: top.fn, args: done } };
+            return {
+              kind: "suspended",
+              state: { kont: rest, awaiting: { fn: top.fn, args: done } },
+              activity: { fn: top.fn, args: done },
+            };
           }
           stack = [...rest, { k: "evalArgs", fn: top.fn, pending: top.pending.slice(1), done, env: top.env }];
           ctrl = { mode: "eval", expr: top.pending[0]!, env: top.env };
@@ -285,7 +306,9 @@ export function serializeState(state: SagaState): Result<string, ResumeFeedback>
   try {
     const kont = state.kont.map(emitFrame).join(",");
     const args = state.awaiting.args.map(emitConstValue).join(",");
-    return ok(`{"v":${RESUME_VERSION},"kont":[${kont}],"awaiting":{"fn":${JSON.stringify(state.awaiting.fn)},"args":[${args}]}}`);
+    return ok(
+      `{"v":${RESUME_VERSION},"kont":[${kont}],"awaiting":{"fn":${JSON.stringify(state.awaiting.fn)},"args":[${args}]}}`,
+    );
   } catch (ex) {
     if (ex instanceof ResumeFail) return err(ex.feedback);
     throw ex;
@@ -355,11 +378,21 @@ function readFrame(n: unknown): Frame {
   const o = n as Record<string, unknown>;
   switch (o.k) {
     case "evalRight":
-      return { k: "evalRight", op: readBinOp(o.op, "evalRight.op"), right: readExpr(o.right, "evalRight.right"), env: readEnv(o.env, "evalRight.env") };
+      return {
+        k: "evalRight",
+        op: readBinOp(o.op, "evalRight.op"),
+        right: readExpr(o.right, "evalRight.right"),
+        env: readEnv(o.env, "evalRight.env"),
+      };
     case "applyOp":
       return { k: "applyOp", op: readBinOp(o.op, "applyOp.op"), left: readConstValue(o.left, "applyOp.left") };
     case "branch":
-      return { k: "branch", then: readExpr(o.then, "branch.then"), els: readExpr(o.els, "branch.els"), env: readEnv(o.env, "branch.env") };
+      return {
+        k: "branch",
+        then: readExpr(o.then, "branch.then"),
+        els: readExpr(o.els, "branch.els"),
+        env: readEnv(o.env, "branch.env"),
+      };
     case "evalArgs": {
       if (!Array.isArray(o.pending)) bad("evalArgs.pending is not an array");
       if (!Array.isArray(o.done)) bad("evalArgs.done is not an array");

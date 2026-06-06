@@ -16,14 +16,14 @@ Pattern: declarative settings-as-code (see Zeta repo's `memory/` for full ration
 
 ## Merge settings
 
-| Setting | Value |
-|---------|-------|
-| Allow merge commits | **disabled** |
-| Allow squash merging | **enabled** (squash-merge only) |
-| Allow rebase merging | **disabled** |
-| Squash merge commit message | PR title + PR number |
-| Delete head branches on merge | **enabled** |
-| Allow auto-merge | **enabled** |
+| Setting                       | Value                           |
+| ----------------------------- | ------------------------------- |
+| Allow merge commits           | **disabled**                    |
+| Allow squash merging          | **enabled** (squash-merge only) |
+| Allow rebase merging          | **disabled**                    |
+| Squash merge commit message   | PR title + PR number            |
+| Delete head branches on merge | **enabled**                     |
+| Allow auto-merge              | **enabled**                     |
 
 ## Merge queue
 
@@ -31,34 +31,34 @@ Merge queue: **enabled** (LFG org feature; requires GitHub Team or above).
 
 ## Branch protection — `main`
 
-| Rule | Value |
-|------|-------|
-| Require pull request before merging | **enabled** |
-| Required approving reviews | 1 (bump to 2 when multi-contributor) |
-| Dismiss stale reviews on push | **enabled** |
-| Require review from code owners | disabled (no CODEOWNERS yet) |
-| Require status checks to pass | **enabled** |
-| Required status checks | `bun-test`, `bun-lint`, `codeql`, `scorecard` _(added in Stage 2 after CI workflows are wired — empty at day-one to avoid deadlocking bootstrap)_ |
-| Require branches up to date | **enabled** (merge queue handles) |
-| Require conversation resolution | **enabled** |
-| Restrict pushes that create files | disabled |
-| Require signed commits | **enabled** |
-| Require linear history | **enabled** |
-| Include administrators | **enabled** |
-| Allow force pushes | **disabled** |
-| Allow deletions | **disabled** |
+| Rule                                | Value                                                                                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Require pull request before merging | **enabled**                                                                                                                                       |
+| Required approving reviews          | 1 (bump to 2 when multi-contributor)                                                                                                              |
+| Dismiss stale reviews on push       | **enabled**                                                                                                                                       |
+| Require review from code owners     | disabled (no CODEOWNERS yet)                                                                                                                      |
+| Require status checks to pass       | **enabled**                                                                                                                                       |
+| Required status checks              | `bun-test`, `bun-lint`, `codeql`, `scorecard` _(added in Stage 2 after CI workflows are wired — empty at day-one to avoid deadlocking bootstrap)_ |
+| Require branches up to date         | **enabled** (merge queue handles)                                                                                                                 |
+| Require conversation resolution     | **enabled**                                                                                                                                       |
+| Restrict pushes that create files   | disabled                                                                                                                                          |
+| Require signed commits              | **enabled**                                                                                                                                       |
+| Require linear history              | **enabled**                                                                                                                                       |
+| Include administrators              | **enabled**                                                                                                                                       |
+| Allow force pushes                  | **disabled**                                                                                                                                      |
+| Allow deletions                     | **disabled**                                                                                                                                      |
 
 ## Security
 
-| Setting | Value |
-|---------|-------|
-| Secret scanning | **enabled** |
-| Push protection | **enabled** |
-| Dependency graph | **enabled** |
-| Dependabot alerts | **enabled** |
-| Dependabot security updates | **enabled** |
-| Code scanning (CodeQL) | **default-setup** (NOT advanced-only) |
-| Private vulnerability reporting | **enabled** |
+| Setting                         | Value                                 |
+| ------------------------------- | ------------------------------------- |
+| Secret scanning                 | **enabled**                           |
+| Push protection                 | **enabled**                           |
+| Dependency graph                | **enabled**                           |
+| Dependabot alerts               | **enabled**                           |
+| Dependabot security updates     | **enabled**                           |
+| Code scanning (CodeQL)          | **default-setup** (NOT advanced-only) |
+| Private vulnerability reporting | **enabled**                           |
 
 > Note: CodeQL **default-setup** is required; advanced-only fails the
 > `code_scanning` ruleset rule (see
@@ -72,11 +72,11 @@ Scorecard workflow: **enabled** via `.github/workflows/scorecard.yml`
 
 ## Budget caps (LFG org — set at org level, not per-repo)
 
-| Surface | Spending limit |
-|---------|---------------|
-| Copilot | $0 |
-| Actions | $0 |
-| Packages | $0 |
+| Surface  | Spending limit |
+| -------- | -------------- |
+| Copilot  | $0             |
+| Actions  | $0             |
+| Packages | $0             |
 
 Caps are designed cost-stops; see the
 [Zeta memory file](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/feedback_lfg_budgets_set_permits_free_experimentation.md)

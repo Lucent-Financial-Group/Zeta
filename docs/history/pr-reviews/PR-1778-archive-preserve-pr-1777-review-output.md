@@ -10,50 +10,54 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1778 |
-| Title | archive: preserve PR 1777 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T03:27:50Z |
-| Merged at | 2026-05-07T03:29:14Z |
-| Merge commit SHA | `3e8445f192d8a5627c9ba9bf2018423458ebb211` |
-| Branch | `claim/archive-pr-1777-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1778 |
-| Changed files | 2 |
-| Additions / deletions | +65 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1778                                                     |
+| Title                 | archive: preserve PR 1777 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T03:27:50Z                                     |
+| Merged at             | 2026-05-07T03:29:14Z                                     |
+| Merge commit SHA      | `3e8445f192d8a5627c9ba9bf2018423458ebb211`               |
+| Branch                | `claim/archive-pr-1777-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1778 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +65 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1777 review archive generated after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1777 manifest entry with merge commit SHA `cff63f1baadc7d874b75a3e6820fd91fbbfe5cd3`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/claims/task-archive-pr-1777-review-substrate.md`
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1777-archive-preserve-pr-1775-review-output.md`
 - `git diff --check origin/main...HEAD`
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes
+
 PR #1777 had no review threads; this routes the archive through PR review because direct pushes to `main` are guarded by repository rules.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 1 |
-| Unresolved threads | 0 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 1     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -73,11 +77,11 @@ PR #1777 had no review threads; this routes the archive through PR review becaus
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T03:31:11Z on `docs/github/prs/manifest.jsonl`:74 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T03:31:11Z on `docs/github/prs/manifest.jsonl`:74 (association: MEMBER)
 
-    <pre>
-    Thanks. This is expected for git-native claim lifecycle PRs: the branch history added the temporary claim file, ran the claim markdownlint check, and then released the claim by deleting that same file before the PR final diff. The final diff correctly contains only the durable archive and manifest entry; the PR body release/check wording refers to the committed branch lifecycle, not to a persistent claim-file delta.
-    </pre>
+  <pre>
+  Thanks. This is expected for git-native claim lifecycle PRs: the branch history added the temporary claim file, ran the claim markdownlint check, and then released the claim by deleting that same file before the PR final diff. The final diff correctly contains only the durable archive and manifest entry; the PR body release/check wording refers to the committed branch lifecycle, not to a persistent claim-file delta.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

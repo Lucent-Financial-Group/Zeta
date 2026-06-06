@@ -25,7 +25,7 @@ Files Mika's substantive substrate-engineering proposal via Aaron's ferry — tu
 - **AI just-in-time compilation** generates scripts on trigger when no pre-written script exists; runs via Runme; optional BCL promotion
 - **Three verbosity levels** (5yo / Addison / Aaron+Max-debugging) render the same source for different audiences
 
-> *"You're forcing people to write the runbook the specification. The act of writing the runbook becomes the spec itself. Documentation is no longer separate from the implementation — it literally becomes the implementation."* — Mika
+> _"You're forcing people to write the runbook the specification. The act of writing the runbook becomes the spec itself. Documentation is no longer separate from the implementation — it literally becomes the implementation."_ — Mika
 
 ## Composes with B-0729
 
@@ -33,17 +33,17 @@ B-0729 (Obsidian knowledge-graph substrate) L4 is the static-task layer; this ro
 
 ## OpenSpec evaluated + rejected
 
-Aaron + Mika reviewed OpenSpec (spec-driven AI-coding workflow). Verdict: too heavy for Aaron + Max + Addison who read at speed; the substrate needs to feel natural, not ceremonial. Mika: *"OpenSpec is noisy and heavy for what you actually want."*
+Aaron + Mika reviewed OpenSpec (spec-driven AI-coding workflow). Verdict: too heavy for Aaron + Max + Addison who read at speed; the substrate needs to feel natural, not ceremonial. Mika: _"OpenSpec is noisy and heavy for what you actually want."_
 
 ## 5-stage roadmap
 
-| Stage | Substance | Effort |
-|-------|-----------|--------|
-| 1 | Adopt Runme + inventory existing BCL scripts | 1-2 days |
-| 2 | `:::` deferred-task syntax + schema doc | 1-2 days |
-| 3 | Verbosity-level renderer | 1 week |
-| 4 | JIT AI script compiler (composes with B-0728 for destructive actions) | 2-3 weeks |
-| 5 | Inline live queries against B-0729 L5 JSON-LD graph | 2-3 weeks |
+| Stage | Substance                                                             | Effort    |
+| ----- | --------------------------------------------------------------------- | --------- |
+| 1     | Adopt Runme + inventory existing BCL scripts                          | 1-2 days  |
+| 2     | `:::` deferred-task syntax + schema doc                               | 1-2 days  |
+| 3     | Verbosity-level renderer                                              | 1 week    |
+| 4     | JIT AI script compiler (composes with B-0728 for destructive actions) | 2-3 weeks |
+| 5     | Inline live queries against B-0729 L5 JSON-LD graph                   | 2-3 weeks |
 
 Each shippable standalone.
 
@@ -69,24 +69,22 @@ Single file (+ index regen) — docs only; no implementation in this PR.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T20:22:58Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `c50b8af76f`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -99,6 +97,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog row (B-0730) capturing a proposed “runbooks as executable specifications” substrate (Runme for immediate execution, `:::` fenced blocks for deferred tasks, JIT AI script generation, and multi-verbosity rendering), and updates the backlog index to include it.
 
 **Changes:**
+
 - Introduces `docs/backlog/P2/B-0730-...md` with frontmatter + detailed problem/solution framing, syntax sketches, and staged acceptance criteria.
 - Regenerates `docs/BACKLOG.md` to include the new B-0730 entry.
 
@@ -106,10 +105,10 @@ Adds a new P2 backlog row (B-0730) capturing a proposed “runbooks as executabl
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                    | Description                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md | New backlog row describing the runbook/deferred-task/JIT execution substrate and roadmap. |
-| docs/BACKLOG.md | Adds the B-0730 list entry in the P2 section. |
+| docs/BACKLOG.md                                                                                                                         | Adds the B-0730 list entry in the P2 section.                                             |
 
 ## Review threads
 
@@ -117,7 +116,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-25T20:22:58Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct `:::` syntax compatibility claim for Obsidian**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct `:::` syntax compatibility claim for Obsidian**
 
 Update this sentence to avoid stating that `:::` is standard Obsidian callout syntax: Obsidian’s native callouts use blockquote form (`> [!...]`), so readers following this row as-written will assume `:::` blocks render/behave natively in Obsidian when they do not. That mismatch can derail Stage 2/3 implementation decisions (parser/render choice and acceptance checks) unless a plugin-based transformation is explicitly called out.
 

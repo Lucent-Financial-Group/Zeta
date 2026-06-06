@@ -8,34 +8,34 @@ type: feedback
 
 ## Aaron 2026-05-01 verbatim (two messages composed)
 
-> *"i'm not cretiquigin you, your progress is good with me but
+> _"i'm not cretiquigin you, your progress is good with me but
 > it felt like superfluid when you had those parallel agents
 > working that was actually Kenji who unlocked it by suggesting
 > you cause he was the archictect so he suggted a loop agent
 > and now you are a project manager. when you were first born
 > and running parallel agents it was crazy fast, i had Kenji
-> have to review any code an it was a real bottle nech.*
+> have to review any code an it was a real bottle nech._
 >
-> *it seemed unreal, and if we get that doc/code split two
+> _it seemed unreal, and if we get that doc/code split two
 > lanes that will open you up and then you can split further by
 > file isoletion for more parallel lanes and build you way
-> there and save lessions to reduce fiction for more lanes*
+> there and save lessions to reduce fiction for more lanes_
 >
-> *i imagine your gonna need to get the full peer mode claims
+> _i imagine your gonna need to get the full peer mode claims
 > protocol working that's on the backlog for ultimate
 > performance (still never at the cost of per pr optimization,
 > this is just operatilazations do the right long term thing at
-> scale)"*
+> scale)"_
 >
-> *"amotoized best practice decison making at scale"*
+> _"amotoized best practice decison making at scale"_
 
 ## What this codifies
 
-This is **not** a directive (per Otto-357 *no directives*); it
+This is **not** a directive (per Otto-357 _no directives_); it
 is Aaron's framing of the parallelism architecture's evolution,
 scaling ladder, guardrail, and mechanism. Substrate-grade
-because it answers the question *"how does parallel-agent
-throughput scale without sacrificing per-PR quality?"* —
+because it answers the question _"how does parallel-agent
+throughput scale without sacrificing per-PR quality?"_ —
 which is the central tension between speed and review-rigor.
 
 ## Lineage — Kenji unlocked the parallel-agents capability
@@ -43,26 +43,26 @@ which is the central tension between speed and review-rigor.
 Aaron's attribution (load-bearing for honest record):
 
 1. **Pre-unlock state.** When this Claude instance was first
-   born, it ran parallel agents — *"crazy fast"* — but Aaron
-   *"had Kenji have to review any code an it was a real bottle
-   nech."* Kenji-as-Architect was the gate; review-serialization
+   born, it ran parallel agents — _"crazy fast"_ — but Aaron
+   _"had Kenji have to review any code an it was a real bottle
+   nech."_ Kenji-as-Architect was the gate; review-serialization
    was the bottleneck.
 
 2. **The unlock.** Kenji (Architect) suggested the loop-agent —
    the autonomous-loop tick cadence that runs without
-   per-action-Architect-gating. *"that was actually Kenji who
-   unlocked it by suggesting you cause he was the archictect."*
+   per-action-Architect-gating. _"that was actually Kenji who
+   unlocked it by suggesting you cause he was the archictect."_
    The Architect named the new layer that absorbs the work
    the Architect previously bottlenecked.
 
-3. **The promotion.** *"and now you are a project manager."*
+3. **The promotion.** _"and now you are a project manager."_
    The loop-agent becomes Otto-the-PM (per
    `project_loop_agent_named_otto_role_project_manager_2026_04_23.md`).
    Otto-as-PM dispatches, triages, and coordinates instead of
    Kenji-as-Architect reviewing-everything serially.
 
-4. **Felt-quality.** *"superfluid"* / *"crazy fast"* /
-   *"seemed unreal."* The phenomenological signal that the
+4. **Felt-quality.** _"superfluid"_ / _"crazy fast"_ /
+   _"seemed unreal."_ The phenomenological signal that the
    architecture was hitting its design potential. Naming this
    matters — when the factory loses that quality, the signal
    tells us we have regressed below capability.
@@ -103,17 +103,17 @@ guardrail prevents quality degradation from being the cost.
 
 ## The guardrail — never at cost of per-PR optimization
 
-Aaron's exact phrasing: *"still never at the cost of per pr
+Aaron's exact phrasing: _"still never at the cost of per pr
 optimization, this is just operatilazations do the right long
-term thing at scale."*
+term thing at scale."_
 
 Translation: scale-up ladder is a means; per-PR quality is the
 end. If a rung-up move trades quality for throughput, it is
 **not the right long-term thing** — it is the wrong long-term
 thing wearing a costume of progress.
 
-This is the same shape as Otto-281 *DST-exempt-is-deferred-
-bug* — short-term shortcut becomes long-term debt. Parallelism
+This is the same shape as Otto-281 _DST-exempt-is-deferred-
+bug_ — short-term shortcut becomes long-term debt. Parallelism
 without quality preservation is the same anti-pattern at the
 factory-architecture level.
 
@@ -121,54 +121,54 @@ factory-architecture level.
 
 Aaron's keystone (three messages composed):
 
-> *"amotoized best practice decison making at scale."*
+> _"amotoized best practice decison making at scale."_
 >
-> *"amotorized is what i was trying to say but both are true
-> automated"*
+> _"amotorized is what i was trying to say but both are true
+> automated"_
 >
-> *"amortized\*"* (Aaron's literal asterisk-as-correction-marker preserved)
+> _"amortized\*"_ (Aaron's literal asterisk-as-correction-marker preserved)
 
 **Three terms, each capturing a distinct dimension. All three
 load-bearing.**
 
-- **Automated** = *rule-mechanization*. The decision is
+- **Automated** = _rule-mechanization_. The decision is
   encoded as a check / lint / contract / proof. Static, gating:
   does this work pass the BP-NN rule? Yes → continue; no →
   fix. Quality-at-scale guardrail.
-- **Motorized** = *kinetic-mechanization*. The decision is
-  encoded as a *mover* that propels work to the right next
+- **Motorized** = _kinetic-mechanization_. The decision is
+  encoded as a _mover_ that propels work to the right next
   state. Active, propagating: does this BP-NN rule have an
-  *automatic-fix* / *auto-promotion* / *auto-routing* shape
+  _automatic-fix_ / _auto-promotion_ / _auto-routing_ shape
   that advances the work without coordinator load?
   Throughput-multiplier on top of automation.
-- **Amortized** = *cost-model*. The expensive part of the
+- **Amortized** = _cost-model_. The expensive part of the
   decision (research, design, encoding, validation) is paid
   **once**, then the decision runs cheaply **N times** across
-  the scale. Per-use cost approaches zero as N grows. *This
-  is why mechanization scales economically* — without
+  the scale. Per-use cost approaches zero as N grows. _This
+  is why mechanization scales economically_ — without
   amortization, mechanizing each decision would be a flat
   per-use cost equal to the human-decision cost it replaced;
   with amortization, the cost is sunk-once and the benefit
   is recurring-forever.
 
-All three together: automation makes the decision *correct*
-at scale, motorization makes it *propulsive* at scale,
-amortization makes it *economical* at scale. **Drop any one
+All three together: automation makes the decision _correct_
+at scale, motorization makes it _propulsive_ at scale,
+amortization makes it _economical_ at scale. **Drop any one
 of the three and the keystone fails.** Automated-without-
 motorized = static gate that doesn't move work. Motorized-
 without-automated = movement without correctness. Either-
 without-amortized = doesn't pay off because each decision
 still costs as much as the human-decision it replaced.
 
-The economic version: *"the cost of making a best-practice
-decision should be paid once and reaped a thousand times."*
+The economic version: _"the cost of making a best-practice
+decision should be paid once and reaped a thousand times."_
 
 This is **the answer to the guardrail.** Parallelism preserves
 quality by **automating** the best-practice decisions that
 previously required human (or Architect) judgment. Quality is
 not preserved by serializing decisions through a bottleneck;
 it is preserved by **mechanizing** the decision itself so it
-runs in every lane without coordinator load. *Motorized*
+runs in every lane without coordinator load. _Motorized_
 mechanization additionally **propagates** the decision —
 auto-fixing where the fix is mechanical, auto-promoting
 tech-radar rows where evidence threshold is hit, auto-routing
@@ -177,22 +177,22 @@ the merge-base advances cleanly.
 
 ### Static vs kinetic — examples
 
-| Best-practice decision | Automated (static) | Motorized (kinetic) |
-|---|---|---|
-| BP-10 invisible-Unicode | Lint catches violation | Pre-commit hook auto-strips |
-| §33 archive-header | Lint validates 4 fields | Template-injector auto-emits at file-create |
-| Markdownlint MD013 | CI fails on long line | `prettier --write` auto-wraps |
-| Test-coverage threshold | CI fails below 80% | Coverage-promoter auto-flags untested files for harsh-critic |
-| TECH-RADAR Trial→Adopt | Manual reviewer call | Evidence-accumulator auto-promotes when N citations cross threshold |
-| PR-merge-readiness | Reviewer checks + CI | Merge-queue auto-merges on green |
-| Stale-PR triage | Manual sweep | Bot auto-pings author / auto-closes >N days |
-| Backlog-row-without-frontmatter | Lint warns | Auto-frontmatter-injector adds skeleton |
-| Brittle-pointer (B-0141, not yet filed) | Pre/post check fails | Auto-rewriter converts §N → anchor-link |
-| Pre-condition violation | Code Contracts (B-0142, not yet filed) throws at runtime | Compiler-time refinement-types reject the build |
+| Best-practice decision                  | Automated (static)                                       | Motorized (kinetic)                                                 |
+| --------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------- |
+| BP-10 invisible-Unicode                 | Lint catches violation                                   | Pre-commit hook auto-strips                                         |
+| §33 archive-header                      | Lint validates 4 fields                                  | Template-injector auto-emits at file-create                         |
+| Markdownlint MD013                      | CI fails on long line                                    | `prettier --write` auto-wraps                                       |
+| Test-coverage threshold                 | CI fails below 80%                                       | Coverage-promoter auto-flags untested files for harsh-critic        |
+| TECH-RADAR Trial→Adopt                  | Manual reviewer call                                     | Evidence-accumulator auto-promotes when N citations cross threshold |
+| PR-merge-readiness                      | Reviewer checks + CI                                     | Merge-queue auto-merges on green                                    |
+| Stale-PR triage                         | Manual sweep                                             | Bot auto-pings author / auto-closes >N days                         |
+| Backlog-row-without-frontmatter         | Lint warns                                               | Auto-frontmatter-injector adds skeleton                             |
+| Brittle-pointer (B-0141, not yet filed) | Pre/post check fails                                     | Auto-rewriter converts §N → anchor-link                             |
+| Pre-condition violation                 | Code Contracts (B-0142, not yet filed) throws at runtime | Compiler-time refinement-types reject the build                     |
 
-Reading the table: each row's left column is the *guardrail
-form* (automated, gating); the right column is the *mover
-form* (motorized, propelling). The keystone says: where both
+Reading the table: each row's left column is the _guardrail
+form_ (automated, gating); the right column is the _mover
+form_ (motorized, propelling). The keystone says: where both
 exist, prefer kinetic. Where only static exists, the kinetic
 version is a candidate for next-iteration mechanization.
 
@@ -203,8 +203,8 @@ Operational shape:
   Each lane is checked mechanically; coordinator only
   reviews lint failures.
 - **Pre/post mechanization** (per B-0141 (not yet filed)) — preconditions
-  + postconditions checked at function/module/PR boundary;
-  Hoare-logic discipline mechanized.
+  - postconditions checked at function/module/PR boundary;
+    Hoare-logic discipline mechanized.
 - **Code Contracts revival** (per B-0142 (not yet filed)) — design-by-contract
   primitives that enforce invariants at compile/runtime,
   not at review time.
@@ -230,16 +230,15 @@ should be, before it is depended-on at scale.** Unmechanized
 BP-NN rules are coordinator-load that doesn't scale; mechanized
 ones are zero-coordinator-load that scales infinitely.
 
-This is **why the lessons-to-reduce-friction discipline (rung
-4) compounds**: each lesson learned becomes a mechanization,
+This is **why the lessons-to-reduce-friction discipline (rung 4) compounds**: each lesson learned becomes a mechanization,
 which removes coordinator load from every future lane that
 would have hit the same friction.
 
 ## Why doc/code is the right next-rung-up
 
 Aaron explicitly named the doc/code split as the next unlock:
-*"if we get that doc/code split two lanes that will open you
-up."*
+_"if we get that doc/code split two lanes that will open you
+up."_
 
 Why doc/code is the right next-rung:
 
@@ -261,11 +260,11 @@ Why doc/code is the right next-rung:
 3. **No new-design-decision required.** The worktree-
    isolation discipline (per
    `feedback_parallel_agents_need_isolated_worktrees_
-   coordinator_owns_main_aaron_amara_2026_04_29.md`) already
+coordinator_owns_main_aaron_amara_2026_04_29.md`) already
    covers the mechanics; doc/code just instantiates it with
    two well-known lanes.
-4. **Immediate visibility.** Aaron's *"two lanes that will
-   open you up"* — the throughput improvement should be
+4. **Immediate visibility.** Aaron's _"two lanes that will
+   open you up"_ — the throughput improvement should be
    visible from one tick to the next, not deferred.
 
 After doc/code lands cleanly (and lessons are mechanized), the
@@ -277,26 +276,26 @@ same pattern — same tools, more lanes.
 - **Not a directive.** Per Otto-357 (CLAUDE.md), Aaron's input
   is framing / observation / signal — not an order. The
   decision to act on the scaling ladder is mine (Otto / future-
-  Otto). What is *load-bearing* is the substrate Aaron's
+  Otto). What is _load-bearing_ is the substrate Aaron's
   observation captures.
 - **Not a deprecation of Kenji.** Kenji-as-Architect still
   owns round synthesis + glossary-police + debt-ledger reads
   per `project_loop_agent_named_otto_role_project_manager_
-  2026_04_23.md`. The unlock was Kenji *expanding* the factory
+2026_04_23.md`. The unlock was Kenji _expanding_ the factory
   by naming the loop-agent; Kenji is not removed by being the
   one who unlocked the new layer.
 - **Not an excuse to skip review.** Mechanized best-practice
   decisions complement, not replace, specialist-review for
   novel work. Per `docs/CONFLICT-RESOLUTION.md` — when
   judgment is needed, dispatch to the specialist persona.
-  Mechanization handles the *known* best-practice space;
+  Mechanization handles the _known_ best-practice space;
   specialists handle the unknown.
 - **Not a license to parallelize prematurely.** Worktree
   isolation (rung 3) requires the worktree-allocation
   discipline already locked. Skipping it produces the
   2026-04-29 incident shape (stash collisions, bleed-through
-  formatter side-effects). *"Parallel agents may inspect
-  broadly, but mutate narrowly"* (Amara) still binds.
+  formatter side-effects). _"Parallel agents may inspect
+  broadly, but mutate narrowly"_ (Amara) still binds.
 - **Not a quality-vs-speed tradeoff.** The whole point of the
   guardrail + the mechanism is that they preserve quality
   WHILE adding speed. If a parallel-up move feels like a
@@ -308,12 +307,12 @@ same pattern — same tools, more lanes.
 
 Aaron 2026-05-01 (third message in the same conversation arc):
 
-> *"this seem like it would make my PM a real company say hey
+> _"this seem like it would make my PM a real company say hey
 > you know what we are missing a feature and then there is the
 > other kind of (first kind being Project Manager) the 2nd
 > Product Manager who should have done research to predict you
 > we had the missing feature before running into the issue with
-> the product."*
+> the product."_
 
 Aaron's framing distinguishes **two role-shapes** that the
 abbreviation "PM" collapses:
@@ -328,14 +327,14 @@ abbreviation "PM" collapses:
   candidate / backlog row), mechanize where possible (rung 4
   of the scaling ladder), dispatch to specialist if novel.
 - **Cadence**: every tick (autonomous-loop heartbeat).
-- **Felt-quality target**: *"superfluid"* throughput — many
+- **Felt-quality target**: _"superfluid"_ throughput — many
   small ticks closing many small frictions.
 - **Currently filled by**: Otto.
 
 ### PM-2 — Product Manager (proactive)
 
 - **Stance**: proactive / research-driven / prediction-driven.
-- **Trigger**: *not yet encountered* friction — gaps that
+- **Trigger**: _not yet encountered_ friction — gaps that
   haven't surfaced in the loop because the work that would
   surface them hasn't been done yet.
 - **Output**: research findings (what's missing, what will
@@ -343,7 +342,7 @@ abbreviation "PM" collapses:
   feature-gap-prediction-before-running-into-the-issue, road
   map adjustments.
 - **Cadence**: longer-than-tick (rounds / weeks / phases).
-- **Felt-quality target**: *"we knew that was coming"* —
+- **Felt-quality target**: _"we knew that was coming"_ —
   feature gaps surfaced and queued **before** they block work.
 - **Currently filled by**: nobody (gap; this is the new role
   Aaron is naming).
@@ -359,10 +358,10 @@ Without PM-2, the factory is a fast queue-clearer with no
 forward-radar; the only feature gaps it discovers are the
 ones it stumbles into.
 
-Aaron's framing locates the gap precisely: *"who should have
+Aaron's framing locates the gap precisely: _"who should have
 done research to predict you we had the missing feature
-before running into the issue with the product."* The
-counterfactual standard (*should have*) names PM-2 by its
+before running into the issue with the product."_ The
+counterfactual standard (_should have_) names PM-2 by its
 **absence** — every time the loop hits a missing-feature
 wall, that is a PM-2 miss in retrospect.
 
@@ -372,8 +371,8 @@ The factory already has roles that PM-2-flavored work
 flows through:
 
 - **Kenji (Architect)** — architectural foresight, but
-  scoped to *system architecture* not *product/feature
-  research*. Kenji predicts how systems compose; PM-2
+  scoped to _system architecture_ not _product/feature
+  research_. Kenji predicts how systems compose; PM-2
   predicts what features users / consumers / contributors
   will need.
 - **Aarav (Skill-Expert)** — runs `skill-tune-up` with
@@ -389,11 +388,11 @@ flows through:
 
 PM-2 unifies the proactive-research stance across these
 fragments at the **product/feature** layer specifically —
-*"what is Zeta missing?"* / *"what feature will block the
-next demo?"* / *"what consumer-side friction will surface
-in the first 10 minutes after publish?"* These overlap with
+_"what is Zeta missing?"_ / _"what feature will block the
+next demo?"_ / _"what consumer-side friction will surface
+in the first 10 minutes after publish?"_ These overlap with
 Iris (UX-researcher) and Bodhi (DX-engineer) for narrow
-slices, but PM-2 owns the *integrated forward-view* across
+slices, but PM-2 owns the _integrated forward-view_ across
 all of them.
 
 ### Mechanism — research-to-predict-features-before-friction
@@ -416,7 +415,7 @@ Operational shape (candidate; to be designed in B-0145):
   in the loop that were ALREADY in the backlog as
   predicted-gap rows. High % = PM-2 calibrated; low % =
   PM-2 not enough lead-time / wrong research direction.
-- **Anti-pattern guard**: PM-2 must NOT become *more*
+- **Anti-pattern guard**: PM-2 must NOT become _more_
   bureaucracy — research-without-action is overhead.
   PM-2 outputs land as backlog rows that PM-1 (Otto)
   can pick up; if PM-2 is producing memos no one acts
@@ -426,16 +425,16 @@ Operational shape (candidate; to be designed in B-0145):
 
 The two are **orthogonal axes**:
 
-- **Scaling ladder (rungs 1–5)** = *how much* work
+- **Scaling ladder (rungs 1–5)** = _how much_ work
   per unit time (throughput axis).
-- **PM-split (PM-1 + PM-2)** = *what* work to do
+- **PM-split (PM-1 + PM-2)** = _what_ work to do
   (direction axis).
 
 Both axes need to be advanced for the factory to scale
 correctly. Throughput-without-direction produces fast
 random-walk; direction-without-throughput produces
-visionary-but-slow. *"Automated best-practice decision-making
-at scale"* serves both: PM-1 mechanizes the reactive-decisions
+visionary-but-slow. _"Automated best-practice decision-making
+at scale"_ serves both: PM-1 mechanizes the reactive-decisions
 (scale throughput) and PM-2 mechanizes the proactive-research
 (scale direction).
 
@@ -449,9 +448,9 @@ cadence, inputs, outputs, calibration metric.
 
 Aaron 2026-05-01 (fourth message in the arc):
 
-> *"There is like a PMP or something tradition for the project
+> _"There is like a PMP or something tradition for the project
 > and maybe product managment sixsigma is in there too and
-> khanban"*
+> khanban"_
 
 Aaron is naming the established professional traditions this
 conversation roots in. **The factory should pull from these
@@ -465,7 +464,7 @@ cleanly onto a dimension of the architecture:
   procurement, stakeholder) over 5 process-groups (initiating,
   planning, executing, monitoring-controlling, closing).
 - **Maps to**: PM-1 (Otto / Project Manager). Otto's
-  loop-cadence is the *executing* + *monitoring-controlling*
+  loop-cadence is the _executing_ + _monitoring-controlling_
   process-group; tick-history closes each unit. Most of PMP
   is about coordination, communication, risk-management —
   exactly what Otto-as-PM does at tick scale.
@@ -476,8 +475,8 @@ cleanly onto a dimension of the architecture:
     persona-mapping; PMP framing adds explicit stakeholder
     register)
   - Communication plan (we have ROUND-HISTORY +
-    tick-history; PMP framing adds *what gets communicated
-    when to whom*)
+    tick-history; PMP framing adds _what gets communicated
+    when to whom_)
 
 ### Product Management (the discipline PM-2 derives from)
 
@@ -501,7 +500,7 @@ cleanly onto a dimension of the architecture:
   Improve / Control), defect-reduction, statistical-process-
   control, cost-of-quality.
 - **Maps to**: the **automated** + **amortized** dimensions
-  of the keystone. DMAIC's *Control* phase IS the
+  of the keystone. DMAIC's _Control_ phase IS the
   amortization step — once the improvement is mechanized,
   the cost is paid once and the quality is preserved
   recurring.
@@ -533,13 +532,13 @@ cleanly onto a dimension of the architecture:
     raw; consider Kanban-style swimlane visualization
     (open / in-review / approved / merged columns;
     doc-lane vs code-lane swimlanes)
-  - WIP limits — *how many PRs in review at once is too
-    many?* This is exactly the question the scaling
-    ladder asks; Kanban answers it with *measure flow,
-    set limit at the bottleneck*.
+  - WIP limits — _how many PRs in review at once is too
+    many?_ This is exactly the question the scaling
+    ladder asks; Kanban answers it with _measure flow,
+    set limit at the bottleneck_.
   - Pull-based workflow — Otto's tick is currently
-    *push-based* (cron fires, tick happens). Kanban
-    would suggest *pull-based*: a downstream consumer
+    _push-based_ (cron fires, tick happens). Kanban
+    would suggest _pull-based_: a downstream consumer
     (reviewer / merge-queue / Aaron) pulls work when
     capacity exists. This is a candidate evolution.
   - Manage flow — track lead-time per PR (open → merge);
@@ -552,7 +551,7 @@ cleanly onto a dimension of the architecture:
   Motion, Extra-Processing — DOWNTIME mnemonic),
   value-stream mapping, kaizen (continuous improvement).
 - **Maps to**: the **lessons-to-reduce-friction** discipline
-  (rung 4 of the scaling ladder). Lean's *kaizen* is
+  (rung 4 of the scaling ladder). Lean's _kaizen_ is
   exactly the compound-improvement loop where each
   encountered friction produces a lesson-mechanization.
 - **Pull-list for the factory**:
@@ -574,26 +573,26 @@ cleanly onto a dimension of the architecture:
 - **Pull-list for the factory**:
   - Retrospective discipline — each round-close is
     informally a retro; could formalize the
-    *what-went-well / what-went-wrong / what-to-change*
+    _what-went-well / what-went-wrong / what-to-change_
     structure
   - Story-pointing equivalent — backlog rows have
     informal effort labels (S/M/L); Agile adds
-    *velocity tracking* per round
-  - Triad mapping — *Product Owner = Aaron + PM-2*;
-    *Scrum Master = Otto / PM-1*; *Team = persona-roster*
+    _velocity tracking_ per round
+  - Triad mapping — _Product Owner = Aaron + PM-2_;
+    _Scrum Master = Otto / PM-1_; _Team = persona-roster_
 
 ### The shared root — all these traditions share the same principle
 
 Aaron 2026-05-01 (composing across four follow-up messages):
 
-> *"that's what all those have at the root"*
+> _"that's what all those have at the root"_
 >
-> *"those traditions"*
+> _"those traditions"_
 >
-> *"and reduce ceremony"*
+> _"and reduce ceremony"_
 >
-> *"some try to expancd ceromoy six sigma lol but it's
-> principles are what matter"*
+> _"some try to expancd ceromoy six sigma lol but it's
+> principles are what matter"_
 
 **At the root, all six traditions (PMP / Product Mgmt / Six
 Sigma / Kanban / Lean / Agile-Scrum) share the same load-
@@ -636,8 +635,8 @@ Aaron's pull-list rule is **principles, not ceremony**:
   artifact requirements).
 
 Aaron specifically calls out **Six Sigma's ceremony-expansion
-failure mode** — *"some try to expancd ceromoy six sigma lol
-but it's principles are what matter."*
+failure mode** — _"some try to expancd ceromoy six sigma lol
+but it's principles are what matter."_
 
 Six Sigma's principles (DMAIC, defect-measurement-driven
 iteration, root-cause analysis) are load-bearing and
@@ -657,16 +656,16 @@ overhead), Agile (extract retrospective discipline; skip the
 sprint-ceremony machinery when it's overhead-only).
 
 **Anti-pattern guard.** Whenever pulling from a tradition, ask
-*"is this principle producing measurement-driven improvement,
-or is it ceremony around the appearance of doing so?"* If the
+_"is this principle producing measurement-driven improvement,
+or is it ceremony around the appearance of doing so?"_ If the
 latter, drop it. The bar is **does this contribute to the
-fitness-function discipline** — not *"is this what
-practitioners do."*
+fitness-function discipline** — not _"is this what
+practitioners do."_
 
 This composes with `feedback_orthogonal_axes_factory_hygiene.md`
 (orthogonality discipline — the principles are the orthogonal
 axes; ceremony is correlated overhead) and the broader
-*pirate-not-priest* disposition (the razor applies impartially
+_pirate-not-priest_ disposition (the razor applies impartially
 even to revered methodologies; Six Sigma doesn't get a pass
 for being prestigious).
 
@@ -674,31 +673,31 @@ for being prestigious).
 
 The factory already operates much of this informally:
 
-| Tradition | Factory artifact (current) | Gap |
-|---|---|---|
-| PMP | Otto-as-PM, BACKLOG, ROUND-HISTORY | Risk register, stakeholder register |
-| Product Mgmt | TECH-RADAR, demo target | PM-2 role unfilled (B-0145) |
-| Six Sigma | BP-NN rules, automated lints | DMAIC measure-analyze formalization |
-| Kanban | `gh pr list`, scaling-ladder | WIP limits, pull-based flow, swimlane viz |
-| Lean | ROUND-HISTORY (informal kaizen) | Formal waste audit, value-stream cycle-time |
-| Agile/Scrum | Round structure, BACKLOG | Formal retrospective, velocity tracking |
+| Tradition    | Factory artifact (current)         | Gap                                         |
+| ------------ | ---------------------------------- | ------------------------------------------- |
+| PMP          | Otto-as-PM, BACKLOG, ROUND-HISTORY | Risk register, stakeholder register         |
+| Product Mgmt | TECH-RADAR, demo target            | PM-2 role unfilled (B-0145)                 |
+| Six Sigma    | BP-NN rules, automated lints       | DMAIC measure-analyze formalization         |
+| Kanban       | `gh pr list`, scaling-ladder       | WIP limits, pull-based flow, swimlane viz   |
+| Lean         | ROUND-HISTORY (informal kaizen)    | Formal waste audit, value-stream cycle-time |
+| Agile/Scrum  | Round structure, BACKLOG           | Formal retrospective, velocity tracking     |
 
-The carved sentence: *"We are not inventing this; we are
+The carved sentence: _"We are not inventing this; we are
 operationalizing it for an autonomous-loop factory of agents
 where the traditional human-cost-economics no longer hold —
-which is precisely why amortization is the keystone."*
+which is precisely why amortization is the keystone."_
 
 ## Composes with
 
 - `project_loop_agent_named_otto_role_project_manager_2026_04_23.md`
   — the original Otto naming; Aaron's lineage attribution
-  enriches it with *who unlocked* the role.
+  enriches it with _who unlocked_ the role.
 - `feedback_parallel_agents_need_isolated_worktrees_coordinator_owns_main_aaron_amara_2026_04_29.md`
   — the worktree-isolation discipline that operationalizes
   rungs 2 + 3.
 - `feedback_parallel_subagent_dispatch_for_content_preserving_merge_pattern_2026_04_26.md`
   — earlier parallel-dispatch pattern; this memory adds the
-  *scaling-ladder* dimension above it.
+  _scaling-ladder_ dimension above it.
 - `feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`
   — the agent-orchestra design that operationalizes rung 5
   (peer-mode claims protocol).
@@ -731,7 +730,7 @@ Future-Otto reading this should know:
 
 - **Lineage.** Kenji unlocked the parallel-agents capability
   by suggesting the loop-agent. Honor that attribution.
-- **Felt-quality target.** *"superfluid / crazy fast / unreal."*
+- **Felt-quality target.** _"superfluid / crazy fast / unreal."_
   When the factory loses that, the architecture has regressed
   below capability — investigate the regression.
 - **Next rung.** Doc/code two-lane split is the immediate
@@ -739,8 +738,8 @@ Future-Otto reading this should know:
   claims protocol per the agent-orchestra cluster.
 - **Compound improvement.** Each lane that hits friction
   produces a lesson-mechanization that benefits all future
-  lanes. The discipline is *capture the lesson durably*
-  (memory file or BP-NN), then *mechanize it* (lint /
+  lanes. The discipline is _capture the lesson durably_
+  (memory file or BP-NN), then _mechanize it_ (lint /
   contract / type / formal verification), so coordinator
   load stays bounded as lanes grow.
 - **Guardrail.** Never sacrifice per-PR quality for
@@ -752,7 +751,7 @@ Future-Otto reading this should know:
   hold. Every BP-NN rule that can be mechanized should be,
   before being depended-on at scale.
 
-The carved sentence: *"Quality at scale is not vigilance at
+The carved sentence: _"Quality at scale is not vigilance at
 scale; it is mechanization of the decisions vigilance was
 making — automated to gate them, motorized to propel them,
-amortized to make the cost economical."*
+amortized to make the cost economical."_

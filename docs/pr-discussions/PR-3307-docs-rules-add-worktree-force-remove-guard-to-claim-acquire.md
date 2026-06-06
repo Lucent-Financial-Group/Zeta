@@ -33,11 +33,11 @@ The legitimate intent (review-thread resolution) was covered by the existing DOE
 
 ## Three operational alternatives
 
-| Approach | When | Cost |
-|---|---|---|
-| 1. New worktree at distinct path | Default — almost always works | ~30s worktree create + 4400 file checkout |
-| 2. \`gh api\` / GraphQL for branch-state ops | Thread resolution, comment posting, PR metadata | Zero — no checkout needed |
-| 3. Bus-mediated worktree handoff | Rare must-checkout cases | Coordination cost; bus advisory envelope |
+| Approach                                     | When                                            | Cost                                      |
+| -------------------------------------------- | ----------------------------------------------- | ----------------------------------------- |
+| 1. New worktree at distinct path             | Default — almost always works                   | ~30s worktree create + 4400 file checkout |
+| 2. \`gh api\` / GraphQL for branch-state ops | Thread resolution, comment posting, PR metadata | Zero — no checkout needed                 |
+| 3. Bus-mediated worktree handoff             | Rare must-checkout cases                        | Coordination cost; bus advisory envelope  |
 
 ## Composition
 
@@ -62,6 +62,7 @@ The legitimate intent (review-thread resolution) was covered by the existing DOE
 Extends the claim-acquire rule with guidance for avoiding destructive takeover of another worktree when Git reports a branch is already in use.
 
 **Changes:**
+
 - Adds a “Worktree force-remove guard” section.
 - Recommends alternate worktree/API/bus-handoff approaches.
 - Links the guidance to a 2026-05-14 hygiene-history tick shard.

@@ -31,6 +31,7 @@ Also includes competitive framing table (vs Proxmox VE / unRAID / Talos / k3sup)
 Adds a new backlog row (B-0759) to capture a UX audit of the cluster-install experience against a “first-time CLI user” persona, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P2/B-0759-…md` defining the problem statement, target, acceptance criteria, and cross-references.
 - Updated `docs/BACKLOG.md` to include B-0759 in the P2 section (and include B-0757 in P3).
 
@@ -38,10 +39,10 @@ Adds a new backlog row (B-0759) to capture a UX audit of the cluster-install exp
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P2/B-0759-cluster-install-ux-audit-against-first-time-cli-user-persona-easier-than-proxmox-3-node-production-ready-aaron-2026-05-25.md | New P2 backlog row describing the cluster-install UX audit scope and acceptance criteria. |
-| docs/BACKLOG.md | Regenerated/updated index entry to surface B-0759 (and B-0757) in the consolidated backlog list. |
+| File                                                                                                                                                | Description                                                                                      |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| docs/backlog/P2/B-0759-cluster-install-ux-audit-against-first-time-cli-user-persona-easier-than-proxmox-3-node-production-ready-aaron-2026-05-25.md | New P2 backlog row describing the cluster-install UX audit scope and acceptance criteria.        |
+| docs/BACKLOG.md                                                                                                                                     | Regenerated/updated index entry to surface B-0759 (and B-0757) in the consolidated backlog list. |
 
 ## Review threads
 

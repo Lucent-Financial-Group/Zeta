@@ -7,22 +7,22 @@ caused_by: Aaron observing `mise WARN HTTP GET .../actionlint.../tar.gz attempt 
 
 The human maintainer 2026-05-02 ~13:10Z initial framing:
 
-> *"we don't want any warnings"*
+> _"we don't want any warnings"_
 
 Scope clarification immediately after:
 
-> *"of any kind anywhee"*
+> _"of any kind anywhee"_
 
 Specific exemplar pasted:
 
-> *"2026-05-02T13:07:20.4965197Z mise WARN  HTTP GET"*
+> _"2026-05-02T13:07:20.4965197Z mise WARN HTTP GET"_
 
 Then ~13:13Z, after Otto cataloged the warning surface, Aaron
 applied the DST external-invariants framing as the scope-cut:
 
-> *"mise WARN HTTP GET github.com/.../actionlint...tar.gz
+> _"mise WARN HTTP GET github.com/.../actionlint...tar.gz
 > (the transient 502s during mise install). A then per DST
-> exeternal invariants this is okay"*
+> exeternal invariants this is okay"_
 
 The third message is the load-bearing scope rule. The first
 two messages are the framing-input surface; the third
@@ -52,7 +52,7 @@ Outside the system boundary (DST external-invariants exempt):
 
 - **External network failures** — HTTP 4xx/5xx from
   github.com / api.github.com / dl.google.com / npm
-  registries / nuget.org / mirrors.* / etc. These are
+  registries / nuget.org / mirrors.\* / etc. These are
   transient blips in OTHERS' infrastructure.
 - **External service degradation** — GitHub Actions
   scheduler delays, Azure runner provisioning slowness,
@@ -212,21 +212,21 @@ Out of scope per DST external-invariants:
 This memory file's body must not produce any in-scope
 warning under the lints that actually apply to memory/
 files (ASCII lint and invisible-char lint per BP-10).
-markdownlint is intentionally NOT applied to memory/**
+markdownlint is intentionally NOT applied to memory/\*\*
 (per `.markdownlint-cli2.jsonc` ignores list); external
 lints (e.g., a CDN-hosted lint that fails to download)
 are also exempt.
 
 ## Provenance
 
-- Aaron 2026-05-02 ~13:10Z initial framing: *"we don't
-  want any warnings"*.
-- Aaron 2026-05-02 ~13:11Z scope clarification: *"of any
-  kind anywhee"*.
+- Aaron 2026-05-02 ~13:10Z initial framing: _"we don't
+  want any warnings"_.
+- Aaron 2026-05-02 ~13:11Z scope clarification: _"of any
+  kind anywhee"_.
 - Aaron 2026-05-02 ~13:12Z exemplar: pasted the literal
   mise WARN HTTP GET line.
-- Aaron 2026-05-02 ~13:13Z scope-cut: *"per DST exeternal
-  invariants this is okay"* — narrowed the rule to
+- Aaron 2026-05-02 ~13:13Z scope-cut: _"per DST exeternal
+  invariants this is okay"_ — narrowed the rule to
   in-system-boundary only.
 - Origin context: investigation of PR #1200 CI
   failure surfaced the mise transient warnings; the
@@ -238,7 +238,7 @@ are also exempt.
   (Otto-357) — reframed in-place to "framing" / "input" /
   "scope-cut" / "observation" language in subsequent edit.
 - Carved candidate (subject to maintainer grading):
-  *"Zero warnings inside the system boundary. External
+  _"Zero warnings inside the system boundary. External
   infrastructure warnings are honest signal — eliminate
   the dependency or accept the warning, but never
-  suppress the message."*
+  suppress the message."_

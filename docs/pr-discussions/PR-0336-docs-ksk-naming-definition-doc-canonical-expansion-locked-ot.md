@@ -51,6 +51,7 @@ Resolves Amara 16th-ferry §4 (KSK naming stabilization) + 17th-ferry correction
 Adds a canonical documentation entry defining **KSK = Kinetic Safeguard Kernel**, and wires it into the repo glossary so the expansion and intended “kernel” meaning are stable and discoverable.
 
 **Changes:**
+
 - Introduces `docs/definitions/KSK.md` as the authoritative KSK definition and disambiguation doc.
 - Adds a new `KSK (Kinetic Safeguard Kernel)` glossary entry pointing to the definition doc.
 
@@ -58,10 +59,10 @@ Adds a canonical documentation entry defining **KSK = Kinetic Safeguard Kernel**
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/definitions/KSK.md | New definition doc describing the KSK concept, disambiguations, and cross-references. |
-| docs/GLOSSARY.md | Adds a glossary entry that summarizes KSK and links to the authoritative definition doc. |
+| File                    | Description                                                                              |
+| ----------------------- | ---------------------------------------------------------------------------------------- |
+| docs/definitions/KSK.md | New definition doc describing the KSK concept, disambiguations, and cross-references.    |
+| docs/GLOSSARY.md        | Adds a glossary entry that summarizes KSK and links to the authoritative definition doc. |
 
 ### COMMENTED — @AceHack (2026-04-24T11:18:56Z)
 
@@ -100,6 +101,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 **@copilot-pull-request-reviewer** (2026-04-24T08:42:24Z):
 
 This glossary entry references `LFG/lucent-ksk` as an in-repo path, but there is no `LFG/` directory here. Please clarify that this is an external repo (or replace with a valid in-repo reference) to avoid dead navigation for readers.
+
 ```suggestion
 starting-point code: Max in the external repo
 `LFG/lucent-ksk`. Canonical expansion ratified 2026-04-24
@@ -116,6 +118,7 @@ Fixed in 364be82. Rewrote the GLOSSARY KSK entry's initial-starting-point refere
 **@copilot-pull-request-reviewer** (2026-04-24T08:42:24Z):
 
 Operational standing rules forbid direct contributor/agent name attribution in docs; this section uses named individuals. Please rewrite to use role references (e.g., “human maintainer”, “external collaborator”) and move any required provenance/credit to allowed locations (e.g., `memory/persona/**` or `docs/BACKLOG.md`). Also update the new glossary entry to match the same no-names convention.
+
 ```suggestion
 - The **human maintainer** and an **external AI
   collaborator** are the concept owners of KSK-as-safety-
@@ -149,19 +152,21 @@ Fixed in 364be82. Attribution section rewritten to use role references ("the hum
 **@copilot-pull-request-reviewer** (2026-04-24T08:42:25Z):
 
 This doc links to `memory/feedback_ksk_naming_unblocked_aaron_directed_rewrite_authority_max_initial_starting_point_2026_04_24.md`, but that file path doesn’t exist in the repository. Please either add the referenced file, or change the reference to an existing in-repo source (or remove it if it’s intentionally out-of-repo).
+
 ```suggestion
   scope.
 ```
 
 **@AceHack** (2026-04-24T11:19:00Z):
 
-Fixed in 364be82. Removed the memory/feedback_ksk_naming_unblocked_* path reference entirely; the factual substance (rewrite-authority context) was restated in role-based prose without creating a broken-link-from-outside dependency. Same pattern applied to #354 thread 59XfPF earlier.
+Fixed in 364be82. Removed the memory/feedback*ksk_naming_unblocked*\* path reference entirely; the factual substance (rewrite-authority context) was restated in role-based prose without creating a broken-link-from-outside dependency. Same pattern applied to #354 thread 59XfPF earlier.
 
 ### Thread 4: docs/definitions/KSK.md:180 (resolved)
 
 **@copilot-pull-request-reviewer** (2026-04-24T08:42:25Z):
 
 `LFG/lucent-ksk` is referenced as if it were an in-repo path, but there is no `LFG/` directory in this repository. Clarify that this is an external repository (and link to it if appropriate), or adjust the wording so readers don’t interpret it as a local path they can navigate to.
+
 ```suggestion
 - **LFG/lucent-ksk** — the external `LFG/lucent-ksk`
   repository, where Max's initial KSK starting-point code
@@ -181,6 +186,7 @@ Fixed in 364be82. Same fix as GLOSSARY thread 59VynF applied here: `Lucent-Finan
 **@copilot-pull-request-reviewer** (2026-04-24T08:42:25Z):
 
 The cross-reference list includes several `docs/aurora/...` paths/patterns that don’t exist in the current tree (e.g., no `2026-04-23-amara-5th-ferry-*`, no `2026-04-24-...-12th/14th/...`, and no `...-16th-ferry.md`). Also, glob patterns in markdown aren’t navigable links. Please update these bullets to point at concrete existing files (or to `docs/aurora/README.md` entries) so the references remain clickable and accurate.
+
 ```suggestion
 - `docs/aurora/README.md` — see the Aurora index entry for the
   5th ferry: Aurora + KSK integration; first articulation of
@@ -213,6 +219,7 @@ Fixed in 364be82. Cross-reference list rewritten to enumerate only verified in-r
 **@copilot-pull-request-reviewer** (2026-04-24T08:42:25Z):
 
 This continuation line starts with a literal `+`, which markdownlint treats as a new nested list marker (and the repo convention explicitly forbids `+` at the start of a wrapped continuation line). Please reword so the line continues without a leading `+` (e.g., “and traffic-light …” or move the `+` to the previous line’s end).
+
 ```suggestion
   and traffic-light + optional-anchoring.
 ```
@@ -226,6 +233,7 @@ Fixed in 364be82. The literal `+` continuation line was in the old Attribution s
 **@copilot-pull-request-reviewer** (2026-04-24T11:22:10Z):
 
 P1: This claims the 5th/12th/14th/16th ferry content is “archived in `docs/ROUND-HISTORY.md` tick rows”, but `docs/ROUND-HISTORY.md` doesn’t contain tick rows or any “ferry” references (it reads as round-level narrative). Please either point to the actual in-repo artifact(s) that preserve those ferry contents, or remove the `ROUND-HISTORY.md`/tick-rows claim so readers aren’t sent to a dead end.
+
 ```suggestion
 16th) have not landed as separate `docs/aurora/` files yet.
 When those ferries graduate to their own `docs/aurora/`
@@ -237,6 +245,7 @@ files, this cross-reference list updates at that time.
 **@copilot-pull-request-reviewer** (2026-04-24T11:22:11Z):
 
 P1: The parenthetical here says the doc’s “ferry references below” are 5th/7th/12th/14th/16th/17th, but the Cross-references section actually lists 6th, 7th, 17th, and 19th as the verified in-repo sources. Please update this list (or reword the sentence) so it matches the references that follow and doesn’t imply missing/incorrect citations.
+
 ```suggestion
   2026-04-23 and 2026-04-24 — the 6th / 7th / 17th / 19th
   ferry references below are the verified in-repo topical

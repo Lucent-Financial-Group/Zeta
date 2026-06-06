@@ -26,11 +26,11 @@ Otto 2026-05-03, after running v0.6 retroactive eval over 65 session shards (PR 
 
 Prose explicitly marks the path as not-real:
 
-> *"still HYPOTHETICAL — not currently in the repo"*
+> _"still HYPOTHETICAL — not currently in the repo"_
 >
-> *"is not yet present/defined"*
+> _"is not yet present/defined"_
 >
-> *"would be the Gemini equivalent if added (currently documented as absent / planned)"*
+> _"would be the Gemini equivalent if added (currently documented as absent / planned)"_
 
 v0.6 flags these as drift; the prose context proves the path is intentionally absent. Should be suppressed to severity=warning or below, OR omitted entirely.
 
@@ -38,9 +38,9 @@ v0.6 flags these as drift; the prose context proves the path is intentionally ab
 
 Prose contrasts presence-X against absence-Y:
 
-> *"Doing them as `docs/research/` artifacts ... rather than `docs/skills/` ..."*
+> _"Doing them as `docs/research/` artifacts ... rather than `docs/skills/` ..."_
 >
-> *"NOT placed in `docs/foo/`"*
+> _"NOT placed in `docs/foo/`"_
 
 The contrastive intent IS the rhetorical point. The "rather than X" path is intentionally absent.
 
@@ -48,9 +48,9 @@ The contrastive intent IS the rhetorical point. The "rather than X" path is inte
 
 Prose uses ellipsis to indicate "some path matching this pattern":
 
-> *"`docs/DECISIONS/...router-coherence-claims-vs-complexity.md`"*
+> _"`docs/DECISIONS/...router-coherence-claims-vs-complexity.md`"_
 >
-> *"`references/upstreams/efcore/.../copilot-setup-steps.yml`"*
+> _"`references/upstreams/efcore/.../copilot-setup-steps.yml`"_
 
 The literal path with `...` doesn't exist; the pattern documents a class.
 
@@ -58,7 +58,7 @@ The literal path with `...` doesn't exist; the pattern documents a class.
 
 Prose uses git-branch-naming conventions that look like paths:
 
-> *"PR opened on `research/` branch"* — `research/` is a branch-prefix, not a directory
+> _"PR opened on `research/` branch"_ — `research/` is a branch-prefix, not a directory
 
 ## What v0.7 builds
 

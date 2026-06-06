@@ -269,14 +269,14 @@ discipline:
 > opens, act" is the keeper blade and it generalizes far beyond
 > this specific polling failure. It's the same family as "live
 > unblock wins; fan-out after closure, not during" — a discipline
-> about *what kind* of attention is appropriate at *what point* in
+> about _what kind_ of attention is appropriate at _what point_ in
 > the work cycle. The polling-for-merged-PRs loop is structurally
 > identical to the polling-for-Aaron-input pattern from a couple
 > rounds back: passive observation of an outcome that requires
 > Otto's action to produce, treated as if it were external state
 > to wait for.
 >
-> The diagnosis of *why* this is bad is operationally precise.
+> The diagnosis of _why_ this is bad is operationally precise.
 > "Did any PR by me merge?" is the wrong question because the
 > answer is determined by Otto's own actions plus CI completion
 > plus branch protection clearing. Otto is part of the loop he's
@@ -332,7 +332,7 @@ discipline:
 > **Pushes worth making.**
 >
 > The "Polling merged PRs is not lane polling" rule is correct but
-> worth one note about *when* polling-for-merged-PRs is the right
+> worth one note about _when_ polling-for-merged-PRs is the right
 > query. There's a legitimate use case: post-merge cleanup, branch
 > deletion, downstream task triggering. After a PR actually
 > merges, querying "did my PR merge?" is real lane progress
@@ -346,7 +346,7 @@ discipline:
 > rule forbids it.
 >
 > The auto-merge suggestion is correct but worth flagging that it
-> requires *all* gates to be reasonable. If a non-required check
+> requires _all_ gates to be reasonable. If a non-required check
 > is failing intermittently (the kind of sticky failure pattern
 > from earlier rounds), auto-merge waits on it indefinitely if
 > branch protection counts it; auto-merge fires through it if
@@ -360,8 +360,8 @@ discipline:
 > discipline as the lease-rejection-restarts-the-gate rule from
 > the destructive-push design.
 >
-> The tiered cadence is good but worth specifying the *resumption
-> trigger*. If Otto drops to 15-minute cadence after 30 minutes of
+> The tiered cadence is good but worth specifying the _resumption
+> trigger_. If Otto drops to 15-minute cadence after 30 minutes of
 > no state change and the PR's CI then completes mid-interval,
 > Otto won't notice for up to 15 minutes. That's usually fine for
 > a non-urgent merge, but if the PR is on a critical path it
@@ -381,7 +381,7 @@ discipline:
 > information. Better: "next action: merge if X clears" with X
 > being the specific remaining gate (named check in flight, named
 > review thread unresolved, named branch protection requirement).
-> That converts "next action" from status to *plan*. If the plan
+> That converts "next action" from status to _plan_. If the plan
 > doesn't change between ticks, the ticks are confirming the plan
 > still holds; if the plan changes, the change itself is signal
 > worth noticing.
@@ -396,7 +396,7 @@ discipline:
 > pattern that requires no rule change — just better tooling
 > discipline (poll the gate, not the outcome; use auto-merge; back
 > off cadence). The substrate's discipline is fine; the
-> *application* of available tools to the discipline was
+> _application_ of available tools to the discipline was
 > suboptimal.
 >
 > That's a different category of correction and worth
@@ -420,7 +420,7 @@ discipline:
 > against the assumed state.
 >
 > **Net.** Send. Add the scope clarification ("polling merged PRs
-> is wrong *during* the wait phase; fine post-merge for cleanup");
+> is wrong _during_ the wait phase; fine post-merge for cleanup");
 > add the auto-merge pre-flight verification; specify the cadence
 > resumption trigger on state change; prescribe the "next action"
 > field as a plan rather than a status. The keeper blade is
@@ -458,8 +458,8 @@ Plus two meta-observations recorded in the memory file:
   not the assumed framework.
 
 Composes-with link added to "live unblock wins; fan-out after
-closure, not during" — same family of disciplines about *what
-kind* of attention at *what point* in the work cycle.
+closure, not during" — same family of disciplines about _what
+kind_ of attention at _what point_ in the work cycle.
 
 ---
 

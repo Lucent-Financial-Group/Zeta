@@ -10,13 +10,13 @@ is carried by the matching entry under `.claude/agents/`.
 
 **Balancer vs optimiser — the load-bearing distinction:**
 
-| | Balancer | Optimiser |
-|---|---|---|
-| **Skill** | `factory-balance-auditor` | `factory-optimizer` (this one) |
-| **Objective** | Minimise variance of load across roster | Maximise scalar utility under constraints |
-| **Fairness** | Is the goal | Is a constraint (or ignored) |
-| **Question** | "Is load evenly distributed?" | "Which move most moves the objective?" |
-| **Failure mode** | Levels to mediocrity | Starves underloaded to feed overloaded |
+|                  | Balancer                                         | Optimiser                                                          |
+| ---------------- | ------------------------------------------------ | ------------------------------------------------------------------ |
+| **Skill**        | `factory-balance-auditor`                        | `factory-optimizer` (this one)                                     |
+| **Objective**    | Minimise variance of load across roster          | Maximise scalar utility under constraints                          |
+| **Fairness**     | Is the goal                                      | Is a constraint (or ignored)                                       |
+| **Question**     | "Is load evenly distributed?"                    | "Which move most moves the objective?"                             |
+| **Failure mode** | Levels to mediocrity                             | Starves underloaded to feed overloaded                             |
 | **Output shape** | Finding: "role X is overloaded; route some to Y" | Finding: "intervention Z uplifts objective O by ~N; ship it first" |
 
 The two will frequently disagree. That is the point.
@@ -30,15 +30,15 @@ unit of maintainer effort.
 
 ### Objectives this skill supports
 
-| Objective | Proxy metric | Source |
-|---|---|---|
-| **Publication velocity** | Papers drafted + ADRs landed per round | `docs/ROUND-HISTORY.md` |
-| **P0 burndown** | P0 items closed per round | `docs/BACKLOG.md` |
-| **Reviewer-latency reduction** | Rounds between spec-zealot finding and close | `memory/persona/viktor/NOTEBOOK.md` |
-| **Skill-coverage** | Number of factory-expert hats covering novel frontiers | `skill-gap-finder` output |
-| **Tech-radar graduation rate** | Items moving Hold→Trial→Adopt per quarter | `docs/TECH-RADAR.md` |
-| **Formal-coverage** | Invariants covered by Lean / TLA+ / Z3 / FsCheck | `docs/research/proof-tool-coverage.md` |
-| **Research-frontier alignment** | Active-research skill coverage | `*-research` skill inventory |
+| Objective                       | Proxy metric                                           | Source                                 |
+| ------------------------------- | ------------------------------------------------------ | -------------------------------------- |
+| **Publication velocity**        | Papers drafted + ADRs landed per round                 | `docs/ROUND-HISTORY.md`                |
+| **P0 burndown**                 | P0 items closed per round                              | `docs/BACKLOG.md`                      |
+| **Reviewer-latency reduction**  | Rounds between spec-zealot finding and close           | `memory/persona/viktor/NOTEBOOK.md`    |
+| **Skill-coverage**              | Number of factory-expert hats covering novel frontiers | `skill-gap-finder` output              |
+| **Tech-radar graduation rate**  | Items moving Hold→Trial→Adopt per quarter              | `docs/TECH-RADAR.md`                   |
+| **Formal-coverage**             | Invariants covered by Lean / TLA+ / Z3 / FsCheck       | `docs/research/proof-tool-coverage.md` |
+| **Research-frontier alignment** | Active-research skill coverage                         | `*-research` skill inventory           |
 
 ### Candidate interventions
 
@@ -72,7 +72,7 @@ For each candidate intervention `I`:
 4. **Flag risks.** Opportunity-cost blockers, load-bearing
    reviewers who would be blocked, shared-state writes.
 5. **Check alignment with balancer.** If `factory-balance-
-   auditor` would flag this as increasing imbalance, note it.
+auditor` would flag this as increasing imbalance, note it.
 
 Output top-3 by EV/cost ratio.
 
@@ -82,6 +82,7 @@ Output top-3 by EV/cost ratio.
 # Factory Optimisation — round N
 
 ## Objective this round
+
 - Declared: <objective name + proxy metric>
 - Baseline: <current level>
 
@@ -101,12 +102,15 @@ Output top-3 by EV/cost ratio.
 3. ...
 
 ## Runners-up (close but didn't make top-3)
+
 - <intervention> — why passed over: <sentence>
 
 ## Declined this round
+
 - <intervention> — why deferred: <sentence>
 
 ## Disagreement with factory-balance-auditor
+
 - <item(s) where optimiser and balancer disagree>
 - Reading: <architect-directed framing>
 ```
@@ -123,7 +127,7 @@ round; reviewer role B has shipped 0.
   A's findings is load-bearing for the publication target.
   Route to B next round after the blocker lands."
 
-The balancer is not wrong — A *is* overloaded. The optimiser
+The balancer is not wrong — A _is_ overloaded. The optimiser
 is not wrong — routing to B this round delays publication.
 The architect integrates by accepting the temporary imbalance
 and queueing the rebalance for next round.

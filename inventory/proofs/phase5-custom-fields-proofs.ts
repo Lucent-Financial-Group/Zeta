@@ -90,7 +90,11 @@ async function signIn(email: string, password: string, label: string): Promise<s
   });
   const text = await res.text();
   let j: { access_token?: string } = {};
-  try { j = JSON.parse(text) as { access_token?: string }; } catch { /* non-JSON */ }
+  try {
+    j = JSON.parse(text) as { access_token?: string };
+  } catch {
+    /* non-JSON */
+  }
   if (!res.ok || !j.access_token) {
     // The auth error body states the REASON (invalid_grant vs email_not_confirmed)
     // and never echoes the submitted password — safe to print.
@@ -115,7 +119,8 @@ function ok2xx(s: number): boolean {
 function sameCf(stored: unknown, sent: Record<string, unknown>): boolean {
   if (!stored || typeof stored !== "object") return false;
   const so = stored as Record<string, unknown>;
-  const sk = Object.keys(so), tk = Object.keys(sent);
+  const sk = Object.keys(so),
+    tk = Object.keys(sent);
   if (sk.length !== tk.length) return false;
   return tk.every((k) => JSON.stringify(so[k]) === JSON.stringify(sent[k]));
 }
@@ -175,14 +180,22 @@ async function main() {
   // (2) APPEARS ON EVERY ITEM — definitions are global; custom_fields default '{}'.
   // ---------------------------------------------------------------------------
   line("---- (2) PROOF: the new fields are available on EVERY item ----");
-  const visDefs = arr((await rest("GET", `field_definitions?select=key,type,is_active&key=like.${sfx}_*`, editorToken)).body);
+  const visDefs = arr(
+    (await rest("GET", `field_definitions?select=key,type,is_active&key=like.${sfx}_*`, editorToken)).body,
+  );
   line(`field_definitions visible to the EDITOR (non-admin) role: ${visDefs.length} of 5`);
-  const sampleItems = arr((await rest("GET", "items?select=id,custom_fields&order=id.asc&limit=5", editorToken)).body) as Record<string, unknown>[];
-  const allObjects = sampleItems.length > 0 && sampleItems.every((r) => r["custom_fields"] !== null && typeof r["custom_fields"] === "object");
+  const sampleItems = arr(
+    (await rest("GET", "items?select=id,custom_fields&order=id.asc&limit=5", editorToken)).body,
+  ) as Record<string, unknown>[];
+  const allObjects =
+    sampleItems.length > 0 &&
+    sampleItems.every((r) => r["custom_fields"] !== null && typeof r["custom_fields"] === "object");
   line(`sample of existing items (custom_fields is an object on each — the field slot exists on all):`);
   for (const r of sampleItems) line(`  #${r["id"]} custom_fields=${JSON.stringify(r["custom_fields"])}`);
   const p2 = visDefs.length === 5 && allObjects;
-  line(`(2) ASSERTION all 5 defs visible to a viewer/editor AND every sampled item has a custom_fields object: ${p2 ? "PASS" : "FAIL"}`);
+  line(
+    `(2) ASSERTION all 5 defs visible to a viewer/editor AND every sampled item has a custom_fields object: ${p2 ? "PASS" : "FAIL"}`,
+  );
   line("");
 
   // SETUP: a throwaway item the EDITOR owns the writes on.
@@ -202,8 +215,17 @@ async function main() {
 
   // valid values of all five types in one write (editor):
   line("---- (2b) editor sets one VALID value of each type on the item ----");
-  const validCf = { [F.text]: "hello", [F.number]: 42, [F.date]: "2024-02-29", [F.dropdown]: "green", [F.boolean]: true };
-  const setValid = await rest("PATCH", `items?id=eq.${id}`, editorToken, { body: { custom_fields: validCf }, prefer: "return=representation" });
+  const validCf = {
+    [F.text]: "hello",
+    [F.number]: 42,
+    [F.date]: "2024-02-29",
+    [F.dropdown]: "green",
+    [F.boolean]: true,
+  };
+  const setValid = await rest("PATCH", `items?id=eq.${id}`, editorToken, {
+    body: { custom_fields: validCf },
+    prefer: "return=representation",
+  });
   const afterValid = arr(setValid.body)[0] as Record<string, unknown> | undefined;
   line(`set valid custom_fields -> http ${setValid.status}; stored=${JSON.stringify(afterValid?.["custom_fields"])}`);
   const p2b = ok2xx(setValid.status) && sameCf(afterValid?.["custom_fields"], validCf);
@@ -227,14 +249,25 @@ async function main() {
     const r = await rest("PATCH", `items?id=eq.${id}`, editorToken, { body: { custom_fields: { ...validCf, ...cf } } });
     const rejected = !ok2xx(r.status);
     if (!rejected) p3 = false;
-    const msg = typeof r.body === "object" && r.body && "message" in (r.body as Record<string, unknown>) ? (r.body as Record<string, unknown>)["message"] : r.body;
-    line(`  ${desc.padEnd(40)} -> http ${r.status} ${rejected ? "REJECTED" : "ACCEPTED (BUG!)"}  ${rejected ? "(" + JSON.stringify(msg) + ")" : ""}`);
+    const msg =
+      typeof r.body === "object" && r.body && "message" in (r.body as Record<string, unknown>)
+        ? (r.body as Record<string, unknown>)["message"]
+        : r.body;
+    line(
+      `  ${desc.padEnd(40)} -> http ${r.status} ${rejected ? "REJECTED" : "ACCEPTED (BUG!)"}  ${rejected ? "(" + JSON.stringify(msg) + ")" : ""}`,
+    );
   }
   // confirm the valid value is unchanged after the rejected writes
-  const stillValid = arr((await rest("GET", `items?id=eq.${id}&select=custom_fields`, editorToken)).body)[0] as Record<string, unknown> | undefined;
+  const stillValid = arr((await rest("GET", `items?id=eq.${id}&select=custom_fields`, editorToken)).body)[0] as
+    | Record<string, unknown>
+    | undefined;
   const intact = sameCf(stillValid?.["custom_fields"], validCf);
-  line(`  value intact after all rejects: ${JSON.stringify(stillValid?.["custom_fields"])} -> ${intact ? "OK" : "MISMATCH"}`);
-  line(`(3) ASSERTION every malformed value + unknown key DB-rejected, valid value intact: ${p3 && intact ? "PASS" : "FAIL"}`);
+  line(
+    `  value intact after all rejects: ${JSON.stringify(stillValid?.["custom_fields"])} -> ${intact ? "OK" : "MISMATCH"}`,
+  );
+  line(
+    `(3) ASSERTION every malformed value + unknown key DB-rejected, valid value intact: ${p3 && intact ? "PASS" : "FAIL"}`,
+  );
   line("");
 
   // ---------------------------------------------------------------------------
@@ -242,25 +275,45 @@ async function main() {
   // ---------------------------------------------------------------------------
   line("---- (4) PROOF: a <script>/onerror payload is stored as DATA (text), accepted by the DB ----");
   const XSS = `<img src=x onerror="window.__xss=1"><script>window.__xss=1</script>`;
-  const setXss = await rest("PATCH", `items?id=eq.${id}`, editorToken, { body: { custom_fields: { ...validCf, [F.text]: XSS } }, prefer: "return=representation" });
-  const xssStored = (arr(setXss.body)[0] as Record<string, unknown> | undefined)?.["custom_fields"] as Record<string, unknown> | undefined;
+  const setXss = await rest("PATCH", `items?id=eq.${id}`, editorToken, {
+    body: { custom_fields: { ...validCf, [F.text]: XSS } },
+    prefer: "return=representation",
+  });
+  const xssStored = (arr(setXss.body)[0] as Record<string, unknown> | undefined)?.["custom_fields"] as
+    | Record<string, unknown>
+    | undefined;
   line(`stored text field -> http ${setXss.status}; value=${JSON.stringify(xssStored?.[F.text])}`);
   const p4 = ok2xx(setXss.status) && xssStored?.[F.text] === XSS;
-  line(`(4) ASSERTION payload stored verbatim as a JSON string (render-inert proof = Playwright): ${p4 ? "PASS" : "FAIL"}`);
+  line(
+    `(4) ASSERTION payload stored verbatim as a JSON string (render-inert proof = Playwright): ${p4 ? "PASS" : "FAIL"}`,
+  );
   line("");
 
   // ---------------------------------------------------------------------------
   // (5) DEACTIVATE a field -> stored values + history PRESERVED.
   // ---------------------------------------------------------------------------
   line("---- (5) PROOF: deactivate a field; stored values + change_log history preserved ----");
-  const deact = await rest("PATCH", `field_definitions?key=eq.${F.number}`, adminToken, { body: { is_active: false }, prefer: "return=representation" });
+  const deact = await rest("PATCH", `field_definitions?key=eq.${F.number}`, adminToken, {
+    body: { is_active: false },
+    prefer: "return=representation",
+  });
   const deactRow = arr(deact.body)[0] as Record<string, unknown> | undefined;
   line(`admin deactivate ${F.number} -> http ${deact.status}; is_active=${deactRow?.["is_active"]}`);
-  const afterDeact = arr((await rest("GET", `items?id=eq.${id}&select=custom_fields`, editorToken)).body)[0] as Record<string, unknown> | undefined;
+  const afterDeact = arr((await rest("GET", `items?id=eq.${id}&select=custom_fields`, editorToken)).body)[0] as
+    | Record<string, unknown>
+    | undefined;
   const numPreserved = (afterDeact?.["custom_fields"] as Record<string, unknown> | undefined)?.[F.number] === 42;
   line(`item custom_fields after deactivation: ${JSON.stringify(afterDeact?.["custom_fields"])}`);
   line(`  number value (42) still present despite the field being inactive: ${numPreserved ? "PRESERVED" : "LOST"}`);
-  const hist = arr((await rest("GET", `change_log?item_id=eq.${id}&field=eq.custom_fields&order=id.asc&select=id,field,old_value,new_value,changed_at`, editorToken)).body) as Record<string, unknown>[];
+  const hist = arr(
+    (
+      await rest(
+        "GET",
+        `change_log?item_id=eq.${id}&field=eq.custom_fields&order=id.asc&select=id,field,old_value,new_value,changed_at`,
+        editorToken,
+      )
+    ).body,
+  ) as Record<string, unknown>[];
   line(`change_log custom_fields history rows (append-only, ${hist.length} total):`);
   for (const h of hist) line(`  #${h["id"]} custom_fields changed @ ${h["changed_at"]}`);
   const p5 = deactRow?.["is_active"] === false && numPreserved && hist.length >= 1;
@@ -268,7 +321,7 @@ async function main() {
   line("");
 
   // numeric-sort trap demonstration (NOT the sort mechanism; client/SQL/unit own that)
-  line("---- (note) PostgREST JSON-arrow ordering is lexicographic (the \"10 < 9\" trap) ----");
+  line('---- (note) PostgREST JSON-arrow ordering is lexicographic (the "10 < 9" trap) ----');
   line("  numeric correctness is enforced client-side (lib/custom-fields.js compareValues),");
   line("  proven in phase5_proofs.sql (cast ::numeric) + custom-fields.unit.test.ts + Playwright.");
   line("");
@@ -300,13 +353,19 @@ async function main() {
   for (const k of Object.values(F)) {
     await rest("PATCH", `field_definitions?key=eq.${k}`, adminToken, { body: { is_active: false } });
   }
-  line(`CLEANUP: throwaway item id=${id} left ARCHIVED; throwaway field defs (${Object.values(F).join(", ")}) left is_active=false.`);
-  line(`  Owner follow-up (SQL editor): disable change_log_immutable trigger -> delete change_log where item_id=${id};`);
+  line(
+    `CLEANUP: throwaway item id=${id} left ARCHIVED; throwaway field defs (${Object.values(F).join(", ")}) left is_active=false.`,
+  );
+  line(
+    `  Owner follow-up (SQL editor): disable change_log_immutable trigger -> delete change_log where item_id=${id};`,
+  );
   line(`  delete items where id=${id}; delete from field_definitions where key like '${sfx}_%'; re-enable trigger.`);
   line("");
 
   const allPass = p1 && p2 && p2b && p3 && intact && p4 && p5 && p6;
-  line(`=== SUMMARY: (1)=${b(p1)} (2)=${b(p2)} (2b)=${b(p2b)} (3)=${b(p3 && intact)} (4)=${b(p4)} (5)=${b(p5)} (6)=${b(p6)} ===`);
+  line(
+    `=== SUMMARY: (1)=${b(p1)} (2)=${b(p2)} (2b)=${b(p2b)} (3)=${b(p3 && intact)} (4)=${b(p4)} (5)=${b(p5)} (6)=${b(p6)} ===`,
+  );
   process.exit(allPass ? 0 : 1);
 }
 

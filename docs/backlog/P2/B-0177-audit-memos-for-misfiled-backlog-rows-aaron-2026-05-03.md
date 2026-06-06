@@ -24,7 +24,7 @@ Aaron 2026-05-03, autonomous-loop maintainer channel. Otto was looking for an ex
 
 This identifies a substrate-architecture failure mode: **memos got authored in memory/ where backlog rows should have been filed in docs/backlog/**. The two surfaces have different roles:
 
-- **memory/feedback_*.md** — observations, framings, rules, doctrine absorbed from external sources
+- **memory/feedback\_\*.md** — observations, framings, rules, doctrine absorbed from external sources
 - **docs/backlog/P*/B-NNNN-*.md** — actionable work items with stable IDs, tier/effort/ask metadata, bounded scope
 
 When an item that should have been a backlog row gets authored as a memo, three failure modes:
@@ -78,14 +78,14 @@ Initial sample-pass over 10 most-recent feedback memos (post-2026-05-02) yielded
 
 Refined hit-rate hypothesis:
 
-| Sub-class | Hit-rate (empirical) | Status |
-|---|---|---|
-| Reserved-but-never-filed B-NNNN cross-references | High (3-of-3 found in 30 min) | Closed via 2026-05-03 audit pass (B-0141, B-0142, B-0157) |
-| Broader misfiled-backlog (memo IS the work item) | Low (0-of-10 in recent sample) | Lower priority than initial estimate |
+| Sub-class                                        | Hit-rate (empirical)           | Status                                                    |
+| ------------------------------------------------ | ------------------------------ | --------------------------------------------------------- |
+| Reserved-but-never-filed B-NNNN cross-references | High (3-of-3 found in 30 min)  | Closed via 2026-05-03 audit pass (B-0141, B-0142, B-0157) |
+| Broader misfiled-backlog (memo IS the work item) | Low (0-of-10 in recent sample) | Lower priority than initial estimate                      |
 
 **Refined audit scope**: focus on the high-yield class (reserved-but-never-filed B-NNNN cross-references in memos). The pattern: search for `B-NNNN.*not yet filed` / `B-NNNN.*pending` / `B-NNNN.*TBD` / `B-NNNN.*to be filed` references in memory/ and verify each B-NNNN has a per-row file. The broader misfiled-backlog class is lower-yield and can be deferred to opportunistic-on-touch rather than systematic audit.
 
-Aaron's *"a lot of backlog lost in our memories"* claim remains valid — 3 lost rows in one cycle IS substantial — but the lost backlog is concentrated in the reserved-but-never-filed sub-class, not spread across all memos.
+Aaron's _"a lot of backlog lost in our memories"_ claim remains valid — 3 lost rows in one cycle IS substantial — but the lost backlog is concentrated in the reserved-but-never-filed sub-class, not spread across all memos.
 
 ## Open design questions (NOT for this row; for the audit pass)
 
@@ -105,4 +105,4 @@ Filing this row as a backlog row (NOT a memo) is itself the carved sentence: whe
 
 ## Carved sentence
 
-**"A lot of backlog is lost in our memories. The substrate-architecture rule: actionable work items with scope+effort+ask belong in docs/backlog/P*/B-NNNN-*.md as backlog rows; observations/framings/rules/doctrine belong in memory/feedback_*.md as memos. Audit memory/ once for misfiled backlog rows; cross-reference back-pointers added in the original memo. The substrate-retrieval-index (B-0175) closes this gap going forward; this row's pass closes it backward over the existing memos."**
+**"A lot of backlog is lost in our memories. The substrate-architecture rule: actionable work items with scope+effort+ask belong in docs/backlog/P*/B-NNNN-*.md as backlog rows; observations/framings/rules/doctrine belong in memory/feedback\_\*.md as memos. Audit memory/ once for misfiled backlog rows; cross-reference back-pointers added in the original memo. The substrate-retrieval-index (B-0175) closes this gap going forward; this row's pass closes it backward over the existing memos."**

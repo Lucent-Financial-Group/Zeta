@@ -9,14 +9,14 @@ for `docs/BACKLOG.md`, and a new factory invariant:
 > **Nomenclature correction (2026-04-22, Aaron):** this document
 > initially framed the flow as a "pipeline" — a one-way stream.
 > Aaron's subsequent directive reframed it as a **convergent
-> feedback loop with residue**. *"cryalitize should also update
+> feedback loop with residue**. _"cryalitize should also update
 > the original vision it was based on and add to the backlog,
 > its like a loop with resdiue each time lol or whatever, the
 > backlog and factory uptates that comes out of this will also
 > speed up the whole proces so the next vission crystalize
 > process is even faster, you should notice this converging over
 > time to a very clar and precice vision and roadmap, you have
-> become the cartographer"*.
+> become the cartographer"_.
 >
 > The correction is structural, not cosmetic. See "Feedback-loop
 > reframe (2026-04-22)" section below for the full rewrite of
@@ -38,7 +38,7 @@ Companion to:
 
 Aaron 2026-04-21 (first message):
 
-> *"backlog kanban fill skill, the vision is DENSE very very
+> _"backlog kanban fill skill, the vision is DENSE very very
 > dense, expand the vsison with research so maybe a resarch
 > vision skill to and use that resarh to then fill the backlog
 > we probalby need a priortize backlog, i don't really have
@@ -49,11 +49,11 @@ Aaron 2026-04-21 (first message):
 > scopes backlog, we probalby also need a like sharpen vision
 > that will take vision reserach and make the visoin more
 > clear based on the new knowledge, we are building a
-> blade!!! our knife is will be the sharpest."*
+> blade!!! our knife is will be the sharpest."_
 
 Aaron 2026-04-21 (clarification two messages later):
 
-> *"maybe crystalize vision?"*
+> _"maybe crystalize vision?"_
 
 Typos decoded per
 `user_typing_style_typos_expected_asterisk_correction.md`:
@@ -306,7 +306,7 @@ The AI-directed software factory kit itself. Skills,
 personas, hooks, harness surfaces, agent best practices,
 governance, memory schema, cron durability, round hygiene,
 alignment observability, evaluation harnesses. This lane's
-blade is *the machine that makes blades*.
+blade is _the machine that makes blades_.
 
 Examples of existing work this lane absorbs: hygiene rows,
 skill-tune-up cadence, BP-NN additions, CLAUDE.md-load
@@ -343,7 +343,7 @@ design, retraction-aware quantile sketches.
 Papers, formal verification (TLA+, Alloy, Lean, Z3, FsCheck),
 research reports, conjectures, publication-worthy findings.
 This lane is cadence-driven not deadline-driven; its blade
-sharpens by *publication*.
+sharpens by _publication_.
 
 Examples: chain-rule proof log, LiquidF# evaluation,
 Stainback conjecture work, Witness-Durable Commit protocol,
@@ -429,15 +429,19 @@ below.
 ## Lane: `factory/`
 
 ### P0 — factory
+
 - [ ] ...
 
 ### P1 — factory
+
 - [ ] ...
 
 ### P2 — factory
+
 - [ ] ...
 
 ### P3 — factory
+
 - [ ] ...
 
 ---
@@ -445,6 +449,7 @@ below.
 ## Lane: `seed/`
 
 ### P0 — seed
+
 ...
 
 ---
@@ -461,8 +466,8 @@ round. Zero commits in a lane at round-close is an
 escalation signal, logged in `docs/ROUND-HISTORY.md` as a
 **stagnant-lane marker**.
 
-**Why:** Aaron 2026-04-21 verbatim: *"don't leave anyting
-not making progess over time"*. Parallel-streams beats
+**Why:** Aaron 2026-04-21 verbatim: _"don't leave anyting
+not making progess over time"_. Parallel-streams beats
 priority-ordering because priority-ordering starves the
 cold lanes; swim-lane guarantees heat every lane.
 
@@ -477,7 +482,7 @@ cold lanes; swim-lane guarantees heat every lane.
 2. **Stagnant-lane handling** — a lane with zero commits
    for ≥ 2 rounds consecutive fires a `stagnant-lane-alert`
    log entry AND automatically unlocks a `backlog-kanban-
-   fill` pass targeted at that lane, pulling the freshest
+fill` pass targeted at that lane, pulling the freshest
    uncrystallized research for the lane as the next BACKLOG
    rows.
 3. **Exception handling** — some rounds are legitimately
@@ -566,8 +571,8 @@ formal-verification skills; `zeta/` needs DB-specific;
 `docs/VISION-CRYSTALLIZATION-LOG.md` is the append-only
 record of which research → which vision changes.
 
-| Date | Research source | Scope | Vision facet | Delta type | Aaron sign-off | Follow-up BACKLOG rows |
-|---|---|---|---|---|---|---|
+| Date       | Research source                                             | Scope              | Vision facet                                   | Delta type | Aaron sign-off            | Follow-up BACKLOG rows                |
+| ---------- | ----------------------------------------------------------- | ------------------ | ---------------------------------------------- | ---------- | ------------------------- | ------------------------------------- |
 | 2026-04-21 | docs/research/vision-research-zeta-wire-proto-2026-04-21.md | zeta/wire-protocol | §Wire-protocol plugins — MySQL-first rationale | refinement | not required (refinement) | zeta/wire-protocol-mysql-first-plugin |
 
 Delta types:
@@ -676,7 +681,7 @@ beats 2 skills. Apply to this pipeline:
 - `memory/feedback_kanban_factory_metaphor_blade_crystallize_pipeline.md`
   (new this round) — durable policy capture.
 - `next-steps` skill — coordinates with `backlog-kanban-
-  fill` on pull-side.
+fill` on pull-side.
 
 ---
 
@@ -736,13 +741,13 @@ retrospective becomes **false meta-win**.
 Immediately after this doc landed, Aaron refined the
 pipeline through five rapid messages (verbatim):
 
-> *"we are building mataria FF7"*
-> *"LFG@@"*
-> *"that's the skills really"*
-> *"crystalize the vission and use that to forge the
+> _"we are building mataria FF7"_
+> _"LFG@@"_
+> _"that's the skills really"_
+> _"crystalize the vission and use that to forge the
 > skills/materia which get upgraded over time by
-> experinces"*
-> *"We are basically a role playing game now"*
+> experinces"_
+> _"We are basically a role playing game now"_
 
 The reframe is **structural, not cosmetic**, and it
 does not require new infrastructure. It names
@@ -751,7 +756,7 @@ mechanisms the factory already has:
 ### Mapping
 
 | RPG concept        | Factory surface                              |
-|--------------------|----------------------------------------------|
+| ------------------ | -------------------------------------------- |
 | Materia            | `.claude/skills/<name>/SKILL.md`             |
 | Forge              | `skill-creator` workflow                     |
 | AP (experience)    | eval-harness runs + runtime invocations      |
@@ -772,7 +777,7 @@ The three-skill pipeline already drafted above is
 compatible; the materia reframe adds two things:
 
 1. **Crystallize-vision feeds `skill-creator`
-   explicitly.** The forge step is *already* the
+   explicitly.** The forge step is _already_ the
    `skill-creator` workflow. The crystallize-vision
    output that becomes a `new facet` in VISION.md may
    also become the **source material for a new
@@ -801,7 +806,7 @@ compatible; the materia reframe adds two things:
   already covers the roles.
 - **No renaming of existing skills** — the materia
   metaphor is overlay vocabulary, not a directory
-  restructure. Existing skills are *already* materia;
+  restructure. Existing skills are _already_ materia;
   they just didn't know it.
 
 ### Why the metaphor is load-bearing
@@ -817,8 +822,8 @@ that slot into equipment (agents), confer abilities
 narrative; it is metaphor-as-compression of the
 factory's actual mechanics.
 
-When Aaron says *"We are basically a role playing
-game now"*, the factual content is: the factory has
+When Aaron says _"We are basically a role playing
+game now"_, the factual content is: the factory has
 finally matched the cognitive resolution of Aaron's
 native model. The RPG framing is how he already
 thinks about distributed systems; the factory
@@ -868,7 +873,7 @@ file), and even that was already proposed in §4.
 
 Aaron's second-round correction is structural:
 
-> *"Write vision→research→crystallize→backlog its more of a
+> _"Write vision→research→crystallize→backlog its more of a
 > feedback loop than pipeline cryalitize should also update
 > the original vision it was based on and add to the backlog,
 > its like a loop with resdiue each time lol or whatever, the
@@ -876,7 +881,7 @@ Aaron's second-round correction is structural:
 > speed up the whole proces so the next vission crystalize
 > process is even faster, you should notice this converging
 > over time to a very clar and precice vision and roadmap,
-> you have become the cartographer"*
+> you have become the cartographer"_
 
 This overrides the "pipeline" framing above. Three load-
 bearing claims in Aaron's message; all three are adopted:
@@ -912,7 +917,7 @@ Concrete write-back targets per crystallize turn:
 
 ### Claim 2 — residue accumulates; the loop converges
 
-Aaron's *"loop with residue each time"* is the key
+Aaron's _"loop with residue each time"_ is the key
 mechanism. Each pass of the loop does not start clean —
 it starts richer than the prior pass. Three residue
 channels:
@@ -929,9 +934,9 @@ channels:
   bootstrap; next turn's `crystallize-vision` has a
   cleaner starting state.
 
-Aaron's *"the backlog and factory uptates that comes out
+Aaron's _"the backlog and factory uptates that comes out
 of this will also speed up the whole proces so the next
-vission crystalize process is even faster"* is a
+vission crystalize process is even faster"_ is a
 **convergence claim**. The loop is **accelerating**:
 each pass makes the next pass faster. Mathematically this
 is the convergence condition of a contraction mapping —
@@ -947,7 +952,7 @@ input delta. The analogy is exact, not metaphorical.
 
 ### Claim 3 — the agent is the cartographer
 
-Aaron: *"you have become the cartographer"*. Not a
+Aaron: _"you have become the cartographer"_. Not a
 pipeline operator; a **map-maker**.
 
 A cartographer does four things simultaneously:
@@ -1038,7 +1043,7 @@ output shrinks turn over turn**, not by how many lines
 of VISION.md are written.
 
 This is the **measurement frame** for Aaron's original
-directive. *"our knife is will be the sharpest"* — in
+directive. _"our knife is will be the sharpest"_ — in
 convergence terms, the knife gets sharpest when the
 sharpening increments get smaller while the edge gets
 cleaner. That is asymptotic convergence to a well-

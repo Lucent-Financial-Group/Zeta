@@ -61,6 +61,7 @@ PR #3611 discipline preserved: the fixture's HTML provenance comment intentional
 Adds the fourth eval-set fixture for `substrate-claim-checker`, covering the cross-surface count-drift sub-class (frontmatter `description:` claim vs body-table rows). Purely additive — no checker code touched.
 
 **Changes:**
+
 - New fixture `cross-surface-drift-9-vs-15.md` with frontmatter claiming "9 drift instances" and a 15-row body table.
 - New `describe()` block in `fixtures.test.ts` pinning exact finding count, field, claimed count, claim shape, and actual counts.
 - Index row appended to `fixtures/README.md`.
@@ -69,8 +70,8 @@ Adds the fourth eval-set fixture for `substrate-claim-checker`, covering the cro
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                  | Description                                                                   |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | tools/substrate-claim-checker/fixtures/cross-surface-drift-9-vs-15.md | New fixture reproducing instance #19 (frontmatter vs body-table count drift). |
-| tools/substrate-claim-checker/fixtures.test.ts | Regression test pinning the single expected cross-surface drift finding. |
-| tools/substrate-claim-checker/fixtures/README.md | Index row added for the new fixture. |
+| tools/substrate-claim-checker/fixtures.test.ts                        | Regression test pinning the single expected cross-surface drift finding.      |
+| tools/substrate-claim-checker/fixtures/README.md                      | Index row added for the new fixture.                                          |

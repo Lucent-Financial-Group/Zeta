@@ -47,11 +47,7 @@ describe("cockroach outbox event source", () => {
     deepEqual(executor.statements[0]?.parameters, [10, "outbox-claim-001"]);
     ok(/AND published_at IS NULL/.test(executor.statements[1]?.sql ?? ""));
     ok(/AND claim_id = \$2/.test(executor.statements[1]?.sql ?? ""));
-    deepEqual(executor.statements[1]?.parameters, [
-      "outbox-001",
-      "outbox-claim-001",
-      "2026-05-25T21:00:00.000Z",
-    ]);
+    deepEqual(executor.statements[1]?.parameters, ["outbox-001", "outbox-claim-001", "2026-05-25T21:00:00.000Z"]);
   });
 
   test("rejects stale, unfenced, or duplicate publish marks", async () => {

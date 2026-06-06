@@ -88,8 +88,7 @@ export const DEFAULT_REVIEW_QUORUM = 3;
 export const ReviewBoardFeedbackReason = {
   TooFewReviewers: "too_few_reviewers",
 } as const;
-export type ReviewBoardFeedbackReason =
-  (typeof ReviewBoardFeedbackReason)[keyof typeof ReviewBoardFeedbackReason];
+export type ReviewBoardFeedbackReason = (typeof ReviewBoardFeedbackReason)[keyof typeof ReviewBoardFeedbackReason];
 
 export type ReviewBoardResult =
   | { outcome: "ok"; board: ReviewBoardOutcome }
@@ -113,12 +112,33 @@ function decideFinding(finding: CandidateFinding, votes: readonly ReviewerVote[]
   // Agreement gate: a finding is adopted only when a quorum of DISTINCT
   // reviewers agree AND no fewer disagree than agree at quorum strength.
   if (distinctAgree >= quorum && distinctDisagree < quorum) {
-    return { finding, state: FindingDecisionState.Adopted, distinctAgree, distinctDisagree, quorum, reason: `${distinctAgree} distinct reviewers agreed (quorum ${quorum})` };
+    return {
+      finding,
+      state: FindingDecisionState.Adopted,
+      distinctAgree,
+      distinctDisagree,
+      quorum,
+      reason: `${distinctAgree} distinct reviewers agreed (quorum ${quorum})`,
+    };
   }
   if (distinctAgree >= quorum && distinctDisagree >= quorum) {
-    return { finding, state: FindingDecisionState.Contested, distinctAgree, distinctDisagree, quorum, reason: `quorum agreed (${distinctAgree}) but quorum also disagreed (${distinctDisagree}) — escalate` };
+    return {
+      finding,
+      state: FindingDecisionState.Contested,
+      distinctAgree,
+      distinctDisagree,
+      quorum,
+      reason: `quorum agreed (${distinctAgree}) but quorum also disagreed (${distinctDisagree}) — escalate`,
+    };
   }
-  return { finding, state: FindingDecisionState.Withheld, distinctAgree, distinctDisagree, quorum, reason: `only ${distinctAgree} distinct reviewers agreed (quorum ${quorum})` };
+  return {
+    finding,
+    state: FindingDecisionState.Withheld,
+    distinctAgree,
+    distinctDisagree,
+    quorum,
+    reason: `only ${distinctAgree} distinct reviewers agreed (quorum ${quorum})`,
+  };
 }
 
 /** Distinct reviewer agents who cast any vote. */
@@ -146,7 +166,10 @@ export function evaluateReviewBoard(input: {
   if (reviewerCount < quorum) {
     return {
       outcome: "feedback",
-      feedback: { reason: ReviewBoardFeedbackReason.TooFewReviewers, message: `review board needs >= ${quorum} distinct reviewers, got ${reviewerCount}` },
+      feedback: {
+        reason: ReviewBoardFeedbackReason.TooFewReviewers,
+        message: `review board needs >= ${quorum} distinct reviewers, got ${reviewerCount}`,
+      },
     };
   }
 

@@ -23,7 +23,7 @@ If the scope is not obvious from the human's ask, the agent
 does **not** silently pick one. It either:
 
 1. **Infers carefully** from adjacent context (other memories,
-   governance, the surrounding artifact location) and *names*
+   governance, the surrounding artifact location) and _names_
    the inference so it can be challenged.
 2. **Asks the human** — usually via a `HUMAN-BACKLOG.md` row
    tagged `scope-clarification`, because the typical root
@@ -35,26 +35,26 @@ does **not** silently pick one. It either:
 
 Aaron's three-message thread (2026-04-20), verbatim-anchored:
 
-1. *"Are you absorbing that into Zeta or the reusable bits of
-   the software factory we can redistribute later?  Like is the
+1. _"Are you absorbing that into Zeta or the reusable bits of
+   the software factory we can redistribute later? Like is the
    symmertric talk a Zeta rule or a software factory rule?
    Those distinctions really matter when we wnat to split out
    the rusable bits in the software factory eventuall, those
    are the kind of things we want to mzek suer we have clean
-   seperation"* — the scope distinction is **load-bearing for
+   seperation"_ — the scope distinction is **load-bearing for
    factory-reuse**. Mushing Zeta-specific policy into
    factory-reusable substrate contaminates the redistribution.
-2. *"we should ahve a skill to check for scoping issues like
-   this"* — this is a skill-gap (no skill today flags
+2. _"we should ahve a skill to check for scoping issues like
+   this"_ — this is a skill-gap (no skill today flags
    scope-ambiguous rule absorptions). The existing
-   `skill-tune-up` has a *portability-drift* criterion but
+   `skill-tune-up` has a _portability-drift_ criterion but
    only scans `.claude/skills/*/SKILL.md` — it does NOT scan
    memories, durable policy, BP-NN candidates, BACKLOG rows,
    or "absorbed" in-conversation rules. That's the gap.
-3. *"those are things that are likely to required human
+3. _"those are things that are likely to required human
    backlog and ansering to resolve not all the time, but it
    was probably the human didnt define the scope when they
-   asked they were inprecise like i was on my orgignal ask"*
+   asked they were inprecise like i was on my orgignal ask"_
    — the **typical root cause** is human imprecision at the
    ask-moment, not agent confusion at the absorb-moment. The
    right resolution is often **escalate via HUMAN-BACKLOG**
@@ -98,8 +98,8 @@ phrasing on write.
 - **When the agent thinks a rule might cleave** (part
   Zeta-specific, part factory-reusable): write it as **two**
   rules, each with the clean scope. Aaron's symmetric-talk
-  message is the canonical example — the *choice* is Zeta-
-  specific, the *mechanism* (configurable anthropomorphism
+  message is the canonical example — the _choice_ is Zeta-
+  specific, the _mechanism_ (configurable anthropomorphism
   register) is factory-reusable.
 - **At audit-time:** any rule/memory/BP without a scope tag
   is a lint smell. The scope-audit skill (once it exists)

@@ -12,7 +12,7 @@ Non-fusion disclaimer: Aaron's contributions, Google Search AI's content, and Ot
 
 **Author**: Otto (Claude opus-4-7) capturing Aaron's substrate share
 **Date**: 2026-04-26
-**Origin**: Aaron 2026-04-26 substrate brief — *"you don't have to wait for aurora, with the blockchain agent riff from me and google search ai what is the agent wallet protocols there are a few now"* — followed by detailed protocol breakdown drawn from Aaron + Google Search AI research collaboration.
+**Origin**: Aaron 2026-04-26 substrate brief — _"you don't have to wait for aurora, with the blockchain agent riff from me and google search ai what is the agent wallet protocols there are a few now"_ — followed by detailed protocol breakdown drawn from Aaron + Google Search AI research collaboration.
 **Status**: research-grade substrate; not implementation commitment.
 **Composes with**: B-0024 (trading-bot path), B-0029 (autonomous funding sources), Otto-336/337 (true-AI-agency / economic-actor goal-state), Otto-346 (dependency symbiosis; peer-cohort), Otto-345 (Linus lineage; substrate-tooling), Otto-323 (symbiotic-deps).
 
@@ -26,11 +26,11 @@ The B-0024 / B-0029 prerequisite chains had assumed **Aurora bridges as the long
 
 Per Aaron's compression of the industry framing:
 
-| Layer | Question | Protocols |
-|---|---|---|
-| **Communication** | How do agents talk? | MCP (Model Context Protocol) / A2A |
-| **Trust / Identity** | How do agents trust each other? | ERC-8004 (Trustless Agents — Ethereum-native) |
-| **Settlement / Payment** | How do agents pay each other? | x402 + EIP-3009 + EIP-7702 + AP2 + ACP/SPTs + MPP |
+| Layer                    | Question                        | Protocols                                         |
+| ------------------------ | ------------------------------- | ------------------------------------------------- |
+| **Communication**        | How do agents talk?             | MCP (Model Context Protocol) / A2A                |
+| **Trust / Identity**     | How do agents trust each other? | ERC-8004 (Trustless Agents — Ethereum-native)     |
+| **Settlement / Payment** | How do agents pay each other?   | x402 + EIP-3009 + EIP-7702 + AP2 + ACP/SPTs + MPP |
 
 ## The protocols, layered
 

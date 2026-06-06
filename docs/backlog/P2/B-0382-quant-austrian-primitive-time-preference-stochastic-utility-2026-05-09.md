@@ -11,7 +11,8 @@ last_updated: 2026-05-09
 depends_on: [B-0380, B-0381]
 composes_with: [B-0023, B-0380, B-0381, B-0383, B-0384, B-0385, B-0386, B-0387]
 parent: B-0023
-tags: [aurora, economics, austrian-school, quant, mathematical-rigor, time-preference, utility-theory, stochastic-calculus]
+tags:
+  [aurora, economics, austrian-school, quant, mathematical-rigor, time-preference, utility-theory, stochastic-calculus]
 type: research
 ---
 
@@ -27,7 +28,7 @@ note at `docs/aurora/YYYY-MM-DD-primitive-time-preference.md`.
 ## The Austrian primitive
 
 Time-preference: the axiom that actors prefer goods available sooner
-over goods available later, *ceteris paribus*, and that this preference
+over goods available later, _ceteris paribus_, and that this preference
 is a universal feature of human action (not a contingent empirical
 observation). From this axiom, Böhm-Bawerk derives the theory of
 interest — interest is the price of time-preference, not a monetary
@@ -47,7 +48,7 @@ Standard stochastic discount factor (SDF) / pricing kernel:
   intertemporal-substitution elasticity (IES)
 - Discount factor β in standard expected utility = constant time-discount
 - Habit formation models, hyperbolic discounting models add dynamics
-- The Austrian claim is that *positive time preference is axiomatic*,
+- The Austrian claim is that _positive time preference is axiomatic_,
   not a calibrated parameter — this is a stronger claim than what
   the quant SDF framework typically assumes
 
@@ -101,12 +102,12 @@ ls docs/aurora/ | grep time-preference
 ## Pre-start checklist
 
 - [x] Prior-art search: B-0381 survey provides the "prior work on this
-  primitive" input; no existing `docs/aurora/` note on time-preference
-  formalization.
+      primitive" input; no existing `docs/aurora/` note on time-preference
+      formalization.
 - [x] Dependency-restructure: `depends_on: [B-0380, B-0381]` — vocabulary
-  needed to classify; survey needed for prior-work context.
-  Parallelizable with B-0383–B-0386 (different primitives, no
-  cross-dependency between them).
+      needed to classify; survey needed for prior-work context.
+      Parallelizable with B-0383–B-0386 (different primitives, no
+      cross-dependency between them).
 
 ## Composes with
 

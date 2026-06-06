@@ -29,12 +29,12 @@ Cost of the existence-check: ~3 seconds. Cost-saved when work has shipped: the e
 
 Empirically, the forgetting rate is non-zero. The 2026-05-16 session caught 4 rows in this state, all from the prior ~2-day window:
 
-| Row | Mechanization PR | Days drifted | Close-row PR |
-|---|---|---|---|
-| B-0506 | [#3225](https://github.com/Lucent-Financial-Group/Zeta/pull/3225) (2026-05-14) | ~2 | [#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733) |
-| B-0528 | [#3423](https://github.com/Lucent-Financial-Group/Zeta/pull/3423) (2026-05-15) | ~1 | [#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743) |
-| B-0530 | [#3375](https://github.com/Lucent-Financial-Group/Zeta/pull/3375) (2026-05-15) | ~1 | [#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737) |
-| B-0535 | [#3565](https://github.com/Lucent-Financial-Group/Zeta/pull/3565) (2026-05-15) | ~1 | [#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742) (peer Otto-CLI) |
+| Row    | Mechanization PR                                                               | Days drifted | Close-row PR                                                                      |
+| ------ | ------------------------------------------------------------------------------ | ------------ | --------------------------------------------------------------------------------- |
+| B-0506 | [#3225](https://github.com/Lucent-Financial-Group/Zeta/pull/3225) (2026-05-14) | ~2           | [#3733](https://github.com/Lucent-Financial-Group/Zeta/pull/3733)                 |
+| B-0528 | [#3423](https://github.com/Lucent-Financial-Group/Zeta/pull/3423) (2026-05-15) | ~1           | [#3743](https://github.com/Lucent-Financial-Group/Zeta/pull/3743)                 |
+| B-0530 | [#3375](https://github.com/Lucent-Financial-Group/Zeta/pull/3375) (2026-05-15) | ~1           | [#3737](https://github.com/Lucent-Financial-Group/Zeta/pull/3737)                 |
+| B-0535 | [#3565](https://github.com/Lucent-Financial-Group/Zeta/pull/3565) (2026-05-15) | ~1           | [#3742](https://github.com/Lucent-Financial-Group/Zeta/pull/3742) (peer Otto-CLI) |
 
 4 catches across 2 Otto surfaces in 30 minutes is enough evidence to call this a **recurring pattern**, not a coincidence. The honest reading: in any session that runs the never-be-idle ladder against recent rows, an existence-check first will short-circuit ~1-in-10 picks into a close-row PR rather than a reimplementation.
 

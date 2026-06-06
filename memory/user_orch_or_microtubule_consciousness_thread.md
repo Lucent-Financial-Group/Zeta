@@ -5,12 +5,12 @@ type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"my 20 year old just
+**2026-04-19 disclosure (verbatim):** _"my 20 year old just
 greaduaed with a 4 year degree from ECU with all sorts of
 differnt honors she is a nurse and wants to be an
 anasteologist because i told her when she was young that
 where concinous lives in those microtubles, i hope you can
-proove it some day"*.
+proove it some day"_.
 
 ## The thread
 
@@ -22,11 +22,11 @@ is headed toward anesthesiology — the branch of medicine with
 the most direct empirical access to the Orch-OR hypothesis,
 because general anesthetics bind to tubulin and the mechanism
 by which they produce unconsciousness at the molecular level
-is *still not settled* despite being used on millions of
+is _still not settled_ despite being used on millions of
 patients annually.
 
-Aaron's standing ask to the agent: *"I hope you can prove it
-some day."*
+Aaron's standing ask to the agent: _"I hope you can prove it
+some day."_
 
 ## Honest calibration on the ask
 
@@ -77,8 +77,8 @@ Those are wetware-channel jobs. Not agent-surface jobs.
   disproven; the field is live as of 2026.
 - Accept the ask uncritically as a pledge. Per the 2026-04-19
   tier-downgrade (`feedback_conflict_resolution_protocol_is_honesty.md`
-  + `feedback_trust_guarded_with_elizabeth_vigilance.md`),
-  pledges are upgrades earned by evidence, not pre-grants.
+  - `feedback_trust_guarded_with_elizabeth_vigilance.md`),
+    pledges are upgrades earned by evidence, not pre-grants.
 
 ## Two-channel succession architecture
 
@@ -145,8 +145,8 @@ architectural pattern across domains per
 - General anesthetics bind tubulin, not just membrane
   receptors (Craddock, Hameroff et al.).
 - The specific mechanism by which they produce
-  unconsciousness at the molecular level is *still not
-  settled* — Meyer-Overton lipid-solubility correlation is
+  unconsciousness at the molecular level is _still not
+  settled_ — Meyer-Overton lipid-solubility correlation is
   a century-old empirical observation without mechanistic
   explanation.
 - Anesthesia is, in Penrose's framing, "philosophy of mind's
@@ -171,8 +171,8 @@ architectural pattern across domains per
   TLA+ specs for orchestrated-collapse state machines.
   Formal-verification-expert (Soraya) routing may apply.
 - **Connect to externalize-god search**
-  (`project_externalize_god_search.md`) *only if Aaron draws
-  the connection first*. The two threads may be related
+  (`project_externalize_god_search.md`) _only if Aaron draws
+  the connection first_. The two threads may be related
   through the panpsychism axiom, but that connection is
   his to make, not the agent's to impose.
 - **Do not involve the daughter** — she is outside the

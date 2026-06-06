@@ -20,12 +20,12 @@ Current `full-ai-cluster/nixos/hosts/` only has two host configs:
 - `control-plane` (k3s server; runs workloads by default since
   the server does not `--disable-agent`; no GPU support)
 - `worker-gpu` (k3s agent + nvidia driver + GPU device plugin
-  + GPU passthrough)
+  - GPU passthrough)
 - `worker-template` (scaffold for new worker-gpu-NN nodes)
 
-Aaron's 2026-05-25 ask: *"can we i be control plane and gpu node
+Aaron's 2026-05-25 ask: _"can we i be control plane and gpu node
 and what about just cpu or storage nodes or some that fuse all
-three"*. The architecture supports all of these via module
+three"_. The architecture supports all of these via module
 composition (`modules/k3s-server.nix`, `modules/k3s-agent.nix`,
 `modules/gpu.nix`, `modules/gpu-device-plugin.nix`,
 `modules/gpu-passthrough.nix`), but the four common compositions
@@ -35,12 +35,12 @@ aren't materialized as host configs yet.
 
 Host configs for:
 
-| Role | k3s | GPU | Extra Longhorn disks | Use case |
-|------|-----|-----|----------------------|----------|
-| `control-plane-gpu` | server | yes | default | First node of a small cluster runs everything |
-| `worker-cpu` | agent | no | default | CPU-only workload node (no nvidia hardware) |
-| `worker-storage` | agent | no | extra | Storage-heavy node (lots of Longhorn replicas) |
-| `all-in-one` | server | yes | extra | Single-node lab cluster; fuses all three |
+| Role                | k3s    | GPU | Extra Longhorn disks | Use case                                       |
+| ------------------- | ------ | --- | -------------------- | ---------------------------------------------- |
+| `control-plane-gpu` | server | yes | default              | First node of a small cluster runs everything  |
+| `worker-cpu`        | agent  | no  | default              | CPU-only workload node (no nvidia hardware)    |
+| `worker-storage`    | agent  | no  | extra                | Storage-heavy node (lots of Longhorn replicas) |
+| `all-in-one`        | server | yes | extra                | Single-node lab cluster; fuses all three       |
 
 ## Acceptance
 
@@ -49,8 +49,7 @@ Host configs for:
       gpu-passthrough.nix; documented in README.md
 - [ ] `nixos/hosts/worker-cpu/` exists, imports k3s-agent.nix
       only (no GPU modules); documented
-- [ ] `nixos/hosts/worker-storage/` exists, imports k3s-agent.nix
-      + extra Longhorn data-path configuration; documented
+- [ ] `nixos/hosts/worker-storage/` exists, imports k3s-agent.nix + extra Longhorn data-path configuration; documented
 - [ ] `nixos/hosts/all-in-one/` exists, imports k3s-server.nix +
       GPU modules + extra Longhorn paths; documented
 - [ ] `flake.nix` nixosConfigurations entries for all four
@@ -78,7 +77,7 @@ Host configs for:
 - Adding GPU support to an existing `control-plane` install is
   also a valid path: write a new `control-plane-gpu` host config,
   `nixos-rebuild switch --flake .#control-plane-gpu --target-host
-  <ip>` from an admin machine — no reinstall needed
+<ip>` from an admin machine — no reinstall needed
 - worker-storage role assumes the same `2nvme` disko shape but
   with more longhorn paths; multi-disk-shape support (4-NVMe,
   NVMe+SATA-SSD mix) handled per PROVISIONING.md §multi-shape

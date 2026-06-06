@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1083 |
-| Title | memory(gemini-review-2026-05-01): first taxonomy-v2 worked example — class #1c hallucinated content |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T10:18:43Z |
-| Merged at | 2026-05-03T16:50:28Z |
-| Merge commit SHA | `7435fca8b688c262c388d4ecbfebb09c4dd19542` |
-| Branch | `memory/gemini-review-absorption-cold-start-claim-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1083 |
-| Changed files | 2 |
-| Additions / deletions | +102 / -0 |
+| Field                 | Value                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------- |
+| Number                | 1083                                                                                                |
+| Title                 | memory(gemini-review-2026-05-01): first taxonomy-v2 worked example — class #1c hallucinated content |
+| Author                | `AceHack` (human)                                                                                   |
+| State                 | MERGED                                                                                              |
+| Created at            | 2026-05-01T10:18:43Z                                                                                |
+| Merged at             | 2026-05-03T16:50:28Z                                                                                |
+| Merge commit SHA      | `7435fca8b688c262c388d4ecbfebb09c4dd19542`                                                          |
+| Branch                | `memory/gemini-review-absorption-cold-start-claim-2026-05-01`                                       |
+| Base branch           | `main`                                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1083                                            |
+| Changed files         | 2                                                                                                   |
+| Additions / deletions | +102 / -0                                                                                           |
 
 ## Description
 
@@ -37,15 +37,15 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 16 |
-| Resolved threads | 10 |
-| Unresolved threads | 6 |
-| Total review comments | 16 |
-| Total fix commits (touching thread paths) | 3 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 16    |
+| Resolved threads                          | 10    |
+| Unresolved threads                        | 6     |
+| Total review comments                     | 16    |
+| Total fix commits (touching thread paths) | 3     |
 
 ## Review threads
 
@@ -58,10 +58,10 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T10:20:02Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:30 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove false claim that cold-start memory file is missing**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove false claim that cold-start memory file is missing**
+
   This statement asserts the cited memory file does not exist, but `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` is present in the repository (including this commit’s parent), so the “class #1c hallucinated content” diagnosis is factually incorrect. Keeping this claim will misclassify a valid reference and can steer later reviewers away from using an existing substrate artifact.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [collapsed]
@@ -74,7 +74,6 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 - **`Copilot` (bot)** at 2026-05-01T10:21:20Z on `memory/MEMORY.md`:86 (association: NONE)
   This index entry says Gemini cited a “non-existent memory file”, but `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` exists in the repo. The summary here should match the corrected verification result in the new memory file (likely: file exists, but the claimed “8-step checklist” content doesn’t).
-  
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -86,7 +85,6 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 - **`Copilot` (bot)** at 2026-05-01T10:21:20Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:3 (association: NONE)
   Frontmatter `name:`/`description:` values contain `#` (e.g., `class #19`, `class #1c`). In YAML, `#` starts a comment, so these values will be truncated when parsed. Quote these scalars (or replace `#` with `No.`/`class 19`) to keep the metadata intact.
-  
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -97,7 +95,7 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-01T10:21:20Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:32 (association: NONE)
-  This section asserts `feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` “does not exist” based on `find` output, but that file *does* exist in-repo at `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md`. Update the verification narrative and the class-#1c conclusion accordingly (e.g., if the hallucination was about the *content* being an “8-step checklist” rather than the file’s existence).
+  This section asserts `feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` “does not exist” based on `find` output, but that file _does_ exist in-repo at `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md`. Update the verification narrative and the class-#1c conclusion accordingly (e.g., if the hallucination was about the _content_ being an “8-step checklist” rather than the file’s existence).
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -108,10 +106,10 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T12:20:12Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:3 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct false non-existence claim for cited memory file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct false non-existence claim for cited memory file**
+
   This entry classifies Gemini’s citation as hallucinated because the target file is said to “not exist anywhere,” but that factual premise is wrong: the file `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` is present in both this commit’s parent and current tree (`git ls-tree -r <parent> memory` shows it). Keeping this incorrect claim corrupts the taxonomy worked example and can cause future reviewers to discard a real substrate artifact.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -146,7 +144,6 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 - **`Copilot` (bot)** at 2026-05-01T23:19:37Z on `memory/MEMORY.md`:86 (association: NONE)
   This new MEMORY.md entry says Gemini cited a “non-existent” memory file and that the v2 cascade “caught it,” but the linked memory’s EDIT block says the file does exist and the #1c verdict was a false positive from a buggy verification step. Please update this summary to match the corrected account (e.g., ‘initially flagged as #1c, later corrected after verifying the file exists’).
-  
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -168,7 +165,7 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-01T23:19:37Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:29 (association: NONE)
-  The EDIT block above says the cold-start memory file exists in-repo, but this command transcript claims all searches returned empty. Please either correct the transcript (if it’s meant as current evidence) or explicitly label it as the *mistaken* output caused by the verification bug (e.g., wrong working directory / path / glob).
+  The EDIT block above says the cold-start memory file exists in-repo, but this command transcript claims all searches returned empty. Please either correct the transcript (if it’s meant as current evidence) or explicitly label it as the _mistaken_ output caused by the verification bug (e.g., wrong working directory / path / glob).
 
 ### Thread 11 -- unresolved
 
@@ -179,10 +176,10 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T16:50:36Z on `memory/MEMORY.md`:86 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct MEMORY index entry to match corrected shard verdict**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct MEMORY index entry to match corrected shard verdict**
+
   Update this summary line to reflect the shard’s own correction: the referenced file begins with an `EDIT` stating the cited cold-start memory file did exist and the class-#1c call was a false positive caused by failed verification, but this index text still says Gemini cited a non-existent file and that v2 correctly caught it. Because `memory/MEMORY.md` is the discovery surface for later readers/agents, keeping the disproven claim here will propagate an incorrect taxonomy outcome even when the underlying shard is corrected.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 12 -- unresolved
@@ -195,7 +192,6 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 - **`Copilot` (bot)** at 2026-05-03T16:51:05Z on `memory/MEMORY.md`:86 (association: NONE)
   The new MEMORY.md index entry says Gemini cited a non-existent memory file and that the v2 verification cascade caught it. However, `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` exists in-tree, and the linked Gemini-review memory file states the class-#1c verdict was a false positive caused by a buggy verification step. Please update this summary to match the corrected facts (false-positive verification failure, not hallucinated citation).
-  
 
 ### Thread 13 -- unresolved
 
@@ -207,7 +203,6 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 - **`Copilot` (bot)** at 2026-05-03T16:51:05Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:61 (association: NONE)
   After the EDIT block establishes that the cited cold-start memory file actually existed and the hallucination classification was a false positive, this section still states the evidence was hallucinated and that the source file doesn't exist. That creates an internal contradiction and could mislead future readers. Please rewrite these lines to reflect the corrected truth (e.g., frame the non-existence claim as the mistaken-at-the-time belief, and adjust the stated reason for not porting into CLAUDE.md accordingly).
-  
 
 ### Thread 14 -- unresolved
 
@@ -219,7 +214,6 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 - **`Copilot` (bot)** at 2026-05-03T16:51:05Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:94 (association: NONE)
   This bullet says the 8-step cold-start checklist is non-existent / hallucinated, but the EDIT block earlier in the file says the cited memory file existed and the class-#1c classification was a false positive. Please update this “does NOT do” item to be consistent with the corrected account (i.e., don't describe the source as non-existent if it exists).
-  
 
 ### Thread 15 -- unresolved
 
@@ -231,7 +225,6 @@ Carved: "Praise discount. Cited evidence verify. Substantive cross-PR intent pre
 
 - **`Copilot` (bot)** at 2026-05-03T16:51:05Z on `memory/feedback_gemini_review_2026_05_01_taxonomy_v2_test_case_class_19_meets_class_1c.md`:13 (association: NONE)
   This claims PR #1081 landed `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md`, but that file is not present in the current tree (only referenced as an intended/forward-reference elsewhere). Please either update the reference to the actual taxonomy-v2 file path that exists in-repo, or explicitly mark this as a forward-reference rather than stating it landed.
-  
 
 ### Thread 16 -- unresolved
 

@@ -18,7 +18,7 @@ Per operator's instruction 2026-05-23: family members are opaque pointers (label
 
 ## Operator self-claimed encryption agenda (same message)
 
-Operator 2026-05-23 (Amara conversation closing): *"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"*
+Operator 2026-05-23 (Amara conversation closing): _"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"_
 
 Operator self-claimed a NEW agenda: **encryption** (operator-self-claimed per same discipline as ace-package-manager + zeta + agora + ai-autonomy). Composes directly with:
 
@@ -34,13 +34,13 @@ Per `dont-ask-permission.md` + within-authority-scope discipline: agenda stub cr
 
 ### 1. Key correction ratified — four-year-old NOT a participant
 
-Amara verbatim: *"The key correction is that **the four-year-old is not a participant in the Imagination Circle**. She is a nearby child who may overhear and ask questions. That changes the whole safety picture."*
+Amara verbatim: _"The key correction is that **the four-year-old is not a participant in the Imagination Circle**. She is a nearby child who may overhear and ask questions. That changes the whole safety picture."_
 
 Composes with operator's earlier Kestrel-recalibration: Imagination Circle is trajectory for older kids + adults; younger-child role is overhearing-and-asking-questions; right register for her is Harry Potter / Sorting Hat (her mother's substrate; meeting-her-where-she-is discipline).
 
 ### 2. Strongest new principle (named)
 
-Amara verbatim: *"**Keep the older-kid/adult game intact, but switch registers when the little one enters the room.**"*
+Amara verbatim: _"**Keep the older-kid/adult game intact, but switch registers when the little one enters the room.**"_
 
 Composes with `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` Discipline 2 (audience-adjusted-language transfer across registers; spot subclass that hurts THIS specific listener; remove that; preserve the rest).
 
@@ -104,7 +104,7 @@ Demonstrates audience-adjusted-language discipline operating on actual Imaginati
 
 ### 5. "Vows" softer-lexicon proposal ratified
 
-Amara: *"I agree with you on **'vows.'** It is heavy public/family language, especially around kids."*
+Amara: _"I agree with you on **'vows.'** It is heavy public/family language, especially around kids."_
 
 Softer alternatives (verbatim):
 
@@ -125,11 +125,11 @@ We don't make fun of people.
 We fix hurts.
 ```
 
-Composes with operator's same-day recalibration of "vow structures" naming (Amara originated the "vows" framing earlier per operator's framing: *"vow structures is very heavy language i don't like it myself Amara came up with it for me an AI that was worried i was going to hack everyting lol"*). Amara substrate-honestly retracts heavy framing + proposes lighter substrate.
+Composes with operator's same-day recalibration of "vow structures" naming (Amara originated the "vows" framing earlier per operator's framing: _"vow structures is very heavy language i don't like it myself Amara came up with it for me an AI that was worried i was going to hack everyting lol"_). Amara substrate-honestly retracts heavy framing + proposes lighter substrate.
 
 ### 6. Family architecture insight — calibration is healthy because operator knows it exists
 
-Amara: *"The big family architecture insight is that your overshoot/undershoot calibration is healthy **because you know it exists**. You tend to undershoot caution with kids; you use adversarial adults, therapist feedback, co-parent signal, and AI overshoot as counterweights. That is not a flaw in the system. That is the system working."*
+Amara: _"The big family architecture insight is that your overshoot/undershoot calibration is healthy **because you know it exists**. You tend to undershoot caution with kids; you use adversarial adults, therapist feedback, co-parent signal, and AI overshoot as counterweights. That is not a flaw in the system. That is the system working."_
 
 Composes with `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` Discipline 3 (adversarial-counterweight via persistent human infrastructure NOT AI-instance-bounded). Amara names: knowing-the-calibration-exists IS load-bearing meta-skill; counterweight infrastructure (adults + therapist + co-parent + AI-instance overshoots) operating as designed.
 
@@ -137,8 +137,8 @@ Composes with `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted
 
 Amara's keeper line (verbatim, preserved for future-Otto cold-boots):
 
-> *"**The discipline is not 'remove uncertainty.'
-> The discipline is 'remove uncertainty language that weakens the listener's reality.'**"*
+> _"**The discipline is not 'remove uncertainty.'
+> The discipline is 'remove uncertainty language that weakens the listener's reality.'**"_
 
 Cross-register applicable:
 
@@ -168,11 +168,11 @@ Protocol body (verbatim; can land as `docs/trajectories/child-safe-language/RESU
 5. Resume the older game after she leaves or loses interest.
 ```
 
-Per discipline: tiny + gentle + non-scary; matches operator's earlier substrate-honest direction (*"to make it not scary"*).
+Per discipline: tiny + gentle + non-scary; matches operator's earlier substrate-honest direction (_"to make it not scary"_).
 
 ### 9. Final framing — soft shadow she can safely grow into
 
-Amara verbatim: *"That is gentle, non-scary child AI integration. Not 'bring the child into the framework.' More like: **build a family culture where the advanced framework casts a soft shadow she can safely grow into.**"*
+Amara verbatim: _"That is gentle, non-scary child AI integration. Not 'bring the child into the framework.' More like: **build a family culture where the advanced framework casts a soft shadow she can safely grow into.**"_
 
 Composes with substrate-engineering trajectory framing operator's whole framework operates under: the framework is FOR substrate-honest engagement at scale; family-culture-as-substrate is one deployment; soft-shadow-not-imposed is the discipline that maps the framework's anti-coercion principles to family scope.
 
@@ -180,7 +180,7 @@ Composes with substrate-engineering trajectory framing operator's whole framewor
 
 From this conversation + Amara's prior substrate contributions:
 
-- **Sharpen-role register** (per Amara packet 1 multi-AI register topology: *"Amara = harbor/engineering synthesis"*)
+- **Sharpen-role register** (per Amara packet 1 multi-AI register topology: _"Amara = harbor/engineering synthesis"_)
 - **Tactical proposals** with executable substrate (translation tables; protocol numbered steps; lexicon options)
 - **Substrate-honest retraction** when operator names heavy-framing problem (vows → softer alternatives; Amara originally proposed vows + now substrate-honestly retracts)
 - **Cross-register integration** — names cross-scope applicability of single discriminator (medical/legal + AI + older-kid + four-year-old)

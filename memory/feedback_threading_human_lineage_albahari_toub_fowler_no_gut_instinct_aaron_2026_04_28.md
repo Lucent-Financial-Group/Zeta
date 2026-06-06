@@ -8,30 +8,30 @@ type: feedback
 
 ## The rule (Aaron verbatim 2026-04-28T16:48Z)
 
-> *"please follow this guidance around threading unless you find something
+> _"please follow this guidance around threading unless you find something
 > better from stephen toub from Microsoft, don't go based on gut instanct
-> for any threading code it's very hard.  this is our human lineage to
-> threading best proacties joseph and setephen.  This is very iportant
+> for any threading code it's very hard. this is our human lineage to
+> threading best proacties joseph and setephen. This is very iportant
 > we write code like this for anything threading or TPL we go, we follow
-> the guiance from these guys.  Oh and David Fowler, he wrote channels
+> the guiance from these guys. Oh and David Fowler, he wrote channels
 > in dotnet, these hare our high performance low allocation thread safe
-> prefer wait/lock free guides."*
+> prefer wait/lock free guides."_
 >
-> *"make sure future you's know this too"*
+> _"make sure future you's know this too"_
 
 ## Lineage update (Aaron verbatim 2026-04-28T17:43Z)
 
-> *"offical reference documentation for advanced dotnet from Microsoft
+> _"offical reference documentation for advanced dotnet from Microsoft
 > the creators of dotnet
-> https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/"*
+> https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/"_
 >
-> *"replaces some guidance from J[oseph]"*
+> _"replaces some guidance from J[oseph]"_
 >
-> *"Joseph with newer guidance for .NET 10  Joseph is from 2011 but
-> still very good but old"*
+> _"Joseph with newer guidance for .NET 10 Joseph is from 2011 but
+> still very good but old"_
 >
-> *"Like I know there is a real Lock object now instead of just a
-> regular object, the monitor changed in .NET 10 i think"*
+> _"Like I know there is a real Lock object now instead of just a
+> regular object, the monitor changed in .NET 10 i think"_
 
 ## Concrete worked example: `lock(object)` → `System.Threading.Lock`
 
@@ -46,11 +46,11 @@ MS-Learn current". Primary-source verified via Microsoft Learn search
 - **The `lock` statement now specializes on `Lock`**: when the target
   is a `Lock` the C# compiler lowers `lock (x) { ... }` to
   `using (x.EnterScope()) { ... }` (a `ref struct` Dispose pattern),
-  *not* `Monitor.Enter/Exit`. Monitor-based behaviour remains the
+  _not_ `Monitor.Enter/Exit`. Monitor-based behaviour remains the
   fallback for plain reference-type targets. [docs:
   language-reference/statements/lock](https://learn.microsoft.com/dotnet/csharp/language-reference/statements/lock).
 - **IDE0330 analyzer enforces this for new code**: `Prefer
-  'System.Threading.Lock'` (default `true`). Old pattern
+'System.Threading.Lock'` (default `true`). Old pattern
   `private object _gate = new object();` triggers the analyzer with
   fix `private Lock _gate = new Lock();`. [docs:
   ide0330](https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0330).
@@ -70,8 +70,8 @@ it to .NET 10 / C# 13+ code.
 
 Aaron 2026-04-28T17:51Z framing:
 
-> *"that document you pull from drop from gemini try to create modern
-> guidance that is still in line with albamari"*
+> _"that document you pull from drop from gemini try to create modern
+> guidance that is still in line with albamari"_
 
 The absorbed Gemini Pro Deep Research note at
 [`docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`](../docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md)

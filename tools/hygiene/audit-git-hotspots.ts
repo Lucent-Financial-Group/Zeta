@@ -32,10 +32,7 @@
 //   64  argument error
 //   128 not inside a git worktree
 
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { writeFileSync } from "node:fs";
 
 type AuditExitCode = 0 | 64 | 128;
@@ -79,27 +76,18 @@ const DEFAULT_WINDOW = "60 days";
 const DEFAULT_TOP = 20;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 
-const EXCLUDED_PREFIXES: readonly string[] = [
-  "docs/hygiene-history/",
-  "openspec/changes/",
-  "references/prior-art/",
-];
+const EXCLUDED_PREFIXES: readonly string[] = ["docs/hygiene-history/", "openspec/changes/", "references/prior-art/"];
 
 const PR_TRAILER_RE = /\(#\d+\)$/;
 const POSITIVE_INT_RE = /^[1-9]\d*$/;
 
-const HELP_TEXT =
-  "Usage: audit-git-hotspots.ts [--window WINDOW] [--top N] [--report PATH]\n";
+const HELP_TEXT = "Usage: audit-git-hotspots.ts [--window WINDOW] [--top N] [--report PATH]\n";
 
 type ParseAcc =
   | { readonly kind: "ok"; readonly window: string; readonly top: number; readonly report: string | null }
   | { readonly kind: "error"; readonly message: string };
 
-function reduceFlag(
-  acc: ParseAcc,
-  flag: string,
-  value: string | undefined,
-): ParseAcc {
+function reduceFlag(acc: ParseAcc, flag: string, value: string | undefined): ParseAcc {
   if (acc.kind === "error") return acc;
   if (value === undefined) {
     return { kind: "error", message: `error: ${flag} requires a value` };
@@ -139,10 +127,7 @@ function parseArgs(argv: readonly string[]): ParseResult {
   };
 }
 
-function classifyGitFailure(
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyGitFailure(args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start 'git ${args.join(" ")}': ${result.error.message}`;
   }
@@ -154,9 +139,7 @@ function classifyGitFailure(
   }
   if (result.status !== 0) {
     const stderr = result.stderr.trim();
-    return stderr !== ""
-      ? stderr
-      : `'git ${args.join(" ")}' exited ${String(result.status)}`;
+    return stderr !== "" ? stderr : `'git ${args.join(" ")}' exited ${String(result.status)}`;
   }
   return null;
 }
@@ -196,26 +179,15 @@ function expandWindowShorthand(window: string): string {
   if (!match) return window;
   const n = match[1];
   const suffix = match[2];
-  const unit =
-    suffix === "d" ? "days" :
-    suffix === "w" ? "weeks" :
-    suffix === "m" ? "months" :
-    "years";
+  const unit = suffix === "d" ? "days" : suffix === "w" ? "weeks" : suffix === "m" ? "months" : "years";
   return `${n} ${unit} ago`;
 }
 
 function tallyTouches(window: string): readonly FileTally[] {
   const since = expandWindowShorthand(window);
-  const raw = runGit([
-    "log",
-    `--since=${since}`,
-    "--pretty=format:",
-    "--name-only",
-  ]);
+  const raw = runGit(["log", `--since=${since}`, "--pretty=format:", "--name-only"]);
   const lines = raw.split("\n").filter((s) => s.length > 0); // excludes blank lines per B-0074 stale-item resolution for B-0067 log-line scoring
-  const filtered = lines.filter(
-    (f) => !EXCLUDED_PREFIXES.some((p) => f.startsWith(p)),
-  );
+  const filtered = lines.filter((f) => !EXCLUDED_PREFIXES.some((p) => f.startsWith(p)));
   const counts = new Map<string, number>();
   for (const file of filtered) {
     counts.set(file, (counts.get(file) ?? 0) + 1);
@@ -240,21 +212,9 @@ function uniqueLineCount(text: string): number {
 
 function summariseFile(window: string, file: string, touches: number): FileSummary {
   const since = expandWindowShorthand(window);
-  const authorsRaw = runGit([
-    "log",
-    `--since=${since}`,
-    "--pretty=format:%an",
-    "--",
-    file,
-  ]);
+  const authorsRaw = runGit(["log", `--since=${since}`, "--pretty=format:%an", "--", file]);
   const authors = uniqueLineCount(authorsRaw.trim());
-  const subjectsRaw = runGit([
-    "log",
-    `--since=${since}`,
-    "--pretty=format:%s",
-    "--",
-    file,
-  ]);
+  const subjectsRaw = runGit(["log", `--since=${since}`, "--pretty=format:%s", "--", file]);
   const subjects = subjectsRaw.split("\n").filter((s) => s.length > 0);
   const prRefs = new Set<string>();
   for (const subject of subjects) {
@@ -291,9 +251,7 @@ export function renderReport(result: AuditResult, clock: Clock): string {
   lines.push("| file | touches | unique authors | PR count |");
   lines.push("|---|---:|---:|---:|");
   for (const s of result.summaries) {
-    lines.push(
-      `| ${s.file} | ${String(s.touches)} | ${String(s.authors)} | ${String(s.prCount)} |`,
-    );
+    lines.push(`| ${s.file} | ${String(s.touches)} | ${String(s.authors)} | ${String(s.prCount)} |`);
   }
   lines.push("");
   lines.push("## Suggested actions");
@@ -343,17 +301,13 @@ export function main(argv: readonly string[]): AuditExitCode {
   const { args } = parsed;
 
   if (!isInsideWorkTree()) {
-    process.stderr.write(
-      "error: tools/hygiene/audit-git-hotspots.ts must run inside a git worktree\n",
-    );
+    process.stderr.write("error: tools/hygiene/audit-git-hotspots.ts must run inside a git worktree\n");
     return 128;
   }
 
   const result = auditRepo(args);
   if (result.emptyWindow) {
-    process.stderr.write(
-      `no commits in window '${args.window}' (or all filtered)\n`,
-    );
+    process.stderr.write(`no commits in window '${args.window}' (or all filtered)\n`);
   }
 
   const rendered = renderReport(result, realClock());

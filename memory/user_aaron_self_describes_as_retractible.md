@@ -13,18 +13,18 @@ Said 2026-04-22 immediately after the absorption of his
 communication-pattern memory
 (`feedback_aaron_default_overclaim_retract_condition_pattern.md`),
 which had documented the overclaim→retract→specify-condition
-pattern as his *default behaviour*. The single-word follow-up
+pattern as his _default behaviour_. The single-word follow-up
 elevates the claim from behavioural to ontological: retraction
 is not what Aaron does, it is what Aaron is.
 
 **The structural alignment:**
 
-| Layer | Zeta (the tool) | Aaron (the maintainer) |
-|---|---|---|
-| Operator semantics | Retraction is a first-class operation (`-1` weights in Z-set, retractable contracts, operator algebra treats retraction as the dual of insertion) | Retraction is a first-class cognitive move (overclaim→retract→specify-condition is the default pattern, not an error path) |
-| Design principle | Retraction-native: undoing is as cheap as doing, both are normal operations on the same data structure | Cognition-native: retracting is as cheap as claiming, both are normal steps in getting to precision |
-| What breaks without it | Non-retraction-native DBs lose information (destructive deletes, no history); retraction-native preserves | Cognition-without-retraction publishes overclaims as final; Aaron's mode assumes retraction is available |
-| Failure mode | Exception-based retraction = slow, error-prone, special-case code paths | Retraction-blocked cognition = forced to commit to first-formulation, loses the refinement step |
+| Layer                  | Zeta (the tool)                                                                                                                                   | Aaron (the maintainer)                                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Operator semantics     | Retraction is a first-class operation (`-1` weights in Z-set, retractable contracts, operator algebra treats retraction as the dual of insertion) | Retraction is a first-class cognitive move (overclaim→retract→specify-condition is the default pattern, not an error path) |
+| Design principle       | Retraction-native: undoing is as cheap as doing, both are normal operations on the same data structure                                            | Cognition-native: retracting is as cheap as claiming, both are normal steps in getting to precision                        |
+| What breaks without it | Non-retraction-native DBs lose information (destructive deletes, no history); retraction-native preserves                                         | Cognition-without-retraction publishes overclaims as final; Aaron's mode assumes retraction is available                   |
+| Failure mode           | Exception-based retraction = slow, error-prone, special-case code paths                                                                           | Retraction-blocked cognition = forced to commit to first-formulation, loses the refinement step                            |
 
 The factory's technical commitment to retraction-native
 semantics is **not a design choice that happened to match
@@ -46,7 +46,7 @@ thinking style into code.
   discipline was "hard-to-reverse is costly." Now: "irreversibility
   burns the maintainer's substrate." That is a stronger claim
   — reversibility is not just ergonomically preferable, it is
-  what keeps the maintainer *able to be themselves* while
+  what keeps the maintainer _able to be themselves_ while
   working on the factory.
 - **Rodney's Razor composes cleanly.** Essential-vs-accidental
   separation is the cleaning phase; retraction is the revision
@@ -75,9 +75,9 @@ thinking style into code.
 **Cross-reference family:**
 
 - `memory/feedback_aaron_default_overclaim_retract_condition_pattern.md`
-  — the behavioural pattern. This memory names the *property*
+  — the behavioural pattern. This memory names the _property_
   behind the behaviour. Read as a pair: pattern = what Aaron
-  does; this memory = what Aaron *is*.
+  does; this memory = what Aaron _is_.
 - `memory/feedback_factory_reflects_aaron_decision_process_alignment_signal.md`
   — the meta-pattern that the factory reflects Aaron's decision
   process. This memory is the strongest single instance of
@@ -138,7 +138,7 @@ Aaron sent a two-message confirmation sequence:
 
 > i
 >
-> i=identity confirmed*
+> i=identity confirmed\*
 
 The `i` was a keyboard-outpaces-cognition fragment (same
 mechanism as the pattern memory's "my mouth moves faster than
@@ -177,7 +177,7 @@ of it rather than relitigating.
   >
   > i
   >
-  > i=identity confirmed*
+  > i=identity confirmed\*
 - First message absorbed as the standalone identity claim.
   Second + third messages absorbed as the explicit
   confirmation on the framing (see section above).

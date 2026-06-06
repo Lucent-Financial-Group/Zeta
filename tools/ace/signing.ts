@@ -4,16 +4,31 @@
 // every present + future manifest field is bound. content_hash (over `files`) is a
 // SEPARATE slice-2 concern handled by store.ts/ace.ts, NOT here.
 import {
-  createHash, generateKeyPairSync, createPrivateKey, createPublicKey,
-  sign as nodeSign, verify as nodeVerify,
+  createHash,
+  generateKeyPairSync,
+  createPrivateKey,
+  createPublicKey,
+  sign as nodeSign,
+  verify as nodeVerify,
 } from "node:crypto";
 import type { AceManifest } from "./store.ts";
 import { canonicalBytes } from "./canonical.ts";
 
-export interface Keypair { privatePem: string; publicSpkiB64: string; keyId: string; }
-export interface AceSignature { algo: "ed25519"; key_id: string; sig: string; }
+export interface Keypair {
+  privatePem: string;
+  publicSpkiB64: string;
+  keyId: string;
+}
+export interface AceSignature {
+  algo: "ed25519";
+  key_id: string;
+  sig: string;
+}
 /** Minimal shape verifySignature needs from a trust-store entry (store.ts's LoadedTrustEntry satisfies it structurally). */
-export interface TrustEntry { public_key: string; label?: string; }
+export interface TrustEntry {
+  public_key: string;
+  label?: string;
+}
 export type VerifyResult =
   | { ok: true; key_id: string; label?: string }
   | { ok: false; reason: "no-signature" | "untrusted-key" | "bad-signature" | "unsupported-algo" };
@@ -46,9 +61,7 @@ export function signManifest(manifest: AceManifest, privatePem: string): AceSign
   return { algo: "ed25519", key_id: keyId(spkiB64), sig };
 }
 
-export function verifySignature(
-  manifest: AceManifest, trustStore: Map<string, TrustEntry>,
-): VerifyResult {
+export function verifySignature(manifest: AceManifest, trustStore: Map<string, TrustEntry>): VerifyResult {
   const signature = (manifest as AceManifest & { signature?: AceSignature }).signature;
   if (!signature) return { ok: false, reason: "no-signature" };
   if (signature.algo !== "ed25519") return { ok: false, reason: "unsupported-algo" };
@@ -67,7 +80,10 @@ export function verifySignature(
   return result;
 }
 
-export interface RevocationEntry { reason?: string; at: string }
+export interface RevocationEntry {
+  reason?: string;
+  at: string;
+}
 export type RevocationMap = Record<string, Record<string, RevocationEntry>>;
 
 /** Derive the SPKI-DER base64 public key + its keyId from a private PEM (for a self-verify

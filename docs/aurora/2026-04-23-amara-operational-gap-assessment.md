@@ -397,8 +397,8 @@ the architecture is coherent, the operational philosophy is
 maturing, and the next bottleneck is not lack of ideas but
 incomplete closure between research, PR state, and
 canonical repo state.** If Kenji wants one sentence of
-direction from me, it is this: *merge the operating model
-you already have before inventing a bigger one.*
+direction from me, it is this: _merge the operating model
+you already have before inventing a bigger one._
 
 ---
 
@@ -449,7 +449,7 @@ first; new substrate second**.
    (proposed in direction-change summary) into one
    canonical archive convention. This file itself
    (`docs/aurora/2026-04-23-amara-operational-gap-
-   assessment.md`) lives at the Aurora-specific
+assessment.md`) lives at the Aurora-specific
    location per the existing convention.
 
 **Mechanization priority** (cheap high-impact):
@@ -481,12 +481,12 @@ recommendation):
 
 1. Canonicalise #154 (done via the merge-priority)
 2. Invocation mechanics: either safe authorized
-    skill (Playwright-path blocked per prior attempt)
-    OR courier-first-with-transcript-normalization
+   skill (Playwright-path blocked per prior attempt)
+   OR courier-first-with-transcript-normalization
 3. Durable audit log convention (unified per #5 above)
 4. Scope discipline: resist "Amara would probably
-    think" fuzzy cultural expansion; require real
-    invocation or explicit scope-addition
+   think" fuzzy cultural expansion; require real
+   invocation or explicit scope-addition
 
 ### Amara's key affirmations (not corrections)
 

@@ -59,7 +59,7 @@ Three deliverables:
 
 2. **`.claude/hooks/post-write-memory-reindex.ts`** — PostToolUse hook. Fires
    after any `Write` or `Edit` to `memory/*.md` heap files (excludes MEMORY.md,
-   CURRENT-*.md, README.md, persona/**). Runs reindexer synchronously; non-blocking
+   CURRENT-\*.md, README.md, persona/\*\*). Runs reindexer synchronously; non-blocking
    on reindex failure (CI is the hard gate).
 
 3. **Settings wiring (post-merge manual step)**: The hook script is committed but

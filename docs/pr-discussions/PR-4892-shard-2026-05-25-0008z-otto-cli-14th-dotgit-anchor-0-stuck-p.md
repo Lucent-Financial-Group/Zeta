@@ -44,12 +44,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new hygiene-history tick shard for 2026-05-25 0008Z to document the first clean dotgit (0 stuck git maintenance procs) reading after a saturation arc, plus related rate-limit, PR fleet-share, and worktree freshness observations.
 
 **Changes:**
+
 - Added a new tick shard file under `docs/hygiene-history/ticks/2026/05/25/`.
 - Recorded observed operational state (stuck procs, peer procs, PR counts, rate limits, HEAD, freshness guard).
 - Captured dotgit-saturation anchor history and cross-lane (Lior vs non-Lior) fleet share snapshot.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T00:12:38Z)
-
 
 ### 💡 Codex Review
 
@@ -57,17 +57,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `faeeaa866e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -101,7 +100,7 @@ The Non-Lior PRs table is formatted with `||`-prefixed rows, which creates an ex
 
 **@chatgpt-codex-connector** (2026-05-25T00:12:39Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct relative path to user-scope memo**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct relative path to user-scope memo**
 
 The link in this sentence is off by one directory level: from `docs/hygiene-history/ticks/2026/05/25/0008Z.md`, `../../../../../.claude/...` resolves to `docs/.claude/...` instead of repo root, so the reference is not navigable when readers click it in GitHub or a local markdown viewer. That breaks the provenance trail this shard relies on; use the same six-level prefix used elsewhere in this file for root-relative `.claude` links.
 

@@ -138,17 +138,17 @@ install --frozen leaf: read root → verify → read lock → root-drift gate �
 
 ## Error handling
 
-| Situation | Verb | Behavior |
-| --- | --- | --- |
-| `update` solve/resolve fails | update | Hard refusal (reason surfaced) |
-| `update` graph node fails preflight (bad content_hash / unsafe path / store-collision) | update | Hard refusal, **no lock written** (never lock a graph install would reject) |
-| `update` lock write fails | update | **Hard error** (the refreshed lock is the purpose) |
-| `install --locked` + no lockfile | install | Hard refusal ("nothing to check against") |
-| `install --locked` + lock differs from fresh solve | install | Hard refusal, **install nothing** ("run `ace update`") |
-| `install --locked --frozen` together | parseArgs | Error (mutually exclusive) |
-| `--frozen` leaf, no lock | install | Hard refusal |
-| `--frozen` leaf, root drift | install | Hard refusal |
-| leaf default lock write fails | install | Warning (install succeeded) |
+| Situation                                                                              | Verb      | Behavior                                                                    |
+| -------------------------------------------------------------------------------------- | --------- | --------------------------------------------------------------------------- |
+| `update` solve/resolve fails                                                           | update    | Hard refusal (reason surfaced)                                              |
+| `update` graph node fails preflight (bad content_hash / unsafe path / store-collision) | update    | Hard refusal, **no lock written** (never lock a graph install would reject) |
+| `update` lock write fails                                                              | update    | **Hard error** (the refreshed lock is the purpose)                          |
+| `install --locked` + no lockfile                                                       | install   | Hard refusal ("nothing to check against")                                   |
+| `install --locked` + lock differs from fresh solve                                     | install   | Hard refusal, **install nothing** ("run `ace update`")                      |
+| `install --locked --frozen` together                                                   | parseArgs | Error (mutually exclusive)                                                  |
+| `--frozen` leaf, no lock                                                               | install   | Hard refusal                                                                |
+| `--frozen` leaf, root drift                                                            | install   | Hard refusal                                                                |
+| leaf default lock write fails                                                          | install   | Warning (install succeeded)                                                 |
 
 ## Testing
 

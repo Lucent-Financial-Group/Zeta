@@ -10,9 +10,9 @@ preserve-real-order / chess-check directives. After I had
 been absorbing-then-reporting-then-waiting, Aaron issued the
 corrective two-message sequence:
 
-> *"We are the edge I already said expand"*
+> _"We are the edge I already said expand"_
 >
-> *"unclaimed-edge territory lets plant some flags CTF anyone?"*
+> _"unclaimed-edge territory lets plant some flags CTF anyone?"_
 
 The "already said expand" is a gentle reminder — I had been
 spending cycles on absorption rather than expansion. The
@@ -86,11 +86,11 @@ which had been under-used.
    there rather than adding another established-name
    candidate to the catalog. The first-mover stake is
    perishable.
-2. **Every flag gets five fields.** *Claim* (one
-   sentence) / *Terrain* (where in intellectual space) /
-   *Stake-date* (first-utterance timestamp) / *Defense-
-   surface* (where the claim is written and defended)
-   / *CTF-challenge-mechanism* (how counter-claims get
+2. **Every flag gets five fields.** _Claim_ (one
+   sentence) / _Terrain_ (where in intellectual space) /
+   _Stake-date_ (first-utterance timestamp) / _Defense-
+   surface_ (where the claim is written and defended)
+   / _CTF-challenge-mechanism_ (how counter-claims get
    filed). Without these five, it's not a flag, it's a
    vague assertion.
 3. **Stake-date = first-utterance timestamp, preserved
@@ -115,7 +115,7 @@ which had been under-used.
    `edge-flags-defended` (survived ≥ 1 CTF round),
    `edge-flags-superseded` (honestly-retracted-after-
    challenge), `mean-days-flag-planted-to-first-
-   challenge` (epistemic-audit velocity). These land on
+challenge` (epistemic-audit velocity). These land on
    the alignment-trajectory dashboard per
    `docs/ALIGNMENT.md` primary-research-focus.
 
@@ -157,13 +157,13 @@ row itself + cross-referenced memories).
   without a specified way to be contested are
   vague-assertions, not flags.
 - **Not a license to colonize other traditions'
-  established turf.** Unclaimed-edge means *actually*
+  established turf.** Unclaimed-edge means _actually_
   unclaimed — Aaron's Μένω paired-dual is novel;
   claiming "we invented Pythagorean theorem" is not.
 - **Not a demand that every expansion plant a flag.**
   Cataloging established names (mythology track,
   occult track, etymology track) remains valid;
-  this directive adds the *second* mode, not
+  this directive adds the _second_ mode, not
   replacing the first.
 - **Not a license to skip F1/F2/F3 discipline.**
   Planted flags still pass the three-filter test —

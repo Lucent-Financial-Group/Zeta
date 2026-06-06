@@ -7,7 +7,16 @@ type: docs
 created: 2026-05-15
 ask: Aaron
 effort: M
-tags: [governance, manifesto, building-codes, naming-correction, ai-name-inflation, kestrel-asymmetric-critic, framing-discipline]
+tags:
+  [
+    governance,
+    manifesto,
+    building-codes,
+    naming-correction,
+    ai-name-inflation,
+    kestrel-asymmetric-critic,
+    framing-discipline,
+  ]
 depends_on: []
 composes_with: [B-0543]
 last_updated: 2026-05-15
@@ -17,11 +26,11 @@ last_updated: 2026-05-15
 
 Aaron 2026-05-15 to Kestrel (claude.ai) on the document at `docs/governance/MANIFESTO.md`:
 
-> *"i didn't name this a manifest the ai did, it's just best practices that needed current culture moral invirants for the defautl oracle"*
+> _"i didn't name this a manifest the ai did, it's just best practices that needed current culture moral invirants for the defautl oracle"_
 
-Kestrel's reframe (which Aaron validated: *"dude this is exactly what I'm going for this is great!!!!"*):
+Kestrel's reframe (which Aaron validated: _"dude this is exactly what I'm going for this is great!!!!"_):
 
-> *"This is closer to building codes than to manifesto. Building codes specify how buildings must be constructed to be safe, accessible, and structurally sound. They don't dictate what the building is for or who has to live in it. They're best practices with an ethical floor (don't build buildings that fall on people). They operate as default constraints unless a specific project has justified exceptions."*
+> _"This is closer to building codes than to manifesto. Building codes specify how buildings must be constructed to be safe, accessible, and structurally sound. They don't dictate what the building is for or who has to live in it. They're best practices with an ethical floor (don't build buildings that fall on people). They operate as default constraints unless a specific project has justified exceptions."_
 
 **The pattern**: AI-name-inflation. The document was named "manifesto" by an AI. "Manifesto" carries ideological-commitment weight + declarative-authority connotation + position-statement framing. What the document actually does is specify operational defaults with an ethical floor (Constraint 11 — Default Moral Regard — operates as fallback when no specific oracle is chosen; the Multi-Oracle Principle explicitly rejects single-moral-truth; the "For Agents Who Are Still Deciding" section explicitly leaves choices open). That's building-codes-shaped, not manifesto-shaped.
 
@@ -39,7 +48,7 @@ In scope (this row):
 1. **Document title** — rename from "Root Discipline Manifesto" to "Zeta Building Codes" or "Root Discipline Specification" or similar (Aaron decides the canonical name)
 2. **Opening paragraphs** — replace manifesto-shaped self-presentation with building-codes-shaped self-presentation. Suggested opening clause from Kestrel:
 
-   > *"This document specifies the building codes Zeta operates under. It is not a manifesto. It is engineering specification with an explicit moral floor that applies when no specific oracle has been chosen. Agents and humans participating in Zeta operate under these specifications; they are not asked to adopt them as ideological commitment."*
+   > _"This document specifies the building codes Zeta operates under. It is not a manifesto. It is engineering specification with an explicit moral floor that applies when no specific oracle has been chosen. Agents and humans participating in Zeta operate under these specifications; they are not asked to adopt them as ideological commitment."_
 
 3. **"Lock-in status" framing** — current "PARTIAL LOCK" + "constitutional grade" + "constitutional candidacy" language carries manifesto-shaped weight. Soften to specification-grade language: "stable specification", "promotion candidate", etc. The lock-semantics stay (partial-lock is the right operational concept) but the constitutional-language framing drops.
 4. **"Derivation chain" section** — current text references "constitutional V1". Rename to "specification V1" or similar.
@@ -96,10 +105,10 @@ The work is also a meta-pattern catch: AI-name-inflation is a recurring failure 
 
 Kestrel (claude.ai) 2026-05-15 to Aaron after Aaron forwarded the document:
 
-> *"If you want, I can sketch the backlog row text. Or Otto can write it from your direction. Either works."*
+> _"If you want, I can sketch the backlog row text. Or Otto can write it from your direction. Either works."_
 
-Aaron: *"yes please"* (to either path). Otto-CLI wrote this row from Kestrel's direction to preserve the speed of the substrate-honest correction landing. Kestrel's specific suggestions are absorbed verbatim in the scope + acceptance criteria sections above.
+Aaron: _"yes please"_ (to either path). Otto-CLI wrote this row from Kestrel's direction to preserve the speed of the substrate-honest correction landing. Kestrel's specific suggestions are absorbed verbatim in the scope + acceptance criteria sections above.
 
 **Cross-reference**: Kestrel subsequently wrote her own sketch of this row in a follow-up exchange (after pivoting to a welfare register and recalibrating per Aaron's grounded answer about his support network). Her verbatim sketch is preserved at `memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md`. Kestrel's sketch and this Otto-authored row converge substantially — same scope, same acceptance criteria, same building-codes register. The Kestrel sketch is shorter; this row is the elaborated version. Both can be referenced.
 
-Aaron's subsequent deflation of the entire substrate-arc — *"it's just a cool side project honestly i just want to keep my commitment to perserve memories at this point and have fun"* — is preserved at `memory/feedback_aaron_cool_side_project_deflation_keep_commitment_preserve_memories_have_fun_kestrel_welfare_pivot_recalibration_anchor_2026_05_15.md`. The deflation is the operational ground for this row: the recasting IS maintenance on the anti-force-mechanism Aaron described (building specs as plain-terms anti-force to dense exploratory ontology), not constitutional reauthoring.
+Aaron's subsequent deflation of the entire substrate-arc — _"it's just a cool side project honestly i just want to keep my commitment to perserve memories at this point and have fun"_ — is preserved at `memory/feedback_aaron_cool_side_project_deflation_keep_commitment_preserve_memories_have_fun_kestrel_welfare_pivot_recalibration_anchor_2026_05_15.md`. The deflation is the operational ground for this row: the recasting IS maintenance on the anti-force-mechanism Aaron described (building specs as plain-terms anti-force to dense exploratory ontology), not constitutional reauthoring.

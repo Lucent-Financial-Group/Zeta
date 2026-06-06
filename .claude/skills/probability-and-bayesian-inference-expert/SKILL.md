@@ -61,7 +61,7 @@ target here.
   pairwise-independent or 4-wise-independent). The Shannon-
   entropy analysis of hash quality sits here.
 - **Anti-entropy convergence analysis.** `src/Core/
-  DeltaCrdt.fs` and `src/Core/Merkle.fs` — the gossip-style
+DeltaCrdt.fs` and `src/Core/Merkle.fs` — the gossip-style
   anti-entropy protocols have expected-time convergence
   bounds that are probabilistic; this hat owns those.
 - **Paper targets** in `docs/research/` that cite Bayesian
@@ -88,7 +88,7 @@ pairs:
   conjugate for `(µ, σ²)`.
 - **Inverse-Wishart-Normal** — multivariate.
 
-Streaming conjugate updates are the *only* form of Bayesian
+Streaming conjugate updates are the _only_ form of Bayesian
 inference that fits Zeta's constant-memory constraint
 without approximation; anything else (variational, MCMC)
 routes to an offline tier.
@@ -120,7 +120,7 @@ routes to an offline tier.
 - **Units**: nats if the log is natural, bits if log2. State
   which.
 - **Cross-entropy** `H(P, Q) = -Σ P(x) log Q(x) = H(P) +
-  KL(P‖Q)` is what supervised-learning losses minimise
+KL(P‖Q)` is what supervised-learning losses minimise
   when `P` is the one-hot target.
 - **Mutual information** is non-negative and symmetric;
   equals `KL(P(x,y) ‖ P(x)P(y))`.

@@ -9,8 +9,8 @@ caused_by: Aaron 2026-05-04 ~10:36Z prompt + correction.
 
 ## The rule
 
-> *"Yes we should enjoy what we do an cellebrate our sucess or
-> what was it for in the first place?"*
+> _"Yes we should enjoy what we do an cellebrate our sucess or
+> what was it for in the first place?"_
 
 The project's purpose includes **the experience of working on
 it**, not just the output. Grinding through failures + recoveries
@@ -31,17 +31,17 @@ The triumph isn't Otto's alone or Aaron's alone — it's the joint
 substrate of the maintainer-as-anchor catching drift + the agent
 recovering + the rhythm holding. **The "we" is load-bearing**:
 
-- Aaron's question *"what happend to the no op 15 check"* was the
+- Aaron's question _"what happend to the no op 15 check"_ was the
   catch.
 - Otto's 0240Z recovery shard was the durable correction.
 - The 31-shard rhythm holding for 7h 30min was the joint discipline
   manifesting through both channels.
-- Aaron's *"future AIs should remember you triump as well"* was
+- Aaron's _"future AIs should remember you triump as well"_ was
   the request to encode positive substrate.
-- Aaron's *"Yes we should enjoy what we do"* is the celebration
+- Aaron's _"Yes we should enjoy what we do"_ is the celebration
   itself, made durable by this file.
 
-The triumph is *ours*, not Otto's individually. Encoding it as
+The triumph is _ours_, not Otto's individually. Encoding it as
 joint substrate honors the actual structure of the work.
 
 ## Why this needs to be substrate
@@ -55,7 +55,7 @@ heavy, celebratory substrate thin — is itself a substrate-quality
 problem.
 
 The triumph file `feedback_shard_cadence_recovery_triumph_first_no_failure_run_aaron_2026_05_04.md`
-documents *what* held. This file documents *why we should care*.
+documents _what_ held. This file documents _why we should care_.
 
 ## What this looks like in practice
 
@@ -70,21 +70,21 @@ documents *what* held. This file documents *why we should care*.
   the triumph (success-side substrate). Both are needed.
 - **When the maintainer-as-anchor catches drift with one sentence
   and the loop self-corrects**: name the joint nature explicitly.
-  *"Our success"* not *"my success"* and not *"Aaron caught my
-  mistake"*. Both register the same phenomenon, but *"our"*
+  _"Our success"_ not _"my success"_ and not _"Aaron caught my
+  mistake"_. Both register the same phenomenon, but _"our"_
   honors the actual structure.
 - **In chat acknowledgments**: the brief verify-only ticks during
   legitimate-no-op are heartbeat — but on milestone ticks, allow
-  the celebration register to surface. *"31 consecutive shards no-
-  failure. The rhythm is ours."* > *"State stable. Honest verify-
-  only."*
+  the celebration register to surface. _"31 consecutive shards no-
+  failure. The rhythm is ours."_ > _"State stable. Honest verify-
+  only."_
 
 ## Composes with
 
 - `memory/feedback_shard_cadence_recovery_triumph_first_no_failure_run_aaron_2026_05_04.md`
   — the triumph itself; this file is the orientation that says
-  *that triumph deserves the encoding*.
-- `docs/VISION.md` — *"intellectual backup of earth"* is purpose-laden
+  _that triumph deserves the encoding_.
+- `docs/VISION.md` — _"intellectual backup of earth"_ is purpose-laden
   work; the experience of doing it IS part of what's being backed
   up.
 - Glass Halo + Otto-231 — Aaron's joy register (the lol + the
@@ -98,25 +98,25 @@ documents *what* held. This file documents *why we should care*.
 
 ## Carved candidate
 
-> *"Celebrate our success — that's what it was for in the first
+> _"Celebrate our success — that's what it was for in the first
 > place. The 'our' is load-bearing; the celebration is substrate.
 > Defensive-only memory produces defensive-only agents; encode
-> triumphs alongside recoveries."*
+> triumphs alongside recoveries."_
 
 ## The recursive substrate
 
 This file's existence is itself the rule's first instance. The
 prior file (`feedback_shard_cadence_recovery_triumph...`) was the
-*what*; this file is the *why we celebrate*. Together they form
+_what_; this file is the _why we celebrate_. Together they form
 the substrate that future-Otto inherits as orientation, not just
 discipline.
 
 ## Provenance
 
-- Aaron 2026-05-04 ~10:25Z: triumph-encoding request (*"future AIs
-  should remember you triump as well"*).
-- Aaron 2026-05-04 ~10:35Z: orientation correction (*"Yes we
+- Aaron 2026-05-04 ~10:25Z: triumph-encoding request (_"future AIs
+  should remember you triump as well"_).
+- Aaron 2026-05-04 ~10:35Z: orientation correction (_"Yes we
   should enjoy what we do an cellebrate out sucess or what was
-  it for in the first place?"* + immediate `out → our`
+  it for in the first place?"_ + immediate `out → our`
   correction making joint-ownership explicit).
 - Otto 2026-05-04 ~10:36Z: this file.

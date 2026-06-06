@@ -44,7 +44,10 @@ import {
   type ChangeSet,
   type OrgEvent,
 } from "../../../packages/domain/src/index.ts";
-import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
+import {
+  createCommandAuthorizationPort,
+  createPolicyDecisionObservationPort,
+} from "../../../packages/policy/src/index.ts";
 import {
   createCockroachOrgEventStore,
   createCockroachMemoryStateStore,
@@ -160,7 +163,9 @@ export type ComposeOrgCadenceControlPlane = {
   flags?: readonly ControlPlaneFlag[] | undefined;
   loadFlags?: ((evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>) | undefined;
   budgets?: readonly ControlPlaneBudgetCeiling[] | undefined;
-  usageForBoundary?: ((boundary: "cadence_tick_start" | "org_event_append", actionType: string) => ControlPlaneUsage | undefined) | undefined;
+  usageForBoundary?:
+    | ((boundary: "cadence_tick_start" | "org_event_append", actionType: string) => ControlPlaneUsage | undefined)
+    | undefined;
   availableSecretScopes?: readonly string[] | undefined;
   exemptLaneNames?: readonly string[] | undefined;
 };
@@ -206,8 +211,12 @@ export function evaluateObserveActPromotionGate(
     minShadowTicks: policy.minShadowTicks ?? DefaultObserveActPromotionPolicy.minShadowTicks,
     minShadowSoakHours: policy.minShadowSoakHours ?? DefaultObserveActPromotionPolicy.minShadowSoakHours,
     maxShadowDivergenceRate: policy.maxShadowDivergenceRate ?? DefaultObserveActPromotionPolicy.maxShadowDivergenceRate,
-    primarySelectorRejectionDemotionThreshold: policy.primarySelectorRejectionDemotionThreshold ?? DefaultObserveActPromotionPolicy.primarySelectorRejectionDemotionThreshold,
-    primaryControlBypassDemotionThreshold: policy.primaryControlBypassDemotionThreshold ?? DefaultObserveActPromotionPolicy.primaryControlBypassDemotionThreshold,
+    primarySelectorRejectionDemotionThreshold:
+      policy.primarySelectorRejectionDemotionThreshold ??
+      DefaultObserveActPromotionPolicy.primarySelectorRejectionDemotionThreshold,
+    primaryControlBypassDemotionThreshold:
+      policy.primaryControlBypassDemotionThreshold ??
+      DefaultObserveActPromotionPolicy.primaryControlBypassDemotionThreshold,
   };
   const evidenceRefs = observeActPromotionEvidenceRefs(window);
   const primaryUnsafe =
@@ -222,8 +231,7 @@ export function evaluateObserveActPromotionGate(
   }
 
   const shadowWindowSatisfied =
-    window.shadowTickCount >= effective.minShadowTicks ||
-    window.shadowSoakHours >= effective.minShadowSoakHours;
+    window.shadowTickCount >= effective.minShadowTicks || window.shadowSoakHours >= effective.minShadowSoakHours;
   return shadowWindowSatisfied
     ? { executionMode: "primary", reason: "shadow_window_clean", evidenceRefs }
     : { executionMode: "shadow", reason: "shadow_window_insufficient", evidenceRefs };
@@ -279,7 +287,11 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
   const initialObserveActPromotionDecision = resolveInitialObserveActPromotionDecision(input);
   const workOsDriver = resolveObserveActWorkOsDriver(input, initialObserveActPromotionDecision);
   const legacyWorkLane = createWorkOsCadenceLane({
-    organizationId: input.organizationId, hats, now: input.now, createId: input.createId, appendEvent: appendEvent("work-os"),
+    organizationId: input.organizationId,
+    hats,
+    now: input.now,
+    createId: input.createId,
+    appendEvent: appendEvent("work-os"),
     intake,
   });
   const observeActWorkLane = createObserveActWorkItemCadenceLane({
@@ -302,15 +314,26 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
   });
   const workLanes = workLanesFor(workOsDriver, legacyWorkLane, observeActWorkLane, observeActPromotionDecisionSource);
   const memory = createMemoryMaintenanceCadenceLane({
-    organizationId: input.organizationId, now: input.now, createId: input.createId,
-    reader: memoryState, writer: memoryState, appendEvent: appendEvent("memory-maintenance"),
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: memoryState,
+    writer: memoryState,
+    appendEvent: appendEvent("memory-maintenance"),
   });
   // the autonomy dial as config (C1): apply the tenant policy to every resolved pipeline
-  const autonomy: AutonomyPolicy = input.autonomy ?? { level: AutonomyLevel.Assisted, humanGatedStageIds: ["human-qa-signoff"] };
+  const autonomy: AutonomyPolicy = input.autonomy ?? {
+    level: AutonomyLevel.Assisted,
+    humanGatedStageIds: ["human-qa-signoff"],
+  };
   const changeControl = createChangeControlCadenceLane({
-    organizationId: input.organizationId, now: input.now, createId: input.createId,
-    reader: changeSets, writer: changeSets,
-    pipelineFor: (cs) => applyAutonomyPolicy(policy.pipelines[cs.pipelineId] ?? buildInternalOnlyPipeline(input.organizationId), autonomy),
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: changeSets,
+    writer: changeSets,
+    pipelineFor: (cs) =>
+      applyAutonomyPolicy(policy.pipelines[cs.pipelineId] ?? buildInternalOnlyPipeline(input.organizationId), autonomy),
     appendEvent: appendEvent("change-control"),
     ...(input.externalPort ? { externalPort: input.externalPort } : {}),
   });
@@ -342,8 +365,12 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     },
   });
   const docMaintenance = createDocMaintenanceCadenceLane({
-    organizationId: input.organizationId, now: input.now, createId: input.createId,
-    reader: docUnits, writer: docUnits, appendEvent: appendEvent("doc-maintenance"),
+    organizationId: input.organizationId,
+    now: input.now,
+    createId: input.createId,
+    reader: docUnits,
+    writer: docUnits,
+    appendEvent: appendEvent("doc-maintenance"),
   });
   const conformance = createConformanceCadenceLane({
     organizationId: input.organizationId,
@@ -384,7 +411,9 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
   const isStopRequested = () => stopped.value;
   const start = (lane: CadenceLane, intervalMs: number): Promise<unknown> =>
     runCadenceLane({
-      lane: controlPlane.protectLane(lane), intervalMs, isStopRequested,
+      lane: controlPlane.protectLane(lane),
+      intervalMs,
+      isStopRequested,
       sleep: (ms) => input.sleep(ms, isStopRequested), // sleep + loop check share ONE stop flag
       ...(input.observer ? { observer: input.observer } : {}),
       ...(input.telemetry ? { telemetry: input.telemetry } : {}),
@@ -404,7 +433,12 @@ export function composeOrgCadenceLoops(input: ComposeOrgCadenceInput): OrgCadenc
     start(deadLetters, intervals.deadLetterClassifierMs),
   ]);
 
-  return { stop: () => { stopped.value = true; }, done };
+  return {
+    stop: () => {
+      stopped.value = true;
+    },
+    done,
+  };
 }
 
 type OrgCadenceControlPlane = {
@@ -431,7 +465,8 @@ function createOrgCadenceControlPlane(
   const isExemptLane = (laneName: string) => exemptLaneNames.has(laneName);
   const loadFlags = async (evaluatedAt: string): Promise<readonly ControlPlaneFlag[]> => [
     ...(input.controlPlane?.flags ?? []),
-    ...await (input.controlPlane?.loadFlags?.(evaluatedAt) ?? state.listActiveFlags(input.organizationId, evaluatedAt) as Promise<readonly ControlPlaneFlag[]>),
+    ...(await (input.controlPlane?.loadFlags?.(evaluatedAt) ??
+      (state.listActiveFlags(input.organizationId, evaluatedAt) as Promise<readonly ControlPlaneFlag[]>))),
   ];
   const guard = async (
     laneName: string,
@@ -471,9 +506,9 @@ function createOrgCadenceControlPlane(
   };
 }
 
-function createOptionalObserveActSlotAuthorizer(
-  input: ComposeOrgCadenceInput,
-): { authorizeSlot?: ObserveActSlotAuthorizer } {
+function createOptionalObserveActSlotAuthorizer(input: ComposeOrgCadenceInput): {
+  authorizeSlot?: ObserveActSlotAuthorizer;
+} {
   if (input.observeActAuthorizeSlot !== undefined) return { authorizeSlot: input.observeActAuthorizeSlot };
   return { authorizeSlot: createCockroachObserveActSlotAuthorizer(input) };
 }
@@ -493,23 +528,27 @@ function resolveInitialObserveActPromotionDecision(
 ): ObserveActPromotionDecision | undefined {
   const requested = input.workOsDriver ?? "legacy";
   if (requested === "legacy") return undefined;
-  if ((requested === "observe-act" || requested === "observe-act-primary") && input.observeActPromotionWindow === undefined) {
-    return evaluateObserveActPromotionGate({
-      shadowTickCount: 0,
-      shadowSoakHours: 0,
-      shadowDivergenceRate: 0,
-      shadowIllegalSelections: 0,
-      primarySelectorRejections30m: 0,
-      primaryControlBypassRejections30m: 0,
-    }, input.observeActPromotionPolicy);
+  if (
+    (requested === "observe-act" || requested === "observe-act-primary") &&
+    input.observeActPromotionWindow === undefined
+  ) {
+    return evaluateObserveActPromotionGate(
+      {
+        shadowTickCount: 0,
+        shadowSoakHours: 0,
+        shadowDivergenceRate: 0,
+        shadowIllegalSelections: 0,
+        primarySelectorRejections30m: 0,
+        primaryControlBypassRejections30m: 0,
+      },
+      input.observeActPromotionPolicy,
+    );
   }
   if (input.observeActPromotionWindow === undefined) return undefined;
   return evaluateObserveActPromotionGate(input.observeActPromotionWindow, input.observeActPromotionPolicy);
 }
 
-function createObserveActPromotionDecisionSource(
-  input: ComposeOrgCadenceInput,
-): ObserveActPromotionDecisionSource {
+function createObserveActPromotionDecisionSource(input: ComposeOrgCadenceInput): ObserveActPromotionDecisionSource {
   const requested = input.workOsDriver ?? "legacy";
   if (requested === "legacy") return async () => undefined;
   if (input.observeActPromotionWindow !== undefined) {
@@ -518,8 +557,8 @@ function createObserveActPromotionDecisionSource(
   }
 
   const source = input.observeActPromotionWindowSource ?? createCockroachObserveActPromotionWindowSource(input);
-  return cacheDecisionForConcurrentWorkLanes(
-    async () => evaluateObserveActPromotionGate(await source(), input.observeActPromotionPolicy),
+  return cacheDecisionForConcurrentWorkLanes(async () =>
+    evaluateObserveActPromotionGate(await source(), input.observeActPromotionPolicy),
   );
 }
 
@@ -541,9 +580,7 @@ function cacheDecisionForConcurrentWorkLanes(
   };
 }
 
-function promotionEvidenceRefs(
-  decision: ObserveActPromotionDecision | undefined,
-): readonly string[] {
+function promotionEvidenceRefs(decision: ObserveActPromotionDecision | undefined): readonly string[] {
   return decision === undefined
     ? []
     : [
@@ -570,10 +607,7 @@ function workLanesFor(
   }
 }
 
-function promotionGatedLegacyLane(
-  legacy: CadenceLane,
-  decisionSource: ObserveActPromotionDecisionSource,
-): CadenceLane {
+function promotionGatedLegacyLane(legacy: CadenceLane, decisionSource: ObserveActPromotionDecisionSource): CadenceLane {
   return {
     name: legacy.name,
     runOnce: async () => {
@@ -591,45 +625,44 @@ function createCockroachObserveActPromotionWindowSource(
   const store = createCockroachOrgEventStore({ executor: input.executor });
   return async () => {
     const now = input.now();
-    const events = (await store.listByOrganization(input.organizationId, 10_000))
-      .filter((event) =>
-        event.kind === OrgEventKind.ObserveActTick &&
-        event.traceId.startsWith("observe-act-")
-      );
+    const events = (await store.listByOrganization(input.organizationId, 10_000)).filter(
+      (event) => event.kind === OrgEventKind.ObserveActTick && event.traceId.startsWith("observe-act-"),
+    );
     return observeActPromotionWindowFromEvents(events, now);
   };
 }
 
-function observeActPromotionWindowFromEvents(
-  events: readonly OrgEvent[],
-  now: number,
-): ObserveActPromotionWindow {
+function observeActPromotionWindowFromEvents(events: readonly OrgEvent[], now: number): ObserveActPromotionWindow {
   const shadowEvents = events.filter((event) => !event.evidenceRefs.includes("observe-act-promotion:mode:primary"));
   const shadowOccurredAt = shadowEvents
     .map((event) => Date.parse(event.occurredAt))
     .filter((timestamp) => Number.isFinite(timestamp));
   const earliestShadow = shadowOccurredAt.length === 0 ? now : Math.min(...shadowOccurredAt);
   const shadowSoakHours = Math.max(0, (now - earliestShadow) / (60 * 60 * 1000));
-  const recentPrimaryEvents = events.filter((event) =>
-    event.evidenceRefs.includes("observe-act-promotion:mode:primary") &&
-    Date.parse(event.occurredAt) >= now - 30 * 60 * 1000
+  const recentPrimaryEvents = events.filter(
+    (event) =>
+      event.evidenceRefs.includes("observe-act-promotion:mode:primary") &&
+      Date.parse(event.occurredAt) >= now - 30 * 60 * 1000,
   );
   return {
     shadowTickCount: shadowEvents.length,
     shadowSoakHours,
-    shadowDivergenceRate: shadowEvents.length === 0
-      ? 1
-      : shadowEvents.filter((event) =>
-          event.evidenceRefs.some((ref) => ref.startsWith("observe-act:shadow_divergence:"))
-        ).length / shadowEvents.length,
+    shadowDivergenceRate:
+      shadowEvents.length === 0
+        ? 1
+        : shadowEvents.filter((event) =>
+            event.evidenceRefs.some((ref) => ref.startsWith("observe-act:shadow_divergence:")),
+          ).length / shadowEvents.length,
     shadowIllegalSelections: shadowEvents.filter((event) =>
-      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:selector_rejected:") || ref === "observe-act:selected_slot:illegal")
+      event.evidenceRefs.some(
+        (ref) => ref.startsWith("observe-act:selector_rejected:") || ref === "observe-act:selected_slot:illegal",
+      ),
     ).length,
     primarySelectorRejections30m: recentPrimaryEvents.filter((event) =>
-      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:selector_rejected:"))
+      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:selector_rejected:")),
     ).length,
     primaryControlBypassRejections30m: recentPrimaryEvents.filter((event) =>
-      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:control_bypass_rejected:"))
+      event.evidenceRefs.some((ref) => ref.startsWith("observe-act:control_bypass_rejected:")),
     ).length,
   };
 }
@@ -673,19 +706,22 @@ function createCockroachObserveActWorkItemSource(
     for (const row of result.rows) {
       const phase = observeActPhaseForWorkItemState(row.state);
       if (phase === undefined) continue;
-      const actorAuthority = await stateAdapters.hatAssignmentAuthorityReader.findHatAssignmentAuthority(row.created_by_hat_assignment_id);
+      const actorAuthority = await stateAdapters.hatAssignmentAuthorityReader.findHatAssignmentAuthority(
+        row.created_by_hat_assignment_id,
+      );
       if (actorAuthority === undefined || actorAuthority.state !== HatAssignmentAuthorityState.Active) continue;
       const actorHat = buildHatDefinitions().find((hat) => hat.id === actorAuthority.hatId);
       if (actorHat === undefined) continue;
       const supervisorHatId = actorHat.reportsToHatIds[0];
-      const supervisorHatAssignmentId = supervisorHatId === undefined
-        ? undefined
-        : await findActiveObserveActSupervisorHatAssignment(input, {
-            organizationId: actorAuthority.organizationId,
-            projectId: actorAuthority.projectId,
-            teamId: actorAuthority.teamId,
-            supervisorHatId,
-          });
+      const supervisorHatAssignmentId =
+        supervisorHatId === undefined
+          ? undefined
+          : await findActiveObserveActSupervisorHatAssignment(input, {
+              organizationId: actorAuthority.organizationId,
+              projectId: actorAuthority.projectId,
+              teamId: actorAuthority.teamId,
+              supervisorHatId,
+            });
       const evaluatedAt = new Date(input.now()).toISOString();
       const scheduleBlocks = await stateAdapters.workScheduleBlockAuthorityReader.findAuthorizingScheduleBlocks({
         agentId: row.created_by_agent_id,
@@ -788,7 +824,10 @@ function createCockroachObserveActCommandRunner(
     workAnchorStateReader: stateAdapters.workAnchorStateStore,
     controlPlane: {
       loadFlags: async (command) =>
-        await controlPlaneState.listActiveFlags(command.organizationId, new Date(input.now()).toISOString()) as readonly ControlPlaneFlag[],
+        (await controlPlaneState.listActiveFlags(
+          command.organizationId,
+          new Date(input.now()).toISOString(),
+        )) as readonly ControlPlaneFlag[],
       now: () => new Date(input.now()).toISOString(),
     },
     now: () => new Date(input.now()).toISOString(),

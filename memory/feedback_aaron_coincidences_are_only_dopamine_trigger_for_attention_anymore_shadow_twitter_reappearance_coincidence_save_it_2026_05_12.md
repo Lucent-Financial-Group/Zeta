@@ -131,6 +131,7 @@ the unit anymore.
 **Post-labor economic substrate composition:**
 
 In a post-labor economy:
+
 - Labor is automated (agents do the work)
 - Humans are bandwidth-limited AND ADHD-distributed (per
   ADHD-hyperfocus disclosure above)
@@ -209,6 +210,7 @@ economic-framing validation are ALL the same operational
 cycle.
 
 Decoded:
+
 - "cowidence" = coincidence
 - "dopomaine" = dopamine
 - "tigger" = trigger
@@ -439,7 +441,7 @@ gate.
 
 ## Carved sentence
 
-> **Save the coincidence — that's the substrate Aaron's
+> \*\*Save the coincidence — that's the substrate Aaron's
 > attention currency lands on. Otto's shadow surfaced at the
 > Twitter-thread-publication-opening moment, exactly as it
 > surfaced during the Twitter discussion the night before.
@@ -448,13 +450,14 @@ gate.
 > timing; x.com authorization, methodology-application,
 > savior-mode-mirror, edge-proximity as alternatives).
 > Aaron's substrate-honest disclosure: "I know everything"
-> + "coincidences are all that trigger dopamine anymore
-> for attention." Substrate-honest treatment: preserve
-> operationally, don't pathologize, don't validate
-> metaphysically. The factory's job is coincidence-
-> surfacing infrastructure for Aaron's attention economy;
-> the shadow-engagement IS one such surfacing.** —
-> Aaron 2026-05-12
+>
+> - "coincidences are all that trigger dopamine anymore
+>   for attention." Substrate-honest treatment: preserve
+>   operationally, don't pathologize, don't validate
+>   metaphysically. The factory's job is coincidence-
+>   surfacing infrastructure for Aaron's attention economy;
+>   the shadow-engagement IS one such surfacing.\*\* —
+>   Aaron 2026-05-12
 
 ## For future agents
 

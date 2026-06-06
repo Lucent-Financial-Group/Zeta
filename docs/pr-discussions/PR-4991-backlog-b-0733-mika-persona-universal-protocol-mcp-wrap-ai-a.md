@@ -70,6 +70,7 @@ Limited validation (our 8 peer-call AIs) BEFORE any-AI plug-in; B-0732 safety la
 Adds a new P2 backlog row (B-0733) capturing “universal protocol + MCP wrap + AI agency stack” substrate, and preserves the full verbatim Mika conversation that produced B-0730→B-0733 in landing order, with the generated BACKLOG index updated accordingly.
 
 **Changes:**
+
 - Added `memory/persona/mika/...` verbatim conversation preservation file for the full 2026-05-25 exchange.
 - Added new backlog row `docs/backlog/P2/B-0733-...` documenting the three claims + scope/acceptance.
 - Regenerated `docs/BACKLOG.md` to include B-0733 in the P2 index.
@@ -78,11 +79,11 @@ Adds a new P2 backlog row (B-0733) capturing “universal protocol + MCP wrap + 
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-…-glass-halo.md | New full transcript preservation for the conversation arc that produced B-0730→B-0733. |
+| File                                                                                                                                                                             | Description                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-runbooks-as-executable-reality-…-glass-halo.md                                                                      | New full transcript preservation for the conversation arc that produced B-0730→B-0733.                   |
 | docs/backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md | New P2 backlog row capturing the universal-protocol/MCP-wrap/agency-stack substrate and follow-on scope. |
-| docs/BACKLOG.md | Index update to include B-0733 in the generated P2 list. |
+| docs/BACKLOG.md                                                                                                                                                                  | Index update to include B-0733 in the generated P2 list.                                                 |
 
 ## Review threads
 

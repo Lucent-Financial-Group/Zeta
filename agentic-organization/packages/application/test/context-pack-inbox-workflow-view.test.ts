@@ -74,37 +74,40 @@ test("context pack inbox workflow view batches active per-hat anchors with safe 
     snoozedDueCount: 1,
     snoozedFutureCount: 1,
   });
-  deepEqual(view.batches.map((batch) => ({
-    kind: batch.kind,
-    count: batch.items.length,
-    ids: batch.items.map((item) => item.inboxAnchorId),
-  })), [
-    {
-      kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
-      count: 2,
-      ids: ["urgent-unread-older", "urgent-unread-newer"],
-    },
-    {
-      kind: ContextPackInboxWorkflowBatchKind.NormalUnread,
-      count: 1,
-      ids: ["normal-unread"],
-    },
-    {
-      kind: ContextPackInboxWorkflowBatchKind.SnoozedDue,
-      count: 1,
-      ids: ["due-snoozed"],
-    },
-    {
-      kind: ContextPackInboxWorkflowBatchKind.SnoozedFuture,
-      count: 1,
-      ids: ["future-snoozed"],
-    },
-    {
-      kind: ContextPackInboxWorkflowBatchKind.Read,
-      count: 1,
-      ids: ["read-anchor"],
-    },
-  ]);
+  deepEqual(
+    view.batches.map((batch) => ({
+      kind: batch.kind,
+      count: batch.items.length,
+      ids: batch.items.map((item) => item.inboxAnchorId),
+    })),
+    [
+      {
+        kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
+        count: 2,
+        ids: ["urgent-unread-older", "urgent-unread-newer"],
+      },
+      {
+        kind: ContextPackInboxWorkflowBatchKind.NormalUnread,
+        count: 1,
+        ids: ["normal-unread"],
+      },
+      {
+        kind: ContextPackInboxWorkflowBatchKind.SnoozedDue,
+        count: 1,
+        ids: ["due-snoozed"],
+      },
+      {
+        kind: ContextPackInboxWorkflowBatchKind.SnoozedFuture,
+        count: 1,
+        ids: ["future-snoozed"],
+      },
+      {
+        kind: ContextPackInboxWorkflowBatchKind.Read,
+        count: 1,
+        ids: ["read-anchor"],
+      },
+    ],
+  );
   deepEqual(view.batches[0]?.items[0]?.actions, [
     {
       kind: ContextPackInboxWorkflowActionKind.MarkRead,
@@ -130,12 +133,13 @@ test("context pack inbox workflow view includes hat-wide anchors for the active 
     organizationId: "org-1",
     targetHatAssignmentId: "hat-director",
     targetAgentId: "agent-director",
-    inboxAnchors: [
-      inboxAnchor({ inboxAnchorId: "hat-wide", targetAgentId: undefined }),
-    ],
+    inboxAnchors: [inboxAnchor({ inboxAnchorId: "hat-wide", targetAgentId: undefined })],
   });
 
-  deepEqual(view.batches[0]?.items.map((item) => item.inboxAnchorId), ["hat-wide"]);
+  deepEqual(
+    view.batches[0]?.items.map((item) => item.inboxAnchorId),
+    ["hat-wide"],
+  );
 });
 
 function inboxAnchor(overrides: Partial<ContextPackInboxAnchor> = {}): ContextPackInboxAnchor {

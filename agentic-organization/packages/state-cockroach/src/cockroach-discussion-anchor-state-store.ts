@@ -40,11 +40,15 @@ export function createCockroachDiscussionAnchorStateStore(
 ): DiscussionAnchorStateReaderPort {
   return {
     findDiscussionAnchor: async (discussionAnchorId) =>
-      mapDiscussionAnchorRow((await input.executor.execute<DiscussionAnchorRow>({
-        name: CockroachDiscussionAnchorStateStoreStatement.FindDiscussionAnchor,
-        sql: CockroachDiscussionAnchorSql.FindDiscussionAnchor,
-        parameters: [discussionAnchorId],
-      })).rows[0]),
+      mapDiscussionAnchorRow(
+        (
+          await input.executor.execute<DiscussionAnchorRow>({
+            name: CockroachDiscussionAnchorStateStoreStatement.FindDiscussionAnchor,
+            sql: CockroachDiscussionAnchorSql.FindDiscussionAnchor,
+            parameters: [discussionAnchorId],
+          })
+        ).rows[0],
+      ),
   };
 }
 
@@ -98,7 +102,9 @@ function parseDiscussionExpectedOutputs(value: unknown): readonly DiscussionExpe
   return value;
 }
 
-function mapActor(row: Pick<DiscussionAnchorRow, "created_by_agent_id" | "created_by_hat_assignment_id">): AgenticActor {
+function mapActor(
+  row: Pick<DiscussionAnchorRow, "created_by_agent_id" | "created_by_hat_assignment_id">,
+): AgenticActor {
   return {
     agentId: row.created_by_agent_id,
     hatAssignmentId: row.created_by_hat_assignment_id,

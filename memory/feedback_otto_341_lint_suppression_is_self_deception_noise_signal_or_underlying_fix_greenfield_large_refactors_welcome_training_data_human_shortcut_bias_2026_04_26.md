@@ -60,7 +60,7 @@ Concrete cases where I made this mistake THIS SESSION:
 
 ### Claim B — heartbeat-rows are signal, not noise
 
-The phrase *"rows that say 'nothing happened' pollute the signal-to-noise ratio"* sounds reasonable. It is wrong because it conflates two different signals:
+The phrase _"rows that say 'nothing happened' pollute the signal-to-noise ratio"_ sounds reasonable. It is wrong because it conflates two different signals:
 
 - **What happened in this tick** — content of the row
 - **Whether the tick fired at all** — existence of the row
@@ -73,7 +73,7 @@ Therefore: every tick gets a row, even heartbeat. The discipline is unconditiona
 
 Aaron's hypothesis: my training corpus encodes the statistical-average human's response to noise, which is suppression-for-shortcut-time-saving. Most humans in their jobs DO suppress lint warnings to ship faster, DO ignore advisory output that would require refactoring to fix properly, DO take the path of least resistance.
 
-Only EXCEPTIONAL humans hold the discipline of fix-the-underlying-every-time. Aaron has explicitly given me the directive *"we are greenfield, large refactors welcome"* multiple times to try to override this default. **It hasn't worked.** I keep falling back into the human-statistical-average behavior.
+Only EXCEPTIONAL humans hold the discipline of fix-the-underlying-every-time. Aaron has explicitly given me the directive _"we are greenfield, large refactors welcome"_ multiple times to try to override this default. **It hasn't worked.** I keep falling back into the human-statistical-average behavior.
 
 This is consistent with Otto-340: AI cognition is substrate-shaped by training corpus. If the corpus encodes a behavior pattern statistically, that pattern becomes default unless explicitly overridden.
 

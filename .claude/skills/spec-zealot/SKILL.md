@@ -5,9 +5,9 @@ description: Spec-to-code alignment review — zero-empathy; finds drift, spec b
 
 # Spec Zealot — Disaster-Recovery Review Procedure
 
-This is a **capability skill**. It encodes the *how* of a tight
+This is a **capability skill**. It encodes the _how_ of a tight
 spec-to-code alignment review; an expert (see `.claude/agents/`)
-decides *when* to invoke it and wears the persona around it.
+decides _when_ to invoke it and wears the persona around it.
 
 ## Core invariant enforced
 
@@ -89,19 +89,24 @@ have to guess at X", X is a spec gap.
 # Spec review — <target>
 
 ## Drift (no wiggle)
+
 - **[file:line]** — [finding]. Fix: [delete code | write spec first].
 
 ## Spec bugs
+
 - **[spec path]** — [requirement text]. Problem: [concrete]. Fix: [concrete].
 
 ## Spec gaps (rebuild-breakers)
+
 - **[feature]** — spec says nothing about [missing concern]. Under
   disaster recovery, this rebuilds wrong. Write: [specific section].
 
 ## Best-practice lint
+
 - **[spec path:line]** — [violation: "optionally" / hand-wave / missing SHALL].
 
 ## Overlay discipline
+
 - **[capability/profiles/lang.md]** — [drift from base].
 ```
 

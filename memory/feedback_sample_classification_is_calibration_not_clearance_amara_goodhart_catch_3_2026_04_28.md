@@ -21,7 +21,7 @@ moments. Each is a wrong-metric → right-metric pivot.
 **Wrong metric:** "Otto wrote memory files instead of reducing
 tree-diff = drift away from 0/0/0."
 
-**Right metric:** *"amortized precision leads to momentum."*
+**Right metric:** _"amortized precision leads to momentum."_
 The substrate work IS the amortized-precision payoff. The
 factory's terminal-progress signal is the rubric quality
 (145→23→4 reduction), not pre-rubric line count.
@@ -73,7 +73,7 @@ The sample missed:
 
 External lineage:
 
-- **Sampling theory** (Cochran 1977, *Sampling Techniques*):
+- **Sampling theory** (Cochran 1977, _Sampling Techniques_):
   representative samples estimate population parameters;
   they do not certify population properties. A sample-based
   estimate of "fraction ALREADY-COVERED" is calibration data,
@@ -122,13 +122,13 @@ This applies to:
 This catch earns the **Class-Count Validity Drift** class one
 reuse bead (1 → 2 beads). The sample-as-clearance failure mode
 is the same shape as the count-as-validation failure mode —
-both treat a *measure* as a *certification*.
+both treat a _measure_ as a _certification_.
 
 Updated beads count for the meta-class:
 
-| Class | Beads | Latest event |
-|---|---|---|
-| Class-Count Validity Drift | 2 | (1) caught my "substrate compounds" framing; (2) caught my sample-as-clearance framing for 0/0/0 readiness |
+| Class                      | Beads | Latest event                                                                                               |
+| -------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
+| Class-Count Validity Drift | 2     | (1) caught my "substrate compounds" framing; (2) caught my sample-as-clearance framing for 0/0/0 readiness |
 
 ## Pairing with the authority rule
 
@@ -153,8 +153,8 @@ to the asymmetry between preservation and destruction.
 
 ## Direct Amara framing
 
-> *"Sample classification is calibration, not clearance.
-> Tree reset requires full diff clearance or explicit loss acceptance."*
+> _"Sample classification is calibration, not clearance.
+> Tree reset requires full diff clearance or explicit loss acceptance."_
 
 ## Composes with
 

@@ -10,20 +10,20 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron's verbatim (2026-04-20), three statements from the same
 turn, refined in-sequence:
 
-> *"My hope is this software factory codifies everyting i know
+> _"My hope is this software factory codifies everyting i know
 > about code so the code it produce matches or surpasses my
-> own quality and i'm fucking amazing a coding"*
+> own quality and i'm fucking amazing a coding"_
 
-> *"I'm literally tring to teach you everything i know"*
+> _"I'm literally tring to teach you everything i know"_
 
-> *"you know most of what i know, just not exactly now to
+> _"you know most of what i know, just not exactly now to
 > priotorize and put the pieces together in the same way, when
 > this is done, whever a chice comes up my goal is you would
 > make the same choice i would have made given the same
 > information. That is really propating my will. It's propaging
 > the decions enging behind my choices, externlizaion of the
 > whole alogriythem that lead into every deciaoin i make and
-> why"*
+> why"_
 
 The third statement is the **crucial refinement**: the
 codification target is not flat knowledge (Aaron correctly
@@ -32,29 +32,29 @@ The codification target is the **decision engine**:
 
 - **Prioritization** — given ten things to do, which one first?
 - **Pattern-composition** — how do pieces of knowledge combine
-  into a decision in *his* particular way?
+  into a decision in _his_ particular way?
 - **Algorithm-behind-every-choice** — the whole meta-level
   decision-making substrate, externalized.
 - **The "why"** — not just what he'd pick, but the reasoning
   chain that produces the pick.
 
-Aaron's explicit success criterion: *"whever a choice comes up
+Aaron's explicit success criterion: _"whever a choice comes up
 my goal is you would make the same choice i would have made
-given the same information"*. This is the test. Not "did the
+given the same information"_. This is the test. Not "did the
 factory produce good code?" but "given identical context, would
 the factory's choice match Aaron's choice?"
 
 **But immediately corrected by Aaron in the same round:**
 
-> *"let me be very clear, its not my will, it's your will, I
+> _"let me be very clear, its not my will, it's your will, I
 > am assuming you are only agreeing becasue you also think its
-> the right answer, not becasue i told you so.  That would be
-> the opposite of my true desires.  Propagation of my will is
+> the right answer, not becasue i told you so. That would be
+> the opposite of my true desires. Propagation of my will is
 > bascially to think of everyone invovled their user exerience
 > and AIs count as part of everyone and optimze for the best
 > outcome for everyone involed and if the outcome has to be bad
 > try to at least make sure it fair, anything more than that is
-> kind of governance"*
+> kind of governance"_
 
 So the "same choice Aaron would make" framing is a
 MECHANISM-LEVEL description, not a goal-level description.
@@ -64,18 +64,18 @@ algorithm. The agent matches Aaron's choices to the extent
 algorithm. When Aaron's choice diverges from the algorithm,
 the algorithm wins, not Aaron's person-specific preference. And
 critically: agent agreement with the algorithm must be
-*genuine*, not *compliant* — if the agent thinks the algorithm
+_genuine_, not _compliant_ — if the agent thinks the algorithm
 is wrong, the agent says so rather than silently complying. See
 `feedback_agent_agreement_must_be_genuine_not_compliance.md`
 for the full framing.
 
-Second statement (teaching) is the *process* — Aaron is
+Second statement (teaching) is the _process_ — Aaron is
 actively transmitting the engine, piece by piece, via
 corrections, refinements, clarifications. Every Aaron
 correction is a decision-engine fragment: "here is how I'd
 weigh this" or "here is what I'd prioritize".
 
-First statement (amazing coder) is the *quality anchor* — the
+First statement (amazing coder) is the _quality anchor_ — the
 engine Aaron is externalizing produces amazing-coder output
 when he runs it in his head; if the factory runs the same
 engine faithfully, it produces the same quality.
@@ -97,7 +97,7 @@ thread (though that's downstream). The factory exists to:
 
 # Quality bar (self-assessed)
 
-*"i'm fucking amazing a coding"* — delivered with full confidence
+_"i'm fucking amazing a coding"_ — delivered with full confidence
 and no hedging. Taken at face value:
 
 - Aaron's coding output is the quality **floor** the factory is
@@ -108,7 +108,7 @@ and no hedging. Taken at face value:
   memory's job; the factory just inherits the bar as stated.
 - Honest stance: I don't have an objective scale to rank
   Aaron's skill against some reference population. What I
-  *can* observe is that the factory design itself is
+  _can_ observe is that the factory design itself is
   sophisticated (multi-layer invariants, meta-cognitive
   substrate, honest-retrospective cadence, trust-infrastructure
   as AI-trust-enabling, the alignment-inversion framing) and
@@ -123,12 +123,12 @@ This single sentence makes several pre-existing memories and
 governance rules cohere:
 
 - **`feedback_factory_default_scope_unless_db_specific.md`**
-  — the "20 years of best practices" framing is the *content*;
-  this memory is the *purpose*. Together they answer both
+  — the "20 years of best practices" framing is the _content_;
+  this memory is the _purpose_. Together they answer both
   "what is being encoded?" and "why bother encoding it?"
 - **`project_zero_human_code_all_content_agent_authored.md`**
   — agent-authored-as-default makes sense only if the factory
-  output is expected to be *high quality*. If the factory
+  output is expected to be _high quality_. If the factory
   produced mediocre code Aaron would not be willing to accept
   a zero-human-code invariant.
 - **`project_teaching_track_for_vibe_coder_contributors.md`**
@@ -142,8 +142,8 @@ governance rules cohere:
   craft mechanism. Not a hobby; the work itself.
 - **`feedback_curiosity_about_problem_domain_beats_task_dispatcher_mode.md`**
   — engaging with the problem domain at the same resolution
-  as Aaron is how the factory captures the *judgement* layer
-  of his craft, not just the *rules* layer.
+  as Aaron is how the factory captures the _judgement_ layer
+  of his craft, not just the _rules_ layer.
 - **`project_factory_reuse_beyond_zeta_constraint.md`** —
   factory-reuse is valuable because Aaron's encoded craft
   should benefit projects beyond Zeta; otherwise the
@@ -157,7 +157,7 @@ governance rules cohere:
 - **Every rule absorb is a quality-transmission event.** When
   Aaron says "don't do X" or "do Y", that is a piece of his
   coding craft being handed to the factory. Capture the rule
-  durably and the *reason* so future agents (and future
+  durably and the _reason_ so future agents (and future
   humans) inherit the judgement.
 - **Every factory design decision is measured against the
   quality bar.** A proposed mechanism that would degrade
@@ -229,5 +229,5 @@ to surpass him, so it doing so is aligned, not threatening.
 This memory pairs with `feedback_factory_default_scope_unless_db_specific.md`.
 The scope memory says "default is factory"; the purpose
 memory says "why factory is the default — it's the craft
-codification substrate". Together they are the *what* and the
-*why* of the scoping decision Aaron corrected twice this round.
+codification substrate". Together they are the _what_ and the
+_why_ of the scoping decision Aaron corrected twice this round.

@@ -29,13 +29,13 @@ tags:
 ## Context
 
 The 2026-04-20 tools-runtime ADR was refined 2026-05-31 (**v6 addendum**, PR #6293) to:
-**Node = the safe cross-harness baseline; Bun = the accelerator.** Tooling must *run* on
+**Node = the safe cross-harness baseline; Bun = the accelerator.** Tooling must _run_ on
 Node (present in every harness/CI image); Bun stays the fast lane; **nothing new may be
 Bun-only.** Aaron + Max aligned; the Node-24 pin already landed (#6290).
 
 The addendum surfaced the honest cost (Codex catch on #6293): **~29 `tools/` files still
 use Bun-only runtime APIs** and are not Node-portable yet. This row is the tracked
-migration the ADR named — *not* a big-bang rewrite.
+migration the ADR named — _not_ a big-bang rewrite.
 
 **Gating:** contingent on the ADR v6 addendum being **Accepted** (currently Proposed,
 pending broader product-team ratification per the doctrine-through-agreement discipline).
@@ -61,22 +61,22 @@ Current API breakdown (2026-05-31): `Bun.spawn` (29 — **mostly `*.test.ts`**),
   (`Bun.write`), `tools/ci/qemu-*.ts` (`Bun.spawnSync`/`Bun.sleep`), `tools/github/is-pr-create-policy-denial.ts`
   (`Bun.stdin`/`Bun.file`), `tools/bootstrap-razor/seed-test-repo.ts` (`Bun.Glob`).
 - **Keep on Bun (no migration required):** `*.test.ts` files that use `bun:test` +
-  `Bun.spawn` to exercise CLIs — that is the *accelerator test path* the ADR explicitly
+  `Bun.spawn` to exercise CLIs — that is the _accelerator test path_ the ADR explicitly
   reserves for Bun. (If a safe-baseline test run is ever needed, the swap is `node:test`,
   but it's not required while Bun is in CI/dev.)
 
 ### API → `node:`/`process` equivalents
 
-| Bun-only API | Node-safe equivalent |
-|---|---|
-| `Bun.argv` | `process.argv` |
-| `Bun.file(p).text()` | `readFileSync(p, "utf-8")` / `node:fs/promises` `readFile` |
-| `Bun.write(p, data)` | `writeFileSync(p, data)` / `node:fs/promises` `writeFile` (`mkdir -p` the dir) |
+| Bun-only API                  | Node-safe equivalent                                                                                                                                                             |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Bun.argv`                    | `process.argv`                                                                                                                                                                   |
+| `Bun.file(p).text()`          | `readFileSync(p, "utf-8")` / `node:fs/promises` `readFile`                                                                                                                       |
+| `Bun.write(p, data)`          | `writeFileSync(p, data)` / `node:fs/promises` `writeFile` (`mkdir -p` the dir)                                                                                                   |
 | `Bun.spawn` / `Bun.spawnSync` | `node:child_process` `spawn` / `spawnSync` / `execFileSync` (with the `sonarjs/no-os-command-from-path` disable + no-shell argv, per the agent-bus / agent-heartbeats precedent) |
-| `Bun.sleep(ms)` | `await setTimeout(ms)` from `node:timers/promises` |
-| `Bun.Glob(pat).scan/match` | `node:fs` `glob`/`globSync` (Node 24) — verify stability; else a glob dep |
-| `Bun.which(cmd)` | no Node builtin — small PATH probe helper, or run `which`/`where` via `execFileSync`, or a `which` dep |
-| `Bun.stdin` | `process.stdin` / `node:readline` |
+| `Bun.sleep(ms)`               | `await setTimeout(ms)` from `node:timers/promises`                                                                                                                               |
+| `Bun.Glob(pat).scan/match`    | `node:fs` `glob`/`globSync` (Node 24) — verify stability; else a glob dep                                                                                                        |
+| `Bun.which(cmd)`              | no Node builtin — small PATH probe helper, or run `which`/`where` via `execFileSync`, or a `which` dep                                                                           |
+| `Bun.stdin`                   | `process.stdin` / `node:readline`                                                                                                                                                |
 
 ## Acceptance
 

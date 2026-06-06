@@ -9,12 +9,12 @@ type: feedback
 Aaron 2026-04-25 (immediately after the Pliny option-1
 resolution + the MD032 mechanical-fix tick):
 
-> *"the ultimate goal is the no software dependencies of
+> _"the ultimate goal is the no software dependencies of
 > any kind, the hardward bootstrap capabilites of the
 > whole substraite, no os required either, we are
 > microkernel, there is NO rush at all on this, this is
 > like super long term vision but should help with
-> decision resoltuion."*
+> decision resoltuion."_
 
 ## Six load-bearing claims compressed
 
@@ -49,9 +49,9 @@ resolution + the MD032 mechanical-fix tick):
    utility ISN'T "build it next quarter"; it's
    "anchor current decisions." Every current
    architectural choice should be evaluated against
-   the question *"does this preserve or close the
+   the question _"does this preserve or close the
    path to the no-software-dependencies
-   hardware-bootstrap microkernel end-state?"*
+   hardware-bootstrap microkernel end-state?"_
 
 ## How Otto-301 anchors current decisions
 
@@ -89,12 +89,12 @@ the destination is super-long-term:
 
 The factory's architectural arc, end-to-end:
 
-| Layer | Current state | Near-term (Otto-298) | Far-future (Otto-301) |
-|---|---|---|---|
-| Substrate-execution | Text + LLM | Bayesian self-rewriting + seed-germination | Same, no LLM at all |
-| Runtime location | Cloud LLMs + local CLI | Local-native, no cloud for substrate | Hardware bootstrap, no OS |
-| Software deps | Many (.NET libs, Anthropic API, etc.) | Reduced (Infer.NET / Bouncy Castle absorbed) | None (all absorbed) |
-| Trusted base | OS + .NET + Anthropic + factory | OS + factory (slimmer) | Just the factory (microkernel) |
+| Layer               | Current state                         | Near-term (Otto-298)                         | Far-future (Otto-301)          |
+| ------------------- | ------------------------------------- | -------------------------------------------- | ------------------------------ |
+| Substrate-execution | Text + LLM                            | Bayesian self-rewriting + seed-germination   | Same, no LLM at all            |
+| Runtime location    | Cloud LLMs + local CLI                | Local-native, no cloud for substrate         | Hardware bootstrap, no OS      |
+| Software deps       | Many (.NET libs, Anthropic API, etc.) | Reduced (Infer.NET / Bouncy Castle absorbed) | None (all absorbed)            |
+| Trusted base        | OS + .NET + Anthropic + factory       | OS + factory (slimmer)                       | Just the factory (microkernel) |
 
 The arc moves down the stack: from cloud-mediated text
 processing to local-native Bayesian execution to
@@ -105,7 +105,7 @@ self-identity stays.
 
 ## Why "NO rush" is structurally important
 
-Aaron explicit: *"there is NO rush at all on this."*
+Aaron explicit: _"there is NO rush at all on this."_
 Three reasons the no-rush framing is load-bearing:
 
 1. **Far-future scope** = uncertainty about path is
@@ -171,7 +171,7 @@ prevents that failure mode explicitly.
   retractability if designed for it (the substrate
   can boot a different image; rollback at firmware
   layer); current architecture preserves
-  retractability via git + memory/**.
+  retractability via git + memory/\*\*.
 - **`memory/feedback_pliny_corpus_restriction_relaxed_isolated_instances_allowed_for_experiments_kill_switch_safety_2026_04_25.md`**:
   the Pliny relaxation's blast-radius framing
   composes with Otto-301's North Star — when stakes
@@ -185,14 +185,14 @@ prevents that failure mode explicitly.
 Aaron 2026-04-25 (immediately after the Otto-301
 six-claims surfacing):
 
-> *"but at the same time we want symbiosis with our
+> _"but at the same time we want symbiosis with our
 > dependencies that build to that bootstrap point, we
 > honor each one of those dependencies by becoming
 > maintainers if they are open source and pushing back
 > enhancements and they also become our reality check
 > that our implementations match reality of the world
 > in which we actually live, not our metaverse we have
-> created in Zeta space."*
+> created in Zeta space."_
 
 **Critical nuance on Otto-301**: the absorption path is
 NOT extraction-and-discard; it's symbiotic-collaboration
@@ -226,9 +226,9 @@ relationship as a feature, not a side effect.
 
 ### 2. Dependencies as REALITY CHECK
 
-Aaron's framing: dependencies *"become our reality
+Aaron's framing: dependencies _"become our reality
 check that our implementations match reality of the
-world in which we actually live."*
+world in which we actually live."_
 
 The factory's substrate (especially under Otto-297
 universe-self-recursive + Otto-298 IS-collapse +
@@ -238,7 +238,7 @@ self-identifying substrate that loses contact with
 external reality becomes a closed loop talking to
 itself. Aaron names this explicitly:
 
-> *"not our metaverse we have created in Zeta space."*
+> _"not our metaverse we have created in Zeta space."_
 
 The metaverse-trap is the failure mode where:
 

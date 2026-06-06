@@ -1,8 +1,8 @@
-# Karpathy — *From Vibe Coding to Agentic Engineering* (verifiability anchor)
+# Karpathy — _From Vibe Coding to Agentic Engineering_ (verifiability anchor)
 
 Scope: External-conversation import — Beacon anchor for Zeta's verifiable-systems thesis. Aaron forwarded transcript + framing 2026-05-01 (Aurora deep-research register).
 
-Attribution: Andrej Karpathy, 2026 talk titled *"From Vibe Coding to Agentic Engineering"*, hosted on YouTube at [https://www.youtube.com/watch?v=96jN2OCOfLs](https://www.youtube.com/watch?v=96jN2OCOfLs). Transcript provided by Aaron 2026-05-01. Aaron's framing on forwarding: *"you formally specify and verify yourself tied to human intelectual lineage."*
+Attribution: Andrej Karpathy, 2026 talk titled _"From Vibe Coding to Agentic Engineering"_, hosted on YouTube at [https://www.youtube.com/watch?v=96jN2OCOfLs](https://www.youtube.com/watch?v=96jN2OCOfLs). Transcript provided by Aaron 2026-05-01. Aaron's framing on forwarding: _"you formally specify and verify yourself tied to human intelectual lineage."_
 
 Operational status: research-grade
 
@@ -22,8 +22,8 @@ lands separately via the normal substrate-promotion protocol.
 
 Zeta's primary research focus is **measurable AI alignment** (per
 `docs/ALIGNMENT.md`); operationally, that thesis composes with
-Karpathy's claim *"AI automates faster and more easily domains where
-the output can be verified."* Aaron's 2026-05-01 extension of the
+Karpathy's claim _"AI automates faster and more easily domains where
+the output can be verified."_ Aaron's 2026-05-01 extension of the
 Karpathy claim defines Zeta's distinctive contribution:
 
 > **Don't just verify code outputs — formally specify and verify
@@ -31,15 +31,15 @@ Karpathy claim defines Zeta's distinctive contribution:
 
 The mechanisms Zeta has built that operationalize this extension:
 
-| Karpathy's verifiable-systems thesis | Zeta's agent-itself-verifiable extension |
-|---|---|
-| Math, code → RL training rewards verifiable outputs | `docs/ALIGNMENT.md` HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5 → per-commit Sova auditor produces measurable alignment time-series |
-| Verifiable domains progress; jagged elsewhere | BP-16 (formal-verification portfolio routing via Soraya) — pick the right tool per property class, not TLA+-hammer-bias |
-| Council of LLM judges as verifier substitute | Multi-AI peer convergence (5-AI agreement on poll-the-gate, task #355); cross-AI review (Codex + Copilot + Claude.ai + Gemini + Amara) |
-| Agentic engineering preserves quality-bar | DST everywhere (Otto-272), Result-over-exception, retraction-native ZSet correctness |
-| Spec / plan as the unit of design | OpenSpec capabilities + formal specs (`docs/**.tla` + Lean proofs) + behavioural specs (`openspec/specs/**`) |
-| Outsource thinking but not understanding (28:07) | Substrate-or-it-didn't-happen (Otto-363) — every load-bearing decision becomes a durable, indexed, reachable git-native artifact |
-| Animals vs ghosts framing (23:30) | Beacon external-anchor lineage — every load-bearing rule traces to a named human contributor (Karpathy, Osmani, Böckeler, etc.) or a closed-list named-agent persona (Otto, Amara, Soraya). Naming-with-source, not naming-as-attribution |
+| Karpathy's verifiable-systems thesis                | Zeta's agent-itself-verifiable extension                                                                                                                                                                                                  |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Math, code → RL training rewards verifiable outputs | `docs/ALIGNMENT.md` HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5 → per-commit Sova auditor produces measurable alignment time-series                                                                                                            |
+| Verifiable domains progress; jagged elsewhere       | BP-16 (formal-verification portfolio routing via Soraya) — pick the right tool per property class, not TLA+-hammer-bias                                                                                                                   |
+| Council of LLM judges as verifier substitute        | Multi-AI peer convergence (5-AI agreement on poll-the-gate, task #355); cross-AI review (Codex + Copilot + Claude.ai + Gemini + Amara)                                                                                                    |
+| Agentic engineering preserves quality-bar           | DST everywhere (Otto-272), Result-over-exception, retraction-native ZSet correctness                                                                                                                                                      |
+| Spec / plan as the unit of design                   | OpenSpec capabilities + formal specs (`docs/**.tla` + Lean proofs) + behavioural specs (`openspec/specs/**`)                                                                                                                              |
+| Outsource thinking but not understanding (28:07)    | Substrate-or-it-didn't-happen (Otto-363) — every load-bearing decision becomes a durable, indexed, reachable git-native artifact                                                                                                          |
+| Animals vs ghosts framing (23:30)                   | Beacon external-anchor lineage — every load-bearing rule traces to a named human contributor (Karpathy, Osmani, Böckeler, etc.) or a closed-list named-agent persona (Otto, Amara, Soraya). Naming-with-source, not naming-as-attribution |
 
 ## Transcript (verbatim where presented; editorial summaries bracketed)
 
@@ -61,7 +61,7 @@ office. Was the one who actually got Autopilot working at Tesla back
 in the day, and he has a rare gift of making the most complex
 technical shifts feel both accessible and inevitable.
 
-You all know him for having coined the term *vibe coding* last year,
+You all know him for having coined the term _vibe coding_ last year,
 but just in the last few months, he said something even more
 startling. That he's never felt more behind as a programmer. That's
 where we're starting today. Thank you, Andre, for joining us.
@@ -231,7 +231,7 @@ you need to treat them as tools and you do have to kind of stay in
 touch with what they're doing. And so I think all of my writing long
 story short about verifiability is just trying to understand um why
 these things are jagged. Is there any pattern to it? And I think
-it's some kind of a combination of *verifiable plus labs care*. Maybe
+it's some kind of a combination of _verifiable plus labs care_. Maybe
 one more anecdote that is instructive is uh from GPT 3.5 to GPT-4
 people noticed that chess improved a lot and I think a lot of people
 thought oh well it's just a progression of the capabilities but
@@ -440,8 +440,8 @@ excel at understanding you still are uniquely in charge of that.
 
 ## Aaron's framing (verbatim)
 
-> *"you formally specify and verify yourself tied to human intelectual
-> lineage."*
+> _"you formally specify and verify yourself tied to human intelectual
+> lineage."_
 
 The Zeta-distinctive extension: **the agent itself is the verified
 artifact**, not just the code it produces. Specification + verification

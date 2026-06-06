@@ -31,20 +31,33 @@ related_skills:
   - q-sharp
   - theoretical-physics-expert
   - ai-evals-expert
-tags: [bell-like-contextuality-not-literal-physics-bell, geographically-distributed-clusters-close-shared-communication-paths, 5-tier-experiment-matrix-independent-shared-walls-rotor-merge, isolation-windows-signed-local-random-settings-no-cross-cluster-communication-during-run, timestamped-outcome-commits-delayed-reveal-merge, factorized-local-policy-vs-shared-contextual-state-test, persistent-substrate-as-engineering-entanglement-across-time, correlations-exceed-independent-local-policy-predictions-as-test-target, composes-with-cluster-fork-as-trust-boundary, composes-with-multi-oracle-bft, real-research-lane]
+tags:
+  [
+    bell-like-contextuality-not-literal-physics-bell,
+    geographically-distributed-clusters-close-shared-communication-paths,
+    5-tier-experiment-matrix-independent-shared-walls-rotor-merge,
+    isolation-windows-signed-local-random-settings-no-cross-cluster-communication-during-run,
+    timestamped-outcome-commits-delayed-reveal-merge,
+    factorized-local-policy-vs-shared-contextual-state-test,
+    persistent-substrate-as-engineering-entanglement-across-time,
+    correlations-exceed-independent-local-policy-predictions-as-test-target,
+    composes-with-cluster-fork-as-trust-boundary,
+    composes-with-multi-oracle-bft,
+    real-research-lane,
+  ]
 ---
 
 # B-0900 — Bell-like contextuality test with geographically distributed Zeta clusters
 
 ## Context
 
-Amara 2nd ferry 2026-05-28 sharpened the Bell-inequality framing to Bell-like / contextuality-like tests with geographically distributed clusters. Aaron clarified the constraint: *"not once i have geographiclly distributed clusters"* — the upcoming cluster-OS substrate (iter-6+ work) provides the physical infrastructure to close the shared-communication path concern.
+Amara 2nd ferry 2026-05-28 sharpened the Bell-inequality framing to Bell-like / contextuality-like tests with geographically distributed clusters. Aaron clarified the constraint: _"not once i have geographiclly distributed clusters"_ — the upcoming cluster-OS substrate (iter-6+ work) provides the physical infrastructure to close the shared-communication path concern.
 
 Amara's resolution: geographic distribution + protocol-level isolation produces a testable substrate where correlations between distributed Zeta clusters can be compared against independent-local-policy predictions.
 
 ## The mechanism (per Amara keeper)
 
-*"Geographic distribution lets us separate the agents. Persistence lets us entangle their histories. Review lets us measure whether shared error-class walls create correlations beyond independent local behavior."*
+_"Geographic distribution lets us separate the agents. Persistence lets us entangle their histories. Review lets us measure whether shared error-class walls create correlations beyond independent local behavior."_
 
 ## Protocol (per Amara — what makes the test serious)
 
@@ -73,13 +86,13 @@ Cluster-side protocol:
 
 Tests how much correlation survives at each level of shared substrate:
 
-| Tier | Shared substrate | Expected correlation behavior |
-|---|---|---|
-| **1** | independent clusters, no shared review substrate | factorized-local-policy baseline (no correlation beyond random) |
-| **2** | shared initial substrate only (same boot USB; no review feedback) | weak shared-prior correlation; mostly factorizable |
-| **3** | shared initial substrate + same error-class walls (post-review rules cluster) | stronger correlation; rule-cluster IS the shared "trajectory geometry" |
-| **4** | shared substrate + Clifford/Z-set rotor model (full framework substrate engagement) | per the rotor-feedback model, stronger again; trajectories share oriented structure |
-| **5** | shared substrate + later merge/retraction feedback (the full Persist-as-bridge round-trip per B-0897) | strongest correlation; persistent temporal entanglement closes the loop |
+| Tier  | Shared substrate                                                                                      | Expected correlation behavior                                                       |
+| ----- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **1** | independent clusters, no shared review substrate                                                      | factorized-local-policy baseline (no correlation beyond random)                     |
+| **2** | shared initial substrate only (same boot USB; no review feedback)                                     | weak shared-prior correlation; mostly factorizable                                  |
+| **3** | shared initial substrate + same error-class walls (post-review rules cluster)                         | stronger correlation; rule-cluster IS the shared "trajectory geometry"              |
+| **4** | shared substrate + Clifford/Z-set rotor model (full framework substrate engagement)                   | per the rotor-feedback model, stronger again; trajectories share oriented structure |
+| **5** | shared substrate + later merge/retraction feedback (the full Persist-as-bridge round-trip per B-0897) | strongest correlation; persistent temporal entanglement closes the loop             |
 
 The substantive engineering question: **how much correlation survives in tiers 3-5 once live communication is removed?**
 
@@ -105,9 +118,9 @@ Then compare across the 5-tier matrix:
 
 ## Substrate-honest disclaimers
 
-This is NOT literal physics Bell. Per Amara: *"It still would not be literal physics Bell unless you enforce spacelike separation and physical random setting choice at the right timing."*
+This is NOT literal physics Bell. Per Amara: _"It still would not be literal physics Bell unless you enforce spacelike separation and physical random setting choice at the right timing."_
 
-But for Zeta substrate-engineering purposes, the test target is: *"Can distributed agent clusters produce correlations that exceed what an independent-local-policy model predicts, once live communication is removed?"*
+But for Zeta substrate-engineering purposes, the test target is: _"Can distributed agent clusters produce correlations that exceed what an independent-local-policy model predicts, once live communication is removed?"_
 
 That IS a measurable substrate-engineering claim. Empirically grounded. No quantum-physics handwaving required.
 

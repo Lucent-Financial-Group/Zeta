@@ -193,11 +193,11 @@ Verified via live probes on 2026-04-24. Test setup: isolated
 `.codex/`, or `.gemini/` skill dirs present), then each
 harness asked whether it could see the skill by name:
 
-| Harness | `.claude/skills/` | `.agents/skills/` | Probe method |
-|---|---|---|---|
-| Claude Code 2.1.116 | yes (canonical) | **NO** (verified) | `claude -p "...available skills..."` — skill absent from the listed set |
-| OpenAI Codex 0.124.0 | n/a (uses `.codex/`) | **YES** (verified) | `codex exec "Do you see a skill named 'agents-only-prove'?"` returned `YES` |
-| Gemini CLI 0.39.1 | n/a (uses `.gemini/`) | **YES** (verified) | `gemini --skip-trust -p "..."` returned `YES` |
+| Harness              | `.claude/skills/`     | `.agents/skills/`  | Probe method                                                                |
+| -------------------- | --------------------- | ------------------ | --------------------------------------------------------------------------- |
+| Claude Code 2.1.116  | yes (canonical)       | **NO** (verified)  | `claude -p "...available skills..."` — skill absent from the listed set     |
+| OpenAI Codex 0.124.0 | n/a (uses `.codex/`)  | **YES** (verified) | `codex exec "Do you see a skill named 'agents-only-prove'?"` returned `YES` |
+| Gemini CLI 0.39.1    | n/a (uses `.gemini/`) | **YES** (verified) | `gemini --skip-trust -p "..."` returned `YES`                               |
 
 Implication: **until all three harnesses support a common
 home, keep each skill in its harness's canonical directory**
@@ -218,10 +218,10 @@ Two classes of skill, two placement rules:
   `.claude/skills/<name>/`, `.codex/skills/<name>/`,
   `.gemini/skills/<name>/`. Apply the **behaviour / data
   split** the factory uses for skills: the SKILL.md bodies
-  carry the *behaviour* (what to do, per-harness tool calls,
+  carry the _behaviour_ (what to do, per-harness tool calls,
   per-harness phrasing tweaks) — thinner than holding the
   underlying data, but not so thin they just proxy somewhere
-  else. The *data* (rule tables, worked examples, reference
+  else. The _data_ (rule tables, worked examples, reference
   material, citation blocks, domain definitions) lives in
   shared `docs/` content that every SKILL.md references. Net
   result: three near-duplicate behaviour bodies, one shared
@@ -260,16 +260,16 @@ at the root. Per the extension reference
 
 ## Key differences vs. Claude Code and Codex
 
-| Axis | Claude Code | OpenAI Codex | Gemini CLI |
-|---|---|---|---|
-| Skill dir | `.claude/skills/` | `.codex/skills/` | `.gemini/skills/` or `.agents/skills/` |
-| Plugin unit | plugin (`plugin.json`) | plugin | extension (`gemini-extension.json`) |
-| Hook migration tool | N/A | N/A | `gemini hooks migrate` (FROM Claude) |
-| Built-in worktree | external (`--add-dir` + manual) | N/A | `-w, --worktree [name]` |
-| Plan mode | `--permission-mode plan` | N/A (yet) | `--approval-mode plan` |
-| Output format | `--output-format json` | text-mostly | `-o` with `text`, `json`, or `stream-json` |
-| Policy engine | skills + hooks | sandbox + policy-dirs | first-class `--policy` + `--admin-policy` |
-| Agent-coord bus | N/A | N/A | `--acp` (experimental) |
+| Axis                | Claude Code                     | OpenAI Codex          | Gemini CLI                                 |
+| ------------------- | ------------------------------- | --------------------- | ------------------------------------------ |
+| Skill dir           | `.claude/skills/`               | `.codex/skills/`      | `.gemini/skills/` or `.agents/skills/`     |
+| Plugin unit         | plugin (`plugin.json`)          | plugin                | extension (`gemini-extension.json`)        |
+| Hook migration tool | N/A                             | N/A                   | `gemini hooks migrate` (FROM Claude)       |
+| Built-in worktree   | external (`--add-dir` + manual) | N/A                   | `-w, --worktree [name]`                    |
+| Plan mode           | `--permission-mode plan`        | N/A (yet)             | `--approval-mode plan`                     |
+| Output format       | `--output-format json`          | text-mostly           | `-o` with `text`, `json`, or `stream-json` |
+| Policy engine       | skills + hooks                  | sandbox + policy-dirs | first-class `--policy` + `--admin-policy`  |
+| Agent-coord bus     | N/A                             | N/A                   | `--acp` (experimental)                     |
 
 The single biggest factory-integration win: Gemini's `extensions
 validate` command is an out-of-the-box STRUCTURAL LINT. A

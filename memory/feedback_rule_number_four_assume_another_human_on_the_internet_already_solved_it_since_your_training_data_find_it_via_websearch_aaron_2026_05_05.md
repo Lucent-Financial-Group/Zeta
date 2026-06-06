@@ -10,11 +10,11 @@ type: feedback
 
 Aaron 2026-05-05 verbatim, after Rule #3:
 
-> *"rule 5 assume another human on the internal already solve it since your training data find it"*
+> _"rule 5 assume another human on the internal already solve it since your training data find it"_
 >
-> *"rule 4 i mean"* (correcting numbering)
+> _"rule 4 i mean"_ (correcting numbering)
 >
-> *"*"* (meta-operator confirmation)
+> _"_"\* (meta-operator confirmation)
 
 ## Composition with Rules #1, #2, #3
 
@@ -29,10 +29,10 @@ This composes with Otto-364 search-first-authority (CLAUDE.md bullet): for any l
 
 ## How to apply
 
-When the impulse is *"I should design / implement / propose this"*:
+When the impulse is _"I should design / implement / propose this"_:
 
 1. **Catch the impulse.**
-2. **Apply Rule #4.** *"Assume another human already solved this on the internet. Where is the open-source project / paper / blog post?"*
+2. **Apply Rule #4.** _"Assume another human already solved this on the internet. Where is the open-source project / paper / blog post?"_
 3. **WebSearch systematically:**
    - The exact problem statement, current year (2026)
    - Domain-specific search (e.g., "DBSP retraction-native" / "differential dataflow" / "incremental computation")
@@ -44,7 +44,7 @@ When the impulse is *"I should design / implement / propose this"*:
    - Read the prior art carefully; don't just adopt-and-rename
    - Identify what's already done vs what's the genuine novel contribution
    - Adapt / extend the prior art rather than parallel-author
-5. **If not found after exhaustive search**: only THEN propose-as-novel, with explicit acknowledgment in the commit message that WebSearch was exhausted across N queries with M variations. Even then, the claim is a *strong update* not a strong claim — there might be prior art the agent missed.
+5. **If not found after exhaustive search**: only THEN propose-as-novel, with explicit acknowledgment in the commit message that WebSearch was exhausted across N queries with M variations. Even then, the claim is a _strong update_ not a strong claim — there might be prior art the agent missed.
 6. **Log the search.** WebSearch URLs + query terms + dates go in the substrate's source-citation section.
 
 ## Why: training data is stale by definition

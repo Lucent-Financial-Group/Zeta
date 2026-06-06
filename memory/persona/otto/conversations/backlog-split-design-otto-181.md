@@ -1,10 +1,10 @@
 # BACKLOG.md Split — Design Proposal (Otto-181)
 
 **Status:** research-grade proposal (pre-v1). Origin: Aaron
-Otto-181 directive: *"BACKLOG.md-touching sibling we gonna
-split it lol, :)"* followed by *"approved whenever you want
+Otto-181 directive: _"BACKLOG.md-touching sibling we gonna
+split it lol, :)"_ followed by _"approved whenever you want
 to do you this is the 3rd time i asked you even created a
-git hot file detector to find other hot files as hygene"*.
+git hot file detector to find other hot files as hygene"_.
 Proposes splitting the single ~6100-line `docs/BACKLOG.md`
 into a per-row file structure so the positional-append
 conflict cascade (documented in Otto-171 queue-saturation
@@ -143,13 +143,13 @@ edit by hand — edit the per-row file and regenerate._
 ## P0 — critical
 
 - [ ] **[B-0003](backlog/P0/B-0003-secret-handoff.md)**
-  Secret-handoff protocol — env-var default + password-manager CLI...
+      Secret-handoff protocol — env-var default + password-manager CLI...
 - ...
 
 ## P1 — within 2-3 rounds
 
 - [ ] **[B-0007](backlog/P1/B-0007-hll-flakiness.md)**
-  HLL property-test flakiness — investigate before retry (DST discipline)...
+      HLL property-test flakiness — investigate before retry (DST discipline)...
 - ...
 ```
 
@@ -185,14 +185,14 @@ hand-edited BACKLOG.md doesn't match regenerated output
   - Regenerates `docs/BACKLOG.md` as the index.
   - Manual review pass + hand-correct frontmatter where
     the heuristic missed (directive / effort / tags).
-  This PR is enormous but it only lands once. After it,
-  every subsequent backlog-add touches only the new per-
-  row file.
+    This PR is enormous but it only lands once. After it,
+    every subsequent backlog-add touches only the new per-
+    row file.
 - **Phase 3 — convention update.** Update
   `docs/CONTRIBUTING.md` (if exists) + `AGENTS.md`
   instructions so contributors add new rows via the new
   path. Script scaffold: `tools/hygiene/backlog-new-row
-  --priority P2 --slug server-meshing-research` creates
+--priority P2 --slug server-meshing-research` creates
   the file with frontmatter pre-filled.
 
 ### 3.2 Risk mitigation during split
@@ -244,19 +244,19 @@ tail-append problem entirely. Upfront cost is significant
 
 ## 5. Cost / benefit summary
 
-| Dimension | Current | After split |
-|-----------|---------|-------------|
-| Lines per add | ~30-100 line edit on one shared file | 1 new file + 1-line index regeneration |
-| Concurrent-writer conflicts | Common (53 DIRTY observed Otto-177) | None structurally |
-| Discoverability | 6100-line grep | Per-file + generated index |
-| Row cross-reference | Ad-hoc prose | `composes_with` frontmatter |
-| Status tracking | `- [ ]` / `- [x]` checkbox | `status:` frontmatter enum |
-| Retire / revive | Edit-in-place hard to track | File-deletion → `git log --diff-filter=D` recovers |
-| Grep for all P1 | `sed` between headers | `ls docs/backlog/P1/` |
-| Audit who added row | `git blame` one huge file | `git log docs/backlog/P2/B-NNNN-*.md` tight |
-| Schema enforcement | None | Frontmatter lint + ID uniqueness |
-| Effort to add a row | Trivial | Trivial (`backlog-new-row` scaffolder) |
-| One-time migration cost | n/a | L (Phase-2 mega-PR) |
+| Dimension                   | Current                              | After split                                        |
+| --------------------------- | ------------------------------------ | -------------------------------------------------- |
+| Lines per add               | ~30-100 line edit on one shared file | 1 new file + 1-line index regeneration             |
+| Concurrent-writer conflicts | Common (53 DIRTY observed Otto-177)  | None structurally                                  |
+| Discoverability             | 6100-line grep                       | Per-file + generated index                         |
+| Row cross-reference         | Ad-hoc prose                         | `composes_with` frontmatter                        |
+| Status tracking             | `- [ ]` / `- [x]` checkbox           | `status:` frontmatter enum                         |
+| Retire / revive             | Edit-in-place hard to track          | File-deletion → `git log --diff-filter=D` recovers |
+| Grep for all P1             | `sed` between headers                | `ls docs/backlog/P1/`                              |
+| Audit who added row         | `git blame` one huge file            | `git log docs/backlog/P2/B-NNNN-*.md` tight        |
+| Schema enforcement          | None                                 | Frontmatter lint + ID uniqueness                   |
+| Effort to add a row         | Trivial                              | Trivial (`backlog-new-row` scaffolder)             |
+| One-time migration cost     | n/a                                  | L (Phase-2 mega-PR)                                |
 
 Break-even analysis: if we currently produce ~2-3
 backlog-tail PRs per tick and 30%+ go DIRTY, and each
@@ -288,8 +288,8 @@ is 1-2 ticks of work. **Payback: one week.**
 ## 7. What this doc does NOT do
 
 - Does **not** ship the split. Pure design + cost/benefit
-  + structure proposal. Execution is a separate PR (or PR
-  sequence).
+  - structure proposal. Execution is a separate PR (or PR
+    sequence).
 - Does **not** pick the ID-numbering scheme unilaterally.
   Alternatives to consider: `B-NNNN` sequential; `<priority>-NNNN`
   (e.g. `P2-0042`); slug-only (no numeric ID at all).
@@ -322,7 +322,7 @@ Before Phase 1 tooling lands, decisions needed:
 4. **Retire-convention.** Delete the file, or move to
    `docs/backlog/_retired/` (per similar discussion on
    retired-skills)? Otto recommends delete + `git log
-   --diff-filter=D` recovery per CLAUDE.md discipline.
+--diff-filter=D` recovery per CLAUDE.md discipline.
 5. **Auto-ID-assignment.** Factory tooling picks next
    unused ID, or manual?
 6. **`composes_with` enforcement.** CI-lint that cross-
@@ -332,8 +332,8 @@ Before Phase 1 tooling lands, decisions needed:
 
 - `docs/BACKLOG.md` — the current monolith (6100 lines).
 - `memory/feedback_queue_saturation_throttle_ship_rate_
-  under_ci_throughput_never_idle_switches_to_memory_
-  reading_review_2026_04_24.md` — Otto-171 queue-
+under_ci_throughput_never_idle_switches_to_memory_
+reading_review_2026_04_24.md` — Otto-171 queue-
   saturation observation.
 - `.github/workflows/memory-index-integrity.yml` — precedent
   generator + drift-CI pattern.

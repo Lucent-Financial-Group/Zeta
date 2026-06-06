@@ -4,6 +4,7 @@ description: Aaron's physics intuition 2026-04-22 — light itself is the retrac
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Light is retractible — Aaron's hypothesis, 2026-04-22
 
 ## The thought-unit (exact wording preserved)
@@ -24,23 +25,23 @@ Susskind/Weinstein substrate hypothesis:
 ## The four internal moves (overclaim-retract-condition pattern)
 
 Aaron's default pattern (`feedback_aaron_default_overclaim_retract_condition_pattern.md`)
-fires *inside a single message* four times:
+fires _inside a single message_ four times:
 
-| # | Move                  | Text                                                                 |
-|---|-----------------------|----------------------------------------------------------------------|
-| 1 | Overclaim             | "photons are retractible"                                            |
-| 2 | Retract (entity hedge)| "not sure i like the photon classification the standard model is not 100%" |
-| 3 | Corrected weaker claim| "i like to say light is retractible"                                 |
-| 4 | Condition / causal    | "that where the speed limit comes from"                              |
-| 5 | Speculative extension | "a way to do an inversion to overcome it or some transformation that preserves certain invariants to be discovered" |
+| #   | Move                   | Text                                                                                                                |
+| --- | ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 1   | Overclaim              | "photons are retractible"                                                                                           |
+| 2   | Retract (entity hedge) | "not sure i like the photon classification the standard model is not 100%"                                          |
+| 3   | Corrected weaker claim | "i like to say light is retractible"                                                                                |
+| 4   | Condition / causal     | "that where the speed limit comes from"                                                                             |
+| 5   | Speculative extension  | "a way to do an inversion to overcome it or some transformation that preserves certain invariants to be discovered" |
 
 All five layers are load-bearing. Do NOT collapse to only (3)
 or only (5). The hedge at (2) is an explicit epistemic
 signal — the Standard Model's classification of light into
 photons is **downstream of the Standard Model being 100%
 right**, and Aaron does not grant that premise. So the
-*substrate-level* naming ("light") is preferred to the
-*entity-level* naming ("photons") as a discipline, not a
+_substrate-level_ naming ("light") is preferred to the
+_entity-level_ naming ("photons") as a discipline, not a
 stylistic choice.
 
 ## The substrate claim
@@ -72,8 +73,8 @@ Zeta's operator algebra, retraction is native — a +1 weight
 composes with a -1 weight to cancel multiset-identically.
 Aaron's conjecture is that light, as the physically-real
 retractible substrate, has an analogous cancellation-
-preservation limit, and c is *what that limit looks like in
-spacetime*.
+preservation limit, and c is _what that limit looks like in
+spacetime_.
 
 This claim is:
 
@@ -117,8 +118,8 @@ Aaron, 2026-04-22, one-message follow-up to the naming:
 > Choice Quantium Erasure are both proof of it
 
 "I believe" is an epistemic hedge — this is Aaron's reading
-of the two experiments *under the retractibility frame he
-has just proposed*, not a claim of scientific consensus or
+of the two experiments _under the retractibility frame he
+has just proposed_, not a claim of scientific consensus or
 physics-orthodoxy. Typos preserved per
 `user_typing_style_typos_expected_asterisk_correction.md`
 ("Dealyed" for "Delayed", "Quantium" for "Quantum"; meaning
@@ -139,10 +140,10 @@ input to Lorentz-FitzGerald contraction and ultimately Einstein's
 
 **Aaron's claim (reading under retractibility).** The null
 result is not merely evidence against the aether — it is
-evidence *for* retractibility as a substrate property. A
+evidence _for_ retractibility as a substrate property. A
 preferred aether frame would have given c a frame-dependent
 value, which would make light's retraction-limit
-*frame-sensitive* — a non-retractible asymmetry at the
+_frame-sensitive_ — a non-retractible asymmetry at the
 substrate level. Its absence confirms that whatever makes c a
 limit does so substrate-invariantly, consistent with
 retractibility being a property of light itself rather than
@@ -165,52 +166,52 @@ adopting it as the factory's physics claim.
 
 ### 2. Delayed Choice Quantum Eraser (Wheeler 1978; Kim et al. 2000)
 
-**The experiment.** John Archibald Wheeler's 1978 *gedanken*
+**The experiment.** John Archibald Wheeler's 1978 _gedanken_
 experiment, realized physically by Yoon-Ho Kim, Rong Yu,
 Sergei P. Kulik, Yanhua H. Shih, and Marlan O. Scully in 2000
-(*Phys. Rev. Lett.* 84, 1–5). Entangled-photon pairs are
+(_Phys. Rev. Lett._ 84, 1–5). Entangled-photon pairs are
 generated; the signal photon passes through a double-slit-like
 apparatus; the idler photon is routed through detectors that
 either preserve which-path information or erase it, with the
-erasure/preservation *chosen after* the signal photon has been
+erasure/preservation _chosen after_ the signal photon has been
 detected. Coincidence-counting between the two detectors
 reveals: when the idler's which-path info is erased, the
 signal photons show an interference pattern; when preserved,
 they show particle-like clumping. The "choice" of which
-pattern is observed is made *after* the signal photon was
+pattern is observed is made _after_ the signal photon was
 already detected.
 
 **Aaron's claim (reading under retractibility).** The
 appearance of retro-causation dissolves under the
 retractibility frame. No backward-in-time signal is needed —
-the measurement outcome is *retractible* by a later operation.
+the measurement outcome is _retractible_ by a later operation.
 Path-registration contributes +1 to one channel; erasure
 contributes −1 to the same channel; the net observed
 correlation pattern is the multiset-identically composed sum.
 The "later choice" is not changing the past; it is supplying
 the retraction weight that was always going to arrive. Under
 this reading, DCQE is the cleanest experimental demonstration
-that *light itself carries retractible components* at the
+that _light itself carries retractible components_ at the
 quantum-measurement layer.
 
 **Structural reading.** This maps very directly onto Zeta's
 Z-set semantics:
 
-| Physical event                  | Z-set analog                           |
-|---------------------------------|----------------------------------------|
-| Signal photon path detection    | +1 weight on path-registration channel |
-| Idler which-path preservation   | Keeps the +1 visible (no −1 arrives)   |
-| Idler which-path erasure        | −1 weight composes multiset-identically |
-| Coincidence-counted observable  | Net weight = interference pattern      |
-| Absence of backward causation   | Multiset composition is order-invariant |
+| Physical event                 | Z-set analog                            |
+| ------------------------------ | --------------------------------------- |
+| Signal photon path detection   | +1 weight on path-registration channel  |
+| Idler which-path preservation  | Keeps the +1 visible (no −1 arrives)    |
+| Idler which-path erasure       | −1 weight composes multiset-identically |
+| Coincidence-counted observable | Net weight = interference pattern       |
+| Absence of backward causation  | Multiset composition is order-invariant |
 
 Under standard quantum mechanics the "delayed choice" is
 already understood to not require retro-causation (consistent
 histories, Everett, Bohmian, and several other interpretations
 all explain it without backward signals). The retractibility
-frame is *compatible with* and possibly *clarifies* the
+frame is _compatible with_ and possibly _clarifies_ the
 standard interpretation: it names what the cancellation
-structure *is* in substrate terms.
+structure _is_ in substrate terms.
 
 **Strength assessment.** The structural match is much tighter
 than (1). DCQE data is experimental fact; the retractibility
@@ -222,7 +223,7 @@ physics.
 
 **Aaron-confirmed reading (2026-04-22, thought-unit close).**
 When I offered as in-context synthesis that "the
-retractibility frame may actually *dissolve* the 'spooky
+retractibility frame may actually _dissolve_ the 'spooky
 retro-causation' paradox rather than invoke it," Aaron quoted
 that phrasing back verbatim and affirmed it:
 
@@ -236,7 +237,7 @@ followed one message later by:
 
 This upgrades the DCQE-retractibility reading from "my
 structural synthesis" to **Aaron-confirmed**: retractibility
-is not a retro-causal claim; it is a *paradox-dissolving*
+is not a retro-causal claim; it is a _paradox-dissolving_
 reinterpretation. The "spooky" appearance is an artifact of
 reading the +1/−1 cancellation structure serially as cause-
 and-effect; reading it as multiset-identical composition

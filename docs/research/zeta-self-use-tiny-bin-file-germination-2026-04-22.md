@@ -34,15 +34,15 @@ Three hard constraints, one soft compatibility bar:
 Zeta already has the pieces a tiny-bin-file DB needs; the
 germination work is an integration seed, not new-primitive work.
 
-| Piece | Location | Role in the seed |
-|---|---|---|
-| `ZSet<'K>` | `src/Core/ZSet.fs` | The fundamental record set. |
-| `ArrowSerializer` | `src/Core/ArrowSerializer.fs` | Arrow IPC round-trip for a `ZSet` → `byte[]`. |
-| Generic `Serializer` surface | `src/Core/Serializer.fs` | Abstract serializer interface the seed plugs into. |
-| `DiskBackingStore` | `src/Core/DiskSpine.fs` | Existing on-disk spine — a Spine IS already a local-native bin file. |
-| `BalancedSpine` | `src/Core/BalancedSpine.fs` | In-memory spine with size-doubling levels. |
-| FastCDC | `src/Core/FastCdc.fs` | Content-defined chunking for deduplication across snapshots. |
-| Merkle | `src/Core/Merkle.fs` | Integrity verification over bin-file spans. |
+| Piece                        | Location                      | Role in the seed                                                     |
+| ---------------------------- | ----------------------------- | -------------------------------------------------------------------- |
+| `ZSet<'K>`                   | `src/Core/ZSet.fs`            | The fundamental record set.                                          |
+| `ArrowSerializer`            | `src/Core/ArrowSerializer.fs` | Arrow IPC round-trip for a `ZSet` → `byte[]`.                        |
+| Generic `Serializer` surface | `src/Core/Serializer.fs`      | Abstract serializer interface the seed plugs into.                   |
+| `DiskBackingStore`           | `src/Core/DiskSpine.fs`       | Existing on-disk spine — a Spine IS already a local-native bin file. |
+| `BalancedSpine`              | `src/Core/BalancedSpine.fs`   | In-memory spine with size-doubling levels.                           |
+| FastCDC                      | `src/Core/FastCdc.fs`         | Content-defined chunking for deduplication across snapshots.         |
+| Merkle                       | `src/Core/Merkle.fs`          | Integrity verification over bin-file spans.                          |
 
 The seed is not "write a new database". The seed is "compose the
 pieces we have, with one narrow public API (soulfile invocation),
@@ -143,7 +143,7 @@ and bumps the manifest.
 3. Viktor adversarial-audits the capability (can I rebuild
    this from the spec alone?).
 4. Land `src/Core/SoulStore.fs` + allocation-property tests
-   + round-trip tests.
+   - round-trip tests.
 5. First real usage: one factory-state soulfile (candidates:
    tick-history index, BACKLOG row-index, round-close ledger).
 

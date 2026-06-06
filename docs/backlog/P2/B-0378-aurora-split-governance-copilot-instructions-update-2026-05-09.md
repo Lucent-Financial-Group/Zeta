@@ -60,7 +60,7 @@ history-surface list is updated to match.
 
 ## Why (and why fourth)
 
-GOVERNANCE.md §33 is the *operative* rule that determines where
+GOVERNANCE.md §33 is the _operative_ rule that determines where
 external-conversation imports land. If it still points at
 `docs/aurora/**` (or is ambiguous) after the split, new imports will
 go to the wrong place.
@@ -71,8 +71,8 @@ of the AGENT-BEST-PRACTICES update in B-0377.
 
 Keeping this separate from B-0377 (which touches AGENT-BEST-PRACTICES
 
-+ Otto-279) means each schema-doc update is reviewable in one coherent
-PR without mixing concerns.
+- Otto-279) means each schema-doc update is reviewable in one coherent
+  PR without mixing concerns.
 
 ## Acceptance signal
 
@@ -86,10 +86,10 @@ PR without mixing concerns.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing ADR or PR touching §33 for this purpose;
-  no memory file with a prior §33 update for the aurora split.
+      no memory file with a prior §33 update for the aurora split.
 - [x] Dependency-restructure: `depends_on: [B-0375, B-0376]` — same as B-0377
-  (need inventory + naming decision). Does NOT depend on B-0377 itself —
-  these two schema updates can run in parallel after B-0376 lands.
+      (need inventory + naming decision). Does NOT depend on B-0377 itself —
+      these two schema updates can run in parallel after B-0376 lands.
 - [x] Reciprocal pointer: B-0375 and B-0376 carry `composes_with: [B-0378]`.
 
 ## Composes with

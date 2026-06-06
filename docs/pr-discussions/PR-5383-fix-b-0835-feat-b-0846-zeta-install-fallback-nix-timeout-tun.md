@@ -26,12 +26,11 @@ Two commits in one PR:
 
    \`\`\`bash
    sudo nixos-install --impure --fallback \\
-     --option connect-timeout 10 \\
-     --option stalled-download-timeout 60 \\
-     --option download-attempts 3 \\
-     --flake ... --no-root-password
+   --option connect-timeout 10 \\
+   --option stalled-download-timeout 60 \\
+   --option download-attempts 3 \\
+   --flake ... --no-root-password
    \`\`\`
-
    - \`--fallback\`: build-from-source when substitute download fails
    - \`connect-timeout 10\`: drop dead connections fast (default 0 = infinity)
    - \`stalled-download-timeout 60\`: cut 300s retry burn by 5×
@@ -46,10 +45,10 @@ Two commits in one PR:
 
 ## Operator framing
 
-> *"yeah i want to make it reproducable over wifi"*
-> *"i got timeouts on the same 5 files"*
-> *"twices in a row"*
-> *"after 300 seconds"*
+> _"yeah i want to make it reproducable over wifi"_
+> _"i got timeouts on the same 5 files"_
+> _"twices in a row"_
+> _"after 300 seconds"_
 
 The "same 5 files twice in 300s" empirical anchor is what makes this a **structural** problem rather than transient flake.
 
@@ -76,6 +75,7 @@ Per \`.claude/rules/dep-pin-search-first-authority.md\`: B-0846 Phase 2 substitu
 This PR hardens the USB NixOS installer’s `nixos-install` step against flaky `cache.nixos.org` WiFi downloads by enabling fallback-to-local-build and tightening Nix download timeouts, and it adds a P2 backlog row tracking longer-horizon “WiFi-reproducible install” substrate work.
 
 **Changes:**
+
 - Update `zeta-install.sh` to run `nixos-install` with `--fallback` plus tuned `connect-timeout`, `stalled-download-timeout`, and `download-attempts`.
 - Add backlog row **B-0846** documenting the observed timeout behavior and a phased mitigation plan (closure baking + extra substituters + mirror).
 - Add **B-0846** entry to `docs/BACKLOG.md`.
@@ -84,11 +84,11 @@ This PR hardens the USB NixOS installer’s `nixos-install` step against flaky `
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds bounded Nix download resilience flags to prevent repeated cache timeouts from stalling installs. |
-| docs/backlog/P2/B-0846-installer-wifi-reproducibility-cache-nixos-org-timeouts-closure-baking-extra-substituters-cachix-mirror-aaron-2026-05-26.md | New P2 row capturing the empirical WiFi timeout issue and outlining phased mitigation work. |
-| docs/BACKLOG.md | Adds the B-0846 index entry under P2. |
+| File                                                                                                                                               | Description                                                                                           |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh                                                                                                | Adds bounded Nix download resilience flags to prevent repeated cache timeouts from stalling installs. |
+| docs/backlog/P2/B-0846-installer-wifi-reproducibility-cache-nixos-org-timeouts-closure-baking-extra-substituters-cachix-mirror-aaron-2026-05-26.md | New P2 row capturing the empirical WiFi timeout issue and outlining phased mitigation work.           |
+| docs/BACKLOG.md                                                                                                                                    | Adds the B-0846 index entry under P2.                                                                 |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-27T02:29:57Z)
 

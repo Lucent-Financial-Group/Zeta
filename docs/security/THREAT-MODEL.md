@@ -17,12 +17,12 @@ tagged with the highest adversary tier it defends to. A
 "mitigation ✅" against a T2 adversary that collapses
 against a T3 adversary is honest if we state the tier.
 
-| Tier | Name | Capabilities | Dwell time |
-|---|---|---|---|
-| **T0** | Bored user | misused API, oversized input | minutes |
-| **T1** | Opportunistic attacker | public-CVE exploitation, script-kiddie | hours to days |
-| **T2** | Organised crime | targeted exploitation, ransomware, known-good malware kits | days to weeks |
-| **T3** | APT / nation-state | zero-day budget, multi-stage supply-chain campaigns, maintainer-compromise tradecraft, sleeper-account strategies | months to years |
+| Tier   | Name                   | Capabilities                                                                                                      | Dwell time      |
+| ------ | ---------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------- |
+| **T0** | Bored user             | misused API, oversized input                                                                                      | minutes         |
+| **T1** | Opportunistic attacker | public-CVE exploitation, script-kiddie                                                                            | hours to days   |
+| **T2** | Organised crime        | targeted exploitation, ransomware, known-good malware kits                                                        | days to weeks   |
+| **T3** | APT / nation-state     | zero-day budget, multi-stage supply-chain campaigns, maintainer-compromise tradecraft, sleeper-account strategies | months to years |
 
 Aaron's round-30 bar: **T3 is first-class in this document,
 not a footnote.** The case-study shapes are the tj-actions/
@@ -59,7 +59,7 @@ adversarial files). This was the entire adversary model
 before round 30.
 
 **Supply-chain adversary (T3, round-30 expansion):** a
-patient adversary targeting Zeta's *build and release path*
+patient adversary targeting Zeta's _build and release path_
 before artefacts ever reach the embedded surface. Capabilities:
 
 - Compromise a GitHub Action's source repository (tj-actions
@@ -94,7 +94,7 @@ over-time):
 - Separate personal GitHub account scoped to Zeta
   maintainer work (blast-radius containment).
 
-**We do not yet defend against:** a malicious *consumer* of
+**We do not yet defend against:** a malicious _consumer_ of
 the library (the embedding app is trusted); hardware side-
 channels; cryptographic adversaries; multi-tenant process
 adversaries.
@@ -130,81 +130,81 @@ adversaries.
 
 ## Trust-boundary summary
 
-| Boundary | In → Out | Adversary (tier) | Shipped defence | Gap |
-|---|---|---|---|---|
-| **B-CI** (new §30) | `git push` → GHA runner → artefacts | T3 tag-rewrite, cache-poison, PR-target RCE | SHA-pinned actions + `contents: read` + no secrets + Semgrep rule 15 (SHA-pin enforcement) | Dependabot SHA bumps currently rubber-stamped; cache fallback-key discipline shipped but not enforced by rule |
-| **B-Installer** (new §30) | laptop → `tools/setup/install.sh` → upstreams → toolchain | T3 DNS-spoof, upstream-account takeover | TOFU with explicit acceptance; TLS + HSTS on fetch | No known-good-hash record; SHA-pin improvement tracked as round-31 item |
-| **B-NuGet-In** (new §30) | `Directory.Packages.props` → `nuget.org` → DLLs | T3 typosquat, ownership takeover, time-bomb, MSBuild `.targets` injection | Version pinning + Central Package Management | `packages.lock.json` NOT YET adopted (round-31 deliverable); transitive `.targets` allowlist NOT YET checked |
-| **B-NuGet-Out** (future) | `dotnet pack` → `nuget.org` → consumers | T3 downstream-consumer attack | None | **P0 before any public release**; namespace pre-registration + OIDC publish + SLSA L3 attestation required |
-| **B-Skill-Supply-Chain** (new §30) | PR diff → `.claude/skills/**/SKILL.md` | T3 long-game safety-clause regression | `skill-creator` workflow + harsh-critic + invisible-Unicode rule | No automated diff-lint for silent section removal (round-31 target) |
-| User lambda | `'T → 'U` | T1 throws, OOM-loops | `task { }` exception propagation | no sandbox; pathological lambdas can hang the circuit |
-| Input ZSet | user data → DBSP | T1 oversized keys, int64 weight overflow | `Checked.(+) / Checked.(*)` + join-capacity guards | no memory-budget |
-| Arrow IPC wire | peer bytes → ArrowSerializer | T2 tampered schema, gadget deserialization | schema fixed-literal, no dynamic types | no authentication / HMAC |
-| On-disk spine | file → DiskBackingStore | T2 bit-flip, torn write, path traversal | CRC32C + `pathFor` canonicalisation | CRC32C detects corruption not tampering |
-| Checkpoint | file → Transaction.Checkpoint | T2 truncated, corrupt, wrong magic | magic tag + CRC | no signed manifest |
+| Boundary                           | In → Out                                                  | Adversary (tier)                                                          | Shipped defence                                                                            | Gap                                                                                                           |
+| ---------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| **B-CI** (new §30)                 | `git push` → GHA runner → artefacts                       | T3 tag-rewrite, cache-poison, PR-target RCE                               | SHA-pinned actions + `contents: read` + no secrets + Semgrep rule 15 (SHA-pin enforcement) | Dependabot SHA bumps currently rubber-stamped; cache fallback-key discipline shipped but not enforced by rule |
+| **B-Installer** (new §30)          | laptop → `tools/setup/install.sh` → upstreams → toolchain | T3 DNS-spoof, upstream-account takeover                                   | TOFU with explicit acceptance; TLS + HSTS on fetch                                         | No known-good-hash record; SHA-pin improvement tracked as round-31 item                                       |
+| **B-NuGet-In** (new §30)           | `Directory.Packages.props` → `nuget.org` → DLLs           | T3 typosquat, ownership takeover, time-bomb, MSBuild `.targets` injection | Version pinning + Central Package Management                                               | `packages.lock.json` NOT YET adopted (round-31 deliverable); transitive `.targets` allowlist NOT YET checked  |
+| **B-NuGet-Out** (future)           | `dotnet pack` → `nuget.org` → consumers                   | T3 downstream-consumer attack                                             | None                                                                                       | **P0 before any public release**; namespace pre-registration + OIDC publish + SLSA L3 attestation required    |
+| **B-Skill-Supply-Chain** (new §30) | PR diff → `.claude/skills/**/SKILL.md`                    | T3 long-game safety-clause regression                                     | `skill-creator` workflow + harsh-critic + invisible-Unicode rule                           | No automated diff-lint for silent section removal (round-31 target)                                           |
+| User lambda                        | `'T → 'U`                                                 | T1 throws, OOM-loops                                                      | `task { }` exception propagation                                                           | no sandbox; pathological lambdas can hang the circuit                                                         |
+| Input ZSet                         | user data → DBSP                                          | T1 oversized keys, int64 weight overflow                                  | `Checked.(+) / Checked.(*)` + join-capacity guards                                         | no memory-budget                                                                                              |
+| Arrow IPC wire                     | peer bytes → ArrowSerializer                              | T2 tampered schema, gadget deserialization                                | schema fixed-literal, no dynamic types                                                     | no authentication / HMAC                                                                                      |
+| On-disk spine                      | file → DiskBackingStore                                   | T2 bit-flip, torn write, path traversal                                   | CRC32C + `pathFor` canonicalisation                                                        | CRC32C detects corruption not tampering                                                                       |
+| Checkpoint                         | file → Transaction.Checkpoint                             | T2 truncated, corrupt, wrong magic                                        | magic tag + CRC                                                                            | no signed manifest                                                                                            |
 
 ## STRIDE × components
 
 ### Spoofing (identity)
 
-| Vector | Mitigation | Tier defended | Gap |
-|---|---|---|---|
-| Fake checkpoint file in spine dir | `Magic == 0xD85C01E2` + CRC fail on bad bytes | T2 | T3: no writer_epoch / manifest CAS — stale writer could overwrite |
-| Sink claims 2PC commit without PreCommit | `ISink` state machine enforced by `InMemorySink` | T2 | Not enforced on user-written sinks |
-| Peer impersonation on Arrow IPC stream | — | — | P1: mTLS or HMAC on wire |
-| **Attacker posts commit impersonating Aaron** (Renovate-spoof class, tj-actions) | 2FA on GitHub account | T1 | **T3 gap (documented exception): no signed commits yet** |
+| Vector                                                                           | Mitigation                                       | Tier defended | Gap                                                               |
+| -------------------------------------------------------------------------------- | ------------------------------------------------ | ------------- | ----------------------------------------------------------------- |
+| Fake checkpoint file in spine dir                                                | `Magic == 0xD85C01E2` + CRC fail on bad bytes    | T2            | T3: no writer_epoch / manifest CAS — stale writer could overwrite |
+| Sink claims 2PC commit without PreCommit                                         | `ISink` state machine enforced by `InMemorySink` | T2            | Not enforced on user-written sinks                                |
+| Peer impersonation on Arrow IPC stream                                           | —                                                | —             | P1: mTLS or HMAC on wire                                          |
+| **Attacker posts commit impersonating Aaron** (Renovate-spoof class, tj-actions) | 2FA on GitHub account                            | T1            | **T3 gap (documented exception): no signed commits yet**          |
 
 ### Tampering (integrity)
 
-| Vector | Mitigation | Tier defended | Gap |
-|---|---|---|---|
-| Bit-flip in on-disk spine segment | `HardwareCrc32C` per-frame; checkpoint CRC; Merkle root | T2 | T3: CRC detects accident, not adversary — needs SHA-256 for adversarial model |
-| In-flight Arrow record corruption | Arrow IPC built-in crc + our frame check | T2 | Same — CRC not auth |
-| ZSet weight tampering during merge | `Checked.(+) / Checked.(*)` throws on overflow | T2 | — |
-| Torn write on crash mid-commit | Witness-Durable mode (P1) + truncate-tail recovery | T2 | Still relies on group-commit roadmap |
-| **Third-party GitHub Action tag-rewrite attack** (tj-actions class) | Full 40-char SHA pin + Semgrep rule 15 (SHA-pin enforcement) | T3 | Dependabot SHA bump review is manual; policy not automated |
-| **NuGet time-bomb package** (shanhai666 class) | `Directory.Packages.props` version pinning | T2 | T3 gap: `packages.lock.json` + reproducible builds NOT YET shipped |
-| **MSBuild `.targets` build-time code execution** (from transitive NuGet deps) | None yet | — | Round-31 target: enumerate transitive `.targets` / `.props`; allowlist |
-| **Cache poisoning across PR/main** (Khan class) | Cache key pinned to `Directory.Packages.props` hash; no `restore-keys` prefix fallback | T2 | Inherits `packages.lock.json` gap |
+| Vector                                                                        | Mitigation                                                                             | Tier defended | Gap                                                                           |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------- |
+| Bit-flip in on-disk spine segment                                             | `HardwareCrc32C` per-frame; checkpoint CRC; Merkle root                                | T2            | T3: CRC detects accident, not adversary — needs SHA-256 for adversarial model |
+| In-flight Arrow record corruption                                             | Arrow IPC built-in crc + our frame check                                               | T2            | Same — CRC not auth                                                           |
+| ZSet weight tampering during merge                                            | `Checked.(+) / Checked.(*)` throws on overflow                                         | T2            | —                                                                             |
+| Torn write on crash mid-commit                                                | Witness-Durable mode (P1) + truncate-tail recovery                                     | T2            | Still relies on group-commit roadmap                                          |
+| **Third-party GitHub Action tag-rewrite attack** (tj-actions class)           | Full 40-char SHA pin + Semgrep rule 15 (SHA-pin enforcement)                           | T3            | Dependabot SHA bump review is manual; policy not automated                    |
+| **NuGet time-bomb package** (shanhai666 class)                                | `Directory.Packages.props` version pinning                                             | T2            | T3 gap: `packages.lock.json` + reproducible builds NOT YET shipped            |
+| **MSBuild `.targets` build-time code execution** (from transitive NuGet deps) | None yet                                                                               | —             | Round-31 target: enumerate transitive `.targets` / `.props`; allowlist        |
+| **Cache poisoning across PR/main** (Khan class)                               | Cache key pinned to `Directory.Packages.props` hash; no `restore-keys` prefix fallback | T2            | Inherits `packages.lock.json` gap                                             |
 
 ### Repudiation (non-repudiation)
 
-| Vector | Mitigation | Tier defended | Gap |
-|---|---|---|---|
-| Sink claims exactly-once, no audit | `ISink.BeginTx/Commit` lifecycle logged via `DbspTracing` ActivitySource | T1 | OpenTelemetry hook only — no durable audit log |
-| Operator-graph mutations untraced | `Circuit.Register` under lock; `anyAsync` flag | T1 | No signed op-graph history |
-| **`git push --force main`** | Branch protection on `main` (round 27) | T2 | — |
+| Vector                             | Mitigation                                                               | Tier defended | Gap                                            |
+| ---------------------------------- | ------------------------------------------------------------------------ | ------------- | ---------------------------------------------- |
+| Sink claims exactly-once, no audit | `ISink.BeginTx/Commit` lifecycle logged via `DbspTracing` ActivitySource | T1            | OpenTelemetry hook only — no durable audit log |
+| Operator-graph mutations untraced  | `Circuit.Register` under lock; `anyAsync` flag                           | T1            | No signed op-graph history                     |
+| **`git push --force main`**        | Branch protection on `main` (round 27)                                   | T2            | —                                              |
 
 ### Information disclosure
 
-| Vector | Mitigation | Tier defended | Gap |
-|---|---|---|---|
-| Temp files during merge world-readable | `DiskBackingStore.pathFor` canonicalises + rejects ADS | T2 | No umask / ACL on spine dir |
-| Heap dump leaks ZSet | — | — | No secure-allocator policy |
-| Error messages leak row data | `failwithf` prints values | T1 | P2: error-redaction policy |
-| Secrets leaked via workflow env echoing | `permissions: contents: read` + no secrets referenced | T2 | When `NUGET_API_KEY` lands, design-doc moment per round-29 rule |
-| **Side-channel classes (EM / timing / acoustic / cache)** | Out of scope today (no crypto) | — | Revisit when crypto lands; Aaron's domain |
+| Vector                                                    | Mitigation                                             | Tier defended | Gap                                                             |
+| --------------------------------------------------------- | ------------------------------------------------------ | ------------- | --------------------------------------------------------------- |
+| Temp files during merge world-readable                    | `DiskBackingStore.pathFor` canonicalises + rejects ADS | T2            | No umask / ACL on spine dir                                     |
+| Heap dump leaks ZSet                                      | —                                                      | —             | No secure-allocator policy                                      |
+| Error messages leak row data                              | `failwithf` prints values                              | T1            | P2: error-redaction policy                                      |
+| Secrets leaked via workflow env echoing                   | `permissions: contents: read` + no secrets referenced  | T2            | When `NUGET_API_KEY` lands, design-doc moment per round-29 rule |
+| **Side-channel classes (EM / timing / acoustic / cache)** | Out of scope today (no crypto)                         | —             | Revisit when crypto lands; Aaron's domain                       |
 
 ### Denial of Service
 
-| Vector | Mitigation | Tier defended | Gap |
-|---|---|---|---|
-| Join cardinality blowup (\|a\| × \|b\|) | Int64 cap + `Array.MaxLength` guard | T2 | No global memory budget |
-| Checkpoint thrash via rapid tick | Group-commit / Witness-Durable (roadmap) | — | Not yet shipped |
-| `Pool.Rent` exhaustion via crafted N | Semgrep rule 1 + capacity guards | T2 | Rule ENFORCED at CI (round 30); no runtime budget |
-| Query timeout | — | — | No per-query deadline |
+| Vector                                  | Mitigation                               | Tier defended | Gap                                               |
+| --------------------------------------- | ---------------------------------------- | ------------- | ------------------------------------------------- |
+| Join cardinality blowup (\|a\| × \|b\|) | Int64 cap + `Array.MaxLength` guard      | T2            | No global memory budget                           |
+| Checkpoint thrash via rapid tick        | Group-commit / Witness-Durable (roadmap) | —             | Not yet shipped                                   |
+| `Pool.Rent` exhaustion via crafted N    | Semgrep rule 1 + capacity guards         | T2            | Rule ENFORCED at CI (round 30); no runtime budget |
+| Query timeout                           | —                                        | —             | No per-query deadline                             |
 
 ### Elevation of Privilege
 
-| Vector | Mitigation | Tier defended | Gap |
-|---|---|---|---|
-| Deserialize untrusted Arrow IPC → gadget | Schema is fixed literal (two Int64Array columns) | T2 | If dynamic schemas land, need type allowlist |
-| Plugin operator runs unsandboxed | User operator author is SEMI-TRUSTED | T1 | No AssemblyLoadContext isolation |
-| Path traversal to `/etc/passwd` via malicious batch id | `pathFor` canonicalisation + ADS reject + Semgrep rule 4 | T2 | — |
-| **`.mise.toml` `[env]` hooks = code execution on `mise trust`** | Trust flow manual today (dev only); NOT in CI | T1 | Pre-req for CI parity-swap (tracked in DEBT) |
-| **Agent-context injection via attacker-controlled text** | Policy + `skill-creator` workflow + invisible-Unicode rule 13 (ENFORCED at CI round 30) + elder-plinius never fetched | T2 | Notebook-ownership lint not yet automated |
-| **Viral agent propagation** | Per-persona notebooks; clean sub-agent briefs; `SKILL.md` edits via `skill-creator` | T2 | Social-process, no pre-commit hook |
-| **XZ-class trusted-contributor long-game** | `skill-creator` review + GOVERNANCE §20 reviewer floor | T1 | No 30-day cooling period on new maintainer; no identity-linked vouch (documented exception per bus-factor section) |
+| Vector                                                          | Mitigation                                                                                                            | Tier defended | Gap                                                                                                                |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Deserialize untrusted Arrow IPC → gadget                        | Schema is fixed literal (two Int64Array columns)                                                                      | T2            | If dynamic schemas land, need type allowlist                                                                       |
+| Plugin operator runs unsandboxed                                | User operator author is SEMI-TRUSTED                                                                                  | T1            | No AssemblyLoadContext isolation                                                                                   |
+| Path traversal to `/etc/passwd` via malicious batch id          | `pathFor` canonicalisation + ADS reject + Semgrep rule 4                                                              | T2            | —                                                                                                                  |
+| **`.mise.toml` `[env]` hooks = code execution on `mise trust`** | Trust flow manual today (dev only); NOT in CI                                                                         | T1            | Pre-req for CI parity-swap (tracked in DEBT)                                                                       |
+| **Agent-context injection via attacker-controlled text**        | Policy + `skill-creator` workflow + invisible-Unicode rule 13 (ENFORCED at CI round 30) + elder-plinius never fetched | T2            | Notebook-ownership lint not yet automated                                                                          |
+| **Viral agent propagation**                                     | Per-persona notebooks; clean sub-agent briefs; `SKILL.md` edits via `skill-creator`                                   | T2            | Social-process, no pre-commit hook                                                                                 |
+| **XZ-class trusted-contributor long-game**                      | `skill-creator` review + GOVERNANCE §20 reviewer floor                                                                | T1            | No 30-day cooling period on new maintainer; no identity-linked vouch (documented exception per bus-factor section) |
 
 ## Supply-chain trust boundaries (round-30 expansion)
 
@@ -212,15 +212,15 @@ Every supply-chain boundary has: upstream identity → acceptance
 control → verification control → rotation cadence → failure
 playbook (see `docs/security/INCIDENT-PLAYBOOK.md`).
 
-| Boundary | Upstream | Acceptance | Verification | Rotation | Playbook |
-|---|---|---|---|---|---|
-| GitHub Actions | Microsoft-maintained actions org + pinned third-parties (`actions/checkout`, `actions/setup-dotnet`, `actions/cache`, `actions/setup-python`, `semgrep/semgrep`) | SHA pin (full 40-char) | Semgrep rule 15 hard-fails PR on mutable tag | Dependabot surfaces action bumps; human review required before merge | Playbook A |
-| Toolchain installers | Homebrew @HEAD, `mise.run`, `leanprover/elan@master` | TOFU (documented) | None today — SHA-256 pinning round-31 target | Manual on dev laptop; CI rebuilds from scratch | Playbook B |
-| Verifier jars | `tlaplus/tlaplus@v1.8.0/tla2tools.jar`, `AlloyTools/org.alloytools.alloy@v6.2.0/alloy.jar` | TOFU (documented) | File-exists after download (round 29); atomic `.part` rename (round 29) | Manual on bump | Playbook B |
-| NuGet package graph | `nuget.org` | `Directory.Packages.props` version pin | `NuGetAudit` transitive (dotnet 10 default) | Dependabot + `package-auditor` skill | Playbook C |
-| Mathlib | `leanprover-community/mathlib@pinned commit` | commit hash pin in `lake-manifest.json` | `lake build` green | Manual bump, Tariq-reviewed | Playbook C-adjacent |
-| Skills / agents | Repo-local (`.claude/skills/**`) | `skill-creator` workflow | harsh-critic + prompt-protector + invisible-Unicode rule 13 + human review | Round-cadence `skill-tune-up` + `skill-gap-finder` | Playbook E |
-| Zeta artefacts (future) | `dotnet pack` → `nuget.org` Zeta.* | Not yet — **P0 before public release** | Pre-v1.0: OIDC publish + SLSA L3 + signed packages | TBD | TBD |
+| Boundary                | Upstream                                                                                                                                                         | Acceptance                              | Verification                                                               | Rotation                                                             | Playbook            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------- |
+| GitHub Actions          | Microsoft-maintained actions org + pinned third-parties (`actions/checkout`, `actions/setup-dotnet`, `actions/cache`, `actions/setup-python`, `semgrep/semgrep`) | SHA pin (full 40-char)                  | Semgrep rule 15 hard-fails PR on mutable tag                               | Dependabot surfaces action bumps; human review required before merge | Playbook A          |
+| Toolchain installers    | Homebrew @HEAD, `mise.run`, `leanprover/elan@master`                                                                                                             | TOFU (documented)                       | None today — SHA-256 pinning round-31 target                               | Manual on dev laptop; CI rebuilds from scratch                       | Playbook B          |
+| Verifier jars           | `tlaplus/tlaplus@v1.8.0/tla2tools.jar`, `AlloyTools/org.alloytools.alloy@v6.2.0/alloy.jar`                                                                       | TOFU (documented)                       | File-exists after download (round 29); atomic `.part` rename (round 29)    | Manual on bump                                                       | Playbook B          |
+| NuGet package graph     | `nuget.org`                                                                                                                                                      | `Directory.Packages.props` version pin  | `NuGetAudit` transitive (dotnet 10 default)                                | Dependabot + `package-auditor` skill                                 | Playbook C          |
+| Mathlib                 | `leanprover-community/mathlib@pinned commit`                                                                                                                     | commit hash pin in `lake-manifest.json` | `lake build` green                                                         | Manual bump, Tariq-reviewed                                          | Playbook C-adjacent |
+| Skills / agents         | Repo-local (`.claude/skills/**`)                                                                                                                                 | `skill-creator` workflow                | harsh-critic + prompt-protector + invisible-Unicode rule 13 + human review | Round-cadence `skill-tune-up` + `skill-gap-finder`                   | Playbook E          |
+| Zeta artefacts (future) | `dotnet pack` → `nuget.org` Zeta.\*                                                                                                                              | Not yet — **P0 before public release**  | Pre-v1.0: OIDC publish + SLSA L3 + signed packages                         | TBD                                                                  | TBD                 |
 
 ### Supply-chain: residual risks explicitly accepted
 
@@ -245,16 +245,16 @@ in time is not a control. Each of these controls is designed to
 persist against a patient adversary who may try to regress it
 in a later PR.
 
-| Control | Persistence mechanism |
-|---|---|
-| Full-SHA action pin on every `uses:` | **Semgrep rule 15 (round 30, ENFORCED at CI)** — PR fails hard on any mutable tag |
-| Invisible-Unicode blocked in docs / skills | **Semgrep rule 13 (round 30, ENFORCED at CI)** — was aspirational before round 30 |
-| 14 F# / security Semgrep rules | **Semgrep-in-CI lint job (round 30)** — was aspirational before round 30 |
-| Skill safety-clause shape (BP-02 "what this does NOT do") | Round-31 target: diff-level lint for section removal / shrinkage |
-| `mise trust` discipline | CI parity-swap prerequisite (DEBT); `.mise.toml` changes require review |
-| Branch protection on `main` | GitHub policy; no `--force`, no direct pushes |
-| Review cadence | GOVERNANCE §20 reviewer floor every code-landing round |
-| Agent roster integrity | `skill-creator` workflow + `skill-expert` role + round-cadence `factory-audit` |
+| Control                                                   | Persistence mechanism                                                             |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Full-SHA action pin on every `uses:`                      | **Semgrep rule 15 (round 30, ENFORCED at CI)** — PR fails hard on any mutable tag |
+| Invisible-Unicode blocked in docs / skills                | **Semgrep rule 13 (round 30, ENFORCED at CI)** — was aspirational before round 30 |
+| 14 F# / security Semgrep rules                            | **Semgrep-in-CI lint job (round 30)** — was aspirational before round 30          |
+| Skill safety-clause shape (BP-02 "what this does NOT do") | Round-31 target: diff-level lint for section removal / shrinkage                  |
+| `mise trust` discipline                                   | CI parity-swap prerequisite (DEBT); `.mise.toml` changes require review           |
+| Branch protection on `main`                               | GitHub policy; no `--force`, no direct pushes                                     |
+| Review cadence                                            | GOVERNANCE §20 reviewer floor every code-landing round                            |
+| Agent roster integrity                                    | `skill-creator` workflow + `skill-expert` role + round-cadence `factory-audit`    |
 
 **The "no lint without a CI gate" principle (round 30).** Any
 lint rule that exists in the repo without a CI job running it is
@@ -326,8 +326,8 @@ already has.
   decisions stored in a non-retractable location (append-only
   log without erase affordance; non-expiring backups).
 - Inherited-and-permanent framings: a skill or ADR that treats
-  a past user-disclosure as *definitionally fixed* rather than
-  *currently believed, retractable on request*.
+  a past user-disclosure as _definitionally fixed_ rather than
+  _currently believed, retractable on request_.
 - External publication of internal-tier material: once
   externalised, retraction depends on third-party cooperation
   that the factory cannot guarantee. The disclosure-tier
@@ -354,7 +354,7 @@ already has.
 every new log or persistence surface. Currently some persistence
 surfaces (git history; round-history) are append-only-by-design;
 others (memory files; notebooks) are mutable-by-design. A third
-class — surfaces that *claim* retractability but have no tested
+class — surfaces that _claim_ retractability but have no tested
 retraction path — would be the attack surface. A lint or ADR-
 checklist item requiring every new persistence surface to name
 its retraction mechanism would surface the class.
@@ -422,9 +422,9 @@ is the graduation step.
 
 ### Calibration
 
-This expansion lands as *described* threats, not *measured*
+This expansion lands as _described_ threats, not _measured_
 threats. Follow-up round(s) should answer: has the factory
-ever *actually* drifted toward h₁ / h₂ / h₃ in a way the
+ever _actually_ drifted toward h₁ / h₂ / h₃ in a way the
 retrospective ledger (BP-WINDOW) caught? Evidence moves the
 class from description to measurement.
 
@@ -445,20 +445,20 @@ both LFG/main and AceHack/main (the backup mirror, declared fungible in CLAUDE.m
 but a live second attack surface for every vector below — with weaker controls
 than LFG; see scoping note on AceHack at the end of this section).
 
-Attack surface typed as *versioned* discriminated union — not a completeness
+Attack surface typed as _versioned_ discriminated union — not a completeness
 claim: `tools/security/heartbeat-attack-vectors.ts` (B-0032.1, PR #2390).
-"Exhaustive" in TypeScript means all *declared* variants are handled; it does
+"Exhaustive" in TypeScript means all _declared_ variants are handled; it does
 not mean all real-world attack classes are declared. Six vectors tracked as of
 B-0032.3 Aminata review (2026-05-10).
 
-| Vector | STRIDE | Surface | Impact | Mitigation | Tier gap |
-|---|---|---|---|---|---|
-| **Repository compromise** | Tampering | Push permissions to `main` | Poisoned heartbeat write absorbed by future AI reads | Branch protection + signed commits + SLSA | T3: signed commits not yet required |
-| **Force-push attack** | Tampering + Repudiation | Admin-override bypass of `force-push: false` | History rewritten; poison enters canonical history | `non_fast_forward` ruleset (enforced on LFG) + signed commits | T3: admin bypass remains a gap; no immutable-history guarantee at host level |
-| **Insider threat** | Tampering + Repudiation | Authorized contributor submits poisoned PR | Hard-to-detect poison passes review gate | Review gate + per-commit-attestation | **T2+ gap (AH-1):** at bus-factor 1, review gate = maintainer = insider threat; gate defends T0/T1 only; T2+ requires a second independent reviewer (deferred). Unicode smuggling (invisible-Unicode class) is a sub-class of semantic poison the review gate cannot catch visually. |
-| **Supply-chain** | Tampering + Spoofing | Compromised CI runner with `main`-write permissions | CI-injected poison bypasses human review; cache-poison (Khan class) that affects the CI runner performing heartbeat writes inherits heartbeat-specific blast radius | SLSA L2+ + Sigstore + runner-attestation + signing infrastructure (Otto-346 design intent — **not yet shipped**) | T3: SLSA L2 not shipped; runner attestation deferred; no operational signing today |
-| **Direct-to-main bypass** | Tampering | Task #276 low-gate-without-threat-model path | Review gate removed; all other vectors amplified | This row (B-0032) + Otto-346 sequencing; task #276 BLOCKED on B-0032 close | — (this is the gate, not a residual gap) |
-| **Content injection** | Tampering + Elevation of Privilege | Heartbeat file body / frontmatter via any write path | AI state-vector shift via crafted natural language, directive text, or invisible-Unicode payload — syntactically valid, passes schema lint | Semantic-diff-lint + outlier-detection on content + invisible-Unicode gate | **T3 gap (AH-2):** no deployed semantic lint today; this is the primary named threat (cognition-poisoning) with no operational defence |
+| Vector                    | STRIDE                             | Surface                                              | Impact                                                                                                                                                              | Mitigation                                                                                                       | Tier gap                                                                                                                                                                                                                                                                             |
+| ------------------------- | ---------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Repository compromise** | Tampering                          | Push permissions to `main`                           | Poisoned heartbeat write absorbed by future AI reads                                                                                                                | Branch protection + signed commits + SLSA                                                                        | T3: signed commits not yet required                                                                                                                                                                                                                                                  |
+| **Force-push attack**     | Tampering + Repudiation            | Admin-override bypass of `force-push: false`         | History rewritten; poison enters canonical history                                                                                                                  | `non_fast_forward` ruleset (enforced on LFG) + signed commits                                                    | T3: admin bypass remains a gap; no immutable-history guarantee at host level                                                                                                                                                                                                         |
+| **Insider threat**        | Tampering + Repudiation            | Authorized contributor submits poisoned PR           | Hard-to-detect poison passes review gate                                                                                                                            | Review gate + per-commit-attestation                                                                             | **T2+ gap (AH-1):** at bus-factor 1, review gate = maintainer = insider threat; gate defends T0/T1 only; T2+ requires a second independent reviewer (deferred). Unicode smuggling (invisible-Unicode class) is a sub-class of semantic poison the review gate cannot catch visually. |
+| **Supply-chain**          | Tampering + Spoofing               | Compromised CI runner with `main`-write permissions  | CI-injected poison bypasses human review; cache-poison (Khan class) that affects the CI runner performing heartbeat writes inherits heartbeat-specific blast radius | SLSA L2+ + Sigstore + runner-attestation + signing infrastructure (Otto-346 design intent — **not yet shipped**) | T3: SLSA L2 not shipped; runner attestation deferred; no operational signing today                                                                                                                                                                                                   |
+| **Direct-to-main bypass** | Tampering                          | Task #276 low-gate-without-threat-model path         | Review gate removed; all other vectors amplified                                                                                                                    | This row (B-0032) + Otto-346 sequencing; task #276 BLOCKED on B-0032 close                                       | — (this is the gate, not a residual gap)                                                                                                                                                                                                                                             |
+| **Content injection**     | Tampering + Elevation of Privilege | Heartbeat file body / frontmatter via any write path | AI state-vector shift via crafted natural language, directive text, or invisible-Unicode payload — syntactically valid, passes schema lint                          | Semantic-diff-lint + outlier-detection on content + invisible-Unicode gate                                       | **T3 gap (AH-2):** no deployed semantic lint today; this is the primary named threat (cognition-poisoning) with no operational defence                                                                                                                                               |
 
 **AceHack scoping note (AH-3):** All six vectors apply per-fork. AceHack/main
 (backup mirror, daily sync cadence) has weaker control posture than LFG — it is
@@ -515,12 +515,12 @@ Zeta's SLSA target is **L1 now → L2 mid-term → L3 pre-v1.0
 NuGet release**. Aaron's round-30 decision: walk up the ladder,
 no rush.
 
-| SLSA level | Claim | Zeta status |
-|---|---|---|
-| **L0** | no guarantees | (not us) |
-| **L1** | build process documented; some provenance | **✅ today** — `gate.yml` is the documented build; CI build on `main` is the provenance anchor |
-| **L2** | hosted build service; provenance generated | partially — GHA is hosted; provenance not attested |
-| **L3** | hardened build service; non-forgeable provenance | pre-v1.0 NuGet release blocker |
+| SLSA level | Claim                                            | Zeta status                                                                                    |
+| ---------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| **L0**     | no guarantees                                    | (not us)                                                                                       |
+| **L1**     | build process documented; some provenance        | **✅ today** — `gate.yml` is the documented build; CI build on `main` is the provenance anchor |
+| **L2**     | hosted build service; provenance generated       | partially — GHA is hosted; provenance not attested                                             |
+| **L3**     | hardened build service; non-forgeable provenance | pre-v1.0 NuGet release blocker                                                                 |
 
 Round-30 lands L1 explicitly (documented build). Round-31+
 incrementally adds `actions/attest-build-provenance` + OIDC
@@ -532,16 +532,16 @@ Cross-reference to `tools/tla/specs/`, `tools/alloy/specs/`,
 `tools/lean4/Lean4/`: which STRIDE-quadrant invariants have
 machine-checked artefacts today.
 
-| STRIDE row | Formal spec | File |
-|---|---|---|
-| Tick monotonicity (tampering on runtime) | TLA+ | `tools/tla/specs/TickMonotonicity.tla` |
-| Spine merge invariants (tampering) | TLA+ | `tools/tla/specs/SpineMergeInvariants.tla` |
-| Operator lifecycle race (spoofing / tampering) | TLA+ | `tools/tla/specs/OperatorLifecycleRace.tla` |
-| Recursive counting LFP (DoS) | TLA+ | `tools/tla/specs/RecursiveCountingLFP.tla` |
-| Two-phase commit (spoofing / repudiation) | TLA+ | `tools/tla/specs/TwoPCSink.tla` |
-| Info-theoretic sharder (DoS) | Alloy | `tools/alloy/specs/InfoTheoreticSharder.als` |
-| Spine shape (tampering) | Alloy | `tools/alloy/specs/Spine.als` |
-| DBSP chain rule (repudiation by derivation) | Lean 4 | `tools/lean4/Lean4/DbspChainRule.lean` |
+| STRIDE row                                     | Formal spec | File                                         |
+| ---------------------------------------------- | ----------- | -------------------------------------------- |
+| Tick monotonicity (tampering on runtime)       | TLA+        | `tools/tla/specs/TickMonotonicity.tla`       |
+| Spine merge invariants (tampering)             | TLA+        | `tools/tla/specs/SpineMergeInvariants.tla`   |
+| Operator lifecycle race (spoofing / tampering) | TLA+        | `tools/tla/specs/OperatorLifecycleRace.tla`  |
+| Recursive counting LFP (DoS)                   | TLA+        | `tools/tla/specs/RecursiveCountingLFP.tla`   |
+| Two-phase commit (spoofing / repudiation)      | TLA+        | `tools/tla/specs/TwoPCSink.tla`              |
+| Info-theoretic sharder (DoS)                   | Alloy       | `tools/alloy/specs/InfoTheoreticSharder.als` |
+| Spine shape (tampering)                        | Alloy       | `tools/alloy/specs/Spine.als`                |
+| DBSP chain rule (repudiation by derivation)    | Lean 4      | `tools/lean4/Lean4/DbspChainRule.lean`       |
 
 Target for v1.0: one formal spec per STRIDE quadrant. Current
 coverage is heaviest on tampering + DoS; spoofing is partial;
@@ -552,23 +552,23 @@ information disclosure and elevation are formal-spec gaps.
 Reverse index: for each class of control Zeta ships, which
 adversary tier it defends to. Forces honest tier scoring.
 
-| Control | T0 | T1 | T2 | T3 |
-|---|---|---|---|---|
-| Semgrep lint rules (14, ENFORCED at CI round 30 via `--error`; all matches hard-fail regardless of declared severity) | ✅ | ✅ | ✅ | partial (long-game regression outside lint scope; diff-lint on skills BACKLOG) |
-| Build gate (`dotnet build` 0W/0E) | ✅ | ✅ | ✅ | — (compile-clean code can still be a Jia-Tan-class backdoor; not a T3 control) |
-| Test suite | ✅ | ✅ | partial | partial |
-| Full-SHA action pins | — | — | ✅ | ✅ |
-| SHA-pin enforcement Semgrep rule | — | — | ✅ | ✅ |
-| `permissions: contents: read` + no secrets *(invariant breakable the moment any secret — e.g., `NUGET_API_KEY` — lands; treat secret introduction as a design-doc moment)* | — | ✅ | ✅ | ✅ (today) |
-| 2FA on maintainer account | — | ✅ | ✅ | **partial — bus-factor exception** |
-| Hardware security key on maintainer | — | — | — | ✅ (not yet enabled) |
-| Signed commits on main | — | — | — | ✅ (deferred) |
-| Co-maintainer with cooling period | — | — | — | ✅ (deferred) |
-| Branch protection | — | ✅ | ✅ | ✅ |
-| `skill-creator` workflow + reviewer floor | ✅ | ✅ | ✅ | partial (long-game needs diff-lint) |
-| `packages.lock.json` (round 31) | — | ✅ | ✅ | ✅ |
-| SLSA L3 provenance (pre-v1.0) | — | — | — | ✅ |
-| OIDC publish (pre-v1.0) | — | — | ✅ | ✅ |
+| Control                                                                                                                                                                    | T0  | T1  | T2      | T3                                                                             |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | --- | ------- | ------------------------------------------------------------------------------ |
+| Semgrep lint rules (14, ENFORCED at CI round 30 via `--error`; all matches hard-fail regardless of declared severity)                                                      | ✅  | ✅  | ✅      | partial (long-game regression outside lint scope; diff-lint on skills BACKLOG) |
+| Build gate (`dotnet build` 0W/0E)                                                                                                                                          | ✅  | ✅  | ✅      | — (compile-clean code can still be a Jia-Tan-class backdoor; not a T3 control) |
+| Test suite                                                                                                                                                                 | ✅  | ✅  | partial | partial                                                                        |
+| Full-SHA action pins                                                                                                                                                       | —   | —   | ✅      | ✅                                                                             |
+| SHA-pin enforcement Semgrep rule                                                                                                                                           | —   | —   | ✅      | ✅                                                                             |
+| `permissions: contents: read` + no secrets _(invariant breakable the moment any secret — e.g., `NUGET_API_KEY` — lands; treat secret introduction as a design-doc moment)_ | —   | ✅  | ✅      | ✅ (today)                                                                     |
+| 2FA on maintainer account                                                                                                                                                  | —   | ✅  | ✅      | **partial — bus-factor exception**                                             |
+| Hardware security key on maintainer                                                                                                                                        | —   | —   | —       | ✅ (not yet enabled)                                                           |
+| Signed commits on main                                                                                                                                                     | —   | —   | —       | ✅ (deferred)                                                                  |
+| Co-maintainer with cooling period                                                                                                                                          | —   | —   | —       | ✅ (deferred)                                                                  |
+| Branch protection                                                                                                                                                          | —   | ✅  | ✅      | ✅                                                                             |
+| `skill-creator` workflow + reviewer floor                                                                                                                                  | ✅  | ✅  | ✅      | partial (long-game needs diff-lint)                                            |
+| `packages.lock.json` (round 31)                                                                                                                                            | —   | ✅  | ✅      | ✅                                                                             |
+| SLSA L3 provenance (pre-v1.0)                                                                                                                                              | —   | —   | —       | ✅                                                                             |
+| OIDC publish (pre-v1.0)                                                                                                                                                    | —   | —   | ✅      | ✅                                                                             |
 
 ## Priorities
 
@@ -608,9 +608,9 @@ Carry-forward priorities:
 ## References
 
 - Microsoft SDL practices 4+5+9 (`docs/security/SDL-CHECKLIST.md`)
-- Adam Shostack, *Threat Modeling: Designing for Security* (Wiley 2014)
+- Adam Shostack, _Threat Modeling: Designing for Security_ (Wiley 2014)
 - Adam Shostack's EoP card game — upstream only, not vendored
-- STRIDE: Howard & LeBlanc, *Writing Secure Code* 2nd ed. 2003
+- STRIDE: Howard & LeBlanc, _Writing Secure Code_ 2nd ed. 2003
 - tj-actions/changed-files supply-chain cascade
   (CVE-2025-30066, March 2025) — Unit 42, CISA, StepSecurity
 - XZ Utils backdoor (Jia Tan, 2024) — research!rsc (Russ Cox),

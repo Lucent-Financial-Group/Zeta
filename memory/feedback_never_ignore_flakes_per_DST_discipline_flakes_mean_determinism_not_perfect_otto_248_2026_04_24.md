@@ -4,14 +4,15 @@ description: Human maintainer Otto-248 critical discipline after I treated the d
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Flakes are determinism violations. Fix them, don't retry.**
 
 Direct human-maintainer quote (verbatim):
 
-> *"never ignore flakes per DST they must be fixed,
-> flakes just mean that your DST isnt perfect."*
+> _"never ignore flakes per DST they must be fixed,
+> flakes just mean that your DST isnt perfect."_
 
 ## Why this matters
 
@@ -64,7 +65,7 @@ For a build-tool flake like the F# SIGSEGV:
    the segfault? (fresh shell, specific project order,
    uncached state, specific `.NET` SDK patch version, etc.)
 2. **Read the crash report / core dump.** macOS IPS files
-   + stack traces tell you which library and which function.
+   - stack traces tell you which library and which function.
 3. **Check known-issues upstream.** `dotnet/fsharp`,
    `dotnet/runtime`, `dotnet/sdk` GitHub issues. File one
    if it doesn't exist.
@@ -101,6 +102,7 @@ really about):
 
 Not flakes (genuinely external transience, acceptable to
 retry):
+
 - GitHub API rate limit (retry with backoff is protocol)
 - Remote server 5xx on first hit, 200 on retry
 - `gh api` transient network failure
@@ -125,8 +127,8 @@ answer but we must distinguish.
 
 - Does NOT forbid retry mechanisms in production code.
   Retries with backoff are appropriate for genuinely-
-  external transient systems. The rule targets *flakes in
-  our own stack*.
+  external transient systems. The rule targets _flakes in
+  our own stack_.
 - Does NOT require fixing every flake immediately. But it
   DOES require **capturing** the flake (crash dump, seed,
   reproducing command) and **filing** a BACKLOG row so
@@ -138,8 +140,8 @@ answer but we must distinguish.
 
 ## Direct human-maintainer quote to preserve (verbatim)
 
-> *"never ignore flakes per DST they must be fixed, flakes
-> just mean that your DST isnt perfect."*
+> _"never ignore flakes per DST they must be fixed, flakes
+> just mean that your DST isnt perfect."_
 
 Future Otto: when a build, test, or tool fails and you're
 tempted to "just retry," STOP. Capture the failure state

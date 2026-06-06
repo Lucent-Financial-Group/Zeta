@@ -92,7 +92,7 @@ a **first-match-per-section** rule inside a file. Specifics:
    value overrides for C# files.
 4. **Negation patterns (`!pattern`) are not supported.**
    Exclusion is by narrow inclusion.
-5. **`**` matches zero or more directories;** `*` matches
+5. **`**`matches zero or more directories;**`\*` matches
    one path segment.
 
 The usual bug: a developer writes `[*.cs]` assuming it
@@ -122,14 +122,14 @@ Plus:
 
 Severities:
 
-| Keyword | Meaning |
-| --- | --- |
-| `error` | build-break |
-| `warning` | build-break under warn-as-error |
-| `suggestion` | IDE-only hint |
-| `silent` | rule runs but emits no user diagnostic |
-| `none` | rule disabled |
-| `default` | fall back to the rule's `DefaultSeverity` |
+| Keyword      | Meaning                                   |
+| ------------ | ----------------------------------------- |
+| `error`      | build-break                               |
+| `warning`    | build-break under warn-as-error           |
+| `suggestion` | IDE-only hint                             |
+| `silent`     | rule runs but emits no user diagnostic    |
+| `none`       | rule disabled                             |
+| `default`    | fall back to the rule's `DefaultSeverity` |
 
 **`none` vs `silent`** matters: `silent` still runs the
 analyzer (you pay the cost and can observe via IDE
@@ -173,17 +173,17 @@ The MSBuild `CompilerVisibleProperty` is the door; the
 
 ## Glob semantics — the dialect trap
 
-The EditorConfig glob language is *not* Git's gitignore
+The EditorConfig glob language is _not_ Git's gitignore
 language. Key differences:
 
-| Pattern | EditorConfig | gitignore |
-| --- | --- | --- |
-| `**` | matches any path | matches any path |
-| `*.cs` | matches any C# file (within the section) | matches at any depth |
-| `src/*.cs` | C# files **in `src/` directly** | also at depth |
-| `src/**/*.cs` | C# files at any depth under `src/` | ditto |
+| Pattern       | EditorConfig                             | gitignore            |
+| ------------- | ---------------------------------------- | -------------------- |
+| `**`          | matches any path                         | matches any path     |
+| `*.cs`        | matches any C# file (within the section) | matches at any depth |
+| `src/*.cs`    | C# files **in `src/` directly**          | also at depth        |
+| `src/**/*.cs` | C# files at any depth under `src/`       | ditto                |
 
-The second row is where people trip: `[*.cs]` matches *any*
+The second row is where people trip: `[*.cs]` matches _any_
 C# file (depth-agnostic) in EditorConfig; `[src/*.cs]` is
 non-recursive.
 
@@ -270,7 +270,7 @@ The cross-tool picture is uneven — which is why
 - EditorConfig spec — editorconfig.org/#file-format-details.
 - .NET `.editorconfig` docs —
   `learn.microsoft.com/dotnet/fundamentals/code-analysis/
-  configuration-options`.
+configuration-options`.
 - Fantomas config docs.
 - Roslyn `AnalyzerConfigOptions` source.
 - `Microsoft.CodeAnalysis.Workspaces` — how the cascade is

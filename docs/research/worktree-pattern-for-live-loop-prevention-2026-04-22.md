@@ -2,12 +2,12 @@
 
 **Date:** 2026-04-22
 **Context:** Live-loop averted tick (2026-04-22). Aaron's
- *"You could use worktrees if that helps IDK, I know there is a
+_"You could use worktrees if that helps IDK, I know there is a
 command line switch for it so maybe yo ushould resrch you might
-not be able to do it right with that switch."*
+not be able to do it right with that switch."_
 **Author:** opus-4-7 / session round-44
 **Status:** research only; no worktree exercised this tick
- (tool-gate discipline).
+(tool-gate discipline).
 
 ## The problem (one sentence)
 
@@ -39,7 +39,7 @@ only.
 **Cons:**
 
 - Shell-level switching only. A single Claude Code session's
-  working directory still points at *one* worktree at a time;
+  working directory still points at _one_ worktree at a time;
   you'd have to `cd` between them, and CWD-dependent caches
   (system prompt sections, memory files, plans directory) don't
   automatically reflect the new location.
@@ -60,7 +60,7 @@ risk of polluting the main working tree; running an experimental
 implementation in isolation before merging findings back.
 
 **Not a fit for:** preventing the autonomous-loop live-loop
-pattern, because the autonomous loop runs on the *main* agent,
+pattern, because the autonomous loop runs on the _main_ agent,
 not a subagent.
 
 ### 3. `EnterWorktree` / `ExitWorktree` — main-agent scope
@@ -87,6 +87,7 @@ branch.
 
 **Strong usage gate (intentional):** the tool's description
 reads:
+
 > Use this tool ONLY when explicitly instructed to work in a
 > worktree — either by the user directly, or by project
 > instructions (CLAUDE.md / memory).
@@ -112,7 +113,7 @@ here" section:
 - **Speculative work on an open-PR branch uses a worktree.**
   When an `<<autonomous-loop>>` tick wakes and the current
   branch is the head of an open pull request (`gh pr list
-  --head "$(git branch --show-current)"` returns non-empty),
+--head "$(git branch --show-current)"` returns non-empty),
   the tick MUST `EnterWorktree` before making any commits.
   Rationale: committing speculative factory hygiene on the
   same branch as an open PR creates a live-loop where every
@@ -150,9 +151,9 @@ load-bearing); this research doc is the draft.
 
 **Recommendation:** `EnterWorktree` + CLAUDE.md rule **AND**
 pre-push heuristic detector — not one or the other. Both are
-permanent factory surface. Aaron 2026-04-22: *"even with the
-fix does not mean we could not regress"* + *"a discovered
-class is a discovered class even if you fix the issue."* The
+permanent factory surface. Aaron 2026-04-22: _"even with the
+fix does not mean we could not regress"_ + _"a discovered
+class is a discovered class even if you fix the issue."_ The
 structural fix prevents a disciplined tick from violating the
 invariant; the detector catches regressions when the discipline
 decays (a future tick that didn't re-read CLAUDE.md, a
@@ -166,7 +167,7 @@ Total live-loop detection is undecidable (halting problem, per
 Turing 1936 via Gödel 1931; Rice's theorem extends to any
 non-trivial semantic property). Heuristic detectors suffice for
 the shapes we actually encounter. The worktree pattern is a
-*structural* prevention — it makes the specific live-loop shape
+_structural_ prevention — it makes the specific live-loop shape
 impossible to construct **for disciplined ticks**.
 
 But structural prevention does not eliminate the class; it

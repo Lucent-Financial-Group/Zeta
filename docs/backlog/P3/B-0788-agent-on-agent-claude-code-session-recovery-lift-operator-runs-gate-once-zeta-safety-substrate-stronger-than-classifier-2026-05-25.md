@@ -27,8 +27,8 @@ it forces a human in the loop for every recovery — including
 recoveries where one Otto needs to repair a peer Otto's wedged
 session that the peer can't fix from inside.
 
-Aaron 2026-05-26: *"this is something we can allow other agents to
-run on each other even tually so we need no human operator"* +
+Aaron 2026-05-26: _"this is something we can allow other agents to
+run on each other even tually so we need no human operator"_ +
 agreed with the eventual-shape design composed with the lift
 criteria.
 
@@ -63,8 +63,8 @@ four-field attribution:
     "operator": "<named human>",
     "scope": "Bash(bun tools/claude-code-recovery/repair-jsonl-strip-images.ts:*)",
     "policy": "Agents may run --apply against own-or-peer corrupted Claude Code sessions in ~/.claude/projects/. Built-in atomic write + .bak make the operation reversible. Lift criteria 1+2+3 ratified <date>.",
-    "see_also": ".claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md"
-  }
+    "see_also": ".claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md",
+  },
 }
 ```
 

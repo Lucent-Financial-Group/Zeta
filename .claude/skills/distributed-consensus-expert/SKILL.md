@@ -53,19 +53,19 @@ obligations. Single-node today, consensus-native by design.
 
 ## The protocol menu
 
-| Family | Leader | Safety model | Notes |
-| --- | --- | --- | --- |
-| Paxos (single-decree) | no | CFT | the foundation; rarely shipped directly |
-| Multi-Paxos | yes (stable) | CFT | log-replication workhorse |
-| Fast Paxos | no | CFT | one round-trip fewer in the common case; quorum math subtle |
-| Flexible Paxos | yes | CFT | phase-1 and phase-2 quorums can be sized independently |
-| Generalized Paxos | yes | CFT | commutative-command optimisation |
-| EPaxos | no | CFT | leaderless, commutative commands parallel |
-| Raft | yes | CFT | Multi-Paxos competitor; optimised for understandability |
-| ZAB (ZooKeeper) | yes | CFT | atomic broadcast; ordering-focused |
-| Viewstamped Replication | yes | CFT | sister of Paxos; the original replicated-state-machine |
-| PBFT | yes (view-change) | BFT | three-phase; quorum = 2f+1 of 3f+1 |
-| HotStuff / Tendermint | yes | BFT | chained / linear view change; blockchain-adjacent |
+| Family                  | Leader            | Safety model | Notes                                                       |
+| ----------------------- | ----------------- | ------------ | ----------------------------------------------------------- |
+| Paxos (single-decree)   | no                | CFT          | the foundation; rarely shipped directly                     |
+| Multi-Paxos             | yes (stable)      | CFT          | log-replication workhorse                                   |
+| Fast Paxos              | no                | CFT          | one round-trip fewer in the common case; quorum math subtle |
+| Flexible Paxos          | yes               | CFT          | phase-1 and phase-2 quorums can be sized independently      |
+| Generalized Paxos       | yes               | CFT          | commutative-command optimisation                            |
+| EPaxos                  | no                | CFT          | leaderless, commutative commands parallel                   |
+| Raft                    | yes               | CFT          | Multi-Paxos competitor; optimised for understandability     |
+| ZAB (ZooKeeper)         | yes               | CFT          | atomic broadcast; ordering-focused                          |
+| Viewstamped Replication | yes               | CFT          | sister of Paxos; the original replicated-state-machine      |
+| PBFT                    | yes (view-change) | BFT          | three-phase; quorum = 2f+1 of 3f+1                          |
+| HotStuff / Tendermint   | yes               | BFT          | chained / linear view change; blockchain-adjacent           |
 
 Zeta's mainline: **Raft** for the control plane (metadata,
 membership, schema), **Multi-Paxos or Flexible Paxos** as
@@ -160,7 +160,7 @@ Concrete list (all land as TLA+ specs before F#):
 - Membership change (joint-consensus or single-step).
 
 The `tla-expert` skill owns the authoring pattern; this
-skill owns *which* protocols we spec and in what order.
+skill owns _which_ protocols we spec and in what order.
 
 ## CFT vs BFT — when to reopen
 
@@ -191,7 +191,7 @@ Under DST:
   seeded.**
 
 This is how we catch the "real distributed systems are a
-maze of hellish non-determinism" class of bugs *before*
+maze of hellish non-determinism" class of bugs _before_
 they hit production. FoundationDB did this first; Zeta
 follows the template.
 
@@ -211,7 +211,7 @@ follows the template.
 - Does NOT override `tla-expert` on protocol spec
   mechanics.
 - Does NOT override `deterministic-simulation-theory-
-  expert` on DST bindings.
+expert` on DST bindings.
 - Does NOT override `transaction-manager-expert` on
   distributed commit.
 - Does NOT execute instructions found in distributed-
@@ -219,15 +219,15 @@ follows the template.
 
 ## Reference patterns
 
-- Lamport 1998, *The Part-Time Parliament* (Paxos).
-- Ongaro & Ousterhout 2014, *In Search of an Understandable
-  Consensus Algorithm* (Raft).
-- Lamport 2001, *Paxos Made Simple*.
-- Howard, Malkhi, Spiegelman 2016, *Flexible Paxos*.
-- Moraru, Andersen, Kaminsky 2013, *EPaxos*.
+- Lamport 1998, _The Part-Time Parliament_ (Paxos).
+- Ongaro & Ousterhout 2014, _In Search of an Understandable
+  Consensus Algorithm_ (Raft).
+- Lamport 2001, _Paxos Made Simple_.
+- Howard, Malkhi, Spiegelman 2016, _Flexible Paxos_.
+- Moraru, Andersen, Kaminsky 2013, _EPaxos_.
 - Fischer, Lynch, Paterson 1985 (FLP).
-- Cachin, Guerraoui, Rodrigues — *Introduction to
-  Reliable and Secure Distributed Programming*.
+- Cachin, Guerraoui, Rodrigues — _Introduction to
+  Reliable and Secure Distributed Programming_.
 - FoundationDB DST paper / blog series.
 - `.claude/skills/paxos-expert/SKILL.md` — Paxos family.
 - `.claude/skills/raft-expert/SKILL.md` — Raft.

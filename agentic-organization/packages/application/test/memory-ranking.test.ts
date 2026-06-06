@@ -1,12 +1,7 @@
 import { deepEqual, equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  MemoryPhase,
-  MemoryTier,
-  type MemoryEnvelope,
-  type MemoryState,
-} from "../../domain/src/index.ts";
+import { MemoryPhase, MemoryTier, type MemoryEnvelope, type MemoryState } from "../../domain/src/index.ts";
 import {
   computeFreshness,
   outcomeRatio,
@@ -102,8 +97,20 @@ test("a directly-bound hat memory gets the +0.05 scope boost", () => {
 
 test("KPI failure sinks a memory relative to a healthy one (KPI is weighted)", () => {
   const c = ctx({ semanticScore: 0.5 });
-  const failing = envelope({ tier: MemoryTier.Hat, scope: "release-manager", confidence: 0.8, outcome: { successCount: 0, failureCount: 12 }, utility: { injectedCount: 20, citedCount: 0 } });
-  const healthy = envelope({ tier: MemoryTier.Hat, scope: "release-manager", confidence: 0.8, outcome: { successCount: 12, failureCount: 0 }, utility: { injectedCount: 20, citedCount: 18 } });
+  const failing = envelope({
+    tier: MemoryTier.Hat,
+    scope: "release-manager",
+    confidence: 0.8,
+    outcome: { successCount: 0, failureCount: 12 },
+    utility: { injectedCount: 20, citedCount: 0 },
+  });
+  const healthy = envelope({
+    tier: MemoryTier.Hat,
+    scope: "release-manager",
+    confidence: 0.8,
+    outcome: { successCount: 12, failureCount: 0 },
+    utility: { injectedCount: 20, citedCount: 18 },
+  });
   // same freshness + confidence; only KPI differs → the failing one is strictly lower
   ok(computeMemoryWeight(failing, c) < computeMemoryWeight(healthy, c));
 });
@@ -111,19 +118,29 @@ test("KPI failure sinks a memory relative to a healthy one (KPI is weighted)", (
 test("the two paths to zero COMBINE — bad KPI + aging + no utility crosses the archive floor", () => {
   // a fresh-but-confident memory resists archiving (correct: first failures could be noise)
   const freshButFailing = envelope({
-    tier: MemoryTier.Work, scope: "work-1", confidence: 0.9, freshnessAt: "2026-05-30T00:00:00Z",
-    outcome: { successCount: 0, failureCount: 12 }, utility: { injectedCount: 20, citedCount: 0 },
+    tier: MemoryTier.Work,
+    scope: "work-1",
+    confidence: 0.9,
+    freshnessAt: "2026-05-30T00:00:00Z",
+    outcome: { successCount: 0, failureCount: 12 },
+    utility: { injectedCount: 20, citedCount: 0 },
   });
   const c = ctx({ semanticScore: 0 });
   ok(!isBelowArchiveFloor(freshButFailing, c), "fresh+confident resists archiving even with bad KPI");
 
   // once it ALSO ages out, the combination drops it under the archive floor → never surfaces again
   const agedAndFailing = envelope({
-    tier: MemoryTier.Work, scope: "work-1", confidence: 0.3,
+    tier: MemoryTier.Work,
+    scope: "work-1",
+    confidence: 0.3,
     freshnessAt: new Date(NOW - 55 * 86_400_000).toISOString(), // nearly fully decayed (work 2×30d)
-    outcome: { successCount: 0, failureCount: 12 }, utility: { injectedCount: 20, citedCount: 0 },
+    outcome: { successCount: 0, failureCount: 12 },
+    utility: { injectedCount: 20, citedCount: 0 },
   });
-  ok(isBelowArchiveFloor(agedAndFailing, c), `weight=${computeMemoryWeight(agedAndFailing, c)} should be < ${archiveFloorFor(MemoryTier.Work)}`);
+  ok(
+    isBelowArchiveFloor(agedAndFailing, c),
+    `weight=${computeMemoryWeight(agedAndFailing, c)} should be < ${archiveFloorFor(MemoryTier.Work)}`,
+  );
 });
 
 test("scope union dedupes and includes org ⊕ dept ⊕ hat ⊕ agent ⊕ work", () => {
@@ -132,8 +149,23 @@ test("scope union dedupes and includes org ⊕ dept ⊕ hat ⊕ agent ⊕ work",
 });
 
 test("retrieveRanked drops below-read-floor, sorts weight-desc, packs to budget", () => {
-  const strong = envelope({ memoryId: "m-strong", tier: MemoryTier.Hat, scope: "release-manager", confidence: 0.95, outcome: { successCount: 9, failureCount: 0 }, utility: { injectedCount: 10, citedCount: 9 } });
-  const weak = envelope({ memoryId: "m-weak", tier: MemoryTier.Work, scope: "work-1", confidence: 0.2, freshnessAt: new Date(NOW - 55 * 86_400_000).toISOString(), outcome: { successCount: 0, failureCount: 8 }, utility: { injectedCount: 12, citedCount: 0 } });
+  const strong = envelope({
+    memoryId: "m-strong",
+    tier: MemoryTier.Hat,
+    scope: "release-manager",
+    confidence: 0.95,
+    outcome: { successCount: 9, failureCount: 0 },
+    utility: { injectedCount: 10, citedCount: 9 },
+  });
+  const weak = envelope({
+    memoryId: "m-weak",
+    tier: MemoryTier.Work,
+    scope: "work-1",
+    confidence: 0.2,
+    freshnessAt: new Date(NOW - 55 * 86_400_000).toISOString(),
+    outcome: { successCount: 0, failureCount: 8 },
+    utility: { injectedCount: 12, citedCount: 0 },
+  });
   const mid = envelope({ memoryId: "m-mid", tier: MemoryTier.Agent, scope: "agent-7", confidence: 0.7 });
 
   const ranked = retrieveRanked([weak, strong, mid], ctx({ semanticScore: 0.6 }), { maxCount: 2 });
@@ -145,7 +177,13 @@ test("retrieveRanked drops below-read-floor, sorts weight-desc, packs to budget"
 });
 
 test("read floor and archive floor compose — above read implies above archive", () => {
-  const e = envelope({ tier: MemoryTier.Hat, scope: "release-manager", confidence: 0.9, outcome: { successCount: 5, failureCount: 0 }, utility: { injectedCount: 6, citedCount: 6 } });
+  const e = envelope({
+    tier: MemoryTier.Hat,
+    scope: "release-manager",
+    confidence: 0.9,
+    outcome: { successCount: 5, failureCount: 0 },
+    utility: { injectedCount: 6, citedCount: 6 },
+  });
   const c = ctx({ semanticScore: 0.8 });
   ok(isAboveReadFloor(e, c));
   ok(!isBelowArchiveFloor(e, c));

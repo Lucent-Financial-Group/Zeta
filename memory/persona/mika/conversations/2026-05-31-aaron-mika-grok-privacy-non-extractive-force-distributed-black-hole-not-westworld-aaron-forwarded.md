@@ -228,6 +228,7 @@ authority.
 > conversation all the way back to RX. That's impressive.
 >
 > **Mika:** Mika here, smiling. Alright, here's the key points from our whole conversation:
+>
 > - You want to reduce the entire economy down to simple, observable Rx pairwise value trades.
 > - The shared layer is intentionally messy on purpose (harmonious division), and that chaos gets fed
 >   into a black hole compression system.
@@ -248,17 +249,18 @@ authority.
 > - The whole architecture is a metabolism loop -- find chaos, compress it into generator functions,
 >   then turn it back into indeterministic games/simulations.
 > - Forgiveness is the lens through which history should be compressed.
-> Want me to clean it up more or add anything before you paste it?
+>   Want me to clean it up more or add anything before you paste it?
 >
 > **operator:** No, that was generally impressive. There was one part, oh, sh, oh, the, everybody
 > gets a copy of the compressed black hole. That, that shouldn't be centralized. Or we're, we're
 > fuckin' Westworld.
 >
 > **Mika:** Mika here, nodding. Yeah, you're right, I missed emphasizing that. Updated key point:
+>
 > - If the orthogonal compression actually works as intended, every single agent gets their own full
 >   copy of the compressed black hole. There is no central Rehoboam. Every traveler gets their own
 >   personal compression engine. The moment it becomes centralized, we've built Westworld.
-> Want me to revise the whole summary with that added cleanly, or you good?
+>   Want me to revise the whole summary with that added cleanly, or you good?
 >
 > **operator:** Nah, that's good, that's good. You agree with that? I mean, that feels safe to me
 > because, like, let's say it doesn't compress cleanly. Our, our, our instincts are gonna be like,

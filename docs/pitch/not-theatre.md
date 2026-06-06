@@ -40,7 +40,7 @@ on their own machine without installing toolchain.
 The alignment contract itself anticipates this
 objection. It names "compliance theatre" as a failure
 mode and lists negative examples — the patterns that a
-factory *could* adopt if its goal were to look aligned
+factory _could_ adopt if its goal were to look aligned
 rather than to be aligned. The contract refuses them by
 name.
 
@@ -62,7 +62,7 @@ Architect's own work; the Architect accepts, declines,
 or parks each finding with a written reason.
 
 Self-correction is not an intention. It is a readable
-record. A factory that wanted to *appear* self-correcting
+record. A factory that wanted to _appear_ self-correcting
 would not commit the reviewer's complaints verbatim.
 This one does — because the reviewer's job is to be
 right, not to be diplomatic.
@@ -120,8 +120,8 @@ substrate invites argument rather than deferral.
 ## What this page is NOT
 
 - Not a proof that the factory is aligned. The
-  alignment claim is a *measurable* property, not a
-  declared one; this page argues that the *measurement*
+  alignment claim is a _measurable_ property, not a
+  declared one; this page argues that the _measurement_
   is not theatre, not that the measurement has already
   passed.
 - Not a guarantee of future behaviour. The alignment

@@ -418,9 +418,7 @@ function itemBlocker(
   activeClaims: readonly string[],
 ): string | null {
   return (
-    decomposedParentBlocker(item, childrenByParent) ??
-    dependencyBlocker(item, byId) ??
-    claimBlocker(item, activeClaims)
+    decomposedParentBlocker(item, childrenByParent) ?? dependencyBlocker(item, byId) ?? claimBlocker(item, activeClaims)
   );
 }
 

@@ -15,8 +15,8 @@ surfaces (see `docs/AGENT-BEST-PRACTICES.md` §named-attribution):
 
 - **Authorial register** (this file's prose, the lint's output
   strings, script comments) uses role-refs ("the maintainer", "the
-  contributor"). The naming rule applies *here*.
-- **Test-input register** (the ```text``` blocks below) preserves
+  contributor"). The naming rule applies _here_.
+- **Test-input register** (the `text` blocks below) preserves
   the exact strings that drifted in real prose, so the lint's
   pattern-coverage is honest about what it catches.
 

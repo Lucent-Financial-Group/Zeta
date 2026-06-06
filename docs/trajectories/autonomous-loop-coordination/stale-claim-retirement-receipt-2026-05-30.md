@@ -40,11 +40,11 @@ active claim files.
 
 ## Reachability Table
 
-| Ref | Head | Committer date | Reachable from `origin/main` | Expected claim file |
-|---|---:|---:|---:|---:|
-| `origin/claim/b0140-bash-ts-migration-smallest-slice-riven-2026-05-08` | `a3be6f2644bc5be69f8e66264eb99d64b2154a27` | `2026-05-08T20:30:37Z` | yes | missing |
-| `origin/claim/b0271-pm2-first-research-pass-2026-05-08` | `5d1da7031132049dd4514af1da2afa8f5013f8b4` | `2026-05-09T01:59:24Z` | yes | missing |
-| `origin/claim/b0325-peer-call-firewall-kiro-claude-smallest-slice-riven-2026-05-09` | `d832d74fd01cfd8872691899a209214c9e136159` | `2026-05-09T12:35:17Z` | yes | missing |
+| Ref                                                                                 |                                       Head |         Committer date | Reachable from `origin/main` | Expected claim file |
+| ----------------------------------------------------------------------------------- | -----------------------------------------: | ---------------------: | ---------------------------: | ------------------: |
+| `origin/claim/b0140-bash-ts-migration-smallest-slice-riven-2026-05-08`              | `a3be6f2644bc5be69f8e66264eb99d64b2154a27` | `2026-05-08T20:30:37Z` |                          yes |             missing |
+| `origin/claim/b0271-pm2-first-research-pass-2026-05-08`                             | `5d1da7031132049dd4514af1da2afa8f5013f8b4` | `2026-05-09T01:59:24Z` |                          yes |             missing |
+| `origin/claim/b0325-peer-call-firewall-kiro-claude-smallest-slice-riven-2026-05-09` | `d832d74fd01cfd8872691899a209214c9e136159` | `2026-05-09T12:35:17Z` |                          yes |             missing |
 
 ## Head Subjects
 

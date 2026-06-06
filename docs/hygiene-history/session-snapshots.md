@@ -11,8 +11,8 @@ surfaces are all pinned and recorded."
 Across Claude model versions (3.5 → 3.7 → 4 → 4.x), the
 system-prompt bundle + knowledge cutoff + memory-retention
 language shift materially. When a future session, external
-reviewer, or tuning pipeline asks *"what did Kenji actually
-know when this decision was made?"* this file answers.
+reviewer, or tuning pipeline asks _"what did Kenji actually
+know when this decision was made?"_ this file answers.
 
 Complements:
 
@@ -43,10 +43,10 @@ tools/hygiene/capture-tick-snapshot.sh --json
 ## Row format
 
 ```yaml
-- session_id: <session-boundary-slug>     # e.g., "2026-04-23-otto-long-session"
+- session_id: <session-boundary-slug> # e.g., "2026-04-23-otto-long-session"
   captured_utc: 2026-04-24T00:00:00Z
   event: session-open | mid-session-pin | session-close | compaction
-  agent: Otto                              # persona hat active; may change mid-session
+  agent: Otto # persona hat active; may change mid-session
   model_snapshot: claude-opus-4-7
   claude_cli_version: "2.1.118 (Claude Code)"
   head_sha: <git-sha>
@@ -61,7 +61,7 @@ tools/hygiene/capture-tick-snapshot.sh --json
   notes: >
     Free-form context: session-boundary reason, model swap
     rationale, compaction trigger, etc.
-  prompt_bundle_hash: null  # populate once a reconstruct-tool lands
+  prompt_bundle_hash: null # populate once a reconstruct-tool lands
 ```
 
 Append-only. Rows stay forever.
@@ -78,18 +78,18 @@ Append-only. Rows stay forever.
   branch: stabilize/snapshot-pinning-tick-history-amara-action-2
   repo: Lucent-Financial-Group/Zeta
   files:
-    claude_md_in_repo_sha: d774531bf284437bbc0bf68133651bf72e300e44
-    claude_md_home_sha: ""
-    agents_md_sha: ea94fa680373715526ebb0d6ecdfbd31e25794ff
-    memory_index_sha: f2799a35808f79ccb924641aaa1a04db73163be3
-    memory_index_bytes: 58842
+  claude_md_in_repo_sha: d774531bf284437bbc0bf68133651bf72e300e44
+  claude_md_home_sha: ""
+  agents_md_sha: ea94fa680373715526ebb0d6ecdfbd31e25794ff
+  memory_index_sha: f2799a35808f79ccb924641aaa1a04db73163be3
+  memory_index_bytes: 58842
   notes: >
-    First entry — captured at Otto-70 when snapshot-pinning
-    scaffolding landed. This session has been running long
-    (~70 Otto ticks); the actual session-open state is
-    earlier and was not captured at that time. Memory index
-    is currently 58842 bytes (over the FACTORY-HYGIENE row
-    #11 24976-byte cap — known separately-tracked drift).
+  First entry — captured at Otto-70 when snapshot-pinning
+  scaffolding landed. This session has been running long
+  (~70 Otto ticks); the actual session-open state is
+  earlier and was not captured at that time. Memory index
+  is currently 58842 bytes (over the FACTORY-HYGIENE row
+  #11 24976-byte cap — known separately-tracked drift).
   prompt_bundle_hash: null
 
 ## What this file is NOT
@@ -118,8 +118,8 @@ Append-only. Rows stay forever.
   action-summary; this file is per-session-state
 - `docs/decision-proxy-evidence/` — per-decision evidence
   (PR #222); can cite rows here via `model.loaded_memory_
-  files` + snapshot refs
+files` + snapshot refs
 - `docs/aurora/2026-04-23-amara-memory-drift-alignment-
-  claude-to-memories-drift.md` (PR #221) — Amara ferry
+claude-to-memories-drift.md` (PR #221) — Amara ferry
   that named snapshot-pinning as Stabilize-stage action
 - `tools/hygiene/capture-tick-snapshot.sh` — capture helper

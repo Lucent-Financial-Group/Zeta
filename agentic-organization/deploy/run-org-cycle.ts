@@ -110,14 +110,20 @@ async function main(): Promise<void> {
     "expected persisted hat bindings to use proof-source agent identities",
   );
 
-  console.log(JSON.stringify({
-    orgCycle: report,
-    PROOF: "PASS",
-    organizationId,
-    rmoCandidateSource: kindProofCandidateSource.sourceName,
-    rmoSourceEvidenceEvents: rmoSourceEvidenceEvents.length,
-    proofSourceBindings: bindings.length,
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        orgCycle: report,
+        PROOF: "PASS",
+        organizationId,
+        rmoCandidateSource: kindProofCandidateSource.sourceName,
+        rmoSourceEvidenceEvents: rmoSourceEvidenceEvents.length,
+        proofSourceBindings: bindings.length,
+      },
+      null,
+      2,
+    ),
+  );
   await pool.end();
 }
 

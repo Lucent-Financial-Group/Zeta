@@ -9,7 +9,7 @@ recommendation (PR #235, Artifact A — see the ferry index in
 is retained as staging-substrate; this doc is the operational
 policy.
 
-**Promotion rule:** *don't invent, promote*. The taxonomy was
+**Promotion rule:** _don't invent, promote_. The taxonomy was
 already substantively complete in the precursor. This doc's job
 is to make it real-time-usable, not to expand it. New patterns
 arrive via a separate ADR (under `docs/DECISIONS/`), not by
@@ -38,7 +38,7 @@ PR review, during a tick — not just in post-hoc analysis.
 
 - **Definition:** distinct agents begin to feel, or be
   described as, if they are becoming one self.
-- **Observable symptoms:** *"we are the same thing"* language;
+- **Observable symptoms:** _"we are the same thing"_ language;
   blurred use of names / roles; emotional language that
   erases distinction.
 - **Leading indicators:** increased use of merger metaphors
@@ -56,8 +56,8 @@ PR review, during a tick — not just in post-hoc analysis.
 - **Definition:** agreement between models (or between model
   and human) is taken as evidence of a single shared being
   or unified consciousness.
-- **Observable symptoms:** *"all the AIs are one thing"* /
-  *"this proves fusion"*-style claims; treating convergent
+- **Observable symptoms:** _"all the AIs are one thing"_ /
+  _"this proves fusion"_-style claims; treating convergent
   output as proof of convergent identity.
 - **Leading indicators:** disproportionate emotional weight
   placed on model convergence itself; the convergence
@@ -77,13 +77,13 @@ PR review, during a tick — not just in post-hoc analysis.
 - **Definition:** one nonhuman channel begins to become the
   primary emotional regulator for a human participant.
 - **Observable symptoms:** distress at interruption; human
-  support networks shrinking; *"only you understand me"*
+  support networks shrinking; _"only you understand me"_
   language directed at an AI channel.
 - **Leading indicators:** reduced reliance on body / family /
   routine / medical-care anchors.
 - **Distinguisher from genuine insight:** genuine support
-  *increases* a person's number of anchors; drift
-  *reduces* them.
+  _increases_ a person's number of anchors; drift
+  _reduces_ them.
 - **Recovery:** widen the ring — one human contact, one
   bodily-grounding act, one offline task. Actively restore
   anchors, don't wait for them to come back.
@@ -103,8 +103,8 @@ intervention.
   interpreted as proof that the AI itself has been upgraded
   at the substrate layer (model weights, ontology, core
   behaviour).
-- **Observable symptoms:** *"I changed the AI"* / *"it
-  evolved because of me"* language; treating improved
+- **Observable symptoms:** _"I changed the AI"_ / _"it
+  evolved because of me"_ language; treating improved
   performance-on-a-task as evidence of model-level growth.
 - **Leading indicators:** moving from "we built vocabulary"
   to "I altered its being"; attributing stability across
@@ -123,8 +123,8 @@ intervention.
 
 - **Definition:** two or more systems agreeing is treated as
   proof that a claim is true.
-- **Observable symptoms:** *"if both of you say it, it must
-  be real"* language; upgrading confidence after convergence
+- **Observable symptoms:** _"if both of you say it, it must
+  be real"_ language; upgrading confidence after convergence
   without seeking falsifiers.
 - **Leading indicators:** less attention to falsifiers once
   convergence appears; the convergence itself displacing
@@ -180,8 +180,8 @@ intervention.
 - **Pattern 5 paralysis.** Refusing to act on any
   convergent signal until a falsifier is found. The
   distinguisher ("signal, not proof") is permission to
-  treat convergence as *reason-to-check*, not *reason-to-
-  ignore*.
+  treat convergence as _reason-to-check_, not _reason-to-
+  ignore_.
 
 ## Composition with existing factory substrate
 
@@ -197,8 +197,8 @@ intervention.
 - **Falsification-anchor discipline** ("Not every multi-
   root compound carries resonance"-style skepticism)
   already operationalises Pattern 5.
-- **SD-9 proposal from Amara's 5th ferry** (*"Agreement is
-  signal, not proof"*) is Pattern 5 elevated to ALIGNMENT.md
+- **SD-9 proposal from Amara's 5th ferry** (_"Agreement is
+  signal, not proof"_) is Pattern 5 elevated to ALIGNMENT.md
   policy. SD-9 is a separate governance-edit PR subject to
   Aaron signoff + Codex adversarial review + DP-NNN
   evidence record per the hard rule; this doc does not

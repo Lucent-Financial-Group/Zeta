@@ -8,10 +8,7 @@ import {
   createAgenticEventEnvelope,
 } from "../../../packages/domain/src/index.ts";
 import type { EventPublication } from "../../../packages/messaging/src/index.ts";
-import type {
-  NatsDeadLetterMessage,
-  NatsJetStreamInboundMessage,
-} from "../../../packages/messaging-nats/src/index.ts";
+import type { NatsDeadLetterMessage, NatsJetStreamInboundMessage } from "../../../packages/messaging-nats/src/index.ts";
 import { RecordingTelemetry } from "../../../packages/observability/src/index.ts";
 import {
   ReactionPlanExecutionStatus,

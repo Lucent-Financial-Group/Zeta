@@ -23,7 +23,7 @@ substrate-drift discriminator in
 
 **Acceptance bullet → evidence**:
 
-1. *All 6 non-install `.sh` files have working TS siblings.*
+1. _All 6 non-install `.sh` files have working TS siblings._
    The self-test in the body (run `find tools -name '*.sh' …`)
    now returns ONLY install-graph files under `tools/setup/`.
    Three originals were ported then deleted in Phase 1-2
@@ -34,28 +34,28 @@ substrate-drift discriminator in
    `tools/peer-call/amara.sh` + `tools/peer-call/ani.sh` via
    subsequent ports). `tools/peer-call/amara.ts` (18891 bytes)
    and `tools/peer-call/ani.ts` (16599 bytes) are present.
-2. *Each TS sibling has at least one `bun test` covering its
-   primary entry path.* `tools/profile.test.ts` covers the
+2. _Each TS sibling has at least one `bun test` covering its
+   primary entry path._ `tools/profile.test.ts` covers the
    profile port. `tools/peer-call/smoke.test.ts` exercises
    help-text + flag-acceptance on all 8 peer-call wrappers
    (claude, grok, gemini, codex, kiro, amara, ani, riven) —
    generalized from the B-0421 acceptance criterion to all
    wrappers. The Phase-1/2 ports landed with their own test
    files in their respective PRs.
-3. *`.sh` siblings remain in tree during transition.* This
+3. _`.sh` siblings remain in tree during transition._ This
    bullet was written before the Phase 5 sweep; Phase 5 has
    landed and the originals are deleted (recoverable via
    `git log --diff-filter=D` per
    `tools/hygiene/LOST-FILES-LOCATIONS.md`).
-4. *`.py` policy lint added to gate.yml.* Landed at
+4. _`.py` policy lint added to gate.yml._ Landed at
    `.github/workflows/gate.yml:877` as the `lint-no-python-files`
    job invoking `bun tools/lint/no-python-files.ts`. Allowlist
    at `tools/lint/no-python-files.allowlist`; unit tests at
    `tools/lint/no-python-files.test.ts`. Phase 6 was explicitly
    marked DONE in the body on 2026-05-16.
-5. *package.json scripts updated.* `grep -E '\.(sh|py)' package.json`
+5. _package.json scripts updated._ `grep -E '\.(sh|py)' package.json`
    returns no matches; no shell/python references remain.
-6. *No regression on existing CI.* All migration PRs merged
+6. _No regression on existing CI._ All migration PRs merged
    green on `main`; no follow-up regression rows filed.
 
 The row was substrate-drift, not in-progress work. Close
@@ -72,11 +72,11 @@ was the discriminator that fired here.
 Aaron 2026-05-01 — explicit scope clarification on the TS-port
 trajectory:
 
-> *"every other .sh not called by install.sh"* + *"any .py"*
+> _"every other .sh not called by install.sh"_ + _"any .py"_
 
 Plus the leverage framing:
 
-> *"you can do a lot more if you write this in typescript"*
+> _"you can do a lot more if you write this in typescript"_
 
 Two clean rules:
 
@@ -91,8 +91,8 @@ Two clean rules:
 
 ## Why now
 
-The class-encoding observation Aaron named (*"there are only
-a few legit blockers you've run into classes of blockers"*)
+The class-encoding observation Aaron named (_"there are only
+a few legit blockers you've run into classes of blockers"_)
 maps directly onto B-0153's 13 mechanizable lint classes.
 This session has empirically validated all 13 across ~10 PRs.
 A TS-implemented pre-commit suite catching those classes
@@ -107,7 +107,7 @@ Plus the broader leverage: TS gets us:
 - Composable modules (import vs source-file)
 - Better error messages
 - Single-runtime tooling (just `bun`, not `bash + jq + sed
-  + awk + grep + ...`)
+  - awk + grep + ...`)
 
 ## Audit — current state (2026-05-01)
 
@@ -160,7 +160,7 @@ sibling; bash version stays as a fallback during transition
 All `.py` found are under `references/upstreams/` (read-only
 external project mirrors — not ours to port).
 
-So Aaron's *"any .py"* directive results in **zero porting
+So Aaron's _"any .py"_ directive results in **zero porting
 work** for Python — the constraint is preventive: future
 contributors should not introduce `.py` files; the policy is
 documented for clarity.
@@ -291,7 +291,7 @@ Phase 6 (.py policy) is hours, not days.
 - **Not P0** because all 6 `.sh` files are working today; no
   correctness regression
 - **Not P2** because the convergence loop benefit (Aaron's
-  *"you can do a lot more if you write this in typescript"*)
+  _"you can do a lot more if you write this in typescript"_)
   compounds across every future tool change. Each day spent
   with bash-only scripts in the non-install graph is a day
   of bash-quirk friction that TS would have eliminated.

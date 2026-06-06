@@ -6,26 +6,26 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1681 |
-| Title | memory(audit): hodl-invariant audit mechanization survey + 8 upstream-contribution candidates (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-05T18:37:01Z |
-| Merged at | 2026-05-05T20:07:20Z |
-| Merge commit SHA | `d1e65f4c61faecdbbd18851f52c5622d13f47be1` |
-| Branch | `memory/hodl-invariant-audit-mechanization-survey-13-properties-mapped-to-CI-and-upstream-contribution-candidates-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1681 |
-| Changed files | 2 |
-| Additions / deletions | +260 / -0 |
+| Field                 | Value                                                                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1681                                                                                                                                |
+| Title                 | memory(audit): hodl-invariant audit mechanization survey + 8 upstream-contribution candidates (Aaron 2026-05-05)                    |
+| Author                | `AceHack` (human)                                                                                                                   |
+| State                 | MERGED                                                                                                                              |
+| Created at            | 2026-05-05T18:37:01Z                                                                                                                |
+| Merged at             | 2026-05-05T20:07:20Z                                                                                                                |
+| Merge commit SHA      | `d1e65f4c61faecdbbd18851f52c5622d13f47be1`                                                                                          |
+| Branch                | `memory/hodl-invariant-audit-mechanization-survey-13-properties-mapped-to-CI-and-upstream-contribution-candidates-aaron-2026-05-05` |
+| Base branch           | `main`                                                                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1681                                                                            |
+| Changed files         | 2                                                                                                                                   |
+| Additions / deletions | +260 / -0                                                                                                                           |
 
 ## Description
 
 ## Summary
 
-Aaron's framing 2026-05-05: *"Is the audit currently human-judgment per primitive, or are there parts of the test wired into CI/lint already? do all you can tell if you cant and why and lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"*.
+Aaron's framing 2026-05-05: _"Is the audit currently human-judgment per primitive, or are there parts of the test wired into CI/lint already? do all you can tell if you cant and why and lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"_.
 
 Survey of all 13 hodl-invariant properties (PR #1680 canonical list) at commit `a7f4d71`:
 
@@ -48,15 +48,15 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 16 |
-| Resolved threads | 16 |
-| Unresolved threads | 0 |
-| Total review comments | 32 |
-| Total fix commits (touching thread paths) | 6 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 16    |
+| Resolved threads                          | 16    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 32    |
+| Total fix commits (touching thread paths) | 6     |
 
 ## Review threads
 
@@ -69,16 +69,16 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T18:38:29Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:209 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct inconsistent property totals in summary counts**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct inconsistent property totals in summary counts**
+
   The `Summary counts` line is internally inconsistent with the 13-row table above: the table lists 6 YELLOW properties (rows 2, 3, 5, 7, 8, 10), but this line claims 7 YELLOW, making `4 GREEN + 7 YELLOW + 2 RED + 1 HUMAN = 14` for a 13-property survey. This arithmetic mismatch weakens the audit’s reliability and can mislead prioritization of follow-up mechanization work.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:42:01Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:209 (association: MEMBER)
-    Fixed in commit ad9304d — corrected YELLOW count from 7 to 6 to match the 13-row table (rows 2, 3, 5, 7, 8, 10). Updated mechanization-percentage 70% to 77% (10 of 13 with at least partial mechanization). Carved sentence also corrected. Thanks for the catch.
+- **`AceHack` (human)** at 2026-05-05T18:42:01Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:209 (association: MEMBER)
+  Fixed in commit ad9304d — corrected YELLOW count from 7 to 6 to match the 13-row table (rows 2, 3, 5, 7, 8, 10). Updated mechanization-percentage 70% to 77% (10 of 13 with at least partial mechanization). Carved sentence also corrected. Thanks for the catch.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -90,12 +90,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T18:43:44Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:47 (association: NONE)
   Backticked `.cfg` will be treated as a path-claim (known extension) by tools/substrate-claim-checker, but no file named `.cfg` exists at repo root. Consider rephrasing to plain text (no backticks) or naming the concrete `.cfg` file(s) under tools/tla/specs/ (or just say “matching cfg file” without backticks).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:13Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:47 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:13Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:47 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -107,12 +106,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T18:43:45Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:47 (association: NONE)
   `DbspSpec.tla` is referenced as a standalone backticked path, but the file lives at `tools/tla/specs/DbspSpec.tla`. Using the full repo-relative path avoids substrate-claim-checker existence-drift and makes the reference clickable in GitHub UI.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:16Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:47 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:16Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:47 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -124,12 +122,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T18:43:45Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:68 (association: NONE)
   `DictionaryStripedCAS.tla` is backticked without its directory, but the spec is under `tools/tla/specs/DictionaryStripedCAS.tla`. As written, this looks like a repo-root file and may trip path-claim existence checks.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:18Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:68 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:18Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:68 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -141,12 +138,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T18:43:45Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:70 (association: NONE)
   `stryker-mutation.yml` is referenced as if it were at repo root, but the workflow is `.github/workflows/stryker-mutation.yml`. Using the correct path avoids broken references and path-claim drift.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:20Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:70 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:20Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:70 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -158,12 +154,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T18:43:45Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:82 (association: NONE)
   Backticked glob paths like `bench/Benchmarks/*.fs` and `bench/Feldera.Bench/*.fs` will be treated as literal path claims (and fail existence checks). Prefer referencing the directories (`bench/Benchmarks/`, `bench/Feldera.Bench/`) or naming concrete files.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:22Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:82 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:22Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:82 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -175,12 +170,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T18:43:46Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:94 (association: NONE)
   `DbspSpec.tla` is referenced as a standalone backticked path here as well, but the file is `tools/tla/specs/DbspSpec.tla`. Using the full path avoids broken references and path-claim existence drift.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:34Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:94 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:34Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:94 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -192,12 +186,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T18:43:46Z on `memory/MEMORY.md`:5 (association: NONE)
   This new entry uses “Per Aaron's directive …”. If `tools/lint/no-directives-otto-prose.ts` is run in strict mode, it flags “directive” phrasing on `memory/*.md` unless the line is a blockquote. Consider switching to “request”/“prompt” wording, or putting the verbatim quote in a `> …` blockquote to preserve wording without tripping the lint.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:37Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:37Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -212,8 +205,8 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T18:53:39Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:8 (association: MEMBER)
-    Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
+- **`AceHack` (human)** at 2026-05-05T18:53:39Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:8 (association: MEMBER)
+  Fixed in commit e6e33d4 — substrate-claim-checker path drift + no-directives-otto-prose lint flags addressed. TLA+ specs now use full tools/tla/specs/<name>.tla path; .cfg rephrased to plain-text reference; stryker-mutation.yml fixed to .github/workflows/ path; bench glob paths rephrased to directory references; 'Aaron directive' phrasing rephrased to 'Aaron framing' per Otto-357 no-directives discipline.
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -224,16 +217,16 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T18:54:28Z on `memory/MEMORY.md`:5 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct hodl-invariant counts in MEMORY index entry**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct hodl-invariant counts in MEMORY index entry**
+
   This index summary still reports `7 YELLOW` alongside `4 GREEN`, `2 RED`, and `1 HUMAN`, which totals 14 and contradicts the stated 13-property survey and the detailed audit file’s corrected `6 YELLOW` breakdown. Even though the earlier thread fixed the count inside the detailed report, this new mismatch in `memory/MEMORY.md` reintroduces inconsistent audit metadata and can mislead readers who use MEMORY.md as the quick canonical entry point.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:01:25Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed in latest commit on this branch — MEMORY.md index entry now matches the file body (6 YELLOW; was 7); also Aaron-directive -> Aaron-framing per Otto-357 lint.
+- **`AceHack` (human)** at 2026-05-05T19:01:25Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed in latest commit on this branch — MEMORY.md index entry now matches the file body (6 YELLOW; was 7); also Aaron-directive -> Aaron-framing per Otto-357 lint.
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -245,12 +238,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T19:07:22Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:53 (association: NONE)
   P1: `Allocation.Tests.fs` is in backticks, so substrate-claim-checker/check-existence.ts will treat it as a path claim (known `.fs` extension). There is no repo-root `Allocation.Tests.fs`; the real file is under `tests/Tests.FSharp/Runtime/`. Use the full repo-relative path or rephrase to avoid a broken path-claim.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:11:59Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:53 (association: MEMBER)
-    Fixed in commit 25c12f1 — path drift on Allocation.Tests.fs (now tests/Tests.FSharp/Runtime/Allocation.Tests.fs) + Storage/ (now tests/Tests.FSharp/Storage/) addressed; PR description updated to 6 YELLOW reconciling with file body.
+- **`AceHack` (human)** at 2026-05-05T19:11:59Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:53 (association: MEMBER)
+  Fixed in commit 25c12f1 — path drift on Allocation.Tests.fs (now tests/Tests.FSharp/Runtime/Allocation.Tests.fs) + Storage/ (now tests/Tests.FSharp/Storage/) addressed; PR description updated to 6 YELLOW reconciling with file body.
 
 ### Thread 12 -- resolved [outdated, collapsed]
 
@@ -262,12 +254,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T19:07:23Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:69 (association: NONE)
   P1: `Storage/` is in backticks, so it is treated as a path claim. There is no repo-root `Storage/`; the likely intended path is `tests/Tests.FSharp/Storage/` (or another concrete repo-relative location). Update the reference or remove backticks to avoid existence-drift findings.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:12:02Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:69 (association: MEMBER)
-    Fixed in commit 25c12f1 — path drift on Allocation.Tests.fs (now tests/Tests.FSharp/Runtime/Allocation.Tests.fs) + Storage/ (now tests/Tests.FSharp/Storage/) addressed; PR description updated to 6 YELLOW reconciling with file body.
+- **`AceHack` (human)** at 2026-05-05T19:12:02Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:69 (association: MEMBER)
+  Fixed in commit 25c12f1 — path drift on Allocation.Tests.fs (now tests/Tests.FSharp/Runtime/Allocation.Tests.fs) + Storage/ (now tests/Tests.FSharp/Storage/) addressed; PR description updated to 6 YELLOW reconciling with file body.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -282,8 +273,8 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:12:05Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed in commit 25c12f1 — path drift on Allocation.Tests.fs (now tests/Tests.FSharp/Runtime/Allocation.Tests.fs) + Storage/ (now tests/Tests.FSharp/Storage/) addressed; PR description updated to 6 YELLOW reconciling with file body.
+- **`AceHack` (human)** at 2026-05-05T19:12:05Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed in commit 25c12f1 — path drift on Allocation.Tests.fs (now tests/Tests.FSharp/Runtime/Allocation.Tests.fs) + Storage/ (now tests/Tests.FSharp/Storage/) addressed; PR description updated to 6 YELLOW reconciling with file body.
 
 ### Thread 14 -- resolved [outdated, collapsed]
 
@@ -294,16 +285,16 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T19:56:49Z on `memory/MEMORY.md`:14 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove duplicate hodl-audit index entry**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove duplicate hodl-audit index entry**
+
   This commit adds the same `feedback_hodl_invariant_audit_mechanization_survey...` link twice in `MEMORY.md`, and the two bullets disagree on the YELLOW count (`7` vs `6`). Because `memory/MEMORY.md` is the quick canonical index, the duplicate stale row can mislead readers and reintroduce contradictory metadata even though the detailed file has one corrected breakdown.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:05:00Z on `memory/MEMORY.md`:14 (association: MEMBER)
-    Fixed in latest commit on this branch — duplicate MEMORY.md entry removed (rebase artifact); Roslyn analyzer reference rephrased to F# analyzer infrastructure since Roslyn analyzers target C#/VB while F# uses F#-analyzer ecosystem (FSharp.Analyzers.SDK / Ionide-FSharp-analyzers).
+- **`AceHack` (human)** at 2026-05-05T20:05:00Z on `memory/MEMORY.md`:14 (association: MEMBER)
+  Fixed in latest commit on this branch — duplicate MEMORY.md entry removed (rebase artifact); Roslyn analyzer reference rephrased to F# analyzer infrastructure since Roslyn analyzers target C#/VB while F# uses F#-analyzer ecosystem (FSharp.Analyzers.SDK / Ionide-FSharp-analyzers).
 
 ### Thread 15 -- resolved [outdated, collapsed]
 
@@ -315,12 +306,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T19:59:06Z on `memory/MEMORY.md`:13 (association: NONE)
   P0: MEMORY.md currently contains the same new hodl-invariant survey entry twice (lines 13–14), with conflicting YELLOW counts (7 vs 6). This will likely trip the memory-index duplicate lint and also creates factual drift. Keep a single entry and ensure the summary counts match the survey doc (6 YELLOW). Also line 13 uses “Per Aaron's directive …” wording, which the no-directives lint has historically flagged on memory surfaces; rephrase to “framing/request” or move the verbatim wording into a blockquote.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:05:03Z on `memory/MEMORY.md`:13 (association: MEMBER)
-    Fixed in latest commit on this branch — duplicate MEMORY.md entry removed (rebase artifact); Roslyn analyzer reference rephrased to F# analyzer infrastructure since Roslyn analyzers target C#/VB while F# uses F#-analyzer ecosystem (FSharp.Analyzers.SDK / Ionide-FSharp-analyzers).
+- **`AceHack` (human)** at 2026-05-05T20:05:03Z on `memory/MEMORY.md`:13 (association: MEMBER)
+  Fixed in latest commit on this branch — duplicate MEMORY.md entry removed (rebase artifact); Roslyn analyzer reference rephrased to F# analyzer infrastructure since Roslyn analyzers target C#/VB while F# uses F#-analyzer ecosystem (FSharp.Analyzers.SDK / Ionide-FSharp-analyzers).
 
 ### Thread 16 -- resolved [collapsed]
 
@@ -332,12 +322,11 @@ The conjunctive-completeness defense across ALL layers cannot be fully automated
 
 - **`Copilot` (bot)** at 2026-05-05T19:59:06Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:76 (association: NONE)
   The proposed “Roslyn analyzer (.NET 10 / F#)” is technically mismatched: Roslyn analyzers target C#/VB, while F# analysis in this repo is typically done via F#-analyzer infrastructure (FCS-based analyzers). Consider rephrasing this to: Roslyn analyzer for any C# surfaces, and an F# analyzer (FSharp.Analyzers SDK / existing analyzer toolchain) for F# code, so the mechanization plan is actionable.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:05:05Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:76 (association: MEMBER)
-    Fixed in latest commit on this branch — duplicate MEMORY.md entry removed (rebase artifact); Roslyn analyzer reference rephrased to F# analyzer infrastructure since Roslyn analyzers target C#/VB while F# uses F#-analyzer ecosystem (FSharp.Analyzers.SDK / Ionide-FSharp-analyzers).
+- **`AceHack` (human)** at 2026-05-05T20:05:05Z on `memory/feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md`:76 (association: MEMBER)
+  Fixed in latest commit on this branch — duplicate MEMORY.md entry removed (rebase artifact); Roslyn analyzer reference rephrased to F# analyzer infrastructure since Roslyn analyzers target C#/VB while F# uses F#-analyzer ecosystem (FSharp.Analyzers.SDK / Ionide-FSharp-analyzers).
 
 ## Fix commits (touching thread paths)
 

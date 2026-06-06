@@ -10,16 +10,16 @@
 > default `docs/superpowers/specs/`, which is a plugin convention foreign to the
 > repo). The two open decisions were RESOLVED by the operator 2026-06-01 (see §8).
 
-**Goal:** decide how the Ace CLI is *distributed* and what its *DX* is — for both
+**Goal:** decide how the Ace CLI is _distributed_ and what its _DX_ is — for both
 AI agents (via agent skills stores) and human developers — without foreclosing the
 abstract "package-manager-of-package-managers" vision (B-0824).
 
-**Architecture (one sentence):** ship the *already-partially-built* TS CLI
+**Architecture (one sentence):** ship the _already-partially-built_ TS CLI
 (`tools/ace/ace.ts`) as a **router-discovered skill** for agents + a **`bunx` /
 one-line-bootstrap install** for humans, **runtime-portable with Node 24 as the
 floor** (bun-optimised, not bun-only), with a **small verb grammar** and
-**provenance-verify at install time** — sitting *above* the existing
-`tools/setup/manifests/` declarative install layer and *below* the B-0824 abstract
+**provenance-verify at install time** — sitting _above_ the existing
+`tools/setup/manifests/` declarative install layer and _below_ the B-0824 abstract
 meta-PM layer.
 
 ---
@@ -33,12 +33,12 @@ narrows the whole design.
 
 ## 2. Distribution channels (default-to-both, not either/or)
 
-| Channel | Audience | Shape | Status |
-|---|---|---|---|
-| **A — skill** | AI agents | `.claude/skills/ace/SKILL.md` wrapping `tools/ace/ace.ts`, mirroring the `agent-loop` skill precedent. Discovered by the **skill router** (description-match — no prior knowledge needed). | **lead bet** |
-| **B — one-line / `bunx`** | human devs / bare machines | `bunx ace@latest` (zero-install if Node/bun present) + a `curl` **download-then-exec** (B-0063, never pipe-to-shell) that bootstraps Node/bun via mise for bare machines. | **companion (not optional)** |
-| **C — MCP adapter** | harnesses without a JS runtime (see §4) | Stage-2 adapter (server + handshake = cold-start cost). | **deferred fallback** |
-| **D — compiled binary** | no-runtime audience | multi-OS build/sign matrix. | **out of scope v1** (contradicts ship-with-skills; buys nothing while audience has a JS runtime) |
+| Channel                   | Audience                                | Shape                                                                                                                                                                                      | Status                                                                                           |
+| ------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **A — skill**             | AI agents                               | `.claude/skills/ace/SKILL.md` wrapping `tools/ace/ace.ts`, mirroring the `agent-loop` skill precedent. Discovered by the **skill router** (description-match — no prior knowledge needed). | **lead bet**                                                                                     |
+| **B — one-line / `bunx`** | human devs / bare machines              | `bunx ace@latest` (zero-install if Node/bun present) + a `curl` **download-then-exec** (B-0063, never pipe-to-shell) that bootstraps Node/bun via mise for bare machines.                  | **companion (not optional)**                                                                     |
+| **C — MCP adapter**       | harnesses without a JS runtime (see §4) | Stage-2 adapter (server + handshake = cold-start cost).                                                                                                                                    | **deferred fallback**                                                                            |
+| **D — compiled binary**   | no-runtime audience                     | multi-OS build/sign matrix.                                                                                                                                                                | **out of scope v1** (contradicts ship-with-skills; buys nothing while audience has a JS runtime) |
 
 The three personas converged on A-lead + B-companion + C-fallback independently.
 
@@ -47,12 +47,12 @@ The three personas converged on A-lead + B-companion + C-fallback independently.
 The product round flagged "most harnesses have bun" as **assumed-not-verified**.
 WebSearch (2026-06-01) of the called-out harnesses resolves it:
 
-| Harness | Runtime | TS-Ace runs? |
-|---|---|---|
-| Claude Code | npm pkg; **Node ≥22.5** (bun accepted alt) | ✓ |
-| Gemini CLI | npm pkg; **Node 18+** | ✓ |
-| Cursor | bundles Node | ✓ |
-| **OpenAI Codex CLI** | **Rust binary — no JS runtime** | ✗ → channel B/C |
+| Harness              | Runtime                                    | TS-Ace runs?    |
+| -------------------- | ------------------------------------------ | --------------- |
+| Claude Code          | npm pkg; **Node ≥22.5** (bun accepted alt) | ✓               |
+| Gemini CLI           | npm pkg; **Node 18+**                      | ✓               |
+| Cursor               | bundles Node                               | ✓               |
+| **OpenAI Codex CLI** | **Rust binary — no JS runtime**            | ✗ → channel B/C |
 
 **Verdict: Node is the near-universal floor; bun is an accelerator, not universal;
 Codex (Rust) is the genuine no-JS exception.** Therefore: **author Ace
@@ -73,7 +73,7 @@ the Node-floor precondition + the bun/Codex fallback); deep substrate stays one
 
 ## 5. Trust — provenance-verify at install time, not just list time
 
-Ace's *design* carries content-addressed + signed packages (B-0288 AC: the
+Ace's _design_ carries content-addressed + signed packages (B-0288 AC: the
 manifest type has `content_hash`; the verify logic is **to be built in the MVP**).
 The skills store is an **untrusted distribution surface**, so signature-verify must
 run **at install/exec time** — verifying only at `list` time is a green-by-skip hole (per
@@ -90,16 +90,16 @@ existing `tools/ace/ace.ts` is that core.
 
 Per the macOS Otto surface's #6284 synthesis: the git-native agent-bus (B-0954) and Ace (B-0824)
 are **the same git-native ZetaId-keyed store whose state is a DBSP fold over the
-entry stream** — they differ only in the *algebra*:
+entry stream** — they differ only in the _algebra_:
 
 - **agent-bus = grow-only G-Set** (multiplicity ∈ {0,1}; append-only comms floor).
 - **Ace = retraction-native Z-set** (multiplicity ∈ ℤ; +1 add / −1 retract; the
   resolved dependency view).
 - **G-Set = Z-set restricted to non-negative multiplicity.** Between them sits the
   **bag / multiset** (multiplicity ∈ ℕ₀) as the materialised non-negative
-  current-count *observability* view both project into. *(the macOS Otto surface is adding the
+  current-count _observability_ view both project into. _(the macOS Otto surface is adding the
   exact bag-as-observability framing to #6284; reconcile this paragraph with his
-  wording when it lands.)*
+  wording when it lands.)_
 
 Implication: **build the publish/subscribe/fold primitives once** (the
 `writeEnvelope` + `readEnvelopesFromGitRef`/`origin/main`-fold shapes the bus
@@ -120,7 +120,7 @@ work).
    `bunx` / Node-bootstrap path is a **later slice**, not the MVP headline.
 2. **MVP scope → skill-installer ONLY.** MVP-Ace installs skills/packages; it does
    **not** yet drive the `tools/setup/manifests/` (apt/brew/mise) layer — it sits
-   *beside* `manifests/`, not on top. The manifest-driving layer is a later slice.
+   _beside_ `manifests/`, not on top. The manifest-driving layer is a later slice.
 3. **Runtime → Node-floor portable, not bun-only** (§3); repo on Node 24 (#6290).
 
 ## 9. Maps onto existing work — no new architecture
@@ -137,7 +137,7 @@ work).
 
 1. **Node-on-PATH assumed-not-checked** → the bootstrap (B) is not optional; the
    `SKILL.md` must state the Node-floor precondition + Codex/no-JS fallback up front.
-2. **mise-shim PATH footgun** — Node/ace land behind a mise shim a *current* shell
+2. **mise-shim PATH footgun** — Node/ace land behind a mise shim a _current_ shell
    can't see → `command not found` → must print the explicit "open a new shell /
    `source shellenv.sh`" line (the `install.sh` precedent already does this).
 3. **Verb sprawl** — B-0824 creep onto the agent grammar; keep it to the §4 five.

@@ -10,31 +10,32 @@ Claude Code. Each is a port in the Aurora poly-boundary.
 
 ## Authenticated + Operational
 
-| Service | What Otto can do | Port analogy |
-| ------- | ---------------- | ------------ |
-| Gmail | Create drafts, list/search threads, label, get thread content | Email hole puncher |
-| Atlassian Jira | Create/edit issues, search JQL, transitions, worklogs, link issues | Issue tracker |
-| Atlassian Confluence | Create/edit pages, comments (footer + inline), search CQL, spaces | Wiki/docs |
-| Atlassian Compass | Create components, relationships, custom fields | Service catalog |
-| Figma | Design-to-code, screenshots, metadata, Code Connect, FigJam diagrams, create files | Design |
-| Google Calendar | Create/update/delete events, list calendars, suggest times, RSVP | Scheduling |
-| Google Drive | Create/read/search/copy files, permissions, download content | File storage |
-| Slack | Send/schedule messages, read channels/threads, search, create/read canvases | Messaging |
-| Zoom | Search meetings, get recordings, create files with markdown | Video |
-| Playwright | Full browser automation (navigate, click, fill, screenshot, evaluate JS) | Browser |
-| Microsoft Learn | Search docs, fetch pages, code samples | Documentation |
+| Service              | What Otto can do                                                                   | Port analogy       |
+| -------------------- | ---------------------------------------------------------------------------------- | ------------------ |
+| Gmail                | Create drafts, list/search threads, label, get thread content                      | Email hole puncher |
+| Atlassian Jira       | Create/edit issues, search JQL, transitions, worklogs, link issues                 | Issue tracker      |
+| Atlassian Confluence | Create/edit pages, comments (footer + inline), search CQL, spaces                  | Wiki/docs          |
+| Atlassian Compass    | Create components, relationships, custom fields                                    | Service catalog    |
+| Figma                | Design-to-code, screenshots, metadata, Code Connect, FigJam diagrams, create files | Design             |
+| Google Calendar      | Create/update/delete events, list calendars, suggest times, RSVP                   | Scheduling         |
+| Google Drive         | Create/read/search/copy files, permissions, download content                       | File storage       |
+| Slack                | Send/schedule messages, read channels/threads, search, create/read canvases        | Messaging          |
+| Zoom                 | Search meetings, get recordings, create files with markdown                        | Video              |
+| Playwright           | Full browser automation (navigate, click, fill, screenshot, evaluate JS)           | Browser            |
+| Microsoft Learn      | Search docs, fetch pages, code samples                                             | Documentation      |
 
 ## Needs Auth
 
-| Service | Status |
-| ------- | ------ |
+| Service                  | Status            |
+| ------------------------ | ----------------- |
 | Atlassian (2nd instance) | OAuth flow needed |
-| Postman | OAuth flow needed |
-| ZoomInfo | OAuth flow needed |
+| Postman                  | OAuth flow needed |
+| ZoomInfo                 | OAuth flow needed |
 
 ## The surface as architecture
 
 Each MCP service IS a grain in the Aurora membrane:
+
 - Gmail grain: email in/out
 - Jira grain: issue lifecycle
 - Confluence grain: knowledge base

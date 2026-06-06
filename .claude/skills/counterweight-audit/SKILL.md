@@ -18,9 +18,9 @@ corrected. There are 51+ counterweights today, still growing.
 
 Aaron Otto-278 (autonomous-loop 2026-04-24):
 
-> *"memory is enough assuming you have a inspect memory for
+> _"memory is enough assuming you have a inspect memory for
 > missing balance and lessions on a cadence it's probably
-> enough, but you forget often when it's just in memory"*
+> enough, but you forget often when it's just in memory"_
 
 The rule: **memory alone is sufficient IFF + ONLY IFF a
 cadenced inspect-memory audit runs on a schedule to check
@@ -110,21 +110,21 @@ Whether drift was found or not, log a short tick-close
 note:
 
 - **Clean tick:** `"counterweight-audit (quick) clean; no
-  drift on Otto-NNN..NNN"`.
+drift on Otto-NNN..NNN"`.
 - **Drift found:** `"counterweight-audit (quick) flagged
-  drift on Otto-NNN; self-corrected in-tick"` OR `"filed
-  follow-up Otto-NNN+1"` as appropriate.
+drift on Otto-NNN; self-corrected in-tick"` OR `"filed
+follow-up Otto-NNN+1"` as appropriate.
 
 The audit's signal value is as much in confirming
 stability as in catching drift. Both outcomes are logged.
 
 ## Cadence selection
 
-| Cadence | Count | When | Time budget |
-|---|---|---|---|
-| `quick` | 3 | Session start; every 5 autonomous-loop ticks | ~2 min |
-| `medium` | 10 | Every 10 autonomous-loop ticks; pre-review | ~5 min |
-| `long` | all (51+) | Round open; drift-audit cadence per Otto-264 | ~15-20 min |
+| Cadence  | Count     | When                                         | Time budget |
+| -------- | --------- | -------------------------------------------- | ----------- |
+| `quick`  | 3         | Session start; every 5 autonomous-loop ticks | ~2 min      |
+| `medium` | 10        | Every 10 autonomous-loop ticks; pre-review   | ~5 min      |
+| `long`   | all (51+) | Round open; drift-audit cadence per Otto-264 | ~15-20 min  |
 
 `quick` is the default. Escalate cadence when:
 
@@ -148,7 +148,7 @@ stability as in catching drift. Both outcomes are logged.
   memory-edit discipline (dated revision lines, verbatim
   Aaron quotes preserved).
 - **Does NOT replace `skill-tune-up` or `factory-balance-
-  auditor`.** Those audit different surfaces (skills and
+auditor`.** Those audit different surfaces (skills and
   factory-shape respectively). This skill audits
   counterweight memories specifically.
 - **Does NOT emit `TodoWrite` tasks or BACKLOG rows on

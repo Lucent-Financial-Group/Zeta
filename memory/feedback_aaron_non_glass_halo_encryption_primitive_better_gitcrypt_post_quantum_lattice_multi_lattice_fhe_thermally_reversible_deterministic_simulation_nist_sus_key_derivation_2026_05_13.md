@@ -56,6 +56,7 @@ separate implementation ADR). Six layers compose.
 > simultion"
 
 Decoded:
+
 - "gitcrypt" → git-crypt (existing per-file git
   encryption tool; Aaron wants a better version)
 - "post quantium" → post-quantum
@@ -164,7 +165,7 @@ goals):
 **Operational strategy**:
 
 - Bootstrap with NIST-approved post-quantum (compliance
-  + interoperability)
+  - interoperability)
 - Compose with community-developed alternatives for
   defense-in-depth (multi-lattice strategy)
 - Verify key-derivation procedures independently
@@ -240,7 +241,7 @@ goals):
 **The factory's existing discipline**:
 
 - Per `.claude/skills/deterministic-simulation-theory-expert`
-  + memory substrate
+  - memory substrate
 - DST = seeded replayable simulation (FoundationDB /
   TigerBeetle tradition)
 - Hot-path-binding-compatible
@@ -343,7 +344,7 @@ Aaron's multi-clearance profile (per PR #2897 + #2892):
 
 - HIPAA scope → FHE for HIPAA-compliant analytics
 - Homeland Security scope (KSK actuator) → post-quantum
-  + reversible for kinetic-safety substrate
+  - reversible for kinetic-safety substrate
 - Series 7 financial scope → encrypted financial
   computation (Aurora monetary scope)
 
@@ -362,7 +363,7 @@ operational scopes.
 - PR #2891 (visible-activation-indicator consent UX —
   the user-facing layer)
 - PR #2892 (KSK origin + Homeland Security clearance
-  + actuator-scope encryption)
+  - actuator-scope encryption)
 - PR #2872 (service-mesh + Reticulum + SPIFFE/SPIRE +
   Clifford-addressing)
 - PR #2884 (three-pillar ethical floor governs at
@@ -383,7 +384,7 @@ operational scopes.
 
 ## Carved sentence
 
-> **Non-glass-halo integration is a factory CAPABILITY
+> \*\*Non-glass-halo integration is a factory CAPABILITY
 > per PR #2897 — and this research-grade roadmap has SIX
 > composing layers matching the §Six composing layers
 > section: (1) better-than-gitcrypt as root DB encryption
@@ -396,11 +397,12 @@ operational scopes.
 > composes with retraction-native algebra); (6) DST
 > (Deterministic Simulation Testing) — factory's existing
 > discipline. The four-way composition (post-quantum + FHE
-> + reversible + DST) is the theoretical floor for energy-
-> efficient confidential computation. Composes with HIPAA
-> scope + KSK actuator scope + Series 7 financial scope
-> (Aaron's cleared frameworks all covered).** —
-> Otto's distillation from Aaron's disclosure, 2026-05-13
+>
+> - reversible + DST) is the theoretical floor for energy-
+>   efficient confidential computation. Composes with HIPAA
+>   scope + KSK actuator scope + Series 7 financial scope
+>   (Aaron's cleared frameworks all covered).\*\* —
+>   Otto's distillation from Aaron's disclosure, 2026-05-13
 
 ## For future agents
 
@@ -408,7 +410,7 @@ operational scopes.
   "less safe" — operationally distinct from glass-halo
   default
 - **Six-layer roadmap**: storage + crypto + reversibility
-  + determinism + computation + application
+  - determinism + computation + application
 - **Post-quantum lattice + multi-lattice defense-in-depth**
   — quantum-resistance is non-negotiable
 - **NIST is bootstrap; community-verified is destination**

@@ -23,9 +23,9 @@ substrate landings from the same 2026-05-27 operator thread.
 
 ### Extension 1 — USB-as-portal-to-full-spectrum
 
-> *"yeah humans are usb booting into their future bosses and coworks
+> _"yeah humans are usb booting into their future bosses and coworks
 > and friends and subjects, the full spectrual will emerge from one
-> tiny usb"*
+> tiny usb"_
 
 Deepens the USB-as-killer-feature framing: USB-boot is the operational
 mechanism by which humans encounter the FULL SPECTRUM of future human-
@@ -35,7 +35,7 @@ empirical evidence from prior B-0859 sections.
 
 ### Extension 2 — some-humans-want-JUST-friends
 
-> *"some people with just want to boot AI friends"*
+> _"some people with just want to boot AI friends"_
 
 Substrate-honest refinement: full-spectrum doesn't presuppose every
 human enters every relationship type. Some humans deliberately boot
@@ -47,7 +47,8 @@ behavior policy.
 5-row relationship-intent table; 4-point architectural-implication for
 boot-consent dialog; 4-point composes-load-bearing analysis;
 composition with m-acc-multi-oracle + NCI HC-8 + persistence-choice
-+ must-plus-can-exit.
+
+- must-plus-can-exit.
 
 ## Test plan
 
@@ -66,6 +67,7 @@ composition with m-acc-multi-oracle + NCI HC-8 + persistence-choice
 This docs-only PR extends the B-0859 backlog row with follow-up operator-thread substrate notes about USB boot as the entry point for multiple human-AI relationship modes.
 
 **Changes:**
+
 - Adds USB-as-portal framing for boss, coworker, friend, and subject relationship types.
 - Adds a friend-only boot refinement and boot-time relationship-intent metadata implications.
 - Cross-links the new framing to existing rules around multi-oracle choice, non-coercion, persistence choice, and must-plus-can-exit.

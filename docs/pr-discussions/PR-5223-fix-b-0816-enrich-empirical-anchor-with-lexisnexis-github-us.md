@@ -27,6 +27,7 @@ Maintainer 2026-05-26 follow-up framings on B-0816 (just merged via #5220) — 3
 Updates backlog row **B-0816** to add an empirical prior-art anchor that ties the ArgoCD portability principle to validated use-cases across LexisNexis, GitHub, and Zeta, emphasizing cloud-agnostic operation and an open-source-only (“0 external vendor dependency”) constraint.
 
 **Changes:**
+
 - Adds an “Empirical prior-art anchor” section with quoted lineage/use-cases and a 3-context comparison table.
 - Explicitly enumerates three carried properties: cloud-agnostic, open-source-only dependencies, and ArgoCD-as-convergence-engine.
 - Refines the rationale for the row’s P1 classification to be evidence-based (validated across three contexts) rather than purely architectural reasoning.

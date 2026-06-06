@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "30"
   name: gitlab
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -21,14 +21,14 @@ spec:
           edition: ce
           hosts:
             domain: gitlab.zeta.local
-          ingress: { tls: { enabled: false } }   # turn on after cert-manager
+          ingress: { tls: { enabled: false } } # turn on after cert-manager
           initialRootPassword:
             secret: gitlab-initial-root-password
             key: password
         # Disable bundled components — cluster has its own.
-        certmanager:    { install: false }
-        nginx-ingress:  { enabled: false }
-        prometheus:     { install: false }
+        certmanager: { install: false }
+        nginx-ingress: { enabled: false }
+        prometheus: { install: false }
         gitlab-runner:
           install: true
           runners: { privileged: false, tags: "kubernetes,zeta-cluster" }
@@ -37,5 +37,5 @@ spec:
     namespace: gitlab
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true, SkipDryRunOnMissingResource=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true, SkipDryRunOnMissingResource=true]
     retry: { limit: 5, backoff: { duration: 30s, factor: 2, maxDuration: 5m } }

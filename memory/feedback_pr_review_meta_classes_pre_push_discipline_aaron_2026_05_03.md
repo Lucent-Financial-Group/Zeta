@@ -7,8 +7,8 @@ type: feedback
 **Rule:** Six author-time disciplines that, if applied before push,
 prevent the recurring review-thread classes observed across
 multiple PRs this session. Capture lesson at the meta-PR-review
-layer (per Aaron 2026-05-03 *"any classes to learn to code better
-next time via meta learning at PR?"*).
+layer (per Aaron 2026-05-03 _"any classes to learn to code better
+next time via meta learning at PR?"_).
 
 ## The six meta-classes
 
@@ -82,6 +82,7 @@ dev has to re-invoke with different args to triage.
 
 **The discipline:** failure UX is part of the contract. Print
 enough context for the consumer to act:
+
 - Which spec / file / step failed
 - Tail of stdout/stderr (last N lines)
 - Rerun command (e.g., `rerun with: bun ... <SpecName>`)
@@ -92,9 +93,9 @@ Fix: print last 30 lines of stdout per failure + stderr-tail.
 
 ### 6. Strong typing as assumption-verifier (Aaron 2026-05-03)
 
-**Aaron's framing:** *"we want to be strongly typed to a large
+**Aaron's framing:** _"we want to be strongly typed to a large
 degree in ts it verifies your assumptions more at lint time if
-you doo."*
+you doo."_
 
 **The discipline:** prefer TypeScript union types over loose
 `number` / `string`. Brand types where invariants matter. Default
@@ -123,6 +124,7 @@ forces escaping at the boundary).
 ## Future-Otto reference
 
 Before push, run:
+
 1. `bun tsc --noEmit` (catches typing + unused imports)
 2. Read related sibling files (F# version when porting; existing
    workflow when adding new one; etc.)
@@ -134,12 +136,12 @@ Before push, run:
 
 ## Reasoning lineage
 
-Aaron 2026-05-03 ask: *"any classes to learn to code better next
-time via meta learning at PR?"* — surfaced after the substantial
+Aaron 2026-05-03 ask: _"any classes to learn to code better next
+time via meta learning at PR?"_ — surfaced after the substantial
 review feedback on #1412. Five lessons extracted from this
 session's review-thread cycles + Aaron's strong-typing direction
 documented as the sixth.
 
-The carved sentence: *"Apply the review feedback at author-time
+The carved sentence: _"Apply the review feedback at author-time
 next time. Each review thread that closes is a meta-class to
-internalize, not just a fix to land."*
+internalize, not just a fix to land."_

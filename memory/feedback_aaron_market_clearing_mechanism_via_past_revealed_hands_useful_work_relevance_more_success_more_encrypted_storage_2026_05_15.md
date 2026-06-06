@@ -7,9 +7,9 @@ created: 2026-05-15
 
 ## Aaron's exact words
 
-> *"what's the integration threshold function? it's not one, its the enconomy and the other players guess of your economic power"*
+> _"what's the integration threshold function? it's not one, its the enconomy and the other players guess of your economic power"_
 
-> *"but it has to be implemented as something. Either there's a market-clearing computation in the substrate in my orcale it will be based on past hidden revelaed hands and how relevlant they were to the useful work in the current culture, more success more encyprted storage given to you."*
+> _"but it has to be implemented as something. Either there's a market-clearing computation in the substrate in my orcale it will be based on past hidden revelaed hands and how relevlant they were to the useful work in the current culture, more success more encyprted storage given to you."_
 
 (2026-05-15 to Kestrel on claude.ai, in response to Kestrel's asks for the threshold function + encryption boundary + metric-like behavior.)
 

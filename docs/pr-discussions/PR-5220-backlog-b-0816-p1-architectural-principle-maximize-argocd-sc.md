@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Lands the architectural principle the maintainer 2026-05-26 named immediately after the iter-6.0 nixpkgs bump merge:
 
-> *"nice also ArgoCD is ususaly be anyone with k8s too not just nixos so antoher reason to push as much as possible into argocd."*
+> _"nice also ArgoCD is ususaly be anyone with k8s too not just nixos so antoher reason to push as much as possible into argocd."_
 
 ## Carved sentence
 
@@ -28,18 +28,19 @@ ArgoCD is used by ANYONE running Kubernetes (not just NixOS users); substrate-in
 
 ## What changes for existing substrate
 
-| Existing row | Status under principle |
-|---|---|
-| B-0813 iter-5.4.2 cluster-nodes-reconciler | ✅ ArgoCD-managed — reinforced |
-| B-0802 kured | ✅ ArgoCD-managed — reinforced |
-| B-0806 sub-target 3 Crossplane | ✅ ArgoCD-managed — reinforced |
-| B-0800 nixpkgs bump | NixOS-only (boot+OS layer; no portable alternative) |
-| B-0801 system.autoUpgrade | NixOS-only (Nix flake update is NixOS-specific) |
-| B-0803 deploy-rs | NixOS-only — **flagged** as not cross-distro-portable |
+| Existing row                               | Status under principle                                |
+| ------------------------------------------ | ----------------------------------------------------- |
+| B-0813 iter-5.4.2 cluster-nodes-reconciler | ✅ ArgoCD-managed — reinforced                        |
+| B-0802 kured                               | ✅ ArgoCD-managed — reinforced                        |
+| B-0806 sub-target 3 Crossplane             | ✅ ArgoCD-managed — reinforced                        |
+| B-0800 nixpkgs bump                        | NixOS-only (boot+OS layer; no portable alternative)   |
+| B-0801 system.autoUpgrade                  | NixOS-only (Nix flake update is NixOS-specific)       |
+| B-0803 deploy-rs                           | NixOS-only — **flagged** as not cross-distro-portable |
 
 ## Implication for B-0782 cluster-IS-DIO
 
 DIO lives in 4 layers, each with its own reconciler:
+
 1. Boot+OS = NixOS substrate (DIO via nixos-rebuild)
 2. K8s+workload = ArgoCD (DIO via ArgoCD sync)
 3. External-infra = Crossplane via ArgoCD (DIO via CR reconciliation)
@@ -48,6 +49,7 @@ DIO lives in 4 layers, each with its own reconciler:
 ## Implication for cross-distro adoption
 
 Operators on K3S-on-Ubuntu / Talos / RKE2 / EKS / GKE / AKS / OpenShift can adopt iter-5.4.x substrate by:
+
 1. Skip NixOS install.sh (use their own bootstrap)
 2. Adopt the `maintainers/<op>/cluster-nodes/<host>/` tree shape
 3. Point their ArgoCD at the tree

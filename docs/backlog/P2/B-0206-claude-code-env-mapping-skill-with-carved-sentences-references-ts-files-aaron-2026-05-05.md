@@ -28,7 +28,7 @@ type: friction-reducer
 
 Aaron 2026-05-05 same-tick verbatim:
 
-> *"Claude Code Docs commands + Claude Code Interactive Mode Reference 2026) — senviroment mapping save this doc and we need a skill carved sentaces in behavire that referenes it and our ts files"*
+> _"Claude Code Docs commands + Claude Code Interactive Mode Reference 2026) — senviroment mapping save this doc and we need a skill carved sentaces in behavire that referenes it and our ts files"_
 
 Translation: Claude Code Docs (commands + Interactive Mode Reference 2026) IS environment-mapping documentation; need to save the doc + build a skill with carved-sentences-in-behavior that references the saved doc + our TS files.
 

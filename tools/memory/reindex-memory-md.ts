@@ -121,11 +121,7 @@ function dateFromFilename(filename: string): string {
   return `${match[1]}-${match[2]}-${match[3]}`;
 }
 
-async function collectEntriesRecursive(
-  baseDir: string,
-  currentDir: string,
-  entries: MemoryEntry[],
-): Promise<void> {
+async function collectEntriesRecursive(baseDir: string, currentDir: string, entries: MemoryEntry[]): Promise<void> {
   const items = await readdir(currentDir, { withFileTypes: true });
   for (const item of items) {
     const itemPath = join(currentDir, item.name);
@@ -192,7 +188,9 @@ function renderIndex(entries: MemoryEntry[], autoDreamMarker?: string): string {
       "stack via traversal, heap via timestamp/filename. Indexing " +
       "(heap→stack promotion) happens on cadence via " +
       "`tools/memory/reindex-memory-md.ts` (B-0423), callable from the " +
-      "autonomous-loop tick. Last reindex: " + now + ".",
+      "autonomous-loop tick. Last reindex: " +
+      now +
+      ".",
   );
   lines.push("");
   lines.push(PREAMBLE_MARKER);

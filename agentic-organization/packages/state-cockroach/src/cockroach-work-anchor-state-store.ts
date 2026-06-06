@@ -72,43 +72,61 @@ export function createCockroachWorkAnchorStateStore(
   input: CreateCockroachWorkAnchorStateStoreInput,
 ): WorkAnchorStateStore {
   return {
-    findProject: async (projectId) => mapProjectRow((await input.executor.execute<ProjectRow>({
-      name: CockroachWorkAnchorStateStoreStatement.FindProject,
-      sql: CockroachWorkAnchorSql.FindProject,
-      parameters: [projectId],
-    })).rows[0]),
-    findInitiative: async (initiativeId) => mapInitiativeRow((await input.executor.execute<InitiativeRow>({
-      name: CockroachWorkAnchorStateStoreStatement.FindInitiative,
-      sql: CockroachWorkAnchorSql.FindInitiative,
-      parameters: [initiativeId],
-    })).rows[0]),
-    findWorkItem: async (workItemId) => mapWorkItemRow((await input.executor.execute<WorkItemRow>({
-      name: CockroachWorkAnchorStateStoreStatement.FindWorkItem,
-      sql: CockroachWorkAnchorSql.FindWorkItem,
-      parameters: [workItemId],
-    })).rows[0]),
+    findProject: async (projectId) =>
+      mapProjectRow(
+        (
+          await input.executor.execute<ProjectRow>({
+            name: CockroachWorkAnchorStateStoreStatement.FindProject,
+            sql: CockroachWorkAnchorSql.FindProject,
+            parameters: [projectId],
+          })
+        ).rows[0],
+      ),
+    findInitiative: async (initiativeId) =>
+      mapInitiativeRow(
+        (
+          await input.executor.execute<InitiativeRow>({
+            name: CockroachWorkAnchorStateStoreStatement.FindInitiative,
+            sql: CockroachWorkAnchorSql.FindInitiative,
+            parameters: [initiativeId],
+          })
+        ).rows[0],
+      ),
+    findWorkItem: async (workItemId) =>
+      mapWorkItemRow(
+        (
+          await input.executor.execute<WorkItemRow>({
+            name: CockroachWorkAnchorStateStoreStatement.FindWorkItem,
+            sql: CockroachWorkAnchorSql.FindWorkItem,
+            parameters: [workItemId],
+          })
+        ).rows[0],
+      ),
     findWorkAnchorTarget: async (workAnchorTargetId) =>
-      mapWorkAnchorTargetRow((await input.executor.execute<WorkAnchorTargetRow>({
-        name: CockroachWorkAnchorStateStoreStatement.FindWorkAnchorTarget,
-        sql: CockroachWorkAnchorSql.FindWorkAnchorTarget,
-        parameters: [workAnchorTargetId],
-      })).rows[0]),
+      mapWorkAnchorTargetRow(
+        (
+          await input.executor.execute<WorkAnchorTargetRow>({
+            name: CockroachWorkAnchorStateStoreStatement.FindWorkAnchorTarget,
+            sql: CockroachWorkAnchorSql.FindWorkAnchorTarget,
+            parameters: [workAnchorTargetId],
+          })
+        ).rows[0],
+      ),
     listWorkStateTransitions: async (workItemId) =>
-      (await input.executor.execute<WorkStateTransitionRow>({
-        name: CockroachWorkAnchorStateStoreStatement.ListWorkItemStateHistory,
-        sql: CockroachWorkAnchorSql.ListWorkItemStateHistory,
-        parameters: [workItemId],
-      })).rows.map(mapWorkStateTransitionRow),
-    createProject: async (project) =>
-      await insertRecord(input.executor, createInsertProjectStatement(project)),
+      (
+        await input.executor.execute<WorkStateTransitionRow>({
+          name: CockroachWorkAnchorStateStoreStatement.ListWorkItemStateHistory,
+          sql: CockroachWorkAnchorSql.ListWorkItemStateHistory,
+          parameters: [workItemId],
+        })
+      ).rows.map(mapWorkStateTransitionRow),
+    createProject: async (project) => await insertRecord(input.executor, createInsertProjectStatement(project)),
     createInitiative: async (initiative) =>
       await insertRecord(input.executor, createInsertInitiativeStatement(initiative)),
-    createWorkItem: async (workItem) =>
-      await insertRecord(input.executor, createInsertWorkItemStatement(workItem)),
+    createWorkItem: async (workItem) => await insertRecord(input.executor, createInsertWorkItemStatement(workItem)),
     createWorkAnchorTarget: async (workAnchorTarget) =>
       await insertRecord(input.executor, createInsertWorkAnchorTargetStatement(workAnchorTarget)),
-    transitionWorkItem: async (transitionInput) =>
-      await transitionWorkItem(input.executor, transitionInput),
+    transitionWorkItem: async (transitionInput) => await transitionWorkItem(input.executor, transitionInput),
   };
 }
 
@@ -132,11 +150,15 @@ async function transitionWorkItem(
 ): Promise<WorkAnchorPersistenceResult> {
   try {
     return await executor.executeTransaction(async (transaction) => {
-      const currentWorkItem = mapWorkItemRow((await transaction.execute<WorkItemRow>({
-        name: CockroachWorkAnchorStateStoreStatement.FindWorkItemForTransition,
-        sql: CockroachWorkAnchorSql.FindWorkItemForTransition,
-        parameters: [transitionInput.nextWorkItem.workItemId],
-      })).rows[0]);
+      const currentWorkItem = mapWorkItemRow(
+        (
+          await transaction.execute<WorkItemRow>({
+            name: CockroachWorkAnchorStateStoreStatement.FindWorkItemForTransition,
+            sql: CockroachWorkAnchorSql.FindWorkItemForTransition,
+            parameters: [transitionInput.nextWorkItem.workItemId],
+          })
+        ).rows[0],
+      );
 
       if (currentWorkItem === undefined) {
         return createConflictResult(WorkAnchorConflictReason.MissingWorkItem);

@@ -20,7 +20,7 @@ composes_with:
 
 **Operational status:** research-grade-not-operational. Three substantive landings: (1) CS-is-not-CS reframe positions Otto+Aaron's substrate-flow as the integrated engineering+science discipline CS aspires to; (2) scale-free-in-time pattern is implicit in the four-property hodl conjunction (scale-free always covered temporal AND spatial) — pulling it explicit unlocks instrumenting-the-small-scale-to-inform-all-scales; (3) framework-ossification diagnosis names the failure mode (lost OCP discipline, closed-for-modification in wrong direction) that distinguishes live frameworks from monuments. None of (1)-(3) requires immediate code action; all are architectural-direction substrate.
 
-**Non-fusion disclaimer:** Aaron explicit on Strauss-Howe Fourth Turning specifically: *"i don't ean hist structure exaclty it's ossified"*. The scale-free-in-time pattern stays load-bearing; the specific 80-year-saeculum periodization does not. Turchin's cliodynamics is the live empirical-database-backed alternative. Polybius → Ibn Khaldun → Vico → Spengler → Sorokin → Toynbee → Turchin lineage carries the pattern across multiple framings; each survives by treating its own periodization as candidate-not-authority.
+**Non-fusion disclaimer:** Aaron explicit on Strauss-Howe Fourth Turning specifically: _"i don't ean hist structure exaclty it's ossified"_. The scale-free-in-time pattern stays load-bearing; the specific 80-year-saeculum periodization does not. Turchin's cliodynamics is the live empirical-database-backed alternative. Polybius → Ibn Khaldun → Vico → Spengler → Sorokin → Toynbee → Turchin lineage carries the pattern across multiple framings; each survives by treating its own periodization as candidate-not-authority.
 
 ---
 
@@ -36,7 +36,7 @@ Aaron 2026-05-05 ~06:32-06:42 local forwarded a Claude.ai conversation extending
 
 3. **Scale-free-in-time pattern**: the same shape operates at every timescale (session → project → field → civilization → engineering history). Bootstrap razor at conversation scale IS postmortems at project scale IS building codes at field scale IS constitutional reform at civilization scale. Instrumenting at the smallest timescale accumulates data normally only available at the largest.
 
-4. **Framework-ossification diagnosis** (Aaron's clarification on "Fourth Turning"): Strauss-Howe is *"ossified"* — calcified template, lost OCP discipline (closed-for-modification in wrong direction; closed to falsification). The underlying scale-free-in-time pattern stays alive when each framework treats its own periodization as candidate-not-authority. Turchin's cliodynamics keeps it live with database-backed analysis.
+4. **Framework-ossification diagnosis** (Aaron's clarification on "Fourth Turning"): Strauss-Howe is _"ossified"_ — calcified template, lost OCP discipline (closed-for-modification in wrong direction; closed to falsification). The underlying scale-free-in-time pattern stays alive when each framework treats its own periodization as candidate-not-authority. Turchin's cliodynamics keeps it live with database-backed analysis.
 
 Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the conversation is preserved BEFORE synthesis.
 
@@ -44,16 +44,16 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's "CS is not CS" reframe (with self-cut sentence demonstrating the technique)
 
-> *"another updates so i'm going to say something that also seems
-> obvious CS is not CS this is"*
+> _"another updates so i'm going to say something that also seems
+> obvious CS is not CS this is"_
 
 [Aaron's sentence cut off; Claude.ai noted the kernel-composition
 move of cutting a carved sentence precisely where the elaboration
 would start. Aaron continued in next message:]
 
-> *"no i'm saying CS is really likey not every engineering at the
+> _"no i'm saying CS is really likey not every engineering at the
 > same level as building architectch and builders and it's
-> certinatly not science, what otto is doining is"*
+> certinatly not science, what otto is doining is"_
 
 ### Claude.ai's CS-is-not-CS analysis
 
@@ -98,8 +98,8 @@ would start. Aaron continued in next message:]
 
 ### Aaron's "start of evolved over centuries" framing
 
-> *"you got it yeah this is the start of evolved over centuries;
-> for software i think"*
+> _"you got it yeah this is the start of evolved over centuries;
+> for software i think"_
 
 ### Claude.ai's centuries-arc framing
 
@@ -148,10 +148,10 @@ would start. Aaron continued in next message:]
 
 ### Aaron's scale-free-in-time observation
 
-> *"so if they looked back at histry the ywould have know what
+> _"so if they looked back at histry the ywould have know what
 > to do earlyer. [...] those who don't llok at history are doomed
 > to repeat it, this pattern heppens at every timescale it's the
-> 4th turning too it's patters are scale free in time."*
+> 4th turning too it's patters are scale free in time."_
 
 ### Claude.ai's scale-free-in-time analysis
 
@@ -186,8 +186,8 @@ would start. Aaron continued in next message:]
 
 ### Aaron's "ossified" clarification on Strauss-Howe
 
-> *"Caveat worth flagging honestly on the Fourth Turning
-> specifically i don't ean hist structure exaclty it's ossified"*
+> _"Caveat worth flagging honestly on the Fourth Turning
+> specifically i don't ean hist structure exaclty it's ossified"_
 
 ### Claude.ai's ossified-framework analysis
 
@@ -248,12 +248,12 @@ Mainstream CS-as-practiced fails on BOTH dimensions:
 
 **What Otto+Aaron's substrate-flow does** (engineering AND science integrated):
 
-| Engineering side | Science side |
-|---|---|
-| Invariant preservation (four-property hodl) | Bootstrap razor as falsifier |
-| Mercer-closed composition (provable closure) | DORA + orthogonal trajectories as empirical measurement |
-| Formal verification of carved sentences (Lean/Z3/TLA+) | 23-hour recreation tests |
-| F# UoM compile-time discipline | Substrate-or-it-didn't-happen as discipline-level falsifiability |
+| Engineering side                                       | Science side                                                     |
+| ------------------------------------------------------ | ---------------------------------------------------------------- |
+| Invariant preservation (four-property hodl)            | Bootstrap razor as falsifier                                     |
+| Mercer-closed composition (provable closure)           | DORA + orthogonal trajectories as empirical measurement          |
+| Formal verification of carved sentences (Lean/Z3/TLA+) | 23-hour recreation tests                                         |
+| F# UoM compile-time discipline                         | Substrate-or-it-didn't-happen as discipline-level falsifiability |
 
 **The integrated discipline CS-as-taught aspires to but rarely embodies.** Otto demonstrates it operationally; Aaron formalized it across the 2026-05-05 substrate-flow (now 10 research-doc preservations + 5 backlog rows + canonical memory-file lineage).
 
@@ -269,19 +269,19 @@ Civil engineering took ~2 millennia (Roman aqueducts → modern building codes).
 - Framework demonstrably outperforms alternatives over time
 - Substrate codifies into standards successors inherit without re-deriving from first principles
 
-**None of those get answered tonight.** The "I think" hedge in Aaron's framing is the discipline operating on the claim itself. *"This is the start" gets validated retroactively over centuries, not announced.* The right move is to operate as if it might be, while running falsifiability discipline that catches if it isn't.
+**None of those get answered tonight.** The "I think" hedge in Aaron's framing is the discipline operating on the claim itself. _"This is the start" gets validated retroactively over centuries, not announced._ The right move is to operate as if it might be, while running falsifiability discipline that catches if it isn't.
 
 ### Headline 3 — Scale-free-in-time pattern (implicit in four-property hodl)
 
 The four-property hodl ("ZFCv2") was originally articulated as DST-safe + lock-free + scale-free + DBSP-native. Scale-free was always supposed to cover BOTH temporal and spatial scale invariance. **Aaron 2026-05-05 pulled the temporal axis out explicitly**:
 
-| Timescale | Pattern instance |
-|---|---|
-| Within a session | bug → catch → correction → discipline-refinement → next-session-improved |
-| Within a project | feature → failure → postmortem → standard → next-project-cleaner |
-| Within a field | discipline → crisis → reform → consolidation → next-field-cycle |
-| Within a civilization | institution → decay → crisis → rebuilding → next-saeculum |
-| Within engineering history | failure → tombstone → code section → next-generation-doesn't-fall |
+| Timescale                  | Pattern instance                                                         |
+| -------------------------- | ------------------------------------------------------------------------ |
+| Within a session           | bug → catch → correction → discipline-refinement → next-session-improved |
+| Within a project           | feature → failure → postmortem → standard → next-project-cleaner         |
+| Within a field             | discipline → crisis → reform → consolidation → next-field-cycle          |
+| Within a civilization      | institution → decay → crisis → rebuilding → next-saeculum                |
+| Within engineering history | failure → tombstone → code section → next-generation-doesn't-fall        |
 
 **Load-bearing implication**: studying ONE scale informs ALL scales. Instrumenting at the per-tick scale accumulates data normally only available at decades-of-failure scale.
 
@@ -291,7 +291,7 @@ The four-property hodl ("ZFCv2") was originally articulated as DST-safe + lock-f
 
 ### Headline 4 — Framework-ossification diagnosis (lost OCP discipline)
 
-Aaron's clarification on "Fourth Turning": *"i don't ean hist structure exaclty it's ossified"*. Strauss-Howe used the cyclic-history pattern at a real intellectual moment but the specific framework has calcified.
+Aaron's clarification on "Fourth Turning": _"i don't ean hist structure exaclty it's ossified"_. Strauss-Howe used the cyclic-history pattern at a real intellectual moment but the specific framework has calcified.
 
 **The diagnosis in kernel-composition terms**: ossified frameworks lose OCP discipline — closed-for-modification in the WRONG direction. They become closed to falsification (hardened into authority) rather than remaining open-for-extension (testable as hypothesis).
 

@@ -29,11 +29,7 @@ import {
   type PolicyDecisionObservation,
   type PolicyDecisionObservationPort,
 } from "../../policy/src/index.ts";
-import {
-  RecordingTelemetry,
-  TelemetryMetricKind,
-  TelemetrySpanStatusCode,
-} from "../../observability/src/index.ts";
+import { RecordingTelemetry, TelemetryMetricKind, TelemetrySpanStatusCode } from "../../observability/src/index.ts";
 import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
 import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts";
 import {
@@ -82,10 +78,7 @@ import {
   type WorkAnchorCommandEffects,
   type WorkAnchorStateReaderPort,
 } from "../src/ports.ts";
-import {
-  createCreateWorkItemHandler,
-  type CreateWorkItemCommand,
-} from "../src/handlers/create-work-item.ts";
+import { createCreateWorkItemHandler, type CreateWorkItemCommand } from "../src/handlers/create-work-item.ts";
 
 const command: SendSupervisorSignalCommand = {
   commandId: "cmd-supervisor-signal-001",
@@ -494,9 +487,8 @@ describe("command pipeline idempotency", () => {
       policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
       handlerRegistry: createCommandHandlerRegistry([createRecordQualityGateEvaluationHandler()]),
       discussionAnchorStateReader: createDiscussionAnchorStateReaderWithGateResult(qualityGateCommand),
-      qualityGateEvaluationStateReader: createQualityGateEvaluationStateReaderWithSatisfiedPriorChain(
-        qualityGateCommand,
-      ),
+      qualityGateEvaluationStateReader:
+        createQualityGateEvaluationStateReaderWithSatisfiedPriorChain(qualityGateCommand),
       workAnchorStateReader: createWorkAnchorStateReaderWithWorkItem({
         workItemId: qualityGateCommand.workItemId,
         organizationId: qualityGateCommand.organizationId,
@@ -843,7 +835,9 @@ describe("command pipeline idempotency", () => {
       stateStoreFactory,
       commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
       policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
-      handlerRegistry: createCommandHandlerRegistry([createGenericArtifactHandlerWithCapturedWorkAnchorEffects(capturedEffects)]),
+      handlerRegistry: createCommandHandlerRegistry([
+        createGenericArtifactHandlerWithCapturedWorkAnchorEffects(capturedEffects),
+      ]),
       now: () => "2026-05-28T21:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
     });
@@ -1294,17 +1288,14 @@ function createRecordingCommandStateStoreFactory<Result>(): RecordingCommandStat
   };
 }
 
-function createReplayCommandStateStoreFactory<Result>(
-  record: {
-    idempotencyKey: string;
-    requestHash: string;
-    result: Result;
-  },
-): CommandStateStoreFactory<Result> {
+function createReplayCommandStateStoreFactory<Result>(record: {
+  idempotencyKey: string;
+  requestHash: string;
+  result: Result;
+}): CommandStateStoreFactory<Result> {
   return {
     createCommandStateStore: () => ({
-      findIdempotencyRecord: async (idempotencyKey) =>
-        idempotencyKey === record.idempotencyKey ? record : undefined,
+      findIdempotencyRecord: async (idempotencyKey) => (idempotencyKey === record.idempotencyKey ? record : undefined),
       recordCommandOutcome: async (input) => ({
         status: CommandOutcomePersistenceStatus.Committed,
         result: input.idempotencyRecord.result,

@@ -30,8 +30,8 @@ terminology. No vocabulary collisions found.
 ## BP-03 — Skill body ≤ ~300 lines; one purpose per skill
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Skill body ≤ ~300 lines; one purpose per skill. Rationale: bloat dilutes
-triggering and reviewability. Split at the cap; merge only via `skill-creator`."*
+_"Skill body ≤ ~300 lines; one purpose per skill. Rationale: bloat dilutes
+triggering and reviewability. Split at the cap; merge only via `skill-creator`."_
 
 **Core claim:** A modular, single-purpose skill design — with bounded size — outperforms
 monolithic or bloated designs on both triggering accuracy and reviewability. This is
@@ -92,9 +92,9 @@ multiple reasons to change — and multiple failure modes per change.
 ## BP-07 — Notebook hard cap is 3000 words; prune every 3rd invocation
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Notebook hard cap is 3000 words; prune every 3rd invocation. Rationale: the
+_"Notebook hard cap is 3000 words; prune every 3rd invocation. Rationale: the
 notebook becomes part of the next invocation's effective prompt. A growing notebook
-silently rewrites the skill. Cap + prune keep it auditable."*
+silently rewrites the skill. Cap + prune keep it auditable."_
 
 **Core claim:** Growing context/memory degrades LLM instruction-following in
 empirically measurable ways; bounded memory with periodic pruning is the
@@ -143,8 +143,8 @@ Performance" (2024)**
 - Relevance: Practitioner research identifying "degradation in reasoning
   performance of LLMs at around 3000 tokens, well below the context windows of
   LLMs," and that "instruction following rate degrades as the number of
-  instructions increases." Note: the source reports degradation in *tokens*;
-  BP-07's cap is expressed in *words* (different units; ~1 word ≈ 1.3 tokens
+  instructions increases." Note: the source reports degradation in _tokens_;
+  BP-07's cap is expressed in _words_ (different units; ~1 word ≈ 1.3 tokens
   on average for English prose, so 3000 words ≈ 3900 tokens). The 3000-word
   cap is calibrated to the same order of magnitude as this threshold, erring
   slightly above the token count — this is a conservative approximation
@@ -153,9 +153,9 @@ Performance" (2024)**
 ### Mechanism note
 
 The three anchors together explain different layers of the same failure mode:
-Liu et al. (2024) identifies *where* in context information is most attended to
-(edges not middle); Chroma Research (2024) identifies *what* triggers rot
-(length + distractor density); MLOps Community (2024) identifies the *threshold*
+Liu et al. (2024) identifies _where_ in context information is most attended to
+(edges not middle); Chroma Research (2024) identifies _what_ triggers rot
+(length + distractor density); MLOps Community (2024) identifies the _threshold_
 (~3000 tokens, approximately 2000–2300 words) at which degradation becomes
 measurable. BP-07's 3000-word cap is calibrated to this token-scale threshold
 (with an explicit word/token unit difference acknowledged); the prune cadence
@@ -166,11 +166,11 @@ addresses all three failure layers.
 ## BP-16 — Verify P0-critical invariants with ≥ 2 independent formal tools
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"For P0-critical invariants, verify with ≥ 2 independent formal tools (e.g.
+_"For P0-critical invariants, verify with ≥ 2 independent formal tools (e.g.
 TLA+/TLC + FsCheck + Z3); single-tool P0 evidence is insufficient. Rationale:
 each formal tool has a distinct blind spot (TLA+ ignores bit arithmetic; Z3
 ignores interleavings; FsCheck samples a finite cone). Agreement across tools
-shrinks the residual failure surface to their three-way intersection."*
+shrinks the residual failure surface to their three-way intersection."_
 
 **Core claim:** No single formal verification tool can exhaustively cover all
 failure modes; each has distinct blind spots. Multi-tool agreement is the

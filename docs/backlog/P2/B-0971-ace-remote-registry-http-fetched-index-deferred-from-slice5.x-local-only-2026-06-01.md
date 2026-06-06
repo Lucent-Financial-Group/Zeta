@@ -40,8 +40,8 @@ rather than only locally-registered entries.
 ## Why deferred (operator 2026-06-01)
 
 Local registry is enough to build + test the semver solver (slice 5.2). Remote fetch +
-index trust is a separable concern. Operator: *"everything we skipped lets slice off
-for further enhancements."*
+index trust is a separable concern. Operator: _"everything we skipped lets slice off
+for further enhancements."_
 
 ## Composes with
 

@@ -22,9 +22,7 @@ function emitColumn(col: ColumnDef): string {
   switch (col.type) {
     case ColumnType.ZetaId:
       // pk flag drives the PRIMARY KEY clause; a non-pk zeta_id degrades to TEXT.
-      return col.pk
-        ? `${col.name} TEXT PRIMARY KEY`
-        : `${col.name} TEXT`;
+      return col.pk ? `${col.name} TEXT PRIMARY KEY` : `${col.name} TEXT`;
     case ColumnType.Enum: {
       // escape single quotes (' -> '') so enum literals can't break the SQL
       // string or open an injection vector when schemas are author-supplied.

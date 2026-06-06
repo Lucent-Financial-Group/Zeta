@@ -4,8 +4,9 @@ description: Aaron 2026-04-22 reframe — some hygiene layers aren't correctness
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22, closing the missing-prevention-layer meta-hygiene
-sub-tick: *"we are enforcing intentional decsions"*.
+sub-tick: _"we are enforcing intentional decsions"_.
 
 **Rule:** when designing a hygiene rule, ask explicitly which of
 two classes it belongs to:
@@ -13,11 +14,11 @@ two classes it belongs to:
 1. **Correctness-enforcement** — the rule has a right answer
    the factory can compute or verify (ASCII-clean lint, build
    warnings-as-errors, spec/code drift detector). The rule
-   catches *wrongness*.
+   catches _wrongness_.
 2. **Intentionality-enforcement** — the rule has no right
    answer the factory can compute, but it forces the author
    to stop, think, and write down a decision. The rule catches
-   *unthought* — the silent accretion of unexamined choices.
+   _unthought_ — the silent accretion of unexamined choices.
 
 Both are valid hygiene. Neither is "weaker" than the other.
 Intentionality-enforcement is often what a seemingly-thin
@@ -32,7 +33,7 @@ literal diff between `docs/FACTORY-HYGIENE.md` main table and
 matrix. On the surface it looks mechanical — "row N in list A
 but not in list B" — and I initially explained it that way to
 Aaron ("bookkeeping sentinel, not a real audit"). Aaron
-reframed: *"we are enforcing intentional decsions"*. The
+reframed: _"we are enforcing intentional decsions"_. The
 script's value isn't that it finds wrong answers; it's that it
 makes the "no answer" state impossible to ship silently. A
 hygiene row landing without a classification is the author

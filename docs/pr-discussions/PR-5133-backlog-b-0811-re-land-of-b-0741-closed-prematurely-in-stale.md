@@ -26,6 +26,7 @@ Renumbered to **B-0811** because B-0741 number remains taken on main (same patte
 
 Topic: `B-0741`, ontology negotiation, fork-negotiation, AI-skills+hats federation
 Searched surfaces:
+
 - `docs/agendas/` → ace-package-manager AGENDA includes hats + multi-oracle BFT
 - `docs/trajectories/` → ace-package-manager-skill-crystallization-pipeline
 - `docs/backlog/` → 10+ existing B-0741 cross-references; B-0742 sibling on hats-as-negotiated-fork-structure
@@ -39,7 +40,7 @@ Authoring action: cherry-pick + renumber + add re-land-context section.
 
 ## Why this matters now
 
-Per the maintainer 2026-05-26 catch on iter-7 (B-0806): *"i'm assuming you have the hat / fork negoation for ace too"*. Cross-fork ontology negotiation is the third layer of every `ace install <pkg>` action per B-0806's architectural integration section. B-0811 (= the original B-0741) substrate is load-bearing for that.
+Per the maintainer 2026-05-26 catch on iter-7 (B-0806): _"i'm assuming you have the hat / fork negoation for ace too"_. Cross-fork ontology negotiation is the third layer of every `ace install <pkg>` action per B-0806's architectural integration section. B-0811 (= the original B-0741) substrate is load-bearing for that.
 
 ## Test plan
 
@@ -59,6 +60,7 @@ Per the maintainer 2026-05-26 catch on iter-7 (B-0806): *"i'm assuming you have 
 Re-lands the previously closed B-0741 backlog substrate as a new P2 row (B-0811) to restore/resolve existing cross-references and keep the generated backlog index in sync.
 
 **Changes:**
+
 - Added new backlog row file `B-0811` (re-land context + original substrate content).
 - Regenerated `docs/BACKLOG.md` to include B-0811 under P2.
 
@@ -66,10 +68,10 @@ Re-lands the previously closed B-0741 backlog substrate as a new P2 row (B-0811)
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                              | Description                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0811-ontology-category-negotiation-as-ai-skills-hats-federation-point-across-clusters-and-forks-of-zeta-reland-from-pr-5003-aaron-2026-05-25.md | New P2 backlog row capturing ontology/category negotiation substrate + re-land context. |
-| docs/BACKLOG.md | Generated index updated to include the new B-0811 row entry. |
+| docs/BACKLOG.md                                                                                                                                                   | Generated index updated to include the new B-0811 row entry.                            |
 
 ## Review threads
 

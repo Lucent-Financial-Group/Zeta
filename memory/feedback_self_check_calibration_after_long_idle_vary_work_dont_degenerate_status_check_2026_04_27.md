@@ -48,12 +48,12 @@ Pick from the speculative-work options that don't compound the in-flight stuck s
 
 Future-Otto self-check rule (refining the 5-10-tick threshold from the prior memory):
 
-| Idle ticks | Action |
-|-----------:|:-------|
-| 1-5 | Status-check OK |
-| 6-8 | **Self-check fires harder** — explicitly verify (a) honest-wait test still passing AND (b) speculative work picked or actively vetoed-with-reason |
-| 9+ | Status-checking is degenerate; vary the work or file substrate memory documenting the wait |
-| 12+ | Whatever Otto's been doing for the last 4 ticks is wrong; switch tracks |
+| Idle ticks | Action                                                                                                                                            |
+| ---------: | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+|        1-5 | Status-check OK                                                                                                                                   |
+|        6-8 | **Self-check fires harder** — explicitly verify (a) honest-wait test still passing AND (b) speculative work picked or actively vetoed-with-reason |
+|         9+ | Status-checking is degenerate; vary the work or file substrate memory documenting the wait                                                        |
+|        12+ | Whatever Otto's been doing for the last 4 ticks is wrong; switch tracks                                                                           |
 
 The threshold isn't "time waiting" — it's "ticks of same-loop-no-new-state."
 

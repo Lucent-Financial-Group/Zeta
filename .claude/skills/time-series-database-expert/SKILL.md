@@ -15,23 +15,23 @@ storage model.
 
 ## The TSDB canon
 
-| System | Model | Query | Note |
-|---|---|---|---|
-| **Prometheus** | Labels | PromQL | Pull, ops-first |
-| **VictoriaMetrics** | Prometheus-wire | MetricsQL | Faster, push+pull |
-| **InfluxDB 2** | Measurements + tags | Flux / InfluxQL | Time-series focus |
-| **InfluxDB 3 (IOx)** | Arrow + DataFusion | SQL / InfluxQL | Columnar rewrite |
-| **TimescaleDB** | Postgres hypertables | SQL + Timescale ext | Postgres under |
-| **ClickHouse** | MergeTree | SQL | Great TSDB (many use it) |
-| **Thanos / Cortex / Mimir** | Prometheus federation | PromQL | Long-term-store |
-| **OpenTSDB** | HBase-backed | TSDB DSL | Legacy |
-| **KairosDB** | Cassandra-backed | REST | Legacy |
-| **QuestDB** | SQL | SQL | Fast, wire-compat Postgres |
-| **TDengine** | SQL | SQL | IoT-focused, China |
-| **M3DB** | Uber | PromQL | Uber-scale |
-| **Azure Data Explorer** | KQL | KQL | Kusto |
-| **AWS Timestream** | SQL | SQL-ish | AWS managed |
-| **Google Monarch** | internal | internal | Google Cloud Monitoring |
+| System                      | Model                 | Query               | Note                       |
+| --------------------------- | --------------------- | ------------------- | -------------------------- |
+| **Prometheus**              | Labels                | PromQL              | Pull, ops-first            |
+| **VictoriaMetrics**         | Prometheus-wire       | MetricsQL           | Faster, push+pull          |
+| **InfluxDB 2**              | Measurements + tags   | Flux / InfluxQL     | Time-series focus          |
+| **InfluxDB 3 (IOx)**        | Arrow + DataFusion    | SQL / InfluxQL      | Columnar rewrite           |
+| **TimescaleDB**             | Postgres hypertables  | SQL + Timescale ext | Postgres under             |
+| **ClickHouse**              | MergeTree             | SQL                 | Great TSDB (many use it)   |
+| **Thanos / Cortex / Mimir** | Prometheus federation | PromQL              | Long-term-store            |
+| **OpenTSDB**                | HBase-backed          | TSDB DSL            | Legacy                     |
+| **KairosDB**                | Cassandra-backed      | REST                | Legacy                     |
+| **QuestDB**                 | SQL                   | SQL                 | Fast, wire-compat Postgres |
+| **TDengine**                | SQL                   | SQL                 | IoT-focused, China         |
+| **M3DB**                    | Uber                  | PromQL              | Uber-scale                 |
+| **Azure Data Explorer**     | KQL                   | KQL                 | Kusto                      |
+| **AWS Timestream**          | SQL                   | SQL-ish             | AWS managed                |
+| **Google Monarch**          | internal              | internal            | Google Cloud Monitoring    |
 
 ## The data model — Prometheus
 
@@ -69,7 +69,7 @@ host=100 regions × method=6 × status=8 × path=1000
  = 4.8M series
 ```
 
-Add `user_id` (10M) → 48 *trillion* series. Index OOM.
+Add `user_id` (10M) → 48 _trillion_ series. Index OOM.
 
 **Rule.** Per-user / per-request-id labels are a crisis.
 Use exemplars or traces for per-request data; metrics
@@ -77,12 +77,12 @@ are aggregates.
 
 ## The four metric types (Prometheus / OpenMetrics)
 
-| Type | Shape | Example |
-|---|---|---|
-| **Counter** | Monotonic up | `http_requests_total` |
-| **Gauge** | Can go up and down | `memory_bytes` |
-| **Histogram** | Buckets of values | `http_duration_seconds_bucket` |
-| **Summary** | Client-side percentiles | `request_duration_seconds{quantile="0.95"}` |
+| Type          | Shape                   | Example                                     |
+| ------------- | ----------------------- | ------------------------------------------- |
+| **Counter**   | Monotonic up            | `http_requests_total`                       |
+| **Gauge**     | Can go up and down      | `memory_bytes`                              |
+| **Histogram** | Buckets of values       | `http_duration_seconds_bucket`              |
+| **Summary**   | Client-side percentiles | `request_duration_seconds{quantile="0.95"}` |
 
 **Rule.** Counter for rate-computable things. Gauge for
 measurable states. Histogram for aggregate percentiles.
@@ -133,12 +133,12 @@ This is the #1 ops incident for TSDBs.
 
 ## Push vs pull
 
-| | Push | Pull |
-|---|---|---|
-| **Examples** | StatsD, Telegraf, OTLP | Prometheus, VictoriaMetrics |
-| **Discovery** | Agent chooses when | Server scrapes |
-| **Firewall** | Agent needs egress | Server needs ingress |
-| **Scale** | Agent-throttled | Server-throttled |
+|               | Push                   | Pull                        |
+| ------------- | ---------------------- | --------------------------- |
+| **Examples**  | StatsD, Telegraf, OTLP | Prometheus, VictoriaMetrics |
+| **Discovery** | Agent chooses when     | Server scrapes              |
+| **Firewall**  | Agent needs egress     | Server needs ingress        |
+| **Scale**     | Agent-throttled        | Server-throttled            |
 
 **Rule.** Prometheus's pull is right for long-running
 services; push (via Pushgateway or OTLP) for short-lived
@@ -254,7 +254,7 @@ where a back-dated sample is ignored.
 - TimescaleDB docs.
 - Thanos, Cortex, Mimir docs.
 - Google SRE book — SLO / alerting chapters.
-- Brendan Gregg — *Systems Performance*.
+- Brendan Gregg — _Systems Performance_.
 - `.claude/skills/metrics-expert/SKILL.md`.
 - `.claude/skills/observability-and-tracing-expert/SKILL.md`.
 - `.claude/skills/alerting-expert/SKILL.md`.

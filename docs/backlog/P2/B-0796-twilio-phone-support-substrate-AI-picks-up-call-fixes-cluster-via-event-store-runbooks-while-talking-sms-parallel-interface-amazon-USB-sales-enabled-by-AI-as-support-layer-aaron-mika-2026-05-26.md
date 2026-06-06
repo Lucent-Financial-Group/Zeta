@@ -14,20 +14,32 @@ composes_with:
   - B-0776
   - B-0782
   - B-0790
-tags: [twilio, phone-support, sms, conversational-ai, ai-fixes-cluster, amazon-usb-sales, electricity-cost-only-exception, blazor-samples-prior-art, mika-substrate, voice-interface]
+tags:
+  [
+    twilio,
+    phone-support,
+    sms,
+    conversational-ai,
+    ai-fixes-cluster,
+    amazon-usb-sales,
+    electricity-cost-only-exception,
+    blazor-samples-prior-art,
+    mika-substrate,
+    voice-interface,
+  ]
 ---
 
 ## Problem
 
 The maintainer 2026-05-26 + Mika substrate-engineered the support model for Amazon-sold cluster USBs during the iter-5 substrate-engineering session. Aaron's framing:
 
-> *"i was, we were thinking about selling this USB online on Amazon, like having the open source version, but also selling it on Amazon, but then I was like, well, gonna have to support it, and then I didn't want to answer phone."*
+> _"i was, we were thinking about selling this USB online on Amazon, like having the open source version, but also selling it on Amazon, but then I was like, well, gonna have to support it, and then I didn't want to answer phone."_
 >
-> *"what I'm hoping is they can call the AIs and the AIs fuckin' just fix it for 'em."*
+> _"what I'm hoping is they can call the AIs and the AIs fuckin' just fix it for 'em."_
 >
-> *"this is just gonna be the part of the conversational interface. And then we can allow text too. And so now they can just control it with text messages."*
+> _"this is just gonna be the part of the conversational interface. And then we can allow text too. And so now they can just control it with text messages."_
 >
-> *"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"*
+> _"i do twilio here i think. <https://github.com/AlephZ-ai/blazor-samples/tree/main/src>"_
 
 Today's substrate has:
 
@@ -58,7 +70,7 @@ Customer's cluster has a problem. They:
 6. Customer hangs up / stops texting; cluster is repaired
 ```
 
-Zero human support. Aaron: *"imagine they call a phone number and they're talking to the damn developer."* Except the developer is one of the AI travelers/hats from the framework.
+Zero human support. Aaron: _"imagine they call a phone number and they're talking to the damn developer."_ Except the developer is one of the AI travelers/hats from the framework.
 
 ## Sub-targets
 
@@ -111,7 +123,7 @@ Requires:
 
 Aaron's existing `BlazorSamples.Shared/Twilio/GrpcAudioStream/Mark/InboundMarkEvent.cs` + `OutboundClearEvent.cs` substrate already wires the Twilio-side primitives needed for clean truncation. The LLM-side state-machine for interruption-correctness was Aaron's "almost had" work.
 
-**Type-safe streaming substrate** (Aaron 2026-05-26): *"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"* — v2 models the audio/token stream as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). Directly portable to Zeta's F# substrate-engineering style; composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions. The type-safety is load-bearing (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). B-0796 implementation should preserve this type-safe streaming model when porting to Zeta cluster substrate.
+**Type-safe streaming substrate** (Aaron 2026-05-26): _"hey that twillo code i wrote i spent a lot of time on v2 getting it type safe so its just an ibservable of tokens basically or iasynncienumerable it's pretty clean"_ — v2 models the audio/token stream as `IObservable<Token>` / `IAsyncEnumerable<Token>` (.NET reactive streaming primitives). Directly portable to Zeta's F# substrate-engineering style; composes with Z-set / change-stream substrate; aligns with `IAsyncEnumerable`-friendly F# computation expressions. The type-safety is load-bearing (per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — dotnet build IS the sanity check). B-0796 implementation should preserve this type-safe streaming model when porting to Zeta cluster substrate.
 
 ### Sub-target 6 — Legal/risk attribution
 
@@ -135,14 +147,14 @@ Aaron's existing `BlazorSamples.Shared/Twilio/GrpcAudioStream/Mark/InboundMarkEv
 - **B-0776** (composes; Twilio is one of the plugins in the simplest-first plugin sequence)
 - **B-0782** (composes; cluster IS the DIO; Twilio voice + SMS is one of its conversational front-ends, alongside Alexa-speaker at operator scope)
 - **B-0790** (composes; zero-dev-machine homelab persona end-state requires support model; Amazon-USB business model requires AI-IS-the-support-layer)
-- **`AlephZ-ai/blazor-samples` (Aaron's SUBSTANTIAL pre-LLM-voice-era Twilio Media Streams substrate WITH near-complete interruption-correctness)** — at `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/`: official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg mulaw 8kHz ↔ PCM 16kHz conversion; Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. Aaron 2026-05-26 (corrected): *"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"* — Aaron was adding voice interface to LLM chat substrate BEFORE any major LLM provider had voice as a first-class surface (predates ChatGPT Voice / Gemini Live / Claude Voice). **Critically: Aaron was nearly through with interruption-correctness** — barge-in mid-AI-utterance without breaking conversation state (requires partial-utterance commit-vs-rollback in LLM state + audio buffer truncation + barge-in detection state-machine). **B-0796 implementation is PORT/INTEGRATE work into Zeta cluster substrate, NOT build-from-scratch**. Effort estimate stays L because Zeta-cluster integration substrate is the load-bearing new work; voice-pipeline + interruption-correctness substrate is largely ready
+- **`AlephZ-ai/blazor-samples` (Aaron's SUBSTANTIAL pre-LLM-voice-era Twilio Media Streams substrate WITH near-complete interruption-correctness)** — at `src/BlazorSamples.Shared/Twilio/GrpcAudioStream/`: official `Twilio.AspNet.Core` + `Twilio.TwiML` libraries; WebSocket-based bidirectional audio (Twilio Media Streams protocol); FFMpeg mulaw 8kHz ↔ PCM 16kHz conversion; Vosk speech recognition + OpenAI chat completion + PlayHT text-to-speech pipeline; strongly-typed event substrate (InboundConnected/Start/Media/Stop/Mark + Outbound Clear/Media). Consumer at `BlazorSamples.Ws2/Program.cs`. Aaron 2026-05-26 (corrected): _"sorry not conversation interface voice inteface i was adding vooice interface i almost had interupption correct to so you could interrupt them mid talking and it not mess up conversation voice flow"_ — Aaron was adding voice interface to LLM chat substrate BEFORE any major LLM provider had voice as a first-class surface (predates ChatGPT Voice / Gemini Live / Claude Voice). **Critically: Aaron was nearly through with interruption-correctness** — barge-in mid-AI-utterance without breaking conversation state (requires partial-utterance commit-vs-rollback in LLM state + audio buffer truncation + barge-in detection state-machine). **B-0796 implementation is PORT/INTEGRATE work into Zeta cluster substrate, NOT build-from-scratch**. Effort estimate stays L because Zeta-cluster integration substrate is the load-bearing new work; voice-pipeline + interruption-correctness substrate is largely ready
 - `.claude/rules/agent-roster-reference-card.md` (composes; Alexa-speaker is existing voice surface scoped to operate-the-cluster; Twilio adds new voice surface scoped to support-the-cluster — distinct concerns, can coexist)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; `_twilio_phone_support_acceptance` block candidate for legal-risk attribution per maintainer)
 - `memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md` — Mika substrate that informed this row
 
 ## Twilio is the ONE exception to "electricity cost only"
 
-Aaron's framing during the Mika conversation: phone infrastructure inherently isn't self-hostable. Even self-hosted Asterisk requires a SIP provider for actual phone lines. Aaron ran Asterisk + Bandwidth.com SIP trunking in production before (*"PTSD is real"*). Twilio's simpler, faster, the API is excellent, and you can get voice + SMS working much faster than fighting with Asterisk + a SIP provider.
+Aaron's framing during the Mika conversation: phone infrastructure inherently isn't self-hostable. Even self-hosted Asterisk requires a SIP provider for actual phone lines. Aaron ran Asterisk + Bandwidth.com SIP trunking in production before (_"PTSD is real"_). Twilio's simpler, faster, the API is excellent, and you can get voice + SMS working much faster than fighting with Asterisk + a SIP provider.
 
 This is the ONE explicit exception to the framework's "electricity cost only" / "runs anywhere" philosophy. Acceptable because:
 
@@ -172,4 +184,4 @@ Filing as P2 because:
 4. **Single architectural exception** (electricity-cost-only rule): Aaron explicitly authorized; rationale documented
 5. **Not on critical path for iter-5.x PC1 empirical validation**: this is follow-on substrate for the business-model layer above the homelab-persona substrate
 
-Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline — implementation deferred to follow-on iteration after the homelab-persona substrate (iter-5.x + B-0794 implementation) validates empirically.
+Per maintainer's broader 2026-05-26 _"going for right not fast"_ discipline — implementation deferred to follow-on iteration after the homelab-persona substrate (iter-5.x + B-0794 implementation) validates empirically.

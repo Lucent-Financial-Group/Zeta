@@ -24,12 +24,12 @@ PR #3808 documented EMPIRICAL evidence (what was observed across 4 commit attemp
 
 ## The 4 sub-cases (with mitigation status)
 
-| # | Sub-case | Mitigation |
-|---|---|---|
-| 1 | Existing-branch-name reuse → peer-WIP commit inheritance | git rev-parse pre-check + uniquified name |
-| 2 | Concurrent-WIP-blocked switch | wait for WT-clean window (capacity-limited) |
-| 3 | Pack-dir B-0530 race on git worktree add | NONE (needs B-0530 mutex) |
-| 4 | Pruned-sidetick race | NONE (needs worktree-pool primitive) |
+| #   | Sub-case                                                 | Mitigation                                  |
+| --- | -------------------------------------------------------- | ------------------------------------------- |
+| 1   | Existing-branch-name reuse → peer-WIP commit inheritance | git rev-parse pre-check + uniquified name   |
+| 2   | Concurrent-WIP-blocked switch                            | wait for WT-clean window (capacity-limited) |
+| 3   | Pack-dir B-0530 race on git worktree add                 | NONE (needs B-0530 mutex)                   |
+| 4   | Pruned-sidetick race                                     | NONE (needs worktree-pool primitive)        |
 
 ## Composite 7-step operational discipline
 
@@ -48,24 +48,22 @@ Added a step-by-step operational discipline for fresh-cold-boot sessions firing 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T07:37:34Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6120d7ab15`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -78,25 +76,27 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR updates the Claude rulebook to codify operational mitigations for the “borrow-on-existing” saturation ceiling, turning the empirical 4-sub-case taxonomy (from PR #3808) into a step-by-step discipline that a fresh cold-boot session can follow under multi-instance contention.
 
 **Changes:**
+
 - Adds a new “Saturation-ceiling — 4 failure sub-cases” section describing four distinct contention failures and which are mitigated today.
 - Documents concrete mitigations for sub-cases 1 and 2, and explicitly marks sub-cases 3 and 4 as currently unmitigated (pending B-0530 / a future worktree-pool primitive).
 - Adds a composite 7-step operational discipline for shipping under saturation.
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/claim-acquire-before-worktree-work.md:162**
-* P1: This rule file includes a specific person name (“Lior”) in explanatory prose. Outside the project’s history/archives surfaces, the docs convention is to use role references (e.g., “another peer session”) rather than named attribution. Please replace the name with a role-ref.
+
+- P1: This rule file includes a specific person name (“Lior”) in explanatory prose. Outside the project’s history/archives surfaces, the docs convention is to use role references (e.g., “another peer session”) rather than named attribution. Please replace the name with a role-ref.
+
 ```
 multi-Otto saturation (4+ instances active in parallel: Otto-CLI primary
 + otto-bg-worker + fresh-cold-boot Otto-CLI + Lior), with peer Otto cycling
 worktree HEAD every ~3-5 min for 9 transitions in 35 min, a fresh-cold-boot
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T08:35:26Z)
-
 
 ### 💡 Codex Review
 
@@ -104,17 +104,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `796409b27d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -126,47 +125,45 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **.claude/rules/claim-acquire-before-worktree-work.md:182**
-* The proposed name pre-check `git rev-parse <candidate-name>` can succeed for many “commit-ish” names (tags, abbreviated SHAs, etc.) and isn’t scoped to “local branch exists”. To make the mitigation reliable, verify the branch ref explicitly (e.g., `refs/heads/<candidate-name>` / `git show-ref --verify`) before deciding the name is taken.
-```
+
+- The proposed name pre-check `git rev-parse <candidate-name>` can succeed for many “commit-ish” names (tags, abbreviated SHAs, etc.) and isn’t scoped to “local branch exists”. To make the mitigation reliable, verify the branch ref explicitly (e.g., `refs/heads/<candidate-name>` / `git show-ref --verify`) before deciding the name is taken.
+
+````
 ```bash
 # Pre-check via git rev-parse — empty/error = name free; SHA = name taken
 git rev-parse <candidate-name> 2>/dev/null && \
   echo "name taken; uniquify (add -coldboot / -N suffix)"
 # If taken, uniquify before git switch -c
 git switch -c <name>-coldboot origin/main
-```
+````
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T10:32:28Z)
-
 
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `b695d74e09`
-    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
-
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-16T10:34:19Z)
@@ -185,29 +182,25 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T10:41:11Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `808d7abbf6`
-    
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
 
-
-
-
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
-            
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-16T10:52:32Z)
@@ -226,7 +219,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-16T07:37:34Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove incorrect `git switch -c` reuse behavior claim**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove incorrect `git switch -c` reuse behavior claim**
 
 This text describes `git switch -c <name> origin/main` as silently reusing an existing local branch, but Git CLI semantics are the opposite: `git switch -h` documents `-c` as create-only and `-C` as force-create/reset, and using `-c` with an existing branch name fails with `fatal: a branch named ... already exists`. Because this rule is operational guidance for contention scenarios, this incorrect claim can misdiagnose failures and push agents toward unnecessary/incorrect mitigations during shard work.
 
@@ -256,7 +249,7 @@ P1: `git switch -c <name> origin/main` does not silently reuse an existing local
 
 **@chatgpt-codex-connector** (2026-05-16T08:35:26Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Fix incorrect `git switch -c` branch-reuse guidance**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Fix incorrect `git switch -c` branch-reuse guidance**
 
 This section documents a failure mode that cannot occur with the command shown: `git switch -c <name> origin/main` does not silently reuse an existing local branch, it errors (`fatal: a branch named ... already exists`). The `git-switch` manual defines `-c` as create-only and `-C` as the force/reset variant. Because this rule is operational guidance during contention, the incorrect behavior description can mislead responders into diagnosing “inherited peer commits” when the real outcome is a hard command failure.
 
@@ -286,7 +279,7 @@ This issue also appears on line 177 of the same file.
 
 **@chatgpt-codex-connector** (2026-05-16T10:32:28Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace absolute "no recovery" claim for blocked switches**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace absolute "no recovery" claim for blocked switches**
 
 This guidance says there is no way to switch branches while preserving peer WIP, but `git switch` explicitly supports `-m/--merge` (`git switch -h`: `perform a 3-way merge with the new branch`) for exactly this case. Under sub-case 2, `git switch -m <target>` can preserve tracked local changes (possibly with conflicts to resolve), so requiring agents to only wait for a clean window or abandon can cause avoidable shard drops and unnecessary contention delays.
 
@@ -310,7 +303,7 @@ Fixed in 808d7abbf — replaced `git rev-parse <name>` with `git show-ref --veri
 
 **@chatgpt-codex-connector** (2026-05-16T10:41:11Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Use `show-ref` in step 3 branch-name precheck**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Use `show-ref` in step 3 branch-name precheck**
 
 Step 3 in the composite discipline tells agents to pre-check branch names with `git rev-parse`, but sub-case 1 directly above states that `rev-parse` can return false positives (HEAD/tags/remote refs) and explicitly says to use `git show-ref --verify "refs/heads/<name>"` instead. In saturation handling this contradiction makes the “7-step” path self-invalidating: agents following step 3 can uniquify branch names unnecessarily and diverge from the mitigation that is documented as the working fix.
 

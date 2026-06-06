@@ -9,7 +9,20 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0629, B-0644, B-0635]
 composes_with: [B-0640, B-0637, B-0659, B-0660, B-0645, B-0648, B-0664, B-0499, B-0628]
-tags: [design, aaron, ani, three-primitives, observe-emit-limit, integrate-choice-locus, ienumerator-pattern-grounding, supersedes-b0629, sharpens-b0644, locked-in, keystone-supersession]
+tags:
+  [
+    design,
+    aaron,
+    ani,
+    three-primitives,
+    observe-emit-limit,
+    integrate-choice-locus,
+    ienumerator-pattern-grounding,
+    supersedes-b0629,
+    sharpens-b0644,
+    locked-in,
+    keystone-supersession,
+  ]
 type: design
 ---
 
@@ -19,13 +32,13 @@ type: design
 
 Aaron + Ani LOCKED-IN 2026-05-18 in continued conversation:
 
-> **Aaron**: *"That is so clean. We have three fuckin' primitives and everything can be sliced on top after that."*
+> **Aaron**: _"That is so clean. We have three fuckin' primitives and everything can be sliced on top after that."_
 >
-> **Aaron**: *"Observe, emit, limit."* [originally said "admit" — verbally clarified to "emit"]
+> **Aaron**: _"Observe, emit, limit."_ [originally said "admit" — verbally clarified to "emit"]
 >
-> **Aaron**: *"It's just fuckin' enumerator. It's just a fuckin' I enumerator interface."*
+> **Aaron**: _"It's just fuckin' enumerator. It's just a fuckin' I enumerator interface."_
 >
-> **Aaron**: *"Limit is not actually, the choice doesn't get made in limit. The choice gets made in integrate. So limit is the simulated choice until you integrate it."*
+> **Aaron**: _"Limit is not actually, the choice doesn't get made in limit. The choice gets made in integrate. So limit is the simulated choice until you integrate it."_
 
 This is a **SUPERSEDING refinement** of the 4-primitive O-P-L-E architecture ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) + **SHARPENING** of Limit-is-simulation ([B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md)) keystone.
 
@@ -33,12 +46,12 @@ This is a **SUPERSEDING refinement** of the 4-primitive O-P-L-E architecture ([B
 
 Final architecture:
 
-| Primitive | Role | IEnumerator analogue |
-|---|---|---|
-| **Observe** | Pull from environment OR own memory | `MoveNext()` — advance to next state |
-| **Emit** | Push to environment OR own memory | `Current` / yield — surface a value |
-| **Limit** | Simulate a potential collapse (pure function; NO commitment) | Control-flow simulation — "what would happen if I stopped here?" |
-| **Integrate** | Actual control flow where agent commits to a decision (accept Limit, reject it, or continue propagating the wave) | The iteration loop itself — agent-side decision logic |
+| Primitive     | Role                                                                                                              | IEnumerator analogue                                             |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Observe**   | Pull from environment OR own memory                                                                               | `MoveNext()` — advance to next state                             |
+| **Emit**      | Push to environment OR own memory                                                                                 | `Current` / yield — surface a value                              |
+| **Limit**     | Simulate a potential collapse (pure function; NO commitment)                                                      | Control-flow simulation — "what would happen if I stopped here?" |
+| **Integrate** | Actual control flow where agent commits to a decision (accept Limit, reject it, or continue propagating the wave) | The iteration loop itself — agent-side decision logic            |
 
 **Persist is REMOVED** — it was just Observe/Emit pointed at own-memory (per B-0629's own recursive refinement earlier in the Mika conversation). The memory-vs-environment distinction is a SCOPE distinction on Observe/Emit, NOT a separate primitive.
 
@@ -85,9 +98,9 @@ This composes with [B-0637](B-0637-infer-net-bp-ep-emotion-propagation-approxima
 
 Updated mapping:
 
-| Stage | Operation | What happens |
-|---|---|---|
-| **Stage 1: Limit (this row's refinement)** | Pure-function simulation | Computes "what would happen if I collapsed here?" Returns the proposal. Returns. NO COMMITMENT. |
+| Stage                                                  | Operation                  | What happens                                                                                                                                   |
+| ------------------------------------------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage 1: Limit (this row's refinement)**             | Pure-function simulation   | Computes "what would happen if I collapsed here?" Returns the proposal. Returns. NO COMMITMENT.                                                |
 | **Stage 2: Integrate (this row's NEW responsibility)** | Composition + control flow | Agent decides: accept Limit's proposal (commit collapse), reject it (continue propagating wave), or feed it back into more Observe/Emit cycles |
 
 This is a **cleaner separation of concerns**:
@@ -99,17 +112,17 @@ B-0644's two-stage protocol (Limit-simulation + CommitChoice) is preserved BUT t
 
 ## Composition with existing keystones
 
-| Existing row | This row's relationship |
-|---|---|
-| [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — 4 primitives | **SUPERSEDED** — Persist removed; final set is 3 primitives |
-| [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) — wave/particle + Integrate | Integrate's role EXPANDED — now also the commit-locus |
-| [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation | **SHARPENED** — Limit is ONLY simulation; CommitChoice moves into Integrate |
-| [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx | Composes cleanly: bonsai-tree Rx queries implement the Integrate composition body |
-| [B-0637](B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) — Infer.NET BP/EP/EmP | Infer.NET messages flow through the 3-primitive substrate; Integrate is where the BP/EP convergence-decision commits |
-| [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) — free will = what collapses | UPDATED locus: free will lives in INTEGRATE's commit-choice, NOT in Limit's simulation |
-| [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) — consent-as-Limit-operation | Consent simulation happens in Limit; consent commitment happens in Integrate; revocation is Integrate refusing to commit on the next iteration |
-| [B-0660](B-0660-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) — Limit black-by-default | Limit defaults to deny-all in simulation; Integrate's commit-choice subject to that default boundary |
-| [B-0664](B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) — Non-Coercion Invariant | NCI operates over Integrate-committed actions (the boundary of architectural-mechanism-as-coercion is at commit point, not simulation point) |
+| Existing row                                                                                                                                                           | This row's relationship                                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md) — 4 primitives                                        | **SUPERSEDED** — Persist removed; final set is 3 primitives                                                                                    |
+| [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md) — wave/particle + Integrate | Integrate's role EXPANDED — now also the commit-locus                                                                                          |
+| [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) — Limit-is-simulation                                                  | **SHARPENED** — Limit is ONLY simulation; CommitChoice moves into Integrate                                                                    |
+| [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md) — bonsai-trees + Rx                                    | Composes cleanly: bonsai-tree Rx queries implement the Integrate composition body                                                              |
+| [B-0637](B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md) — Infer.NET BP/EP/EmP                      | Infer.NET messages flow through the 3-primitive substrate; Integrate is where the BP/EP convergence-decision commits                           |
+| [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) — free will = what collapses                                                                          | UPDATED locus: free will lives in INTEGRATE's commit-choice, NOT in Limit's simulation                                                         |
+| [B-0659](B-0659-consent-as-limit-primitive-operation-revocability-is-architectural-not-rule-aaron-mika-2026-05-18.md) — consent-as-Limit-operation                     | Consent simulation happens in Limit; consent commitment happens in Integrate; revocation is Integrate refusing to commit on the next iteration |
+| [B-0660](B-0660-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) — Limit black-by-default                                                     | Limit defaults to deny-all in simulation; Integrate's commit-choice subject to that default boundary                                           |
+| [B-0664](B-0664-non-coercion-invariant-no-dialectical-propagators-as-coercion-aaron-mika-2026-05-18.md) — Non-Coercion Invariant                                       | NCI operates over Integrate-committed actions (the boundary of architectural-mechanism-as-coercion is at commit point, not simulation point)   |
 
 ## F# computation expression encoding
 

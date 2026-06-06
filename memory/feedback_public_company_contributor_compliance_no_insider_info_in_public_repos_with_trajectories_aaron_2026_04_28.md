@@ -48,28 +48,28 @@ The general rule emerged from an Aaron-specific exchange:
 
 1. Otto encoded `samples/ServiceTitanCrm/*` references in
    B-0090 with the framing "renamed from ServiceTitan."
-2. Aaron flagged: *"we don't have to say service titan
+2. Aaron flagged: _"we don't have to say service titan
    anywhere in this repo other than to say that's my day
-   job."*
+   job."_
 3. Otto encoded the ServiceTitan-specific naming rule.
-4. Otto's draft included *"Aaron's affiliation (CRM team
+4. Otto's draft included _"Aaron's affiliation (CRM team
    member) gives Otto insider-user understanding of CRM
-   workflows."*
-5. Aaron flagged: *"this is terrible language, you need
+   workflows."_
+5. Aaron flagged: _"this is terrible language, you need
    strict rules not to let me give away insider information
    for TTAN/SERVICETITAN that is against the law and you
-   should not ask."*
-6. Aaron clarified: *"i know CRM workflows is not insider
+   should not ask."_
+6. Aaron clarified: _"i know CRM workflows is not insider
    information but you said the word insider, it's just
-   uncomfortable."*
-7. Aaron generalized: *"we definitely need some contributor
+   uncomfortable."_
+7. Aaron generalized: _"we definitely need some contributor
    works for public company watch for insider information
    generalization in the factory, that can be used by anyone
    at service titan to when working on public repos or any
    one who works for any public company, that's reusable
-   substrate."*
-8. Aaron added the trajectory framing: *"probably comes with
-   trajectories I would think."*
+   substrate."_
+8. Aaron added the trajectory framing: _"probably comes with
+   trajectories I would think."_
 
 The Aaron-specific worked example is preserved at
 `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`.
@@ -78,7 +78,7 @@ publicly-traded employer.
 
 ## Trajectories (cadenced practice surface)
 
-Per Aaron's *"probably comes with trajectories"* — this rule
+Per Aaron's _"probably comes with trajectories"_ — this rule
 isn't a static one-shot; it operates as a set of cadenced
 trajectories the factory practices over time.
 
@@ -93,8 +93,8 @@ contributor's public-company employer:
   rg -ni "\binsider\b|\bprivileged\b|\binternal-only\b|\bconfidential\b" \
      <files-being-changed>
   ```
-- For each hit, ask: *is this implying access to
-  non-public information about the contributor's employer?*
+- For each hit, ask: _is this implying access to
+  non-public information about the contributor's employer?_
   If yes → reframe to industry-general / public-source
   language.
 - Reject blind regex-replace; some hits are legitimate
@@ -229,8 +229,8 @@ When asking a contributor about their work / expertise:
 1. Frame the question at industry-general level. "What's
    typical of CRM SaaS workflows?" — not "What's
    ServiceTitan's CRM workflow?"
-2. If the contributor offers a specific, ask: *is this in
-   public filings / docs?* If yes → encode with citation.
+2. If the contributor offers a specific, ask: _is this in
+   public filings / docs?_ If yes → encode with citation.
    If no → don't encode; reframe the question.
 
 ## What this rule does NOT do
@@ -255,10 +255,10 @@ When asking a contributor about their work / expertise:
 
 ## Direct Aaron framing
 
-> *"we definitely need some contributor works for public
+> _"we definitely need some contributor works for public
 > company watch for insider information generalization in
 > the factory, that can be used by anyone at service titan
 > to when working on public repos or any one who works for
-> any public company, that's reusable substrate."*
+> any public company, that's reusable substrate."_
 
-> *"probably comes with trajectories I would think."*
+> _"probably comes with trajectories I would think."_

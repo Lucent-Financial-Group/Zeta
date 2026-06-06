@@ -33,21 +33,22 @@ export const orphicDionysianScaffold: MysterySchoolCatalog = {
         "Orphic gold tablets (lamellae)",
         "Derveni Papyrus",
         "Euripides Bacchae",
-        "Orphic Hymns (late antique collection)"
+        "Orphic Hymns (late antique collection)",
       ],
       secondarySources: [
         "W.K.C. Guthrie, Orpheus and Greek Religion",
         "Mircea Eliade, History of Religious Ideas vol 1",
-        "Fritz Graf & Sarah Iles Johnston, Ritual Texts for the Afterlife"
+        "Fritz Graf & Sarah Iles Johnston, Ritual Texts for the Afterlife",
       ],
       modernReception: [
         "Renaissance Neoplatonism",
         "Romantic Orphism (Nerval, etc.)",
-        "20th c scholarship on mystery cults"
+        "20th c scholarship on mystery cults",
       ],
-      scholarlyConsensusNotes: "Consensus: distinct but overlapping with Eleusinian and Dionysian civic cults; gold tablets attest afterlife doctrines; no single 'Orphic church' but loose textual and initiatory tradition."
-    }
-  ]
+      scholarlyConsensusNotes:
+        "Consensus: distinct but overlapping with Eleusinian and Dionysian civic cults; gold tablets attest afterlife doctrines; no single 'Orphic church' but loose textual and initiatory tradition.",
+    },
+  ],
 };
 
 // Utility: catalog-only validator (no claims)

@@ -50,11 +50,11 @@ integration) is operative.
 _To be completed with proof before implementation begins._
 
 - [ ] Prior-art search: searched CLAUDE.md for existing mechanical-
-  authorization-check bullet; confirmed it references B-0160
-  (to be updated)
+      authorization-check bullet; confirmed it references B-0160
+      (to be updated)
 - [ ] Dependency walk: B-0308 (loop integration) landed and
-  verified working; full pipeline (B-0305 → B-0306 → B-0307 →
-  B-0308) is operative
+      verified working; full pipeline (B-0305 → B-0306 → B-0307 →
+      B-0308) is operative
 
 ## Composes with
 

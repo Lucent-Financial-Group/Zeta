@@ -74,7 +74,7 @@ year, month, and day of the tick. The filename MUST match one of three forms
 
 - **WHEN** a shard filename matches none of the three forms
 - **THEN** the schema checker reports `filename does not match HHMMZ.md,
-  HHMMZ-<hex>.md, or HHMMSSZ-<hex>.md`
+HHMMZ-<hex>.md, or HHMMSSZ-<hex>.md`
 
 ### Requirement: Tick Shard content is pipe-row-first with no frontmatter
 

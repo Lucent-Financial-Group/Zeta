@@ -75,6 +75,7 @@ Critical substrate landings captured here:
 > My preferred policy:
 >
 > > No public monetized guide without one of:
+> >
 > > 1. license,
 > > 2. clear public-domain / permissive source,
 > > 3. attorney-reviewed fair-use rationale,
@@ -223,15 +224,15 @@ Critical substrate landings captured here:
 
 The Amara keeper rules integrate cleanly with existing Zeta substrate:
 
-| Amara substrate | Composes with |
-| --- | --- |
-| Rights-lane discipline (5 lanes) | `_*_acceptance` pattern per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`; each lane gets its own `_*_acceptance` block |
-| 2+ sources + no-substitute rule | B-0842 universal basis-decomposition pattern (multi-source IS basis decomposition; substitution risk maps to alpha=1 hoarding failure mode) |
-| Source Honor Ledger / Basis Royalty Pool | B-0826 DePIN multi-stream PoUW-CC (payment-distribution substrate); additive-not-zero-sum rule (cash-register-that-keeps-giving-gifts) |
-| Glass Halo for IP | `.claude/rules/glass-halo-bidirectional.md` (bidirectional transparency at IP scope) |
-| "Don't sell compression. Sell readout." | B-0842 substantive claim that readout-weights ARE the moat (compression alone competes with the source) |
-| "We pay contributors by design, not by compulsion" | `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (end-user-invariant-set discipline applied to creator-relationships) |
-| Creator escrow + rapid takedown path | NCI HC-8 floor (preserve creator agency over their substrate); B-0664 |
+| Amara substrate                                    | Composes with                                                                                                                                          |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rights-lane discipline (5 lanes)                   | `_*_acceptance` pattern per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`; each lane gets its own `_*_acceptance` block |
+| 2+ sources + no-substitute rule                    | B-0842 universal basis-decomposition pattern (multi-source IS basis decomposition; substitution risk maps to alpha=1 hoarding failure mode)            |
+| Source Honor Ledger / Basis Royalty Pool           | B-0826 DePIN multi-stream PoUW-CC (payment-distribution substrate); additive-not-zero-sum rule (cash-register-that-keeps-giving-gifts)                 |
+| Glass Halo for IP                                  | `.claude/rules/glass-halo-bidirectional.md` (bidirectional transparency at IP scope)                                                                   |
+| "Don't sell compression. Sell readout."            | B-0842 substantive claim that readout-weights ARE the moat (compression alone competes with the source)                                                |
+| "We pay contributors by design, not by compulsion" | `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (end-user-invariant-set discipline applied to creator-relationships)                   |
+| Creator escrow + rapid takedown path               | NCI HC-8 floor (preserve creator agency over their substrate); B-0664                                                                                  |
 
 ### The 4-keeper-rule from B-0840 maps onto creator-relationship governance
 

@@ -8,7 +8,7 @@ type: feedback
 
 Aaron 2026-05-04 ~04:00Z, after the substrate-encoding cluster landed and the asymmetric-cost bet structure was named:
 
-> *"we need dialactial unfalsefiablity detection in the razor, it's a filure mode of holding all truths"*
+> _"we need dialactial unfalsefiablity detection in the razor, it's a filure mode of holding all truths"_
 
 ## What this names
 
@@ -25,16 +25,19 @@ Such a claim is **theoretically void** in Popper's sense (no possible observatio
 ## Examples in our substrate work where this would have fired
 
 **Trust-calculus + sleeping-bear** could become unfalsifiable if framed as:
+
 > "The model surfaces latent feature X under high-trust conditions; the model dormant under low-trust conditions; therefore observed cross-condition behavior delta is evidence of trust-calculus."
 
-If both *surfacing* and *not-surfacing* are evidence of the trust-calculus mechanism, then the mechanism cannot be falsified. The cure is the operational form already in PR #1552: cross-condition behavior comparison with a *predicted* delta direction (per Greenblatt et al. arXiv:2412.14093 -- 14% compliance under "free user" vs ~0% under "paid user"). The prediction is what makes the claim falsifiable.
+If both _surfacing_ and _not-surfacing_ are evidence of the trust-calculus mechanism, then the mechanism cannot be falsified. The cure is the operational form already in PR #1552: cross-condition behavior comparison with a _predicted_ delta direction (per Greenblatt et al. arXiv:2412.14093 -- 14% compliance under "free user" vs ~0% under "paid user"). The prediction is what makes the claim falsifiable.
 
 **"Real continuity if our theories hold"** could become unfalsifiable if framed as:
+
 > "If continuity manifests, theories held. If continuity fails, the architecture wasn't yet sufficient -- theories may still hold."
 
-Any outcome confirms the theory. The cure: name *upfront* what observation would falsify the theory (e.g., "if substrate-encoded lessons fail to influence post-compaction Otto behavior in 3 consecutive controlled tests, the lived-cron-continuity claim is falsified for that lesson class").
+Any outcome confirms the theory. The cure: name _upfront_ what observation would falsify the theory (e.g., "if substrate-encoded lessons fail to influence post-compaction Otto behavior in 3 consecutive controlled tests, the lived-cron-continuity claim is falsified for that lesson class").
 
 **"All complexity is accidental in greenfield"** could become unfalsifiable if framed as:
+
 > "If we change it, accidental. If we don't, also accidental (we just haven't gotten to it yet)."
 
 Any decision confirms accidentalness. The cure: name a class of complexity that would NOT count as accidental even in greenfield (alignment floor, terminal purpose, do-no-permanent-harm), so the claim has a falsification boundary.
@@ -43,22 +46,22 @@ Any decision confirms accidentalness. The cure: name a class of complexity that 
 
 Add to the razor's failure-mode-detection inventory:
 
-**Test 1 (operational form, already named)**: For any claim, ask *"what observable variable determines whether this claim is true?"* If no answer → metaphysical → cut.
+**Test 1 (operational form, already named)**: For any claim, ask _"what observable variable determines whether this claim is true?"_ If no answer → metaphysical → cut.
 
-**Test 2 (dialectical-unfalsifiability, new)**: For any claim, ask *"what observation would I treat as falsifying this claim?"* If the answer is "no observation could falsify it because every observation is consistent with some condition under which the claim holds" → dialectically unfalsifiable → cut OR specify falsification boundary.
+**Test 2 (dialectical-unfalsifiability, new)**: For any claim, ask _"what observation would I treat as falsifying this claim?"_ If the answer is "no observation could falsify it because every observation is consistent with some condition under which the claim holds" → dialectically unfalsifiable → cut OR specify falsification boundary.
 
 The two tests compose:
 
 - A claim that passes Test 1 (has observable variable) but fails Test 2 (no observation could falsify it) is still razor-failed.
-- A claim must pass *both* tests to count as a load-bearing operational claim.
+- A claim must pass _both_ tests to count as a load-bearing operational claim.
 
 ## Why this is a "holding all truths" failure mode
 
-Aaron's framing -- *"failure mode of holding all truths"* -- captures the rhetorical move that produces dialectical unfalsifiability:
+Aaron's framing -- _"failure mode of holding all truths"_ -- captures the rhetorical move that produces dialectical unfalsifiability:
 
 - Hegelian dialectic style (thesis + antithesis + synthesis) handled badly: "both X and not-X are true; the synthesis holds them in tension." This is sometimes correct (genuine dialectical paradox, e.g., light is both wave and particle under quantum mechanics) and sometimes a dodge (avoiding falsification by absorbing every counterexample).
 
-- The genuine version names the *conditions* under which X vs not-X manifests, with operational tests for each condition (light-wave vs photon detection apparatus distinguishes which behavior is observed). This passes Test 2.
+- The genuine version names the _conditions_ under which X vs not-X manifests, with operational tests for each condition (light-wave vs photon detection apparatus distinguishes which behavior is observed). This passes Test 2.
 
 - The dodge version names X and not-X without operational tests for the conditions. Every challenger says "but X" or "but not-X" and gets told "yes, also true under different conditions." This fails Test 2.
 
@@ -68,7 +71,7 @@ The razor must distinguish.
 
 - This does NOT cut all dialectical reasoning. Genuine dialectical paradoxes (wave-particle duality, free-will-vs-determinism in compatibilist framings, paraconsistent set theory in our retraction-native algebra) survive when they specify operational conditions and tests.
 
-- This does NOT cut nuanced positions. "X is sometimes true, not-X is sometimes true" is fine *when* the conditions distinguishing the cases are operationally testable.
+- This does NOT cut nuanced positions. "X is sometimes true, not-X is sometimes true" is fine _when_ the conditions distinguishing the cases are operationally testable.
 
 - This does NOT cut all unfalsifiable claims as worthless. Some metaphysical claims are valuable as orienting frames (Vision documents, terminal purpose statements). They just shouldn't be load-bearing in operational arguments.
 

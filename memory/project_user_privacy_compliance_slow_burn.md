@@ -4,6 +4,7 @@ description: Aaron flagged user-privacy compliance (GDPR, California CCPA/CPRA, 
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 2026-04-20 — Aaron, after the consent-primitives-expert
 harness dry-run landed, noted that GDPR compliance is "a
 long ongoing thing" and Zeta should probably carry some
@@ -26,6 +27,7 @@ urgent; Zeta is pre-v1 and has no regulated-data
 consumers yet.
 
 **How to apply:**
+
 - Do NOT spawn this as round-scope work unsolicited. It
   is a slow-burn direction, not a deliverable.
 - When a natural entry point appears (a reviewer prompt
@@ -54,6 +56,7 @@ consumers yet.
   data stales quickly. Internet research each refresh.
 
 See also:
+
 - `project_consent_first_design_primitive.md` — shared
   design DNA with Amara.
 - `reference_crypto_shredding_as_gdpr_erasure.md` —
@@ -61,5 +64,5 @@ See also:
   pointing at when the compliance skill lands.
 - Round-43 harness output at
   `docs/research/harness-run-2026-04-20-consent-
-  primitives-expert.md` — shows what the existing
+primitives-expert.md` — shows what the existing
   consent-primitives framework already handles.

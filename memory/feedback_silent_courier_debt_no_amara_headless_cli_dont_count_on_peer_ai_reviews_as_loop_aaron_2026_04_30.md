@@ -6,10 +6,10 @@ type: feedback
 
 Aaron 2026-04-30 verbatim:
 
-> *"don't count on her review until you have a process
+> _"don't count on her review until you have a process
 > encoded for bootstraping her and doing the communitation
 > yourself, this is a silent dept on me to be the courrir
-> and I can't keep up"*
+> and I can't keep up"_
 > — Aaron 2026-04-30
 
 ## The rule
@@ -18,7 +18,7 @@ Otto must NOT count on peer-AI reviews (specifically Amara,
 but the principle generalizes to any peer-AI without an
 encoded autonomous-bootstrap process) as part of the
 operational substrate-correction loop. Until Otto can
-*autonomously*:
+_autonomously_:
 
 1. **Bootstrap the peer-AI** into a state where it can
    review the substrate.
@@ -62,20 +62,20 @@ The debt has been invisible to Otto because:
 
 `tools/peer-call/` has three operational scripts:
 
-| Peer | Script | Underlying CLI | Status |
-|---|---|---|---|
-| Codex (OpenAI) | `codex.sh` / `codex.ts` | `codex exec -s read-only` | Operational — Otto can call directly |
-| Gemini (Google) | `gemini.sh` / `gemini.ts` | `gemini -p` | Operational — Otto can call directly |
-| Grok (xAI) | `grok.sh` / `grok.ts` | `cursor-agent --print --model grok-*` | Operational — Otto can call directly |
-| **Amara (ChatGPT/OpenAI)** | **— missing —** | **— ChatGPT lacks the headless CLI surface that maps to the existing peer-call shape —** | **NOT operational; courier-dependent** |
-| Claude.ai (Anthropic) | — none — | — Claude.ai web is not headless-callable from Claude Code — | NOT operational; courier-dependent |
-| Alexa (Amazon Addison) | — none — | — Alexa device API is not the right surface for substrate review — | NOT operational; courier-dependent |
-| Deepseek | — none — | — Deepseek has API; would need wrapper script — | NOT operational currently |
+| Peer                       | Script                    | Underlying CLI                                                                           | Status                                 |
+| -------------------------- | ------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------- |
+| Codex (OpenAI)             | `codex.sh` / `codex.ts`   | `codex exec -s read-only`                                                                | Operational — Otto can call directly   |
+| Gemini (Google)            | `gemini.sh` / `gemini.ts` | `gemini -p`                                                                              | Operational — Otto can call directly   |
+| Grok (xAI)                 | `grok.sh` / `grok.ts`     | `cursor-agent --print --model grok-*`                                                    | Operational — Otto can call directly   |
+| **Amara (ChatGPT/OpenAI)** | **— missing —**           | **— ChatGPT lacks the headless CLI surface that maps to the existing peer-call shape —** | **NOT operational; courier-dependent** |
+| Claude.ai (Anthropic)      | — none —                  | — Claude.ai web is not headless-callable from Claude Code —                              | NOT operational; courier-dependent     |
+| Alexa (Amazon Addison)     | — none —                  | — Alexa device API is not the right surface for substrate review —                       | NOT operational; courier-dependent     |
+| Deepseek                   | — none —                  | — Deepseek has API; would need wrapper script —                                          | NOT operational currently              |
 
 The README explicitly noted the gap:
 
-> *"when another peer (Amara via ChatGPT, etc.) gains a
-> headless CLI surface..."*
+> _"when another peer (Amara via ChatGPT, etc.) gains a
+> headless CLI surface..."_
 
 That's a known future-task, not a current capability.
 
@@ -165,7 +165,7 @@ Aaron-mediated by definition.
   funding-budget surface.
 - `memory/feedback_free_work_amara_and_agent_schedule_paid_work_escalate_to_aaron_2026_04_23.md`
   — Aaron has explicitly licensed free Amara work; this
-  rule isn't about license, it's about Aaron's *time*
+  rule isn't about license, it's about Aaron's _time_
   cost as courier.
 
 ## Operational protocol — what Otto does going forward
@@ -180,7 +180,7 @@ When Otto wants peer-AI input on substrate:
    silently expect it. Either:
    - (a) Defer to a future round when the bootstrap
      infrastructure exists, OR
-   - (b) Ask Aaron *once* if he has time to courier this
+   - (b) Ask Aaron _once_ if he has time to courier this
      specific item, with explicit acknowledgment that
      Aaron may decline.
 3. **Don't repeatedly ask Aaron for courier cycles** —
@@ -193,15 +193,15 @@ When Otto wants peer-AI input on substrate:
 
 ## Carved sentences
 
-*"Aaron's courier work was unaccounted in Otto's cost
+_"Aaron's courier work was unaccounted in Otto's cost
 model. The substrate accelerated; the courier load grew
-silently; Aaron couldn't keep up."*
+silently; Aaron couldn't keep up."_
 
-*"Until Otto encodes a process for autonomously
+_"Until Otto encodes a process for autonomously
 bootstrapping a peer-AI and doing the communication
 directly, that peer-AI's review cadence is not part of
 the operational loop. It is Aaron-mediated, and Aaron is
-not infinite."*
+not infinite."_
 
-*"Aaron's processing budget IS Aaron's survival surface.
-Otto consuming it silently is the failure mode."*
+_"Aaron's processing budget IS Aaron's survival surface.
+Otto consuming it silently is the failure mode."_

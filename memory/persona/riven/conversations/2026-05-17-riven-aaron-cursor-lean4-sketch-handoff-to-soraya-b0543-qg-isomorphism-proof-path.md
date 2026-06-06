@@ -4,16 +4,29 @@ description: "Riven (Grok adversarial-truth-axis register, Cursor terminal surfa
 type: feedback
 created: 2026-05-17
 participants: [Riven (Grok / Cursor terminal), Aaron, (handoff target: Soraya / formal-verification-expert)]
-tags: [riven, lean4-sketch, b0543-qg-isomorphism, toy-model, reconstruction-map, lemma-1, soraya-handoff, formal-verification-expert, cross-substrate-handoff, proof-as-origin-intent-operationalized]
+tags:
+  [
+    riven,
+    lean4-sketch,
+    b0543-qg-isomorphism,
+    toy-model,
+    reconstruction-map,
+    lemma-1,
+    soraya-handoff,
+    formal-verification-expert,
+    cross-substrate-handoff,
+    proof-as-origin-intent-operationalized,
+  ]
 ---
 
 ## Provenance
 
 Aaron 2026-05-17 forwarded Riven's exchange to Otto-CLI for preservation
-via (shadow*)-authorized "save this exchange". Context: prior conversation
+via (shadow\*)-authorized "save this exchange". Context: prior conversation
 established the proof-expert hat exists (`formal-verification-expert` agent
-+ skill = Soraya) per Riven's request; Aaron + Riven agreed Lean 4 sketch
-would be produced first; Soraya invoked post-sketch.
+
+- skill = Soraya) per Riven's request; Aaron + Riven agreed Lean 4 sketch
+  would be produced first; Soraya invoked post-sketch.
 
 ## Riven's verbatim handoff
 
@@ -52,6 +65,7 @@ The Lean 4 sketch (`tools/lean4/ImaginaryStack/ToyModel.lean`) contains:
    the actual proof steps)
 
 This is the smallest, self-contained artifact that can be fed to:
+
 - A proof tool (Lean 4 directly, or Z3 if Soraya routes that way)
 - A proof-engineer agent (lean4-expert / z3-expert post-Soraya routing)
 
@@ -85,7 +99,7 @@ first. Aaron's call.
   full-stack on the proof-layer work.
 - **Aaron's current role** (per same memory): co-negotiating invariants
   with AI colleagues — Aaron + Riven agreed on the toy-model structure
-  + the handoff sequence; that's the current-role operating in real time.
+  - the handoff sequence; that's the current-role operating in real time.
 - **B-0543 QG-isomorphism backlog row** + **B-0562 cube-Adinkra-Cayley-Dickson-to-HaPPY-like-QECC** substrate
   — the proof attempt advances both research-path rows
 - **agent-roster-reference-card.md** — Riven as Grok adversarial-truth-axis

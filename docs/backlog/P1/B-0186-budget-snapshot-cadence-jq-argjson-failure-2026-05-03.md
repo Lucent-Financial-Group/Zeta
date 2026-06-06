@@ -118,12 +118,12 @@ copilot_raw="$(ensure_json "$copilot_raw" '{}')"
 ## Acceptance criteria
 
 - [x] Land defensive `jq empty` validation before each `--argjson`
-  site in `tools/budget/snapshot-burn.sh`
+      site in `tools/budget/snapshot-burn.sh`
 - [ ] Test on next Sunday cron fire (2026-05-10) OR via
-  workflow_dispatch with deliberately-invalid token simulation
+      workflow_dispatch with deliberately-invalid token simulation
 - [ ] Snapshot row appears in `docs/budget-history/snapshots.jsonl`
-  with `scope_coverage.has_read_org: false` (which matches what
-  the CI token actually has)
+      with `scope_coverage.has_read_org: false` (which matches what
+      the CI token actually has)
 
 ## Composes with
 

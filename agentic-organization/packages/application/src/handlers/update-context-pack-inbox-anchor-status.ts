@@ -15,12 +15,7 @@ import {
   CommandResultStatus,
   type CommandResult,
 } from "../command-result.ts";
-import type {
-  Clock,
-  CommandEffects,
-  ContextPackInboxAnchorStateReaderPort,
-  IdGenerator,
-} from "../ports.ts";
+import type { Clock, CommandEffects, ContextPackInboxAnchorStateReaderPort, IdGenerator } from "../ports.ts";
 
 export const UpdateContextPackInboxAnchorStatusIdPrefix = {
   Audit: "audit",
@@ -116,11 +111,13 @@ export async function updateContextPackInboxAnchorStatus(
     result: {
       commandId: command.commandId,
       status: CommandResultStatus.Accepted,
-      artifacts: [{
-        artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
-        artifactId: inboxAnchor.inboxAnchorId,
-        label: inboxAnchor.title,
-      }],
+      artifacts: [
+        {
+          artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
+          artifactId: inboxAnchor.inboxAnchorId,
+          label: inboxAnchor.title,
+        },
+      ],
       auditEventIds: [auditEvent.auditEventId],
       contextPackInboxAnchor: inboxAnchor,
       contextPackInboxAnchorStatusTransition: statusTransition,
@@ -174,13 +171,15 @@ function inboxAnchorMatchesCommandScope(
   inboxAnchor: ContextPackInboxAnchor,
   command: UpdateContextPackInboxAnchorStatusCommand,
 ): boolean {
-  return inboxAnchor.inboxAnchorId === command.inboxAnchorId &&
+  return (
+    inboxAnchor.inboxAnchorId === command.inboxAnchorId &&
     inboxAnchor.organizationId === command.organizationId &&
     inboxAnchor.projectId === command.projectId &&
     sameOptionalScope(inboxAnchor.teamId, command.teamId) &&
     sameOptionalScope(inboxAnchor.workItemId, command.workItemId) &&
     inboxAnchor.targetHatAssignmentId === command.targetHatAssignmentId &&
-    sameOptionalScope(inboxAnchor.targetAgentId, command.targetAgentId);
+    sameOptionalScope(inboxAnchor.targetAgentId, command.targetAgentId)
+  );
 }
 
 function createStatusTransition(
@@ -201,7 +200,10 @@ function createStatusTransition(
     ...optionalValue("targetAgentId", command.targetAgentId),
     status: command.status,
     changedAt,
-    ...optionalValue("snoozedUntil", command.status === ContextPackInboxAnchorStatus.Snoozed ? command.snoozedUntil : undefined),
+    ...optionalValue(
+      "snoozedUntil",
+      command.status === ContextPackInboxAnchorStatus.Snoozed ? command.snoozedUntil : undefined,
+    ),
     traceId: command.traceId,
   };
 }
@@ -281,11 +283,8 @@ function createEmptyWorkAnchorCommandEffects(): NonNullable<CommandEffects["work
   };
 }
 
-function optionalValue<Key extends string>(
-  key: Key,
-  value: string | undefined,
-): { [Property in Key]?: string } {
-  return value === undefined ? {} : { [key]: value } as { [Property in Key]?: string };
+function optionalValue<Key extends string>(key: Key, value: string | undefined): { [Property in Key]?: string } {
+  return value === undefined ? {} : ({ [key]: value } as { [Property in Key]?: string });
 }
 
 function sameOptionalScope(left: string | undefined, right: string | undefined): boolean {

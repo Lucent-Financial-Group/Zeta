@@ -17,7 +17,11 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { SandboxToolPort, SandboxToolRequest, SandboxToolResult } from "../../../../packages/application/src/index.ts";
+import type {
+  SandboxToolPort,
+  SandboxToolRequest,
+  SandboxToolResult,
+} from "../../../../packages/application/src/index.ts";
 
 const MAX_OUTPUT_BYTES = 64 * 1024;
 

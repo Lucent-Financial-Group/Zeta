@@ -18,26 +18,36 @@ composes_with:
   - B-0742
   - B-0816
   - B-0820
-tags: [ace-feature, helm, time-modeled-dependencies, rolling-upgrade, migration-phase, revision-history, k8s-stateful, ace-meta-pm-axis]
+tags:
+  [
+    ace-feature,
+    helm,
+    time-modeled-dependencies,
+    rolling-upgrade,
+    migration-phase,
+    revision-history,
+    k8s-stateful,
+    ace-meta-pm-axis,
+  ]
 ---
 
 ## Problem
 
 [B-0824](B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) names the N-dimensional dependency space Ace meta-PM operates over. The maintainer 2026-05-26 also named Helm's UNIQUE requirement:
 
-> *"helm needs time modeled in the depedencies like no others"*
+> _"helm needs time modeled in the depedencies like no others"_
 
 (from the broader N-D + holographic + AI-rate negotiation framing in B-0824)
 
 **Time as a dependency dimension is Helm-distinct** because Helm operates on **long-running stateful systems** (Kubernetes clusters with persistent state, in-flight workloads, running pods, stored data). Other PMs typically don't need a time axis in their dependency graph:
 
-| PM | Why time isn't load-bearing | Example |
-|---|---|---|
-| Maven | Build artifact is point-in-time; deploy is separate concern | `pom.xml` defines deps for THIS build; not over time |
-| npm | Same as Maven; build-time freeze | `package-lock.json` is point-in-time snapshot |
-| apt / yum / dnf | OS-level packages; upgrades replace; rare side-by-side | `apt upgrade` swaps versions atomically |
-| brew | Per-user; per-session | upgrades replace |
-| Helm | **Long-running clusters; multi-version overlap during migrations; revisions; rolling upgrades; stateful workloads** | postgres v15 + v17 may run side-by-side for hours-to-weeks during migration |
+| PM              | Why time isn't load-bearing                                                                                         | Example                                                                     |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Maven           | Build artifact is point-in-time; deploy is separate concern                                                         | `pom.xml` defines deps for THIS build; not over time                        |
+| npm             | Same as Maven; build-time freeze                                                                                    | `package-lock.json` is point-in-time snapshot                               |
+| apt / yum / dnf | OS-level packages; upgrades replace; rare side-by-side                                                              | `apt upgrade` swaps versions atomically                                     |
+| brew            | Per-user; per-session                                                                                               | upgrades replace                                                            |
+| Helm            | **Long-running clusters; multi-version overlap during migrations; revisions; rolling upgrades; stateful workloads** | postgres v15 + v17 may run side-by-side for hours-to-weeks during migration |
 
 Helm's existing time-handling is partial:
 
@@ -79,14 +89,14 @@ spec:
   dependsOn:
     - chart: postgres
       version:
-        current: ">=15.0.0"           # what's allowed today
-        future: "==17.x"              # planned migration target
+        current: ">=15.0.0" # what's allowed today
+        future: "==17.x" # planned migration target
         migration-window:
-          start: "2026-06-01T00:00Z"  # cutover begins
-          end: "2026-08-01T00:00Z"    # legacy version retired
-          mode: "dual-running"        # both v15 + v17 reachable during window
+          start: "2026-06-01T00:00Z" # cutover begins
+          end: "2026-08-01T00:00Z" # legacy version retired
+          mode: "dual-running" # both v15 + v17 reachable during window
       time-aware-isolation:
-        per-tenant-cutover: true       # tenants migrate independently
+        per-tenant-cutover: true # tenants migrate independently
         cutover-schedule-ref: "configmap/tenant-cutover-2026"
 ```
 
@@ -94,13 +104,13 @@ spec:
 
 5-phase canonical migration lifecycle (operator-overridable per chart):
 
-| Phase | What's running | Dep-graph constraint |
-|---|---|---|
-| preparing | old version; new staged in canary namespace | dep-graph reads OLD; new deps allowed in canary only |
-| cutting-over | old + new running concurrently; gradual traffic shift | dep-graph allows BOTH; consumers can target either |
-| dual-running | both versions stable; tenant-by-tenant cutover | per-tenant-isolation per B-0822; dep-graph routes by tenant-id |
-| draining-old | new version primary; old cleanup in progress | dep-graph reads NEW; old marked deprecated |
-| cleanup | old version retired; only new remains | dep-graph normalizes to NEW |
+| Phase        | What's running                                        | Dep-graph constraint                                           |
+| ------------ | ----------------------------------------------------- | -------------------------------------------------------------- |
+| preparing    | old version; new staged in canary namespace           | dep-graph reads OLD; new deps allowed in canary only           |
+| cutting-over | old + new running concurrently; gradual traffic shift | dep-graph allows BOTH; consumers can target either             |
+| dual-running | both versions stable; tenant-by-tenant cutover        | per-tenant-isolation per B-0822; dep-graph routes by tenant-id |
+| draining-old | new version primary; old cleanup in progress          | dep-graph reads NEW; old marked deprecated                     |
+| cleanup      | old version retired; only new remains                 | dep-graph normalizes to NEW                                    |
 
 Ace tracks phase via cluster-state observation + emits per-phase engine config (ArgoCD applications / Flux kustomizations per B-0820 derivability-asymmetry).
 
@@ -186,7 +196,7 @@ Time + AI-rate-negotiation compose: Ace is the always-on agent watching the temp
 
 Aaron 2026-05-26 in the broader N-D + holographic + AI-rate negotiation framing:
 
-> *"helm needs time modeled in the depedencies like no others"*
+> _"helm needs time modeled in the depedencies like no others"_
 
 Filed P1 because:
 

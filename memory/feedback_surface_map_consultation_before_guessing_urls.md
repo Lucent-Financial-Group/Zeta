@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 after agent invented `/orgs/.../billing/budgets` (
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** Before calling `gh api <path>` (or equivalent) for a
 surface that has a mapping doc, **grep the map first**. Guessing
 a URL for a surface the factory has already mapped is a drift
@@ -14,7 +15,7 @@ Two orthogonal failure modes:
 1. **Not-consulting.** A map exists, contains the correct path,
    but the agent invents a new path anyway. Root cause: agent
    didn't recall the map was available. Fix: make the map
-   consultation a pre-call step. This is the *pure* smell.
+   consultation a pre-call step. This is the _pure_ smell.
 2. **Consulting-but-stale.** The map has a path, but GitHub /
    the platform moved it. The `gh api` call returns `410 Gone`
    (often with a `documentation_url` pointing at the new
@@ -48,6 +49,7 @@ distinct from the guessing smell.
 
 1. **Pre-call check.** Before any `gh api <path>` targeting
    org/enterprise/Copilot/billing surfaces:
+
    ```bash
    # Does the map know about this kind of thing?
    grep -li "<surface-keyword>" docs/research/*surface*map*.md \
@@ -56,6 +58,7 @@ distinct from the guessing smell.
                                  docs/GITHUB-SETTINGS.md
    # Then grep within the matched file for the exact endpoint.
    ```
+
    If the map lists the endpoint, use that one. If the map
    doesn't list it, **treat that as a map-gap finding**, not a
    license to guess.
@@ -78,11 +81,11 @@ distinct from the guessing smell.
 
 4. **Missing-from-map is a map-gap finding, not a blocker.**
    When an audit needs an endpoint the map doesn't have, the
-   agent may still call the endpoint if confident — *but* the
+   agent may still call the endpoint if confident — _but_ the
    audit output must include a "Map gap discovered" row so the
    next round-close sweep extends the map. Inventing a URL when
    confident is OK if also confident the URL exists; inventing
-   a URL *and being wrong* because the real thing doesn't exist
+   a URL _and being wrong_ because the real thing doesn't exist
    is the anti-pattern Aaron flagged.
 
 5. **UI-only surfaces are legitimate map entries.** Budget

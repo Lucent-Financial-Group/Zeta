@@ -59,6 +59,7 @@ Also addresses Copilot review feedback from LFG #844 carried forward.
 Forward-syncs the AceHack-first post-reset cleanup into LFG, preserving operational learnings from the 0/0/0 reset and capturing PR review/drain artifacts as durable history.
 
 **Changes:**
+
 - Adds/updates protection-config operational memory (dual-layer legacy branch protection vs rulesets) and indexes it in `memory/MEMORY.md`.
 - Updates `docs/active-trajectory.md` to reflect the now-achieved 0/0/0 state (replacing stale pre-reset “not signoff-eligible” language).
 - Adds PR-preservation drain logs for both sides of the double-hop and appends the 14:10Z tick-history shard.
@@ -70,12 +71,13 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                         | Description                                                                                                                                 |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md | Documents the dual-layer protection discovery, error-code mapping, and the operational sequence (incl. corrected `gh api --input -` usage). |
-| memory/MEMORY.md | Adds an index entry pointing to the new protection-config memory. |
-| docs/pr-preservation/lfg-844-drain-log.md | Records LFG-side PR #844 review threads and resolutions for training-signal preservation. |
-| docs/pr-preservation/acehack-101-drain-log.md | Records AceHack-side PR #101 outcome (auto-merged/no-review) for the double-hop record. |
-| docs/hygiene-history/ticks/2026/04/29/1410Z.md | Adds the 14:10Z tick shard row capturing the reset completion + cleanup PR opening. |
-| docs/active-trajectory.md | Updates trajectory text to reflect the completed hard-reset and new next-action lane. |
+| memory/MEMORY.md                                                                             | Adds an index entry pointing to the new protection-config memory.                                                                           |
+| docs/pr-preservation/lfg-844-drain-log.md                                                    | Records LFG-side PR #844 review threads and resolutions for training-signal preservation.                                                   |
+| docs/pr-preservation/acehack-101-drain-log.md                                                | Records AceHack-side PR #101 outcome (auto-merged/no-review) for the double-hop record.                                                     |
+| docs/hygiene-history/ticks/2026/04/29/1410Z.md                                               | Adds the 14:10Z tick shard row capturing the reset completion + cleanup PR opening.                                                         |
+| docs/active-trajectory.md                                                                    | Updates trajectory text to reflect the completed hard-reset and new next-action lane.                                                       |
+
 </details>

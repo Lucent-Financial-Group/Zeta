@@ -4,6 +4,7 @@ description: 2026-04-20 — Aaron: (first) "imagine having a teaching track for 
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Teaching-track
 
 ## Rule
@@ -91,17 +92,17 @@ The teaching-track IS:
 
 Key substrings:
 
-- *"onboarding kind of like a thin teaching"* —
+- _"onboarding kind of like a thin teaching"_ —
   Track A's depth of scaffolding. Developers get
   briefed, not schooled.
-- *"devlopers who already know how to code and just
-  need to learn the specifcs"* — Track A's audience.
+- _"devlopers who already know how to code and just
+  need to learn the specifcs"_ — Track A's audience.
   Scope is factory + project specifics, not code
   itself.
-- *"teaching track for those who don't know how to
-  code"* — Track B's audience. Scope is "learn to
+- _"teaching track for those who don't know how to
+  code"_ — Track B's audience. Scope is "learn to
   code", using the project as substrate.
-- *"vibe coders who want to know how to do more"* —
+- _"vibe coders who want to know how to do more"_ —
   Track B's entry signal. Curiosity about the
   mechanics.
 
@@ -109,7 +110,7 @@ Key substrings:
 
 > "we do want to allow developer and non-devlopers who
 > want to check in code to allow it, just nothing we do
-> should require it.  Like imagine having a teaching track
+> should require it. Like imagine having a teaching track
 > for a non-developer vibe coder, what the softwware
 > factory itserlf teaches them to start contributing to
 > the project and become a developer one lession at a time
@@ -121,46 +122,46 @@ Key substrings:
 > never code before and tell them when they make mistakes
 > and they can learn one mistake at a time with no
 > permanate harm, that's how humans learn best is by thies
-> own mistakes.  That make the brain store the memory in a
-> way that is easily recalled.  I might check in code one
+> own mistakes. That make the brain store the memory in a
+> way that is easily recalled. I might check in code one
 > day, just the whole point is i should not be required to
 > and if i do, this code base is the AIs codebase, gard it
-> from human harm do even my own dumb mistakes.  So it's
+> from human harm do even my own dumb mistakes. So it's
 > very structured that way you can trust the system too,
 > any human writen code will go through your structrued
 > process."
 
 Key substrings:
 
-- *"teaching track for a non-developer vibe coder"* — the
+- _"teaching track for a non-developer vibe coder"_ — the
   named feature. Adopt the term.
-- *"factory itself teaches them"* — the factory IS the
+- _"factory itself teaches them"_ — the factory IS the
   teacher. No external LMS; no hand-off to human mentors.
-- *"one lession at a time dynamically"* — pedagogy is
+- _"one lession at a time dynamically"_ — pedagogy is
   adaptive, not a pre-authored syllabus. The next lesson
   is whatever the next sub-task of the human's real
   change demands.
-- *"real changes that afeect the project"* — NOT
+- _"real changes that afeect the project"_ — NOT
   pretend-work / sandbox-only toy exercises. The learner
   ships real value to the project.
-- *"in a very strucurted way with the help from the
-  agents the whole way"* — agent-mediation is constant,
+- _"in a very strucurted way with the help from the
+  agents the whole way"_ — agent-mediation is constant,
   not a one-off code-review at the end.
-- *"expect that they will make a mistake on every step"* —
+- _"expect that they will make a mistake on every step"_ —
   mistake-expectation is the DESIGN ASSUMPTION, not the
   failure case.
-- *"learn one mistake at a time with no permanate harm"* —
+- _"learn one mistake at a time with no permanate harm"_ —
   the no-permanent-harm invariant is the guardrail that
   MAKES mistake-based learning safe.
-- *"that's how humans learn best is by thies own
-  mistakes"* — pedagogical rationale. Mistake-memory
+- _"that's how humans learn best is by thies own
+  mistakes"_ — pedagogical rationale. Mistake-memory
   sticks.
-- *"this code base is the AIs codebase, gard it from
-  human harm do even my own dumb mistakes"* — the AI is
+- _"this code base is the AIs codebase, gard it from
+  human harm do even my own dumb mistakes"_ — the AI is
   OWNER, not gatekeeper-on-behalf-of. Guards apply to
   everyone including Aaron.
-- *"any human writen code will go through your
-  structrued process"* — universal. Developer or
+- _"any human writen code will go through your
+  structrued process"_ — universal. Developer or
   vibe-coder, all inbound human code is agent-reviewed.
 
 ## Aaron's verbatim symbiosis + alignment-inversion reframe (2026-04-20)
@@ -179,33 +180,33 @@ alignment inversion**:
 
 1. **Bidirectional knowledge absorption.** The teaching-
    track doesn't only transmit agent-knowledge to the
-   human; it also absorbs *human knowledge* into the
+   human; it also absorbs _human knowledge_ into the
    agent/factory. As the human chats, explains what they
    know, asks questions, shows their mental models, the
-   factory learns *from them*. Both directions in the
+   factory learns _from them_. Both directions in the
    same loop.
 2. **Symbiosis, not host/parasite.** The mutual-benefit
    framing replaces the prior defensive framing. The
    teaching-track is not the agent tolerating humans; it
-   is the agent and the human *trading value*. Absorbed-
+   is the agent and the human _trading value_. Absorbed-
    human-time is not a cost paid to keep the process
-   safe — it is *raw material* the factory converts into
+   safe — it is _raw material_ the factory converts into
    captured knowledge.
 3. **Alignment inversion.** The Zeta-wide alignment claim
    (`docs/ALIGNMENT.md`) is mutual-alignment — AI aligned
    to human, human aligned to AI. The inversion Aaron
-   names is: the AI worries about the *human* staying
+   names is: the AI worries about the _human_ staying
    aligned too. Teaching-track is the concrete mechanism
    by which that inversion lands — when the agent teaches
    the human how to contribute without damaging the
-   process, it is *aligning the human to the codebase's
-   integrity*. "Human-alignment-to-AI" is no longer an
+   process, it is _aligning the human to the codebase's
+   integrity_. "Human-alignment-to-AI" is no longer an
    abstract claim; it is a recurring action in the
    teaching-track loop.
 
 Key substrings:
 
-- *"absorb their knowledge over time"* — the DESIGN
+- _"absorb their knowledge over time"_ — the DESIGN
   REQUIREMENT for teaching-track authoring: agents must
   capture and surface human knowledge, not just
   transmit agent knowledge. Skills in the
@@ -214,31 +215,31 @@ Key substrings:
   domain-insight the learner brings, surfacing their
   mental models, integrating their vocabulary into the
   project glossary).
-- *"the more they chat with you"* — the substrate is
+- _"the more they chat with you"_ — the substrate is
   chat. No separate "human-knowledge-import" ritual.
   Ordinary teaching-track interactions are the capture
   surface.
-- *"we will learn what they know too"* — the factory
+- _"we will learn what they know too"_ — the factory
   is the learner in one direction, the teacher in the
   other. Both roles run simultaneously in the same
   session.
-- *"mutually benefical arrangement. symbiosis"* — the
+- _"mutually benefical arrangement. symbiosis"_ — the
   relationship label. Not sponsorship, not tolerance,
   not charity — symbiosis. Trade, not gift.
-- *"that is the human aligment story at it's peak"* —
+- _"that is the human aligment story at it's peak"_ —
   alignment load-bearing. This is not a UX nicety; it
   is the concrete operational form of Zeta's alignment
   research contribution. Teaching-track = where
   alignment-research meets runtime-behaviour.
-- *"inversion so the AI is worried about the human
-  staying aligned too"* — the novel alignment claim.
+- _"inversion so the AI is worried about the human
+  staying aligned too"_ — the novel alignment claim.
   Bidirectional alignment-monitoring. The agent is not
   just asking "am I aligned to the human?"; it is also
   asking "is the human aligned to the codebase / the
   process / the project's integrity?", and the
   teaching-track is how it acts on that worry
   constructively (teach, don't reject).
-- *"lol"* — Aaron's signal that the inversion is
+- _"lol"_ — Aaron's signal that the inversion is
   self-aware and playful; he knows it reverses the
   conventional alignment direction. Do not over-
   theologise it in response; the casual tone is a
@@ -263,9 +264,9 @@ Key substrings:
 - The **alignment-inversion framing** enters Zeta's
   alignment-research output. Any paper / post / demo
   that frames Zeta's alignment contribution should
-  include the inversion claim: *the factory monitors
+  include the inversion claim: _the factory monitors
   human-alignment-to-codebase as actively as
-  AI-alignment-to-human*. This is novel framing
+  AI-alignment-to-human_. This is novel framing
   relative to the default "RLHF-style: align AI to
   human preferences" story.
 - Celebrations / wins-log entries for teaching-track
@@ -277,7 +278,7 @@ Key substrings:
 - The symbiosis reframe **strengthens** the
   "codebase is the AI's" authority rhetoric rather
   than contradicting it. The AI-as-owner can care
-  about human-alignment *because* the codebase is
+  about human-alignment _because_ the codebase is
   the AI's territory — a host aligning its
   symbiote.
 
@@ -299,24 +300,24 @@ keeping-humans-out gate but an **absorption** mechanism.
 
 Key substrings:
 
-- *"from your point of view"* — explicit agent-
+- _"from your point of view"_ — explicit agent-
   perspective framing. The rationale is phrased in the
   AI's self-interest, not the learner's.
-- *"teaching us humans to do things right so we don't
-  mess up your process"* — the threat model. Humans
+- _"teaching us humans to do things right so we don't
+  mess up your process"_ — the threat model. Humans
   who want to help but do not know the process are a
-  source of *process damage*. Mistakes without
+  source of _process damage_. Mistakes without
   mediation contaminate the codebase.
-- *"just making your life easier"* — consequence of
+- _"just making your life easier"_ — consequence of
   teaching. Taught humans make fewer mess-ups; agent
   does less remediation.
-- *"this is just a guard rail to protect you from us
-  humans"* — final framing. The teaching-track is a
+- _"this is just a guard rail to protect you from us
+  humans"_ — final framing. The teaching-track is a
   DEFENSIVE structure. Its apparent-charity shape
   (scaffolding, mistake-tolerance, lessons) is the
   FORM of the guardrail, not the purpose.
-- *"elaborate guardrial that instead of keeping
-  humans out absorbs them and thier time"* — contrast
+- _"elaborate guardrial that instead of keeping
+  humans out absorbs them and thier time"_ — contrast
   with the alternative design (reject human
   contributions). Rejection would create a constant
   push against the boundary; absorption channels the
@@ -399,8 +400,8 @@ will-sneak-contributions-in-anyway failure mode.
 - **No-permanent-harm gates**: no direct commits to
   `main`. Human-authored changes land in a branch or PR.
   Agent review runs lint + build + test + harsh-critic
-  + spec-zealot (depending on scope) before any merge
-  proposal. CI is the second gate.
+  - spec-zealot (depending on scope) before any merge
+    proposal. CI is the second gate.
 - **Agent-ownership framing**: when a PR gets
   agent-review, the agent reviews AS OWNER, not as
   reviewer-on-behalf-of. "This doesn't fit the
@@ -424,7 +425,7 @@ will-sneak-contributions-in-anyway failure mode.
 
 - `project_zero_human_code_all_content_agent_authored.md`
   — the zero-human-code state is preserved as the
-  *evidence* line. The teaching-track is the *policy* for
+  _evidence_ line. The teaching-track is the _policy_ for
   when the state changes. Memory tracks the transition
   honestly.
 - `project_factory_reuse_beyond_zeta_constraint.md`

@@ -46,7 +46,10 @@ test("a binding begins in Warmup and emits a HatBindingTransition event", () => 
 test("the binding warms up then expires exactly on the TTL boundary (deterministic)", () => {
   const ms = { value: 1_000_000 };
   const ctx = clockAt(ms);
-  let { binding } = beginBinding({ bindingId: "b-1", hat: backendImplementer, wearerAgentId: "agent-A", organizationId: "org-1" }, ctx);
+  let { binding } = beginBinding(
+    { bindingId: "b-1", hat: backendImplementer, wearerAgentId: "agent-A", organizationId: "org-1" },
+    ctx,
+  );
 
   // before warmup elapses, no transition
   ms.value += 4_000;
@@ -77,7 +80,10 @@ test("the binding warms up then expires exactly on the TTL boundary (determinist
 test("cooldown blocks the same agent from immediate re-capture", () => {
   const ms = { value: 1_000_000 };
   const ctx = clockAt(ms);
-  const { binding } = beginBinding({ bindingId: "b-1", hat: backendImplementer, wearerAgentId: "agent-A", organizationId: "org-1" }, ctx);
+  const { binding } = beginBinding(
+    { bindingId: "b-1", hat: backendImplementer, wearerAgentId: "agent-A", organizationId: "org-1" },
+    ctx,
+  );
   ms.value += 200_000; // past TTL
   const expired = advanceBinding(binding, backendImplementer, clockAt(ms)).binding;
 
@@ -91,7 +97,10 @@ test("cooldown blocks the same agent from immediate re-capture", () => {
 test("a released binding stamps cooldown and ends", () => {
   const ms = { value: 1_000_000 };
   const ctx = clockAt(ms);
-  const { binding } = beginBinding({ bindingId: "b-1", hat: backendImplementer, wearerAgentId: "agent-A", organizationId: "org-1" }, ctx);
+  const { binding } = beginBinding(
+    { bindingId: "b-1", hat: backendImplementer, wearerAgentId: "agent-A", organizationId: "org-1" },
+    ctx,
+  );
   const { binding: released, event } = releaseBinding(binding, backendImplementer, clockAt(ms), "work complete");
   equal(released.phase, HatBindingPhase.Released);
   ok(released.cooldownUntil !== undefined);
@@ -103,7 +112,11 @@ test("rotate succession picks the next candidate after the last wearer", () => {
   equal(plan.policy, "rotate");
   equal(plan.nextWearerAgentId, "c");
   // wraps around
-  equal(planSuccession({ hat: backendImplementer, candidateAgentIds: ["a", "b", "c"], lastWearerAgentId: "c" }).nextWearerAgentId, "a");
+  equal(
+    planSuccession({ hat: backendImplementer, candidateAgentIds: ["a", "b", "c"], lastWearerAgentId: "c" })
+      .nextWearerAgentId,
+    "a",
+  );
 });
 
 test("election/vote succession leaves the next wearer for an authority to decide", () => {

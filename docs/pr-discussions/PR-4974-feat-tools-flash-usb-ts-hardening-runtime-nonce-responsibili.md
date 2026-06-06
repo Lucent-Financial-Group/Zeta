@@ -67,6 +67,7 @@ Composes with the framework's autonomy-first-class + NCI disciplines: agents act
 Hardens the `full-ai-cluster/tools/flash-usb.ts` safety confirmation gate by requiring an explicit responsibility-acceptance phrase that includes a fresh per-run nonce, and documents/permits agent invocation via `.claude/settings.json`.
 
 **Changes:**
+
 - Add a per-run random nonce and require typing `accept-destroy <device> <nonce>` to proceed.
 - Expand README + script header text around the new confirmation semantics and liability framing.
 - Add a path-scoped Claude permissions allow rule for invoking `flash-usb.ts`.
@@ -75,11 +76,11 @@ Hardens the `full-ai-cluster/tools/flash-usb.ts` safety confirmation gate by req
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                      | Description                                                                                                     |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | full-ai-cluster/tools/README-flash-usb.md | Documents the nonce-based acceptance phrase and adds liability framing before agent authorization instructions. |
-| full-ai-cluster/tools/flash-usb.ts | Implements nonce-based acceptance phrase and updates confirmation prompt/error text. |
-| .claude/settings.json | Adds an explicit allow rule for `bun full-ai-cluster/tools/flash-usb.ts *`. |
+| full-ai-cluster/tools/flash-usb.ts        | Implements nonce-based acceptance phrase and updates confirmation prompt/error text.                            |
+| .claude/settings.json                     | Adds an explicit allow rule for `bun full-ai-cluster/tools/flash-usb.ts *`.                                     |
 
 ### COMMENTED — @AceHack (2026-05-25T19:25:46Z)
 
@@ -99,7 +100,7 @@ _(no body)_
 
 **@AceHack** (2026-05-25T19:25:48Z):
 
-Acknowledged — the path-scoped rule IS redundant from the permissions.allow standpoint (Bash(bun *) already matches). Keeping it because: (a) the auto-mode classifier's prior block message explicitly said 'add a Bash permission rule' — that classifier layer appears to look for SPECIFIC pre-vetted rules vs broad wildcards; (b) self-documenting for reviewers ('this script is explicitly permitted' is more legible than 'falls under bun *'); (c) future-proof if Bash(bun *) ever gets narrowed. The redundancy is by design, not oversight. Worth a CONTRIBUTING note though — filed as part of B-0728's pattern docs.
+Acknowledged — the path-scoped rule IS redundant from the permissions.allow standpoint (Bash(bun _) already matches). Keeping it because: (a) the auto-mode classifier's prior block message explicitly said 'add a Bash permission rule' — that classifier layer appears to look for SPECIFIC pre-vetted rules vs broad wildcards; (b) self-documenting for reviewers ('this script is explicitly permitted' is more legible than 'falls under bun _'); (c) future-proof if Bash(bun \*) ever gets narrowed. The redundancy is by design, not oversight. Worth a CONTRIBUTING note though — filed as part of B-0728's pattern docs.
 
 ### Thread 2: full-ai-cluster/tools/flash-usb.ts:296 (resolved)
 

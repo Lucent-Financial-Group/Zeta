@@ -27,6 +27,7 @@ Preserves discussion threads from merged PRs #4835 (1607Z dotgit-saturation 15th
 This PR adds git-tracked PR discussion archives under `docs/pr-discussions/` to preserve GitHub-hosted conversation context in-repo.
 
 **Changes:**
+
 - Adds an archive file for PR #4835 (dotgit-saturation 15th observation, 16:07Z).
 - Adds an archive file for PR #4853 (otto-vscode bg-worker shard, 19:02Z).
 
@@ -34,8 +35,8 @@ This PR adds git-tracked PR discussion archives under `docs/pr-discussions/` to 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                        | Description                                                                        |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | docs/pr-discussions/PR-4835-shard-2026-05-24-1607z-dotgit-saturation-15th-observation-2h.md | New PR #4835 discussion archive with YAML frontmatter + preserved reviews/threads. |
 | docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | New PR #4853 discussion archive with YAML frontmatter + preserved reviews/threads. |
 

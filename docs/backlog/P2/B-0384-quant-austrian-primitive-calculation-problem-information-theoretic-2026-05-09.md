@@ -11,7 +11,8 @@ last_updated: 2026-05-09
 depends_on: [B-0380, B-0381]
 composes_with: [B-0023, B-0380, B-0381, B-0382, B-0383, B-0385, B-0386, B-0387]
 parent: B-0023
-tags: [aurora, economics, austrian-school, quant, mathematical-rigor, calculation-problem, information-theory, complexity]
+tags:
+  [aurora, economics, austrian-school, quant, mathematical-rigor, calculation-problem, information-theory, complexity]
 type: research
 ---
 
@@ -33,13 +34,13 @@ replicate market prices because the information needed is:
 (a) distributed across millions of actors,
 (b) tacit / non-articulable in many cases (Hayek 1945 knowledge
 problem extension),
-(c) created *through* the market process itself, not pre-existing
+(c) created _through_ the market process itself, not pre-existing
 it (prices as discovery mechanism, not just signals of fixed data).
 
 The calculation-problem is not merely "too many equations to solve"
 (the socialist planners had this objection and answered it with
 linear programming). It is a deeper claim: the data the equations
-need to solve *do not exist* in any form that permits aggregation
+need to solve _do not exist_ in any form that permits aggregation
 prior to the market process.
 
 ## The quant/CS-side analogs
@@ -118,9 +119,9 @@ ls docs/aurora/ | grep calculation-problem
 ## Pre-start checklist
 
 - [x] Prior-art search: B-0381 survey provides prior-work context;
-  no existing `docs/aurora/` note on calculation-problem formalization.
+      no existing `docs/aurora/` note on calculation-problem formalization.
 - [x] Dependency-restructure: parallelizable with B-0382, B-0383,
-  B-0385, B-0386 after B-0380 and B-0381 complete.
+      B-0385, B-0386 after B-0380 and B-0381 complete.
 
 ## Composes with
 

@@ -18,15 +18,15 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Layer 2a of 4-layer CI testing approach
 
-Per Aaron's *"yes lets push all of those forward i'll test again in like 30 minutes are so but this is perfect"* — shipping the layers in parallel during Aaron's 3rd USB re-flash window.
+Per Aaron's _"yes lets push all of those forward i'll test again in like 30 minutes are so but this is perfect"_ — shipping the layers in parallel during Aaron's 3rd USB re-flash window.
 
-| Layer | Approach | Status |
-|---|---|---|
-| Layer 1 | Source-level sentinel audit | #5365 (armed) |
-| **Layer 2a (THIS PR)** | Structural-behavioral test (logical relationships) | here |
-| Layer 2b | True mock-gh shim execution | future PR (needs iter-5.4 refactored to sourceable function) |
-| Layer 3 | Mock GH device-code endpoint | B-0833 Approach A |
-| Layer 4 | QEMU full-install + cluster auto-join | B-0831 cascade #6 |
+| Layer                  | Approach                                           | Status                                                       |
+| ---------------------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| Layer 1                | Source-level sentinel audit                        | #5365 (armed)                                                |
+| **Layer 2a (THIS PR)** | Structural-behavioral test (logical relationships) | here                                                         |
+| Layer 2b               | True mock-gh shim execution                        | future PR (needs iter-5.4 refactored to sourceable function) |
+| Layer 3                | Mock GH device-code endpoint                       | B-0833 Approach A                                            |
+| Layer 4                | QEMU full-install + cluster auto-join              | B-0831 cascade #6                                            |
 
 ## What this catches that Layer 1 doesn't
 
@@ -47,9 +47,9 @@ Parses \`zeta-install.sh\` as text; extracts iter-5.4.0 and iter-5.4.1 blocks by
 
 \`\`\`
 \$ bun test tools/ci/test-iter-54-install-flow.test.ts
- 23 pass
- 0 fail
- 35 expect() calls
+23 pass
+0 fail
+35 expect() calls
 \`\`\`
 
 Wired into \`.github/workflows/build-ai-cluster-iso.yml\` as fast preflight BEFORE the ~15-min Nix build.

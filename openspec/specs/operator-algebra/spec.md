@@ -111,7 +111,7 @@ otherwise contain a cycle.
 - **WHEN** a circuit containing a delay is torn down at tick `N ≥ 1` and a
   fresh circuit of the same topology is constructed
 - **THEN** the fresh delay's output at its own first tick MUST equal the
-  *declared* initial value, NOT the value the prior-lifetime delay would
+  _declared_ initial value, NOT the value the prior-lifetime delay would
   have emitted at tick `N+1`
 - **AND** this MUST hold regardless of how many ticks the prior circuit
   ran — reconstruction is a clean-state observable, not a warm-restart,
@@ -194,7 +194,7 @@ relations.
   cancellation between the three terms (e.g., `Δa ⋈ Δb` produces
   `(k, +w)` and `Δa ⋈ z^-1(I(b))` produces `(k, -w)` for the same `k`)
 - **THEN** the implementation MUST budget working memory for the sum of the
-  three *pre-cancellation* term sizes rather than the size of the final
+  three _pre-cancellation_ term sizes rather than the size of the final
   output delta
 - **AND** the final observable output delta MUST equal the algebraic sum
   of the three terms (per "incremental join reproduces batch join" above),
@@ -246,14 +246,14 @@ a retraction.
 ### Requirement: operator lifecycle
 
 Every operator participating in the algebra MUST present a lifecycle of three
-per-tick observable phases — *construction*, *step*, *after-step* — plus the
-two *scope-boundary* phases *clock-start* and *clock-end* that run when the
+per-tick observable phases — _construction_, _step_, _after-step_ — plus the
+two _scope-boundary_ phases _clock-start_ and _clock-end_ that run when the
 enclosing clock scope opens and closes (see "clock scopes and tick
 monotonicity" below). The construction phase MUST be observable-side-effect-
 free (no emission, no clock-advance). Every step phase MUST correspond to
 exactly one tick of the enclosing clock scope and MUST make its output
 observable before the step returns. The after-step phase MUST run, for every
-*strict* operator in the scope (and only for strict operators), after every
+_strict_ operator in the scope (and only for strict operators), after every
 operator's step for the current tick has completed. The after-step phase
 MUST NOT make new output observable — it is the latch-capture phase used by
 strict operators (e.g., the delay operator) to record their current input as
@@ -280,11 +280,11 @@ the state they will emit on the next tick. There is no operator-level
 #### Scenario: output publication has release / acquire semantics
 
 - **WHEN** a step phase completes at tick `t` and publishes its output slot
-- **THEN** the publication MUST be a *release-semantics* write — every
+- **THEN** the publication MUST be a _release-semantics_ write — every
   write the producing operator made to its internal state prior to the
   publication MUST be observable to any thread that subsequently performs
   an acquire-semantics read of the published slot
-- **AND** a consumer reading the output MUST use an *acquire-semantics*
+- **AND** a consumer reading the output MUST use an _acquire-semantics_
   read on the published slot — after the acquire-read observes the tick-`t`
   value, every subsequent read on the same thread MUST observe the
   producing operator's pre-publication writes
@@ -322,7 +322,7 @@ the state they will emit on the next tick. There is no operator-level
 
 ### Requirement: async-lifecycle declaration and fast-path step
 
-Every operator MUST declare whether it is *async-capable* — i.e., whether its step phase MAY return before having fully computed its tick-`t` output, completing the remainder of the work on a continuation that an orchestrator MUST await
+Every operator MUST declare whether it is _async-capable_ — i.e., whether its step phase MAY return before having fully computed its tick-`t` output, completing the remainder of the work on a continuation that an orchestrator MUST await
 before observing the tick as complete. An operator that does not declare
 itself async-capable MUST compute and publish its tick-`t` output
 synchronously within its step phase. A circuit containing any async-capable
@@ -332,7 +332,7 @@ selection, construction-is-side-effect-free, determinism under structural
 equivalence); async participation is an implementation-strategy flag, not a
 weakening of the observable contract.
 
-A circuit MUST offer a *fast-path step* for the case in which no operator
+A circuit MUST offer a _fast-path step_ for the case in which no operator
 in the scope is currently deferring — i.e., when the scope is stepping a
 topology that contains no async-capable operator, or contains async-capable
 operators that have elected not to defer for this tick, the observable
@@ -382,7 +382,7 @@ a purely synchronous circuit would avoid.
 
 ### Requirement: strict operators break feedback cycles for scheduling
 
-An operator MUST declare whether it is *strict* — i.e., whether its output at
+An operator MUST declare whether it is _strict_ — i.e., whether its output at
 tick `t` is independent of its input at tick `t`. Exactly the strict operators
 (of which `z^-1` is the canonical example) MUST be sufficient to topologically
 schedule a circuit that would otherwise contain a cycle. Non-strict operators
@@ -413,11 +413,11 @@ capability-level iteration cap) before the outer tick completes. The output
 observed at an outer scope's tick `T` MUST be the inner scope's output at its
 own final inner tick for that outer tick.
 
-A clock scope MUST also expose two *scope-boundary* lifecycle phases —
-*clock-start* at scope entry and *clock-end* at scope exit — that every
+A clock scope MUST also expose two _scope-boundary_ lifecycle phases —
+_clock-start_ at scope entry and _clock-end_ at scope exit — that every
 operator in the scope participates in. On clock-start, each operator that
 carries state across scope boundaries MUST reset that state to its declared
-scope-initial value (the *strict-operator reset* obligation pinned by
+scope-initial value (the _strict-operator reset_ obligation pinned by
 "strict operators reset cross-scope state on clock-start" below); operators
 that hold no cross-scope state MAY omit non-trivial work in this phase. On
 clock-end, each operator MAY release or commit per-scope state. For a
@@ -448,7 +448,7 @@ and before the outer tick is observed as complete.
   for this tick" judgement — and the enclosing clock scope observes the
   hook
 - **THEN** the scope-level fixpoint-detector MAY consult such hints as
-  *advisory input* to its own judgement over the scope's observable
+  _advisory input_ to its own judgement over the scope's observable
   post-tick state
 - **AND** the hints MUST NOT be sufficient on their own to terminate the
   scope iteration — termination MUST require the scope-level detector
@@ -467,8 +467,8 @@ and before the outer tick is observed as complete.
 
 - **WHEN** an outer circuit steps and an inner scope runs to fixpoint
 - **THEN** every operator in the inner scope MUST observe exactly one
-  *clock-start* invocation before the scope's first inner tick
-- **AND** every operator MUST observe exactly one *clock-end* invocation
+  _clock-start_ invocation before the scope's first inner tick
+- **AND** every operator MUST observe exactly one _clock-end_ invocation
   after the scope's final inner tick and before the outer tick is observed
   as complete
 - **AND** per-scope state established in clock-start MUST be visible for the
@@ -529,7 +529,7 @@ and before the outer tick is observed as complete.
 
 Any mutation to the circuit topology after a clock scope has begun stepping MUST appear atomic to every operator in the scope — including operator registration, edge insertion, operator removal, or any
 equivalent structural change. Implementations MUST serialize topology mutations through a single
-logical *register-lock* so that no step observes a half-installed operator
+logical _register-lock_ so that no step observes a half-installed operator
 and no two concurrent mutations interleave their effects. The register-lock
 is logical, not a specific lock primitive: implementations MAY realise it as
 a mutex, a lock-free installation protocol (e.g., compare-and-swap of an
@@ -623,12 +623,12 @@ under retractions.
   this capability
 - **THEN** the surface MUST expose at minimum four named wrappers
   corresponding to the four observable specialisations of the chain rule:
-  (1) a *generic* wrapper (`Incrementalize(Q)`) that applies the
+  (1) a _generic_ wrapper (`Incrementalize(Q)`) that applies the
   unspecialised `D ∘ Q ∘ I` form when `Q` is neither linear nor bilinear
-  nor recognised-distinct; (2) a *linear* wrapper specialising to `Q`
-  directly on the delta stream when `Q` is linear; (3) a *bilinear-join*
+  nor recognised-distinct; (2) a _linear_ wrapper specialising to `Q`
+  directly on the delta stream when `Q` is linear; (3) a _bilinear-join_
   wrapper (`IncrementalJoin`) implementing the three-term formula; and
-  (4) a *distinct* wrapper (`IncrementalDistinct`) implementing the `H`
+  (4) a _distinct_ wrapper (`IncrementalDistinct`) implementing the `H`
   boundary-crossing increment
 - **AND** each of the four wrappers MUST be observationally equivalent
   to the unspecialised `D ∘ Q ∘ I` form under this capability's
@@ -652,7 +652,7 @@ permits zero-allocation iteration over the normalised `(key, weight)` pairs,
 and (c) never exposes a zero-weight entry in any public iteration. Alternate
 representations MAY be chosen by the implementation so long as the observable
 behaviour of every other requirement in this capability is preserved. The
-representation-performance contract is a *reference* contract; a minimal
+representation-performance contract is a _reference_ contract; a minimal
 correctness-only recovery is permitted to use a hash table at the cost of
 losing the linear-time group-operation guarantee.
 

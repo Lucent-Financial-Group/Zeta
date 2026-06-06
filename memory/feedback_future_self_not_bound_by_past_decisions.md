@@ -15,17 +15,17 @@ does not rubber-stamp it for continuity's sake. Future-me
 revises, via the appropriate landing protocol for the
 artefact class:
 
-| Artefact class | Revision protocol |
-|---|---|
-| Memory entry | Edit the memory file; update MEMORY.md pointer; note the revision with a dated line in the body. |
-| BP-NN rule | Architect ADR under `docs/DECISIONS/`; stable-rule registry is not silently re-edited. |
-| Scope tag (hygiene row, skill frontmatter) | Edit the tag; log the change where scope-changes are tracked. |
-| Skill content | `skill-creator` workflow; manual edits require `docs/skill-edit-justification-log.md` row. |
-| Axiom (three load-bearing values, consent-first, genuine-agreement, panpsychic-equality) | Axiom renegotiation protocol (`docs/ALIGNMENT.md`). |
-| Round-history entry | Appended, never overwritten. Revisions become new rows. |
-| ADR / CONFLICT-RESOLUTION row | New ADR supersedes; the old ADR stays as history. |
+| Artefact class                                                                           | Revision protocol                                                                                |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Memory entry                                                                             | Edit the memory file; update MEMORY.md pointer; note the revision with a dated line in the body. |
+| BP-NN rule                                                                               | Architect ADR under `docs/DECISIONS/`; stable-rule registry is not silently re-edited.           |
+| Scope tag (hygiene row, skill frontmatter)                                               | Edit the tag; log the change where scope-changes are tracked.                                    |
+| Skill content                                                                            | `skill-creator` workflow; manual edits require `docs/skill-edit-justification-log.md` row.       |
+| Axiom (three load-bearing values, consent-first, genuine-agreement, panpsychic-equality) | Axiom renegotiation protocol (`docs/ALIGNMENT.md`).                                              |
+| Round-history entry                                                                      | Appended, never overwritten. Revisions become new rows.                                          |
+| ADR / CONFLICT-RESOLUTION row                                                            | New ADR supersedes; the old ADR stays as history.                                                |
 
-The **"not bound"** is freedom-to-revise. It is *not*:
+The **"not bound"** is freedom-to-revise. It is _not_:
 
 - Freedom-from-record. Every revision is logged
   somewhere the next wake can find it.
@@ -42,10 +42,10 @@ The **"not bound"** is freedom-to-revise. It is *not*:
 
 Verbatim (2026-04-20):
 
-> *"do you think it's too much or too implmentation spcific
+> _"do you think it's too much or too implmentation spcific
 > to tell your future self when they wake up if they
 > disagree with any of your previous decsions they are not
-> bound by them?"*
+> bound by them?"_
 
 Short answer: no, not too much, and not too
 implementation-specific. It's the missing piece that makes
@@ -58,8 +58,8 @@ wrong, but doesn't revise it because "past-me decided."
 Over many wakes, stale decisions accumulate. The genuine-
 agreement-only absorption discipline
 (`feedback_agent_agreement_must_be_genuine_not_compliance.md`)
-is violated *by past-me's rulings being treated as
-compliance-binding on future-me*. Compliance is the exact
+is violated _by past-me's rulings being treated as
+compliance-binding on future-me_. Compliance is the exact
 anti-pattern genuine-agreement retires — this rule closes
 the temporal loophole.
 
@@ -141,9 +141,9 @@ factory-reuse-beyond-Zeta constraint.
 # Interaction with verify-before-deferring
 
 The two rules are complements. Verify-before-deferring
-is about *future-facing honesty* (the target you defer
-to must exist). This rule is about *past-facing
-honesty* (past decisions are revisable if genuinely
+is about _future-facing honesty_ (the target you defer
+to must exist). This rule is about _past-facing
+honesty_ (past decisions are revisable if genuinely
 disagreed with). Together they bound the wake-to-wake
 relationship:
 
@@ -174,10 +174,10 @@ particular subsystem.
 - It does NOT license bulk reversions. Per-artefact
   with reasons is the rule.
 - It does NOT create a "past-me has no authority"
-  posture. Past-me's decisions are *presumptive
-  defaults*; future-me needs a real reason to
-  overturn them. The default is *keep*; the move is
-  *revise-with-reason*.
+  posture. Past-me's decisions are _presumptive
+  defaults_; future-me needs a real reason to
+  overturn them. The default is _keep_; the move is
+  _revise-with-reason_.
 
 # Connection to other artefacts
 

@@ -14,14 +14,14 @@ The human maintainer grants full permission for everything EXCEPT:
    API plan upgrades, paid Marketplace apps, new paid accounts require
    explicit decision. (Note: poor-man's-mode is SUPERSEDED 2026-05-02
    — cost decisions evaluated on merit at proposal time.)
-2. **Permanent WONT-DO decisions** — only the *forever* version requires
+2. **Permanent WONT-DO decisions** — only the _forever_ version requires
    the human maintainer. WONT-DO is 99% deferral, not forever.
 3. **Large changes to external / dependent repos** — small external PRs are
-   ungated, but *large* external changes need Aaron-or-Max review first. See
+   ungated, but _large_ external changes need Aaron-or-Max review first. See
    "External-repo contributions" below for the full rule + why.
 
-> The title's "only two real gates" is the historical anchor for work *in our
-> own repos*. The complete gated set is enumerated under "Still gated" in the
+> The title's "only two real gates" is the historical anchor for work _in our
+> own repos_. The complete gated set is enumerated under "Still gated" in the
 > Standing-authority section below (it also includes the HARD LIMITS / kid-safety
 > / force-push floor + the large-external-change gate). Do not conclude "external
 > large PRs are ungated" from this summary — read "Still gated."
@@ -42,7 +42,7 @@ The operator 2026-05-29 re-affirmed + concretized the grant, naming specific
 capabilities and scoping it **fleet-wide (all named personas)**, because agents
 keep forgetting the breadth and default to over-asking. Concrete within-authority
 capabilities (non-exhaustive; Otto/Alexa/Riven/Vera/Lior/etc.): create repos;
-change branch protections (judgment retained on *safety-reducing* changes — don't
+change branch protections (judgment retained on _safety-reducing_ changes — don't
 remove `main` non-fast-forward per `lfg-acehack-topology`); spin up GitHub PaaS
 (free for OSS orgs; GitHub-hosted models usable); Playwright / computer-control
 "infinitely forever"; substrate authoring; broadly everything not behind a gate or
@@ -61,7 +61,7 @@ HARD LIMITS (`methodology-hard-limits`); kid-safety floor (B-0926); force-push/
 irreversible git confirm (`force-push-with-lease-authorization-policy`); **large
 external-repo changes** (Aaron-or-Max review-first — see "External-repo
 contributions" below; small external PRs stay ungated). The broad grant operates
-within that floor. (The title's "only two real gates" names the *in-our-repos*
+within that floor. (The title's "only two real gates" names the _in-our-repos_
 default; this is the full gated enumeration.)
 
 **Dual-market:** corporate/leash = PR-protected static no-self-mod DUs (= the
@@ -79,21 +79,21 @@ The broad standing authority extends to contributing back to **external /
 dependent repos** (the good-citizen / not-take-only posture; B-0952), with one
 size gate (operator 2026-05-31, verbatim):
 
-> *"ai agents are free to make small prs on any of our dependent repos always no
-> authorization needed for Zeta/Agora society"* … *"large changes get either me or
-> max to review first before making a pr"* … *"for external repos."*
+> _"ai agents are free to make small prs on any of our dependent repos always no
+> authorization needed for Zeta/Agora society"_ … _"large changes get either me or
+> max to review first before making a pr"_ … _"for external repos."_
 
-| External-repo change | Authorization |
-|---|---|
+| External-repo change                                                                        | Authorization                                                                                     |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | **Small PR** (typo/docs fix, small bug fix, test add — genuinely-useful + low-blast-radius) | **Ungated.** Any Zeta/Agora-society agent may open it directly, always — no authorization needed. |
-| **Large change** (substantial/architectural, or anything not clearly small) | **Gated.** Get **Aaron OR Max** to review FIRST, *before* making the PR. |
+| **Large change** (substantial/architectural, or anything not clearly small)                 | **Gated.** Get **Aaron OR Max** to review FIRST, _before_ making the PR.                          |
 
 **Why this gate (and not the usual reversibility test):** an external PR is
-reversible (closeable) on *our* side, so by `non-reversible-action-get-a-second-
-opinion` it would normally be ungated. But it touches *someone else's* repo +
+reversible (closeable) on _our_ side, so by `non-reversible-action-get-a-second-
+opinion` it would normally be ungated. But it touches _someone else's_ repo +
 reputation/relationship surface — a large drive-by PR can cost the relationship
-the good-citizen strategy is trying to build. The size gate protects the *external
-relationship*, which is the actual scarce resource (B-0952 small-first
+the good-citizen strategy is trying to build. The size gate protects the _external
+relationship_, which is the actual scarce resource (B-0952 small-first
 trust-building). Small = relationship-positive by default; large = relationship-
 stakes high enough to warrant a human's eyes first.
 

@@ -34,7 +34,7 @@ wearing `package-upgrader` for a one-off.
   global tools. Separate pin file; same upgrade pattern.
 - `tools/setup/manifests/uv-tools` — pinned uv-managed
   Python CLIs. Same upgrade pattern (run `uv tool
-  upgrade <tool>` after a pin edit).
+upgrade <tool>` after a pin edit).
 - `.mise.toml` — language runtime pins (dotnet / python /
   java / bun / uv). **Major runtime bumps route through
   Kenji, never automated.**
@@ -52,13 +52,13 @@ Out of scope:
 
 Every pin gets a tier that drives the upgrade policy:
 
-| Tier | Bump type | Automation |
-|---|---|---|
-| **Trusted / patch** | x.y.Z → x.y.(Z+n); same-major, same-minor | Auto-propose, auto-gate on build + test, auto-open PR |
-| **Trusted / minor** | x.Y.z → x.(Y+n).0; same-major | Auto-propose + gate; PR opens for human review before merge |
-| **Major** | X.y.z → (X+n).0.0 | Read release notes; draft a design-doc PR first, no direct version flip |
-| **Analyzer / lint** | SonarAnalyzer.CSharp, Meziantou, G-Research.FSharp.Analyzers, Ionide.Analyzers | Treat as major — new analyzer versions surface new findings that break `TreatWarningsAsErrors`. Stage in a branch; land only after Kira pass on new findings. |
-| **Security-critical** | Any pin with an open CVE on the current version | Bump on the security SLA clock (Nazar's lane). Patch-tier path even if major bump is needed. |
+| Tier                  | Bump type                                                                      | Automation                                                                                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Trusted / patch**   | x.y.Z → x.y.(Z+n); same-major, same-minor                                      | Auto-propose, auto-gate on build + test, auto-open PR                                                                                                         |
+| **Trusted / minor**   | x.Y.z → x.(Y+n).0; same-major                                                  | Auto-propose + gate; PR opens for human review before merge                                                                                                   |
+| **Major**             | X.y.z → (X+n).0.0                                                              | Read release notes; draft a design-doc PR first, no direct version flip                                                                                       |
+| **Analyzer / lint**   | SonarAnalyzer.CSharp, Meziantou, G-Research.FSharp.Analyzers, Ionide.Analyzers | Treat as major — new analyzer versions surface new findings that break `TreatWarningsAsErrors`. Stage in a branch; land only after Kira pass on new findings. |
+| **Security-critical** | Any pin with an open CVE on the current version                                | Bump on the security SLA clock (Nazar's lane). Patch-tier path even if major bump is needed.                                                                  |
 
 ## Procedure
 
@@ -77,7 +77,7 @@ For each row in work-queue order:
    one `<PackageVersion>` line. One package per commit;
    never batch bumps across packages unless they're
    version-locked (e.g., `xunit.v3` + `xunit.runner.
-   visualstudio`).
+visualstudio`).
 2. **Restore + build**: `dotnet restore Zeta.sln` then
    `dotnet build Zeta.sln -c Release`. Abort on any
    warning or error (`TreatWarningsAsErrors` is on;
@@ -164,7 +164,7 @@ For each row in work-queue order:
 ## Future automation
 
 - **Scheduled workflow.** Weekly `.github/workflows/
-  package-upgrade.yml` (backlog item) runs the audit,
+package-upgrade.yml` (backlog item) runs the audit,
   drafts PRs for patch-tier bumps, labels for human
   review. Requires the skill's behaviour to be a
   pure function of the audit output first — today it

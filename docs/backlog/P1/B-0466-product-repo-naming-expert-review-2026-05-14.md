@@ -27,6 +27,7 @@ need this review before scaffolding begins.
 
 The naming-expert skill (Ilyana, per `public-api-designer` agent) holds authority over
 public-surface naming. Per the three-repo-split memory:
+
 > "naming-expert (Ilyana) gate stays open for public-announce if brand-critical."
 
 Product repos will be public from day one per glass-halo + Aaron's "all public" signal.
@@ -55,15 +56,15 @@ For each product repo name, the naming-expert skill checks:
 
 ### Repo names to review (existing handles)
 
-| Product | Handle in use | Repo name candidate | Review needed |
-|---------|--------------|---------------------|---------------|
-| KSK | "KSK" / "Kinetic Safeguard Kernel" | `ksk` or `kinetic-safeguard-kernel` | Collision check; abbreviation safety |
-| Wellness | "wellness app" | `wellness` or `zeta-wellness` | Namespace collision (many wellness apps) |
-| Civsim | "civsim" | `civsim` or `civ-sim` | Collision check; game-design reference |
-| American Dream 2.0 | "American Dream 2.0" | `american-dream` or `ad2` | Abbreviation + trademark check |
-| DIO | "DIO" | `dio` | "Dio" (musician) + "DIO" (Jojo's Bizarre Adventure) collision check |
-| Aurora | "Aurora" | `aurora` | Many projects named Aurora; disambiguation needed |
-| Dawn | "Dawn" | `dawn` | Common name; collision check |
+| Product            | Handle in use                      | Repo name candidate                 | Review needed                                                       |
+| ------------------ | ---------------------------------- | ----------------------------------- | ------------------------------------------------------------------- |
+| KSK                | "KSK" / "Kinetic Safeguard Kernel" | `ksk` or `kinetic-safeguard-kernel` | Collision check; abbreviation safety                                |
+| Wellness           | "wellness app"                     | `wellness` or `zeta-wellness`       | Namespace collision (many wellness apps)                            |
+| Civsim             | "civsim"                           | `civsim` or `civ-sim`               | Collision check; game-design reference                              |
+| American Dream 2.0 | "American Dream 2.0"               | `american-dream` or `ad2`           | Abbreviation + trademark check                                      |
+| DIO                | "DIO"                              | `dio`                               | "Dio" (musician) + "DIO" (Jojo's Bizarre Adventure) collision check |
+| Aurora             | "Aurora"                           | `aurora`                            | Many projects named Aurora; disambiguation needed                   |
+| Dawn               | "Dawn"                             | `dawn`                              | Common name; collision check                                        |
 
 ### Special considerations
 
@@ -84,6 +85,7 @@ Search for "KSK" in the national-security / robotics domain.
 A new file: `docs/research/2026-05-14-product-repo-naming-review-b0425.md`
 
 Structure per product:
+
 ```
 ## [Product name]
 Repo slug candidates: [list]

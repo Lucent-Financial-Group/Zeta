@@ -27,10 +27,10 @@ Cron-driven autonomous-loop tick.
 Routine cron-driven hygiene tick log entry recording merge status of prior PRs and current wait-CI state.
 
 **Changes:**
+
 - Adds a new tick log file under `docs/hygiene-history/ticks/2026/05/15/`.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T13:01:32Z)
-
 
 ### 💡 Codex Review
 
@@ -38,17 +38,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `390b7b75d8`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -64,7 +63,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-15T13:01:32Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reference an existing shard when citing prior tick state**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reference an existing shard when citing prior tick state**
 
 This line records PR #3465 as coming from a `1305Z` shard, but there is no `docs/hygiene-history/ticks/2026/05/15/1305Z.md` entry in the repo history; the citation therefore points to a non-existent provenance record. In this project, tick files are the audit substrate for reproducibility, so a broken shard reference makes the state transition unverifiable for later reviewers and tools.
 

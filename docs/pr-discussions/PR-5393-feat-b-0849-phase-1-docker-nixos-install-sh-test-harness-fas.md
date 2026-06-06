@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-27: *"we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile"*
+Aaron 2026-05-27: _"we should add docker based nixos install.sh testing so we can iterate quick that's an easy dockerfile"_
 
 Implements [B-0849](docs/backlog/P2/B-0849-...) Phase 1 — bounded-iteration test harness for the install.sh / linux.sh / mise.sh substrate.
 
@@ -30,27 +30,27 @@ Implements [B-0849](docs/backlog/P2/B-0849-...) Phase 1 — bounded-iteration te
 
 ## Validation coverage
 
-| Layer | Check |
-|---|---|
-| linux.sh NixOS detection | `touch /etc/NIXOS` makes linux.sh route to mise.sh |
-| mise install | nix-shell bootstraps mise + reads .mise.toml |
-| bun via mise | `bun --version` matches .mise.toml pin `1.3` EXACTLY |
-| claude-code via bun | `set -o pipefail` + `bun install --global @anthropic-ai/claude-code` |
-| gh via nix | `nix-shell -p gh` install + version check |
+| Layer                    | Check                                                                |
+| ------------------------ | -------------------------------------------------------------------- |
+| linux.sh NixOS detection | `touch /etc/NIXOS` makes linux.sh route to mise.sh                   |
+| mise install             | nix-shell bootstraps mise + reads .mise.toml                         |
+| bun via mise             | `bun --version` matches .mise.toml pin `1.3` EXACTLY                 |
+| claude-code via bun      | `set -o pipefail` + `bun install --global @anthropic-ai/claude-code` |
+| gh via nix               | `nix-shell -p gh` install + version check                            |
 
 ## Cycle-time tradeoff
 
-| Surface | Validates | Cycle |
-|---|---|---|
-| Operator USB | End-to-end + reboot | ~30+ min |
-| B-0831 QEMU | End-to-end virtualized | ~15 min |
+| Surface                     | Validates                     | Cycle          |
+| --------------------------- | ----------------------------- | -------------- |
+| Operator USB                | End-to-end + reboot           | ~30+ min       |
+| B-0831 QEMU                 | End-to-end virtualized        | ~15 min        |
 | **B-0849 Docker (THIS PR)** | install.sh on NixOS userspace | **~30-60 sec** |
 
 ## Usage
 
 \`\`\`bash
-bun tools/ci/docker-nixos-install-sh-test.ts                  # default 600s timeout
-bun tools/ci/docker-nixos-install-sh-test.ts --keep-image     # inspect after
+bun tools/ci/docker-nixos-install-sh-test.ts # default 600s timeout
+bun tools/ci/docker-nixos-install-sh-test.ts --keep-image # inspect after
 DOCKER_BUILD_TIMEOUT_SEC=900 bun tools/ci/docker-nixos-install-sh-test.ts
 \`\`\`
 
@@ -77,6 +77,7 @@ _(no body)_
 Adds a fast-iteration Docker-based NixOS userspace harness intended to validate `tools/setup/install.sh`’s NixOS detection path (via `/etc/NIXOS`) plus key post-install tooling checks, providing a quicker feedback loop than the existing QEMU full-install test.
 
 **Changes:**
+
 - Introduces a `nixos/nix`-based Dockerfile that runs `tools/setup/install.sh` and validates bun + claude-code + gh availability.
 - Adds a Bun/TypeScript wrapper to run `docker build` with log capture, timeout, and optional image retention.
 
@@ -84,10 +85,10 @@ Adds a fast-iteration Docker-based NixOS userspace harness intended to validate 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 10 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile | Docker build recipe to exercise `install.sh` on NixOS userspace and validate bun/claude-code/gh. |
-| tools/ci/docker-nixos-install-sh-test.ts | Bun/TS wrapper that invokes `docker build`, captures logs, enforces a timeout, and cleans up the image. |
+| File                                                  | Description                                                                                             |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile | Docker build recipe to exercise `install.sh` on NixOS userspace and validate bun/claude-code/gh.        |
+| tools/ci/docker-nixos-install-sh-test.ts              | Bun/TS wrapper that invokes `docker build`, captures logs, enforces a timeout, and cleans up the image. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-27T03:27:17Z)
 
@@ -114,6 +115,7 @@ Unused import join.
 ---
 
 Remove the unused <code>join</code> named import from <code>node:path</code> in <code>tools/ci/docker-nixos-install-sh-test.ts</code>, leaving only <code>resolve</code>.</p>
+
 <p>This is the minimal, behavior-preserving fix:</p>
 <ul>
 <li>**File:** <code>tools/ci/docker-nixos-install-sh-test.ts</code></li>

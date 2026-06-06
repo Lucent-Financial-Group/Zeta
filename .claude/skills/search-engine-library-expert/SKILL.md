@@ -11,28 +11,28 @@ is carried by the matching entry under `.claude/agents/`.
 An **embeddable search-engine library** is a single-process
 in-VM / in-binary implementation of the full-text-search
 primitives. Distributed engines (Elasticsearch, Solr,
-OpenSearch, Vespa) sit *on top* of such a library — Lucene is
+OpenSearch, Vespa) sit _on top_ of such a library — Lucene is
 the engine under Elasticsearch / Solr / OpenSearch; Tantivy
 is the engine under Quickwit; Xapian is its own stack.
 
 ## The library canon
 
-| Library | Language | Status |
-|---|---|---|
-| **Apache Lucene** | Java / JVM | The reference; under ES/Solr/OpenSearch |
-| **Tantivy** | Rust | Lucene-inspired, cloud-native, under Quickwit |
-| **Xapian** | C++ | Mature, probabilistic, BM25 / LM default |
-| **Bleve** | Go | Full-text for Go apps |
-| **Whoosh** | Pure Python | Pure-Python, small-scale |
-| **Sonic** | Rust | Low-memory (can run in 1MB) |
-| **MeiliSearch core** | Rust | Typo-tolerant, instant search UX |
-| **Typesense core** | C++ | Meilisearch-like, typo-tolerance |
-| **RediSearch** | C (Redis module) | Redis-native FTS + vector |
-| **Quickwit** | Rust | Log-search, cloud-native Tantivy wrapper |
-| **Vespa** | C++ (Yahoo) | Structured + dense + sparse at scale |
-| **Zinc** | Go | Single-binary ES-like |
+| Library              | Language         | Status                                        |
+| -------------------- | ---------------- | --------------------------------------------- |
+| **Apache Lucene**    | Java / JVM       | The reference; under ES/Solr/OpenSearch       |
+| **Tantivy**          | Rust             | Lucene-inspired, cloud-native, under Quickwit |
+| **Xapian**           | C++              | Mature, probabilistic, BM25 / LM default      |
+| **Bleve**            | Go               | Full-text for Go apps                         |
+| **Whoosh**           | Pure Python      | Pure-Python, small-scale                      |
+| **Sonic**            | Rust             | Low-memory (can run in 1MB)                   |
+| **MeiliSearch core** | Rust             | Typo-tolerant, instant search UX              |
+| **Typesense core**   | C++              | Meilisearch-like, typo-tolerance              |
+| **RediSearch**       | C (Redis module) | Redis-native FTS + vector                     |
+| **Quickwit**         | Rust             | Log-search, cloud-native Tantivy wrapper      |
+| **Vespa**            | C++ (Yahoo)      | Structured + dense + sparse at scale          |
+| **Zinc**             | Go               | Single-binary ES-like                         |
 
-**Rule.** Name the library *and* the engine separately. "We
+**Rule.** Name the library _and_ the engine separately. "We
 use Elasticsearch" is incomplete — Lucene is underneath.
 "We use Tantivy" stands alone.
 
@@ -67,14 +67,14 @@ Durable segments_N pointer updated
 ```
 
 **Rule.** The segmented, immutable, merge-based pattern is
-*the* reason Lucene / Tantivy perform well under write
+_the_ reason Lucene / Tantivy perform well under write
 pressure. Mutating indexes (B-trees) cannot match this under
 bulk ingest.
 
 ## Commit vs refresh vs flush — get these right
 
 - **Refresh.** Make recently-added docs visible to
-  searchers. Does *not* fsync. Cheap (NRT semantics).
+  searchers. Does _not_ fsync. Cheap (NRT semantics).
 - **Flush.** Write in-memory buffer to a new on-disk
   segment. May or may not fsync (library-specific).
 - **Commit.** Durability: fsync + update segments_N.
@@ -222,19 +222,19 @@ not file listings.
 
 ## Comparison — when to pick which
 
-| Library | Strength | Weakness |
-|---|---|---|
-| Lucene | Most features, most battle-tested | JVM, heap tuning |
-| Tantivy | Rust speed, no GC | Smaller feature set, newer |
-| Xapian | Probabilistic, mature | Smaller ecosystem |
-| Bleve | Go-native, good enough | Not as fast |
-| Whoosh | Pure Python, no deps | Slow for real-scale |
-| Sonic | Tiny memory footprint | Limited features |
-| MeiliSearch | Amazing UX out of the box | Less tunable |
-| Typesense | MeiliSearch-alike, C++ | Smaller ecosystem |
-| RediSearch | Redis-native | Redis-bound |
-| Quickwit | Cloud-native, object-storage | Newer, log-focused |
-| Vespa | Structured + vector + sparse | Complex to operate |
+| Library     | Strength                          | Weakness                   |
+| ----------- | --------------------------------- | -------------------------- |
+| Lucene      | Most features, most battle-tested | JVM, heap tuning           |
+| Tantivy     | Rust speed, no GC                 | Smaller feature set, newer |
+| Xapian      | Probabilistic, mature             | Smaller ecosystem          |
+| Bleve       | Go-native, good enough            | Not as fast                |
+| Whoosh      | Pure Python, no deps              | Slow for real-scale        |
+| Sonic       | Tiny memory footprint             | Limited features           |
+| MeiliSearch | Amazing UX out of the box         | Less tunable               |
+| Typesense   | MeiliSearch-alike, C++            | Smaller ecosystem          |
+| RediSearch  | Redis-native                      | Redis-bound                |
+| Quickwit    | Cloud-native, object-storage      | Newer, log-focused         |
+| Vespa       | Structured + vector + sparse      | Complex to operate         |
 
 **Rule.** Lucene is the default. Pick Tantivy when you need
 no-GC + Rust; Xapian when you want probabilistic + small;
@@ -246,7 +246,7 @@ than tuning.
 Zeta is F#/.NET; a direct Lucene.NET port exists (and is
 production). Tantivy-via-PInvoke is possible but has
 marshalling cost. For WDC-era retraction-native integration,
-the segment architecture is a *natural* fit for DBSP:
+the segment architecture is a _natural_ fit for DBSP:
 
 - Each segment is a snapshot; merges are retraction+insert.
 - NRT visibility maps to the `I` operator (integrator).
@@ -297,7 +297,7 @@ the segment architecture is a *natural* fit for DBSP:
 
 ## Reference patterns
 
-- McCandless, Hatcher, Gospodnetić — *Lucene in Action*
+- McCandless, Hatcher, Gospodnetić — _Lucene in Action_
   (2nd ed., 2010; dated but foundational).
 - Lucene source (`lucene.apache.org`).
 - Tantivy docs (`github.com/quickwit-oss/tantivy`).

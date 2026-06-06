@@ -3,7 +3,15 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { spawnSync } from "node:child_process";
-import { runOneCycle, log, detectViaCommand, detectGreyTextMacOS, parseConfig, parseRestoreArrowOutput, RESTORE_ARROW_SEP } from "./shadow-observer.ts";
+import {
+  runOneCycle,
+  log,
+  detectViaCommand,
+  detectGreyTextMacOS,
+  parseConfig,
+  parseRestoreArrowOutput,
+  RESTORE_ARROW_SEP,
+} from "./shadow-observer.ts";
 import type { ShadowConfig, ShadowEvent, OsascriptRunner, RestoreArrowResult } from "./shadow-observer.ts";
 
 const SCRIPT = join(import.meta.dir, "shadow-observer.ts");
@@ -152,7 +160,10 @@ describe("shadow-observer — freshness guard (fix #3 for new-console zsh abort)
       freshnessThresholdMs: 5000,
     };
     let detectCalled = false;
-    const detectFn = async () => { detectCalled = true; return "should-not-fire"; };
+    const detectFn = async () => {
+      detectCalled = true;
+      return "should-not-fire";
+    };
     const acceptFn = async () => true;
     const restoreArrowFn = async () => ({ verdict: "should-not-fire", delta: "" });
     const getFrontmostStateFn = async () => ({ pid: 9999, name: "iTerm2" });
@@ -177,9 +188,15 @@ describe("shadow-observer — freshness guard (fix #3 for new-console zsh abort)
     };
     let detectCalled = false;
     let restoreCalled = false;
-    const detectFn = async () => { detectCalled = true; return "should-not-fire"; };
+    const detectFn = async () => {
+      detectCalled = true;
+      return "should-not-fire";
+    };
     const acceptFn = async () => true;
-    const restoreArrowFn = async () => { restoreCalled = true; return { verdict: "should-not-fire", delta: "" }; };
+    const restoreArrowFn = async () => {
+      restoreCalled = true;
+      return { verdict: "should-not-fire", delta: "" };
+    };
     const getFrontmostStateFn = async () => null;
     const fixedNow = () => 1_000_000;
 
@@ -256,7 +273,10 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
 
   test("restoreArrow=false skips the press (restoreArrowFn never called)", async () => {
     let pressed = 0;
-    const restoreArrowFn = async () => { pressed++; return { verdict: "pressed:Terminal", delta: "" }; };
+    const restoreArrowFn = async () => {
+      pressed++;
+      return { verdict: "pressed:Terminal", delta: "" };
+    };
     const result = await runOneCycle(baseConfig, async () => null, undefined, restoreArrowFn);
     expect(result).toBe("no-suggestion");
     expect(pressed).toBe(0);
@@ -265,7 +285,10 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
   test("restoreArrow=true invokes restoreArrowFn exactly once per cycle", async () => {
     const cfg = { ...baseConfig, restoreArrow: true };
     let pressed = 0;
-    const restoreArrowFn = async () => { pressed++; return { verdict: "pressed:Terminal", delta: "" }; };
+    const restoreArrowFn = async () => {
+      pressed++;
+      return { verdict: "pressed:Terminal", delta: "" };
+    };
     const result = await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
     expect(result).toBe("no-suggestion");
     expect(pressed).toBe(1);
@@ -273,7 +296,9 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
 
   test("restoreArrowFn throw is captured as error verdict, never crashes the cycle", async () => {
     const cfg = { ...baseConfig, restoreArrow: true };
-    const restoreArrowFn = async (): Promise<RestoreArrowResult> => { throw new Error("osascript-died"); };
+    const restoreArrowFn = async (): Promise<RestoreArrowResult> => {
+      throw new Error("osascript-died");
+    };
     const result = await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
     expect(result).toBe("no-suggestion");
   });
@@ -281,7 +306,10 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
   test("restoreArrow=true fires even under dry-run (orthogonal to acceptGreyText safety)", async () => {
     const cfg = { ...baseConfig, restoreArrow: true, dryRun: true };
     let pressed = 0;
-    const restoreArrowFn = async () => { pressed++; return { verdict: "pressed:Terminal", delta: "" }; };
+    const restoreArrowFn = async () => {
+      pressed++;
+      return { verdict: "pressed:Terminal", delta: "" };
+    };
     await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
     expect(pressed).toBe(1);
   });
@@ -292,7 +320,10 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
       const cfg = { ...baseConfig, restoreArrow: true, logFile: join(tmpDir, "log") };
       const restoreArrowFn = async () => ({ verdict: "pressed:Terminal", delta: "restored-autocomplete-content" });
       await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
-      const events = readFileSync(join(tmpDir, "log"), "utf-8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as ShadowEvent);
+      const events = readFileSync(join(tmpDir, "log"), "utf-8")
+        .split("\n")
+        .filter(Boolean)
+        .map((l) => JSON.parse(l) as ShadowEvent);
       const restoreEvent = events.find((e) => e.type === "restore-arrow");
       expect(restoreEvent).toBeDefined();
       expect(restoreEvent!.content).toBe("pressed:Terminal");
@@ -309,7 +340,10 @@ describe("shadow-observer — runOneCycle unit (injected fns)", () => {
       const cfg = { ...baseConfig, restoreArrow: true, logFile: join(tmpDir, "log") };
       const restoreArrowFn = async () => ({ verdict: "pressed:Terminal", delta: "" });
       await runOneCycle(cfg, async () => null, undefined, restoreArrowFn);
-      const events = readFileSync(join(tmpDir, "log"), "utf-8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as ShadowEvent);
+      const events = readFileSync(join(tmpDir, "log"), "utf-8")
+        .split("\n")
+        .filter(Boolean)
+        .map((l) => JSON.parse(l) as ShadowEvent);
       const restoreEvent = events.find((e) => e.type === "restore-arrow");
       expect(restoreEvent!.delta).toBe("");
       expect(restoreEvent!.deltaLen).toBe(0);
@@ -505,7 +539,7 @@ describe("shadow-observer — --detect-cmd CLI integration (slice 2)", () => {
       loopIntervalMs: 0,
       once: true,
       restoreArrow: false,
-    freshnessThresholdMs: 0,
+      freshnessThresholdMs: 0,
     };
     const result = await runOneCycle(baseConfig, async () => null);
     expect(result).toBe("no-suggestion");
@@ -562,9 +596,7 @@ describe("shadow-observer — detectGreyTextMacOS unit (slice 3)", () => {
       });
       const result = await detectGreyTextMacOS(undefined, mockRunner);
       expect(result).toBeNull();
-      expect(
-        warnings.some((m) => m.includes("osascript exited") || m.includes("permission")),
-      ).toBe(true);
+      expect(warnings.some((m) => m.includes("osascript exited") || m.includes("permission"))).toBe(true);
     } finally {
       console.warn = origWarn;
     }
@@ -653,10 +685,18 @@ describe("shadow-observer — --loop outer restart integration (slice 4)", () =>
     // Use --detect-cmd false so cycles complete instantly (no osascript overhead)
     const proc = Bun.spawn(
       [
-        "bun", ZETA_SHADOW,
-        "--loop", "100", "--once", "--dry-run", "--delay", "0",
-        "--detect-cmd", "false",
-        "--log-file", logPath(),
+        "bun",
+        ZETA_SHADOW,
+        "--loop",
+        "100",
+        "--once",
+        "--dry-run",
+        "--delay",
+        "0",
+        "--detect-cmd",
+        "false",
+        "--log-file",
+        logPath(),
       ],
       { stdout: "ignore", stderr: "ignore" },
     );
@@ -671,11 +711,18 @@ describe("shadow-observer — --loop outer restart integration (slice 4)", () =>
   test("--loop 100 --detect-cmd 'echo hi' --once --dry-run --delay 0: detection runs across restarts", async () => {
     const proc = Bun.spawn(
       [
-        "bun", ZETA_SHADOW,
-        "--loop", "100",
-        "--once", "--dry-run", "--delay", "0",
-        "--detect-cmd", "echo hi",
-        "--log-file", logPath(),
+        "bun",
+        ZETA_SHADOW,
+        "--loop",
+        "100",
+        "--once",
+        "--dry-run",
+        "--delay",
+        "0",
+        "--detect-cmd",
+        "echo hi",
+        "--log-file",
+        logPath(),
       ],
       { stdout: "ignore", stderr: "ignore" },
     );
@@ -688,10 +735,10 @@ describe("shadow-observer — --loop outer restart integration (slice 4)", () =>
   });
 
   test("SIGTERM stops outer loop: no new started events appear after kill", async () => {
-    const proc = Bun.spawn(
-      ["bun", ZETA_SHADOW, "--loop", "2000", "--once", "--dry-run", "--log-file", logPath()],
-      { stdout: "ignore", stderr: "ignore" },
-    );
+    const proc = Bun.spawn(["bun", ZETA_SHADOW, "--loop", "2000", "--once", "--dry-run", "--log-file", logPath()], {
+      stdout: "ignore",
+      stderr: "ignore",
+    });
     // Let one cycle run, then kill
     await Bun.sleep(300);
     proc.kill("SIGTERM");
@@ -716,20 +763,14 @@ describe("shadow-observer — zeta-shadow.ts smoke tests (slice 4)", () => {
   });
 
   test("zeta-shadow.ts --once --dry-run exits 0", () => {
-    const r = spawnSync(
-      "bun",
-      [ZETA_SHADOW, "--once", "--dry-run", "--log-file", join(SMOKE_DIR, "shadow.log")],
-      { encoding: "utf-8" },
-    );
+    const r = spawnSync("bun", [ZETA_SHADOW, "--once", "--dry-run", "--log-file", join(SMOKE_DIR, "shadow.log")], {
+      encoding: "utf-8",
+    });
     expect(r.status).toBe(0);
   });
 
   test("zeta-shadow.ts with invalid flag exits 1", () => {
-    const r = spawnSync(
-      "bun",
-      [ZETA_SHADOW, "--bogus-flag-zeta"],
-      { encoding: "utf-8" },
-    );
+    const r = spawnSync("bun", [ZETA_SHADOW, "--bogus-flag-zeta"], { encoding: "utf-8" });
     expect(r.status).toBe(1);
   });
 });
@@ -752,7 +793,7 @@ describe("shadow-observer — runOneCycle full cycle paths (slice 3)", () => {
       loopIntervalMs: 0,
       once: true,
       restoreArrow: false,
-    freshnessThresholdMs: 0,
+      freshnessThresholdMs: 0,
     };
   }
 

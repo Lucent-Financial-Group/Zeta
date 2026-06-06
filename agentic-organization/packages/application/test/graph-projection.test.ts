@@ -51,7 +51,10 @@ test("projects nodes and the three edge kinds", () => {
   });
   // nodes: w1, a1, d1, w2
   equal(graph.nodes.length, 4);
-  equal(graph.nodes.some((n) => n.kind === GraphNodeKind.Decision && n.id === "d1"), true);
+  equal(
+    graph.nodes.some((n) => n.kind === GraphNodeKind.Decision && n.id === "d1"),
+    true,
+  );
   // edges: anchored_to (a1->w1), decided_in (d1->a1), follows_up (d1->w2)
   equal(graph.edges.filter((e) => e.kind === GraphEdgeKind.AnchoredTo).length, 1);
   equal(graph.edges.filter((e) => e.kind === GraphEdgeKind.DecidedIn).length, 1);

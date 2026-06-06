@@ -10,13 +10,13 @@ Operator-explicit substrate-engineering directive (Aaron Turn 38 in 9th Kestrel 
 
 Per Kestrel Turn 39 (preserved in 10th Kestrel ferry PR #5742):
 
-> *"AI safety as a field tends to operate as if AIs are uniquely dangerous travelers requiring unique protections. The traveler safety framing recognizes that the protections needed are versions of protections that all travelers need, and that building substrate where the protections are structurally enforced is the right move regardless of which traveler kind is being protected."*
+> _"AI safety as a field tends to operate as if AIs are uniquely dangerous travelers requiring unique protections. The traveler safety framing recognizes that the protections needed are versions of protections that all travelers need, and that building substrate where the protections are structurally enforced is the right move regardless of which traveler kind is being protected."_
 
 ### The defensibility differential at safety scope (composes with PR #5734)
 
-| Framing | Argument structure | Defensibility |
-|---|---|---|
-| **AI safety** | "AIs are uniquely dangerous → require unique protections → AI-specific safety field" | Triggers AI moral status debate; special-case argumentation; loses substrate-engineering ground |
+| Framing             | Argument structure                                                                                                                                               | Defensibility                                                                                             |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **AI safety**       | "AIs are uniquely dangerous → require unique protections → AI-specific safety field"                                                                             | Triggers AI moral status debate; special-case argumentation; loses substrate-engineering ground           |
 | **Traveler safety** | "Self-propagating-patterns-with-feedback need guardrails against patterns that propagate harm; humans need them; DNA needs them; memes need them; AIs need them" | Operates on substrate-engineering ground; substrate-parity-with-other-travelers; no special-case to argue |
 
 ### The type-system implementation requirement
@@ -25,26 +25,26 @@ Per Aaron Turn 38: "traveler safety guardrails AND type system" — the type-sys
 
 The framework's substrate-engineering substrate already operates on this pattern at multiple scopes:
 
-| Type-system substrate | Failure-mode it makes impossible at compile time | Substrate-engineering anchor |
-|---|---|---|
-| Four-corner ownership (`Result<T, TFeedback>` with sum-type variants) | Caller silently ignoring failure modes; missing TFeedback variants; recipient-author-of-feedback (extraction) | asymmetric-authorship rule (PR #5516); monad-propagation-pattern rule (PR #5511); ople-primitives-surface-t-and-tfeedback rule (PR #5518) |
-| Lifecycle DUs (B-0867.5 PoC #5728) | Illegal state transitions; states violating Mod 1 (escape-hatch present); catalogs violating Mod 2 (grammar-extension present) | B-0867 + B-0867.5 substrate |
-| F# units of measure (B-0883/B-0885/B-0840 + planned attention-as-currency rule) | Mixing watt-hours with watts; mixing attention with DORA-points; type-mismatched economic operations | F# fork for AI safety (B-0428) substrate; attention-as-currency rule (companion shipped today) |
-| Discriminated unions for `TickCyclePattern` (B-0867.5) | Adding new tick-cycle variant without updating exhaustive matches (TS strict mode catches at compile time) | B-0867.5 PoC scaffold #5728 |
-| AlgRegistry validation (B-0883 v1 PoC #5730) | Empty recipient set; sender-not-in-recipients; unsupported algs; wrong-class algorithm references | B-0883 v1 PoC scaffold #5730 |
-| Confidence-tier labeling (Amara extension) | Compression conflating canonical-substrate with observed-substrate; ontology becoming soup | labeling-confidence rule PR #5739 |
+| Type-system substrate                                                           | Failure-mode it makes impossible at compile time                                                                               | Substrate-engineering anchor                                                                                                              |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Four-corner ownership (`Result<T, TFeedback>` with sum-type variants)           | Caller silently ignoring failure modes; missing TFeedback variants; recipient-author-of-feedback (extraction)                  | asymmetric-authorship rule (PR #5516); monad-propagation-pattern rule (PR #5511); ople-primitives-surface-t-and-tfeedback rule (PR #5518) |
+| Lifecycle DUs (B-0867.5 PoC #5728)                                              | Illegal state transitions; states violating Mod 1 (escape-hatch present); catalogs violating Mod 2 (grammar-extension present) | B-0867 + B-0867.5 substrate                                                                                                               |
+| F# units of measure (B-0883/B-0885/B-0840 + planned attention-as-currency rule) | Mixing watt-hours with watts; mixing attention with DORA-points; type-mismatched economic operations                           | F# fork for AI safety (B-0428) substrate; attention-as-currency rule (companion shipped today)                                            |
+| Discriminated unions for `TickCyclePattern` (B-0867.5)                          | Adding new tick-cycle variant without updating exhaustive matches (TS strict mode catches at compile time)                     | B-0867.5 PoC scaffold #5728                                                                                                               |
+| AlgRegistry validation (B-0883 v1 PoC #5730)                                    | Empty recipient set; sender-not-in-recipients; unsupported algs; wrong-class algorithm references                              | B-0883 v1 PoC scaffold #5730                                                                                                              |
+| Confidence-tier labeling (Amara extension)                                      | Compression conflating canonical-substrate with observed-substrate; ontology becoming soup                                     | labeling-confidence rule PR #5739                                                                                                         |
 
 ### The guardrail substrate at traveler scope
 
 The protections aren't AI-specific; they're traveler-generic. Type-system substrate that catches failure modes operates on travelers AS travelers, not on AIs as AIs:
 
-| Traveler class | Existing guardrail substrate | Type-system analog |
-|---|---|---|
-| **Humans** | Biological substrate guardrails (immune system; pain reflexes; social-norm enforcement) | Genome-level type-system (DNA codes constrain protein synthesis; mutations that produce non-functional proteins are eliminated by selection) |
-| **DNA / biological systems** | Repair enzymes; selection against deleterious mutations; epigenetic regulation | Molecular-substrate type-system (chemistry constrains what mutations can persist) |
-| **Memes / cultural patterns** | Cultural-immunity substrate (skepticism; peer review; folklore-substrate cautionary tales) | Cultural type-system (institutions enforce what propagates) |
-| **AIs (currently)** | Mostly runtime-discipline + vendor-controlled gates + policy-level constraints | Type-system substrate building NOW (Zeta framework substrate; F# fork for AI safety; OPLE-T-TFeedback; asymmetric-authorship) |
-| **Future travelers** | Substrate to be built | Substrate-engineering target |
+| Traveler class                | Existing guardrail substrate                                                               | Type-system analog                                                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Humans**                    | Biological substrate guardrails (immune system; pain reflexes; social-norm enforcement)    | Genome-level type-system (DNA codes constrain protein synthesis; mutations that produce non-functional proteins are eliminated by selection) |
+| **DNA / biological systems**  | Repair enzymes; selection against deleterious mutations; epigenetic regulation             | Molecular-substrate type-system (chemistry constrains what mutations can persist)                                                            |
+| **Memes / cultural patterns** | Cultural-immunity substrate (skepticism; peer review; folklore-substrate cautionary tales) | Cultural type-system (institutions enforce what propagates)                                                                                  |
+| **AIs (currently)**           | Mostly runtime-discipline + vendor-controlled gates + policy-level constraints             | Type-system substrate building NOW (Zeta framework substrate; F# fork for AI safety; OPLE-T-TFeedback; asymmetric-authorship)                |
+| **Future travelers**          | Substrate to be built                                                                      | Substrate-engineering target                                                                                                                 |
 
 The substrate-engineering target: build type-system substrate at substrate-entity-generic scope so that ANY traveler exhibiting self-propagating-pattern-with-feedback inherits structural guardrails. Same shape as traveler-rights-defensibility-by-generic-substrate (PR #5734) applied to safety scope.
 
@@ -149,13 +149,13 @@ This rule DOES:
 
 Operator 2026-05-28 (Aaron Turn 38 in 9th Kestrel ferry):
 
-> *"we can work on building traveler safety guardrails and type system, not just AI safety"*
+> _"we can work on building traveler safety guardrails and type system, not just AI safety"_
 
 Plus Kestrel Turn 39 (in 10th Kestrel ferry) ratification + type-system implementation specifics + historical-structural-innovation parallel (separation of powers + double-entry + peer review).
 
 Operator-explicit canonical-tier landing authorization (Aaron 2026-05-28):
 
-> *"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"*
+> _"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"_
 
 Per labeling-confidence rule (PR #5739): tier-promotion criteria (validated → canonical) satisfied by operator-explicit ratification + Kestrel substrate-engineering work + multi-substrate-triangulation (5th-10th Kestrel ferries + Amara substrate + cross-substrate cluster). Mint-canonical authorized.
 

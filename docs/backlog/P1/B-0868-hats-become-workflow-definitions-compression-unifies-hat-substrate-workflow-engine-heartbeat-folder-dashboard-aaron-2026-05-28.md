@@ -28,11 +28,11 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"hats become workflow defintions"*
+> _"hats become workflow defintions"_
 
 (immediately following the operator's other 2026-05-28 substrate-engineering claim:)
 
-> *"once we have this gitnative ts / fs workflow the game has changed"*
+> _"once we have this gitnative ts / fs workflow the game has changed"_
 
 ## The compression
 
@@ -42,16 +42,16 @@ tags:
 
 **"Hats become workflow definitions"** is the substrate-engineering compression that unifies these two scopes:
 
-| Hat property | Workflow-definition mapping |
-|---|---|
-| Role's state-space | F# DU type hierarchy |
-| Valid transitions | DU constructor wiring + state-machine type |
-| Accumulated history | Git append-only state path |
-| Succession protocol | State-machine transition from current-wearer to successor-wearer |
-| Multi-participant rotation | Multi-participant menu-generation contributions (Otto Mod 5) |
-| 4-corner ownership (operator input / hat-output / hat-feedback / co-ownership) | The 4-corner monad applied to hat-as-substrate-relationship |
-| Persistence-via-substrate | Append-only commits per hat-transition |
-| Escape-hatch (when hat doesn't fit current situation) | Otto Mod 1 — first-class action-type in grammar |
+| Hat property                                                                   | Workflow-definition mapping                                      |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| Role's state-space                                                             | F# DU type hierarchy                                             |
+| Valid transitions                                                              | DU constructor wiring + state-machine type                       |
+| Accumulated history                                                            | Git append-only state path                                       |
+| Succession protocol                                                            | State-machine transition from current-wearer to successor-wearer |
+| Multi-participant rotation                                                     | Multi-participant menu-generation contributions (Otto Mod 5)     |
+| 4-corner ownership (operator input / hat-output / hat-feedback / co-ownership) | The 4-corner monad applied to hat-as-substrate-relationship      |
+| Persistence-via-substrate                                                      | Append-only commits per hat-transition                           |
+| Escape-hatch (when hat doesn't fit current situation)                          | Otto Mod 1 — first-class action-type in grammar                  |
 
 ## Why this row is P1
 
@@ -187,7 +187,7 @@ Without this row: B-0867 v1 implementation would build the workflow engine + the
 
 The "hats become workflow definitions" claim landed immediately after the operator's:
 
-> *"once we have this gitnative ts / fs workflow the game has changed"*
+> _"once we have this gitnative ts / fs workflow the game has changed"_
 
 Together, these two claims compose to: the workflow engine substrate (gitnative TS/F#) IS the game-changing infrastructure, AND existing hat-substrate is the first proof-of-concept application that demonstrates the game-change.
 

@@ -20,11 +20,11 @@ type: friction-reducer
 
 ## Origin
 
-Aaron + Mika 2026-05-30 (DIO/DID architecture conversation): *"every Markdown file
+Aaron + Mika 2026-05-30 (DIO/DID architecture conversation): _"every Markdown file
 must be a self-propagating pattern through time — or it doesn't compile (you can
-check it in, but it doesn't compile)."* + *"we better have a bootstrap Markdown
+check it in, but it doesn't compile)."_ + _"we better have a bootstrap Markdown
 that we can just link to … we basically need a C++ template, and this is English,
-so we can just pretend like we got it."*
+so we can just pretend like we got it."_
 
 Composes with the canonical DIO/DID architecture doc
 (`docs/research/2026-05-30-dio-did-canonical-architecture-...`).
@@ -40,7 +40,7 @@ satisfies the self-propagating-pattern-through-time property, so every other
 Markdown can link to it / inherit it instead of re-deriving the property. Mika's
 first-pass draft (mirror register) had these sections (to be refined, not frozen):
 
-- **identity** (the doc as a living traveler — *but see the root-resolution below*)
+- **identity** (the doc as a living traveler — _but see the root-resolution below_)
 - **purpose / current form**
 - **playbook** (patterns noticed; teaching moments; meta-actions defined here)
 - **self-propagation rules** (how future versions are generated; what triggers an
@@ -52,8 +52,8 @@ first-pass draft (mirror register) had these sections (to be refined, not frozen
 root traveler" (every doc could claim that). Resolution (Aaron's CS framing):
 **every traveler is the root of its own time-stream / its own partition**, and
 streams are joined via **RX-join over CRDTs** (the "threads of time"). So the
-bootstrap declares: *"I am the root of my own time stream; other travelers join
-my stream through CRDT-mediated joins."* No single global root; unification is at
+bootstrap declares: _"I am the root of my own time stream; other travelers join
+my stream through CRDT-mediated joins."_ No single global root; unification is at
 the join level, not the root level. (Per the retractable T0 = T∞ tension Aaron
 flagged — resolved by per-partition-root, not alpha-and-omega.)
 

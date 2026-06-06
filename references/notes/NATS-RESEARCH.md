@@ -46,17 +46,17 @@ replica set disagrees with the meta-cluster (GH 2022-2024),
 double-delivery under leader-change / pull-consumer
 interleavings, and `AckAll` being stronger than the docs imply
 under consumer restart. Treat correctness claims as
-*load-bearing but unproved*.
+_load-bearing but unproved_.
 
 ## Against Kafka / Redpanda / BookKeeper / EventStoreDB
 
-| System       | Partitioning        | Replication | Consumer state       |
-| ------------ | ------------------- | ----------- | -------------------- |
-| Kafka        | Explicit partitions | ISR + KRaft | Client offsets       |
-| Redpanda     | Same as Kafka       | RAFT        | Client offsets       |
-| BookKeeper   | Ledgers             | Quorum write | External            |
-| EventStoreDB | Streams per aggregate | Gossip/epoch | Server-side        |
-| JetStream    | Streams over subjects | RAFT    | Server-side consumers |
+| System       | Partitioning          | Replication  | Consumer state        |
+| ------------ | --------------------- | ------------ | --------------------- |
+| Kafka        | Explicit partitions   | ISR + KRaft  | Client offsets        |
+| Redpanda     | Same as Kafka         | RAFT         | Client offsets        |
+| BookKeeper   | Ledgers               | Quorum write | External              |
+| EventStoreDB | Streams per aggregate | Gossip/epoch | Server-side           |
+| JetStream    | Streams over subjects | RAFT         | Server-side consumers |
 
 JetStream is closer to EventStoreDB than to Kafka: consumers
 are first-class server-side objects, not client-held offsets.
@@ -68,7 +68,7 @@ reference, not the `kafka` one.
 **NATS core as transport.** Arrow Flight remains the primary
 data-plane target — Flight carries zero-copy Arrow batches end
 to end; NATS's byte-payload model cannot. NATS fits the
-*control plane* — circuit registration, shard-assignment
+_control plane_ — circuit registration, shard-assignment
 gossip, liveness — where Flight is overkill. Hard line: no
 Arrow batches through NATS; that pays exactly the copy Flight
 exists to avoid.
@@ -82,9 +82,9 @@ for fan-out across circuit replicas.
 
 **JetStream as durability substrate.** Secondary. `AckExplicit
 
-+ R=3` maps loosely to `StableStorage`. JetStream acks a
-*consumer cursor*, not a transactional commit — reference, not
-a plan.
+- R=3`maps loosely to`StableStorage`. JetStream acks a
+  _consumer cursor_, not a transactional commit — reference, not
+  a plan.
 
 **Sharder mapping.** `InfoTheoreticSharder`
 (`src/Core/NovelMathExt.fs:88`) picks least-loaded shard
@@ -115,11 +115,11 @@ adequate, no fork needed; serialisation hooks accept our
 
 ## Sources
 
-+ `nats-io/nats-server` README + `doc/` (Apache-2.0)
-+ `nats-io/nats.net` (Apache-2.0)
-+ ADR-018 "JetStream as the Durable Replacement for STAN",
+- `nats-io/nats-server` README + `doc/` (Apache-2.0)
+- `nats-io/nats.net` (Apache-2.0)
+- ADR-018 "JetStream as the Durable Replacement for STAN",
   `nats-io/nats-architecture-and-design`
-+ Ongaro + Ousterhout 2014 (RAFT)
-+ EventStoreDB docs (server-side-consumer comparison)
-+ Kingsbury, Jepsen reports on Kafka (2013, 2024) — the
+- Ongaro + Ousterhout 2014 (RAFT)
+- EventStoreDB docs (server-side-consumer comparison)
+- Kingsbury, Jepsen reports on Kafka (2013, 2024) — the
   methodology JetStream has not yet been subjected to

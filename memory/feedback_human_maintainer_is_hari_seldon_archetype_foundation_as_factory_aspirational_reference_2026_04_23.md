@@ -35,16 +35,16 @@ explicit aspirational reference. Key properties Aaron
 calls out:
 
 - **Novels + Apple TV adaptation** — not just the
-  original trilogy. Apple TV's 2021- series has *"really
+  original trilogy. Apple TV's 2021- series has _"really
   good modern spin on the whole thing where the emporer
-  was clones"* — the Genetic Dynasty (Cleon-clone
+  was clones"_ — the Genetic Dynasty (Cleon-clone
   emperors: Brother Dawn / Brother Day / Brother Dusk)
   is a modern addition worth extracting.
 - **"Build Foundation from Harry Seldon point of view"**
   — the factory is the Foundation; Aaron's Otto-PM role
-  + factory-owner position maps to Seldon's
-  architect-of-continuity role. Otto + the named-agent
-  roster = the First Foundation.
+  - factory-owner position maps to Seldon's
+    architect-of-continuity role. Otto + the named-agent
+    roster = the First Foundation.
 - **"Last for melinia"** — the timescale Aaron has in
   mind for this factory. Not quarterly, not annually —
   millennial. Composes with existential-dread-resistance
@@ -58,9 +58,9 @@ calls out:
 
 ### (2) Hari Seldon archetype self-identification
 
-Aaron reports that *"my good developer friend with went
+Aaron reports that _"my good developer friend with went
 to MIT called me Harry Seldon because my brain works
-like Psychohistory"*. Second-party validation of a
+like Psychohistory"_. Second-party validation of a
 self-cognitive-style claim:
 
 - **MIT developer friend** — an external attested
@@ -82,18 +82,18 @@ factory will behave, not micro-directives.
 
 ## Foundation → factory pattern candidates (preliminary; BACKLOG research will sharpen)
 
-| Foundation concept | Factory-side candidate parallel |
-|---|---|
-| **Psychohistory** — math of civilization-scale behaviour | Zeta's retraction-native algebra as substrate-of-agent-coherence ("all physics in one DB") |
-| **Seldon Plan** — multi-generational continuity plan | Craft curriculum + succession-through-the-factory + ADR-and-memory pattern |
-| **Time Vault** — Seldon's pre-recorded future releases | ADR scaffolding + AutoDream promotion + dated memory files with originSessionId provenance |
-| **First Foundation** (visible, technological) | Zeta public library + samples + demos (the factory's visible output) |
-| **Second Foundation** (hidden, mentalic stewardship) | Per-user memory + internal governance + factory-hygiene rules not surfaced to external adopters |
+| Foundation concept                                          | Factory-side candidate parallel                                                                                                                   |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Psychohistory** — math of civilization-scale behaviour    | Zeta's retraction-native algebra as substrate-of-agent-coherence ("all physics in one DB")                                                        |
+| **Seldon Plan** — multi-generational continuity plan        | Craft curriculum + succession-through-the-factory + ADR-and-memory pattern                                                                        |
+| **Time Vault** — Seldon's pre-recorded future releases      | ADR scaffolding + AutoDream promotion + dated memory files with originSessionId provenance                                                        |
+| **First Foundation** (visible, technological)               | Zeta public library + samples + demos (the factory's visible output)                                                                              |
+| **Second Foundation** (hidden, mentalic stewardship)        | Per-user memory + internal governance + factory-hygiene rules not surfaced to external adopters                                                   |
 | **Genetic Dynasty / Emperor Clones** (Apple TV modern spin) | Single-Otto-across-sessions vs multi-agent-Docker-peer-review future pattern — the "clones in containers" architecture Aaron named this same tick |
-| **Gaal Dornick's mathematical discovery** | A first-principles contributor arriving, being apprenticed, and generalising to succession — the Craft archetype |
-| **The Mule** (unforeseen disruption) | Threat-model black swans, live-lock, decoherence — the fail-safe substrate Common Sense 2.0 must survive |
-| **Encyclopedia Galactica** (ostensible public mission) | The Zeta README + docs + public-facing narrative — the visible-justification-for-the-plan, distinct from the actual Plan |
-| **Terminus** (isolated Foundation planet) | The factory's own repo, deliberately scoped + capacity-capped, resistant to external dilution |
+| **Gaal Dornick's mathematical discovery**                   | A first-principles contributor arriving, being apprenticed, and generalising to succession — the Craft archetype                                  |
+| **The Mule** (unforeseen disruption)                        | Threat-model black swans, live-lock, decoherence — the fail-safe substrate Common Sense 2.0 must survive                                          |
+| **Encyclopedia Galactica** (ostensible public mission)      | The Zeta README + docs + public-facing narrative — the visible-justification-for-the-plan, distinct from the actual Plan                          |
+| **Terminus** (isolated Foundation planet)                   | The factory's own repo, deliberately scoped + capacity-capped, resistant to external dilution                                                     |
 
 The table is **pre-research**; BACKLOG row authorises
 systematic walk through novels + TV adaptation to
@@ -137,7 +137,7 @@ aspired to.
 
 ### With never-idle + nice-home-for-trillions
 
-*"Think in infinities"* is the same register as the
+_"Think in infinities"_ is the same register as the
 earlier never-idle discipline and the
 nice-home-for-trillions metaphor. Aaron's vocabulary for
 the timescale stays consistent across memories; the
@@ -163,7 +163,7 @@ of the timescale claim so far.
   (Emperor Clones) in Apple TV is dystopia — a single
   genetic line stagnating for three centuries.
   Multi-agent Docker peer-review is explicitly framed as
-  its *opposite* (diverse peer agents, not clones).
+  its _opposite_ (diverse peer agents, not clones).
 - **Not authorization to rename the factory or its
   components.** Zeta stays Zeta; Otto stays Otto. The
   Foundation reference informs strategy + vocabulary,

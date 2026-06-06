@@ -180,9 +180,8 @@ clears these on reboot AND via `com.apple.periodic-daily` cleanup
 backgrounded `git push` operations, partially-extracted worktrees,
 captured background-task output files — all evaporate.
 
-**(B) NEVER use `~/Documents/src/repos/Zeta/**` for agent worktrees.**
-Operator's primary repo MUST stay agent-free so operator's
-`git checkout <branch>` operations are unblocked. ANY agent worktree
+**(B) NEVER use `~/Documents/src/repos/Zeta/**`for agent worktrees.**
+Operator's primary repo MUST stay agent-free so operator's`git checkout <branch>` operations are unblocked. ANY agent worktree
 there can hold a branch ref and block operator. Lior's empirical
 pattern (10 worktrees under operator's primary) demonstrates both
 the reboot-survival success AND the operator-blocking failure modes
@@ -191,13 +190,13 @@ simultaneously.
 Empirical anchor 2026-05-28T04:09Z–04:35Z (operator restart) +
 2026-05-28T~04:50Z (operator surfaced residual blocking):
 
-| Worktree location pattern | Outcome on restart | Operator-`main`-blocking? |
-|---|---|---|
-| `/private/tmp/zeta-<task>-<hhmmz>/` (95 instances) | **All 95 pruned** | N/A (didn't survive to block) |
-| `~/Documents/src/repos/Zeta/worktrees/<surface>-*` (multiple, Lior + PR #5696's worktree) | **All survived intact** | **YES — operator surfaced "sometimes locks up where i can't switch to main"** |
-| `~/Documents/src/repos/Zeta/<top-level>-*` (Lior 5 worktrees) | **All survived intact** | **YES — same blocking class** |
-| `~/.gemini/tmp/project/lior-*` (multiple) | **All survived intact** | NO (outside operator's primary) |
-| `~/.zeta/agents/<persona>/<stream>/` (this rule's authoring location) | **Survived intact** (born 2026-05-28T~04:55Z; restart-survivable by inheritance from user-home pattern) | NO (outside operator's primary) — **canonical post-B-0894.3** |
+| Worktree location pattern                                                                 | Outcome on restart                                                                                      | Operator-`main`-blocking?                                                     |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `/private/tmp/zeta-<task>-<hhmmz>/` (95 instances)                                        | **All 95 pruned**                                                                                       | N/A (didn't survive to block)                                                 |
+| `~/Documents/src/repos/Zeta/worktrees/<surface>-*` (multiple, Lior + PR #5696's worktree) | **All survived intact**                                                                                 | **YES — operator surfaced "sometimes locks up where i can't switch to main"** |
+| `~/Documents/src/repos/Zeta/<top-level>-*` (Lior 5 worktrees)                             | **All survived intact**                                                                                 | **YES — same blocking class**                                                 |
+| `~/.gemini/tmp/project/lior-*` (multiple)                                                 | **All survived intact**                                                                                 | NO (outside operator's primary)                                               |
+| `~/.zeta/agents/<persona>/<stream>/` (this rule's authoring location)                     | **Survived intact** (born 2026-05-28T~04:55Z; restart-survivable by inheritance from user-home pattern) | NO (outside operator's primary) — **canonical post-B-0894.3**                 |
 
 The 04:09Z autonomous-loop tick had a substantive tick-shard commit
 (`4f89af885`) sitting on branch

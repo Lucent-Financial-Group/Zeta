@@ -37,6 +37,7 @@ Follow-up: close #5062 with substrate-recoverable cross-link.
 Re-lands backlog row **B-0776** describing a “simplest-first” sequence for wrapping already-deployed cluster substrate components as Zeta plugin interfaces (starting with Redis KV), and regenerates the root backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P1/B-0776-...md` (new P1 backlog row capturing the proposed plugin sequencing and Rank 1 acceptance scope).
 - Updates `docs/BACKLOG.md` to include the new B-0776 entry in the generated index.
 
@@ -44,10 +45,10 @@ Re-lands backlog row **B-0776** describing a “simplest-first” sequence for w
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                            | Description                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0776-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md | New backlog row defining the simplest-first plugin rollout sequence and Rank 1 (Redis KV) acceptance criteria. |
-| docs/BACKLOG.md | Regenerated backlog index including the new B-0776 entry. |
+| docs/BACKLOG.md                                                                                                                                                 | Regenerated backlog index including the new B-0776 entry.                                                      |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T05:18:38Z)
 

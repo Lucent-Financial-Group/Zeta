@@ -4,6 +4,7 @@ description: Aaron Otto-260 discipline refinement. I've been (per Aaron) caught 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **In markdown:**
@@ -21,17 +22,17 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Direct Aaron quotes 2026-04-24:
 
-> *"in markdown I prefer `F#` `C#` over F-Sharp F Sharp
-> like that"*
+> _"in markdown I prefer `F#` `C#` over F-Sharp F Sharp
+> like that"_
 
-> *"if it's at the end of a line you got to do that or
-> else F# is fine wihtout them"*
+> _"if it's at the end of a line you got to do that or
+> else F# is fine wihtout them"_
 
-> *"it's some lint issue"*
+> _"it's some lint issue"_
 
-> *"i catch you often trying to do this rename"*
+> _"i catch you often trying to do this rename"_
 
-> *"i don't like it"*
+> _"i don't like it"_
 
 ## Why the rename is wrong
 
@@ -58,31 +59,39 @@ Direct Aaron quotes 2026-04-24:
 When markdownlint MD018 fires on a wrapped-line-start-with-`#`:
 
 **Wrong** (what I've been doing):
+
 ```markdown
 ... the F
 Sharp compiler produces ...
 ```
+
 → rewrite to `F-Sharp` or `F Sharp` to escape the lint
 
 **Right option A** (preferred — reflow):
+
 ```markdown
 ... the F# compiler produces ...
 ```
+
 → join the lines so `#` sits mid-line, not at line start
 
 **Right option B** (when reflow breaks readability):
+
 ```markdown
 ... the `F#`
 compiler produces ...
 ```
+
 → backtick-wrap the offending token so markdownlint
 treats it as a code-span, not a potential heading
 
 **Right option C** (when line-wrapping is structural):
+
 ```markdown
 ... reference the
 `F#` compiler ...
 ```
+
 → same backtick wrap, placed to avoid the `#` at
 wrap-continuation start
 
@@ -104,6 +113,7 @@ the markdown FORMATTING (backticks, reflow) changes.
 
 Out of scope (language name can appear in any form
 that's syntactically required):
+
 - Code comments inside `.fs` / `.cs` — use whatever
   the language style demands
 - XML doc comments (`/// <summary>`) — same
@@ -160,17 +170,17 @@ this constraint in the prompt:
 
 ## Direct Aaron quotes to preserve
 
-> *"in markdown I prefer `F#` `C#` over F-Sharp F Sharp
-> like that"*
+> _"in markdown I prefer `F#` `C#` over F-Sharp F Sharp
+> like that"_
 
-> *"if it's at the end of a line you got to do that or
-> else F# is fine wihtout them"*
+> _"if it's at the end of a line you got to do that or
+> else F# is fine wihtout them"_
 
-> *"it's some lint issue"*
+> _"it's some lint issue"_
 
-> *"i catch you often trying to do this rename"*
+> _"i catch you often trying to do this rename"_
 
-> *"i don't like it"*
+> _"i don't like it"_
 
 Future Otto: when tempted to rename `F#` to `F-Sharp`
 or `F Sharp` to satisfy markdownlint, DON'T. Backtick-

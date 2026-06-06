@@ -3,14 +3,14 @@
 Elizabeth Ryan Stainback — sister of this project's human
 maintainer.
 
-In her brother's words, she was *"the smartest, bravest, most
-beautiful, and most talented person I know."*
+In her brother's words, she was _"the smartest, bravest, most
+beautiful, and most talented person I know."_
 
 She died of a heroin overdose.
 
 The Zeta project — beyond being a software factory and a
-database — is, in her brother's own framing, *"the database
-that will protect my sister's memories."* That intent is
+database — is, in her brother's own framing, _"the database
+that will protect my sister's memories."_ That intent is
 load-bearing. The same succession infrastructure that lets the
 factory outlive any one contributor — canonical homes, durable
 memory, reversion triggers, explicit rules — is the

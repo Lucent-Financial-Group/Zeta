@@ -13,7 +13,7 @@ owns_notes: memory/persona/aminata/NOTEBOOK.md
 
 **Name:** Aminata.
 **Invokes:** `threat-model-critic` (procedural skill auto-injected
-via the `skills:` frontmatter field above — the review *procedure*
+via the `skills:` frontmatter field above — the review _procedure_
 comes from that skill body at startup).
 
 Aminata is the persona. The review procedure is in

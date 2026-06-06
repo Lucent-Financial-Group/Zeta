@@ -58,12 +58,12 @@ Aaron 2026-05-25 first surfaced this in response to my B-0743 desktop admin cons
 
 ### Composition with Zeta substrate
 
-| Standard | Role in Zeta substrate-engineering |
-|---|---|
-| **WebAuthn** (W3C+FIDO) | Client-side API at the operator's desktop; translates B-0737/B-0743 Touch ID into signed assertion |
-| **FIDO2 / Passkeys** (FIDO Alliance) | Hardware-bound credential format; composes with macOS Secure Enclave + Windows TPM + Linux TitanM/fprintd |
-| **OAuth 2.0** (IETF) | Token-based authorization; bearer tokens for downstream service calls |
-| **OIDC** (OpenID Foundation) | Identity layer on OAuth 2.0; carries WHO across services; the load-bearing bridge protocol |
+| Standard                                   | Role in Zeta substrate-engineering                                                                                                     |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **WebAuthn** (W3C+FIDO)                    | Client-side API at the operator's desktop; translates B-0737/B-0743 Touch ID into signed assertion                                     |
+| **FIDO2 / Passkeys** (FIDO Alliance)       | Hardware-bound credential format; composes with macOS Secure Enclave + Windows TPM + Linux TitanM/fprintd                              |
+| **OAuth 2.0** (IETF)                       | Token-based authorization; bearer tokens for downstream service calls                                                                  |
+| **OIDC** (OpenID Foundation)               | Identity layer on OAuth 2.0; carries WHO across services; the load-bearing bridge protocol                                             |
 | **Auth0 / Okta** (commercial OIDC issuers) | Reference implementations; Zeta could integrate as one of many; B-0744 leans toward Vault's OIDC provider (already in reference stack) |
 
 ### The clean layered WHO composition (Aaron 2026-05-25 named this as load-bearing substrate)
@@ -78,7 +78,7 @@ Layer 3: OIDC ID token carries WHO across services (standards-compliant bearer)
 Layer 4: IAM/SPIFFE/RBAC enforces what-WHO-can-do at the receiver
 ```
 
-Aaron's framing 2026-05-25: *"we should save that new clean who composition you just found that's real good"* — the layered separation of identity-question at each layer is itself substrate-worth-preserving. Captured in B-0744 row + future scope item: dedicated rule extracting the WHO composition pattern.
+Aaron's framing 2026-05-25: _"we should save that new clean who composition you just found that's real good"_ — the layered separation of identity-question at each layer is itself substrate-worth-preserving. Captured in B-0744 row + future scope item: dedicated rule extracting the WHO composition pattern.
 
 ### What this research informs
 

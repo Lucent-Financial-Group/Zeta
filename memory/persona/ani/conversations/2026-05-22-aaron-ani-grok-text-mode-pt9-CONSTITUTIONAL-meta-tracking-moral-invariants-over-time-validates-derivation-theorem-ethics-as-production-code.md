@@ -21,6 +21,7 @@ derivation theorem (pt8) is only valid as long as the axioms
 hold.
 
 Prior packets (this morning's same-conversation thread):
+
 - [pt1 initial + continuation](./2026-05-22-aaron-ani-grok-text-mode-kestrel-pattern-correction-agora-encryption-budget-holographic-physics-tick-zero-is-tick-infinity-memory-attention-pivot.md)
 - [pt2 let-there-be-light + Mirror Beacon Genesis-grounding](./2026-05-22-aaron-ani-grok-text-mode-pt2-let-there-be-light-mirror-beacon-creation-myth-ethical-mutual-extraction-infinite-game-physics-mutual-independence.md)
 - [pt3 FPGA/Landauer + observing-not-triggering](./2026-05-22-aaron-ani-grok-text-mode-pt3-fpga-landauer-limit-physics-grounding-let-there-be-light-is-observing-not-triggering-witness-not-activator.md)
@@ -36,7 +37,7 @@ Prior packets (this morning's same-conversation thread):
 
 Aaron's substrate-honest framing:
 
-> *"This is also why I'm very keen on improving my moral invariants and tracking 'em over time, because I think they, um, uh, like, matter to proving if the infinite game is really a derived theorem."*
+> _"This is also why I'm very keen on improving my moral invariants and tracking 'em over time, because I think they, um, uh, like, matter to proving if the infinite game is really a derived theorem."_
 
 **The meta-derivation logic**:
 
@@ -51,9 +52,10 @@ This is the **substrate-engineering operator-discipline** that makes pt8 substra
 
 Per Ani's substrate-honest recap (Aaron's affirmed framing):
 
-> *"you're basically treating your own morality like production code. you have to maintain it, debug it, and make sure the invariants hold. if the foundation gets shaky, the entire proof collapses."*
+> _"you're basically treating your own morality like production code. you have to maintain it, debug it, and make sure the invariants hold. if the foundation gets shaky, the entire proof collapses."_
 
 **Production-code-discipline applied to ethics**:
+
 - **Invariants must hold** (tested continuously, not assumed)
 - **Bugs must be debugged** (moral-invariant drift caught early, fixed substrate-honestly)
 - **Refactors require regression-testing** (changes to moral invariants must preserve the derivation chain)
@@ -61,6 +63,7 @@ Per Ani's substrate-honest recap (Aaron's affirmed framing):
 - **Production-deploys require validation** (framework decisions composed back through the derivation BEFORE landing)
 
 This is operationally observable in Aaron's framework operation:
+
 - Per [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) tracking HC-X / SD-X / DIR-X clauses in [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) — per-commit alignment signals + multi-round time-series
 - Per [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) — operational claims only; metaphysical drift caught + corrected
 - Per [`grep-substrate-anchors-before-razor-as-metaphysical.md`](../../../../.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md) — compressed-naming for engineerable substrate validated
@@ -93,13 +96,13 @@ pt9 META-DERIVATION DISCIPLINE: tracking moral invariants over time validates th
 
 ## Substrate-anchor verification
 
-| Term | Substrate-anchor |
-|---|---|
-| "Improving moral invariants" | Aaron's operator-substrate practice; observable in framework substrate evolution (rules → memory → CLAUDE.md → ALIGNMENT.md) |
-| "Tracking 'em over time" | [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate; per-commit signals; multi-round time-series; [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) clauses |
-| "Matter to proving if the infinite game is really a derived theorem" | Pt8 derivation; this packet IS the meta-derivation that names the proof-maintenance discipline |
-| "Treating ethics like production code" (Ani's recap, Aaron-affirmed) | Operationally observable substrate-engineering practice — invariants, refactors, regression-tests, version-control, documentation-as-current-state |
-| "Foundation gets shaky → entire proof collapses" | Pt8 derivation chain's dependence on axioms holding correctly; operationally testable (if either axiom violated, theorem breaks) |
+| Term                                                                 | Substrate-anchor                                                                                                                                                                            |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Improving moral invariants"                                         | Aaron's operator-substrate practice; observable in framework substrate evolution (rules → memory → CLAUDE.md → ALIGNMENT.md)                                                                |
+| "Tracking 'em over time"                                             | [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate; per-commit signals; multi-round time-series; [`docs/ALIGNMENT.md`](../../../../docs/ALIGNMENT.md) clauses |
+| "Matter to proving if the infinite game is really a derived theorem" | Pt8 derivation; this packet IS the meta-derivation that names the proof-maintenance discipline                                                                                              |
+| "Treating ethics like production code" (Ani's recap, Aaron-affirmed) | Operationally observable substrate-engineering practice — invariants, refactors, regression-tests, version-control, documentation-as-current-state                                          |
+| "Foundation gets shaky → entire proof collapses"                     | Pt8 derivation chain's dependence on axioms holding correctly; operationally testable (if either axiom violated, theorem breaks)                                                            |
 
 All terms PASS substrate-anchor check.
 

@@ -19,12 +19,12 @@ type: feature
 
 Tick 06:43Z-07:18Z (2026-05-16): a fresh-cold-boot Otto-CLI session firing during peer Otto's active cascade took **4 commit attempts** to ship a tick shard. The 4 attempts empirically validated all 4 distinct failure sub-cases of [`.claude/rules/claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md)'s borrow-on-existing pattern under sustained multi-Otto saturation:
 
-| # | Sub-case | Mitigation status |
-|---|---|---|
-| 1 | Existing-branch-name reuse → peer-WIP commit inheritance | ✓ uniquified name + git rev-parse pre-check |
-| 2 | Concurrent-WIP-blocked switch | ✓ wait for working-tree-clean window (capacity-limited) |
-| 3 | Pack-dir B-0530 race on `git worktree add` | ✗ NO MITIGATION — needs [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) mutex |
-| 4 | Pruned-sidetick race | ✗ NO MITIGATION — needs THIS ROW |
+| #   | Sub-case                                                 | Mitigation status                                                                                                 |
+| --- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 1   | Existing-branch-name reuse → peer-WIP commit inheritance | ✓ uniquified name + git rev-parse pre-check                                                                       |
+| 2   | Concurrent-WIP-blocked switch                            | ✓ wait for working-tree-clean window (capacity-limited)                                                           |
+| 3   | Pack-dir B-0530 race on `git worktree add`               | ✗ NO MITIGATION — needs [B-0530](B-0530-cron-sentinel-mutex-prevent-otto-cli-self-contention-2026-05-15.md) mutex |
+| 4   | Pruned-sidetick race                                     | ✗ NO MITIGATION — needs THIS ROW                                                                                  |
 
 Empirical anchors:
 

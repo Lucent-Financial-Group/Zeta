@@ -26,8 +26,8 @@ root's ranges against the current registry and rewrites `./ace.lock` — the car
 
 Slice 5.3's normal `ace install` already regenerates the lock (solve-fresh-then-write), so
 a separate `update` verb is pure ergonomics, not a capability gap. Keep slice 5.3 to
-write + `--frozen`-replay. Operator: *"everything we skipped lets slice off for further
-enhancements."*
+write + `--frozen`-replay. Operator: _"everything we skipped lets slice off for further
+enhancements."_
 
 ## Scope sketch
 

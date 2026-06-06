@@ -142,7 +142,7 @@ per the project convention.
 
 **CI risk:** `actionlint` + `shellcheck` gates will exercise
 the new workflow files. Per `c82030d` commit message:
-*"actionlint clean"* was verified at authoring time; re-run
+_"actionlint clean"_ was verified at authoring time; re-run
 locally before push.
 
 ---
@@ -300,15 +300,15 @@ queue is on, because they touch overlapping files.
 ## Per-batch sizing
 
 | Batch | Effort | Files | LoC (est.) | Risk |
-|---|---|---|---|---|
-| 1 | S | 20 | 2000-3000 | low |
-| 2 | M | 8 | 500-800 | med |
-| 3 | M | 12 | 1500-2000 | med |
-| 4 | S | 7 | 400-600 | low |
-| 5 | S | 1 | 288 | low |
-| 6a | M | 12 | 1000-2000 | med |
-| 6b | L | 10 | 1500-3000 | high |
-| 6c | L | 3 | 500-1000 | high |
+| ----- | ------ | ----- | ---------- | ---- |
+| 1     | S      | 20    | 2000-3000  | low  |
+| 2     | M      | 8     | 500-800    | med  |
+| 3     | M      | 12    | 1500-2000  | med  |
+| 4     | S      | 7     | 400-600    | low  |
+| 5     | S      | 1     | 288        | low  |
+| 6a    | M      | 12    | 1000-2000  | med  |
+| 6b    | L      | 10    | 1500-3000  | high |
+| 6c    | L      | 3     | 500-1000   | high |
 
 Totals match the 9782 insertions + 862 deletions observed
 in the full diff, modulo overlaps with already-landed
@@ -330,8 +330,8 @@ content.
 ## Meta-win
 
 This landing plan is itself a meta-win pattern:
-*speculative work accumulated during wait-on-build, the
-landing plan drains it into main when builds clear*. The
+_speculative work accumulated during wait-on-build, the
+landing plan drains it into main when builds clear_. The
 plan doc lives under `docs/research/` so it survives the
 speculative branch being pruned after all batches land.
 Parallel to `meta-wins-log.md` but for landable-work-items

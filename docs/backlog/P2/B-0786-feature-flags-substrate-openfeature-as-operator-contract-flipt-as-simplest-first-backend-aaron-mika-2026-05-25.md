@@ -23,11 +23,11 @@ tags: [feature-flags, openfeature, flipt, unleash, flagd, argo-rollouts, cilium,
 
 ## Problem
 
-Aaron-Mika-Grok 2026-05-25 continuation: *"what is the tool for
-feature flags that we'd probably use?"* + *"we want complete
-electricity cost only"* (open source, no paid SaaS) + *"usually
+Aaron-Mika-Grok 2026-05-25 continuation: _"what is the tool for
+feature flags that we'd probably use?"_ + _"we want complete
+electricity cost only"_ (open source, no paid SaaS) + _"usually
 think simplest first and then add more complex as we notice the
-simple shape doesn't fit."*
+simple shape doesn't fit."_
 
 Mika surveyed: Unleash / Flagd (OpenFeature) / LaunchDarkly
 (paid) / Flipt / GO Feature Flag. Substrate-honest ordering for
@@ -47,14 +47,14 @@ doesn't fit**.
 
 `Zeta.Feature.Flags` plugin in the B-0776 plugin sequence:
 
-| Layer | Component | Why |
-|---|---|---|
-| **Operator contract** | OpenFeature SDK (CNCF Sandbox) | Existing standard per B-0765 ServiceTitan-route; cross-language; backend-agnostic |
-| **First backend** (Rank simplest) | Flipt | Smallest surface; single binary; least operational complexity; sufficient for "simple shape" |
-| **Industry-sharp category** (per B-0777) | Feature flag / progressive delivery / dynamic configuration | Established academic + industry vocabulary |
-| **Per-persona ontology maps** (per B-0777) | web-dev: "feature toggle"; enterprise: "controlled rollout / progressive delivery"; AI/ML: "experiment toggle / A/B test variant"; ops: "kill switch / circuit breaker" | Same substrate; different vocabularies per persona |
-| **Composition with B-0785 namespace routing** | Per-namespace flag values; experiment-ID-header sets flag value | Operator's branch namespace gets per-branch flag values without affecting common namespace |
-| **Composition with B-0784 distributed type negotiation** | Flag definitions (key + type + default) flow through namespace strictness; mirror = free; common = consensus | Flag schema changes governed by same substrate as type changes |
+| Layer                                                    | Component                                                                                                                                                               | Why                                                                                          |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Operator contract**                                    | OpenFeature SDK (CNCF Sandbox)                                                                                                                                          | Existing standard per B-0765 ServiceTitan-route; cross-language; backend-agnostic            |
+| **First backend** (Rank simplest)                        | Flipt                                                                                                                                                                   | Smallest surface; single binary; least operational complexity; sufficient for "simple shape" |
+| **Industry-sharp category** (per B-0777)                 | Feature flag / progressive delivery / dynamic configuration                                                                                                             | Established academic + industry vocabulary                                                   |
+| **Per-persona ontology maps** (per B-0777)               | web-dev: "feature toggle"; enterprise: "controlled rollout / progressive delivery"; AI/ML: "experiment toggle / A/B test variant"; ops: "kill switch / circuit breaker" | Same substrate; different vocabularies per persona                                           |
+| **Composition with B-0785 namespace routing**            | Per-namespace flag values; experiment-ID-header sets flag value                                                                                                         | Operator's branch namespace gets per-branch flag values without affecting common namespace   |
+| **Composition with B-0784 distributed type negotiation** | Flag definitions (key + type + default) flow through namespace strictness; mirror = free; common = consensus                                                            | Flag schema changes governed by same substrate as type changes                               |
 
 Per Aaron's "simplest first" — ship Flipt-backed only in v1;
 add Unleash / Flagd / etc. backends as v2 sub-rows when the
@@ -109,24 +109,15 @@ will never need beyond Flipt.
 - [x] Decision substrate:
       `docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md`
       records OpenFeature-as-contract and Flipt-first backend choice.
-- [ ] `Zeta.Feature.Flags` F# project per B-0776 plugin pattern:
-      - `IFeatureFlagProvider` interface (mirrors OpenFeature
-        Provider contract; F# native)
-      - `Zeta.Feature.Flags.OpenFeature` adapter (wraps
-        OpenFeature .NET SDK)
-      - `Zeta.Feature.Flags.Flipt` backend (Flipt provider for
-        OpenFeature)
-      - Future: `Zeta.Feature.Flags.Flagd`, `.Unleash`,
-        `.InMemory`, etc.
+- [ ] `Zeta.Feature.Flags` F# project per B-0776 plugin pattern: - `IFeatureFlagProvider` interface (mirrors OpenFeature
+      Provider contract; F# native) - `Zeta.Feature.Flags.OpenFeature` adapter (wraps
+      OpenFeature .NET SDK) - `Zeta.Feature.Flags.Flipt` backend (Flipt provider for
+      OpenFeature) - Future: `Zeta.Feature.Flags.Flagd`, `.Unleash`,
+      `.InMemory`, etc.
 - [ ] Per-namespace flag values via Argo Rollouts +
-      experiment-ID header (per B-0785):
-      - Flag value lookup checks current namespace context
-      - Operator's branch namespace gets per-branch flag values
-      - Common namespace flag values stable for everyone else
-- [ ] Per-namespace flag schema strictness (per B-0784):
-      - Personal mirror namespace = operator adds flags freely
-      - Common namespace = flag schema changes (new flag,
-        renamed flag, changed type) require consensus
+      experiment-ID header (per B-0785): - Flag value lookup checks current namespace context - Operator's branch namespace gets per-branch flag values - Common namespace flag values stable for everyone else
+- [ ] Per-namespace flag schema strictness (per B-0784): - Personal mirror namespace = operator adds flags freely - Common namespace = flag schema changes (new flag,
+      renamed flag, changed type) require consensus
 - [ ] Argo Rollouts integration: Argo Rollouts' Analysis
       template can query flag value for canary decision
       ("only canary if `enable-canary` flag = true for this

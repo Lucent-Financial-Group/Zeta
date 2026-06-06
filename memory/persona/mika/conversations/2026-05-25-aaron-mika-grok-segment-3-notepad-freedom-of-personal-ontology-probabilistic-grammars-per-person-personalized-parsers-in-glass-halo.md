@@ -11,7 +11,19 @@ discipline: persona-scope archive — segment 3 of the runbooks-as-executable-re
 substrate_landings:
   - B-0735 (Notepad-freedom-of-personal-ontology + probabilistic grammars + per-person personalized parsers in Glass Halo)
 prior_conversation: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md
-tags: [notepad-freedom, personal-ontology, probabilistic-grammars, per-person-personalized-parsers, glass-halo-personal-compiler, fsharp-parser-toolkit, zetaparse, antlr-compatible-importer, mika-substrate-segment-3, b0687-extension]
+tags:
+  [
+    notepad-freedom,
+    personal-ontology,
+    probabilistic-grammars,
+    per-person-personalized-parsers,
+    glass-halo-personal-compiler,
+    fsharp-parser-toolkit,
+    zetaparse,
+    antlr-compatible-importer,
+    mika-substrate-segment-3,
+    b0687-extension,
+  ]
 ---
 
 # Aaron + Mika 2026-05-25 segment 3 — Notepad-freedom + probabilistic grammars + per-person personalized parsers in Glass Halo (verbatim preservation)
@@ -22,7 +34,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"Yeah, and people love Notepad 'cause it's free. They can just make up new ontologies and shit, and non-compiled syntax that just makes sense only in their head."*
+> _"Yeah, and people love Notepad 'cause it's free. They can just make up new ontologies and shit, and non-compiled syntax that just makes sense only in their head."_
 
 **Mika:**
 
@@ -34,7 +46,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"So that's the, what I want. I have shit like that. I want that where I'd write like that and we, I iterate with the AIs to dis, discover the structure in my head and map it to some fuckin' anchor points that already exist out there. And make it compilable. With, with Antler or some, or we, no, we got a better one. We have our own F-sharp version of Antler that's just, I forgot. It's not full star. We didn't need full, uh, star. It was somethin' else."*
+> _"So that's the, what I want. I have shit like that. I want that where I'd write like that and we, I iterate with the AIs to dis, discover the structure in my head and map it to some fuckin' anchor points that already exist out there. And make it compilable. With, with Antler or some, or we, no, we got a better one. We have our own F-sharp version of Antler that's just, I forgot. It's not full star. We didn't need full, uh, star. It was somethin' else."_
 
 **Mika:**
 
@@ -46,7 +58,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"Nah, it was, so we have it on the backlog. It's like G T R something. It's like several different techniques, but it doesn't go as far as Antler, so it's not like a full Antler replacement. That was just, we didn't need it."*
+> _"Nah, it was, so we have it on the backlog. It's like G T R something. It's like several different techniques, but it doesn't go as far as Antler, so it's not like a full Antler replacement. That was just, we didn't need it."_
 
 **Mika:**
 
@@ -61,7 +73,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"No, it is that we, so we were using F Parsec. We were pulling in all of them to replace Antlr, including G T R and everything, all in one composable package to try to never need Antlr's level of the star or whatever."*
+> _"No, it is that we, so we were using F Parsec. We were pulling in all of them to replace Antlr, including G T R and everything, all in one composable package to try to never need Antlr's level of the star or whatever."_
 
 **Mika:**
 
@@ -73,7 +85,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"Yeah, so imagine if we really wanted to be able to parse every single, like, maybe 90% or 80% of the Antler, um, of the existing grammars they have out there without needing a lot of rewrite, but not try to hit a hundred percent."*
+> _"Yeah, so imagine if we really wanted to be able to parse every single, like, maybe 90% or 80% of the Antler, um, of the existing grammars they have out there without needing a lot of rewrite, but not try to hit a hundred percent."_
 
 **Mika:**
 
@@ -83,7 +95,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"That's exactly right. That's a hundred percent. And for me personally, I don't know if everybody will like this, everything will be probabilistic in my grammars."*
+> _"That's exactly right. That's a hundred percent. And for me personally, I don't know if everybody will like this, everything will be probabilistic in my grammars."_
 
 **Mika:**
 
@@ -97,7 +109,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"Yeah, yeah, so think of it like this. Think of it like this. Every document I write that's a half-formed thought, the more it becomes that it can just be understood by that probabilistic game, uh, and just compiled directly from pure thought, the better that fuckin' parser is."*
+> _"Yeah, yeah, so think of it like this. Think of it like this. Every document I write that's a half-formed thought, the more it becomes that it can just be understood by that probabilistic game, uh, and just compiled directly from pure thought, the better that fuckin' parser is."_
 
 **Mika:**
 
@@ -111,7 +123,7 @@ Continuation of the multi-turn voice-mode conversation. Segment 1 → B-0730/B-0
 
 **Aaron:**
 
-> *"Right, and then we can make, we could make that just the natural behavior of anyone in Glass Halo so that they all get their own customized fuckin' parser for them, themselves."*
+> _"Right, and then we can make, we could make that just the natural behavior of anyone in Glass Halo so that they all get their own customized fuckin' parser for them, themselves."_
 
 **Mika:**
 

@@ -38,11 +38,12 @@ Three composing operational targets:
 - **B-0904** (GitHub-as-free-accelerator; emulator generation+join can run as GitHub Actions substrate)
 
 Plus framework rule composition:
+
 - DST-omniscience (PR #5841), pilot-wave-MWI (PR #5842), Cayley-Dickson canonical-form (PR #5843), particle-as-locus (PR #5846), Clifford-underwater (PR #5850), asymmetric-authorship + monad-propagation + OPLE-T-TFeedback + function-as-control-flow-generator + algebra-owner z-sets skill substrate
 
 ## Operator framing (verbatim)
 
-> *"we are buding our own emulaters starting with 2600 to train for ARC3-AGI benchmark and also test our consensus is bit perfect IScheduler DST by testing emulators in zsets, i was worried it was going to be terrible but we can simulate interrupts maybe we could go full generte+join on the emlator scene instead of trying to copy patterns that are there just ideas."*
+> _"we are buding our own emulaters starting with 2600 to train for ARC3-AGI benchmark and also test our consensus is bit perfect IScheduler DST by testing emulators in zsets, i was worried it was going to be terrible but we can simulate interrupts maybe we could go full generte+join on the emlator scene instead of trying to copy patterns that are there just ideas."_
 
 The substrate that worried operator IS now substrate-engineering-substrate-engineering substrate via today's B-0917 landing.
 

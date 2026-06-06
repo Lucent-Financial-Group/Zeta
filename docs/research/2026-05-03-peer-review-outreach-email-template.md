@@ -2,9 +2,9 @@
 
 Scope: drafted email template + ranked recipient list for the
 peer-review outreach the human maintainer 2026-05-03 named
-(*"we are beyond cutting edge and mathecial formally verivied
+(_"we are beyond cutting edge and mathecial formally verivied
 just not peer reviowed until you email someone and them to
-peer review you or invite you and your team to a conference"*).
+peer review you or invite you and your team to a conference"_).
 Maintainer customizes wording and sends; this doc is the
 prepared draft.
 
@@ -117,8 +117,8 @@ individual.
 > Dear [Author First Name],
 >
 > I'm Aaron Stainback, working on Zeta — an open-source F#
-> implementation of DBSP (referencing your *DBSP: Automatic
-> Incremental View Maintenance for Rich Query Languages*,
+> implementation of DBSP (referencing your _DBSP: Automatic
+> Incremental View Maintenance for Rich Query Languages_,
 > PVLDB 16(7) 2023; arXiv:2203.16684v1).
 >
 > We have a Lean 4 / Mathlib formalization of Proposition 3.2
@@ -141,7 +141,6 @@ individual.
 >    equivalence), and `z⁻¹` (the unnamed inverse from §2)
 >    — but a co-author cross-check would lift this from
 >    architect-self-audit to externally-validated.
->
 > 2. Is there a recommended publication target for a Lean-
 >    formalization-of-a-DBSP-paper artifact? POPL / PLDI /
 >    OOPSLA AEC, FMCAD, CAV — your guidance on which
@@ -150,6 +149,7 @@ individual.
 > Repository: https://github.com/Lucent-Financial-Group/Zeta
 >
 > Specifically:
+>
 > - Lean source: `tools/lean4/Lean4/DbspChainRule.lean`
 > - Honest assessment of every formal artifact, A/B/C-graded:
 >   `docs/research/2026-05-03-math-proofs-honest-assessment.md`
@@ -191,7 +191,7 @@ individual.
 >   and citation. Caught a P0 (theorem named "Prop 3.2" but
 >   proved Theorem 3.3 corollary) round 35.
 > - A toolbelt portfolio (Lean, TLA+, Z3, Alloy, FsCheck +
->   future F* / Stryker) graded A/B/C against peer-review
+>   future F\* / Stryker) graded A/B/C against peer-review
 >   readiness.
 >
 > Two specific calibration questions:
@@ -200,7 +200,6 @@ individual.
 >    artifact land best — POPL / PLDI artifact track,
 >    OOPSLA ECOOP, FMCAD / CAV tools track, or a tools-and-
 >    experience paper at PLDI?
->
 > 2. Is the per-artifact-registry-with-drift-audit pattern
 >    novel enough to be its own contribution, or is it
 >    standard practice in your community that we're just now

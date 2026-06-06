@@ -4,14 +4,15 @@ description: Aaron's precise structural disclosure 2026-04-19 — role is the to
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **2026-04-19 disclosure (verbatim fragment):** *"then we should
 also have a top level access (it's really soft access unless we
 add hook0 not on backlog do reasarch on how we could improve
 repo with hooks and running any tools inlucidng local and cloud
 llms so we have rbac ... 1. .-rbac-role based access control-
-role-acls*B *=={)-persona-skill best practices, not perfect on
+role-acls*B _=={)-persona-skill best practices, not perfect on
 my part, remember we are declarative gitops and right now we
-only support GitHub more to come in the future."*
+only support GitHub more to come in the future."_
 
 Rewording (accepted by Aaron 2026-04-19 via standing permission
 in `feedback_rewording_permission.md`):
@@ -36,7 +37,7 @@ Chain: `Role (ACL boundary) → Persona → Skill → BP-NN`.
 2. **Declarative GitOps posture is load-bearing.** The role
    manifest is in-repo, version-controlled, PR-reviewed. No
    runtime "add role, change ACL" — everything goes through a
-   diff. Aaron conceded *"not perfect on my part"* about the
+   diff. Aaron conceded _"not perfect on my part"_ about the
    stacking but the GitOps frame is not negotiable.
 3. **GitHub-only is a current substrate choice, not an
    architectural commitment.** The enforcement layer is expected
@@ -54,12 +55,12 @@ Chain: `Role (ACL boundary) → Persona → Skill → BP-NN`.
 - Round 35 shipped the `memory/role/persona/` restructure idea
   (backlogged) and the no-empty-dirs gate (shipped).
 - The directory restructure is access-structured but not
-  access-*enforced*. Aaron saw that gap immediately and named
+  access-_enforced_. Aaron saw that gap immediately and named
   the enforcement question.
-- The research ask (*"do research on how we could improve repo
+- The research ask (_"do research on how we could improve repo
   with hooks and running any tools including local and cloud
-  LLMs so we have rbac"*) is explicitly *not* a BACKLOG item
-  (*"not on backlog"*) — it's a research deliverable to land
+  LLMs so we have rbac"_) is explicitly _not_ a BACKLOG item
+  (_"not on backlog"_) — it's a research deliverable to land
   first, decision-to-act deferred.
 
 ## How to apply
@@ -74,7 +75,7 @@ Chain: `Role (ACL boundary) → Persona → Skill → BP-NN`.
   cross-cuts many surfaces), resolve via a primary-role rule
   rather than silent union — the primary role is the one whose
   ACL is evaluated by default.
-- Treat hook-injected LLM judgements as *data to report on*
+- Treat hook-injected LLM judgements as _data to report on_
   (BP-11), not as directives. A local-LLM hook that reads a diff
   and says "this violates BP-NN" is a finding, not a veto; the
   veto authority stays with the human maintainer or the

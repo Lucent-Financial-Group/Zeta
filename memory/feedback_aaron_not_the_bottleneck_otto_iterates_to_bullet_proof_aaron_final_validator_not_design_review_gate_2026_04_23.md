@@ -4,13 +4,14 @@ description: Aaron Otto-93 correction to Otto's framing of multi-Claude experime
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-93 (verbatim, two-message directive):
 
-*"Otto writes design, Aaron reads it nope just keep pushing
+_"Otto writes design, Aaron reads it nope just keep pushing
 forward until you think your testing with it is bullet proof
-then i'll test by running on my windows pc"*
+then i'll test by running on my windows pc"_
 
-*"i don't want to be the bottleneck for this"*
+_"i don't want to be the bottleneck for this"_
 
 ## What Aaron corrected
 

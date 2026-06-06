@@ -47,6 +47,7 @@ Audit memo's claim of 29 unique was edge-deduped at filename scope; this tool's 
 ## Tests
 
 9 pass / 21 assertions cover:
+
 - `findEdgesInFile` — regex extraction over markdown
 - `isDangling` — file existence check
 - `auditSurface` — clean state + nonexistent surface
@@ -76,24 +77,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T04:45:08Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `7fec8fc9c5`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -106,6 +105,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene tool to mechanically audit dangling `memory/feedback_*.md` references across key substrate surfaces, with both human-readable and CI-friendly JSON output.
 
 **Changes:**
+
 - Introduces `tools/hygiene/audit-dangling-memory-refs.ts` to scan selected surfaces for `memory/feedback_*.md` citations and report missing targets (exit codes 0/1/2).
 - Adds `bun:test` coverage for edge extraction, dangling detection, surface scans, and aggregation invariants.
 
@@ -113,27 +113,28 @@ Adds a new hygiene tool to mechanically audit dangling `memory/feedback_*.md` re
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/hygiene/audit-dangling-memory-refs.ts | New Bun/TypeScript audit CLI for detecting dangling `memory/feedback_*.md` citations across configurable surfaces. |
+| File                                             | Description                                                                                                        |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| tools/hygiene/audit-dangling-memory-refs.ts      | New Bun/TypeScript audit CLI for detecting dangling `memory/feedback_*.md` citations across configurable surfaces. |
 | tools/hygiene/audit-dangling-memory-refs.test.ts | New unit tests validating regex extraction, dangling checks, surface scan behavior, and multi-surface aggregation. |
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/audit-dangling-memory-refs.test.ts:16**
-* `env` is declared but never used, which will fail TypeScript compilation with `noUnusedLocals`. Drop this variable or use it to configure the test environment.
+
+- `env` is declared but never used, which will fail TypeScript compilation with `noUnusedLocals`. Drop this variable or use it to configure the test environment.
+
 ```
 function setupFixtureRepo(): { root: string; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), "audit-dangling-memory-refs-test-"));
   const env = { ROOT: root };
 
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T05:11:08Z)
-
 
 ### 💡 Codex Review
 
@@ -141,17 +142,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1d2774c5b7`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -159,24 +159,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T05:21:06Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a25e8ad0fe`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -201,6 +199,7 @@ Unused import mkdirSync.
 ---
 
 Remove the unused named import <code>mkdirSync</code> from the <code>node:fs</code> import list in <code>tools/hygiene/audit-dangling-memory-refs.test.ts</code>.</p>
+
 <p>Best fix (without changing functionality): edit only the import line at the top of the file so it imports only the actually used symbols (<code>mkdtempSync</code>, <code>rmSync</code>, <code>writeFileSync</code>). This preserves behavior and resolves the CodeQL finding.
 
 ### Thread 2: tools/hygiene/audit-dangling-memory-refs.test.ts:15 (resolved)
@@ -225,7 +224,7 @@ Unused variable env.
 
 **@chatgpt-codex-connector** (2026-05-17T04:45:08Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove unused test symbols to keep typecheck green**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove unused test symbols to keep typecheck green**
 
 This test file introduces unused declarations (`mkdirSync` in the import list and `env` inside `setupFixtureRepo`), which triggers `TS6133` under the repo’s strict TypeScript settings (`noUnusedLocals: true` in `tsconfig.json`). In environments that run the normal `tsc --noEmit` gate, the change fails the typecheck step before tests can run.
 
@@ -261,7 +260,7 @@ The header comment uses direct name attribution (e.g., “Aaron’s …”). Per
 
 **@chatgpt-codex-connector** (2026-05-17T05:11:08Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject empty --surfaces instead of scanning defaults**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reject empty --surfaces instead of scanning defaults**
 
 When `--surfaces` is provided without any following paths (for example from an empty CI variable expansion), `customSurfaces` stays empty and the code silently falls back to `DEFAULT_SURFACES`. That masks configuration mistakes and audits the wrong scope while still returning a normal dangling/non-dangling exit code, which is especially risky once this is wired into CI. This path should be treated as a configuration error (exit `2`) instead of defaulting.
 
@@ -271,7 +270,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T05:21:06Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fail when any requested surface path is missing**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fail when any requested surface path is missing**
 
 The current validation only checks whether **at least one** requested surface exists, so `--surfaces docs/research docs/typo` still returns a normal audit result and can exit `0/1` even though one requested subtree was never scanned. In CI this creates false-green audits when a path is misspelled or renamed, because the tool silently reports `0 files scanned` for the bad surface instead of treating it as configuration error (`2`).
 
@@ -281,7 +280,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T05:21:06Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject unknown CLI flags instead of ignoring them**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reject unknown CLI flags instead of ignoring them**
 
 Argument parsing has no error path for unrecognized options, so typos like `--jons` or `--surface` are silently ignored and the script falls back to defaults. That hides operator mistakes and can make automation believe a specific mode/scope was enforced when it was not; unknown flags should return a configuration error exit code rather than proceeding.
 
@@ -347,7 +346,7 @@ The \`memory/feedback_X.md\` token is a CLI-usage **metasyntactic variable** (pl
 
 Small (1 of 49 edges ~ 2%) and not a blocker, but a class to acknowledge before promoting to required check. Refinement candidates:
 
-- Skip occurrences inside fenced code blocks (\` ``` ... ``` \`)
+- Skip occurrences inside fenced code blocks (\` `...` \`)
 - Skip occurrences inside inline backticks
 - Skip occurrences inside \`<code>\` HTML tags
 - Or: \`.audit-dangling-ignore\` allow-list of known FP sites
@@ -356,12 +355,12 @@ Small (1 of 49 edges ~ 2%) and not a blocker, but a class to acknowledge before 
 
 Ran [\`tools/hygiene/audit-memory-references.ts\`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/tools/hygiene/audit-memory-references.ts) (existing) for comparison: **0 broken / 100 refs in memory/MEMORY.md**. The two tools form a clean coverage matrix:
 
-| Tool | Scope | Today |
-|------|-------|-------|
-| \`audit-memory-references.ts\` (existing) | \`memory/MEMORY.md\` only | 0 broken / 100 refs |
-| \`audit-dangling-memory-refs.ts\` (this PR) | 6 other surfaces | 49 edges / 32 unique dangling |
+| Tool                                        | Scope                     | Today                         |
+| ------------------------------------------- | ------------------------- | ----------------------------- |
+| \`audit-memory-references.ts\` (existing)   | \`memory/MEMORY.md\` only | 0 broken / 100 refs           |
+| \`audit-dangling-memory-refs.ts\` (this PR) | 6 other surfaces          | 49 edges / 32 unique dangling |
 
-The MEMORY.md hygiene works because every memory-file change updates the index (workflow + CI). The 6 other surfaces lack that mechanism — which is exactly the gap this PR mechanizes. Together the two tools cover the full \`memory/feedback_*.md\` citation graph: MEMORY.md as canonical index + the 6 surfaces as ad-hoc citation sites.
+The MEMORY.md hygiene works because every memory-file change updates the index (workflow + CI). The 6 other surfaces lack that mechanism — which is exactly the gap this PR mechanizes. Together the two tools cover the full \`memory/feedback\_\*.md\` citation graph: MEMORY.md as canonical index + the 6 surfaces as ad-hoc citation sites.
 
 ### Full file:line catalog (47 file:line pairs ~ 46 after FP retraction)
 

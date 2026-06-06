@@ -33,10 +33,10 @@ graph into slice 5.1's **unchanged** verify + atomic-install engine.
 4. **Z3 tests our TS.** Differential tests cross-check our TS solver against **Z3**
    (end-to-end multi-constraint assignment) and **node-semver** (the `satisfies` /
    `compare` primitive). Both are **test-only devDependencies** (npm `z3-solver` WASM
-   + `semver`), pinned per
-   [`dep-pin-search-first-authority`](../../../.claude/rules/dep-pin-search-first-authority.md) — WebSearch the current version at **authoring time** and cite it in the commit message + PR description (no automated build-time pinning). Using `z3-solver` (WASM, always present in CI)
-   not a system `z3` binary, so the Z3 cross-check **asserts** rather than skipping —
-   no false-green hole (per [`automated-tests-are-the-shield`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)).
+   - `semver`), pinned per
+     [`dep-pin-search-first-authority`](../../../.claude/rules/dep-pin-search-first-authority.md) — WebSearch the current version at **authoring time** and cite it in the commit message + PR description (no automated build-time pinning). Using `z3-solver` (WASM, always present in CI)
+     not a system `z3` binary, so the Z3 cross-check **asserts** rather than skipping —
+     no false-green hole (per [`automated-tests-are-the-shield`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)).
 
 ## Manifest dep shape (`tools/ace/store.ts`)
 
@@ -45,7 +45,13 @@ edge's `version` field widens from "exact" to "semver range":
 
 ```ts
 export type AceDependency =
-  | { readonly kind: "inline";   readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
+  | {
+      readonly kind: "inline";
+      readonly name: string;
+      readonly version: string;
+      readonly url: string;
+      readonly package_hash: string;
+    }
   | { readonly kind: "registry"; readonly name: string; readonly version: string }; // version: now a semver RANGE
 ```
 
@@ -75,14 +81,15 @@ in the module so the desugaring is the testable spec node-semver is checked agai
 
 ```ts
 export type SolveResult =
-  | { ok: true; versions: Map<string, string> }              // name → concrete version
-  | { ok: false; reason: "unsatisfiable" | "bad-range" | "registry-miss" | "fetch-failed" | "invalid-package"; detail: string; path: string[] };
+  | { ok: true; versions: Map<string, string> } // name → concrete version
+  | {
+      ok: false;
+      reason: "unsatisfiable" | "bad-range" | "registry-miss" | "fetch-failed" | "invalid-package";
+      detail: string;
+      path: string[];
+    };
 
-export async function solve(
-  root: AcePackage,
-  fetchPackage: FetchPackage,
-  registry: Registry,
-): Promise<SolveResult>;
+export async function solve(root: AcePackage, fetchPackage: FetchPackage, registry: Registry): Promise<SolveResult>;
 ```
 
 Algorithm — **deterministic newest-first backtracking** (pubgrub-shape, scoped to the
@@ -103,7 +110,7 @@ subset):
      inline pin is authoritative; mixed inline+registry edges for one name only constrain,
      they never re-source. (All-inline graphs / empty registry therefore solve trivially.)
    - **Registry-sourced, unassigned** → intersect all ranges, take `maxSatisfying(registry
-     versions for that name, intersected range)`; no candidate → **backtrack** (try the
+versions for that name, intersected range)`; no candidate → **backtrack** (try the
      next-lower version of the most-recent decision that narrowed this package); exhausted
      → `unsatisfiable` with the conflicting constraint path.
    - **Registry-sourced, already assigned** → **re-validate**: the current concrete version
@@ -136,11 +143,20 @@ unchanged:
 // registry edge: version field is a RANGE; the concrete version comes from the solver
 if (edge.kind === "registry") {
   const concrete = solved.get(edge.name);
-  if (concrete === undefined) return { ok:false, reason:"unsatisfiable", detail:`${edge.name}: no solved version`, path: here };
-  if (!satisfies(concrete, edge.version)) return { ok:false, reason:"unsatisfiable", detail:`${edge.name}: solved ${concrete} violates ${edge.version}`, path: here }; // defense-in-depth: never blindly trust the solver map
+  if (concrete === undefined)
+    return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: no solved version`, path: here };
+  if (!satisfies(concrete, edge.version))
+    return {
+      ok: false,
+      reason: "unsatisfiable",
+      detail: `${edge.name}: solved ${concrete} violates ${edge.version}`,
+      path: here,
+    }; // defense-in-depth: never blindly trust the solver map
   const entry = registry.get(edge.name)?.get(concrete);
-  if (entry === undefined) return { ok:false, reason:"registry-miss", detail:`${edge.name}@${concrete} not in registry`, path: here };
-  url = entry.url; package_hash = entry.package_hash;
+  if (entry === undefined)
+    return { ok: false, reason: "registry-miss", detail: `${edge.name}@${concrete} not in registry`, path: here };
+  url = entry.url;
+  package_hash = entry.package_hash;
   // byName / version-skew / tamper checks use `concrete`, not the range string
 }
 ```
@@ -171,10 +187,10 @@ edges are untouched (exact + self-pinned).
   `our maxSatisfying === semver.maxSatisfying`. This is the load-bearing oracle for the
   range primitive and is always present in CI → it **asserts** (no skip).
 - **Z3 cross-check** (`z3-solver` WASM npm, devDep): encode a generated dependency-graph
-  + range-constraint problem as SMT (versions as bounded ints, ranges as constraints,
-  maximize-newest objective) and assert our solver's assignment matches a Z3 model
-  (or both agree it is unsatisfiable). This tests our TS solver end-to-end. `z3-solver`
-  is a WASM devDep so it is always present in CI → **asserts**, no graceful-skip hole.
+  - range-constraint problem as SMT (versions as bounded ints, ranges as constraints,
+    maximize-newest objective) and assert our solver's assignment matches a Z3 model
+    (or both agree it is unsatisfiable). This tests our TS solver end-to-end. `z3-solver`
+    is a WASM devDep so it is always present in CI → **asserts**, no graceful-skip hole.
 - Own unit tests: `^`/`~` desugaring table, AND-range intersection, wildcard,
   **re-validation/backtrack** (a transitive dep narrows an already-assigned package below
   the newest-first pick — `A>=1.0.0`→`A@1.9.0`, then `B*`→`B@1.0.0` requires `A<1.6.0`;
@@ -210,14 +226,14 @@ edges are untouched (exact + self-pinned).
 
 ## Files
 
-| File | Change |
-|---|---|
-| `tools/ace/semver.ts` | new — pure subset range parser + `satisfies` / `compare` / `maxSatisfying` |
-| `tools/ace/solver.ts` | new — newest-first backtracking `solve()` → `Map<name,version>` |
-| `tools/ace/resolve.ts` | minimal — `solved` map param; registry edge concrete-from-map; `unsatisfiable` / `bad-range` reasons |
-| `tools/ace/ace.ts` | install runs solve→resolve; optional `--print-resolution` |
-| `tools/ace/semver.test.ts` | new — unit + node-semver differential |
-| `tools/ace/solver.test.ts` | new — unit + Z3 differential |
-| `tools/ace/resolve.test.ts`, `ace.test.ts` | range/unsatisfiable/e2e cases |
-| `package.json` | test-only devDeps `semver` + `z3-solver` (WebSearch-pinned at build) |
-| `.claude/skills/ace/SKILL.md` | range deps + solver docs |
+| File                                       | Change                                                                                               |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `tools/ace/semver.ts`                      | new — pure subset range parser + `satisfies` / `compare` / `maxSatisfying`                           |
+| `tools/ace/solver.ts`                      | new — newest-first backtracking `solve()` → `Map<name,version>`                                      |
+| `tools/ace/resolve.ts`                     | minimal — `solved` map param; registry edge concrete-from-map; `unsatisfiable` / `bad-range` reasons |
+| `tools/ace/ace.ts`                         | install runs solve→resolve; optional `--print-resolution`                                            |
+| `tools/ace/semver.test.ts`                 | new — unit + node-semver differential                                                                |
+| `tools/ace/solver.test.ts`                 | new — unit + Z3 differential                                                                         |
+| `tools/ace/resolve.test.ts`, `ace.test.ts` | range/unsatisfiable/e2e cases                                                                        |
+| `package.json`                             | test-only devDeps `semver` + `z3-solver` (WebSearch-pinned at build)                                 |
+| `.claude/skills/ace/SKILL.md`              | range deps + solver docs                                                                             |

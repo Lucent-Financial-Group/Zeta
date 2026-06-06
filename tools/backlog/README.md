@@ -56,21 +56,21 @@ tags: [game-industry, sharding, multi-node]
 
 ## Frontmatter fields
 
-| Field          | Required | Type         | Notes |
-|----------------|----------|--------------|-------|
-| `id`           | yes      | `B-NNNN`     | Zero-padded 4 digits, sequential. Factory-wide unique. |
-| `priority`     | yes      | `P0..P3`     | Directory must match (`P2` row → `docs/backlog/P2/`). |
-| `status`       | yes      | enum         | `open` / `closed` / `superseded-by-B-NNNN` / `deferred` / `decomposed` (broken into child rows; stays open until `closed_by` row closes) |
-| `title`        | yes      | string       | Short index-display title. |
-| `tier`         | no       | string       | Free-form; e.g. `research-grade`, `active-substrate`. |
-| `effort`       | no       | `S` / `M` / `L` | Size estimate. |
-| `ask`          | no       | string       | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. Per Otto-293 mutual-alignment language ("ask" not "directive"). |
-| `created`      | yes      | YYYY-MM-DD   | First-landing date. |
-| `last_updated` | yes      | YYYY-MM-DD   | Updated on every content edit. |
-| `depends_on`   | no       | list of `B-NNNN` | Hard prerequisite ordering (this row cannot land until each listed row lands). Distinct from `composes_with` (which is bidirectional cross-reference, not ordering). Empty list `[]` = no known dependencies. Backfill-discipline: incremental on-demand as rows are touched (Aaron 2026-05-02 backfill thesis). Graph-traversal field; not surfaced in `BACKLOG.md` index. |
-| `decomposition`| no       | enum         | Optional decomposition marker. `blob` means the row is intentionally too large or fuzzy for a single implement cycle and should be split before pickup. |
-| `composes_with`| no       | list of `B-NNNN` | Cross-references; strict-lint-candidate Phase-2+. |
-| `tags`         | no       | list of string | Free-form. Examples: `multi-node`, `dst`, `ui-rename`. |
+| Field           | Required | Type             | Notes                                                                                                                                                                                                                                                                                                                                                                       |
+| --------------- | -------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`            | yes      | `B-NNNN`         | Zero-padded 4 digits, sequential. Factory-wide unique.                                                                                                                                                                                                                                                                                                                      |
+| `priority`      | yes      | `P0..P3`         | Directory must match (`P2` row → `docs/backlog/P2/`).                                                                                                                                                                                                                                                                                                                       |
+| `status`        | yes      | enum             | `open` / `closed` / `superseded-by-B-NNNN` / `deferred` / `decomposed` (broken into child rows; stays open until `closed_by` row closes)                                                                                                                                                                                                                                    |
+| `title`         | yes      | string           | Short index-display title.                                                                                                                                                                                                                                                                                                                                                  |
+| `tier`          | no       | string           | Free-form; e.g. `research-grade`, `active-substrate`.                                                                                                                                                                                                                                                                                                                       |
+| `effort`        | no       | `S` / `M` / `L`  | Size estimate.                                                                                                                                                                                                                                                                                                                                                              |
+| `ask`           | no       | string           | Origin reference; e.g. `maintainer Otto-180`, `Amara 18th ferry #4`. Per Otto-293 mutual-alignment language ("ask" not "directive").                                                                                                                                                                                                                                        |
+| `created`       | yes      | YYYY-MM-DD       | First-landing date.                                                                                                                                                                                                                                                                                                                                                         |
+| `last_updated`  | yes      | YYYY-MM-DD       | Updated on every content edit.                                                                                                                                                                                                                                                                                                                                              |
+| `depends_on`    | no       | list of `B-NNNN` | Hard prerequisite ordering (this row cannot land until each listed row lands). Distinct from `composes_with` (which is bidirectional cross-reference, not ordering). Empty list `[]` = no known dependencies. Backfill-discipline: incremental on-demand as rows are touched (Aaron 2026-05-02 backfill thesis). Graph-traversal field; not surfaced in `BACKLOG.md` index. |
+| `decomposition` | no       | enum             | Optional decomposition marker. `blob` means the row is intentionally too large or fuzzy for a single implement cycle and should be split before pickup.                                                                                                                                                                                                                     |
+| `composes_with` | no       | list of `B-NNNN` | Cross-references; strict-lint-candidate Phase-2+.                                                                                                                                                                                                                                                                                                                           |
+| `tags`          | no       | list of string   | Free-form. Examples: `multi-node`, `dst`, `ui-rename`.                                                                                                                                                                                                                                                                                                                      |
 
 ## Adding a new row
 
@@ -150,7 +150,7 @@ delete the file.
   answered by reasonable defaults in this phase).
 - Hot-file-detector tooling (unmerged at the time of
   this Phase-1a PR; recovery path: `git log
-  --diff-filter=A --all -- tools/hygiene/` if it lands
+--diff-filter=A --all -- tools/hygiene/` if it lands
   later) — the detector flagged `docs/BACKLOG.md` as
   the repo's top hotspot and named "BACKLOG-per-swim-
   lane split" as a remediation option. The design

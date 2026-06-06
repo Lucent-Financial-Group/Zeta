@@ -41,7 +41,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [ ] B-0475 output doc reviewed (prior-art audit complete; no blocking conflicts)
 - [ ] Walk `depends_on:` chain — B-0475 closed
 - [ ] Check B-0476 progress — ruleset audit can run in parallel; note any
-  divergences already found that constrain classification
+      divergences already found that constrain classification
 
 ## Axis-3 tier definitions
 
@@ -82,12 +82,12 @@ Content whose primary purpose is discursive, philosophical, or substrate-narrati
 
 For every existing and proposed repo, produce a row in this matrix:
 
-| Repo | Axis-1 | Axis-2 | Axis-3 primary | Axis-3 English content | Split recommendation |
-|------|--------|--------|----------------|------------------------|----------------------|
-| LFG/Zeta | Factory | TBD (B-0472) | Mixed | `docs/research/`, `memory/` | Candidate for English split |
-| LFG/civsim | Product | TBD | Code | Minimal | Stay co-located |
-| Forge (proposed) | Factory-tools | TBD | Code | Minimal | Stay co-located |
-| … | … | … | … | … | … |
+| Repo             | Axis-1        | Axis-2       | Axis-3 primary | Axis-3 English content      | Split recommendation        |
+| ---------------- | ------------- | ------------ | -------------- | --------------------------- | --------------------------- |
+| LFG/Zeta         | Factory       | TBD (B-0472) | Mixed          | `docs/research/`, `memory/` | Candidate for English split |
+| LFG/civsim       | Product       | TBD          | Code           | Minimal                     | Stay co-located             |
+| Forge (proposed) | Factory-tools | TBD          | Code           | Minimal                     | Stay co-located             |
+| …                | …             | …            | …              | …                           | …                           |
 
 For each repo where the "English" content exceeds a threshold, produce a
 split recommendation with reasoning.

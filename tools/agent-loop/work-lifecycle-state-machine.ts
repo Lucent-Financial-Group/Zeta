@@ -36,11 +36,11 @@ import type { AgentPersona } from "./state-machine";
 // ─── Work-item identity + metadata ───────────────────────────────────
 
 export interface BacklogRow {
-  readonly id: string;             // "B-0867.5"
+  readonly id: string; // "B-0867.5"
   readonly title: string;
   readonly priority: "P0" | "P1" | "P2" | "P3";
-  readonly filePath: string;       // "docs/backlog/P1/B-0867.5-..."
-  readonly trajectory: string;     // composes with B-0867 trajectory taxonomy
+  readonly filePath: string; // "docs/backlog/P1/B-0867.5-..."
+  readonly trajectory: string; // composes with B-0867 trajectory taxonomy
 }
 
 // ─── Work-lifecycle state (F# DU) ────────────────────────────────────
@@ -233,10 +233,7 @@ export type TransitionResult =
  * is a signal that the work-item may need substrate-engineering
  * attention (decomposition; alternative approach; escalation).
  */
-export function applyTransition(
-  state: WorkLifecycleState,
-  event: WorkLifecycleTransition,
-): TransitionResult {
+export function applyTransition(state: WorkLifecycleState, event: WorkLifecycleTransition): TransitionResult {
   switch (state.tag) {
     case "Backlog":
       if (event.tag === "Claim") {
@@ -471,11 +468,7 @@ export function applyTransition(
  * Abandoned). Used by aggregators to filter active work from completed.
  */
 export function isTerminal(state: WorkLifecycleState): boolean {
-  return (
-    state.tag === "Merged" ||
-    state.tag === "Closed" ||
-    state.tag === "Abandoned"
-  );
+  return state.tag === "Merged" || state.tag === "Closed" || state.tag === "Abandoned";
 }
 
 /**
@@ -495,12 +488,6 @@ export function revisionCount(state: WorkLifecycleState): number {
  * Requires the state's history (not encoded in the state itself for
  * stateless storage simplicity; caller passes the claimAt timestamp).
  */
-export function leadTimeSeconds(
-  claimAtIso: string,
-  mergedAtIso: string,
-): number {
-  return (
-    (new Date(mergedAtIso).getTime() - new Date(claimAtIso).getTime()) /
-    1000
-  );
+export function leadTimeSeconds(claimAtIso: string, mergedAtIso: string): number {
+  return (new Date(mergedAtIso).getTime() - new Date(claimAtIso).getTime()) / 1000;
 }

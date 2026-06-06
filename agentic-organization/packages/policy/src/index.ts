@@ -1,7 +1,4 @@
-import type {
-  AgenticActor,
-  SupervisorChainLevel,
-} from "../../domain/src/index.ts";
+import type { AgenticActor, SupervisorChainLevel } from "../../domain/src/index.ts";
 
 export const PolicyDecisionStatus = {
   Allowed: "allowed",

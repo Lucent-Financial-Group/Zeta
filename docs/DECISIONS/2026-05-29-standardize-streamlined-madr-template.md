@@ -14,30 +14,30 @@ We need a structured, agent-friendly template that enforces explicit pros/cons r
 
 ## Considered Options
 
-* **Option 1: Classic Nygard/Zeta Template** — Flat status/date lines followed by Context, Decision, Consequences.
-* **Option 2: Rigid MADR / YAML Template** — Markdown Architectural Decision Records utilizing YAML frontmatter and complex Markdown comparison tables.
-* **Option 3: Streamlined Flat MADR Template** — Flat bold status lines and simplified lists that compare options and document pros/cons without YAML formatting or tables.
+- **Option 1: Classic Nygard/Zeta Template** — Flat status/date lines followed by Context, Decision, Consequences.
+- **Option 2: Rigid MADR / YAML Template** — Markdown Architectural Decision Records utilizing YAML frontmatter and complex Markdown comparison tables.
+- **Option 3: Streamlined Flat MADR Template** — Flat bold status lines and simplified lists that compare options and document pros/cons without YAML formatting or tables.
 
 ## Pros & Cons of the Options
 
 ### Option 1: Classic Nygard/Zeta Template
 
-* **Pros:** Highly readable, with low exposure to linter and spacing errors.
-* **Cons:** Lacks a strict schema or forcing-function to compare alternative options, allowing agents to skip documenting rejected hypotheses.
+- **Pros:** Highly readable, with low exposure to linter and spacing errors.
+- **Cons:** Lacks a strict schema or forcing-function to compare alternative options, allowing agents to skip documenting rejected hypotheses.
 
 ### Option 2: Rigid MADR / YAML Template
 
-* **Pros:** Highly structured, machine-readable frontmatter metadata, and rigorous comparison grids.
-* **Cons:** High linter friction. LLMs frequently mess up spacing in YAML frontmatter and table cell-padding, causing automated reviewers (Copilot, Rune) to fail the gate.
+- **Pros:** Highly structured, machine-readable frontmatter metadata, and rigorous comparison grids.
+- **Cons:** High linter friction. LLMs frequently mess up spacing in YAML frontmatter and table cell-padding, causing automated reviewers (Copilot, Rune) to fail the gate.
 
 ### Option 3: Streamlined Flat MADR Template
 
-* **Pros:** Highly agent-friendly. Uses standard flat Markdown headings and simple bullet lists that minimize common linter/spacing failures. Formally forces agents to document alternative options and explicitly compare pros/cons.
-* **Cons:** Slightly less machine-parseable than raw structured JSON/YAML frontmatter (mitigated by predictable flat bold line markers).
+- **Pros:** Highly agent-friendly. Uses standard flat Markdown headings and simple bullet lists that minimize common linter/spacing failures. Formally forces agents to document alternative options and explicitly compare pros/cons.
+- **Cons:** Slightly less machine-parseable than raw structured JSON/YAML frontmatter (mitigated by predictable flat bold line markers).
 
 ## Decision Outcome
 
-* **Chosen Option:** Option 3: Streamlined Flat MADR Template, because it balances technical decision rigor with agent velocity, reducing reviewer linter friction while ensuring robust options analysis.
-* **Consequences:**
-  * **Positive:** All future architectural decisions will use a standardized, easy-to-write comparison format that reduces common markdownlint failures in agent decision records.
-  * **Negative/Costs:** Requires checking in a template file at `docs/templates/ADR-TEMPLATE.md`.
+- **Chosen Option:** Option 3: Streamlined Flat MADR Template, because it balances technical decision rigor with agent velocity, reducing reviewer linter friction while ensuring robust options analysis.
+- **Consequences:**
+  - **Positive:** All future architectural decisions will use a standardized, easy-to-write comparison format that reduces common markdownlint failures in agent decision records.
+  - **Negative/Costs:** Requires checking in a template file at `docs/templates/ADR-TEMPLATE.md`.

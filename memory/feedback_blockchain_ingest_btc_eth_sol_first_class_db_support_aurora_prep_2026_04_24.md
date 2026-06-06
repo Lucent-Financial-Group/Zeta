@@ -8,7 +8,7 @@ type: feedback
 
 Maintainer 2026-04-24:
 
-> *"i would love to test our database by having first
+> _"i would love to test our database by having first
 > class support for bitcoin, eth, and solana blocks into
 > our database in the order of priority unless you tell
 > me there are other ones worth exploring for two reason,
@@ -35,7 +35,7 @@ Maintainer 2026-04-24:
 > that, i want those interfaces too just like our SQL
 > interfaces and i also want deep integration into those
 > networks so we can 'bridge' them in streams and maybe
-> further. backlog"*
+> further. backlog"_
 
 ## Two load-bearing motivations
 
@@ -63,13 +63,13 @@ reorder.
 ## Architectural frame
 
 **NOT a fork of bitcoind / geth / solana-labs.** This
-is explicitly *full-node layered on top of Zeta's
-distributed DB*. Maintainer verbatim:
+is explicitly _full-node layered on top of Zeta's
+distributed DB_. Maintainer verbatim:
 
-> *"this is not a full node implimentation or anyting
+> _"this is not a full node implimentation or anyting
 > yet that will come leter layed on top of our multinode
 > database so we can have distributed node support from
-> the start cause we are on top of our distributed db."*
+> the start cause we are on top of our distributed db."_
 
 Zeta provides the storage / consensus / query
 substrate; chain protocol runs on top. Distributed-node
@@ -80,14 +80,14 @@ free.
 
 Maintainer verbatim:
 
-> *"some nodes will try to call you a bad node if you
+> _"some nodes will try to call you a bad node if you
 > don't hame some amount of the full protocol, they give
 > extra tests exactly to try to stop this freeloader
 > scenaro where you download but dont upload, you can
 > look at their source code to figure it out. Also if
 > you have to do full nodes of those types to be able to
 > download we have to upload too go ahead and to that, i
-> want those interfaces too just like our SQL interfaces"*
+> want those interfaces too just like our SQL interfaces"_
 
 Translation for Phase 0 research pass:
 
@@ -129,14 +129,14 @@ Key source locations (Phase 0 targets):
   (CONDITIONAL on Phase 0 finding; if reciprocity
   required to stay in-network). Upload-side interfaces
   as first-class Zeta interfaces on par with SQL.
-  Architecturally *on top of* Zeta's distributed DB,
+  Architecturally _on top of_ Zeta's distributed DB,
   not a fork.
 - **Phase 3** — Cross-chain stream bridge. Z-set
   operator composition across chain streams. "Maybe
   further" = cross-chain atomic ops, value-transfer,
   unified-view layers — scope intentionally open.
-- **Phase 4** — UI. Maintainer quote: *"stick a ui in
-  front of that too lol"*. Block explorer + streaming
+- **Phase 4** — UI. Maintainer quote: _"stick a ui in
+  front of that too lol"_. Block explorer + streaming
   dashboard + bridge visualizer as initial surfaces.
 
 ## Additional chains (future evaluation only)
@@ -183,7 +183,7 @@ candidates:
   Aminata threat-model sign-off on the
   network-exposure surface (Phase 2 only).
 - Forking bitcoind / geth / solana-labs — the
-  architecture is *on top of Zeta*, not a fork.
+  architecture is _on top of Zeta_, not a fork.
 
 ## Future Otto reference
 

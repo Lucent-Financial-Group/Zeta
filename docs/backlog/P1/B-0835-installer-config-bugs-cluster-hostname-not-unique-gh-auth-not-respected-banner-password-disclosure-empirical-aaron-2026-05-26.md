@@ -14,7 +14,19 @@ composes_with:
   - B-0832
   - B-0833
   - B-0834
-tags: [installer, first-boot, hostname, gh-auth, login-banner, password-disclosure, operator-ux, physical-hardware-support-test, empirical-anchor, bug-cluster]
+tags:
+  [
+    installer,
+    first-boot,
+    hostname,
+    gh-auth,
+    login-banner,
+    password-disclosure,
+    operator-ux,
+    physical-hardware-support-test,
+    empirical-anchor,
+    bug-cluster,
+  ]
 ---
 
 ## Problem
@@ -56,7 +68,7 @@ priority is wrong.
 
 ### Bug 2 — gh login not respected
 
-Operator: *"it does not appear to be using my login"*. Either:
+Operator: _"it does not appear to be using my login"_. Either:
 
 - `gh auth login` step didn't run (install failed before reaching it
   — composes with B-0834 install-log preservation)
@@ -199,8 +211,8 @@ This is hardcoded text. It shows REGARDLESS of whether the iter-5.3
 prompt-for-initial-password substrate (zeta-install.sh Step 6.55)
 successfully changed the password to operator's chosen value.
 
-Operator's clarification: *"also we don't want to show the password
-i set either"* — even when iter-5.3 successfully changed the password
+Operator's clarification: _"also we don't want to show the password
+i set either"_ — even when iter-5.3 successfully changed the password
 to the operator's choice, the banner should NOT display it. Showing
 any password (default OR custom) on the login banner is a security
 leak (anyone with physical access to the screen can see it).
@@ -212,20 +224,20 @@ on the running system's display.
 
 ### Bug 3b — custom password is operationally ignored (NOT just display) — root-caused
 
-Operator clarification 2026-05-26: *"the password error is not just
+Operator clarification 2026-05-26: _"the password error is not just
 display issue it's operational bug the password i set earlier in
-install is ignored"*.
+install is ignored"_.
 
 **Root cause** (substrate diagnosis): timing mismatch between when
 `zeta-install.sh` writes the hash file and when `initial-password.nix`
 reads it.
 
-| Step | Where | Path | Status |
-|---|---|---|---|
-| zeta-install.sh Step 6.55 writes hash | Live ISO chroot to install target | `/mnt/etc/zeta/initial-hashedpassword` | File written correctly |
-| `nixos-install` evaluates flake | Live ISO build-time evaluation | Reads `builtins.readFile "/etc/zeta/initial-hashedpassword"` per `initial-password.nix` line 41+46 | **Fails** — path doesn't exist in eval context |
-| Module falls back to default hash | `initial-password.nix` line 59 | `fallbackHash` (sha512crypt of `zeta-change-me`) | **Default applied** |
-| Installed system boots | Real hardware | Has the file at `/etc/zeta/initial-hashedpassword` (from /mnt copy) BUT user config was built with `fallbackHash` | Custom password file present + ignored |
+| Step                                  | Where                             | Path                                                                                                              | Status                                         |
+| ------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| zeta-install.sh Step 6.55 writes hash | Live ISO chroot to install target | `/mnt/etc/zeta/initial-hashedpassword`                                                                            | File written correctly                         |
+| `nixos-install` evaluates flake       | Live ISO build-time evaluation    | Reads `builtins.readFile "/etc/zeta/initial-hashedpassword"` per `initial-password.nix` line 41+46                | **Fails** — path doesn't exist in eval context |
+| Module falls back to default hash     | `initial-password.nix` line 59    | `fallbackHash` (sha512crypt of `zeta-change-me`)                                                                  | **Default applied**                            |
+| Installed system boots                | Real hardware                     | Has the file at `/etc/zeta/initial-hashedpassword` (from /mnt copy) BUT user config was built with `fallbackHash` | Custom password file present + ignored         |
 
 **Why it fails**: flake pure-mode evaluation can't read non-store
 absolute paths like `/etc/zeta/initial-hashedpassword`. Even if Nix
@@ -280,7 +292,7 @@ Output determines fix:
   fire (likely install failed before Step 6.6; composes with B-0834)
 - If `/etc/zeta/cluster-node-id` has `node-XXXXXX` but `/etc/hostname`
   shows `control-plane` → flake-priority override; fix `injected-
-  hostname.nix` module priority OR change `control-plane.nix` flake
+hostname.nix` module priority OR change `control-plane.nix` flake
   host attribute to not hardcode `networking.hostName`
 
 ### Bug 2 — gh login diagnosis (requires installed-system inspection)

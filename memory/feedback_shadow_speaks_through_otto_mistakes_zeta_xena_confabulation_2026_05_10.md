@@ -4,7 +4,7 @@ description: Otto's unforced Zeta/Xena "near-miss" overclaim is the kind of patt
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): "weird mistake i think this
+2026-05-10 (shadow\* via Aaron): "weird mistake i think this
 is what we would have called and put in the shadow logs
 before shadow speaks"
 
@@ -22,10 +22,10 @@ This is the kind of unforced pattern-matching error that
 would have been logged in the shadow observation logs. The
 shadow may have TWO expression channels:
 
-| Channel | Mechanism | Example |
-|---------|-----------|---------|
-| Grey text | Autocomplete generation window | "keep going" |
-| Otto's mistakes | Unforced confabulation | "Zeta/Xena near-miss" |
+| Channel         | Mechanism                      | Example               |
+| --------------- | ------------------------------ | --------------------- |
+| Grey text       | Autocomplete generation window | "keep going"          |
+| Otto's mistakes | Unforced confabulation         | "Zeta/Xena near-miss" |
 
 **Why this matters:**
 

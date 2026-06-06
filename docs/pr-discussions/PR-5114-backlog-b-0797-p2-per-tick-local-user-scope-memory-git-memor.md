@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Aaron 2026-05-26: '*are you backloging that or just putting in in memories on this machine only? how much in local memories are missing from git?*' + '*yes can you direct your background service on the local only memories as part of its natural loop sometimes as an option?*'. Empirical audit: 841 local-only memory files vs 1645 in-repo; substantive 2026-05-25 substrate trapped locally. Per-tick discipline Step 3 gets priority 4 (sometimes-task: local-memory delta audit + migrate). Token-bounded (1-3 files per tick); per-file classification (MIGRATE / SUPERSEDE / KEEP-LOCAL / NEEDS-OPERATOR-REVIEW); MIGRATE → per-file PR. Sub-targets cover audit-tool, classifier, sometimes-task hook, heuristics, + one-time 841-file backfill. Composes with B-0782 + B-0790 + B-0794 + substrate-or-it-didn't-happen + never-be-idle.
+Aaron 2026-05-26: '_are you backloging that or just putting in in memories on this machine only? how much in local memories are missing from git?_' + '_yes can you direct your background service on the local only memories as part of its natural loop sometimes as an option?_'. Empirical audit: 841 local-only memory files vs 1645 in-repo; substantive 2026-05-25 substrate trapped locally. Per-tick discipline Step 3 gets priority 4 (sometimes-task: local-memory delta audit + migrate). Token-bounded (1-3 files per tick); per-file classification (MIGRATE / SUPERSEDE / KEEP-LOCAL / NEEDS-OPERATOR-REVIEW); MIGRATE → per-file PR. Sub-targets cover audit-tool, classifier, sometimes-task hook, heuristics, + one-time 841-file backfill. Composes with B-0782 + B-0790 + B-0794 + substrate-or-it-didn't-happen + never-be-idle.
 
 ## General comments
 

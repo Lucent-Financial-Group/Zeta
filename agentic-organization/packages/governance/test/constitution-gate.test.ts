@@ -48,12 +48,7 @@ test("two distinct agreers with one agent twice -> Gathering, distinct counts on
 
 test("three agreers plus one Object -> Rejected, objection veto precedence", () => {
   const result = evaluateConstitutionRatification({
-    agreements: [
-      agree("a", "h1"),
-      agree("b", "h2"),
-      agree("c", "h3"),
-      object_("d", "h4"),
-    ],
+    agreements: [agree("a", "h1"), agree("b", "h2"), agree("c", "h3"), object_("d", "h4")],
   });
   equal(result.state, ConstitutionRatificationState.Rejected);
   equal(result.objections, 1);

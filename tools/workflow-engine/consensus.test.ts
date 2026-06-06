@@ -5,22 +5,22 @@
  */
 
 import { describe, expect, it } from "bun:test";
-import {
-  nIdenticalAnalyzers,
-  runConsensus,
-  type AnalyzerOutput,
-  type ConsensusMechanism,
-} from "./consensus";
+import { nIdenticalAnalyzers, runConsensus, type AnalyzerOutput, type ConsensusMechanism } from "./consensus";
 
 // Test analyzers — caller-injected per asymmetric-authorship
-const constantAnalyzer = <T>(verdict: T): (() => Promise<AnalyzerOutput<T>>) =>
+const constantAnalyzer =
+  <T>(verdict: T): (() => Promise<AnalyzerOutput<T>>) =>
   async () => ({ ok: true, verdict });
 
-const failingAnalyzer = (reason: string): (() => Promise<AnalyzerOutput<unknown>>) =>
+const failingAnalyzer =
+  (reason: string): (() => Promise<AnalyzerOutput<unknown>>) =>
   async () => ({ ok: false, reason });
 
-const throwingAnalyzer = (msg: string): (() => Promise<AnalyzerOutput<unknown>>) =>
-  async () => { throw new Error(msg); };
+const throwingAnalyzer =
+  (msg: string): (() => Promise<AnalyzerOutput<unknown>>) =>
+  async () => {
+    throw new Error(msg);
+  };
 
 describe("B-0914.3 n-parallel + consensus substrate", () => {
   it("empty analyzers → InsufficientAnalyzers", async () => {
@@ -67,12 +67,16 @@ describe("B-0914.3 n-parallel + consensus substrate", () => {
 
   it("supermajority 2/3: 6 of 9 agree → consensus reached (just over threshold)", async () => {
     const analyzers = [
-      ...Array(6).fill(0).map(() => constantAnalyzer("X")),
-      ...Array(3).fill(0).map(() => constantAnalyzer("Y")),
+      ...Array(6)
+        .fill(0)
+        .map(() => constantAnalyzer("X")),
+      ...Array(3)
+        .fill(0)
+        .map(() => constantAnalyzer("Y")),
     ];
     const result = await runConsensus({
       analyzers,
-      mechanism: { kind: "supermajority", threshold: 0.6 },  // > 60%
+      mechanism: { kind: "supermajority", threshold: 0.6 }, // > 60%
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -101,7 +105,9 @@ describe("B-0914.3 n-parallel + consensus substrate", () => {
 
   it("unanimous: all 5 agree → consensus reached", async () => {
     const result = await runConsensus({
-      analyzers: Array(5).fill(0).map(() => constantAnalyzer("X")),
+      analyzers: Array(5)
+        .fill(0)
+        .map(() => constantAnalyzer("X")),
       mechanism: { kind: "unanimous" },
     });
     expect(result.ok).toBe(true);
@@ -167,11 +173,7 @@ describe("B-0914.3 n-parallel + consensus substrate", () => {
 
   it("throwing analyzer converted to failure (not propagated)", async () => {
     const result = await runConsensus({
-      analyzers: [
-        constantAnalyzer("X"),
-        constantAnalyzer("X"),
-        throwingAnalyzer("crashed"),
-      ],
+      analyzers: [constantAnalyzer("X"), constantAnalyzer("X"), throwingAnalyzer("crashed")],
       mechanism: { kind: "majority" },
     });
     expect(result.ok).toBe(true);
@@ -225,7 +227,7 @@ describe("B-0914.3 n-parallel + consensus substrate", () => {
       return { ok: true, verdict: "X" };
     };
     const result = await runConsensus({
-      analyzers: nIdenticalAnalyzers(8, analyzer),  // Robin's 8 parallel pattern
+      analyzers: nIdenticalAnalyzers(8, analyzer), // Robin's 8 parallel pattern
       mechanism: { kind: "majority" },
     });
     expect(result.ok).toBe(true);
@@ -255,14 +257,18 @@ describe("B-0914.3 n-parallel + consensus substrate", () => {
 
   it("Robin's 8-parallel pattern: 5 of 8 agree → majority consensus reached", async () => {
     const analyzers = [
-      ...Array(5).fill(0).map(() => constantAnalyzer("treatment-effective")),
-      ...Array(3).fill(0).map(() => constantAnalyzer("treatment-uncertain")),
+      ...Array(5)
+        .fill(0)
+        .map(() => constantAnalyzer("treatment-effective")),
+      ...Array(3)
+        .fill(0)
+        .map(() => constantAnalyzer("treatment-uncertain")),
     ];
     const result = await runConsensus({ analyzers, mechanism: { kind: "majority" } });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.verdict).toBe("treatment-effective");
-    expect(result.agreement.winnerFraction).toBeCloseTo(5/8, 2);
+    expect(result.agreement.winnerFraction).toBeCloseTo(5 / 8, 2);
   });
 
   it("ConsensusMechanism union exhaustive switch (compile-time check)", () => {

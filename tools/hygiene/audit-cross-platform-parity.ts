@@ -34,10 +34,7 @@
 //   1  usage error
 //   2  --enforce mode with gap count > 0
 
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 type AuditExitCode = 0 | 1 | 2;
@@ -48,11 +45,7 @@ type ParseResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-type Classification =
-  | "pre-setup"
-  | "post-setup-permanent"
-  | "post-setup-transitional"
-  | "exempt-deprecated";
+type Classification = "pre-setup" | "post-setup-permanent" | "post-setup-transitional" | "exempt-deprecated";
 
 interface AuditBuckets {
   readonly paired: readonly string[];
@@ -75,17 +68,11 @@ const PERMANENT_LABELS: readonly string[] = [
   "stay bash forever",
 ];
 
-const TRANSITIONAL_LABELS: readonly string[] = [
-  "bun+TS migration candidate",
-  "bash scaffolding",
-];
+const TRANSITIONAL_LABELS: readonly string[] = ["bun+TS migration candidate", "bash scaffolding"];
 
 const LABEL_DECL_RE = /^# (Post-setup stack|Exception label|label):/i;
 
-function classifyGitFailure(
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyGitFailure(args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start 'git ${args.join(" ")}': ${result.error.message}`;
   }
@@ -97,9 +84,7 @@ function classifyGitFailure(
   }
   if (result.status !== 0) {
     const stderr = result.stderr.trim();
-    return stderr !== ""
-      ? stderr
-      : `'git ${args.join(" ")}' exited ${String(result.status)}`;
+    return stderr !== "" ? stderr : `'git ${args.join(" ")}' exited ${String(result.status)}`;
   }
   return null;
 }
@@ -143,14 +128,7 @@ function parseMode(argv: readonly string[]): ParseResult {
 }
 
 function listToolScripts(): readonly string[] {
-  const raw = runGit([
-    "ls-files",
-    "-z",
-    "tools/*.sh",
-    "tools/*.ps1",
-    "tools/**/*.sh",
-    "tools/**/*.ps1",
-  ]);
+  const raw = runGit(["ls-files", "-z", "tools/*.sh", "tools/*.ps1", "tools/**/*.sh", "tools/**/*.ps1"]);
   return raw
     .split("\0")
     .filter((s): s is string => s.length > 0)
@@ -258,11 +236,7 @@ export function auditRepo(): AuditBuckets {
 }
 
 export function gapCount(buckets: AuditBuckets): number {
-  return (
-    buckets.preSetupGapBash.length +
-    buckets.preSetupGapPs1.length +
-    buckets.postPermGap.length
-  );
+  return buckets.preSetupGapBash.length + buckets.preSetupGapPs1.length + buckets.postPermGap.length;
 }
 
 function renderSummary(buckets: AuditBuckets): string {
@@ -270,15 +244,9 @@ function renderSummary(buckets: AuditBuckets): string {
   lines.push(`paired:                    ${String(buckets.paired.length)}`);
   lines.push(`transitional (no gap):     ${String(buckets.transitional.length)}`);
   lines.push(`exempt (_deprecated):      ${String(buckets.exempt.length)}`);
-  lines.push(
-    `gap: pre-setup .sh no twin:  ${String(buckets.preSetupGapBash.length)}`,
-  );
-  lines.push(
-    `gap: pre-setup .ps1 no twin: ${String(buckets.preSetupGapPs1.length)}`,
-  );
-  lines.push(
-    `gap: permanent-bash no .ps1: ${String(buckets.postPermGap.length)}`,
-  );
+  lines.push(`gap: pre-setup .sh no twin:  ${String(buckets.preSetupGapBash.length)}`);
+  lines.push(`gap: pre-setup .ps1 no twin: ${String(buckets.preSetupGapPs1.length)}`);
+  lines.push(`gap: permanent-bash no .ps1: ${String(buckets.postPermGap.length)}`);
   lines.push(`gap total:                 ${String(gapCount(buckets))}`);
   return lines.join("\n");
 }
@@ -288,21 +256,13 @@ function renderBulletList(items: readonly string[], suffix: string): string[] {
   return items.map((i) => (suffix === "" ? `- ${i}` : `- ${i} ${suffix}`));
 }
 
-export function renderReport(
-  buckets: AuditBuckets,
-  mode: Mode,
-  clock: Clock,
-): string {
+export function renderReport(buckets: AuditBuckets, mode: Mode, clock: Clock): string {
   const lines: string[] = [];
   lines.push("# Cross-platform parity audit");
   lines.push("");
   lines.push(`Run: ${clock.nowUtcIso()}`);
-  lines.push(
-    "Authoritative rules: docs/POST-SETUP-SCRIPT-STACK.md Q1 (pre-setup)",
-  );
-  lines.push(
-    "  + memory/feedback_stay_bash_forever_implies_powershell_twin_obligation.md",
-  );
+  lines.push("Authoritative rules: docs/POST-SETUP-SCRIPT-STACK.md Q1 (pre-setup)");
+  lines.push("  + memory/feedback_stay_bash_forever_implies_powershell_twin_obligation.md");
   lines.push("  (post-setup permanent-bash).");
   lines.push(`Mode: ${mode} (enforcement deferred; exit 2 requires --enforce).`);
   lines.push("");
@@ -312,16 +272,10 @@ export function renderReport(
   lines.push("");
   for (const l of renderBulletList(buckets.paired, "")) lines.push(l);
   lines.push("");
-  lines.push(
-    `## Gaps — pre-setup bash without PowerShell twin (${String(buckets.preSetupGapBash.length)})`,
-  );
+  lines.push(`## Gaps — pre-setup bash without PowerShell twin (${String(buckets.preSetupGapBash.length)})`);
   lines.push("");
-  lines.push(
-    "Q1 violation per docs/POST-SETUP-SCRIPT-STACK.md — pre-setup scripts",
-  );
-  lines.push(
-    "MUST be dual-authored as bash + PowerShell because they run before",
-  );
+  lines.push("Q1 violation per docs/POST-SETUP-SCRIPT-STACK.md — pre-setup scripts");
+  lines.push("MUST be dual-authored as bash + PowerShell because they run before");
   lines.push("canonical tooling is installed, on OS-default shells.");
   lines.push("");
   for (const l of renderBulletList(
@@ -331,43 +285,25 @@ export function renderReport(
     lines.push(l === "- (none)" ? "- (none — clean)" : l);
   }
   lines.push("");
-  lines.push(
-    `## Gaps — pre-setup PowerShell without bash twin (${String(buckets.preSetupGapPs1.length)})`,
-  );
+  lines.push(`## Gaps — pre-setup PowerShell without bash twin (${String(buckets.preSetupGapPs1.length)})`);
   lines.push("");
-  for (const l of renderBulletList(
-    buckets.preSetupGapPs1,
-    buckets.preSetupGapPs1.length > 0 ? "(missing .sh)" : "",
-  )) {
+  for (const l of renderBulletList(buckets.preSetupGapPs1, buckets.preSetupGapPs1.length > 0 ? "(missing .sh)" : "")) {
     lines.push(l === "- (none)" ? "- (none — clean)" : l);
   }
   lines.push("");
-  lines.push(
-    `## Gaps — permanent-bash without PowerShell twin (${String(buckets.postPermGap.length)})`,
-  );
+  lines.push(`## Gaps — permanent-bash without PowerShell twin (${String(buckets.postPermGap.length)})`);
   lines.push("");
-  lines.push(
-    "Post-setup permanent-bash exceptions (thin wrapper / find-xargs /",
-  );
-  lines.push(
-    "stay bash forever) owe a .ps1 twin per the 2026-04-22 Windows-twin",
-  );
+  lines.push("Post-setup permanent-bash exceptions (thin wrapper / find-xargs /");
+  lines.push("stay bash forever) owe a .ps1 twin per the 2026-04-22 Windows-twin");
   lines.push("obligation. Missing twin is a quiet break for Windows devs.");
   lines.push("");
-  for (const l of renderBulletList(
-    buckets.postPermGap,
-    buckets.postPermGap.length > 0 ? "(missing .ps1)" : "",
-  )) {
+  for (const l of renderBulletList(buckets.postPermGap, buckets.postPermGap.length > 0 ? "(missing .ps1)" : "")) {
     lines.push(l === "- (none)" ? "- (none — clean)" : l);
   }
   lines.push("");
-  lines.push(
-    `## Transitional / exempt (${String(buckets.transitional.length)} + ${String(buckets.exempt.length)})`,
-  );
+  lines.push(`## Transitional / exempt (${String(buckets.transitional.length)} + ${String(buckets.exempt.length)})`);
   lines.push("");
-  lines.push(
-    "Transitional (bun+TS migration candidate / bash scaffolding): no twin obligation.",
-  );
+  lines.push("Transitional (bun+TS migration candidate / bash scaffolding): no twin obligation.");
   lines.push("Exempt (tools/_deprecated/): awaiting deletion.");
   lines.push("");
   lines.push("Transitional:");
@@ -379,19 +315,11 @@ export function renderReport(
   lines.push("## Summary");
   lines.push("");
   lines.push(`- paired:                    ${String(buckets.paired.length)}`);
-  lines.push(
-    `- transitional (no gap):     ${String(buckets.transitional.length)}`,
-  );
+  lines.push(`- transitional (no gap):     ${String(buckets.transitional.length)}`);
   lines.push(`- exempt (_deprecated):      ${String(buckets.exempt.length)}`);
-  lines.push(
-    `- gap: pre-setup .sh no twin:  ${String(buckets.preSetupGapBash.length)}`,
-  );
-  lines.push(
-    `- gap: pre-setup .ps1 no twin: ${String(buckets.preSetupGapPs1.length)}`,
-  );
-  lines.push(
-    `- gap: permanent-bash no .ps1: ${String(buckets.postPermGap.length)}`,
-  );
+  lines.push(`- gap: pre-setup .sh no twin:  ${String(buckets.preSetupGapBash.length)}`);
+  lines.push(`- gap: pre-setup .ps1 no twin: ${String(buckets.preSetupGapPs1.length)}`);
+  lines.push(`- gap: permanent-bash no .ps1: ${String(buckets.postPermGap.length)}`);
   lines.push(`- gap total:                 ${String(gapCount(buckets))}`);
   return lines.join("\n");
 }
@@ -405,9 +333,7 @@ function realClock(): Clock {
 export function main(argv: readonly string[]): AuditExitCode {
   const parsed = parseMode(argv);
   if (parsed.kind === "help") {
-    process.stdout.write(
-      "Usage: audit-cross-platform-parity.ts [--summary | --enforce]\n",
-    );
+    process.stdout.write("Usage: audit-cross-platform-parity.ts [--summary | --enforce]\n");
     return 0;
   }
   if (parsed.kind === "error") {
@@ -425,9 +351,7 @@ export function main(argv: readonly string[]): AuditExitCode {
   }
 
   if (mode === "enforce" && gaps > 0) {
-    process.stderr.write(
-      `\nFAIL: ${String(gaps)} cross-platform parity gap(s). See rules above.\n`,
-    );
+    process.stderr.write(`\nFAIL: ${String(gaps)} cross-platform parity gap(s). See rules above.\n`);
     return 2;
   }
   return 0;

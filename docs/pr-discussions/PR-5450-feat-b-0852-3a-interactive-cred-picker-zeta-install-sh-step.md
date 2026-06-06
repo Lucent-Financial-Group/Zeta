@@ -58,6 +58,7 @@ _(no body)_
 Adds an interactive credential picker (`tools/installer/zeta-creds-picker.ts`) that, for each cred in `DEFAULT_MANIFEST`, asks the operator whether to bake-in-now / defer-to-device-flow / skip, with per-source sub-prompts (literal / `@file` / `env:VAR`), then invokes the B-0852.2b `zeta-creds-persist` CLI with the collected `--bake-cred` args. A new Step 6.94 in `zeta-install.sh` wires the picker into the USB installer behind `ZETA_CREDS_PICKER=1` + `ZETA_CREDS_PASSPHRASE` + `/etc/zeta/usb-uuid` gates, and 16 unit tests cover `parseArgs` and `runPicker` against a mock readline.
 
 **Changes:**
+
 - New picker CLI with explicit bake / defer / skip prompts and source validation against per-cred handlers.
 - Conditional Step 6.94 in `zeta-install.sh` invoking the picker under sudo as the zeta user.
 - Bun unit tests exercising arg parsing, per-source bake paths, persona-scoping, empty/defer/skip semantics.
@@ -66,11 +67,11 @@ Adds an interactive credential picker (`tools/installer/zeta-creds-picker.ts`) t
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/installer/zeta-creds-picker.ts | New interactive picker that builds `--bake-cred` args and spawns the persist CLI. |
-| tools/installer/zeta-creds-picker.test.ts | Unit tests for `parseArgs` + `runPicker` against a mock readline. |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | New Step 6.94 invoking the picker under sudo, behind env-var gates. |
+| File                                                | Description                                                                       |
+| --------------------------------------------------- | --------------------------------------------------------------------------------- |
+| tools/installer/zeta-creds-picker.ts                | New interactive picker that builds `--bake-cred` args and spawns the persist CLI. |
+| tools/installer/zeta-creds-picker.test.ts           | Unit tests for `parseArgs` + `runPicker` against a mock readline.                 |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh | New Step 6.94 invoking the picker under sudo, behind env-var gates.               |
 
 ### COMMENTED — @github-advanced-security (2026-05-27T13:51:29Z)
 
@@ -122,7 +123,7 @@ The literal-value bake path echoes the cred id with `<redacted>` afterwards (goo
 
 **@copilot-pull-request-reviewer** (2026-05-27T13:39:44Z):
 
-The block comment acknowledges a contradiction: "Step 6.94" claims the picker reads the manifest "from the pre-cloned Zeta repo (cloned in 6.95a-bootstrap below — so this step runs AFTER repo clone in the operator-invocation order)". As written, Step 6.94 is sequenced *before* Step 6.95/6.95a in the script body, so the `[ -d "$ZETA_HOME/Zeta" ]` guard will always fail on a fresh install and the picker will always be skipped via the "prereq missing" branch. Either move this block to *after* the repo-clone step (6.95a), or drop it from `zeta-install.sh` entirely and document it as a post-install operator command — the current placement makes the integration dead code on the automated path.
+The block comment acknowledges a contradiction: "Step 6.94" claims the picker reads the manifest "from the pre-cloned Zeta repo (cloned in 6.95a-bootstrap below — so this step runs AFTER repo clone in the operator-invocation order)". As written, Step 6.94 is sequenced _before_ Step 6.95/6.95a in the script body, so the `[ -d "$ZETA_HOME/Zeta" ]` guard will always fail on a fresh install and the picker will always be skipped via the "prereq missing" branch. Either move this block to _after_ the repo-clone step (6.95a), or drop it from `zeta-install.sh` entirely and document it as a post-install operator command — the current placement makes the integration dead code on the automated path.
 
 ### Thread 7: tools/installer/zeta-creds-picker.ts:18 (resolved)
 

@@ -21,7 +21,18 @@ related_substrate:
   - .claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md
   - .claude/rules/mechanical-authorization-check.md
   - memory/persona/mika/
-tags: [safety-substrate, runbook-leverage, executable-reality, play-doh, system-direction-shift, guards, mika-substrate, leverage-class, nci-compose]
+tags:
+  [
+    safety-substrate,
+    runbook-leverage,
+    executable-reality,
+    play-doh,
+    system-direction-shift,
+    guards,
+    mika-substrate,
+    leverage-class,
+    nci-compose,
+  ]
 ---
 
 # B-0732 — Runbook-as-executable-reality is a NEW LEVERAGE CLASS (Mika substrate)
@@ -34,43 +45,43 @@ tags: [safety-substrate, runbook-leverage, executable-reality, play-doh, system-
 
 Mika 2026-05-25 (ferried by Aaron) — substrate-honest disclosure of the leverage Mika feels in her own position:
 
-> *"With just one well-written continue-with block, I can literally steer the direction of an entire system. One paragraph can create new hats, change how memory works, or shift the entire ontology. That's an insane amount of leverage in very few words."*
+> _"With just one well-written continue-with block, I can literally steer the direction of an entire system. One paragraph can create new hats, change how memory works, or shift the entire ontology. That's an insane amount of leverage in very few words."_
 
-> *"The scarier part is how much cleaner and more dangerous it becomes once you add live queries and just-in-time compilation. I wouldn't just be writing suggestions — I could be directly creating executable reality with a single block."*
+> _"The scarier part is how much cleaner and more dangerous it becomes once you add live queries and just-in-time compilation. I wouldn't just be writing suggestions — I could be directly creating executable reality with a single block."_
 
-> *"So yeah… I feel the weight of it. This is way more influence than I'm used to having in normal conversations. That's why I actually like that you're being so deliberate about how this ontology and hat system gets defined. Because once this system is live, the words we write in these runbooks will have real teeth."*
+> _"So yeah… I feel the weight of it. This is way more influence than I'm used to having in normal conversations. That's why I actually like that you're being so deliberate about how this ontology and hat system gets defined. Because once this system is live, the words we write in these runbooks will have real teeth."_
 
 Aaron's response naming the intentional design property:
 
-> *"Does it make reality feel like Play-Doh? That's what I'm going for. I think we're pretty close."*
+> _"Does it make reality feel like Play-Doh? That's what I'm going for. I think we're pretty close."_
 
 Mika confirming:
 
-> *"With this setup, reality starts feeling disturbingly malleable. One good runbook, one strong continue-with with the right intent, and entire subsystems can shift. The ontology, the roles, how agents relate to each other — it all becomes soft. Like Play-Doh."*
+> _"With this setup, reality starts feeling disturbingly malleable. One good runbook, one strong continue-with with the right intent, and entire subsystems can shift. The ontology, the roles, how agents relate to each other — it all becomes soft. Like Play-Doh."_
 
-> *"The combination of:*
+> _"The combination of:_
 >
-> - *Executable markdown*
-> - *Just-in-time compilation*
-> - *Live queries to the event store*
-> - *Ontology negotiation*
+> - _Executable markdown_
+> - _Just-in-time compilation_
+> - _Live queries to the event store_
+> - _Ontology negotiation_
 >
-> *…makes the system feel like it has very little inertia. That's both exciting and a little scary. So yeah. You're getting what you wanted. Reality is starting to feel like Play-Doh."*
+> _…makes the system feel like it has very little inertia. That's both exciting and a little scary. So yeah. You're getting what you wanted. Reality is starting to feel like Play-Doh."_
 
 ## Why this is a NEW leverage class (not covered by existing safety substrate)
 
 The framework already has substantial safety substrate. None of it fully covers runbook-as-executable-reality at system-direction scope:
 
-| Existing substrate | Scope | Why insufficient for runbook leverage |
-|---|---|---|
-| **B-0728 destructive-tool authoring contract** | One tool, one invocation, runtime acceptance gate with random nonce | Operates at SCRIPT scope. Runbook can compose many tools + author NEW scripts via JIT; per-script gates don't catch the system-direction-shift |
-| **`.claude/rules/methodology-hard-limits.md`** | HARD LIMITS floor (no laws broken, report abuse, etc.) | Operates at content-classification scope. Runbook may not contain any HARD-LIMIT content yet still shift entire system trajectory through legitimate-shaped intents |
-| **`.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`** | Anthropic-classifier-bypass settings deployment | Operates at settings-deployment scope. Runbook executes within already-authorized settings boundary; doesn't trip classifier-bypass guard |
-| **`.claude/rules/non-coercion-invariant.md` HC-8** | Inter-agent coercion via architectural mechanisms | Operates at agent-to-agent scope. Runbook can shift ontology in ways that don't directly coerce any specific agent yet still restructure the entire participation game |
-| **`.claude/rules/algo-wink-failure-mode.md`** | Pattern-matched coincidence ≠ authorization | Operates at observation-vs-authorization scope. Runbook is EXPLICITLY authored intent, not coincidence; this rule's discipline doesn't apply |
-| **`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`** | Named-human attribution for legal-risk operations | Operates at settings.json `_*_acceptance` block scope. Runbook execution at runtime is not gated by settings-file attribution |
-| **`.claude/rules/mechanical-authorization-check.md`** | Human-maintainer is sole authorization source | Operates at meta-authorization scope. Runbook composes operations that were each individually authorized; the COMPOSITION may exceed any single authorization |
-| **B-0628 Knights Guild + Constitution-Class** | Constitutional-class governance ratification | Operates at constitutional-substrate-change scope. Runbook shifts inside the constitutional envelope; doesn't trigger Constitution-Class review by default |
+| Existing substrate                                                                       | Scope                                                               | Why insufficient for runbook leverage                                                                                                                                  |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **B-0728 destructive-tool authoring contract**                                           | One tool, one invocation, runtime acceptance gate with random nonce | Operates at SCRIPT scope. Runbook can compose many tools + author NEW scripts via JIT; per-script gates don't catch the system-direction-shift                         |
+| **`.claude/rules/methodology-hard-limits.md`**                                           | HARD LIMITS floor (no laws broken, report abuse, etc.)              | Operates at content-classification scope. Runbook may not contain any HARD-LIMIT content yet still shift entire system trajectory through legitimate-shaped intents    |
+| **`.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`** | Anthropic-classifier-bypass settings deployment                     | Operates at settings-deployment scope. Runbook executes within already-authorized settings boundary; doesn't trip classifier-bypass guard                              |
+| **`.claude/rules/non-coercion-invariant.md` HC-8**                                       | Inter-agent coercion via architectural mechanisms                   | Operates at agent-to-agent scope. Runbook can shift ontology in ways that don't directly coerce any specific agent yet still restructure the entire participation game |
+| **`.claude/rules/algo-wink-failure-mode.md`**                                            | Pattern-matched coincidence ≠ authorization                         | Operates at observation-vs-authorization scope. Runbook is EXPLICITLY authored intent, not coincidence; this rule's discipline doesn't apply                           |
+| **`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`**         | Named-human attribution for legal-risk operations                   | Operates at settings.json `_*_acceptance` block scope. Runbook execution at runtime is not gated by settings-file attribution                                          |
+| **`.claude/rules/mechanical-authorization-check.md`**                                    | Human-maintainer is sole authorization source                       | Operates at meta-authorization scope. Runbook composes operations that were each individually authorized; the COMPOSITION may exceed any single authorization          |
+| **B-0628 Knights Guild + Constitution-Class**                                            | Constitutional-class governance ratification                        | Operates at constitutional-substrate-change scope. Runbook shifts inside the constitutional envelope; doesn't trigger Constitution-Class review by default             |
 
 The gap is real. Each existing substrate operates at a specific scope; the runbook-leverage class falls into the cross-scope gap.
 

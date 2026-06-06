@@ -46,17 +46,17 @@ Candidate paths in the kernel/initrd any-of family (initial guesses; can be tigh
 
 ```typescript
 const REQUIRED_KERNEL_ANY = [
-  { path: "boot/bzImage" },              // 24.11 legacy
+  { path: "boot/bzImage" }, // 24.11 legacy
   { path: "boot/x86_64-linux/bzImage" }, // per-arch
-  { path: "boot/kernel" },               // generic
-  { path: "boot/vmlinuz" },              // vmlinuz convention
-  { path: "boot/vmlinuz-linux" },        // alt vmlinuz convention
+  { path: "boot/kernel" }, // generic
+  { path: "boot/vmlinuz" }, // vmlinuz convention
+  { path: "boot/vmlinuz-linux" }, // alt vmlinuz convention
 ];
 
 const REQUIRED_INITRD_ANY = [
-  { path: "boot/initrd" },               // 24.11 legacy
-  { path: "boot/x86_64-linux/initrd" },  // per-arch
-  { path: "boot/initrd.img" },           // .img convention
+  { path: "boot/initrd" }, // 24.11 legacy
+  { path: "boot/x86_64-linux/initrd" }, // per-arch
+  { path: "boot/initrd.img" }, // .img convention
 ];
 ```
 

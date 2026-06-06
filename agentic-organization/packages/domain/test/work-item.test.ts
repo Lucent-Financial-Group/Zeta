@@ -14,9 +14,16 @@ import {
 
 function item(type: WorkItemType, state: WorkItemState): WorkItem {
   return {
-    workItemId: "wi-1", organizationId: "org-lfg", workItemType: type, state,
-    title: "t", description: "d", projectId: "proj-1", initiativeId: "init-1",
-    source: WorkItemSource.Internal, createdAt: "2026-05-30T00:00:00.000Z",
+    workItemId: "wi-1",
+    organizationId: "org-lfg",
+    workItemType: type,
+    state,
+    title: "t",
+    description: "d",
+    projectId: "proj-1",
+    initiativeId: "init-1",
+    source: WorkItemSource.Internal,
+    createdAt: "2026-05-30T00:00:00.000Z",
     createdBy: { agentId: "a-1", hatAssignmentId: "ha-1" },
   };
 }
@@ -57,7 +64,10 @@ test("review→in_progress (QA bounce-back / rework) is always legal and gate-fr
 });
 
 test("service requests and reports flow with no heavy gates", () => {
-  equal(transitionRequiresGates(item(WorkItemType.ServiceRequest, WorkItemState.Triage), WorkItemState.Ready).length, 0);
+  equal(
+    transitionRequiresGates(item(WorkItemType.ServiceRequest, WorkItemState.Triage), WorkItemState.Ready).length,
+    0,
+  );
   equal(transitionRequiresGates(item(WorkItemType.Report, WorkItemState.Triage), WorkItemState.Ready).length, 0);
 });
 

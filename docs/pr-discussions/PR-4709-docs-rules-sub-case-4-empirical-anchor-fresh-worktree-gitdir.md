@@ -59,24 +59,22 @@ Clean success under identical saturation ~11min later (Lior 3 procs both attempt
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-23T02:26:00Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `cb83efcaba`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -88,7 +86,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-23T02:26:01Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align sub-case 4 retry policy in this rule**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align sub-case 4 retry policy in this rule**
 
 This new paragraph authorizes a **single retry after orphan cleanup** for sub-case 4, but the same document still states "no working mitigation today" in the sub-case 4 mitigation block and later says to "ABANDON" the shard write when sub-case 4 is hit in the composite discipline. That contradiction creates operational ambiguity for agents under saturation (some will retry, others will abort), which undermines the rule's reliability as a decision gate; update the surrounding policy text in this file so all sub-case 4 guidance is consistent.
 

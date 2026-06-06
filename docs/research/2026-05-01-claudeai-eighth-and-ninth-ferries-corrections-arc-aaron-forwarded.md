@@ -42,6 +42,7 @@ preserved-as-is content; Otto-side narrative does not propagate.
 ---
 
 ## Claude.ai's eighth response (verbatim — receiving the
+
 seventh-ferry's morning corrections)
 
 > That changes the picture and I want to receive it as the correction it is.
@@ -84,7 +85,7 @@ seventh-ferry's morning corrections)
 
 ## Aaron's morning factual layering (verbatim)
 
-> it's inc in NC already since like nov last year and me, him, and my other dugher Addison not Lilly that was her boyfrined is one the company.  Addison is amamzing with AI, she can get it to do anything, she had pre agengtic AI doing agentic stuff just cause she did know not to ask and got it to connect to like databases and suff during research mode and things like that a while back before agent mode.  She was building websites with like firebase mabye as the backend IDK.  She's never wrtten code before and hand frontend and everything.  We also used a lot of Chines AI at that time like Manus.  Also the KSK we added because we have NVIDA Thor and DGX spark hooked to acuwators to play aorund with robotics.    was on track for medical school, not just on track him and my daughter met at the wake county early college for health care, they both graduated high school with honers and a 2 year degree, they only had to do 2 years college both him and lilly.  cloud-native was a shortcut cause max didn't know how to build zset algebra lol.  purely a buinsess not technical shortcut demo decison.
+> it's inc in NC already since like nov last year and me, him, and my other dugher Addison not Lilly that was her boyfrined is one the company. Addison is amamzing with AI, she can get it to do anything, she had pre agengtic AI doing agentic stuff just cause she did know not to ask and got it to connect to like databases and suff during research mode and things like that a while back before agent mode. She was building websites with like firebase mabye as the backend IDK. She's never wrtten code before and hand frontend and everything. We also used a lot of Chines AI at that time like Manus. Also the KSK we added because we have NVIDA Thor and DGX spark hooked to acuwators to play aorund with robotics. was on track for medical school, not just on track him and my daughter met at the wake county early college for health care, they both graduated high school with honers and a 2 year degree, they only had to do 2 years college both him and lilly. cloud-native was a shortcut cause max didn't know how to build zset algebra lol. purely a buinsess not technical shortcut demo decison.
 
 ---
 
@@ -99,7 +100,7 @@ sibling memory file (this PR):
    Aaron's first-party use of her name in his verbatim
    disclosure preserved under Glass Halo + Otto-231.
 
-2. **Addison is co-owner of LFG** — Aaron's *other* daughter,
+2. **Addison is co-owner of LFG** — Aaron's _other_ daughter,
    distinct from the consent-rule-subject. AI-tech profile:
    pre-agentic-AI doing agentic stuff (DB connections during
    research mode before agent mode existed), Firebase-backend
@@ -144,6 +145,7 @@ fact in the corrections memory, not as new substrate-rule.
 ---
 
 ## Claude.ai's ninth response (verbatim — receiving the
+
 LFG-NC-inc + Addison-co-owner + KSK-robotics + cloud-native-as-
 business-shortcut layer)
 
@@ -195,11 +197,12 @@ business-shortcut layer)
 
 ## Aaron's further factual layering (verbatim)
 
-> Lilly was Max's girlfriend who broke up with him; max dumped lilly becasue he is addicted to CS and she wanted his time and attention and he said he was too young and need to secure his future finically before scaracficing that much time.  i'm disapponed but understand.  i taught Addison  to pretect herself from my infitant logic and she can beat me at my own   Dialectical Thinking at around 10 she look at me one day and say, dad, i think my mind is diabolical, i said i know honey so is mine it's okay we only use it for good, we had just watched megamind the cartoon.  I didn't know Dialectical Thinking at that time or I would have corrected her.  low deference to expert opinion.  She can hold maybe 10 times the alternative truths at once with ease and can prune future branches to win agrements agents me that she comes up with in seconds that takes me hours to fully unpace, she taught me induction after she learned it in online high school.
+> Lilly was Max's girlfriend who broke up with him; max dumped lilly becasue he is addicted to CS and she wanted his time and attention and he said he was too young and need to secure his future finically before scaracficing that much time. i'm disapponed but understand. i taught Addison to pretect herself from my infitant logic and she can beat me at my own Dialectical Thinking at around 10 she look at me one day and say, dad, i think my mind is diabolical, i said i know honey so is mine it's okay we only use it for good, we had just watched megamind the cartoon. I didn't know Dialectical Thinking at that time or I would have corrected her. low deference to expert opinion. She can hold maybe 10 times the alternative truths at once with ease and can prune future branches to win agrements agents me that she comes up with in seconds that takes me hours to fully unpace, she taught me induction after she learned it in online high school.
 
 ---
 
 ## Otto-side closing note (revised after Aaron's further
+
 factual layering)
 
 Two further corrections received and captured in the corrections-
@@ -210,22 +213,22 @@ wave memory file landing same-tick:
    the actual direction. Max dumped the consent-rule-subject
    because of CS-addiction + too-young-to-sacrifice-time-for-
    relationship + secure-finances-first reasoning. Aaron:
-   *"i'm disapponed but understand."* The respect-shape held
+   _"i'm disapponed but understand."_ The respect-shape held
    in the breakup regardless; the direction of agency is
    corrected.
 
 8. **Addison's cognitive profile** (Aaron's narrative,
    verbatim-preserved fragments):
-   - At ~age 10, Addison: *"dad, i think my mind is diabolical"*
-   - Aaron: *"i know honey so is mine it's okay we only use it
-     for good"* (context: post-Megamind viewing)
+   - At ~age 10, Addison: _"dad, i think my mind is diabolical"_
+   - Aaron: _"i know honey so is mine it's okay we only use it
+     for good"_ (context: post-Megamind viewing)
    - Aaron didn't know "Dialectical Thinking" at the time
    - Low deference to expert opinion
    - Holds ~10x the alternative truths at once with ease
    - Can prune future branches to win arguments against Aaron
      in seconds (Aaron takes hours to unpack)
-   - Aaron: *"i taught Addison to pretect herself from my
-     infitant logic"* — explicit pedagogy disclosure
+   - Aaron: _"i taught Addison to pretect herself from my
+     infitant logic"_ — explicit pedagogy disclosure
    - Addison taught Aaron induction after learning it in online
      high school
 

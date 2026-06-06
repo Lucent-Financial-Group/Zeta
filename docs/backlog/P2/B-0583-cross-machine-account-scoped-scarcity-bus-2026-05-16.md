@@ -19,7 +19,7 @@ type: feature
 
 Aaron 2026-05-16, refining the B-0570 (scarcity tracker) design after Otto proposed per-agent `/tmp/zeta-bus/scarcity-<agent>.json` files:
 
-> *"this is an account level issue so could cross machine hmm but no sure tracking it in git/github would be any better unless we make certain long lived branches that can be pushed to without a pr or something. myabe worth having a github temp branch with no restrictions for agents for cross mchines communication too outside of the pr itself. just thinking outloud we can build and try a few differnt things. also this resource is tied to my account not a specific agent maybe a shard folder would be better for /tmp or a temp github branch the timestamps would keep it unique without the agent name."*
+> _"this is an account level issue so could cross machine hmm but no sure tracking it in git/github would be any better unless we make certain long lived branches that can be pushed to without a pr or something. myabe worth having a github temp branch with no restrictions for agents for cross mchines communication too outside of the pr itself. just thinking outloud we can build and try a few differnt things. also this resource is tied to my account not a specific agent maybe a shard folder would be better for /tmp or a temp github branch the timestamps would keep it unique without the agent name."_
 
 Two scoping corrections + one architectural opening:
 
@@ -31,13 +31,13 @@ The original B-0570 design captures scarcity-as-substrate; this row refines the 
 
 ## Design space — options to weigh
 
-| Approach | Cross-machine? | Cost trap | Setup overhead | Verdict |
-|---|---|---|---|---|
-| `/tmp/zeta-bus/scarcity-<ts>.json` (machine-local, timestamped) | NO | None | Trivial | Useful for single-machine visibility; insufficient for cross-machine |
-| Long-lived branch on LFG/Zeta with minute-cron pushes from each agent | YES via git fetch | `copilot_code_review: review_on_push: true` in enterprise ruleset #16490134 fires on every push → burns Copilot premium requests at minute cadence | Branch creation + ruleset carve-out | The Copilot review trap is sharp; needs ruleset exclusion |
-| Sidecar repo (e.g., new `LFG/Zeta-bus`) WITHOUT the enterprise ruleset | YES via git fetch | None if ruleset doesn't apply | New repo setup + ruleset configuration | Clean partition; explicit "bus traffic doesn't get code-reviewed" property |
-| GitHub Action cron on AceHack/Zeta that polls + writes single file to a branch | YES; only GitHub writes | One source of truth; runs even with no agent alive | Workflow file + scheduling design | Cleanest if "current state only" is enough; loses per-poll history |
-| Gist with append-only updates | YES via gist API | None | Trivial; gist API supports updates | Less greppable at scale; informal |
+| Approach                                                                       | Cross-machine?          | Cost trap                                                                                                                                          | Setup overhead                         | Verdict                                                                    |
+| ------------------------------------------------------------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------- |
+| `/tmp/zeta-bus/scarcity-<ts>.json` (machine-local, timestamped)                | NO                      | None                                                                                                                                               | Trivial                                | Useful for single-machine visibility; insufficient for cross-machine       |
+| Long-lived branch on LFG/Zeta with minute-cron pushes from each agent          | YES via git fetch       | `copilot_code_review: review_on_push: true` in enterprise ruleset #16490134 fires on every push → burns Copilot premium requests at minute cadence | Branch creation + ruleset carve-out    | The Copilot review trap is sharp; needs ruleset exclusion                  |
+| Sidecar repo (e.g., new `LFG/Zeta-bus`) WITHOUT the enterprise ruleset         | YES via git fetch       | None if ruleset doesn't apply                                                                                                                      | New repo setup + ruleset configuration | Clean partition; explicit "bus traffic doesn't get code-reviewed" property |
+| GitHub Action cron on AceHack/Zeta that polls + writes single file to a branch | YES; only GitHub writes | One source of truth; runs even with no agent alive                                                                                                 | Workflow file + scheduling design      | Cleanest if "current state only" is enough; loses per-poll history         |
+| Gist with append-only updates                                                  | YES via gist API        | None                                                                                                                                               | Trivial; gist API supports updates     | Less greppable at scale; informal                                          |
 
 The "right" choice depends on:
 
@@ -103,9 +103,9 @@ The 2026-05-16 session demonstrated that all agents on this machine (Otto-CLI + 
 
 ## Decomposition into implementation slices
 
-| Slice | Description | Effort | Status |
-|-------|-------------|--------|--------|
-| 1 | \`tools/bg/scarcity-tracker-gist-experiment.ts\` — standalone script to test the Gist append-only updates approach | S | extracted |
-| 2 | Ruleset carve-out experiment — test if a long-lived branch can bypass Copilot review | M | open |
-| 3 | Evaluate experiments and select final design | S | open |
-| 4 | Integrate selected design into \`tools/bg/scarcity-tracker.ts\` | M | open |
+| Slice | Description                                                                                                        | Effort | Status    |
+| ----- | ------------------------------------------------------------------------------------------------------------------ | ------ | --------- |
+| 1     | \`tools/bg/scarcity-tracker-gist-experiment.ts\` — standalone script to test the Gist append-only updates approach | S      | extracted |
+| 2     | Ruleset carve-out experiment — test if a long-lived branch can bypass Copilot review                               | M      | open      |
+| 3     | Evaluate experiments and select final design                                                                       | S      | open      |
+| 4     | Integrate selected design into \`tools/bg/scarcity-tracker.ts\`                                                    | M      | open      |

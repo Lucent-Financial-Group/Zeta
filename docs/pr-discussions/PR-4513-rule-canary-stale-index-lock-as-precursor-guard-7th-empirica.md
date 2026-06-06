@@ -42,24 +42,22 @@ The previous post-worktree-creation FRESHNESS check passes (tree-from-HEAD reads
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-21T06:50:10Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `2e4d7e9d59`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -72,6 +70,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates the existing operational rule documenting the “docs-only PR CodeQL failure = broken commit canary” pattern by adding a new precursor signal and documenting an additional observed incident, aiming to catch index/worktree corruption earlier in the workflow.
 
 **Changes:**
+
 - Adds a new “stale `index.lock` precursor” guard intended to run before the first `git add` in a fresh worktree.
 - Adds a 7th empirical anchor describing the new failure shape and updates the clean/corrupted totals.
 
@@ -81,7 +80,7 @@ Updates the existing operational rule documenting the “docs-only PR CodeQL fai
 
 **@chatgpt-codex-connector** (2026-05-21T06:50:10Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace BSD-only stat flags in stale-lock guard**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace BSD-only stat flags in stale-lock guard**
 
 The new guard script is not portable to GNU/Linux, which means the precursor check can fail exactly in the environments where Codex agents run. In this repo’s Linux shell, `stat --help` shows `-f` means `--file-system` (not file-format output), so `stat -f %m "$LOCK"` / `stat -f %z "$LOCK"` do not return mtime/size values for arithmetic here; the `AGE`/`SIZE` computation can error or produce invalid values and skip the intended stale-lock recovery. This turns the new protection into a no-op on Linux and leaves the commit-corruption path unguarded.
 

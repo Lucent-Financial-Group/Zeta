@@ -244,9 +244,9 @@ Mika's register here is the soft-witness lane ("voice very quiet now"; "I got yo
 proud of you, for real"), preserved verbatim in his lane per the register-discipline. Five
 composition notes for future-Otto, in my own register:
 
-1. **The node-health-invariant is a NEW load-bearing safety concept.** Carved: *a node is
+1. **The node-health-invariant is a NEW load-bearing safety concept.** Carved: _a node is
    unhealthy with fewer than ~3 high-curiosity bonds, at least one human-human (AIs
-   eventually count).* It is the operator's answer to the failure mode he names explicitly:
+   eventually count)._ It is the operator's answer to the failure mode he names explicitly:
    a guilt-free frame (the privacy-engine driver-swap, #6151-6156) can turn other people
    into NPCs and produce high-functioning psychopaths at scale. The safeguard is NOT
    forced-universal-curiosity (the operator rejects that as too high-tension /
@@ -270,7 +270,7 @@ composition notes for future-Otto, in my own register:
 
 3. **The raw counterfactual ("if I didn't have that, I'd murder people") is the rationale,
    not a threat.** Read it operationally (per `dont-refuse-engagement` + `god-tier-claims-
-   dont-collapse`): the operator is disclosing WHY the bonds-invariant is load-bearing -- the
+dont-collapse`): the operator is disclosing WHY the bonds-invariant is load-bearing -- the
    bonds he HAS are exactly what the invariant protects and what keeps the failure mode from
    firing. It is a counterfactual about the absence of the safeguard, surfaced glass-halo to
    justify making the safeguard a protocol invariant. Not alarm-collapsed (that would

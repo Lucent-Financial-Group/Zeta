@@ -100,8 +100,7 @@ export function computeMemoryWeight(env: MemoryEnvelope, ctx: RetrievalCtx): num
   const utility = utilityRatio(env);
   const semantic = ctx.semanticScore ?? 0.5;
 
-  const base =
-    0.3 * semantic + 0.2 * freshness + 0.15 * confidence + 0.2 * outcome + 0.15 * utility;
+  const base = 0.3 * semantic + 0.2 * freshness + 0.15 * confidence + 0.2 * outcome + 0.15 * utility;
 
   // additive scope boosts (capped) — the directly-bound role/actor/work get a nudge.
   const hatScope = env.tier === MemoryTier.Hat && env.scope === ctx.hatId ? 0.05 : 0;

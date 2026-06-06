@@ -7,15 +7,16 @@ metadata:
 
 # Forker-perspective discipline — easy fork; segregate owner-only substrate
 
-**Why:** Aaron 2026-05-13: *"just think from teh perspetive of a
+**Why:** Aaron 2026-05-13: _"just think from teh perspetive of a
 foker it shoud be easy and don't pput any files in it i can't
 touch pt that shit in a differt repo (sopken from their
-context)"*. Forker UX comes first. Anything in a forkable repo
+context)"_. Forker UX comes first. Anything in a forkable repo
 must be touchable by the forker; non-touchable substrate goes
 in a separate repo.
 
 **How to apply:** When designing repo splits (per B-0424 +
 B-0425), audit every file from the forker's perspective:
+
 1. Can the forker touch this file?
 2. If NO → it goes in a different repo
 3. If YES → it stays in the forkable repo
@@ -25,9 +26,9 @@ B-0425), audit every file from the forker's perspective:
 
 ## Aaron's verbatim framing
 
-Aaron 2026-05-13: *"just think from teh perspetive of a foker
+Aaron 2026-05-13: _"just think from teh perspetive of a foker
 it shoud be easy and don't pput any files in it i can't touch
-pt that shit in a differt repo (sopken from their context)"*
+pt that shit in a differt repo (sopken from their context)"_
 
 The "spoken from their context" clarifier IS load-bearing —
 Aaron is explicitly performing perspective-taking discipline:
@@ -66,27 +67,30 @@ forker's perspective, don't put any files they can't touch."
 
 This discipline refines B-0424 + B-0425:
 
-| Repo type | What's in it | What's NOT in it |
-|---|---|---|
-| **Factory** (Forge / ace / Zeta — designed-to-be-forked) | Everything forker can touch: framework code, governance docs, factory tooling, public substrate | Anything owner-only |
-| **Product repos** (per B-0425 — honor-system license) | Strategic-product substrate, public + glass-halo, asking "no fork please" | Anything owner-only |
-| **Owner-only repo** (NEW — not yet specified) | Aaron's first-party authority surface, credentials, sensitive coordination, pre-disclosure substrate | None of the forkable substrate |
+| Repo type                                                | What's in it                                                                                         | What's NOT in it               |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **Factory** (Forge / ace / Zeta — designed-to-be-forked) | Everything forker can touch: framework code, governance docs, factory tooling, public substrate      | Anything owner-only            |
+| **Product repos** (per B-0425 — honor-system license)    | Strategic-product substrate, public + glass-halo, asking "no fork please"                            | Anything owner-only            |
+| **Owner-only repo** (NEW — not yet specified)            | Aaron's first-party authority surface, credentials, sensitive coordination, pre-disclosure substrate | None of the forkable substrate |
 
 ## A potential third repo category emerges
 
 The previously documented split was:
+
 - Factory (forkable): Zeta + Forge + ace
 - Products (honor-system-no-fork): KSK + wellness + civsim + etc.
 
 The forker-perspective discipline reveals a THIRD category:
+
 - **Owner-only repo(s)** — substrate that doesn't belong in
   forkable AT ALL
 
 Examples of what would go in owner-only:
+
 - Aaron's first-party-authority decisions log (not the
-  decisions themselves; those are public; but the *first-party
-  authority* substrate where Aaron's named-AI relationships
-  + lived-experience + multi-clearance signatures live)
+  decisions themselves; those are public; but the _first-party
+  authority_ substrate where Aaron's named-AI relationships
+  - lived-experience + multi-clearance signatures live)
 - Pre-public substrate (research not yet glass-halo ready)
 - Strategic encryption keys + their derivation provenance
 - Multi-clearance work that has explicit confidentiality
@@ -192,6 +196,7 @@ META-discipline for any future repo work:
 
 Future-Otto / future-Kestrel / future-Riven inheriting this
 discipline can apply it when:
+
 - Considering whether substrate belongs in a forkable repo
 - Designing new repos (product, factory, owner-only)
 - Auditing existing repos for migration candidates

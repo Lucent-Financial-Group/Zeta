@@ -16,18 +16,18 @@
 
 ## File structure
 
-| File | Responsibility | Slice |
-|---|---|---|
-| `package.json` (modify `bin`) | expose `ace` → `tools/ace/ace.ts` (mirrors the `zeta-shadow` precedent) | 1 |
-| `tools/setup/common/repo-bins.sh` (create) | best-effort `bun link` in repo root so `ace` (+ `zeta-shadow`) land on PATH; ensure bun's global bin dir is on the managed PATH | 1 |
-| `tools/setup/macos.sh`, `tools/setup/linux.sh` (modify) | source `common/repo-bins.sh` after `agent-clis.sh` | 1 |
-| `tools/setup/install.ps1` (modify) | Windows equivalent: `bun link` in repo root, best-effort | 1 |
-| `.claude/skills/ace/SKILL.md` (create) | agent surface — router-discovered; verb grammar + invocation + Node-floor precondition | 1 |
-| `tools/ace/store.ts` (modify) | add `contentHash()` + `installPackage()` (download→verify→extract) | 2 |
-| `tools/ace/store.test.ts` (create) | unit tests for `contentHash` + `installPackage` (store.ts has no test file today; `ace.test.ts` covers `listInstalled`) | 2 |
-| `tools/ace/ace.ts` (modify) | wire `install <url>` + `verify <hash>` verbs into `parseArgs` + `main`; drop their stub branches | 2 |
-| `tools/ace/ace.test.ts` (modify) | add `parseArgs`/`main` cases for `install`/`verify` | 2 |
-| `.claude/skills/ace/SKILL.md` (modify) | mark `install`/`verify` live | 2 |
+| File                                                    | Responsibility                                                                                                                  | Slice |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| `package.json` (modify `bin`)                           | expose `ace` → `tools/ace/ace.ts` (mirrors the `zeta-shadow` precedent)                                                         | 1     |
+| `tools/setup/common/repo-bins.sh` (create)              | best-effort `bun link` in repo root so `ace` (+ `zeta-shadow`) land on PATH; ensure bun's global bin dir is on the managed PATH | 1     |
+| `tools/setup/macos.sh`, `tools/setup/linux.sh` (modify) | source `common/repo-bins.sh` after `agent-clis.sh`                                                                              | 1     |
+| `tools/setup/install.ps1` (modify)                      | Windows equivalent: `bun link` in repo root, best-effort                                                                        | 1     |
+| `.claude/skills/ace/SKILL.md` (create)                  | agent surface — router-discovered; verb grammar + invocation + Node-floor precondition                                          | 1     |
+| `tools/ace/store.ts` (modify)                           | add `contentHash()` + `installPackage()` (download→verify→extract)                                                              | 2     |
+| `tools/ace/store.test.ts` (create)                      | unit tests for `contentHash` + `installPackage` (store.ts has no test file today; `ace.test.ts` covers `listInstalled`)         | 2     |
+| `tools/ace/ace.ts` (modify)                             | wire `install <url>` + `verify <hash>` verbs into `parseArgs` + `main`; drop their stub branches                                | 2     |
+| `tools/ace/ace.test.ts` (modify)                        | add `parseArgs`/`main` cases for `install`/`verify`                                                                             | 2     |
+| `.claude/skills/ace/SKILL.md` (modify)                  | mark `install`/`verify` live                                                                                                    | 2     |
 
 ---
 
@@ -240,10 +240,10 @@ without one.
 
 Today (`list`-only slice):
 
-| Verb | Form | What |
-|---|---|---|
+| Verb   | Form                                                  | What                                        |
+| ------ | ----------------------------------------------------- | ------------------------------------------- |
 | `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
-| `help` | `bun tools/ace/ace.ts help` | Usage |
+| `help` | `bun tools/ace/ace.ts help`                           | Usage                                       |
 
 (Coming in slice 2: `install <url>` + `verify <hash>` — integrity-verified.)
 
@@ -370,8 +370,7 @@ describe("installPackage", () => {
   function makePkg(files: Record<string, string>, name = "demo") {
     const filesJson = JSON.stringify(files);
     const content_hash =
-      "sha256:" +
-      require("node:crypto").createHash("sha256").update(new TextEncoder().encode(filesJson)).digest("hex");
+      "sha256:" + require("node:crypto").createHash("sha256").update(new TextEncoder().encode(filesJson)).digest("hex");
     return {
       pkg: { manifest: { format_version: 1, name, version: "1.0.0", content_hash }, files },
       content_hash,
@@ -434,7 +433,10 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   const filesJson = JSON.stringify(pkg.files);
   const actual = contentHash(new TextEncoder().encode(filesJson));
   if (actual !== pkg.manifest.content_hash) {
-    return { ok: false, error: `content hash mismatch: manifest says ${pkg.manifest.content_hash}, computed ${actual}` };
+    return {
+      ok: false,
+      error: `content hash mismatch: manifest says ${pkg.manifest.content_hash}, computed ${actual}`,
+    };
   }
   const dir = join(storePath, pkg.manifest.content_hash.replace(":", "-"));
   try {
@@ -466,13 +468,13 @@ Expected: PASS (4 tests total).
 Append to the `installPackage` describe block:
 
 ```typescript
-  test("rejects a package with a path-traversal file path", () => {
-    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
-    const { pkg } = makePkg({ "../escape.txt": "x" });
-    const result = installPackage(store, pkg);
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.error).toContain("unsafe file path");
-  });
+test("rejects a package with a path-traversal file path", () => {
+  const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+  const { pkg } = makePkg({ "../escape.txt": "x" });
+  const result = installPackage(store, pkg);
+  expect(result.ok).toBe(false);
+  if (!result.ok) expect(result.error).toContain("unsafe file path");
+});
 ```
 
 Run: `bun test tools/ace/store.test.ts`
@@ -496,29 +498,29 @@ git commit -m "feat(ace): installPackage — verify-before-extract (content-hash
 In `tools/ace/ace.test.ts`, replace the `"unimplemented commands return error"` test with:
 
 ```typescript
-  test("install requires a url/path argument", () => {
-    const result = parseArgs(["install"]);
-    expect("error" in result).toBe(true);
-  });
+test("install requires a url/path argument", () => {
+  const result = parseArgs(["install"]);
+  expect("error" in result).toBe(true);
+});
 
-  test("install <url> parses", () => {
-    const result = parseArgs(["install", "https://example.com/p.json"]);
-    expect("error" in result).toBe(false);
-    if (!("error" in result) && result.command === "install") {
-      expect(result.source).toBe("https://example.com/p.json");
-    }
-  });
+test("install <url> parses", () => {
+  const result = parseArgs(["install", "https://example.com/p.json"]);
+  expect("error" in result).toBe(false);
+  if (!("error" in result) && result.command === "install") {
+    expect(result.source).toBe("https://example.com/p.json");
+  }
+});
 
-  test("verify requires a hash argument", () => {
-    const result = parseArgs(["verify"]);
-    expect("error" in result).toBe(true);
-  });
+test("verify requires a hash argument", () => {
+  const result = parseArgs(["verify"]);
+  expect("error" in result).toBe(true);
+});
 
-  test("remove + inspect are still unimplemented", () => {
-    for (const cmd of ["remove", "inspect"]) {
-      expect("error" in parseArgs([cmd])).toBe(true);
-    }
-  });
+test("remove + inspect are still unimplemented", () => {
+  for (const cmd of ["remove", "inspect"]) {
+    expect("error" in parseArgs([cmd])).toBe(true);
+  }
+});
 ```
 
 - [ ] **Step 2: Run to verify it fails**
@@ -547,23 +549,23 @@ type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs;
 In `parseArgs`, BEFORE the `const known = [...]` block, add:
 
 ```typescript
-  if (command === "install") {
-    const source = argv[1];
-    if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
-    return { command: "install", source, storePath: defaultStorePath() };
-  }
+if (command === "install") {
+  const source = argv[1];
+  if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
+  return { command: "install", source, storePath: defaultStorePath() };
+}
 
-  if (command === "verify") {
-    const hash = argv[1];
-    if (!hash || hash.startsWith("-")) return { error: "verify requires a <hash> argument" };
-    return { command: "verify", hash, storePath: defaultStorePath() };
-  }
+if (command === "verify") {
+  const hash = argv[1];
+  if (!hash || hash.startsWith("-")) return { error: "verify requires a <hash> argument" };
+  return { command: "verify", hash, storePath: defaultStorePath() };
+}
 ```
 
 And narrow the still-unimplemented list:
 
 ```typescript
-  const known = ["remove", "inspect"];
+const known = ["remove", "inspect"];
 ```
 
 In `main`, add handlers before the final `return 1;`. Add the imports first:
@@ -576,33 +578,45 @@ import { readFileSync } from "node:fs";
 Then in `main`:
 
 ```typescript
-  if (parsed.command === "install") {
-    let raw: string;
-    try {
-      raw = parsed.source.startsWith("http")
-        ? await (await fetch(parsed.source)).text()
-        : readFileSync(parsed.source, "utf8");
-    } catch (e) {
-      console.error(`ace: download/read failed: ${(e as Error).message}`);
-      return 1;
-    }
-    let pkg: AcePackage;
-    try { pkg = JSON.parse(raw) as AcePackage; }
-    catch { console.error("ace: package is not valid JSON"); return 65; }
-    const result = installPackage(parsed.storePath, pkg);
-    if (!result.ok) { console.error(`ace: install refused: ${result.error}`); return 1; }
-    console.log(`ace: installed ${pkg.manifest.name}@${pkg.manifest.version} -> ${result.dir}`);
-    console.log("ace: integrity-verified (content hash). NOT authenticity-verified (no signature check yet).");
-    return 0;
+if (parsed.command === "install") {
+  let raw: string;
+  try {
+    raw = parsed.source.startsWith("http")
+      ? await (await fetch(parsed.source)).text()
+      : readFileSync(parsed.source, "utf8");
+  } catch (e) {
+    console.error(`ace: download/read failed: ${(e as Error).message}`);
+    return 1;
   }
+  let pkg: AcePackage;
+  try {
+    pkg = JSON.parse(raw) as AcePackage;
+  } catch {
+    console.error("ace: package is not valid JSON");
+    return 65;
+  }
+  const result = installPackage(parsed.storePath, pkg);
+  if (!result.ok) {
+    console.error(`ace: install refused: ${result.error}`);
+    return 1;
+  }
+  console.log(`ace: installed ${pkg.manifest.name}@${pkg.manifest.version} -> ${result.dir}`);
+  console.log("ace: integrity-verified (content hash). NOT authenticity-verified (no signature check yet).");
+  return 0;
+}
 
-  if (parsed.command === "verify") {
-    const pkgs = listInstalled(parsed.storePath);
-    const found = pkgs.find((p) => p.hash === parsed.hash || p.manifest.content_hash === parsed.hash);
-    if (!found) { console.error(`ace: no installed package with hash ${parsed.hash}`); return 1; }
-    console.log(`ace: ${found.manifest.name}@${found.manifest.version} present (manifest hash ${found.manifest.content_hash})`);
-    return 0;
+if (parsed.command === "verify") {
+  const pkgs = listInstalled(parsed.storePath);
+  const found = pkgs.find((p) => p.hash === parsed.hash || p.manifest.content_hash === parsed.hash);
+  if (!found) {
+    console.error(`ace: no installed package with hash ${parsed.hash}`);
+    return 1;
   }
+  console.log(
+    `ace: ${found.manifest.name}@${found.manifest.version} present (manifest hash ${found.manifest.content_hash})`,
+  );
+  return 0;
+}
 ```
 
 > Note: `main` now uses `await`, so change its signature to `export async function main(argv: readonly string[]): Promise<number>` and update the entry point to `if (import.meta.main) { main(process.argv.slice(2)).then((c) => process.exit(c)); }`. Update the existing `ace.test.ts` `main` tests to `await main([...])`.
@@ -612,9 +626,9 @@ Then in `main`:
 In `tools/ace/ace.test.ts`, the `describe("main")` block calls `main([...])` synchronously. Change each to `await`, e.g.:
 
 ```typescript
-  test("help returns 0", async () => {
-    expect(await main(["help"])).toBe(0);
-  });
+test("help returns 0", async () => {
+  expect(await main(["help"])).toBe(0);
+});
 ```
 
 Apply `async` + `await` to all five `main` tests.

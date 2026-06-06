@@ -41,6 +41,7 @@ Single finding so far. Per the suspect-by-default Copilot finding-classes thresh
 [PR #3856 thread on line 32](https://github.com/Lucent-Financial-Group/Zeta/pull/3856) — flagged `0 + 0 = 0 corrected-tag annotations` as manual summary inside a `grep -c` transcript. Substrate-honest replacement forms documented in the memory file.
 
 ## Test plan
+
 - [ ] CI green (docs-only PR; gate checks only)
 - [ ] CodeQL "source code seen" canary verified (per [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md): commit tree count should match origin/main ± a few entries)
 
@@ -55,6 +56,7 @@ Single finding so far. Per the suspect-by-default Copilot finding-classes thresh
 Adds durable substrate guidance clarifying how to write reproducible fenced shell transcripts by separating literal command output from any derived/manual summary, and records a brief tick shard noting no new action needed post-session-close.
 
 **Changes:**
+
 - Added a new `memory/feedback_*.md` entry defining the fenced shell transcript hygiene rule and anchoring it to PR #3856’s example.
 - Added a new tick shard file for 2026-05-16T10:43Z capturing post-session-close state and peer activity.
 
@@ -62,10 +64,10 @@ Adds durable substrate guidance clarifying how to write reproducible fenced shel
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                     | Description                                                                                                                                                         |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | memory/feedback_fenced_shell_transcript_hygiene_command_output_vs_derived_summary_otto_cli_2026_05_16.md | Documents the rule for distinguishing literal tool output vs derived summaries inside fenced shell transcripts, with an empirical anchor and “composes with” links. |
-| docs/hygiene-history/ticks/2026/05/16/1043Z.md | Adds a short post-session-close tick shard recording current status and peer activity. |
+| docs/hygiene-history/ticks/2026/05/16/1043Z.md                                                           | Adds a short post-session-close tick shard recording current status and peer activity.                                                                              |
 
 ## Review threads
 

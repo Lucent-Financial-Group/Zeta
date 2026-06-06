@@ -14,7 +14,21 @@ composes_with:
   - B-0822
   - B-0823
   - B-0838
-tags: [substrate-capture, computational-neuroscience, hopfield-networks, boltzmann-machines, rbm, energy-based-models, thousand-brains, hebbian-learning, generative-models, kirsanov, multi-video-capture, fsharp-implementation-target]
+tags:
+  [
+    substrate-capture,
+    computational-neuroscience,
+    hopfield-networks,
+    boltzmann-machines,
+    rbm,
+    energy-based-models,
+    thousand-brains,
+    hebbian-learning,
+    generative-models,
+    kirsanov,
+    multi-video-capture,
+    fsharp-implementation-target,
+  ]
 ---
 
 ## Problem

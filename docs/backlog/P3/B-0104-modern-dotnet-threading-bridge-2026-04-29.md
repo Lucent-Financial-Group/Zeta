@@ -22,8 +22,8 @@ the existing 2026-04-28 Gemini Pro threading research doc
 The review surfaced 5 specific corrections worth integrating
 into the canonical threading documentation.
 
-Aaron's framing: *"we have a few different docs not just the one
-amara mentioned on threading and locks"* — the bridge needs to
+Aaron's framing: _"we have a few different docs not just the one
+amara mentioned on threading and locks"_ — the bridge needs to
 connect:
 
 - `docs/LOCKS.md` (Amara's primary cite — existing lock inventory + replacement criteria)
@@ -116,15 +116,18 @@ remain outstanding.
 # Modern .NET Threading Bridge
 
 ## Purpose
+
 Connect classic threading primitives to Zeta's current lock
 inventory and async lifecycle contracts.
 
 ## Source-of-truth docs
+
 - docs/LOCKS.md
 - openspec/specs/operator-algebra/spec.md
 - docs/research/2026-04-28-gemini-pro-deep-research-threading-...md
 
 ## Replacement map
+
 Thread -> Task / ThreadPool / dedicated scheduler only when justified
 Monitor / lock(obj) -> System.Threading.Lock where C# surface supports it
 ReaderWriterLockSlim -> async mutex only if reader concurrency is not needed
@@ -133,14 +136,19 @@ BackgroundWorker -> Task / async APIs
 ManualResetEvent -> Async coordination primitive where possible
 
 ## Zeta rule
+
 Do not replace a lock because it looks old.
 Replace it only when the new primitive preserves the observable
 contract and reduces measured contention/allocation risk.
 
 ## ReaderWriterLockSlim nuance (see §1 above)
+
 ## System.Threading.Lock nuance (see §2)
+
 ## Frozen collections (see §3)
+
 ## Task.WhenEach (see §4)
+
 ## Operator algebra async lifecycle (see §5)
 ```
 

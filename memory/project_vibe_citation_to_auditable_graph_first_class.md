@@ -6,11 +6,12 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 Aaron 2026-04-20 (in order):
-1. *"also ../scratch parity"*
-2. *"first class feature of source or ace our package
+
+1. _"also ../scratch parity"_
+2. _"first class feature of source or ace our package
    manager ../scratch parity converts the vibe-citation
-   into an auditable inheritance graph"*
-3. *"citations is really the feature"*
+   into an auditable inheritance graph"_
+3. _"citations is really the feature"_
 
 ## The concept (first-class) and its implementations
 
@@ -37,9 +38,9 @@ are the feature, then we have the implementation"):**
   drift between papers and Zeta formal artefacts) to
   every citation: when the target moves / vanishes /
   renames, the graph names the break.
-- **"Remember" primitive** — Aaron 2026-04-20: *"i
+- **"Remember" primitive** — Aaron 2026-04-20: _"i
   think that will help us 'remember' to keep things
-  clean and audit more easy"*. Memory stops being a
+  clean and audit more easy"_. Memory stops being a
   prose soup of "see also X somewhere" and becomes a
   queryable graph. Finding every citation of a
   retired doc is a query, not a grep.
@@ -107,8 +108,8 @@ shape everywhere).
   citation becomes a graph entry, or it's a vibe-citation
   that belongs in prose not in architecture.
 - **When writing the research output for the `../scratch`
-  parity BACKLOG P1**, the output shape is *the graph
-  format itself* — not a markdown inheritance list, but
+  parity BACKLOG P1**, the output shape is _the graph
+  format itself_ — not a markdown inheritance list, but
   a data structure that can plug into the Seed kernel
   or `ace` primitive.
 - **When `ace` gets designed** (future round), its
@@ -150,11 +151,11 @@ audit-cadence invocation. This is gitops for patterns.
 
 - Does not mean blocking the `../scratch` parity
   research entry on the Seed / `ace` implementation.
-  Research phase runs first; the *output shape* is
+  Research phase runs first; the _output shape_ is
   designed to feed the primitive, that's all.
 - Does not mean every cross-repo citation becomes a
   graph. Citations that are genuinely one-off references
-  stay prose. Citations that claim *inheritance* are
+  stay prose. Citations that claim _inheritance_ are
   what this rule targets.
 - Does not mean the Seed kernel grows a new
   responsibility. The primitive may end up in `ace`,

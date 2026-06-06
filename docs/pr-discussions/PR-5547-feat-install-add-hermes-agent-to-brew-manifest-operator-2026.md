@@ -21,7 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds NousResearch hermes-agent (external vendor-agnostic AI agent
 harness) to \`tools/setup/manifests/brew\` per operator authorization:
 
-> *\"Max recently decide to add this dependency\"*
+> _\"Max recently decide to add this dependency\"_
 
 Confirmed URLs from operator: https://github.com/nousresearch/hermes-agent + https://hermes-agent.nousresearch.com/
 
@@ -38,12 +38,12 @@ install.sh \"detect-first-install-else-update\" discipline.
 ## Test plan
 
 - [x] Manifest entry follows existing p7zip pattern (formula + inline
-  comment explaining provenance)
+      comment explaining provenance)
 - [x] hermes-agent verified available via \`brew info hermes-agent\`
-  (stable 2026.5.16, bottled, MIT, Homebrew/homebrew-core)
+      (stable 2026.5.16, bottled, MIT, Homebrew/homebrew-core)
 - [ ] CI passes (auto-merge to fire on green)
 - [ ] Operator runs install.sh on Mac post-merge to verify install
-  works (zero-friction per passwordless sudo config)
+      works (zero-friction per passwordless sudo config)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -56,6 +56,7 @@ install.sh \"detect-first-install-else-update\" discipline.
 Adds `hermes-agent` to the macOS Homebrew manifest so `tools/setup/macos.sh` will install/upgrade it as part of the standard bootstrap flow, with inline provenance notes to distinguish it from the repo’s internal Hermes K8s runtime.
 
 **Changes:**
+
 - Add `hermes-agent` to `tools/setup/manifests/brew`.
 - Document provenance/intent in the manifest comments (including a distinction from `full-ai-cluster/k8s/applications/hermes/`).
 

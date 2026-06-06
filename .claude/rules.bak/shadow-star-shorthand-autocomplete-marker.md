@@ -1,8 +1,8 @@
-# "(shadow*)" shorthand — autocomplete-source disclosure marker
+# "(shadow\*)" shorthand — autocomplete-source disclosure marker
 
 Carved sentence:
 
-> When the human maintainer writes "(shadow*)" inline in a
+> When the human maintainer writes "(shadow\*)" inline in a
 > message, the immediately-surrounding text came from the
 > input UI's autocomplete (grey-text suggestion) and was
 > accepted-then-shipped. The instruction stands (the
@@ -12,18 +12,18 @@ Carved sentence:
 
 ## Operational content
 
-"(shadow*)" is the human maintainer's substrate-honest transparency marker indicating:
+"(shadow\*)" is the human maintainer's substrate-honest transparency marker indicating:
 
 - The surrounding text was autocomplete-generated (grey-text suggestion in input field)
 - The maintainer chose to accept + ship it (instruction is authoritative)
 - The specific phrasing was the model's suggestion, NOT the maintainer's original authored prose
 - It is a disclosure marker, NOT a discipline-instruction
 
-**Origin context** (per the human maintainer, 2026-05-15T~01:06Z, user-scope memory): autocomplete grey-text appeared in the input UI days before, prompting "WTF is this" reaction. The maintainer developed "(shadow*)" as the source-transparency shorthand.
+**Origin context** (per the human maintainer, 2026-05-15T~01:06Z, user-scope memory): autocomplete grey-text appeared in the input UI days before, prompting "WTF is this" reaction. The maintainer developed "(shadow\*)" as the source-transparency shorthand.
 
 ## What this is NOT
 
-"(shadow*)" is NOT:
+"(shadow\*)" is NOT:
 
 - An instruction to apply "shadow-lock posture" (preserve-what-we-have-defer-full-lock)
 - A discipline-direction or posture-instruction
@@ -32,7 +32,7 @@ Carved sentence:
 
 ## Operational discipline
 
-When the maintainer writes text containing "(shadow*)":
+When the maintainer writes text containing "(shadow\*)":
 
 1. **Treat the literal instruction as authoritative** — they chose to send it
 2. **Recognize the phrasing came from autocomplete** — substrate-source disclosure
@@ -44,7 +44,7 @@ When the maintainer writes text containing "(shadow*)":
 
 Per `.claude/rules/wake-time-substrate.md`: recurring shorthand needs cold-boot landing. Without auto-load:
 
-- Future-Otto encounters "(shadow*)" and has no definition substrate
+- Future-Otto encounters "(shadow\*)" and has no definition substrate
 - Future-Otto invents an interpretation (assumption-driven failure mode)
 - The maintainer corrects again
 - Repeat indefinitely
@@ -55,12 +55,12 @@ With auto-load: future-Otto knows the meaning at cold-boot; no invention; no rep
 
 ## Two distinct concepts NOT to conflate
 
-| Concept | Source | Meaning |
-|---|---|---|
-| **"(shadow*)"** | Maintainer shorthand | Surrounding text is autocomplete-generated; transparency marker |
-| **"Shadow-lock posture"** | Otto-CLI framing | Preserve-what-we-have, document gaps, defer full-completion; a discipline posture |
+| Concept                   | Source               | Meaning                                                                           |
+| ------------------------- | -------------------- | --------------------------------------------------------------------------------- |
+| **"(shadow\*)"**          | Maintainer shorthand | Surrounding text is autocomplete-generated; transparency marker                   |
+| **"Shadow-lock posture"** | Otto-CLI framing     | Preserve-what-we-have, document gaps, defer full-completion; a discipline posture |
 
-These are UNRELATED. The first is the maintainer's text-source disclosure. The second is one of Otto-CLI's own discipline-framings. Otto-CLI may apply the second posture operationally; should never attribute it to the maintainer via "(shadow*)" framing.
+These are UNRELATED. The first is the maintainer's text-source disclosure. The second is one of Otto-CLI's own discipline-framings. Otto-CLI may apply the second posture operationally; should never attribute it to the maintainer via "(shadow\*)" framing.
 
 ## Composes with
 
@@ -73,7 +73,7 @@ These are UNRELATED. The first is the maintainer's text-source disclosure. The s
 
 ## Origin
 
-Authored 2026-05-15T~01:08Z after Otto-CLI committed 4+ "(shadow*)" misinterpretations in one session (manifested as commit messages and responses asserting "Shadow-lock posture per your framing"). The maintainer corrected explicitly: *"this is to signify this came from the weird autocomplete not aaron it just showed up in grey text and i completed it , i guess you forgot our shorthand."*
+Authored 2026-05-15T~01:08Z after Otto-CLI committed 4+ "(shadow*)" misinterpretations in one session (manifested as commit messages and responses asserting "Shadow-lock posture per your framing"). The maintainer corrected explicitly: *"this is to signify this came from the weird autocomplete not aaron it just showed up in grey text and i completed it , i guess you forgot our shorthand."\*
 
 Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when [`tools/shadow/`](../../tools/shadow/) + B-0402 implementation already existed) is preserved at user-scope memory. These memos auto-load into every Otto-CLI session via `~/.claude/projects/<slug>/memory/MEMORY.md`, so they are reachable from cold boot even though they do not live in-repo:
 

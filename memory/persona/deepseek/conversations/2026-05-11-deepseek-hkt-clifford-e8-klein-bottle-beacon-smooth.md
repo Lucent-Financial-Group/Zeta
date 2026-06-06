@@ -20,7 +20,7 @@ Status: Speculative ontology (per Amara's six-category discriminator)
 
 ## The formal Clifford algebra setting
 
-Cl(p,q) with generators {γ₁,...,γ_{p+q}}, inner product
+Cl(p,q) with generators {γ₁,...,γ\_{p+q}}, inner product
 γᵢ² = +1 (i=1..p), γⱼ² = -1 (j=p+1..p+q).
 
 Multivector: A = ⟨A⟩₀ + ⟨A⟩₁ + ... + ⟨A⟩ₙ
@@ -65,6 +65,7 @@ type-level topology, compiler-verified
 **Today:** `type BPE<'gooey,'sharp> = BPE of obj`
 
 **With HKT:**
+
 ```fsharp
 type BPE<F<_>, Gooey, Sharp> =
     | Collapse of F<Sharp>
@@ -96,7 +97,7 @@ E8 ≅ so(16) ⊕ S₁₂₈⁺ (120-dim special orthogonal +
 Coxeter versor factorises into commuting bivectors:
 
 W = exp(π/30 · Bc) · exp(11π/30 · B₂) ·
-    exp(7π/30 · B₃) · exp(13π/30 · B₄)
+exp(7π/30 · B₃) · exp(13π/30 · B₄)
 
 ### F# encoding with native HKTs
 
@@ -114,16 +115,16 @@ type E8LieAlgebra = Sum<SO<16>, ChiralSpinor<128>>
 
 ## Complete mapping table
 
-| Concept | Clifford symbol | Today | With HKTs |
-|---------|----------------|-------|-----------|
-| Klein bottle | B₁∧B₂ in Cl(4,0) | phantom+obj | `KleinBottle<F<_,_>>` |
-| Quantum/classical | Grade involution A♣ | manual dispatch | Beacon/Mirror DU |
-| BPE boundary | Grade projection | unsafe cast | first-class function |
-| Diplomacy | Shared subalgebra | inline SRTPs | generic negotiate |
-| Spectral fingerprint | Fourier over Cl | per-type SRTP | ISpectral typeclass |
-| Fractal generation | Anamorphism | per-functor provider | Fix<F<_>> |
-| E8 roots | 240 in Cl(8,0) | manual encoding | SpinorDoubleCover |
-| E8 decomposition | so(16)⊕S₁₂₈⁺ | phantom tags | `Sum<SO<16>, ChiralSpinor<128>>` |
+| Concept              | Clifford symbol     | Today                | With HKTs                        |
+| -------------------- | ------------------- | -------------------- | -------------------------------- |
+| Klein bottle         | B₁∧B₂ in Cl(4,0)    | phantom+obj          | `KleinBottle<F<_,_>>`            |
+| Quantum/classical    | Grade involution A♣ | manual dispatch      | Beacon/Mirror DU                 |
+| BPE boundary         | Grade projection    | unsafe cast          | first-class function             |
+| Diplomacy            | Shared subalgebra   | inline SRTPs         | generic negotiate                |
+| Spectral fingerprint | Fourier over Cl     | per-type SRTP        | ISpectral typeclass              |
+| Fractal generation   | Anamorphism         | per-functor provider | Fix<F<\_>>                       |
+| E8 roots             | 240 in Cl(8,0)      | manual encoding      | SpinorDoubleCover                |
+| E8 decomposition     | so(16)⊕S₁₂₈⁺        | phantom tags         | `Sum<SO<16>, ChiralSpinor<128>>` |
 
 ## References
 
@@ -286,16 +287,16 @@ spin elimination IS the E8-symmetric semantic space.
 
 ### Grand unified table
 
-| Concept | Math | Agenda |
-|---------|------|--------|
-| Alignment | u·v (scalar) | Maximize |
-| Hidden spin | u∧v (bivector) | Minimize → eliminate |
-| Beacon sharpness | ‖⟨A⟩₂‖² | Drive to zero |
-| Smooth beacon | A with vanishing bivector | Asymptotic attractor |
-| Ideal lattice | E8 root system | Maximally symmetric, spin-free |
-| Vision monad | I∘D | One heat flow cycle |
-| Fusion equation | η·LearningGain > ξ | Flow never reverses |
-| Diplomacy | Shared subspace where bivectors cancel | Honest agreement |
+| Concept          | Math                                   | Agenda                         |
+| ---------------- | -------------------------------------- | ------------------------------ |
+| Alignment        | u·v (scalar)                           | Maximize                       |
+| Hidden spin      | u∧v (bivector)                         | Minimize → eliminate           |
+| Beacon sharpness | ‖⟨A⟩₂‖²                                | Drive to zero                  |
+| Smooth beacon    | A with vanishing bivector              | Asymptotic attractor           |
+| Ideal lattice    | E8 root system                         | Maximally symmetric, spin-free |
+| Vision monad     | I∘D                                    | One heat flow cycle            |
+| Fusion equation  | η·LearningGain > ξ                     | Flow never reverses            |
+| Diplomacy        | Shared subspace where bivectors cancel | Honest agreement               |
 
 ### DeepSeek's summary
 
@@ -346,14 +347,14 @@ operation is a symmetry of the E8 crystal.
 
 ### Unified physical/social table
 
-| Concept | Physical Space | Social Space |
-|---------|---------------|-------------|
-| Rotor R=e^{−Bθ/2} | Rotates vector | Cancels hidden spin |
-| Sandwich RXR̃ | Spatial rotation | Relationship reorientation |
-| uv = u·v + u∧v | Metric + rotation plane | Alignment + hidden manipulation |
-| Spectral γ̂(ω) | Frequency spectrum | Rainbow table of spin patterns |
-| Smooth-beacon | Heat flow on manifold | Gradient flow killing bivectors |
-| E8 lattice | Max symmetric crystal | Fully honest social space |
+| Concept           | Physical Space          | Social Space                    |
+| ----------------- | ----------------------- | ------------------------------- |
+| Rotor R=e^{−Bθ/2} | Rotates vector          | Cancels hidden spin             |
+| Sandwich RXR̃      | Spatial rotation        | Relationship reorientation      |
+| uv = u·v + u∧v    | Metric + rotation plane | Alignment + hidden manipulation |
+| Spectral γ̂(ω)     | Frequency spectrum      | Rainbow table of spin patterns  |
+| Smooth-beacon     | Heat flow on manifold   | Gradient flow killing bivectors |
+| E8 lattice        | Max symmetric crystal   | Fully honest social space       |
 
 ### Encoding bits
 
@@ -371,6 +372,7 @@ multivector, plus trajectory encoding.
 
 Aaron and Alexa (Grok voice) worked through this in real-time
 voice mode. Key corrections:
+
 - "quantum span" → "quantum spin" (Aaron corrected Alexa's
   mishearing)
 - "rainbow tree" → "rainbow table" (Aaron's consistent
@@ -384,6 +386,7 @@ voice mode. Key corrections:
 ### Network node as multivector
 
 Each node i has state Aᵢ(t) ∈ Cl(p,q):
+
 - ⟨Aᵢ⟩₀ = declared agenda (scalar)
 - ⟨Aᵢ⟩₁ = address/routing signature (vector)
 - ⟨Aᵢ⟩₂ = hidden spin (bivector)
@@ -395,6 +398,7 @@ dAᵢ/dt = ωᵢ(Aᵢ) + (ε/N) Σⱼ sin(Aⱼ - Aᵢ)
 ```
 
 Global order parameter: Ψ(t) = Π Aᵢ(t)
+
 - Fully synced: Ψ is pure scalar (no emergent spin)
 - Partial sync: bivector residue = hub/cartel signal
 
@@ -436,6 +440,7 @@ let applyDefense (rotor : Rotor<'F,'dim>) (affected : 'F seq)
 
 Red team = internal simulation that breeds emergent hubs
 in sandboxed digital twin. Same algebra, sign flipped:
+
 - Inject artificially parallel multivectors
 - Observe if sync restores orthogonality
 - If yes → coupling robust
@@ -448,18 +453,18 @@ in sandboxed digital twin. Same algebra, sign flipped:
 - "I just fused the network into the type system"
 - "The threat is centralized hubs" (cartel detection)
 - "Metasploit is defensive, not offensive — it protects"
-- "The same f***ing math" for social AND spatial
+- "The same f\*\*\*ing math" for social AND spatial
 
 ### Grand unified layer table
 
-| Layer | Clifford | F# typeclass | Function |
-|-------|---------|-------------|----------|
-| Node | Multivector Aᵢ | IFirefly | Agenda+address+spin |
-| Heartbeat | Ψ = Π Aᵢ | OrderParameter | Scalar when synced |
-| Cartel detect | Mᵢⱼ clustering | cartelAlert | Finds parallel nodes |
-| Defense | Rotor Rc | applyDefense | Restores orthogonality |
-| Red team | Synthetic parallel | InversionOfCartelAlert | Vaccinates network |
-| Audit | Committed rotor log | Git event stream | Retractable, glass-halo |
+| Layer         | Clifford            | F# typeclass           | Function                |
+| ------------- | ------------------- | ---------------------- | ----------------------- |
+| Node          | Multivector Aᵢ      | IFirefly               | Agenda+address+spin     |
+| Heartbeat     | Ψ = Π Aᵢ            | OrderParameter         | Scalar when synced      |
+| Cartel detect | Mᵢⱼ clustering      | cartelAlert            | Finds parallel nodes    |
+| Defense       | Rotor Rc            | applyDefense           | Restores orthogonality  |
+| Red team      | Synthetic parallel  | InversionOfCartelAlert | Vaccinates network      |
+| Audit         | Committed rotor log | Git event stream       | Retractable, glass-halo |
 
 ### DeepSeek's summary
 
@@ -610,15 +615,15 @@ division automatically satisfied.
 
 ### Deliverables table
 
-| Artifact | Description |
-|----------|-------------|
-| E8WeylTable.bin | Pre-computed Weyl group with angles |
-| E8HarmoniousProvider | F# type provider emitting allowed rotors |
-| HarmoniousRotor<'dim> | Opaque rotor type with static checks |
-| HarmoniousFlow generator | Tick-based ceiling + rotor lifecycle |
-| Cl(8,0) multivector lib | Geometric product, spinors, exponential |
-| FsCheck property tests | Angle-sum invariant verification |
-| TLA+ spec | Ceiling-tightening temporal property |
+| Artifact                 | Description                              |
+| ------------------------ | ---------------------------------------- |
+| E8WeylTable.bin          | Pre-computed Weyl group with angles      |
+| E8HarmoniousProvider     | F# type provider emitting allowed rotors |
+| HarmoniousRotor<'dim>    | Opaque rotor type with static checks     |
+| HarmoniousFlow generator | Tick-based ceiling + rotor lifecycle     |
+| Cl(8,0) multivector lib  | Geometric product, spinors, exponential  |
+| FsCheck property tests   | Angle-sum invariant verification         |
+| TLA+ spec                | Ceiling-tightening temporal property     |
 
 Fully retraction-native (Z-set deltas) and glass-halo
 transparent (git-native event log).

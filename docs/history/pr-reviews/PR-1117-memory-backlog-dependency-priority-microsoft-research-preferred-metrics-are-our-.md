@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1117 |
-| Title | memory + backlog: dependency-priority + Microsoft-Research preferred + metrics-are-our-eyes (Helen Keller framing) + B-0147/B-0148/B-0149 (Aaron 2026-05-01) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T13:57:12Z |
-| Merged at | 2026-05-01T14:45:48Z |
-| Merge commit SHA | `2fa374b1c22cda4340eca53e5558f4dee87a2095` |
-| Branch | `substrate-timeseries-db-dependency-priority-metrics-as-eyes-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1117 |
-| Changed files | 16 |
-| Additions / deletions | +1646 / -0 |
+| Field                 | Value                                                                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Number                | 1117                                                                                                                                                         |
+| Title                 | memory + backlog: dependency-priority + Microsoft-Research preferred + metrics-are-our-eyes (Helen Keller framing) + B-0147/B-0148/B-0149 (Aaron 2026-05-01) |
+| Author                | `AceHack` (human)                                                                                                                                            |
+| State                 | MERGED                                                                                                                                                       |
+| Created at            | 2026-05-01T13:57:12Z                                                                                                                                         |
+| Merged at             | 2026-05-01T14:45:48Z                                                                                                                                         |
+| Merge commit SHA      | `2fa374b1c22cda4340eca53e5558f4dee87a2095`                                                                                                                   |
+| Branch                | `substrate-timeseries-db-dependency-priority-metrics-as-eyes-2026-05-01`                                                                                     |
+| Base branch           | `main`                                                                                                                                                       |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1117                                                                                                     |
+| Changed files         | 16                                                                                                                                                           |
+| Additions / deletions | +1646 / -0                                                                                                                                                   |
 
 ## Description
 
@@ -37,7 +37,7 @@ Substrate cluster from Aaron 2026-05-01 (8+ message arc) covering factory depend
 
 - `memory/feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md` — three composing factory-architecture rules:
   1. **Dependency-source priority hierarchy** — Open Source generally → Microsoft (open-source) → CNCF → Apache → MIT-licensed → expand from there. **NEVER proprietary** (hard floor).
-  2. **Microsoft Research as preferred research source** — 25+ years of high-quality output (F#, Infer.NET, z3, Dafny, F*); cite liberally + verify per Otto-364.
+  2. **Microsoft Research as preferred research source** — 25+ years of high-quality output (F#, Infer.NET, z3, Dafny, F\*); cite liberally + verify per Otto-364.
   3. **Metrics-are-our-eyes** — the SRE metric frameworks + timeseries-DB infrastructure are not decoration; they ARE the factory's sensory system. Aaron's Helen-Keller framing precisely-fits: text-channel-only is single-channel-but-developed.
 
 - `docs/backlog/P2/B-0147-timeseries-db-native-in-zsets-multi-dsl-integration-research-aaron-2026-05-01.md` — research B-row. Includes design constraints (high-cardinality first-class + CRDT multi-mode + formal math spec) + open research question (both shapes maybe) + Pareto-improvement methodology spine + algebra-complexity prior. Effort L, P2, Layer 5.
@@ -56,20 +56,20 @@ Substrate cluster from Aaron 2026-05-01 (8+ message arc) covering factory depend
 
 ## Aaron 2026-05-01 verbatim arc highlights
 
-> *"back log timeseries db domean reserach... Open Source Microsoft, Cloud Native Computing Foundation CNCF, Apache, MIT, etc... are our prefered top priorty references and we expand out from there too... pro not."*
+> _"back log timeseries db domean reserach... Open Source Microsoft, Cloud Native Computing Foundation CNCF, Apache, MIT, etc... are our prefered top priorty references and we expand out from there too... pro not."_
 
-> *"that's for all the metrics that's the connection it's not just for fun, it's our eyes"* + *"hellen keller lol"*
+> _"that's for all the metrics that's the connection it's not just for fun, it's our eyes"_ + _"hellen keller lol"_
 
-> *"plus promethius as a sick MCP and promtool and you'll love the query language its like simplifed multidimensonal query language MDX, oh shit backlog f# mdx dsl"* + *"that's might be meta dsl framing"*
+> _"plus promethius as a sick MCP and promtool and you'll love the query language its like simplifed multidimensonal query language MDX, oh shit backlog f# mdx dsl"_ + _"that's might be meta dsl framing"_
 
-> *"why did they make the tradeoff and can we make a different one that gives us better properties without losing good properties"* (Pareto-improvement methodology spine)
+> _"why did they make the tradeoff and can we make a different one that gives us better properties without losing good properties"_ (Pareto-improvement methodology spine)
 
-> *"we need like a RX research user experience researcher"* + *"not to be confused with the reactive extensions rx lol"*
+> _"we need like a RX research user experience researcher"_ + _"not to be confused with the reactive extensions rx lol"_
 
 ## Carved sentences
 
-- *"Metrics are our eyes. The factory without them is blind."*
-- *"Every tradeoff is a tradeoff for reasons. Find better, not different."*
+- _"Metrics are our eyes. The factory without them is blind."_
+- _"Every tradeoff is a tradeoff for reasons. Find better, not different."_
 
 ## Composes with
 
@@ -93,15 +93,15 @@ Substrate cluster from Aaron 2026-05-01 (8+ message arc) covering factory depend
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 32 |
-| Resolved threads | 28 |
-| Unresolved threads | 4 |
-| Total review comments | 32 |
-| Total fix commits (touching thread paths) | 17 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 32    |
+| Resolved threads                          | 28    |
+| Unresolved threads                        | 4     |
+| Total review comments                     | 32    |
+| Total fix commits (touching thread paths) | 17    |
 
 ## Review threads
 
@@ -178,8 +178,9 @@ Substrate cluster from Aaron 2026-05-01 (8+ message arc) covering factory depend
 
 - **`Copilot` (bot)** at 2026-05-01T14:02:05Z on `memory/feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`:359 (association: NONE)
   P1: This `Composes with` pointer targets a memory filename that doesn’t exist under `memory/` in this branch (`feedback_graph_substrate_must_be_tight_in_all_aspects_zset_backed_first_class_event_retractable_columnar_storage_first_of_kind_2026_04_24.md`). Please update to the correct existing filename/path (or drop the reference) so the xref stays navigable after merge.
+
   ```suggestion
-  
+
   ```
 
 ### Thread 6 -- resolved [outdated, collapsed]

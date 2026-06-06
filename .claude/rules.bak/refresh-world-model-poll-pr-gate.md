@@ -10,9 +10,9 @@ Carved sentence:
 When a tick needs PR-gate state, call the TS scripts; do NOT
 write ad-hoc `gh pr view N --json ... | jq ...` chains.
 
-| Need | Command |
-|------|---------|
-| Single PR | `bun tools/github/poll-pr-gate.ts <PR>` |
+| Need                | Command                                                                |
+| ------------------- | ---------------------------------------------------------------------- |
+| Single PR           | `bun tools/github/poll-pr-gate.ts <PR>`                                |
 | Multiple / all open | `bun tools/github/poll-pr-gate-batch.ts <PR1> <PR2> …` or `--all-open` |
 
 Both emit structured JSON with `gate`, `requiredChecks`,
@@ -30,12 +30,12 @@ the script** rather than fall back to one-off bash.
 
 Empirical from the 2026-05-16T04:15Z–05:53Z cascade window (12+ tick autonomous-loop sequence that traversed all four tiers naturally). Each tier names a discrete operational stance:
 
-| Remaining | Tier | Operational stance |
-|---|---|---|
-| > 2000 | **Normal** | Full operations: `gh pr create` + `gh pr merge --auto` + `gh api graphql` thread-resolve + batch-polling. No special discipline. |
-| 1000–2000 | **Cost-aware** | Reduce `--all-open` polling; prefer per-PR queries; defer non-essential `gh pr comment` and `gh pr view --json` calls. Continue normal substantive work (1 PR open per tick is fine). |
-| 200–1000 | **Extreme cost-aware** | Skip batch-polling entirely. Open at most 1 PR per tick. Avoid `gh api graphql` thread sweeps. Inline `gh api rate_limit --jq` (REST, free) to monitor without burning budget. |
-| 0–200 | **Pure-git** | Zero `gh` calls except `gh api rate_limit` (REST, free). All substrate landings via `git fetch` + `git push` to a branch; PR creation deferred to post-reset tick. Tick shards still committed and pushed (no GraphQL needed). |
+| Remaining | Tier                   | Operational stance                                                                                                                                                                                                             |
+| --------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| > 2000    | **Normal**             | Full operations: `gh pr create` + `gh pr merge --auto` + `gh api graphql` thread-resolve + batch-polling. No special discipline.                                                                                               |
+| 1000–2000 | **Cost-aware**         | Reduce `--all-open` polling; prefer per-PR queries; defer non-essential `gh pr comment` and `gh pr view --json` calls. Continue normal substantive work (1 PR open per tick is fine).                                          |
+| 200–1000  | **Extreme cost-aware** | Skip batch-polling entirely. Open at most 1 PR per tick. Avoid `gh api graphql` thread sweeps. Inline `gh api rate_limit --jq` (REST, free) to monitor without burning budget.                                                 |
+| 0–200     | **Pure-git**           | Zero `gh` calls except `gh api rate_limit` (REST, free). All substrate landings via `git fetch` + `git push` to a branch; PR creation deferred to post-reset tick. Tick shards still committed and pushed (no GraphQL needed). |
 
 ### `git log --since="N min ago"` is the wrong query for recent main merges
 
@@ -89,7 +89,7 @@ Despite the fetch printing the same ref milliseconds earlier, the worktree-add f
 
 - **DO** base isolated worktrees on remote-tracking refs: `git worktree add <path> origin/main` or `git worktree add -b <branch> <path> origin/main`
 - **DO NOT** rely on `FETCH_HEAD` under multi-Otto saturation: `git worktree add <path> FETCH_HEAD` may fail with `invalid reference` even right after a successful fetch
-- This is distinct from the `unable to update local ref` wedge documented in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) borrow-on-existing — that wedge fails the *fetch* under ref-lock contention; this one fails the *post-fetch worktree-add* under FETCH_HEAD-file contention. Same multi-Otto-shared-`.git/` root cause class; different observable symptom
+- This is distinct from the `unable to update local ref` wedge documented in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) borrow-on-existing — that wedge fails the _fetch_ under ref-lock contention; this one fails the _post-fetch worktree-add_ under FETCH_HEAD-file contention. Same multi-Otto-shared-`.git/` root cause class; different observable symptom
 
 The 1614Z tick shard documented the anchor; this rule subsection lands the operational discipline for future-Otto cold-boots.
 
@@ -187,16 +187,16 @@ If stuck-plumbing > ~10 OR worktree-add canary hangs past 20s OR `.git/index.loc
 
 The tier applies REGARDLESS of GraphQL remaining (a session can simultaneously be GraphQL-Normal + dotgit-saturated). Substrate landing options narrow to surfaces independent of `.git/`:
 
-| Surface | Available under dotgit-saturation? |
-|---|---|
-| Bus envelopes (`/tmp/zeta-bus/*.json`) | yes |
-| User-scope memory (`~/.claude/projects/.../memory/*.md`) | yes |
-| GraphQL queries (`gh api`, `gh pr comment`, `gh api graphql`) | yes (subject to GraphQL tier) |
-| PR forward-signal comments | yes (subject to GraphQL tier) |
-| In-repo commits via root worktree | blocked (contested, peer-WIP) |
-| Fresh isolated worktree creation | blocked (hangs on pack-dir) |
-| In-repo tick shards | blocked (worktree-required) |
-| Borrow-on-existing isolated worktree | conditional — see THREE preconditions below |
+| Surface                                                       | Available under dotgit-saturation?          |
+| ------------------------------------------------------------- | ------------------------------------------- |
+| Bus envelopes (`/tmp/zeta-bus/*.json`)                        | yes                                         |
+| User-scope memory (`~/.claude/projects/.../memory/*.md`)      | yes                                         |
+| GraphQL queries (`gh api`, `gh pr comment`, `gh api graphql`) | yes (subject to GraphQL tier)               |
+| PR forward-signal comments                                    | yes (subject to GraphQL tier)               |
+| In-repo commits via root worktree                             | blocked (contested, peer-WIP)               |
+| Fresh isolated worktree creation                              | blocked (hangs on pack-dir)                 |
+| In-repo tick shards                                           | blocked (worktree-required)                 |
+| Borrow-on-existing isolated worktree                          | conditional — see THREE preconditions below |
 
 ### Borrow-on-existing preconditions (empirical 2026-05-18T23:36Z–23:44Z)
 

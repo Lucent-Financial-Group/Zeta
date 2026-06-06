@@ -5,7 +5,7 @@
 - **Claimed at:** 2026-05-09T09:18:00Z
 - **ETA:** 2026-05-09T09:45:00Z
 - **Scope:** B-0212 Phase 1 close-out — complete ephemeral.ts library, wire shadow outlet into SAFE-AUTONOMOUS-ACTIONS.md Tier 1
-- **Durable target:** tools/shadow-outlet/ephemeral.ts, docs/SAFE-AUTONOMOUS-ACTIONS.md, docs/backlog/P1/B-0212-*.md
+- **Durable target:** tools/shadow-outlet/ephemeral.ts, docs/SAFE-AUTONOMOUS-ACTIONS.md, docs/backlog/P1/B-0212-\*.md
 - **Platform mirror:** https://github.com/Lucent-Financial-Group/Zeta/issues (B-0212)
 
 ## Notes

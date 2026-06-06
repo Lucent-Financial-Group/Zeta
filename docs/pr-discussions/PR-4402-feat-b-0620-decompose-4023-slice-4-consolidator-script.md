@@ -22,24 +22,22 @@ Maji (Lior) Execution: Decomposing slice 4 from blob PR #4023.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T13:03:59Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `17636b0927`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -52,11 +50,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new per-row backlog file for B-0620 slice 4, capturing the intended scope and acceptance criteria for an inventory consolidator script as part of decomposing the larger B-0620 / PR #4023 effort.
 
 **Changes:**
+
 - Introduces a new backlog slice row describing `tools/inventory/consolidate.ts` responsibilities.
 - Adds initial acceptance checklist items (adapter enumeration, dedupe, unified output shape).
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T13:14:20Z)
-
 
 ### 💡 Codex Review
 
@@ -64,17 +62,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `c028f7e7e6`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -104,7 +101,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 c
 
 **@chatgpt-codex-connector** (2026-05-20T13:03:59Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Add required `title` frontmatter to backlog item**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Add required `title` frontmatter to backlog item**
 
 This backlog entry is missing a `title` key in frontmatter, which makes it invisible to the autonomous backlog picker: `readBacklogItems` skips any file where `!id || !title` (`tools/backlog/autonomous-pickup.ts`, lines 292-295). As written, this slice will never be loaded into pickup/priority logic, so decomposition work can silently stall.
 
@@ -114,7 +111,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-20T13:03:59Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point acceptance criteria at an existing spec file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point acceptance criteria at an existing spec file**
 
 The acceptance criterion references `AI-TEAM-FINANCIAL-SUBSTRATE.md`, but there is no such file in this repository (repo-wide filename search returns no match), so the target output shape is not verifiable from source. This makes the task definition ambiguous for whoever implements the slice and weakens reviewability of completion.
 
@@ -148,7 +145,7 @@ Acceptance criteria references `AI-TEAM-FINANCIAL-SUBSTRATE.md`, but that file n
 
 **@chatgpt-codex-connector** (2026-05-20T13:14:20Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use numeric backlog ID for autopick compatibility**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use numeric backlog ID for autopick compatibility**
 
 Setting `id` to `B-0620.4` makes this row incompatible with the autonomous claim bootstrap path: `empty-queue-pickup` forwards `selected.id` directly as `--backlog-id` and builds `slug` from it (`tools/backlog/empty-queue-pickup.ts` lines 180-187), but `claim-worktree-bootstrap` only accepts `backlogId` matching `^B-[0-9]+$` and slugs matching `backlog-[0-9]+` (`tools/backlog/claim-worktree-bootstrap.ts` lines 173 and 201-202). When this item is selected, bootstrap will fail with an invalid id/slug error, so the backlog runner cannot claim or execute this slice.
 

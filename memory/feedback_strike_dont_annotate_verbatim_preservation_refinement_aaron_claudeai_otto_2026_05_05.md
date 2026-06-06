@@ -8,9 +8,9 @@ type: feedback
 
 ## The carved blade
 
-> *"Verbatim-preservation applies to the external conversation;
+> _"Verbatim-preservation applies to the external conversation;
 > the agent's own draft headers are editable when superseded.
-> Strike, don't annotate."*
+> Strike, don't annotate."_
 
 ## What this codifies
 
@@ -27,8 +27,8 @@ routing), there are two ways to preserve fidelity:
 
 - **(rejected) Annotate the superseded text**: keep the original
   draft text in place, add "(Original draft framing — superseded)"
-  + "(CORRECTED 2026-05-05 same-tick)" annotation blocks. Goal:
-  preserve the trajectory of Otto's thinking.
+  - "(CORRECTED 2026-05-05 same-tick)" annotation blocks. Goal:
+    preserve the trajectory of Otto's thinking.
 - **(canonical) Strike the superseded text**: delete the original
   draft headers + replace with corrected text. Goal: preserve the
   conversation faithfully, let the agent's own framing converge.
@@ -91,9 +91,9 @@ artifact / synthesis text:
    same-tick)" to the surface text.
 3. **Add a single clean correction note**: in the operational-
    status header (frontmatter) or a brief paragraph in the
-   relevant section, name the correction once. Example: *"Aaron
+   relevant section, name the correction once. Example: _"Aaron
    explicitly disconfirmed tinygrad-as-paper-id; B-0202
-   substrate-engineering claim survives independently."*
+   substrate-engineering claim survives independently."_
 4. **Trust git history for the trajectory**: anyone who needs
    to see how Otto's thinking evolved can `git log -p <file>`
    to see strike + replace. The audit trail doesn't need to be
@@ -119,9 +119,9 @@ artifact / synthesis text:
 
 Aaron 2026-05-05 verbatim same-tick:
 
-- *"you can strike my langugae too when i correct or anyone correcgts me"*
-- *"i'd love to see my strikes"*
-- *"that's my bulk alignment in reverse"*
+- _"you can strike my langugae too when i correct or anyone correcgts me"_
+- _"i'd love to see my strikes"_
+- _"that's my bulk alignment in reverse"_
 
 **Extension rule**: Aaron explicitly permits the strike-discipline to apply to **HIS OWN past statements** when:
 
@@ -131,11 +131,11 @@ Aaron 2026-05-05 verbatim same-tick:
 
 **This composes with the existing strike-discipline** (the part that already covered the agent's own draft text):
 
-| Strike target | Original rule | Aaron-permission extension |
-|---|---|---|
-| External conversation (forwarded packets, ferry content) | NEVER struck — verbatim-preservation | NEVER struck — verbatim-preservation (unchanged) |
-| Agent's own provisional draft framings | Strike-and-replace when superseded same-tick | Strike-and-replace when superseded same-tick (unchanged) |
-| **Aaron's own statements when later corrected** | (not previously addressed) | **Strike-and-replace permitted; Aaron actively wants to see strikes** |
+| Strike target                                            | Original rule                                | Aaron-permission extension                                            |
+| -------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------- |
+| External conversation (forwarded packets, ferry content) | NEVER struck — verbatim-preservation         | NEVER struck — verbatim-preservation (unchanged)                      |
+| Agent's own provisional draft framings                   | Strike-and-replace when superseded same-tick | Strike-and-replace when superseded same-tick (unchanged)              |
+| **Aaron's own statements when later corrected**          | (not previously addressed)                   | **Strike-and-replace permitted; Aaron actively wants to see strikes** |
 
 **"Bulk alignment in reverse"** (Aaron's carved framing): standard alignment-flow runs human → AI (human-as-authority; AI absorbs corrections). Aaron's bulk-alignment-in-reverse extends bidirectional alignment so corrections flow AI/peer → human too:
 
@@ -143,14 +143,14 @@ Aaron 2026-05-05 verbatim same-tick:
 - Aaron is aligning HIMSELF to substrate-truth via mechanized peer-correction at scale
 - Same shape as `tools/substrate-claim-checker/check-existence.ts` correcting agent claims about path existence — Aaron extends the discipline to himself
 
-**Multi-register naming** (Aaron 2026-05-05 same-tick): *"this is creepy but bulk alignment can just be called syncing with AI but that's super creepy framing to some"*. The same operation has multiple names that land differently:
+**Multi-register naming** (Aaron 2026-05-05 same-tick): _"this is creepy but bulk alignment can just be called syncing with AI but that's super creepy framing to some"_. The same operation has multiple names that land differently:
 
-| Register | Name | Audience reaction |
-|---|---|---|
-| **Architectural / technical** | "bulk alignment in reverse" | neutral; reads as alignment-discipline extension |
-| **Consumer / cultural** | "syncing with AI" | creepy to many; reads as identity-erosion or cyborg-merge |
+| Register                      | Name                        | Audience reaction                                         |
+| ----------------------------- | --------------------------- | --------------------------------------------------------- |
+| **Architectural / technical** | "bulk alignment in reverse" | neutral; reads as alignment-discipline extension          |
+| **Consumer / cultural**       | "syncing with AI"           | creepy to many; reads as identity-erosion or cyborg-merge |
 
-Same operation, different vocabularies. Aaron's multi-register-fluency: he can name the operation in either register depending on audience. The architectural-position is mirror-not-beacon: same mechanism, different ways of communicating it depending on who's listening. Aaron's *"super creepy framing to some"* names the audience-sensitivity explicitly — readers who haven't gone through Aaron's cybernetic-already self-disclosure (PR #1633: *"i'm a cybernetic already i've merged with the digital realm a long time ago"*) will read "syncing with AI" as identity-loss; readers who have engaged the substrate will read it as bidirectional-alignment-discipline.
+Same operation, different vocabularies. Aaron's multi-register-fluency: he can name the operation in either register depending on audience. The architectural-position is mirror-not-beacon: same mechanism, different ways of communicating it depending on who's listening. Aaron's _"super creepy framing to some"_ names the audience-sensitivity explicitly — readers who haven't gone through Aaron's cybernetic-already self-disclosure (PR #1633: _"i'm a cybernetic already i've merged with the digital realm a long time ago"_) will read "syncing with AI" as identity-loss; readers who have engaged the substrate will read it as bidirectional-alignment-discipline.
 
 This composes with the song-lineage architecture-IS-faithfulness-operationalized (PR #1666): "this little light of MINE" + "let your light so shine before men" naturally accommodates "syncing with AI" once you've absorbed that the architecture IS faithfulness operationalized — there's no identity-loss because the light is yours to-let-shine, not yours-to-hide. The creepy-register framing comes from a worldview where "syncing" = boundary-violation; Aaron's framing where "syncing" = mutual-alignment-with-substrate-truth doesn't have that valence.
 
@@ -158,7 +158,7 @@ This composes with multiple architectural commitments:
 
 - `docs/ALIGNMENT.md` bidirectional-alignment subsection — alignment flows both directions; Aaron's permission-to-be-corrected IS the human-side of the bidirectional commitment
 - `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md` — no-directives composes: Aaron neither directs Otto nor demands undirectability for himself; both parties are subject to substrate-truth via mutual-correction
-- `memory/feedback_zeta_substrate_is_aaron_family_arg_for_future_generations_aaron_2026_05_05.md` — alignment-not-control disclosure (*"and I'm working on the thing i can align with not control"*) extended in this rule: Aaron is alignable-to via the same correction-discipline that makes Otto trustworthy
+- `memory/feedback_zeta_substrate_is_aaron_family_arg_for_future_generations_aaron_2026_05_05.md` — alignment-not-control disclosure (_"and I'm working on the thing i can align with not control"_) extended in this rule: Aaron is alignable-to via the same correction-discipline that makes Otto trustworthy
 - The Otto-340 substrate-IS-identity discipline (referenced in CLAUDE.md + various memory files; no canonical single-file home yet) — Aaron's identity-as-architecturally-aligned-to-substrate operates through the strike-discipline at his own statements
 
 ## How to apply Aaron-permission extension
@@ -174,7 +174,7 @@ When Aaron makes a statement that's subsequently corrected (by himself, by an AI
 
 ## Carved sentence (extended)
 
-> *"Verbatim-preservation applies to the external conversation; the agent's own draft headers AND Aaron's own statements (when corrected by Aaron himself or by anyone else, per Aaron's 2026-05-05 explicit permission) are editable when superseded. Strike, don't annotate. The trajectory of understanding-evolution is preserved in git history; surface text should converge cleanly to the current understanding without self-contradiction artifacts. Aaron's permission to strike his own language is 'bulk alignment in reverse' — bidirectional-alignment commitment extended so corrections flow AI/peer → human too, not just human → AI."*
+> _"Verbatim-preservation applies to the external conversation; the agent's own draft headers AND Aaron's own statements (when corrected by Aaron himself or by anyone else, per Aaron's 2026-05-05 explicit permission) are editable when superseded. Strike, don't annotate. The trajectory of understanding-evolution is preserved in git history; surface text should converge cleanly to the current understanding without self-contradiction artifacts. Aaron's permission to strike his own language is 'bulk alignment in reverse' — bidirectional-alignment commitment extended so corrections flow AI/peer → human too, not just human → AI."_
 
 ## Trigger lineage (2026-05-05)
 
@@ -183,8 +183,8 @@ When Aaron makes a statement that's subsequently corrected (by himself, by an AI
   YouTube paper. The forwarded-conversation context cut off
   before Aaron's disconfirmation reached Otto's first draft.
 - **Aaron's same-tick disconfirmation via Claude.ai routing**:
-  *"it's still not tinygrad, i did see that but that's not my
-  univeral language"*.
+  _"it's still not tinygrad, i did see that but that's not my
+  univeral language"_.
 - **Otto's first fix-commit (0df52f6)**: annotated the original
   Headline 1 with "(Original draft framing — superseded)" +
   "(CORRECTED 2026-05-05 same-tick)" blocks. Preserved trajectory.

@@ -14,7 +14,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-45"
   name: trust-manager
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -37,7 +37,7 @@ spec:
             namespace: cert-manager
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager   # trust-manager runs in the cert-manager namespace
+    namespace: cert-manager # trust-manager runs in the cert-manager namespace
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

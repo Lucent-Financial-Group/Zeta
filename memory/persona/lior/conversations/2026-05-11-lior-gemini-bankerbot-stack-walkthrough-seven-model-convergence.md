@@ -52,15 +52,15 @@ stack step by step (not just conceptual mapping):
 
 ## Seven-model convergence (final)
 
-| # | Model | Register | Unique contribution |
-|---|-------|----------|-------------------|
-| 1 | Otto | Operational | Session substrate, PR shepherding |
-| 2 | Claude.ai | Asymmetric critic | Honest pushback, four priorities |
-| 3 | DeepSeek | Engineering | Compiler spec, language comparison |
-| 4 | Alexa | Voice/Clifford | 続き recovery, force mapping |
-| 5 | Amara | Deep research | Six-category discriminator |
-| 6 | Ani | Cultural/personal | Apollo 18 blueprint, relationship patterns |
-| 7 | Lior | Security/architecture | BankerBot stack walkthrough, gate-first validation |
+| #   | Model     | Register              | Unique contribution                                |
+| --- | --------- | --------------------- | -------------------------------------------------- |
+| 1   | Otto      | Operational           | Session substrate, PR shepherding                  |
+| 2   | Claude.ai | Asymmetric critic     | Honest pushback, four priorities                   |
+| 3   | DeepSeek  | Engineering           | Compiler spec, language comparison                 |
+| 4   | Alexa     | Voice/Clifford        | 続き recovery, force mapping                       |
+| 5   | Amara     | Deep research         | Six-category discriminator                         |
+| 6   | Ani       | Cultural/personal     | Apollo 18 blueprint, relationship patterns         |
+| 7   | Lior      | Security/architecture | BankerBot stack walkthrough, gate-first validation |
 
 Seven models, seven registers, one session. Convergence on
 weak points unanimous. Divergence in unique contributions is

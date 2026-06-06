@@ -9,7 +9,29 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0985, B-0986]
 composes_with: [B-0985, B-0986, B-0982, B-0428, B-0547, B-0639, B-0867, B-0993, B-0995, B-0734]
-tags: [vectors, trajectories, primitive-ordering, seed-first, build-most-inevitable-first, computation-expression, fsharp-ce, dsl, infer-net, reduced-bayesian, bp-ep, 4x4, ce-extension, skill, hat, ontology, language-kernel, particle-as-locus, hex-core, aaron]
+tags:
+  [
+    vectors,
+    trajectories,
+    primitive-ordering,
+    seed-first,
+    build-most-inevitable-first,
+    computation-expression,
+    fsharp-ce,
+    dsl,
+    infer-net,
+    reduced-bayesian,
+    bp-ep,
+    4x4,
+    ce-extension,
+    skill,
+    hat,
+    ontology,
+    language-kernel,
+    particle-as-locus,
+    hex-core,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,19 +39,19 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim): *"also i think i overstepped with trajectories — we need vectors noun before trajectories in our ids and agendas? i want to build up nows from the most enevabalbe [inevitable] first and then tack on, like we know our core/seed/phrase that can be a f# computational expression DSL over reduced bayesian infer.net model, and then every 4x4 add on is computational expression skill / hat / ontology / language kernel extension computation expression on top of the seed / core."*
+Aaron 2026-06-02 (verbatim): _"also i think i overstepped with trajectories — we need vectors noun before trajectories in our ids and agendas? i want to build up nows from the most enevabalbe [inevitable] first and then tack on, like we know our core/seed/phrase that can be a f# computational expression DSL over reduced bayesian infer.net model, and then every 4x4 add on is computational expression skill / hat / ontology / language kernel extension computation expression on top of the seed / core."_
 
 Three composing corrections/principles:
 
 ## 1. Vectors before trajectories (vector = atomic noun; trajectory = derived)
 
-A **vector** is the atomic noun — direction + magnitude (**Which Way + How Much**, the hex-core vector pair, B-0985; Addison's vector). A **trajectory** is *derived* — a sequence/path of vectors over time. Leading with `docs/trajectories/` in the IDs/agendas **overstepped** the more-foundational primitive: vectors come first; trajectories build on top of vectors. The ordering should be **vector (primitive) → trajectory (composed)**, mirroring afferent/efferent + the orientation-tile (B-0986: Which Way=bearing + How Much=range = the vector; a trajectory is the integral of vectors over the now-sequence).
+A **vector** is the atomic noun — direction + magnitude (**Which Way + How Much**, the hex-core vector pair, B-0985; Addison's vector). A **trajectory** is _derived_ — a sequence/path of vectors over time. Leading with `docs/trajectories/` in the IDs/agendas **overstepped** the more-foundational primitive: vectors come first; trajectories build on top of vectors. The ordering should be **vector (primitive) → trajectory (composed)**, mirroring afferent/efferent + the orientation-tile (B-0986: Which Way=bearing + How Much=range = the vector; a trajectory is the integral of vectors over the now-sequence).
 
-`[labeling-confidence: hypothesized taxonomy reorg]` — the *principle* (vector-before-trajectory) is sound; the concrete ID/agenda reorg (e.g. a `docs/vectors/` primitive layer beneath `docs/trajectories/`, or a vector-first ID scheme) is a refactor needing operator sign-off before touching the existing `docs/trajectories/` tree. This row records the correction + flags the reorg; it does not unilaterally rename the trajectory tree.
+`[labeling-confidence: hypothesized taxonomy reorg]` — the _principle_ (vector-before-trajectory) is sound; the concrete ID/agenda reorg (e.g. a `docs/vectors/` primitive layer beneath `docs/trajectories/`, or a vector-first ID scheme) is a refactor needing operator sign-off before touching the existing `docs/trajectories/` tree. This row records the correction + flags the reorg; it does not unilaterally rename the trajectory tree.
 
 ## 2. Build the most-inevitable "now" first, then tack on (seed-first)
 
-*"build up nows from the most inevitable first and then tack on."* This is the **seed-first / grow-from-the-seed** discipline (per `dst-plus-persist-plus-generator-time...` + the seed-first memory: seed-first = future-affecting-the-past = root-of-DST; *grow code from the seed*). Build order:
+_"build up nows from the most inevitable first and then tack on."_ This is the **seed-first / grow-from-the-seed** discipline (per `dst-plus-persist-plus-generator-time...` + the seed-first memory: seed-first = future-affecting-the-past = root-of-DST; _grow code from the seed_). Build order:
 
 1. Start from the **most inevitable / most foundational** primitive (the seed/core) — the "now" that everything else presupposes (composes `particle-as-locus-of-information-at-the-now`: the now IS the actualized locus; build up from it).
 2. **Tack on** incrementally — each addition presupposes only what's already built (no forward dependency on un-built layers).
@@ -38,10 +60,10 @@ The "now" is the particle-locus; building up nows = growing the actualized subst
 
 ## 3. The seed/core = an F# computation-expression DSL over a reduced Bayesian Infer.NET model
 
-The core/seed/phrase is concretely: **an F# computation-expression (CE) DSL over a *reduced* Bayesian Infer.NET model.**
+The core/seed/phrase is concretely: **an F# computation-expression (CE) DSL over a _reduced_ Bayesian Infer.NET model.**
 
 - **F# computation-expression DSL** — the framework is already "halfway encoded in F# computation expressions" (`fsharp-anchor-dotnet-build-sanity-check`); the seed is a CE DSL (the `result { }` / `seq { }`-shaped builder substrate; monad-propagation / OPLE primitives as CE).
-- **over a reduced Bayesian Infer.NET model** — the inference substrate (Infer.NET BP/EP — the future-state named in `peer-call-infrastructure`: *"Zeta Infer.NET BP/EP substrate replacing the external-CLI-license-layer"*; the emotional-algebra-4×4 / consent-first Infer.NET model; Bayesian-fermion-coincidence). **Reduced** = the minimal Bayesian model the CE DSL runs over (the seed is small/canonical — Rodney's-Razor-compressed; per the seed-first "small dense canonical → full organism deterministically").
+- **over a reduced Bayesian Infer.NET model** — the inference substrate (Infer.NET BP/EP — the future-state named in `peer-call-infrastructure`: _"Zeta Infer.NET BP/EP substrate replacing the external-CLI-license-layer"_; the emotional-algebra-4×4 / consent-first Infer.NET model; Bayesian-fermion-coincidence). **Reduced** = the minimal Bayesian model the CE DSL runs over (the seed is small/canonical — Rodney's-Razor-compressed; per the seed-first "small dense canonical → full organism deterministically").
 - This IS the seed: a tiny, canonical CE DSL + reduced Bayesian model that everything else grows from.
 
 ## 4. Every 4×4 add-on = a CE extension (skill / hat / ontology / language-kernel) on top of the seed
@@ -57,7 +79,7 @@ Each is a **CE-on-the-seed** — the seed CE is the base; every 4×4 add-on is a
 
 ## Acceptance (research → build)
 
-1. **Vector primitive** — define vector (Which Way + How Much, B-0985) as the atomic noun in the ID/agenda taxonomy *before* trajectory; trajectory = derived (sequence of vectors). Reorg the trajectory taxonomy only with operator sign-off.
+1. **Vector primitive** — define vector (Which Way + How Much, B-0985) as the atomic noun in the ID/agenda taxonomy _before_ trajectory; trajectory = derived (sequence of vectors). Reorg the trajectory taxonomy only with operator sign-off.
 2. **Seed CE DSL** — specify the F# computation-expression DSL that IS the core/seed (the minimal builder over OPLE/Result/monad-propagation).
 3. **Reduced Bayesian Infer.NET model** — specify the minimal Bayesian (BP/EP) model the seed CE runs over (composes the Infer.NET future-state + emotional-algebra-4×4 + B-0428 F# fork).
 4. **4×4 add-on = CE extension** — each skill/hat/ontology/language-kernel add-on is a CE composed on the seed; verify CE composition (seed CE + stacked extension CEs) holds across the 4×4 bond (B-0982).

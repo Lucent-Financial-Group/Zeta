@@ -18,39 +18,39 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-24T~02:30Z: *"yes capture pattern r (shadow*)"*
+Aaron 2026-05-24T~02:30Z: _"yes capture pattern r (shadow_)"\*
 
 Adds **Pattern R** to the Amazon vendor-management corpus, closing the Pattern O-through-R full dispute-resolution lifecycle.
 
 ## Resolution captured
 
-> *"we are back to vendor neutral accounting they enabled the serial numbers i verivied they all worked and cancled the specifc 4 they over resupplied we are even now"*
+> _"we are back to vendor neutral accounting they enabled the serial numbers i verivied they all worked and cancled the specifc 4 they over resupplied we are even now"_
 
-| Phase | Net vs original purchase |
-|---|---|
-| Original order (15 items, $3K) | 0 |
-| Initial delivery | -11 items |
-| Pattern P over-supply | +4 over |
-| Pattern Q deactivation | net 0 functional |
-| **Pattern R resolution** | **net 0, full functional** |
+| Phase                          | Net vs original purchase   |
+| ------------------------------ | -------------------------- |
+| Original order (15 items, $3K) | 0                          |
+| Initial delivery               | -11 items                  |
+| Pattern P over-supply          | +4 over                    |
+| Pattern Q deactivation         | net 0 functional           |
+| **Pattern R resolution**       | **net 0, full functional** |
 
 ## Pattern O-through-R full lifecycle
 
-| Pattern | Description |
-|---|---|
-| **O** | Vendor's wear-down design intent |
-| **P** | Customer parallel-channel persistence → over-fulfillment |
-| **Q** | Vendor's post-delivery deactivation counter (cloud-service-attachment) |
-| **R** | Customer-driven balancing back to vendor-neutral |
+| Pattern | Description                                                            |
+| ------- | ---------------------------------------------------------------------- |
+| **O**   | Vendor's wear-down design intent                                       |
+| **P**   | Customer parallel-channel persistence → over-fulfillment               |
+| **Q**   | Vendor's post-delivery deactivation counter (cloud-service-attachment) |
+| **R**   | Customer-driven balancing back to vendor-neutral                       |
 
 ## KEY INSIGHT — Pattern R is CONDITIONAL on customer-bandwidth
 
-| Customer disposition | Resolution outcome |
-|---|---|
-| No bandwidth | Bricked + duplicates kept (confused net) |
-| **Bandwidth + framework-aligned discipline** | **Pattern R vendor-neutral** |
-| Bandwidth + adversarial framing | Escalate-with-compensation-demand |
-| Bandwidth + give-up-mid-resolution | Customer-favorable over-supply |
+| Customer disposition                         | Resolution outcome                       |
+| -------------------------------------------- | ---------------------------------------- |
+| No bandwidth                                 | Bricked + duplicates kept (confused net) |
+| **Bandwidth + framework-aligned discipline** | **Pattern R vendor-neutral**             |
+| Bandwidth + adversarial framing              | Escalate-with-compensation-demand        |
+| Bandwidth + give-up-mid-resolution           | Customer-favorable over-supply           |
 
 The framework-aligned outcome (Pattern R) requires BOTH bandwidth AND substrate-honest discipline.
 
@@ -76,24 +76,22 @@ Pattern R is NOT a zero-sum "win" — vendor-neutral cost both sides material la
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T01:25:02Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `40242457c0`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -106,6 +104,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds **Pattern R** to the Amazon vendor-management research corpus, documenting the customer-driven balancing path that returns a Pattern P→Q over-fulfillment + deactivation cascade back to vendor-neutral accounting.
 
 **Changes:**
+
 - Introduces Pattern R with an empirical anchor and a phase-by-phase resolution ledger.
 - Adds a labor-cost / substrate-engineering analysis describing why vendor-neutral outcomes are bandwidth-dependent.
 - Extends the Pattern O–R lifecycle narrative and maps Pattern R into future Zeta vendor-management AI design implications.
@@ -126,24 +125,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T02:43:40Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `d17cab78a7`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -155,7 +152,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-24T01:25:03Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct vendor-neutral definition to include labor overhead**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct vendor-neutral definition to include labor overhead**
 
 The sentence defining vendor-neutral as `no profit, no loss, no overhead-debt` conflicts with the immediately following cost table that documents substantial labor and fulfillment overhead on both sides. This inconsistency weakens the accounting model used by the Pattern O→R corpus and can mislead downstream policy logic into treating high-overhead outcomes as cost-neutral. Please align the definition with the documented labor-cost reality (e.g., neutral on item/financial position but not on process overhead).
 
@@ -165,7 +162,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T01:25:03Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix inconsistent net-position accounting in no-bandwidth row**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix inconsistent net-position accounting in no-bandwidth row**
 
 The `No bandwidth for further labor` row labels the outcome as customer-favorable while also stating `net 0 working devices vs 4 originals`, which is internally inconsistent and mixes incompatible baselines. Because this table is meant to drive resolution-path classification, the contradictory net math can route analysis/recommendation logic to the wrong branch. Please restate this row with a single baseline and consistent functional/device counts.
 
@@ -213,7 +210,7 @@ Fixed in d17cab78a — "over-paid" → "over-shipped" at L531; also caught match
 
 **@chatgpt-codex-connector** (2026-05-24T02:43:40Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reclassify no-bandwidth outcome net direction**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reclassify no-bandwidth outcome net direction**
 
 This row labels the outcome as customer-favorable, but the same sentence says the customer ends with only 15 functional devices (exactly what was ordered) plus 4 bricked units as e-waste. Because this table is framed as a resolution-outcome classifier, calling this branch "favorable" can bias downstream recommendation logic toward abandonment even when there is no functional upside; it should be classified consistently (e.g., neutral-on-functionality with added waste burden).
 
@@ -231,9 +228,9 @@ Pushed \`639c6be19\` fixing terminology consistency: line 505 "MACs" → "MAC ad
 
 **Left for author** — 4 substantive analytical threads:
 
-| Thread | Issue | Mechanical fix? |
-|---|---|---|
-| \`PRRT_kwDOSF9kNM6EWK7J\` + \`PRRT_kwDOSF9kNM6EWK-W\` (line 507) | "Vendor-neutral: no overhead-debt" contradicts the very next table listing labor-cost on BOTH sides. Options: (a) clarify "overhead-debt" excludes labor; (b) reword to "no NET wealth-transfer"; (c) acknowledge labor as overhead-debt that IS incurred but balanced. Requires author intent | No — definition choice |
+| Thread                                                           | Issue                                                                                                                                                                                                                                                                                                                                                                                               | Mechanical fix?              |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| \`PRRT_kwDOSF9kNM6EWK7J\` + \`PRRT_kwDOSF9kNM6EWK-W\` (line 507) | "Vendor-neutral: no overhead-debt" contradicts the very next table listing labor-cost on BOTH sides. Options: (a) clarify "overhead-debt" excludes labor; (b) reword to "no NET wealth-transfer"; (c) acknowledge labor as overhead-debt that IS incurred but balanced. Requires author intent                                                                                                      | No — definition choice       |
 | \`PRRT_kwDOSF9kNM6EWK7K\` + \`PRRT_kwDOSF9kNM6EWK-Y\` (line 528) | "No bandwidth" row claims BOTH "net +4 working devices" AND "net 0 working devices" — author flagged it themselves as "CONFUSED net". Resolving requires the author to pick the analytical frame: counting from delivered-state (+4 from duplicate-overship) vs from intended-state (-4 originals bricked) vs total-functional-state (15 working but with 4 redundant). Each gives different answer | No — analytical frame choice |
 
 Both substantive findings are correct (Codex + Copilot independently flagged each); neither is mechanically fixable without deciding the analytical frame the doc should use.

@@ -10,7 +10,17 @@ last_updated: 2026-05-26
 depends_on: []
 composes_with:
   - B-0844
-tags: [ts-tooling, cli-arg-parsing, library-evaluation, refactor-many-scripts, bandwidth-engineering, zflash, flash-usb, poll-pr-gate]
+tags:
+  [
+    ts-tooling,
+    cli-arg-parsing,
+    library-evaluation,
+    refactor-many-scripts,
+    bandwidth-engineering,
+    zflash,
+    flash-usb,
+    poll-pr-gate,
+  ]
 ---
 
 ## Problem
@@ -36,19 +46,19 @@ Evaluate the 3-4 candidate TS CLI arg-parser libraries against Zeta's substrate-
 
 ### Candidate libraries
 
-| Library | Stewardship | TypeScript fit | Bun compat | Bundle size | Subcommand support | Notable property |
-| --- | --- | --- | --- | --- | --- | --- |
-| **citty** | UnJS / Nuxt team | First-class (native ESM, TypeScript-native) | Excellent | Tiny (~5KB) | Yes | Modern; ESM-first; minimal API surface; subcommand-tree native |
-| **commander** | TJ Holowaychuk (now community) | Good (types via DefinitelyTyped historically, now native) | Good | Medium (~30KB) | Yes | Most popular; battle-tested 15+ years; mature ecosystem |
-| **clipanion** | Yarn team | First-class (TypeScript-native) | Good | Medium (~20KB) | Yes | Class-based command pattern; from yarn-berry; great validation |
-| **cmd-ts** | Niche | First-class (TypeScript-native; functional API) | Unknown | Small (~10KB) | Yes | Strong type inference; result-type API |
-| **Manual + Bun.argv** (current) | Zeta-internal | Full control | Native | 0 | Manual | Current pattern; ~80 LOC boilerplate per script |
+| Library                         | Stewardship                    | TypeScript fit                                            | Bun compat | Bundle size    | Subcommand support | Notable property                                               |
+| ------------------------------- | ------------------------------ | --------------------------------------------------------- | ---------- | -------------- | ------------------ | -------------------------------------------------------------- |
+| **citty**                       | UnJS / Nuxt team               | First-class (native ESM, TypeScript-native)               | Excellent  | Tiny (~5KB)    | Yes                | Modern; ESM-first; minimal API surface; subcommand-tree native |
+| **commander**                   | TJ Holowaychuk (now community) | Good (types via DefinitelyTyped historically, now native) | Good       | Medium (~30KB) | Yes                | Most popular; battle-tested 15+ years; mature ecosystem        |
+| **clipanion**                   | Yarn team                      | First-class (TypeScript-native)                           | Good       | Medium (~20KB) | Yes                | Class-based command pattern; from yarn-berry; great validation |
+| **cmd-ts**                      | Niche                          | First-class (TypeScript-native; functional API)           | Unknown    | Small (~10KB)  | Yes                | Strong type inference; result-type API                         |
+| **Manual + Bun.argv** (current) | Zeta-internal                  | Full control                                              | Native     | 0              | Manual             | Current pattern; ~80 LOC boilerplate per script                |
 
 ### Evaluation criteria for Zeta substrate
 
 Per Zeta substrate-engineering discipline:
 
-1. **TypeScript-native** (no @types/* extra deps; type-checked at script-author time)
+1. **TypeScript-native** (no @types/\* extra deps; type-checked at script-author time)
 2. **ESM-native** (Bun runtime preference; future-aligned)
 3. **Lightweight** (no transitive dep bloat; respects bandwidth-served-falsifier)
 4. **Subcommand-tree** (some scripts have natural subcommand structure)

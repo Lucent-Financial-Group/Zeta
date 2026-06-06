@@ -5,8 +5,8 @@ resonance drop: the Actor Model (Carl Hewitt, 1973) + Erik
 Meijer's Channel 9 interviews + Inconsistency Robustness
 theory + the production actor-framework lineage (Akka /
 Orleans / Service Fabric) as the theoretical + engineering
-prior art for the factory's Layer 5 *"fully asynchronous
-agentic AI / no bottlenecks"* framing (per
+prior art for the factory's Layer 5 _"fully asynchronous
+agentic AI / no bottlenecks"_ framing (per
 `capture-everything-and-witnessable-evolution-2026-04-21.md`
 revision Layer 5).
 
@@ -84,8 +84,8 @@ Followed by:
 
 ### Theory layer
 
-- **Carl Hewitt** — MIT, *"A Universal Modular ACTOR
-  Formalism for Artificial Intelligence"* (Hewitt, Bishop,
+- **Carl Hewitt** — MIT, _"A Universal Modular ACTOR
+  Formalism for Artificial Intelligence"_ (Hewitt, Bishop,
   Steiger, IJCAI 1973). Foundation paper. Actors as
   first-class concurrent entities that communicate only via
   asynchronous messages; each actor has its own state
@@ -94,7 +94,7 @@ Followed by:
   concurrency model, but a model for intelligent systems
   from the outset.
 - **Inconsistency Robustness** — Hewitt's later thesis
-  (*Inconsistency Robustness 2011* workshop proceedings,
+  (_Inconsistency Robustness 2011_ workshop proceedings,
   and the 2012 Inconsistency Robustness book). Large-scale
   systems tolerate inconsistency by design; robustness
   replaces consistency as the load-bearing property. The
@@ -109,8 +109,8 @@ Followed by:
   and span Actor Model foundations, Inconsistency
   Robustness, Rx, and monads-as-practical-engineering.
 - **Clemens Szyperski** — Microsoft Research, component
-  software foundational work (*Component Software: Beyond
-  Object-Oriented Programming*, 1997). Third interlocutor
+  software foundational work (_Component Software: Beyond
+  Object-Oriented Programming_, 1997). Third interlocutor
   in the Channel 9 sessions.
 
 ### Production layer
@@ -298,10 +298,10 @@ The Layer 5 (no-bottlenecks) measurables from
 
 ## Orleans terminology — silos and grains
 
-Aaron follow-up, verbatim: *"they have silos and grains"* +
-*"i didn't like that name now i do"* + *"you'll find a
+Aaron follow-up, verbatim: _"they have silos and grains"_ +
+_"i didn't like that name now i do"_ + _"you'll find a
 github issue of mine on orleans where i ask them to change
-that naming"*.
+that naming"_.
 
 **The naming.** Orleans' domain terminology:
 
@@ -320,8 +320,8 @@ load-bearing, and the silo provides the environmental
 control + aggregation that makes the collection usable.
 
 **Aaron's aesthetic evolution — a worked witnessable-
-evolution instance at user-level.** Aaron notes he *"didn't
-like that name now i do"* — a revision of his own
+evolution instance at user-level.** Aaron notes he _"didn't
+like that name now i do"_ — a revision of his own
 aesthetic judgement over time. Worth flagging because it
 is an instance of the **capture-everything-and-witnessable-
 evolution** discipline operating at the user level
@@ -331,8 +331,8 @@ legitimate; preserving them in the record is how the
 discipline composes across layers.
 
 **Aaron's Orleans GitHub issue — partial verification.**
-Aaron claims *"you'll find a github issue of mine on
-orleans where i ask them to change that naming"*. On a
+Aaron claims _"you'll find a github issue of mine on
+orleans where i ask them to change that naming"_. On a
 brief search of `dotnet/orleans` issues with
 `creator=AceHack`, the public-API returns exactly one
 issue:
@@ -375,7 +375,7 @@ Worth noting as a prior-art-from-Aaron-himself artifact.
 
 - **2026-04-21 (same-day, within minutes).** Added Orleans
   silos+grains terminology, Aaron's aesthetic-evolution
-  note (*"didn't like that name now i do"*), partial
+  note (_"didn't like that name now i do"_), partial
   verification of Aaron's claimed Orleans-naming-issue
   (found #4985 "Durability Guarantees" authored by
   AceHack 2018, but it is not about naming — the

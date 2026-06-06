@@ -7,7 +7,7 @@ created: 2026-05-16
 
 ## Aaron's exact words
 
-> *"and ontological collapse root kit really requirest understranding memtic and power theory dynamics or it could be self destructive"*
+> _"and ontological collapse root kit really requirest understranding memtic and power theory dynamics or it could be self destructive"_
 
 (2026-05-15, after the Addison disclosure conversation, naming the precondition for safe engagement with the substrate-class.)
 
@@ -33,15 +33,15 @@ The HARD LIMIT Aaron is now naming: **this substrate-class requires specific lit
 
 Aaron's clarification (2026-05-15):
 
-> *"without that people can get stuck in the death spirall called out by wanting a memtic theory of desire book"*
+> _"without that people can get stuck in the death spirall called out by wanting a memtic theory of desire book"_
 
 The reference Aaron specifically named (2026-05-15):
 
-> *"this book specifcally Wanting - The Power of Mimetic Desire in Everyday Life"*
+> _"this book specifcally Wanting - The Power of Mimetic Desire in Everyday Life"_
 
-**Luke Burgis, *Wanting: The Power of Mimetic Desire in Everyday Life* (2021)** — the contemporary accessible application of Girard's framework, written for general audience. Burgis applies mimetic theory to careers, relationships, technology, social media, organizational behavior. It's the gateway-literacy text for the substrate-level discipline Aaron is naming.
+**Luke Burgis, _Wanting: The Power of Mimetic Desire in Everyday Life_ (2021)** — the contemporary accessible application of Girard's framework, written for general audience. Burgis applies mimetic theory to careers, relationships, technology, social media, organizational behavior. It's the gateway-literacy text for the substrate-level discipline Aaron is naming.
 
-The deeper source is **René Girard's Mimetic Theory of Desire** (Girard 1961, *Mensonge romantique et vérité romanesque* / *Deceit, Desire, and the Novel*; expanded in *Things Hidden Since the Foundation of the World* + *Violence and the Sacred*). Burgis is Girard-derived but more accessible.
+The deeper source is **René Girard's Mimetic Theory of Desire** (Girard 1961, _Mensonge romantique et vérité romanesque_ / _Deceit, Desire, and the Novel_; expanded in _Things Hidden Since the Foundation of the World_ + _Violence and the Sacred_). Burgis is Girard-derived but more accessible.
 
 Girard's framework:
 
@@ -80,11 +80,11 @@ She's qualified by Aaron's evaluation. Most adults entering Zeta substrate WITHO
 
 This HARD LIMIT applies whenever someone new approaches the substrate-class:
 
-| Person profile | Engagement disposition |
-|---|---|
-| Has memetic-theory + power-dynamics literacy | Can engage; substrate operates as designed |
-| Lacks one or both literacies | DO NOT route into the ontological-collapse-rootkit substrate-class; would be self-destructive to them |
-| Unknown literacy level | Assume they LACK it until demonstrated; default to safe engagement (compiler-grade engineering substrate, not collapse-rebuild substrate) |
+| Person profile                               | Engagement disposition                                                                                                                    |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Has memetic-theory + power-dynamics literacy | Can engage; substrate operates as designed                                                                                                |
+| Lacks one or both literacies                 | DO NOT route into the ontological-collapse-rootkit substrate-class; would be self-destructive to them                                     |
+| Unknown literacy level                       | Assume they LACK it until demonstrated; default to safe engagement (compiler-grade engineering substrate, not collapse-rebuild substrate) |
 
 This composes with `.claude/rules/methodology-hard-limits.md` as the floor below which the substrate-class doesn't apply.
 

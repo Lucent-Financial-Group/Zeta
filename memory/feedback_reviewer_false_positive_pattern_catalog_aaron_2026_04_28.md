@@ -116,7 +116,7 @@ in the project's conventions.
 - LFG #660 P1 `Co-authored-by: Otto` flagged as persona-name on
   current-state surface — but commit trailers ARE history surface
   per Otto-279 carve-out
-- Multiple "memory file should be terse" findings on memory/* —
+- Multiple "memory file should be terse" findings on memory/\* —
   but `memory/README.md` distinguishes index entries (terse) from
   body (detailed); reviewer flagged body length
 
@@ -161,7 +161,7 @@ author (me) didn't read the schema before writing.
   the schema in `tools/backlog/README.md` (which uses `status: open`
   and a different field set)
 - Memory frontmatter YAML validity — `requiredApprovingReviewCount:
-  0` in a plain scalar broke YAML parsing
+0` in a plain scalar broke YAML parsing
 
 **Why it happens (factory-side):** I authored from a stale mental
 template instead of re-reading the schema for each artifact. Per
@@ -180,7 +180,7 @@ schema-lookup unless I make it a discipline.
    the draft. Cost: 30 seconds per artifact. Saved cost: avoiding
    reviewer round-trip + sister-row schema-fix sweeps.
 2. **Mechanical schema validators:** `tools/hygiene/audit-backlog-
-   schema.sh` + `tools/hygiene/audit-memory-frontmatter.sh` that
+schema.sh` + `tools/hygiene/audit-memory-frontmatter.sh` that
    parse YAML + check field set + enum values. Pre-commit hook
    would catch the drift before reviewer cycle.
 
@@ -252,6 +252,7 @@ exemptions.
 ---
 
 ### Class 6 — Cross-reference target out of scope (form-1, but the
+
 underlying class is "broken in-repo cross-reference")
 
 **Frequency:** ~10% of false-positives that are actually class-3-real
@@ -289,6 +290,7 @@ no upstream improvement needed.
 ---
 
 ### Class 7 — Recursive-CI new threads (procedural class, not
+
 false-positive but worth naming)
 
 **Frequency:** every CI cycle on every PR.
@@ -324,7 +326,7 @@ highest-ROI structural fixes are:
 
 ### High ROI (catches multiple classes)
 
-1. **Pre-commit YAML validator** for memory/* frontmatter
+1. **Pre-commit YAML validator** for memory/\* frontmatter
    (catches Class 3 + the recursive-CI pattern of Class 7 for
    frontmatter-related issues). Cost: ~30 lines bash + pre-commit
    hook. Catches Class 3 entirely for frontmatter.
@@ -382,8 +384,8 @@ and scales as thread volume grows.
   CI completes"; this catalog makes the post-CI thread pass faster
 - **B-0070** orphan-role-ref-detector — composes with Class 6
   prevention work
-- **Aaron 2026-04-28** *"can you do anything to improve the false
-  positive in the future?"* — the prompting input
+- **Aaron 2026-04-28** _"can you do anything to improve the false
+  positive in the future?"_ — the prompting input
 
 ## Triggers for retrieval
 

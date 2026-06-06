@@ -50,14 +50,14 @@ hat owns the row-side layout specifics.
 
 ## The row-store value proposition
 
-| Access pattern | Row store | Column store |
-| --- | --- | --- |
-| Point read (full tuple by PK) | cache-line fit | decompose + reassemble |
-| Point update | single page | touches N column segments |
-| Range scan all columns | OK (wide page) | excellent |
-| Range scan one column | bad (wastes bandwidth) | excellent |
-| High-cardinality insert stream | excellent | segment-flush overhead |
-| Bulk analytic scan | poor | excellent |
+| Access pattern                 | Row store              | Column store              |
+| ------------------------------ | ---------------------- | ------------------------- |
+| Point read (full tuple by PK)  | cache-line fit         | decompose + reassemble    |
+| Point update                   | single page            | touches N column segments |
+| Range scan all columns         | OK (wide page)         | excellent                 |
+| Range scan one column          | bad (wastes bandwidth) | excellent                 |
+| High-cardinality insert stream | excellent              | segment-flush overhead    |
+| Bulk analytic scan             | poor                   | excellent                 |
 
 Zeta's lean: **row for OLTP paths and catalog**, **column
 for analytical paths and materialised views**. The choice is
@@ -141,7 +141,7 @@ Zeta's call: **FSM tree** (matches Postgres; well-studied).
 ## Clustered vs non-clustered index
 
 - **Clustered.** Heap is sorted by the primary key; the PK
-  B+ tree's leaf *is* the heap. Wins: PK scans are
+  B+ tree's leaf _is_ the heap. Wins: PK scans are
   sequential. Loses: non-PK inserts pay split cost.
 - **Non-clustered.** Heap is insertion-ordered; PK index
   is a separate B+ tree whose leaves hold `(key, rowid)`.
@@ -204,14 +204,14 @@ downstream sees the delta pair — no impedance mismatch.
 
 ## Row-vs-column decision per subsystem
 
-| Subsystem | Layout | Why |
-| --- | --- | --- |
-| Catalog (`pg_*`) | row | point reads dominate |
-| WAL / delta log | append-only row | sequential write |
-| Hot OLTP tenant | row | point update dominates |
-| Materialised view | column | analytical scan |
-| Analytical warehouse | column | scan dominates |
-| Control plane metadata | row | tiny tables, mixed access |
+| Subsystem              | Layout          | Why                       |
+| ---------------------- | --------------- | ------------------------- |
+| Catalog (`pg_*`)       | row             | point reads dominate      |
+| WAL / delta log        | append-only row | sequential write          |
+| Hot OLTP tenant        | row             | point update dominates    |
+| Materialised view      | column          | analytical scan           |
+| Analytical warehouse   | column          | scan dominates            |
+| Control plane metadata | row             | tiny tables, mixed access |
 
 The call is per-subsystem; global defaults are traps.
 
@@ -235,7 +235,7 @@ The call is per-subsystem; global defaults are traps.
 
 ## Reference patterns
 
-- Gray & Reuter 1993, *Transaction Processing*.
+- Gray & Reuter 1993, _Transaction Processing_.
 - Stonebraker et al. — Postgres heap + slotted page.
 - Postgres `src/backend/access/heap/` + `nbtree/`.
 - InnoDB clustered-index design.

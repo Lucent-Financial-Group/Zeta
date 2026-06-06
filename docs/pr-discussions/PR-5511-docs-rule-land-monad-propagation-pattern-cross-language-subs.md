@@ -22,11 +22,11 @@ Operator-directed substrate-landing of the monad-propagation pattern
 identified through the 2026-05-27 substrate-engineering thread that
 produced PR #5505 + #5507:
 
-> *\"we should save that modan propatation pattern we can generate
+> _\"we should save that modan propatation pattern we can generate
 > code from specs easlier in the future if we build around these
 > patterns our code becomes more similar shapped across languages.
 > and we have some amount of composiblity in what's ususaly not
-> composable like recursive CTE composiblity.\"*
+> composable like recursive CTE composiblity.\"_
 
 ## Three-component pattern
 
@@ -68,6 +68,7 @@ produced PR #5505 + #5507:
 This PR adds an always-on Claude rule documenting a cross-language “monad-propagation” substrate pattern for uniform feedback/error propagation across languages and SQL recursive CTEs.
 
 **Changes:**
+
 - Adds a new `.claude/rules/` rule defining the three-part pattern.
 - Provides cross-language instantiation examples and operational benefits.
 - Connects the rule to related framework rules and substrate concepts.

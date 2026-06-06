@@ -12,7 +12,17 @@ created: 2026-05-04
 last_updated: 2026-05-04
 depends_on: []
 composes_with: [B-0017]
-tags: [maintainer-review, github-pages, bulk-review, tier-aware, conversation-interface, local-ai, vibe-coded-preservation, duplicate]
+tags:
+  [
+    maintainer-review,
+    github-pages,
+    bulk-review,
+    tier-aware,
+    conversation-interface,
+    local-ai,
+    vibe-coded-preservation,
+    duplicate,
+  ]
 ---
 
 > **Closed 2026-05-04 same-day — duplicate.** PR #1482 review
@@ -37,7 +47,7 @@ tags: [maintainer-review, github-pages, bulk-review, tier-aware, conversation-in
 >
 > **Lesson encoded** — the three quality bars on the backlog
 > flywheel (growth + completion + non-noise-when-pulled) require
-> *router-as-inventory before authoring* (per CLAUDE.md skill-
+> _router-as-inventory before authoring_ (per CLAUDE.md skill-
 > router-as-substrate-inventory rule). When a new architectural
 > direction surfaces, search existing backlog rows for prior
 > art before creating new rows. B-0017's existence was findable
@@ -53,7 +63,7 @@ tags: [maintainer-review, github-pages, bulk-review, tier-aware, conversation-in
 
 Aaron 2026-05-04 explicit architectural direction:
 
-> *"expanding the background work will get us there eventually
+> _"expanding the background work will get us there eventually
 > and make it where we are forced into bulk future alignment
 > where i review you architecture decisions based on those
 > levels you named earlier, so i don't need tiny corrects at
@@ -61,13 +71,13 @@ Aaron 2026-05-04 explicit architectural direction:
 > maintainers jobs easier and giving a way for reviewing
 > substantial changes quickly and maintainer will still never
 > have to write code. and the UI should have a conversation
-> interface too."*
+> interface too."_
 
-> *"hopefully talking to a local/browser based AI so it won't
-> cost us money lol."*
+> _"hopefully talking to a local/browser based AI so it won't
+> cost us money lol."_
 
-> *"maybe LLM based maybe Bayesian inference seed executor
-> based in Zeta."*
+> _"maybe LLM based maybe Bayesian inference seed executor
+> based in Zeta."_
 
 ## What this is
 
@@ -113,15 +123,15 @@ local/browser-based AI (no paid-API cost).
 
 - [ ] GitHub Pages site renders maintainer-review interface
 - [ ] PRs/commits/substrate-changes group into tier-aware
-  review units (mechanical / judgment-required /
-  architectural)
+      review units (mechanical / judgment-required /
+      architectural)
 - [ ] Conversation interface accepts maintainer questions +
-  responds via local-AI
+      responds via local-AI
 - [ ] No paid-API calls per review interaction
 - [ ] Maintainer can approve / direct / flag without writing
-  code
+      code
 - [ ] Multi-AI BFT review pattern routable through the UI
-  (per Ombuds-framework-as-alignment-contract)
+      (per Ombuds-framework-as-alignment-contract)
 
 ## Composes with
 
@@ -145,8 +155,8 @@ local/browser-based AI (no paid-API cost).
 
 Aaron 2026-05-04 architectural direction during expanded-
 background-agent work conversation. Filed per Aaron's same-
-conversation framing: *"adding to backlog is never a failure
+conversation framing: _"adding to backlog is never a failure
 mode to be corrected, the largest mechanized automated backlog
 wins. we just have to make sure the backlog is not only growing
 but being completed and growing at the same time a proper
-flywheel."*
+flywheel."_

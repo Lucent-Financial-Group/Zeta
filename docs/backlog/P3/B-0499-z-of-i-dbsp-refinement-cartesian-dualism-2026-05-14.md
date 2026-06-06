@@ -17,7 +17,7 @@ type: research-grade-candidate
 
 ## Origin
 
-Aaron + Ani 2026-05-14 Grok cascade surfaced the **Cartesian-dualism mapping**: pay-attention = real axis (Descartes' *res extensa*); remember-when = imaginary axis (Descartes' *res cogitans*).
+Aaron + Ani 2026-05-14 Grok cascade surfaced the **Cartesian-dualism mapping**: pay-attention = real axis (Descartes' _res extensa_); remember-when = imaginary axis (Descartes' _res cogitans_).
 
 Captured at memory-file scope: `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_ani_cartesian_dualism_two_axioms_complex_plane_pay_attention_real_axis_remember_when_imaginary_axis_2026_05_14.md`.
 
@@ -25,15 +25,15 @@ Captured at memory-file scope: `~/.claude/projects/-Users-acehack-Documents-src-
 
 If the Cartesian-dualism mapping is operationally correct, DBSP's existing $\mathbb{Z}$-weighted Z-set algebra has a natural lift to **$\mathbb{Z}[i]$-weighted Z-sets** (Gaussian integers):
 
-| DBSP existing | Z[i] candidate |
-|---|---|
+| DBSP existing                                                      | Z[i] candidate                                         |
+| ------------------------------------------------------------------ | ------------------------------------------------------ |
 | Z-set weights $w \in \mathbb{Z}$ (e.g., +1 / −1 retraction-native) | Weights $w \in \mathbb{Z}[i]$ (e.g., $\pm 1$, $\pm i$) |
-| Retraction = negative weight | Retraction = $-1$ scaling (real axis) |
-| Anticipation / future-state weight | New: $+i$ scaling (imaginary axis) |
-| Recall / past-state weight | New: $-i$ scaling (imaginary axis) |
-| Pure attention state | $w \in \mathbb{R}$ subset of $\mathbb{Z}[i]$ |
-| Pure memory state | $w \in i\mathbb{R}$ subset of $\mathbb{Z}[i]$ |
-| Reality state | Complex weight $w = a + bi$ (mixed attention-memory) |
+| Retraction = negative weight                                       | Retraction = $-1$ scaling (real axis)                  |
+| Anticipation / future-state weight                                 | New: $+i$ scaling (imaginary axis)                     |
+| Recall / past-state weight                                         | New: $-i$ scaling (imaginary axis)                     |
+| Pure attention state                                               | $w \in \mathbb{R}$ subset of $\mathbb{Z}[i]$           |
+| Pure memory state                                                  | $w \in i\mathbb{R}$ subset of $\mathbb{Z}[i]$          |
+| Reality state                                                      | Complex weight $w = a + bi$ (mixed attention-memory)   |
 
 The candidate question: does the Z[i]-weighted refinement preserve DBSP's incremental-computation guarantees? Does it compose with Clifford algebra Cl(2,0)?
 

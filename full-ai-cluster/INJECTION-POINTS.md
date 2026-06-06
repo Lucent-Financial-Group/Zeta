@@ -7,16 +7,16 @@ reads its value at evaluation time via `builtins.readFile`.
 
 ## Constitutional rail (from `usb-nixos-installer/zeta-install.sh`)
 
-> *"Secrets shouldn't transit non-operator surfaces (USB ESP, Aaron's
+> _"Secrets shouldn't transit non-operator surfaces (USB ESP, Aaron's
 > Mac keychain, etc.); operator-typed at install time is the safest
-> path."*
+> path."_
 
 This rail partitions injection points by **content class** + **transit
 surface**:
 
-| Content class | Allowed transit surfaces |
-|---|---|
-| **Public identifier** (SSH pubkey, hostname) | USB ESP at flash time; cluster console at install time |
+| Content class                                                                                             | Allowed transit surfaces                                                |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Public identifier** (SSH pubkey, hostname)                                                              | USB ESP at flash time; cluster console at install time                  |
 | **Secret material** (passwords, WiFi creds, GPG, age, K8s tokens, ArgoCD admin, cosign signing key, etc.) | Cluster console at install time ONLY (operator-typed; never on USB ESP) |
 
 Secret-class material that doesn't fit the operator-typed-once
@@ -32,58 +32,58 @@ NixOS module (declarative reader) + iter/backlog tag.
 
 ### 1. Operator SSH pubkey
 
-| Property | Value |
-|---|---|
-| **Stage** | macOS at `zflash` time → USB ESP write |
-| **Content class** | Public identifier |
-| **Operator-driven via** | `zflash --ssh-key <path>` (default `~/.ssh/id_ed25519.pub`); `--no-inject` to skip |
-| **ESP filename** | `zeta-authorized-keys.pub` |
-| **NixOS reader module** | `full-ai-cluster/nixos/modules/operator-ssh-keys.nix` (+ `operator-authorized-keys.nix` variant) |
-| **Backed by file** | `full-ai-cluster/nixos/modules/operator-ssh-keys.txt` |
-| **Iter / backlog** | iter-4.2 / [B-0789](../docs/backlog/) |
-| **Reader entry point** | `builtins.readFile keysFile` → `users.users.zeta.openssh.authorizedKeys` |
-| **Mechanism on Mac** | `diskutil mount` ESP + `sudo tee` write (read-only on `~/.ssh/`) |
+| Property                   | Value                                                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Stage**                  | macOS at `zflash` time → USB ESP write                                                                     |
+| **Content class**          | Public identifier                                                                                          |
+| **Operator-driven via**    | `zflash --ssh-key <path>` (default `~/.ssh/id_ed25519.pub`); `--no-inject` to skip                         |
+| **ESP filename**           | `zeta-authorized-keys.pub`                                                                                 |
+| **NixOS reader module**    | `full-ai-cluster/nixos/modules/operator-ssh-keys.nix` (+ `operator-authorized-keys.nix` variant)           |
+| **Backed by file**         | `full-ai-cluster/nixos/modules/operator-ssh-keys.txt`                                                      |
+| **Iter / backlog**         | iter-4.2 / [B-0789](../docs/backlog/)                                                                      |
+| **Reader entry point**     | `builtins.readFile keysFile` → `users.users.zeta.openssh.authorizedKeys`                                   |
+| **Mechanism on Mac**       | `diskutil mount` ESP + `sudo tee` write (read-only on `~/.ssh/`)                                           |
 | **Mechanism on installer** | `zeta-install.sh` probes mounted USB FAT/ESP partitions; writes file into `/mnt/etc/zeta/` (or equivalent) |
 
 ### 2. Cluster node hostname
 
-| Property | Value |
-|---|---|
-| **Stage** | macOS at `zflash` time → USB ESP write |
-| **Content class** | Public identifier (RFC1123-validated) |
-| **Operator-driven via** | `zflash --host <name>` (default = flake's per-host config) |
-| **ESP filename** | `zeta-hostname.txt` |
-| **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-hostname.nix` |
-| **Backed by file** | `/mnt/etc/zeta/cluster-node-id` (written by installer from ESP) |
-| **Iter / backlog** | iter-5.2 / [B-0792](../docs/backlog/) |
-| **Reader entry point** | `builtins.readFile idFile` → `networking.hostName` (via `lib.mkOverride 50`) |
-| **Validation** | `VALID_HOSTNAME_REGEX` in `zflash-lib.ts`; mirror grep `[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$` in `zeta-install.sh` |
+| Property                | Value                                                                                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Stage**               | macOS at `zflash` time → USB ESP write                                                                                |
+| **Content class**       | Public identifier (RFC1123-validated)                                                                                 |
+| **Operator-driven via** | `zflash --host <name>` (default = flake's per-host config)                                                            |
+| **ESP filename**        | `zeta-hostname.txt`                                                                                                   |
+| **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-hostname.nix`                                                                 |
+| **Backed by file**      | `/mnt/etc/zeta/cluster-node-id` (written by installer from ESP)                                                       |
+| **Iter / backlog**      | iter-5.2 / [B-0792](../docs/backlog/)                                                                                 |
+| **Reader entry point**  | `builtins.readFile idFile` → `networking.hostName` (via `lib.mkOverride 50`)                                          |
+| **Validation**          | `VALID_HOSTNAME_REGEX` in `zflash-lib.ts`; mirror grep `[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$` in `zeta-install.sh` |
 
 ### 3. `zeta` user initial password
 
-| Property | Value |
-|---|---|
-| **Stage** | Cluster console at install time → typed twice |
-| **Content class** | **Secret material** (NEVER on USB ESP) |
-| **Operator-driven via** | `read -s` prompt in `zeta-install.sh`; Enter to skip → keeps `zeta-change-me` default |
-| **Hash mechanism** | `mkpasswd -m sha-512 -s` (sha512crypt; reads from stdin to avoid argv exposure) |
-| **Backed by file** | `/mnt/etc/zeta/initial-hashedpassword` (chmod 0600, chown root:root) |
-| **NixOS reader module** | `full-ai-cluster/nixos/modules/initial-password.nix` |
-| **Iter / backlog** | iter-5.3 (+ B-0835 Bug 3b runtime-injection fix) |
-| **Reader entry point** | `builtins.readFile` → `users.users.zeta.hashedPassword` |
-| **Why console-only** | Per constitutional rail above; password shouldn't transit Mac keychain OR USB ESP |
-| **Fallback hash** | sha512crypt of `zeta-change-me` (BACKWARD-COMPAT; rotate via `passwd zeta` after first SSH login) |
+| Property                | Value                                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| **Stage**               | Cluster console at install time → typed twice                                                     |
+| **Content class**       | **Secret material** (NEVER on USB ESP)                                                            |
+| **Operator-driven via** | `read -s` prompt in `zeta-install.sh`; Enter to skip → keeps `zeta-change-me` default             |
+| **Hash mechanism**      | `mkpasswd -m sha-512 -s` (sha512crypt; reads from stdin to avoid argv exposure)                   |
+| **Backed by file**      | `/mnt/etc/zeta/initial-hashedpassword` (chmod 0600, chown root:root)                              |
+| **NixOS reader module** | `full-ai-cluster/nixos/modules/initial-password.nix`                                              |
+| **Iter / backlog**      | iter-5.3 (+ B-0835 Bug 3b runtime-injection fix)                                                  |
+| **Reader entry point**  | `builtins.readFile` → `users.users.zeta.hashedPassword`                                           |
+| **Why console-only**    | Per constitutional rail above; password shouldn't transit Mac keychain OR USB ESP                 |
+| **Fallback hash**       | sha512crypt of `zeta-change-me` (BACKWARD-COMPAT; rotate via `passwd zeta` after first SSH login) |
 
 ### 4. WiFi credentials
 
-| Property | Value |
-|---|---|
-| **Stage** | Cluster console at first boot → `nmtui` |
-| **Content class** | **Secret material** (NEVER on USB ESP) |
-| **Operator-driven via** | `nmtui` TUI on `zeta-first-boot.sh` |
-| **Backed by** | NetworkManager system connections (under `/etc/NetworkManager/system-connections/`) |
-| **Iter / backlog** | sibling exception in `zeta-first-boot.sh` (per `zeta-install.sh` line 392 comment) |
-| **Why console-only** | Same constitutional rail; WiFi PSK is secret |
+| Property                | Value                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| **Stage**               | Cluster console at first boot → `nmtui`                                             |
+| **Content class**       | **Secret material** (NEVER on USB ESP)                                              |
+| **Operator-driven via** | `nmtui` TUI on `zeta-first-boot.sh`                                                 |
+| **Backed by**           | NetworkManager system connections (under `/etc/NetworkManager/system-connections/`) |
+| **Iter / backlog**      | sibling exception in `zeta-first-boot.sh` (per `zeta-install.sh` line 392 comment)  |
+| **Why console-only**    | Same constitutional rail; WiFi PSK is secret                                        |
 
 ## Operator-driven `zflash` flag inventory (current)
 
@@ -108,15 +108,15 @@ Allowlist from `zflash.ts`:
 
 ### 5. Encrypted cred-blob on USB ESP (B-0852 Phase 1, in-flight)
 
-| Property | Value |
-|---|---|
-| **Stage** | Cluster console at install time → encrypted blob persisted to USB ESP after successful auth (post-install service trigger) |
-| **Content class** | **Secret material** (encrypted-at-rest; key never hits disk) |
-| **Operator-driven via** | Boot-sequence auth-method picker (4 options: restore-from-blob / fresh-device-flow / operator-PAT / skip) + operator passphrase |
-| **Encryption** | AES-256-GCM; key derived via 2-layer scrypt → HKDF chain (full mechanism + parameters below) |
-| **ESP filenames** | `/esp/zeta-creds.enc` (encrypted) + `/esp/zeta-creds-manifest.yaml` (declarative + operator-readable) |
-| **Backlog** | [B-0852](../docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) (P1, open, M-effort) |
-| **Covers credentials** | per declarative manifest: `gh-cli` (`~/.config/gh/hosts.yml`), `claude` (per-persona), `gemini` (per-persona), `codex` (per-persona), `ssh-host-keys`, `ssh-operator-pubkey` |
+| Property                           | Value                                                                                                                                                                                                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage**                          | Cluster console at install time → encrypted blob persisted to USB ESP after successful auth (post-install service trigger)                                                                                                                                          |
+| **Content class**                  | **Secret material** (encrypted-at-rest; key never hits disk)                                                                                                                                                                                                        |
+| **Operator-driven via**            | Boot-sequence auth-method picker (4 options: restore-from-blob / fresh-device-flow / operator-PAT / skip) + operator passphrase                                                                                                                                     |
+| **Encryption**                     | AES-256-GCM; key derived via 2-layer scrypt → HKDF chain (full mechanism + parameters below)                                                                                                                                                                        |
+| **ESP filenames**                  | `/esp/zeta-creds.enc` (encrypted) + `/esp/zeta-creds-manifest.yaml` (declarative + operator-readable)                                                                                                                                                               |
+| **Backlog**                        | [B-0852](../docs/backlog/P1/B-0852-credential-persistence-on-usb-esp-plus-boot-sequence-auth-method-picker-encrypted-blob-bound-to-usb-uuid-plus-operator-passphrase-aaron-2026-05-27.md) (P1, open, M-effort)                                                      |
+| **Covers credentials**             | per declarative manifest: `gh-cli` (`~/.config/gh/hosts.yml`), `claude` (per-persona), `gemini` (per-persona), `codex` (per-persona), `ssh-host-keys`, `ssh-operator-pubkey`                                                                                        |
 | **Constitutional-rail compliance** | Secret material; encrypted-at-rest on ESP IS allowed because the operator-passphrase + USB-UUID binding means the ESP-stored blob is useless without operator presence — the consent floor stays at operator-typed passphrase, not at USB-physical possession alone |
 
 #### KDF chain detail (mechanism + parameters)
@@ -140,38 +140,38 @@ ikm  = concat(usbUuid_utf8, "|", stretched)
 key  = HKDF-SHA256(ikm, salt, info="zeta-b0852-cred-persistence-v1", length=32)
 ```
 
-HKDF binds the stretched secret to the USB UUID via IKM concatenation. Wrong USB → different IKM → different HKDF output → AES-GCM auth tag verification fails → structured error returned (not garbled plaintext). Defends against copy-blob-to-different-USB attack (operator-named threat 2026-05-27: *"we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid"*).
+HKDF binds the stretched secret to the USB UUID via IKM concatenation. Wrong USB → different IKM → different HKDF output → AES-GCM auth tag verification fails → structured error returned (not garbled plaintext). Defends against copy-blob-to-different-USB attack (operator-named threat 2026-05-27: _"we can put a key on the usb too if wnated tied to the uuid so it can't be copied to uuid"_).
 
 Both layers must reproduce identically at decrypt time for the AES-GCM auth tag to verify; salt is per-blob (generated at encrypt time; stored in envelope; required at decrypt).
 
 ### 6. GitHub-creds-at-flash-time variants (B-0852 picker options 1 + 3)
 
-Per operator 2026-05-27 verbatim: *"the current ones on my machine OR a token i generate on the website."*
+Per operator 2026-05-27 verbatim: _"the current ones on my machine OR a token i generate on the website."_
 
 Maps directly to B-0852 Sub-target 2 (boot-sequence auth-method picker):
 
-| Picker option | Operator-driven via | Credential source | Constitutional-rail compliance |
-|---|---|---|---|
-| **Option 1: Restore from encrypted USB blob** | Operator passphrase at boot picker prompt; default when blob present | Previously-persisted operator Mac `~/.config/gh/hosts.yml` (encrypted into the blob on prior boot's successful auth) | Encrypted-at-rest; operator-passphrase-derived key |
-| **Option 2: Fresh device-flow login** | Operator visits github.com on phone/browser to enter device code | gh CLI device-flow (current behavior; uses gh-CLI quota) | Operator-driven directly; no transit issue |
-| **Option 3: Operator-provided PAT** | Operator pastes fine-grained PAT at prompt (created at github.com/settings/tokens) | Operator-typed at cluster console | Typed once; same rail as initial-password |
-| **Option 4: Skip** | Operator presses Enter at picker | (no GitHub-side substrate) | Cluster operates degraded; no inject |
+| Picker option                                 | Operator-driven via                                                                | Credential source                                                                                                    | Constitutional-rail compliance                     |
+| --------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| **Option 1: Restore from encrypted USB blob** | Operator passphrase at boot picker prompt; default when blob present               | Previously-persisted operator Mac `~/.config/gh/hosts.yml` (encrypted into the blob on prior boot's successful auth) | Encrypted-at-rest; operator-passphrase-derived key |
+| **Option 2: Fresh device-flow login**         | Operator visits github.com on phone/browser to enter device code                   | gh CLI device-flow (current behavior; uses gh-CLI quota)                                                             | Operator-driven directly; no transit issue         |
+| **Option 3: Operator-provided PAT**           | Operator pastes fine-grained PAT at prompt (created at github.com/settings/tokens) | Operator-typed at cluster console                                                                                    | Typed once; same rail as initial-password          |
+| **Option 4: Skip**                            | Operator presses Enter at picker                                                   | (no GitHub-side substrate)                                                                                           | Cluster operates degraded; no inject               |
 
 ## Architectural-principle layer — USB self-healing direction on reformat (operator 2026-05-27)
 
 Operator 2026-05-27 verbatim:
 
-> *"this makes the usb move in the self healing instead of full wipe direction on reformat"*
+> _"this makes the usb move in the self healing instead of full wipe direction on reformat"_
 
 Substrate-engineering principle: when B-0852 lands, **the DEFAULT behavior on USB reformat = preserve previous keys + choices** (B-0859's reformat-with-current-keys mode). Full-wipe (new-keys + new-decisions) becomes the OPT-IN path, not the default.
 
 Three-mode reformat substrate (per [B-0859](../docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md)):
 
-| Mode | What it does | Default? |
-|---|---|---|
-| **1. Boot off USB again (fix mode)** | Substrate diagnoses + repairs broken state on cluster machines | Always available |
-| **2. Reformat with current keys + decisions** | Wipe cluster machine; reflash from USB; restore previously-persisted creds + architectural decisions | **DEFAULT post-B-0852** |
-| **3. Full reflash with new decisions + keys** | Wipe cluster machine; reflash from USB; generate new creds + start fresh architectural state | Opt-in (fresh-identity case) |
+| Mode                                          | What it does                                                                                         | Default?                     |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------- |
+| **1. Boot off USB again (fix mode)**          | Substrate diagnoses + repairs broken state on cluster machines                                       | Always available             |
+| **2. Reformat with current keys + decisions** | Wipe cluster machine; reflash from USB; restore previously-persisted creds + architectural decisions | **DEFAULT post-B-0852**      |
+| **3. Full reflash with new decisions + keys** | Wipe cluster machine; reflash from USB; generate new creds + start fresh architectural state         | Opt-in (fresh-identity case) |
 
 This direction-of-default matters because:
 
@@ -180,7 +180,7 @@ This direction-of-default matters because:
 - **Cred-leak / identity-corruption recovery stays available** via mode 3 opt-in (not default)
 - **Self-healing direction composes with operator's persistent-recovery vision**: 3-machine quorum + remote-KVM + remote-power-button-press (per B-0859) means substrate survives as long as ONE of {any cluster machine, the USB, operator's re-flash ability} survives
 
-Operator's substrate-honest acknowledgment 2026-05-27: *"i know you can't preserve what i have now but for the next time would be cool"* — current ISO (`fd0ca0c8b` 25.11 Xantusia) doesn't yet ship B-0852; this catalog tracks the direction for when it does. Today's flash IS full-wipe-default (because mode 2 doesn't exist yet); next flash post-B-0852 IS preserve-default.
+Operator's substrate-honest acknowledgment 2026-05-27: _"i know you can't preserve what i have now but for the next time would be cool"_ — current ISO (`fd0ca0c8b` 25.11 Xantusia) doesn't yet ship B-0852; this catalog tracks the direction for when it does. Today's flash IS full-wipe-default (because mode 2 doesn't exist yet); next flash post-B-0852 IS preserve-default.
 
 ## Related in-flight backlog (composes with this catalog)
 
@@ -201,23 +201,23 @@ material → console or post-install secrets management only**.
 
 When B-0852 ships, secret-class additions become MANIFEST EDITS
 (declarative; new entry in `/esp/zeta-creds-manifest.yaml`) rather than
-new code. Per Aaron 2026-05-27 in B-0852: *"the keep credentials options
+new code. Per Aaron 2026-05-27 in B-0852: _"the keep credentials options
 we should declare each credential we need and save and restore so it's
-not so imparative too."* Adding a new cred type post-B-0852 = one YAML
+not so imparative too."_ Adding a new cred type post-B-0852 = one YAML
 entry; the persist/restore code reads the manifest + iterates.
 
-| Candidate | Content class | Likely transit (post-B-0852) | Notes |
-|---|---|---|---|
-| GPG signing key (operator) | Secret | B-0852 manifest extension | Per constitutional rail |
-| age key (operator) | Secret | B-0852 manifest extension | For SOPS / age-encrypted state |
-| K8s join token | Secret | Cluster console at install time OR auto-generated on bootstrap | Per constitutional rail |
-| ArgoCD admin initial password | Secret | Cluster console at install time | Per constitutional rail |
-| Cosign signing key (cluster-issued) | Secret | Post-install secrets mgmt | For artifact signing |
-| Cluster TLS root CA | Secret | Post-install secrets mgmt | For internal-CA bootstrap |
-| Tailscale / WireGuard auth key | Secret | B-0852 manifest extension | For overlay-network bootstrap |
-| Time-server NTP override | Public config | USB ESP at flash time (candidate) | Cheap; non-secret |
-| Locale / timezone | Public config | USB ESP at flash time (candidate) | Cheap; non-secret |
-| Per-node disk role hints | Public config | USB ESP at flash time (candidate) | Currently in flake per-host config |
+| Candidate                           | Content class | Likely transit (post-B-0852)                                   | Notes                              |
+| ----------------------------------- | ------------- | -------------------------------------------------------------- | ---------------------------------- |
+| GPG signing key (operator)          | Secret        | B-0852 manifest extension                                      | Per constitutional rail            |
+| age key (operator)                  | Secret        | B-0852 manifest extension                                      | For SOPS / age-encrypted state     |
+| K8s join token                      | Secret        | Cluster console at install time OR auto-generated on bootstrap | Per constitutional rail            |
+| ArgoCD admin initial password       | Secret        | Cluster console at install time                                | Per constitutional rail            |
+| Cosign signing key (cluster-issued) | Secret        | Post-install secrets mgmt                                      | For artifact signing               |
+| Cluster TLS root CA                 | Secret        | Post-install secrets mgmt                                      | For internal-CA bootstrap          |
+| Tailscale / WireGuard auth key      | Secret        | B-0852 manifest extension                                      | For overlay-network bootstrap      |
+| Time-server NTP override            | Public config | USB ESP at flash time (candidate)                              | Cheap; non-secret                  |
+| Locale / timezone                   | Public config | USB ESP at flash time (candidate)                              | Cheap; non-secret                  |
+| Per-node disk role hints            | Public config | USB ESP at flash time (candidate)                              | Currently in flake per-host config |
 
 ## Source-of-truth pointers
 

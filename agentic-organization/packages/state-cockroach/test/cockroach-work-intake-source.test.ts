@@ -22,7 +22,11 @@ function fakeExecutor(rows: readonly Record<string, unknown>[]): {
 
 test("claims the proposed initiative and returns the work tuple with a derived branch", async () => {
   const { executor, calls } = fakeExecutor([{ initiative_id: "init-7", project_id: "proj-3" }]);
-  const intake = createCockroachWorkIntakeSource({ executor, organizationId: "org-lfg", nowIso: () => "2026-05-30T00:00:00Z" });
+  const intake = createCockroachWorkIntakeSource({
+    executor,
+    organizationId: "org-lfg",
+    nowIso: () => "2026-05-30T00:00:00Z",
+  });
 
   const claimed = await intake();
 
@@ -37,7 +41,11 @@ test("claims the proposed initiative and returns the work tuple with a derived b
 
 test("returns null (the lane idles) when nothing is proposed", async () => {
   const { executor } = fakeExecutor([]);
-  const intake = createCockroachWorkIntakeSource({ executor, organizationId: "org-lfg", nowIso: () => "2026-05-30T00:00:00Z" });
+  const intake = createCockroachWorkIntakeSource({
+    executor,
+    organizationId: "org-lfg",
+    nowIso: () => "2026-05-30T00:00:00Z",
+  });
 
   const claimed = await intake();
 

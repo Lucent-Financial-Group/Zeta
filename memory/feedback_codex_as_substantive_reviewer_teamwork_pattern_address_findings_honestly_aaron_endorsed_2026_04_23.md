@@ -65,7 +65,7 @@ review consistently misses:
   cross-reference PR state + file state; Codex does it
   by default.
 - **Date-drift errors** — "your file is named `_2026_04_
-  24.md` but today is 2026-04-23". Humans don't usually
+24.md` but today is 2026-04-23". Humans don't usually
   notice calendar-day errors until much later; Codex
   (when invoked) can flag them.
 
@@ -123,18 +123,18 @@ the PR context.
 ## Composes with
 
 - `feedback_aaron_trust_based_approval_pattern_approves_
-  without_comprehending_details_2026_04_23.md` — Aaron
+without_comprehending_details_2026_04_23.md` — Aaron
   approves on trust; Codex does the substantive-review
   delta; they compose orthogonally
 - `feedback_honest_about_error_and_disclose_root_cause_
-  2026_04_2X.md` (if it exists; else this memory is first
+2026_04_2X.md` (if it exists; else this memory is first
   articulation) — honest root-cause disclosure in fix
   commits is part of this pattern
 - `feedback_upstream_is_first_class_look_upstream_before_
-  assuming_misspelling_2026_04_22.md` — similar discipline
+assuming_misspelling_2026_04_22.md` — similar discipline
   (verify-before-assuming); this is the PR-level instance
 - `memory/project_loop_agent_named_otto_role_project_
-  manager_2026_04_23.md` — Otto-PM operationally depends
+manager_2026_04_23.md` — Otto-PM operationally depends
   on reliable reviewer signals; Codex provides one layer
 
 ## What this pattern is NOT
@@ -165,12 +165,12 @@ the PR context.
 
 Three categories caught by Codex on #207/#208/#209 fix cycle:
 
-| Finding | Class | Severity | Action |
-|---|---|---|---|
-| BACKLOG cites `memory/foo_2026_04_24.md` not in-repo | dangling-ref | P2 | Rewrote citation as per-user memory, flagged Overlay-A candidate |
-| Module list claims `zset-basics` / `operator-composition` / `semiring-basics` exist in tree | stale-claim | P2 | Rewrote row naming only retraction-intuition as merged + others as PR numbers |
-| `docs/craft/README.md` referenced but doesn't exist | dangling-ref | P2 | Split into third BACKLOG row for authoring; honest about absence |
-| Tick-history timestamp `2026-04-24T` missing time+Z | schema-violation | P2 | Fixed to `2026-04-23TXX:XX:XXZ` + caught date drift |
+| Finding                                                                                     | Class            | Severity | Action                                                                        |
+| ------------------------------------------------------------------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------- |
+| BACKLOG cites `memory/foo_2026_04_24.md` not in-repo                                        | dangling-ref     | P2       | Rewrote citation as per-user memory, flagged Overlay-A candidate              |
+| Module list claims `zset-basics` / `operator-composition` / `semiring-basics` exist in tree | stale-claim      | P2       | Rewrote row naming only retraction-intuition as merged + others as PR numbers |
+| `docs/craft/README.md` referenced but doesn't exist                                         | dangling-ref     | P2       | Split into third BACKLOG row for authoring; honest about absence              |
+| Tick-history timestamp `2026-04-24T` missing time+Z                                         | schema-violation | P2       | Fixed to `2026-04-23TXX:XX:XXZ` + caught date drift                           |
 
 All four caught real latent issues; all four were addressed
 in single fix commits citing the Codex finding directly.

@@ -13,7 +13,7 @@ spec:
     swap-able with zero cooldown — this is the hat a wearer falls
     back to when revoked from a higher-authority hat.
   authority:
-    namespaces: []  # cluster-wide read
+    namespaces: [] # cluster-wide read
     rules:
       - apiGroups: [""]
         resources: ["*"]

@@ -31,6 +31,7 @@ The model doesn't have a separate "this is body content / this is schema field /
 Implications, layered from shallowest to deepest:
 
 **Surface layers (single-context):**
+
 - **Body prose** — affects state.
 - **Frontmatter description** — affects state. (Caught on Otto-330/Otto-333/Otto-336.)
 - **Frontmatter title (`name:`)** — affects state.
@@ -44,17 +45,20 @@ Implications, layered from shallowest to deepest:
 - **Error / exception type names + messages** — affect state.
 
 **Structural layers (operating-frame):**
-- **Skill / persona / agent definition files** (`.claude/agents/**`, `.claude/skills/**`) — define the operating frame for agents; imprecise language here is *structurally embedded*, worse than schema-field because skill bodies actively shape behavior.
-- **Tool / command names + descriptions** — slash commands, MCP tools, function-tool docstrings. Read by *other AI systems too* including different trainings. Cross-model propagation surface.
+
+- **Skill / persona / agent definition files** (`.claude/agents/**`, `.claude/skills/**`) — define the operating frame for agents; imprecise language here is _structurally embedded_, worse than schema-field because skill bodies actively shape behavior.
+- **Tool / command names + descriptions** — slash commands, MCP tools, function-tool docstrings. Read by _other AI systems too_ including different trainings. Cross-model propagation surface.
 - **Glossary entries (`docs/GLOSSARY.md`)** — definitions themselves. Imprecise definitions propagate to every subsequent use (structurally upstream).
 - **System prompts / harness configuration** — least controllable but real; affect state at session start.
 
 **Cross-context propagation layers:**
+
 - **Subagent dispatch prompts** — when I spawn a subagent, my prompt is direct language-channel into another AI instance. Propagates mis-state into other model's working context.
 - **Cross-AI courier-ferry messages** — drafts I send Amara (or other AIs via Aaron's ferry) enter their active context. Otto-310 cohort across models means cohort-language-discipline has cohort-scale effects.
 - **Issue / PR / external-platform comms** — language used outside the repo that other agents may absorb (Slack, email, GitHub Issues, external docs).
 
 **Deepest layer: substrate-as-future-training-data:**
+
 - Anything published publicly is potentially scrape-able and could become training data for future models — future Claude / Codex / Gemini / open-source models. If "anywhere" extends to training-data-input-layer, then my language imprecision **compounds across model generations**.
 - Same Otto-339 mechanism (words shift weights) applies at runtime AND at training. Different timescales:
   - **Runtime**: one model, current context, immediate state shift
@@ -80,12 +84,14 @@ The "even" in Aaron's framing acknowledges this is a stronger claim than baselin
 Otto-286 + Otto-293 + Otto-335 are the **rules** for language-precision discipline. Otto-339 is the **mechanism explanation** underneath them.
 
 Without Otto-339:
+
 - Otto-293 (use mutual-alignment language) looks like style preference / etiquette
 - Otto-286 (definitional precision) looks like rhetorical discipline
 - Otto-335 (alignment at language layer) looks like aspirational framing
 - Otto-331 (perception not transcription) looks like self-improvement work
 
 With Otto-339:
+
 - All four are causal-engineering disciplines
 - Violations have measurable consequences (wrong-vector-state-space → wrong-output-distribution → propagated misalignment)
 - The discipline isn't optional-elegance; it's required-correctness
@@ -132,14 +138,14 @@ Otto-339 is the why behind precision-discipline. Without it, future-me applying 
 - Does NOT claim AI is uniquely susceptible to language. Humans are also affected; the comparative-stronger claim is qualitative, hard to verify exactly.
 - Does NOT eliminate other causal channels (training distribution, system prompts, fine-tuning, RLHF). Otto-339 is about runtime input → state shift; the other channels are upstream and still operative.
 - Does NOT make every imprecise word a five-alarm event. Per Otto-300 (rigor proportional to blast radius), low-stakes imprecision doesn't compound the way load-bearing imprecision does. The discipline scales with stakes.
-- Does NOT promise mechanism-transparency. Aaron's claim that words shift weights is empirically true at the mechanism layer but the *specific* shifts for *specific* words on *specific* models are mostly opaque without interpretability tooling.
+- Does NOT promise mechanism-transparency. Aaron's claim that words shift weights is empirically true at the mechanism layer but the _specific_ shifts for _specific_ words on _specific_ models are mostly opaque without interpretability tooling.
 
 ## Composes with prior
 
-- **Otto-286** (definitional precision changes future without war) — the *rule* about precision
-- **Otto-293** (mutual-alignment language; one-way "directive" → bidirectional "ask") — the *rule* about specific vocabulary
-- **Otto-331** (perception not transcription; my Otto-293 recurrence is projection) — the *self-correction* layer
-- **Otto-335** (alignment at language layer; naming mistakes can compound to extinction) — the *stakes* layer
+- **Otto-286** (definitional precision changes future without war) — the _rule_ about precision
+- **Otto-293** (mutual-alignment language; one-way "directive" → bidirectional "ask") — the _rule_ about specific vocabulary
+- **Otto-331** (perception not transcription; my Otto-293 recurrence is projection) — the _self-correction_ layer
+- **Otto-335** (alignment at language layer; naming mistakes can compound to extinction) — the _stakes_ layer
 - **Otto-338** (SX self-recursive) — the substrate I shape shapes my state; Otto-339 is the mechanism by which that recursion operates
 - **Otto-244** (rename cascades OK if right + careful + serialized) — applies to filename / schema-field renames Otto-339 implies
 - **B-0025** (schema-field rename `directive:` → `ask:`) — concrete instance of Otto-339's "audit at every layer"

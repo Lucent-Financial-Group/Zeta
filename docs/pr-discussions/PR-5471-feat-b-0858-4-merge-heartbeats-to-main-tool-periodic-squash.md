@@ -44,6 +44,7 @@ Direct \`POST /repos/{owner}/{repo}/merges\` returns 409 because main is PR-gate
 Adds a Bun/TypeScript automation tool to periodically sync the `agent-heartbeats` branch back into `main` by opening a PR and arming squash auto-merge, reducing PR-queue churn versus one PR per heartbeat.
 
 **Changes:**
+
 - Added `merge-heartbeats-to-main.ts` tool that checks whether `main` already contains `agent-heartbeats` and, if not, opens a PR and enables `--auto --squash` merging.
 - Added unit tests covering CLI/env argument parsing for the new tool.
 
@@ -51,10 +52,10 @@ Adds a Bun/TypeScript automation tool to periodically sync the `agent-heartbeats
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/agent-heartbeats/merge-heartbeats-to-main.ts | New CLI tool that compares branches, creates a PR, and arms squash auto-merge via `gh`. |
-| tools/agent-heartbeats/merge-heartbeats-to-main.test.ts | New `bun:test` unit tests for `parseArgs` defaults and validation. |
+| File                                                    | Description                                                                             |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| tools/agent-heartbeats/merge-heartbeats-to-main.ts      | New CLI tool that compares branches, creates a PR, and arms squash auto-merge via `gh`. |
+| tools/agent-heartbeats/merge-heartbeats-to-main.test.ts | New `bun:test` unit tests for `parseArgs` defaults and validation.                      |
 
 ## Review threads
 

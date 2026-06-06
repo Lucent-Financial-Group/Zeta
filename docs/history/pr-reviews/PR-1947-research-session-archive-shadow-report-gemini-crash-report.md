@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1947 |
-| Title | research: session archive — shadow report + Gemini crash report |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T21:45:53Z |
-| Merged at | 2026-05-07T21:55:16Z |
-| Merge commit SHA | `d318601bdb17669246863340ac9208e2127ca6ce` |
-| Branch | `research/session-archive-shadow-crash-2026-05-07` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1947 |
-| Changed files | 3 |
-| Additions / deletions | +290 / -0 |
+| Field                 | Value                                                           |
+| --------------------- | --------------------------------------------------------------- |
+| Number                | 1947                                                            |
+| Title                 | research: session archive — shadow report + Gemini crash report |
+| Author                | `AceHack` (human)                                               |
+| State                 | MERGED                                                          |
+| Created at            | 2026-05-07T21:45:53Z                                            |
+| Merged at             | 2026-05-07T21:55:16Z                                            |
+| Merge commit SHA      | `d318601bdb17669246863340ac9208e2127ca6ce`                      |
+| Branch                | `research/session-archive-shadow-crash-2026-05-07`              |
+| Base branch           | `main`                                                          |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1947        |
+| Changed files         | 3                                                               |
+| Additions / deletions | +290 / -0                                                       |
 
 ## Description
 
@@ -42,15 +42,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 9 |
-| Resolved threads | 9 |
-| Unresolved threads | 0 |
-| Total review comments | 9 |
-| Total fix commits (touching thread paths) | 3 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 9     |
+| Resolved threads                          | 9     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 9     |
+| Total fix commits (touching thread paths) | 3     |
 
 ## Review threads
 
@@ -164,7 +164,7 @@
 
   <pre>
   The reference `memory/feedback_shadow_lesson_log` doesn’t match an existing file path in `memory/` (the corresponding file is named with a full suffix and `.md`). Update this to the exact filename so the link/xref is resolvable.
-
+  
   </pre>
 
 ### Thread 9 -- resolved [collapsed]
@@ -179,7 +179,7 @@
 
   <pre>
   This tick shard uses YAML frontmatter + headings, but `docs/hygiene-history/ticks/README.md` defines shards as a single-row 6-column markdown table and `tools/hygiene/check-tick-history-shard-schema.sh` enforces that schema. Either reformat this shard to match the declared schema, or update the schema docs/checker so they reflect the current shard format (to avoid future tooling/CI drift).
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

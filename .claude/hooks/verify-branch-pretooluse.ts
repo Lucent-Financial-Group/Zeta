@@ -44,7 +44,7 @@ function emitDeny(reason: string): never {
 
 function isGitCommitCommand(command: string): boolean {
   const trimmed = command.trimStart();
-  return trimmed.startsWith("git commit") || trimmed.startsWith("git -C") && trimmed.includes("commit");
+  return trimmed.startsWith("git commit") || (trimmed.startsWith("git -C") && trimmed.includes("commit"));
 }
 
 function main(): number {
@@ -66,14 +66,10 @@ function main(): number {
   }
 
   const projectDir = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
-  const result = spawnSync(
-    "bun",
-    [`${projectDir}/tools/orchestrator-checks/verify-branch.ts`],
-    {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    },
-  );
+  const result = spawnSync("bun", [`${projectDir}/tools/orchestrator-checks/verify-branch.ts`], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 
   if (result.status === 0) {
     if (result.stderr) {

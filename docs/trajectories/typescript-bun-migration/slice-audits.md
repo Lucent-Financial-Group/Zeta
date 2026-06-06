@@ -59,16 +59,16 @@ merge gate). Layered references for the checklist:
 
 Hard-requirement checks across all 3 ports (results from `grep` / `tsc --noEmit` / `eslint`):
 
-| Check | Method | Result |
-|---|---|---|
-| No `any` uses | `grep -n ": any\| any =\|<any>\|as any"` | 0 matches |
-| No `as` casts | `grep -n " as [A-Z]"` | 0 matches |
-| Project typecheck clean | `bun x tsc --noEmit` | 0 errors in slice-1 files |
-| ESLint strictTypeChecked | `eslint <files>` | 0 errors |
-| Regex match groups guarded | `grep "match\["` | 2 hits, both guarded (`?? ""` or `!== undefined`) |
-| Index accesses guarded under `noUncheckedIndexedAccess` | `grep "\[i\]"` / `lines[i]` etc. | All guarded with `?? ""` or explicit `=== undefined` check |
-| File reads as typed error outcomes | inspect `try/catch` blocks | All file IO wrapped; returns exit code 64 on ENOENT |
-| TOCTOU race avoided | inspect for `existsSync(target) ... readFileSync(target)` patterns | 0 instances; atomic `readFileSync` everywhere |
+| Check                                                   | Method                                                             | Result                                                     |
+| ------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------- |
+| No `any` uses                                           | `grep -n ": any\| any =\|<any>\|as any"`                           | 0 matches                                                  |
+| No `as` casts                                           | `grep -n " as [A-Z]"`                                              | 0 matches                                                  |
+| Project typecheck clean                                 | `bun x tsc --noEmit`                                               | 0 errors in slice-1 files                                  |
+| ESLint strictTypeChecked                                | `eslint <files>`                                                   | 0 errors                                                   |
+| Regex match groups guarded                              | `grep "match\["`                                                   | 2 hits, both guarded (`?? ""` or `!== undefined`)          |
+| Index accesses guarded under `noUncheckedIndexedAccess` | `grep "\[i\]"` / `lines[i]` etc.                                   | All guarded with `?? ""` or explicit `=== undefined` check |
+| File reads as typed error outcomes                      | inspect `try/catch` blocks                                         | All file IO wrapped; returns exit code 64 on ENOENT        |
+| TOCTOU race avoided                                     | inspect for `existsSync(target) ... readFileSync(target)` patterns | 0 instances; atomic `readFileSync` everywhere              |
 
 Per-port pattern checklist:
 
@@ -137,7 +137,7 @@ modes:
   (`foo.md`). Detection, count, and ordering are byte-equivalent;
   only the wrapper visual is dropped. The wrapper was extraction
   noise — the column header is "target" and `foo.md` IS the
-  target; `](foo.md)` was the *match-pattern*, not the target.
+  target; `](foo.md)` was the _match-pattern_, not the target.
   Treated as an intentional improvement; documented here so future
   audits know the divergence is deliberate, not a regression.
 
@@ -178,16 +178,16 @@ Slice 1 passes audit with one ergonomic gap (`noPropertyAccessFromIndexSignature
 
 Hard-requirement checks across all 3 ports:
 
-| Check | Method | Result |
-|---|---|---|
-| No `any` uses | grep for any patterns | 0 matches |
-| No `as` casts | grep for `as` casts | 0 matches |
-| Project typecheck clean | `bun x tsc --noEmit` | 0 errors |
-| ESLint strictTypeChecked | `eslint <files>` | 0 errors |
-| Regex match groups guarded | inspect `match[]` access | All guarded |
-| Index accesses guarded under `noUncheckedIndexedAccess` | inspect | All guarded |
-| File reads as typed error outcomes | inspect `try/catch` | All file IO wrapped |
-| TOCTOU race avoided | inspect for `existsSync ... readFileSync` patterns | 0 instances |
+| Check                                                   | Method                                             | Result              |
+| ------------------------------------------------------- | -------------------------------------------------- | ------------------- |
+| No `any` uses                                           | grep for any patterns                              | 0 matches           |
+| No `as` casts                                           | grep for `as` casts                                | 0 matches           |
+| Project typecheck clean                                 | `bun x tsc --noEmit`                               | 0 errors            |
+| ESLint strictTypeChecked                                | `eslint <files>`                                   | 0 errors            |
+| Regex match groups guarded                              | inspect `match[]` access                           | All guarded         |
+| Index accesses guarded under `noUncheckedIndexedAccess` | inspect                                            | All guarded         |
+| File reads as typed error outcomes                      | inspect `try/catch`                                | All file IO wrapped |
+| TOCTOU race avoided                                     | inspect for `existsSync ... readFileSync` patterns | 0 instances         |
 
 Per-port pattern checklist:
 
@@ -202,7 +202,7 @@ Per-port pattern checklist:
 ### DST + coverage audit (per `repo-scripting.md`)
 
 - **DST-friendly: applied** — the only non-deterministic surface in either time-stamping script (`audit-git-hotspots`, `audit-cross-platform-parity`) is the report's "Generated"/"Run" timestamp, and both inject a `Clock` interface so tests can substitute a fake clock. `audit-machine-specific-content` has no time/random surface.
-- **Code coverage: deferred** — slice 2 ports do not introduce tests yet. The bash originals had no tests either; per `repo-scripting.md` the gap is recorded explicitly rather than waved through, and tests are queued as a follow-up before the next slice that introduces a *new* module (not a port).
+- **Code coverage: deferred** — slice 2 ports do not introduce tests yet. The bash originals had no tests either; per `repo-scripting.md` the gap is recorded explicitly rather than waved through, and tests are queued as a follow-up before the next slice that introduces a _new_ module (not a port).
 
 ### Equivalence audit
 
@@ -247,12 +247,12 @@ Slice 2 passes audit. The clock-injection pattern is the new substrate addition 
 
 ### Code-pattern audit (per-port)
 
-| Check | Result |
-|---|---|
-| No `any` uses | 0 matches across all 3 |
-| No `as` casts | 0 matches across all 3 (one `as string` replaced with non-null assertion + eslint-disable for sonarjs) |
-| Project typecheck clean | 0 errors |
-| ESLint strictTypeChecked | 0 errors |
+| Check                    | Result                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| No `any` uses            | 0 matches across all 3                                                                                 |
+| No `as` casts            | 0 matches across all 3 (one `as string` replaced with non-null assertion + eslint-disable for sonarjs) |
+| Project typecheck clean  | 0 errors                                                                                               |
+| ESLint strictTypeChecked | 0 errors                                                                                               |
 
 Per-port pattern checklist:
 
@@ -291,12 +291,12 @@ Slice 3 passes audit. Three new patterns recorded in this audit (Bun-native read
 
 ### Code-pattern audit
 
-| Check | Result |
-|---|---|
-| No `any` uses | 0 matches |
-| No `as` casts | 0 matches |
-| Project typecheck clean | 0 errors |
-| ESLint strictTypeChecked | 0 errors |
+| Check                    | Result    |
+| ------------------------ | --------- |
+| No `any` uses            | 0 matches |
+| No `as` casts            | 0 matches |
+| Project typecheck clean  | 0 errors  |
+| ESLint strictTypeChecked | 0 errors  |
 
 Per-port pattern checklist:
 
@@ -334,12 +334,12 @@ Slice 4 passes audit. New pattern recorded: per-line scan to preserve bash `grep
 
 ### Code-pattern audit
 
-| Check | Result |
-|---|---|
-| No `any` uses | 0 matches |
-| No `as` casts | 0 matches |
-| Project typecheck clean | 0 errors |
-| ESLint strictTypeChecked | 0 errors |
+| Check                    | Result    |
+| ------------------------ | --------- |
+| No `any` uses            | 0 matches |
+| No `as` casts            | 0 matches |
+| Project typecheck clean  | 0 errors  |
+| ESLint strictTypeChecked | 0 errors  |
 
 Per-port pattern checklist:
 
@@ -380,12 +380,12 @@ Slice 5 passes audit. New pattern recorded: `trimSpaces` pure helper as eslint-c
 
 ### Code-pattern audit
 
-| Check | Result |
-|---|---|
-| No `any` uses | 0 matches |
-| No `as` casts | 0 matches |
-| Project typecheck clean | 0 errors |
-| ESLint strictTypeChecked | 0 errors |
+| Check                    | Result    |
+| ------------------------ | --------- |
+| No `any` uses            | 0 matches |
+| No `as` casts            | 0 matches |
+| Project typecheck clean  | 0 errors  |
+| ESLint strictTypeChecked | 0 errors  |
 
 Per-port pattern checklist:
 

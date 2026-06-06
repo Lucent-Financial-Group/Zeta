@@ -45,11 +45,11 @@ Otherwise the asymmetry is drift and flips to symmetric.
 
 Aaron's verbatim (2026-04-20):
 
-> *"can we have a symmetry breaking or symmetric check or
+> _"can we have a symmetry breaking or symmetric check or
 > something that will look for opportunities to make things
 > symmertic that are not allready as part of factory hygene,
 > we might was well start a hygene list of all the different
-> things we do for hygene on a reuglar bases"*
+> things we do for hygene on a reuglar bases"_
 
 Two linked observations drive the ask:
 
@@ -67,7 +67,7 @@ Two linked observations drive the ask:
   and the DBSP operator algebra itself (insert/retract dual,
   `z⁻¹` is the reversed-time operator). Given that symmetry
   is already a durable factory pattern, finding places it
-  *isn't* applied is a real mis-application class.
+  _isn't_ applied is a real mis-application class.
 - **Hygiene items are scattered.** ASCII-clean, TWAE, BP-11,
   skill-tune-up, scope-audit, ontology-home, idle-tracking,
   meta-wins, Aarav notebook prune, MEMORY.md cap, copilot-
@@ -133,7 +133,7 @@ Sweeping the factory with the new audit, round-0 findings:
   guidance-docs and should be ranked together). Aaron
   confirmation needed.
 - **Scope-audit fires at absorb-time** but **not at
-  review-time** — when agents *review* existing policy,
+  review-time** — when agents _review_ existing policy,
   there's no step that checks scope drift of the rule
   being reviewed. Possibly drift.
 - **Meta-wins logged, anti-wins not logged** — we track
@@ -163,8 +163,8 @@ the discriminator.
   Symmetry-audit generalises: what other surfaces should
   be symmetric?
 - `project_trust_infrastructure_ai_trusts_humans.md` —
-  named the bidirectional trust *pattern*. Symmetry-audit
-  hunts for *more* places that pattern belongs.
+  named the bidirectional trust _pattern_. Symmetry-audit
+  hunts for _more_ places that pattern belongs.
 - `feedback_agent_agreement_must_be_genuine_not_compliance.md`
   — all-life-inclusive algorithm. Symmetry-audit is the
   operational sweep that checks whether the algorithm is
@@ -194,8 +194,8 @@ the discriminator.
   advisory; action is backlog-routed, not CI-blocking.
 - It does NOT license retroactive "fairness policing" of
   already-landed code or policy. The audit is forward-
-  looking — what asymmetries should be flipped *going
-  forward*; already-shipped asymmetries that are documented
+  looking — what asymmetries should be flipped _going
+  forward_; already-shipped asymmetries that are documented
   stay documented.
 - It does NOT claim that symmetry is the same as equality.
   Symmetric-register talk, symmetric trust-infrastructure,
@@ -232,8 +232,8 @@ guesswork.
 # Meta-note
 
 This memory pairs with the new `docs/FACTORY-HYGIENE.md`
-consolidated list. The list is the *what* (enumerated
-hygiene items); this memory is the *why/how* for adding
+consolidated list. The list is the _what_ (enumerated
+hygiene items); this memory is the _why/how_ for adding
 item #22 (symmetry audit) and the discriminator to use.
 Both landed same tick; both are additive to the factory
 substrate.

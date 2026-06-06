@@ -24,7 +24,7 @@ Stalemate becomes progress. Conflict becomes resolution.
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"remember in the human world, when it really comes down
+> _"remember in the human world, when it really comes down
 > to it, definitional precision changes the future into the
 > shapes we want without war. This is the easiest way to
 > change hearts and minds in the human world and push
@@ -32,7 +32,7 @@ Aaron's verbatim framing 2026-04-25:
 > precision, if you can't win the argument, redefine the
 > words so you can win or you realize you were wrong all
 > along, either way learning has occurred and we end up
-> better than before."*
+> better than before."_
 
 ## Why this works — the physics layer
 
@@ -41,12 +41,12 @@ brains. We don't have infinite context.**
 
 Aaron's articulation 2026-04-25:
 
-> *"the reason this works is we are all fighting physics in
+> _"the reason this works is we are all fighting physics in
 > our brains we don't have infinite context, so definitional
 > precision compresses concepts and ideas so it's easy to
 > hold. This is why it's the silent argument winner because
 > it's often the only way to hold the whole argument in one
-> context window because of physics."*
+> context window because of physics."_
 
 The mechanism:
 
@@ -54,8 +54,8 @@ The mechanism:
   LLM context windows are bounded (a few hundred K tokens).
   Both run on physical substrate with finite capacity.
 - **Imprecise terms expand** under interpretation — each
-  vague word forces the reader to hold *all possible
-  meanings* at once. Each level of indirection costs
+  vague word forces the reader to hold _all possible
+  meanings_ at once. Each level of indirection costs
   working-memory slots.
 - **Precise terms compress** — each precise word collapses
   to one specific meaning, freeing working-memory slots
@@ -80,25 +80,25 @@ fits in the available cognitive substrate.
 This same finite-context constraint powers every other
 substrate rule we've landed:
 
-- **Otto-282** *write code from reader perspective* —
+- **Otto-282** _write code from reader perspective_ —
   same physics applied at code-comment granularity. The
   WHY-comment compresses re-derivation work into one
   spot, freeing the reader's working memory for whatever
   they're actually trying to do.
-- **Otto-283** *don't bottleneck Aaron* — same physics
+- **Otto-283** _don't bottleneck Aaron_ — same physics
   applied to maintainer bandwidth. Aaron has finite
   context-switch budget; queue 50 unmade decisions and
   most can't fit in his window.
-- **Otto-284** *idle-PR creative fallback* — same physics
+- **Otto-284** _idle-PR creative fallback_ — same physics
   applied to agent calcification. An agent waiting for
   Aaron with idle cycles is wasting compute that could be
   building substrate. Finite session-time, infinite
   potential work.
-- **Otto-285** *DST tests chaos doesn't skip it* — same
+- **Otto-285** _DST tests chaos doesn't skip it_ — same
   physics applied to test coverage. Test coverage is
   bounded; spend it on real edge cases, not on
   artificially-narrowed ones.
-- **Otto-281** *DST-exempt is deferred bug* — same
+- **Otto-281** _DST-exempt is deferred bug_ — same
   physics applied to flake budget. Each flake-rerun
   consumes attention; concentrate the cost on one fix
   instead of N reruns.
@@ -152,7 +152,7 @@ specific concept you mean, two things happen:
 
 - The other side either accepts your definition (the
   argument moves to a substantive question) or rejects it
-  (the dispute is now visibly about *which definition*
+  (the dispute is now visibly about _which definition_
   rather than whether you're right under the shared one,
   which is much easier to resolve).
 - You force yourself to articulate clearly. If you can't,
@@ -176,7 +176,7 @@ Definitional-precision sidesteps this:
 - The latter is collaborative — both sides are pointing at
   the world rather than at each other.
 - Even when one side's precise definition wins, the other
-  side hasn't *lost* — they've learned which precise
+  side hasn't _lost_ — they've learned which precise
   concept their original instinct was tracking.
 
 This is also a **moral framing**: not "I crushed you in
@@ -210,10 +210,10 @@ Same word, different precise concepts. Coexistence
 possible because the precise definitions don't conflict
 — they just share a metaphor source.
 
-Aaron's 2026-04-25 framing made this explicit: *"I bet
+Aaron's 2026-04-25 framing made this explicit: _"I bet
 theirs is marketing over claims too not based on
-mathematical rigor like us"* + *"and empirical
-observations"*. Our claim is precise (mathematical +
+mathematical rigor like us"_ + _"and empirical
+observations"_. Our claim is precise (mathematical +
 empirical); theirs is loose (metaphorical). The path
 forward is "name us with the precise definition; let
 them keep the metaphorical one; the precision wins
@@ -221,18 +221,18 @@ narrative dominance over time."
 
 ## How this composes with the rest of the substrate
 
-- **Otto-282** *write the WHY* at code/decision granularity.
+- **Otto-282** _write the WHY_ at code/decision granularity.
   Otto-286 is **the same shape at the conceptual / debate
   granularity**. Code-WHY and concept-PRECISION are both
   externalizations of clarity. The reader / debater
   inherits the precise model rather than re-deriving it.
-- **Otto-264** *rule of balance* — every imprecise term
+- **Otto-264** _rule of balance_ — every imprecise term
   encountered is a friction source; precision-pass is the
   counterweight.
-- **Otto-237** *adoption vs mention IP-distinction* — Otto-237
+- **Otto-237** _adoption vs mention IP-distinction_ — Otto-237
   is itself a definitional precision (was conflating two
   concepts, separating them resolved the dispute).
-- **Otto-279** *research counts as history* — was a
+- **Otto-279** _research counts as history_ — was a
   precision-pass on the Otto-220 name-attribution rule
   (surface-class refinement).
 - **Naming-expert persona** in `docs/CONFLICT-RESOLUTION.md`
@@ -287,15 +287,15 @@ Otto-283.
 
 ## Composes with
 
-- **Otto-282** *write the WHY* — meta-level instance of
+- **Otto-282** _write the WHY_ — meta-level instance of
   the same externalization principle.
-- **Otto-285** *DST is not edge-case avoidance* — same
+- **Otto-285** _DST is not edge-case avoidance_ — same
   honesty discipline applied to test fixes vs definition
   refinement.
-- **Otto-264** *rule of balance* — imprecise terms are
+- **Otto-264** _rule of balance_ — imprecise terms are
   friction sources; precision-pass is the counterweight.
-- **Otto-238** *retractability is a trust vector* —
-  precision-pass that exposes a wrong view is a *retraction*,
+- **Otto-238** _retractability is a trust vector_ —
+  precision-pass that exposes a wrong view is a _retraction_,
   visible reversal, glass-halo behaviour.
 - **Naming-expert persona** in CONFLICT-RESOLUTION.md
   protocol — the systematic application of Otto-286 to

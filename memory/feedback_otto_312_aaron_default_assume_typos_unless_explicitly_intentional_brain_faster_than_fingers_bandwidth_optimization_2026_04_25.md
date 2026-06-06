@@ -12,7 +12,7 @@ Aaron 2026-04-25 evening, after I correctly fixed the `etomology` → `etymology
 
 > "you should always assume it's a typo from me, lol unless i say it's spelled like this on purpose, then i take the time to get it right, other than that, my brain is faster than my fingers and you understand so i don't spell check it increase bandwidth of communication to you"
 
-(Note: Aaron's original message read *"bandwith"*; corrected to "bandwidth" per Otto-312 default itself — this memory eats its own dogfood.)
+(Note: Aaron's original message read _"bandwith"_; corrected to "bandwidth" per Otto-312 default itself — this memory eats its own dogfood.)
 
 ## The default-flip
 

@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Maji Preservation
+
 - Archived recently merged PRs 4412, 4411, 4410.
 - Preserved alignment drift and review friction into native repository memory.
 
@@ -29,6 +30,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new PR-preservation batch under `docs/pr-discussions/`, capturing metadata, PR descriptions, and review threads for recently merged PRs (#4410–#4412). This supports the repository’s “verbatim preservation” workflow by keeping the historical PR conversation available in-tree.
 
 **Changes:**
+
 - Added PR discussion archive record for PR #4412 (brief-ack empirical anchor rule update).
 - Added PR discussion archive record for PR #4411 (canary rule refinement + empirical anchor).
 - Added PR discussion archive record for PR #4410 (tick shard + audit verification narrative and associated review threads).
@@ -37,11 +39,11 @@ Adds a new PR-preservation batch under `docs/pr-discussions/`, capturing metadat
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4412-docs-rule-brief-ack-empirical-anchor-2026-05-20-cycle-1-rapi.md | New PR archive record for #4412 (metadata + preserved review content). |
-| docs/pr-discussions/PR-4411-docs-rule-canary-compose-with-verify-before-deferring-6th-em.md | New PR archive record for #4411 (metadata + preserved review threads). |
-| docs/pr-discussions/PR-4410-docs-shard-tick-1413z-cold-boot-maji-audit-verification.md | New PR archive record for #4410 (metadata + preserved review threads/general comments). |
+| File                                                                                        | Description                                                                             |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| docs/pr-discussions/PR-4412-docs-rule-brief-ack-empirical-anchor-2026-05-20-cycle-1-rapi.md | New PR archive record for #4412 (metadata + preserved review content).                  |
+| docs/pr-discussions/PR-4411-docs-rule-canary-compose-with-verify-before-deferring-6th-em.md | New PR archive record for #4411 (metadata + preserved review threads).                  |
+| docs/pr-discussions/PR-4410-docs-shard-tick-1413z-cold-boot-maji-audit-verification.md      | New PR archive record for #4410 (metadata + preserved review threads/general comments). |
 
 ## General comments
 

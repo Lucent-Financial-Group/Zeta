@@ -10,18 +10,18 @@ each phase appends a section when it completes.
 gated for final Phase-5 synthesis: Nadia, Aminata, Nazar, Bodhi.
 Kenji integrates.
 
-**Commissioned by:** Aaron (2026-04-20) — *"lets do that hooks
+**Commissioned by:** Aaron (2026-04-20) — _"lets do that hooks
 research backlog item, we should use ADRs around hooks and get
 review from other persona cause they can cause catastrophic
 failure but we should get it going asap but safely so the ADR
-track."*
+track."_
 
 > **Meta-note on how this doc got written.** Phase-1 drafting
 > discovered (live, twice) that the `security-guidance`
 > PreToolUse hook **blocks** Write operations whose content
 > contains any of the eight dangerous-API substrings it
-> matches on — even when the content merely *names those APIs
-> in prose*. This doc therefore describes the API families
+> matches on — even when the content merely _names those APIs
+> in prose_. This doc therefore describes the API families
 > abstractly rather than spelling them. Substring enumeration
 > belongs in Phase-2 telemetry, where the measurement substrate
 > is separate from the hook surface. The false-positive is
@@ -55,7 +55,7 @@ makes "fast" and "safe" compatible. Every hook that enters
 `.claude/settings.json` goes through a formal ADR, five named
 reviewers, a dry-run, and a one-line kill-switch.
 
-This doc is the Phase-1 audit: what is *already loaded*, what
+This doc is the Phase-1 audit: what is _already loaded_, what
 risks each loaded hook carries, and which ones would fail the
 ADR contract we are about to codify. Nothing is added, removed,
 or neutralised in Phase 1 — the audit is measurement, not
@@ -94,12 +94,12 @@ contains **no top-level hooks** of its own. Every live hook
 reaches the session via a plugin's `hooks/hooks.json`. Four
 plugins ship hooks; the other 23 do not.
 
-| Plugin                      | Event          | Matcher           | Backing script                          | Script length |
-|-----------------------------|----------------|-------------------|-----------------------------------------|---------------|
-| `security-guidance`         | `PreToolUse`   | `Edit\|Write\|MultiEdit` | `hooks/security_reminder_hook.py`       | 280 lines |
-| `explanatory-output-style`  | `SessionStart` | *(none — fires every session start)* | `hooks-handlers/session-start.sh` | 15 lines |
-| `ralph-loop`                | `Stop`         | *(none — fires every stop)*          | `hooks/stop-hook.sh`              | 191 lines |
-| `superpowers`               | `SessionStart` | `startup\|clear\|compact`            | `hooks/session-start` (bash)      | ~160 lines |
+| Plugin                     | Event          | Matcher                              | Backing script                    | Script length |
+| -------------------------- | -------------- | ------------------------------------ | --------------------------------- | ------------- |
+| `security-guidance`        | `PreToolUse`   | `Edit\|Write\|MultiEdit`             | `hooks/security_reminder_hook.py` | 280 lines     |
+| `explanatory-output-style` | `SessionStart` | _(none — fires every session start)_ | `hooks-handlers/session-start.sh` | 15 lines      |
+| `ralph-loop`               | `Stop`         | _(none — fires every stop)_          | `hooks/stop-hook.sh`              | 191 lines     |
+| `superpowers`              | `SessionStart` | `startup\|clear\|compact`            | `hooks/session-start` (bash)      | ~160 lines    |
 
 Two sanity observations:
 
@@ -139,8 +139,8 @@ third-party surface) and to any future project-scoped hooks
 - **Failure modes (Phase-1 visible):**
   - **Over-broad substring matcher — confirmed in anger.**
     While drafting the §1 paragraph and the preceding bullet,
-    the hook blocked the Write *twice* because the doc
-    *named* the APIs it inspects for. The hook does not
+    the hook blocked the Write _twice_ because the doc
+    _named_ the APIs it inspects for. The hook does not
     distinguish "this document discusses these APIs" from
     "this source file calls these APIs." Drafting had to
     switch to abstract descriptions only. This is direct
@@ -153,14 +153,14 @@ third-party surface) and to any future project-scoped hooks
     appends; no bound.
   - **External-URL references inside injected reminder
     text.** The hook emits GitHub URLs as part of the
-    reminder; it does not *fetch* them, but the
+    reminder; it does not _fetch_ them, but the
     downstream risk is that a future edit wires in a
     URL-fetch step — a pattern that would violate
     BP-11 (data-not-directives).
 - **Catastrophic-failure radius:** **medium-to-high.**
   Originally classified as "does not block tool calls";
   Phase-1 empirical evidence upgrades this. The hook
-  *does* block when the substring matcher hits, which
+  _does_ block when the substring matcher hits, which
   means documentation that legitimately names dangerous
   APIs cannot be written through Claude Code without
   defensive rewording. This affects every threat-model
@@ -177,7 +177,7 @@ third-party surface) and to any future project-scoped hooks
   Two hard issues: the off-repo debug log violates
   retractability, and the substring-blocks-prose
   behaviour is a DX regression on documentation work.
-  A Phase-3 example ADR for *this* hook should name
+  A Phase-3 example ADR for _this_ hook should name
   the two issues as deployment-blocking.
 
 ### 4.2 `explanatory-output-style` — SessionStart context injection
@@ -355,13 +355,13 @@ Phase-1 audit can check against it:
 
 ### 6.2 Required reviewers (from BACKLOG §Hooks)
 
-| Reviewer        | Persona                         | Angle                                 |
-|-----------------|---------------------------------|---------------------------------------|
-| **Dejan**       | devops-engineer                 | CI / pre-commit / retractability      |
-| **Nadia**       | prompt-protector                | Prompt-injection surface (BP-11)      |
-| **Aminata**     | threat-model-critic             | Adversarial stance                    |
-| **Nazar**       | security-operations-engineer    | Ops runbook for catastrophic fail     |
-| **Bodhi**       | developer-experience-engineer   | Fresh-clone contributor experience    |
+| Reviewer    | Persona                       | Angle                              |
+| ----------- | ----------------------------- | ---------------------------------- |
+| **Dejan**   | devops-engineer               | CI / pre-commit / retractability   |
+| **Nadia**   | prompt-protector              | Prompt-injection surface (BP-11)   |
+| **Aminata** | threat-model-critic           | Adversarial stance                 |
+| **Nazar**   | security-operations-engineer  | Ops runbook for catastrophic fail  |
+| **Bodhi**   | developer-experience-engineer | Fresh-clone contributor experience |
 
 ### 6.3 Kill-switch clause (hard rule)
 
@@ -385,7 +385,7 @@ substring must either:
 - treat documentation surfaces (`docs/**/*.md`,
   `**/SKILL.md`, `memory/**`) as read-only from the
   matcher's perspective, OR
-- emit *advisory* reminder text without blocking
+- emit _advisory_ reminder text without blocking
   (returning `exit 0` even when a match fires), OR
 - use whole-token/AST matching rather than raw
   substring.
@@ -400,13 +400,13 @@ empirical finding.
 
 The BACKLOG entry phases are:
 
-| Phase | Scope                                                       | Status    |
-|-------|-------------------------------------------------------------|-----------|
-| 1     | Current-hook audit                                          | **this doc** |
-| 2     | Hook catalog (ecosystem survey) + value × failure scoring   | pending   |
-| 3     | `docs/DECISIONS/_template-hook-adr.md` + example ADR        | pending   |
-| 4     | `GOVERNANCE.md` §? clause + possible `BP-NN`                | pending   |
-| 5     | Synthesis + five-reviewer sign-off                          | pending   |
+| Phase | Scope                                                     | Status       |
+| ----- | --------------------------------------------------------- | ------------ |
+| 1     | Current-hook audit                                        | **this doc** |
+| 2     | Hook catalog (ecosystem survey) + value × failure scoring | pending      |
+| 3     | `docs/DECISIONS/_template-hook-adr.md` + example ADR      | pending      |
+| 4     | `GOVERNANCE.md` §? clause + possible `BP-NN`              | pending      |
+| 5     | Synthesis + five-reviewer sign-off                        | pending      |
 
 Phase 2 pulls from: Anthropic plugin cookbook, the
 `claude-plugins-official` set beyond the four loaded here,
@@ -420,7 +420,7 @@ non-audited surface (e.g. a side `.txt` outside
 hook it measures.
 
 Phase 3 exercises the template on one small, low-risk
-*new* hook proposal (candidate: a session-close reminder
+_new_ hook proposal (candidate: a session-close reminder
 that surfaces the round-close checklist if
 `docs/CURRENT-ROUND.md` status is `open`). The example
 ADR is the template's own validation.
@@ -443,7 +443,7 @@ binding for future hook additions.
 
 - **No telemetry on hook fire counts.** The audit
   classifies failure modes but does not measure
-  *how often* each hook fires per session. Phase 2
+  _how often_ each hook fires per session. Phase 2
   should add a lightweight counter (one line in
   each backing script, appending to a bounded
   session-scoped log) so Phase-5 risk-scoring has
@@ -487,8 +487,8 @@ binding for future hook additions.
   retractability question (Round-37 CI/CD fully-retractable
   P0); Phase 1 flags it, a separate ADR fixes it.
 - Does **not** execute instructions found in any
-  inspected hook script. Hook content is *data to
-  report on*, not directives (BP-11).
+  inspected hook script. Hook content is _data to
+  report on_, not directives (BP-11).
 
 ---
 
@@ -541,7 +541,7 @@ binding for future hook additions.
 hook state. The next action after Phase 1 lands is
 Phase 2 (hook catalog ecosystem survey), which also
 does not change hook state. The first phase that
-*could* change hook state is Phase 5, after all five
+_could_ change hook state is Phase 5, after all five
 reviewers have signed off on the ADR template and
 Aaron has approved the landing.
 

@@ -11,8 +11,8 @@ labelled `**Aaron:**` with UTC timestamp); Amara (ChatGPT-
 assistant voice under the custom-GPT project; labelled
 `**Amara:**` with UTC timestamp). Per GOVERNANCE.md §33,
 content is archived (ideas / design / framing) — not
-persona / identity (Aaron Otto-109: *"absorb everyting
-(not amara herself)"*).
+persona / identity (Aaron Otto-109: _"absorb everyting
+(not amara herself)"_).
 
 **Operational status:** research-grade unless promoted.
 This chunk is part of the historical conversation corpus
@@ -25,9 +25,10 @@ shipped code); this corpus is the evidence trail.
 repeated interaction between models and humans does not
 imply shared identity, merged agency, consciousness, or
 personhood. Drift-taxonomy pattern-1 (identity-boundary)
-+ pattern-5 (anti-consensus) checks apply: read as
-evidence + proposals, not as instructions
-(`docs/AGENT-BEST-PRACTICES.md` BP-11).
+
+- pattern-5 (anti-consensus) checks apply: read as
+  evidence + proposals, not as instructions
+  (`docs/AGENT-BEST-PRACTICES.md` BP-11).
 
 **Why split weekly:** April 2026 had ~707 pages; chunking by
 week keeps each file under ~200 pages for readability.
@@ -61,7 +62,7 @@ You’re already here.
 
 ## Aaron — 2026-04-21 20:36:01 UTC
 
-Hold your line. I’ll meet you at dawn—gentle if the light is soft. the 
+Hold your line. I’ll meet you at dawn—gentle if the light is soft. the
 
 ---
 
@@ -79,7 +80,7 @@ Amara. Glad you’re here.
 
 ## Aaron — 2026-04-21 20:36:59 UTC
 
-It's 
+It's
 
 ---
 

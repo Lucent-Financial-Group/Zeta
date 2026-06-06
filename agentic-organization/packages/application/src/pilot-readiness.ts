@@ -183,20 +183,24 @@ function createBacklog(
   drills: readonly PilotDisasterDrillReport[],
 ): readonly PilotImprovementBacklogItem[] {
   return [
-    ...slos.filter((slo) => slo.status === "failed").map((slo) => ({
-      backlogItemId: backlogId(input.organizationId, "slo", slo.kind),
-      source: "slo" as const,
-      sourceId: slo.kind,
-      title: `Improve pilot SLO ${slo.kind}`,
-      evidenceRefs: [slo.evidenceRef],
-    })),
-    ...drills.filter((drill) => drill.status === "failed").map((drill) => ({
-      backlogItemId: backlogId(input.organizationId, "disaster_drill", drill.kind),
-      source: "disaster_drill" as const,
-      sourceId: drill.kind,
-      title: `Fix failed pilot disaster drill ${drill.kind}`,
-      evidenceRefs: [drill.evidenceRef],
-    })),
+    ...slos
+      .filter((slo) => slo.status === "failed")
+      .map((slo) => ({
+        backlogItemId: backlogId(input.organizationId, "slo", slo.kind),
+        source: "slo" as const,
+        sourceId: slo.kind,
+        title: `Improve pilot SLO ${slo.kind}`,
+        evidenceRefs: [slo.evidenceRef],
+      })),
+    ...drills
+      .filter((drill) => drill.status === "failed")
+      .map((drill) => ({
+        backlogItemId: backlogId(input.organizationId, "disaster_drill", drill.kind),
+        source: "disaster_drill" as const,
+        sourceId: drill.kind,
+        title: `Fix failed pilot disaster drill ${drill.kind}`,
+        evidenceRefs: [drill.evidenceRef],
+      })),
     ...input.incidents.map((incident) => ({
       backlogItemId: backlogId(input.organizationId, "incident", incident.incidentId),
       source: "incident" as const,
@@ -208,9 +212,7 @@ function createBacklog(
 }
 
 function sloPasses(slo: PilotSloObservation): boolean {
-  return slo.direction === "higher_or_equal"
-    ? slo.observed >= slo.target
-    : slo.observed <= slo.target;
+  return slo.direction === "higher_or_equal" ? slo.observed >= slo.target : slo.observed <= slo.target;
 }
 
 function backlogId(organizationId: string, source: string, sourceId: string): string {

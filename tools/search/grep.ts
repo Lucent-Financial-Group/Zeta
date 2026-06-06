@@ -184,7 +184,12 @@ export function parseArgs(argv: string[]): ParsedArgs | { error: string } {
     } else if (a === "--ext") {
       const v = argv[++i];
       if (!v) return { error: "--ext requires a comma-separated list" };
-      exts = new Set(v.split(",").map((s) => s.trim().replace(/^\./, "")).filter(Boolean));
+      exts = new Set(
+        v
+          .split(",")
+          .map((s) => s.trim().replace(/^\./, ""))
+          .filter(Boolean),
+      );
     } else if (a === "-i") {
       ignoreCase = true;
     } else if (a === "--files") {

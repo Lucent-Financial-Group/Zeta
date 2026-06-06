@@ -49,24 +49,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T16:12:48Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a26ed1f9bc`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -78,7 +76,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-24T16:12:48Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep recovery gate closed until two follow-up lows exist**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep recovery gate closed until two follow-up lows exist**
 
 This line marks the 1407Z recovery gate as satisfied after only one follow-up observation (14:07Z then 16:08Z), but the gate definition in `docs/hygiene-history/ticks/2026/05/24/1407Z.md` says to require **2+ subsequent** low readings after the initial zero. Recording the gate as already positive can cause later ticks to treat the saturation arc as closed too early and skip continued verification for another interval.
 

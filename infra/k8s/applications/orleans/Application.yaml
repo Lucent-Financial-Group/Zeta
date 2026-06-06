@@ -22,7 +22,7 @@ spec:
     targetRevision: main
     path: infra/k8s/applications/orleans
     directory:
-      include: '{deployment,service,rbac,configmap}.yaml'
+      include: "{deployment,service,rbac,configmap}.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: orleans

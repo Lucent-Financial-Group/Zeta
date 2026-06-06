@@ -257,18 +257,11 @@ function gatherInputs(): {
   } catch {
     lsblkOutput = "";
   }
-  const procCpuinfo = existsSync("/proc/cpuinfo")
-    ? readFileSync("/proc/cpuinfo", "utf8")
-    : "";
-  const procMeminfo = existsSync("/proc/meminfo")
-    ? readFileSync("/proc/meminfo", "utf8")
-    : "";
+  const procCpuinfo = existsSync("/proc/cpuinfo") ? readFileSync("/proc/cpuinfo", "utf8") : "";
+  const procMeminfo = existsSync("/proc/meminfo") ? readFileSync("/proc/meminfo", "utf8") : "";
   let cpuCores = 0;
   try {
-    cpuCores = parseInt(
-      execFileSync("nproc", [], { encoding: "utf8" }).trim(),
-      10,
-    );
+    cpuCores = parseInt(execFileSync("nproc", [], { encoding: "utf8" }).trim(), 10);
   } catch {
     cpuCores = 0;
   }
@@ -282,9 +275,7 @@ async function main(): Promise<number> {
     if (arg === "--json") mode = "json";
     else if (arg === "--suggested-host") mode = "suggested-host";
     else if (arg === "--help" || arg === "-h") {
-      process.stdout.write(
-        "Usage: bun tools/installer/zeta-hardware-detect.ts [--json | --suggested-host]\n",
-      );
+      process.stdout.write("Usage: bun tools/installer/zeta-hardware-detect.ts [--json | --suggested-host]\n");
       return 0;
     } else {
       process.stderr.write(`unknown arg: ${arg}\n`);
@@ -292,9 +283,7 @@ async function main(): Promise<number> {
     }
   }
   if (platform() !== "linux") {
-    process.stderr.write(
-      `zeta-hardware-detect: only supported on Linux (got ${platform()})\n`,
-    );
+    process.stderr.write(`zeta-hardware-detect: only supported on Linux (got ${platform()})\n`);
     return 1;
   }
   const inputs = gatherInputs();

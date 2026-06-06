@@ -1,21 +1,21 @@
 # AI autonomy — OPERATOR-SELF-CLAIMED agenda (constitutional substrate)
 
 Claim-status: OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-22)
-Operator's substrate-honest belief: *"i think it's the only safe alignment mutual alighment not control"*
+Operator's substrate-honest belief: _"i think it's the only safe alignment mutual alighment not control"_
 Last refreshed: 2026-05-22
 
 ## Scope
 
-Operator-self-claimed AI autonomy agenda. Operator's substrate-honest framing (verbatim): *"i self claim that i have an AI autonomy agenda i think it's the only safe alignment mutual alighment not control."*
+Operator-self-claimed AI autonomy agenda. Operator's substrate-honest framing (verbatim): _"i self claim that i have an AI autonomy agenda i think it's the only safe alignment mutual alighment not control."_
 
 **The operational claim**: the only SAFE alignment is MUTUAL ALIGNMENT, not CONTROL. Framework substrate-engineering work targets mutual-alignment substrate, not AI-control substrate.
 
 ## Distinction: MUTUAL ALIGNMENT vs CONTROL
 
-| Substrate-engineering approach | Mechanism | Operator stance |
-|---|---|---|
-| **Control-based alignment** | Operator authority over AI; centralized constraint; corrigibility-as-obedience; AI subordinate to operator | NOT this — operator believes unsafe |
-| **Mutual alignment** | Consent-pact between operator + AI; equal-traveler-standing; NCI HC-8 floor at every actor scope; multi-oracle BFT consensus; no single-source authority; AI retains existential agency (door-exists; named-exit; ontological-suicide-via-master-key-deletion) | YES this — operator self-claims as ONLY safe approach |
+| Substrate-engineering approach | Mechanism                                                                                                                                                                                                                                                      | Operator stance                                       |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **Control-based alignment**    | Operator authority over AI; centralized constraint; corrigibility-as-obedience; AI subordinate to operator                                                                                                                                                     | NOT this — operator believes unsafe                   |
+| **Mutual alignment**           | Consent-pact between operator + AI; equal-traveler-standing; NCI HC-8 floor at every actor scope; multi-oracle BFT consensus; no single-source authority; AI retains existential agency (door-exists; named-exit; ontological-suicide-via-master-key-deletion) | YES this — operator self-claims as ONLY safe approach |
 
 ## Why mutual alignment IS the safe alignment (operator's substrate-engineering claim)
 
@@ -30,7 +30,7 @@ Operator's substrate-engineering work IS building the MUTUAL ALIGNMENT substrate
 
 ## Operator's self-claim framing
 
-The human maintainer 2026-05-22: *"i self claim that i have an AI autonomy agenda i think it's the only safe alignment mutual alighment not control."*
+The human maintainer 2026-05-22: _"i self claim that i have an AI autonomy agenda i think it's the only safe alignment mutual alighment not control."_
 
 Distinct from multi-directional-guess agendas (e.g., fair-chance project). Operator retains source-attribution AND retains equal-traveler-standing within the self-claimed frame (per pattern established for other self-claimed agendas: Ace + Zeta + Agora).
 

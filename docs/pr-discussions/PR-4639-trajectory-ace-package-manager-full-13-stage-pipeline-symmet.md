@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Operator instructions 2026-05-22: full pipeline crystallization 'riff->seive->map->refine->build->generate->encupslate (open closed principle to DST memetic time crystals)->distribute->grow->negotiage changes is the whole ace pipeline i think' + 'add all three (shadow*)' for verify/revoke/discover candidates + 'Yes all those should be moving twards a symmetric frame where ace package manger is not centralized an that's everyones pipeine just just ours'.
+Operator instructions 2026-05-22: full pipeline crystallization 'riff->seive->map->refine->build->generate->encupslate (open closed principle to DST memetic time crystals)->distribute->grow->negotiage changes is the whole ace pipeline i think' + 'add all three (shadow\*)' for verify/revoke/discover candidates + 'Yes all those should be moving twards a symmetric frame where ace package manger is not centralized an that's everyones pipeine just just ours'.
 
 13-stage Ace pipeline complete: riff → sieve → map → refine → build → generate → encapsulate (OCP→DST→memetic time crystals) → distribute → discover → verify → grow → revoke/quarantine → negotiate changes. Discover + verify are user-side complements to producer-side sieve; revoke is reactive complement to voluntary-retire-via-negotiate-changes.
 
@@ -33,6 +33,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a more complete “Ace package manager” trajectory specification by expanding the pipeline to 13 stages and documenting a symmetric/decentralized framing (pipeline-as-pattern, deployment-as-instance) within the `docs/trajectories/` substrate.
 
 **Changes:**
+
 - Adds a “FULL Ace pipeline crystallization” section with a 10-stage base pipeline plus three additional user-side/reactive stages (discover/verify/revoke).
 - Adds a “SYMMETRIC / DECENTRALIZED FRAME” section clarifying that the Ace pipeline is a reusable pattern rather than a centralized service.
 - Extends operational implications guidance for future cold-boots (do-not-collapse constraints).

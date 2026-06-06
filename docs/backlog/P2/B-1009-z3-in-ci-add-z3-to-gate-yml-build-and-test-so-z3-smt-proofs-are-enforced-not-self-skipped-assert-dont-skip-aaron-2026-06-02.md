@@ -9,7 +9,21 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
 composes_with: [B-1007, B-1000]
-tags: [z3, smt, ci, gate-yml, green-by-skip, assert-dont-skip, formal-proof-first, formal-verification, self-skip-hole, shield-with-a-hole, infer-net, aaron]
+tags:
+  [
+    z3,
+    smt,
+    ci,
+    gate-yml,
+    green-by-skip,
+    assert-dont-skip,
+    formal-proof-first,
+    formal-verification,
+    self-skip-hole,
+    shield-with-a-hole,
+    infer-net,
+    aaron,
+  ]
 type: tooling
 ---
 
@@ -19,19 +33,19 @@ type: tooling
 
 `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` shells to the `z3` CLI and **self-skips
 when z3 is absent from PATH** (the existing `which "z3"` guard → "informational only").
-**The `z3` CLI is installed in NO workflow** — it appears only in a *comment* in
+**The `z3` CLI is installed in NO workflow** — it appears only in a _comment_ in
 `stryker-mutation.yml` (not an install step), and neither `gate.yml` nor
-`tools/setup/install.sh` install it. (`Microsoft.Z3` NuGet 4.12.2 *is* pinned in
+`tools/setup/install.sh` install it. (`Microsoft.Z3` NuGet 4.12.2 _is_ pinned in
 `Directory.Packages.props` for an in-process path, but the harness uses the CLI.) So
 in the merge gate the Z3 proofs run **green-by-skip** — the check passes without
 exercising the proof.
 
 This is the [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
-failure: *a shield with a hole reads as covered.* The Z-set abelian-group Z3 lemmas
+failure: _a shield with a hole reads as covered._ The Z-set abelian-group Z3 lemmas
 have had this property all along; B-1007 C1 added the Gaussian-group Z3 lemmas, which
 were verified **locally** (z3 on PATH, 7/7 passed, 0 skipped) but **self-skip in the
-gate**. As more of B-1007's C1–C14 land with Z3 halves, the gate increasingly *reads
-as* proven while the symbolic half never runs.
+gate**. As more of B-1007's C1–C14 land with Z3 halves, the gate increasingly _reads
+as_ proven while the symbolic half never runs.
 
 ## Fix
 
@@ -40,19 +54,19 @@ as* proven while the symbolic half never runs.
    WebSearch current stable). Ubuntu: `apt-get install z3` (or a pinned release);
    macOS leg: `brew install z3`; confirm the binary lands on PATH for the test step.
 2. **Convert green-by-skip into assert-don't-skip** for CI: the `Z3.Laws.Tests.fs`
-   self-skip is correct for *local dev without z3*, but in CI the absence of z3 must
+   self-skip is correct for _local dev without z3_, but in CI the absence of z3 must
    be a **failure, not a skip**. Add a CI-only assertion (e.g., an env flag
    `ZETA_REQUIRE_Z3=1` set in gate.yml that flips the "tool not installed →
    informational" branch into an explicit `failwith "z3 required in CI but not on
-   PATH"`). Keep the graceful skip for local runs; strip the grace only in the gate
+PATH"`). Keep the graceful skip for local runs; strip the grace only in the gate
    (per the rule: keep grace in the artifact, strip it in the gate).
 3. Verify: a gate run shows the Z3 lemmas as **run + passed** (0 skipped), and a
    deliberately-broken z3 install makes the gate **fail** (not silently skip).
 
 ## Why P2 (not P0)
 
-The proofs ARE verified — locally, where z3 is present. The hole is *enforcement in
-the gate*, not *correctness of the proof*. So it's important (it's the difference
+The proofs ARE verified — locally, where z3 is present. The hole is _enforcement in
+the gate_, not _correctness of the proof_. So it's important (it's the difference
 between "proven" and "reads-as-proven" in CI) but not silent-corruption-of-results.
 It should land soon after the first few B-1007 Z3 proofs accumulate, so the gate
 actually guards them.

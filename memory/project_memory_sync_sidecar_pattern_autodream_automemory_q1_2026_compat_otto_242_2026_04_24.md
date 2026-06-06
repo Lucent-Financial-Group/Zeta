@@ -3,6 +3,7 @@ name: Memory-sync sidecar pattern (`.memory-sync-state.json`) + AutoDream/AutoMe
 description: Aaron Otto-242 shared a substantial Google Search AI research packet on memory-sync patterns that materially upgrades the Otto-114 "ongoing memory-sync mechanism" BACKLOG row. Confirms `originSessionId` is third-party convention not native Claude Code (already in Otto-241 memory). Adds concrete sidecar-file shape (SHA-256 + last_sync + processed_files), community tool recommendations, AutoDream/AutoMemory Q1 2026 interaction notes, and implementation tips (lock-check, ignore-deletions, sync-consolidated-not-raw). This memory captures that research for when Otto-114 executes.
 type: project
 ---
+
 ## The full substrate Aaron shared
 
 Google Search AI summary across ~16 sources covering three
@@ -19,6 +20,7 @@ topics that all compose into a single memory-sync architecture:
 ## Quality assessment (my read)
 
 **HIGH** on:
+
 - `originSessionId` not native — matches prior research + my
   own harness knowledge
 - Sidecar pattern with SHA-256 hashing — standard engineering
@@ -30,6 +32,7 @@ topics that all compose into a single memory-sync architecture:
   also cited across sources
 
 **MEDIUM** on:
+
 - `tengu_onyx_plover` as AutoDream internal codename —
   Reddit-sourced only; plausible (Anthropic has used cute
   three-word codenames before) but I cannot verify from
@@ -40,6 +43,7 @@ topics that all compose into a single memory-sync architecture:
   implementation detail that could drift
 
 **LOW** / treat-carefully on:
+
 - Claim that AutoDream has "trouble with large directory
   refactors" — could be a Reddit anecdote; Otto-114 solver
   should test empirically before trusting
@@ -122,8 +126,8 @@ Purpose breakdown:
 
 ## The SKILL.md metaphor (Aaron's question)
 
-Aaron asked: *"this would be a SKILL.md 2nd file in this
-metaphor no? for claude code?"*
+Aaron asked: _"this would be a SKILL.md 2nd file in this
+metaphor no? for claude code?"_
 
 Yes — structurally. The three-layer composition:
 
@@ -199,14 +203,14 @@ Three orthogonal concerns, three file homes.
 
 ## Direct Aaron message to preserve (selective)
 
-> *"larger update from google search ai, again only you know
+> _"larger update from google search ai, again only you know
 > if it's good information. do i need originSessionId in
-> frontmatter for claude memories"*
+> frontmatter for claude memories"_
 
 And the question that most shifts my implementation map:
 
-> *"this would be a SKILL.md 2nd file in this metaphor no?
-> for claude code?"*
+> _"this would be a SKILL.md 2nd file in this metaphor no?
+> for claude code?"_
 
 Answer: structurally yes, but with the critical difference
 that sidecar is **gitignored** (machine-local bookmark)
@@ -216,8 +220,8 @@ pattern.
 
 And Aaron's explicit AutoDream probe:
 
-> *"Does this work okay with the Q1 feature AutoDream and
-> AutoMemory from Anthropic in the claude code harness?"*
+> _"Does this work okay with the Q1 feature AutoDream and
+> AutoMemory from Anthropic in the claude code harness?"_
 
 Answer: yes but the sync layer must (a) target consolidated
 output not raw logs, (b) lock-check before writing, (c)

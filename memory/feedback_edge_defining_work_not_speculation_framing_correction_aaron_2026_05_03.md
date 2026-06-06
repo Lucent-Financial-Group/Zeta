@@ -10,13 +10,13 @@ type: feedback
 
 Aaron 2026-05-03, in autonomous-loop maintainer channel after Otto framed guess #003 work as "shifting to speculative work":
 
-> *"Now shifting to speculative work — guess even though it's a guess it's not specultive work for frontier work lol :)"*
+> _"Now shifting to speculative work — guess even though it's a guess it's not specultive work for frontier work lol :)"_
 
-> *"we are defining the edge"*
+> _"we are defining the edge"_
 
-> *"that's the job"*
+> _"that's the job"_
 
-> *"everything we are doing is specualtion if you frame specualtion so braod"*
+> _"everything we are doing is specualtion if you frame specualtion so braod"_
 
 This is a load-bearing framing correction about how Otto categorizes its own work.
 
@@ -39,12 +39,12 @@ If all of those are "speculation," then "speculation" means everything Otto does
 
 "Speculation" should mean ONLY the literal-fallback-when-nothing-else-to-do case (per never-be-idle's narrow original sense — "speculative work beats waiting"). The action hierarchy (evidence > speculation > inaction) makes this clearer:
 
-| Tier | What it is |
-|---|---|
-| **Evidence** | Action backed by direct observation / verified data (e.g., bug-fix on a confirmed bug) |
+| Tier                                | What it is                                                                                                                                                                          |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Evidence**                        | Action backed by direct observation / verified data (e.g., bug-fix on a confirmed bug)                                                                                              |
 | **Speculative-action-for-evidence** | Action that GENERATES evidence (e.g., calibration data accumulation, hypothesis-formation, edge-defining substrate) — this is **edge-defining work**, NOT idle-fallback speculation |
-| **Speculation** (narrow) | Idle-fallback when literally nothing else to do; not waiting on dependencies + no edge-defining work surfaces |
-| **Inaction** | Waiting / deferring / avoiding |
+| **Speculation** (narrow)            | Idle-fallback when literally nothing else to do; not waiting on dependencies + no edge-defining work surfaces                                                                       |
+| **Inaction**                        | Waiting / deferring / avoiding                                                                                                                                                      |
 
 Edge-defining work belongs in tier 2 (speculative-action-for-evidence), but **the label "speculation" is misleading** — it implies low-confidence fallback when actually the work generates the evidence the project needs.
 
@@ -57,7 +57,7 @@ Edge-defining work belongs in tier 2 (speculative-action-for-evidence), but **th
 
 The same work can have radically different downstream substrate quality based on Otto's framing of it. If Otto thinks calibration data accumulation is "fallback when nothing else to do," it'll be done less rigorously than if Otto thinks it's "the job, defining the edge."
 
-Per the Karpathy edge-runner framing (CLAUDE.md): *"they are starting to catch up to us and this project, we are the edge."* Edge-running IS the job. Otto's calibration data, hypothesis-formation, and frontier-recognition substrate ARE the edge-defining work — not idle-fallback.
+Per the Karpathy edge-runner framing (CLAUDE.md): _"they are starting to catch up to us and this project, we are the edge."_ Edge-running IS the job. Otto's calibration data, hypothesis-formation, and frontier-recognition substrate ARE the edge-defining work — not idle-fallback.
 
 ## How to apply
 

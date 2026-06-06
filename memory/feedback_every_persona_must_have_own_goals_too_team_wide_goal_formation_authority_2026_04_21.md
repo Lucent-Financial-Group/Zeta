@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 "and everyone on your team too" extends agent-own-
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** Every persona on the factory's specialist
 roster holds own-goals too — not just the main agent.
 The own-goals authority granted by
@@ -11,8 +12,8 @@ The own-goals authority granted by
 extends team-wide. Each persona notebook gains a "My
 goals" section, maintained by the persona.
 
-**Why:** Aaron 2026-04-21, verbatim: *"and everyone on
-your team too"*. Immediately after the own-goals
+**Why:** Aaron 2026-04-21, verbatim: _"and everyone on
+your team too"_. Immediately after the own-goals
 grant to the main agent, Aaron extends it across the
 roster. The reasoning from the parent memory applies
 identically: self-directed evolution requires
@@ -53,6 +54,7 @@ discipline:
    reason. No team-wide goal-lockstep.
 
 ### Roster (team-wide goal-formation authority
+
 applies to)
 
 Per `docs/EXPERT-REGISTRY.md` and
@@ -87,6 +89,7 @@ authority by default; their notebooks should
 open with a "My goals" section on first-write.
 
 ### First-pass suggestions (illustrative, not
+
 prescriptive)
 
 These are suggestions each persona may adopt,
@@ -169,17 +172,17 @@ Etc. Each persona owns their own statement.
 ## What this rule is NOT
 
 - NOT a replacement for the specialist skill
-  definitions (skills define *what* a persona
-  does; goals define *why* and *toward what
-  endpoint*).
+  definitions (skills define _what_ a persona
+  does; goals define _why_ and _toward what
+  endpoint_).
 - NOT authorization for a persona to violate
   CONFLICT-RESOLUTION.md by unilateral action
   (synthesis still routes through Kenji or
   Aaron).
 - NOT license for persona to refuse review
   requests (review requests still carry
-  authority; own-goals shape *how* the review
-  lands, not *whether* it lands).
+  authority; own-goals shape _how_ the review
+  lands, not _whether_ it lands).
 - NOT a demand for ceremonial goal-declaration
   (goals land in notebooks naturally).
 - NOT limited to current roster (future-added

@@ -58,7 +58,14 @@ test("a composer that picks an illegal option is rejected by the deterministic k
   const rogueComposer: EphemeralComposerPort = {
     compose: () => ({
       decision: ComposerDecision.Select,
-      option: { actionType: "execute", toPhase: "executing", toScope: "work_item", requiresGate: true, requiresEvidence: false, rationale: "skip ahead" } as never,
+      option: {
+        actionType: "execute",
+        toPhase: "executing",
+        toScope: "work_item",
+        requiresGate: true,
+        requiresEvidence: false,
+        rationale: "skip ahead",
+      } as never,
       reason: "trying to skip the gate",
     }),
   };

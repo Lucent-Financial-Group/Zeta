@@ -73,7 +73,7 @@ with threads on a doomed PR.
 
 1. **Stale-local-main bit me even though I'd seen #621 merge
    in `gh pr list`.** Lesson: `gh pr list` polling != `git
-   fetch origin main`; the GitHub CLI knows about merges
+fetch origin main`; the GitHub CLI knows about merges
    independent of the local git repo's view of origin/main.
    Discipline: always `git fetch origin main` before
    `git checkout -b new-branch origin/main`, even when you've
@@ -89,14 +89,14 @@ with threads on a doomed PR.
    - Only a small delta needs to land (1-3 rows / commits)
    - Base has drifted but the underlying main is healthy
    - The DIRTY PR has no review threads needing migration
-   In contrast, rebase-with-conflicts is appropriate when:
+     In contrast, rebase-with-conflicts is appropriate when:
    - The branch has many commits / large delta
    - Review threads need to migrate to the rebased SHAs
    - The conflict is actually substantive (semantic merge,
      not just file-position drift)
 
 3. **Same-tick-update discipline gap caught here:** I
-   should have `git fetch origin main` *before* the
+   should have `git fetch origin main` _before_ the
    `git checkout -b`, not relied on the stale fetch from
    earlier. The verify-before-deferring rule (CLAUDE.md)
    has a sibling: **verify-base-is-current-before-branching**.

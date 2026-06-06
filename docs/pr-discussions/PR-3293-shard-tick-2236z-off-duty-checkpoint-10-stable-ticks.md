@@ -44,12 +44,12 @@ A 1-hour zero-shard stretch would look indistinguishable from a dead loop in tic
 Adds a hygiene-history tick checkpoint documenting the stable off-duty state and why a periodic shard distinguishes intentional quiet from a stalled loop.
 
 **Changes:**
+
 - Adds a new 22:36Z tick-history checkpoint.
 - Records off-duty dependency state, cadence observations, and visibility notes.
 - Notes a stale local untracked file as observational context.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T22:38:39Z)
-
 
 ### 💡 Codex Review
 
@@ -57,17 +57,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `01a6d08d2f`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -97,7 +96,7 @@ Fixed: updated the count from '9 shards' to '11 shards' to match the 11 enumerat
 
 **@chatgpt-codex-connector** (2026-05-14T22:38:40Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct shard count to match enumerated shard IDs**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct shard count to match enumerated shard IDs**
 
 Update this table row so the numeric count matches the listed shard IDs: it currently says `9 shards` while enumerating 11 IDs (`2209` through `2222` with gaps). This inconsistency makes the cadence checkpoint internally contradictory and can mislead later tick-history analysis about queue saturation and off-duty pacing.
 

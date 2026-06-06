@@ -4,7 +4,7 @@ This doc is the **declarative source of truth** for every GitHub
 repo setting that GitHub does not itself expose as a checked-in
 config file. Workflow YAML, CODEOWNERS, Dependabot config, and
 pre-commit hooks are already declarative in-tree — not tracked
-here. What *is* tracked here: click-ops toggles that live inside
+here. What _is_ tracked here: click-ops toggles that live inside
 GitHub's UI or require API calls to change.
 
 The machine-readable companion is
@@ -35,16 +35,16 @@ That silent drift is exactly what this system detects.
    against the expected JSON. Exit 0 on match, 1 on drift.
 3. **Cadence** is enforced by
    `.github/workflows/github-settings-drift.yml` — weekly cron
-   + `workflow_dispatch` for manual runs. Drift blocks the
-   weekly run (visible in Actions tab as a failing job);
-   resolve by either reverting the unexpected change or
-   re-snapshotting and committing the new expected.
+   - `workflow_dispatch` for manual runs. Drift blocks the
+     weekly run (visible in Actions tab as a failing job);
+     resolve by either reverting the unexpected change or
+     re-snapshotting and committing the new expected.
 4. **On any settings change** (ruleset edit, new required
    check, flipped security toggle, new environment, ...) the
    same-commit obligation is: re-run
    `snapshot-github-settings.ts`, commit the new expected
    JSON alongside whatever configuration caused the drift,
-   with a message explaining *why* the setting changed.
+   with a message explaining _why_ the setting changed.
 
 See `docs/FACTORY-HYGIENE.md` row #40 for the full cadence /
 owner / scope specification.
@@ -97,7 +97,7 @@ owner / scope specification.
   researchers can open confidential advisories via the
   Security tab.
 - Interaction limits: none (would be `interaction_limits:
-  {limit, origin, expires_at}` when active — used to rate-
+{limit, origin, expires_at}` when active — used to rate-
   limit comment/issue activity during incident response).
 - Autolinks: none — no external issue-tracker linking.
 - Topics: empty — no discovery tags.
@@ -121,8 +121,8 @@ Single ruleset named `Default` (id 15256879), enforcement
 6. **Required linear history**.
 
 Note on the **`code_scanning` rule**: we toggled it OFF
-2026-04-21 because it binds to CodeQL *default-setup*
-configurations and Zeta uses *advanced-setup*
+2026-04-21 because it binds to CodeQL _default-setup_
+configurations and Zeta uses _advanced-setup_
 (`.github/workflows/codeql.yml` with `build-mode: manual`
 for csharp + per-language SARIF upload). The rule returned
 NEUTRAL / "1 configuration not found" and blocked PR #42
@@ -257,29 +257,29 @@ preserving for future maintainers).
 
 ## Architectural target — three-ruleset split (B-0155 Phase 1 audit)
 
-Per the human maintainer 2026-05-01 — *"the settings that are there
+Per the human maintainer 2026-05-01 — _"the settings that are there
 are accidental complexity not intentional, we want best practices and
 to prefer the git native settings over the legacy github ui/cli only
-settings, these are nasty thats why they are legacy"* + *"splitting
-rulesets so you could have all always on but multiple smaller rulesets."*
+settings, these are nasty thats why they are legacy"_ + _"splitting
+rulesets so you could have all always on but multiple smaller rulesets."_
 
 ### Migration matrix — branch protection field → ruleset rule
 
 Audit performed 2026-05-01 against live state of `Lucent-Financial-Group/Zeta`.
 
-| Branch protection field | Current state | Ruleset rule equivalent | Migration plan |
-|---|---|---|---|
-| `allow_deletions` | `false` | `deletion` rule | Already in `Default` ruleset → keep on ruleset, can remove from branch protection |
-| `allow_force_pushes` | `false` | `non_fast_forward` rule | Already in `Default` ruleset → keep on ruleset, can remove from branch protection |
-| `allow_fork_syncing` | `false` | (no equivalent) | **Branch-protection-only legacy** — keep in branch protection |
-| `block_creations` | `false` | (no direct equivalent) | Off anyway; can remove |
-| `enforce_admins` | `false` | (rulesets default-enforce against admins unless bypass-actors set) | Rulesets handle admins differently; verify policy intent |
-| `lock_branch` | `false` | (no equivalent) | Off anyway; can remove |
-| `required_conversation_resolution` | `true` | `required_review_thread_resolution` rule (verify exact name in REST API) | **MIGRATE** — add rule to Review-process ruleset |
-| `required_linear_history` | `true` | `required_linear_history` rule | Already in `Default` ruleset → keep on ruleset, can remove from branch protection |
-| `required_pull_request_reviews` | configured | `pull_request` rule (broader scope) | Already in `Default` ruleset (more comprehensive) → keep on ruleset, can remove from branch protection |
-| `required_signatures` | `false` | `required_signatures` rule | Off anyway; can remove |
-| `required_status_checks` | configured (7 contexts, `strict: false`) | `required_status_checks` rule | **MIGRATE** — primary work; add to CI-gate ruleset |
+| Branch protection field            | Current state                            | Ruleset rule equivalent                                                  | Migration plan                                                                                         |
+| ---------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `allow_deletions`                  | `false`                                  | `deletion` rule                                                          | Already in `Default` ruleset → keep on ruleset, can remove from branch protection                      |
+| `allow_force_pushes`               | `false`                                  | `non_fast_forward` rule                                                  | Already in `Default` ruleset → keep on ruleset, can remove from branch protection                      |
+| `allow_fork_syncing`               | `false`                                  | (no equivalent)                                                          | **Branch-protection-only legacy** — keep in branch protection                                          |
+| `block_creations`                  | `false`                                  | (no direct equivalent)                                                   | Off anyway; can remove                                                                                 |
+| `enforce_admins`                   | `false`                                  | (rulesets default-enforce against admins unless bypass-actors set)       | Rulesets handle admins differently; verify policy intent                                               |
+| `lock_branch`                      | `false`                                  | (no equivalent)                                                          | Off anyway; can remove                                                                                 |
+| `required_conversation_resolution` | `true`                                   | `required_review_thread_resolution` rule (verify exact name in REST API) | **MIGRATE** — add rule to Review-process ruleset                                                       |
+| `required_linear_history`          | `true`                                   | `required_linear_history` rule                                           | Already in `Default` ruleset → keep on ruleset, can remove from branch protection                      |
+| `required_pull_request_reviews`    | configured                               | `pull_request` rule (broader scope)                                      | Already in `Default` ruleset (more comprehensive) → keep on ruleset, can remove from branch protection |
+| `required_signatures`              | `false`                                  | `required_signatures` rule                                               | Off anyway; can remove                                                                                 |
+| `required_status_checks`           | configured (7 contexts, `strict: false`) | `required_status_checks` rule                                            | **MIGRATE** — primary work; add to CI-gate ruleset                                                     |
 
 ### Three-ruleset target shape
 
@@ -314,7 +314,7 @@ most frequently (every new workflow / lint / check).
 
 Rules:
 
-- `required_status_checks` migrated from branch protection. Contexts: the 7 currently in branch protection (`build-and-test (macos-26)` / `build-and-test (ubuntu-24.04)` / `build-and-test (ubuntu-24.04-arm)` / `lint (actionlint)` / `lint (markdownlint)` / `lint (semgrep)` / `lint (shellcheck)`) plus the memory-* lints + backlog-index-integrity + tick-history-order
+- `required_status_checks` migrated from branch protection. Contexts: the 7 currently in branch protection (`build-and-test (macos-26)` / `build-and-test (ubuntu-24.04)` / `build-and-test (ubuntu-24.04-arm)` / `lint (actionlint)` / `lint (markdownlint)` / `lint (semgrep)` / `lint (shellcheck)`) plus the memory-\* lints + backlog-index-integrity + tick-history-order
 - `strict: false` (parallel-PR-friendly; preserved per session-cluster experience)
 
 ### Branch protection — minimized post-migration
@@ -329,7 +329,7 @@ removed (their ruleset equivalents take over enforcement).
 
 ### Why git-native preferred over legacy UI/CLI-only
 
-Aaron 2026-05-01: *"these are nasty thats why they are legacy."*
+Aaron 2026-05-01: _"these are nasty thats why they are legacy."_
 
 - **Rulesets** can be exported via REST API as JSON, edited, and
   applied via REST API — declarative-as-code shape (even if not in

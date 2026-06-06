@@ -24,11 +24,11 @@ Final shard in the 12:21Z/12:36Z/12:53Z deferred-PR cluster. Push completed ~10 
 
 ## Pattern stable across 4 ticks
 
-| Tick | HEAD at tick start |
-|---|---|
-| 12:11Z | `otto-cli-b0206-audit-2026-05-16-1207z` (own) |
-| 12:21Z | `otto-cli-b0037.2-audit-2026-05-16-1131z` (peer) |
-| 12:36Z | `otto-cli-b0206-audit-2026-05-16-1207z` (bounced back) |
+| Tick   | HEAD at tick start                                                   |
+| ------ | -------------------------------------------------------------------- |
+| 12:11Z | `otto-cli-b0206-audit-2026-05-16-1207z` (own)                        |
+| 12:21Z | `otto-cli-b0037.2-audit-2026-05-16-1131z` (peer)                     |
+| 12:36Z | `otto-cli-b0206-audit-2026-05-16-1207z` (bounced back)               |
 | 12:53Z | `otto-cli-audit-subclass-catalog-2026-05-16-1156z` (new peer branch) |
 
 Defense pattern (`git branch --show-current` + `git switch -c <fresh> origin/main`) 100% effective: 4/4 ticks caught contamination before any commit; 0 false-branch commits.
@@ -46,6 +46,7 @@ GraphQL went 0→4995 at 12:55Z mid-tick, allowing the deferred-PR backlog (3 br
 Adds a new hygiene-history “tick” shard documenting a 2026-05-16T12:53Z cron fire, capturing the third observed multi-Otto branch contamination within four ticks and the operational plan around an imminent GraphQL rate-limit reset.
 
 **Changes:**
+
 - Added a new tick record at 12:53Z with refresh-state snapshot (rate limits, processes, HEAD, deferred PR backlog).
 - Documented a 4-tick contamination cadence table and the “defense pattern” effectiveness.
 - Recorded the planned mid-tick transition from pure-git tier to normal tier post reset.

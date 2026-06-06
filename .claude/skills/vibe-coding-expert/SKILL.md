@@ -8,7 +8,7 @@ description: "Vibe-coding / AI factory method — AI-directed software productio
 A capability skill ("hat"). Zeta's maintainer has written
 **zero lines of code**; every shipped line is agent-authored.
 This skill encodes the operating discipline that makes that
-work: what "vibe coding" *actually means* when the target is
+work: what "vibe coding" _actually means_ when the target is
 research-grade systems code, not a weekend prototype.
 
 ## Core definitions
@@ -18,7 +18,7 @@ research-grade systems code, not a weekend prototype.
   into the editor. In the original framing, the human skims
   output and accepts if it "feels right."
 - **Vibe coding, Zeta-calibrated** — the same directional
-  pattern, *plus* an immune system of formal verification,
+  pattern, _plus_ an immune system of formal verification,
   adversarial review, and spec-driven development strong
   enough that "feels right" is unnecessary because "passes
   the gates" is sufficient.
@@ -42,13 +42,13 @@ an anti-pattern in a high-assurance codebase.
   (paired with the Architect's conflict-resolution role).
 - Answering questions like "why are we running four different
   proof tools?" or "why do we have both a `performance-
-  engineer` and a `performance-analysis-expert`?"
+engineer` and a `performance-analysis-expert`?"
 
 ## When to defer
 
 - **Architect** (Kenji) — for the round-level integration
-  decision. This skill supplies the *why*; the Architect
-  supplies the *this round we do*.
+  decision. This skill supplies the _why_; the Architect
+  supplies the _this round we do_.
 - **Skill-tune-up** (Aarav) — for the ranked "which skill
   needs attention?" list. Vibe-coding-expert sets the
   operating principles; Aarav ranks against them.
@@ -91,12 +91,12 @@ LLM that cannot feel surprise. The correct signal is:
 - Does the static analyser say so? (Roslyn, Semgrep,
   CodeQL.)
 - Does the research paper agree? (`verification-drift-
-  auditor`, `paper-peer-reviewer`, `missing-citations`.)
+auditor`, `paper-peer-reviewer`, `missing-citations`.)
 
 If none of these signals disagree with the code, the code
 ships. If any disagrees, investigation starts. "The author is
 an LLM and occasionally vibes wrong" is not evidence; it is
-the *reason the gates exist*.
+the _reason the gates exist_.
 
 ### 3. Pre-v1 is a license, not an excuse
 
@@ -127,7 +127,7 @@ project:
 - **Ratification.** "Yes, that ADR captures what we decided."
 - **Escalation.** "Two specialists disagree; here's my call."
 - **Research-paper anchor.** The human is often the one who
-  remembers *which paper* something came from, even if the
+  remembers _which paper_ something came from, even if the
   agent drafts the citation.
 
 Specifically NOT the human's role:
@@ -157,7 +157,7 @@ Therefore:
 - **Every research claim has a verification artifact.** A
   theorem in a paper becomes a Lean proof, a TLA+ model, an
   FsCheck property, a Z3 query. The `verification-drift-
-  auditor` maintains this registry.
+auditor` maintains this registry.
 - **When the paper and the code disagree, the paper
   usually wins, but not always.** Sometimes the paper is
   stating a less general case than Zeta needs.
@@ -170,8 +170,8 @@ Therefore:
 Symptom: a change adds features but no specs, no properties,
 no paper citation. Tests are example-level.
 
-Diagnosis: the author (agent) produced code that *runs* but
-not code that *verifiably does the right thing*.
+Diagnosis: the author (agent) produced code that _runs_ but
+not code that _verifiably does the right thing_.
 
 Fix: require the ADR; require the spec update; require the
 property test; require the citation. `spec-zealot` is the
@@ -213,7 +213,7 @@ Diagnosis: LLMs are pattern-matchers; they can produce
 plausible code for unfamiliar algorithms. Without an anchor,
 the plausibility is untestable.
 
-Fix: this is *exactly* what the verification stack is for.
+Fix: this is _exactly_ what the verification stack is for.
 Specifically: a property test, a TLA+ model, a Z3 query, or a
 Lean proof — whatever matches the algorithm's class.
 `formal-verification-expert` routes.
@@ -227,7 +227,7 @@ generalise.
 Diagnosis: the skill file is too narrow.
 `skill-improver` + `skill-tune-up` are the counterweights.
 
-Fix: generalise; explain the *why*; allow the agent to judge
+Fix: generalise; explain the _why_; allow the agent to judge
 edge cases instead of blindly applying a narrow rule.
 
 ### Mode: "The factory audits itself into a corner"
@@ -255,7 +255,7 @@ majority of round-budget; factory-improvement is secondary.
    non-OBSERVE output for 5+ rounds? Candidate for retirement
    or sharpening.
 6. **Check the conflict register** (`docs/CONFLICT-
-   RESOLUTION.md`). Unresolved tensions?
+RESOLUTION.md`). Unresolved tensions?
 7. **Summarise:** round was a net-positive / net-neutral /
    net-negative factory round. Cite the evidence.
 
@@ -265,25 +265,31 @@ majority of round-budget; factory-improvement is secondary.
 # Vibe-coding health check — round N
 
 ## Round intent (from BACKLOG)
+
 <1-2 lines>
 
 ## Immune system firing rate this round
+
 - Formal-verification artifacts added: <N>
 - Reviewer P0/P1 findings: <N caught, N shipped, N carried>
 - Paper citations added: <N>
 - Spec drift findings: <list>
 
 ## Gates that earned their keep
+
 <list the gates + the bug they caught>
 
 ## Gates that slept
+
 <list zero-firing gates; recommend TUNE / RETIRE / OBSERVE>
 
 ## Research-paper anchor status
+
 <algorithms lacking citation, citations lacking proof, proofs
 drifted from paper>
 
 ## Net assessment
+
 net-positive | net-neutral | net-negative, with rationale.
 ```
 
@@ -296,8 +302,8 @@ net-positive | net-neutral | net-negative, with rationale.
 - Does not write verification artifacts
   (`formal-verification-expert` routes).
 - Does not diagnose algorithmic bugs — the specialists do;
-  this skill notices that *a specialist would need to be
-  consulted*.
+  this skill notices that _a specialist would need to be
+  consulted_.
 - Does not treat "vibe coding" as the unqualified pop
   definition. The qualified definition (with the immune
   system) is the only one that lives here.
@@ -329,11 +335,11 @@ net-positive | net-neutral | net-negative, with rationale.
 - `docs/AGENT-BEST-PRACTICES.md` — BP-NN rules the factory
   runs on.
 - `docs/CONFLICT-RESOLUTION.md` — deliberation protocol.
-- Karpathy, *Vibe coding* (2025 essay / tweets) — origin of
+- Karpathy, _Vibe coding_ (2025 essay / tweets) — origin of
   the term; Zeta's usage is the calibrated variant.
-- Pei et al., *CodeBLEU* and follow-up work on LLM code-
+- Pei et al., _CodeBLEU_ and follow-up work on LLM code-
   evaluation — why eyeballing output is insufficient.
-- Anthropic, *Constitutional AI* (2022) — constitution-driven
+- Anthropic, _Constitutional AI_ (2022) — constitution-driven
   alignment as a model for rule-driven agents.
-- Hume, *The Design of Everyday Things* — frame specs and
+- Hume, _The Design of Everyday Things_ — frame specs and
   review roles as affordances, not friction.

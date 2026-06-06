@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron explicit design principle. Git is the DEFAULT per
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Git is the factory's default persistence + first plugin — pluggable by design
 
 ## Rule
@@ -68,20 +69,20 @@ External systems are acceptable additions **as plugins** when:
 
 Key substrings from both:
 
-- *"git is our persistance for the sotfware factory"* —
+- _"git is our persistance for the sotfware factory"_ —
   git is the default, the bootstrap, the always-present
   plugin.
-- *"we need to be plugable but git is our first plugin"* —
+- _"we need to be plugable but git is our first plugin"_ —
   pluggability is the architecture; git is plugin number one.
-- *"expand when it makes sense and we have use cases that
-  bring value"* — expansion rule, burden-of-proof on the
+- _"expand when it makes sense and we have use cases that
+  bring value"_ — expansion rule, burden-of-proof on the
   external plugin.
-- *"some pepople are gonna wnna plug in jira"* — Jira is
-  the canonical *pluggable alternative*, not the canonical
-  *rejected alternative* (as the first statement alone
+- _"some pepople are gonna wnna plug in jira"_ — Jira is
+  the canonical _pluggable alternative_, not the canonical
+  _rejected alternative_ (as the first statement alone
   suggested). Adjust the invariant accordingly.
-- *"cheap and easy and only pull in extra things tht
-  really help"* — operational-experience cost is the
+- _"cheap and easy and only pull in extra things tht
+  really help"_ — operational-experience cost is the
   primary design driver.
 
 ## Why:
@@ -130,9 +131,9 @@ Key substrings from both:
 ## How to apply:
 
 - **When proposing any new factory feature:** lead with
-  the git-native form. *"This could be a markdown file
-  under `docs/<topic>/<name>.md`"* beats *"this could
-  be a Notion page."* Git-native is the default
+  the git-native form. _"This could be a markdown file
+  under `docs/<topic>/<name>.md`"_ beats _"this could
+  be a Notion page."_ Git-native is the default
   recommendation, always.
 - **When a consumer team asks for a non-git backend**
   (e.g. "we want Jira integration"): treat it as a
@@ -143,7 +144,7 @@ Key substrings from both:
 - **When Event Storming is adopted:** index cards,
   domain events, commands, aggregates, bounded contexts
   are markdown / text files by default; any visualization
-  layer is generated *from* the git-native source.
+  layer is generated _from_ the git-native source.
   Pluggable alternative: an ES tool that reads the
   git-native markdown is fine; a tool that stores
   stickies in its own database is not the default, but
@@ -194,7 +195,7 @@ Key substrings from both:
 - It does NOT mean "never render UI." A UI that reads
   git and renders nicely (e.g. a generated HTML static
   site, a browser-rendered board over markdown source)
-  is fine — the *persistence* is git; the render is
+  is fine — the _persistence_ is git; the render is
   a derivative.
 - It does NOT forbid experimenting with external tools
   in a research round. Research is research; adopting
@@ -213,7 +214,7 @@ Key substrings from both:
   and any installed ecosystem.
 - `project_zero_human_code_all_content_agent_authored.md`
   — sibling invariant: what's in the repo is agent-
-  authored. This memory says: what's in the repo *is*
+  authored. This memory says: what's in the repo _is_
   the factory, by default.
 - `feedback_simple_security_until_proven_otherwise.md`
   — same pattern applied to security.
@@ -242,7 +243,7 @@ An automated UI (browser-rendered sticky timeline)
 reads these files and displays the board. When chat
 emits a new event, the factory writes the markdown row,
 git-commits it, and the UI re-renders. Default
-persistence remains git; the board is a *view*.
+persistence remains git; the board is a _view_.
 
 This is also the answer to "should we adopt EventModeler
 or similar?" — as a plugin alternative, only if the tool

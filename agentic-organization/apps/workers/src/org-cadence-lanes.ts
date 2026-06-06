@@ -135,16 +135,8 @@ export type ObserveActWorkItem = {
 
 export type ObserveActWorkItemSource = () => Promise<ObserveActWorkItem | null>;
 export type ObserveActMenuSelector = MenuSelector;
-export type ObserveActCommandRunner = (
-  commandType: string,
-  command: unknown,
-  slot: Menu16Slot,
-) => Promise<unknown>;
-export type ObserveActToolDispatcher = (
-  tool: string,
-  args: unknown,
-  slot: Menu16Slot,
-) => Promise<unknown>;
+export type ObserveActCommandRunner = (commandType: string, command: unknown, slot: Menu16Slot) => Promise<unknown>;
+export type ObserveActToolDispatcher = (tool: string, args: unknown, slot: Menu16Slot) => Promise<unknown>;
 export type ObserveActPromptFlowContextLoader = (
   request: PromptFlowContextRequest,
   slot: Menu16Slot,
@@ -155,9 +147,7 @@ export type ObserveActSlotAuthorizationInput = {
   slot: Menu16Slot;
   evaluatedAt: string;
 };
-export type ObserveActSlotAuthorizer = (
-  input: ObserveActSlotAuthorizationInput,
-) => Promise<SlotAuthorizationDecision>;
+export type ObserveActSlotAuthorizer = (input: ObserveActSlotAuthorizationInput) => Promise<SlotAuthorizationDecision>;
 export type ObserveActOrgEventAppender = (event: OrgEvent) => Promise<void>;
 export type ObserveActExecutionMode = "primary" | "shadow";
 export type ObserveActExecutionModeSource = ObserveActExecutionMode | (() => Promise<ObserveActExecutionMode>);
@@ -278,10 +268,7 @@ function createObserveActTickEvent(
     subjectId: work.workItemId,
     decision: `observe-act selected slot ${evidence.selectedIndex} for run ${work.runId}`,
     supervisorChain: supervisorChainFor(work.hatId, deps.hats),
-    evidenceRefs: [
-      ...observeActEvidenceRefs(evidence),
-      ...supplementalEvidenceRefs,
-    ],
+    evidenceRefs: [...observeActEvidenceRefs(evidence), ...supplementalEvidenceRefs],
     correlationId: traceId,
     causationId: eventId,
     traceId,
@@ -332,9 +319,7 @@ function selectedSemanticEvidenceRefs(
 function selectedCommandEvidenceRefs(
   evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
 ): readonly string[] {
-  return evidence.selectedCommandType === undefined
-    ? []
-    : [`observe-act:command_type:${evidence.selectedCommandType}`];
+  return evidence.selectedCommandType === undefined ? [] : [`observe-act:command_type:${evidence.selectedCommandType}`];
 }
 
 function statusEvidenceRefs(
@@ -345,7 +330,9 @@ function statusEvidenceRefs(
     `observe-act:status:${evidence.statusSignalKind}`,
     ...(evidence.statusScope === undefined ? [] : [`observe-act:status_scope:${evidence.statusScope}`]),
     ...(evidence.statusPhase === undefined ? [] : [`observe-act:status_phase:${evidence.statusPhase}`]),
-    ...(evidence.statusHierarchyPriorityScope === undefined ? [] : [`observe-act:status_priority_scope:${evidence.statusHierarchyPriorityScope}`]),
+    ...(evidence.statusHierarchyPriorityScope === undefined
+      ? []
+      : [`observe-act:status_priority_scope:${evidence.statusHierarchyPriorityScope}`]),
   ];
 }
 
@@ -354,9 +341,15 @@ function promptFlowPageEvidenceRefs(
 ): readonly string[] {
   return [
     ...(evidence.promptFlowPage === undefined ? [] : [`observe-act:prompt_flow_page:${evidence.promptFlowPage}`]),
-    ...(evidence.selectedPromptFlowTaskId === undefined ? [] : [`observe-act:selected_prompt_flow_task:${evidence.selectedPromptFlowTaskId}`]),
-    ...(evidence.selectedPromptFlowId === undefined ? [] : [`observe-act:selected_prompt_flow:${evidence.selectedPromptFlowId}`]),
-    ...(evidence.reobservePromptFlowPage === undefined ? [] : [`observe-act:reobserve_prompt_flow_page:${evidence.reobservePromptFlowPage}`]),
+    ...(evidence.selectedPromptFlowTaskId === undefined
+      ? []
+      : [`observe-act:selected_prompt_flow_task:${evidence.selectedPromptFlowTaskId}`]),
+    ...(evidence.selectedPromptFlowId === undefined
+      ? []
+      : [`observe-act:selected_prompt_flow:${evidence.selectedPromptFlowId}`]),
+    ...(evidence.reobservePromptFlowPage === undefined
+      ? []
+      : [`observe-act:reobserve_prompt_flow_page:${evidence.reobservePromptFlowPage}`]),
   ];
 }
 
@@ -369,9 +362,7 @@ function actionRejectionEvidenceRefs(
   ) {
     return [];
   }
-  return [
-    `observe-act:control_bypass_rejected:${evidence.actionRejectionReason}:${evidence.selectedIndex}`,
-  ];
+  return [`observe-act:control_bypass_rejected:${evidence.actionRejectionReason}:${evidence.selectedIndex}`];
 }
 
 function selectorRejectionEvidenceRefs(
@@ -384,7 +375,11 @@ function selectorRejectionEvidenceRefs(
   ];
 }
 
-function observeActArgv(organizationId: string, work: ObserveActWorkItem, promptFlowPage: number | undefined): string[] {
+function observeActArgv(
+  organizationId: string,
+  work: ObserveActWorkItem,
+  promptFlowPage: number | undefined,
+): string[] {
   return [
     "observe",
     "--hat",
@@ -420,21 +415,21 @@ function observeActPromptFlowPageArgs(promptFlowPage: number | undefined): strin
   return promptFlowPage === undefined ? [] : ["--prompt-flow-page", String(promptFlowPage)];
 }
 
-function createOptionalObserveActPromptFlowTasks(
-  promptFlowTasks: readonly PromptFlowTask[] | undefined,
-): { promptFlowTasks?: readonly PromptFlowTask[] } {
+function createOptionalObserveActPromptFlowTasks(promptFlowTasks: readonly PromptFlowTask[] | undefined): {
+  promptFlowTasks?: readonly PromptFlowTask[];
+} {
   return promptFlowTasks === undefined ? {} : { promptFlowTasks };
 }
 
-function createOptionalObserveActScheduleBlocks(
-  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
-): { scheduleBlocks?: readonly WorkScheduleBlock[] } {
+function createOptionalObserveActScheduleBlocks(scheduleBlocks: readonly WorkScheduleBlock[] | undefined): {
+  scheduleBlocks?: readonly WorkScheduleBlock[];
+} {
   return scheduleBlocks === undefined ? {} : { scheduleBlocks };
 }
 
-function createOptionalObserveActHierarchy(
-  hierarchy: HierarchySnapshot | undefined,
-): { hierarchy?: HierarchySnapshot } {
+function createOptionalObserveActHierarchy(hierarchy: HierarchySnapshot | undefined): {
+  hierarchy?: HierarchySnapshot;
+} {
   return hierarchy === undefined ? {} : { hierarchy };
 }
 
@@ -462,10 +457,7 @@ function createOptionalObserveActSlotAuthorizer(
 }
 
 function observeActBooleanArgs(work: ObserveActWorkItem): string[] {
-  return [
-    ...(work.hasGateApproval ? ["--gate-approved"] : []),
-    ...(work.hasEvidence ? ["--evidence"] : []),
-  ];
+  return [...(work.hasGateApproval ? ["--gate-approved"] : []), ...(work.hasEvidence ? ["--evidence"] : [])];
 }
 
 function formatObserveActStatus(
@@ -526,7 +518,9 @@ function observeActFailures(
 // ── A2: memory maintenance ───────────────────────────────────────────────────
 
 export type MemoryEnvelopeReader = {
-  listAll: (organizationId: string) => Promise<readonly import("../../../packages/domain/src/index.ts").MemoryEnvelope[]>;
+  listAll: (
+    organizationId: string,
+  ) => Promise<readonly import("../../../packages/domain/src/index.ts").MemoryEnvelope[]>;
 };
 export type MemoryStateWriter = {
   upsert: (record: MemoryRecord, state: MemoryState) => Promise<void>;
@@ -547,13 +541,33 @@ export function createMemoryMaintenanceCadenceLane(deps: MemoryMaintenanceCadenc
     async runOnce(): Promise<CadenceLaneTickResult> {
       try {
         const envelopes = await deps.reader.listAll(deps.organizationId);
-        const result = runMemoryMaintenanceCycle(envelopes, { organizationId: deps.organizationId, now: deps.now(), createId: deps.createId });
+        const result = runMemoryMaintenanceCycle(envelopes, {
+          organizationId: deps.organizationId,
+          now: deps.now(),
+          createId: deps.createId,
+        });
         const byId = new Map(envelopes.map((e) => [e.memoryId, e]));
         for (const upd of result.updates) {
           const env = byId.get(upd.memoryId);
           if (env === undefined) continue;
-          const record: MemoryRecord = { memoryId: env.memoryId, organizationId: env.organizationId, tier: env.tier, scope: env.scope, key: env.key, value: "", protected: env.protected, writtenBy: env.writtenBy, writtenAt: env.writtenAt };
-          const nextState: MemoryState = { ...env.state, phase: upd.nextPhase, weight: upd.nextWeight, confidence: upd.nextConfidence, ...(upd.archivedAt !== undefined ? { archivedAt: upd.archivedAt } : {}) };
+          const record: MemoryRecord = {
+            memoryId: env.memoryId,
+            organizationId: env.organizationId,
+            tier: env.tier,
+            scope: env.scope,
+            key: env.key,
+            value: "",
+            protected: env.protected,
+            writtenBy: env.writtenBy,
+            writtenAt: env.writtenAt,
+          };
+          const nextState: MemoryState = {
+            ...env.state,
+            phase: upd.nextPhase,
+            weight: upd.nextWeight,
+            confidence: upd.nextConfidence,
+            ...(upd.archivedAt !== undefined ? { archivedAt: upd.archivedAt } : {}),
+          };
           await deps.writer.upsert(record, nextState);
         }
         for (const e of result.events) await deps.appendEvent(e);
@@ -623,7 +637,11 @@ export function createChangeControlCadenceLane(deps: ChangeControlCadenceDeps): 
             let ref = next.projections.find((p) => p.system === externalSystem);
             if (ref === undefined) {
               ref = await deps.externalPort.project(next, stage);
-              next = { ...next, projections: [...next.projections, ref], updatedAt: new Date(deps.now()).toISOString() };
+              next = {
+                ...next,
+                projections: [...next.projections, ref],
+                updatedAt: new Date(deps.now()).toISOString(),
+              };
               await deps.writer.upsert(next);
             }
             const externalState = await deps.externalPort.pull(ref);
@@ -700,10 +718,13 @@ export function createReleaseQueueCadenceLane(deps: ReleaseQueueCadenceDeps): Ca
         });
         const byId = new Map(approved.map((cs) => [cs.changeSetId, cs]));
         const counts = { applied: 0, changesRequested: 0, requeued: 0 };
-        const persist = deps.runAtomically ?? (async (operation) => await operation({
-          writer: deps.writer,
-          appendEvent: deps.appendEvent,
-        }));
+        const persist =
+          deps.runAtomically ??
+          (async (operation) =>
+            await operation({
+              writer: deps.writer,
+              appendEvent: deps.appendEvent,
+            }));
 
         if (plan.actions.length > 0) {
           await persist(async (ports) => {
@@ -750,7 +771,11 @@ export function createReleaseQueueCadenceLane(deps: ReleaseQueueCadenceDeps): Ca
   };
 }
 
-function releaseQueueKernel(deps: ReleaseQueueCadenceDeps, evidenceRefs: readonly string[] = [], evidenceArtifacts: readonly ContentAddressedEvidenceArtifact[] = []): ReviewKernelDeps {
+function releaseQueueKernel(
+  deps: ReleaseQueueCadenceDeps,
+  evidenceRefs: readonly string[] = [],
+  evidenceArtifacts: readonly ContentAddressedEvidenceArtifact[] = [],
+): ReviewKernelDeps {
   return {
     organizationId: deps.organizationId,
     now: deps.now(),
@@ -761,8 +786,8 @@ function releaseQueueKernel(deps: ReleaseQueueCadenceDeps, evidenceRefs: readonl
 }
 
 function withEvidence(event: OrgEvent, evidenceRefs: readonly string[]): OrgEvent {
-  const appendableEvidenceRefs = evidenceRefs.filter((ref) =>
-    !isPolicyAuthorizingEvidenceRef(ref) || event.evidenceRefs.includes(ref),
+  const appendableEvidenceRefs = evidenceRefs.filter(
+    (ref) => !isPolicyAuthorizingEvidenceRef(ref) || event.evidenceRefs.includes(ref),
   );
   return {
     ...event,
@@ -771,11 +796,10 @@ function withEvidence(event: OrgEvent, evidenceRefs: readonly string[]): OrgEven
 }
 
 function isPolicyAuthorizingEvidenceRef(ref: string): boolean {
-  return isContentAddressedEvidenceRef(ref)
-    && (
-      ref.startsWith("evidence:simulation-report:sha256:")
-      || ref.startsWith("evidence:emergency-waiver:sha256:")
-    );
+  return (
+    isContentAddressedEvidenceRef(ref) &&
+    (ref.startsWith("evidence:simulation-report:sha256:") || ref.startsWith("evidence:emergency-waiver:sha256:"))
+  );
 }
 
 function releaseQueueChangesRequestedEvent(
@@ -803,10 +827,7 @@ function releaseQueueChangesRequestedEvent(
 
 // ── D4: document maintenance ─────────────────────────────────────────────────
 
-import {
-  DocLifecycleState,
-  type DocUnit,
-} from "../../../packages/domain/src/index.ts";
+import { DocLifecycleState, type DocUnit } from "../../../packages/domain/src/index.ts";
 import { runDocMaintenanceCycle } from "../../../packages/application/src/index.ts";
 
 export type DocUnitMaintenanceReader = {
@@ -846,7 +867,9 @@ export function createDocMaintenanceCadenceLane(deps: DocMaintenanceCadenceDeps)
         const byId = new Map(units.map((d) => [d.docUnitId, d]));
 
         const result = runDocMaintenanceCycle(units, {
-          organizationId: deps.organizationId, now: deps.now(), createId: deps.createId,
+          organizationId: deps.organizationId,
+          now: deps.now(),
+          createId: deps.createId,
           stalenessFloorMs: deps.stalenessFloorMs ?? 30 * DOC_DAY_MS,
           archiveFloorMs: deps.archiveFloorMs ?? 180 * DOC_DAY_MS,
         });
@@ -857,7 +880,10 @@ export function createDocMaintenanceCadenceLane(deps: DocMaintenanceCadenceDeps)
           await deps.writer.upsert({ ...unit, status: upd.nextStatus, updatedAt: nowIso, version: unit.version + 1 });
         }
         for (const e of result.events) await deps.appendEvent(e);
-        return { status: `doc:${result.staleFlagged}stale/${result.superseded}superseded/${result.archived}archived/${result.conflicts.length}conflicts`, failures: [] };
+        return {
+          status: `doc:${result.staleFlagged}stale/${result.superseded}superseded/${result.archived}archived/${result.conflicts.length}conflicts`,
+          failures: [],
+        };
       } catch (error) {
         return degraded(`doc-maintenance lane: ${error instanceof Error ? error.message : String(error)}`);
       }
@@ -897,9 +923,14 @@ export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): Cade
         }
         if (report.nonconformant > 0) {
           const first = report.violations[0]!;
-          return degraded(`conformance lane: ${report.nonconformant} violation(s); first=${first.eventId} ${first.fromState}->${first.toState} legal=[${first.legalToStates.join(",")}]`);
+          return degraded(
+            `conformance lane: ${report.nonconformant} violation(s); first=${first.eventId} ${first.fromState}->${first.toState} legal=[${first.legalToStates.join(",")}]`,
+          );
         }
-        return { status: `conformance:${report.checked}checked/${report.nonconformant}violations/${report.skipped}skipped`, failures: [] };
+        return {
+          status: `conformance:${report.checked}checked/${report.nonconformant}violations/${report.skipped}skipped`,
+          failures: [],
+        };
       } catch (error) {
         return degraded(`conformance lane: ${error instanceof Error ? error.message : String(error)}`);
       }
@@ -1062,7 +1093,9 @@ export function createAbandonedRunBindingScanCadenceLane(deps: AbandonedRunBindi
         const candidates = await deps.reader.listAbandonedRunBindingCandidates({
           organizationId: deps.organizationId,
           nowMs: now,
-          heartbeatBeforeIso: new Date(now - (deps.heartbeatDeadlineMs ?? DEFAULT_ABANDONED_RUN_HEARTBEAT_MS)).toISOString(),
+          heartbeatBeforeIso: new Date(
+            now - (deps.heartbeatDeadlineMs ?? DEFAULT_ABANDONED_RUN_HEARTBEAT_MS),
+          ).toISOString(),
           limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
         });
         const report = scanAbandonedRunBindings({
@@ -1108,23 +1141,27 @@ async function appendRecoveryScanEvents(
 
   for (const incident of report.incidents) {
     const id = deps.createId("recovery-incident");
-    await deps.appendEvent(recoveryIncidentToOrgEvent({
-      incident,
+    await deps.appendEvent(
+      recoveryIncidentToOrgEvent({
+        incident,
+        id,
+        occurredAt,
+        organizationId: deps.organizationId,
+        correlationId,
+        traceId,
+      }),
+    );
+  }
+
+  const id = deps.createId("recovery-scan");
+  await deps.appendEvent(
+    recoveryScanCompletedToOrgEvent({
+      report,
       id,
       occurredAt,
       organizationId: deps.organizationId,
       correlationId,
       traceId,
-    }));
-  }
-
-  const id = deps.createId("recovery-scan");
-  await deps.appendEvent(recoveryScanCompletedToOrgEvent({
-    report,
-    id,
-    occurredAt,
-    organizationId: deps.organizationId,
-    correlationId,
-    traceId,
-  }));
+    }),
+  );
 }

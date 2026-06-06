@@ -5,12 +5,12 @@ the ecosystem. Short file, load-bearing distinctions.
 
 ## Two names, two owners
 
-| Thing | Name | Owned by |
-| --- | --- | --- |
+| Thing                                                             | Name     | Owned by                                                                                                |
+| ----------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | **The algorithm** (delay / D / I, incrementalization, chain rule) | **DBSP** | Mihai Budiu, Tej Chajed, Frank McSherry, Leonid Ryzhyk, Val Tannen. VLDB'23 paper (`arXiv:2203.16684`). |
-| **This library** (F# + C# implementation on .NET 10) | **Zeta** | This repository and its contributors. |
+| **This library** (F# + C# implementation on .NET 10)              | **Zeta** | This repository and its contributors.                                                                   |
 
-Zeta implements DBSP. Zeta is *not* DBSP. "DBSP" is the
+Zeta implements DBSP. Zeta is _not_ DBSP. "DBSP" is the
 academic construct; "Zeta" is the product-name, the NuGet
 family, the GitHub repo. When in doubt: a citation of the
 paper says **DBSP**; an `open` on a namespace says **Zeta**.
@@ -23,7 +23,7 @@ database / streaming / .NET space, not a cryptocurrency.
 ## What keeps the "DBSP" name
 
 These are academic citations, paper-theorem names, or
-descriptions *of the paper*. They stay DBSP — even the
+descriptions _of the paper_. They stay DBSP — even the
 public-facing ones.
 
 - **Paper references** — every `arXiv:2203.16684`, every
@@ -32,8 +32,8 @@ public-facing ones.
 - **Tests that assert paper theorems** — file names like
   `IncrementalTests.fs`, `ChainRuleTests.fs`; test-method
   names like `chainRule_holds`, `distinct_H_bound`,
-  `bilinearJoin_identity`. These describe *what the paper
-  proves*, not product branding.
+  `bilinearJoin_identity`. These describe _what the paper
+  proves_, not product branding.
 - **Lean theorem names** — `chain_rule`, `D_I_id`, etc.
   Mirror the paper.
 - **Glossary entries for DBSP vocabulary** — Z-set, delay,
@@ -67,7 +67,7 @@ These are the project's product identity.
 ## What carries neither
 
 On-disk folders under the repo root do **not** repeat
-either name. The repo *is* the project; naming every
+either name. The repo _is_ the project; naming every
 subfolder after it is redundant noise:
 
 - `src/Core/`, `src/Core.CSharp/`, `src/Bayesian/`.
@@ -80,7 +80,7 @@ subfolder after it is redundant noise:
 (`Core.fsproj` inside `src/Core/`, not `Zeta.Core.fsproj`).
 Test / benchmark / sample assembly names default to the
 filename (`Tests.FSharp.dll`, `Benchmarks.dll`, etc.);
-only the three *published* libraries carry explicit
+only the three _published_ libraries carry explicit
 `Zeta.*` AssemblyName + PackageId.
 
 The folder-naming rule lives in the shared memory folder as
@@ -103,8 +103,8 @@ In docs written here:
 
 ## When NOT to rename
 
-- A comment explaining why code is the way it is *because
-  of the DBSP paper* — say DBSP.
+- A comment explaining why code is the way it is _because
+  of the DBSP paper_ — say DBSP.
 - A test that proves a paper theorem — say DBSP (or say
   nothing and let the theorem name stand).
 - A blog post aimed at the streaming-systems research

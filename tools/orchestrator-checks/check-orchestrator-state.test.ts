@@ -4,10 +4,7 @@
 // we don't mock process.env or spawnSync globally.
 
 import { describe, expect, test } from "bun:test";
-import {
-  checkOrchestratorState,
-  parseWorktreeList,
-} from "./check-orchestrator-state";
+import { checkOrchestratorState, parseWorktreeList } from "./check-orchestrator-state";
 
 describe("parseWorktreeList", () => {
   test("parses a single non-bare worktree block", () => {

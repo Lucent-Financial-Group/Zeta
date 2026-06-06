@@ -27,6 +27,7 @@ This PR delivers the Phase 1 audit for the OpenSpec catch-up project (B-0171). I
 Adds a new research write-up documenting the Phase 1 audit and proposed Phase 2 sequencing for the OpenSpec catch-up effort (B-0171), intended to guide formal spec authoring priorities.
 
 **Changes:**
+
 - Introduces a Phase 1 audit of current OpenSpec specs and other formal artifacts (TLA+/Lean).
 - Summarizes several load-bearing capabilities and their current spec coverage.
 - Proposes an ordered backlog of Phase 2 spec targets.

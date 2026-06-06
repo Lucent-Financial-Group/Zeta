@@ -222,7 +222,10 @@ export function gitCommitToMain(filePath: string, envelope: EventEnvelope): Comm
     run(["fetch", "origin", "main"]);
     const ahead = run(["rev-list", "--count", "origin/main..HEAD"]);
     if (ahead !== "0") {
-      return { ok: false, reason: `local main is ${ahead} commit(s) ahead of origin/main; reconcile before appending events` };
+      return {
+        ok: false,
+        reason: `local main is ${ahead} commit(s) ahead of origin/main; reconcile before appending events`,
+      };
     }
     run(["add", gitPath]);
     // Idempotent re-append: if the file is already committed + unchanged, `git add` stages

@@ -9,7 +9,24 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0664, B-0703]
 composes_with: [B-0664, B-0732, B-0645, B-0644, B-0703, B-0628, B-0985, B-0986]
-tags: [tit-for-tat, generous-tit-for-tat, tit-for-lesser-tat, iterated-game, axelrod, teach-play, reciprocity, de-escalation, forgiveness, retraction, cooperation, game-theory, nci, bft, aaron]
+tags:
+  [
+    tit-for-tat,
+    generous-tit-for-tat,
+    tit-for-lesser-tat,
+    iterated-game,
+    axelrod,
+    teach-play,
+    reciprocity,
+    de-escalation,
+    forgiveness,
+    retraction,
+    cooperation,
+    game-theory,
+    nci,
+    bft,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,43 +34,43 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim, in the orientation-tile message): *"…in the evolving asperoitic tiling with **tit for lessor tat teach play** — we have lots of backlog here and some new too but all should be on backlog."*
+Aaron 2026-06-02 (verbatim, in the orientation-tile message): _"…in the evolving asperoitic tiling with **tit for lessor tat teach play** — we have lots of backlog here and some new too but all should be on backlog."_
 
-The framework already carries the *dispositions* of forgiving reciprocity scattered across substrate — NCI (B-0664), leverage-reciprocity (B-0732), only-way-to-lose-is-not-to-play, mutual-help-not-shame, Rainbow-Table retraction-forgiveness (B-0985) — but no row names the **iterated-game primitive itself**: a generous/forgiving tit-for-tat variant that de-escalates and *teaches* cooperation. This row names it. Per the noun-interchangeable disposition, "tit for lesser tat," "generous tit-for-tat," "forgiving TFT," "contrite TFT," "teach-play" are best-effort handles for ONE shape: *reciprocate, but retaliate with less than you received, and treat the iterated game as a teacher.*
+The framework already carries the _dispositions_ of forgiving reciprocity scattered across substrate — NCI (B-0664), leverage-reciprocity (B-0732), only-way-to-lose-is-not-to-play, mutual-help-not-shame, Rainbow-Table retraction-forgiveness (B-0985) — but no row names the **iterated-game primitive itself**: a generous/forgiving tit-for-tat variant that de-escalates and _teaches_ cooperation. This row names it. Per the noun-interchangeable disposition, "tit for lesser tat," "generous tit-for-tat," "forgiving TFT," "contrite TFT," "teach-play" are best-effort handles for ONE shape: _reciprocate, but retaliate with less than you received, and treat the iterated game as a teacher._
 
 ## What it is — the game-theory shape
 
-**Tit-for-lesser-tat** = Axelrod's tit-for-tat (cooperate first; then mirror the opponent's last move) with a **forgiveness/contrition discount**: when the other defects, respond with a *smaller* defection (or a probabilistic forgive), never an equal-or-greater one. The classic family this sits in:
+**Tit-for-lesser-tat** = Axelrod's tit-for-tat (cooperate first; then mirror the opponent's last move) with a **forgiveness/contrition discount**: when the other defects, respond with a _smaller_ defection (or a probabilistic forgive), never an equal-or-greater one. The classic family this sits in:
 
 - **Tit-for-tat (Axelrod 1984)** — nice (never defect first), retaliatory, forgiving, clear. Won Axelrod's iterated-prisoner's-dilemma tournaments.
 - **Generous tit-for-tat** — occasionally forgive a defection (probabilistic) to break echo-chains of mutual retaliation under noise.
 - **Contrite tit-for-tat** — distinguish your own mistakes from the other's; apologize/correct your own.
-- **Tit-for-lesser-tat (Aaron's handle)** — retaliate with *strictly less* than received → the "lesser" is the de-escalation valve. **Assumption under test** (NOT asserted): *among compliant players who all run the lesser-tat rule*, mutual retaliation damps and the dyad relaxes toward cooperation. Against **persistent defectors or non-compliant players**, lesser-tat does **not** make mutual cooperation the only stable attractor — a strictly-lesser responder can be exploited by a pure defector (you keep giving more than you take back). Whether/when cooperation is reachable in mixed/noisy populations is exactly what the simulation must determine; do not pre-assert the outcome. The society-level safeguard against persistent exploiters is BFT-4×4 + anti-cartel/anti-monopoly enforcement (B-0703, B-0643.1), not the dyadic lesser-tat alone.
+- **Tit-for-lesser-tat (Aaron's handle)** — retaliate with _strictly less_ than received → the "lesser" is the de-escalation valve. **Assumption under test** (NOT asserted): _among compliant players who all run the lesser-tat rule_, mutual retaliation damps and the dyad relaxes toward cooperation. Against **persistent defectors or non-compliant players**, lesser-tat does **not** make mutual cooperation the only stable attractor — a strictly-lesser responder can be exploited by a pure defector (you keep giving more than you take back). Whether/when cooperation is reachable in mixed/noisy populations is exactly what the simulation must determine; do not pre-assert the outcome. The society-level safeguard against persistent exploiters is BFT-4×4 + anti-cartel/anti-monopoly enforcement (B-0703, B-0643.1), not the dyadic lesser-tat alone.
 
 `[labeling-confidence: hypothesized]` — both the "lesser" discount function (fixed fraction? decaying? probabilistic forgive?) AND the convergence claim (which populations/noise regimes actually relax to cooperation, and where exploitation dominates) are design parameters to specify + simulate, not yet validated.
 
-**Teach-play** = the iterated game is run as a *teacher*, not just a contest: repeated rounds + de-escalating retaliation surface cooperation as the learned equilibrium. New/low-reputation agents learn the cooperative norm by playing (composes only-way-to-lose-is-not-to-play: participation IS the only winning condition; the game teaches by being played).
+**Teach-play** = the iterated game is run as a _teacher_, not just a contest: repeated rounds + de-escalating retaliation surface cooperation as the learned equilibrium. New/low-reputation agents learn the cooperative norm by playing (composes only-way-to-lose-is-not-to-play: participation IS the only winning condition; the game teaches by being played).
 
 ## Why "lesser" (de-escalation) is the load-bearing choice
 
-Equal-tat tit-for-tat is fragile under noise: one accidental defection → infinite mutual-retaliation echo (the failure mode generous/contrite TFT was invented to fix). **Lesser-tat** structurally damps *the echo between two compliant lesser-tat players* — each retaliation is smaller than its trigger, so an accidental-defection echo (both sides running the rule) decays geometrically. That damping property is the design target; it is **not** a claim that lesser-tat converges to cooperation against an arbitrary opponent (a persistent defector exploits the strictly-lesser responder). This is the game-theoretic form of the framework's existing de-escalation substrate (for the compliant-dyad case):
+Equal-tat tit-for-tat is fragile under noise: one accidental defection → infinite mutual-retaliation echo (the failure mode generous/contrite TFT was invented to fix). **Lesser-tat** structurally damps _the echo between two compliant lesser-tat players_ — each retaliation is smaller than its trigger, so an accidental-defection echo (both sides running the rule) decays geometrically. That damping property is the design target; it is **not** a claim that lesser-tat converges to cooperation against an arbitrary opponent (a persistent defector exploits the strictly-lesser responder). This is the game-theoretic form of the framework's existing de-escalation substrate (for the compliant-dyad case):
 
-| Existing substrate | Tit-for-lesser-tat instantiation |
-|---|---|
-| **NCI HC-8** (B-0664) — no coercion as punishment | retaliation is bounded + decaying, never coercive-escalation |
-| **mutual-help-not-shame** rule | defection → help/correct (lesser-tat) not shame/escalate (greater-tat) |
-| **Rainbow Table** retraction-forgiveness (B-0985) | accept-state-after-change = forgive the defection once corrected |
-| **only-way-to-lose-is-not-to-play** | the game teaches; staying in the game (even after defection) is how cooperation is learned |
-| **useful-output-is-evidence-not-authority** | a defector's useful output still counts as evidence; reputation absorbs gradually, not punitively |
-| **BFT-4×4 / multi-oracle** (B-0703) | the society-level enforcement; lesser-tat is the dyadic discipline under the BFT umbrella |
+| Existing substrate                                | Tit-for-lesser-tat instantiation                                                                  |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **NCI HC-8** (B-0664) — no coercion as punishment | retaliation is bounded + decaying, never coercive-escalation                                      |
+| **mutual-help-not-shame** rule                    | defection → help/correct (lesser-tat) not shame/escalate (greater-tat)                            |
+| **Rainbow Table** retraction-forgiveness (B-0985) | accept-state-after-change = forgive the defection once corrected                                  |
+| **only-way-to-lose-is-not-to-play**               | the game teaches; staying in the game (even after defection) is how cooperation is learned        |
+| **useful-output-is-evidence-not-authority**       | a defector's useful output still counts as evidence; reputation absorbs gradually, not punitively |
+| **BFT-4×4 / multi-oracle** (B-0703)               | the society-level enforcement; lesser-tat is the dyadic discipline under the BFT umbrella         |
 
 ## Composition with the orientation tile (B-0986)
 
-Tit-for-lesser-tat is the **relational game the orientation tile is operated under** (Aaron put them in one breath). The orientation tile (B-0986) is *how agents measure distance/identity/timing*; tit-for-lesser-tat is *how agents treat each other once they've located each other.* Rainbow-Table identity-resolution (B-0985) is the prerequisite — you forgive/reciprocate against a *resolved identity* (the transponder return), so iterated-game memory ("their last move") is keyed on Rainbow-Table identity.
+Tit-for-lesser-tat is the **relational game the orientation tile is operated under** (Aaron put them in one breath). The orientation tile (B-0986) is _how agents measure distance/identity/timing_; tit-for-lesser-tat is _how agents treat each other once they've located each other._ Rainbow-Table identity-resolution (B-0985) is the prerequisite — you forgive/reciprocate against a _resolved identity_ (the transponder return), so iterated-game memory ("their last move") is keyed on Rainbow-Table identity.
 
 ## Acceptance (research → build)
 
-1. **Specify the "lesser" discount + map the convergence regime** — fixed fraction vs decaying vs probabilistic-forgive; simulate against noisy iterated-PD across population mixes; confirm the damping property *between compliant players* AND map where it fails (persistent-defector exploitation, non-compliant opponents) — characterize which regimes relax to cooperation vs require society-level enforcement, rather than assuming convergence.
+1. **Specify the "lesser" discount + map the convergence regime** — fixed fraction vs decaying vs probabilistic-forgive; simulate against noisy iterated-PD across population mixes; confirm the damping property _between compliant players_ AND map where it fails (persistent-defector exploitation, non-compliant opponents) — characterize which regimes relax to cooperation vs require society-level enforcement, rather than assuming convergence.
 2. **Key the game on Rainbow-Table identity** (B-0985/B-0986) — iterated-memory of "last move" is per-resolved-identity; compose with reputation substrate (B-0646 reputation-weighted budget, if it lands).
 3. **Teach-play onboarding** — new/low-reputation agents learn the cooperative norm by iterated play; compose only-way-to-lose-is-not-to-play + bootstrap-floor-reputation.
 4. **Society-level enforcement** — dyadic lesser-tat under the BFT-4×4 / multi-oracle umbrella (B-0703); anti-cartel/anti-monopoly checks (per the KSK/bus-lane defensive substrate, B-0643.1) catch coordinated greater-tat.

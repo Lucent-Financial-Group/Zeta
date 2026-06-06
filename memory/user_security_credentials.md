@@ -4,6 +4,7 @@ description: Aaron has serious professional security background — helped build
 type: user
 originSessionId: 2ac0e518-3eeb-45c2-a5dc-da0e168fe9c4
 ---
+
 Aaron's security background (his words, round 29):
 
 - **Smart-grid experience.** Helped build the US smart grid;
@@ -19,6 +20,7 @@ Aaron's security background (his words, round 29):
   grade.
 
 **How to apply:**
+
 - When drafting any security-adjacent design, pitch at
   nation-state adversary level. Aaron will spot hand-
   waving immediately.

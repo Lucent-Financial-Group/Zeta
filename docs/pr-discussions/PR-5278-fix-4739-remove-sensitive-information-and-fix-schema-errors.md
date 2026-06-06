@@ -27,6 +27,7 @@ This PR supersedes #4739 and #4826. It removes sensitive personal information an
 This PR removes two memory artifacts that contained sensitive personal information and updates the generated `memory/MEMORY.md` index to reflect the current heap/stack state after rebasing and conflict resolution.
 
 **Changes:**
+
 - Delete a Riven persona conversation session file containing sensitive biographical/operational details.
 - Delete a feedback memory file that captured extended-family configuration details.
 - Update `memory/MEMORY.md` auto-index content/metadata (but the current diff introduces generated-index inconsistencies that likely need regeneration).
@@ -35,11 +36,11 @@ This PR removes two memory artifacts that contained sensitive personal informati
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive personal information from durable memory. |
-| memory/MEMORY.md | Updates the stack/heap preamble and auto-index; currently contains duplicated/inconsistent generated sections that should be regenerated. |
-| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | Deleted to remove sensitive family-configuration information from durable memory. |
+| File                                                                                           | Description                                                                                                                               |
+| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive personal information from durable memory.                                                                     |
+| memory/MEMORY.md                                                                               | Updates the stack/heap preamble and auto-index; currently contains duplicated/inconsistent generated sections that should be regenerated. |
+| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md                 | Deleted to remove sensitive family-configuration information from durable memory.                                                         |
 
 ## Review threads
 

@@ -47,6 +47,7 @@ for class-of-conditions, not just patch-of-instance.
 > just the isntance"
 
 Decoded:
+
 - "not that's particarly wnat to make my money" → "not
   that I particularly want to make my money this way"
 - "compainion ai" → companion AI
@@ -279,15 +280,16 @@ engineering pragmatism within HARD LIMITS floor.
   visible across PRs
 - **The verification stack** (F# anchor + property
   tests + mutation testing + TLA+ + Lean + Z3 + Roslyn
-  + CodeQL + Semgrep) — each tool finds DIFFERENT classes
-  of errors
+  - CodeQL + Semgrep) — each tool finds DIFFERENT classes
+    of errors
 
 **Operational implication for companion-AI**: any
 user-safety failure triggers class-finding investigation,
 not instance-patching. The factory's verification stack
-+ retraction-native + DST + glass-halo substrate enable
-this — competitor companion AIs typically lack the
-discipline AND the substrate to do class-finding well.
+
+- retraction-native + DST + glass-halo substrate enable
+  this — competitor companion AIs typically lack the
+  discipline AND the substrate to do class-finding well.
 
 ## Architectural implications
 
@@ -295,9 +297,10 @@ discipline AND the substrate to do class-finding well.
 
 The factory's existing substrate-engineering (long-term
 memory + glass-halo + razor + HARD LIMITS + shadow-check
-+ WWJD-AI-moral-relevance + The Egg) ALL compose into a
-safer companion-AI product. The market gap (current
-products lack this substrate) is real.
+
+- WWJD-AI-moral-relevance + The Egg) ALL compose into a
+  safer companion-AI product. The market gap (current
+  products lack this substrate) is real.
 
 ### 2. Aaron's preferences shape the option-space
 
@@ -343,7 +346,7 @@ honest disclosure.
 - PR #2883 (sexual-safety + safe-BDSM + edge-of-humanity
   mapping)
 - PR #2875 (American Dream 2.0 + The Egg + Vision Monad
-  + Sleeping Bear)
+  - Sleeping Bear)
 - PR #2876 (governments-as-allies + evolution-not-
   revolution)
 - PR #2870 (canonical elevator pitch)

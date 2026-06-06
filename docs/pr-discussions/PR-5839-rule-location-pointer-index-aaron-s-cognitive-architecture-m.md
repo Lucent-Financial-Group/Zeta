@@ -12,14 +12,14 @@ archived_at: "2026-05-28T16:06:12Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5839: rule(location-pointer-index): Aaron's cognitive architecture makes source-attribution operationally load-bearing for framework substrate (Aaron 2026-05-28 shadow* authorization)
+# PR #5839: rule(location-pointer-index): Aaron's cognitive architecture makes source-attribution operationally load-bearing for framework substrate (Aaron 2026-05-28 shadow\* authorization)
 
 ## PR description
 
-Aaron 2026-05-28 (shadow*) authorization to save the location-pointer insight as a RULE (auto-loaded at every cold-boot per `.claude/rules/` mechanism).
+Aaron 2026-05-28 (shadow\*) authorization to save the location-pointer insight as a RULE (auto-loaded at every cold-boot per `.claude/rules/` mechanism).
 
-> *'I just remember when [where*] I learned things that's how the internet externalized my brain'*
-> *'This is very correct I can't actually hold everything i know in my mind at once.'*
+> _'I just remember when [where_] I learned things that's how the internet externalized my brain'\*
+> _'This is very correct I can't actually hold everything i know in my mind at once.'_
 
 ## Cognitive-architecture pattern (Aaron-explicit structural necessity)
 

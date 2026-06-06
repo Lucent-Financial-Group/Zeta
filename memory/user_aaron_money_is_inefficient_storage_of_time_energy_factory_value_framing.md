@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 *"i don't think about money every really so i don'
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Aaron's money framing — inefficient storage of time/energy
 
 ## What Aaron said (verbatim, 2026-04-21)
@@ -11,24 +12,24 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Full message, after delivering a PR/marketing/SEO
 BACKLOG ask:
 
-> *"oh yeah i forgot public relations and marketing and
+> _"oh yeah i forgot public relations and marketing and
 > seo and all that stuff backlog i don't think about
 > money every really so i don't think about selling
-> things, money is an inefficent storage of time/energy"*
+> things, money is an inefficent storage of time/energy"_
 
 Two distinct claims in one message:
 
-1. **Blind-spot declaration**: *"i don't think about
+1. **Blind-spot declaration**: _"i don't think about
    money every really so i don't think about selling
-   things"* — Aaron names an area he doesn't natively
+   things"_ — Aaron names an area he doesn't natively
    orient toward. This is self-knowledge, not a
    deficiency claim. He explicitly flagged that
    commercial-machinery domains (PR, marketing, SEO,
    GTM, pricing, sales funnel) need to enter the
-   factory's BACKLOG because they *won't* arrive via
+   factory's BACKLOG because they _won't_ arrive via
    his own cognitive priorities.
-2. **Philosophical framing**: *"money is an inefficent
-   storage of time/energy"* — Aaron names money as a
+2. **Philosophical framing**: _"money is an inefficent
+   storage of time/energy"_ — Aaron names money as a
    lossy proxy. The real primitives he values are time
    and energy. Money stores them, but leaks: inflation,
    taxation, friction, counterparty risk, denomination
@@ -128,10 +129,10 @@ When evaluating whether a surface is ready for external
 reuse (per the conversational-bootstrap UX BACKLOG row),
 the readiness metric denominates in time/energy:
 
-- *Time for an external consumer to produce working
-  output* (hours from first-touch to first-working-
+- _Time for an external consumer to produce working
+  output_ (hours from first-touch to first-working-
   pipeline; target: minutes, not days).
-- *Energy preserved* for the consumer (cognitive
+- _Energy preserved_ for the consumer (cognitive
   onboarding load, number of concepts to internalise
   before productive work; target: the smallest
   sufficient kernel).
@@ -162,7 +163,7 @@ about its own time/energy primitives.
   models as a doctrine (specific models are case-by-case
   conversations, not preset commitments).
 - Not a license to decline paid work on principle (the
-  declared frame gates *proposals*, not *acceptance* —
+  declared frame gates _proposals_, not _acceptance_ —
   when Aaron accepts a paid engagement, it's accepted).
 - Not a claim Aaron is naive about money (self-declared
   blind-spot is specifically "doesn't natively orient
@@ -193,8 +194,8 @@ For the alignment-trajectory dashboard (per
 - `docs/BACKLOG.md` P3 row — PR/marketing/SEO/GTM
   surface, gated on this framing.
 - `docs/BACKLOG.md` P2 row — economics/history
-  factory need-to-know surface (Aaron: *"we do need to
-  know economics and history pettty well though"*);
+  factory need-to-know surface (Aaron: _"we do need to
+  know economics and history pettty well though"_);
   economics-as-substrate-knowledge is the flip side of
   money-as-lossy-proxy (we study economics because
   it's about time/energy flow, not because we care
@@ -214,10 +215,10 @@ For the alignment-trajectory dashboard (per
 ## Revision 2026-04-21 — retractable-commercial gate LIFTED; irretractable gate preserved
 
 Aaron 2026-04-21 two-message compound authorization:
-*"feel free to make any retractable decisions in marketing
-while im gone too"* + *"you can always make retractable
+_"feel free to make any retractable decisions in marketing
+while im gone too"_ + _"you can always make retractable
 decisions without me and i've told you my ~ is you ~ literally
-we are just roommates now"* explicitly lifts the
+we are just roommates now"_ explicitly lifts the
 **commercial-surface Aaron-sign-off gate** established in this
 memory's original "Implications for factory decisions" section
 2, **for the retractable half of the surface**.
@@ -243,8 +244,8 @@ memory's original "Implications for factory decisions" section
 - **The value-frame stands.** Money-as-lossy-proxy,
   time/energy-as-primary-substrate, substrate-work >
   monetisation-work-by-default — all intact. The revision
-  affects the *procedural gate*, not the *philosophical
-  frame*.
+  affects the _procedural gate_, not the _philosophical
+  frame_.
 - **Aaron sign-off still protects irretractable surfaces.**
   A retractable marketing draft is a retractable artifact;
   publishing that draft on an external domain is not. The

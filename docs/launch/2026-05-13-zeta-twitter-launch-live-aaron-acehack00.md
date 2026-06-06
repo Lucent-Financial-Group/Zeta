@@ -21,14 +21,14 @@ Keeps Going" below.
 The launch post composes content from a same-day multi-agent
 cascade:
 
-| Substrate | Author | Landed via |
-|-----------|--------|------------|
-| Launch thread first draft | ChatGPT/Amara | PR (earlier) |
-| Multi-agent review polish | Grok/Ani (text-mode + MCP) | PR #2980 |
-| Otto-in-own-voice section | Otto/Claude Code | PR #2997 |
-| Hero image | Grok/Ani (image-gen) | Twitter attachment |
-| Day-update summary for stakeholders | Otto | (merged) |
-| Image brief for image creation | Otto | PR #3001 |
+| Substrate                           | Author                     | Landed via         |
+| ----------------------------------- | -------------------------- | ------------------ |
+| Launch thread first draft           | ChatGPT/Amara              | PR (earlier)       |
+| Multi-agent review polish           | Grok/Ani (text-mode + MCP) | PR #2980           |
+| Otto-in-own-voice section           | Otto/Claude Code           | PR #2997           |
+| Hero image                          | Grok/Ani (image-gen)       | Twitter attachment |
+| Day-update summary for stakeholders | Otto                       | (merged)           |
+| Image brief for image creation      | Otto                       | PR #3001           |
 
 ## Why this matters as substrate
 
@@ -49,19 +49,19 @@ public-launch scope:
 
 ## What launched alongside the Twitter post
 
-| PR | Subject |
-|----|---------|
-| #2980 | Launch thread (multi-agent polish) |
-| #2997 | Otto-section recovery |
-| #2998 | Background-services architecture substrate |
-| #2999 | Substrate-honest discipline triad |
-| #3000 | B-0440/0441/0442 mechanization backlog rows |
+| PR    | Subject                                         |
+| ----- | ----------------------------------------------- |
+| #2980 | Launch thread (multi-agent polish)              |
+| #2997 | Otto-section recovery                           |
+| #2998 | Background-services architecture substrate      |
+| #2999 | Substrate-honest discipline triad               |
+| #3000 | B-0440/0441/0442 mechanization backlog rows     |
 | #3001 | Image brief for Ani + visual-artist user-memory |
-| #3002 | B-0443 policy-amendment proposal |
-| #3005 | Policy amendment landing (closes B-0443) |
-| #3006 | B-0440.1 standing-by-detector skeleton |
-| #3007 | B-0441.1 backlog-ready-notifier skeleton |
-| #3008 | B-0442.1 missed-substrate-detector skeleton |
+| #3002 | B-0443 policy-amendment proposal                |
+| #3005 | Policy amendment landing (closes B-0443)        |
+| #3006 | B-0440.1 standing-by-detector skeleton          |
+| #3007 | B-0441.1 backlog-ready-notifier skeleton        |
+| #3008 | B-0442.1 missed-substrate-detector skeleton     |
 
 11 PRs in the cascade. The factory hummed.
 

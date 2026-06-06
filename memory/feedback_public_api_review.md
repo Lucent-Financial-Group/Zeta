@@ -4,7 +4,8 @@ description: Every internal→public flip, new public member, signature change, 
 type: feedback
 originSessionId: 2ac0e518-3eeb-45c2-a5dc-da0e168fe9c4
 ---
-Every change that affects the *public* surface of one of
+
+Every change that affects the _public_ surface of one of
 Zeta's three published libraries (`Zeta.Core`,
 `Zeta.Core.CSharp`, `Zeta.Bayesian`) goes through the
 public-api-designer (persona: Ilyana) before it lands. This
@@ -25,6 +26,7 @@ refactors, doc-only changes.
 `internal → public` flips (`Stream<'T>.Op`,
 `Circuit.RegisterStream`) land in a single session without
 any design review:
+
 > "it scared me how easily you flipped those internal
 > methods public, I don't even know if that was a good
 > change, you got to be very very very careful about what

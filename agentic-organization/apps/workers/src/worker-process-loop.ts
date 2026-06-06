@@ -21,8 +21,7 @@ export const WorkerProcessLoopEventName = {
   ShutdownCompleted: "agentic.worker.loop.shutdown_completed",
 } as const;
 
-export type WorkerProcessLoopEventName =
-  (typeof WorkerProcessLoopEventName)[keyof typeof WorkerProcessLoopEventName];
+export type WorkerProcessLoopEventName = (typeof WorkerProcessLoopEventName)[keyof typeof WorkerProcessLoopEventName];
 
 export const WorkerProcessLoopFailureStage = {
   Delay: "delay",
@@ -112,10 +111,7 @@ export function createWorkerProcessLoop(input: CreateWorkerProcessLoopInput): Wo
 }
 
 function validateWorkerProcessLoopInput(input: CreateWorkerProcessLoopInput): void {
-  if (
-    input.maxCycles !== undefined &&
-    (!Number.isSafeInteger(input.maxCycles) || input.maxCycles < 1)
-  ) {
+  if (input.maxCycles !== undefined && (!Number.isSafeInteger(input.maxCycles) || input.maxCycles < 1)) {
     throw new Error(WorkerProcessLoopConfigErrorMessage.InvalidMaxCycles);
   }
 }

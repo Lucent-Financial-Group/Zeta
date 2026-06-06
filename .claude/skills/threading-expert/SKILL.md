@@ -121,16 +121,16 @@ none shipped in-box.
 
 ### Monitors / locks
 
-| Primitive | Cost | Use |
-|---|---|---|
-| `lock (obj)` / `Monitor` | ns (uncontended) | short critical sections |
-| `SpinLock` | ns (if you win) | very short + high contention unlikely |
-| `SemaphoreSlim` | us | rate limiting, async-compatible |
-| `Mutex` | us-ms (cross-process) | inter-process only |
-| `ReaderWriterLockSlim` | 10s of ns | read-heavy critical sections |
-| `ManualResetEventSlim` | ns-us | one-shot signalling |
-| `CountdownEvent` | us | fan-in / barrier |
-| `Barrier` | us | phased parallel algorithms |
+| Primitive                | Cost                  | Use                                   |
+| ------------------------ | --------------------- | ------------------------------------- |
+| `lock (obj)` / `Monitor` | ns (uncontended)      | short critical sections               |
+| `SpinLock`               | ns (if you win)       | very short + high contention unlikely |
+| `SemaphoreSlim`          | us                    | rate limiting, async-compatible       |
+| `Mutex`                  | us-ms (cross-process) | inter-process only                    |
+| `ReaderWriterLockSlim`   | 10s of ns             | read-heavy critical sections          |
+| `ManualResetEventSlim`   | ns-us                 | one-shot signalling                   |
+| `CountdownEvent`         | us                    | fan-in / barrier                      |
+| `Barrier`                | us                    | phased parallel algorithms            |
 
 **`Monitor` vs `SemaphoreSlim`.** `lock`/`Monitor` cannot
 be held across `await`. `SemaphoreSlim` has an async
@@ -362,17 +362,17 @@ checks it.
 ## Reference patterns
 
 - ECMA-335 §12.6 — CLR memory model.
-- Albahari — *Threading in C#* (the freely available
+- Albahari — _Threading in C#_ (the freely available
   Joseph Albahari e-book; canonical reference).
 - Cliff Click — lock-free hashmap lectures.
-- Michael, Scott 1996 — *Simple, Fast, and Practical
-  Non-Blocking and Blocking Concurrent Queue Algorithms*.
-- Michael 2004 — *Hazard Pointers: Safe Memory
-  Reclamation*.
-- Fraser 2004 — *Practical Lock-Freedom*.
-- Herlihy, Shavit — *The Art of Multiprocessor
-  Programming* (2nd ed).
-- Sustrik — *Structured Concurrency*.
+- Michael, Scott 1996 — _Simple, Fast, and Practical
+  Non-Blocking and Blocking Concurrent Queue Algorithms_.
+- Michael 2004 — _Hazard Pointers: Safe Memory
+  Reclamation_.
+- Fraser 2004 — _Practical Lock-Freedom_.
+- Herlihy, Shavit — _The Art of Multiprocessor
+  Programming_ (2nd ed).
+- Sustrik — _Structured Concurrency_.
 - Stephen Toub — .NET runtime async/await blog posts.
 - .NET runtime repo — `ThreadPool` + `Task` source.
 - `.claude/skills/race-hunter/SKILL.md` — diff audit.

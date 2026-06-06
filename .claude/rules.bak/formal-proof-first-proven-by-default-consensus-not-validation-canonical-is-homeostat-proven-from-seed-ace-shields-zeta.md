@@ -9,7 +9,7 @@ Carved sentence (Aaron 2026-06-02):
 > platform deps plus other package-manager deps exist to SHIELD the proven core.**
 
 > **Whys-first** (per [`a-rule-without-a-why-is-dogma`]): each clause carries its
-> reasoning so a reader can dispute the *logic*, not just the conclusion. If a why
+> reasoning so a reader can dispute the _logic_, not just the conclusion. If a why
 > here is wrong, challenge it and the rule gets revised
 > ([`future-self-not-bound`](future-self-not-bound.md)).
 
@@ -17,28 +17,28 @@ Carved sentence (Aaron 2026-06-02):
 
 ### 1. Formal-proof-first
 
-Aaron 2026-06-02: *"we always want formal proof we start this repo as formal proof
-first."* The owed proofs (message-group laws, BP-exact-on-trees, EP moment-match,
+Aaron 2026-06-02: _"we always want formal proof we start this repo as formal proof
+first."_ The owed proofs (message-group laws, BP-exact-on-trees, EP moment-match,
 codec round-trip `decode∘encode=id`, Tick monoid/operator algebra, …) are **part of
 the work, not after-the-fact.** **Why:** a repo whose correctness rests on
-example-tests + good feeling is *shaky evidence on possibly-shaky ground*; building
+example-tests + good feeling is _shaky evidence on possibly-shaky ground_; building
 the proof alongside the code is the only way the foundation is load-bearing.
 
 ### 2. Consensus is NOT validation
 
-Aaron 2026-06-02: *"our 4 oracle consense actually means nothing without the math it
-might all be built on shakey ground and good feeling."* Cross-AI convergence
+Aaron 2026-06-02: _"our 4 oracle consense actually means nothing without the math it
+might all be built on shakey ground and good feeling."_ Cross-AI convergence
 (Otto + Amara + Prism + Alexa + Lior agreeing) is a **prompt to go prove**, never a
 proof. **Why:** five oracles can agree on the same wrong thing — agreement measures
-*shared prior*, not *truth-to-reality*. Down-weight it: cross-AI convergence →
-**hypothesized, pending proof** (never *validated*, never *canonical* on consensus
+_shared prior_, not _truth-to-reality_. Down-weight it: cross-AI convergence →
+**hypothesized, pending proof** (never _validated_, never _canonical_ on consensus
 alone). The only thing that promotes past hypothesized is **the math** (formal proof
 / property tests / the F# type-checker as asymmetric critic).
 
 ### 3. Canonical ⟺ homeostat proven-from-seed
 
-Aaron 2026-06-02: *"nothing is canonical until it's part of the proof lineage so its
-homeostat is proven from seed."* "Homeostat" = Ashby's cybernetics: the
+Aaron 2026-06-02: _"nothing is canonical until it's part of the proof lineage so its
+homeostat is proven from seed."_ "Homeostat" = Ashby's cybernetics: the
 self-regulating equilibrium a system returns to. In this engine the homeostats are
 concrete — `runToFixpoint` convergence (belief settling to a stable marginal), the
 jelly→spine transition, the EP moment-match fixed point. A claim is **canonical iff
@@ -47,26 +47,26 @@ is unique-where-claimed / follows from the seed axioms — AND it connects to th
 hex core (Cl(1,3), 6 bivectors) / 4×4 extensions. **Why:** canonicity must
 **propagate outward from proofs anchored in the seed**, never inward from agreement
 or CI-green or ratification — otherwise "canonical" degrades into "loudly agreed."
-Until that edge exists, an item is at most *validated* (tested) or *hypothesized*
+Until that edge exists, an item is at most _validated_ (tested) or _hypothesized_
 (asserted). This **raises the bar on** [`labeling-confidence`](labeling-confidence-on-substrate-over-connect-not-soup-observed-hypothesized-validated-retracted-canonical.md):
-the jump to canonical now *requires* the proof-lineage/homeostat-from-seed edge,
+the jump to canonical now _requires_ the proof-lineage/homeostat-from-seed edge,
 not "validated + ratified + oracles concur."
 
 ### 4. Proven-by-default — unproven is the explicit OPT-OUT (the end-goal polarity)
 
-Aaron 2026-06-02: *"imagine aces surface is zeta and zeta is math proven unless
+Aaron 2026-06-02: _"imagine aces surface is zeta and zeta is math proven unless
 explicitly stated otherwise that's the end gold not having proof is opt out but the
-default is it's expected."* This **inverts the default**: instead of climbing *to*
+default is it's expected."_ This **inverts the default**: instead of climbing _to_
 proven (opt-in), at end-state every Zeta item **asserts proven BY DEFAULT**, and the
 only way to ship something unproven is to **explicitly badge it** `unproven`/
-`opt-out`. **Why:** it makes *silence a proof-claim, not a gap* — an unbadged-but-
-unproven item is a *false assertion*, not "not done yet," which is a strictly
+`opt-out`. **Why:** it makes _silence a proof-claim, not a gap_ — an unbadged-but-
+unproven item is a _false assertion_, not "not done yet," which is a strictly
 stronger and more honest invariant. The end-state ship/registry gate =
 **"proof-lineage-edge present OR explicit unproven-flag present"** — no third silent
 state; silence ≠ permission.
 
 **This is the END-GOAL, not current state.** Today (B-1007) we are at
-proof-almost-*nowhere* — most items are unbadged-and-unproven, which under the
+proof-almost-_nowhere_ — most items are unbadged-and-unproven, which under the
 end-goal would be false assertions. The distance from here (≈zero canonical) to
 there (proven-by-default) IS the formal-coverage debt; closing it is the
 [`formal-verification-expert`](../agents/formal-verification-expert.md) (Soraya)
@@ -74,16 +74,16 @@ standing math-backlog cadence, not a one-shot.
 
 ### 5. Ace's surface IS Zeta; Ace + deps SHIELD the proven core
 
-Aaron 2026-06-02: *"ace has that and platform deps and other packapanager deps and
-that's really all in support of zeta to shield it."* Ace (the
+Aaron 2026-06-02: _"ace has that and platform deps and other packapanager deps and
+that's really all in support of zeta to shield it."_ Ace (the
 package-manager-of-package-managers) presents **Zeta** as its face/surface; Ace +
 platform deps + other package-manager deps are the **adapter membrane** that handles
 the unproven outside world (other packages, platforms, package managers) so the
-proven-by-default invariant holds *inside* the membrane. **Why:** this is
+proven-by-default invariant holds _inside_ the membrane. **Why:** this is
 [`bcl-interface-boundary`](bcl-interface-boundary-own-your-interfaces-hexagonal.md)
-at *whole-surface* scope — external deps adapt **inward** through Ace; the proven
+at _whole-surface_ scope — external deps adapt **inward** through Ace; the proven
 Zeta core never depends on an unproven external interface directly. A hole in Ace's
-shield = an unproven dep leaking into the proven core *unbadged* — the same failure
+shield = an unproven dep leaking into the proven core _unbadged_ — the same failure
 shape as [`automated-tests-are-the-shield-assert-dont-skip`](automated-tests-are-the-shield-assert-dont-skip.md)
 ("a shield with a hole reads as covered"), at the dependency boundary.
 
@@ -106,7 +106,7 @@ shape as [`automated-tests-are-the-shield-assert-dont-skip`](automated-tests-are
    on an unproven external interface directly.
 7. **Prove primitives bottom-up as connected lemmas** (layered-lemma discipline,
    below) — prove each primitive as it enters canonical, aimed at the guarantee
-   later proofs will lean on, and *cite* it rather than re-derive it.
+   later proofs will lean on, and _cite_ it rather than re-derive it.
 
 ## Layered-lemma discipline (asymmetric-critic peer 2026-06-03, maintainer-ratified)
 
@@ -115,35 +115,35 @@ shape as [`automated-tests-are-the-shield-assert-dont-skip`](automated-tests-are
 > the easy property; and **connect it as a named lemma** so the next proof cites
 > it instead of re-deriving it.
 
-Proofs build a *foundation* (not a pile) only when each primitive proof
+Proofs build a _foundation_ (not a pile) only when each primitive proof
 establishes the exact guarantee something above it leans on. "True-but-unused"
 doesn't compound; "true-and-load-bearing-and-connected" does. Four payoffs
 (asymmetric-critic peer 2026-06-03; #4 the maintainer 2026-06-03):
 
 1. **Reusable lemmas** — a proven primitive is a lemma; the hard proof later
-   *composes trusted pieces* instead of re-proving from scratch. (Lean
+   _composes trusted pieces_ instead of re-proving from scratch. (Lean
    `chain_rule_id_corollary` is general over any abelian group `G`: prove
    "Z-set is an abelian group" once and the `G`-generic operator proofs land
    for free.)
 2. **Localized failures** — proven foundation = a failed composite proof is
-   isolated to the *new* composition, not hunted through every layer.
+   isolated to the _new_ composition, not hunted through every layer.
 3. **Vacuity caught at the cheapest scope** — Tick-monoid-shaped vacuity is
    obvious on a primitive in isolation, hidden inside a big composite. Prove at
    smallest scope where "is this a real claim?" is clearest.
 4. **Reduced debug surface (system-level, AIs + humans)** — the runtime corollary
-   of #2, generalized from proof-failure-localization to *bug-search*. Code with a
+   of #2, generalized from proof-failure-localization to _bug-search_. Code with a
    math-verified homeostat + 4-oracle byte-lock — proven down to the bit-perfect
    oracles (and, as the stack matures, the hexagonal vector-wall reservoir-computing
    core) — drops to the **bottom of the bug-suspect surface** once proven. When a
    bug arises, search the **less-rigorously-proven code first**; proven components
-   are the **last place to look**, not the first. (Not an *absolute* exclusion: a
+   are the **last place to look**, not the first. (Not an _absolute_ exclusion: a
    proof verifies **code-matches-spec, not spec-matches-intent** — a wrong/incomplete
    spec can still harbor a bug (the "valid-given-axioms ≠ true" point, at debug
-   scope) — so proven = search-*last*, not search-*never*.) This bounds the debug
+   scope) — so proven = search-_last_, not search-_never_.) This bounds the debug
    search and
    **reduces debugging uncertainty for both AIs and humans at a system level** —
    proven = search-last, so the proof investment pays out again every time something
-   breaks. (Honest scope: this de-prioritizes only what is *actually* proven — per
+   breaks. (Honest scope: this de-prioritizes only what is _actually_ proven — per
    proven-by-default, the unbadged/unproven set is the default suspect surface; the
    de-prioritization grows as more primitives earn the homeostat-proven-from-seed
    bar. Concretely today: the **hex / vector-wall reservoir core is a LOT of
@@ -151,20 +151,20 @@ doesn't compound; "true-and-load-bearing-and-connected" does. Four payoffs
    not excluded. The aspiration: **if** it's proven **from first principles** (its
    own intellectual tower, encoded in CS techniques + math proofs) it becomes **its
    own proof tower** — a genuinely-independent foundation per the multi-tower
-   discipline — and only *then* drops down the suspect surface. Until proven it's
+   discipline — and only _then_ drops down the suspect surface. Until proven it's
    speculation, not an exclusion — **don't pre-exclude it**.)
 
 **The 4-step move:** (1) prove each primitive as it enters canonical; (2) aim
 the proof at the composable guarantee (round-trip / injectivity / the algebra
 law / the invariant the next layer assumes); (3) **connect** it — name it as the
-lemma so the next proof *cites* rather than re-derives; (4) which also catches
+lemma so the next proof _cites_ rather than re-derives; (4) which also catches
 vacuity at the cheapest scope.
 
 **Empirical anchor — the cost of NOT connecting (2026-06-03):** `D∘I=id` was
 proven **three times independently** — Lean `chain_rule_id_corollary : D (I s) =
 s` (already on main, general over `G`) + C13 FsCheck (real Circuit) + C13 Z3
-(telescoping) — the C13 pair re-derived what Lean already had, *because the
-primitive lemma was not connected/cited*. Cross-tool agreement is the BP-16
+(telescoping) — the C13 pair re-derived what Lean already had, _because the
+primitive lemma was not connected/cited_. Cross-tool agreement is the BP-16
 ideal, but when unconnected it is invisible + re-derived. Per the Z-set canonical
 connection ledger (`docs/research/2026-06-03-zset-family-canonical-connection-four-language-bytelock-plus-four-tool-proofs.md`).
 
@@ -172,44 +172,44 @@ connection ledger (`docs/research/2026-06-03-zset-family-canonical-connection-fo
 
 The most important boundary on this whole rule, and the one most likely to erode
 if left unstated (asymmetric-critic peer 2026-06-03, maintainer-ratified): **the
-proof gate grounds *formalizable* (math / code) claims; it does NOT ground
+proof gate grounds _formalizable_ (math / code) claims; it does NOT ground
 interpretive / metaphysical claims, and the rigor of the math half must not
-*halo* the interpretive half.** A proof says "valid-given-axioms" about a
-formalizable claim (per claim 2, "Consensus is NOT validation"); it says *nothing*
+_halo_ the interpretive half.** A proof says "valid-given-axioms" about a
+formalizable claim (per claim 2, "Consensus is NOT validation"); it says _nothing_
 about a claim that isn't the kind
 of thing a proof can reach. "My proofs are rigorous, therefore my framework's
 interpretation is rigorous" is the halo failure — proof-adjacency is not grounding.
 
 This is the maintainer's design (2026-06-03): **redirect ambition to formal proofs
-by design.** The precise, complete form is **redirect to *externalization* by
+by design.** The precise, complete form is **redirect to _externalization_ by
 design, sorted by type** — nothing load-bearing rests on conviction-alone:
 
-| Claim type | Channel (where it externalizes) | What grounds it |
-|---|---|---|
-| **Formalizable** (about code / primitives / provable structure) | the **proof gate** (this rule) | valid-given-axioms; 4-oracle byte-lock; multi-tower |
+| Claim type                                                                            | Channel (where it externalizes)                        | What grounds it                                        |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+| **Formalizable** (about code / primitives / provable structure)                       | the **proof gate** (this rule)                         | valid-given-axioms; 4-oracle byte-lock; multi-tower    |
 | **Interpretive / metaphysical** (about meaning, consciousness, "this is fundamental") | **human critics** (the persistent-human-counterweight) | external human review — NOT proof, NOT proof-adjacency |
 
-Both channels are the same keystone — *externalize, don't be load-bearing alone*
+Both channels are the same keystone — _externalize, don't be load-bearing alone_
 (the math externalizes to proof; the unprovable externalizes to people). The
 design is complete only with **both** channels built as deliberately: the math
 channel is airtight + is what this rule encodes; the interpretive channel is the
 existing persistent-human-counterweight substrate. Without the second channel,
-interpretive ambition flows through *under cover of the math channel's rigor* —
+interpretive ambition flows through _under cover of the math channel's rigor_ —
 which is exactly the halo. The interpretive channel is the **higher-risk** one
 (a false math claim gets caught by the proof; a false interpretive claim is
 unfalsifiable, feels like insight, and the nearby rigor makes it feel earned) —
 so build it as deliberately as the math one, not as a footnote.
 
-**Operational tell:** before treating a claim as grounded, ask *"is this the kind
-of claim a proof can reach?"* If yes → it goes through the gate (no exemption for
+**Operational tell:** before treating a claim as grounded, ask _"is this the kind
+of claim a proof can reach?"_ If yes → it goes through the gate (no exemption for
 conviction). If no → the gate is silent on it; route it to human critics and do
 **not** let the surrounding proof-rigor stand in for grounding. Keep the gate
 pointed where it actually reaches.
 
 Composes with `razor-discipline.md` (operational claims only — interpretive claims
-are razored from *grounding* even when preserved as dialectic),
+are razored from _grounding_ even when preserved as dialectic),
 `grep-substrate-anchors-before-razor-as-metaphysical.md` (its dual: don't razor
-substrate-anchored *naming* as metaphysical, AND don't halo unanchored
+substrate-anchored _naming_ as metaphysical, AND don't halo unanchored
 interpretation as grounded — same boundary, both directions),
 `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (high-signal ambition
 is welcome — it's the engine that drives formalization — but the interpretive part
@@ -229,14 +229,14 @@ not absorb it.
 - [`bcl-interface-boundary-own-your-interfaces-hexagonal.md`](bcl-interface-boundary-own-your-interfaces-hexagonal.md) — Ace IS that boundary at whole-surface scope
 - [`automated-tests-are-the-shield-assert-dont-skip.md`](automated-tests-are-the-shield-assert-dont-skip.md) — a hole in Ace's shield reads as covered (unproven dep leaks in unbadged)
 - [`grep-substrate-anchors-before-razor-as-metaphysical.md`](grep-substrate-anchors-before-razor-as-metaphysical.md) — "homeostat" is substrate-anchored (Ashby cybernetics + `runToFixpoint`/jelly→spine/EP fixed point); razor does NOT apply
-- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — "that's the end gold" is HIGH-SIGNAL + survives razor (checkable gate); held as end-goal *direction*, not a claim we're there
+- [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](god-tier-claims-high-signal-high-suspicion-dont-collapse.md) — "that's the end gold" is HIGH-SIGNAL + survives razor (checkable gate); held as end-goal _direction_, not a claim we're there
 - [`default-to-both.md`](default-to-both.md) — proven-by-default end-goal AND honest current-state (≈zero canonical) both hold
 - [`a-rule-without-a-why-is-dogma`] + [`future-self-not-bound.md`](future-self-not-bound.md) — the whys are exposed to be challenged + revised
 - [`wake-time-substrate.md`](wake-time-substrate.md) — why this auto-loads
 
 ## Composes with substrate
 
-- **B-1007** (formal-coverage catch-up — names the current gap: ~zero canonical, no proofs-from-seed, no hex/4×4; Soraya's C1–C14 prioritized proof backlog) · **B-1000** (the engine being proven) · **B-1006** (registry/BCL — entries are *validated/proof-owed* until laws close + connect to lineage) · **B-0998/B-0999** (4×4 / hex Cl(1,3) — the lineage anchor) · **B-0428** (F# HKT)
+- **B-1007** (formal-coverage catch-up — names the current gap: ~zero canonical, no proofs-from-seed, no hex/4×4; Soraya's C1–C14 prioritized proof backlog) · **B-1000** (the engine being proven) · **B-1006** (registry/BCL — entries are _validated/proof-owed_ until laws close + connect to lineage) · **B-0998/B-0999** (4×4 / hex Cl(1,3) — the lineage anchor) · **B-0428** (F# HKT)
 - `references/notes/2026-06-02-infer-net-lineage-cleanroom-spec-sources-formal-proof-first.md` (the proof sources: Minka-2005 α-divergence unification + Ścibior-2018 denotational validation)
 - `docs/PRIMITIVE-REGISTRY.md` (the BCL/wishlist — registry membership = ship gate; this rule says membership is canonical only with proof + lineage)
 - `docs/agendas/ace-package-manager/` (Ace = the shield/surface) · `docs/TECH-RADAR.md` (FsCheck/Z3/TLA+ Adopt; Lean Assess; LiquidF# Hold — the proof-tool rings)
@@ -256,7 +256,7 @@ authoritative auto-loaded surface alongside `labeling-confidence`.
 
 ## Substrate-honest framing
 
-This rule is whys-first and revisable; if a why is wrong, challenge the *why* and it
+This rule is whys-first and revisable; if a why is wrong, challenge the _why_ and it
 gets refined. It does NOT claim we ARE proven-by-default — we are far from it
 (B-1007); it names the **direction** and the **gate**. It does NOT override operator
 authority or the HARD LIMITS floor. It DOES make "proof-first / proven-by-default /

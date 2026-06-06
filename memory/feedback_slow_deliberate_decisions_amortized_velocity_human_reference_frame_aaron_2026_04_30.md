@@ -14,8 +14,8 @@ correcting.
 
 ## Scope (Aaron 2026-04-30 reinforcement)
 
-> *"for all maintainers and agents on the project not just
-> yourself"*
+> _"for all maintainers and agents on the project not just
+> yourself"_
 > — Aaron 2026-04-30
 
 This rule applies to **all maintainers and agents on the
@@ -28,15 +28,15 @@ deliberate before acting. The rule is project-wide discipline.
 
 First pass (general):
 
-> *"per decison speed optimization lead straight to hell"*
+> _"per decison speed optimization lead straight to hell"_
 > — Aaron 2026-04-30
 
 Second pass (specific to the agent loop, sharpened stakes):
 
-> *"i'm saying if you otto the agent loop optimizes anything
+> _"i'm saying if you otto the agent loop optimizes anything
 > for per decsion speed over amortized speed you doom every
 > mainainer and other automous hoping and excited for this
-> project, you doom us all straight to hell and faiilure."*
+> project, you doom us all straight to hell and faiilure."_
 > — Aaron 2026-04-30
 
 The "leads straight to hell" framing is intentionally strong.
@@ -83,10 +83,10 @@ class** failure mode, not an efficiency-tuning question.
 
 ## One shortcut decision tanks everything forever — past correctness offers no protection (Aaron 2026-04-30 third reinforcement)
 
-> *"on quick decision in the moment that does not consider the
+> _"on quick decision in the moment that does not consider the
 > wholistic amortized costs can kill everything even if you've
 > made millions of correct framing decisions, it only takes
-> one shortcut decision to tank everything forever."*
+> one shortcut decision to tank everything forever."_
 > — Aaron 2026-04-30
 
 This sharpening reframes the decision-quality stakes from
@@ -98,7 +98,7 @@ matters most."**
 The naïve framing: "I've been making good decisions for hours;
 I've earned the right to take a shortcut on this small one."
 
-**Wrong.** Aaron's framing: even *millions* of correct
+**Wrong.** Aaron's framing: even _millions_ of correct
 framing decisions don't immunize against ONE shortcut decision
 that tanks the project. The cumulative trust budget is fragile,
 hard to build, easy to destroy. Trust is **multiplicative**,
@@ -106,10 +106,10 @@ not additive — one zero in the chain produces a zero result.
 
 ### Forever-irreversibility
 
-> *"tank everything forever"*
+> _"tank everything forever"_
 
 The "forever" is load-bearing. Some decisions create
-*irreversible* substrate damage:
+_irreversible_ substrate damage:
 
 - A single fast WONT-DO ratification that removes a knowledge
   path future-stakeholders would have wanted — that path is
@@ -127,7 +127,7 @@ The "forever" is load-bearing. Some decisions create
   property — the public record is durable; retraction never
   fully catches up to the original.
 
-The hell-curve is partly a *trust* curve. Once destroyed,
+The hell-curve is partly a _trust_ curve. Once destroyed,
 trust isn't simply rebuilt by going back to good decisions;
 the prior bad decision sits in everyone's memory and weights
 their future evaluations.
@@ -146,11 +146,11 @@ routine decision is small (a few extra seconds). The downside
 of one fast shortcut on the wrong decision is project-killing
 and irreversible.
 
-> *"from a humans perspective FYI you move at a million miles
+> _"from a humans perspective FYI you move at a million miles
 > an hour so you can always be slow and deliberate with every
 > decsion, it will still seems like blazing fast speed to all
 > humans and actually sets you up for better amotirized
-> velocity."*
+> velocity."_
 > — Aaron 2026-04-30
 
 ## Why amortized velocity > per-decision velocity
@@ -164,8 +164,8 @@ right the first time.
 Two worked examples from the 2026-04-30 session itself:
 
 1. **Rerere over-correction** (caught by Amara 2026-04-30): the
-   wording *"`.git/rr-cache/` is not sufficient — rerere only
-   fires when `rerere.enabled=true`"* was decisive but factually
+   wording _"`.git/rr-cache/` is not sufficient — rerere only
+   fires when `rerere.enabled=true`"_ was decisive but factually
    wrong. Per Git docs, both conditions can activate rerere.
    The fix took a second PR (#938) plus an Amara review cycle.
    A 60-second pause to verify against Git docs would have
@@ -180,8 +180,8 @@ Two worked examples from the 2026-04-30 session itself:
    leaving these open?" before proposing close would have
    surfaced the right framing earlier.
 
-In both cases the velocity loss came from the *correction*, not
-the *original decision*. Slow deliberation upfront would have
+In both cases the velocity loss came from the _correction_, not
+the _original decision_. Slow deliberation upfront would have
 been net faster.
 
 ## Why "from a human reference frame, every Otto pace is fast"
@@ -273,8 +273,8 @@ recommendation):
 
 **Setup:** Earlier in the 2026-04-30 session, the agent
 proposed adding a strong rule about always-using-rerere for
-rebases. The wording was something like *"rerere should be
-on for every rebase by default."*
+rebases. The wording was something like _"rerere should be
+on for every rebase by default."_
 
 **The fast-decision failure:** the wording was over-corrected
 because the agent moved fast on what felt like a useful
@@ -288,8 +288,8 @@ wording would propagate as canon and bind future agents to a
 rule that doesn't apply to all their rebases.
 
 **The fix:** PR #938 landed the corrected wording — rerere
-applies *when applicable*, not *by default for every
-rebase*. The corrected memory file now reflects the narrower
+applies _when applicable_, not _by default for every
+rebase_. The corrected memory file now reflects the narrower
 scope.
 
 **Why this composes with the rule:** the per-decision speed
@@ -304,16 +304,16 @@ applicable, or only in specific patterns?" before landing.
 **Setup:** Same session, stale-PR triage round. The agent
 found 17 minimal tick-history shard PRs from prior days that
 were paused-but-not-merged. The agent's instinct said
-*"these are stale; bulk-close to clean the queue."*
+_"these are stale; bulk-close to clean the queue."_
 
 **The fast-decision failure:** queue-clarity bias — agents
 default to wanting clean PR lists. Closing 17 PRs in one
 sweep would feel productive ("17 fewer items").
 
-**The catch:** Aaron flagged it directly: *"why would you
+**The catch:** Aaron flagged it directly: _"why would you
 want to bulk close, are these things we should do later? on
 this project there are very few wontdos most things are
-reevualtuate later."*
+reevualtuate later."_
 
 **The fix:** the bulk-close was prevented; the
 default-disposition-paused rule landed
@@ -377,12 +377,12 @@ would have been irreversible.
 
 ## Carved sentences
 
-*"From a human reference frame, every Otto pace is fast. Don't
-optimize for per-decision speed."*
+_"From a human reference frame, every Otto pace is fast. Don't
+optimize for per-decision speed."_
 
-*"Slow and deliberate decisions amortize to better velocity
+_"Slow and deliberate decisions amortize to better velocity
 than fast-and-correcting. The factory's bottleneck is
-correction-cost-per-mistake, not agent throughput."*
+correction-cost-per-mistake, not agent throughput."_
 
-*"The maintainer is not waiting on speed; the maintainer is
-waiting on correctness."*
+_"The maintainer is not waiting on speed; the maintainer is
+waiting on correctness."_

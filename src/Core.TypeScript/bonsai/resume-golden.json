@@ -67,7 +67,13 @@
       "bindings": {},
       "activityResults": [{ "t": "int", "v": 42 }],
       "expectedSuspensions": [
-        { "fn": "act", "args": [{ "t": "int", "v": 3 }, { "t": "int", "v": 7 }] }
+        {
+          "fn": "act",
+          "args": [
+            { "t": "int", "v": 3 },
+            { "t": "int", "v": 7 }
+          ]
+        }
       ],
       "expectedFinal": { "t": "int", "v": 42 },
       "expectedStateAtSuspension": [
@@ -105,9 +111,7 @@
       },
       "bindings": { "n": { "t": "int", "v": 5 } },
       "activityResults": [{ "t": "int", "v": 10 }],
-      "expectedSuspensions": [
-        { "fn": "dbl", "args": [{ "t": "int", "v": 5 }] }
-      ],
+      "expectedSuspensions": [{ "fn": "dbl", "args": [{ "t": "int", "v": 5 }] }],
       "expectedFinal": { "t": "int", "v": 15 },
       "expectedStateAtSuspension": [
         "{\"v\":1,\"kont\":[{\"k\":\"applyOp\",\"op\":\"add\",\"left\":{\"t\":\"int\",\"v\":5}}],\"awaiting\":{\"fn\":\"dbl\",\"args\":[{\"t\":\"int\",\"v\":5}]}}"

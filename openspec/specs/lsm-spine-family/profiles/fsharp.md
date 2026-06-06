@@ -71,8 +71,8 @@ F# today. Prose bullets, no RFC-2119 keywords; those live in the base
   cost-optimal schedule" clause is satisfied here by a greedy
   largest-cost-first drain of the pending-merge priority queue; the
   known bound is **2×** the optimal makespan, by Graham's 1969 list-
-  scheduling result (Graham, R. L., *Bounds on Multiprocessing Timing
-  Anomalies*, SIAM J. Appl. Math., 17:2, 416-429). The spec's "target
+  scheduling result (Graham, R. L., _Bounds on Multiprocessing Timing
+  Anomalies_, SIAM J. Appl. Math., 17:2, 416-429). The spec's "target
   factor is stated in the profile" clause resolves to 2× on this
   variant; any successor variant that tightens the bound MUST restate
   the factor here.
@@ -111,7 +111,7 @@ F# today. Prose bullets, no RFC-2119 keywords; those live in the base
 ## `SpineAsync<'K>` — async-producer variant
 
 - Wraps an inner `Spine<'K>` plus a `System.Threading.Channels.Channel<
-  ZSet<'K>>` configured `SingleReader = true`, `SingleWriter = false`.
+ZSet<'K>>` configured `SingleReader = true`, `SingleWriter = false`.
   Multiple producers supported; exactly one background worker drains.
 - `Insert(batch)` writes to the channel with `TryWrite`, then increments
   a `sent` counter. The hot path is allocation-free for the batch (the
@@ -161,14 +161,15 @@ F# today. Prose bullets, no RFC-2119 keywords; those live in the base
   mode and constructs the concrete type.
 - The decision matrix (from `SpineSelector.fs:14-17`, 41-50) is:
 
-  | condition                                              | result                           |
-  | ------------------------------------------------------ | -------------------------------- |
-  | `workingSet × 4 ≤ budget`                              | `SpineMode.Sync`                 |
-  | `workingSet ≤ budget`                                  | `SpineMode.Async`                |
-  | `workingSet > budget` and `workDir = Some d`           | `SpineMode.AsyncOnDisk d`        |
-  | `workingSet > budget` and `workDir = None`             | `SpineMode.Async` (degraded; documented OOM risk) |
+  | condition                                    | result                                            |
+  | -------------------------------------------- | ------------------------------------------------- |
+  | `workingSet × 4 ≤ budget`                    | `SpineMode.Sync`                                  |
+  | `workingSet ≤ budget`                        | `SpineMode.Async`                                 |
+  | `workingSet > budget` and `workDir = Some d` | `SpineMode.AsyncOnDisk d`                         |
+  | `workingSet > budget` and `workDir = None`   | `SpineMode.Async` (degraded; documented OOM risk) |
 
   Here `workingSet = estimatedEntries × entrySizeBytes`.
+
 - `SpineSelector.auto` defaults to a budget of `max(process.WorkingSet64 × 2, 1 GB)` and the given `estimatedEntries` + `workDir`. It is the common-case entry point; `pick` is the explicit-budget form for callers that want to pin their memory envelope.
 - `DefaultEntrySizeBytes` is `24L` — matches the 24-bytes/entry working-set
   estimate used by `DiskBackingStore`'s hot-set accounting, so `pick` and
@@ -205,7 +206,7 @@ F# today. Prose bullets, no RFC-2119 keywords; those live in the base
 
 - Arrow / Parquet columnar spill format — future work; tracked by the
   `docs/BACKLOG.md` Band 2 probabilistic-sketches/CRDT cluster.
-- Spine recovery from a disk-spill crash — ruled explicitly *not durable*
+- Spine recovery from a disk-spill crash — ruled explicitly _not durable_
   above; the durable-recovery story lives in `durability-modes` and the
   upstream-stream replay it mandates.
 - Streaming consolidation (produce the consolidated Z-set incrementally

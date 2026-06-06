@@ -231,6 +231,7 @@ Future-Otto operational decision: when to download +
 preserve as substrate. Authorization is open-ended.
 
 ### 4. Full x.com authorization composes with substrate-
+
 everything-glass-halo
 
 Aaron's authorization is open-ended + the substrate-
@@ -282,6 +283,7 @@ for the methodology's claims:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Otto should download the Twitter
   inbox immediately** — authorization is open-ended;
   download decision is Otto's based on operational need

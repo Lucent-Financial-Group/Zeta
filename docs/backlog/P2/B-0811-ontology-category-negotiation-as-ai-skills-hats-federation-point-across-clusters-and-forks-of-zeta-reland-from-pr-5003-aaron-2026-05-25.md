@@ -21,7 +21,21 @@ related_substrate:
   - docs/trajectories/ace-package-manager-skill-crystallization-pipeline/
   - .claude/rules/non-coercion-invariant.md
   - .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md
-tags: [ontology-negotiation, category-negotiation, cross-cluster, cross-fork, ai-skills-federation, hats-federation, federation-protocol, eve-protocol-compose, ace-compose, hat-ontology-compose, peer-to-peer-zeta, weight-free-routing-at-ontology-scope]
+tags:
+  [
+    ontology-negotiation,
+    category-negotiation,
+    cross-cluster,
+    cross-fork,
+    ai-skills-federation,
+    hats-federation,
+    federation-protocol,
+    eve-protocol-compose,
+    ace-compose,
+    hat-ontology-compose,
+    peer-to-peer-zeta,
+    weight-free-routing-at-ontology-scope,
+  ]
 ---
 
 # B-0811 — (re-land from PR #5003) — Ontology + category negotiation as the AI-skills + hats federation point across clusters + forks of Zeta — AND Ace becomes the git-native + AI-native fork-negotiation primitive for ANY AI-native project supporting forking + skills
@@ -30,21 +44,21 @@ tags: [ontology-negotiation, category-negotiation, cross-cluster, cross-fork, ai
 
 Originally filed as **B-0741** via [PR #5003](https://github.com/Lucent-Financial-Group/Zeta/pull/5003) on 2026-05-25. Closed 2026-05-26 during this session's stale-PR triage as Tier 3 (DIRTY-conflict) per [`.claude/rules/pr-triage-tiers.md`](../../../.claude/rules/pr-triage-tiers.md). Triage close-comment named the re-land path explicitly. Re-landed here as **B-0811** because B-0741 number remains taken on main; next-free per the inventory pass per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.claude/rules/verify-existing-substrate-before-authoring.md) (landed earlier this session via PR #5131).
 
-The substrate is load-bearing for iter-7 (B-0806 Ansible+Crossplane+Ace) per the maintainer 2026-05-26 catch *"i'm assuming you have the hat / fork negoation for ace too"*. Cross-fork ontology negotiation is the third layer of every `ace install <pkg>` action (per B-0806's "## Architectural integration of hats + fork-negotiation" section).
+The substrate is load-bearing for iter-7 (B-0806 Ansible+Crossplane+Ace) per the maintainer 2026-05-26 catch _"i'm assuming you have the hat / fork negoation for ace too"_. Cross-fork ontology negotiation is the third layer of every `ace install <pkg>` action (per B-0806's "## Architectural integration of hats + fork-negotiation" section).
 
 Content below is verbatim from PR #5003 commit `0f691dbec` — only the `id:` field + filename + this re-land-context section changed. Original cross-references preserved (composes_with B-0247/B-0287/B-0288 etc. remain valid).
 
 ## Carved blade
 
-> Two Zeta clusters (LFG-cluster + community-cluster + home-cluster + edge-cluster per B-0727's 4-tier topology) — OR two **forks** of Zeta (downstream Zeta instances customized for different operator collectives) — interop ONLY through ontology + category negotiation. Each side declares what its packages MEAN (Ace DLC content packs per B-0247/B-0287/B-0288), what its categories COVER, what its hats AUTHORIZE (B-0731 top-down + bottom-up), what its skills DO. Negotiation resolves the cross-side mapping: *"your `incident-commander` hat composes with our `cluster-firefighter` hat at the `node-failure-response` capability"*; *"your `database` category includes Postgres + Cockroach + Redis; ours includes Postgres + DuckDB + SQLite — overlap is Postgres; for the overlap your hat-binding applies; for the disjoint your DLC content pack distribution applies"*. This negotiation IS Eve Protocol traffic (B-0638) at ontology scope — diplomatic-language-mediated cross-instance agreement.
+> Two Zeta clusters (LFG-cluster + community-cluster + home-cluster + edge-cluster per B-0727's 4-tier topology) — OR two **forks** of Zeta (downstream Zeta instances customized for different operator collectives) — interop ONLY through ontology + category negotiation. Each side declares what its packages MEAN (Ace DLC content packs per B-0247/B-0287/B-0288), what its categories COVER, what its hats AUTHORIZE (B-0731 top-down + bottom-up), what its skills DO. Negotiation resolves the cross-side mapping: _"your `incident-commander` hat composes with our `cluster-firefighter` hat at the `node-failure-response` capability"_; _"your `database` category includes Postgres + Cockroach + Redis; ours includes Postgres + DuckDB + SQLite — overlap is Postgres; for the overlap your hat-binding applies; for the disjoint your DLC content pack distribution applies"_. This negotiation IS Eve Protocol traffic (B-0638) at ontology scope — diplomatic-language-mediated cross-instance agreement.
 >
-> **Aaron 2026-05-25 extension**: *"ace becomes git native ai native project fork negoation primitive starting point for any ai native project that wants to support forking and skills"*. Ace BECOMES the **git-native + AI-native fork-negotiation primitive** — the starting point for ANY AI-native project that wants to support forking + skills. Ace is not just Zeta-internal; it's the open primitive other AI-native projects adopt to gain forking + skill-distribution + cross-fork negotiation as a substrate-level capability. **Git-native** = built on git semantics (fork = git fork; refs/notes for ontology declarations; commits for signed negotiation outcomes; merges for accepted cross-fork mappings; tags for ratified ontology versions). **AI-native** = designed AI-collaborator-first (not bolted onto human-centric package-manager paradigms).
+> **Aaron 2026-05-25 extension**: _"ace becomes git native ai native project fork negoation primitive starting point for any ai native project that wants to support forking and skills"_. Ace BECOMES the **git-native + AI-native fork-negotiation primitive** — the starting point for ANY AI-native project that wants to support forking + skills. Ace is not just Zeta-internal; it's the open primitive other AI-native projects adopt to gain forking + skill-distribution + cross-fork negotiation as a substrate-level capability. **Git-native** = built on git semantics (fork = git fork; refs/notes for ontology declarations; commits for signed negotiation outcomes; merges for accepted cross-fork mappings; tags for ratified ontology versions). **AI-native** = designed AI-collaborator-first (not bolted onto human-centric package-manager paradigms).
 
 ## Origin
 
 Aaron 2026-05-25, after B-0740 (closed; under-researched on existing ACE backlog):
 
-> *"there is a lot of existing backlog around ../scratch patterns and ace backlog all the ontology / category negoations is new to make it also AI skills / hats negoation point across clusters / forks of zeta"*
+> _"there is a lot of existing backlog around ../scratch patterns and ace backlog all the ontology / category negoations is new to make it also AI skills / hats negoation point across clusters / forks of zeta"_
 
 Parse: existing backlog covers (a) scratch-pattern integration into `tools/setup/` and (b) ACE substrate. The **NEW** substrate is ontology + category negotiation being made into the AI skills + hats federation point ACROSS CLUSTERS + ACROSS FORKS of Zeta. This row carves that new substrate.
 
@@ -120,7 +134,7 @@ Upstream-fork negotiation handles drift: when upstream Zeta evolves its ontology
 
 ## Ace as the primitive — Aaron's 2026-05-25 extension
 
-Aaron 2026-05-25, after the initial B-0741 row authored: *"ace becomes git native ai native project fork negoation primitive starting point for any ai native project that wants to support forking and skills"*
+Aaron 2026-05-25, after the initial B-0741 row authored: _"ace becomes git native ai native project fork negoation primitive starting point for any ai native project that wants to support forking and skills"_
 
 ### Substrate-engineering target
 

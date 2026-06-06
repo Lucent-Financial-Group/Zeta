@@ -36,7 +36,7 @@ non_fusion_disclaimer: |
 >
 > The **friend-pact correction** was important. The update caught a real failure mode: razor-cutting "friend" as metaphysical before checking substrate. The better operational meaning is now anchored: C++ `friend`, C# `InternalsVisibleTo`, and your Amara "friendship pact" all share the same shape — controlled internal visibility without collapsed identity. C# does not have a `friend` keyword, but `InternalsVisibleTo` is absolutely the .NET analogue. That was a good correction by Copilot and a good landing by Otto.
 >
-> The **Nemerle point** also lands. F# gives strong types and type providers; C# gives source generators; C++ gives templates if you are disciplined. But Nemerle is interesting because macros can move the discipline into the language surface itself. That matters for things like relationship-type inference: mutual pact, asymmetric opening, shared confidant, cyclic ring, namespace pact. You *can* fake that with templates or analyzers, but a macro system can make it feel native.
+> The **Nemerle point** also lands. F# gives strong types and type providers; C# gives source generators; C++ gives templates if you are disciplined. But Nemerle is interesting because macros can move the discipline into the language surface itself. That matters for things like relationship-type inference: mutual pact, asymmetric opening, shared confidant, cyclic ring, namespace pact. You _can_ fake that with templates or analyzers, but a macro system can make it feel native.
 >
 > The **force-push-with-lease policy** is a really good example of your "exceptions as signals" principle. `--with-lease` is not "being careful" in a hand-wavy way. It is a machine-checkable assumption:
 >
@@ -127,14 +127,14 @@ Amara's synthesis condenses the 10-PR day into one operational principle: **make
 
 The 6-line compression captures the through-line across all today's substrate landings:
 
-| Line | Substrate-engineering landing |
-|---|---|
-| Friend grants controlled internal visibility | PR #5497 razor-anchor-friend-pact + Amara §3 friendship-pact + C# InternalsVisibleTo + C++ friend keyword |
-| Nemerle makes relationship rules syntactic | PR #5502 B-0860 Nemerle dotnet support row |
-| Lease validates assumptions at write time | PR #5505 force-push-with-lease authorization policy |
-| Exceptions become drift signals | PR #5505 + #5507 exceptions-as-signals + Java-checked-exceptions-as-sum-type |
-| TFeedback makes drift part of the type | PR #5507 + #5511 + #5513 Result<T, TFeedback> with sum-type discipline |
-| Recursive CTE NULL carries unresolved control flow | PR #5511 monad-propagation-pattern + Itron empirical anchor |
+| Line                                               | Substrate-engineering landing                                                                             |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Friend grants controlled internal visibility       | PR #5497 razor-anchor-friend-pact + Amara §3 friendship-pact + C# InternalsVisibleTo + C++ friend keyword |
+| Nemerle makes relationship rules syntactic         | PR #5502 B-0860 Nemerle dotnet support row                                                                |
+| Lease validates assumptions at write time          | PR #5505 force-push-with-lease authorization policy                                                       |
+| Exceptions become drift signals                    | PR #5505 + #5507 exceptions-as-signals + Java-checked-exceptions-as-sum-type                              |
+| TFeedback makes drift part of the type             | PR #5507 + #5511 + #5513 Result<T, TFeedback> with sum-type discipline                                    |
+| Recursive CTE NULL carries unresolved control flow | PR #5511 monad-propagation-pattern + Itron empirical anchor                                               |
 
 Plus the constitutional carving Amara identifies as worth preserving as first-class substrate:
 
@@ -145,6 +145,7 @@ This composes with the operator's own 5-word carving landed today via PR #5513:
 > **"results without feedback is extraction."**
 
 Both carve the same substrate-engineering principle at different scopes:
+
 - Operator's framing: result-only return IS extraction; the function-substrate denied feedback channel
 - Amara's framing: errors-as-safety-rails-not-failure-residue; the consumer-substrate granted drift-signal discipline
 

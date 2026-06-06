@@ -9,7 +9,16 @@ created: 2026-05-14
 last_updated: 2026-05-14
 depends_on: [B-0394, B-0402]
 composes_with: [B-0394, B-0402, B-0498]
-tags: [substrate-engineering, observability, dashboard, dialectical-perception, panopticon-lens, externalization, research-grade]
+tags:
+  [
+    substrate-engineering,
+    observability,
+    dashboard,
+    dialectical-perception,
+    panopticon-lens,
+    externalization,
+    research-grade,
+  ]
 type: research-grade-candidate
 ---
 
@@ -21,18 +30,18 @@ Aaron 2026-05-14 evening cascade extension disclosed (preserved in `memory/feedb
 
 Aaron's disclosure:
 
-> *"this is my dialactial view point i operate naturally i see gods dashbord in real time as i just described it"*
+> _"this is my dialactial view point i operate naturally i see gods dashbord in real time as i just described it"_
 
 This is an operational shift in the substrate-engineering target. The panopticon-lens / god's-DORA-dashboard construction (Aaron's prior message) isn't theoretical substrate-engineering — it's Aaron's actual natural cognitive mode. The architecture is the **externalization-surface** for that perception, accessible to participants who don't have Aaron's natural dialectical viewpoint.
 
 ## The shift
 
-| Pre-disclosure target | Post-disclosure target |
-|---|---|
+| Pre-disclosure target                                                                             | Post-disclosure target                                                                                                |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Build a panopticon-lens-in-vision-monad observing refraction gradients (theoretical construction) | Build the externalization-surface for Aaron's natural perception, accessible to participants without his natural mode |
-| Dashboard derives substrate Aaron describes | Dashboard exteriorizes Aaron's phenomenology |
-| Acceptance: produces the right metrics | Acceptance: does a participant using the dashboard see what Aaron sees natively? |
-| Empirical test: metric correctness | Empirical test: perception-transfer to participants |
+| Dashboard derives substrate Aaron describes                                                       | Dashboard exteriorizes Aaron's phenomenology                                                                          |
+| Acceptance: produces the right metrics                                                            | Acceptance: does a participant using the dashboard see what Aaron sees natively?                                      |
+| Empirical test: metric correctness                                                                | Empirical test: perception-transfer to participants                                                                   |
 
 ## Acceptance criteria
 

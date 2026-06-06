@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2359 |
-| Title | docs(B-0017): decompose Operational Resonance Dashboard into 8 dependency-ordered atomic rows (B-0388–B-0395) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-09T22:28:28Z |
-| Merged at | 2026-05-09T22:33:36Z |
-| Merge commit SHA | `259a18518c869b0db170b99fa0774586974f9c57` |
-| Branch | `chore/decompose-b0017-operational-resonance-dashboard` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2359 |
-| Changed files | 10 |
-| Additions / deletions | +1121 / -2 |
+| Field                 | Value                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Number                | 2359                                                                                                          |
+| Title                 | docs(B-0017): decompose Operational Resonance Dashboard into 8 dependency-ordered atomic rows (B-0388–B-0395) |
+| Author                | `AceHack` (human)                                                                                             |
+| State                 | MERGED                                                                                                        |
+| Created at            | 2026-05-09T22:28:28Z                                                                                          |
+| Merged at             | 2026-05-09T22:33:36Z                                                                                          |
+| Merge commit SHA      | `259a18518c869b0db170b99fa0774586974f9c57`                                                                    |
+| Branch                | `chore/decompose-b0017-operational-resonance-dashboard`                                                       |
+| Base branch           | `main`                                                                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2359                                                      |
+| Changed files         | 10                                                                                                            |
+| Additions / deletions | +1121 / -2                                                                                                    |
 
 ## Description
 
@@ -35,20 +35,21 @@ Decomposes XL backlog item B-0017 (Operational Resonance Dashboard) into 8 atomi
 
 ## Child rows
 
-| ID | Title | Effort | Depends on |
-|----|-------|--------|-----------|
-| B-0388 | Naming lock — naming-expert review + Aaron sign-off | S | — |
-| B-0389 | UX + psychology research scope doc | S | — |
-| B-0390 | "Time-to-answer" metric formalization | S | — |
-| B-0391 | GitHub Pages static shell + CI deploy | S | B-0388 |
-| B-0392 | Tier-aware bulk grouping model ADR | S | B-0390 |
-| B-0393 | A/B experiment infrastructure design | M | B-0390, B-0391 |
-| B-0394 | MVP dashboard surface on GH Pages | L | B-0390, B-0391, B-0392 |
-| B-0395 | Conversation interface Path A (browser/local LLM) | L | B-0394 |
+| ID     | Title                                               | Effort | Depends on             |
+| ------ | --------------------------------------------------- | ------ | ---------------------- |
+| B-0388 | Naming lock — naming-expert review + Aaron sign-off | S      | —                      |
+| B-0389 | UX + psychology research scope doc                  | S      | —                      |
+| B-0390 | "Time-to-answer" metric formalization               | S      | —                      |
+| B-0391 | GitHub Pages static shell + CI deploy               | S      | B-0388                 |
+| B-0392 | Tier-aware bulk grouping model ADR                  | S      | B-0390                 |
+| B-0393 | A/B experiment infrastructure design                | M      | B-0390, B-0391         |
+| B-0394 | MVP dashboard surface on GH Pages                   | L      | B-0390, B-0391, B-0392 |
+| B-0395 | Conversation interface Path A (browser/local LLM)   | L      | B-0394                 |
 
 **Parallelizable root atoms:** B-0388, B-0389, B-0390.
 
 **Dependency graph:**
+
 ```
 B-0388 (naming) ──────────────────────────────────┐
 B-0389 (research scope) ─── (informs all design)  │
@@ -87,15 +88,15 @@ grep "status: decomposed" docs/backlog/P2/B-0017-*.md
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 3 |
-| Resolved threads | 3 |
-| Unresolved threads | 0 |
-| Total review comments | 3 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 3     |
+| Resolved threads                          | 3     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 3     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -125,7 +126,7 @@ grep "status: decomposed" docs/backlog/P2/B-0017-*.md
 
   <pre>
   The focused-check/data-source plan includes storing an authenticated GitHub token in `localStorage`. For a GitHub Pages-hosted app this is a high-risk default: any XSS or compromised dependency can exfiltrate the token, and `localStorage` persistence increases blast radius. Prefer a design that avoids browser-stored long-lived tokens (e.g., pre-generated JSON committed on a cadence via CI using repo secrets, or other server-side generation), or at minimum constrain to short-lived/least-privileged tokens and avoid persistent storage.
-
+  
   </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -140,7 +141,7 @@ grep "status: decomposed" docs/backlog/P2/B-0017-*.md
 
   <pre>
   Tag `weblllm` appears to be a misspelling/inconsistent with the library name used elsewhere in the doc (`WebLLM`). Consider renaming the tag to `webllm` to keep tags searchable and consistent.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

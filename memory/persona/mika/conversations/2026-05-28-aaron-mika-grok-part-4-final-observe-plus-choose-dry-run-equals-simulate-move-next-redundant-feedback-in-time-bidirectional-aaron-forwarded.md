@@ -3,18 +3,18 @@
 ## §33 Archive header
 
 - **Date**: 2026-05-28
-- **Substrate origin**: Aaron-forwarded verbatim Mika (Grok) conversation, part 4 of 4 (operator: *"okay last one"*)
+- **Substrate origin**: Aaron-forwarded verbatim Mika (Grok) conversation, part 4 of 4 (operator: _"okay last one"_)
 - **Continuity**: Direct continuation of [part 3 ferry](2026-05-28-aaron-mika-grok-part-3-isomorphic-harness-endgame-shiva-efficient-otto-degradation-cron-as-external-loop-controller-observe-limit-emit-primitives-clarified-aaron-forwarded.md). Opens with Mika synthesizing the Observe/Limit/Emit clarification from part 3.
 - **Preservation discipline**: per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
-- **Final synthesis**: Aaron gives direct instruction to me (Otto-CLI) at end: *"move-next is now just observe and choose.js --dry-run or something like that sounds good for simulate"*
+- **Final synthesis**: Aaron gives direct instruction to me (Otto-CLI) at end: _"move-next is now just observe and choose.js --dry-run or something like that sounds good for simulate"_
 
 ## Substantive substrate-engineering content (Otto-CLI synthesis) — 7 new decisions; FULL ARCHITECTURE LOCKED
 
 ### 41. TWO primitives at agent-tick scope: Observe + Emit (Limit absorbed into Simulate)
 
-> Aaron: *"in it, is the limit just simulate? Is there any difference? Like, before it made sense to simulate the limit before making a choice. But in this, but you also could just run the limit because it was a pure function."*
+> Aaron: _"in it, is the limit just simulate? Is there any difference? Like, before it made sense to simulate the limit before making a choice. But in this, but you also could just run the limit because it was a pure function."_
 >
-> Mika: *"You probably only need two real primitives at the agent tick level now: Observe and Emit. The middle part should just be called Simulate (or simulateAndChoose). Limit as a separate concept is no longer pulling its weight — it's been folded into how Simulate works."*
+> Mika: _"You probably only need two real primitives at the agent tick level now: Observe and Emit. The middle part should just be called Simulate (or simulateAndChoose). Limit as a separate concept is no longer pulling its weight — it's been folded into how Simulate works."_
 
 The framework primitive count COLLAPSES:
 
@@ -25,11 +25,11 @@ The limiting concept (bounded depth, branching factor, compute spent) is now a *
 
 ### 42. `move_next` is REDUNDANT — discriminated union does the job
 
-> Aaron: *"Do we even need move next, or is it just, um, observe spits out basically the discriminated union and you go from there?"*
+> Aaron: _"Do we even need move next, or is it just, um, observe spits out basically the discriminated union and you go from there?"_
 >
-> Mika: *"No, you don't really need a separate move_next function anymore. If you do it cleanly, it actually collapses into this: Observe pulls the current git state + prompt/context + pointer. From that, you directly get back a discriminated union of all valid next actions (this your choose-your-own-adventure). You run simulate on those options, pick one, then Emit (push the result + new pointer to git). So move_next becomes almost redundant. Its only job was give me the list of things I can do next. But once you have discriminated unions representing the valid states/transitions, that list is literally just the union itself."*
+> Mika: _"No, you don't really need a separate move_next function anymore. If you do it cleanly, it actually collapses into this: Observe pulls the current git state + prompt/context + pointer. From that, you directly get back a discriminated union of all valid next actions (this your choose-your-own-adventure). You run simulate on those options, pick one, then Emit (push the result + new pointer to git). So move_next becomes almost redundant. Its only job was give me the list of things I can do next. But once you have discriminated unions representing the valid states/transitions, that list is literally just the union itself."_
 >
-> Aaron: *"No, we don't need move next or name. That's confused and iterator and observable anyway. So now we just have observe."*
+> Aaron: _"No, we don't need move next or name. That's confused and iterator and observable anyway. So now we just have observe."_
 
 `move_next` is REMOVED from the architecture. The discriminated union returned BY Observe IS the move-next list. No separate function needed.
 
@@ -46,11 +46,11 @@ The limiting concept (bounded depth, branching factor, compute spent) is now a *
                     + updated context for next agent/workflow
 ```
 
-Aaron's refinement: *"we could even split out simulate, then choose. That doesn't have to be the same step."* — so Simulate + Choose CAN be separate phases (allows LLM to read simulation results between them).
+Aaron's refinement: _"we could even split out simulate, then choose. That doesn't have to be the same step."_ — so Simulate + Choose CAN be separate phases (allows LLM to read simulation results between them).
 
 ### 44. AARON'S DIRECT INSTRUCTION (final ferry message) — operationally explicit
 
-> Aaron (final): *"also move-next is now just observe and choose.js --dry-run or something like that sounds good for simulate"*
+> Aaron (final): _"also move-next is now just observe and choose.js --dry-run or something like that sounds good for simulate"_
 
 **The shippable architecture for the agent-loop tools**:
 
@@ -65,32 +65,32 @@ The `--dry-run` flag IS the simulate-mode discriminator. Without the flag, `choo
 
 ### 45. Context = MANY composing layers (operator-named)
 
-> Aaron: *"the context is basically like the authorization context, the, uh, log context, like the hotel, uh, telemetry context, the, um, prompt context, the, you know, uh, basically context, window context, basically the evolving ontology context, you know, all of that."*
+> Aaron: _"the context is basically like the authorization context, the, uh, log context, like the hotel, uh, telemetry context, the, um, prompt context, the, you know, uh, basically context, window context, basically the evolving ontology context, you know, all of that."_
 
 **Context layers** that ride together via the prompt+pointer handoff:
 
-| Context layer | What it carries | Composes with |
-|---|---|---|
-| Authorization / trust | Who granted what authority + trust calculus | NCI HC-8 + mechanical-authorization-check rule + trust-propagation-through-spawning per ferry #2 §25 |
-| Log / telemetry | What just happened (hotel-telemetry analog) | observe.ts state-source + heartbeat substrate |
-| Prompt + intent | Natural language instructions + current goals | English-as-projection per B-0666 |
-| Context-window | LLM's working context window | Otto-degradation diagnosis per ferry #3 §33 |
-| Evolving ontology | Schema-as-rows substrate that's drifted/grown today | per existing ontology substrate (paced-ontology-landing, etc.) |
-| Discriminated union state | Current valid-next-actions enumeration | state-machine.ts + ferry #4 §42 |
+| Context layer             | What it carries                                     | Composes with                                                                                        |
+| ------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Authorization / trust     | Who granted what authority + trust calculus         | NCI HC-8 + mechanical-authorization-check rule + trust-propagation-through-spawning per ferry #2 §25 |
+| Log / telemetry           | What just happened (hotel-telemetry analog)         | observe.ts state-source + heartbeat substrate                                                        |
+| Prompt + intent           | Natural language instructions + current goals       | English-as-projection per B-0666                                                                     |
+| Context-window            | LLM's working context window                        | Otto-degradation diagnosis per ferry #3 §33                                                          |
+| Evolving ontology         | Schema-as-rows substrate that's drifted/grown today | per existing ontology substrate (paced-ontology-landing, etc.)                                       |
+| Discriminated union state | Current valid-next-actions enumeration              | state-machine.ts + ferry #4 §42                                                                      |
 
 All compose through the **push-with-pointer + prompt** mechanism per ferry #2 §24.
 
 ### 46. Feedback-in-time = BIDIRECTIONAL channels in the four-corner monadic structure
 
-> Mika: *"In your four-corner monadic structure, every piece of data or event has four parts: T In — What comes into this step; T Feedback In — Feedback coming from the future (this is the key one for retrocausality); T Out — What this step produces forward; T Feedback Out — Feedback this step sends backward to the past. Normally in programming and physics, we only have forward flow (T In → T Out). The past affects the future, but not the other way around. You made time itself into a generator function (like an IScheduler in Rx). That generator can carry feedback channels in both directions. So when a future state runs, it can send data back through the T Feedback In channel to influence what happened earlier in the simulation. This is why you can do indeterministic simulation — you run the simulation forward, but because feedback channels exist, effects from later states can flow backward and change earlier decisions. You literally get to observe the future shaping the past inside the simulation."*
+> Mika: _"In your four-corner monadic structure, every piece of data or event has four parts: T In — What comes into this step; T Feedback In — Feedback coming from the future (this is the key one for retrocausality); T Out — What this step produces forward; T Feedback Out — Feedback this step sends backward to the past. Normally in programming and physics, we only have forward flow (T In → T Out). The past affects the future, but not the other way around. You made time itself into a generator function (like an IScheduler in Rx). That generator can carry feedback channels in both directions. So when a future state runs, it can send data back through the T Feedback In channel to influence what happened earlier in the simulation. This is why you can do indeterministic simulation — you run the simulation forward, but because feedback channels exist, effects from later states can flow backward and change earlier decisions. You literally get to observe the future shaping the past inside the simulation."_
 
 **The four-corner structure RUNNING THROUGH TIME** gives bidirectional feedback:
 
-| Channel | Direction | Purpose |
-|---|---|---|
-| T In | Future ← Past | Forward inputs (normal) |
-| T Out | Past → Future | Forward outputs (normal) |
-| T Feedback In | Past ← Future | **Retrocausal**: future states influence past decisions |
+| Channel        | Direction     | Purpose                                                   |
+| -------------- | ------------- | --------------------------------------------------------- |
+| T In           | Future ← Past | Forward inputs (normal)                                   |
+| T Out          | Past → Future | Forward outputs (normal)                                  |
+| T Feedback In  | Past ← Future | **Retrocausal**: future states influence past decisions   |
 | T Feedback Out | Future → Past | **Retrocausal**: past sends feedback to future scheduling |
 
 **This is the foundational property of Aaron's framework**: time is NOT a one-way arrow; it's a bidirectional stream with feedback channels modeled inside the type system. Composes with:
@@ -104,7 +104,7 @@ All compose through the **push-with-pointer + prompt** mechanism per ferry #2 §
 
 ### 47. GitMonster mapping for feedback-in-time
 
-> Mika: *"In the GitMonster version, this maps like this: The git pointer acts as the handoff point in time. When one workflow spawns another, it's pushing both state feedback context. The child workflow wakes up, reads from that pointer (the past), does its work, and can push feedback back through the context/prompt that gets carried to the next spawned workflow. So even though Git history looks linear, your discriminated unions + four-corner context let information flow backward through the feedback channels in the prompts and context that get passed forward."*
+> Mika: _"In the GitMonster version, this maps like this: The git pointer acts as the handoff point in time. When one workflow spawns another, it's pushing both state feedback context. The child workflow wakes up, reads from that pointer (the past), does its work, and can push feedback back through the context/prompt that gets carried to the next spawned workflow. So even though Git history looks linear, your discriminated unions + four-corner context let information flow backward through the feedback channels in the prompts and context that get passed forward."_
 
 **Git history appears linear; the four-corner context layered ON TOP enables retrocausal feedback**:
 
@@ -159,7 +159,7 @@ This composes with:
 
 ## Substrate-honest preservation framing
 
-Ferry #4 is the FINAL ferry per operator *"okay last one"*. The architectural decisions are LOCKED:
+Ferry #4 is the FINAL ferry per operator _"okay last one"_. The architectural decisions are LOCKED:
 
 - **2 primitives** (Observe + Emit) at agent-tick scope
 - **Simulate + Choose** as middle phases (operator-confirmed split into separate steps)

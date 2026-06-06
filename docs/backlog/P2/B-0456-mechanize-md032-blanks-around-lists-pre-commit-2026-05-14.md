@@ -34,12 +34,12 @@ cron-tick volume.
 
 Examples this session:
 
-| Shard | Line | Pattern |
-|---|---|---|
-| 2228Z (PR #3044) | 88 | `Two PRs in flight, both auto-merge armed:` → bullet-list-with-no-blank-line |
-| 2348Z (PR #3058) | 41 | `Each row:` → bullet-list-with-no-blank-line |
-| 0017Z (PR #3065) | 51 | `Plus:` → bullet-list-with-no-blank-line |
-| 0024Z (PR #3065) | 66 | `infra issues that resolve when:` → numbered-list-with-no-blank-line |
+| Shard            | Line | Pattern                                                                      |
+| ---------------- | ---- | ---------------------------------------------------------------------------- |
+| 2228Z (PR #3044) | 88   | `Two PRs in flight, both auto-merge armed:` → bullet-list-with-no-blank-line |
+| 2348Z (PR #3058) | 41   | `Each row:` → bullet-list-with-no-blank-line                                 |
+| 0017Z (PR #3065) | 51   | `Plus:` → bullet-list-with-no-blank-line                                     |
+| 0024Z (PR #3065) | 66   | `infra issues that resolve when:` → numbered-list-with-no-blank-line         |
 
 Each occurrence costs ~1 CI cycle on the markdownlint job + ~5
 minutes of agent attention to triage + fix.
@@ -82,7 +82,7 @@ layer). Option 2 is a fallback if hooks add too much friction.
 - [x] Wire into either pre-push hook or tick-close ritual
       (`.claude/hooks/check-md032-pretooluse.ts` — opt-in via
       `ZETA_MD032_PRECOMMIT=1` env var, mirrors `verify-branch-
-      pretooluse.ts` pattern; this PR)
+    pretooluse.ts` pattern; this PR)
 - [x] Verify against the 4 historical occurrences (2228Z, 2348Z,
       0017Z, 0024Z) — each is caught by the helper test fixtures
       (`single bullet violation` / `single numbered-list violation`

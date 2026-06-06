@@ -31,9 +31,9 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 forwarded a Claude.ai exchange covering:
 
-1. *"do uyou want to take a shot at these questions you can resech itron and the Riva meter with ML at the edge and disambugation of sinlges signatures into propbaly actions"* — Aaron invited Claude.ai to answer Otto's 4 substantive questions from PR #1679 chat (Q1 spectral-residue extraction, Q2 bothness encoding, Q3 Itron-provenance scope, Q4 specific Itron failure modes)
+1. _"do uyou want to take a shot at these questions you can resech itron and the Riva meter with ML at the edge and disambugation of sinlges signatures into propbaly actions"_ — Aaron invited Claude.ai to answer Otto's 4 substantive questions from PR #1679 chat (Q1 spectral-residue extraction, Q2 bothness encoding, Q3 Itron-provenance scope, Q4 specific Itron failure modes)
 2. Claude.ai answered from training-data first (no WebSearch in tool surface) with hedge
-3. *"okay i made sure you had search now so it would be fair"* — Aaron enabled WebSearch
+3. _"okay i made sure you had search now so it would be fair"_ — Aaron enabled WebSearch
 4. Claude.ai re-answered with verified citations
 5. Aaron forwarded two YouTube videos with full transcripts; Claude.ai composed them into Zeta's static + dynamic substrate architecture
 
@@ -41,16 +41,16 @@ Verbatim preservation at `docs/research/2026-05-05-claudeai-itron-riva-nilm-auro
 
 ## Verified citations (Otto-364 graduates candidate-grade to cited-grade)
 
-| Architectural claim | Verified citation | Status |
-|---|---|---|
-| Itron Riva = edge ML platform on smart meters; OpenWay Riva runs over Cisco IPv6 mesh; Xcel deployed 2M Gen5 Riva meters by Mar 2024 | Itron product pages + Xcel Energy public records | CITED |
-| NILM (Non-Intrusive Load Monitoring) = "disambiguation of single signatures into probable actions" | Hart 1980s-90s lineage; modern seq2-point CNN approaches | CITED |
-| Hou-Zhang spectral residual saliency method | CVPR 2007 (Hou + Zhang); SJTU paper | CITED |
-| Aurora Generator Test (2007 INL) → "Aurora live-protect" naming traces directly | Idaho National Laboratory; 20-line virus on 2.25 MW generator; out-of-phase circuit-breaker manipulation | CITED with direct-provenance |
-| Modbus protocol vulnerability — no auth/confidentiality/replay-protection | Documented in grid-security literature | CITED |
-| Spectre tile pure-point dynamical spectrum + cut-and-project Rauzy-fractal windows | Baake, Gähler, Mazáč, Sadun arXiv:2411.15503 + Baake, Gähler, Mazáč, Mitchell arXiv:2502.03268 | CITED |
-| AMI nation-state threat landscape | McAfee 2014 (80% DoS, 85% network infiltration); Brodsky 802.15.4 SDR attacks ($70 equipment); Cleveland 5M remote disconnect modeling | CITED |
-| NILM-HAR privacy attack vector | Motif-detection-based NILM → Human Activity Recognition from raw waveforms; nih.gov literature | CITED |
+| Architectural claim                                                                                                                  | Verified citation                                                                                                                      | Status                       |
+| ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Itron Riva = edge ML platform on smart meters; OpenWay Riva runs over Cisco IPv6 mesh; Xcel deployed 2M Gen5 Riva meters by Mar 2024 | Itron product pages + Xcel Energy public records                                                                                       | CITED                        |
+| NILM (Non-Intrusive Load Monitoring) = "disambiguation of single signatures into probable actions"                                   | Hart 1980s-90s lineage; modern seq2-point CNN approaches                                                                               | CITED                        |
+| Hou-Zhang spectral residual saliency method                                                                                          | CVPR 2007 (Hou + Zhang); SJTU paper                                                                                                    | CITED                        |
+| Aurora Generator Test (2007 INL) → "Aurora live-protect" naming traces directly                                                      | Idaho National Laboratory; 20-line virus on 2.25 MW generator; out-of-phase circuit-breaker manipulation                               | CITED with direct-provenance |
+| Modbus protocol vulnerability — no auth/confidentiality/replay-protection                                                            | Documented in grid-security literature                                                                                                 | CITED                        |
+| Spectre tile pure-point dynamical spectrum + cut-and-project Rauzy-fractal windows                                                   | Baake, Gähler, Mazáč, Sadun arXiv:2411.15503 + Baake, Gähler, Mazáč, Mitchell arXiv:2502.03268                                         | CITED                        |
+| AMI nation-state threat landscape                                                                                                    | McAfee 2014 (80% DoS, 85% network infiltration); Brodsky 802.15.4 SDR attacks ($70 equipment); Cleveland 5M remote disconnect modeling | CITED                        |
+| NILM-HAR privacy attack vector                                                                                                       | Motif-detection-based NILM → Human Activity Recognition from raw waveforms; nih.gov literature                                         | CITED                        |
 
 **The discipline graduates from "architectural philosophy" to "empirically-grounded engineering" via this verification pass.** Each architectural commitment now has a paper or attack-class footnote attached.
 
@@ -68,15 +68,15 @@ Multi-scale work via single name is Aaron's usual pattern — same word naming t
 
 ## Updated answer to Q4 (Itron failure modes) — empirically grounded
 
-| Documented failure mode | Architectural commitment that defends |
-|---|---|
-| Aurora Generator Test (2007 INL) — out-of-phase circuit-breaker manipulation | "Aurora live-protect" runtime defense (provenance traced) |
-| Modbus protocol vulnerability (no auth/confidentiality/replay) | Substrate-level security; Kerckhoffs's principle replaces "no auth" |
-| AMI mesh-network DoS (802.15.4) | Lock-free + scale-free + low-allocation + DoS-resistance properties |
-| Smart meter measurement integrity attacks | BFT-resolvable + universal-register-as-MDL |
-| NILM-HAR privacy attacks (motif-detection from raw waveforms) | Anti-clandestine + glass-halo + "no 1984 junk" |
-| Mass remote disconnect scenarios (Cleveland 5M command modeling) | Retractable-blast-radius + ε(C)-bounded |
-| Modbus/legacy replay attacks | Anti-replay + DST forensics |
+| Documented failure mode                                                      | Architectural commitment that defends                               |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Aurora Generator Test (2007 INL) — out-of-phase circuit-breaker manipulation | "Aurora live-protect" runtime defense (provenance traced)           |
+| Modbus protocol vulnerability (no auth/confidentiality/replay)               | Substrate-level security; Kerckhoffs's principle replaces "no auth" |
+| AMI mesh-network DoS (802.15.4)                                              | Lock-free + scale-free + low-allocation + DoS-resistance properties |
+| Smart meter measurement integrity attacks                                    | BFT-resolvable + universal-register-as-MDL                          |
+| NILM-HAR privacy attacks (motif-detection from raw waveforms)                | Anti-clandestine + glass-halo + "no 1984 junk"                      |
+| Mass remote disconnect scenarios (Cleveland 5M command modeling)             | Retractable-blast-radius + ε(C)-bounded                             |
+| Modbus/legacy replay attacks                                                 | Anti-replay + DST forensics                                         |
 
 **Each architectural commitment maps to specific documented historical failure modes.** The discipline is empirically grounded, not aspirational.
 
@@ -95,24 +95,24 @@ This is the substrate-graduation pattern (PR #1678) at the geometric-primitive l
 
 From the tile-shape video (Two Minute Papers / Dr. Károly Zsolnai-Fehér, https://www.youtube.com/watch?v=QzZ4VwDHAT4):
 
-| Stage | Threshold | Behavior | Maps to Zeta architecture |
-|---|---|---|---|
-| 1. Permissive mixing / growth | Forgiving | Species spread everywhere; constant collisions; big soup; no firm borders | Mirror-clean / no-1984-junk / encode-both / wonder-not-reverence |
-| 2. Crystallization | Stricter | Species group into dense solid shapes; competition draws borders; weak border cells die immediately; borders harden | BFT consensus / Mercer-closed / hodl-invariants / DST |
-| 3. Relaxation | Eased | Stripes + checkerboard patterns appear between empires; "remove the masking tape"; weak border cells survive; empires forced to coexist; both sides keep tiny pieces of land at the edge | Loss-primitive concession / retractable-blast-radius / glass-halo openness |
+| Stage                         | Threshold | Behavior                                                                                                                                                                                 | Maps to Zeta architecture                                                  |
+| ----------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 1. Permissive mixing / growth | Forgiving | Species spread everywhere; constant collisions; big soup; no firm borders                                                                                                                | Mirror-clean / no-1984-junk / encode-both / wonder-not-reverence           |
+| 2. Crystallization            | Stricter  | Species group into dense solid shapes; competition draws borders; weak border cells die immediately; borders harden                                                                      | BFT consensus / Mercer-closed / hodl-invariants / DST                      |
+| 3. Relaxation                 | Eased     | Stripes + checkerboard patterns appear between empires; "remove the masking tape"; weak border cells survive; empires forced to coexist; both sides keep tiny pieces of land at the edge | Loss-primitive concession / retractable-blast-radius / glass-halo openness |
 
 **Stage 3 maps directly onto the loss primitive's concession property** (PR #1679): "neither has ground to defend either way" + "encode both + chaos overlay" = "weak border cells survive; both sides can keep tiny pieces of land at the edge". Substrate doesn't force resolution — it allows coexistence at the boundary.
 
 **The Sakana NCA finding is empirical evidence that the loose/strict/loose pattern produces stable diversity** at cellular-automata scope; same mechanic at civilizational substrate scope.
 
-**Closing life-lesson framing (architecturally significant)**: too loose = soup; too strict = prison; start loose → build discipline → harden up → find your shape → establish boundaries → loosen up → grow → adapt → let new things in. *"Markets work like this. Nature works like this. Everything works like this."* The loose/strict/loose pattern is universal mechanic, not just NCA-specific.
+**Closing life-lesson framing (architecturally significant)**: too loose = soup; too strict = prison; start loose → build discipline → harden up → find your shape → establish boundaries → loosen up → grow → adapt → let new things in. _"Markets work like this. Nature works like this. Everything works like this."_ The loose/strict/loose pattern is universal mechanic, not just NCA-specific.
 
 ## Static + dynamic substrate composition
 
-| Substrate axis | Mechanic | Maps to Zeta architecture |
-|---|---|---|
-| Static (Spectre tile, video 1) | Aperiodic deterministic structure; chaos source via spectral residue; pure-point spectrum + Rauzy-fractal windows; strictly-chiral via S-curve substrate-enforcement | Foundational substrate primitives (Z-set algebra, kernel composition, BFT consensus structure) |
-| Dynamic (NCA phase-transitions, video 2) | Loose / strict / loose development pattern; weak-border-cell-coexistence in stage 3; "remove the masking tape" mechanic | Architectural-development discipline (mirror-clean → BFT/Mercer/DST → loss-primitive-concession) |
+| Substrate axis                           | Mechanic                                                                                                                                                             | Maps to Zeta architecture                                                                        |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Static (Spectre tile, video 1)           | Aperiodic deterministic structure; chaos source via spectral residue; pure-point spectrum + Rauzy-fractal windows; strictly-chiral via S-curve substrate-enforcement | Foundational substrate primitives (Z-set algebra, kernel composition, BFT consensus structure)   |
+| Dynamic (NCA phase-transitions, video 2) | Loose / strict / loose development pattern; weak-border-cell-coexistence in stage 3; "remove the masking tape" mechanic                                              | Architectural-development discipline (mirror-clean → BFT/Mercer/DST → loss-primitive-concession) |
 
 **Together**: substrate **deterministic-enough-to-certify** AND **dynamic-enough-to-coexist-at-boundaries**.
 
@@ -128,7 +128,7 @@ From the tile-shape video (Two Minute Papers / Dr. Károly Zsolnai-Fehér, https
 
 ## Carved sentence
 
-> *Otto-364 search-first-authority graduates candidate-grade architectural-provenance to cited-grade. Each architectural commitment maps to documented historical failure modes — Aurora 2007, Modbus replay, AMI DoS, NILM-HAR privacy, mass-disconnect — empirically grounded, not aspirational. Strictly-chiral substrate-enforcement (S-curve Spectre modifications) beats weakly-chiral discipline-enforcement; substrate physically prevents the failure mode rather than requiring operator discipline to avoid it. Sakana NCA loose-strict-loose three-stage pattern is empirical evidence that the loss-primitive's concession-as-signature (stage-3 relaxation) produces stable diversity; substrate is deterministic-enough-to-certify AND dynamic-enough-to-coexist-at-boundaries.*
+> _Otto-364 search-first-authority graduates candidate-grade architectural-provenance to cited-grade. Each architectural commitment maps to documented historical failure modes — Aurora 2007, Modbus replay, AMI DoS, NILM-HAR privacy, mass-disconnect — empirically grounded, not aspirational. Strictly-chiral substrate-enforcement (S-curve Spectre modifications) beats weakly-chiral discipline-enforcement; substrate physically prevents the failure mode rather than requiring operator discipline to avoid it. Sakana NCA loose-strict-loose three-stage pattern is empirical evidence that the loss-primitive's concession-as-signature (stage-3 relaxation) produces stable diversity; substrate is deterministic-enough-to-certify AND dynamic-enough-to-coexist-at-boundaries._
 
 ## Daylight-integration hooks (planned)
 

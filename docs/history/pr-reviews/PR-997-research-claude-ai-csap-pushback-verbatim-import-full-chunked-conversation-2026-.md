@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 997 |
-| Title | research: claude.ai CSAP-pushback verbatim import — full chunked conversation 2026-05-01 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T01:18:08Z |
-| Merged at | 2026-05-01T02:04:54Z |
-| Merge commit SHA | `54fd1fa0e6da536fe75dcd93bc6d7e3a0ab97f99` |
-| Branch | `research/claudeai-csap-pushback-verbatim-import-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/997 |
-| Changed files | 1 |
-| Additions / deletions | +1311 / -0 |
+| Field                 | Value                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| Number                | 997                                                                                      |
+| Title                 | research: claude.ai CSAP-pushback verbatim import — full chunked conversation 2026-05-01 |
+| Author                | `AceHack` (human)                                                                        |
+| State                 | MERGED                                                                                   |
+| Created at            | 2026-05-01T01:18:08Z                                                                     |
+| Merged at             | 2026-05-01T02:04:54Z                                                                     |
+| Merge commit SHA      | `54fd1fa0e6da536fe75dcd93bc6d7e3a0ab97f99`                                               |
+| Branch                | `research/claudeai-csap-pushback-verbatim-import-2026-05-01`                             |
+| Base branch           | `main`                                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/997                                  |
+| Changed files         | 1                                                                                        |
+| Additions / deletions | +1311 / -0                                                                               |
 
 ## Description
 
@@ -32,7 +32,7 @@
 - Verbatim preservation of a Claude.ai conversation Aaron forwarded into the factory. Conversation thread URL: \`https://claude.ai/chat/527588d0-b707-4308-be3c-16b9c5d0d869\`.
 - Imported in 7 chunks because the conversation exceeded the harness paste-buffer cap. Each chunk landed as a separate commit.
 - Per GOVERNANCE.md §33 archive-header discipline: Scope, Attribution, Operational status, Non-fusion disclaimer at file head.
-- Aaron's signal-of-completion: *"end of conversation (for now :)) Claude.ai back on track!!"*
+- Aaron's signal-of-completion: _"end of conversation (for now :)) Claude.ai back on track!!"_
 
 ## What this PR does NOT do
 
@@ -42,7 +42,7 @@
 - Does NOT roll out \`language_layer\` / \`preservation_reason\` fields.
 - Does NOT file backlog rows in response to specific Claude.ai suggestions.
 
-This restraint is intentional. Aaron explicitly framed: *"memory files are fine, don't take his suggestions yet, he retracts a lot by the end"* + *"we should condense it later into an overall archicteture of all 4 projects or whatever an uberarch."*
+This restraint is intentional. Aaron explicitly framed: _"memory files are fine, don't take his suggestions yet, he retracts a lot by the end"_ + _"we should condense it later into an overall archicteture of all 4 projects or whatever an uberarch."_
 
 ## Conversation arc summary
 
@@ -80,15 +80,15 @@ Through Aaron's substrate-defense across seven message exchanges, Claude.ai prog
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 9 |
-| Resolved threads | 9 |
-| Unresolved threads | 0 |
-| Total review comments | 9 |
-| Total fix commits (touching thread paths) | 13 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 9     |
+| Resolved threads                          | 9     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 9     |
+| Total fix commits (touching thread paths) | 13    |
 
 ## Review threads
 

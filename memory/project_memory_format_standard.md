@@ -20,20 +20,20 @@ delimited by `---` lines.
 
 ### Required fields
 
-| Field         | Type   | Description |
-|---------------|--------|-------------|
-| `name:`       | string | Human-readable title. Used for MEMORY.md index entries and agent retrieval. Keep under 200 characters when possible; longer is tolerated for high-context entries. |
-| `description:`| string | One-line description used to decide relevance in future conversations. Be specific — this is the retrieval key. |
-| `type:`       | enum   | One of: `user`, `feedback`, `project`, `reference`. Must match the filename prefix. |
+| Field          | Type   | Description                                                                                                                                                        |
+| -------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name:`        | string | Human-readable title. Used for MEMORY.md index entries and agent retrieval. Keep under 200 characters when possible; longer is tolerated for high-context entries. |
+| `description:` | string | One-line description used to decide relevance in future conversations. Be specific — this is the retrieval key.                                                    |
+| `type:`        | enum   | One of: `user`, `feedback`, `project`, `reference`. Must match the filename prefix.                                                                                |
 
 ### Optional fields
 
-| Field             | Type   | Description |
-|-------------------|--------|-------------|
-| `originSessionId:`| string | UUID of the Claude Code session that created the file. Present in most files created by the auto-memory system. |
-| `created:`        | date   | ISO date (`YYYY-MM-DD`) when the file was first committed. Recommended for new files. |
-| `last_updated:`   | date   | ISO date (`YYYY-MM-DD`) of the most recent substantive edit. Omit if never updated since creation. |
-| `superseded_by:`  | string | Filename (without path) of the memory file that replaces this one. When set, the superseded file is kept for history but agents should prefer the successor. |
+| Field              | Type   | Description                                                                                                                                                  |
+| ------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `originSessionId:` | string | UUID of the Claude Code session that created the file. Present in most files created by the auto-memory system.                                              |
+| `created:`         | date   | ISO date (`YYYY-MM-DD`) when the file was first committed. Recommended for new files.                                                                        |
+| `last_updated:`    | date   | ISO date (`YYYY-MM-DD`) of the most recent substantive edit. Omit if never updated since creation.                                                           |
+| `superseded_by:`   | string | Filename (without path) of the memory file that replaces this one. When set, the superseded file is kept for history but agents should prefer the successor. |
 
 ### Frontmatter rules
 
@@ -57,22 +57,22 @@ delimited by `---` lines.
 
 ### Type prefixes (closed enumeration)
 
-| Prefix       | Maps to `type:` | Description |
-|--------------|-----------------|-------------|
+| Prefix       | Maps to `type:` | Description                                                                |
+| ------------ | --------------- | -------------------------------------------------------------------------- |
 | `feedback_`  | `feedback`      | Corrections, confirmations, behavioral guidance from the human maintainer. |
-| `project_`   | `project`       | Project-level facts, decisions, initiatives, policy. |
-| `user_`      | `user`          | Information about the human maintainer (role, preferences, background). |
-| `reference_` | `reference`     | Pointers to external systems and resources. |
+| `project_`   | `project`       | Project-level facts, decisions, initiatives, policy.                       |
+| `user_`      | `user`          | Information about the human maintainer (role, preferences, background).    |
+| `reference_` | `reference`     | Pointers to external systems and resources.                                |
 
 ### Special files (not type-prefixed)
 
-| Pattern               | Purpose |
-|-----------------------|---------|
-| `MEMORY.md`           | The always-loaded index. One line per entry, under 150 chars. Capped at ~200 lines. |
-| `README.md`           | Memory folder documentation. |
-| `MEMORY-AUTHOR-TEMPLATE.md` | Lint-hygiene template for authors. |
-| `CURRENT-<name>.md`   | Distilled currently-in-force projection per maintainer or named-agent persona. |
-| `INDEX-*.md`          | Overflow indexes when MEMORY.md exceeds 200 lines. |
+| Pattern                     | Purpose                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `MEMORY.md`                 | The always-loaded index. One line per entry, under 150 chars. Capped at ~200 lines. |
+| `README.md`                 | Memory folder documentation.                                                        |
+| `MEMORY-AUTHOR-TEMPLATE.md` | Lint-hygiene template for authors.                                                  |
+| `CURRENT-<name>.md`         | Distilled currently-in-force projection per maintainer or named-agent persona.      |
+| `INDEX-*.md`                | Overflow indexes when MEMORY.md exceeds 200 lines.                                  |
 
 ### Topic segment
 
@@ -236,7 +236,7 @@ Three existing files validated against this standard:
   No date suffix (pre-standard; acceptable). **PASS.**
 - Section headers: Leads with bold-text migrated note,
   then body text. No explicit `**Why:**` / `**How to
-  apply:**` structure. **ADVISORY** — predates the
+apply:**` structure. **ADVISORY** — predates the
   body_structure spec.
 - Composes-with: References other files inline. Files
   exist. **PASS.**
@@ -275,12 +275,12 @@ frontmatter block at all**. Files with frontmatter but missing
 individual fields fall back to safe defaults rather than being
 skipped:
 
-| Field | Behavior when missing | B-0335 enforcement |
-|---|---|---|
-| `name:` | Falls back to filename (without `.md`) | Error — enforced |
-| `description:` | Falls back to `"(no description)"` | Error — enforced |
-| `type:` | Not used by reindexer; B-0335 `--fix` auto-infers from filename prefix | Error — enforced |
-| `created:` | Falls back to date extracted from filename, or `"0000-00-00"` | Not enforced by B-0335 |
+| Field          | Behavior when missing                                                  | B-0335 enforcement     |
+| -------------- | ---------------------------------------------------------------------- | ---------------------- |
+| `name:`        | Falls back to filename (without `.md`)                                 | Error — enforced       |
+| `description:` | Falls back to `"(no description)"`                                     | Error — enforced       |
+| `type:`        | Not used by reindexer; B-0335 `--fix` auto-infers from filename prefix | Error — enforced       |
+| `created:`     | Falls back to date extracted from filename, or `"0000-00-00"`          | Not enforced by B-0335 |
 
 Best practice: include all four fields so the index entry is
 useful. Files with missing `name`, `description`, or `type`

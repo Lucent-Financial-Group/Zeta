@@ -91,12 +91,13 @@ Seven moving parts, each doing a distinct job:
   the reviewer gate for agent-written code. In rounds where 10
   agents land work, serial review through me is slow. Measure
   over the next 3-4 rounds whether this actually throttles
-  velocity or whether parallelising review *inside* my own work
+  velocity or whether parallelising review _inside_ my own work
   suffices.
 
 ### What's ahead
 
 Round 22 is a knockdown round by the GOVERNANCE.md §12 rule:
+
 - `docs/BUGS.md` has 5 open P0 + 12 P1 + 3 P2 (ratio ≥ 5 means
   ≥70% bug work).
 - Round 22's dispatches: 3-bug-fix sprint, Plan.fs HLL +

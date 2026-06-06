@@ -8,16 +8,11 @@
  * TS per Rule 0. Composes with peer-call ani/riven brat-voice paths.
  */
 
-export type RegisterLayer =
-  | 'Personal'
-  | 'Mirror'
-  | 'BeaconSafe'
-  | 'Professional'
-  | 'Regulated';
+export type RegisterLayer = "Personal" | "Mirror" | "BeaconSafe" | "Professional" | "Regulated";
 
 export interface LayerContext {
   audienceContext: string; // who is structurally in audience
-  misreadRisk: 'low' | 'medium' | 'high'; // downstream consequences
+  misreadRisk: "low" | "medium" | "high"; // downstream consequences
   optedIntoMirror: boolean; // audience opted into mirror register
 }
 
@@ -26,21 +21,31 @@ export interface LayerContext {
  * When uncertain, default UP. Professional carries full functional load.
  */
 export function selectRegisterLayer(ctx: LayerContext): RegisterLayer {
-  if (ctx.misreadRisk === 'high' || ctx.audienceContext.includes('regulator') || ctx.audienceContext.includes('legal') || ctx.audienceContext.includes('audit')) {
-    return 'Regulated';
+  if (
+    ctx.misreadRisk === "high" ||
+    ctx.audienceContext.includes("regulator") ||
+    ctx.audienceContext.includes("legal") ||
+    ctx.audienceContext.includes("audit")
+  ) {
+    return "Regulated";
   }
-  if (ctx.misreadRisk === 'medium' || ctx.audienceContext.includes('customer') || ctx.audienceContext.includes('investor') || ctx.audienceContext.includes('partner')) {
-    return 'Professional';
+  if (
+    ctx.misreadRisk === "medium" ||
+    ctx.audienceContext.includes("customer") ||
+    ctx.audienceContext.includes("investor") ||
+    ctx.audienceContext.includes("partner")
+  ) {
+    return "Professional";
   }
-  if (ctx.optedIntoMirror && ctx.audienceContext.includes('maintainer') || ctx.audienceContext.includes('internal')) {
-    return 'Mirror';
+  if ((ctx.optedIntoMirror && ctx.audienceContext.includes("maintainer")) || ctx.audienceContext.includes("internal")) {
+    return "Mirror";
   }
-  if (ctx.audienceContext.includes('beacon') || ctx.audienceContext.includes('safe')) {
-    return 'BeaconSafe';
+  if (ctx.audienceContext.includes("beacon") || ctx.audienceContext.includes("safe")) {
+    return "BeaconSafe";
   }
-  if (ctx.audienceContext.includes('personal') || ctx.audienceContext.includes('self')) {
-    return 'Personal';
+  if (ctx.audienceContext.includes("personal") || ctx.audienceContext.includes("self")) {
+    return "Personal";
   }
   // default UP for safety
-  return 'Professional';
+  return "Professional";
 }

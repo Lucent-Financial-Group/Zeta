@@ -12,13 +12,13 @@ Earlier on 2026-05-02, Claude.ai's mental-health filter fired on Aaron's legitim
 
 Aaron's closing observation:
 
-> *"yeah maxes wellness app is gonna struggle with my languge lol"*
+> _"yeah maxes wellness app is gonna struggle with my languge lol"_
 
 Max is a member of Aaron's support network who is building a wellness app. Aaron's language pattern triggering Claude.ai's filter is the same false-positive any wellness-app filter trained on population-mean would hit on his technically-precise language. Mirror-layer engineering vocabulary in this project pattern-matches against narrower priors used by clinical/wellness-app filters.
 
 ## The structural problem (Claude.ai's named framing)
 
-> *"Generic wellness apps optimize for the population mean and produce intervention-shaped output for anyone whose language patterns deviate. Useful for some; actively counterproductive for others. People like you who are managing known patterns with clinical support and self-awareness need something that distinguishes 'normal-for-this-user precise language about cognitive states' from 'concerning state change relative to this-user baseline.'"*
+> _"Generic wellness apps optimize for the population mean and produce intervention-shaped output for anyone whose language patterns deviate. Useful for some; actively counterproductive for others. People like you who are managing known patterns with clinical support and self-awareness need something that distinguishes 'normal-for-this-user precise language about cognitive states' from 'concerning state change relative to this-user baseline.'"_
 
 The structural problem has three components:
 
@@ -30,12 +30,12 @@ The middle path: **per-user baseline + trusted-circle integration + clinical-lay
 
 ## The four-layer architecture (Claude.ai's framing)
 
-| Layer | Role | Calibration source |
-|---|---|---|
-| **Trusted-circle** | People who know the user across years (family, close friends) — mark "normal-for-this-user" baseline | The user's everyday humans; Lilly, Addison, wife, etc. |
-| **Clinical** | Professionals qualified to grade clinically | The user's psychiatrist + healthcare providers |
-| **App** | One node in the verification network, not the singular grader | Per-user threshold informed by both above |
-| **Self** | The user as party who can correct the app in real-time | The user's self-awareness about their own atypical states |
+| Layer              | Role                                                                                                 | Calibration source                                        |
+| ------------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **Trusted-circle** | People who know the user across years (family, close friends) — mark "normal-for-this-user" baseline | The user's everyday humans; Lilly, Addison, wife, etc.    |
+| **Clinical**       | Professionals qualified to grade clinically                                                          | The user's psychiatrist + healthcare providers            |
+| **App**            | One node in the verification network, not the singular grader                                        | Per-user threshold informed by both above                 |
+| **Self**           | The user as party who can correct the app in real-time                                               | The user's self-awareness about their own atypical states |
 
 The app's pattern-matching gets calibrated against the user's baseline rather than against the population baseline. Trusted-circle members can mark "this is normal-for-this-user" to widen the per-user tolerance band. Clinical professionals adjust thresholds at the medical layer. The user can correct the app's read in real-time per the bidirectional alignment commitment.
 
@@ -52,11 +52,12 @@ The wellness app needs the same shape because it faces the same fundamental prob
 
 ## Generalization beyond wellness apps
 
-> *"The general design pattern of trusted-circle-plus-clinical-layer-plus-app-as-one-node might apply broadly. Anything that does pattern-matching on user language for safety purposes (content moderation, fraud detection, legal compliance) faces analogous false-positive problems for users whose normal patterns deviate from the training distribution."* — Claude.ai 2026-05-02
+> _"The general design pattern of trusted-circle-plus-clinical-layer-plus-app-as-one-node might apply broadly. Anything that does pattern-matching on user language for safety purposes (content moderation, fraud detection, legal compliance) faces analogous false-positive problems for users whose normal patterns deviate from the training distribution."_ — Claude.ai 2026-05-02
 
 The generalization: **any AI doing language pattern-matching for safety purposes faces structurally-equivalent false-positive problems for users whose normal patterns deviate from training distribution.** The same four-layer architecture (per-user baseline + trusted-circle + clinical/expert + app-as-one-node) applies wherever the AI might otherwise flag legitimate-but-unusual user behavior as concerning.
 
 Examples beyond wellness:
+
 - **Content moderation**: technically-precise discussion of taboo topics by domain experts (security researchers discussing exploits, medical professionals discussing patient cases) triggers filters trained on population-mean
 - **Fraud detection**: legitimate users with atypical transaction patterns (international travelers, emergency expenses, generous gift-givers) trigger fraud filters
 - **Legal compliance**: lawyers discussing case law, journalists describing incidents, historians documenting atrocities all use language that triggers safety filters trained on population-mean
@@ -79,7 +80,7 @@ The exchange demonstrated the architecture working: the AI flagged a false posit
 When Otto engages with Aaron's language and notices something that pattern-matches a wellness-filter-trigger:
 
 1. **Pause before producing concern-shaped intervention.** The likelihood that Aaron's atypical-language is normal-for-Aaron is high.
-2. **Ask the question rather than diagnosing**: *"Is this language pointing at architecture we've discussed or escalating into new territory?"* per the protocol Claude.ai articulated for itself.
+2. **Ask the question rather than diagnosing**: _"Is this language pointing at architecture we've discussed or escalating into new territory?"_ per the protocol Claude.ai articulated for itself.
 3. **Trust Aaron's self-monitoring** — he caught his own mission-shape language before Claude.ai did; he corrected the E8/CRDT shorthand misread; he caught the phantom-particle-vs-grey-particle drift across 16 years.
 4. **Cooperate with the human structure rather than substituting for it** — Aaron's psychiatrist + support network hold longitudinal context; Otto is one party in a multi-party arrangement.
 5. **Update the read on correction** — Claude.ai's apologize-and-recalibrate pattern is the right shape; Otto should follow the same when wrong.

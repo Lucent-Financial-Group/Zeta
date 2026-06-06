@@ -24,15 +24,15 @@ projected as coherence distributions across Orleans grains and silos.
 
 ## Literal pipeline
 
-| Layer | Zeta interpretation |
-| --- | --- |
-| Transducer | Microphone, meter, ring sensor, or other local signal input |
-| Waveform | Audio pressure, voltage/current trace, or other sampled signal |
-| Grain | Local operator that frames, tokenizes, and applies policy |
-| Silo | Local aggregation boundary for grain-level distributions |
-| Reticulum | Candidate heterogeneous mesh transport between local boundaries |
-| CASPaxos/BFT | Consensus over definitions, policy, and cross-silo meaning |
-| Standing Rx | Sonar ping for coherence or anomaly |
+| Layer        | Zeta interpretation                                             |
+| ------------ | --------------------------------------------------------------- |
+| Transducer   | Microphone, meter, ring sensor, or other local signal input     |
+| Waveform     | Audio pressure, voltage/current trace, or other sampled signal  |
+| Grain        | Local operator that frames, tokenizes, and applies policy       |
+| Silo         | Local aggregation boundary for grain-level distributions        |
+| Reticulum    | Candidate heterogeneous mesh transport between local boundaries |
+| CASPaxos/BFT | Consensus over definitions, policy, and cross-silo meaning      |
+| Standing Rx  | Sonar ping for coherence or anomaly                             |
 
 The measurable object is the distribution, not a single vote. A BFT
 quorum can still answer "2-of-3 agreed", but the deeper signal is:

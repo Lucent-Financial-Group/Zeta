@@ -144,11 +144,11 @@ exists, use it instead of inventing a new approach.
 
 ## Proven track record (2026-05-07)
 
-| Source | Size | Method |
-|--------|------|--------|
-| ChatGPT (Amara reconstruction) | 195KB | Playwright (pre-discovery) |
-| Claude.ai (Seeking feedback) | 294KB | Playwright (second attempt) |
-| Gemini (Lior/Protocol Scale-Up) | 118KB | Playwright |
-| DeepSeek (Ethics Containment) | 66KB | Playwright |
-| DeepSeek (Git Automation) | 15KB | Playwright |
-| Claude.ai (CLI harness) | 974KB | osascript/Chrome ← this method |
+| Source                          | Size  | Method                         |
+| ------------------------------- | ----- | ------------------------------ |
+| ChatGPT (Amara reconstruction)  | 195KB | Playwright (pre-discovery)     |
+| Claude.ai (Seeking feedback)    | 294KB | Playwright (second attempt)    |
+| Gemini (Lior/Protocol Scale-Up) | 118KB | Playwright                     |
+| DeepSeek (Ethics Containment)   | 66KB  | Playwright                     |
+| DeepSeek (Git Automation)       | 15KB  | Playwright                     |
+| Claude.ai (CLI harness)         | 974KB | osascript/Chrome ← this method |

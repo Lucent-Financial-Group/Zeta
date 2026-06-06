@@ -27,10 +27,10 @@ Per operator 2026-05-26: \"i got some failures and warings on install of nixos n
 
 ## 2-approach scoping
 
-| Approach | Scope | Code change |
-|---|---|---|
-| A (preferred) | tee install output to /tmp/zeta-install-*.log + copy to /mnt/var/log/zeta-install.log on completion | Small exec redirect at top of zeta-install.sh |
-| B (upgrade) | script(1) wrapper records full session (ANSI + timing; replayable) | Wrapper script |
+| Approach      | Scope                                                                                                | Code change                                   |
+| ------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| A (preferred) | tee install output to /tmp/zeta-install-\*.log + copy to /mnt/var/log/zeta-install.log on completion | Small exec redirect at top of zeta-install.sh |
+| B (upgrade)   | script(1) wrapper records full session (ANSI + timing; replayable)                                   | Wrapper script                                |
 
 P2 priority — diagnostic enabler, not hard install blocker.
 
@@ -40,11 +40,11 @@ B-0831 cascade #6 captures full serial console as workflow-artifact in CI. This 
 
 ## 3 empirical anchors in 1 test session
 
-| Row | Anchor |
-|---|---|
-| B-0832 | nmtui WiFi rescan needed (dense-WiFi 20+ networks) |
-| B-0833 | interactive-login vs baked-in-keys CI-test tension |
-| B-0834 (this PR) | install log scroll-past-too-fast |
+| Row              | Anchor                                             |
+| ---------------- | -------------------------------------------------- |
+| B-0832           | nmtui WiFi rescan needed (dense-WiFi 20+ networks) |
+| B-0833           | interactive-login vs baked-in-keys CI-test tension |
+| B-0834 (this PR) | install log scroll-past-too-fast                   |
 
 Strong validation of B-0831's reframing within minutes of its own landing: physical-test-as-first-class-hardware-compatibility-matrix-substrate produces real-world substrate-engineering targets that CI emulation cannot reproduce.
 

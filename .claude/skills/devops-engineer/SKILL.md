@@ -114,7 +114,7 @@ therefore asks:
   (`tools/setup/common/*.sh`, reusable workflow fragments,
   `Directory.Build.props` skeleton). Project hooks live in
   clearly-named files or manifest entries (`tools/setup/
-  manifests/*`, project-specific workflow jobs, Zeta-named
+manifests/*`, project-specific workflow jobs, Zeta-named
   MSBuild targets).
 - **Do generic files hard-code project names?** If the
   `.github/workflows/gate.yml` shape would only work on
@@ -147,7 +147,7 @@ Design-doc findings use this structure:
 ## Zeta's adoption — decisions locked / open
 
 | Decision | Source | Choice | Rationale |
-|---|---|---|---|
+| -------- | ------ | ------ | --------- |
 
 ## What Zeta borrows
 

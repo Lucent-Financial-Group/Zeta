@@ -17,14 +17,14 @@ and PII audits.
 
 ## Log levels — what each means
 
-| Level | Meaning | Audience | Default in prod |
-|---|---|---|---|
-| **TRACE** | Method entry/exit, tight-loop detail | Developer debugging | Off |
-| **DEBUG** | State transitions, intermediate values | Developer, on-demand | Off |
-| **INFO** | Lifecycle events, "the thing happened" | Operator | On (sampled) |
-| **WARN** | Degraded but serving | Operator, paged never | On |
-| **ERROR** | Request / op failed | Operator, paged conditionally | On |
-| **FATAL** | Process dying | Operator, page always | On |
+| Level     | Meaning                                | Audience                      | Default in prod |
+| --------- | -------------------------------------- | ----------------------------- | --------------- |
+| **TRACE** | Method entry/exit, tight-loop detail   | Developer debugging           | Off             |
+| **DEBUG** | State transitions, intermediate values | Developer, on-demand          | Off             |
+| **INFO**  | Lifecycle events, "the thing happened" | Operator                      | On (sampled)    |
+| **WARN**  | Degraded but serving                   | Operator, paged never         | On              |
+| **ERROR** | Request / op failed                    | Operator, paged conditionally | On              |
+| **FATAL** | Process dying                          | Operator, page always         | On              |
 
 **Level drift.** The three cardinal sins:
 
@@ -84,12 +84,12 @@ Datadog APM + logs; Honeycomb with bundled logs).
 
 ## The logging library — .NET
 
-| Library | Role | When to choose |
-|---|---|---|
-| `Microsoft.Extensions.Logging` / `ILogger<T>` | The abstraction | Always — it's the consumer-facing interface. |
-| Serilog | Structured-first sink | Default pick; semantic templates; rich sinks. |
-| NLog | Feature-rich sink | Legacy apps; when custom targets matter. |
-| log4net | Legacy | Only when maintaining log4net. |
+| Library                                       | Role                  | When to choose                                |
+| --------------------------------------------- | --------------------- | --------------------------------------------- |
+| `Microsoft.Extensions.Logging` / `ILogger<T>` | The abstraction       | Always — it's the consumer-facing interface.  |
+| Serilog                                       | Structured-first sink | Default pick; semantic templates; rich sinks. |
+| NLog                                          | Feature-rich sink     | Legacy apps; when custom targets matter.      |
+| log4net                                       | Legacy                | Only when maintaining log4net.                |
 
 **Rule.** Zeta code consumes `ILogger<T>`. Serilog is the
 default provider under it. Changing provider is a config
@@ -131,7 +131,7 @@ runtime without redeploy. Patterns:
 - .NET `IOptionsMonitor<LoggerFilterOptions>` with
   file-watcher on `appsettings.json`.
 - Admin endpoint: `POST /admin/log-level { "logger":
-  "Zeta.Core.Pipeline", "level": "Debug" }`.
+"Zeta.Core.Pipeline", "level": "Debug" }`.
 - Config-store pull (Consul, etcd) → reload.
 
 **Rule.** Every production service has one of these wired.
@@ -140,13 +140,13 @@ a deploy is an ops maturity failure.
 
 ## Log retention — the compliance minefield
 
-| Class | Retention | Reason |
-|---|---|---|
-| **Audit logs** | 3–7 years | SOX, HIPAA, SOC 2, internal forensics |
-| **Security events** | 1–2 years | Incident response, breach investigation |
-| **App operational logs** | 30–90 days | Debugging, trend analysis |
-| **DEBUG / TRACE** | 1–7 days | Short investigation window |
-| **PII-containing logs** | Minimise | GDPR data-minimisation |
+| Class                    | Retention  | Reason                                  |
+| ------------------------ | ---------- | --------------------------------------- |
+| **Audit logs**           | 3–7 years  | SOX, HIPAA, SOC 2, internal forensics   |
+| **Security events**      | 1–2 years  | Incident response, breach investigation |
+| **App operational logs** | 30–90 days | Debugging, trend analysis               |
+| **DEBUG / TRACE**        | 1–7 days   | Short investigation window              |
+| **PII-containing logs**  | Minimise   | GDPR data-minimisation                  |
 
 **GDPR wrinkle.** User-identifiable operational logs have
 a legal retention cap. The simplest defence: don't log
@@ -172,13 +172,13 @@ Serilog `Destructure.With<RedactingPolicy>()` or
 
 ## Log shippers — the transport layer
 
-| Shipper | Language | Footprint | Strengths |
-|---|---|---|---|
-| **Fluent Bit** | C | Tiny | K8s-native, efficient, limited enrichment |
-| **Vector** | Rust | Small | Rich routing, fast, no agent lock-in |
-| **Filebeat** | Go | Medium | Elastic-native |
-| **Logstash** | JRuby | Large | Rich transforms, heavyweight |
-| **OpenTelemetry Collector** | Go | Medium | Unified metrics + logs + traces |
+| Shipper                     | Language | Footprint | Strengths                                 |
+| --------------------------- | -------- | --------- | ----------------------------------------- |
+| **Fluent Bit**              | C        | Tiny      | K8s-native, efficient, limited enrichment |
+| **Vector**                  | Rust     | Small     | Rich routing, fast, no agent lock-in      |
+| **Filebeat**                | Go       | Medium    | Elastic-native                            |
+| **Logstash**                | JRuby    | Large     | Rich transforms, heavyweight              |
+| **OpenTelemetry Collector** | Go       | Medium    | Unified metrics + logs + traces           |
 
 **Rule.** For Zeta, OTel Collector is the default — one
 agent handles all three pillars. Fluent Bit for resource-
@@ -249,7 +249,7 @@ DBSP pipelines have specific logging concerns:
 - **Per-delta logging** would flood; aggregate at batch
   scope.
 - **Per-batch INFO** — `batch={id} deltas={count}
-  retractions={count} duration_ms={...}` at INFO once
+retractions={count} duration_ms={...}` at INFO once
   per batch, not once per delta.
 - **Retraction clarity** — insertion and retraction counts
   are separate fields, not just "changes".
@@ -287,7 +287,7 @@ in the log emission path). Delegate to
 - **Schema / field-convention / OTel Logs deep-dive** →
   `structured-logging-expert`.
 - **Three-pillar umbrella** → `observability-and-tracing-
-  expert`.
+expert`.
 - **Audit-log retention and forensics** →
   `security-operations-engineer`.
 - **Shipper deployment (Fluent Bit, Vector, OTel
@@ -300,7 +300,7 @@ in the log emission path). Delegate to
 ## Zeta connection
 
 A Zeta pipeline is already a structured event stream. The
-log pillar is then *the unstructured-text fallback* —
+log pillar is then _the unstructured-text fallback_ —
 where there is no metric, where a trace was not sampled,
 where a developer needs a human-readable narrative. Keep
 it small.
@@ -313,7 +313,7 @@ it small.
 - **Context established per-call.** Every log site
   restates `tenant=X request=Y`. Scope it once.
 - **`catch (Exception ex) { /* swallow */ logger.Log...
-  */ }`** — exception swallowed, log line insufficient,
+*/ }`** — exception swallowed, log line insufficient,
   caller unaware of failure. Log and rethrow, or log and
   convert to `Result.Err`.
 - **`ToString()` on a huge object in the template.**
@@ -335,8 +335,8 @@ it small.
 
 - Nicholas Blumhardt — Serilog design posts; message-
   template specification.
-- Jimmy Bogard — *"Microservices and the definition of
-  insanity"* on log-context.
+- Jimmy Bogard — _"Microservices and the definition of
+  insanity"_ on log-context.
 - OpenTelemetry Logs specification.
 - ECS (Elastic Common Schema) logging spec.
 - ILogger<T> design notes in `aspnetcore` docs.

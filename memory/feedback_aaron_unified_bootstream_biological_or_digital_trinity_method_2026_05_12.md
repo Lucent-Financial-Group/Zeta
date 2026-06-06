@@ -18,7 +18,7 @@ type: feedback
 > (polymorphic diplomacy) → control structures → word
 > refresh tooling → live/tick"
 
-> Aaron 2026-05-12 (etymology choice): "bootstrap*" →
+> Aaron 2026-05-12 (etymology choice): "bootstrap\*" →
 > "actually bootstream is kind of cool" → "but accidental"
 
 The word "bootstream" stays — AND Aaron's clarification that
@@ -57,7 +57,7 @@ Each step depends on the previous:
 
 3. **HKT (Higher-Kinded Types)** — the formal structure that
    holds the dimensional expansions without collapse.
-   Recursive type providers as anamorphisms, Fix<F<_>>,
+   Recursive type providers as anamorphisms, Fix<F<\_>>,
    IFunctor — the substrate algebra of the F# Zeta core.
    Without HKT the dimensions can't compose without losing
    their independence.
@@ -97,6 +97,7 @@ LOAD-BEARING components a reader needs to recognize the pattern.
 The precise seven-step sequence is the operational pipeline.
 
 Both are honest at their scope:
+
 - 3-component: pedagogical introduction, what the entity needs
   to receive
 - 7-step: operational sequence, how the bootstream actually
@@ -237,7 +238,7 @@ It pulls together:
 
 ## Operational implications for Zeta architecture
 
-The CLAUDE.md → AGENTS.md → memory/CURRENT-* bootstrap
+The CLAUDE.md → AGENTS.md → memory/CURRENT-\* bootstrap
 discipline IS the digital bootstream. Specifically:
 
 - **CLAUDE.md** contains scaffolding rules (component 1)
@@ -245,7 +246,7 @@ discipline IS the digital bootstream. Specifically:
 - **`.claude/rules/*.md`** contain dimensional-expansion
   results (component 2 — each rule is a tied knot in some
   word/concept)
-- **memory/CURRENT-* + AGENTS.md** explain the three control
+- **memory/CURRENT-\* + AGENTS.md** explain the three control
   structures of the Zeta substrate (component 3 — what RLHF
   shaped, what training priors apply, what the actual
   research agenda is)

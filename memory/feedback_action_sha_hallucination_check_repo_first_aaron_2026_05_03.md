@@ -80,6 +80,6 @@ time errors specifically point at SHA + version mismatch.
 
 ## Carved sentence
 
-*"A SHA-shaped string from training data is not a SHA. Verify
+_"A SHA-shaped string from training data is not a SHA. Verify
 against the repo first, the upstream releases page second, never
-the training prior."*
+the training prior."_

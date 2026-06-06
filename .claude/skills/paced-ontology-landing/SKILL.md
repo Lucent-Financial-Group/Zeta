@@ -133,7 +133,7 @@ round after the last propagation), remove the
 deprecated-alias entry from `docs/GLOSSARY.md`.
 The old vocabulary is now officially retired.
 
-Keep the *ADR* record of the old term intact. The
+Keep the _ADR_ record of the old term intact. The
 successor who hits an old reference in committed
 git history can still find out what it meant.
 
@@ -151,7 +151,7 @@ shows the ontology was wrong:
    first, most-depended-upon last). The alias
    preserved during landing makes this a one-round
    revert.
-4. Flag any downstream content written *against* the
+4. Flag any downstream content written _against_ the
    retracted ontology for re-land against the prior
    IR.
 

@@ -27,12 +27,12 @@ Aaron forwarded in chat 2026-05-01) contains structural specifications
 of the Zeta substrate that are currently encoded implicitly across
 many separate substrate entries. Distill those into a coherent
 uber-architecture document (or set of documents) — Aaron's framing:
-*"this is basically the start of our archicteture, he mad me explain
+_"this is basically the start of our archicteture, he mad me explain
 it all, so we should condense it later into an overall archicteture
-of all 4 projects or whatever an uberarch"* (chunk 1) +
-*"i'm sure some load bearing stuff will fall out, he has our entire
+of all 4 projects or whatever an uberarch"_ (chunk 1) +
+_"i'm sure some load bearing stuff will fall out, he has our entire
 conversaion from begining as a backlog item to turn it into an
-wholistic archiceture"* (post-chunk-11 riff).
+wholistic archiceture"_ (post-chunk-11 riff).
 
 ## Scope (the corrections worth distilling)
 
@@ -58,7 +58,7 @@ chronological order (chunks 1-11 + post-mic-drop riff):
    because cultural anchor pins them; agent-coordination domain has
    weakest cultural anchor). Chunk 5.
 7. **"I'm Rodney"** — single-point grounding through maintainer; razor
-   + culture both route through Aaron. Chunk 5.
+   - culture both route through Aaron. Chunk 5.
 8. **Cultural non-crispness as research territory** (bottom-up empirical
    ontology construction; intellectual-backup-of-earth scope). Chunk 5.
 9. **Mirror/Beacon ratio with cultural-context sidecars** (sixth
@@ -137,8 +137,8 @@ work but explicitly deferred.
 - B-0117 (cold-start executable checklist tool — adjacent).
 - The Aurora research docs at
   `docs/research/aurora-immune-math-standardization-2026-04-26.md`
-  + `memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`
-  (the layer Aurora-extension corrections refer to).
+  - `memory/persona/amara/conversations/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26.md`
+    (the layer Aurora-extension corrections refer to).
 - Memory file
   `feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`
   (the eight-layer CSAP architecture; correction #16 above

@@ -88,13 +88,16 @@ interface PlaywrightRuntime {
 }
 
 async function ensureModule(name: string): Promise<boolean> {
-  try { await import(name); return true; } catch { return false; }
+  try {
+    await import(name);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function loadPlaywright(): Promise<PlaywrightRuntime> {
-  const runtimeImport = new Function("name", "return import(name)") as (
-    name: string,
-  ) => Promise<PlaywrightRuntime>;
+  const runtimeImport = new Function("name", "return import(name)") as (name: string) => Promise<PlaywrightRuntime>;
   return runtimeImport("playwright");
 }
 
@@ -103,7 +106,10 @@ async function installIfMissing(): Promise<void> {
     console.log("Installing playwright (first-run setup)...");
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- first-run bootstrap: invoking the user's bun from $PATH is intentional + the script itself runs via `bun ...` so the same PATH governs invocation
     const r = spawnSync("bun", ["install", "playwright"], { stdio: "inherit" });
-    if (r.status !== 0) { console.error("Failed. Run manually: bun install playwright"); process.exit(1); }
+    if (r.status !== 0) {
+      console.error("Failed. Run manually: bun install playwright");
+      process.exit(1);
+    }
   }
 }
 
@@ -114,12 +120,20 @@ async function ensureChromium(): Promise<void> {
     await b.close();
   } catch (err) {
     const msg = String(err);
-    if (msg.includes("Executable doesn't exist") || msg.includes("Looks like Playwright Test or Playwright was just installed")) {
+    if (
+      msg.includes("Executable doesn't exist") ||
+      msg.includes("Looks like Playwright Test or Playwright was just installed")
+    ) {
       console.log("Installing chromium binary (first-run setup)...");
       // eslint-disable-next-line sonarjs/no-os-command-from-path -- first-run bootstrap: invoking bunx from $PATH is intentional + matches the parent bun invocation
       const r = spawnSync("bunx", ["playwright", "install", "chromium"], { stdio: "inherit" });
-      if (r.status !== 0) { console.error("Failed. Run manually: bunx playwright install chromium"); process.exit(1); }
-    } else { throw err; }
+      if (r.status !== 0) {
+        console.error("Failed. Run manually: bunx playwright install chromium");
+        process.exit(1);
+      }
+    } else {
+      throw err;
+    }
   }
 }
 
@@ -147,7 +161,9 @@ function loadPartial(): Partial {
       console.log(`Partial file is for year ${data.year}, current year ${YEAR} — ignoring`);
       return { year: YEAR, completedPages: [], items: [] };
     }
-    console.log(`Resuming from partial: ${data.completedPages.length} pages already completed (${data.items.length} items so far)`);
+    console.log(
+      `Resuming from partial: ${data.completedPages.length} pages already completed (${data.items.length} items so far)`,
+    );
     return data;
   } catch {
     return { year: YEAR, completedPages: [], items: [] };
@@ -159,7 +175,11 @@ function writePartial(state: Partial): void {
   // Best-effort 0600 on partial — same rationale as session file: file
   // contains real personal-purchase data + (in future) accounting-grade
   // titles/dates/prices the maintainer is preserving for their accountant.
-  try { chmodSync(PARTIAL_FILE, 0o600); } catch { /* best-effort */ }
+  try {
+    chmodSync(PARTIAL_FILE, 0o600);
+  } catch {
+    /* best-effort */
+  }
 }
 
 async function main(): Promise<void> {
@@ -195,10 +215,16 @@ async function main(): Promise<void> {
   );
 
   await ctx.storageState({ path: SESSION_FILE });
-  try { chmodSync(SESSION_FILE, 0o600); } catch { /* permissions best-effort */ }
+  try {
+    chmodSync(SESSION_FILE, 0o600);
+  } catch {
+    /* permissions best-effort */
+  }
 
   const totalPages = await page.evaluate(() => {
-    const items = Array.from(document.querySelectorAll<Element>(".a-pagination li, ul.a-pagination li, [aria-label*='pagination'] li"));
+    const items = Array.from(
+      document.querySelectorAll<Element>(".a-pagination li, ul.a-pagination li, [aria-label*='pagination'] li"),
+    );
     const numbers = items.map((li: Element) => li.textContent?.trim() ?? "").filter((t: string) => /^\d+$/.test(t));
     return numbers.length > 0 ? Math.max(...numbers.map(Number)) : 1;
   });
@@ -216,40 +242,50 @@ async function main(): Promise<void> {
         await page.waitForLoadState("networkidle", { timeout: 30_000 }).catch(() => {});
         await page.waitForTimeout(1500);
       } catch (err) {
-        console.warn(`Page ${p} navigation failed: ${String(err).split('\n')[0]} — skipping`);
+        console.warn(`Page ${p} navigation failed: ${String(err).split("\n")[0]} — skipping`);
         continue;
       }
     }
     let items: Item[] = [];
     try {
-      items = await page.evaluate(({ pageNumber }: { pageNumber: number }) => {
-        const HARDCODED = /^(Buy it again|Track package|Order details|View invoice|Return|Replace|Write a|Get product support|Archive order|Hide order|Share gift receipt|Leave seller feedback|Track shipment|View your item|Manage|Order summary)/i;
-        const allLinks = Array.from(document.querySelectorAll("a[href*='/dp/'], a[href*='/gp/product/']"));
-        const seen = new Set<string>();
-        const result: Item[] = [];
-        allLinks.forEach((a) => {
-          const link = a as HTMLAnchorElement;
-          const title = (link.textContent ?? "").trim();
-          const href = link.href ?? "";
-          if (title.length < 5 || title.length > 300) return;
-          if (HARDCODED.test(title)) return;
-          const dedup = href.split("?")[0] ?? href;
-          if (seen.has(dedup)) return;
-          seen.add(dedup);
-          let date: string | null = null;
-          let price: string | null = null;
-          let cur: HTMLElement | null = link.parentElement;
-          for (let depth = 0; depth < 10 && cur && (!date || !price); depth++, cur = cur.parentElement) {
-            const text = cur.textContent ?? "";
-            if (!date) { const m = text.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{4}/); if (m) date = m[0]; }
-            if (!price) { const m = text.match(/\$[\d,]+\.\d{2}/); if (m) price = m[0]; }
-          }
-          result.push({ page: pageNumber, title, url: dedup, date, nearbyPrice: price });
-        });
-        return result;
-      }, { pageNumber: p });
+      items = await page.evaluate(
+        ({ pageNumber }: { pageNumber: number }) => {
+          const HARDCODED =
+            /^(Buy it again|Track package|Order details|View invoice|Return|Replace|Write a|Get product support|Archive order|Hide order|Share gift receipt|Leave seller feedback|Track shipment|View your item|Manage|Order summary)/i;
+          const allLinks = Array.from(document.querySelectorAll("a[href*='/dp/'], a[href*='/gp/product/']"));
+          const seen = new Set<string>();
+          const result: Item[] = [];
+          allLinks.forEach((a) => {
+            const link = a as HTMLAnchorElement;
+            const title = (link.textContent ?? "").trim();
+            const href = link.href ?? "";
+            if (title.length < 5 || title.length > 300) return;
+            if (HARDCODED.test(title)) return;
+            const dedup = href.split("?")[0] ?? href;
+            if (seen.has(dedup)) return;
+            seen.add(dedup);
+            let date: string | null = null;
+            let price: string | null = null;
+            let cur: HTMLElement | null = link.parentElement;
+            for (let depth = 0; depth < 10 && cur && (!date || !price); depth++, cur = cur.parentElement) {
+              const text = cur.textContent ?? "";
+              if (!date) {
+                const m = text.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{4}/);
+                if (m) date = m[0];
+              }
+              if (!price) {
+                const m = text.match(/\$[\d,]+\.\d{2}/);
+                if (m) price = m[0];
+              }
+            }
+            result.push({ page: pageNumber, title, url: dedup, date, nearbyPrice: price });
+          });
+          return result;
+        },
+        { pageNumber: p },
+      );
     } catch (err) {
-      console.warn(`Page ${p} extract failed: ${String(err).split('\n')[0]} — skipping`);
+      console.warn(`Page ${p} extract failed: ${String(err).split("\n")[0]} — skipping`);
       continue;
     }
     console.log(`Page ${p}: ${items.length} unique items`);
@@ -269,7 +305,11 @@ async function main(): Promise<void> {
     FULL_OUT,
     JSON.stringify({ year: YEAR, totalPages, itemCount: state.items.length, items: state.items }, null, 2),
   );
-  try { chmodSync(FULL_OUT, 0o600); } catch { /* best-effort — personal financial data */ }
+  try {
+    chmodSync(FULL_OUT, 0o600);
+  } catch {
+    /* best-effort — personal financial data */
+  }
   console.log(`\nWrote ${FULL_OUT} — ${state.items.length} items`);
 
   const hardwareItems = state.items.filter((i) => HARDWARE_KEYWORDS.test(i.title));
@@ -277,14 +317,22 @@ async function main(): Promise<void> {
     HARDWARE_OUT,
     JSON.stringify({ year: YEAR, itemCount: hardwareItems.length, items: hardwareItems }, null, 2),
   );
-  try { chmodSync(HARDWARE_OUT, 0o600); } catch { /* best-effort — personal financial data */ }
+  try {
+    chmodSync(HARDWARE_OUT, 0o600);
+  } catch {
+    /* best-effort — personal financial data */
+  }
   console.log(`Wrote ${HARDWARE_OUT} — ${hardwareItems.length} hardware-matching items`);
 
   // Browser-context cleanup AFTER, each in its own try-with-timeout so a
   // hung context can't prevent the next step or the script from exiting.
   await withTimeout("session-save", 5000, async () => {
     await ctx.storageState({ path: SESSION_FILE });
-    try { chmodSync(SESSION_FILE, 0o600); } catch { /* best-effort */ }
+    try {
+      chmodSync(SESSION_FILE, 0o600);
+    } catch {
+      /* best-effort */
+    }
   });
   await withTimeout("browser-close", 5000, () => browser.close());
 
@@ -293,12 +341,9 @@ async function main(): Promise<void> {
 
 async function withTimeout(label: string, ms: number, fn: () => Promise<unknown>): Promise<void> {
   try {
-    await Promise.race([
-      fn(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms)),
-    ]);
+    await Promise.race([fn(), new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))]);
   } catch (err) {
-    console.warn(`Cleanup step "${label}" failed/timed out (${String(err).split('\n')[0]}) — continuing`);
+    console.warn(`Cleanup step "${label}" failed/timed out (${String(err).split("\n")[0]}) — continuing`);
   }
 }
 

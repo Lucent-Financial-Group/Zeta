@@ -17,10 +17,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add Vera persona memory for Aaron's family-configuration and child-AI language calibration context
 - refresh memory/MEMORY.md via the repo reindex script
 
 ## Checks
+
 - bun tools/memory/reindex-memory-md.ts
 - git diff --check
 - git diff --cached --check
@@ -35,6 +37,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR adds a new Vera persona conversation archive and regenerates the `memory/MEMORY.md` auto-index so the memory stack view reflects the latest committed memory heap.
 
 **Changes:**
+
 - Add a new Vera conversation file capturing family-configuration context and child-safe language calibration guidance.
 - Re-run `tools/memory/reindex-memory-md.ts` to refresh the `memory/MEMORY.md` auto-index.
 
@@ -42,10 +45,10 @@ This PR adds a new Vera persona conversation archive and regenerates the `memory
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                          | Description                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | memory/persona/vera/conversations/2026-05-22-aaron-vera-family-configuration-child-ai-language-calibration.md | New Vera persona conversation archive (currently missing frontmatter; contains detailed family configuration). |
-| memory/MEMORY.md | Auto-generated index updated with a new top entry and heap count change. |
+| memory/MEMORY.md                                                                                              | Auto-generated index updated with a new top entry and heap count change.                                       |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-22T20:14:20Z)
 

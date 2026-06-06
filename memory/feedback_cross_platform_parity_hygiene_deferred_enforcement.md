@@ -4,28 +4,30 @@ description: Aaron 2026-04-22 — cross-platform-first status must be a *visible
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-22: *"missing mac/windows/linux/wsl parity
+
+Aaron 2026-04-22: _"missing mac/windows/linux/wsl parity
 (ubuntu latest) we can deffer but should have the hygene in
 place for when we want to enforce and it will be more obvious
-to you in the future that we are cross platform."*
+to you in the future that we are cross platform."_
 
 **Why:** The immediate trigger was the discovery (while
 reverting the three "stay bash forever" flips — see
 `feedback_stay_bash_forever_implies_powershell_twin_obligation.md`)
-that Zeta's cross-platform support was lived as an *assumption*,
-not a *visible property*. The pre-setup tree under `tools/setup/`
+that Zeta's cross-platform support was lived as an _assumption_,
+not a _visible property_. The pre-setup tree under `tools/setup/`
 had 12 bash scripts and zero PowerShell twins — a direct
 violation of the existing Q1 dual-authoring rule that nobody
 had noticed because no audit ran.
 
-Aaron's load-bearing phrase: *"it will be more obvious to you
-in the future that we are cross platform."* The cross-platform
+Aaron's load-bearing phrase: _"it will be more obvious to you
+in the future that we are cross platform."_ The cross-platform
 commitment is itself a piece of factory state that needs a
 surface. Without an audit running, the factory forgets it's
 cross-platform — which is how we ended up flipping 3 scripts
 to "stay bash forever" without pricing the Windows-twin cost.
 
 The four target platforms:
+
 - **macOS (darwin)** — factory host platform (Aaron's dev
   machine; `macos-latest` on GitHub Actions).
 - **Windows** — first-class developer platform via PowerShell.
@@ -47,8 +49,8 @@ The four target platforms:
   - FACTORY-HYGIENE row #43 (missing-cadence activation audit)
   - FACTORY-HYGIENE row #47 (missing-prevention-layer meta-
     audit)
-  Each exists to make a silent property loud before it becomes
-  enforced.
+    Each exists to make a silent property loud before it becomes
+    enforced.
 - **First instance:** `tools/hygiene/audit-cross-platform-parity.ts`
   (landed 2026-04-22 together with this memory). Detect-only;
   enforces with `--enforce`; surfaces:
@@ -57,12 +59,12 @@ The four target platforms:
     inverse)
   - Post-setup permanent-bash missing PowerShell twin
     (Windows-twin obligation per prior memory)
-  Transitional post-setup scripts (bun+TS migration candidate,
-  bash scaffolding) carry no twin obligation — their plan is
-  one cross-platform bun+TS script.
+    Transitional post-setup scripts (bun+TS migration candidate,
+    bash scaffolding) carry no twin obligation — their plan is
+    one cross-platform bun+TS script.
 - **Enforcement gate (deferred):** when baseline is green AND
   the CI matrix runs `--enforce` on `macos-latest /
-  windows-latest / ubuntu-latest` (WSL inherits ubuntu-latest
+windows-latest / ubuntu-latest` (WSL inherits ubuntu-latest
   for CI purposes), the audit becomes binding. Queued in
   BACKLOG.
 - **Baseline at first fire (2026-04-22):** 13 gaps — 12
@@ -73,10 +75,10 @@ The four target platforms:
   existed. Queued in BACKLOG for triage (author the 12 `.ps1`
   twins OR accept the gap with a recorded reason).
 - **Don't confuse with existing post-setup-stack audit.** Row
-  #46 (post-setup script stack audit) asks *"is this script
-  the right stack?"* — canonical bun+TS or a labelled
-  exception. The parity audit asks *"does the chosen stack
-  ship to all target platforms?"* Two orthogonal questions;
+  #46 (post-setup script stack audit) asks _"is this script
+  the right stack?"_ — canonical bun+TS or a labelled
+  exception. The parity audit asks _"does the chosen stack
+  ship to all target platforms?"_ Two orthogonal questions;
   two audits. A post-setup bash script with a valid label
   under row #46 may still be a parity gap under this audit if
   the label is permanent and the `.ps1` twin is missing.
@@ -84,13 +86,15 @@ The four target platforms:
 **Pattern: visibility precedes enforcement.** A factory
 property that is nowhere in the audit surface is functionally
 absent, even if stated in a memory or doc. The audit existing
-+ running + printing the gap is what makes the commitment real.
-Enforcement can flip on later — the cheap move is making the
-property visible NOW. This is the same principle behind
-"instrument first, cadence second" from
-`feedback_data_driven_cadence_not_prescribed.md`.
+
+- running + printing the gap is what makes the commitment real.
+  Enforcement can flip on later — the cheap move is making the
+  property visible NOW. This is the same principle behind
+  "instrument first, cadence second" from
+  `feedback_data_driven_cadence_not_prescribed.md`.
 
 **Related memories:**
+
 - `memory/feedback_stay_bash_forever_implies_powershell_twin_obligation.md`
   — the Windows-twin cost reframe that preceded this memory
   by hours.

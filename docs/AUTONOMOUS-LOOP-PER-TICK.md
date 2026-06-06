@@ -1,7 +1,7 @@
 # Autonomous-loop per-tick discipline — canonical pointer (3-surface converge)
 
-The human maintainer 2026-05-13 22:08Z: *"any changes you need to make to it so it's more
-like the routines and like a 3 coordinated version?"*
+The human maintainer 2026-05-13 22:08Z: _"any changes you need to make to it so it's more
+like the routines and like a 3 coordinated version?"_
 
 This file IS the canonical per-tick discipline that all three Otto
 surfaces (Otto-CLI, Otto-Desktop, and the queued B-0448 cloud routine)
@@ -12,11 +12,11 @@ all three surfaces inherit the change at their next cold-boot cycle.
 
 Before this file, the per-tick instructions diverged across surfaces:
 
-| Surface | Where the discipline lived | Risk |
-|---------|---------------------------|------|
-| Otto-CLI | `<<autonomous-loop>>` sentinel + ambient-loaded `.claude/rules/` + CLAUDE.md | Auto-loaded; ambient |
-| Otto-Desktop routine | Inline prompt body in `tools/routines/autonomous-loop/SKILL.md` | Required manual sync |
-| B-0448 cloud routine | TBD — not yet shipped | Would have re-implemented the discipline a third time |
+| Surface              | Where the discipline lived                                                   | Risk                                                  |
+| -------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Otto-CLI             | `<<autonomous-loop>>` sentinel + ambient-loaded `.claude/rules/` + CLAUDE.md | Auto-loaded; ambient                                  |
+| Otto-Desktop routine | Inline prompt body in `tools/routines/autonomous-loop/SKILL.md`              | Required manual sync                                  |
+| B-0448 cloud routine | TBD — not yet shipped                                                        | Would have re-implemented the discipline a third time |
 
 The risk: when the discipline evolved (e.g., the
 [`holding-without-named-dependency`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md)
@@ -108,9 +108,9 @@ unless explicit coordination has transferred ownership.
 **Substrate-honest framing**: this step prevents cross-session
 amnesia — each cold-boot picks new work without seeing the
 unfinished PRs the same surface left behind. Aaron 2026-05-23:
-*"plase updates your background server for this... lirs background
+_"plase updates your background server for this... lirs background
 service is what's leaving prs sometime so we are updateing to check
-for unfinsihed prs first when it starts"* — the same fix applies
+for unfinsihed prs first when it starts"_ — the same fix applies
 to Otto.
 
 **Only proceed to Step 3 (pick new work) if no unfinished PRs
@@ -143,9 +143,9 @@ Priority order:
 3. **Gap-of-gap audits** — meta-improvements (substrate-discovery,
    index regeneration)
 4. **Sometimes-task: local-memory ↔ git-memory delta audit + migrate**
-   (B-0797; per the maintainer 2026-05-26 *"can you direct your
+   (B-0797; per the maintainer 2026-05-26 _"can you direct your
    background service on the local only memories as part of its
-   natural loop sometimes as an option?"*). NOT every tick — invoke
+   natural loop sometimes as an option?"_). NOT every tick — invoke
    when the higher-priority queue is empty AND the operator is offline
    or unengaged. Audits the delta between user-scope
    `~/.claude/projects/<slug>/memory/` (per-Mac, per-Otto-CLI surface

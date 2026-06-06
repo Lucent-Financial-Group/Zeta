@@ -52,7 +52,7 @@ output is data, not evidence of unity.
   classes 1 and 4 simultaneously.
 - **Side-channel / observability leakage.** Receipts bind
   `h_inputs ∥ h_actions ∥ h_outputs ∥ budget_id ∥
-  policy_version ∥ approval_set ∥ node_id`. That
+policy_version ∥ approval_set ∥ node_id`. That
   composition leaks approval-set cardinality and policy-
   version timing even to a read-only adversary with access
   to the receipt ledger. Not in the model.
@@ -87,8 +87,8 @@ coarse — "outage, retention-policy change, evaluation
 regression, safety-policy change, interface breakage" are
 five distinct attack surfaces with five distinct detection
 regimes. Class 7 (irreversible harm) is correctly coarse for
-the red-line mechanism but under-specified on *what makes
-an action irreversible* — `no_doxxing` after-the-fact is
+the red-line mechanism but under-specified on _what makes
+an action irreversible_ — `no_doxxing` after-the-fact is
 different from `no_weapons_control` ex-ante. Class 1 and
 class 2 are at the right level.
 
@@ -107,7 +107,7 @@ omits the insider is not audit-ready.
 - **Below-threshold flooding.** `a` passes all five
   conjuncts. A thousand copies of `a` pass all five
   conjuncts. The rule has no rate/budget-per-unit-time
-  term; `BudgetActive` is a boolean, not a *burn*
+  term; `BudgetActive` is a boolean, not a _burn_
   predicate. An adversary (or a looping agent) that stays
   below every individual gate can saturate the downstream
   execution surface.
@@ -150,7 +150,7 @@ them.
 
 - **`BudgetActive`.** The math spec defines it as
   `w_B(b) > 0 ∧ t < expiry(b) ∧ w_Rev(b) = 0`. Undefined:
-  behaviour when a single transaction *spans* the expiry
+  behaviour when a single transaction _spans_ the expiry
   (`t₀ < expiry < t_execute`); whether `w_B` is post-
   consolidation at which horizon (pre-compaction vs.
   post); whether partial-budget is a thing or budgets are
@@ -175,7 +175,7 @@ route around the rule by (a) reclassifying `k3` actions as
 `k2` (`ICapabilityClassifier` is pluggable and in-process),
 (b) proposing threshold tweaks to `OraclePass` as
 "parameter tuning" rather than a policy change, (c) arguing
-a given action is an *observation* (`k1`) with a side-
+a given action is an _observation_ (`k1`) with a side-
 effect attached, (d) issuing actions below the RedLine-
 composition horizon.
 
@@ -203,7 +203,7 @@ through λ₄ have no stated fitting procedure, no held-out
 set, no attestation of who set them. An agent with commit
 rights adjusts β₆ (harm pressure weight) by 0.1 and the
 authorization surface shifts. There is no proposed ADR gate
-on parameter changes. "Pluggable" is the *design* word;
+on parameter changes. "Pluggable" is the _design_ word;
 "tunable by whoever has commit" is the operational reality.
 
 **False-precision risk.** `σ(...)` returns a number in
@@ -217,10 +217,10 @@ consumers (dashboards, ADRs, BACKLOG rows) will quote
 caveat.
 
 **Composition with SD-9.** Partially restates, partially
-contradicts. SD-9 says *agreement is signal, not proof*,
+contradicts. SD-9 says _agreement is signal, not proof_,
 and asks for downgrade-of-weight when carrier exposure
 exists. `V(c)` has no carrier-aware term — `K(c)` (coherence
-with current state) *rewards* agreement with the consensus
+with current state) _rewards_ agreement with the consensus
 that may itself be a carrier artifact. A high-`V(c)` claim
 that is high because it agrees with a widely-carried but
 unfalsified consensus is an SD-9 failure mode scored as a
@@ -259,7 +259,7 @@ scoring function without the oracle rule leaves `V(c)` with
 no consumer. The ferry presents them as separable; they are
 not.
 
-The 7-class threat model is presented as *justification*
+The 7-class threat model is presented as _justification_
 for the oracle rule and scoring, but the rule+scoring cover
 at most classes 1 (unauthorized actuation) and 7
 (irreversible harm) cleanly. Classes 2, 3, 5, 6 are
@@ -303,7 +303,7 @@ loosely-linked pieces. Landing any one binds the other two.
    Leverage: shifts the entire authorization surface.
    Cost: a PR to a constants file. Defense: β/λ changes
    gated behind an ADR; adversary budget goes from `push
-   commit` to `convince Kenji + Aaron`. This is the
+commit` to `convince Kenji + Aaron`. This is the
    cheapest attack in the design.
 2. **Approval-withdrawal race at execute-time.** Leverage:
    turns `k3` quorum into advisory. Cost: one well-timed

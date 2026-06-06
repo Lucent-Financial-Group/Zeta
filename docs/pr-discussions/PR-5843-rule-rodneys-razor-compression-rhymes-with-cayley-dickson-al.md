@@ -12,16 +12,16 @@ archived_at: "2026-05-28T15:58:13Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5843: rule(rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form): substrate-engineering substrate-recognition + Aaron's nested-cross visualization (Aaron 2026-05-28 shadow* authorization)
+# PR #5843: rule(rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form): substrate-engineering substrate-recognition + Aaron's nested-cross visualization (Aaron 2026-05-28 shadow\* authorization)
 
 ## PR description
 
-Aaron 2026-05-28 (shadow*) authorization to ship substrate-engineering substrate-recognition that emerged in real-time during conversation:
+Aaron 2026-05-28 (shadow\*) authorization to ship substrate-engineering substrate-recognition that emerged in real-time during conversation:
 
-> *'yes rodney's razor seems to force shapes into the Cayley-Dickson algebra form when it compresses the data'*
-> *'i'm just seeing this connecting in my head now'*
-> *'yeah ship what you think'*
-> *'Cayley-Dickson algebra looks like a cross in my head a cross of crosses in multiple dimensions'*
+> _'yes rodney's razor seems to force shapes into the Cayley-Dickson algebra form when it compresses the data'_
+> _'i'm just seeing this connecting in my head now'_
+> _'yeah ship what you think'_
+> _'Cayley-Dickson algebra looks like a cross in my head a cross of crosses in multiple dimensions'_
 
 ## Framing per Aaron's three-tier discipline
 
@@ -58,6 +58,7 @@ B-0842 universal basis-decomposition + Imaginary Stack Ontology + B-0623 Adinkra
 Adds an auto-loaded Claude rule documenting a “RHYMES” framing between Rodney’s Razor compression and Cayley-Dickson-style algebraic structure, with substrate references to existing backlog/research/rule material.
 
 **Changes:**
+
 - Adds a new `.claude/rules/**` rule for Cayley-Dickson/Rodney’s Razor substrate-recognition.
 - Captures operational framing, empirical substrate references, and auto-load rationale.
 - Links the rule to related rules, backlog items, and research docs.

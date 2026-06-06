@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - replays the post-#4990 NATS outbox publisher and replaceable state-adapter commits onto current main
 - keeps stale-base governance/backlog deletions out of the branch
 - includes claim and release commits for task-pr-4990-nats-outbox-replay per the git-native claim protocol
 
 ## Validation
+
 - npm --prefix agentic-organization test
 - npm --prefix agentic-organization run typecheck
 
@@ -34,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Replays and extends the Agentic Organization “outbox → publisher → NATS adapter” slice by introducing generic outbox publishing ports, a Cockroach-backed outbox event source, and a JetStream event publisher adapter, while updating OpenSpec + docs to reinforce replaceable durable-adapter boundaries.
 
 **Changes:**
+
 - Add `OutboxEventSource` port (state) plus a Cockroach-backed implementation for reading/publishing outbox rows.
 - Add a generic outbox publisher (messaging) and a JetStream `EventPublisher` adapter (messaging-nats).
 - Expand governance dependency-boundary checks and update OpenSpec/docs to reflect durable-adapter replaceability and outbox publication semantics.
@@ -45,27 +48,28 @@ Copilot reviewed 19 out of 19 changed files in this pull request and generated 5
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| openspec/specs/agentic-organization/spec.md | Updates spec to include durable-adapter replaceability and outbox publisher requirements. |
-| agentic-organization/packages/state/src/outbox-event-source.ts | Introduces `OutboxEventSource` port for claiming and marking outbox events published. |
-| agentic-organization/packages/state/src/index.ts | Re-exports new outbox source port types. |
-| agentic-organization/packages/state-cockroach/src/index.ts | Exposes Cockroach outbox event source factory/types. |
-| agentic-organization/packages/state-cockroach/src/cockroach-outbox-event-source.ts | Adds Cockroach implementation of the outbox event source. |
-| agentic-organization/packages/state-cockroach/src/cockroach-outbox-event-source.test.ts | Adds unit coverage for the Cockroach outbox event source. |
-| agentic-organization/packages/README.md | Updates package boundary documentation to include outbox publisher and NATS adapter. |
-| agentic-organization/packages/messaging/src/outbox-publisher.ts | Adds generic outbox publisher + domain resolver + publisher port. |
-| agentic-organization/packages/messaging/src/outbox-publisher.test.ts | Adds unit coverage for outbox publishing loop. |
-| agentic-organization/packages/messaging/src/index.ts | Re-exports outbox publisher/public interfaces. |
-| agentic-organization/packages/messaging-nats/src/nats-jetstream-event-publisher.ts | Adds JetStream adapter implementing `EventPublisher` with headers/message ID. |
-| agentic-organization/packages/messaging-nats/src/nats-jetstream-event-publisher.test.ts | Adds unit coverage for JetStream adapter serialization/headers/message ID. |
-| agentic-organization/packages/messaging-nats/src/index.ts | Exposes JetStream adapter entrypoints/types. |
-| agentic-organization/packages/governance/src/package-dependency-boundaries.ts | Extends boundary rule enum to include messaging + state-adapter rules. |
-| agentic-organization/packages/governance/src/package-dependency-boundaries.test.ts | Adds new boundary rules for messaging and Cockroach state adapter imports. |
-| agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md | Updates schema prose to emphasize durable adapter boundary (Cockroach as first impl). |
-| agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md | Updates executable contract to reflect Cockroach as first durable adapter. |
-| agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md | Updates package architecture docs to include outbox publisher + messaging-nats adapter. |
-| agentic-organization/docs/FIRST_IMPLEMENTATION_SLICE.md | Updates slice narrative to include outbox publisher + NATS adapter and boundary rules. |
+| File                                                                                    | Description                                                                               |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| openspec/specs/agentic-organization/spec.md                                             | Updates spec to include durable-adapter replaceability and outbox publisher requirements. |
+| agentic-organization/packages/state/src/outbox-event-source.ts                          | Introduces `OutboxEventSource` port for claiming and marking outbox events published.     |
+| agentic-organization/packages/state/src/index.ts                                        | Re-exports new outbox source port types.                                                  |
+| agentic-organization/packages/state-cockroach/src/index.ts                              | Exposes Cockroach outbox event source factory/types.                                      |
+| agentic-organization/packages/state-cockroach/src/cockroach-outbox-event-source.ts      | Adds Cockroach implementation of the outbox event source.                                 |
+| agentic-organization/packages/state-cockroach/src/cockroach-outbox-event-source.test.ts | Adds unit coverage for the Cockroach outbox event source.                                 |
+| agentic-organization/packages/README.md                                                 | Updates package boundary documentation to include outbox publisher and NATS adapter.      |
+| agentic-organization/packages/messaging/src/outbox-publisher.ts                         | Adds generic outbox publisher + domain resolver + publisher port.                         |
+| agentic-organization/packages/messaging/src/outbox-publisher.test.ts                    | Adds unit coverage for outbox publishing loop.                                            |
+| agentic-organization/packages/messaging/src/index.ts                                    | Re-exports outbox publisher/public interfaces.                                            |
+| agentic-organization/packages/messaging-nats/src/nats-jetstream-event-publisher.ts      | Adds JetStream adapter implementing `EventPublisher` with headers/message ID.             |
+| agentic-organization/packages/messaging-nats/src/nats-jetstream-event-publisher.test.ts | Adds unit coverage for JetStream adapter serialization/headers/message ID.                |
+| agentic-organization/packages/messaging-nats/src/index.ts                               | Exposes JetStream adapter entrypoints/types.                                              |
+| agentic-organization/packages/governance/src/package-dependency-boundaries.ts           | Extends boundary rule enum to include messaging + state-adapter rules.                    |
+| agentic-organization/packages/governance/src/package-dependency-boundaries.test.ts      | Adds new boundary rules for messaging and Cockroach state adapter imports.                |
+| agentic-organization/docs/V0_SCHEMA_AND_COMMANDS.md                                     | Updates schema prose to emphasize durable adapter boundary (Cockroach as first impl).     |
+| agentic-organization/docs/V0_EXECUTABLE_CONTRACT.md                                     | Updates executable contract to reflect Cockroach as first durable adapter.                |
+| agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md                          | Updates package architecture docs to include outbox publisher + messaging-nats adapter.   |
+| agentic-organization/docs/FIRST_IMPLEMENTATION_SLICE.md                                 | Updates slice narrative to include outbox publisher + NATS adapter and boundary rules.    |
+
 </details>
 
 ## Review threads
@@ -112,13 +116,13 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 
 Per [`.claude/rules/blocked-green-ci-investigate-threads.md`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/blocked-green-ci-investigate-threads.md) `verify-also-on-stale-but-fresh-looking findings` — verified each thread's claim against current branch state, resolving no-op:
 
-| Thread | Reviewer claim | Status at HEAD |
-|---|---|---|
-| P0 atomic claim | `claimUnpublishedOutboxEvents` is plain `SELECT ... WHERE published_at IS NULL` | **FIXED** — uses `UPDATE ... FOR UPDATE SKIP LOCKED` with `claimed_at` + `claim_expires_at` (lines 71-86) |
-| P1 mark-published guard | `mark_outbox_event_published` overwrites timestamp on retry | **FIXED** — guarded with `AND published_at IS NULL` + `RETURNING outbox_event_id` (lines 87-95) |
-| P1 subject domain duplication | Returning `domain: "supervisor_signal"` produces `...supervisor_signal.supervisor_signal.sent` | **FIXED** — `outbox-publisher.ts` line 66 uses injected `resolveDomain` callback; impl returns broader `work` domain |
-| P1 test locks duplicated shape | Test asserts `...supervisor_signal.supervisor_signal.sent` | **FIXED** — `outbox-publisher.test.ts` line 57 asserts `agentic-org.local.org-lfg.work.supervisor_signal.sent` (non-duplicated) |
-| P1 Messaging boundary DB fragments | `Messaging` only forbids `messaging-nats` + `nats`; should also forbid DB clients | **FIXED** — `forbiddenImportFragments` includes `drizzle`, `pg`, `postgres` alongside `nats` |
+| Thread                             | Reviewer claim                                                                                 | Status at HEAD                                                                                                                  |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| P0 atomic claim                    | `claimUnpublishedOutboxEvents` is plain `SELECT ... WHERE published_at IS NULL`                | **FIXED** — uses `UPDATE ... FOR UPDATE SKIP LOCKED` with `claimed_at` + `claim_expires_at` (lines 71-86)                       |
+| P1 mark-published guard            | `mark_outbox_event_published` overwrites timestamp on retry                                    | **FIXED** — guarded with `AND published_at IS NULL` + `RETURNING outbox_event_id` (lines 87-95)                                 |
+| P1 subject domain duplication      | Returning `domain: "supervisor_signal"` produces `...supervisor_signal.supervisor_signal.sent` | **FIXED** — `outbox-publisher.ts` line 66 uses injected `resolveDomain` callback; impl returns broader `work` domain            |
+| P1 test locks duplicated shape     | Test asserts `...supervisor_signal.supervisor_signal.sent`                                     | **FIXED** — `outbox-publisher.test.ts` line 57 asserts `agentic-org.local.org-lfg.work.supervisor_signal.sent` (non-duplicated) |
+| P1 Messaging boundary DB fragments | `Messaging` only forbids `messaging-nats` + `nats`; should also forbid DB clients              | **FIXED** — `forbiddenImportFragments` includes `drizzle`, `pg`, `postgres` alongside `nats`                                    |
 
 Auto-merge stays armed; threads resolve no-op.
 
@@ -129,6 +133,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Resolved the five Copilot review threads after verifying current head `779720fb5934d3724d9bf3ac2fdf6cadfbfcc2e4`.
 
 Evidence:
+
 - `claimUnpublishedOutboxEvents` now uses an atomic `UPDATE ... FOR UPDATE SKIP LOCKED ... RETURNING` claim with lease columns.
 - `markOutboxEventPublished` now guards `AND published_at IS NULL`, uses `RETURNING`, and rejects duplicate or stale publish marks.
 - Supervisor-signal outbox subjects now use the broader `work` domain, avoiding duplicated subject segments.

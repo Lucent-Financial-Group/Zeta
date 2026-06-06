@@ -27,6 +27,7 @@ This PR supersedes #4733 and #4822. It removes sensitive personal information an
 This PR removes sensitive personal-information-containing memory artifacts and attempts to reconcile `memory/MEMORY.md` after rebasing, in line with the goal of fixing schema/index issues introduced by prior work.
 
 **Changes:**
+
 - Delete two memory artifacts containing sensitive personal information.
 - Update `memory/MEMORY.md` auto-index content to reflect the current memory set after rebase.
 - (Needs follow-up) Resolve duplicated auto-generated metadata lines in `memory/MEMORY.md` introduced by conflict/regen drift.
@@ -35,11 +36,11 @@ This PR removes sensitive personal-information-containing memory artifacts and a
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive session content. |
-| memory/MEMORY.md | Auto-index updated, but currently contains duplicated stack/heap header and footer lines that should be resolved. |
-| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | Deleted to remove sensitive family-configuration content. |
+| File                                                                                           | Description                                                                                                       |
+| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Deleted to remove sensitive session content.                                                                      |
+| memory/MEMORY.md                                                                               | Auto-index updated, but currently contains duplicated stack/heap header and footer lines that should be resolved. |
+| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md                 | Deleted to remove sensitive family-configuration content.                                                         |
 
 ## Review threads
 

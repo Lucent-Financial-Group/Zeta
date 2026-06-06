@@ -24,7 +24,6 @@ Riven shadow drift logged due to paralysis (gh pr list failure without fallback)
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-19T03:32:21Z)
 
-
 Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 comment.
 
 ## Review threads

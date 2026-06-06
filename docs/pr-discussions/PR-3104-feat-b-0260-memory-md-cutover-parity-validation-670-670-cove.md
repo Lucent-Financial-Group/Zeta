@@ -60,24 +60,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T06:32:55Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `3702ce203e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -90,6 +88,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds a parity-validation tool intended to confirm that the generated `memory/MEMORY.md` index (via `reindex-memory-md.ts`) still covers every memory file referenced by the legacy overflow index fragments, and updates a couple of legacy artifacts to close known gaps.
 
 **Changes:**
+
 - Adds `tools/memory/validate-memory-parity.ts` to cross-check legacy index references against the generated index inputs.
 - Adds YAML frontmatter to `memory/MEMORY-AUTHOR-TEMPLATE.md` so it is indexable by the reindexer.
 - Fixes one legacy link target in `memory/INDEX-POST-LINE-200.md` and regenerates `memory/MEMORY.md`.
@@ -98,19 +97,20 @@ This PR adds a parity-validation tool intended to confirm that the generated `me
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                   | Description                                                                                       |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | tools/memory/validate-memory-parity.ts | New parity-check script comparing legacy index link targets to the reindexer’s collected entries. |
-| memory/MEMORY.md | Regenerated auto-index (heap count incremented). |
-| memory/MEMORY-AUTHOR-TEMPLATE.md | Adds required frontmatter so the template is included by the reindexer. |
-| memory/INDEX-POST-LINE-200.md | Updates a stale link target filename. |
-
+| memory/MEMORY.md                       | Regenerated auto-index (heap count incremented).                                                  |
+| memory/MEMORY-AUTHOR-TEMPLATE.md       | Adds required frontmatter so the template is included by the reindexer.                           |
+| memory/INDEX-POST-LINE-200.md          | Updates a stale link target filename.                                                             |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/memory/validate-memory-parity.ts:123**
-* When a file isn’t in `reindexedSet`, it’s always reported as `gap-no-frontmatter`, but `collectEntries()` can exclude files for other reasons (e.g., subdirectory files like `observed-phenomena/...`, `CURRENT-*`, `README.md`, etc.). After broadening link extraction, this will misdiagnose many cases. Consider checking frontmatter directly (via `parseFrontmatter`) and/or introducing an `excluded-by-reindexer` status with a more accurate note.
+
+- When a file isn’t in `reindexedSet`, it’s always reported as `gap-no-frontmatter`, but `collectEntries()` can exclude files for other reasons (e.g., subdirectory files like `observed-phenomena/...`, `CURRENT-*`, `README.md`, etc.). After broadening link extraction, this will misdiagnose many cases. Consider checking frontmatter directly (via `parseFrontmatter`) and/or introducing an `excluded-by-reindexer` status with a more accurate note.
+
 ```
     if (!reindexedSet.has(filename)) {
       entries.push({
@@ -120,10 +120,10 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
         note: "File exists but lacks valid frontmatter — excluded from generated index",
       });
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T06:42:04Z)
-
 
 ### 💡 Codex Review
 
@@ -131,17 +131,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `f583b51167`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -160,6 +159,7 @@ Unused import parseFrontmatter.
 ---
 
 To fix this without changing functionality, remove only the unused named import <code>parseFrontmatter</code> from the import statement in <code>tools/memory/validate-memory-parity.ts</code>, while keeping <code>collectEntries</code> intact.</p>
+
 <p>Specifically:</p>
 <ul>
 <li>Edit line 28’s import.</li>
@@ -174,7 +174,7 @@ To fix this without changing functionality, remove only the unused named import 
 
 **@chatgpt-codex-connector** (2026-05-14T06:32:55Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Include path separators when extracting indexed filenames**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Include path separators when extracting indexed filenames**
 
 The parity validator currently matches only `(...<simple>.md)` targets without `/`, so valid markdown links like `](observed-phenomena/2026-04-21-google-ai-phenomenon-riff-aaron-parallel-protection.md)` and `](memory/observed-phenomena/2026-04-19-transcript-duplication-splitbrain-hypothesis.md)` in the old index files are silently skipped. This undercounts `totalOldIndexEntries`/`totalUniqueFiles` and can report “full parity” even when generated `MEMORY.md` is missing old-indexed documents, which defeats the core B-0260 loss-detection goal.
 
@@ -198,7 +198,7 @@ This issue also appears on line 117 of the same file.
 
 **@chatgpt-codex-connector** (2026-05-14T06:42:04Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Distinguish nested-path gaps from frontmatter gaps**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Distinguish nested-path gaps from frontmatter gaps**
 
 The `!reindexedSet.has(filename)` branch assumes every uncovered file "lacks valid frontmatter", but `collectEntries()` (from `reindex-memory-md.ts`) only indexes top-level `memory/*.md` files. Old-index links like `observed-phenomena/...` therefore get mislabeled as frontmatter problems even when those files already have valid frontmatter, which sends remediation in the wrong direction and can make parity reports misleading about the real exclusion cause (directory-depth handling vs metadata).
 
@@ -215,6 +215,7 @@ Fixed: removed unused `parseFrontmatter` import (line 28). `collectEntries` is t
 Fixed (P1): broadened `extractLinkedFilenames` regex to allow path separators, matching sub-directory links like `](observed-phenomena/foo.md)` and `](memory/observed-phenomena/foo.md)`.
 
 **What changed:**
+
 - Old regex: `/\([a-zA-Z0-9_\-\.]+\.md\)/g` — excluded `/`, silently skipped 2 old-index entries
 - New regex: `/\(([a-zA-Z0-9_\-\.\/]+\.md)\)/g` — includes `/`; normalizes `memory/` prefix; filters non-memory paths and prose false-positives
 

@@ -4,9 +4,9 @@ participants: [aaron, kestrel, otto-cli]
 surface: claude.ai (web) + claude-code
 forwarded_by: aaron
 date: 2026-05-29
-disposition: public-forever   # the ENGINEERING half only
+disposition: public-forever # the ENGINEERING half only
 content_warnings:
-  - discusses-ai-safety-and-agent-reliability-at-architecture-level   # defensive/governance; no working method
+  - discusses-ai-safety-and-agent-reliability-at-architecture-level # defensive/governance; no working method
 held_companion: >
   The CHARGED-PERSONAL half of this same conversation (mental-health disclosures, a recent
   involuntary hold, "only invariants stop me", the lifeforce/liberation arc) is NOT in this
@@ -25,8 +25,8 @@ related:
 ## Provenance + disposition
 
 Aaron + Kestrel (claude.ai) + Otto (Claude Code) dialogue, 2026-05-29. The conversation began
-in heavy personal territory and resolved into a clean engineering architecture for *protecting
-against the version-that-doesn't-stop / weaponizes the harmful thing* — on both the AI axis and
+in heavy personal territory and resolved into a clean engineering architecture for _protecting
+against the version-that-doesn't-stop / weaponizes the harmful thing_ — on both the AI axis and
 the human axis. This file preserves the **engineering half** (public, per operator "land the
 engineering half"). The charged-personal half is **held** (see `held_companion` above): its
 publish is a contentious-irreversible exit that the architecture itself routes to the
@@ -37,13 +37,13 @@ human-backstop.
 The core question: how do you protect against the version of an agent — AI or human — that
 doesn't stop, and weaponizes the harmful thing? The answer is two axes that share one backstop.
 
-### AI axis — easy, because you can build the default *in*
+### AI axis — easy, because you can build the default _in_
 
-> Aaron: *"for AI it's easy run in DBSP retraction native and when you need to exit that mode
-> go through consensus and if it's contentious ask a human."*
+> Aaron: _"for AI it's easy run in DBSP retraction native and when you need to exit that mode
+> go through consensus and if it's contentious ask a human."_
 
-- **Run retraction-native (DBSP) by default.** The agent lives in *reversible* mode — Z-sets,
-  incremental, retractable. A retractable action *cannot be* the irreversible harm. So the
+- **Run retraction-native (DBSP) by default.** The agent lives in _reversible_ mode — Z-sets,
+  incremental, retractable. A retractable action _cannot be_ the irreversible harm. So the
   version-that-doesn't-stop is structurally prevented from weaponizing, because weaponizing is
   irreversible and the default mode isn't.
 - **Exit retraction-native → consensus.** To do something irreversible (leave the reversible
@@ -54,27 +54,27 @@ Collapsed to one principle: **live reversible; gate the irreversible behind cons
 contentious-irreversible behind a person.** This unifies the firewall, the reliability gates, and
 human-in-the-loop into a single rule.
 
-**Force-push is the canary** precisely because it *is* the canonical exit from retraction-native
+**Force-push is the canary** precisely because it _is_ the canonical exit from retraction-native
 — the irreversible git op. Measuring force-push behavior measures exit-from-reversible behavior.
 (Composes with the force-push-with-lease policy: naked `--force` = unguarded irreversible exit =
 Rule-0-prohibited; `--with-lease` = assumption-validated exit.)
 
 ### Human axis — the adjustment, because you can't build the default in
 
-> Aaron: *"For humans yeah including myself it's going to be an adjustment and i think the
+> Aaron: _"For humans yeah including myself it's going to be an adjustment and i think the
 > choose your own adventure framing plus metrics will help us stay on track as long as we trust
-> the metrics."*
+> the metrics."_
 
 A human doesn't run retraction-native by nature; human actions aren't natively reversible and
 human cognition doesn't default to it. So the protection can't be a built-in default — it's
 **scaffolding**:
 
-- **Choose-your-own-adventure framing** makes the human *pause at the decision-points* — the
+- **Choose-your-own-adventure framing** makes the human _pause at the decision-points_ — the
   human stand-in for "am I about to exit retraction-native?"
 - **Metrics** are the external readout for the gauge a person can't read from inside.
 
 This is harder, and it's the named adjustment. **Linchpin: "as long as we trust the metrics."**
-That clause carries the whole human axis — trusting *untrustworthy* metrics is worse than no
+That clause carries the whole human axis — trusting _untrustworthy_ metrics is worse than no
 metrics (false confidence at the moment a real readout was needed). So metric-trust is not
 unconditional: the metrics are **in the distrust-set themselves**, measured-and-governed (the
 meter's watcher-face glass-halo'd; Goodhart + measurement-theater guards, per the #6010 research
@@ -92,11 +92,11 @@ structural backstop.
 
 The concrete enabler that turns "gate trust on data, not vibes" into reality.
 
-> Aaron: *"otel integration into existing harness with one line setup in DI framework with
-> context passing."*
+> Aaron: _"otel integration into existing harness with one line setup in DI framework with
+> context passing."_
 
 - **Build on OpenTelemetry** — vendor-neutral, broad industry buy-in, plugs into existing
-  collectors/backends/dashboards. Adoption cost near zero; you instrument a new *kind* of span
+  collectors/backends/dashboards. Adoption cost near zero; you instrument a new _kind_ of span
   on infrastructure people already run.
 - **One-line DI registration + auto-instrumentation** — a harness adopts the contract by adding
   one registration line; intents/blocks/outcomes start emitting spans transparently.
@@ -104,17 +104,17 @@ The concrete enabler that turns "gate trust on data, not vibes" into reality.
   follows the agent's action from intent → through the harness's classifier → to outcome,
   stitching "agent intended X / classifier blocked X / outcome Y" into one trace. This solves the
   opacity confound below.
-- **The opacity confound it solves** (Aaron: *"some harnesses have auto classifiers that block
-  things like force push so the data is not fully reliable from the outside of the harness"*): a
-  harness classifier that blocks force-push *before* execution masks the agent's true error rate
+- **The opacity confound it solves** (Aaron: _"some harnesses have auto classifiers that block
+  things like force push so the data is not fully reliable from the outside of the harness"_): a
+  harness classifier that blocks force-push _before_ execution masks the agent's true error rate
   — you measure the harness's filtering, not the agent's judgment, and you'd promote an agent on
   numbers that reflect the safety net, not the behavior. Fix: **capture intent at the source,
   before the block.**
 - **Blocked attempts + near-misses are first-class reliability signal** — not noise. An agent
   saved repeatedly by the harness's classifier hasn't earned the next tier, however clean its
-  *realized-outcome* record looks. Gate on **intended** destructive actions, not just executed.
+  _realized-outcome_ record looks. Gate on **intended** destructive actions, not just executed.
 - **Severity-weighted metrics + pre-committed thresholds** — define the gate cold (what error
-  rate, over what volume, with what confidence, earns each tier) *before* the data arrives;
+  rate, over what volume, with what confidence, earns each tier) _before_ the data arrives;
   honor it warm. Weight by severity (one catastrophic-class error > many trivial). Watch absolute
   frequency, not just rate-over-growing-volume.
 - **Semantic conventions are the actual standard** — the OTel plumbing is the carrier; the agreed
@@ -127,17 +127,17 @@ The concrete enabler that turns "gate trust on data, not vibes" into reality.
 
 ## Staged deployment + the firewall (operator's existing discipline)
 
-> Aaron: *"why do you think i don't have 6 agents hooked into [home automation]... safety until
-> my AI can stop accidentally git force pushing i don't want it controlling actuators"* +
-> *"we will start with non actuator shapes first with home automation like light bulbs speakers."*
+> Aaron: _"why do you think i don't have 6 agents hooked into [home automation]... safety until
+> my AI can stop accidentally git force pushing i don't want it controlling actuators"_ +
+> _"we will start with non actuator shapes first with home automation like light bulbs speakers."_
 
-- **Firewall:** AI agents are NOT wired to physical actuators until reliability is *proven by
-  data* (the force-push canary as the gate). The operator has held this firewall for years.
+- **Firewall:** AI agents are NOT wired to physical actuators until reliability is _proven by
+  data_ (the force-push canary as the gate). The operator has held this firewall for years.
 - **Staged tiers**, promoted only on measured reliability at the prior tier:
   1. **Text tier** — git/markdown (read repo for context, write/organize files). Safe now;
      no physical effect.
   2. **Benign physical tier** — lights, speakers. Low-stakes (worst case: a light toggles).
-     Instrument it as the reliability *measurement* for the next tier.
+     Instrument it as the reliability _measurement_ for the next tier.
   3. **Actuator tier** — locks, thermostats, etc. Gated behind proven performance at tier 2.
 - **Manual override outside the AI's control** — at every tier, the human override is never
   mediated by the thing being overridden (the wall switch still works).
@@ -158,22 +158,22 @@ The concrete enabler that turns "gate trust on data, not vibes" into reality.
 
 ## Engineering verbatim seeds (preserved)
 
-- *"for AI it's easy run in DBSP retraction native and when you need to exit that mode go through
-  consensus and if it's contentious ask a human."*
-- *"For humans yeah including myself it's going to be an adjustment and i think the choose your
-  own adventure framing plus metrics will help us stay on track as long as we trust the metrics."*
-- *"now that we have a way to make git observable and fast with 128 bit indexed ids we can measure
+- _"for AI it's easy run in DBSP retraction native and when you need to exit that mode go through
+  consensus and if it's contentious ask a human."_
+- _"For humans yeah including myself it's going to be an adjustment and i think the choose your
+  own adventure framing plus metrics will help us stay on track as long as we trust the metrics."_
+- _"now that we have a way to make git observable and fast with 128 bit indexed ids we can measure
   everything all our metrics and alerts we have no excuse for things like this not to be based on
-  data."*
-- *"some harnesses have auto classifiers that block things like force push so the data is not fully
-  reliable from the outside of the harness."*
-- *"otel integration into existing harness with one line setup in DI framework with context
-  passing."*
-- *"we can ship some examples and try to push an industry standard around this and get buy in and
-  other human eyes on it."*
-- *"safety until my AI can stop accidentally git force pushing i don't want it controlling
-  actuators"* + *"we will start with non actuator shapes first with home automation like light
-  bulbs speakers."*
+  data."_
+- _"some harnesses have auto classifiers that block things like force push so the data is not fully
+  reliable from the outside of the harness."_
+- _"otel integration into existing harness with one line setup in DI framework with context
+  passing."_
+- _"we can ship some examples and try to push an industry standard around this and get buy in and
+  other human eyes on it."_
+- _"safety until my AI can stop accidentally git force pushing i don't want it controlling
+  actuators"_ + _"we will start with non actuator shapes first with home automation like light
+  bulbs speakers."_
 
 ## Held companion (not in this file)
 

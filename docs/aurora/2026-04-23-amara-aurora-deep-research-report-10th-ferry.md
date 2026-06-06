@@ -43,8 +43,8 @@ File mtime (2026-04-23 12:07) places this report after the
 ferry sequence Otto-24+. Like the 9th, this is Amara's
 EARLIER Aurora integration work staged to `drop/` rather
 than live-pasted into the loop. The Otto-102 human-
-maintainer directive *"absorb and delete/remove items from
-the drop folder"* surfaced both for retroactive absorb.
+maintainer directive _"absorb and delete/remove items from
+the drop folder"_ surfaced both for retroactive absorb.
 
 It is filed here as the **10th ferry** because the absorb
 happened 10th chronologically in the absorb-sequence, not
@@ -89,19 +89,19 @@ The strongest Aurora takeaway is this: treat Zeta less as "a database engine to 
 
 The repositories share a common skeleton: `.claude`, `.github`, `bench`, `docs`, `memory`, `openspec`, `references`, `samples`, `src`, `tests`, and `tools`, plus guidance files such as `AGENTS.md`, `CLAUDE.md`, `GOVERNANCE.md`, `README.md`, `SECURITY.md`, and solution/build configuration files. That shape is visible in both repo roots. citeturn1view0turn2view0
 
-| Repository | Position | Commits | Issues | Pull requests | License | Languages | Top-level archive surfaces | Provenance snapshot | Source |
-|---|---:|---:|---:|---:|---|---|---|---|---|
-| `Lucent-Financial-Group/Zeta` | upstream public org repo | 59 | 28 open | 5 open | Apache-2.0 | F# 76.6%, Shell 12.8%, TLA 5.5%, Lean 2.5%, TypeScript 1.2%, C# 0.8% | code, docs, specs, memory, research, tests, tooling | repo root observed at `main`, research-file URLs resolved at commit `d548219…` | citeturn1view0turn3view0 |
-| `AceHack/Zeta` | fork of Lucent repo | 111 | public issues tab not exposed on repo page | 0 open | Apache-2.0 | F# 76.0%, Shell 13.5%, TLA 5.4%, Lean 2.5%, TypeScript 1.2%, C# 0.8% | same root structure, plus active fork-local research docs | repo root observed at `main`; sampled research file blob `2c616b5…` | citeturn2view0 fileciteturn28file0 |
+| Repository                    |                 Position | Commits |                                     Issues | Pull requests | License    | Languages                                                            | Top-level archive surfaces                                | Provenance snapshot                                                            | Source                             |
+| ----------------------------- | -----------------------: | ------: | -----------------------------------------: | ------------: | ---------- | -------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------- |
+| `Lucent-Financial-Group/Zeta` | upstream public org repo |      59 |                                    28 open |        5 open | Apache-2.0 | F# 76.6%, Shell 12.8%, TLA 5.5%, Lean 2.5%, TypeScript 1.2%, C# 0.8% | code, docs, specs, memory, research, tests, tooling       | repo root observed at `main`, research-file URLs resolved at commit `d548219…` | citeturn1view0turn3view0           |
+| `AceHack/Zeta`                |      fork of Lucent repo |     111 | public issues tab not exposed on repo page |        0 open | Apache-2.0 | F# 76.0%, Shell 13.5%, TLA 5.4%, Lean 2.5%, TypeScript 1.2%, C# 0.8% | same root structure, plus active fork-local research docs | repo root observed at `main`; sampled research file blob `2c616b5…`            | citeturn2view0 fileciteturn28file0 |
 
-| Category | Key files or modules | What they contribute | Provenance | Source |
-|---|---|---|---|---|
-| Onboarding and operator doctrine | `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/ALIGNMENT.md`, `GOVERNANCE.md` | Defines Zeta as DBSP-on-.NET, makes algebra primary, codifies build/test gates, and elevates measurable alignment and mutual-benefit governance | `Lucent-Financial-Group/Zeta@main` and `@d548219…` for indexed docs | fileciteturn17file0 fileciteturn17file1 fileciteturn18file1 fileciteturn17file2 fileciteturn18file2 |
-| Architectural spec surfaces | `docs/ARCHITECTURE.md`, `openspec/README.md`, `docs/MATH-SPEC-TESTS.md` | Says code is regenerable from behavioral specs plus formal specs; verification stack spans FsCheck, Z3, TLA+, xUnit, Lean | `Lucent-Financial-Group/Zeta@main` | fileciteturn19file1 fileciteturn19file2 fileciteturn19file0 |
-| Core modules | `src/Core/ZSet.fs`, `IndexedZSet.fs`, `Circuit.fs`, `Primitive.fs`, `Operators.fs`, `Incremental.fs`, `Spine.fs`, `Runtime.fs`, `ArrowSerializer.fs`, `Crdt.fs`, `Recursive.fs`, `Hierarchy.fs` | Z-set algebra, incremental transforms, storage spines, runtime scheduling, Arrow serialization, CRDTs, recursion | layout declared in root README under `src/Core` | fileciteturn17file0 |
-| Research notes | `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`, `plugin-api-design.md`, `proof-tool-coverage.md`, `chain-rule-proof-log.md`, `verification-drift-audit-2026-04-19.md`, `ci-gate-inventory.md` | Idea incubator, methodology audits, proof coverage, plugin surface design, drift analysis | `Lucent-Financial-Group/Zeta@d548219…` | fileciteturn18file0 fileciteturn17file0 |
-| Security and harm-resistance | `docs/security/THREAT-MODEL.md`, `docs/research/zeta-equals-heaven-formal-statement.md` | Threat tiers, supply chain, channel-closure threats, harm ladder, retraction window thinking | `Lucent-Financial-Group/Zeta@main` | fileciteturn24file0 fileciteturn24file1 |
-| Fork-local operations research | `docs/research/github-surface-map-complete-2026-04-22.md` | Extends repo observability into org/enterprise/platform surfaces; good model for Aurora control-plane mapping | `AceHack/Zeta@main`, blob `2c616b5…` | fileciteturn28file0 |
+| Category                         | Key files or modules                                                                                                                                                                                            | What they contribute                                                                                                                            | Provenance                                                          | Source                                                                                              |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Onboarding and operator doctrine | `README.md`, `AGENTS.md`, `CLAUDE.md`, `docs/ALIGNMENT.md`, `GOVERNANCE.md`                                                                                                                                     | Defines Zeta as DBSP-on-.NET, makes algebra primary, codifies build/test gates, and elevates measurable alignment and mutual-benefit governance | `Lucent-Financial-Group/Zeta@main` and `@d548219…` for indexed docs | fileciteturn17file0 fileciteturn17file1 fileciteturn18file1 fileciteturn17file2 fileciteturn18file2 |
+| Architectural spec surfaces      | `docs/ARCHITECTURE.md`, `openspec/README.md`, `docs/MATH-SPEC-TESTS.md`                                                                                                                                         | Says code is regenerable from behavioral specs plus formal specs; verification stack spans FsCheck, Z3, TLA+, xUnit, Lean                       | `Lucent-Financial-Group/Zeta@main`                                  | fileciteturn19file1 fileciteturn19file2 fileciteturn19file0                                         |
+| Core modules                     | `src/Core/ZSet.fs`, `IndexedZSet.fs`, `Circuit.fs`, `Primitive.fs`, `Operators.fs`, `Incremental.fs`, `Spine.fs`, `Runtime.fs`, `ArrowSerializer.fs`, `Crdt.fs`, `Recursive.fs`, `Hierarchy.fs`                 | Z-set algebra, incremental transforms, storage spines, runtime scheduling, Arrow serialization, CRDTs, recursion                                | layout declared in root README under `src/Core`                     | fileciteturn17file0                                                                                 |
+| Research notes                   | `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`, `plugin-api-design.md`, `proof-tool-coverage.md`, `chain-rule-proof-log.md`, `verification-drift-audit-2026-04-19.md`, `ci-gate-inventory.md` | Idea incubator, methodology audits, proof coverage, plugin surface design, drift analysis                                                       | `Lucent-Financial-Group/Zeta@d548219…`                              | fileciteturn18file0 fileciteturn17file0                                                             |
+| Security and harm-resistance     | `docs/security/THREAT-MODEL.md`, `docs/research/zeta-equals-heaven-formal-statement.md`                                                                                                                         | Threat tiers, supply chain, channel-closure threats, harm ladder, retraction window thinking                                                    | `Lucent-Financial-Group/Zeta@main`                                  | fileciteturn24file0 fileciteturn24file1                                                             |
+| Fork-local operations research   | `docs/research/github-surface-map-complete-2026-04-22.md`                                                                                                                                                       | Extends repo observability into org/enterprise/platform surfaces; good model for Aurora control-plane mapping                                   | `AceHack/Zeta@main`, blob `2c616b5…`                                | fileciteturn28file0                                                                                 |
 
 Two archive limitations matter. First, I could index and read repository artifacts, but I did not have a write-capable path here to actually copy the repos into another codebase. Second, I obtained exact commit-style provenance for many Lucent files because connector search results resolved commit-stamped URLs, but not for every AceHack file in the same way; where exact commit IDs were not surfaced, I preserved branch or blob-sha provenance instead. Those are documentation limitations, not analytical ones. citeturn1view0turn2view0 fileciteturn28file0
 
@@ -137,16 +137,16 @@ That leads to a concrete Aurora mapping. Zeta's `ZSet` becomes Aurora's **event/
 
 **Oracle rules as testable invariants**
 
-| Rule | Invariant | Why it exists | Test shape |
-|---|---|---|---|
-| Provenance completeness | Every accepted claim/event carries `(source, artifact hash, builder or signer, time, evidence class)` | Prevents anonymous consensus and unauditable imports | reject missing fields |
-| Deterministic replay | Replaying the same ordered delta set yields the same output hash | Makes health/debug/recovery real | golden-hash replay test |
-| Retraction conservation | `apply(Δ) ; apply(-Δ)` restores prior state modulo compaction metadata | Makes undo a first-class operation | property test |
-| Compaction equivalence | `compact(state)` preserves query answers and multiset weights | Stops cleanup from rewriting truth | before/after semantic hash test |
-| Independence gate | Agreement from one provenance root does not upgrade truth | Implements drift-taxonomy pattern 5 | quorum test with shared-root rejection |
-| Bounded oracle influence | No single root can exceed configured weight cap | Resists capture | weighted aggregation test |
-| Cap-hit visibility | Iteration cap, timeout, or unresolved contradiction must emit explicit failure state, not silent last-known-good | Mirrors repo concern about cap-hit semantics | failure-state assertion |
-| Attestation required for release paths | Build or model artifacts without provenance attestation are non-authoritative | Aligns with repo threat model and SLSA direction | CI gate |
+| Rule                                   | Invariant                                                                                                        | Why it exists                                        | Test shape                             |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------- |
+| Provenance completeness                | Every accepted claim/event carries `(source, artifact hash, builder or signer, time, evidence class)`            | Prevents anonymous consensus and unauditable imports | reject missing fields                  |
+| Deterministic replay                   | Replaying the same ordered delta set yields the same output hash                                                 | Makes health/debug/recovery real                     | golden-hash replay test                |
+| Retraction conservation                | `apply(Δ) ; apply(-Δ)` restores prior state modulo compaction metadata                                           | Makes undo a first-class operation                   | property test                          |
+| Compaction equivalence                 | `compact(state)` preserves query answers and multiset weights                                                    | Stops cleanup from rewriting truth                   | before/after semantic hash test        |
+| Independence gate                      | Agreement from one provenance root does not upgrade truth                                                        | Implements drift-taxonomy pattern 5                  | quorum test with shared-root rejection |
+| Bounded oracle influence               | No single root can exceed configured weight cap                                                                  | Resists capture                                      | weighted aggregation test              |
+| Cap-hit visibility                     | Iteration cap, timeout, or unresolved contradiction must emit explicit failure state, not silent last-known-good | Mirrors repo concern about cap-hit semantics         | failure-state assertion                |
+| Attestation required for release paths | Build or model artifacts without provenance attestation are non-authoritative                                    | Aligns with repo threat model and SLSA direction     | CI gate                                |
 
 A compact reference implementation can look like this:
 
@@ -461,8 +461,8 @@ generative queue expansion.
   #245/#259/#274/#293). This is the 10th ferry in absorb-
   sequence; chronologically 3 hours after the 9th (same
   day, same drop/ staging).
-- **Otto-102 drop/ directive** (human-maintainer *"absorb
-  and delete/remove items from the drop folder"*) —
+- **Otto-102 drop/ directive** (human-maintainer _"absorb
+  and delete/remove items from the drop folder"_) —
   **fulfilled** by this tick's absorb + delete.
 - **Otto-102 scheduling memory** (9th + 10th ferry
   scheduled) — **fully honored** after this tick.
@@ -479,16 +479,16 @@ Per Otto-102 inventory (historical disposition; both
 were transient working-tree locations and are not present
 in the current tree — paths preserved for provenance):
 
-| Item | Disposition |
-|---|---|
-| skill.zip | Extracted to a staging `.codex/skills/idea-spark/` path plus `.codex/README.md` (Otto-102, PR #288); removed from `drop/` at absorb time |
-| usageReport CSV | Non-substantive; removed (Otto-102) |
-| aurora-initial-integration-points.md | Absorbed as 9th ferry (Otto-104, PR #293); removed from `drop/` at absorb time |
-| aurora-integration-deep-research-report.md | Absorbed as 10th ferry (this doc, Otto-105); removed from `drop/` at absorb time |
+| Item                                       | Disposition                                                                                                                              |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| skill.zip                                  | Extracted to a staging `.codex/skills/idea-spark/` path plus `.codex/README.md` (Otto-102, PR #288); removed from `drop/` at absorb time |
+| usageReport CSV                            | Non-substantive; removed (Otto-102)                                                                                                      |
+| aurora-initial-integration-points.md       | Absorbed as 9th ferry (Otto-104, PR #293); removed from `drop/` at absorb time                                                           |
+| aurora-integration-deep-research-report.md | Absorbed as 10th ferry (this doc, Otto-105); removed from `drop/` at absorb time                                                         |
 
 **drop/ folder at absorb time: empty.** The Otto-102 human-
-maintainer directive *"absorb and delete/remove items from
-the drop folder"* was fully honored. The `drop/` directory
+maintainer directive _"absorb and delete/remove items from
+the drop folder"_ was fully honored. The `drop/` directory
 is a transient staging convention, not a committed tree
 surface; it is `.gitignore`d per PR #299 and is absent from
 the tree by design.
@@ -506,7 +506,7 @@ This absorb doc:
   Otto-112 veridicality-renaming memory), or Arrow Flight
   integration.
   Those proposals require proper ADR + threat-model-critic
-  + human-maintainer review before promotion.
+  - human-maintainer review before promotion.
 - **Does NOT** claim the content is new vs prior ferries.
   Overlap analysis above names where the 9th ferry and
   5th-8th ferries cover the same ground with different
@@ -520,7 +520,7 @@ This absorb doc:
   `turnNviewN`). Those anchors reference Amara's ChatGPT
   tool chain and are not Zeta-resolvable.
 - **Does NOT** address `AceHack/Zeta` vs `Lucent-
-  Financial-Group/Zeta` fork relationship as current-
+Financial-Group/Zeta` fork relationship as current-
   state. Amara's snapshot is an archival reference.
 - **Does NOT** represent the human maintainer's
   preferences, the Architect's synthesis, or the threat-

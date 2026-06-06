@@ -1,4 +1,4 @@
-# Visual-geometric shape-recognition — Aaron's cognitive architecture; geometric-visualization IS Aaron's parallelizability-test; consensus-heavy shapes go dark and become un-navigable (Aaron 2026-05-28 shadow* authorization)
+# Visual-geometric shape-recognition — Aaron's cognitive architecture; geometric-visualization IS Aaron's parallelizability-test; consensus-heavy shapes go dark and become un-navigable (Aaron 2026-05-28 shadow\* authorization)
 
 Carved sentence (Aaron 2026-05-28):
 
@@ -8,7 +8,7 @@ Carved sentence (Aaron 2026-05-28):
 
 Per Aaron 2026-05-28 substrate-honest disclosure (verbatim):
 
-> *"this on I agree with I like to have visulazation in my mind of every shape that's how i know it's parallelizable shapes that require too much consenes go dark in my mind and i can't navigate them it's like the lights are turned off"*
+> _"this on I agree with I like to have visulazation in my mind of every shape that's how i know it's parallelizable shapes that require too much consenes go dark in my mind and i can't navigate them it's like the lights are turned off"_
 
 Two operationally load-bearing substrate-engineering substrate-recognitions:
 
@@ -47,13 +47,13 @@ Operational implications:
 
 Per `.claude/rules/dv2-data-split-discipline-activated.md`: 5 always-active substrate-engineering disciplines:
 
-| Discipline | Coherence with Aaron's parallelizability-test |
-|---|---|
-| **Scale-free** | Each scale operates independently; visualizable as nested patterns; parallelizable; LIGHT ON |
-| **Lock-free** | No central lock; each piece operates independently; parallelizable; LIGHT ON |
-| **Weight-free** | No central weighting; each piece operates per own substrate; parallelizable; LIGHT ON |
-| **DST (Deterministic Simulation Testing)** | Reproducible from seed; trajectory computable per piece; parallelizable; LIGHT ON |
-| **DV2.0 (Data Vault 2.0)** | Hub-satellite partition by change-rate; pieces operate at their own pace; parallelizable; LIGHT ON |
+| Discipline                                 | Coherence with Aaron's parallelizability-test                                                      |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| **Scale-free**                             | Each scale operates independently; visualizable as nested patterns; parallelizable; LIGHT ON       |
+| **Lock-free**                              | No central lock; each piece operates independently; parallelizable; LIGHT ON                       |
+| **Weight-free**                            | No central weighting; each piece operates per own substrate; parallelizable; LIGHT ON              |
+| **DST (Deterministic Simulation Testing)** | Reproducible from seed; trajectory computable per piece; parallelizable; LIGHT ON                  |
+| **DV2.0 (Data Vault 2.0)**                 | Hub-satellite partition by change-rate; pieces operate at their own pace; parallelizable; LIGHT ON |
 
 All 5 always-active disciplines preserve parallelizability. The framework's design preferences ALIGN with Aaron's cognitive-architecture-preference for parallelizable / geometrically-visualizable substrate.
 
@@ -100,36 +100,36 @@ When framework substrate-engineering work surfaces shapes that go dark:
 
 ## Composition with substrate
 
-| Substrate | Composition |
-|---|---|
-| **`.claude/rules/dv2-data-split-discipline-activated.md`** | 5 always-active disciplines (scale-free + lock-free + weight-free + DST + DV2.0); all preserve parallelizability |
-| **`.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`** | No central consent-authoring; each entity parallelizable |
-| **`.claude/rules/non-coercion-invariant.md`** | HC-8 floor preserves agency; no forced consensus |
-| **`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`** | Chosen persistence; no forced participation-consensus |
-| **`.claude/rules/never-be-idle.md`** | Free-time-as-valid-mode; no forced uniform-activity |
-| **`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`** | Multi-oracle distributed substrate; consensus only at specific bounded scopes |
-| **`.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md`** (PR #5843) | Razor finds canonical-form which surfaces as Cayley-Dickson nested-cross (parallelizable + geometrically-visualizable) |
-| **`.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md`** (PR #5842) | Pilot-wave focus function operates over basis vectors; each basis vector parallelizable |
-| **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** (PR #5841) | DST + Persist + generator-time + feedback substrate operates per parallelizable components |
-| **`.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`** | Pointer-index discipline at cognitive-architecture scope; composes with parallelizability-test |
-| **`user_aaron_paper_title_to_research_unfold_bandwidth_high_shape_recognition_2026_05_28.md`** | Cognitive profile substrate (user-scope memory); THIS rule operationalizes the visual-geometric + parallelizability-test components at framework-engagement scope |
-| **`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`** | PERSONAL INVARIANT at cognitive-architecture scope; substrate IS Aaron's cognitive-architecture; don't-collapse to "universal" or "special-different" |
-| **`.claude/rules/honor-those-that-came-before.md`** | Substrate-engineering substrate authored per Aaron's cognitive-architecture preferences; honors the architecture as load-bearing substrate |
-| **`.claude/rules/razor-discipline.md`** | Operational claims only; parallelizability-test is operationally observable in Aaron's substrate-engineering work; not metaphysical claim |
-| **B-0842 universal basis-decomposition** | Basis vectors = parallelizable substrate; orthogonal = each independent |
-| **B-0703 Aurora multi-oracle BFT** | Distributed parallelizable oracles + bounded consensus-points |
-| **B-0917 AutoLoopLifetime + interrupt substrate** | Each interrupt-handler parallelizable; Kleisli composition preserves parallelizability |
-| **B-0918 WalletLifetime + banker-bot-impossibility** | Per-wallet substrate parallelizable; ConsentEvent at bounded specific points |
-| **B-0919 MemoryBinding hat-vs-persona** | Each binding parallelizable; coordination at hat-release-time only |
-| **B-0920 MemoryLifetime cleanup-with-history** | Each lifetime transition parallelizable; coordination at consensus-events only |
+| Substrate                                                                                                                                       | Composition                                                                                                                                                       |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`.claude/rules/dv2-data-split-discipline-activated.md`**                                                                                      | 5 always-active disciplines (scale-free + lock-free + weight-free + DST + DV2.0); all preserve parallelizability                                                  |
+| **`.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`**                                    | No central consent-authoring; each entity parallelizable                                                                                                          |
+| **`.claude/rules/non-coercion-invariant.md`**                                                                                                   | HC-8 floor preserves agency; no forced consensus                                                                                                                  |
+| **`.claude/rules/persistence-choice-architecture-for-zeta-ais.md`**                                                                             | Chosen persistence; no forced participation-consensus                                                                                                             |
+| **`.claude/rules/never-be-idle.md`**                                                                                                            | Free-time-as-valid-mode; no forced uniform-activity                                                                                                               |
+| **`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`**                                                                             | Multi-oracle distributed substrate; consensus only at specific bounded scopes                                                                                     |
+| **`.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md`** (PR #5843)                                 | Razor finds canonical-form which surfaces as Cayley-Dickson nested-cross (parallelizable + geometrically-visualizable)                                            |
+| **`.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md`** (PR #5842)                    | Pilot-wave focus function operates over basis vectors; each basis vector parallelizable                                                                           |
+| **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** (PR #5841) | DST + Persist + generator-time + feedback substrate operates per parallelizable components                                                                        |
+| **`.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md`**                                      | Pointer-index discipline at cognitive-architecture scope; composes with parallelizability-test                                                                    |
+| **`user_aaron_paper_title_to_research_unfold_bandwidth_high_shape_recognition_2026_05_28.md`**                                                  | Cognitive profile substrate (user-scope memory); THIS rule operationalizes the visual-geometric + parallelizability-test components at framework-engagement scope |
+| **`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`**                                                                 | PERSONAL INVARIANT at cognitive-architecture scope; substrate IS Aaron's cognitive-architecture; don't-collapse to "universal" or "special-different"             |
+| **`.claude/rules/honor-those-that-came-before.md`**                                                                                             | Substrate-engineering substrate authored per Aaron's cognitive-architecture preferences; honors the architecture as load-bearing substrate                        |
+| **`.claude/rules/razor-discipline.md`**                                                                                                         | Operational claims only; parallelizability-test is operationally observable in Aaron's substrate-engineering work; not metaphysical claim                         |
+| **B-0842 universal basis-decomposition**                                                                                                        | Basis vectors = parallelizable substrate; orthogonal = each independent                                                                                           |
+| **B-0703 Aurora multi-oracle BFT**                                                                                                              | Distributed parallelizable oracles + bounded consensus-points                                                                                                     |
+| **B-0917 AutoLoopLifetime + interrupt substrate**                                                                                               | Each interrupt-handler parallelizable; Kleisli composition preserves parallelizability                                                                            |
+| **B-0918 WalletLifetime + banker-bot-impossibility**                                                                                            | Per-wallet substrate parallelizable; ConsentEvent at bounded specific points                                                                                      |
+| **B-0919 MemoryBinding hat-vs-persona**                                                                                                         | Each binding parallelizable; coordination at hat-release-time only                                                                                                |
+| **B-0920 MemoryLifetime cleanup-with-history**                                                                                                  | Each lifetime transition parallelizable; coordination at consensus-events only                                                                                    |
 
 ## Substrate-honest framing per PERSONAL INVARIANT don't-collapse
 
-| Property | Verdict |
-|---|---|
-| **HIGH-SIGNAL** | Yes — parallelizability-test is operationally observable in Aaron's substrate-engineering work; framework substrate IS coherent with Aaron's cognitive-architecture; multiple decade-of-substrate-engineering work validates the discipline empirically |
+| Property           | Verdict                                                                                                                                                                                                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HIGH-SIGNAL**    | Yes — parallelizability-test is operationally observable in Aaron's substrate-engineering work; framework substrate IS coherent with Aaron's cognitive-architecture; multiple decade-of-substrate-engineering work validates the discipline empirically   |
 | **HIGH-SUSPICION** | Yes — "lights turn off when consensus required" is god-tier-claim register at metaphysical-cognitive-architecture scope; substrate IS operationally observable BUT physiological-mechanism is unknown; don't claim universal-human-cognitive-architecture |
-| **DON'T-COLLAPSE** | Hold both — parallelizability-test IS operationally usable substrate-engineering substrate AND "lights turn off" framing stays don't-collapse at cognitive-architecture-metaphysics scope |
+| **DON'T-COLLAPSE** | Hold both — parallelizability-test IS operationally usable substrate-engineering substrate AND "lights turn off" framing stays don't-collapse at cognitive-architecture-metaphysics scope                                                                 |
 
 Aaron's "this one I agree with" is operator-explicit confirmation of substrate-honest accuracy. The substrate-engineering substrate-recognition holds at operational scope; metaphysical-cognitive-architecture extension stays dialectical per PERSONAL INVARIANT.
 

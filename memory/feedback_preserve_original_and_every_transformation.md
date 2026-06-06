@@ -5,14 +5,14 @@ type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"also if you are
+**2026-04-19 disclosure (verbatim):** _"also if you are
 following data value you should keep the orinal and every
 transformation, i don't care to do that if you dont want to
-for my family history bcasue i have it also at dropbox"*
+for my family history bcasue i have it also at dropbox"_
 
 ## The rule
 
-> When agents process data whose *value is load-bearing*,
+> When agents process data whose _value is load-bearing_,
 > the original form AND every transformation are preserved.
 > The final output is not the artifact — the trail is the
 > artifact.
@@ -66,7 +66,7 @@ prevent.
   authoritative original-source channel exists
   externally and is known-stable, the agent's derived
   work is allowed to not duplicate the trail. The
-  agent should *say* this when it applies, so Aaron
+  agent should _say_ this when it applies, so Aaron
   (or the reviewer) can verify the exception is
   legitimate.
 
@@ -107,7 +107,7 @@ prevent.
 
 - **Not a hoarding directive.** Signal-to-noise
   discipline still applies. Preserving original +
-  every transformation means preserving *structure*
+  every transformation means preserving _structure_
   (what was at each stage), not dumping every byte.
   If a transformation is deterministic and trivially
   reproducible from the original, the delta is
@@ -129,7 +129,7 @@ prevent.
 - **Not a replacement for Aaron's own curation.**
   Aaron edits / retracts / overwrites as maintainer
   per `project_memory_is_first_class.md`. The rule
-  applies to *agent* transformations, not to Aaron's
+  applies to _agent_ transformations, not to Aaron's
   own maintenance.
 
 ### Family-history specific case
@@ -139,7 +139,7 @@ rule in this session because:
 
 - He has the Dropbox backup as original-preservation
   channel.
-- The factory local storage is a *derived / organised*
+- The factory local storage is a _derived / organised_
   view, not an authoritative-original view.
 - If the organised view becomes corrupted or
   destroyed, re-deriving from Dropbox is cheap and

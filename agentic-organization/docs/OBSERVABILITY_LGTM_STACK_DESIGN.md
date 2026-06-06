@@ -93,21 +93,21 @@ worker pods ──────────────────────�
 
 A single set of resource + span attributes (reuse + extend `packages/observability/src/span-attributes.ts`):
 
-| Key | Meaning | Pillar reach |
-|---|---|---|
-| `trace_id` / `span_id` | W3C trace context | the join key across all pillars |
-| `org.id` | organization (tenant) | resource attribute on everything |
-| `org.work_item_id` | the work item this serves | the lifecycle-trace spine |
-| `org.initiative_id` / `org.project_id` | hierarchy | rollups |
-| `org.hat_assignment_id` / `org.hat_id` | the acting authority | per-hat metrics, guardrail audit |
-| `org.run_id` (Hermes) | the agent run | per-run cost + decision trace |
-| `org.org_event_id` / `org.org_event_kind` | the domain event emitted | ledger↔trace bridge |
-| `org.command_id` / `org.command_type` | the command | command RED |
-| `org.change_set_id` / `org.stage_id` | change-control | release pipeline trace |
-| `org.memory_id` | memory op | memory lifecycle |
-| `org.reaction_plan_id` | reaction plan | self-healing trace |
-| `org.lane` / `org.tick` | cadence lane | lane RED |
-| `result.status` / `error.kind` | outcome | error budgets |
+| Key                                       | Meaning                   | Pillar reach                     |
+| ----------------------------------------- | ------------------------- | -------------------------------- |
+| `trace_id` / `span_id`                    | W3C trace context         | the join key across all pillars  |
+| `org.id`                                  | organization (tenant)     | resource attribute on everything |
+| `org.work_item_id`                        | the work item this serves | the lifecycle-trace spine        |
+| `org.initiative_id` / `org.project_id`    | hierarchy                 | rollups                          |
+| `org.hat_assignment_id` / `org.hat_id`    | the acting authority      | per-hat metrics, guardrail audit |
+| `org.run_id` (Hermes)                     | the agent run             | per-run cost + decision trace    |
+| `org.org_event_id` / `org.org_event_kind` | the domain event emitted  | ledger↔trace bridge              |
+| `org.command_id` / `org.command_type`     | the command               | command RED                      |
+| `org.change_set_id` / `org.stage_id`      | change-control            | release pipeline trace           |
+| `org.memory_id`                           | memory op                 | memory lifecycle                 |
+| `org.reaction_plan_id`                    | reaction plan             | self-healing trace               |
+| `org.lane` / `org.tick`                   | cadence lane              | lane RED                         |
+| `result.status` / `error.kind`            | outcome                   | error budgets                    |
 
 **Propagation across async boundaries** is the load-bearing detail:
 
@@ -120,22 +120,22 @@ A single set of resource + span attributes (reuse + extend `packages/observabili
 
 ## 4. Span taxonomy — what gets a span (no gaps)
 
-| Span (parent → child) | Source file | Key attributes |
-|---|---|---|
-| `org.command` (root for a sync command) | `command-pipeline.ts` | command_type, hat, result.status; child spans: authorize / idempotency / schedule-authority / handler / persist-effects |
-| `org.lane.tick` | `cadence-lane.ts` + `org-cadence-lanes.ts` | lane, tick, degraded, failures |
-| `org.workos.cycle` → `org.workitem.transition` | `org-cadence-lanes.ts`, work-os cycle | work_item_id, from→to, org_event_kind |
-| `org.changecontrol.stage` | the review kernel (`change-control.ts` consumers) | change_set_id, stage_id, authority kind, gate outcome |
-| `org.releasequeue.batch` → `…bisect` | `release-queue.ts` (moat G1) | batch size, bisect depth, culprit change_set_id |
-| `org.memory.cycle` → `org.memory.transition` | memory maintenance lane | memory_id, phase from→to, weight |
-| `org.graph.promote` | knowledge-graph construction | node/edge id, confidence from→to |
-| `org.reaction.execute` | `reaction-plan-executor.ts` | reaction_plan_id, action type, attempt, claim outcome |
-| `org.recovery.scan` | `recovery-scanners.ts` (moat G3) | scanner kind, candidates, incidents |
-| `org.agent.run` (root for a Hermes run) → `org.agent.decide` / `org.tool.exec` | `orchestrate-run.ts`, sandbox | run_id, model, tokens, tool result |
-| `org.nats.publish` / `org.nats.consume` | messaging adapters | subject, event_id, traceparent |
-| `org.db.query` | cockroach adapters (auto-instrument `pg`) | statement digest, rows, duration |
-| `org.conformance.replay` | `conformance.ts` (moat M1) | events replayed, illegal-count (MUST be 0) |
-| `org.modeleval.run` / `org.optimizer.cycle` | `model-eval.ts`, `decision-optimizer.ts` (moat M3) | class A/B score, proposed change_set_id |
+| Span (parent → child)                                                          | Source file                                        | Key attributes                                                                                                          |
+| ------------------------------------------------------------------------------ | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `org.command` (root for a sync command)                                        | `command-pipeline.ts`                              | command_type, hat, result.status; child spans: authorize / idempotency / schedule-authority / handler / persist-effects |
+| `org.lane.tick`                                                                | `cadence-lane.ts` + `org-cadence-lanes.ts`         | lane, tick, degraded, failures                                                                                          |
+| `org.workos.cycle` → `org.workitem.transition`                                 | `org-cadence-lanes.ts`, work-os cycle              | work_item_id, from→to, org_event_kind                                                                                   |
+| `org.changecontrol.stage`                                                      | the review kernel (`change-control.ts` consumers)  | change_set_id, stage_id, authority kind, gate outcome                                                                   |
+| `org.releasequeue.batch` → `…bisect`                                           | `release-queue.ts` (moat G1)                       | batch size, bisect depth, culprit change_set_id                                                                         |
+| `org.memory.cycle` → `org.memory.transition`                                   | memory maintenance lane                            | memory_id, phase from→to, weight                                                                                        |
+| `org.graph.promote`                                                            | knowledge-graph construction                       | node/edge id, confidence from→to                                                                                        |
+| `org.reaction.execute`                                                         | `reaction-plan-executor.ts`                        | reaction_plan_id, action type, attempt, claim outcome                                                                   |
+| `org.recovery.scan`                                                            | `recovery-scanners.ts` (moat G3)                   | scanner kind, candidates, incidents                                                                                     |
+| `org.agent.run` (root for a Hermes run) → `org.agent.decide` / `org.tool.exec` | `orchestrate-run.ts`, sandbox                      | run_id, model, tokens, tool result                                                                                      |
+| `org.nats.publish` / `org.nats.consume`                                        | messaging adapters                                 | subject, event_id, traceparent                                                                                          |
+| `org.db.query`                                                                 | cockroach adapters (auto-instrument `pg`)          | statement digest, rows, duration                                                                                        |
+| `org.conformance.replay`                                                       | `conformance.ts` (moat M1)                         | events replayed, illegal-count (MUST be 0)                                                                              |
+| `org.modeleval.run` / `org.optimizer.cycle`                                    | `model-eval.ts`, `decision-optimizer.ts` (moat M3) | class A/B score, proposed change_set_id                                                                                 |
 
 **Flagship view — the work-item lifecycle trace.** A single TraceQL query
 `{ org.work_item_id = "wi-..." }` returns the whole life of a work item as one waterfall: intake →
@@ -170,11 +170,11 @@ Keep the kernel pure and tests hermetic. One port, two adapters, reusing the exi
 ```ts
 // packages/observability/src/telemetry-port.ts  (NEW — the seam)
 export interface TelemetryPort {
-  startSpan(name: string, attrs: SpanAttributes): Span;     // returns a handle with end()/setStatus()
-  recordMetric(metric: MetricSample): void;                  // counter | gauge | histogram
+  startSpan(name: string, attrs: SpanAttributes): Span; // returns a handle with end()/setStatus()
+  recordMetric(metric: MetricSample): void; // counter | gauge | histogram
   log(record: StructuredLogRecord): void;
-  inject(carrier: Record<string,string>): void;              // W3C traceparent → carrier (NATS/reaction)
-  extract(carrier: Record<string,string>): SpanContext | null;
+  inject(carrier: Record<string, string>): void; // W3C traceparent → carrier (NATS/reaction)
+  extract(carrier: Record<string, string>): SpanContext | null;
 }
 ```
 
@@ -201,9 +201,9 @@ This is the part that makes observability first-class for the org, not just for 
 ```ts
 // packages/observability/src/telemetry-query-port.ts  (NEW)
 export interface TelemetryQueryPort {
-  queryMetrics(promql: string, range: TimeRange): Promise<MetricSeries[]>;   // Mimir
-  queryTraces(traceql: string, range: TimeRange): Promise<TraceSummary[]>;   // Tempo
-  queryLogs(logql: string, range: TimeRange): Promise<LogLine[]>;            // Loki
+  queryMetrics(promql: string, range: TimeRange): Promise<MetricSeries[]>; // Mimir
+  queryTraces(traceql: string, range: TimeRange): Promise<TraceSummary[]>; // Tempo
+  queryLogs(logql: string, range: TimeRange): Promise<LogLine[]>; // Loki
 }
 ```
 
@@ -223,15 +223,15 @@ export interface TelemetryQueryPort {
 
 ## 9. Phased implementation plan (each phase proven in KIND, per the handoff discipline)
 
-| Phase | Deliverable | KIND proof |
-|---|---|---|
-| **OBS0** | `TelemetryPort` + `NoopTelemetry` + `OtlpTelemetry` (Node SDK); wire it through the worker composition; `deploy/k8s/` manifests for OTel Collector + Tempo + Mimir + Loki + Grafana | `deploy/run-observability-smoke.ts`: emit a span from the worker → assert it is queryable in Tempo via the in-cluster API |
-| **OBS1** | Instrument the command pipeline + every cadence lane (spans + RED metrics) at the two seams | proof: drive a work-os cycle → assert `org.lane.tick` + `org.command` spans + `org_command_duration_ms` in Tempo/Mimir |
-| **OBS2** | W3C trace-context propagation through NATS (envelope) + reaction-plans (V21 column) → the end-to-end **work-item lifecycle trace** | proof: publish→consume→react across a tick boundary → assert ONE trace spans all of it |
-| **OBS3** | org_event → span-event + log bridge; re-point `json-worker-telemetry-sink` at Loki | proof: a transition's org_event_id appears on both the span and the Loki line |
-| **OBS4** | Grafana dashboards-as-code (org-health, lane-RED, work-item funnel, change-control queue, conformance SLI) + alert rules; provision from `tenant-config` | proof: dashboards render against the live in-cluster data; a conformance<1.0 alert fires on an injected illegal event |
-| **OBS5** | `TelemetryQueryPort` + feed the decision-optimizer/org-intelligence (the self-enhancement read-path) | proof: `deploy/run-telemetry-driven-optimizer.ts` — a synthetic latency regression in telemetry produces a reviewed optimizer ChangeSet |
-| **OBS6** | Cost/token telemetry per hat per model → model-eval (M3) | proof: a run records `org_agent_tokens_total`; model-eval reads it to rank cost-per-correct |
+| Phase    | Deliverable                                                                                                                                                                         | KIND proof                                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **OBS0** | `TelemetryPort` + `NoopTelemetry` + `OtlpTelemetry` (Node SDK); wire it through the worker composition; `deploy/k8s/` manifests for OTel Collector + Tempo + Mimir + Loki + Grafana | `deploy/run-observability-smoke.ts`: emit a span from the worker → assert it is queryable in Tempo via the in-cluster API               |
+| **OBS1** | Instrument the command pipeline + every cadence lane (spans + RED metrics) at the two seams                                                                                         | proof: drive a work-os cycle → assert `org.lane.tick` + `org.command` spans + `org_command_duration_ms` in Tempo/Mimir                  |
+| **OBS2** | W3C trace-context propagation through NATS (envelope) + reaction-plans (V21 column) → the end-to-end **work-item lifecycle trace**                                                  | proof: publish→consume→react across a tick boundary → assert ONE trace spans all of it                                                  |
+| **OBS3** | org_event → span-event + log bridge; re-point `json-worker-telemetry-sink` at Loki                                                                                                  | proof: a transition's org_event_id appears on both the span and the Loki line                                                           |
+| **OBS4** | Grafana dashboards-as-code (org-health, lane-RED, work-item funnel, change-control queue, conformance SLI) + alert rules; provision from `tenant-config`                            | proof: dashboards render against the live in-cluster data; a conformance<1.0 alert fires on an injected illegal event                   |
+| **OBS5** | `TelemetryQueryPort` + feed the decision-optimizer/org-intelligence (the self-enhancement read-path)                                                                                | proof: `deploy/run-telemetry-driven-optimizer.ts` — a synthetic latency regression in telemetry produces a reviewed optimizer ChangeSet |
+| **OBS6** | Cost/token telemetry per hat per model → model-eval (M3)                                                                                                                            | proof: a run records `org_agent_tokens_total`; model-eval reads it to rank cost-per-correct                                             |
 
 Sequence rationale: OBS0 stands the stack; OBS1–OBS2 make every action a span and stitch the lifecycle
 trace (the "see every small thing" core); OBS3 unifies the ledger; OBS4 gives humans Grafana; OBS5–OBS6

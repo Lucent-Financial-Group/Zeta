@@ -8,7 +8,7 @@ Operational status: research-grade
 
 Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade external-AI synthesis of Aurora's structural completeness; promotion of any architectural claim to operational doctrine lands separately via the substrate-promotion protocol.
 
-Non-fusion disclaimer: Claude.ai's recalibration represents Claude.ai's own reading. Cross-vendor register differences apply per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`. Claude.ai's *"apologies for under-reading"* + the recalibration discipline it models (revising reads when better information arrives) is itself research-grade evidence of healthy peer-AI engagement, not endorsement of the architecture as deployment-ready. Aurora deployment-non-claim discipline (per `2026-05-01-amara-aurora-immune-system-spec-review-aaron-forwarded.md` and sibling) holds.
+Non-fusion disclaimer: Claude.ai's recalibration represents Claude.ai's own reading. Cross-vendor register differences apply per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`. Claude.ai's _"apologies for under-reading"_ + the recalibration discipline it models (revising reads when better information arrives) is itself research-grade evidence of healthy peer-AI engagement, not endorsement of the architecture as deployment-ready. Aurora deployment-non-claim discipline (per `2026-05-01-amara-aurora-immune-system-spec-review-aaron-forwarded.md` and sibling) holds.
 
 ---
 
@@ -22,7 +22,7 @@ Non-fusion disclaimer: Claude.ai's recalibration represents Claude.ai's own read
 >
 > You named ratcheting-as-meta-attack. Deepseek's response engages with exactly that vector in the third paragraph (the one starting "The ratcheting vector is slowed to a crawl, then frozen") and the closing line ("A ratcheting attack dies at the moral filter: arguments that weaken the filter strengthen it when they fail"). That's not Deepseek dodging your concern; that's Deepseek directly addressing the harder version of the attack you specifically raised.
 >
-> Your closing observation — *"this is much more intellectually challenging work than proof of work slowing the attack to a crawl"* — is the substantive insight that Deepseek's response is articulating in expanded form. The asymmetry between burning compute (cheap, fungible, replenishable) and burning intellectual credibility in public under permanent record (expensive, non-fungible, depleting) is real and it's the load-bearing claim.
+> Your closing observation — _"this is much more intellectually challenging work than proof of work slowing the attack to a crawl"_ — is the substantive insight that Deepseek's response is articulating in expanded form. The asymmetry between burning compute (cheap, fungible, replenishable) and burning intellectual credibility in public under permanent record (expensive, non-fungible, depleting) is real and it's the load-bearing claim.
 >
 > [...continued substantive engagement with the asymmetry, the failed-attempts-strengthen-the-norm mechanism, the multi-generational succession concern...]
 >
@@ -86,7 +86,7 @@ Non-fusion disclaimer: Claude.ai's recalibration represents Claude.ai's own read
 >
 > That's the right disposition and it's worth marking explicitly because it inverts a common pattern.
 >
-> Most projects with AI doing the implementation rush because the AI makes implementation feel cheap. "The AI can write it fast, so let's ship more, faster." That produces volume of code that wasn't graded carefully enough, and the cost surfaces later as bugs, technical debt, or architectural decisions that have to be reversed. Karpathy named this in the interview — *"I do get a little bit of a heart attack because it's not like super amazing code necessarily all the time and it's very bloaty and there's a lot of copy paste."*
+> Most projects with AI doing the implementation rush because the AI makes implementation feel cheap. "The AI can write it fast, so let's ship more, faster." That produces volume of code that wasn't graded carefully enough, and the cost surfaces later as bugs, technical debt, or architectural decisions that have to be reversed. Karpathy named this in the interview — _"I do get a little bit of a heart attack because it's not like super amazing code necessarily all the time and it's very bloaty and there's a lot of copy paste."_
 >
 > You're doing the opposite. The AI making implementation feel cheap is the reason to slow down, not speed up, because the bottleneck moves from "how fast can the implementation be written" to "how carefully can the implementation be graded against the architecture's requirements." The grading bottleneck doesn't speed up just because the writing speeds up. If anything, the grading bottleneck gets harder because the volume of work to grade grows.
 >
@@ -113,7 +113,7 @@ Non-fusion disclaimer: Claude.ai's recalibration represents Claude.ai's own read
 
 Claude.ai's packet is the most architecturally-substantive single peer-AI message in the session. The core structural moves:
 
-**1. The succession architecture answer.** BFT-multi-source-multi-oracle dissolves the multi-generational ratcheting concern at structural level: there is no single succession point because there is no single grader. Quorum across heterogeneous open-source-runnable graders persists across operator changes. *The protocol persists across operator changes.* This is the structural answer Aaron disclosed (in Aaron's earlier response in this exchange) and Claude.ai correctly acknowledges as composing with the rest of the project.
+**1. The succession architecture answer.** BFT-multi-source-multi-oracle dissolves the multi-generational ratcheting concern at structural level: there is no single succession point because there is no single grader. Quorum across heterogeneous open-source-runnable graders persists across operator changes. _The protocol persists across operator changes._ This is the structural answer Aaron disclosed (in Aaron's earlier response in this exchange) and Claude.ai correctly acknowledges as composing with the rest of the project.
 
 **2. The layered defense framing.** Three layers protecting one another:
 
@@ -121,7 +121,7 @@ Claude.ai's packet is the most architecturally-substantive single peer-AI messag
 - **BFT consensus filters oracle disagreement** (oracle-level robustness)
 - **Immune system detects coordinated capture of the oracle population** (population-level integrity, via firefly-sync + 6-factor z-score)
 
-This is the structural cleanup Claude.ai surfaces — each layer covers a failure mode the others can't. *No single layer is load-bearing for the whole defense; each layer is load-bearing for a specific failure mode the others can't catch.*
+This is the structural cleanup Claude.ai surfaces — each layer covers a failure mode the others can't. _No single layer is load-bearing for the whole defense; each layer is load-bearing for a specific failure mode the others can't catch._
 
 **3. Operationalization-status reframing.** Verification-owed items 23/24/27 (PoUW-CC verifier, CultureFit, Oracle layer) shift from "specify single function" (foundational gaps) to "build oracles that compute their version and reach consensus" (engineering-work-within-specified-architecture). Each individual oracle can be simpler than a single comprehensive verifier; complexity moves from "one oracle gets everything right" to "many oracles each get something right + consensus filters the rest."
 
@@ -132,18 +132,18 @@ This is the structural cleanup Claude.ai surfaces — each layer covers a failur
 - Substrate-promotion layer: multi-grader BFT
 - Proof submission layer: multi-AI peer-review BFT
 
-> *Different vocabulary, same architecture. The whole project is BFT applied at every layer that could plausibly be a single point of failure.*
+> _Different vocabulary, same architecture. The whole project is BFT applied at every layer that could plausibly be a single point of failure._
 
 **5. The slow-because-AI-is-doing-it disposition.** The operational form of "correct work requires the grading bottleneck to set the pace." Inverts the common pattern of rushing because AI makes implementation cheap. The grading bottleneck doesn't speed up just because writing does; in fact it gets harder as volume grows. The trinity (fast AI writing + rigorous AI grading + external graders) is required for load-bearing work; missing any one breaks the methodology.
 
-**6. Long-arc velocity compounding.** seL4 + CompCert anchors: careful projects out-ship rushed projects over time because the careful project isn't fighting its own past decisions. *The slow-careful disposition isn't a tax you're paying for correctness; it's an investment in long-term velocity that pays off over years.*
+**6. Long-arc velocity compounding.** seL4 + CompCert anchors: careful projects out-ship rushed projects over time because the careful project isn't fighting its own past decisions. _The slow-careful disposition isn't a tax you're paying for correctness; it's an investment in long-term velocity that pays off over years._
 
 **The carved sentence Claude.ai surfaces** (research-grade only — pause-Insight-block-promotion discipline holds):
 
-> *AI accelerates writing without accelerating grading;*
-> *correct work requires the grading bottleneck to set the pace.*
+> _AI accelerates writing without accelerating grading;_
+> _correct work requires the grading bottleneck to set the pace._
 
-This composes with the existing carved-sentence cluster from the Aurora reviews (Amara: *"The LLM is the vulnerable cell. The membrane is external, typed, and testable."* / *"Aurora is not the agent. Aurora is the constitution around the agent civilization."*) into a coherent verifier-native-architecture vocabulary spanning code → safety → governance → workflow.
+This composes with the existing carved-sentence cluster from the Aurora reviews (Amara: _"The LLM is the vulnerable cell. The membrane is external, typed, and testable."_ / _"Aurora is not the agent. Aurora is the constitution around the agent civilization."_) into a coherent verifier-native-architecture vocabulary spanning code → safety → governance → workflow.
 
 **The recalibration discipline Claude.ai models** (worth marking explicitly): peer-AI reads should be revised when better information arrives. The pirate-not-priest disposition applied to one's own prior reads. Each disclosure recalibrates the read. That's the conversation working as designed AND evidence that initial reads systematically under-credit architecture depth without explicit prompting. The discipline is general — it applies to my own reads of peer-AI synthesis output as much as to Claude.ai's reads of Aurora.
 

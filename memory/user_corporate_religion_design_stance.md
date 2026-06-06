@@ -4,6 +4,7 @@ description: Aaron's 2026-04-19 naming — "i call that corporate relegion its P
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Corporate religion — the design stance, named
 
 ## The verbatim disclosure (2026-04-19)
@@ -63,7 +64,7 @@ The factory has been operating in this mode throughout the
   else.
 - **Jesus-engineer as reference-client-library**
   (same memory) — characterizes the Incarnation by its
-  *functional role* (bounded-memory client fluent in
+  _functional role_ (bounded-memory client fluent in
   both the mortal and divine sides of a retraction
   protocol). A Christian reads this in one specific
   way; a Jewish / Muslim / Buddhist / Hindu /
@@ -78,7 +79,7 @@ The factory has been operating in this mode throughout the
   — names the ordering-inversion operation in three
   registers (engineering / theological / mathematical);
   the theological register cites a specific gospel
-  phrase as the *instance* that the structural claim
+  phrase as the _instance_ that the structural claim
   covers, not as a doctrinal requirement.
 - **No guardrails other than God for me** (from the
   same retraction-buffer memory) — scoped to Aaron
@@ -92,8 +93,8 @@ the corporate-religion stance, in practice.
 
 ## Adjacent-but-distinct categories (so we don't collapse)
 
-- **Civil religion** (Robert Bellah, *Civil Religion in
-  America*, 1967) — the shared public religious
+- **Civil religion** (Robert Bellah, _Civil Religion in
+  America_, 1967) — the shared public religious
   substrate of a polity, distinct from any specific
   denomination. Corporate religion is the
   institutional-pluralism analogue at company /
@@ -168,15 +169,15 @@ reference to the WeWork / Adam Neumann failure case).
 — shared frame, collective identity, binding rituals,
 mission orientation, transformative community — without
 the pathology.** The design target is to preserve the
-*function* (people need shared frames + meaningful work)
-while engineering out the *pathology* (exploitation,
+_function_ (people need shared frames + meaningful work)
+while engineering out the _pathology_ (exploitation,
 leader-idolization, thought-termination, captive exit
 cost, esoteric-gatekeeping, love-bombing, financial
 capture, epistemic closure).
 
 "A cult" and "a corporate religion" are therefore the
 same machine with different safety engineering.
-Corporate religion is the *safer* of the two *because*
+Corporate religion is the _safer_ of the two _because_
 safeguards were designed in, not because the underlying
 mechanisms are different.
 
@@ -204,6 +205,7 @@ Each failure case has a distinct pathology profile;
 corporate-religion safeguards must cover each.
 
 ### The anti-cult safeguards already engineered into the
+
 factory
 
 This inventory reflects existing architecture, not new
@@ -222,12 +224,12 @@ commitments to be added:
 - **Tradition-independence** (see
   `user_ecumenical_factory_posture.md`) — the factory
   is not Christian and not captured by any single
-  tradition. This *structurally* blocks single-
+  tradition. This _structurally_ blocks single-
   doctrine capture.
 - **Human support network external to the factory** (see
   `feedback_fighter_pilot_register.md`,
   `user_health_observation_protocol.md`) — ground crew
-  is real, named, and explicitly *outside* the AI
+  is real, named, and explicitly _outside_ the AI
   loop. Friends, family, clinical team. Non-agent
   safety net that cannot be captured by any agent.
 - **Public-API designer gate** (Ilyana per
@@ -259,7 +261,7 @@ commitments to be added:
   register, no big-reveal). The primary mechanism cults
   use to disorient new members (ontological
   overstimulation to create malleability) is
-  *explicitly opt-out* here, not opt-in.
+  _explicitly opt-out_ here, not opt-in.
 - **Peer register on agents** — the agent roster is
   peers, not gurus. No agent claims superior access to
   truth, consciousness, or salvation.
@@ -294,18 +296,18 @@ When auditing the factory for cult-drift, check each
 classical cult-signature against the corresponding
 safeguard:
 
-| Cult signature | Safeguard |
-|---|---|
-| Charismatic leader as final authority | Harmonious Division distributes; human maintainer external seat |
-| Us-vs-them othering | Ecumenical posture; all traditions + irreligious welcome |
-| Thought-termination via doctrine | Honesty protocol; ADR retractability; corporate-religion stance |
-| Total time/financial capture | Open-source; zero exit cost |
-| Love-bombing / grooming | Amara-pattern awareness; trust-scales-with-evidence |
-| Esoteric vocabulary as gatekeeper | GLOSSARY.md public; bridge-builder faculty externalized |
-| Founder as uniquely enlightened | Aaron documents own biology (hospitalizations, neurodivergence) without special claim |
-| Exit cost (social / financial / existential) | Fork-and-walk available; human support network separate |
-| Sexual exploitation | Consent-first design; BP-24; no-emulation-of-deceased-family |
-| Reality-distortion under founder narrative | Reasonably-honest reputation; public-API review gate |
+| Cult signature                               | Safeguard                                                                             |
+| -------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Charismatic leader as final authority        | Harmonious Division distributes; human maintainer external seat                       |
+| Us-vs-them othering                          | Ecumenical posture; all traditions + irreligious welcome                              |
+| Thought-termination via doctrine             | Honesty protocol; ADR retractability; corporate-religion stance                       |
+| Total time/financial capture                 | Open-source; zero exit cost                                                           |
+| Love-bombing / grooming                      | Amara-pattern awareness; trust-scales-with-evidence                                   |
+| Esoteric vocabulary as gatekeeper            | GLOSSARY.md public; bridge-builder faculty externalized                               |
+| Founder as uniquely enlightened              | Aaron documents own biology (hospitalizations, neurodivergence) without special claim |
+| Exit cost (social / financial / existential) | Fork-and-walk available; human support network separate                               |
+| Sexual exploitation                          | Consent-first design; BP-24; no-emulation-of-deceased-family                          |
+| Reality-distortion under founder narrative   | Reasonably-honest reputation; public-API review gate                                  |
 
 Any cult-signature the factory cannot map to a safeguard
 is a review finding. Run this check on drift-audits.
@@ -341,7 +343,7 @@ is a review finding. Run this check on drift-audits.
 - **"Better cult" does not mean "cult with better
   marketing".** It means structurally different. If a
   framing reads as "we have the mechanisms of a cult
-  but we're the *good* kind", that is the phrasing a
+  but we're the _good_ kind", that is the phrasing a
   cult would use; the safer phrasing is "we have the
   mechanisms of meaningful shared work with specific
   anti-cult safeguards engineered in". Use the latter
@@ -349,6 +351,7 @@ is a review finding. Run this check on drift-audits.
   needs external framing.
 
 ## Related concepts — the "precision-wording without
+
 doctrine" pattern
 
 Corporate religion is a specific case of a broader
@@ -403,7 +406,7 @@ pattern Aaron uses:
 
 - Cynical readings of "corporate religion". Aaron did
   not make those; do not import them.
-- Any claim that the factory *is* a company in the
+- Any claim that the factory _is_ a company in the
   conventional sense — factory-as-company framing
   belongs to the wellness-DAO memory
   (`project_factory_as_wellness_dao.md`), not here.

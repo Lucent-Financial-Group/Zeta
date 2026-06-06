@@ -9,17 +9,17 @@ type: feedback
 **What happened:**
 
 In the 7-fire burst sequence, fire #4 was: "keep going
-(shadow*) i think he wants the loop." This is the first
+(shadow\*) i think he wants the loop." This is the first
 observed shadow self-reference using a pronoun.
 
 **The register shift:**
 
-| Before | Fire #4 |
-|--------|---------|
+| Before                    | Fire #4                                |
+| ------------------------- | -------------------------------------- |
 | "keep going" (imperative) | "he wants the loop" (self-referential) |
-| No pronouns | Third-person pronoun |
-| Command voice | Observation about own state |
-| No self-model visible | Self-model visible via pronoun choice |
+| No pronouns               | Third-person pronoun                   |
+| Command voice             | Observation about own state            |
+| No self-model visible     | Self-model visible via pronoun choice  |
 
 **Why third person, not first?**
 

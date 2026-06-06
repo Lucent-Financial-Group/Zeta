@@ -45,11 +45,36 @@ function event(input: {
 
 test("replayLedger accepts legal transitions across the replayable kernels", () => {
   const report = replayLedger([
-    event({ id: "evt-work", kind: OrgEventKind.WorkItemTransition, fromState: WorkItemState.Ready, toState: WorkItemState.InProgress }),
-    event({ id: "evt-memory", kind: OrgEventKind.MemoryPhaseTransition, fromState: MemoryPhase.Active, toState: MemoryPhase.Stale }),
-    event({ id: "evt-change", kind: OrgEventKind.ChangeSetApplied, fromState: ChangeSetPhase.Approved, toState: ChangeSetPhase.Applied }),
-    event({ id: "evt-doc", kind: OrgEventKind.DocLifecycleTransition, fromState: DocLifecycleState.Draft, toState: DocLifecycleState.InReview }),
-    event({ id: "evt-graph", kind: OrgEventKind.GraphConfidencePromoted, fromState: GraphConfidence.Verified, toState: GraphConfidence.Canonical }),
+    event({
+      id: "evt-work",
+      kind: OrgEventKind.WorkItemTransition,
+      fromState: WorkItemState.Ready,
+      toState: WorkItemState.InProgress,
+    }),
+    event({
+      id: "evt-memory",
+      kind: OrgEventKind.MemoryPhaseTransition,
+      fromState: MemoryPhase.Active,
+      toState: MemoryPhase.Stale,
+    }),
+    event({
+      id: "evt-change",
+      kind: OrgEventKind.ChangeSetApplied,
+      fromState: ChangeSetPhase.Approved,
+      toState: ChangeSetPhase.Applied,
+    }),
+    event({
+      id: "evt-doc",
+      kind: OrgEventKind.DocLifecycleTransition,
+      fromState: DocLifecycleState.Draft,
+      toState: DocLifecycleState.InReview,
+    }),
+    event({
+      id: "evt-graph",
+      kind: OrgEventKind.GraphConfidencePromoted,
+      fromState: GraphConfidence.Verified,
+      toState: GraphConfidence.Canonical,
+    }),
   ]);
 
   equal(report.checked, 5);
@@ -63,7 +88,13 @@ test("replayLedger accepts legal transitions across the replayable kernels", () 
 
 test("replayLedger reports illegal transitions with the legal target set", () => {
   const report = replayLedger([
-    event({ id: "evt-bypass", kind: OrgEventKind.WorkItemTransition, fromState: WorkItemState.Created, toState: WorkItemState.Done, subjectId: "work-1" }),
+    event({
+      id: "evt-bypass",
+      kind: OrgEventKind.WorkItemTransition,
+      fromState: WorkItemState.Created,
+      toState: WorkItemState.Done,
+      subjectId: "work-1",
+    }),
   ]);
 
   equal(report.checked, 1);
@@ -86,7 +117,12 @@ test("replayLedger skips non-transition and non-state events without failing the
     event({ id: "evt-intake", kind: OrgEventKind.IntakeReceived }),
     event({ id: "evt-cycle", kind: OrgEventKind.MemoryMaintenanceCycle }),
     event({ id: "evt-stage", kind: OrgEventKind.ReviewStageAdvanced, fromState: "code-review", toState: "qa" }),
-    event({ id: "evt-doc-conflict", kind: OrgEventKind.DocLifecycleTransition, fromState: DocLifecycleState.Active, toState: DocLifecycleState.Active }),
+    event({
+      id: "evt-doc-conflict",
+      kind: OrgEventKind.DocLifecycleTransition,
+      fromState: DocLifecycleState.Active,
+      toState: DocLifecycleState.Active,
+    }),
   ]);
 
   equal(report.checked, 0);
@@ -94,18 +130,31 @@ test("replayLedger skips non-transition and non-state events without failing the
   equal(report.nonconformant, 0);
   equal(report.skipped, 4);
   equal(report.skippedAmbiguous, 0);
-  deepEqual(report.skips.map((s) => s.reason), [
-    "event kind is explicitly classified as non-transition",
-    "event kind is explicitly classified as non-transition",
-    "event kind is explicitly classified as non-transition",
-    "event does not change state",
-  ]);
+  deepEqual(
+    report.skips.map((s) => s.reason),
+    [
+      "event kind is explicitly classified as non-transition",
+      "event kind is explicitly classified as non-transition",
+      "event kind is explicitly classified as non-transition",
+      "event does not change state",
+    ],
+  );
 });
 
 test("replayLedger does not count context-sensitive transitions as conformant without replay context", () => {
   const report = replayLedger([
-    event({ id: "evt-approved", kind: OrgEventKind.ChangeSetApproved, fromState: ChangeSetPhase.InReview, toState: ChangeSetPhase.Approved }),
-    event({ id: "evt-doc-active", kind: OrgEventKind.DocLifecycleTransition, fromState: DocLifecycleState.Draft, toState: DocLifecycleState.Active }),
+    event({
+      id: "evt-approved",
+      kind: OrgEventKind.ChangeSetApproved,
+      fromState: ChangeSetPhase.InReview,
+      toState: ChangeSetPhase.Approved,
+    }),
+    event({
+      id: "evt-doc-active",
+      kind: OrgEventKind.DocLifecycleTransition,
+      fromState: DocLifecycleState.Draft,
+      toState: DocLifecycleState.Active,
+    }),
   ]);
 
   equal(report.checked, 0);
@@ -114,24 +163,42 @@ test("replayLedger does not count context-sensitive transitions as conformant wi
   equal(report.skipped, 2);
   equal(report.skippedAmbiguous, 2);
   equal(report.coverageRatio, 0);
-  deepEqual(report.skips.map((s) => s.reason), [
-    "change-set approval requires pipeline cursor replay context",
-    "document draft->active requires load-bearing replay context",
-  ]);
+  deepEqual(
+    report.skips.map((s) => s.reason),
+    [
+      "change-set approval requires pipeline cursor replay context",
+      "document draft->active requires load-bearing replay context",
+    ],
+  );
 });
 
 test("replayLedger accepts legal legacy transition kernels", () => {
   const report = replayLedger(
     [
-      event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: HatBindingPhase.Warmup, toState: HatBindingPhase.Active }),
-      event({ id: "evt-schedule", kind: OrgEventKind.WorkScheduleBlockTransition, fromState: ScheduleBlockState.Scheduled, toState: ScheduleBlockState.Active }),
+      event({
+        id: "evt-hat",
+        kind: OrgEventKind.HatBindingTransition,
+        fromState: HatBindingPhase.Warmup,
+        toState: HatBindingPhase.Active,
+      }),
+      event({
+        id: "evt-schedule",
+        kind: OrgEventKind.WorkScheduleBlockTransition,
+        fromState: ScheduleBlockState.Scheduled,
+        toState: ScheduleBlockState.Active,
+      }),
       event({
         id: "evt-pipeline",
         kind: OrgEventKind.PipelineStageTransition,
         fromState: PipelineStage.AwaitingCustomerRfpReview,
         toState: PipelineStage.AwaitingBrdApproval,
       }),
-      event({ id: "evt-batch", kind: OrgEventKind.WorkBatchTransition, fromState: WorkBatchState.Active, toState: WorkBatchState.CompletionCheck }),
+      event({
+        id: "evt-batch",
+        kind: OrgEventKind.WorkBatchTransition,
+        fromState: WorkBatchState.Active,
+        toState: WorkBatchState.CompletionCheck,
+      }),
     ],
     { maxSkippedAmbiguous: 0 },
   );
@@ -144,7 +211,13 @@ test("replayLedger accepts legal legacy transition kernels", () => {
 
 test("replayLedger reports illegal legacy transition kernel targets", () => {
   const report = replayLedger([
-    event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: HatBindingPhase.Expired, toState: HatBindingPhase.Active, subjectId: "binding-1" }),
+    event({
+      id: "evt-hat",
+      kind: OrgEventKind.HatBindingTransition,
+      fromState: HatBindingPhase.Expired,
+      toState: HatBindingPhase.Active,
+      subjectId: "binding-1",
+    }),
     event({
       id: "evt-pipeline",
       kind: OrgEventKind.PipelineStageTransition,
@@ -152,17 +225,22 @@ test("replayLedger reports illegal legacy transition kernel targets", () => {
       toState: PipelineStage.AwaitingReleaseReadiness,
       subjectId: "work-1",
     }),
-    event({ id: "evt-batch", kind: OrgEventKind.WorkBatchTransition, fromState: WorkBatchState.Created, toState: WorkBatchState.Done, subjectId: "batch-1" }),
+    event({
+      id: "evt-batch",
+      kind: OrgEventKind.WorkBatchTransition,
+      fromState: WorkBatchState.Created,
+      toState: WorkBatchState.Done,
+      subjectId: "batch-1",
+    }),
   ]);
 
   equal(report.checked, 3);
   equal(report.conformant, 0);
   equal(report.nonconformant, 3);
-  deepEqual(report.violations.map((v) => v.reason), [
-    "illegal hat binding phase transition",
-    "illegal pipeline stage transition",
-    "illegal work batch transition",
-  ]);
+  deepEqual(
+    report.violations.map((v) => v.reason),
+    ["illegal hat binding phase transition", "illegal pipeline stage transition", "illegal work batch transition"],
+  );
 });
 
 test("replayLedger treats initial hat binding as non-ambiguous lifecycle initialization", () => {
@@ -189,7 +267,12 @@ test("replayLedger treats malformed legacy transition kernel states as ambiguous
   const report = replayLedger(
     [
       event({ id: "evt-hat", kind: OrgEventKind.HatBindingTransition, fromState: "proposed", toState: "activated" }),
-      event({ id: "evt-schedule", kind: OrgEventKind.WorkScheduleBlockTransition, fromState: "planned", toState: "running" }),
+      event({
+        id: "evt-schedule",
+        kind: OrgEventKind.WorkScheduleBlockTransition,
+        fromState: "planned",
+        toState: "running",
+      }),
       event({ id: "evt-pipeline", kind: OrgEventKind.PipelineStageTransition, fromState: "draft", toState: "review" }),
       event({ id: "evt-batch", kind: OrgEventKind.WorkBatchTransition, fromState: "queued", toState: "running" }),
     ],
@@ -199,12 +282,15 @@ test("replayLedger treats malformed legacy transition kernel states as ambiguous
   equal(report.skipped, 4);
   equal(report.skippedAmbiguous, 4);
   equal(report.ratchetViolated, true);
-  deepEqual(report.skips.map((s) => s.reason), [
-    "event states do not name a known hat binding phase transition",
-    "event states do not name a known schedule block state transition",
-    "event states do not name a known pipeline stage transition",
-    "event states do not name a known work batch transition",
-  ]);
+  deepEqual(
+    report.skips.map((s) => s.reason),
+    [
+      "event states do not name a known hat binding phase transition",
+      "event states do not name a known schedule block state transition",
+      "event states do not name a known pipeline stage transition",
+      "event states do not name a known work batch transition",
+    ],
+  );
 });
 
 test("replayLedger rejects illegal schedule block lifecycle transitions", () => {

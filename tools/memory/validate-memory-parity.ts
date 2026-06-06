@@ -28,10 +28,7 @@ import { join } from "node:path";
 import { collectEntries } from "./reindex-memory-md.ts";
 
 const MEMORY_DIR = "memory";
-const OLD_INDEX_FILES = [
-  "INDEX-PRE-2026-04-23.md",
-  "INDEX-POST-LINE-200.md",
-];
+const OLD_INDEX_FILES = ["INDEX-PRE-2026-04-23.md", "INDEX-POST-LINE-200.md"];
 
 // Non-memory repo paths whose links should not be validated as memory files
 const SKIP_PREFIXES = ["docs/", "tools/", ".github/", "src/"];

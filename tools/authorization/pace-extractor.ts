@@ -97,11 +97,7 @@ function inferSourceFromFilename(filename: string): string {
   return "unknown";
 }
 
-function inferSource(
-  raw: string,
-  previousLine: string | null,
-  filename: string,
-): string {
+function inferSource(raw: string, previousLine: string | null, filename: string): string {
   if (previousLine !== null) {
     const issuerSource = inferIssuerSource(previousLine);
     if (issuerSource !== "unknown") return issuerSource;
@@ -132,11 +128,7 @@ function extractFilenameTimestamp(filename: string): string | null {
   return null;
 }
 
-function extractTimestamp(
-  raw: string,
-  previousLine: string | null,
-  filename: string,
-): string | null {
+function extractTimestamp(raw: string, previousLine: string | null, filename: string): string | null {
   return (
     extractInlineTimestamp(raw) ??
     (previousLine === null ? null : extractInlineTimestamp(previousLine)) ??
@@ -151,34 +143,21 @@ function stripFrontmatter(content: string): string {
   return content.slice(endIdx + 3);
 }
 
-function previousAttributionLine(
-  lines: string[],
-  beforeIndex: number,
-): string | null {
+function previousAttributionLine(lines: string[], beforeIndex: number): string | null {
   let seen = 0;
-  for (
-    let i = beforeIndex - 1;
-    i >= 0 && seen < MAX_ATTRIBUTION_LOOKBACK;
-    i -= 1
-  ) {
+  for (let i = beforeIndex - 1; i >= 0 && seen < MAX_ATTRIBUTION_LOOKBACK; i -= 1) {
     const candidate = lines[i]?.trim();
     if (candidate === undefined || !NON_EMPTY_RE.test(candidate)) continue;
 
     seen += 1;
-    if (
-      inferIssuerSource(candidate) !== "unknown" ||
-      extractInlineTimestamp(candidate) !== null
-    ) {
+    if (inferIssuerSource(candidate) !== "unknown" || extractInlineTimestamp(candidate) !== null) {
       return candidate;
     }
   }
   return null;
 }
 
-function extractFromFile(
-  filePath: string,
-  rootPath: string,
-): PaceInstruction[] {
+function extractFromFile(filePath: string, rootPath: string): PaceInstruction[] {
   if (!existsSync(filePath)) return [];
 
   const content = readFileSync(filePath, "utf-8");
@@ -201,9 +180,7 @@ function extractFromFile(
   return instructions;
 }
 
-export async function extractPaceInstructions(
-  rootPath: string,
-): Promise<PaceInstruction[]> {
+export async function extractPaceInstructions(rootPath: string): Promise<PaceInstruction[]> {
   const results: PaceInstruction[] = [];
 
   // Surface 1: CLAUDE.md
@@ -212,26 +189,17 @@ export async function extractPaceInstructions(
   // Surface 2: memory/feedback_*.md files
   const memoryDir = join(rootPath, "memory");
   if (existsSync(memoryDir)) {
-    const files = readdirSync(memoryDir).filter(
-      (f) => f.startsWith("feedback_") && f.endsWith(".md"),
-    );
+    const files = readdirSync(memoryDir).filter((f) => f.startsWith("feedback_") && f.endsWith(".md"));
     for (const f of files) {
       results.push(...extractFromFile(join(memoryDir, f), rootPath));
     }
   }
 
   // Surface 3: memory/CURRENT-aaron.md
-  results.push(
-    ...extractFromFile(join(rootPath, "memory", "CURRENT-aaron.md"), rootPath),
-  );
+  results.push(...extractFromFile(join(rootPath, "memory", "CURRENT-aaron.md"), rootPath));
 
   // Surface 4: docs/active-trajectory.md
-  results.push(
-    ...extractFromFile(
-      join(rootPath, "docs", "active-trajectory.md"),
-      rootPath,
-    ),
-  );
+  results.push(...extractFromFile(join(rootPath, "docs", "active-trajectory.md"), rootPath));
 
   // Sort chronologically (nulls last)
   results.sort((a, b) => {

@@ -71,7 +71,7 @@ Discipline:
 
 - **Version lives only in `Directory.Packages.props`.**
   If a .fsproj has `<PackageReference Include="X"
-  Version="Y">`, remove the `Version` attribute and add
+Version="Y">`, remove the `Version` attribute and add
   to the props file instead.
 - **Bumping a pin is `package-auditor`'s lane** (`package-auditor`).
   Validate that our code actually touches the changed
@@ -172,17 +172,17 @@ build Zeta.sln`.
   IN ORDER, but the SDK might ALSO be auto-including
   them — causing duplicate-compilation errors. Either
   turn off auto-include (`<EnableDefaultCompileItems>
-  false</EnableDefaultCompileItems>`) or remove
+false</EnableDefaultCompileItems>`) or remove
   auto-included items first. Zeta's .fsproj uses
   explicit includes with auto-include disabled.
 - **`$(MSBuildThisFileDirectory)`.** Path helper inside
   .props files; use for repo-relative references.
 - **Condition attributes.** `<PackageReference Include=
-  "X" Condition=" '$(OS)' == 'Windows_NT' ">` works;
+"X" Condition=" '$(OS)' == 'Windows_NT' ">` works;
   useful for OS-specific deps. Don't abuse — most of
   Zeta is platform-agnostic.
 - **`<Content Include="X" CopyToOutputDirectory="
-  PreserveNewest"/>`.** For non-compilable files (jars,
+PreserveNewest"/>`.** For non-compilable files (jars,
   configs) that need to travel with the build output.
   Zeta's test project does this for `tla2tools.jar`
   reference.

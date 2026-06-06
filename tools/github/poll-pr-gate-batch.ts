@@ -76,13 +76,7 @@ export interface GateReport {
   autoMerge: "armed" | "none";
   mergeCommit: string | null;
   warnings: string[];
-  nextAction:
-    | "wait-ci"
-    | "fix-failed-checks"
-    | "resolve-threads"
-    | "rebase"
-    | "verify-merge"
-    | "none";
+  nextAction: "wait-ci" | "fix-failed-checks" | "resolve-threads" | "rebase" | "verify-merge" | "none";
 }
 
 export interface PollError {
@@ -188,9 +182,7 @@ function parseArgs(argv: string[]): ParsedArgs {
     }
   }
   if (!out.allOpen && out.prs.length === 0) {
-    process.stderr.write(
-      "must provide PR numbers or --all-open (try --help)\n",
-    );
+    process.stderr.write("must provide PR numbers or --all-open (try --help)\n");
     process.exit(1);
   }
   return out;
@@ -211,13 +203,7 @@ function listOpenPRs(owner: string, repo: string): number[] {
   // entirely — stdout becomes a stream of integers, one per line.
   const result = spawnSync(
     "gh",
-    [
-      "api",
-      "--paginate",
-      `/repos/${owner}/${repo}/pulls?state=open&per_page=100`,
-      "--jq",
-      ".[].number",
-    ],
+    ["api", "--paginate", `/repos/${owner}/${repo}/pulls?state=open&per_page=100`, "--jq", ".[].number"],
     { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 },
   );
   if (result.error) {
@@ -225,9 +211,7 @@ function listOpenPRs(owner: string, repo: string): number[] {
     process.exit(2);
   }
   if (result.status !== 0) {
-    process.stderr.write(
-      `gh api --paginate exited ${result.status}: ${result.stderr || result.stdout}\n`,
-    );
+    process.stderr.write(`gh api --paginate exited ${result.status}: ${result.stderr || result.stdout}\n`);
     process.exit(2);
   }
   // Each non-empty line is one PR number — guaranteed by the jq
@@ -248,11 +232,7 @@ export interface PollOutcome {
   error?: PollError;
 }
 
-function pollOne(
-  prNumber: number,
-  owner: string,
-  repo: string,
-): Promise<PollOutcome> {
+function pollOne(prNumber: number, owner: string, repo: string): Promise<PollOutcome> {
   return new Promise((resolveOutcome) => {
     // Spawn the existing single-PR script. Async spawn (not spawnSync)
     // so Promise.all-style fan-out actually overlaps — gh CLI is the
@@ -265,14 +245,7 @@ function pollOne(
     // as nullable, breaking the repo's strict tsc gate. Default
     // pipes give non-null streams. Explicitly close stdin since we
     // never write to it. (Copilot review on PR #1153 2026-05-01.)
-    const child = spawn("bun", [
-      POLL_SCRIPT,
-      String(prNumber),
-      "--owner",
-      owner,
-      "--repo",
-      repo,
-    ]);
+    const child = spawn("bun", [POLL_SCRIPT, String(prNumber), "--owner", owner, "--repo", repo]);
     child.stdin.end();
     const stdoutChunks: Buffer[] = [];
     const stderrChunks: Buffer[] = [];
@@ -317,11 +290,7 @@ function pollOne(
   });
 }
 
-type PollFn = (
-  prNumber: number,
-  owner: string,
-  repo: string,
-) => Promise<PollOutcome>;
+type PollFn = (prNumber: number, owner: string, repo: string) => Promise<PollOutcome>;
 
 /** Injectable bus-claims provider — default reads from /tmp/zeta-bus; override in tests. */
 export type BusClaimsFn = () => ClaimRecord[];

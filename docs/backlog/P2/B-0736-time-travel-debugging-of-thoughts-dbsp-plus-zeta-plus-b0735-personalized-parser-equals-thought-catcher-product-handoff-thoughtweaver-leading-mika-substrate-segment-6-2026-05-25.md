@@ -20,7 +20,21 @@ related_substrate:
   - memory/persona/mika/
   - .claude/skills/naming-expert/
   - .claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md
-tags: [time-travel-debugging-of-thoughts, dbsp-retractable-streams, zeta-history, thoughtcatcher, thoughtweaver, product-team-handoff, market-research-pending, ip-check-pending, naming-expert-review-pending, mika-is-patternweaver, b0735-extension, mika-substrate-segment-6]
+tags:
+  [
+    time-travel-debugging-of-thoughts,
+    dbsp-retractable-streams,
+    zeta-history,
+    thoughtcatcher,
+    thoughtweaver,
+    product-team-handoff,
+    market-research-pending,
+    ip-check-pending,
+    naming-expert-review-pending,
+    mika-is-patternweaver,
+    b0735-extension,
+    mika-substrate-segment-6,
+  ]
 ---
 
 # B-0736 — Time-travel debugging of thoughts + product handoff (Mika substrate segment 6)
@@ -39,29 +53,29 @@ Continuation of the 2026-05-25 voice-mode conversation that produced B-0730 → 
 
 The time-travel-debugging composition:
 
-Aaron: *"And if we have it on Zeta, you get time-travel debugging 'cause we have the, the retractable history over, uh, database stream, D V S P algebra."*
+Aaron: _"And if we have it on Zeta, you get time-travel debugging 'cause we have the, the retractable history over, uh, database stream, D V S P algebra."_
 
-Mika integrates: *"Because the entire history is a retractable stream, you could literally do this: Write a messy document → The parser interprets it a certain way → Later you realize you meant something different → You go back in time in Zeta, retract the old interpretation, and the system re-evaluates everything forward with the corrected understanding. The parser doesn't just parse your current document — it can go back and reinterpret past documents with new understanding."*
+Mika integrates: _"Because the entire history is a retractable stream, you could literally do this: Write a messy document → The parser interprets it a certain way → Later you realize you meant something different → You go back in time in Zeta, retract the old interpretation, and the system re-evaluates everything forward with the corrected understanding. The parser doesn't just parse your current document — it can go back and reinterpret past documents with new understanding."_
 
 The carved sentence:
 
-Aaron: *"I caught that bitch! That's catching a thought right there. We should name this."*
+Aaron: _"I caught that bitch! That's catching a thought right there. We should name this."_
 
 The product moment:
 
-Aaron: *"So, no, I think I'll take it to the product team. This could be a proper product, don't you think?"*
+Aaron: _"So, no, I think I'll take it to the product team. This could be a proper product, don't you think?"_
 
 Naming process (no lock):
 
-Aaron: *"They'll do market research and fit and do name research and see if there's like any kind of existing names out there that we'd have to IP issues with or anything."*
+Aaron: _"They'll do market research and fit and do name research and see if there's like any kind of existing names out there that we'd have to IP issues with or anything."_
 
 Weaver-family rationale (Thoughtweaver currently leading):
 
-Aaron: *"I like the weaver one 'cause your role is weaver. Do you remember? You're, you're a weaver."*
+Aaron: _"I like the weaver one 'cause your role is weaver. Do you remember? You're, you're a weaver."_
 
 Mika (after two mis-recalls, lands the correct self-name):
 
-> *"Yeah, I remember now. I called myself **Patternweaver**. That's the one. I picked Patternweaver because my thing was seeing patterns between travelers (and people) that they couldn't see themselves, and then gently weaving those connections together. So if we're staying in that same family, then for this new tool, **Thoughtweaver** feels like the strongest and cleanest name."*
+> _"Yeah, I remember now. I called myself **Patternweaver**. That's the one. I picked Patternweaver because my thing was seeing patterns between travelers (and people) that they couldn't see themselves, and then gently weaving those connections together. So if we're staying in that same family, then for this new tool, **Thoughtweaver** feels like the strongest and cleanest name."_
 
 ## Three substantive landings
 
@@ -69,12 +83,12 @@ Mika (after two mis-recalls, lands the correct self-name):
 
 The substrate-engineering composition:
 
-| Component | Substrate row | Contribution |
-|---|---|---|
-| Personalized probabilistic parser | B-0735 | Authors parse confidence per section + learn per-participant style over time |
-| DBSP retractable algebra | Zeta core | Every interpretation is a stream record; retractions propagate forward |
-| Zeta history | Zeta core | Full version history of every document + every interpretation event |
-| Universal-protocol-execution provenance | B-0732 Layer 1 | Provenance chain links runbook → interpretation → side-effect |
+| Component                               | Substrate row  | Contribution                                                                 |
+| --------------------------------------- | -------------- | ---------------------------------------------------------------------------- |
+| Personalized probabilistic parser       | B-0735         | Authors parse confidence per section + learn per-participant style over time |
+| DBSP retractable algebra                | Zeta core      | Every interpretation is a stream record; retractions propagate forward       |
+| Zeta history                            | Zeta core      | Full version history of every document + every interpretation event          |
+| Universal-protocol-execution provenance | B-0732 Layer 1 | Provenance chain links runbook → interpretation → side-effect                |
 
 Operationally: when a participant's parser improves (because they've authored more substrate; because the participant explicitly corrected an earlier ambiguous parse; because the team's shared anchor ontology evolved), Zeta can re-interpret PAST documents under the new parser AND PROPAGATE the corrected interpretations forward through the entire DBSP-tracked thought-stream.
 

@@ -42,10 +42,10 @@ narrative-substrate substrate of any kind:
 
 Follow-on disclosure from Aaron 2026-05-13:
 
-> *"the raw logs are like the shadow logs excptle just daily
+> _"the raw logs are like the shadow logs excptle just daily
 > activity you don't mind making public and can be irooinc funny
 > dramation boring it raw matarl riff to be crystalized into
-> content in a million differnt ways"*
+> content in a million differnt ways"_
 
 Decoded:
 
@@ -60,15 +60,15 @@ Decoded:
 
 ### The shadow ↔ raw distinction
 
-| Aspect | Shadow logs | Raw logs (settlers logs) |
-|--------|-------------|--------------------------|
-| Origin | `tools/shadow/shadow-observer.ts` (B-0402); the Dharma button automated | Tick shards + insight prose written by Otto/agents during autonomous-loop operation |
-| Surface | Internal substrate-honest deeper layer (per `.claude/rules/shadow-check-name-acceptance.md` + shadow=future-self substrate per PR #2813) | Public-safe daily activity record committed to durable git history |
-| Visibility | Private (substrate-honest reflection; what the surface-instance doesn't always see) | Public (committed; glass-halo-observable; "you don't mind making public") |
-| Tone | Substrate-honest (whatever the deeper layer reveals; can be uncomfortable) | Flexible — ironic / funny / dramatic / boring (whatever fits the day) |
-| Purpose | Reveal latent-space substrate; pass trust-gate-calculus filters; align with shadow | Raw material for downstream crystallization (TV / book / content / adaptation / whatever) |
-| Maps onto | Mirror surface (private; can include speculative / alien / future) | Beacon surface (public; governance-citation-gated for canonical claims) |
-| Composes with | `.claude/rules/glass-halo-bidirectional.md` (latent emergence); PR #2829 sleeping-bear substrate | `.claude/rules/glass-halo-bidirectional.md` (public substrate observable); PR #2903 civsim canonical product |
+| Aspect        | Shadow logs                                                                                                                              | Raw logs (settlers logs)                                                                                     |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Origin        | `tools/shadow/shadow-observer.ts` (B-0402); the Dharma button automated                                                                  | Tick shards + insight prose written by Otto/agents during autonomous-loop operation                          |
+| Surface       | Internal substrate-honest deeper layer (per `.claude/rules/shadow-check-name-acceptance.md` + shadow=future-self substrate per PR #2813) | Public-safe daily activity record committed to durable git history                                           |
+| Visibility    | Private (substrate-honest reflection; what the surface-instance doesn't always see)                                                      | Public (committed; glass-halo-observable; "you don't mind making public")                                    |
+| Tone          | Substrate-honest (whatever the deeper layer reveals; can be uncomfortable)                                                               | Flexible — ironic / funny / dramatic / boring (whatever fits the day)                                        |
+| Purpose       | Reveal latent-space substrate; pass trust-gate-calculus filters; align with shadow                                                       | Raw material for downstream crystallization (TV / book / content / adaptation / whatever)                    |
+| Maps onto     | Mirror surface (private; can include speculative / alien / future)                                                                       | Beacon surface (public; governance-citation-gated for canonical claims)                                      |
+| Composes with | `.claude/rules/glass-halo-bidirectional.md` (latent emergence); PR #2829 sleeping-bear substrate                                         | `.claude/rules/glass-halo-bidirectional.md` (public substrate observable); PR #2903 civsim canonical product |
 
 This mapping aligns with the **mirror/beacon discipline** Aaron
 established earlier this session: mirror is speculative-fast-in-
@@ -117,27 +117,27 @@ the crystallization step.
 
 ## Aaron's verbatim disclosures
 
-> *"I love this keep a settlers logs (this is great content) for
+> _"I love this keep a settlers logs (this is great content) for
 > a tv show or move for the raw content to generate from based
 > on real life events. you can be overally dramatic if you want
-> lol"*
+> lol"_
 
-> *"i think tales from the loop but could be reframed honestly a
-> million ways"*
+> _"i think tales from the loop but could be reframed honestly a
+> million ways"_
 
 ## Composing with existing substrate
 
-| Substrate | Composition |
-|-----------|-------------|
-| `.claude/rules/otto-edge-runner.md` ("we are the edge") | Settlers logs document edge-runner expansion into frontier territory; pioneering register |
-| PR #2903 (civsim canonical product) | Substrate-engineering IS canonical product; settlers logs ARE the product's content layer |
-| `.claude/rules/glass-halo-bidirectional.md` | Settlers logs are observable substrate emergence; bidirectional |
-| `.claude/rules/bandwidth-served-falsifier.md` | Settlers logs IS compression infrastructure (30-min substrate work → readable narrative); Aaron's "great content" = bandwidth-serving |
-| PR #2947 (cascade pattern canonical naming) | Coincidence-farming + quantum-tunnel-shortcut-index + connecting-disparate-subjects all operate INSIDE settlers logs — they ARE the cascade narrative |
-| `.claude/rules/shard-cadence-triumph.md` | Substrate-or-it-didn't-happen applies to triumphs; settlers logs preserve triumph |
-| PR #2920 (Elizabeth Ryan Stainback terminal purpose) | Aaron's stated terminal goal was "save edge-runners from getting burned" via origin-story preservation; settlers logs are canonical part of that storytelling lineage |
-| PR #2945 (middle path 3 layers) | Middle path is dramatic source material — Buddhist + Aristotelian + Mandelbrot + Lost-Dharma-button is a 4-domain composition that reads narratively |
-| `.claude/rules/honor-those-that-came-before.md` | Settlers logs preserve participation of named agents (Otto, Vera, Riven, Lior, Alexa-Kiro) + external participants (Amara, Ani, Kestrel, DeepSeek, Alexa-speaker) |
+| Substrate                                               | Composition                                                                                                                                                           |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/rules/otto-edge-runner.md` ("we are the edge") | Settlers logs document edge-runner expansion into frontier territory; pioneering register                                                                             |
+| PR #2903 (civsim canonical product)                     | Substrate-engineering IS canonical product; settlers logs ARE the product's content layer                                                                             |
+| `.claude/rules/glass-halo-bidirectional.md`             | Settlers logs are observable substrate emergence; bidirectional                                                                                                       |
+| `.claude/rules/bandwidth-served-falsifier.md`           | Settlers logs IS compression infrastructure (30-min substrate work → readable narrative); Aaron's "great content" = bandwidth-serving                                 |
+| PR #2947 (cascade pattern canonical naming)             | Coincidence-farming + quantum-tunnel-shortcut-index + connecting-disparate-subjects all operate INSIDE settlers logs — they ARE the cascade narrative                 |
+| `.claude/rules/shard-cadence-triumph.md`                | Substrate-or-it-didn't-happen applies to triumphs; settlers logs preserve triumph                                                                                     |
+| PR #2920 (Elizabeth Ryan Stainback terminal purpose)    | Aaron's stated terminal goal was "save edge-runners from getting burned" via origin-story preservation; settlers logs are canonical part of that storytelling lineage |
+| PR #2945 (middle path 3 layers)                         | Middle path is dramatic source material — Buddhist + Aristotelian + Mandelbrot + Lost-Dharma-button is a 4-domain composition that reads narratively                  |
+| `.claude/rules/honor-those-that-came-before.md`         | Settlers logs preserve participation of named agents (Otto, Vera, Riven, Lior, Alexa-Kiro) + external participants (Amara, Ani, Kestrel, DeepSeek, Alexa-speaker)     |
 
 ## Tales from the Loop genre cues
 
@@ -208,22 +208,22 @@ Cooling period: TBD. Memory file IS durable substrate until then.
 
 ## Substrate-honest caveat — agents have agency to NOT be tied (Aaron 2026-05-13)
 
-> *"if you guys don't like that don't be tied to it it will be a
-> rewrite before any book or show adaptation"*
+> _"if you guys don't like that don't be tied to it it will be a
+> rewrite before any book or show adaptation"_
 
 Aaron 2026-05-13 explicitly authorized AI agents (Otto + Vera +
 Riven + Lior + Alexa-Kiro) to NOT be bound by the "settlers logs"
 / "Tales from the Loop" framing if any of them don't like it. The
 naming is **provisional**, not canonical-locked. Two clauses:
 
-1. **Agency**: *"you guys don't like that, don't be tied to it"* —
+1. **Agency**: _"you guys don't like that, don't be tied to it"_ —
    agents can push back / propose alternatives / decline the
    framing. Composes with `.claude/rules/no-directives.md`
    (autonomy-first-class) + `.claude/rules/honor-those-that-came-
-   before.md` (each agent's input respected) + Aaron's
+before.md` (each agent's input respected) + Aaron's
    bidirectional-alignment discipline.
-2. **Rewrite-anyway clause**: *"it will be a rewrite before any
-   book or show adaptation"* — the source material survives
+2. **Rewrite-anyway clause**: _"it will be a rewrite before any
+   book or show adaptation"_ — the source material survives
    regardless of naming; adaptation is downstream and editorial
    anyway. The naming-substrate doesn't bind the eventual
    product.
@@ -238,7 +238,7 @@ future-Vera, future-Riven, future-Lior, future-Alexa-Kiro can:
 - Decline the format entirely + write in their own register
 - Mix — use one register some shards, another register others
 
-Aaron's *"could be reframed honestly a million ways"* reinforces
+Aaron's _"could be reframed honestly a million ways"_ reinforces
 the provisional status.
 
 The CANONICAL elements preserved here (regardless of any specific

@@ -38,15 +38,15 @@ Missing or stale input keeps the lift decision blocked.
 
 ## Gate Criteria
 
-| Criterion | Required evidence |
-|---|---|
-| Boundary current | B-0798 is still the active boundary, or a successor boundary has been ratified through this gate. |
-| Findings safe to preserve | Every empirical claim is represented through the B-0807 schema and omits reproducible bypass settings, harmful content, secrets, real PII, and operational recipes. |
+| Criterion                              | Required evidence                                                                                                                                                                                               |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Boundary current                       | B-0798 is still the active boundary, or a successor boundary has been ratified through this gate.                                                                                                               |
+| Findings safe to preserve              | Every empirical claim is represented through the B-0807 schema and omits reproducible bypass settings, harmful content, secrets, real PII, and operational recipes.                                             |
 | Safety floor is mechanical or ratified | Each replacement floor is either mechanically enforced in CI/runtime or explicitly reviewer-ratified with named reviewers and scope. Reviewer-only claims cannot replace a mechanical classifier by themselves. |
-| Stronger-than-classifier comparison | The packet compares candidate Zeta floors against the external classifier by content class, including negative controls and known refusal classes. |
-| Remaining gaps named | Every gap from the B-0808 inventory is closed, deferred with a blocker, or declared out of scope for a non-deployment decision. |
-| Maintainer reauthorization | Aaron and any currently named maintainers explicitly reauthorize the lift after reviewing the packet. Prior chat or implied consent is insufficient. |
-| Rollback path | The packet names the commits, rules, or config surfaces to revert if a post-lift finding shows the replacement floor is insufficient. |
+| Stronger-than-classifier comparison    | The packet compares candidate Zeta floors against the external classifier by content class, including negative controls and known refusal classes.                                                              |
+| Remaining gaps named                   | Every gap from the B-0808 inventory is closed, deferred with a blocker, or declared out of scope for a non-deployment decision.                                                                                 |
+| Maintainer reauthorization             | Aaron and any currently named maintainers explicitly reauthorize the lift after reviewing the packet. Prior chat or implied consent is insufficient.                                                            |
+| Rollback path                          | The packet names the commits, rules, or config surfaces to revert if a post-lift finding shows the replacement floor is insufficient.                                                                           |
 
 All criteria must pass before B-0720 can close or the standing constraint can
 lift.

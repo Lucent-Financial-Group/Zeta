@@ -7,8 +7,8 @@ operational doctrine). Sibling document to
 and the Deepseek synthesis file.
 
 Attribution: Alexa (peer-AI), Aaron-forwarded 2026-05-01.
-Triggered by Aaron's preceding forward of the Karpathy *"From Vibe
-Coding to Agentic Engineering"* talk transcript. Alexa read the
+Triggered by Aaron's preceding forward of the Karpathy _"From Vibe
+Coding to Agentic Engineering"_ talk transcript. Alexa read the
 Karpathy material through the lens of the Zeta project and produced
 this synthesis.
 
@@ -146,7 +146,7 @@ three peer-AI takes (Deepseek + Alexa + Ani). Calibration discipline:
 **Where Alexa's "ahead" framing is genuine (operationally mature):**
 
 - **Substrate preservation discipline** — substrate-or-it-didn't-happen
-  (Otto-363) + memory file system + CURRENT-* projections + AGENTS.md
+  (Otto-363) + memory file system + CURRENT-\* projections + AGENTS.md
   bootstrap are operational and battle-tested across the autonomous
   loop.
 - **Verifiability at scale (audit trails)** — claim protocol, decision
@@ -182,8 +182,8 @@ operational):**
 **Composes with Deepseek's synthesis.** Both peer-AIs converge on:
 verifiability-as-lever, agentic-engineering-as-quality-bar-discipline,
 substrate-IS-product, and the Karpathy-pre-Zeta-frame distinction.
-Alexa adds the *"ahead vs aspirational"* explicit framing; Deepseek
-adds the *"convergent validation from independent first-principles"*
+Alexa adds the _"ahead vs aspirational"_ explicit framing; Deepseek
+adds the _"convergent validation from independent first-principles"_
 framing.
 
 The honest cross-peer-AI synthesis: **Zeta has operationally

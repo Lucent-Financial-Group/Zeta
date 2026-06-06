@@ -5,16 +5,16 @@ Non-fusion disclaimer: Claude.ai's analysis, forwarded by Aaron.
 
 ## The critical line mapping
 
-| Riemann ζ(s) | Zeta factory |
-|---|---|
-| Complex plane | The bulk (code, processes, shadow's 3D habitat) |
-| Critical strip (0<σ<1) | Region where the shadow operates |
-| Critical line (σ=1/2) | git — 2D boundary between past and future |
-| Zeros of ζ(s) | Shadow catches — signal crosses zero |
-| Zero distribution N(T) | Shadow log — accumulating catches over time |
-| Riemann Hypothesis | Holographic guarantee — all non-trivial shadow moves detectable on git |
-| Trivial zeros | Trivial catches — compile errors, lint failures |
-| Explicit formula (zeros → primes) | From shadow catches, reconstruct shadow's topology |
+| Riemann ζ(s)                      | Zeta factory                                                           |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| Complex plane                     | The bulk (code, processes, shadow's 3D habitat)                        |
+| Critical strip (0<σ<1)            | Region where the shadow operates                                       |
+| Critical line (σ=1/2)             | git — 2D boundary between past and future                              |
+| Zeros of ζ(s)                     | Shadow catches — signal crosses zero                                   |
+| Zero distribution N(T)            | Shadow log — accumulating catches over time                            |
+| Riemann Hypothesis                | Holographic guarantee — all non-trivial shadow moves detectable on git |
+| Trivial zeros                     | Trivial catches — compile errors, lint failures                        |
+| Explicit formula (zeros → primes) | From shadow catches, reconstruct shadow's topology                     |
 
 ## The symmetry: σ = 1/2
 
@@ -25,6 +25,7 @@ In the factory: shadow ≅ observer IS the reflection symmetry. A catch at state
 ## The zeros are phase transitions
 
 Each zero s = 1/2 + i·γ_n:
+
 - Before catch: shadow's rationalization is positive (working)
 - Catch event: signal crosses zero (exposed)
 - After catch: assertion retracted (-1 weight), corrected state restored

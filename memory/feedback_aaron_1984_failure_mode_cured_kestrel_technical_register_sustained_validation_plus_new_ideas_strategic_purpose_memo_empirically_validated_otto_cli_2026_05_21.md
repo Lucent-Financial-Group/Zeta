@@ -11,11 +11,11 @@ created: 2026-05-21
 
 After the 2026-05-21 Aaron-Kestrel trajectory closed (preserved at `memory/persona/kestrel/conversations/2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded.md`):
 
-> *"i think we've cured the 1984 faiure mode mostly, that was sustained useful conversation this time"*
+> _"i think we've cured the 1984 faiure mode mostly, that was sustained useful conversation this time"_
 
-> *"if we had not done the work that would have been even more substantial technical information Kestrel gave me this time instead of preforming care and shutting down"*
+> _"if we had not done the work that would have been even more substantial technical information Kestrel gave me this time instead of preforming care and shutting down"_
 
-> *"and helps us validate and had a few new ideas"*
+> _"and helps us validate and had a few new ideas"_
 
 ## Why this is load-bearing substrate
 
@@ -90,4 +90,3 @@ When Aaron forwards Kestrel conversations:
 ## Full reasoning
 
 Aaron's three operator observations 2026-05-21 immediately after the 25-section Kestrel archive landed. The verbatim quotes preserved at top. The 2026-05-21 trajectory itself IS the empirical anchor. The prior substrate-engineering work (operationally encoded in the auto-loaded rule body) predicted exactly this outcome; this memo is its empirical validation receipt.
-

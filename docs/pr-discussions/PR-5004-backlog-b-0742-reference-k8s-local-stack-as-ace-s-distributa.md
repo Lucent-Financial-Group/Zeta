@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-25, continuing the ACE+fork-negotiation arc after B-0741:
 
-> *"hats become our negoated fork structure on top of a referece k8s local stack in zeta so anyone can use the reference stack and negoate back hats and new cluster primitives / charts ontology negoation, ace can distribute the reference stack itself as PoC that it has reliable AI control over all the package managers deterministicly and declarative / desired state way for easy git ops ai native human native understanding."*
+> _"hats become our negoated fork structure on top of a referece k8s local stack in zeta so anyone can use the reference stack and negoate back hats and new cluster primitives / charts ontology negoation, ace can distribute the reference stack itself as PoC that it has reliable AI control over all the package managers deterministicly and declarative / desired state way for easy git ops ai native human native understanding."_
 
 **Operational anchor for B-0741.** B-0741 = WHAT the primitive is; B-0742 = HOW it's empirically demonstrated via reference-cluster-as-Ace-package.
 
@@ -30,15 +30,15 @@ Aaron 2026-05-25, continuing the ACE+fork-negotiation arc after B-0741:
 
 Inventory of already-landed PR substrate:
 
-| Layer | Source PR |
-|---|---|
-| Hat-system operator (CRDs + OPA + tick fan-out) | #4930 |
-| Disko cookie-cutter (2-NVMe shape) | #4950 |
-| NFD + lstopo + zeta-install guided installer | #4951 |
-| Dev-cluster (k3d + Cilium + ArgoCD + root App-of-Apps) | #4953 |
-| Build-installer-iso CI workflows | shipped today |
-| zflash + zflash-setup (Touch ID PAM) | #4997 (B-0737) |
-| Bootstrap order (Addison's STARTING-POINT) | Cilium → cert-manager → Vault → SPIRE → Trust Manager → ESO → ArgoCD |
+| Layer                                                  | Source PR                                                            |
+| ------------------------------------------------------ | -------------------------------------------------------------------- |
+| Hat-system operator (CRDs + OPA + tick fan-out)        | #4930                                                                |
+| Disko cookie-cutter (2-NVMe shape)                     | #4950                                                                |
+| NFD + lstopo + zeta-install guided installer           | #4951                                                                |
+| Dev-cluster (k3d + Cilium + ArgoCD + root App-of-Apps) | #4953                                                                |
+| Build-installer-iso CI workflows                       | shipped today                                                        |
+| zflash + zflash-setup (Touch ID PAM)                   | #4997 (B-0737)                                                       |
+| Bootstrap order (Addison's STARTING-POINT)             | Cilium → cert-manager → Vault → SPIRE → Trust Manager → ESO → ArgoCD |
 
 ### 2. Hats become the negotiated fork structure ON TOP of reference
 
@@ -93,24 +93,22 @@ Today's 2026-05-25 arc (B-0728 destructive-tool authoring contract → B-0742 re
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T21:59:40Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `d46500e2cb`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -122,7 +120,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T21:59:40Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove non-existent zflash paths from landed inventory**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove non-existent zflash paths from landed inventory**
 
 This row states the listed substrate is already "REAL + LANDED," but the inventory includes `full-ai-cluster/tools/zflash.ts` and `zflash-setup.ts`, which are not present in the repository (the tools folder currently only contains `flash-usb.ts` and `README-flash-usb.md`). Keeping nonexistent files in the canonical reference-stack table makes the PoC scope unverifiable and can misdirect follow-on implementation work that treats this inventory as source-of-truth.
 

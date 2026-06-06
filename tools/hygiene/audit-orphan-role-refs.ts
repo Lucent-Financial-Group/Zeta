@@ -80,12 +80,40 @@ Exit codes:
 
 // Names recognized as factory persona-attributions
 const NAMES = [
-  "Amara", "Grok", "Gemini", "Codex", "Cursor", "Copilot",
-  "Claude\\.ai", "Claudeai", "Aaron", "Otto", "Ani", "Alexa",
-  "Deepseek", "Kenji", "Soraya", "Nazar", "Mateo", "Aminata",
-  "Nadia", "Naledi", "Rune", "Bodhi", "Iris", "Daya", "Dejan",
-  "Samir", "Kai", "Hiroshi", "Imani", "Ilyana", "Aarav", "Yara",
-  "Viktor", "Kira",
+  "Amara",
+  "Grok",
+  "Gemini",
+  "Codex",
+  "Cursor",
+  "Copilot",
+  "Claude\\.ai",
+  "Claudeai",
+  "Aaron",
+  "Otto",
+  "Ani",
+  "Alexa",
+  "Deepseek",
+  "Kenji",
+  "Soraya",
+  "Nazar",
+  "Mateo",
+  "Aminata",
+  "Nadia",
+  "Naledi",
+  "Rune",
+  "Bodhi",
+  "Iris",
+  "Daya",
+  "Dejan",
+  "Samir",
+  "Kai",
+  "Hiroshi",
+  "Imani",
+  "Ilyana",
+  "Aarav",
+  "Yara",
+  "Viktor",
+  "Kira",
 ];
 
 const NAMES_PATTERN = NAMES.join("|");
@@ -187,7 +215,10 @@ function getFileList(paths: readonly string[]): string[] {
 
   try {
     const output = execFileSync("git", ["ls-files"], { encoding: "utf8" });
-    return output.split("\n").map(s => s.trim()).filter(s => s.length > 0);
+    return output
+      .split("\n")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
   } catch {
     return [];
   }
@@ -279,9 +310,7 @@ export function main(argv: readonly string[]): AuditExitCode {
   }
 
   if (allFindings.length === 0) {
-    process.stdout.write(
-      "OK: no orphan role-refs or un-stripped name attributions on code-surface files.\n"
-    );
+    process.stdout.write("OK: no orphan role-refs or un-stripped name attributions on code-surface files.\n");
     return 0;
   }
 
@@ -291,32 +320,20 @@ export function main(argv: readonly string[]): AuditExitCode {
 
   process.stdout.write("\n");
   process.stdout.write(
-    `Found ${allFindings.length} orphan role-ref / un-stripped-name-attribution findings on code-surface files.\n`
+    `Found ${allFindings.length} orphan role-ref / un-stripped-name-attribution findings on code-surface files.\n`,
   );
   process.stdout.write("\n");
   process.stdout.write("Fix suggestions per class:\n");
   process.stdout.write("  orphan-ferry-ref / orphan-courier-ferry-ref:\n");
-  process.stdout.write(
-    '    Either remove the ferry-N reference entirely (it carries no semantic\n'
-  );
-  process.stdout.write(
-    "    weight without a named source) OR replace it with a self-contained\n"
-  );
+  process.stdout.write("    Either remove the ferry-N reference entirely (it carries no semantic\n");
+  process.stdout.write("    weight without a named source) OR replace it with a self-contained\n");
   process.stdout.write("    principle name (e.g., 'lineage-continuity-substrate-purpose').\n");
   process.stdout.write("  un-stripped-named-attribution:\n");
-  process.stdout.write(
-    "    Move to a history surface (memory/, docs/research/, docs/DECISIONS/,\n"
-  );
-  process.stdout.write(
-    "    etc.) OR replace with role-ref ('the maintainer') AND a self-contained\n"
-  );
-  process.stdout.write(
-    "    principle name. See Otto-279 carve-out at docs/AGENT-BEST-PRACTICES.md.\n"
-  );
+  process.stdout.write("    Move to a history surface (memory/, docs/research/, docs/DECISIONS/,\n");
+  process.stdout.write("    etc.) OR replace with role-ref ('the maintainer') AND a self-contained\n");
+  process.stdout.write("    principle name. See Otto-279 carve-out at docs/AGENT-BEST-PRACTICES.md.\n");
   process.stdout.write("  per-name-attribution:\n");
-  process.stdout.write(
-    "    Same as un-stripped-named-attribution. 'Per <Name> 2026-MM-DD' belongs\n"
-  );
+  process.stdout.write("    Same as un-stripped-named-attribution. 'Per <Name> 2026-MM-DD' belongs\n");
   process.stdout.write("    on history surfaces only.\n");
 
   return enforce ? 2 : 0;

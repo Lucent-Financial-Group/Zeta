@@ -8,12 +8,12 @@ type: feedback
 
 ## The carved blade
 
-> *"Only land a claim — upstream contribution, legal clearance,
+> _"Only land a claim — upstream contribution, legal clearance,
 > empirical assertion, alignment-floor compliance — if it has
 > substance. Substance = verifiable evidence that supports this
 > specific claim at this specific scope. Broad strokes / common
 > practice / 'probably-true' is substance-shortfall; narrow
-> the claim or specify per-instance verification methodology."*
+> the claim or specify per-instance verification methodology."_
 
 ## Where the discipline originally lived
 
@@ -21,8 +21,8 @@ The engagement-gate phrasing first surfaced in two places this
 recent-tick cluster:
 
 - **B-0198** (F# UoM-on-BigInteger upstream contribution) --
-  *"only engage upstream IF the contribution has substance (a
-  real use case OR a concrete proposal)"*
+  _"only engage upstream IF the contribution has substance (a
+  real use case OR a concrete proposal)"_
 - **The Prop 3.5 misattribution worked example** -- Otto
   initially attributed a counter-example to a paper's
   Proposition that doesn't exist; engaging upstream on under-
@@ -40,13 +40,13 @@ same discipline operating **at the internal-claim level**:
 
 Otto's first draft of B-0199 Scope A asserted:
 
-> *"This is allowed under personal-backup-preservation rules
+> _"This is allowed under personal-backup-preservation rules
 > (most jurisdictions permit personal backups of legally-
-> purchased media)."*
+> purchased media)."_
 
 Reviewer P1 (`PRRT_kwDOSF9kNM5_lVdW`) flagged this as over-claim:
 
-> *"This statement treats internal use as generally lawful and
+> _"This statement treats internal use as generally lawful and
 > extends that permission to agents acting on Aaron's behalf,
 > but that legal conclusion is not universally true (especially
 > where copying/access may trigger copyright or anti-
@@ -54,12 +54,13 @@ Reviewer P1 (`PRRT_kwDOSF9kNM5_lVdW`) flagged this as over-claim:
 > gate publication safety, a blanket assertion here can cause
 > reviewers to skip required per-title legal checks and rely on
 > an unsafe default; the guidance should require explicit
-> verification instead of presuming legality."*
+> verification instead of presuming legality."_
 
 The fix narrowed the claim to per-jurisdiction + per-title +
 per-acquisition-provenance verification, with explicit DMCA 1201
-+ 17 USC 117 caveats + agent-acting-on-behalf-of-natural-person
-legal-interpretation-unsettled framing.
+
+- 17 USC 117 caveats + agent-acting-on-behalf-of-natural-person
+  legal-interpretation-unsettled framing.
 
 ## The generalisation
 
@@ -67,13 +68,13 @@ legal-interpretation-unsettled framing.
 of upstream-engagement specifically.** Same discipline, broader
 scope:
 
-| Claim type | Substance test |
-|---|---|
-| Upstream contribution | Does the contribution have a real use case OR concrete proposal? |
-| Legal clearance | Does the claim have per-jurisdiction + per-instance verification? |
-| Empirical assertion | Is there cross-check evidence at the specific scope claimed? |
-| Alignment-floor compliance | Does the surface verifiably preserve HC/SD/DIR contracts? |
-| Architecture-naming | Is the named category empirically falsifiable? |
+| Claim type                 | Substance test                                                    |
+| -------------------------- | ----------------------------------------------------------------- |
+| Upstream contribution      | Does the contribution have a real use case OR concrete proposal?  |
+| Legal clearance            | Does the claim have per-jurisdiction + per-instance verification? |
+| Empirical assertion        | Is there cross-check evidence at the specific scope claimed?      |
+| Alignment-floor compliance | Does the surface verifiably preserve HC/SD/DIR contracts?         |
+| Architecture-naming        | Is the named category empirically falsifiable?                    |
 
 When the answer is "broad strokes / common practice / probably-
 true," that's **substance-shortfall**: either narrow the claim
@@ -98,8 +99,8 @@ Before landing any claim with substantive stakes:
 
 The engagement-gate discipline applying to itself: Otto's
 **initial** framing of this recursion observation in PR #1603
-(*"Otto initially asserted 'internal use under backup-
-preservation rules' too broadly"*) is itself a substantive claim
+(_"Otto initially asserted 'internal use under backup-
+preservation rules' too broadly"_) is itself a substantive claim
 with its own substance-test requirement. Future iterations of
 the engagement-gate discipline at new claim levels will trigger
 the same recursion -- the discipline is fractal in scope, not

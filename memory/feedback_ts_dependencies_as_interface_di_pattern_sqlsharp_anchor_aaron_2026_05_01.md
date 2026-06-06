@@ -31,7 +31,7 @@ When authoring (or refactoring) a TS tool in Zeta:
    on array params. Exhaustive switch / discriminant checks.
 
 This is the SQLSharp pattern. Aaron's framing —
-*"super strongly typed... not js in ts failure mode"* — is
+_"super strongly typed... not js in ts failure mode"_ — is
 the discriminating axis: TS that's just JavaScript with a
 `.ts` extension and `any` escapes is the failure mode; TS
 where the type system carries the design invariants is the
@@ -41,11 +41,11 @@ target.
 
 Aaron 2026-05-01 (verbatim, four-message clarification):
 
-> *"`../SQLSharp` is a decent example"*
-> *"of best preactices not super DST yet the other repo but
-> best bun/ts practices"*
-> *"super strongly typed"*
-> *"not js in ts failure mode"*
+> _"`../SQLSharp` is a decent example"_
+> _"of best preactices not super DST yet the other repo but
+> best bun/ts practices"_
+> _"super strongly typed"_
+> _"not js in ts failure mode"_
 
 The clarification stack is itself the lesson: SQLSharp is
 **not** the DST anchor (some other repo carries that), but
@@ -119,7 +119,7 @@ SQLSharp:
 - Lives at `../SQLSharp` (relative to Zeta) — directly
   inspectable
 - Has explicit type-discipline rule in `CLAUDE.md`
-  (*"push invariants into compiler-checked types"*)
+  (_"push invariants into compiler-checked types"_)
 - Demonstrates the pattern in production code
   (`tools/automation/format/format-repo.ts`,
   `tools/automation/lib/repo-environment.ts`,
@@ -219,23 +219,23 @@ script under the DST-grade-A umbrella, not just `pollAllBounded`.
   full DI infrastructure.
 - **NOT a claim SQLSharp is the only valid anchor.** Other
   TS-strong repos exist (Effect-TS ecosystem, fp-ts, etc.).
-  SQLSharp is the *closest, sibling-repo* anchor with
+  SQLSharp is the _closest, sibling-repo_ anchor with
   consistent maintainer-discipline. External anchors
   rotate as new evidence lands.
 - **NOT a ban on `any` in third-party-shape parsing.** When
   parsing JSON of unknown shape (e.g., `gh api` output that
   GitHub may evolve), narrow types via runtime checks +
-  type guards. The `any` ban applies to *internal* types
+  type guards. The `any` ban applies to _internal_ types
   not external-API-shape parsing where validation IS the
   type-narrowing step.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Super-strongly-typed TS, not js-in-ts. Every external
+_"Super-strongly-typed TS, not js-in-ts. Every external
 call surface in an interface. Every function takes its
 dependencies. The default const wires production; the test
 constructs the synthetic. The pattern IS the DST achievability
-vehicle."* (Aaron 2026-05-01.)
+vehicle."_ (Aaron 2026-05-01.)
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not

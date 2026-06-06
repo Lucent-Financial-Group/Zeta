@@ -12,21 +12,21 @@ type: feedback
 
 ## 4-tier network (cumulative)
 
-| Tier | Bandwidth / range | Hardware | Otto-NNN |
-|------|------------------|----------|----------|
-| Sub-1GHz mesh / IoT | 1 km+, low-power, embedded | HaLow (802.11ah) | 314 |
-| Indoor/campus WiFi | meters, ~10 Gbps WiFi 7 | Ubiquiti UniFi WiFi 7 | 317 |
-| Long-range backhaul | km, line-of-sight | Ubiquiti airMAX beaming | 317 |
-| **High-speed local cluster-fabric** | meters, **10–120 Gbps wired** | **Ubiquiti 10GbE + Thunderbolt 5 / USB4 hubs** | **318** |
+| Tier                                | Bandwidth / range             | Hardware                                       | Otto-NNN |
+| ----------------------------------- | ----------------------------- | ---------------------------------------------- | -------- |
+| Sub-1GHz mesh / IoT                 | 1 km+, low-power, embedded    | HaLow (802.11ah)                               | 314      |
+| Indoor/campus WiFi                  | meters, ~10 Gbps WiFi 7       | Ubiquiti UniFi WiFi 7                          | 317      |
+| Long-range backhaul                 | km, line-of-sight             | Ubiquiti airMAX beaming                        | 317      |
+| **High-speed local cluster-fabric** | meters, **10–120 Gbps wired** | **Ubiquiti 10GbE + Thunderbolt 5 / USB4 hubs** | **318**  |
 
 ## High-speed local-interconnect options (cumulative)
 
-| Standard | Speed | Use |
-|----------|-------|-----|
-| 10GbE | 10 Gbps | Wired backbone, switch fabric |
-| OCuLink (PCIe 4.0 x4) | ~64 Gbps | External GPU + storage attachment (Otto-316) |
-| Thunderbolt 5 | 80–120 Gbps | PC-to-PC, eGPU, mesh fabric |
-| USB4 | up to 80 Gbps | Similar to TB5 |
+| Standard              | Speed         | Use                                          |
+| --------------------- | ------------- | -------------------------------------------- |
+| 10GbE                 | 10 Gbps       | Wired backbone, switch fabric                |
+| OCuLink (PCIe 4.0 x4) | ~64 Gbps      | External GPU + storage attachment (Otto-316) |
+| Thunderbolt 5         | 80–120 Gbps   | PC-to-PC, eGPU, mesh fabric                  |
+| USB4                  | up to 80 Gbps | Similar to TB5                               |
 
 These speeds are **cluster-fabric class**. Approaching what data-center backbones use (40–100 Gbps Infiniband / Ethernet). Distributed training, parameter-server work, real-time mesh coordination across the ~40-node fleet (Otto-316) is bandwidth-feasible.
 

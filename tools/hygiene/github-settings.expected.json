@@ -62,9 +62,7 @@
       "conditions": {
         "ref_name": {
           "exclude": [],
-          "include": [
-            "~DEFAULT_BRANCH"
-          ]
+          "include": ["~DEFAULT_BRANCH"]
         }
       },
       "enforcement": "active",
@@ -77,9 +75,7 @@
       "conditions": {
         "ref_name": {
           "exclude": [],
-          "include": [
-            "~DEFAULT_BRANCH"
-          ]
+          "include": ["~DEFAULT_BRANCH"]
         }
       },
       "enforcement": "active",
@@ -130,9 +126,7 @@
       "conditions": {
         "ref_name": {
           "exclude": [],
-          "include": [
-            "~DEFAULT_BRANCH"
-          ]
+          "include": ["~DEFAULT_BRANCH"]
         }
       },
       "enforcement": "active",
@@ -148,9 +142,7 @@
         },
         {
           "parameters": {
-            "allowed_merge_methods": [
-              "squash"
-            ],
+            "allowed_merge_methods": ["squash"],
             "dismiss_stale_reviews_on_push": false,
             "require_code_owner_review": false,
             "require_last_push_approval": false,
@@ -167,9 +159,7 @@
       "conditions": {
         "ref_name": {
           "exclude": [],
-          "include": [
-            "~DEFAULT_BRANCH"
-          ]
+          "include": ["~DEFAULT_BRANCH"]
         }
       },
       "enforcement": "active",
@@ -347,9 +337,7 @@
     },
     {
       "name": "github-pages",
-      "protection_rule_types": [
-        "branch_policy"
-      ]
+      "protection_rule_types": ["branch_policy"]
     }
   ],
   "pages": {
@@ -362,14 +350,7 @@
     }
   },
   "codeql_default_setup": {
-    "languages": [
-      "actions",
-      "csharp",
-      "java-kotlin",
-      "javascript",
-      "javascript-typescript",
-      "typescript"
-    ],
+    "languages": ["actions", "csharp", "java-kotlin", "javascript", "javascript-typescript", "typescript"],
     "query_suite": "extended",
     "state": "not-configured"
   },

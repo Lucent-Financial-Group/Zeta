@@ -91,21 +91,21 @@ semantics at the memory substrate.
 
 ### Fields
 
-| Field | Type | Required | Semantics |
-|---|---|---|---|
-| `id` | string | yes | Globally unique fact ID (e.g., `MF-2026-04-23-001`) |
-| `subject` | string | yes | Who the fact is about: `aaron` / `amara` / `otto` / `kenji` / ... / `any` (factory-generic) |
-| `predicate` | string | yes | Normalized verb: `prefers` / `delegates` / `forbids` / `endorses` / `retracted` / `supersedes` / ... |
-| `object` | string | yes | Normalized claim text |
-| `source_kind` | enum | yes | `memory` / `current` / `decision` / `backlog` / `conflict` / `verbatim-quote` |
-| `source_path` | string | yes | File path the fact was extracted from |
-| `source_anchor` | string | optional | Line number, section header, or hash for citation |
-| `timestamp_utc` | ISO8601 | yes | When the fact was authored (not when extracted) |
-| `supersedes` | string | optional | ID of fact this one supersedes (one-to-one) |
-| `priority` | int | yes | Explicit override > current view > memory > archive (4 > 3 > 2 > 1) |
-| `status` | enum | yes | `active` / `retracted` / `superseded` |
-| `confidence` | enum | optional | `verbatim` / `paraphrase` / `inference` — how tight the extraction is |
-| `tags` | list[string] | optional | Cross-cutting tags: `principle`, `authorization`, `register`, `ops`, `naming`, etc. |
+| Field           | Type         | Required | Semantics                                                                                            |
+| --------------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------- |
+| `id`            | string       | yes      | Globally unique fact ID (e.g., `MF-2026-04-23-001`)                                                  |
+| `subject`       | string       | yes      | Who the fact is about: `aaron` / `amara` / `otto` / `kenji` / ... / `any` (factory-generic)          |
+| `predicate`     | string       | yes      | Normalized verb: `prefers` / `delegates` / `forbids` / `endorses` / `retracted` / `supersedes` / ... |
+| `object`        | string       | yes      | Normalized claim text                                                                                |
+| `source_kind`   | enum         | yes      | `memory` / `current` / `decision` / `backlog` / `conflict` / `verbatim-quote`                        |
+| `source_path`   | string       | yes      | File path the fact was extracted from                                                                |
+| `source_anchor` | string       | optional | Line number, section header, or hash for citation                                                    |
+| `timestamp_utc` | ISO8601      | yes      | When the fact was authored (not when extracted)                                                      |
+| `supersedes`    | string       | optional | ID of fact this one supersedes (one-to-one)                                                          |
+| `priority`      | int          | yes      | Explicit override > current view > memory > archive (4 > 3 > 2 > 1)                                  |
+| `status`        | enum         | yes      | `active` / `retracted` / `superseded`                                                                |
+| `confidence`    | enum         | optional | `verbatim` / `paraphrase` / `inference` — how tight the extraction is                                |
+| `tags`          | list[string] | optional | Cross-cutting tags: `principle`, `authorization`, `register`, `ops`, `naming`, etc.                  |
 
 ### Invariants
 
@@ -135,7 +135,7 @@ Rules (applied in order):
 1. Lowercase all characters
 2. Replace whitespace sequences with single space
 3. Strip leading/trailing whitespace
-4. Strip markdown formatting *delimiters* — i.e. unwrap
+4. Strip markdown formatting _delimiters_ — i.e. unwrap
    text from paired emphasis/code spans rather than
    removing every occurrence of those characters as raw
    chars. Concretely:
@@ -150,6 +150,7 @@ Rules (applied in order):
    Single occurrences and unpaired delimiters are NOT
    stripped — `_internal_var` stays as `_internal_var`,
    `a_b_c` stays as `a_b_c`, and a stray backtick survives.
+
 5. Normalize smart/curly quotes (left-double U+201C, right-
    double U+201D, left-single U+2018, right-single U+2019)
    to plain ASCII straight quotes (`"` and `'`)
@@ -190,7 +191,7 @@ Rules NOT applied (preserve these distinctions):
   source_kind: memory
   source_path: memory/feedback_aaron_full_github_access_authorization_all_acehack_lfg_only_restriction_no_spending_increase_2026_04_23.md
   timestamp_utc: 2026-04-23T21:30:00Z
-  supersedes: MF-2026-04-23-002   # superseding the prior Otto-23 partial grant
+  supersedes: MF-2026-04-23-002 # superseding the prior Otto-23 partial grant
   priority: 3
   status: active
   confidence: verbatim
@@ -351,7 +352,7 @@ sort by `(priority DESC, timestamp DESC)`, group by
 
 ## <predicate>
 
-- **<object>** — source: [<memory>](<source_path>), <timestamp>
+- **<object>** — source: [<memory>](source_path), <timestamp>
 - ...
 ```
 
@@ -429,7 +430,7 @@ preserved across the archive boundary.
 - Use an LLM pass to extract additional facts from
   prose that the mechanical parser missed
 - Careful review discipline — not auto-merge; human
-  + peer review for each LLM extraction pass
+  - peer review for each LLM extraction pass
 - Establishes a richer fact-count; may surface additional
   conflicts
 
@@ -534,7 +535,7 @@ This doc operationalizes it at the memory layer.
   per-user memories at once.** Incremental backfill,
   prose retained as source-of-truth.
 - **Not authorization to overwrite existing
-  CURRENT-*.md files.** Cutover is Phase 4; earlier
+  CURRENT-\*.md files.** Cutover is Phase 4; earlier
   phases generate `.generated` companions.
 - **Not a commitment to LLM-assisted extraction.**
   Phase 5 is research-grade; manual + mechanical

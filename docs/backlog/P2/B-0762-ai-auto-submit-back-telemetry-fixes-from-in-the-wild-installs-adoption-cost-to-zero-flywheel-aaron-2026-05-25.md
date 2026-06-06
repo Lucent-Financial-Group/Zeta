@@ -24,11 +24,11 @@ tags: [cluster, telemetry, ai-native, network-effects, adoption, consent, distri
 ## Problem
 
 Aaron 2026-05-25 (mid-iteration-2 wait, observing the iteration-1
-→ iteration-2 cycle): *"thank how easy it will be for someone to
+→ iteration-2 cycle): _"thank how easy it will be for someone to
 clone and use this project once we get it right adoption scales
 to 0 the more machines we test it on and have the AI auto submite
 back updates on every new hardward it runs into out there in the
-wild."*
+wild."_
 
 Today's iteration loop:
 

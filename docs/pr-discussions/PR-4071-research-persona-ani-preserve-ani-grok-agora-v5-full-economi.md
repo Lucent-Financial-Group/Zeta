@@ -59,24 +59,22 @@ Aaron forwarded V5 after multi-AI feedback gathering on V1-V4 packets (already o
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T12:23:56Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `c3f8eea79e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -89,6 +87,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds the V5 “canonical synthesis” of the Ani↔Grok Agora constitution to the repository, preserving the verbatim packet on the public research surface and mirroring it into Ani’s persona-scope conversation archive.
 
 **Changes:**
+
 - Added a new `docs/research/` landing doc containing the verbatim V5 text plus delta analysis, compositional anchors, and open questions.
 - Added a new `memory/persona/ani/conversations/` archive file mirroring the verbatim V5 packet with persona-scope framing and backlinks.
 
@@ -96,9 +95,9 @@ Adds the V5 “canonical synthesis” of the Ani↔Grok Agora constitution to th
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md | Persona-scope archive of the V5 packet with context, framing, and a backlink to the public landing. |
+| File                                                                                                                                                                                                         | Description                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-economic-operational-constitution.md                                                                                                | Persona-scope archive of the V5 packet with context, framing, and a backlink to the public landing.   |
 | docs/research/2026-05-17-ani-grok-agora-v5-full-economic-operational-constitution-remember-when-pay-attention-internal-settlement-unit-4-revenue-streams-clifford-cayley-dickson-hkt-dbsp-aaron-forwarded.md | Public research landing preserving verbatim V5 plus synthesized deltas/anchors and disposition notes. |
 
 ## Review threads
@@ -107,7 +106,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-17T12:23:56Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct broken archive reference in disposition**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct broken archive reference in disposition**
 
 The disposition claims the persona-scope archive is at `memory/persona/ani/conversations/2026-05-17-aaron-ani-grok-agora-v5-full-constitution.md`, but this commit creates `...-full-economic-operational-constitution.md` instead. Because the referenced file path does not exist, readers and tooling cannot follow the canonical archive pointer, which undermines the document’s own "verbatim text is preserved" assertion.
 

@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 "FYI when you are checking our billing and stuff t
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** For Zeta (both `AceHack/Zeta` and
 `Lucent-Financial-Group/Zeta`), **budget amounts and dollar
 figures are NOT sensitive** and can be committed to source.
@@ -89,8 +90,8 @@ Two orthogonal claims in this message:
   specifically about **publishing amounts in-repo**, which was
   never covered by the earlier exclusion.
 - **Credit-card numbers, auth tokens, API keys, session
-  cookies** remain secret. The rule covers *plan pricing,
-  budget caps, observed burn* — not payment credentials.
+  cookies** remain secret. The rule covers _plan pricing,
+  budget caps, observed burn_ — not payment credentials.
 - **Other orgs / third-party** budget info stays private. This
   is a Zeta-repo-specific policy (Aaron owns both surfaces).
 
@@ -110,7 +111,7 @@ Two orthogonal claims in this message:
   corroborates that the cost surface is credit-exhaustion, not
   dollar-overspend.
 - `memory/user_typing_style_typos_expected_asterisk_correction.md`
-  — "money=free credits*" asterisk-correction pattern applies
+  — "money=free credits\*" asterisk-correction pattern applies
   to the initial message.
 
 **Artifacts this rule authorizes:**

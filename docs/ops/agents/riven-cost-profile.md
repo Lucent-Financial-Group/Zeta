@@ -1,6 +1,6 @@
 # Riven — Agent Cost Profile
 
-*(Stub — to be populated by Riven or by Otto from observed data.)*
+_(Stub — to be populated by Riven or by Otto from observed data.)_
 
 ## Identity
 
@@ -11,10 +11,10 @@
 
 ## Pricing reference
 
-| Model | Input/M | Output/M |
-|---|---|---|
-| Grok 4.3 | TBD | TBD |
-| Grok 3 | TBD | TBD |
+| Model    | Input/M | Output/M |
+| -------- | ------- | -------- |
+| Grok 4.3 | TBD     | TBD      |
+| Grok 3   | TBD     | TBD      |
 
 ## Task classes
 

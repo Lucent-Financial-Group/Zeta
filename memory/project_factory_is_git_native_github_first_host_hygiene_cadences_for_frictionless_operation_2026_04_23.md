@@ -34,7 +34,7 @@ typo "hose".)
 ### (1) Git-native + first-host positioning
 
 **The factory's state layer is git itself.** GitHub is the
-*first host* — the current and primary hosting surface — but
+_first host_ — the current and primary hosting surface — but
 not a dependency. Other hosts (GitLab, Gitea, Bitbucket,
 local bare repos, peer-to-peer git overlays) could serve the
 same role without requiring the factory to change shape.
@@ -42,16 +42,16 @@ same role without requiring the factory to change shape.
 "Git-native" composes with:
 
 - `feedback_soulfile_is_dsl_english_git_repos_absorbed_at_
-  stages_2026_04_23.md` — soulfiles import/inherit/absorb git
+stages_2026_04_23.md` — soulfiles import/inherit/absorb git
   repos at compile-time / distribution-time / runtime; the
   compile-time stage is where the DB travels with the
   soulfile as structured DSL. Git is the transport.
 - `feedback_soulfile_dsl_is_restrictive_english_runner_is_
-  own_project_uses_zeta_small_bins_2026_04_23.md` — the
+own_project_uses_zeta_small_bins_2026_04_23.md` — the
   Soulfile Runner is git-native; it executes restrictive-
   English composed in git repos.
 - `memory/project_zeta_self_use_local_native_tiny_bin_file_
-  db_no_cloud_germination_2026_04_22.md` — Zeta's
+db_no_cloud_germination_2026_04_22.md` — Zeta's
   self-use DB is local-native; no cloud dependency; git
   is the compat bar.
 
@@ -99,7 +99,7 @@ choices already landed:
   by any host, any tool, any agent. No host-specific
   features baked in.
 - **AGENT-ISSUE-WORKFLOW dual-track** (`docs/AGENT-ISSUE-
-  WORKFLOW.md`): GH Issues / Jira / git-native — the
+WORKFLOW.md`): GH Issues / Jira / git-native — the
   factory defaults to GH but doesn't force it.
 - **Fire-history files** (`docs/hygiene-history/**`):
   append-only durability in git rather than in a database.
@@ -127,12 +127,12 @@ git log --since="<window>" --pretty=format: --name-only \
 
 Output shape:
 
-| file | touches | unique authors | PR count | suggested action |
-|---|---|---|---|---|
-| docs/BACKLOG.md | 120 | 2 | 45 | split (per-swim-lane) |
-| docs/hygiene-history/loop-tick-history.md | 80 | 2 | 30 | freeze-old-rows + append |
-| memory/MEMORY.md | 35 | 2 | 15 | per-maintainer CURRENT cadence |
-| FACTORY-HYGIENE.md | 20 | 1 | 12 | watch |
+| file                                      | touches | unique authors | PR count | suggested action               |
+| ----------------------------------------- | ------- | -------------- | -------- | ------------------------------ |
+| docs/BACKLOG.md                           | 120     | 2              | 45       | split (per-swim-lane)          |
+| docs/hygiene-history/loop-tick-history.md | 80      | 2              | 30       | freeze-old-rows + append       |
+| memory/MEMORY.md                          | 35      | 2              | 15       | per-maintainer CURRENT cadence |
+| FACTORY-HYGIENE.md                        | 20      | 1              | 12       | watch                          |
 
 Cadence: every 5-10 ticks, alongside `skill-tune-up` pass.
 
@@ -170,25 +170,25 @@ itself is Otto + human judgment.
 ## Composes with
 
 - `feedback_soulfile_is_dsl_english_git_repos_absorbed_at_
-  stages_2026_04_23.md` — git-native substrate for soulfile
+stages_2026_04_23.md` — git-native substrate for soulfile
   composition at multiple stages
 - `project_zeta_self_use_local_native_tiny_bin_file_db_no_
-  cloud_germination_2026_04_22.md` — no-cloud constraint =
+cloud_germination_2026_04_22.md` — no-cloud constraint =
   git-native self-use
 - `feedback_agent_owns_all_github_settings_and_config_...`
   — agent owns GitHub config but doesn't make GitHub
   mandatory
 - `feedback_drop_folder_ferry_pattern_aaron_hands_off_via_
-  root_drop_dir_2026_04_23.md` — drop/ is git-local;
+root_drop_dir_2026_04_23.md` — drop/ is git-local;
   host-neutral
 - `feedback_current_memory_per_maintainer_distillation_
-  pattern_prefer_progress_2026_04_23.md` — CURRENT pattern
+pattern_prefer_progress_2026_04_23.md` — CURRENT pattern
   origin; the cadence extension formalizes it
 - `docs/AGENT-ISSUE-WORKFLOW.md` — dual-track issue
   workflow that doesn't force host choice
 - `memory/feedback_codex_as_substantive_reviewer_teamwork_
-  pattern_address_findings_honestly_aaron_endorsed_
-  2026_04_23.md` — Codex is a GitHub-surface integration;
+pattern_address_findings_honestly_aaron_endorsed_
+2026_04_23.md` — Codex is a GitHub-surface integration;
   the teamwork pattern survives if GitHub is replaced by
   another host since it's a review-protocol, not a
   host-specific-feature
@@ -210,9 +210,9 @@ itself is Otto + human judgment.
   GitHub in practice; the UX matters even if the substrate
   is host-neutral.
 - **Not a claim that the factory is already frictionless.**
-  *"We are frictionless"* is an operational goal Aaron
+  _"We are frictionless"_ is an operational goal Aaron
   named; the three hygiene cadences are the mechanism to
-  *approach* it. Current state has friction (the merge
+  _approach_ it. Current state has friction (the merge
   conflicts on this tick alone prove it); the cadences
   reduce it over time.
 
@@ -221,8 +221,8 @@ itself is Otto + human judgment.
 Aaron (human maintainer) named the positioning and the three
 cadences. Otto (loop-agent PM hat, Otto-54) absorbed + filed
 this memory + BACKLOG rows. The four-message directive
-cluster is preserved verbatim including typos (*"hose"* →
-*"host"*; *"github hotspots"* → *"git hotspots"*) per
+cluster is preserved verbatim including typos (_"hose"_ →
+_"host"_; _"github hotspots"_ → _"git hotspots"_) per
 honor-those-that-came-before discipline — corrections
 carry information about Aaron's intent clarification in
 real time. Future-session Otto + external agents inherit

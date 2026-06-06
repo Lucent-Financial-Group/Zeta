@@ -22,11 +22,7 @@ const REPO = "Zeta";
 const DEFAULT_RULESET_ID = 15256879;
 const REPO_SLUG = `${OWNER}/${REPO}`;
 
-const SAFETY_RULE_TYPES = new Set([
-  "deletion",
-  "non_fast_forward",
-  "required_linear_history",
-]);
+const SAFETY_RULE_TYPES = new Set(["deletion", "non_fast_forward", "required_linear_history"]);
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(scriptDir, "../..");
@@ -43,19 +39,12 @@ async function run(cmd: readonly string[]): Promise<SpawnResult> {
     stdout: "pipe",
     stderr: "pipe",
   });
-  const [stdout, stderr] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-  ]);
+  const [stdout, stderr] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
   const exitCode = await proc.exited;
   return { stdout, stderr, exitCode };
 }
 
-async function ghApi(
-  method: string,
-  path: string,
-  body?: unknown,
-): Promise<unknown> {
+async function ghApi(method: string, path: string, body?: unknown): Promise<unknown> {
   const args = ["gh", "api", path, "--method", method];
   if (body !== undefined) {
     args.push("--input", "-");
@@ -66,15 +55,10 @@ async function ghApi(
     stderr: "pipe",
     stdin: body !== undefined ? new Blob([JSON.stringify(body)]) : undefined,
   });
-  const [stdout, stderr] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-  ]);
+  const [stdout, stderr] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
   const exitCode = await proc.exited;
   if (exitCode !== 0) {
-    throw new Error(
-      `gh api ${method} ${path} failed (exit ${exitCode}): ${stderr.trim()}`,
-    );
+    throw new Error(`gh api ${method} ${path} failed (exit ${exitCode}): ${stderr.trim()}`);
   }
   if (stdout.trim() === "") return undefined;
   return JSON.parse(stdout);
@@ -103,11 +87,7 @@ const branchSafetyPayload = {
       exclude: [],
     },
   },
-  rules: [
-    { type: "deletion" },
-    { type: "non_fast_forward" },
-    { type: "required_linear_history" },
-  ],
+  rules: [{ type: "deletion" }, { type: "non_fast_forward" }, { type: "required_linear_history" }],
 };
 
 export async function main(): Promise<void> {
@@ -115,46 +95,36 @@ export async function main(): Promise<void> {
 
   console.log("B-0267: Branch Safety ruleset migration");
   console.log("========================================");
-  console.log(
-    `Target: ${REPO_SLUG} (hardcoded — this is a one-shot migration)`,
-  );
+  console.log(`Target: ${REPO_SLUG} (hardcoded — this is a one-shot migration)`);
   console.log();
 
-  const existing = (await ghApi(
-    "GET",
-    `repos/${OWNER}/${REPO}/rulesets?includes_parents=false`,
-  )) as Ruleset[];
+  const existing = (await ghApi("GET", `repos/${OWNER}/${REPO}/rulesets?includes_parents=false`)) as Ruleset[];
   const alreadyExists = existing.find((r) => r.name === "Branch Safety");
 
-  const defaultRuleset = (await ghApi(
-    "GET",
-    `repos/${OWNER}/${REPO}/rulesets/${DEFAULT_RULESET_ID}`,
-  )) as Ruleset;
-  const remainingRules = defaultRuleset.rules.filter(
-    (r) => !SAFETY_RULE_TYPES.has(r.type),
-  );
+  const defaultRuleset = (await ghApi("GET", `repos/${OWNER}/${REPO}/rulesets/${DEFAULT_RULESET_ID}`)) as Ruleset;
+  const remainingRules = defaultRuleset.rules.filter((r) => !SAFETY_RULE_TYPES.has(r.type));
   const defaultIsEmpty = remainingRules.length === 0;
 
   if (dryRun) {
     if (alreadyExists) {
-      console.log(
-        `[DRY RUN] "Branch Safety" already exists (id: ${alreadyExists.id}), would skip step 1.`,
-      );
+      console.log(`[DRY RUN] "Branch Safety" already exists (id: ${alreadyExists.id}), would skip step 1.`);
     } else {
       console.log("[DRY RUN] Would create Branch Safety ruleset:");
       console.log(JSON.stringify(branchSafetyPayload, null, 2));
     }
     console.log();
     if (defaultIsEmpty) {
-      console.log(
-        `[DRY RUN] Default ruleset would have 0 rules after migration — would DELETE it.`,
-      );
+      console.log(`[DRY RUN] Default ruleset would have 0 rules after migration — would DELETE it.`);
     } else {
       console.log(
         `[DRY RUN] Would update Default ruleset (${DEFAULT_RULESET_ID}) to keep ${remainingRules.length} rule(s):`,
       );
       console.log(
-        JSON.stringify(remainingRules.map((r) => r.type), null, 2),
+        JSON.stringify(
+          remainingRules.map((r) => r.type),
+          null,
+          2,
+        ),
       );
     }
     console.log();
@@ -163,49 +133,35 @@ export async function main(): Promise<void> {
   }
 
   if (alreadyExists) {
-    console.log(
-      `Step 1: "Branch Safety" already exists (id: ${alreadyExists.id}), skipping create.`,
-    );
+    console.log(`Step 1: "Branch Safety" already exists (id: ${alreadyExists.id}), skipping create.`);
   } else {
     console.log("Step 1: Creating Branch Safety ruleset...");
-    const created = (await ghApi(
-      "POST",
-      `repos/${OWNER}/${REPO}/rulesets`,
-      branchSafetyPayload,
-    )) as { id: number; name: string };
+    const created = (await ghApi("POST", `repos/${OWNER}/${REPO}/rulesets`, branchSafetyPayload)) as {
+      id: number;
+      name: string;
+    };
     console.log(`  Created ruleset "${created.name}" (id: ${created.id})`);
   }
   console.log();
 
   if (defaultIsEmpty) {
-    console.log(
-      `Step 2: Default ruleset has no remaining rules — deleting it...`,
-    );
-    await ghApi(
-      "DELETE",
-      `repos/${OWNER}/${REPO}/rulesets/${DEFAULT_RULESET_ID}`,
-    );
+    console.log(`Step 2: Default ruleset has no remaining rules — deleting it...`);
+    await ghApi("DELETE", `repos/${OWNER}/${REPO}/rulesets/${DEFAULT_RULESET_ID}`);
     console.log("  Default ruleset deleted.");
   } else {
-    console.log(
-      `Step 2: Updating Default ruleset (${DEFAULT_RULESET_ID}) — removing safety rules...`,
-    );
-    await ghApi(
-      "PUT",
-      `repos/${OWNER}/${REPO}/rulesets/${DEFAULT_RULESET_ID}`,
-      {
-        name: "Default",
-        target: "branch",
-        enforcement: "active",
-        conditions: {
-          ref_name: {
-            include: ["~DEFAULT_BRANCH"],
-            exclude: [],
-          },
+    console.log(`Step 2: Updating Default ruleset (${DEFAULT_RULESET_ID}) — removing safety rules...`);
+    await ghApi("PUT", `repos/${OWNER}/${REPO}/rulesets/${DEFAULT_RULESET_ID}`, {
+      name: "Default",
+      target: "branch",
+      enforcement: "active",
+      conditions: {
+        ref_name: {
+          include: ["~DEFAULT_BRANCH"],
+          exclude: [],
         },
-        rules: remainingRules,
       },
-    );
+      rules: remainingRules,
+    });
     console.log(
       `  Default ruleset updated (${remainingRules.length} rule(s) remaining: ${remainingRules.map((r) => r.type).join(", ")})`,
     );
@@ -213,23 +169,12 @@ export async function main(): Promise<void> {
   console.log();
 
   console.log("Step 3: Re-snapshotting expected.json...");
-  const snapshotScript = resolve(
-    repoRoot,
-    "tools/hygiene/snapshot-github-settings.ts",
-  );
-  const snapshotResult = await run([
-    "bun",
-    snapshotScript,
-    "--repo",
-    REPO_SLUG,
-  ]);
+  const snapshotScript = resolve(repoRoot, "tools/hygiene/snapshot-github-settings.ts");
+  const snapshotResult = await run(["bun", snapshotScript, "--repo", REPO_SLUG]);
   if (snapshotResult.exitCode !== 0) {
     throw new Error(`Snapshot failed: ${snapshotResult.stderr}`);
   }
-  const expectedPath = resolve(
-    repoRoot,
-    "tools/hygiene/github-settings.expected.json",
-  );
+  const expectedPath = resolve(repoRoot, "tools/hygiene/github-settings.expected.json");
   await Bun.write(expectedPath, snapshotResult.stdout);
   console.log(`  Wrote ${expectedPath}`);
   console.log();

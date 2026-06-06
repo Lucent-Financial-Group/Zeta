@@ -27,7 +27,7 @@ Files [B-0822](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b082
 
 Aaron 2026-05-26 sharpening caught the conflation (multi-tenant ≠ multi-use):
 
-> *"it's worse than multi tenant you are right but even within tenant you might need two redises for different microservices so that's why i said multi use instead of multi tenant but maybe it's two dimensions and i'm conflating one."*
+> _"it's worse than multi tenant you are right but even within tenant you might need two redises for different microservices so that's why i said multi use instead of multi tenant but maybe it's two dimensions and i'm conflating one."_
 
 5-scenario table + 7-chart characterization table (postgres / redis / kafka / cert-manager / elasticsearch / vault / ingress-nginx).
 

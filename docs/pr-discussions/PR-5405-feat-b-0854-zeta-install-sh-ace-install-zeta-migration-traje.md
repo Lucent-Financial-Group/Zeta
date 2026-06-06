@@ -54,6 +54,7 @@ Per `.claude/rules/rule-0-no-sh-files.md`: install-graph carve-out preserved thr
 Adds a new P1 backlog row for migrating Zeta installation from `zeta-install.sh` toward a declarative Ace-managed `ace install zeta` flow, and updates the generated backlog index to include it.
 
 **Changes:**
+
 - Adds B-0854 with phased migration plan and Ace-cluster cross-references.
 - Updates `docs/BACKLOG.md` with the new P1 entry.
 
@@ -61,10 +62,10 @@ Adds a new P1 backlog row for migrating Zeta installation from `zeta-install.sh`
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                    | Description                                                      |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `docs/backlog/P1/B-0854-zeta-install-sh-to-ace-install-zeta-migration-trajectory-package-json-style-declarative-manifest-like-scratch-and-sqlsharp-aaron-2026-05-27.md` | New backlog row describing the Ace install migration trajectory. |
-| `docs/BACKLOG.md` | Generated backlog index entry for B-0854. |
+| `docs/BACKLOG.md`                                                                                                                                                       | Generated backlog index entry for B-0854.                        |
 
 ## Review threads
 

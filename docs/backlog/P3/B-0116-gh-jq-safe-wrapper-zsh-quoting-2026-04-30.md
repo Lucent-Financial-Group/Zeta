@@ -23,13 +23,13 @@ type: friction-reducer
 Deepseek peer review 2026-04-30 (Review 10 in
 `docs/research/2026-04-30-session-end-peer-ai-reviews-verbatim.md`):
 
-> *"`jq` quoting issues in zsh are still causing command
+> _"`jq` quoting issues in zsh are still causing command
 > failures. Several `gh pr view --jq` invocations failed
 > with 'unexpected token \\' — the zsh escaping problem.
 > Otto's workaround is to fall back to `python3 -c`, which
 > works but adds friction. A tiny helper script
 > (`tools/gh-jq-safe.sh`) that handles the quoting
-> automatically would eliminate this recurring error class."*
+> automatically would eliminate this recurring error class."_
 
 ## What
 
@@ -65,13 +65,13 @@ A TS-port equivalent for `bun run` would also work.
 ## Acceptance criteria
 
 - [ ] Wrapper script handles common gh + jq invocation
-  patterns without zsh-quoting failures
+      patterns without zsh-quoting failures
 - [ ] Works on macOS zsh + Linux Ubuntu bash per
-  Otto-235 four-shell target
+      Otto-235 four-shell target
 - [ ] Unit test or fixture-test demonstrates the
-  failure-then-fix on a known zsh-tripping jq pattern
+      failure-then-fix on a known zsh-tripping jq pattern
 - [ ] Documented in `tools/github/README.md` (when that
-  file exists) or inline in the wrapper
+      file exists) or inline in the wrapper
 
 ## Trigger condition for promotion to P2
 

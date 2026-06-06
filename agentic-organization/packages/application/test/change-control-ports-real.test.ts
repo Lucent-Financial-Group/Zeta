@@ -14,30 +14,63 @@ import {
 
 function changeSet(over: Partial<ChangeSet> = {}): ChangeSet {
   return {
-    changeSetId: "cs-1", organizationId: "org-lfg", workItemId: "JIRA-42", proposerHatId: "h",
-    title: "Add coupon flow", targetRef: "feat/coupon", phase: "in_review", pipelineId: "pl", currentStageIndex: 0,
+    changeSetId: "cs-1",
+    organizationId: "org-lfg",
+    workItemId: "JIRA-42",
+    proposerHatId: "h",
+    title: "Add coupon flow",
+    targetRef: "feat/coupon",
+    phase: "in_review",
+    pipelineId: "pl",
+    currentStageIndex: 0,
     artifacts: [
       { kind: "code_diff", path: "src/coupon.ts", diff: "export const c = 1;", language: "ts" },
       { kind: "doc_change", path: "docs/coupon.md", before: "old", after: "new" },
       { kind: "schema_migration", migrationId: "m1", sql: "CREATE TABLE coupons (…);" }, // NOT git-representable
     ],
-    projections: [], revision: 1, openedAt: "2026-05-30T00:00:00Z", updatedAt: "2026-05-30T00:00:00Z", ...over,
+    projections: [],
+    revision: 1,
+    openedAt: "2026-05-30T00:00:00Z",
+    updatedAt: "2026-05-30T00:00:00Z",
+    ...over,
   };
 }
-const extStage: ReviewStage = { id: "external", ownerLabel: "x", authority: { kind: "external", system: ExternalSystem.GitHub }, gate: "external_approved", blocking: true };
+const extStage: ReviewStage = {
+  id: "external",
+  ownerLabel: "x",
+  authority: { kind: "external", system: ExternalSystem.GitHub },
+  gate: "external_approved",
+  blocking: true,
+};
 
 // ── GitHub ───────────────────────────────────────────────────────────────────
 
-function fakeGitHub(): { client: GitHubClient; created: { files: number; body: string }[]; comments: string[]; merged: number[]; state: GitHubPullRequestState } {
+function fakeGitHub(): {
+  client: GitHubClient;
+  created: { files: number; body: string }[];
+  comments: string[];
+  merged: number[];
+  state: GitHubPullRequestState;
+} {
   const created: { files: number; body: string }[] = [];
   const comments: string[] = [];
   const merged: number[] = [];
   const state: GitHubPullRequestState = { number: 128, reviewDecision: "REVIEW_REQUIRED", merged: false };
   const client: GitHubClient = {
-    async createPullRequest(args) { created.push({ files: args.files.length, body: args.body }); return { number: 128, url: "https://github.test/pr/128" }; },
-    async getPullRequest() { return state; },
-    async comment(_n, body) { comments.push(body); },
-    async merge(n) { merged.push(n); state.merged = true; },
+    async createPullRequest(args) {
+      created.push({ files: args.files.length, body: args.body });
+      return { number: 128, url: "https://github.test/pr/128" };
+    },
+    async getPullRequest() {
+      return state;
+    },
+    async comment(_n, body) {
+      comments.push(body);
+    },
+    async merge(n) {
+      merged.push(n);
+      state.merged = true;
+    },
   };
   return { client, created, comments, merged, state };
 }
@@ -86,18 +119,35 @@ function fakeJira(): { client: JiraClient; status: { value: string }; transition
   const transitions: string[] = [];
   const comments: string[] = [];
   const client: JiraClient = {
-    async transition(_k, name) { transitions.push(name); status.value = name; },
-    async comment(_k, body) { comments.push(body); },
-    async getStatus() { return status.value; },
+    async transition(_k, name) {
+      transitions.push(name);
+      status.value = name;
+    },
+    async comment(_k, body) {
+      comments.push(body);
+    },
+    async getStatus() {
+      return status.value;
+    },
   };
   return { client, status, transitions, comments };
 }
 
-const jiraStatus = { reviewStatus: "In Review", approvedStatus: "QA Approved", changesStatus: "In Progress", doneStatus: "Done" };
+const jiraStatus = {
+  reviewStatus: "In Review",
+  approvedStatus: "QA Approved",
+  changesStatus: "In Progress",
+  doneStatus: "Done",
+};
 
 test("Jira port: project transitions the card to In Review + comments", async () => {
   const f = fakeJira();
-  const port = createJiraCardPort({ client: f.client, statusMap: jiraStatus, issueKeyFor: (cs) => cs.workItemId, nowMs: () => 0 });
+  const port = createJiraCardPort({
+    client: f.client,
+    statusMap: jiraStatus,
+    issueKeyFor: (cs) => cs.workItemId,
+    nowMs: () => 0,
+  });
   const ref = await port.project(changeSet(), extStage);
   equal(ref.externalId, "JIRA-42");
   deepEqual(f.transitions, ["In Review"]);
@@ -106,7 +156,12 @@ test("Jira port: project transitions the card to In Review + comments", async ()
 
 test("Jira port: pull maps the card status INTO an ExternalDecision; merge transitions to Done", async () => {
   const f = fakeJira();
-  const port = createJiraCardPort({ client: f.client, statusMap: jiraStatus, issueKeyFor: (cs) => cs.workItemId, nowMs: () => 0 });
+  const port = createJiraCardPort({
+    client: f.client,
+    statusMap: jiraStatus,
+    issueKeyFor: (cs) => cs.workItemId,
+    nowMs: () => 0,
+  });
   const ref = await port.project(changeSet(), extStage);
   equal((await port.pull(ref)).decision, ExternalDecision.Pending); // "In Review"
   f.status.value = "QA Approved";

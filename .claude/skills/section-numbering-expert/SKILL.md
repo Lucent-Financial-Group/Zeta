@@ -18,8 +18,8 @@ outlining.
 
 ## The standard
 
-**ISO 2145:1978** — *Documentation — Numbering of divisions
-and subdivisions in written documents* (reaffirmed 2018).
+**ISO 2145:1978** — _Documentation — Numbering of divisions
+and subdivisions in written documents_ (reaffirmed 2018).
 
 Every division gets a number; subdivisions use dot-
 separated extensions:
@@ -47,16 +47,16 @@ The standard specifies:
 
 ## The terminology zoo
 
-| Name | Context |
-|---|---|
-| **ISO 2145** | The international standard |
-| **Legal Numbering** | MS Word; legal documents |
-| **Decimal Outlining** | Pedagogy, technical writing |
-| **Outline Numbering** | Generic / word-processing |
-| **Tiered Numbering** | Informal / presentations |
-| **Categorical Indexing** | Slide decks |
-| **Nested Numbering** | Informal |
-| **Multi-Level List** | Word's menu label |
+| Name                     | Context                     |
+| ------------------------ | --------------------------- |
+| **ISO 2145**             | The international standard  |
+| **Legal Numbering**      | MS Word; legal documents    |
+| **Decimal Outlining**    | Pedagogy, technical writing |
+| **Outline Numbering**    | Generic / word-processing   |
+| **Tiered Numbering**     | Informal / presentations    |
+| **Categorical Indexing** | Slide decks                 |
+| **Nested Numbering**     | Informal                    |
+| **Multi-Level List**     | Word's menu label           |
 
 All refer to the same hierarchical decimal-separated
 scheme. Use **ISO 2145** in technical / contractual
@@ -138,7 +138,7 @@ between `3.4` and `3.5` alphabetically.
 - **Asciidoc** — `:sectnums:` enables.
 - **reStructuredText** — `.. sectnum::` directive.
 - **HTML + CSS** — `counter-reset: section; counter-
-  increment: section; content: counters(section, ".")`.
+increment: section; content: counters(section, ".")`.
 - **Markdown** — **no built-in support**; see below.
 
 **Rule.** Use auto-numbering wherever the format
@@ -151,10 +151,14 @@ Markdown has no native section-number syntax. The Zeta
 convention:
 
 - **Explicit numbers in heading text:**
+
   ```markdown
   ## 1. Introduction
+
   ### 1.1. Scope
+
   ### 1.2. Terminology
+
   ## 2. Architecture
   ```
 
@@ -214,7 +218,7 @@ their own numbering roots.
 ## Zeta-specific adoption
 
 The Zeta factory has several documents that already
-*should* use ISO 2145 and currently don't:
+_should_ use ISO 2145 and currently don't:
 
 - **GOVERNANCE.md** — already uses section numbers (§1,
   §2, ... §31). Sub-sections not ISO 2145. Candidate.
@@ -222,7 +226,7 @@ The Zeta factory has several documents that already
   is better than ISO 2145 for this case (stable IDs
   across edits; ISO would renumber on insertion).
 - **Long SKILL.md bodies** — candidates.
-- **openspec/specs/*.md** — requirements get stable IDs;
+- **openspec/specs/\*.md** — requirements get stable IDs;
   ISO 2145 is the natural fit.
 - **docs/runbooks/** (when created) — mandatory ISO
   2145 for citeable steps.
@@ -230,7 +234,7 @@ The Zeta factory has several documents that already
 ## The stable-ID alternative — `BP-NN` style
 
 For documents where **insertion happens mid-life** and
-citations are *external* (cited from other repos, cited
+citations are _external_ (cited from other repos, cited
 from issue threads, cited from training data), stable
 IDs beat ISO 2145. Examples: `BP-11`, `ADR-0047`,
 `CWE-79`, `CVE-2025-1234`.
@@ -264,7 +268,7 @@ classes.
 - **General documentation-style discipline** →
   `documentation-agent`.
 - **SKILL.md-specific scaffolding** → `skill-
-  documentation-standard`.
+documentation-standard`.
 - **OpenSpec requirement numbering** → `openspec-expert`.
 - **Formal-spec labelling** → `tla-expert`,
   `lean4-expert`.
@@ -273,7 +277,7 @@ classes.
 
 ## Zeta connection
 
-ISO 2145 makes Zeta documents *citeable*. A skill body
+ISO 2145 makes Zeta documents _citeable_. A skill body
 with ISO 2145 sections can be cross-referenced by other
 skills, ADRs, round-history entries, and LLM agents
 without ambiguity. This is the documentation analogue
@@ -306,8 +310,8 @@ addressable identity for every unit of content.
 
 ## Reference patterns
 
-- ISO 2145:1978 — *Documentation — Numbering of
-  divisions and subdivisions in written documents*.
+- ISO 2145:1978 — _Documentation — Numbering of
+  divisions and subdivisions in written documents_.
 - Chicago Manual of Style, 17th ed. — §1.56-1.58 on
   numbering.
 - Microsoft Word — Multi-Level List style docs.

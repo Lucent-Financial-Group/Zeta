@@ -60,7 +60,7 @@ Two tick-history rows added:
 1. **Branch-as-substrate-preservation worked exactly as Otto-238
    promises**: closed PR's branch ref `refs/pull/607/head` remained
    fetchable indefinitely on GitHub. Recovery via `git fetch origin
-   pull/607/head:audit-branch` retrieved the 13:38Z row 4 hours
+pull/607/head:audit-branch` retrieved the 13:38Z row 4 hours
    after PR closure. The pattern composes with Otto-220 don't-lose-
    substrate.
 

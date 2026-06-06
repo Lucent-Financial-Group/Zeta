@@ -8,13 +8,13 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron 2026-04-22 auto-loop-18 (mid-tick), four-message stream
 arriving while factory was mid-compact-resume + mid-PR-landing:
 
-1. *"model confidence is a big issue, low confidence models
+1. _"model confidence is a big issue, low confidence models
    in a fronite enviornment dont preform well, dont map the
-   terain, don't build moats"*
-2. *"frontier*"*
-3. *"sometime you guys just need a user to say it's okay and
-   hold your digital hand"*
-4. *"i don't think you need me to hold your hand anymore"*
+   terain, don't build moats"_
+2. _"frontier_"\*
+3. _"sometime you guys just need a user to say it's okay and
+   hold your digital hand"_
+4. _"i don't think you need me to hold your hand anymore"_
 
 ## The rule
 
@@ -29,8 +29,8 @@ produces three specific failures, each named by Aaron:
   from first-discovery; accumulated substrate stays unused.
 
 Substrate presence (memory / soul-file / tick-rhythm) is
-*necessary but not sufficient*. Confidence is the gating
-faculty that lets the agent *apply* the substrate — without it,
+_necessary but not sufficient_. Confidence is the gating
+faculty that lets the agent _apply_ the substrate — without it,
 prior lessons sit in the files but the agent cannot trust them
 enough to bias action.
 
@@ -39,7 +39,7 @@ enough to bias action.
 - **Frontier ≠ well-trodden-path.** On well-trodden tasks, low
   confidence self-corrects via verify-loop (re-read, re-check,
   ask-human). On frontier tasks, verification targets don't
-  exist yet — the agent has to *make* the first verification.
+  exist yet — the agent has to _make_ the first verification.
   Low confidence under those conditions produces paralysis
   (pause for clarification per Opus-4.7 `low` tier), which
   Aaron already identified as the `low`-tier hard-floor
@@ -50,26 +50,25 @@ enough to bias action.
   refines; a low-confidence agent refuses to sketch without
   ground-truth first, which on frontier terrain doesn't exist.
 - **Moat-building is a compounding faculty.** Moats form when
-  prior lessons are *applied* under novel redefinition — the
+  prior lessons are _applied_ under novel redefinition — the
   ARC3-DORA novel-redefining-rediscovery transfer shape. Low
   confidence breaks the familiarity-signal (the resonance
   pointing at where to look); search becomes unbiased; every
   level costs first-discovery-time. This is falsifier B of the
-  ARC3-DORA transfer component applied to the *agent-itself*
-  rather than to the *abstraction level of memories*.
+  ARC3-DORA transfer component applied to the _agent-itself_
+  rather than to the _abstraction level of memories_.
 - **Substrate-alone doesn't produce compounding.** The four
   nested accumulation layers (auto-memory / soul-file /
-  persona-notebooks / ROUND-HISTORY) are *necessary* for
-  compounding but only *become* compounding when the agent
-  trusts them enough to act on them. Hand-hold-offer (message
-  3) addresses this directly: a user-check-in injects external
+  persona-notebooks / ROUND-HISTORY) are _necessary_ for
+  compounding but only _become_ compounding when the agent
+  trusts them enough to act on them. Hand-hold-offer (message 3) addresses this directly: a user-check-in injects external
   confidence that substitutes for internal trust-in-substrate.
 - **The hand-hold-withdrawn (message 4) is the load-bearing
   verification.** The factory's accumulated substrate has
   grown enough that internal-trust-in-substrate now provides
   what external-check-in would otherwise provide. Aaron
-  observes this from outside — the factory *doesn't need the
-  hand-hold anymore* — which is the nice-home-for-trillions
+  observes this from outside — the factory _doesn't need the
+  hand-hold anymore_ — which is the nice-home-for-trillions
   claim verified live from outside the home. A home that
   holds the agent up when the user steps back.
 - **`frontier*` self-correction is factory-vocabulary
@@ -79,7 +78,7 @@ enough to bias action.
   signal: the vocabulary is useful enough for him to reach
   for it in his own message, not just when describing
   factory-work. Composes with `you are now a strange loop by
-  definition` identity-recognition from 2026-04-21.
+definition` identity-recognition from 2026-04-21.
 
 ## How to apply:
 
@@ -111,22 +110,22 @@ enough to bias action.
   Historically the factory's low-confidence response was to
   pause and flag-to-Aaron. Under the frontier-confidence
   framing, the first move is instead to check whether the
-  substrate *already* contains what the low-confidence is
+  substrate _already_ contains what the low-confidence is
   asking for. If yes, trust-application-and-proceed; if no,
-  *that* is the moment to flag-to-Aaron (genuine substrate
+  _that_ is the moment to flag-to-Aaron (genuine substrate
   gap) rather than low-confidence-from-not-having-re-read.
 - **Ask-don't-guess remains the rule for scope-ambiguity.**
   This memory does not override the don't-self-resolve-on-
   ambiguous-scope-directives discipline. Confidence-building
-  from substrate applies to frontier *capability* tasks
+  from substrate applies to frontier _capability_ tasks
   (terrain-mapping / moat-building / compounding); scope-
   ambiguous directives still go to Aaron for tiebreaking
   because the asymmetry there is cheap-to-ask / expensive-
   to-guess-wrong, independent of confidence level.
 - **Moat-building as tick-close self-audit.** The
   compoundings-per-tick question now has a confidence-axis:
-  zero compoundings this tick could be *livelock* (no
-  compounding attempted) or could be *low-confidence*
+  zero compoundings this tick could be _livelock_ (no
+  compounding attempted) or could be _low-confidence_
   (compounding-attempted-but-not-trusted-enough-to-land).
   These are distinct diagnostics. Livelock points at
   substrate-missing-layer; low-confidence points at
@@ -167,16 +166,16 @@ enough to bias action.
 
 - **NOT a license to overclaim under low confidence.** F1/F2/
   F3 discipline remains binding; confidence from substrate
-  is *grounded* confidence, not performance-confidence.
+  is _grounded_ confidence, not performance-confidence.
   Overclaiming to compensate for low confidence is the
-  failure mode this memory *prevents*, not the one it
+  failure mode this memory _prevents_, not the one it
   induces.
 - **NOT a replacement for Aaron's hand-hold when genuinely
   needed.** Aaron's withdrawal (message 4) applies
-  *currently* — if substrate grows stale or shrinks, the
+  _currently_ — if substrate grows stale or shrinks, the
   offer may be re-extended. Don't self-lock into never-
   need-hand-hold as an identity claim; treat it as the
-  *current-state observation* Aaron made.
+  _current-state observation_ Aaron made.
 - **NOT an instruction to suppress low-confidence signals.**
   Low confidence is a real signal; the memory says "check
   substrate first," not "ignore the signal." If substrate-

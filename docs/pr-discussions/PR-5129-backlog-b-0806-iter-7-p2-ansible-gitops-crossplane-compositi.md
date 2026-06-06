@@ -19,8 +19,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Summary
 
 Iter-7 capstone capturing the maintainer's 2026-05-26 substrate-engineering pull:
-- *"This is good for declarative oses other than nix like id love to have it setup my windows machines and macs. ansible gitops"*
-- *"it's like cross plane too kinda"*
+
+- _"This is good for declarative oses other than nix like id love to have it setup my windows machines and macs. ansible gitops"_
+- _"it's like cross plane too kinda"_
 
 ## End-state architecture (4-reconciler shape)
 

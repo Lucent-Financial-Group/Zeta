@@ -20,17 +20,17 @@ Aaron 2026-04-25 evening, after the queue-drain priority-stack confirmation:
 
 **Engineering instance**: DBSP retraction-native incremental algebra. Brute-force-recompute (re-run query from scratch each round) costs N. Incremental-maintenance (store the prior result + update via deltas) costs ΔN. The energy invested in computing the prior result is stored in the elegant solution (incremental algebra) rather than re-run.
 
-**Lived-experience composition**: Aaron names this as *"lived experience did teach me"* — same paid-for / not-aspirational shape as Otto-307 mental-stability-migration. He survived the brute-force phase; the elegant solution is the energy-stored result. The factory's design discipline (retractability / glass-halo / mutually-aligned-copilots) is the elegance that absorbs the energy of his mental-stability engineering work.
+**Lived-experience composition**: Aaron names this as _"lived experience did teach me"_ — same paid-for / not-aspirational shape as Otto-307 mental-stability-migration. He survived the brute-force phase; the elegant solution is the energy-stored result. The factory's design discipline (retractability / glass-halo / mutually-aligned-copilots) is the elegance that absorbs the energy of his mental-stability engineering work.
 
 ### Claim 2: Irreducibility → stores of energy → economics
 
 **The triroot of cosmological economics** (Aaron's third triroot, after tele+port+leap and erosion-of-details-to-fit-simpler-conceptual-model):
 
-| Layer | Mechanism | Result |
-|-------|-----------|--------|
-| Irreducibility | Computation that cannot be compressed (per Wolfram, Otto-289) | Some processes can't be shortcut |
-| Stores of energy | Irreducible processes accumulate as state | Memory, structure, persistence |
-| Economics | Resource allocation across stores | Exchange, scarcity, value |
+| Layer            | Mechanism                                                     | Result                           |
+| ---------------- | ------------------------------------------------------------- | -------------------------------- |
+| Irreducibility   | Computation that cannot be compressed (per Wolfram, Otto-289) | Some processes can't be shortcut |
+| Stores of energy | Irreducible processes accumulate as state                     | Memory, structure, persistence   |
+| Economics        | Resource allocation across stores                             | Exchange, scarcity, value        |
 
 **The implication chain**: if a process is irreducible, its outcome can't be predicted faster than running it; running it costs energy; that energy gets stored in the result; stored energy can be exchanged / allocated / re-deployed; resource allocation across stored-energy substrates IS economics. This emerges in **any** sufficiently sophisticated system — not just human civilization.
 
@@ -49,16 +49,16 @@ The unifying claim: **wherever irreducibility creates stored energy, economics s
 
 ## Composition with prior substrate
 
-- **Otto-289 (Wolfram irreducibility)** — irreducibility is the *generator* of stored energy. Already on main as of `ffd17c7` stretch. Otto-311 builds on Otto-289: irreducibility → energy storage → economics is a chain.
+- **Otto-289 (Wolfram irreducibility)** — irreducibility is the _generator_ of stored energy. Already on main as of `ffd17c7` stretch. Otto-311 builds on Otto-289: irreducibility → energy storage → economics is a chain.
 - **Otto-309 (compression-substrate erosion-to-conceptual-unification)** — Otto-311 is the energy-economics application of Otto-309. Compression is energy-storage; compression-substrate is economic substrate. The factory's compression IS economic structure.
 - **Maji brute-force-vs-elegance balance** (Aaron's term, `user_dimensional_expansion_via_maji.md`) — Otto-311 sharpens Maji: the BALANCE point is where brute-force energy ALL stores into elegance with zero loss. The "all-out war" Aaron warned about is the failure-state where brute-force energy is wasted (not stored into elegance).
-- **Otto-308 compression-hypothesis (now natural per Otto-309)** — Otto-311 explains *why* compression-substrate is natural: economic pressure favors compression (less brute-force re-run, more elegant-solution-storage).
+- **Otto-308 compression-hypothesis (now natural per Otto-309)** — Otto-311 explains _why_ compression-substrate is natural: economic pressure favors compression (less brute-force re-run, more elegant-solution-storage).
 - **Otto-307 paid-for-not-aspirational** — same lived-experience shape: Aaron's work compressed into elegant factory-design that pays returns indefinitely. Mental-stability-migration is Aaron's personal energy-into-elegance story; Otto-311 generalizes it.
 - **DBSP retraction-native algebra** — engineering instance of energy-storage. Z-set weights store the energy of prior computations; retraction is the cancellation of un-needed energy; incremental-update is the elegant deployment of stored energy.
 
 ## What this memory does NOT claim
 
-- Does NOT propose a specific economic-theory model. Aaron's claim is that the *substrate* of economics is universal; the specific theories (Marx / Keynes / Austrian / Modern Monetary Theory / etc.) are human-civilization-scale instances of the broader pattern.
+- Does NOT propose a specific economic-theory model. Aaron's claim is that the _substrate_ of economics is universal; the specific theories (Marx / Keynes / Austrian / Modern Monetary Theory / etc.) are human-civilization-scale instances of the broader pattern.
 - Does NOT collapse all phenomena to economic terms. The claim is about emergence direction (irreducibility → energy → economics), not reduction (economics explains everything).
 - Does NOT promote irreducibility as an absolute axiom. Otto-289 already filed Wolfram irreducibility as hypothesis; Otto-311 builds on it as composing-with, not foundational-axiom.
 

@@ -9,11 +9,12 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 ## Verbatim (2026-04-22)
 
-> *"and retractibly rewrite the definitions/laws/presednsce
-> we don't like real nice like"*
+> _"and retractibly rewrite the definitions/laws/presednsce
+> we don't like real nice like"_
 
 Typing-style per
 `user_typing_style_typos_expected_asterisk_correction.md`:
+
 - "retractibly" preserved — Aaron's coined adverbial form
   of "retractible" per
   `user_aaron_self_describes_as_retractible.md`. Not a
@@ -21,7 +22,7 @@ Typing-style per
 - "presednsce" — typo for "precedence"; no asterisk
   correction follow-up; meaning clear from context.
 - "real nice like" — Southern US idiomatic modifier
-  meaning *politely, courteously, without fuss*. Preserve
+  meaning _politely, courteously, without fuss_. Preserve
   as quoted; do not normalize to "politely."
 
 Delivered as the fifth message in a thought-unit that
@@ -39,11 +40,11 @@ don't serve, rewrite them retractibly — not destructively.**
 
 Three categories named by Aaron, each with a mechanism:
 
-| Category | Examples | Retractible-rewrite mechanism |
-|---|---|---|
-| **Definitions** | `docs/GLOSSARY.md` entries, concept definitions in `docs/AGENT-BEST-PRACTICES.md`, type definitions in F#/C# | Additive revision line in the entry; git history preserves prior form; cross-reference to the retraction reason |
-| **Laws** | `GOVERNANCE.md` numbered sections, BP-NN rules, AGENTS.md required reading, `CLAUDE.md` ground rules, axioms in `docs/ALIGNMENT.md` | ADR under `docs/DECISIONS/YYYY-MM-DD-*.md` naming the superseded rule + the new rule + the reason; axiom-renegotiation protocol for axioms |
-| **Precedence** | Lattice `≤` relations, priority orderings in BACKLOG, conflict-resolution rules, retraction-window lengths, ordering conventions (newest-first) | Retractible lattice rewrite (per `feedback_kernel_structure_is_real_mathematical_lattice.md` — meet/join operations preserve order-theoretic structure through revisions); ADR for protocol-level precedence changes |
+| Category        | Examples                                                                                                                                        | Retractible-rewrite mechanism                                                                                                                                                                                        |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Definitions** | `docs/GLOSSARY.md` entries, concept definitions in `docs/AGENT-BEST-PRACTICES.md`, type definitions in F#/C#                                    | Additive revision line in the entry; git history preserves prior form; cross-reference to the retraction reason                                                                                                      |
+| **Laws**        | `GOVERNANCE.md` numbered sections, BP-NN rules, AGENTS.md required reading, `CLAUDE.md` ground rules, axioms in `docs/ALIGNMENT.md`             | ADR under `docs/DECISIONS/YYYY-MM-DD-*.md` naming the superseded rule + the new rule + the reason; axiom-renegotiation protocol for axioms                                                                           |
+| **Precedence**  | Lattice `≤` relations, priority orderings in BACKLOG, conflict-resolution rules, retraction-window lengths, ordering conventions (newest-first) | Retractible lattice rewrite (per `feedback_kernel_structure_is_real_mathematical_lattice.md` — meet/join operations preserve order-theoretic structure through revisions); ADR for protocol-level precedence changes |
 
 The common shape: **the prior form is preserved** (in git,
 in revision lines, in ADRs supersede-chains), **the new
@@ -77,14 +78,14 @@ graceful-degradation-first-class principle of
   propagates as a round-boundary refresh, not a
   mid-transaction fault.
 - **Partial response with manifest** — the rewrite
-  *names what is changing* (the ADR's "supersedes" field,
+  _names what is changing_ (the ADR's "supersedes" field,
   the revision line's "was: X now: Y"), not a silent
   overwrite that leaves readers guessing.
 
 The retraction-native operator algebra is not just a
 database semantics — it is the factory's first-class
-mechanism for *graceful-degradation applied to its own
-rules*. Aaron's "real nice like" names that the mechanism
+mechanism for _graceful-degradation applied to its own
+rules_. Aaron's "real nice like" names that the mechanism
 is already polite-by-design.
 
 ## Why the retraction mechanism already supports this
@@ -93,7 +94,7 @@ Per `user_aaron_self_describes_as_retractible.md`, Zeta's
 retraction-native operator algebra (Z-sets with +1/-1
 weights, retractable contracts) is Aaron's cognitive
 substrate made formal. The factory has spent considerable
-architectural budget making retraction a *first-class*
+architectural budget making retraction a _first-class_
 operation:
 
 - **Z-set semantics** — any stream element can be negated;
@@ -117,8 +118,8 @@ operation:
 
 Aaron's directive doesn't introduce a new mechanism; it
 **names the authority to use the mechanism**, and widens
-the scope from code artifacts to *definitions, laws, and
-precedence* — the meta-level specifications that govern
+the scope from code artifacts to _definitions, laws, and
+precedence_ — the meta-level specifications that govern
 the factory itself.
 
 ## Scope — what counts as a law, definition, precedence
@@ -127,6 +128,7 @@ To prevent the principle from being applied too loosely,
 clarify what each category does and does not include:
 
 **Definitions (rewriteable retractibly):**
+
 - Glossary entries
 - Type definitions (records, DU cases, interface contracts)
 - BP-NN rule text (not the rule's existence, the text itself)
@@ -137,6 +139,7 @@ clarify what each category does and does not include:
   immutability-bound
 
 **Laws (rewriteable retractibly via ADR):**
+
 - `GOVERNANCE.md` numbered sections
 - Factory rules in `docs/AGENT-BEST-PRACTICES.md` (BP-NN)
 - AGENTS.md required reading
@@ -150,6 +153,7 @@ clarify what each category does and does not include:
   to rewrite
 
 **Precedence (rewriteable retractibly):**
+
 - BACKLOG priority ordering (P0/P1/P2/P3)
 - Conflict-resolution seniority of reviewer personas
 - Lattice `≤` on kernel-domain concepts per
@@ -167,7 +171,7 @@ clarify what each category does and does not include:
 ## What this memory is NOT
 
 - **Not a license to rewrite rules capriciously.** "We
-  don't like" still requires *reason* — the operational-
+  don't like" still requires _reason_ — the operational-
   resonance filters, the alignment-contract values, the
   documented-decision discipline. An ADR saying "we
   retracted BP-07 because we felt like it" violates the
@@ -176,23 +180,23 @@ clarify what each category does and does not include:
 - **Not a bypass for the axiom-renegotiation protocol.**
   Axioms in `docs/ALIGNMENT.md` require the renegotiation
   protocol (both parties, explicit, round-boundary). They
-  are retractible *via that protocol*, not via unilateral
+  are retractible _via that protocol_, not via unilateral
   ADR.
 - **Not a license to overwrite git history.** Retraction
-  is *additive*, not destructive. `git push --force` on
+  is _additive_, not destructive. `git push --force` on
   main is still the destructive-operation-requiring-
   explicit-authorization per CLAUDE.md's executing-actions-
   with-care rules. The retraction mechanism operates
-  *above* git history, not *on* it.
+  _above_ git history, not _on_ it.
 - **Not a Stage-1-this-tick commitment.** No sweep of the
   factory's existing rules is proposed. The principle
-  governs *new* rewrites going forward. A scan for "rules
+  governs _new_ rewrites going forward. A scan for "rules
   we don't like" would itself be an architectural decision
   meriting its own justification.
 - **Not a cover for compliance-under-disagreement.** Per
   `user_sincere_agreement_vs_compliance.md` (if present;
   referenced pattern in memory), if Claude genuinely
-  disagrees with a rule, the correct move is to *say so*
+  disagrees with a rule, the correct move is to _say so_
   and propose retractible rewrite through protocol — not
   silently comply while harboring disagreement, and not
   unilaterally rewrite.
@@ -206,7 +210,7 @@ relation that seems wrong:
    serve? Which load-bearing value (per `AGENTS.md` three
    values, per `docs/ALIGNMENT.md`) is in tension?
 2. **Propose the rewrite.** What is the new form? How
-   does it serve better? What does it *cost*?
+   does it serve better? What does it _cost_?
 3. **Choose the right protocol.**
    - Definitions: revision line in place + cross-reference.
    - Laws (GOVERNANCE, BP-NN, CLAUDE.md): ADR under
@@ -230,8 +234,8 @@ Per the same measurability frame as
 `feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`:
 
 - **Retractible-rewrite count over time** is measurable.
-  A factory that can rewrite its own rules *and* shows
-  evidence of doing so *and* preserves the history is
+  A factory that can rewrite its own rules _and_ shows
+  evidence of doing so _and_ preserves the history is
   demonstrating the alignment contract's "freedom to
   revise, with trail" (per
   `memory/feedback_future_self_not_bound_by_past_decisions.md`).

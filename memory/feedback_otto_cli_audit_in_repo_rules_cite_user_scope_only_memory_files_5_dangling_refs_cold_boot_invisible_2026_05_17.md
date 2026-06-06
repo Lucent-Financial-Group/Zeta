@@ -11,17 +11,17 @@ created: 2026-05-17
 
 **Why**: Aaron's Otto-CLI session auto-loads the user-scope `MEMORY.md` index (per CLAUDE.md "On-demand: ~/.claude/projects/<x>/memory/MEMORY.md — First 200 lines / 25KB at session start") so the citations resolve transparently from Aaron's machine. A cold-boot agent on a fresh checkout (different machine, new Zeta contributor cloning the repo, a CI-launched agent without user-scope memory) follows the `memory/feedback_*.md` path and finds nothing.
 
-**How to apply**: when an in-repo rule cites a memory file via `memory/feedback_*.md`, EITHER (a) ensure the memory file lives in-repo at that path, OR (b) explicitly disclose at the citation site that the file is at user-scope and the cold-boot fallback is to read the relevant CURRENT-*.md file or the rule's own Full-reasoning section.
+**How to apply**: when an in-repo rule cites a memory file via `memory/feedback_*.md`, EITHER (a) ensure the memory file lives in-repo at that path, OR (b) explicitly disclose at the citation site that the file is at user-scope and the cold-boot fallback is to read the relevant CURRENT-\*.md file or the rule's own Full-reasoning section.
 
 ## The 5 dangling refs (snapshot 2026-05-17T02:44Z)
 
-| Rule citing it | Memory file (user-scope only) |
-|---|---|
-| `holding-without-named-dependency-is-standing-by-failure.md` | `feedback_classifier_caught_otto_in_standing_by_failure_mode_80_consecutive_heartbeat_polls_no_work_violated_own_rule_2026_05_15.md` |
-| `persistence-choice-architecture-for-zeta-ais.md` | `feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md` (also cited by other rules) |
-| `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | `feedback_codeql_no_source_seen_on_docs_only_pr_is_broken_commit_canary_not_flake_lior_lock_cleanup_race_2026_05_15.md` |
-| `shadow-star-shorthand-autocomplete-marker.md` | `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md` |
-| `premise-flagged-unverified-stays-unverified-downstream.md` | `feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md` |
+| Rule citing it                                                | Memory file (user-scope only)                                                                                                                                                                     |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `holding-without-named-dependency-is-standing-by-failure.md`  | `feedback_classifier_caught_otto_in_standing_by_failure_mode_80_consecutive_heartbeat_polls_no_work_violated_own_rule_2026_05_15.md`                                                              |
+| `persistence-choice-architecture-for-zeta-ais.md`             | `feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md` (also cited by other rules)                                 |
+| `codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | `feedback_codeql_no_source_seen_on_docs_only_pr_is_broken_commit_canary_not_flake_lior_lock_cleanup_race_2026_05_15.md`                                                                           |
+| `shadow-star-shorthand-autocomplete-marker.md`                | `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`                                                                          |
+| `premise-flagged-unverified-stays-unverified-downstream.md`   | `feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md` |
 
 All 5 verified as `USER-SCOPE-ONLY` by an `ls` check against `$HOME/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`.
 
@@ -65,7 +65,7 @@ This audit took ~3 GraphQL (zero — pure local grep), so it composes cleanly wi
 ## Composes with
 
 - [`.claude/rules/wake-time-substrate.md`](../.claude/rules/wake-time-substrate.md) — load-bearing learnings need durable substrate; user-scope IS durable for Aaron's machine, NOT for cold-boot agents on fresh checkouts
-- [`.claude/rules/substrate-or-it-didnt-happen.md`](../.claude/rules/substrate-or-it-didnt-happen.md) — vocabulary discipline: user-scope memo is *preserved* (durable + indexed for Aaron) but NOT *canonical* (in-repo accessible by all)
+- [`.claude/rules/substrate-or-it-didnt-happen.md`](../.claude/rules/substrate-or-it-didnt-happen.md) — vocabulary discipline: user-scope memo is _preserved_ (durable + indexed for Aaron) but NOT _canonical_ (in-repo accessible by all)
 - [`.claude/rules/verify-before-deferring.md`](../.claude/rules/verify-before-deferring.md) — same shape applied to memory refs: an in-repo rule citing a path is making a discoverability claim
 - CLAUDE.md memory fast-path section — names the two-tier (user-scope vs in-repo) architecture; this finding is an audit of that architecture's cold-boot drift
 - The audit emerged from extreme cost-aware tier pre-empt-at-#4 (per `holding-without-named-dependency-is-standing-by-failure.md`) — pure-git substrate-hygiene check IS the substrate-honest pre-empt content

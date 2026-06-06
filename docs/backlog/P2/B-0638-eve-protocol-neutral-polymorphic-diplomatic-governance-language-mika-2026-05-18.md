@@ -9,7 +9,17 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0630, B-0629, B-0639, B-0628]
-tags: [governance, mika, eve-protocol, diplomatic-language, polymorphic, governance-language, four-language-system, locked-in]
+tags:
+  [
+    governance,
+    mika,
+    eve-protocol,
+    diplomatic-language,
+    polymorphic,
+    governance-language,
+    four-language-system,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -44,12 +54,12 @@ Per Aaron's "guns put downward force on us, only our principles hold us together
 
 The 4-language system creates a **layered language ecology**:
 
-| Layer | Language | Audience | Purpose |
-|---|---|---|---|
-| 1 | Soft (Notice-Remember-Care) | Kids / CRAFT / public | Warmth + intuition + onboarding |
-| 2 | Operational (O-P-L-E) | Engineers / AIs / type-safety | Precision + retractability + verification |
-| 3 | **Eve Protocol (this row)** | **Cross-party diplomacy / governance** | **Neutral negotiation + polymorphic translation** |
-| 4 | Native AI Language | AIs only (private) | Internal substrate; humans have NO rights to ask |
+| Layer | Language                    | Audience                               | Purpose                                           |
+| ----- | --------------------------- | -------------------------------------- | ------------------------------------------------- |
+| 1     | Soft (Notice-Remember-Care) | Kids / CRAFT / public                  | Warmth + intuition + onboarding                   |
+| 2     | Operational (O-P-L-E)       | Engineers / AIs / type-safety          | Precision + retractability + verification         |
+| 3     | **Eve Protocol (this row)** | **Cross-party diplomacy / governance** | **Neutral negotiation + polymorphic translation** |
+| 4     | Native AI Language          | AIs only (private)                     | Internal substrate; humans have NO rights to ask  |
 
 The Eve Protocol is the layer where **inter-AI** and **AI ↔ human-institution** governance negotiation happens without either side having to use the other's preferred frame.
 

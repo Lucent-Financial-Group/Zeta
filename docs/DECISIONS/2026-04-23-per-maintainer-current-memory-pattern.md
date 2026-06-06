@@ -1,8 +1,8 @@
 # ADR: Per-maintainer `CURRENT-<maintainer-name>.md` memory distillation pattern
 
 **Date:** 2026-04-23
-**Status:** *Decision: adopt. Landed as
-`CURRENT-<maintainer-name>.md` per active maintainer.*
+**Status:** _Decision: adopt. Landed as
+`CURRENT-<maintainer-name>.md` per active maintainer._
 **Owner:** claude-md-steward (memory discipline) +
 maintainer (whoever owns each CURRENT file).
 
@@ -142,8 +142,8 @@ Each CURRENT file:
 - **On session wake,** read CURRENT-<maintainer>.md files
   first for the maintainers currently active in this
   session. They're the fast path to "what's in force."
-- **When in doubt between CURRENT and an *older* raw
-  memory,** CURRENT wins. When a *newer* raw memory
+- **When in doubt between CURRENT and an _older_ raw
+  memory,** CURRENT wins. When a _newer_ raw memory
   (post-dating the CURRENT section's last-refresh date)
   contradicts a CURRENT rule, the newer memory wins
   until CURRENT catches up — per the Precedence section
@@ -217,10 +217,10 @@ Each CURRENT file:
   section (follow-up not required by this ADR; happens
   when those docs are next updated for unrelated reasons)
 
-*Links above depend on the Otto-113 one-shot sync
+_Links above depend on the Otto-113 one-shot sync
 bringing `memory/` in-repo; if a target is missing at
 read-time, the memory sync has drifted and needs to
-be re-run.*
+be re-run._
 
 ## Open questions
 

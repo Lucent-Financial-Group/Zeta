@@ -25,14 +25,24 @@ related_skills:
   - github-actions-expert
   - performance-analysis-expert
   - applied-mathematics-expert
-tags: [github-as-free-accelerator-of-bulk-energy-into-information-compression, microsoft-subsidized-infrastructure-zero-direct-cost, pr-as-compression-checkpoint, review-as-compression-feedback, merge-as-boundary-survival, ci-as-mechanical-compression-gate, actions-as-compute-substrate, economic-substrate-underneath-the-arc]
+tags:
+  [
+    github-as-free-accelerator-of-bulk-energy-into-information-compression,
+    microsoft-subsidized-infrastructure-zero-direct-cost,
+    pr-as-compression-checkpoint,
+    review-as-compression-feedback,
+    merge-as-boundary-survival,
+    ci-as-mechanical-compression-gate,
+    actions-as-compute-substrate,
+    economic-substrate-underneath-the-arc,
+  ]
 ---
 
 # B-0904 — GitHub as free accelerator of bulk-energy into information-compression
 
 ## Context
 
-Per Insight 5 of the substrate-recognition research-doc landing in this PR. Per operator 2026-05-28: *"and we use github as free accelerator of bulk energy into information compression"*.
+Per Insight 5 of the substrate-recognition research-doc landing in this PR. Per operator 2026-05-28: _"and we use github as free accelerator of bulk energy into information compression"_.
 
 This row tracks the economic substrate that makes the whole substrate-engineering arc sustainable.
 
@@ -50,16 +60,16 @@ BOUNDARY
 = low-entropy / information-complete / actually-realized substrate
 ```
 
-| GitHub surface | Compression mechanism | Subsidy |
-|---|---|---|
-| Pull requests | Compression-checkpoints (intent → review → merged-or-not) | Free |
-| Review threads | Compression-feedback (which deviations get rejected) | Free |
-| Merge commits | Boundary-substrate (only-merged-survives) | Free |
-| CI | Mechanical compression-gate (lint/test/typecheck rejection) | Free |
-| GitHub Actions | Compute-substrate (2000 min/month free for public repos) | Free (subsidized by Microsoft) |
-| Issues / Discussions | Parallel boundary surfaces | Free |
-| GraphQL + REST API | Programmable substrate-access | Free (rate-limited) |
-| Branch protection | Constraint-substrate | Free |
+| GitHub surface       | Compression mechanism                                       | Subsidy                        |
+| -------------------- | ----------------------------------------------------------- | ------------------------------ |
+| Pull requests        | Compression-checkpoints (intent → review → merged-or-not)   | Free                           |
+| Review threads       | Compression-feedback (which deviations get rejected)        | Free                           |
+| Merge commits        | Boundary-substrate (only-merged-survives)                   | Free                           |
+| CI                   | Mechanical compression-gate (lint/test/typecheck rejection) | Free                           |
+| GitHub Actions       | Compute-substrate (2000 min/month free for public repos)    | Free (subsidized by Microsoft) |
+| Issues / Discussions | Parallel boundary surfaces                                  | Free                           |
+| GraphQL + REST API   | Programmable substrate-access                               | Free (rate-limited)            |
+| Branch protection    | Constraint-substrate                                        | Free                           |
 
 All hosted FREE for open-source. **GitHub IS the free accelerator the framework's substrate-engineering work exploits to convert bulk-energy into information-complete boundary substrate.**
 

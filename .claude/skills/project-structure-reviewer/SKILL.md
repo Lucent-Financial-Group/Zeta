@@ -19,7 +19,7 @@ Sibling skills cover adjacent lanes:
   should be centralised but aren't).
 - **`sweep-refs`** — one-time cross-repo ref sweep on a
   specific rename (procedural, not cadence-driven).
-- **this skill** — *physical* layout: where do files live,
+- **this skill** — _physical_ layout: where do files live,
   are they named right, is the tree legible.
 
 ## Scope
@@ -37,7 +37,7 @@ Audits the tree shape + naming across:
   - `src/Bayesian/**/*.fs` (Bayesian operators)
   - `tests/Tests.FSharp/**/*.fs` (F# tests by
     Algebra / Circuit / Operators / Storage / Sketches /
-    Formal / Infra / Crdt / _Support)
+    Formal / Infra / Crdt / \_Support)
   - `tests/Tests.CSharp/**/*.cs` + `Core.CSharp.Tests/`
     (C# tests)
   - `bench/Benchmarks/` + `Feldera.Bench/`
@@ -46,7 +46,7 @@ Audits the tree shape + naming across:
   - `docs/research/` vs `docs/DECISIONS/` vs `docs/*.md`
     root-level files
   - `.claude/agents/<name>.md` + `.claude/skills/<name>/
-    SKILL.md` (one-to-one pairing on named personas)
+SKILL.md` (one-to-one pairing on named personas)
   - `memory/persona/<name>/` (MEMORY, NOTEBOOK, OFFTIME,
     and JOURNAL for every named persona)
   - `openspec/specs/<capability>/spec.md` +
@@ -160,7 +160,7 @@ paired ref sweeps are regression vectors.
   layout-confusion signal triggers an extra pass.
 - **At round-open** — quick "did any files land in the
   wrong place last round" check during `round-open-
-  checklist`.
+checklist`.
 
 ## What this skill does NOT do
 

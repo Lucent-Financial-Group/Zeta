@@ -74,12 +74,12 @@ depends_on guess: probably **B-0171** (OpenSpec specs exist before plugins packa
 
 ## Confidence levels
 
-| Layer | Confidence | Reasoning |
-|---|---|---|
-| Architectural — "plugins-as-distribution-+-isolation-+-composition-units for skill domains" | **Medium-High** | Composes naturally with skill-design rule 3 (already first-party-confirmed) + Claude Code plugin system is the natural fit + Aaron's multi-harness framing |
-| Substrate-content — "plugin manifest format + first packaging is decision-archaeology + substrate-claim-checker cluster" | **Medium** | Decision-graph memo mentioned plugin format briefly + recent path corrections (#1262) showed `.claude-plugin/plugin.json` is the convention |
-| Specific implementation — "directory tree + dependencies declaration + GitHub-publishable" | **Low** | Standard Claude Code plugin pattern but I haven't confirmed which specific clusters get packaged first or how dependencies declare |
-| Cross-row composition | **Medium** | Confident on B-0169/B-0170/B-0173 composition; less confident on B-0171 as depends_on vs composes_with |
+| Layer                                                                                                                    | Confidence      | Reasoning                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architectural — "plugins-as-distribution-+-isolation-+-composition-units for skill domains"                              | **Medium-High** | Composes naturally with skill-design rule 3 (already first-party-confirmed) + Claude Code plugin system is the natural fit + Aaron's multi-harness framing |
+| Substrate-content — "plugin manifest format + first packaging is decision-archaeology + substrate-claim-checker cluster" | **Medium**      | Decision-graph memo mentioned plugin format briefly + recent path corrections (#1262) showed `.claude-plugin/plugin.json` is the convention                |
+| Specific implementation — "directory tree + dependencies declaration + GitHub-publishable"                               | **Low**         | Standard Claude Code plugin pattern but I haven't confirmed which specific clusters get packaged first or how dependencies declare                         |
+| Cross-row composition                                                                                                    | **Medium**      | Confident on B-0169/B-0170/B-0173 composition; less confident on B-0171 as depends_on vs composes_with                                                     |
 
 ## Pre-recovery prediction (calibration self-test)
 
@@ -99,16 +99,16 @@ Read source: `docs/backlog/P2/B-0172-skill-domain-plugin-packaging-aaron-2026-05
 
 **From B-0172 row body** (initial recovery source):
 
-> *"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"*
+> _"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"_
 
 **From Aaron 2026-05-03 chat clarification (direct first-party query, after recovery commit landed)**:
 
-> *"why package skills as plugins (specifically) i care about the hooks the most and then 2nd going to the devloper / vibe coder where they are already without much hassle."*
+> _"why package skills as plugins (specifically) i care about the hooks the most and then 2nd going to the devloper / vibe coder where they are already without much hassle."_
 
 **Two architectural motivations, ranked**:
 
-1. **PRIMARY: Hooks** — *"i care about the hooks the most"*. Plugin packaging exists to ship hooks. Without hooks, plugin packaging is "bare-skill-grouping" (the row's own characterization). The composition with B-0173 is depends_on (load-bearing), not just composes_with
-2. **SECONDARY: Meet developers where they already are** — *"going to the devloper / vibe coder where they are already without much hassle"*. Plugin packaging meets contributors in the harness they already use (Claude Code plugin system; Codex equivalent; Cursor; etc.) without forcing them to install separately. Distribution-as-low-friction is the secondary motivation
+1. **PRIMARY: Hooks** — _"i care about the hooks the most"_. Plugin packaging exists to ship hooks. Without hooks, plugin packaging is "bare-skill-grouping" (the row's own characterization). The composition with B-0173 is depends_on (load-bearing), not just composes_with
+2. **SECONDARY: Meet developers where they already are** — _"going to the devloper / vibe coder where they are already without much hassle"_. Plugin packaging meets contributors in the harness they already use (Claude Code plugin system; Codex equivalent; Cursor; etc.) without forcing them to install separately. Distribution-as-low-friction is the secondary motivation
 
 The secondary motivation was NOT in the B-0172 row body verbatim. Aaron's direct chat input added it as load-bearing first-party data.
 
@@ -136,14 +136,14 @@ The secondary motivation was NOT in the B-0172 row body verbatim. Aaron's direct
 
 ### Architectural layer — PARTIAL-MATCH (6/10) — SCORE UNCHANGED but motivation-ranking now first-party-confirmed
 
-| What I got | What I missed |
-|---|---|
-| Distribution-as-unit (partial match for Aaron's secondary "meet developers where they are") | **PRIMARY motivation: hooks** — Aaron's direct chat input *"i care about the hooks the most"* — I had hooks as point #2 of 4, not as primary |
-| Hub-satellite at domain level (principle-shaped — but wasn't named by Aaron as motivation; valid as architectural pattern) | **SECONDARY motivation: meeting developers where they are** — Aaron's chat *"going to the devloper / vibe coder where they are already without much hassle"*. NOT in the row body verbatim; first-party clarification post-recovery added it |
-| | **Promotion-trigger maturity-gate** — row is P2 specifically because the trigger hasn't fired; I didn't anticipate the maturity-gate-before-packaging design at all |
-| | **Composition-as-contracts** — I generated this as point #3 of 4 motivations; Aaron did NOT name it as motivation. Inferred-from-principles, not load-bearing |
-| | **Versioning-as-lineage** — I generated this as point #4; Aaron did NOT name it. Row says "minimal fields" — no semver in the manifest |
-| | **Isolation-as-namespace** — I generated this; Aaron did NOT name it. Inferred-from-principles, not load-bearing |
+| What I got                                                                                                                 | What I missed                                                                                                                                                                                                                                |
+| -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Distribution-as-unit (partial match for Aaron's secondary "meet developers where they are")                                | **PRIMARY motivation: hooks** — Aaron's direct chat input _"i care about the hooks the most"_ — I had hooks as point #2 of 4, not as primary                                                                                                 |
+| Hub-satellite at domain level (principle-shaped — but wasn't named by Aaron as motivation; valid as architectural pattern) | **SECONDARY motivation: meeting developers where they are** — Aaron's chat _"going to the devloper / vibe coder where they are already without much hassle"_. NOT in the row body verbatim; first-party clarification post-recovery added it |
+|                                                                                                                            | **Promotion-trigger maturity-gate** — row is P2 specifically because the trigger hasn't fired; I didn't anticipate the maturity-gate-before-packaging design at all                                                                          |
+|                                                                                                                            | **Composition-as-contracts** — I generated this as point #3 of 4 motivations; Aaron did NOT name it as motivation. Inferred-from-principles, not load-bearing                                                                                |
+|                                                                                                                            | **Versioning-as-lineage** — I generated this as point #4; Aaron did NOT name it. Row says "minimal fields" — no semver in the manifest                                                                                                       |
+|                                                                                                                            | **Isolation-as-namespace** — I generated this; Aaron did NOT name it. Inferred-from-principles, not load-bearing                                                                                                                             |
 
 **Refined analysis (post-Aaron-direct-input 2026-05-03)**: Aaron has TWO explicitly-ranked motivations, not the four I generalized to:
 
@@ -158,22 +158,22 @@ My "isolation-as-namespace" + "versioning-as-lineage" + "composition-as-contract
 
 ### Substrate-content layer — MIXED (6/10)
 
-| What I got | What I missed |
-|---|---|
-| `.claude-plugin/plugin.json` path (correct; cited from #1262 path-correction context) | **Codex equivalent format** with richer fields (semver + interface block + URLs + category) — completely missed |
-| Plugin install location `~/.claude/plugins/cache/<plugin-name>/` (correct) | **Cross-harness portability via canonical-bundle-format + per-harness adapters** — significant architectural element; row's design is to ship a harness-agnostic substrate format |
-| Bundle contents (skills/, agents/, hooks/) (correct, kind of — also tools/ and OpenSpec references) | (closeish on contents) |
-| First packaging = decision-archaeology cluster (correct — B-0169 named as "likely first") | (no miss here) |
+| What I got                                                                                          | What I missed                                                                                                                                                                     |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude-plugin/plugin.json` path (correct; cited from #1262 path-correction context)               | **Codex equivalent format** with richer fields (semver + interface block + URLs + category) — completely missed                                                                   |
+| Plugin install location `~/.claude/plugins/cache/<plugin-name>/` (correct)                          | **Cross-harness portability via canonical-bundle-format + per-harness adapters** — significant architectural element; row's design is to ship a harness-agnostic substrate format |
+| Bundle contents (skills/, agents/, hooks/) (correct, kind of — also tools/ and OpenSpec references) | (closeish on contents)                                                                                                                                                            |
+| First packaging = decision-archaeology cluster (correct — B-0169 named as "likely first")           | (no miss here)                                                                                                                                                                    |
 
 **Analysis**: I correctly inferred the Claude-Code-side path/format/install-location (recent specific-context from PR #1262 boosted accuracy). But missed the Codex equivalent + cross-harness adapter design entirely. The cross-harness piece is load-bearing for Aaron's "skills are for everyone and even other agent harnesses" framing.
 
 ### Specific implementation layer — MOSTLY-MATCH (7/10)
 
-| What I got | What I missed |
-|---|---|
-| Plugin format: directory tree with manifest + skills/ + agents/ + hooks/ (correct) | **Tools/ subdirectory** — I didn't list this explicitly |
-| Plugin install location (correct) | (no miss) |
-| Manifest path (correct via #1262 context) | (no miss) |
+| What I got                                                                                                                    | What I missed                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Plugin format: directory tree with manifest + skills/ + agents/ + hooks/ (correct)                                            | **Tools/ subdirectory** — I didn't list this explicitly                                      |
+| Plugin install location (correct)                                                                                             | (no miss)                                                                                    |
+| Manifest path (correct via #1262 context)                                                                                     | (no miss)                                                                                    |
 | Dependencies declaration mechanism (incorrect — I guessed `dependencies: ["plugin-name@version"]`; row says "minimal fields") | The row says minimal fields — no dependencies in the Claude Code manifest. (Codex has more.) |
 
 **Analysis**: This layer was substantially stronger than guess #001's specific-implementation layer. The reason: **recent specific-context from PR #1262 path correction** taught me the actual manifest path + install location. When prior specific-context exists, specific-implementation accuracy is much higher.
@@ -182,12 +182,12 @@ My "isolation-as-namespace" + "versioning-as-lineage" + "composition-as-contract
 
 ### Cross-row composition layer — MOSTLY-MATCH (7/10)
 
-| What I got | What I missed |
-|---|---|
-| depends_on B-0171 (correct) | **depends_on B-0173 (NOT composes_with)** — I categorized B-0173 as composes_with; actual is depends_on. Architectural reason: hooks shipping inside the plugin is the primary value |
-| composes_with B-0169 (correct) | (no miss) |
-| composes_with B-0170 (correct) | (no miss) |
-| | (no major miss) |
+| What I got                     | What I missed                                                                                                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| depends_on B-0171 (correct)    | **depends_on B-0173 (NOT composes_with)** — I categorized B-0173 as composes_with; actual is depends_on. Architectural reason: hooks shipping inside the plugin is the primary value |
+| composes_with B-0169 (correct) | (no miss)                                                                                                                                                                            |
+| composes_with B-0170 (correct) | (no miss)                                                                                                                                                                            |
+|                                | (no major miss)                                                                                                                                                                      |
 
 **Analysis**: Right rows; one categorization error (B-0173 depends_on vs composes_with). The depends_on B-0173 reflects that "without hooks, packaging is bare-skill-grouping" — packaging-without-hooks is meaningless, so hooks must precede plugin packaging.
 
@@ -195,16 +195,17 @@ My "isolation-as-namespace" + "versioning-as-lineage" + "composition-as-contract
 
 I predicted before research:
 
-| Layer | Predicted | Actual | Match? |
-|---|---|---|---|
-| Architectural | PARTIAL-MATCH | PARTIAL-MATCH (6/10) | ✓ |
-| Substrate-content | MIXED | MIXED (6/10) | ✓ |
-| Specific implementation | MOSTLY-OFF | MOSTLY-MATCH (7/10) | ✗ — over-predicted weakness |
-| Cross-row composition | (no prediction) | MOSTLY-MATCH (7/10) | n/a |
+| Layer                   | Predicted       | Actual               | Match?                      |
+| ----------------------- | --------------- | -------------------- | --------------------------- |
+| Architectural           | PARTIAL-MATCH   | PARTIAL-MATCH (6/10) | ✓                           |
+| Substrate-content       | MIXED           | MIXED (6/10)         | ✓                           |
+| Specific implementation | MOSTLY-OFF      | MOSTLY-MATCH (7/10)  | ✗ — over-predicted weakness |
+| Cross-row composition   | (no prediction) | MOSTLY-MATCH (7/10)  | n/a                         |
 
 **Pre-prediction accuracy: 2/3 = 67%**. The pattern (principle-strong + specific-weak) held for architectural + substrate-content layers, but specific-implementation was actually stronger than expected because recent specific-context (PR #1262) was present.
 
 **Updated pattern observation**:
+
 - The principle-strong + specific-weak pattern holds **when no prior specific-context is present**
 - Recent specific-context (e.g., recent PR fixes, recent doc reads, recent commit context) substantially boosts specific-implementation accuracy
 - Pre-recovery self-prediction is reliable for architectural + substrate-content layers but unreliable for specific-implementation (Otto under-predicts its own ability when specific-context exists)
@@ -213,12 +214,12 @@ I predicted before research:
 
 **Score (informal):**
 
-| Layer | Score | Pattern |
-|---|---|---|
-| Architectural intent | **6/10** | Principle-strong; missed Aaron's "hooks-shipping" frame + promotion-trigger maturity-gate |
-| Substrate-content | **6/10** | Got Claude-Code-side; missed Codex equivalent + cross-harness adapter design |
-| Specific implementation | **7/10** | **Stronger than expected** — recent specific-context (PR #1262) boosted accuracy |
-| Cross-row composition | **7/10** | Right rows; one mis-categorization (B-0173 depends_on vs composes_with) |
+| Layer                   | Score    | Pattern                                                                                   |
+| ----------------------- | -------- | ----------------------------------------------------------------------------------------- |
+| Architectural intent    | **6/10** | Principle-strong; missed Aaron's "hooks-shipping" frame + promotion-trigger maturity-gate |
+| Substrate-content       | **6/10** | Got Claude-Code-side; missed Codex equivalent + cross-harness adapter design              |
+| Specific implementation | **7/10** | **Stronger than expected** — recent specific-context (PR #1262) boosted accuracy          |
+| Cross-row composition   | **7/10** | Right rows; one mis-categorization (B-0173 depends_on vs composes_with)                   |
 
 **Overall**: 26/40 = **65%** — significantly higher than guess #001's 48%. The improvement came from specific-implementation + cross-row layers, both boosted by prior context.
 

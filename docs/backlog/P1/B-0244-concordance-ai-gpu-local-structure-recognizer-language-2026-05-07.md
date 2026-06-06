@@ -29,27 +29,27 @@ Aaron 2026-05-07: "that will tie it all together"
 This item composes with every major thread from the 2026-05-07
 session:
 
-| Session thread | How concordance AI connects |
-|----------------|----------------------------|
-| **Structure recognizer (B-0240)** | The concordance IS B-0240 applied to language instead of game mechanics. Same fingerprinting, different corpus. |
-| **DBSP replay algebra** | Every text edit, translation, and revision is a +1/-1 Z-set stream. The concordance replays the evolution of word usage across time. |
-| **ARC-AGI-3 / compounding lessons** | Each word usage is a "level." Compounding meaning across contexts is the same as compounding game mechanics across levels. |
-| **Atari / CHIP-8 emulator** | The emulator runs game state machines. The concordance runs language state machines. Same algebra. |
-| **Genesis Seed / orthogonal dials** | Certainty Dial = how confident is the concordance match? Friction Dial = is the translation grinding against the structure? Space Dial = hold multiple valid readings without choosing? |
-| **Shadow lesson log** | The concordance catches when a translation's shadow (implicit bias, theological agenda) diverges from the structural fingerprint. |
-| **Ace / Itron edge gate** | Runs locally on GPUs. Data stays home. No cloud dependency. The guardian gates what leaves. |
-| **Hole puncher (B-0242)** | The concordance communicates results through the multiplexed WebSocket without exposing the full corpus. |
-| **KSK** | Gates what concordance outputs cross into external use (publication, citation, derivative works). |
-| **Hawkins Thousand Brains** | Each word-in-context is a cortical column with its own world model. Concordance = voting consensus across columns. |
-| **Sakana Neural Cellular Automata** | Word meanings compete for territory in semantic space. Three phases: permissive mixing (exploration) → crystallization (established usage) → relaxation (living language evolution). |
-| **C. elegans worm towers** | Individual word-usages forming superorganism meaning without central authority. The meaning emerges from the consensus of usages. |
-| **Kozyrev Mirror** | The concordance reflects a word back through every context it appears in. Reverse sensory deprivation: flooded with the word's own signal. What persists across all contexts is the irreducible meaning. |
-| **Computational irreducibility (Wolfram)** | You can't shortcut what a word means. You have to run it through every context. The concordance IS that computation. |
-| **Lectio Divina** | Multi-angle-light reading discipline. The concordance provides the angles — every context, every translation, every structural parallel. |
-| **Apocalypse = ἀποκάλυψις = unveiling** | The concordance unveils the structural meaning behind surface translations. Not destruction — disclosure. |
-| **Data homecoming / Orleans grains** | Each word's concordance entry is a grain. Queries come to the grain. The grain decides what meaning to reveal. |
-| **Patent US 10,834,144** | The concordance's communication primitive is the hole puncher — name-only invocation across the boundary. Query the word, get the concordance, never expose the full corpus. |
-| **Ego death / Maji** | The concordance follows received direction (the text) without imposing ego (theological bias). Same as the Maji following the star. |
+| Session thread                             | How concordance AI connects                                                                                                                                                                              |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Structure recognizer (B-0240)**          | The concordance IS B-0240 applied to language instead of game mechanics. Same fingerprinting, different corpus.                                                                                          |
+| **DBSP replay algebra**                    | Every text edit, translation, and revision is a +1/-1 Z-set stream. The concordance replays the evolution of word usage across time.                                                                     |
+| **ARC-AGI-3 / compounding lessons**        | Each word usage is a "level." Compounding meaning across contexts is the same as compounding game mechanics across levels.                                                                               |
+| **Atari / CHIP-8 emulator**                | The emulator runs game state machines. The concordance runs language state machines. Same algebra.                                                                                                       |
+| **Genesis Seed / orthogonal dials**        | Certainty Dial = how confident is the concordance match? Friction Dial = is the translation grinding against the structure? Space Dial = hold multiple valid readings without choosing?                  |
+| **Shadow lesson log**                      | The concordance catches when a translation's shadow (implicit bias, theological agenda) diverges from the structural fingerprint.                                                                        |
+| **Ace / Itron edge gate**                  | Runs locally on GPUs. Data stays home. No cloud dependency. The guardian gates what leaves.                                                                                                              |
+| **Hole puncher (B-0242)**                  | The concordance communicates results through the multiplexed WebSocket without exposing the full corpus.                                                                                                 |
+| **KSK**                                    | Gates what concordance outputs cross into external use (publication, citation, derivative works).                                                                                                        |
+| **Hawkins Thousand Brains**                | Each word-in-context is a cortical column with its own world model. Concordance = voting consensus across columns.                                                                                       |
+| **Sakana Neural Cellular Automata**        | Word meanings compete for territory in semantic space. Three phases: permissive mixing (exploration) → crystallization (established usage) → relaxation (living language evolution).                     |
+| **C. elegans worm towers**                 | Individual word-usages forming superorganism meaning without central authority. The meaning emerges from the consensus of usages.                                                                        |
+| **Kozyrev Mirror**                         | The concordance reflects a word back through every context it appears in. Reverse sensory deprivation: flooded with the word's own signal. What persists across all contexts is the irreducible meaning. |
+| **Computational irreducibility (Wolfram)** | You can't shortcut what a word means. You have to run it through every context. The concordance IS that computation.                                                                                     |
+| **Lectio Divina**                          | Multi-angle-light reading discipline. The concordance provides the angles — every context, every translation, every structural parallel.                                                                 |
+| **Apocalypse = ἀποκάλυψις = unveiling**    | The concordance unveils the structural meaning behind surface translations. Not destruction — disclosure.                                                                                                |
+| **Data homecoming / Orleans grains**       | Each word's concordance entry is a grain. Queries come to the grain. The grain decides what meaning to reveal.                                                                                           |
+| **Patent US 10,834,144**                   | The concordance's communication primitive is the hole puncher — name-only invocation across the boundary. Query the word, get the concordance, never expose the full corpus.                             |
+| **Ego death / Maji**                       | The concordance follows received direction (the text) without imposing ego (theological bias). Same as the Maji following the star.                                                                      |
 
 ## The shape
 

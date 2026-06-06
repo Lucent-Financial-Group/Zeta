@@ -127,11 +127,7 @@ export function buildRecoveryPRBody(finding: CascadeFinding): string {
  * is the load-bearing uniqueness mechanism — duplicate recovery attempts
  * for the same PR resolve to `already-exists` and perform no mutations.
  */
-export function openRecoveryPR(
-  finding: CascadeFinding,
-  dryRun: boolean,
-  adapters: RecoveryAdapters,
-): RecoveryResult {
+export function openRecoveryPR(finding: CascadeFinding, dryRun: boolean, adapters: RecoveryAdapters): RecoveryResult {
   const recoveryBranch = buildRecoveryBranchName(finding.prNumber);
 
   if (adapters.checkRecoveryPRExists(recoveryBranch)) {

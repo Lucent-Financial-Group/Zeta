@@ -133,11 +133,11 @@ When a spec takes more than a few minutes on TLC:
 
 ## Invariants vs temporal properties
 
-- **Invariant** — a predicate on *one state*. "At every
+- **Invariant** — a predicate on _one state_. "At every
   tick, tick >= 0." Use when the claim is stateless
   relative to history.
-- **Temporal property** — a formula over *infinite
-  behaviours*. "Eventually every request is served"
+- **Temporal property** — a formula over _infinite
+  behaviours_. "Eventually every request is served"
   (`<>...`); "always eventually progress is made"
   (`[]<>...`). Use when the claim inherently references
   other states (past / future).
@@ -212,7 +212,7 @@ spec.
 - **`/\` vs `\/` confusion.** `/\` is conjunction
   (separator between clauses); `\/` is disjunction (enum
   of alternative cases). Misuse is a common spec bug.
-- **Primed vars in the past.** `tick'` is the *next*
+- **Primed vars in the past.** `tick'` is the _next_
   state's tick. `tick' = tick + 1` reads as "next tick
   = current tick + 1."
 - **Module name mismatch.** `.tla` filename must equal
@@ -241,5 +241,5 @@ spec.
   the `formal-verification-expert`, routing authority
 - `.claude/skills/alloy-expert/SKILL.md` — sibling for
   the other bounded-model-checker we use
-- Lamport, *Specifying Systems* (canonical textbook;
+- Lamport, _Specifying Systems_ (canonical textbook;
   referenced from `references/tla-book/`)

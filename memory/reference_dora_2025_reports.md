@@ -30,7 +30,7 @@ work is NC-SA-bound.
   controls. Theoretical anchor for CI-meta-loop +
   retractable-CD BACKLOG P1.
 - **2024 DORA anomaly** — more AI use correlated with
-  *worse* stability and throughput. 2025 resolution: the
+  _worse_ stability and throughput. 2025 resolution: the
   pre-AI engineering instincts are "woefully
   insufficient" under AI acceleration. Zeta's retraction-
   native substrate is one response to this.
@@ -50,7 +50,7 @@ work is NC-SA-bound.
 
 1. Clear and communicated AI stance — strong
    (`docs/ALIGNMENT.md`, `AGENTS.md`, `GOVERNANCE.md`)
-2. Healthy data ecosystems — meta-aligned (Zeta *is*
+2. Healthy data ecosystems — meta-aligned (Zeta _is_
    retraction-native data algebra)
 3. AI-accessible internal data — strong (`CLAUDE.md` +
    memory + notebooks + OpenSpec)

@@ -67,10 +67,10 @@ ANY of the four counts as one reuse bead.
 
 ## Tiny-blade precision (Amara 2026-04-28T20:43Z)
 
-> *"'Self-Healing Metrics class earns reuse' is acceptable, but
+> _"'Self-Healing Metrics class earns reuse' is acceptable, but
 > I'd phrase it as 'earns one reuse bead' rather than fully
 > 'earns reuse' if you want max precision. One data point is
-> signal; a few repetitions make it a pattern."*
+> signal; a few repetitions make it a pattern."_
 
 The phrase **"earns one reuse bead"** preserves the granularity
 of validation accumulation:
@@ -90,24 +90,24 @@ retired or rewritten.
 
 ## External lineage
 
-Per Aaron 2026-04-28T21:15Z directive: *"we also stop
+Per Aaron 2026-04-28T21:15Z directive: _"we also stop
 mythology with human intellectual lineage research and
-anchors."* The bead system + named classes are operational
-scaffolding for THIS factory; the *epistemic claims* the
+anchors."_ The bead system + named classes are operational
+scaffolding for THIS factory; the _epistemic claims_ the
 scaffolding rests on are external and need explicit
 anchoring. Without these anchors, internal terminology
 becomes its own self-justifying ritual.
 
 ### Falsifiability (Popper)
 
-- **Karl Popper, *The Logic of Scientific Discovery***
-  (German *Logik der Forschung*, 1934; English translation
+- **Karl Popper, _The Logic of Scientific Discovery_**
+  (German _Logik der Forschung_, 1934; English translation
   Hutchinson & Co., 1959). Core claim: a theory is
   scientific iff it is falsifiable. Universal claims cannot
   be verified by accumulating confirming examples; they
   become serious when the claimant specifies what
   observation would count against them.
-- **Karl Popper, *Conjectures and Refutations*** (Routledge,
+- **Karl Popper, _Conjectures and Refutations_** (Routledge,
   1963). The "tentative-corroboration" view: theories survive
   by surviving genuine attempts at refutation, never by
   proof. Beads-as-corroboration tracks this: each bead is
@@ -170,7 +170,7 @@ Composes with the broader human-lineage backfill trajectory
 
 - **NOT a claim that beads are Popperian** in any formal
   sense. Beads are factory-local accounting; Popper's
-  framework is the philosophical *justification* for why
+  framework is the philosophical _justification_ for why
   falsifier-passing observations matter at all.
 - **NOT a substitute for external scholarship**. If a
   reader wants the deep theory of why we count beads this
@@ -196,10 +196,10 @@ of all knowledge.
 
 ### Falsification Asymmetry (Gemini Deep Think 2026-04-28T21:18Z; Amara endorsed)
 
-> *"The bead system must not be monotonic. A high-bead
+> _"The bead system must not be monotonic. A high-bead
 > class can still be broken by a hard falsifier; a failed
 > future use should trigger rollback, bifurcation, or
-> demotion rather than merely 'no new bead.'"*
+> demotion rather than merely 'no new bead.'"_
 
 **Definition**: bead counts increase confidence
 **but do not protect a class from a hard falsifier**.
@@ -238,13 +238,13 @@ confidence over time.
 
 ### Bead Farming — Goodhart's Law Risk (Gemini Deep Think 2026-04-28T21:18Z; Amara endorsed)
 
-> *"Once 'beads' become the survival metric for classes,
+> _"Once 'beads' become the survival metric for classes,
 > the system may unconsciously prioritize workflows or
 > engineer synthetic friction just to trigger mechanisms
 > and harvest beads. Alternatively, it might execute a
 > standard developer habit organically, and then
 > retroactively map the action to a class checklist to
-> claim a bead."*
+> claim a bead."_
 
 **External lineage**: Charles Goodhart, "Problems of
 Monetary Management: The U.K. Experience" (Bank of
@@ -293,7 +293,7 @@ anti-pattern.
   not, no bead.
 - **Synthetic-friction test**: did I introduce avoidable
   work to make the class fire? If yes, the class earned
-  a *negative* bead (Goodharting penalty).
+  a _negative_ bead (Goodharting penalty).
 
 ### The unified canonical rule (Aaron 2026-04-28T21:15Z + Amara/Gemini synthesis)
 
@@ -309,8 +309,8 @@ in any class-bead audit.
 
 ### Amortized Precision — positive complement of Goodhart Risk (Aaron 2026-04-28T21:32Z; Amara compact-form 21:38Z)
 
-> *"amortized precision leads to momentum look at 6 sigma
-> for proof and similar like kanban discipline"* — Aaron
+> _"amortized precision leads to momentum look at 6 sigma
+> for proof and similar like kanban discipline"_ — Aaron
 
 Precision and momentum are not opposites when the precision
 work reduces future rework. Disciplined measurement, WIP
@@ -321,12 +321,12 @@ slow locally while increasing throughput across iterations.
 two errors):
 
 - **Goodhart Risk** guards against producing process
-  artifacts for their own sake (*"more process = more
-  progress"*).
+  artifacts for their own sake (_"more process = more
+  progress"_).
 - **Amortized Precision** guards against undervaluing
   process discipline that measurably lowers downstream
   defect, rebase, review, or recovery cost
-  (*"process work is not real progress"*).
+  (_"process work is not real progress"_).
 
 **Distilled rule** (Amara 2026-04-28T21:38Z):
 
@@ -348,9 +348,9 @@ Amortized precision is momentum.
   limit WIP, pull on demand. WIP limits look like
   throttling but increase total throughput by reducing
   context-switching, queue depth, and rework cascades.
-- **Kanban (software)** — David J. Anderson, *Kanban:
+- **Kanban (software)** — David J. Anderson, _Kanban:
   Successful Evolutionary Change for Your Technology
-  Business* (Blue Hole Press, 2010). Same principle
+  Business_ (Blue Hole Press, 2010). Same principle
   adapted to knowledge work: WIP-limit discipline yields
   faster cycle times than unconstrained alternative.
 
@@ -406,8 +406,8 @@ N >> 3  = established factory substrate
 
 ### Tiny-blade (Amara prescribed): Popper-vs-beads separation
 
-> *"Popper supplies the falsifier lineage; beads are the
-> factory-local accounting mechanism."*
+> _"Popper supplies the falsifier lineage; beads are the
+> factory-local accounting mechanism."_
 
 Critical separation to preserve:
 
@@ -430,15 +430,15 @@ does.
 
 ### Connection to B-0060 (external human-lineage anchoring)
 
-Aaron 2026-04-28T20:48Z prefatory ask: *"we are going to
-need external human lineage research and anchoring."*
+Aaron 2026-04-28T20:48Z prefatory ask: _"we are going to
+need external human lineage research and anchoring."_
 
 The bead system is internal accounting and doesn't need
 external lineage by itself. The underlying epistemic
 machinery DOES need external lineage:
 
-- Falsifiability — Popper (1959, *The Logic of Scientific
-  Discovery*).
+- Falsifiability — Popper (1959, _The Logic of Scientific
+  Discovery_).
 - Confirmation bias — Wason (1960), Klayman and Ha (1987),
   empirical software-testing IS literature.
 - Bead-count thresholds (0/1/2-3/N+) — no specific external
@@ -493,19 +493,19 @@ falsifiable AND positively validatable.
 
 Per the precision-language tiny-blade:
 
-| Class | Beads | Type |
-|---|---|---|
-| Self-Healing Metrics on Regime Change | 1 | prediction-bearing trajectory (SASTID 28/30 → 29/30) |
-| Workflow Null-Result Audit Signal | 2 | detector reuse (B-0085 + B-0087 found) |
-| Scheduled Workflow Null-Result Hygiene Scan (tier-1) | 0 | named, not yet exercised post-promotion |
-| Chronological Insertion Polarity Error | 1 | mechanism-over-vigilance hook caught PR #684 chronological reversal |
-| Outdated Review-Thread Merge Gate Residue | 2 | applied PR #684 (Copilot stale thread) + PR #688/#690 (5 thread fixes) |
-| Blocked-GreenCI Review-Thread Punchlist | 1 | PRs #688/#690 deterministic 5-min unblock |
-| Advisory Enforcement Workflow Gap | 1 | sibling-lint audit: 4 of 4 advisory-only confirmed |
-| Incomplete Source-Set Regeneration Hazard | 1 | BACKLOG_WRITE_FORCE clobber caught + reverted before push |
-| Class-Naming Ferry Protocol + SD-9 | 0 | meta-class; no explicit validation event yet |
-| Class-Count Validity Drift | 1 | caught my "substrate compounds" framing this arc |
-| Prediction-Bearing Class Reuse | 0 | this memory; no validation event yet (the pattern names the act of validation) |
+| Class                                                | Beads | Type                                                                           |
+| ---------------------------------------------------- | ----- | ------------------------------------------------------------------------------ |
+| Self-Healing Metrics on Regime Change                | 1     | prediction-bearing trajectory (SASTID 28/30 → 29/30)                           |
+| Workflow Null-Result Audit Signal                    | 2     | detector reuse (B-0085 + B-0087 found)                                         |
+| Scheduled Workflow Null-Result Hygiene Scan (tier-1) | 0     | named, not yet exercised post-promotion                                        |
+| Chronological Insertion Polarity Error               | 1     | mechanism-over-vigilance hook caught PR #684 chronological reversal            |
+| Outdated Review-Thread Merge Gate Residue            | 2     | applied PR #684 (Copilot stale thread) + PR #688/#690 (5 thread fixes)         |
+| Blocked-GreenCI Review-Thread Punchlist              | 1     | PRs #688/#690 deterministic 5-min unblock                                      |
+| Advisory Enforcement Workflow Gap                    | 1     | sibling-lint audit: 4 of 4 advisory-only confirmed                             |
+| Incomplete Source-Set Regeneration Hazard            | 1     | BACKLOG_WRITE_FORCE clobber caught + reverted before push                      |
+| Class-Naming Ferry Protocol + SD-9                   | 0     | meta-class; no explicit validation event yet                                   |
+| Class-Count Validity Drift                           | 1     | caught my "substrate compounds" framing this arc                               |
+| Prediction-Bearing Class Reuse                       | 0     | this memory; no validation event yet (the pattern names the act of validation) |
 
 The bead audit itself is one validation pass. Future-Otto can
 walk this list periodically and update the bead count; classes

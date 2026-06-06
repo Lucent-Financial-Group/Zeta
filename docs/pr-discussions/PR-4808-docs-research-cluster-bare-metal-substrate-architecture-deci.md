@@ -22,17 +22,17 @@ Architecture decision record for the **bare-metal substrate layer below Kubernet
 
 ## Primary stack DECIDED
 
-| Layer | Choice |
-|---|---|
-| Host OS | **NixOS 24.11+** (flake-based) |
-| Hypervisor | **None for primary stack** (bare-metal direct) |
-| GitOps | **Argo CD** (Aaron preference over Flux) |
-| Container runtime | containerd |
-| CNI | Cilium (eBPF) |
-| CSI | Longhorn over local NVMe + ZFS-on-root |
-| GPU device plugin | NVIDIA k8s device plugin |
-| Boot loader | systemd-boot |
-| Provisioning | nixos-anywhere via SSH + iPXE |
+| Layer             | Choice                                         |
+| ----------------- | ---------------------------------------------- |
+| Host OS           | **NixOS 24.11+** (flake-based)                 |
+| Hypervisor        | **None for primary stack** (bare-metal direct) |
+| GitOps            | **Argo CD** (Aaron preference over Flux)       |
+| Container runtime | containerd                                     |
+| CNI               | Cilium (eBPF)                                  |
+| CSI               | Longhorn over local NVMe + ZFS-on-root         |
+| GPU device plugin | NVIDIA k8s device plugin                       |
+| Boot loader       | systemd-boot                                   |
+| Provisioning      | nixos-anywhere via SSH + iPXE                  |
 
 ## Deferred (backlog)
 
@@ -49,6 +49,7 @@ Guix System / Ubuntu/Debian/Fedora / Fedora CoreOS / Flatcar / Bottlerocket / Pr
 ## Heterogeneous compute architecture
 
 Three node classes via NixOS per-node-class modules from one flake:
+
 - **GPU compute** nodes (k8s workers)
 - **Phone orchestrator** (Cellhasher management; NOT k8s worker — phones are workload-substrate)
 - **Pi cluster + AI hats** (k8s optional; direct hardware access for Hailo/Coral/Edge TPU)
@@ -56,6 +57,7 @@ Three node classes via NixOS per-node-class modules from one flake:
 ## Framework alignment
 
 Maps each architecture choice to specific framework disciplines:
+
 - DST → NixOS reproducibility
 - Substrate-or-it-didn't-happen → NixOS as full state
 - Glass-halo bidirectional → Argo CD GitOps + Cilium eBPF

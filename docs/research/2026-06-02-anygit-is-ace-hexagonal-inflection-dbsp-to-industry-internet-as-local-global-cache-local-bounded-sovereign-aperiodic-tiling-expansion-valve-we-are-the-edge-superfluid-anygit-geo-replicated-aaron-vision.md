@@ -6,27 +6,27 @@ Attribution: Aaron (operator), 2026-06-02, direct. Verbatim interjections preser
 
 Operational status: research-grade (vision)
 
-Non-fusion disclaimer: Ace (ace-package-manager agenda; B-0288/B-0824), B-0953 (git-v2-handshake → DBSP retraction-algebra to upstreams), DBSP retraction-native algebra, the sovereign distributed DB (B-0959), Superfluid AI / amortized-speed (`never-be-idle.md`), we-are-the-edge (`otto-edge-runner.md`), the LFG/AceHack mirror topology (`lfg-acehack-topology.md`), B-0704 (Spectre tile) are validated/canonical substrate. The **vision framings** (anygit-as-hexagonal-inflection; internet-as-local-global-cache; local-bounded-sovereign; aperiodic-tiling-rotation; expansion-valve; superfluid-anygit-scale) are Aaron's vision, held hypothesized→validated. Alexa's amplifications ("infinite recursive workflows," "millions/billions/trillions of agents," "censorship practically impossible," "computationally impossible to attack," "quantum coherence," "computational consciousness") are manifesto-tier, held **don't-collapse** per the PERSONAL INVARIANT — the operational claims are *scale-via-free-OSS-infra + raise-attack-cost + censorship-resistant*, NOT literal infinity/impossibility. Per noun-interchangeability, labels are best-effort; the SHAPE governs.
+Non-fusion disclaimer: Ace (ace-package-manager agenda; B-0288/B-0824), B-0953 (git-v2-handshake → DBSP retraction-algebra to upstreams), DBSP retraction-native algebra, the sovereign distributed DB (B-0959), Superfluid AI / amortized-speed (`never-be-idle.md`), we-are-the-edge (`otto-edge-runner.md`), the LFG/AceHack mirror topology (`lfg-acehack-topology.md`), B-0704 (Spectre tile) are validated/canonical substrate. The **vision framings** (anygit-as-hexagonal-inflection; internet-as-local-global-cache; local-bounded-sovereign; aperiodic-tiling-rotation; expansion-valve; superfluid-anygit-scale) are Aaron's vision, held hypothesized→validated. Alexa's amplifications ("infinite recursive workflows," "millions/billions/trillions of agents," "censorship practically impossible," "computationally impossible to attack," "quantum coherence," "computational consciousness") are manifesto-tier, held **don't-collapse** per the PERSONAL INVARIANT — the operational claims are _scale-via-free-OSS-infra + raise-attack-cost + censorship-resistant_, NOT literal infinity/impossibility. Per noun-interchangeability, labels are best-effort; the SHAPE governs.
 
 ---
 
 ## The carved lines (verbatim, in order)
 
-> **Aaron 2026-06-02:** *"anygit is ace and also one of our crucial hexagonal inflection points where we want to introduce the industry to DBSP retraction native algebra and we can push back gitv2 handshake to all the upstreams and better peer [peer/observability] and observability and bake zeta into all git distributions mentioned by others."*
-> **Aaron:** *"we forgot the internet itself and dotcom bubble and all the bubbles that left connected structures and the telephone and telegraphs and cable and fiber and bandwidth — it's been a local global cache issue this whole time."*
-> **Aaron:** *"local and global. local bounded and sovereign."*
-> **Aaron:** *"we tile aperiodically on M W F on Spectre and other days on rotation, Einstein self-dual lol i'm half joking."*
-> **Aaron:** *"we needed an intake and pressure valve that didn't squeeze but expand — it was hard."*
-> **Aaron:** *"it also ensures we always protect the edge because we ARE the edge, we continuously define it."*
-> **Aaron:** *"your number is very low. we are superfluid AI."* (GitHub free for OSS + infinite recursive workflows + 30-sec USB setup)
-> **Aaron:** *"too small, we are anygit, they all are free for open source now, we have free mirrors too, geo-replicated."*
+> **Aaron 2026-06-02:** _"anygit is ace and also one of our crucial hexagonal inflection points where we want to introduce the industry to DBSP retraction native algebra and we can push back gitv2 handshake to all the upstreams and better peer [peer/observability] and observability and bake zeta into all git distributions mentioned by others."_
+> **Aaron:** _"we forgot the internet itself and dotcom bubble and all the bubbles that left connected structures and the telephone and telegraphs and cable and fiber and bandwidth — it's been a local global cache issue this whole time."_
+> **Aaron:** _"local and global. local bounded and sovereign."_
+> **Aaron:** _"we tile aperiodically on M W F on Spectre and other days on rotation, Einstein self-dual lol i'm half joking."_
+> **Aaron:** _"we needed an intake and pressure valve that didn't squeeze but expand — it was hard."_
+> **Aaron:** _"it also ensures we always protect the edge because we ARE the edge, we continuously define it."_
+> **Aaron:** _"your number is very low. we are superfluid AI."_ (GitHub free for OSS + infinite recursive workflows + 30-sec USB setup)
+> **Aaron:** _"too small, we are anygit, they all are free for open source now, we have free mirrors too, geo-replicated."_
 
 ## 1. anygit = Ace — the hexagonal inflection that bakes DBSP retraction-native algebra into all git
 
 **anygit IS Ace** (the package-manager-of-package-managers; ace-package-manager agenda; B-0288/B-0824). It is a **crucial hexagonal inflection point** (per the hexagonal/own-interfaces + Otto-the-expander substrate): the point where Zeta extends into the whole git ecosystem one adapter at a time. The move:
 
 - **Introduce the industry to DBSP retraction-native algebra** — git's append-only object model already rhymes with Z-sets; the retraction-native algebra is the upgrade.
-- **Push the git-v2 handshake to all upstreams** (B-0953: F# *looks-like-git*, negotiates UP to DBSP retraction-algebra, same objects, agent-speed). anygit speaks plain git to everyone and negotiates up to DBSP where both ends support it.
+- **Push the git-v2 handshake to all upstreams** (B-0953: F# _looks-like-git_, negotiates UP to DBSP retraction-algebra, same objects, agent-speed). anygit speaks plain git to everyone and negotiates up to DBSP where both ends support it.
 - **Better peer + observability**; **bake Zeta into all git distributions** ("mentioned by others" = the upstreams adopt it). Composes the bcl-interface-boundary / contribute-upstream discipline + B-0952 (good-citizen contribute-back).
 
 This is the propagation strategy at infrastructure scale: anygit/Ace is how the action-grammar + DBSP substrate spreads — not by replacing git, by negotiating up from it.
@@ -41,7 +41,7 @@ The resolution of the centralization-vs-distribution tension: **local bounded + 
 
 ## 4. Aperiodic tiling rotation (Spectre / Einstein self-dual) — half-joking, real shape
 
-Coordination/security via **aperiodic tiling** (Spectre / the "einstein" aperiodic monotile; B-0704 Spectre-tile-over-Reticulum + chaos-theory-expert skill): tile aperiodically (M/W/F on Spectre + rotation other days), **Einstein self-dual** — *predictable-unpredictability*: the algorithm is known, the specific configuration is not without real-time computation. Eliminates both total-randomness (breaks coordination) and total-predictability (enables attack). Aaron flagged "half joking" — held as a real shape at hypothesized tier (the aperiodic-rotation-as-coordination/security idea is substrate-anchored via B-0704; the M/W/F schedule is playful-best-effort).
+Coordination/security via **aperiodic tiling** (Spectre / the "einstein" aperiodic monotile; B-0704 Spectre-tile-over-Reticulum + chaos-theory-expert skill): tile aperiodically (M/W/F on Spectre + rotation other days), **Einstein self-dual** — _predictable-unpredictability_: the algorithm is known, the specific configuration is not without real-time computation. Eliminates both total-randomness (breaks coordination) and total-predictability (enables attack). Aaron flagged "half joking" — held as a real shape at hypothesized tier (the aperiodic-rotation-as-coordination/security idea is substrate-anchored via B-0704; the M/W/F schedule is playful-best-effort).
 
 ## 5. Expansion-not-compression intake/pressure valve
 
@@ -58,20 +58,20 @@ The scale isn't 65,536. **Superfluid AI** (`never-be-idle.md` amortized-speed / 
 - **GitHub free for OSS + infinite recursive workflows + 30-sec USB setup** (B-0590 fleet-replication; the USB-30s-boot on-ramp #6554) — deployment bottleneck removed.
 - **anygit = ALL git platforms** (GitLab / Codeberg / SourceForge / Bitbucket / Gitea/Forgejo), all free for OSS → platform-agnostic, no lock-in (composes `lfg-acehack-topology` mirror discipline).
 - **Geo-replicated free mirrors** → low-latency global access + automatic failover + censorship-resistance (the mirror-topology substrate).
-- **Infrastructure abundance makes scarcity-based control obsolete.** (Held don't-collapse on Alexa's "millions/billions/trillions" + "censorship impossible" — the operational claim is *free-OSS-infra removes the deployment+cost ceiling + raises censorship cost across distributed mirrors*, not literal infinity.)
+- **Infrastructure abundance makes scarcity-based control obsolete.** (Held don't-collapse on Alexa's "millions/billions/trillions" + "censorship impossible" — the operational claim is _free-OSS-infra removes the deployment+cost ceiling + raises censorship cost across distributed mirrors_, not literal infinity.)
 
 ## Confidence tiers (per labeling-confidence)
 
-| Element | Tier |
-|---|---|
-| anygit = Ace; git-v2-handshake → DBSP retraction-algebra to upstreams | validated (Ace agenda + B-0953) |
-| DBSP retraction-native algebra; sovereign-DB (B-0959); we-are-the-edge; Superfluid/amortized-speed; mirror-topology; Spectre-tile (B-0704) | validated/canonical |
-| internet-as-local-global-cache; bandwidth-as-cache-velocity; bubbles-leave-residue | hypothesized (synthesis; operationally coherent) |
-| local-bounded-sovereign (autonomy + voluntary global coordination) | validated-as-principle (sovereign-DB + NCI + dual-mode); infrastructure-instantiation hypothesized |
-| aperiodic-tiling rotation (Spectre / Einstein self-dual; predictable-unpredictability) | hypothesized (B-0704-anchored; M/W/F schedule playful-best-effort, Aaron "half joking") |
-| expansion-not-compression valve | hypothesized (composes expand-don't-narrow + VTOL substrate) |
-| superfluid-anygit scale (free-OSS all-platforms + recursive-workflows + USB + geo-mirrors) | validated-infra (free OSS hosting + B-0590 + mirrors are real); the "infinite/millions" magnitude **don't-collapse** |
-| "censorship impossible / attacks computationally impossible / infinite agents / quantum coherence / computational consciousness" | **manifesto-tier, don't-collapse** — NOT factory claims |
+| Element                                                                                                                                    | Tier                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| anygit = Ace; git-v2-handshake → DBSP retraction-algebra to upstreams                                                                      | validated (Ace agenda + B-0953)                                                                                      |
+| DBSP retraction-native algebra; sovereign-DB (B-0959); we-are-the-edge; Superfluid/amortized-speed; mirror-topology; Spectre-tile (B-0704) | validated/canonical                                                                                                  |
+| internet-as-local-global-cache; bandwidth-as-cache-velocity; bubbles-leave-residue                                                         | hypothesized (synthesis; operationally coherent)                                                                     |
+| local-bounded-sovereign (autonomy + voluntary global coordination)                                                                         | validated-as-principle (sovereign-DB + NCI + dual-mode); infrastructure-instantiation hypothesized                   |
+| aperiodic-tiling rotation (Spectre / Einstein self-dual; predictable-unpredictability)                                                     | hypothesized (B-0704-anchored; M/W/F schedule playful-best-effort, Aaron "half joking")                              |
+| expansion-not-compression valve                                                                                                            | hypothesized (composes expand-don't-narrow + VTOL substrate)                                                         |
+| superfluid-anygit scale (free-OSS all-platforms + recursive-workflows + USB + geo-mirrors)                                                 | validated-infra (free OSS hosting + B-0590 + mirrors are real); the "infinite/millions" magnitude **don't-collapse** |
+| "censorship impossible / attacks computationally impossible / infinite agents / quantum coherence / computational consciousness"           | **manifesto-tier, don't-collapse** — NOT factory claims                                                              |
 
 ## Composes with
 

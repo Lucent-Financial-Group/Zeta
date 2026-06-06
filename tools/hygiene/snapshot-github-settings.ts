@@ -60,10 +60,7 @@ async function runCmd(cmd: readonly string[]): Promise<SpawnResult> {
     stdout: "pipe",
     stderr: "pipe",
   });
-  const [stdout, stderr] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-  ]);
+  const [stdout, stderr] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
   const exitCode = await proc.exited;
   return { stdout, stderr, exitCode };
 }
@@ -239,7 +236,9 @@ export async function snapshot(repo: string): Promise<string> {
   // Repo metadata
   const repoJson = markAdminLimitedNulls(
     parseJsonSafe(
-      await ghApi(`/repos/${repo}`, `{
+      await ghApi(
+        `/repos/${repo}`,
+        `{
       allow_auto_merge, allow_forking, allow_merge_commit, allow_rebase_merge, allow_squash_merge,
       allow_update_branch, archived, custom_properties, default_branch,
       delete_branch_on_merge, description, disabled,
@@ -250,8 +249,9 @@ export async function snapshot(repo: string): Promise<string> {
       squash_merge_commit_message, squash_merge_commit_title,
       use_squash_pr_title_as_default, visibility, web_commit_signoff_required,
       security_and_analysis
-    }`)
-    )
+    }`,
+      ),
+    ),
   );
 
   const defaultBranch = await ghApi(`/repos/${repo}`, ".default_branch");
@@ -261,7 +261,10 @@ export async function snapshot(repo: string): Promise<string> {
   const topics = parseJsonSafe(topicsRaw, []);
 
   // Automated security fixes (optional endpoint)
-  const autoSecFixResult = await ghApiOptionalScopeAware(`/repos/${repo}/automated-security-fixes`, "{enabled, paused}");
+  const autoSecFixResult = await ghApiOptionalScopeAware(
+    `/repos/${repo}/automated-security-fixes`,
+    "{enabled, paused}",
+  );
   const automatedSecurityFixes = parseOptionalScopeResult(autoSecFixResult);
 
   // Private vulnerability reporting (optional endpoint)
@@ -282,7 +285,7 @@ export async function snapshot(repo: string): Promise<string> {
   // Autolinks
   const autolinksRaw = await ghApiOptional(
     `/repos/${repo}/autolinks`,
-    "[.[] | {key_prefix, url_template, is_alphanumeric}] | sort_by(.key_prefix)"
+    "[.[] | {key_prefix, url_template, is_alphanumeric}] | sort_by(.key_prefix)",
   );
   const autolinks = parseJsonSafe(autolinksRaw, []);
 
@@ -297,7 +300,7 @@ export async function snapshot(repo: string): Promise<string> {
     vulnerabilityAlertsEnabled = false;
   } else {
     throw new Error(
-      `gh api /repos/${repo}/vulnerability-alerts failed (exit ${vulnAlertsResult.exitCode}): ${vulnAlertsResult.stderr.trim()}`
+      `gh api /repos/${repo}/vulnerability-alerts failed (exit ${vulnAlertsResult.exitCode}): ${vulnAlertsResult.stderr.trim()}`,
     );
   }
 
@@ -305,11 +308,11 @@ export async function snapshot(repo: string): Promise<string> {
   const rulesetIdsRaw = await ghApiOptional(`/repos/${repo}/rulesets`, "[.[].id] | sort | .[]");
   const rulesetDetails: unknown[] = [];
   if (rulesetIdsRaw !== null && rulesetIdsRaw.length > 0) {
-    const ids = rulesetIdsRaw.split("\n").filter(s => s.trim().length > 0);
+    const ids = rulesetIdsRaw.split("\n").filter((s) => s.trim().length > 0);
     for (const rid of ids) {
       const oneRaw = await ghApi(
         `/repos/${repo}/rulesets/${rid}`,
-        "{id, name, target, enforcement, conditions, rules: [.rules[] | {type, parameters}]}"
+        "{id, name, target, enforcement, conditions, rules: [.rules[] | {type, parameters}]}",
       );
       const one = parseJsonSafe(oneRaw);
       if (one !== null) {
@@ -332,7 +335,7 @@ export async function snapshot(repo: string): Promise<string> {
       required_conversation_resolution: .required_conversation_resolution.enabled,
       lock_branch: .lock_branch.enabled,
       allow_fork_syncing: .allow_fork_syncing.enabled
-    }`
+    }`,
   );
   const protection = parseOptionalScopeResult(protectionResult);
 
@@ -345,21 +348,21 @@ export async function snapshot(repo: string): Promise<string> {
   // GITHUB_TOKEN in CI lacks that scope (HTTP 403).
   const actionsVarsRaw = await ghApiOptional(
     `/repos/${repo}/actions/variables`,
-    "[.variables[]? | {name, value}] | sort_by(.name)"
+    "[.variables[]? | {name, value}] | sort_by(.name)",
   );
   const actionsVars = actionsVarsRaw === null ? insufficientTokenScope : parseJsonSafe(actionsVarsRaw, []);
 
   // Workflows
   const workflowsRaw = await ghApi(
     `/repos/${repo}/actions/workflows`,
-    "[.workflows[] | {name, state, path}] | sort_by(.name, .path)"
+    "[.workflows[] | {name, state, path}] | sort_by(.name, .path)",
   );
   const workflows = parseJsonSafe(workflowsRaw, []);
 
   // Environments
   const envsRaw = await ghApi(
     `/repos/${repo}/environments`,
-    "[.environments[]? | {name, protection_rule_types: [.protection_rules[]?.type] | sort}] | sort_by(.name)"
+    "[.environments[]? | {name, protection_rule_types: [.protection_rules[]?.type] | sort}] | sort_by(.name)",
   );
   const envs = parseJsonSafe(envsRaw, []);
 
@@ -372,7 +375,7 @@ export async function snapshot(repo: string): Promise<string> {
   // transient API failures are not silently hidden from the drift check.
   const codeqlRaw = await ghApiSkip403(
     `/repos/${repo}/code-scanning/default-setup`,
-    "{state, languages: (.languages | sort), query_suite}"
+    "{state, languages: (.languages | sort), query_suite}",
   );
   const codeql = codeqlRaw === null ? insufficientTokenScope : parseJsonSafe(codeqlRaw);
 
@@ -384,9 +387,10 @@ export async function snapshot(repo: string): Promise<string> {
   const actionsSecretsCountRaw = await ghApiSkip403(`/repos/${repo}/actions/secrets`, ".secrets | length");
   const dependabotSecretsCountRaw = await ghApiOptional(`/repos/${repo}/dependabot/secrets`, ".secrets | length");
 
-  const webhooksCount = webhooksCountRaw === null ? insufficientTokenScope : (parseInt(webhooksCountRaw, 10) || 0);
-  const deployKeysCount = deployKeysCountRaw === null ? insufficientTokenScope : (parseInt(deployKeysCountRaw, 10) || 0);
-  const actionsSecretsCount = actionsSecretsCountRaw === null ? insufficientTokenScope : (parseInt(actionsSecretsCountRaw, 10) || 0);
+  const webhooksCount = webhooksCountRaw === null ? insufficientTokenScope : parseInt(webhooksCountRaw, 10) || 0;
+  const deployKeysCount = deployKeysCountRaw === null ? insufficientTokenScope : parseInt(deployKeysCountRaw, 10) || 0;
+  const actionsSecretsCount =
+    actionsSecretsCountRaw === null ? insufficientTokenScope : parseInt(actionsSecretsCountRaw, 10) || 0;
   const dependabotSecretsCount = parseInt(dependabotSecretsCountRaw ?? "0", 10) || 0;
 
   const result = {

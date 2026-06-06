@@ -23,16 +23,16 @@ type: friction-reducer
 
 In a single session, ~10 PRs were drained (#1031, #986, #1030, #1018, #1015, #1012, #1025, #1006, #1008 lineage, etc.) and converged on the same finding-class: **claim/reality mismatch in substrate's claims about its own structure**. Specific instances drained:
 
-| PR | Finding | Claim | Reality |
-|---|---|---|---|
-| #1031 | Verbatim Aaron quotes "preserved exactly with [sic] notes outside the quote blocks" | Convention claim | File didn't actually use [sic] notation |
-| #986 | "Six-message chain" in MEMORY.md index entry | Count claim | File body says "eight-message chain"; lists Layers 1-8 |
-| #986 | Multiple `latest-paired-edit:` markers in MEMORY.md | Slot-uniqueness claim ("supersedes prior markers") | Two markers existed simultaneously |
-| #1015 | Force-push "forbidden on main with sign-off; possible on feature branches with same caution" | Citation of CLAUDE.md | CLAUDE.md says host blocks force-push UNIFORMLY on both forks; no per-branch carve-out |
-| #1018 | B-0124/0125/0126 backlog rows lacking YAML frontmatter | Schema claim (filename pattern signals backlog row) | Files had markdown headers only, no YAML; index emitted empty entries |
-| #1025 | `feedback_otto_*_vendor_alignment_bias_*` and similar wildcards | Concrete-reference claim | Wildcards aren't valid filenames; broke xref integrity |
-| #1025 | "bot reviewers" wording | Conformance to AGENTS.md "Agents, not bots." (GOVERNANCE §3) | Wording violated the very rule about not using "bot" |
-| Multiple | `feedback_otto_NNN_*.md` wildcard refs | Concrete file existence | Wildcards used as placeholder for unknown filenames |
+| PR       | Finding                                                                                      | Claim                                                        | Reality                                                                                |
+| -------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| #1031    | Verbatim Aaron quotes "preserved exactly with [sic] notes outside the quote blocks"          | Convention claim                                             | File didn't actually use [sic] notation                                                |
+| #986     | "Six-message chain" in MEMORY.md index entry                                                 | Count claim                                                  | File body says "eight-message chain"; lists Layers 1-8                                 |
+| #986     | Multiple `latest-paired-edit:` markers in MEMORY.md                                          | Slot-uniqueness claim ("supersedes prior markers")           | Two markers existed simultaneously                                                     |
+| #1015    | Force-push "forbidden on main with sign-off; possible on feature branches with same caution" | Citation of CLAUDE.md                                        | CLAUDE.md says host blocks force-push UNIFORMLY on both forks; no per-branch carve-out |
+| #1018    | B-0124/0125/0126 backlog rows lacking YAML frontmatter                                       | Schema claim (filename pattern signals backlog row)          | Files had markdown headers only, no YAML; index emitted empty entries                  |
+| #1025    | `feedback_otto_*_vendor_alignment_bias_*` and similar wildcards                              | Concrete-reference claim                                     | Wildcards aren't valid filenames; broke xref integrity                                 |
+| #1025    | "bot reviewers" wording                                                                      | Conformance to AGENTS.md "Agents, not bots." (GOVERNANCE §3) | Wording violated the very rule about not using "bot"                                   |
+| Multiple | `feedback_otto_NNN_*.md` wildcard refs                                                       | Concrete file existence                                      | Wildcards used as placeholder for unknown filenames                                    |
 
 The discipline that catches these at authoring time is **verify-before-state-claim** (`memory/feedback_verify_target_exists_before_deferring.md` is the closest extant; this row captures the structural extension to file-internal-metadata claims).
 

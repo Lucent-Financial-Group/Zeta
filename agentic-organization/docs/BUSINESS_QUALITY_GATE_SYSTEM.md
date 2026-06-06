@@ -16,15 +16,15 @@ stakeholder, BRD, and recorded decisions.
 Customer-facing or ambiguous work should move through this chain before it can
 merge from an initiative feature branch into `main`:
 
-| Phase | Required artifact | Gate kind | Gate owner | Event | Next allowed movement |
-|---|---|---|---|---|---|
-| Ambiguous intake | original request and current-state inventory | `customer_rfp_review` | Product Owner, Business Analyst, customer-facing hat | `quality_gate.evaluated` | customer/user confirms the Organization understood what exists, what is missing, and what may need extension |
-| Requirements | BRD with business rules and acceptance criteria | `brd_approval` | Business Analyst reviewer and Product Owner | `quality_gate.evaluated` | architecture may begin |
-| Architecture | CA, ADRs, design docs, workflow/data/security impact | `architecture_approval` | Architect, Product Owner for business-rule fit | `quality_gate.evaluated` | implementation planning may begin |
-| Implementation review | code, tests, traces, branch evidence | `implementation_review` | reviewer hat, manager as needed | `quality_gate.evaluated` | runtime validation may begin |
-| Runtime validation | QA/browser automation, screenshots, logs, traces, reproducibility evidence | `runtime_validation` | validation/reviewer hats | `quality_gate.evaluated` | final business validation may begin |
-| Final business validation | outcome report mapped rule-by-rule to the BRD and decisions | `final_business_validation` | Product Owner or Business Analyst reviewer | `quality_gate.evaluated` | release readiness may begin |
-| Release readiness | branch evidence package, gate summary, rollout notes | `release_readiness` | Delivery/TPM/release authority | `quality_gate.evaluated` | feature branch may merge to `main` |
+| Phase                     | Required artifact                                                          | Gate kind                   | Gate owner                                           | Event                    | Next allowed movement                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Ambiguous intake          | original request and current-state inventory                               | `customer_rfp_review`       | Product Owner, Business Analyst, customer-facing hat | `quality_gate.evaluated` | customer/user confirms the Organization understood what exists, what is missing, and what may need extension |
+| Requirements              | BRD with business rules and acceptance criteria                            | `brd_approval`              | Business Analyst reviewer and Product Owner          | `quality_gate.evaluated` | architecture may begin                                                                                       |
+| Architecture              | CA, ADRs, design docs, workflow/data/security impact                       | `architecture_approval`     | Architect, Product Owner for business-rule fit       | `quality_gate.evaluated` | implementation planning may begin                                                                            |
+| Implementation review     | code, tests, traces, branch evidence                                       | `implementation_review`     | reviewer hat, manager as needed                      | `quality_gate.evaluated` | runtime validation may begin                                                                                 |
+| Runtime validation        | QA/browser automation, screenshots, logs, traces, reproducibility evidence | `runtime_validation`        | validation/reviewer hats                             | `quality_gate.evaluated` | final business validation may begin                                                                          |
+| Final business validation | outcome report mapped rule-by-rule to the BRD and decisions                | `final_business_validation` | Product Owner or Business Analyst reviewer           | `quality_gate.evaluated` | release readiness may begin                                                                                  |
+| Release readiness         | branch evidence package, gate summary, rollout notes                       | `release_readiness`         | Delivery/TPM/release authority                       | `quality_gate.evaluated` | feature branch may merge to `main`                                                                           |
 
 V0 implements the generic `record_quality_gate_evaluation` command and the
 first company-level Work OS policy for this chain. Approved later gates read
@@ -83,14 +83,14 @@ Organization lifecycle.
 
 Business gate failure is work-routing evidence, not a stale blocker.
 
-| Failure class | Recovery path |
-|---|---|
-| Implementation missed BRD | route back to engineering with evidence and required rule deltas |
-| Runtime validation missed behavior | create validation process improvement work and reopen the affected task |
-| BRD was incomplete or wrong | reopen discovery / BRD work and record a decision |
-| Architecture missed a constraint | reopen CA/ADR work and notify architecture owner |
-| Customer expectation changed | create change request or scope-change decision |
-| Repeated pattern | manager outcome review creates process, memory, test, or prompt-flow improvement work |
+| Failure class                      | Recovery path                                                                         |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| Implementation missed BRD          | route back to engineering with evidence and required rule deltas                      |
+| Runtime validation missed behavior | create validation process improvement work and reopen the affected task               |
+| BRD was incomplete or wrong        | reopen discovery / BRD work and record a decision                                     |
+| Architecture missed a constraint   | reopen CA/ADR work and notify architecture owner                                      |
+| Customer expectation changed       | create change request or scope-change decision                                        |
+| Repeated pattern                   | manager outcome review creates process, memory, test, or prompt-flow improvement work |
 
 Every recovery path should create anchored work, decisions, or quality-gate
 evidence. No free-floating meeting or chat should decide a release.

@@ -14,9 +14,9 @@ Peer to [`docs/GITHUB-SETTINGS.md`](GITHUB-SETTINGS.md)
 (fire-history event log).
 
 Why split? Aaron 2026-04-22:
-*"seperating thing by data and behiaver is a tried and true way
-and you mentied it for the skills earler, works in code too lol"*.
-The skill encodes *how* to transfer; this doc encodes *what*
+_"seperating thing by data and behiaver is a tried and true way
+and you mentied it for the skills earler, works in code too lol"_.
+The skill encodes _how_ to transfer; this doc encodes _what_
 we know about transfers — the gotchas, the inventory, the
 worked examples. They change at different rates and should
 be versioned at different cadences.
@@ -59,7 +59,7 @@ preserves all of the following across the cutover:
 
 ## What silently breaks or changes
 
-A transfer surfaces these changes *without* sending a
+A transfer surfaces these changes _without_ sending a
 notification. Every entry here is something the
 declarative-scorecard diff (`tools/hygiene/check-github-settings-drift.ts`
 after `tools/hygiene/snapshot-github-settings.ts`) should
@@ -81,10 +81,12 @@ default — even if the source repo had it explicitly on.
 `enabled` → `disabled`.
 
 **Fix.**
+
 ```bash
 gh api --method PATCH /repos/<new>/<name> \
   -f security_and_analysis='{"secret_scanning":{"status":"enabled"}}'
 ```
+
 Confirm with re-snapshot.
 
 ### S2 — `secret_scanning_push_protection` silently flips `enabled` → `disabled`
@@ -98,6 +100,7 @@ Confirm with re-snapshot.
 changing `enabled` → `disabled`.
 
 **Fix.**
+
 ```bash
 gh api --method PATCH /repos/<new>/<name> \
   -f security_and_analysis='{"secret_scanning_push_protection":{"status":"enabled"}}'
@@ -130,11 +133,13 @@ but new URL is the stable contract.
 `ssh_url`, `git_url`, `svn_url` all changed.
 
 **Fix.** Update local git remotes:
+
 ```bash
 git remote set-url origin https://github.com/<new>/<name>.git
 ```
+
 Old URLs redirect for web; the API follows transfer
-redirects for reads. Pushes to old URLs *may* break
+redirects for reads. Pushes to old URLs _may_ break
 depending on auth flow.
 
 ### S5 — `code_scanning` ruleset rule NEUTRAL with "1 configuration not found"
@@ -150,6 +155,7 @@ same; the transfer just made us notice.
 when all advanced-setup SARIF jobs pass.
 
 **Diagnostic.**
+
 ```bash
 gh api /repos/<new>/<name>/code-scanning/default-setup \
   --jq .state
@@ -163,7 +169,7 @@ gh api /repos/<new>/<name>/code-scanning/default-setup \
    2026-04-21 — advanced-setup SARIF uploads still gate
    merges via required status checks, so security
    coverage is preserved).
-2. Enable default-setup *alongside* advanced (unverified
+2. Enable default-setup _alongside_ advanced (unverified
    coexistence; potential duplicate compute).
 3. Migrate to default-setup only (loses per-path gate
    precision that advanced-setup provides).
@@ -180,7 +186,8 @@ gh api /repos/<new>/<name>/code-scanning/default-setup \
 gate: merge queue is available only for
 organization-owned repositories on any plan tier.
 
-**Detection.** Check the *owner* type, not the plan:
+**Detection.** Check the _owner_ type, not the plan:
+
 ```bash
 gh api /users/<owner> --jq .type
 # "User" → merge queue unavailable
@@ -206,12 +213,14 @@ rulesets can both apply to `main` with overlapping but
 non-identical required-check lists.
 
 **Detection.** Post-transfer, enumerate both:
+
 ```bash
 gh api /repos/<new>/<name>/branches/main/protection \
   --jq '.required_status_checks.contexts'
 gh api /repos/<new>/<name>/rulesets \
   --jq '.[] | {id, rules}'
 ```
+
 Required-check names should agree. A check required by
 one surface but not the other is a silent gap (the
 looser surface is the effective policy).
@@ -225,12 +234,12 @@ Zeta is on GitHub; the skill and this data layer are
 written for GitHub. Adopters on other platforms map the
 transfer primitive:
 
-| Platform | Transfer endpoint | Notes on gotchas |
-|---|---|---|
-| GitHub | `POST /repos/<old>/<name>/transfer` | This document. |
-| GitLab | `POST /projects/:id/transfer` | Preserves more than GitHub by default. CI variables scoped to groups may need re-linking; group-level policy re-apply is GitLab's analogue of the org re-apply step. |
-| Gitea | `POST /repos/{owner}/{repo}/transfer` | Gotchas largely undocumented; first transfer on any Gitea instance is research. |
-| Bitbucket | Workspace transfer (UI-historically; API coverage varies) | Ownership transfer conflates with workspace-move semantics. |
+| Platform  | Transfer endpoint                                         | Notes on gotchas                                                                                                                                                     |
+| --------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub    | `POST /repos/<old>/<name>/transfer`                       | This document.                                                                                                                                                       |
+| GitLab    | `POST /projects/:id/transfer`                             | Preserves more than GitHub by default. CI variables scoped to groups may need re-linking; group-level policy re-apply is GitLab's analogue of the org re-apply step. |
+| Gitea     | `POST /repos/{owner}/{repo}/transfer`                     | Gotchas largely undocumented; first transfer on any Gitea instance is research.                                                                                      |
+| Bitbucket | Workspace transfer (UI-historically; API coverage varies) | Ownership transfer conflates with workspace-move semantics.                                                                                                          |
 
 The routine shape (pre-scorecard → execute → post-diff →
 heal) is adapter-agnostic. Only the specific API calls and
@@ -251,9 +260,9 @@ work. Two drivers:
 
 **Authorization.** `HB-001` in `docs/HUMAN-BACKLOG.md`
 (now resolved). Aaron's three-message direction:
-*"we can move tih to https://github.com/Lucent-Financial-Group at some point it's my org for LFG"* +
-*"we need to move it to lucent for contributor at some point anyways, we want to keep all the settings we have now"* +
-*"i think we are going to have to go without merge queue parallelism for now."*
+_"we can move tih to https://github.com/Lucent-Financial-Group at some point it's my org for LFG"_ +
+_"we need to move it to lucent for contributor at some point anyways, we want to keep all the settings we have now"_ +
+_"i think we are going to have to go without merge queue parallelism for now."_
 
 **Execution.** `gh api --method POST /repos/AceHack/Zeta/transfer -f new_owner=Lucent-Financial-Group`.
 Instant propagation (admin both sides — no
@@ -273,7 +282,7 @@ secret-scanning-push-protection, both flipped
   in `docs/GITHUB-SETTINGS.md`.
 - CodeQL ruleset (S5) rule turned off; tradeoff
   documented.
-- Merge queue (S6) unlock *noted*, not enabled same
+- Merge queue (S6) unlock _noted_, not enabled same
   session — parked as a separate decision.
 
 **Artifacts from this transfer** (the output of the

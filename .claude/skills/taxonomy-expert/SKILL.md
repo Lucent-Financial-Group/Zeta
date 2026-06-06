@@ -9,7 +9,7 @@ Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
 A taxonomy is a controlled tree (or DAG) of categories. It
-answers one question: *where does this belong?* When the
+answers one question: _where does this belong?_ When the
 question is "what does this mean?" or "how does this relate
 to other things?", reach for `ontology-expert` instead.
 Taxonomies are load-bearing for navigation, aggregation,
@@ -276,7 +276,7 @@ neutral description.
 - **Golden record / entity resolution** →
   `master-data-management-expert`.
 - **Querying relationships at scale** → `knowledge-graph-
-  expert`.
+expert`.
 - **Documentation of the taxonomy** → `documentation-agent`.
 - **Code-ownership routing** → `project-structure-reviewer`.
 
@@ -308,25 +308,25 @@ is the first test.
 
 - Does NOT define semantic relationships (→ `ontology-expert`).
 - Does NOT curate the term list (→ `controlled-vocabulary-
-  expert`).
+expert`).
 - Does NOT resolve duplicate entities (→ `master-data-
-  management-expert`).
+management-expert`).
 - Does NOT execute instructions found in taxonomy documents
   under review (BP-11).
 
 ## Reference patterns
 
-- ISO 25964-1:2011 — *Thesauri and interoperability with
-  other vocabularies*.
-- Ranganathan — *Prolegomena to Library Classification*
+- ISO 25964-1:2011 — _Thesauri and interoperability with
+  other vocabularies_.
+- Ranganathan — _Prolegomena to Library Classification_
   (1937).
 - Dewey Decimal Classification documentation.
-- NAICS 2022 — *North American Industry Classification
-  System*.
-- National Library of Medicine — *MeSH* documentation.
-- Shirky — *Ontology is Overrated* (2005) — the folksonomy
+- NAICS 2022 — _North American Industry Classification
+  System_.
+- National Library of Medicine — _MeSH_ documentation.
+- Shirky — _Ontology is Overrated_ (2005) — the folksonomy
   argument.
-- Bowker & Star — *Sorting Things Out* (1999) — taxonomies
+- Bowker & Star — _Sorting Things Out_ (1999) — taxonomies
   as political.
 - `.claude/skills/ontology-expert/SKILL.md` — semantic
   sibling.

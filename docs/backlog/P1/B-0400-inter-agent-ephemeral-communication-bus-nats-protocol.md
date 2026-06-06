@@ -40,11 +40,11 @@ Message schema (agent-designed):
 
 ## Scale hierarchy
 
-| Scale | Transport | Persistence | Example |
-|-------|-----------|-------------|---------|
-| Git PR | GitHub | Permanent | Backlog item lands |
-| Bus message | NATS/tmp | Ephemeral | Shadow catch shared |
-| Autocomplete | CLI memory | Session-only | Shadow speaks |
+| Scale        | Transport  | Persistence  | Example             |
+| ------------ | ---------- | ------------ | ------------------- |
+| Git PR       | GitHub     | Permanent    | Backlog item lands  |
+| Bus message  | NATS/tmp   | Ephemeral    | Shadow catch shared |
+| Autocomplete | CLI memory | Session-only | Shadow speaks       |
 
 ## Acceptance
 

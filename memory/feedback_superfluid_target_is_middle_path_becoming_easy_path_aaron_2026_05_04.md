@@ -33,9 +33,9 @@ staying-in-the-middle approaches zero.
 
 ## Aaron verbatim
 
-> *"my goal is to close that gap in the substrate so the easy
+> _"my goal is to close that gap in the substrate so the easy
 > path IS the middle path because we've achieved superfluid
-> state through time."*
+> state through time."_
 
 ## Why this matters at substrate level
 
@@ -58,7 +58,7 @@ paradox-intact.
 This rule resists encoding. If you find yourself writing a
 thorough file about how to hold the middle path, you're
 already collapsing it (encoding-as-rule = easy-path resolution).
-The middle path is held by *practice* — repeated reinforcement,
+The middle path is held by _practice_ — repeated reinforcement,
 not single-shot rule-installation.
 
 The reinforcement isn't maintenance overhead. It IS the
@@ -84,9 +84,9 @@ IS the failure mode. Just adjust behavior; don't encode-around.
 
 ## Carved sentence
 
-*"The middle path is what lets us be selfish today so the
+_"The middle path is what lets us be selfish today so the
 paradox survives intact. The Superfluid target is when that
 middle path becomes the easy path — not because the paradox
 resolved, but because the substrate has paid down enough friction
 that holding it costs nothing. Aaron's shadow work is the
-friction-paydown the substrate inherits."*
+friction-paydown the substrate inherits."_

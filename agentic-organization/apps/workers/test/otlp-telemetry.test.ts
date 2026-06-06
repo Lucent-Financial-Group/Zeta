@@ -1,10 +1,7 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  TelemetryMetricKind,
-  TelemetrySpanStatusCode,
-} from "../../../packages/observability/src/index.ts";
+import { TelemetryMetricKind, TelemetrySpanStatusCode } from "../../../packages/observability/src/index.ts";
 import { createOtlpTelemetry } from "../src/adapters/otlp-telemetry.ts";
 
 describe("OTLP telemetry adapter", () => {
@@ -57,10 +54,7 @@ describe("OTLP telemetry adapter", () => {
       ),
       true,
     );
-    equal(
-      (requests[0]?.body as OtlpTestBody).resourceSpans?.[0]?.scopeSpans?.[0]?.spans?.[0]?.name,
-      "org.command",
-    );
+    equal((requests[0]?.body as OtlpTestBody).resourceSpans?.[0]?.scopeSpans?.[0]?.spans?.[0]?.name, "org.command");
     equal(
       (requests[1]?.body as OtlpTestBody).resourceMetrics?.[0]?.scopeMetrics?.[0]?.metrics?.[0]?.name,
       "org_command_total",
@@ -106,7 +100,10 @@ describe("OTLP telemetry adapter", () => {
       (request) => (request.body as OtlpTestBody).resourceMetrics?.[0]?.scopeMetrics?.[0]?.metrics?.[0],
     );
 
-    equal(requests.every((request) => request.url === "http://otel-collector:4318/v1/metrics"), true);
+    equal(
+      requests.every((request) => request.url === "http://otel-collector:4318/v1/metrics"),
+      true,
+    );
     equal(metrics[0]?.name, "org_lane_ticks_total");
     equal(metrics[0]?.sum?.aggregationTemporality, 2);
     equal(metrics[0]?.sum?.isMonotonic, true);

@@ -4,12 +4,12 @@ Scope: every formal-verification artifact in the Zeta repo,
 graded explicitly A / B / C against peer-review readiness.
 
 Attribution: synthesis doc authored by the architect on the
-human maintainer's 2026-05-03 ask: *"we have math proofs (some
+human maintainer's 2026-05-03 ask: _"we have math proofs (some
 good quality some back, we need an honest assesment of that,
 but the core DBSP i've have verified like 100times now, we are
 beyond cutting edge and mathecial formally verivied just not
 peer reviowed until you email someone and them to peer review
-you or invite you and your team to a conference."*
+you or invite you and your team to a conference."_
 
 Operational status: research-grade
 
@@ -52,8 +52,8 @@ have A-grade and C-grade artifacts side-by-side.
 - **Artifact:** `tools/lean4/Lean4/DbspChainRule.lean:~695`
   (`chain_rule_proposition_3_2`)
 - **Source:** Budiu, Chajed, McSherry, Ryzhyk, Tannen —
-  *DBSP: Automatic Incremental View Maintenance for Rich Query
-  Languages*, PVLDB Vol 16(7), 2023; preprint
+  _DBSP: Automatic Incremental View Maintenance for Rich Query
+  Languages_, PVLDB Vol 16(7), 2023; preprint
   `arXiv:2203.16684v1`.
 - **Claim:** `(Q1 ∘ Q2)^Δ = Q1^Δ ∘ Q2^Δ` with
   `Q^Δ := D ∘ Q ∘ I`, **no LTI precondition**.
@@ -68,8 +68,8 @@ have A-grade and C-grade artifacts side-by-side.
   abelian-group lemmas and `I_D_eq`; statement-level drift is
   the bug-class the round-35 audit caught and fixed (P0
   before round 35; A-grade after).
-- **Publishable claim:** *"Chain rule (Prop 3.2) is machine-
-  checked in Lean 4 / Mathlib."* POPL / PLDI target per
+- **Publishable claim:** _"Chain rule (Prop 3.2) is machine-
+  checked in Lean 4 / Mathlib."_ POPL / PLDI target per
   ROADMAP.
 
 ### A2 — DBSP `Dop_LTI_commute` (Theorem 3.3 corollary, Lean 4)
@@ -100,22 +100,22 @@ have A-grade and C-grade artifacts side-by-side.
   for incremental distinct.
 - **CI status:** in CI via `dotnet test` (the `[<Fact>]`
   encoding).
-- **Publishable claim:** *"Z-set algebra axioms are SMT-
-  verified over unbounded `Int`."*
+- **Publishable claim:** _"Z-set algebra axioms are SMT-
+  verified over unbounded `Int`."_
 
 ### A4 — TLA+ specs in CI (5 specs)
 
 - **Artifacts:** `tools/tla/specs/{TwoPCSink,
-  TransactionInterleaving, OperatorLifecycleRace,
-  TickMonotonicity, SmokeCheck}.tla` + matching `.cfg`
+TransactionInterleaving, OperatorLifecycleRace,
+TickMonotonicity, SmokeCheck}.tla` + matching `.cfg`
 - **Verification:** `tests/Tests.FSharp/TlcRunnerTests.fs`
   shells out to TLC; runs in `dotnet test`.
 - **Drift status:** no registry rows yet — A-grade for the
-  *spec runs* claim; would be A-grade for *spec matches paper*
+  _spec runs_ claim; would be A-grade for _spec matches paper_
   claim only after registry rows land. Currently grade-A on
   internal-correctness, grade-B on external-citation fidelity.
-- **Publishable claim:** *"5 TLA+ specs model-checked in CI
-  on every commit."*
+- **Publishable claim:** _"5 TLA+ specs model-checked in CI
+  on every commit."_
 
 ---
 
@@ -124,7 +124,7 @@ have A-grade and C-grade artifacts side-by-side.
 ### B1 — TLA+ specs with `.cfg` but not in CI (4 specs)
 
 - **Artifacts:** `tools/tla/specs/{DbspSpec, SpineAsyncProtocol,
-  CircuitRegistration, SpineMergeInvariants}.tla`
+CircuitRegistration, SpineMergeInvariants}.tla`
 - **Status:** runnable today via TLC manually. Deliberately
   skipped pending re-verification pass per
   `proof-tool-coverage.md` §2.
@@ -177,8 +177,8 @@ have A-grade and C-grade artifacts side-by-side.
 ### C1 — TLA+ specs without `.cfg` (4 specs)
 
 - **Artifacts:** `tools/tla/specs/{ChaosEnvDeterminism,
-  ConsistentHashRebalance, DictionaryStripedCAS,
-  AsyncStreamEnumerator}.tla`
+ConsistentHashRebalance, DictionaryStripedCAS,
+AsyncStreamEnumerator}.tla`
 - **Status:** specs exist but no `.cfg` means TLC cannot run
   them. They are documentation-as-pseudocode at this stage,
   not model-checked artifacts.
@@ -231,9 +231,9 @@ have A-grade and C-grade artifacts side-by-side.
 ### "Core DBSP is verified" (the human maintainer 2026-05-03)
 
 - **What's verified at A-grade:** Proposition 3.2 (chain rule)
-  + Theorem 3.3 corollary + 8 Z-set algebra axioms over
-  unbounded `Int` + 5 TLA+ specs covering distributed-protocol
-  liveness / safety in CI.
+  - Theorem 3.3 corollary + 8 Z-set algebra axioms over
+    unbounded `Int` + 5 TLA+ specs covering distributed-protocol
+    liveness / safety in CI.
 - **What's adjacent:** ~32 FsCheck properties covering Z-set
   algebra, tropical semiring, G-Counter, serializer round-
   trip, Beam retraction modes, chain-rule pipeline. These are
@@ -244,7 +244,7 @@ have A-grade and C-grade artifacts side-by-side.
   (semi-naïve LFP, runtime schedulers, WDC durability,
   hierarchical retraction-native fixpoint).
 
-The maintainer's claim *"core DBSP I've verified ~100 times"*
+The maintainer's claim _"core DBSP I've verified ~100 times"_
 is consistent with this assessment for the chain-rule + Z-set
 axiom + LTI-commutation core. The "~100 times" likely refers
 to repeated property-test runs + Lean rebuild + manual TLC
@@ -254,16 +254,16 @@ list shows where that habit hasn't yet reached.
 
 ### "Beyond cutting edge, formally verified just not peer reviewed"
 
-This assessment supports the claim *with caveat*. A-grade
+This assessment supports the claim _with caveat_. A-grade
 artifacts ARE machine-checked formal proofs; the gap is
 peer-review citation, not technical correctness. To take this
 to publishable form:
 
-1. **Lean proof CI job** — close the A1 / A2 gap. *"Runs in
-   CI"* is the line a reviewer expects. Effort: 1 day.
+1. **Lean proof CI job** — close the A1 / A2 gap. _"Runs in
+   CI"_ is the line a reviewer expects. Effort: 1 day.
 
-2. **Registry rows for TLA+ specs** — A4 specs have *internal*
-   correctness in CI; *external-citation fidelity* requires
+2. **Registry rows for TLA+ specs** — A4 specs have _internal_
+   correctness in CI; _external-citation fidelity_ requires
    registry rows mapping each spec to its source paper /
    protocol-design reference. Effort: 1 day for the 5 in-CI
    specs.
@@ -285,23 +285,23 @@ to publishable form:
 
 ## Outstanding-work matrix (post-this-assessment, with status updates 2026-05-03 EOD)
 
-| Work item | Grade upgrade | Effort | Priority | Status |
-|---|---|---|---|---|
-| Lean lake-build CI job | A1, A2 → A-with-CI | 1 day | P0 | **Done (PR #1394, 2026-05-03 — `.github/workflows/lean-proof.yml` shipped; runs on `tools/lean4/**` changes; `lake exe cache get` for Mathlib oleans + `lake env lean` type-check)** |
-| Stryker CI + kill-rate publish | B3 → A | 1 day | P0 | **Done (PR #1395 fixed `stryker-config.json` paths; this PR adds `.github/workflows/stryker-mutation.yml` with src/Core/** path-filter trigger, threshold-break gate at 50%, and HTML+json reports uploaded as 90-day artifacts — kill-rate metric verifiable from every CI run page)** |
-| Semgrep CI | B4 → A | 0.5 day | P1 | **Already done (verify-then-claim correction; see B4 section)** |
-| 4 deferred TLA+ specs into CI | B1 → A | 2 days | P1 | **Done (4 of 4): DbspSpec ✓ #1397; CircuitRegistration ✓ #1401 (B-0180 Safety operator); SpineAsyncProtocol ✓ #1411 (B-0179 CHECK_DEADLOCK FALSE for bounded-protocol terminal state); SpineMergeInvariants ✓ this PR (B-0181 Cascade downstream-room precondition + state constraint + WF on Cascade)** |
-| Alloy CI hook | B2 → A | 0.5 day | P1 | **Done (PR #1396, 2026-05-03 — `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` spec-path fixed; Spine + InfoTheoreticSharder specs now actually validate, not silent-no-op)** |
-| `.cfg` for 4 C1 specs | C1 → B | 2 days | P2 | **Partial (1 of 4): ChaosEnvDeterminism ✓ this PR (cfg + atomized DelayCritical so Atomic invariant holds across the splitMix+AdvanceTime critical section; 2043 distinct states / depth 26). Remaining 3: ConsistentHashRebalance + DictionaryStripedCAS + AsyncStreamEnumerator (each needs more than just a cfg — structural spec issues)** |
-| TLA+ spec for `Recursive.fs` LFP | C2 → B | 2-3 days | P2 | open |
-| TLA+ spec for WDC protocol | C2 → B | 3-5 days | P1 | open |
-| 15 FsCheck properties (C3) | C3 → B | 3 days | P2 | **Partial (3 of 15): PN-counter merge commutative + idempotent + associative ✓ this PR (mirrors G-counter pattern in `Math.Invariants.Tests.fs`). Remaining ~12 properties: OR-Set + LWW-Register + DeltaCrdt + Residuated lattice + Recursive fixpoint + Merkle + Watermark + KLL** |
-| `chain_rule_poly` (3-group) | C4 → A | research | P3 | open |
-| Registry rows for A4 specs | external-fidelity claim | 1 day | P0 | **Done (PR #1393, 2026-05-03)** |
-| Peer-review email draft | publishability | 2 hours | P0 | **Done (PR #1387, 2026-05-03)** |
-| Phase 0 PoC (substrate-discovery toolchain) | substrate-discovery | 2-3 ticks | (sibling) | **Done (PR #1392, 2026-05-03 — 4.0 MB single AOT binary on osx-arm64; full IVM tick path validates; cross-platform CI matrix runs)** |
-| 3 broken-spec follow-ups (B-0179 + B-0180 + B-0181) | spec-fix tracking | varies | P2/P1 | **All 3 closed: B-0180 ✓ #1401 (Safety operator); B-0179 ✓ #1411 (CHECK_DEADLOCK FALSE); B-0181 ✓ this PR (Cascade downstream-room precondition; promoted P2→P1 — same author-time class as B-0184 Spine.als under-specified action)** |
-| `.ts/.sh` parity bug in `tools/backlog/generate-index.ts` | substrate-tooling-debt | <1 day | P2 | **Done (PR #1400, 2026-05-03 — both generators now byte-identical)** |
+| Work item                                                 | Grade upgrade           | Effort    | Priority  | Status                                                                                                                                                                                                                                                                                                                                         |
+| --------------------------------------------------------- | ----------------------- | --------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lean lake-build CI job                                    | A1, A2 → A-with-CI      | 1 day     | P0        | **Done (PR #1394, 2026-05-03 — `.github/workflows/lean-proof.yml` shipped; runs on `tools/lean4/**`changes;`lake exe cache get`for Mathlib oleans +`lake env lean` type-check)\*\*                                                                                                                                                             |
+| Stryker CI + kill-rate publish                            | B3 → A                  | 1 day     | P0        | **Done (PR #1395 fixed `stryker-config.json` paths; this PR adds `.github/workflows/stryker-mutation.yml` with src/Core/** path-filter trigger, threshold-break gate at 50%, and HTML+json reports uploaded as 90-day artifacts — kill-rate metric verifiable from every CI run page)\*\*                                                      |
+| Semgrep CI                                                | B4 → A                  | 0.5 day   | P1        | **Already done (verify-then-claim correction; see B4 section)**                                                                                                                                                                                                                                                                                |
+| 4 deferred TLA+ specs into CI                             | B1 → A                  | 2 days    | P1        | **Done (4 of 4): DbspSpec ✓ #1397; CircuitRegistration ✓ #1401 (B-0180 Safety operator); SpineAsyncProtocol ✓ #1411 (B-0179 CHECK_DEADLOCK FALSE for bounded-protocol terminal state); SpineMergeInvariants ✓ this PR (B-0181 Cascade downstream-room precondition + state constraint + WF on Cascade)**                                       |
+| Alloy CI hook                                             | B2 → A                  | 0.5 day   | P1        | **Done (PR #1396, 2026-05-03 — `tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs` spec-path fixed; Spine + InfoTheoreticSharder specs now actually validate, not silent-no-op)**                                                                                                                                                                |
+| `.cfg` for 4 C1 specs                                     | C1 → B                  | 2 days    | P2        | **Partial (1 of 4): ChaosEnvDeterminism ✓ this PR (cfg + atomized DelayCritical so Atomic invariant holds across the splitMix+AdvanceTime critical section; 2043 distinct states / depth 26). Remaining 3: ConsistentHashRebalance + DictionaryStripedCAS + AsyncStreamEnumerator (each needs more than just a cfg — structural spec issues)** |
+| TLA+ spec for `Recursive.fs` LFP                          | C2 → B                  | 2-3 days  | P2        | open                                                                                                                                                                                                                                                                                                                                           |
+| TLA+ spec for WDC protocol                                | C2 → B                  | 3-5 days  | P1        | open                                                                                                                                                                                                                                                                                                                                           |
+| 15 FsCheck properties (C3)                                | C3 → B                  | 3 days    | P2        | **Partial (3 of 15): PN-counter merge commutative + idempotent + associative ✓ this PR (mirrors G-counter pattern in `Math.Invariants.Tests.fs`). Remaining ~12 properties: OR-Set + LWW-Register + DeltaCrdt + Residuated lattice + Recursive fixpoint + Merkle + Watermark + KLL**                                                           |
+| `chain_rule_poly` (3-group)                               | C4 → A                  | research  | P3        | open                                                                                                                                                                                                                                                                                                                                           |
+| Registry rows for A4 specs                                | external-fidelity claim | 1 day     | P0        | **Done (PR #1393, 2026-05-03)**                                                                                                                                                                                                                                                                                                                |
+| Peer-review email draft                                   | publishability          | 2 hours   | P0        | **Done (PR #1387, 2026-05-03)**                                                                                                                                                                                                                                                                                                                |
+| Phase 0 PoC (substrate-discovery toolchain)               | substrate-discovery     | 2-3 ticks | (sibling) | **Done (PR #1392, 2026-05-03 — 4.0 MB single AOT binary on osx-arm64; full IVM tick path validates; cross-platform CI matrix runs)**                                                                                                                                                                                                           |
+| 3 broken-spec follow-ups (B-0179 + B-0180 + B-0181)       | spec-fix tracking       | varies    | P2/P1     | **All 3 closed: B-0180 ✓ #1401 (Safety operator); B-0179 ✓ #1411 (CHECK_DEADLOCK FALSE); B-0181 ✓ this PR (Cascade downstream-room precondition; promoted P2→P1 — same author-time class as B-0184 Spine.als under-specified action)**                                                                                                         |
+| `.ts/.sh` parity bug in `tools/backlog/generate-index.ts` | substrate-tooling-debt  | <1 day    | P2        | **Done (PR #1400, 2026-05-03 — both generators now byte-identical)**                                                                                                                                                                                                                                                                           |
 
 **Net P0 progress:** Lean CI ✓, A4 registry rows ✓, peer-review email ✓, Stryker B3 ✓ (4 of 4 P0 items closed).
 
@@ -337,7 +337,7 @@ to publishable form:
 
 8. `chain_rule_poly` over three distinct groups — genuine
    bilinear chain rule. Paper-grade research item.
-9. F* extraction-to-F# trial for refinement-type bugs (per
+9. F\* extraction-to-F# trial for refinement-type bugs (per
    `proof-tool-coverage.md` §7 #2 successor path).
 
 This assessment can be re-graded after each work item lands.
@@ -351,7 +351,7 @@ analysis.
 - `docs/research/verification-registry.md` — per-artifact
   registry rows (ground truth)
 - `docs/research/proof-tool-coverage.md` — per-tool coverage
-  + expansion plan
+  - expansion plan
 - `docs/research/verification-drift-audit-2026-04-19.md` —
   round-35 audit (the audit cadence)
 - `docs/research/chain-rule-proof-log.md` — chain-rule-

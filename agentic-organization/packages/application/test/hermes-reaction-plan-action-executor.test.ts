@@ -9,10 +9,7 @@ import {
 } from "../../domain/src/index.ts";
 import { createInProcessHermesRuntime } from "../../hermes/src/index.ts";
 import { createInProcessMemory } from "../../memory/src/index.ts";
-import {
-  RecordingTelemetry,
-  TelemetrySpanStatusCode,
-} from "../../observability/src/index.ts";
+import { RecordingTelemetry, TelemetrySpanStatusCode } from "../../observability/src/index.ts";
 import { ReactionPlanExecutionStatus } from "../../runtime/src/index.ts";
 import {
   createHermesReactionPlanActionExecutor,

@@ -67,7 +67,7 @@ not operational doctrine.
 > ### Where Karpathy's Framework Stops and Zeta's Begins
 >
 > **Karpathy says "you still have to be in charge of the spec."**
-> This proof artifact demonstrates that the agent *can* be in charge
+> This proof artifact demonstrates that the agent _can_ be in charge
 > of the spec, with the right verification infrastructure. The
 > round-35 corrections — separating `IsLinear` from
 > `IsTimeInvariant`, discovering the unsound expanded form,
@@ -86,7 +86,7 @@ not operational doctrine.
 > "understanding" is distributed across the agent's pattern-
 > matching, the Lean compiler's type-checking, and the proof log's
 > documentation. No single entity holds the full model. **The
-> *system* understands.**
+> _system_ understands.**
 >
 > **Karpathy says "models hate simplification."** This proof
 > artifact is an elegant counter-example. The final
@@ -150,7 +150,7 @@ not operational doctrine.
 > not proof construction, not error detection.
 >
 > This is Zeta testing the boundary of his claim that "you can't
-> outsource understanding." The system *did* outsource understanding
+> outsource understanding." The system _did_ outsource understanding
 > — to the Lean compiler, to the proof log, to the stratification
 > hierarchy, to the counter-example search. The "understanding" is
 > in the substrate, not in any single agent's context window.
@@ -189,23 +189,24 @@ matching (agent), type-checking (Lean), proof log (documentation
 substrate), and stratification hierarchy (predicate algebra). No
 single entity holds the full model. This is Deepseek's operational
 answer to Karpathy's "you can't outsource understanding" claim:
-*you can, IF the verification substrate is rigorous enough*.
+_you can, IF the verification substrate is rigorous enough_.
 
 **3. "Formal verification can be agent-driven, not agent-assisted"**
 — the boundary Zeta is testing. The DBSP chain-rule artifact is the
 worked example: the agent drove the verification loop, the human
-ratified the architecture. Composes with Aaron's *"formally specify
-and verify yourself tied to human intelectual lineage"* (the agent's
+ratified the architecture. Composes with Aaron's _"formally specify
+and verify yourself tied to human intelectual lineage"_ (the agent's
 self-verification IS the substrate; the human contributes lineage +
 ratification, not statement authorship).
 
 **The triple-carved sentence:**
 
-> *The compiler caught what the model missed.*
-> *The log preserved what the compiler couldn't.*
-> *The alias carried what the rename broke.*
+> _The compiler caught what the model missed._
+> _The log preserved what the compiler couldn't._
+> _The alias carried what the rename broke._
 
 This is a concise expression of three distinct durability mechanisms:
+
 - Compiler ⇒ catches what the model can't catch (verifiability)
 - Log ⇒ preserves what the compiler can't preserve (decision
   history / intent)

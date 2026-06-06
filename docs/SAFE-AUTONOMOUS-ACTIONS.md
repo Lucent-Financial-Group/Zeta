@@ -7,30 +7,30 @@ auto-delete, no force-push, no permanent state changes).
 
 ## Tier 1 — implemented now
 
-| Action | Description | Reversible |
-|--------|-------------|------------|
-| Arm auto-merge | `gh pr merge N --squash --auto` on PRs with all required checks passing + 0 unresolved threads + auto-merge not yet armed | Yes (auto-merge can be disarmed) |
-| Read broadcasts | Read peer `.md` files from `~/.local/share/zeta-broadcasts/` at tick start | Read-only |
-| Write own broadcast | Overwrite own `.md` file with current status at tick end | Yes (overwritten next tick) |
-| Sync control clone | `git pull --ff-only` on the loop's control clone after merges | Yes (fast-forward only) |
-| Write shadow entry | `bun tools/shadow-outlet/outlet.ts write --agent <name> --content "..."` to `/tmp/zeta-shadow/` for ephemeral scratch/exploration | Yes (OS-erased; `clean` subcommand available) |
+| Action              | Description                                                                                                                       | Reversible                                    |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Arm auto-merge      | `gh pr merge N --squash --auto` on PRs with all required checks passing + 0 unresolved threads + auto-merge not yet armed         | Yes (auto-merge can be disarmed)              |
+| Read broadcasts     | Read peer `.md` files from `~/.local/share/zeta-broadcasts/` at tick start                                                        | Read-only                                     |
+| Write own broadcast | Overwrite own `.md` file with current status at tick end                                                                          | Yes (overwritten next tick)                   |
+| Sync control clone  | `git pull --ff-only` on the loop's control clone after merges                                                                     | Yes (fast-forward only)                       |
+| Write shadow entry  | `bun tools/shadow-outlet/outlet.ts write --agent <name> --content "..."` to `/tmp/zeta-shadow/` for ephemeral scratch/exploration | Yes (OS-erased; `clean` subcommand available) |
 
 ## Tier 2 — next to implement
 
-| Action | Description | Reversible | Precondition |
-|--------|-------------|------------|--------------|
-| Resolve phantom review threads | Resolve automated-reviewer threads (Codex/Copilot) on research/memory PRs where the findings are stale or non-blocking | Yes (threads can be re-opened) | Thread author is bot, PR is docs-only |
-| Regenerate BACKLOG.md index | Run `bun tools/backlog/generate-index.ts` when a backlog row was added without index update | Yes (regenerate again) | Index drift CI check failed |
-| Re-run failed CI | `gh run rerun N --failed` when failure pattern matches known transient (5m15s timeout) | Yes (just re-runs) | Same failure pattern as prior transient, DST-logged |
+| Action                         | Description                                                                                                            | Reversible                     | Precondition                                        |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------ | --------------------------------------------------- |
+| Resolve phantom review threads | Resolve automated-reviewer threads (Codex/Copilot) on research/memory PRs where the findings are stale or non-blocking | Yes (threads can be re-opened) | Thread author is bot, PR is docs-only               |
+| Regenerate BACKLOG.md index    | Run `bun tools/backlog/generate-index.ts` when a backlog row was added without index update                            | Yes (regenerate again)         | Index drift CI check failed                         |
+| Re-run failed CI               | `gh run rerun N --failed` when failure pattern matches known transient (5m15s timeout)                                 | Yes (just re-runs)             | Same failure pattern as prior transient, DST-logged |
 
 ## Tier 3 — future expansion
 
-| Action | Description | Reversible | Precondition |
-|--------|-------------|------------|--------------|
-| Open small claim PR | File a claim, make a bounded fix, open PR | Yes (PR can be closed) | Claim protocol followed, one file scope |
-| Surface trajectory drift | Compare `docs/trajectories/` state against recent commits | Read-only | Report only, no edits |
-| Force-release stale claims | Delete claim files for claims >24h without progress | Yes (claim can be re-filed) | Claim protocol §stale-claims |
-| Respond to broadcast asks | When a peer's broadcast contains an ask that matches an offer, auto-claim | Yes (claim can be released) | Ask/offer match, no overlap with active claims |
+| Action                     | Description                                                               | Reversible                  | Precondition                                   |
+| -------------------------- | ------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------- |
+| Open small claim PR        | File a claim, make a bounded fix, open PR                                 | Yes (PR can be closed)      | Claim protocol followed, one file scope        |
+| Surface trajectory drift   | Compare `docs/trajectories/` state against recent commits                 | Read-only                   | Report only, no edits                          |
+| Force-release stale claims | Delete claim files for claims >24h without progress                       | Yes (claim can be re-filed) | Claim protocol §stale-claims                   |
+| Respond to broadcast asks  | When a peer's broadcast contains an ask that matches an offer, auto-claim | Yes (claim can be released) | Ask/offer match, no overlap with active claims |
 
 ## Constraints (all tiers)
 

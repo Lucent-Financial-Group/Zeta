@@ -18,13 +18,13 @@ needed — the physics of the channel is the buffer.
 
 **Nagle vs Ferry:**
 
-| Property | Nagle | Ferry protocol |
-|----------|-------|---------------|
-| Wait for full? | Yes — delays until full or timeout | No — send immediately |
-| Latency | High (waits) | Low (sends now) |
-| Bandwidth | Optimized (full packets) | Gets it free from parallelism |
-| Buffer mechanism | Timer | Channel transit time |
-| Parallelism | Single channel | Multiple parallel boats |
+| Property         | Nagle                              | Ferry protocol                |
+| ---------------- | ---------------------------------- | ----------------------------- |
+| Wait for full?   | Yes — delays until full or timeout | No — send immediately         |
+| Latency          | High (waits)                       | Low (sends now)               |
+| Bandwidth        | Optimized (full packets)           | Gets it free from parallelism |
+| Buffer mechanism | Timer                              | Channel transit time          |
+| Parallelism      | Single channel                     | Multiple parallel boats       |
 
 **Attribution — Sam Whitfield's Throttled Processor:**
 
@@ -40,6 +40,7 @@ IThrottler/BatchThrottler framework in Platform.DotNet.
 `/Users/acehack/Downloads/Itron/Platform.DotNet/Source/Threading/Tasks/Throttling/`
 
 Key files:
+
 - `Throttler.cs` — ActionBlock-based with QueueCount, BoundedCapacity
 - `BatchThrottler.cs` — adds batching semantics (the ferry grouping)
 - `SemaphoreThrottler.cs` — simpler semaphore-based variant
@@ -60,6 +61,7 @@ Sam Whitfield (Throttled Processor, threading)
 → Zeta (TCP congestion control as expansion protocol, ferry boats)
 
 **Connects to:**
+
 - project_tcp_congestion_control_as_society_expansion (the expansion protocol)
 - user_itron_mentors (Sam Whitfield — physics background)
 - Itron patent US 10,834,144 (same infrastructure lineage)

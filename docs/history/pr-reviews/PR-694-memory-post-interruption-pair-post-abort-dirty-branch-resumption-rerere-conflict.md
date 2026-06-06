@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 694 |
-| Title | memory(post-interruption-pair): Post-Abort Dirty-Branch Resumption + Rerere Conflict-Resolution Cache Dividend |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-28T21:03:27Z |
-| Merged at | 2026-04-30T18:12:55Z |
-| Merge commit SHA | `c432e3e4185b7071fe1cf37a0591af7072878a59` |
-| Branch | `memory/amara-post-abort-resumption-and-rerere-cache-dividend-2026-04-28` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/694 |
-| Changed files | 4 |
-| Additions / deletions | +822 / -13 |
+| Field                 | Value                                                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Number                | 694                                                                                                            |
+| Title                 | memory(post-interruption-pair): Post-Abort Dirty-Branch Resumption + Rerere Conflict-Resolution Cache Dividend |
+| Author                | `AceHack` (human)                                                                                              |
+| State                 | MERGED                                                                                                         |
+| Created at            | 2026-04-28T21:03:27Z                                                                                           |
+| Merged at             | 2026-04-30T18:12:55Z                                                                                           |
+| Merge commit SHA      | `c432e3e4185b7071fe1cf37a0591af7072878a59`                                                                     |
+| Branch                | `memory/amara-post-abort-resumption-and-rerere-cache-dividend-2026-04-28`                                      |
+| Base branch           | `main`                                                                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/694                                                        |
+| Changed files         | 4                                                                                                              |
+| Additions / deletions | +822 / -13                                                                                                     |
 
 ## Description
 
@@ -31,15 +31,15 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 14 |
-| Resolved threads | 14 |
-| Unresolved threads | 0 |
-| Total review comments | 14 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 14    |
+| Resolved threads                          | 14    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 14    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -52,10 +52,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:05:31Z on `memory/feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`:114 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use exact-SHA leases in force-push guidance**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use exact-SHA leases in force-push guidance**
+
   This new canonical recipe weakens the repo’s own safety control by recommending bare `--force-with-lease` as the default. In this project’s multi-agent workflow, a bare lease can still permit overwriting unseen remote updates when the expected value comes from a moved tracking ref (e.g., background/automation fetch behavior); the existing guidance in `memory/feedback_destructive_git_op_5_pre_flight_disciplines_codex_gemini_2026_04_28.md` explicitly requires `--force-with-lease=<ref>:<exact-old-sha>` to prevent that race. Please keep the stronger exact-SHA lease form in canonical recovery instructions.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [collapsed]
@@ -133,10 +133,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:13:04Z on `memory/feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`:79 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fetch remote refs before doing state comparison**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fetch remote refs before doing state comparison**
+
   Step 2 compares `HEAD` against `origin/main` and `@{u}` but the checklist never fetches first, so if remote-tracking refs are stale these diffs can misreport the branch as clean/up-to-date even after remote movement. Because this inventory is the decision point for whether rebases and force-pushes are required, stale comparisons can drive incorrect recovery actions after an interruption.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 7 -- resolved [collapsed]
@@ -148,10 +148,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:13:04Z on `memory/feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`:80 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Guard upstream diff for branches without tracking**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Guard upstream diff for branches without tracking**
+
   `git log --oneline @{u}..HEAD` exits with `fatal: no upstream configured` when a branch has local commits but no upstream (e.g., never pushed with `-u`), which is a common case for the exact “not pushed yet” recovery scenario described here. That makes the required inventory checklist fail before it can report unpushed work.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- resolved [collapsed]
@@ -163,10 +163,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:18:55Z on `memory/feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`:81 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fetch before comparing with remote-tracking refs**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fetch before comparing with remote-tracking refs**
+
   Step 2 compares `HEAD` with `origin/main` immediately, but this checklist never refreshes refs first, so stale tracking data can report a branch as clean/up-to-date when the remote has moved since the last fetch. Because these comparisons drive whether to rebase and force-push after an interruption, add an explicit `git fetch`/`git fetch --prune` before this diff triage to avoid recovery decisions based on outdated state.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 9 -- resolved [collapsed]
@@ -178,10 +178,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:18:55Z on `memory/feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`:80 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Guard upstream diff for branches without tracking**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Guard upstream diff for branches without tracking**
+
   The checklist uses `git log --oneline @{u}..HEAD` unconditionally, but branches that were never pushed with `-u` have no upstream and this command exits fatally (`fatal: no upstream configured for branch ...`). Fresh evidence: this exact unguarded command is still present here, and it breaks the inventory flow for a common post-abort case (local commits not yet pushed).
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 10 -- resolved [collapsed]
@@ -193,10 +193,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:18:55Z on `memory/feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`:114 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use exact-SHA lease in canonical force-push recipe**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use exact-SHA lease in canonical force-push recipe**
+
   This commit’s canonical guidance now says `Always: git push --force-with-lease origin <branch>`, but the repo’s own destructive-op discipline requires the stronger exact-SHA lease form (`--force-with-lease=<ref>:<exact-old-sha>`) to pin the expected remote tip explicitly. Using the bare lease weakens the documented safety invariant for multi-agent workflows and can allow overwriting unseen updates when the expected value is derived from a moved tracking ref.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 11 -- resolved [outdated, collapsed]
@@ -226,10 +226,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:23:06Z on `memory/feedback_post_abort_dirty_branch_resumption_amara_2026_04_28.md`:62 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Avoid `git pull --ff-only origin main` in recovery flow**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Avoid `git pull --ff-only origin main` in recovery flow**
+
   This step is brittle in the exact post-abort scenario the checklist targets: when your feature branch has local commits and `origin/main` has advanced, `git pull --ff-only origin main` aborts with a non-fast-forward error and interrupts recovery before rebase/push can proceed. `git pull` integrates into the current branch (not just refresh refs), so this should be a fetch-only/update-base step instead to keep recovery deterministic on diverged branches.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 13 -- resolved [collapsed]
@@ -241,10 +241,10 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:23:06Z on `memory/feedback_rerere_conflict_resolution_cache_dividend_amara_2026_04_28.md`:232 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Rebase onto updated remote main, not local `main`**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Rebase onto updated remote main, not local `main`**
+
   This recipe rebases onto `main`, but the surrounding guidance compares against `origin/main` and never guarantees local `main` was refreshed first; if local `main` is stale, rebasing it can leave the branch still behind remote main and keep the PR dirty after a force-push. In interrupted-run recovery, rebasing onto `origin/main` (or explicitly updating local `main` first) is needed to ensure the branch is actually rebased to the latest base.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 14 -- resolved [outdated, collapsed]
@@ -257,8 +257,9 @@ Two Amara-named classes from this session's Aaron-stop + max-mode restart sequen
 
 - **`Copilot` (bot)** at 2026-04-30T18:04:19Z on `memory/MEMORY.md`:51 (association: NONE)
   `MEMORY.md` already has a single top-of-file “Fast path” marker with an explicit note that it’s a single-slot latest-paired-edit marker. Adding two more “Fast path” markers here creates duplication and conflicts with the stated single-slot semantics. Suggest removing these duplicated lines and, if needed, update the existing top marker comment instead.
+
   ```suggestion
-  
+
   ```
 
 ## Fix commits (touching thread paths)

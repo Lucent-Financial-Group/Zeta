@@ -48,24 +48,22 @@ Closes B-0501 (B-0441 slice 5a). Adds the assignment-history dedup/cooldown mech
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T19:51:38Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `74dc2f0fe9`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -82,6 +80,7 @@ _(no body)_
 Adds an assignment-history “cooldown” mechanism to the backlog ready-to-grind notifier to avoid re-sending identical `work-assignment` envelopes to idle agents on every poll cycle, and updates the associated backlog rows/docs to mark the slice as shipped.
 
 **Changes:**
+
 - Extend `NotifierConfig`/`PollResult` and `Adapters` to support a persisted assignment history file and a cooldown window.
 - Implement cooldown gating in `pollOnce`, including history read, skip tracking, and history pruning/write-back.
 - Add targeted tests for cooldown behavior and CLI parsing; close out B-0501/B-0441 checklist items in docs.
@@ -93,17 +92,17 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 2 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| tools/bg/backlog-ready-notifier.ts | Implements cooldown gate + history persistence hooks and CLI flags. |
-| tools/bg/backlog-ready-notifier.test.ts | Adds 8 tests covering cooldown behavior, pruning, and arg parsing. |
-| docs/backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md | Marks B-0501 closed and documents the shipped resolution. |
-| docs/backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md | Checks off the slice-5a acceptance bullet as shipped. |
-| docs/BACKLOG.md | Regenerates index entry to reflect B-0501 as closed. |
+| File                                                                                        | Description                                                         |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| tools/bg/backlog-ready-notifier.ts                                                          | Implements cooldown gate + history persistence hooks and CLI flags. |
+| tools/bg/backlog-ready-notifier.test.ts                                                     | Adds 8 tests covering cooldown behavior, pruning, and arg parsing.  |
+| docs/backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md        | Marks B-0501 closed and documents the shipped resolution.           |
+| docs/backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md | Checks off the slice-5a acceptance bullet as shipped.               |
+| docs/BACKLOG.md                                                                             | Regenerates index entry to reflect B-0501 as closed.                |
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T19:57:57Z)
-
 
 ### 💡 Codex Review
 
@@ -111,17 +110,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `fe47416885`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -149,7 +147,7 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 1 c
 
 **@chatgpt-codex-connector** (2026-05-20T19:51:38Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Filter cooldown before enforcing maxAssignments**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Filter cooldown before enforcing maxAssignments**
 
 `pollOnce` caps candidates with `readyRows.slice(0, config.maxAssignments)` before checking cooldown, so cooled-down rows consume the whole quota and block later eligible rows in the same poll. In a common case (e.g., first 3 ready rows are in cooldown, 4th is eligible, `maxAssignments=3`), this publishes nothing and can keep the queue idle until cooldown expires even though assignable work exists. Apply cooldown filtering while scanning ready rows, and stop only after publishing `maxAssignments` envelopes.
 
@@ -159,7 +157,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-20T19:51:38Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Use unique temp files when atomically writing history**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Use unique temp files when atomically writing history**
 
 `writeHistoryFile` always writes to the same `<path>.tmp`, which is racy with multiple notifier instances (the exact concurrency case this slice targets): one writer can overwrite another's temp file, and the second `renameSync` can fail with `ENOENT` after the first rename moves the shared temp path. That can drop history updates and intermittently disable cooldown dedup. Use a per-process/per-write unique temp name before rename.
 
@@ -191,7 +189,7 @@ P1: `pollOnce` reads/parses the history file and builds `activeEntries` even whe
 
 **@chatgpt-codex-connector** (2026-05-20T19:57:58Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Merge concurrent history writes before replacing file**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Merge concurrent history writes before replacing file**
 
 The cooldown history update is a read-modify-write cycle built from a stale snapshot (`history` read once at line 368, then written at line 412), so two notifier instances polling at the same time can overwrite each other’s updates: if instance A publishes `row X` and instance B publishes `row Y`, the later rename can leave only one row in history. In that case the dropped row is no longer protected by cooldown and can be re-assigned on the next poll, which breaks the dedup guarantee specifically in the multi-instance scenario this slice targets.
 

@@ -42,7 +42,7 @@ import { type GitWorld } from "./git-world.js";
  * buildCodebergWorld below).
  */
 export interface CodebergWorld extends Omit<GiteaWorld, "forgeSpecialization"> {
-  readonly forgeSpecialization: "codeberg";  // narrower than gitea
+  readonly forgeSpecialization: "codeberg"; // narrower than gitea
   readonly hostingPolicy: "non-commercial-eu-sovereign";
   readonly communityGoverned: true;
 }
@@ -51,10 +51,7 @@ export interface CodebergWorld extends Omit<GiteaWorld, "forgeSpecialization"> {
  * Build CodebergWorld from base GitWorld; inherits Gitea substrate via
  * intermediate buildGiteaWorld.
  */
-export function buildCodebergWorld(
-  gitWorld: GitWorld,
-  resourceBudget?: GiteaResourceBudget,
-): CodebergWorld {
+export function buildCodebergWorld(gitWorld: GitWorld, resourceBudget?: GiteaResourceBudget): CodebergWorld {
   const giteaBase = buildGiteaWorld(gitWorld, resourceBudget);
   return {
     ...giteaBase,
@@ -70,8 +67,8 @@ export function buildCodebergWorld(
  */
 export const CODEBERG_CONSERVATIVE_BUDGET: GiteaResourceBudget = {
   restRemaining: 300,
-  restLimit: 500,        // conservative; tighter than commercial Gitea instances
-  restResetAt: 0,        // caller updates to actual reset timestamp
+  restLimit: 500, // conservative; tighter than commercial Gitea instances
+  restResetAt: 0, // caller updates to actual reset timestamp
 };
 
 // Re-export Gitea types for CodebergWorld consumers (alias-pattern at

@@ -5,8 +5,8 @@ description: Factory balance audit — finds powers/authorities/write-surfaces l
 
 # Factory Balance Auditor — Procedure
 
-A balanced factory has, for every significant *authority*, a
-*compensating mechanism* that can notice when the authority
+A balanced factory has, for every significant _authority_, a
+_compensating mechanism_ that can notice when the authority
 is being wielded badly. "Notice" matters more than "stop" —
 most compensators are advisory, which is fine, but the
 noticing must be structural rather than rely on a specific
@@ -28,7 +28,7 @@ factory, three questions:
 2. **How does the noticing surface?** (A finding, a commit,
    a round-close entry, a BUGS.md P0.)
 3. **Does the compensator have standing to act, or only to
-   advise?** (Advisory is usually fine; the *absence* of any
+   advise?** (Advisory is usually fine; the _absence_ of any
    compensator is the defect.)
 
 If question 1 or 2 has no answer, this skill files it as an
@@ -43,7 +43,7 @@ imbalance finding with a proposed compensating mechanism.
 - **Integration authority.** The Architect (Kenji) integrates
   agent-written code per GOVERNANCE §11. Nobody reviews the
   Architect — accepted bottleneck. Check that the bottleneck
-  is still *accepted* and not silently widening (new
+  is still _accepted_ and not silently widening (new
   architect-only surfaces that could have reviewer floors).
 - **Gate authority.** The reviewer floor (Kira + Rune + a
   rotating third per GOVERNANCE §20). Check the floor is
@@ -145,7 +145,7 @@ installs a compensator:
 - **Spawn a new skill.** Only when the other options fail;
   this is the expensive fix.
 - **Document acceptance.** The Architect bottleneck is
-  *accepted* per GOVERNANCE §11. Some imbalances are
+  _accepted_ per GOVERNANCE §11. Some imbalances are
   deliberate; the fix is a visible acceptance statement,
   not a structural change.
 
@@ -164,6 +164,7 @@ Route to:
 # Factory Balance Audit — round N
 
 ## Authority graph delta vs last audit
+
 <what's new / moved / retired since last run>
 
 ## Findings
@@ -183,11 +184,13 @@ Route to:
 ...
 
 ## Acceptances confirmed
+
 <imbalances that are deliberate per GOVERNANCE / CONFLICT-
 RESOLUTION; list them explicitly so silence doesn't read as
 oversight>
 
 ## Recommendations to Architect
+
 <top-3 structural moves ranked by P0/P1 blast radius>
 ```
 

@@ -1,16 +1,16 @@
 # Substrate-Discovery via Zeta-Native-AOT — Scoping 2026-05-03
 
 Scope: scoping doc for the custom substrate-index the human
-maintainer 2026-05-03 named (*"we should use zeta in native
-assmly mode for our custom index i think"*) and the architect's
+maintainer 2026-05-03 named (_"we should use zeta in native
+assmly mode for our custom index i think"_) and the architect's
 authority-scope decision that Zeta-native-AOT IS the best
 long-term solution (rather than TS+sqlite-vec, live-off-the-
 land, or hybrid).
 
 Attribution: factory architect; the human maintainer 2026-05-03
 provided the directional input + the edge-runner reframe
-(*"changing the engine while driving sounds like edge runner
-tertitory"*).
+(_"changing the engine while driving sounds like edge runner
+tertitory"_).
 
 Operational status: research-grade
 
@@ -54,32 +54,32 @@ re-grade the original framing:
 
 ### Correction 1 — chat is an assertion-channel, not a fact-channel
 
-The maintainer 2026-05-03 verbatim: *"when i speak i'm
+The maintainer 2026-05-03 verbatim: _"when i speak i'm
 making assertions, that's the best way to describe this
-chat channel."* Chat-claims (his OR the architect's) are
+chat channel."_ Chat-claims (his OR the architect's) are
 assertions; they need evidence to be elevated to
 architectural fact. The architect's failure mode in #1385:
-echoed the maintainer's *"maybe"* on live-off-the-land back
+echoed the maintainer's _"maybe"_ on live-off-the-land back
 as an architectural fact. Push-back-with-evidence is the
 discipline.
 
 ### Correction 2 — alternatives are complementary, not exclusive
 
-The maintainer 2026-05-03 verbatim: *"i like hybrid for
+The maintainer 2026-05-03 verbatim: _"i like hybrid for
 verification duckdb is very advanced too and we want a lot
 of its features we can verify against it behavior too, we
 don't want to copy it's code at all we are very differnt
-but it has some awesome feature."* The original "rejected"
+but it has some awesome feature."_ The original "rejected"
 framing was too binary.
 
 ### Re-graded architecture (with evidence labels)
 
-| Layer | Status | Evidence base |
-|---|---|---|
-| Zeta-native-AOT canonical index | **Decision (architect, within authority)** | Algebra match (fact: workload IS Z-set); dogfood-leverage (assertion, supported by math-proofs A-grade); deployment story (hypothesis pending Phase 0 PoC) |
-| DuckDB as verification oracle | **Assertion (maintainer 2026-05-03), worth pursuing** | DuckDB feature-richness (fact, well-known); cross-check-as-property-test pattern (precedent: Lean cross-checks paper); pattern extends to git per maintainer 2026-05-03 (*"some compabilty testing you do with duck you can do with git to slowly replace that"*) — composes with existing `memory/feedback_git_interface_wasm_bootstrap_zero_requirements_2026_04_24.md` architectural commitment (Zeta IS git client+server; native F# impl; two-UI Frontier+Mode-1-admin+WASM-Mode-2; both zero-install). |
-| Live-off-the-land for harness-loaded surfaces | **Hypothesis pending research** | Maintainer said "maybe"; zero observed-behavior evidence; falsifiable via canary test + skill-persona behavioral observation |
-| Distribution feasibility (NativeAOT single-binary) | **Make-or-break risk per maintainer assertion** | Need cross-platform empirical test (linux-x64 / osx-arm64 / win-x64); known-unknown |
+| Layer                                              | Status                                                | Evidence base                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| -------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Zeta-native-AOT canonical index                    | **Decision (architect, within authority)**            | Algebra match (fact: workload IS Z-set); dogfood-leverage (assertion, supported by math-proofs A-grade); deployment story (hypothesis pending Phase 0 PoC)                                                                                                                                                                                                                                                                                                                                                   |
+| DuckDB as verification oracle                      | **Assertion (maintainer 2026-05-03), worth pursuing** | DuckDB feature-richness (fact, well-known); cross-check-as-property-test pattern (precedent: Lean cross-checks paper); pattern extends to git per maintainer 2026-05-03 (_"some compabilty testing you do with duck you can do with git to slowly replace that"_) — composes with existing `memory/feedback_git_interface_wasm_bootstrap_zero_requirements_2026_04_24.md` architectural commitment (Zeta IS git client+server; native F# impl; two-UI Frontier+Mode-1-admin+WASM-Mode-2; both zero-install). |
+| Live-off-the-land for harness-loaded surfaces      | **Hypothesis pending research**                       | Maintainer said "maybe"; zero observed-behavior evidence; falsifiable via canary test + skill-persona behavioral observation                                                                                                                                                                                                                                                                                                                                                                                 |
+| Distribution feasibility (NativeAOT single-binary) | **Make-or-break risk per maintainer assertion**       | Need cross-platform empirical test (linux-x64 / osx-arm64 / win-x64); known-unknown                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 ### Push-back: what would establish the live-off-the-land hypothesis?
 
@@ -122,14 +122,14 @@ land.
 ### Distribution feasibility — existing AOT core + JIT plugin architecture
 
 **Updated 2026-05-03** (the human maintainer): the dual-mode
-framing in this doc was reinventing existing prior art. *"we
+framing in this doc was reinventing existing prior art. _"we
 already have a AOT core that can load JIT plugins see the
-Baseyan."* Verified in repo: `src/Bayesian/Bayesian.fsproj`
-line 9 explicit comment — *"Explicitly NOT AOT-enforced —
-this is a plugin. Core stays AOT-clean."* — and the project
-description *"Opt-in: this project doesn't enforce
+Baseyan."_ Verified in repo: `src/Bayesian/Bayesian.fsproj`
+line 9 explicit comment — _"Explicitly NOT AOT-enforced —
+this is a plugin. Core stays AOT-clean."_ — and the project
+description _"Opt-in: this project doesn't enforce
 PublishAot=true because it may optionally use Infer.NET,
-which depends on reflection-emit."*
+which depends on reflection-emit."_
 
 The actual architecture (already shipping):
 
@@ -161,14 +161,14 @@ For substrate-discovery, this means:
   / JIT boundary; plugins compose into the same circuit
   evaluator the AOT core runs.
 
-This means the maintainer's *"zero-install external-agent
-delivery"* use case is met by the AOT core alone. Plugins
+This means the maintainer's _"zero-install external-agent
+delivery"_ use case is met by the AOT core alone. Plugins
 ship separately when needed. No need to bundle the entire
 Zeta + DuckDB.NET stack into a single binary.
 
-The maintainer's epistemic position remains honest: *"i
+The maintainer's epistemic position remains honest: _"i
 just don't know whats possiible with distribution that's
-what makes or breaks it."* Distribution feasibility is the
+what makes or breaks it."_ Distribution feasibility is the
 load-bearing empirical question. Phase 0 PoC's **primary
 deliverables** validate the existing AOT-core-plus-JIT-plugins
 architecture extends cleanly to substrate-discovery:
@@ -186,7 +186,7 @@ architecture extends cleanly to substrate-discovery:
 If the AOT core publishes cleanly on all three platforms,
 the zero-install external-agent delivery use-case is met.
 If AOT has compatibility issues for some Zeta.Core
-dependency, the rethink is *narrow* (which dependency, can
+dependency, the rethink is _narrow_ (which dependency, can
 it be moved to a JIT plugin, can the AOT-clean subset be
 extracted) — not a wholesale re-architecture, because the
 AOT-core-plus-plugins pattern is already shipping in
@@ -197,8 +197,8 @@ commit beyond Phase 0 PoC until this question has data.
 
 ### DST integration — load-bearing, not afterthought
 
-**Updated 2026-05-03** (the human maintainer reminder *"i'm sure
-you remember all the DST goodness right?"*). Deterministic
+**Updated 2026-05-03** (the human maintainer reminder _"i'm sure
+you remember all the DST goodness right?"_). Deterministic
 Simulation Testing (Otto-272 DST-everywhere + Otto-273
 seed-lock-policy + Otto-281 DST-exempt-is-deferred-bug) is
 load-bearing for substrate-discovery, not a follow-on. The
@@ -222,7 +222,7 @@ PoC includes DST primitives from day 1 because:
    Dictionary iteration order, hashtable insertion order,
    async-scheduler ordering, plugin-load timing — each is
    either pinned or filed as a deferred bug per Otto-281.
-   *"Retries are non-determinism smell"* — if the
+   _"Retries are non-determinism smell"_ — if the
    substrate-discovery test suite ever needs a retry, that
    retry IS the bug.
 
@@ -259,18 +259,18 @@ the deterministic event-sequence produced X."
 Five composable substrate-types live under different roots,
 each with a distinct lifecycle:
 
-| Substrate type | Root path | Cardinality (today) | Mutation cadence |
-|---|---|---|---|
-| Memory files | `memory/**.md` + `~/.claude/projects/<slug>/memory/**.md` | ~250+ | every tick possible |
-| Skill files | `.claude/skills/<name>/SKILL.md` | ~50+ | rare (skill-creator gated) |
-| Agent files | `.claude/agents/<name>.md` | ~30+ | rare |
-| Command files | `.claude/commands/<name>.md` | small | rare |
-| Rule files | `.claude/rules/*.md` | very small | new surface |
-| Doc cross-refs | `docs/**.md` link targets | ~thousands | every doc edit |
-| BACKLOG rows | `docs/BACKLOG.md` + `docs/backlog/**.md` | ~200+ | every tick |
-| Tick shards | `docs/hygiene-history/ticks/**/*.md` | ~hundreds | every tick |
-| Research docs | `docs/research/**.md` | ~hundreds | every doc edit |
-| Code symbols | `src/**.fs` (F#) + `tools/**/*.ts` (TS) | thousands | every code edit |
+| Substrate type | Root path                                                 | Cardinality (today) | Mutation cadence           |
+| -------------- | --------------------------------------------------------- | ------------------- | -------------------------- |
+| Memory files   | `memory/**.md` + `~/.claude/projects/<slug>/memory/**.md` | ~250+               | every tick possible        |
+| Skill files    | `.claude/skills/<name>/SKILL.md`                          | ~50+                | rare (skill-creator gated) |
+| Agent files    | `.claude/agents/<name>.md`                                | ~30+                | rare                       |
+| Command files  | `.claude/commands/<name>.md`                              | small               | rare                       |
+| Rule files     | `.claude/rules/*.md`                                      | very small          | new surface                |
+| Doc cross-refs | `docs/**.md` link targets                                 | ~thousands          | every doc edit             |
+| BACKLOG rows   | `docs/BACKLOG.md` + `docs/backlog/**.md`                  | ~200+               | every tick                 |
+| Tick shards    | `docs/hygiene-history/ticks/**/*.md`                      | ~hundreds           | every tick                 |
+| Research docs  | `docs/research/**.md`                                     | ~hundreds           | every doc edit             |
+| Code symbols   | `src/**.fs` (F#) + `tools/**/*.ts` (TS)                   | thousands           | every code edit            |
 
 **Indexing scope decision:** Phase 1 covers memory files +
 skill files + agent files + rule files + BACKLOG rows. These
@@ -311,14 +311,14 @@ The index serves both classes.
 
 ## Operator mapping — Zeta primitives per query
 
-| Query | Zeta operators |
-|---|---|
-| find-by-keyword | `IndexedZSet` keyed on token; `flatMap` + `distinct` |
-| find-by-link-target | `IndexedZSet` keyed on link-target; `join` against existence stream |
-| find-stale-references | `outerJoin` (memory-pointers ⨝ existing-files); `filter` on null-right |
-| find-by-tag/role-ref | `IndexedZSet` keyed on attribution-tuple |
-| find-by-cadence-marker | `IndexedZSet` keyed on shard-date; `filter` on `CADENCE-TRACK` regex |
-| find-by-archive-header | `flatMap` over header-fields; `aggregate` per-doc |
+| Query                  | Zeta operators                                                         |
+| ---------------------- | ---------------------------------------------------------------------- |
+| find-by-keyword        | `IndexedZSet` keyed on token; `flatMap` + `distinct`                   |
+| find-by-link-target    | `IndexedZSet` keyed on link-target; `join` against existence stream    |
+| find-stale-references  | `outerJoin` (memory-pointers ⨝ existing-files); `filter` on null-right |
+| find-by-tag/role-ref   | `IndexedZSet` keyed on attribution-tuple                               |
+| find-by-cadence-marker | `IndexedZSet` keyed on shard-date; `filter` on `CADENCE-TRACK` regex   |
+| find-by-archive-header | `flatMap` over header-fields; `aggregate` per-doc                      |
 
 **Update semantics:** every file-add / file-remove /
 file-modify is an insertion or retraction in Z-set terms.
@@ -327,11 +327,12 @@ guarantee means the index only re-evaluates the affected
 join branches, not the full re-scan.
 
 **Determinism contract:** per `tools/tla/specs/DbspSpec.tla`
-+ the chain-rule Prop 3.2 verified in Lean, the Z-set
-algebra preserves determinism across replays. Rebuilding
-the index from scratch via `git ls-files | feed-into-zeta`
-must produce the identical Z-set state to the live IVM. This
-becomes a CI invariant (cold-start replay vs warm-state).
+
+- the chain-rule Prop 3.2 verified in Lean, the Z-set
+  algebra preserves determinism across replays. Rebuilding
+  the index from scratch via `git ls-files | feed-into-zeta`
+  must produce the identical Z-set state to the live IVM. This
+  becomes a CI invariant (cold-start replay vs warm-state).
 
 ---
 
@@ -357,7 +358,7 @@ becomes a CI invariant (cold-start replay vs warm-state).
 
 - Build via `tools/setup/install.sh` (mise-pinned dotnet)
 - CI build via `gate.yml` job (`dotnet publish -c Release
-  -p:PublishAot=true`)
+-p:PublishAot=true`)
 - Distribute via per-platform binaries (linux-x64, osx-arm64,
   win-x64) attached as GitHub release artifacts
 - Cron-loop tools (`tools/hygiene/**`) opportunistically
@@ -408,15 +409,15 @@ start replay matches live IVM.
 
 ## Risk register
 
-| Risk | Probability | Mitigation |
-|---|---|---|
-| NativeAOT incompatibility on F# library | Medium | Phase 0 PoC validates before substantial commit |
-| Pre-v1 Zeta API churn breaks substrate-discovery | Medium | Pin to specific Zeta commit per phase; bump explicitly |
-| IVM cold-start slower than full-scan via grep | Low | Phase 0 measures; if slower, redesign or add caching layer |
-| Watcher-daemon liveness drift (hangs / misses events) | Medium | Cron-friendly liveness probe; auto-restart; state checkpointing per Otto-272 DST |
-| Per-platform binary distribution friction | Medium | GitHub Actions artifact build; mise-pinned dotnet matrix |
-| Cross-platform file-watch primitive differences | Medium | Use .NET `FileSystemWatcher`; fall back to polling if unreliable |
-| F# JSON-source-generator AOT edge case | Low | Use simple records; avoid generic dispatch in serializer |
+| Risk                                                  | Probability | Mitigation                                                                       |
+| ----------------------------------------------------- | ----------- | -------------------------------------------------------------------------------- |
+| NativeAOT incompatibility on F# library               | Medium      | Phase 0 PoC validates before substantial commit                                  |
+| Pre-v1 Zeta API churn breaks substrate-discovery      | Medium      | Pin to specific Zeta commit per phase; bump explicitly                           |
+| IVM cold-start slower than full-scan via grep         | Low         | Phase 0 measures; if slower, redesign or add caching layer                       |
+| Watcher-daemon liveness drift (hangs / misses events) | Medium      | Cron-friendly liveness probe; auto-restart; state checkpointing per Otto-272 DST |
+| Per-platform binary distribution friction             | Medium      | GitHub Actions artifact build; mise-pinned dotnet matrix                         |
+| Cross-platform file-watch primitive differences       | Medium      | Use .NET `FileSystemWatcher`; fall back to polling if unreliable                 |
+| F# JSON-source-generator AOT edge case                | Low         | Use simple records; avoid generic dispatch in serializer                         |
 
 ---
 
@@ -425,7 +426,7 @@ start replay matches live IVM.
 - `docs/research/2026-05-03-math-proofs-honest-assessment.md`
   (the algebra is A-grade verified; this dogfoods it)
 - `src/Core/IndexedZSet.fs` + `Incremental.fs` + `Operators.fs`
-  + `ZSet.fs` (the primitives)
+  - `ZSet.fs` (the primitives)
 - `src/Core/PluginApi.fs` + `PluginHarness.fs` (the AOT-core
   plugin contract; Zeta.Bayesian is the existing JIT plugin
   precedent)
@@ -442,7 +443,7 @@ start replay matches live IVM.
   consumes substrate-discovery's index data; Z-set queries
   feed dashboard widgets; live IVM means auto-updating
   without polling; DST means dashboard state is reproducible;
-  *"every pixel earns its way via A/B experiments"* is the
+  _"every pixel earns its way via A/B experiments"_ is the
   consumer-side discipline)
 - `memory/feedback_claude_code_loading_taxonomy_*.md`
   (the wake-time inventory discipline this index serves)
@@ -474,10 +475,10 @@ start replay matches live IVM.
 ## Audit trail
 
 - Scoping doc authored: 2026-05-03
-- Triggered by: human maintainer 2026-05-03 input *"use zeta
-  in native assmly mode for our custom index i think"* +
+- Triggered by: human maintainer 2026-05-03 input _"use zeta
+  in native assmly mode for our custom index i think"_ +
   edge-runner reframe + math-proofs assessment landing
 - Authority decision: architect within scope (per CLAUDE.md
-  *"don't ask permission within authority scope — only two
-  real gates"*)
+  _"don't ask permission within authority scope — only two
+  real gates"_)
 - Next concrete work: Phase 0 PoC (separate PR)

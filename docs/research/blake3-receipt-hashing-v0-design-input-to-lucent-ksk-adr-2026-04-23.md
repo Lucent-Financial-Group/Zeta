@@ -14,12 +14,12 @@ Non-fusion disclaimer: Amara proposing + Aminata critiquing + Otto synthesising 
 
 ## Why this belongs in lucent-ksk not Zeta
 
-Aminata's Otto-90 pass (PR #263) said it clearly: *"The
+Aminata's Otto-90 pass (PR #263) said it clearly: _"The
 BLAKE3 receipt-hash binding is correct but belongs in a
 lucent-ksk receipt ADR, not in the Zeta-module threat-
 model doc. Including it here couples Zeta's control-plane
 story to a specific hash choice; BLAKE3 is fine, the
-coupling is avoidable."*
+coupling is avoidable."_
 
 The separation of concerns:
 
@@ -163,7 +163,7 @@ shift / collision-by-reframing adversary surface (an
 attacker could partition `"AB" ∥ "CD"` and `"A" ∥ "BCD"` to
 the same input bytes; both yield identical hashes despite
 representing different field assignments). Note: this is
-*not* a BLAKE3 length-extension attack — BLAKE3's tree-hash
+_not_ a BLAKE3 length-extension attack — BLAKE3's tree-hash
 construction with finalisation flags is not vulnerable to
 length-extension the way SHA-256 / MD5 are. The risk here
 is purely the encoding ambiguity at the input layer. v0
@@ -295,17 +295,17 @@ scope-wise):
    algorithm unknown.) Additionally, the consumer MUST
    consult a `hash_version` policy registry (lucent-ksk
    governance artifact) and reject receipts whose
-   `hash_version` is *deprecated* — even if recognised.
+   `hash_version` is _deprecated_ — even if recognised.
    This prevents an attacker from forging receipts under
    an old, weaker scheme that has been retired but is
    still mechanically recognised by older verifier
    software. **Issuance-epoch gate:** the deprecation
    policy MUST distinguish receipts by their issuance
    epoch, not by the verification timestamp. Receipts
-   issued *before* a `hash_version` was deprecated remain
+   issued _before_ a `hash_version` was deprecated remain
    valid for audit / replay (replay-determinism preserves
    historical receipts under their then-current scheme);
-   receipts that *claim* an issuance epoch *after* the
+   receipts that _claim_ an issuance epoch _after_ the
    deprecation cutoff under a deprecated `hash_version`
    are rejected. The lucent-ksk policy registry stores
    `(version, deprecated_after_epoch)` tuples; the
@@ -406,7 +406,7 @@ In order of leverage (same pattern as oracle-scoring v0):
    entry there, or wherever lucent-ksk keeps ADRs. Max's
    input as lucent-ksk author; specific-ask on the ADR
    form-factor if lucent-ksk doesn't have a `docs/
-   DECISIONS/` pattern yet.
+DECISIONS/` pattern yet.
 3. **`hash_version` registry landing in lucent-ksk** —
    governance artifact; first `0x01` entry.
 4. **`parameter_file_sha` registry landing** — parallel

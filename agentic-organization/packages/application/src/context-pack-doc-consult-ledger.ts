@@ -1,9 +1,6 @@
 import { createHash } from "node:crypto";
 
-import type {
-  DocScopeKind,
-  DocType,
-} from "../../domain/src/index.ts";
+import type { DocScopeKind, DocType } from "../../domain/src/index.ts";
 import {
   type AgenticActor,
   QualityGateOutcome as QualityGateOutcomeValue,
@@ -128,9 +125,7 @@ export type ContextPackDocConsultOutcomeStampResult = {
 };
 
 export type ContextPackDocConsultOutcomeWriterPort = {
-  stampOutcome: (
-    stamp: ContextPackDocConsultOutcomeStamp,
-  ) => Promise<ContextPackDocConsultOutcomeStampResult>;
+  stampOutcome: (stamp: ContextPackDocConsultOutcomeStamp) => Promise<ContextPackDocConsultOutcomeStampResult>;
 };
 
 export const ContextPackDocConsultOutcomeRefPrefix = {
@@ -151,9 +146,7 @@ export type ContextPackSnapshotRecorderTransactionPort = {
   run: (operation: (ports: ContextPackSnapshotRecorderPorts) => Promise<void>) => Promise<void>;
 };
 
-export function contextPackDocConsultOutcomeClassFor(
-  outcome: string,
-): ContextPackDocConsultOutcomeClass | undefined {
+export function contextPackDocConsultOutcomeClassFor(outcome: string): ContextPackDocConsultOutcomeClass | undefined {
   if (SUCCESSFUL_CONTEXT_PACK_DOC_CONSULT_OUTCOMES.has(outcome)) {
     return ContextPackDocConsultOutcomeClass.Success;
   }

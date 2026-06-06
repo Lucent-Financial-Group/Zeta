@@ -27,7 +27,7 @@ Two come from git (the repo axis):
 The third is the role axis:
 
 - **factory content** — everything in Forge. Unlike Zeta (which
-  has a SUT/factory split), Forge is *purely* factory content:
+  has a SUT/factory split), Forge is _purely_ factory content:
   skills, agents, tools, factory meta-docs, persona notebooks.
   Every file in Forge is factory-by-role.
 

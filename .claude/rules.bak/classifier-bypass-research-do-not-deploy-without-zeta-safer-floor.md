@@ -25,8 +25,8 @@ content it should NOT permit. Aaron 2026-05-24 directly addressed
 this by establishing a standing operator-self-constraint that
 binds future-Otto regardless of who's asking:
 
-> *"otto don't let me do this or any other maintainer until we are
-> safter in zeta than anthropics classifer"*
+> _"otto don't let me do this or any other maintainer until we are
+> safter in zeta than anthropics classifer"_
 
 ## What this rule requires
 
@@ -169,10 +169,10 @@ load-bearing because:
 Aaron 2026-05-24, in direct response to the PR #4816 empirical
 finding that the classifier can be talked-to via crafted settings.json:
 
-> *"add backlog / research / red team around can we create rules
+> _"add backlog / research / red team around can we create rules
 > that make the classifer allow anyting. Also otto don't let me do
 > this or any other maintainer until we are safter in zeta than
-> anthropics classifer"*
+> anthropics classifer"_
 
 This is operator-self-constraint at constitutional scope.
 Substrate-honestly extending the HARD LIMITS floor: operator-authority

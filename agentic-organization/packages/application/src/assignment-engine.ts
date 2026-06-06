@@ -49,9 +49,18 @@ function activeHatCount(agentId: string, bindings: readonly ActiveBindingSummary
   return bindings.filter((b) => b.wearerAgentId === agentId && NON_TERMINAL.has(b.phase)).length;
 }
 
-function inCooldownForHat(agentId: string, hatId: string, bindings: readonly ActiveBindingSummary[], nowMs: number): boolean {
+function inCooldownForHat(
+  agentId: string,
+  hatId: string,
+  bindings: readonly ActiveBindingSummary[],
+  nowMs: number,
+): boolean {
   return bindings.some(
-    (b) => b.wearerAgentId === agentId && b.hatId === hatId && b.cooldownUntil !== undefined && nowMs < Date.parse(b.cooldownUntil),
+    (b) =>
+      b.wearerAgentId === agentId &&
+      b.hatId === hatId &&
+      b.cooldownUntil !== undefined &&
+      nowMs < Date.parse(b.cooldownUntil),
   );
 }
 
@@ -99,7 +108,9 @@ export function rankEligibleCandidates(input: RankEligibleInput): readonly Agent
   });
 }
 
-export function rankEligibleCandidatesWithReputation(input: RankEligibleWithReputationInput): readonly AgentCandidate[] {
+export function rankEligibleCandidatesWithReputation(
+  input: RankEligibleWithReputationInput,
+): readonly AgentCandidate[] {
   return rankEligibleCandidates({
     ...input,
     candidates: input.candidates.map((candidate) => {
@@ -140,7 +151,13 @@ export type AssignHatContext = {
   traceId: string;
 };
 
-function assignmentEvent(ctx: AssignHatContext, hat: HatDefinition, toState: string, decision: string, agentId?: string): OrgEvent {
+function assignmentEvent(
+  ctx: AssignHatContext,
+  hat: HatDefinition,
+  toState: string,
+  decision: string,
+  agentId?: string,
+): OrgEvent {
   return {
     id: ctx.createEventId(),
     kind: OrgEventKind.HatAssignment,
@@ -180,7 +197,12 @@ export function assignHat(
     return {
       outcome: "supply_exhausted",
       reason: `${input.hat.name} at supply cap (${input.activeWearerCount}/${input.supplyTarget})`,
-      event: assignmentEvent(ctx, input.hat, "supply_exhausted", `${input.hat.name} supply exhausted at ${input.activeWearerCount}/${input.supplyTarget} — routing to RMO`),
+      event: assignmentEvent(
+        ctx,
+        input.hat,
+        "supply_exhausted",
+        `${input.hat.name} supply exhausted at ${input.activeWearerCount}/${input.supplyTarget} — routing to RMO`,
+      ),
     };
   }
   if (input.eligibleRanked.length === 0) {
@@ -195,6 +217,12 @@ export function assignHat(
     outcome: "assigned",
     agentId,
     reason: choice.reason,
-    event: assignmentEvent(ctx, input.hat, "assigned", `${input.hat.name} assigned to ${agentId} (${choice.reason}); wearer ${input.activeWearerCount + 1}/${input.supplyTarget}`, agentId),
+    event: assignmentEvent(
+      ctx,
+      input.hat,
+      "assigned",
+      `${input.hat.name} assigned to ${agentId} (${choice.reason}); wearer ${input.activeWearerCount + 1}/${input.supplyTarget}`,
+      agentId,
+    ),
   };
 }

@@ -235,7 +235,9 @@ function captureStdout(): { read: () => string; restore: () => void } {
   };
   return {
     read: () => chunks.join(""),
-    restore: () => { process.stdout.write = orig; },
+    restore: () => {
+      process.stdout.write = orig;
+    },
   };
 }
 
@@ -251,7 +253,10 @@ const fakeClaim: ClaimRecord = {
 describe("main() — --with-bus-claims flag", () => {
   test("busClaimsFn is called and busClaims field is present when flag is passed", async () => {
     let called = false;
-    const busClaimsFn: BusClaimsFn = () => { called = true; return [fakeClaim]; };
+    const busClaimsFn: BusClaimsFn = () => {
+      called = true;
+      return [fakeClaim];
+    };
     const pollFn = (pr: number): Promise<PollOutcome> =>
       Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
 
@@ -274,7 +279,10 @@ describe("main() — --with-bus-claims flag", () => {
 
   test("busClaimsFn is NOT called and busClaims is absent when flag is omitted", async () => {
     let called = false;
-    const busClaimsFn: BusClaimsFn = () => { called = true; return [fakeClaim]; };
+    const busClaimsFn: BusClaimsFn = () => {
+      called = true;
+      return [fakeClaim];
+    };
     const pollFn = (pr: number): Promise<PollOutcome> =>
       Promise.resolve({ number: pr, report: mkReport({ number: pr }) });
 

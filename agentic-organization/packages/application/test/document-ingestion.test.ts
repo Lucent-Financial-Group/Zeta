@@ -2,10 +2,20 @@ import { equal, ok, deepEqual } from "node:assert/strict";
 import { test } from "node:test";
 
 import { DocType, DocScopeKind, DocLifecycleState, OrgEventKind } from "../../domain/src/index.ts";
-import { decomposeMarkdown, ingestDocument, ingestFromConnector, type RawDocument, type DocConnectorPort } from "../src/index.ts";
+import {
+  decomposeMarkdown,
+  ingestDocument,
+  ingestFromConnector,
+  type RawDocument,
+  type DocConnectorPort,
+} from "../src/index.ts";
 
 let seq = 0;
-const deps = { organizationId: "org-lfg", now: () => Date.parse("2026-05-30T00:00:00Z"), createId: (p: string) => `${p}-${++seq}` };
+const deps = {
+  organizationId: "org-lfg",
+  now: () => Date.parse("2026-05-30T00:00:00Z"),
+  createId: (p: string) => `${p}-${++seq}`,
+};
 
 const HANDBOOK = `Intro preamble line.
 
@@ -22,7 +32,15 @@ Do the second thing.
 Rotate your keys.`;
 
 function raw(markdown: string): RawDocument {
-  return { sourceId: "src-1", externalRef: "wiki:onboarding", type: DocType.Handbook, scopeKind: DocScopeKind.Department, scopeId: "eng", title: "Eng Handbook", markdown };
+  return {
+    sourceId: "src-1",
+    externalRef: "wiki:onboarding",
+    type: DocType.Handbook,
+    scopeKind: DocScopeKind.Department,
+    scopeId: "eng",
+    title: "Eng Handbook",
+    markdown,
+  };
 }
 
 test("decompose splits by STRUCTURE (headings) preserving the heading path — not fixed chunks", () => {

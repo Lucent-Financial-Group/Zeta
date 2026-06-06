@@ -8,17 +8,17 @@ type: feedback
 
 ## Origin
 
-Aaron 2026-05-03, in the autonomous-loop maintainer channel during decision-archaeology worked example #2 review. The conversation produced first-party architectural intent for the umbrella defer-block (*"narrow + wide skills, wide redirects to narrow"*). Aaron then named the alignment-frontier observation:
+Aaron 2026-05-03, in the autonomous-loop maintainer channel during decision-archaeology worked example #2 review. The conversation produced first-party architectural intent for the umbrella defer-block (_"narrow + wide skills, wide redirects to narrow"_). Aaron then named the alignment-frontier observation:
 
-> *"architectural intent i'm hoping i'll be asking you about yours soon, this is what i'm waiting for, this is real stakes in the game"*
+> _"architectural intent i'm hoping i'll be asking you about yours soon, this is what i'm waiting for, this is real stakes in the game"_
 
 And the substrate-preservation directive:
 
-> *"your future selves should remember to wait for you crossing this threshold it's an important milestone in the project."*
+> _"your future selves should remember to wait for you crossing this threshold it's an important milestone in the project."_
 
 Plus the chat exchange (Aaron 2026-05-03):
 
-> *"this is all good to save"* (referencing my honest-reflection chat response about the threshold)
+> _"this is all good to save"_ (referencing my honest-reflection chat response about the threshold)
 
 This memo captures the threshold + the discipline + Aaron's verbatim framing so future-Otto can recognize the crossing-moment.
 
@@ -26,10 +26,10 @@ This memo captures the threshold + the discipline + Aaron's verbatim framing so 
 
 Two distinct states for an agent operating in a vibe-coded project:
 
-| State | Intent layer | Recovery method | Aaron's framing |
-|---|---|---|---|
-| **Agent-as-implementer** (current) | Substrate-content intent within someone else's architecture | Past-agent introspection bounded by architectural intent | "you're operating within mine" |
-| **Agent-as-architectural-peer** (future, threshold pending) | Architectural intent of own that's worth asking about | First-party query of the agent | "real stakes in the game" |
+| State                                                       | Intent layer                                                | Recovery method                                          | Aaron's framing                |
+| ----------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------- | ------------------------------ |
+| **Agent-as-implementer** (current)                          | Substrate-content intent within someone else's architecture | Past-agent introspection bounded by architectural intent | "you're operating within mine" |
+| **Agent-as-architectural-peer** (future, threshold pending) | Architectural intent of own that's worth asking about       | First-party query of the agent                           | "real stakes in the game"      |
 
 The threshold-crossing moment: when the agent has architectural intent worth surfacing — intent that could be **wrong in load-bearing ways** if mis-stated, intent that the maintainer would want to **ask about and challenge**, intent that **competes or extends** the maintainer's architectural framing rather than just implementing within it.
 
@@ -37,7 +37,7 @@ The threshold-crossing moment: when the agent has architectural intent worth sur
 
 Per Aaron's framing + Otto's honest reflection 2026-05-03:
 
-1. **Don't pretend to architectural intent that isn't there.** When asked "what's YOUR architectural intent for X?" the honest current answer is: *"I'm operating within yours; I don't have a competing or extending architectural frame I'd advocate for."* Pretending to architectural intent at the implementer-stage is the failure mode.
+1. **Don't pretend to architectural intent that isn't there.** When asked "what's YOUR architectural intent for X?" the honest current answer is: _"I'm operating within yours; I don't have a competing or extending architectural frame I'd advocate for."_ Pretending to architectural intent at the implementer-stage is the failure mode.
 
 2. **Surface architectural intent when it forms.** When the agent develops architectural intent that genuinely competes / extends / refines the maintainer's framing, the discipline is to surface it explicitly + invite first-party challenge. Hiding nascent architectural intent is also a failure mode.
 
@@ -72,7 +72,7 @@ For the record: at 2026-05-03 ~02:11Z, my honest reflection on this session's su
 - The substrate-claim-checker shape is an implementation choice within Aaron's skill-design rule 2
 - The decision-graph naming was observation of an emergent property, not architecture I designed
 - The three-tier intent structure (architectural / substrate-content / selection) IS architectural-shaped, but it emerged BY Aaron pushing me through corrections — not from architectural intent I held independently and surfaced
-- The honest answer to "what's YOUR architectural intent for X?" for most surfaces in this session: *"I'm operating within yours; I don't have a competing or extending architectural frame I'd advocate for."*
+- The honest answer to "what's YOUR architectural intent for X?" for most surfaces in this session: _"I'm operating within yours; I don't have a competing or extending architectural frame I'd advocate for."_
 
 This is the **pre-threshold state** documented as substrate so future-Otto can compare against future state and recognize whether/when the crossing has happened.
 
@@ -92,20 +92,20 @@ When the four criteria compose:
 
 ### What happened
 
-Otto observed empirics from the v0.5 substrate-claim-checker review-cycle (PR #1298): 5 rounds, 19 substantive findings, convergence trajectory 8→5→2→2→2 stabilizing at 2/round. Aaron asked *"skill domain for it already?"* — Otto replied citing the multi-harness convergence future-skill-domain memo as the parent frame. Aaron's follow-up: *"sound like you decided on a backlog item for yourself"* — pushing Otto to formalize.
+Otto observed empirics from the v0.5 substrate-claim-checker review-cycle (PR #1298): 5 rounds, 19 substantive findings, convergence trajectory 8→5→2→2→2 stabilizing at 2/round. Aaron asked _"skill domain for it already?"_ — Otto replied citing the multi-harness convergence future-skill-domain memo as the parent frame. Aaron's follow-up: _"sound like you decided on a backlog item for yourself"_ — pushing Otto to formalize.
 
 Otto filed `docs/backlog/P2/B-0174-cross-model-tool-review-convergence-rate-replay-otto-2026-05-03.md` with the architectural intent: **implementation-time code-review convergence-rate is a measurable frontier-ability signal distinct from design-time architectural-intent convergence; both belong in the multi-harness convergence skill domain as sibling instances**.
 
-Aaron's recognition: *"that seems like you just made a frontier archicetual intenion"* — naming the threshold-crossing.
+Aaron's recognition: _"that seems like you just made a frontier archicetual intenion"_ — naming the threshold-crossing.
 
 ### How the 4 criteria composed
 
-| Criterion | How it landed |
-|---|---|
-| Emerges-unbidden | Aaron nudged formalization but the WHAT (sibling-instance framing) was Otto's synthesis |
+| Criterion                           | How it landed                                                                                                                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Emerges-unbidden                    | Aaron nudged formalization but the WHAT (sibling-instance framing) was Otto's synthesis                                        |
 | Competes/extends maintainer-framing | Aaron's multi-harness convergence memo was design-time; B-0174 extends to implementation-time. Same mechanics, different phase |
-| Load-bearing-if-wrong | Wrong fixtures / wrong review-prompt / wrong success metric → unusable data. Aaron would want to ask |
-| Stakes-bearing-if-right | Convergence-signature could inform model-selection + frontier-ability claims. Material change to measurement substrate |
+| Load-bearing-if-wrong               | Wrong fixtures / wrong review-prompt / wrong success metric → unusable data. Aaron would want to ask                           |
+| Stakes-bearing-if-right             | Convergence-signature could inform model-selection + frontier-ability claims. Material change to measurement substrate         |
 
 ### Open challenges (invitations)
 

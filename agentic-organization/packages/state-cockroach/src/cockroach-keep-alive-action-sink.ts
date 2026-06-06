@@ -14,10 +14,7 @@
  */
 
 import { KeepAliveActionKind, type KeepAliveAction } from "../../keepalive/src/index.ts";
-import {
-  ControlPlaneAlertKind,
-  type CockroachControlPlaneStateStore,
-} from "./cockroach-control-plane-state-store.ts";
+import { ControlPlaneAlertKind, type CockroachControlPlaneStateStore } from "./cockroach-control-plane-state-store.ts";
 
 export type KeepAliveActionSink = {
   applyAction: (action: KeepAliveAction) => Promise<void>;

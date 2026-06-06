@@ -9,7 +9,21 @@ created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: [B-1007]
 composes_with: [B-1006, B-1002, B-0997]
-tags: [codec, codec-algebra, deserialize-safety, purity, side-effects, untrusted-wire, zero-trust, hexagonal, bcl-interface-boundary, security, infer-net, aaron]
+tags:
+  [
+    codec,
+    codec-algebra,
+    deserialize-safety,
+    purity,
+    side-effects,
+    untrusted-wire,
+    zero-trust,
+    hexagonal,
+    bcl-interface-boundary,
+    security,
+    infer-net,
+    aaron,
+  ]
 type: design
 ---
 
@@ -22,9 +36,9 @@ short-circuited because **`Serialize` MAY have side effects** (adapters can open
 streams, touch the network, increment counters) — eager evaluation ran the right
 codec even when the left had declined. Aaron's forward note:
 
-> *"Serialize with side effects we are going to have safe deserialize surfaces
+> _"Serialize with side effects we are going to have safe deserialize surfaces
 > listed eventually for pure non side-effecting stuff, we can backlog deserialize
-> safety as backlog."*
+> safety as backlog."_
 
 This row captures that: **a listed/registered set of codec `Deserialize` surfaces
 that are guaranteed PURE** (no side effects), so that **decoding untrusted wire input
@@ -32,15 +46,15 @@ routes only to safe surfaces**.
 
 ## The asymmetry: Serialize vs Deserialize
 
-| Direction | Trust posture | Side effects |
-|---|---|---|
-| **Serialize** (encode our value → wire) | input is *our* value (trusted) | **MAY have side effects** — adapters can be effectful; the C12 `product` short-circuits so a doomed encode doesn't run the second codec |
-| **Deserialize** (decode wire → our value) | input is *the wire* (often **untrusted** — Eve transport / strangers / B-1002) | **must be routable to a PURE subset** — decoding attacker-controlled bytes through a side-effecting `Deserialize` is an RCE-shaped surface |
+| Direction                                 | Trust posture                                                                  | Side effects                                                                                                                               |
+| ----------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Serialize** (encode our value → wire)   | input is _our_ value (trusted)                                                 | **MAY have side effects** — adapters can be effectful; the C12 `product` short-circuits so a doomed encode doesn't run the second codec    |
+| **Deserialize** (decode wire → our value) | input is _the wire_ (often **untrusted** — Eve transport / strangers / B-1002) | **must be routable to a PURE subset** — decoding attacker-controlled bytes through a side-effecting `Deserialize` is an RCE-shaped surface |
 
 `Codec.ICodec` (src/Core/Codec.fs, B-1007 C12) does not yet distinguish "this
 `Deserialize` is pure" from "this `Deserialize` may have effects." The combinators
 (`identity`/`imap`/`product`/`sum`) preserve whatever purity the components have, but
-there is no *registry* of which leaf adapters are pure, and no way to *require* a pure
+there is no _registry_ of which leaf adapters are pure, and no way to _require_ a pure
 path when decoding untrusted input.
 
 ## Proposed shape (design — not yet built)
@@ -69,7 +83,7 @@ path when decoding untrusted input.
 ## Composes with
 
 - **B-1007 C12** (the codec algebra — `identity`/`imap`/`product`/`sum`; this row adds
-  the *purity* axis on top of the *round-trip* axis)
+  the _purity_ axis on top of the _round-trip_ axis)
 - **B-1006** (canonical primitives registry — purity as a codec-algebra registry axis)
 - **B-1002** (Eve transport codecs over zero-trust wire — the primary untrusted-decode
   consumer)
@@ -78,11 +92,11 @@ path when decoding untrusted input.
 - `.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md` (we own the
   codec port; purity is a property of our port, enforced at our boundary)
 - `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md` (a deserialize
-  surface that *reads as* safe but runs effects on untrusted input is a shield-with-a-hole)
+  surface that _reads as_ safe but runs effects on untrusted input is a shield-with-a-hole)
 
 ## Substrate-honest framing
 
 This is a **design row**, not yet built. C12 shipped the codec algebra (round-trip
-closure); this is the *next* axis (deserialize purity for untrusted wire). It is
+closure); this is the _next_ axis (deserialize purity for untrusted wire). It is
 **backlogged**, not urgent — filed so Aaron's directive is durable substrate rather
 than weather.

@@ -4,8 +4,9 @@ description: Aaron 2026-04-22 scope-extension — DV-2.0 audit columns (`record_
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-22: *"Data Vault 2.0 can be scope universal sounds
-like it will help with indexing"*. The DV-2.0 discipline that
+
+Aaron 2026-04-22: _"Data Vault 2.0 can be scope universal sounds
+like it will help with indexing"_. The DV-2.0 discipline that
 `skill-documentation-standard` codified for SKILL.md files is
 not scoped to the skill catalog — it is a factory-wide default
 for every artifact the factory indexes.

@@ -33,16 +33,8 @@ export {
   type ContextPackInboxAnchor,
 } from "../../domain/src/index.ts";
 import { buildHatDefinitions } from "./org-seed.ts";
-import {
-  deriveNeighborhood,
-  type GraphStoreReader,
-} from "./knowledge-graph-intelligence.ts";
-import {
-  runRetrieval,
-  type RetrievalContext,
-  type RetrievalDeps,
-  type RetrievalResult,
-} from "./document-retrieval.ts";
+import { deriveNeighborhood, type GraphStoreReader } from "./knowledge-graph-intelligence.ts";
+import { runRetrieval, type RetrievalContext, type RetrievalDeps, type RetrievalResult } from "./document-retrieval.ts";
 import { activeGraphRootNodeIdsForSnapshot } from "./context-pack-scope-evaluator.ts";
 import {
   admitContextPackAdvisoryPromotions,
@@ -108,8 +100,7 @@ export type ContextPackDocumentFocus = {
 };
 
 export type ContextPackDocumentFocusPolicyPort = {
-  resolve: (request: ContextPackDocumentFocusRequest) =>
-    Promise<ContextPackDocumentFocus> | ContextPackDocumentFocus;
+  resolve: (request: ContextPackDocumentFocusRequest) => Promise<ContextPackDocumentFocus> | ContextPackDocumentFocus;
 };
 
 export type ContextPackCurationIntentRequest = {
@@ -122,8 +113,9 @@ export type ContextPackCurationIntent = {
 };
 
 export type ContextPackCurationIntentPolicyPort = {
-  resolve: (request: ContextPackCurationIntentRequest) =>
-    Promise<ContextPackCurationIntent> | ContextPackCurationIntent;
+  resolve: (
+    request: ContextPackCurationIntentRequest,
+  ) => Promise<ContextPackCurationIntent> | ContextPackCurationIntent;
 };
 
 export type CreateInMemoryContextPackDocumentPortInput = {
@@ -266,8 +258,9 @@ export type ContextPackHatCommunicationBriefResult = {
 };
 
 export type ContextPackHatCommunicationBriefPort = {
-  build: (request: ContextPackHatCommunicationBriefRequest) =>
-    Promise<ContextPackHatCommunicationBriefResult> | ContextPackHatCommunicationBriefResult;
+  build: (
+    request: ContextPackHatCommunicationBriefRequest,
+  ) => Promise<ContextPackHatCommunicationBriefResult> | ContextPackHatCommunicationBriefResult;
 };
 
 export type ContextPackLifecycleAnchorRequest = {
@@ -283,8 +276,9 @@ export type ContextPackLifecycleAnchorResult = {
 };
 
 export type ContextPackLifecycleAnchorPort = {
-  load: (request: ContextPackLifecycleAnchorRequest) =>
-    Promise<ContextPackLifecycleAnchorResult> | ContextPackLifecycleAnchorResult;
+  load: (
+    request: ContextPackLifecycleAnchorRequest,
+  ) => Promise<ContextPackLifecycleAnchorResult> | ContextPackLifecycleAnchorResult;
 };
 
 export type ContextPackInboxAnchorRequest = {
@@ -300,8 +294,9 @@ export type ContextPackInboxAnchorResult = {
 };
 
 export type ContextPackInboxAnchorPort = {
-  load: (request: ContextPackInboxAnchorRequest) =>
-    Promise<ContextPackInboxAnchorResult> | ContextPackInboxAnchorResult;
+  load: (
+    request: ContextPackInboxAnchorRequest,
+  ) => Promise<ContextPackInboxAnchorResult> | ContextPackInboxAnchorResult;
 };
 
 export type CreateInMemoryContextPackLifecycleAnchorPortInput = {
@@ -335,8 +330,9 @@ export type ContextPackCompletenessPolicyResult = {
 };
 
 export type ContextPackCompletenessPolicyPort = {
-  evaluate: (request: ContextPackCompletenessPolicyRequest) =>
-    Promise<ContextPackCompletenessPolicyResult> | ContextPackCompletenessPolicyResult;
+  evaluate: (
+    request: ContextPackCompletenessPolicyRequest,
+  ) => Promise<ContextPackCompletenessPolicyResult> | ContextPackCompletenessPolicyResult;
 };
 
 export type ContextPackCurationProfileRequest = {
@@ -368,8 +364,9 @@ export type ContextPackAttentionLaneDescriptor = {
 };
 
 export type ContextPackCurationProfilePolicyPort = {
-  resolve: (request: ContextPackCurationProfileRequest) =>
-    Promise<ContextPackCurationProfile> | ContextPackCurationProfile;
+  resolve: (
+    request: ContextPackCurationProfileRequest,
+  ) => Promise<ContextPackCurationProfile> | ContextPackCurationProfile;
 };
 
 export const ContextPackSynthesisRequirementDecision = {
@@ -412,8 +409,9 @@ export type ContextPackSynthesisRequirement = {
 };
 
 export type ContextPackSynthesisRequirementPolicyPort = {
-  evaluate: (request: ContextPackSynthesisRequirementPolicyRequest) =>
-    Promise<ContextPackSynthesisRequirement> | ContextPackSynthesisRequirement;
+  evaluate: (
+    request: ContextPackSynthesisRequirementPolicyRequest,
+  ) => Promise<ContextPackSynthesisRequirement> | ContextPackSynthesisRequirement;
 };
 
 type ContextPackActiveHatCurationPolicy = {
@@ -438,10 +436,9 @@ export type ContextPackCompletenessRequirement = {
   message: string;
   evidenceRef: string;
   appliesTo: (request: ContextPackCompletenessPolicyRequest) => boolean;
-  isSatisfiedBy?: ((
-    candidate: ContextPackCompletenessCandidate,
-    request: ContextPackCompletenessPolicyRequest,
-  ) => boolean) | undefined;
+  isSatisfiedBy?:
+    | ((candidate: ContextPackCompletenessCandidate, request: ContextPackCompletenessPolicyRequest) => boolean)
+    | undefined;
 };
 
 export type ContextPackGraphRootSeed = {
@@ -543,22 +540,31 @@ const HAT_COMMUNICATION_BRIEF_FAILED_MESSAGE = "hat communication brief retrieva
 const CURATION_PROFILE_FAILED_MESSAGE = "context pack curation profile retrieval failed";
 const ADVISORY_PROMOTION_POLICY_FAILED_MESSAGE = "context pack advisory promotion policy failed";
 const REQUIRED_CURATION_LANE_EMPTY_MESSAGE = "required context-pack curation lane has no refs";
-const UNGROUNDED_SYNTHESIS_BRIEFING_MESSAGE = "ephemeral synthesis briefing was not grounded in deterministic evidence refs";
-const UNGROUNDED_SYNTHESIS_ADVISORY_MESSAGE = "ephemeral synthesis advisory was not grounded in deterministic evidence refs";
-const UNGROUNDED_SYNTHESIS_RANKED_TARGET_MESSAGE = "ephemeral synthesis ranked context target was not grounded in deterministic evidence refs";
-const UNGROUNDED_SYNTHESIS_CURATION_EVIDENCE_MESSAGE = "ephemeral synthesis curation evidence was not grounded in deterministic evidence refs";
+const UNGROUNDED_SYNTHESIS_BRIEFING_MESSAGE =
+  "ephemeral synthesis briefing was not grounded in deterministic evidence refs";
+const UNGROUNDED_SYNTHESIS_ADVISORY_MESSAGE =
+  "ephemeral synthesis advisory was not grounded in deterministic evidence refs";
+const UNGROUNDED_SYNTHESIS_RANKED_TARGET_MESSAGE =
+  "ephemeral synthesis ranked context target was not grounded in deterministic evidence refs";
+const UNGROUNDED_SYNTHESIS_CURATION_EVIDENCE_MESSAGE =
+  "ephemeral synthesis curation evidence was not grounded in deterministic evidence refs";
 const ILLEGAL_SYNTHESIS_ACTION_MESSAGE = "synthesis recommended action is not legal in the current observe readout";
 const LIFECYCLE_ANCHOR_REQUIRES_ACTIVE_WORK_SCOPE_MESSAGE = "lifecycle anchor item requires active work item scope";
 const LIFECYCLE_ANCHOR_REQUIRES_SOURCE_POINTER_MESSAGE = "lifecycle anchor item lacks a lifecycle source pointer";
 const LIFECYCLE_ANCHOR_REQUIRES_ACTIVE_WORK_POINTER_MESSAGE = "lifecycle anchor item lacks active work source pointer";
 const LIFECYCLE_ANCHOR_OUTSIDE_ACTIVE_WORK_SCOPE_MESSAGE = "lifecycle anchor item is outside active work scope";
-const SCHEDULE_ANCHOR_REQUIRES_HAT_ASSIGNMENT_PROVENANCE_MESSAGE = "schedule anchor lacks active hat assignment provenance";
+const SCHEDULE_ANCHOR_REQUIRES_HAT_ASSIGNMENT_PROVENANCE_MESSAGE =
+  "schedule anchor lacks active hat assignment provenance";
 const SCHEDULE_ANCHOR_OUTSIDE_ACTIVE_HAT_ASSIGNMENT_MESSAGE = "schedule anchor is outside active hat assignment";
 const SCHEDULE_ANCHOR_OUTSIDE_ACTIVE_AGENT_ASSIGNMENT_MESSAGE = "schedule anchor is outside active agent assignment";
-const SUPERVISOR_SIGNAL_REQUIRES_TARGET_HAT_ASSIGNMENT_PROVENANCE_MESSAGE = "supervisor signal lacks target hat assignment provenance";
-const SUPERVISOR_SIGNAL_OUTSIDE_ACTIVE_TARGET_HAT_ASSIGNMENT_MESSAGE = "supervisor signal is outside active target hat assignment";
-const INBOX_ANCHOR_REQUIRES_TARGET_HAT_ASSIGNMENT_PROVENANCE_MESSAGE = "inbox anchor lacks target hat assignment provenance";
-const INBOX_ANCHOR_OUTSIDE_ACTIVE_TARGET_HAT_ASSIGNMENT_MESSAGE = "inbox anchor is outside active target hat assignment";
+const SUPERVISOR_SIGNAL_REQUIRES_TARGET_HAT_ASSIGNMENT_PROVENANCE_MESSAGE =
+  "supervisor signal lacks target hat assignment provenance";
+const SUPERVISOR_SIGNAL_OUTSIDE_ACTIVE_TARGET_HAT_ASSIGNMENT_MESSAGE =
+  "supervisor signal is outside active target hat assignment";
+const INBOX_ANCHOR_REQUIRES_TARGET_HAT_ASSIGNMENT_PROVENANCE_MESSAGE =
+  "inbox anchor lacks target hat assignment provenance";
+const INBOX_ANCHOR_OUTSIDE_ACTIVE_TARGET_HAT_ASSIGNMENT_MESSAGE =
+  "inbox anchor is outside active target hat assignment";
 const INBOX_ANCHOR_OUTSIDE_ACTIVE_AGENT_ASSIGNMENT_MESSAGE = "inbox anchor is outside active agent assignment";
 const DOC_REF_PREFIX = "doc:";
 const INBOX_REF_PREFIX = "inbox:";
@@ -604,8 +610,10 @@ const ContextPackAttentionObjective = {
 } as const;
 const ContextPackDeterministicInstruction = {
   SourcePriority: "Rank required documents and active graph context before advisory memory.",
-  AuthorityBoundaries: "Use the hat communication brief to keep questions, escalations, and resource requests on the supervisor chain.",
-  GapDiscipline: "Turn omissions and contradictions into explicit questions or lifecycle blockers instead of inventing context.",
+  AuthorityBoundaries:
+    "Use the hat communication brief to keep questions, escalations, and resource requests on the supervisor chain.",
+  GapDiscipline:
+    "Turn omissions and contradictions into explicit questions or lifecycle blockers instead of inventing context.",
   LegalActionBoundary: "Recommend only actions present in the legal observe action lane.",
 } as const;
 export const ContextPackCurationProfileInstruction = {
@@ -729,7 +737,9 @@ type ContextPackDocumentFocusTemplate = {
   preferredDocTypes: readonly DocType[];
 };
 
-const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurationProfileId, ContextPackDocumentFocusTemplate>> = {
+const ContextPackDocumentFocusByCurationProfile: Partial<
+  Record<ContextPackCurationProfileId, ContextPackDocumentFocusTemplate>
+> = {
   [ContextPackCurationProfileId.ManagementBlocker]: {
     profileId: ContextPackDocumentFocusProfileId.ManagementBlocker,
     queryTerms: [
@@ -740,13 +750,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.Policy,
       ContextPackDocumentFocusTerm.Blocker,
     ],
-    preferredDocTypes: [
-      DocType.Brd,
-      DocType.Architecture,
-      DocType.Adr,
-      DocType.Policy,
-      DocType.DecisionRecord,
-    ],
+    preferredDocTypes: [DocType.Brd, DocType.Architecture, DocType.Adr, DocType.Policy, DocType.DecisionRecord],
   },
   [ContextPackCurationProfileId.ImplementerExecution]: {
     profileId: ContextPackDocumentFocusProfileId.ImplementerExecution,
@@ -757,13 +761,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.Runbook,
       ContextPackDocumentFocusTerm.TestEvidence,
     ],
-    preferredDocTypes: [
-      DocType.Spec,
-      DocType.Runbook,
-      DocType.Architecture,
-      DocType.Adr,
-      DocType.Brd,
-    ],
+    preferredDocTypes: [DocType.Spec, DocType.Runbook, DocType.Architecture, DocType.Adr, DocType.Brd],
   },
   [ContextPackCurationProfileId.ProductValidation]: {
     profileId: ContextPackDocumentFocusProfileId.ProductValidation,
@@ -775,12 +773,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.BusinessValidation,
       ContextPackDocumentFocusTerm.Signoff,
     ],
-    preferredDocTypes: [
-      DocType.Brd,
-      DocType.Spec,
-      DocType.DecisionRecord,
-      DocType.Policy,
-    ],
+    preferredDocTypes: [DocType.Brd, DocType.Spec, DocType.DecisionRecord, DocType.Policy],
   },
   [ContextPackCurationProfileId.ArchitectureDecision]: {
     profileId: ContextPackDocumentFocusProfileId.ArchitectureDecision,
@@ -791,12 +784,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.IntegrationBoundary,
       ContextPackDocumentFocusTerm.Policy,
     ],
-    preferredDocTypes: [
-      DocType.Architecture,
-      DocType.Adr,
-      DocType.Policy,
-      DocType.DecisionRecord,
-    ],
+    preferredDocTypes: [DocType.Architecture, DocType.Adr, DocType.Policy, DocType.DecisionRecord],
   },
   [ContextPackCurationProfileId.EvidenceReview]: {
     profileId: ContextPackDocumentFocusProfileId.EvidenceReview,
@@ -807,12 +795,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.AcceptanceCriteria,
       ContextPackDocumentFocusTerm.Runbook,
     ],
-    preferredDocTypes: [
-      DocType.DecisionRecord,
-      DocType.Runbook,
-      DocType.Spec,
-      DocType.Brd,
-    ],
+    preferredDocTypes: [DocType.DecisionRecord, DocType.Runbook, DocType.Spec, DocType.Brd],
   },
   [ContextPackCurationProfileId.SecurityControl]: {
     profileId: ContextPackDocumentFocusProfileId.SecurityControl,
@@ -823,13 +806,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.AuditEvidence,
       ContextPackDocumentFocusTerm.Decision,
     ],
-    preferredDocTypes: [
-      DocType.Policy,
-      DocType.Adr,
-      DocType.DecisionRecord,
-      DocType.Architecture,
-      DocType.Runbook,
-    ],
+    preferredDocTypes: [DocType.Policy, DocType.Adr, DocType.DecisionRecord, DocType.Architecture, DocType.Runbook],
   },
   [ContextPackCurationProfileId.ProgramCoordination]: {
     profileId: ContextPackDocumentFocusProfileId.ProgramCoordination,
@@ -841,13 +818,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.Blocker,
       ContextPackDocumentFocusTerm.Decision,
     ],
-    preferredDocTypes: [
-      DocType.Handbook,
-      DocType.DecisionRecord,
-      DocType.Brd,
-      DocType.Spec,
-      DocType.Policy,
-    ],
+    preferredDocTypes: [DocType.Handbook, DocType.DecisionRecord, DocType.Brd, DocType.Spec, DocType.Policy],
   },
   [ContextPackCurationProfileId.ReleaseDelivery]: {
     profileId: ContextPackDocumentFocusProfileId.ReleaseDelivery,
@@ -859,13 +830,7 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.Policy,
       ContextPackDocumentFocusTerm.Decision,
     ],
-    preferredDocTypes: [
-      DocType.Runbook,
-      DocType.DecisionRecord,
-      DocType.Policy,
-      DocType.Spec,
-      DocType.Adr,
-    ],
+    preferredDocTypes: [DocType.Runbook, DocType.DecisionRecord, DocType.Policy, DocType.Spec, DocType.Adr],
   },
   [ContextPackCurationProfileId.RuntimeOperations]: {
     profileId: ContextPackDocumentFocusProfileId.RuntimeOperations,
@@ -933,31 +898,26 @@ const ContextPackDocumentFocusByCurationProfile: Partial<Record<ContextPackCurat
       ContextPackDocumentFocusTerm.Initiative,
       ContextPackDocumentFocusTerm.Policy,
     ],
-    preferredDocTypes: [
-      DocType.Policy,
-      DocType.DecisionRecord,
-      DocType.Reference,
-      DocType.Handbook,
-      DocType.Brd,
-    ],
+    preferredDocTypes: [DocType.Policy, DocType.DecisionRecord, DocType.Reference, DocType.Handbook, DocType.Brd],
   },
 } as const;
 
-const ContextPackCurationInstructionByProfile:
-  Partial<Record<ContextPackCurationProfileId, ContextPackCurationProfileInstruction>> = {
-    [ContextPackCurationProfileId.ManagementBlocker]: ContextPackCurationProfileInstruction.ManagementBlocker,
-    [ContextPackCurationProfileId.ImplementerExecution]: ContextPackCurationProfileInstruction.ImplementerExecution,
-    [ContextPackCurationProfileId.ProductValidation]: ContextPackCurationProfileInstruction.ProductValidation,
-    [ContextPackCurationProfileId.ArchitectureDecision]: ContextPackCurationProfileInstruction.ArchitectureDecision,
-    [ContextPackCurationProfileId.EvidenceReview]: ContextPackCurationProfileInstruction.EvidenceReview,
-    [ContextPackCurationProfileId.SecurityControl]: ContextPackCurationProfileInstruction.SecurityControl,
-    [ContextPackCurationProfileId.ProgramCoordination]: ContextPackCurationProfileInstruction.ProgramCoordination,
-    [ContextPackCurationProfileId.ReleaseDelivery]: ContextPackCurationProfileInstruction.ReleaseDelivery,
-    [ContextPackCurationProfileId.RuntimeOperations]: ContextPackCurationProfileInstruction.RuntimeOperations,
-    [ContextPackCurationProfileId.KnowledgeStewardship]: ContextPackCurationProfileInstruction.KnowledgeStewardship,
-    [ContextPackCurationProfileId.CapabilityExpansion]: ContextPackCurationProfileInstruction.CapabilityExpansion,
-    [ContextPackCurationProfileId.CapacityFinance]: ContextPackCurationProfileInstruction.CapacityFinance,
-  } as const;
+const ContextPackCurationInstructionByProfile: Partial<
+  Record<ContextPackCurationProfileId, ContextPackCurationProfileInstruction>
+> = {
+  [ContextPackCurationProfileId.ManagementBlocker]: ContextPackCurationProfileInstruction.ManagementBlocker,
+  [ContextPackCurationProfileId.ImplementerExecution]: ContextPackCurationProfileInstruction.ImplementerExecution,
+  [ContextPackCurationProfileId.ProductValidation]: ContextPackCurationProfileInstruction.ProductValidation,
+  [ContextPackCurationProfileId.ArchitectureDecision]: ContextPackCurationProfileInstruction.ArchitectureDecision,
+  [ContextPackCurationProfileId.EvidenceReview]: ContextPackCurationProfileInstruction.EvidenceReview,
+  [ContextPackCurationProfileId.SecurityControl]: ContextPackCurationProfileInstruction.SecurityControl,
+  [ContextPackCurationProfileId.ProgramCoordination]: ContextPackCurationProfileInstruction.ProgramCoordination,
+  [ContextPackCurationProfileId.ReleaseDelivery]: ContextPackCurationProfileInstruction.ReleaseDelivery,
+  [ContextPackCurationProfileId.RuntimeOperations]: ContextPackCurationProfileInstruction.RuntimeOperations,
+  [ContextPackCurationProfileId.KnowledgeStewardship]: ContextPackCurationProfileInstruction.KnowledgeStewardship,
+  [ContextPackCurationProfileId.CapabilityExpansion]: ContextPackCurationProfileInstruction.CapabilityExpansion,
+  [ContextPackCurationProfileId.CapacityFinance]: ContextPackCurationProfileInstruction.CapacityFinance,
+} as const;
 const SynthesisAdvisoryIdPart = {
   Ranked: "ranked",
   Gap: "gap",
@@ -977,10 +937,7 @@ const MANAGEMENT_CONTEXT_HAT_LEVELS: ReadonlySet<HatLevel> = new Set([
   HatLevel.Director,
   HatLevel.Manager,
 ]);
-const EXECUTION_CONTEXT_HAT_LEVELS: ReadonlySet<HatLevel> = new Set([
-  HatLevel.Lead,
-  HatLevel.IndividualContributor,
-]);
+const EXECUTION_CONTEXT_HAT_LEVELS: ReadonlySet<HatLevel> = new Set([HatLevel.Lead, HatLevel.IndividualContributor]);
 const MANAGEMENT_CONTEXT_SCOPES: ReadonlySet<RunScope> = new Set([
   RunScope.WorkItem,
   RunScope.Initiative,
@@ -1092,11 +1049,13 @@ export function createDefaultContextPackCompletenessPolicy(
       const missing = requirements
         .filter((requirement) => requirement.appliesTo(request))
         .filter((requirement) => !request.items.some((item) => requirementSatisfiedByItem(requirement, item, request)))
-        .map((requirement): ContextPackOmittedItem => ({
-          nodeId: contextRequirementNodeId(requirement.id),
-          reason: ContextPackOmissionReason.NotIndexed,
-          message: requirement.message,
-        }));
+        .map(
+          (requirement): ContextPackOmittedItem => ({
+            nodeId: contextRequirementNodeId(requirement.id),
+            reason: ContextPackOmissionReason.NotIndexed,
+            message: requirement.message,
+          }),
+        );
 
       return {
         omittedItemsWithReason: missing,
@@ -1117,8 +1076,14 @@ export function createDefaultContextPackCurationIntentPolicy(): ContextPackCurat
       const activeHatPolicy = resolveDefaultContextPackActiveHatPolicy(intentRequest.request);
       if (activeHatPolicy !== undefined) {
         return {
-          documentFocus: documentFocusForActiveHatPolicy(activeHatPolicy, DEFAULT_CONTEXT_PACK_DOCUMENT_FOCUS_POLICY_VERSION),
-          curationProfile: curationProfileForActiveHatPolicy(activeHatPolicy, DEFAULT_CONTEXT_PACK_CURATION_PROFILE_POLICY_VERSION),
+          documentFocus: documentFocusForActiveHatPolicy(
+            activeHatPolicy,
+            DEFAULT_CONTEXT_PACK_DOCUMENT_FOCUS_POLICY_VERSION,
+          ),
+          curationProfile: curationProfileForActiveHatPolicy(
+            activeHatPolicy,
+            DEFAULT_CONTEXT_PACK_CURATION_PROFILE_POLICY_VERSION,
+          ),
         };
       }
       return {
@@ -1279,21 +1244,22 @@ export function createInMemoryContextPackLifecycleAnchorPort(
     load(request): ContextPackLifecycleAnchorResult {
       const scoped = lifecycleAnchorScope(request.request);
       const discussionAnchors = (input.discussionAnchors ?? []).filter((anchor) =>
-        lifecycleRecordMatchesScope(anchor, scoped)
+        lifecycleRecordMatchesScope(anchor, scoped),
       );
       const decisionRecords = (input.decisionRecords ?? []).filter((record) =>
-        lifecycleRecordMatchesScope(record, scoped)
+        lifecycleRecordMatchesScope(record, scoped),
       );
       const qualityGateEvaluations = (input.qualityGateEvaluations ?? []).filter((evaluation) =>
-        lifecycleRecordMatchesScope(evaluation, scoped)
+        lifecycleRecordMatchesScope(evaluation, scoped),
       );
-      const workScheduleBlocks = (input.workScheduleBlocks ?? []).filter((block) =>
-        lifecycleRecordMatchesScope(block, scoped) &&
-        optionalMatches(block.assignedAgentId, scoped.agentId) &&
-        optionalMatches(block.assignedHatAssignmentId, scoped.hatAssignmentId)
+      const workScheduleBlocks = (input.workScheduleBlocks ?? []).filter(
+        (block) =>
+          lifecycleRecordMatchesScope(block, scoped) &&
+          optionalMatches(block.assignedAgentId, scoped.agentId) &&
+          optionalMatches(block.assignedHatAssignmentId, scoped.hatAssignmentId),
       );
       const supervisorSignals = (input.supervisorSignals ?? []).filter((signal) =>
-        supervisorSignalMatchesScope(signal, scoped)
+        supervisorSignalMatchesScope(signal, scoped),
       );
 
       const items = [
@@ -1322,7 +1288,9 @@ export function createInMemoryContextPackInboxAnchorPort(
 ): ContextPackInboxAnchorPort {
   return {
     load(request): ContextPackInboxAnchorResult {
-      const inboxAnchors = input.inboxAnchors.filter((anchor) => contextPackInboxAnchorIsVisible(anchor, request.observedAt));
+      const inboxAnchors = input.inboxAnchors.filter((anchor) =>
+        contextPackInboxAnchorIsVisible(anchor, request.observedAt),
+      );
       return {
         items: inboxAnchors.map(inboxAnchorContextItem),
         graphRootSeeds: inboxAnchors.map(inboxAnchorGraphRootSeed),
@@ -1478,9 +1446,10 @@ function qualityGateEvaluationContextItem(evaluation: QualityGateEvaluation): Co
 
 function inboxAnchorContextItem(anchor: ContextPackInboxAnchor): ContextPackItem {
   const workItemCitationRefs = anchor.workItemId === undefined ? [] : [`${WORK_REF_PREFIX}${anchor.workItemId}`];
-  const workItemSourcePointers: readonly ContextPackSourcePointer[] = anchor.workItemId === undefined
-    ? []
-    : [{ kind: ContextPackSourcePointerKind.WorkItem, workItemId: anchor.workItemId }];
+  const workItemSourcePointers: readonly ContextPackSourcePointer[] =
+    anchor.workItemId === undefined
+      ? []
+      : [{ kind: ContextPackSourcePointerKind.WorkItem, workItemId: anchor.workItemId }];
   return {
     id: `${INBOX_REF_PREFIX}${anchor.inboxAnchorId}`,
     kind: ContextPackItemKind.InboxAnchor,
@@ -1510,7 +1479,9 @@ function inboxAnchorContextItem(anchor: ContextPackInboxAnchor): ContextPackItem
         ...(anchor.targetAgentId === undefined ? {} : { targetAgentId: anchor.targetAgentId }),
       },
       ...workItemSourcePointers,
-      ...(anchor.traceId === undefined ? [] : [{ kind: ContextPackSourcePointerKind.Trace, traceId: anchor.traceId } as const]),
+      ...(anchor.traceId === undefined
+        ? []
+        : [{ kind: ContextPackSourcePointerKind.Trace, traceId: anchor.traceId } as const]),
       inboxAnchorGraphNodePointer(anchor),
     ],
   };
@@ -1549,12 +1520,14 @@ function workScheduleBlockContextItem(block: WorkScheduleBlock): ContextPackItem
       },
       ...(meetingId === undefined
         ? []
-        : [{
-            kind: ContextPackSourcePointerKind.Meeting,
-            meetingId,
-            workScheduleBlockId: block.workScheduleBlockId,
-            ...(block.discussionAnchorId === undefined ? {} : { discussionAnchorId: block.discussionAnchorId }),
-          } as const]),
+        : [
+            {
+              kind: ContextPackSourcePointerKind.Meeting,
+              meetingId,
+              workScheduleBlockId: block.workScheduleBlockId,
+              ...(block.discussionAnchorId === undefined ? {} : { discussionAnchorId: block.discussionAnchorId }),
+            } as const,
+          ]),
       { kind: ContextPackSourcePointerKind.WorkItem, workItemId: block.workItemId },
       { kind: ContextPackSourcePointerKind.Trace, traceId: block.metadata.traceId },
       ...(block.discussionAnchorId === undefined
@@ -1805,62 +1778,80 @@ function contextPackCurationPlanFor(
   const lanes: ContextPackAttentionLane[] = [
     attentionLane(
       ContextPackAttentionLaneKind.Authority,
-      contextPackAttentionLanePriority(effectiveProfile, ContextPackAttentionLaneKind.Authority, ContextPackAttentionPriority.Authority),
+      contextPackAttentionLanePriority(
+        effectiveProfile,
+        ContextPackAttentionLaneKind.Authority,
+        ContextPackAttentionPriority.Authority,
+      ),
       ContextPackAttentionObjective.Authority,
       contextPackAttentionLaneRequired(effectiveProfile, ContextPackAttentionLaneKind.Authority, true),
-      items
-        .filter((item) => item.kind === ContextPackItemKind.HatCommunicationBrief)
-        .map(itemLaneRef),
+      items.filter((item) => item.kind === ContextPackItemKind.HatCommunicationBrief).map(itemLaneRef),
     ),
     attentionLane(
       ContextPackAttentionLaneKind.RequiredDocuments,
-      contextPackAttentionLanePriority(effectiveProfile, ContextPackAttentionLaneKind.RequiredDocuments, ContextPackAttentionPriority.RequiredDocuments),
+      contextPackAttentionLanePriority(
+        effectiveProfile,
+        ContextPackAttentionLaneKind.RequiredDocuments,
+        ContextPackAttentionPriority.RequiredDocuments,
+      ),
       ContextPackAttentionObjective.RequiredDocuments,
       contextPackAttentionLaneRequired(effectiveProfile, ContextPackAttentionLaneKind.RequiredDocuments, true),
-      items
-        .filter((item) => item.required && sourceOfTruthContextItemKinds.has(item.kind))
-        .map(itemLaneRef),
+      items.filter((item) => item.required && sourceOfTruthContextItemKinds.has(item.kind)).map(itemLaneRef),
     ),
     attentionLane(
       ContextPackAttentionLaneKind.ActiveWork,
-      contextPackAttentionLanePriority(effectiveProfile, ContextPackAttentionLaneKind.ActiveWork, ContextPackAttentionPriority.ActiveWork),
+      contextPackAttentionLanePriority(
+        effectiveProfile,
+        ContextPackAttentionLaneKind.ActiveWork,
+        ContextPackAttentionPriority.ActiveWork,
+      ),
       ContextPackAttentionObjective.ActiveWork,
       contextPackAttentionLaneRequired(effectiveProfile, ContextPackAttentionLaneKind.ActiveWork, true),
       [
         ...deterministicScopeEvidenceRefs(request).map(scopeAnchorLaneRef),
-        ...items
-          .filter((item) => activeWorkContextItemKinds.has(item.kind))
-          .map(itemLaneRef),
+        ...items.filter((item) => activeWorkContextItemKinds.has(item.kind)).map(itemLaneRef),
       ],
     ),
     attentionLane(
       ContextPackAttentionLaneKind.GraphNeighborhood,
-      contextPackAttentionLanePriority(effectiveProfile, ContextPackAttentionLaneKind.GraphNeighborhood, ContextPackAttentionPriority.GraphNeighborhood),
+      contextPackAttentionLanePriority(
+        effectiveProfile,
+        ContextPackAttentionLaneKind.GraphNeighborhood,
+        ContextPackAttentionPriority.GraphNeighborhood,
+      ),
       ContextPackAttentionObjective.GraphNeighborhood,
       contextPackAttentionLaneRequired(effectiveProfile, ContextPackAttentionLaneKind.GraphNeighborhood, false),
-      items
-        .filter((item) => item.kind === ContextPackItemKind.GraphNeighborhood)
-        .map(itemLaneRef),
+      items.filter((item) => item.kind === ContextPackItemKind.GraphNeighborhood).map(itemLaneRef),
     ),
     attentionLane(
       ContextPackAttentionLaneKind.Memory,
-      contextPackAttentionLanePriority(effectiveProfile, ContextPackAttentionLaneKind.Memory, ContextPackAttentionPriority.Memory),
+      contextPackAttentionLanePriority(
+        effectiveProfile,
+        ContextPackAttentionLaneKind.Memory,
+        ContextPackAttentionPriority.Memory,
+      ),
       ContextPackAttentionObjective.Memory,
       contextPackAttentionLaneRequired(effectiveProfile, ContextPackAttentionLaneKind.Memory, false),
-      items
-        .filter((item) => item.kind === ContextPackItemKind.MemoryPointer)
-        .map(itemLaneRef),
+      items.filter((item) => item.kind === ContextPackItemKind.MemoryPointer).map(itemLaneRef),
     ),
     attentionLane(
       ContextPackAttentionLaneKind.Omissions,
-      contextPackAttentionLanePriority(effectiveProfile, ContextPackAttentionLaneKind.Omissions, ContextPackAttentionPriority.Omissions),
+      contextPackAttentionLanePriority(
+        effectiveProfile,
+        ContextPackAttentionLaneKind.Omissions,
+        ContextPackAttentionPriority.Omissions,
+      ),
       ContextPackAttentionObjective.Omissions,
       contextPackAttentionLaneRequired(effectiveProfile, ContextPackAttentionLaneKind.Omissions, omissions.length > 0),
       omissions.map(omissionLaneRef),
     ),
     attentionLane(
       ContextPackAttentionLaneKind.LegalActions,
-      contextPackAttentionLanePriority(effectiveProfile, ContextPackAttentionLaneKind.LegalActions, ContextPackAttentionPriority.LegalActions),
+      contextPackAttentionLanePriority(
+        effectiveProfile,
+        ContextPackAttentionLaneKind.LegalActions,
+        ContextPackAttentionPriority.LegalActions,
+      ),
       ContextPackAttentionObjective.LegalActions,
       contextPackAttentionLaneRequired(effectiveProfile, ContextPackAttentionLaneKind.LegalActions, true),
       legalActionsForSynthesis(request.readout.options).map(legalActionLaneRef),
@@ -1957,9 +1948,7 @@ function requiredCurationLaneOmissions(plan: ContextPackCurationPlan): readonly 
     }));
 }
 
-function requiredSynthesisUnavailableOmission(
-  requirement: ContextPackSynthesisRequirement,
-): ContextPackOmittedItem {
+function requiredSynthesisUnavailableOmission(requirement: ContextPackSynthesisRequirement): ContextPackOmittedItem {
   return {
     nodeId: REQUIRED_SYNTHESIS_UNAVAILABLE_NODE_ID,
     reason: ContextPackOmissionReason.RetrievalFailed,
@@ -1977,19 +1966,23 @@ async function contextPackCurationIntentFor(
 ): Promise<{ intent: ContextPackCurationIntent; omissions: readonly ContextPackOmittedItem[] }> {
   try {
     return {
-      intent: cloneContextPackCurationIntent(await policy.resolve({
-        request: cloneContextPackBuildRequest(request),
-      })),
+      intent: cloneContextPackCurationIntent(
+        await policy.resolve({
+          request: cloneContextPackBuildRequest(request),
+        }),
+      ),
       omissions: [],
     };
   } catch (error) {
     return {
       intent: defaultContextPackCurationIntent(),
-      omissions: [{
-        nodeId: CURATION_INTENT_NODE_ID,
-        reason: ContextPackOmissionReason.RetrievalFailed,
-        message: `${CURATION_INTENT_FAILED_MESSAGE}: ${errorMessage(error)}`,
-      }],
+      omissions: [
+        {
+          nodeId: CURATION_INTENT_NODE_ID,
+          reason: ContextPackOmissionReason.RetrievalFailed,
+          message: `${CURATION_INTENT_FAILED_MESSAGE}: ${errorMessage(error)}`,
+        },
+      ],
     };
   }
 }
@@ -2000,19 +1993,23 @@ async function contextPackDocumentFocusFor(
 ): Promise<{ focus: ContextPackDocumentFocus; omissions: readonly ContextPackOmittedItem[] }> {
   try {
     return {
-      focus: cloneContextPackDocumentFocus(await policy.resolve({
-        request: cloneContextPackBuildRequest(request),
-      })),
+      focus: cloneContextPackDocumentFocus(
+        await policy.resolve({
+          request: cloneContextPackBuildRequest(request),
+        }),
+      ),
       omissions: [],
     };
   } catch (error) {
     return {
       focus: defaultContextPackDocumentFocus(),
-      omissions: [{
-        nodeId: DOCUMENT_FOCUS_NODE_ID,
-        reason: ContextPackOmissionReason.RetrievalFailed,
-        message: `${DOCUMENT_FOCUS_POLICY_FAILED_MESSAGE}: ${errorMessage(error)}`,
-      }],
+      omissions: [
+        {
+          nodeId: DOCUMENT_FOCUS_NODE_ID,
+          reason: ContextPackOmissionReason.RetrievalFailed,
+          message: `${DOCUMENT_FOCUS_POLICY_FAILED_MESSAGE}: ${errorMessage(error)}`,
+        },
+      ],
     };
   }
 }
@@ -2040,9 +2037,7 @@ export function contextPackDocumentFocusForCurationProfile(
   };
 }
 
-function contextPackDocumentFocusTemplateForProfile(
-  profileId: string,
-): ContextPackDocumentFocusTemplate | undefined {
+function contextPackDocumentFocusTemplateForProfile(profileId: string): ContextPackDocumentFocusTemplate | undefined {
   return Object.values(ContextPackCurationProfileId).includes(profileId as ContextPackCurationProfileId)
     ? ContextPackDocumentFocusByCurationProfile[profileId as ContextPackCurationProfileId]
     : undefined;
@@ -2092,20 +2087,24 @@ async function contextPackCurationProfileFor(
   }
   try {
     return {
-      profile: cloneContextPackCurationProfile(await policy.resolve({
-        request: cloneContextPackBuildRequest(request),
-        items: cloneContextPackItems(items),
-        omissions: cloneContextPackOmissions(omissions),
-      })),
+      profile: cloneContextPackCurationProfile(
+        await policy.resolve({
+          request: cloneContextPackBuildRequest(request),
+          items: cloneContextPackItems(items),
+          omissions: cloneContextPackOmissions(omissions),
+        }),
+      ),
       omissions: [],
     };
   } catch (error) {
     return {
       profile: defaultContextPackCurationProfile(),
-      omissions: [{
-        reason: ContextPackOmissionReason.RetrievalFailed,
-        message: `${CURATION_PROFILE_FAILED_MESSAGE}: ${errorMessage(error)}`,
-      }],
+      omissions: [
+        {
+          reason: ContextPackOmissionReason.RetrievalFailed,
+          message: `${CURATION_PROFILE_FAILED_MESSAGE}: ${errorMessage(error)}`,
+        },
+      ],
     };
   }
 }
@@ -2229,13 +2228,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.Policy,
         ContextPackDocumentFocusTerm.Blocker,
       ],
-      preferredDocTypes: [
-        DocType.Brd,
-        DocType.Architecture,
-        DocType.Adr,
-        DocType.Policy,
-        DocType.DecisionRecord,
-      ],
+      preferredDocTypes: [DocType.Brd, DocType.Architecture, DocType.Adr, DocType.Policy, DocType.DecisionRecord],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.RequiredDocuments]: 15,
         [ContextPackAttentionLaneKind.GraphNeighborhood]: 20,
@@ -2259,13 +2252,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.Initiative,
         ContextPackDocumentFocusTerm.Policy,
       ],
-      preferredDocTypes: [
-        DocType.Policy,
-        DocType.DecisionRecord,
-        DocType.Reference,
-        DocType.Handbook,
-        DocType.Brd,
-      ],
+      preferredDocTypes: [DocType.Policy, DocType.DecisionRecord, DocType.Reference, DocType.Handbook, DocType.Brd],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.ActiveWork]: 15,
         [ContextPackAttentionLaneKind.GraphNeighborhood]: 20,
@@ -2288,13 +2275,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.AuditEvidence,
         ContextPackDocumentFocusTerm.Decision,
       ],
-      preferredDocTypes: [
-        DocType.Policy,
-        DocType.Adr,
-        DocType.DecisionRecord,
-        DocType.Architecture,
-        DocType.Runbook,
-      ],
+      preferredDocTypes: [DocType.Policy, DocType.Adr, DocType.DecisionRecord, DocType.Architecture, DocType.Runbook],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.RequiredDocuments]: 15,
         [ContextPackAttentionLaneKind.Omissions]: 20,
@@ -2318,12 +2299,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.BusinessValidation,
         ContextPackDocumentFocusTerm.Signoff,
       ],
-      preferredDocTypes: [
-        DocType.Brd,
-        DocType.Spec,
-        DocType.DecisionRecord,
-        DocType.Policy,
-      ],
+      preferredDocTypes: [DocType.Brd, DocType.Spec, DocType.DecisionRecord, DocType.Policy],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.RequiredDocuments]: 15,
         [ContextPackAttentionLaneKind.ActiveWork]: 20,
@@ -2346,12 +2322,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.IntegrationBoundary,
         ContextPackDocumentFocusTerm.Policy,
       ],
-      preferredDocTypes: [
-        DocType.Architecture,
-        DocType.Adr,
-        DocType.Policy,
-        DocType.DecisionRecord,
-      ],
+      preferredDocTypes: [DocType.Architecture, DocType.Adr, DocType.Policy, DocType.DecisionRecord],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.RequiredDocuments]: 15,
         [ContextPackAttentionLaneKind.GraphNeighborhood]: 20,
@@ -2375,13 +2346,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.Blocker,
         ContextPackDocumentFocusTerm.Decision,
       ],
-      preferredDocTypes: [
-        DocType.Handbook,
-        DocType.DecisionRecord,
-        DocType.Brd,
-        DocType.Spec,
-        DocType.Policy,
-      ],
+      preferredDocTypes: [DocType.Handbook, DocType.DecisionRecord, DocType.Brd, DocType.Spec, DocType.Policy],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.ActiveWork]: 15,
         [ContextPackAttentionLaneKind.GraphNeighborhood]: 20,
@@ -2405,13 +2370,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.Policy,
         ContextPackDocumentFocusTerm.Decision,
       ],
-      preferredDocTypes: [
-        DocType.Runbook,
-        DocType.DecisionRecord,
-        DocType.Policy,
-        DocType.Spec,
-        DocType.Adr,
-      ],
+      preferredDocTypes: [DocType.Runbook, DocType.DecisionRecord, DocType.Policy, DocType.Spec, DocType.Adr],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.RequiredDocuments]: 15,
         [ContextPackAttentionLaneKind.ActiveWork]: 20,
@@ -2526,12 +2485,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.AcceptanceCriteria,
         ContextPackDocumentFocusTerm.Runbook,
       ],
-      preferredDocTypes: [
-        DocType.DecisionRecord,
-        DocType.Runbook,
-        DocType.Spec,
-        DocType.Brd,
-      ],
+      preferredDocTypes: [DocType.DecisionRecord, DocType.Runbook, DocType.Spec, DocType.Brd],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.ActiveWork]: 15,
         [ContextPackAttentionLaneKind.RequiredDocuments]: 25,
@@ -2554,13 +2508,7 @@ function resolveDefaultContextPackActiveHatPolicy(
         ContextPackDocumentFocusTerm.Runbook,
         ContextPackDocumentFocusTerm.TestEvidence,
       ],
-      preferredDocTypes: [
-        DocType.Spec,
-        DocType.Runbook,
-        DocType.Architecture,
-        DocType.Adr,
-        DocType.Brd,
-      ],
+      preferredDocTypes: [DocType.Spec, DocType.Runbook, DocType.Architecture, DocType.Adr, DocType.Brd],
       lanePriorityOverrides: {
         [ContextPackAttentionLaneKind.ActiveWork]: 15,
         [ContextPackAttentionLaneKind.RequiredDocuments]: 25,
@@ -2615,80 +2563,80 @@ function isImplementerExecutionCurationProfileRequest(request: ContextPackBuildR
 function isProductValidationCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatHasToolBundle(request.snapshot.hat, ToolBundle.Business) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Brd) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Product) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Business)
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Brd) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Product) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Business)
   );
 }
 
 function isArchitectureDecisionCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatDepartmentIs(request.snapshot.hat, DepartmentId.Architecture) ||
-      hatHasToolBundle(request.snapshot.hat, ToolBundle.Architecture) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Architecture)
+    hatHasToolBundle(request.snapshot.hat, ToolBundle.Architecture) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Architecture)
   );
 }
 
 function isProgramCoordinationCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatDepartmentIs(request.snapshot.hat, DepartmentId.ProgramAndInitiativeManagement) ||
-      (hatHasToolBundle(request.snapshot.hat, ToolBundle.PortfolioAndInitiative) &&
-        hatHasToolBundle(request.snapshot.hat, ToolBundle.TeamRuntime)) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Initiative) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Tpm) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Staffing) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Coordination) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Mission)
+    (hatHasToolBundle(request.snapshot.hat, ToolBundle.PortfolioAndInitiative) &&
+      hatHasToolBundle(request.snapshot.hat, ToolBundle.TeamRuntime)) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Initiative) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Tpm) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Staffing) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Coordination) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Mission)
   );
 }
 
 function isReleaseDeliveryCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatDepartmentIs(request.snapshot.hat, DepartmentId.DeliveryAndRelease) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Release) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Delivery) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Rollback) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Merge)
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Release) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Delivery) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Rollback) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Merge)
   );
 }
 
 function isRuntimeOperationsCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatDepartmentIs(request.snapshot.hat, DepartmentId.OperationsAndInfrastructure) ||
-      hatDepartmentIs(request.snapshot.hat, DepartmentId.ObservabilityAndEvidence) ||
-      hatHasToolBundle(request.snapshot.hat, ToolBundle.NatsAndDlqOperations) ||
-      hatHasToolBundle(request.snapshot.hat, ToolBundle.OzAndHermesRuntime) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Incident) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Operations) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Health) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Observability)
+    hatDepartmentIs(request.snapshot.hat, DepartmentId.ObservabilityAndEvidence) ||
+    hatHasToolBundle(request.snapshot.hat, ToolBundle.NatsAndDlqOperations) ||
+    hatHasToolBundle(request.snapshot.hat, ToolBundle.OzAndHermesRuntime) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Incident) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Operations) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Health) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Observability)
   );
 }
 
 function isKnowledgeStewardshipCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatDepartmentIs(request.snapshot.hat, DepartmentId.MemoryAndKnowledge) ||
-      hatDepartmentIs(request.snapshot.hat, DepartmentId.DocumentationAndProjectSkills) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Memory) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Documentation)
+    hatDepartmentIs(request.snapshot.hat, DepartmentId.DocumentationAndProjectSkills) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Memory) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Documentation)
   );
 }
 
 function isCapabilityExpansionCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatDepartmentIs(request.snapshot.hat, DepartmentId.CapabilityAndAutomationExpansion) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.HatProposal) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.AutomationExpansion) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Capability) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.ToolRegistry)
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.HatProposal) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.AutomationExpansion) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Capability) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.ToolRegistry)
   );
 }
 
 function isCapacityFinanceCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Budget) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Cost) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Capacity)
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Cost) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Capacity)
   );
 }
 
@@ -2706,10 +2654,10 @@ function isEvidenceReviewCurationProfileRequest(request: ContextPackBuildRequest
 function isSecurityControlCurationProfileRequest(request: ContextPackBuildRequest): boolean {
   return (
     hatDepartmentIs(request.snapshot.hat, DepartmentId.SecurityAndCompliance) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Security) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Credential) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Audit) ||
-      hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Dangerous)
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Security) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Credential) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Audit) ||
+    hatHasApprovalScopeContaining(request.snapshot.hat, ContextPackHatApprovalScopeNeedle.Dangerous)
   );
 }
 
@@ -2765,7 +2713,9 @@ function candidateHasActiveScopeDocUnitSource(
       optionalContextValueMatches(pointer.organizationId, request.request.snapshot.organizationId) &&
       pointer.scopeKind !== undefined &&
       pointer.scopeId !== undefined &&
-      activeDocScopesFor(request.request).some((scope) => pointer.scopeKind === scope.kind && pointer.scopeId === scope.id)
+      activeDocScopesFor(request.request).some(
+        (scope) => pointer.scopeKind === scope.kind && pointer.scopeId === scope.id,
+      )
     );
   });
 }
@@ -2783,9 +2733,7 @@ function contextItemIsActiveScopeSynthesisGround(
   request: ContextPackBuildRequest,
   activeDocRefs: ReadonlySet<string>,
 ): boolean {
-  const docPointers = (item.sourcePointers ?? []).filter((pointer) =>
-    isDocUnitSourcePointer(pointer)
-  );
+  const docPointers = (item.sourcePointers ?? []).filter((pointer) => isDocUnitSourcePointer(pointer));
   if (!itemDocCitationRefs(item).every((ref) => activeDocRefs.has(ref))) {
     return false;
   }
@@ -2798,22 +2746,19 @@ function contextItemIsActiveScopeSynthesisGround(
   return docPointers.every((pointer) => docPointerMatchesActiveScope(pointer, request));
 }
 
-function contextItemGraphPointersMatchActiveScope(
-  item: ContextPackItem,
-  request: ContextPackBuildRequest,
-): boolean {
-  const graphNodes = (item.sourcePointers ?? []).filter((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode
+function contextItemGraphPointersMatchActiveScope(item: ContextPackItem, request: ContextPackBuildRequest): boolean {
+  const graphNodes = (item.sourcePointers ?? []).filter(
+    (pointer) => pointer.kind === ContextPackSourcePointerKind.GraphNode,
   );
-  const graphEdges = (item.sourcePointers ?? []).filter((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphEdge
+  const graphEdges = (item.sourcePointers ?? []).filter(
+    (pointer) => pointer.kind === ContextPackSourcePointerKind.GraphEdge,
   );
   if (graphNodes.length === 0 && graphEdges.length === 0) return true;
   if (itemDocCitationRefs(item).length > 0) return true;
   const activeRootNodeIds = activeGraphRootNodeIdsFor(request);
   const nodeMatched = graphNodes.length === 0 || graphNodes.some((pointer) => activeRootNodeIds.has(pointer.nodeId));
   const edgesMatched = graphEdges.every((pointer) =>
-    graphEdgePointerMatchesActiveScope(pointer, item, activeRootNodeIds)
+    graphEdgePointerMatchesActiveScope(pointer, item, activeRootNodeIds),
   );
   if (nodeMatched && edgesMatched) return true;
   return graphEdges.length === 0 && contextItemHasActiveWorkItemPointer(item, request);
@@ -2825,8 +2770,9 @@ function graphEdgePointerMatchesActiveScope(
   activeRootNodeIds: ReadonlySet<string>,
 ): boolean {
   return (
-    activeRootNodeIds.has(pointer.fromNodeId) && activeRootNodeIds.has(pointer.toNodeId)
-  ) || contextItemHasActiveGraphTraversalRootForEdge(item, pointer, activeRootNodeIds);
+    (activeRootNodeIds.has(pointer.fromNodeId) && activeRootNodeIds.has(pointer.toNodeId)) ||
+    contextItemHasActiveGraphTraversalRootForEdge(item, pointer, activeRootNodeIds)
+  );
 }
 
 function contextItemHasActiveGraphTraversalRootForEdge(
@@ -2834,21 +2780,20 @@ function contextItemHasActiveGraphTraversalRootForEdge(
   edge: Extract<ContextPackSourcePointer, { kind: typeof ContextPackSourcePointerKind.GraphEdge }>,
   activeRootNodeIds: ReadonlySet<string>,
 ): boolean {
-  return (item.sourcePointers ?? []).some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode &&
-    activeRootNodeIds.has(pointer.nodeId) &&
-    (pointer.nodeId === edge.fromNodeId || pointer.nodeId === edge.toNodeId)
+  return (item.sourcePointers ?? []).some(
+    (pointer) =>
+      pointer.kind === ContextPackSourcePointerKind.GraphNode &&
+      activeRootNodeIds.has(pointer.nodeId) &&
+      (pointer.nodeId === edge.fromNodeId || pointer.nodeId === edge.toNodeId),
   );
 }
 
-function contextItemHasActiveWorkItemPointer(
-  item: ContextPackItem,
-  request: ContextPackBuildRequest,
-): boolean {
-  return (item.sourcePointers ?? []).some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.WorkItem &&
-    request.snapshot.workItemId !== undefined &&
-    pointer.workItemId === request.snapshot.workItemId
+function contextItemHasActiveWorkItemPointer(item: ContextPackItem, request: ContextPackBuildRequest): boolean {
+  return (item.sourcePointers ?? []).some(
+    (pointer) =>
+      pointer.kind === ContextPackSourcePointerKind.WorkItem &&
+      request.snapshot.workItemId !== undefined &&
+      pointer.workItemId === request.snapshot.workItemId,
   );
 }
 
@@ -2903,8 +2848,8 @@ function candidateHasActiveScopeGraphRoot(
   request: ContextPackCompletenessPolicyRequest,
 ): boolean {
   const activeNodeIds = activeGraphRootNodeIdsFor(request.request);
-  return candidate.sourcePointers.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode && activeNodeIds.has(pointer.nodeId)
+  return candidate.sourcePointers.some(
+    (pointer) => pointer.kind === ContextPackSourcePointerKind.GraphNode && activeNodeIds.has(pointer.nodeId),
   );
 }
 
@@ -2929,9 +2874,10 @@ export function createDeterministicContextPackBuilder(
         request,
       );
       omissions.push(...curationIntent.omissions);
-      const documentFocus = input.documentFocusPolicy === undefined
-        ? { focus: curationIntent.intent.documentFocus, omissions: [] }
-        : await contextPackDocumentFocusFor(input.documentFocusPolicy, request);
+      const documentFocus =
+        input.documentFocusPolicy === undefined
+          ? { focus: curationIntent.intent.documentFocus, omissions: [] }
+          : await contextPackDocumentFocusFor(input.documentFocusPolicy, request);
       omissions.push(...documentFocus.omissions);
       const query = contextPackQuery(request, documentFocus.focus);
       const curationTrace: ContextPackCurationStage[] = [
@@ -2967,8 +2913,8 @@ export function createDeterministicContextPackBuilder(
         omissions.push(hatCommunicationBrief.omission);
       }
       items.push(...documentUnits.map((unit) => docUnitContextItem(unit, request)));
-      const contradictions = documentResult.retrieval.conflicts.map((conflict) =>
-        `document conflict: ${conflict.a.docUnitId} conflicts with ${conflict.b.docUnitId}`,
+      const contradictions = documentResult.retrieval.conflicts.map(
+        (conflict) => `document conflict: ${conflict.a.docUnitId} conflicts with ${conflict.b.docUnitId}`,
       );
       curationTrace.push({
         stage: ContextPackCurationStageKind.RequiredConsult,
@@ -3010,7 +2956,13 @@ export function createDeterministicContextPackBuilder(
 
       const telemetryGraphRootSeeds: ContextPackGraphRootSeed[] = [];
       if (input.telemetryEvidence !== undefined) {
-        const telemetryResult = await telemetryEvidenceItemsFor(input.telemetryEvidence, request, query, observedAt, items);
+        const telemetryResult = await telemetryEvidenceItemsFor(
+          input.telemetryEvidence,
+          request,
+          query,
+          observedAt,
+          items,
+        );
         items.push(...telemetryResult.items);
         omissions.push(...telemetryResult.omissions);
         telemetryGraphRootSeeds.push(...telemetryResult.graphRootSeeds);
@@ -3105,7 +3057,8 @@ export function createDeterministicContextPackBuilder(
         );
       }
 
-      const synthesisRequirementPolicy = input.synthesisRequirementPolicy ?? createDefaultContextPackSynthesisRequirementPolicy();
+      const synthesisRequirementPolicy =
+        input.synthesisRequirementPolicy ?? createDefaultContextPackSynthesisRequirementPolicy();
       const synthesisRequirement = await synthesisRequirementPolicy.evaluate({
         request: cloneContextPackBuildRequest(request),
         curationPlan: cloneContextPackCurationPlan(curationPlan),
@@ -3254,7 +3207,9 @@ export function createDeterministicContextPackBuilder(
           hatAssignmentId: request.snapshot.hatAssignmentId,
           hatId: request.snapshot.hat.id,
           generatedAt: observedAt,
-          freshnessDeadline: new Date(Date.parse(observedAt) + (input.freshnessWindowMs ?? DEFAULT_CONTEXT_PACK_FRESHNESS_WINDOW_MS)).toISOString(),
+          freshnessDeadline: new Date(
+            Date.parse(observedAt) + (input.freshnessWindowMs ?? DEFAULT_CONTEXT_PACK_FRESHNESS_WINDOW_MS),
+          ).toISOString(),
           sourceGraphVersion: documentResult.sourceGraphVersion,
           policyVersion: input.policyVersion ?? DEFAULT_CONTEXT_PACK_POLICY_VERSION,
           tokenBudget: input.tokenBudget ?? DEFAULT_CONTEXT_PACK_TOKEN_BUDGET,
@@ -3295,9 +3250,13 @@ function retrievalContextFor(
   };
 }
 
-function retrievalScopesFor(snapshot: AgentObserveSnapshot, hierarchy: HierarchyReadout): readonly { kind: DocScopeKind; id: string }[] {
+function retrievalScopesFor(
+  snapshot: AgentObserveSnapshot,
+  hierarchy: HierarchyReadout,
+): readonly { kind: DocScopeKind; id: string }[] {
   const scopes: { kind: DocScopeKind; id: string }[] = [];
-  if (snapshot.organizationId !== undefined) scopes.push({ kind: DocScopeKind.Organization, id: snapshot.organizationId });
+  if (snapshot.organizationId !== undefined)
+    scopes.push({ kind: DocScopeKind.Organization, id: snapshot.organizationId });
   if (snapshot.projectId !== undefined) scopes.push({ kind: DocScopeKind.Project, id: snapshot.projectId });
   if (snapshot.teamId !== undefined) scopes.push({ kind: DocScopeKind.Team, id: snapshot.teamId });
   scopes.push({ kind: DocScopeKind.Department, id: snapshot.hat.departmentId });
@@ -3309,7 +3268,9 @@ function retrievalScopesFor(snapshot: AgentObserveSnapshot, hierarchy: Hierarchy
   return uniqueScopes(scopes);
 }
 
-function uniqueScopes(scopes: readonly { kind: DocScopeKind; id: string }[]): readonly { kind: DocScopeKind; id: string }[] {
+function uniqueScopes(
+  scopes: readonly { kind: DocScopeKind; id: string }[],
+): readonly { kind: DocScopeKind; id: string }[] {
   const seen = new Set<string>();
   return scopes.filter((scope) => {
     const key = `${scope.kind}:${scope.id}`;
@@ -3331,7 +3292,9 @@ function contextPackQuery(request: ContextPackBuildRequest, focus: ContextPackDo
     ...focus.queryTerms,
     ...request.hierarchy.priorityItems.map((item) => item.label),
     ...request.metrics.blocks.map((block) => `${block.label} ${block.value}`),
-  ].filter((part): part is string => part !== undefined && part.length > 0).join(" ");
+  ]
+    .filter((part): part is string => part !== undefined && part.length > 0)
+    .join(" ");
 }
 
 function documentFocusCurationStage(focus: ContextPackDocumentFocus): ContextPackCurationStage {
@@ -3807,7 +3770,9 @@ function contextPackUncertaintySignalsFor(
     }
   });
   conflicts.forEach((conflict) => {
-    const evidenceRefs = [`doc:${conflict.a.docUnitId}`, `doc:${conflict.b.docUnitId}`].filter((ref) => itemIds.has(ref));
+    const evidenceRefs = [`doc:${conflict.a.docUnitId}`, `doc:${conflict.b.docUnitId}`].filter((ref) =>
+      itemIds.has(ref),
+    );
     if (evidenceRefs.length > 1) {
       signals.push({
         kind: ContextPackUncertaintySignalKind.ConflictingEvidence,
@@ -3831,8 +3796,8 @@ function contextPackUncertaintySignalsFor(
 }
 
 function memoryPointerIsAdvisory(item: ContextPackItem): boolean {
-  return (item.sourcePointers ?? []).some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.HindsightMemory && pointer.advisory
+  return (item.sourcePointers ?? []).some(
+    (pointer) => pointer.kind === ContextPackSourcePointerKind.HindsightMemory && pointer.advisory,
   );
 }
 
@@ -3870,11 +3835,7 @@ function uniqueContextPackUncertaintySignals(
 }
 
 function contextPackUncertaintySignalRef(signal: ContextPackUncertaintySignal): string {
-  return [
-    UNCERTAINTY_SIGNAL_REF_PREFIX,
-    signal.kind,
-    ...signal.evidenceRefs.map(synthesisIdToken),
-  ].join(":");
+  return [UNCERTAINTY_SIGNAL_REF_PREFIX, signal.kind, ...signal.evidenceRefs.map(synthesisIdToken)].join(":");
 }
 
 function uncertaintySignalsForCitedItems(
@@ -3893,10 +3854,7 @@ function synthesisRankedContextItem(
   request: ContextPackBuildRequest,
   uncertaintySignals: readonly ContextPackUncertaintySignal[],
 ): { ok: true; item: ContextPackItem } | { ok: false; omission: ContextPackOmittedItem } {
-  if (
-    ranked.evidenceRefs.length === 0 ||
-    !contextEvidenceRefsAreGrounded(items, omissions, ranked.evidenceRefs)
-  ) {
+  if (ranked.evidenceRefs.length === 0 || !contextEvidenceRefsAreGrounded(items, omissions, ranked.evidenceRefs)) {
     return ungroundedSynthesisAdvisoryOmission();
   }
   if (contextItemsForEvidenceRefs(items, [ranked.itemId]).length !== 1) {
@@ -3932,7 +3890,10 @@ function synthesisGapHypothesisItem(
     id: `${synthesisBaseId(request)}:${SynthesisAdvisoryIdPart.Gap}:${index}`,
     kind: ContextPackItemKind.SynthesisGapHypothesis,
     title: "Gap hypothesis",
-    summary: gap.suggestedNextStep === undefined ? gap.message : `${gap.message} Suggested next step: ${gap.suggestedNextStep}`,
+    summary:
+      gap.suggestedNextStep === undefined
+        ? gap.message
+        : `${gap.message} Suggested next step: ${gap.suggestedNextStep}`,
     sourceRef: `${synthesisBaseRef(request)}:${SynthesisAdvisoryIdPart.Gap}:${index}`,
     confidence: gap.confidence,
     reasons: [SynthesisAdvisoryReason.GapHypothesis],
@@ -4044,11 +4005,7 @@ function contextEvidenceRefsAreGrounded(
   omissions: readonly ContextPackOmittedItem[],
   evidenceRefs: readonly string[],
 ): boolean {
-  const itemEvidenceRefs = new Set(items.flatMap((item) => [
-    item.id,
-    item.sourceRef,
-    ...(item.citationRefs ?? []),
-  ]));
+  const itemEvidenceRefs = new Set(items.flatMap((item) => [item.id, item.sourceRef, ...(item.citationRefs ?? [])]));
   const omissionEvidenceRefs = new Set(omissions.map(contextOmissionRef));
   return evidenceRefs.every((ref) => itemEvidenceRefs.has(ref) || omissionEvidenceRefs.has(ref));
 }
@@ -4067,10 +4024,9 @@ function contextItemsForEvidenceRefs(
   evidenceRefs: readonly string[],
 ): readonly ContextPackItem[] {
   return evidenceRefs.flatMap((ref) => {
-    const item = items.find((candidate) =>
-      candidate.id === ref ||
-      candidate.sourceRef === ref ||
-      (candidate.citationRefs ?? []).includes(ref)
+    const item = items.find(
+      (candidate) =>
+        candidate.id === ref || candidate.sourceRef === ref || (candidate.citationRefs ?? []).includes(ref),
     );
     return item === undefined ? [] : [item];
   });
@@ -4148,7 +4104,12 @@ function synthesisBaseRef(request: ContextPackBuildRequest): string {
 }
 
 function synthesisIdToken(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "item";
+  return (
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "item"
+  );
 }
 
 function minimumContextItemConfidence(items: readonly ContextPackItem[]): number {
@@ -4266,11 +4227,13 @@ async function telemetryEvidenceItemsFor(
   } catch (error) {
     return {
       items: [],
-      omissions: [{
-        nodeId: TELEMETRY_EVIDENCE_NODE_ID,
-        reason: ContextPackOmissionReason.RetrievalFailed,
-        message: `${TELEMETRY_EVIDENCE_RETRIEVAL_FAILED_MESSAGE}: ${errorMessage(error)}`,
-      }],
+      omissions: [
+        {
+          nodeId: TELEMETRY_EVIDENCE_NODE_ID,
+          reason: ContextPackOmissionReason.RetrievalFailed,
+          message: `${TELEMETRY_EVIDENCE_RETRIEVAL_FAILED_MESSAGE}: ${errorMessage(error)}`,
+        },
+      ],
       graphRootSeeds: [],
     };
   }
@@ -4491,8 +4454,8 @@ function scheduleAnchorScopeViolation(
   sourcePointers: readonly ContextPackSourcePointer[],
   request: ContextPackBuildRequest,
 ): string | null {
-  const schedulePointers = sourcePointers.filter((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.ScheduleBlock
+  const schedulePointers = sourcePointers.filter(
+    (pointer) => pointer.kind === ContextPackSourcePointerKind.ScheduleBlock,
   );
   if (schedulePointers.length === 0) {
     return itemClaimsScheduleAnchor(item) ? SCHEDULE_ANCHOR_REQUIRES_HAT_ASSIGNMENT_PROVENANCE_MESSAGE : null;
@@ -4506,7 +4469,11 @@ function scheduleAnchorScopeViolation(
     if (pointer.assignedHatAssignmentId !== activeHatAssignmentId) {
       return SCHEDULE_ANCHOR_OUTSIDE_ACTIVE_HAT_ASSIGNMENT_MESSAGE;
     }
-    if (activeAgentId !== undefined && pointer.assignedAgentId !== undefined && pointer.assignedAgentId !== activeAgentId) {
+    if (
+      activeAgentId !== undefined &&
+      pointer.assignedAgentId !== undefined &&
+      pointer.assignedAgentId !== activeAgentId
+    ) {
       return SCHEDULE_ANCHOR_OUTSIDE_ACTIVE_AGENT_ASSIGNMENT_MESSAGE;
     }
   }
@@ -4518,8 +4485,8 @@ function supervisorSignalAnchorScopeViolation(
   sourcePointers: readonly ContextPackSourcePointer[],
   request: ContextPackBuildRequest,
 ): string | null {
-  const supervisorSignalPointers = sourcePointers.filter((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.SupervisorSignal
+  const supervisorSignalPointers = sourcePointers.filter(
+    (pointer) => pointer.kind === ContextPackSourcePointerKind.SupervisorSignal,
   );
   if (supervisorSignalPointers.length === 0) {
     return itemClaimsSupervisorSignalAnchor(item)
@@ -4573,8 +4540,8 @@ function graphNodeIdsForContextItems(items: readonly ContextPackItem[]): Readonl
   return new Set(
     items.flatMap((item) =>
       (item.sourcePointers ?? []).flatMap((pointer) =>
-        pointer.kind === ContextPackSourcePointerKind.GraphNode ? [pointer.nodeId] : []
-      )
+        pointer.kind === ContextPackSourcePointerKind.GraphNode ? [pointer.nodeId] : [],
+      ),
     ),
   );
 }
@@ -4597,10 +4564,14 @@ function memoryContextItem(memory: ContextPackMemoryRecall): ContextPackItem {
         providerId: memory.providerId,
         memoryId: memory.memoryId,
         ...(memory.creatingAgentId === undefined ? {} : { creatingAgentId: memory.creatingAgentId }),
-        ...(memory.creatingHatAssignmentId === undefined ? {} : { creatingHatAssignmentId: memory.creatingHatAssignmentId }),
+        ...(memory.creatingHatAssignmentId === undefined
+          ? {}
+          : { creatingHatAssignmentId: memory.creatingHatAssignmentId }),
         ...(memory.creatingProjectId === undefined ? {} : { creatingProjectId: memory.creatingProjectId }),
         ...(memory.creatingWorkItemId === undefined ? {} : { creatingWorkItemId: memory.creatingWorkItemId }),
-        ...(memory.creatingPromptFlowRunId === undefined ? {} : { creatingPromptFlowRunId: memory.creatingPromptFlowRunId }),
+        ...(memory.creatingPromptFlowRunId === undefined
+          ? {}
+          : { creatingPromptFlowRunId: memory.creatingPromptFlowRunId }),
         ...(memory.recallAgentId === undefined ? {} : { recallAgentId: memory.recallAgentId }),
         ...(memory.recallHatAssignmentId === undefined ? {} : { recallHatAssignmentId: memory.recallHatAssignmentId }),
         ...(memory.recallProjectId === undefined ? {} : { recallProjectId: memory.recallProjectId }),
@@ -4620,7 +4591,9 @@ function staleInputsFor(units: readonly DocUnit[]): readonly string[] {
     .map((unit) => unit.docUnitId);
 }
 
-function contextPackScope(snapshot: AgentObserveSnapshot): Pick<ContextPack, "agentId" | "organizationId" | "projectId" | "teamId" | "workItemId"> {
+function contextPackScope(
+  snapshot: AgentObserveSnapshot,
+): Pick<ContextPack, "agentId" | "organizationId" | "projectId" | "teamId" | "workItemId"> {
   return {
     ...(snapshot.agentId === undefined ? {} : { agentId: snapshot.agentId }),
     ...(snapshot.organizationId === undefined ? {} : { organizationId: snapshot.organizationId }),
@@ -4721,7 +4694,9 @@ function cloneContextPackCurationProfile(profile: ContextPackCurationProfile): C
   return {
     profileId: profile.profileId,
     policyVersion: profile.policyVersion,
-    ...(profile.lanePriorityOverrides === undefined ? {} : { lanePriorityOverrides: { ...profile.lanePriorityOverrides } }),
+    ...(profile.lanePriorityOverrides === undefined
+      ? {}
+      : { lanePriorityOverrides: { ...profile.lanePriorityOverrides } }),
     ...(profile.requiredLanes === undefined ? {} : { requiredLanes: [...profile.requiredLanes] }),
     ...(profile.deterministicInstructions === undefined
       ? {}

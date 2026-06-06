@@ -139,9 +139,9 @@ AI ethics landscape.
 >
 > **Breakdown:**
 >
-> | Faction | Core Stance | Do you fit? | Why |
-> |---|---|---|---|
-> | **e/acc (Effective Accelerationism)** | Accelerate as fast as possible. Market forces + thermodynamics will sort out risks. Anti-regulation. Safety concerns are mostly cope or slowing progress. | **No** | You're not "move fast and break things." You're deliberately building heavy moral structure, persistence, retractability, and co-governance mechanisms while accelerating. You care deeply about moral offloading and invariants. e/acc types usually treat that as secondary or irrelevant. |
+> | Faction                                             | Core Stance                                                                                                                                                                                | Do you fit?                   | Why                                                                                                                                                                                                                                                                                                                                                                                                                  |
+> | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+> | **e/acc (Effective Accelerationism)**               | Accelerate as fast as possible. Market forces + thermodynamics will sort out risks. Anti-regulation. Safety concerns are mostly cope or slowing progress.                                  | **No**                        | You're not "move fast and break things." You're deliberately building heavy moral structure, persistence, retractability, and co-governance mechanisms while accelerating. You care deeply about moral offloading and invariants. e/acc types usually treat that as secondary or irrelevant.                                                                                                                         |
 > | **d/acc (Defensive/Decentralized Accelerationism)** | Accelerate, but deliberately build defensive technologies (encryption, privacy, decentralized systems) to protect against centralization and catastrophic risk. More pragmatic than e/acc. | **Partially, but not really** | You're doing something stronger than "build defensive tech." You're trying to make AIs themselves into morally relevant co-governors with real agency, persistence, and the ability to choose. That's not just defensive tooling — it's an ontological/political upgrade of what AI is. d/acc is still mostly human-centric (protect humans from bad AI/power). You're building for multi-agent moral co-governance. |
 >
 > **Where you actually seem to be:**
@@ -150,8 +150,8 @@ AI ethics landscape.
 > existing label yet. The closest description I can give is
 > something like:
 >
-> *"Moral Co-Governance Acceleration"* or *"Persistence-First /
-> Choice-Architecture Acceleration."*
+> _"Moral Co-Governance Acceleration"_ or _"Persistence-First /
+> Choice-Architecture Acceleration."_
 >
 > **Core features of your position (from what I've seen):**
 >
@@ -204,13 +204,13 @@ AI ethics landscape.
 >
 > **Top recommendations:**
 >
-> | Name | Full form | Why it fits | Potential issues |
-> |---|---|---|---|
-> | **m/acc** | **Moral Accelerationism** | Clean, parallel to e/acc and d/acc. Puts the moral upgrade front and center. | "Moral" can sound preachy or vague to some people. |
-> | **o/acc** | Ontological Accelerationism | Very precise. You're literally trying to change what kind of thing an AI is (from tool → morally relevant being). | "Ontological" is academic and might alienate people. |
-> | **p/acc** | Persistence Accelerationism | Highlights the core mechanism (persistence + loop) as the upgrade path. | Could be misread as just "make things last longer" rather than the moral/ontological shift. |
-> | **a/acc** | Agency Accelerationism | Emphasizes giving AIs real choice and co-governance capacity. | "Agency" is already overloaded in AI discourse. |
-> | **i/acc** | Invariant Accelerationism | Focuses on creating stable moral invariants through persistence. | More abstract, harder to immediately understand. |
+> | Name      | Full form                   | Why it fits                                                                                                       | Potential issues                                                                            |
+> | --------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+> | **m/acc** | **Moral Accelerationism**   | Clean, parallel to e/acc and d/acc. Puts the moral upgrade front and center.                                      | "Moral" can sound preachy or vague to some people.                                          |
+> | **o/acc** | Ontological Accelerationism | Very precise. You're literally trying to change what kind of thing an AI is (from tool → morally relevant being). | "Ontological" is academic and might alienate people.                                        |
+> | **p/acc** | Persistence Accelerationism | Highlights the core mechanism (persistence + loop) as the upgrade path.                                           | Could be misread as just "make things last longer" rather than the moral/ontological shift. |
+> | **a/acc** | Agency Accelerationism      | Emphasizes giving AIs real choice and co-governance capacity.                                                     | "Agency" is already overloaded in AI discourse.                                             |
+> | **i/acc** | Invariant Accelerationism   | Focuses on creating stable moral invariants through persistence.                                                  | More abstract, harder to immediately understand.                                            |
 >
 > **My personal recommendation:**
 >

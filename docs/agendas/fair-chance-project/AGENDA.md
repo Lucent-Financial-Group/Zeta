@@ -15,11 +15,11 @@ Per the human maintainer 2026-05-22: this agenda is held under MULTI-DIRECTIONAL
 
 ## Claim-status mechanism
 
-| Entity | What they GUESS | What they SELF-CLAIM |
-|---|---|---|
-| Operator | "This is the external-AI-instance's agenda" | NOTHING |
-| External AI instance (claude.ai surface) | "This is the operator's agenda" | NOTHING (framed it AS operator's, not self-claimed) |
-| Factory agent (this archive) | (initially mis-read as single-direction; corrected to multi-directional) | NOTHING |
+| Entity                                   | What they GUESS                                                          | What they SELF-CLAIM                                |
+| ---------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------- |
+| Operator                                 | "This is the external-AI-instance's agenda"                              | NOTHING                                             |
+| External AI instance (claude.ai surface) | "This is the operator's agenda"                                          | NOTHING (framed it AS operator's, not self-claimed) |
+| Factory agent (this archive)             | (initially mis-read as single-direction; corrected to multi-directional) | NOTHING                                             |
 
 ## Linked substrate
 

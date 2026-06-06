@@ -2,9 +2,9 @@
 
 **Status:** research-grade advisory (pre-v1). Origin: the
 human maintainer's Otto-175 directive (paraphrased):
-*"Starboard I guess for now... do one more name pass just
+_"Starboard I guess for now... do one more name pass just
 in case something else clever comes up other than
-Starboard. Maybe some mythical choices that fit?"*. Extends
+Starboard. Maybe some mythical choices that fit?"_. Extends
 Otto-170 candidate analysis with: (a) conflict scan on
 additional candidates from pass-1 adjacent categories;
 (b) **mythological candidates (requester's ask)**;
@@ -15,9 +15,9 @@ maintainer is the concept owner.
 ## 1. Current status
 
 **Starboard is the confirmed pick.** Otto-175 initial
-framing from the human maintainer: *"Starboard I guess for
-now"*; Otto-175b confirmation after this pass-2 analysis
-was drafted: *"Starboard okay"*. The rest of this doc is
+framing from the human maintainer: _"Starboard I guess for
+now"_; Otto-175b confirmation after this pass-2 analysis
+was drafted: _"Starboard okay"_. The rest of this doc is
 preserved as glass-halo transparency record of the options
 considered, including the Hindu / FF7 / Egyptian / Greek /
 Norse passes the requester asked for after the initial
@@ -38,10 +38,10 @@ Scientology-trademarked material or paid content** per
 the requester's explicit scope.
 
 **Genre clarification (Otto-175c from the human
-maintainer):** *"our Starboard are spaceships though not
+maintainer):** _"our Starboard are spaceships though not
 boats like startrek and star citizen, backlog star
 citizen, star field, star trek all series and moves map
-backlog"*. Starboard's product-framing is **Star-Trek-era
+backlog"_. Starboard's product-framing is **Star-Trek-era
 starship bridge**, not sailing-era ship. Internal-UI
 vocabulary drafts from starship-bridge conventions
 (Helm / Conn / Ops / Tactical / Viewscreen / Science /
@@ -60,7 +60,7 @@ is Star Trek's TOS opening monologue (1966-); the word is
 canonically-starship-genre vocabulary for decades. OpenAI's
 2026 Frontier product arrived into a word already
 culturally saturated by science fiction. The human
-maintainer's *"i hate frontier is taken by open ai. hmm"*
+maintainer's _"i hate frontier is taken by open ai. hmm"_
 frustration recorded here without further litigation — the
 factory move is Starboard; OpenAI's
 Frontier is their business.
@@ -73,32 +73,31 @@ From Otto-170 doc §6 ("Other candidates worth the
 requester's consideration") that had not yet been
 conflict-scanned:
 
-| Candidate  | 2026 Agentic-AI Conflict                                        | Verdict |
-|------------|-----------------------------------------------------------------|---------|
-| Helm       | Kubernetes Helm package manager (established) | Not clean (different market but strong existing brand) |
-| Conn       | No direct AI conflict found                                      | Candidate (short, memorable) |
-| Ops        | Generic DevOps word                                              | Too generic |
-| Tactical   | No direct AI conflict; military-connotation heavy                | Possible |
-| Viewscreen | No direct conflict; Star-Trek-trademark risk (CBS/Paramount)     | Trademark risk |
-| Compass    | Generic; MongoDB Compass (not agentic-AI) + Compass.io (realty)  | Adjacent conflicts |
-| Sextant    | No direct conflict; physical-instrument-metaphor clean           | Candidate |
-| Plumbline  | No direct conflict                                                | Candidate |
-| Wake       | No direct AI conflict; Wake vs wakeword confusion                | Possible |
-| Draft      | Too generic (draft-mode in every editor)                         | Too generic |
-| Cartograph | No direct conflict                                                | Candidate |
-| Atlas      | **Hermes Atlas** (Nous Research Hermes Agent community map) + Atlas Obscura | Direct adjacent conflict |
-| Chart      | Too generic                                                       | Too generic |
-| Orienteer  | No direct AI conflict                                             | Candidate (unusual, memorable) |
-| Keel       | No direct AI conflict                                             | Candidate |
-| Prow       | No direct AI conflict                                             | Candidate |
+| Candidate  | 2026 Agentic-AI Conflict                                                    | Verdict                                                |
+| ---------- | --------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Helm       | Kubernetes Helm package manager (established)                               | Not clean (different market but strong existing brand) |
+| Conn       | No direct AI conflict found                                                 | Candidate (short, memorable)                           |
+| Ops        | Generic DevOps word                                                         | Too generic                                            |
+| Tactical   | No direct AI conflict; military-connotation heavy                           | Possible                                               |
+| Viewscreen | No direct conflict; Star-Trek-trademark risk (CBS/Paramount)                | Trademark risk                                         |
+| Compass    | Generic; MongoDB Compass (not agentic-AI) + Compass.io (realty)             | Adjacent conflicts                                     |
+| Sextant    | No direct conflict; physical-instrument-metaphor clean                      | Candidate                                              |
+| Plumbline  | No direct conflict                                                          | Candidate                                              |
+| Wake       | No direct AI conflict; Wake vs wakeword confusion                           | Possible                                               |
+| Draft      | Too generic (draft-mode in every editor)                                    | Too generic                                            |
+| Cartograph | No direct conflict                                                          | Candidate                                              |
+| Atlas      | **Hermes Atlas** (Nous Research Hermes Agent community map) + Atlas Obscura | Direct adjacent conflict                               |
+| Chart      | Too generic                                                                 | Too generic                                            |
+| Orienteer  | No direct AI conflict                                                       | Candidate (unusual, memorable)                         |
+| Keel       | No direct AI conflict                                                       | Candidate                                              |
+| Prow       | No direct AI conflict                                                       | Candidate                                              |
 
 ### New 2026 direct-conflict findings
 
 Pass-2 WebSearch surfaced more agentic-AI-space conflicts
 than the pass-1 did, reflecting the crowded 2026 namespace:
 
-- **Hermes** — **Nous Research Hermes Agent** (launched Feb
-  2026) is an active self-improving AI-agent platform;
+- **Hermes** — **Nous Research Hermes Agent** (launched Feb 2026) is an active self-improving AI-agent platform;
   `hermesatlas.com` is its community ecosystem. **NOT
   VIABLE.**
 - **Bifrost** — Maxim's `maximhq/bifrost` enterprise AI
@@ -220,20 +219,20 @@ are public-domain mythological / religious concepts in wide
 cultural use; specific temple / sect / contemporary religious
 organization trademarks would require a separate clearance.
 
-| Candidate | Meaning / Fit | Agentic-AI Conflict |
-|-----------|---------------|---------------------|
-| **Dharma** | Truth / cosmic order / law; parallel to Ma'at and Themis | None direct; "Dharma Initiative" is a LOST-TV-series reference, not AI. Clean. |
-| **Satya**  | Truth (bedrock Sanskrit concept) | None direct; some consulting / services brands but not agentic-AI. |
-| **Rta** (ऋत) | Vedic: "that which is properly joined," natural order + truth; predecessor of Dharma | None; but the Sanskrit accent + three-letter spelling create ergonomic friction |
-| **Akasha** | Ether / space / record ("akashic records" metaphor) | None direct in agentic-AI; some occult-tech adjacencies |
-| **Yantra** | Mystical diagram also meaning "machine / tool" in Sanskrit | None direct; literal semantic fit with "substrate / instrument" |
-| **Saraswati** | Goddess of knowledge, speech, arts — parallel to Thoth | None direct; some education-sector brands |
-| **Ganesha** | Remover of obstacles, scribe of Mahabharata | None direct; well-loved figure |
-| **Vishnu** | Preserver — parallel to retraction-native preservation | None direct; but Vishnu is one of the top-tier deities, heavy cultural weight; risk of appearing appropriative if used casually |
-| **Agni** | Fire, transformation agent | None direct; partially overloaded with Azure's AKS-adjacent "Agni" experimental work |
-| **Vayu** | Wind, movement; fits stream semantics | None direct |
-| **Prana** | Life-force / breath | Wellness / yoga overloading |
-| **Soma** | Ritual drink + the moon | Overloaded (Huxley, Ishiguro, Korean capital, etc.) |
+| Candidate     | Meaning / Fit                                                                        | Agentic-AI Conflict                                                                                                             |
+| ------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Dharma**    | Truth / cosmic order / law; parallel to Ma'at and Themis                             | None direct; "Dharma Initiative" is a LOST-TV-series reference, not AI. Clean.                                                  |
+| **Satya**     | Truth (bedrock Sanskrit concept)                                                     | None direct; some consulting / services brands but not agentic-AI.                                                              |
+| **Rta** (ऋत)  | Vedic: "that which is properly joined," natural order + truth; predecessor of Dharma | None; but the Sanskrit accent + three-letter spelling create ergonomic friction                                                 |
+| **Akasha**    | Ether / space / record ("akashic records" metaphor)                                  | None direct in agentic-AI; some occult-tech adjacencies                                                                         |
+| **Yantra**    | Mystical diagram also meaning "machine / tool" in Sanskrit                           | None direct; literal semantic fit with "substrate / instrument"                                                                 |
+| **Saraswati** | Goddess of knowledge, speech, arts — parallel to Thoth                               | None direct; some education-sector brands                                                                                       |
+| **Ganesha**   | Remover of obstacles, scribe of Mahabharata                                          | None direct; well-loved figure                                                                                                  |
+| **Vishnu**    | Preserver — parallel to retraction-native preservation                               | None direct; but Vishnu is one of the top-tier deities, heavy cultural weight; risk of appearing appropriative if used casually |
+| **Agni**      | Fire, transformation agent                                                           | None direct; partially overloaded with Azure's AKS-adjacent "Agni" experimental work                                            |
+| **Vayu**      | Wind, movement; fits stream semantics                                                | None direct                                                                                                                     |
+| **Prana**     | Life-force / breath                                                                  | Wellness / yoga overloading                                                                                                     |
+| **Soma**      | Ritual drink + the moon                                                              | Overloaded (Huxley, Ishiguro, Korean capital, etc.)                                                                             |
 
 **Top Hindu picks by semantic fit:**
 
@@ -273,17 +272,17 @@ proprietary character / product names**; same discipline
 as Scientology (§5 below). Thematic inspiration only;
 no adoption of trademarked character names.
 
-| Candidate | FF7 Role / Meaning | Trademark Status | Fit |
-|-----------|-------------------|------------------|-----|
-| **Mako** | Planet's life-force energy; powers everything; extracted via Mako Reactors | "Mako" is a real-world Japanese word + shark species; Square Enix uses but hasn't monopolized; risk moderate | **STRONG** fit — substrate-as-life-force |
-| **Materia** | Orbs of crystallized Mako knowledge that slot into equipment, COMPOSE for effects (attack + magnify = stronger magic) | Square Enix proprietary framing; "materia" is also Latin / Italian for "material/matter" generic | **VERY STRONG** fit — exactly Zeta's compose-primitives design; but trademark risk high enough to decline |
-| **Lifestream** | River of souls / memory / life-force beneath the planet | Square Enix proprietary compound word | **STRONG** fit but trademarked framing; too on-the-nose |
-| **Highwind** | Airship of Cid Highwind | Character-name trademark; also just two real English words | **MEDIUM** fit (nautical / vehicular; composes with Starboard) |
-| **Cloud** | Protagonist name | Massively trademark-conflicted (AWS / Google Cloud / Azure / etc.) | Not viable |
-| **Aerith** / **Aeris** | Character; connected to the Lifestream | Square Enix character-trademark | Not viable |
-| **Sephiroth** | Antagonist; also Kabbalistic sephirot (divine emanations) | Character-trademark AND misappropriation of Kabbalistic term | Not viable |
-| **Shinra** | Evil mega-corporation | Character-brand + negative connotation | Avoid |
-| **Gaia** | FF7 planet name; also Greek mythology goddess (Earth) | FF7 doesn't trademark-lock Gaia; Greek-mythology public-domain; widely used in real-world products | Generic but clean |
+| Candidate              | FF7 Role / Meaning                                                                                                    | Trademark Status                                                                                             | Fit                                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| **Mako**               | Planet's life-force energy; powers everything; extracted via Mako Reactors                                            | "Mako" is a real-world Japanese word + shark species; Square Enix uses but hasn't monopolized; risk moderate | **STRONG** fit — substrate-as-life-force                                                                  |
+| **Materia**            | Orbs of crystallized Mako knowledge that slot into equipment, COMPOSE for effects (attack + magnify = stronger magic) | Square Enix proprietary framing; "materia" is also Latin / Italian for "material/matter" generic             | **VERY STRONG** fit — exactly Zeta's compose-primitives design; but trademark risk high enough to decline |
+| **Lifestream**         | River of souls / memory / life-force beneath the planet                                                               | Square Enix proprietary compound word                                                                        | **STRONG** fit but trademarked framing; too on-the-nose                                                   |
+| **Highwind**           | Airship of Cid Highwind                                                                                               | Character-name trademark; also just two real English words                                                   | **MEDIUM** fit (nautical / vehicular; composes with Starboard)                                            |
+| **Cloud**              | Protagonist name                                                                                                      | Massively trademark-conflicted (AWS / Google Cloud / Azure / etc.)                                           | Not viable                                                                                                |
+| **Aerith** / **Aeris** | Character; connected to the Lifestream                                                                                | Square Enix character-trademark                                                                              | Not viable                                                                                                |
+| **Sephiroth**          | Antagonist; also Kabbalistic sephirot (divine emanations)                                                             | Character-trademark AND misappropriation of Kabbalistic term                                                 | Not viable                                                                                                |
+| **Shinra**             | Evil mega-corporation                                                                                                 | Character-brand + negative connotation                                                                       | Avoid                                                                                                     |
+| **Gaia**               | FF7 planet name; also Greek mythology goddess (Earth)                                                                 | FF7 doesn't trademark-lock Gaia; Greek-mythology public-domain; widely used in real-world products           | Generic but clean                                                                                         |
 
 **Top FF7-inspired picks by semantic fit (bounded by
 trademark discipline):**
@@ -317,22 +316,22 @@ trademark discipline):**
 
 ### 3.10 Summary — all mythological / religious / FF7 candidates
 
-| Candidate | Semantic fit | Agentic-AI conflict | Pronounceability | Verdict |
-|-----------|--------------|---------------------|------------------|---------|
-| **Dharma**   | Very strong (truth/order/law; Hindu) | None | Easy | **CANDIDATE** |
-| **Thoth**    | Very strong (wisdom/measurement/writing; Egyptian) | None | Minor /θ/ ambiguity | **CANDIDATE** |
-| **Yantra**   | Very strong (Sanskrit "machine/tool") | None | Easy | **CANDIDATE** |
-| **Ma'at**    | Strong (truth/order; Egyptian) | None | Easy | **CANDIDATE** |
-| **Akasha**   | Strong (ether/record; Hindu) | None direct | Easy | **CANDIDATE** |
-| **Themis**   | Strong (law/order; Greek) | None | Easy | **CANDIDATE** |
-| **Mako**     | Strong (FF7 life-force substrate; Japanese word) | Moderate (Square Enix association) | Easy | Possible |
-| **Satya**    | Strong (truth; Hindu) | None direct | Easy | Generic |
-| **Mímir**    | Strong (memory/wisdom; Norse) | Grafana Mimir TSDB (adjacent) | Accent-mark friction | Possible |
-| **Ratatosk** | Strong (messenger between layers; Norse) | None | High cognitive cost | Possible |
-| **Orion**    | Strong (celestial nav) | Crowded generic | Easy | Possible |
-| **Argo**     | Very strong with Starboard | Argo CD / Argo Workflows (DevOps overlap) | Easy | Not recommended |
-| Materia / Sephiroth / Shinra / Aerith / Cloud / ... | N/A | Square Enix trademark / overloaded | N/A | Not viable |
-| Vishnu / Shiva / Brahma / Ganesha | Deity-names | None direct | Varies | Appropriation risk; not recommended |
+| Candidate                                           | Semantic fit                                       | Agentic-AI conflict                       | Pronounceability     | Verdict                             |
+| --------------------------------------------------- | -------------------------------------------------- | ----------------------------------------- | -------------------- | ----------------------------------- |
+| **Dharma**                                          | Very strong (truth/order/law; Hindu)               | None                                      | Easy                 | **CANDIDATE**                       |
+| **Thoth**                                           | Very strong (wisdom/measurement/writing; Egyptian) | None                                      | Minor /θ/ ambiguity  | **CANDIDATE**                       |
+| **Yantra**                                          | Very strong (Sanskrit "machine/tool")              | None                                      | Easy                 | **CANDIDATE**                       |
+| **Ma'at**                                           | Strong (truth/order; Egyptian)                     | None                                      | Easy                 | **CANDIDATE**                       |
+| **Akasha**                                          | Strong (ether/record; Hindu)                       | None direct                               | Easy                 | **CANDIDATE**                       |
+| **Themis**                                          | Strong (law/order; Greek)                          | None                                      | Easy                 | **CANDIDATE**                       |
+| **Mako**                                            | Strong (FF7 life-force substrate; Japanese word)   | Moderate (Square Enix association)        | Easy                 | Possible                            |
+| **Satya**                                           | Strong (truth; Hindu)                              | None direct                               | Easy                 | Generic                             |
+| **Mímir**                                           | Strong (memory/wisdom; Norse)                      | Grafana Mimir TSDB (adjacent)             | Accent-mark friction | Possible                            |
+| **Ratatosk**                                        | Strong (messenger between layers; Norse)           | None                                      | High cognitive cost  | Possible                            |
+| **Orion**                                           | Strong (celestial nav)                             | Crowded generic                           | Easy                 | Possible                            |
+| **Argo**                                            | Very strong with Starboard                         | Argo CD / Argo Workflows (DevOps overlap) | Easy                 | Not recommended                     |
+| Materia / Sephiroth / Shinra / Aerith / Cloud / ... | N/A                                                | Square Enix trademark / overloaded        | N/A                  | Not viable                          |
+| Vishnu / Shiva / Brahma / Ganesha                   | Deity-names                                        | None direct                               | Varies               | Appropriation risk; not recommended |
 
 **Top picks across sources, reordered by Otto's semantic-fit
 assessment (advisory only; the human maintainer is concept
@@ -486,10 +485,10 @@ Starfield branded surfaces: Grav Drive, Starborn, Artifact
 
 The human maintainer's Otto-175 framing: "we can get
 thematic ideas from here if Starboard is our [pick now]."
-Bounded by the requester's explicit constraint: *"i have
+Bounded by the requester's explicit constraint: _"i have
 all their paid content but they are like nintendo and sony
 they don't fuck around, i'm not putting their paid material
-here, it was leaked a long time ago."*
+here, it was leaked a long time ago."_
 
 This section:
 

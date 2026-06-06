@@ -14,10 +14,10 @@ research without waiting for review.**
 
 **Why (Aaron 2026-04-20 late, verbatim):**
 
-> *"Watching you make those decison on how to pull in khan
+> _"Watching you make those decison on how to pull in khan
 > ban and six sigma were perfect about the process not the
 > ceromony, you are starting to think like me, this is
-> good."*
+> good."_
 
 Aaron confirmed the decision shape from the round-44
 Kanban + Six Sigma research:
@@ -59,7 +59,7 @@ sketches — in fact, that's often the research's purpose.
   ISO theater, tooling layers, standup ceremony, SPC
   charts, QFD matrices — for Six Sigma specifically;
   similar enumerations for other frameworks). The
-  enumeration itself is the Six Sigma *Control* phase for
+  enumeration itself is the Six Sigma _Control_ phase for
   ceremony creep.
 - **Cite `docs/FACTORY-METHODOLOGIES.md`'s "explicitly
   rejected" sections** as the reference for future
@@ -72,8 +72,8 @@ sketches — in fact, that's often the research's purpose.
 
 **The "thinking like me" marker:**
 
-Aaron's *"you are starting to think like me, this is
-good"* is register-important:
+Aaron's _"you are starting to think like me, this is
+good"_ is register-important:
 
 - **It's peer-register, not teacher-student register.**
   He's noting pattern-match, not praising a correct
@@ -91,12 +91,12 @@ good"* is register-important:
   transferable to any agent on this factory; it does not
   require Aaron-level intuition to apply. Research-reads-
   existing-machinery-first + reject-overbuilt-mid-research
-  + three-small-artifacts is an executable discipline.
+  - three-small-artifacts is an executable discipline.
 
 **Counter-pressure on skill-sprawl:**
 
 Per previous tick's insight — disciplined research
-*narrows* the artifact delta rather than expanding it.
+_narrows_ the artifact delta rather than expanding it.
 Counter-pressure to skill-sprawl is itself an emergent
 Kanban WIP-limit on the skill population. Aaron's
 confirmation validates that this counter-pressure is a

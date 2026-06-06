@@ -24,8 +24,17 @@ export type AdaptationDeps = {
 
 function event(deps: AdaptationDeps, kind: OrgEventKind, subjectId: string, decision: string): OrgEvent {
   return {
-    id: deps.createId("evt"), kind, occurredAt: new Date(deps.now()).toISOString(), organizationId: deps.organizationId,
-    subjectId, decision, supervisorChain: ["ceo"], evidenceRefs: [], correlationId: subjectId, causationId: subjectId, traceId: subjectId,
+    id: deps.createId("evt"),
+    kind,
+    occurredAt: new Date(deps.now()).toISOString(),
+    organizationId: deps.organizationId,
+    subjectId,
+    decision,
+    supervisorChain: ["ceo"],
+    evidenceRefs: [],
+    correlationId: subjectId,
+    causationId: subjectId,
+    traceId: subjectId,
   };
 }
 
@@ -34,14 +43,35 @@ function event(deps: AdaptationDeps, kind: OrgEventKind, subjectId: string, deci
  * handbook seeding, and autonomy confirmation are tasks too — so onboarding is the org doing its
  * own bootstrap through the normal loop, not a one-off migration.
  */
-export function planOnboarding(config: TenantConfig, deps: AdaptationDeps): { work: readonly PlannedWork[]; events: readonly OrgEvent[] } {
+export function planOnboarding(
+  config: TenantConfig,
+  deps: AdaptationDeps,
+): { work: readonly PlannedWork[]; events: readonly OrgEvent[] } {
   const work: PlannedWork[] = [
-    { workItemType: WorkItemType.Task, title: "Ingest the tenant's existing documentation", description: "Run the doc connectors → structural units at draft; load-bearing docs route to review." },
-    { workItemType: WorkItemType.Task, title: "Build the codebase knowledge graph", description: "Deterministic extraction of services/deps/endpoints; enrichment adds ownership/risk as inferred." },
-    { workItemType: WorkItemType.Task, title: "Seed canonical handbooks from ingested docs", description: "Canonicalize per topic; bind handbooks to their workflow stages." },
-    { workItemType: WorkItemType.Task, title: `Confirm the autonomy dial (${config.autonomy.level})`, description: `Review which stages require humans: ${config.autonomy.humanGatedStageIds.join(", ") || "none pinned"}.` },
+    {
+      workItemType: WorkItemType.Task,
+      title: "Ingest the tenant's existing documentation",
+      description: "Run the doc connectors → structural units at draft; load-bearing docs route to review.",
+    },
+    {
+      workItemType: WorkItemType.Task,
+      title: "Build the codebase knowledge graph",
+      description: "Deterministic extraction of services/deps/endpoints; enrichment adds ownership/risk as inferred.",
+    },
+    {
+      workItemType: WorkItemType.Task,
+      title: "Seed canonical handbooks from ingested docs",
+      description: "Canonicalize per topic; bind handbooks to their workflow stages.",
+    },
+    {
+      workItemType: WorkItemType.Task,
+      title: `Confirm the autonomy dial (${config.autonomy.level})`,
+      description: `Review which stages require humans: ${config.autonomy.humanGatedStageIds.join(", ") || "none pinned"}.`,
+    },
   ];
-  const events = work.map((w) => event(deps, OrgEventKind.IntakeReceived, deps.createId("onboard"), `onboarding work planned: ${w.title}`));
+  const events = work.map((w) =>
+    event(deps, OrgEventKind.IntakeReceived, deps.createId("onboard"), `onboarding work planned: ${w.title}`),
+  );
   return { work, events };
 }
 
@@ -58,12 +88,38 @@ export type DriftSignal = {
  * each correction is a normal work item the org executes — the platform heals by doing work, not by
  * a privileged side-channel.
  */
-export function planSelfHealing(signal: DriftSignal, deps: AdaptationDeps): { work: readonly PlannedWork[]; events: readonly OrgEvent[] } {
+export function planSelfHealing(
+  signal: DriftSignal,
+  deps: AdaptationDeps,
+): { work: readonly PlannedWork[]; events: readonly OrgEvent[] } {
   const work: PlannedWork[] = [];
-  if (signal.staleDocCount > 0) work.push({ workItemType: WorkItemType.Task, title: `Re-review ${signal.staleDocCount} stale documents`, description: "Freshness fell below floor; the Documentation department re-verifies or archives." });
-  if (signal.failingGateCount > 0) work.push({ workItemType: WorkItemType.Defect, title: `Investigate ${signal.failingGateCount} failing quality gate(s)`, description: "A gate regressed; open a defect and route to the owning hat." });
-  if (signal.lowConfidenceEdgeCount > 0) work.push({ workItemType: WorkItemType.Task, title: `Verify ${signal.lowConfidenceEdgeCount} low-confidence graph edge(s)`, description: "Inferred edges await confirmation; a hat verifies or retracts them." });
-  if (signal.docConflictCount > 0) work.push({ workItemType: WorkItemType.Task, title: `Resolve ${signal.docConflictCount} document conflict(s)`, description: "Two active load-bearing docs disagree on a topic; documentation_reviewer decides — never auto-averaged." });
-  const events = work.map((w) => event(deps, OrgEventKind.ChurnDetected, deps.createId("heal"), `self-healing work planned: ${w.title}`));
+  if (signal.staleDocCount > 0)
+    work.push({
+      workItemType: WorkItemType.Task,
+      title: `Re-review ${signal.staleDocCount} stale documents`,
+      description: "Freshness fell below floor; the Documentation department re-verifies or archives.",
+    });
+  if (signal.failingGateCount > 0)
+    work.push({
+      workItemType: WorkItemType.Defect,
+      title: `Investigate ${signal.failingGateCount} failing quality gate(s)`,
+      description: "A gate regressed; open a defect and route to the owning hat.",
+    });
+  if (signal.lowConfidenceEdgeCount > 0)
+    work.push({
+      workItemType: WorkItemType.Task,
+      title: `Verify ${signal.lowConfidenceEdgeCount} low-confidence graph edge(s)`,
+      description: "Inferred edges await confirmation; a hat verifies or retracts them.",
+    });
+  if (signal.docConflictCount > 0)
+    work.push({
+      workItemType: WorkItemType.Task,
+      title: `Resolve ${signal.docConflictCount} document conflict(s)`,
+      description:
+        "Two active load-bearing docs disagree on a topic; documentation_reviewer decides — never auto-averaged.",
+    });
+  const events = work.map((w) =>
+    event(deps, OrgEventKind.ChurnDetected, deps.createId("heal"), `self-healing work planned: ${w.title}`),
+  );
   return { work, events };
 }

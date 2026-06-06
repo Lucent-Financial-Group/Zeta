@@ -17,7 +17,7 @@ distributed-systems bugs. This hat owns the vocabulary.
 Zeta's retraction-native Z-sets converge without coordination
 (see `crdt-expert`). Convergence is the **endpoint**, not the
 path. Between "nothing observed" and "converged" there is a
-consistency *spectrum*, and where Zeta sits on that spectrum
+consistency _spectrum_, and where Zeta sits on that spectrum
 depends on:
 
 - Whether operations propagate in causal order.
@@ -52,14 +52,14 @@ lets users assume read-your-writes and be surprised.
 ## When to defer
 
 - **Linearizable commits, consensus** → `distributed-
-  consensus-expert`.
+consensus-expert`.
 - **CRDT type design + convergence proofs** → `crdt-expert`.
 - **Monotonicity / coordination-avoidance theory** →
   `calm-theorem-expert`.
 - **Replication mechanics (primary-backup, chain
   replication, anti-entropy)** → `replication-expert`.
 - **Linearizable KV primitive semantics** → `distributed-
-  coordination-expert`.
+coordination-expert`.
 - **TLA+ spec authoring** → `tla-expert`.
 - **Transaction isolation levels (serializable, snapshot,
   read-committed)** → `transaction-manager-expert` +
@@ -67,23 +67,23 @@ lets users assume read-your-writes and be surprised.
 
 ## The spectrum (strongest → weakest)
 
-| Model | Definition | Cost | Example |
-|---|---|---|---|
-| **Linearizability** (Herlihy-Wing 1990) | ops appear atomic at a linearization point between invocation and response; real-time order respected | consensus, quorums | etcd reads, Raft leader-read |
-| **Sequential consistency** (Lamport 1979) | some total order consistent with per-process order | weaker than linearizability (no real-time) | classical SMR |
-| **Serializability** | tx equivalent to some serial execution | 2PL, SSI | SQL isolation levels |
-| **External consistency / strict serializability** | serializable + linearizable | TrueTime / Spanner | Spanner |
-| **Causal+ consistency** | causal + convergent conflict handling | gossip + CRDTs | COPS, Eiger |
-| **Causal consistency** (Ahamad 1995) | reads respect happens-before | causal broadcast | Bayou |
-| **PRAM / FIFO consistency** (Lipton-Sandberg 1988) | per-process order preserved; cross-process free | per-process FIFO | weak distributed shared memory |
-| **Session guarantees** (Terry et al. 1994) | RYW + MR + MW + WFR | per-session state | Bayou |
-| **Read-your-writes** | client sees its own writes | per-session write-log | standard session knob |
-| **Monotonic reads** | reads don't go backwards in time | per-session read-low-watermark | standard session knob |
-| **Monotonic writes** | writes are ordered within session | per-session write-high-watermark | standard session knob |
-| **Writes-follow-reads** | writes after reads are ordered after the reads' writes | per-session dependency | standard session knob |
-| **Eventual consistency** (Vogels 2009) | all replicas eventually agree | no coordination | DNS |
-| **Strong eventual consistency (SEC)** | EC + deterministic conflict resolution | CRDTs | Riak DT, Automerge, Zeta |
-| **Quiescent consistency** | once quiescent, all replicas agree | as for EC | telemetry |
+| Model                                              | Definition                                                                                            | Cost                                       | Example                        |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------ |
+| **Linearizability** (Herlihy-Wing 1990)            | ops appear atomic at a linearization point between invocation and response; real-time order respected | consensus, quorums                         | etcd reads, Raft leader-read   |
+| **Sequential consistency** (Lamport 1979)          | some total order consistent with per-process order                                                    | weaker than linearizability (no real-time) | classical SMR                  |
+| **Serializability**                                | tx equivalent to some serial execution                                                                | 2PL, SSI                                   | SQL isolation levels           |
+| **External consistency / strict serializability**  | serializable + linearizable                                                                           | TrueTime / Spanner                         | Spanner                        |
+| **Causal+ consistency**                            | causal + convergent conflict handling                                                                 | gossip + CRDTs                             | COPS, Eiger                    |
+| **Causal consistency** (Ahamad 1995)               | reads respect happens-before                                                                          | causal broadcast                           | Bayou                          |
+| **PRAM / FIFO consistency** (Lipton-Sandberg 1988) | per-process order preserved; cross-process free                                                       | per-process FIFO                           | weak distributed shared memory |
+| **Session guarantees** (Terry et al. 1994)         | RYW + MR + MW + WFR                                                                                   | per-session state                          | Bayou                          |
+| **Read-your-writes**                               | client sees its own writes                                                                            | per-session write-log                      | standard session knob          |
+| **Monotonic reads**                                | reads don't go backwards in time                                                                      | per-session read-low-watermark             | standard session knob          |
+| **Monotonic writes**                               | writes are ordered within session                                                                     | per-session write-high-watermark           | standard session knob          |
+| **Writes-follow-reads**                            | writes after reads are ordered after the reads' writes                                                | per-session dependency                     | standard session knob          |
+| **Eventual consistency** (Vogels 2009)             | all replicas eventually agree                                                                         | no coordination                            | DNS                            |
+| **Strong eventual consistency (SEC)**              | EC + deterministic conflict resolution                                                                | CRDTs                                      | Riak DT, Automerge, Zeta       |
+| **Quiescent consistency**                          | once quiescent, all replicas agree                                                                    | as for EC                                  | telemetry                      |
 
 **Zeta's claim:** strong eventual consistency by construction
 (Z-sets as CRDTs); causal+ when deltas propagate in causal
@@ -113,15 +113,15 @@ would violate.
 
 ## Logical clocks — the substrate
 
-| Scheme | Ordering captured | Size | Use |
-|---|---|---|---|
-| **Lamport clock** (Lamport 1978) | consistent with happens-before | O(1) | total ordering (with tie-break) |
-| **Vector clock** (Fidge 1988, Mattern 1989) | full happens-before | O(N) per event | causal broadcast, CmRDT delivery |
-| **Version vector** (Parker 1983) | per-object version | O(replicas) per object | Dynamo, Riak |
-| **Dotted version vector** (Preguica 2010) | identifies causally-concurrent siblings | slightly larger than VV | Riak 2.0 |
-| **Interval Tree Clocks (ITC)** (Almeida et al. 2008) | grows with active replicas, not peak | O(active replicas) | dynamic replica sets |
-| **Hybrid Logical Clock (HLC)** (Kulkarni 2014) | wall-clock + logical; ≤ physical-time skew | 64-80 bits | CockroachDB, YugabyteDB |
-| **TrueTime** (Spanner 2012) | interval-bounded physical time with commit-wait | 2×64 bits + bound | Spanner only (GPS+atomic hardware) |
+| Scheme                                               | Ordering captured                               | Size                    | Use                                |
+| ---------------------------------------------------- | ----------------------------------------------- | ----------------------- | ---------------------------------- |
+| **Lamport clock** (Lamport 1978)                     | consistent with happens-before                  | O(1)                    | total ordering (with tie-break)    |
+| **Vector clock** (Fidge 1988, Mattern 1989)          | full happens-before                             | O(N) per event          | causal broadcast, CmRDT delivery   |
+| **Version vector** (Parker 1983)                     | per-object version                              | O(replicas) per object  | Dynamo, Riak                       |
+| **Dotted version vector** (Preguica 2010)            | identifies causally-concurrent siblings         | slightly larger than VV | Riak 2.0                           |
+| **Interval Tree Clocks (ITC)** (Almeida et al. 2008) | grows with active replicas, not peak            | O(active replicas)      | dynamic replica sets               |
+| **Hybrid Logical Clock (HLC)** (Kulkarni 2014)       | wall-clock + logical; ≤ physical-time skew      | 64-80 bits              | CockroachDB, YugabyteDB            |
+| **TrueTime** (Spanner 2012)                          | interval-bounded physical time with commit-wait | 2×64 bits + bound       | Spanner only (GPS+atomic hardware) |
 
 **Happens-before (Lamport's → relation).** Event `a → b` iff
 (i) same process, `a` before `b`; (ii) `a` is a send, `b` is
@@ -206,7 +206,7 @@ Cassandra's `ONE`, `QUORUM`, `ALL` are syntactic sugar.
 ## What this skill does NOT do
 
 - Does NOT own linearizability-side proofs (→ `distributed-
-  consensus-expert`).
+consensus-expert`).
 - Does NOT own CRDT type authoring (→ `crdt-expert`).
 - Does NOT own monotonicity theory (→ `calm-theorem-expert`).
 - Does NOT own replication mechanics (→ `replication-expert`).
@@ -219,24 +219,24 @@ Cassandra's `ONE`, `QUORUM`, `ALL` are syntactic sugar.
 
 ## Reference patterns
 
-- Gilbert, Lynch 2002 — *Brewer's conjecture and the
+- Gilbert, Lynch 2002 — _Brewer's conjecture and the
   feasibility of consistent, available, partition-tolerant
-  web services*.
-- Terry et al. 1994 — *Session guarantees for weakly
-  consistent replicated data*.
-- Lamport 1978 — *Time, clocks, and the ordering of events
-  in a distributed system*.
+  web services_.
+- Terry et al. 1994 — _Session guarantees for weakly
+  consistent replicated data_.
+- Lamport 1978 — _Time, clocks, and the ordering of events
+  in a distributed system_.
 - Fidge 1988 / Mattern 1989 — vector clocks.
-- Kulkarni et al. 2014 — *Logical Physical Clocks* (HLC).
-- Corbett et al. 2012 — *Spanner: Google's Globally-
-  Distributed Database*.
-- Abadi 2012 — *Consistency Tradeoffs in Modern Distributed
-  Database System Design* (PACELC).
-- Vogels 2009 — *Eventually Consistent* (CACM).
-- Bailis, Ghodsi 2013 — *Eventual Consistency Today:
-  Limitations, Extensions, and Beyond*.
-- Viotti, Vukolic 2016 — *Consistency in Non-Transactional
-  Distributed Storage Systems* (ACM CSUR — the survey).
+- Kulkarni et al. 2014 — _Logical Physical Clocks_ (HLC).
+- Corbett et al. 2012 — _Spanner: Google's Globally-
+  Distributed Database_.
+- Abadi 2012 — _Consistency Tradeoffs in Modern Distributed
+  Database System Design_ (PACELC).
+- Vogels 2009 — _Eventually Consistent_ (CACM).
+- Bailis, Ghodsi 2013 — _Eventual Consistency Today:
+  Limitations, Extensions, and Beyond_.
+- Viotti, Vukolic 2016 — _Consistency in Non-Transactional
+  Distributed Storage Systems_ (ACM CSUR — the survey).
 - `.claude/skills/distributed-consensus-expert/SKILL.md` —
   linearizable counterpart.
 - `.claude/skills/crdt-expert/SKILL.md` — convergent data

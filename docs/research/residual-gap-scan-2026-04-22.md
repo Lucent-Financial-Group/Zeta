@@ -61,13 +61,13 @@ decision exists; the indeterminacy is honest).
 
 ### Per-file tally
 
-| File | Pass 1 hits | Pass 2 hits | Classified stale | Classified genuine |
-|---|---|---|---|---|
-| VISION.md | 4 | 2 | **0** (all swept in turn 4) | 6 |
-| ROADMAP.md | 0 | 0 | 0 | 0 |
-| ARCHITECTURE.md | 0 | 0 | 0 | 0 |
-| WONT-DO.md | 0 | 0 | 0 | 0 |
-| TECH-RADAR.md | 0 | 0 | 0 | 0 |
+| File            | Pass 1 hits | Pass 2 hits | Classified stale            | Classified genuine |
+| --------------- | ----------- | ----------- | --------------------------- | ------------------ |
+| VISION.md       | 4           | 2           | **0** (all swept in turn 4) | 6                  |
+| ROADMAP.md      | 0           | 0           | 0                           | 0                  |
+| ARCHITECTURE.md | 0           | 0           | 0                           | 0                  |
+| WONT-DO.md      | 0           | 0           | 0                           | 0                  |
+| TECH-RADAR.md   | 0           | 0           | 0                           | 0                  |
 
 ### VISION.md hits — all genuine (classified)
 
@@ -79,7 +79,7 @@ decision exists; the indeterminacy is honest).
 2. **Lines 915 / 918 / 929** — "far-future" / "decision
    deferred to" phrasing in §First-pass confidence + gaps
    appendix, all part of the Turn 2 resolved-gap-log text
-   describing *why* the admin-UI tech-pick was deferred.
+   describing _why_ the admin-UI tech-pick was deferred.
    - **ADR cross-check:** no admin-UI tech-pick ADR.
    - **Classification:** genuine indeterminacy (reading
      the text). Not stale.
@@ -92,7 +92,7 @@ decision exists; the indeterminacy is honest).
 4. **Line 909** — "decision deferred to" in Turn 2's
    resolved-gap-log explanatory text.
    - **Classification:** not a pending-reference phrase
-     per se — it's explanation text *about* a resolved
+     per se — it's explanation text _about_ a resolved
      deferral. False positive for the scan; genuine
      content for the doc.
 
@@ -112,13 +112,13 @@ phrases are all either:
   (not an agent) needs to resolve (line 847 commercial
   posture; line 722 factory UI timing), or
 - **resolved-gap-log explanation text** that correctly
-  describes *why* a decision was deferred (lines
+  describes _why_ a decision was deferred (lines
   915/918/929 from the Turn 2 admin-UI resolution).
 
-Per the BACKLOG row's acceptance criterion (b) — *"at
+Per the BACKLOG row's acceptance criterion (b) — _"at
 least one new body-ahead-of-map drift case is found (if
 zero found, the scan's precision calibration becomes the
-finding — also valuable)"* — the zero finding is the
+finding — also valuable)"_ — the zero finding is the
 valuable finding.
 
 ## Interpretation

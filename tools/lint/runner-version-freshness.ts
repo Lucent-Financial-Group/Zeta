@@ -46,11 +46,7 @@ const ALLOWED_LABELS: readonly string[] = [
   "macos-26-intel",
 ];
 
-const ROLLING_ALIASES: readonly string[] = [
-  "ubuntu-latest",
-  "windows-latest",
-  "macos-latest",
-];
+const ROLLING_ALIASES: readonly string[] = ["ubuntu-latest", "windows-latest", "macos-latest"];
 
 const STALE_LABELS: readonly string[] = [
   "ubuntu-22.04",
@@ -97,15 +93,11 @@ function ageDays(lastVerified: string): number | null {
 function emitFreshnessWarning(): boolean {
   const days = ageDays(LAST_VERIFIED);
   if (days === null) {
-    process.stderr.write(
-      `WARN: could not parse LAST_VERIFIED=${LAST_VERIFIED} on this platform\n`,
-    );
+    process.stderr.write(`WARN: could not parse LAST_VERIFIED=${LAST_VERIFIED} on this platform\n`);
     return false;
   }
   if (days <= 30) return false;
-  process.stderr.write(
-    `WARN: runner-version allow-list last verified ${String(days)} days ago (${LAST_VERIFIED}).\n`,
-  );
+  process.stderr.write(`WARN: runner-version allow-list last verified ${String(days)} days ago (${LAST_VERIFIED}).\n`);
   process.stderr.write(`      Re-verify against: ${VERIFY_URL}\n`);
   process.stderr.write("      Then bump LAST_VERIFIED in this script.\n");
   return true;
@@ -170,11 +162,7 @@ const NONWORD_END = "([^A-Za-z0-9_]|$)";
 const MATRIX_PREFIX = "^[\\t ]*-[\\t ]+(['\"]?)";
 const MATRIX_PREFIX_LN = "(^|^[0-9]+:)[\\t ]*-[\\t ]+(['\"]?)";
 
-function findMatchingLines(
-  uncommented: string,
-  prefilter: RegExp,
-  boundary: RegExp,
-): readonly string[] {
+function findMatchingLines(uncommented: string, prefilter: RegExp, boundary: RegExp): readonly string[] {
   const lines = uncommented.split("\n");
   const hits: string[] = [];
   for (let i = 0; i < lines.length; i++) {
@@ -186,28 +174,18 @@ function findMatchingLines(
   return hits;
 }
 
-function scanStaleOrRolling(
-  uncommented: string,
-  pattern: string,
-): readonly string[] {
-  const prefilter = new RegExp(
-    `runs-on:|(^|[^A-Za-z0-9_])os:|${MATRIX_PREFIX}(${pattern})`,
-  );
+function scanStaleOrRolling(uncommented: string, pattern: string): readonly string[] {
+  const prefilter = new RegExp(`runs-on:|(^|[^A-Za-z0-9_])os:|${MATRIX_PREFIX}(${pattern})`);
   const boundary = new RegExp(`${NONWORD_START}(${pattern})${NONWORD_END}`);
   return findMatchingLines(uncommented, prefilter, boundary);
 }
 
-function scanUnknownScalar(
-  uncommented: string,
-  rollingOrAllowed: string,
-): readonly string[] {
+function scanUnknownScalar(uncommented: string, rollingOrAllowed: string): readonly string[] {
   const lines = uncommented.split("\n");
   const out: string[] = [];
   const matchRe = /runs-on:[\t ]*[A-Za-z0-9_-][A-Za-z0-9._-]*/;
   const exprRe = /runs-on:[\t ]*\$\{\{/;
-  const allowedRe = new RegExp(
-    `runs-on:[\\t ]*(${rollingOrAllowed})($|[\\t ]|#)`,
-  );
+  const allowedRe = new RegExp(`runs-on:[\\t ]*(${rollingOrAllowed})($|[\\t ]|#)`);
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
     if (!matchRe.test(line)) continue;
@@ -218,19 +196,11 @@ function scanUnknownScalar(
   return out;
 }
 
-function scanUnknownMatrix(
-  uncommented: string,
-  rollingOrAllowed: string,
-  stalePattern: string,
-): readonly string[] {
+function scanUnknownMatrix(uncommented: string, rollingOrAllowed: string, stalePattern: string): readonly string[] {
   const lines = uncommented.split("\n");
   const out: string[] = [];
-  const labelRe = new RegExp(
-    `${MATRIX_PREFIX}[A-Za-z][A-Za-z0-9._-]*[0-9][A-Za-z0-9._-]*`,
-  );
-  const allowedRe = new RegExp(
-    `${MATRIX_PREFIX_LN}(${rollingOrAllowed})(['"]?)([\\t ]|$|#)`,
-  );
+  const labelRe = new RegExp(`${MATRIX_PREFIX}[A-Za-z][A-Za-z0-9._-]*[0-9][A-Za-z0-9._-]*`);
+  const allowedRe = new RegExp(`${MATRIX_PREFIX_LN}(${rollingOrAllowed})(['"]?)([\\t ]|$|#)`);
   const staleRe = new RegExp(`${MATRIX_PREFIX_LN}(${stalePattern})`);
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i] ?? "";
@@ -253,11 +223,7 @@ function scanFile(content: string): ScanResult {
   const stale = scanStaleOrRolling(uncommented, stalePattern);
   const rolling = scanStaleOrRolling(uncommented, rollingPattern);
   const scalarUnknown = scanUnknownScalar(uncommented, rollingOrAllowed);
-  const matrixUnknown = scanUnknownMatrix(
-    uncommented,
-    rollingOrAllowed,
-    stalePattern,
-  );
+  const matrixUnknown = scanUnknownMatrix(uncommented, rollingOrAllowed, stalePattern);
   const unknown = [...scalarUnknown, ...matrixUnknown];
 
   return { stale, rolling, unknown };
@@ -271,9 +237,7 @@ function emitFileFindings(file: string, r: ScanResult): boolean {
     any = true;
   }
   if (r.rolling.length > 0) {
-    process.stdout.write(
-      `ROLLING-ALIAS RUNNER LABEL(S) in ${file} (use a pinned version per repo convention):\n`,
-    );
+    process.stdout.write(`ROLLING-ALIAS RUNNER LABEL(S) in ${file} (use a pinned version per repo convention):\n`);
     for (const h of r.rolling) process.stdout.write(`  ${h}\n`);
     any = true;
   }
@@ -289,15 +253,9 @@ function emitFileFindings(file: string, r: ScanResult): boolean {
 
 function emitFailureFooter(): void {
   process.stdout.write("\n");
-  process.stdout.write(
-    "One or more workflow files pin stale / rolling /\n",
-  );
-  process.stdout.write(
-    "not-on-allow-list runner labels. Update to current\n",
-  );
-  process.stdout.write(
-    "standard-runner labels. Canonical list:\n",
-  );
+  process.stdout.write("One or more workflow files pin stale / rolling /\n");
+  process.stdout.write("not-on-allow-list runner labels. Update to current\n");
+  process.stdout.write("standard-runner labels. Canonical list:\n");
   for (const l of ALLOWED_LABELS) process.stdout.write(`  - ${l}\n`);
   process.stdout.write("\n");
   process.stdout.write(`Source: ${VERIFY_URL}\n`);
@@ -305,18 +263,10 @@ function emitFailureFooter(): void {
 
 function emitEnvErrorFooter(): void {
   process.stderr.write("\n");
-  process.stderr.write(
-    "Environment / usage error encountered (see ERROR\n",
-  );
-  process.stderr.write(
-    "lines above). This is distinct from stale-label\n",
-  );
-  process.stderr.write(
-    "findings; exit 1 reserves an out-of-band code so\n",
-  );
-  process.stderr.write(
-    "callers can distinguish 'something broke' from\n",
-  );
+  process.stderr.write("Environment / usage error encountered (see ERROR\n");
+  process.stderr.write("lines above). This is distinct from stale-label\n");
+  process.stderr.write("findings; exit 1 reserves an out-of-band code so\n");
+  process.stderr.write("callers can distinguish 'something broke' from\n");
   process.stderr.write("'stale labels found'.\n");
 }
 
@@ -352,9 +302,7 @@ export function main(argv: readonly string[]): ExitCode {
 
   for (const file of files) {
     if (!isReadable(file)) {
-      process.stderr.write(
-        `ERROR: cannot read ${file} (does not exist or unreadable)\n`,
-      );
+      process.stderr.write(`ERROR: cannot read ${file} (does not exist or unreadable)\n`);
       envError = true;
       continue;
     }
@@ -362,9 +310,7 @@ export function main(argv: readonly string[]): ExitCode {
     try {
       content = readFileSync(file, "utf8");
     } catch {
-      process.stderr.write(
-        `ERROR: cannot read ${file} (does not exist or unreadable)\n`,
-      );
+      process.stderr.write(`ERROR: cannot read ${file} (does not exist or unreadable)\n`);
       envError = true;
       continue;
     }
@@ -383,9 +329,7 @@ export function main(argv: readonly string[]): ExitCode {
     return 2;
   }
   if (warn) return 0;
-  process.stdout.write(
-    `ok: all workflow runner labels are current (verified ${LAST_VERIFIED})\n`,
-  );
+  process.stdout.write(`ok: all workflow runner labels are current (verified ${LAST_VERIFIED})\n`);
   return 0;
 }
 

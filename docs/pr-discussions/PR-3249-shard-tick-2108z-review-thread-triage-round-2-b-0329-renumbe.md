@@ -63,6 +63,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a 21:08Z hygiene-history tick shard documenting a review-thread triage round and the fixes pushed to related PR branches.
 
 **Changes:**
+
 - Records the duplicate backlog ID investigation and B-0329 → B-0520 renumber on #3247.
 - Records the `gh api graphql` usage correction on #3246.
 - Captures verification notes and follow-up audit-discipline ideas.

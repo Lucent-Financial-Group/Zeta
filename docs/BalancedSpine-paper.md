@@ -13,14 +13,14 @@ blocks the inserter for `Θ(n log n)` time. For soft-real-time ingest
 unacceptable, and existing "tiered" or "leveled" variants only shift
 the problem — they don't eliminate it.
 
-We present **BalancedSpine**, a *MaxSAT-inspired* merge scheduler that
+We present **BalancedSpine**, a _MaxSAT-inspired_ merge scheduler that
 (a) bounds per-tick merge work to `K` merges regardless of input
 distribution, (b) achieves provably within `2×` of the MaxSAT optimum
 worst-case latency via Graham's 1969 list-scheduling bound, and (c)
 preserves the amortised `O(log n)` insert guarantee of classical LSM.
 Our implementation, shipped in an open-source .NET 10 DBSP engine
 ([repo link]), runs per-tick in under 200 ns and achieves an
-end-to-end *p99 latency under 5 µs* on a 16-shard, 10 M-event/s
+end-to-end _p99 latency under 5 µs_ on a 16-shard, 10 M-event/s
 workload — a 40× reduction over the amortised-LSM baseline.
 
 ## 1. Introduction
@@ -102,17 +102,17 @@ member _.Tick() =
 
 ### 3.1 Analysis
 
-**Claim 1** *(Per-tick latency is `O(K · (n/K) · log K)` = `O(n log K)`.)*
+**Claim 1** _(Per-tick latency is `O(K · (n/K) · log K)` = `O(n log K)`.)_
 The `K` merges in one tick each process at most `n/K` entries in the
 worst case (total invariant). Each merge's k-way priority-queue merge
 is `O((n/K) log K)`. Total: `O(n log K)`. Independent of the number
 of levels or pending merges.
 
-**Claim 2** *(Amortised insert is `O(log n)`.)* Each batch traverses at
+**Claim 2** _(Amortised insert is `O(log n)`.)_ Each batch traverses at
 most `⌈log₂ n⌉` slots before consolidating. At budget `K`, the cost
 is spread across `⌈log₂ n / K⌉` ticks.
 
-**Claim 3** *(Graham 2-approximation.)* Let `OPT` be the MaxSAT-optimal
+**Claim 3** _(Graham 2-approximation.)_ Let `OPT` be the MaxSAT-optimal
 max-tick latency and `GREEDY` ours. Then `GREEDY ≤ (2 - 1/K) · OPT`.
 Proof sketch: Graham 1969 proved this for list scheduling on `K`
 identical machines. Our merges are our jobs, `log size` are our
@@ -146,13 +146,13 @@ InputBatches = 8` in under 10s, ~9,600 states, no counterexamples.
 
 [Placeholder table — to be filled with empirical numbers]
 
-| Implementation | p50 (ns) | p99 (ns) | p99.9 (ns) | Max (µs) | Throughput (M ev/s) |
-|---|---|---|---|---|---|
-| Spine (classical) | 50 | 2,300 | 210,000 | 1,200 | 9.8 |
-| SpineAsync | 80 | 450 | 12,000 | 85 | 10.1 |
-| BalancedSpine K=2 | 90 | 95 | 110 | 8 | 9.6 |
-| BalancedSpine K=4 | 70 | 80 | 98 | 5 | 9.9 |
-| BalancedSpine K=8 | 60 | 75 | 94 | 5 | 10.0 |
+| Implementation    | p50 (ns) | p99 (ns) | p99.9 (ns) | Max (µs) | Throughput (M ev/s) |
+| ----------------- | -------- | -------- | ---------- | -------- | ------------------- |
+| Spine (classical) | 50       | 2,300    | 210,000    | 1,200    | 9.8                 |
+| SpineAsync        | 80       | 450      | 12,000     | 85       | 10.1                |
+| BalancedSpine K=2 | 90       | 95       | 110        | 8        | 9.6                 |
+| BalancedSpine K=4 | 70       | 80       | 98         | 5        | 9.9                 |
+| BalancedSpine K=8 | 60       | 75       | 94         | 5        | 10.0                |
 
 BalancedSpine K=4 achieves **40× p99 latency reduction** over the
 classical spine while preserving 99% of the throughput.
@@ -191,5 +191,5 @@ property-based tests, and microbenchmarks included.
 
 ---
 
-*Status:* draft; empirical numbers are placeholders pending the full
+_Status:_ draft; empirical numbers are placeholders pending the full
 benchmark harness. Author welcomes correspondence.

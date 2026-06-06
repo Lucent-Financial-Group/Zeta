@@ -8,11 +8,11 @@ type: feedback
 
 ## Aaron 2026-05-01 verbatim
 
-> *"DST extension, if you are havibng a non-deterministic bug
+> _"DST extension, if you are havibng a non-deterministic bug
 > you can't track down, look at the source code of all the
 > dependencies involved, even pull it down ../sibling repo if
 > you need to search it deeply. DST should hodl and we become
-> grade A DST."*
+> grade A DST."_
 
 ## What this codifies
 
@@ -51,7 +51,7 @@ testing:
 
 Grade A DST is **DST that doesn't surrender** — DST that
 escalates investigation rather than accepting the failure
-mode. Aaron's *"DST should hodl"* is the carved sentence
+mode. Aaron's _"DST should hodl"_ is the carved sentence
 (typo intentional and preserved per Glass Halo + Otto-231
 first-party-content; "hodl" is also a Bitcoin-culture
 intentional misspelling that semantically aligns).
@@ -74,7 +74,7 @@ root-causes (seeds, time, IO, threading) don't account for it:
    or via SourceLink (debugger steps directly into the
    dependency source); decompile via ILSpy / dnSpy / dotPeek
    when source isn't published. For npm: `npm view <pkg>
-   repository` for the repo URL; for `pip`: the package's
+repository` for the repo URL; for `pip`: the package's
    PyPI page or `pip show <pkg>` lists Home-page; for cargo:
    `cargo metadata --format-version=1` or `crates.io` metadata.
    The discipline is generic (find the source); the specific
@@ -102,7 +102,7 @@ root-causes (seeds, time, IO, threading) don't account for it:
   Grade A DST is "DST holds even when investigation is
   expensive."
 - **Not "vendor every dependency."** Pulling to `../sibling
-  repo` is for investigation, not for bypassing the dependency.
+repo` is for investigation, not for bypassing the dependency.
   The fix lands as a configuration / wrapper / replacement,
   not as a vendored fork (unless the dep is unmaintained and
   the fix has to live somewhere).
@@ -121,8 +121,8 @@ root-causes (seeds, time, IO, threading) don't account for it:
 
 Aaron 2026-05-01 (follow-up):
 
-> *"the dst rule is a class that can be checked/metachecked by
-> our PR review agents too"*
+> _"the dst rule is a class that can be checked/metachecked by
+> our PR review agents too"_
 
 The DST-grade-A discipline is **mechanizable as a class** that
 PR review agents (Copilot, Codex, harsh-critic, etc.) can
@@ -138,13 +138,13 @@ check. The class signature:
   this exemption.
 - **Failure mode** (what the class flags): annotation lands
   WITHOUT the citation. PR review agent posts a thread:
-  *"DST deviation detected. Provide source-inspection
-  evidence or remove the annotation."*
+  _"DST deviation detected. Provide source-inspection
+  evidence or remove the annotation."_
 - **Enforcement** (Aaron 2026-05-01 follow-up, **verbatim
-  quote, typo preserved**): *"with a source attribution the
-  code does not max it through"* — Aaron's intended meaning
-  (clarified by surrounding context): *without* a source
-  attribution, code does NOT make it through; *with*
+  quote, typo preserved**): _"with a source attribution the
+  code does not max it through"_ — Aaron's intended meaning
+  (clarified by surrounding context): _without_ a source
+  attribution, code does NOT make it through; _with_
   attribution, it does. The "max" is a typo for "make"; the
   inversion in the negative direction is what's load-bearing.
   This is enforcement, not just flag-and-resolve. The
@@ -164,11 +164,11 @@ which is the stronger discipline shape Aaron is naming.
 
 Aaron 2026-05-01 (further clarification):
 
-> *"i mean we have the pr convergence loop in the classes that
+> _"i mean we have the pr convergence loop in the classes that
 > the copilot, claude and other agents who review prs the meta
-> learning loop on every pr is what i was talking aobut"*
+> learning loop on every pr is what i was talking aobut"_
 
-The mechanization isn't just *"a single agent posts a thread."*
+The mechanization isn't just _"a single agent posts a thread."_
 It's the **PR convergence loop**: every PR runs through
 multiple review agents (Copilot, Claude, harsh-critic via
 peer-call, future-Cursor when wired) that collectively iterate
@@ -184,7 +184,7 @@ Three structural properties this composes:
    multiple bias-axes; the convergence loop reconciles them.
 2. **Iterative refinement.** Per the 7-class PR-thread-
    resolution taxonomy (`memory/feedback_pr_thread_resolution_
-   class_taxonomy_2026_04_28.md`), each PR's threads exercise
+class_taxonomy_2026_04_28.md`), each PR's threads exercise
    the class library; the meta-learning loop is "the agents
    collectively improve their handling of the class library
    across iterations."
@@ -201,13 +201,13 @@ The 13 mechanizable lint-classes from B-0153 (proposed in PR #1120) + the DST-ru
 class 14 here all become meta-learning targets — each PR's
 iteration is one training-instance for the convergence loop.
 
-**Carved sentence (refined)**: *"The PR convergence loop IS
+**Carved sentence (refined)**: _"The PR convergence loop IS
 the meta-learning mechanism. Every class checked is a
 training-instance; every PR is an iteration; every merge is
-a converged answer."*
+a converged answer."_
 
-**Aaron's challenge to Otto** (same exchange): *"did you look
-at source to prove your DST dievation was necessary"* — a
+**Aaron's challenge to Otto** (same exchange): _"did you look
+at source to prove your DST dievation was necessary"_ — a
 quality-check on whether the documenting-agent walks the
 talk. The honest answer (from Otto, 2026-05-01): no DST
 deviations have surfaced this session that warranted source
@@ -219,15 +219,15 @@ this discipline is invoked, the citation must be real, not
 theoretical.
 
 The carved sentence (now with the meta-checkable extension):
-*"DST should hodl. Grade A DST is DST that doesn't surrender —
+_"DST should hodl. Grade A DST is DST that doesn't surrender —
 and the deviation that DOES need to ship is the one that
-provides source-level evidence of necessity."*
+provides source-level evidence of necessity."_
 
 ## Composes with
 
 - `memory/feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md`
   — the "investigate first" stance; this memory extends with
-  *how deep* to investigate
+  _how deep_ to investigate
 - `memory/feedback_pinned_seeds_are_DST_resolution_for_property_test_flakiness_2026_04_23.md`
   — pinned seeds are the typical resolution; this memory
   covers the case where seeds aren't the cause
@@ -254,12 +254,12 @@ Future-Otto encountering a flaky test or non-deterministic bug:
 3. **If not found**: list dependencies on the failing path;
    identify candidates; read source.
 4. **If public source insufficient**: pull to `../sibling
-   repo`. Grep deeply.
+repo`. Grep deeply.
 5. **Find the seed; pin/wrap/replace.** Document the find
    as memory or BP-NN candidate.
 6. **Result**: grade A DST.
 
-The carved sentence: *"DST should hodl. Grade A DST is DST
+The carved sentence: _"DST should hodl. Grade A DST is DST
 that doesn't surrender — investigation escalates through
 dependency source until the seed of non-determinism is
-found."*
+found."_

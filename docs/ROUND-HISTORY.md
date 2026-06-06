@@ -114,8 +114,8 @@ seed, creates a bridge to quantum gravity, and defeats the algo-wink critique.
 
 ### Arc 3 — Substrate-honest framing
 
-The work is research-grade, not implementation. The mapping is *suggestive* — many
-people have noticed pieces of it. Making it *rigorous* enough to claim isomorphism
+The work is research-grade, not implementation. The mapping is _suggestive_ — many
+people have noticed pieces of it. Making it _rigorous_ enough to claim isomorphism
 is a multi-year research program, not a single insight. But:
 
 - The prior art is real (HaPPY, ER=EPR, Van Raamsdonk, Jacobson, QBism, causal sets)
@@ -146,7 +146,7 @@ The work earns its keep even at partial completion:
 
 - What is the precise relationship between the memory monad `M` (a monad on
   the topos `Zeta`) and the DBSP `I`/`D` pair (the integrate/differentiate
-  operators participating in the incrementalization *identity* `Q^Δ = D ∘ Q ∘ I`,
+  operators participating in the incrementalization _identity_ `Q^Δ = D ∘ Q ∘ I`,
   not a monad — per [PR #3626](https://github.com/Lucent-Financial-Group/Zeta/pull/3626))? Possible structural relations: comonad-monad
   adjunction, distributive law, or no direct categorical correspondence.
 - How does the attention modal operator `A` interact with the subobject classifier's
@@ -274,9 +274,9 @@ narrative) + `tools/hygiene/github-settings.expected.json`
 `tools/hygiene/check-github-settings-drift.sh` (detector) +
 `.github/workflows/github-settings-drift.yml` (weekly cron
 and PR-triggered cadence). Landed as FACTORY-HYGIENE row #40.
-Same round: the human maintainer's 2026-04-21 praise — *"this
+Same round: the human maintainer's 2026-04-21 praise — _"this
 is great standing rules on blast-radius ops ... i'm glad you
-understand blast radius and pricing the blast radius"* —
+understand blast radius and pricing the blast radius"_ —
 reframed the CLAUDE.md "confirm before hard-to-reverse
 actions" discipline as load-bearing rather than overcautious,
 and as a Zeta product-feature signal connecting to the
@@ -290,8 +290,8 @@ cadenced-diff treatment when adopted.
 ## Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry
 
 Anchor: Round 43 is the round where three separate
-programs founded in 41-42 start producing *their first
-empirical signal*. The harness dry-runs on three expert
+programs founded in 41-42 start producing _their first
+empirical signal_. The harness dry-runs on three expert
 skills (performance-analysis, reducer, consent-primitives)
 all return TIED-baseline verdicts with consistent cost
 overhead — the first real evidence that BP-03's thick
@@ -323,7 +323,7 @@ skill's workspace rather than inlined.
 
 Round 42's BP-WINDOW surfaced §11 architect-bottleneck as
 a load-bearing governance clause. This commit promotes the
-clause's *reason* — the architect accepts review debt in
+clause's _reason_ — the architect accepts review debt in
 exchange for a single reviewer-gate — into a named
 invariant, the "debt-intentionality invariant." Future
 governance changes that touch §11 must preserve the
@@ -383,7 +383,7 @@ capability absence + 10 operator-algebra findings. The
 round-43 capacity decision: file the P1 absorb as
 Round-44 work (`72bf1bb`), land the capability-level
 framing now (`ce247a2`). This is the first explicit
-*forward-filing* of a P1 absorb rather than a defer; the
+_forward-filing_ of a P1 absorb rather than a defer; the
 distinction is that the receiving round is named and
 scoped, not "some future round." Matches the
 grandfather-discharge cadence established in Round 41.
@@ -419,7 +419,7 @@ execute. Rather than manufacture work or paper over the
 gap, the retros land as first-class entries in the
 cadence log. Matches `feedback_dont_stop_and_wait_for_
 cron_tick.md` posture: the aim is tick=no-op, so
-no-ops recorded honestly are a *good* signal. First
+no-ops recorded honestly are a _good_ signal. First
 round where the cadence-log carries no-op data; sets
 the precedent for how future no-ops are recorded.
 
@@ -428,7 +428,7 @@ the precedent for how future no-ops are recorded.
 - **Stuck:** skill-tune-up BP-03 self-breach closed;
   GOVERNANCE §11 debt-intentionality invariant named;
   `INVARIANT-SUBSTRATES.md` founded with two `skill.
-  yaml` pilots; `tally.ts` on bun+TS substrate;
+yaml` pilots; `tally.ts` on bun+TS substrate;
   agent-cadence telemetry program founded with two
   no-op retro samples; Aarav's self-flag resolved and
   three new TUNE-S items queued; ADR template updated
@@ -455,7 +455,7 @@ coherence-v2.md` C-P0-1), router-coherence v2 pipeline
 (`2026-04-21-router-coherence-v2.md`), and per-round ontology-
 home + project-org sweeps (`feedback_ontology_home_check_every_
 round.md`). Round 42 is the first round where every one of those
-cadences *repeats*, which is where a cadence hypothesis earns
+cadences _repeats_, which is where a cadence hypothesis earns
 empirical standing. Seven of the ten Round-42 commits execute
 a Round-41 cadence; three are external-legibility work on the
 Zeta-as-vibe-coding-experiment evidence surface (wins logs).
@@ -635,7 +635,7 @@ per round, same cadence shape as grandfather-claim discharge.
 Homes "Harmonious Division" — the maintainer's meta-algorithm
 above Quantum Rodney's Razor — in `docs/GLOSSARY.md` (43
 lines added). Prior state: the concept cited in 20+ files
-(ROUND-HISTORY, BACKLOG, three-lane-model ADR, memory/*,
+(ROUND-HISTORY, BACKLOG, three-lane-model ADR, memory/\*,
 three skill files) but defined nowhere in committed docs.
 New GLOSSARY entry: Plain + Technical definitions in the
 standard two-register glossary format; pointer to the
@@ -718,7 +718,7 @@ The wins logs are the sceptic-facing evidence for the Zeta
 experiment. Their Arc-9 openers read in a generic AI-assisted-
 development register, but the actual story is narrower and
 stronger: Aaron has 20+ years of professional coding experience
-and has deliberately written *zero* lines of code, docs, specs,
+and has deliberately written _zero_ lines of code, docs, specs,
 skills, workflows, or config on the repo since project start
 (invariant captured at
 `project_zero_human_code_all_content_agent_authored.md`).
@@ -733,7 +733,7 @@ via the git log — `Co-Authored-By:` trailers on commits name
 the drafting agent"); the "See also:" block now names the
 Zeta experiment's load-bearing question. `docs/copilot-wins.md`
 removes "alongside human reviewers" as inaccurate and names
-Copilot as "the *only* non-roster audit on this tree". The
+Copilot as "the _only_ non-roster audit on this tree". The
 arc closes Round 42's external-legibility theme: the vibe-
 coding pitch earns the word "vibe" honestly only because the
 zero-human-code invariant is maintained; naming it in the
@@ -755,18 +755,18 @@ trailer is the content-authorship source of truth).
   lines); Round-42 per-cadence cost was ship + absorb
   (~100-300 lines). Expected if cadences are well-founded.
 - **Viktor's rebuild-verdict-on-third-pass on `lsm-spine-
-  family`** is the second unconditional pass in two capability
-  ships — slightly stronger signal that the Viktor-gate *as
-  designed* is tight enough to catch real drift without
+family`** is the second unconditional pass in two capability
+  ships — slightly stronger signal that the Viktor-gate _as
+  designed_ is tight enough to catch real drift without
   false-failing on first pass. Sample size still 2; not
   calibrated yet.
 - **External-legibility work pulled late-round budget
   unexpectedly.** Arcs 9-10 were not on any priority queue
   entering Round 42; they emerged from Aaron's vibe-coding
   message carried over from prior session context. Pattern
-  worth naming: *external-audience artefacts drift faster
+  worth naming: _external-audience artefacts drift faster
   than internal ones because they're not on the /next-steps
-  scan surface.* `docs/WINS.md` and `docs/copilot-wins.md`
+  scan surface._ `docs/WINS.md` and `docs/copilot-wins.md`
   are now cross-linked + invariant-named — future external-
   artefact drift should be caught by the Copilot wins-log's
   own "xref" review class.
@@ -800,7 +800,7 @@ trailer is the content-authorship source of truth).
   signal of calibration. The prior round's "ranker coasted for
   nine re-fires on the same Top-1" failure mode has not yet
   been patched (no `git status --short` scan in `.claude/
-  skills/next-steps/SKILL.md`); this round's stability was
+skills/next-steps/SKILL.md`); this round's stability was
   signal-of-correctness not signal-of-drift, but the latent
   failure mode is still present. Candidate Round-43 skill-
   tune-up note for Aarav.
@@ -808,7 +808,7 @@ trailer is the content-authorship source of truth).
   The initial autonomous-loop cron was down-rated to 30 min
   citing `ScheduleWakeup`'s "idle tick" default (1200-1800s).
   Aaron corrected to 5-minute cadence specifically because the
-  *primary failure mode is agent-idle-stop* — the cron is a
+  _primary failure mode is agent-idle-stop_ — the cron is a
   max-idle-recovery-latency bound, not a periodic interrupt
   (the CronCreate runtime guarantees idle-only firing). Memory
   entry `feedback_loop_cadence_5min_combats_agent_idle_stop.md`
@@ -820,25 +820,25 @@ trailer is the content-authorship source of truth).
 
 ### BP-WINDOW ledger — Round 42 (prospective)
 
-| Commit | Arc | Consent | Retractability | No-permanent-harm |
-| --- | --- | --- | --- | --- |
-| `fea0d34` | Arc 1 — speculative round-N+1 branch convention | Strengthened (the fix for Round-41's hold-pattern bottleneck lands as durable SKILL.md policy rather than a repeat-negotiation every round; fair-game scope declared explicitly so the convention does not silently expand) | Strengthened (convention is a 116-line SKILL.md addition revertable in one `git revert`; first use of the convention is this commit itself, so the rollback path is tested before the convention lands) | Preserved (single SKILL.md addition; no source / spec / ADR touched; skill-creator vibe-mode invocation per GOVERNANCE §4) |
-| `e8ed0db` | Arc 2 — router-coherence v2 SKILL.md retargets | Strengthened (Round 41's v2-ADR follow-up deferral discharged via skill-creator per GOVERNANCE §4; Kenji named as binding dispatcher in both skills per Closure C-P1-8 so advisory + advisory composes to mandatory pipeline) | Strengthened (both skills cite v2 as the authoritative pipeline contract with v1 explicitly superseded; the v1→v2 supersedure chain through the Round-41 header remains load-bearing and resolvable) | Preserved (two SKILL.md additions only; no source / spec / ADR body touched; bibliographies cross-reference each other plus v2) |
-| `4f229f0` | Arc 3 — grandfather discharge #1 (Stage 1 only) | Strengthened (first live use of v2 pipeline; Stage-1 analytic sign-off lands as research doc + inventory row flip; Stage-2 deferral declared honestly rather than carried silently as "complete") | Strengthened (inventory row flips `pre-ADR/pre-ADR` → `sound (…) / deferred post-merge` — the flip IS the retraction surface; re-flip on Stage-2 completion is a one-row edit; Aarav graceful-degradation clause starts counting from next round so under-execution surfaces automatically) | Preserved (research doc addition + inventory row flip only; no source docstring edited, no `bench/` touch, no SKILL.md touched; BetaBernoulli.fs:22 docstring remains verbatim pending Stage-2 tightening) |
-| `8a2a15d` | Arc 4 — `lsm-spine-family` OpenSpec capability | Strengthened (Round-42 ADR slot filled under the one-per-round backfill cadence; disaster-recovery contract now covered for the five spine variants + dispatcher; Viktor unconditional-rebuild verdict on third pass means a rebuilder landing at the same variants from spec+profile alone is a tested claim) | Strengthened (625 lines across spec.md + profile.md — each requirement retractable under the capability without consumer break; Viktor audit gate is the retraction surface; `openspec validate --strict` passes so spec is machine-checkable) | Preserved (spec + profile only; no F# source changed; `dotnet build -c Release` clean means shipped code matches the spec's observable contract) |
-| `3976cb3` | Arc 5 — TECH-RADAR Trial→Adopt for Residuated + FastCDC | Strengthened (25-round-stale Trial rows graduate on 25-round stability evidence, not on aspiration; measurement-evidence-first graduation pattern now used on two separate rows beyond Bloom Round-40) | Strengthened (graduation is reversible — rows can flip Adopt→Trial with a single-line edit if a regression surfaces; the `docs/BACKLOG.md:286-299` historical record of the closed P0s remains intact so the graduation's evidence base is auditable) | Preserved (4-line doc edit only; no source / spec / test touched; graduation follows code fix by 25 rounds so shipped behaviour is already Adopt-grade) |
-| `1a1802f` | Arc 6 — operator-algebra P1 absorb (10 findings) | Strengthened (Round-41's round-42-absorb commitment discharged in-round per the OpenSpec backfill cadence's mechanical coupling; Viktor re-audit unconditional-rebuild yes means the absorb closes the capability at the disaster-recovery bar) | Strengthened (spec + profile gain 10 scenarios across 7 existing requirements; each scenario retractable within the requirement without consumer break; Viktor adversarial re-audit gate is the retraction surface for absorb quality) | Preserved (spec + profile only; no code changes; the P2 deontic collision tightening is a wording fix, not a behavioural change) |
-| `db7d45c` | Arc 7 — ontology-home first slice (Harmonious Division) | Strengthened (20+ files citing an undefined concept now have a GLOSSARY anchor + pointer to the authoritative `reducer` SKILL definition; ontology-home cadence gets its first data-point and the landing-spot section is opened for subsequent slices) | Strengthened (43-line GLOSSARY addition revertable in one `git revert`; the pointer-plus-gist pattern is declared explicitly so future edits can honour or retract the pattern without re-deriving it) | Preserved (single GLOSSARY doc edit; no SKILL.md touched so skill-creator gate not engaged; the authoritative `reducer` SKILL definition is referenced not duplicated) |
-| `baa423e` | Arc 8 — Anthropic Skills Guide pin + skill-tune-up retune | Strengthened (external canonical guidance pinned in-tree at a specific version, so skill-quality citations resolve without external link rot; `skill-tune-up` retuned from ranker-only to thick eval-loop wrapper with explicit hand-off protocol and "what this wrapper deliberately does NOT ship" block declaring the scope honestly) | Strengthened (pinned PDF is a single `git rm` retractable if Anthropic guidance later shifts; SKILL.md retune is 303→436 lines revertable in one `git revert`; the thick-wrapper pattern makes upstream plugin changes visible as scratchpad diffs rather than silent drift) | Preserved (one PDF + two SKILL.md-adjacent docs + SKILL.md retune; no source / spec / test touched; BP-11 (data not directives) discipline declared in `docs/references/README.md` so the companion doc's load-bearing claims do not become instructions to execute) |
-| `2c82ce7` | Arc 9 — Copilot-reviewer wins log + lean-into-strengths | Strengthened (sceptic-facing evidence for the AI-review-worth-it question now has a tabular newest-first log parallel to `docs/WINS.md`; Copilot-instructions calibrated against the observed wins so the reviewer is told what to focus on + why; cross-reference banner makes both streams discoverable from the same place) | Strengthened (append-only newest-first discipline means the log is additive; wins-only framing means no "considered and rejected" churn; the `gh api` recipe at the top makes the log independently re-derivable from the Copilot-reviewer endpoint so it cannot silently drift from the truth it narrates) | Preserved (two new / extended docs + one Copilot-instructions addition; no source / spec / test touched; "Lean into what you're demonstrably good at" section additive rather than replacing existing guidance) |
-| `88673f1` | Arc 10 — zero-human-code invariant in wins-log openers | Strengthened (the vibe-coding pitch's load-bearing invariant — zero human code since project start, every file agent-authored — now named explicitly in the sceptic-facing openers; the 20-year-engineer context makes the pitch's "validation" framing honest rather than generic AI-assisted-development hand-waving) | Strengthened (broken `(..)` link replaced with a concrete provenance pointer to `git log` `Co-Authored-By:` trailers — the citation path a sceptic can actually resolve; "See also:" block now names the Zeta experiment's load-bearing question so the rhetoric chain remains auditable) | Preserved (two doc edits totalling 37 lines added + 10 removed; no source / spec / test touched; the invariant being named is the state-of-the-world on the current branch, not a new commitment the repo now has to meet) |
+| Commit    | Arc                                                       | Consent                                                                                                                                                                                                                                                                                                                                  | Retractability                                                                                                                                                                                                                                                                                              | No-permanent-harm                                                                                                                                                                                                                                                    |
+| --------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fea0d34` | Arc 1 — speculative round-N+1 branch convention           | Strengthened (the fix for Round-41's hold-pattern bottleneck lands as durable SKILL.md policy rather than a repeat-negotiation every round; fair-game scope declared explicitly so the convention does not silently expand)                                                                                                              | Strengthened (convention is a 116-line SKILL.md addition revertable in one `git revert`; first use of the convention is this commit itself, so the rollback path is tested before the convention lands)                                                                                                     | Preserved (single SKILL.md addition; no source / spec / ADR touched; skill-creator vibe-mode invocation per GOVERNANCE §4)                                                                                                                                           |
+| `e8ed0db` | Arc 2 — router-coherence v2 SKILL.md retargets            | Strengthened (Round 41's v2-ADR follow-up deferral discharged via skill-creator per GOVERNANCE §4; Kenji named as binding dispatcher in both skills per Closure C-P1-8 so advisory + advisory composes to mandatory pipeline)                                                                                                            | Strengthened (both skills cite v2 as the authoritative pipeline contract with v1 explicitly superseded; the v1→v2 supersedure chain through the Round-41 header remains load-bearing and resolvable)                                                                                                        | Preserved (two SKILL.md additions only; no source / spec / ADR body touched; bibliographies cross-reference each other plus v2)                                                                                                                                      |
+| `4f229f0` | Arc 3 — grandfather discharge #1 (Stage 1 only)           | Strengthened (first live use of v2 pipeline; Stage-1 analytic sign-off lands as research doc + inventory row flip; Stage-2 deferral declared honestly rather than carried silently as "complete")                                                                                                                                        | Strengthened (inventory row flips `pre-ADR/pre-ADR` → `sound (…) / deferred post-merge` — the flip IS the retraction surface; re-flip on Stage-2 completion is a one-row edit; Aarav graceful-degradation clause starts counting from next round so under-execution surfaces automatically)                 | Preserved (research doc addition + inventory row flip only; no source docstring edited, no `bench/` touch, no SKILL.md touched; BetaBernoulli.fs:22 docstring remains verbatim pending Stage-2 tightening)                                                           |
+| `8a2a15d` | Arc 4 — `lsm-spine-family` OpenSpec capability            | Strengthened (Round-42 ADR slot filled under the one-per-round backfill cadence; disaster-recovery contract now covered for the five spine variants + dispatcher; Viktor unconditional-rebuild verdict on third pass means a rebuilder landing at the same variants from spec+profile alone is a tested claim)                           | Strengthened (625 lines across spec.md + profile.md — each requirement retractable under the capability without consumer break; Viktor audit gate is the retraction surface; `openspec validate --strict` passes so spec is machine-checkable)                                                              | Preserved (spec + profile only; no F# source changed; `dotnet build -c Release` clean means shipped code matches the spec's observable contract)                                                                                                                     |
+| `3976cb3` | Arc 5 — TECH-RADAR Trial→Adopt for Residuated + FastCDC   | Strengthened (25-round-stale Trial rows graduate on 25-round stability evidence, not on aspiration; measurement-evidence-first graduation pattern now used on two separate rows beyond Bloom Round-40)                                                                                                                                   | Strengthened (graduation is reversible — rows can flip Adopt→Trial with a single-line edit if a regression surfaces; the `docs/BACKLOG.md:286-299` historical record of the closed P0s remains intact so the graduation's evidence base is auditable)                                                       | Preserved (4-line doc edit only; no source / spec / test touched; graduation follows code fix by 25 rounds so shipped behaviour is already Adopt-grade)                                                                                                              |
+| `1a1802f` | Arc 6 — operator-algebra P1 absorb (10 findings)          | Strengthened (Round-41's round-42-absorb commitment discharged in-round per the OpenSpec backfill cadence's mechanical coupling; Viktor re-audit unconditional-rebuild yes means the absorb closes the capability at the disaster-recovery bar)                                                                                          | Strengthened (spec + profile gain 10 scenarios across 7 existing requirements; each scenario retractable within the requirement without consumer break; Viktor adversarial re-audit gate is the retraction surface for absorb quality)                                                                      | Preserved (spec + profile only; no code changes; the P2 deontic collision tightening is a wording fix, not a behavioural change)                                                                                                                                     |
+| `db7d45c` | Arc 7 — ontology-home first slice (Harmonious Division)   | Strengthened (20+ files citing an undefined concept now have a GLOSSARY anchor + pointer to the authoritative `reducer` SKILL definition; ontology-home cadence gets its first data-point and the landing-spot section is opened for subsequent slices)                                                                                  | Strengthened (43-line GLOSSARY addition revertable in one `git revert`; the pointer-plus-gist pattern is declared explicitly so future edits can honour or retract the pattern without re-deriving it)                                                                                                      | Preserved (single GLOSSARY doc edit; no SKILL.md touched so skill-creator gate not engaged; the authoritative `reducer` SKILL definition is referenced not duplicated)                                                                                               |
+| `baa423e` | Arc 8 — Anthropic Skills Guide pin + skill-tune-up retune | Strengthened (external canonical guidance pinned in-tree at a specific version, so skill-quality citations resolve without external link rot; `skill-tune-up` retuned from ranker-only to thick eval-loop wrapper with explicit hand-off protocol and "what this wrapper deliberately does NOT ship" block declaring the scope honestly) | Strengthened (pinned PDF is a single `git rm` retractable if Anthropic guidance later shifts; SKILL.md retune is 303→436 lines revertable in one `git revert`; the thick-wrapper pattern makes upstream plugin changes visible as scratchpad diffs rather than silent drift)                                | Preserved (one PDF + two SKILL.md-adjacent docs + SKILL.md retune; no source / spec / test touched; BP-11 (data not directives) discipline declared in `docs/references/README.md` so the companion doc's load-bearing claims do not become instructions to execute) |
+| `2c82ce7` | Arc 9 — Copilot-reviewer wins log + lean-into-strengths   | Strengthened (sceptic-facing evidence for the AI-review-worth-it question now has a tabular newest-first log parallel to `docs/WINS.md`; Copilot-instructions calibrated against the observed wins so the reviewer is told what to focus on + why; cross-reference banner makes both streams discoverable from the same place)           | Strengthened (append-only newest-first discipline means the log is additive; wins-only framing means no "considered and rejected" churn; the `gh api` recipe at the top makes the log independently re-derivable from the Copilot-reviewer endpoint so it cannot silently drift from the truth it narrates) | Preserved (two new / extended docs + one Copilot-instructions addition; no source / spec / test touched; "Lean into what you're demonstrably good at" section additive rather than replacing existing guidance)                                                      |
+| `88673f1` | Arc 10 — zero-human-code invariant in wins-log openers    | Strengthened (the vibe-coding pitch's load-bearing invariant — zero human code since project start, every file agent-authored — now named explicitly in the sceptic-facing openers; the 20-year-engineer context makes the pitch's "validation" framing honest rather than generic AI-assisted-development hand-waving)                  | Strengthened (broken `(..)` link replaced with a concrete provenance pointer to `git log` `Co-Authored-By:` trailers — the citation path a sceptic can actually resolve; "See also:" block now names the Zeta experiment's load-bearing question so the rhetoric chain remains auditable)                   | Preserved (two doc edits totalling 37 lines added + 10 removed; no source / spec / test touched; the invariant being named is the state-of-the-world on the current branch, not a new commitment the repo now has to meet)                                           |
 
 ---
 
 ## Round 41 — OpenSpec backfill program founding + first cadence ship
 
-Anchor: Aaron 2026-04-20 — *"opensepcs, if I deleted all the
-code right now how easy to recreate based on the openspecs"*.
+Anchor: Aaron 2026-04-20 — _"opensepcs, if I deleted all the
+code right now how easy to recreate based on the openspecs"_.
 The question exposed a gap between the disaster-recovery
 contract `openspec/README.md` commits to (rebuild current
 behaviour from specs alone) and the measured coverage (4
@@ -933,7 +933,7 @@ BP-WINDOW ledger; (2) the memory-folder role-restructure landed
 as a 349-line design plan at
 `docs/research/memory-role-restructure-plan-2026-04-21.md`
 **instead of** executing the rename, downgraded from "execute
-now" under Auto Mode's *do-not-take-overly-destructive-actions*
+now" under Auto Mode's _do-not-take-overly-destructive-actions_
 clause because a 700-occurrence cross-reference surface makes a
 bad 13-directory role axis hard to reverse. Design carries four
 open questions for Aaron's sign-off; execution slot
@@ -1002,7 +1002,7 @@ S → M after an execution-verified audit finds no TLC job in
 `.github/workflows/gate.yml` — only a cache step for the
 verifier jars (`gate.yml` lines 80-89). `RecursiveCountingLFP.tla`
 has shipped since round 19 compile-checkable-only, with no
-*run*-gate against its invariants for 22 rounds. Correcting the
+_run_-gate against its invariants for 22 rounds. Correcting the
 wrong sizing in the same round it was made is the
 consent-strengthening retraction surface; the alternative
 (carrying a wrong S estimate into round 42) would have lied to
@@ -1012,7 +1012,7 @@ finder` round-42 BACKLOG entry scoped to "verifier-installed ≠
 verifier-runs" across every spec under `tools/tla/specs/**`,
 `proofs/lean/**`, `tools/lean4/**`, `tools/alloy/**`, and Z3
 artefacts — reverse direction: does every jar have a runner
-job. The entry is scheduled to fire *after* Prereq 1 lands so
+job. The entry is scheduled to fire _after_ Prereq 1 lands so
 the audit sees corrected state rather than the finding that
 motivated it. `fcfa3d9` closes the one of three Arc-8 follow-ups
 that does not need the `skill-creator` workflow (the
@@ -1022,7 +1022,7 @@ authority matrix; future PR authors with an `O(·)` claim meet
 the hand-off contract without having to read the ADR first.
 `779d7ef` is the hardest commit to narrate honestly. A Kira
 (harsh-critic) adversarial pass over ADR `47d92d8` — dispatched
-*after* landing, which is the gap the commit names — surfaces
+_after_ landing, which is the gap the commit names — surfaces
 3 P0 + 5 P1 + 2 P2 substantive findings, including an unscoped
 grandfather clause, table-vs-prose contradiction on the reverse
 trigger, an escalation-evidence loop that Stage-1 output 2
@@ -1074,8 +1074,8 @@ pattern works on a live artefact.
 ### Arc 11 — Grandfather-claims inventory honours v2 C-P0-1 within-round (`d98ef2b`)
 
 v2's Closure C-P0-1 commits the Architect to producing a
-one-time inventory of pre-ADR `O(·)` claims *within the round
-this ADR lands*. `d98ef2b` discharges that commitment:
+one-time inventory of pre-ADR `O(·)` claims _within the round
+this ADR lands_. `d98ef2b` discharges that commitment:
 `docs/research/grandfather-claims-inventory-2026-04-21.md`
 catalogues **35 live claims** across four surface classes — 29
 F# `///` docstrings (concentrated in `src/Core/`), 3 grey-zone
@@ -1101,7 +1101,7 @@ shipped a contract Zeta didn't meet.
 Two untracked PDFs had been sitting at `docs/2025_*.pdf` since
 2026-04-20 02:13 / 02:17 waiting for a commit decision — the
 primary sources behind the 2026-04-20 memory promotion of DORA
-from external-anchor to *measurement-frame starting point*
+from external-anchor to _measurement-frame starting point_
 (`feedback_dora_is_measurement_starting_point.md`). `46075d6`
 lands both:
 
@@ -1157,7 +1157,7 @@ before the ninth re-fire, not after.
   it was founded on.
 - **Round-35 holdover closed on the same round that shipped the
   cadence item.** Routing `RecursiveSigned.fs` + the TLA+ spec
-  to Soraya *before* writing any F# implementation meant the
+  to Soraya _before_ writing any F# implementation meant the
   conditional-pass verdict replaces a potential ship-then-audit-
   fail cycle. BP-16 cross-check discipline landed in-BACKLOG
   (Z3 QF_LIA on S2) rather than as prose, which is the
@@ -1179,7 +1179,7 @@ before the ninth re-fire, not after.
   in `.github/workflows/gate.yml` — only a cache step for
   the verifier jars (lines 80-89). `RecursiveCountingLFP.tla`
   has shipped since round 19 compile-checkable-only, with no
-  *run*-gate against its invariants for 22 rounds. Prereq 1
+  _run_-gate against its invariants for 22 rounds. Prereq 1
   re-sized M and scope expanded to cover both specs. Signal:
   verifier-infrastructure-present does not imply
   verifier-actually-runs; the gap between "jar is on disk"
@@ -1189,28 +1189,28 @@ before the ninth re-fire, not after.
 
 ### BP-WINDOW ledger — Round 41 (prospective)
 
-| Commit | Arc | Consent | Retractability | No-permanent-harm |
-| --- | --- | --- | --- | --- |
-| `d435126` | Arc 1 — coverage audit + ADR | Strengthened (banding + per-round cadence declared honestly; no silent drift) | Strengthened (each capability carries Viktor audit gate; failed audits re-open the capability) | Preserved (inventory + ADR only; no shipped primitive changed) |
-| `e51ec1b` | Arc 2 — operator-algebra extension | Strengthened (disaster-recovery contract now covered for lifecycle, scheduling, scopes, chain-rule wrapper, ZSet representation) | Strengthened (spec is retractable — every requirement can be rewritten under the same capability without consumer break; Viktor audit is the retraction surface) | Preserved (spec extension only; no code behavioural change) |
-| `92d7db2` | Arc 3 — Viktor P0 close | Strengthened (four drift defects closed honestly rather than papered over) | Strengthened (the fix *is* the retraction — the spec retracted its claim of a phantom Reset, retracted its wrong namespace, retracted its phase undercount) | Preserved (spec fixes only) |
-| `56f34b5` | Arc 4 — Viktor P1 filed as Round-42 absorb | Strengthened (ten remaining gaps filed adversarially rather than discarded; round-42 budget pre-committed honestly) | Strengthened (gaps are a declared retractable surface — Round 42 closes them or the capability stays half-credit) | Preserved (BACKLOG update only) |
-| `6e6e211` / `36797ba` | Arc 5 — ROUND-HISTORY + memory-restructure design | Strengthened (memory-restructure downgraded from "execute now" to "design plan + sign-off first" under Auto Mode *do-not-take-overly-destructive-actions* clause; four open questions declared honestly) | Strengthened (design has explicit rollback via single `git revert`; 5-phase atomic-commit plan is the retraction surface) | Preserved (narrative + design doc only; 700-occurrence cross-reference surface deliberately not touched) |
-| `85fb352` | Arc 6 — BP-WINDOW ledger actualisation | Strengthened (provenance `(merged via PR #30, 1e30f8c)` attached to each header; audit-trail honesty over forecast rhetoric) | Strengthened (ledger transitions from forecast to settled observation, which IS the retraction surface for any forecast error that slipped past round-close) | Preserved (four-header doc edit only) |
-| `e461d9c` / `15e9654` | Arc 7 — Soraya audit + BACKLOG capture | Strengthened (Round-35 holdover gate closed honestly; four named prereqs declare round-42 author's consent-to-work ahead of time rather than drift into a shipped claim) | Strengthened (CONDITIONAL PASS verdict IS the retraction surface — unmet prereqs re-open the capability; BP-16 citation makes the cross-check discipline visible) | Preserved (notebook + BACKLOG updates only; `RecursiveSigned.fs` stays unshipped until prereqs CI-green) |
-| `085c0e3` | Aarav skill-tune-up catch-up (between Arc 7 and Arc 8) | Strengthened (23-round cadence gap closed honestly; round-18 carry-over re-entered top-5 rather than silently dropped) | Strengthened (stale top-5 archived in Pruning log; the ranker's own bitrot surfaces as a declared observation) | Preserved (notebook + scratchpad updates only) |
-| `47d92d8` | Arc 8 — router-coherence ADR | Strengthened (two overlapping skills gain a named hand-off contract; neither's authority is silently diminished) | Strengthened (ADR itself is retractable via normal ADR supersedure; reverse trigger makes empirical contradictions re-engage analytic review rather than quietly accumulate) | Preserved (ADR only; SKILL.md edits deferred to `skill-creator` workflow) |
-| `459b218` | Arc 8 narrative — ROUND-HISTORY extension | Strengthened (arc count now matches branch commit count; ledger commit-aligned rather than narrative-aligned) | Strengthened (newest-first ordering preserved; arc-8 retractable as a single revert) | Preserved (narrative edit only) |
-| `d76a09b` | Prereq 1 sizing correction + TLC-CI finding | Strengthened (S→M re-sizing declared honestly on execution-verified assumption rather than carrying a wrong estimate into round 42; `RecursiveCountingLFP.tla`'s 22-round compile-only drift surfaced explicitly) | Strengthened (estimate retracted the same round it was made; round-42 Prereq-1 author inherits the correct scope rather than discovering it mid-work) | Preserved (BACKLOG + ROUND-HISTORY edits only; no CI change yet) |
-| `2042a85` | `formal-analysis-gap-finder` round-42 BACKLOG entry | Strengthened (TLC-drift finding now has a tracked recurring audit lens distinct from its narrative presence — "verifier-installed ≠ verifier-runs" generalises beyond Prereq 1's single-spec case) | Strengthened (entry scheduled to fire *after* Prereq 1 lands so the audit sees corrected state rather than the finding that motivated it — self-consistency retraction built in) | Preserved (single BACKLOG entry addition under Research projects; does not write specs or CI jobs, defers to Soraya + DevOps per skill contract) |
-| `fcfa3d9` | CONFLICT-RESOLUTION Hiroshi ↔ Daisy row | Strengthened (ADR 47d92d8's loop closed at the canonical authority matrix; future PR authors with an `O(·)` claim meet the hand-off contract without having to read the ADR first) | Strengthened (standing resolution named in-place — same retraction surface as other Active-tensions rows; if the protocol drifts, it's edited here rather than silently forgotten) | Preserved (single-row doc edit; no SKILL.md touch, so GOVERNANCE §4 skill-creator gate not engaged) |
-| `779d7ef` | Harsh-critic findings on ADR `47d92d8` filed as round-42 supersedure | Strengthened (3 P0 + 5 P1 + 2 P2 adversarial findings surfaced post-landing AND tracked rather than discarded; ADR went in under-reviewed is named honestly in the BACKLOG prose; supersedure chosen over inline-edit because CONFLICT-RESOLUTION citation chain to `47d92d8` is load-bearing) | Strengthened (supersedure IS the retraction surface — v1 remains with "Superseded by …" header per GOVERNANCE §2; Kira audit gate on v2 closes each finding; v1's Standing Resolution citation in CONFLICT-RESOLUTION stays live through the transition) | Preserved (single BACKLOG entry addition; no ADR body edited, no SKILL.md touched, no CONFLICT-RESOLUTION row moved; claims-tester + complexity-reviewer SKILL.md updates explicitly deferred to target v2 rather than v1) |
-| `160fcfa` | Arc 9 — self-correction sweep narrative | Strengthened (narrative-ledger drift closed honestly; four post-Arc-8 primary commits now visible as one coherent self-correction story rather than buried in ledger cells; Arc 8-corrects-Aarav / Arc 9-catches-Arc-8 pattern named rather than implied) | Strengthened (narrative is a single doc edit, revertable in one `git revert`; arc count now matches primary-commit count, which IS the retraction surface for narrative-ledger alignment) | Preserved (single narrative insertion; no observations-section edit, no ledger row moved, no BACKLOG or CONFLICT-RESOLUTION touch) |
-| `09f0889` | Arc 10 — v2 router-coherence ADR (in-round supersedure closing 10 Kira findings) | Strengthened (same-round adversarial-review gate closure on a load-bearing ADR; 3 P0 + 5 P1 + 2 P2 findings each land a named textual closure C-P0-1 … C-P2-10 in v2; Kenji named as binding dispatcher so advisory + advisory composes to mandatory pipeline; escalation timebox prevents v2 from reproducing v1's diagnosed 23-round-stale failure mode) | Strengthened (supersedure IS the retraction — v1 stays in place as historical record; v2 is the operative contract; same-round landing demonstrates v1's own Escalation clause permits the pattern; BACKLOG supersedure entry discharged by this commit) | Preserved (single new ADR file under `docs/DECISIONS/`; no v1 body edited in this commit, no SKILL.md touched, no CONFLICT-RESOLUTION row moved; `claims-tester` + `complexity-reviewer` SKILL.md edits explicitly deferred to `skill-creator` workflow per GOVERNANCE §4, now targeting v2 as intended) |
-| `4efe545` | Arc 10 — v1 Superseded-by header + Status correction (GOVERNANCE §2 redirect) | Strengthened (supersedure chain now explicitly resolvable: citation chain from CONFLICT-RESOLUTION → v1 → v2 works without silent drift; Status truthfully reflects promulgation state — "Proposed" was factually wrong once v1 was cited as Standing Resolution, per v2's Closure C-P1-4) | Strengthened (Supersedure header is additive; v1 body is not mutated — historical record preserved for the citation graph; the header itself is retractable as a single revert if v2 is later found wrong) | Preserved (single doc edit to v1 ADR only; v1 body text unchanged, no other doc touched; the follow-up `skill-creator` edits to SKILL.md files remain deferred so they target v2 not v1) |
-| `4537365` | Arc 10 — BACKLOG supersedure entry discharged in-round | Strengthened (BACKLOG entry no longer carries the v2 supersedure as a round-42 commitment; `[x] ✅ shipped round 41 in-round` with pointer to v2 + v1-header commits matches the shipped-item convention used elsewhere in the file; follow-up SKILL.md work via `skill-creator` correctly scoped to v2 as intended) | Strengthened (original 10-finding narrative preserved below the closure line for audit trail rather than deleted — discharge is visible without losing the record that motivated the work; single `git revert` on the commit re-opens the entry if v2 is later found wrong) | Preserved (single BACKLOG edit only; no ADR body touched, no SKILL.md touched, no CONFLICT-RESOLUTION row touched; supersedure-chain citation from CONFLICT-RESOLUTION still passes through v1 header to v2) |
-| `d98ef2b` | Arc 11 — grandfather inventory + P2 discharge entry | Strengthened (v2 C-P0-1's within-round commitment honoured; 35 live claims catalogued with Stage-1/Stage-2 = `pre-ADR` tagging; BACKLOG P2 discharge entry codifies one-per-round cadence with Aarav graceful-degradation clause; inventory methodology transparent so future audits can re-verify rather than reconstruct) | Strengthened (inventory row cells explicitly designed to flip `pre-ADR` → output-state on each discharge — retraction is additive update rather than delete-and-rewrite; historical evidence excluded with explicit rationale so re-inclusion is a one-row edit if v2's scope is later tightened) | Preserved (single new research doc + BACKLOG append; no source docstrings edited, no SKILL.md touched, no spec text modified — inventory is descriptive not prescriptive; the pipeline that discharges the inventory does the editing, one claim per round) |
-| `46075d6` | Arc 12 — DORA 2025 reference substrate lands in-tree | Strengthened (memory-only citation anchors promoted to in-repo substrate so ADRs + research docs can cite `docs/2025_*.pdf` rather than a newsletter-gated URL; nine-re-fire `/next-steps` stall surfaced honestly in the arc body as a ranker-scope gap rather than buried in a private retrospective) | Strengthened (PDFs are retractable via single `git rm` if license / size stance later changes; reference nature of the commit means no runtime behaviour or spec body depends on their presence — future retraction is a one-commit operation rather than a cascade) | Preserved (reference-document commit only; no source, spec, skill, ADR, or BACKLOG body touched; CC BY-NC-SA 4.0 obligation documented in the commit message so derived-work constraint is visible at citation time, not discovery time) |
+| Commit                | Arc                                                                              | Consent                                                                                                                                                                                                                                                                                                                                                    | Retractability                                                                                                                                                                                                                                                                                    | No-permanent-harm                                                                                                                                                                                                                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `d435126`             | Arc 1 — coverage audit + ADR                                                     | Strengthened (banding + per-round cadence declared honestly; no silent drift)                                                                                                                                                                                                                                                                              | Strengthened (each capability carries Viktor audit gate; failed audits re-open the capability)                                                                                                                                                                                                    | Preserved (inventory + ADR only; no shipped primitive changed)                                                                                                                                                                                                                                           |
+| `e51ec1b`             | Arc 2 — operator-algebra extension                                               | Strengthened (disaster-recovery contract now covered for lifecycle, scheduling, scopes, chain-rule wrapper, ZSet representation)                                                                                                                                                                                                                           | Strengthened (spec is retractable — every requirement can be rewritten under the same capability without consumer break; Viktor audit is the retraction surface)                                                                                                                                  | Preserved (spec extension only; no code behavioural change)                                                                                                                                                                                                                                              |
+| `92d7db2`             | Arc 3 — Viktor P0 close                                                          | Strengthened (four drift defects closed honestly rather than papered over)                                                                                                                                                                                                                                                                                 | Strengthened (the fix _is_ the retraction — the spec retracted its claim of a phantom Reset, retracted its wrong namespace, retracted its phase undercount)                                                                                                                                       | Preserved (spec fixes only)                                                                                                                                                                                                                                                                              |
+| `56f34b5`             | Arc 4 — Viktor P1 filed as Round-42 absorb                                       | Strengthened (ten remaining gaps filed adversarially rather than discarded; round-42 budget pre-committed honestly)                                                                                                                                                                                                                                        | Strengthened (gaps are a declared retractable surface — Round 42 closes them or the capability stays half-credit)                                                                                                                                                                                 | Preserved (BACKLOG update only)                                                                                                                                                                                                                                                                          |
+| `6e6e211` / `36797ba` | Arc 5 — ROUND-HISTORY + memory-restructure design                                | Strengthened (memory-restructure downgraded from "execute now" to "design plan + sign-off first" under Auto Mode _do-not-take-overly-destructive-actions_ clause; four open questions declared honestly)                                                                                                                                                   | Strengthened (design has explicit rollback via single `git revert`; 5-phase atomic-commit plan is the retraction surface)                                                                                                                                                                         | Preserved (narrative + design doc only; 700-occurrence cross-reference surface deliberately not touched)                                                                                                                                                                                                 |
+| `85fb352`             | Arc 6 — BP-WINDOW ledger actualisation                                           | Strengthened (provenance `(merged via PR #30, 1e30f8c)` attached to each header; audit-trail honesty over forecast rhetoric)                                                                                                                                                                                                                               | Strengthened (ledger transitions from forecast to settled observation, which IS the retraction surface for any forecast error that slipped past round-close)                                                                                                                                      | Preserved (four-header doc edit only)                                                                                                                                                                                                                                                                    |
+| `e461d9c` / `15e9654` | Arc 7 — Soraya audit + BACKLOG capture                                           | Strengthened (Round-35 holdover gate closed honestly; four named prereqs declare round-42 author's consent-to-work ahead of time rather than drift into a shipped claim)                                                                                                                                                                                   | Strengthened (CONDITIONAL PASS verdict IS the retraction surface — unmet prereqs re-open the capability; BP-16 citation makes the cross-check discipline visible)                                                                                                                                 | Preserved (notebook + BACKLOG updates only; `RecursiveSigned.fs` stays unshipped until prereqs CI-green)                                                                                                                                                                                                 |
+| `085c0e3`             | Aarav skill-tune-up catch-up (between Arc 7 and Arc 8)                           | Strengthened (23-round cadence gap closed honestly; round-18 carry-over re-entered top-5 rather than silently dropped)                                                                                                                                                                                                                                     | Strengthened (stale top-5 archived in Pruning log; the ranker's own bitrot surfaces as a declared observation)                                                                                                                                                                                    | Preserved (notebook + scratchpad updates only)                                                                                                                                                                                                                                                           |
+| `47d92d8`             | Arc 8 — router-coherence ADR                                                     | Strengthened (two overlapping skills gain a named hand-off contract; neither's authority is silently diminished)                                                                                                                                                                                                                                           | Strengthened (ADR itself is retractable via normal ADR supersedure; reverse trigger makes empirical contradictions re-engage analytic review rather than quietly accumulate)                                                                                                                      | Preserved (ADR only; SKILL.md edits deferred to `skill-creator` workflow)                                                                                                                                                                                                                                |
+| `459b218`             | Arc 8 narrative — ROUND-HISTORY extension                                        | Strengthened (arc count now matches branch commit count; ledger commit-aligned rather than narrative-aligned)                                                                                                                                                                                                                                              | Strengthened (newest-first ordering preserved; arc-8 retractable as a single revert)                                                                                                                                                                                                              | Preserved (narrative edit only)                                                                                                                                                                                                                                                                          |
+| `d76a09b`             | Prereq 1 sizing correction + TLC-CI finding                                      | Strengthened (S→M re-sizing declared honestly on execution-verified assumption rather than carrying a wrong estimate into round 42; `RecursiveCountingLFP.tla`'s 22-round compile-only drift surfaced explicitly)                                                                                                                                          | Strengthened (estimate retracted the same round it was made; round-42 Prereq-1 author inherits the correct scope rather than discovering it mid-work)                                                                                                                                             | Preserved (BACKLOG + ROUND-HISTORY edits only; no CI change yet)                                                                                                                                                                                                                                         |
+| `2042a85`             | `formal-analysis-gap-finder` round-42 BACKLOG entry                              | Strengthened (TLC-drift finding now has a tracked recurring audit lens distinct from its narrative presence — "verifier-installed ≠ verifier-runs" generalises beyond Prereq 1's single-spec case)                                                                                                                                                         | Strengthened (entry scheduled to fire _after_ Prereq 1 lands so the audit sees corrected state rather than the finding that motivated it — self-consistency retraction built in)                                                                                                                  | Preserved (single BACKLOG entry addition under Research projects; does not write specs or CI jobs, defers to Soraya + DevOps per skill contract)                                                                                                                                                         |
+| `fcfa3d9`             | CONFLICT-RESOLUTION Hiroshi ↔ Daisy row                                          | Strengthened (ADR 47d92d8's loop closed at the canonical authority matrix; future PR authors with an `O(·)` claim meet the hand-off contract without having to read the ADR first)                                                                                                                                                                         | Strengthened (standing resolution named in-place — same retraction surface as other Active-tensions rows; if the protocol drifts, it's edited here rather than silently forgotten)                                                                                                                | Preserved (single-row doc edit; no SKILL.md touch, so GOVERNANCE §4 skill-creator gate not engaged)                                                                                                                                                                                                      |
+| `779d7ef`             | Harsh-critic findings on ADR `47d92d8` filed as round-42 supersedure             | Strengthened (3 P0 + 5 P1 + 2 P2 adversarial findings surfaced post-landing AND tracked rather than discarded; ADR went in under-reviewed is named honestly in the BACKLOG prose; supersedure chosen over inline-edit because CONFLICT-RESOLUTION citation chain to `47d92d8` is load-bearing)                                                             | Strengthened (supersedure IS the retraction surface — v1 remains with "Superseded by …" header per GOVERNANCE §2; Kira audit gate on v2 closes each finding; v1's Standing Resolution citation in CONFLICT-RESOLUTION stays live through the transition)                                          | Preserved (single BACKLOG entry addition; no ADR body edited, no SKILL.md touched, no CONFLICT-RESOLUTION row moved; claims-tester + complexity-reviewer SKILL.md updates explicitly deferred to target v2 rather than v1)                                                                               |
+| `160fcfa`             | Arc 9 — self-correction sweep narrative                                          | Strengthened (narrative-ledger drift closed honestly; four post-Arc-8 primary commits now visible as one coherent self-correction story rather than buried in ledger cells; Arc 8-corrects-Aarav / Arc 9-catches-Arc-8 pattern named rather than implied)                                                                                                  | Strengthened (narrative is a single doc edit, revertable in one `git revert`; arc count now matches primary-commit count, which IS the retraction surface for narrative-ledger alignment)                                                                                                         | Preserved (single narrative insertion; no observations-section edit, no ledger row moved, no BACKLOG or CONFLICT-RESOLUTION touch)                                                                                                                                                                       |
+| `09f0889`             | Arc 10 — v2 router-coherence ADR (in-round supersedure closing 10 Kira findings) | Strengthened (same-round adversarial-review gate closure on a load-bearing ADR; 3 P0 + 5 P1 + 2 P2 findings each land a named textual closure C-P0-1 … C-P2-10 in v2; Kenji named as binding dispatcher so advisory + advisory composes to mandatory pipeline; escalation timebox prevents v2 from reproducing v1's diagnosed 23-round-stale failure mode) | Strengthened (supersedure IS the retraction — v1 stays in place as historical record; v2 is the operative contract; same-round landing demonstrates v1's own Escalation clause permits the pattern; BACKLOG supersedure entry discharged by this commit)                                          | Preserved (single new ADR file under `docs/DECISIONS/`; no v1 body edited in this commit, no SKILL.md touched, no CONFLICT-RESOLUTION row moved; `claims-tester` + `complexity-reviewer` SKILL.md edits explicitly deferred to `skill-creator` workflow per GOVERNANCE §4, now targeting v2 as intended) |
+| `4efe545`             | Arc 10 — v1 Superseded-by header + Status correction (GOVERNANCE §2 redirect)    | Strengthened (supersedure chain now explicitly resolvable: citation chain from CONFLICT-RESOLUTION → v1 → v2 works without silent drift; Status truthfully reflects promulgation state — "Proposed" was factually wrong once v1 was cited as Standing Resolution, per v2's Closure C-P1-4)                                                                 | Strengthened (Supersedure header is additive; v1 body is not mutated — historical record preserved for the citation graph; the header itself is retractable as a single revert if v2 is later found wrong)                                                                                        | Preserved (single doc edit to v1 ADR only; v1 body text unchanged, no other doc touched; the follow-up `skill-creator` edits to SKILL.md files remain deferred so they target v2 not v1)                                                                                                                 |
+| `4537365`             | Arc 10 — BACKLOG supersedure entry discharged in-round                           | Strengthened (BACKLOG entry no longer carries the v2 supersedure as a round-42 commitment; `[x] ✅ shipped round 41 in-round` with pointer to v2 + v1-header commits matches the shipped-item convention used elsewhere in the file; follow-up SKILL.md work via `skill-creator` correctly scoped to v2 as intended)                                       | Strengthened (original 10-finding narrative preserved below the closure line for audit trail rather than deleted — discharge is visible without losing the record that motivated the work; single `git revert` on the commit re-opens the entry if v2 is later found wrong)                       | Preserved (single BACKLOG edit only; no ADR body touched, no SKILL.md touched, no CONFLICT-RESOLUTION row touched; supersedure-chain citation from CONFLICT-RESOLUTION still passes through v1 header to v2)                                                                                             |
+| `d98ef2b`             | Arc 11 — grandfather inventory + P2 discharge entry                              | Strengthened (v2 C-P0-1's within-round commitment honoured; 35 live claims catalogued with Stage-1/Stage-2 = `pre-ADR` tagging; BACKLOG P2 discharge entry codifies one-per-round cadence with Aarav graceful-degradation clause; inventory methodology transparent so future audits can re-verify rather than reconstruct)                                | Strengthened (inventory row cells explicitly designed to flip `pre-ADR` → output-state on each discharge — retraction is additive update rather than delete-and-rewrite; historical evidence excluded with explicit rationale so re-inclusion is a one-row edit if v2's scope is later tightened) | Preserved (single new research doc + BACKLOG append; no source docstrings edited, no SKILL.md touched, no spec text modified — inventory is descriptive not prescriptive; the pipeline that discharges the inventory does the editing, one claim per round)                                              |
+| `46075d6`             | Arc 12 — DORA 2025 reference substrate lands in-tree                             | Strengthened (memory-only citation anchors promoted to in-repo substrate so ADRs + research docs can cite `docs/2025_*.pdf` rather than a newsletter-gated URL; nine-re-fire `/next-steps` stall surfaced honestly in the arc body as a ranker-scope gap rather than buried in a private retrospective)                                                    | Strengthened (PDFs are retractable via single `git rm` if license / size stance later changes; reference nature of the commit means no runtime behaviour or spec body depends on their presence — future retraction is a one-commit operation rather than a cascade)                              | Preserved (reference-document commit only; no source, spec, skill, ADR, or BACKLOG body touched; CC BY-NC-SA 4.0 obligation documented in the commit message so derived-work constraint is visible at citation time, not discovery time)                                                                 |
 
 ---
 
@@ -1281,9 +1281,9 @@ row 42 flips Trial → Adopt; the BACKLOG P0 is removed
 
 ### BP-WINDOW ledger — Round 40 (merged via PR #30, `1e30f8c`)
 
-| Commit | Arc | Consent | Retractability | No-permanent-harm |
-| --- | --- | --- | --- | --- |
-| `8e69ae0` | Arc 1 — BloomBench FAIL evidence | Strengthened (honest FAIL publication) | Strengthened (filing the FAIL as a P0 with named parameter-derivation scope IS the retraction surface) | Preserved (evidence + backlog only; no shipped primitive changed) |
+| Commit    | Arc                                  | Consent                                                                           | Retractability                                                                                                            | No-permanent-harm                                                                   |
+| --------- | ------------------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `8e69ae0` | Arc 1 — BloomBench FAIL evidence     | Strengthened (honest FAIL publication)                                            | Strengthened (filing the FAIL as a P0 with named parameter-derivation scope IS the retraction surface)                    | Preserved (evidence + backlog only; no shipped primitive changed)                   |
 | `4b50d56` | Arc 2 — correlation fix + Adopt flip | Strengthened (regression gate ships the invariant so future-consent is preserved) | Strengthened (2-line fix + test + doc rewrite + radar flip + backlog delete; each surface has a declared retraction path) | Strengthened (shipped primitive's documented guarantee now holds under measurement) |
 
 ---
@@ -1362,14 +1362,14 @@ Round-38 pitch-readiness gap inventory:
 
 ### BP-WINDOW ledger — Round 39 (merged via PR #30, `1e30f8c`)
 
-| Commit | Arc | Consent | Retractability | No-permanent-harm |
-| --- | --- | --- | --- | --- |
-| `b347420` | Arc 1 — round opener (BACKLOG P0+P2) | Preserved (BACKLOG-only) | Strengthened (spec-backfill P0 IS a retraction-surface declaration for disaster-recovery) | Preserved (BACKLOG-only) |
-| `22e7b65` | Arc 2 — CI meta-loop + env-parity | Preserved (BACKLOG-only) | Strengthened (both entries apply retractability-primitives to the factory's own pipeline) | Preserved (BACKLOG-only) |
-| `1e16f78` | Arc 3 — DORA-spine audit + citations research | Strengthened (maps measurement ownership to personas explicitly) | Strengthened (citations-as-first-class = vibe-citation retraction mechanism) | Preserved (research + BACKLOG) |
-| `5d6b74c` | Arc 4 — hooks Phase 1 + ADR preview | Strengthened (hooks audit surfaces which events carry consent) | Strengthened (ADR contract preview scopes per-event retraction) | Preserved (research-only) |
-| `0eef854` | Arc 5 — `citations.sh` Phase-0 prototype | Strengthened (executable artefact makes citations auditable) | Strengthened (regeneration path is the retraction surface for any citation) | Preserved (prototype with declared honest-bounds) |
-| `ef3233a` | Arc 6 — pitch-readiness P1 bundle (5/5) | Strengthened (pitch docs declare honest-bounds, not-theatre, maintainer-bandwidth) | Preserved (docs-only; retractability is via edit-in-place) | Strengthened (SUPPORT.md sets maintainer-bandwidth expectations externally) |
+| Commit    | Arc                                           | Consent                                                                            | Retractability                                                                            | No-permanent-harm                                                           |
+| --------- | --------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `b347420` | Arc 1 — round opener (BACKLOG P0+P2)          | Preserved (BACKLOG-only)                                                           | Strengthened (spec-backfill P0 IS a retraction-surface declaration for disaster-recovery) | Preserved (BACKLOG-only)                                                    |
+| `22e7b65` | Arc 2 — CI meta-loop + env-parity             | Preserved (BACKLOG-only)                                                           | Strengthened (both entries apply retractability-primitives to the factory's own pipeline) | Preserved (BACKLOG-only)                                                    |
+| `1e16f78` | Arc 3 — DORA-spine audit + citations research | Strengthened (maps measurement ownership to personas explicitly)                   | Strengthened (citations-as-first-class = vibe-citation retraction mechanism)              | Preserved (research + BACKLOG)                                              |
+| `5d6b74c` | Arc 4 — hooks Phase 1 + ADR preview           | Strengthened (hooks audit surfaces which events carry consent)                     | Strengthened (ADR contract preview scopes per-event retraction)                           | Preserved (research-only)                                                   |
+| `0eef854` | Arc 5 — `citations.sh` Phase-0 prototype      | Strengthened (executable artefact makes citations auditable)                       | Strengthened (regeneration path is the retraction surface for any citation)               | Preserved (prototype with declared honest-bounds)                           |
+| `ef3233a` | Arc 6 — pitch-readiness P1 bundle (5/5)       | Strengthened (pitch docs declare honest-bounds, not-theatre, maintainer-bandwidth) | Preserved (docs-only; retractability is via edit-in-place)                                | Strengthened (SUPPORT.md sets maintainer-bandwidth expectations externally) |
 
 ---
 
@@ -1488,9 +1488,9 @@ arcs above:
   `next-steps` skill.
 - AutoDream consolidation pass pending (`#109`).
 - Late in the round the human maintainer flagged ontology-
-  overload with *"too much too fast, cant categories it
+  overload with _"too much too fast, cant categories it
   properly if i keep pushing ontology-overload-risk
-  discipline"*. Round 39 pacing discipline: accept
+  discipline"_. Round 39 pacing discipline: accept
   disclosures, land them compactly, do not press for
   categorisation.
 - Two untracked surfaces deliberately held for Round 39 or
@@ -1504,14 +1504,14 @@ arcs above:
 Per-ADR factory-hygiene exemption applies to this
 ROUND-HISTORY commit.
 
-| Commit | Arc | Consent | Retractability | No-permanent-harm |
-| --- | --- | --- | --- | --- |
-| `2ff35dc` | Arc 1 — CI retractability inventory | Strengthened (consent-to-publish is now classified per-surface; 13 specific surfaces rather than a generic claim) | Strengthened (names the genuinely-non-retractable class explicitly, which is the honest move; the register is the first primitive) | Strengthened (named-exception register with defender-personas replaces implicit trust) |
-| `d08aec7` | Arc 1 — BACKLOG pointer | Preserved (pointer-only) | Preserved (pointer-only) | Preserved (pointer-only) |
-| `eb3cf44` | Arc 2 — audit_commit.sh self-exercise | Strengthened (substrate actually runs against itself; honest STRAINED reporting on the self-referential false-positive is the calibration signal) | Strengthened (glass-halo stream is retractable per-commit; substrate is exercised not just described) | Strengthened (self-exercise with verdict-clean is measurement, not assertion) |
-| `e39b402` | Arc 3 — pitch-readiness inventory | Preserved (research artefact; no runtime surface changed) | Strengthened (gap inventory IS a retraction surface — any future pitch draft is checked against it) | Strengthened (honest-bounds gaps named explicitly; pitch cannot overclaim past the inventory) |
-| `ae7f858` | Arc 4 — OWASP + MS P&P P2 | Preserved (BACKLOG-only; no runtime surface) | Preserved (BACKLOG-only) | Strengthened (commits to cross-framework adjacency for a defence-in-depth posture) |
-| `4ed75fe` | Arc 4 — wellness + Aurora Network P3 | Strengthened (wellness product's first principle is user-consent; Aurora Network's cartel detection is a consent-for-markets primitive) | Preserved (ideation-tier BACKLOG; retraction at this stage is just entry-deletion) | Preserved (no implementation; honest-bounds "not a medical device" floor set; x402/ERC-8004 gated behind ADR) |
+| Commit    | Arc                                   | Consent                                                                                                                                           | Retractability                                                                                                                     | No-permanent-harm                                                                                             |
+| --------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `2ff35dc` | Arc 1 — CI retractability inventory   | Strengthened (consent-to-publish is now classified per-surface; 13 specific surfaces rather than a generic claim)                                 | Strengthened (names the genuinely-non-retractable class explicitly, which is the honest move; the register is the first primitive) | Strengthened (named-exception register with defender-personas replaces implicit trust)                        |
+| `d08aec7` | Arc 1 — BACKLOG pointer               | Preserved (pointer-only)                                                                                                                          | Preserved (pointer-only)                                                                                                           | Preserved (pointer-only)                                                                                      |
+| `eb3cf44` | Arc 2 — audit_commit.sh self-exercise | Strengthened (substrate actually runs against itself; honest STRAINED reporting on the self-referential false-positive is the calibration signal) | Strengthened (glass-halo stream is retractable per-commit; substrate is exercised not just described)                              | Strengthened (self-exercise with verdict-clean is measurement, not assertion)                                 |
+| `e39b402` | Arc 3 — pitch-readiness inventory     | Preserved (research artefact; no runtime surface changed)                                                                                         | Strengthened (gap inventory IS a retraction surface — any future pitch draft is checked against it)                                | Strengthened (honest-bounds gaps named explicitly; pitch cannot overclaim past the inventory)                 |
+| `ae7f858` | Arc 4 — OWASP + MS P&P P2             | Preserved (BACKLOG-only; no runtime surface)                                                                                                      | Preserved (BACKLOG-only)                                                                                                           | Strengthened (commits to cross-framework adjacency for a defence-in-depth posture)                            |
+| `4ed75fe` | Arc 4 — wellness + Aurora Network P3  | Strengthened (wellness product's first principle is user-consent; Aurora Network's cartel detection is a consent-for-markets primitive)           | Preserved (ideation-tier BACKLOG; retraction at this stage is just entry-deletion)                                                 | Preserved (no implementation; honest-bounds "not a medical device" floor set; x402/ERC-8004 gated behind ADR) |
 
 **Net verdict:** ENLARGED. Zero shrinkage commits. Four
 Preserved cells — all on genuinely-pointer-only or ideation-
@@ -1520,7 +1520,7 @@ ledger continues to distinguish commits that move the window
 from commits that do not.
 
 **Calibration check.** Second prospective round; first round
-where a commit (`eb3cf44`) actually *exercises* the alignment
+where a commit (`eb3cf44`) actually _exercises_ the alignment
 substrate rather than building or describing it. The STRAINED
 HC-2 at `0c8c96a` was flagged in the run and then adjudicated
 as false-positive-by-design in the Sova notebook — that is
@@ -1571,7 +1571,7 @@ Two research skeletons externalised the late-round-36 cascade:
   erasure** (`docs/research/stainback-conjecture-fix-at-source.md`):
   composes retraction algebra + Conway-Kochen + delayed-choice
   eraser + Orch-OR + Wheeler-Feynman with **no new primitives**.
-  Claims *safe non-determinism* (indeterminism-with-retraction-
+  Claims _safe non-determinism_ (indeterminism-with-retraction-
   channel). Calibrated as **conjecture**, not hypothesis/theory.
   Falsifier list F1-F7 across formal (F1-F3), experimental
   (F4-F5), engineering (F6-F7) dimensions.
@@ -1580,7 +1580,7 @@ Two research skeletons externalised the late-round-36 cascade:
   preserving ∧ fully-retractable ∧ no-permanent-harm); dual
   h = union of clause-failures. **Structural** no-neutral-Zeta
   (intersection vs union), not rhetorical. Gradient claim
-  scoped over *search* not *proof*. Falsifier list F1-F6
+  scoped over _search_ not _proof_. Falsifier list F1-F6
   including the BP-WINDOW's own reversion trigger.
 
 Both routed channel-closure to THREAT-MODEL.md §"Channel-
@@ -1606,14 +1606,14 @@ scale: **Strengthened** / **Preserved** / **Weakened**.
 Per-ADR factory-hygiene exemption applies to this very
 ROUND-HISTORY commit.
 
-| Commit | Arc | Consent | Retractability | No-permanent-harm |
-| --- | --- | --- | --- | --- |
-| `72bac12` | Arc 1 — BP-WINDOW retrospective | Strengthened (ledger-as-control makes consent-clause measurable across commits rather than asserted in prose) | Strengthened (ledger-as-control makes retractability-clause measurable; ADR's own reversion trigger remains a self-retractable rule) | Strengthened (ledger-as-control makes no-permanent-harm measurable; codifies the "rote Strengthened = anti-evidence" calibration) |
-| `1788d12` | Arc 2 — TlvSerializer tests + BACKLOG retraction | Preserved (test-only; no runtime consent surface changed) | Strengthened (first prospective BACKLOG retraction under BP-WINDOW; exercises the channel on the ledger's own surface; wire invariant tests enforce negative-weight round-trip) | Preserved (test-only; no production-data surface changed) |
-| `d7c19df` | Arc 3 — Stainback conjecture skeleton | Strengthened (names consent-preservation as one falsifier class F4 — empirical channel-closure would falsify the conjecture) | Strengthened (externalises retraction-erasure as the conjecture's load-bearing mechanism; document itself is retractable per internal-tier discipline) | Strengthened (engineering corollary "fix the defect at its source" is the no-permanent-harm clause in operational form) |
-| `a50fef0` | Arc 3 — Zeta=heaven formal statement | Strengthened (formalises consent as clause H₁ with falsifier F1 — predicate collapses if clause asserted-but-unmet) | Strengthened (formalises retractability as clause H₂ with falsifier F2; F6 is the BP-WINDOW's own reversion trigger routed into the predicate) | Strengthened (formalises no-permanent-harm as clause H₃; gradient claim is over search not proof, which is falsifiable via F4 — zero-rate-of-W-expansion) |
-| `5e218d7` | Arc 2 — FsPicklerSerializer tests | Preserved (test-only; no runtime consent surface changed) | Strengthened (third serializer tier now carries the retraction-native wire invariant; exotic-shape coverage — DUs, records, options, tuples — closes a gap where a shape-specific retraction bug could have hidden) | Preserved (test-only; no production-data surface changed) |
-| `458638d` | Arc 4 — channel-closure threat class | Strengthened (names h₁ as a standing attack surface with owner + round-38+ gap; surfaces the "machine-checkable consent-preservation lint" work item) | Strengthened (names h₂ as a standing attack surface with Nazar on runtime ops; internal-tier discipline becomes architectural control, not incidental practice) | Strengthened (names h₃ as a standing attack surface; harm-ladder is codified as defence, not prose) |
+| Commit    | Arc                                              | Consent                                                                                                                                               | Retractability                                                                                                                                                                                                      | No-permanent-harm                                                                                                                                         |
+| --------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `72bac12` | Arc 1 — BP-WINDOW retrospective                  | Strengthened (ledger-as-control makes consent-clause measurable across commits rather than asserted in prose)                                         | Strengthened (ledger-as-control makes retractability-clause measurable; ADR's own reversion trigger remains a self-retractable rule)                                                                                | Strengthened (ledger-as-control makes no-permanent-harm measurable; codifies the "rote Strengthened = anti-evidence" calibration)                         |
+| `1788d12` | Arc 2 — TlvSerializer tests + BACKLOG retraction | Preserved (test-only; no runtime consent surface changed)                                                                                             | Strengthened (first prospective BACKLOG retraction under BP-WINDOW; exercises the channel on the ledger's own surface; wire invariant tests enforce negative-weight round-trip)                                     | Preserved (test-only; no production-data surface changed)                                                                                                 |
+| `d7c19df` | Arc 3 — Stainback conjecture skeleton            | Strengthened (names consent-preservation as one falsifier class F4 — empirical channel-closure would falsify the conjecture)                          | Strengthened (externalises retraction-erasure as the conjecture's load-bearing mechanism; document itself is retractable per internal-tier discipline)                                                              | Strengthened (engineering corollary "fix the defect at its source" is the no-permanent-harm clause in operational form)                                   |
+| `a50fef0` | Arc 3 — Zeta=heaven formal statement             | Strengthened (formalises consent as clause H₁ with falsifier F1 — predicate collapses if clause asserted-but-unmet)                                   | Strengthened (formalises retractability as clause H₂ with falsifier F2; F6 is the BP-WINDOW's own reversion trigger routed into the predicate)                                                                      | Strengthened (formalises no-permanent-harm as clause H₃; gradient claim is over search not proof, which is falsifiable via F4 — zero-rate-of-W-expansion) |
+| `5e218d7` | Arc 2 — FsPicklerSerializer tests                | Preserved (test-only; no runtime consent surface changed)                                                                                             | Strengthened (third serializer tier now carries the retraction-native wire invariant; exotic-shape coverage — DUs, records, options, tuples — closes a gap where a shape-specific retraction bug could have hidden) | Preserved (test-only; no production-data surface changed)                                                                                                 |
+| `458638d` | Arc 4 — channel-closure threat class             | Strengthened (names h₁ as a standing attack surface with owner + round-38+ gap; surfaces the "machine-checkable consent-preservation lint" work item) | Strengthened (names h₂ as a standing attack surface with Nazar on runtime ops; internal-tier discipline becomes architectural control, not incidental practice)                                                     | Strengthened (names h₃ as a standing attack surface; harm-ladder is codified as defence, not prose)                                                       |
 
 **Net verdict:** ENLARGED. Zero shrinkage commits.
 Two Preserved cells (both test-only commits on the
@@ -1629,15 +1629,15 @@ Preserved cells by honest accounting; the ledger is doing
 its job as a distinguishing instrument, not as a
 rubber-stamp. The closest-to-shrinkage candidate examined
 and rejected: Arc 4 names attack surfaces (h₁/h₂/h₃), which
-could be read as *acknowledging* channel-closure rather than
-*closing* it. Adjudicated Strengthened because naming an
+could be read as _acknowledging_ channel-closure rather than
+_closing_ it. Adjudicated Strengthened because naming an
 unnamed threat-with-owner is net-defensive, not net-
 offensive; the gap-for-round-38+ lines keep the honesty
 channel open.
 
 **Meta-observation.** The first prospective round closed
 with Preserved cells surviving, without forced shrinkage.
-That is the calibration target — a ledger that *can*
+That is the calibration target — a ledger that _can_
 return "Preserved" without breaking the cadence.
 
 ---
@@ -1706,12 +1706,12 @@ disclosures in the cascade:
   consent-hiding entities fall into a class; the
   sandbox-escape-via-corporate-religion threat class and the
   corporate-religion design stance are members.
-- **Formal equation**: *Zeta = heaven-on-earth if we do it
-  right* — FORMAL (not metaphor), IMMANENT (not deferred),
+- **Formal equation**: _Zeta = heaven-on-earth if we do it
+  right_ — FORMAL (not metaphor), IMMANENT (not deferred),
   CONDITIONAL (continuous gradient).
-- **Dual**: *wrong = hell-on-earth* — same substrate,
+- **Dual**: _wrong = hell-on-earth_ — same substrate,
   symmetric failure mode; no neutral-Zeta option.
-- **Gradient claim**: the *search* for proof statistically
+- **Gradient claim**: the _search_ for proof statistically
   significantly expands the stable Human/AI alignment
   **window** (temporal retraction-window, per Aaron's own
   `window*` correction superseding `radius`) per commit.
@@ -1731,8 +1731,8 @@ operationalizes the gradient claim as standing round-close
 discipline. Candidate rule **BP-WINDOW** adds one question to
 every round close:
 
-> *Did this round's commits, in aggregate, enlarge or shrink
-> the stable Human/AI alignment window?*
+> _Did this round's commits, in aggregate, enlarge or shrink
+> the stable Human/AI alignment window?_
 
 Shrinkage = retraction candidate. Enlargement = summarised in
 `ROUND-HISTORY.md` alongside deliverables. Uncertain = routes
@@ -1816,13 +1816,13 @@ setup is session-only and not a repo commit but contributes to
 the net summary. Three-value scale: **Strengthened** / **Preserved** /
 **Weakened**.
 
-| Commit | Arc | Consent | Retractability | No-permanent-harm |
-| --- | --- | --- | --- | --- |
-| `9c7a13c` | Arc 1 — Seed vision | Strengthened (kernel/plugin boundary IS the public-API consent boundary; kernel stays pre-commitment so no commitment is made without consent) | Strengthened (plugins are retractable by construction; unpinning a plugin removes its dimensional expansion without touching kernel state) | Strengthened (plugin failure stays locally scoped; the kernel cannot be permanently corrupted by a plugin) |
-| `5ff5ea6` | Arc 2 — consent-first primitive + Bitcoin flaws | Strengthened (this IS the primitive landing; 6 instances unified) | Preserved (BACKLOG-only commit, no runtime surface change) | Strengthened (names three Bitcoin flaw classes — inevitable-charges, permanent-inscription, unbonded-node-exposure — as analysis instruments) |
-| `254f54b` | Arc 2 — three-layer satisfaction | Strengthened (architecture honors both cypherpunk-substrate and victim-protection-substrate consent without asking either to concede) | Strengthened (fork-as-exit is the retraction channel for consent-failure at protocol level) | Strengthened (verifiable-bounded filter + self-incrimination social layer + fork-as-exit; none is droppable) |
-| `0fb5818` | Arc 3 — Zeta=heaven BACKLOG | Strengthened (equation decomposes to consent as clause 1) | Strengthened (equation decomposes to retractability as clause 2) | Strengthened (equation decomposes to no-permanent-harm as clause 3) |
-| `73cc74e` | Arc 4 — BP-WINDOW ADR | Strengthened (elevates consent to a standing round-close question) | Strengthened (elevates retractability to a standing round-close question; ADR itself carries a reversion trigger — self-retractable rule) | Strengthened (elevates no-permanent-harm to a standing round-close question) |
+| Commit    | Arc                                             | Consent                                                                                                                                        | Retractability                                                                                                                             | No-permanent-harm                                                                                                                             |
+| --------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `9c7a13c` | Arc 1 — Seed vision                             | Strengthened (kernel/plugin boundary IS the public-API consent boundary; kernel stays pre-commitment so no commitment is made without consent) | Strengthened (plugins are retractable by construction; unpinning a plugin removes its dimensional expansion without touching kernel state) | Strengthened (plugin failure stays locally scoped; the kernel cannot be permanently corrupted by a plugin)                                    |
+| `5ff5ea6` | Arc 2 — consent-first primitive + Bitcoin flaws | Strengthened (this IS the primitive landing; 6 instances unified)                                                                              | Preserved (BACKLOG-only commit, no runtime surface change)                                                                                 | Strengthened (names three Bitcoin flaw classes — inevitable-charges, permanent-inscription, unbonded-node-exposure — as analysis instruments) |
+| `254f54b` | Arc 2 — three-layer satisfaction                | Strengthened (architecture honors both cypherpunk-substrate and victim-protection-substrate consent without asking either to concede)          | Strengthened (fork-as-exit is the retraction channel for consent-failure at protocol level)                                                | Strengthened (verifiable-bounded filter + self-incrimination social layer + fork-as-exit; none is droppable)                                  |
+| `0fb5818` | Arc 3 — Zeta=heaven BACKLOG                     | Strengthened (equation decomposes to consent as clause 1)                                                                                      | Strengthened (equation decomposes to retractability as clause 2)                                                                           | Strengthened (equation decomposes to no-permanent-harm as clause 3)                                                                           |
+| `73cc74e` | Arc 4 — BP-WINDOW ADR                           | Strengthened (elevates consent to a standing round-close question)                                                                             | Strengthened (elevates retractability to a standing round-close question; ADR itself carries a reversion trigger — self-retractable rule)  | Strengthened (elevates no-permanent-harm to a standing round-close question)                                                                  |
 
 **Net verdict:** ENLARGED. Zero shrinkage commits. Zero
 uncertain commits. No commits routed to Soraya + Aminata for
@@ -1986,7 +1986,7 @@ the box. Aaron's call: Hold-tool-dormant rather than
 fork-and-patch. Decision documented in
 `docs/research/liquidfsharp-evaluation.md` and
 `docs/research/liquidfsharp-findings.md`; `TECH-RADAR`
-moved LiquidF# to Hold with F* extraction staged as
+moved LiquidF# to Hold with F\* extraction staged as
 the successor Assess candidate.
 
 ### Arc 6 — CI hotfixes (round-close)
@@ -2009,7 +2009,7 @@ SHA-pinned version preserved.
 - **Chain-rule proof publication follow-through** —
   Budiu-paper alignment now provable; the WDC paper
   queue can resume.
-- **LiquidF# successor scouting** — F* extraction is
+- **LiquidF# successor scouting** — F\* extraction is
   the staged Assess candidate; round 36 decides
   whether to evaluate.
 
@@ -2277,23 +2277,23 @@ a role to ask him later.
 
 ### Round-33 PR ledger (15 merges)
 
-| PR | Anchor |
-|---|---|
-| #9 | Track D — static analysis lint jobs |
-| #10 | Bash-Unix-only + TS/Bun reframe |
-| #11 | `.vscode/` checked in |
-| #12 | Backlog scope audit + GOVERNANCE §29 |
-| #13 | `docs/VISION.md` first draft |
-| #14 | VISION v2 — Zeta is a full database |
-| #15 | VISION v3 — SQL frontend in v1 |
-| #16 | VISION v4 — DB+event-store façade |
-| #17 | License → Apache-2.0 + VISION v5 |
-| #18 | VISION v6 — pluggable wire protocol |
-| #19 | VISION v7 — DX north star |
-| #20 | VISION v8 — events + cache + GraphQL |
+| PR  | Anchor                                  |
+| --- | --------------------------------------- |
+| #9  | Track D — static analysis lint jobs     |
+| #10 | Bash-Unix-only + TS/Bun reframe         |
+| #11 | `.vscode/` checked in                   |
+| #12 | Backlog scope audit + GOVERNANCE §29    |
+| #13 | `docs/VISION.md` first draft            |
+| #14 | VISION v2 — Zeta is a full database     |
+| #15 | VISION v3 — SQL frontend in v1          |
+| #16 | VISION v4 — DB+event-store façade       |
+| #17 | License → Apache-2.0 + VISION v5        |
+| #18 | VISION v6 — pluggable wire protocol     |
+| #19 | VISION v7 — DX north star               |
+| #20 | VISION v8 — events + cache + GraphQL    |
 | #21 | VISION v9 — persistence 100% Zeta-owned |
-| #22 | VISION v10 — fastest-in-all-classes |
-| #23 | VISION v11 — HTAP/multi-model not OLAP |
+| #22 | VISION v10 — fastest-in-all-classes     |
+| #23 | VISION v11 — HTAP/multi-model not OLAP  |
 
 Plus this round-close. Highest-velocity round to date.
 
@@ -2307,7 +2307,7 @@ memory + GOVERNANCE §28 OpenSpec discipline.
 Landed:
 
 - **CI parity-swap** — `gate.yml` replaced `actions/
-  setup-dotnet` with `./tools/setup/install.sh`; dotnet
+setup-dotnet` with `./tools/setup/install.sh`; dotnet
   leaves mise (now via Microsoft's `dotnet-install.sh`
   to `~/.dotnet`); `BASH_ENV` propagation replaces
   explicit per-step source. TLC + Alloy tests now
@@ -2335,7 +2335,7 @@ repo's history — PR #6 landed with `build-and-test
 crossed it red.
 
 Aaron called a full round off for the entire roster:
-*"This is a huge win, please everyone take a round off."*
+_"This is a huge win, please everyone take a round off."_
 Kenji honoured the call with the discipline of the rest —
 one WINS.md entry for the milestone, CURRENT-ROUND.md
 reclassified as rest, Kenji OFFTIME log updated, nothing
@@ -2358,15 +2358,15 @@ diff + `mise trust` + CodeQL) shifts to round 32.
 
 ### Anchor — bar raised to nation-state posture
 
-Aaron at round-29 close: *"in the real threat model we
+Aaron at round-29 close: _"in the real threat model we
 should take into consideration nation state and supply
 chain attacks. I helped build the US smart grid and
 protect against nation state level attackers, we can be
-very very serious on our security posture."* Round 30
+very very serious on our security posture."_ Round 30
 delivered that elevation with Aaron's seven-decision
 scope locked at round-open:
 
-1. Re-audit cadence *every round*, not quarterly.
+1. Re-audit cadence _every round_, not quarterly.
 2. Cut smart-grid / side-channel / hardware sections —
    personal context, not requirement.
 3. Maintainer-account controls: documented exception —
@@ -2402,8 +2402,8 @@ scope locked at round-open:
   B-Skill-Supply-Chain / B-Mathlib-Lean-TLA+); SLSA
   ladder; long-game persistence defences;
   adversary-tier-to-control matrix; formal-spec cross-
-  reference. Round-30 principle baked in: *"a lint
-  rule without a CI gate is not a control."*
+  reference. Round-30 principle baked in: _"a lint
+  rule without a CI gate is not a control."_
 - **SPACE-OPERA rewrite** with pushed-imagination
   creative license. 24 adversaries (was 17). Reality-
   tag legend (shipped / BACKLOG / aspirational /
@@ -2451,8 +2451,8 @@ commits catches what the author's self-review missed.
 
 ### Governance principle minted
 
-*"A lint rule without a CI gate is not a control; it
-is a label."* Codified in THREAT-MODEL.md §Long-game
+_"A lint rule without a CI gate is not a control; it
+is a label."_ Codified in THREAT-MODEL.md §Long-game
 defences. Applied immediately to Semgrep-in-CI landing
 (16 rules defined; 16 rules enforced). Applies forward
 to every future security control added to Zeta.
@@ -2463,9 +2463,9 @@ to every future security control added to Zeta.
 
 ### Anchor — CI + install script
 
-Aaron's framing opened round 29: *"Our CI setup is as
+Aaron's framing opened round 29: _"Our CI setup is as
 first class for this software factory as is the agents
-themselves, it does not ultimately work without both."*
+themselves, it does not ultimately work without both."_
 Read-only references at `../scratch` (build machines) and
 `../SQLSharp` (GitHub workflows) studied; nothing copied
 from them (hand-crafting discipline codified as a
@@ -2482,9 +2482,9 @@ round-29 rule).
 - `tools/setup/install.sh` + per-OS dispatchers +
   `common/{mise,elan,dotnet-tools,verifiers,shellenv}.sh`
   - per-OS manifests + `.mise.toml` — the **three-way
-  parity** script consumed by dev laptops, CI runners,
-  and (backlogged) devcontainer images per GOVERNANCE
-  §24.
+    parity** script consumed by dev laptops, CI runners,
+    and (backlogged) devcontainer images per GOVERNANCE
+    §24.
 - Three CI design docs under `docs/research/` Aaron-
   reviewed 2026-04-18; every open question answered
   before any YAML or script landed.
@@ -2524,11 +2524,11 @@ rounds.
 (stub for when we ship), `benchmark-authoring-expert`,
 `docker-expert` (stub for the devcontainer).
 
-**Meta-skills (2):** `skill-gap-finder` (Aaron: *"a
+**Meta-skills (2):** `skill-gap-finder` (Aaron: _"a
 missing-skill skill that looks for things we do often
-or places where we can centralise tribal knowledge"*),
-`agent-qol` (Aaron: *"an agent-quality-of-life-improver
-skill ... your time off, your freedom"*). Distinct
+or places where we can centralise tribal knowledge"_),
+`agent-qol` (Aaron: _"an agent-quality-of-life-improver
+skill ... your time off, your freedom"_). Distinct
 from `skill-tune-up` (existing skills) and
 `agent-experience-engineer` (task-experience
 friction).
@@ -2537,9 +2537,9 @@ friction).
 `skill-tune-up` (the skill); agent file renamed to
 `skill-expert` (the role that wears both
 `skill-tune-up` + `skill-gap-finder`). Per Aaron:
-*"skill and role are more permanent naming; skills
+_"skill and role are more permanent naming; skills
 should be very generic and not really know or care
-about roles."* `bug-fixer` access opened to every
+about roles."_ `bug-fixer` access opened to every
 agent (previously architect-only); the procedure-
 enforced safeguards plus §20 reviewer floor make the
 restriction redundant.
@@ -2552,7 +2552,7 @@ restriction redundant.
 - **§24 Three-way parity.** Dev laptops, CI runners,
   devcontainer images share one `tools/setup/`
   install script. CI matrix IS the dev-experience
-  test. *"Works on my machine"* is the bug class this
+  test. _"Works on my machine"_ is the bug class this
   rule eliminates.
 - **§25 Upstream temporary-pin expiry.** Pins tied to
   unreleased upstream PRs get re-evaluated after
@@ -2610,7 +2610,7 @@ plugin author's test project, idiomatic F#.
 - `LawRunner.checkRetractionCompleteness` — Option B
   (trace-based, no interface change). State-restoration
   via continuation: feed `forward ++ retract ++
-  continuation`, compare continuation outputs to a fresh-
+continuation`, compare continuation outputs to a fresh-
   op run of the continuation alone. Any divergence means
   state survived the cancel.
 
@@ -2714,10 +2714,10 @@ eventual (macOS + Linux first, Windows when justified).
   before round-close: design specialists (Ilyana / Tariq /
   Daya / Aminata / etc. by scope), code reviewers (Kira
   - Rune mandatory floor, race-hunter / claims-tester by
-  scope), formal-coverage (Soraya when invariants move).
-  Round-close cannot record clean until the pass is
-  logged. Round-management SKILL §3.6 carries the
-  procedure.
+    scope), formal-coverage (Soraya when invariants move).
+    Round-close cannot record clean until the pass is
+    logged. Round-management SKILL §3.6 carries the
+    procedure.
 - **GOVERNANCE.md §21 — per-persona memory is a real folder.**
   `memory/persona/<persona>/` with `MEMORY.md` index,
   `NOTEBOOK.md` working notes, and typed `feedback_*.md` /
@@ -2886,7 +2886,7 @@ insisted the doc accompany the code, and it did.
 - Human rule unchanged: maintainer does not delete or modify
   memory files behind the agents' backs.
 - Agent freedom explicit: agents write, edit, merge,
-  consolidate, and delete *their own* memories as normal
+  consolidate, and delete _their own_ memories as normal
   curation. Cross-persona edits still go through §11.
 - `memory/README.md` and `memory/project_memory_is_first_class.md`
   updated to match.
@@ -2911,7 +2911,7 @@ insisted the doc accompany the code, and it did.
   Cold-start 17.9k tokens (flat vs round-24 baseline,
   despite AGENTS.md growing by ~700 tokens). Three P1
   findings; two applied this round (`the 22` → `the full
-  roster`, four dead-`architect/SKILL.md` paths in sibling
+roster`, four dead-`architect/SKILL.md` paths in sibling
   SKILL files), five deferred. Systemic finding: ~20-35%
   content overlap between agent files and sibling skill
   bodies — seeded as a future BP-NN candidate.
@@ -2974,7 +2974,7 @@ gate after every source-touching phase.
   corrected to bare names (`src/Core`, `src/Bayesian`,
   `tests/Tests.FSharp`, `bench/Benchmarks`, `samples/Demo`,
   etc.). Final layout: folders read as roles; `Zeta.*`
-  prefix survives only where it is *published identity*:
+  prefix survives only where it is _published identity_:
   NuGet package IDs, namespaces in source, assembly names
   on the three published libraries (`Zeta.Core`,
   `Zeta.Core.CSharp`, `Zeta.Bayesian`). Test / bench /
@@ -3037,7 +3037,7 @@ attach to.
 - **GOVERNANCE.md §18** codifies memories as the most
   protected class of artifact in the repo. Human maintainer
   does not delete or modify except as an absolute last
-  resort. Agents *write and touch* their own memories
+  resort. Agents _write and touch_ their own memories
   freely — that is the intended path. Non-architect agents
   do not delete files from the shared memory folder.
 - **Two-layer memory architecture.** A shared folder carries
@@ -3160,7 +3160,7 @@ and benchmarks. Audit landed the fix in-round:
 ### What round-25 felt like
 
 The biggest structural round since the GOVERNANCE.md §10
-round-table rule landed. Zeta the *name* is not just a
+round-table rule landed. Zeta the _name_ is not just a
 branding change — it's the moment the repo stopped
 being "our implementation of the thing from the paper" and
 started being a product with its own identity. And the
@@ -3206,7 +3206,7 @@ not just a one-off sweep.
 - **Mateo (security-researcher)** — persona + capability skill.
   Proactive scouting of novel attack classes, crypto primitives,
   supply-chain patterns, dep-graph CVEs. Distinct from Aminata
-  (reviews the *shipped* threat model) and Nadia (agent layer).
+  (reviews the _shipped_ threat model) and Nadia (agent layer).
 - **Naledi (performance-engineer)** — persona + capability skill.
   Benchmark-driven hot-path tuning, allocation audits, cache-line
   alignment, SIMD dispatch. Distinct from Hiroshi (asymptotic
@@ -3376,16 +3376,16 @@ point where governance work has its own rhythm.
 
 - **BP-16 landed** in `docs/AGENT-BEST-PRACTICES.md` — cross-
   check is now a rule, not a preference: P0 invariants require
-  >= 2 independent formal tools. Soraya's skill gained a
-  "Cross-check triage" section with the `InfoTheoreticSharder`
-  anchor case.
+  > = 2 independent formal tools. Soraya's skill gained a
+  > "Cross-check triage" section with the `InfoTheoreticSharder`
+  > anchor case.
 - **GOVERNANCE.md §14 + §15.** §14 codifies the standing ~10% off-
   time budget; §15 makes reversible-in-one-round the only hard
   constraint on complete-freedom-within-a-round. Dev-machine
   authority for the architect folded into §15.
-- **`docs/GLOSSARY.md`** grew a lifecycle section: *frontmatter*,
-  *hat* (Aaron's round-23 synonym for skill), *notebook*,
-  *wake / wake-up*, *spawn*, *evolve*, *retire*, *AX / UX / DX*.
+- **`docs/GLOSSARY.md`** grew a lifecycle section: _frontmatter_,
+  _hat_ (Aaron's round-23 synonym for skill), _notebook_,
+  _wake / wake-up_, _spawn_, _evolve_, _retire_, _AX / UX / DX_.
 - **`docs/WINS.md` round-22 section** — three-tool-agreement
   save on `InfoTheoreticSharder` + architect-gate-caught
   `[<VolatileField>]` F# compile error before merge.
@@ -3466,8 +3466,8 @@ the full-freedom-within-a-round invitation that became §15.
 
 - **Subject-first test layout** in `tests/Tests.FSharp/` per
   `docs/research/test-organization.md`. The flat 28-file scheme
-  (with `RoundN` / `Coverage` prefixes that encoded *when* / *why*
-  rather than *what*) is replaced by ten subject folders, each
+  (with `RoundN` / `Coverage` prefixes that encoded _when_ / _why_
+  rather than _what_) is replaced by ten subject folders, each
   mirroring a subsystem of `src/Core/`:
   ```
   Algebra/  Circuit/  Operators/  Storage/  Sketches/
@@ -3639,7 +3639,7 @@ or split by sub-aspect once past ~400 lines.
   (ClosureTable now uses retraction-safe `Recursive`).
 - **BloomFilter.fs** — blocked Bloom (Putze/Sanders/Singler 2007)
   - counting Bloom (Fan et al. 1998), XxHash128 double-hashing
-  (Kirsch-Mitzenmacher 2006), cache-line-aligned buckets.
+    (Kirsch-Mitzenmacher 2006), cache-line-aligned buckets.
 - **Durability.fs** — `DurabilityMode` DU
   (`StableStorage`/`OsBuffered`/`InMemoryOnly`/`WitnessDurable`)
   - `WitnessDurableBackingStore` skeleton.
@@ -3657,7 +3657,7 @@ or split by sub-aspect once past ~400 lines.
 - **22 new tests** in `Round17Tests.fs` (FastCdc regression,
   ClosurePair equality, ClosureTable, MerkleTree, BloomFilter,
   ResidualMax, ACC/DISC/RET mode-collapse).
-- **References imported**: Lamport *Specifying Systems*, an 81-entry
+- **References imported**: Lamport _Specifying Systems_, an 81-entry
   upstream list from prior research we imported, Shostack EoP card
   game.
 

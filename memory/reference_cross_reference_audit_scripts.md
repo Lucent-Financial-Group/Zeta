@@ -71,7 +71,7 @@ After Batch A (confident prefix renames) + Batch B
 
 **Surface:** `docs/**/*.md` (repo working copy).
 
-**Target pattern:** backticked ``` `X.md` ``` paths; filter
+**Target pattern:** backticked `` `X.md` `` paths; filter
 out auto-memory naming, `YYYY-MM-DD` placeholders, and
 `-NN-` template segments.
 
@@ -181,8 +181,8 @@ files. Top concentrations:
   structural analogue at the doc-surface layer.
 - The verify-before-deferring rule (CLAUDE.md §ground-
   rules + `feedback_verify_target_exists_before_deferring.md`)
-  is the *preventive* discipline; this audit is the
-  *detective* counterpart for dead pointers that slip
+  is the _preventive_ discipline; this audit is the
+  _detective_ counterpart for dead pointers that slip
   through.
 
 ## What this memory does NOT do

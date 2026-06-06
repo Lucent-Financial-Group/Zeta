@@ -4,15 +4,16 @@ desc-cription: Aaron 2026-04-22 "i'm sure some people will want to force a 2nd A
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Deferred factory policy, with an explicit trigger condition.**
 
 **Aaron 2026-04-22 (context: enabling merge queue + auto-merge):**
 
-> *"i'm sure some people will want to force a 2nd AI reviwers like
+> _"i'm sure some people will want to force a 2nd AI reviwers like
 > with the git branch protections but we are not going to worry
 > about that until we get more contibutors. it's probably a good
 > rule once another contributor has their agents running at the
-> same time."*
+> same time."_
 
 **Not doing now:**
 
@@ -25,7 +26,7 @@ self-approval theater.
 
 **The trigger condition — when to revisit:**
 
-The policy becomes *probably good* when:
+The policy becomes _probably good_ when:
 
 1. **Multiple human contributors** have agents running against the
    same repo concurrently, AND
@@ -62,16 +63,16 @@ merge-queue gate passes.
   at that point. The onboarding itself is the trigger.
 - **Do not confuse this with the `strengthen-the-check` rule**
   (`feedback_strengthen_the_check_not_the_manual_gate.md`). That
-  rule is about *what checks gate merges* today. This memory is
-  about *a specific check we're not adding until conditions
-  change*.
+  rule is about _what checks gate merges_ today. This memory is
+  about _a specific check we're not adding until conditions
+  change_.
 
 **Pairs with:**
 
 - `feedback_strengthen_the_check_not_the_manual_gate.md` — the
   companion rule that determines when adding a check is right;
   this memory explains why the second-AI-reviewer check fails
-  the test *today* but would pass it under stated trigger
+  the test _today_ but would pass it under stated trigger
   conditions.
 - `feedback_merge_queue_structural_fix_for_parallel_pr_rebase_cost.md`
   — the context in which this was discussed (enabling merge queue

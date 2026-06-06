@@ -139,10 +139,10 @@ it, you'd need an infinite stack of separate ontology layers.
 With it, one type expression captures all layers AND their
 self-reference.
 
-| Audience | Framing | Vocabulary |
-|----------|---------|------------|
-| 5-year-old | "things that look like things" | apple, ball, Round, Square, Shape |
-| Code-reader | "recursive ontology in code" | type, kind, ontology, Fix<F<_>>, IFunctor |
+| Audience      | Framing                                 | Vocabulary                                      |
+| ------------- | --------------------------------------- | ----------------------------------------------- |
+| 5-year-old    | "things that look like things"          | apple, ball, Round, Square, Shape               |
+| Code-reader   | "recursive ontology in code"            | type, kind, ontology, Fix<F<\_>>, IFunctor      |
 | Mathematician | "fixed point of category of categories" | category, functor, fix-point, recursion-schemes |
 
 All three name the same thing. Audience-appropriate framing
@@ -245,7 +245,7 @@ notation to land later.
 **For future agents who need HKT understanding:** start with
 this pedagogical artifact, not with category-theory textbooks.
 Apple/ball/coin → Round/Square → Shape. The formal notation
-(Fix<F<_>>, IFunctor, kind theory) lands AFTER the shape is
+(Fix<F<\_>>, IFunctor, kind theory) lands AFTER the shape is
 in the head.
 
 **For future agents teaching HKT to humans:** Aaron's method

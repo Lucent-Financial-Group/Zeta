@@ -4,6 +4,7 @@ description: Aaron Otto-271 counterweight for premature-failure-diagnosis drift.
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Don't diagnose subagent failure mid-execution.**
@@ -20,7 +21,7 @@ completion) before concluding the subagent failed.
 
 Direct Aaron quote 2026-04-24:
 
-> *"sounds like something you can improve next time"*
+> _"sounds like something you can improve next time"_
 
 (Gentle correction after I prematurely concluded the
 #147 drain subagent had failed to post
@@ -92,9 +93,9 @@ completion:
 
 Aaron 2026-04-24 refinement:
 
-> *"wait for completion signal before diagnosing
+> _"wait for completion signal before diagnosing
 > failure. to a point, you could get stuck in an
-> infinate loop with some sort of deadline"*
+> infinate loop with some sort of deadline"_
 
 **Otto-271 is wait-with-bound, not wait-forever.**
 Unbounded waiting is its own failure mode — liveness
@@ -103,15 +104,15 @@ starves.
 
 **Default deadlines** (adjust per task complexity):
 
-| Task class | Expected duration | Deadline (no-signal) |
-|---|---|---|
-| Simple markdownlint --fix + push | 2-5 min | 10 min |
-| Thread drain, 1-5 threads | 5-10 min | 20 min |
-| Thread drain, 6-15 threads | 10-20 min | 30 min |
-| Rebase (small branch, <10 commits) | 3-8 min | 15 min |
-| Rebase (large branch, 20+ commits) | 10-30 min | 45 min |
-| Read-only audit | 2-10 min | 20 min |
-| Worktree prune + verify | 5-10 min | 20 min |
+| Task class                         | Expected duration | Deadline (no-signal) |
+| ---------------------------------- | ----------------- | -------------------- |
+| Simple markdownlint --fix + push   | 2-5 min           | 10 min               |
+| Thread drain, 1-5 threads          | 5-10 min          | 20 min               |
+| Thread drain, 6-15 threads         | 10-20 min         | 30 min               |
+| Rebase (small branch, <10 commits) | 3-8 min           | 15 min               |
+| Rebase (large branch, 20+ commits) | 10-30 min         | 45 min               |
+| Read-only audit                    | 2-10 min          | 20 min               |
+| Worktree prune + verify            | 5-10 min          | 20 min               |
 
 **At deadline**:
 
@@ -160,24 +161,24 @@ precedent-correct behavior.
 
 Aaron 2026-04-24 observation:
 
-> *"All the same rules of DST basically apply here,
-> at least many of them."*
+> _"All the same rules of DST basically apply here,
+> at least many of them."_
 
 Subagent-interaction is a distributed-execution
 discipline. Deterministic Simulation Testing (DST,
 Otto-248) rules transfer:
 
-| DST rule | Otto-271 application |
-|---|---|
-| **Never ignore flakes** (determinism-not-perfect) | Don't ignore subagent stalls / partial-progress anomalies; investigate each as a real signal |
-| **Explicit timeouts, not vibes** | Deadlines are concrete values (10/20/30 min) per task class, not "feels like a while" |
-| **Reproducible failure modes** | Same subagent task should take roughly same time; large variance is itself a signal to file as class |
-| **Observable state, not inferred** | Check concrete signals (commits pushed, file mod timestamps, completion notification) — don't guess from thread count |
-| **Bounded retry, loud failure** | At deadline: escalate loudly (report state to human, file fresh subagent with different approach) — never silently infinite-loop |
-| **Seed / parameterize randomness** | Subagent-dispatch prompts should be deterministic: same prompt + same branch state = same expected behavior. Randomness (LLM sampling temp) is the "seed" — accept variance but bound it |
-| **Mark non-deterministic explicitly** | Some subagent tasks are inherently non-deterministic (e.g. creative drafting). Mark those dispatches explicitly with looser expectations, same as DST-exempt test markers |
-| **Fail fast on stall; fail slow on progress** | If subagent showing progress signals: wait longer. If no signals: deadline fires sharply |
-| **No test ignored → no stall ignored** | Every deadline-expired subagent gets investigated — not "tick moves on, whatever." Same rigor as a failed test |
+| DST rule                                          | Otto-271 application                                                                                                                                                                     |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Never ignore flakes** (determinism-not-perfect) | Don't ignore subagent stalls / partial-progress anomalies; investigate each as a real signal                                                                                             |
+| **Explicit timeouts, not vibes**                  | Deadlines are concrete values (10/20/30 min) per task class, not "feels like a while"                                                                                                    |
+| **Reproducible failure modes**                    | Same subagent task should take roughly same time; large variance is itself a signal to file as class                                                                                     |
+| **Observable state, not inferred**                | Check concrete signals (commits pushed, file mod timestamps, completion notification) — don't guess from thread count                                                                    |
+| **Bounded retry, loud failure**                   | At deadline: escalate loudly (report state to human, file fresh subagent with different approach) — never silently infinite-loop                                                         |
+| **Seed / parameterize randomness**                | Subagent-dispatch prompts should be deterministic: same prompt + same branch state = same expected behavior. Randomness (LLM sampling temp) is the "seed" — accept variance but bound it |
+| **Mark non-deterministic explicitly**             | Some subagent tasks are inherently non-deterministic (e.g. creative drafting). Mark those dispatches explicitly with looser expectations, same as DST-exempt test markers                |
+| **Fail fast on stall; fail slow on progress**     | If subagent showing progress signals: wait longer. If no signals: deadline fires sharply                                                                                                 |
+| **No test ignored → no stall ignored**            | Every deadline-expired subagent gets investigated — not "tick moves on, whatever." Same rigor as a failed test                                                                           |
 
 **The key DST principle that maps directly**: observable + bounded + loud. A well-behaved distributed system (including subagent + main-agent) is one where every participant's state is OBSERVABLE, every wait is BOUNDED, every failure is LOUD (not silent).
 
@@ -222,7 +223,7 @@ Otto-271 pre-DST-composition risked: unobservable (polling thread count isn't st
 
 ## Direct Aaron quote to preserve
 
-> *"sounds like something you can improve next time"*
+> _"sounds like something you can improve next time"_
 
 Future Otto: when a subagent is dispatched, trust it
 to finish unless you have HARD evidence of stall

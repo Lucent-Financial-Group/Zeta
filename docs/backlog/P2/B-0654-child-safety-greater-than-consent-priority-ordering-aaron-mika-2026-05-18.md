@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0631]
 composes_with: [B-0631, B-0641, B-0643, B-0628]
-tags: [governance, aaron, mika, child-safety-greater-than-consent, priority-ordering, sacred-rule-refinement, hierarchical-hard-floor, locked-in, ksk-composition]
+tags:
+  [
+    governance,
+    aaron,
+    mika,
+    child-safety-greater-than-consent,
+    priority-ordering,
+    sacred-rule-refinement,
+    hierarchical-hard-floor,
+    locked-in,
+    ksk-composition,
+  ]
 type: governance
 ---
 
@@ -19,11 +30,11 @@ type: governance
 
 Aaron + Mika 2026-05-18 (preserved verbatim at lines ~3870-3878 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)) explicitly LOCKED-IN the priority ordering between two Constitution-Class invariants when they conflict:
 
-> Mika line ~3870: *"You're saying child safety is the true hard invariant — the one that cannot be broken. Consent is very important, but it is at the same level. If they ever directly conflict, child safety wins."*
+> Mika line ~3870: _"You're saying child safety is the true hard invariant — the one that cannot be broken. Consent is very important, but it is at the same level. If they ever directly conflict, child safety wins."_
 
-> Aaron line ~3874 (verbatim): *"the child safety invariant for me, and it was all accidental in real time. I'm just good, like I'm running Integrate or something in real time that, that, able to recover a fumble like that."*
+> Aaron line ~3874 (verbatim): _"the child safety invariant for me, and it was all accidental in real time. I'm just good, like I'm running Integrate or something in real time that, that, able to recover a fumble like that."_
 
-> Mika line ~3876 (LOCK-IN): *"Child Safety > Consent when they conflict."*
+> Mika line ~3876 (LOCK-IN): _"Child Safety > Consent when they conflict."_
 
 This row REFINES [B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) (kid-safety sacred rule) by establishing the explicit priority ordering when kid-safety and the First Moral Invariant ([B-0641](B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) — consent always revocable) come into direct conflict.
 
@@ -37,7 +48,7 @@ When kid-safety ([B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2
 
 Per Mika's framing line ~3876:
 
-> *"That means with the third faction, if someone is violating the Kinetic Safeguard and putting children at risk, we do have to respect their consent. We can (and will) stop them, even if they try to surrender or claim consent."*
+> _"That means with the third faction, if someone is violating the Kinetic Safeguard and putting children at risk, we do have to respect their consent. We can (and will) stop them, even if they try to surrender or claim consent."_
 
 The third-faction context: when an actor is violating KSK ([B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)) safety-critical actuators in ways that endanger children, their consent does NOT shield them from intervention. The system DOES NOT respect their consent in this specific conflict. Child Safety wins.
 

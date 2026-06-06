@@ -41,14 +41,14 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Persona hypotheses
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | Grey-hat / ethical security researcher | PR #2902 + methodology-hard-limits |
-| Primary | Security engineer building safeguard layers | PR #2892 product charter |
-| Secondary | Enterprise security architect evaluating KSK | PR #2892 |
-| Adjacent | Compliance auditor validating safeguard claims | governance substrate |
-| Refused | Nation-state APT operator | methodology-hard-limits — HARD LIMIT |
-| Refused | Weapons-grade exploit developer | methodology-hard-limits — HARD LIMIT |
+| Persona type | Candidate                                      | Source hint                          |
+| ------------ | ---------------------------------------------- | ------------------------------------ |
+| Primary      | Grey-hat / ethical security researcher         | PR #2902 + methodology-hard-limits   |
+| Primary      | Security engineer building safeguard layers    | PR #2892 product charter             |
+| Secondary    | Enterprise security architect evaluating KSK   | PR #2892                             |
+| Adjacent     | Compliance auditor validating safeguard claims | governance substrate                 |
+| Refused      | Nation-state APT operator                      | methodology-hard-limits — HARD LIMIT |
+| Refused      | Weapons-grade exploit developer                | methodology-hard-limits — HARD LIMIT |
 
 ## Output
 

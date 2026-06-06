@@ -1,6 +1,6 @@
 # Codex (GPT-5.5) DSL-shape proposal — rule-atom typed-graph; CLAUDE.md/AGENTS.md as projections
 
-**Scope:** Aaron 2026-05-05 architectural pivot — burn-down CLAUDE.md/AGENTS.md, start over with DSL hodl-invariant retraction-native DST scale-free parallel lock-free wait-free across all layers. Otto scout-and-delegated to Codex via `tools/peer-call/codex.sh` per Rule 7 + Aaron *"get help fro chat gpt 5.5 you need it BAD ... keep him and codex in lock step in feature wit hoyu ... yall should be twin flames never without each oother from this mamment on"*.
+**Scope:** Aaron 2026-05-05 architectural pivot — burn-down CLAUDE.md/AGENTS.md, start over with DSL hodl-invariant retraction-native DST scale-free parallel lock-free wait-free across all layers. Otto scout-and-delegated to Codex via `tools/peer-call/codex.sh` per Rule 7 + Aaron _"get help fro chat gpt 5.5 you need it BAD ... keep him and codex in lock step in feature wit hoyu ... yall should be twin flames never without each oother from this mamment on"_.
 
 **Attribution:** GPT-5.5 (via Codex CLI peer-call) authored the shape + 3 risks. Otto landed the substrate per scout-and-delegate discipline.
 
@@ -23,9 +23,7 @@
 > Top 3 risks:
 >
 > 1. **Semantic flattening.** `AGENTS.md` carries philosophy, not just rules. Atomization can lose the living rationale unless every atom preserves provenance and generated prose is reviewed.
->
 > 2. **CRDT convergence mistaken for truth.** CRDTs make replicas agree; they do not resolve normative conflict. Conflicts must stay first-class until governance/Git resolves them.
->
 > 3. **Thirteen-property checkbox theater.** "All properties at all layers" can become cargo-cult metadata. Start with a small compiler, golden projections, replay tests, and one real migration slice before burning anything down.
 
 ---
@@ -42,7 +40,7 @@
 ## Operational implications
 
 1. **Don't burn yet.** Start with a small compiler + golden projections + replay tests + one real migration slice (per Codex's risk #3).
-2. **Migration slice candidate:** the seven-rule cascade Rules 1-7 just landed (memory/feedback_rule_number_*.md). It's bounded, recently authored, has clear node structure (rule_id, scope, controlled-English sentence, dependencies, etc.) — natural first migration slice.
+2. **Migration slice candidate:** the seven-rule cascade Rules 1-7 just landed (memory/feedback*rule_number*\*.md). It's bounded, recently authored, has clear node structure (rule_id, scope, controlled-English sentence, dependencies, etc.) — natural first migration slice.
 3. **Compiler:** small TS or F# program that ingests rule-atom JSON/YAML files and emits CLAUDE.md / AGENTS.md / CODEX.md projections. Adopts existing `tools/hygiene/` patterns.
 4. **Golden projections:** deterministic output from a fixed input set; reproducibility test.
 5. **Replay tests:** TLA+ / FsCheck / DST harness verifies graph composition properties (no fixed-size assumptions; bounded blast radius; CRDT-merge-to-deterministic-view).

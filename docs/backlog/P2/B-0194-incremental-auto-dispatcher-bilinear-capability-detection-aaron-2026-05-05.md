@@ -10,7 +10,17 @@ created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0140, B-0156, B-0189, B-0196]
-tags: [dbsp, plugin-api, bilinear, capability-detection, active-patterns, fsharp-type-system, retraction-correctness, research+implementation]
+tags:
+  [
+    dbsp,
+    plugin-api,
+    bilinear,
+    capability-detection,
+    active-patterns,
+    fsharp-type-system,
+    retraction-correctness,
+    research+implementation,
+  ]
 type: friction-reducer
 ---
 
@@ -26,7 +36,7 @@ The algebra-capability system at `src/Core/PluginApi.fs:103-132` declares four c
 
 3. **Sign-distribution as a third law.** The retraction-correctness story needs `op(0, b) = 0` (i.e. `op(a, b) + op(-a, b) = 0`) in addition to bilinearity. A plugin author implementing a "bilinear" operator with a constant offset would pass classical bilinearity but fail retraction. The third law catches this.
 
-4. **Capability detection at the runtime boundary** (the existential-quantification problem). When a plugin arrives at the dispatcher typed as `IOperator<'TOut>`, F#'s `:?` syntax can't ask *"does this object implement `IBilinearOperator<*, *, 'TOut>` for some unknown input types?"* because existential quantification isn't expressible in F#'s type-test syntax. Three viable approaches:
+4. **Capability detection at the runtime boundary** (the existential-quantification problem). When a plugin arrives at the dispatcher typed as `IOperator<'TOut>`, F#'s `:?` syntax can't ask _"does this object implement `IBilinearOperator<_, _, 'TOut>` for some unknown input types?"_ because existential quantification isn't expressible in F#'s type-test syntax. Three viable approaches:
    - **Marker interface** (non-generic `IBilinearMarker` that the typed `IBilinearOperator<...>` inherits from; `:? IBilinearMarker` works) -- requires plugin authors to inherit the marker explicitly.
    - **Raw reflection** (`typedefof<IBilinearOperator<_,_,_>>` + `GetInterfaces()` + `GetGenericTypeDefinition()`) -- API-surface unchanged; runtime cost is bounded if cached at construction.
    - **Active patterns over reflection** (idiomatic F# wrapper):
@@ -77,7 +87,7 @@ This is genuine F# duck-typing-via-reflection territory. SRTP doesn't help (comp
 
 - **Type-system language extension to F# / C#** (existential-quantification syntax for type tests). The shard's review correctly noted this is a real gap; filing an F# RFC is separate work and bigger scope. Reflection / active-patterns is the in-language workaround.
 - **Bilinear ∘ Bilinear composition optimization**. Generally loses bilinearity; the dispatcher correctly falls back to D∘Q∘I in that case.
-- **Replacing existing Core operators**. Core operators inherit `Op<'T>` directly; this row only changes how *external* plugins are dispatched.
+- **Replacing existing Core operators**. Core operators inherit `Op<'T>` directly; this row only changes how _external_ plugins are dispatched.
 
 ## The carved sentence
 

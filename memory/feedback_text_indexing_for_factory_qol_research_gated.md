@@ -4,8 +4,9 @@ description: Aaron 2026-04-22 — repo text volume is large enough to justify a 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22:
-*"we have so much text you might as well put a high prority
+_"we have so much text you might as well put a high prority
 for a way you can fastly query our text, maybe even index it.
 I don't really want to check in binary files so i would hope
 the index would be text too, it would be fine t ocheck the
@@ -20,7 +21,7 @@ how to use all the tools we have at hand and get the info you
 need the fastest, seperating thing by data and behiaver is a
 tried and true way and you mentied it for the skills earler,
 works in code too lol. you can backlog this but reasearch this
-a lot and deeply could really imporve your QoL and performance."*
+a lot and deeply could really imporve your QoL and performance."_
 
 **The directive:**
 
@@ -32,7 +33,7 @@ a lot and deeply could really imporve your QoL and performance."*
   can be committed to the repo.
 - Binary indices (vector embeddings) are CHECK-IN-NOT-OK by
   default because GitHub LFS is billed by usage over the 10 GB
-  free tier. A binary index check-in is *gated* on being worth
+  free tier. A binary index check-in is _gated_ on being worth
   it under 10 GB.
 - Aaron explicitly invites outside-the-box thinking — not
   just SQLite FTS, but any substrate that gets us query speed.
@@ -43,9 +44,9 @@ a lot and deeply could really imporve your QoL and performance."*
 
 **High-priority but research-gated:**
 
-Aaron said *"you can backlog this but reasearch this a lot and
-deeply could really imporve your QoL and performance."* The
-*reasearch this a lot and deeply* phrase means the research
+Aaron said _"you can backlog this but reasearch this a lot and
+deeply could really imporve your QoL and performance."_ The
+_reasearch this a lot and deeply_ phrase means the research
 starts now (document pointer in place, notes accumulated on
 every tick), but shipping is backlog — no hasty substrate
 choice.
@@ -102,10 +103,10 @@ choice.
 **How to apply:**
 
 - Ship nothing this tick. This is research-gated.
-- BACKLOG row P1: *Text-indexing substrate research + pilot
-  selection.* Owner: Architect (Kenji).
+- BACKLOG row P1: _Text-indexing substrate research + pilot
+  selection._ Owner: Architect (Kenji).
 - Research doc stub: `docs/research/text-indexing-landscape-
-  2026-04-22.md` with the options above + sizing estimate per
+2026-04-22.md` with the options above + sizing estimate per
   option + measured grep-baseline (how fast is `rg` across the
   repo today? — if grep is already <50ms, the case for
   indexing weakens).

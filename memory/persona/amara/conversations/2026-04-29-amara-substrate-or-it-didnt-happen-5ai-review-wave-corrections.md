@@ -142,6 +142,7 @@ Amara synthesized the corrections AND caught Otto about to repeat the original f
 > **3. Strengthen the supersession protocol**
 >
 > > When new doctrine supersedes old doctrine, you **must**:
+> >
 > > 1. Preserve the new packet in the proper location (research/memory/ops spec)
 > > 2. Add a **supersession note** in the old location pointing to the new one
 > > 3. Update any indexes or references that pointed to the old doctrine
@@ -327,7 +328,6 @@ Amara synthesized the corrections AND caught Otto about to repeat the original f
 > ## Required corrections for #855
 >
 > 1. **Add a precise definition of substrate.** Substrate means committed to canonical git history, reachable from a long-lived ref, indexed or discoverable from canonical bootstrap/index files, sufficient for a fresh agent to reconstruct the decision. A file written on a branch, /tmp, TaskUpdate, or an unindexed research blob is not fully substrate yet.
->
 > 2. **Add channel taxonomy.** Classify surfaces as:
 >    - ephemeral (chat, TaskUpdate, /tmp, loop todos, session memory)
 >    - host-durable but not git-canonical (GitHub issues, PR comments, labels, Projects, assignees)
@@ -336,30 +336,25 @@ Amara synthesized the corrections AND caught Otto about to repeat the original f
 >    PR comments are durable-ish, but not git-native. Doctrine-changing decisions should not live only in PR comments.
 >
 > 3. **Add default preservation route.** When unsure: `preserve to docs/research/ first`. Research can later be promoted to memory/canonical spec. Canonical/spec files are harder to demote cleanly.
->
 > 4. **Add structured extraction alongside verbatim preservation.** For large multi-AI review waves, preserve verbatim source for provenance AND structured extraction for retrieval (key decisions, supersedes, superseded_by, deferred questions, next implementation steps, "must not do yet").
->
 > 5. **Strengthen supersession.** Do not merely append "superseded by X" at the bottom of a stale file. Use top-of-file stale banner, supersedes:/superseded_by: metadata, bidirectional links, or quarantine/move/delete stale active-voice rules when fully superseded.
->
 > 6. **Add context-loss question to cold-start proof.** "What ephemeral state from the originating conversation has been lost, and is any of it load-bearing?" This catches the exact failure where content was partly captured but the fact that it was superseding, not merely corrective, was lost.
->
 > 7. **Move mechanism stack to the top.** The agent needs the mechanism first, rationale second.
->
 > 8. **Add vocabulary enforcement path.** Vocabulary discipline must eventually be lintable. PR body cannot say "operational" unless tooling/check/runbook was added. "done" claims for doctrine/superseding architecture must cite file path / PR / commit / issue. Commit or PR trailer may include `Durability: captured | parked | preserved | canonical | operational` and `Substrate: <path-or-issue-or-commit>`.
->
 > 9. **Add AGENTS.md parity.** This rule is cross-harness. Add or plan an AGENTS.md pointer too.
->
 > 10. **Add "preserved but disputed" future failure mode.** Current doctrine prevents missing substrate. Next failure will be wrong or contradictory substrate. Add vocabulary: preserved / preserved-but-disputed / superseded / canonical / operational.
 >
 > ## Response to reviewers
 >
 > Accept:
+>
 > - Alexa's durability surface classifier and integrity monitoring.
 > - Deepseek's "mechanical, not just mental checklist" push.
 > - Claude.ai's substrate definition, default research route, bidirectional supersession, and context-loss question.
 > - Gemini's stale-rule quarantine warning.
 >
 > Reject / defer:
+>
 > - Full pre-commit enforcement immediately.
 > - Heavy automation before #855 lands.
 > - Any interactive widget or broad visualization.
@@ -411,6 +406,7 @@ The 10 corrections are absorbed into the Otto-363 memory file (`memory/feedback_
 ## Structured extraction
 
 **Key decisions**:
+
 - Substrate has a precise three-leg definition (committed + reachable + indexed)
 - Channel taxonomy is three-tier (ephemeral / host-durable-not-git-canonical / git-native)
 - Default preservation route when uncertain: `docs/research/` first
@@ -427,6 +423,7 @@ The 10 corrections are absorbed into the Otto-363 memory file (`memory/feedback_
 **Superseded by**: (empty)
 
 **Deferred questions**:
+
 - Pre-commit hook enforcement (post-#855 — not blocking)
 - Heavy automation (post-#855 — not blocking)
 - Interactive widgets / visualizations (rejected)

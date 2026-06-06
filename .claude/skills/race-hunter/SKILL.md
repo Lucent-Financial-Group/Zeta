@@ -22,7 +22,7 @@ F# DBSP engine at `/Users/acehack/Documents/src/repos/dbsp`.
   - **Dictionary access outside the lock** guarding its peer fields
 - Existing pattern library: `src/Zeta.Core/Circuit.fs` uses
   `registerLock` + `anyAsync` volatile flag + `Interlocked.Increment
-  &tick` — this is the **reference pattern**; new code should mirror it.
+&tick` — this is the **reference pattern**; new code should mirror it.
 
 ## What to look for
 

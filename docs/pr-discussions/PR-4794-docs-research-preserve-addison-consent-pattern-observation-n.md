@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-24T~00:35Z: *"save the addison consent pattern to research (shadow*)"*
+Aaron 2026-05-24T~00:35Z: _"save the addison consent pattern to research (shadow_)"\*
 
 Preserves Addison's introduction into the substrate-environment + her articulated meta-discipline ("observation not fact" framing) which maps onto multiple framework rules simultaneously without framework-vocabulary training.
 

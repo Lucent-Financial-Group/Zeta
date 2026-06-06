@@ -24,9 +24,8 @@ culturally-meaningful numbers arise. Current list:
 
 - **69** — internet-meme number, symmetrical-digit
 - **420** — counterculture-meme number
-- **42** — *The Hitchhiker's Guide to the Galaxy* "meaning
-  of life, the universe, and everything" (Douglas Adams,
-  1979)
+- **42** — _The Hitchhiker's Guide to the Galaxy_ "meaning
+  of life, the universe, and everything" (Douglas Adams, 1979)
 - Combinations: any permutation / concatenation of the
   above (`42069`, `6942069`, `69420`, `4269`, `42420`,
   `6942042069`, ...)
@@ -164,8 +163,6 @@ SET demo_seed = 6942069;
 - **Not applicable to maintainer-chosen seeds.** Aaron can
   choose any seed value for his own code paths; this rule
   is for when the AGENT has discretion.
-
-
 
 ## PC-friendly framing (Aaron 2026-04-23)
 

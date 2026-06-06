@@ -58,6 +58,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a memory feedback file documenting a lesson about the "one-PR-one-artifact-type" discipline, prompted by an antigravity check that flagged PR #4112 as bundling three artifact types. The MEMORY.md index is regenerated to include the new entry.
 
 **Changes:**
+
 - New feedback memory file capturing the blob-PR lesson and atomicity bar heuristic
 - Auto-regenerated MEMORY.md index updated to reflect the added entry (count 1270 → 1271)
 
@@ -65,7 +66,7 @@ Adds a memory feedback file documenting a lesson about the "one-PR-one-artifact-
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                        | Description                                                                                                |
+| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | memory/feedback_otto_cli_blob_pr_lesson_maji_antigravity_caught_4112_mixed_shard_rules_memory_2026_05_17.md | New feedback file documenting blob-PR lesson; YAML frontmatter present with name/description/type/created. |
-| memory/MEMORY.md | Auto-regen index inserting the new feedback entry and bumping the truncated-stack count. |
+| memory/MEMORY.md                                                                                            | Auto-regen index inserting the new feedback entry and bumping the truncated-stack count.                   |

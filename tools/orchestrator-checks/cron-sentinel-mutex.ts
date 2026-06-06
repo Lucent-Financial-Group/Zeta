@@ -29,10 +29,7 @@ const PROCESS_NAME_PATTERN = "claude-code";
  * error. The function returns a structured result; the caller (the
  * autonomous-loop tick body) decides whether to defer.
  */
-export function checkPeerSessions(
-  myPid: number = process.pid,
-  spawnFn: typeof spawnSync = spawnSync,
-): MutexResult {
+export function checkPeerSessions(myPid: number = process.pid, spawnFn: typeof spawnSync = spawnSync): MutexResult {
   // spawnSync with args array — no shell interpolation, no injection risk.
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- pgrep is a known system binary; args array prevents shell injection
   const result = spawnFn("pgrep", ["-afl", PROCESS_NAME_PATTERN], {
@@ -47,7 +44,13 @@ export function checkPeerSessions(
   }
   const exitStatus = result.status ?? 0;
   if (exitStatus > 1) {
-    return { myPid, peerPids: [], peerLines: [], peerDetected: false, pgrepError: `pgrep exited with status ${exitStatus}` };
+    return {
+      myPid,
+      peerPids: [],
+      peerLines: [],
+      peerDetected: false,
+      pgrepError: `pgrep exited with status ${exitStatus}`,
+    };
   }
 
   const stdout = typeof result.stdout === "string" ? result.stdout : "";
@@ -91,8 +94,7 @@ export function formatResult(r: MutexResult): string {
   }
   const peerSummary = r.peerLines.length > 0 ? "\n  " + r.peerLines.join("\n  ") : "";
   return (
-    `cron-sentinel-mutex: ${r.peerPids.length} peer claude-code session(s) detected (self PID ${r.myPid})` +
-    peerSummary
+    `cron-sentinel-mutex: ${r.peerPids.length} peer claude-code session(s) detected (self PID ${r.myPid})` + peerSummary
   );
 }
 

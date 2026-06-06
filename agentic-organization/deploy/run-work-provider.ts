@@ -37,18 +37,30 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     if (p === "/repos/o/r/git/ref/heads/main") return body(res, { object: { sha: "base" } });
     if (p === "/repos/o/r/git/refs" && method === "POST") return body(res, {}, 201);
     if (p.startsWith("/repos/o/r/contents/") && method === "PUT") return body(res, {}, 201);
-    if (p === "/repos/o/r/pulls" && method === "POST") return body(res, { number: 1, html_url: "http://mock/pr/1" }, 201);
+    if (p === "/repos/o/r/pulls" && method === "POST")
+      return body(res, { number: 1, html_url: "http://mock/pr/1" }, 201);
     if (p === "/repos/o/r/pulls/1" && method === "GET") return body(res, { merged: state.ghMerged });
     if (p === "/repos/o/r/pulls/1/reviews") return body(res, state.ghApproved ? [{ state: "APPROVED" }] : []);
     if (p === "/repos/o/r/issues/1/comments") return body(res, {}, 201);
-    if (p === "/repos/o/r/pulls/1/merge" && method === "PUT") { state.ghMerged = true; return body(res, {}); }
+    if (p === "/repos/o/r/pulls/1/merge" && method === "PUT") {
+      state.ghMerged = true;
+      return body(res, {});
+    }
   }
   // ── mock Jira (under /jira) ──
   if (url.startsWith("/jira")) {
     const p = url.slice(5);
     if (p === "/issue" && method === "POST") return body(res, { key: "ENG-1", self: "x" }, 201);
-    if (p === "/issue/ENG-1" && method === "GET") return body(res, { fields: { status: { name: state.jiraStatus }, resolution: state.jiraResolved ? { name: "Done" } : null } });
-    if (p === "/issue/ENG-1/transitions" && method === "POST") { state.jiraStatus = "Done"; state.jiraResolved = true; res.writeHead(204); return res.end(); }
+    if (p === "/issue/ENG-1" && method === "GET")
+      return body(res, {
+        fields: { status: { name: state.jiraStatus }, resolution: state.jiraResolved ? { name: "Done" } : null },
+      });
+    if (p === "/issue/ENG-1/transitions" && method === "POST") {
+      state.jiraStatus = "Done";
+      state.jiraResolved = true;
+      res.writeHead(204);
+      return res.end();
+    }
     if (p === "/issue/ENG-1/comment" && method === "POST") return body(res, {}, 201);
   }
   res.writeHead(404);
@@ -56,7 +68,12 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
 });
 
 function listen(): Promise<number> {
-  return new Promise((resolve) => server.listen(0, "127.0.0.1", () => { const a = server.address(); resolve(typeof a === "object" && a !== null ? a.port : 0); }));
+  return new Promise((resolve) =>
+    server.listen(0, "127.0.0.1", () => {
+      const a = server.address();
+      resolve(typeof a === "object" && a !== null ? a.port : 0);
+    }),
+  );
 }
 
 async function main(): Promise<void> {
@@ -66,12 +83,33 @@ async function main(): Promise<void> {
 
   // ── github code_review over the REAL resolver + REAL native fetch ──
   const gh = resolveChangeControlExternalPort(
-    { WORK_PROVIDER: "github", GITHUB_TOKEN: "proof-token", GITHUB_OWNER: "o", GITHUB_REPO: "r", GITHUB_API_BASE_URL: `${base}/gh` },
+    {
+      WORK_PROVIDER: "github",
+      GITHUB_TOKEN: "proof-token",
+      GITHUB_OWNER: "o",
+      GITHUB_REPO: "r",
+      GITHUB_API_BASE_URL: `${base}/gh`,
+    },
     { nowMs: NOW },
   );
   report["github_mode"] = gh.mode;
   if (gh.port === null) throw new Error("expected a live github ChangeControlPort");
-  const cs = { changeSetId: "cs-1", workItemId: "w-1", title: "Add endpoint", targetRef: "feat/x", organizationId: "org", proposerHatId: "h", pipelineId: "github-gated", phase: "review", currentStageIndex: 0, projections: [], stages: [], artifacts: [{ kind: "code_diff", path: "src/a.ts", diff: "+1" }], createdAt: "", updatedAt: "" } as unknown as Parameters<typeof gh.port.project>[0];
+  const cs = {
+    changeSetId: "cs-1",
+    workItemId: "w-1",
+    title: "Add endpoint",
+    targetRef: "feat/x",
+    organizationId: "org",
+    proposerHatId: "h",
+    pipelineId: "github-gated",
+    phase: "review",
+    currentStageIndex: 0,
+    projections: [],
+    stages: [],
+    artifacts: [{ kind: "code_diff", path: "src/a.ts", diff: "+1" }],
+    createdAt: "",
+    updatedAt: "",
+  } as unknown as Parameters<typeof gh.port.project>[0];
   const stage = { id: "external-code-review" } as unknown as Parameters<typeof gh.port.push>[1];
   const ref = await gh.port.project(cs, stage);
   report["github_projected"] = { externalId: ref.externalId, url: ref.url };

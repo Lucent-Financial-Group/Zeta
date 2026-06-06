@@ -11,7 +11,20 @@ last_updated: 2026-05-29
 decomposition: decomposed
 children: [B-0272, B-0273, B-0083.1]
 depends_on: []
-tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0, scheduled-after-0-0-0]
+tags:
+  [
+    aaron-2026-04-28,
+    roms,
+    atari-2600,
+    tosec,
+    good-tools,
+    canonical-naming,
+    datfile,
+    license-safety,
+    gitignore-already-protects,
+    high-priority-after-0-0-0,
+    scheduled-after-0-0-0,
+  ]
 type: friction-reducer
 ---
 
@@ -35,7 +48,7 @@ type: friction-reducer
 
 Aaron 2026-04-28T18:55Z verbatim:
 
-> *"I just put a bunch of messy roms int your Atari 2600 folder, can you
+> _"I just put a bunch of messy roms int your Atari 2600 folder, can you
 > organize them connonicaly for easy finding, feel free to spend some
 > time doing research, these folders should be ignored and not checked
 > in but you can reference any of them you want in readmes as games you
@@ -50,7 +63,7 @@ Aaron 2026-04-28T18:55Z verbatim:
 > database file you can check agants sha or md5s or sometime based on the
 > latest list. Lets make sure we can replicate that functionalty here on
 > list updates if that's how it works, we can backlog this but hight
-> priortiy right after the 0/0/0 starting point"*
+> priortiy right after the 0/0/0 starting point"_
 
 ## Schedule
 
@@ -60,11 +73,11 @@ and pull-queue work).
 
 ## Ownership rationale (Aaron verbatim 2026-04-28T18:58Z)
 
-> *"basically some roms i own becasue i bought the same i can share
+> _"basically some roms i own becasue i bought the same i can share
 > with you locally but we can't check into git, only certain ones are
 > license safe or it's expired or whatever. those can get checked in,
 > the more realish games will only be on local maintainers computers
-> and each will likely have their own set."*
+> and each will likely have their own set."_
 
 This articulates the established personal-use vs distribution legal
 boundary:
@@ -90,7 +103,7 @@ operationalizes the split by adding the safe-folder + the tooling.
 
 - **3461 files** in `roms/atari/2600/` — mix of `.bin` and `.zip`,
   some Good-Tools-style canonical names (`Title (Year) (Publisher)
-  [!]`), some uncanonical (`Jammed.bin`, `seantsc.bin`).
+[!]`), some uncanonical (`Jammed.bin`, `seantsc.bin`).
 - **`roms/.gitignore` already fully protects** with depth-limited
   pattern (`*` + `!*/` + `!/README.md` + `!/*/README.md` +
   `!/*/*/README.md`). The 3461 ROMs are NOT at risk of accidental
@@ -103,8 +116,8 @@ operationalizes the split by adding the safe-folder + the tooling.
 
 ## Why high-priority + scheduled-after-0/0/0
 
-Aaron's explicit verbatim: *"we can backlog this but hight priortiy
-right after the 0/0/0 starting point"*. Decoded:
+Aaron's explicit verbatim: _"we can backlog this but hight priortiy
+right after the 0/0/0 starting point"_. Decoded:
 
 - Priority: P1 (high)
 - Trigger: AceHack-main and LFG-main reach 0/0/0 (per the hard-reset
@@ -137,7 +150,7 @@ right after the 0/0/0 starting point"*. Decoded:
   (English translation), etc.
 - Source for GoodA26: search GitHub for `GoodTools-A26` mirrors;
   the original distribution was `GoodA26.zip` containing the EXE
-  + datfile.
+  - datfile.
 
 ### Algorithm (replicated in factory tooling)
 
@@ -172,13 +185,13 @@ right after the 0/0/0 starting point"*. Decoded:
 
 ## Tooling design — dependency-first as bridge; build-our-own as end goal (Aaron 2026-04-28T18:59Z + 19:00Z)
 
-Aaron verbatim 18:59Z: *"TOSEC/Good we can pull as dependences too and
+Aaron verbatim 18:59Z: _"TOSEC/Good we can pull as dependences too and
 use the same consume goodcitizen staces as all of our other dependencies
-i just don't know if these are cross platform."*
+i just don't know if these are cross platform."_
 
-Aaron sharpened verbatim 19:00Z: *"build-our-own as last resort. our
+Aaron sharpened verbatim 19:00Z: _"build-our-own as last resort. our
 good citizen is because our end goal is we build all of our dependncies
-but still contribute back our enhancements and such"*
+but still contribute back our enhancements and such"_
 
 The trajectory (per
 `memory/feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
@@ -257,7 +270,7 @@ Either path needs the actual TOSEC + GoodA26 datfiles. Approach:
 - Algorithm:
   1. Download TOSEC datfile (XML) from versioned URL.
   2. Parse XML, build `dict[sha1] = (canonical_name,
-     license_class, ...)`.
+license_class, ...)`.
   3. For each file in `roms/atari/2600/`, compute SHA1, lookup,
      rename + move per classification.
   4. Refresh-on-demand: re-pull datfile, re-run against folder.
@@ -295,22 +308,22 @@ roms-safe/                         (NEW, tracked — license-verified ROMs)
 ## Acceptance criteria
 
 - [ ] All 3461 files in `roms/atari/2600/` renamed to canonical
-  form (TOSEC or Good-Tools — pick one) where matchable.
+      form (TOSEC or Good-Tools — pick one) where matchable.
 - [ ] Unmatchable files flagged in a manual-review list.
 - [ ] License-classification applied per the README's gate.
 - [ ] License-cleared ROMs moved to `roms-safe/atari/2600/`
-  with per-ROM license citation.
+      with per-ROM license citation.
 - [ ] License-uncertain ROMs stay in `roms/atari/2600/`
-  (gitignored, never distributed).
+      (gitignored, never distributed).
 - [ ] Tooling lives in `tools/roms/` and refreshes on TOSEC
-  datfile updates (manual-trigger workflow at minimum;
-  scheduled cron optional).
+      datfile updates (manual-trigger workflow at minimum;
+      scheduled cron optional).
 - [ ] `roms/atari/2600/README.md` updated to reference the
-  safe ROMs as "games you can test out locally" per Aaron's
-  framing.
+      safe ROMs as "games you can test out locally" per Aaron's
+      framing.
 - [ ] Otto-247 version-currency: WebSearch for the latest
-  TOSEC Atari 2600 datfile version before asserting which
-  one to use.
+      TOSEC Atari 2600 datfile version before asserting which
+      one to use.
 
 ## Composes with
 
@@ -323,7 +336,7 @@ roms-safe/                         (NEW, tracked — license-verified ROMs)
 - Otto-275-YET — Aaron's explicit log-don't-implement signal
   ("we can backlog this").
 - The 0/0/0 hard-reset work in flight (PR #677 5-disciplines
-  + the pull-queue audit) — gating dependency.
+  - the pull-queue audit) — gating dependency.
 
 ## Future-Otto pickup notes
 

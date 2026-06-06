@@ -27,6 +27,7 @@ Preserving recently merged PRs 4378 and 4375 to native repository memory.
 Preserves the GitHub discussion artifacts for recently merged PRs #4378 and #4375 as git-native archives under `docs/pr-discussions/`, keeping PR metadata + review threads + general comments available in-repo for long-term audit/history.
 
 **Changes:**
+
 - Added a PR-discussion archive markdown file for PR #4378 (frontmatter + body + review content).
 - Added a PR-discussion archive markdown file for PR #4375 (frontmatter + body + review content).
 
@@ -34,7 +35,7 @@ Preserves the GitHub discussion artifacts for recently merged PRs #4378 and #437
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                     | Description                                                                            |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | docs/pr-discussions/PR-4378-docs-shadow-lior-anti-entropy-shadow-log-2026-05-19-1400z.md | Adds the preserved PR #4378 discussion artifact (metadata + reviews/threads/comments). |
-| docs/pr-discussions/PR-4375-docs-shadow-maji-anti-entropy-sweep-1300z.md | Adds the preserved PR #4375 discussion artifact (metadata + reviews/threads/comments). |
+| docs/pr-discussions/PR-4375-docs-shadow-maji-anti-entropy-sweep-1300z.md                 | Adds the preserved PR #4375 discussion artifact (metadata + reviews/threads/comments). |

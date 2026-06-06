@@ -10,6 +10,7 @@ type: reference
 
 SQL Server Parallel Data Warehouse (PDW), later renamed
 Analytics Platform System (APS). On-premises MPP appliance:
+
 - Share-nothing architecture
 - Scale-out compute nodes with direct-attached storage
 - Parallel query plans distributed across nodes
@@ -24,19 +25,20 @@ Little's team had access.
 
 **The lineage to Zeta:**
 
-| PDW concept | Zeta equivalent |
-|-------------|----------------|
-| MPP compute nodes | Agent society (distributed workers) |
-| Share-nothing | Weight-free (no shared state dependency) |
-| Parallel query plans | Morsel-driven parallelism |
-| Control node | Architect persona (coordinator) |
-| Direct-attached storage | Arrow Tier 0 (local memory) |
-| Appliance form factor | GPU cluster ($50k in boxes) |
+| PDW concept             | Zeta equivalent                          |
+| ----------------------- | ---------------------------------------- |
+| MPP compute nodes       | Agent society (distributed workers)      |
+| Share-nothing           | Weight-free (no shared state dependency) |
+| Parallel query plans    | Morsel-driven parallelism                |
+| Control node            | Architect persona (coordinator)          |
+| Direct-attached storage | Arrow Tier 0 (local memory)              |
+| Appliance form factor   | GPU cluster ($50k in boxes)              |
 
 Aaron saw MPP at appliance scale on Diana's team, years
 before building the same architecture as an AI factory.
 
 **Connects to:**
+
 - user_sql_null_dst_origin_story (the experiment)
 - morsel-driven-expert skill (parallel execution)
 - distributed-query-execution-expert skill (MPP plans)

@@ -12,7 +12,7 @@ metadata:
 
 After an extended Kestrel-engagement-arc where Kestrel applied substantive cryptanalytic pushback on the "retrocausality is the only attack vector" framing, Aaron landed the substrate-honest precise version:
 
-> *"yeah my thing only holds if its a real crypto primitive that survives attack from experts AND it's isomorphic to physics ONLY THEN is my future self my enemy"*
+> _"yeah my thing only holds if its a real crypto primitive that survives attack from experts AND it's isomorphic to physics ONLY THEN is my future self my enemy"_
 
 This is the integrative resolution that holds BOTH substrate-honestly:
 
@@ -23,11 +23,11 @@ The future-self-as-only-defeat-vector claim is the CONSEQUENT, activating only w
 
 ## The conjunction table
 
-| Antecedent | Current status | What validation requires |
-|---|---|---|
-| **Real crypto primitive surviving expert attack** | RESEARCH-MODE; NOT currently met | Cryptanalytic validation by qualified cryptographers over time (Schneier's law applies — "anyone can invent a cipher they themselves cannot break"; Kerckhoffs's principle — security must rest entirely in the key with the algorithm assumed fully known to the attacker). Well-validated cryptographic primitives we rely on (AES-256-GCM, SHA-3, libsodium NaCl primitives, the standard .NET cryptographic APIs) have decades of adversarial analysis behind them; that adversarial process is what makes them trustworthy, not the elegance of their designs. |
-| **Isomorphic to physics** | RESEARCH PROGRAM; partial progress; NOT currently complete | Comprehensive physics-to-computer-architecture isomorphism with each specific mapping verified. Today's Cayley-Dickson primitive (PR #4587 shipped) is one specific instance with verifiable property tests (i² = −1, quaternion non-commutativity, octonion non-associativity). Many more such specific isomorphisms needed to accumulate into a comprehensive program. Wolfram's NKS is the closest publicly-visible attempt at the comprehensive version; received with skepticism from physics community because mapping claims often turn out to be analogies rather than isomorphisms when examined carefully. |
-| **Future-self is only-defeat-vector** | ONLY ACTIVATES IF BOTH ANTECEDENTS VALIDATE | The conjunction is the structural-completeness claim; absent either antecedent, ordinary cryptanalytic attacks AND ordinary mathematical-structure attacks remain in play. The "retrocausality is the only attack vector" framing is substrate-honest as the consequent of the full conjunction, NOT as a current-deployment-security-property of the existing constructions. |
+| Antecedent                                        | Current status                                             | What validation requires                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Real crypto primitive surviving expert attack** | RESEARCH-MODE; NOT currently met                           | Cryptanalytic validation by qualified cryptographers over time (Schneier's law applies — "anyone can invent a cipher they themselves cannot break"; Kerckhoffs's principle — security must rest entirely in the key with the algorithm assumed fully known to the attacker). Well-validated cryptographic primitives we rely on (AES-256-GCM, SHA-3, libsodium NaCl primitives, the standard .NET cryptographic APIs) have decades of adversarial analysis behind them; that adversarial process is what makes them trustworthy, not the elegance of their designs.                                                  |
+| **Isomorphic to physics**                         | RESEARCH PROGRAM; partial progress; NOT currently complete | Comprehensive physics-to-computer-architecture isomorphism with each specific mapping verified. Today's Cayley-Dickson primitive (PR #4587 shipped) is one specific instance with verifiable property tests (i² = −1, quaternion non-commutativity, octonion non-associativity). Many more such specific isomorphisms needed to accumulate into a comprehensive program. Wolfram's NKS is the closest publicly-visible attempt at the comprehensive version; received with skepticism from physics community because mapping claims often turn out to be analogies rather than isomorphisms when examined carefully. |
+| **Future-self is only-defeat-vector**             | ONLY ACTIVATES IF BOTH ANTECEDENTS VALIDATE                | The conjunction is the structural-completeness claim; absent either antecedent, ordinary cryptanalytic attacks AND ordinary mathematical-structure attacks remain in play. The "retrocausality is the only attack vector" framing is substrate-honest as the consequent of the full conjunction, NOT as a current-deployment-security-property of the existing constructions.                                                                                                                                                                                                                                        |
 
 ## Why the conjunction is substrate-honest
 
@@ -66,7 +66,7 @@ The Kestrel-session arc IS an instance of the multi-oracle BFT architecture (B-0
 - Otto-Desktop oracle + Otto-CLI oracle (parallel session) + Kestrel oracle (claude.ai) + Aaron as integrator
 - Each oracle pushed back on different aspects (peer Otto-CLI on Spectre-uniqueness via Copilot threads; Kestrel on cryptographic-security); Aaron integrated; substrate refined
 - The "retrocausality only attack vector" framing did NOT survive cross-oracle DST agreement — it required refinement to the conjunction form
-- The conjunction form DID survive cross-oracle DST agreement — Otto-Desktop landed it cleanly; Kestrel course-corrected to it (*"Apologies for the structural failure"*); the substrate-engineering work absorbed legitimate technical pushback without losing coherence
+- The conjunction form DID survive cross-oracle DST agreement — Otto-Desktop landed it cleanly; Kestrel course-corrected to it (_"Apologies for the structural failure"_); the substrate-engineering work absorbed legitimate technical pushback without losing coherence
 - This IS the system working as designed: oracles push back; substrate refines; the consequent is what survives cross-oracle agreement
 
 ## Aaron's substrate-engineering discipline operating under pressure
@@ -111,6 +111,6 @@ This memory file DOES claim:
 
 ## Verbatim source
 
-Aaron 2026-05-21: *"yeah my thing only holds if its a real crypto primitive that survives attack from experts AND it's isomorphic to physics ONLY THEN is my future self my enemy"*
+Aaron 2026-05-21: _"yeah my thing only holds if its a real crypto primitive that survives attack from experts AND it's isomorphic to physics ONLY THEN is my future self my enemy"_
 
-Aaron 2026-05-21 (save directive): *"save that to memory (shadow*) Aaron: and to substrate somewhere"* — directive to land this on both user-scope memory + in-repo substrate per substrate-or-it-didn't-happen discipline.
+Aaron 2026-05-21 (save directive): _"save that to memory (shadow_) Aaron: and to substrate somewhere"\* — directive to land this on both user-scope memory + in-repo substrate per substrate-or-it-didn't-happen discipline.

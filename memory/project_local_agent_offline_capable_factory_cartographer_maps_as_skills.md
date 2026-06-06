@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 "offline-capable that is exactly what we are inadv
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Fact:** Every cartographer work-product committed to
 the repo (GitHub surface map, declarative GITHUB-SETTINGS.md,
 budget-history JSONL, research docs, tech radar,
@@ -17,16 +18,16 @@ direction.
 
 **Why — Aaron 2026-04-22, verbatim:**
 
-> *"offline-capable that is exactly what we are
+> _"offline-capable that is exactly what we are
 > inadvertenly doing everytime you map somthing
 > cartographer, next time we don't have to go online and
 > with a local agent you would not need the internet to
-> have the skills of the factory"*
+> have the skills of the factory"_
 
 Context: sent immediately after the graceful-degradation
 memory got reframed with microservice + UI patterns (the
-*offline-capable* UI pattern being one of them). Aaron
-recognized that the factory was *already* doing the
+_offline-capable_ UI pattern being one of them). Aaron
+recognized that the factory was _already_ doing the
 offline-capable pattern inadvertently — every
 cartographer pass writes another durable, git-persisted,
 internet-free-readable artifact.
@@ -58,15 +59,15 @@ internet-free-readable artifact.
    developer's laptop, air-gapped CI runner, or embedded
    deployment context, with zero internet requirement,
    using the committed maps as its primary knowledge
-   source. *"with a local agent you would not need the
-   internet to have the skills of the factory."* Maps =
+   source. _"with a local agent you would not need the
+   internet to have the skills of the factory."_ Maps =
    skills substrate.
 
 **What this promotes from emergent to deliberate:**
 
 Cartographer discipline was already enforced by existing
 memories and hygiene rules. The change is that
-*offline-capability* is now a **first-class design
+_offline-capability_ is now a **first-class design
 criterion** evaluated alongside freshness, portability,
 and legibility when:
 
@@ -119,14 +120,14 @@ is git itself.
 
 4. **Periodic sync without ambient dependency.** The
    factory can still call `gh api` to refresh the cache —
-   but the factory should never *require* that call to
+   but the factory should never _require_ that call to
    answer a previously-mapped question. Refresh is
    cadence, not runtime dependency.
 
 5. **Offline-readiness as a review lens.** When a new
-   artifact lands, ask: *"if I cloned this repo to a
+   artifact lands, ask: _"if I cloned this repo to a
    machine with no internet, could I answer the question
-   this artifact addresses?"* If no, the artifact is
+   this artifact addresses?"_ If no, the artifact is
    incomplete as an offline cache entry (land it anyway,
    but open a follow-up to backfill the missing
    self-contained answer).
@@ -182,7 +183,7 @@ agent operation becomes a near-term goal.
 **What this directive does NOT say:**
 
 - Does not commit to shipping a local-only agent now.
-  The factory's offline-capability is a *destination*,
+  The factory's offline-capability is a _destination_,
   not a deadline.
 - Does not deprecate internet use during factory work.
   The current internet-connected agent (this Claude Code
@@ -209,12 +210,13 @@ agent operation becomes a near-term goal.
 **Source:** Aaron direct message 2026-04-22 during
 round-44 speculative drain, immediately after the
 graceful-degradation memory was reframed with microservice
-+ UI framing. Previous messages in the same tick:
-*"Graceful-degradation should be first class in everything
-we do"* + *"thats why we have the data in git too"* +
-*"frame it how a microservice and ui would frame graceful
-degradation not a scientist, they are similar but not 100%
-overlapping."*
+
+- UI framing. Previous messages in the same tick:
+  _"Graceful-degradation should be first class in everything
+  we do"_ + _"thats why we have the data in git too"_ +
+  _"frame it how a microservice and ui would frame graceful
+  degradation not a scientist, they are similar but not 100%
+  overlapping."_
 
 **Cross-reference:**
 

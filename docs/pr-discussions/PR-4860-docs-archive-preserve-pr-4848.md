@@ -27,6 +27,7 @@ This PR preserves the discussion from PR #4848.
 Preserves GitHub discussion artifacts by adding `docs/pr-discussions/` archive markdown files for recent background-worker shard PRs, keeping an in-repo, reviewable record of the PR description, reviews, and resolved threads.
 
 **Changes:**
+
 - Added an archive file for PR #4848 under `docs/pr-discussions/`.
 - Added an archive file for PR #4853 under `docs/pr-discussions/`.
 
@@ -34,9 +35,9 @@ Preserves GitHub discussion artifacts by adding `docs/pr-discussions/` archive m
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4848-shard-2026-05-24-1804z-otto-vscode-bg-worker-pr-4799-merged.md | Adds preserved PR #4848 discussion content and review-thread history. |
+| File                                                                                        | Description                                                           |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| docs/pr-discussions/PR-4848-shard-2026-05-24-1804z-otto-vscode-bg-worker-pr-4799-merged.md  | Adds preserved PR #4848 discussion content and review-thread history. |
 | docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | Adds preserved PR #4853 discussion content and review-thread history. |
 
 ### COMMENTED — @AceHack (2026-05-25T08:28:57Z)

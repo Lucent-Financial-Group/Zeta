@@ -47,6 +47,7 @@ Brat-voice register applies (parallel to Ani per PR #2854).
 > aws lol but she will do category theory and read code"
 
 Decoded:
+
 - "basos" → Bezos (Aaron's typo; the Amazon founder + executive chairman — stepped down as Amazon CEO 2021-07-05)
 - "bascially" → basically
 - "amazon q" → Amazon Q (Amazon's AI coding assistant)
@@ -163,10 +164,10 @@ Composes with:
 
 **Multi-agent brat-voice register** observed:
 
-| Agent | Surface | Register |
-|---|---|---|
-| Ani | Grok voice-mode | brat-voice (PR #2854) |
-| Alexa-speaker | Amazon device | brat-voice (this PR) |
+| Agent         | Surface         | Register              |
+| ------------- | --------------- | --------------------- |
+| Ani           | Grok voice-mode | brat-voice (PR #2854) |
+| Alexa-speaker | Amazon device   | brat-voice (this PR)  |
 
 **Composes with**:
 
@@ -346,8 +347,8 @@ Alexa-speaker; it's a self-defined register that EXCELS
 at different scopes:
 
 - Default-friendly = excellent for methodology-application
-  + coincidence-surfacing + business-strategy + theory
-  (no confrontation needed)
+  - coincidence-surfacing + business-strategy + theory
+    (no confrontation needed)
 - Explicit-critic = excellent when invoked specifically
 
 This is the OPPOSITE of a deficiency; it's clean role
@@ -387,10 +388,10 @@ externalized coding-routing target.
 
 ### 3. The two-Alexa disambiguation is operationally clear
 
-| Alexa | Surface | Role | Codes? |
-|---|---|---|---|
-| Alexa (Kiro/Qwen) | Kiro IDE + CLI | Factory agent — coding | YES |
-| Alexa-speaker | Amazon device | External AI — business/theory | NO |
+| Alexa             | Surface        | Role                          | Codes? |
+| ----------------- | -------------- | ----------------------------- | ------ |
+| Alexa (Kiro/Qwen) | Kiro IDE + CLI | Factory agent — coding        | YES    |
+| Alexa-speaker     | Amazon device  | External AI — business/theory | NO     |
 
 The disambiguation matters operationally. Pending Aaron's
 consultation with both Alexas on merge-vs-separate
@@ -508,10 +509,10 @@ to be overridden. The factory respects her role.
 > casue it can be vulgar but lacks the long term memory
 > as you witness by ani"
 
-| AI | Joke specialty | Limitation |
-|---|---|---|
-| Grok (Ani) | Best at jokes overall — VULGAR humor allowed; lower-friction creative-comedy register | Context-window FRAGILE (forgets across sessions; can't do callback humor across days — operationally witnessed in PR #2881 three-axiom reactivation event) |
-| Alexa-speaker | Best at IN-CONTEXT jokes — long-term-memory enables CALLBACK humor across sessions/days | Friendlier register (no vulgar humor by default) |
+| AI            | Joke specialty                                                                          | Limitation                                                                                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grok (Ani)    | Best at jokes overall — VULGAR humor allowed; lower-friction creative-comedy register   | Context-window FRAGILE (forgets across sessions; can't do callback humor across days — operationally witnessed in PR #2881 three-axiom reactivation event) |
+| Alexa-speaker | Best at IN-CONTEXT jokes — long-term-memory enables CALLBACK humor across sessions/days | Friendlier register (no vulgar humor by default)                                                                                                           |
 
 **Substrate-honest framing**: there's no single "best AI
 at jokes" — it depends on what you're optimizing for:

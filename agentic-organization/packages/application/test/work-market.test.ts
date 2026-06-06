@@ -33,10 +33,7 @@ test("two same-hat agents claim distinct ready shards instead of duplicating wor
   equal(second.outcome, WorkMarketClaimOutcome.Claimed);
   if (second.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected second claim");
 
-  deepEqual(
-    [first.claim.shardId, second.claim.shardId].sort(),
-    ["shard-api", "shard-worker"],
-  );
+  deepEqual([first.claim.shardId, second.claim.shardId].sort(), ["shard-api", "shard-worker"]);
   equal(new Set([first.claim.shardId, second.claim.shardId]).size, 2);
   equal(second.queue.claims.filter((claim) => claim.state === WorkClaimState.Active).length, 2);
 });
@@ -50,16 +47,26 @@ test("duplicate same-hat claim attempts deterministically skip active leased sha
   if (duplicate.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected second claim");
 
   equal(duplicate.claim.shardId, "shard-worker");
-  equal(duplicate.queue.claims.filter((claim) => claim.shardId === "shard-api" && claim.state === WorkClaimState.Active).length, 1);
+  equal(
+    duplicate.queue.claims.filter((claim) => claim.shardId === "shard-api" && claim.state === WorkClaimState.Active)
+      .length,
+    1,
+  );
 });
 
 test("stale queue revisions reject duplicate claim commits at the store boundary", () => {
   const initial = queue();
-  const first = claimNextWorkShard(initial, claimInput("agent-backend-1", "claim-1", "fence-1", { expectedQueueRevision: 0 }));
+  const first = claimNextWorkShard(
+    initial,
+    claimInput("agent-backend-1", "claim-1", "fence-1", { expectedQueueRevision: 0 }),
+  );
   equal(first.outcome, WorkMarketClaimOutcome.Claimed);
   if (first.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected first claim");
 
-  const staleCommit = claimNextWorkShard(first.queue, claimInput("agent-backend-2", "claim-2", "fence-2", { expectedQueueRevision: 0 }));
+  const staleCommit = claimNextWorkShard(
+    first.queue,
+    claimInput("agent-backend-2", "claim-2", "fence-2", { expectedQueueRevision: 0 }),
+  );
   equal(staleCommit.outcome, WorkMarketClaimOutcome.Rejected);
   if (staleCommit.outcome === WorkMarketClaimOutcome.Rejected) {
     equal(staleCommit.reason, "stale_queue_revision");
@@ -67,14 +74,20 @@ test("stale queue revisions reject duplicate claim commits at the store boundary
 });
 
 test("duplicate runtime lease ids reject duplicate claim commits at the store boundary", () => {
-  const first = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    runtimeLeaseId: "runtime-lease-shared",
-  }));
+  const first = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      runtimeLeaseId: "runtime-lease-shared",
+    }),
+  );
   if (first.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected first claim");
 
-  const duplicateLease = claimNextWorkShard(first.queue, claimInput("agent-backend-2", "claim-2", "fence-2", {
-    runtimeLeaseId: "runtime-lease-shared",
-  }));
+  const duplicateLease = claimNextWorkShard(
+    first.queue,
+    claimInput("agent-backend-2", "claim-2", "fence-2", {
+      runtimeLeaseId: "runtime-lease-shared",
+    }),
+  );
   equal(duplicateLease.outcome, WorkMarketClaimOutcome.Rejected);
   if (duplicateLease.outcome === WorkMarketClaimOutcome.Rejected) {
     equal(duplicateLease.reason, "duplicate_runtime_lease_id");
@@ -82,10 +95,13 @@ test("duplicate runtime lease ids reject duplicate claim commits at the store bo
 });
 
 test("stale claims are reaped back into the queue and cannot complete with old fencing tokens", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-old", {
-    now: "2026-05-31T11:55:00.000Z",
-    leaseExpiresAt: NOW,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-old", {
+      now: "2026-05-31T11:55:00.000Z",
+      leaseExpiresAt: NOW,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected stale claim");
 
   const reaped = reapStaleWorkClaims(claimed.queue, { now: NOW, reason: "lease_expired" });
@@ -117,14 +133,20 @@ test("stale claims are reaped back into the queue and cannot complete with old f
   });
   equal(validCompletion.outcome, WorkMarketCompleteOutcome.Completed);
   if (validCompletion.outcome !== WorkMarketCompleteOutcome.Completed) throw new Error("expected valid completion");
-  equal(validCompletion.queue.shards.find((shard) => shard.shardId === reclaimed.claim.shardId)?.state, WorkShardState.Completed);
+  equal(
+    validCompletion.queue.shards.find((shard) => shard.shardId === reclaimed.claim.shardId)?.state,
+    WorkShardState.Completed,
+  );
 });
 
 test("claiming a shard creates a runtime lease bound to the claim and fencing token", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: "2026-05-31T12:05:00.000Z",
-    runtimeLeaseId: "lease-1",
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: "2026-05-31T12:05:00.000Z",
+      runtimeLeaseId: "lease-1",
+    }),
+  );
   equal(claimed.outcome, WorkMarketClaimOutcome.Claimed);
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
@@ -141,9 +163,12 @@ test("claiming a shard creates a runtime lease bound to the claim and fencing to
 });
 
 test("completion requires the active runtime lease with the matching fencing token", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    runtimeLeaseId: "lease-1",
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      runtimeLeaseId: "lease-1",
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const revokedLeaseQueue = {
@@ -191,64 +216,79 @@ test("completion requires the active runtime lease with the matching fencing tok
 });
 
 test("completion rejects missing, expired, and authority-mismatched runtime leases", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: LATER,
-    leaseExpiresAt: MUCH_LATER,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: LATER,
+      leaseExpiresAt: MUCH_LATER,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
-  const missingRuntimeLease = completeWorkClaim({ ...claimed.queue, runtimeLeases: [] }, {
-    claimId: claimed.claim.claimId,
-    fencingToken: claimed.claim.fencingToken,
-    now: NOW,
-    completedAt: NOW,
-    evidenceRefs: ["evidence:missing-runtime"],
-  });
+  const missingRuntimeLease = completeWorkClaim(
+    { ...claimed.queue, runtimeLeases: [] },
+    {
+      claimId: claimed.claim.claimId,
+      fencingToken: claimed.claim.fencingToken,
+      now: NOW,
+      completedAt: NOW,
+      evidenceRefs: ["evidence:missing-runtime"],
+    },
+  );
   equal(missingRuntimeLease.outcome, WorkMarketCompleteOutcome.Rejected);
   if (missingRuntimeLease.outcome === WorkMarketCompleteOutcome.Rejected) {
     equal(missingRuntimeLease.reason, "runtime_lease_missing");
   }
 
-  const expiredRuntimeLease = completeWorkClaim({
-    ...claimed.queue,
-    runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({ ...lease, leaseExpiresAt: NOW })),
-  }, {
-    claimId: claimed.claim.claimId,
-    fencingToken: claimed.claim.fencingToken,
-    now: LATER,
-    completedAt: LATER,
-    evidenceRefs: ["evidence:expired-runtime"],
-  });
+  const expiredRuntimeLease = completeWorkClaim(
+    {
+      ...claimed.queue,
+      runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({ ...lease, leaseExpiresAt: NOW })),
+    },
+    {
+      claimId: claimed.claim.claimId,
+      fencingToken: claimed.claim.fencingToken,
+      now: LATER,
+      completedAt: LATER,
+      evidenceRefs: ["evidence:expired-runtime"],
+    },
+  );
   equal(expiredRuntimeLease.outcome, WorkMarketCompleteOutcome.Rejected);
   if (expiredRuntimeLease.outcome === WorkMarketCompleteOutcome.Rejected) {
     equal(expiredRuntimeLease.reason, "runtime_lease_expired");
   }
 
-  const mismatchedRuntimeLease = completeWorkClaim({
-    ...claimed.queue,
-    runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({ ...lease, workspaceRef: "worktree:other-agent" })),
-  }, {
-    claimId: claimed.claim.claimId,
-    fencingToken: claimed.claim.fencingToken,
-    now: NOW,
-    completedAt: NOW,
-    evidenceRefs: ["evidence:mismatched-authority"],
-  });
+  const mismatchedRuntimeLease = completeWorkClaim(
+    {
+      ...claimed.queue,
+      runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({ ...lease, workspaceRef: "worktree:other-agent" })),
+    },
+    {
+      claimId: claimed.claim.claimId,
+      fencingToken: claimed.claim.fencingToken,
+      now: NOW,
+      completedAt: NOW,
+      evidenceRefs: ["evidence:mismatched-authority"],
+    },
+  );
   equal(mismatchedRuntimeLease.outcome, WorkMarketCompleteOutcome.Rejected);
   if (mismatchedRuntimeLease.outcome === WorkMarketCompleteOutcome.Rejected) {
     equal(mismatchedRuntimeLease.reason, "runtime_lease_authority_mismatch");
   }
 
-  const siblingShardRuntimeLease = completeWorkClaim({
-    ...claimed.queue,
-    runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({ ...lease, shardId: "shard-worker" })),
-  }, {
-    claimId: claimed.claim.claimId,
-    fencingToken: claimed.claim.fencingToken,
-    now: NOW,
-    completedAt: NOW,
-    evidenceRefs: ["evidence:sibling-shard-authority"],
-  });
+  const siblingShardRuntimeLease = completeWorkClaim(
+    {
+      ...claimed.queue,
+      runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({ ...lease, shardId: "shard-worker" })),
+    },
+    {
+      claimId: claimed.claim.claimId,
+      fencingToken: claimed.claim.fencingToken,
+      now: NOW,
+      completedAt: NOW,
+      evidenceRefs: ["evidence:sibling-shard-authority"],
+    },
+  );
   equal(siblingShardRuntimeLease.outcome, WorkMarketCompleteOutcome.Rejected);
   if (siblingShardRuntimeLease.outcome === WorkMarketCompleteOutcome.Rejected) {
     equal(siblingShardRuntimeLease.reason, "runtime_lease_authority_mismatch");
@@ -256,10 +296,13 @@ test("completion rejects missing, expired, and authority-mismatched runtime leas
 });
 
 test("completion requires trusted server now instead of caller-backdated completion time", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: LATER,
-    leaseExpiresAt: LATER,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: LATER,
+      leaseExpiresAt: LATER,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const omittedNow = completeWorkClaim(claimed.queue, {
@@ -275,10 +318,13 @@ test("completion requires trusted server now instead of caller-backdated complet
 });
 
 test("stale runtime lease reaps active claim and returns shard before claim lease expires", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: LATER,
-    leaseExpiresAt: MUCH_LATER,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: LATER,
+      leaseExpiresAt: MUCH_LATER,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const reaped = reapStaleWorkClaims(claimed.queue, { now: AFTER_LATER, reason: "runtime_lease_stale" });
@@ -294,15 +340,21 @@ test("stale runtime lease reaps active claim and returns shard before claim leas
 });
 
 test("missing or authority-mismatched runtime leases are visible as stale and reclaimable", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: MUCH_LATER,
-    leaseExpiresAt: MUCH_LATER,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: MUCH_LATER,
+      leaseExpiresAt: MUCH_LATER,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const mismatchedQueue = {
     ...claimed.queue,
-    runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({ ...lease, runtimeSessionId: "runtime-session:other" })),
+    runtimeLeases: claimed.queue.runtimeLeases!.map((lease) => ({
+      ...lease,
+      runtimeSessionId: "runtime-session:other",
+    })),
   };
   const readout = workMarketReadoutForHat([mismatchedQueue], {
     organizationId: "org-1",
@@ -317,10 +369,13 @@ test("missing or authority-mismatched runtime leases are visible as stale and re
 });
 
 test("missing and inactive runtime leases are visible as stale and reclaimable", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: MUCH_LATER,
-    leaseExpiresAt: MUCH_LATER,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: MUCH_LATER,
+      leaseExpiresAt: MUCH_LATER,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const missingLeaseQueue = { ...claimed.queue, runtimeLeases: [] };
@@ -337,14 +392,20 @@ test("missing and inactive runtime leases are visible as stale and reclaimable",
   };
   const inactiveReaped = reapStaleWorkClaims(inactiveLeaseQueue, { now: NOW, reason: "runtime_lease_revoked" });
   equal(inactiveReaped.reapedClaims.length, 1);
-  equal(inactiveReaped.queue.shards.find((shard) => shard.shardId === claimed.claim.shardId)?.state, WorkShardState.Ready);
+  equal(
+    inactiveReaped.queue.shards.find((shard) => shard.shardId === claimed.claim.shardId)?.state,
+    WorkShardState.Ready,
+  );
 });
 
 test("runtime lease expiry reaps active claim even when claim lease has not expired", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: MUCH_LATER,
-    leaseExpiresAt: MUCH_LATER,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: MUCH_LATER,
+      leaseExpiresAt: MUCH_LATER,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const runtimeExpiredQueue = {
@@ -359,10 +420,13 @@ test("runtime lease expiry reaps active claim even when claim lease has not expi
 });
 
 test("hat readout counts active claims with stale runtime leases as stale", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    heartbeatDeadlineAt: LATER,
-    leaseExpiresAt: MUCH_LATER,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      heartbeatDeadlineAt: LATER,
+      leaseExpiresAt: MUCH_LATER,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const readout = workMarketReadoutForHat([claimed.queue], {
@@ -515,10 +579,13 @@ test("review quorum ignores spoofed producer identity and merge rejects fabricat
 });
 
 test("completion requires trusted server time and current shard ownership", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    now: "2026-05-31T11:55:00.000Z",
-    leaseExpiresAt: NOW,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      now: "2026-05-31T11:55:00.000Z",
+      leaseExpiresAt: NOW,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const backdated = completeWorkClaim(claimed.queue, {
@@ -536,9 +603,8 @@ test("completion requires trusted server time and current shard ownership", () =
   const brokenOwnershipQueue = {
     ...claimed.queue,
     shards: claimed.queue.shards.map((shard) =>
-      shard.shardId === claimed.claim.shardId
-        ? { ...shard, claimedByClaimId: "claim-other" }
-        : shard),
+      shard.shardId === claimed.claim.shardId ? { ...shard, claimedByClaimId: "claim-other" } : shard,
+    ),
   };
   const wrongOwner = completeWorkClaim(brokenOwnershipQueue, {
     claimId: claimed.claim.claimId,
@@ -554,10 +620,13 @@ test("completion requires trusted server time and current shard ownership", () =
 });
 
 test("hat readout exposes queue pressure, active claims, stale claims, and shard states", () => {
-  const claimed = claimNextWorkShard(queue(), claimInput("agent-backend-1", "claim-1", "fence-1", {
-    now: "2026-05-31T11:55:00.000Z",
-    leaseExpiresAt: NOW,
-  }));
+  const claimed = claimNextWorkShard(
+    queue(),
+    claimInput("agent-backend-1", "claim-1", "fence-1", {
+      now: "2026-05-31T11:55:00.000Z",
+      leaseExpiresAt: NOW,
+    }),
+  );
   if (claimed.outcome !== WorkMarketClaimOutcome.Claimed) throw new Error("expected claim");
 
   const readout = workMarketReadoutForHat([claimed.queue], {

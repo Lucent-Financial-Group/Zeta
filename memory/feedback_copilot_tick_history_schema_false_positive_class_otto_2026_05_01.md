@@ -16,8 +16,8 @@ composes_with:
 
 When Copilot posts a review comment on a `docs/hygiene-history/ticks/<YYYY>/<MM>/<DD>/<HHMM>Z.md`
 shard claiming it fails `tools/hygiene/check-tick-history-shard-schema.sh` with text
-matching the pattern *"line starts with ` <N> || <date>...`"* or *"col1 must
-be exactly..."* or *"leading whitespace before the pipe"*:
+matching the pattern _"line starts with ` <N> || <date>...`"_ or _"col1 must
+be exactly..."_ or _"leading whitespace before the pipe"_:
 
 1. **Run the validator first in `--files` mode** —
    `bash tools/hygiene/check-tick-history-shard-schema.sh --files <shard-path>`.
@@ -43,11 +43,11 @@ the named scope.
 
 Copilot finding (verbatim):
 
-> *"P0: This shard's first non-empty line doesn't match the
+> _"P0: This shard's first non-empty line doesn't match the
 > tick-history schema and will fail
 > `tools/hygiene/check-tick-history-shard-schema.sh`. It starts with
 > leading whitespace and `1 || ...` instead of starting at column 0
-> with `| <ISO8601 ts> | ...`."*
+> with `| <ISO8601 ts> | ...`."_
 
 Verification:
 
@@ -67,11 +67,11 @@ script's own usage docs recommend.)
 
 Copilot finding (verbatim):
 
-> *"P0: This shard doesn't match the tick-history schema. The first
+> _"P0: This shard doesn't match the tick-history schema. The first
 > non-empty line must start at column 0 with `| <ISO8601 UTC ts> | ...`
 > (no leading spaces / no line numbering). Current line starts with
 > ` 1 || 2026-...`, which will fail
-> `tools/hygiene/check-tick-history-shard-schema.sh`'s col1 regex."*
+> `tools/hygiene/check-tick-history-shard-schema.sh`'s col1 regex."_
 
 Verification:
 
@@ -167,10 +167,10 @@ When Copilot posts the false-positive shape:
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Copilot's tick-history-shard schema findings are validator-checkable.
+_"Copilot's tick-history-shard schema findings are validator-checkable.
 Run the validator before believing the finding. Two same-shape
 false-positives in one session crosses the ratchet threshold for
-encoding the discipline."* (Synthesis Otto 2026-05-01.)
+encoding the discipline."_ (Synthesis Otto 2026-05-01.)
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence,

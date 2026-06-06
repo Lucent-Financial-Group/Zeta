@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Bumps the github-actions-minor-patch group with 1 update: [github/codeql-action](https://github.com/github/codeql-action).
 
 Updates `github/codeql-action` from 4.35.5 to 4.36.0
+
 <details>
 <summary>Release notes</summary>
 <p><em>Sourced from <a href="https://github.com/github/codeql-action/releases">github/codeql-action's releases</a>.</em></p>
@@ -103,13 +104,12 @@ Updates `github/codeql-action` from 4.35.5 to 4.36.0
 </details>
 <br />
 
-
 [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=github/codeql-action&package-manager=github_actions&previous-version=4.35.5&new-version=4.36.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
 
 Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
 
-[//]: # (dependabot-automerge-start)
-[//]: # (dependabot-automerge-end)
+[//]: # "dependabot-automerge-start"
+[//]: # "dependabot-automerge-end"
 
 ---
 
@@ -118,6 +118,7 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
@@ -126,7 +127,6 @@ You can trigger Dependabot actions by commenting on this PR:
 - `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
 - `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
 - `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
-
 
 </details>
 
@@ -137,7 +137,6 @@ You can trigger Dependabot actions by commenting on this PR:
 ### Labels
 
 The following labels could not be found: `dependencies`. Please create it before Dependabot can add it to a pull request.
-
 
 Please fix the above issues or remove invalid values from `dependabot.yml`.
 

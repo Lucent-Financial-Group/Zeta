@@ -35,19 +35,37 @@ export const EscalationAction = {
 export type EscalationAction = (typeof EscalationAction)[keyof typeof EscalationAction];
 
 const LEGAL_BY_TRIGGER: Readonly<Record<EscalationTrigger, readonly EscalationAction[]>> = {
-  [EscalationTrigger.RepeatedQaBounceBack]: [EscalationAction.AddAgents, EscalationAction.BringInArchitect, EscalationAction.ReScope, EscalationAction.Pause, EscalationAction.AcceptRisk],
+  [EscalationTrigger.RepeatedQaBounceBack]: [
+    EscalationAction.AddAgents,
+    EscalationAction.BringInArchitect,
+    EscalationAction.ReScope,
+    EscalationAction.Pause,
+    EscalationAction.AcceptRisk,
+  ],
   [EscalationTrigger.SlaBreach]: [EscalationAction.AddAgents, EscalationAction.ReScope, EscalationAction.Pause],
-  [EscalationTrigger.StaleBlocker]: [EscalationAction.AssignOwner, EscalationAction.AlternateWork, EscalationAction.ReScope],
+  [EscalationTrigger.StaleBlocker]: [
+    EscalationAction.AssignOwner,
+    EscalationAction.AlternateWork,
+    EscalationAction.ReScope,
+  ],
   [EscalationTrigger.ReviewQueueSaturated]: [EscalationAction.ReassignReviewer, EscalationAction.AddAgents],
 };
 
 /** Escalation is a MANAGEMENT action — only Manager/Director/exec hats may decide. */
 function hasEscalationAuthority(level: HatLevel): boolean {
-  return level === HatLevel.Manager || level === HatLevel.Director || level === HatLevel.CSuite || level === HatLevel.ExecutiveBoard;
+  return (
+    level === HatLevel.Manager ||
+    level === HatLevel.Director ||
+    level === HatLevel.CSuite ||
+    level === HatLevel.ExecutiveBoard
+  );
 }
 
 /** The bounded legal escalations for a trigger, clamped by decider authority. */
-export function legalEscalationActions(trigger: EscalationTrigger, deciderLevel: HatLevel): readonly EscalationAction[] {
+export function legalEscalationActions(
+  trigger: EscalationTrigger,
+  deciderLevel: HatLevel,
+): readonly EscalationAction[] {
   if (!hasEscalationAuthority(deciderLevel)) return [];
   return LEGAL_BY_TRIGGER[trigger];
 }
@@ -55,14 +73,22 @@ export function legalEscalationActions(trigger: EscalationTrigger, deciderLevel:
 /** Count QA bounce-backs (review → in_progress rework) for a work item from the trace. */
 export function bounceBackCount(workItemId: string, events: readonly OrgEvent[]): number {
   return events.filter(
-    (e) => e.kind === OrgEventKind.WorkItemTransition && e.subjectId === workItemId && e.fromState === WorkItemState.Review && e.toState === WorkItemState.InProgress,
+    (e) =>
+      e.kind === OrgEventKind.WorkItemTransition &&
+      e.subjectId === workItemId &&
+      e.fromState === WorkItemState.Review &&
+      e.toState === WorkItemState.InProgress,
   ).length;
 }
 
 export const DEFAULT_CHURN_THRESHOLD = 3;
 
 /** Has this work item crossed the churn threshold (and therefore needs escalation)? */
-export function detectChurn(workItemId: string, events: readonly OrgEvent[], threshold = DEFAULT_CHURN_THRESHOLD): boolean {
+export function detectChurn(
+  workItemId: string,
+  events: readonly OrgEvent[],
+  threshold = DEFAULT_CHURN_THRESHOLD,
+): boolean {
   return bounceBackCount(workItemId, events) >= threshold;
 }
 
@@ -125,7 +151,10 @@ export type EscalationDecisionResult =
   | { outcome: "escalated"; action: EscalationAction; change: EscalationOutcomeChange; event: OrgEvent };
 
 /** A management hat decides an escalation within the legal set; the choice is clamped. */
-export function decideEscalation(input: EscalationDecisionInput, ctx: EscalationDecisionContext): EscalationDecisionResult {
+export function decideEscalation(
+  input: EscalationDecisionInput,
+  ctx: EscalationDecisionContext,
+): EscalationDecisionResult {
   if (!hasEscalationAuthority(input.deciderHat.level)) {
     return { outcome: "no_authority", reason: `${input.deciderHat.id} (${input.deciderHat.level}) cannot escalate` };
   }

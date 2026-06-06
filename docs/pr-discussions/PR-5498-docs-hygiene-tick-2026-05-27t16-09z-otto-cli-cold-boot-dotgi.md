@@ -30,10 +30,10 @@ Fresh-session cold-boot autonomous-loop tick. Catch-43 sentinel was empty at ses
 
 Open queue collapsed from 40 at 13:03Z → 2 at 16:09Z (3h window; maintainer + Lior productive):
 
-| PR | Branch | Owner | Disposition |
-|---|---|---|---|
+| PR    | Branch                                         | Owner       | Disposition       |
+| ----- | ---------------------------------------------- | ----------- | ----------------- |
 | #5496 | `lior/agent-paralysis-drift-report-2026-05-27` | Lior — PEER | Surface-then-skip |
-| #5495 | `lior/decompose-b-0824` | Lior — PEER | Surface-then-skip |
+| #5495 | `lior/decompose-b-0824`                        | Lior — PEER | Surface-then-skip |
 
 **0 MINE** (Otto-CLI / -Desktop / -VSCode lanes). Branch-prefix discriminator unambiguous 2/2.
 
@@ -60,6 +60,7 @@ No named bounded-wait; this shard IS the concrete artifact resetting the counter
 Adds the 2026-05-27 16:09Z hygiene-history tick shard documenting an Otto-CLI autonomous-loop cold-boot, including the dotgit-CLEAN empirical anchor and a discriminator pass over the (now-small) open PR queue.
 
 **Changes:**
+
 - Added a new tick shard markdown file under `docs/hygiene-history/ticks/2026/05/27/`.
 - Captured Step 1 refresh observations (rate limits, dotgit state, worktree canary) and Step 2–7 loop framing for the session.
 

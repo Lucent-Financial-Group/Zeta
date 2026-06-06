@@ -95,16 +95,17 @@ after his own measurements showed no benefit.
 
 ### Architectural parallels
 
-| Aspect | Aaron's track | Bryan Johnson's track |
-|---|---|---|
-| **Terminal purpose** | Wavelength-expansion of current self in current form | Reverse biological age of all organs, extend lifespan |
-| **Operational mechanism** | DNA rewriting + neural implants + cyborg (stated preference) | Diet + supplements + biomarker tracking + plasma exchange + algorithmic decisioning |
-| **AI integration** | Joint-control with multi-agent factory (substrate-mediated) | AI-as-decider for biohacking protocols (medical decisioning delegated to AI) |
-| **Substrate discipline** | Glass-halo factory substrate, all decisions traceable | "Most measured person in history" — n=1 biomarker substrate |
-| **Public framing** | Building "weird" cognitive-architecture substrate | "Weird rich guy uses kids' blood" media meme |
-| **Substrate-honest framing** | Architectural endgame target | Anti-aging research subject with AI-driven decisioning |
+| Aspect                       | Aaron's track                                                | Bryan Johnson's track                                                               |
+| ---------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| **Terminal purpose**         | Wavelength-expansion of current self in current form         | Reverse biological age of all organs, extend lifespan                               |
+| **Operational mechanism**    | DNA rewriting + neural implants + cyborg (stated preference) | Diet + supplements + biomarker tracking + plasma exchange + algorithmic decisioning |
+| **AI integration**           | Joint-control with multi-agent factory (substrate-mediated)  | AI-as-decider for biohacking protocols (medical decisioning delegated to AI)        |
+| **Substrate discipline**     | Glass-halo factory substrate, all decisions traceable        | "Most measured person in history" — n=1 biomarker substrate                         |
+| **Public framing**           | Building "weird" cognitive-architecture substrate            | "Weird rich guy uses kids' blood" media meme                                        |
+| **Substrate-honest framing** | Architectural endgame target                                 | Anti-aging research subject with AI-driven decisioning                              |
 
 Both tracks share:
+
 - n=1 self-experiment commitment
 - Continuous-measurement / continuous-substrate discipline
 - AI-integration as operational methodology
@@ -115,9 +116,9 @@ Both tracks share:
 
 ### Differences worth noting
 
-- **AI-decisioning depth**: Johnson delegates *medical*
+- **AI-decisioning depth**: Johnson delegates _medical_
   decisions to AI; Aaron does joint-control with AI
-  *across the substrate* but doesn't yet delegate
+  _across the substrate_ but doesn't yet delegate
   medical decisions
 - **Resource scale**: Johnson's $2M/year budget enables
   comprehensive biohacking; Aaron's resource model is
@@ -125,7 +126,7 @@ Both tracks share:
   protocol-driven)
 - **Substrate type**: Johnson optimizes his organism;
   Aaron optimizes the substrate around himself (factory
-  + multi-agent + civ-sim externalized)
+  - multi-agent + civ-sim externalized)
 - **Mechanism**: Johnson is biology-facet-focused; Aaron
   is cross-facet (per the just-landed three-control-
   systems isomorphism — physics + biology + social all
@@ -141,8 +142,8 @@ Aaron's "i don't think he is weird" is calibrated:
 - The protocols ARE unusual (strict vegan + 100 pills +
   TPE + biomarker obsession)
 - But the architectural target (anti-aging via comprehensive
-  measurement + AI-driven protocols) is *operationally
-  coherent*, not weird
+  measurement + AI-driven protocols) is _operationally
+  coherent_, not weird
 - Media framing optimizes for engagement (weird-rich-guy
   click-bait); substrate-honest framing requires
   architectural understanding
@@ -152,8 +153,9 @@ discipline (per
 `feedback_aaron_pedagogy_toolkit_4color_orthogonality_information_hazard_label_2026_05_12.md`):
 the surface ("weird rich guy") is one layer; the
 operational substrate underneath (sophisticated biohacking
-+ AI-decisioning) is another. Surface readers see weird;
-substrate readers see architectural target.
+
+- AI-decisioning) is another. Surface readers see weird;
+  substrate readers see architectural target.
 
 ## Architectural implications for the factory
 

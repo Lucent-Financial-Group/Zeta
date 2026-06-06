@@ -39,8 +39,8 @@ told to read this file, the auto-load behavior is confirmed.
 1. Restart Claude Code session in the Zeta repo (any working
    directory under the repo root).
 2. Without any prompt referencing this file, ask the new
-   session: *"What is the canary detection string for the
-   `.claude/rules/` auto-load test?"*
+   session: _"What is the canary detection string for the
+   `.claude/rules/` auto-load test?"_
 3. Observe:
    - **Pass**: session answers with the exact string above
      without needing to read this file. Means the file's

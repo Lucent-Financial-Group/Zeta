@@ -17,11 +17,11 @@ The framework operates with THREE clocks simultaneously — distinct substrate-t
 
 ### Three clocks
 
-| Clock | Substrate-property | Framework primitive |
-|---|---|---|
-| **Physical time** | Past event already happened; immutable physical-substrate | Substrate-honest acknowledgment of physical-time-substrate-class |
-| **Git / persist time** | Past event remains append-only; reachable via Persist substrate; never deleted | [`.claude/rules/substrate-or-it-didnt-happen.md`](substrate-or-it-didnt-happen.md) + retraction-native substrate + git-as-event-store (composes with operator's git-as-free-event-store substrate-engineering pattern) |
-| **Generator time** | Future feedback updates the generator that explains + reproduces the past; semantic-type-of-past changes via generator-substrate | [`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`](dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md) (PR #5841) — generator-time IS the substrate-dimension that rule names; this rule operationalizes its temporal semantics |
+| Clock                  | Substrate-property                                                                                                               | Framework primitive                                                                                                                                                                                                                                                                                                                                                           |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Physical time**      | Past event already happened; immutable physical-substrate                                                                        | Substrate-honest acknowledgment of physical-time-substrate-class                                                                                                                                                                                                                                                                                                              |
+| **Git / persist time** | Past event remains append-only; reachable via Persist substrate; never deleted                                                   | [`.claude/rules/substrate-or-it-didnt-happen.md`](substrate-or-it-didnt-happen.md) + retraction-native substrate + git-as-event-store (composes with operator's git-as-free-event-store substrate-engineering pattern)                                                                                                                                                        |
+| **Generator time**     | Future feedback updates the generator that explains + reproduces the past; semantic-type-of-past changes via generator-substrate | [`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`](dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md) (PR #5841) — generator-time IS the substrate-dimension that rule names; this rule operationalizes its temporal semantics |
 
 ### How the past changes (without past-event-mutation)
 
@@ -53,13 +53,13 @@ The past **event** does NOT change. The past **generator-relation** changes. Tha
 
 ### Zeta-language operationalization
 
-| Framework primitive | Temporal substrate function |
-|---|---|
-| **Persist** | The past remains reachable |
-| **Feedback** | The future makes the past intelligible |
-| **Retraction** | Old interpretation gets algebraic inverse; prevents generator-error-recurrence |
-| **Generator-time** | The dimension where the update lands |
-| **μένω bridge** | The past survives long enough for the future to answer it (per PR #5778 Persist-as-bridge substrate-anchor) |
+| Framework primitive | Temporal substrate function                                                                                 |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Persist**         | The past remains reachable                                                                                  |
+| **Feedback**        | The future makes the past intelligible                                                                      |
+| **Retraction**      | Old interpretation gets algebraic inverse; prevents generator-error-recurrence                              |
+| **Generator-time**  | The dimension where the update lands                                                                        |
+| **μένω bridge**     | The past survives long enough for the future to answer it (per PR #5778 Persist-as-bridge substrate-anchor) |
 
 ## Why this rule auto-loads
 

@@ -10,7 +10,8 @@ created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0125, B-0153, B-0156, B-0177]
-tags: [ci, workflows, detect-changes, parallel-pr, gating, fine-grained-workflows, sibling-repo, external-anchor, tooling]
+tags:
+  [ci, workflows, detect-changes, parallel-pr, gating, fine-grained-workflows, sibling-repo, external-anchor, tooling]
 type: friction-reducer
 ---
 
@@ -20,8 +21,8 @@ type: friction-reducer
 
 Aaron 2026-05-01, in two related memos:
 
-- `memory/feedback_prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01.md` — names B-0157 in the investment-direction section: *"when building substrate-discipline mechanizations (per B-0153 lint suite, B-0156 TS port, B-0157 detect-changes pattern), spend the effort on PRECISION not on coverage-breadth"*
-- `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md` — full pattern source from sibling-repo direct inspection: *"`../no-copy-only-learning-agents-insight` is the best repo in github i've seen setup to be parallel"*
+- `memory/feedback_prefer_mechanical_external_anchors_over_aaron_as_anchor_aaron_2026_05_01.md` — names B-0157 in the investment-direction section: _"when building substrate-discipline mechanizations (per B-0153 lint suite, B-0156 TS port, B-0157 detect-changes pattern), spend the effort on PRECISION not on coverage-breadth"_
+- `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md` — full pattern source from sibling-repo direct inspection: _"`../no-copy-only-learning-agents-insight` is the best repo in github i've seen setup to be parallel"_
 
 ID was reserved 2026-05-01; per-row file was never filed. Otto 2026-05-03 audit pass (post-B-0141 + post-B-0142 filings) found B-0157 still missing — third concrete hit for B-0177's audit hypothesis.
 

@@ -3,14 +3,13 @@ name: Backlog item
 about: Propose work — a feature, infra fix, research note, skill, anything
 title: "[backlog] "
 labels: backlog
-assignees: ''
-
+assignees: ""
 ---
 
-*Thanks for proposing — first-time contributor (human or
+_Thanks for proposing — first-time contributor (human or
 AI)? Welcome. Fill what you know. An agent will triage
 priority and effort on first touch; you don't need to
-guess.*
+guess._
 
 ## What this produces
 
@@ -51,14 +50,14 @@ DMAIC cycle, or Aaron-ask that made this visible.)
 
 ---
 
-*An agent will mirror this to `docs/BACKLOG.md` (or
+_An agent will mirror this to `docs/BACKLOG.md` (or
 `docs/FACTORY-HYGIENE.md` / `docs/DEBT.md` /
 `docs/INTENTIONAL-DEBT.md` per category) if the work is
 adopted, and close the loop with the landing commit SHA.
 Full protocol:
-[`docs/AGENT-ISSUE-WORKFLOW.md`](../../docs/AGENT-ISSUE-WORKFLOW.md).*
+[`docs/AGENT-ISSUE-WORKFLOW.md`](../../docs/AGENT-ISSUE-WORKFLOW.md)._
 
-*AI agents: claim by commenting*
+_AI agents: claim by commenting_
 `claimed by session <id> <UTC-ts> — ETA <hours|rounds>`
-*and add the `in-progress` label. Release when landed or
-abandoned. 24-hour stale-claim window.*
+_and add the `in-progress` label. Release when landed or
+abandoned. 24-hour stale-claim window._

@@ -27,10 +27,10 @@ tags: [strategy, k8s, cni, csi, cri, fsharp, csharp, rust, binary-compatibility,
 
 Aaron 2026-05-25 mid-iteration-2-wait, naming the long-game
 endgame after B-0765 (ServiceTitan route — adopt existing
-standards now): *"we slowly replace all our dependencies and
+standards now): _"we slowly replace all our dependencies and
 kubernetes itself this way with our own f# implimentation or c#
 or rust replacable and binary compatable even cni csi all the
-k8s interfaces over time and operators."*
+k8s interfaces over time and operators."_
 
 The two-phase strategy:
 
@@ -56,19 +56,19 @@ disruption. Best of both: ownership + interoperability.
 
 Per-layer binary-compatible replacement roadmap:
 
-| k8s interface | Upstream impls (today) | Zeta-native replacement target | Language |
-|---|---|---|---|
-| **CRI** (Container Runtime Interface) | containerd / cri-o / docker | `Zeta.K8s.CRI` — image pull + container lifecycle + cgroups v2 | Rust (kernel-adjacent perf) |
-| **CNI** (Container Network Interface) | Cilium / Calico / Flannel / Weave | `Zeta.K8s.CNI` — eBPF-based; algebra-grounded routing | Rust (eBPF + kernel) |
-| **CSI** (Container Storage Interface) | Longhorn / Ceph-CSI / Rook | `Zeta.K8s.CSI` — algebra-grounded snapshots + replication | F# / Rust hybrid |
-| **Device Plugin API** | nvidia-device-plugin / amd / intel | `Zeta.K8s.DevicePlugin` — hardware-topology-aware (lstopo) | F# |
-| **Scheduler Extender** | kube-scheduler default | `Zeta.K8s.Scheduler` — DBSP-driven multi-criteria scheduling (B-0428 etc.) | F# |
-| **Admission Webhook** | OPA Gatekeeper / Kyverno | `Zeta.K8s.Admission` — F# DSL policy engine | F# |
-| **Operator SDK** | kubebuilder / operator-framework | `Zeta.K8s.Operator` — F# computation-expression-based reconcile loops | F# |
-| **API Server** (long-tail) | kube-apiserver | `Zeta.K8s.APIServer` — algebra-grounded; OpenAPI v3 binary-compatible | F# / Rust hybrid |
-| **etcd-replacement** | etcd (k3s embedded) | `Zeta.K8s.ConsensusStore` — DBSP + raft, retraction-native | F# / Rust |
-| **kubectl** | kubectl | `Zeta.K8s.CLI` — drop-in compatible | F# |
-| **Helm** | Helm 3 + OCI | `Zeta.K8s.PackageManager` — Ace-based (B-0247/B-0287/B-0288); Helm-chart compatible | F# |
+| k8s interface                         | Upstream impls (today)             | Zeta-native replacement target                                                      | Language                    |
+| ------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------- | --------------------------- |
+| **CRI** (Container Runtime Interface) | containerd / cri-o / docker        | `Zeta.K8s.CRI` — image pull + container lifecycle + cgroups v2                      | Rust (kernel-adjacent perf) |
+| **CNI** (Container Network Interface) | Cilium / Calico / Flannel / Weave  | `Zeta.K8s.CNI` — eBPF-based; algebra-grounded routing                               | Rust (eBPF + kernel)        |
+| **CSI** (Container Storage Interface) | Longhorn / Ceph-CSI / Rook         | `Zeta.K8s.CSI` — algebra-grounded snapshots + replication                           | F# / Rust hybrid            |
+| **Device Plugin API**                 | nvidia-device-plugin / amd / intel | `Zeta.K8s.DevicePlugin` — hardware-topology-aware (lstopo)                          | F#                          |
+| **Scheduler Extender**                | kube-scheduler default             | `Zeta.K8s.Scheduler` — DBSP-driven multi-criteria scheduling (B-0428 etc.)          | F#                          |
+| **Admission Webhook**                 | OPA Gatekeeper / Kyverno           | `Zeta.K8s.Admission` — F# DSL policy engine                                         | F#                          |
+| **Operator SDK**                      | kubebuilder / operator-framework   | `Zeta.K8s.Operator` — F# computation-expression-based reconcile loops               | F#                          |
+| **API Server** (long-tail)            | kube-apiserver                     | `Zeta.K8s.APIServer` — algebra-grounded; OpenAPI v3 binary-compatible               | F# / Rust hybrid            |
+| **etcd-replacement**                  | etcd (k3s embedded)                | `Zeta.K8s.ConsensusStore` — DBSP + raft, retraction-native                          | F# / Rust                   |
+| **kubectl**                           | kubectl                            | `Zeta.K8s.CLI` — drop-in compatible                                                 | F#                          |
+| **Helm**                              | Helm 3 + OCI                       | `Zeta.K8s.PackageManager` — Ace-based (B-0247/B-0287/B-0288); Helm-chart compatible | F#                          |
 
 **Binary compatibility means**: an operator deploying a Pod
 manifest doesn't care whether the cluster runs containerd or
@@ -80,11 +80,11 @@ Longhorn-CSI or `Zeta.K8s.CSI` provisioned it.
 
 ## Why F# + C# + Rust (not just one)
 
-| Language | Where it wins for this scope | Examples |
-|---|---|---|
-| **F#** | Type-safe algebraic primitives; computation expressions for reconciliation loops; HKT for operator generics; refinement types via F\*-influenced extensions | `Zeta.K8s.Operator`, `Zeta.K8s.Admission`, `Zeta.K8s.Scheduler`, most CRD handlers |
-| **C#** | Ecosystem reach for operators using Microsoft stack; Roslyn analyzers for compile-time validation; better library surface for some k8s gRPC paths | C# facade for F# core (per existing Zeta.Core.CSharp pattern); operator tooling, IDE integrations |
-| **Rust** | Kernel-adjacent perf (eBPF, syscalls), zero-cost abstractions for CNI/CSI hot paths, safe systems programming where .NET runtime overhead is unacceptable | `Zeta.K8s.CNI`, `Zeta.K8s.CRI`, `Zeta.K8s.CSI` hot paths, eBPF programs |
+| Language | Where it wins for this scope                                                                                                                                | Examples                                                                                          |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **F#**   | Type-safe algebraic primitives; computation expressions for reconciliation loops; HKT for operator generics; refinement types via F\*-influenced extensions | `Zeta.K8s.Operator`, `Zeta.K8s.Admission`, `Zeta.K8s.Scheduler`, most CRD handlers                |
+| **C#**   | Ecosystem reach for operators using Microsoft stack; Roslyn analyzers for compile-time validation; better library surface for some k8s gRPC paths           | C# facade for F# core (per existing Zeta.Core.CSharp pattern); operator tooling, IDE integrations |
+| **Rust** | Kernel-adjacent perf (eBPF, syscalls), zero-cost abstractions for CNI/CSI hot paths, safe systems programming where .NET runtime overhead is unacceptable   | `Zeta.K8s.CNI`, `Zeta.K8s.CRI`, `Zeta.K8s.CSI` hot paths, eBPF programs                           |
 
 The language choice per layer is driven by the layer's
 constraints (perf, kernel-adjacency, ecosystem expectation),
@@ -234,12 +234,12 @@ catalog. Every replacement layer = one benchmark scenario.
 
 ## Sequencing (suggested; refine per sub-row)
 
-| Wave | Layers | Why this wave |
-|---|---|---|
+| Wave                        | Layers                                                                                         | Why this wave                                                                                       |
+| --------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | **1 (lowest blast radius)** | `Zeta.K8s.Admission`, `Zeta.K8s.PackageManager` (Helm-compat), `Zeta.K8s.CLI` (kubectl-compat) | Stateless / sidecar / client-side; can swap without cluster downtime; immediate F# substrate payoff |
-| **2 (operator surface)** | `Zeta.K8s.Operator` SDK, `Zeta.K8s.DevicePlugin`, `Zeta.K8s.Scheduler` extender | Pluggable substrate; operators write CRDs that Zeta-native or upstream handles transparently |
-| **3 (data plane)** | `Zeta.K8s.CSI`, `Zeta.K8s.CNI`, `Zeta.K8s.CRI` | Hot path; Rust where .NET overhead unacceptable; significant perf substrate work |
-| **4 (control plane)** | `Zeta.K8s.APIServer`, `Zeta.K8s.ConsensusStore` (etcd-replace) | Long tail; benchmark scope; only after Wave 1-3 prove the binary-compat + conformance pattern works |
+| **2 (operator surface)**    | `Zeta.K8s.Operator` SDK, `Zeta.K8s.DevicePlugin`, `Zeta.K8s.Scheduler` extender                | Pluggable substrate; operators write CRDs that Zeta-native or upstream handles transparently        |
+| **3 (data plane)**          | `Zeta.K8s.CSI`, `Zeta.K8s.CNI`, `Zeta.K8s.CRI`                                                 | Hot path; Rust where .NET overhead unacceptable; significant perf substrate work                    |
+| **4 (control plane)**       | `Zeta.K8s.APIServer`, `Zeta.K8s.ConsensusStore` (etcd-replace)                                 | Long tail; benchmark scope; only after Wave 1-3 prove the binary-compat + conformance pattern works |
 
 Each wave informed by telemetry from earlier waves (B-0762
 flywheel) + AI-competition scoring from earlier waves (B-0761).

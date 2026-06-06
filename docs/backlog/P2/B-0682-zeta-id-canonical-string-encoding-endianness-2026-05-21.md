@@ -60,10 +60,10 @@ worked examples for the 12 canonical vectors.
 Pick big-endian (network byte order) for the on-wire 16-byte
 representation. Spec the byte order explicitly:
 
-  byte[0] = most-significant byte (bits 120-127)
-  byte[1] = bits 112-119
-  ...
-  byte[15] = least-significant byte (bits 0-7)
+byte[0] = most-significant byte (bits 120-127)
+byte[1] = bits 112-119
+...
+byte[15] = least-significant byte (bits 0-7)
 
 Reference 12 canonical vectors with both hex and Crockford base32
 serializations + the byte-array spelling.

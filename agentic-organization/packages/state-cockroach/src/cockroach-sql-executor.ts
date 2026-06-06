@@ -1,7 +1,4 @@
-import {
-  TelemetrySpanStatusCode,
-  type TelemetryPort,
-} from "../../observability/src/index.ts";
+import { TelemetrySpanStatusCode, type TelemetryPort } from "../../observability/src/index.ts";
 
 export type CockroachAnySqlStatement = {
   name: string;

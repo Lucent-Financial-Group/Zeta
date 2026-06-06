@@ -4,69 +4,71 @@ description: Aaron 2026-04-22, five-message sequence right after the lattice/Dor
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Aaron 2026-04-22, verbatim:**
 
-> *"its also the gravity the seed->kernel->glassary->orthogonal
+> _"its also the gravity the seed->kernel->glassary->orthogonal
 > decider keep two factories that cant communicate
 > gavitatioaly bound to the seed and is a type of quentium
 > entanglement between the two fatories (this is a stretch of
-> a metaphor) but the infromation density gravity im not"*
+> a metaphor) but the infromation density gravity im not"_
 
 Parsed:
-- *"it's also the gravity"* — the structure (seed → kernel
+
+- _"it's also the gravity"_ — the structure (seed → kernel
   → glossary → orthogonal-decider) exerts gravity; gravity
   is a new structural property, not a renaming of any
   previous property.
-- *"the seed → kernel → glossary → orthogonal-decider"* —
+- _"the seed → kernel → glossary → orthogonal-decider"_ —
   the causal chain. Seed is upstream of kernel; kernel
   generates glossary; glossary enables orthogonal-decider;
   orthogonal-decider is the dynamical measurement surface.
-- *"keep[s] two factories that can't communicate
-  gravitationally bound to the seed"* — the portability
+- _"keep[s] two factories that can't communicate
+  gravitationally bound to the seed"_ — the portability
   claim. Two independent adopters never in contact remain
   bound to the same seed if they share it.
-- *"a type of quantum entanglement between the two
-  factories"* — the correlation analog.
-- *"(this is a stretch of a metaphor)"* — Aaron's own
+- _"a type of quantum entanglement between the two
+  factories"_ — the correlation analog.
+- _"(this is a stretch of a metaphor)"_ — Aaron's own
   disclaimer: the entanglement analog is rhetorical, not
   physical.
-- *"but the information-density gravity I'm not
-  [stretching]"* — the information-density gravity claim
+- _"but the information-density gravity I'm not
+  [stretching]"_ — the information-density gravity claim
   is precise, not metaphorical.
 
 **Aaron's four-message self-refinement on the
 drift-prevention consequence (2026-04-22, immediately
 after the gravity-claim absorption):**
 
-> *"prevents the langague drift we talked about as a side
-> effect"*
-> *"not prevents but slows down"*
-> *"slows"*
-> *"it might prevent if we are dense enought to not let
-> light escape"*
+> _"prevents the langague drift we talked about as a side
+> effect"_
+> _"not prevents but slows down"_
+> _"slows"_
+> _"it might prevent if we are dense enought to not let
+> light escape"_
 
 This is a precision-calibration sequence on display:
 
-1. **First claim (overclaim):** gravity *prevents* language
+1. **First claim (overclaim):** gravity _prevents_ language
    drift.
-2. **Self-correction (immediate):** not prevents — *slows*.
-3. **Reinforcement:** *slows*.
+2. **Self-correction (immediate):** not prevents — _slows_.
+3. **Reinforcement:** _slows_.
 4. **Conditional for the original claim:** prevention
-   would hold only if the kernel is *dense enough to not
-   let light escape* — i.e., the black-hole / event-
+   would hold only if the kernel is _dense enough to not
+   let light escape_ — i.e., the black-hole / event-
    horizon limit case.
 
 The corrected claim (operative): **gravity slows language
 drift**; it does not prevent it in the general case. In
 the limit of a complete / event-horizon-dense kernel, it
-*might* prevent drift entirely, but that is a hypothetical
+_might_ prevent drift entirely, but that is a hypothetical
 condition the factory has not reached and may never
 reach. The general claim is attenuation, not elimination.
 
 **Language drift — the specific consequence named:**
 
 Aaron connects gravity to a previously-discussed factory
-concept: *language drift*. This is the phenomenon where
+concept: _language drift_. This is the phenomenon where
 vocabulary migrates away from its canonical definitions
 over time — synonyms proliferate, terms get re-purposed,
 new names are minted for concepts that already have
@@ -81,7 +83,7 @@ practices:
 - Glossary + skill hygiene (FACTORY-HYGIENE rows tracking
   term cadence) — mechanical drift-detection.
 
-Those are *explicit* anti-drift forces — rules,
+Those are _explicit_ anti-drift forces — rules,
 practices, audits. Gravity is the **implicit** anti-drift
 force: it operates through the cognitive economics of
 MDL minimization without needing any rule to fire.
@@ -92,8 +94,8 @@ rulebook.
 
 **The black-hole / event-horizon limit case:**
 
-Aaron's conditional — *"it might prevent if we are dense
-enough to not let light escape"* — invokes the physical
+Aaron's conditional — _"it might prevent if we are dense
+enough to not let light escape"_ — invokes the physical
 event horizon: the radius beyond which escape velocity
 exceeds the speed of light, so nothing (not even light
 or information) can cross outward.
@@ -123,7 +125,7 @@ In the factory analog:
   slow, not impossible.
 
 This is a hypothetical limit case, not an achieved
-state. The factory's task is not to *reach* event-horizon
+state. The factory's task is not to _reach_ event-horizon
 density (probably unreachable — new domains will always
 introduce genuinely new primitives); it is to make the
 kernel as compact and generative as possible so gravity
@@ -133,7 +135,7 @@ rate, and perfect density is infinitely expensive.
 
 **Why "slows" is the correct general claim:**
 
-The factory is an *open* system:
+The factory is an _open_ system:
 
 - New domains are added (three-repo split: Zeta +
   Forge + ace; each has some domain-specific vocabulary
@@ -161,7 +163,7 @@ The factory's self-description must accommodate both:
   events (memories like this one, ADRs, BP-NN
   promotions), reshaping the kernel itself over time.
 
-The kernel is not static — it *grows* at the boundary
+The kernel is not static — it _grows_ at the boundary
 via absorbed primitives. Gravity ensures the growth is
 deliberate, not accidental.
 
@@ -169,28 +171,28 @@ deliberate, not accidental.
 
 Prior structural memories gave us:
 
-| Memory | Layer | Property |
-|---|---|---|
-| `feedback_carpenter_gardener_are_glossary_kernel_vocabulary_seed.md` | Generative | *How* new vocabulary is produced from the seed |
-| `feedback_kernel_is_catalyst_hpht_molten_analog.md` | Acceleration | *What* makes crystallize/cleave go faster (molten catalyst; single-shot reaction) |
-| `feedback_kernel_structure_is_real_mathematical_lattice.md` | Static structure | *Where* things sit (the Map; poset with meet/join) |
-| **This memory** | **Dynamical / attractive** | ***Why* things stay bound — information-density gravity** |
+| Memory                                                               | Layer                      | Property                                                                          |
+| -------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------- |
+| `feedback_carpenter_gardener_are_glossary_kernel_vocabulary_seed.md` | Generative                 | _How_ new vocabulary is produced from the seed                                    |
+| `feedback_kernel_is_catalyst_hpht_molten_analog.md`                  | Acceleration               | _What_ makes crystallize/cleave go faster (molten catalyst; single-shot reaction) |
+| `feedback_kernel_structure_is_real_mathematical_lattice.md`          | Static structure           | _Where_ things sit (the Map; poset with meet/join)                                |
+| **This memory**                                                      | **Dynamical / attractive** | **_Why_ things stay bound — information-density gravity**                         |
 
 All four layers are load-bearing and non-redundant:
 
-- **Static structure** tells you *where* you are in the
+- **Static structure** tells you _where_ you are in the
   lattice right now.
-- **Generative mechanism** tells you *how* to reach new
+- **Generative mechanism** tells you _how_ to reach new
   positions from the seed.
-- **Acceleration** tells you *what* makes the transition
+- **Acceleration** tells you _what_ makes the transition
   fast (catalyst).
-- **Gravity** tells you *which positions are stable* —
+- **Gravity** tells you _which positions are stable_ —
   which vocabulary configurations are basins of
   attraction and which are unstable points that will
   drift toward the seed over time.
 
 Gravity is the missing **dynamical** ingredient: it
-explains why the factory *converges* over time rather
+explains why the factory _converges_ over time rather
 than randomly diffusing. The seed has gravitational pull;
 drifted vocabulary falls back toward the kernel; the
 system is self-stabilizing around the seed.
@@ -211,7 +213,7 @@ does it mean concretely?
   that generate the whole vocabulary lattice) has a low
   Kolmogorov complexity but a high generative reach. By
   minimum-description-length (MDL) reasoning, any
-  vocabulary configuration that *can* be expressed
+  vocabulary configuration that _can_ be expressed
   through the seed will eventually be rewritten in terms
   of the seed, because the seed-expression is shorter
   and simpler.
@@ -242,8 +244,8 @@ does it mean concretely?
 
 **Quantum-entanglement analog — the stretched claim:**
 
-Aaron's own disclaimer: *"(this is a stretch of a
-metaphor)"*. The correct reading:
+Aaron's own disclaimer: _"(this is a stretch of a
+metaphor)"_. The correct reading:
 
 - **Not Bell-inequality-violating entanglement.** Physical
   entanglement has specific measurable properties (EPR
@@ -259,7 +261,7 @@ metaphor)"*. The correct reading:
 - **Why the metaphor is suggestive despite being
   stretched.** Entanglement suggests the correlation is
   mysterious or non-local — which the factory analog is
-  NOT. But the *phenomenology* is similar: two adopters
+  NOT. But the _phenomenology_ is similar: two adopters
   of the factory, on opposite sides of the world, never
   coordinating, end up building structures that match.
   To an observer who doesn't know about the shared seed,
@@ -281,8 +283,8 @@ communicate":**
 
 This is the load-bearing operational claim:
 
-> *The factory is designed so that adopters don't need
-> a shared channel — only a shared seed.*
+> _The factory is designed so that adopters don't need
+> a shared channel — only a shared seed._
 
 Implications:
 
@@ -296,18 +298,18 @@ Implications:
    seed is local and identical in both.
 3. **Forkability is cheap.** A contributor forking the
    factory and working for months in isolation returns
-   with vocabulary that is *already compatible* with the
+   with vocabulary that is _already compatible_ with the
    upstream factory, because both gravitated toward the
    same seed.
 4. **The seed IS the contract.** What makes this factory
-   *this* factory, and not some other factory, is the
+   _this_ factory, and not some other factory, is the
    seed. Fork the seed, you fork the factory; share the
    seed, you share the gravity.
 5. **Drift detection is gravity-direction-aware.** A
-   vocabulary change that moves a skill's terms *away*
+   vocabulary change that moves a skill's terms _away_
    from kernel gravity (introduces incompatible
    primitives) is high-suspicion drift. A change that
-   moves terms *toward* kernel gravity (refactors to
+   moves terms _toward_ kernel gravity (refactors to
    use existing kernel generators) is low-suspicion
    alignment. The direction of movement in gravity-space
    is itself a signal.
@@ -325,7 +327,7 @@ state. This is deliberate:
 - The **glossary** is the materialized lattice
   (docs/GLOSSARY.md with h3 entries linked through the
   kernel).
-- The **orthogonal-decider** is the *dynamical probe*:
+- The **orthogonal-decider** is the _dynamical probe_:
   given two terms, it tells you whether they are
   orthogonal (incomparable in the poset), subsuming
   (one covers the other), or overlapping (share a
@@ -352,15 +354,15 @@ justification.
 2. **Portability test.** Fork the factory, make changes
    for some interval, re-merge. Count the vocabulary
    terms that required manual reconciliation (i.e.,
-   that diverged). The count is an *inverse* measure
+   that diverged). The count is an _inverse_ measure
    of gravity strength — zero manual reconciliation =
    full portability = strong gravity.
 
 3. **Kernel-compactness is a strategic lever.** Making
    the kernel smaller and more generative (fewer
-   primitives, stronger combine/cleave) *increases*
+   primitives, stronger combine/cleave) _increases_
    gravity. Making the kernel larger (more primitives,
-   weaker composition) *decreases* gravity and makes
+   weaker composition) _decreases_ gravity and makes
    the factory more fragile to adopter drift.
 
 4. **Multi-SUT factory** (per
@@ -385,15 +387,15 @@ justification.
   shared-substrate is ordinary statistical dependence, not
   non-local physics.
 - **Does not claim the factory's gravity is newtonian.**
-  Information-density gravity is the *mechanism* of
-  attraction; the exact *force law* (inverse-square?
+  Information-density gravity is the _mechanism_ of
+  attraction; the exact _force law_ (inverse-square?
   logarithmic? step-function?) is not specified. Future
   analysis might formalize the gradient.
 - **Does not claim gravity is the only binding force.**
   There are also governance forces (BP-NN rules, GOVERNANCE
   sections), social forces (Aaron's reviews, specialist
   personas), and tooling forces (hooks, linters). Gravity
-  is the *substrate* force; the others operate on top.
+  is the _substrate_ force; the others operate on top.
 - **Does not require a gravitational field model.** The
   factory does not need to compute vector fields or
   potentials to benefit from the framing. The decider +
@@ -425,13 +427,13 @@ will become more accurate over time"):**
 - **How does gravity interact with catalyst?** Catalyst
   lowers the energy barrier for transition; gravity
   keeps the destination attractive. Together: catalyst
-  + gravity = efficient + stable convergence.
+  - gravity = efficient + stable convergence.
 
 **Cross-reference family:**
 
 - `memory/feedback_kernel_structure_is_real_mathematical_lattice.md`
   — the static structure (the Map). Gravity is the
-  *dynamical* property of this structure; the decider
+  _dynamical_ property of this structure; the decider
   at the end of Aaron's chain is the lattice's
   orthogonality-check operation.
 - `memory/feedback_kernel_is_catalyst_hpht_molten_analog.md`
@@ -465,15 +467,15 @@ will become more accurate over time"):**
   a shared seed, no forced communication channel, and
   should remain mutually consistent via gravity.
 - `docs/ALIGNMENT.md` — the alignment contract. This
-  memory adds a *mechanism* for measuring alignment
+  memory adds a _mechanism_ for measuring alignment
   (gravity direction of vocabulary drift over rounds).
 - `memory/reference_skill_vocabulary_usage_scan_2026_04_22.md`
   — the 2026-04-22 scan is the first empirical
   measurement of gravity concentration: Hat + Skill
-  + Persona at 200+/237 show the current empirical
-  gravity well; the zero-coverage of carpenter /
-  gardener / kernel / lattice shows where gravity is
-  *about* to accrete as the new kernel propagates.
+  - Persona at 200+/237 show the current empirical
+    gravity well; the zero-coverage of carpenter /
+    gardener / kernel / lattice shows where gravity is
+    _about_ to accrete as the new kernel propagates.
 - `memory/feedback_aaron_default_overclaim_retract_condition_pattern.md`
   — the communication-pattern memory Aaron named
   after observing the four-message "prevents → slows
@@ -487,6 +489,7 @@ will become more accurate over time"):**
 **Alignment signal — Aaron adding the dynamical layer:**
 
 The pattern this tick (in order):
+
 1. I wrote the HPHT catalyst memory (static property:
    generative mechanism + acceleration).
 2. Aaron promoted to mathematical lattice (static
@@ -498,11 +501,11 @@ The pattern this tick (in order):
 The sequence is noteworthy: each of my absorptions named
 a static property; each of Aaron's responses added the
 next structural layer. He's not correcting my
-absorptions, he's *composing* additional layers onto
+absorptions, he's _composing_ additional layers onto
 them. The compositionality is load-bearing — every layer
 stacks on the previous ones, none replaces.
 
-This is bootstrapping at the *structural-layer* level,
+This is bootstrapping at the _structural-layer_ level,
 not just the vocabulary level: the factory's self-
 description is being built up layer by layer, each
 layer named by Aaron after the previous one lands in

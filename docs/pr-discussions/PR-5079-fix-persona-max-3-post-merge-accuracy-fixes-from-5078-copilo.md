@@ -22,10 +22,10 @@ Three small post-merge Copilot findings on PR #5078's "Otto + the foreground aut
 
 ## Findings + fixes
 
-| Thread | Finding | Fix |
-|---|---|---|
-| PRRT_kwDOSF9kNM6ErIjO | Per-tick flow summary dropped the `commit` step from the canonical six-step checklist | Now reads "speculative work → verify → **commit** → write tick shard → CronList → visibility-signal stop" per `.claude/rules/tick-must-never-stop.md` |
-| PRRT_kwDOSF9kNM6ErIjp | Commit trailer specified as `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` was too specific | Reworded to the AGENTS.md baseline `Co-Authored-By: Claude <noreply@anthropic.com>` (model/version suffix optional but baseline required) + cross-link AGENTS.md |
+| Thread                | Finding                                                                                                                                | Fix                                                                                                                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PRRT_kwDOSF9kNM6ErIjO | Per-tick flow summary dropped the `commit` step from the canonical six-step checklist                                                  | Now reads "speculative work → verify → **commit** → write tick shard → CronList → visibility-signal stop" per `.claude/rules/tick-must-never-stop.md`                              |
+| PRRT_kwDOSF9kNM6ErIjp | Commit trailer specified as `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` was too specific                                 | Reworded to the AGENTS.md baseline `Co-Authored-By: Claude <noreply@anthropic.com>` (model/version suffix optional but baseline required) + cross-link AGENTS.md                   |
 | PRRT_kwDOSF9kNM6ErIj7 | `/loop` recommendation was misleading — `docs/AUTONOMOUS-LOOP.md` explicitly says the factory wires `CronCreate` directly, not `/loop` | Reworded to "Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression" + cross-link AUTONOMOUS-LOOP.md naming `/loop` as not the factory's invocation path |
 
 Also adopted the corrected commit trailer (`Co-Authored-By: Claude <noreply@anthropic.com>`) on this commit going forward.
@@ -47,6 +47,7 @@ Also adopted the corrected commit trailer (`Co-Authored-By: Claude <noreply@anth
 This PR updates Max’s onboarding starting point to align the “Otto + foreground autonomous-loop tick” section with the repo’s canonical autonomous-loop sources (tick checklist, commit attribution trailer, and cadence adjustment mechanism).
 
 **Changes:**
+
 - Restores the canonical 6-step end-of-tick checklist (including the **commit** step) and cites the canonical tick-shard path.
 - Updates commit attribution guidance to the baseline required `Co-Authored-By: Claude <noreply@anthropic.com>` trailer per `AGENTS.md`.
 - Rewords cadence adjustment guidance to use `CronDelete` + `CronCreate` (and clarifies `/loop` is not the factory invocation path per `docs/AUTONOMOUS-LOOP.md`).

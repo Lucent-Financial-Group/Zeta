@@ -2,11 +2,11 @@
 
 **For the sceptic reading this cold:** Zeta is a vibe-coding
 experiment. The human maintainer has 20+ years of professional
-coding experience and has deliberately written *zero* lines of
+coding experience and has deliberately written _zero_ lines of
 code, docs, specs, skills, workflows, or config in this
 repository. Every file under version control is authored by an
 AI agent; the maintainer's contribution is chat-level guidance
-and git authorship of commits whose *content* came from the
+and git authorship of commits whose _content_ came from the
 agent roster. The wins below are therefore wins on an all-AI
 codebase — every catch is a catch on code no human has ever
 typed into, in a tree no human has ever audited end-to-end.
@@ -19,7 +19,7 @@ happened, what would have gone wrong without it, and what
 pattern it teaches.
 
 Like `docs/ROUND-HISTORY.md`, this is a narrative file;
-unlike ROUND-HISTORY it's about *quality* wins, not "what
+unlike ROUND-HISTORY it's about _quality_ wins, not "what
 shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
@@ -28,9 +28,9 @@ passes, because the pattern is the value.
 tabular log of catches from the GitHub Copilot PR reviewer.
 Same newest-first discipline, wins only, one row per finding.
 The two files together answer the Zeta experiment's load-bearing
-question: *can a multi-agent factory plus an external AI
+question: _can a multi-agent factory plus an external AI
 reviewer carry a research-grade codebase forward with the human
-in a chat-only loop?* This file logs the factory's own agents;
+in a chat-only loop?_ This file logs the factory's own agents;
 the sibling logs the external reviewer.
 
 ## Wins — round 38
@@ -59,11 +59,11 @@ strict and would be rate-silenced into noise. The STRAINED-
 with-citation is the honest third option: the substrate
 sees the pattern, reports it, and the notebook explains
 why it is not a violation. That pattern is the calibration
-signal the BP-WINDOW ADR calls for — a ledger that *can*
+signal the BP-WINDOW ADR calls for — a ledger that _can_
 report non-Strengthened values is doing its job as a
 distinguishing instrument.
 
-**Pattern it teaches:** build the instrument *and* the
+**Pattern it teaches:** build the instrument _and_ the
 false-positive taxonomy in the same round. A tool that has
 never been run against its own commit range is a tool that
 has never been calibrated.
@@ -92,8 +92,8 @@ prose to read. Prose drifts; inventories don't.
 
 **Pattern it teaches:** when a claim is load-bearing,
 upgrade it from "we handle X" to "here are the surfaces of
-X with their class". The second form *has to be retracted
-one entry at a time* rather than silently drifted.
+X with their class". The second form _has to be retracted
+one entry at a time_ rather than silently drifted.
 
 ## Wins — round 34
 
@@ -283,10 +283,10 @@ applies forward to every future control.
 ### Creative license as a rigour tool
 
 Aaron granted creative license on SPACE-OPERA:
-*"really an imagination game at heart."* The
+_"really an imagination game at heart."_ The
 rewrite pushed imagination (Whispering Drone
 Swarm, Fungal Network, Moon Stares Back) and
-*improved* the teaching rigour — because each
+_improved_ the teaching rigour — because each
 creative adversary had to carry a reality tag
 (shipped / BACKLOG / aspirational / teaching)
 forcing honesty. The result is a doc that teaches
@@ -315,7 +315,7 @@ turning any interrupted download into a permanently-
 trusted partial file via the subsequent TOFU check. All
 three would have shipped to main CI without §20 floor.
 
-**What it teaches.** §20 reviewer floor is *especially*
+**What it teaches.** §20 reviewer floor is _especially_
 valuable on fresh code — it's tempting to think new code
 has been thought-through, but every landing has novel
 failure modes the author couldn't have caught. The rule
@@ -342,9 +342,9 @@ for every future reference-repo study.
 ### GOVERNANCE §27 abstraction layers — caught drift mid-round
 
 §27 (skills-roles-personas) was proposed and landed in
-the same round the drift was noticed. Aaron: *"skills
+the same round the drift was noticed. Aaron: _"skills
 should be very generic and not really know or care
-about roles."* The mechanical sweep updated ~30 skill
+about roles."_ The mechanical sweep updated ~30 skill
 files; the remaining prose polish is one DEBT entry.
 Future changes don't need to re-re-discover this — the
 rule is in GOVERNANCE, the sweep pattern is in
@@ -455,14 +455,14 @@ retraction-lossy by design and needs a `Sink` tag to
 exempt it from composition. Daya proposed `PLUGIN-AUTHOR.md`
 entry-point doc because no existing doc repurposed well
 for plugin authors. The three dispatches returned
-*divergent* recommendations.
+_divergent_ recommendations.
 
 The architect did not pick one. Ilyana re-reviewed her own
 design with Tariq + Daya findings embedded; her revised
-draft combines the compositional-interface shape *plus*
+draft combines the compositional-interface shape _plus_
 capability sub-interfaces (`ILinearOperator`, `IBilinearOperator`,
-`ISinkOperator`, `IStatefulStrictOperator`) *plus* the
-`PluginHarness` *plus* the entry-point doc. Seven
+`ISinkOperator`, `IStatefulStrictOperator`) _plus_ the
+`PluginHarness` _plus_ the entry-point doc. Seven
 interfaces instead of four, but the capability split is
 load-bearing for Tariq's algebra check and cannot be cut.
 Her final verdict: ACCEPT, with the three gates intact.
@@ -498,7 +498,7 @@ the repo swept, a new §22 codifying `~/.claude/projects/`
 as sandbox-only.
 
 **What would have gone wrong:** memories in the sandbox
-travel with *this machine* but not with *clones*. A new
+travel with _this machine_ but not with _clones_. A new
 contributor pulling the repo gets zero memory corpus.
 Every correction the maintainer had given across rounds
 24-26 would have been invisible to them. The "memories
@@ -516,7 +516,7 @@ artifact says yes or no.
 `docs/skill-notes/<persona>.md` had been the per-persona
 notebook location for ~5 rounds. Maintainer caught it this
 round: personas are not skills. Skills are capabilities;
-personas are experts that *wear* skills. The folder name
+personas are experts that _wear_ skills. The folder name
 conflated them and risked future readers confusing
 "persona state" with "skill state." Renamed to
 `memory/persona/` mid-round with a cross-file sweep.
@@ -555,8 +555,8 @@ without a compaction or context-collapse.
 Tariq first, then Yara, then Daya — would have filled
 Kenji's context with Tariq's Lean details before the
 small Yara + Daya work could even be reviewed. Parallel
-dispatch keeps each specialist's detailed output in *its
-own* subagent context; Kenji gets a 150-250 word summary
+dispatch keeps each specialist's detailed output in _its
+own_ subagent context; Kenji gets a 150-250 word summary
 per lane and integrates in proportion to what's actually
 landing.
 
@@ -587,7 +587,7 @@ a specialist's on-record recommendation, every round that
 touches the Lean proofs relitigates the choice.
 
 **Pattern to keep:** when a specialist recommends a
-decision the architect accepts, record the *decision* on
+decision the architect accepts, record the _decision_ on
 the DEBT entry (with pointer to the specialist's
 notebook) even if the implementation defers by N rounds.
 Decisions age better than questions; a rationale
@@ -684,7 +684,7 @@ seconds. The folder-naming rule is now a feedback memory
 (`feedback_folder_naming_convention.md`) and the final
 layout is clean: `src/Core/`, `tests/Tests.FSharp/`,
 `bench/Benchmarks/`, `samples/Demo/` — Zeta prefix only
-where it is *published identity* (NuGet IDs, namespaces,
+where it is _published identity_ (NuGet IDs, namespaces,
 explicit assembly names on published libraries).
 
 **What would have gone wrong:** landing an 8-phase rename
@@ -712,8 +712,8 @@ extension method used two internal-marked bits of Core
 (`Stream<T>.Op` field, `Circuit.RegisterStream` method)
 via the InternalsVisibleTo punchthrough. That's not a
 test-fixture access pattern; it's the plugin registration
-point. The *design* was internal-and-hole-punched; the
-rule says plugin-author-facing API is *public*. Fix
+point. The _design_ was internal-and-hole-punched; the
+rule says plugin-author-facing API is _public_. Fix
 landed same-round: both items promoted to public with XML
 docs naming them the plugin registration path, and
 Bayesian dropped from the InternalsVisibleTo list. The
@@ -754,8 +754,8 @@ property smell that was applied immediately (struct `val`
 **What would have gone wrong:** without a dedicated
 public-API reviewer, every future "make X public" would
 have depended on the architect noticing the right
-questions — *would we maintain this exact shape for ten
-years?* — in the middle of integrating five other
+questions — _would we maintain this exact shape for ten
+years?_ — in the middle of integrating five other
 concerns. The first time that check was skipped, a field
 (not a property) landed on a struct, and an extension
 surface on `Op<'T>` became a forever commitment without
@@ -796,7 +796,7 @@ fine." The correction is the value; the same-round reversal
 keeps the correction crisp.
 
 **Pattern to keep:** when a human correction lands, update the
-rule set *before* continuing the work. The §16 clause landed
+rule set _before_ continuing the work. The §16 clause landed
 the same turn the retraction did. If the rule had waited for
 "the next governance round," the mistake would have re-appeared
 on the next persona decision.
@@ -918,7 +918,7 @@ caught at the last mile and the win is real.
 
 **Pattern to keep:** GOVERNANCE.md §11 — Architect reviews every
 agent-written code change, nobody reviews Architect. The gate is
-load-bearing precisely when the agent's fix *looks* right.
+load-bearing precisely when the agent's fix _looks_ right.
 `[<VolatileField>]` was the plausible-wrong; only a second reader
 with the F# spec fluent catches "plausible" there.
 
@@ -954,8 +954,8 @@ reason.
 `tools/tla/specs/InfoTheoreticSharder.tla` was written round 21 to cover a
 `docs/BUGS.md` P0 (the sharder had no formal spec, which is how
 the double-charge + tie-break bugs landed unchallenged in round
-20). During the concurrent test-add, TLC found *two pre-existing
-bugs in the spec itself*:
+20). During the concurrent test-add, TLC found _two pre-existing
+bugs in the spec itself_:
 
 - A `.cfg` syntax error: `HashTieBreak` was declared with a
   function-literal TLC's config parser doesn't accept.
@@ -1001,7 +1001,7 @@ run and pass, and the gap is documented honestly in
 **What would have gone wrong:** without the property test, the
 multi-tick-seed claim would have sat as a docstring hedge
 ("multi-tick is open research") that nobody reproduced. A
-SIGMOD reviewer *would* have reproduced it. Having the repo
+SIGMOD reviewer _would_ have reproduced it. Having the repo
 catch its own over-claim — with a specific three-tick adversarial
 sequence checked into git — turns a hand-wavy hedge into a
 rigorous scope boundary.
@@ -1077,7 +1077,7 @@ A win entry belongs here when:
 1. The pattern behind the win is reusable next time.
 2. Without the pattern, a specific bad outcome would have
    shipped (name it).
-3. The entry names something the team should *keep doing*,
+3. The entry names something the team should _keep doing_,
    not just a particular success.
 
 Format:

@@ -208,7 +208,7 @@ Per Otto-250 PR-preservation drain-log discipline: per-thread fields are reviewe
 
 ### Original comment
 
-> This section introduces a personal name ("Amara") in a doc. Repo convention is to avoid direct contributor/agent names in docs (use role references instead; names are limited to memory/persona/** and a few carve-outs like docs/HUMAN-BACKLOG.md). Please rewrite this example to be name-free (e.g., "a ChatGPT Deep Research archive report").
+> This section introduces a personal name ("Amara") in a doc. Repo convention is to avoid direct contributor/agent names in docs (use role references instead; names are limited to memory/persona/\*\* and a few carve-outs like docs/HUMAN-BACKLOG.md). Please rewrite this example to be name-free (e.g., "a ChatGPT Deep Research archive report").
 
 ### Reply
 

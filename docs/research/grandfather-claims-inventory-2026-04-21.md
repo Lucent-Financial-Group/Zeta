@@ -14,7 +14,7 @@ v2 §C-P0-1 reads:
 This inventory distinguishes:
 
 - **Live claims** (shipping to consumers as asserted bounds): F# `///` XML doc comments on public/internal API, `openspec/specs/**` spec text, published `docs/research/**` claims that consumers might cite, `docs/TECH-RADAR.md` live rows. These populate the grandfather set.
-- **Non-claims** (historical / residual evidence): BACKLOG `[x] ✅` shipped-item residue mentioning past O-values, in-file comment commentary narrating past bugs (e.g. "was O(n·k)" on a fixed path), TECH-RADAR flag-text describing a past regression. These are *evidence*, not *claims Zeta is currently making*, and are excluded. The grandfather set is what Zeta asserts **today**.
+- **Non-claims** (historical / residual evidence): BACKLOG `[x] ✅` shipped-item residue mentioning past O-values, in-file comment commentary narrating past bugs (e.g. "was O(n·k)" on a fixed path), TECH-RADAR flag-text describing a past regression. These are _evidence_, not _claims Zeta is currently making_, and are excluded. The grandfather set is what Zeta asserts **today**.
 - **Surfaces with zero hits**: root `README.md` (no big-O claims); `memory/persona/*/NOTEBOOK.md` (no big-O claims); `docs/papers/**` (directory does not exist yet).
 
 Methodology: ripgrep over `src/**/*.fs`, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`, `docs/research/**/*.md`, `openspec/specs/**/*.md`, `memory/**/*.md`, and root `README*` for `O\([A-Za-z0-9 ·²³√/|]+\)`. Each hit classified by hand as live claim vs evidence.
@@ -25,37 +25,37 @@ Status column conventions: **Stage-1** = analytic review by Hiroshi (`complexity
 
 ### F# source docstrings (`///` triple-slash) — shipping surfaces
 
-| # | File | Line | Claim (verbatim, trimmed) | Surface kind | Stage-1 | Stage-2 |
-|---|---|---|---|---|---|---|
-| 1 | `src/Bayesian/BayesianAggregate.fs` | 22 | Beta conjugate update "O(1) per observation" | docstring | sound (2026-04-20, `docs/research/claims/bayesian-aggregate-update-o1-2026-04-20.md`) | deferred post-merge |
-| 2 | `src/Core/SpineAsync.fs` | 14 | Steady-state throughput matches sync spine "same O(log n) amortised" | docstring | pre-ADR | pre-ADR |
-| 3 | `src/Core/Merkle.fs` | 13 | "O(log N) path to the root" | docstring | pre-ADR | pre-ADR |
-| 4 | `src/Core/DeltaCrdt.fs` | 14 | Delta ship-size "O(1) bytes instead of O(\|state\|)" | docstring | pre-ADR | pre-ADR |
-| 5 | `src/Core/DeltaCrdt.fs` | 107 | "Shipping size = O(1), vs O(\|replicas\|) for full-state merge" | docstring | pre-ADR | pre-ADR |
-| 6 | `src/Core/BalancedSpine.fs` | 9 | "amortised O(log n) insert for bounded-latency per-insert cost" | docstring | pre-ADR | pre-ADR |
-| 7 | `src/Core/Spine.fs` | 14 | "Inserting a batch at L_i is amortised O(log n)" | docstring | pre-ADR | pre-ADR |
-| 8 | `src/Core/Spine.fs` | 16 | "O(log n) lookup and O(n) scan with excellent cache [locality]" | docstring | pre-ADR | pre-ADR |
-| 9 | `src/Core/Spine.fs` | 57-58 | "Collapse all levels ... O(n log n) work ... amortised O(n) across the batch" | docstring | pre-ADR | pre-ADR |
-| 10 | `src/Core/NovelMath.fs` | 112 | `Merge` "O(k₁ + k₂)" | docstring | pre-ADR | pre-ADR |
-| 11 | `src/Core/NovelMath.fs` | 206 | "O(log windowSize) time — physics-signal-processing trick" | docstring | pre-ADR | pre-ADR |
-| 12 | `src/Core/NovelMath.fs` | 212 | "answers all three in O(log n) probes" | docstring | pre-ADR | pre-ADR |
-| 13 | `src/Core/NovelMath.fs` | 249 | "Sum over the most-recent 2^lvl samples. O(1) given the [prefix]" | docstring | pre-ADR | pre-ADR |
-| 14 | `src/Core/Recursive.fs` | 195 | LFP relation "O(\|integrated\|)" | docstring | pre-ADR | pre-ADR |
-| 15 | `src/Core/Recursive.fs` | 244-248 | "O(n·N)" naive vs "O(total new facts across iterations) = O(\|LFP\|)" semi-naive | docstring | pre-ADR | pre-ADR |
-| 16 | `src/Core/FastCdc.fs` | 12 | "O(1) cross-checkpoint dedup" | docstring | pre-ADR | pre-ADR |
-| 17 | `src/Core/FastCdc.fs` | 68 | "Push(n) amortises to O(n)" | docstring | pre-ADR | pre-ADR |
-| 18 | `src/Core/Hierarchy.fs` | 18 | Range queries "O(log K + matches)" | docstring | pre-ADR | pre-ADR |
-| 19 | `src/Core/Hierarchy.fs` | 42 | "nodes exactly N levels below X queries in O(1)" | docstring | pre-ADR | pre-ADR |
-| 20 | `src/Core/ZSet.fs` | 494 | "true O(n log k) — heap merge over source head pointers" | docstring | pre-ADR | pre-ADR |
-| 21 | `src/Core/ConsistentHash.fs` | 15 | "O(log N) lookup, 1/N optimal rebalance" | docstring | pre-ADR | pre-ADR |
-| 22 | `src/Core/ConsistentHash.fs` | 17 | "arbitrary bucket IDs; still O(log N)" | docstring | pre-ADR | pre-ADR |
-| 23 | `src/Core/ConsistentHash.fs` | 121 | "removal for O(1) Add/Remove" | docstring | pre-ADR | pre-ADR |
-| 24 | `src/Core/Residuated.fs` | 9 | "O(log k) retraction for non-invertible [aggregates]" | docstring | pre-ADR | pre-ADR |
-| 25 | `src/Core/Residuated.fs` | 34 | "All three core ops are O(log k) where k = \|distinct keys\|" | docstring | pre-ADR | pre-ADR |
-| 26 | `src/Core/Residuated.fs` | 121 | "retract, max-query — is O(log k) where k = \|distinct [keys]\|" | docstring | pre-ADR | pre-ADR |
-| 27 | `src/Core/IndexedZSet.fs` | 25 | "O(log k) key lookup for joins and span-friendly [iteration]" | docstring | pre-ADR | pre-ADR |
-| 28 | `src/Core/Sketch.fs` | 10 | "\|supp(Z-set)\| in O(1) memory regardless of input size" | docstring | pre-ADR | pre-ADR |
-| 29 | `src/Core/CountMin.fs` | 16 | "A delta-only update at tick t updates the sketch in O(d)" | docstring | pre-ADR | pre-ADR |
+| #   | File                                | Line    | Claim (verbatim, trimmed)                                                        | Surface kind | Stage-1                                                                               | Stage-2             |
+| --- | ----------------------------------- | ------- | -------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------- | ------------------- |
+| 1   | `src/Bayesian/BayesianAggregate.fs` | 22      | Beta conjugate update "O(1) per observation"                                     | docstring    | sound (2026-04-20, `docs/research/claims/bayesian-aggregate-update-o1-2026-04-20.md`) | deferred post-merge |
+| 2   | `src/Core/SpineAsync.fs`            | 14      | Steady-state throughput matches sync spine "same O(log n) amortised"             | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 3   | `src/Core/Merkle.fs`                | 13      | "O(log N) path to the root"                                                      | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 4   | `src/Core/DeltaCrdt.fs`             | 14      | Delta ship-size "O(1) bytes instead of O(\|state\|)"                             | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 5   | `src/Core/DeltaCrdt.fs`             | 107     | "Shipping size = O(1), vs O(\|replicas\|) for full-state merge"                  | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 6   | `src/Core/BalancedSpine.fs`         | 9       | "amortised O(log n) insert for bounded-latency per-insert cost"                  | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 7   | `src/Core/Spine.fs`                 | 14      | "Inserting a batch at L_i is amortised O(log n)"                                 | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 8   | `src/Core/Spine.fs`                 | 16      | "O(log n) lookup and O(n) scan with excellent cache [locality]"                  | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 9   | `src/Core/Spine.fs`                 | 57-58   | "Collapse all levels ... O(n log n) work ... amortised O(n) across the batch"    | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 10  | `src/Core/NovelMath.fs`             | 112     | `Merge` "O(k₁ + k₂)"                                                             | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 11  | `src/Core/NovelMath.fs`             | 206     | "O(log windowSize) time — physics-signal-processing trick"                       | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 12  | `src/Core/NovelMath.fs`             | 212     | "answers all three in O(log n) probes"                                           | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 13  | `src/Core/NovelMath.fs`             | 249     | "Sum over the most-recent 2^lvl samples. O(1) given the [prefix]"                | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 14  | `src/Core/Recursive.fs`             | 195     | LFP relation "O(\|integrated\|)"                                                 | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 15  | `src/Core/Recursive.fs`             | 244-248 | "O(n·N)" naive vs "O(total new facts across iterations) = O(\|LFP\|)" semi-naive | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 16  | `src/Core/FastCdc.fs`               | 12      | "O(1) cross-checkpoint dedup"                                                    | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 17  | `src/Core/FastCdc.fs`               | 68      | "Push(n) amortises to O(n)"                                                      | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 18  | `src/Core/Hierarchy.fs`             | 18      | Range queries "O(log K + matches)"                                               | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 19  | `src/Core/Hierarchy.fs`             | 42      | "nodes exactly N levels below X queries in O(1)"                                 | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 20  | `src/Core/ZSet.fs`                  | 494     | "true O(n log k) — heap merge over source head pointers"                         | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 21  | `src/Core/ConsistentHash.fs`        | 15      | "O(log N) lookup, 1/N optimal rebalance"                                         | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 22  | `src/Core/ConsistentHash.fs`        | 17      | "arbitrary bucket IDs; still O(log N)"                                           | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 23  | `src/Core/ConsistentHash.fs`        | 121     | "removal for O(1) Add/Remove"                                                    | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 24  | `src/Core/Residuated.fs`            | 9       | "O(log k) retraction for non-invertible [aggregates]"                            | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 25  | `src/Core/Residuated.fs`            | 34      | "All three core ops are O(log k) where k = \|distinct keys\|"                    | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 26  | `src/Core/Residuated.fs`            | 121     | "retract, max-query — is O(log k) where k = \|distinct [keys]\|"                 | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 27  | `src/Core/IndexedZSet.fs`           | 25      | "O(log k) key lookup for joins and span-friendly [iteration]"                    | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 28  | `src/Core/Sketch.fs`                | 10      | "\|supp(Z-set)\| in O(1) memory regardless of input size"                        | docstring    | pre-ADR                                                                               | pre-ADR             |
+| 29  | `src/Core/CountMin.fs`              | 16      | "A delta-only update at tick t updates the sketch in O(d)"                       | docstring    | pre-ADR                                                                               | pre-ADR             |
 
 **29 live F# docstring claims.**
 
@@ -63,28 +63,28 @@ Status column conventions: **Stage-1** = analytic review by Hiroshi (`complexity
 
 These are code comments (not `///` docstrings), so they do not ship to IntelliSense consumers, but they are still asserted bounds on read-through. Included for completeness; may be re-classified as non-claims if Hiroshi + Daisy agree.
 
-| # | File | Line | Comment | Notes |
-|---|---|---|---|---|
-| 30 | `src/Core/DiskSpine.fs` | 180 | "Phase 3: re-hot so the next Load is O(1)" | Code comment, not docstring. Describes current intended behaviour. |
-| 31 | `src/Core/LawRunner.fs` | 114 | "is O(n) on List.item, so a List scan would ..." | Code comment narrating an avoidance rationale. Borderline. |
-| 32 | `src/Core/HigherOrder.fs` | 89 | "For 'T = ZSet<_>, this is O(n·order) in the worst case" | Code comment. Describes current behaviour under a type specialisation. |
+| #   | File                      | Line | Comment                                                   | Notes                                                                  |
+| --- | ------------------------- | ---- | --------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 30  | `src/Core/DiskSpine.fs`   | 180  | "Phase 3: re-hot so the next Load is O(1)"                | Code comment, not docstring. Describes current intended behaviour.     |
+| 31  | `src/Core/LawRunner.fs`   | 114  | "is O(n) on List.item, so a List scan would ..."          | Code comment narrating an avoidance rationale. Borderline.             |
+| 32  | `src/Core/HigherOrder.fs` | 89   | "For 'T = ZSet<\_>, this is O(n·order) in the worst case" | Code comment. Describes current behaviour under a type specialisation. |
 
 ### `openspec/specs/**` — published behavioural spec text
 
-| # | File | Line | Claim | Stage-1 | Stage-2 |
-|---|---|---|---|---|---|
-| 33 | `openspec/specs/operator-algebra/spec.md` | 341 | "supports O(n + m) group operations over two Z-sets of sizes n and m" | pre-ADR | pre-ADR |
+| #   | File                                      | Line | Claim                                                                 | Stage-1 | Stage-2 |
+| --- | ----------------------------------------- | ---- | --------------------------------------------------------------------- | ------- | ------- |
+| 33  | `openspec/specs/operator-algebra/spec.md` | 341  | "supports O(n + m) group operations over two Z-sets of sizes n and m" | pre-ADR | pre-ADR |
 
 ### `docs/TECH-RADAR.md` — live rows
 
-Both TECH-RADAR rows that mention `O(·)` do so in the **flag-text of past regressions** (e.g. *"claimed O(1) was actually O(n); fix in progress"* on row 29; *"harsh-critic found O(n²) buffer scan; fix P0"* on row 30). These are retrospective observations, not current assertions. Excluded from the grandfather set; captured here for audit trail.
+Both TECH-RADAR rows that mention `O(·)` do so in the **flag-text of past regressions** (e.g. _"claimed O(1) was actually O(n); fix in progress"_ on row 29; _"harsh-critic found O(n²) buffer scan; fix P0"_ on row 30). These are retrospective observations, not current assertions. Excluded from the grandfather set; captured here for audit trail.
 
 ### `docs/research/**` — published research claims
 
-| # | File | Line | Claim | Notes | Stage-1 | Stage-2 |
-|---|---|---|---|---|---|---|
-| 34 | `docs/research/bloom-filter-frontier.md` | 16 | Vector Quotient Filter "O(1) ops" | External claim cited from Pandey et al. SIGMOD 2021; not Zeta's assertion, but Zeta is citing it uncritically. | pre-ADR | pre-ADR |
-| 35 | `docs/research/openspec-coverage-audit-2026-04-21.md` | 92 | `Spine.fs` description: "LSM trace over Z-set batches; O(log n) amortised insert" | Duplicates claim #7 (same bound, different surface). | pre-ADR | pre-ADR |
+| #   | File                                                  | Line | Claim                                                                             | Notes                                                                                                          | Stage-1 | Stage-2 |
+| --- | ----------------------------------------------------- | ---- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------- | ------- |
+| 34  | `docs/research/bloom-filter-frontier.md`              | 16   | Vector Quotient Filter "O(1) ops"                                                 | External claim cited from Pandey et al. SIGMOD 2021; not Zeta's assertion, but Zeta is citing it uncritically. | pre-ADR | pre-ADR |
+| 35  | `docs/research/openspec-coverage-audit-2026-04-21.md` | 92   | `Spine.fs` description: "LSM trace over Z-set batches; O(log n) amortised insert" | Duplicates claim #7 (same bound, different surface).                                                           | pre-ADR | pre-ADR |
 
 The two `docs/research/liquidfsharp-evaluation.md` `O(n²)` references (lines 38 and 98) are narrating a past harsh-critic-#7 bug — historical, excluded.
 

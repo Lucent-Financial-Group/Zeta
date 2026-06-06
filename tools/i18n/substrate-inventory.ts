@@ -20,7 +20,19 @@ interface Inventory {
 }
 
 function walk(dir: string, exts: string[], results: string[] = []): string[] {
-  const ignores = ["node_modules", "bin", ".lake", ".git", ".cursor", "private", "tmp", "worktrees", "target", "dist", ".next"];
+  const ignores = [
+    "node_modules",
+    "bin",
+    ".lake",
+    ".git",
+    ".cursor",
+    "private",
+    "tmp",
+    "worktrees",
+    "target",
+    "dist",
+    ".next",
+  ];
   try {
     const entries = readdirSync(dir);
     for (const e of entries) {
@@ -46,7 +58,8 @@ async function scan(): Promise<Inventory> {
   const codeFiles = walk(".", [".fs", ".fsx", ".cs", ".ts"]);
 
   const codeComments: string[] = [];
-  for (const f of codeFiles.slice(0, 50)) { // bounded to keep step atomic
+  for (const f of codeFiles.slice(0, 50)) {
+    // bounded to keep step atomic
     try {
       const content = readFileSync(f, "utf8");
       if (content.includes("//") || content.includes("(*")) {

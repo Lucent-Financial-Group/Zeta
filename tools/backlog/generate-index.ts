@@ -211,18 +211,10 @@ function readLineCount(path: string): number {
 }
 
 function emitWriteRefuse(indexPath: string): ExitCode {
-  process.stderr.write(
-    "generate-index.ts: refusing to overwrite existing\n",
-  );
-  process.stderr.write(
-    `${indexPath} — file has substantial content\n`,
-  );
-  process.stderr.write(
-    "(Phase-1a guard). Phase 2 content-migration PR should\n",
-  );
-  process.stderr.write(
-    "set BACKLOG_WRITE_FORCE=1 to authorize the overwrite\n",
-  );
+  process.stderr.write("generate-index.ts: refusing to overwrite existing\n");
+  process.stderr.write(`${indexPath} — file has substantial content\n`);
+  process.stderr.write("(Phase-1a guard). Phase 2 content-migration PR should\n");
+  process.stderr.write("set BACKLOG_WRITE_FORCE=1 to authorize the overwrite\n");
   process.stderr.write("once per-row files have been populated.\n");
   process.stderr.write("\n");
   process.stderr.write("Use --stdout to preview, --check to compare against\n");

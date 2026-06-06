@@ -116,7 +116,7 @@ updates on planner/executor split vs ReAct choices.
   ("README saying `curl | bash` is an adversarial input.") Pass.
 - **F11 (P1, coordination).** Similarly-shaped personas:
   - Naledi / performance-engineer -- exists (`/.claude/agents/
-    performance-engineer.md`). Agent boundary clearly stated.
+performance-engineer.md`). Agent boundary clearly stated.
   - Daya / agent-experience-engineer -- exists. Not named by
     name in Dejan's coordination block; only AX (concept) in the
     persona description.
@@ -263,7 +263,7 @@ narratives. Promotion criteria per the existing AGENT-BEST-
 PRACTICES.md gate:
 
 - Source count: markdownlint default config + CommonMark spec
-  + the pattern in BACKLOG / agents / PRs here. Meets 3.
+  - the pattern in BACKLOG / agents / PRs here. Meets 3.
 - Round survival: round 34 only. Needs ≥10 rounds.
 - Architect sign-off: pending.
 
@@ -280,6 +280,7 @@ Rust-implemented 10-100x speedup and reproducible lockfile.
 `../scratch` ships the same discipline.
 
 Codified meanwhile in:
+
 - `.claude/skills/python-expert/SKILL.md` §Packaging (authoritative
   rewrite table)
 - `.github/copilot-instructions.md` "Conventions you must respect"
@@ -313,7 +314,7 @@ maintainer's framing. Enforcement skill landed as
 `.claude/skills/canonical-home-auditor/SKILL.md`; narrow
 counterpart `.claude/skills/skill-ontology-auditor/SKILL.md`
 covers the skill-library-only case.
-**Candidate rule:** BP-HOME -- *Every artifact type has exactly
+**Candidate rule:** BP-HOME -- _Every artifact type has exactly
 one canonical home declared in the project's ontology
 (`GOVERNANCE.md` + canonical-home map). Artifacts out-of-place,
 duplicated across homes, or homeless are P0 findings. New
@@ -321,7 +322,7 @@ artifact types require an ADR declaring a canonical home
 before the first file lands. Moving a canonical home is a
 governance event (ADR under `docs/DECISIONS/`), not a casual
 refactor. Deprecation follows the retirement path of the
-owning skill/doc, not hard-delete.*
+owning skill/doc, not hard-delete._
 **Decision:** promote to stable BP-HOME as rule zero via
 Architect ADR in round 36. This rule is invoked by the
 `canonical-home-auditor` skill every round-close.
@@ -343,12 +344,12 @@ file-count saving.
 **Applies to our repo?** Yes -- operationalised in the counterpart
 matrix and in `teaching-skill-pattern` (faceted-classification
 section). Enforced by `skill-ontology-auditor`.
-**Candidate rule:** BP-CF -- *Epistemic stance is a cognitive
+**Candidate rule:** BP-CF -- _Epistemic stance is a cognitive
 firewall. `X-expert` skills carry shipped-invariant
 / runtime-validated knowledge; `X-research` skills carry
 literature survey / speculative / open-question knowledge; the
 two stay in separate files even when topic size would allow
-merging. Violations are P0 (hallucination risk).*
+merging. Violations are P0 (hallucination risk)._
 **Decision:** promote to stable BP-CF alongside BP-HOME in
 round 36.
 
@@ -365,11 +366,11 @@ file exceeds ~250-300 lines, or when a reader wearing the skill
 has to ignore half the content for the current task.
 **Applies to our repo?** Yes -- operationalised in
 `teaching-skill-pattern` faceted-classification section.
-**Candidate rule:** BP-SPLIT -- *Split skills when context needs
+**Candidate rule:** BP-SPLIT -- _Split skills when context needs
 to split to reduce cognitive load on the reader. A clean
 150-line combined skill beats two 75-line split skills readers
 have to context-switch between; but a 300-line combined skill
-covering two distinct facet values must split.*
+covering two distinct facet values must split._
 **Decision:** promote to stable BP-SPLIT in round 36.
 
 ## 2026-04-19 -- BP-FACET (faceted classification)
@@ -388,12 +389,12 @@ documentation layer) are honest exemptions.
 **Applies to our repo?** Yes -- `teaching-skill-pattern` already
 encodes the faceted-classification section;
 `skill-ontology-auditor` enforces.
-**Candidate rule:** BP-FACET -- *Non-exempt capability skills
+**Candidate rule:** BP-FACET -- _Non-exempt capability skills
 declare or imply their three facet values (epistemic stance:
 expert/research/teach; abstraction level: theory/applied;
 function: practitioner/gap-finder/enforcer/optimizer/balancer).
 The on-disk naming convention `<topic>-<role>` carries one
-facet; the description carries the other two when not obvious.*
+facet; the description carries the other two when not obvious._
 **Decision:** promote to stable BP-FACET in round 36.
 
 ## 2026-04-19 -- BP-OPT-BAL (optimizer and balancer are distinct roles)
@@ -410,12 +411,12 @@ which objective function the underlying agent reaches for.
 **Applies to our repo?** Yes -- operationalised in
 `factory-balance-auditor` (existing) and `factory-optimizer`
 (new in round 35).
-**Candidate rule:** BP-OPT-BAL -- *Where a skill's function is
+**Candidate rule:** BP-OPT-BAL -- _Where a skill's function is
 "maximise something" and another skill's function is "minimise
 variance / enforce fairness," these are distinct roles and
 belong in distinct skills. Skills that claim both objective
 functions simultaneously are function-conflated and must be
-split.*
+split._
 **Decision:** promote to stable BP-OPT-BAL in round 36.
 
 ## 2026-04-19 -- BP-THEORY-APPLIED (theory/applied split where load-bearing)
@@ -435,14 +436,14 @@ differs sharply between the two levels.
 **Applies to our repo?** Yes -- operationalised in
 `knowledge-graph-expert` (theory, existing) vs
 `graph-database-expert` (applied, new in round 35).
-**Candidate rule:** BP-THEORY-APPLIED -- *Where theory-level
+**Candidate rule:** BP-THEORY-APPLIED -- _Where theory-level
 content (abstract models, mathematical foundations) and
 applied-level content (specific vendors, concrete engineering
 tradeoffs) differ sharply in audience and cognitive budget,
 they split into separate skills. The theory skill points at
 the applied skill for "when you need a concrete vendor"; the
 applied skill points at the theory skill for "when you need
-the model the vendor implements."*
+the model the vendor implements."_
 **Decision:** promote to stable BP-THEORY-APPLIED in round 36.
 
 ## 2026-04-19 -- Meijer maxim (life philosophy signal) -- Aaron
@@ -480,8 +481,8 @@ to BP. Candidate wording below:
 > contract. Every new module opens with its types; the
 > implementation is derived from what the types oblige. Cites
 > Meijer (LINQ, Rx, Haskell advocacy 2000s-2010s), Wlaschin
-> (*Domain Modeling Made Functional* 2018), Brady (*Type-Driven
-> Development with Idris* 2017).
+> (_Domain Modeling Made Functional_ 2018), Brady (_Type-Driven
+> Development with Idris_ 2017).
 
 ## 2026-04-19 -- BP-HOME-AS-TYPE (canonical home IS the type signature)
 
@@ -505,25 +506,26 @@ system enforcer" and explains why Rule Zero is load-bearing
 for the project's reasoning traction (a reviewer who knows the
 home of a PR-touched file knows the schema, consumers,
 governance, and edit rules without reading the file).
-**Candidate rule:** BP-HOME-AS-TYPE -- *The canonical-home map
+**Candidate rule:** BP-HOME-AS-TYPE -- _The canonical-home map
 is the repo's type system. Declaring a new artifact type IS
 declaring a new type in the repo. New types require ADR /
 `GOVERNANCE.md` entry before the first instance lands.
 Placement violations are type errors, reportable by
 `canonical-home-auditor` with exactly the gravity `dotnet
 build` reports compilation errors under
-`TreatWarningsAsErrors`.*
+`TreatWarningsAsErrors`._
 **Decision:** promote BP-HOME and BP-HOME-AS-TYPE together as
 a paired rule in round 36. BP-HOME is the existential claim
 ("every artifact has a home"); BP-HOME-AS-TYPE is the
 universal claim ("and that home determines its type
 signature"). The skill `canonical-home-auditor` already
 encodes the framing; ADR should cite Meijer + Wlaschin +
-Harper (*Practical Foundations for Programming Languages*) +
-Pierce (*Types and Programming Languages*) for the theoretical
+Harper (_Practical Foundations for Programming Languages_) +
+Pierce (_Types and Programming Languages_) for the theoretical
 lineage.
 
 Follow-up work:
+
 - ADR draft `docs/DECISIONS/2026-0x-xx-bp-home-rule-zero.md`
   pairing BP-HOME + BP-HOME-AS-TYPE.
 - `AGENTS.md` snippet under "How AI agents should treat this
@@ -550,7 +552,8 @@ the repo's governance rules become **derivable theorems in a
 formal system** rather than prose rules enforced by eyeball.
 **Sketch of the system:**
 
-*Layer 1 -- type declarations (types of artifacts):*
+_Layer 1 -- type declarations (types of artifacts):_
+
 ```
 type artifact =
   | SourceFSharp     of path: Path * module: FSharpModule
@@ -570,10 +573,12 @@ type artifact =
   | CopilotInstr     of path: Path * rules: string list
   | ... (extensible via GOVERNANCE.md additions)
 ```
+
 The type constructors come from GOVERNANCE.md; adding a new
 constructor IS declaring a new artifact type (requires ADR).
 
-*Layer 2 -- axioms (rules expressible as predicates over types):*
+_Layer 2 -- axioms (rules expressible as predicates over types):_
+
 ```
 axiom skill_has_not_block:
   forall (s: Skill),
@@ -616,7 +621,8 @@ axiom copilot_instr_skills_sync:
 // ... many more, each tied to a BP-NN or ADR
 ```
 
-*Layer 3 -- checkers (mechanical verification):*
+_Layer 3 -- checkers (mechanical verification):_
+
 - **Semgrep rules** for string-level patterns (ASCII-only,
   frontmatter shape, line-start-minus, absolute paths).
 - **Roslyn analyzers** for C#/F# source-level rules (public-API
@@ -634,8 +640,9 @@ axiom copilot_instr_skills_sync:
   BP-HOME-AS-TYPE together imply repo-wide orthogonality, as
   a soundness theorem).
 
-*Layer 4 -- routing:*
+_Layer 4 -- routing:_
 Every finding in the system carries:
+
 - The violated axiom (by ID / BP-NN).
 - The artifact involved (by canonical home).
 - The type error (wrong-home / homeless / duplicated / ...).
@@ -646,7 +653,7 @@ This routes to `skill-improver` (for skills),
 the Architect (for governance-level fixes). Every fix becomes
 a git commit; the axiom-checker runs on pre-commit and CI.
 
-*Who owns the design?* `formal-verification-expert` (Soraya)
+_Who owns the design?_ `formal-verification-expert` (Soraya)
 is the portfolio router for which tool fits each property
 class -- she assigns axioms to Semgrep vs Roslyn vs F#
 analyzers vs TLA+ vs Alloy vs Lean vs custom walkers, per
@@ -670,6 +677,7 @@ BACKLOG as a P2 design-research item; revisit at round 36
 after BP-HOME-as-rule-zero lands.
 
 Follow-up work:
+
 - `docs/BACKLOG.md` P2 entry: "Repo-axiomatic-system design
   (Soraya-routed) -- after BP-HOME lands."
 - Soraya scratchpad / notebook entry noting the vision so
@@ -682,19 +690,20 @@ Follow-up work:
   routed by Soraya.
 
 Cited lineage for the ADR when commissioned:
-- Pierce -- *Types and Programming Languages* (2002).
-- Harper -- *Practical Foundations for Programming
-  Languages* (2016).
-- Jackson -- *Software Abstractions* (2012) -- Alloy as
+
+- Pierce -- _Types and Programming Languages_ (2002).
+- Harper -- _Practical Foundations for Programming
+  Languages_ (2016).
+- Jackson -- _Software Abstractions_ (2012) -- Alloy as
   lightweight formal method.
-- Lamport -- *Specifying Systems* (2002) -- TLA+ as spec
+- Lamport -- _Specifying Systems_ (2002) -- TLA+ as spec
   language.
-- Necula -- *Proof-Carrying Code* (1997) -- artifact-with-
+- Necula -- _Proof-Carrying Code_ (1997) -- artifact-with-
   proof discipline.
-- Knuth -- *Literate Programming* (1984) -- documentation-as-
+- Knuth -- _Literate Programming_ (1984) -- documentation-as-
   program inversion; this vision is the ontology-as-program
   mirror.
-- Berners-Lee, Hendler, Lassila -- *The Semantic Web* (2001)
+- Berners-Lee, Hendler, Lassila -- _The Semantic Web_ (2001)
   -- RDF/OWL applied inward to the repo rather than outward
   to the web.
 
@@ -707,23 +716,24 @@ cononical and missing areas are crawalable almost".
 **Nature:** architectural observation, not a rule. Under
 BP-HOME + BP-HOME-AS-TYPE, gap-finding stops being a fuzzy
 heuristic ("what might we be missing?") and becomes a
-mechanical set-difference: *declared slots minus occupied
-slots*.
+mechanical set-difference: _declared slots minus occupied
+slots_.
 **The dual structure:**
 
-| Question | Mechanism | Owner |
-|---|---|---|
-| *Is this artifact in the right place?* | Wrong-home finding (type error) | `canonical-home-auditor` |
-| *Is there an artifact for this slot?* | Empty-home finding (completeness) | `skill-gap-finder` (existing) + extended gap-radar layer |
-| *Is this artifact duplicated across places?* | Duplicated-home finding (subtyping ambiguity) | `canonical-home-auditor` |
-| *Is this artifact-type undeclared?* | Homeless finding (missing type constructor) | `canonical-home-auditor` → ADR request |
-| *Do two locations claim the same artifact type?* | Ambiguous-home finding (needs discriminator) | `canonical-home-auditor` → ADR request |
+| Question                                         | Mechanism                                     | Owner                                                    |
+| ------------------------------------------------ | --------------------------------------------- | -------------------------------------------------------- |
+| _Is this artifact in the right place?_           | Wrong-home finding (type error)               | `canonical-home-auditor`                                 |
+| _Is there an artifact for this slot?_            | Empty-home finding (completeness)             | `skill-gap-finder` (existing) + extended gap-radar layer |
+| _Is this artifact duplicated across places?_     | Duplicated-home finding (subtyping ambiguity) | `canonical-home-auditor`                                 |
+| _Is this artifact-type undeclared?_              | Homeless finding (missing type constructor)   | `canonical-home-auditor` → ADR request                   |
+| _Do two locations claim the same artifact type?_ | Ambiguous-home finding (needs discriminator)  | `canonical-home-auditor` → ADR request                   |
 
 Together these cover the full type-checking surface for the
 repo. The auditor covers wrong/homeless/duplicated/ambiguous;
 the gap-radar covers empty.
 
 **Under BP-HOME, gap-finding is crawlable:**
+
 1. Enumerate every declared artifact type from
    GOVERNANCE.md + canonical-home map.
 2. For each type, enumerate its expected instances
@@ -742,6 +752,7 @@ skill library; under BP-HOME it graduates to mechanical
 completeness, and can be extended to cover the whole repo.
 
 **Examples of gap-radar checks under BP-HOME:**
+
 - For every `X-expert` skill, is there an `X-research`
   where expected? An `X-teach` where expected?
 - For every `.fs` source file under `src/`, does
@@ -783,6 +794,7 @@ repo-wide under BP-HOME. Soraya's axiomatic-system work
 feeds the checker that makes the gaps machine-enumerable.
 
 The satisfying picture:
+
 - **BP-HOME** declares every artifact has a type.
 - **BP-HOME-AS-TYPE** declares the home IS the type.
 - **Axiomatic enforcement** (Soraya-routed) mechanically
@@ -801,12 +813,12 @@ the factory's type system. Everything else is implementation.
 
 ## 2026-04-20 -- candidate BP: git-first text-based observability (gitops) for factory state
 
-**Source:** human maintainer directive 2026-04-20 -- *"think of
+**Source:** human maintainer directive 2026-04-20 -- _"think of
 our decision in this repo as git first git ops flows fit us
 and other agent harnesses that wnat to jump in on the fun
-seeing the same wholist view without much fuss"* and
-reinforcement *"wholelistic view shared easily with gitops and
-git based text based observability artifacts"* (typo-corrected
+seeing the same wholist view without much fuss"_ and
+reinforcement _"wholelistic view shared easily with gitops and
+git based text based observability artifacts"_ (typo-corrected
 from "gitobs" by the maintainer to the industry-standard term
 "gitops", extended here from infra-ops to observability).
 **Claim:** every factory observability artifact -- glass-halo
@@ -1014,15 +1026,14 @@ Three queries this round, targeted April 2026.
   page now cites ">= 500 lines recommended split" as the
   public cap; our BP-03 "~300 lines" is stricter.** Source:
   `platform.claude.com/docs/en/agents-and-tools/agent-skills/
-  best-practices` (April 2026). Claim: "Keeping SKILL.md
+best-practices` (April 2026). Claim: "Keeping SKILL.md
   body under 500 lines for optimal performance"; progressive
   disclosure should absorb overflow via bundled files.
   **Applies to our repo?** Yes but not as a contradiction.
   Our BP-03 is internally justified (reviewability + one-
   purpose) and is free to be stricter than Anthropic's
   public cap. Round-43 harness runs on three >500-line
-  skills (perf-analysis 642, reducer 570, consent-primitives
-  507) tied baseline or regressed at +22-35% cost -- the
+  skills (perf-analysis 642, reducer 570, consent-primitives 507) tied baseline or regressed at +22-35% cost -- the
   empirical signal matches Anthropic's cap direction even
   stronger than our ~300 static rule. **Candidate rule:**
   none; keep BP-03. **Decision:** stable; no promotion. Note
@@ -1032,7 +1043,7 @@ Three queries this round, targeted April 2026.
 
 - **F11 -- Gerund naming for skills is now Anthropic
   official recommendation.** Source: `platform.claude.com/
-  docs/en/agents-and-tools/agent-skills/best-practices`.
+docs/en/agents-and-tools/agent-skills/best-practices`.
   Claim: "Use gerund form (verb + -ing) for Skill names,
   clearly describing the activity." **Applies to our repo?**
   Partial. Our convention is `<topic>-<role>` (BP-21) and
@@ -1147,31 +1158,32 @@ Scratchpad-only until round ~54.
 ## 2026-04-20 -- Seed-only persona marker suppresses MEMORY/OFFTIME/JOURNAL stub scaffolding
 
 **Source:** Daya's first roster-wide AX/UX audit — Pattern F
-+ §5 candidate BP-26. Empirical evidence: 7 of 22 persona
-notebook directories (Aminata, Kira, Mateo, Nadia, Naledi,
-Rune, Viktor) sit at the 96-word seed stub 12+ rounds after
-seed, yet each carries MEMORY.md (~400b), OFFTIME.md
-(~1500b), JOURNAL.md (~1600b) as structural stubs -- ~25 KB
-of zero-signal scaffolding readers cold-load.
-**Claim:** Persona notebooks in seed-only state (zero
-substantive entries post-seed for >= 3 round-blocks of five
-rounds) declare `seed-only: true` in MEMORY.md frontmatter,
-suppress JOURNAL and OFFTIME generation, and are reviewed
-for retire-or-dispatch every factory-hygiene audit.
-**Applies to our repo?** Yes. 7 personas × ~3.5 KB = ~25 KB
-scaffolding tax. BP-07's letter is clean; spirit eroded.
-**Candidate rule:** BP-26 (slot if promoted) -- "Seed-only
-marker." Draft wording above. Pair with FACTORY-HYGIENE row
-31 (invocation-cadence per persona) so seed-only flag is
-*auto-lifted* when the second substantive entry lands.
-**Decision:** keep watching. Paired with BP-25; promote or
-demote as a pair on the round-54 audit.
+
+- §5 candidate BP-26. Empirical evidence: 7 of 22 persona
+  notebook directories (Aminata, Kira, Mateo, Nadia, Naledi,
+  Rune, Viktor) sit at the 96-word seed stub 12+ rounds after
+  seed, yet each carries MEMORY.md (~400b), OFFTIME.md
+  (~1500b), JOURNAL.md (~1600b) as structural stubs -- ~25 KB
+  of zero-signal scaffolding readers cold-load.
+  **Claim:** Persona notebooks in seed-only state (zero
+  substantive entries post-seed for >= 3 round-blocks of five
+  rounds) declare `seed-only: true` in MEMORY.md frontmatter,
+  suppress JOURNAL and OFFTIME generation, and are reviewed
+  for retire-or-dispatch every factory-hygiene audit.
+  **Applies to our repo?** Yes. 7 personas × ~3.5 KB = ~25 KB
+  scaffolding tax. BP-07's letter is clean; spirit eroded.
+  **Candidate rule:** BP-26 (slot if promoted) -- "Seed-only
+  marker." Draft wording above. Pair with FACTORY-HYGIENE row
+  31 (invocation-cadence per persona) so seed-only flag is
+  _auto-lifted_ when the second substantive entry lands.
+  **Decision:** keep watching. Paired with BP-25; promote or
+  demote as a pair on the round-54 audit.
 
 ## 2026-04-20 -- Recurring agent-QOL hygiene class (per-persona AX/UX)
 
-**Source:** Aaron 2026-04-20 directive *"lets make quality
+**Source:** Aaron 2026-04-20 directive _"lets make quality
 of life change for them too over time, its like another
-hygene"* + first-pass audit at `docs/research/notebook-cap-
+hygene"_ + first-pass audit at `docs/research/notebook-cap-
 per-persona-review-2026-04-20.md` + new FACTORY-HYGIENE
 rows 30-34 (this round) + `feedback_agent_qol_as_ongoing_
 hygiene_class.md`.

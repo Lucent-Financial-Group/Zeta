@@ -63,9 +63,7 @@ describe("checkPeerSessions", () => {
   });
 
   it("excludes the self-PID even when its line matches the stdio pattern", () => {
-    const lines = [
-      "555 /path/to/claude-code --output-format stream-json --input-format stream-json",
-    ];
+    const lines = ["555 /path/to/claude-code --output-format stream-json --input-format stream-json"];
     const r = checkPeerSessions(555, fakeSpawn(lines, 0));
     expect(r.peerDetected).toBe(false);
   });
@@ -92,7 +90,13 @@ describe("formatResult", () => {
   });
 
   it("formats pgrep error case with unknown-mutex-state message", () => {
-    const out = formatResult({ myPid: 42, peerPids: [], peerLines: [], peerDetected: false, pgrepError: "ENOENT: pgrep not found" });
+    const out = formatResult({
+      myPid: 42,
+      peerPids: [],
+      peerLines: [],
+      peerDetected: false,
+      pgrepError: "ENOENT: pgrep not found",
+    });
     expect(out).toContain("pgrep failed");
     expect(out).toContain("ENOENT: pgrep not found");
     expect(out).toContain("mutex state unknown");
@@ -127,17 +131,27 @@ describe("mainResult", () => {
   });
 
   it("returns PGREP_ERROR_EXIT (251) when pgrepError is set, even with no peers", () => {
-    expect(mainResult({
-      myPid: 1, peerPids: [], peerLines: [], peerDetected: false,
-      pgrepError: "ENOENT: pgrep not found",
-    })).toBe(PGREP_ERROR_EXIT);
+    expect(
+      mainResult({
+        myPid: 1,
+        peerPids: [],
+        peerLines: [],
+        peerDetected: false,
+        pgrepError: "ENOENT: pgrep not found",
+      }),
+    ).toBe(PGREP_ERROR_EXIT);
     expect(PGREP_ERROR_EXIT).toBe(251);
   });
 
   it("returns PGREP_ERROR_EXIT even when peers were also detected (error takes precedence)", () => {
-    expect(mainResult({
-      myPid: 1, peerPids: [99], peerLines: [], peerDetected: true,
-      pgrepError: "pgrep exited with status 2",
-    })).toBe(PGREP_ERROR_EXIT);
+    expect(
+      mainResult({
+        myPid: 1,
+        peerPids: [99],
+        peerLines: [],
+        peerDetected: true,
+        pgrepError: "pgrep exited with status 2",
+      }),
+    ).toBe(PGREP_ERROR_EXIT);
   });
 });

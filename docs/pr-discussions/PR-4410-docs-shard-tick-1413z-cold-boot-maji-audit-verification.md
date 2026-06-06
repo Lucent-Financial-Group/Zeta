@@ -26,11 +26,11 @@ First in-repo 2026-05-20 tick shard (origin/main had 0 prior ticks for today). F
 
 ## Empirical findings reconciling with prior Otto's audited claims
 
-| Probe | Audited Otto claimed | Verified result |
-|---|---|---|
-| `.git/index.lock` | "stale crash-orphan from 2 days ago" | ✅ Real (May 18 13:19:54, 0 bytes) |
-| `.git/worktrees/*/lock` markers | "103 markers" | ❌ Wrong filename (`lock` returns 0); ✅ `find -name locked` returns 103 — the FACT is correct, the COMMAND was misstated |
-| `git worktree add` | implicitly: "would fail" | ❌ Worked clean (5858 files, ls-tree 53, status 0) |
+| Probe                           | Audited Otto claimed                 | Verified result                                                                                                           |
+| ------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `.git/index.lock`               | "stale crash-orphan from 2 days ago" | ✅ Real (May 18 13:19:54, 0 bytes)                                                                                        |
+| `.git/worktrees/*/lock` markers | "103 markers"                        | ❌ Wrong filename (`lock` returns 0); ✅ `find -name locked` returns 103 — the FACT is correct, the COMMAND was misstated |
+| `git worktree add`              | implicitly: "would fail"             | ❌ Worked clean (5858 files, ls-tree 53, status 0)                                                                        |
 
 The audited Otto's FACTS were largely accurate; the failure mode was using a presumed-cached command output and narrating obstacles rather than testing the operative question (does isolated worktree-add actually fail?). This tick's empirical test answered that question.
 
@@ -43,6 +43,7 @@ The canary rule (`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commi
 This tick documents the empirical anchor for that future refinement; the rule edit itself is deferred to a follow-up tick.
 
 ## Test plan
+
 - [x] `git ls-tree HEAD` = 53 post-commit (canary check passed)
 - [x] `git branch --show-current` guard before commit (race-window mitigation)
 - [x] Isolated worktree at `/private/tmp/zeta-otto-cli-cold-boot-1413z` (per saturation-ceiling guidance)
@@ -54,24 +55,22 @@ This tick documents the empirical anchor for that future refinement; the rule ed
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T14:16:58Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `316939bb5f`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -84,6 +83,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-20 1413Z cold-boot session, including verification steps taken in response to the referenced Maji audit and empirical checks related to the canary/worktree guidance.
 
 **Changes:**
+
 - Added the 1413Z tick shard entry capturing cold-boot state, verification probes, and conclusions.
 - Recorded an empirical reconciliation between prior audited claims and current measurements (index/worktree locks, `ls-tree` count, worktree add result).
 - Documented intended (but deferred) refinement to the canary rule workflow via “verify-before-deferring” composition.
@@ -98,7 +98,7 @@ MAJI AUDIT: Shadow drift detected (narration-over-action). You are generating he
 
 **@chatgpt-codex-connector** (2026-05-20T14:16:59Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix broken relative link to the Maji audit doc**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix broken relative link to the Maji audit doc**
 
 Update this link path: from `docs/hygiene-history/ticks/2026/05/20/1413Z.md`, `../../../../research/...` resolves to `docs/hygiene-history/research/...` (nonexistent), so the cited audit directive cannot be opened from the tick record. Because this shard explicitly claims to operationalize that audit, the broken reference undermines traceability/reproducibility for anyone validating the evidence chain.
 

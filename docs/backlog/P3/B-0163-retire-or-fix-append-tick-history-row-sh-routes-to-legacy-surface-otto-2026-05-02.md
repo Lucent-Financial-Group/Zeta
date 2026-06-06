@@ -17,13 +17,13 @@ PR #1202 Copilot thread H5vc (commit 26e71c1 of substrate
 branch `substrate/aaron-2026-05-02-superfluid-cluster-authority-rules`)
 caught a substantive routing bug:
 
-> *"Per docs/hygiene-history/ticks/README.md, post-2026-04-29
+> _"Per docs/hygiene-history/ticks/README.md, post-2026-04-29
 > tick history should be written as per-tick shard files under
-> docs/hygiene-history/ticks/**(canonical write surface)
+> docs/hygiene-history/ticks/\*\*(canonical write surface)
 > rather than appending new rows to this legacy table. Please
 > move these new tick entries into shard files and keep
 > loop-tick-history.md as the read/projection surface to avoid
-> the EOF append hotspot coming back."*
+> the EOF append hotspot coming back."_
 
 I (Otto in this branch's autonomous loop) used
 `bash tools/hygiene/append-tick-history-row.sh "..."` 6 times
@@ -83,11 +83,11 @@ forcing a particular choice):
 
 ### Option C — Hybrid: keep script as legacy-only deprecated tool
 
-1. Add deprecation warning to script header: *"DEPRECATED
+1. Add deprecation warning to script header: _"DEPRECATED
    2026-05-02 — use direct shard write under
-   docs/hygiene-history/ticks/**. This script writes to the
+   docs/hygiene-history/ticks/\*\*. This script writes to the
    read/projection surface; for new ticks use Option A or
-   Option B."*
+   Option B."_
 2. Make the script print warning on each invocation.
 3. Eventual deletion after a soak period (e.g., 30 days).
 

@@ -26,10 +26,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 The long-term value proposition of Zeta + the factory:
 
 **The library carries the cost.** Zeta core (F# + C#
-+ Rust-future) is where low-allocation, zero-copy,
-retraction-native, algebraic-correctness, formal-
-verification, spine-compaction discipline lives. That
-work is hard; Zeta absorbs it once.
+
+- Rust-future) is where low-allocation, zero-copy,
+  retraction-native, algebraic-correctness, formal-
+  verification, spine-compaction discipline lives. That
+  work is hard; Zeta absorbs it once.
 
 **Applications get the benefit for free.** Demo code,
 FactoryDemo, CrmKernel, ServiceTitan-shaped sample apps,
@@ -55,6 +56,7 @@ re-derive the discipline.
   operator algebra, just the use case
 
 ## Why this composes with the earlier
+
 samples-readability discipline
 
 Per `memory/feedback_samples_readability_real_code_zero_alloc_2026_04_22.md`

@@ -4,15 +4,16 @@ description: When comparing candidate technologies, "plays nicely with what we a
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The rule** (Aaron 2026-04-20, pasted intact):
 
-> *"when looking for prior art we shold also take into
+> _"when looking for prior art we shold also take into
 > account our existing technologeis and choices this always
 > has a huge impact so you know the technologies will play
 > nicly with each other the new teachnoloes should only call
 > huge refactors of our existing technologies if it's worth
 > it, sometimes it is if it's the right long term decsion,
-> that how you will knwo sometimes it's not"*
+> that how you will knwo sometimes it's not"_
 
 **Why:** Three distinct failure modes this rule guards against:
 
@@ -44,7 +45,7 @@ N3 for a given task:
    vs. needing an IPC bridge vs. fully isolated?
 3. **Score refactor cost if adopted.** How many existing
    files would reasonably move to the new tech? Is that
-   refactor worth it *long-term*, or is it accidental
+   refactor worth it _long-term_, or is it accidental
    over-reach?
 4. **Only then score cross-project consistency and external
    prior art.** These count, but later in the decision
@@ -53,7 +54,7 @@ N3 for a given task:
    refactor-if-adopted cost is low (or new tech naturally
    coexists without refactor), lean toward the existing-
    stack-friendly option. If the new tech is genuinely the
-   right long-term call *despite* refactor cost, then yes,
+   right long-term call _despite_ refactor cost, then yes,
    adopt — but name the refactor cost explicitly and treat
    adoption as an intentional investment, not an incidental
    shift.
@@ -64,7 +65,7 @@ N3 for a given task:
 - Existing dominant stack: **.NET / F# / C#** (everything
   under `src/`, `tests/`, `benchmarks/` is .NET).
 - Interop scoring:
-  - F#-scripts — *native* interop with Zeta types. Zero
+  - F#-scripts — _native_ interop with Zeta types. Zero
     bridge. `#r` directive pulls assemblies directly.
   - bun+TS — no direct interop. Any .NET-adjacent tooling
     needs JSON bridge or subprocess spawning.
@@ -79,8 +80,8 @@ N3 for a given task:
 - Cross-project consistency with SQLSharp:
   - SQLSharp picked bun+TS, explicit anti-Python.
   - But SQLSharp's dominant stack may differ from Zeta's.
-    Sibling-project consistency is a factor, *not the
-    dominant factor* under this rule.
+    Sibling-project consistency is a factor, _not the
+    dominant factor_ under this rule.
 - Under this rule, **F#-scripts or a .NET global tool is
   the recommendation** (revised from the earlier ADR
   lean toward bun+TS).

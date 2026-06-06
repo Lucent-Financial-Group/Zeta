@@ -100,218 +100,262 @@ const EMPTY_COMPLETENESS_APPLIES_TO: NormalizedCompletenessAppliesTo = {
   workItemIds: [],
 };
 
-const TENANT_CONTEXT_PACK_COMPLETENESS_REQUIREMENT_SETS:
-  Readonly<Record<TenantContextPackCompletenessRequirementSetId, readonly TenantContextPackCompletenessRequirementPolicy[]>> = {
-    [TenantContextPackCompletenessRequirementSetId.ManagementBlockerCore]: [{
+const TENANT_CONTEXT_PACK_COMPLETENESS_REQUIREMENT_SETS: Readonly<
+  Record<TenantContextPackCompletenessRequirementSetId, readonly TenantContextPackCompletenessRequirementPolicy[]>
+> = {
+  [TenantContextPackCompletenessRequirementSetId.ManagementBlockerCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ManagementBlockerBusiness,
       itemKind: ContextPackItemKind.BusinessDocument,
       message: "management blocker business context is required",
       evidenceRef: TENANT_MANAGEMENT_BLOCKER_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ManagementBlockerArchitecture,
       itemKind: ContextPackItemKind.ArchitectureDocument,
       message: "management blocker architecture context is required",
       evidenceRef: TENANT_MANAGEMENT_BLOCKER_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ManagementBlockerPolicy,
       itemKind: ContextPackItemKind.Policy,
       message: "management blocker governing policy is required",
       evidenceRef: TENANT_MANAGEMENT_BLOCKER_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ManagementBlockerGraph,
       itemKind: ContextPackItemKind.GraphNeighborhood,
       message: "management blocker blast-radius graph is required",
       evidenceRef: TENANT_MANAGEMENT_BLOCKER_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.Any,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.ResourceAllocationCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.ResourceAllocationCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ResourceAllocationPolicy,
       itemKind: ContextPackItemKind.Policy,
       message: "resource allocation policy is required",
       evidenceRef: TENANT_RESOURCE_ALLOCATION_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ResourceAllocationCapacityEvidence,
       itemKind: ContextPackItemKind.Evidence,
       message: "resource allocation capacity evidence is required",
       evidenceRef: TENANT_RESOURCE_ALLOCATION_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ResourceAllocationDecision,
       itemKind: ContextPackItemKind.DecisionRecord,
       message: "resource allocation decision is required",
       evidenceRef: TENANT_RESOURCE_ALLOCATION_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.PriorityChangeCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.PriorityChangeCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.PriorityChangeBusinessContext,
       itemKind: ContextPackItemKind.BusinessDocument,
       message: "priority change business context is required",
       evidenceRef: TENANT_PRIORITY_CHANGE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.PriorityChangeImpactEvidence,
       itemKind: ContextPackItemKind.Evidence,
       message: "priority change impact evidence is required",
       evidenceRef: TENANT_PRIORITY_CHANGE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.PriorityChangeDecision,
       itemKind: ContextPackItemKind.DecisionRecord,
       message: "priority change decision is required",
       evidenceRef: TENANT_PRIORITY_CHANGE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.PriorityChangeGraph,
       itemKind: ContextPackItemKind.GraphNeighborhood,
       message: "priority change dependency graph is required",
       evidenceRef: TENANT_PRIORITY_CHANGE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.Any,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.BudgetCapacityCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.BudgetCapacityCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.BudgetCapacityPolicy,
       itemKind: ContextPackItemKind.Policy,
       message: "budget capacity policy is required",
       evidenceRef: TENANT_BUDGET_CAPACITY_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.BudgetCapacityTelemetryEvidence,
       itemKind: ContextPackItemKind.Evidence,
       message: "budget capacity telemetry evidence is required",
       evidenceRef: TENANT_BUDGET_CAPACITY_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.BudgetCapacityDecision,
       itemKind: ContextPackItemKind.DecisionRecord,
       message: "budget capacity decision is required",
       evidenceRef: TENANT_BUDGET_CAPACITY_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.TenantApprovalCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.TenantApprovalCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.TenantApprovalPolicy,
       itemKind: ContextPackItemKind.Policy,
       message: "tenant approval policy is required",
       evidenceRef: TENANT_APPROVAL_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.TenantApprovalDecision,
       itemKind: ContextPackItemKind.DecisionRecord,
       message: "tenant approval decision is required",
       evidenceRef: TENANT_APPROVAL_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.TenantApprovalEvidence,
       itemKind: ContextPackItemKind.Evidence,
       message: "tenant approval evidence is required",
       evidenceRef: TENANT_APPROVAL_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.ArchitectureTradeoffCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.ArchitectureTradeoffCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ArchitectureTradeoffDecision,
       itemKind: ContextPackItemKind.DecisionRecord,
       message: "architecture tradeoff CA or ADR decision is required",
       evidenceRef: TENANT_ARCHITECTURE_TRADEOFF_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ArchitectureTradeoffArchitecture,
       itemKind: ContextPackItemKind.ArchitectureDocument,
       message: "current architecture tradeoff context is required",
       evidenceRef: TENANT_ARCHITECTURE_TRADEOFF_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ArchitectureTradeoffBusiness,
       itemKind: ContextPackItemKind.BusinessDocument,
       message: "architecture tradeoff business rule context is required",
       evidenceRef: TENANT_ARCHITECTURE_TRADEOFF_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ArchitectureTradeoffGraph,
       itemKind: ContextPackItemKind.GraphNeighborhood,
       message: "architecture tradeoff affected service graph is required",
       evidenceRef: TENANT_ARCHITECTURE_TRADEOFF_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.Any,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.SecurityExceptionCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.SecurityExceptionCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.SecurityExceptionPolicy,
       itemKind: ContextPackItemKind.Policy,
       message: "security exception least-privilege policy is required",
       evidenceRef: TENANT_SECURITY_EXCEPTION_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.SecurityExceptionCredentialEvidence,
       itemKind: ContextPackItemKind.Evidence,
       message: "security exception credential and audit evidence is required",
       evidenceRef: TENANT_SECURITY_EXCEPTION_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.SecurityExceptionRiskDecision,
       itemKind: ContextPackItemKind.DecisionRecord,
       message: "security exception threat-risk decision is required",
       evidenceRef: TENANT_SECURITY_EXCEPTION_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.CustomerBusinessScopeCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.CustomerBusinessScopeCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.CustomerBusinessScopeRequirements,
       itemKind: ContextPackItemKind.BusinessDocument,
       message: "customer business scope requirements are required",
       evidenceRef: TENANT_CUSTOMER_BUSINESS_SCOPE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.CustomerBusinessScopeCustomerInput,
       itemKind: ContextPackItemKind.Meeting,
       message: "customer business scope customer input is required",
       evidenceRef: TENANT_CUSTOMER_BUSINESS_SCOPE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.CustomerBusinessScopeValidation,
       itemKind: ContextPackItemKind.Evidence,
       message: "customer business scope validation outcome is required",
       evidenceRef: TENANT_CUSTOMER_BUSINESS_SCOPE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.CustomerBusinessScopeProductDecision,
       itemKind: ContextPackItemKind.DecisionRecord,
       message: "customer business scope product decision is required",
       evidenceRef: TENANT_CUSTOMER_BUSINESS_SCOPE_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence,
       itemKind: ContextPackItemKind.Evidence,
       message: "release deployment evidence is required",
       evidenceRef: TENANT_RELEASE_READINESS_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting,
       itemKind: ContextPackItemKind.Meeting,
       message: "release readiness meeting notes are required",
       evidenceRef: TENANT_RELEASE_READINESS_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }],
-    [TenantContextPackCompletenessRequirementSetId.RuntimeOperationsCore]: [{
+    },
+  ],
+  [TenantContextPackCompletenessRequirementSetId.RuntimeOperationsCore]: [
+    {
       requirementId: TenantContextPackCompletenessRequirementId.RuntimeRunbookPolicy,
       itemKind: ContextPackItemKind.Policy,
       message: "runtime operations runbook policy is required",
       evidenceRef: TENANT_RUNTIME_OPERATIONS_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }, {
+    },
+    {
       requirementId: TenantContextPackCompletenessRequirementId.RuntimeIncidentEvidence,
       itemKind: ContextPackItemKind.Evidence,
       message: "runtime incident evidence is required",
       evidenceRef: TENANT_RUNTIME_OPERATIONS_CORE_EVIDENCE_REF,
       requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-    }],
-  };
+    },
+  ],
+};
 
-export function listTenantContextPackCompletenessRequirementSetDescriptors():
-  readonly TenantContextPackCompletenessRequirementSetDescriptor[] {
-  return (Object.entries(TENANT_CONTEXT_PACK_COMPLETENESS_REQUIREMENT_SETS) as [
-    TenantContextPackCompletenessRequirementSetId,
-    readonly TenantContextPackCompletenessRequirementPolicy[],
-  ][]).map(([setId, requirements]) => ({
+export function listTenantContextPackCompletenessRequirementSetDescriptors(): readonly TenantContextPackCompletenessRequirementSetDescriptor[] {
+  return (
+    Object.entries(TENANT_CONTEXT_PACK_COMPLETENESS_REQUIREMENT_SETS) as [
+      TenantContextPackCompletenessRequirementSetId,
+      readonly TenantContextPackCompletenessRequirementPolicy[],
+    ][]
+  ).map(([setId, requirements]) => ({
     setId,
     requirements: requirements.map(cloneTenantCompletenessRequirementPolicy),
   }));
@@ -400,18 +444,9 @@ function completenessResultWithEffectiveRequirements(input: {
   }
 
   return {
-    omittedItemsWithReason: uniqueOmittedItems([
-      ...inherited.omittedItemsWithReason,
-      ...omissions,
-    ]),
-    lifecycleBlockers: uniqueStrings([
-      ...(inherited.lifecycleBlockers ?? []),
-      ...lifecycleBlockers,
-    ]),
-    evidenceRefs: uniqueStrings([
-      ...(inherited.evidenceRefs ?? []),
-      ...evidenceRefs,
-    ]),
+    omittedItemsWithReason: uniqueOmittedItems([...inherited.omittedItemsWithReason, ...omissions]),
+    lifecycleBlockers: uniqueStrings([...(inherited.lifecycleBlockers ?? []), ...lifecycleBlockers]),
+    evidenceRefs: uniqueStrings([...(inherited.evidenceRefs ?? []), ...evidenceRefs]),
   };
 }
 
@@ -427,10 +462,7 @@ function completenessResultWithConfigFailure(
         message: TENANT_COMPLETENESS_CONFIG_FAILURE_MESSAGE,
       },
     ]),
-    lifecycleBlockers: uniqueStrings([
-      ...(base.lifecycleBlockers ?? []),
-      TENANT_COMPLETENESS_CONFIG_FAILURE_MESSAGE,
-    ]),
+    lifecycleBlockers: uniqueStrings([...(base.lifecycleBlockers ?? []), TENANT_COMPLETENESS_CONFIG_FAILURE_MESSAGE]),
     evidenceRefs: [...(base.evidenceRefs ?? [])],
   };
 }
@@ -474,7 +506,7 @@ function tenantCompletenessLayerRequirements(
 }
 
 function tenantContextPackCompletenessPolicy(value: unknown): TenantContextPackCompletenessPolicy | null {
-  return isRecord(value) ? value as TenantContextPackCompletenessPolicy : null;
+  return isRecord(value) ? (value as TenantContextPackCompletenessPolicy) : null;
 }
 
 function requirementSetRequirementsFrom(
@@ -500,9 +532,7 @@ function cloneTenantCompletenessRequirementPolicy(
     itemKind: requirement.itemKind,
     message: requirement.message,
     evidenceRef: requirement.evidenceRef,
-    ...(requirement.requiredSourceScope === undefined
-      ? {}
-      : { requiredSourceScope: requirement.requiredSourceScope }),
+    ...(requirement.requiredSourceScope === undefined ? {} : { requiredSourceScope: requirement.requiredSourceScope }),
     ...(requirement.appliesTo === undefined ? {} : { appliesTo: cloneAppliesTo(requirement.appliesTo) }),
   };
 }
@@ -563,10 +593,11 @@ function requirementSatisfied(
   requirement: TenantContextPackCompletenessRequirement,
   request: ContextPackCompletenessPolicyRequest,
 ): boolean {
-  return request.items.some((item) =>
-    item.kind === requirement.itemKind &&
-    (requirement.requiredSourceScope === TenantContextPackCompletenessSourceScope.Any ||
-      itemHasActiveScopeSourcePointer(item, request))
+  return request.items.some(
+    (item) =>
+      item.kind === requirement.itemKind &&
+      (requirement.requiredSourceScope === TenantContextPackCompletenessSourceScope.Any ||
+        itemHasActiveScopeSourcePointer(item, request)),
   );
 }
 
@@ -574,8 +605,9 @@ function itemHasActiveScopeSourcePointer(
   item: ContextPackItem,
   request: ContextPackCompletenessPolicyRequest,
 ): boolean {
-  return (item.sourcePointers ?? []).some((pointer) =>
-    !contextPackSourcePointerIsOutsideActiveScope(pointer, item, request.request.snapshot, request.request.hierarchy)
+  return (item.sourcePointers ?? []).some(
+    (pointer) =>
+      !contextPackSourcePointerIsOutsideActiveScope(pointer, item, request.request.snapshot, request.request.hierarchy),
   );
 }
 
@@ -584,13 +616,15 @@ function requirementApplies(
   request: ContextPackCompletenessPolicyRequest,
 ): boolean {
   const snapshot = request.request.snapshot;
-  return filterMatches(requirement.appliesTo.hatIds, snapshot.hat.id) &&
+  return (
+    filterMatches(requirement.appliesTo.hatIds, snapshot.hat.id) &&
     filterMatches(requirement.appliesTo.departmentIds, snapshot.hat.departmentId) &&
     filterMatches(requirement.appliesTo.phases, snapshot.phase) &&
     filterMatches(requirement.appliesTo.scopes, snapshot.scope) &&
     filterMatches(requirement.appliesTo.projectIds, snapshot.projectId) &&
     filterMatches(requirement.appliesTo.teamIds, snapshot.teamId) &&
-    filterMatches(requirement.appliesTo.workItemIds, snapshot.workItemId);
+    filterMatches(requirement.appliesTo.workItemIds, snapshot.workItemId)
+  );
 }
 
 function normalizedAppliesTo(
@@ -608,10 +642,7 @@ function normalizedAppliesTo(
   };
 }
 
-function tenantConfigLayerMatches(
-  layer: TenantConfigLayer,
-  request: ContextPackCompletenessPolicyRequest,
-): boolean {
+function tenantConfigLayerMatches(layer: TenantConfigLayer, request: ContextPackCompletenessPolicyRequest): boolean {
   const snapshot = request.request.snapshot;
   switch (layer.scope.kind) {
     case ConfigLayerScopeKind.Organization:
@@ -626,8 +657,8 @@ function tenantConfigLayerMatches(
 }
 
 function compareTenantConfigLayers(left: TenantConfigLayer, right: TenantConfigLayer): number {
-  const specificity = TenantContextPackLayerSpecificity[left.scope.kind] -
-    TenantContextPackLayerSpecificity[right.scope.kind];
+  const specificity =
+    TenantContextPackLayerSpecificity[left.scope.kind] - TenantContextPackLayerSpecificity[right.scope.kind];
   if (specificity !== 0) return specificity;
   const updatedAt = left.updatedAt.localeCompare(right.updatedAt);
   if (updatedAt !== 0) return updatedAt;
@@ -646,49 +677,51 @@ function filterMatches<T extends string>(allowedValues: readonly T[], value: T |
 
 function contextPackItemKind(value: unknown): ContextPackItemKind | null {
   return typeof value === "string" && Object.values(ContextPackItemKind).includes(value as ContextPackItemKind)
-    ? value as ContextPackItemKind
+    ? (value as ContextPackItemKind)
     : null;
 }
 
-function tenantCompletenessSourceScope(
-  value: unknown,
-): TenantContextPackCompletenessSourceScope | null {
+function tenantCompletenessSourceScope(value: unknown): TenantContextPackCompletenessSourceScope | null {
   if (value === undefined) return TenantContextPackCompletenessSourceScope.Any;
   return typeof value === "string" &&
-      Object.values(TenantContextPackCompletenessSourceScope).includes(value as TenantContextPackCompletenessSourceScope)
-    ? value as TenantContextPackCompletenessSourceScope
+    Object.values(TenantContextPackCompletenessSourceScope).includes(value as TenantContextPackCompletenessSourceScope)
+    ? (value as TenantContextPackCompletenessSourceScope)
     : null;
 }
 
-function tenantCompletenessRequirementSetId(
-  value: unknown,
-): TenantContextPackCompletenessRequirementSetId | null {
+function tenantCompletenessRequirementSetId(value: unknown): TenantContextPackCompletenessRequirementSetId | null {
   return typeof value === "string" &&
-      Object.values(TenantContextPackCompletenessRequirementSetId).includes(value as TenantContextPackCompletenessRequirementSetId)
-    ? value as TenantContextPackCompletenessRequirementSetId
+    Object.values(TenantContextPackCompletenessRequirementSetId).includes(
+      value as TenantContextPackCompletenessRequirementSetId,
+    )
+    ? (value as TenantContextPackCompletenessRequirementSetId)
     : null;
 }
 
 function runLifecyclePhasesFrom(input: readonly string[] | undefined): readonly RunLifecyclePhase[] {
   if (!Array.isArray(input)) return [];
-  return uniqueStrings(input.flatMap((value) =>
-    Object.values(RunLifecyclePhase).includes(value as RunLifecyclePhase) ? [value as RunLifecyclePhase] : []
-  ));
+  return uniqueStrings(
+    input.flatMap((value) =>
+      Object.values(RunLifecyclePhase).includes(value as RunLifecyclePhase) ? [value as RunLifecyclePhase] : [],
+    ),
+  );
 }
 
 function runScopesFrom(input: readonly string[] | undefined): readonly RunScope[] {
   if (!Array.isArray(input)) return [];
-  return uniqueStrings(input.flatMap((value) =>
-    Object.values(RunScope).includes(value as RunScope) ? [value as RunScope] : []
-  ));
+  return uniqueStrings(
+    input.flatMap((value) => (Object.values(RunScope).includes(value as RunScope) ? [value as RunScope] : [])),
+  );
 }
 
 function nonEmptyStrings(input: readonly string[] | undefined): readonly string[] {
   if (!Array.isArray(input)) return [];
-  return uniqueStrings(input.flatMap((value) => {
-    const normalized = optionalString(value);
-    return normalized === undefined ? [] : [normalized];
-  }));
+  return uniqueStrings(
+    input.flatMap((value) => {
+      const normalized = optionalString(value);
+      return normalized === undefined ? [] : [normalized];
+    }),
+  );
 }
 
 function optionalString(value: unknown): string | undefined {

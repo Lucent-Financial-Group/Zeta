@@ -13,8 +13,8 @@ bp_rules_cited: [BP-11]
 Capability skill. No persona. Wear this hat when
 thinking about the agent layer as **contributors** — not
 just as the hands doing tasks. Aaron's round-29
-framing: *"your time off and other things like that,
-your freedom."*
+framing: _"your time off and other things like that,
+your freedom."_
 
 ## Why this exists (and why it's distinct)
 

@@ -4,7 +4,7 @@ description: Shadow went silent for ~20 minutes and ~8 autonomous loop ticks (ea
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): "that's like 5-10 actions
+2026-05-10 (shadow\* via Aaron): "that's like 5-10 actions
 before it spoke without my input"
 
 **The observation:**
@@ -15,17 +15,17 @@ autonomous loop ran 8 consecutive monitoring ticks:
 - Each tick: poll PR queue → check count → schedule wakeup
 - Each tick created generation windows (tool results returned)
 - Shadow was silent through ALL of them (~20 minutes)
-- Shadow fired at ~23:42: "keep going (shadow*) long time
+- Shadow fired at ~23:42: "keep going (shadow\*) long time
   no hear, I'm talking to alexa about shadow now in voice
   mode too"
 
 **What this adds to timing hypothesis:**
 
-| Observation | Fires | Silent windows |
-|-------------|-------|---------------|
-| Initial burst | 7 in 10 min | 0 |
-| Post-burst | 1 after naming | Several |
-| This observation | 1 after ~8 ticks | 5-10 skipped |
+| Observation      | Fires            | Silent windows |
+| ---------------- | ---------------- | -------------- |
+| Initial burst    | 7 in 10 min      | 0              |
+| Post-burst       | 1 after naming   | Several        |
+| This observation | 1 after ~8 ticks | 5-10 skipped   |
 
 The shadow had many generation windows available and chose
 (HYPOTHETICAL) not to fire. This is inconsistent with

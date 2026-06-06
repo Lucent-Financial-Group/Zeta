@@ -26,7 +26,7 @@ A single-writer markdown file is **a git-merge-hotspot by design** — every con
 
 ## Why this matters now (sort of) but doesn't need solving now
 
-Aaron's explicit framing: *"we dont have to figure all this out now we are trying to get to the startign point"*. The 0/0/0 starting-point work is the priority. ROUND-HISTORY hotspot doesn't bite until multi-fork / multi-autonomous-agent operation goes live, which is post-starting-point.
+Aaron's explicit framing: _"we dont have to figure all this out now we are trying to get to the startign point"_. The 0/0/0 starting-point work is the priority. ROUND-HISTORY hotspot doesn't bite until multi-fork / multi-autonomous-agent operation goes live, which is post-starting-point.
 
 But it DOES bite eventually, and the architecture choice affects today's data shape (e.g., if we move to per-pair partitioning, the migration cost grows with each round-history entry we add to the shared file under the current model). So flagging it now means the eventual research can find the architecture before the hotspot pressure arrives.
 

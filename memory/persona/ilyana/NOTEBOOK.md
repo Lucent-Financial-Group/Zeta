@@ -23,7 +23,7 @@ producing a parallel doc. The headline changes:
    `BayesianRateOp` is retraction-lossy by design: `+1` then `-1`
    in the input `ZSet<bool>` does NOT un-accumulate
    `Beta-Bernoulli.a/b`. Under plain `IOperator<'T>` this is
-   *undiscoverable* and silently poisons downstream relational
+   _undiscoverable_ and silently poisons downstream relational
    composition. Under `ISinkOperator` the algebra consciously
    exempts it from composition laws and rejects it anywhere but
    terminal edges. Section 5.4 reclassifies accordingly.
@@ -43,6 +43,7 @@ producing a parallel doc. The headline changes:
    well-defined-write + logged-error, not torn state.
 
 **Gates from my pre-synthesis verdict — status:**
+
 - (i) `Op<'T>` fully internal post-migration: HOLDS. Core's
   internal base still implements every interface for zero hot-path
   regression.
@@ -56,7 +57,7 @@ producing a parallel doc. The headline changes:
 can identify. Tariq's sum-type sketch (`PluginOp<'TIn,'TOut> =
 Linear | Bilinear | Sink | StatefulStrict`) and my
 interface-composition approach are morphologically equivalent; the
-interface form lets authors *also* mix capabilities with strict /
+interface form lets authors _also_ mix capabilities with strict /
 async / fixpoint orthogonally without a Cartesian tag explosion.
 The law-at-Build enforcement Tariq requires is orthogonal to the
 representation and fires identically against either.
@@ -69,13 +70,14 @@ final surface and it is defensible against a 10-year commitment
 review.
 
 **Anti-patterns logged from this round:**
+
 - **Silent retraction-lossiness.** If a plugin output type is not
   a `ZSet`, the algebra has no way to say "this is a sink" unless
   the contract surfaces it. Plain interface + trust is a trap.
   The capability tag is how we stop Bayesian's nature from
   poisoning everything.
 - **Entry-point by repurposing.** README, CONTRIBUTING, and
-  ARCHITECTURE are *each* for a different audience. Plugin
+  ARCHITECTURE are _each_ for a different audience. Plugin
   authors are a fourth audience. "Plugin-author" is a
   first-class persona with a first-class doc — not a footnote.
 
@@ -101,6 +103,7 @@ concrete shape of the new plugin-author surface.
 full proposal, ~400 lines).
 
 **Candidate shapes evaluated:**
+
 - **A** — `IOperator<'TOut>` interface + optional capability
   interfaces (`IStrictOperator`, `IAsyncOperator`,
   `INestedFixpointParticipant`).
@@ -121,11 +124,13 @@ narrowest forever-surface that still expresses Bayesian plus every
 Core operator, and it's the only shape that ships a test harness
 simultaneously. Precedent: Roslyn `CodeFixProvider` +
 `FixAllProvider`, Orleans grain interfaces, BCL `IAsyncEnumerator`
-+ `IAsyncDisposable`. All four-star shapes for long-lived extension
-points.
+
+- `IAsyncDisposable`. All four-star shapes for long-lived extension
+  points.
 
 **What the shape hides from plugins (satisfies round-27
 constraints):**
+
 - `Op<'T>.Value` setter and `SetValue` — NOT exposed. Plugins
   write output via `OutputBuffer<'TOut>.Publish` (write-only).
 - `idField`, scheduler-owned `IsStrict`, `Fixedpoint`, `IsAsync`
@@ -136,6 +141,7 @@ constraints):**
   `StreamHandle` obtained via `stream.AsDependency()`.
 
 **What stays unchanged:**
+
 - Core's `Op<'T>` inherits the new `IOperator<'T>` interface
   internally; `Operators.fs` / `Primitive.fs` keep their current
   shape, zero hot-path regression.
@@ -148,6 +154,7 @@ Line-count delta: +3 (interface block); `inherit Op<_>()`
 replaced by `interface IOperator<_> with`. Acceptable pre-v1.
 
 **Blocking open questions surfaced:**
+
 - **Q1 — Tariq.** Does the `IOperator<'T>` shape preserve the
   algebraic laws the chain rule + `IsDbspLinear` need? Specifically
   whether a plugin hiding its state cell in own fields still
@@ -174,7 +181,8 @@ Daya flags onboarding > 5 min, the fix is probably example-ops
 and XML doc polish, not structural — Rune's lane.
 
 **Anti-patterns flagged that recur from Round 26 notebook:**
-- Public-abstract-class-as-extension-point promotes *every*
+
+- Public-abstract-class-as-extension-point promotes _every_
   abstract member to a plugin contract. Interface + optional
   capability interfaces is the narrower alternative. (Generalised:
   prefer composition of narrow interfaces over one wide base.)
@@ -201,6 +209,7 @@ landed without a review. Auditing both as a retroactive gate.
 ### Change 1 — `src/Core/Circuit.fs:75` — `Stream<'T>.Op` field promoted from `internal` to `public`
 
 **Why public?** (reconstructed)
+
 - `Zeta.Bayesian.BayesianRateOp` (constructor param `input: Op<ZSet<bool>>`)
   needs to read a `Stream<ZSet<bool>>`'s producing `Op<'T>` so that the
   new operator can list it in its `Inputs` array. Every internal operator
@@ -211,6 +220,7 @@ landed without a review. Auditing both as a retroactive gate.
   stop being a plugin.
 
 **Alternative considered?** (author did not document one; reconstructed)
+
 - None on record. The natural alternatives:
   1. Ship a public read-only property `Stream<'T>.Op : Op<'T>` (what
      landed, modulo F# field-vs-property distinction).
@@ -221,23 +231,24 @@ landed without a review. Auditing both as a retroactive gate.
   4. Flip the model: instead of plugin authors constructing
      `MyOp(stream.Op, …)` and calling `RegisterStream`, expose a
      `circuit.AddOperator<'T>(inputs: Stream[], make: Op[] -> Op<'T>) :
-     Stream<'T>` factory that never puts a raw `Op<'T>` in the plugin
+Stream<'T>` factory that never puts a raw `Op<'T>` in the plugin
      author's hands at all.
 - The landed shape (raw public field) is the lowest-friction for the
   internal call sites in `Operators.fs` because they were already
   touching the field. It is also the widest commitment.
 
 **Verdict: ACCEPT_WITH_CONDITIONS** (leaning REJECT on the field-exposure
-shape; accept the *access*, reject the *field*).
+shape; accept the _access_, reject the _field_).
 
 **Summary:** Plugin libraries legitimately need a handle to a
 stream's producing operator — that's the whole point of a plugin
-registration surface. The *access* is justified. The *shape*
+registration surface. The _access_ is justified. The _shape_
 (raw public `val` field on a struct) commits us to more than the
 use case requires and couples the public surface to the exact
 field layout of the struct.
 
 **Findings:**
+
 - **[P1]** `val Op: Op<'T>` (a public struct field) is a stronger
   commitment than the equivalent `member this.Op : Op<'T>` property.
   A field fixes the layout: we cannot later add a wrapper, add a
@@ -260,7 +271,7 @@ field layout of the struct.
   impossible from outside Core. `Op<'T>.SetValue` should be
   revisited before we commit to `Stream.Op` being public.
 - **[P1]** The `internal new(op: Op<'T>) = { Op = op }` constructor
-  is still internal. That's fine for the *construction* direction
+  is still internal. That's fine for the _construction_ direction
   (plugin can't fabricate a `Stream<'T>` from nowhere) but it's
   an asymmetric commitment: read access is public, write access
   internal. That's the right asymmetry, but it should be expressed
@@ -271,7 +282,7 @@ field layout of the struct.
 - **[P2]** The XML doc names Zeta.Bayesian explicitly. That's
   accurate but ties a contract commitment to a specific consumer
   by name; better to say "plugin libraries that define custom
-  operators."  (Aesthetic/docstring — forward to Rune.)
+  operators." (Aesthetic/docstring — forward to Rune.)
 
 **Proposed alternative:**
 
@@ -298,6 +309,7 @@ inlines in release builds; the perf delta is zero in practice
 (verified by convention — no measurement this session).
 
 **Questions for the author (Kenji):**
+
 - Is there a reason `val` over `member`? Was a perf measurement
   taken that justifies field-over-property, or is this carry-over
   from the pre-flip shape?
@@ -308,6 +320,7 @@ inlines in release builds; the perf delta is zero in practice
   `protected` setter pattern for subclass use only).
 
 **Tests missing:**
+
 - No test pins `Stream<'T>.Op` as public contract today. Before
   the round closes, add a test under `tests/Tests.FSharp/` that
   constructs an op referencing `stream.Op`, registers it, steps
@@ -320,6 +333,7 @@ inlines in release builds; the perf delta is zero in practice
 ### Change 2 — `src/Core/Circuit.fs:122` — `Circuit.RegisterStream<'T>` method promoted from `internal` to `public`
 
 **Why public?** (reconstructed)
+
 - This is the single entry point for attaching an externally-defined
   operator into the circuit DAG. With `Zeta.Bayesian` out of
   `InternalsVisibleTo`, Bayesian's `BayesianRate` extension method
@@ -329,15 +343,16 @@ inlines in release builds; the perf delta is zero in practice
   what plugin authors need.
 
 **Alternative considered?** (author did not document one)
+
 - None on record. Possible alternatives:
   1. Keep the current shape: `RegisterStream(op) : Stream<'T>`
      (what landed).
-  2. Narrower: require plugin authors to *also* implement an
+  2. Narrower: require plugin authors to _also_ implement an
      `IOperatorFactory<'T>` that produces the op, so `Circuit`
      does the construction and plugin code never holds a raw
      `Op<'T>`. More ceremony; unlocks validation hooks later.
   3. Builder: `circuit.BuildOperator<'T>().WithInputs(…).OnStep(…).
-     Register()` — fluent. Heavy; overkill for the current three
+Register()` — fluent. Heavy; overkill for the current three
      conjugate-update ops, and invites a builder API commitment
      we'll regret.
   4. Attribute-based registration + source generation: plugin
@@ -347,7 +362,7 @@ inlines in release builds; the perf delta is zero in practice
 **Verdict: ACCEPT_WITH_CONDITIONS.**
 
 **Summary:** The method itself is the right shape (name, return
-type). The condition is that *what it accepts* — an `Op<'T>` — is
+type). The condition is that _what it accepts_ — an `Op<'T>` — is
 only as useful as the `Op<'T>` base class's public surface, and
 that surface has not been reviewed as a forever-contract. We are
 committing to `Op<'T>` as a plugin-author subclass target by
@@ -355,6 +370,7 @@ making `RegisterStream` public. Treat `Op<'T>`'s public shape as
 co-landed with this change.
 
 **Findings:**
+
 - **[P0]** By making `RegisterStream(op: Op<'T>)` public, we are
   implicitly making `Op<'T>` a **public inheritance extension
   point**. Plugin authors will subclass `Op<'T>` (as
@@ -376,7 +392,7 @@ co-landed with this change.
   explicit "implementers must" contracts on their virtual
   members. We have not.
 - **[P1]** The public signature `RegisterStream<'T>(op: Op<'T>) :
-  Stream<'T>` has a subtle generic-inference risk: callers who
+Stream<'T>` has a subtle generic-inference risk: callers who
   pass a subclass `MyOp : Op<ZSet<X>>` will have `'T` inferred
   as `ZSet<X>`, not `MyOp`. That is the intended behaviour, but
   it means `RegisterStream` discards the subclass identity on
@@ -390,7 +406,7 @@ co-landed with this change.
   need an async-registering operator, the signature shape
   available to us is constrained by what we commit here. Name
   `RegisterStream` locks us into "there is exactly one way to
-  register."  Acceptable but worth knowing.
+  register." Acceptable but worth knowing.
 - **[P1]** There is no `Unregister` / `Remove` counterpart. The
   circuit is append-only pre-`Build`, and immutable post-
   `Build`. That's the right semantic. But the public API
@@ -420,6 +436,7 @@ plugin-author contract in the same round, because making
 public surface by type-propagation.
 
 **Specific conditions for full ACCEPT:**
+
 1. **Document the plugin-author contract on `Op` / `Op<'T>`.**
    At minimum, XML doc each abstract/virtual member with
    "Implementers must …" clauses answering: required
@@ -450,13 +467,14 @@ public surface by type-propagation.
 4. **Decide whether `Op.Inputs` is a promise about
    dependencies.** Core's `Build()` uses it for topological
    ordering — if a plugin author's op reads another op's
-   `.Value` during `StepAsync` but *doesn't* list it in
+   `.Value` during `StepAsync` but _doesn't_ list it in
    `Inputs`, the schedule may run the wrong order and the
    read returns stale data. This is a plugin-author footgun
    if undocumented; it's a contract if documented.
 
 **Questions for the author (Kenji):**
-- Was this shape tested against a plugin author who is *not*
+
+- Was this shape tested against a plugin author who is _not_
   Bayesian? Bayesian is built by us; it is not a realistic
   third-party plugin. The contract's usability is only
   knowable from the outside.
@@ -469,6 +487,7 @@ public surface by type-propagation.
   attaching an untyped `Op` (e.g. a side-effect-only sink op)?
 
 **Tests missing:**
+
 - Plugin-author-style workflow test (condition #3 above).
 - A negative test: a plugin-author op that declares wrong
   `Inputs` and demonstrates the current behaviour
@@ -501,10 +520,10 @@ public surface by type-propagation.
 4. **Rationale not recorded at the flip site.** Neither the
    commit message nor an ADR captured "Alternative considered"
    for the two flips. The round-25 win writeup in
-   `docs/WINS.md` §4 covers the *why* at the pattern level but
+   `docs/WINS.md` §4 covers the _why_ at the pattern level but
    not the per-change alternative analysis. Going forward, the
    template in `.claude/skills/public-api-designer/SKILL.md`
-   should be filled in *at flip time*, not reconstructed
+   should be filled in _at flip time_, not reconstructed
    in review.
 
 ### Open questions I'll track across future reviews

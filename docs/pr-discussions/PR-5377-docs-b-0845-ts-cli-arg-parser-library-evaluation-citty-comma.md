@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## What
 
-Operator 2026-05-26: *"is there some cli package we should use for ts for the --parameter helpers and such? we have a lot of ts scripts that function similar to shell script"*
+Operator 2026-05-26: _"is there some cli package we should use for ts for the --parameter helpers and such? we have a lot of ts scripts that function similar to shell script"_
 
 Recognizes bandwidth-engineering inefficiency in Zeta TS substrate. zflash.ts / flash-usb.ts / poll-pr-gate-batch.ts / audit-installer-substrate.ts each have ~80-150 LOC of manual arg-parsing boilerplate.
 

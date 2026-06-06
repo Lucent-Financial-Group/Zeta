@@ -21,7 +21,7 @@ further.
 
 Gastown is a **local-first, single-host, Dolt+tmux+git** workspace orchestrator.
 We are a **cluster-native, CockroachDB+NATS+k8s** organization OS. They are similar
-in *intent* (both are AI workspace orchestration) and opposite in *substrate*. That
+in _intent_ (both are AI workspace orchestration) and opposite in _substrate_. That
 substrate difference is the source of most of our wins and most of their weaknesses
 — but it is NOT the source of the handful of genuinely good things they have shipped
 that we have not. Those are the point of this doc.
@@ -33,31 +33,31 @@ that we have not. Those are the point of this doc.
 "Maturity" below is **shipped+proven**, not designed. Be honest: gastown has been
 alive much longer and has shipped several subsystems we currently have only as schema
 
-+ domain types or design docs.
+- domain types or design docs.
 
-| Capability | Gastown | Us | Verdict |
-|---|---|---|---|
-| **Workflow enforcement** | Molecule/formula steps **rendered as prose**; agent works on honor system, can skip steps, no gate (`docs/concepts/molecules.md`) | Kernel **enforces** gates: `legalXxxTransitions()` clamp, evidence-required, authority DU, no bypass path | **WE WIN (north star)** |
-| **Durable state substrate** | Dolt (git-for-data) used as schema DB + queue + event log + mail store; 5s poll latency, cross-rig staleness, 20-min sync | CockroachDB (MVCC, consistent, multi-region) + NATS (event-driven, <1s) | **WE WIN** |
-| **Agent runtime boundary** | tmux shims: 512-byte chunking, 600ms readline dance, U+276F prompt-prefix scraping, JSONL transcript parsing — breaks on Claude Code updates | Native ports: `ChatCompletionPort` (Ollama), `SandboxToolPort` (subprocess), structured telemetry push | **WE WIN** |
-| **Horizontal scale** | Single host, tmux, ~10-20 agents max, macOS-only keychain | k8s-native, pod-per-agent, horizontal | **WE WIN** |
-| **Coordinator topology** | Mayor/Deacon/Witness/Refinery **singletons** (SPOF, bottleneck) | Hat-pattern: any persona wears any hat, no singleton | **WE WIN** |
-| **Polling vs events** | Polling-first everywhere (witness 30s, convoy 5s, nudge 10s) | Event-first (NATS), recovery-scan second | **WE WIN (where built)** |
-| **Merge queue / release** | **Refinery: batch-then-bisect merge queue — SHIPPED** (`internal/refinery/batch.go`) | Per-ChangeSet serial change-control kernel; **no batching, no bisect, no queue** | **THEY WIN — build it** |
-| **Model evaluation** | **gt-model-eval: Class A/B downgrade harness — SHIPPED** (94 test cases, Promptfoo) | None | **THEY WIN — build it** |
-| **Persistent agent pool** | **Persistent polecat pool w/ warm sandbox + idle reuse + branch-only repair — SHIPPED** | Agent identity vs run vs hat exists; no warm pool, no sandbox reuse | **THEY WIN — adopt** |
-| **Self-resuming work (GUPP)** | **hook_bead pinning + session-per-step relay — SHIPPED**; "if a hook is set, a session WILL run it" | reaction-plan + hermes_run + heartbeat (better substrate) but **resume-from-checkpoint guarantee not formalized** | **THEY WIN the guarantee — formalize ours** |
-| **Recovery scanners** | **Convoy stranded-scan + reaper + witness patrol — SHIPPED** (fail-open, dual-feed dedup) | Lane framework exists; **stale-reaction/stranded-schedule/dead-letter scanners are design-only** | **THEY WIN — build (we already planned)** |
-| **Config layering** | **4-tier property layers + directives + overlays — SHIPPED** (first-non-nil, integer-stacking, blocking-inheritance) | `tenant_config` = single JSONB blob (V20), no layering, no read path | **THEY WIN — upgrade ours** |
-| **Escalation ladder** | **Severity-routed escalation w/ stale-re-escalate + ack — SHIPPED** | supervisor-signal + triage (2 of 5 actions); no severity ladder | **THEY WIN — build out** |
-| **Emergency stop** | **ESTOP sentinel — SHIPPED** (distributed freeze, exempt coordinators) | None | **THEY WIN — adopt (cheap)** |
-| **Two-channel comms** | **Mail (durable) vs Nudge (ephemeral) — SHIPPED**; wisps (TTL ephemeral data) | Everything → durable org_events (ledger bloat risk) | **THEY WIN — adopt the split** |
-| **Capability extension** | **Plugin system + Mol-Mall registry — SHIPPED** (cooldown/cron/condition/event gates) | Skills-as-data (frontmatter) + capability_request work type; no plugin/registry runtime | **THEY WIN the runtime — ours is more principled, less built** |
-| **Provider-contract API** | **Factory-Worker-API — DESIGNED (Gas City), not shipped**; today it's tmux shims | **Native ports — SHIPPED** (this IS their endgame) | **WE WIN — their design validates ours** |
-| **OTel observability** | OTel logs+metrics shipped; **traces are roadmap** (flat logs + run.id joins today) | org_event ledger (shipped) + OTEL attribute types; **SDK not wired** | **EVEN — both behind on traces** |
-| **Work model richness** | beads: tasks/epics/agents/molecules/messages/events; Dolt time-travel (`AS OF`) | 9 work types, org-as-data graph, hat authority, change-control, memory, doc, KG | **WE WIN breadth; they win time-travel queries** |
-| **Memory system** | None comparable (CV/reputation ledger only) | Hindsight: tiers/decay/KPI-correlation/injection-ledger/maintenance — SHIPPED+proven | **WE WIN (we have no peer here)** |
-| **Knowledge graph / doc intel** | None | Schema+domain shipped; **construction + 8-stage retrieval pipelines partial** | **WE WIN the ambition; honest: partly built** |
+| Capability                      | Gastown                                                                                                                                      | Us                                                                                                                | Verdict                                                        |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Workflow enforcement**        | Molecule/formula steps **rendered as prose**; agent works on honor system, can skip steps, no gate (`docs/concepts/molecules.md`)            | Kernel **enforces** gates: `legalXxxTransitions()` clamp, evidence-required, authority DU, no bypass path         | **WE WIN (north star)**                                        |
+| **Durable state substrate**     | Dolt (git-for-data) used as schema DB + queue + event log + mail store; 5s poll latency, cross-rig staleness, 20-min sync                    | CockroachDB (MVCC, consistent, multi-region) + NATS (event-driven, <1s)                                           | **WE WIN**                                                     |
+| **Agent runtime boundary**      | tmux shims: 512-byte chunking, 600ms readline dance, U+276F prompt-prefix scraping, JSONL transcript parsing — breaks on Claude Code updates | Native ports: `ChatCompletionPort` (Ollama), `SandboxToolPort` (subprocess), structured telemetry push            | **WE WIN**                                                     |
+| **Horizontal scale**            | Single host, tmux, ~10-20 agents max, macOS-only keychain                                                                                    | k8s-native, pod-per-agent, horizontal                                                                             | **WE WIN**                                                     |
+| **Coordinator topology**        | Mayor/Deacon/Witness/Refinery **singletons** (SPOF, bottleneck)                                                                              | Hat-pattern: any persona wears any hat, no singleton                                                              | **WE WIN**                                                     |
+| **Polling vs events**           | Polling-first everywhere (witness 30s, convoy 5s, nudge 10s)                                                                                 | Event-first (NATS), recovery-scan second                                                                          | **WE WIN (where built)**                                       |
+| **Merge queue / release**       | **Refinery: batch-then-bisect merge queue — SHIPPED** (`internal/refinery/batch.go`)                                                         | Per-ChangeSet serial change-control kernel; **no batching, no bisect, no queue**                                  | **THEY WIN — build it**                                        |
+| **Model evaluation**            | **gt-model-eval: Class A/B downgrade harness — SHIPPED** (94 test cases, Promptfoo)                                                          | None                                                                                                              | **THEY WIN — build it**                                        |
+| **Persistent agent pool**       | **Persistent polecat pool w/ warm sandbox + idle reuse + branch-only repair — SHIPPED**                                                      | Agent identity vs run vs hat exists; no warm pool, no sandbox reuse                                               | **THEY WIN — adopt**                                           |
+| **Self-resuming work (GUPP)**   | **hook_bead pinning + session-per-step relay — SHIPPED**; "if a hook is set, a session WILL run it"                                          | reaction-plan + hermes_run + heartbeat (better substrate) but **resume-from-checkpoint guarantee not formalized** | **THEY WIN the guarantee — formalize ours**                    |
+| **Recovery scanners**           | **Convoy stranded-scan + reaper + witness patrol — SHIPPED** (fail-open, dual-feed dedup)                                                    | Lane framework exists; **stale-reaction/stranded-schedule/dead-letter scanners are design-only**                  | **THEY WIN — build (we already planned)**                      |
+| **Config layering**             | **4-tier property layers + directives + overlays — SHIPPED** (first-non-nil, integer-stacking, blocking-inheritance)                         | `tenant_config` = single JSONB blob (V20), no layering, no read path                                              | **THEY WIN — upgrade ours**                                    |
+| **Escalation ladder**           | **Severity-routed escalation w/ stale-re-escalate + ack — SHIPPED**                                                                          | supervisor-signal + triage (2 of 5 actions); no severity ladder                                                   | **THEY WIN — build out**                                       |
+| **Emergency stop**              | **ESTOP sentinel — SHIPPED** (distributed freeze, exempt coordinators)                                                                       | None                                                                                                              | **THEY WIN — adopt (cheap)**                                   |
+| **Two-channel comms**           | **Mail (durable) vs Nudge (ephemeral) — SHIPPED**; wisps (TTL ephemeral data)                                                                | Everything → durable org_events (ledger bloat risk)                                                               | **THEY WIN — adopt the split**                                 |
+| **Capability extension**        | **Plugin system + Mol-Mall registry — SHIPPED** (cooldown/cron/condition/event gates)                                                        | Skills-as-data (frontmatter) + capability_request work type; no plugin/registry runtime                           | **THEY WIN the runtime — ours is more principled, less built** |
+| **Provider-contract API**       | **Factory-Worker-API — DESIGNED (Gas City), not shipped**; today it's tmux shims                                                             | **Native ports — SHIPPED** (this IS their endgame)                                                                | **WE WIN — their design validates ours**                       |
+| **OTel observability**          | OTel logs+metrics shipped; **traces are roadmap** (flat logs + run.id joins today)                                                           | org_event ledger (shipped) + OTEL attribute types; **SDK not wired**                                              | **EVEN — both behind on traces**                               |
+| **Work model richness**         | beads: tasks/epics/agents/molecules/messages/events; Dolt time-travel (`AS OF`)                                                              | 9 work types, org-as-data graph, hat authority, change-control, memory, doc, KG                                   | **WE WIN breadth; they win time-travel queries**               |
+| **Memory system**               | None comparable (CV/reputation ledger only)                                                                                                  | Hindsight: tiers/decay/KPI-correlation/injection-ledger/maintenance — SHIPPED+proven                              | **WE WIN (we have no peer here)**                              |
+| **Knowledge graph / doc intel** | None                                                                                                                                         | Schema+domain shipped; **construction + 8-stage retrieval pipelines partial**                                     | **WE WIN the ambition; honest: partly built**                  |
 
 **Net:** we win the architecture (substrate, enforcement, scale, no-SPOF) decisively.
 They win on **specific shipped tooling we lack**: a real merge queue, a model-eval
@@ -92,13 +92,13 @@ isolation that is **not** naive reject-and-requeue:
 A Promptfoo benchmark of Opus vs Sonnet vs Haiku on **94 real patrol decisions**,
 split into two classes:
 
-- **Class B (82 tests)**: directive context + role hints → measures *instruction-following*.
-- **Class A (12 tests)**: neutral context, evidence-only → measures *pure reasoning*.
+- **Class B (82 tests)**: directive context + role hints → measures _instruction-following_.
+- **Class A (12 tests)**: neutral context, evidence-only → measures _pure reasoning_.
 
 Class A is the **primary signal for safe downgrade**: can a cheaper model infer the
 right action from shell-output evidence alone? Tests validate against a per-role
-`allowed_actions` vocabulary (abstractions of CLI verbs), so it scores *decision
-quality*, not syntax. Results auto-post to GitHub Discussions. We have **no model
+`allowed_actions` vocabulary (abstractions of CLI verbs), so it scores _decision
+quality_, not syntax. Results auto-post to GitHub Discussions. We have **no model
 eval** and a live cost concern (per-hat model selection) — this directly serves it.
 
 ### 2.3 Persistent polecat pool + three-layer identity (`docs/concepts/polecat-lifecycle.md`)
@@ -115,8 +115,8 @@ fall out of persistent identity. We have identity vs run vs hat but **no warm po
 
 Three invariants guarantee completion: (1) work is **pinned** via `hook_bead` on the
 agent (survives session cycling); (2) the **sandbox persists** (branch+worktree);
-(3) **someone respawns** sessions (Witness on crash). Together: *if a hook is set, a
-session WILL eventually run it.* Each molecule step = one session; **beads state IS
+(3) **someone respawns** sessions (Witness on crash). Together: _if a hook is set, a
+session WILL eventually run it._ Each molecule step = one session; **beads state IS
 the handoff** (no explicit payload). A crash mid-step loses only that step. We have
 the better substrate (durable Cockroach + leased reaction plans) but have **not
 formalized the equivalent guarantee** (work-item + hermes_run resume-from-last-event).
@@ -128,7 +128,7 @@ The pattern our own analysis doc already praised, now confirmed in code: a **dua
 sync.Map, reopen clears markers) **plus** a stranded-recovery scan every 30s as the net.
 **Fail-open** on transient store errors (assume not-blocked, retry next cycle) prevents
 a single DB hiccup from stalling work. Their own SKILL doc admits the weakness:
-*"convoys stall on poll cycles"* (~5s latency) — which is exactly the thing NATS
+_"convoys stall on poll cycles"_ (~5s latency) — which is exactly the thing NATS
 subscriptions fix for us. The **shape** (event-first, recovery-scan-second, fail-open)
 is right and we should build our scanners to it.
 
@@ -153,7 +153,7 @@ distributed freeze with zero central coordination. We have supervisor-signal + t
 
 ### 2.8 Mail-vs-Nudge two-channel philosophy (`docs/design/mail-protocol.md`)
 
-The litmus test: *"does the recipient need this after session restart?"* Yes → **mail**
+The litmus test: _"does the recipient need this after session restart?"_ Yes → **mail**
 (durable, creates a Dolt commit, use sparingly). No → **nudge** (ephemeral tmux inject,
 zero storage). Plus **wisps**: high-volume patrol data with TTL, auto-GC'd, kept out of
 the permanent ledger. We route **everything** to durable `org_events` — correct for
@@ -219,7 +219,7 @@ models) in two classes — **Class B** (full hat directive context) and **Class 
 evidence-only) — to find where a cheaper model matches. Directly serves per-hat model
 selection + cost discipline (our autonomy story). Lives as a new `packages/model-eval`
 
-+ a deploy proof; results recorded as org_events.
+- a deploy proof; results recorded as org_events.
 
 **B3. Build the recovery scanners** our NORTH_STAR already lists as future workers:
 `stale-reaction-plan-scan`, `stranded-schedule-scan`, `abandoned-run-binding-scan`,
@@ -254,13 +254,13 @@ cheap, high-safety, distributed freeze with coordinator exemption.
 **B7. Two-channel comms + ephemeral surface.** Keep durable transitions in `org_events`,
 but add an **ephemeral nudge channel** (NATS subject, no ledger write) for high-volume
 non-durable signals, and a **wisp-equivalent TTL table** for high-churn patrol data so the
-ledger doesn't bloat. Litmus test, theirs, adopted: *survives restart? → org_event; else →
-nudge.*
+ledger doesn't bloat. Litmus test, theirs, adopted: _survives restart? → org_event; else →
+nudge._
 
 ### Tier 3 — leverage / leapfrog
 
 **B8. Wire real OTel traces (leapfrog).** We have org_event ledger + OTEL attribute types
-but no SDK. Gastown is *also* behind here (flat logs + run.id joins; traces are roadmap).
+but no SDK. Gastown is _also_ behind here (flat logs + run.id joins; traces are roadmap).
 Wiring real distributed traces (root span per Hermes run, child spans per command/NATS/tool)
 **leapfrogs** them on the one observability axis where neither has shipped.
 
@@ -269,7 +269,7 @@ Wiring real distributed traces (root span per Hermes run, child spans per comman
 Composes with B1 (the release queue lands the integration branch).
 
 **B10. Formalize the agent-provider contract as an explicit API.** We already have the
-native ports that *are* gastown's unbuilt "Factory Worker API" endgame. Document our
+native ports that _are_ gastown's unbuilt "Factory Worker API" endgame. Document our
 contract explicitly (`/lifecycle`, `/prompt`, `/context`, `/authorize`, `/telemetry`,
 `/health` equivalents) — their `docs/design/factory-worker-api.md` is a ready-made
 reference and a validation that our boundary is the right one.

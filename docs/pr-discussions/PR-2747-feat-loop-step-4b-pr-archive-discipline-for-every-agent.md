@@ -35,24 +35,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T20:21:05Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `d20040a72b`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -65,6 +63,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new “step 4b” to the autonomous loop checklist to ensure merged PR discussion threads are archived into the repo after tick work is committed, using the existing `tools/pr-preservation/archive-pr.ts` flow.
 
 **Changes:**
+
 - Document a new post-commit step to scan recent merged PRs and archive unarchived PR discussions.
 - Add a suggested `gh pr list` + `bun tools/pr-preservation/archive-pr.ts` snippet to automate the check.
 - Explain why PR discussion archives are treated as durable, git-native substrate.
@@ -75,7 +74,7 @@ Adds a new “step 4b” to the autonomous loop checklist to ensure merged PR di
 
 **@chatgpt-codex-connector** (2026-05-11T20:21:06Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove fixed 10-PR cap from archive sweep**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove fixed 10-PR cap from archive sweep**
 
 The new loop command hard-caps discovery to `gh pr list --state merged --limit 10`, so any unarchived merged PRs outside the newest 10 are never considered by this step. The `gh pr list` manual defines `--limit` as the maximum number of items fetched, which means a merge burst or a longer offline window can permanently skip older PR discussion archives and violate the stated preservation goal. Please paginate (or otherwise continue until no unarchived matches remain) instead of using a fixed top-10 window.
 

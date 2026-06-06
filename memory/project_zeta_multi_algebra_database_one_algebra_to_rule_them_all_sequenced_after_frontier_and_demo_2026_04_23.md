@@ -53,7 +53,7 @@ Aaron's explicit sequence:
    authority / branch-protection / plural-host / etc.)
    — this IS what "more stable" means.
 2. **Good demo surface + UI** — the Showcase projects
-   (FactoryDemo.* renamed from ServiceTitan-shape
+   (FactoryDemo.\* renamed from ServiceTitan-shape
    samples) + the Pages-UI (P2 BACKLOG row, PR #172
    merged) + any adopter-facing surfaces.
 3. **THEN** multi-algebra work on Zeta earns the bulk of
@@ -94,7 +94,7 @@ next major engineering effort.
 ### When Frontier + demo are stable
 
 - **Research doc first**: `docs/research/semiring-
-  parameterized-zeta-design-YYYY-MM-DD.md` with the full
+parameterized-zeta-design-YYYY-MM-DD.md` with the full
   design surface (public API shape, compile-time vs
   runtime parameterisation, wire-format implications,
   perf envelopes per semiring).

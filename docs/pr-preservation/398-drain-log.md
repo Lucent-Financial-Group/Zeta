@@ -24,6 +24,7 @@ threads landed on the memory file and BACKLOG row.
 > This references `docs/AGENTS.md`, but in the repo the file is
 > `AGENTS.md` at the root (no `docs/` prefix). Update the link/path
 > so readers can actually navigate to the referenced document.
+>
 > ```suggestion
 > `AGENTS.md`) breaks.
 > ```
@@ -78,9 +79,9 @@ commands and a comment pointing at this memory file.
 >    note that older brew / system installs are personal-machine
 >    residue not used by the build.
 > 2. The "recreate from scratch" snippet drops `brew install
->    --cask dotnet`, reorders to put `tools/setup/install.sh` as
+--cask dotnet`, reorders to put `tools/setup/install.sh` as
 >    the canonical path, and prefixes `dotnet restore` / `dotnet
->    build` with `mise exec --` so the resolved SDK matches the
+build` with `mise exec --` so the resolved SDK matches the
 >    pin.
 >
 > No more conflicting guidance — `INSTALLED.md` and this memory
@@ -101,6 +102,7 @@ commands and a comment pointing at this memory file.
 > section. Please either move the entry into the appropriate
 > priority section or update the priority label so the backlog
 > structure stays consistent.
+>
 > ```suggestion
 >   directive (verbatim, research-grade):
 > ```
@@ -132,7 +134,7 @@ backlog per maintainer" stays as-is and now matches the section.
 
 ### Original comment (verbatim)
 
-> **P2 Badge**  Align backlog priority text with its section
+> **P2 Badge** Align backlog priority text with its section
 >
 > This new entry is placed under `## P2 — research-grade` but
 > explicitly says `Priority P3 / way-back-backlog`, which creates
@@ -166,7 +168,7 @@ priority label preserved, section now matches the maintainer's
 
 ### Original comment (verbatim)
 
-> **P2 Badge**  Require updating both .mise.toml and global.json
+> **P2 Badge** Require updating both .mise.toml and global.json
 >
 > The new "preferred update path" says to edit `.mise.toml`
 > "(or `global.json`), but this repo's .NET pinning contract

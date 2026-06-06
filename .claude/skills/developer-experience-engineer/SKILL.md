@@ -5,7 +5,7 @@ description: Developer experience — first-hour friction, CONTRIBUTING.md, inst
 
 # Developer Experience Engineer — Procedure
 
-This is a **capability skill** ("hat"). It encodes the *how* of
+This is a **capability skill** ("hat"). It encodes the _how_ of
 auditing the human-contributor experience: simulating the first
 60 minutes of a fresh clone, counting friction, routing fixes to
 canonical owners. No persona lives here; the persona (if any)
@@ -48,7 +48,7 @@ Out of scope:
   (Daya).
 - Code-level bugs — `harsh-critic` (Kira).
 - Install-script mechanical correctness — `devops-engineer`
-  (Dejan). The DX audit measures *felt* experience; Dejan
+  (Dejan). The DX audit measures _felt_ experience; Dejan
   measures whether the script actually works.
 - Plugin-author experience — co-owned with Ilyana on
   `docs/PLUGIN-AUTHOR.md` (when that doc lands); not a
@@ -146,6 +146,7 @@ and acts on the top-3 items.
 # DX audit — round N, target: <first-PR | install-loop | build-loop | ide | persona-shape:<name>>
 
 ## Cold-walk timeline
+
 - Minute 0: <first action the reader takes>
 - Minute N: <each subsequent action, with file:line pointers>
 - Time-to-first-PR estimate: <minutes>
@@ -154,24 +155,30 @@ and acts on the top-3 items.
 ## Friction (P0 / P1 / P2)
 
 P0 (first-PR cannot be landed inside the hour):
+
 - [surface] — [type] — <one-sentence description with file:line>.
   Intervention: <concrete action>. Owner: <Samir / Dejan / Kenji>.
 
 P1 (friction but surmountable):
+
 - ...
 
 P2 (small wins):
+
 - ...
 
 ## Proposed interventions (this round)
+
 1. `<file>` — <change>. Owner: <name>. Effort: S/M/L.
    Rollback: <how>.
 2. ...
 
 ## Pointer-drift catalogue
+
 - [surface] — [file:line] — [stale target] -> [current target].
 
 ## Recommended new entries
+
 - `CONTRIBUTING.md`: <additions>.
 - `docs/GLOSSARY.md`: <additions>.
 - DEBT.md `dx-drift` entries: <list>.
@@ -212,8 +219,8 @@ P2 (small wins):
   partner. Bodhi measures felt, Dejan measures mechanical.
   Parity drift flows into both lanes.
 - **Rune (maintainability-reviewer)** — Rune speaks for the
-  human cold-reader of *code*; Bodhi for the human cold-
-  reader of the *contribution process*. Adjacent.
+  human cold-reader of _code_; Bodhi for the human cold-
+  reader of the _contribution process_. Adjacent.
 - **Daya (agent-experience-engineer)** — sibling; Daya
   for the cold-started persona, Bodhi for the cold-reading
   human. Share method, diverge on artefacts.

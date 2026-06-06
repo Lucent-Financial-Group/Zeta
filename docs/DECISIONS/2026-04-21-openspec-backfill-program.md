@@ -3,16 +3,16 @@
 **Status:** Adopted
 **Decision date:** 2026-04-21
 **Deciders:** Architect (Kenji) with human maintainer sign-off.
-**Triggered by:** Aaron 2026-04-20 — *"opensepcs, if I deleted
+**Triggered by:** Aaron 2026-04-20 — _"opensepcs, if I deleted
 all the code right now how easy to recreate based on the
-openspecs"*.
+openspecs"_.
 
 ## Context
 
 `openspec/README.md` declares a disaster-recovery contract:
-*"if code was hard-deleted from the repository and from git
+_"if code was hard-deleted from the repository and from git
 history... a contributor should be able to rebuild the current
-behaviour from these specs alone, at the same quality bar."*
+behaviour from these specs alone, at the same quality bar."_
 
 The Round 41 opener inventory at
 `docs/research/openspec-coverage-audit-2026-04-21.md`
@@ -39,8 +39,8 @@ with the following rules.
 
 1. **One capability per round baseline.** Every round that is
    not paper-grade ships at least one OpenSpec capability —
-   either a *new* capability (Band 2 / Band 3) or an
-   *extension pass* on an existing capability (Band 1
+   either a _new_ capability (Band 2 / Band 3) or an
+   _extension pass_ on an existing capability (Band 1
    modules added to `operator-algebra`, etc.).
 2. **Two capabilities allowed on small rounds.** Where two
    capabilities together fit inside a round's normal capacity
@@ -62,9 +62,9 @@ with the following rules.
 ### Per-capability success signal
 
 After each capability lands, Viktor (spec-zealot) runs an
-adversarial audit: *"if `src/Core/<module>.fs` were deleted
+adversarial audit: _"if `src/Core/<module>.fs` were deleted
 today, could I rebuild this module from this spec alone, at the
-factory's quality bar?"*
+factory's quality bar?"_
 
 - **Yes** → capability ships; round counts as full credit for
   cadence purposes.
@@ -125,7 +125,7 @@ When `L = 0`, Band 1 is complete and the cadence escalation
 
 **Neutral / to revisit.**
 
-- The *one capability per round baseline* is a starting
+- The _one capability per round baseline_ is a starting
   hypothesis, not a measured rate. First 6 rounds may reveal
   it is too ambitious or too slow. Revisit at Round 47
   retrospective.
@@ -137,7 +137,7 @@ When `L = 0`, Band 1 is complete and the cadence escalation
 Spend a single multi-week round writing all 20 Band 1 +
 Band 2 capabilities at once.
 
-*Rejected.* This violates the factory's ontology-landing
+_Rejected._ This violates the factory's ontology-landing
 cadence principle (`.claude/skills/paced-ontology-landing/`)
 and over-commits the reviewer bandwidth (Viktor plus
 public-API-designer Ilyana plus threat-model-critic Aminata
@@ -148,7 +148,7 @@ quality bar).
 
 Treat each `src/Core/*.fs` module as its own capability.
 
-*Rejected.* Co-dependent modules (the Spine family, the CRDT
+_Rejected._ Co-dependent modules (the Spine family, the CRDT
 pair, the SIMD pair) need joint specs to express
 cross-module invariants. Per-module specs would triple the
 total line count with no semantic gain.
@@ -157,7 +157,7 @@ total line count with no semantic gain.
 
 Leave backfill as best-effort; rely on per-round prioritisation.
 
-*Rejected.* The last 40 rounds are evidence that organic
+_Rejected._ The last 40 rounds are evidence that organic
 prioritisation drifts away from spec backfill (coverage
 declined in relative terms as `src/Core/` grew without matching
 spec expansion). A declared cadence is the retraction mechanism

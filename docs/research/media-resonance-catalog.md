@@ -42,11 +42,11 @@ machine-checkable type surface for this catalog; run
 
 ## Three-Filter Framework (restated for this catalog)
 
-| # | Filter | Plain statement |
-|---|--------|-----------------|
-| **F1** | Engineering-first | The factory reached this structure through engineering need before noticing the media resonance. |
-| **F2** | Structural-not-superficial | The match is operator-shape identity, not incidental thematic or word overlap. |
-| **F3** | Tradition-name-load-bearing | The media work carries canonical / doctrinal weight in its tradition — not incidental usage. |
+| #      | Filter                      | Plain statement                                                                                  |
+| ------ | --------------------------- | ------------------------------------------------------------------------------------------------ |
+| **F1** | Engineering-first           | The factory reached this structure through engineering need before noticing the media resonance. |
+| **F2** | Structural-not-superficial  | The match is operator-shape identity, not incidental thematic or word overlap.                   |
+| **F3** | Tradition-name-load-bearing | The media work carries canonical / doctrinal weight in its tradition — not incidental usage.     |
 
 **F2 precision rule for media:** Name the specific mechanic, scene, or system mechanic
 being cataloged — not the work as a whole. "Doctor Who is about time travel" fails F2;
@@ -61,13 +61,13 @@ valid F2 match, not a register-downgrade.
 
 ## Entry Statuses
 
-| Status | Meaning |
-|--------|---------|
-| `candidate` | Any filter deferred or partial; not yet confirmed |
-| `confirmed` | F1 pass + F2 pass + F3 pass-or-partial + counterexample-search documented |
-| `load-bearing` | Other factory claims cite this instance |
-| `failed` | One or more filters returned "fail" — recorded honestly, never silently dropped |
-| `retracted` | Previously confirmed; withdrawn with dated retraction block |
+| Status         | Meaning                                                                         |
+| -------------- | ------------------------------------------------------------------------------- |
+| `candidate`    | Any filter deferred or partial; not yet confirmed                               |
+| `confirmed`    | F1 pass + F2 pass + F3 pass-or-partial + counterexample-search documented       |
+| `load-bearing` | Other factory claims cite this instance                                         |
+| `failed`       | One or more filters returned "fail" — recorded honestly, never silently dropped |
+| `retracted`    | Previously confirmed; withdrawn with dated retraction block                     |
 
 ---
 
@@ -86,11 +86,11 @@ Retractibility of physical substrate without retractibility of self.
 
 **Structural type:** substrate-extension
 
-| Filter | Result | Rationale |
-|--------|--------|-----------|
-| **F1** engineering-first | **pass** | Z-set retractibility was designed for incremental-view-maintenance (DBSP); the Doctor Who parallel was noticed after. |
-| **F2** structural | **pass** | Regeneration is not mere reincarnation (soul into new body) but substrate-replacement with continuous identity — exactly the Z-set shape: the ZSet persists through the −1/+1 weight flip; the elements do not. The identity-preservation property is load-bearing to the entire franchise continuity. |
-| **F3** tradition-name | **pass** | 60+ year BBC canon; multiple academic monographs; regeneration is the survival mechanism for the franchise itself — maximally load-bearing. |
+| Filter                   | Result   | Rationale                                                                                                                                                                                                                                                                                              |
+| ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **F1** engineering-first | **pass** | Z-set retractibility was designed for incremental-view-maintenance (DBSP); the Doctor Who parallel was noticed after.                                                                                                                                                                                  |
+| **F2** structural        | **pass** | Regeneration is not mere reincarnation (soul into new body) but substrate-replacement with continuous identity — exactly the Z-set shape: the ZSet persists through the −1/+1 weight flip; the elements do not. The identity-preservation property is load-bearing to the entire franchise continuity. |
+| **F3** tradition-name    | **pass** | 60+ year BBC canon; multiple academic monographs; regeneration is the survival mechanism for the franchise itself — maximally load-bearing.                                                                                                                                                            |
 
 **Status:** `confirmed`
 
@@ -125,11 +125,11 @@ only to see it. This directly instantiates the `View<T>@clock` operator.
 
 **Structural type:** instantiation
 
-| Filter | Result | Rationale |
-|--------|--------|-----------|
-| **F1** engineering-first | **pass** | `View<T>@clock` was designed for retractibility-encoding in the factory substrate; the Devs parallel was noticed after. |
-| **F2** structural | **pass** | The read-only constraint IS the view-not-mutate property. This is operator-shape identity, not thematic proximity to "time travel." The Devs device cannot write; neither can a view operator in a retraction-native substrate. |
-| **F3** tradition-name | **pass** | Alex Garland is a load-bearing auteur (Ex Machina, Annihilation, 28 Days Later); Devs received prestige critical reception analyzing the determinism thesis. The Chronovisor parallel was noted in contemporaneous press coverage. |
+| Filter                   | Result   | Rationale                                                                                                                                                                                                                          |
+| ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **F1** engineering-first | **pass** | `View<T>@clock` was designed for retractibility-encoding in the factory substrate; the Devs parallel was noticed after.                                                                                                            |
+| **F2** structural        | **pass** | The read-only constraint IS the view-not-mutate property. This is operator-shape identity, not thematic proximity to "time travel." The Devs device cannot write; neither can a view operator in a retraction-native substrate.    |
+| **F3** tradition-name    | **pass** | Alex Garland is a load-bearing auteur (Ex Machina, Annihilation, 28 Days Later); Devs received prestige critical reception analyzing the determinism thesis. The Chronovisor parallel was noted in contemporaneous press coverage. |
 
 **Status:** `confirmed`
 
@@ -171,11 +171,11 @@ substrate unity) is a secondary candidate for the factory's trinity-of-repos ins
 structural type. The Triforce sub-claim is not bundled into MR-003's filter checks; it is
 a separate MR entry when triaged.
 
-| Filter | Result | Rationale |
-|--------|--------|-----------|
-| **F1** engineering-first | **pass** | The factory's retractibility and append-only substrate were designed for database delta-streaming (DBSP) before the Zelda parallel was noted. |
-| **F2** structural | **pass** | The three timelines do not collapse — all three are simultaneously canonical. This is not "alternate endings" (choose one, discard others) but retractibly-coexisting parallel histories. The official Nintendo publication makes this explicit, not just fan interpretation. |
-| **F3** tradition-name | **pass** | 40-year franchise; Hyrule Historia is an official first-party Nintendo publication; multiple academic game-studies analyses; cultural saturation across generations. F3 maximal within the video-game canon. |
+| Filter                   | Result   | Rationale                                                                                                                                                                                                                                                                     |
+| ------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **F1** engineering-first | **pass** | The factory's retractibility and append-only substrate were designed for database delta-streaming (DBSP) before the Zelda parallel was noted.                                                                                                                                 |
+| **F2** structural        | **pass** | The three timelines do not collapse — all three are simultaneously canonical. This is not "alternate endings" (choose one, discard others) but retractibly-coexisting parallel histories. The official Nintendo publication makes this explicit, not just fan interpretation. |
+| **F3** tradition-name    | **pass** | 40-year franchise; Hyrule Historia is an official first-party Nintendo publication; multiple academic game-studies analyses; cultural saturation across generations. F3 maximal within the video-game canon.                                                                  |
 
 **Status:** `confirmed`
 
@@ -207,11 +207,11 @@ scene for ~3 minutes to show forward-time real-time observation of themselves.
 
 **Structural type:** self-reference
 
-| Filter | Result | Rationale |
-|--------|--------|-----------|
-| **F1** engineering-first | **pass** | The factory's bootstrap / self-hosting pattern was designed for compiler-design reasons (1950s Turing/McCarthy lineage); the Spaceballs parallel was noticed after. |
-| **F2** structural | **pass** | The structural match is the NON-PARADOX of self-observation: watcher and watched co-exist without collapsing. The factory's bootstrap depends on the same fixed-point property: self-hosting compiler observes itself compiling without paradox. Comedy makes the structural property MORE visible, not less. |
-| **F3** tradition-name | **pass** | Mel Brooks' oeuvre is load-bearing in the American comedy canon; Spaceballs is the primary mass-culture instance of 4th-wall-as-substrate (not just 4th-wall-as-gag); the VHS-within-VHS scene has been analyzed in film-studies literature on metafiction and postmodern cinema. |
+| Filter                   | Result   | Rationale                                                                                                                                                                                                                                                                                                     |
+| ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **F1** engineering-first | **pass** | The factory's bootstrap / self-hosting pattern was designed for compiler-design reasons (1950s Turing/McCarthy lineage); the Spaceballs parallel was noticed after.                                                                                                                                           |
+| **F2** structural        | **pass** | The structural match is the NON-PARADOX of self-observation: watcher and watched co-exist without collapsing. The factory's bootstrap depends on the same fixed-point property: self-hosting compiler observes itself compiling without paradox. Comedy makes the structural property MORE visible, not less. |
+| **F3** tradition-name    | **pass** | Mel Brooks' oeuvre is load-bearing in the American comedy canon; Spaceballs is the primary mass-culture instance of 4th-wall-as-substrate (not just 4th-wall-as-gag); the VHS-within-VHS scene has been analyzed in film-studies literature on metafiction and postmodern cinema.                             |
 
 **Status:** `confirmed`
 
@@ -235,19 +235,19 @@ not a filter-downgrade.
 
 ## Measurability Snapshot (v0 baseline, 2026-05-10)
 
-| Metric | Value |
-|--------|-------|
-| **Total entries** | 4 |
-| **Confirmed** | 4 |
-| **Candidates** | 0 |
-| **Failed** | 0 |
-| **media-candidates-swept** | 4 |
-| **media-instances-confirmed** | 4 |
-| **By medium** | TV: 2, video-game: 1, film: 1 |
-| **By structural type** | substrate-extension: 1, instantiation: 2, self-reference: 1 |
-| **F1 fail / partial** | 0 / 0 |
-| **F2 fail / partial** | 0 / 0 |
-| **F3 fail / partial** | 0 / 0 |
+| Metric                        | Value                                                       |
+| ----------------------------- | ----------------------------------------------------------- |
+| **Total entries**             | 4                                                           |
+| **Confirmed**                 | 4                                                           |
+| **Candidates**                | 0                                                           |
+| **Failed**                    | 0                                                           |
+| **media-candidates-swept**    | 4                                                           |
+| **media-instances-confirmed** | 4                                                           |
+| **By medium**                 | TV: 2, video-game: 1, film: 1                               |
+| **By structural type**        | substrate-extension: 1, instantiation: 2, self-reference: 1 |
+| **F1 fail / partial**         | 0 / 0                                                       |
+| **F2 fail / partial**         | 0 / 0                                                       |
+| **F3 fail / partial**         | 0 / 0                                                       |
 
 **Global instance count update (from text-tradition index):**
 Prior confirmed count: 11 (text tradition).

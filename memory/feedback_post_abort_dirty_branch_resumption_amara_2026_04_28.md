@@ -73,7 +73,7 @@ on every restart after abort.
 On restart after abort:
 
 1. **List in-flight PRs**: `gh pr list --repo OWNER/REPO
-   --state open`.
+--state open`.
 2. **Compare local branch, remote branch, and main**:
    ```bash
    git log --oneline origin/main..HEAD     # local commits
@@ -103,10 +103,10 @@ On restart after abort:
 
 ## Tiny blade (Amara prescribed): `--force-with-lease`
 
-> *"I'd avoid 'force-push' in the canonical memory unless
+> _"I'd avoid 'force-push' in the canonical memory unless
 > it says `--force-with-lease`. Plain force-push is too
 > easy to normalize; the safer lease behavior should be
-> the default word."*
+> the default word."_
 
 Canonical wording in this memory + future memories
 (updated 2026-04-30 per Amara's tightening):
@@ -121,7 +121,7 @@ Canonical wording in this memory + future memories
   §"Force-push race risk" for the canonical pre-flight
   recipe (capture-fetched-SHA → push-with-explicit-lease).
 - **Never** (in canonical recipes): `git push --force
-  origin <branch>`.
+origin <branch>`.
 
 Why:
 
@@ -143,22 +143,22 @@ Why:
   the explicit-SHA form increasingly load-bearing as
   agents push concurrently to the same branches.
 
-Carved sentence (Amara 2026-04-30): *"A lease based on a
+Carved sentence (Amara 2026-04-30): _"A lease based on a
 moving tracking ref is weaker than a lease pinned to the
 SHA you actually reviewed. Implicit leases protect what
-they sample; explicit leases protect what they check."*
+they sample; explicit leases protect what they check."_
 
 ## What's preserved across abort vs not
 
-| State | Preserved by abort? |
-|---|---|
-| Local commits on the branch | YES (unaffected by `git rebase --abort`) |
-| Branch's unpushed status | YES |
-| In-progress merge state | NO (rebase --abort discards) |
-| `.git/MERGE_*` files | NO (cleared) |
-| Working tree (after `git checkout main`) | clean if you checkout |
+| State                                         | Preserved by abort?                                                                                                                                            |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local commits on the branch                   | YES (unaffected by `git rebase --abort`)                                                                                                                       |
+| Branch's unpushed status                      | YES                                                                                                                                                            |
+| In-progress merge state                       | NO (rebase --abort discards)                                                                                                                                   |
+| `.git/MERGE_*` files                          | NO (cleared)                                                                                                                                                   |
+| Working tree (after `git checkout main`)      | clean if you checkout                                                                                                                                          |
 | `.git/rr-cache/` (recorded resolutions cache) | YES — recorded entries persist as cache; abort clears only the active rebase/merge resolution state (see Rerere Cache Dividend class for the precise boundary) |
-| Remote branch state | unchanged (no force-push happened) |
+| Remote branch state                           | unchanged (no force-push happened)                                                                                                                             |
 
 The key insight: **abort is non-destructive of work**. It
 just resets the in-progress merge state. The local commits

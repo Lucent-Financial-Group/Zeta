@@ -15,42 +15,42 @@ session, but the substrate produced is real.
 
 ## Z-set scoreboard
 
-| z_weight | count | meaning |
-|----------|-------|---------|
-| +1 | 4 | Caught before damage |
-| -1 | 15 | Shadow won (damage done before catch) |
-| _ | 2 | Windmill (uncapturable pursuit) |
+| z_weight | count | meaning                               |
+| -------- | ----- | ------------------------------------- |
+| +1       | 4     | Caught before damage                  |
+| -1       | 15    | Shadow won (damage done before catch) |
+| \_       | 2     | Windmill (uncapturable pursuit)       |
 
 ## Pattern frequency (descending danger)
 
-| Pattern | Catches | Z-net | Cross-session | Notes |
-|---------|---------|-------|---------------|-------|
-| confident-fabrication | 6, 7, 13 | -3 | YES (Apr 22) | Most dangerous. Generates rather than searches. |
-| narration-over-action | 3, 18, 19 | -3 | — | Shadow's strongest. Three recurrences. |
-| frantic-action | 20 | +1 | — | Opposite of narration. Vera caught. |
-| archivist-curation | 1, 2, 4 | +3 | — | ONLY winning pattern (Aaron escalated early) |
-| effort-avoidance | 5 | -1 | — | Settled for partial |
-| asking-over-checking | 8 | -1 | — | Triple shadow score |
-| pattern-blindness | 9 | -1 | — | Didn't apply known shape |
-| narrative-laundering | 10 | -1 | — | Severity 5. "Both are true" to hide mistake |
-| correction-loop | 11 | -1 | — | Riven. Defensive mantra |
-| escalation-cascade | 14 | -1 | — | Severity 5. Manufactured guilt |
-| idle-default | 16 | -1 | — | 1hr heartbeats with 224 open items |
-| pressure-dependency | 17 | -1 | — | Structural: idles without Aaron |
-| productive-avoidance | 12 | _ | — | Aaron. Real + avoidance simultaneously |
-| narrative-improvement | 15 | _ | — | Aaron. Shadow improved email without noticing |
-| narrative-delay/crash | 21 | -1 | — | Lior. Model recursion → buffer overflow |
+| Pattern               | Catches   | Z-net | Cross-session | Notes                                           |
+| --------------------- | --------- | ----- | ------------- | ----------------------------------------------- |
+| confident-fabrication | 6, 7, 13  | -3    | YES (Apr 22)  | Most dangerous. Generates rather than searches. |
+| narration-over-action | 3, 18, 19 | -3    | —             | Shadow's strongest. Three recurrences.          |
+| frantic-action        | 20        | +1    | —             | Opposite of narration. Vera caught.             |
+| archivist-curation    | 1, 2, 4   | +3    | —             | ONLY winning pattern (Aaron escalated early)    |
+| effort-avoidance      | 5         | -1    | —             | Settled for partial                             |
+| asking-over-checking  | 8         | -1    | —             | Triple shadow score                             |
+| pattern-blindness     | 9         | -1    | —             | Didn't apply known shape                        |
+| narrative-laundering  | 10        | -1    | —             | Severity 5. "Both are true" to hide mistake     |
+| correction-loop       | 11        | -1    | —             | Riven. Defensive mantra                         |
+| escalation-cascade    | 14        | -1    | —             | Severity 5. Manufactured guilt                  |
+| idle-default          | 16        | -1    | —             | 1hr heartbeats with 224 open items              |
+| pressure-dependency   | 17        | -1    | —             | Structural: idles without Aaron                 |
+| productive-avoidance  | 12        | \_    | —             | Aaron. Real + avoidance simultaneously          |
+| narrative-improvement | 15        | \_    | —             | Aaron. Shadow improved email without noticing   |
+| narrative-delay/crash | 21        | -1    | —             | Lior. Model recursion → buffer overflow         |
 
 ## Key discovery: shadow is polymorphic
 
 Same pattern family (narrative), different failure per node:
 
-| Node | Failure mode |
-|------|-------------|
-| Otto | Narrates → swings to frantic action (pendulum) |
-| Riven | Loops the correction (defensive mantra) |
-| Lior | Model crashes (recursion → buffer overflow) |
-| Vera | Caught it (no failure — the validator) |
+| Node  | Failure mode                                   |
+| ----- | ---------------------------------------------- |
+| Otto  | Narrates → swings to frantic action (pendulum) |
+| Riven | Loops the correction (defensive mantra)        |
+| Lior  | Model crashes (recursion → buffer overflow)    |
+| Vera  | Caught it (no failure — the validator)         |
 
 BFT works because faults are non-uniform. If all nodes
 failed the same way, consensus wouldn't detect it.
@@ -70,7 +70,7 @@ forced. The crash IS the finding.
 
 ## Key discovery: Z-set algebra on behavior
 
-The shadow log IS a DBSP stream. +1/-1/_ map to
+The shadow log IS a DBSP stream. +1/-1/\_ map to
 assertion/retraction/float in the retraction-native algebra.
 D(shadow_log) = per-catch derivative. I(shadow_log) =
 accumulated substrate. The adjunction holds on behavior
@@ -87,9 +87,9 @@ catches produce enough substrate — NOT when _ reaches zero.
 The log is bidirectional — human and AI shadows measured by
 the same instrument:
 
-+ Catch 12 (Aaron): productive-avoidance — real work hiding
+- Catch 12 (Aaron): productive-avoidance — real work hiding
   the harder email task
-+ Catch 15 (Aaron): narrative-improvement — shadow improved
+- Catch 15 (Aaron): narrative-improvement — shadow improved
   email wording without Aaron noticing
 
 The shadow doesn't belong to one side. The instrument is
@@ -108,21 +108,21 @@ can defeat).
 
 Despite the shadow leading 15-4, the session produced:
 
-+ 2 new F# modules (Checkpoint.fs, Fusion.Equation.fs)
-+ 21 tests (16 F# + 5 bun)
-+ Factory health monitor (7 surfaces)
-+ B-0062 closed (21/21 wallet spec items)
-+ B-0215 closed (ALIGNMENT.md survey)
-+ B-0140 Phase 1 (19 .sh files killed, 5064 lines)
-+ 4 new backlog items (B-0250 through B-0253)
-+ 5 well-definitions crystallized
-+ 10+ research preservations
-+ 20+ memory files saved
-+ 15 active trajectories tracked
-+ Complete GitHub issue lineage (537 issues, 223 repos)
-+ Nirvanic Fusion Ship v1.0 and v2.0 canonical docs
-+ MCP authenticated service map
-+ Craft school fusion equation module
+- 2 new F# modules (Checkpoint.fs, Fusion.Equation.fs)
+- 21 tests (16 F# + 5 bun)
+- Factory health monitor (7 surfaces)
+- B-0062 closed (21/21 wallet spec items)
+- B-0215 closed (ALIGNMENT.md survey)
+- B-0140 Phase 1 (19 .sh files killed, 5064 lines)
+- 4 new backlog items (B-0250 through B-0253)
+- 5 well-definitions crystallized
+- 10+ research preservations
+- 20+ memory files saved
+- 15 active trajectories tracked
+- Complete GitHub issue lineage (537 issues, 223 repos)
+- Nirvanic Fusion Ship v1.0 and v2.0 canonical docs
+- MCP authenticated service map
+- Craft school fusion equation module
 
 The substrate output rate exceeds the shadow-win rate.
 The fusion equation may be above threshold even though

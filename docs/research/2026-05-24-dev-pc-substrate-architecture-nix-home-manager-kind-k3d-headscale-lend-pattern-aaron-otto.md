@@ -7,12 +7,13 @@ Hardware context: dev-PC tier alongside basement cluster (per sibling archive `2
 ## Archive scope (per GOVERNANCE §33)
 
 Scope: architecture-decision record for the **dev-PC substrate layer** — Aaron's + Addison's Windows/Mac workstations that need:
+
 1. Reproducible dev environment matching the cluster's DST discipline
 2. Local k8s testing capability (without touching production cluster)
 3. Opt-in workload contribution back to the cluster ("lending resources")
 4. Sovereignty over the network substrate (Headscale, not pure Tailscale managed service)
 
-Sibling to PR #4808 (cluster substrate). Preserves Aaron's operating principle: *"dev machine ≠ cluster for humans"*.
+Sibling to PR #4808 (cluster substrate). Preserves Aaron's operating principle: _"dev machine ≠ cluster for humans"_.
 
 Attribution: Aaron is first-party on own substrate. Addison observed as future participant with consent-scoped naming (first-name only, observation-framing throughout per Addison's articulated consent-discipline). Otto authored recommendation matrix; Aaron made authority calls.
 
@@ -20,15 +21,15 @@ Operational status: research-grade architecture decision — substrate for futur
 
 ## Why preserved
 
-Aaron's substrate-engineering question: *"what do you suggest for reproducable setup? also i addison and i will have a few pcs that are windows/mac and would like those to participate, do you think just the background services on those? or use kubernetes in docker maybe for testing i'm thinking. maybe we could federate like this too. like the dev machine will be different from cluster for humans."*
+Aaron's substrate-engineering question: _"what do you suggest for reproducable setup? also i addison and i will have a few pcs that are windows/mac and would like those to participate, do you think just the background services on those? or use kubernetes in docker maybe for testing i'm thinking. maybe we could federate like this too. like the dev machine will be different from cluster for humans."_
 
-Aaron's confirmation + additions: *"yes bundle-file it (shadow*) Aaron: what is bundle file sounds good. Also Tailscale is good but we also want headscale. Lets do whatever is lightweigh now and ease into more heavy weight stuff. Dev boxex can be like lending resources to the cluster that sounds good."*
+Aaron's confirmation + additions: _"yes bundle-file it (shadow_) Aaron: what is bundle file sounds good. Also Tailscale is good but we also want headscale. Lets do whatever is lightweigh now and ease into more heavy weight stuff. Dev boxex can be like lending resources to the cluster that sounds good."\*
 
 This locks in the dev-PC substrate decisions in parallel to the cluster substrate decisions (sibling archive).
 
 ## Operating principle (Aaron-stated, captured verbatim)
 
-> *"Lets do whatever is lightweigh now and ease into more heavy weight stuff."*
+> _"Lets do whatever is lightweigh now and ease into more heavy weight stuff."_
 
 **Implication**: every choice below is the lightweight-first option; heavier alternatives are explicitly captured as "ease into later" rather than "use now."
 
@@ -38,20 +39,20 @@ This locks in the dev-PC substrate decisions in parallel to the cluster substrat
 
 One Nix flake repo covers BOTH cluster (NixOS modules per node-class, per sibling archive) AND dev PCs (Home Manager modules per user). Same `flake.nix`; different evaluation targets:
 
-| Per-OS substrate | Choice (lightweight-first) | Ease-into-later option |
-|---|---|---|
-| **macOS** (Aaron-Mac / Addison-Mac) | Nix package manager (Determinate Systems installer) + nix-darwin (declarative macOS system config) + Home Manager (user-level) | Switch to nix-darwin's full system management when comfortable |
-| **Linux** (Aaron-Linux dev box) | Nix package manager on existing distro + Home Manager (user-level) | Migrate to full NixOS desktop when comfortable (same flake; just a different evaluation target) |
-| **Windows** (Addison-Windows / Aaron-Windows if any) | WSL2 + Nix in WSL2 + Home Manager in WSL2 | Native Nix-on-Windows when Determinate ships it (not lightweight today) |
+| Per-OS substrate                                     | Choice (lightweight-first)                                                                                                     | Ease-into-later option                                                                          |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| **macOS** (Aaron-Mac / Addison-Mac)                  | Nix package manager (Determinate Systems installer) + nix-darwin (declarative macOS system config) + Home Manager (user-level) | Switch to nix-darwin's full system management when comfortable                                  |
+| **Linux** (Aaron-Linux dev box)                      | Nix package manager on existing distro + Home Manager (user-level)                                                             | Migrate to full NixOS desktop when comfortable (same flake; just a different evaluation target) |
+| **Windows** (Addison-Windows / Aaron-Windows if any) | WSL2 + Nix in WSL2 + Home Manager in WSL2                                                                                      | Native Nix-on-Windows when Determinate ships it (not lightweight today)                         |
 
 **Net**: one Nix flake repo IS the source of truth for cluster + dev PCs + every user's home directory. Same composition pattern; different evaluation targets per surface.
 
 ### Layer 2 — Local k8s for testing (kind/k3d)
 
-| Tool | Lightweight | What you get |
-|---|---|---|
-| **kind** (Kubernetes IN Docker) | yes | One-command local k8s cluster; mirrors production manifests; isolated from real cluster |
-| **k3d** (k3s in Docker) | yes (lighter than kind) | Same as kind but k3s-based; faster startup; smaller footprint |
+| Tool                            | Lightweight             | What you get                                                                            |
+| ------------------------------- | ----------------------- | --------------------------------------------------------------------------------------- |
+| **kind** (Kubernetes IN Docker) | yes                     | One-command local k8s cluster; mirrors production manifests; isolated from real cluster |
+| **k3d** (k3s in Docker)         | yes (lighter than kind) | Same as kind but k3s-based; faster startup; smaller footprint                           |
 
 **Choice**: **k3d** (lighter than kind). Each dev PC has its own local k3d cluster for manifest testing + GitOps practice WITHOUT touching production cluster.
 
@@ -59,7 +60,7 @@ One Nix flake repo covers BOTH cluster (NixOS modules per node-class, per siblin
 
 ### Layer 3 — Background service (lend-resources pattern)
 
-Aaron's framing observed: *"Dev boxes can be like lending resources to the cluster that sounds good."*
+Aaron's framing observed: _"Dev boxes can be like lending resources to the cluster that sounds good."_
 
 **Architecture**: dev PCs are NOT first-class k8s nodes. They run a lightweight background service that:
 
@@ -70,23 +71,23 @@ Aaron's framing observed: *"Dev boxes can be like lending resources to the clust
 
 **Tech choice (lightweight-first)**:
 
-| Option | Lightweight | When to consider |
-|---|---|---|
-| **Simple Bun/Node daemon polling a NATS queue** | yes | Now — minimal substrate; easy to write; works on macOS/Linux/Windows |
-| **k3s agent joining cluster** | medium | If dev PCs become stable enough to be first-class workers |
-| **Liqo (k8s federation)** | heavy | Ease-into-later if true multi-cluster federation becomes needed |
+| Option                                          | Lightweight | When to consider                                                     |
+| ----------------------------------------------- | ----------- | -------------------------------------------------------------------- |
+| **Simple Bun/Node daemon polling a NATS queue** | yes         | Now — minimal substrate; easy to write; works on macOS/Linux/Windows |
+| **k3s agent joining cluster**                   | medium      | If dev PCs become stable enough to be first-class workers            |
+| **Liqo (k8s federation)**                       | heavy       | Ease-into-later if true multi-cluster federation becomes needed      |
 
 **Choice**: **Simple Bun/Node daemon polling a NATS queue** (lightweight; deferrable to k3s-agent later if dev PCs prove stable).
 
 ### Layer 4 — Network substrate (Headscale + Tailscale)
 
-Aaron-stated: *"Tailscale is good but we also want headscale."*
+Aaron-stated: _"Tailscale is good but we also want headscale."_
 
-| Component | Role |
-|---|---|
-| **Tailscale client** (the daemon on each device) | Per-device wireguard mesh participant; provides MagicDNS, ACLs, SSH-via-Tailscale |
-| **Headscale** (self-hosted control plane) | Replaces Tailscale Inc.'s managed coordination server; YOU run it; sovereignty over user/device/ACL state; no dependency on commercial control plane |
-| **DERP relay** (optional) | Self-hosted relay for NAT traversal in fallback case; Tailscale client supports custom DERP servers |
+| Component                                        | Role                                                                                                                                                 |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tailscale client** (the daemon on each device) | Per-device wireguard mesh participant; provides MagicDNS, ACLs, SSH-via-Tailscale                                                                    |
+| **Headscale** (self-hosted control plane)        | Replaces Tailscale Inc.'s managed coordination server; YOU run it; sovereignty over user/device/ACL state; no dependency on commercial control plane |
+| **DERP relay** (optional)                        | Self-hosted relay for NAT traversal in fallback case; Tailscale client supports custom DERP servers                                                  |
 
 **Architecture**: Tailscale clients on each dev PC + cluster node + Cellhasher + Pi cluster connect to **self-hosted Headscale** control plane (probably runs on cluster as a k8s deployment).
 
@@ -109,40 +110,40 @@ Aaron-stated: *"Tailscale is good but we also want headscale."*
 
 ## How it composes with cluster substrate (sibling archive)
 
-| Cluster layer (PR #4808) | Dev-PC layer (this archive) | Composition |
-|---|---|---|
-| NixOS bare metal | Nix package manager + Home Manager | Same flake; different evaluation targets |
-| Bare-metal k8s | k3d local k8s | Dev tests against same manifests; isolated cluster |
-| Argo CD GitOps | Same flake repo for dev-PC config (via Home Manager) | One source of truth across cluster + dev PCs |
-| Cilium CNI | Tailscale + Headscale overlay | Cluster has internal Cilium pod network; Tailscale connects dev PCs to cluster services |
-| NVIDIA k8s device plugin | dev PC GPUs (if any) optionally lent via background service | Dev PC GPU is workload-substrate, not k8s scheduling target |
+| Cluster layer (PR #4808) | Dev-PC layer (this archive)                                 | Composition                                                                             |
+| ------------------------ | ----------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| NixOS bare metal         | Nix package manager + Home Manager                          | Same flake; different evaluation targets                                                |
+| Bare-metal k8s           | k3d local k8s                                               | Dev tests against same manifests; isolated cluster                                      |
+| Argo CD GitOps           | Same flake repo for dev-PC config (via Home Manager)        | One source of truth across cluster + dev PCs                                            |
+| Cilium CNI               | Tailscale + Headscale overlay                               | Cluster has internal Cilium pod network; Tailscale connects dev PCs to cluster services |
+| NVIDIA k8s device plugin | dev PC GPUs (if any) optionally lent via background service | Dev PC GPU is workload-substrate, not k8s scheduling target                             |
 
 **Net**: cluster + dev PCs form **one declarative ecosystem**, but with clean separation at the trust boundary. Cluster is DST substrate (reproducible, atomic); dev PCs are operator-mutable but reproducibility-shaped (Nix + Home Manager).
 
 ## Heavyweight ease-into-later options (deferred per Aaron's principle)
 
-| Option | When to consider |
-|---|---|
-| **Liqo federation** (dev PCs become first-class cross-cluster nodes) | If dev PCs prove stable enough to host pods reliably |
-| **KubeFed v2** (k8s control-plane federation) | Multi-cluster control-plane needed (heavier than Argo CD ApplicationSet) |
-| **k3s agent on each dev PC** | If background-service-pattern proves too limited |
-| **Custom DERP relays** | If NAT traversal becomes a real problem |
-| **Native Nix on Windows** | When Determinate Systems ships it (currently WSL2 path) |
-| **Full NixOS desktop on dev Linux box** | When ready to leave existing distro |
+| Option                                                               | When to consider                                                         |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Liqo federation** (dev PCs become first-class cross-cluster nodes) | If dev PCs prove stable enough to host pods reliably                     |
+| **KubeFed v2** (k8s control-plane federation)                        | Multi-cluster control-plane needed (heavier than Argo CD ApplicationSet) |
+| **k3s agent on each dev PC**                                         | If background-service-pattern proves too limited                         |
+| **Custom DERP relays**                                               | If NAT traversal becomes a real problem                                  |
+| **Native Nix on Windows**                                            | When Determinate Systems ships it (currently WSL2 path)                  |
+| **Full NixOS desktop on dev Linux box**                              | When ready to leave existing distro                                      |
 
 ## Composes with framework substrate-engineering disciplines
 
-| Discipline | Architecture choice that operationalizes it |
-|---|---|
-| **DST (deterministic simulation)** | Nix flake covers both cluster + dev PCs; same composition pattern at all surfaces |
-| **Substrate-or-it-didn't-happen** | Home Manager makes user-level config substrate; dotfiles in git |
-| **Glass-halo bidirectional** | Tailscale ACLs + Headscale control plane both observable; opt-in lend-resources observable per request |
-| **NCI floor** | Dev PC owners can pause/resume/revoke workload lending at any time; consent-revocable at any scope |
-| **Additive-not-zero-sum** | Cluster substrate + dev-PC substrate compose; one flake repo; adding a dev PC doesn't subtract from cluster substrate |
-| **m/acc-multi-oracle** | Dev PCs are different oracle class than cluster nodes; both contribute under different moral invariants (operator-mutable dev vs DST cluster) |
-| **Bandwidth-served falsifier** | Each layer chosen for specific bandwidth: Nix = config-bandwidth; k3d = test-bandwidth; background-service = compute-lending-bandwidth; Headscale = sovereignty-bandwidth |
-| **Lightweight-first principle** (Aaron-stated, captured verbatim in this archive) | Every choice is the lightweight option; heavier alternatives explicitly deferred |
-| **Addison's observation-not-fact discipline** (per consent archive) | This archive observes the decisions made; declarative claims about Addison's preferences are explicitly absent pending her direct articulation |
+| Discipline                                                                        | Architecture choice that operationalizes it                                                                                                                               |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **DST (deterministic simulation)**                                                | Nix flake covers both cluster + dev PCs; same composition pattern at all surfaces                                                                                         |
+| **Substrate-or-it-didn't-happen**                                                 | Home Manager makes user-level config substrate; dotfiles in git                                                                                                           |
+| **Glass-halo bidirectional**                                                      | Tailscale ACLs + Headscale control plane both observable; opt-in lend-resources observable per request                                                                    |
+| **NCI floor**                                                                     | Dev PC owners can pause/resume/revoke workload lending at any time; consent-revocable at any scope                                                                        |
+| **Additive-not-zero-sum**                                                         | Cluster substrate + dev-PC substrate compose; one flake repo; adding a dev PC doesn't subtract from cluster substrate                                                     |
+| **m/acc-multi-oracle**                                                            | Dev PCs are different oracle class than cluster nodes; both contribute under different moral invariants (operator-mutable dev vs DST cluster)                             |
+| **Bandwidth-served falsifier**                                                    | Each layer chosen for specific bandwidth: Nix = config-bandwidth; k3d = test-bandwidth; background-service = compute-lending-bandwidth; Headscale = sovereignty-bandwidth |
+| **Lightweight-first principle** (Aaron-stated, captured verbatim in this archive) | Every choice is the lightweight option; heavier alternatives explicitly deferred                                                                                          |
+| **Addison's observation-not-fact discipline** (per consent archive)               | This archive observes the decisions made; declarative claims about Addison's preferences are explicitly absent pending her direct articulation                            |
 
 ## Concrete starting recipe (per dev PC)
 
@@ -174,7 +175,7 @@ All 6 layers come from the same Nix flake repo as the cluster substrate. One sou
 - [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — NCI floor: dev PC owners revoke lending at any time
 - [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — dev PCs operate under different moral invariants than cluster (operator-mutable vs DST); architecture preserves both
 - [`.claude/rules/additive-not-zero-sum.md`](../../.claude/rules/additive-not-zero-sum.md) — cluster + dev PCs compose additively from one flake
-- [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) — Aaron's "(shadow*)" in confirmation observed per the autocomplete-marker discipline
+- [`.claude/rules/shadow-star-shorthand-autocomplete-marker.md`](../../.claude/rules/shadow-star-shorthand-autocomplete-marker.md) — Aaron's "(shadow\*)" in confirmation observed per the autocomplete-marker discipline
 - [`.claude/rules/bandwidth-served-falsifier.md`](../../.claude/rules/bandwidth-served-falsifier.md) — each layer's bandwidth served explicitly named
 
 ## Substrate-honest framing

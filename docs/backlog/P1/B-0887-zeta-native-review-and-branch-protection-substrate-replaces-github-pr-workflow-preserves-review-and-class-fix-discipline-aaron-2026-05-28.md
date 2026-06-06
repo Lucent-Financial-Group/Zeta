@@ -39,7 +39,7 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"we still want reviews like PRs we just want to coordinate it through our own branch protection that works without workflow system instead of PRs"*
+> _"we still want reviews like PRs we just want to coordinate it through our own branch protection that works without workflow system instead of PRs"_
 
 Sharp operator clarification of earlier "0 prs" framing (which was misread as "no review"). Parsing:
 
@@ -68,7 +68,7 @@ B-0874 stays in the cluster but its framing is now the implementation-detail (Gi
 
 ## Architectural sketch (sharpened per operator 2026-05-28 follow-on)
 
-> *"so review and all the same checks happen but it's part of choose your own adventure and just another reusable shippble skill/DU"*
+> _"so review and all the same checks happen but it's part of choose your own adventure and just another reusable shippble skill/DU"_
 
 Review is NOT a separate subsystem. It's:
 
@@ -77,14 +77,14 @@ Review is NOT a separate subsystem. It's:
 3. **A reusable shippable skill** — `.claude/skills/zeta-native-review/SKILL.md` distributes the review-substrate to any agent harness with bun; no GitHub-PR-workflow dependency
 4. **Composes with existing playbook + event-log substrate** — review threads ARE playbook sections; review events ARE event-log entries; no parallel infrastructure
 
-| Component | Substrate (as MenuOption / DU / skill) |
-|---|---|
-| Review-thread surface | Playbook documents (per B-0867.21 conversational path); each unresolved finding = an unresolved playbook section |
-| Approval mechanism | `ApproveTrajectoryCompletion` MenuOption emits "approved" event to work-lifecycle event log (per B-0867.2) |
-| Branch protection | `BranchProtectionGate` state in WorkLifecycle DU; transitions to "merged" only when required-approvals + green-canary + no-unresolved-findings predicates hold |
-| Class-fix discipline | `RaiseClassFindingForTechDebtSweep` MenuOption (per B-0875.1) triggers class-extraction + retroactive sweep + rule encoding |
-| Multi-reviewer ensemble | Per B-0877 — each reviewer (Copilot, CodeQL, Semgrep, Sonar, AI peer-call) emits findings as events via the same playbook substrate |
-| Distribution | `.claude/skills/zeta-native-review/SKILL.md` — any bun-capable agent harness pulls + runs the review-substrate |
+| Component               | Substrate (as MenuOption / DU / skill)                                                                                                                         |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Review-thread surface   | Playbook documents (per B-0867.21 conversational path); each unresolved finding = an unresolved playbook section                                               |
+| Approval mechanism      | `ApproveTrajectoryCompletion` MenuOption emits "approved" event to work-lifecycle event log (per B-0867.2)                                                     |
+| Branch protection       | `BranchProtectionGate` state in WorkLifecycle DU; transitions to "merged" only when required-approvals + green-canary + no-unresolved-findings predicates hold |
+| Class-fix discipline    | `RaiseClassFindingForTechDebtSweep` MenuOption (per B-0875.1) triggers class-extraction + retroactive sweep + rule encoding                                    |
+| Multi-reviewer ensemble | Per B-0877 — each reviewer (Copilot, CodeQL, Semgrep, Sonar, AI peer-call) emits findings as events via the same playbook substrate                            |
+| Distribution            | `.claude/skills/zeta-native-review/SKILL.md` — any bun-capable agent harness pulls + runs the review-substrate                                                 |
 
 The substrate is EXTREMELY THIN — mostly: add DU cases + MenuOption variants + a skill wrapper. The existing event-log + playbook + state-machine + work-lifecycle substrate already does the heavy lifting. The earlier "review subsystem" framing was over-design; the operator-correct framing is **"just another MenuOption + DU + skill."**
 
@@ -92,7 +92,7 @@ Composes with the broader "everything is a skill + discriminated union path exec
 
 ## Isomorphic across Git hosts (operator 2026-05-28 follow-on)
 
-> *"Then it can run isomorphic on GitLab and GitHub"*
+> _"Then it can run isomorphic on GitLab and GitHub"_
 
 Because the review-substrate runs on the agent-loop state-machine + event-log + playbook substrate (all of which operate on Git directly, not on GitHub-specific objects), the same code runs ISOMORPHICALLY on:
 
@@ -110,18 +110,18 @@ Strategic implication: the substrate becomes a portable AI-engineering review-st
 
 ## Full throttle — complete API rate-limit avoidance (operator 2026-05-28 design intent)
 
-> *"We also pretty much complete avoid any API limits cause we don't need their graphql api so full throttle i've been trying to design around that."*
+> _"We also pretty much complete avoid any API limits cause we don't need their graphql api so full throttle i've been trying to design around that."_
 
 Operator naming the strategic design property that has been guiding architectural choices: the Zeta-native review substrate **completely avoids the API rate-limit class** that throttles every other GitHub-PR-coordinated workflow.
 
 The rate-limit topology:
 
-| API surface | Budget | What uses it |
-|---|---|---|
-| **GraphQL** | 5000 points/hr/token; PR mutations (create/update/comment/resolve-thread/merge) cost ~5-50 points each → real ceiling ~100-1000 operations/hr | Standard GitHub PR workflow; ALL the existing project rate-limit pain (per `refresh-world-model-poll-pr-gate.md` tier table) |
-| **REST core** | 5000/hr; less-expensive operations; PR-creation REST works around GraphQL ceiling for one specific case (per existing rule) | Pre-arm REST file-create + commit endpoints (per B-0867.19 spike) |
-| **Git protocol (push/fetch)** | Barely rate-limited; thousands of pushes/hr possible | Direct push to trajectory branches; ZetaID-named files |
-| **Webhooks / Actions runtime** | Per-repo limits but extremely generous for the operations Zeta needs | B-0874 GitHub Actions recursion |
+| API surface                    | Budget                                                                                                                                        | What uses it                                                                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **GraphQL**                    | 5000 points/hr/token; PR mutations (create/update/comment/resolve-thread/merge) cost ~5-50 points each → real ceiling ~100-1000 operations/hr | Standard GitHub PR workflow; ALL the existing project rate-limit pain (per `refresh-world-model-poll-pr-gate.md` tier table) |
+| **REST core**                  | 5000/hr; less-expensive operations; PR-creation REST works around GraphQL ceiling for one specific case (per existing rule)                   | Pre-arm REST file-create + commit endpoints (per B-0867.19 spike)                                                            |
+| **Git protocol (push/fetch)**  | Barely rate-limited; thousands of pushes/hr possible                                                                                          | Direct push to trajectory branches; ZetaID-named files                                                                       |
+| **Webhooks / Actions runtime** | Per-repo limits but extremely generous for the operations Zeta needs                                                                          | B-0874 GitHub Actions recursion                                                                                              |
 
 The Zeta-native review substrate ROUTES AROUND the GraphQL ceiling entirely:
 
@@ -182,6 +182,6 @@ The implementation work is significant (L effort) because it touches the review-
 
 ## Full reasoning
 
-Operator 2026-05-28: *"we still want reviews like PRs we just want to coordinate it through our own branch protection that works without workflow system instead of PRs"*
+Operator 2026-05-28: _"we still want reviews like PRs we just want to coordinate it through our own branch protection that works without workflow system instead of PRs"_
 
 Sharpens / supersedes the "no-PR swarm" framing of B-0874 (which was correct as RATE-LIMIT-BYPASS architectural framing, incorrect as "no-review" implication).

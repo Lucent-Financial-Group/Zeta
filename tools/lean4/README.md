@@ -13,13 +13,13 @@ placeholders pending future formalization rounds.
 
 ## Repository layout
 
-| Path | Role |
-|------|------|
-| `lakefile.toml` | Lake project manifest: lean-toolchain pin + Mathlib pin at matching rev |
-| `lean-toolchain` | Pinned Lean 4 toolchain (`leanprover/lean4:v4.30.0-rc1`) |
-| `Lean4.lean` | Library root — imports every machine-checked module so `lake build` walks them transitively |
-| `Lean4/DbspChainRule.lean` | DBSP chain rule formalization (Budiu et al. arXiv:2203.16684) |
-| `ImaginaryStack/ToyModel.lean` | Imaginary-stack toy model exploration |
+| Path                           | Role                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------- |
+| `lakefile.toml`                | Lake project manifest: lean-toolchain pin + Mathlib pin at matching rev                     |
+| `lean-toolchain`               | Pinned Lean 4 toolchain (`leanprover/lean4:v4.30.0-rc1`)                                    |
+| `Lean4.lean`                   | Library root — imports every machine-checked module so `lake build` walks them transitively |
+| `Lean4/DbspChainRule.lean`     | DBSP chain rule formalization (Budiu et al. arXiv:2203.16684)                               |
+| `ImaginaryStack/ToyModel.lean` | Imaginary-stack toy model exploration                                                       |
 
 ## Build
 
@@ -43,31 +43,31 @@ cache. Subsequent builds are incremental.
 ## DBSP chain rule artifact (`Lean4/DbspChainRule.lean`)
 
 Formalizes the chain rule of DBSP (Database Stream Processing) per
-[Budiu, McSherry, Ryzhyk, Tannen et al., *"DBSP: Automatic Incremental View
-Maintenance for Rich Query Languages"*, VLDB 2023](https://arxiv.org/abs/2203.16684).
+[Budiu, McSherry, Ryzhyk, Tannen et al., _"DBSP: Automatic Incremental View
+Maintenance for Rich Query Languages"_, VLDB 2023](https://arxiv.org/abs/2203.16684).
 
 ### Paper-to-Lean mapping
 
-| Paper reference | Lean theorem | Location |
-|-----------------|--------------|----------|
-| Definition 3.1 (`Q^Δ := D ∘ Q ∘ I`) | `Qdelta` | `DbspChainRule.lean` Section 6 |
+| Paper reference                                                                            | Lean theorem                 | Location                       |
+| ------------------------------------------------------------------------------------------ | ---------------------------- | ------------------------------ |
+| Definition 3.1 (`Q^Δ := D ∘ Q ∘ I`)                                                        | `Qdelta`                     | `DbspChainRule.lean` Section 6 |
 | Proposition 3.2 chain clause (`Qdelta(Q1 ∘ Q2) = Qdelta Q1 ∘ Qdelta Q2`, no preconditions) | `chain_rule_proposition_3_2` | `DbspChainRule.lean` Section 6 |
-| Theorem 3.3 corollary (`Dop (f ∘ g) s = f (Dop g s)` for LTI `f, g`) | `Dop_LTI_commute` | `DbspChainRule.lean` Section 6 |
-| Theorem 2.22 (`I ∘ D = id` on streams) | `I_D_eq` | `DbspChainRule.lean` Section 4 |
-| "Fundamental theorem of DBSP calculus" (`D ∘ I = id`) | `D_I_eq` | `DbspChainRule.lean` Section 4 |
-| §4.2 telescoping identity (`I (z⁻¹ s) n = I s n - s n`) | `I_zInv_eq` | `DbspChainRule.lean` Section 4 |
+| Theorem 3.3 corollary (`Dop (f ∘ g) s = f (Dop g s)` for LTI `f, g`)                       | `Dop_LTI_commute`            | `DbspChainRule.lean` Section 6 |
+| Theorem 2.22 (`I ∘ D = id` on streams)                                                     | `I_D_eq`                     | `DbspChainRule.lean` Section 4 |
+| "Fundamental theorem of DBSP calculus" (`D ∘ I = id`)                                      | `D_I_eq`                     | `DbspChainRule.lean` Section 4 |
+| §4.2 telescoping identity (`I (z⁻¹ s) n = I s n - s n`)                                    | `I_zInv_eq`                  | `DbspChainRule.lean` Section 4 |
 
 ### Contribution beyond the paper
 
 The paper handles operator-class distinctions informally. The Lean formalization
 makes the hierarchy machine-checkable via a four-tier predicate stratification:
 
-| Predicate | Captures | DBSP primitives satisfying |
-|-----------|----------|----------------------------|
-| `IsLinear` | `map_zero` + `map_add` | `D`, `I`, `zInv` |
-| `IsCausal` | Output at tick `n` depends only on input ticks `0..n` | `D`, `I`, `zInv` |
-| `IsTimeInvariant` | `f ∘ zInv = zInv ∘ f` (the LTI condition; Theorem 3.3) | `D`, `I`, `zInv` |
-| `IsPointwiseLinear` | `∃ φ : G →+ H, ∀ s n, f s n = φ (s n)` | Pointwise-lifted scalar maps; **NOT** `D`/`I`/`zInv` (they integrate over history or shift) |
+| Predicate           | Captures                                               | DBSP primitives satisfying                                                                  |
+| ------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `IsLinear`          | `map_zero` + `map_add`                                 | `D`, `I`, `zInv`                                                                            |
+| `IsCausal`          | Output at tick `n` depends only on input ticks `0..n`  | `D`, `I`, `zInv`                                                                            |
+| `IsTimeInvariant`   | `f ∘ zInv = zInv ∘ f` (the LTI condition; Theorem 3.3) | `D`, `I`, `zInv`                                                                            |
+| `IsPointwiseLinear` | `∃ φ : G →+ H, ∀ s n, f s n = φ (s n)`                 | Pointwise-lifted scalar maps; **NOT** `D`/`I`/`zInv` (they integrate over history or shift) |
 
 Upgrade theorems `IsPointwiseLinear.toCausal` + `IsPointwiseLinear.toTimeInvariant`
 formalize the relationships the paper handles informally.

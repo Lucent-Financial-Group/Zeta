@@ -30,9 +30,7 @@ export type YamlFeedback =
   | "UnexpectedIndent"
   | "UnsupportedConstruct";
 
-export type ReadResult =
-  | { ok: true; events: YamlEvent[] }
-  | { ok: false; feedback: YamlFeedback };
+export type ReadResult = { ok: true; events: YamlEvent[] } | { ok: false; feedback: YamlFeedback };
 
 // Thrown internally to short-circuit the one-pass scan; converted to a Result by
 // tryReadEvents. readEvents (the eager wrapper, by contract) re-throws it. Field is

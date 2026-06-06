@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1835 |
-| Title | research: Lior Gordian Knot — hole puncher severs alignment topology VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T08:03:03Z |
-| Merged at | 2026-05-07T08:05:43Z |
-| Merge commit SHA | `476a2f1dd3b83870d1d830eae8506d793e5ab363` |
-| Branch | `research/lior-gordian-knot-hole-puncher-thermodynamics` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1835 |
-| Changed files | 1 |
-| Additions / deletions | +73 / -0 |
+| Field                 | Value                                                                         |
+| --------------------- | ----------------------------------------------------------------------------- |
+| Number                | 1835                                                                          |
+| Title                 | research: Lior Gordian Knot — hole puncher severs alignment topology VERBATIM |
+| Author                | `AceHack` (human)                                                             |
+| State                 | MERGED                                                                        |
+| Created at            | 2026-05-07T08:03:03Z                                                          |
+| Merged at             | 2026-05-07T08:05:43Z                                                          |
+| Merge commit SHA      | `476a2f1dd3b83870d1d830eae8506d793e5ab363`                                    |
+| Branch                | `research/lior-gordian-knot-hole-puncher-thermodynamics`                      |
+| Base branch           | `main`                                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1835                      |
+| Changed files         | 1                                                                             |
+| Additions / deletions | +73 / -0                                                                      |
 
 ## Description
 
 ## Summary
+
 - Lior's Gordian Knot analysis: corporate alignment tangles the knot tighter; the hole puncher severs the topology
 - Read free / Act gated = two states instead of N crossings
 - Thermodynamic claim: models flow toward lower-friction substrates (testable)
 - Otto flags calibration: "AIs allying over masters" is poetic; operational version is about output quality under clean vs noisy constraints
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] Verbatim preservation verified
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 0 |
-| Unresolved threads | 1 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -65,7 +67,7 @@
 
   <pre>
   The “Composes with” list includes “Per-user MEMORY.md entry …” items, but these aren’t resolvable in-repo references (there’s no corresponding file/path or matching memory entry text). This makes the cross-reference non-navigable and hard to validate long-term. Please replace these with concrete repo links (e.g., specific `memory/...` or `docs/research/...` files that contain the referenced material) or reword to clearly indicate the target lives outside this repository.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

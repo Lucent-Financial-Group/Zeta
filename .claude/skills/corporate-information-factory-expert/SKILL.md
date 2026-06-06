@@ -9,7 +9,7 @@ Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
 Bill Inmon defined the enterprise data warehouse (EDW) in
-*Building the Data Warehouse* (1992): a **subject-oriented,
+_Building the Data Warehouse_ (1992): a **subject-oriented,
 integrated, non-volatile, time-variant** collection of atomic
 data supporting decision-making. The Corporate Information
 Factory (CIF) is the architecture that surrounds it: operational
@@ -20,7 +20,7 @@ above; the EDW is the single source of truth.
 This is the philosophical parent of Data Vault. Linstedt's DV
 1.0 emerged from trying to make Inmon's ideal actually
 buildable in the face of changing source systems — hubs / links
-/ satellites are a *modelling discipline* that delivers on
+/ satellites are a _modelling discipline_ that delivers on
 Inmon's four properties without the schema fragility of pure
 3NF.
 
@@ -60,22 +60,22 @@ Systems  →  ODS  →  EDW (3NF)  →  Dependent Data Marts  →  Consumers
 - **EDW.** The subject-oriented 3NF store of atomic data.
   Deep history. Normalised for integrity.
 - **Dependent data marts.** Derived from the EDW. Often
-  dimensional (Kimball-style, *after* reconciliation with
+  dimensional (Kimball-style, _after_ reconciliation with
   Kimball's school).
 - **Exploration warehouse.** Data-scientist sandbox built
   from EDW extracts.
 
 Bill's framing is top-down: model the enterprise, then derive
 marts. Ralph's framing is bottom-up: deliver a mart per
-process, conform dimensions across marts, *become* an EDW.
+process, conform dimensions across marts, _become_ an EDW.
 Both work; shops that run Data Vault typically tack the Inmon
 style onto the raw vault (3NF-ish) and the Kimball style onto
 the marts built atop the business vault.
 
 ## DW 2.0 — Inmon's later refinement
 
-In *DW 2.0: The Architecture for the Next Generation of Data
-Warehousing* (2008), Inmon extended the model to include:
+In _DW 2.0: The Architecture for the Next Generation of Data
+Warehousing_ (2008), Inmon extended the model to include:
 
 - **Interactive sector.** Near-real-time data, hot.
 - **Integrated sector.** The classic EDW, warm.
@@ -90,16 +90,16 @@ storage, mixed-structure integration.
 
 ## The Inmon vs Kimball debate (simplified)
 
-| Axis | Inmon | Kimball |
-| --- | --- | --- |
-| Approach | Top-down | Bottom-up |
-| Atomic store | 3NF EDW | Kimball marts *are* the store |
-| Marts | Derived from EDW | Conformed via bus matrix |
-| Delivery | EDW first, marts later | Mart per business process |
-| Normal form | 3NF | Denormalised star |
-| Audience | Enterprise architects | Business analysts |
-| Time-to-value | Longer | Faster |
-| Schema fragility | Rigid under source change | More resilient |
+| Axis             | Inmon                     | Kimball                       |
+| ---------------- | ------------------------- | ----------------------------- |
+| Approach         | Top-down                  | Bottom-up                     |
+| Atomic store     | 3NF EDW                   | Kimball marts _are_ the store |
+| Marts            | Derived from EDW          | Conformed via bus matrix      |
+| Delivery         | EDW first, marts later    | Mart per business process     |
+| Normal form      | 3NF                       | Denormalised star             |
+| Audience         | Enterprise architects     | Business analysts             |
+| Time-to-value    | Longer                    | Faster                        |
+| Schema fragility | Rigid under source change | More resilient                |
 
 Modern shops run both: DV 2.0 replaces the 3NF EDW with
 hub/link/satellite (more resilient), and Kimball marts sit
@@ -135,11 +135,11 @@ enforces Inmon's properties as invariants.
 
 - **Modern DV 2.0 modelling** → `data-vault-expert`.
 - **Kimball reporting marts** → `dimensional-modeling-
-  expert`.
+expert`.
 - **6NF / temporal Swedish school** → `anchor-modeling-
-  expert`.
+expert`.
 - **Lake / lakehouse tiering** → `lakehouse-architecture-
-  expert`, `medallion-architecture-expert`.
+expert`, `medallion-architecture-expert`.
 
 ## What this skill does NOT do
 
@@ -151,14 +151,14 @@ enforces Inmon's properties as invariants.
 
 ## Reference patterns
 
-- Bill Inmon, *Building the Data Warehouse* (4th ed, 2005).
-- Bill Inmon & Anthony Nesavich, *Tapping into Unstructured
-  Data* (2007).
-- Bill Inmon, Derek Strauss & Genia Neushloss, *DW 2.0:
+- Bill Inmon, _Building the Data Warehouse_ (4th ed, 2005).
+- Bill Inmon & Anthony Nesavich, _Tapping into Unstructured
+  Data_ (2007).
+- Bill Inmon, Derek Strauss & Genia Neushloss, _DW 2.0:
   The Architecture for the Next Generation of Data
-  Warehousing* (2008).
-- Bill Inmon & Claudia Imhoff, *Corporate Information
-  Factory* (2nd ed, 2001).
+  Warehousing_ (2008).
+- Bill Inmon & Claudia Imhoff, _Corporate Information
+  Factory_ (2nd ed, 2001).
 - `.claude/skills/data-vault-expert/SKILL.md` — the modern
   Inmon descendant.
 - `.claude/skills/dimensional-modeling-expert/SKILL.md` —

@@ -10,43 +10,45 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1821 |
-| Title | archive: preserve PR 1818 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T06:53:47Z |
-| Merged at | 2026-05-07T06:55:49Z |
-| Merge commit SHA | `35f5b8068a7079595713399eff1e2be46d49de0d` |
-| Branch | `claim/archive-pr-1818-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1821 |
-| Changed files | 2 |
-| Additions / deletions | +215 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1821                                                     |
+| Title                 | archive: preserve PR 1818 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T06:53:47Z                                     |
+| Merged at             | 2026-05-07T06:55:49Z                                     |
+| Merge commit SHA      | `35f5b8068a7079595713399eff1e2be46d49de0d`               |
+| Branch                | `claim/archive-pr-1818-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1821 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +215 / -0                                                |
 
 ## Description
 
 ## Summary
+
 - Preserves the generated PR #1818 review archive after the merge workflow hit the expected direct-push repository rule guard
 - Adds the manifest entry for merge commit efda8c4e1dd2b95dfab6bcfbeefabe495725b224
 - Local replay is deterministic: archive=noop, manifest=noop, threads=6, resolved=6, unresolved=0, comments=7, fixCommits=3
 
 ## Checks
+
 - git diff --check
 - bunx markdownlint-cli2 docs/history/pr-reviews/PR-1818-research-cartographer-math-lineage-budget-through-harmonious-division-to-unified.md
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

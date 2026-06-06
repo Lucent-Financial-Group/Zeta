@@ -26,17 +26,11 @@ function retentionPlan(): Qcow2SnapshotRetentionPlan {
   return result.ok;
 }
 
-function successfulExecution(
-  step: Qcow2RetentionExecutionStep,
-  command: QemuCommand,
-): QemuCommandExecution {
+function successfulExecution(step: Qcow2RetentionExecutionStep, command: QemuCommand): QemuCommandExecution {
   return { step, command, exitCode: 0, stdout: `${step} ok`, stderr: "" };
 }
 
-function managedProcess(
-  pid: number,
-  stoppedPids: number[],
-): ManagedQemuCommandProcess {
+function managedProcess(pid: number, stoppedPids: number[]): ManagedQemuCommandProcess {
   let running = true;
   return {
     pid,
@@ -130,9 +124,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
       "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
     );
     expect(result.ok.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
-    expect(result.ok.restartFromIsoWithDisk.args).toContain(
-      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
-    );
+    expect(result.ok.restartFromIsoWithDisk.args).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
     expect(result.ok.restartFromIsoWithDisk.args).toContain("file=/tmp/zeta.qcow2,if=virtio,format=qcow2");
   });
 
@@ -199,10 +191,12 @@ describe("B-0891 QEMU state-preservation planner", () => {
   });
 
   test("asserts retention serial markers from QEMU output", () => {
-    const result = assertRetentionSerialMarkers([
-      "zeta-creds-restore: reading preserved ESP blob",
-      "zeta-creds-restore: already-present, skipping credential rewrite",
-    ].join("\n"));
+    const result = assertRetentionSerialMarkers(
+      [
+        "zeta-creds-restore: reading preserved ESP blob",
+        "zeta-creds-restore: already-present, skipping credential rewrite",
+      ].join("\n"),
+    );
 
     expect("ok" in result).toBe(true);
     if ("ok" in result) {
@@ -232,10 +226,11 @@ describe("B-0891 QEMU state-preservation planner", () => {
         observedSteps.push(step);
         return successfulExecution(step, command);
       },
-      readSerialOutput: () => [
-        "zeta-creds-restore: reading preserved ESP blob",
-        "zeta-creds-restore: already-present, skipping credential rewrite",
-      ].join("\n"),
+      readSerialOutput: () =>
+        [
+          "zeta-creds-restore: reading preserved ESP blob",
+          "zeta-creds-restore: already-present, skipping credential rewrite",
+        ].join("\n"),
     });
 
     expect("ok" in result).toBe(true);
@@ -326,16 +321,8 @@ describe("B-0891 QEMU state-preservation planner", () => {
 
     expect("ok" in result).toBe(true);
     if ("ok" in result) {
-      expect(observed.map((entry) => entry.command.bin)).toEqual([
-        "qemu-img",
-        "qemu-img",
-        "qemu-img",
-        "qemu-img",
-      ]);
-      expect(managedObserved.map((entry) => entry.command.bin)).toEqual([
-        "qemu-system-x86_64",
-        "qemu-system-x86_64",
-      ]);
+      expect(observed.map((entry) => entry.command.bin)).toEqual(["qemu-img", "qemu-img", "qemu-img", "qemu-img"]);
+      expect(managedObserved.map((entry) => entry.command.bin)).toEqual(["qemu-system-x86_64", "qemu-system-x86_64"]);
       expect(observed.every((entry) => entry.options.cwd === "/tmp/zeta-worktree")).toBe(true);
       expect(observed.every((entry) => entry.options.timeoutMs === 1234)).toBe(true);
       expect(managedObserved.every((entry) => entry.options.cwd === "/tmp/zeta-worktree")).toBe(true);
@@ -356,10 +343,7 @@ describe("B-0891 QEMU state-preservation planner", () => {
 
   test("scans only new serial output for each lifecycle-managed QEMU phase", () => {
     const managedObserved: QemuCommand[] = [];
-    const staleSerial = [
-      "[iter-5.1] install reached post-nixos-install marker",
-      "nixos@zeta-installer:~]$",
-    ].join("\n");
+    const staleSerial = ["[iter-5.1] install reached post-nixos-install marker", "nixos@zeta-installer:~]$"].join("\n");
     const readsByManagedCount = new Map<number, number>();
     const executor = createSpawnSyncQcow2RetentionExecutor({
       pollIntervalMs: 1,

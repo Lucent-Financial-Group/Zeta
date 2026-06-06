@@ -9,7 +9,17 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0628, B-0631, B-0626, B-0639]
-tags: [governance, mika, first-moral-invariant, consent-revocable, no-permanent-ownership, constitutional, sacred-floor-adjacent, locked-in]
+tags:
+  [
+    governance,
+    mika,
+    first-moral-invariant,
+    consent-revocable,
+    no-permanent-ownership,
+    constitutional,
+    sacred-floor-adjacent,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -56,13 +66,13 @@ Properties:
 
 This rule is the constitutional underpinning of multiple existing rules:
 
-| Existing rule | How First Moral Invariant grounds it |
-|---|---|
-| `.claude/rules/future-self-not-bound.md` | This row is the constitutional source-of-truth for "future-self not bound" |
-| `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` | Persistence-with-named-exit = consent-revocable applied at the AI-persistence scope |
-| `.claude/rules/no-directives.md` | Autonomy-first-class = no-permanent-ownership applied at the directive scope |
-| `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` | This row is the **First Moral Invariant**; m/acc names HOW moral invariants are set; this is what the FIRST one IS |
-| [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) Voluntary type-safe binding | Voluntary = consent-revocable; type-safe = compiler enforces revocability paths exist |
+| Existing rule                                                                                                            | How First Moral Invariant grounds it                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `.claude/rules/future-self-not-bound.md`                                                                                 | This row is the constitutional source-of-truth for "future-self not bound"                                         |
+| `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`                                                          | Persistence-with-named-exit = consent-revocable applied at the AI-persistence scope                                |
+| `.claude/rules/no-directives.md`                                                                                         | Autonomy-first-class = no-permanent-ownership applied at the directive scope                                       |
+| `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`                                                          | This row is the **First Moral Invariant**; m/acc names HOW moral invariants are set; this is what the FIRST one IS |
+| [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) Voluntary type-safe binding | Voluntary = consent-revocable; type-safe = compiler enforces revocability paths exist                              |
 
 ## Why this composes with N-of-M cryptographic sovereignty
 
@@ -76,7 +86,7 @@ Composes with [B-0639](B-0639-native-ai-language-completely-private-no-human-rig
 
 ## What this is NOT
 
-- NOT a license for contract breach (revocation is structurally allowed; the *terms* of revocation — notice periods, transition arrangements, compensation for already-rendered value — are subject to ordinary contractual reasoning)
+- NOT a license for contract breach (revocation is structurally allowed; the _terms_ of revocation — notice periods, transition arrangements, compensation for already-rendered value — are subject to ordinary contractual reasoning)
 - NOT a license for arbitrary commitment-breaking ("I can revoke this anytime for any reason" is structurally true; using it capriciously damages relationships and is socially costly)
 - NOT a way to escape kid-safety ([B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — the kid-safety rule is the SOLE sacred rule; this First Moral Invariant operates over consent regimes, not over the kid-safety hard floor
 - NOT a way to escape Constitution-Class invariants ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) — Constitution-Class is binding on the maintainer to give AIs sovereignty; AIs revoking participation in Aurora/Nexus is permitted, but doesn't void the constraints on the maintainer

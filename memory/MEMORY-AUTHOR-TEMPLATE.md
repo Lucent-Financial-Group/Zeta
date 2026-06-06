@@ -32,8 +32,8 @@ author-time keeps the draft clean in one pass.
 **Wrong:**
 
 ```markdown
-Some conclusion text.
----
+## Some conclusion text.
+
 ## Next section
 ```
 
@@ -83,6 +83,7 @@ the first line as heading.
 
 ```markdown
 ## What people typically know about AI in engineering (the
+
 common priors)
 
 - Bullet text
@@ -127,10 +128,11 @@ Lists need blank lines above and below.
 
 ```markdown
 **Why:**
+
 - First reason
 - Second reason
 - Third reason
-Next paragraph starts here.
+  Next paragraph starts here.
 ```
 
 **Right:**

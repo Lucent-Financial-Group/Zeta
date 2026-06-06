@@ -8,9 +8,9 @@ type: feedback
 
 Maintainer 2026-04-24:
 
-> *"oraborus bootstraping exact integrations and
+> _"oraborus bootstraping exact integrations and
 > connections and all that to make sure we can do it
-> right"*
+> right"_
 
 ## What Ouroboros bootstrapping means here
 
@@ -63,8 +63,8 @@ self-reference doesn't:
 
 ## Maintainer's directive applied
 
-> *"exact integrations and connections and all that to
-> make sure we can do it right"*
+> _"exact integrations and connections and all that to
+> make sure we can do it right"_
 
 Translation: when designing each piece of the
 2026-04-24 cluster (Mode 1 admin UI, native F# git,

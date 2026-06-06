@@ -4,6 +4,7 @@ description: Enabling the "Require code scanning results" repository ruleset rul
 type: reference
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # `code_scanning` ruleset rule vs CodeQL advanced setup
 
 ## The failure mode
@@ -17,11 +18,18 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 - Aaron toggled ON the Default ruleset's `code_scanning` rule
   ("Require code scanning results"), configured as:
   ```json
-  {"parameters":{"code_scanning_tools":[{
-    "alerts_threshold":"all",
-    "security_alerts_threshold":"all",
-    "tool":"CodeQL"
-  }]},"type":"code_scanning"}
+  {
+    "parameters": {
+      "code_scanning_tools": [
+        {
+          "alerts_threshold": "all",
+          "security_alerts_threshold": "all",
+          "tool": "CodeQL"
+        }
+      ]
+    },
+    "type": "code_scanning"
+  }
   ```
 - PR #42 ran all CI checks green (11 SUCCESS including
   `Analyze (actions)` + `Analyze (csharp)` + both uploaded
@@ -56,7 +64,7 @@ Simplest unblock; loses the "must have code-scanning results"
 gate. OK as interim.
 
 **2. Enable CodeQL default setup alongside advanced** (untested).
-GitHub *may* reject this — traditional guidance is default XOR
+GitHub _may_ reject this — traditional guidance is default XOR
 advanced, not both. If GitHub allows both, you get a
 configuration the rule can bind to. Downside: duplicate
 CodeQL analyses on every PR (default setup runs its own,
@@ -64,6 +72,7 @@ advanced runs yours), doubling compute and alert queue noise.
 
 **3. Migrate to default setup, delete advanced workflow.**
 Default setup provides the configuration the rule wants. Lose:
+
 - Path-gate short-circuit for docs-only PRs.
 - Three-way-parity install script integration
   (GOVERNANCE §24).

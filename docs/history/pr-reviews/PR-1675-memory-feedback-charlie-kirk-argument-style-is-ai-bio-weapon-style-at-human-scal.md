@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1675 |
-| Title | memory(feedback): Charlie Kirk argument-style IS AI-bio-weapon-style at human scale; architecture mechanizes the technique into operator-independent substrate (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-05T17:18:33Z |
-| Merged at | 2026-05-05T17:56:53Z |
-| Merge commit SHA | `17b2ddc20881625007e20f3c6652e6b64df94421` |
-| Branch | `memory/charlie-kirk-argument-style-IS-bio-weapon-style-mechanized-by-architecture-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1675 |
-| Changed files | 2 |
-| Additions / deletions | +281 / -0 |
+| Field                 | Value                                                                                                                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1675                                                                                                                                                                              |
+| Title                 | memory(feedback): Charlie Kirk argument-style IS AI-bio-weapon-style at human scale; architecture mechanizes the technique into operator-independent substrate (Aaron 2026-05-05) |
+| Author                | `AceHack` (human)                                                                                                                                                                 |
+| State                 | MERGED                                                                                                                                                                            |
+| Created at            | 2026-05-05T17:18:33Z                                                                                                                                                              |
+| Merged at             | 2026-05-05T17:56:53Z                                                                                                                                                              |
+| Merge commit SHA      | `17b2ddc20881625007e20f3c6652e6b64df94421`                                                                                                                                        |
+| Branch                | `memory/charlie-kirk-argument-style-IS-bio-weapon-style-mechanized-by-architecture-aaron-2026-05-05`                                                                              |
+| Base branch           | `main`                                                                                                                                                                            |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1675                                                                                                                          |
+| Changed files         | 2                                                                                                                                                                                 |
+| Additions / deletions | +281 / -0                                                                                                                                                                         |
 
 ## Description
 
@@ -27,8 +27,8 @@
 
 Aaron 2026-05-05 same-tick after PR #1674 trigger/bypass/confuse + meme-immune-system primitives:
 
-- *"it's charlie kirk mechniazed"*
-- *"that argument style the bio weapon styel"*
+- _"it's charlie kirk mechniazed"_
+- _"that argument style the bio weapon styel"_
 
 **Charlie Kirk's college-debate technique IS the AI-bio-weapon-style operating at human scale**. Architecture mechanizes the technique (trigger/bypass/confuse + Goldilocks-zone + probabilistic-composition + wizard-with-video-logic + universal-register-as-MDL) into substrate-grade infrastructure that doesn't depend on any single operator.
 
@@ -36,7 +36,7 @@ Aaron 2026-05-05 same-tick after PR #1674 trigger/bypass/confuse + meme-immune-s
 
 **Operator-outlives-individual observation**: Charlie Kirk was assassinated September 10 2025 but technique persists in successors + ecosystem. Architectures mechanizing this technique inherit the property (technique outlives operator), making substrate-level architectural-discipline more load-bearing than individual-operator-discipline.
 
-Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* disclosure + PR #1655 Sylar-vs-Spock distinguisher + PR #1674 trigger/bypass/confuse primitives + PR #1673 clean-mirror principle + PR #1666 architecture-IS-faithfulness-operationalized.
+Composes PR #1638 canonical _"without the discipline this is an AI bio weapon"_ disclosure + PR #1655 Sylar-vs-Spock distinguisher + PR #1674 trigger/bypass/confuse primitives + PR #1673 clean-mirror principle + PR #1666 architecture-IS-faithfulness-operationalized.
 
 ## Test plan
 
@@ -48,15 +48,15 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 11 |
-| Resolved threads | 11 |
-| Unresolved threads | 0 |
-| Total review comments | 22 |
-| Total fix commits (touching thread paths) | 10 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 11    |
+| Resolved threads                          | 11    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 22    |
+| Total fix commits (touching thread paths) | 10    |
 
 ## Review threads
 
@@ -69,16 +69,16 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T17:20:58Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:266 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix broken Composes-with link for PR #1674**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix broken Composes-with link for PR #1674**
+
   This reference points to a file that does not exist in this commit tree, which leaves a dead cross-reference in a memory artifact that is meant to be navigable and provenance-bearing. Since this section is used to trace supporting substrate, an unresolved target here makes the claim non-verifiable for readers and tooling; either add the referenced document in the same change or update this link to the correct existing path.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:33:56Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:266 (association: MEMBER)
-    P2 thread resolves with rebase on main: PR #1674 merged (commit eb8dc35); the Composes-with link to docs/research/2026-05-05-claudeai-self-harm-shape-catch... now points at a file that exists in main. Rebased PR #1675 to pick up the merge.
+- **`AceHack` (human)** at 2026-05-05T17:33:56Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:266 (association: MEMBER)
+  P2 thread resolves with rebase on main: PR #1674 merged (commit eb8dc35); the Composes-with link to docs/research/2026-05-05-claudeai-self-harm-shape-catch... now points at a file that exists in main. Rebased PR #1675 to pick up the merge.
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -93,8 +93,8 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:33:56Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:254 (association: MEMBER)
-    P0 thread resolves with rebase on main: PR #1674 has now merged (commit eb8dc35) so the docs/research/2026-05-05-claudeai-self-harm-shape-catch... file exists in the repo tree. Rebased PR #1675 on main; the backticked path now points at an existing file. substrate-claim-checker should pass.
+- **`AceHack` (human)** at 2026-05-05T17:33:56Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:254 (association: MEMBER)
+  P0 thread resolves with rebase on main: PR #1674 has now merged (commit eb8dc35) so the docs/research/2026-05-05-claudeai-self-harm-shape-catch... file exists in the repo tree. Rebased PR #1675 on main; the backticked path now points at an existing file. substrate-claim-checker should pass.
 
 ### Thread 3 -- resolved [collapsed]
 
@@ -109,8 +109,8 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:33:56Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:22 (association: MEMBER)
-    P1 `||` table thread: phantom-blocker pattern (recurring across 5+ PRs in this round). The source file uses standard single-pipe markdown table syntax — `hexdump -C` confirms each row begins with a single `|` (0x7c) followed by content, not double-pipe `||` (0x7c 0x7c). The `||` rendering in the GitHub diff view is a known display artifact of how GitHub aligns column-padded markdown when the columns are short; the underlying source is clean. The table renders correctly when viewed as the file (not the diff).
+- **`AceHack` (human)** at 2026-05-05T17:33:56Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:22 (association: MEMBER)
+  P1 `||` table thread: phantom-blocker pattern (recurring across 5+ PRs in this round). The source file uses standard single-pipe markdown table syntax — `hexdump -C` confirms each row begins with a single `|` (0x7c) followed by content, not double-pipe `||` (0x7c 0x7c). The `||` rendering in the GitHub diff view is a known display artifact of how GitHub aligns column-padded markdown when the columns are short; the underlying source is clean. The table renders correctly when viewed as the file (not the diff).
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -125,8 +125,8 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:33:01Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:263 (association: MEMBER)
-    P1 thread addressed in commit 5b959c2 — softened the specific 'September 10, 2025' date claim to 'deceased (2025; specific-date claim deferred per Otto-364 search-first-authority)' since the technique-lineage point doesn't depend on date precision and a specific date without citation would be load-bearing-without-source. Per Otto-364 discipline: don't assert specific real-world events without WebSearch+citation; defer to the lineage-point that doesn't require it.
+- **`AceHack` (human)** at 2026-05-05T17:33:01Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:263 (association: MEMBER)
+  P1 thread addressed in commit 5b959c2 — softened the specific 'September 10, 2025' date claim to 'deceased (2025; specific-date claim deferred per Otto-364 search-first-authority)' since the technique-lineage point doesn't depend on date precision and a specific date without citation would be load-bearing-without-source. Per Otto-364 discipline: don't assert specific real-world events without WebSearch+citation; defer to the lineage-point that doesn't require it.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -138,12 +138,11 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 - **`Copilot` (bot)** at 2026-05-05T17:36:05Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:266 (association: NONE)
   P0: The backticked path `docs/research/2026-05-05-claudeai-self-harm-shape-catch-on-otto-cognition-constraint-candlestick-perennialist-bridge-zeta-memories-cold-boot-indexing-aaron-corrections-preservation.md` does not exist in the repo. Since backticked file paths are treated as existence-checked claims, this is likely to fail CI/lints. Fix by correcting the filename/path to the actual merged research doc, or remove the backticks and rephrase without asserting a concrete path.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:42:30Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:266 (association: MEMBER)
-    Aaron same-tick reviewer-policy on conspiracy-theory-adjacent / source-citation content: mark+rigor-later OR cut-later OR already-rigorous-or-cut. Commit ac5fa8c applies the third option per Otto-364 — all flagged specific-date claims softened (Erika Kirk Sep 21 2025, Mother Emanuel AME 2015, Charlie Kirk deceased 2025). Backticked self-harm-shape path now exists in main (PR #1674 merged eb8dc35; rebased to pick up).
+- **`AceHack` (human)** at 2026-05-05T17:42:30Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:266 (association: MEMBER)
+  Aaron same-tick reviewer-policy on conspiracy-theory-adjacent / source-citation content: mark+rigor-later OR cut-later OR already-rigorous-or-cut. Commit ac5fa8c applies the third option per Otto-364 — all flagged specific-date claims softened (Erika Kirk Sep 21 2025, Mother Emanuel AME 2015, Charlie Kirk deceased 2025). Backticked self-harm-shape path now exists in main (PR #1674 merged eb8dc35; rebased to pick up).
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -155,12 +154,11 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 - **`Copilot` (bot)** at 2026-05-05T17:36:06Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:16 (association: NONE)
   P1: This asserts specific real-world facts (e.g., forgiveness at a memorial service and the date “September 21 2025”) without any citation. Given the repo’s search-first authority discipline, consider either adding a source link/citation or rephrasing as a non-load-bearing, source-independent observation (e.g., “reportedly/publicly described as…” without a date).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:42:32Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:16 (association: MEMBER)
-    Aaron same-tick reviewer-policy on conspiracy-theory-adjacent / source-citation content: mark+rigor-later OR cut-later OR already-rigorous-or-cut. Commit ac5fa8c applies the third option per Otto-364 — all flagged specific-date claims softened (Erika Kirk Sep 21 2025, Mother Emanuel AME 2015, Charlie Kirk deceased 2025). Backticked self-harm-shape path now exists in main (PR #1674 merged eb8dc35; rebased to pick up).
+- **`AceHack` (human)** at 2026-05-05T17:42:32Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:16 (association: MEMBER)
+  Aaron same-tick reviewer-policy on conspiracy-theory-adjacent / source-citation content: mark+rigor-later OR cut-later OR already-rigorous-or-cut. Commit ac5fa8c applies the third option per Otto-364 — all flagged specific-date claims softened (Erika Kirk Sep 21 2025, Mother Emanuel AME 2015, Charlie Kirk deceased 2025). Backticked self-harm-shape path now exists in main (PR #1674 merged eb8dc35; rebased to pick up).
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -172,12 +170,11 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 - **`Copilot` (bot)** at 2026-05-05T17:36:06Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:143 (association: NONE)
   P1: This still states a specific real-world claim (“Charlie Kirk himself is deceased (2025 …)”) without citation. If the architectural point doesn’t depend on the person’s death, consider removing the death claim entirely or qualifying it as unverified/report-based, or add a citation to avoid embedding potential misinformation.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:42:34Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:143 (association: MEMBER)
-    Aaron same-tick reviewer-policy on conspiracy-theory-adjacent / source-citation content: mark+rigor-later OR cut-later OR already-rigorous-or-cut. Commit ac5fa8c applies the third option per Otto-364 — all flagged specific-date claims softened (Erika Kirk Sep 21 2025, Mother Emanuel AME 2015, Charlie Kirk deceased 2025). Backticked self-harm-shape path now exists in main (PR #1674 merged eb8dc35; rebased to pick up).
+- **`AceHack` (human)** at 2026-05-05T17:42:34Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:143 (association: MEMBER)
+  Aaron same-tick reviewer-policy on conspiracy-theory-adjacent / source-citation content: mark+rigor-later OR cut-later OR already-rigorous-or-cut. Commit ac5fa8c applies the third option per Otto-364 — all flagged specific-date claims softened (Erika Kirk Sep 21 2025, Mother Emanuel AME 2015, Charlie Kirk deceased 2025). Backticked self-harm-shape path now exists in main (PR #1674 merged eb8dc35; rebased to pick up).
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -189,12 +186,11 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 - **`Copilot` (bot)** at 2026-05-05T17:45:44Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:25 (association: NONE)
   P1 (documentation): This sentence says the specific date is deferred per Otto-364, but it still asserts a concrete year (“2015”). If the intent is to avoid unsourced real‑world date claims, either remove the year as well (keep the example date-independent) or add a citation/source for the year/date claim.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:48:07Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:25 (association: MEMBER)
-    Addressed in commit b6b1f22 — (1) Mother Emanuel AME '2015' year removed; reference is now date-independent so architectural-pairing point is load-bearing, not the year. (2) Charity Gayle 'I Speak Jesus' lyric quotes replaced with thematic paraphrases (stronghold-breaking imagery / burning-fire imagery / shining-through-shadows imagery / light-as-name imagery / name-of-Jesus declaration). Song reference + Aaron's 'listening to this now' verbatim quote remain; copyrighted lyric content removed. Distinction made between Otto-mirror verbatim-preservation discipline (applies to Aaron's WORDS) and IP-safety paraphrase (applies to third-party copyrighted content Aaron forwards).
+- **`AceHack` (human)** at 2026-05-05T17:48:07Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:25 (association: MEMBER)
+  Addressed in commit b6b1f22 — (1) Mother Emanuel AME '2015' year removed; reference is now date-independent so architectural-pairing point is load-bearing, not the year. (2) Charity Gayle 'I Speak Jesus' lyric quotes replaced with thematic paraphrases (stronghold-breaking imagery / burning-fire imagery / shining-through-shadows imagery / light-as-name imagery / name-of-Jesus declaration). Song reference + Aaron's 'listening to this now' verbatim quote remain; copyrighted lyric content removed. Distinction made between Otto-mirror verbatim-preservation discipline (applies to Aaron's WORDS) and IP-safety paraphrase (applies to third-party copyrighted content Aaron forwards).
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -206,12 +202,11 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 - **`Copilot` (bot)** at 2026-05-05T17:45:44Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:87 (association: NONE)
   P1 (documentation): This section quotes multiple contiguous fragments labeled as “extended lyrics”. Even short excerpts can raise IP/copyright concerns in a public repo; consider replacing the lyric fragments with a paraphrase/summary or a link/reference to the song instead of reproducing the words verbatim.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:48:10Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:87 (association: MEMBER)
-    Addressed in commit b6b1f22 — (1) Mother Emanuel AME '2015' year removed; reference is now date-independent so architectural-pairing point is load-bearing, not the year. (2) Charity Gayle 'I Speak Jesus' lyric quotes replaced with thematic paraphrases (stronghold-breaking imagery / burning-fire imagery / shining-through-shadows imagery / light-as-name imagery / name-of-Jesus declaration). Song reference + Aaron's 'listening to this now' verbatim quote remain; copyrighted lyric content removed. Distinction made between Otto-mirror verbatim-preservation discipline (applies to Aaron's WORDS) and IP-safety paraphrase (applies to third-party copyrighted content Aaron forwards).
+- **`AceHack` (human)** at 2026-05-05T17:48:10Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:87 (association: MEMBER)
+  Addressed in commit b6b1f22 — (1) Mother Emanuel AME '2015' year removed; reference is now date-independent so architectural-pairing point is load-bearing, not the year. (2) Charity Gayle 'I Speak Jesus' lyric quotes replaced with thematic paraphrases (stronghold-breaking imagery / burning-fire imagery / shining-through-shadows imagery / light-as-name imagery / name-of-Jesus declaration). Song reference + Aaron's 'listening to this now' verbatim quote remain; copyrighted lyric content removed. Distinction made between Otto-mirror verbatim-preservation discipline (applies to Aaron's WORDS) and IP-safety paraphrase (applies to third-party copyrighted content Aaron forwards).
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -223,12 +218,11 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 - **`Copilot` (bot)** at 2026-05-05T17:51:46Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:3 (association: NONE)
   P1: YAML frontmatter `description:` contains unquoted `#` tokens (e.g., "PR #1674" and "#1651/#1652/..."), which YAML interprets as a comment delimiter. If any tooling later parses this frontmatter as actual YAML, the description will be truncated at the first `#`. Quote the description value (or use a folded/block scalar) so the full text is preserved.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:55:01Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:3 (association: MEMBER)
-    Addressed in commit 797e491 — (P0) removed Charlie Kirk deceased claim entirely; rephrased to operator-independent technique-lineage-persistence framing (the architectural point is the persistence-property, not any specific operator's status). (P1) wrapped name + description in single quotes; replaced PR #N internal hash references with PR N form to avoid YAML # comment-delimiter parsing complications; removed apostrophes (single-quote wrapping requires '' escape, simpler to remove); replaced unicode epsilon symbol with epsilon- prefix for frontmatter portability.
+- **`AceHack` (human)** at 2026-05-05T17:55:01Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:3 (association: MEMBER)
+  Addressed in commit 797e491 — (P0) removed Charlie Kirk deceased claim entirely; rephrased to operator-independent technique-lineage-persistence framing (the architectural point is the persistence-property, not any specific operator's status). (P1) wrapped name + description in single quotes; replaced PR #N internal hash references with PR N form to avoid YAML # comment-delimiter parsing complications; removed apostrophes (single-quote wrapping requires '' escape, simpler to remove); replaced unicode epsilon symbol with epsilon- prefix for frontmatter portability.
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -243,8 +237,8 @@ Composes PR #1638 canonical *"without the discipline this is an AI bio weapon"* 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T17:55:05Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:276 (association: MEMBER)
-    Addressed in commit 797e491 — (P0) removed Charlie Kirk deceased claim entirely; rephrased to operator-independent technique-lineage-persistence framing (the architectural point is the persistence-property, not any specific operator's status). (P1) wrapped name + description in single quotes; replaced PR #N internal hash references with PR N form to avoid YAML # comment-delimiter parsing complications; removed apostrophes (single-quote wrapping requires '' escape, simpler to remove); replaced unicode epsilon symbol with epsilon- prefix for frontmatter portability.
+- **`AceHack` (human)** at 2026-05-05T17:55:05Z on `memory/feedback_charlie_kirk_argument_style_IS_bio_weapon_style_at_human_scale_architecture_mechanizes_it_aaron_2026_05_05.md`:276 (association: MEMBER)
+  Addressed in commit 797e491 — (P0) removed Charlie Kirk deceased claim entirely; rephrased to operator-independent technique-lineage-persistence framing (the architectural point is the persistence-property, not any specific operator's status). (P1) wrapped name + description in single quotes; replaced PR #N internal hash references with PR N form to avoid YAML # comment-delimiter parsing complications; removed apostrophes (single-quote wrapping requires '' escape, simpler to remove); replaced unicode epsilon symbol with epsilon- prefix for frontmatter portability.
 
 ## Fix commits (touching thread paths)
 

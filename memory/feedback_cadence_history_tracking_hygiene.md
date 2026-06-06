@@ -15,9 +15,9 @@ surface.
 **Scope — explicitly broader than FACTORY-HYGIENE rows
 (2026-04-22 extension).** Row #44's original scope only named
 `docs/FACTORY-HYGIENE.md` rows and BP-NN rules. Aaron's
-second directive on the same round — *"you might as well right
+second directive on the same round — _"you might as well right
 a history record somewhere on every loop tool right before
-you check cron"* — applied the rule to the autonomous-loop
+you check cron"_ — applied the rule to the autonomous-loop
 cron tick, which was NOT a FACTORY-HYGIENE row but IS the
 single most cadenced surface in the factory. The corrected
 scope covers:
@@ -56,9 +56,9 @@ And, when I acknowledged but under-emphasized the point:
 That second message is the load-bearing logic. A cadence is
 not a declaration — it is a **promise to fire with a period**.
 A promise with no log is indistinguishable from a lie. Rows
-#23 and #43 check for *existence* and *activation* of cadenced
+#23 and #43 check for _existence_ and _activation_ of cadenced
 hygiene items; row #44 is the only one of the three that lets
-us *verify the cadence actually fires*. Without it, a row that
+us _verify the cadence actually fires_. Without it, a row that
 says "every 5-10 rounds" can sit for 30 rounds with nobody
 noticing, while the factory's paperwork continues to claim the
 hygiene runs.
@@ -98,15 +98,15 @@ and falls over.
   compliance gaps — either pick a surface or retire the
   cadence. There is no third option.
 - **Distinct from rows #23 and #43:**
-  - Row #23 (existence) — *what hygiene are we not running
-    at all?*
-  - Row #43 (activation) — *what hygiene have we authored
-    but not activated?*
-  - Row #44 (fire-history) — *of the classes we AUTHORED
-    and ACTIVATED, can we prove they fire on cadence?*
-  Each row catches a different structural failure mode.
-  The three together form the meta-hygiene triangle and
-  each is its own canonical example (self-audit risk).
+  - Row #23 (existence) — _what hygiene are we not running
+    at all?_
+  - Row #43 (activation) — _what hygiene have we authored
+    but not activated?_
+  - Row #44 (fire-history) — _of the classes we AUTHORED
+    and ACTIVATED, can we prove they fire on cadence?_
+    Each row catches a different structural failure mode.
+    The three together form the meta-hygiene triangle and
+    each is its own canonical example (self-audit risk).
 - **Self-audit risk.** Row #44 itself is proposed at
   authoring time. First fire: an audit of every currently-
   active cadenced row in `docs/FACTORY-HYGIENE.md` checking
@@ -123,24 +123,24 @@ and falls over.
   discipline. Parking indefinitely is the worst option — it
   hides the gap.
 - **Factory-scope, not shipped-scope.** The hygiene list
-  itself is factory-internal. The *discipline* (fire-log
+  itself is factory-internal. The _discipline_ (fire-log
   for cadenced checks) ships to project-under-construction
   indirectly via any audit skill built to enforce this row.
 
 **The meta-hygiene triangle — each row's self-audit risk:**
 
-| Row | Catches | Self-audit example at authoring |
-|---|---|---|
-| 23 | Classes we don't run at all | Row #23 itself was `(proposed)` and therefore could not catch row #42 before Aaron did |
-| 43 | Authored-but-not-activated rows | Row #43 itself is `(proposed)` at authoring — canonical example of what it catches |
-| 44 | Active cadences with no verifiable fire-log | Row #44 itself is `(proposed)` at authoring and has no fire-log yet — canonical example |
+| Row | Catches                                     | Self-audit example at authoring                                                         |
+| --- | ------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 23  | Classes we don't run at all                 | Row #23 itself was `(proposed)` and therefore could not catch row #42 before Aaron did  |
+| 43  | Authored-but-not-activated rows             | Row #43 itself is `(proposed)` at authoring — canonical example of what it catches      |
+| 44  | Active cadences with no verifiable fire-log | Row #44 itself is `(proposed)` at authoring and has no fire-log yet — canonical example |
 
 **Leverage chain observed.**
 
 Row #43 → surfaced row #23 as proposed-unactivated → row
 #23 activation fired 6 candidates → 2 became BACKLOG P1
 (dead-link hygiene, skill-eval coverage) → Aaron then
-noticed that of the *already-active* cadenced rows, we
+noticed that of the _already-active_ cadenced rows, we
 had no fire-history discipline → row #44.
 
 Depth-3 leverage chain (row #43 → row #23 activation →
@@ -157,15 +157,15 @@ preserve-original rule).**
 Aaron 2026-04-22 during round 44 autonomous-loop work,
 immediately after row #23 activation landed:
 
-1. *"everything with a cadence should be track it history
-   hygene make sure we got that one too"* — asserts the
+1. _"everything with a cadence should be track it history
+   hygene make sure we got that one too"_ — asserts the
    class.
-2. *"else how can we verify it's cadence?"* — makes the
+2. _"else how can we verify it's cadence?"_ — makes the
    load-bearing logic explicit: fire-history IS the
    cadence-verification mechanism, not a nice-to-have.
 
-The honest read: the factory had nailed *existence* and
-*activation* but had a blind spot on *verification*. A
+The honest read: the factory had nailed _existence_ and
+_activation_ but had a blind spot on _verification_. A
 cadence without fire-history looks self-regulating on
 paper but provides no evidence. Row #44 exists to raise
 the verification bar and complete the triangle.

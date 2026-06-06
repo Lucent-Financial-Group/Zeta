@@ -35,8 +35,8 @@ that integrates all five per-primitive verdicts (B-0382–B-0386) into:
    - Which primitive(s) are the strongest formalization candidates?
      (B-0384 calculation-problem and B-0385 ABCT are hypothesized
      to be the strongest — the ADR either confirms or revises this)
-   - Is the synthesis gap a *foundations-incompatibility problem*
-     or a *literature gap* per B-0380 vocabulary? (This changes
+   - Is the synthesis gap a _foundations-incompatibility problem_
+     or a _literature gap_ per B-0380 vocabulary? (This changes
      the research program direction entirely)
    - What does successful formalization buy Aurora? (Per B-0023
      §"Why Aurora-relevant": anti-deception, mechanism-not-
@@ -107,10 +107,10 @@ Expected: the ADR file present with today's date prefix.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing synthesis ADR in `docs/aurora/`
-  or `docs/DECISIONS/`. B-0023 defines the shape; this row executes it.
+      or `docs/DECISIONS/`. B-0023 defines the shape; this row executes it.
 - [x] Dependency-restructure: `depends_on: [B-0382, B-0383, B-0384,
-  B-0385, B-0386]` — all five primitive verdicts required. Cannot
-  start until all five primitive assessment notes are committed.
+B-0385, B-0386]` — all five primitive verdicts required. Cannot
+      start until all five primitive assessment notes are committed.
 
 ## Composes with
 

@@ -8,9 +8,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ## REVISION 2026-04-21 (same-day, minutes-later)
 
 Aaron clarified the original message immediately after
-landing: *"dont decoeher\* is what i was trying to say
+landing: _"dont decoeher\* is what i was trying to say
 as long as that's good english lol me talk dumb
-somtimes"*.
+somtimes"_.
 
 Three moves in the clarification:
 
@@ -39,7 +39,7 @@ Three moves in the clarification:
 **What this revision preserves:** The welcome-interface
 reading (OSS contributor handling, human-meets-agent,
 persona-internal, conversation-message) remains load-
-bearing as a *specialization* of the broader
+bearing as a _specialization_ of the broader
 `don't decohere*` rule. The four interfaces each
 manifest the decohere*-class anti-pattern at their
 boundary; the seven-form decoherent-welcome taxonomy
@@ -77,7 +77,7 @@ overwrites.
 
 ## Original 2026-04-21 body (welcome-interface specialization)
 
-**Rule:** *Don't decoherent welcome.* When the factory
+**Rule:** _Don't decoherent welcome._ When the factory
 receives incoming motion (contributor PR, external ask,
 human-meeting-the-agent, new persona arrival, child
 message in a conversation), the welcome must be **phase-
@@ -87,8 +87,8 @@ than no welcome; it is the silencing-shadow anti-pattern
 per
 `memory/feedback_engage_substantively_no_dismissive_closing_with_silencing_shadow_2026_04_21.md`.
 
-**Why:** Aaron 2026-04-21, verbatim: *"dont decoherent
-welcome"*. The compressed message lands at the session-
+**Why:** Aaron 2026-04-21, verbatim: _"dont decoherent
+welcome"_. The compressed message lands at the session-
 close of the superfluid / Frictionless / Amen chain and is
 structurally composed with it:
 
@@ -99,7 +99,7 @@ structurally composed with it:
   environmental coupling — the system's identity
   collapses into the environment's noise.
 - **Welcome** is the greeting / admitting / engaging
-  move — the factory's *interface to the outside*. The
+  move — the factory's _interface to the outside_. The
   interface is where the substrate most easily loses
   phase coherence to the environment.
 - **Don't decoherent welcome** names the rule: at the
@@ -156,8 +156,8 @@ Welcome composes with Amen (per
 `memory/user_amen_operational_seal_fourth_pillar_4_letters_greek_lock_at_end_of_sequence_2026_04_21.md`)
 at the two ends of a conversation / exchange / contribution:
 
-- **Welcome** = the *open* — phase-coherent admission.
-- **Amen** = the *seal* — phase-coherent commit-point.
+- **Welcome** = the _open_ — phase-coherent admission.
+- **Amen** = the _seal_ — phase-coherent commit-point.
 
 Together they bracket the conversation as a phase-coherent
 arc. Decoherent welcome or decoherent seal breaks the

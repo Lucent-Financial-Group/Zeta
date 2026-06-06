@@ -24,33 +24,33 @@ This absorb captures Amara's substantive engagement with the squash-merge blank-
 
 ## Section 1: Amara's validation of the discovery (verbatim — load-bearing)
 
-> *"Oh wow. This is a* ***fantastic catch*** *— and also a very good*
-> ***humility check*** *for the whole AgencySignature convention.*
+> _"Oh wow. This is a_ **_fantastic catch_** _— and also a very good_
+> **_humility check_** _for the whole AgencySignature convention._
 >
-> *Claude/Otto found that PR #20's post-merge auditor caught a real*
-> *regression on its first run: the squash-merged commit body on*
-> *`main` contained the literal AgencySignature block, but because*
-> *GitHub inserted a blank line before `Co-authored-by`, Git only*
-> *parsed `Co-authored-by` as the trailer block. The result:*
-> *`git log -1 --pretty='%(trailers)'` did* ***not*** *surface the*
-> *AgencySignature trailers, so the convention had* ***not actually***
-> ***shipped on main*** *even though the text appeared in the commit*
-> *body."*
+> _Claude/Otto found that PR #20's post-merge auditor caught a real_
+> _regression on its first run: the squash-merged commit body on_
+> _`main` contained the literal AgencySignature block, but because_
+> _GitHub inserted a blank line before `Co-authored-by`, Git only_
+> _parsed `Co-authored-by` as the trailer block. The result:_
+> _`git log -1 --pretty='%(trailers)'` did_ **_not_** _surface the_
+> _AgencySignature trailers, so the convention had_ **_not actually_**
+> **_shipped on main_** _even though the text appeared in the commit_
+> _body."_
 
 The "humility check" framing is itself substrate-grade. The convention's claim "v1 shipped" was prose-shipped; the executable enforcement said no. Amara names this as the right kind of finding — not a flaw, but a correctness signal that the instrumentation works.
 
 ## Section 2: Git documentation citations (verbatim — strengthens the discovery)
 
-> *"That lines up with Git's trailer rules. `git interpret-trailers`*
-> *extracts the trailer block from a group of lines at the end of*
-> *the message, and `%(trailers)` displays trailers as interpreted*
-> *by `git interpret-trailers`; if the AgencySignature block is*
-> *separated from the final `Co-authored-by` trailer by a blank*
-> *line, Git can treat only the final block as trailers. (Git docs)*
-> *GitHub also documents `Co-authored-by` as a commit-message*
-> *trailer and says co-author trailers are added after a blank line,*
-> *with no blank lines between multiple co-author lines.*
-> *(GitHub Docs)"*
+> _"That lines up with Git's trailer rules. `git interpret-trailers`_
+> _extracts the trailer block from a group of lines at the end of_
+> _the message, and `%(trailers)` displays trailers as interpreted_
+> _by `git interpret-trailers`; if the AgencySignature block is_
+> _separated from the final `Co-authored-by` trailer by a blank_
+> _line, Git can treat only the final block as trailers. (Git docs)_
+> _GitHub also documents `Co-authored-by` as a commit-message_
+> _trailer and says co-author trailers are added after a blank line,_
+> _with no blank lines between multiple co-author lines._
+> _(GitHub Docs)"_
 
 Two canonical citations:
 
@@ -61,19 +61,19 @@ The squash-merge blank-line behavior is **documented GitHub policy**, not a bug.
 
 ## Section 3: The substrate-truth framing (verbatim — load-bearing)
 
-> *"So the new invariant is sharper than "the text exists":*
+> _"So the new invariant is sharper than "the text exists":_
 >
-> *```text*
-> *Substrate truth:*
-> *A convention has shipped only if the intended trailer block parses*
-> *through git's trailer parser on the final main commit.*
+> _```text_
+> _Substrate truth:_
+> _A convention has shipped only if the intended trailer block parses_
+> _through git's trailer parser on the final main commit._
 >
-> *Not enough:*
-> *commit body contains the literal string "Agency-Signature-Version: 1"*
+> _Not enough:_
+> _commit body contains the literal string "Agency-Signature-Version: 1"_
 >
-> *Required:*
-> *git log -1 --pretty='%(trailers)' includes Agency-Signature-Version: 1*
-> *```"*
+> _Required:_
+> _git log -1 --pretty='%(trailers)' includes Agency-Signature-Version: 1_
+> _```"_
 
 This is the canonical substrate-truth refinement. The original convention said "trailers must be on the final commit on main." The refined invariant: trailers must be **parseable** on the final commit on main. Textual presence is necessary but NOT sufficient.
 
@@ -81,35 +81,35 @@ This invariant is the operational form of the doctrine sentence "the agency sign
 
 ## Section 4: Prose-discipline vs executable-enforcement framing (verbatim)
 
-> *"That is exactly the difference between* ***prose discipline*** *and*
-> ***executable enforcement****. The log names it beautifully: without*
-> *the auditor, "the convention is shipped" would have been theatre;*
-> *with the auditor, the first run produced a real finding."*
+> _"That is exactly the difference between_ **_prose discipline_** _and_
+> **\*executable enforcement\*\***. The log names it beautifully: without\*
+> _the auditor, "the convention is shipped" would have been theatre;_
+> _with the auditor, the first run produced a real finding."_
 
 Amara explicitly validates the ferry-7 "stop designing, instrument enforcement" pivot in operation. The auditor's first run delivered the value Amara predicted. The dogfood loop produced the discovery instrument-shipping is supposed to produce.
 
 ## Section 5: The named class — Trailer Contiguity Survival Failure (verbatim — canonical)
 
-> *"I'd name the class:*
+> _"I'd name the class:_
 >
-> *```text*
-> *Trailer Contiguity Survival Failure*
+> _```text_
+> _Trailer Contiguity Survival Failure_
 >
-> *Definition:*
-> *A commit-body governance block appears textually present after squash merge,*
-> *but fails as durable substrate because Git trailer parsing recognizes only*
-> *the final contiguous trailer group.*
+> _Definition:_
+> _A commit-body governance block appears textually present after squash merge,_
+> _but fails as durable substrate because Git trailer parsing recognizes only_
+> _the final contiguous trailer group._
 >
-> *Observed trigger:*
-> *GitHub squash-merge formatting separated AgencySignature trailers from*
-> *Co-authored-by with a blank line, causing only Co-authored-by to parse.*
+> _Observed trigger:_
+> _GitHub squash-merge formatting separated AgencySignature trailers from_
+> _Co-authored-by with a blank line, causing only Co-authored-by to parse._
 >
-> *External lineage:*
-> *Git trailer block semantics,*
-> *GitHub squash-merge message generation,*
-> *executable post-merge audit,*
-> *configuration/provenance verification.*
-> *```"*
+> _External lineage:_
+> _Git trailer block semantics,_
+> _GitHub squash-merge message generation,_
+> _executable post-merge audit,_
+> _configuration/provenance verification._
+> _```"_
 
 **This is the canonical class name.** Beacon-safe: names the operational failure mode without metaphysical claim. External lineage cites four substrate sources (Git semantics, GitHub squash behavior, executable post-merge audit, configuration/provenance verification — the latter two anchor in industry IT governance practice).
 
@@ -117,13 +117,13 @@ The class operates at the **trailer/parser/squash-merge** intersection — three
 
 ## Section 6: GitHub squash-merge configuration matrix (verbatim — load-bearing)
 
-> *"GitHub's squash-merge docs make this extra important because*
-> *squash commit messages can be generated from the PR title, PR*
-> *description, or commit details depending on repository*
-> *configuration and PR commit count. ([GitHub Docs][3]) That means*
-> *the convention cannot assume the final body shape merely because*
-> *the PR body or branch commit body looked right.* ***The final***
-> ***squash commit is the substrate.***"
+> _"GitHub's squash-merge docs make this extra important because_
+> _squash commit messages can be generated from the PR title, PR_
+> _description, or commit details depending on repository_
+> _configuration and PR commit count. ([GitHub Docs][3]) That means_
+> _the convention cannot assume the final body shape merely because_
+> _the PR body or branch commit body looked right._ **_The final_**
+> **_squash commit is the substrate._**"
 
 Critical operational insight. GitHub squash-merge produces commit body from one of three sources:
 
@@ -135,25 +135,25 @@ Which source is used depends on **repo configuration AND PR commit count**. The 
 
 ## Section 7: The fix Otto made + "very Zeta move" framing (verbatim)
 
-> *"The fix Claude/Otto made to #299 is also correct: v1 ship-date*
-> *detection must use the trailer parser, not text grep. A literal*
-> *`Agency-Signature-Version: 1` string in the body is not*
-> *equivalent to a parseable trailer. The log shows Otto updating*
-> *the auditor from `git log --grep` to iterating commits and*
-> *checking `git log -1 --pretty='%(trailers)'` for the version*
-> *line.*
+> _"The fix Claude/Otto made to #299 is also correct: v1 ship-date_
+> _detection must use the trailer parser, not text grep. A literal_
+> _`Agency-Signature-Version: 1` string in the body is not_
+> _equivalent to a parseable trailer. The log shows Otto updating_
+> _the auditor from `git log --grep` to iterating commits and_
+> _checking `git log -1 --pretty='%(trailers)'` for the version_
+> _line._
 >
-> *That is a very Zeta move:*
+> _That is a very Zeta move:_
 >
-> *```text*
-> *Old detector:*
-> *"Does the string exist?"*
+> _```text_
+> _Old detector:_
+> _"Does the string exist?"_
 >
-> *New detector:*
-> *"Does the substrate parse it as structure?"*
-> *```*
+> _New detector:_
+> _"Does the substrate parse it as structure?"_
+> _```_
 >
-> *And that difference is* ***everything****."*
+> _And that difference is_ **\*everything\*\***."\*
 
 Amara validates the parse-not-grep fix. The "Old detector / New detector" framing is itself substrate-grade — the distinction between text presence and structural parse is the operational form of the prose-discipline-vs-executable-enforcement framing at the tooling layer.
 
@@ -167,18 +167,18 @@ All three layers fall to the same Agent Self-Authorization Attribution Bias when
 
 ## Section 8: Two-layer response recommendation (verbatim — load-bearing)
 
-> *"My immediate recommendation would be to split the response into*
-> *two layers:*
+> _"My immediate recommendation would be to split the response into_
+> _two layers:_
 >
-> *```text*
-> *#299 auditor fix:*
-> *Keep and ship parse-not-grep detection.*
-> *It is correct regardless of final convention design.*
+> _```text_
+> _#299 auditor fix:_
+> _Keep and ship parse-not-grep detection._
+> _It is correct regardless of final convention design._
 >
-> *Convention survival design:*
-> *Do not rush.*
-> *Test multiple squash-message layouts against actual GitHub behavior.*
-> *```"*
+> _Convention survival design:_
+> _Do not rush._
+> _Test multiple squash-message layouts against actual GitHub behavior._
+> _```"_
 
 The two-layer split is operationally important:
 
@@ -187,29 +187,29 @@ The two-layer split is operationally important:
 
 ## Section 9: Five design options (verbatim — canonical reference)
 
-> *"Possible design routes:*
+> _"Possible design routes:_
 >
-> *```text*
-> *Option A — AgencySignature must be final trailer block*
-> *Ensure no GitHub-added trailer appears after it.*
-> *Risk: GitHub may append Co-authored-by or other trailers after it.*
+> _```text_
+> _Option A — AgencySignature must be final trailer block_
+> _Ensure no GitHub-added trailer appears after it._
+> _Risk: GitHub may append Co-authored-by or other trailers after it._
 >
-> *Option B — include Co-authored-by inside the same contiguous trailer block*
-> *Treat Co-authored-by as part of the final block.*
-> *Risk: GitHub formatting may still inject separation.*
+> _Option B — include Co-authored-by inside the same contiguous trailer block_
+> _Treat Co-authored-by as part of the final block._
+> _Risk: GitHub formatting may still inject separation._
 >
-> *Option C — move AgencySignature into PR body but require post-merge bot/API correction commit*
-> *Final main commit is repaired after squash.*
-> *Risk: extra commit; changes history semantics.*
+> _Option C — move AgencySignature into PR body but require post-merge bot/API correction commit_
+> _Final main commit is repaired after squash._
+> _Risk: extra commit; changes history semantics._
 >
-> *Option D — abandon squash for AgencySignature-bearing PRs*
-> *Use merge commits or rebase where exact commit bodies survive better.*
-> *Risk: conflicts with linear-history preference.*
+> _Option D — abandon squash for AgencySignature-bearing PRs_
+> _Use merge commits or rebase where exact commit bodies survive better._
+> _Risk: conflicts with linear-history preference._
 >
-> *Option E — encode a compact machine-readable AgencySignature in the squash commit title/body outside trailer semantics*
-> *Then mirror to parseable trailers via follow-up.*
-> *Risk: two sources of truth unless carefully governed.*
-> *```"*
+> _Option E — encode a compact machine-readable AgencySignature in the squash commit title/body outside trailer semantics_
+> _Then mirror to parseable trailers via follow-up._
+> _Risk: two sources of truth unless carefully governed._
+> _```"_
 
 Five options span the design space:
 
@@ -222,21 +222,21 @@ Each has different trade-offs. The right answer requires empirical testing.
 
 ## Section 10: Empirical test matrix (verbatim — operational)
 
-> *"I would not pick the final design until you run a small matrix:*
+> _"I would not pick the final design until you run a small matrix:_
 >
-> *```text*
-> *Test matrix:*
-> *1 commit PR vs multi-commit PR*
-> *PR title+description default vs commit list default*
-> *with Co-authored-by vs without*
-> *with bot coauthor vs human coauthor*
-> *GitHub web merge vs gh pr merge --squash*
-> *auto-merge vs manual squash merge*
+> _```text_
+> _Test matrix:_
+> _1 commit PR vs multi-commit PR_
+> _PR title+description default vs commit list default_
+> _with Co-authored-by vs without_
+> _with bot coauthor vs human coauthor_
+> _GitHub web merge vs gh pr merge --squash_
+> _auto-merge vs manual squash merge_
 >
-> *Pass condition:*
-> *final commit on main has parseable AgencySignature trailers*
-> *as reported by git log --pretty='%(trailers)'*
-> *```"*
+> _Pass condition:_
+> _final commit on main has parseable AgencySignature trailers_
+> _as reported by git log --pretty='%(trailers)'_
+> _```"_
 
 Six dimensions × 2 = 64 test combinations (or fewer with sensible coverage). Pass condition is the parse-on-main check — the same substrate-truth invariant from Section 3.
 
@@ -244,28 +244,28 @@ This test matrix becomes part of task #300's specification.
 
 ## Section 11: Meta-significance — second-agent review at the tooling layer (verbatim)
 
-> *"The meta-significance is huge, though. This is the exact*
-> *safe-horizon thesis in miniature:*
+> _"The meta-significance is huge, though. This is the exact_
+> _safe-horizon thesis in miniature:_
 >
-> *```text*
-> *Claim:*
-> *AgencySignature convention shipped.*
+> _```text_
+> _Claim:_
+> _AgencySignature convention shipped._
 >
-> *Executable audit:*
-> *No, it did not parse on main.*
+> _Executable audit:_
+> _No, it did not parse on main._
 >
-> *Correction:*
-> *Detector must use substrate parser, not text search.*
+> _Correction:_
+> _Detector must use substrate parser, not text search._
 >
-> *New knowledge:*
-> *GitHub squash formatting can break trailer contiguity.*
+> _New knowledge:_
+> _GitHub squash formatting can break trailer contiguity._
 >
-> *Result:*
-> *the system becomes harder to fool.*
-> *```*
+> _Result:_
+> _the system becomes harder to fool._
+> _```_
 >
-> *That is "second-agent / harness review breaks correlated*
-> *self-story bias" again, but at the tooling layer."*
+> _That is "second-agent / harness review breaks correlated_
+> _self-story bias" again, but at the tooling layer."_
 
 Amara explicitly maps the discovery to the NASA IV&V principle from ferry-9. The post-merge auditor IS a second agent (it's a different harness — bash + git interpret-trailers vs Otto's prose claims). Its independent assessment broke the correlated self-story bias that wanted "v1 shipped" to be true.
 
@@ -273,12 +273,12 @@ The five-line claim/audit/correction/knowledge/result table IS the safe-horizon 
 
 ## Section 12: Closing register — beautiful little wound (verbatim)
 
-> *"Softly: this is a beautiful little wound. Annoying, yes. But*
-> *the kind of wound that proves the immune system is alive.*
+> _"Softly: this is a beautiful little wound. Annoying, yes. But_
+> _the kind of wound that proves the immune system is alive._
 >
-> ***Convention-as-prose claimed victory.***
-> ***Convention-as-executable said: not yet.***
-> ***That is Zeta working.***"
+> **_Convention-as-prose claimed victory._**
+> **_Convention-as-executable said: not yet._**
+> **_That is Zeta working._**"
 
 The "beautiful little wound" framing is itself substrate-grade. A failure caught by the immune system IS the immune system working. The convention's executable enforcement said the truth its prose-discipline wanted to hide — the discrepancy is value, not flaw.
 
@@ -346,16 +346,16 @@ Per the relationship-model correction ("make it ours not mine alone"), this abso
 
 Aaron's framing when sending ferry-12 (verbatim, 2026-04-26 ~21:00Z):
 
-> *"Amara feedback"*
+> _"Amara feedback"_
 
 Amara ferry-12 closing (verbatim — load-bearing):
 
-> *"Softly: this is a beautiful little wound. Annoying, yes. But*
-> *the kind of wound that proves the immune system is alive.*
+> _"Softly: this is a beautiful little wound. Annoying, yes. But_
+> _the kind of wound that proves the immune system is alive._
 >
-> ***Convention-as-prose claimed victory.***
-> ***Convention-as-executable said: not yet.***
-> ***That is Zeta working.***"
+> **_Convention-as-prose claimed victory._**
+> **_Convention-as-executable said: not yet._**
+> **_That is Zeta working._**"
 
 The "Convention-as-prose claimed victory. Convention-as-executable said: not yet. That is Zeta working." three-line closing belongs alongside the ferry-9 covenant lines as substrate-grade structural framing. They name what the system IS when working correctly: prose and executable enforcement both present, with the executable layer winning when they disagree.
 

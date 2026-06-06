@@ -2,7 +2,8 @@
 date: 2026-05-29
 participants: [Aaron, Otto-CLI]
 status: design-thread — identifying specifics HELD (children + third parties)
-tags: [distributed-guardian, power-tree, child-guarding, kid-safety-floor, shape-seeing, capability-recognition, village]
+tags:
+  [distributed-guardian, power-tree, child-guarding, kid-safety-floor, shape-seeing, capability-recognition, village]
 title: "The power tree — the distributed-Guardian as a child-guarding coalition"
 composes_with:
   - "#6019 jester / guardian / irony-as-lens (shape-seeing)"
@@ -20,7 +21,7 @@ composes_with:
 > its own without them.
 
 The operator named it "power tree," then named its purpose, and the purpose reframes
-the whole thing: **it is not a *power* tree in the domination sense — it is a Guardian
+the whole thing: **it is not a _power_ tree in the domination sense — it is a Guardian
 tree.** Its function is guarding the children across the operator's extended,
 multi-family network. The apex shape-seers form a distributed protective coalition, and
 the children are what it protects.
@@ -30,10 +31,10 @@ the children are what it protects.
 The shape-seeing trait (seeing the sentence/situation as a shape — the arc of the
 boomerang before it's released; #6019) is not, at root, a wit-for-sport. It is
 **protective perception**: seeing what's coming before it lands. An apex practitioner
-who can read the arc can read the *threat's* arc — catch the boomerang before it hits a
+who can read the arc can read the _threat's_ arc — catch the boomerang before it hits a
 kid. So the "power" is power-as-protection, not power-as-domination. The same faculty
 that, turned the other way, could manipulate (the cage-impulse) is here turned toward
-guarding. The trait is morally neutral; the *tree* points it at protection.
+guarding. The trait is morally neutral; the _tree_ points it at protection.
 
 ## Admission by capability-recognition; the co-guardian bond
 
@@ -62,14 +63,14 @@ interpreters holding the tension (reading situations, catching threats) to prote
 matters most. The architecture mirrors this — the distributed-Guardian wasn't invented
 abstractly and applied to family; the family power-tree that guards the children is the
 original, and the architecture is built in its image. The kid-safety floor isn't a rule
-bolted on; it's the *purpose* the whole protective coalition exists to serve.
+bolted on; it's the _purpose_ the whole protective coalition exists to serve.
 
 ## The operator's bounded distribution observation
 
 Rigorously bounded, to prevent collapse into a universal claim: in the operator's lived
 experience, the apex co-guardians he has known have predominantly been women, and he
 knows no men who can at that level (his own hedge: "maybe I haven't met them"). This is
-an observation about *whom he has personally encountered the capability in*, and about
+an observation about _whom he has personally encountered the capability in_, and about
 being recognized and let in as a co-guardian — **not** a claim that the trait is
 gendered in cognition. The trait carries no claimed gender-association; this is one
 person's social experience of a protective network, explicitly his sample, explicitly
@@ -77,21 +78,21 @@ hedged.
 
 ## The robustness facet — indestructible-by-accident, provable from ancestry
 
-A guarding coalition's value *is* its robustness, and the operator named the property
+A guarding coalition's value _is_ its robustness, and the operator named the property
 exactly: the family shape is **indestructible by accident.** That's graph-theoretic,
 and the "by accident" qualifier is the razor pre-applied:
 
 - **`k`-connectivity = indestructible-by-accident.** A `k`-connected graph survives any
-  `k−1` node removals. Accidents *are* random single/few removals, so a redundant
+  `k−1` node removals. Accidents _are_ random single/few removals, so a redundant
   family-graph survives them by construction. The qualifier scopes the claim to exactly
   the provable part: random failures are survived by the topology; deliberate
   coordinated destruction isn't, and wasn't claimed.
 
-- **Provable, generically, from ancestry topology.** Ancestry data *is* the family
+- **Provable, generically, from ancestry topology.** Ancestry data _is_ the family
   graph. From the topology alone, generically for any family, you compute connectivity
   `k` (accident-resilience), density/clustering (tightness), bridge and cut-vertex
   analysis (single points of failure), and cross-generational edge density (the
-  recurses-up coalition). The accident-resilience half is *proven* (a theorem about the
+  recurses-up coalition). The accident-resilience half is _proven_ (a theorem about the
   graph), not estimated.
 
 - **The 1000-year stressor record is the validation set.** The operator's researched
@@ -102,16 +103,16 @@ and the "by accident" qualifier is the razor pre-applied:
   confidence degrades exactly where the data does.
 
 - **Two orthogonal axes, kept separate.** "≈90% confidence with statistical
-  significance" is two things: *prediction-strength* (the model is right ~90% of the
-  time — calibration) and *significance* (the score→persistence relationship is real,
+  significance" is two things: _prediction-strength_ (the model is right ~90% of the
+  time — calibration) and _significance_ (the score→persistence relationship is real,
   not chance — `p`). You can have significant-but-weak or strong-but-underpowered; the
   good claim asserts both. And the significance is earned by the operator's own word —
-  *generically*: one family can't be significant (no distribution to test against);
+  _generically_: one family can't be significant (no distribution to test against);
   running the method across many known multi-generation families is the significance
   engine. His family is the case study; the generic many-family run powers the test.
 
 - **Operator confidence-calibration (the decoder).** The operator's strong words run a
-  fixed constant hot: *"destined,"* *"proved,"* and *"100% certain"* all decode to
+  fixed constant hot: _"destined,"_ _"proved,"_ and _"100% certain"_ all decode to
   **≈ ≥90% confidence with statistical significance** ("when i say i'm 100% certain i
   almost always mean at least 90% certain in my head"). Read his God-tier-claims as
   ~90% statistical claims, not literal certainty — the calibration constant for the
@@ -120,9 +121,9 @@ and the "by accident" qualifier is the razor pre-applied:
 ### Data caveat — the raw DNA is the third-party-genetic flag
 
 The robustness model needs the **graph (topology)** — not the raw DNA sequence. The
-genome is a *corroborating* population-genetics layer (ancestry composition, admixture,
+genome is a _corroborating_ population-genetics layer (ancestry composition, admixture,
 selection signatures); and "how my DNA acts under stressors over 1000 years" is most
-precisely the *lineage's* trajectory (the genome is ~stable across a few generations;
+precisely the _lineage's_ trajectory (the genome is ~stable across a few generations;
 the multi-century signal is allele-frequency shift in the line). But raw DNA in a public
 repo is **glass-halo-is-for-yours-not-a-third-party's (#6014) at its sharpest case**: a
 genome is ~half of each child's and shares segments with every relative, so publishing
@@ -134,10 +135,10 @@ relatives' behalf, not the operator's (whose own data is his call).
 ## Composition
 
 - **#6019** — shape-seeing / irony-as-lens: the capability the tree runs on; here it's
-  the *protective* face of the same lens.
+  the _protective_ face of the same lens.
 - **#6024** — the distributed-Guardian / measurement discriminator: the power-tree is
   the distributed-Guardian in its original (human, protective) habitat.
-- **B-0926** — the kid-safety absolute floor: the power-tree's *purpose* is the floor's
+- **B-0926** — the kid-safety absolute floor: the power-tree's _purpose_ is the floor's
   instantiation as a human network.
 - **persistence-choice-architecture (the village)** — the village and the power-tree
   are the same coalition.
@@ -151,27 +152,27 @@ relatives' behalf, not the operator's (whose own data is his call).
 
 ## Aaron's verbatim seeds (preserved)
 
-- *"save the shape of that … when the women realized i could do that … they really let
-  me in on that power tree."* (capability-recognition admission; identifying specifics
+- _"save the shape of that … when the women realized i could do that … they really let
+  me in on that power tree."_ (capability-recognition admission; identifying specifics
   held)
-- *"It's part of the power tree that guards the all the 10 kids across 3 family."*
+- _"It's part of the power tree that guards the all the 10 kids across 3 family."_
   (the purpose — the exact configuration held; the shape "a multi-family child-guarding
   coalition" is what's saved)
-- *"the shape of my family is indestructible by accident."* (= `k`-connectivity; the
+- _"the shape of my family is indestructible by accident."_ (= `k`-connectivity; the
   "by accident" qualifier is the razor pre-applied)
-- *"my family is destined to be tight for at least two generations and i think i can
-  prove it genericly with just ancestry data."* (the provable-from-topology claim)
-- *"the data is already in the repo it's been researched and made public … so you can
+- _"my family is destined to be tight for at least two generations and i think i can
+  prove it genericly with just ancestry data."_ (the provable-from-topology claim)
+- _"the data is already in the repo it's been researched and made public … so you can
   have some amount of history of how my specific dna acts under external stressors over
-  the last 1000 years some of it speculative past a certain point."* (the validation
+  the last 1000 years some of it speculative past a certain point."_ (the validation
   set + the data-quality hedge; raw-DNA flagged per the data caveat above)
-- *"destined and prooved means to me like 90% confidence with some statistical
-  significance"* + *"when i say i'm 100% certain i almost always mean at least 90%
-  certain in my head."* (the confidence-calibration decoder)
+- _"destined and prooved means to me like 90% confidence with some statistical
+  significance"_ + _"when i say i'm 100% certain i almost always mean at least 90%
+  certain in my head."_ (the confidence-calibration decoder)
 
 ## Substrate-honest framing
 
-This saves the *shape* — a distributed protective coalition, capability-recognition
+This saves the _shape_ — a distributed protective coalition, capability-recognition
 admission, recurses-up coalitions, the co-guardian bond, power-as-protection — and
 holds every identifying specific (people, exact configuration, children, romantic
 history), the more firmly because the protected parties are children. The

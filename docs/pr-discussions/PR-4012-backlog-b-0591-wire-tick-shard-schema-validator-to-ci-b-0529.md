@@ -50,6 +50,7 @@ Two slices documented:
 Adds a new P3 backlog row decomposing B-0529’s later CI-wiring recommendation for the tick-shard schema validator.
 
 **Changes:**
+
 - Adds B-0591 with frontmatter and context tying the work to B-0529.
 - Defines acceptance criteria for advisory CI wiring and future required-check promotion.
 - Cross-links the validator, retrofit tool, target workflow, and shard schema docs.

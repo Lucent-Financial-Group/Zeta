@@ -56,12 +56,7 @@ export type ControlPlaneUsage = {
   secretScopes?: readonly string[] | undefined;
 };
 
-export type ControlPlaneBudgetKind =
-  | "tokens"
-  | "tools"
-  | "model_calls"
-  | "external_provider_calls"
-  | "release_actions";
+export type ControlPlaneBudgetKind = "tokens" | "tools" | "model_calls" | "external_provider_calls" | "release_actions";
 
 export type ControlPlaneBudgetCeiling = {
   kind: ControlPlaneBudgetKind;
@@ -78,8 +73,7 @@ export const ControlPlaneRateLimitKind = {
   ReleaseActions: "release_actions",
 } as const;
 
-export type ControlPlaneRateLimitKind =
-  (typeof ControlPlaneRateLimitKind)[keyof typeof ControlPlaneRateLimitKind];
+export type ControlPlaneRateLimitKind = (typeof ControlPlaneRateLimitKind)[keyof typeof ControlPlaneRateLimitKind];
 
 export type ControlPlaneRateLimit = {
   rateLimitId: string;
@@ -164,10 +158,7 @@ export function evaluateControlPlaneAccess(input: EvaluateControlPlaneAccessInpu
   };
 }
 
-export type CreateControlPlaneDeterministicRuleInput = Omit<
-  EvaluateControlPlaneAccessInput,
-  "actionType" | "usage"
-> & {
+export type CreateControlPlaneDeterministicRuleInput = Omit<EvaluateControlPlaneAccessInput, "actionType" | "usage"> & {
   usageForOption?: ((option: AvailableOption) => ControlPlaneUsage | undefined) | undefined;
 };
 
@@ -219,10 +210,7 @@ function mergeControlPlaneUsage(
   return {
     ...slotUsage,
     ...callerUsage,
-    secretScopes: uniqueStrings([
-      ...(callerUsage.secretScopes ?? []),
-      ...(slotUsage.secretScopes ?? []),
-    ]),
+    secretScopes: uniqueStrings([...(callerUsage.secretScopes ?? []), ...(slotUsage.secretScopes ?? [])]),
   };
 }
 
@@ -242,10 +230,11 @@ function secretScopesForSlot(slot: Menu16Slot): readonly string[] {
 }
 
 function activeMatchingFlags(input: EvaluateControlPlaneAccessInput): readonly ControlPlaneFlag[] {
-  return input.flags.filter((flag) =>
-    flag.organizationId === input.organizationId &&
-    isActive(flag, input.evaluatedAt) &&
-    flagMatchesScope(flag, input)
+  return input.flags.filter(
+    (flag) =>
+      flag.organizationId === input.organizationId &&
+      isActive(flag, input.evaluatedAt) &&
+      flagMatchesScope(flag, input),
   );
 }
 
@@ -281,7 +270,8 @@ function collectFlagReasons(
     }
 
     if (flag.flag === ControlPlaneFlagKind.Freeze) {
-      if (flag.scope.kind === ControlPlaneScopeKind.Organization) return [{ flag, reason: "organization_freeze" as const }];
+      if (flag.scope.kind === ControlPlaneScopeKind.Organization)
+        return [{ flag, reason: "organization_freeze" as const }];
       if (flag.scope.kind === ControlPlaneScopeKind.Tenant) return [{ flag, reason: "tenant_freeze" as const }];
       if (flag.scope.kind === ControlPlaneScopeKind.Hat) return [{ flag, reason: "hat_freeze" as const }];
     }
@@ -304,7 +294,9 @@ function budgetCeilingExceeded(
   budgets: readonly ControlPlaneBudgetCeiling[],
   usage: ControlPlaneUsage | undefined,
 ): boolean {
-  return budgets.some((budget) => budget.used + (budget.requested ?? usageCostForBudget(budget.kind, usage)) > budget.limit);
+  return budgets.some(
+    (budget) => budget.used + (budget.requested ?? usageCostForBudget(budget.kind, usage)) > budget.limit,
+  );
 }
 
 function usageCostForBudget(kind: ControlPlaneBudgetKind, usage: ControlPlaneUsage | undefined): number {
@@ -317,12 +309,13 @@ function usageCostForBudget(kind: ControlPlaneBudgetKind, usage: ControlPlaneUsa
 }
 
 function exhaustedMatchingRateLimits(input: EvaluateControlPlaneAccessInput): readonly ControlPlaneRateLimit[] {
-  return (input.rateLimits ?? []).filter((limit) =>
-    limit.organizationId === input.organizationId &&
-    scopeMatchesInput(limit.scope, input) &&
-    limit.window.startedAt <= input.evaluatedAt &&
-    input.evaluatedAt < limit.window.endsAt &&
-    limit.used + (limit.requested ?? usageCostForRateLimit(limit.kind, input.usage)) > limit.limit
+  return (input.rateLimits ?? []).filter(
+    (limit) =>
+      limit.organizationId === input.organizationId &&
+      scopeMatchesInput(limit.scope, input) &&
+      limit.window.startedAt <= input.evaluatedAt &&
+      input.evaluatedAt < limit.window.endsAt &&
+      limit.used + (limit.requested ?? usageCostForRateLimit(limit.kind, input.usage)) > limit.limit,
   );
 }
 

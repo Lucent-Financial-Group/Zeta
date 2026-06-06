@@ -18,7 +18,7 @@ type: friction-reducer
 
 Codex P1 on PR #663 (.markdownlint-cli2.jsonc:108):
 
-> Adding `docs/research/2026-*-*.md` to markdownlint ignores disables linting for *all* date-prefixed research docs, not just verbatim ferry absorbs. If the date-prefix convention is ever used for author-edited research notes, they'll silently lose lint coverage.
+> Adding `docs/research/2026-*-*.md` to markdownlint ignores disables linting for _all_ date-prefixed research docs, not just verbatim ferry absorbs. If the date-prefix convention is ever used for author-edited research notes, they'll silently lose lint coverage.
 
 Codex's suggested narrowing: `docs/research/2026-*-verbatim-*.md`.
 
@@ -30,7 +30,7 @@ PR #663 forwards AceHack's broader pattern as-is (preserve source-of-truth direc
 
 The attempted narrowing to `docs/research/2026-*verbatim*.md` failed CI: 82+ existing
 date-prefixed research files have lint violations (MD027/MD032/MD052/MD037) that exist
-*because* they are verbatim courier-protocol absorbs (Amara ferries, Grok session logs,
+_because_ they are verbatim courier-protocol absorbs (Amara ferries, Grok session logs,
 conversation extracts, peer-review packets). These files cannot be reformatted without
 violating GOVERNANCE §33 verbatim-preservation.
 

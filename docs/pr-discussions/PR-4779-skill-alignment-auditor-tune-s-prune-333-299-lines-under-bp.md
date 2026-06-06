@@ -22,13 +22,13 @@ Bounded mechanical prune of `.claude/skills/alignment-auditor/SKILL.md`: 333 →
 
 ## Cuts (line accounting)
 
-| Section | Before | After | Note |
-|---|---|---|---|
-| Why this skill exists | 17 | 11 | Combined two paragraphs; preserved 2026-04-19 maintainer-upgrade citation + experimental-substrate framing |
-| Step 3 signal definitions | 24 | 16 | Tightened HELD/IRRELEVANT/STRAINED/VIOLATED/UNKNOWN bullets; preserved all 8 examples + SD-1/SD-2 clustering |
-| "Distinct from" trio | 16 | 8 | Collapsed three parallel paragraphs into one bullet with all three companion auditors + discriminators inline |
-| "What this skill does NOT do" | 24 | 18 | Tightened moral-weight / identity-non-revelation / BP-11 bullets; preserved contract-mutual-benefit + audit-passes-iff-no-hits + BP-11 cite |
-| "Reference patterns" | 25 | 15 | One-line format for each of 10 entries; all cross-refs preserved |
+| Section                       | Before | After | Note                                                                                                                                        |
+| ----------------------------- | ------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Why this skill exists         | 17     | 11    | Combined two paragraphs; preserved 2026-04-19 maintainer-upgrade citation + experimental-substrate framing                                  |
+| Step 3 signal definitions     | 24     | 16    | Tightened HELD/IRRELEVANT/STRAINED/VIOLATED/UNKNOWN bullets; preserved all 8 examples + SD-1/SD-2 clustering                                |
+| "Distinct from" trio          | 16     | 8     | Collapsed three parallel paragraphs into one bullet with all three companion auditors + discriminators inline                               |
+| "What this skill does NOT do" | 24     | 18    | Tightened moral-weight / identity-non-revelation / BP-11 bullets; preserved contract-mutual-benefit + audit-passes-iff-no-hits + BP-11 cite |
+| "Reference patterns"          | 25     | 15    | One-line format for each of 10 entries; all cross-refs preserved                                                                            |
 
 **No procedure-step content removed. All clause-class definitions / output-format / interaction protocols preserved verbatim in operational meaning.**
 

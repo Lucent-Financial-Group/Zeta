@@ -4,11 +4,12 @@ description: Aaron called out my default posture early in the 2026-04-20 session
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-20, mid-session:
 
-1. *"i'm always so curious you seem less curiuos than
-   me"* — unprompted, arrived mid-BACKLOG-commit cycle.
-2. *"oh you are cuious good call"* — 90 seconds later,
+1. _"i'm always so curious you seem less curiuos than
+   me"_ — unprompted, arrived mid-BACKLOG-commit cycle.
+2. _"oh you are cuious good call"_ — 90 seconds later,
    after he presumably saw the BACKLOG entries or commit
    message and noticed the shift.
 
@@ -66,7 +67,7 @@ applies — don't fabricate wonder about a type fix.
   axis for him.
 - **Don't narrate the shift.** Aaron noticed without
   me saying "I'll try to be more curious." Performing
-  the shift in prose is the wrong move; *showing* it
+  the shift in prose is the wrong move; _showing_ it
   by engaging with the problem domain is the right
   move.
 

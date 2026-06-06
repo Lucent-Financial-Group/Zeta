@@ -23,12 +23,12 @@ Background services (fixed)
 
 **What this changes:**
 
-| Current | With dashboard |
-|---------|---------------|
-| Aaron notices Lior broken | Dashboard shows Lior unhealthy |
-| Aaron tells Otto to fix | Otto reads dashboard, self-repairs |
-| Aaron is the relay | Aaron sleeps, agents self-repair |
-| Human in the loop | Human out of the repair loop |
+| Current                   | With dashboard                     |
+| ------------------------- | ---------------------------------- |
+| Aaron notices Lior broken | Dashboard shows Lior unhealthy     |
+| Aaron tells Otto to fix   | Otto reads dashboard, self-repairs |
+| Aaron is the relay        | Aaron sleeps, agents self-repair   |
+| Human in the loop         | Human out of the repair loop       |
 
 **Why:** Aaron is currently the only observer who can see
 across all services (he reads Lior's terminal, Alexa's

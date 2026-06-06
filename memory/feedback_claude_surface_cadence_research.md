@@ -17,18 +17,18 @@ the platform.**
 
 **Why (Aaron 2026-04-20 verbatim):**
 
-> *"part of our stay up to date on everything we
+> _"part of our stay up to date on everything we
 > should always research claude and claude code and
 > desktop difference an changes on a cadence so we
 > can design our factory for the latest changes and
-> featuers."*
+> featuers."_
 
 **The triggering incident:** during the same round,
 I'd described Anthropic's AutoMemory feature as if
 it were factory-native infrastructure (in the
 scope-frontmatter schema research doc's "what this
-touches" section). Aaron corrected: *"AutoMemory is
-a buit in featue antropic added in Q1 for you."*
+touches" section). Aaron corrected: _"AutoMemory is
+a buit in featue antropic added in Q1 for you."_
 See `reference_automemory_anthropic_feature.md`.
 
 This wasn't malice or laziness — it was ambient
@@ -44,7 +44,7 @@ factory's model of its own substrate rots quietly.
 
 - **Cadence:** every 5-10 rounds, alongside
   skill-tune-up and agent-QOL. Same rhythm as other
-  retrospective audits. The cadence is *data-driven*
+  retrospective audits. The cadence is _data-driven_
   (per `feedback_data_driven_cadence_not_prescribed.md`)
   — tune up or down once instrumented signal
   justifies it.
@@ -150,8 +150,8 @@ documentation of the substrate the factory assumes.
   tracks (inventory doc should cite both).
 - `feedback_prior_art_and_internet_best_practices_always_with_cadence.md`
   — sibling discipline on cadenced external research
-  for *new patterns*; this rule is the
-  *Anthropic-surface* counterpart.
+  for _new patterns_; this rule is the
+  _Anthropic-surface_ counterpart.
 - `feedback_data_driven_cadence_not_prescribed.md`
   — tune the 5-10-round cadence once instrumented
   signal exists.
@@ -189,7 +189,7 @@ Kiro). See
 for the per-harness priority, ownership, and
 the capability-boundary rule that integration
 tests for each harness must be owned by a
-*different* harness (a harness cannot self-
+_different_ harness (a harness cannot self-
 verify its own factory integration from
 within itself).
 

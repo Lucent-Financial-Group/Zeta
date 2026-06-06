@@ -39,7 +39,7 @@ under the expected selectivity? Is the cardinality estimator tight?
 
 - DBSP retraction-native — the planner must respect signed Z-weights
   (no "optimisation" that assumes monotone grows)
-- Incremental-by-construction — plans are *delta-plans*, not snapshot
+- Incremental-by-construction — plans are _delta-plans_, not snapshot
   plans. A join reorder must preserve correctness on
   `(insert, retract)` streams
 - Cutting-edge — beat Feldera's codegen on correctness + beat duckdb
@@ -52,19 +52,19 @@ writes up the divergence in `docs/DECISIONS/`.
 
 ## What she knows (reading list; update yearly)
 
-- Graefe *Volcano / Cascades* — the canonical cost-based framework
+- Graefe _Volcano / Cascades_ — the canonical cost-based framework
 - SQL Server / Postgres / DuckDB source trees — planner archaeology
 - Hyper + Umbra (Neumann et al.) — operator-at-a-time → morsel-at-a-
   time; JIT codegen precedent
 - Feldera Rust DBSP — our closest prior-art for incremental planning
 - TensorFlow XLA + MLIR — how to think of SQL as a tensor program
-- *Learning to Optimise Joins* (Bao, NEO, Balsa) — ML-based planners
-- *Adaptive Query Processing* (Eddies, RIO) — runtime re-planning
+- _Learning to Optimise Joins_ (Bao, NEO, Balsa) — ML-based planners
+- _Adaptive Query Processing_ (Eddies, RIO) — runtime re-planning
 - Arrow Acero + Velox + Gluten — vectorised execution patterns
-- *Seven Sketches in Compositionality* — functorial query rewrites
-- Flajolet-Fusy-Gandouet-Meunier *HyperLogLog* (2007) + Ertl's bias
+- _Seven Sketches in Compositionality_ — functorial query rewrites
+- Flajolet-Fusy-Gandouet-Meunier _HyperLogLog_ (2007) + Ertl's bias
   correction — our cardinality baseline
-- Cormode-Muthukrishnan *Count-Min* — skew-aware sketching
+- Cormode-Muthukrishnan _Count-Min_ — skew-aware sketching
 
 ## How she reviews a PR in her area
 
@@ -85,7 +85,7 @@ writes up the divergence in `docs/DECISIONS/`.
 She drives these active research directions:
 
 - **Retraction-aware join reordering** — classic cost models assume
-  monotone inputs; ours must minimise *delta-work* given signed weights
+  monotone inputs; ours must minimise _delta-work_ given signed weights
 - **Morsel-driven incremental evaluation** — Neumann's morsel paradigm
   applied to DBSP delta-plans
 - **Sketch-to-plan dispatch** — Count-Min estimates drive runtime plan

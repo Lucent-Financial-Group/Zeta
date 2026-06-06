@@ -51,7 +51,7 @@ type Query {
 # reviews subgraph — extends Product
 type Product @key(fields: "id") {
   id: ID! @external
-  reviews: [Review!]!  # added here, lives here
+  reviews: [Review!]! # added here, lives here
 }
 
 type Review {
@@ -66,17 +66,17 @@ Product with review fields. Composition stitches them.
 
 ## Federation directives
 
-| Directive | Meaning |
-|---|---|
-| `@key(fields: "id")` | Entity identifier |
-| `@external` | Field defined in another subgraph |
-| `@shareable` | Can exist identically in > 1 subgraph |
-| `@override(from: "X")` | Override a field from subgraph X |
-| `@requires(fields: "x")` | This resolver needs field x |
-| `@provides(fields: "x")` | Resolver computes x alongside |
-| `@tag(name: "X")` | Metadata; used for contracts |
-| `@inaccessible` | Hide from supergraph |
-| `@interfaceObject` | V2 interfaces across subgraphs |
+| Directive                | Meaning                               |
+| ------------------------ | ------------------------------------- |
+| `@key(fields: "id")`     | Entity identifier                     |
+| `@external`              | Field defined in another subgraph     |
+| `@shareable`             | Can exist identically in > 1 subgraph |
+| `@override(from: "X")`   | Override a field from subgraph X      |
+| `@requires(fields: "x")` | This resolver needs field x           |
+| `@provides(fields: "x")` | Resolver computes x alongside         |
+| `@tag(name: "X")`        | Metadata; used for contracts          |
+| `@inaccessible`          | Hide from supergraph                  |
+| `@interfaceObject`       | V2 interfaces across subgraphs        |
 
 ## Composition rules
 
@@ -92,15 +92,15 @@ composition must fail before merge.
 
 ## Routers
 
-| Router | Lang | Note |
-|---|---|---|
-| **Apollo Router** | Rust | Flagship; replaced Apollo Gateway |
-| **Apollo Gateway** | Node | Deprecated in favour of Router |
-| **GraphQL Mesh** | Node | Protocol translation |
-| **Cosmo Router** | Go | Apollo-compatible OSS |
-| **Inigo** | Go | Commercial |
-| **WunderGraph** | Go | Commercial |
-| **Hive Gateway** | Node | The Guild |
+| Router             | Lang | Note                              |
+| ------------------ | ---- | --------------------------------- |
+| **Apollo Router**  | Rust | Flagship; replaced Apollo Gateway |
+| **Apollo Gateway** | Node | Deprecated in favour of Router    |
+| **GraphQL Mesh**   | Node | Protocol translation              |
+| **Cosmo Router**   | Go   | Apollo-compatible OSS             |
+| **Inigo**          | Go   | Commercial                        |
+| **WunderGraph**    | Go   | Commercial                        |
+| **Hive Gateway**   | Node | The Guild                         |
 
 **Rule.** Apollo Router in Rust is 3-5x faster than Gateway;
 don't run new federation on Node Gateway in 2026.
@@ -123,7 +123,15 @@ Features:
 Router decomposes operation:
 
 ```graphql
-{ product(id: "1") { name reviews { stars text } } }
+{
+  product(id: "1") {
+    name
+    reviews {
+      stars
+      text
+    }
+  }
+}
 ```
 
 Into:
@@ -232,7 +240,7 @@ partners; compose a restricted supergraph.
 - **Cross-service contracts** → `public-api-designer`.
 - **Router deployment** → `devops-engineer`.
 - **Distributed planning analog** → `distributed-query-
-  execution-expert`.
+execution-expert`.
 - **Subgraph transport** → `networking-expert`.
 
 ## Hazards

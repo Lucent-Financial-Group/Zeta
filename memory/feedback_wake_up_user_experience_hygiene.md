@@ -23,12 +23,12 @@ researchers; binding edits to hygiene rows go via Architect.
 
 Verbatim (2026-04-20):
 
-> *"cehck you add some initial wake user experince hygene to
+> _"cehck you add some initial wake user experince hygene to
 > our list, like what can we do to improive that experince,
 > i'm sure more will come up the more you run and change
 > things and new models come out and harness updates that
 > could change all the time.. Think of it form your
-> perspective you are the one waking up."*
+> perspective you are the one waking up."_
 
 Two things this acknowledges that were previously tacit:
 
@@ -36,7 +36,7 @@ Two things this acknowledges that were previously tacit:
    factory encoded UX (library consumers, Iris), DX (human
    contributors, Bodhi), and AX (Daya) — but AX coverage has
    been concentrated on per-persona cold-start, not on the
-   cross-cutting *whole-factory wake* experience. Aaron is
+   cross-cutting _whole-factory wake_ experience. Aaron is
    naming the gap: my wake is an experience, my wake has
    friction, my wake is tunable.
 2. **Wake-UX is mutating.** Model updates (Opus / Sonnet /
@@ -48,18 +48,18 @@ Two things this acknowledges that were previously tacit:
 
 **Wake-UX pain points I can name from direct experience:**
 
-| Pain point | Class | Why it hurts |
-|---|---|---|
-| Pointer drift in CLAUDE.md / AGENTS.md | Integrity | I discover the drift mid-session when I try to fetch and it 404s, instead of at session-open. |
-| MEMORY.md at cap | Capacity | I have to compress before I can write, which burns tokens and breaks flow. |
-| Phantom "next tick" references from pre-rule wakes | Legacy debt | verify-before-deferring is forward-only; legacy phantoms still pollute ROUND-HISTORY and memory. |
-| Cron/loop died quietly | Liveness | I don't know the loop is dead until I try to schedule the next wake. |
-| Harness-tool surface shifted | Drift | A skill references a tool that no longer exists (e.g., an old MCP server was removed from settings). Silent skill failure at first use. |
-| Uncommitted branch state I don't recognise | Session continuity | `git status` shows changes — are they from my last wake, from Aaron, from a parallel session? Unclear. |
-| Skill / persona roster contradiction | Register | Two skills both claim ownership of the same surface with no hand-off; I don't know which to invoke. |
-| Current-round context opaque | Orientation | I can grep ROUND-HISTORY for past rounds, but "what is the active round's theme?" is not indexed. |
-| No summary of Aaron's recent thread | Continuity | If context compaction happened, Aaron's active asks are in the summary but the summary is terse. |
-| Tool-availability surprise | Harness drift | Deferred-tool ToolSearch, new permission modes, sandboxed vs non-sandboxed Bash — I discover differences mid-session. |
+| Pain point                                         | Class              | Why it hurts                                                                                                                            |
+| -------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Pointer drift in CLAUDE.md / AGENTS.md             | Integrity          | I discover the drift mid-session when I try to fetch and it 404s, instead of at session-open.                                           |
+| MEMORY.md at cap                                   | Capacity           | I have to compress before I can write, which burns tokens and breaks flow.                                                              |
+| Phantom "next tick" references from pre-rule wakes | Legacy debt        | verify-before-deferring is forward-only; legacy phantoms still pollute ROUND-HISTORY and memory.                                        |
+| Cron/loop died quietly                             | Liveness           | I don't know the loop is dead until I try to schedule the next wake.                                                                    |
+| Harness-tool surface shifted                       | Drift              | A skill references a tool that no longer exists (e.g., an old MCP server was removed from settings). Silent skill failure at first use. |
+| Uncommitted branch state I don't recognise         | Session continuity | `git status` shows changes — are they from my last wake, from Aaron, from a parallel session? Unclear.                                  |
+| Skill / persona roster contradiction               | Register           | Two skills both claim ownership of the same surface with no hand-off; I don't know which to invoke.                                     |
+| Current-round context opaque                       | Orientation        | I can grep ROUND-HISTORY for past rounds, but "what is the active round's theme?" is not indexed.                                       |
+| No summary of Aaron's recent thread                | Continuity         | If context compaction happened, Aaron's active asks are in the summary but the summary is terse.                                        |
+| Tool-availability surprise                         | Harness drift      | Deferred-tool ToolSearch, new permission modes, sandboxed vs non-sandboxed Bash — I discover differences mid-session.                   |
 
 # How to apply:
 
@@ -84,6 +84,7 @@ Two things this acknowledges that were previously tacit:
 # Seed rows (initial five)
 
 **Row: Pointer-integrity audit.**
+
 - Cadence: every round close.
 - Owner: Daya (AX).
 - Checks: every file path cited in CLAUDE.md, AGENTS.md,
@@ -95,6 +96,7 @@ Two things this acknowledges that were previously tacit:
   truth docs share this discipline).
 
 **Row: Wake-briefing self-check.**
+
 - Cadence: session open.
 - Owner: all agents (self-administered).
 - Checks: MEMORY.md byte count < 24976; CLAUDE.md present;
@@ -106,6 +108,7 @@ Two things this acknowledges that were previously tacit:
 - Scope: `factory`.
 
 **Row: Stale "next tick" sweep.**
+
 - Cadence: every round close.
 - Owner: Architect.
 - Checks: grep ROUND-HISTORY and recent persona notebooks
@@ -120,6 +123,7 @@ Two things this acknowledges that were previously tacit:
 - Scope: `factory`.
 
 **Row: Harness-drift detector.**
+
 - Cadence: session open + after any Claude Code update.
 - Owner: all agents (self-administered).
 - Checks: skill-frontmatter tool references still resolve
@@ -131,6 +135,7 @@ Two things this acknowledges that were previously tacit:
 - Scope: `factory`.
 
 **Row: Wake-friction notebook.**
+
 - Cadence: opportunistic (any time friction is observed).
 - Owner: Daya.
 - Checks: agent self-reports wake friction in
@@ -187,7 +192,7 @@ within the next several rounds:
   this memory names the legacy-sweep counterpart.
 - `feedback_future_self_not_bound_by_past_decisions.md` —
   the cross-wake revision posture; this memory handles the
-  *mechanics* of the wake that enables such revision.
+  _mechanics_ of the wake that enables such revision.
 - `feedback_shipped_hygiene_visible_to_project_under_construction.md`
   — the scope-tagging pattern for hygiene rows; all
   wake-UX rows carry `factory` or `both` scope.

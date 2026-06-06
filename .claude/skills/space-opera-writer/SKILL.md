@@ -20,7 +20,7 @@ The factory has two threat models:
    variant. Same threats, different costume. Time Lords
    attack wall-clocks. Quantum Twins force measurement
    paradoxes. Poisoned Bards sing supply-chain poisoning
-   into existence. Consumers who read *only* the space-opera
+   into existence. Consumers who read _only_ the space-opera
    variant still come away with accurate instincts about
    real classes of attack.
 
@@ -43,7 +43,7 @@ Every space-opera adversary has:
 - A **capital-letter name** that reads like a card in a
   Shostack Elevation-of-Privilege deck (the spiritual parent
   of this register).
-- A **one-sentence stake**: what does the attacker *gain*?
+- A **one-sentence stake**: what does the attacker _gain_?
 - A **concrete target surface**: which factory component is
   in scope?
 
@@ -69,16 +69,16 @@ undermine the teaching frame. A reader who laughs at Mr.
 Wiggles does not believe the threat is real.
 
 The register is **Ursula K. Le Guin / M. John Harrison /
-China Miéville**, not *Cucumber Quest*. Stakes are high.
+China Miéville**, not _Cucumber Quest_. Stakes are high.
 Prose is crisp. Whimsy is in the taxonomy, never in the
 verbs.
 
 ### 3. Active voice on the attacker
 
 Attackers ACT. They do not "get attacked by." Default:
-*"The Wizard with Counterspell reverses your transaction
-mid-commit."* Not: *"The transaction is reversed by a
-counterspell mechanism."* The passive-voice rule from
+_"The Wizard with Counterspell reverses your transaction
+mid-commit."_ Not: _"The transaction is reversed by a
+counterspell mechanism."_ The passive-voice rule from
 `writing-expert` §4 applies with extra teeth here — passive
 on an attacker signals the writer has lost the thread.
 
@@ -114,12 +114,12 @@ that does not exist.
 Every space-opera scenario carries exactly one tag, from
 `THREAT-MODEL-SPACE-OPERA §reality-tags`:
 
-| Tag | Meaning |
-|---|---|
-| `shipped` | Mitigation exists in `src/`, tested, audited. |
-| `BACKLOG` | Mitigation is committed to in `docs/BACKLOG.md` with tier and owner. |
-| `aspirational` | Mitigation is a design direction with no committed owner. |
-| `teaching` | Attack is real in the wider world; Zeta's mitigation may never ship, scenario exists for reader instincts only. |
+| Tag            | Meaning                                                                                                         |
+| -------------- | --------------------------------------------------------------------------------------------------------------- |
+| `shipped`      | Mitigation exists in `src/`, tested, audited.                                                                   |
+| `BACKLOG`      | Mitigation is committed to in `docs/BACKLOG.md` with tier and owner.                                            |
+| `aspirational` | Mitigation is a design direction with no committed owner.                                                       |
+| `teaching`     | Attack is real in the wider world; Zeta's mitigation may never ship, scenario exists for reader instincts only. |
 
 Unmitigated scenarios with no tag are banned. A reader
 should always be able to answer "which of these are you

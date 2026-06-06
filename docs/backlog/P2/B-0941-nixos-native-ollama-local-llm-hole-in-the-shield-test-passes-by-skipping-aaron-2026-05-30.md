@@ -25,12 +25,12 @@ type: bug
 Surfaced 2026-05-30 while validating the local-LLM core primitive (ollama +
 qwen2.5:0.5b CPU model) across the Docker Ubuntu+NixOS install.sh test matrix.
 
-Aaron 2026-05-30, on what actually holds back entropy: *"it's impossible to keep
+Aaron 2026-05-30, on what actually holds back entropy: _"it's impossible to keep
 all the install surfaces in your mind at once — only automation can be sure a
 nixos change didn't break ubuntu or mac and vice versa. trying to manually make
-sure everything is a losing game to entropy."* And the sharpening: the entropy
-shield is not install.sh itself — *"the automated tests around install.sh
-honestly — that's the shield."*
+sure everything is a losing game to entropy."_ And the sharpening: the entropy
+shield is not install.sh itself — _"the automated tests around install.sh
+honestly — that's the shield."_
 
 This row is a **hole in that shield.**
 
@@ -48,7 +48,7 @@ That works on Ubuntu (FHS). It does **NOT** work on NixOS:
 Compose those two facts and the result is a **false-green**: on NixOS,
 `local-llm.sh` fails to produce a working ollama, skips gracefully, and the
 `docker-nixos-install-sh-test` build **passes anyway** — because the NixOS test
-validates that *install.sh runs clean*, NOT that *the local-LLM actually works*.
+validates that _install.sh runs clean_, NOT that _the local-LLM actually works_.
 
 So the automated test (the shield) reports green on the **primary OS** while the
 local-LLM primitive is non-functional there. A shield with a hole is worse than a
@@ -67,8 +67,8 @@ NixOS should get ollama the declarative-native way, not via the Ubuntu
 generic-binary retrofit:
 
 - Add `services.ollama.enable = true;` (or `environment.systemPackages = [ pkgs.ollama ];`
-  + a oneshot model-pull unit) to the appropriate NixOS module
-  (`full-ai-cluster/nixos/modules/common.nix` or a dedicated `local-llm.nix`).
+  - a oneshot model-pull unit) to the appropriate NixOS module
+    (`full-ai-cluster/nixos/modules/common.nix` or a dedicated `local-llm.nix`).
 - Pin the model to `manifests/local-llm` (`qwen2.5:0.5b`) so the declarative
   pin stays the single source of truth across all three OSes.
 - `local-llm.sh` should **detect NixOS** (`/etc/NIXOS` or `$NIX_PATH`) and

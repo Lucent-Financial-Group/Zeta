@@ -31,11 +31,11 @@ Mika joins as the 6th persona in today's substrate cluster (after Aaron + Amara 
 
 4-row transition discipline table:
 
-| Transition | Join discipline |
-|---|---|
-| high-temp gen → low-temp verify | Explicit join: critic names what passed AND what was rejected |
-| self-work → shared/acted-upon | Multi-oracle consensus required |
-| Cross-agent | Consent-bounded handoff (NCI HC-8 floor) |
+| Transition                           | Join discipline                                                 |
+| ------------------------------------ | --------------------------------------------------------------- |
+| high-temp gen → low-temp verify      | Explicit join: critic names what passed AND what was rejected   |
+| self-work → shared/acted-upon        | Multi-oracle consensus required                                 |
+| Cross-agent                          | Consent-bounded handoff (NCI HC-8 floor)                        |
 | Cross-substrate (digital → physical) | Audit-mechanism + multi-oracle BFT; NEVER direct from high-temp |
 
 ## Operator's open question (preserved, not decided)
@@ -67,6 +67,7 @@ This is the 9th PR in today's cluster. The substantively-new refinement (explici
 Adds a new `docs/research/` preservation note capturing Mika’s ratification of the day’s NCI scope-split + temperature/pipeline framing, and records the refinement that “join” should be explicit/mandatory at temperature-band crossings and self→shared transitions.
 
 **Changes:**
+
 - Adds a verbatim preservation section for Mika’s turn plus an extracted “substrate landings” summary.
 - Introduces a 4-row transition/join-discipline table focused on temperature-band crossings and self→shared/cross-agent/cross-substrate transitions.
 - Adds “Composes with” cross-references to related rules/backlog items/PRs.

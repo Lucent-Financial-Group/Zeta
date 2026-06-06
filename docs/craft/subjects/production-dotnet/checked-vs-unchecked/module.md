@@ -4,7 +4,7 @@
 **Level:** applied (default) + theoretical (opt-in)
 **Audience:** contributors already comfortable with F# types,
 spans, and Z-set basics; moving from "it compiles" to "it runs
-fast *and* correctly under adversarial input"
+fast _and_ correctly under adversarial input"
 **Prerequisites:** an onboarding-tier Z-set foundation — of the
 planned onboarding modules (zset-basics, retraction-intuition,
 operator-composition, semiring-basics), `retraction-intuition`
@@ -67,14 +67,14 @@ does the measurement earn the demotion?"
 Classify every arithmetic site into one of six classes before
 deciding whether to use `Checked.`:
 
-| Class | Definition | Default |
-|---|---|---|
-| **Bounded-by-construction** | The type system or a compile-time constant proves overflow impossible (e.g. `byte + byte → int32`). | unchecked (F# default) |
-| **Bounded-by-workload** | A **hard**, stated invariant of the running system proves the sum cannot reach `MaxValue` — e.g. a loop counter with a known iteration cap, a cell count multiplied by a per-cell cap. "Unlikely within a reasonable lifetime" is not a bound; it is a vibe. | unchecked + comment stating the numeric cap |
-| **Bounded-by-pre-check** | A cheap upstream guard makes overflow impossible inside the hot loop (the guard is outside the loop). | unchecked inside loop; check at boundary |
-| **Unbounded stream sum** | A cumulative value over an unbounded stream — no bound is provable because the stream never ends. | **keep `Checked.`** |
-| **User-controlled product** | A product of two caller-provided values that a hostile caller could pick adversarially. | **keep `Checked.`** |
-| **SIMD-candidate** | A loop eligible for `Vector<int64>` vectorisation where checked arithmetic is architecturally unavailable. | unchecked with block-boundary overflow detection |
+| Class                       | Definition                                                                                                                                                                                                                                                   | Default                                          |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| **Bounded-by-construction** | The type system or a compile-time constant proves overflow impossible (e.g. `byte + byte → int32`).                                                                                                                                                          | unchecked (F# default)                           |
+| **Bounded-by-workload**     | A **hard**, stated invariant of the running system proves the sum cannot reach `MaxValue` — e.g. a loop counter with a known iteration cap, a cell count multiplied by a per-cell cap. "Unlikely within a reasonable lifetime" is not a bound; it is a vibe. | unchecked + comment stating the numeric cap      |
+| **Bounded-by-pre-check**    | A cheap upstream guard makes overflow impossible inside the hot loop (the guard is outside the loop).                                                                                                                                                        | unchecked inside loop; check at boundary         |
+| **Unbounded stream sum**    | A cumulative value over an unbounded stream — no bound is provable because the stream never ends.                                                                                                                                                            | **keep `Checked.`**                              |
+| **User-controlled product** | A product of two caller-provided values that a hostile caller could pick adversarially.                                                                                                                                                                      | **keep `Checked.`**                              |
+| **SIMD-candidate**          | A loop eligible for `Vector<int64>` vectorisation where checked arithmetic is architecturally unavailable.                                                                                                                                                   | unchecked with block-boundary overflow detection |
 
 ### Decision tree (read top to bottom)
 
@@ -323,8 +323,8 @@ references as the invariant and re-locate by symbol name:
 - `src/Core/CountMin.fs` cell-increment site — **Unbounded
   stream sum**. `CountMinSketch.Add` takes a caller-supplied
   `int64 weight` with no numeric cap and is called once per
-  stream item. Sketch accuracy parameters bound *error*,
-  not *counter magnitude* — a single adversarial weight
+  stream item. Sketch accuracy parameters bound _error_,
+  not _counter magnitude_ — a single adversarial weight
   plus enough calls reaches `Int64.MaxValue`. **Keep
   `Checked.`** pending a separately-proved ingest-rate /
   weight-magnitude contract the code actually enforces.
@@ -351,7 +351,7 @@ grounds. That is the correct outcome.
   canonical "Z-set weight" vocabulary this module builds on.
 - `subjects/zeta/zset-basics/` (in-flight via PR #200) —
   the foundational Z-set introduction once it merges; you
-  need to know what a Z-set weight *is* before reasoning
+  need to know what a Z-set weight _is_ before reasoning
   about its overflow behaviour.
 - `subjects/zeta/operator-composition/` (in-flight via
   PR #203) — establishes why weight-sum correctness is

@@ -204,11 +204,11 @@ Between the two waves of review threads, the clean-room BIOS
 workflow evolved from two-persona to three-persona per Aaron's
 autonomous-loop directive:
 
-> *"if this works it will really be a 3 person casue we are
+> _"if this works it will really be a 3 person casue we are
 > not going to take code directly that was missing our best
 > practice guidance becasue it's missing our memories, we
 > would treat output as subpar and rewrire using our
-> standards."*
+> standards."_
 
 The three personas:
 

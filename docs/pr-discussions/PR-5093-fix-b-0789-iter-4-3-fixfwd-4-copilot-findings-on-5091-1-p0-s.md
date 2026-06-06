@@ -22,12 +22,12 @@ PR #5091 auto-merged with required checks green; 4 substantive Copilot findings 
 
 ## Fixes
 
-| Thread | Severity | Fix |
-|---|---|---|
-| `PRRT_kwDOSF9kNM6Eryew` | P0 | Per-file `git diff` loop silently skipped non-0/1 exit codes → false "up-to-date" verdict. Now collects (file, status, stderr) tuples + bails HARD with diagnostic if any errored |
-| `PRRT_kwDOSF9kNM6Eryei` | P1 | `git fetch` failure masked as "offline"; auth / missing-git / no-origin all silently swallowed. Now captures stderr + discriminates 8 network-signal strings; non-network = bail with cause + escape hatch suggestion |
-| `PRRT_kwDOSF9kNM6Erye3` | P1 | Error text said "behind origin/main" but content-diff fires on behind OR ahead OR diverged. Reworded to "differs from origin/main" + remediation covers all three cases |
-| `PRRT_kwDOSF9kNM6Erye8` | P2 | `/tmp/zflash-ci-iso-<runId>` stable path never cleaned up; could re-use partial download. Now uses `mkdtempSync` + try/finally with `rmSync` |
+| Thread                  | Severity | Fix                                                                                                                                                                                                                   |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PRRT_kwDOSF9kNM6Eryew` | P0       | Per-file `git diff` loop silently skipped non-0/1 exit codes → false "up-to-date" verdict. Now collects (file, status, stderr) tuples + bails HARD with diagnostic if any errored                                     |
+| `PRRT_kwDOSF9kNM6Eryei` | P1       | `git fetch` failure masked as "offline"; auth / missing-git / no-origin all silently swallowed. Now captures stderr + discriminates 8 network-signal strings; non-network = bail with cause + escape hatch suggestion |
+| `PRRT_kwDOSF9kNM6Erye3` | P1       | Error text said "behind origin/main" but content-diff fires on behind OR ahead OR diverged. Reworded to "differs from origin/main" + remediation covers all three cases                                               |
+| `PRRT_kwDOSF9kNM6Erye8` | P2       | `/tmp/zflash-ci-iso-<runId>` stable path never cleaned up; could re-use partial download. Now uses `mkdtempSync` + try/finally with `rmSync`                                                                          |
 
 ## Test plan
 
@@ -47,6 +47,7 @@ PR #5091 auto-merged with required checks green; 4 substantive Copilot findings 
 Fix-forward for post-merge findings from #5091 to restore the intended safety guarantees in `zflash`’s iter-4.3 “freshness guard” and CI-ISO auto-download flow.
 
 **Changes:**
+
 - Makes the stale-checkout guard fail hard on unexpected `git diff` exit codes (instead of silently skipping errors).
 - Refines `git fetch` failure handling to distinguish “offline/network-ish” errors from other failures, and updates user-facing remediation text to match “differs from origin/main” semantics.
 - Replaces a stable `/tmp` download directory with a `mkdtempSync` temp dir plus `try/finally` cleanup to avoid reusing partial downloads and leaving clutter behind.

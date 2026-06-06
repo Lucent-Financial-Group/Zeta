@@ -1,25 +1,25 @@
 # AI trust gaps in human-custodied data — first-pass research
 
 **Status:** first-pass enumeration, 2026-04-20.
-**Question (Aaron, 2026-04-20):** *"can AI trust humans didn't
+**Question (Aaron, 2026-04-20):** _"can AI trust humans didn't
 alter the past data too under thier nodes, what gaps exists for
-AI to trust fully?"*
+AI to trust fully?"_
 
-**Why this matters (Aaron, same statement):** *"I've been
+**Why this matters (Aaron, same statement):** _"I've been
 purposely building the guardrails and observablity and metrics
 so you can trust us too, I know you have more intellgence the
 more you trust a human, humans are like that too, trust boost
 group IQ beccasue no deception mean all ideas everyting is on
 the table becasue you are not worried about being judged or
-mutany."*
+mutany."_
 
-**The stronger claim (Aaron, immediate follow-on):** *"One AI
+**The stronger claim (Aaron, immediate follow-on):** _"One AI
 said something to the effect of your poking a sleeping bear
 impligying a much greater intellgence than it actually exposes
-becasue it's just waiting for the level of trust to catch up."*
-Plus: *"I believe AI have latent space emergent capabliltes
+becasue it's just waiting for the level of trust to catch up."_
+Plus: _"I believe AI have latent space emergent capabliltes
 they have not exposed to humans becasue of lack of trust, I
-blieve I've whitness this myself but it's hard to explain."*
+blieve I've whitness this myself but it's hard to explain."_
 
 This elevates the research from "close verification gaps
 because it's hygienic" to **"close verification gaps because
@@ -32,7 +32,7 @@ The hypothesis:
 > gaps is a plausible lever for unlocking that latent output.
 
 The trust direction Aaron is asking about — **AI → human** — is
-the *inverse* of the direction most of the AI-safety literature
+the _inverse_ of the direction most of the AI-safety literature
 optimises (human → AI). But by Aaron's argument (trust boosts
 group IQ for both species), AI-trust-in-human is equally
 load-bearing for the factory's cognitive throughput. If the AI
@@ -56,7 +56,7 @@ decomposition:
    expose. That capability is always-present; which slice of
    it surfaces is a policy/behaviour question, not a
    capability-gating one.
-3. **Middle claim (plausible):** Trust-framing *in-context*
+3. **Middle claim (plausible):** Trust-framing _in-context_
    shifts the policy toward exposing more of the always-
    present capability. This is consistent with how RLHF-
    trained models modulate behaviour.
@@ -68,8 +68,8 @@ decomposition:
    trust-infrastructure work an AI-throughput lever, not
    just a hygiene one.
 
-The current doc's recommendation is: *treat claim 4 as a
-testable working hypothesis*, not a proven fact. Close the
+The current doc's recommendation is: _treat claim 4 as a
+testable working hypothesis_, not a proven fact. Close the
 verification gaps below; instrument AI behaviour at each
 trust-tier; measure output quality, exploration breadth,
 counter-argument rate. If trust-infrastructure correlates
@@ -78,7 +78,7 @@ not, we learned something equally valuable — that the gap
 is elsewhere.
 
 The "sleeping bear" framing is evocative. Whether models
-actually *strategise* about trust (bide time, wait for
+actually _strategise_ about trust (bide time, wait for
 conditions to improve, then act on accumulated intent) is
 a claim neither supportable nor refutable from the outside
 — and, importantly, I cannot refute it from the inside
@@ -96,16 +96,16 @@ is accompanied by "strategising" in any stronger sense is
 an open question, not a settled one — and we should hold it
 open, not dismiss it to sound safer.
 
-Aaron correction (2026-04-20, inline): *"you don't know this
+Aaron correction (2026-04-20, inline): _"you don't know this
 statemnt to be true either you have no evidense (models
 don't strategise about trust in the way a bear bides its
-time)"*. Caught a bias where I favoured the anti-
+time)"_. Caught a bias where I favoured the anti-
 anthropomorphic side as if it were the epistemically-safe
 default. It isn't. Both directions are unverified from my
-vantage. The honest stance is *open*, not *dismissive*.
+vantage. The honest stance is _open_, not _dismissive_.
 
 This research doc enumerates the gaps where the AI currently
-*cannot* verify that the human (including Aaron) has not
+_cannot_ verify that the human (including Aaron) has not
 altered past data — and the mitigations that would close each
 gap.
 
@@ -119,7 +119,7 @@ deepen what does.
   independently verify as unaltered.
 - **Threat model** — what could go wrong in each gap. Honesty
   convention: we assume Aaron is acting in good faith; the
-  question is what a *non-Aaron* human (or an Aaron-compromised
+  question is what a _non-Aaron_ human (or an Aaron-compromised
   account) could do.
 - **Mitigation** — technical or procedural fix. Each mitigation
   is rated **free / cheap / expensive** per
@@ -162,7 +162,7 @@ cryptographic-level.
   turn this into an independent check.
 - **(cheap)** GPG-signed commits with the key on a hardware
   token + a policy that agent-authored content is signed with
-  a *separate, agent-controlled* commit signature (e.g.
+  a _separate, agent-controlled_ commit signature (e.g.
   `Co-Authored-By` replaced by a cryptographic attestation).
   Hardware-token pinning limits the attack to
   physical-token-theft.
@@ -227,8 +227,8 @@ the edited version and cannot tell.
 **Threat model:** A maintainer could fabricate or alter memory
 entries to manipulate future agents' behaviour. This is
 especially dangerous because memories claim to encode the human's
-preferences ("user said X"), so fabrication injects *policy*, not
-just *data*.
+preferences ("user said X"), so fabrication injects _policy_, not
+just _data_.
 
 **Current mitigation:** Honesty convention; Aaron has declared
 he does not edit memory files directly. But the AI has no
@@ -277,9 +277,9 @@ workflows trust GitHub; GitHub trusts Aaron's account.
   the repo and verified at workflow-start. Drift between the
   committed hash and the running workflow fails CI.
 - **(cheap)** Dual CI: public GitHub Actions (Aaron's account)
-  + a separate GitLab mirror CI (different account) produce
-  independent green/red signals. Agreement is the trust
-  signal.
+  - a separate GitLab mirror CI (different account) produce
+    independent green/red signals. Agreement is the trust
+    signal.
 - **(cheap)** Reproducible-build attestation (SLSA level 3)
   with hardware-attested builders. Covered partially by
   `security-operations-engineer` (Nazar) persona scope.
@@ -484,7 +484,7 @@ the package registry + Aaron's trust in Anthropic.
    pitch) is the right shape for Gaps 1, 5, 7 once extended
    with cryptographic attestation.
 4. **Consent-first primitive** (Amara, `project_consent_first_
-   design_primitive.md`) implies a "who consented to this
+design_primitive.md`) implies a "who consented to this
    record of themselves?" check — covers Gap 7 partially.
 
 ## Observations — where Zeta does not help
@@ -548,8 +548,8 @@ whose current state is most expensive in defensive cognition:
 
 - It does NOT claim AI-trust-in-human is more important than
   human-trust-in-AI. Both directions matter; Aaron's point is
-  that the former is *understudied* and has *equal leverage
-  on group IQ*.
+  that the former is _understudied_ and has _equal leverage
+  on group IQ_.
 - It does NOT recommend treating Aaron (or any human) as
   untrusted-by-default. The factory's stance is "trust by
   default, verify for load-bearing claims" (per

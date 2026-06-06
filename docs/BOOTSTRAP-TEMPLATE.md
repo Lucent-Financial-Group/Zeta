@@ -11,7 +11,7 @@ instance into the **universal six-step process** with the
 **harness-specific tooling references** filled in.
 
 The pattern this generalizes was established by **B-0353** ("CLAUDE.md
-as process"): a fresh instance that *walks* the six steps discovers the
+as process"): a fresh instance that _walks_ the six steps discovers the
 rules through friction rather than memorizing harness-specific doctrine.
 A Codex instance and a Claude instance running the same process produce
 equivalent behavior. This template (**B-0355**) lifts that pattern off
@@ -24,8 +24,8 @@ is **optional**, **additive**, and **may not contradict** `AGENTS.md`
 or `GOVERNANCE.md`. If a harness file contradicts either, the harness
 file is wrong and must be reconciled — not the other way around.
 
-A harness bootstrap file's content is therefore mostly *pointers* and
-*harness-specific mechanics*, never a re-statement of repo-wide rules.
+A harness bootstrap file's content is therefore mostly _pointers_ and
+_harness-specific mechanics_, never a re-statement of repo-wide rules.
 
 ## Universal vs harness-specific
 
@@ -34,18 +34,18 @@ What changes per harness is the **tooling reference** inside each step:
 the command runner, the skill-loading mechanism, the worktree
 discipline, the commit-attribution trailer.
 
-| Step | Universal (same everywhere) | Harness-specific (fill in) |
-|------|-----------------------------|----------------------------|
-| 1. Orient | Read `AGENTS.md` → `docs/ALIGNMENT.md` → `docs/GLOSSARY.md` → `GOVERNANCE.md` (scan on §N cite). Read the harness persona/state file. | *Which* persona/state file (`memory/persona/<name>/CURRENT-*.md`, `.codex/CURRENT-codex.md`, etc.) and any harness read-order addendum. |
-| 2. Refresh | Run the worldview refresh; read active `docs/trajectories/*/RESUME.md`. | The exact refresh command + how this harness runs TypeScript / shell (`bun tools/github/refresh-worldview.ts`, etc.). |
-| 3. Pick work | Open `docs/BACKLOG.md` / `docs/backlog/P*/`; complete the backlog-item start gate (prior-art search + dependency check); acquire a claim before worktree work. | The claim mechanism this harness uses (`tools/bus/claim.ts` surface-tagged sender ID, claim-branch convention). |
-| 4. Build | `dotnet build -c Release` (0 warnings, 0 errors — `TreatWarningsAsErrors`) then `dotnet test Zeta.sln -c Release`. | Nothing — the build gate is identical for all harnesses. |
-| 5. Ship | Open a PR against `main`; arm auto-merge if green. | The commit-attribution trailer (`Co-Authored-By: <Harness> <...>`) and worktree-isolation discipline for this harness. |
-| 6. When stuck | See `docs/CONFLICT-RESOLUTION.md`; on deadlock, the human decides. | Any harness-specific escalation channel. |
+| Step          | Universal (same everywhere)                                                                                                                                    | Harness-specific (fill in)                                                                                                              |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Orient     | Read `AGENTS.md` → `docs/ALIGNMENT.md` → `docs/GLOSSARY.md` → `GOVERNANCE.md` (scan on §N cite). Read the harness persona/state file.                          | _Which_ persona/state file (`memory/persona/<name>/CURRENT-*.md`, `.codex/CURRENT-codex.md`, etc.) and any harness read-order addendum. |
+| 2. Refresh    | Run the worldview refresh; read active `docs/trajectories/*/RESUME.md`.                                                                                        | The exact refresh command + how this harness runs TypeScript / shell (`bun tools/github/refresh-worldview.ts`, etc.).                   |
+| 3. Pick work  | Open `docs/BACKLOG.md` / `docs/backlog/P*/`; complete the backlog-item start gate (prior-art search + dependency check); acquire a claim before worktree work. | The claim mechanism this harness uses (`tools/bus/claim.ts` surface-tagged sender ID, claim-branch convention).                         |
+| 4. Build      | `dotnet build -c Release` (0 warnings, 0 errors — `TreatWarningsAsErrors`) then `dotnet test Zeta.sln -c Release`.                                             | Nothing — the build gate is identical for all harnesses.                                                                                |
+| 5. Ship       | Open a PR against `main`; arm auto-merge if green.                                                                                                             | The commit-attribution trailer (`Co-Authored-By: <Harness> <...>`) and worktree-isolation discipline for this harness.                  |
+| 6. When stuck | See `docs/CONFLICT-RESOLUTION.md`; on deadlock, the human decides.                                                                                             | Any harness-specific escalation channel.                                                                                                |
 
 Rule of thumb: if a line would be **identical** in every harness file,
 it belongs in `AGENTS.md`, not in the harness file. The harness file
-keeps only the lines that *differ* by harness plus the pointers that
+keeps only the lines that _differ_ by harness plus the pointers that
 direct the read.
 
 ## Skeleton
@@ -69,7 +69,7 @@ Then read the <Harness> persona/state file: <path>.
 ## 2. Refresh
 
 Run: <harness-specific worldview-refresh command>
-Read active trajectories: docs/trajectories/*/RESUME.md
+Read active trajectories: docs/trajectories/\*/RESUME.md
 
 ## 3. Pick work
 
@@ -78,7 +78,7 @@ Claim before worktree work: <harness-specific claim mechanism>.
 
 ## 4. Build
 
-dotnet build -c Release   # 0 warnings, 0 errors
+dotnet build -c Release # 0 warnings, 0 errors
 dotnet test Zeta.sln -c Release
 
 ## 5. Ship
@@ -102,15 +102,15 @@ stays in AGENTS.md / GOVERNANCE.md.>
 These files already instantiate the template (in varying degrees of
 process-ification). New harness files should match their shape.
 
-| File | Harness | Status |
-|------|---------|--------|
-| [`CLAUDE.md`](../CLAUDE.md) | Claude Code | Canonical six-step process + Conventions pointer tree (B-0353). |
-| [`GEMINI.md`](../GEMINI.md) | Gemini CLI / Antigravity (Lior) | Boot sequence pointing into shared factory physics + persona file (B-0538). |
-| [`CODEX.md`](../CODEX.md) | OpenAI Codex (Vera) | Six-step pointer tree at repo root (B-0355.4); points into `.codex/AGENTS.md` for deep host-loop mechanics. |
-| [`.codex/AGENTS.md`](../.codex/AGENTS.md) | OpenAI Codex (Vera) | Codex-owned deep addendum: read-order, worktree discipline, commit/origin trailers, background-agent discipline. |
-| [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) | GitHub Copilot | Factory-managed instructions, audited on the skill-file cadence (GOVERNANCE.md §31). |
-| [`CURSOR.md`](../CURSOR.md) | Cursor IDE (Riven) | Six-step pointer tree at repo root (B-0355.2). Native `.cursor/rules/` still absent. |
-| [`KIRO.md`](../KIRO.md) | Amazon Kiro (Alexa) | Six-step pointer tree at repo root (B-0355.3, per B-0325). Native `.kiro/steering/` still absent. |
+| File                                                                    | Harness                         | Status                                                                                                           |
+| ----------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| [`CLAUDE.md`](../CLAUDE.md)                                             | Claude Code                     | Canonical six-step process + Conventions pointer tree (B-0353).                                                  |
+| [`GEMINI.md`](../GEMINI.md)                                             | Gemini CLI / Antigravity (Lior) | Boot sequence pointing into shared factory physics + persona file (B-0538).                                      |
+| [`CODEX.md`](../CODEX.md)                                               | OpenAI Codex (Vera)             | Six-step pointer tree at repo root (B-0355.4); points into `.codex/AGENTS.md` for deep host-loop mechanics.      |
+| [`.codex/AGENTS.md`](../.codex/AGENTS.md)                               | OpenAI Codex (Vera)             | Codex-owned deep addendum: read-order, worktree discipline, commit/origin trailers, background-agent discipline. |
+| [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) | GitHub Copilot                  | Factory-managed instructions, audited on the skill-file cadence (GOVERNANCE.md §31).                             |
+| [`CURSOR.md`](../CURSOR.md)                                             | Cursor IDE (Riven)              | Six-step pointer tree at repo root (B-0355.2). Native `.cursor/rules/` still absent.                             |
+| [`KIRO.md`](../KIRO.md)                                                 | Amazon Kiro (Alexa)             | Six-step pointer tree at repo root (B-0355.3, per B-0325). Native `.kiro/steering/` still absent.                |
 
 ## How to add a new harness
 

@@ -41,7 +41,7 @@ rotation ceremonies — for registries that need defense against single-key comp
 Full TUF is the gold standard but heavyweight (multiple key ceremonies, role infra). The
 slice-6 subset (signed index + sequence + freshness + mandatory pin) defends the named
 threats now; full role separation is a later hardening for high-value registries.
-Operator: *"everything we skipped lets slice off for further enhancements."*
+Operator: _"everything we skipped lets slice off for further enhancements."_
 
 ## Composes with
 

@@ -72,13 +72,13 @@ After absorption:
 
 ## Attack classes defended against
 
-| Attack class | Detection | Defense |
-|-------------|-----------|---------|
-| Authority laundering (BankerBot) | PoUW-CC CultureFit fail | Block at membrane |
-| Capability gifting (NFT expansion) | Bivector rotation in permissions | Freeze + revert |
-| 51% cartel (Qubic) | Bivector clustering | Dissolve via defensive rotors |
-| Confused deputy | No signed assertion | Proposal ≠ permission |
-| Translation-as-laundering | Content stays tagged untrusted | Never forwarded as executable |
+| Attack class                       | Detection                        | Defense                       |
+| ---------------------------------- | -------------------------------- | ----------------------------- |
+| Authority laundering (BankerBot)   | PoUW-CC CultureFit fail          | Block at membrane             |
+| Capability gifting (NFT expansion) | Bivector rotation in permissions | Freeze + revert               |
+| 51% cartel (Qubic)                 | Bivector clustering              | Dissolve via defensive rotors |
+| Confused deputy                    | No signed assertion              | Proposal ≠ permission         |
+| Translation-as-laundering          | Content stays tagged untrusted   | Never forwarded as executable |
 
 ## Implementation path (per Amara's corrections)
 

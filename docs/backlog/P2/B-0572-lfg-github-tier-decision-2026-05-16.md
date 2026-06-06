@@ -25,7 +25,7 @@ This re-shapes the row from "audit the tier" (XS, complete) to "decide whether t
 
 ## Decision: TRY ENTERPRISE (2026-05-16)
 
-Aaron 2026-05-16: *"we will just try it, it says we can downgrade anytime"*
+Aaron 2026-05-16: _"we will just try it, it says we can downgrade anytime"_
 
 The downgrade-anytime escape valve removes the cost-of-decision risk: if Enterprise's included-credit table differs unfavorably from Team's (eliminating the $2,863/mo discounts), or if features don't justify the per-user premium, just downgrade. Worst case = one billing cycle of higher cost; verification happens with real data instead of pre-commit speculation.
 
@@ -33,9 +33,9 @@ This row pivots from "decide whether to upgrade" to "monitor post-upgrade and tr
 
 ### What's at stake
 
-| Path | Cost | Rate-limit | Risk |
-|---|---|---|---|
-| **Stay on Team** | $96/yr | 5000/hr GraphQL per user (saturated today) | Recurring multi-agent saturation |
+| Path                            | Cost                                                             | Rate-limit                                                 | Risk                                                                                                        |
+| ------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Stay on Team**                | $96/yr                                                           | 5000/hr GraphQL per user (saturated today)                 | Recurring multi-agent saturation                                                                            |
 | **Upgrade to Enterprise Cloud** | $504/yr ($21/user/mo × 2) — but Aaron has promotional free trial | 15000/hr per user (3×) AND typically more included credits | **None confirmed yet** — needs verification that the $2,863/mo discounts persist or grow at Enterprise tier |
 
 ### Why the verification matters

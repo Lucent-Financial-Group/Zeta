@@ -29,13 +29,13 @@ AND-ranges. This row tracks the **deferred** remainder of node-semver semantics:
 
 The pragmatic subset covers virtually all real manifests with a small, testable
 surface; pre-release precedence in particular is the fiddly part of semver and earns
-its own focused slice. Operator: *"everything we skipped lets slice off for further
-enhancements."*
+its own focused slice. Operator: _"everything we skipped lets slice off for further
+enhancements."_
 
 ## Acceptance
 
 - `parseRange` accepts `||`, hyphen ranges; `satisfies` honors pre-release precedence
-  + the same-tuple pre-release rule; build metadata parsed + ignored for ordering.
+  - the same-tuple pre-release rule; build metadata parsed + ignored for ordering.
 - node-semver differential corpus extended to cover unions / hyphen / pre-release /
   build-metadata and asserts parity (per slice-5.2 test discipline).
 - Solver intersection logic handles union ranges (disjunction of conjunctions).

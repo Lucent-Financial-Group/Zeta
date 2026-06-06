@@ -43,23 +43,23 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 From B-0424, B-0425, and PR #3127 (civsim created):
 
-| Repo | Axis 1 position | Axis 2 candidate | Status |
-|------|-----------------|------------------|--------|
-| `Zeta` | Factory | Beacon | Exists (LFG/Zeta) |
-| `Forge` | Factory | Mirror | Planned (B-0424) |
-| `ace` | Factory | Beacon | Planned (B-0424) |
-| `civsim` | Product | Mirror | Created (PR #3127) |
-| `KSK` | Product | TBD | Later (no repo yet) |
-| `Aurora` | Product | Beacon | Later (no repo yet) |
-| `american-dream` | Product | TBD | Later (no repo yet) |
-| `DIO` | Product | TBD | Later (⚠️ re-evaluate name first) |
-| `Wellness` | Product | TBD | Later (scope not settled) |
-| `Dawn` | stays-in-monorepo | N/A | No own repo |
-| Aaron-private speculative | Owner-only | Mirror | Not in LFG |
-| Aaron-private governance | Owner-only | Beacon | Not in LFG |
+| Repo                      | Axis 1 position   | Axis 2 candidate | Status                            |
+| ------------------------- | ----------------- | ---------------- | --------------------------------- |
+| `Zeta`                    | Factory           | Beacon           | Exists (LFG/Zeta)                 |
+| `Forge`                   | Factory           | Mirror           | Planned (B-0424)                  |
+| `ace`                     | Factory           | Beacon           | Planned (B-0424)                  |
+| `civsim`                  | Product           | Mirror           | Created (PR #3127)                |
+| `KSK`                     | Product           | TBD              | Later (no repo yet)               |
+| `Aurora`                  | Product           | Beacon           | Later (no repo yet)               |
+| `american-dream`          | Product           | TBD              | Later (no repo yet)               |
+| `DIO`                     | Product           | TBD              | Later (⚠️ re-evaluate name first) |
+| `Wellness`                | Product           | TBD              | Later (scope not settled)         |
+| `Dawn`                    | stays-in-monorepo | N/A              | No own repo                       |
+| Aaron-private speculative | Owner-only        | Mirror           | Not in LFG                        |
+| Aaron-private governance  | Owner-only        | Beacon           | Not in LFG                        |
 
-*Axis-2 candidates are initial assessments from B-0426 illustrative matrix —
-this row verifies and justifies each position.*
+_Axis-2 candidates are initial assessments from B-0426 illustrative matrix —
+this row verifies and justifies each position._
 
 ## Classification criteria per tier
 

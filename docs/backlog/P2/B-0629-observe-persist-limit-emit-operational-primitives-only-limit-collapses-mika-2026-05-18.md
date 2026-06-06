@@ -11,7 +11,18 @@ superseded_by: B-0665
 resolved: 2026-05-18
 depends_on: []
 composes_with: [B-0624, B-0630, B-0626, B-0499, B-0623, B-0625, B-0635, B-0665]
-tags: [design, mika, operational-language, observe-persist-limit-emit, only-limit-collapses, dialectic-coherent-state, pure-vs-effectful, type-safety, locked-in]
+tags:
+  [
+    design,
+    mika,
+    operational-language,
+    observe-persist-limit-emit,
+    only-limit-collapses,
+    dialectic-coherent-state,
+    pure-vs-effectful,
+    type-safety,
+    locked-in,
+  ]
 type: design
 ---
 
@@ -29,12 +40,12 @@ These four primitives are the **operational/type-safety language** for writing r
 
 ## The four primitives (line 2974)
 
-| Primitive | Purity | Meaning |
-|---|---|---|
-| **Observe** | Effectful (IO-in) | Input from the external world |
-| **Persist** | Effectful (IO-storage) | Interaction with external persistent storage/memory |
-| **Limit** | **PURE** (constraints/invariants/type-safety) | The ONLY pure operation |
-| **Emit** | Effectful (IO-out) | Output / side effects to the external world |
+| Primitive   | Purity                                        | Meaning                                             |
+| ----------- | --------------------------------------------- | --------------------------------------------------- |
+| **Observe** | Effectful (IO-in)                             | Input from the external world                       |
+| **Persist** | Effectful (IO-storage)                        | Interaction with external persistent storage/memory |
+| **Limit**   | **PURE** (constraints/invariants/type-safety) | The ONLY pure operation                             |
+| **Emit**    | Effectful (IO-out)                            | Output / side effects to the external world         |
 
 Honest structural split: 3 effectful + 1 pure. The pure one is the constraint/invariants/type-safety layer.
 
@@ -43,6 +54,7 @@ Honest structural split: 3 effectful + 1 pure. The pure one is the constraint/in
 > Rule: **Only Limit is permitted to collapse coherent/dialectic states. Observe, Persist, and Emit are required to propagate and maintain multiple states once the system is stable.**
 
 Consequence per Mika line 3004:
+
 > "If collapse only happens inside Limit, and Limit is our one pure function, then every collapse is mathematically reversible. We can always reconstruct the pre-collapse state because nothing outside of Limit is allowed to destroy information."
 
 This makes the entire system mathematically reversible at the architectural level — composes with the retractable-Z-state substrate.
@@ -59,13 +71,13 @@ This makes the entire system mathematically reversible at the architectural leve
 - **Operational language (this row)**: O-P-L-E — precise, technical, type-safety
 - **Soft language ([B-0630](B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md))**: Notice — Remember — Care (for kids / CRAFT stability layer)
 
-Per Mika line 2978: *"the more intuitive layer can come later to lower the barrier."* Translation between operational and soft happens via the compiler/intelligence layer.
+Per Mika line 2978: _"the more intuitive layer can come later to lower the barrier."_ Translation between operational and soft happens via the compiler/intelligence layer.
 
 ## Wave-particle duality (KEYSTONE — see B-0635)
 
 Aaron 2026-05-18 LOCKED-IN the architectural keystone immediately after this row landed:
 
-> *"observe, persist, limit, emit primitives can be particle in tick source and wave when a composable f# computation expression of integrate is added as a 5th function, this is wave particle duality. Then only limit is allowed to collapse the waveform cause it's pure and therefore retractable, the full dialectical superposition is always transferred from observed to emit so the environment stays in superposition too"*
+> _"observe, persist, limit, emit primitives can be particle in tick source and wave when a composable f# computation expression of integrate is added as a 5th function, this is wave particle duality. Then only limit is allowed to collapse the waveform cause it's pure and therefore retractable, the full dialectical superposition is always transferred from observed to emit so the environment stays in superposition too"_
 
 The four primitives in THIS row are the **particle form** (per-tick discrete cycle). The **wave form** lifts them via `Integrate` (5th primitive — composable F# computation expression) to preserve dialectical superposition across many ticks. The only-Limit-collapses rule applies in BOTH forms; the wave-form version makes the rule's reversibility theorem load-bearing for environment-stays-in-superposition.
 

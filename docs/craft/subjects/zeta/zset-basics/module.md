@@ -27,11 +27,11 @@ end of the day, the counter tells you how many you sold.
 
 **But a customer returns an apple.** Now what?
 
-Most counters can't click *down*. You'd have to remember
+Most counters can't click _down_. You'd have to remember
 to subtract. That's error-prone — if you forget even once,
 your count is wrong forever.
 
-A **Z-set** is a tally counter that *can click down*. Every
+A **Z-set** is a tally counter that _can click down_. Every
 item can have a positive count (we have this many) or a
 negative count (we owe this many / customer returned
 this many).
@@ -48,19 +48,19 @@ a minus sign.**
 Use a Z-set when you have:
 
 - **Lots of items** where you need exact counts
-- **Changes that can go both ways** (insertions *and*
+- **Changes that can go both ways** (insertions _and_
   returns / retractions)
 - **A need to combine counts from multiple places** without
   double-counting or losing returns
 
 Examples from the real world:
 
-| Situation | Why Z-set fits |
-|---|---|
-| Tracking inventory with returns | Clicks up on restock, down on return; running total always correct |
-| Tracking dashboard metrics that can be revised | Click down on a bad record, click up on the corrected record |
-| Combining results from two data pipelines | Just add the counters; positives and negatives cancel correctly |
-| Incremental view maintenance (IVM) | Insert = click up; delete = click down; the view stays up to date without recomputing from scratch |
+| Situation                                      | Why Z-set fits                                                                                     |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Tracking inventory with returns                | Clicks up on restock, down on return; running total always correct                                 |
+| Tracking dashboard metrics that can be revised | Click down on a bad record, click up on the corrected record                                       |
+| Combining results from two data pipelines      | Just add the counters; positives and negatives cancel correctly                                    |
+| Incremental view maintenance (IVM)             | Insert = click up; delete = click down; the view stays up to date without recomputing from scratch |
 
 ### How to use Z-sets in Zeta
 
@@ -97,12 +97,12 @@ no "delete this row" — just arithmetic.
 
 ### Why Z-sets (instead of something else)
 
-| Alternative | Problem |
-|---|---|
-| Plain list of items | No counts; have to track repetition manually |
-| Plain dictionary `key → count` | Can't represent "we owe N" cleanly; deletion is ad-hoc |
-| SQL table with rows | Deletion is a different operation; retractions not first-class |
-| Probabilistic counter | Can't retract; counts drift over time |
+| Alternative                    | Problem                                                        |
+| ------------------------------ | -------------------------------------------------------------- |
+| Plain list of items            | No counts; have to track repetition manually                   |
+| Plain dictionary `key → count` | Can't represent "we owe N" cleanly; deletion is ad-hoc         |
+| SQL table with rows            | Deletion is a different operation; retractions not first-class |
+| Probabilistic counter          | Can't retract; counts drift over time                          |
 
 Z-sets win when retraction has to be exact and first-
 class. They're the right tool for anything that reads as
@@ -128,8 +128,8 @@ If those are clear, proceed to
 
 ## Theoretical track — opt-in (for learners who really care)
 
-*If applied is enough for you, stop reading here. The
-below is for those going deep.*
+_If applied is enough for you, stop reading here. The
+below is for those going deep._
 
 ### The algebra
 
@@ -204,8 +204,8 @@ and `src/Core/Algebra.fs`):
   faster but trusts the caller (per the comment in
   `src/Core/ZSet.fs`) — pass unsorted or zero-weight
   entries through it and lookup / merge will misbehave.
-  It is *not* a type alias for `ImmutableArray<...>` and
-  *not* a mutable `Dictionary<'K, int>`. Sorted-by-key
+  It is _not_ a type alias for `ImmutableArray<...>` and
+  _not_ a mutable `Dictionary<'K, int>`. Sorted-by-key
   gives log(N) binary-search lookup + linear merge for
   `add`
 - The `'K : comparison` constraint is required so the
@@ -216,7 +216,7 @@ and `src/Core/Algebra.fs`):
 - `ofPairs : seq<struct ('K * Weight)> → ZSet<'K>`
   (struct-tuple, C#-friendly low-ceremony builder; note
   the current implementation pipes through `Seq.map ...
-  |> ofSeq`, so it allocates an iterator/closure — it is
+|> ofSeq`, so it allocates an iterator/closure — it is
   not a zero-allocation construction path)
 - `add : ZSet<'K> → ZSet<'K> → ZSet<'K>` (pointwise
   checked sum; drops zero-weight entries)

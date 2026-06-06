@@ -18,8 +18,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Files Aaron's federated topology + the LOAD-BEARING weight-free correction:
 
-  > 'imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes'
-  > 'and that's not a hierarchy it's weight free routing cloud/hub nodes don't get to hog net neutrality'
+> 'imagine cloud/hub clusters then community clusters then home/business clusers then edge nodes with routing for weaker edge nodes'
+> 'and that's not a hierarchy it's weight free routing cloud/hub nodes don't get to hog net neutrality'
 
 The 5 categories (cloud/hub, community, home/business, edge, leaf) are RESOURCE PROFILES, not authority tiers. Cloud/hub has MORE RESOURCES but NOT MORE AUTHORITY. Routing is identity-based not rank-based. Net neutrality is a SUBSTRATE PROPERTY enforced at protocol layer. Stronger peers route for weaker leaves BY VOLUNTARY CONTRIBUTION (NCI-revocable), not by hierarchy mandate.
 
@@ -37,24 +37,22 @@ P3 because research-grade architecture; needs design pass + first multi-peer dep
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T17:47:43Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `f8a52ac15e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -66,7 +64,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T17:47:44Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix dangling composes_with references**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix dangling composes_with references**
 
 This row adds `composes_with` entries that do not resolve to tracked targets (`docs/backlog/P2/B-0726-...` and `full-ai-cluster/k8s/applications/argocd/` are both absent in this tree), which leaves the backlog graph with broken edges and makes cross-row traceability/tooling unreliable when following prerequisites. Please point these to existing paths (or land the referenced row first) so the metadata remains navigable and machine-consumable.
 

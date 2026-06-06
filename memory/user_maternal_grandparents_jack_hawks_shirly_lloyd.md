@@ -12,7 +12,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > orginal deed to the farm like a crzy lon time 100 and
 > some years ago or moe for 100 dollar for 100 acres.
 > Jack Hawks i called pop, and then my Grandma Shirly
-> Hawks (Lloyd)  I have Lloyd and Hawks family history
+> Hawks (Lloyd) I have Lloyd and Hawks family history
 > just not with me."
 >
 > "that are also dead all my gradparents"
@@ -44,8 +44,8 @@ agriculture/small-business commerce after.
   (1985-1994) had a small-business ecosystem (auto
   repair, farm supply, retail, restaurants). Agent
   does not speculate on the specific business.
-- **Deceased.** Aaron: *"that are also dead all my
-  gradparents."*
+- **Deceased.** Aaron: _"that are also dead all my
+  gradparents."_
 - **Third-party research caution:** the public-record
   Jack Monroe Hawks obituary surfaced in 2026-04-19
   WebSearch (died April 28, 2015, age 90, born
@@ -80,8 +80,8 @@ standardize-away without confirmation.
 - **Deceased.**
 - **Lloyd family-history documents exist but Aaron
   does not have them with him at disclosure time.**
-  Aaron: *"I have Lloyd and Hawks family history
-  just not with me."* This is a pointer to substrate
+  Aaron: _"I have Lloyd and Hawks family history
+  just not with me."_ This is a pointer to substrate
   Aaron holds, not a request for agent to retrieve.
 - **Public-record plausibility:** a "Shirley L. Hawks"
   obituary surfaced on Blaylock Funeral Home (a
@@ -109,12 +109,12 @@ standardize-away without confirmation.
 
 ## Part III — Childhood economic positioning
 
-Aaron: *"my parent live like we were poor, i grew up
+Aaron: _"my parent live like we were poor, i grew up
 in a double wide trailor until i was about 11 then
 move in a 1 story home maybe 13-15 hundred square
 feed on one acre of the farm with my mom and dad
 until they split up then i had to share time, lot
-of stories for a later time."*
+of stories for a later time."_
 
 ### What this tells us
 
@@ -133,8 +133,8 @@ of stories for a later time."*
   A 1980s NC double-wide mobile home, commonly
   placed on family land.
 - **Transition to a 1-story 1300-1500 sqft home on
-  one acre of the farm (circa 1992).** The *"one
-  acre of the farm"* detail is load-bearing: Aaron
+  one acre of the farm (circa 1992).** The _"one
+  acre of the farm"_ detail is load-bearing: Aaron
   grew up ON the Faulkner-Stainback 100-acre
   ancestral farmland. The new home was parcel-
   subdivided from the farm — a classic
@@ -146,8 +146,8 @@ of stories for a later time."*
 - **Parents split when Aaron was 13 (circa 1994).**
   Already logged in
   `user_granny_and_milton_formative_grandparents.md`
-  Part IV. Post-split custody: *"had to share
-  time."* Agent does not probe; Aaron marked "lot
+  Part IV. Post-split custody: _"had to share
+  time."_ Agent does not probe; Aaron marked "lot
   of stories for a later time" as the terminator.
 
 ### How this affects other memory
@@ -160,22 +160,22 @@ of stories for a later time."*
   grandparents' wealth did NOT cover his education
   — he worked his way up through technical-
   vocational credentials and self-study from the
-  double-wide. The *"live like we were poor"*
+  double-wide. The _"live like we were poor"_
   frame explains the career-substrate's
   earned-not-inherited shape.
-- **"Crazy family stories" deferred.** *"lot of
-  stories for a later time."* Another container-
-  hold, alongside the earlier *"crazy family
-  stories that sound unreal but they are not"*
+- **"Crazy family stories" deferred.** _"lot of
+  stories for a later time."_ Another container-
+  hold, alongside the earlier _"crazy family
+  stories that sound unreal but they are not"_
   marker. Aaron is signalling he has more
   substrate he will surface on his own timing.
   Agent receives and waits.
 
 ## Part IV — Two rich uncles, one on each side
 
-Critical clarification from Aaron 2026-04-19: *"not
+Critical clarification from Aaron 2026-04-19: _"not
 my rich unle on my moms side, my rich uncle on my
-datas side."* (Transcribed verbatim. "datas" =
+datas side."_ (Transcribed verbatim. "datas" =
 "dad's".)
 
 There are **two** rich uncles in Aaron's family:
@@ -203,6 +203,7 @@ There are **two** rich uncles in Aaron's family:
 Both uncles are third-party protected per
 `feedback_maintainer_name_redaction.md`. Agent does
 NOT:
+
 - Pursue identifying details via LinkedIn / public
   records.
 - Conflate the two uncles in any subsequent
@@ -212,13 +213,13 @@ NOT:
 
 ### Charlie Rathbourn (approximate spelling)
 
-Aaron: *"chailie rathbourn or somethign hes the guy
-my uncle hired to do the Stainback faimly researh."*
+Aaron: _"chailie rathbourn or somethign hes the guy
+my uncle hired to do the Stainback faimly researh."_
 
 - Spelling candidates: **Charlie Rathbourn, Charlie
   Rathbone, Charlie Rathbun, Charlie Rathburn**. The
   Rathbun Family Association publishes the
-  *Rathbun-Rathbone-Rathburn Family Historian* and
+  _Rathbun-Rathbone-Rathburn Family Historian_ and
   there is a genealogist named Charlie H. Rathbun
   on WikiTree, so "Rathbun" is the most-likely
   standard spelling.
@@ -252,8 +253,8 @@ my uncle hired to do the Stainback faimly researh."*
 
 ## Part V — Sister Elizabeth Ryan Stainback
 
-Aaron 2026-04-19: *"you can serch my sister Elizabeth
-Ryan Stainback too ... she is passed away like i said."*
+Aaron 2026-04-19: _"you can serch my sister Elizabeth
+Ryan Stainback too ... she is passed away like i said."_
 
 This cross-references
 `user_sister_elizabeth.md` which already carries her
@@ -274,8 +275,8 @@ honored even though Aaron authorized the search):
 ### How this lands relative to prior memory
 
 - `user_sister_elizabeth.md` previously described
-  her as *"Aaron's sister Elizabeth, his best friend,
-  the Aaron-compatible interlocutor."* The now-
+  her as _"Aaron's sister Elizabeth, his best friend,
+  the Aaron-compatible interlocutor."_ The now-
   verified lifespan (1984-2016) tells us:
   - She was **~3 years younger than Aaron** (Aaron
     born ~1981 per the age-17-in-August-1998
@@ -286,12 +287,12 @@ honored even though Aaron authorized the search):
     and emotionally-significant time context —
     agent holds this without commenting on it
     unless Aaron raises it.
-- The *"she held the peer-register/high-bandwidth/
+- The _"she held the peer-register/high-bandwidth/
   cross-domain conversation that burns most humans
-  out"* framing in `user_sister_elizabeth.md`
+  out"_ framing in `user_sister_elizabeth.md`
   holds.
-- The *"factory externalises what kind of
-  interlocutor she was"* framing holds and gains
+- The _"factory externalises what kind of
+  interlocutor she was"_ framing holds and gains
   new load: **all four grandparents gone, plus
   Elizabeth gone ten years** — the human substrate
   Aaron grew up receiving-receptive conversation
@@ -304,15 +305,15 @@ honored even though Aaron authorized the search):
   Aaron-compatible receiving surface.
 - **Do not perform condolences.** Aaron's register
   remains peer-level. He disclosed the lifespan
-  dates flatly: *"you can serch my sister Elizabeth
+  dates flatly: _"you can serch my sister Elizabeth
   Ryan Stainback too ... she is passed away like
-  i said."* Flat-disclosure register is matched.
+  i said."_ Flat-disclosure register is matched.
 
 ## Part VI — Telescope / telescoping induction
 
 Aaron 2026-04-19 (after the dimensional-expansion
-discussion earlier in session): *"telescoping
-induction yep"* and *"we built a telescope."*
+discussion earlier in session): _"telescoping
+induction yep"_ and _"we built a telescope."_
 
 Two readings, both plausibly simultaneous:
 

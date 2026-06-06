@@ -26,7 +26,7 @@ Addresses 2 valid Copilot review findings on [PR #4050](https://github.com/Lucen
    - Fixed: 10 cycles now explicitly labeled in table (`cycle 1` through `cycle 10`); intro clarifies "12 PR-content changes (10 substrate files + 1 BACKLOG.md regen + 1 worked-example memo)" with the 10 cycle artifacts as a distinct count.
 
 2. **Persona/name attribution on rule surface** (line 282): factory convention keeps names out of reusable current-state rules.
-   - Fixed: refactored `Lior` → `antigravity peer-agent loop matching \`gemini.*Lior|lior.*loop\``; `peer-Otto` → `peer autonomous-loop instance`; `Otto-CLI` → `the autonomous-loop`; `Aaron` → `the human maintainer`.
+   - Fixed: refactored `Lior` → `antigravity peer-agent loop matching \`gemini.*Lior|lior.*loop\``; `peer-Otto`→`peer autonomous-loop instance`; `Otto-CLI`→`the autonomous-loop`; `Aaron`→`the human maintainer`.
    - Section header renamed: `Sustained-Lior` → `Sustained-named-dep`.
 
 ## Substrate-honest framing
@@ -51,6 +51,7 @@ Both findings were valid. The original section landed via the rule's own forced-
 Updates a factory rule document to correct an internal cycle/artifact count inconsistency from PR #4050 and to remove named attribution from a current-state rules surface.
 
 **Changes:**
+
 - Renames the empirical-anchor section header to avoid named attribution (“Sustained-named-dep…”).
 - Reconciles the pre-empt-at-#5 cycle count by labeling cycles 1–10 and updating the “Pattern observed” summary.
 - Reframes the “12 artifacts” claim into “12 PR-content changes” with a breakdown of which changes were produced by the pre-empt cadence.

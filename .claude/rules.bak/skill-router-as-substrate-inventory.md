@@ -20,8 +20,8 @@ Before authoring new substrate, check:
 If existing substrate covers the topic: **extend or correct it** instead
 of duplicating. Only mint new substrate when no existing coverage is found.
 
-The human maintainer 2026-05-01: *"it could just remind you to use the
-router as lookup of existing substrate, quick inventory via router."*
+The human maintainer 2026-05-01: _"it could just remind you to use the
+router as lookup of existing substrate, quick inventory via router."_
 
 This rule encodes that discipline so fresh sessions inherit it without
 primed prompting. The router's description-keyed search IS the factory's

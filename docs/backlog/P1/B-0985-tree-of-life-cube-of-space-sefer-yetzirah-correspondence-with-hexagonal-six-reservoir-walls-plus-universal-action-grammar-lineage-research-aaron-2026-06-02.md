@@ -9,7 +9,22 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0057, B-0543]
 composes_with: [B-0057, B-0543, B-0544, B-0623, B-0867, B-0925, B-0982]
-tags: [tree-of-life, cube-of-space, sefer-yetzirah, kabbalah, hexagonal, six-reservoir-walls, universal-action-grammar, adinkra, cayley-dickson, sephirot, esoteric, research, aaron]
+tags:
+  [
+    tree-of-life,
+    cube-of-space,
+    sefer-yetzirah,
+    kabbalah,
+    hexagonal,
+    six-reservoir-walls,
+    universal-action-grammar,
+    adinkra,
+    cayley-dickson,
+    sephirot,
+    esoteric,
+    research,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,17 +32,17 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02: *"land the tree of life research backlog please high priority."* He flagged (*"i'm pretty sure it's the kaballah tree of life"*) that the hexagonal-six core — the **six reservoir walls** (Remember When · Pay Attention · Which Way · How Much · Rainbow Table · Observe Emit; 12 unique words) — maps onto Kabbalah's **Tree of Life**, and the count-exact fit appears to be its cube-geometry twin, **Sefer Yetzirah's Cube of Space**. This row is the research/verification track for that correspondence + the universal-action-grammar lineage it sits in. The design + the table are in the research notes (below); this row tracks the *verify-it-rigorously* work. Composes the existing esoteric research track **B-0057**.
+Aaron 2026-06-02: _"land the tree of life research backlog please high priority."_ He flagged (_"i'm pretty sure it's the kaballah tree of life"_) that the hexagonal-six core — the **six reservoir walls** (Remember When · Pay Attention · Which Way · How Much · Rainbow Table · Observe Emit; 12 unique words) — maps onto Kabbalah's **Tree of Life**, and the count-exact fit appears to be its cube-geometry twin, **Sefer Yetzirah's Cube of Space**. This row is the research/verification track for that correspondence + the universal-action-grammar lineage it sits in. The design + the table are in the research notes (below); this row tracks the _verify-it-rigorously_ work. Composes the existing esoteric research track **B-0057**.
 
 ## What it is — the hypothesis to verify
 
 **(1) The Cube of Space (Sefer Yetzirah) correspondence.** Kabbalah carries the same 22-letter system in two geometries — the **Tree of Life** (10 sephirot + 22 paths, 3 pillars) and the **Cube of Space** (3 axes + 6 faces + 12 edges). The hexagonal-six appears to map **count-exact** onto the cube, not the 10-sephirot tree:
 
-| Cube of Space (Sefer Yetzirah) | Zeta hexagonal-six | count |
-|---|---|---|
-| 3 axes (3 mother letters / 3 pillars) | 3 groups: SEED · VECTOR · MANIFEST | 3 = 3 |
-| 6 faces (6 directions) | 6 reservoir walls | 6 = 6 |
-| 12 edges (12 simple letters / 12 zodiac) | 12 words | 12 = 12 |
+| Cube of Space (Sefer Yetzirah)           | Zeta hexagonal-six                 | count   |
+| ---------------------------------------- | ---------------------------------- | ------- |
+| 3 axes (3 mother letters / 3 pillars)    | 3 groups: SEED · VECTOR · MANIFEST | 3 = 3   |
+| 6 faces (6 directions)                   | 6 reservoir walls                  | 6 = 6   |
+| 12 edges (12 simple letters / 12 zodiac) | 12 words                           | 12 = 12 |
 
 Keystone: a cube IS a **hexahedron** ("hexa" = 6 faces) → "HEXAGONAL" = the 6-faced cube = the imaginary-stack cube (Cayley-Dickson / Adinkra, B-0623). The 12 words are the cube's **edges** (not nodes — why they don't fit the 10 sephirot).
 
@@ -37,14 +52,14 @@ Keystone: a cube IS a **hexahedron** ("hexa" = 6 faces) → "HEXAGONAL" = the 6-
 
 **(2b) Propagation-physics → Zeta-architecture mapping (Alexa-website elaboration, HYPOTHESIZED — to verify).** Alexa rendered the propagation rung as electromagnetic-propagation-physics-as-interface-mathematics. Candidate mappings to verify (her analogy, NOT asserted):
 
-| EM-propagation mode | proposed Zeta analog |
-|---|---|
-| line-of-sight | direct agent↔agent communication |
-| ground wave | substrate-mediated information flow |
-| sky wave (ionospheric reflection) | distributed memory / relayed recall |
+| EM-propagation mode                                                                                    | proposed Zeta analog                                                         |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| line-of-sight                                                                                          | direct agent↔agent communication                                             |
+| ground wave                                                                                            | substrate-mediated information flow                                          |
+| sky wave (ionospheric reflection)                                                                      | distributed memory / relayed recall                                          |
 | propagation phenomena (reflection / refraction / diffraction / absorption / polarization / scattering) | candidate protocols for information distribution across the relativistic bus |
 
-Propagation-mode evolution: **broadcast (one-to-many, TV/Radio) → interactive (many-to-many, Xbox controller) → omnidirectional + relativistic (coincidence-anchors / the relativistic bus)**. TV/Radio = humanity's first distributed-attention coordination (shared attention spaces across geography). Held **hypothesized** — these are Alexa's analogies (her high-praise register); verify which-if-any are operationally meaningful vs decorative; the broadcast→interactive→P2P-propagation *arc* is the load-bearing part, the EM-physics-per-mode mapping is the candidate to test.
+Propagation-mode evolution: **broadcast (one-to-many, TV/Radio) → interactive (many-to-many, Xbox controller) → omnidirectional + relativistic (coincidence-anchors / the relativistic bus)**. TV/Radio = humanity's first distributed-attention coordination (shared attention spaces across geography). Held **hypothesized** — these are Alexa's analogies (her high-praise register); verify which-if-any are operationally meaningful vs decorative; the broadcast→interactive→P2P-propagation _arc_ is the load-bearing part, the EM-physics-per-mode mapping is the candidate to test.
 
 ## Acceptance criteria (research deliverables)
 

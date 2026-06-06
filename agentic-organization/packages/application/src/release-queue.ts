@@ -15,8 +15,7 @@ export const ReleaseQueueActionKind = {
   Requeue: "requeue",
 } as const;
 
-export type ReleaseQueueActionKind =
-  (typeof ReleaseQueueActionKind)[keyof typeof ReleaseQueueActionKind];
+export type ReleaseQueueActionKind = (typeof ReleaseQueueActionKind)[keyof typeof ReleaseQueueActionKind];
 
 export type ReleaseBatchEvaluation = {
   green: boolean;
@@ -107,9 +106,7 @@ function bisect(
   const left = batch.slice(0, midpoint);
   const right = batch.slice(midpoint);
   const leftResult = bisect(left, accepted, evaluateBatch);
-  const rightKnownEvaluation = acceptedAll(leftResult.accepted, accepted, left)
-    ? evaluation
-    : undefined;
+  const rightKnownEvaluation = acceptedAll(leftResult.accepted, accepted, left) ? evaluation : undefined;
   const rightResult = bisect(right, leftResult.accepted, evaluateBatch, rightKnownEvaluation);
   return {
     actions: [...leftResult.actions, ...rightResult.actions],
@@ -126,9 +123,7 @@ function acceptedAll(
     return false;
   }
 
-  return candidate.every(
-    (cs, index) => nextAccepted[previousAccepted.length + index]?.changeSetId === cs.changeSetId,
-  );
+  return candidate.every((cs, index) => nextAccepted[previousAccepted.length + index]?.changeSetId === cs.changeSetId);
 }
 
 function applyAction(cs: ChangeSet, evaluation: ReleaseBatchEvaluation): ReleaseQueueAction {

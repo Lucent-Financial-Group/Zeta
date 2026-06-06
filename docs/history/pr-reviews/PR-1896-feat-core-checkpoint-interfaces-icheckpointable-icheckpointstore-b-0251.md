@@ -10,24 +10,25 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1896 |
-| Title | feat(core): Checkpoint interfaces — ICheckpointable + ICheckpointStore (B-0251) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T15:29:28Z |
-| Merged at | 2026-05-07T15:32:21Z |
-| Merge commit SHA | `93ac781cd2ce3e2729e25b1a55c9646c9d528265` |
-| Branch | `otto/checkpoint-interface-b0251` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1896 |
-| Changed files | 2 |
-| Additions / deletions | +123 / -0 |
+| Field                 | Value                                                                           |
+| --------------------- | ------------------------------------------------------------------------------- |
+| Number                | 1896                                                                            |
+| Title                 | feat(core): Checkpoint interfaces — ICheckpointable + ICheckpointStore (B-0251) |
+| Author                | `AceHack` (human)                                                               |
+| State                 | MERGED                                                                          |
+| Created at            | 2026-05-07T15:29:28Z                                                            |
+| Merged at             | 2026-05-07T15:32:21Z                                                            |
+| Merge commit SHA      | `93ac781cd2ce3e2729e25b1a55c9646c9d528265`                                      |
+| Branch                | `otto/checkpoint-interface-b0251`                                               |
+| Base branch           | `main`                                                                          |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1896                        |
+| Changed files         | 2                                                                               |
+| Additions / deletions | +123 / -0                                                                       |
 
 ## Description
 
 ## Summary
+
 - Adds `src/Core/Checkpoint.fs` — checkpoint interfaces for durable circuit execution
 - `ICheckpointReader`/`ICheckpointWriter` — operator state serialization primitives
 - `ICheckpointable` — interface for operators that can save/restore state
@@ -37,12 +38,14 @@
 - Build: 0 warnings, 0 errors. Tests: 769 pass.
 
 ## Design lineage
+
 - Reaqtor `IStatefulOperator` (SaveState/LoadState at operator boundaries)
 - Temporal deterministic replay (event history as source of truth)
 - Orleans grain persistence (grain = standing query subscriber)
 - Checkpoint boundary = `Circuit.StepAsync` (existing yield point)
 
 ## Test plan
+
 - [x] `dotnet build -c Release` — 0 warnings, 0 errors
 - [x] `dotnet test Zeta.sln -c Release` — 769 pass, 1 skip
 - [ ] CI passes
@@ -51,15 +54,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 2 |
-| Unresolved threads | 0 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 2     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -75,9 +78,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Partition in-memory checkpoints by circuit ID**
-
+  
   `InMemoryCheckpointStore` keeps only a single `saved` snapshot and both save/load ignore `circuitId`, so any second circuit checkpoint overwrites the first and `LoadCheckpointAsync` can return state from the wrong circuit. This breaks recovery correctness as soon as one store instance is shared across multiple circuits (which is plausible in DST/tests using a shared fixture), despite the interface contract being keyed by circuit ID.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -93,9 +96,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Surface saved state version during checkpoint restore**
-
+  
   `SaveCheckpointAsync` writes `checkpointable.StateVersion`, but `LoadCheckpointAsync` immediately reads it into `_version` and discards it before handing the reader to operators. That makes versioned deserialization impossible for `LoadState` and can cause misreads once an operator state schema changes, even though the API already advertises versioning support.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

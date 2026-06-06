@@ -14,18 +14,33 @@ composes_with:
   - B-0831
   - B-0852
   - B-0833
-tags: [supply-chain, signing, sigstore, cosign, fulcio, rekor, keyless-oidc, slsa, artifact-attestation, iso-signing, container-signing, free-stuff, github-actions-oidc]
+tags:
+  [
+    supply-chain,
+    signing,
+    sigstore,
+    cosign,
+    fulcio,
+    rekor,
+    keyless-oidc,
+    slsa,
+    artifact-attestation,
+    iso-signing,
+    container-signing,
+    free-stuff,
+    github-actions-oidc,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
 After asking whether Let's Encrypt could issue code signing certs (answer: no, LE explicitly out-of-scope), Aaron picked the free-stuff path:
 
-> *"this sounds good and i can pay those costs for the propritary oses when we need please start on the free stuff and backlog it"*
+> _"this sounds good and i can pay those costs for the propritary oses when we need please start on the free stuff and backlog it"_
 
 Plus the outreach-channel signal:
 
-> *"if you need outreach or to fill out forms you can involve me addison or max"*
+> _"if you need outreach or to fill out forms you can involve me addison or max"_
 
 (Sigstore needs no form-filling — fully open community substrate; outreach channel applies to SignPath Foundation OSS application + Apple Developer Program enrollment if/when we go that route.)
 
@@ -33,36 +48,36 @@ Plus the outreach-channel signal:
 
 ### IN-SCOPE (this row — free signing substrate)
 
-| Artifact class | Tool | Notes |
-|---|---|---|
-| Container images | **cosign** (sigstore) | Keyless via GitHub OIDC + Fulcio CA + Rekor transparency log; zero key management |
-| ISO releases (iter-5.x / iter-6.x) | **cosign blob signing** | Detached sigs; verifiable via cosign + Rekor lookup |
-| Tarball / archive releases | **cosign blob signing** OR GPG | Cosign preferred; GPG as legacy fallback |
-| NixOS substitutes / store paths | `nix-store --sign` with operator-controlled key | Nix-native; binary cache integration; substrate-honest with Nix substitution model |
-| Linux packages (deb/rpm) — IF we ever ship them | GPG repo-signing key | Operator-controlled key in HSM or 1Password-style vault |
+| Artifact class                                  | Tool                                            | Notes                                                                              |
+| ----------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Container images                                | **cosign** (sigstore)                           | Keyless via GitHub OIDC + Fulcio CA + Rekor transparency log; zero key management  |
+| ISO releases (iter-5.x / iter-6.x)              | **cosign blob signing**                         | Detached sigs; verifiable via cosign + Rekor lookup                                |
+| Tarball / archive releases                      | **cosign blob signing** OR GPG                  | Cosign preferred; GPG as legacy fallback                                           |
+| NixOS substitutes / store paths                 | `nix-store --sign` with operator-controlled key | Nix-native; binary cache integration; substrate-honest with Nix substitution model |
+| Linux packages (deb/rpm) — IF we ever ship them | GPG repo-signing key                            | Operator-controlled key in HSM or 1Password-style vault                            |
 
 ### OUT-OF-SCOPE (deferred; Aaron-funded when relevant)
 
-| Artifact class | Tool | Cost | Trigger to revisit |
-|---|---|---|---|
-| Windows binaries (Authenticode) | Commercial CA (DigiCert / Sectigo) | $200-700/yr | When we ship a Windows-side binary publicly + SmartScreen reputation matters |
-| Windows binaries (OSS path) | SignPath Foundation | free (qualifying OSS) | Sibling option to commercial CA; requires SignPath app form |
-| macOS binaries (notarized Gatekeeper) | Apple Developer Program | $99/yr | When we ship a macOS binary publicly |
-| EV code signing (Windows reputation) | Commercial CA EV | $400-1000/yr | When SmartScreen reputation is load-bearing |
+| Artifact class                        | Tool                               | Cost                  | Trigger to revisit                                                           |
+| ------------------------------------- | ---------------------------------- | --------------------- | ---------------------------------------------------------------------------- |
+| Windows binaries (Authenticode)       | Commercial CA (DigiCert / Sectigo) | $200-700/yr           | When we ship a Windows-side binary publicly + SmartScreen reputation matters |
+| Windows binaries (OSS path)           | SignPath Foundation                | free (qualifying OSS) | Sibling option to commercial CA; requires SignPath app form                  |
+| macOS binaries (notarized Gatekeeper) | Apple Developer Program            | $99/yr                | When we ship a macOS binary publicly                                         |
+| EV code signing (Windows reputation)  | Commercial CA EV                   | $400-1000/yr          | When SmartScreen reputation is load-bearing                                  |
 
 Aaron's commitment: funds proprietary-OS signing costs when load-bearing. No premature spend; current scope is free-stuff-coverage of the substrate we're shipping today.
 
 ## Why sigstore is the right primary
 
-| Property | sigstore/cosign | Commercial CA | GPG-only |
-|---|---|---|---|
-| Cost | $0 | $200-1000/yr per cert | $0 (operator-managed) |
-| Key management | None (OIDC-keyless) OR per-project ed25519 | HSM required for EV | Operator-managed (key-loss = signing-loss) |
-| Transparency log | **Rekor (public, append-only)** — independent audit surface | Per-CA disclosure (limited) | None (private trust) |
-| Verification chain | Fulcio root → cert tied to identity | CA root → cert tied to identity | Pubkey trust web |
-| CI integration | First-class GitHub OIDC | Per-CA tooling | Manual key import |
-| Existing in CNCF | Kubernetes / Helm / Tekton / etc. all use it | (mixed) | (legacy) |
-| Container-native | Yes (designed for it) | Workable | Less natural |
+| Property           | sigstore/cosign                                             | Commercial CA                   | GPG-only                                   |
+| ------------------ | ----------------------------------------------------------- | ------------------------------- | ------------------------------------------ |
+| Cost               | $0                                                          | $200-1000/yr per cert           | $0 (operator-managed)                      |
+| Key management     | None (OIDC-keyless) OR per-project ed25519                  | HSM required for EV             | Operator-managed (key-loss = signing-loss) |
+| Transparency log   | **Rekor (public, append-only)** — independent audit surface | Per-CA disclosure (limited)     | None (private trust)                       |
+| Verification chain | Fulcio root → cert tied to identity                         | CA root → cert tied to identity | Pubkey trust web                           |
+| CI integration     | First-class GitHub OIDC                                     | Per-CA tooling                  | Manual key import                          |
+| Existing in CNCF   | Kubernetes / Helm / Tekton / etc. all use it                | (mixed)                         | (legacy)                                   |
+| Container-native   | Yes (designed for it)                                       | Workable                        | Less natural                               |
 
 For Zeta substrate (cluster + ISO + container-shipped substrate): sigstore is the operational fit. Composes with B-0843 (artifact attestation work) + B-0850 (cluster substrate the signed artifacts deploy into) + B-0831 (CI cascade 6 full-install path that consumes signed artifacts).
 
@@ -137,7 +152,7 @@ Order suggestion: 1 → 2 (container path; most-mature sigstore use-case); 3 →
 
 ## Outreach channels (Aaron 2026-05-27)
 
-> *"if you need outreach or to fill out forms you can involve me addison or max"*
+> _"if you need outreach or to fill out forms you can involve me addison or max"_
 
 Sigstore needs zero outreach (open community substrate; no form-filling). The outreach channel applies to future Phase decisions:
 
@@ -174,10 +189,10 @@ Per `.claude/rules/non-coercion-invariant.md` HC-8 — sigstore's keyless OIDC m
 
 Aaron 2026-05-27 conversation arc (immediately after the gh-throttle / B-0852 cred-persistence thread):
 
-1. *"can you use lets encrypt to get code signing certs?"* (asked)
+1. _"can you use lets encrypt to get code signing certs?"_ (asked)
 2. (Otto answered: no, LE explicitly out-of-scope; sigstore/cosign is the free fit; commercial CAs needed only for proprietary OS signing)
-3. *"this sounds good and i can pay those costs for the propritary oses when we need please start on the free stuff and backlog it"*
-4. *"if you need outreach or to fill out forms you can involve me addison or max"*
+3. _"this sounds good and i can pay those costs for the propritary oses when we need please start on the free stuff and backlog it"_
+4. _"if you need outreach or to fill out forms you can involve me addison or max"_
 
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
 

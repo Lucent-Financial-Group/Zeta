@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 846 |
-| Title | ops(0-0-0): post-#101 follow-up v2 LFG forward-sync — Copilot fixes + archives + GH_REPO + fork-naming rename |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T14:43:29Z |
-| Merged at | 2026-04-29T15:12:14Z |
-| Merge commit SHA | `17a26370ea5eb979406a3913d57348d3b647afd8` |
-| Branch | `post-0-0-0-cleanup-followup-v2-lfg-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/846 |
-| Changed files | 8 |
-| Additions / deletions | +582 / -31 |
+| Field                 | Value                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Number                | 846                                                                                                           |
+| Title                 | ops(0-0-0): post-#101 follow-up v2 LFG forward-sync — Copilot fixes + archives + GH_REPO + fork-naming rename |
+| Author                | `AceHack` (human)                                                                                             |
+| State                 | MERGED                                                                                                        |
+| Created at            | 2026-04-29T14:43:29Z                                                                                          |
+| Merged at             | 2026-04-29T15:12:14Z                                                                                          |
+| Merge commit SHA      | `17a26370ea5eb979406a3913d57348d3b647afd8`                                                                    |
+| Branch                | `post-0-0-0-cleanup-followup-v2-lfg-2026-04-29`                                                               |
+| Base branch           | `main`                                                                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/846                                                       |
+| Changed files         | 8                                                                                                             |
+| Additions / deletions | +582 / -31                                                                                                    |
 
 ## Description
 
@@ -34,6 +34,7 @@ LFG forward-sync of AceHack #103 (just merged 14:41:11Z). Step 2 of the canonica
 ## Lineage
 
 This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale base). v2:
+
 - Branched fresh from current LFG main `3785124`
 - Cherry-picked 3 of the 4 v1 commits (skipping `74af746`/`19f8f0b` which is already on LFG via #845)
 - Plus the memory-rename commit `5ba30cc` per Aaron's just-arrived fork-naming correction
@@ -47,7 +48,7 @@ This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale
 
 2. **GH_REPO env var support** (commit `3cd01d2`, cherry-pick of `18c807f`): `tools/pr-preservation/archive-pr.sh` now respects `GH_REPO=<owner>/<name>` for cross-fork archives. Per Aaron 2026-04-29 ask. (Fuller `archive-pr.sh` patch — frontmatter repo: field, auto-route to forks/<fork>/, --out-dir, etc. — tracked as task #314.)
 
-3. **Memory file rename** (commit `96bd246`, cherry-pick of `5ba30cc`): per Aaron 2026-04-29 fork-naming rule (*"we should not use a forks name in the main repo except for the special section for forks data that is unique to them"*). Renamed `memory/feedback_acehack_zeta_*` → `memory/feedback_*` + updated cross-references.
+3. **Memory file rename** (commit `96bd246`, cherry-pick of `5ba30cc`): per Aaron 2026-04-29 fork-naming rule (_"we should not use a forks name in the main repo except for the special section for forks data that is unique to them"_). Renamed `memory/feedback_acehack_zeta_*` → `memory/feedback_*` + updated cross-references.
 
 ## Tasks filed
 
@@ -75,15 +76,15 @@ This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 5 |
-| Resolved threads | 5 |
-| Unresolved threads | 0 |
-| Total review comments | 9 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 5     |
+| Resolved threads                          | 5     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 9     |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -96,10 +97,10 @@ This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T14:45:38Z on `tools/pr-preservation/archive-pr.sh`:131 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Parse GH_REPO with optional host correctly**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Parse GH_REPO with optional host correctly**
+
   `GH_REPO` is documented by GitHub CLI as `[HOST/]OWNER/REPO`, but this new override path only validates “contains a slash” and then later splits as if the value were always `OWNER/REPO`. With `GH_REPO` set to a host-qualified value (for example on GitHub Enterprise), the script derives invalid GraphQL owner/name components and repository fetches fail. This breaks the cross-fork/archive workflow in the exact scenario this env var support is meant to enable; either normalize host-qualified input before splitting or explicitly reject 3-segment values with a clear error.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -115,8 +116,8 @@ This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T14:58:44Z on `tools/pr-preservation/archive-pr.sh`:133 (association: MEMBER)
-    Codex P1 (validation): strict regex validation now in place — 4+ segment values rejected; 3-segment HOST/OWNER/REPO requires HOST to contain a dot; embedded slashes inside owner/repo rejected. Tested locally against 10 edge cases (3 valid + 7 invalid) all returning expected behavior. Commit d263a01.
+- **`AceHack` (human)** at 2026-04-29T14:58:44Z on `tools/pr-preservation/archive-pr.sh`:133 (association: MEMBER)
+  Codex P1 (validation): strict regex validation now in place — 4+ segment values rejected; 3-segment HOST/OWNER/REPO requires HOST to contain a dot; embedded slashes inside owner/repo rejected. Tested locally against 10 edge cases (3 valid + 7 invalid) all returning expected behavior. Commit d263a01.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -128,12 +129,11 @@ This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale
 
 - **`Copilot` (bot)** at 2026-04-29T14:50:52Z on `docs/pr-preservation/acehack-101-drain-log.md`:22 (association: NONE)
   P1: The resolution text claims there’s an existing broken pointer in `memory/MEMORY.md` to `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`, but `memory/MEMORY.md` does not currently reference that filename. Please correct this to avoid baking a false “pre-existing” pointer into the drain log (or point to the actual files that still reference it).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T14:58:48Z on `docs/pr-preservation/acehack-101-drain-log.md`:22 (association: MEMBER)
-    Right catch — in-repo memory/MEMORY.md does NOT have that pointer (only user-scope MEMORY.md does). Drain-log Thread 1 resolution corrected to reflect that, with backfill tracked under task #291. Commit d263a01.
+- **`AceHack` (human)** at 2026-04-29T14:58:48Z on `docs/pr-preservation/acehack-101-drain-log.md`:22 (association: MEMBER)
+  Right catch — in-repo memory/MEMORY.md does NOT have that pointer (only user-scope MEMORY.md does). Drain-log Thread 1 resolution corrected to reflect that, with backfill tracked under task #291. Commit d263a01.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -144,12 +144,12 @@ This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-29T14:50:52Z on `docs/pr-preservation/acehack-101-drain-log.md`:74 (association: NONE)
-  P1: Lesson 3 says `tools/pr-preservation/archive-pr.sh` can’t be pointed at a different repo and suggests workarounds, but this PR *adds* GH_REPO support to that script. Update this lesson to reflect the new behavior (or explicitly scope it as “pre-fix behavior”) so the drain log doesn’t instruct operators to do unnecessary/manual steps.
+  P1: Lesson 3 says `tools/pr-preservation/archive-pr.sh` can’t be pointed at a different repo and suggests workarounds, but this PR _adds_ GH_REPO support to that script. Update this lesson to reflect the new behavior (or explicitly scope it as “pre-fix behavior”) so the drain log doesn’t instruct operators to do unnecessary/manual steps.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T14:58:51Z on `docs/pr-preservation/acehack-101-drain-log.md`:74 (association: MEMBER)
-    Lesson 3 rewritten as pre-fix behavior with the post-fix command (GH_REPO=fork/repo archive-pr.sh N) and forward pointer to task #314 for the canonical fork-routing patch. Commit d263a01.
+- **`AceHack` (human)** at 2026-04-29T14:58:51Z on `docs/pr-preservation/acehack-101-drain-log.md`:74 (association: MEMBER)
+  Lesson 3 rewritten as pre-fix behavior with the post-fix command (GH_REPO=fork/repo archive-pr.sh N) and forward pointer to task #314 for the canonical fork-routing patch. Commit d263a01.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -160,16 +160,16 @@ This is the v2 of the post-#101 follow-up cycle (v1 closed as DIRTY due to stale
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T14:52:00Z on `tools/pr-preservation/archive-pr.sh`:158 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Honor GH_REPO host when calling gh api graphql**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Honor GH_REPO host when calling gh api graphql**
+
   The new `GH_REPO=[HOST/]OWNER/REPO` path parses and discards the host segment, then runs `gh api graphql` without `--hostname`, so host-qualified values still query the default host instead of the intended GHES instance. This means cross-fork archive runs against enterprise repos can fail or target the wrong backend even though the script now advertises host-qualified `GH_REPO` support. GitHub CLI docs for `gh api` note `--hostname` controls target host (default `github.com`), so the parsed host must be propagated when present.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T14:58:53Z on `tools/pr-preservation/archive-pr.sh`:158 (association: MEMBER)
-    Codex P2 fix landed — REPO_HOST captured into env, propagated to both gh api graphql calls via --hostname when set, so 3-segment GH_REPO=HOST/OWNER/REPO actually targets the right backend. Commit d263a01.
+- **`AceHack` (human)** at 2026-04-29T14:58:53Z on `tools/pr-preservation/archive-pr.sh`:158 (association: MEMBER)
+  Codex P2 fix landed — REPO_HOST captured into env, propagated to both gh api graphql calls via --hostname when set, so 3-segment GH_REPO=HOST/OWNER/REPO actually targets the right backend. Commit d263a01.
 
 ## Fix commits (touching thread paths)
 

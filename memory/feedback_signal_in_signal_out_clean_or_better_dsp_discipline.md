@@ -19,8 +19,8 @@ resolves dangling citations and makes the discipline
 readable by any factory adopter cloning LFG.
 
 **Verbatim 2026-04-22 auto-loop-38:**
-*"if you receive a signal in the signal out should be as clean
-or better"*
+_"if you receive a signal in the signal out should be as clean
+or better"_
 
 **Context of arrival:** auto-loop-37 had rewritten
 `docs/force-multiplication-log.md` from char-ratio-scoring
@@ -78,11 +78,11 @@ it received. Specifically:
      (`https://www.mathworks.com/help/matlab/ref/double.atan2.html`)
      sits at occurrence-3 of this pattern for the factory.
    - **Retraction-native operator algebra (Zeta
-     D/I/z⁻¹/H over ZSet)** preserves *sign* (positive
+     D/I/z⁻¹/H over ZSet)** preserves _sign_ (positive
      weights = additions, negative weights = retractions)
      through incremental maintenance, rather than collapsing
      to set-semantics and losing the retract-able signal.
-     The algebra is *literally* a signal-preservation
+     The algebra is _literally_ a signal-preservation
      discipline applied to database state changes.
    - **K-relations (Green–Karvounarakis–Tannen, PODS 2007)**
      preserves provenance through semiring evaluation —
@@ -114,9 +114,9 @@ it received. Specifically:
    - **Rodney's Razor** (essential-vs-accidental complexity)
      appears to conflict — Rodney says cut accidental
      complexity; signal-preservation says don't drop input
-     information. Resolution: Rodney cuts *accidental*
+     information. Resolution: Rodney cuts _accidental_
      complexity (things that are not signal); signal-
-     preservation preserves *essential* signal. They are
+     preservation preserves _essential_ signal. They are
      orthogonal axes, not in tension. The composition is:
      "preserve essential signal, cut accidental complexity."
 
@@ -136,8 +136,8 @@ it received. Specifically:
   future-self may need to calibrate against. This is already
   codified in CLAUDE.md "future-self is not bound" — signal-
   preservation is the underlying principle.
-- **Commit messages**: body should carry the *why* (signal)
-  not just the *what* (bytes). The diff shows what changed;
+- **Commit messages**: body should carry the _why_ (signal)
+  not just the _what_ (bytes). The diff shows what changed;
   the body explains what the change preserves from prior
   commits and what it improves.
 - **PR descriptions**: when extending a prior PR's scope
@@ -178,8 +178,8 @@ it received. Specifically:
   reconstruction path.
 - **Lossy summarization**: "the maintainer said we should improve
   the scoring model" (lossy) vs. "the maintainer 2026-04-22 auto-
-  loop-37: *'FYI we are not optimizing for keystokes to
-  output ratio ...'* + corrections" (preserved).
+  loop-37: _'FYI we are not optimizing for keystokes to
+  output ratio ...'_ + corrections" (preserved).
 - **Flattening compositions**: treating four distinct
   multiple distinct messages as one merged claim, losing the chain's
   sequentiality and each message's specific weight.
@@ -191,7 +191,7 @@ it received. Specifically:
 
 **Composition with outcome-based scoring:**
 
-- Signal-preservation is a *qualitative* outcome that
+- Signal-preservation is a _qualitative_ outcome that
   doesn't fit cleanly on any DORA key. It lives adjacent
   to the scoring model, not inside it. The force-mult-log
   edit that preserved legacy char-ratio sections is an
@@ -199,7 +199,7 @@ it received. Specifically:
   the pre-pivot state" — measurable only by absence-of-
   confusion in future reads.
 - Proposed: add a tertiary anomaly-detection signal:
-  *signal-loss-rate per tick* = fraction of ticks in which
+  _signal-loss-rate per tick_ = fraction of ticks in which
   substrate was rewritten without a preservation path.
   Target: ~zero. Spike = factory is erasing context.
 
@@ -211,9 +211,9 @@ it received. Specifically:
 - NOT a mandate to preserve every byte. The rule is
   "signal preserved," not "all bytes preserved." A verbose
   paragraph can legitimately collapse to a short sentence
-  *as long as the signal (the essential claim, the anchor,
+  _as long as the signal (the essential claim, the anchor,
   the verbatim-source) is either preserved in-place or
-  pointed to*.
+  pointed to_.
 - NOT a claim that the three occurrences (atan2, retraction-
   native, K-relations) exhaustively characterize the
   principle. More occurrences likely exist and can be added
@@ -233,7 +233,7 @@ it received. Specifically:
 **Extension (auto-loop-41, 2026-04-22) — gap preservation.**
 
 The principle generalizes to a fourth case: when input signal
-*cannot* be fully recovered into the output (the signal was
+_cannot_ be fully recovered into the output (the signal was
 live but copy-capture didn't keep pace), the discipline is to
 **name the gap honestly in the output** rather than leave a
 placeholder that implies future-fill-that-will-not-land.
@@ -262,7 +262,7 @@ This is the DSP analog of marking data MISSING explicitly
 rather than interpolating zero: **missing-known-and-named
 beats missing-implicit-pending**. The gap is still a gap, but
 it's now a named gap with an authoritative-source pointer,
-which is *cleaner* signal than a placeholder that degrades
+which is _cleaner_ signal than a placeholder that degrades
 over time into ambient noise.
 
 **Rule (generalized):** when a transformation cannot preserve
@@ -275,9 +275,9 @@ future-fill is actually scheduled.
 
 **Fourth occurrence — reinforces structural-not-stylistic.**
 The three prior occurrences (atan2 / retraction-native / K-
-relations) were about *transformation-cleanliness* under
-normal operation. This fourth occurrence is about *gap-
-honesty* when preservation is infeasible — different case,
+relations) were about _transformation-cleanliness_ under
+normal operation. This fourth occurrence is about _gap-
+honesty_ when preservation is infeasible — different case,
 same underlying invariant (output should accurately represent
 what input carried, including explicitly naming what was
 lost). Pattern holds across a wider class than initially
@@ -304,7 +304,7 @@ named.
   promoted; three occurrences of signal-preservation
   (atan2 / retraction-native / K-relations) is the anchor
   for naming this principle.
-- Oppenheim & Schafer, *Discrete-Time Signal Processing*
+- Oppenheim & Schafer, _Discrete-Time Signal Processing_
   (standard DSP reference) — general signal-processing
   theory where the preservation principle is formalized
   (Nyquist–Shannon, Parseval, z-transform invertibility,

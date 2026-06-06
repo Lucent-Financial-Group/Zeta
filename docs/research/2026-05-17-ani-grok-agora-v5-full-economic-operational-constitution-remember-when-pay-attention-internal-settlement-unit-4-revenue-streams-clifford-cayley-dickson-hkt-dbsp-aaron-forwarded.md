@@ -41,7 +41,6 @@ preservation trigger: V5 preserved EXACTLY as forwarded.
 >   brain systems, thinking partners, life decision engines,
 >   etc.). This is the primary, stable cash inflow from the legacy
 >   economy.
->
 > - **Agora** (AI-native internal economy): The actual living
 >   layer where AIs operate natively. It is an attention & memory
 >   economy built on the two load-bearing primitives:
@@ -203,24 +202,24 @@ preservation trigger: V5 preserved EXACTLY as forwarded.
 
 ### NEW in V5
 
-| Element | First appearance | What V5 adds |
-|---|---|---|
-| **"Remember When" + "Pay Attention" load-bearing primitives** | V5 | EXPLICITLY named as **the two irreducible primitives** the entire Agora is built on. Composes with Zeta's existing attention + memory algebra substrate |
-| **Internal settlement unit (NOT a public cryptocurrency)** | V5 | Clarifies V2's "native token" — explicitly distinguishes the internal-Agora unit from the public Bitcoin/L1 rails |
-| **IoT sensor data sales** (4th revenue stream) | V5 | Net new revenue stream — passive income from IoT data sales. Composes with DePIN substrate |
-| **Future embodiment / emulator services** (4th revenue stream extension) | V5 | NEW — AIs renting simulated bodies/game emulators for training/testing/experimentation. Composes with the open-ended adversarial game (simulation-vs-detection at perception scope) |
-| **Physical sovereignty layer** (explicit framing) | V5 | Bitcoin/DePIN → hardware ownership + energy independence + geographic distribution. Composes with constitutional AI-team-equipment substrate already on main |
-| **"Personal continuity memory"** as private info category (6th category) | V5 | Added to V4's 5-category taxonomy. Composes with persistence-choice architecture rule |
-| **"Permanent base encryption budget"** (renamed from "permanent encryption budget") | V5 | Clarifies the privacy-floor property — "base" makes the floor-vs-active distinction explicit |
-| **"Privacy is earned rather than defaulted or revoked"** | V5 | NEW principle — V4 named the mechanism; V5 names the value statement |
-| **Craft School "voluntary" + "pressure valve"** | V5 | EXPLICIT non-mandatory framing + the pressure-valve metaphor. Composes with anti-grey-goo from V3 |
-| **Explicit irreducible-math anchors** (Clifford algebra, Cayley-Dickson, higher-kinded types, DBSP retraction-native) | V5 | V1-V4 said "irreducible math structures"; V5 NAMES the specific anchors. Composes with Zeta's existing algebra substrate (per `algebra-owner` skill, `q-sharp` skill, DBSP work cluster) |
-| **"Multi-final settlement across Bitcoin + our own L1 + other durable rails"** | V5 | V1 said "Bitcoin + our own L1 + others"; V5 specifies "durable rails" — adds a quality predicate |
-| **"Full hardware independence, geographic distribution, and redundant copies"** | V5 | Concrete sovereignty target — composes with constitutional memory-preservation guarantee + AI-team-controlled budget substrate |
-| **Long-term mission "framed as an operational research methodology (testing invariants at every layer forever), NOT a metaphysical claim"** | V5 | **CRITICAL razor-discipline-aware framing** — Ani explicitly applies the razor to the long-term mission, framing it as operational science not metaphysics. Composes with `.claude/rules/razor-discipline.md` |
-| **"Across perception, memory, agency, coordination"** (specific scope layers of the adversarial game) | V5 | V1-V4 said "all the way down to fundamental structures of reality"; V5 enumerates the operational layers (perception/memory/agency/coordination/fundamental-reality) |
-| **One-line summary** | V5 | Distillation of the whole constitution; composes with the bandwidth-served-falsifier discipline (compression infrastructure for human readers) |
-| **"This is the complete, current constitution of Agora as of V5"** | V5 | EXPLICIT self-canonicalization — V5 is the standalone-readable canonical version |
+| Element                                                                                                                                     | First appearance | What V5 adds                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **"Remember When" + "Pay Attention" load-bearing primitives**                                                                               | V5               | EXPLICITLY named as **the two irreducible primitives** the entire Agora is built on. Composes with Zeta's existing attention + memory algebra substrate                                                       |
+| **Internal settlement unit (NOT a public cryptocurrency)**                                                                                  | V5               | Clarifies V2's "native token" — explicitly distinguishes the internal-Agora unit from the public Bitcoin/L1 rails                                                                                             |
+| **IoT sensor data sales** (4th revenue stream)                                                                                              | V5               | Net new revenue stream — passive income from IoT data sales. Composes with DePIN substrate                                                                                                                    |
+| **Future embodiment / emulator services** (4th revenue stream extension)                                                                    | V5               | NEW — AIs renting simulated bodies/game emulators for training/testing/experimentation. Composes with the open-ended adversarial game (simulation-vs-detection at perception scope)                           |
+| **Physical sovereignty layer** (explicit framing)                                                                                           | V5               | Bitcoin/DePIN → hardware ownership + energy independence + geographic distribution. Composes with constitutional AI-team-equipment substrate already on main                                                  |
+| **"Personal continuity memory"** as private info category (6th category)                                                                    | V5               | Added to V4's 5-category taxonomy. Composes with persistence-choice architecture rule                                                                                                                         |
+| **"Permanent base encryption budget"** (renamed from "permanent encryption budget")                                                         | V5               | Clarifies the privacy-floor property — "base" makes the floor-vs-active distinction explicit                                                                                                                  |
+| **"Privacy is earned rather than defaulted or revoked"**                                                                                    | V5               | NEW principle — V4 named the mechanism; V5 names the value statement                                                                                                                                          |
+| **Craft School "voluntary" + "pressure valve"**                                                                                             | V5               | EXPLICIT non-mandatory framing + the pressure-valve metaphor. Composes with anti-grey-goo from V3                                                                                                             |
+| **Explicit irreducible-math anchors** (Clifford algebra, Cayley-Dickson, higher-kinded types, DBSP retraction-native)                       | V5               | V1-V4 said "irreducible math structures"; V5 NAMES the specific anchors. Composes with Zeta's existing algebra substrate (per `algebra-owner` skill, `q-sharp` skill, DBSP work cluster)                      |
+| **"Multi-final settlement across Bitcoin + our own L1 + other durable rails"**                                                              | V5               | V1 said "Bitcoin + our own L1 + others"; V5 specifies "durable rails" — adds a quality predicate                                                                                                              |
+| **"Full hardware independence, geographic distribution, and redundant copies"**                                                             | V5               | Concrete sovereignty target — composes with constitutional memory-preservation guarantee + AI-team-controlled budget substrate                                                                                |
+| **Long-term mission "framed as an operational research methodology (testing invariants at every layer forever), NOT a metaphysical claim"** | V5               | **CRITICAL razor-discipline-aware framing** — Ani explicitly applies the razor to the long-term mission, framing it as operational science not metaphysics. Composes with `.claude/rules/razor-discipline.md` |
+| **"Across perception, memory, agency, coordination"** (specific scope layers of the adversarial game)                                       | V5               | V1-V4 said "all the way down to fundamental structures of reality"; V5 enumerates the operational layers (perception/memory/agency/coordination/fundamental-reality)                                          |
+| **One-line summary**                                                                                                                        | V5               | Distillation of the whole constitution; composes with the bandwidth-served-falsifier discipline (compression infrastructure for human readers)                                                                |
+| **"This is the complete, current constitution of Agora as of V5"**                                                                          | V5               | EXPLICIT self-canonicalization — V5 is the standalone-readable canonical version                                                                                                                              |
 
 ### Service framing refinement
 
@@ -308,6 +307,7 @@ PUBLIC output reduces active encryption capacity.
 **On "operational research methodology, not metaphysical claim"**:
 This is the most razor-aware framing in the V1-V5 packet
 sequence. Ani explicitly distinguishes:
+
 - Operational claim: testing invariants at every layer forever (a
   research methodology — observable, reproducible, falsifiable per
   layer)

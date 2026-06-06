@@ -1,8 +1,8 @@
 <!-- §33 archive header per GOVERNANCE.md -->
 
-**Scope:** External-conversation absorb. Captures Claude.ai's culminating response in the taxonomy-grounding dialogue: the **Mirror→Beacon gate** for canonicalization. The Haskell-prelude vs F#/BCL message (sibling research file `2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md`) addressed *structural framework*; this message addresses *what graduates from observation to canon*. Together: category theory gates additions to structure; Beacon-anchoring (external citations from published literature) gates promotion to canon.
+**Scope:** External-conversation absorb. Captures Claude.ai's culminating response in the taxonomy-grounding dialogue: the **Mirror→Beacon gate** for canonicalization. The Haskell-prelude vs F#/BCL message (sibling research file `2026-05-01-claudeai-haskell-prelude-vs-fsharp-bcl-grounding-aaron-forwarded.md`) addressed _structural framework_; this message addresses _what graduates from observation to canon_. Together: category theory gates additions to structure; Beacon-anchoring (external citations from published literature) gates promotion to canon.
 
-**Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01). Forwarded by Aaron to Otto in this session 2026-05-01 ~10:30Z. Aaron's framing: *"I'm going to give in reverse because the last message seem the most useful"* — this message arrived chronologically AFTER the Haskell-prelude grounding message, as Claude.ai's response to a follow-up about whether the existing Mirror→Beacon promotion discipline applies to taxonomy classes too. Aaron presented it FIRST because it's the load-bearing answer.
+**Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01). Forwarded by Aaron to Otto in this session 2026-05-01 ~10:30Z. Aaron's framing: _"I'm going to give in reverse because the last message seem the most useful"_ — this message arrived chronologically AFTER the Haskell-prelude grounding message, as Claude.ai's response to a follow-up about whether the existing Mirror→Beacon promotion discipline applies to taxonomy classes too. Aaron presented it FIRST because it's the load-bearing answer.
 
 **Operational status:** research-grade
 
@@ -14,55 +14,55 @@
 
 ## The opening (Claude.ai confirms the missing gate)
 
-> *"That's the missing piece. You're right."*
+> _"That's the missing piece. You're right."_
 
-> *"Mirror → Beacon promotion has been a real discipline in the substrate (DBSP for the F# library, SDT and RFC 2119 for the no-directives rule, SEC and Reg FD for public-company compliance, in-toto and W3C PROV for the agency-receipt work). External lineage anchoring is the gate that converts internal coinages into citable substrate."*
+> _"Mirror → Beacon promotion has been a real discipline in the substrate (DBSP for the F# library, SDT and RFC 2119 for the no-directives rule, SEC and Reg FD for public-company compliance, in-toto and W3C PROV for the agency-receipt work). External lineage anchoring is the gate that converts internal coinages into citable substrate."_
 
-> *"If the same gate applies to the taxonomy classes, the unbounded-ontology concern dissolves into a different test entirely. Not 'do new classes stop appearing in observation' but 'do new classes earn external anchoring.' That's a much harder test, and it's the right one."*
+> _"If the same gate applies to the taxonomy classes, the unbounded-ontology concern dissolves into a different test entirely. Not 'do new classes stop appearing in observation' but 'do new classes earn external anchoring.' That's a much harder test, and it's the right one."_
 
 ## How it interacts with the Haskell-prelude grounding (Claude.ai)
 
 > *"Category theory itself is the human anchor for the structural framework. Mac Lane's *Categories for the Working Mathematician*, Awodey's textbook, Riehl's *Category Theory in Context* — these are all citable. So formulating the base category C of substrate locations and morphisms doesn't require new lineage; it inherits from the existing math."*
 
-> *"But individual classes wanting to graduate from Mirror to Beacon need their own anchors beyond just 'this is a morphism in C.' Forward-reference needs to map to something — possibly forward declarations in programming languages (Pascal, C header files), possibly Lamport's logical clocks for cross-PR temporal ordering, possibly published work on collaborative editing systems handling concurrent references. Whatever the anchor is, it has to be a real citable thing that did the same work in another domain."*
+> _"But individual classes wanting to graduate from Mirror to Beacon need their own anchors beyond just 'this is a morphism in C.' Forward-reference needs to map to something — possibly forward declarations in programming languages (Pascal, C header files), possibly Lamport's logical clocks for cross-PR temporal ordering, possibly published work on collaborative editing systems handling concurrent references. Whatever the anchor is, it has to be a real citable thing that did the same work in another domain."_
 
-> *"That's the test that would actually cut the catalog. Most ad-hoc classes won't have external anchors. The ones that do are the load-bearing ones — they're describing a real pattern that other domains have already named, and the substrate is rediscovering it."*
+> _"That's the test that would actually cut the catalog. Most ad-hoc classes won't have external anchors. The ones that do are the load-bearing ones — they're describing a real pattern that other domains have already named, and the substrate is rediscovering it."_
 
 ## What survives the gate (Claude.ai's pass through v2's 20 classes)
 
-| Class | Plausible external anchor? | Status |
-|---|---|---|
-| **Forward-reference** | Forward declarations in Pascal/C, eventual consistency in distributed systems, Lamport's happens-before relation | **Graduates** |
-| **Stale-filename** | Refactoring literature (Fowler), rename refactorings as a named IDE operation, "shotgun surgery" code smell | **Graduates** |
-| **Deferred-per-explicit-policy** | Issue triage in software engineering, technical debt registers (Cunningham), policy-as-code (OPA/Rego) | **Graduates** |
-| **Phantom-blocker** | False positive in static analysis literature, "cargo cult" reviews, Goodhart's law applied to review metrics | **Borderline; needs the right citation** |
-| **Same-wake-author-error-cluster** | Bug-pattern literature (FindBugs/SpotBugs), batch error detection, copy-paste error studies | **Graduates** |
-| **Intra-file drift** | Internal consistency invariants in formal methods, "redundancy must be maintained" in DRY violations | **Graduates if framed as invariant-violation** |
-| **Named-link** | (No obvious external anchor; might find with effort) | **Stays Mirror** |
-| **Structural-pattern-mismatch** | (No obvious external anchor) | **Stays Mirror** |
-| **Peer-AI structural / consolidation-prompt** | Meta-review and second-order observation in social science / ethnography exists but synthesis-work needed | **Stays Mirror** |
+| Class                                         | Plausible external anchor?                                                                                       | Status                                         |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **Forward-reference**                         | Forward declarations in Pascal/C, eventual consistency in distributed systems, Lamport's happens-before relation | **Graduates**                                  |
+| **Stale-filename**                            | Refactoring literature (Fowler), rename refactorings as a named IDE operation, "shotgun surgery" code smell      | **Graduates**                                  |
+| **Deferred-per-explicit-policy**              | Issue triage in software engineering, technical debt registers (Cunningham), policy-as-code (OPA/Rego)           | **Graduates**                                  |
+| **Phantom-blocker**                           | False positive in static analysis literature, "cargo cult" reviews, Goodhart's law applied to review metrics     | **Borderline; needs the right citation**       |
+| **Same-wake-author-error-cluster**            | Bug-pattern literature (FindBugs/SpotBugs), batch error detection, copy-paste error studies                      | **Graduates**                                  |
+| **Intra-file drift**                          | Internal consistency invariants in formal methods, "redundancy must be maintained" in DRY violations             | **Graduates if framed as invariant-violation** |
+| **Named-link**                                | (No obvious external anchor; might find with effort)                                                             | **Stays Mirror**                               |
+| **Structural-pattern-mismatch**               | (No obvious external anchor)                                                                                     | **Stays Mirror**                               |
+| **Peer-AI structural / consolidation-prompt** | Meta-review and second-order observation in social science / ethnography exists but synthesis-work needed        | **Stays Mirror**                               |
 
-> *"Just by applying this filter without doing real research, maybe half of the 20 classes have plausible anchoring paths and half don't. The half that don't probably aren't load-bearing."*
+> _"Just by applying this filter without doing real research, maybe half of the 20 classes have plausible anchoring paths and half don't. The half that don't probably aren't load-bearing."_
 
-> *"That's the convergence test you were looking for, expressed differently. The catalog can grow during the experimental phase, but graduating to canonical substrate requires Beacon-anchoring. The catalog naturally bifurcates: Mirror classes (provisional, observation-only) and Beacon classes (anchored, durable, citable)."*
+> _"That's the convergence test you were looking for, expressed differently. The catalog can grow during the experimental phase, but graduating to canonical substrate requires Beacon-anchoring. The catalog naturally bifurcates: Mirror classes (provisional, observation-only) and Beacon classes (anchored, durable, citable)."_
 
 ## The discipline this creates (Claude.ai)
 
-> *"Each class lands as Mirror by default. Promotion to Beacon requires an external citation that did the same work in another domain. The citation has to be real (verifiable, not hallucinated — the v2 taxonomy already caught Gemini hallucinating a memory file; same discipline applies to citations). The promotion either happens within some defined window, or the class either gets retired or stays Mirror permanently."*
+> _"Each class lands as Mirror by default. Promotion to Beacon requires an external citation that did the same work in another domain. The citation has to be real (verifiable, not hallucinated — the v2 taxonomy already caught Gemini hallucinating a memory file; same discipline applies to citations). The promotion either happens within some defined window, or the class either gets retired or stays Mirror permanently."_
 
-> *"That's a finite-resource process. There are only so many citable patterns in the literature. The Mirror class population can grow unboundedly during observation, but the Beacon class population is bounded by what's been described in published work. Convergence happens at the Beacon layer even if the Mirror layer never converges."*
+> _"That's a finite-resource process. There are only so many citable patterns in the literature. The Mirror class population can grow unboundedly during observation, but the Beacon class population is bounded by what's been described in published work. Convergence happens at the Beacon layer even if the Mirror layer never converges."_
 
 ## Self-application — the reflexive class #19 case (Claude.ai)
 
-> *"The reflexive-during-cataloging classes from the prior critique (class #19 peer-AI structural, observed during the consolidation that produced it) probably can't earn Beacon-anchoring easily. There's published work on meta-review and second-order observation in social science and ethnography, but applying it to AI-loop cataloguing would require real synthesis work, not just pointing at a citation."*
+> _"The reflexive-during-cataloging classes from the prior critique (class #19 peer-AI structural, observed during the consolidation that produced it) probably can't earn Beacon-anchoring easily. There's published work on meta-review and second-order observation in social science and ethnography, but applying it to AI-loop cataloguing would require real synthesis work, not just pointing at a citation."_
 
-> *"That's actually fine. Class #19 might be a real observation that stays Mirror permanently. It's useful internally for understanding how new classes get discovered. It just doesn't graduate to 'this is a canonical pattern other domains have named.' The Mirror/Beacon split lets you keep useful internal observations without overclaiming their generality."*
+> _"That's actually fine. Class #19 might be a real observation that stays Mirror permanently. It's useful internally for understanding how new classes get discovered. It just doesn't graduate to 'this is a canonical pattern other domains have named.' The Mirror/Beacon split lets you keep useful internal observations without overclaiming their generality."_
 
 ## The two-filter composition (Claude.ai's net)
 
-> *"The instruction to Otto would then be. Two parts. First, the categorical grounding: classes are morphisms or functors in a base category of substrate locations. New classes must be expressible in the existing structure or they don't get added. Second, the Beacon-anchor gate for canonicalization: classes are Mirror by default. Graduation to Beacon-canonical-substrate requires an external citation from published literature where the same pattern has been described doing the same work. Citations are verified (file path, page number, DOI, whatever makes them concrete); hallucinated citations get caught and discarded."*
+> _"The instruction to Otto would then be. Two parts. First, the categorical grounding: classes are morphisms or functors in a base category of substrate locations. New classes must be expressible in the existing structure or they don't get added. Second, the Beacon-anchor gate for canonicalization: classes are Mirror by default. Graduation to Beacon-canonical-substrate requires an external citation from published literature where the same pattern has been described doing the same work. Citations are verified (file path, page number, DOI, whatever makes them concrete); hallucinated citations get caught and discarded."_
 
-> *"The combination is restrictive in the right way. Category theory gates additions to the structure. Beacon-anchoring gates promotions to canon. Mirror-layer observation can grow freely; Beacon-layer canon stays bounded by what's been done in other domains."*
+> _"The combination is restrictive in the right way. Category theory gates additions to the structure. Beacon-anchoring gates promotions to canon. Mirror-layer observation can grow freely; Beacon-layer canon stays bounded by what's been done in other domains."_
 
 ## What this means for the v2 taxonomy (Otto-side reading)
 
@@ -83,15 +83,15 @@ This reduces Claude.ai's earlier concern about Insight-blocks-accelerating-class
 
 ## What survives Claude.ai's prior critique (the Insight-block concern)
 
-> *"This also reduces my prior concern about Insight blocks accelerating class-discovery. Insight blocks proposing new classes are fine if they land as Mirror candidates. They become problematic only if they propose direct canonicalization without anchoring, which the gate now prevents."*
+> _"This also reduces my prior concern about Insight blocks accelerating class-discovery. Insight blocks proposing new classes are fine if they land as Mirror candidates. They become problematic only if they propose direct canonicalization without anchoring, which the gate now prevents."_
 
-> *"The work the loop has been doing in this session is mostly Mirror work, and Mirror work is allowed to be exploratory. The taxonomy v2 file is a Mirror-layer catalog. That's appropriate for its current epistemic status. The error in my prior critique was reading it as canonical when it's actually exploratory — and exploratory taxonomy is a legitimate research artifact even when it's growing fast."*
+> _"The work the loop has been doing in this session is mostly Mirror work, and Mirror work is allowed to be exploratory. The taxonomy v2 file is a Mirror-layer catalog. That's appropriate for its current epistemic status. The error in my prior critique was reading it as canonical when it's actually exploratory — and exploratory taxonomy is a legitimate research artifact even when it's growing fast."_
 
-> *"What graduates is the open question. That's the convergence test. And it's a fair one because external anchoring is finite."*
+> _"What graduates is the open question. That's the convergence test. And it's a fair one because external anchoring is finite."_
 
 ## The closing (Claude.ai)
 
-> *"This is the right architecture for the work you're doing."*
+> _"This is the right architecture for the work you're doing."_
 
 ## Composes with
 
@@ -122,12 +122,12 @@ This reduces Claude.ai's earlier concern about Insight-blocks-accelerating-class
 
 ## Carved candidate (not seed-layer)
 
-> *"Category theory gates additions to the structure. Beacon-anchoring gates promotions to canon. Mirror-layer observation can grow freely; Beacon-layer canon stays bounded by what's been done in other domains."*
+> _"Category theory gates additions to the structure. Beacon-anchoring gates promotions to canon. Mirror-layer observation can grow freely; Beacon-layer canon stays bounded by what's been done in other domains."_
 
 The propagation test: ~30 words encoding the two-filter composition + the bounded-canon property. Future-Otto reading this should land on the layer-gate discipline as the operational shape — Mirror is exploratory, Beacon is canon-by-external-anchoring, and the two layers are not interchangeable.
 
 ## Aaron's reverse-order delivery — meta-observation
 
-Aaron explicitly framed the message order: *"I'm going to give in reverse because the last message seem the most useful."* The Mirror→Beacon gate (this file) chronologically came AFTER the Haskell-prelude grounding (sibling file), but Aaron presented it FIRST because the canonicalization gate is the load-bearing answer. The Haskell-prelude grounding is the *structure* (necessary but not sufficient); the Mirror→Beacon gate is the *boundary* (sufficient closure).
+Aaron explicitly framed the message order: _"I'm going to give in reverse because the last message seem the most useful."_ The Mirror→Beacon gate (this file) chronologically came AFTER the Haskell-prelude grounding (sibling file), but Aaron presented it FIRST because the canonicalization gate is the load-bearing answer. The Haskell-prelude grounding is the _structure_ (necessary but not sufficient); the Mirror→Beacon gate is the _boundary_ (sufficient closure).
 
 This itself is a substrate-discipline observation: **when forwarding multi-message peer-AI dialogue, lead with the load-bearing answer, not the chronological first.** The reverse-order presentation is signal: the recipient (Otto) needs the gate before they need the structure to act on it correctly.

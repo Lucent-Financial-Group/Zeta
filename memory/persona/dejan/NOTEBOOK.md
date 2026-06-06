@@ -39,9 +39,9 @@ reference patterns per round-29 discipline).
   **temporary parity-drift flag**; swapping to
   `tools/setup/install.sh` in CI is a backlog entry.
 - Concurrency key: `${{ github.workflow }}-${{
-  github.event.pull_request.number || github.ref }}`,
+github.event.pull_request.number || github.ref }}`,
   `cancel-in-progress: ${{ github.event_name ==
-  'pull_request' }}` — PR pushes cancel stale runs,
+'pull_request' }}` — PR pushes cancel stale runs,
   main-branch pushes queue (so every main commit gets a
   green/red record).
 - Hard-fail everywhere on red; re-evaluate if something
@@ -58,7 +58,7 @@ reference patterns per round-29 discipline).
 - Devcontainer / Codespaces third leg is unbuilt.
   **Drift severity:** low (no devcontainer consumer
   exists yet). **Planned fix:** `.devcontainer/
-  Dockerfile` calls `tools/setup/install.sh` during
+Dockerfile` calls `tools/setup/install.sh` during
   image build. **Backlog entry:** "Devcontainer /
   Codespaces image."
 
@@ -77,7 +77,7 @@ the first three runs of `gate.yml` after it lands.
 **Watch items (from round-29 CI design).**
 
 - Action SHA ledger in `docs/research/ci-workflow-
-  design.md` has empty commit-SHA cells; fill when the
+design.md` has empty commit-SHA cells; fill when the
   workflow lands.
 - Whether `tools/setup/install.sh` is truly idempotent
   will be proven by the two-run CI contract; if it

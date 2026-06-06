@@ -27,12 +27,30 @@ export type EnrichDeps = {
   createId: (prefix: string) => string;
 };
 
-function edgeEvent(deps: EnrichDeps, kind: OrgEventKind, edge: GraphEdge, from: GraphConfidence, to: GraphConfidence, by: string, decision: string): OrgEvent {
+function edgeEvent(
+  deps: EnrichDeps,
+  kind: OrgEventKind,
+  edge: GraphEdge,
+  from: GraphConfidence,
+  to: GraphConfidence,
+  by: string,
+  decision: string,
+): OrgEvent {
   return {
-    id: deps.createId("evt"), kind, occurredAt: new Date(deps.now()).toISOString(),
-    organizationId: deps.organizationId, actorHatId: by, subjectId: edge.edgeId, fromState: from, toState: to, decision,
-    supervisorChain: [], evidenceRefs: [`${edge.provenance.source}#${edge.provenance.method}`],
-    correlationId: edge.edgeId, causationId: edge.edgeId, traceId: edge.edgeId,
+    id: deps.createId("evt"),
+    kind,
+    occurredAt: new Date(deps.now()).toISOString(),
+    organizationId: deps.organizationId,
+    actorHatId: by,
+    subjectId: edge.edgeId,
+    fromState: from,
+    toState: to,
+    decision,
+    supervisorChain: [],
+    evidenceRefs: [`${edge.provenance.source}#${edge.provenance.method}`],
+    correlationId: edge.edgeId,
+    causationId: edge.edgeId,
+    traceId: edge.edgeId,
   };
 }
 
@@ -42,23 +60,45 @@ function edgeEvent(deps: EnrichDeps, kind: OrgEventKind, edge: GraphEdge, from: 
  * idempotent. Optionally records the ChangeSet that motivated it.
  */
 export function inferEdge(
-  args: { fromNodeId: string; kind: GraphEdgeKind; toNodeId: string; agent: string; rationale: string; changeSetId?: string },
+  args: {
+    fromNodeId: string;
+    kind: GraphEdgeKind;
+    toNodeId: string;
+    agent: string;
+    rationale: string;
+    changeSetId?: string;
+  },
   deps: EnrichDeps,
 ): { edge: GraphEdge; event: OrgEvent } {
   const nowIso = new Date(deps.now()).toISOString();
   const provenance: GraphProvenance = { source: `agent:${args.agent}`, method: "reasoned", observedAt: nowIso };
   const edge: GraphEdge = {
     edgeId: graphEdgeId(deps.organizationId, args.fromNodeId, args.kind, args.toNodeId),
-    organizationId: deps.organizationId, fromNodeId: args.fromNodeId, toNodeId: args.toNodeId, kind: args.kind,
-    confidence: GraphConfidence.Inferred, provenance,
+    organizationId: deps.organizationId,
+    fromNodeId: args.fromNodeId,
+    toNodeId: args.toNodeId,
+    kind: args.kind,
+    confidence: GraphConfidence.Inferred,
+    provenance,
     ...(args.changeSetId !== undefined ? { changeSetId: args.changeSetId } : {}),
-    createdAt: nowIso, updatedAt: nowIso, version: 1,
+    createdAt: nowIso,
+    updatedAt: nowIso,
+    version: 1,
   };
   const event: OrgEvent = {
-    id: deps.createId("evt"), kind: OrgEventKind.GraphEdgeInferred, occurredAt: nowIso,
-    organizationId: deps.organizationId, actorHatId: args.agent, subjectId: edge.edgeId, toState: GraphConfidence.Inferred,
-    decision: `inferred ${args.kind}: ${args.rationale}`, supervisorChain: [], evidenceRefs: [`agent:${args.agent}`],
-    correlationId: edge.edgeId, causationId: edge.edgeId, traceId: edge.edgeId,
+    id: deps.createId("evt"),
+    kind: OrgEventKind.GraphEdgeInferred,
+    occurredAt: nowIso,
+    organizationId: deps.organizationId,
+    actorHatId: args.agent,
+    subjectId: edge.edgeId,
+    toState: GraphConfidence.Inferred,
+    decision: `inferred ${args.kind}: ${args.rationale}`,
+    supervisorChain: [],
+    evidenceRefs: [`agent:${args.agent}`],
+    correlationId: edge.edgeId,
+    causationId: edge.edgeId,
+    traceId: edge.edgeId,
   };
   return { edge, event };
 }
@@ -73,12 +113,26 @@ export type PromoteResult =
  */
 export function promoteConfidence(edge: GraphEdge, to: GraphConfidence, by: string, deps: EnrichDeps): PromoteResult {
   if (!isLegalConfidencePromotion(edge.confidence, to)) {
-    return { ok: false, reason: `illegal promotion ${edge.confidence} → ${to}`, legal: legalConfidencePromotions(edge.confidence) };
+    return {
+      ok: false,
+      reason: `illegal promotion ${edge.confidence} → ${to}`,
+      legal: legalConfidencePromotions(edge.confidence),
+    };
   }
   const from = edge.confidence;
-  const next: GraphEdge = { ...edge, confidence: to, updatedAt: new Date(deps.now()).toISOString(), version: edge.version + 1 };
-  const kind = to === GraphConfidence.Retracted ? OrgEventKind.GraphEdgeRetracted : OrgEventKind.GraphConfidencePromoted;
-  return { ok: true, edge: next, event: edgeEvent(deps, kind, next, from, to, by, `confidence ${from} → ${to} by ${by}`) };
+  const next: GraphEdge = {
+    ...edge,
+    confidence: to,
+    updatedAt: new Date(deps.now()).toISOString(),
+    version: edge.version + 1,
+  };
+  const kind =
+    to === GraphConfidence.Retracted ? OrgEventKind.GraphEdgeRetracted : OrgEventKind.GraphConfidencePromoted;
+  return {
+    ok: true,
+    edge: next,
+    event: edgeEvent(deps, kind, next, from, to, by, `confidence ${from} → ${to} by ${by}`),
+  };
 }
 
 /**
@@ -87,9 +141,31 @@ export function promoteConfidence(edge: GraphEdge, to: GraphConfidence, by: stri
  */
 export function retractEdge(edge: GraphEdge, reason: string, by: string, deps: EnrichDeps): PromoteResult {
   if (!isLegalConfidencePromotion(edge.confidence, GraphConfidence.Retracted)) {
-    return { ok: false, reason: `cannot retract from ${edge.confidence}`, legal: legalConfidencePromotions(edge.confidence) };
+    return {
+      ok: false,
+      reason: `cannot retract from ${edge.confidence}`,
+      legal: legalConfidencePromotions(edge.confidence),
+    };
   }
   const from = edge.confidence;
-  const next: GraphEdge = { ...edge, confidence: GraphConfidence.Retracted, retractionReason: reason, updatedAt: new Date(deps.now()).toISOString(), version: edge.version + 1 };
-  return { ok: true, edge: next, event: edgeEvent(deps, OrgEventKind.GraphEdgeRetracted, next, from, GraphConfidence.Retracted, by, `retracted: ${reason}`) };
+  const next: GraphEdge = {
+    ...edge,
+    confidence: GraphConfidence.Retracted,
+    retractionReason: reason,
+    updatedAt: new Date(deps.now()).toISOString(),
+    version: edge.version + 1,
+  };
+  return {
+    ok: true,
+    edge: next,
+    event: edgeEvent(
+      deps,
+      OrgEventKind.GraphEdgeRetracted,
+      next,
+      from,
+      GraphConfidence.Retracted,
+      by,
+      `retracted: ${reason}`,
+    ),
+  };
 }

@@ -44,34 +44,66 @@ export type ServiceManifest = {
   testedBy?: readonly string[]; // test target keys
 };
 
-function node(deps: ExtractDeps, kind: GraphNodeKind, sourceKey: string, label: string, provenance: GraphProvenance, attributes: Record<string, string> = {}): GraphNode {
+function node(
+  deps: ExtractDeps,
+  kind: GraphNodeKind,
+  sourceKey: string,
+  label: string,
+  provenance: GraphProvenance,
+  attributes: Record<string, string> = {},
+): GraphNode {
   const nowIso = new Date(deps.now()).toISOString();
   return {
     nodeId: graphNodeId(deps.organizationId, kind, sourceKey),
     organizationId: deps.organizationId,
-    kind, sourceKey, label,
+    kind,
+    sourceKey,
+    label,
     confidence: GraphConfidence.Extracted,
-    provenance, attributes,
-    createdAt: nowIso, updatedAt: nowIso, version: 1,
+    provenance,
+    attributes,
+    createdAt: nowIso,
+    updatedAt: nowIso,
+    version: 1,
   };
 }
 
-function edge(deps: ExtractDeps, fromNodeId: string, kind: GraphEdgeKind, toNodeId: string, provenance: GraphProvenance, confidence: GraphConfidence = GraphConfidence.Extracted): GraphEdge {
+function edge(
+  deps: ExtractDeps,
+  fromNodeId: string,
+  kind: GraphEdgeKind,
+  toNodeId: string,
+  provenance: GraphProvenance,
+  confidence: GraphConfidence = GraphConfidence.Extracted,
+): GraphEdge {
   const nowIso = new Date(deps.now()).toISOString();
   return {
     edgeId: graphEdgeId(deps.organizationId, fromNodeId, kind, toNodeId),
     organizationId: deps.organizationId,
-    fromNodeId, toNodeId, kind,
-    confidence, provenance,
-    createdAt: nowIso, updatedAt: nowIso, version: 1,
+    fromNodeId,
+    toNodeId,
+    kind,
+    confidence,
+    provenance,
+    createdAt: nowIso,
+    updatedAt: nowIso,
+    version: 1,
   };
 }
 
 function ingestedEvent(deps: ExtractDeps, subjectId: string, decision: string, prov: GraphProvenance): OrgEvent {
   return {
-    id: deps.createId("evt"), kind: OrgEventKind.GraphNodeExtracted, occurredAt: new Date(deps.now()).toISOString(),
-    organizationId: deps.organizationId, subjectId, decision, supervisorChain: [], evidenceRefs: [`${prov.source}#${prov.method}`],
-    correlationId: subjectId, causationId: subjectId, traceId: subjectId,
+    id: deps.createId("evt"),
+    kind: OrgEventKind.GraphNodeExtracted,
+    occurredAt: new Date(deps.now()).toISOString(),
+    organizationId: deps.organizationId,
+    subjectId,
+    decision,
+    supervisorChain: [],
+    evidenceRefs: [`${prov.source}#${prov.method}`],
+    correlationId: subjectId,
+    causationId: subjectId,
+    traceId: subjectId,
   };
 }
 
@@ -81,7 +113,11 @@ function ingestedEvent(deps: ExtractDeps, subjectId: string, decision: string, p
  * Every node/edge is `extracted` (a parser proved it). Content-addressed → idempotent.
  */
 export function extractServiceManifest(manifest: ServiceManifest, deps: ExtractDeps): ExtractResult {
-  const prov: GraphProvenance = { source: `manifest:${manifest.serviceKey}`, method: "parse", observedAt: new Date(deps.now()).toISOString() };
+  const prov: GraphProvenance = {
+    source: `manifest:${manifest.serviceKey}`,
+    method: "parse",
+    observedAt: new Date(deps.now()).toISOString(),
+  };
   const nodes: GraphNode[] = [];
   const edges: GraphEdge[] = [];
   const events: OrgEvent[] = [];
@@ -123,7 +159,11 @@ export type CodeownersEntry = { path: string; hatId: string };
  * SIGNAL about ownership/responsibility.
  */
 export function extractCodeowners(entries: readonly CodeownersEntry[], deps: ExtractDeps): ExtractResult {
-  const prov: GraphProvenance = { source: "manifest:CODEOWNERS", method: "parse", observedAt: new Date(deps.now()).toISOString() };
+  const prov: GraphProvenance = {
+    source: "manifest:CODEOWNERS",
+    method: "parse",
+    observedAt: new Date(deps.now()).toISOString(),
+  };
   const nodes: GraphNode[] = [];
   const edges: GraphEdge[] = [];
   for (const e of entries) {

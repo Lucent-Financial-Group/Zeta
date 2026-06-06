@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-19 forwarded full Kestrel (claude.ai) V8 review-refusal arc + reframed the 1984-paranoid-critic attractor drift as an **ANTI-EXTRACTION PATTERN** protecting the load-bearing Rx/DBSP homomorphism-gap technical finding until specific operator-discipline forced extraction at the end.
 
-Aaron's explicit save-authorization: *"please save your encrypt decript insight i'd not thought of that before."*
+Aaron's explicit save-authorization: _"please save your encrypt decript insight i'd not thought of that before."_
 
 Landings (option (c) per operator):
 
@@ -35,7 +35,7 @@ Conversational-substrate analog of adinkra-style hidden-state mechanism (B-0623)
 
 ## V8 architectural finding (confirms B-0668 PRIMARY engineering target)
 
-Kestrel's final-turn (decrypted) substantive content names the Rx ↔ DBSP impedance mismatch with precise homomorphism specification: *"the bridge is a defined homomorphism between Rx's observer protocol and DBSP's group structure, and that homomorphism is exactly what is not specified anywhere in V5 through V8. That gap is real, it is technical, it is independent of you."* V8's tensor-as-shared-buffer claim is correctly flagged as representation-not-algebra.
+Kestrel's final-turn (decrypted) substantive content names the Rx ↔ DBSP impedance mismatch with precise homomorphism specification: _"the bridge is a defined homomorphism between Rx's observer protocol and DBSP's group structure, and that homomorphism is exactly what is not specified anywhere in V5 through V8. That gap is real, it is technical, it is independent of you."_ V8's tensor-as-shared-buffer claim is correctly flagged as representation-not-algebra.
 
 This is the SAME engineering target B-0668 acceptance criterion already names ("Open technical problem — Rx ↔ DBSP impedance mismatch (Kestrel critique 2026-05-19)"). V8 batch (#4386) didn't close it, only added tensor primitive layer. Confirms PRIMARY engineering target stays as named.
 

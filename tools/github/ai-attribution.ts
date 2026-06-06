@@ -16,15 +16,10 @@ export interface AttributionOptions {
 }
 
 export function aiAttributionFooter(opts: AttributionOptions): string {
-  const who = opts.onBehalfOf
-    ? ` on behalf of @${opts.onBehalfOf}`
-    : "";
+  const who = opts.onBehalfOf ? ` on behalf of @${opts.onBehalfOf}` : "";
   return `${SEPARATOR}🤖 *Posted by ${opts.agent}${who}*`;
 }
 
-export function appendAttribution(
-  body: string,
-  opts: AttributionOptions,
-): string {
+export function appendAttribution(body: string, opts: AttributionOptions): string {
   return `${body}${aiAttributionFooter(opts)}`;
 }

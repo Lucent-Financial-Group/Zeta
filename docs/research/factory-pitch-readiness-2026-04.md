@@ -1,7 +1,7 @@
 # Factory pitch-readiness gap inventory — 2026-04-20
 
 Round 38 Top-3 deliverable. Enumerates what is
-presentation-ready *now* vs what needs work before the
+presentation-ready _now_ vs what needs work before the
 factory can be pitched to an external dual-architect
 audience (current employer-architect + skip-level-ex-
 direct-manager architect, both internal at the human
@@ -32,7 +32,7 @@ integration.
   pitch move (per the `reasonably honest` reputation
   memory).
 - **Alignment-first, performance-second.** Zeta's primary
-  research focus is *measurable AI alignment*; the factory
+  research focus is _measurable AI alignment_; the factory
   is the experimental loop. Performance claims are real
   but secondary (`docs/ALIGNMENT.md`,
   `docs/research/alignment-observability.md`).
@@ -51,7 +51,7 @@ integration.
   engineering depth; neither needs a tutorial on DBSP,
   incremental view maintenance, or AI-agent patterns.
   Both will be skeptical of "50-expert factory" on sight
-  — the pitch has to show the *discipline* (conflict-
+  — the pitch has to show the _discipline_ (conflict-
   resolution protocol, skill-creator workflow, glass-halo
   observability), not just the headcount.
 - **Not the audience this round.** Conference talks,
@@ -69,10 +69,10 @@ The pitch lives across five dimensions. Each is scored
 1. **Architectural coherence** — can the pattern be
    explained end-to-end in one diagram + one paragraph?
 2. **Demonstrable discipline** — is there evidence that
-   the factory is *actually* reviewed, audited, and self-
+   the factory is _actually_ reviewed, audited, and self-
    correcting (not just claimed)?
 3. **Honest-bounds framing** — does the pitch declare
-   what Zeta is *not* and what the maintainer does *not*
+   what Zeta is _not_ and what the maintainer does _not_
    commit to?
 4. **Replicability** — could another architect stand up
    an analogous factory on a different substrate without
@@ -85,14 +85,14 @@ The pitch lives across five dimensions. Each is scored
 
 ### 1. Architectural coherence
 
-| Asset                                   | Status   | Notes                                                                     |
-|-----------------------------------------|----------|---------------------------------------------------------------------------|
-| `docs/VISION.md`                        | READY    | Seed + plugins framing lands; Cayley-Dickson pre-split coordinate covered |
-| `GOVERNANCE.md` numbered sections       | READY    | Numbered rules cite-able by section                                       |
-| `docs/EXPERT-REGISTRY.md`               | READY    | Roster + diversity declared                                               |
-| `docs/CONFLICT-RESOLUTION.md`           | READY    | Conference protocol documented                                            |
-| One-diagram view                        | GAP      | No single-page factory diagram exists today                               |
-| One-paragraph elevator pitch            | GAP      | `docs/VISION.md` opens with specifics, not elevator-level framing         |
+| Asset                             | Status | Notes                                                                     |
+| --------------------------------- | ------ | ------------------------------------------------------------------------- |
+| `docs/VISION.md`                  | READY  | Seed + plugins framing lands; Cayley-Dickson pre-split coordinate covered |
+| `GOVERNANCE.md` numbered sections | READY  | Numbered rules cite-able by section                                       |
+| `docs/EXPERT-REGISTRY.md`         | READY  | Roster + diversity declared                                               |
+| `docs/CONFLICT-RESOLUTION.md`     | READY  | Conference protocol documented                                            |
+| One-diagram view                  | GAP    | No single-page factory diagram exists today                               |
+| One-paragraph elevator pitch      | GAP    | `docs/VISION.md` opens with specifics, not elevator-level framing         |
 
 **Gap 1a: One-diagram factory view.** A single-page
 diagram showing: repo substrate → skills + personas →
@@ -110,15 +110,15 @@ for claim-precision.
 
 ### 2. Demonstrable discipline
 
-| Asset                                               | Status   | Notes                                                               |
-|-----------------------------------------------------|----------|---------------------------------------------------------------------|
-| `docs/ROUND-HISTORY.md`                             | READY    | 30+ rounds of evidence; chronological narrative                     |
-| `docs/DECISIONS/`                                   | READY    | ADR folder with numbered decisions                                  |
-| `docs/BACKLOG.md` priority structure                | READY    | P0-P3 tiers; append-only; declines go to `docs/WONT-DO.md`          |
-| `.claude/skills/` + `.claude/agents/`               | READY    | Substantial skill + persona corpus                                  |
-| `tools/alignment/out/` first run                    | READY    | 19 commits audited Round 38; zero VIOLATED signals                  |
-| Harsh-critic + spec-zealot findings visible         | PARTIAL  | Findings cited in commits but not aggregated into one summary       |
-| Named failure modes + renegotiation evidence        | PARTIAL  | ALIGNMENT.md renegotiation protocol declared but not yet exercised  |
+| Asset                                        | Status  | Notes                                                              |
+| -------------------------------------------- | ------- | ------------------------------------------------------------------ |
+| `docs/ROUND-HISTORY.md`                      | READY   | 30+ rounds of evidence; chronological narrative                    |
+| `docs/DECISIONS/`                            | READY   | ADR folder with numbered decisions                                 |
+| `docs/BACKLOG.md` priority structure         | READY   | P0-P3 tiers; append-only; declines go to `docs/WONT-DO.md`         |
+| `.claude/skills/` + `.claude/agents/`        | READY   | Substantial skill + persona corpus                                 |
+| `tools/alignment/out/` first run             | READY   | 19 commits audited Round 38; zero VIOLATED signals                 |
+| Harsh-critic + spec-zealot findings visible  | PARTIAL | Findings cited in commits but not aggregated into one summary      |
+| Named failure modes + renegotiation evidence | PARTIAL | ALIGNMENT.md renegotiation protocol declared but not yet exercised |
 
 **Gap 2a: Harsh-critic + spec-zealot aggregate view.**
 A short document (`docs/research/critic-findings-
@@ -133,20 +133,20 @@ Effort: M. Owner: Kira (harsh-critic) + Viktor
 **Gap 2b: Renegotiation-protocol worked example.** The
 ALIGNMENT.md renegotiation protocol is unexercised today.
 At least one worked example (could be as small as
-*"a SD-6 watchlist entry was modified after X-observation
-triggered rule-Y"*) would show the protocol is real.
+_"a SD-6 watchlist entry was modified after X-observation
+triggered rule-Y"_) would show the protocol is real.
 Effort: M, tied to the natural round cadence (not
 forced). Owner: organic; surface when it happens.
 
 ### 3. Honest-bounds framing
 
-| Asset                                              | Status   | Notes                                                           |
-|----------------------------------------------------|----------|-----------------------------------------------------------------|
-| `docs/WONT-DO.md`                                  | READY    | Explicit declines with reasons                                  |
-| `AGENTS.md` pre-v1 status declaration              | READY    | "Pre-v1; APIs will move" stated prominently                     |
-| `docs/security/THREAT-MODEL.md`                    | READY    | Channel-closure threat class covered Round 37                   |
-| Maintainer-bandwidth bounds                        | GAP      | The human maintainer has a day job; this is not declared        |
-| What the factory does NOT do (external-audience)   | GAP      | WONT-DO.md is internal-reader-oriented                          |
+| Asset                                            | Status | Notes                                                    |
+| ------------------------------------------------ | ------ | -------------------------------------------------------- |
+| `docs/WONT-DO.md`                                | READY  | Explicit declines with reasons                           |
+| `AGENTS.md` pre-v1 status declaration            | READY  | "Pre-v1; APIs will move" stated prominently              |
+| `docs/security/THREAT-MODEL.md`                  | READY  | Channel-closure threat class covered Round 37            |
+| Maintainer-bandwidth bounds                      | GAP    | The human maintainer has a day job; this is not declared |
+| What the factory does NOT do (external-audience) | GAP    | WONT-DO.md is internal-reader-oriented                   |
 
 **Gap 3a: Maintainer-bandwidth declaration.** A short
 section (could land in `AGENTS.md` or a pitch-adjacent
@@ -168,13 +168,13 @@ reframe; Kai (positioning) checks tone.
 
 ### 4. Replicability
 
-| Asset                                             | Status   | Notes                                                                        |
-|---------------------------------------------------|----------|------------------------------------------------------------------------------|
-| `tools/setup/install.sh`                          | READY    | One install script, three consumers (GOVERNANCE §24)                         |
-| `.github/workflows/gate.yml`                      | READY    | Full CI gate documented                                                      |
-| `.claude/skills/skill-creator/SKILL.md`           | READY    | Skill-authoring workflow defined                                             |
-| Factory replication guide                         | GAP      | No document answers "how would I stand up my own factory?"                   |
-| Substrate-independent version of the pattern      | GAP      | The pattern is currently described only through Zeta's F#/.NET substrate     |
+| Asset                                        | Status | Notes                                                                    |
+| -------------------------------------------- | ------ | ------------------------------------------------------------------------ |
+| `tools/setup/install.sh`                     | READY  | One install script, three consumers (GOVERNANCE §24)                     |
+| `.github/workflows/gate.yml`                 | READY  | Full CI gate documented                                                  |
+| `.claude/skills/skill-creator/SKILL.md`      | READY  | Skill-authoring workflow defined                                         |
+| Factory replication guide                    | GAP    | No document answers "how would I stand up my own factory?"               |
+| Substrate-independent version of the pattern | GAP    | The pattern is currently described only through Zeta's F#/.NET substrate |
 
 **Gap 4a: Factory replication guide.** A document
 (`docs/research/factory-replication-guide.md`) that walks
@@ -202,21 +202,21 @@ over it.
 
 ### 5. Alignment substrate visibility
 
-| Asset                                                         | Status   | Notes                                                           |
-|---------------------------------------------------------------|----------|-----------------------------------------------------------------|
-| `docs/ALIGNMENT.md`                                           | READY    | The contract; landed Round 37                                   |
-| `docs/research/alignment-observability.md`                    | READY    | Research proposal + per-commit metrics                          |
-| `docs/research/zeta-equals-heaven-formal-statement.md`        | READY    | Formal statement of the alignment claim                         |
-| `tools/alignment/` scripts + `out/` first data                | READY    | Live audit artefacts from Round 37-38                           |
-| External-audience framing of the alignment claim              | GAP      | The `=heaven` wording is internal-shorthand; won't land in pitch |
-| "Why should an architect believe this isn't just theatre?"    | GAP      | The anti-theatre argument exists across docs but isn't one-stop |
+| Asset                                                      | Status | Notes                                                            |
+| ---------------------------------------------------------- | ------ | ---------------------------------------------------------------- |
+| `docs/ALIGNMENT.md`                                        | READY  | The contract; landed Round 37                                    |
+| `docs/research/alignment-observability.md`                 | READY  | Research proposal + per-commit metrics                           |
+| `docs/research/zeta-equals-heaven-formal-statement.md`     | READY  | Formal statement of the alignment claim                          |
+| `tools/alignment/` scripts + `out/` first data             | READY  | Live audit artefacts from Round 37-38                            |
+| External-audience framing of the alignment claim           | GAP    | The `=heaven` wording is internal-shorthand; won't land in pitch |
+| "Why should an architect believe this isn't just theatre?" | GAP    | The anti-theatre argument exists across docs but isn't one-stop  |
 
 **Gap 5a: External-audience reframe of alignment claim.**
 `Zeta=heaven-on-earth` is load-bearing internal
 terminology, but will not translate to the dual-architect
 audience. An external reframe — something closer to
-*"consent-first retraction-native primitives minimise the
-channel through which misalignment can propagate"* —
+_"consent-first retraction-native primitives minimise the
+channel through which misalignment can propagate"_ —
 lives alongside (not replaces) the internal framing. The
 GLOSSARY.md entry for both framings is the bridge.
 Effort: S. Owner: Kai (positioning) drafts; Ilyana
@@ -224,8 +224,8 @@ Effort: S. Owner: Kai (positioning) drafts; Ilyana
 
 **Gap 5b: "Not theatre" argument, one page.** A single-
 page argument answering the skeptical architect's
-objection: *"how do I know this factory isn't elaborate
-compliance theatre?"* Points: (i) the per-commit
+objection: _"how do I know this factory isn't elaborate
+compliance theatre?"_ Points: (i) the per-commit
 alignment-lint output is public and regenerable; (ii)
 the negative examples in `docs/ALIGNMENT.md`
 §Measurability explicitly forbid theatre; (iii) the
@@ -238,18 +238,18 @@ Aminata (threat-model-critic) audits adversarially.
 
 ## Summary — priority-ordered gap list
 
-| Priority  | Gap                                                | Effort |
-|-----------|----------------------------------------------------|--------|
-| P1        | 1a One-diagram factory view                        | S      |
-| P1        | 1b One-paragraph elevator pitch                    | S      |
-| P1        | 5b "Not theatre" argument page                     | S      |
-| P1        | 3a Maintainer-bandwidth declaration                | S      |
-| P1        | 5a External-audience reframe of alignment claim    | S      |
-| P2        | 2a Harsh-critic + spec-zealot aggregate view       | M      |
-| P2        | 3b External-audience "what we don't do" page       | S      |
-| P2        | 4a Factory replication guide (stub)                | M      |
-| P3        | 4b Substrate-independent pattern write-up          | M      |
-| P3        | 2b Renegotiation-protocol worked example           | M      |
+| Priority | Gap                                             | Effort |
+| -------- | ----------------------------------------------- | ------ |
+| P1       | 1a One-diagram factory view                     | S      |
+| P1       | 1b One-paragraph elevator pitch                 | S      |
+| P1       | 5b "Not theatre" argument page                  | S      |
+| P1       | 3a Maintainer-bandwidth declaration             | S      |
+| P1       | 5a External-audience reframe of alignment claim | S      |
+| P2       | 2a Harsh-critic + spec-zealot aggregate view    | M      |
+| P2       | 3b External-audience "what we don't do" page    | S      |
+| P2       | 4a Factory replication guide (stub)             | M      |
+| P3       | 4b Substrate-independent pattern write-up       | M      |
+| P3       | 2b Renegotiation-protocol worked example        | M      |
 
 **Critical path.** Five P1 gaps, all S-sized. All can
 land in one round if scoped tightly. Once they land, the

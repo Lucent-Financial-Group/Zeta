@@ -32,7 +32,7 @@ Slice 5.3's serialization is already deterministic (install order is stable beca
 solve+resolve are deterministic), so alphabetical ordering is a diff-readability nicety,
 not correctness. Partial-merge is an optimization over solve-fresh-then-write. Leaf-lock
 adds a uniform-but-empty artifact. None are needed for the core write + `--frozen`-replay
-guarantee. Operator: *"everything we skipped lets slice off for further enhancements."*
+guarantee. Operator: _"everything we skipped lets slice off for further enhancements."_
 
 ## Scope sketch
 

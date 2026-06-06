@@ -32,8 +32,7 @@ const DEFAULT_ROOTS: AuditRoots = {
 };
 const RESEARCH_LABEL = "docs/research";
 const MEMORY_LABEL = "memory";
-const UNINDEXED_RATIONALE_RE =
-  /\b(?:unindexed[_ -]?rationale|explicit unindexed rationale)\b/i;
+const UNINDEXED_RATIONALE_RE = /\b(?:unindexed[_ -]?rationale|explicit unindexed rationale)\b/i;
 
 function normalizePath(path: string): string {
   return path.replaceAll("\\", "/");
@@ -50,9 +49,7 @@ function escapeRegExp(text: string): string {
 function hasPathReference(content: string, candidate: string): boolean {
   const escaped = escapeRegExp(candidate);
   const pathChar = String.raw`A-Za-z0-9._~/-`;
-  return new RegExp(
-    String.raw`(^|[^${pathChar}])(?:\.\./)*${escaped}($|[^${pathChar}])`,
-  ).test(content);
+  return new RegExp(String.raw`(^|[^${pathChar}])(?:\.\./)*${escaped}($|[^${pathChar}])`).test(content);
 }
 
 async function listFiles(root: string): Promise<readonly string[]> {
@@ -92,18 +89,11 @@ export async function auditResearchDocs(): Promise<AuditResult> {
   return auditResearchDocsInRoots(DEFAULT_ROOTS);
 }
 
-export async function auditResearchDocsInRoots(
-  roots: AuditRoots,
-): Promise<AuditResult> {
-  const [researchFiles, allMemoryFiles] = await Promise.all([
-    listFiles(roots.researchDir),
-    listFiles(roots.memoryDir),
-  ]);
+export async function auditResearchDocsInRoots(roots: AuditRoots): Promise<AuditResult> {
+  const [researchFiles, allMemoryFiles] = await Promise.all([listFiles(roots.researchDir), listFiles(roots.memoryDir)]);
   const memoryFiles = allMemoryFiles.filter((path) => path.endsWith(".md"));
 
-  const memoryContents = await Promise.all(
-    memoryFiles.map(async (path) => readFile(path, "utf8")),
-  );
+  const memoryContents = await Promise.all(memoryFiles.map(async (path) => readFile(path, "utf8")));
   const combinedMemoryContent = memoryContents.join("\n");
 
   const referenced: string[] = [];
@@ -144,21 +134,15 @@ export async function main(): Promise<AuditExitCode> {
   try {
     result = await auditResearchDocs();
   } catch (err: unknown) {
-    process.stderr.write(
-      `error: failed to audit research docs (${describeIoError(err)})\n`,
-    );
+    process.stderr.write(`error: failed to audit research docs (${describeIoError(err)})\n`);
     return 64;
   }
 
-  process.stderr.write(
-    `research-doc audit on ${RESEARCH_LABEL} against ${MEMORY_LABEL}/**/*\n`,
-  );
+  process.stderr.write(`research-doc audit on ${RESEARCH_LABEL} against ${MEMORY_LABEL}/**/*\n`);
   process.stderr.write(`  research docs: ${String(result.researchFiles.length)}\n`);
   process.stderr.write(`  memory docs:   ${String(result.memoryFiles.length)}\n`);
   process.stderr.write(`  referenced:    ${String(result.referenced.length)}\n`);
-  process.stderr.write(
-    `  unindexed rationale: ${String(result.explicitlyUnindexed.length)}\n`,
-  );
+  process.stderr.write(`  unindexed rationale: ${String(result.explicitlyUnindexed.length)}\n`);
   process.stderr.write(`  unreferenced:  ${String(result.unreferenced.length)}\n`);
 
   if (result.unreferenced.length === 0) {
@@ -173,9 +157,7 @@ export async function main(): Promise<AuditExitCode> {
     process.stderr.write(`  ${file}\n`);
   }
   process.stderr.write("\n");
-  process.stderr.write(
-    "Add a memory-substrate reference or record an explicit unindexed rationale.\n",
-  );
+  process.stderr.write("Add a memory-substrate reference or record an explicit unindexed rationale.\n");
   return 2;
 }
 
@@ -183,9 +165,7 @@ if (import.meta.main) {
   void main()
     .then((code) => process.exit(code))
     .catch((err: unknown) => {
-      process.stderr.write(
-        `error: unhandled research-doc audit failure (${describeIoError(err)})\n`,
-      );
+      process.stderr.write(`error: unhandled research-doc audit failure (${describeIoError(err)})\n`);
       process.exit(1);
     });
 }

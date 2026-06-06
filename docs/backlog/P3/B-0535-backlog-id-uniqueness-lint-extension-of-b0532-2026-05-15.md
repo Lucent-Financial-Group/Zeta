@@ -20,9 +20,9 @@ type: feature
 
 2026-05-15 had at least 2 cross-agent B-NNNN ID-allocation collisions:
 
-| Collision | Agents | Resolution |
-|---|---|---|
-| `B-0444` | Otto-CLI vs Otto-Desktop | Otto-CLI flagged via "Request Changes"; corrected as [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) using `B-0450` |
+| Collision           | Agents                                           | Resolution                                                                                                                                                                                                                                                        |
+| ------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `B-0444`            | Otto-CLI vs Otto-Desktop                         | Otto-CLI flagged via "Request Changes"; corrected as [PR #3053](https://github.com/Lucent-Financial-Group/Zeta/pull/3053) using `B-0450`                                                                                                                          |
 | `B-0532` + `B-0533` | Lior (PR #3545) vs Otto-CLI (PR #3523, PR #3540) | Otto-CLI's PRs landed first ([B-0532](B-0532-backlog-graph-consistency-lint-parent-child-status-mismatch-2026-05-15.md), [B-0533](B-0533-section33-migration-dead-xref-sweep-and-lint-2026-05-15.md)); Lior's PR #3545 in CONFLICTING state, requires renumbering |
 
 Both collisions cost ~15min of cross-agent coordination effort (investigation + comment + renumbering) per occurrence. Empirical collision rate ~20% across backlog-row-authoring events on 2026-05-15.
@@ -94,12 +94,12 @@ Mechanization shipped 2026-05-15 via **PR #3565** (`feat(B-0535): wire backlog I
 
 The duplicate-ID detection logic was extended into the existing `tools/hygiene/audit-backlog-items.ts` (per the row's skill-router-as-substrate-inventory decision in "Implementation sketch"), and CI is now wired:
 
-| Acceptance | Status |
-|---|---|
-| Walk all `docs/backlog/**/B-NNNN-*.md`; group by ID | shipped — `audit-backlog-items.ts` `--enforce-duplicate-ids` |
-| Hard error on collision | shipped — exit non-zero on duplicate IDs |
-| Wired to `.github/workflows/gate.yml` | shipped — `lint-backlog-id-uniqueness` job (verified by `grep -E 'lint-backlog-id-uniqueness' .github/workflows/gate.yml`) |
-| Composes with B-0532 hard-error slice | shipped — sibling job `--enforce-parent-child-status` adjacent in gate.yml |
+| Acceptance                                          | Status                                                                                                                     |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Walk all `docs/backlog/**/B-NNNN-*.md`; group by ID | shipped — `audit-backlog-items.ts` `--enforce-duplicate-ids`                                                               |
+| Hard error on collision                             | shipped — exit non-zero on duplicate IDs                                                                                   |
+| Wired to `.github/workflows/gate.yml`               | shipped — `lint-backlog-id-uniqueness` job (verified by `grep -E 'lint-backlog-id-uniqueness' .github/workflows/gate.yml`) |
+| Composes with B-0532 hard-error slice               | shipped — sibling job `--enforce-parent-child-status` adjacent in gate.yml                                                 |
 
 Out-of-scope items remain out of scope (auto-suggest next ID; cross-fork coordination; D-NNNN type).
 

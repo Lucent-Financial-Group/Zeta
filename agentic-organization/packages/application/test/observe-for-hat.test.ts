@@ -29,23 +29,48 @@ import { ScheduleCorrectiveActionKind, SchedulePressureLevel } from "../src/sche
 
 function wi(id: string, type: WorkItemType, state: WorkItemState, batchId: string): WorkItem {
   return {
-    workItemId: id, organizationId: "org-lfg", workItemType: type, state, title: id, description: "d",
-    projectId: "proj-1", initiativeId: "init-1", batchId, source: WorkItemSource.Internal,
-    createdAt: "2026-05-30T00:00:00.000Z", createdBy: { agentId: "a", hatAssignmentId: "ha" },
+    workItemId: id,
+    organizationId: "org-lfg",
+    workItemType: type,
+    state,
+    title: id,
+    description: "d",
+    projectId: "proj-1",
+    initiativeId: "init-1",
+    batchId,
+    source: WorkItemSource.Internal,
+    createdAt: "2026-05-30T00:00:00.000Z",
+    createdBy: { agentId: "a", hatAssignmentId: "ha" },
   };
 }
 function batch(id: string, ownerHatId: string): WorkBatch {
   return {
-    batchId: id, organizationId: "org-lfg", scopeKind: "initiative", scopeId: "init-1",
-    ownerHatId, state: WorkBatchState.Active, capacityPlannedHats: 2,
-    createdAt: "2026-05-30T00:00:00.000Z", updatedAt: "2026-05-30T00:00:00.000Z",
+    batchId: id,
+    organizationId: "org-lfg",
+    scopeKind: "initiative",
+    scopeId: "init-1",
+    ownerHatId,
+    state: WorkBatchState.Active,
+    capacityPlannedHats: 2,
+    createdAt: "2026-05-30T00:00:00.000Z",
+    updatedAt: "2026-05-30T00:00:00.000Z",
   };
 }
 function bounceBack(itemId: string): OrgEvent {
   return {
-    id: `evt-${itemId}`, kind: OrgEventKind.WorkItemTransition, occurredAt: "2026-05-30T01:00:00.000Z",
-    organizationId: "org-lfg", subjectId: itemId, fromState: WorkItemState.Review, toState: WorkItemState.InProgress,
-    decision: "QA failed; rework", supervisorChain: [], evidenceRefs: [], correlationId: "c", causationId: "c", traceId: "t",
+    id: `evt-${itemId}`,
+    kind: OrgEventKind.WorkItemTransition,
+    occurredAt: "2026-05-30T01:00:00.000Z",
+    organizationId: "org-lfg",
+    subjectId: itemId,
+    fromState: WorkItemState.Review,
+    toState: WorkItemState.InProgress,
+    decision: "QA failed; rework",
+    supervisorChain: [],
+    evidenceRefs: [],
+    correlationId: "c",
+    causationId: "c",
+    traceId: "t",
   };
 }
 
@@ -68,7 +93,12 @@ function changeSet(changeSetId: string, workItemId: string, openedAt: string): C
   };
 }
 
-function changeEvent(kind: OrgEventKind, subjectId: string, occurredAt: string, actorHatId = "release_manager"): OrgEvent {
+function changeEvent(
+  kind: OrgEventKind,
+  subjectId: string,
+  occurredAt: string,
+  actorHatId = "release_manager",
+): OrgEvent {
   return {
     id: `${kind}-${subjectId}-${occurredAt}`,
     kind,
@@ -107,12 +137,24 @@ test("batch metrics: completion %, open defects, and QA bounce-backs fold from i
 test("the QA gate term: passRate is neutral with no runs, drops with failures", () => {
   const base = { batchId: "b1", items: [wi("a", WorkItemType.Task, WorkItemState.Done, "b1")], events: [] };
   equal(rollUpBatchMetrics(base).passRate, 1);
-  equal(rollUpBatchMetrics({ ...base, tests: { runs: 4, failures: 1, regressionsOpen: 1, defectsOpenedInTestSetup: 2 } }).passRate, 0.75);
+  equal(
+    rollUpBatchMetrics({ ...base, tests: { runs: 4, failures: 1, regressionsOpen: 1, defectsOpenedInTestSetup: 2 } })
+      .passRate,
+    0.75,
+  );
 });
 
 test("aggregateMetrics rolls batch metrics up to a scope-level view (department/org)", () => {
-  const m1 = rollUpBatchMetrics({ batchId: "b1", items: [wi("a", WorkItemType.Task, WorkItemState.Done, "b1")], events: [] });
-  const m2 = rollUpBatchMetrics({ batchId: "b2", items: [wi("b", WorkItemType.Task, WorkItemState.Blocked, "b2")], events: [] });
+  const m1 = rollUpBatchMetrics({
+    batchId: "b1",
+    items: [wi("a", WorkItemType.Task, WorkItemState.Done, "b1")],
+    events: [],
+  });
+  const m2 = rollUpBatchMetrics({
+    batchId: "b2",
+    items: [wi("b", WorkItemType.Task, WorkItemState.Blocked, "b2")],
+    events: [],
+  });
   const scope = aggregateMetrics([m1, m2]);
   equal(scope.batchCount, 2);
   equal(scope.total, 2);
@@ -291,7 +333,11 @@ test("observeForHat exposes schedule pressure and legal reassignment actions", (
   equal(readout.schedulePressure.level, SchedulePressureLevel.Critical);
   equal(readout.schedulePressure.visibleHatIds.includes("backend_implementer"), true);
   ok(readout.schedulePressure.signals.some((signal) => signal.kind === "expired_hat_binding"));
-  ok(readout.schedulePressure.correctiveActions.some((action) => action.kind === ScheduleCorrectiveActionKind.ReassignAfterExpiry));
+  ok(
+    readout.schedulePressure.correctiveActions.some(
+      (action) => action.kind === ScheduleCorrectiveActionKind.ReassignAfterExpiry,
+    ),
+  );
 });
 
 test("authorityScopeOf maps every level", () => {
@@ -373,7 +419,13 @@ function scheduleBlock(input: Partial<WorkScheduleBlock> = {}): WorkScheduleBloc
     endsAt: "2026-05-31T13:00:00.000Z",
     scheduledAt: "2026-05-31T11:30:00.000Z",
     scheduledBy: { agentId: "agent-manager", hatAssignmentId: "hat-manager" },
-    metadata: { updatedAt: "2026-05-31T11:30:00.000Z", version: 1, correlationId: "corr", causationId: "cause", traceId: "trace" },
+    metadata: {
+      updatedAt: "2026-05-31T11:30:00.000Z",
+      version: 1,
+      correlationId: "corr",
+      causationId: "cause",
+      traceId: "trace",
+    },
     ...input,
   };
 }

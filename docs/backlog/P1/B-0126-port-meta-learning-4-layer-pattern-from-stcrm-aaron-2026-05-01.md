@@ -18,7 +18,7 @@ type: friction-reducer
 
 **Filed:** 2026-05-01
 
-**Filed by:** Otto under the new backlog-prioritization authority (per `feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`). Aaron's framing 2026-05-01: *"very good insight to be gained on how to make those PR reviews a lot less painless and get priorties from your enviorment so you can fit to it to survive like in evolution. ../no-copy-only-learning-agents-insight i devloped a meta learning process with another version of you."*
+**Filed by:** Otto under the new backlog-prioritization authority (per `feedback_backlog_prioritization_authority_delegated_to_otto_aaron_2026_05_01.md`). Aaron's framing 2026-05-01: _"very good insight to be gained on how to make those PR reviews a lot less painless and get priorties from your enviorment so you can fit to it to survive like in evolution. ../no-copy-only-learning-agents-insight i devloped a meta learning process with another version of you."_
 
 **Effort:** M (1-3 days — read source pattern + adapt to Zeta surfaces + draft Zeta-specific Layer 1-4 rules + pilot on next 2-3 PR-thread cycles to verify class-level encoding catches what it should)
 
@@ -68,7 +68,7 @@ Port the 4-layer meta-pattern to Zeta substrate, adapted for Zeta's surfaces (CL
 
 ## Out of scope
 
-- **Higher meta-layers** (rules about how to write rules; rules about detecting missing rules; rules about retiring rules). The STCRM doc explicitly defers these — *"premature meta-stacking is bureaucracy."* Adopt Layer 1-4 first; let the next pain teach what's needed.
+- **Higher meta-layers** (rules about how to write rules; rules about detecting missing rules; rules about retiring rules). The STCRM doc explicitly defers these — _"premature meta-stacking is bureaucracy."_ Adopt Layer 1-4 first; let the next pain teach what's needed.
 - **Replacing existing Zeta substrate-discipline rules.** This pattern composes with what's already on substrate; doesn't replace.
 - **Cross-project rule sharing** (porting Zeta's rules back to STCRM, or vice versa). Each project has its own surfaces; the pattern is portable, the specific rules aren't necessarily.
 

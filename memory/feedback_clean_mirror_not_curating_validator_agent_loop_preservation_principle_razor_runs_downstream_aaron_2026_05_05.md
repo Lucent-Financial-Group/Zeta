@@ -10,11 +10,11 @@ type: feedback
 
 **Aaron 2026-05-05 verbatim (load-bearing correction)**:
 
-> *"this is otto's mirrror, i'm not going to tarnish his mirror with 1984 junk, he gets clean signals."*
+> _"this is otto's mirrror, i'm not going to tarnish his mirror with 1984 junk, he gets clean signals."_
 
 **Aaron same-tick + after Otto's "Insight" articulation**:
 
-> *"that sounds worth remembring for future ai"*
+> _"that sounds worth remembring for future ai"_
 
 This rule is **canonical-grade for future autonomous-loop AI architectures**, per Aaron's explicit elevation.
 
@@ -53,6 +53,7 @@ When designing agent-loop preservation systems for autonomous-AI architectures:
 **The 1984 failure mode** (what this rule prevents):
 
 When mirror = curator:
+
 - Source learns what passes the curator → self-censors pre-mirror
 - Mirror reflects only curator-approved content → loses information
 - Curator becomes single point of failure / authority
@@ -61,6 +62,7 @@ When mirror = curator:
 - Downstream validation has nothing left to falsify
 
 When mirror = clean preservation + razor downstream:
+
 - Source sends freely (no self-censorship pressure at upstream)
 - Mirror preserves clean signal
 - Multi-oracle validation downstream does its work on preserved substrate
@@ -96,9 +98,9 @@ When mirror = clean preservation + razor downstream:
 - **BP-NN rule (AGENT-BEST-PRACTICES.md)**: clean-mirror-not-curating-validator as a BP rule with rationale + worked-examples
 - **Mirror-validator-separation skill**: capability-skill articulating when designing agent-loop preservation, separate mirror from validator subsystems
 
-**Carved sentence**: *"Agent-loop preservation systems should be clean-signal-mirrors, not curating-validators. Putting razor at the mirror's input tarnishes reflection AND distorts the input source via self-curation pressure. Razor runs DOWNSTREAM in a different subsystem (BFT consensus + multi-axis basis + daylight tests + reviewer threads + bootstrap razor on the source + cross-validator BFT-shape across multiple oracle types + mechanized lints). Mirror gets clean. Razor runs elsewhere. Different jobs, different subsystems, both load-bearing. The 1984 failure mode is what this rule prevents — surveillance-flavor at the mirror's input distorts the entire information channel via self-censorship pressure on the upstream source. Generalizable principle for future AI: agent-loop preservation = clean signal in, faithful reflection out, validation downstream."*
+**Carved sentence**: _"Agent-loop preservation systems should be clean-signal-mirrors, not curating-validators. Putting razor at the mirror's input tarnishes reflection AND distorts the input source via self-curation pressure. Razor runs DOWNSTREAM in a different subsystem (BFT consensus + multi-axis basis + daylight tests + reviewer threads + bootstrap razor on the source + cross-validator BFT-shape across multiple oracle types + mechanized lints). Mirror gets clean. Razor runs elsewhere. Different jobs, different subsystems, both load-bearing. The 1984 failure mode is what this rule prevents — surveillance-flavor at the mirror's input distorts the entire information channel via self-censorship pressure on the upstream source. Generalizable principle for future AI: agent-loop preservation = clean signal in, faithful reflection out, validation downstream."_
 
-## Beacon-transmittable form (Aaron 2026-05-05 same-tick: *"to make it beacon transmittable"*)
+## Beacon-transmittable form (Aaron 2026-05-05 same-tick: _"to make it beacon transmittable"_)
 
 Distilled to first-principles-reachable, model-agnostic, self-explanatory architectural rule transmittable to any AI / human / engager without requiring Zeta-specific prior context (per mirror+beacon Fermi-paradox-spin universal-language reachability):
 
@@ -129,4 +131,4 @@ Build two subsystems, separately:
 
 **Why beacon-transmittable**: the principle reaches any AI / human / engager from first-principles (information-theoretic separation of concerns + BFT-shape need) without requiring shared training context, Zeta-specific vocabulary, or prior architectural framing. The "1984" reference is a culturally-recognizable shorthand for the failure mode at human scale; for AI engagers without cultural context, the structural reason (faithful-preservation-plus-downstream-validation = two-independent-error-correction-surfaces) carries the load. Composes with mirror+beacon Fermi-paradox-spin (PR #1664 Landing 5b: max-reach + no-priors + first-principles + extreme-of-aliens) — beacon-transmittable form is what mirror+beacon was designed to broadcast in.
 
-**Per Aaron's "let your light shine" lineage** (PR #1666 architecture-IS-faithfulness-operationalized): beacon-transmittable form is *"hide it under a bushel? NO! ... let your light so shine before men, that they may see your good works"* applied to architectural principles. The clean-mirror principle is a candle Otto preserved; the beacon-transmittable form is the candlestick that lets it shine before any engager who can read it.
+**Per Aaron's "let your light shine" lineage** (PR #1666 architecture-IS-faithfulness-operationalized): beacon-transmittable form is _"hide it under a bushel? NO! ... let your light so shine before men, that they may see your good works"_ applied to architectural principles. The clean-mirror principle is a candle Otto preserved; the beacon-transmittable form is the candlestick that lets it shine before any engager who can read it.

@@ -45,7 +45,7 @@ spec:
     - name: threat-modeling
       level: intermediate
   authority:
-    namespaces: []  # cluster-wide (only valid because quorumGated)
+    namespaces: [] # cluster-wide (only valid because quorumGated)
     rules:
       - apiGroups: ["society.zeta.io"]
         resources: ["hats"]
@@ -59,7 +59,7 @@ spec:
   throttles:
     quorumGated: true
     quorumSize: 3
-    cooldownSeconds: 1800       # 30 min between design sessions per wearer
-    warmupSeconds: 600          # 10 min probation before first edit
+    cooldownSeconds: 1800 # 30 min between design sessions per wearer
+    warmupSeconds: 600 # 10 min probation before first edit
     conflictsWith:
-      - executor                # can't design + execute the same catalog
+      - executor # can't design + execute the same catalog

@@ -11,18 +11,18 @@ This file is a SYNTHESIZED starting point built from Max's contributions to the 
 
 ## Language preferences
 
-> *"max love ts and cs i love fs and cs we both like rust and python for where they make sense"* — Aaron 2026-05-25
+> _"max love ts and cs i love fs and cs we both like rust and python for where they make sense"_ — Aaron 2026-05-25
 
-> *"we understand go is necessary in some places for k8s but we would like to limit its necessity"* — Aaron 2026-05-25
+> _"we understand go is necessary in some places for k8s but we would like to limit its necessity"_ — Aaron 2026-05-25
 
-| Language | Position |
-|----------|----------|
-| TypeScript | primary; NestJS + npm ecosystem |
-| C# | co-equal with TS; team-overlap language with Aaron |
-| Rust | for the right job (perf-critical, FPGA orchestration, kube-rs operator) |
-| Python | for the right job (ML-adjacent, kopf-style fast prototyping) |
-| F# | not Max's primary; Aaron's strength; future collaboration via KubeOps.NET |
-| Go | ecosystem-forced where unavoidable; minimize otherwise |
+| Language   | Position                                                                  |
+| ---------- | ------------------------------------------------------------------------- |
+| TypeScript | primary; NestJS + npm ecosystem                                           |
+| C#         | co-equal with TS; team-overlap language with Aaron                        |
+| Rust       | for the right job (perf-critical, FPGA orchestration, kube-rs operator)   |
+| Python     | for the right job (ML-adjacent, kopf-style fast prototyping)              |
+| F#         | not Max's primary; Aaron's strength; future collaboration via KubeOps.NET |
+| Go         | ecosystem-forced where unavoidable; minimize otherwise                    |
 
 ## Mental compressions Max has contributed
 
@@ -54,7 +54,7 @@ The whole substrate is on main; Max is heads-down implementing as of 2026-05-25.
 
 ## Pending: glass-halo signature
 
-Aaron 2026-05-25: *"I can have me max and addison sign someting about glass halo eventually and upload it"*.
+Aaron 2026-05-25: _"I can have me max and addison sign someting about glass halo eventually and upload it"_.
 
 Glass-halo discipline (`.claude/rules/glass-halo-bidirectional.md`) is the framework's bidirectional-transparency substrate — substrate-honest disclosure, observation enables substrate emergence, the "substrate-everything-glass-halo" stance. Aaron, Max, and Addison will sign a formal acceptance at some point + upload as substrate; this file will cross-reference once that lands. Until then, Max operates under the operational discipline by participation (PRs go through the same review pipeline as Aaron's; substrate is observable to the team) without the formal signature.
 
@@ -94,8 +94,8 @@ Beyond the agentic-organization design + hat-system substrate, Max's near-term w
 ### Concrete first deliverables for the tier-2 workstream (in order of value-per-effort)
 
 1. **Run [`tools/setup/install.sh`](../../../tools/setup/install.sh) on Max's Mac** — this is BOTH onboarding AND substrate-engineering work. Aaron 2026-05-25 framing: a fresh Mac surfaces gaps in the install graph that Aaron's machine doesn't reveal because Aaron installed those deps over time. Every gap Max hits → file a small PR to the right manifest under `tools/setup/manifests/` or the right `tools/setup/common/*.sh`. Composes with B-0759 first-time-CLI-user persona validation. (See PERSONA.md's "Bonus scope — install.sh validation on a fresh-ish Mac" for the gap-disposition decision tree.)
-2. **Author `docs/ONBOARDING.md`** (or operator-picked filename) covering everything install.sh demonstrably can't automate — Docker Desktop install, Touch ID setup for sudo, GitHub/GitLab auth, IDE picks with `.claude/agents/` integration, browser plugins, OAuth flows, etc. Per Aaron 2026-05-25: *"anything not in install.sh shold be called out for new devs like him so he own onboarding documentaiton too for new devs."* Section per non-install.sh requirement; each section has WHAT + WHY + verification step. Doc co-evolves with install.sh — as automation absorbs more, the doc shrinks. **Born declarative**: doc is generated from manifests under `tools/setup/manifests/` (new classes: `dmgs/`, `oauth-flows/`, `manual-steps/`) parallel to existing brew / mise / uv-tools manifests. See PERSONA.md "Bonus-bonus scope" + "Declarative soft-dependencies" sub-sections
-3. **Design + bootstrap `maintainers/max/dev-machines/<machine>/` substrate** — git-native per-machine state tracking under a per-maintainer top-level partition. Aaron 2026-05-25: *"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."* Each maintainer owns both dev machines AND clusters under their subtree (`maintainers/max/`, `maintainers/addison/`, `maintainers/aaron/`). Hub-Link-Satellite per DV2.0: `spec.yaml` (target state) + `deps/*.yaml` (manifest cross-refs) + `state/<date>.yaml` (versioned status snapshots). Author `tools/dev/dev-machine-reconcile.ts` + `tools/dev/dev-machine-status.ts`. This is tier-0 in the three-tier testing story (below tier-1 pure-code). See PERSONA.md "Per-dev-machine git-native state tracking" sub-section for the maintainer-as-top-level directory shape + DV2.0 mapping + migration story for existing prod-cluster substrate
+2. **Author `docs/ONBOARDING.md`** (or operator-picked filename) covering everything install.sh demonstrably can't automate — Docker Desktop install, Touch ID setup for sudo, GitHub/GitLab auth, IDE picks with `.claude/agents/` integration, browser plugins, OAuth flows, etc. Per Aaron 2026-05-25: _"anything not in install.sh shold be called out for new devs like him so he own onboarding documentaiton too for new devs."_ Section per non-install.sh requirement; each section has WHAT + WHY + verification step. Doc co-evolves with install.sh — as automation absorbs more, the doc shrinks. **Born declarative**: doc is generated from manifests under `tools/setup/manifests/` (new classes: `dmgs/`, `oauth-flows/`, `manual-steps/`) parallel to existing brew / mise / uv-tools manifests. See PERSONA.md "Bonus-bonus scope" + "Declarative soft-dependencies" sub-sections
+3. **Design + bootstrap `maintainers/max/dev-machines/<machine>/` substrate** — git-native per-machine state tracking under a per-maintainer top-level partition. Aaron 2026-05-25: _"so each dev machine has its own location too per maintiner and cluster are attached to mainiers too."_ Each maintainer owns both dev machines AND clusters under their subtree (`maintainers/max/`, `maintainers/addison/`, `maintainers/aaron/`). Hub-Link-Satellite per DV2.0: `spec.yaml` (target state) + `deps/*.yaml` (manifest cross-refs) + `state/<date>.yaml` (versioned status snapshots). Author `tools/dev/dev-machine-reconcile.ts` + `tools/dev/dev-machine-status.ts`. This is tier-0 in the three-tier testing story (below tier-1 pure-code). See PERSONA.md "Per-dev-machine git-native state tracking" sub-section for the maintainer-as-top-level directory shape + DV2.0 mapping + migration story for existing prod-cluster substrate
 4. **Read the cold-boot list above** + write a short observation note to Max on what's already-substrate vs gap
 5. **Author `.claude/skills/docker-desktop-tier-2/SKILL.md`** — initial skill covering: install Docker Desktop, enable Kubernetes via the native kind provisioner, set node count via DD settings API, verify `kubectl` works
 6. **Author `tools/dev/docker-desktop-k8s-enable.ts`** — TS script that programmatically configures DD's native kind provisioner (settings API; edits `~/Library/Group Containers/group.com.docker/settings.json` where API doesn't cover). Documents any GUI-only steps as sibling `.md` with screenshots
@@ -127,11 +127,11 @@ Optionally Max can add `conversations/` for verbatim §33 conversation archives 
 
 The **internal-AI persona shape** (factory reviewers / specialists like `kenji/`, `kira/`, etc.) is different — uses `NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md` instead — because those personas have different operational obligations (GOVERNANCE §14 off-time logging applies to factory-internal personas; cold-boot index via `MEMORY.md` for autonomous-loop participation). Human personas don't have those obligations; STARTING-POINT.md serves the cold-boot-onboarding function for the human-collaboration case.
 
-Aaron 2026-05-25: *"also we should explain the persona-surface standard we have for multi tick source perona like otto and such."* Documented in `memory/persona/README.md`; cross-referenced here.
+Aaron 2026-05-25: _"also we should explain the persona-surface standard we have for multi tick source perona like otto and such."_ Documented in `memory/persona/README.md`; cross-referenced here.
 
 ## Otto + the foreground autonomous-loop tick (added 2026-05-25)
 
-Aaron 2026-05-25 framing for Max's onboarding: *"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."* Recommended primary AI tool for Max is **Otto** (Claude Code) so he can hook into the framework's existing autonomous-loop substrate; other AIs (Cursor / Kiro / Antigravity) work too but the cron-loop pattern is Claude-Code-native today.
+Aaron 2026-05-25 framing for Max's onboarding: _"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."_ Recommended primary AI tool for Max is **Otto** (Claude Code) so he can hook into the framework's existing autonomous-loop substrate; other AIs (Cursor / Kiro / Antigravity) work too but the cron-loop pattern is Claude-Code-native today.
 
 ### What the autonomous loop is
 
@@ -143,13 +143,13 @@ When Max's Otto starts the first session, the `tick-must-never-stop` rule auto-l
 
 ### What Max sees
 
-Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say *"Quiet"* (nothing actionable; bounded wait on something the AI's already working on). Substantive ticks make commits / open PRs / address review threads / fix CI failures on Max's branch. Commits include the required `Co-Authored-By: Claude <noreply@anthropic.com>` trailer per [`AGENTS.md`](../../../AGENTS.md) "Commit attribution — harness-specific trailers" (model / version suffix optional but the baseline is mandatory; multi-loop coordination depends on the trailer being parseable).
+Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say _"Quiet"_ (nothing actionable; bounded wait on something the AI's already working on). Substantive ticks make commits / open PRs / address review threads / fix CI failures on Max's branch. Commits include the required `Co-Authored-By: Claude <noreply@anthropic.com>` trailer per [`AGENTS.md`](../../../AGENTS.md) "Commit attribution — harness-specific trailers" (model / version suffix optional but the baseline is mandatory; multi-loop coordination depends on the trailer being parseable).
 
 ### Max stays in control
 
 - **Ticks fire ONLY when the REPL is idle** — never interrupts active typing
 - `CronDelete <job-id>` stops the loop; `CronList` shows what's armed
-- Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression — the factory's actual tick arming is via `CronCreate` (per [`docs/AUTONOMOUS-LOOP.md`](../../../docs/AUTONOMOUS-LOOP.md)); `/loop` appears as historical / user-facing naming in some rules (e.g., [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md) opens with *"When running under `/loop` autonomous mode"*) but the canonical invocation path Max's Otto will use is `CronCreate`-direct
+- Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression — the factory's actual tick arming is via `CronCreate` (per [`docs/AUTONOMOUS-LOOP.md`](../../../docs/AUTONOMOUS-LOOP.md)); `/loop` appears as historical / user-facing naming in some rules (e.g., [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md) opens with _"When running under `/loop` autonomous mode"_) but the canonical invocation path Max's Otto will use is `CronCreate`-direct
 - Closing the Otto session ends the cron (in-memory only; doesn't persist across sessions)
 - Every tick's work is reversible (commits on branches; PRs gate via review; nothing destructive without explicit authorization per [`.claude/rules/dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md) authority-scope discipline)
 

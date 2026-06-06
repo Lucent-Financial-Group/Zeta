@@ -85,11 +85,11 @@ Test: d(Spread(Red(V)), Red(Spread(V))) < ε
 
 ### 10. Three-state adversarial-to-friend model
 
-| State | Reward |
-|-------|--------|
-| RawExternalAttack | 0 |
+| State                 | Reward             |
+| --------------------- | ------------------ |
+| RawExternalAttack     | 0                  |
 | CoordinatedDisclosure | Bounty if eligible |
-| AuthorizedRedTeam | Reward if bounded |
+| AuthorizedRedTeam     | Reward if bounded  |
 
 BountyEligible = InScope · GoodFaith · NoPermanentHarm ·
 NoExtraction · Reproducible · Provenanced ·

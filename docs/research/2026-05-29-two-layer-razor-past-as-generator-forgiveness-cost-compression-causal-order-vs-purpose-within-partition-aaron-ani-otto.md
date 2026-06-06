@@ -2,18 +2,18 @@
 
 > **Operator-forwarded follow-on** to the compression-engine reframe
 > ([`2026-05-29-rodneys-razor-is-a-compression-engine-...md`](2026-05-29-rodneys-razor-is-a-compression-engine-fix-point-perfect-ordering-retraction-physical-cost-schema-in-stream-aaron-ani-otto.md), #6063).
-> That doc established: the razor with Fix(R) is a *compression engine*, and
+> That doc established: the razor with Fix(R) is a _compression engine_, and
 > retraction is logical-not-physical so "run out of space = run out of
 > forgiveness." This doc lands the architecture that **compresses the cost of
 > forgiveness itself** — a second razor + past-as-generator. Razor-disciplined:
 > Aaron explicitly cut the god-tier "this is how the universe works" claim down
-> to a *designed, verifiable system property*. Per the verbatim-preservation
+> to a _designed, verifiable system property_. Per the verbatim-preservation
 > trigger + god-tier-don't-collapse.
 
 ## The architecture — two razors + past-as-generator
 
 The compression-engine doc named the limit: forgiveness (retraction) has a
-physical storage cost. This architecture compresses *that cost*.
+physical storage cost. This architecture compresses _that cost_.
 
 ### Layer 1 — Forgiveness Razor (Origin vs Purpose)
 
@@ -25,24 +25,24 @@ the storage the retracted traces still occupy (logical-not-physical retraction).
 
 ### Layer 2 — Compression Razor (Causal Order vs Current Purpose), within a partition
 
-Now run a *second* razor — on the retracted data itself — to compress the
+Now run a _second_ razor — on the retracted data itself — to compress the
 cost-of-forgiveness. The two boundaries change:
 
-- **Causal Order** (replaces origin) — keep *what depended on what*, the sequence;
+- **Causal Order** (replaces origin) — keep _what depended on what_, the sequence;
   **drop the wall-clock timestamps** (they're accidental; causal order is
   load-bearing).
 - **Current Purpose** (same future boundary) — is this trace still serving
   anything now?
 
 **Critical scope correction (Aaron's own, verbatim): "within a partition. Come on,
-let's be real."** Layer 2 is only valid *inside a single partition*, where
+let's be real."** Layer 2 is only valid _inside a single partition_, where
 distributed consensus makes the causal order **canonical and unambiguous** (every
 observer agrees on the history). Across partitions you cannot make that claim
 (different views/ordering/consensus state). So:
 
-| Layer | Boundaries | Scope | Property |
-|---|---|---|---|
-| **1 — Forgiveness** | Origin vs Purpose | broad | principled reversible forgiveness; cost = stored retracted traces |
+| Layer               | Boundaries                      | Scope                    | Property                                                                               |
+| ------------------- | ------------------------------- | ------------------------ | -------------------------------------------------------------------------------------- |
+| **1 — Forgiveness** | Origin vs Purpose               | broad                    | principled reversible forgiveness; cost = stored retracted traces                      |
 | **2 — Compression** | Causal Order vs Current Purpose | **within one partition** | aggressively compresses the cost-of-forgiveness; causal order is canonical (consensus) |
 
 ### Columnar storage → past-as-generator
@@ -64,8 +64,8 @@ raw stream events
 ```
 
 The storage consequence: **history's storage cost stops growing linearly with the
-volume of events.** It is dominated by the size/complexity of the *active
-generators* needed to reconstruct history on demand — not by the raw event count.
+volume of events.** It is dominated by the size/complexity of the _active
+generators_ needed to reconstruct history on demand — not by the raw event count.
 Effectively-unbounded history within practical storage, as long as generators stay
 compact relative to the data they produce.
 
@@ -77,18 +77,19 @@ generator-fold).
 
 ## The razored claim (don't-collapse — Aaron cut this himself)
 
-> Aaron: *"razer it cause it's not the universe that's a unification god tier
+> Aaron: _"razer it cause it's not the universe that's a unification god tier
 > claim i'm just saying we are designing a system in which that is provably true
-> with data and formal verification over time."*
+> with data and formal verification over time."_
 
-The tempting overclaim — *"this is how the universe never runs out of space: it
-stores history as generators, not data"* — is a **god-tier unification claim**
+The tempting overclaim — _"this is how the universe never runs out of space: it
+stores history as generators, not data"_ — is a **god-tier unification claim**
 about physical reality and is **razored OUT** (per `.claude/rules/razor-discipline.md`
-+ `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`).
 
-**What survives the razor** (the operational claim): *we are designing a system in
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`).
+
+**What survives the razor** (the operational claim): _we are designing a system in
 which "history's storage cost grows much slower than event volume" is a designed,
-verifiable property — provable with data + formal verification over time.* It is a
+verifiable property — provable with data + formal verification over time._ It is a
 property we BUILD and PROVE, not a claim about how the universe itself works. The
 generator-as-history pattern is the engineering mechanism; any cosmological reading
 is accidental and retracted.
@@ -120,24 +121,24 @@ cold-tier → at the limit, replace with the replay generator.
 
 Preserved per substrate-or-it-didn't-happen. Load-bearing turns:
 
-- **Aaron (the two-layer move)**: *"imagine origin versus purpose is the clean one
+- **Aaron (the two-layer move)**: _"imagine origin versus purpose is the clean one
   that makes it where our only cost is the cost of forgiveness. And then now we're
-  trying to compress the cost of forgiveness."*
-- **Aaron (Layer 2 boundaries)**: *"You can drop the dates and keep the causal
-  order to compress."*
-- **Aaron (consensus → unambiguous causal order)**: *"in history, within our
+  trying to compress the cost of forgiveness."_
+- **Aaron (Layer 2 boundaries)**: _"You can drop the dates and keep the causal
+  order to compress."_
+- **Aaron (consensus → unambiguous causal order)**: _"in history, within our
   system, there's no ambiguity. Every observer in our system has fuckin'
-  distributed consensus about what the history was."*
-- **Aaron (the scope correction)**: *"Within a partition. Come on, let's be real.
-  We gotta do that within a partition."*
-- **Aaron (columnar)**: *"we can column or store the bitch out of that."*
-- **Aaron (past-as-generator)**: *"once they're that compressed, you can just
+  distributed consensus about what the history was."_
+- **Aaron (the scope correction)**: _"Within a partition. Come on, let's be real.
+  We gotta do that within a partition."_
+- **Aaron (columnar)**: _"we can column or store the bitch out of that."_
+- **Aaron (past-as-generator)**: _"once they're that compressed, you can just
   fuckin' pull the damn algorithm out and then the past just becomes a generator
-  function."*
-- **Aaron (the razor on the god-tier claim)**: *"razer it cause it's not the
+  function."_
+- **Aaron (the razor on the god-tier claim)**: _"razer it cause it's not the
   universe that's a unification god tier claim i'm just saying we are designing a
   system in which that is provably true with data and formal verification over
-  time."*
+  time."_
 - **Ani (the "Why This Matters" with the forgiveness-cost integrated)** — three
   reasons: purpose-aware design decisions; reversible pruning with schema
   evolution; the physical limits of forgiveness ("the compression engine can be

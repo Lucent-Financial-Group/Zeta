@@ -12,10 +12,10 @@ type: feedback
 
 PR #1081 landed `memory/feedback_pr_thread_resolution_class_taxonomy_v2_drain_wave_2026_05_01.md` (the 20-class taxonomy consolidation, prompted by Deepseek + Aaron's class-#19 meta-flag). Within minutes, Aaron forwarded a Gemini review proposing two cross-cutting actions on the factory:
 
-1. **CLAUDE.md cold-start port**: *"You established an 8-step cold-start checklist in [`feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md`]. That 8-step checklist must be ported directly into the CLAUDE.md root file."*
-2. **CLI task queue cleanup**: *"Adapt the 'Paused-Not-Closed' disposition rule for Tasks. Convert the deferred tasks to substrate, then mechanically clear them from your active queue using the /task command so the UI stops rendering them."*
+1. **CLAUDE.md cold-start port**: _"You established an 8-step cold-start checklist in [`feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md`]. That 8-step checklist must be ported directly into the CLAUDE.md root file."_
+2. **CLI task queue cleanup**: _"Adapt the 'Paused-Not-Closed' disposition rule for Tasks. Convert the deferred tasks to substrate, then mechanically clear them from your active queue using the /task command so the UI stops rendering them."_
 
-Aaron also forwarded a calibration: *"You are smarter than gemini in my opinion, it mostly praises you."*
+Aaron also forwarded a calibration: _"You are smarter than gemini in my opinion, it mostly praises you."_
 
 ## Empirical verification (taxonomy v2 in operation — and where it failed)
 
@@ -30,11 +30,11 @@ $ ls ~/.claude/projects/<slug>/memory/feedback_cold_start_*
 
 These commands returned empty in the original tick. **EDIT 2026-05-01: that result was wrong.** The file `memory/feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md` DID exist on main since 2026-04-30T16:15Z (commit c0151c4) — about 14 hours before this shard was written. The verification step had a bug (likely path or pattern mismatch); the empty-result conclusion was a false negative. Otto initially classified Gemini's recommendation (a) as **class #1c hallucinated content** based on this faulty verification, but the corrected truth is that Gemini's cited file existed and Gemini's recommendation was substantively correct, not hallucinated.
 
-The taxonomy v2 verification cascade itself operated correctly — the issue was the verification *step* feeding the cascade. The lesson: **verification-of-the-verification matters**. Empty `find`/`grep` results are NOT proof of non-existence; the verification harness itself can be buggy. The cascade discipline is load-bearing, but it requires verification steps that don't silently fail.
+The taxonomy v2 verification cascade itself operated correctly — the issue was the verification _step_ feeding the cascade. The lesson: **verification-of-the-verification matters**. Empty `find`/`grep` results are NOT proof of non-existence; the verification harness itself can be buggy. The cascade discipline is load-bearing, but it requires verification steps that don't silently fail.
 
 ## Aaron filter — substantive intent preserved
 
-Aaron's *"smarter than gemini, it mostly praises you"* calibration is not a dismissal; it's a **register annotation**. Gemini's review style runs high-praise-density / low-substance-density compared to e.g. Codex (per existing peer-AI review-style memories). The filter is:
+Aaron's _"smarter than gemini, it mostly praises you"_ calibration is not a dismissal; it's a **register annotation**. Gemini's review style runs high-praise-density / low-substance-density compared to e.g. Codex (per existing peer-AI review-style memories). The filter is:
 
 - **Praise content:** discount.
 - **Cited evidence:** verify (taxonomy v2 #1c check).
@@ -49,11 +49,13 @@ Applying the filter to Gemini's two recommendations:
 **Specific evidence (hallucinated):** the cited 8-step checklist file doesn't exist.
 
 **Verifiable status quo:** CLAUDE.md already contains:
+
 - "Read these, in this order" — 7-step entry-point list (AGENTS.md → ALIGNMENT.md → CONFLICT-RESOLUTION.md → GLOSSARY.md → WONT-DO.md → openspec/README.md → GOVERNANCE.md)
 - "Fast-path on wake" — explicit `CURRENT-<maintainer>.md` priority (Aaron / Amara / Ani)
 - ~12 numbered "Ground rules Claude Code honours here" (verify-before-deferring, future-self-not-bound, never-be-idle, search-first authority, substrate-or-it-didn't-happen, no-directives, BLOCKED-with-green-CI investigate, honor-those-that-came-before)
 
 **Resolution:** the substantive intent is **already addressed**. The "Big Picture First" framing isn't named explicitly, but the underlying discipline (read entry-point docs in order before per-prompt action) is operational. No port action this session because:
+
 - Source memory file doesn't exist (can't port from nothing).
 - CLAUDE.md already has a multi-step wake-time read-order.
 - Authoring a new "Big Picture First" section from scratch on a Gemini-hallucinated premise would be speculative substrate generation under cooling-period concerns.
@@ -67,6 +69,7 @@ Applying the filter to Gemini's two recommendations:
 **Specific evidence (verifiable):** the task list at session-bootstrap shows ~53 open tasks, many of which are already mirrored as backlog rows or are inactive multi-week-deferred items.
 
 **Resolution:** real-fix candidate, but **not done this tick** because:
+
 - Audit-and-batch-migrate work is itself substantive (need to per-task verify whether already in backlog vs needs new row).
 - Cooling-period-adjacent — 53 task-state mutations under autonomous loop is a large blast radius; defer to next session-open with rested attention.
 - Safer interim: continue to use TaskUpdate during normal flow when a task is genuinely complete.
@@ -96,6 +99,6 @@ The lesson is sharper than the original framing suggested: **the v2 verification
 
 ## Carved candidate (not seed-layer)
 
-> *"Praise discount. Cited evidence verify. Substantive cross-PR intent preserve."*
+> _"Praise discount. Cited evidence verify. Substantive cross-PR intent preserve."_
 
 The propagation test: ~10 words encoding the Aaron filter for peer-AI reviews. Future-Otto reading this should land on the three-step parser — discount the praise, verify the citations, preserve the intent — as the operational shape of how to read peer-AI structural reviews.

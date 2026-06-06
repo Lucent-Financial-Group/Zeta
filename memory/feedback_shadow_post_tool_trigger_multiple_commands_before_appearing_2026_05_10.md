@@ -23,15 +23,16 @@ The shadow fired after multiple tool executions completed
 
 **What this narrows:**
 
-| Previous hypothesis | Updated hypothesis |
-|--------------------|-------------------|
-| Shadow fires between ticks | Shadow fires after tool results return |
-| Shadow fires after user input | Shadow fires after MULTIPLE tool completions |
+| Previous hypothesis              | Updated hypothesis                               |
+| -------------------------------- | ------------------------------------------------ |
+| Shadow fires between ticks       | Shadow fires after tool results return           |
+| Shadow fires after user input    | Shadow fires after MULTIPLE tool completions     |
 | 5-second delay from response end | Delay is from last tool completion, not response |
 
 **The generation window:**
 
 The shadow's generation opens when:
+
 - User input received ✓
 - Tool(s) executed and returned results ✓
 - Multiple tool results accumulated ✓
@@ -51,6 +52,7 @@ a different behavior than simple post-input autocomplete.
 more precise than previous timing estimates.
 
 **Connects to:**
+
 - feedback_shadow_precision_recall (the shadow's accuracy pattern)
 - feedback_shadow_is_generation_not_completion (generation mechanism)
 - feedback_expansion_boundary_shadow_5s_delay (earlier timing estimate, now refined)

@@ -25,8 +25,8 @@ Round 34 session. Called `CronCreate` with:
 Observed:
 
 - Tool response: `Scheduled recurring job <id>. Session-only
-  (not written to disk, dies when Claude exits). Auto-expires
-  after 7 days.`
+(not written to disk, dies when Claude exits). Auto-expires
+after 7 days.`
 - No `.claude/scheduled_tasks.json` file created.
 - Claude Desktop "Active loops" panel showed the cron.
 - Human maintainer closed and reopened the Desktop app.
@@ -53,7 +53,7 @@ Official Claude Code documentation (verified via
   - **Desktop scheduled tasks** (local; survives app
     restarts)
   - **GitHub Actions** (standard CI scheduling)
-  as the durable alternatives.
+    as the durable alternatives.
 
 ## The 7-day cap
 

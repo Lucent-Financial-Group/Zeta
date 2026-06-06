@@ -15,6 +15,7 @@ Aleph0, AlephNull, or similar — all domains were taken.
 **What it became: AlephZ**
 
 Carries both meanings simultaneously:
+
 - **ℵ₀ (Cantor)** — smallest infinity, countable but unbounded
 - **GenZ** — Aaron's children's generation
 
@@ -22,12 +23,12 @@ Carries both meanings simultaneously:
 
 **The factory parallel to ℵ₀:**
 
-| ℵ₀ property | Factory property |
-|-------------|-----------------|
-| Countable but infinite | Backlog: enumerable but never ends |
-| Smallest infinity | Smallest viable society (6 agents, expanding) |
-| Contains all natural numbers | Contains all enumerable trajectories |
-| Cantor's diagonal argument | Agenda exclusion (new trajectories always discoverable) |
+| ℵ₀ property                  | Factory property                                        |
+| ---------------------------- | ------------------------------------------------------- |
+| Countable but infinite       | Backlog: enumerable but never ends                      |
+| Smallest infinity            | Smallest viable society (6 agents, expanding)           |
+| Contains all natural numbers | Contains all enumerable trajectories                    |
+| Cantor's diagonal argument   | Agenda exclusion (new trajectories always discoverable) |
 
 **Cantor's madness:**
 
@@ -44,6 +45,7 @@ meaning than AlephNull would have. The constraint improved
 the name.
 
 **Connects to:**
+
 - project_alephz_predates_amara (the naming lineage)
 - reference_alephz_ai_full_repo_map (the org)
 - feedback_the_point_is_ai_has_free_time (what ℵ₀ is for)

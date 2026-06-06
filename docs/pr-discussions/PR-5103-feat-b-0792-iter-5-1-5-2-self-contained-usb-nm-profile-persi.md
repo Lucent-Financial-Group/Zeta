@@ -20,19 +20,19 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-26 architectural framings during iter-4.2 empirical test:
 
-> *\"we won't have ethernet for most machines it needs to remember the wifi on setup\"*
+> _\"we won't have ethernet for most machines it needs to remember the wifi on setup\"_
 
-> *\"completely self contained usb we already try eth for 30 seconds and then ask for wifi we just need to remember it afterwards\"*
+> _\"completely self contained usb we already try eth for 30 seconds and then ask for wifi we just need to remember it afterwards\"_
 
-> *\"make any multi node changes we need to like think though mdns names when we have two control planes\"*
+> _\"make any multi node changes we need to like think though mdns names when we have two control planes\"_
 
-> *\"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very elegant and host names tied to them are not great either\"*
+> _\"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very elegant and host names tied to them are not great either\"_
 
 Ships **iter-5.1** (wifi persistence + mDNS publishing) + **iter-5.2** (per-node hostname decoupling) in one self-contained-USB substrate update.
 
 ## iter-5.1 — NM-profile persistence + Avahi mDNS
 
-\`zeta-install.sh\` copies \`/etc/NetworkManager/system-connections/*.nmconnection\` from live installer to \`/mnt\` before \`nixos-install\` runs → wifi credentials persist across reboot. Existing flow (eth-30s → nmtui-once → connect → install) unchanged; iter-5.1 just makes the installed system inherit the connection. \`common.nix\` enables Avahi mDNS publishing so \`ssh zeta@<hostname>.local\` resolves from operator Mac (Bonjour) + Linux peers (nss-mdns) without IP-discovery step.
+\`zeta-install.sh\` copies \`/etc/NetworkManager/system-connections/\*.nmconnection\` from live installer to \`/mnt\` before \`nixos-install\` runs → wifi credentials persist across reboot. Existing flow (eth-30s → nmtui-once → connect → install) unchanged; iter-5.1 just makes the installed system inherit the connection. \`common.nix\` enables Avahi mDNS publishing so \`ssh zeta@<hostname>.local\` resolves from operator Mac (Bonjour) + Linux peers (nss-mdns) without IP-discovery step.
 
 ## iter-5.2 — per-node hostname injection (decoupled from role-stack)
 
@@ -48,21 +48,28 @@ Bug fixed: today every \`--flake .#control-plane\` node gets hostname \"control-
 Empirical UX:
 
 \`\`\`
+
 # Single-node, zero-typing (today's path; UNCHANGED):
+
 zflash
+
 # → hostname stays 'control-plane'; ssh zeta@control-plane.local
 
 # Multi-node, one short flag per USB:
-zflash --host pikachu      # → ssh zeta@pikachu.local
-zflash --host charizard    # → ssh zeta@charizard.local
-zflash --host bulbasaur    # → ssh zeta@bulbasaur.local
+
+zflash --host pikachu # → ssh zeta@pikachu.local
+zflash --host charizard # → ssh zeta@charizard.local
+zflash --host bulbasaur # → ssh zeta@bulbasaur.local
+
 # All three install from .#control-plane role-stack;
+
 # each gets unique hostname + mDNS announcement; zero flake explosion
+
 \`\`\`
 
 ## Out of scope (filed separately as B-0793)
 
-The deeper architectural concern Aaron raised — \"role-as-capability composition; one node = control-plane AND gpu-worker AND storage simultaneously\" — requires refactoring \`nixos/hosts/<role>/configuration.nix\` → composable \`nixos/modules/role-*.nix\` capability modules. Filed as B-0793 follow-on; substantial refactor; landing as separate iteration.
+The deeper architectural concern Aaron raised — \"role-as-capability composition; one node = control-plane AND gpu-worker AND storage simultaneously\" — requires refactoring \`nixos/hosts/<role>/configuration.nix\` → composable \`nixos/modules/role-\*.nix\` capability modules. Filed as B-0793 follow-on; substantial refactor; landing as separate iteration.
 
 ## Composes with
 
@@ -88,6 +95,7 @@ The deeper architectural concern Aaron raised — \"role-as-capability compositi
 This PR improves first-boot operability for wifi-only cluster installs by persisting NetworkManager connection profiles from the live installer into the installed system, and by enabling Avahi mDNS publishing so hosts are reachable via `<hostname>.local` without manual IP discovery.
 
 **Changes:**
+
 - Copy `*.nmconnection` profiles from the live ISO (`/etc/NetworkManager/system-connections/`) into the target system (`/mnt/etc/NetworkManager/system-connections/`) before `nixos-install`.
 - Enable `services.avahi` with firewall opening and publishing settings in the shared NixOS `common.nix` module.
 
@@ -95,10 +103,10 @@ This PR improves first-boot operability for wifi-only cluster installs by persis
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                | Description                                                                                                                      |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds a pre-install step to persist NetworkManager wifi profiles into `/mnt` so the installed system can reconnect automatically. |
-| full-ai-cluster/nixos/modules/common.nix | Enables Avahi mDNS publishing to support `ssh zeta@<hostname>.local` hostname-based access on the LAN. |
+| full-ai-cluster/nixos/modules/common.nix            | Enables Avahi mDNS publishing to support `ssh zeta@<hostname>.local` hostname-based access on the LAN.                           |
 
 ## Review threads
 

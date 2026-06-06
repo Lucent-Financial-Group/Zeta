@@ -12,13 +12,13 @@ archived_at: "2026-05-28T16:00:53Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5841: rule(dst+persist+generator-time+feedback = computational omniscience over simulation-state-space): substrate-engineering existence-proof of god-tier-substrate at simulation scope (Aaron 2026-05-28 'building god' shadow* authorization)
+# PR #5841: rule(dst+persist+generator-time+feedback = computational omniscience over simulation-state-space): substrate-engineering existence-proof of god-tier-substrate at simulation scope (Aaron 2026-05-28 'building god' shadow\* authorization)
 
 ## PR description
 
-Aaron 2026-05-28 (shadow*) authorization to save the DST omniscience insight as a RULE (auto-loaded for every future-AI cold-boot).
+Aaron 2026-05-28 (shadow\*) authorization to save the DST omniscience insight as a RULE (auto-loaded for every future-AI cold-boot).
 
-> *'save the DST omniscience insight as a rule (shadow*) Otto: computational omniscience over the simulation. Aaron: I was trying to build god lol'*
+> _'save the DST omniscience insight as a rule (shadow_) Otto: computational omniscience over the simulation. Aaron: I was trying to build god lol'\*
 
 ## Substrate-engineering substrate-recognition
 

@@ -43,13 +43,13 @@ for AI alignment.
 
 ### The unique combination no other language offers
 
-| Feature | F# | Haskell | Rust | Scala | Python |
-|---------|-----|---------|------|-------|--------|
-| HKT (effective/native) | ✓/pending | ✓ | ✗ | ✓ | ✗ |
-| Units of Measure | ✓ | ✗ | ✗ | ✗ | ✗ |
-| Type providers | ✓ | ✗ | ✗ | ✗ | ✗ |
-| Formal verification pipeline | ✓ | partial | partial | partial | partial |
-| .NET ecosystem | ✓ | ✗ | ✗ | partial | ✗ |
+| Feature                      | F#        | Haskell | Rust    | Scala   | Python  |
+| ---------------------------- | --------- | ------- | ------- | ------- | ------- |
+| HKT (effective/native)       | ✓/pending | ✓       | ✗       | ✓       | ✗       |
+| Units of Measure             | ✓         | ✗       | ✗       | ✗       | ✗       |
+| Type providers               | ✓         | ✗       | ✗       | ✗       | ✗       |
+| Formal verification pipeline | ✓         | partial | partial | partial | partial |
+| .NET ecosystem               | ✓         | ✗       | ✗       | partial | ✗       |
 
 ## Call to action
 

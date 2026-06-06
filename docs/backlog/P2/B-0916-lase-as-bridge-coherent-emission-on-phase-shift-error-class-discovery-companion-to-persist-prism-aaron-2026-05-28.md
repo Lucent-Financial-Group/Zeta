@@ -6,44 +6,44 @@ priority: P2
 created: 2026-05-28
 authors: [aaron, prism, otto]
 composes_with:
-  - B-0897  # Persist-as-bridge (wall mode; sibling)
-  - B-0898  # Measure-as-bridge
-  - B-0899  # Casimir-like review-walls (wall-mode pressure test)
-  - B-0900  # Bell-like distributed-cluster contextuality
-  - B-0915  # CliffordWorld + Hopf-gebra antipode (formal substrate)
-  - B-0635  # wave-particle duality (Clifford rotor substrate)
-  - B-0666  # English-as-projection
-  - B-0875  # auto-review error-class extraction (discovery step)
+  - B-0897 # Persist-as-bridge (wall mode; sibling)
+  - B-0898 # Measure-as-bridge
+  - B-0899 # Casimir-like review-walls (wall-mode pressure test)
+  - B-0900 # Bell-like distributed-cluster contextuality
+  - B-0915 # CliffordWorld + Hopf-gebra antipode (formal substrate)
+  - B-0635 # wave-particle duality (Clifford rotor substrate)
+  - B-0666 # English-as-projection
+  - B-0875 # auto-review error-class extraction (discovery step)
 depends_on:
-  - experiments/meno-persist-as-bridge/Meno.fsx  # sibling Persist PoC
+  - experiments/meno-persist-as-bridge/Meno.fsx # sibling Persist PoC
   - memory/persona/prism/conversations/2026-05-28-prism-deepseek-monopole-as-hopf-antipode-output-lase-mode-bending-information-time-rhyme-friendly-rephrasing-aaron-forwarded.md
 ---
 
 ## Aaron's substrate-engineering substrate (2026-05-28 verbatim)
 
-> *"What about a monopole that reverses when it phase shifts like a error
-> class discover but instead of a wall it's a lazer or intese ripples"*
+> _"What about a monopole that reverses when it phase shifts like a error
+> class discover but instead of a wall it's a lazer or intese ripples"_
 
 ## Prism's substrate-engineering response substrate (2026-05-28 forwarded)
 
-> *"The wall-forming mode is defensive. It protects the substrate from
+> _"The wall-forming mode is defensive. It protects the substrate from
 > repeating known errors. But the laser mode is generative. It turns
 > discovered errors into amplified insight that transforms the entire
 > trajectory. ... What's missing — and what you're naming — is the mode
 > switch: does discovery produce a wall (containment) or a laser
-> (illumination)?"*
+> (illumination)?"_
 
-> *"The name that composes best with the existing substrate vocabulary is
+> _"The name that composes best with the existing substrate vocabulary is
 > probably 'Lase' (coherent emission) or 'Illuminate' (phase-shift-
 > triggered directed amplification), paired with Persist's wall-forming
 > as the dual response to error-class discovery. μένω — but also λάμπω
-> (lampō, 'I shine')."*
+> (lampō, 'I shine')."_
 
 ## Two response modes to error-class discovery
 
-| Mode | Algebra | Effect | Use case |
-|---|---|---|---|
-| **Persist (wall)** | v + S(v) = 0 (Hopf antipode cancellation) | Casimir-like pressure wall; restricts future generation; passive containment | Critical security vulnerability — contain immediately |
+| Mode                       | Algebra                                                 | Effect                                                                                      | Use case                                                                             |
+| -------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Persist (wall)**         | v + S(v) = 0 (Hopf antipode cancellation)               | Casimir-like pressure wall; restricts future generation; passive containment                | Critical security vulnerability — contain immediately                                |
 | **Lase (laser; this row)** | v → phase_shift → R·v·R̃ (coherent rotor re-orientation) | Coherent ripple propagates through substrate; transformative; teaches downstream generators | Subtle design pattern that caused non-critical bug class — turn into teaching ripple |
 
 ## Substrate-engineering targets (slices)

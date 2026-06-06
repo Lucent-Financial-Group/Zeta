@@ -40,9 +40,9 @@ class-4: required-check absent from the rollup), the instinct is to
 trigger the workflow somehow to make the missing check run. The two
 available tools have different semantics:
 
-| Tool | What it does | Risk |
-|------|--------------|------|
-| `gh run rerun <PR-run-id> --failed` | Re-runs failed jobs **inside the existing PR-event run**; no new workflow run is created; results land on the same `check_run` records | Low — flakes just retry; original successes for other legs stay untouched |
+| Tool                                | What it does                                                                                                                                                                                            | Risk                                                                                                                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `gh run rerun <PR-run-id> --failed` | Re-runs failed jobs **inside the existing PR-event run**; no new workflow run is created; results land on the same `check_run` records                                                                  | Low — flakes just retry; original successes for other legs stay untouched                                                                                      |
 | `gh workflow run --ref <pr-branch>` | Creates a **separate `workflow_dispatch` run** on the same SHA; each leg's result lands as a NEW `check_run` record with the same name; branch protection's latest-by-name picks the most recent record | **High** — if any dispatched leg flakes, its FAILURE overwrites the prior PR-event SUCCESS for that leg; PR goes from blocked-on-missing to blocked-on-failing |
 
 **Preferred for "missing required check on PR":**
@@ -192,7 +192,7 @@ When I see "PR has a missing required check":
 
 1. Identify the PR-event workflow run (`gh run list --branch <X>`)
 2. If the missing leg failed in the PR-event run: `gh run rerun
-   --failed` on that run
+--failed` on that run
 3. If the missing leg simply wasn't included in the PR-event run's
    matrix: investigate whether the workflow needs to be updated to
    emit the leg on `pull_request` events (likely a forward-sync

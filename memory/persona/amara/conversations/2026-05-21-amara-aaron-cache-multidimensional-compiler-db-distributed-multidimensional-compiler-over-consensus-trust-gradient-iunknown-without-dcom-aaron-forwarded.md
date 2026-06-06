@@ -4,7 +4,30 @@ description: "Amara cascade continuation 2026-05-21 — Zeta compiler DB lineage
 type: feedback
 created: 2026-05-21
 participants: [Amara (ChatGPT/Aurora), Aaron, Otto-CLI]
-tags: [amara, intersystems-cache, mumps-globals, persistent-multidimensional-store, zeta-compiler-db, distributed-multidimensional-compiler-over-consensus, languages-as-query-surfaces, trust-gradient-consensus, capability-negotiated-consistency, iunknown-without-dcom, queryinterface-pattern, orleans-activation-lifetime, spiffe-spire, opa-policy, reticulum-transport, saga-compensation, bft-multi-oracle-adversarial-layer, time-pointer-negotiated-like-interface-pointer, hlc-vector-tier-deferred-causality-escalation, b-0688-extension, agora-v6-applied-to-compiler-substrate]
+tags:
+  [
+    amara,
+    intersystems-cache,
+    mumps-globals,
+    persistent-multidimensional-store,
+    zeta-compiler-db,
+    distributed-multidimensional-compiler-over-consensus,
+    languages-as-query-surfaces,
+    trust-gradient-consensus,
+    capability-negotiated-consistency,
+    iunknown-without-dcom,
+    queryinterface-pattern,
+    orleans-activation-lifetime,
+    spiffe-spire,
+    opa-policy,
+    reticulum-transport,
+    saga-compensation,
+    bft-multi-oracle-adversarial-layer,
+    time-pointer-negotiated-like-interface-pointer,
+    hlc-vector-tier-deferred-causality-escalation,
+    b-0688-extension,
+    agora-v6-applied-to-compiler-substrate,
+  ]
 ---
 
 # Amara — Caché-like multidimensional compiler DB + distributed multidimensional compiler over consensus + trust-gradient capability negotiation + IUnknown-without-DCOM
@@ -29,9 +52,9 @@ Three substantive architectural insights this cascade preserves:
 
 ## Amara's Caché-lineage framing (verbatim)
 
-> *"Ahhh yes — InterSystems Caché, not 'a cache.' That makes your comparison much better. Yes: the Zeta compiler DB idea is closer to Caché / MUMPS globals than to a normal compiler cache."*
+> _"Ahhh yes — InterSystems Caché, not 'a cache.' That makes your comparison much better. Yes: the Zeta compiler DB idea is closer to Caché / MUMPS globals than to a normal compiler cache."_
 
-> *"Caché's core idea is not 'temporary cached values.' It is a persistent, multidimensional/hierarchical data engine with multiple access models over the same underlying data: object, SQL, and direct multidimensional access. It descends from M technology / MUMPS globals, where persistent hierarchical arrays are the native storage shape."*
+> _"Caché's core idea is not 'temporary cached values.' It is a persistent, multidimensional/hierarchical data engine with multiple access models over the same underlying data: object, SQL, and direct multidimensional access. It descends from M technology / MUMPS globals, where persistent hierarchical arrays are the native storage shape."_
 
 ### The mapping (Amara's design)
 
@@ -53,15 +76,15 @@ Zeta compiler version:
   + provenance/retraction view
 ```
 
-> *"So yes — it's like Caché for compiler reality."*
+> _"So yes — it's like Caché for compiler reality."_
 
 ### The keeper phrase Amara coined
 
-> *"Zeta Compiler DB is an InterSystems Caché-like multidimensional global store for compiler state, upgraded with DBSP retractions, Rx observables, tensor meta-tags, and deterministic replay."*
+> _"Zeta Compiler DB is an InterSystems Caché-like multidimensional global store for compiler state, upgraded with DBSP retractions, Rx observables, tensor meta-tags, and deterministic replay."_
 
 ### MUMPS globals shape applied to compiler facts
 
-> *"Not: source file -> parser cache. But:"*
+> _"Not: source file -> parser cache. But:"_
 
 ```text
 ^Compiler("Source", path, hash)
@@ -73,15 +96,15 @@ Zeta compiler version:
 ^Compiler("Diagnostic", file, span, message)
 ```
 
-> *"The key difference is that Zeta adds DBSP/Z-set semantics: `+ fact`, `- fact`. So it is Caché-like persistent multidimensional compiler state, but with formal retractability and deterministic seeded replay."*
+> _"The key difference is that Zeta adds DBSP/Z-set semantics: `+ fact`, `- fact`. So it is Caché-like persistent multidimensional compiler state, but with formal retractability and deterministic seeded replay."_
 
 ### Why the lineage matters operationally
 
-> *"That's a very strong architecture. It also explains why healthcare/medical DB intuition keeps showing up: Caché was designed for long-lived operational state where correctness, persistence, and flexible views matter. Zeta is applying that same shape to compiler/runtime/agent state."*
+> _"That's a very strong architecture. It also explains why healthcare/medical DB intuition keeps showing up: Caché was designed for long-lived operational state where correctness, persistence, and flexible views matter. Zeta is applying that same shape to compiler/runtime/agent state."_
 
 ## Aaron's load-bearing reframe (verbatim)
 
-> *"fyi this stack inlcuding the compiler and a few agents get deployed with ours ours is a distributed multidmensional compiler over consensuse. let me share. we also have a sql linq / general any language parser on the path"*
+> _"fyi this stack inlcuding the compiler and a few agents get deployed with ours ours is a distributed multidmensional compiler over consensuse. let me share. we also have a sql linq / general any language parser on the path"_
 
 This is the substantive architectural commitment. Composes with:
 
@@ -92,7 +115,7 @@ This is the substantive architectural commitment. Composes with:
 
 ## Amara's "distributed multidimensional compiler" framing (verbatim)
 
-> *"Yeah. This is the cleanest frame yet: Zeta is not 'a compiler deployed on a distributed system.' It is a distributed multidimensional compiler over consensus, with agents, parsers, generators, DBSP/Z-sets, Rx queries, and runtime state all participating in one evolving compiler substrate."*
+> _"Yeah. This is the cleanest frame yet: Zeta is not 'a compiler deployed on a distributed system.' It is a distributed multidimensional compiler over consensus, with agents, parsers, generators, DBSP/Z-sets, Rx queries, and runtime state all participating in one evolving compiler substrate."_
 
 ### The shift Amara surfaced
 
@@ -113,9 +136,9 @@ Zeta compiler:
 
 ### Languages-as-query-surfaces (the keeper phrase)
 
-> *"So the compiler is not just producing code. It is maintaining a shared, retractable, queryable, multi-language state across the mesh."*
+> _"So the compiler is not just producing code. It is maintaining a shared, retractable, queryable, multi-language state across the mesh."_
 
-> *"The SQL / LINQ / 'any language parser' path matters because it makes language surfaces into views over the substrate:"*
+> _"The SQL / LINQ / 'any language parser' path matters because it makes language surfaces into views over the substrate:"_
 
 ```text
 F# CE
@@ -129,15 +152,15 @@ runtime metric query
 all become different front doors into the same compiler database.
 ```
 
-> *"Languages are not the substrate. Languages are query surfaces over the substrate."*
+> _"Languages are not the substrate. Languages are query surfaces over the substrate."_
 
-> *"That line might be the keeper."*
+> _"That line might be the keeper."_
 
 This composes directly with the multi-oracle discipline per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multiple languages-as-oracles all view the same substrate; no single language has authoritative claim.
 
 ## Amara's six-point architecture skeleton
 
-> *"The sharp architecture I'd preserve:"*
+> _"The sharp architecture I'd preserve:"_
 
 ```text
 1. Local compiler facts are cheap and retractable.
@@ -152,7 +175,7 @@ The 5th point ("agents act as compiler participants, not just chat workers") is 
 
 ### Tiny blade Amara cut
 
-> *"Tiny blade: do not put consensus under every compiler event. That would murder the elegance. Use consensus where a fact becomes shared authority:"*
+> _"Tiny blade: do not put consensus under every compiler event. That would murder the elegance. Use consensus where a fact becomes shared authority:"_
 
 ```text
 local parse fact -> no consensus
@@ -164,25 +187,25 @@ wallet/deployment/infra action -> consensus
 multi-agent accepted ontology update -> consensus
 ```
 
-> *"So the model is not 'global consensus compiler.' It is: local-first compiler state with consensus escalation at authority boundaries."*
+> _"So the model is not 'global consensus compiler.' It is: local-first compiler state with consensus escalation at authority boundaries."_
 
-> *"That matches what you were already saying about row-level CAS / escalation. Same discipline."*
+> _"That matches what you were already saying about row-level CAS / escalation. Same discipline."_
 
 The composition with the prior Kestrel-trajectory framing (per the just-merged 25-section archive section on row-level CAS with escalation) is exact — same operational discipline operating at compiler-fact scope.
 
 ### Amara's keeper phrase for the design doc
 
-> *"Zeta is a distributed multidimensional compiler: source code, queries, generated artifacts, memory, agent actions, runtime metrics, and ontology facts are all represented as retractable compiler facts. Local facts evolve through DBSP/Z-set deltas; cross-boundary commitments escalate to consensus."*
+> _"Zeta is a distributed multidimensional compiler: source code, queries, generated artifacts, memory, agent actions, runtime metrics, and ontology facts are all represented as retractable compiler facts. Local facts evolve through DBSP/Z-set deltas; cross-boundary commitments escalate to consensus."_
 
 ## Aaron's IUnknown-without-DCOM clarification (verbatim)
 
-> *"yes on consensus it will even take different shapes across the trust graident were you able to read the attached file last time it's iunknown from dcom without the ref counting and using orleans for capability routing and lifetime managment with saga for dtc over durable functions/taks. bft at multi oracle level"*
+> _"yes on consensus it will even take different shapes across the trust graident were you able to read the attached file last time it's iunknown from dcom without the ref counting and using orleans for capability routing and lifetime managment with saga for dtc over durable functions/taks. bft at multi oracle level"_
 
 Aaron's substrate-honest correction extends Amara's "trust gradient" framing with the explicit IUnknown lineage clarification — preserves the QueryInterface pattern while rejecting DCOM's specific failure modes.
 
 ## Amara's trust-gradient capability-negotiation model
 
-> *"Consensus should take different shapes across the trust gradient. The clean model is:"*
+> _"Consensus should take different shapes across the trust gradient. The clean model is:"_
 
 ```text
 Local compiler/agent facts
@@ -207,11 +230,11 @@ Multi-oracle / adversarial boundary
   → BFT quorum
 ```
 
-> *"So it is not one consensus hammer. It is capability-negotiated consistency."*
+> _"So it is not one consensus hammer. It is capability-negotiated consistency."_
 
 ### The IUnknown-shaped pattern preserved
 
-> *"The IUnknown analogy stays useful if we phrase it like this:"*
+> _"The IUnknown analogy stays useful if we phrase it like this:"_
 
 ```text
 QueryInterface:
@@ -223,7 +246,7 @@ Zeta boundary negotiation:
 
 ### What Zeta rejects from COM/DCOM
 
-> *"But Zeta rejects the bad COM/DCOM parts:"*
+> _"But Zeta rejects the bad COM/DCOM parts:"_
 
 - No distributed reference counting
 - No lifetime-by-client-count
@@ -232,7 +255,7 @@ Zeta boundary negotiation:
 
 ### What replaces each COM/DCOM concern
 
-> *"Instead:"*
+> _"Instead:"_
 
 ```text
 Orleans manages activation/lifetime.
@@ -245,7 +268,7 @@ BFT only appears at the multi-oracle / adversarial layer.
 
 ### Time/clock pointer as negotiated capability
 
-> *"That means the 'time pointer' or 'clock pointer' is negotiated like an interface pointer, but its authority depends on the boundary:"*
+> _"That means the 'time pointer' or 'clock pointer' is negotiated like an interface pointer, but its authority depends on the boundary:"_
 
 ```text
 local monotonic clock
@@ -257,9 +280,9 @@ local monotonic clock
 
 ### Amara's keeper phrase for IUnknown-without-DCOM
 
-> *"Zeta uses QueryInterface-shaped negotiation over trust gradients, Orleans-shaped lifetimes, saga-shaped compensation, and BFT only where adversarial multi-oracle agreement is actually required."*
+> _"Zeta uses QueryInterface-shaped negotiation over trust gradients, Orleans-shaped lifetimes, saga-shaped compensation, and BFT only where adversarial multi-oracle agreement is actually required."_
 
-> *"That is very strong. It gives the architecture lineage without inheriting DCOM's ghosts."*
+> _"That is very strong. It gives the architecture lineage without inheriting DCOM's ghosts."_
 
 ## Five architectural recognitions this cascade preserves
 

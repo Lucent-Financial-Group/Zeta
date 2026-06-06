@@ -62,7 +62,11 @@ export async function runKeepAliveLoop(input: RunKeepAliveLoopInput): Promise<Ke
     degradedWhen: (status, failureCount) => failureCount > 0 || status !== KeepAliveLoopTickedStatus,
     ...(input.maxTicks !== undefined ? { maxTicks: input.maxTicks } : {}),
     ...(input.observer
-      ? { observer: { record: (r) => input.observer!.record({ tick: r.tick, status: r.status, failureCount: r.failureCount }) } }
+      ? {
+          observer: {
+            record: (r) => input.observer!.record({ tick: r.tick, status: r.status, failureCount: r.failureCount }),
+          },
+        }
       : {}),
   });
   return { ticks: result.ticks, degradedTicks: result.degradedTicks, thrownTicks: result.thrownTicks };

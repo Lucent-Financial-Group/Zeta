@@ -2,7 +2,7 @@
 
 Status: active — shipped + iterating; first surfaced as a trajectory 2026-05-29 from substrate inventory (the flashing mechanism works on `origin/main`; this surface was missing, so the workstream lived head-only)
 Last refreshed: 2026-05-29
-Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
+Type: workstream (current-focus) — a trajectory the operator is _actively powering_. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). (Genus = "trajectory"; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`. See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; WiFi reproducibility (nixos.org closure-fetch timeouts) + the zflash doc-vs-implementation gap (B-0844) are the live edges
 Next concrete action: close the B-0844 zflash agent-mode native-impl gap; land B-0831 CI full-install + cluster-auto-join to retire routine human physical-USB testing
@@ -12,12 +12,12 @@ Next concrete action: close the B-0844 zflash agent-mode native-impl gap; land B
 The "usb/zflash" workstream is the **flashing mechanism** for getting NixOS
 onto cluster hardware: the USB NixOS installer + the `zflash` tool (Touch ID +
 random nonce + SSH-key auto-inject + control-plane/worker role-picker). It is
-the sibling of `cluster-encryption-credential-substrate` (which owns *what*
-secrets get injected); this trajectory owns *how the bits get onto the metal
-and boot into a joinable node*.
+the sibling of `cluster-encryption-credential-substrate` (which owns _what_
+secrets get injected); this trajectory owns _how the bits get onto the metal
+and boot into a joinable node_.
 
 **Deeper purpose — self-healing hardware (the human maintainer 2026-05-29):**
-the USB is not only first-install; it is the *self-healing repair* mechanism for
+the USB is not only first-install; it is the _self-healing repair_ mechanism for
 the local accelerator cluster. A human's only job is to plug in the USB — any
 failed node in the K8s / GPU-accelerator cluster re-images, re-joins, and
 re-credentials itself. This gives Zeta **local + free-cloud both**: the

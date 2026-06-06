@@ -57,7 +57,7 @@ speculative-work known-gap-fix tier (auto-loop-45).
 
 Append-only discipline (Otto-229) honoured: no existing
 prior row was edited; the fix is a structural completion of
-rows *introduced by this PR*, not a rewrite of rows
+rows _introduced by this PR_, not a rewrite of rows
 previously landed on `main`.
 
 **Verification:**
@@ -151,7 +151,7 @@ failures masked:
 
 - `lint memory/MEMORY.md reference-existence` — FAIL
   (`observed-phenomena/2026-04-19-transcript-duplication-
-  splitbrain-hypothesis.md -> ... (not found)`).
+splitbrain-hypothesis.md -> ... (not found)`).
 
 **Root cause:** `tools/hygiene/audit-memory-references.sh`
 resolves link targets containing `/` as cwd-relative (from
@@ -207,7 +207,7 @@ pure merge-conflict drain.
   commit) removed via `git rm -rf` — superseded by
   `samples/ServiceTitanCrm/` which already lives on `main`
   with the same content modulo the `CrmKernel ->
-  ServiceTitanCrm` rename. Keeping the `CrmKernel`
+ServiceTitanCrm` rename. Keeping the `CrmKernel`
   directory would duplicate source at the filesystem level
   and cause a project-GUID collision in the solution.
 

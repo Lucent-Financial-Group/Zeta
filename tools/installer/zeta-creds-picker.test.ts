@@ -18,8 +18,15 @@ describe("parseArgs", () => {
 
   it("accepts --persona + --dry-run", () => {
     const r = parseArgs([
-      "--usb-uuid", "u1", "--output", "/o", "--passphrase-file", "/pp",
-      "--persona", "otto", "--dry-run",
+      "--usb-uuid",
+      "u1",
+      "--output",
+      "/o",
+      "--passphrase-file",
+      "/pp",
+      "--persona",
+      "otto",
+      "--dry-run",
     ]);
     if ("error" in r) throw new Error(r.error);
     expect(r.persona).toBe("otto");
@@ -62,15 +69,27 @@ describe("parseArgs", () => {
 
 describe("buildVerifyArgs", () => {
   it("composes restore CLI args with --dry-run + provided tmpdir", () => {
-    const parsed = parseArgs(["--usb-uuid", "u1", "--output", "/mnt/boot/zeta-creds.enc", "--passphrase-env", "ZETA_PP", "--verify"]);
+    const parsed = parseArgs([
+      "--usb-uuid",
+      "u1",
+      "--output",
+      "/mnt/boot/zeta-creds.enc",
+      "--passphrase-env",
+      "ZETA_PP",
+      "--verify",
+    ]);
     if ("error" in parsed) throw new Error(parsed.error);
     const args = buildVerifyArgs(parsed, "/tmp/verify-x");
     expect(args).toContain("tools/installer/zeta-creds-restore.ts");
-    expect(args).toContain("--usb-uuid"); expect(args).toContain("u1");
-    expect(args).toContain("--input"); expect(args).toContain("/mnt/boot/zeta-creds.enc");
-    expect(args).toContain("--target-root"); expect(args).toContain("/tmp/verify-x");
+    expect(args).toContain("--usb-uuid");
+    expect(args).toContain("u1");
+    expect(args).toContain("--input");
+    expect(args).toContain("/mnt/boot/zeta-creds.enc");
+    expect(args).toContain("--target-root");
+    expect(args).toContain("/tmp/verify-x");
     expect(args).toContain("--dry-run");
-    expect(args).toContain("--passphrase-env"); expect(args).toContain("ZETA_PP");
+    expect(args).toContain("--passphrase-env");
+    expect(args).toContain("ZETA_PP");
   });
 
   it("propagates --passphrase-file when picker used file source", () => {
@@ -106,7 +125,14 @@ describe("runPicker", () => {
       "d", // gh-cli
       // claude/gemini/codex auto-skip (persona-scoped + no persona)
       // ssh-host-keys / ssh-operator-pubkey: prompt depending on handler/scope
-      "d", "d", "d", "d", "d", "d", "d", "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
     ]);
     const args = await runPicker(rl, null);
     expect(args.length).toBe(0);
@@ -115,10 +141,7 @@ describe("runPicker", () => {
   it("bakes gh-cli with literal value when chosen", async () => {
     // Skip persona-scoped (no persona); gh-cli is the first global cred.
     // Answers: bake, literal, value, then defer remaining
-    const rl = mockRl([
-      "b", "l", "ghp_test_value",
-      "d", "d", "d", "d", "d", "d", "d", "d",
-    ]);
+    const rl = mockRl(["b", "l", "ghp_test_value", "d", "d", "d", "d", "d", "d", "d", "d"]);
     const args = await runPicker(rl, null);
     expect(args.length).toBeGreaterThanOrEqual(1);
     const gh = args.find((a) => a.startsWith("gh-cli="));
@@ -127,28 +150,31 @@ describe("runPicker", () => {
 
   it("skips empty literal value", async () => {
     const rl = mockRl([
-      "b", "l", "", // gh-cli bake, literal, EMPTY
-      "d", "d", "d", "d", "d", "d", "d", "d",
+      "b",
+      "l",
+      "", // gh-cli bake, literal, EMPTY
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
     ]);
     const args = await runPicker(rl, null);
     expect(args.find((a) => a.startsWith("gh-cli="))).toBeUndefined();
   });
 
   it("uses @file syntax when operator picks file source", async () => {
-    const rl = mockRl([
-      "b", "f", "/tmp/test-file",
-      "d", "d", "d", "d", "d", "d", "d", "d",
-    ]);
+    const rl = mockRl(["b", "f", "/tmp/test-file", "d", "d", "d", "d", "d", "d", "d", "d"]);
     const args = await runPicker(rl, null);
     const gh = args.find((a) => a.startsWith("gh-cli="));
     expect(gh).toBe("gh-cli=@/tmp/test-file");
   });
 
   it("uses env: syntax when operator picks env source", async () => {
-    const rl = mockRl([
-      "b", "e", "GH_TOKEN",
-      "d", "d", "d", "d", "d", "d", "d", "d",
-    ]);
+    const rl = mockRl(["b", "e", "GH_TOKEN", "d", "d", "d", "d", "d", "d", "d", "d"]);
     const args = await runPicker(rl, null);
     const gh = args.find((a) => a.startsWith("gh-cli="));
     expect(gh).toBe("gh-cli=env:GH_TOKEN");
@@ -169,9 +195,17 @@ describe("runPicker", () => {
     // DEFAULT_MANIFEST iteration.
     const rl = mockRl([
       "d", // gh-cli
-      "b", "l", '{"creds":"otto-claude"}', // claude bake literal
-      "d", "d", // gemini, codex
-      "d", "d", "d", "d", "d", "d", // remaining
+      "b",
+      "l",
+      '{"creds":"otto-claude"}', // claude bake literal
+      "d",
+      "d", // gemini, codex
+      "d",
+      "d",
+      "d",
+      "d",
+      "d",
+      "d", // remaining
     ]);
     const args = await runPicker(rl, "otto");
     expect(args.find((a) => a.startsWith("claude="))).toBe('claude={"creds":"otto-claude"}');

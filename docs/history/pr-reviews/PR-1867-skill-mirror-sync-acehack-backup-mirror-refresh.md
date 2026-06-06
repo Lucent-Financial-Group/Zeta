@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1867 |
-| Title | skill: mirror-sync — AceHack backup mirror refresh |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T11:54:32Z |
-| Merged at | 2026-05-07T11:56:21Z |
-| Merge commit SHA | `6a677e82e2a314a4a80e4f45e4ee009509edaab2` |
-| Branch | `skill/mirror-sync-acehack` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1867 |
-| Changed files | 1 |
-| Additions / deletions | +50 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1867                                                     |
+| Title                 | skill: mirror-sync — AceHack backup mirror refresh       |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T11:54:32Z                                     |
+| Merged at             | 2026-05-07T11:56:21Z                                     |
+| Merge commit SHA      | `6a677e82e2a314a4a80e4f45e4ee009509edaab2`               |
+| Branch                | `skill/mirror-sync-acehack`                              |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1867 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +50 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - New skill at `.claude/skills/mirror-sync/SKILL.md`
 - Mechanizes AceHack backup mirror sync via force-push-with-lease
 - Aaron added as bypass actor on AceHack ruleset (2026-05-07)
 - Triggers on "sync mirror", "update acehack", "backup mirror"
 
 ## Test plan
+
 - [x] Mirror sync executed successfully (1022 commits synced)
 - [x] Bypass actor confirmed working
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 6 |
-| Resolved threads | 0 |
-| Unresolved threads | 6 |
-| Total review comments | 6 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 6     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 6     |
+| Total review comments                     | 6     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -65,9 +67,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Make trigger frontmatter valid YAML**
-
+  
   The `trigger` field is not valid YAML as written (`"sync mirror", "update acehack", ...`), so any loader that parses SKILL.md frontmatter as YAML will fail to parse this file or drop the field, which can prevent the skill from being discovered/invoked. This repo treats SKILL.md headers as YAML frontmatter, so this should be encoded as a proper YAML sequence (e.g., bracketed list or `-` items) or a single scalar string.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -83,7 +85,7 @@
 
   <pre>
   Frontmatter `trigger:` value is not valid YAML (comma-separated quoted scalars without a list wrapper). If anything parses this frontmatter as YAML, the skill won’t load. Use a YAML sequence (e.g., a `triggers:` list or a flow-style list) or move triggers into the body if they’re not part of the supported schema.
-
+  
   </pre>
 
 ### Thread 3 -- unresolved
@@ -98,7 +100,7 @@
 
   <pre>
   This new SKILL.md is missing the DV-2.0 provenance frontmatter fields that the repo’s skill docs standard expects (e.g., `record_source`, `load_datetime`, `last_updated`, `status`, `bp_rules_cited`). Adding them makes the skill auditable and keeps it consistent with the majority of skills that already carry these fields.
-
+  
   </pre>
 
 ### Thread 4 -- unresolved
@@ -127,7 +129,7 @@
 
   <pre>
   The procedure prints divergence counts but doesn’t say what to do when AceHack is ahead/diverged. As written, the next step will overwrite AceHack/main (and potentially delete commits) as long as your lease matches. Please add an explicit decision/stop condition (e.g., bail out when “AceHack ahead by” is non-zero unless the operator has performed an explicit reset workflow).
-
+  
   </pre>
 
 ### Thread 6 -- unresolved

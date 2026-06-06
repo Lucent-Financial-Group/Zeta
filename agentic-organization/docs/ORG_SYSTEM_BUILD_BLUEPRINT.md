@@ -15,7 +15,7 @@ single map of what is being built and how each piece maps to the docs.
 Every decision uses the **`observe → decide` kernel** already in
 `packages/application/src/observe.ts`:
 
-- **deterministic** computes the *legal set* (next legal gate, eligible hats,
+- **deterministic** computes the _legal set_ (next legal gate, eligible hats,
   in-scope reprioritizations, supply-permitted candidates),
 - the **agent composer chooses within it** (which work, approve/reject, who to
   staff, how many hats).
@@ -33,20 +33,20 @@ and `correlationId/causationId/traceId`. "What's happening" is one query over
 
 ## Layers being built (on top of what exists)
 
-Already present (build *on* these): `QualityGateKind` (7 gates),
+Already present (build _on_ these): `QualityGateKind` (7 gates),
 `company-work-policy.ts` (gate-chain order + prior-gate enforcement),
 `work-item-state-machine.ts`, `record_quality_gate_evaluation`, the keep-alive
 control plane, Hermes runs, the observe/decide kernel.
 
-| # | Layer | New modules | Doc anchor |
-|---|---|---|---|
-| P1 | **Org as data** | `domain/department.ts`, `domain/hat-definition.ts`, `application/org-seed.ts` (15 depts + ~100 hats) | DEPARTMENT_HAT_TOOL_INVENTORY |
-| P2 | **Hat binding lifecycle** | `domain/hat-binding.ts` (Pending→Warmup→Active→Probation→Revoked→Expired/Released/Succeeded), `application/hat-lifecycle.ts` (TTL expiry, warmup, cooldown, succession) | CLUSTER_NATIVE_HAT_SYSTEM |
-| P3 | **Prioritization + RMO** | `application/prioritization.ts` (PriorityDecision), `application/rmo.ts` (hat-supply voting) | ANTI_STALL_PRIORITY_RUNTIME |
-| P4 | **Assignment engine** | `application/assignment-engine.ts` (rank by reputation, assign within supply+policy) | CLUSTER_NATIVE_HAT_SYSTEM, ANTI_STALL |
-| P5 | **Work pipeline driver** | `application/pipeline.ts` (discovery→…→release; gate→owner-hat; agent runs approve/reject) | BUSINESS_QUALITY_GATE_SYSTEM |
-| P6 | **Observability** | `domain/org-event.ts`, `observability/org-snapshot.ts`, Cockroach tables + stores | CLUSTER_NATIVE_HAT_SYSTEM §Observability |
-| P7 | **Deploy + observe** | worker lifecycle loops, kind deploy, full-hierarchy proof | all |
+| #   | Layer                     | New modules                                                                                                                                                             | Doc anchor                               |
+| --- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| P1  | **Org as data**           | `domain/department.ts`, `domain/hat-definition.ts`, `application/org-seed.ts` (15 depts + ~100 hats)                                                                    | DEPARTMENT_HAT_TOOL_INVENTORY            |
+| P2  | **Hat binding lifecycle** | `domain/hat-binding.ts` (Pending→Warmup→Active→Probation→Revoked→Expired/Released/Succeeded), `application/hat-lifecycle.ts` (TTL expiry, warmup, cooldown, succession) | CLUSTER_NATIVE_HAT_SYSTEM                |
+| P3  | **Prioritization + RMO**  | `application/prioritization.ts` (PriorityDecision), `application/rmo.ts` (hat-supply voting)                                                                            | ANTI_STALL_PRIORITY_RUNTIME              |
+| P4  | **Assignment engine**     | `application/assignment-engine.ts` (rank by reputation, assign within supply+policy)                                                                                    | CLUSTER_NATIVE_HAT_SYSTEM, ANTI_STALL    |
+| P5  | **Work pipeline driver**  | `application/pipeline.ts` (discovery→…→release; gate→owner-hat; agent runs approve/reject)                                                                              | BUSINESS_QUALITY_GATE_SYSTEM             |
+| P6  | **Observability**         | `domain/org-event.ts`, `observability/org-snapshot.ts`, Cockroach tables + stores                                                                                       | CLUSTER_NATIVE_HAT_SYSTEM §Observability |
+| P7  | **Deploy + observe**      | worker lifecycle loops, kind deploy, full-hierarchy proof                                                                                                               | all                                      |
 
 ## Departments (15) and hierarchy
 
@@ -87,7 +87,7 @@ wearer via `observe→decide` (legal = eligible candidates per successionPolicy)
 
 ## RMO (resource/hat-supply)
 
-From the *prioritized workload* compute `requiredCount` per hat (sum of
+From the _prioritized workload_ compute `requiredCount` per hat (sum of
 `requiredHats` across non-paused, ranked work). Supervisors (Director, Cost
 Controller, CFO, Executive Board by risk) **vote**; the tally yields a
 `HatSupplyDecision` (reserve | release | expand | preempt) with a target count.
@@ -104,15 +104,15 @@ incident_commander|approved_policy; requiredHats; reasonCodes). Platform compute
 
 ## Pipeline (the 7 gates → owner hats)
 
-| Gate | Owner hats |
-|---|---|
-| customer_rfp_review | Product Owner, Business Analyst, Customer Interviewer |
-| brd_approval | BRD Reviewer, Business Approver, Product Owner |
-| architecture_approval | Architect, Architecture Reviewer, Chief Architect |
-| implementation_review | Code Reviewer, Engineering Manager |
-| runtime_validation | QA Verifier, QA Reviewer, Browser Automation QA |
-| final_business_validation | Product Owner, Business Analyst |
-| release_readiness | Release Manager, Delivery Reviewer, TPM |
+| Gate                      | Owner hats                                            |
+| ------------------------- | ----------------------------------------------------- |
+| customer_rfp_review       | Product Owner, Business Analyst, Customer Interviewer |
+| brd_approval              | BRD Reviewer, Business Approver, Product Owner        |
+| architecture_approval     | Architect, Architecture Reviewer, Chief Architect     |
+| implementation_review     | Code Reviewer, Engineering Manager                    |
+| runtime_validation        | QA Verifier, QA Reviewer, Browser Automation QA       |
+| final_business_validation | Product Owner, Business Analyst                       |
+| release_readiness         | Release Manager, Delivery Reviewer, TPM               |
 
 The driver: `observe→decide` computes the next legal gate (prior gates approved/
 waived per `company-work-policy`), routes a reaction-plan agent run to an

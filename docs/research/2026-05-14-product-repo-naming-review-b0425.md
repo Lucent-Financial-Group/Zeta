@@ -14,15 +14,15 @@ Only products with B-0465 verdict `now` need an **approved** slug before B-0468.
 Products with verdict `later` get **provisional** slugs (re-review at repo-creation time).  
 `stays-in-monorepo` products need no slug.
 
-| Product | B-0465 verdict | Slug status needed |
-|---------|---------------|-------------------|
-| Civsim | **now** | Approved |
-| KSK | later | Provisional |
-| DIO | later | Provisional + ⚠️ flag |
-| Aurora | later | Provisional + ⚠️ flag |
-| American Dream 2.0 | later | Provisional |
-| Wellness | later | TBD (pending product definition) |
-| Dawn | stays-in-monorepo | N/A |
+| Product            | B-0465 verdict    | Slug status needed               |
+| ------------------ | ----------------- | -------------------------------- |
+| Civsim             | **now**           | Approved                         |
+| KSK                | later             | Provisional                      |
+| DIO                | later             | Provisional + ⚠️ flag            |
+| Aurora             | later             | Provisional + ⚠️ flag            |
+| American Dream 2.0 | later             | Provisional                      |
+| Wellness           | later             | TBD (pending product definition) |
+| Dawn               | stays-in-monorepo | N/A                              |
 
 ---
 
@@ -32,13 +32,13 @@ Products with verdict `later` get **provisional** slugs (re-review at repo-creat
 
 ### Collisions found
 
-| Collision | Type | Severity | Notes |
-|-----------|------|----------|-------|
-| [UtilityHotbar/civsim](https://github.com/UtilityHotbar/civsim) | GitHub repo (Python, hobby) | Low | Archived/inactive; basic civilisation simulation in Python 3.8 |
-| [molnarp/civsim](https://github.com/molnarp/civsim) | GitHub repo (board game sim) | Low | Civilization: The Board Game combat simulator; personal project |
-| [noamlerner/Civ-Sim](https://github.com/noamlerner/Civ-Sim) | GitHub repo (Python) | Low | Religion-interaction simulation; student project |
-| [yzhwang/civ-sim](https://github.com/yzhwang/civ-sim) | GitHub repo | Low | Minimal activity |
-| [athaun/civ-sim](https://github.com/athaun/civ-sim) | GitHub repo (LWJGL) | Low | Cellular automata; personal project |
+| Collision                                                       | Type                         | Severity | Notes                                                           |
+| --------------------------------------------------------------- | ---------------------------- | -------- | --------------------------------------------------------------- |
+| [UtilityHotbar/civsim](https://github.com/UtilityHotbar/civsim) | GitHub repo (Python, hobby)  | Low      | Archived/inactive; basic civilisation simulation in Python 3.8  |
+| [molnarp/civsim](https://github.com/molnarp/civsim)             | GitHub repo (board game sim) | Low      | Civilization: The Board Game combat simulator; personal project |
+| [noamlerner/Civ-Sim](https://github.com/noamlerner/Civ-Sim)     | GitHub repo (Python)         | Low      | Religion-interaction simulation; student project                |
+| [yzhwang/civ-sim](https://github.com/yzhwang/civ-sim)           | GitHub repo                  | Low      | Minimal activity                                                |
+| [athaun/civ-sim](https://github.com/athaun/civ-sim)             | GitHub repo (LWJGL)          | Low      | Cellular automata; personal project                             |
 
 **npm search:** No `civsim` package found on npm.  
 **NuGet search:** No `Civsim` package found on NuGet.
@@ -63,11 +63,11 @@ The `civsim` slug is available for the LFG GitHub org under `Lucent-Financial-Gr
 
 ### Collisions found
 
-| Collision | Type | Severity | Notes |
-|-----------|------|----------|-------|
-| [Kommando Spezialkräfte](https://en.wikipedia.org/wiki/Kommando_Spezialkr%C3%A4fte) | German special forces (military acronym) | Medium | Elite tier-1 unit of the German Bundeswehr; well-known in national-security / mil-tech circles |
-| KSK = Key Signing Key ([NIST CSRC](https://csrc.nist.gov/glossary/term/ksk)) | DNSSEC cryptography (RFC 4641) | Medium | NIST-standardised abbreviation in DNS security; ambiguous in a security-product context |
-| KSK (various) | Generic abbreviation | Low | Various unrelated uses (Korean entertainment, etc.) |
+| Collision                                                                           | Type                                     | Severity | Notes                                                                                          |
+| ----------------------------------------------------------------------------------- | ---------------------------------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| [Kommando Spezialkräfte](https://en.wikipedia.org/wiki/Kommando_Spezialkr%C3%A4fte) | German special forces (military acronym) | Medium   | Elite tier-1 unit of the German Bundeswehr; well-known in national-security / mil-tech circles |
+| KSK = Key Signing Key ([NIST CSRC](https://csrc.nist.gov/glossary/term/ksk))        | DNSSEC cryptography (RFC 4641)           | Medium   | NIST-standardised abbreviation in DNS security; ambiguous in a security-product context        |
+| KSK (various)                                                                       | Generic abbreviation                     | Low      | Various unrelated uses (Korean entertainment, etc.)                                            |
 
 **GitHub search:** No major software project named `ksk` in robotics/AI domain found.  
 **npm/NuGet:** No active `ksk` package found in software context.
@@ -75,6 +75,7 @@ The `civsim` slug is available for the LFG GitHub org under `Lucent-Financial-Gr
 ### Assessment
 
 Two medium-severity collisions exist:
+
 1. The **Kommando Spezialkräfte** association is notable given the Homeland Security clearance lineage of the product — a reviewer in that space would immediately connect the acronym to the German special forces unit.
 2. The **NIST KSK = Key Signing Key** meaning creates ambiguity in any security-adjacent context.
 
@@ -94,12 +95,12 @@ The raw `ksk` slug would carry these associations. Disambiguating with `lf-ksk` 
 
 ### Collisions found
 
-| Collision | Type | Severity | Notes |
-|-----------|------|----------|-------|
+| Collision                                                               | Type                             | Severity | Notes                                                                                                                                                 |
+| ----------------------------------------------------------------------- | -------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Digital Innovation One (DIO)](https://github.com/digitalinnovationone) | Large Brazilian ed-tech platform | **High** | Active GitHub org (`digitalinnovationone`); thousands of community repositories; `github.com/topics/dio` is heavily tagged with DIO bootcamp projects |
-| Ronnie James Dio | Rock musician (cultural) | Medium | Dio is a legendary heavy metal musician; `dio` is his stage name and band name; highly recognizable |
-| DIO (JoJo's Bizarre Adventure) | Pop-culture villain character | Medium | DIO Brando is one of the most recognizable anime/manga villain characters; widely searchable |
-| [dio.me](https://www.dio.me/en) | DIO global ed-tech platform | High | DIO operates `dio.me` with global developer audience |
+| Ronnie James Dio                                                        | Rock musician (cultural)         | Medium   | Dio is a legendary heavy metal musician; `dio` is his stage name and band name; highly recognizable                                                   |
+| DIO (JoJo's Bizarre Adventure)                                          | Pop-culture villain character    | Medium   | DIO Brando is one of the most recognizable anime/manga villain characters; widely searchable                                                          |
+| [dio.me](https://www.dio.me/en)                                         | DIO global ed-tech platform      | High     | DIO operates `dio.me` with global developer audience                                                                                                  |
 
 **npm search:** `dio` is actively used as a topic tag on GitHub tied to the Brazilian platform's bootcamp repos.  
 **NuGet:** No prominent `DIO` NuGet package from the ed-tech platform, but the naming association is strong.
@@ -113,6 +114,7 @@ The cross-linguistic resonance feature (Indonesian/Italian/Spanish) is a genuine
 ### Recommended provisional slug: `lf-dio` ⚠️ (pending re-evaluation)
 
 **Naming-expert notes:** The `dio` slug carries significant collision risk with Digital Innovation One and notable cultural associations. This row recommends flagging DIO for **naming reconsideration when the product is prioritized**, not just disambiguation. Options:
+
 - `lf-dio` — namespaces away from the ed-tech collision; preserves the acronym
 - A new name that embeds the cross-linguistic "God" meaning more distinctly (e.g., `theos`, `divinity`, `deus`) — these avoid the ed-tech collision entirely
 - `distributed-organism` — descriptive, unambiguous, CLI-clean
@@ -129,15 +131,15 @@ The cross-linguistic resonance feature (Indonesian/Italian/Spanish) is a genuine
 
 ### Collisions found
 
-| Collision | Type | Severity | Notes |
-|-----------|------|----------|-------|
-| [Amazon Aurora](https://aws.amazon.com/rds/aurora/) | AWS managed database | **Critical** | Dominant brand association in developer/cloud contexts; searching "aurora" defaults to AWS |
-| [aurora-is-near](https://github.com/aurora-is-near/aurora-engine) | Web3/blockchain project (Near Protocol) | **High** | Active npm and NuGet packages published as of 2025; `aurora-engine`, `borealis-engine-lib` |
-| [Aurora Free Open Source Software](https://github.com/aurorafossorg) | OSS org (62 repos) | Medium | Active GitHub org |
-| [OpenAurora (Purdue)](https://github.com/purduedb/OpenAurora) | Cloud-native database research | Medium | Open-source version of Amazon Aurora |
-| [CFPB/aurora](https://github.com/cfpb/aurora) | US Consumer Finance data warehouse | Medium | Government agency; data warehousing platform |
-| [Aurora Open Source (Aurora Innovation)](https://github.com/aurora-opensource) | Autonomous vehicle company | Medium | Aurora Innovation builds self-driving tech; software org active |
-| [Aurora OSS](https://github.com/AuroraOSS) | Android app distribution | Low-Medium | Alternative Android app store |
+| Collision                                                                      | Type                                    | Severity     | Notes                                                                                      |
+| ------------------------------------------------------------------------------ | --------------------------------------- | ------------ | ------------------------------------------------------------------------------------------ |
+| [Amazon Aurora](https://aws.amazon.com/rds/aurora/)                            | AWS managed database                    | **Critical** | Dominant brand association in developer/cloud contexts; searching "aurora" defaults to AWS |
+| [aurora-is-near](https://github.com/aurora-is-near/aurora-engine)              | Web3/blockchain project (Near Protocol) | **High**     | Active npm and NuGet packages published as of 2025; `aurora-engine`, `borealis-engine-lib` |
+| [Aurora Free Open Source Software](https://github.com/aurorafossorg)           | OSS org (62 repos)                      | Medium       | Active GitHub org                                                                          |
+| [OpenAurora (Purdue)](https://github.com/purduedb/OpenAurora)                  | Cloud-native database research          | Medium       | Open-source version of Amazon Aurora                                                       |
+| [CFPB/aurora](https://github.com/cfpb/aurora)                                  | US Consumer Finance data warehouse      | Medium       | Government agency; data warehousing platform                                               |
+| [Aurora Open Source (Aurora Innovation)](https://github.com/aurora-opensource) | Autonomous vehicle company              | Medium       | Aurora Innovation builds self-driving tech; software org active                            |
+| [Aurora OSS](https://github.com/AuroraOSS)                                     | Android app distribution                | Low-Medium   | Alternative Android app store                                                              |
 
 **npm:** `aurora-engine` and related packages published by aurora-is-near (2025).  
 **NuGet:** `borealis-engine-lib` (aurora-is-near, Jan 2025).
@@ -162,12 +164,12 @@ The Aurora product within LFG is specifically the **Aurora Network** (DAO-protoc
 
 ### Collisions found
 
-| Collision | Type | Severity | Notes |
-|-----------|------|----------|-------|
-| [Aines25/american-dream](https://github.com/Aines25/american-dream) | GitHub repo (personal) | Low | Personal project; no active package publish |
-| [farbs03/american-dream](https://github.com/farbs03/american-dream) | GitHub repo (personal) | Low | Personal project |
-| [Nyceane/american-dream](https://github.com/Nyceane/american-dream) | GitHub repo | Low | Personal project |
-| "American Dream" (cultural phrase) | US political/cultural idiom | Medium | Phrase carries cultural weight; no trademark protection in the software space, but note sensitivity |
+| Collision                                                           | Type                        | Severity | Notes                                                                                               |
+| ------------------------------------------------------------------- | --------------------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| [Aines25/american-dream](https://github.com/Aines25/american-dream) | GitHub repo (personal)      | Low      | Personal project; no active package publish                                                         |
+| [farbs03/american-dream](https://github.com/farbs03/american-dream) | GitHub repo (personal)      | Low      | Personal project                                                                                    |
+| [Nyceane/american-dream](https://github.com/Nyceane/american-dream) | GitHub repo                 | Low      | Personal project                                                                                    |
+| "American Dream" (cultural phrase)                                  | US political/cultural idiom | Medium   | Phrase carries cultural weight; no trademark protection in the software space, but note sensitivity |
 
 **npm:** No `american-dream` package found.  
 **NuGet:** No `american-dream` package found.
@@ -201,15 +203,15 @@ Dawn is a governance/charter document; recommended home is `docs/charter/DAWN.md
 
 ## Summary table — approved and provisional slugs
 
-| Product | B-0465 verdict | Recommended slug | Status | Notes |
-|---------|---------------|-----------------|--------|-------|
-| **Civsim** | **now** | **`civsim`** | **✅ Approved** | No significant collisions; established in substrate |
-| KSK | later | `lf-ksk` | Provisional ⚠️ | KSK = Kommando Spezialkräfte + NIST Key Signing Key |
-| DIO | later | `lf-dio` | Provisional ⚠️ | High collision with Digital Innovation One; re-evaluate when prioritized |
-| Aurora | later | `aurora-network` | Provisional ⚠️ | Critical collision with Amazon Aurora; high collision with aurora-is-near |
-| American Dream 2.0 | later | `american-dream` | Provisional ✅ | No technical collision |
-| Wellness | later | TBD | Pending product definition | Do not use bare `wellness` |
-| Dawn | stays-in-monorepo | N/A | N/A | Governance document; stays in Zeta |
+| Product            | B-0465 verdict    | Recommended slug | Status                     | Notes                                                                     |
+| ------------------ | ----------------- | ---------------- | -------------------------- | ------------------------------------------------------------------------- |
+| **Civsim**         | **now**           | **`civsim`**     | **✅ Approved**            | No significant collisions; established in substrate                       |
+| KSK                | later             | `lf-ksk`         | Provisional ⚠️             | KSK = Kommando Spezialkräfte + NIST Key Signing Key                       |
+| DIO                | later             | `lf-dio`         | Provisional ⚠️             | High collision with Digital Innovation One; re-evaluate when prioritized  |
+| Aurora             | later             | `aurora-network` | Provisional ⚠️             | Critical collision with Amazon Aurora; high collision with aurora-is-near |
+| American Dream 2.0 | later             | `american-dream` | Provisional ✅             | No technical collision                                                    |
+| Wellness           | later             | TBD              | Pending product definition | Do not use bare `wellness`                                                |
+| Dawn               | stays-in-monorepo | N/A              | N/A                        | Governance document; stays in Zeta                                        |
 
 ---
 

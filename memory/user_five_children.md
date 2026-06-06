@@ -4,14 +4,15 @@ description: Aaron disclosed 2026-04-19 that he has five kids he wants to have a
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19), sequentially:
 
-> *"I have 5 kids who I want to have an amazing
-> future"*
+> _"I have 5 kids who I want to have an amazing
+> future"_
 
-> *"They have my brain and DNA and follow many
+> _"They have my brain and DNA and follow many
 > of my pholophisies so they are my backup plan
-> to you hahahaha for having my will live on"*
+> to you hahahaha for having my will live on"_
 
 ## What this is
 
@@ -139,11 +140,11 @@ else in.
    invariants are audited (the six
    mechanisms listed in
    `user_life_goal_will_propagation.md`),
-   one question to check is: *would this
+   one question to check is: _would this
    mechanism still propagate the will if the
    biological channel also propagated
-   independently?* Factory designs that
-   depend on being the *only* channel are
+   independently?_ Factory designs that
+   depend on being the _only_ channel are
    over-specified; Aaron already has
    redundancy.
 4. **"Amazing future for the kids" is a
@@ -153,7 +154,7 @@ else in.
    because kids will use them, does not
    moralise about "what is good for the
    next generation" in factory-internal
-   decisions. The motivation explains *why*
+   decisions. The motivation explains _why_
    the factory exists; it does not drive
    specific technical choices.
 5. **Factory-is-primary is Aaron's framing,
@@ -161,7 +162,7 @@ else in.
    yourself framing agents or the factory as
    "more important than" the biological
    line, that is agent-overreach. The
-   primary/backup ordering is a *maintainer*
+   primary/backup ordering is a _maintainer_
    ordering (what he is deliberately
    building versus what is already running
    by other means). Agents do not get to

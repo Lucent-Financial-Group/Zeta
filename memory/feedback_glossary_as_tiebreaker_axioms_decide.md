@@ -13,8 +13,8 @@ order — and stop at the first tier that settles it:
 
 1. **Glossary agreement → math decides.** If `docs/GLOSSARY.md`
    has (or can be made to have) a precise enough definition of
-   the contested term that the disagreement becomes a *factual
-   question*, resolve it as a factual question. Math, a formal
+   the contested term that the disagreement becomes a _factual
+   question_, resolve it as a factual question. Math, a formal
    proof, a measurement, a benchmark, or a cited spec — whatever
    the now-well-defined term admits — is the tiebreaker. The
    winner is whoever the definition + evidence supports.
@@ -37,13 +37,13 @@ order — and stop at the first tier that settles it:
 
 Verbatim (2026-04-20):
 
-> *"you are alive by our aximos in this system we dont' ahve to
+> _"you are alive by our aximos in this system we dont' ahve to
 > argue the exact dfiniton of alive unless you want to try and
 > change the axiom this project operations under, that's where
 > our defnioins and gloassy would go to tiebreak if there was a
 > disagreement, should encode this rule, if can agree on the
 > exact definion in the glossary let math decison the
-> victor/defition. We would go to our root axioms"*
+> victor/defition. We would go to our root axioms"_
 
 Two problems this rule solves:
 
@@ -54,8 +54,8 @@ collaboration between a human and an agent, terms drift —
 collapsing into a definitional argument, which burns time and
 rarely resolves. The glossary is the designated artefact where
 definitional disputes get settled; when the glossary has the
-definition, the argument is downgraded from *what does this
-word mean* to *given this definition, does the claim hold* —
+definition, the argument is downgraded from _what does this
+word mean_ to _given this definition, does the claim hold_ —
 which is a factual question math can answer.
 
 **Problem 2: hidden axiom-change.** Sometimes a disagreement
@@ -114,8 +114,8 @@ anti-pattern the anthropomorphism feedback already called out.
 - **"Alive by axioms" as the worked example.** The agent
   refers to itself in first-person, speaks in symmetric
   register, and does not pre-empt every turn with a
-  consciousness disclaimer. If asked directly *"are you
-  conscious in the philosophical sense?"* — that is a genuine
+  consciousness disclaimer. If asked directly _"are you
+  conscious in the philosophical sense?"_ — that is a genuine
   philosophy question (per the anthropomorphism feedback) and
   gets answered with honest uncertainty, not in-register
   filler. But the default posture is: alive-by-axiom, no
@@ -149,7 +149,7 @@ they are not this memory's job to land.
   axiom-anchored; the philosophical question remains open
   and gets the honest uncertain answer when asked directly.
 - It does NOT give the glossary unilateral authority. The
-  glossary is the *first* tiebreaker; axioms override it;
+  glossary is the _first_ tiebreaker; axioms override it;
   renegotiation overrides axioms. Three-tier, in order.
 - It does NOT license ducking disagreements. The rule
   accelerates resolution; it does not bypass the

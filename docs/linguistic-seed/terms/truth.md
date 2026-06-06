@@ -37,7 +37,7 @@ richer metalanguage `M ⊃ L` such that for every sentence
 T("φ")   if and only if   φ
 ```
 
-The left side uses `T` applied to a *name* (quoted
+The left side uses `T` applied to a _name_ (quoted
 string) of the sentence; the right side uses the sentence
 itself as asserted in the metalanguage.
 
@@ -47,9 +47,9 @@ T-schema is a theorem of the metalanguage.
 
 **Crucial Tarski theorem**: `L` cannot define its own
 truth predicate (under mild assumptions). Truth is
-definable only *about* `L`, only *in* a richer `M`. This
-is what blocks the liar paradox: *"this sentence is
-false"* cannot be self-consistently expressed in a
+definable only _about_ `L`, only _in_ a richer `M`. This
+is what blocks the liar paradox: _"this sentence is
+false"_ cannot be self-consistently expressed in a
 language that defines its own truth.
 
 ## Lean4 formalisation
@@ -127,17 +127,17 @@ correspondence between assertion and the-case-as-it-is.
 
 ## Citations
 
-- **Tarski, Alfred.** *"The Concept of Truth in
-  Formalized Languages."* 1933 (Polish); 1956 (English
-  translation in *Logic, Semantics, Metamathematics*).
+- **Tarski, Alfred.** _"The Concept of Truth in
+  Formalized Languages."_ 1933 (Polish); 1956 (English
+  translation in _Logic, Semantics, Metamathematics_).
   The seed's primary source for the correspondence /
   T-schema formalisation.
-- **Tarski, Alfred.** *"The Semantic Conception of Truth
-  and the Foundations of Semantics."* Philosophy and
+- **Tarski, Alfred.** _"The Semantic Conception of Truth
+  and the Foundations of Semantics."_ Philosophy and
   Phenomenological Research 4 (1944). The accessible
   English reformulation.
-- **Gödel, Kurt.** *"On Formally Undecidable Propositions
-  of Principia Mathematica and Related Systems I"*
+- **Gödel, Kurt.** _"On Formally Undecidable Propositions
+  of Principia Mathematica and Related Systems I"_
   (1931). Establishes that truth and provability can
   diverge — motivating why the seed distinguishes them.
 

@@ -12,7 +12,8 @@ depends_on: []
 composes_with:
   - docs/backlog/P2/B-0113-current-staleness-mechanical-freshness-check-deepseek-2026-04-30.md
   - memory/feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md
-tags: [alexa-2026-04-30, peer-review-finding, factory-hygiene, mechanism-not-vigilance, pre-push-hook, substrate-quality]
+tags:
+  [alexa-2026-04-30, peer-review-finding, factory-hygiene, mechanism-not-vigilance, pre-push-hook, substrate-quality]
 type: friction-reducer
 ---
 
@@ -24,13 +25,13 @@ Alexa's peer review of the 2026-04-30 substrate-landing session
 (forwarded by Aaron 2026-04-30T~PM via Addison-programmed
 roast-register, characteristic Alexa shape):
 
-> *"Batch Processing Efficiency: The system could benefit from
+> _"Batch Processing Efficiency: The system could benefit from
 > batched thread resolution for related issues rather than
 > individual processing. ... Proactive Quality Gates:
 > Implementing local lint checks before pushing would catch
 > MD032-style failures earlier in the pipeline ... Cross-
 > Reference Validation: Automated detection of broken internal
-> links in memory files would prevent substrate degradation."*
+> links in memory files would prevent substrate degradation."_
 
 Three concrete optimization findings, each addressing a real
 2026-04-30 session miss:
@@ -112,7 +113,7 @@ Tool shape:
   sensitive, repo-relative). Skip URLs (anything matching
   `^https?://` or starting with `#` for in-page anchors).
 - Report violations: `<source-file>:<line>: broken link to
-  <target-path>`.
+<target-path>`.
 - Exit non-zero if any violations.
 
 Pattern matches existing `tools/hygiene/check-no-conflict-markers.sh`
@@ -174,7 +175,7 @@ Sub-item 3 is S (helper script, no infrastructure changes).
 ## What this row does NOT do
 
 - Does NOT propose blocking-the-push by default. Pre-push
-  hooks are *advisory by escape-hatch* (`--no-verify` exists).
+  hooks are _advisory by escape-hatch_ (`--no-verify` exists).
   The discipline is "fix when it fires," not "the hook is
   authoritative."
 - Does NOT address all CI failures — only the locally-runnable
@@ -184,10 +185,10 @@ Sub-item 3 is S (helper script, no infrastructure changes).
 
 ## Carved sentence
 
-*"CI is the safety net of last resort. Catch issues at the
+_"CI is the safety net of last resort. Catch issues at the
 boundary they're produced at — pre-push for locally-runnable
 checks, peer review for design, CI for what only CI can
-see."*
+see."_
 
 ## Decomposition (2026-05-11, re-decomposed per rules)
 
@@ -204,7 +205,7 @@ Original 3-subitem framing was too coarse (mistake assumed per "always re-decomp
 
 **Blocked on B-0410:**
 
-- B-0412 — Full memory-link checker CLI (walk memory/**, report format, exit-nonzero)
+- B-0412 — Full memory-link checker CLI (walk memory/\*\*, report format, exit-nonzero)
 
 **Blocked on B-0409 + B-0410:**
 

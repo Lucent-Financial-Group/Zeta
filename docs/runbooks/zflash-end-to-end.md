@@ -4,7 +4,7 @@
 
 **Status:** 2026-05-28 — substrate ~75% shipped; bottleneck is empirical validation. This runbook IS the validation procedure.
 
-**Audience:** Operator (Aaron) primarily; collaborative test partner per operator's 2026-05-28 framing *"i can test some along the way too."*
+**Audience:** Operator (Aaron) primarily; collaborative test partner per operator's 2026-05-28 framing _"i can test some along the way too."_
 
 **Time estimate:** ~1 operator-day (3-4 hours mostly-waiting; ~30 min active typing/fingerprinting).
 
@@ -56,7 +56,7 @@ ls -la ~/Downloads/zeta-installer-*.iso
 
 ## CP-2 — `bun zflash.ts --agent` on fresh USB
 
-**Goal:** validate B-0844 `--agent` flag end-to-end (its acceptance bullet *"a full re-flash via `bun zflash.ts --agent` completes with 'Flash complete.' visible"* is still unchecked as of 2026-05-28).
+**Goal:** validate B-0844 `--agent` flag end-to-end (its acceptance bullet _"a full re-flash via `bun zflash.ts --agent` completes with 'Flash complete.' visible"_ is still unchecked as of 2026-05-28).
 
 **Effort:** S (~3-5 minutes once USB plugged in).
 
@@ -239,51 +239,54 @@ iter-4.2: pubkey written; USB ejected. Safe to remove.
 ```
 
 **Operator narration:**
-> *"One command. Zero characters typed manually — the `--agent` flag auto-types the consent token. One fingerprint. The fingerprint is the consent floor — no agent can bypass biometric proof of physical presence."*
+
+> _"One command. Zero characters typed manually — the `--agent` flag auto-types the consent token. One fingerprint. The fingerprint is the consent floor — no agent can bypass biometric proof of physical presence."_
 
 ### Act 2 — Boot target PC + interactive picker (~5 min)
 
 [Show colleague the picker fire at boot; operator selects option 3; pastes PAT once; sets passphrase]
 
 **Operator narration:**
-> *"Picker shows up. I pick option 3 because I have a PAT in my password manager. Type it once, set a passphrase, done."*
-> *"The blob is HKDF-SHA256 + AES-256-GCM keyed off USB-UUID + my passphrase — neither one alone unlocks it. `--verify` re-decrypts immediately to catch bad-blob at install time."*
+
+> _"Picker shows up. I pick option 3 because I have a PAT in my password manager. Type it once, set a passphrase, done."_
+> _"The blob is HKDF-SHA256 + AES-256-GCM keyed off USB-UUID + my passphrase — neither one alone unlocks it. `--verify` re-decrypts immediately to catch bad-blob at install time."_
 
 ### Act 3 — Reboot + automatic restore (~3 min; THE PUNCHLINE)
 
 [Operator reboots; types passphrase ONCE; system boots; `gh auth status` shows logged-in]
 
 **Operator punchline:**
-> *"Second boot. I typed my passphrase ONCE. All credentials restored. ZERO `gh auth login` device-flow. ZERO 'go to github.com/login/device on your phone' tax."*
-> *"This is the substrate the cluster runs on. Each reboot in dev iteration is just my passphrase, not the device-flow."*
+
+> _"Second boot. I typed my passphrase ONCE. All credentials restored. ZERO `gh auth login` device-flow. ZERO 'go to github.com/login/device on your phone' tax."_
+> _"This is the substrate the cluster runs on. Each reboot in dev iteration is just my passphrase, not the device-flow."_
 
 [Pause for colleague reaction]
 
-> *"Watch — let me reboot once more."*
+> _"Watch — let me reboot once more."_
 
 [Reboot. Same picker → passphrase → done.]
 
-> *"That's iteration speed at DevOps. That's why USB is first-class for me."*
+> _"That's iteration speed at DevOps. That's why USB is first-class for me."_
 
 ### Why this demo lands
 
-| Operator-personal-priority axis (B-0886.2) | Demo moment |
-|---|---|
-| Iteration speed at DevOps | Reboot loop visibly shrinks from "device-flow tax × N" to "passphrase × N" |
-| In-front-of-your-eyes word-of-mouth | Colleague SEES the USB physically + sees Touch ID + sees cred-restore log scroll past — visceral demonstrability |
-| Composes with B-0866 marketing strategy | Short story; small technical lift; immediately legible value; fits ServiceTitan-internal evangelism path |
+| Operator-personal-priority axis (B-0886.2) | Demo moment                                                                                                      |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Iteration speed at DevOps                  | Reboot loop visibly shrinks from "device-flow tax × N" to "passphrase × N"                                       |
+| In-front-of-your-eyes word-of-mouth        | Colleague SEES the USB physically + sees Touch ID + sees cred-restore log scroll past — visceral demonstrability |
+| Composes with B-0866 marketing strategy    | Short story; small technical lift; immediately legible value; fits ServiceTitan-internal evangelism path         |
 
 ---
 
 ## Acceptance criteria (per B-0891)
 
-| Scenario | This runbook covers | Status |
-|---|---|---|
-| **1. Initial format** | CP-1 + CP-2 | ✓ covered |
-| **2. Initial boot + cluster up** | CP-3 (single-node install; multi-node fleet via B-0590 sibling) | ✓ single-node; multi-node out of CP-1..6 scope |
-| **3. Reformat WITH key + selection retention** | NOT in CP-1..6; requires second `zflash --agent` invocation that preserves existing blob; **TODO follow-up** | ✗ pending sub-row |
-| **4. Reformat from scratch** | CP-1..CP-3 (any re-run with fresh USB = reformat from scratch by design) | ✓ implicit |
-| **5. Cluster joining** | NOT in CP-1..6 (single-node validation only); multi-node fleet validation per B-0590 follow-up | ✗ pending sub-row |
+| Scenario                                       | This runbook covers                                                                                          | Status                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| **1. Initial format**                          | CP-1 + CP-2                                                                                                  | ✓ covered                                      |
+| **2. Initial boot + cluster up**               | CP-3 (single-node install; multi-node fleet via B-0590 sibling)                                              | ✓ single-node; multi-node out of CP-1..6 scope |
+| **3. Reformat WITH key + selection retention** | NOT in CP-1..6; requires second `zflash --agent` invocation that preserves existing blob; **TODO follow-up** | ✗ pending sub-row                              |
+| **4. Reformat from scratch**                   | CP-1..CP-3 (any re-run with fresh USB = reformat from scratch by design)                                     | ✓ implicit                                     |
+| **5. Cluster joining**                         | NOT in CP-1..6 (single-node validation only); multi-node fleet validation per B-0590 follow-up               | ✗ pending sub-row                              |
 
 **Coverage gap:** Scenarios 3 + 5 are NOT in this runbook's scope. Sub-rows tracked at B-0891 follow-ups. CP-1..CP-6 validates Scenarios 1 + 4 + (single-node) 2.
 
@@ -291,16 +294,16 @@ iter-4.2: pubkey written; USB ejected. Safe to remove.
 
 ## Failure modes register
 
-| # | Failure | Mitigation |
-|---|---|---|
-| **R1** | Step-ordering bug: picker fires AFTER `gh auth login` | Verify positioning BEFORE `gh auth login` on dry-run; file regression test if found |
-| **R2** | USB-UUID mismatch install-time vs boot-time | Test CP-3 → CP-4 immediately; fallback "operator types USB-UUID at boot" |
-| **R3** | Touch ID PAM line clobbered by macOS update | Re-run `zflash-setup --install-alias`; idempotent |
-| **R4** | `mise activate` PATH propagation under sudo | Document explicit `bun` path fallback |
-| **R5** | Fresh ISO build fails CI | Verify `build-ai-cluster-iso.yml` green BEFORE CP-1 |
-| **R6** | Target PC BIOS doesn't recognize USB as bootable | Test on actual target; may need SecureBoot disable + USB-boot priority |
-| **R7** | Multi-Otto/Lior dotgit-saturation when downloading ISO | Have known-good ISO already in `~/Downloads/` (no fresh CI needed) |
-| **R8** | Wrong-passphrase boot-time fall-through loops | Per B-0852.6 — 3 retries then fall-back to device-flow |
+| #      | Failure                                                | Mitigation                                                                          |
+| ------ | ------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| **R1** | Step-ordering bug: picker fires AFTER `gh auth login`  | Verify positioning BEFORE `gh auth login` on dry-run; file regression test if found |
+| **R2** | USB-UUID mismatch install-time vs boot-time            | Test CP-3 → CP-4 immediately; fallback "operator types USB-UUID at boot"            |
+| **R3** | Touch ID PAM line clobbered by macOS update            | Re-run `zflash-setup --install-alias`; idempotent                                   |
+| **R4** | `mise activate` PATH propagation under sudo            | Document explicit `bun` path fallback                                               |
+| **R5** | Fresh ISO build fails CI                               | Verify `build-ai-cluster-iso.yml` green BEFORE CP-1                                 |
+| **R6** | Target PC BIOS doesn't recognize USB as bootable       | Test on actual target; may need SecureBoot disable + USB-boot priority              |
+| **R7** | Multi-Otto/Lior dotgit-saturation when downloading ISO | Have known-good ISO already in `~/Downloads/` (no fresh CI needed)                  |
+| **R8** | Wrong-passphrase boot-time fall-through loops          | Per B-0852.6 — 3 retries then fall-back to device-flow                              |
 
 ## Composes with
 

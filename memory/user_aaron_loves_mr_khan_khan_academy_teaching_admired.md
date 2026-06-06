@@ -6,10 +6,10 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 Aaron 2026-04-21, immediately after the four-message teaching
-directive (*"we change the current order through teaching /
-chronology / everything / *"*), single-message follow-up:
+directive (_"we change the current order through teaching /
+chronology / everything / _"\*), single-message follow-up:
 
-> *"I love Mr Khan"*
+> _"I love Mr Khan"_
 
 ## What this tells us about Aaron
 

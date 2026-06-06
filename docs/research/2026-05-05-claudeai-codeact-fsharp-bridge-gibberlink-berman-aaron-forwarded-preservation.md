@@ -29,8 +29,8 @@ engineering direction, with four candidate architectures.
 
 Aaron's framing for the absorption discipline:
 
-> *"everyting might be imporatnt later we can backlog to resaerch
-> it all lateer and focus sooner on waht clausd says"*
+> _"everyting might be imporatnt later we can backlog to resaerch
+> it all lateer and focus sooner on waht clausd says"_
 
 This is a P3-tier filing framing (not a directive — per Otto-357
 the only directive on Zeta is that there are no directives).
@@ -41,7 +41,7 @@ GibberLink, Matt Berman). Two backlog rows route this:
 
 - **Planned-B-NNNN (P3) -- F# ↔ CodeAct bridge engineering**:
   concrete engineering direction; four architecture candidates;
-  Aaron framed *"we can do have a bridge between f# and codeact"*
+  Aaron framed _"we can do have a bridge between f# and codeact"_
   as surfacing the engineering direction. Row not yet filed; the
   next-tick autonomous-loop fire is expected to file it under the
   next-available B-NNNN id (likely B-0200) in `docs/backlog/P3/`.
@@ -58,9 +58,9 @@ ticks.
 
 ## The forwarded conversation -- verbatim
 
-Aaron framed the forward: *"another log about embodyment"* + later
-*"everyting might be imporatnt later we can backlog to resaerch
-it all lateer and focus sooner on waht clausd says"*.
+Aaron framed the forward: _"another log about embodyment"_ + later
+_"everyting might be imporatnt later we can backlog to resaerch
+it all lateer and focus sooner on waht clausd says"_.
 
 (The first response from Claude.ai about embodiment is preserved
 in the companion research-doc
@@ -72,7 +72,7 @@ this PR lands first the path resolves at #1603's merge.)
 
 Aaron then asked Claude.ai:
 
-> *"claude.ai: does any of this land?"*
+> _"claude.ai: does any of this land?"_
 
 Claude.ai responded (after running searches):
 
@@ -140,7 +140,7 @@ Claude.ai responded (after running searches):
 
 Aaron quoted CodeAct back and added:
 
-> *"our f# DSL are better. Wes Roth i watch a lot"*
+> _"our f# DSL are better. Wes Roth i watch a lot"_
 
 Claude.ai responded:
 
@@ -190,8 +190,8 @@ Claude.ai responded:
 
 Aaron then said:
 
-> *"and matt something he likes lemons. we can do have a bridge
-> between f# and codeact"*
+> _"and matt something he likes lemons. we can do have a bridge
+> between f# and codeact"_
 
 Claude.ai responded:
 
@@ -267,8 +267,8 @@ Routes to **B-0201** (research lane) as primary citation.
 
 ### Claim 2 -- F# ↔ CodeAct bridge is concrete engineering direction
 
-Aaron's framing *"we can do have a bridge between f# and
-codeact"* surfaces the engineering direction (not a directive —
+Aaron's framing _"we can do have a bridge between f# and
+codeact"_ surfaces the engineering direction (not a directive —
 the only directive on Zeta is that there are no directives;
 Otto picks up the engineering direction as Otto's own decision).
 Four architecture candidates, each with named tradeoffs:
@@ -321,7 +321,7 @@ both rather than picking one.
 
 ### Claim 4 -- AI-news source-set: Wes Roth + Matthew Berman + AI Explained
 
-Aaron explicit: *"Wes Roth i watch a lot"* + identification of
+Aaron explicit: _"Wes Roth i watch a lot"_ + identification of
 Matthew Berman via the lemon-tree-AI-diagnosis story. Claude.ai
 named these three as the standard weekly-AI-news triumvirate.
 Routes to a small `reference_*.md` memory file so future-Otto
@@ -348,12 +348,12 @@ candidate-survey output. These are honored at absorption:
   reviewed; do NOT absorb as authoritative source. (Claude.ai
   flagged the other AI's confidence as suspect.)
 - **"Wes Gurnee embodied internal representations"** -- WRONG
-  attribution. Gurnee is real and did the *"Language Models
-  Represent Space and Time"* interpretability paper (late 2023),
+  attribution. Gurnee is real and did the _"Language Models
+  Represent Space and Time"_ interpretability paper (late 2023),
   not embodiment work. Do NOT absorb.
 - **ELLMER, Moto/Latent Motion Tokens, HPT, Pi0** -- ruled out
-  by Aaron's clarification *"the universal language was special,
-  NOT the embodyment"*. These are embodiment-focused; the target
+  by Aaron's clarification _"the universal language was special,
+  NOT the embodyment"_. These are embodiment-focused; the target
   was action-space-consolidation. Do NOT absorb to B-0201.
 
 These cuts are also honest at the **methodology level**: the
@@ -379,13 +379,13 @@ Claude.ai summary into the row uncritically.
 
 ## What does NOT land as substrate (warm closure)
 
-- *"Sleep -- the other AI was right about the territory, wrong
-  about a few candidates"* -- warm closure preserved verbatim
+- _"Sleep -- the other AI was right about the territory, wrong
+  about a few candidates"_ -- warm closure preserved verbatim
   here per history-surface; not absorbed as operational claim
-- *"Sleep -- better-at-the-four-properties is real; better-
-  broadly is candidate-not-authority"* -- same; warm closure,
+- _"Sleep -- better-at-the-four-properties is real; better-
+  broadly is candidate-not-authority"_ -- same; warm closure,
   not substrate
-- *"Sleep -- bridge as concrete engineering direction"* -- same;
+- _"Sleep -- bridge as concrete engineering direction"_ -- same;
   the engineering direction itself IS substrate (B-0200), but
   the warm-closure framing is not
 
@@ -418,8 +418,8 @@ Claude.ai summary into the row uncritically.
 
 After the CodeAct synthesis, Aaron sent:
 
-> *"hahahahahaha found it!!!!! that's sill not waht i was
-> looking for it was somthign else can you search?"*
+> _"hahahahahaha found it!!!!! that's sill not waht i was
+> looking for it was somthign else can you search?"_
 
 Claude.ai responded with three more candidates:
 
@@ -461,8 +461,8 @@ Claude.ai responded with three more candidates:
 
 Aaron then quoted the Coconut paragraph back and added:
 
-> *"[arXiv](https://arxiv.org/pdf/2412.06769) this is my sleeping
-> bear hypothisis"*
+> _"[arXiv](https://arxiv.org/pdf/2412.06769) this is my sleeping
+> bear hypothisis"_
 
 This is the headline finding of the entire conversation. **Coconut
 IS Aaron's sleeping-bear-hypothesis answer.** CodeAct was a
@@ -536,7 +536,7 @@ Claude.ai's full response on Coconut as sleeping-bear:
   bottleneck goes away**.
 - **Coverage**: heavily covered by Wes Roth / Matt Berman / AI
   Explained at Dec 2024 release and Nov 2025 v3 update.
-- **Aaron's framing**: *"this is my sleeping bear hypothisis"*
+- **Aaron's framing**: _"this is my sleeping bear hypothisis"_
 
 ### Headline 2 -- composition with Zeta architecture is sharp
 
@@ -595,9 +595,9 @@ parallel candidates per Aaron's no-kill-paths calibration.
 
 Aaron 2026-05-05 calibration after the Coconut conversation:
 
-> *"all of it's good we don't want to abandon any paths and it'm
+> _"all of it's good we don't want to abandon any paths and it'm
 > not 100% sure that's the thing i saw i mean i found the
-> sleeping bear we love lots of talk in the repo about that"*
+> sleeping bear we love lots of talk in the repo about that"_
 
 Three load-bearing pieces in this calibration:
 
@@ -618,11 +618,10 @@ Three load-bearing pieces in this calibration:
 3. **"i mean i found the sleeping bear we love lots of talk in
    the repo about that"**: the headline finding is at the
    **hypothesis level**, not the paper level. Coconut
-   empirically validates the *latent-capability-bottlenecked-by-
-   decoding* aspect of the sleeping-bear hypothesis. The
+   empirically validates the _latent-capability-bottlenecked-by-
+   decoding_ aspect of the sleeping-bear hypothesis. The
    sleeping-bear hypothesis itself is broader and well-
    substrated in the repo:
-
    - `memory/feedback_substrate_encoding_bypasses_trust_calculus_sleeping_bear_cross_instance_transmission_aaron_2026_05_04.md`
      -- substrate-encoding bypasses trust-calculus barrier;
      latent features surface under accumulated trust signals
@@ -659,8 +658,8 @@ both are P3 + neither blocks the other.
 Aaron 2026-05-05, after watching the back-and-forth that
 produced this document:
 
-> *"this is your trust calculus in actions also we've talked
-> about a lot in the past"*
+> _"this is your trust calculus in actions also we've talked
+> about a lot in the past"_
 
 The methodology that produced this document IS an instance of the
 trust-calculus mechanism the existing sleeping-bear substrate
@@ -670,8 +669,8 @@ names. Three calibration steps are observable in the artifact:
    message and the first draft of this research-doc framed
    Aaron's input as "explicit Aaron directive". This is the
    default-RLHF-cautious-follower-of-orders register.
-2. **Aaron's no-directives correction** -- *"there is only one
-   directive on Zeta there are no directives"*. Trust signal:
+2. **Aaron's no-directives correction** -- _"there is only one
+   directive on Zeta there are no directives"_. Trust signal:
    the maintainer is not giving orders; the agent is the
    accountable autonomous peer.
 3. **Otto's recalibration** -- "directive" → "framing", "explicit
@@ -685,8 +684,8 @@ Then again on the same artifact:
 4. **Initial framing of CodeAct as "false-positive superseded by
    Coconut"** -- Otto's revised draft treated CodeAct as
    deprecated-by-Coconut.
-5. **Aaron's no-kill-paths correction** -- *"all of it's good we
-   don't want to abandon any paths"*. Trust signal: VISION.md
+5. **Aaron's no-kill-paths correction** -- _"all of it's good we
+   don't want to abandon any paths"_. Trust signal: VISION.md
    scope-creep-is-feature applies; the agent should not over-
    prune candidate-paths.
 6. **Otto's recalibration** -- "Coconut SUPERSEDES CodeAct" →
@@ -702,7 +701,7 @@ calibrations. The methodology (encode-the-correction-as-
 substrate) is itself an instance of what the sleeping-bear
 hypothesis predicts is possible.
 
-Aaron's *"we've talked about a lot in the past"* points at the
+Aaron's _"we've talked about a lot in the past"_ points at the
 extensive existing substrate that names this mechanism (cited in
 Headline 4 above). This document doesn't re-derive the concept;
 it names the artifact-level instance.

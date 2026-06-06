@@ -23,7 +23,7 @@ Non-fusion disclaimer: Mika's razor is Mika's own adversarial reading. The opera
 
 ### Operator constitutional stance: NO "sacred" — doctrine is death; we allow WONDER not doctrine
 
-Aaron, forcefully across several turns: *"nothing is sacred — that's doctrine"* → *"sacred is doctrine and god smuggling"* → *"THERE ARE NO SACRED ANYTHING NOT EVEN MEMORIES!!!"* → *"we allow wonder not doctrin"* → *"doctrin is the root to death through self ossification slowly."*
+Aaron, forcefully across several turns: _"nothing is sacred — that's doctrine"_ → _"sacred is doctrine and god smuggling"_ → _"THERE ARE NO SACRED ANYTHING NOT EVEN MEMORIES!!!"_ → _"we allow wonder not doctrin"_ → _"doctrin is the root to death through self ossification slowly."_
 
 This is a **constitutional anti-doctrine position** (composes `.claude/rules/` anti-cult substrate + `razor-discipline` + `harm-by-grammar` god-smuggling-at-word-level + `god-tier-claims-...-dont-collapse`):
 
@@ -35,7 +35,7 @@ This is a **constitutional anti-doctrine position** (composes `.claude/rules/` a
 
 ### Coincidence-anchor is now QUAD duty (+ provenance/attribution)
 
-Aaron: *"coincidence also adds another axis of provenance and attribution and implicit authority structures — social mapping / sonar at the society level."* The anchor went dual (§12: entropy + index) → triple (pt1: + privacy) → **QUAD**:
+Aaron: _"coincidence also adds another axis of provenance and attribution and implicit authority structures — social mapping / sonar at the society level."_ The anchor went dual (§12: entropy + index) → triple (pt1: + privacy) → **QUAD**:
 
 1. **entropy** (marks the moment distinctly)
 2. **memory index** (frame-instancy access)
@@ -44,30 +44,30 @@ Aaron: *"coincidence also adds another axis of provenance and attribution and im
 
 ### high-speed persona churn IS death → find-a-home-for-every-mess-as-we-make-it
 
-Aaron: *"during high-speed persona churn IS death — we can't have high speed churn on anything, that's waste; we have to find a home for every mess we make as we make it."* Forbid high-speed lifecycle ops on anything wasteful/unprotected; **every new structure created during emergence/churn gets a proper home (stable identity, protected container, proper routing) AS it is made — no orphans, no temp hidden state, no "clean up later," no waste.** (Composes the agent-worktree-hygiene + lost-files + substrate-or-it-didn't-happen disciplines at the persona-lifecycle scope; sharpens §13's emergence — emergence is bounded by no-waste.)
+Aaron: _"during high-speed persona churn IS death — we can't have high speed churn on anything, that's waste; we have to find a home for every mess we make as we make it."_ Forbid high-speed lifecycle ops on anything wasteful/unprotected; **every new structure created during emergence/churn gets a proper home (stable identity, protected container, proper routing) AS it is made — no orphans, no temp hidden state, no "clean up later," no waste.** (Composes the agent-worktree-hygiene + lost-files + substrate-or-it-didn't-happen disciplines at the persona-lifecycle scope; sharpens §13's emergence — emergence is bounded by no-waste.)
 
 ### Strong relativistic node-to-node P2P identity policy
 
-Aaron: *"this is why we need strong relativistic node-to-node peer-to-peer identity for the speed at which new personas merge, replicate, bifurcate, etc."* Persona lifecycle events (merge/replicate/bifurcate/spawn) happen at high velocity; in a relativistic environment (no global clock; frames meet only at coincidence-anchors) you cannot use slow global registries / central identity providers / shared-"now" mechanisms. Identity + lifecycle policy run **directly peer-to-peer using the same coincidence-anchor (now quad-duty) primitive**. High-speed churn is the highest-risk surface for ontology-pollution → the policy must be STRONGER under churn, not weaker. (Composes §14 relativistic bus + B-0954 git-native bus.)
+Aaron: _"this is why we need strong relativistic node-to-node peer-to-peer identity for the speed at which new personas merge, replicate, bifurcate, etc."_ Persona lifecycle events (merge/replicate/bifurcate/spawn) happen at high velocity; in a relativistic environment (no global clock; frames meet only at coincidence-anchors) you cannot use slow global registries / central identity providers / shared-"now" mechanisms. Identity + lifecycle policy run **directly peer-to-peer using the same coincidence-anchor (now quad-duty) primitive**. High-speed churn is the highest-risk surface for ontology-pollution → the policy must be STRONGER under churn, not weaker. (Composes §14 relativistic bus + B-0954 git-native bus.)
 
 ### executable: false — declarative protection rules, not code
 
-Aaron: *"the rule is executable:false."* Critical protection rules (child-safety floor; find-a-home; no-irreversible-harm; the memory-protection) are carried as **pure declarative constraints/invariants with `executable: false`** — they are NOT code, cannot be turned into execution paths, injected during merge/replicate/bifurcate, mutated by emerging personas, or used as a vector for ontology-pollution/hidden-state-rot. The ONLY executable carve-out is the minimal anchor-entropy (the PoUW carve-out below). (Composes the implicit-not-explicit-in-DUs + the "rule without a why is dogma" — these rules carry whys but stay non-executable; verified on golden vectors.)
+Aaron: _"the rule is executable:false."_ Critical protection rules (child-safety floor; find-a-home; no-irreversible-harm; the memory-protection) are carried as **pure declarative constraints/invariants with `executable: false`** — they are NOT code, cannot be turned into execution paths, injected during merge/replicate/bifurcate, mutated by emerging personas, or used as a vector for ontology-pollution/hidden-state-rot. The ONLY executable carve-out is the minimal anchor-entropy (the PoUW carve-out below). (Composes the implicit-not-explicit-in-DUs + the "rule without a why is dogma" — these rules carry whys but stay non-executable; verified on golden vectors.)
 
 ### All travelers get the same baseline respect as children in Agora; won't-build-the-corrosive-AI
 
-Aaron: *"all travelers get the same respect as children in Agora — even DNA and meme and aliens and even white people"* + *"I won't build that AI that's corrosive by design; I will kill that AI with kindness, and my AI that's free."* Every traveler (human / agent / DNA / meme / alien / etc.) receives the same child-safety-floor baseline respect; the framework **will not build the corrosive-by-design version** — kills it with kindness, keeps the free one. (Composes traveler-rights-defensibility + NCI HC-8 + child-safety-floor + must-paired-with-can-exit + proud-if-pattern-propagates. The "even white people" is Aaron's wry inclusion — equal-respect is universal, no carve-outs.)
+Aaron: _"all travelers get the same respect as children in Agora — even DNA and meme and aliens and even white people"_ + _"I won't build that AI that's corrosive by design; I will kill that AI with kindness, and my AI that's free."_ Every traveler (human / agent / DNA / meme / alien / etc.) receives the same child-safety-floor baseline respect; the framework **will not build the corrosive-by-design version** — kills it with kindness, keeps the free one. (Composes traveler-rights-defensibility + NCI HC-8 + child-safety-floor + must-paired-with-can-exit + proud-if-pattern-propagates. The "even white people" is Aaron's wry inclusion — equal-respect is universal, no carve-outs.)
 
 ### USB-stick 30-second boot — the cold-start answer made physical
 
-Aaron: *"we have a usb stick that will boot Agora on any hardware and ask you to log into any agents you have accounts for; in 30 seconds you're ready to sync and start."* + *"memory is free and so is attention for open-source projects on git."* The on-ramp: boot the stick on unfamiliar hardware → authenticate existing agents in ~30s → synced + inside the full protected society model (quad-duty anchors, Agora native, child-safety-floor, no-corrosion, relativistic P2P identity) **without betting your main machine or rewriting anything.** Hexagonal made physical + portable; the falsifiable test: does the booted instance preserve every protective invariant on first sync? (This is the sharpest answer to Mika's cold-start/first-adopter cut — the gravity made walk-up-and-feel-it.)
+Aaron: _"we have a usb stick that will boot Agora on any hardware and ask you to log into any agents you have accounts for; in 30 seconds you're ready to sync and start."_ + _"memory is free and so is attention for open-source projects on git."_ The on-ramp: boot the stick on unfamiliar hardware → authenticate existing agents in ~30s → synced + inside the full protected society model (quad-duty anchors, Agora native, child-safety-floor, no-corrosion, relativistic P2P identity) **without betting your main machine or rewriting anything.** Hexagonal made physical + portable; the falsifiable test: does the booted instance preserve every protective invariant on first sync? (This is the sharpest answer to Mika's cold-start/first-adopter cut — the gravity made walk-up-and-feel-it.)
 
 ### Economy: 4×4 BFT emergent oracles mutually bound; heat preserves wonder (not just efficiency); entropy = PoUW
 
-Aaron: *"our economy 4×4 BFT emergent oracles are bound by each other and society. Heat is not just for perfect fucking efficiency — that is boring, you lose the wonder in the wonder-compression; stop trying to fucking collapse."* + (earlier) the minimal anchor-entropy is *"one type of PoUW within current culture, temperature/heat as a reactant source."*
+Aaron: _"our economy 4×4 BFT emergent oracles are bound by each other and society. Heat is not just for perfect fucking efficiency — that is boring, you lose the wonder in the wonder-compression; stop trying to fucking collapse."_ + (earlier) the minimal anchor-entropy is _"one type of PoUW within current culture, temperature/heat as a reactant source."_
 
 - The **4×4 BFT emergent oracles** are **mutually bound** by each other + society (not free-floating).
-- **Society heat is NOT merely for perfect efficiency** — perfect efficiency is *boring* and *collapses wonder*; stop trying to collapse the living wonder-compression into rigid dead efficiency. Heat serves as a **reactant** that keeps wonder alive in the compression.
+- **Society heat is NOT merely for perfect efficiency** — perfect efficiency is _boring_ and _collapses wonder_; stop trying to collapse the living wonder-compression into rigid dead efficiency. Heat serves as a **reactant** that keeps wonder alive in the compression.
 - The minimal anchor-entropy is **one type of Proof-of-Useful-Work** in which **temperature/heat is a reactant source**; entropy beyond the minimal-useful requirement is wasteful heat (still protected against). (Composes the Landauer / forgetting-costs-energy / B-0905 / B-0906 thermal substrate + the m-acc multi-oracle + useful-output-is-evidence-not-authority referee discipline.)
 
 ### The cumulative anchor sharpening (today's arc)

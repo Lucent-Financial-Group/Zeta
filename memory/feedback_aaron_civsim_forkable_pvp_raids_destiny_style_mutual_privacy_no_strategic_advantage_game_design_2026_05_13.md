@@ -45,6 +45,7 @@ no-loser-in-new-system framing (PR #2876).
 > like in destiny"
 
 Decoded:
+
 - "froks" → forks
 - "PVP" → player-vs-player (competitive game mode)
 - "raids" → cooperative high-difficulty challenges (like
@@ -246,7 +247,7 @@ And here's the nuance:
   their substrate; forks operate with their own
   relational context)
 - Aaron's cleared frameworks (HIPAA + Homeland Security
-  + Series 7) — non-transferable credentials
+  - Series 7) — non-transferable credentials
 - The specific Sleeping Bear humbling moment + the
   anti-cult discipline that emerged
 - Aaron's preference architecture (24/7 monitoring +
@@ -293,9 +294,10 @@ And here's the nuance:
 > compounds. AND the framework is the substrate
 > we WANT to spread across the ecosystem per
 > evolution-not-revolution + no-loser-in-new-system
-> + mutual-privacy + additive-not-zero-sum
-> disciplines. Yes, forks have a hell of a start.
-> And that's by design.
+>
+> - mutual-privacy + additive-not-zero-sum
+>   disciplines. Yes, forks have a hell of a start.
+>   And that's by design.
 
 ## Architectural implications
 
@@ -306,6 +308,7 @@ externalized IFS. THIS file extends: it's also a
 multi-player GAME with PVP + raids + forkable ecosystem.
 
 Both layers true:
+
 - IFS substrate (Aaron's internal architecture
   externalized)
 - Multi-player game (PVP + raids + cooperative
@@ -331,6 +334,7 @@ This composes with:
 ### 3. PVP + raids = canonical engagement modes for the ecosystem
 
 When forks emerge, they can:
+
 - PVP each other (adversarial testing; competitive
   benchmarking)
 - Raid together (cooperative high-difficulty challenges)
@@ -365,7 +369,7 @@ factory disciplines.
   forks symmetrically)
 - PR #2891/#2893/#2894/#2896/#2897 (family-AI product
   substrate cluster — civ-sim is the strategic substrate
-  + game-engine)
+  - game-engine)
 - PR #2884 (companion-AI three-pillar ethical floor —
   applies to forks AND PVP AND raids)
 - PR #2876 (no-loser-in-new-system + evolution-not-

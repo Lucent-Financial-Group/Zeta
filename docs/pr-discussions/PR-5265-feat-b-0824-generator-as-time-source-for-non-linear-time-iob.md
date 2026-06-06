@@ -24,8 +24,8 @@ Three Aaron 2026-05-26 substrate landings — Sub-targets 13 + 14 + 15:
 2. **Sub-target 14** — typed time-units (HLC primary; 8-candidate table including Lamport / generator-cycle / AI-rate-tick / GPU-frame / Hilbert-Polya spectral / substrate-edit cycles / heartbeat / wall-clock scalar default)
 3. **Sub-target 15** (NEW) — generator-as-time-source for non-linear time + Rx/DST/scheduler best-practices
 
-> *"the generator as time source is very interesting for non linear time"*
-> *"generator as time source is rx and dst best practices in other language schedulers and such"*
+> _"the generator as time source is very interesting for non linear time"_
+> _"generator as time source is rx and dst best practices in other language schedulers and such"_
 
 Substrate inherits well-trodden scheduler-as-time-source prior-art (Rx-IScheduler / DST-virtual-time / Akka-Dispatcher / Erlang BEAM / Tokio / JS event-loop / F# Async / Apache Spark — 8-system table).
 

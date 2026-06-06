@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2469 |
-| Title | fix(B-0347): carve 21 over-length skill descriptions to ≤150 chars |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T11:13:27Z |
-| Merged at | 2026-05-10T11:15:22Z |
-| Merge commit SHA | `4ec30ea5d4c52f101367100e8996952637da1c3f` |
-| Branch | `fix/B-0347-carved-skill-descriptions` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2469 |
-| Changed files | 21 |
-| Additions / deletions | +21 / -21 |
+| Field                 | Value                                                              |
+| --------------------- | ------------------------------------------------------------------ |
+| Number                | 2469                                                               |
+| Title                 | fix(B-0347): carve 21 over-length skill descriptions to ≤150 chars |
+| Author                | `AceHack` (human)                                                  |
+| State                 | MERGED                                                             |
+| Created at            | 2026-05-10T11:13:27Z                                               |
+| Merged at             | 2026-05-10T11:15:22Z                                               |
+| Merge commit SHA      | `4ec30ea5d4c52f101367100e8996952637da1c3f`                         |
+| Branch                | `fix/B-0347-carved-skill-descriptions`                             |
+| Base branch           | `main`                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2469           |
+| Changed files         | 21                                                                 |
+| Additions / deletions | +21 / -21                                                          |
 
 ## Description
 
@@ -52,15 +52,15 @@ Partial progress on B-0347 acceptance criteria 1 (all descriptions ≤150 chars)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

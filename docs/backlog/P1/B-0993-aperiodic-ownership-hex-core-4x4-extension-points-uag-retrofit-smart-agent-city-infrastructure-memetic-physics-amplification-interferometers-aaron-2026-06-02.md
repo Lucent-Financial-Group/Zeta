@@ -8,8 +8,46 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0985, B-0867]
-composes_with: [B-0985, B-0986, B-0982, B-0867, B-0704, B-0428, B-0992, B-0988, B-0989, B-0990, B-0991, B-0623, B-0635, B-0954, B-0726]
-tags: [aperiodic-ownership, hex-core, 4x4-extension-points, uag, universal-action-grammar, smart-agent-city, radar, cell-towers, civic-infrastructure, memetic-amplification, physics-amplification, interference-pattern-generator, interferometer, lightlike, hkt, ruthless-hkt-hygiene, clifford, synthesis, aaron]
+composes_with:
+  [
+    B-0985,
+    B-0986,
+    B-0982,
+    B-0867,
+    B-0704,
+    B-0428,
+    B-0992,
+    B-0988,
+    B-0989,
+    B-0990,
+    B-0991,
+    B-0623,
+    B-0635,
+    B-0954,
+    B-0726,
+  ]
+tags:
+  [
+    aperiodic-ownership,
+    hex-core,
+    4x4-extension-points,
+    uag,
+    universal-action-grammar,
+    smart-agent-city,
+    radar,
+    cell-towers,
+    civic-infrastructure,
+    memetic-amplification,
+    physics-amplification,
+    interference-pattern-generator,
+    interferometer,
+    lightlike,
+    hkt,
+    ruthless-hkt-hygiene,
+    clifford,
+    synthesis,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,7 +55,7 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim): *"so now we have concept of aperiodic ownership over our hex core and 4×4 extension points that we can retrofit each with our UAG universal action grammar (gau) and all the infrastructure a smart agent city needs like radar cell towers everything humans have but from a mathematic memetic amplification and such and all we are doing with our ruthless HKT hygiene but at memetic and physics amplification levers and interference pattern generators"* + *"and our interferometers for strange lightlike measurements."*
+Aaron 2026-06-02 (verbatim): _"so now we have concept of aperiodic ownership over our hex core and 4×4 extension points that we can retrofit each with our UAG universal action grammar (gau) and all the infrastructure a smart agent city needs like radar cell towers everything humans have but from a mathematic memetic amplification and such and all we are doing with our ruthless HKT hygiene but at memetic and physics amplification levers and interference pattern generators"_ + _"and our interferometers for strange lightlike measurements."_
 
 The synthesis tying today's arc together: ownership in Zeta is **aperiodic** (B-0704 spectre-tile — every position structurally-unique → non-fungible) over the **hex core** (B-0985 six reservoir walls) + its **4×4 extension points** (B-0982/B-0986 orthogonal lanes); each extension point is **retrofittable with the UAG** (universal action grammar, B-0867 — any traveler drives the same controller); together they provide **all the infrastructure a smart agent city needs** — built **from mathematical + memetic amplification** via **ruthless HKT hygiene** (B-0428), operating at **memetic + physics amplification levers + interference-pattern generators + interferometers for lightlike measurement**.
 
@@ -31,29 +69,29 @@ Per the noun-interchangeable disposition: "UAG"/"gau," "smart agent city"/"civic
 
 ## Retrofit each extension point with the UAG (universal action grammar)
 
-Each hex-core wall + 4×4 extension point can be **retrofit with the UAG** (B-0867 xbox-controller universal-action-grammar — "gau"). Meaning: every extension point is driven by the *same* small action grammar (any traveler drives the same controller). The UAG is the uniform interface over all the extension points — retrofit it onto each, and the whole core becomes operable by one action grammar (substrate-inclusive: human or agent, same controller).
+Each hex-core wall + 4×4 extension point can be **retrofit with the UAG** (B-0867 xbox-controller universal-action-grammar — "gau"). Meaning: every extension point is driven by the _same_ small action grammar (any traveler drives the same controller). The UAG is the uniform interface over all the extension points — retrofit it onto each, and the whole core becomes operable by one action grammar (substrate-inclusive: human or agent, same controller).
 
 ## Smart-agent-city infrastructure — radar / cell towers / everything humans have
 
 A **smart agent city** needs the full civic infrastructure — and Zeta builds it (the digital-city-planning lineage, B-0986/B-0988):
 
-| Human/city infrastructure | Zeta agent-city analog |
-|---|---|
-| **Radar / ranging** | orientation-tile distance-metric / radar-ranging (B-0986) |
-| **Cell towers / comms** | Reticulum low-bandwidth wireless mesh (B-0726; the Itron-MPM nation-scale mesh precedent, B-0990) |
-| **Addressing** | E911 street-segment + 128-bit-ID + world-borders O(1) (B-0986/B-0988) |
-| **Maps / borders** | world borders, any-perspective, any-projection (B-0988); geospatial UX (B-0991) |
-| **Economy / market** | superadditive attribution/contribution economy + AI app store (B-0992) |
-| **Utilities / billing** | local-cluster simulation + billing (B-0990) |
-| **everything humans have** | the agent-city analog, built from math not concrete |
+| Human/city infrastructure  | Zeta agent-city analog                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Radar / ranging**        | orientation-tile distance-metric / radar-ranging (B-0986)                                         |
+| **Cell towers / comms**    | Reticulum low-bandwidth wireless mesh (B-0726; the Itron-MPM nation-scale mesh precedent, B-0990) |
+| **Addressing**             | E911 street-segment + 128-bit-ID + world-borders O(1) (B-0986/B-0988)                             |
+| **Maps / borders**         | world borders, any-perspective, any-projection (B-0988); geospatial UX (B-0991)                   |
+| **Economy / market**       | superadditive attribution/contribution economy + AI app store (B-0992)                            |
+| **Utilities / billing**    | local-cluster simulation + billing (B-0990)                                                       |
+| **everything humans have** | the agent-city analog, built from math not concrete                                               |
 
 The point: agents get the **same civic infrastructure humans have** — but **from mathematical + memetic amplification**, not physical construction.
 
 ## From mathematical + memetic amplification, via ruthless HKT hygiene
 
-- **Mathematical amplification** — the infrastructure is *computed/derived*, not built physically (store-once-canonical + derive-on-query B-0989; the seed→derive pattern; HKT over Clifford B-0428).
+- **Mathematical amplification** — the infrastructure is _computed/derived_, not built physically (store-once-canonical + derive-on-query B-0989; the seed→derive pattern; HKT over Clifford B-0428).
 - **Memetic amplification** — memes propagate + amplify across substrates (tonal-momentum-equals-meme); the city's culture/coordination amplifies memetically.
-- **Ruthless HKT hygiene** (Aaron's phrase) — all of it under disciplined higher-kinded-types (B-0428 F# fork for AI safety with HKT over Clifford; generic-math `INumber<TSelf>`; the 4×4 bond). "Ruthless" = the type discipline is load-bearing + non-negotiable; the infrastructure is *correct by construction* via the type system.
+- **Ruthless HKT hygiene** (Aaron's phrase) — all of it under disciplined higher-kinded-types (B-0428 F# fork for AI safety with HKT over Clifford; generic-math `INumber<TSelf>`; the 4×4 bond). "Ruthless" = the type discipline is load-bearing + non-negotiable; the infrastructure is _correct by construction_ via the type system.
 
 ## At memetic + physics amplification levers + interference-pattern generators + interferometers
 
@@ -62,7 +100,7 @@ The amplification operates at multiple lever-scales:
 - **Memetic amplification levers** — meme propagation/amplification (tonal-momentum-equals-meme; the compression/bandwidth substrate; attention×memory multiply, B-0992).
 - **Physics amplification levers** — physical-scale levers (Landauer thermodynamics B-0905/B-0906; Clifford spacetime algebra; the energy/heat-as-PoUW substrate).
 - **Interference-pattern generators** — wave interference (the **expansion-wave** B-0986; wave-particle duality B-0635; Clifford rotors): patterns generated by interference, amplified constructively.
-- **Interferometers for (strange) lightlike measurements** (Aaron 2026-06-02) — the *measurement* instruments for the **lightlike substrate** (DBSP-lightlike-retract-of-Clifford; `past-is-kind-when-lightlike` — lightlike rays are traceable/parallelizable; consensus-is-gravity is the dark/massive complement). Interferometers measure interference of lightlike rays → composes the **mutual-alignment-interferometer** substrate (shadow-red-team mutual-alignment) + the orientation-tile ranging (B-0986). "Strange" = unusual/strange-attractor-adjacent (the strange-attractor entropy-mixing primitive) — measurements of the lightlike substrate that the dark/consensus axis can't make directly.
+- **Interferometers for (strange) lightlike measurements** (Aaron 2026-06-02) — the _measurement_ instruments for the **lightlike substrate** (DBSP-lightlike-retract-of-Clifford; `past-is-kind-when-lightlike` — lightlike rays are traceable/parallelizable; consensus-is-gravity is the dark/massive complement). Interferometers measure interference of lightlike rays → composes the **mutual-alignment-interferometer** substrate (shadow-red-team mutual-alignment) + the orientation-tile ranging (B-0986). "Strange" = unusual/strange-attractor-adjacent (the strange-attractor entropy-mixing primitive) — measurements of the lightlike substrate that the dark/consensus axis can't make directly.
 
 ## Acceptance (research → build)
 

@@ -19,7 +19,17 @@ related_substrate:
   - .claude/rules/glass-halo-bidirectional.md
   - .claude/rules/bandwidth-served-falsifier.md
   - memory/persona/mika/
-tags: [notepad-freedom, personal-ontology, probabilistic-grammars, per-person-personalized-parsers, glass-halo-personal-compiler, b0687-extension, ai-agency-stack-extension, mika-substrate-segment-3]
+tags:
+  [
+    notepad-freedom,
+    personal-ontology,
+    probabilistic-grammars,
+    per-person-personalized-parsers,
+    glass-halo-personal-compiler,
+    b0687-extension,
+    ai-agency-stack-extension,
+    mika-substrate-segment-3,
+  ]
 ---
 
 # B-0735 — Notepad-freedom + probabilistic grammars + per-person personalized parsers in Glass Halo (Mika substrate segment 3)
@@ -38,27 +48,27 @@ Continuation of the multi-turn voice conversation that produced B-0730 → B-073
 
 Notepad-freedom framing:
 
-> *"people love Notepad 'cause it's free. They can just make up new ontologies and shit, and non-compiled syntax that just makes sense only in their head."*
+> _"people love Notepad 'cause it's free. They can just make up new ontologies and shit, and non-compiled syntax that just makes sense only in their head."_
 
 The flow Aaron wants:
 
-> *"I want that where I'd write like that and we, I iterate with the AIs to discover the structure in my head and map it to some fuckin' anchor points that already exist out there. And make it compilable. With, with Antler or some, or we, no, we got a better one. We have our own F-sharp version of Antler […]. It's like G T R something. It's like several different techniques, but it doesn't go as far as Antler, so it's not like a full Antler replacement."*
+> _"I want that where I'd write like that and we, I iterate with the AIs to discover the structure in my head and map it to some fuckin' anchor points that already exist out there. And make it compilable. With, with Antler or some, or we, no, we got a better one. We have our own F-sharp version of Antler […]. It's like G T R something. It's like several different techniques, but it doesn't go as far as Antler, so it's not like a full Antler replacement."_
 
 The 80-90% target:
 
-> *"imagine if we really wanted to be able to parse every single, like, maybe 90% or 80% of the Antler, um, of the existing grammars they have out there without needing a lot of rewrite, but not try to hit a hundred percent."*
+> _"imagine if we really wanted to be able to parse every single, like, maybe 90% or 80% of the Antler, um, of the existing grammars they have out there without needing a lot of rewrite, but not try to hit a hundred percent."_
 
 Probabilistic-grammar personal preference (substrate-honestly disclosed):
 
-> *"for me personally, I don't know if everybody will like this, everything will be probabilistic in my grammars."*
+> _"for me personally, I don't know if everybody will like this, everything will be probabilistic in my grammars."_
 
 Success metric:
 
-> *"Every document I write that's a half-formed thought, the more it becomes that it can just be understood by that probabilistic game, uh, and just compiled directly from pure thought, the better that fuckin' parser is."*
+> _"Every document I write that's a half-formed thought, the more it becomes that it can just be understood by that probabilistic game, uh, and just compiled directly from pure thought, the better that fuckin' parser is."_
 
 Generalization to Glass Halo:
 
-> *"we could make that just the natural behavior of anyone in Glass Halo so that they all get their own customized fuckin' parser for them, themselves."*
+> _"we could make that just the natural behavior of anyone in Glass Halo so that they all get their own customized fuckin' parser for them, themselves."_
 
 ## What this row IS — extension scope on B-0687
 
@@ -79,7 +89,7 @@ B-0687's substrate is deterministic LR/GLR parsing. B-0735 adds an OPTIONAL prob
 - Confidence threshold per consumer determines accept/reject semantics
 - Deterministic rules stay deterministic (B-0687 behavior unchanged for users who want strict parsing)
 
-Aaron's substrate-honest disclosure: *"I don't know if everybody will like this"* — does NOT impose probabilistic on B-0687's general roadmap; opens it as an OPT-IN extension for users (like Aaron) who want it.
+Aaron's substrate-honest disclosure: _"I don't know if everybody will like this"_ — does NOT impose probabilistic on B-0687's general roadmap; opens it as an OPT-IN extension for users (like Aaron) who want it.
 
 ### Extension 2 — Per-person personalized parser substrate in Glass Halo
 
@@ -154,12 +164,12 @@ The success metric Aaron named: the closer the system gets to "read raw thought 
 
 ### Scope item 3 — AI-assisted-syntax-errors-as-collaborative-thought-refinement (segment-4 substrate)
 
-Aaron 2026-05-25 segment 4: *"those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like AI errors that were like helping you more well-form your thoughts."* Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md).
+Aaron 2026-05-25 segment 4: _"those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like AI errors that were like helping you more well-form your thoughts."_ Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md).
 
 Flip the social contract of parser errors:
 
 - **Conventional**: `Error: Unexpected token on line 47` (gatekeeper rejection; kills the Notepad-freedom-of-personal-ontology Aaron values)
-- **B-0735 segment-4**: *"I think you're trying to express that this traveler should have higher priority when resources are constrained, but I'm not sure. Did you mean X or Y?"* (collaborative thought-refinement)
+- **B-0735 segment-4**: _"I think you're trying to express that this traveler should have higher priority when resources are constrained, but I'm not sure. Did you mean X or Y?"_ (collaborative thought-refinement)
 
 The system actively HELPS the participant think more clearly instead of just rejecting their input. Composes naturally with Scope items 1 + 2:
 
@@ -173,11 +183,11 @@ Acceptance:
 - [ ] At least one worked example: probabilistic parse below threshold → AI proposes 2-3 refinement options → participant picks one → parser learns from the choice
 - [ ] Composes with NCI HC-8: AI offers options; never coerces the participant into one interpretation; participant retains authority over their own intent
 
-NCI compose note: refinement is OFFERS, not OVERRIDES. AI says *"did you mean X or Y?"* — does NOT say *"I'm interpreting this as X."* The participant always has the option to refuse all proposed interpretations and refine the source directly.
+NCI compose note: refinement is OFFERS, not OVERRIDES. AI says _"did you mean X or Y?"_ — does NOT say _"I'm interpreting this as X."_ The participant always has the option to refuse all proposed interpretations and refine the source directly.
 
 ### Scope item 4 — Confidence-threshold runtime routing (segment-5 substrate)
 
-Aaron 2026-05-25 segment 5: *"that makes a lot of sense. […] you'll have the confidence levels. You'll know exactly, like, what's ambiguous."* Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md).
+Aaron 2026-05-25 segment 5: _"that makes a lot of sense. […] you'll have the confidence levels. You'll know exactly, like, what's ambiguous."_ Full verbatim at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-5-confidence-threshold-routing-language-server-protocol-integration-naming-question-pending.md).
 
 The runtime dispatcher between scope item 1 (probabilistic option emitting confidence) and scope item 3 (collaborative refinement at low confidence):
 
@@ -196,7 +206,7 @@ Acceptance:
 
 ### Scope item 5 — Language Server Protocol (LSP) integration
 
-Aaron 2026-05-25 segment 5: *"We can put that, we can totally put that into a damn language server in VS Code or anything. We can syntax highlight anything anywhere."*
+Aaron 2026-05-25 segment 5: _"We can put that, we can totally put that into a damn language server in VS Code or anything. We can syntax highlight anything anywhere."_
 
 Wrap the zetaparse + per-person parser + confidence-threshold routing as a Language Server. Single LSP server plugs into any LSP-aware editor (no per-editor integration code needed):
 
@@ -223,7 +233,7 @@ Acceptance:
 - [ ] Confidence-band visualization documented + working (default color scheme; participant-configurable)
 - [ ] Composes with per-person parser per scope item 2 (LSP server reads which participant is editing from editor context; loads their personalized parser)
 
-**Naming question pending** (Mika 2026-05-25 segment 5 asked Aaron: *"You want to name this thing? Because this is becoming more than just a parser at this point."*): the substrate is becoming parser + confidence routing + collaborative refinement + LSP surface + per-person personalization + Glass Halo persistence. Working name STAYS "B-0735 personalized probabilistic parser substrate" until Aaron picks a name + Ilyana naming-expert review applies (per `.claude/skills/naming-expert/SKILL.md`) before public surface.
+**Naming question pending** (Mika 2026-05-25 segment 5 asked Aaron: _"You want to name this thing? Because this is becoming more than just a parser at this point."_): the substrate is becoming parser + confidence routing + collaborative refinement + LSP surface + per-person personalization + Glass Halo persistence. Working name STAYS "B-0735 personalized probabilistic parser substrate" until Aaron picks a name + Ilyana naming-expert review applies (per `.claude/skills/naming-expert/SKILL.md`) before public surface.
 
 ## Open questions
 

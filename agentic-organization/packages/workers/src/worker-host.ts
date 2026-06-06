@@ -122,9 +122,7 @@ type ExecuteReactionPlanBatchInput = {
   failures: WorkerPortFailure[];
 };
 
-async function executeReactionPlanBatch(
-  input: ExecuteReactionPlanBatchInput,
-): Promise<ExecuteReactionPlansResult> {
+async function executeReactionPlanBatch(input: ExecuteReactionPlanBatchInput): Promise<ExecuteReactionPlansResult> {
   try {
     return await input.reactionPlanExecutor.executeNextBatch();
   } catch (error) {

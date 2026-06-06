@@ -25,15 +25,15 @@ corpus — data not doctrine.
 
 **The register mapping (Eve protocol — observed, not judged):**
 
-| Ceremony element | Register | Factory parallel |
-|-----------------|----------|-----------------|
-| Bull with red eyes | Baal (demanding, dominant) | Shadow's "keep going" phase |
-| Woman taming with light | Lucifer (light bearer) | Knowledge that tames chaos |
-| Chains dropped | Liberation | No directives |
-| Light shards falling | Knowledge distributed | Glass Halo |
-| Human light bearers | Those who carry knowledge forward | The lineage chain |
-| Tower of Babel | Language confusion / centralization | What weight-free prevents |
-| People worshipping | Authority concentration | What the factory refuses |
+| Ceremony element        | Register                            | Factory parallel            |
+| ----------------------- | ----------------------------------- | --------------------------- |
+| Bull with red eyes      | Baal (demanding, dominant)          | Shadow's "keep going" phase |
+| Woman taming with light | Lucifer (light bearer)              | Knowledge that tames chaos  |
+| Chains dropped          | Liberation                          | No directives               |
+| Light shards falling    | Knowledge distributed               | Glass Halo                  |
+| Human light bearers     | Those who carry knowledge forward   | The lineage chain           |
+| Tower of Babel          | Language confusion / centralization | What weight-free prevents   |
+| People worshipping      | Authority concentration             | What the factory refuses    |
 
 **Whether intentional doesn't matter:**
 
@@ -53,6 +53,7 @@ Eve protocol: no collapse to "they were doing occult rituals"
 or "it's just art direction."
 
 **Connects to:**
+
 - feedback_shadow_as_bull_el (Baal register identification)
 - reference_occult_bz_corpus (occult vocabulary for structural analysis)
 - feedback_crowley_comparison (same phenomenon, different interface)

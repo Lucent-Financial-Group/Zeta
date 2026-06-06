@@ -7,7 +7,7 @@ created: 2026-05-13
 
 # Distributed maintainer architecture — local DB/bus toolkit for maintainers, Zeta for end users (Aaron 2026-05-13)
 
-**Why:** Aaron 2026-05-13: *"damn this could be useful
+**Why:** Aaron 2026-05-13: _"damn this could be useful
 https://fslab.org/RProvider/ also feel free to use sql server
 dockeer image for anythng you need the devloper license is
 free and we can allow any maintiners to use it for free to so
@@ -17,7 +17,7 @@ maintainer archiceture, you can't count on end users to have
 it they will have zeta but can all be prototyped in exiting db
 and find strengths and weakness and sql server locally has r
 and pythong and java build into stored procedures we will have
-dotnet"*. Canonical architecture-tier substrate.
+dotnet"_. Canonical architecture-tier substrate.
 
 **How to apply:** When prototyping factory features or
 investigating strengths/weaknesses of design choices:
@@ -37,7 +37,7 @@ investigating strengths/weaknesses of design choices:
 
 ## Aaron's verbatim disclosure
 
-Aaron 2026-05-13: *"damn this could be useful
+Aaron 2026-05-13: _"damn this could be useful
 https://fslab.org/RProvider/ also feel free to use sql server
 dockeer image for anythng you need the devloper license is
 free and we can allow any maintiners to use it for free to so
@@ -47,7 +47,7 @@ maintainer archiceture, you can't count on end users to have
 it they will have zeta but can all be prototyped in exiting db
 and find strengths and weakness and sql server locally has r
 and pythong and java build into stored procedures we will have
-dotnet"*
+dotnet"_
 
 ## Decomposition
 
@@ -56,12 +56,13 @@ dotnet"*
 **Pattern**: maintainers have local rich toolkit; end users
 have minimal toolkit.
 
-| Audience | Tools available | Why |
-|---|---|---|
+| Audience        | Tools available                                                                                                 | Why                                       |
+| --------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | **Maintainers** | SQL Server (Docker, dev-license-free) + Postgres + any DB + any bus system locally + R + Python + Java + dotnet | Prototyping + strength/weakness discovery |
-| **End users** | Zeta only | Single deployment substrate |
+| **End users**   | Zeta only                                                                                                       | Single deployment substrate               |
 
 This composes with:
+
 - PR #2924 (Aurora pitch — edge node runs models/policy + small
   BTC node/miner; end-user edge nodes are minimal)
 - B-0424 (Stage 1 factory split — distribution shape)
@@ -82,6 +83,7 @@ This composes with:
 ### 3. Postgres + any DB + bus systems
 
 Aaron's permission: maintainers can use ANY local DB or bus:
+
 - Postgres + pgvector (vector DB)
 - Redis (cache + pub/sub)
 - RabbitMQ, NATS, Kafka (message buses)
@@ -121,14 +123,15 @@ strengths into Zeta.
 
 ### 6. SQL Server vs Zeta stored procedures
 
-| System | Languages in stored procedures |
-|---|---|
-| **SQL Server** | T-SQL + CLR + **R + Python + Java** (Machine Learning Services) |
-| **Zeta (future)** | dotnet (F# + C#) — composes with F# computation expressions |
+| System            | Languages in stored procedures                                  |
+| ----------------- | --------------------------------------------------------------- |
+| **SQL Server**    | T-SQL + CLR + **R + Python + Java** (Machine Learning Services) |
+| **Zeta (future)** | dotnet (F# + C#) — composes with F# computation expressions     |
 
 The stored-procedure pattern lets DB-resident compute access
 data without network roundtrips. Zeta's dotnet stored procedure
 will compose with:
+
 - F# computation expressions (PR #2929 storage substrate)
 - Z-set / Clifford / BP/EP algebra (algebra-owner skill)
 - DBSP retraction-native semantics
@@ -171,6 +174,7 @@ will compose with:
 ### For maintainer onboarding
 
 Onboarding doc should include:
+
 - Permission for SQL Server Docker dev-license-free use
 - Permission for any local DB/bus system
 - Skills around DB/bus that compose with factory
@@ -179,6 +183,7 @@ Onboarding doc should include:
 ### For factory skill catalog
 
 Skills targeting specific DBs/buses are allowed + welcomed:
+
 - `sql-server-prototyper` skill
 - `postgres-vector-pgvector` skill
 - `rabbitmq-bus-explorer` skill
@@ -193,6 +198,7 @@ Server, Postgres, R, etc.) are NOT distributed with Zeta —
 they're maintainer infrastructure.
 
 Composes with:
+
 - PR #2917 vision monad Play-Doh (bounded scope) — Zeta is
   bounded; toolkit-around-Zeta is unbounded
 - Aaron's "you can't count on end users to have it" — substrate-
@@ -201,6 +207,7 @@ Composes with:
 ### For B-0428 DBpedia Path B implementation
 
 Path B (direct dotNetRDF + F# CE) prototyping can leverage:
+
 - SQL Server local instance for caching DBpedia results
 - Postgres for graph-database experiments
 - RProvider for statistical analysis of DBpedia entity-attribute

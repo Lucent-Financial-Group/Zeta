@@ -22,11 +22,11 @@ with BP-NN citations, and hands actionable findings to
 
 ## The three facets (from `teaching-skill-pattern`)
 
-| Facet | Values | Audit question |
-|---|---|---|
-| **Epistemic stance** | `expert` / `research` / `teach` | Does this skill conflate runtime-validated with speculative knowledge? |
-| **Abstraction level** | `theory` / `applied` | Has the skill drifted between abstract model and vendor-specific detail? |
-| **Function** | `practitioner` / `gap-finder` / `enforcer` / `optimizer` / `balancer` | Does one skill fill two functions without declaring both? |
+| Facet                 | Values                                                                | Audit question                                                           |
+| --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Epistemic stance**  | `expert` / `research` / `teach`                                       | Does this skill conflate runtime-validated with speculative knowledge?   |
+| **Abstraction level** | `theory` / `applied`                                                  | Has the skill drifted between abstract model and vendor-specific detail? |
+| **Function**          | `practitioner` / `gap-finder` / `enforcer` / `optimizer` / `balancer` | Does one skill fill two functions without declaring both?                |
 
 A clean skill names one value per facet (implicitly via name
 convention, or explicitly in description).
@@ -95,7 +95,7 @@ convention, or explicitly in description).
 
 ## Exemptions — process and cross-cutting skills
 
-Some skills describe *process* rather than a topic with
+Some skills describe _process_ rather than a topic with
 counterparts. The auditor does not force facet declarations
 on these:
 
@@ -152,8 +152,9 @@ Each carries an effort label matching `next-steps`:
 # Skill Ontology Audit — round N
 
 ## Summary
+
 - Skills audited: <count>
-- Flagged: <count>   (P0: <n>, P1: <n>, P2: <n>)
+- Flagged: <count> (P0: <n>, P1: <n>, P2: <n>)
 - Exempt (process / cross-cutting): <count>
 
 ## Top-N offenders
@@ -175,19 +176,21 @@ Each carries an effort label matching `next-steps`:
 
 ## Orthogonality map (optional)
 
-| Topic | (stance, abstraction, function) | Skill |
-|---|---|---|
-| knowledge graphs | (expert, theory, practitioner) | knowledge-graph-expert |
-| graph databases | (expert, applied, practitioner) | graph-database-expert |
-| factory balance | (expert, applied, balancer) | factory-balance-auditor |
-| factory optimisation | (expert, applied, optimizer) | factory-optimizer |
-| skill gaps | (expert, applied, gap-finder) | skill-gap-finder |
-| skill ontology | (expert, applied, enforcer) | skill-ontology-auditor |
+| Topic                | (stance, abstraction, function) | Skill                   |
+| -------------------- | ------------------------------- | ----------------------- |
+| knowledge graphs     | (expert, theory, practitioner)  | knowledge-graph-expert  |
+| graph databases      | (expert, applied, practitioner) | graph-database-expert   |
+| factory balance      | (expert, applied, balancer)     | factory-balance-auditor |
+| factory optimisation | (expert, applied, optimizer)    | factory-optimizer       |
+| skill gaps           | (expert, applied, gap-finder)   | skill-gap-finder        |
+| skill ontology       | (expert, applied, enforcer)     | skill-ontology-auditor  |
 
 ## Notable mentions
+
 - [skills close to flagging but not there yet]
 
 ## Self-recommendation
+
 - Does this skill itself need audit? [yes/no] — concrete
   signal. Honest answers only; no modesty bias.
 ```
@@ -281,13 +284,13 @@ per `.claude/skills/skill-tune-up/SKILL.md` §live-search.
 
 ## Reference patterns
 
-- Ranganathan — *Colon Classification* (1933); PMEST facet
+- Ranganathan — _Colon Classification_ (1933); PMEST facet
   analysis (Personality-Matter-Energy-Space-Time).
-- Ranganathan — *Prolegomena to Library Classification* (1937).
-- Mooers — *Coding, Deciphering, and Classification* (1951).
-- Gruber — *A Translation Approach to Portable Ontologies*
+- Ranganathan — _Prolegomena to Library Classification_ (1937).
+- Mooers — _Coding, Deciphering, and Classification_ (1951).
+- Gruber — _A Translation Approach to Portable Ontologies_
   (1993) — ontology-as-specification discipline.
-- Guarino — *Formal Ontology and Information Systems* (1998)
+- Guarino — _Formal Ontology and Information Systems_ (1998)
   — the IS-A and role-vs-kind distinctions this audit enforces.
 - `.claude/skills/taxonomy-expert/SKILL.md` — hierarchical
   classification theory.

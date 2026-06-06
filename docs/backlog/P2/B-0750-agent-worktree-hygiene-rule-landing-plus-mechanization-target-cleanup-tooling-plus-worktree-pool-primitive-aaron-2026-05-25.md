@@ -14,20 +14,30 @@ composes_with:
 related_substrate:
   - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md
   - .claude/rules/claim-acquire-before-worktree-work.md
-tags: [agent-worktree-hygiene, multi-agent-worktree-contention, operator-unblocking, cleanup-tooling, worktree-pool-handoff, b0530-compose, never-hold-main, substrate-engineering-mechanization-target]
+tags:
+  [
+    agent-worktree-hygiene,
+    multi-agent-worktree-contention,
+    operator-unblocking,
+    cleanup-tooling,
+    worktree-pool-handoff,
+    b0530-compose,
+    never-hold-main,
+    substrate-engineering-mechanization-target,
+  ]
 ---
 
 # B-0750 — Agent worktree hygiene mechanization target
 
 ## Carved blade
 
-> Operator 2026-05-25: *"i'm stuck (max) ➜ Zeta git:(lior-archive-prs-2026-05-26) ✗ git checkout main → fatal: 'main' is already used by worktree at '/private/tmp/zeta-riven-loop-2'... nope we need to fix this mess yall always stepping on each other and me constantly."* The proximate cause was 37 agent worktrees from one substrate-cascade day, including one peer-agent worktree holding `[main]` at stale SHA. Mass-cleanup unblocked + the agent-worktree-hygiene rule landed simultaneously, but the substrate-engineering target is mechanization: periodic cleanup tooling (auto-prune post-PR-merge) plus an ownership architecture handoff. The older worktree-pool primitive remains in B-0558; the per-agent isolated-clones architecture in PR #5019 supersedes the pool as the preferred architecture for future agent isolation, but is not listed in `composes_with` until its backlog row is main-visible. Until mechanization lands, agent-side compliance with the rule operates the discipline.
+> Operator 2026-05-25: _"i'm stuck (max) ➜ Zeta git:(lior-archive-prs-2026-05-26) ✗ git checkout main → fatal: 'main' is already used by worktree at '/private/tmp/zeta-riven-loop-2'... nope we need to fix this mess yall always stepping on each other and me constantly."_ The proximate cause was 37 agent worktrees from one substrate-cascade day, including one peer-agent worktree holding `[main]` at stale SHA. Mass-cleanup unblocked + the agent-worktree-hygiene rule landed simultaneously, but the substrate-engineering target is mechanization: periodic cleanup tooling (auto-prune post-PR-merge) plus an ownership architecture handoff. The older worktree-pool primitive remains in B-0558; the per-agent isolated-clones architecture in PR #5019 supersedes the pool as the preferred architecture for future agent isolation, but is not listed in `composes_with` until its backlog row is main-visible. Until mechanization lands, agent-side compliance with the rule operates the discipline.
 
 ## Origin
 
 Operator 2026-05-25, mid-session:
 
-> *"i'm stuck... yall always stepping on each other and me constantly"*
+> _"i'm stuck... yall always stepping on each other and me constantly"_
 
 Empirical anchor: 37 agent worktrees in `/private/tmp/zeta-*` + 4 worktrees in operator's primary checkout subdir (peer-AI legacy) + 1 `/private/tmp/zeta-riven-loop-2` holding `[main]` at stale SHA. Mass-cleanup (37 removed) unblocked the operator's `git checkout main`. Same-PR landing: `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` ensures future-AIs inherit the discipline at cold-boot.
 

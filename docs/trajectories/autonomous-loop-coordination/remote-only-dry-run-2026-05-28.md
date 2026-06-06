@@ -68,14 +68,14 @@ Durable target: docs/trajectories/autonomous-loop-coordination/remote-only-dry-r
 
 ## Matrix Outcome
 
-| Matrix requirement | Result | Evidence |
-|---|---:|---|
-| Start from a fresh repository with no local bus | pass | Scratch repository initialized outside the Zeta worktrees |
-| Discover active work with `git fetch origin` plus claim refs | pass | 37 remote claim refs listed |
-| Recover ownership and target path from claim file | pass | Claim file read from `origin/claim/codex-autonomous-loop-remote-dry-run-20260528` |
-| Avoid GitHub as a required dependency | pass | Replay used git transport only |
-| Prove two participants avoid overlap | not run | Only the Codex claim participated in this preflight |
-| Prove release reconstruction from git history | not run | No release commit exists yet for this claim |
+| Matrix requirement                                           |  Result | Evidence                                                                          |
+| ------------------------------------------------------------ | ------: | --------------------------------------------------------------------------------- |
+| Start from a fresh repository with no local bus              |    pass | Scratch repository initialized outside the Zeta worktrees                         |
+| Discover active work with `git fetch origin` plus claim refs |    pass | 37 remote claim refs listed                                                       |
+| Recover ownership and target path from claim file            |    pass | Claim file read from `origin/claim/codex-autonomous-loop-remote-dry-run-20260528` |
+| Avoid GitHub as a required dependency                        |    pass | Replay used git transport only                                                    |
+| Prove two participants avoid overlap                         | not run | Only the Codex claim participated in this preflight                               |
+| Prove release reconstruction from git history                | not run | No release commit exists yet for this claim                                       |
 
 ## Finding
 

@@ -27,11 +27,11 @@ reference:
 
 The relevant tools (bundled in Claude Code ≥ v2.1.72):
 
-| Tool         | Purpose                                          |
-|--------------|--------------------------------------------------|
-| `CronCreate` | Schedule a prompt; 5-field cron + recurring flag |
-| `CronList`   | List scheduled tasks with IDs, schedules, prompts|
-| `CronDelete` | Cancel by 8-character ID                         |
+| Tool         | Purpose                                           |
+| ------------ | ------------------------------------------------- |
+| `CronCreate` | Schedule a prompt; 5-field cron + recurring flag  |
+| `CronList`   | List scheduled tasks with IDs, schedules, prompts |
+| `CronDelete` | Cancel by 8-character ID                          |
 
 The Ralph Loop plugin (`ralph-loop@claude-plugins-official`)
 is a different, unrelated mechanism — it implements the Ralph
@@ -44,12 +44,12 @@ dependency surface.
 
 ## The registered tick
 
-| Field      | Value                                       |
-|------------|---------------------------------------------|
-| Sentinel   | `<<autonomous-loop>>`                       |
-| Cadence    | `* * * * *` (every minute)                  |
-| Recurring  | `true`                                      |
-| Mechanism  | `CronCreate`                                |
+| Field     | Value                      |
+| --------- | -------------------------- |
+| Sentinel  | `<<autonomous-loop>>`      |
+| Cadence   | `* * * * *` (every minute) |
+| Recurring | `true`                     |
+| Mechanism | `CronCreate`               |
 
 `<<autonomous-loop>>` is a harness-internal sentinel that
 resolves, at fire time, to autonomous-loop instructions —
@@ -63,22 +63,22 @@ would work; the sentinel is the more concise form.
 autonomously on its own cadence without further agent
 action. `ScheduleWakeup` is a one-shot reminder; using it
 for a recurring loop creates scheduler churn and duplicate
-ticks (human maintainer, round 44: *"i thought we decided on
-cron over ScheduleWakeup so it would be more reliable"*).
+ticks (human maintainer, round 44: _"i thought we decided on
+cron over ScheduleWakeup so it would be more reliable"_).
 
 **Why 1 minute.** The Anthropic prompt cache has a 5-minute
 TTL; 60 s keeps the within-session context cache maximally
 warm between ticks. The human maintainer explicitly cranked
-cadence twice this round: first from 5 → 2 min (*"will it
+cadence twice this round: first from 5 → 2 min (_"will it
 hurt anything to crank that trigger up to 2 mintues instead
-of 5 you are having a lot of idle time just sitting here"*),
-then from 2 → 1 min (*"lets change to 1 minute"*). One
+of 5 you are having a lot of idle time just sitting here"_),
+then from 2 → 1 min (_"lets change to 1 minute"_). One
 minute is the runtime-enforced floor — see `CronCreate` docs
 — so this is as tight as the cadence can go.
 
 **Fleet `:00` / `:30` trade-off accepted.** The official
-docs advise: *"If exact timing matters, pick a minute that
-is not `:00` or `:30`."* At every-minute cadence there is
+docs advise: _"If exact timing matters, pick a minute that
+is not `:00` or `:30`."_ At every-minute cadence there is
 no offset available — the tick fires on every minute
 including `:00` and `:30`. We accept the fleet-pile-on risk
 for this particular cron because (a) the session-scoped
@@ -87,19 +87,19 @@ runtime adds (up to 10 % of 60 s ≈ 6 s late) further
 spreads fires. The earlier `1-59/2` odd-minute pattern is
 preserved in history below as the prior cadence.
 
-**Session scope.** From the official docs: *"Tasks are
+**Session scope.** From the official docs: _"Tasks are
 session-scoped: they live in the current conversation and
 stop when you start a new one. Resuming with `--resume` or
 `--continue` brings back any task that hasn't expired: a
 recurring task created within the last 7 days, or a one-shot
-whose scheduled time hasn't passed yet."* Session-open
+whose scheduled time hasn't passed yet."_ Session-open
 recovery is therefore `--resume` / `--continue` for the
 same thread; brand-new sessions need the tick re-armed per
 the every-tick checklist below.
 
-**Seven-day expiry.** From the official docs: *"Recurring
+**Seven-day expiry.** From the official docs: _"Recurring
 tasks automatically expire 7 days after creation. The task
-fires one final time, then deletes itself."* For runs
+fires one final time, then deletes itself."_ For runs
 longer than 7 days, the `long-term-rescheduler` skill rotates
 crons near expiry via `CronDelete` + `CronCreate`.
 
@@ -111,15 +111,15 @@ This discipline serves a load-bearing invariant:
 > no in-session memory, no out-of-band context — can pick
 > up the next tick and continue the work cleanly.**
 
-The every-tick checklist below is *a* mechanism that
+The every-tick checklist below is _a_ mechanism that
 preserves this invariant; it is not itself the invariant.
 The number of checklist steps is incidental — discoverability
 from `main` alone is what's load-bearing.
 
 Concretely, every change to this file MUST preserve (or
-strengthen) the invariant. The check is: *can a freshly
+strengthen) the invariant. The check is: _can a freshly
 spawned agent, reading only committed-on-`main` artifacts,
-find the prior tick's state and act on it?* If yes, the
+find the prior tick's state and act on it?_ If yes, the
 invariant holds. If no, the change has broken it.
 
 Four properties make the invariant true today:
@@ -160,9 +160,9 @@ properties above as the test surface.
 > that should be an invariant for all future changes to this
 > file" followed by a sharpening "not six step the
 > rediscoverable on main part"; the bracketed gloss reflects
-> the sharpening): *"[the rediscoverable-on-main part]
+> the sharpening): _"[the rediscoverable-on-main part]
 > should be an invariant for all future changes to this
-> file."* The meta-property is what makes the discipline
+> file."_ The meta-property is what makes the discipline
 > portable across sessions, agents, and forks of the
 > factory.
 
@@ -179,11 +179,11 @@ the [last-check → next-cron-fire] window during which a
 silent cron expiry can drop ticks.
 
 **End-over-start discipline** (human maintainer, round 44):
-*"you
+_"you
 know you should check the cronlist at the end instead
 of the start becasue it could expire while you are
 running if you check right before you exit that chance
-is reduced."* If the cron is checked only at start of
+is reduced."_ If the cron is checked only at start of
 tick, it can expire during the tick's work and the tick
 stops silently. If it is checked at end, the check is
 seconds before stopping — the next tick fires within
@@ -200,10 +200,10 @@ prompt:    "<<autonomous-loop>>"
 recurring: true
 ```
 
-Human maintainer, round 44: *"you are suppsed to check that
-its set everytime and not assume."* The discipline is
-*check-don't-
-assume*: defensive polling, re-arm only on miss. Most
+Human maintainer, round 44: _"you are suppsed to check that
+its set everytime and not assume."_ The discipline is
+_check-don't-
+assume_: defensive polling, re-arm only on miss. Most
 ticks are no-ops on the scheduler (cron is there → do
 nothing); the rare miss is detected and fixed in-tick
 before the silent stop becomes hours of missing activity.
@@ -214,7 +214,7 @@ Per the never-idle rule (CLAUDE.md §"Never be idle —
 speculative factory work beats waiting"), the tick does not
 wait for instruction. Priority ladder:
 
-0. **Tick-start mechanical checks** (the human maintainer 2026-05-03 — *"important to survival"*).
+0. **Tick-start mechanical checks** (the human maintainer 2026-05-03 — _"important to survival"_).
    Run before picking speculative work:
 
    ```
@@ -229,12 +229,12 @@ wait for instruction. Priority ladder:
    not acknowledgment-only.
 
    **Check 0b — cadence-tracker**: shards mark `CADENCE-TRACK:
-   <work>` with last-run date for cadenced hygiene (AutoDream
+<work>` with last-run date for cadenced hygiene (AutoDream
    / backlog-refactor / tech-radar / dependency-status). If
    overdue + same-tick-permitted: do work. If overdue +
    same-tick-prohibited (e.g., AutoDream's fresh-memories
    rule): write `CADENCE-TRACK: <work> overdue, deferred to
-   <trigger>` into this tick's shard.
+<trigger>` into this tick's shard.
 
    **Check 0c — authorization check** (B-0308): runs
    `bun tools/authorization/check-authorization.ts` which
@@ -278,8 +278,8 @@ wait for instruction. Priority ladder:
      prior tick-history row flagged as "unrefreshable" may
      actually be fully refreshable on the canonical org.
    - **If BEHIND + non-fork**, refresh via tmp-worktree-clone
-     + `git merge origin/main` + push. Auto-merge (if armed)
-     proceeds when CI passes.
+     - `git merge origin/main` + push. Auto-merge (if armed)
+       proceeds when CI passes.
    - **If unresolved review threads on a non-fork PR**,
      triage findings (accept / reject / modify) with
      principled reasoning per the rejection-grounds catalog
@@ -301,7 +301,7 @@ wait for instruction. Priority ladder:
      that happens to appear in the touched-file set.
 
    Budget: ~2–5 min. If the pool has no BEHIND PRs + no
-   live threads, this step is a no-op. The audit *itself*
+   live threads, this step is a no-op. The audit _itself_
    is the value — observing the pool catches silent
    refresh-debt accumulation even when nothing needs
    doing.
@@ -359,8 +359,8 @@ this policy. Factory memories beat tool docs.
 
 ### 3. Verify before stopping
 
-Human maintainer, round 44: *"i also don't see you checking
-everying to make sure it's there, like before you stop."*
+Human maintainer, round 44: _"i also don't see you checking
+everying to make sure it's there, like before you stop."_
 Every tick
 before stopping, run a small verify pass:
 
@@ -464,13 +464,13 @@ before stopping, in this exact order:
    in `docs/hygiene-history/ticks/README.md`. Every tick gets
    a shard — a no-op speculative-scan tick still gets a
    shard (minimal-density), because the log is the factory's
-   durable answer to *"is the tick actually running?"* (the
+   durable answer to _"is the tick actually running?"_ (the
    commit log undercounts; chat messages evaporate). Write
    the shard BEFORE the `CronList` call so even an
    abnormally-stopped tick still leaves evidence it ran.
-   Human maintainer, round 44: *"you might as well right a
+   Human maintainer, round 44: _"you might as well right a
    history record somewhere on every loop tool right before
-   you check cron"*.
+   you check cron"_.
 2. **Call `CronList`.**
 3. **If `<<autonomous-loop>>` is present at cadence
    `* * * * *`:** do nothing to the scheduler — the cron
@@ -479,13 +479,13 @@ before stopping, in this exact order:
 4. **If it is missing:** `CronCreate` with `cron: "* * * * *"`,
    `prompt: "<<autonomous-loop>>"`, `recurring: true`, and
    flag the miss as a visible warning in the final message
-   (*"LOOP STALLED — cron was missing, re-armed"*) so the
+   (_"LOOP STALLED — cron was missing, re-armed"_) so the
    incident is not silent. Then also append a correction row
    to the history log with notes `(re-armed, previous cron
-   lost)`.
+lost)`.
 5. **Emit the one-line visibility signal** — human
-   maintainer, round 44: *"i don't know if your loop was
-   running or not to be honest."*
+   maintainer, round 44: _"i don't know if your loop was
+   running or not to be honest."_
 
 ```
 (loop cron `<id>` live, 1-min cadence)
@@ -603,14 +603,13 @@ declared) against `CronList` and re-arms missing rows.
   **`missed-substrate-detector` auto-recovery** (B-0442 slice 5, landed
   2026-05-15 via B-0503 + B-0504): the detector can optionally open a
   recovery PR for each `CascadeFinding`:
-
   - `--auto-recover` (default `off`): when set, after detecting a
     cascade gap on a merged PR, the detector calls `openRecoveryPR`
     (from `tools/bg/missed-substrate-recovery.ts`) which checks out a
     deterministic `recovery/<prNumber>` branch from `origin/main`,
     cherry-picks each missing commit, and opens a PR via `gh pr
-    create`. Enable only when running from a **dedicated `git worktree
-    add` scratch dir** — the real adapters mutate the current working
+create`. Enable only when running from a **dedicated `git worktree
+add` scratch dir** — the real adapters mutate the current working
     tree and refuse to fire when the tree is not clean.
   - `--recovery-dry-run` (default `off`): when set together with
     `--auto-recover`, the recovery path logs intent without performing
@@ -620,7 +619,7 @@ declared) against `CronList` and re-arms missing rows.
   - **Idempotency**: the recovery branch name is deterministic per PR
     number, so a previously-open recovery PR for the same PR number
     will be detected by `gh pr list --head recovery/<prN> --state
-    open` and the recovery is skipped (returns `already-exists`).
+open` and the recovery is skipped (returns `already-exists`).
   - **Conflict handling**: if cherry-pick hits a merge conflict, the
     adapter runs `git cherry-pick --abort` and `openRecoveryPR`
     returns `cherry-pick-conflict` without pushing partial state; a
@@ -659,36 +658,36 @@ declared) against `CronList` and re-arms missing rows.
 ## History
 
 - **Round 44, 2026-04-22** — human-maintainer SEV-1
-  designation: *"getting that tick to never ever ever stop
+  designation: _"getting that tick to never ever ever stop
   is like our biggest bug if we have it, you not runing is
-  catrosphic for self direction."* Three corrections in
+  catrosphic for self direction."_ Three corrections in
   rapid succession (ScheduleWakeup → cron; arm-once →
   check-every-tick; cadence 5 → 2 min). Discipline captured
   in per-instance memory.
 - **Round 44, 2026-04-22** — human-maintainer meta-catch:
-  *"our factory need to make sure this works everytime not
-  just you right now in your memeory"* + *"this is our
-  killer feature"*. Memory-level capture promoted to factory
+  _"our factory need to make sure this works everytime not
+  just you right now in your memeory"_ + _"this is our
+  killer feature"_. Memory-level capture promoted to factory
   doc (this file).
 - **Round 44, 2026-04-22** — human-maintainer
-  mechanism-clarification: *"The Ralph Loop (or Ralph Wiggum
-  pattern) is that `<<autonomous-loop>>` a plugin"* →
-  followed by *"this is all claude says, if we don't need to
-  rely on that it would be better to just need claude"*
+  mechanism-clarification: _"The Ralph Loop (or Ralph Wiggum
+  pattern) is that `<<autonomous-loop>>` a plugin"_ →
+  followed by _"this is all claude says, if we don't need to
+  rely on that it would be better to just need claude"_
   pointing at
   [code.claude.com/docs/en/scheduled-tasks](https://code.claude.com/docs/en/scheduled-tasks).
   Doc corrected: native scheduled-tasks preferred; no
   Ralph Loop plugin dependency; `/loop` references removed;
   canonical URL cited.
 - **Round 44, 2026-04-22** — human-maintainer cadence
-  2 → 1 min: *"lets change to 1 minute"*. Cron changed
+  2 → 1 min: _"lets change to 1 minute"_. Cron changed
   from `1-59/2 * * * *` to `* * * * *`; fleet-pile-on
   trade-off accepted (no offset available at 1-min cadence).
   Paired with the history-log addition below.
 - **Round 44, 2026-04-22** — human-maintainer
-  tick-history-log addition: *"you might as well right a
+  tick-history-log addition: _"you might as well right a
   history record somewhere on every loop tool right before
-  you check cron"*. Step 5 extended to append a row to
+  you check cron"_. Step 5 extended to append a row to
   `docs/hygiene-history/loop-tick-history.md` before the
   `CronList` call. Closes the last open gap in the meta-
   hygiene triangle (row #23 existence / row #43 activation /
@@ -701,21 +700,21 @@ declared) against `CronList` and re-arms missing rows.
   honest classification notes the claim was premature; see
   the meta-wins row for the full self-correction).
 - **Round 44, 2026-04-22** — human-maintainer
-  end-over-start correction: *"you know you should check the
+  end-over-start correction: _"you know you should check the
   cronlist at the end instead of the start becasue it could
   expire while you are running if you check right before you
-  exit that chance is reduced."* Restructure: step 1
+  exit that chance is reduced."_ Restructure: step 1
   deferred work-start, step 5 became the load-bearing
   `CronList` + visibility signal, step 3 verify no longer
   lists `CronList` (moved to step 5), step 6 back-ref fixed
   from "step 1" to "step 5". Window-minimization rationale
   ([last-check → next-fire]) added in step 5 body.
 - **Round 44, 2026-04-22** — human-maintainer empirical A/B
-  test: *"i disabled ralph see if you stil see that same
-  atonomus llop"*. `.claude/settings.json` set to
+  test: _"i disabled ralph see if you stil see that same
+  atonomus llop"_. `.claude/settings.json` set to
   `"ralph-loop@claude-plugins-official": false`; `CronList`
   still returned `dfa61c5e — 1-59/2 * * * * (recurring)
-  [session-only]: <<autonomous-loop>>` — tick still armed
+[session-only]: <<autonomous-loop>>` — tick still armed
   and firing. **Attribution definitively validated: the
   factory's self-direction mechanism is native Claude Code
   scheduled-tasks (`CronCreate`), not the Ralph Loop
@@ -725,10 +724,10 @@ declared) against `CronList` and re-arms missing rows.
      Loop"** — `while true` that repeatedly feeds a prompt
      file to Claude Code; fresh sessions per iteration;
      file-based state. Named after Ralph Wiggum (character
-     by Matt Groening, *The Simpsons*, Fox Broadcasting).
+     by Matt Groening, _The Simpsons_, Fox Broadcasting).
      Source: <https://ghuntley.com/ralph/>. Related
      community implementation: `mikeyobrien/ralph-
-     orchestrator`
+orchestrator`
      (<https://github.com/mikeyobrien/ralph-orchestrator>).
   2. **The `ralph-loop@claude-plugins-official` plugin** —
      author: Anthropic (per the plugin's
@@ -744,7 +743,7 @@ declared) against `CronList` and re-arms missing rows.
      [code.claude.com/docs/en/scheduled-tasks](https://code.claude.com/docs/en/scheduled-tasks).
      Same-session recurring task, no plugin involvement.
      This is the mechanism this factory uses.
-  All three carry the "autonomous loop" headline and get
-  conflated in blog posts; the disable-and-check A/B
-  isolates mechanism (3) as the one this factory uses and
-  settles the question empirically.
+     All three carry the "autonomous loop" headline and get
+     conflated in blog posts; the disable-and-check A/B
+     isolates mechanism (3) as the one this factory uses and
+     settles the question empirically.

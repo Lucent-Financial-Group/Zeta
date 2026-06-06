@@ -104,6 +104,7 @@ the whole system becomes foreground-optional.
 
 ```markdown
 ## Project state (background writes this)
+
 - PR queue: <count> open, <count> mergeable
 - Active claims: <list>
 - Recent merges: <list>
@@ -116,6 +117,7 @@ the whole system becomes foreground-optional.
 
 ```markdown
 ## Direction (foreground writes this)
+
 - Aaron said: <summary of direction change>
 - Priority shift: <what changed>
 - Shadow acknowledgment: <what the human heard>

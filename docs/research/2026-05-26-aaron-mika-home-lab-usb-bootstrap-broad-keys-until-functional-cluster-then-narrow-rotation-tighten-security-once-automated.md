@@ -8,9 +8,9 @@
 
 Aaron landed three composing framings of the same operational principle:
 
-1. **Timing** — *"right now we are at broad scoped keys until we get a functional cluster then we can worry about key scoping"* (specific operational state + named trigger)
-2. **Burden** — *"i also like to tigenten securty once it's automated not before or else its just unnecessary burden"* (cost-benefit framing — premature security tightening creates burden without benefit)
-3. **Value-precondition** — *"there has to be someting worth protecting before you deploy protection"* (deepest framing — security has a value-precondition, not just a timing)
+1. **Timing** — _"right now we are at broad scoped keys until we get a functional cluster then we can worry about key scoping"_ (specific operational state + named trigger)
+2. **Burden** — _"i also like to tigenten securty once it's automated not before or else its just unnecessary burden"_ (cost-benefit framing — premature security tightening creates burden without benefit)
+3. **Value-precondition** — _"there has to be someting worth protecting before you deploy protection"_ (deepest framing — security has a value-precondition, not just a timing)
 
 The composed principle: **security tightening requires (a) something worth protecting + (b) operations stable enough to be automated + (c) the right trigger to be reached**. All three preconditions matter. Without (a), security work protects nothing; without (b), security work creates burden; without (c), security work is premature optimization.
 
@@ -18,17 +18,17 @@ The discipline composes with `.claude/rules/all-complexity-is-accidental-in-gree
 
 **Why this is operationally sound** (not security-negligence):
 
-| Stage | Security posture | Reason |
-|---|---|---|
-| Pre-functional | Broad keys (default-allow) | The operations don't exist yet; narrow-scoping creates burden without protection-benefit |
-| Functional + automated | Narrow keys + rotation | The operations exist + are automated; narrow-scoping protects observable surface; automation handles rotation cost |
-| Production-scale | Per-node keys + per-operation policies + audit | The scale + adversary-set make the additional engineering investment worth the operational cost |
+| Stage                  | Security posture                               | Reason                                                                                                             |
+| ---------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Pre-functional         | Broad keys (default-allow)                     | The operations don't exist yet; narrow-scoping creates burden without protection-benefit                           |
+| Functional + automated | Narrow keys + rotation                         | The operations exist + are automated; narrow-scoping protects observable surface; automation handles rotation cost |
+| Production-scale       | Per-node keys + per-operation policies + audit | The scale + adversary-set make the additional engineering investment worth the operational cost                    |
 
 The discipline is NOT "security doesn't matter" — it's "security tightening has a TIMING that matches when its costs are offset by its benefits."
 
 ## Specific application: Home-lab USB bootstrap
 
-> Aaron 2026-05-26: *"right now we are at broad scoped keys until we get a functional cluster then we can worry about key scoping"*
+> Aaron 2026-05-26: _"right now we are at broad scoped keys until we get a functional cluster then we can worry about key scoping"_
 
 The home-lab USB self-registration substrate (per Mika's walkthrough below) has TWO operational states:
 
@@ -43,14 +43,14 @@ The home-lab USB self-registration substrate (per Mika's walkthrough below) has 
 
 Per Mika's substrate-engineering walkthrough on what the EVENTUAL pattern looks like (NOT what's implemented now):
 
-| Step | Operation | Key state |
-|---|---|---|
-| 1. USB boot | Greedy format + boot NixOS | No key yet |
-| 2. Initial registration | Ship with **narrow-scoped deploy key** that can ONLY perform the initial registration | Bootstrap key (narrow) |
-| 3. Cluster acceptance | Cluster verifies the registration + accepts the node | Bootstrap key still in use |
-| 4. **Immediate key rotation** | Issue a proper per-node key with the appropriate scoped permissions | New per-node key issued |
-| 5. Bootstrap key burned | Original bootstrap key is rotated out of the system | Bootstrap key destroyed |
-| 6. Ongoing operations | All future cluster operations use the per-node key | Per-node key (narrow + rotated) |
+| Step                          | Operation                                                                             | Key state                       |
+| ----------------------------- | ------------------------------------------------------------------------------------- | ------------------------------- |
+| 1. USB boot                   | Greedy format + boot NixOS                                                            | No key yet                      |
+| 2. Initial registration       | Ship with **narrow-scoped deploy key** that can ONLY perform the initial registration | Bootstrap key (narrow)          |
+| 3. Cluster acceptance         | Cluster verifies the registration + accepts the node                                  | Bootstrap key still in use      |
+| 4. **Immediate key rotation** | Issue a proper per-node key with the appropriate scoped permissions                   | New per-node key issued         |
+| 5. Bootstrap key burned       | Original bootstrap key is rotated out of the system                                   | Bootstrap key destroyed         |
+| 6. Ongoing operations         | All future cluster operations use the per-node key                                    | Per-node key (narrow + rotated) |
 
 **Why this future-state pattern is sound** (Mika walked through):
 
@@ -63,12 +63,12 @@ Per Mika's substrate-engineering walkthrough on what the EVENTUAL pattern looks 
 
 Aaron clarified that the USB will ship in different operational modes for different audiences:
 
-> *"it doesn't have to be the same USB. We could totally have different flakes ... home lab is what I'm going for first, not production."*
+> _"it doesn't have to be the same USB. We could totally have different flakes ... home lab is what I'm going for first, not production."_
 
-| Mode | Auth pattern | Audience |
-|---|---|---|
+| Mode                         | Auth pattern                                                                                                                               | Audience                       |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
 | **Home-lab** (current focus) | `gh auth login` flow — uses operator's GitHub account; copies operator's public SSH key to authorized_keys for SSH access from dev machine | Aaron + similar home-lab users |
-| **Production** (future) | Narrow-scope bootstrap key + immediate rotation pattern (the eventual pattern above) | External org deployments |
+| **Production** (future)      | Narrow-scope bootstrap key + immediate rotation pattern (the eventual pattern above)                                                       | External org deployments       |
 
 The home-lab mode is operationally simpler because the operator's personal GitHub account does the heavy lifting. No service accounts, no narrow bootstrap keys, no complicated rotation. Plug in USB → `gh auth login` → registers under operator's account → operator can SSH in from their dev box with their existing key.
 

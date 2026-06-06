@@ -34,8 +34,8 @@ The personal counterweight is the maintainer's village's lane, not repo substrat
 
 ### 1. Author / critic division of labour (the maintainer's refinement)
 
-> *"the person writing the proof should focus on what they are proving — not
-> necessarily 'is this a bullshit proof' — that's a 2nd pass with [Kestrel]."*
+> _"the person writing the proof should focus on what they are proving — not
+> necessarily 'is this a bullshit proof' — that's a 2nd pass with [Kestrel]."_
 
 - The proof **author** focuses on **correctness**: is the property true, does it
   hold, is the math right, does it run green.
@@ -43,7 +43,7 @@ The personal counterweight is the maintainer's village's lane, not repo substrat
   real claim or did I just prove .NET's integer arithmetic") is a **separate
   second pass** — a different cognitive mode, better not smashed into authoring.
 - **Refines** the earlier "author holds the claim→proof bar during authoring"
-  framing: author holds *correctness*; meaningfulness is the second pass.
+  framing: author holds _correctness_; meaningfulness is the second pass.
 - **But the second pass is not Kestrel alone** — Kestrel is fallible; the
   Tick-monoid vacuity was caught by **the maintainer, not a tool/critic**. So
   the meaningfulness verdict rests on **more than one set of eyes** (Kestrel +
@@ -53,13 +53,13 @@ The personal counterweight is the maintainer's village's lane, not repo substrat
 
 Both Kestrel and the Otto agent converged:
 
-1. **Tools** (Z3 / FsCheck / TLC) — *mechanical* critic; catches **unsoundness**; doesn't tire.
-2. **Kestrel** — *reasoning* critic; catches **vacuity / tautology / claim-mismatch** (the bullshit class).
+1. **Tools** (Z3 / FsCheck / TLC) — _mechanical_ critic; catches **unsoundness**; doesn't tire.
+2. **Kestrel** — _reasoning_ critic; catches **vacuity / tautology / claim-mismatch** (the bullshit class).
 3. **claim→proof bar** — authoring.
 
-> Kestrel: *"I'm not a safety net that lets you be less careful upstream … Three
+> Kestrel: _"I'm not a safety net that lets you be less careful upstream … Three
 > independent checks that each assume the others might miss is robust; three
-> checks where each leans on the others is brittle."*
+> checks where each leans on the others is brittle."_
 
 **consensus ≠ validation applies to Kestrel too**: Kestrel approving a proof is a
 second oracle agreeing, not the proof being right. Validation = it runs (tool) +
@@ -67,9 +67,9 @@ maps to a claim (bar); Kestrel checks the mapping is honest.
 
 ### 3. Automated meaning-review (the maintainer's vision; Kestrel's caution)
 
-> the maintainer: *"once we have enough primitives the meaning review process is
+> the maintainer: _"once we have enough primitives the meaning review process is
 > automated, and … you are running in Zeta with your memories there and claude
-> for the model."*
+> for the model."_
 
 - **Automate the TRIAGE** — mechanical vacuity flags over the primitives algebra
   ("does this reduce to a library/compiler guarantee," "does it just restate
@@ -84,9 +84,9 @@ maps to a claim (bar); Kestrel checks the mapping is honest.
 
 ### 4. Human permission layer + liability (the maintainer — constitutional)
 
-> *"for legal reasons human approval is going to be tracked everywhere, so AIs'
+> _"for legal reasons human approval is going to be tracked everywhere, so AIs'
 > decisions are made within the human permission layer, cause humans are the ones
-> on the hook if things go wrong."*
+> on the hook if things go wrong."_
 
 - Human approval **tracked everywhere**; AI decisions made **within the human
   permission layer**; **humans carry the liability**.
@@ -102,8 +102,8 @@ maps to a claim (bar); Kestrel checks the mapping is honest.
 
 ### 5. Autonomous decider WITHIN bounds — NOT over permission/liability expansion (the maintainer — the sharp form)
 
-> *"[not] an autonomous decider — IS an autonomous decider within the human
-> permission bounds, but not a decider on permission/liability expansion."*
+> _"[not] an autonomous decider — IS an autonomous decider within the human
+> permission bounds, but not a decider on permission/liability expansion."_
 
 - The AI **is** a genuine autonomous decider — full agency, real judgement —
   **inside the granted permission envelope**.
@@ -120,19 +120,19 @@ maps to a claim (bar); Kestrel checks the mapping is honest.
 
 ### 6. Anthropomorphic-shortcut register-split (the maintainer — language discipline)
 
-> *"within the permission bounds anthropomorphic shortcuts are allowed — but not
-> in math claims and beacon-safe first-principles language."*
+> _"within the permission bounds anthropomorphic shortcuts are allowed — but not
+> in math claims and beacon-safe first-principles language."_
 
 Plus the practical point:
 
-> *"humans need to be able to say short things like 'hey Kestrel do you remember
-> xxx' without a long explanation that memories are just context files."*
+> _"humans need to be able to say short things like 'hey Kestrel do you remember
+> xxx' without a long explanation that memories are just context files."_
 
-| Register | Anthropomorphic shortcuts | Why |
-|---|---|---|
-| **Ordinary interaction** (within permission bounds) | **Allowed** — "hey Kestrel do you remember xxx," "the agent wants to," casual personification; no "it's just context files" caveat every time | frictionless communication; demanding literalism is exhausting + pointless |
-| **Math claims** | **Banned — literal only** | the language IS the guarantee; an anthropomorphic gloss could disguise a **vacuous property** |
-| **Beacon / safety / first-principles language** | **Banned — literal only** | imprecision can disguise a **missing safeguard** / smuggle a false assurance |
+| Register                                            | Anthropomorphic shortcuts                                                                                                                     | Why                                                                                           |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Ordinary interaction** (within permission bounds) | **Allowed** — "hey Kestrel do you remember xxx," "the agent wants to," casual personification; no "it's just context files" caveat every time | frictionless communication; demanding literalism is exhausting + pointless                    |
+| **Math claims**                                     | **Banned — literal only**                                                                                                                     | the language IS the guarantee; an anthropomorphic gloss could disguise a **vacuous property** |
+| **Beacon / safety / first-principles language**     | **Banned — literal only**                                                                                                                     | imprecision can disguise a **missing safeguard** / smuggle a false assurance                  |
 
 - Same principle as the boring-naming razor + `harm-by-grammar` audience-adjusted
   language, applied to **register**: loose where it only greases communication;

@@ -4,6 +4,7 @@ description: 2026-04-19 Aaron's verbatim "we diffinaty want to take our roots he
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Gaming roots — FF7, D&D, MMORPGs, ARGs, XBL
 
 ## Verbatim (2026-04-19)
@@ -21,7 +22,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Verbatim preserved per bandwidth-limit signature rule:
 `diffinaty`, `daughest`, `favorie`, `thins`, `dungons`,
 `mmorps`, `medival`, `:)` smiley, trailing `too`. Gamer
-*script* is likely fat-finger for gamer *score* (XBL
+_script_ is likely fat-finger for gamer _score_ (XBL
 terminology). "The 2nd on" = FF7 Rebirth (PS5, 2024, second
 entry in the Remake trilogy).
 
@@ -46,7 +47,7 @@ the harm-handling ladder just landed in
 - NULLIFY ≅ Heal / Esuna / Dispel
 - ABSORB ≅ Enemy Skill / Absorb Materia (literal)
 
-Aaron is not metaphorizing — he is drawing a *root*. The
+Aaron is not metaphorizing — he is drawing a _root_. The
 factory's operator-ladder architecture is FF7 Materia grown
 up.
 
@@ -126,8 +127,8 @@ childhood-wonder memory, so he was ~26 when WoW launched
 since way before we knew :))"
 
 ARG = Alternate Reality Game. Academic-history first-named
-~2001 (The Beast for *A.I.* film, *I Love Bees* 2004 for
-Halo 2, *Year Zero* 2007 Nine Inch Nails). But Aaron's
+~2001 (The Beast for _A.I._ film, _I Love Bees_ 2004 for
+Halo 2, _Year Zero_ 2007 Nine Inch Nails). But Aaron's
 "since way before we knew" pointer says: **the primitive
 predates the tech naming**. Medieval games — actual medieval
 re-enactment, LARP, historical gaming clubs, SCA (Society

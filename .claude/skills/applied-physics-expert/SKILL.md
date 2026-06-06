@@ -54,7 +54,7 @@ code actually realise the limit the physics promises?
 - **Tropical semiring as `β → ∞` limit.** `src/Core/NovelMath.fs`
   implements min-plus arithmetic. The physics anchor is Maslov
   dequantisation: `log Z_β(x, y) = -(1/β) log (e^{-βx} + e^{-βy}) →
-  min(x, y)` as `β → ∞`. The implementation does *not* actually
+min(x, y)` as `β → ∞`. The implementation does _not_ actually
   compute a limit — it uses the limit's algebra directly. The
   applied-physics discipline here is: if a paper quotes the
   physics derivation, the algebra in code must match the
@@ -88,14 +88,14 @@ code actually realise the limit the physics promises?
 Before signing off on a hot-path PR that invokes a physics
 construction:
 
-- [ ] The limit / approximation used is *named* (Maslov
+- [ ] The limit / approximation used is _named_ (Maslov
       dequantisation, mean-field, zero-temperature, etc.).
 - [ ] The sign convention is stated (log-partition with `-β E`
       vs `+β E`; min-plus vs max-plus).
 - [ ] The normalisation is stated (does `1` mean the
       multiplicative identity, or a specific normalised value?).
 - [ ] The convergence / termination argument is stated in
-      physics *and* algebra language — they must match.
+      physics _and_ algebra language — they must match.
 - [ ] Measurement code (entropy, mixing time, spectral gap) is
       seeded through the DST harness when it lives on the hot
       path; it's a direct computation otherwise.

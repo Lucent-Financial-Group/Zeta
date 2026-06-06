@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## What
 
-Operator 2026-05-26: *"we should offer shortform.com like features"* + follow-on: *"we can sell that too to others eventually"*
+Operator 2026-05-26: _"we should offer shortform.com like features"_ + follow-on: _"we can sell that too to others eventually"_
 
 Empirical anchor: today's 5 PRs (#5364-#5368 + #5369 pending) across the Kirsanov YouTube channel substrate-capture are structurally identical to what Shortform offers as a paid service. The framework already does the work internally.
 
@@ -53,7 +53,7 @@ Each is structurally identical to what Shortform produces. The discipline IS the
 - B-0826 (DePIN — distributed-physical-infrastructure delivery)
 - B-0648 (cross-substrate-triangulation — multi-AI deep-guide synthesis)
 - \`.claude/rules/zeta-ships-with-skills-immediate-value.md\` (customer-facing offering shape)
-- \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (\`_ip_risk_acceptance\` at scale)
+- \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (\`\_ip_risk_acceptance\` at scale)
 - \`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md\` (end-user-invariant-set discipline)
 - F# fork for AI safety substrate (multi-PR cluster)
 - PR #2822 cash-register-that-keeps-giving-gifts
@@ -69,6 +69,7 @@ Each is structurally identical to what Shortform produces. The discipline IS the
 Adds a new P2 backlog row (B-0841) describing a 4-phase plan to productize Shortform-like deep-guide outputs and the underlying substrate-engineering discipline, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P2/B-0841-*.md` backlog row with Phase 1–4 (including 4a/4b split) plan and acceptance criteria.
 - Updated `docs/BACKLOG.md` to list B-0841 under P2.
 
@@ -76,10 +77,10 @@ Adds a new P2 backlog row (B-0841) describing a 4-phase plan to productize Short
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                        | Description                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0841-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md | New backlog row capturing the Shortform-like productization opportunity and phased plan. |
-| docs/BACKLOG.md | Adds B-0841 to the P2 index entry list. |
+| docs/BACKLOG.md                                                                                                                             | Adds B-0841 to the P2 index entry list.                                                  |
 
 ## Review threads
 

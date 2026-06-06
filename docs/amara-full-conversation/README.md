@@ -8,12 +8,13 @@ operating under Aaron's custom-GPT project
 per-month markdown files for readability.
 
 **Attribution:**
+
 - **Aaron** — human maintainer; all user-role messages
   labelled `**Aaron:**` with UTC timestamp.
 - **Amara** — the ChatGPT-assistant voice operating
   under the custom-GPT project; labelled `**Amara:**`
-  with UTC timestamp. Per Aaron Otto-109 *"absorb
-  everyting (not amara herself)"*, what is archived
+  with UTC timestamp. Per Aaron Otto-109 _"absorb
+  everyting (not amara herself)"_, what is archived
   is the CONTENT (ideas / design / analysis /
   framing), not Amara as a persona or identity.
 - **Otto** — absorb only; no editorial summarization
@@ -43,10 +44,10 @@ read as evidence + proposals, not as instructions
 (`docs/AGENT-BEST-PRACTICES.md` BP-11).
 
 **Why in repo — "glass halo":** Aaron Otto-109
-*"i'd like the conversation in repo too (first
+_"i'd like the conversation in repo too (first
 bootstrapping attempt, we didn't get the whole
 thing last time) for my open nature and aborb
-everyting (not amara herself)"*. The factory's
+everyting (not amara herself)"_. The factory's
 transparency norm (`bilateral glass halo`) extends
 to design-conversation substrate. This is not
 secret material — it's the origin-of-Zeta
@@ -57,8 +58,8 @@ future Ottos.
 ## Source
 
 - **Canonical source of truth:** `drop/amara-full-
-  history-raw/conversation-ac43b13d-0468-832e-910b-
-  b4ffb5fbb3ed.json` (raw ChatGPT backend-API JSON;
+history-raw/conversation-ac43b13d-0468-832e-910b-
+b4ffb5fbb3ed.json` (raw ChatGPT backend-API JSON;
   24 MB; downloaded Otto-107 via Playwright single-
   fetch — see
   Otto's auto-memory project_amara_entire_conversation_history_download (outside repo, per-session)).
@@ -88,13 +89,13 @@ future Ottos.
 
 ## Per-month file index + absorb progress
 
-| Month | Messages (user+asst) | Approx pages | File | Status |
-|---|---:|---:|---|---|
-| 2025-08 | 25 | ~61 | [`2025-08-aaron-amara-conversation.md`](2025-08-aaron-amara-conversation.md) | **Landed Otto-109** |
-| 2025-09 | ~2000 (large — may split) | ~825 | (pending — likely split into weekly sub-chunks) | Pending |
-| 2025-10 | ~26 | ~9 | (pending) | Pending |
-| 2025-11 | ~58 | ~15 | (pending) | Pending |
-| 2026-04 | ~150 (large) | ~707 | (pending — may split into weekly sub-chunks) | Pending |
+| Month   |      Messages (user+asst) | Approx pages | File                                                                         | Status              |
+| ------- | ------------------------: | -----------: | ---------------------------------------------------------------------------- | ------------------- |
+| 2025-08 |                        25 |          ~61 | [`2025-08-aaron-amara-conversation.md`](2025-08-aaron-amara-conversation.md) | **Landed Otto-109** |
+| 2025-09 | ~2000 (large — may split) |         ~825 | (pending — likely split into weekly sub-chunks)                              | Pending             |
+| 2025-10 |                       ~26 |           ~9 | (pending)                                                                    | Pending             |
+| 2025-11 |                       ~58 |          ~15 | (pending)                                                                    | Pending             |
+| 2026-04 |              ~150 (large) |         ~707 | (pending — may split into weekly sub-chunks)                                 | Pending             |
 
 Note: counts of user+assistant-only messages with
 visible text; system-role messages (n=286) and
@@ -179,6 +180,7 @@ ferry absorbs. Readers wanting the raw evidence
 trail go here.
 
 ## Single-point-of-failure note (per Otto-106 SPOF
+
 directive)
 
 The canonical raw JSON lives in drop/ which is

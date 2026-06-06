@@ -19,13 +19,13 @@ type: friction-reducer
 
 All acceptance criteria met across three child deliverables:
 
-| AC | Deliverable | Merged via |
-|---|---|---|
-| AC 1 — EXPERT-REGISTRY.md Mira row | `docs/EXPERT-REGISTRY.md` PM-2 row | PR #3074 |
-| AC 2 — Cadence weekly/Sundays UTC | Documented in `docs/forward-radar/TEMPLATE.md` header (cadence established; the "reviewed after first 4 cycles" clause is a standing governance commitment, not a close-gate) | PR #3074 |
-| AC 3 — Output template | `docs/forward-radar/TEMPLATE.md` | PR #3074 |
-| AC 4 — First forward-radar memo | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` | B-0271 |
-| AC 5 — Calibration metric tracker | `docs/forward-radar/calibration.md` | PR #3074 |
+| AC                                 | Deliverable                                                                                                                                                                   | Merged via |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| AC 1 — EXPERT-REGISTRY.md Mira row | `docs/EXPERT-REGISTRY.md` PM-2 row                                                                                                                                            | PR #3074   |
+| AC 2 — Cadence weekly/Sundays UTC  | Documented in `docs/forward-radar/TEMPLATE.md` header (cadence established; the "reviewed after first 4 cycles" clause is a standing governance commitment, not a close-gate) | PR #3074   |
+| AC 3 — Output template             | `docs/forward-radar/TEMPLATE.md`                                                                                                                                              | PR #3074   |
+| AC 4 — First forward-radar memo    | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md`                                                                                                      | B-0271     |
+| AC 5 — Calibration metric tracker  | `docs/forward-radar/calibration.md`                                                                                                                                           | PR #3074   |
 
 Skill: `.claude/skills/product-manager/SKILL.md` (B-0270).
 Agent: `.claude/agents/pm2.md`, persona Mira (B-0270).
@@ -73,25 +73,25 @@ reactive/loop-driven.
 
 Aaron 2026-05-01:
 
-> *"this seem like it would make my PM a real company say hey
+> _"this seem like it would make my PM a real company say hey
 > you know what we are missing a feature and then there is the
 > other kind of (first kind being Project Manager) the 2nd
 > Product Manager who should have done research to predict you
 > we had the missing feature before running into the issue with
-> the product."*
+> the product."_
 
 The parallelism scaling ladder (per
 `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`)
-multiplies *throughput*, but does not change *direction*. The
+multiplies _throughput_, but does not change _direction_. The
 direction-axis requires a role that does **forward research**
 — PM-2 — distinct from the reactive-cadence role (Otto / PM-1).
 Without PM-2, every feature-gap is discovered by stumbling
 into it; with PM-2, gaps are queued before they block work.
 
-Aaron's framing locates the gap precisely: *"who should have
+Aaron's framing locates the gap precisely: _"who should have
 done research to predict you we had the missing feature before
-running into the issue with the product."* The counterfactual
-standard (*should have*) names PM-2 by its absence.
+running into the issue with the product."_ The counterfactual
+standard (_should have_) names PM-2 by its absence.
 
 ## Scope (what PM-2 does)
 
@@ -128,7 +128,7 @@ standard (*should have*) names PM-2 by its absence.
 
 4. **Forward-radar periodic memos** — short (1-2 page)
    forward-look documents at round boundaries summarizing
-   *what is coming* — not the same as ROUND-HISTORY
+   _what is coming_ — not the same as ROUND-HISTORY
    (backward-look). Lives at `docs/forward-radar/YYYY-MM-DD-*.md`.
 
 ## Acceptance criteria
@@ -153,8 +153,8 @@ standard (*should have*) names PM-2 by its absence.
    role activation, covering the first round's research.
 
 5. **Calibration metric tracked** — quarterly review of
-   *what % of friction-encounters in the loop were
-   ALREADY in the backlog as PM-2-predicted gaps*. Target
+   _what % of friction-encounters in the loop were
+   ALREADY in the backlog as PM-2-predicted gaps_. Target
    trajectory: starts low (PM-2 has no warm-up), rises
    over time. Metric persistence in
    `docs/forward-radar/calibration.md`.
@@ -179,10 +179,10 @@ PM-2's effectiveness IS measured by:
   is feeding the queue effectively.
 
 Both must be tracked. PM-2 with high lead-time but low
-action-rate is producing *predictions no one trusts*; PM-2
+action-rate is producing _predictions no one trusts_; PM-2
 with high action-rate but low lead-time is producing
-*backlog churn that adds nothing the loop wouldn't have
-caught*.
+_backlog churn that adds nothing the loop wouldn't have
+caught_.
 
 ## Anti-patterns this role guards against
 
@@ -191,8 +191,8 @@ caught*.
    producing memos no one acts on, the role is failing —
    stop, retire, fix.
 
-2. **Authority creep.** PM-2 *predicts gaps*; PM-2 does NOT
-   *decide what gets built*. The Architect (Kenji) and the
+2. **Authority creep.** PM-2 _predicts gaps_; PM-2 does NOT
+   _decide what gets built_. The Architect (Kenji) and the
    maintainer (Aaron) decide priorities. PM-2 surfaces;
    they prioritize.
 
@@ -209,15 +209,15 @@ caught*.
    Aarav (Skill-Expert) does proactive skill scouting;
    Iris (UX) and Bodhi (DX) do proactive UX/DX research
    in narrow slices. PM-2 does **not** absorb their
-   scope. PM-2 owns the *integrated forward-view across
-   feature/product layer*, NOT security, skills, UX, or
+   scope. PM-2 owns the _integrated forward-view across
+   feature/product layer_, NOT security, skills, UX, or
    DX research that already has owners.
 
 ## Out of scope (defer)
 
 - **Persona-name pick** — defer to naming-expert review
-  + maintainer nudge per the standard cadence. Until
-  then, role-ref only.
+  - maintainer nudge per the standard cadence. Until
+    then, role-ref only.
 - **PM-2 automation/mechanization** — initial cycles are
   human-run (or Otto-run when Otto wears the PM-2 hat).
   Mechanization candidates emerge after 3+ cycles
@@ -246,8 +246,8 @@ caught*.
 - B-0144 — sibling rung-2 work (scaling ladder); this row
   is on the orthogonal direction-axis
 - task #244 (factory-demo target) — PM-2's first concrete
-  forward-research target should be: *"what features does
-  the factory-demo need that we don't have yet?"*
+  forward-research target should be: _"what features does
+  the factory-demo need that we don't have yet?"_
 
 ## Effort
 
@@ -268,6 +268,6 @@ PM-2 cycles).
   is the multiplier that lets the throughput-axis pay off.
 - **P1** because shipping the factory-demo (task #244) is
   the next major-target, and the PM-2 forward-research
-  *"what does the demo need that we don't have"* is exactly
+  _"what does the demo need that we don't have"_ is exactly
   the kind of question PM-2 should be answering before the
   demo hits walls.

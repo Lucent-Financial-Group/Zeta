@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1946 |
-| Title | fix(B-0140): kill 19 dead .sh files, switch callers to .ts — Rule 0 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T21:42:43Z |
-| Merged at | 2026-05-07T21:47:24Z |
-| Merge commit SHA | `224021417393d8497cd4e6cfcb9999c6e9e16fd2` |
-| Branch | `chore/b0140-bash-to-ts-kill-dead-shells` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1946 |
-| Changed files | 29 |
-| Additions / deletions | +99 / -5064 |
+| Field                 | Value                                                               |
+| --------------------- | ------------------------------------------------------------------- |
+| Number                | 1946                                                                |
+| Title                 | fix(B-0140): kill 19 dead .sh files, switch callers to .ts — Rule 0 |
+| Author                | `AceHack` (human)                                                   |
+| State                 | MERGED                                                              |
+| Created at            | 2026-05-07T21:42:43Z                                                |
+| Merged at             | 2026-05-07T21:47:24Z                                                |
+| Merge commit SHA      | `224021417393d8497cd4e6cfcb9999c6e9e16fd2`                          |
+| Branch                | `chore/b0140-bash-to-ts-kill-dead-shells`                           |
+| Base branch           | `main`                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1946            |
+| Changed files         | 29                                                                  |
+| Additions / deletions | +99 / -5064                                                         |
 
 ## Description
 
@@ -51,15 +51,15 @@ would have broken budget tooling. Fixed before commit.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

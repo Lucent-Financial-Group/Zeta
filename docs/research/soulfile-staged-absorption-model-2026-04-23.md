@@ -4,14 +4,14 @@
 **Status:** Research doc — proposing the stage boundaries
 for the soulfile's DSL-as-substrate-with-git-ingest model.
 **Triggered by:** The human maintainer 2026-04-23:
-*"i'm thinking soufils shoud just be the DSL/english we
+_"i'm thinking soufils shoud just be the DSL/english we
 talk about and the can import/inherit/abosrb or whatever
 you want to can it git repos at compile time, distribution
 time, or runtime, remember the local native story so those
 will need to be inlucded at soulfile compile time somewhere
 I'm calling it compile time but that's just a metaphore
 like packing time or whatever. You can figure out the
-proper stages."*
+proper stages."_
 
 **Scope:** Factory policy — generic, reusable by any factory
 adopter; ships to each project-under-construction that needs
@@ -139,8 +139,8 @@ soulfile release, via AutoDream consolidation cadence
 The human maintainer's 2026-04-23 follow-up clarifies the
 DSL shape: it is **restrictive English** — natural-language
 prose constrained to a grammar the runner can execute —
-not an F# DSL. The target is *"feels like natural English
-even if not exactly English"* with a controlled vocabulary
+not an F# DSL. The target is _"feels like natural English
+even if not exactly English"_ with a controlled vocabulary
 where **every word used has an exact definition reachable
 from the linguistic-seed glossary**.
 

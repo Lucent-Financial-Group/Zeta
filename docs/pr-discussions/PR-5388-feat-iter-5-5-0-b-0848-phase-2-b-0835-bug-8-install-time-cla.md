@@ -20,24 +20,24 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-27 (verbatim):
 
-> *\"also wanna make this automatic on boot before i even login and have it save my claude code device login like gh, also make sure they are all on path for me to play with when i log in?\"*
+> _\"also wanna make this automatic on boot before i even login and have it save my claude code device login like gh, also make sure they are all on path for me to play with when i log in?\"_
 
-> *\"this will be a hell of a start.\"*
+> _\"this will be a hell of a start.\"_
 
 And the follow-up clarification:
 
-> *\"avahi yes the mdns and also wi already save the gh login i think maybe but we want to do it for claude code now too\"*
+> _\"avahi yes the mdns and also wi already save the gh login i think maybe but we want to do it for claude code now too\"_
 
 **Empirical finding**: gh credential persistence Aaron \"thinks maybe\" exists — does NOT actually exist. Zero refs to \`.config/gh\` or \`/mnt/home\` in zeta-install.sh; only SSH pubkey copy (different mechanism). This PR fixes BOTH at once.
 
 ## iter-5.5.0 = 4-part install step (Step 6.95, runs AFTER nixos-install)
 
-| Sub-step | What | Surfaces |
-|---|---|---|
-| 6.95a | \`npm install -g @anthropic-ai/claude-code\` to \`/mnt/home/zeta/.npm-global/\` (writable prefix) | claude on PATH post-reboot |
-| 6.95b | Interactive \`claude login\` device-flow (mirror iter-5.4.0 gh auth login) | \`/mnt/home/zeta/.config/claude/\` populated |
-| 6.95c | Copy \`/root/.config/gh\` → \`/mnt/home/zeta/.config/gh\` (Bug 8 — Aaron's \"i think maybe\" hedge confirmed wrong) | gh auth survives reboot |
-| 6.95d | Pre-clone Zeta repo to \`/mnt/home/zeta/Zeta\` | first login: \`cd ~/Zeta && claude\` |
+| Sub-step | What                                                                                                                | Surfaces                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| 6.95a    | \`npm install -g @anthropic-ai/claude-code\` to \`/mnt/home/zeta/.npm-global/\` (writable prefix)                   | claude on PATH post-reboot                   |
+| 6.95b    | Interactive \`claude login\` device-flow (mirror iter-5.4.0 gh auth login)                                          | \`/mnt/home/zeta/.config/claude/\` populated |
+| 6.95c    | Copy \`/root/.config/gh\` → \`/mnt/home/zeta/.config/gh\` (Bug 8 — Aaron's \"i think maybe\" hedge confirmed wrong) | gh auth survives reboot                      |
+| 6.95d    | Pre-clone Zeta repo to \`/mnt/home/zeta/Zeta\`                                                                      | first login: \`cd ~/Zeta && claude\`         |
 
 ## common.nix additions
 
@@ -51,6 +51,7 @@ And the follow-up clarification:
 **On PATH**: gh + claude + kubectl + helm + k9s + argocd + cilium-cli + hubble + nmblookup + smbclient + git + nodejs/npm + standard tools
 
 **In \$HOME**:
+
 - \`~/Zeta/\` (pre-cloned)
 - \`~/.config/gh/\` (iter-5.4.0 gh auth persisted)
 - \`~/.config/claude/\` (iter-5.5.0 claude login persisted)
@@ -79,6 +80,7 @@ Per \`.claude/rules/non-coercion-invariant.md\` HC-8: operator interactive YES/n
 This PR extends the NixOS cluster install flow to install Claude Code at install-time, persist both GitHub + Claude credentials into the installed `zeta` user’s home, and pre-clone the Zeta repo so the first interactive login can start work immediately.
 
 **Changes:**
+
 - Add installer Step 6.95 to `zeta-install.sh`: npm-install `@anthropic-ai/claude-code`, optional interactive `claude login`, copy `/root/.config/gh` into the installed home, and pre-clone the repo to `/mnt/home/zeta/Zeta`.
 - Update the shared NixOS `common.nix` baseline to include `nodejs_22`, `samba`, and a PATH hook for `~/.npm-global/bin` (plus an attempted `NPM_CONFIG_PREFIX` session variable).
 
@@ -86,10 +88,10 @@ This PR extends the NixOS cluster install flow to install Claude Code at install
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds Step 6.95 for claude-code install, interactive login, gh credential persistence, and repo pre-clone. |
-| full-ai-cluster/nixos/modules/common.nix | Adds nodejs + samba packages and user PATH/session env wiring intended to make `claude` usable on first login. |
+| File                                                | Description                                                                                                    |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds Step 6.95 for claude-code install, interactive login, gh credential persistence, and repo pre-clone.      |
+| full-ai-cluster/nixos/modules/common.nix            | Adds nodejs + samba packages and user PATH/session env wiring intended to make `claude` usable on first login. |
 
 ### COMMENTED — @AceHack (2026-05-27T02:46:00Z)
 

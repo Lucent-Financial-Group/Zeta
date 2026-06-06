@@ -24,9 +24,9 @@ Generators via Nemerle's compile-time macro-based syntax extension.
 
 Operator conversation thread:
 
-> *\"i guess you can do that with templates if you are deiciplined\"*
+> _\"i guess you can do that with templates if you are deiciplined\"_
 >
-> *\"this is why we shold support nmerle for dotnet\"*
+> _\"this is why we shold support nmerle for dotnet\"_
 
 The substrate-engineering insight: C++ templates put discipline on
 user; Nemerle macros put discipline INTO the language. Aligns with

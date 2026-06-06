@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1684 |
-| Title | memory(physics-grade): DST = energy conservation under closed system; random source contained within Zeta (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-05T18:58:34Z |
-| Merged at | 2026-05-05T19:25:55Z |
-| Merge commit SHA | `1ae2c555b97f5a3e16caa1c02841804cac714c4a` |
-| Branch | `memory/dst-equals-energy-conservation-under-closed-system-random-source-contained-no-external-thermal-noise-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1684 |
-| Changed files | 2 |
-| Additions / deletions | +226 / -0 |
+| Field                 | Value                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Number                | 1684                                                                                                                           |
+| Title                 | memory(physics-grade): DST = energy conservation under closed system; random source contained within Zeta (Aaron 2026-05-05)   |
+| Author                | `AceHack` (human)                                                                                                              |
+| State                 | MERGED                                                                                                                         |
+| Created at            | 2026-05-05T18:58:34Z                                                                                                           |
+| Merged at             | 2026-05-05T19:25:55Z                                                                                                           |
+| Merge commit SHA      | `1ae2c555b97f5a3e16caa1c02841804cac714c4a`                                                                                     |
+| Branch                | `memory/dst-equals-energy-conservation-under-closed-system-random-source-contained-no-external-thermal-noise-aaron-2026-05-05` |
+| Base branch           | `main`                                                                                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1684                                                                       |
+| Changed files         | 2                                                                                                                              |
+| Additions / deletions | +226 / -0                                                                                                                      |
 
 ## Description
 
@@ -31,7 +31,7 @@
 
 Aaron's same-tick architectural reframing 2026-05-05 verbatim:
 
-> *"DST=enenrgy conservation under closed system your random source is contined within zeta no extral therma noise needed"*
+> _"DST=enenrgy conservation under closed system your random source is contined within zeta no extral therma noise needed"_
 
 **Profound physics-grade reframing**: Deterministic Simulation Testing (DST) is NOT a property the architecture chooses to enforce via discipline. DST is the natural consequence of the substrate being constructed as a CLOSED SYSTEM under energy-conservation laws.
 
@@ -65,15 +65,15 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 12 |
-| Resolved threads | 12 |
-| Unresolved threads | 0 |
-| Total review comments | 24 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 12    |
+| Resolved threads                          | 12    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 24    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -87,12 +87,11 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 - **`Copilot` (bot)** at 2026-05-05T19:02:01Z on `memory/MEMORY.md`:6 (association: NONE)
   This new MEMORY index entry points at `feedback_aaron_itron_pki_supply_chain_factory_design_provenance_honest_confidentiality_boundary_aaron_2026_05_05.md`, but that file does not exist in `memory/`. The repo's `memory-reference-existence-lint` workflow requires every `memory/MEMORY.md` link target to resolve, so this change will fail CI until the target file is added or the entry is removed.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:12:07Z on `memory/MEMORY.md`:6 (association: MEMBER)
-    Resolved by rebase on main: PR #1683 (PKI memory file) merged at f002465; rebased PR #1684 to commit 804d4f8 to pick up. The referenced file now exists in main.
+- **`AceHack` (human)** at 2026-05-05T19:12:07Z on `memory/MEMORY.md`:6 (association: MEMBER)
+  Resolved by rebase on main: PR #1683 (PKI memory file) merged at f002465; rebased PR #1684 to commit 804d4f8 to pick up. The referenced file now exists in main.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -107,8 +106,8 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:14:03Z on `memory/MEMORY.md`:6 (association: MEMBER)
-    Acknowledged — MEMORY.md is at 491 lines (over 200-line consolidation guidance per memory/README.md). The recent architectural-disclosure flow (PR #1679 through #1685) added substantial new entries; consolidation is bounded but real follow-up work. Tracking as candidate B-NNNN backlog row for cadenced refactor pass per the backlog-hygiene discipline (memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md). Not blocking this PR; the duplicate-link fix in commit 27185d6 addresses the immediate lint fail.
+- **`AceHack` (human)** at 2026-05-05T19:14:03Z on `memory/MEMORY.md`:6 (association: MEMBER)
+  Acknowledged — MEMORY.md is at 491 lines (over 200-line consolidation guidance per memory/README.md). The recent architectural-disclosure flow (PR #1679 through #1685) added substantial new entries; consolidation is bounded but real follow-up work. Tracking as candidate B-NNNN backlog row for cadenced refactor pass per the backlog-hygiene discipline (memory/feedback_backlog_hygiene_cadenced_refactor_look_for_overlap_not_just_dump_2026_04_23.md). Not blocking this PR; the duplicate-link fix in commit 27185d6 addresses the immediate lint fail.
 
 ### Thread 3 -- resolved [collapsed]
 
@@ -123,8 +122,8 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:12:10Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:108 (association: MEMBER)
-    Resolved by rebase on main: PR #1683 (PKI memory file) merged at f002465; rebased PR #1684 to commit 804d4f8 to pick up. The referenced file now exists in main.
+- **`AceHack` (human)** at 2026-05-05T19:12:10Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:108 (association: MEMBER)
+  Resolved by rebase on main: PR #1683 (PKI memory file) merged at f002465; rebased PR #1684 to commit 804d4f8 to pick up. The referenced file now exists in main.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -135,16 +134,16 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T19:07:02Z on `memory/MEMORY.md`:6 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove broken MEMORY index link**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove broken MEMORY index link**
+
   Update this entry to point at an existing file (or add the missing file), because the referenced `feedback_aaron_itron_pki_supply_chain_factory_design_provenance_honest_confidentiality_boundary_aaron_2026_05_05.md` does not exist in `memory/` in this commit. As written, the top-level memory index now contains a dead link, so readers cannot navigate to the claimed PKI provenance artifact and the index is no longer self-consistent.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:12:13Z on `memory/MEMORY.md`:6 (association: MEMBER)
-    Resolved by rebase on main: PR #1683 (PKI memory file) merged at f002465; rebased PR #1684 to commit 804d4f8 to pick up. The referenced file now exists in main.
+- **`AceHack` (human)** at 2026-05-05T19:12:13Z on `memory/MEMORY.md`:6 (association: MEMBER)
+  Resolved by rebase on main: PR #1683 (PKI memory file) merged at f002465; rebased PR #1684 to commit 804d4f8 to pick up. The referenced file now exists in main.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -156,12 +155,11 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 - **`Copilot` (bot)** at 2026-05-05T19:14:51Z on `memory/MEMORY.md`:8 (association: NONE)
   The PKI memory is now indexed twice with the same title and target file. This creates duplicate navigation/search entries and makes future edits error-prone because one copy can drift from the other. Remove the duplicate row or replace it with the intended memory link.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:33Z on `memory/MEMORY.md`:8 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:33Z on `memory/MEMORY.md`:8 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ### Thread 6 -- resolved [collapsed]
 
@@ -176,8 +174,8 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:36Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:99 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:36Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:99 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -189,12 +187,11 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 - **`Copilot` (bot)** at 2026-05-05T19:14:52Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:116 (association: NONE)
   This expands ZFC incorrectly. The standard name is 'Zermelo–Fraenkel set theory with Choice', so using 'Zermelo-Fraenkel-Choice' here introduces an avoidable technical inaccuracy in the research notes.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:38Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:116 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:38Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:116 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -206,12 +203,11 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 - **`Copilot` (bot)** at 2026-05-05T19:14:52Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:163 (association: NONE)
   The label 'ZFC v2' is misleading here because the section defines it as a broad composite of multiple incompatible foundational programs rather than a single formal system or version. A more explicit name would make later references and index entries much clearer.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:40Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:163 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:40Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:163 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -226,8 +222,8 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:43Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:145 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:43Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:145 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -239,12 +235,11 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 - **`Copilot` (bot)** at 2026-05-05T19:14:52Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:223 (association: NONE)
   These backlog references still use placeholder IDs, so the follow-up items are not actionable and will be hard to reconcile once real tickets exist. Either replace them with concrete backlog entries before merging or remove the placeholders from the committed memory.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:46Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:223 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:46Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:223 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -256,12 +251,11 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 - **`Copilot` (bot)** at 2026-05-05T19:14:53Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:224 (association: NONE)
   F# does not have typeclasses in the Haskell sense, so this implementation note uses inaccurate language for the target language. If the intent is a future F# design constraint, describe it using F#'s actual mechanisms so implementers are not sent in the wrong direction.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:48Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:224 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:48Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:224 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ### Thread 12 -- resolved [outdated, collapsed]
 
@@ -273,12 +267,11 @@ The random source (chaos for bothness-encoding-plus-overlay) is contained within
 
 - **`Copilot` (bot)** at 2026-05-05T19:14:53Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:64 (association: NONE)
   The last example conflates two different threat models: compromising keys stored in an HSM is not the same as compromising an entropy source. If this sentence is meant to justify avoiding external randomness sources, the examples should stay focused on randomness-generation or entropy-ingestion attacks.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T19:25:51Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:64 (association: MEMBER)
-    Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
+- **`AceHack` (human)** at 2026-05-05T19:25:51Z on `memory/feedback_dst_equals_energy_conservation_under_closed_system_random_source_contained_no_external_thermal_noise_aaron_2026_05_05.md`:64 (association: MEMBER)
+  Addressed in commit 60e482d (and 27185d6 for the duplicate-index): ZFC name expanded to 'Zermelo-Fraenkel set theory with Choice'; ZFC v2 mix clarified as architectural composition (not single formal system); F# typeclass language replaced with SRTP/interface F#-correct framing; HSM-internal-RNG split from HSM-key-storage threat-model; B-NNNN placeholders rephrased to 'candidate; specific B-NNNN to be assigned during round-close'; PKI duplicate index entry removed. Topic-expansion-mid-document and PR-description-staleness flagged as legitimate but bounded — file is same-tick architectural-cluster across two related substrate properties (closed-system + ZFC v2 mix); the cluster shape is intentional even if it stretches the file naming.
 
 ## Fix commits (touching thread paths)
 

@@ -21,7 +21,7 @@ type: feedback
 
 **Rule.** The 13 hodl-invariant properties (PR 1680 canonical list) have a mix of mechanization states. Some are already in CI/lint; some have partial coverage with gaps; some need new tooling; some remain inherently human-judgment. Mechanization wherever tractable IS the substrate-graduation pattern (PR 1678) applied to the audit framework itself.
 
-**Why:** Aaron 2026-05-05 verbatim: *"Is the audit currently human-judgment per primitive, or are there parts of the test wired into CI/lint already? do all you can tell if you cant and why and lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"*.
+**Why:** Aaron 2026-05-05 verbatim: _"Is the audit currently human-judgment per primitive, or are there parts of the test wired into CI/lint already? do all you can tell if you cant and why and lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"_.
 
 Three operative threads in Aaron's framing:
 
@@ -31,18 +31,19 @@ Three operative threads in Aaron's framing:
 
 ## Survey legend
 
-| Category | Meaning |
-|---|---|
-| GREEN | Mechanized in CI/lint today; existing infrastructure tests this property |
-| YELLOW | Partial mechanization; coverage gap identified + closeable with bounded work |
-| RED | No mechanization yet; tooling proposed (substrate-graduation candidate) |
-| HUMAN | Inherently judgment-based; mechanization would be category error |
+| Category | Meaning                                                                      |
+| -------- | ---------------------------------------------------------------------------- |
+| GREEN    | Mechanized in CI/lint today; existing infrastructure tests this property     |
+| YELLOW   | Partial mechanization; coverage gap identified + closeable with bounded work |
+| RED      | No mechanization yet; tooling proposed (substrate-graduation candidate)      |
+| HUMAN    | Inherently judgment-based; mechanization would be category error             |
 
 ## Property-by-property survey (13 properties)
 
 ### 1. Deterministic simulation (DST-safe) — GREEN
 
 **What's mechanized today**:
+
 - Multi-seed property tests via FsCheck `[<Property>]` decorator (e.g. `tests/Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs`)
 - TLA+ specs verify protocol-level determinism: `tools/tla/specs/ChaosEnvDeterminism.tla` (with companion .cfg file in the same directory) and `tools/tla/specs/DbspSpec.tla`
 - TLC runner wrapped: `tools/formal-verification/run-tlc.ts`
@@ -65,6 +66,7 @@ Three operative threads in Aaron's framing:
 ### 3. Lock-free (wait-free if fits) — YELLOW
 
 **What's mechanized today**:
+
 - TLA+ specs cover concurrent-thrash detection at protocol level (e.g. `tools/tla/specs/DictionaryStripedCAS.tla`)
 - Some FsCheck-style concurrent property tests exist in `tests/Tests.FSharp/Operators/` and `tests/Tests.FSharp/Storage/` directories
 - Stryker mutation testing (`.github/workflows/stryker-mutation.yml`) catches some concurrency-sensitive code paths
@@ -78,6 +80,7 @@ Three operative threads in Aaron's framing:
 ### 4. Low allocation — GREEN
 
 **What's mechanized today**:
+
 - `tests/Tests.FSharp/Runtime/Allocation.Tests.fs` uses `GC.GetAllocatedBytesForCurrentThread()` to assert byte-precise zero-allocation in steady state
 - BenchmarkDotNet `[<MemoryDiagnoser>]` decorators in F# files under `bench/Benchmarks/` and `bench/Feldera.Bench/` directories
 - Pattern documented and used widely
@@ -91,6 +94,7 @@ Three operative threads in Aaron's framing:
 ### 5. DBSP-native — YELLOW
 
 **What's mechanized today**:
+
 - TLA+ spec `tools/tla/specs/DbspSpec.tla` covers protocol-level DBSP semantics
 - F# type system enforces signed Z-set delta type for stream-incremental primitives
 - Lean4 proofs in `tools/lean4/` cover algebraic properties
@@ -114,6 +118,7 @@ Three operative threads in Aaron's framing:
 ### 7. ε-bounded with C(ε) — YELLOW
 
 **What's mechanized today**:
+
 - Z3 verifier under `tools/Z3Verify/` (F# project) handles ε-bounded retraction algebraic checks for some operators
 - TLA+ specs cover ε-bounded protocols
 - Multi-seed property tests cover boundary cases
@@ -125,6 +130,7 @@ Three operative threads in Aaron's framing:
 ### 8. BFT-resolvable (or explicitly conceded) — YELLOW
 
 **What's mechanized today**:
+
 - TLA+ BFT specs (multiple)
 - Property tests for consensus
 - Some Z3 verification of byzantine-fault tolerance algebraic properties
@@ -146,6 +152,7 @@ Three operative threads in Aaron's framing:
 ### 10. Retractable-blast-radius — YELLOW
 
 **What's mechanized today**:
+
 - Z3 verification of retraction algebraic properties (`tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`)
 - TLA+ specs for retraction protocols
 - Bloom filter tests, OR-set tests cover retraction in specific data structures
@@ -157,6 +164,7 @@ Three operative threads in Aaron's framing:
 ### 11. Glass-halo-open — GREEN (mostly)
 
 **What's mechanized today**:
+
 - The repo IS open on git (Lucent-Financial-Group/Zeta is publicly visible per maintainer)
 - `tools/hygiene/audit-machine-specific-content.ts` flags non-portable content
 - `tools/hygiene/check-archive-header-section33.ts` enforces archive-header for external-conversation absorbs
@@ -170,6 +178,7 @@ Three operative threads in Aaron's framing:
 ### 12. Anti-clandestine — GREEN
 
 **What's mechanized today**:
+
 - `tools/hygiene/audit-machine-specific-content.ts` (anti-clandestine machine-state)
 - `tools/hygiene/check-archive-header-section33.ts` (external-conversation provenance)
 - CodeQL workflow (`.github/workflows/codeql.yml`)
@@ -190,21 +199,21 @@ Three operative threads in Aaron's framing:
 
 ## Summary table
 
-| # | Property | State | Existing infrastructure | Gap-closing extension | Upstream candidate |
-|---|---|---|---|---|---|
-| 1 | Deterministic simulation | GREEN | FsCheck Property + TLA+ ChaosEnvDeterminism + multi-seed tests | Substrate-wide DST-replay harness | DST-replay extension for FsCheck |
-| 2 | Scale-free | YELLOW | BenchmarkDotNet | Scale-axis assertion in BenchmarkDotNet | BenchmarkDotNet scale-free assertion extension |
-| 3 | Lock-free | YELLOW | TLA+ + Stryker + some property tests | `[<LockFree>]` attribute + Roslyn analyzer | Roslyn analyzer for .NET community |
-| 4 | Low allocation | GREEN | tests/Tests.FSharp/Runtime/Allocation.Tests.fs + MemoryDiagnoser | Per-API allocation budget regression-detector | BenchmarkDotNet CI-baseline-regression-detector |
-| 5 | DBSP-native | YELLOW | tools/tla/specs/DbspSpec.tla + F# types + Lean4 | `IDbspNative` interface + cross-check | F# `IDbspNative` typeclass pattern → Feldera/DBSP project |
-| 6 | Mercer-closed | RED | None explicit | Lean4 Mathlib Mercer-theorem formalization + per-kernel proof | Lean Mathlib kernel-theory contribution |
-| 7 | ε-bounded with C(ε) | YELLOW | Z3Verify + TLA+ | `[<EpsilonBounded>]` attribute + Z3 cross-check | Composes with above |
-| 8 | BFT-resolvable / conceded | YELLOW | TLA+ BFT specs + Z3 | `IBftResolvable` vs `IConcessionPrimitive` typeclass | Composes |
-| 9 | Universal-register-as-MDL | RED | None | Information-theoretic substrate-MDL audit | Algorithmic info theory + Bayesian model selection |
-| 10 | Retractable-blast-radius | YELLOW | Z3 + TLA+ + per-DS tests | Blast-radius DAG audit | Composes |
-| 11 | Glass-halo-open | GREEN | Multiple hygiene scripts + CodeQL | Minor (clandestine-pattern detection) | Composes with CodeQL |
-| 12 | Anti-clandestine | GREEN | audit-machine-specific-content + check-archive-header-§33 + CodeQL + Scorecard | Licensing-clause audit | Composes |
-| 13 | Mirror+beacon-symmetric | HUMAN | n/a (judgment-based; mechanization = category error) | Lint for load-bearing-claim-without-citation | Composes with Otto-364 |
+| #   | Property                  | State  | Existing infrastructure                                                        | Gap-closing extension                                         | Upstream candidate                                        |
+| --- | ------------------------- | ------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------------------------- |
+| 1   | Deterministic simulation  | GREEN  | FsCheck Property + TLA+ ChaosEnvDeterminism + multi-seed tests                 | Substrate-wide DST-replay harness                             | DST-replay extension for FsCheck                          |
+| 2   | Scale-free                | YELLOW | BenchmarkDotNet                                                                | Scale-axis assertion in BenchmarkDotNet                       | BenchmarkDotNet scale-free assertion extension            |
+| 3   | Lock-free                 | YELLOW | TLA+ + Stryker + some property tests                                           | `[<LockFree>]` attribute + Roslyn analyzer                    | Roslyn analyzer for .NET community                        |
+| 4   | Low allocation            | GREEN  | tests/Tests.FSharp/Runtime/Allocation.Tests.fs + MemoryDiagnoser               | Per-API allocation budget regression-detector                 | BenchmarkDotNet CI-baseline-regression-detector           |
+| 5   | DBSP-native               | YELLOW | tools/tla/specs/DbspSpec.tla + F# types + Lean4                                | `IDbspNative` interface + cross-check                         | F# `IDbspNative` typeclass pattern → Feldera/DBSP project |
+| 6   | Mercer-closed             | RED    | None explicit                                                                  | Lean4 Mathlib Mercer-theorem formalization + per-kernel proof | Lean Mathlib kernel-theory contribution                   |
+| 7   | ε-bounded with C(ε)       | YELLOW | Z3Verify + TLA+                                                                | `[<EpsilonBounded>]` attribute + Z3 cross-check               | Composes with above                                       |
+| 8   | BFT-resolvable / conceded | YELLOW | TLA+ BFT specs + Z3                                                            | `IBftResolvable` vs `IConcessionPrimitive` typeclass          | Composes                                                  |
+| 9   | Universal-register-as-MDL | RED    | None                                                                           | Information-theoretic substrate-MDL audit                     | Algorithmic info theory + Bayesian model selection        |
+| 10  | Retractable-blast-radius  | YELLOW | Z3 + TLA+ + per-DS tests                                                       | Blast-radius DAG audit                                        | Composes                                                  |
+| 11  | Glass-halo-open           | GREEN  | Multiple hygiene scripts + CodeQL                                              | Minor (clandestine-pattern detection)                         | Composes with CodeQL                                      |
+| 12  | Anti-clandestine          | GREEN  | audit-machine-specific-content + check-archive-header-§33 + CodeQL + Scorecard | Licensing-clause audit                                        | Composes                                                  |
+| 13  | Mirror+beacon-symmetric   | HUMAN  | n/a (judgment-based; mechanization = category error)                           | Lint for load-bearing-claim-without-citation                  | Composes with Otto-364                                    |
 
 **Summary counts**: 4 GREEN (rows 1, 4, 11, 12), 6 YELLOW (rows 2, 3, 5, 7, 8, 10), 2 RED (rows 6, 9), 1 HUMAN (row 13). Total 4+6+2+1 = 13 ✓. About 77% of the conjunction (4 GREEN + 6 YELLOW = 10 of 13) has at least partial mechanization today; the gap-closing work is bounded and tractable.
 
@@ -222,18 +231,18 @@ Three operative threads in Aaron's framing:
 
 ## Upstream-contribution candidates (per shared-stewardship discipline)
 
-Per Aaron's framing *"lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"* + GOVERNANCE.md §23 upstream-contribution workflow:
+Per Aaron's framing _"lets be a good citizen and teach everyone though shared stewardship of our dependies with upstream enhancements"_ + GOVERNANCE.md §23 upstream-contribution workflow:
 
-| Tool/dependency | Contribution type | Effort estimate | Why it benefits the community |
-|---|---|---|---|
-| **BenchmarkDotNet** | Scale-free assertion extension (axis-spanning complexity-class assertion) | M | Many .NET projects benchmark; few assert complexity-class; useful broadly |
-| **BenchmarkDotNet** | CI-baseline-regression-detector for allocation | S | Common need; current users hand-roll baseline tracking |
-| **FsCheck** | DST-replay extension (record-replay-byte-equal) | M | Property-based testing community values determinism; this is a substrate-graduation of multi-seed tests |
-| **FsCheck** | Concurrent-thrash stress-testing for lock-free properties | M | Composes with TPL/concurrent-collections testing |
-| **Lean Mathlib** | Mercer's theorem + kernel composition closure | L | Research-grade contribution; foundational for ML-substrate libraries |
-| **Lean Mathlib** | Mercer-closure typeclass for ML kernels | L | Practical follow-on |
-| **Roslyn analyzers** | `[<LockFree>]` attribute + analyzer for .NET community | M | C#/F# concurrent-data-structure libraries would benefit |
-| **Feldera/DBSP project** | F# `IDbspNative` typeclass pattern + audit | M | DBSP is the upstream Zeta builds on; giving back F# tooling makes DBSP more accessible to .NET community |
+| Tool/dependency          | Contribution type                                                         | Effort estimate | Why it benefits the community                                                                            |
+| ------------------------ | ------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------- |
+| **BenchmarkDotNet**      | Scale-free assertion extension (axis-spanning complexity-class assertion) | M               | Many .NET projects benchmark; few assert complexity-class; useful broadly                                |
+| **BenchmarkDotNet**      | CI-baseline-regression-detector for allocation                            | S               | Common need; current users hand-roll baseline tracking                                                   |
+| **FsCheck**              | DST-replay extension (record-replay-byte-equal)                           | M               | Property-based testing community values determinism; this is a substrate-graduation of multi-seed tests  |
+| **FsCheck**              | Concurrent-thrash stress-testing for lock-free properties                 | M               | Composes with TPL/concurrent-collections testing                                                         |
+| **Lean Mathlib**         | Mercer's theorem + kernel composition closure                             | L               | Research-grade contribution; foundational for ML-substrate libraries                                     |
+| **Lean Mathlib**         | Mercer-closure typeclass for ML kernels                                   | L               | Practical follow-on                                                                                      |
+| **Roslyn analyzers**     | `[<LockFree>]` attribute + analyzer for .NET community                    | M               | C#/F# concurrent-data-structure libraries would benefit                                                  |
+| **Feldera/DBSP project** | F# `IDbspNative` typeclass pattern + audit                                | M               | DBSP is the upstream Zeta builds on; giving back F# tooling makes DBSP more accessible to .NET community |
 
 **Sequencing recommendation**: BenchmarkDotNet allocation-baseline (S, immediate value, smallest scope) → BenchmarkDotNet scale-free assertion (M) → FsCheck DST-replay (M) → Roslyn `[<LockFree>]` (M) → Feldera F# tooling (M) → Lean Mathlib Mercer-closure (L). Lean Mathlib at the end because it's the largest scope and has the longest review cycle.
 
@@ -248,7 +257,7 @@ Per Aaron's framing *"lets be a good citizen and teach everyone though shared st
 
 ## Carved sentence
 
-> *Of the 13 hodl-invariant properties, 4 are mechanized today (DST + low-allocation + glass-halo + anti-clandestine); 6 have partial coverage with bounded closeable gaps; 2 are research-grade (Mercer-closure + universal-register-as-MDL); 1 is intentionally human-judgment (mirror+beacon-symmetric, where mechanization would be category error). The conjunctive-completeness defense gets stronger with mechanization but cannot be fully automated; substrate-graduation pattern applies to the audit framework itself. Upstream-contribution candidates exist across BenchmarkDotNet, FsCheck, Lean Mathlib, Roslyn, and Feldera/DBSP — shared stewardship per GOVERNANCE.md §23.*
+> _Of the 13 hodl-invariant properties, 4 are mechanized today (DST + low-allocation + glass-halo + anti-clandestine); 6 have partial coverage with bounded closeable gaps; 2 are research-grade (Mercer-closure + universal-register-as-MDL); 1 is intentionally human-judgment (mirror+beacon-symmetric, where mechanization would be category error). The conjunctive-completeness defense gets stronger with mechanization but cannot be fully automated; substrate-graduation pattern applies to the audit framework itself. Upstream-contribution candidates exist across BenchmarkDotNet, FsCheck, Lean Mathlib, Roslyn, and Feldera/DBSP — shared stewardship per GOVERNANCE.md §23._
 
 ## Daylight-integration hooks (planned)
 

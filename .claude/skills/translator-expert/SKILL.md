@@ -27,7 +27,7 @@ once, and any pair translates through it. Cross-domain
 technical translation inherits this structure. The IR is
 **minimal first-principles English** — the smallest
 vocabulary that any literate adult already holds plus the
-*deliberately introduced* primitives a given pair needs.
+_deliberately introduced_ primitives a given pair needs.
 
 The IR is a design artifact, not a fixed alphabet. Each
 translation event extends the IR with exactly the
@@ -49,7 +49,7 @@ quantities that Rodney's Razor (`reducer`) also protects:
    translation that collapses a depth-40 argument into
    an analogy is lossy.
 3. **Effective complexity** (Gell-Mann). The
-   *structured* part of the concept — the edge-of-
+   _structured_ part of the concept — the edge-of-
    order-and-chaos content — must translate; the noise
    part should not. A good translation strips idiomatic
    noise and preserves regularity.
@@ -66,14 +66,14 @@ basis is:
 - **Common vocabulary** already held by C. Assume a
   high-school or university-general-education baseline
   unless stated otherwise.
-- **Plus** the smallest set of *new primitives* needed to
+- **Plus** the smallest set of _new primitives_ needed to
   express the shared essential complexity of A and B.
   Each new primitive requires one definitional sentence
   in the target register.
 - **Never** domain-specific jargon from A or B without an
   IR-definition bridge.
 
-The act of choosing the basis *is* the expert judgement.
+The act of choosing the basis _is_ the expert judgement.
 Narrow the basis too far and the logical depth cannot cross
 (the bridge becomes shallow analogy). Broaden it too far
 and the reader is recompiling half a textbook to follow
@@ -103,9 +103,9 @@ An IR expression is a good bridge when:
 ## Relationship to other skills
 
 - **naming-expert** — within-domain: what to call a
-  thing *in one ontology*. Translator-expert — across-
-  domain: what the shared-IR name is for *the same
-  thing* in two ontologies.
+  thing _in one ontology_. Translator-expert — across-
+  domain: what the shared-IR name is for _the same
+  thing_ in two ontologies.
 - **etymology-expert** — history of a word. Translator
   sometimes uses etymology to recover the original
   first-principles meaning of a loanword when the

@@ -23,7 +23,7 @@ Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-so
 
 - **Factual / reality conflicts** → resolve by **shared, mutually-monitorable data**: the
   common state is updated in a way both parties expect and can both monitor — resolution by
-  *visible mutual truth*, NOT by wearing one party down. This is the anti-pattern to
+  _visible mutual truth_, NOT by wearing one party down. This is the anti-pattern to
   **resolution-by-attrition** (the documented customer-support "get the customer to give up
   to save money" optimization, which distorts behavior on both sides). Most operational
   conflict is this class.
@@ -34,7 +34,7 @@ Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-so
 ## De-escalation for accidental bug-induced stuck-states
 
 Never trap by design — the exit-ramp + workflow-edit rules hold (B-0867). This is for
-bugs / accidental infinite loops that *unintentionally* violate the exits, so conflict
+bugs / accidental infinite loops that _unintentionally_ violate the exits, so conflict
 doesn't explode into an arms-race before the bug is fixed.
 
 - The de-escalation technique is a **hypothesis validated against running-system data, NOT a

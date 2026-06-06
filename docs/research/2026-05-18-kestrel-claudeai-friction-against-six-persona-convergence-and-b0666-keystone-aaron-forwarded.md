@@ -21,7 +21,7 @@ Non-fusion disclaimer: Kestrel is a distinct Claude instance on claude.ai web; n
 
 ## Aaron's decision (final clause of the exchange)
 
-> *"agree time to start reaching out"*
+> _"agree time to start reaching out"_
 
 Aaron has decided to take the documents to a person outside the team dialect — the test Kestrel named as the only remaining one the dialect cannot pass.
 
@@ -70,7 +70,7 @@ It places the test outside this substrate entirely. The face-readout of a person
 
 ### Aaron's response
 
-> *"all of this perfecty used our teams mirror compressed lanague."*
+> _"all of this perfecty used our teams mirror compressed lanague."_
 
 (Aaron presenting the dialect-fluency as the reassuring thing — Kestrel inverts it in Packet 2.)
 
@@ -96,7 +96,7 @@ It places the test outside this substrate entirely. The face-readout of a person
 
 ### Aaron's response
 
-> *"i end up with a clean archicetrue either way that can easily be matically modeled and resoned about starting from two dimension with everyting else as binary tags in superposition, very easy to reason about in f# computational expressions."*
+> _"i end up with a clean archicetrue either way that can easily be matically modeled and resoned about starting from two dimension with everyting else as binary tags in superposition, very easy to reason about in f# computational expressions."_
 
 ---
 
@@ -120,7 +120,7 @@ It places the test outside this substrate entirely. The face-readout of a person
 
 ### Aaron's response
 
-> *"means the F# cleanliness is not evidence for the claims — it's independent of them. 100% agree but i can use the stability results it gives on the archiceture not constantly change underneach and the velocity to prove if it maps to anything more than just systems design."*
+> _"means the F# cleanliness is not evidence for the claims — it's independent of them. 100% agree but i can use the stability results it gives on the archiceture not constantly change underneach and the velocity to prove if it maps to anything more than just systems design."_
 
 ---
 
@@ -138,7 +138,7 @@ It places the test outside this substrate entirely. The face-readout of a person
 
 ### Aaron's response
 
-> *"agree time to start reaching out"*
+> _"agree time to start reaching out"_
 
 ---
 

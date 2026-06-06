@@ -4,6 +4,7 @@ description: Aaron Otto-258 structural-fix directive after noticing I was manual
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **If a lint class is mostly auto-fixable with --fix (or
@@ -12,11 +13,11 @@ workflow. It belongs in CI / pre-commit.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"mostly auto-fixable with --fix why isn't this just
+> _"mostly auto-fixable with --fix why isn't this just
 > part of the build, or have a job like ../SQLSharp to
 > force format on the PR i really like this super force
 > formant it's like static analysers that way eyeveryones
-> code looks the same and our editorconfig is applied"*
+> code looks the same and our editorconfig is applied"_
 
 ## The three-way implementation (GOVERNANCE §24 parity)
 
@@ -42,9 +43,9 @@ looks the same regardless of individual dev habits.
 
 ## Editorconfig — start from proven defaults
 
-Aaron 2026-04-24 addendum: *"i think both of those
+Aaron 2026-04-24 addendum: _"i think both of those
 project have kick ass editorconfigs there are also good
-standard starting points too online"*
+standard starting points too online"_
 
 The `.editorconfig` Aaron references as authoritative
 for this repo is the one he's already been using on his
@@ -113,7 +114,7 @@ everyone's code looks the same"):
 - **Aaron's "never cite ../SQLSharp" rule** (from
   earlier this session, in PR #377) — Aaron EXPLICITLY
   cites the SQLSharp pattern here by name. He can
-  cite external refs in conversation; *I* can't cite
+  cite external refs in conversation; _I_ can't cite
   them in repo docs. When I land the BACKLOG row,
   the pattern description goes verbatim but the
   "../SQLSharp" reference stays out of the repo text.
@@ -124,13 +125,13 @@ Per queue-saturation discipline I do NOT open a new PR
 for this right now. When drain clears:
 
 - **P1 BACKLOG row** — "Auto-format CI job (markdownlint
-  + dotnet format + shfmt + prettier) on every PR;
-  super-force-format pattern commits fixes back to the
-  PR branch; three-way parity via pre-commit hook +
-  CI + devcontainer per GOVERNANCE §24. Effort:
-  M (markdownlint first — simplest), then L (full matrix
-  rollout). Eliminates manual-drain cadence for
-  auto-fixable lint classes."
+  - dotnet format + shfmt + prettier) on every PR;
+    super-force-format pattern commits fixes back to the
+    PR branch; three-way parity via pre-commit hook +
+    CI + devcontainer per GOVERNANCE §24. Effort:
+    M (markdownlint first — simplest), then L (full matrix
+    rollout). Eliminates manual-drain cadence for
+    auto-fixable lint classes."
 - **Prototype order** — markdownlint first (already
   proven via manual --fix this tick); dotnet format
   second (largest repo surface; highest dev-velocity
@@ -139,11 +140,11 @@ for this right now. When drain clears:
 
 ## Direct Aaron quote to preserve
 
-> *"mostly auto-fixable with --fix why isn't this just
+> _"mostly auto-fixable with --fix why isn't this just
 > part of the build, or have a job like ../SQLSharp to
 > force format on the PR i really like this super force
 > formant it's like static analysers that way eyeveryones
-> code looks the same and our editorconfig is applied"*
+> code looks the same and our editorconfig is applied"_
 
 Future Otto: if you find yourself manually running a
 --fix / --write / auto-repair command across 3+ PRs in

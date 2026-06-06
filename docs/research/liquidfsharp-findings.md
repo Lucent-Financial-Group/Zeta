@@ -24,7 +24,7 @@ Four targeted web searches on `2026-04-19`:
    FSharp.Data, awesome-fsharp. No `LiquidFSharp`.
 2. `"LiquidFSharp" OR "Liquid F#" refinement types .NET 10 last commit`
    — no hit on the exact name. Results surface LiquidHaskell
-   (ACM SIGPLAN '14), F7 (Microsoft Research, 2012), F* (active,
+   (ACM SIGPLAN '14), F7 (Microsoft Research, 2012), F\* (active,
    separate language).
 3. `site:github.com LiquidFSharp` — no GitHub repository by
    that name. Results are unrelated Liquid-template projects
@@ -33,7 +33,7 @@ Four targeted web searches on `2026-04-19`:
    — surfaces F7 with Microsoft Research page last updated
    May 2020 and the download artefact dated 2012. No active
    F#-native refinement checker. F* is active but is a distinct
-   language that can *translate to* F#, not a refinement layer
+   language that can *translate to\* F#, not a refinement layer
    over F#.
 
 ## Verdict
@@ -65,7 +65,7 @@ Compensating coverage today:
   bug class post-hoc, not at type-check time.
 - **Z3-driven TLA+ specs** cover the algorithmic-level
   invariants (e.g. `tools/tla/specs/RecursiveSignedSemiNaive.tla`).
-  Catches the *algorithm-level* bug, not the F#-source-level
+  Catches the _algorithm-level_ bug, not the F#-source-level
   off-by-one.
 - **Lean 4 + Mathlib** covers the mathematical-correctness
   layer (e.g. `tools/lean4/Lean4/DbspChainRule.lean`). Does
@@ -80,14 +80,14 @@ Haskell.
 Ranked by effort vs. payoff. None are round-35 work — this
 is future triage.
 
-### Path A — F* integration (future round, L)
+### Path A — F\* integration (future round, L)
 
 F*is actively maintained (Wikipedia page touched January 2026)
 and can extract to F#. Investigating F* → F# extraction for
 one target module (`FastCdc.fs`) is the closest substitute
 for the original LiquidF# plan. Effort: 2-3 weeks for a
 proof-of-concept; higher than LiquidF#'s estimated 1 week
-because F* is a different source language.
+because F\* is a different source language.
 
 ### Path B — F7 resurrection (future round, L)
 
@@ -110,7 +110,7 @@ seconds vs. milliseconds.
 Write a G-Research-style F# analyzer that emits SMT
 obligations for specific invariant patterns. Covers the
 target bug class at the source level. Effort: months, not
-weeks. Only worth it if F* integration (Path A) is found
+weeks. Only worth it if F\* integration (Path A) is found
 to be a poor fit for extract-to-F#.
 
 ## Recommended action this round

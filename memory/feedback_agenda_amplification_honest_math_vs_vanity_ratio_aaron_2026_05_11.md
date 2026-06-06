@@ -29,7 +29,7 @@ as equivalent. But actions vary in agenda:
 
 The vanity ratio compresses all of these to "high action count
 good." The honest ratio asks: of the N actions, how many
-amplified Aaron's *actual* agenda?
+amplified Aaron's _actual_ agenda?
 
 ## Why it won't be clean
 

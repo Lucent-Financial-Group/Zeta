@@ -27,11 +27,11 @@ the UI to spot new features** as GitHub ships them.
 
 Aaron 2026-04-28:
 
-> *"backlog github/playwrite integration, this is for all
+> _"backlog github/playwrite integration, this is for all
 > those things you need me to change, you should be able to
 > change in the UI, also looking at the UI will help you
 > understand how i see things and find new features as soon
-> as they come out, backlog"*
+> as they come out, backlog"_
 
 Two distinct payloads in that one signal:
 
@@ -98,7 +98,7 @@ using it on the GitHub-UI surface specifically.
     agent may mutate (start small: dependabot toggles,
     branch-protection-rule edits already authorized via
     the settings backup at `tools/hygiene/github-
-    settings.expected.json`, dismissed-alert
+settings.expected.json`, dismissed-alert
     re-classification).
   - Mandatory before-and-after snapshot for every
     mutation, committed as part of a hygiene-history
@@ -122,13 +122,13 @@ using it on the GitHub-UI surface specifically.
   signal that GitHub shipped a feature the agent should
   investigate.
 - Output drops as a `docs/research/github-ui-feature-
-  diff-YYYY-MM-DD.md` for the maintainer / agent to
+diff-YYYY-MM-DD.md` for the maintainer / agent to
   triage.
 
 ## Done-criteria
 
 - [ ] Phase 1 harness lands at `tools/playwright/github-
-      ui/` with at least 3 read-only use cases.
+    ui/` with at least 3 read-only use cases.
 - [ ] Phase 2 lands with the guardrail enforcement
       mechanisms in code (not just discipline).
 - [ ] Phase 3 scheduled job lands as a CI workflow OR

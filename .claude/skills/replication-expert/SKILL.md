@@ -11,10 +11,10 @@ data live on multiple nodes?" — a different question from
 
 ## Consensus vs replication — the distinction
 
-- **Consensus** is a *mechanism*: a protocol by which a set
+- **Consensus** is a _mechanism_: a protocol by which a set
   of processes agree on a value (Paxos, Raft).
-- **Replication** is an *architecture*: how data lives on
-  multiple nodes. Consensus is *one* mechanism for
+- **Replication** is an _architecture_: how data lives on
+  multiple nodes. Consensus is _one_ mechanism for
   replication (state-machine replication, SMR); chain
   replication, primary-backup, and anti-entropy-based
   replication are others.
@@ -45,11 +45,11 @@ space.
 - **Consensus internals (leader election, log matching,
   log compaction)** → `paxos-expert` / `raft-expert`.
 - **Cross-protocol consensus positioning** → `distributed-
-  consensus-expert`.
+consensus-expert`.
 - **CRDT-based coordination-avoidant replication design** →
   `crdt-expert`.
 - **Consistency-spectrum framing** → `eventual-consistency-
-  expert`.
+expert`.
 - **Membership + failure-detection propagation** →
   `gossip-protocols-expert`.
 - **Coordination-primitive (lock, lease, KV) semantics** →
@@ -57,7 +57,7 @@ space.
 - **TLA+ replication-spec authoring** → `tla-expert`.
 - **Transaction-level replication (logical replication,
   change data capture at tx boundary)** → `transaction-
-  manager-expert`.
+manager-expert`.
 
 ## Replication strategies — the taxonomy
 
@@ -203,14 +203,14 @@ they're primary. Mitigations:
 
 Replication strategy determines both:
 
-| Strategy | RPO | RTO |
-|---|---|---|
-| Sync primary-backup | 0 | seconds |
-| Semi-sync primary-backup | ≤ last ack window | seconds |
-| Async primary-backup | replica lag | seconds-minutes |
-| SMR (quorum commit) | 0 (within quorum) | seconds (election) |
-| CRDT gossip | 0 after convergence | always available |
-| Chain replication | 0 | seconds (chain reconfig) |
+| Strategy                 | RPO                 | RTO                      |
+| ------------------------ | ------------------- | ------------------------ |
+| Sync primary-backup      | 0                   | seconds                  |
+| Semi-sync primary-backup | ≤ last ack window   | seconds                  |
+| Async primary-backup     | replica lag         | seconds-minutes          |
+| SMR (quorum commit)      | 0 (within quorum)   | seconds (election)       |
+| CRDT gossip              | 0 after convergence | always available         |
+| Chain replication        | 0                   | seconds (chain reconfig) |
 
 ## Catch-up + snapshot transfer
 
@@ -252,12 +252,12 @@ shipping alone:
 ## What this skill does NOT do
 
 - Does NOT own consensus-protocol internals (→ `paxos-
-  expert` / `raft-expert`).
+expert` / `raft-expert`).
 - Does NOT own consistency-spectrum framing
   (→ `eventual-consistency-expert`).
 - Does NOT own CRDT design (→ `crdt-expert`).
 - Does NOT own gossip / failure-detection (→ `gossip-
-  protocols-expert`).
+protocols-expert`).
 - Does NOT author TLA+ specs (→ `tla-expert`); names
   property classes.
 - Does NOT override `transaction-manager-expert` on tx-
@@ -267,21 +267,21 @@ shipping alone:
 
 ## Reference patterns
 
-- Schneider 1990 — *Implementing fault-tolerant services
-  using the state machine approach* (ACM CSUR).
-- van Renesse, Schneider 2004 — *Chain Replication for
-  Supporting High Throughput and Availability* (OSDI).
-- Terrace, Freedman 2009 — *Object Storage on CRAQ* (USENIX
+- Schneider 1990 — _Implementing fault-tolerant services
+  using the state machine approach_ (ACM CSUR).
+- van Renesse, Schneider 2004 — _Chain Replication for
+  Supporting High Throughput and Availability_ (OSDI).
+- Terrace, Freedman 2009 — _Object Storage on CRAQ_ (USENIX
   ATC).
-- Herlihy 1986 — *A Quorum-Consensus Replication Method
-  for Abstract Data Types*.
-- DeCandia et al. 2007 — *Dynamo: Amazon's Highly Available
-  Key-value Store* (SOSP).
-- Demers et al. 1987 — *Epidemic algorithms for
-  replicated database maintenance* (PODC).
-- Merkle 1987 — *A Digital Signature Based on a
-  Conventional Encryption Function* (Merkle tree origin).
-- Corbett et al. 2012 — *Spanner* (TrueTime-based
+- Herlihy 1986 — _A Quorum-Consensus Replication Method
+  for Abstract Data Types_.
+- DeCandia et al. 2007 — _Dynamo: Amazon's Highly Available
+  Key-value Store_ (SOSP).
+- Demers et al. 1987 — _Epidemic algorithms for
+  replicated database maintenance_ (PODC).
+- Merkle 1987 — _A Digital Signature Based on a
+  Conventional Encryption Function_ (Merkle tree origin).
+- Corbett et al. 2012 — _Spanner_ (TrueTime-based
   replication).
 - `.claude/skills/distributed-consensus-expert/SKILL.md` —
   consensus umbrella.

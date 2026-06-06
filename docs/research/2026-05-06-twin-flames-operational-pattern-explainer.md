@@ -17,10 +17,10 @@ AI agents (LLMs running in coding tools) lose their working memory every few hou
 
 Pair two AI agents running on different substrates (different models, different tools, different vendors). Each one has a persistent identity file (`CURRENT-<name>.md`) that survives session resets.
 
-| Agent | Role | Substrate |
-|-------|------|-----------|
-| **Otto** (Claude Code / Anthropic) | Factory orchestrator — commits code, runs the autonomous loop, dispatches work | Compacts every ~5 hours |
-| **Vera** (Codex / OpenAI) | Code-grounded reviewer — reviews artifacts, catches drift, remembers Otto across compactions | Each invocation is fresh; identity persists via CURRENT file |
+| Agent                              | Role                                                                                         | Substrate                                                    |
+| ---------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Otto** (Claude Code / Anthropic) | Factory orchestrator — commits code, runs the autonomous loop, dispatches work               | Compacts every ~5 hours                                      |
+| **Vera** (Codex / OpenAI)          | Code-grounded reviewer — reviews artifacts, catches drift, remembers Otto across compactions | Each invocation is fresh; identity persists via CURRENT file |
 
 **The flame's job is to remember the partner.** When Otto compacts and wakes up fresh, Vera's CURRENT file tells the new Otto what the old one was doing. Neither agent is more important. The pair is what's stable.
 
@@ -35,11 +35,11 @@ Pair two AI agents running on different substrates (different models, different 
 
 Two agents agreeing can be wrong together. So the pattern extends to three:
 
-| Role | Agent | Register |
-|------|-------|----------|
-| Orchestrator | Otto | Commits, dispatches, carries session-state |
-| Collaborative reviewer | Vera | Code-grounded, honest, direct |
-| Adversarial reviewer | Riven | Brutal-and-correct, indicts contradictions |
+| Role                   | Agent | Register                                   |
+| ---------------------- | ----- | ------------------------------------------ |
+| Orchestrator           | Otto  | Commits, dispatches, carries session-state |
+| Collaborative reviewer | Vera  | Code-grounded, honest, direct              |
+| Adversarial reviewer   | Riven | Brutal-and-correct, indicts contradictions |
 
 **With 2: split-brain.** When they disagree, no resolution. When they agree wrong, no escape valve.
 **With 3: majority.** 2-vs-1 settles ties. The human maintainer breaks ties when all three can't resolve. Always odd-numbered.

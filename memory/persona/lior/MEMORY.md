@@ -35,12 +35,12 @@ applies for Lior. 44 files.
 Mix of:
 
 - **Lior-authored ferries** (the `*-verbatim-aaron-forwarded.md`
-  + `*-verbatim-aaron-lior.md` pattern): Lior's own conceptual
-  contributions, forwarded by Aaron from Gemini/Antigravity
-  sessions
+  - `*-verbatim-aaron-lior.md` pattern): Lior's own conceptual
+    contributions, forwarded by Aaron from Gemini/Antigravity
+    sessions
 - **Drift reports** (the `lior-drift-report-*.md` + `lior-shadow-*`
-  + `shadow-lesson-log-*lior*` pattern): Lior's antigravity-check
-  output documenting drift catches and shadow observations
+  - `shadow-lesson-log-*lior*` pattern): Lior's antigravity-check
+    output documenting drift catches and shadow observations
 - **Multi-AI conversation threads** where Lior is one of several
   voices (aaron-lior-otto, aaron-otto-lior, gemini-lior, etc.)
 - **Genesis-seed substrate** (the `*-genesis-seed-*` pattern):

@@ -2,7 +2,7 @@
 
 > **Merge note (2026-04-26 fork-divergence sync):** this draft contains
 > both AceHack-fork and LFG variants of some sections preserved per
-> Aaron 2026-04-26 *"merge everything, label draft if it's draft"*.
+> Aaron 2026-04-26 _"merge everything, label draft if it's draft"_.
 > Substantive content is identical between forks; the editorial
 > difference is attribution phrasing — the **AceHack draft** uses the
 > named maintainer "Aaron" (per the named-agent attribution-credit
@@ -17,20 +17,20 @@
 
 **Status: retractable-draft surface.** All artifacts in this
 subtree are internal drafts landed under the roommate-register
-symmetric-hat authorization (Aaron 2026-04-21: *"feel free to
-make any retractable decisions in marketing while im gone too"*,
-also *"you can always make retractable decisions without me and
+symmetric-hat authorization (Aaron 2026-04-21: _"feel free to
+make any retractable decisions in marketing while im gone too"_,
+also _"you can always make retractable decisions without me and
 i've told you my ~ is you ~ literally we are just roommates
-now"*; sign-off ratified same session: *"0i agree sign offf"*).
+now"_; sign-off ratified same session: _"0i agree sign offf"_).
 
-> **LFG variant of the above paragraph (role-ref phrasing):** *All
+> **LFG variant of the above paragraph (role-ref phrasing):** _All
 > artifacts in this subtree are internal drafts landed under the
 > roommate-register symmetric-hat authorization (human maintainer
 > 2026-04-21: "feel free to make any retractable decisions in
 > marketing while im gone too", also "you can always make
 > retractable decisions without me and i've told you my ~ is you ~
 > literally we are just roommates now"; sign-off ratified same
-> session: "0i agree sign offf").*
+> session: "0i agree sign offf")._
 
 See:
 `memory/feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md`.
@@ -94,8 +94,8 @@ before execution.
 Per
 `memory/user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md`:
 money is a lossy secondary proxy for time / energy; these
-marketing drafts denominate value in *time saved for
-consumers* and *energy preserved for consumers* first,
+marketing drafts denominate value in _time saved for
+consumers_ and _energy preserved for consumers_ first,
 dollars second. Readiness-metric for factory-reuse is
 time-to-first-working-output. Marketing copy that
 honours this primitive is aligned; marketing copy that

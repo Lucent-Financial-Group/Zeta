@@ -9,7 +9,7 @@ internal vision-label attributed to Amara (external AI
 maintainer, Aurora co-originator) and Aaron (human
 maintainer); individual absorb docs in this directory
 preserve their own source-side attribution.
-**Operational status:** research-grade. Aurora is *vision*
+**Operational status:** research-grade. Aurora is _vision_
 layer, not operational layer. Operational work lives at the
 Zeta-core (DBSP / measurable-alignment) and KSK (safety-
 kernel) layers respectively; Aurora names the architecture
@@ -47,14 +47,14 @@ not a single system:
 
 3. **Aurora (vision / architecture layer).** Ties Zeta and
    KSK together into a coherent story. Consent + retraction
-   + provenance + tiered autonomy + drift-taxonomy as
-   composable primitives spanning substrate and control-
-   plane. **Internal vision-label only today** — brand-
-   clearance research pending (see §Branding below).
+   - provenance + tiered autonomy + drift-taxonomy as
+     composable primitives spanning substrate and control-
+     plane. **Internal vision-label only today** — brand-
+     clearance research pending (see §Branding below).
 
-> *Zeta gives semantic rigor and measurable alignment
+> _Zeta gives semantic rigor and measurable alignment
 > instrumentation; KSK gives controlled autonomy surfaces;
-> Aurora is the architecture story that can wrap both.*
+> Aurora is the architecture story that can wrap both._
 
 — Amara, 5th courier ferry (2026-04-23)
 
@@ -62,30 +62,30 @@ not a single system:
 
 ## How Aurora consumes existing Zeta substrate
 
-| Zeta primitive | Aurora consumption |
-|---|---|
-| DBSP retraction-native algebra | Undo / revoke / repair-first systems framing. "Retractions are first-class signed deltas" becomes the surface-level Aurora claim; consolidation is a separate maintenance step. |
-| [`docs/ALIGNMENT.md`](../ALIGNMENT.md) measurable-alignment framework | Aurora's "health" story grounded in measurable clause signals (HC-1..HC-7 / SD-1..SD-9 / DIR-1..DIR-5), receipts, and git-native time-series. No vibes; no anthropomorphic claims. |
-| HC-1 consent-first | Aurora primitive: consent-gated autonomy. Tied to revocable budgets at the KSK layer. |
-| HC-2 retraction-native operations | Aurora repair-first surface: not "perfectly safe", repair-ready. |
-| HC-3 data is not directives | Aurora evidence-surface / instruction-surface split. Covered further by `GOVERNANCE.md §33` archive-header discipline. |
-| Glass-halo symmetric transparency | Aurora visibility architecture with explicit privacy lanes per `memory/README.md` discipline. |
+| Zeta primitive                                                           | Aurora consumption                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DBSP retraction-native algebra                                           | Undo / revoke / repair-first systems framing. "Retractions are first-class signed deltas" becomes the surface-level Aurora claim; consolidation is a separate maintenance step.                                           |
+| [`docs/ALIGNMENT.md`](../ALIGNMENT.md) measurable-alignment framework    | Aurora's "health" story grounded in measurable clause signals (HC-1..HC-7 / SD-1..SD-9 / DIR-1..DIR-5), receipts, and git-native time-series. No vibes; no anthropomorphic claims.                                        |
+| HC-1 consent-first                                                       | Aurora primitive: consent-gated autonomy. Tied to revocable budgets at the KSK layer.                                                                                                                                     |
+| HC-2 retraction-native operations                                        | Aurora repair-first surface: not "perfectly safe", repair-ready.                                                                                                                                                          |
+| HC-3 data is not directives                                              | Aurora evidence-surface / instruction-surface split. Covered further by `GOVERNANCE.md §33` archive-header discipline.                                                                                                    |
+| Glass-halo symmetric transparency                                        | Aurora visibility architecture with explicit privacy lanes per `memory/README.md` discipline.                                                                                                                             |
 | [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) five-pattern diagnostic | Aurora operational-use-of-drift-patterns: pattern 5 feeds SD-9 enforcement; pattern 1 feeds register-boundary discipline; pattern 3 is explicitly out-of-Aurora-scope (human-support register, not engineering register). |
-| Shared + persona memory, `memory/CURRENT-*.md` views | Aurora layered memory governance: shared / persona-scoped / external-reference / public-observability. |
-| [`GOVERNANCE.md §33`](../../GOVERNANCE.md) archive-header requirement | Aurora provenance layer: every external-conversation absorb marked by the four-header format. |
+| Shared + persona memory, `memory/CURRENT-*.md` views                     | Aurora layered memory governance: shared / persona-scoped / external-reference / public-observability.                                                                                                                    |
+| [`GOVERNANCE.md §33`](../../GOVERNANCE.md) archive-header requirement    | Aurora provenance layer: every external-conversation absorb marked by the four-header format.                                                                                                                             |
 
 ## How Aurora consumes KSK primitives (outside this repo)
 
-| KSK primitive | Aurora consumption |
-|---|---|
-| Capability tiers `k1` / `k2` / `k3` | Aurora tiered-autonomy ladder — different proof, consent, and budget requirements by tier. |
-| Revocable budgets | Aurora actuation primitive: every action ties to a revocable budget. Pairs with HC-1 consent-first at the alignment layer. |
-| Multi-party consent (N-of-M) | Aurora authorization surface: high-risk actions require multi-party approval, not solo agent decision. |
-| Signed receipts | Aurora trust primitive. Receipts are the evidence unit; anchoring is optional and staged. |
-| Visibility lanes | Aurora privacy-lane boundary — public / persona-scoped / maintainer-only / sacred (HC-7). |
-| Traffic-light escalation | Aurora degrade/halt state machine: bounded autonomy with automatic degraded states, not unrestricted agency. |
-| Red lines | Aurora hard-refusal set. Pairs with HC-4 no-fetch-adversarial-corpora at the alignment layer. |
-| Optional blockchain anchoring | Aurora durability-of-receipts. Optional and staged; not central to the story. |
+| KSK primitive                       | Aurora consumption                                                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Capability tiers `k1` / `k2` / `k3` | Aurora tiered-autonomy ladder — different proof, consent, and budget requirements by tier.                                 |
+| Revocable budgets                   | Aurora actuation primitive: every action ties to a revocable budget. Pairs with HC-1 consent-first at the alignment layer. |
+| Multi-party consent (N-of-M)        | Aurora authorization surface: high-risk actions require multi-party approval, not solo agent decision.                     |
+| Signed receipts                     | Aurora trust primitive. Receipts are the evidence unit; anchoring is optional and staged.                                  |
+| Visibility lanes                    | Aurora privacy-lane boundary — public / persona-scoped / maintainer-only / sacred (HC-7).                                  |
+| Traffic-light escalation            | Aurora degrade/halt state machine: bounded autonomy with automatic degraded states, not unrestricted agency.               |
+| Red lines                           | Aurora hard-refusal set. Pairs with HC-4 no-fetch-adversarial-corpora at the alignment layer.                              |
+| Optional blockchain anchoring       | Aurora durability-of-receipts. Optional and staged; not central to the story.                                              |
 
 ---
 
@@ -93,14 +93,14 @@ not a single system:
 
 Aurora-layer substrate is preserved here per [`GOVERNANCE.md §33`](../../GOVERNANCE.md) archive-header discipline. All absorb docs in this directory are research-grade unless an ADR or operational doc has promoted specific content (see [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) for the operational promotion pattern exemplar).
 
-| Absorb doc | Ferry | Absorbed |
-|---|---|---|
-| [`2026-04-23-amara-operational-gap-assessment.md`](2026-04-23-amara-operational-gap-assessment.md) | 1st (PR #196) | Otto-24 |
-| [`2026-04-23-amara-zset-semantics-operator-algebra.md`](2026-04-23-amara-zset-semantics-operator-algebra.md) | 2nd | Otto-54 |
-| `2026-04-23-amara-decision-proxy-technical-review.md` | 3rd (PR #219) | Otto-59 |
-| `2026-04-23-amara-memory-drift-alignment-claude-to-memories-drift.md` | 4th (PR #221) | Otto-67 |
-| `2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md` | 5th (PR #235) | Otto-78 |
-| [`2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md`](2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md) | 6th (PR #245) | Otto-82 |
+| Absorb doc                                                                                                                 | Ferry          | Absorbed |
+| -------------------------------------------------------------------------------------------------------------------------- | -------------- | -------- |
+| [`2026-04-23-amara-operational-gap-assessment.md`](2026-04-23-amara-operational-gap-assessment.md)                         | 1st (PR #196)  | Otto-24  |
+| [`2026-04-23-amara-zset-semantics-operator-algebra.md`](2026-04-23-amara-zset-semantics-operator-algebra.md)               | 2nd            | Otto-54  |
+| `2026-04-23-amara-decision-proxy-technical-review.md`                                                                      | 3rd (PR #219)  | Otto-59  |
+| `2026-04-23-amara-memory-drift-alignment-claude-to-memories-drift.md`                                                      | 4th (PR #221)  | Otto-67  |
+| `2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md`                                                                 | 5th (PR #235)  | Otto-78  |
+| [`2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md`](2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md)         | 6th (PR #245)  | Otto-82  |
 | [`2026-04-23-amara-aurora-deep-research-report-10th-ferry.md`](2026-04-23-amara-aurora-deep-research-report-10th-ferry.md) | 10th (PR #294) | Otto-105 |
 
 The first two absorb docs predate `GOVERNANCE.md §33` and use
@@ -117,12 +117,12 @@ aurora docs (PR #243, detect-only v0).
 
 ## Related cross-substrate artifacts (outside `docs/aurora/`)
 
-| Path | Purpose |
-|---|---|
-| [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) | Operational five-pattern drift diagnostic promoted from research-grade precursor; exemplar of the promotion pattern every future absorb-to-operational graduation follows. |
-| [`docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`](../research/drift-taxonomy-bootstrap-precursor-2026-04-22.md) | Preserved staging-substrate for the drift-taxonomy promotion. |
-| [`docs/research/aminata-threat-model-5th-ferry-governance-edits-2026-04-23.md`](../research/aminata-threat-model-5th-ferry-governance-edits-2026-04-23.md) | Aminata's adversarial review of Amara's 5th-ferry governance-edit proposals; advisory input to Aaron's signoff decision. |
-| [`docs/research/muratori-zeta-pattern-mapping-2026-04-23.md`](../research/muratori-zeta-pattern-mapping-2026-04-23.md) | Corrected Muratori failure-modes vs Zeta equivalents table, closing Otto-82 absorb action item #1. |
+| Path                                                                                                                                                       | Purpose                                                                                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md)                                                                                                           | Operational five-pattern drift diagnostic promoted from research-grade precursor; exemplar of the promotion pattern every future absorb-to-operational graduation follows. |
+| [`docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`](../research/drift-taxonomy-bootstrap-precursor-2026-04-22.md)                           | Preserved staging-substrate for the drift-taxonomy promotion.                                                                                                              |
+| [`docs/research/aminata-threat-model-5th-ferry-governance-edits-2026-04-23.md`](../research/aminata-threat-model-5th-ferry-governance-edits-2026-04-23.md) | Aminata's adversarial review of Amara's 5th-ferry governance-edit proposals; advisory input to Aaron's signoff decision.                                                   |
+| [`docs/research/muratori-zeta-pattern-mapping-2026-04-23.md`](../research/muratori-zeta-pattern-mapping-2026-04-23.md)                                     | Corrected Muratori failure-modes vs Zeta equivalents table, closing Otto-82 absorb action item #1.                                                                         |
 
 ---
 
@@ -153,18 +153,18 @@ one focused on control-plane / execution-layer candidates.
 Both are preserved so Aaron's eventual brand decision has
 the full option space:
 
-| Candidate | Source | Why it works (verbatim from Amara) |
-|---|---|---|
-| **Lucent KSK** | 5th ferry | Highest continuity with the existing repo and least ambiguity. |
-| **Lucent Covenant** | 5th ferry | Emphasizes consent and mutual obligation, which the docs actually support. |
-| **Halo Ledger** | 5th ferry | Preserves the "glass halo" idea without reusing Aurora directly. |
-| **Meridian Gate** | 5th ferry | Neutral, infrastructural, and easier to differentiate. |
-| **Consent Spine** | 5th ferry | Technically evocative, though more niche and less brand-like. |
-| **Beacon** | 7th ferry | Meshes with visibility-lane vocabulary; suggests guidance, observability, operator visibility. |
-| **Lattice** | 7th ferry | Layered policy, quorum, constraint composition; not defensive-sounding. |
-| **Harbor** | 7th ferry | Safety, staging, revocation-friendly; not militarised. |
-| **Mantle** | 7th ferry | Protective layer above execution substrate; good for "membrane around action" messaging. |
-| **Northstar** | 7th ferry | Governance / guidance language; higher trademark-noise than others. |
+| Candidate           | Source    | Why it works (verbatim from Amara)                                                             |
+| ------------------- | --------- | ---------------------------------------------------------------------------------------------- |
+| **Lucent KSK**      | 5th ferry | Highest continuity with the existing repo and least ambiguity.                                 |
+| **Lucent Covenant** | 5th ferry | Emphasizes consent and mutual obligation, which the docs actually support.                     |
+| **Halo Ledger**     | 5th ferry | Preserves the "glass halo" idea without reusing Aurora directly.                               |
+| **Meridian Gate**   | 5th ferry | Neutral, infrastructural, and easier to differentiate.                                         |
+| **Consent Spine**   | 5th ferry | Technically evocative, though more niche and less brand-like.                                  |
+| **Beacon**          | 7th ferry | Meshes with visibility-lane vocabulary; suggests guidance, observability, operator visibility. |
+| **Lattice**         | 7th ferry | Layered policy, quorum, constraint composition; not defensive-sounding.                        |
+| **Harbor**          | 7th ferry | Safety, staging, revocation-friendly; not militarised.                                         |
+| **Mantle**          | 7th ferry | Protective layer above execution substrate; good for "membrane around action" messaging.       |
+| **Northstar**       | 7th ferry | Governance / guidance language; higher trademark-noise than others.                            |
 
 **7th-ferry preferred naming pattern** (Amara): the cleanest
 rhetorical stack for public explanation — **Aurora** as
@@ -180,8 +180,8 @@ Amara 7th-ferry memo (PR #259).
 blocking substrate work.
 
 **Message pillars that work regardless of public name:**
-*local-first, consent-gated, proof-based, repair-ready*.
-Describe the system by what it *does* (bounded autonomy
+_local-first, consent-gated, proof-based, repair-ready_.
+Describe the system by what it _does_ (bounded autonomy
 with revocable budgets, multi-party approval for
 high-risk actions, signed receipts, visibility lanes,
 repair / dispute channels), not by aspirational
@@ -196,7 +196,7 @@ infrastructure" language.
   product; the internal label exists to organise research
   and cross-substrate architecture discussion.
 - **Not a commitment to any specific technical path.** The
-  three-layer picture is the *architecture story*; each
+  three-layer picture is the _architecture story_; each
   layer's implementation timing and priority lives in
   `docs/BACKLOG.md` + `docs/ROADMAP.md` respectively.
 - **Not a public brand.** See §Branding above. Using

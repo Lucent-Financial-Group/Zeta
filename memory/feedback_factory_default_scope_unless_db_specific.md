@@ -34,23 +34,23 @@ substrate; those practices are not Zeta's.
 
 Aaron's verbatim (2026-04-20):
 
-> *"almost everything we've talked about so far is a factory
+> _"almost everything we've talked about so far is a factory
 > rule not a Zeta rule, this is my experience and 20 years of
 > code best practices I'm tryiing to encode into this software
-> factory.  I don't think any of the guidance I've given other
+> factory. I don't think any of the guidance I've given other
 > than specfic db kind of stuff is specifc to Zeta most/all is
-> univeral factory"*
+> univeral factory"_
 
 The key signals:
 
-- *"20 years of code best practices"* — the accumulated craft
+- _"20 years of code best practices"_ — the accumulated craft
   is the thing being encoded; it is independent of what the
   factory produces on any given run.
-- *"specfic db kind of stuff"* is the explicit exception —
+- _"specfic db kind of stuff"_ is the explicit exception —
   database-algebra details are Zeta's particular domain; the
   factory could produce a totally different product on a
   different run and most rules would still apply.
-- *"most/all is univeral factory"* — the default direction is
+- _"most/all is univeral factory"_ — the default direction is
   factory, not project.
 
 This directly corrects the scope-audit work I just did in the
@@ -89,11 +89,11 @@ First-hand evidence in this very round:
   yes → Zeta. If no → factory. If unclear → factory (conservative
   in the new direction).
 - **When a rule has both layers**, the cleave still applies:
-  the *mechanism* and the *default* are factory; any
+  the _mechanism_ and the _default_ are factory; any
   Zeta-specific instantiation of the knob is a per-project
   override. But for most rules there is no Zeta layer at all.
 - **Retroactive audit is warranted, not urgent.** The `project:
-  zeta` frontmatter I added recently to symmetric-talk should
+zeta` frontmatter I added recently to symmetric-talk should
   be flipped. Scope-audit memory should be updated to name the
   factory-default bias. MEMORY.md pointer phrasing can be
   corrected. Separate cleanup pass, low priority.
@@ -161,7 +161,7 @@ same round (first was "Zeta + factory is conflation, split
 them"). The second correction is **meta** — it tells me the
 default direction of the cleave I just landed was wrong. This
 is exactly why the scope-audit skill Aaron asked for matters:
-even when I *do* think about scope, I can pick the wrong
+even when I _do_ think about scope, I can pick the wrong
 default without human input. HUMAN-BACKLOG resolution for
 scope-ambiguity was the right pattern; what was missing was
 the **factory-default** bias for the inference that should

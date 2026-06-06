@@ -38,12 +38,12 @@ industry-engineering register. No beacon-blocked terminology found.
 cognitive load, not when a length threshold is crossed
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Skills split when context needs to split to reduce reader cognitive load,
+_"Skills split when context needs to split to reduce reader cognitive load,
 not when a length threshold is crossed. Rationale: a clean 150-line combined
 skill beats two 75-line split skills readers have to context-switch between;
 but a 300-line combined skill covering two distinct facet values must split
 regardless of length. Cognitive load is the first-class constraint; file count
-is not."*
+is not."_
 
 **Core claim:** File length is a symptom, not a root cause of skill
 incomprehensibility. The correct splitting criterion is reader cognitive
@@ -58,7 +58,7 @@ because it treats all content as cognitively equivalent.
 
 **1. Sweller, J. (1988) — Cognitive load during problem solving: Effects on learning**
 
-Sweller, J. *Cognitive load during problem solving: Effects on learning.*
+Sweller, J. _Cognitive load during problem solving: Effects on learning._
 Cognitive Science, 12(2), 257–285.
 <https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1202_4>
 (published 1988).
@@ -76,7 +76,7 @@ measure element interactivity, and therefore cannot correctly trigger a split.
 
 **2. Parnas, D. L. (1972) — On the criteria to be used in decomposing systems into modules**
 
-Parnas, D. L. *On the criteria to be used in decomposing systems into modules.*
+Parnas, D. L. _On the criteria to be used in decomposing systems into modules._
 Communications of the ACM, 15(12), 1053–1058.
 <https://dl.acm.org/doi/10.1145/361598.361623>
 (published December 1972).
@@ -95,8 +95,8 @@ reduces cognitive load.
 
 **3. Sweller, J., van Merriënboer, J. J. G., & Paas, F. (2019) — Cognitive architecture and instructional design: 20 years later**
 
-Sweller, J., van Merriënboer, J. J. G. & Paas, F. *Cognitive architecture and
-instructional design: 20 years later.* Educational Psychology Review, 31,
+Sweller, J., van Merriënboer, J. J. G. & Paas, F. _Cognitive architecture and
+instructional design: 20 years later._ Educational Psychology Review, 31,
 261–292.
 <https://link.springer.com/article/10.1007/s10648-019-09465-5>
 (published 2019).
@@ -119,13 +119,13 @@ failure mode BP-20 prevents.
 values: epistemic stance × abstraction level × function
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Non-exempt capability skills declare or imply their three facet values:
+_"Non-exempt capability skills declare or imply their three facet values:
 epistemic stance (expert / research / teach) × abstraction level (theory /
 applied) × function (practitioner / gap-finder / enforcer / optimizer /
 balancer). Rationale: faceted classification (Ranganathan PMEST
 colon-classification tradition) avoids monohierarchy pathologies. Naming
 convention `<topic>-<role>` carries one facet; description carries the other
-two."*
+two."_
 
 **Core claim:** A skill named `foo-expert` lives in a multi-dimensional
 classification space — its topic, its epistemic stance, its abstraction
@@ -141,7 +141,7 @@ structural distortion.
 
 **1. Ranganathan, S. R. (1933/1960) — Colon Classification (CC)**
 
-Ranganathan, S. R. *Colon Classification* (6th ed., 1960). Sarada Ranganathan
+Ranganathan, S. R. _Colon Classification_ (6th ed., 1960). Sarada Ranganathan
 Endowment for Library Science, Bangalore. First published 1933 by the Madras
 Library Association.
 <https://en.wikipedia.org/wiki/Colon_classification>
@@ -161,7 +161,7 @@ time from independent axis values, not looked up in a monohierarchy. The
 
 **2. Spiteri, L. F. (1998) — A simplified model for facet analysis**
 
-Spiteri, L. F. *A simplified model for facet analysis.* Canadian Journal of
+Spiteri, L. F. _A simplified model for facet analysis._ Canadian Journal of
 Information and Library Science, 23(1–2), 1–30.
 <https://www.semanticscholar.org/paper/A-simplified-model-for-facet-analysis-Spiteri/b2ef06ede33b7e7cffab75b8ed3d1b0e6f96aa56>
 (published 1998).
@@ -179,8 +179,8 @@ find the matching topic.
 
 **3. Hearst, M. A. (2006) — Design recommendations for hierarchical faceted search interfaces**
 
-Hearst, M. A. *Design recommendations for hierarchical faceted search
-interfaces.* Proceedings of the Workshop on Faceted Search, ACM SIGIR 2006.
+Hearst, M. A. _Design recommendations for hierarchical faceted search
+interfaces._ Proceedings of the Workshop on Faceted Search, ACM SIGIR 2006.
 <https://people.ischool.berkeley.edu/~hearst/papers/faceted-workshop06.pdf>
 (published 2006).
 
@@ -203,12 +203,12 @@ enable triggering from topic, stance, or function as starting points.
 functions
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Optimizer and balancer are distinct roles with distinct objective functions.
+_"Optimizer and balancer are distinct roles with distinct objective functions.
 Rationale: balancer minimises variance / maximises entropy / enforces
 fairness; optimizer maximises a scalar utility function under constraints.
 Skills claiming both objective functions simultaneously are function-conflated
 and must split. Underlying agents reach for different search strategies under
-the two objectives; collapsing them produces unpredictable behaviour."*
+the two objectives; collapsing them produces unpredictable behaviour."_
 
 **Core claim:** Scalar-utility optimization (finding a single best solution
 according to a single-valued objective) and Pareto-trade-off balancing
@@ -228,7 +228,7 @@ pre-baking a weighting judgment (optimizer role) and refusing to pre-bake one
 
 **1. Miettinen, K. (1999) — Nonlinear Multiobjective Optimization**
 
-Miettinen, K. *Nonlinear Multiobjective Optimization.* Kluwer Academic
+Miettinen, K. _Nonlinear Multiobjective Optimization._ Kluwer Academic
 Publishers, Boston. International Series in Operations Research & Management
 Science, Vol. 12.
 <https://link.springer.com/book/10.1007/978-1-4615-5563-6>
@@ -251,8 +251,8 @@ objectives without pre-baking a weighting).
 
 **2. Deb, K., Pratap, A., Agarwal, S. & Meyarivan, T. (2002) — A fast and elitist multiobjective genetic algorithm: NSGA-II**
 
-Deb, K., Pratap, A., Agarwal, S. & Meyarivan, T. *A fast and elitist
-multiobjective genetic algorithm: NSGA-II.* IEEE Transactions on
+Deb, K., Pratap, A., Agarwal, S. & Meyarivan, T. _A fast and elitist
+multiobjective genetic algorithm: NSGA-II._ IEEE Transactions on
 Evolutionary Computation, 6(2), 182–197.
 <https://ieeexplore.ieee.org/document/996017>
 <https://sci2s.ugr.es/sites/default/files/files/Teaching/OtherPostGraduateCourses/Metaheuristicas/Deb_NSGAII.pdf>
@@ -275,8 +275,8 @@ without a pre-baked weighting, which changes the problem.
 
 **3. Celis, L. E., Huang, L., Keswani, V. & Vishnoi, N. K. (2024) — Towards Fairness-Aware Multi-Objective Optimization**
 
-Celis, L. E., Huang, L., Keswani, V. & Vishnoi, N. K. *Towards
-fairness-aware multi-objective optimization.* Complex & Intelligent Systems,
+Celis, L. E., Huang, L., Keswani, V. & Vishnoi, N. K. _Towards
+fairness-aware multi-objective optimization._ Complex & Intelligent Systems,
 10(4), 5633–5651.
 <https://link.springer.com/article/10.1007/s40747-024-01668-w>
 (published 2024).
@@ -302,10 +302,10 @@ with separate interfaces that make the weighting choice explicit.
 
 ## Summary
 
-| Rule | Core claim | Primary anchors |
-|------|-----------|-----------------|
-| BP-20 | Cognitive load (element interactivity) determines splits, not line count | Sweller (1988) CLT foundations; Parnas (1972) comprehensibility criterion; Sweller et al. (2019) element interactivity retrospective |
-| BP-21 | Faceted classification avoids monohierarchy; three facets required | Ranganathan (1933/1960) CC PMEST; Spiteri (1998) facet independence; Hearst (2006) path-independence |
+| Rule  | Core claim                                                                         | Primary anchors                                                                                                                                      |
+| ----- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BP-20 | Cognitive load (element interactivity) determines splits, not line count           | Sweller (1988) CLT foundations; Parnas (1972) comprehensibility criterion; Sweller et al. (2019) element interactivity retrospective                 |
+| BP-21 | Faceted classification avoids monohierarchy; three facets required                 | Ranganathan (1933/1960) CC PMEST; Spiteri (1998) facet independence; Hearst (2006) path-independence                                                 |
 | BP-22 | Optimizer (scalar utility) and balancer (Pareto/variance) are non-composable roles | Miettinen (1999) scalarization vs Pareto; Deb et al. (2002) NSGA-II algorithmic distinctness; Celis et al. (2024) fairness-accuracy non-reducibility |
 
 All nine anchors sourced 1933–2024, verified via WebSearch 2026-05-10.

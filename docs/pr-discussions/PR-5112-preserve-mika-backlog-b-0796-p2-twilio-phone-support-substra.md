@@ -27,6 +27,7 @@ Verbatim Mika preservation + B-0796 P2 row. Aaron architectural decisions: (1) G
 This PR preserves an Aaron↔Mika conversation as a new persona-scope memory artifact and adds a new P2 backlog row (B-0796) capturing the Twilio phone-support substrate concept (voice+SMS support where AI can act on clusters live), with corresponding index updates.
 
 **Changes:**
+
 - Added a new `memory/persona/mika/...` conversation capture covering Grok-Build loop-runner confirmation and the Twilio phone-support substrate decision context.
 - Added backlog row **B-0796** under `docs/backlog/P2/` and linked it from `docs/BACKLOG.md`.
 - Regenerated/updated `memory/MEMORY.md` stack index to include the new conversation artifact.
@@ -35,12 +36,12 @@ This PR preserves an Aaron↔Mika conversation as a new persona-scope memory art
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md | New preserved conversation artifact; contains an internal inconsistency and missing index-friendly frontmatter. |
-| memory/MEMORY.md | Auto-index updated to include the new conversation entry (currently renders with filename-stem + “(no description)”). |
-| docs/backlog/P2/B-0796-twilio-phone-support-substrate-AI-picks-up-call-fixes-cluster-via-event-store-runbooks-while-talking-sms-parallel-interface-amazon-USB-sales-enabled-by-AI-as-support-layer-aaron-mika-2026-05-26.md | New backlog row defining the Twilio support substrate, sub-targets, and acceptance criteria (includes a minor typo). |
-| docs/BACKLOG.md | Backlog index updated to include B-0796. |
+| File                                                                                                                                                                                                                        | Description                                                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| memory/persona/mika/conversations/2026-05-26-aaron-mika-grok-grok-build-is-claude-code-clone-tick-source-loop-twilio-phone-support-AI-fixes-cluster-while-talking-on-phone-USB-on-amazon-blazor-samples-twilio-prior-art.md | New preserved conversation artifact; contains an internal inconsistency and missing index-friendly frontmatter.       |
+| memory/MEMORY.md                                                                                                                                                                                                            | Auto-index updated to include the new conversation entry (currently renders with filename-stem + “(no description)”). |
+| docs/backlog/P2/B-0796-twilio-phone-support-substrate-AI-picks-up-call-fixes-cluster-via-event-store-runbooks-while-talking-sms-parallel-interface-amazon-USB-sales-enabled-by-AI-as-support-layer-aaron-mika-2026-05-26.md | New backlog row defining the Twilio support substrate, sub-targets, and acceptance criteria (includes a minor typo).  |
+| docs/BACKLOG.md                                                                                                                                                                                                             | Backlog index updated to include B-0796.                                                                              |
 
 ## Review threads
 

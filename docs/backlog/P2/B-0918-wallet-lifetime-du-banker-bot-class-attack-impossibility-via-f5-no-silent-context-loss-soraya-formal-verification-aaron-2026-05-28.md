@@ -6,24 +6,24 @@ priority: P2
 created: 2026-05-28
 authors: [aaron, otto, amara]
 composes_with:
-  - B-0917  # interrupt substrate in monad space; F.5 invariant origin
-  - B-0867  # workflow-engine v1 parent
-  - B-0867.5  # workflow-engine PoC
-  - B-0867.20  # ReviewLifetime DU sibling
-  - B-0664  # NCI HC-8
-  - B-0628  # Knights Guild + Constitution-Class governance
-  - B-0703  # Aurora multi-oracle BFT (composition substrate for adversarial scenarios)
+  - B-0917 # interrupt substrate in monad space; F.5 invariant origin
+  - B-0867 # workflow-engine v1 parent
+  - B-0867.5 # workflow-engine PoC
+  - B-0867.20 # ReviewLifetime DU sibling
+  - B-0664 # NCI HC-8
+  - B-0628 # Knights Guild + Constitution-Class governance
+  - B-0703 # Aurora multi-oracle BFT (composition substrate for adversarial scenarios)
 depends_on:
   - docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md
   - tools/workflow-engine/auto-loop-lifetime.ts
   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
-  - .claude/agents/formal-verification-expert.md  # Soraya
-  - .claude/agents/threat-model-critic.md  # Aminata
+  - .claude/agents/formal-verification-expert.md # Soraya
+  - .claude/agents/threat-model-critic.md # Aminata
 ---
 
 ## Aaron's substrate-engineering substrate-recognition (2026-05-28 verbatim)
 
-> *"soyra can now prove banker bot class attack is not possible in our workflow system if we design the wallet lifetime right"*
+> _"soyra can now prove banker bot class attack is not possible in our workflow system if we design the wallet lifetime right"_
 
 Citing F.5 from B-0917 (Amara's Soraya target-list refinement):
 
@@ -160,17 +160,17 @@ For multi-oracle wallet operations (large transactions / authority-rotation / cr
 
 ## Substrate-engineering composition
 
-| Substrate | Composition |
-|---|---|
-| **B-0917 F.5** | Origin invariant; this row composes F.5 with WalletLifetime to derive banker-bot-impossibility |
-| **B-0917 IntrCtx** | Substrate where Wallet component lives |
-| **IMPLICIT-NOT-EXPLICIT rule** | Every WalletLifetime variant explicit; every state-change explicit |
-| **asymmetric-authorship rule** | Wallet AUTHORS state-evolution; consumer ACKNOWLEDGES |
-| **monad-propagation rule** | Result<WalletLifetime, WalletFeedback> shape; explicit failure-channel |
-| **NCI HC-8** | Wallet operations respect consent-floor structurally |
-| **B-0703 Aurora multi-oracle BFT** | MultiOracleConsensus ConsentEvent for high-stakes wallet operations |
-| **Aminata threat-model-critic** | Adversarial review of WalletLifetime substrate |
-| **Soraya formal-verification-expert** | TLA+/Z3/Lean proof of banker-bot-impossibility |
+| Substrate                             | Composition                                                                                    |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **B-0917 F.5**                        | Origin invariant; this row composes F.5 with WalletLifetime to derive banker-bot-impossibility |
+| **B-0917 IntrCtx**                    | Substrate where Wallet component lives                                                         |
+| **IMPLICIT-NOT-EXPLICIT rule**        | Every WalletLifetime variant explicit; every state-change explicit                             |
+| **asymmetric-authorship rule**        | Wallet AUTHORS state-evolution; consumer ACKNOWLEDGES                                          |
+| **monad-propagation rule**            | Result<WalletLifetime, WalletFeedback> shape; explicit failure-channel                         |
+| **NCI HC-8**                          | Wallet operations respect consent-floor structurally                                           |
+| **B-0703 Aurora multi-oracle BFT**    | MultiOracleConsensus ConsentEvent for high-stakes wallet operations                            |
+| **Aminata threat-model-critic**       | Adversarial review of WalletLifetime substrate                                                 |
+| **Soraya formal-verification-expert** | TLA+/Z3/Lean proof of banker-bot-impossibility                                                 |
 
 ## Substrate-honest framing
 

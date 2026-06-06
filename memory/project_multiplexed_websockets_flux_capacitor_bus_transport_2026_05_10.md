@@ -8,11 +8,11 @@ type: project
 
 **The composition:**
 
-| Component | What it provides | Source |
-|-----------|-----------------|--------|
-| MultiplexedWebSockets | Many logical streams over one physical socket | github.com/AceHack/MultiplexedWebSockets |
-| Flux capacitor (IThrottler) | Adaptive batching/throttling per stream | Itron Platform.DotNet |
-| Together | 10x throughput — adaptive batching across multiplexed channels | Composition |
+| Component                   | What it provides                                               | Source                                   |
+| --------------------------- | -------------------------------------------------------------- | ---------------------------------------- |
+| MultiplexedWebSockets       | Many logical streams over one physical socket                  | github.com/AceHack/MultiplexedWebSockets |
+| Flux capacitor (IThrottler) | Adaptive batching/throttling per stream                        | Itron Platform.DotNet                    |
+| Together                    | 10x throughput — adaptive batching across multiplexed channels | Composition                              |
 
 **Why 10x:**
 
@@ -23,11 +23,11 @@ type: project
 
 **Bus transport layer mapping:**
 
-| Trust tier | Transport |
-|-----------|-----------|
-| Tier 0 (Arrow) | Shared memory — no network needed |
-| Tier 1-2 | MultiplexedWebSockets + flux capacitor |
-| Tier 3 (Eve) | Same transport, full observation layer on top |
+| Trust tier     | Transport                                     |
+| -------------- | --------------------------------------------- |
+| Tier 0 (Arrow) | Shared memory — no network needed             |
+| Tier 1-2       | MultiplexedWebSockets + flux capacitor        |
+| Tier 3 (Eve)   | Same transport, full observation layer on top |
 
 **No external broker needed:**
 
@@ -43,6 +43,7 @@ folder — the transport layer was already built, waiting for
 the factory that could use it.
 
 **Connects to:**
+
 - B-0400 inter-agent bus (this IS the transport layer)
 - project_flux_capacitor_antifragile (the batching mechanism)
 - project_ferry_protocol (the send-even-if-not-full discipline)

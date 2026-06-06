@@ -20,19 +20,19 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two related substrate landings from Aaron 2026-05-26 conversation that arrived after PR #5227 (B-0820 row file) merged:
 
-1. **Derivability asymmetry** — Aaron: *"but depends on is the only reason i'm giving flux a chance cause they sync waves are derivable"*
+1. **Derivability asymmetry** — Aaron: _"but depends on is the only reason i'm giving flux a chance cause they sync waves are derivable"_
 
-   | Direction | Possible? |
-   |---|---|
+   | Direction                               | Possible?                                           |
+   | --------------------------------------- | --------------------------------------------------- |
    | \`dependsOn\` graph → sync-wave numbers | YES (topological sort + assign wave per topo-level) |
-   | sync-wave numbers → \`dependsOn\` graph | NO trivially (numbers don't carry the WHY) |
+   | sync-wave numbers → \`dependsOn\` graph | NO trivially (numbers don't carry the WHY)          |
 
    Source-of-truth should be \`dependsOn\`-shaped; sync-waves are a DERIVED projection.
 
-2. **Helm-tricks approach for ArgoCD** — Aaron: *"oh shit maybe we should calculate this for our argo too eventually somehow with some helm chart tricks"*
+2. **Helm-tricks approach for ArgoCD** — Aaron: _"oh shit maybe we should calculate this for our argo too eventually somehow with some helm chart tricks"_
 
    Two candidate derivation surfaces documented:
-   - **Approach A**: Helm template-level derivation (\`values.yaml\` \`zeta.dependsOn\` + \`_helpers.tpl\` topo-sort + sync-wave annotation emission)
+   - **Approach A**: Helm template-level derivation (\`values.yaml\` \`zeta.dependsOn\` + \`\_helpers.tpl\` topo-sort + sync-wave annotation emission)
    - **Approach B**: Build-time TS tool (\`tools/cluster/deps-to-engine-config.ts\`)
    - Recommendation: start with B (graph algorithms in TS are trivial); evaluate A as follow-on
 

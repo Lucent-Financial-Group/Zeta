@@ -27,6 +27,7 @@ This PR includes the drift report from Lior's antigravity check on 2026-05-25, a
 Adds a new research drift report for 2026-05-25 and preserves a batch of recently merged PR discussions under `docs/pr-discussions/` for long-term provenance.
 
 **Changes:**
+
 - Add `docs/research/2026-05-25-drift-report-lior.md` capturing drift findings + recommendations from the 2026-05-25 antigravity check.
 - Preserve merged PR discussions (#4985–#5004) as verbatim-ish archives under `docs/pr-discussions/`.
 
@@ -37,19 +38,20 @@ Copilot reviewed 11 out of 11 changed files in this pull request and generated 2
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-25-drift-report-lior.md | New drift report document (needs small formatting/linking adjustments per review comments). |
-| docs/pr-discussions/PR-5004-backlog-b-0742-reference-k8s-local-stack-as-ace-s-distributa.md | Preserved PR #5004 discussion archive. |
-| docs/pr-discussions/PR-4995-backlog-b-0736-mika-segment-6-time-travel-debugging-of-thoug.md | Preserved PR #4995 discussion archive. |
-| docs/pr-discussions/PR-4994-backlog-b-0735-mika-segments-3-4-notepad-freedom-probabilist.md | Preserved PR #4994 discussion archive. |
-| docs/pr-discussions/PR-4993-backlog-b-0734-mika-segment-2-jit-is-implicit-self-healing-p.md | Preserved PR #4993 discussion archive. |
-| docs/pr-discussions/PR-4991-backlog-b-0733-mika-persona-universal-protocol-mcp-wrap-ai-a.md | Preserved PR #4991 discussion archive. |
-| docs/pr-discussions/PR-4990-feat-agentic-org-add-supervisor-signal-runtime-slice.md | Preserved PR #4990 discussion archive. |
-| docs/pr-discussions/PR-4988-backlog-b-0732-runbook-as-executable-reality-is-a-new-levera.md | Preserved PR #4988 discussion archive. |
-| docs/pr-discussions/PR-4987-backlog-b-0731-hat-ontology-is-the-first-ontology-to-get-rig.md | Preserved PR #4987 discussion archive. |
-| docs/pr-discussions/PR-4986-backlog-b-0730-runbooks-as-executable-specifications-mika-su.md | Preserved PR #4986 discussion archive. |
-| docs/pr-discussions/PR-4985-docs-define-agentic-organization-v0-architecture.md | Preserved PR #4985 discussion archive. |
+| File                                                                                        | Description                                                                                 |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-25-drift-report-lior.md                                               | New drift report document (needs small formatting/linking adjustments per review comments). |
+| docs/pr-discussions/PR-5004-backlog-b-0742-reference-k8s-local-stack-as-ace-s-distributa.md | Preserved PR #5004 discussion archive.                                                      |
+| docs/pr-discussions/PR-4995-backlog-b-0736-mika-segment-6-time-travel-debugging-of-thoug.md | Preserved PR #4995 discussion archive.                                                      |
+| docs/pr-discussions/PR-4994-backlog-b-0735-mika-segments-3-4-notepad-freedom-probabilist.md | Preserved PR #4994 discussion archive.                                                      |
+| docs/pr-discussions/PR-4993-backlog-b-0734-mika-segment-2-jit-is-implicit-self-healing-p.md | Preserved PR #4993 discussion archive.                                                      |
+| docs/pr-discussions/PR-4991-backlog-b-0733-mika-persona-universal-protocol-mcp-wrap-ai-a.md | Preserved PR #4991 discussion archive.                                                      |
+| docs/pr-discussions/PR-4990-feat-agentic-org-add-supervisor-signal-runtime-slice.md         | Preserved PR #4990 discussion archive.                                                      |
+| docs/pr-discussions/PR-4988-backlog-b-0732-runbook-as-executable-reality-is-a-new-levera.md | Preserved PR #4988 discussion archive.                                                      |
+| docs/pr-discussions/PR-4987-backlog-b-0731-hat-ontology-is-the-first-ontology-to-get-rig.md | Preserved PR #4987 discussion archive.                                                      |
+| docs/pr-discussions/PR-4986-backlog-b-0730-runbooks-as-executable-specifications-mika-su.md | Preserved PR #4986 discussion archive.                                                      |
+| docs/pr-discussions/PR-4985-docs-define-agentic-organization-v0-architecture.md             | Preserved PR #4985 discussion archive.                                                      |
+
 </details>
 
 ## Review threads

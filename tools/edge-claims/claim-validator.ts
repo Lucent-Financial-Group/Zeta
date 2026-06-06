@@ -15,7 +15,7 @@ export type EdgeClaimFlag = {
   readonly stakeDate: string;
   readonly defenseSurface: string;
   readonly ctfChallenge: CTFChallenge;
-  readonly state: 'planted' | 'challenged' | 'defended' | 'superseded' | 'withdrawn';
+  readonly state: "planted" | "challenged" | "defended" | "superseded" | "withdrawn";
 };
 
 export type ValidationResult = {
@@ -28,8 +28,8 @@ export type ValidationResult = {
 export function validateEdgeClaimFlag(flag: EdgeClaimFlag): ValidationResult {
   // Bounded slice: type-level + stub; no full impl yet (one step only)
   const errors: string[] = [];
-  if (!flag.claim || flag.claim.length < 10) errors.push('claim too vague for falsifiable stake');
-  if (!flag.ctfChallenge.falsifiabilityTest) errors.push('missing CTF challenge mechanism');
+  if (!flag.claim || flag.claim.length < 10) errors.push("claim too vague for falsifiable stake");
+  if (!flag.ctfChallenge.falsifiabilityTest) errors.push("missing CTF challenge mechanism");
 
   return {
     valid: errors.length === 0,

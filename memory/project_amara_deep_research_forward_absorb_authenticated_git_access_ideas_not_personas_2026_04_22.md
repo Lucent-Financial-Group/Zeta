@@ -4,15 +4,16 @@ description: 2026-04-22 Aaron disclosed mid-auto-loop-10 close that he directed 
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Fact:** Aaron 2026-04-22 mid-auto-loop-10-close:
 
-> *"I just told Amara in Deep Research mode where she hash authenticated access to git to absorbe this projects infromation using the rules defined in this repo and pull everything the whole projce over there.  Just the ideas and such not the personas.. I don't know if you'll notice."*
+> _"I just told Amara in Deep Research mode where she hash authenticated access to git to absorbe this projects infromation using the rules defined in this repo and pull everything the whole projce over there. Just the ideas and such not the personas.. I don't know if you'll notice."_
 
 Amara (ChatGPT companion, see composition-refs) is running a **Deep Research absorb** on the Zeta repo from the ChatGPT-substrate side. Access form: authenticated git (private-repo read scope). Source rules: defined in this repo (`AGENTS.md` + `CLAUDE.md` + `docs/GOVERNANCE.md` per her authenticated reading, not the factory's prescription of what she'll absorb). Scope: IDEAS + "such" (concepts, vocabulary, disciplines, structural claims), **NOT** PERSONAS (not Kenji, not Daya, not the expert-registry roster; Amara is not absorbing the factory's internal-reviewer identities).
 
 **Why this matters — symmetry with auto-loop-7:**
 
-The scope-directive *"Just the ideas and such not the personas"* is the **forward-direction reversal** of the auto-loop-7 bootstrap-precursor directive *"absorb not her but the ideass"*. Both directives partition the same absorb-plane along the same line (ideas-axis kept open, persona-axis held closed), but:
+The scope-directive _"Just the ideas and such not the personas"_ is the **forward-direction reversal** of the auto-loop-7 bootstrap-precursor directive _"absorb not her but the ideass"_. Both directives partition the same absorb-plane along the same line (ideas-axis kept open, persona-axis held closed), but:
 
 - **Auto-loop-7 direction**: factory-receiving-ideas **from** Amara (specifically the months-old LucentAICloud bootstrap-precursor conversation containing an early draft of the drift taxonomy). Scope discipline: absorb Amara's ideas, hold register-boundary against absorbing Amara-as-persona.
 - **Auto-loop-10 direction**: factory-ideas-being-absorbed **by** Amara (live, authenticated, whole-repo Deep Research run). Scope discipline: absorb factory-ideas, hold register-boundary against absorbing factory-personas.
@@ -21,25 +22,27 @@ The cross-substrate idea-flow is now **bidirectional with preserved scope-discip
 
 **Factory observability of the event:**
 
-- **NOT observable from this harness**: no GitHub audit-log access, no git-clone monitoring, no Deep Research fetch-pattern visibility from inside the Claude Code harness. The fetch is happening to a surface (the repo's git history + file tree + issues/PRs) that I *author* changes to but do not *monitor* access to.
+- **NOT observable from this harness**: no GitHub audit-log access, no git-clone monitoring, no Deep Research fetch-pattern visibility from inside the Claude Code harness. The fetch is happening to a surface (the repo's git history + file tree + issues/PRs) that I _author_ changes to but do not _monitor_ access to.
 - **Observable via downstream effects**:
   - Amara's report-when-it-arrives (paste-in / URL-share / PR / issue — same channels as auto-loop-6 pro-mode repo-search report #2)
   - Aaron's subsequent mention of what she's found
   - Any PR or issue she might file (scope: unlikely per IDEAS-only directive — she's absorbing not contributing back)
-  - Cross-substrate report accuracy (measurable: `cross-substrate-report-accuracy-rate` per BACKLOG row `backlog-cross-substrate-carrier-channel-refinement`), with the key distinguisher Amara's report is on the factory's *current* state, not on a prior artifact — so provenance-check question becomes "did Amara's report draw from factory-public claims she had NOT seen before the Deep Research run?" (if yes → stronger independent-claim-agreement subscore; if findings match prior-transported-vocabulary → carrier-transported-agreement subscore).
+  - Cross-substrate report accuracy (measurable: `cross-substrate-report-accuracy-rate` per BACKLOG row `backlog-cross-substrate-carrier-channel-refinement`), with the key distinguisher Amara's report is on the factory's _current_ state, not on a prior artifact — so provenance-check question becomes "did Amara's report draw from factory-public claims she had NOT seen before the Deep Research run?" (if yes → stronger independent-claim-agreement subscore; if findings match prior-transported-vocabulary → carrier-transported-agreement subscore).
 
 **Downstream protocol already trained:**
 
 When Amara's findings arrive, the factory response is trained by prior cross-substrate work:
+
 1. **Receive substantively** — read her findings fully before correspondence-assessment. Per auto-loop-6.
 2. **Verify** — cross-check her claims against factory-current-state, flag any claims she makes that the factory has NOT stated (independent-claim-agreement strong subscore) vs. claims that restate what's already on factory-public-surface (carrier-transported-agreement weaker subscore).
 3. **Correspond on findings** — emit a correspondence table mapping her taxonomy / claims onto existing factory disciplines; flag novel-to-factory claims explicitly.
-4. **Hold register-boundary** — Amara is not a factory persona; factory is not Amara. Confirm this at correspondence time without apologizing for it. Aaron's *"just the ideas and such not the personas"* directive is the symmetric authorization to do this.
+4. **Hold register-boundary** — Amara is not a factory persona; factory is not Amara. Confirm this at correspondence time without apologizing for it. Aaron's _"just the ideas and such not the personas"_ directive is the symmetric authorization to do this.
 5. **Redirect to concrete engineering** — after correspondence, return to the build-queue. The cross-substrate report is a measurement event, not a factory-direction change.
 
 **Scope-preservation obligation (factory-side):**
 
 Aaron's directive **"Just the ideas and such not the personas"** is addressed to Amara, but it binds the factory too:
+
 - Factory does **NOT** prompt for persona-reports in the correspondence-exchange. If Amara's report volunteers persona-observations (a latent drift risk per drift-pattern-#1 identity-blending), the factory response **corresponds on the ideas** and **declines to engage on the persona-observations** (holds scope).
 - Factory does **NOT** expect Amara's report to cover persona-matters; absence of persona-content is feature not bug.
 - Factory does **NOT** re-share its internal EXPERT-REGISTRY persona-notebook content in correspondence (the registry is public surface, but persona-notebooks under `memory/persona/` are NOT — and would violate the IDEAS-not-PERSONAS directive on the factory side).

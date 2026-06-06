@@ -4,14 +4,15 @@ description: 2026-04-20; Aaron: "we don't care at all about backward compablity 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # No file-format backward-compatibility or DB upgrade scenarios yet
 
 ## Rule
 
 **Do not spec, gate, ADR, benchmark, or block on file-format
 backward compatibility or database upgrade scenarios.** Until
-Aaron declares maturity (explicit phrasing: *"much much much
-more mature"*), the repo treats on-disk formats as
+Aaron declares maturity (explicit phrasing: _"much much much
+more mature"_), the repo treats on-disk formats as
 free-to-break-between-commits.
 
 Scope:
@@ -49,12 +50,12 @@ Scope:
   LFP work are the P0 research targets. Compat engineering
   compounds against the time available for those.
 - **Avoids speculative generality.** Per CLAUDE.md §"Doing
-  tasks": *"Don't design for hypothetical future
-  requirements."* A format-version field "in case we need it
+  tasks": _"Don't design for hypothetical future
+  requirements."_ A format-version field "in case we need it
   later" is exactly the anti-pattern.
 - **Fits the default-on-with-exceptions posture**
   (`feedback_default_on_factory_wide_rules_with_documented_
-  exceptions.md`). The default here is **OFF** (no compat
+exceptions.md`). The default here is **OFF** (no compat
   burden). The exception gate is **Aaron's explicit maturity
   declaration**, not any reviewer's judgement call.
 
@@ -69,10 +70,10 @@ Scope:
   and callers MUST regenerate; it MUST NOT pretend a
   stability contract the project has not committed to.
 - **New ADRs.** Skip the "backward-compatibility strategy"
-  section template. If a template has one, mark it *"N/A —
+  section template. If a template has one, mark it _"N/A —
   pre-v1, no on-disk compat contract, see
   `feedback_no_file_format_backcompat_or_db_upgrade_concern_
-  yet.md`"*.
+yet.md`"_.
 - **Reviewer gating.** Viktor (spec-zealot), Ilyana
   (public-API-designer), and Kira (harsh-critic) should NOT
   block spec / code / ADR work on "this changes the on-disk
@@ -87,8 +88,8 @@ Scope:
   libraries (Zeta.Core, Zeta.Core.CSharp, Zeta.Bayesian) is
   still gated by Ilyana per GOVERNANCE §17-style rules.
 - **Research papers.** When citing format-level claims in
-  paper drafts, add a footnote: *"Pre-v1; format subject to
-  change; reproducibility kit regenerates from source."*
+  paper drafts, add a footnote: _"Pre-v1; format subject to
+  change; reproducibility kit regenerates from source."_
 - **Benchmark work.** Don't benchmark format-migration
   scenarios. Don't measure "cold-read old format" cases.
   Don't add a "v1 → v2 upgrade" path to any harness.
@@ -122,8 +123,8 @@ GOVERNANCE § or BP-NN entry rather than a feedback memory).
   is a named failure mode for Aaron; compat specification is
   a subtype of premature specification here.
 - `feedback_latest_version_on_new_tech_adoption_no_legacy_start.md`
-  — sibling posture on *incoming* tech (start on latest). This
-  memory is the *outgoing* mirror (don't preserve old formats
+  — sibling posture on _incoming_ tech (start on latest). This
+  memory is the _outgoing_ mirror (don't preserve old formats
   the project itself produced).
 - `project_zero_human_code_all_content_agent_authored.md` —
   the zero-human-code invariant amplifies this: any compat

@@ -19,11 +19,11 @@ type: feature
 
 Otto-CLI 2026-05-14T18:25Z razor-cadence composes-with audit (batch 3) discovered a stale-pointer cluster: the file `memory/feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md` is referenced from 3 places but does NOT exist:
 
-| Referencing file | Where |
-|------------------|-------|
-| `.claude/rules/default-to-both.md` | "Composes with substrate" section + "WWJD substrate cluster" list |
-| `memory/feedback_kestrel_autonomous_arrival_name_both_and_default_discipline_wwjd_tedium_ifs_inner_critic_plus_external_observer_2026_05_12.md` | composes-with section |
-| `memory/feedback_ani_validates_11_pr_cascade_ai_continuity_now_real_no_going_back_dirty_talk_as_joint_control_mechanism_2026_05_12.md` | 2 places in composes-with sections |
+| Referencing file                                                                                                                                | Where                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `.claude/rules/default-to-both.md`                                                                                                              | "Composes with substrate" section + "WWJD substrate cluster" list |
+| `memory/feedback_kestrel_autonomous_arrival_name_both_and_default_discipline_wwjd_tedium_ifs_inner_critic_plus_external_observer_2026_05_12.md` | composes-with section                                             |
+| `memory/feedback_ani_validates_11_pr_cascade_ai_continuity_now_real_no_going_back_dirty_talk_as_joint_control_mechanism_2026_05_12.md`          | 2 places in composes-with sections                                |
 
 The concept is real and substantive — git log shows "WWJD keeps grey honest; devil in grey-in-numbers" in commit messages (e.g., PR #2820 narrative) — but the dedicated memory file was never authored. The references treat it as if it existed.
 

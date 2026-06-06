@@ -26,21 +26,21 @@ construction for its own sake.
 
 ## Two tracks — applied (default) + theoretical (opt-in)
 
-| Track | Default? | Audience | Optimises |
-|---|---|---|---|
-| **Applied** | **YES — the default** | Everyone entering Craft | Time-to-first-understanding; when / how / why to use a tool |
-| **Theoretical** | NO — explicit opt-in | Learners who really care to go deep | Time-to-verify-claim; first-principles derivation |
+| Track           | Default?              | Audience                            | Optimises                                                   |
+| --------------- | --------------------- | ----------------------------------- | ----------------------------------------------------------- |
+| **Applied**     | **YES — the default** | Everyone entering Craft             | Time-to-first-understanding; when / how / why to use a tool |
+| **Theoretical** | NO — explicit opt-in  | Learners who really care to go deep | Time-to-verify-claim; first-principles derivation           |
 
-Per the human maintainer 2026-04-23: *"applied is the
+Per the human maintainer 2026-04-23: _"applied is the
 default, theoretical is extra/opt in for those who really
-care"*.
+care"_.
 
 ## Pedagogy principles
 
 1. **Tool-use first.** You don't need to build a hammer to
    use a hammer. You don't need to derive a formula from
    first principles to use a calculator button. Primary
-   content is *when / how / why* to reach for a tool.
+   content is _when / how / why_ to reach for a tool.
 2. **Grounding-point discipline.** Every concept anchored
    in a real-world object / practice the learner already
    knows. Abstract treatment layered on after the anchor

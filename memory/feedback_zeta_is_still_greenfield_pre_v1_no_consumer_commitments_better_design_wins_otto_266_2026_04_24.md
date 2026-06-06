@@ -4,6 +4,7 @@ description: Aaron Otto-266 load-bearing context reminder. I keep defaulting to 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The principle
 
 **Zeta is STILL GREENFIELD. Pre-v1. No external
@@ -17,7 +18,7 @@ on "what landed first."
 
 Direct Aaron quote 2026-04-24:
 
-> *"we are still greenfield"*
+> _"we are still greenfield"_
 
 ## What greenfield means in practice
 
@@ -69,6 +70,7 @@ we realize the landed design isn't optimal.
 ## Triggering example — SignalQuality (2026-04-24)
 
 PR #147's rebase hit conflict on `src/Core/SignalQuality.fs`:
+
 - Main's version (landed via PR #142): empty-string → 0.5
   neutral, no size threshold
 - PR #147's version: empty-string → 0.0 neutral, 64-byte
@@ -83,6 +85,7 @@ current main as base. No compatibility concerns because
 no consumers yet.
 
 Net result:
+
 - For THIS rebase: main wins (to unblock #147's
   FactoryDemo C# scope which is the PR's primary value).
 - Separately: evaluate SignalQuality designs on merits via
@@ -169,7 +172,7 @@ public commitment made) happens.
 
 ## Direct Aaron quote to preserve
 
-> *"we are still greenfield"*
+> _"we are still greenfield"_
 
 Future Otto: when tempted to default to "main wins
 because it landed first," ask: "are we still

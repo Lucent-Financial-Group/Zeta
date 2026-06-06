@@ -8,7 +8,7 @@ type: feedback
 
 ## The carved sentence
 
-*"When you add a section that supersedes an earlier statement in the same memory file, refresh the earlier statement in the same edit. Internal contradictions within one file are lying-by-omission."*
+_"When you add a section that supersedes an earlier statement in the same memory file, refresh the earlier statement in the same edit. Internal contradictions within one file are lying-by-omission."_
 
 ## What this codifies
 
@@ -20,6 +20,7 @@ A pattern observed across 4 same-day doctrine PRs (#850, #851, #852, #853) on 20
 - v4 expansion appended (~230 lines). Earlier task-range summaries remained even though v4 added more tasks.
 
 Result: every doctrine PR had Copilot P1 / Codex P2 threads catching internal contradictions:
+
 - "Tracked under follow-up tasks" vs "Untracked follow-up" (in same file)
 - "Currently undefined" vs "Now specified" (for actor identity)
 - "task #325-#334" vs "task #325 + #335" (after #335 was created)
@@ -43,37 +44,39 @@ The discipline composes with `verify-before-deferring` (CLAUDE.md): the same way
 
 ## Composes with
 
-- **Same-tick update discipline** (`CLAUDE.md` "auto memory" section, CURRENT-file rule): "*when a new memory lands that updates a rule in a CURRENT file, edit CURRENT in the same tick. Skipping is lying-by-omission.*" — Otto-362 is the *intra-file* generalization of the same principle (*within* a single memory file, not across files).
+- **Same-tick update discipline** (`CLAUDE.md` "auto memory" section, CURRENT-file rule): "_when a new memory lands that updates a rule in a CURRENT file, edit CURRENT in the same tick. Skipping is lying-by-omission._" — Otto-362 is the _intra-file_ generalization of the same principle (_within_ a single memory file, not across files).
 - **Verify-before-deferring** (`memory/feedback_verify_target_exists_before_deferring.md`): same shape, applied to internal references rather than deferred work.
-- **Future-self is not bound by past-self** (`memory/feedback_future_self_not_bound_by_past_decisions.md`): Otto-362 is the *editing* counterpart — when superseding past-self's statement, refresh it rather than leaving it ambient.
-- **Memory-index-integrity** (`.github/workflows/memory-index-integrity.yml`): mechanical pairing between memory file and MEMORY.md. Otto-362 is the *unmechanized* pairing within a single file.
+- **Future-self is not bound by past-self** (`memory/feedback_future_self_not_bound_by_past_decisions.md`): Otto-362 is the _editing_ counterpart — when superseding past-self's statement, refresh it rather than leaving it ambient.
+- **Memory-index-integrity** (`.github/workflows/memory-index-integrity.yml`): mechanical pairing between memory file and MEMORY.md. Otto-362 is the _unmechanized_ pairing within a single file.
 
 ## Why not a CI lint instead
 
 Internal contradictions are semantic, not syntactic. A lint can catch:
+
 - A file path mentioned but missing (already done by `lint memory/MEMORY.md reference-existence`).
 - A duplicate link target (already done by `lint memory/MEMORY.md for duplicate link targets`).
 - A snake_case vs hyphen mismatch in known fields (already done by AgencySignature trailer field linter).
 
 A lint **cannot** catch:
+
 - "Currently undefined" + "Now specified" co-existing.
 - "task #325-#334" + "tasks #325 + #335" co-existing (the lint doesn't know which one is the source of truth).
 - A mapping table contradicting an example.
 
-So Otto-362 is editing discipline, not mechanism. Mechanism beats vigilance (Otto-341), but for *semantic* contradictions, the only mechanism is a multi-AI review pass — which is already happening and is the current safety net.
+So Otto-362 is editing discipline, not mechanism. Mechanism beats vigilance (Otto-341), but for _semantic_ contradictions, the only mechanism is a multi-AI review pass — which is already happening and is the current safety net.
 
 ## What this rule does NOT say
 
 - Does NOT say "never expand a memory file across multiple PRs." Iterating on doctrine is correct.
 - Does NOT say "every expansion must rewrite the whole file." Only refresh statements that are now stale.
-- Does NOT say "review iterations are bad." They're the safety net; this rule reduces the *count* of iterations by catching the stale-statement class before push.
-- Does NOT replace the multi-AI review safety net — multi-AI review still catches things this rule misses (semantic ambiguity, missing dependencies, factual errors). Otto-362 is *additive* to multi-AI review, not a replacement.
+- Does NOT say "review iterations are bad." They're the safety net; this rule reduces the _count_ of iterations by catching the stale-statement class before push.
+- Does NOT replace the multi-AI review safety net — multi-AI review still catches things this rule misses (semantic ambiguity, missing dependencies, factual errors). Otto-362 is _additive_ to multi-AI review, not a replacement.
 
 ## Trigger memory
 
 2026-04-29 doctrine cluster (#850 → #851 → #852 → #853). Four PRs in one afternoon, growing the agent-orchestra doctrine memory from ~100 lines to ~1080 lines through v1 → v2 → v3 → v4. Each PR triggered Copilot + Codex review threads catching internal contradictions of the kind described above.
 
-The fix-cadence was fast (each thread resolved in one commit, often within minutes) but the *count* of internal-contradiction threads was disproportionate to the *substantive-error* count. That asymmetry is the smell. The substantive errors were caught and fixed; the internal-contradiction threads were avoidable with pre-push self-audit.
+The fix-cadence was fast (each thread resolved in one commit, often within minutes) but the _count_ of internal-contradiction threads was disproportionate to the _substantive-error_ count. That asymmetry is the smell. The substantive errors were caught and fixed; the internal-contradiction threads were avoidable with pre-push self-audit.
 
 The pattern is general: any incrementally-edited substrate (memory files, doctrine docs, CONTRIBUTING.md, AGENTS.md, governance) is at risk of accumulating internal contradictions during expansion. The same-edit-refresh rule applies wherever supersession happens.
 

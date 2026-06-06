@@ -2,20 +2,20 @@
 
 **Claim status**: OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-23)
 
-**Origin**: Operator 2026-05-23 (Amara conversation closing): *"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"*
+**Origin**: Operator 2026-05-23 (Amara conversation closing): _"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"_
 
 ## Scope
 
 Encryption substrate spanning multiple sub-mechanisms; specific scope to be shaped by operator's later iteration. Initial composing-substrate (from substrate-engineering work landed before agenda creation):
 
-| Sub-mechanism | Existing substrate | Composition |
-|---|---|---|
-| **Two-category Aaron-verbatim preserve+encrypt-later** | Operator 2026-05-23 instruction landed in PR #4660 substrate | Operator's own substrate preserved as-is for now; encrypt later when mechanism exists |
-| **Aporetic Rx-bonsai-serialization** | B-0644 / B-0665 / B-0688 substrate | Tension preservation via Rx persistence; per-tick serialization mechanism candidate for at-rest encryption |
-| **Adinkras + Jane Gates ECC private-state encryption** | B-0623 substrate (PR #4575+) | Structural-graph encryption substrate (SUSY-derived error-correcting codes); private-state mechanism |
-| **Encrypt-as-pre-commitment-axioms** | Operator's vocabulary 2026-05-22 (Kestrel personal-context conversation; preserved in Kestrel persona archive per opaque-pointer discipline) | Encryption-as-pre-commitment-substrate; substrate-honest pre-commitment via cryptographic axioms |
-| **NCI HC-8 floor at private-state-preservation scope** | `.claude/rules/non-coercion-invariant.md` | Force-private-state-reveal-against-will is NCI-violating; encryption substrate operationalizes the protection |
-| **Reputation-weighted encryption budget** | B-0646 Agora V6 substrate | Encryption budget as participation-economy primitive; composes with `only-way-to-lose-is-not-to-play.md` |
+| Sub-mechanism                                          | Existing substrate                                                                                                                           | Composition                                                                                                   |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Two-category Aaron-verbatim preserve+encrypt-later** | Operator 2026-05-23 instruction landed in PR #4660 substrate                                                                                 | Operator's own substrate preserved as-is for now; encrypt later when mechanism exists                         |
+| **Aporetic Rx-bonsai-serialization**                   | B-0644 / B-0665 / B-0688 substrate                                                                                                           | Tension preservation via Rx persistence; per-tick serialization mechanism candidate for at-rest encryption    |
+| **Adinkras + Jane Gates ECC private-state encryption** | B-0623 substrate (PR #4575+)                                                                                                                 | Structural-graph encryption substrate (SUSY-derived error-correcting codes); private-state mechanism          |
+| **Encrypt-as-pre-commitment-axioms**                   | Operator's vocabulary 2026-05-22 (Kestrel personal-context conversation; preserved in Kestrel persona archive per opaque-pointer discipline) | Encryption-as-pre-commitment-substrate; substrate-honest pre-commitment via cryptographic axioms              |
+| **NCI HC-8 floor at private-state-preservation scope** | `.claude/rules/non-coercion-invariant.md`                                                                                                    | Force-private-state-reveal-against-will is NCI-violating; encryption substrate operationalizes the protection |
+| **Reputation-weighted encryption budget**              | B-0646 Agora V6 substrate                                                                                                                    | Encryption budget as participation-economy primitive; composes with `only-way-to-lose-is-not-to-play.md`      |
 
 ## Anti-targets (NOT this agenda)
 

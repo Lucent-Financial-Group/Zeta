@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 699 |
-| Title | memory: Authority rule (default to reversible preservation) + Goodhart catch #3 + Stop Mythology directive + B-0089 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-28T22:33:49Z |
-| Merged at | 2026-04-29T00:19:47Z |
-| Merge commit SHA | `06b3c25844b491e495adb10f41d5a097cc34cb55` |
-| Branch | `memory/amara-authority-rule-default-preservation-stop-mythology-2026-04-28` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/699 |
-| Changed files | 15 |
-| Additions / deletions | +3215 / -2 |
+| Field                 | Value                                                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Number                | 699                                                                                                                 |
+| Title                 | memory: Authority rule (default to reversible preservation) + Goodhart catch #3 + Stop Mythology directive + B-0089 |
+| Author                | `AceHack` (human)                                                                                                   |
+| State                 | MERGED                                                                                                              |
+| Created at            | 2026-04-28T22:33:49Z                                                                                                |
+| Merged at             | 2026-04-29T00:19:47Z                                                                                                |
+| Merge commit SHA      | `06b3c25844b491e495adb10f41d5a097cc34cb55`                                                                          |
+| Branch                | `memory/amara-authority-rule-default-preservation-stop-mythology-2026-04-28`                                        |
+| Base branch           | `main`                                                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/699                                                             |
+| Changed files         | 15                                                                                                                  |
+| Additions / deletions | +3215 / -2                                                                                                          |
 
 ## Description
 
@@ -96,15 +96,15 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 42 |
-| Resolved threads | 42 |
-| Unresolved threads | 0 |
-| Total review comments | 42 |
-| Total fix commits (touching thread paths) | 23 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 42    |
+| Resolved threads                          | 42    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 42    |
+| Total fix commits (touching thread paths) | 23    |
 
 ## Review threads
 
@@ -117,11 +117,12 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-28T22:36:38Z on `memory/feedback_stop_mythology_directive_layered_evidence_thresholds_aaron_amara_2026_04_28.md`:39 (association: NONE)
-  The table entry for `src/Core/Veridicality.fs` appears to overstate what’s shipped: the module currently defines `Provenance`/`Claim<'T>` and validation primitives, and explicitly notes the actual `V(c)=…` scoring formula as a *future graduation* (see `src/Core/Veridicality.fs:17-23`). Consider adjusting this row’s “Status” text to reflect the current foundation-only state (and keep the formula/scorer as future work).
+  The table entry for `src/Core/Veridicality.fs` appears to overstate what’s shipped: the module currently defines `Provenance`/`Claim<'T>` and validation primitives, and explicitly notes the actual `V(c)=…` scoring formula as a _future graduation_ (see `src/Core/Veridicality.fs:17-23`). Consider adjusting this row’s “Status” text to reflect the current foundation-only state (and keep the formula/scorer as future work).
+
   ```suggestion
   | **Veridicality** (`src/Core/Veridicality.fs`) | Formal scoring module foundation | Shipped foundation — defines claim/provenance and validation primitives; the Amara-7th-ferry V(c) formula/scorer remains future graduation work |
   | **Stop Mythology directive** | Operational discipline | This memory — directive-level discipline that Veridicality would operationalize |
-  
+
   - **Veridicality** is the *programmatic surface*. Today it
     defines the foundation for claim/provenance handling and
     validation primitives; the claim-scoring `V(c)` formula and
@@ -166,8 +167,9 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 
 - **`Copilot` (bot)** at 2026-04-28T22:48:50Z on `memory/CURRENT-aaron.md`:1516 (association: NONE)
   This new CURRENT-aaron section points to three new memories, but this PR also adds an Aaron attribution-correction memory ("Ani's voice-mode transcript = original catcher") that isn't referenced here. If that memory is intended to be in-force guidance, include it in the pointer list (or explicitly note why it’s excluded from CURRENT-aaron) so the fast-path distillation doesn’t miss it.
+
   ```suggestion
-  
+
   **Exclusion note:** The Aaron attribution-correction memory
   about *"Ani's voice-mode transcript = original catcher"* is
   intentionally **not** in this pointer list because it is a
@@ -353,10 +355,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T23:33:35Z on `docs/backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md`:55 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep ServiceTitan name in pitch-context docs**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep ServiceTitan name in pitch-context docs**
+
   This backlog scope tells contributors to rename `docs/plans/servicetitan-crm-ui-scope.md` and rewrite `docs/pitch/README.md` to generic wording, but the rule encoded in `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md` classifies both files as `KEEP-NAME` for pitch context. Following this row as written will over-correct and remove intentional target-audience context that the same commit says must be preserved, so the queue will drive inconsistent edits and churn.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 19 -- resolved [outdated, collapsed]
@@ -368,10 +370,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T23:38:46Z on `memory/MEMORY.md`:10 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update MEMORY index to reflect KEEP-NAME exceptions**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update MEMORY index to reflect KEEP-NAME exceptions**
+
   This summary says "8 need active rewriting," but the authoritative rule in `feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md` explicitly classifies two files (`docs/plans/servicetitan-crm-ui-scope.md` and `docs/pitch/README.md`) as **KEEP-NAME** in pitch context. Keeping the index at 8 rewrites will direct future contributors to over-rename intended pitch-target references and recreate the same churn the rule was meant to prevent.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 20 -- resolved [outdated, collapsed]
@@ -383,10 +385,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T23:38:46Z on `docs/backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md`:77 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Relax B-0091 zero-match acceptance criterion**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Relax B-0091 zero-match acceptance criterion**
+
   The acceptance target requiring "zero matches" in live scope conflicts with this same row's own MIXED guidance to preserve ServiceTitan mentions where structural disclosure is required, and with the linked naming rule's KEEP-NAME carve-outs for pitch-context files. As written, completion is either impossible or incentivizes deleting intentional disclosure/pitch context to satisfy the regex metric.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 21 -- resolved [outdated, collapsed]
@@ -399,22 +401,23 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 
 - **`Copilot` (bot)** at 2026-04-28T23:42:12Z on `docs/backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md`:60 (association: NONE)
   B-0091 marks `docs/plans/servicetitan-crm-ui-scope.md` and `docs/pitch/README.md` as active rewrite targets, but the rule memory it references (`memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`, table at ~lines 245-248) classifies both as **KEEP-NAME** in pitch context. Please reconcile this: either update B-0091 to match the context-sensitive rule (keep name in pitch artifacts) or adjust the rule memory if the intended policy is now “rewrite pitch docs to generic” too.
+
   ```suggestion
   12 files matched. 6 need active rewriting; 2 are pitch-context files that stay KEEP-NAME per the referenced rule memory; 2 are historical narratives that stay verbatim; 2 are generated artifacts.
-  
+
   ## Scope
-  
+
   ### Active-rewrite files (6)
-  
+
   1. **`samples/FactoryDemo.Db/README.md`** — BODY-REWORD — uses ServiceTitan as the demo's "what" name. Rewrite to "external UI demo" / "external CRM API demo."
   2. **`docs/FACTORY-DISCIPLINE.md`** — MIXED — line-by-line inspection. Where it's naming the demo → generic; where it's structural disclosure of funding chain / org-access scope → preserve precisely.
   3. **`docs/BACKLOG.md`** — AGGREGATE — references per-row files. Regenerate after per-row updates land (per the source-set-regeneration-hazard rule, only after ALL per-row files are rewritten).
   4. **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — PER-ROW — rewrite naming references.
   5. **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — PER-ROW (just authored 2026-04-28) — already partially fixed in this session's commit; verify clean.
   6. **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — PER-ROW — rewrite naming references.
-  
+
   ### Pitch-context KEEP-NAME files (2)
-  
+
   - `docs/plans/servicetitan-crm-ui-scope.md` — KEEP-NAME in pitch context per `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`; do not generify this artifact unless the rule memory is updated too.
   - `docs/pitch/README.md` — KEEP-NAME in pitch context per `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`; preserve naming in this artifact.
   ```
@@ -492,13 +495,14 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 
 - **`Copilot` (bot)** at 2026-04-28T23:47:40Z on `docs/backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md`:62 (association: NONE)
   This backlog row’s scope marks `docs/pitch/README.md` as needing a rewrite to generic naming, but the new ServiceTitan naming memory’s audit table classifies `docs/pitch/README.md` as KEEP-NAME in pitch context. Please reconcile these two new sources (either the memory’s reclassification or this row’s scope) so the project has a single, consistent directive for that file.
+
   ```suggestion
   12 files matched. 7 need active rewriting; 3 stay as preserve/keep-name surfaces; 2 are generated artifacts.
-  
+
   ## Scope
-  
+
   ### Active-rewrite files (7)
-  
+
   1. **`docs/plans/servicetitan-crm-ui-scope.md`** — PATH-RENAME — file path itself contains the term. Rename to `docs/plans/external-crm-ui-scope.md` (or similar) + update body to use generic terms.
   2. **`samples/FactoryDemo.Db/README.md`** — BODY-REWORD — uses ServiceTitan as the demo's "what" name. Rewrite to "external UI demo" / "external CRM API demo."
   3. **`docs/FACTORY-DISCIPLINE.md`** — MIXED — line-by-line inspection. Where it's naming the demo → generic; where it's structural disclosure of funding chain / org-access scope → preserve precisely.
@@ -506,9 +510,9 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
   5. **`docs/backlog/P2/B-0017-operational-resonance-dashboard-frontier-bulk-alignment-ui-with-continuous-ux-research-meta-recursive.md`** — PER-ROW — rewrite naming references.
   6. **`docs/backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md`** — PER-ROW (just authored 2026-04-28) — already partially fixed in this session's commit; verify clean.
   7. **`docs/backlog/P3/B-0008-investigate-ci-macos-slim-nightly-move-if-doubles-pr-wait-time.md`** — PER-ROW — rewrite naming references.
-  
+
   ### Preserve / keep-name files (3)
-  
+
   - `docs/pitch/README.md` — KEEP-NAME — pitch-context exception per the newer ServiceTitan naming audit table; do not genericize this file under B-0091.
   ```
 
@@ -521,10 +525,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T23:53:48Z on `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`:93 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove blanket claim that public-company disclosures are all public**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove blanket claim that public-company disclosures are all public**
+
   This statement is factually incorrect and weakens the compliance guardrail the same memory tries to establish. Publicly traded status does **not** mean all employer information is public; contributors can still hold MNPI, so telling readers there is “no insider-information concern” can normalize unsafe handling of company-specific details in later docs and reviews.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 29 -- resolved [outdated, collapsed]
@@ -536,10 +540,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T23:53:48Z on `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`:320 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep pitch/research carve-out in pickup decision rule**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep pitch/research carve-out in pickup decision rule**
+
   The pickup rule here narrows the exception to funding-chain/org-access disclosure only, which conflicts with this same document’s earlier carve-out that pitch/research/target-audience contexts should keep the ServiceTitan name. That inconsistency will drive contributors to over-rename legitimate pitch docs and recreate churn in B-0091-style follow-up work.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 30 -- resolved [outdated, collapsed]
@@ -606,10 +610,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T23:59:18Z on `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`:263 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reclassify sample README from BODY-REWORD to keep-pointer**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reclassify sample README from BODY-REWORD to keep-pointer**
+
   This table still marks `samples/FactoryDemo.Db/README.md` as `BODY-REWORD`, which conflicts with the later inspection outcome in this same change-set that the only hit is a historical memory-path pointer and needs no rewrite. Leaving it as rewrite-required will send future cleanup passes into unnecessary edits and recreate naming churn the context-sensitive rule is meant to prevent.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 35 -- resolved [outdated, collapsed]
@@ -635,10 +639,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T00:13:21Z on `memory/feedback_public_company_contributor_compliance_no_insider_info_in_public_repos_with_trajectories_aaron_2026_04_28.md`:170 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove incorrect SOX selective-disclosure attribution**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove incorrect SOX selective-disclosure attribution**
+
   This compliance memory says Sarbanes-Oxley includes "selective disclosure" prohibitions, but selective disclosure duties are governed by Regulation FD; conflating these in the project’s legal guardrail can send future contributors toward the wrong authority when drafting policy or CI checks and weaken the reliability of the compliance guidance.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 37 -- resolved [outdated, collapsed]
@@ -650,10 +654,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T00:13:21Z on `docs/backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md`:4 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Mark B-0091 complete or remove completion language**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Mark B-0091 complete or remove completion language**
+
   This row is marked `status: open` even though the same document states the final audit is satisfied and explicitly says the row can be marked complete; leaving the canonical status field open will keep this item in active queues and can trigger unnecessary rework on an already-closed scope.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 38 -- resolved [collapsed]
@@ -714,11 +718,12 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 
 - **`Copilot` (bot)** at 2026-04-29T00:20:11Z on `docs/backlog/P2/B-0091-audit-and-rename-servicetitan-references-in-live-docs-aaron-2026-04-28.md`:100 (association: NONE)
   The Acceptance section still has unchecked items (e.g., BACKLOG.md regeneration and “No new ServiceTitan references introduced…”), but later the row says it can be marked complete. If the row is actually complete, consider either checking these off, moving them into a follow-up row (e.g., B-0092 trajectories / a BACKLOG.md regen row), or clarifying that they’re non-blocking so completion criteria stays unambiguous.
+
   ```suggestion
   - [x] Final audit completed: all 12 matches in live-repo scope are correctly-named for context. **Acceptance metric satisfied: "all remaining matches are correctly-named for context," not "zero matches."**
-  
+
   ### Non-blocking follow-ups
-  
+
   - `BACKLOG.md` regeneration remains deferred for this row because no per-row content rewrites were needed, so the aggregate index did not require refresh.
   - Future enforcement of "no new ServiceTitan references in non-pitch / non-disclosure contexts" is tracked as forward-going rule work under B-0092 trajectories; it is not a blocker for B-0091 closure.
   ```
@@ -732,10 +737,10 @@ PR #704 carries the Candidate-count Goodhart rule + B-0093 (14 multi-AI synthesi
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T00:20:46Z on `memory/feedback_input_is_not_directive_provenance_framing_rule_aaron_amara_2026_04_28.md`:163 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include all forbidden terms in audit patterns**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Include all forbidden terms in audit patterns**
+
   The rule marks `require/required/demand/demanded` as forbidden agency-framing words, but the pre-push audit regex here only searches for `directive`, `directed`, `instruction`, and `order` (with `command` split to Pass 3). This creates an enforcement gap where phrases like “Aaron required …” can slip through the documented gate even though they violate the same section’s policy, weakening the rule’s ability to prevent agency-framing regressions.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

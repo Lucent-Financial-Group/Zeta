@@ -68,8 +68,7 @@ const SCAN_EXCLUDE_SEGMENTS: readonly string[] = [
   ".lake",
 ];
 
-const TOKEN_RE =
-  /(Otto-\d+|Amara|Aaron|ferry|courier|graduation|Provenance:|Attribution:)/g;
+const TOKEN_RE = /(Otto-\d+|Amara|Aaron|ferry|courier|graduation|Provenance:|Attribution:)/g;
 
 // Comment-line patterns. `///` and `//` are F#/C# comment markers
 // (and the F#-XML-doc shape is `///`). `#!` is a shell shebang (NOT
@@ -85,8 +84,7 @@ const COMMENT_DOUBLE_SLASH_RE = /^[\t ]*\/\//;
 const COMMENT_SHEBANG_RE = /^[\t ]*#!/;
 const COMMENT_HASH_RE = /^[\t ]*#/;
 
-const HELP_MEMORY_REF =
-  "  memory/feedback_code_comments_explain_code_not_history_otto_220_2026_04_24.md";
+const HELP_MEMORY_REF = "  memory/feedback_code_comments_explain_code_not_history_otto_220_2026_04_24.md";
 
 function repoRoot(): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
@@ -174,9 +172,7 @@ function toPosixRel(p: string): string {
   return p.replace(/\\/g, "/");
 }
 
-function readDirEntries(
-  dir: string,
-): readonly import("node:fs").Dirent[] {
+function readDirEntries(dir: string): readonly import("node:fs").Dirent[] {
   try {
     return readdirSync(dir, { withFileTypes: true });
   } catch {
@@ -184,13 +180,7 @@ function readDirEntries(
   }
 }
 
-function processEntry(
-  e: import("node:fs").Dirent,
-  dir: string,
-  root: string,
-  stack: string[],
-  out: string[],
-): void {
+function processEntry(e: import("node:fs").Dirent, dir: string, root: string, stack: string[], out: string[]): void {
   const full = join(dir, e.name);
   const rel = toPosixRel(relative(root, full));
   if (e.isDirectory()) {
@@ -217,10 +207,7 @@ function listScanFiles(root: string): readonly string[] {
   return out;
 }
 
-function collectViolationsForFile(
-  rel: string,
-  absPath: string,
-): readonly string[] {
+function collectViolationsForFile(rel: string, absPath: string): readonly string[] {
   let content: string;
   try {
     content = readFileSync(absPath, "utf8");
@@ -257,10 +244,7 @@ function loadBaseline(path: string): readonly string[] | null {
   }
 }
 
-function diffNew(
-  current: readonly string[],
-  baseline: readonly string[],
-): readonly string[] {
+function diffNew(current: readonly string[], baseline: readonly string[]): readonly string[] {
   const baseSet = new Set(baseline);
   return current.filter((row) => !baseSet.has(row));
 }
@@ -272,46 +256,28 @@ function emitListMode(violations: readonly string[]): ExitCode {
 
 function emitFailAny(violations: readonly string[]): ExitCode {
   if (violations.length === 0) {
-    process.stdout.write(
-      "doc-comment-history-audit: no violations (strict mode clean)\n",
-    );
+    process.stdout.write("doc-comment-history-audit: no violations (strict mode clean)\n");
     return 0;
   }
-  process.stderr.write(
-    "doc-comment-history-audit: violations found (strict mode):\n",
-  );
+  process.stderr.write("doc-comment-history-audit: violations found (strict mode):\n");
   for (const row of violations) process.stderr.write(`${row}\n`);
-  process.stderr.write(
-    `doc-comment-history-audit: ${String(violations.length)} violation(s); see\n`,
-  );
+  process.stderr.write(`doc-comment-history-audit: ${String(violations.length)} violation(s); see\n`);
   process.stderr.write(`${HELP_MEMORY_REF}\n`);
   return 1;
 }
 
-function emitRegenerate(
-  violations: readonly string[],
-  baselinePath: string,
-): ExitCode {
-  const content =
-    violations.length === 0 ? "" : `${violations.join("\n")}\n`;
+function emitRegenerate(violations: readonly string[], baselinePath: string): ExitCode {
+  const content = violations.length === 0 ? "" : `${violations.join("\n")}\n`;
   writeFileSync(baselinePath, content);
-  process.stderr.write(
-    `doc-comment-history-audit: baseline regenerated with ${String(violations.length)} entries\n`,
-  );
+  process.stderr.write(`doc-comment-history-audit: baseline regenerated with ${String(violations.length)} entries\n`);
   process.stderr.write(`  -> ${baselinePath}\n`);
   return 0;
 }
 
-function emitCheck(
-  violations: readonly string[],
-  baselinePath: string,
-  scriptName: string,
-): ExitCode {
+function emitCheck(violations: readonly string[], baselinePath: string, scriptName: string): ExitCode {
   const baseline = loadBaseline(baselinePath);
   if (baseline === null) {
-    process.stderr.write(
-      `doc-comment-history-audit: baseline missing at ${baselinePath}\n`,
-    );
+    process.stderr.write(`doc-comment-history-audit: baseline missing at ${baselinePath}\n`);
     process.stderr.write(`  regenerate with: ${scriptName} --regenerate-baseline\n`);
     return 2;
   }
@@ -324,13 +290,9 @@ function emitCheck(
   }
   process.stderr.write("doc-comment-history-audit: new violations not in baseline:\n");
   for (const row of newViolations) process.stderr.write(`${row}\n`);
-  process.stderr.write(
-    `doc-comment-history-audit: ${String(newViolations.length)} new violation(s); see\n`,
-  );
+  process.stderr.write(`doc-comment-history-audit: ${String(newViolations.length)} new violation(s); see\n`);
   process.stderr.write(`${HELP_MEMORY_REF}\n`);
-  process.stderr.write(
-    `  to legitimize a moved line, run: ${scriptName} --regenerate-baseline\n`,
-  );
+  process.stderr.write(`  to legitimize a moved line, run: ${scriptName} --regenerate-baseline\n`);
   return 1;
 }
 
@@ -343,12 +305,8 @@ export function main(argv: readonly string[]): ExitCode {
   const mode = parseMode(argv);
   if (mode === null) {
     const arg0 = argv[0] ?? "";
-    process.stderr.write(
-      `doc-comment-history-audit: unknown mode '${arg0}'\n`,
-    );
-    process.stderr.write(
-      `usage: ${scriptName} [--list|--fail-any|--regenerate-baseline]\n`,
-    );
+    process.stderr.write(`doc-comment-history-audit: unknown mode '${arg0}'\n`);
+    process.stderr.write(`usage: ${scriptName} [--list|--fail-any|--regenerate-baseline]\n`);
     return 2;
   }
 

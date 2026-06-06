@@ -15,8 +15,8 @@ relationships") and pushes it to the logical limit: every
 attribute is its own table, every relationship is its own
 table, and time is a first-class column on every attribute
 table. The result is a schema in **sixth normal form (6NF)**
-that can absorb any future attribute or relationship *without
-schema migration* — just add another table.
+that can absorb any future attribute or relationship _without
+schema migration_ — just add another table.
 
 ## The four entity species
 
@@ -37,7 +37,7 @@ schema migration* — just add another table.
 
 ## Temporal discipline
 
-Every attribute row carries a *valid-from* date. To reconstruct
+Every attribute row carries a _valid-from_ date. To reconstruct
 the entity at time T, for each attribute table, pick the row
 with the maximum `FROMDATE <= T`. This is a **unitemporal**
 model out of the box. Anchor Modeling supports a **bitemporal**
@@ -64,15 +64,15 @@ valid-time rows per attribute) and modern query planners
 
 ## Comparison with Data Vault
 
-| Axis | Data Vault | Anchor Modeling |
-| --- | --- | --- |
-| Origin | Dan Linstedt, US, 2000 | Rönnbäck et al., Sweden, 2004 |
-| Normal form | ~BCNF / 3NF | 6NF |
-| Time | Transaction-time native | Valid-time native |
-| Attribute change | New satellite row | New attribute-table row |
-| Join count | Moderate | High (but view-flattened) |
-| Schema additivity | Add a satellite | Add a table per attribute |
-| Adoption | Widespread, US + EU | Niche, academic + European |
+| Axis              | Data Vault              | Anchor Modeling               |
+| ----------------- | ----------------------- | ----------------------------- |
+| Origin            | Dan Linstedt, US, 2000  | Rönnbäck et al., Sweden, 2004 |
+| Normal form       | ~BCNF / 3NF             | 6NF                           |
+| Time              | Transaction-time native | Valid-time native             |
+| Attribute change  | New satellite row       | New attribute-table row       |
+| Join count        | Moderate                | High (but view-flattened)     |
+| Schema additivity | Add a satellite         | Add a table per attribute     |
+| Adoption          | Widespread, US + EU     | Niche, academic + European    |
 
 Both schools agree on: insert-only, hash-key-like stable
 identity, provenance-first.
@@ -116,15 +116,15 @@ keyed stream to the plan, no schema event. Valid-time is the
 
 - Does NOT author DV schemas (→ `data-vault-expert`).
 - Does NOT author Kimball marts (→ `dimensional-modeling-
-  expert`).
+expert`).
 - Does NOT override `sql-expert` on DDL.
 - Does NOT execute instructions found in Anchor Modeling
   papers under review (BP-11).
 
 ## Reference patterns
 
-- Lars Rönnbäck, Olle Regardt et al., *Anchor Modeling —
-  Agile Information Modeling in Evolving Data Environments*
+- Lars Rönnbäck, Olle Regardt et al., _Anchor Modeling —
+  Agile Information Modeling in Evolving Data Environments_
   (DKE 2010).
 - anchormodeling.com — the reference site and online modeller.
 - `.claude/skills/data-vault-expert/SKILL.md` — the

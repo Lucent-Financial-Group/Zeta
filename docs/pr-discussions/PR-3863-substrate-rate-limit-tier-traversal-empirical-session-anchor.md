@@ -37,6 +37,7 @@ Authoring this memory file triggered git ref-lock contention with peer Otto-CLI 
 Second counter-with-escalation forced #6 of the session per [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md). Borrow-on-existing pattern used (`git switch -c <new> origin/main`) per [`.claude/rules/claim-acquire-before-worktree-work.md`](.claude/rules/claim-acquire-before-worktree-work.md).
 
 ## Test plan
+
 - [ ] CI green (docs-only PR)
 - [ ] Broken-commit canary clear (tree count vs origin/main)
 
@@ -51,11 +52,11 @@ Second counter-with-escalation forced #6 of the session per [`.claude/rules/hold
 Adds a single new feedback memory file under `memory/` that documents an empirical rate-limit trace from an Otto-CLI session, validating the operational-tier discipline and shared-token contention pattern.
 
 **Changes:**
+
 - New memory file capturing rate-limit tier traversal observations (Normal → Cost-aware → Extreme → Normal via reset).
 - Includes empirical trace table, observations, and cross-references to related `.claude/rules/` files.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T11:07:48Z)
-
 
 ### 💡 Codex Review
 
@@ -63,17 +64,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `0cf60606cf`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -85,7 +85,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-16T11:07:48Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct Pure-git tier threshold to documented range**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct Pure-git tier threshold to documented range**
 
 This states that Pure-git starts at `200-1000`, but the tier table in `.claude/rules/refresh-world-model-poll-pr-gate.md` defines **Extreme cost-aware** as `200-1000` and **Pure-git** as `0-200`. Keeping this range wrong will cause future sessions to classify tier transitions incorrectly and may force unnecessary Pure-git behavior while GraphQL budget is still in the Extreme tier.
 
@@ -95,7 +95,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-16T11:07:48Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove incorrect claim that only Otto shares the user token**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove incorrect claim that only Otto shares the user token**
 
 The note says shared-token contention is an Otto-only artifact, but `.claude/rules/refresh-world-model-poll-pr-gate.md` explicitly documents that Otto-CLI, Otto-Desktop, Lior, Vera, and Riven all consume the same user GraphQL budget. This incorrect scope narrows the inferred contention source and can mislead later rate-limit mitigation decisions and postmortem analysis.
 

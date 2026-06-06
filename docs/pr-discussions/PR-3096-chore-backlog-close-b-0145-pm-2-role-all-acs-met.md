@@ -24,13 +24,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Acceptance-criteria trace
 
-| AC | Deliverable | Merged via |
-|---|---|---|
-| AC 1 — EXPERT-REGISTRY.md Mira row | `docs/EXPERT-REGISTRY.md` PM-2 row | PR #3074 |
-| AC 2 — Cadence weekly/Sundays UTC | Documented in `docs/forward-radar/TEMPLATE.md` header | PR #3074 |
-| AC 3 — Output template | `docs/forward-radar/TEMPLATE.md` | PR #3074 |
-| AC 4 — First forward-radar memo | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` | B-0271 |
-| AC 5 — Calibration metric tracker | `docs/forward-radar/calibration.md` | PR #3074 |
+| AC                                 | Deliverable                                                              | Merged via |
+| ---------------------------------- | ------------------------------------------------------------------------ | ---------- |
+| AC 1 — EXPERT-REGISTRY.md Mira row | `docs/EXPERT-REGISTRY.md` PM-2 row                                       | PR #3074   |
+| AC 2 — Cadence weekly/Sundays UTC  | Documented in `docs/forward-radar/TEMPLATE.md` header                    | PR #3074   |
+| AC 3 — Output template             | `docs/forward-radar/TEMPLATE.md`                                         | PR #3074   |
+| AC 4 — First forward-radar memo    | `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` | B-0271     |
+| AC 5 — Calibration metric tracker  | `docs/forward-radar/calibration.md`                                      | PR #3074   |
 
 Child rows: B-0270 (skill + agent), B-0271 (first research pass) — both closed.
 
@@ -51,24 +51,22 @@ Child rows: B-0270 (skill + agent), B-0271 (first research pass) — both closed
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T04:11:45Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `01df22573e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -81,6 +79,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Closes backlog row B-0145 by updating its frontmatter to `status: closed` and adding completion notes that trace each acceptance criterion to the merged deliverable(s).
 
 **Changes:**
+
 - Update B-0145 frontmatter (`status`, `last_updated`, plus closure metadata fields).
 - Add a “Completion notes” section with an AC→deliverable traceability table.
 
@@ -102,7 +101,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-14T04:11:46Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep B-0145 open until cadence-review criterion is satisfied**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep B-0145 open until cadence-review criterion is satisfied**
 
 This change marks the row closed while asserting all acceptance criteria are met, but AC2 in the same file still requires the cadence to be **reviewed after the first 4 cycles** (lines 142–144), and the completion note only documents weekly/Sundays cadence delivery. Closing now can cause backlog automation and human triage to skip the remaining acceptance condition, so the row should stay open (or AC2 should be rewritten to match what was actually delivered).
 

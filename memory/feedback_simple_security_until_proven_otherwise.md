@@ -4,10 +4,11 @@ description: Aaron's standing rule 2026-04-19 for security design — prefer the
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-**2026-04-19 disclosure:** *"ACLs (permission lists) this is
+
+**2026-04-19 disclosure:** _"ACLs (permission lists) this is
 scray to new people but if its the proper termooty for this
 class of tings, i just prefer simple security unless proven
-otherwise but still rbac"*.
+otherwise but still rbac"_.
 
 Rule: **prefer the simplest security mechanism that achieves the
 security goal; keep the RBAC architectural frame; use standard
@@ -18,8 +19,8 @@ always lead with plain-English gloss.**
 
 Aaron is a gray-hat with hardware side-channel experience and
 smart-grid credentials (per `user_security_credentials.md`); he
-pitches threat-model rigor at nation-state level on *product*
-surfaces. But on *governance* surfaces, his preference is
+pitches threat-model rigor at nation-state level on _product_
+surfaces. But on _governance_ surfaces, his preference is
 minimalism — matches `user_governance_stance.md` ("no respect
 for authority; minimalist government on factory rule
 discipline"). The two postures are not contradictions:
@@ -38,7 +39,7 @@ the governance side. The proof is upgrade-on-evidence:
 
 - CODEOWNERS + branch protection + a tiny YAML manifest today.
 - Full policy-engine (OPA, cedar, custom) only when a concrete
-  incident or systematic evasion pattern *proves* the simpler
+  incident or systematic evasion pattern _proves_ the simpler
   mechanism insufficient.
 - Always document the upgrade trigger that was observed, not
   "to be more secure" generically — proof-based escalation.

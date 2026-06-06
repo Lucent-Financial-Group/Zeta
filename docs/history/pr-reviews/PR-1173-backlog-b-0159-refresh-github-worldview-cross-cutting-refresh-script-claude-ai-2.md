@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1173 |
-| Title | backlog(B-0159): refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T22:00:51Z |
-| Merged at | 2026-05-01T22:20:04Z |
-| Merge commit SHA | `07d16e34958990c87b5bf4559ad80cbd61e76774` |
-| Branch | `otto/B-0159-refresh-github-worldview-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1173 |
-| Changed files | 2 |
-| Additions / deletions | +767 / -0 |
+| Field                 | Value                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| Number                | 1173                                                                                          |
+| Title                 | backlog(B-0159): refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01) |
+| Author                | `AceHack` (human)                                                                             |
+| State                 | MERGED                                                                                        |
+| Created at            | 2026-05-01T22:00:51Z                                                                          |
+| Merged at             | 2026-05-01T22:20:04Z                                                                          |
+| Merge commit SHA      | `07d16e34958990c87b5bf4559ad80cbd61e76774`                                                    |
+| Branch                | `otto/B-0159-refresh-github-worldview-2026-05-01`                                             |
+| Base branch           | `main`                                                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1173                                      |
+| Changed files         | 2                                                                                             |
+| Additions / deletions | +767 / -0                                                                                     |
 
 ## Description
 
@@ -35,15 +35,15 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 14 |
-| Resolved threads | 9 |
-| Unresolved threads | 5 |
-| Total review comments | 14 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 14    |
+| Resolved threads                          | 9     |
+| Unresolved threads                        | 5     |
+| Total review comments                     | 14    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -56,10 +56,10 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T22:03:02Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:12 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Add required YAML frontmatter to this backlog row**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Add required YAML frontmatter to this backlog row**
+
   This new row starts directly with a Markdown heading, but backlog rows are required to include frontmatter fields (`id`, `priority`, `status`, `title`, `created`, `last_updated`) per `tools/backlog/README.md`. Because those fields are missing, the `backlog-index-integrity` check (`.github/workflows/backlog-index-integrity.yml`) cannot extract `id/status/title` and treats the file as malformed; the generator also warns and cannot index it correctly. Any PR touching `docs/backlog/**` will hit this gate, so this row should be converted to the standard frontmatter-backed format.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [collapsed]
@@ -83,7 +83,6 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 - **`Copilot` (bot)** at 2026-05-01T22:03:58Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:14 (association: NONE)
   The `Origin` section links to `docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md`, but that file does not exist in the repo. Please update this to a valid path (or add the referenced research file in the same PR) so the lineage link isn’t dead.
-  
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -95,7 +94,6 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 - **`Copilot` (bot)** at 2026-05-01T22:03:58Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:127 (association: NONE)
   In `Composes with`, `memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md` is referenced, but no such file exists under `memory/` in this branch. Please fix the filename/path (or add the missing memory file) so cross-references remain navigable.
-  
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -106,10 +104,10 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T22:07:40Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:206 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Move `--since` before pathspec in backlog-delta query**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Move `--since` before pathspec in backlog-delta query**
+
   The proposed command `git log --oneline --diff-filter=A -- docs/backlog/ --since="<last-refresh-timestamp>"` places `--since` after the `--` pathspec separator, so the time filter is not applied as intended. `git log -h` shows the form `git log [<options>] ... [[--] <path>...]`, which means options must come before pathspecs. In this form the refresh can over-report historical rows instead of “since last refresh,” producing incorrect backlog deltas.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 6 -- resolved [collapsed]
@@ -121,10 +119,10 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T22:07:40Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:431 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile contradictory output-format requirements**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile contradictory output-format requirements**
+
   This acceptance criterion conflicts with the later “Single JSON with summary field, not two-pass print” section, which explicitly switches away from two-pass output. Keeping both requirements in one row makes the implementation target ambiguous and can cause reviewers to reject correct work depending on which section they follow.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 7 -- resolved [collapsed]
@@ -137,7 +135,6 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 - **`Copilot` (bot)** at 2026-05-01T22:09:41Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:14 (association: NONE)
   P1 (xref): The link target `docs/research/2026-05-01-claudeai-backlog-driven-dual-pm-loop-with-refresh-discipline.md` does not exist in the repo, so this reference will be broken on merge. Please update it to the correct existing research file path, or (if this is meant to land via PR #1171) reference the PR explicitly / add the missing file in the same merge chain so `main` never contains a dead link.
-  
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -160,7 +157,6 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 - **`Copilot` (bot)** at 2026-05-01T22:09:42Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:74 (association: NONE)
   P1: This row currently specifies a two-step output contract (“raw JSON first” then a separate labeled interpretation layer), but later it calls for “Single JSON with summary field, not two-pass print,” and the acceptance criteria also still mentions two-layer print. Please reconcile these so the output contract is unambiguous (either two distinct outputs, or one JSON document with `summary` + raw arrays).
-  
 
 ### Thread 10 -- unresolved
 
@@ -183,7 +179,6 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 - **`Copilot` (bot)** at 2026-05-01T22:20:06Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:439 (association: NONE)
   P1: Acceptance criteria still refer to `tools/refresh-github-worldview/refresh.ts`, which conflicts with the later decision in this same row that the canonical “before tick decision” entrypoint becomes `bun tools/github/github-state.ts` (wrapping `tools/repo-state/repo-state.ts`). Update acceptance criteria to match the final intended tool names/paths.
-  
 
 ### Thread 12 -- unresolved
 
@@ -195,7 +190,6 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 - **`Copilot` (bot)** at 2026-05-01T22:20:06Z on `docs/backlog/P1/B-0159-refresh-github-worldview-cross-cutting-claudeai-2026-05-01.md`:431 (association: NONE)
   P1: The row earlier declares the output contract as a single JSON document with a `summary` field (and explicitly “NOT two separate passes”), but this acceptance criterion reads like an ordered two-layer print (“raw JSON first, interpretation labeled second”). Please align the acceptance criteria with the canonical output contract (either single-JSON-with-summary, or a true two-pass/dual-stream output).
-  
 
 ### Thread 13 -- unresolved
 
@@ -207,7 +201,6 @@ Composes with PR #1171 (refresh-before-decide memo + verbatim packet) — this r
 
 - **`Copilot` (bot)** at 2026-05-01T22:20:06Z on `docs/research/2026-05-01-peer-ai-followup-reviews-on-b-0159-refresh-script.md`:43 (association: NONE)
   P2: The Ani section is labeled “verbatim”, but it’s not formatted as a quote block the way other research docs preserve verbatim packets (typically `>` blockquotes). As-is, the slang/profanity reads like repo-authored voice. Consider wrapping each peer’s verbatim contribution in a blockquote (or a fenced `text` block) so attribution/voice boundaries are unambiguous.
-  
 
 ### Thread 14 -- unresolved
 

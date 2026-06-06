@@ -11,8 +11,30 @@ last_updated: 2026-05-09
 depends_on: []
 children: [B-0388, B-0389, B-0390, B-0391, B-0392, B-0393, B-0394, B-0395]
 decomposition: clean
-composes_with: [feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md, project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md, feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md, project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md]
-tags: [frontier, ui, ux, dashboard, bulk-alignment, operational-resonance, ux-research, a-b-experiments, meta-recursive-research, research-program, pop-factor, wow-factor]
+composes_with:
+  [
+    feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md,
+    project_frontier_burn_rate_ui_first_class_git_native_for_private_repo_adopters_servicetitan_84_percent_2026_04_23.md,
+    project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md,
+    feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md,
+    project_factory_is_git_native_github_first_host_hygiene_cadences_for_frictionless_operation_2026_04_23.md,
+    feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md,
+  ]
+tags:
+  [
+    frontier,
+    ui,
+    ux,
+    dashboard,
+    bulk-alignment,
+    operational-resonance,
+    ux-research,
+    a-b-experiments,
+    meta-recursive-research,
+    research-program,
+    pop-factor,
+    wow-factor,
+  ]
 type: feature
 ---
 
@@ -144,7 +166,7 @@ Aaron 2026-05-04 in conversation about expanding background-agent
 work, extending this row's scope with three concrete architectural
 moves:
 
-> *"expanding the background work will get us there eventually
+> _"expanding the background work will get us there eventually
 > and make it where we are forced into bulk future alignment
 > where i review you architecture decisions based on those
 > levels you named earlier, so i don't need tiny corrects at
@@ -152,13 +174,13 @@ moves:
 > maintainers jobs easier and giving a way for reviewing
 > substantial changes quickly and maintainer will still never
 > have to write code. and the UI should have a conversation
-> interface too."*
+> interface too."_
 
-> *"hopefully talking to a local/browser based AI so it won't
-> cost us money lol."*
+> _"hopefully talking to a local/browser based AI so it won't
+> cost us money lol."_
 
-> *"maybe LLM based maybe Bayesian inference seed executor based
-> in Zeta."*
+> _"maybe LLM based maybe Bayesian inference seed executor based
+> in Zeta."_
 
 Three architectural additions to the Operational Resonance
 Dashboard scope:
@@ -179,7 +201,6 @@ Dashboard scope:
    the maintainer uses to discuss decisions in-context. Cost-
    constraint: no paid API per review. Two implementation
    paths:
-
    - **Path A — browser/local LLM** (faster build): WebLLM /
      transformers.js / lightweight local-runtime as bridge
      implementation.
@@ -215,16 +236,16 @@ and UI. Decomposed into 8 dependency-ordered atomic child rows.
 
 **Dependency-ordered atomic child rows:**
 
-| ID | Title | Priority | Effort | Depends on |
-|----|-------|----------|--------|-----------|
-| B-0388 | Naming lock — naming-expert review, candidates, Aaron sign-off | P3 | S | — |
-| B-0389 | UX + psychology research scope doc — Chomsky, pre-attentive, cognitive load, UX methodology | P3 | S | — |
-| B-0390 | "Time-to-answer" metric formalization — baseline, measurement methodology, acceptance criteria | P3 | S | — |
-| B-0391 | GitHub Pages static shell — index page, nav shell, CI deploy config | P3 | S | B-0388 |
-| B-0392 | Tier-aware bulk grouping model ADR — Tier 0-4 mapped to reviewer attention levels | P3 | S | B-0390 |
-| B-0393 | A/B experiment infrastructure design — event-capture schema, experiment registration, git-native results | P3 | M | B-0390, B-0391 |
-| B-0394 | MVP dashboard surface — first working "are things going as expected?" page on GH Pages | P3 | L | B-0390, B-0391, B-0392 |
-| B-0395 | Conversation interface Path A — browser/local LLM (WebLLM/transformers.js) embedded in dashboard | P3 | L | B-0394 |
+| ID     | Title                                                                                                    | Priority | Effort | Depends on             |
+| ------ | -------------------------------------------------------------------------------------------------------- | -------- | ------ | ---------------------- |
+| B-0388 | Naming lock — naming-expert review, candidates, Aaron sign-off                                           | P3       | S      | —                      |
+| B-0389 | UX + psychology research scope doc — Chomsky, pre-attentive, cognitive load, UX methodology              | P3       | S      | —                      |
+| B-0390 | "Time-to-answer" metric formalization — baseline, measurement methodology, acceptance criteria           | P3       | S      | —                      |
+| B-0391 | GitHub Pages static shell — index page, nav shell, CI deploy config                                      | P3       | S      | B-0388                 |
+| B-0392 | Tier-aware bulk grouping model ADR — Tier 0-4 mapped to reviewer attention levels                        | P3       | S      | B-0390                 |
+| B-0393 | A/B experiment infrastructure design — event-capture schema, experiment registration, git-native results | P3       | M      | B-0390, B-0391         |
+| B-0394 | MVP dashboard surface — first working "are things going as expected?" page on GH Pages                   | P3       | L      | B-0390, B-0391, B-0392 |
+| B-0395 | Conversation interface Path A — browser/local LLM (WebLLM/transformers.js) embedded in dashboard         | P3       | L      | B-0394                 |
 
 **Dependency order:**
 

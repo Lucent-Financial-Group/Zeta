@@ -11,7 +11,17 @@ last_updated: 2026-05-09
 resolved: 2026-05-09
 depends_on: []
 composes_with: [B-0190, B-0193]
-tags: [memory-hygiene, MEMORY.md, distillation, compression, otto-291-pacing, otto-294-smooth-shape, otto-295-monoidal-manifold, factory-maintenance]
+tags:
+  [
+    memory-hygiene,
+    MEMORY.md,
+    distillation,
+    compression,
+    otto-291-pacing,
+    otto-294-smooth-shape,
+    otto-295-monoidal-manifold,
+    factory-maintenance,
+  ]
 type: friction-reducer
 ---
 
@@ -49,20 +59,20 @@ fast-path role.
 The fast-path role MATTERS:
 
 - **Per the auto-memory header** (the leading line of
-  CLAUDE.md memory bootstrap): *"📌 Fast path: read
+  CLAUDE.md memory bootstrap): _"📌 Fast path: read
   `CURRENT-aaron.md` and `CURRENT-amara.md` first.
   These per-maintainer distillations show what's
   currently in force. Raw memories below are the
-  history; CURRENT files are the projection."*
-- **CURRENT-* files are tier-1 distillation** of
+  history; CURRENT files are the projection."_
+- **CURRENT-\* files are tier-1 distillation** of
   MEMORY.md. The full-detail memories under
   `memory/**/*.md` are tier-3. **MEMORY.md is tier-2
   — the index from one to the other.** When tier-2
   oversizes, the dependency chain breaks.
 - **Truncation symptom**: the system reminder at
-  session start: *"Only part of it was loaded. Keep
+  session start: _"Only part of it was loaded. Keep
   index entries to one line under ~200 chars; move
-  detail into topic files."* Truncated index = the
+  detail into topic files."_ Truncated index = the
   navigation surface for the entire memory system is
   partial.
 
@@ -76,8 +86,8 @@ For each existing entry in `memory/MEMORY.md`:
    inlined detail meant for the body).
 3. **Replace the entry** with a true one-liner under
    ~200 chars: `[Hook — what's surprising / non-obvious
-   in one sentence. Optionally a tag like "Aaron <date>"
-   or "Otto-NNN" for ordering.](underlying-file.md)`
+in one sentence. Optionally a tag like "Aaron <date>"
+or "Otto-NNN" for ordering.](underlying-file.md)`
 4. **Verify the body file is canonical** — if entry
    detail wasn't yet in the body, move it there.
 
@@ -99,7 +109,7 @@ The compression pass is "good enough to ship" when:
   contains the detail that used to live in the index
 - A peer-Claude session loading the file does not see
   the truncation warning
-- Fast-path discipline (read CURRENT-* + scan MEMORY.md +
+- Fast-path discipline (read CURRENT-\* + scan MEMORY.md +
   drill into specific body file) works under typical
   context budget
 
@@ -112,12 +122,12 @@ decorative (not cited from bootstrap surfaces).
 
 **Differentiated targets:**
 
-| Category | Target | Rationale |
-| -------- | ------ | --------- |
-| Load-bearing (5 files) | KEEP in index, up to 200 chars | These are the files a fresh agent WILL read via bootstrap citation chain |
-| CURRENT-* files (4-6) | KEEP in index, up to 150 chars | Fast-path discipline requires these visible |
-| Recent entries (last 30 days) | KEEP in index, ~120 chars | Active context; recent memory is high-value |
-| Decorative older entries | REMOVE from index | Files stay on disk; the index is not the archive |
+| Category                      | Target                         | Rationale                                                                |
+| ----------------------------- | ------------------------------ | ------------------------------------------------------------------------ |
+| Load-bearing (5 files)        | KEEP in index, up to 200 chars | These are the files a fresh agent WILL read via bootstrap citation chain |
+| CURRENT-\* files (4-6)        | KEEP in index, up to 150 chars | Fast-path discipline requires these visible                              |
+| Recent entries (last 30 days) | KEEP in index, ~120 chars      | Active context; recent memory is high-value                              |
+| Decorative older entries      | REMOVE from index              | Files stay on disk; the index is not the archive                         |
 
 **Feasibility math:** 200 lines - 5 header lines = 195 entries.
 With ~5 load-bearing + ~5 CURRENT + ~100 recent-30-day entries
@@ -144,7 +154,7 @@ tools serve hot-path agents.
   body file paths stay constant. Cross-references that
   point at body files are unaffected.
 - **Compression-induced flatness** (loss of ordering
-  hierarchy) → mitigation: keep top-of-file CURRENT-*
+  hierarchy) → mitigation: keep top-of-file CURRENT-\*
   pointer; keep AutoDream timestamp; keep most-recent
   ordering convention; the structural top-of-file
   doesn't compress.
@@ -157,7 +167,7 @@ tools serve hot-path agents.
 ## Why P1 (not P0/P2/P3)
 
 - **Not P0**: factory still functions; navigation is
-  degraded but not broken; CURRENT-* files cover the
+  degraded but not broken; CURRENT-\* files cover the
   fast-path needs partially.
 - **P1 fits**: within 2-3 rounds; substantial maintenance
   payoff; unblocks the substrate's compression direction

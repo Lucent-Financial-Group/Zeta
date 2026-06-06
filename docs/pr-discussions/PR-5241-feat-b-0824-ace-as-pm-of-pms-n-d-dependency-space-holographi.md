@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Files [B-0824](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0824-nd-holographic-meta-pm-architecture-2026-05-26/docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md) — unifies three architectural claims into the Ace meta-PM substrate per Aaron 2026-05-26:
 
-> *"yes maven is 2d we have to be at least 3d or nd, but since we are self similar and trying to map to holographic we should be able to ultimately map merging 2d streams into higher dimension views. also no package manager does ongoing negotiation of trying to force people forward while sucking in upstream changes at the rate of AI this is what we are trying to do with AI across all package manager of package manager dimensions helm needs time modeled in the depedencies like no others."*
+> _"yes maven is 2d we have to be at least 3d or nd, but since we are self similar and trying to map to holographic we should be able to ultimately map merging 2d streams into higher dimension views. also no package manager does ongoing negotiation of trying to force people forward while sucking in upstream changes at the rate of AI this is what we are trying to do with AI across all package manager of package manager dimensions helm needs time modeled in the depedencies like no others."_
 
 1. **N-dimensional dependency space** — Maven=2D; B-0822=4 properties; truth=N-D. Each PM is a 2D-projection.
 2. **Holographic projection via self-similar substrate** — composes with B-0666 keystone. Merge per-PM shadows holographically.
@@ -49,6 +49,7 @@ Time-modeled deps filed separately as B-0825 (Helm-specific axis).
 Adds a new P1 backlog row (B-0824) describing the “Ace as meta package manager” architecture (N-D dependency space, holographic projection, AI-rate upstream negotiation) and updates the generated backlog index to include it.
 
 **Changes:**
+
 - Added `docs/backlog/P1/B-0824-...md` with full row content + frontmatter (dependencies/compositions/tags).
 - Updated `docs/BACKLOG.md` to include the new B-0824 entry under P1.
 
@@ -56,10 +57,10 @@ Adds a new P1 backlog row (B-0824) describing the “Ace as meta package manager
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                         | Description                                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md | New backlog row capturing the B-0824 architecture + composition links. |
-| docs/BACKLOG.md | Adds B-0824 to the P1 index list. |
+| docs/BACKLOG.md                                                                                                                                                              | Adds B-0824 to the P1 index list.                                      |
 
 ## Review threads
 

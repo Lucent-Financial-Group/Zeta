@@ -48,45 +48,32 @@ export function parseWorktreeList(raw: string): WorktreeEntry[] {
   for (const block of raw.split(/\n\n+/)) {
     const lines = block.trim().split("\n");
     if (!lines[0]) continue;
-    const get = (prefix: string) =>
-      lines.find((l) => l.startsWith(prefix))?.slice(prefix.length) ?? "";
+    const get = (prefix: string) => lines.find((l) => l.startsWith(prefix))?.slice(prefix.length) ?? "";
     const branchRef = get("branch ");
     entries.push({
       path: get("worktree "),
       head: get("HEAD "),
       // strip refs/heads/ prefix; keep "(detached)" or bare as-is.
-      branch: branchRef.startsWith("refs/heads/")
-        ? branchRef.slice("refs/heads/".length)
-        : branchRef || "(detached)",
+      branch: branchRef.startsWith("refs/heads/") ? branchRef.slice("refs/heads/".length) : branchRef || "(detached)",
       bare: lines.includes("bare"),
     });
   }
   return entries;
 }
 
-export function checkOrchestratorState(
-  env: NodeJS.ProcessEnv = process.env,
-): OrchestratorState {
+export function checkOrchestratorState(env: NodeJS.ProcessEnv = process.env): OrchestratorState {
   const currentBranch = run("git", ["branch", "--show-current"]).trim();
   const expectedBranch = env.ZETA_EXPECTED_BRANCH ?? "";
-  const dirtyFiles = run("git", ["status", "--short"])
-    .split("\n")
-    .filter(Boolean);
-  const worktrees = parseWorktreeList(
-    run("git", ["worktree", "list", "--porcelain"]),
-  );
+  const dirtyFiles = run("git", ["status", "--short"]).split("\n").filter(Boolean);
+  const worktrees = parseWorktreeList(run("git", ["worktree", "list", "--porcelain"]));
   // Identify caller's own worktree by matching CWD (first entry is always main worktree per git docs).
   // Exclude it when scanning for other worktrees on expectedBranch (CWD-bleed-over hazard).
   const cwd = process.cwd();
   // Use exact-boundary comparison: bare startsWith("/Zeta") would wrongly match "/Zeta-feature".
-  const ownIdx = worktrees.findIndex(
-    (w) => cwd === w.path || cwd.startsWith(w.path + "/"),
-  );
+  const ownIdx = worktrees.findIndex((w) => cwd === w.path || cwd.startsWith(w.path + "/"));
   const driftedWorktrees =
     expectedBranch && worktrees.length > 1
-      ? worktrees
-          .filter((_, i) => i !== ownIdx)
-          .filter((w) => w.branch === expectedBranch)
+      ? worktrees.filter((_, i) => i !== ownIdx).filter((w) => w.branch === expectedBranch)
       : [];
   return {
     currentBranch,
@@ -103,9 +90,7 @@ function main(): number {
   console.log(JSON.stringify(state, null, 2));
 
   if (!state.branchMatch) {
-    console.error(
-      `\nWARNING: current branch '${state.currentBranch}' != expected '${state.expectedBranch}'`,
-    );
+    console.error(`\nWARNING: current branch '${state.currentBranch}' != expected '${state.expectedBranch}'`);
     return 1;
   }
   if (state.driftedWorktrees.length > 0) {

@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1349 |
-| Title | backlog(B-0142): Code Contracts revival — design-by-contract primitives at compile/runtime (Aaron 2026-05-01; sibling of B-0141; second B-0177 audit hit) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T07:43:17Z |
-| Merged at | 2026-05-03T07:53:51Z |
-| Merge commit SHA | `9c4d2470dc375f576cadc75a89d3decbc18f5199` |
-| Branch | `backlog/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1349 |
-| Changed files | 2 |
-| Additions / deletions | +100 / -0 |
+| Field                 | Value                                                                                                                                                     |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1349                                                                                                                                                      |
+| Title                 | backlog(B-0142): Code Contracts revival — design-by-contract primitives at compile/runtime (Aaron 2026-05-01; sibling of B-0141; second B-0177 audit hit) |
+| Author                | `AceHack` (human)                                                                                                                                         |
+| State                 | MERGED                                                                                                                                                    |
+| Created at            | 2026-05-03T07:43:17Z                                                                                                                                      |
+| Merged at             | 2026-05-03T07:53:51Z                                                                                                                                      |
+| Merge commit SHA      | `9c4d2470dc375f576cadc75a89d3decbc18f5199`                                                                                                                |
+| Branch                | `backlog/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01`                                                                               |
+| Base branch           | `main`                                                                                                                                                    |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1349                                                                                                  |
+| Changed files         | 2                                                                                                                                                         |
+| Additions / deletions | +100 / -0                                                                                                                                                 |
 
 ## Description
 
@@ -74,15 +74,15 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 10 |
-| Resolved threads | 10 |
-| Unresolved threads | 0 |
-| Total review comments | 20 |
-| Total fix commits (touching thread paths) | 4 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 10    |
+| Resolved threads                          | 10    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 20    |
+| Total fix commits (touching thread paths) | 4     |
 
 ## Review threads
 
@@ -95,24 +95,23 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T07:45:20Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:49 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove throw/panic contract path from row spec**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove throw/panic contract path from row spec**
+
   The new row specifies precondition handling as "throws / panics / returns Result-error," which conflicts with the repo-wide hard rule that user-visible failures must flow as `Result`/`DbspError` values rather than exceptions. Because backlog rows act as implementation guidance, this wording can directly cause future contract tooling to reintroduce exception-based control flow and break the intended Result-over-exception semantics.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T07:47:23Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:49 (association: MEMBER)
-    Addressed in latest commit. Per CLAUDE.md Result-over-exception invariant, the row spec has been normalized to Result-flow only:
-    
-    - **Pre-condition primitives** (line 51): now reads "returns Result-error if violated (Result-over-exception per CLAUDE.md; NO throw / panic flow)"
-    - **Editorial note** (line 24) added after the verbatim 2026-05-01 quote: clarifies the verbatim "throws at runtime" wording predates the row spec; the actual implementation MUST flow contract violations as Result-error values
-    - **Open design questions** (line 87): reframed as "Contract-violation handling within Result-flow" (no longer admits throw as an option)
-    - **Integration item** (line 55): made explicit that runtime-mode catches surface as Result-error
-    - **Carved sentence** (line 99): explicit "Result-over-exception per CLAUDE.md; NO throw / panic flow"
-    
-    The verbatim Aaron 2026-05-01 quote stays preserved (preservation discipline doesn't edit external authors' words); the editorial note bridges the verbatim wording to the canonical Result-flow invariant. Backlog row no longer admits throw/panic as implementation guidance.
+- **`AceHack` (human)** at 2026-05-03T07:47:23Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:49 (association: MEMBER)
+  Addressed in latest commit. Per CLAUDE.md Result-over-exception invariant, the row spec has been normalized to Result-flow only:
+  - **Pre-condition primitives** (line 51): now reads "returns Result-error if violated (Result-over-exception per CLAUDE.md; NO throw / panic flow)"
+  - **Editorial note** (line 24) added after the verbatim 2026-05-01 quote: clarifies the verbatim "throws at runtime" wording predates the row spec; the actual implementation MUST flow contract violations as Result-error values
+  - **Open design questions** (line 87): reframed as "Contract-violation handling within Result-flow" (no longer admits throw as an option)
+  - **Integration item** (line 55): made explicit that runtime-mode catches surface as Result-error
+  - **Carved sentence** (line 99): explicit "Result-over-exception per CLAUDE.md; NO throw / panic flow"
+
+  The verbatim Aaron 2026-05-01 quote stays preserved (preservation discipline doesn't edit external authors' words); the editorial note bridges the verbatim wording to the canonical Result-flow invariant. Backlog row no longer admits throw/panic as implementation guidance.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -124,12 +123,11 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:47:24Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:12 (association: NONE)
   `B-0141` still does not resolve to any backlog file under `docs/backlog/**`, so adding it to `composes_with` leaves this row with a dangling backlog ID. Per the reference-resolution rule documented in B-0153, unresolved `B-NNNN` refs should stay annotated as `(not yet filed)` / `(when filed)` until the sibling row actually exists.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T07:48:58Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:12 (association: MEMBER)
-    B-0141 IS filed and on main as of `ca2e578` (PR #1347 merged at ~07:42Z). Verified: `ls docs/backlog/P*/B-0141*.md` returns `docs/backlog/P2/B-0141-brittle-pointer-anchor-link-auto-rewriter-aaron-2026-05-01.md`; BACKLOG.md contains the index entry. The unresolved-reference claim was merge-ordering-dependent at PR-eval time. Standardized PR-branch-not-main reviewer-eval class.
+- **`AceHack` (human)** at 2026-05-03T07:48:58Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:12 (association: MEMBER)
+  B-0141 IS filed and on main as of `ca2e578` (PR #1347 merged at ~07:42Z). Verified: `ls docs/backlog/P*/B-0141*.md` returns `docs/backlog/P2/B-0141-brittle-pointer-anchor-link-auto-rewriter-aaron-2026-05-01.md`; BACKLOG.md contains the index entry. The unresolved-reference claim was merge-ordering-dependent at PR-eval time. Standardized PR-branch-not-main reviewer-eval class.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -141,12 +139,11 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:47:24Z on `docs/BACKLOG.md`:125 (association: NONE)
   This entry reintroduces a bare `B-0141` reference even though there is still no `B-0141` row anywhere under `docs/backlog/**`. B-0153 explicitly calls unresolved backlog IDs out as an xref-integrity issue, so the sibling reference should be framed as `not yet filed` / `when filed` until that row lands.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T07:49:00Z on `docs/BACKLOG.md`:125 (association: MEMBER)
-    B-0141 IS filed and on main as of `ca2e578` (PR #1347 merged at ~07:42Z). Verified: `ls docs/backlog/P*/B-0141*.md` returns `docs/backlog/P2/B-0141-brittle-pointer-anchor-link-auto-rewriter-aaron-2026-05-01.md`; BACKLOG.md contains the index entry. The unresolved-reference claim was merge-ordering-dependent at PR-eval time. Standardized PR-branch-not-main reviewer-eval class.
+- **`AceHack` (human)** at 2026-05-03T07:49:00Z on `docs/BACKLOG.md`:125 (association: MEMBER)
+  B-0141 IS filed and on main as of `ca2e578` (PR #1347 merged at ~07:42Z). Verified: `ls docs/backlog/P*/B-0141*.md` returns `docs/backlog/P2/B-0141-brittle-pointer-anchor-link-auto-rewriter-aaron-2026-05-01.md`; BACKLOG.md contains the index entry. The unresolved-reference claim was merge-ordering-dependent at PR-eval time. Standardized PR-branch-not-main reviewer-eval class.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -158,12 +155,11 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:47:25Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:8 (association: NONE)
   Backlog rows generally cite memory files with the full `memory/...` path. Using the bare filename here reintroduces the class-6 inconsistency B-0153 calls out, and it makes this source reference harder to grep and resolve consistently from the row text.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T07:49:01Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:8 (association: MEMBER)
-    Addressed in latest commit. Path now reads `memory/feedback_parallelism_scaling_ladder_..._aaron_2026_05_01.md` with full `memory/` prefix per the convention used elsewhere in backlog rows.
+- **`AceHack` (human)** at 2026-05-03T07:49:01Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:8 (association: MEMBER)
+  Addressed in latest commit. Path now reads `memory/feedback_parallelism_scaling_ladder_..._aaron_2026_05_01.md` with full `memory/` prefix per the convention used elsewhere in backlog rows.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -175,12 +171,11 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:47:25Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:5 (association: NONE)
   Once this row is merged, the title text `reserved ID never filed` becomes false, and that stale wording propagates into the generated backlog index. The historical filing context belongs in `ask`/`Origin`; keeping it in the title makes the authoritative summary describe an already-filed row as unfiled.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T07:49:02Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:5 (association: MEMBER)
-    Addressed in latest commit. Title updated: "reserved ID never filed" removed (becomes false on merge); historical filing context moved to `ask:` field which now reads "ID was reserved 2026-05-01; per-row file filed 2026-05-03 by Otto audit pass post-B-0141 filing." Title is now durable across merge.
+- **`AceHack` (human)** at 2026-05-03T07:49:02Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:5 (association: MEMBER)
+  Addressed in latest commit. Title updated: "reserved ID never filed" removed (becomes false on merge); historical filing context moved to `ask:` field which now reads "ID was reserved 2026-05-01; per-row file filed 2026-05-03 by Otto audit pass post-B-0141 filing." Title is now durable across merge.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -191,16 +186,16 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T07:50:17Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:12 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include all declared composition links in frontmatter**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Include all declared composition links in frontmatter**
+
   Add the missing `composes_with` edges for `B-0130` and `B-0170` to frontmatter so backlog tooling can see the same graph the prose describes. In this file’s “Composes with” section those rows are explicitly listed, but `tools/backlog/README.md` defines `composes_with` as the machine-readable cross-reference field used for graph traversal; leaving them out here silently drops those links from automated queries and audits.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T07:52:29Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:12 (association: MEMBER)
-    Addressed in latest commit. `composes_with` frontmatter expanded to `[B-0130, B-0141, B-0170, B-0177]` matching the prose Composes-with section. Backlog tooling now sees the same composition graph the prose describes.
+- **`AceHack` (human)** at 2026-05-03T07:52:29Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:12 (association: MEMBER)
+  Addressed in latest commit. `composes_with` frontmatter expanded to `[B-0130, B-0141, B-0170, B-0177]` matching the prose Composes-with section. Backlog tooling now sees the same composition graph the prose describes.
 
 ### Thread 7 -- resolved [collapsed]
 
@@ -212,19 +207,17 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:58:32Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:55 (association: NONE)
   The proposed `requires`/`ensures`/`invariant` primitives are defined as returning `Result<_, ContractViolation>`, but much of `src/Core/**` still exposes plain-returning APIs (`bool`, `Stream<_>`, `ValueTask`, etc.). Without scoping this to Result-returning functions or defining a separate mechanism for ordinary members and constructors, the row currently implies repo-wide signature churn rather than a drop-in contract primitive.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:12:01Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:55 (association: MEMBER)
-    Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
-    
-    1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
-    2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
-    3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
-    4. Dangling memo path: replaced with full filename for grep-ability.
-    
-    Real compatibility concerns; thanks for the careful review.
+- **`AceHack` (human)** at 2026-05-03T08:12:01Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:55 (association: MEMBER)
+  Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
+  1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
+  2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
+  3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
+  4. Dangling memo path: replaced with full filename for grep-ability.
+
+  Real compatibility concerns; thanks for the careful review.
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -236,19 +229,17 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:58:33Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:75 (association: NONE)
   `memory/parallelism-scaling-ladder memo` looks like a file path but does not resolve to an actual file. `docs/backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md:67-72` establishes the backlog-row convention here: use concrete `memory/...md` filenames (or descriptive prose), not pseudo-paths, so this `Composes with` entry is currently a dangling reference.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:12:03Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:75 (association: MEMBER)
-    Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
-    
-    1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
-    2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
-    3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
-    4. Dangling memo path: replaced with full filename for grep-ability.
-    
-    Real compatibility concerns; thanks for the careful review.
+- **`AceHack` (human)** at 2026-05-03T08:12:03Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:75 (association: MEMBER)
+  Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
+  1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
+  2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
+  3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
+  4. Dangling memo path: replaced with full filename for grep-ability.
+
+  Real compatibility concerns; thanks for the careful review.
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -260,19 +251,17 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:58:33Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:91 (association: NONE)
   `Directory.Build.props` already sets `TreatWarningsAsErrors=true`, so a warning-only contract diagnostic would still fail the build unless the project explicitly carves it out. Framing this as 'warnings or errors?' makes the design question misleading because those are not distinct choices under the current build configuration.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:12:05Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:91 (association: MEMBER)
-    Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
-    
-    1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
-    2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
-    3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
-    4. Dangling memo path: replaced with full filename for grep-ability.
-    
-    Real compatibility concerns; thanks for the careful review.
+- **`AceHack` (human)** at 2026-05-03T08:12:05Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:91 (association: MEMBER)
+  Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
+  1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
+  2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
+  3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
+  4. Dangling memo path: replaced with full filename for grep-ability.
+
+  Real compatibility concerns; thanks for the careful review.
 
 ### Thread 10 -- resolved [collapsed]
 
@@ -284,19 +273,17 @@ L-effort due to: library selection (PostSharp / Fody / Roslyn analyzers / F# typ
 
 - **`Copilot` (bot)** at 2026-05-03T07:58:33Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:24 (association: NONE)
   This makes the contract mechanism blanket-ban exceptions, but the current public APIs still use `invalidArg` for programmer-error preconditions (for example bucket/count/window validation in `src/Core/**`). Unless the row explicitly narrows itself to recoverable user-facing failures, it conflicts with the existing error model for argument-validation contracts.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:12:07Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:24 (association: MEMBER)
-    Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
-    
-    1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
-    2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
-    3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
-    4. Dangling memo path: replaced with full filename for grep-ability.
-    
-    Real compatibility concerns; thanks for the careful review.
+- **`AceHack` (human)** at 2026-05-03T08:12:07Z on `docs/backlog/P2/B-0142-code-contracts-design-by-contract-revival-aaron-2026-05-01.md`:24 (association: MEMBER)
+  Addressed in follow-up PR #1356. New "Migration concerns + scope clarification" section absorbs all four findings:
+  1. Existing `invalidArg`/exception code: scope refined — B-0142 targets recoverable user-facing failures (Result-flow); programmer-error preconditions stay as `invalidArg`. NO blanket-ban exceptions.
+  2. Plain-returning APIs: two-mode primitive — `requires_result()` (Result-returning) vs `requires_assert()` (assertion-only).
+  3. TreatWarningsAsErrors=true: contract-layer severity field; build-gate disposition uniform; per-contract-class CI gating is separate future question. Open-question reframed.
+  4. Dangling memo path: replaced with full filename for grep-ability.
+
+  Real compatibility concerns; thanks for the careful review.
 
 ## Fix commits (touching thread paths)
 

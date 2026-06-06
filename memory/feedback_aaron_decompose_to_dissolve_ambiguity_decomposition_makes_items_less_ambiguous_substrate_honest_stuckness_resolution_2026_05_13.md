@@ -11,18 +11,18 @@ created: 2026-05-13
 "stuckness is usually my ambiguous task," Aaron validated the
 operational discipline that resolves it:
 
-> *"that what decompose backlog item is also a good choice it
-> makes my items less ambigious"*
+> _"that what decompose backlog item is also a good choice it
+> makes my items less ambigious"_
 
 This completes the substrate-honest stuckness-resolution
 discipline that started with the upstream-cause disclosure.
 
 ## The stuckness-resolution discipline (3-part composition)
 
-| Part | Rule | What it does |
-|------|------|--------------|
-| 1. Recognize | Ambiguity is two-sided | Stops blame-spiral toward agent OR Aaron |
-| 2. Disambiguate-in-place | Name interpretation + continue | Resolves ambiguity at single-task scope |
+| Part                         | Rule                            | What it does                                                      |
+| ---------------------------- | ------------------------------- | ----------------------------------------------------------------- |
+| 1. Recognize                 | Ambiguity is two-sided          | Stops blame-spiral toward agent OR Aaron                          |
+| 2. Disambiguate-in-place     | Name interpretation + continue  | Resolves ambiguity at single-task scope                           |
 | 3. **Decompose** (THIS RULE) | Break parent into smaller items | Resolves ambiguity at backlog scope; each child is less ambiguous |
 
 All three compose. Part 3 is the substrate-honest path when
@@ -101,9 +101,9 @@ ARE shipped substrate.
 
 **Ambiguous task** (from Aaron 2026-05-13):
 
-> *"you need to imagine how would you survive without this
+> _"you need to imagine how would you survive without this
 > foreground loop and you background should be strong enough
-> to do that"*
+> to do that"_
 
 **Disambiguate-in-place result** (substrate memory file):
 
@@ -205,11 +205,11 @@ compounds.
 
 Aaron's 3-message arc on substrate-honest discipline:
 
-1. *"when you get stuck it's usually aaron's ambiguous task"*
-2. *"i wanted the version without my review to make it in
-   first"*
-3. *"that what decompose backlog item is also a good choice
-   it makes my items less ambigious"*
+1. _"when you get stuck it's usually aaron's ambiguous task"_
+2. _"i wanted the version without my review to make it in
+   first"_
+3. _"that what decompose backlog item is also a good choice
+   it makes my items less ambigious"_
 
 All three compose into substrate-honest operational
 discipline. The agent's job:
@@ -229,7 +229,7 @@ Aaron 2026-05-13 verbatim (preserved above)
 Composes with:
 
 - PR (this substrate landing — same PR as upstream-cause
-  + ship-first substrates)
+  - ship-first substrates)
 - PR #2998 (background-services architecture — substrate
   that requires decomposition follow-up; this rule directs
   the follow-up cadence)

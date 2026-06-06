@@ -5,19 +5,19 @@ Captured from deep research agent 2025. Drives the selection in
 
 ## Decision matrix
 
-| Algorithm | Memory | Lookup | Rebalance churn | Supports removal | Supports weights | Maturity |
-|---|---|---|---|---|---|---|
-| Ring / ketama | O(N·V), V~160 | O(log NV) | ~1/N | yes | yes (vnodes) | production ~20y |
-| **Jump** (Lamping–Veach 2014, arXiv:1406.2294) | O(1) | O(log N) | optimal 1/N | **no** (LIFO only) | no | production |
-| HRW / Rendezvous (Thaler 1998) | O(N) | O(N) or O(log N) skeleton | optimal 1/N | yes | yes (Schindelhauer 2005) | production |
-| Maglev (Google NSDI 2016) | O(M), M≈100N | O(1) | ~1% (not optimal) | yes | yes | production (Envoy, Cloudflare) |
-| AnchorHash (Mendelson IEEE TNET 2020) | O(a) fixed | O(1) avg | near-optimal | yes | no | production-ready |
-| DxHash (Dong ACM TOIT 2023) | O(a) bitmap | O(1) avg | near-optimal | yes | **arbitrary** | new but solid |
-| **MementoHash** (Coluzzi IEEE TON 2024) | O(r), r=removed | O(ln n · ln(n/w)) | optimal | yes | no | **Pareto-best dynamic** |
-| BinomialHash (2024) | O(1) | O(1) | optimal | via Memento wrap | no | brand-new |
-| JumpBackHash (2024) | O(1) | O(1) expected | optimal | LIFO | no | 2024 |
-| FlipHash (2024) | O(1) | O(1) | optimal | LIFO | no | 2024 |
-| CRUSH (Weil 2006) | tree | tree-descent | optimal per level | yes | yes | production (Ceph) |
+| Algorithm                                      | Memory          | Lookup                    | Rebalance churn   | Supports removal   | Supports weights         | Maturity                       |
+| ---------------------------------------------- | --------------- | ------------------------- | ----------------- | ------------------ | ------------------------ | ------------------------------ |
+| Ring / ketama                                  | O(N·V), V~160   | O(log NV)                 | ~1/N              | yes                | yes (vnodes)             | production ~20y                |
+| **Jump** (Lamping–Veach 2014, arXiv:1406.2294) | O(1)            | O(log N)                  | optimal 1/N       | **no** (LIFO only) | no                       | production                     |
+| HRW / Rendezvous (Thaler 1998)                 | O(N)            | O(N) or O(log N) skeleton | optimal 1/N       | yes                | yes (Schindelhauer 2005) | production                     |
+| Maglev (Google NSDI 2016)                      | O(M), M≈100N    | O(1)                      | ~1% (not optimal) | yes                | yes                      | production (Envoy, Cloudflare) |
+| AnchorHash (Mendelson IEEE TNET 2020)          | O(a) fixed      | O(1) avg                  | near-optimal      | yes                | no                       | production-ready               |
+| DxHash (Dong ACM TOIT 2023)                    | O(a) bitmap     | O(1) avg                  | near-optimal      | yes                | **arbitrary**            | new but solid                  |
+| **MementoHash** (Coluzzi IEEE TON 2024)        | O(r), r=removed | O(ln n · ln(n/w))         | optimal           | yes                | no                       | **Pareto-best dynamic**        |
+| BinomialHash (2024)                            | O(1)            | O(1)                      | optimal           | via Memento wrap   | no                       | brand-new                      |
+| JumpBackHash (2024)                            | O(1)            | O(1) expected             | optimal           | LIFO               | no                       | 2024                           |
+| FlipHash (2024)                                | O(1)            | O(1)                      | optimal           | LIFO               | no                       | 2024                           |
+| CRUSH (Weil 2006)                              | tree            | tree-descent              | optimal per level | yes                | yes                      | production (Ceph)              |
 
 ## Our picks
 
@@ -29,7 +29,7 @@ Captured from deep research agent 2025. Drives the selection in
 - **MementoHash** is the elastic upgrade for worker pools that can
   fail/return: same Jump behaviour in the no-failures common case
   (zero perf regression), graceful degradation as workers go away
-  with memory proportional to *actual failures* rather than capacity.
+  with memory proportional to _actual failures_ rather than capacity.
   The current Pareto-dominant algorithm per IEEE TON 2024.
 
 ### Secondary: `RendezvousHash` (named workers)

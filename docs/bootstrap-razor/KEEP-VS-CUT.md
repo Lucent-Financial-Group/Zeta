@@ -80,12 +80,12 @@ relationship they encode.
 
 ## Disposition summary
 
-| Category | Disposition | Count (est.) | Experiment role |
-| ---------- | ------------- | ------------- | ----------------- |
-| Research-grade | KEEP | ~50 | Control group |
-| Decision rationale | CUT-IF-REGENERABLE | ~400 | Test group |
-| External-context | EXEMPT | ~100 | Excluded |
-| Personal-history | KEEP | 4-6 | Control group |
+| Category           | Disposition        | Count (est.) | Experiment role |
+| ------------------ | ------------------ | ------------ | --------------- |
+| Research-grade     | KEEP               | ~50          | Control group   |
+| Decision rationale | CUT-IF-REGENERABLE | ~400         | Test group      |
+| External-context   | EXEMPT             | ~100         | Excluded        |
+| Personal-history   | KEEP               | 4-6          | Control group   |
 
 ## Usage
 

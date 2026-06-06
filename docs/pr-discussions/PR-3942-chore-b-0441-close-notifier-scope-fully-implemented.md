@@ -51,24 +51,22 @@ The remaining open work — slice 5.2, agent-side `work-assignment` subscriber h
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T21:23:38Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a07804b9fa`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -81,6 +79,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Closes backlog row **B-0441** by updating its per-row file to `status: closed`, marking acceptance criteria as shipped, and regenerating the `docs/BACKLOG.md` index to reflect that closure.
 
 **Changes:**
+
 - Mark `docs/backlog/P1/B-0441-*.md` as **closed**, update `last_updated`, and flip remaining acceptance checkboxes to `[x]` with slice annotations.
 - Regenerate `docs/BACKLOG.md` so the B-0441 entry is shown as closed.
 
@@ -88,10 +87,10 @@ Closes backlog row **B-0441** by updating its per-row file to `status: closed`, 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                        | Description                                                       |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | docs/backlog/P1/B-0441-backlog-row-ready-to-grind-notifier-background-service-2026-05-13.md | Closes B-0441 and marks remaining acceptance criteria as shipped. |
-| docs/BACKLOG.md | Updates the generated backlog index to reflect B-0441 as closed. |
+| docs/BACKLOG.md                                                                             | Updates the generated backlog index to reflect B-0441 as closed.  |
 
 ## Review threads
 
@@ -99,7 +98,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-16T21:23:38Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep B-0441 open until dedup cooldown is implemented**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Keep B-0441 open until dedup cooldown is implemented**
 
 Marking the dedup criterion as shipped here is inconsistent with the repo state in this commit: the child slice row `docs/backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md` is still `status: open`, and `tools/bg/backlog-ready-notifier.ts` still publishes per poll without persisted cooldown history. Closing B-0441 with this checkbox set to `[x]` can suppress remaining work in backlog-driven workflows and make reviewers think the anti-reassignment safeguard already exists when it does not.
 

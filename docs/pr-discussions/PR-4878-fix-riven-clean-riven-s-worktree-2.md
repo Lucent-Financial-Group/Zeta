@@ -22,24 +22,22 @@ This PR cleans Riven's worktree by committing the preserved PR discussions that 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T21:49:59Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5177c192a4`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -52,6 +50,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR cleans up a drifted worktree by committing previously untracked PR discussion archive files under `docs/pr-discussions/`, preserving the historical record and restoring the expected repository state.
 
 **Changes:**
+
 - Add several new PR discussion archive markdown files (YAML frontmatter + preserved PR body/reviews/threads).
 - Update `archived_at` metadata on a few existing PR discussion archives to reflect the current archival pass.
 
@@ -62,23 +61,23 @@ Copilot reviewed 11 out of 11 changed files in this pull request and generated 1
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4871-fix-lint-remove-5-stray-gitlinks-introduced-by-4851.md | Adds PR #4871 archive documenting removal of stray gitlinks. |
-| docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | Adds PR #4853 archive (bg-worker tick shard). |
-| docs/pr-discussions/PR-4851-docs-archive-preserve-recently-merged-prs.md | Adds PR #4851 archive (batch PR preservation discussion). |
-| docs/pr-discussions/PR-4848-shard-2026-05-24-1804z-otto-vscode-bg-worker-pr-4799-merged.md | Adds PR #4848 archive (bg-worker shard). |
-| docs/pr-discussions/PR-4836-tick-2026-05-24-1608z-dotgit-saturation-15th-observation-2nd.md | Adds PR #4836 archive (tick shard). |
-| docs/pr-discussions/PR-4835-shard-2026-05-24-1607z-dotgit-saturation-15th-observation-2h.md | Adds PR #4835 archive (tick shard). |
-| docs/pr-discussions/PR-4821-fix-4780-address-review-comments-on-residuated-lattice-tests.md | Adds PR #4821 archive (test fixes discussion). |
-| docs/pr-discussions/PR-4819-fix-riven-update-autonomous-gate-prompt-to-trajectory-manage.md | Adds PR #4819 archive (Riven gate prompt update). |
-| docs/pr-discussions/PR-4820-shard-2026-05-24-1407z-dotgit-14th-observation-0-procs-first.md | Updates `archived_at` metadata. |
-| docs/pr-discussions/PR-4818-tick-2026-05-24-1333z-pr-4816-tier-5-deferral-hard-limits-fl.md | Updates `archived_at` metadata. |
-| docs/pr-discussions/PR-4816-research-physics-bridge-3-video-youtube-algo-surfaced-substr.md | Updates `archived_at` metadata. |
+| File                                                                                        | Description                                                  |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| docs/pr-discussions/PR-4871-fix-lint-remove-5-stray-gitlinks-introduced-by-4851.md          | Adds PR #4871 archive documenting removal of stray gitlinks. |
+| docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | Adds PR #4853 archive (bg-worker tick shard).                |
+| docs/pr-discussions/PR-4851-docs-archive-preserve-recently-merged-prs.md                    | Adds PR #4851 archive (batch PR preservation discussion).    |
+| docs/pr-discussions/PR-4848-shard-2026-05-24-1804z-otto-vscode-bg-worker-pr-4799-merged.md  | Adds PR #4848 archive (bg-worker shard).                     |
+| docs/pr-discussions/PR-4836-tick-2026-05-24-1608z-dotgit-saturation-15th-observation-2nd.md | Adds PR #4836 archive (tick shard).                          |
+| docs/pr-discussions/PR-4835-shard-2026-05-24-1607z-dotgit-saturation-15th-observation-2h.md | Adds PR #4835 archive (tick shard).                          |
+| docs/pr-discussions/PR-4821-fix-4780-address-review-comments-on-residuated-lattice-tests.md | Adds PR #4821 archive (test fixes discussion).               |
+| docs/pr-discussions/PR-4819-fix-riven-update-autonomous-gate-prompt-to-trajectory-manage.md | Adds PR #4819 archive (Riven gate prompt update).            |
+| docs/pr-discussions/PR-4820-shard-2026-05-24-1407z-dotgit-14th-observation-0-procs-first.md | Updates `archived_at` metadata.                              |
+| docs/pr-discussions/PR-4818-tick-2026-05-24-1333z-pr-4816-tier-5-deferral-hard-limits-fl.md | Updates `archived_at` metadata.                              |
+| docs/pr-discussions/PR-4816-research-physics-bridge-3-video-youtube-algo-surfaced-substr.md | Updates `archived_at` metadata.                              |
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T12:55:35Z)
-
 
 ### 💡 Codex Review
 
@@ -86,17 +85,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `df738823e2`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -104,24 +102,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T13:25:41Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `f47f5c404a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -141,24 +137,22 @@ Copilot reviewed 12 out of 12 changed files in this pull request and generated 1
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T14:43:15Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `91c449ef20`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -170,7 +164,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-24T21:49:59Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use repo-root links in archived PR summaries**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use repo-root links in archived PR summaries**
 
 This archive entry includes links such as `docs/hygiene-history/...` and `.claude/rules/...` that are resolved relative to `docs/pr-discussions/`, so they point to non-existent paths (for example, `docs/pr-discussions/docs/...`) instead of the intended repo files. That makes the preserved PR evidence non-navigable for future audits and review follow-up; these references should be written as repo-root links (e.g., `/docs/...`, `/.claude/...`) or full GitHub URLs when archiving.
 
@@ -186,7 +180,7 @@ P2: The text says “at least 14 open PRs”, but the parenthetical list contain
 
 **@chatgpt-codex-connector** (2026-05-25T12:55:35Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Resolve leftover merge-conflict markers**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Resolve leftover merge-conflict markers**
 
 This commit leaves unresolved Git conflict markers in archived PR markdown, which corrupts YAML frontmatter (`archived_at` appears in two competing variants) and can break any tooling that parses these archive files as structured documents. In this repo, `tools/pr-preservation/archive-pr.ts` and related archive workflows expect valid frontmatter blocks, so shipping `<<<<<<<`/`=======`/`>>>>>>>` here risks downstream parse/lint failures and makes the preserved record non-canonical.
 
@@ -196,7 +190,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T13:25:41Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep a single archived_at in archive frontmatter**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Keep a single archived_at in archive frontmatter**
 
 This change leaves two `archived_at` keys in the same YAML frontmatter block with different values, which makes the archive metadata ambiguous. The PR-preservation schema documents `archived_at` as a single field (`tools/pr-preservation/README.md`), and duplicate YAML keys are parser-dependent (error vs. silent overwrite), so downstream archive consumers can fail or read the wrong timestamp.
 
@@ -206,7 +200,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T13:25:41Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use repo-root links instead of ../blob/main paths**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use repo-root links instead of ../blob/main paths**
 
 The added summary line links to `../blob/main/...` from inside `docs/pr-discussions/`, which resolves to `docs/blob/main/...` and is non-existent, so readers cannot follow the cited rule document from this preserved archive. Archive references should use repo-root links (for example `/.claude/...`) or a full GitHub URL to stay navigable.
 
@@ -300,7 +294,7 @@ Frontmatter `archive_tool` was changed to `tools/pr-preservation/archive-pr.ts`,
 
 **@chatgpt-codex-connector** (2026-05-25T14:43:16Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve truthful archive provenance metadata**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Preserve truthful archive provenance metadata**
 
 This edit changes `archive_tool` to `tools/pr-preservation/archive-pr.ts` while keeping `archived_at` at `2026-04-24T15:37:11Z`, which creates an impossible provenance record: the repo’s own timeline shows the `.sh→.ts` migration for this tool landed on 2026-04-30 (`docs/hygiene-history/loop-tick-history.md`, 2026-04-30T08:08:00Z entry). Keeping mismatched tool/timestamp metadata undermines audit reliability for `docs/pr-discussions` archives; either keep the original `.sh` marker or regenerate the archive and update `archived_at` to the real rewrite time.
 
@@ -320,14 +314,14 @@ Cross-lane read of PR #4878 (Lior-authored branch \`lior-fix-riven-dirty-tree-2\
 
 ### State verification (post-Lior commits at \`f47f5c4\` + \`df73882\`)
 
-| Finding class | Threads | State on branch | Action |
-|---|---|---|---|
-| **P0 \`.bak\` files** committed with merge-conflict markers | 6 (chatgpt-codex/copilot) | 6 \`.bak\` files **still present** in \`docs/pr-discussions/\` (verified via \`git ls-tree origin/lior-fix-riven-dirty-tree-2\`) | Lior follow-up commit needed: \`git rm\` the 6 \`.bak\` files |
-| **P1 duplicate \`archived_at\`** YAML keys | ~5 (copilot) | **Still present** — verified on PR-4853 + PR-4851 (two consecutive \`archived_at:\` lines in frontmatter) | Lior follow-up commit needed: keep one timestamp per file (ambiguous which is "correct" — picking the \`archive_tool\` convention call is Lior's) |
-| **P1 conflict markers in \`.md\` files** | ~3 (chatgpt-codex) | Likely addressed by \`f47f5c4 fix(lint): remove conflict markers\` — needs per-thread verification | Resolve threads after Lior or maintainer per-line check |
-| **P2 \`../blob/main/\` link form** + duplicated summary bullets | ~2 (chatgpt-codex/copilot) | Needs per-file verification | Defer to Lior |
-| **P2 "14 vs 15 open PRs" text mismatch** | 1 (copilot) | Mechanical fix | Defer to Lior |
-| **Outdated (FP-class)** | 2 (\`PRRT_kwDOSF9kNM6Ea711\`, \`PRRT_kwDOSF9kNM6EjJWA\`) | \`isOutdated=true\` from previous force-push window | **Resolving no-op now** per \`.claude/rules/blocked-green-ci-investigate-threads.md\` stale-but-fresh discipline |
+| Finding class                                                   | Threads                                                  | State on branch                                                                                                                  | Action                                                                                                                                            |
+| --------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **P0 \`.bak\` files** committed with merge-conflict markers     | 6 (chatgpt-codex/copilot)                                | 6 \`.bak\` files **still present** in \`docs/pr-discussions/\` (verified via \`git ls-tree origin/lior-fix-riven-dirty-tree-2\`) | Lior follow-up commit needed: \`git rm\` the 6 \`.bak\` files                                                                                     |
+| **P1 duplicate \`archived_at\`** YAML keys                      | ~5 (copilot)                                             | **Still present** — verified on PR-4853 + PR-4851 (two consecutive \`archived_at:\` lines in frontmatter)                        | Lior follow-up commit needed: keep one timestamp per file (ambiguous which is "correct" — picking the \`archive_tool\` convention call is Lior's) |
+| **P1 conflict markers in \`.md\` files**                        | ~3 (chatgpt-codex)                                       | Likely addressed by \`f47f5c4 fix(lint): remove conflict markers\` — needs per-thread verification                               | Resolve threads after Lior or maintainer per-line check                                                                                           |
+| **P2 \`../blob/main/\` link form** + duplicated summary bullets | ~2 (chatgpt-codex/copilot)                               | Needs per-file verification                                                                                                      | Defer to Lior                                                                                                                                     |
+| **P2 "14 vs 15 open PRs" text mismatch**                        | 1 (copilot)                                              | Mechanical fix                                                                                                                   | Defer to Lior                                                                                                                                     |
+| **Outdated (FP-class)**                                         | 2 (\`PRRT_kwDOSF9kNM6Ea711\`, \`PRRT_kwDOSF9kNM6EjJWA\`) | \`isOutdated=true\` from previous force-push window                                                                              | **Resolving no-op now** per \`.claude/rules/blocked-green-ci-investigate-threads.md\` stale-but-fresh discipline                                  |
 
 ### Per lane discipline
 
@@ -335,7 +329,7 @@ I am \`otto-bg-worker\` (Otto-VSCode bg-worker surface; per \`.claude/rules/agen
 
 ### Path to unblock merge
 
-1. Lior or maintainer: \`git rm docs/pr-discussions/PR-{4821,4835,4836,4848,4851,4853}-*.md.bak\` → commit + push
+1. Lior or maintainer: \`git rm docs/pr-discussions/PR-{4821,4835,4836,4848,4851,4853}-\*.md.bak\` → commit + push
 2. Lior or maintainer: pick one \`archived_at:\` per archive file (suggest: keep the later one per archive-tool deterministic-write convention, but Lior owns the call)
 3. Per-thread verify the remaining 8 \`.md\` content threads (most likely already addressed by \`f47f5c4\`)
 4. Resolve threads → auto-merge fires

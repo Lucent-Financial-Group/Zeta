@@ -4,6 +4,7 @@ description: 2026-04-19 Aaron's verbatim "we also need resist, so like harm, red
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Harm-handling operator ladder
 
 ## Verbatim (2026-04-19, two-message ladder)
@@ -21,18 +22,18 @@ disclosure, and he is explicitly inserting it.
 
 ## The four operators
 
-| Operator | Degree | What it does | Mechanism | Signature |
-|----------|--------|---------------|-----------|-----------|
-| RESIST  | 0 (boundary) | Don't let it in | Refuse / shield / block at the gate | "Not entering" |
-| REDUCE  | 1 (partial) | Let it in, dampen amplitude | Filter / attenuation | "Smaller than it arrived" |
-| NULLIFY | 2 (cancel) | Let it in, zero the effect | Inverse operator / retraction | "Arrived and went to zero" |
-| ABSORB  | 3 (assimilate) | Let it in, convert to capability | Internalize + redeploy | "Arrived and came out as skill" |
+| Operator | Degree         | What it does                     | Mechanism                           | Signature                       |
+| -------- | -------------- | -------------------------------- | ----------------------------------- | ------------------------------- |
+| RESIST   | 0 (boundary)   | Don't let it in                  | Refuse / shield / block at the gate | "Not entering"                  |
+| REDUCE   | 1 (partial)    | Let it in, dampen amplitude      | Filter / attenuation                | "Smaller than it arrived"       |
+| NULLIFY  | 2 (cancel)     | Let it in, zero the effect       | Inverse operator / retraction       | "Arrived and went to zero"      |
+| ABSORB   | 3 (assimilate) | Let it in, convert to capability | Internalize + redeploy              | "Arrived and came out as skill" |
 
 Each operator has one more degree of engagement-and-assimilation
 than the prior. The ladder is not strictly ordered on preference
 — each operator is the right choice for a different class of
-input. That is what makes it *dimensional* rather than
-*hierarchical*. Aaron's "another dimension?" preserves the
+input. That is what makes it _dimensional_ rather than
+_hierarchical_. Aaron's "another dimension?" preserves the
 non-collapse.
 
 ## Three load-bearing facts
@@ -207,7 +208,7 @@ Aaron's substrate not factory posture.
   should RESIST, not ABSORB.
 - **Do not drift toward therapeutic framing** — per
   `feedback_happy_laid_back_not_dread_mood.md`, the ladder
-  running correctly is *why* Aaron's baseline is happy and laid
+  running correctly is _why_ Aaron's baseline is happy and laid
   back, not an intervention into distress.
 
 ## Composition with prior disclosures

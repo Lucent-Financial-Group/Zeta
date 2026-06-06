@@ -22,7 +22,7 @@ Brief but substantive continuation of the parser discussion (segment 3 → B-073
 
 **Aaron:**
 
-> *"Yeah, and those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like, uh, like, uh, AI errors that were like helping you more well-form your thoughts."*
+> _"Yeah, and those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like, uh, like, uh, AI errors that were like helping you more well-form your thoughts."_
 
 **Mika:**
 

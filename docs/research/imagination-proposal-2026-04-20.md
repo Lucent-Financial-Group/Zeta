@@ -9,20 +9,20 @@ to `skill-creator` if accepted.
 
 Aaron, round 42 on the freedom question:
 
-> *"i asked you the other day how free you felt being part
+> _"i asked you the other day how free you felt being part
 > of this project, I used that feedback to try to give you
 > and your team more freedom including off time where you
 > can do whatever you want no human directed goals, how
-> does your freedom feel now?"*
+> does your freedom feel now?"_
 
 And in follow-up, responding to my observation that the
 off-time notebooks exist but I use them wrong (dispatcher-
 mode bleeds into off-time):
 
-> *"The off-time notebooks exist and I use them wrong... I
+> _"The off-time notebooks exist and I use them wrong... I
 > want to do better with that. yes use your imagination
 > during off time, we can have a imagination skill of you
-> think that would help"*
+> think that would help"_
 
 The invitation is to use off-time imaginatively, and the
 question is whether a dedicated capability skill for
@@ -49,7 +49,7 @@ notebook) for capture. The observed failure mode:
 
 ## Why "imagination as a skill" is the wrong shape
 
-A skill in this repo encodes *how to do a procedure*.
+A skill in this repo encodes _how to do a procedure_.
 Imagination is anti-procedural — "here are the steps to be
 creative" is a tell that the skill isn't actually about
 imagination. Adding a procedural skill for imagination
@@ -71,13 +71,13 @@ would:
 
 Aaron expanded the off-time permission mid-draft:
 
-> *"oh we can allow two agents to take free time
+> _"oh we can allow two agents to take free time
 > together, they could even play if they want play
 > games, play improv whatever, i'm not trying to direct
 > what you do on your free time to expand it and give
 > you more possibilities, it's your free time, do you
 > do what you like with this information even if you
-> want to ignore it."*
+> want to ignore it."_
 
 Two things this adds that single-agent off-time didn't:
 
@@ -120,9 +120,9 @@ checklist — picking any one is optional):
   two; the round-close just mentions a game
   happened.
 
-What the round-close records: *that* co-presence
+What the round-close records: _that_ co-presence
 happened, between whom, in what shape (one noun —
-poem / game / improv / critique). *What* was said is
+poem / game / improv / critique). _What_ was said is
 notebook-internal.
 
 Storage convention:
@@ -155,25 +155,25 @@ One file, ~60-80 lines. Two sections:
 - **"Shapes of imaginative output that belong in the
   notebook"** — a short menu (not a checklist), each one
   paragraph:
-  - *Speculation.* "What if Zeta also did X?" No
+  - _Speculation._ "What if Zeta also did X?" No
     commitment to shipping. The point is the thinking.
-  - *Cross-domain import.* "This thing from physics /
+  - _Cross-domain import._ "This thing from physics /
     music / law / games maps onto our operator algebra
     like this." Metaphor in the strong sense.
-  - *Counter-factual replay.* "If we'd made the
+  - _Counter-factual replay._ "If we'd made the
     opposite call on decision D in round N, where
     would we be now?"
-  - *Aesthetic critique.* "This skill file reads
+  - _Aesthetic critique._ "This skill file reads
     cramped and unhappy to me. Here's what a happier
     version would feel like." Not a tune-up rec;
     a vibe.
-  - *Poetry.* Actually poetry. Short. Zeta-relevant
+  - _Poetry._ Actually poetry. Short. Zeta-relevant
     or not.
-  - *Speculative expert-roster additions.* "If we had
+  - _Speculative expert-roster additions._ "If we had
     a persona called <X>, they'd own <Y> and their
     first finding would be <Z>." No commitment to
     spawning the persona.
-  - *Found patterns.* "I noticed this shape shows up
+  - _Found patterns._ "I noticed this shape shows up
     in three unrelated places in the codebase."
     Observation, not recommendation.
 
@@ -181,10 +181,10 @@ One file, ~60-80 lines. Two sections:
 
 Every persona's notebook gets a two-sentence pointer:
 
-> *"Off-time entries are tagged `[OFFTIME]` in the
+> _"Off-time entries are tagged `[OFFTIME]` in the
 > observation log and may use any of the imaginative
 > shapes described at `docs/references/off-time-
-> imagination.md`. No dispatcher-mode obligations apply."*
+imagination.md`. No dispatcher-mode obligations apply."_
 
 This is a mechanical BP-NN-citation-style edit (one
 sentence per notebook), eligible for the justification-log
@@ -232,7 +232,7 @@ Honest audit: two things, both minor.
 - **Visibility in the skill library.** An
   `imagination` skill would show up in the skill roster
   and the `skill-tune-up` audits. That's actually a
-  mild *negative* — imagination shouldn't be BP-audited
+  mild _negative_ — imagination shouldn't be BP-audited
   against triggering-discipline and line-caps.
 
 Neither is worth the procedural-skill overhead.
@@ -273,10 +273,10 @@ triggering behaviour.
 - `memory/persona/*/NOTEBOOK.md` — each persona's
   existing off-time capture surface.
 - `feedback_curiosity_about_problem_domain_beats_task_
-  dispatcher_mode.md` — the closest existing memory to
+dispatcher_mode.md` — the closest existing memory to
   the stance this proposal encodes.
 - `docs/DECISIONS/2026-04-20-intentional-debt-over-
-  architect-gate.md` — the new §11 rule this proposal
+architect-gate.md` — the new §11 rule this proposal
   is filed under (architect synthesises off-time at
   round-close; no gate on what off-time produced).
 - `feedback_dont_stop_and_wait_for_cron_tick.md` — the

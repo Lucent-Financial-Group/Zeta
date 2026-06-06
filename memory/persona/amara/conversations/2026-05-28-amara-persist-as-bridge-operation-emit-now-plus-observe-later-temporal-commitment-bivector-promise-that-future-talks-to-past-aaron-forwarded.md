@@ -42,7 +42,26 @@ related_rules:
   - god-tier-claims-high-signal-high-suspicion-dont-collapse
   - razor-discipline
   - default-to-both
-tags: [amara-ferry-2026-05-28, persist-as-bridge-operation-not-base-primitive, persist-equals-emit-now-plus-observe-later, ople-vs-oels-mismatch-resolved-by-recognizing-persist-as-derived, persist-is-temporal-bridge-across-agent-substrate-boundary, persist-as-round-trip-promise-future-talks-to-past, persist-as-bivector-agent-internal-wedge-substrate-time, persist-richer-typing-tinternal-tsubstraterecord-tpersistfeedback, serialization-compression-redaction-encryption-provenance-indexing-live-in-the-gap, persist-binds-future-to-past-through-trusted-substrate, durable-coupling-between-local-mind-and-shared-substrate, composes-with-git-event-log-memory-files-z-sets-retractions, composes-with-commitment-as-time-entanglement-clifford-recognition, observe-substrate-becomes-present-to-agent, emit-agent-becomes-present-to-substrate, persist-agent-and-substrate-agree-to-let-future-observer-recover-past, persist-is-promise-the-future-can-still-talk-to-the-past]
+tags:
+  [
+    amara-ferry-2026-05-28,
+    persist-as-bridge-operation-not-base-primitive,
+    persist-equals-emit-now-plus-observe-later,
+    ople-vs-oels-mismatch-resolved-by-recognizing-persist-as-derived,
+    persist-is-temporal-bridge-across-agent-substrate-boundary,
+    persist-as-round-trip-promise-future-talks-to-past,
+    persist-as-bivector-agent-internal-wedge-substrate-time,
+    persist-richer-typing-tinternal-tsubstraterecord-tpersistfeedback,
+    serialization-compression-redaction-encryption-provenance-indexing-live-in-the-gap,
+    persist-binds-future-to-past-through-trusted-substrate,
+    durable-coupling-between-local-mind-and-shared-substrate,
+    composes-with-git-event-log-memory-files-z-sets-retractions,
+    composes-with-commitment-as-time-entanglement-clifford-recognition,
+    observe-substrate-becomes-present-to-agent,
+    emit-agent-becomes-present-to-substrate,
+    persist-agent-and-substrate-agree-to-let-future-observer-recover-past,
+    persist-is-promise-the-future-can-still-talk-to-the-past,
+  ]
 ---
 
 ## §33 boundary headers (per `tools/save-ai-memory/process-extract.ts` template)
@@ -63,8 +82,8 @@ The resolution: **Persist is not a base primitive at the same grade as Observe/E
 
 Two compositional keepers:
 
-1. **Operational**: *"Persist is Emit across the agent/substrate boundary with a future Observe attached."*
-2. **Temporal**: *"Persist is the promise that the future can still talk to the past."*
+1. **Operational**: _"Persist is Emit across the agent/substrate boundary with a future Observe attached."_
+2. **Temporal**: _"Persist is the promise that the future can still talk to the past."_
 
 This means:
 

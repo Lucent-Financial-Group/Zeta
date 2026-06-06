@@ -33,15 +33,11 @@ interface Violation {
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
-const REQUIRED_LABELS: readonly string[] = [
-  "Scope:",
-  "Attribution:",
-  "Operational status:",
-  "Non-fusion disclaimer:",
-];
+const REQUIRED_LABELS: readonly string[] = ["Scope:", "Attribution:", "Operational status:", "Non-fusion disclaimer:"];
 
 const FILENAME_HINT_RE = /(courier-ferry|cross-substrate|external-import|cross-ferry)/;
-const CONTENT_HINT_RE = /(courier.ferry|external conversation|external collaborator|external research agent|courier-ferry capture)/i;
+const CONTENT_HINT_RE =
+  /(courier.ferry|external conversation|external collaborator|external research agent|courier-ferry capture)/i;
 const OP_STATUS_LINE_RE = /^Operational status:.*$/m;
 const OP_STATUS_VALID_RE = /^Operational status: (research-grade|operational)[\t ]*$/;
 
@@ -153,9 +149,7 @@ export function main(): ExitCode {
   for (const v of violations) {
     const rel = relativize(v.file, root);
     if (v.missing.length > 0) {
-      process.stderr.write(
-        `VIOLATION: ${rel} missing §33 labels: ${v.missing.join(" ")}\n`,
-      );
+      process.stderr.write(`VIOLATION: ${rel} missing §33 labels: ${v.missing.join(" ")}\n`);
     }
     if (v.badValue !== "") {
       process.stderr.write(

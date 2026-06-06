@@ -29,7 +29,7 @@ session Otto-87)
 
 ## Preamble context from Aaron (Otto-87)
 
-*"another amara update"* (verbatim) — single-line framing
+_"another amara update"_ (verbatim) — single-line framing
 followed by the full ferry paste. Light-touch paste with no
 additional directive framing.
 
@@ -139,19 +139,19 @@ were discovered through repository search but not content-fetched
 in this pass. fileciteturn13file0L1-L1 fileciteturn16file0L1-L1
 fileciteturn19file0L1-L1
 
-| Repo | Status | Path | Summary | Relevance tags | Evidence |
-|---|---|---|---|---|---|
-| Lucent-Financial-Group/Zeta | Pulled | `README.md` | Public definition of Zeta as a DBSP implementation on .NET with identities, operator surface, storage/runtime layers, and performance posture. | algebra, API, runtime, storage | fileciteturn36file0L1-L1 |
-| Lucent-Financial-Group/Zeta | Pulled | `AGENTS.md` | Universal onboarding/governance handbook for humans and AI agents; frames the repo as an AI-directed software factory with verification as the quality backstop. | governance, factory, process | fileciteturn37file0L1-L1 |
-| Lucent-Financial-Group/Zeta | Pulled | `docs/ALIGNMENT.md` | Mutual-benefit alignment contract; treats alignment as measurable over commits, memory, and rounds. | alignment, metrics, governance | fileciteturn38file0L1-L1 |
-| Lucent-Financial-Group/Zeta | Pulled | `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md` | Research absorb of precursor conversation; preserves the five-pattern drift taxonomy and branding-risk notes around Aurora. | drift, aurora, branding, epistemics | fileciteturn39file0L1-L1 |
-| Lucent-Financial-Group/Zeta | Pulled | `docs/aurora/2026-04-23-amara-operational-gap-assessment.md` | External review of repo progress and operational gaps; strongest source on main-vs-PR ambiguity, memory index lag, and closure-over-novelty. | aurora, operations, review | fileciteturn40file0L1-L1 |
-| Lucent-Financial-Group/Zeta | Pulled | `docs/aurora/2026-04-23-amara-zset-semantics-operator-algebra.md` | Systematic audit of ZSet semantics, normalization, recursion caveats, and proposed semantic metrics like stability and "Veridicality Score." | algebra, zset, aurora, metrics | fileciteturn41file0L1-L1 |
-| Lucent-Financial-Group/Zeta | Pulled | `docs/DECISIONS/2026-04-23-external-maintainer-decision-proxy-pattern.md` | ADR for scoped external-AI decision proxies with advisory/approving modes, logging, and out-of-repo access handling. | proxy, governance, audit | fileciteturn42file0L1-L1 |
-| AceHack/Zeta | Pulled | `README.md` | Confirms the same DBSP/Zeta public positioning and operator surface on the AceHack mirror. | mirror, algebra, API | fileciteturn23file0L1-L1 |
-| AceHack/Zeta | Pulled | `CLAUDE.md` | Session bootstrap for Claude Code; points first to `AGENTS.md`, then alignment, conflict resolution, glossary, and harness-specific safety rules. | harness, governance, operations | fileciteturn24file0L1-L1 |
-| Lucent-Financial-Group/lucent-ksk | Pulled | `docs/ksk_architecture.yaml` | Draft architecture for Aurora KSK as a local-first safety kernel with budgets, receipts, red lines, traffic-light state, and optional anchoring. | ksk, architecture, policy, security | fileciteturn33file0L1-L1 |
-| Lucent-Financial-Group/lucent-ksk | Pulled | `docs/development_guide.md` | MVP-oriented delivery plan for the KSK services, contracts, integrations, milestones, and test approach. | ksk, implementation, roadmap | fileciteturn34file0L1-L1 |
+| Repo                              | Status | Path                                                                      | Summary                                                                                                                                                          | Relevance tags                      | Evidence                 |
+| --------------------------------- | ------ | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------ |
+| Lucent-Financial-Group/Zeta       | Pulled | `README.md`                                                               | Public definition of Zeta as a DBSP implementation on .NET with identities, operator surface, storage/runtime layers, and performance posture.                   | algebra, API, runtime, storage      | fileciteturn36file0L1-L1 |
+| Lucent-Financial-Group/Zeta       | Pulled | `AGENTS.md`                                                               | Universal onboarding/governance handbook for humans and AI agents; frames the repo as an AI-directed software factory with verification as the quality backstop. | governance, factory, process        | fileciteturn37file0L1-L1 |
+| Lucent-Financial-Group/Zeta       | Pulled | `docs/ALIGNMENT.md`                                                       | Mutual-benefit alignment contract; treats alignment as measurable over commits, memory, and rounds.                                                              | alignment, metrics, governance      | fileciteturn38file0L1-L1 |
+| Lucent-Financial-Group/Zeta       | Pulled | `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`          | Research absorb of precursor conversation; preserves the five-pattern drift taxonomy and branding-risk notes around Aurora.                                      | drift, aurora, branding, epistemics | fileciteturn39file0L1-L1 |
+| Lucent-Financial-Group/Zeta       | Pulled | `docs/aurora/2026-04-23-amara-operational-gap-assessment.md`              | External review of repo progress and operational gaps; strongest source on main-vs-PR ambiguity, memory index lag, and closure-over-novelty.                     | aurora, operations, review          | fileciteturn40file0L1-L1 |
+| Lucent-Financial-Group/Zeta       | Pulled | `docs/aurora/2026-04-23-amara-zset-semantics-operator-algebra.md`         | Systematic audit of ZSet semantics, normalization, recursion caveats, and proposed semantic metrics like stability and "Veridicality Score."                     | algebra, zset, aurora, metrics      | fileciteturn41file0L1-L1 |
+| Lucent-Financial-Group/Zeta       | Pulled | `docs/DECISIONS/2026-04-23-external-maintainer-decision-proxy-pattern.md` | ADR for scoped external-AI decision proxies with advisory/approving modes, logging, and out-of-repo access handling.                                             | proxy, governance, audit            | fileciteturn42file0L1-L1 |
+| AceHack/Zeta                      | Pulled | `README.md`                                                               | Confirms the same DBSP/Zeta public positioning and operator surface on the AceHack mirror.                                                                       | mirror, algebra, API                | fileciteturn23file0L1-L1 |
+| AceHack/Zeta                      | Pulled | `CLAUDE.md`                                                               | Session bootstrap for Claude Code; points first to `AGENTS.md`, then alignment, conflict resolution, glossary, and harness-specific safety rules.                | harness, governance, operations     | fileciteturn24file0L1-L1 |
+| Lucent-Financial-Group/lucent-ksk | Pulled | `docs/ksk_architecture.yaml`                                              | Draft architecture for Aurora KSK as a local-first safety kernel with budgets, receipts, red lines, traffic-light state, and optional anchoring.                 | ksk, architecture, policy, security | fileciteturn33file0L1-L1 |
+| Lucent-Financial-Group/lucent-ksk | Pulled | `docs/development_guide.md`                                               | MVP-oriented delivery plan for the KSK services, contracts, integrations, milestones, and test approach.                                                         | ksk, implementation, roadmap        | fileciteturn34file0L1-L1 |
 
 High-value files **indexed but not content-fetched in this
 pass** include `docs/REVIEW-AGENTS.md`,
@@ -460,7 +460,7 @@ where:
 - `D_t(c)` = temporal drift from canonical state,
 - `G(c)` = compression gap between claim and evidence,
 - `H(c)` = harm pressure or irreversible-risk content.
-fileciteturn41file0L1-L1
+  fileciteturn41file0L1-L1
 
 A complementary **network health** metric should track state
 stability rather than truthfulness alone:
@@ -666,20 +666,20 @@ NetworkHealth
 
 The **runnable test-harness/spec checklist** should start here:
 
-| Surface | Required test |
-|---|---|
-| Capability classifier | `k1/k2/k3` classification is deterministic and versioned |
-| Budget validity | Scope, expiry, limits, duty flags, and revocation all reject correctly |
-| Quorum | `k3` denies until N-of-M is reached and denies again after revoke/withdraw |
-| Red lines | `no_minors`, `no_coercion`, `no_doxxing`, `no_weapons_control` always hard-deny |
-| Receipt integrity | Input/action/output hashes reproduce exactly; agent/node signatures verify |
-| Replay determinism | Replaying event log yields identical authorization and receipt views |
-| Compaction equivalence | Compacting event history preserves replay result |
-| Oracle scoring | `V(c)` and `S(Z_t)` are deterministic given same inputs and parameters |
-| Drift handling | Contradictions remain explicit state, not silent overwrite |
-| Decision-proxy integrity | No review claim can be emitted unless consultation log exists |
-| Vendor isolation | Model outage or vendor-side denial cannot invalidate local revocation history |
-| Recursive boundary | Any semi-naïve recursive path labeled monotone-only must reject retraction-native use unless upgraded |
+| Surface                  | Required test                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Capability classifier    | `k1/k2/k3` classification is deterministic and versioned                                              |
+| Budget validity          | Scope, expiry, limits, duty flags, and revocation all reject correctly                                |
+| Quorum                   | `k3` denies until N-of-M is reached and denies again after revoke/withdraw                            |
+| Red lines                | `no_minors`, `no_coercion`, `no_doxxing`, `no_weapons_control` always hard-deny                       |
+| Receipt integrity        | Input/action/output hashes reproduce exactly; agent/node signatures verify                            |
+| Replay determinism       | Replaying event log yields identical authorization and receipt views                                  |
+| Compaction equivalence   | Compacting event history preserves replay result                                                      |
+| Oracle scoring           | `V(c)` and `S(Z_t)` are deterministic given same inputs and parameters                                |
+| Drift handling           | Contradictions remain explicit state, not silent overwrite                                            |
+| Decision-proxy integrity | No review claim can be emitted unless consultation log exists                                         |
+| Vendor isolation         | Model outage or vendor-side denial cannot invalidate local revocation history                         |
+| Recursive boundary       | Any semi-naïve recursive path labeled monotone-only must reject retraction-native use unless upgraded |
 
 The best immediate implementation order is:
 
@@ -832,12 +832,12 @@ trademark and category risk. fileciteturn39file0L1-L1
 A practical shortlist of alternative public-facing names for the
 KSK/control-plane layer is:
 
-| Candidate | Why it works |
-|---|---|
-| **Beacon** | Already meshes with your visibility-lane vocabulary and suggests guidance, observability, and operator visibility. |
-| **Lattice** | Good fit for layered policy, quorum, and constraint composition without sounding defensive or bureaucratic. |
-| **Harbor** | Conveys safety, staging, and revocation-friendly control without sounding militarized. |
-| **Mantle** | Suggests a protective layer above the execution substrate; good for "membrane around action" messaging. |
+| Candidate     | Why it works                                                                                                                  |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Beacon**    | Already meshes with your visibility-lane vocabulary and suggests guidance, observability, and operator visibility.            |
+| **Lattice**   | Good fit for layered policy, quorum, and constraint composition without sounding defensive or bureaucratic.                   |
+| **Harbor**    | Conveys safety, staging, and revocation-friendly control without sounding militarized.                                        |
+| **Mantle**    | Suggests a protective layer above the execution substrate; good for "membrane around action" messaging.                       |
 | **Northstar** | Strong for governance and guidance language, though more common and likely higher-trademark-noise than Beacon/Lattice/Harbor. |
 
 If you want the cleanest architecture stack rhetorically, my
@@ -897,7 +897,7 @@ fileciteturn42file0L1-L1
 
 ---
 
-*(End of Amara's verbatim ferry.)*
+_(End of Amara's verbatim ferry.)_
 
 ---
 
@@ -958,7 +958,7 @@ correspondingly larger.
    SD-9 weight-downgrade mechanism + DRIFT-TAXONOMY
    pattern 5. Research doc candidate under
    `docs/research/oracle-scoring-veridicality-network-
-   health-2026-*.md`.
+health-2026-*.md`.
 
 3. **BLAKE3 receipt hashing + replay-deterministic harness**
    — M effort. Tracks cryptographic content-hashing design,
@@ -971,12 +971,12 @@ correspondingly larger.
    pattern (Aurora + [Beacon|Lattice] KSK + Zeta).
    **Aaron-decision-gated** on M4 branding.
 
-5. **Aminata threat-model pass on the 7-class threat model
-   + oracle rules** — S effort. Adversarial review on
-   carrier-laundering-inside-oracle-scoring + cross-check
-   against SD-9 + existing threat-model substrate.
-   Filed after absorb lands to avoid gating the absorb on
-   adversarial pre-review.
+5. \*\*Aminata threat-model pass on the 7-class threat model
+   - oracle rules\*\* — S effort. Adversarial review on
+     carrier-laundering-inside-oracle-scoring + cross-check
+     against SD-9 + existing threat-model substrate.
+     Filed after absorb lands to avoid gating the absorb on
+     adversarial pre-review.
 
 6. **12-row test-harness checklist as property spec** —
    S-M effort. Each row is a testable property; the
@@ -1055,7 +1055,7 @@ Aaron cleared (first-name-only, non-PII).
    (KSK implementation; oracle scoring research; receipt
    hashing; branding update; Aminata pass).
 2. Queue Aminata threat-model pass on 7-class threat model
-   + oracle rules (cheap; one-shot review).
+   - oracle rules (cheap; one-shot review).
 3. Consider cross-repo PR to `LFG/lucent-ksk` README
    pointing at this absorb for bidirectional visibility.
    Low-friction; Otto has read+write access via Otto-67.
@@ -1088,7 +1088,7 @@ Aaron cleared (first-name-only, non-PII).
 - **Decision-proxy-evidence record:** NOT filed for this
   absorb — per `docs/decision-proxy-evidence/README.md` an
   absorb is documentation, not a proxy-reviewed decision.
-  DP-NNN records are for decisions *based on* this absorb
+  DP-NNN records are for decisions _based on_ this absorb
   (e.g., if the proposed ADR lands formally, that PR
   files a DP-NNN citing this absorb as its input).
 

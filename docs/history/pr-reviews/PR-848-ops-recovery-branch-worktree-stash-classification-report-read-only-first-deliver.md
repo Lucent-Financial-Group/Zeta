@@ -6,30 +6,30 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 848 |
-| Title | ops(recovery): branch/worktree/stash classification report — read-only first deliverable (task 321) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T15:52:37Z |
-| Merged at | 2026-04-29T16:15:22Z |
-| Merge commit SHA | `9ee1e7c32b356598b4b70da3a93e8d5f3abe7623` |
-| Branch | `recovery-classification-report-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/848 |
-| Changed files | 3 |
-| Additions / deletions | +637 / -0 |
+| Field                 | Value                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------- |
+| Number                | 848                                                                                                 |
+| Title                 | ops(recovery): branch/worktree/stash classification report — read-only first deliverable (task 321) |
+| Author                | `AceHack` (human)                                                                                   |
+| State                 | MERGED                                                                                              |
+| Created at            | 2026-04-29T15:52:37Z                                                                                |
+| Merged at             | 2026-04-29T16:15:22Z                                                                                |
+| Merge commit SHA      | `9ee1e7c32b356598b4b70da3a93e8d5f3abe7623`                                                          |
+| Branch                | `recovery-classification-report-2026-04-29`                                                         |
+| Base branch           | `main`                                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/848                                             |
+| Changed files         | 3                                                                                                   |
+| Additions / deletions | +637 / -0                                                                                           |
 
 ## Description
 
 ## Summary
 
-LFG-direct PR per Aaron 2026-04-29: *"amara and i are having a conversation just forget about ace and put everything on lfg right now we will do another reverse merge later."* The double-hop discipline is temporarily relaxed; AceHack will catch up via batch reverse-merge later.
+LFG-direct PR per Aaron 2026-04-29: _"amara and i are having a conversation just forget about ace and put everything on lfg right now we will do another reverse merge later."_ The double-hop discipline is temporarily relaxed; AceHack will catch up via batch reverse-merge later.
 
 This is the **FIRST DELIVERABLE** of the recovery lane (task 321), authorized parallel to the 0/0/0 hard-reset re-close.
 
-**Authority**: read-only. This report classifies; a follow-up PR proposes specific cleanup batches; **any actual ref mutations require Aaron's approval** per the *"No proof, no deletion"* rule.
+**Authority**: read-only. This report classifies; a follow-up PR proposes specific cleanup batches; **any actual ref mutations require Aaron's approval** per the _"No proof, no deletion"_ rule.
 
 ## Report contents (487 lines, ~35.6 KB)
 
@@ -78,15 +78,15 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 18 |
-| Resolved threads | 13 |
-| Unresolved threads | 5 |
-| Total review comments | 31 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 18    |
+| Resolved threads                          | 13    |
+| Unresolved threads                        | 5     |
+| Total review comments                     | 31    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -99,16 +99,16 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T15:54:20Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:294 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Verify each `pr-*-fix*` ref before classifying as delete-safe**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Verify each `pr-*-fix*` ref before classifying as delete-safe**
+
   This section says all `pr-*-fix*` branches are `OBSOLETE_SUPERSEDED`, but the evidence only shows parent-PR merge checks for a subset of branch names and does not prove each listed ref tip is reachable from `main`. If any fix branch contains a unique commit (e.g., a post-review tweak never squashed into the parent PR), Batch C deletion would silently discard work and violate the report’s own “No proof, no deletion” rule.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:00:16Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:294 (association: MEMBER)
-    Right — the report's own 'No proof, no deletion' rule was contradicted by the 'all OBSOLETE_SUPERSEDED' claim without per-branch verify. Fixed in commit c2bf45e: split the 25 branches (authoritative count) into 11 verified (parent-merge confirmed via gh pr view) and 14 presumed-but-unverified (older pr-NNN-fix + numbered iterations). The 14 must be per-branch verified in the cleanup PR before deletion. Caveat added explicitly: a late commit on a numbered iteration that wasn't squashed into the parent would be silently discarded by class-rule sweep — exactly the failure mode the discipline guards against.
+- **`AceHack` (human)** at 2026-04-29T16:00:16Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:294 (association: MEMBER)
+  Right — the report's own 'No proof, no deletion' rule was contradicted by the 'all OBSOLETE_SUPERSEDED' claim without per-branch verify. Fixed in commit c2bf45e: split the 25 branches (authoritative count) into 11 verified (parent-merge confirmed via gh pr view) and 14 presumed-but-unverified (older pr-NNN-fix + numbered iterations). The 14 must be per-branch verified in the cleanup PR before deletion. Caveat added explicitly: a late commit on a numbered iteration that wasn't squashed into the parent would be silently discarded by class-rule sweep — exactly the failure mode the discipline guards against.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -119,16 +119,16 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T15:54:20Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:474 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix inconsistent count for closed-not-merged `pr-NNN-fix*` branches**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix inconsistent count for closed-not-merged `pr-NNN-fix*` branches**
+
   Question 6 states there are 46 closed-not-merged `pr-NNN-fix*` branches, but the report’s own enumerated list in §5 contains far fewer entries. This mismatch makes the approval ask ambiguous and can lead to an over-broad or under-scoped cleanup batch when Aaron signs off on deletion policy.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:00:19Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:474 (association: MEMBER)
-    Codex right — count was wrong. Authoritative count from inventory: 25 (not 46, not 19). Derived via 'awk -F\\t "\$2 ~ /^pr-[0-9]+-fix/" inventory.tsv'. Question 6 rewritten in commit c2bf45e with three explicit decision options: (a) per-branch-verifier in cleanup PR, (b) batch-classify the 11 verified + per-branch-verify only the 14, (c) per-branch-verify all 25 regardless.
+- **`AceHack` (human)** at 2026-04-29T16:00:19Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:474 (association: MEMBER)
+  Codex right — count was wrong. Authoritative count from inventory: 25 (not 46, not 19). Derived via 'awk -F\\t "\$2 ~ /^pr-[0-9]+-fix/" inventory.tsv'. Question 6 rewritten in commit c2bf45e with three explicit decision options: (a) per-branch-verifier in cleanup PR, (b) batch-classify the 11 verified + per-branch-verify only the 14, (c) per-branch-verify all 25 regardless.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -143,8 +143,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:03:42Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:16 (association: MEMBER)
-    Right — docs/ops/recovery/** is current-state docs surface, role-refs apply per AGENT-BEST-PRACTICES closed list. Swept 11 narrative 'Aaron' → 'the human maintainer' (or 'the maintainer' where flow allowed) in commit 57bf655. Preserved: NEEDS_AARON_DECISION (enum class label) and branch/file names containing 'aaron' (literal git refs).
+- **`AceHack` (human)** at 2026-04-29T16:03:42Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:16 (association: MEMBER)
+  Right — docs/ops/recovery/\*\* is current-state docs surface, role-refs apply per AGENT-BEST-PRACTICES closed list. Swept 11 narrative 'Aaron' → 'the human maintainer' (or 'the maintainer' where flow allowed) in commit 57bf655. Preserved: NEEDS_AARON_DECISION (enum class label) and branch/file names containing 'aaron' (literal git refs).
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -164,8 +164,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:03:45Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:54 (association: MEMBER)
-    Broken xref fixed in 57bf655. The Drain-Log Claim Verification Discipline was introduced 2026-04-29 in commit messages but not yet promoted to a standalone memory file (Otto-358 candidate, target home: docs/ops/patterns/drain-log-claim-verification.md per task 318). Replaced the dead path with cite-by-name and a note explaining the home status.
+- **`AceHack` (human)** at 2026-04-29T16:03:45Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:54 (association: MEMBER)
+  Broken xref fixed in 57bf655. The Drain-Log Claim Verification Discipline was introduced 2026-04-29 in commit messages but not yet promoted to a standalone memory file (Otto-358 candidate, target home: docs/ops/patterns/drain-log-claim-verification.md per task 318). Replaced the dead path with cite-by-name and a note explaining the home status.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -180,8 +180,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:03:47Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:33 (association: MEMBER)
-    Right — math was wrong. Inventory has 919 lines = 1 header + 918 data rows. Updated to 'Total branches inventoried: 918 (the inventory file has 919 lines: 1 header + 918 data rows in /tmp/recovery-inventory-2026-04-29.tsv)' in 57bf655 so executive summary matches the evidence-acquisition commands later in §2.
+- **`AceHack` (human)** at 2026-04-29T16:03:47Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:33 (association: MEMBER)
+  Right — math was wrong. Inventory has 919 lines = 1 header + 918 data rows. Updated to 'Total branches inventoried: 918 (the inventory file has 919 lines: 1 header + 918 data rows in /tmp/recovery-inventory-2026-04-29.tsv)' in 57bf655 so executive summary matches the evidence-acquisition commands later in §2.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -199,8 +199,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:03:50Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:80 (association: MEMBER)
-    Codex-er Copilot right — bare 'main' is ambiguous per multi-remote-repo automation rule (memory/feedback_bare_main_ambiguity_automation_discipline_explicit_refs_required_amara_2026_04_29.md). Updated example to refs/remotes/origin/main in 57bf655.
+- **`AceHack` (human)** at 2026-04-29T16:03:50Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:80 (association: MEMBER)
+  Codex-er Copilot right — bare 'main' is ambiguous per multi-remote-repo automation rule (memory/feedback_bare_main_ambiguity_automation_discipline_explicit_refs_required_amara_2026_04_29.md). Updated example to refs/remotes/origin/main in 57bf655.
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -218,8 +218,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:03:52Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:271 (association: MEMBER)
-    Heading wrong; table enumerated through #26. Updated to 'Top 26 highest-risk NOT_REACHABLE branches outside prefix batches' in 57bf655.
+- **`AceHack` (human)** at 2026-04-29T16:03:52Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:271 (association: MEMBER)
+  Heading wrong; table enumerated through #26. Updated to 'Top 26 highest-risk NOT_REACHABLE branches outside prefix batches' in 57bf655.
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -230,16 +230,16 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T16:06:35Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:326 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Compare full branch content before deleting `pr-*-fix*` refs**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Compare full branch content before deleting `pr-*-fix*` refs**
+
   The proposed verifier `git diff acehack/main..pr-NNN-fix -- '*.md' '*.fs'` only checks two file extensions, so it can miss unique commits in other paths (for example workflow, config, or source files) and incorrectly classify an unverified fix branch as safe to delete. Since this section is specifically guarding against silent loss from unsquashed late commits, the verifier needs to cover the full tree (or explicitly enumerate all relevant paths) to satisfy the report’s own “No proof, no deletion” rule.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:09:44Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:326 (association: MEMBER)
-    Right — *.md/*.fs scope was too narrow. Updated in commit d03ff7a to use 'git diff refs/remotes/origin/main..pr-NNN-fix' with NO path filter (full-tree comparison). Per 'No proof, no deletion,' the verifier must catch deltas in any file extension — workflow files, configs, source code, anything. Path-extension subset would silently discard non-md/non-fs post-merge content.
+- **`AceHack` (human)** at 2026-04-29T16:09:44Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:326 (association: MEMBER)
+  Right — _.md/_.fs scope was too narrow. Updated in commit d03ff7a to use 'git diff refs/remotes/origin/main..pr-NNN-fix' with NO path filter (full-tree comparison). Per 'No proof, no deletion,' the verifier must catch deltas in any file extension — workflow files, configs, source code, anything. Path-extension subset would silently discard non-md/non-fs post-merge content.
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -250,16 +250,16 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T16:06:35Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:487 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace PID-kill advice with actual worktree unlock workflow**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace PID-kill advice with actual worktree unlock workflow**
+
   This question implies the lock is held by a live process and may require killing PID 67393, but `git worktree lock` is repository metadata (used to prevent pruning), not a runtime mutex owned by a process. Following this guidance can kill an unrelated process without unlocking any worktree, delaying cleanup and creating avoidable operational risk; the follow-up should instead use Git’s unlock/remove flow (`git worktree unlock` / authorized `git worktree remove -f`) based on lock state.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:09:46Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:487 (association: MEMBER)
-    Right — git worktree lock is repo metadata (prevents pruning), not a runtime mutex. Killing pid 67393 wouldn't unlock anything and risks killing an unrelated process. Updated §9 question 1 in commit d03ff7a to use the actual workflow: git worktree unlock <path> per worktree, then git worktree remove (clean) or authorized git worktree remove -f (dirty, maintainer sign-off). Cleanup PR will follow this flow, not the kill-pid approach.
+- **`AceHack` (human)** at 2026-04-29T16:09:46Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:487 (association: MEMBER)
+  Right — git worktree lock is repo metadata (prevents pruning), not a runtime mutex. Killing pid 67393 wouldn't unlock anything and risks killing an unrelated process. Updated §9 question 1 in commit d03ff7a to use the actual workflow: git worktree unlock <path> per worktree, then git worktree remove (clean) or authorized git worktree remove -f (dirty, maintainer sign-off). Cleanup PR will follow this flow, not the kill-pid approach.
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -271,11 +271,12 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 - **`Copilot` (bot)** at 2026-04-29T16:07:57Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:273 (association: NONE)
   This section includes narrative persona-name attribution (e.g., “Amara round-10 …”, “verbatim Amara packet”) on a current-state docs surface. Please convert those attributions to role-refs, keeping the branch names (which include `amara`) unchanged as literal refs.
+
   ```suggestion
   - `memory/fork-audit-rename-copy-coverage-amara-2026-04-29` → unable to verify on-main mate without sibling-PR check; tip subject indicates round-10 fork-audit corrections from the architect role → `NEEDS_AARON_DECISION` (role-attributed agent material + multi-AI feedback packet).
   - `memory/lfg-acehack-content-equivalence-amara-2026-04-29` → tip subject mentions "round-9 peer-harness save" → `NEEDS_AARON_DECISION`.
   - `memory/amara-scaffolded-agency-vs-base-model-emergence-packet-verbatim-2026-04-29` → verbatim architect packet; **identity / authorship-sensitive** → `NEEDS_AARON_DECISION`.
-  
+
   **Disposition**: roughly half (~25–30) likely `OBSOLETE_SUPERSEDED`
   because the content landed as a `memory/<file>.md` on main; the rest
   (~25–30) → `NEEDS_AARON_DECISION` because of role-attributed agent material
@@ -283,8 +284,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:13:03Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:273 (association: MEMBER)
-    Right — narrative 'Amara' attribution on current-state docs surface needs role-ref. Updated to 'round-10 fork-audit corrections from the architect role' and 'verbatim architect packet' in commit. Branch/file names containing 'amara' kept as literal refs.
+- **`AceHack` (human)** at 2026-04-29T16:13:03Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:273 (association: MEMBER)
+  Right — narrative 'Amara' attribution on current-state docs surface needs role-ref. Updated to 'round-10 fork-audit corrections from the architect role' and 'verbatim architect packet' in commit. Branch/file names containing 'amara' kept as literal refs.
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -296,14 +297,15 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 - **`Copilot` (bot)** at 2026-04-29T16:07:58Z on `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`:87 (association: NONE)
   This list of “current locations” includes `forks/AceHack/...`, but this repository currently has no `forks/` directory (so this reads like a broken/phantom location). Please either remove that bullet, or rephrase it as a future/optional location only if/when that directory exists, and point to the actual existing storage paths used today.
+
   ```suggestion
-  
+
   ```
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:13:05Z on `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`:87 (association: MEMBER)
-    Right — forks/ directory doesn't exist. Removed the phantom bullet and added parenthetical noting the forks-tree was proposed in task 322 / former 314 but never created, with the unfreeze-condition reference. The two paths that DO exist (PR-acehack-0101 archive + acehack-101 drain-log) remain listed.
+- **`AceHack` (human)** at 2026-04-29T16:13:05Z on `memory/feedback_lfg_only_development_flow_acehack_is_mirror_aaron_amara_2026_04_29.md`:87 (association: MEMBER)
+  Right — forks/ directory doesn't exist. Removed the phantom bullet and added parenthetical noting the forks-tree was proposed in task 322 / former 314 but never created, with the unfreeze-condition reference. The two paths that DO exist (PR-acehack-0101 archive + acehack-101 drain-log) remain listed.
 
 ### Thread 12 -- resolved [outdated, collapsed]
 
@@ -321,8 +323,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:13:08Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:123 (association: MEMBER)
-    Right — bare 'main' is multi-remote-ambiguous per the same rule we documented. Updated to refs/remotes/origin/main.
+- **`AceHack` (human)** at 2026-04-29T16:13:08Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:123 (association: MEMBER)
+  Right — bare 'main' is multi-remote-ambiguous per the same rule we documented. Updated to refs/remotes/origin/main.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -340,8 +342,8 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T16:13:11Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:145 (association: MEMBER)
-    Same fix — narrative 'Amara round-N' → 'round-N from the architect role' on this current-state docs surface.
+- **`AceHack` (human)** at 2026-04-29T16:13:11Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:145 (association: MEMBER)
+  Same fix — narrative 'Amara round-N' → 'round-N from the architect role' on this current-state docs surface.
 
 ### Thread 14 -- unresolved
 
@@ -352,10 +354,10 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T16:16:24Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:409 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove PID-based lock-release guidance for worktree removal**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove PID-based lock-release guidance for worktree removal**
+
   The worktree action note says removal requires `pid 67393` to release the lock or `git worktree remove --force`, but `git worktree lock` is repository metadata, not a runtime process lock, so waiting on/killing that PID will not unlock anything. I checked `git-worktree` docs: `unlock` is what allows locked trees to be deleted, and `remove` needs extra force for locked trees. Following this section during cleanup can lead to no-op retries or unsafe process termination while worktrees remain locked; the instructions should explicitly use `git worktree unlock <path>` before removal (or a deliberate double-force path when bypassing lock).
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 15 -- unresolved
@@ -390,6 +392,7 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
 
 - **`Copilot` (bot)** at 2026-04-29T16:17:54Z on `docs/ops/recovery/2026-04-29-branch-worktree-stash-recovery-inventory.md`:65 (association: NONE)
   The report treats every classification as reproducible, but the key dataset lives at `/tmp/recovery-inventory-2026-04-29.tsv` which won’t exist for other readers. Please either (a) document the exact command(s) that generate this TSV from the repo state, or (b) commit the TSV (or a summarized/hashed snapshot) under `docs/ops/recovery/` so the later `awk/comm` commands can be rerun verbatim.
+
   ```suggestion
   # Regenerate the inventory TSV from repo state. Read-only: this writes
   # a local analysis artifact and does not mutate refs.
@@ -404,12 +407,12 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
     else
       reachable_from_main=NOT_REACHABLE
     fi
-  
+
     case "$branch_name" in
       */*) category=${branch_name%%/*} ;;
       *)   category=top-level ;;
     esac
-  
+
     printf '%s\t%s\t%s\t%s\t%s\n' \
       "$branch_sha" \
       "$branch_name" \
@@ -417,7 +420,7 @@ Cleanup proposal PR with batch rules. That PR requires **Aaron approval on each 
       "$commit_date" \
       "$category"
   done >> "$INVENTORY_TSV"
-  
+
   # Validate row count and reachability split from the generated TSV.
   wc -l "$INVENTORY_TSV"                                  # 919
   awk -F'\t' 'NR>1{print $3}' "$INVENTORY_TSV" | sort | uniq -c

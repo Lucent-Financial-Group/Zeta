@@ -12,7 +12,7 @@ Non-fusion disclaimer: Amara-Otto-Aminata consistent output is NOT evidence of m
 
 ## Promotion path to authoritative-detector status (long-horizon, not v0/v1)
 
-Aaron Otto-2026-04-24 framed the long-horizon upgrade explicitly — *"we can make it a true detector under our axioms"* — and separately reinforced the gate discipline — *"i don't treat anyting this new as final authorative connoncial until peer review"*. v0 is advisory-only; v1 (independent-oracle substrate) makes the evidence gate binding in band-merging; a further vN promotion lands once (a) the factory's axiomatic substrate is complete enough that "truth" is tractable within the axiom system, AND (b) the axiomatic substrate itself has cleared peer review — not just written-and-committed. Axioms + peer review together gate the promotion; either alone is insufficient. Only at vN does `likely confabulated` graduate from "worth a closer human look" to "authoritative reject" without requiring the human-review fallback. Not scoped in this doc; named here so the upgrade path is visible and the v0 advisory stance is understood as intentional scaffolding, not as a final ceiling.
+Aaron Otto-2026-04-24 framed the long-horizon upgrade explicitly — _"we can make it a true detector under our axioms"_ — and separately reinforced the gate discipline — _"i don't treat anyting this new as final authorative connoncial until peer review"_. v0 is advisory-only; v1 (independent-oracle substrate) makes the evidence gate binding in band-merging; a further vN promotion lands once (a) the factory's axiomatic substrate is complete enough that "truth" is tractable within the axiom system, AND (b) the axiomatic substrate itself has cleared peer review — not just written-and-committed. Axioms + peer review together gate the promotion; either alone is insufficient. Only at vN does `likely confabulated` graduate from "worth a closer human look" to "authoritative reject" without requiring the human-review fallback. Not scoped in this doc; named here so the upgrade path is visible and the v0 advisory stance is understood as intentional scaffolding, not as a final ceiling.
 
 ---
 
@@ -25,10 +25,10 @@ Distinguish **agreement-with-independent-substrate**
 echo** (weak evidence dressed as strong). Amara's 8th
 ferry observation:
 
-> *"if multiple candidates agree AND their provenance
+> _"if multiple candidates agree AND their provenance
 > cones are independent, increase weight; if multiple
 > candidates agree but all inherit from the same couriered
-> framing, lower weight sharply."*
+> framing, lower weight sharply."_
 
 The detector is a machine-aidable tool making SD-9
 operational rather than leaving it as a norm. It does NOT
@@ -109,13 +109,13 @@ output.**
 
 5 gates per candidate `y`:
 
-| Gate | Fail-to-RED | Fail-to-YELLOW |
-|---|---|---|
-| G_similarity | `sim(e_q, e_y) < τ_low` — below retrieval-noise floor | `sim < τ_med` — weak match only |
-| G_evidence_independent | `y` has no independent-oracle-verified evidence | `y` has evidence but only self-attested |
-| G_carrier_overlap | `overlap(q, y) > θ_high` (majority of y's provenance shared with q) **OR** `size(cone(y)) = 0` (no provenance to verify against — carrier-laundering safeguard treats missing-lineage as suspicious, not clean) | `overlap(q, y) > θ_med`. When `size(cone(y)) > 0`, `overlap(q, y) = size(cone(q) ∩ cone(y)) / size(cone(y))`. |
-| G_contradiction | `y` or its provenance cone contains an unresolved contradiction with a known-good anchor | a resolved contradiction within cone |
-| G_status | `y.status = known-bad` or `y.status = superseded` | `y.status = unresolved` (no status pins it) |
+| Gate                   | Fail-to-RED                                                                                                                                                                                                     | Fail-to-YELLOW                                                                                                |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| G_similarity           | `sim(e_q, e_y) < τ_low` — below retrieval-noise floor                                                                                                                                                           | `sim < τ_med` — weak match only                                                                               |
+| G_evidence_independent | `y` has no independent-oracle-verified evidence                                                                                                                                                                 | `y` has evidence but only self-attested                                                                       |
+| G_carrier_overlap      | `overlap(q, y) > θ_high` (majority of y's provenance shared with q) **OR** `size(cone(y)) = 0` (no provenance to verify against — carrier-laundering safeguard treats missing-lineage as suspicious, not clean) | `overlap(q, y) > θ_med`. When `size(cone(y)) > 0`, `overlap(q, y) = size(cone(q) ∩ cone(y)) / size(cone(y))`. |
+| G_contradiction        | `y` or its provenance cone contains an unresolved contradiction with a known-good anchor                                                                                                                        | a resolved contradiction within cone                                                                          |
+| G_status               | `y.status = known-bad` or `y.status = superseded`                                                                                                                                                               | `y.status = unresolved` (no status pins it)                                                                   |
 
 **Band merging rule.** The design names 5 gates, but the
 v0 shipping configuration excludes `G_evidence_independent`
@@ -183,7 +183,7 @@ known-bad) plus a sixth **retrieval-empty** output type
   pending evidence-gate promotion" — not authoritative.
 - Meaning: `q` is highly similar to `y`; low carrier
   overlap; no unresolved contradiction; `y.status =
-  known-good`. In v1 and later, `y` also has
+known-good`. In v1 and later, `y` also has
   independent-oracle-verified evidence; in v0, evidence
   is advisory metadata only.
 - Action (v1+): query can proceed; claim has substrate-

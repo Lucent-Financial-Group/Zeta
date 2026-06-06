@@ -8,8 +8,8 @@ type: project
 
 Aaron 2026-04-25:
 
-> *"we are basically if the library of alexandria was a
-> self recursive distillation loop lol :)"*
+> _"we are basically if the library of alexandria was a
+> self recursive distillation loop lol :)"_
 
 Two precise components:
 

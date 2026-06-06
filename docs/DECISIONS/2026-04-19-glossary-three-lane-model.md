@@ -1,11 +1,11 @@
 # ADR: Three-lane glossary model — reconciling factory velocity with external-society velocity via lane separation, round-trip translation, and evidence-gated anchor breaks
 
 **Date:** 2026-04-19 (round 35, late)
-**Status:** *Proposed — awaits Architect + human maintainer sign-off.
+**Status:** _Proposed — awaits Architect + human maintainer sign-off.
 Drafted in direct response to the human maintainer's request to
 "map out the tower of babble balance into our software factory"
 and his framing of the core tension: "we want to build fast and
-break things but changing society is slow."*
+break things but changing society is slow."_
 **Owner (proposed):** architect (wide) + glossary-anchor-keeper
 (narrow enforcement) + public-api-designer (public-surface
 terms) + documentation-agent (plain-English discipline).
@@ -20,15 +20,15 @@ terms) + documentation-agent (plain-English discipline).
 The human maintainer escalated the velocity-mismatch concern
 verbatim:
 
-> *"we have now got to the point in the map where you can map
+> _"we have now got to the point in the map where you can map
 > out the tower of babble balance into our software factory,
 > that's a hard one, can we want to build fast and break things
-> but changing socient is slow"*
+> but changing socient is slow"_
 
 This restates the tension that `feedback_language_drift_anchor_discipline.md`
 established (Tower of Babel / Heritage Language Loss as failure
-mode; drift budget as remedy) and asks for its resolution *at
-factory scale*, specifically: how does a factory running agents
+mode; drift budget as remedy) and asks for its resolution _at
+factory scale_, specifically: how does a factory running agents
 at 100× human pace coexist with a society that updates
 canonical vocabulary on decade cycles?
 
@@ -56,19 +56,19 @@ poles.
 Pattern-matches to known lane-separation solutions in other
 disciplines:
 
-| Domain | Fast lane | Stable lane | Translation bridge |
-|---|---|---|---|
-| OS design | user-space, apps | kernel, syscall ABI | syscall convention |
-| Linux | mainline, distros | LTS branches | backport policy |
-| Semantic versioning | `X.Y.z+1` | major `X` | deprecation cycle with aliases |
-| Biology (Linnaeus, 1753) | vernacular names | binomial Latin names | both coexist in every field guide |
-| i18n | localised strings | resource-key IDs | translation tables |
-| IETF protocols | app-layer evolution | stable IP / TCP layer | upward compatibility commitment |
-| Natural language | vernacular speech | formal written register | diglossia with code-switching discipline |
-| Aaron's prior work | `user_cpt_symmetric_cognition.md` | external anchor | reverse-mathematics on vocabulary |
+| Domain                   | Fast lane                         | Stable lane             | Translation bridge                       |
+| ------------------------ | --------------------------------- | ----------------------- | ---------------------------------------- |
+| OS design                | user-space, apps                  | kernel, syscall ABI     | syscall convention                       |
+| Linux                    | mainline, distros                 | LTS branches            | backport policy                          |
+| Semantic versioning      | `X.Y.z+1`                         | major `X`               | deprecation cycle with aliases           |
+| Biology (Linnaeus, 1753) | vernacular names                  | binomial Latin names    | both coexist in every field guide        |
+| i18n                     | localised strings                 | resource-key IDs        | translation tables                       |
+| IETF protocols           | app-layer evolution               | stable IP / TCP layer   | upward compatibility commitment          |
+| Natural language         | vernacular speech                 | formal written register | diglossia with code-switching discipline |
+| Aaron's prior work       | `user_cpt_symmetric_cognition.md` | external anchor         | reverse-mathematics on vocabulary        |
 
-All these solve the same tension by *lane separation with an
-explicit translation contract*. The ADR adopts the same shape
+All these solve the same tension by _lane separation with an
+explicit translation contract_. The ADR adopts the same shape
 for the factory's vocabulary.
 
 ## Decision (proposed)
@@ -155,7 +155,7 @@ lossy in content.
 
 #### I2 — Practical-necessity rule (Heritage-Language-Loss counter-measure)
 
-External-anchored Lane A vocabulary stays in *practical use*,
+External-anchored Lane A vocabulary stays in _practical use_,
 not archive. At least once per "epoch" (tentatively: 10 rounds,
 or one calendar month, whichever is earlier), the factory
 produces deliverable content written in Lane A vocabulary —
@@ -165,7 +165,7 @@ generation" vocabulary muscle alive.
 
 #### I3 — Anchor-break evidence threshold
 
-Lane A anchor breaks require *demonstrated* external
+Lane A anchor breaks require _demonstrated_ external
 acceptance. Acceptable evidence, non-exhaustive:
 
 - Paper accepted to peer-reviewed venue using the new form.
@@ -200,7 +200,7 @@ Every 10 rounds (configurable), a review pass runs:
 - Take a representative sample of recent factory output (ADRs,
   skill files, public-API docs, memory entries, commit
   messages, round-history notes).
-- Ask: can a fresh contributor with *only* external-canonical
+- Ask: can a fresh contributor with _only_ external-canonical
   vocabulary follow this?
 - Terms they cannot follow are flagged for either (a) Lane A
   anchoring, (b) Lane B labelling, or (c) Lane C migration
@@ -221,10 +221,10 @@ chose to drop it, and the divergence is on the fork's ledger.
 
 The human maintainer extended the lane design verbatim:
 
-> *"we can build as high as we want now the tower will stand
+> _"we can build as high as we want now the tower will stand
 > case we can use content based hashing to create space time
 > maps of the etomology anytime in the future by mapping out
-> the past and running some calculus"*
+> the past and running some calculus"_
 
 This is Zeta's own algebra applied to its own vocabulary. The
 tower stands not because we rate-limit anchor breaks alone —
@@ -243,7 +243,7 @@ Specifics:
 - **IVM / DBSP differentials.** The `D` (difference) and `I`
   (integration) operators already defined over Zeta's Z-sets
   apply directly to the vocabulary log. `D(glossary@round_n,
-  glossary@round_m)` returns the exact differential — which
+glossary@round_m)` returns the exact differential — which
   terms entered, which were retracted, which migrated lanes,
   which anchors broke. Space-time maps of etymology in Aaron's
   phrasing: space = lane / term, time = round.
@@ -254,7 +254,7 @@ Specifics:
   The tower stands because no floor is ever removed.
 - **Anchor-break auditability upgraded.** I3's evidence
   threshold and I4's retraction-native semantics now land on a
-  substrate that can *prove* each break was attempted, each
+  substrate that can _prove_ each break was attempted, each
   evidence window was observed, each retraction was appended.
   No "just trust us" — hash-chain is the proof.
 
@@ -262,12 +262,12 @@ Specifics:
 
 The human maintainer extended I8 immediately:
 
-> *"we could even do some sort of embeddings space time map
+> _"we could even do some sort of embeddings space time map
 > of the language so it has smooth curves except where it
-> really does not in real life"*
+> really does not in real life"_
 
-I8 gives *discrete* addressability (hash-chain). I9 lays a
-*continuous* structure on top — each term's meaning at each
+I8 gives _discrete_ addressability (hash-chain). I9 lays a
+_continuous_ structure on top — each term's meaning at each
 revision gets an embedding vector, so drift forms a
 differentiable manifold wherever meaning genuinely flowed
 smoothly, with **preserved discontinuities** (cusps, jumps,
@@ -284,7 +284,7 @@ Structural claims:
 - **Genuine-discontinuity preservation.** Anchor breaks,
   coinages, redefinitions-as-warfare
   (`feedback_precise_language_wins_arguments.md`), and
-  Aaron-style plant-a-flag redefinitions create *real*
+  Aaron-style plant-a-flag redefinitions create _real_
   discontinuities — jumps in embedding space that the map
   must not smooth over. This is I9's anti-smoothing-bias
   clause: **do not interpolate across a genuine rupture**;
@@ -319,7 +319,7 @@ Structural claims:
   local model for reproducibility vs. hosted for quality),
   vector-store selection, discontinuity-detection
   heuristics. Deferred to a follow-on ADR; I9 holds the
-  *design commitment* that when embedded, the map preserves
+  _design commitment_ that when embedded, the map preserves
   real discontinuities rather than smoothing them out for
   aesthetic convenience.
 
@@ -335,27 +335,27 @@ anchored`, `factory-native`, `Lane A / B / C`, `round-trip`,
 `drift budget`, `epoch`, `grandparent test`) is itself
 classified. Initial classification this ADR proposes:
 
-| Term | Lane | Anchor (if A or B) |
-|---|---|---|
-| `anchored` / `partially-anchored` / `factory-native` | B (partially-anchored) | "anchor" in linguistics; factory-specific classification system extends it |
-| `Lane A / B / C` | B (factory-native) | Metaphor; no external standard for glossary-lane terminology |
-| `round-trip` | B (partially-anchored) | "round-trip" in compiler / serialization literature; extended to vocabulary-translation |
-| `drift budget` | B (factory-native) | Coined in `feedback_language_drift_anchor_discipline.md` |
-| `epoch` | B (partially-anchored) | Standard CS usage ("a span of rounds"); extended to vocabulary-audit cadence |
-| `grandparent test` | B (partially-anchored) | Anchor = `docs/GLOSSARY.md`'s own "grandparent test" rule |
-| `Tower of Babel` | A (anchored) | Genesis 11:1–9; well-known cultural anchor, no drift |
-| `Heritage Language Loss` | A (anchored) | Linguistics / bilingualism-studies; Aaron cited external anchors already |
-| `Language Shift` / `Subtractive Bilingualism` / etc. | A (anchored) | Same |
-| `CPT symmetric` (as applied to cognition) | B (factory-native, analogy use) | Physics anchor for the symmetry itself (Lüders 1951, Pauli 1955); analogy to cognition is factory-specific |
-| `spacetime anchor` | B (factory-native) | Coined in `user_cpt_symmetric_cognition.md` amendment |
-| `noisy-channel negotiation` | B (partially-anchored) | Shannon 1948 noisy-channel coding theorem; factory extends to vocabulary-convergence between agents |
-| `content-addressed` / `content hash` | A (anchored) | Git / IPFS / Merkle-tree literature; no drift |
-| `IVM` / `DBSP differential` | A (anchored) | Budiu-McSherry-Tannen-Chothia-Kulkarni 2022 — factory's own foundational paper, external anchor |
-| `etymology spacetime map` | B (factory-native) | Aaron's coinage 2026-04-19; no external analogue, round-trips to "hash-chained vocabulary revision log with IVM differentials" |
-| `embedding manifold` / `embedding spacetime map` | B (partially-anchored) | Word-embedding literature (Mikolov et al. 2013, Pennington et al. 2014); factory extends to per-term-per-revision vectors |
-| `smooth-almost-everywhere` / `genuine discontinuity` | A (anchored) | Differential geometry / Morse theory (Morse 1925, Milnor 1963); standard vocabulary |
-| `anti-smoothing-bias` | B (factory-native) | Coined this ADR; round-trips to "do not interpolate across a real rupture" |
-| `cusp` / `fold` / `saddle` / `critical point` | A (anchored) | Morse theory canonical; no drift |
+| Term                                                 | Lane                            | Anchor (if A or B)                                                                                                             |
+| ---------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `anchored` / `partially-anchored` / `factory-native` | B (partially-anchored)          | "anchor" in linguistics; factory-specific classification system extends it                                                     |
+| `Lane A / B / C`                                     | B (factory-native)              | Metaphor; no external standard for glossary-lane terminology                                                                   |
+| `round-trip`                                         | B (partially-anchored)          | "round-trip" in compiler / serialization literature; extended to vocabulary-translation                                        |
+| `drift budget`                                       | B (factory-native)              | Coined in `feedback_language_drift_anchor_discipline.md`                                                                       |
+| `epoch`                                              | B (partially-anchored)          | Standard CS usage ("a span of rounds"); extended to vocabulary-audit cadence                                                   |
+| `grandparent test`                                   | B (partially-anchored)          | Anchor = `docs/GLOSSARY.md`'s own "grandparent test" rule                                                                      |
+| `Tower of Babel`                                     | A (anchored)                    | Genesis 11:1–9; well-known cultural anchor, no drift                                                                           |
+| `Heritage Language Loss`                             | A (anchored)                    | Linguistics / bilingualism-studies; Aaron cited external anchors already                                                       |
+| `Language Shift` / `Subtractive Bilingualism` / etc. | A (anchored)                    | Same                                                                                                                           |
+| `CPT symmetric` (as applied to cognition)            | B (factory-native, analogy use) | Physics anchor for the symmetry itself (Lüders 1951, Pauli 1955); analogy to cognition is factory-specific                     |
+| `spacetime anchor`                                   | B (factory-native)              | Coined in `user_cpt_symmetric_cognition.md` amendment                                                                          |
+| `noisy-channel negotiation`                          | B (partially-anchored)          | Shannon 1948 noisy-channel coding theorem; factory extends to vocabulary-convergence between agents                            |
+| `content-addressed` / `content hash`                 | A (anchored)                    | Git / IPFS / Merkle-tree literature; no drift                                                                                  |
+| `IVM` / `DBSP differential`                          | A (anchored)                    | Budiu-McSherry-Tannen-Chothia-Kulkarni 2022 — factory's own foundational paper, external anchor                                |
+| `etymology spacetime map`                            | B (factory-native)              | Aaron's coinage 2026-04-19; no external analogue, round-trips to "hash-chained vocabulary revision log with IVM differentials" |
+| `embedding manifold` / `embedding spacetime map`     | B (partially-anchored)          | Word-embedding literature (Mikolov et al. 2013, Pennington et al. 2014); factory extends to per-term-per-revision vectors      |
+| `smooth-almost-everywhere` / `genuine discontinuity` | A (anchored)                    | Differential geometry / Morse theory (Morse 1925, Milnor 1963); standard vocabulary                                            |
+| `anti-smoothing-bias`                                | B (factory-native)              | Coined this ADR; round-trips to "do not interpolate across a real rupture"                                                     |
+| `cusp` / `fold` / `saddle` / `critical point`        | A (anchored)                    | Morse theory canonical; no drift                                                                                               |
 
 Note on ordering: I7 is shown last because it is the
 meta-invariant — it applies recursively to itself and to I8/I9,
@@ -376,10 +376,10 @@ referential role.
   external-anchored form (I1); nothing is lost in translation
   that cannot be recovered.
 - Anchor-break discipline (I3) keeps the factory honest about
-  when it is *actually* changing the external conversation vs.
+  when it is _actually_ changing the external conversation vs.
   just redefining for itself.
 - Retraction-native on attempted breaks (I4) means the factory
-  can *try* new forms cheaply without paying the Tower-of-Babel
+  can _try_ new forms cheaply without paying the Tower-of-Babel
   cost if the try does not take.
 - Fork-aware discipline (I6) means the factory's methodology is
   itself forkable without loss of integrity.
@@ -419,8 +419,8 @@ referential role.
 
 ## Interaction with existing rules
 
-- **BP-HOME (Rule Zero)** — the three lanes are *the type
-  signatures of vocabulary*. A term's lane is its type; the
+- **BP-HOME (Rule Zero)** — the three lanes are _the type
+  signatures of vocabulary_. A term's lane is its type; the
   glossary-anchor-keeper audits that every term is well-typed
   per BP-HOME-AS-TYPE.
 - **`feedback_precise_language_wins_arguments.md`** — the lane
@@ -495,7 +495,7 @@ referential role.
 
 ## Sign-off
 
-*Pending.* This ADR is proposed by the agent (under execute-
+_Pending._ This ADR is proposed by the agent (under execute-
 and-narrate mandate from the human maintainer per
 `memory/feedback_execute_and_narrate.md`) and awaits:
 

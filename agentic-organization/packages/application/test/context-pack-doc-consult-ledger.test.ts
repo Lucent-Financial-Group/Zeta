@@ -91,13 +91,28 @@ test("context pack doc consult ledger keeps doc-unit versions distinct even when
 test("context pack doc consult outcome classification maps known gates and review stages conservatively", () => {
   equal(contextPackDocConsultOutcomeClassFor(QualityGateOutcome.Approved), ContextPackDocConsultOutcomeClass.Success);
   equal(contextPackDocConsultOutcomeClassFor(QualityGateOutcome.Waived), ContextPackDocConsultOutcomeClass.Success);
-  equal(contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.Approved), ContextPackDocConsultOutcomeClass.Success);
-  equal(contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.Waived), ContextPackDocConsultOutcomeClass.Success);
+  equal(
+    contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.Approved),
+    ContextPackDocConsultOutcomeClass.Success,
+  );
+  equal(
+    contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.Waived),
+    ContextPackDocConsultOutcomeClass.Success,
+  );
   equal(contextPackDocConsultOutcomeClassFor(StageOutcome.Approve), ContextPackDocConsultOutcomeClass.Success);
-  equal(contextPackDocConsultOutcomeClassFor(QualityGateOutcome.ChangesRequested), ContextPackDocConsultOutcomeClass.Failure);
+  equal(
+    contextPackDocConsultOutcomeClassFor(QualityGateOutcome.ChangesRequested),
+    ContextPackDocConsultOutcomeClass.Failure,
+  );
   equal(contextPackDocConsultOutcomeClassFor(QualityGateOutcome.Rejected), ContextPackDocConsultOutcomeClass.Failure);
-  equal(contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.ChangesRequested), ContextPackDocConsultOutcomeClass.Failure);
-  equal(contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.Rejected), ContextPackDocConsultOutcomeClass.Failure);
+  equal(
+    contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.ChangesRequested),
+    ContextPackDocConsultOutcomeClass.Failure,
+  );
+  equal(
+    contextPackDocConsultOutcomeClassFor(ContextPackBusinessValidationOutcome.Rejected),
+    ContextPackDocConsultOutcomeClass.Failure,
+  );
   equal(contextPackDocConsultOutcomeClassFor(StageOutcome.RequestChanges), ContextPackDocConsultOutcomeClass.Failure);
   equal(contextPackDocConsultOutcomeClassFor(StageOutcome.Reject), ContextPackDocConsultOutcomeClass.Failure);
   equal(contextPackDocConsultOutcomeClassFor("unknown_outcome"), undefined);
@@ -118,55 +133,61 @@ test("context pack doc consult outcome stamp derives scope from quality gate eva
 });
 
 test("context pack doc consult outcome stamp derives scope from observe lifecycle transitions", () => {
-  deepEqual(contextPackDocConsultOutcomeStampForLifecycleTransition({
-    organizationId: "org-lfg",
-    projectId: "project-billing",
-    teamId: "team-platform",
-    workItemId: "work-123",
-    actor: {
+  deepEqual(
+    contextPackDocConsultOutcomeStampForLifecycleTransition({
+      organizationId: "org-lfg",
+      projectId: "project-billing",
+      teamId: "team-platform",
+      workItemId: "work-123",
+      actor: {
+        agentId: "agent-reviewer",
+        hatAssignmentId: "hat-reviewer",
+      },
+      workStateTransitionId: "work-state-transition-123",
+      outcome: StageOutcome.RequestChanges,
+      outcomeRecordedAt: "2026-06-02T14:00:00.000Z",
+    }),
+    {
+      organizationId: "org-lfg",
       agentId: "agent-reviewer",
       hatAssignmentId: "hat-reviewer",
+      projectId: "project-billing",
+      teamId: "team-platform",
+      workItemId: "work-123",
+      outcome: StageOutcome.RequestChanges,
+      outcomeRef: "work_state_transition:work-state-transition-123",
+      outcomeRecordedAt: "2026-06-02T14:00:00.000Z",
     },
-    workStateTransitionId: "work-state-transition-123",
-    outcome: StageOutcome.RequestChanges,
-    outcomeRecordedAt: "2026-06-02T14:00:00.000Z",
-  }), {
-    organizationId: "org-lfg",
-    agentId: "agent-reviewer",
-    hatAssignmentId: "hat-reviewer",
-    projectId: "project-billing",
-    teamId: "team-platform",
-    workItemId: "work-123",
-    outcome: StageOutcome.RequestChanges,
-    outcomeRef: "work_state_transition:work-state-transition-123",
-    outcomeRecordedAt: "2026-06-02T14:00:00.000Z",
-  });
+  );
 });
 
 test("context pack doc consult outcome stamp derives scope from business validation decisions", () => {
-  deepEqual(contextPackDocConsultOutcomeStampForBusinessValidation({
-    organizationId: "org-lfg",
-    projectId: "project-billing",
-    teamId: "team-platform",
-    workItemId: "work-123",
-    actor: {
+  deepEqual(
+    contextPackDocConsultOutcomeStampForBusinessValidation({
+      organizationId: "org-lfg",
+      projectId: "project-billing",
+      teamId: "team-platform",
+      workItemId: "work-123",
+      actor: {
+        agentId: "agent-product-owner",
+        hatAssignmentId: "hat-product-owner",
+      },
+      businessValidationId: "decision-record-123",
+      outcome: ContextPackBusinessValidationOutcome.Approved,
+      outcomeRecordedAt: "2026-06-02T15:00:00.000Z",
+    }),
+    {
+      organizationId: "org-lfg",
       agentId: "agent-product-owner",
       hatAssignmentId: "hat-product-owner",
+      projectId: "project-billing",
+      teamId: "team-platform",
+      workItemId: "work-123",
+      outcome: ContextPackBusinessValidationOutcome.Approved,
+      outcomeRef: "business_validation:decision-record-123",
+      outcomeRecordedAt: "2026-06-02T15:00:00.000Z",
     },
-    businessValidationId: "decision-record-123",
-    outcome: ContextPackBusinessValidationOutcome.Approved,
-    outcomeRecordedAt: "2026-06-02T15:00:00.000Z",
-  }), {
-    organizationId: "org-lfg",
-    agentId: "agent-product-owner",
-    hatAssignmentId: "hat-product-owner",
-    projectId: "project-billing",
-    teamId: "team-platform",
-    workItemId: "work-123",
-    outcome: ContextPackBusinessValidationOutcome.Approved,
-    outcomeRef: "business_validation:decision-record-123",
-    outcomeRecordedAt: "2026-06-02T15:00:00.000Z",
-  });
+  );
 });
 
 test("context pack snapshot recorder records the snapshot and then records consulted documents", async () => {
@@ -310,52 +331,60 @@ function contextReadout(input: { docVersion?: number | undefined } = {}): Contex
       sourceGraphVersion: "graph:v1",
       policyVersion: "policy:v1",
       tokenBudget: 4096,
-      curationTrace: [{
-        stage: ContextPackCurationStageKind.RequiredConsult,
-        summary: "Business rules were required for this blocked director context.",
-        evidenceRefs: ["doc:doc-billing-brd"],
-      }],
-      items: [{
-        id: "business-doc",
-        kind: ContextPackItemKind.BusinessDocument,
-        title: "Billing BRD",
-        summary: "Customer billing rules.",
-        sourceRef: "doc:doc-billing-brd",
-        required: true,
-        freshness: ContextPackFreshness.Current,
-        confidence: 1,
-        reasons: ["required_consult", "management_blocker"],
-        citationRefs: ["doc:doc-billing-brd"],
-        sourcePointers: [docPointer],
-      }, {
-        id: "synthesis-briefing",
-        kind: ContextPackItemKind.SynthesisBriefing,
-        title: "Blocked-context synthesis",
-        summary: "The blocker depends on the billing BRD.",
-        sourceRef: "synthesis:blocked",
-        required: false,
-        freshness: ContextPackFreshness.Stale,
-        confidence: 0.8,
-        reasons: ["ranked_context"],
-        citationRefs: ["business-doc"],
-        sourcePointers: [docPointer],
-      }, {
-        id: "memory-note",
-        kind: ContextPackItemKind.MemoryPointer,
-        title: "Prior memory",
-        summary: "Advisory memory, not a document consult.",
-        sourceRef: "memory:1",
-        required: false,
-        freshness: ContextPackFreshness.Current,
-        confidence: 0.5,
-        reasons: ["memory"],
-        sourcePointers: [{
-          kind: ContextPackSourcePointerKind.HindsightMemory,
-          providerId: "hindsight",
-          memoryId: "memory-1",
-          advisory: true,
-        }],
-      }],
+      curationTrace: [
+        {
+          stage: ContextPackCurationStageKind.RequiredConsult,
+          summary: "Business rules were required for this blocked director context.",
+          evidenceRefs: ["doc:doc-billing-brd"],
+        },
+      ],
+      items: [
+        {
+          id: "business-doc",
+          kind: ContextPackItemKind.BusinessDocument,
+          title: "Billing BRD",
+          summary: "Customer billing rules.",
+          sourceRef: "doc:doc-billing-brd",
+          required: true,
+          freshness: ContextPackFreshness.Current,
+          confidence: 1,
+          reasons: ["required_consult", "management_blocker"],
+          citationRefs: ["doc:doc-billing-brd"],
+          sourcePointers: [docPointer],
+        },
+        {
+          id: "synthesis-briefing",
+          kind: ContextPackItemKind.SynthesisBriefing,
+          title: "Blocked-context synthesis",
+          summary: "The blocker depends on the billing BRD.",
+          sourceRef: "synthesis:blocked",
+          required: false,
+          freshness: ContextPackFreshness.Stale,
+          confidence: 0.8,
+          reasons: ["ranked_context"],
+          citationRefs: ["business-doc"],
+          sourcePointers: [docPointer],
+        },
+        {
+          id: "memory-note",
+          kind: ContextPackItemKind.MemoryPointer,
+          title: "Prior memory",
+          summary: "Advisory memory, not a document consult.",
+          sourceRef: "memory:1",
+          required: false,
+          freshness: ContextPackFreshness.Current,
+          confidence: 0.5,
+          reasons: ["memory"],
+          sourcePointers: [
+            {
+              kind: ContextPackSourcePointerKind.HindsightMemory,
+              providerId: "hindsight",
+              memoryId: "memory-1",
+              advisory: true,
+            },
+          ],
+        },
+      ],
       omittedItemsWithReason: [],
       contradictions: [],
       staleInputs: [],

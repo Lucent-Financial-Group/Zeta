@@ -30,7 +30,7 @@ Mika ferry forwarded by Aaron 2026-05-27 — substrate-engineering crystallizati
 
 ## Aaron's keystone framing
 
-> *"And instead of treating them like sessions, imagine we're gonna actually do fuckin' joins. We're gonna join, but we're gonna join with clear security context, boundaries, attributes on the join."*
+> _"And instead of treating them like sessions, imagine we're gonna actually do fuckin' joins. We're gonna join, but we're gonna join with clear security context, boundaries, attributes on the join."_
 
 ## Composes with
 
@@ -41,11 +41,11 @@ Mika ferry forwarded by Aaron 2026-05-27 — substrate-engineering crystallizati
 F# substrate primitive shape:
 
 \`\`\`fsharp
-type Tic<'state> = IObservable<Span * 'state>
+type Tic<'state> = IObservable<Span \* 'state>
 type JoinPolicy = {
-  SecurityContextMerge: SecurityContext list -> SecurityContext
-  BoundaryEnforcement: Boundary list -> Boundary
-  AttributeProjection: Attributes list -> Attributes
+SecurityContextMerge: SecurityContext list -> SecurityContext
+BoundaryEnforcement: Boundary list -> Boundary
+AttributeProjection: Attributes list -> Attributes
 }
 \`\`\`
 

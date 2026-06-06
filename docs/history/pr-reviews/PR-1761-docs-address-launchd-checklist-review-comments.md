@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1761 |
-| Title | docs: address launchd checklist review comments |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T01:58:06Z |
-| Merged at | 2026-05-07T01:59:48Z |
-| Merge commit SHA | `8adfbfaa2679a1a598fdd93540b6972d9f7ec1f1` |
-| Branch | `claim/launchd-checklist-review-followup` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1761 |
-| Changed files | 1 |
-| Additions / deletions | +46 / -34 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1761                                                     |
+| Title                 | docs: address launchd checklist review comments          |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T01:58:06Z                                     |
+| Merged at             | 2026-05-07T01:59:48Z                                     |
+| Merge commit SHA      | `8adfbfaa2679a1a598fdd93540b6972d9f7ec1f1`               |
+| Branch                | `claim/launchd-checklist-review-followup`                |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1761 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +46 / -34                                                |
 
 ## Description
 
 ## Summary
+
 - Addresses the archived PR #1758 review comments on the launchd hot-swap checklist.
 - Rewrites current-state prose to role-refs while preserving technical service identifiers.
 - Replaces hard-coded home paths with `$HOME` / `ZETA_RIVEN_LOOP_*` variables, uses `launchctl print` for live argument inspection, and swaps stop/start fallback for domain-scoped `bootout` / `bootstrap` / `kickstart`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/operations/riven-tier1-launchd-hot-swap-checklist.md docs/claims/launchd-checklist-review-followup.md`
 - `npx markdownlint-cli2 docs/operations/riven-tier1-launchd-hot-swap-checklist.md`
 - `git diff --check origin/main...HEAD`
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -79,7 +81,7 @@
 
   <pre>
   The `bootout ... 2&gt;/dev/null || true` line suppresses all errors, which makes it hard to tell whether `bootout` actually failed due to a real problem (wrong domain, wrong plist path, permissions) vs “not loaded”. Consider keeping stderr visible, or only ignoring the specific “No such process”/not-loaded case, so operators have actionable diagnostics if the reload sequence fails.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

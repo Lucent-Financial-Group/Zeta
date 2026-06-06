@@ -126,11 +126,7 @@ function runSnapshotBurn(dryRun: boolean): { exitCode: number; note: string } {
     stdio: "inherit",
     maxBuffer: SPAWN_MAX_BUFFER,
   });
-  const classified = classifySpawnFailure(
-    result.status,
-    result.signal,
-    result.error as SpawnError | undefined,
-  );
+  const classified = classifySpawnFailure(result.status, result.signal, result.error as SpawnError | undefined);
   return { exitCode: classified.status, note: classified.note };
 }
 
@@ -143,11 +139,7 @@ function runProjectRunway(): { exitCode: number; output: string; note: string } 
   });
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const output = result.stdout ?? "";
-  const classified = classifySpawnFailure(
-    result.status,
-    result.signal,
-    result.error as SpawnError | undefined,
-  );
+  const classified = classifySpawnFailure(result.status, result.signal, result.error as SpawnError | undefined);
   return {
     exitCode: classified.status,
     output,
@@ -229,9 +221,7 @@ const BOOTSTRAP_PROJECTION =
 
 function runProjectionStep(snapshotsPath: string): StepResult {
   if (!isRegularFileSafe(snapshotsPath)) {
-    process.stdout.write(
-      "==> project-runway.ts SKIPPED (no snapshots yet); writing bootstrap report\n",
-    );
+    process.stdout.write("==> project-runway.ts SKIPPED (no snapshots yet); writing bootstrap report\n");
     return { ok: true, projection: BOOTSTRAP_PROJECTION };
   }
   process.stdout.write("==> project-runway.ts\n");

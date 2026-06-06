@@ -17,11 +17,11 @@ Aaron 2026-05-03, autonomous-loop maintainer channel, immediately after Otto:
 
 Aaron's response (verbatim):
 
-> *"ironicly enough you don't remember things unless they are in claude.md and other agents don't remember much unless their equilvalan file, memeories are not very reliable until we get an index or something built like sematic index or somthing"*
+> _"ironicly enough you don't remember things unless they are in claude.md and other agents don't remember much unless their equilvalan file, memeories are not very reliable until we get an index or something built like sematic index or somthing"_
 
-> *"memories not that good for remember lol"*
+> _"memories not that good for remember lol"_
 
-> *"carved sentancy and specialed indeex we build over time are goona be key"*
+> _"carved sentancy and specialed indeex we build over time are goona be key"_
 
 This is a substrate-retrieval-architecture observation, empirically self-demonstrated this same tick.
 
@@ -43,21 +43,21 @@ This same tick (2026-05-03 ~06:00Z) Otto:
 1. Used the framing "Now to speculative work per never-be-idle" in chat
 2. Aaron corrected with "I thought you were going to remember a narrorer definition?"
 3. Otto checked `ls memory/ | grep -iE "specul|frontier"` and found `feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md` — authored by Otto earlier that same day (~6h prior)
-4. Read the memo; confirmed it explicitly covers the corrected framing including the carved sentence: *"Edge-defining work is not speculation. ... Reserve 'speculation' for the narrow idle-fallback case."*
-5. Subsequently grep'd CLAUDE.md and discovered the rule **was already in the auto-loaded carved-sentence index** (CLAUDE.md lines ~415-440), explicitly stating *"Future-Otto: when the never-be-idle ladder surfaces 'speculative work,' check if it's edge-defining; if yes, frame as edge-defining-work in chat / commits / tick shards — not 'speculative work.'"*
+4. Read the memo; confirmed it explicitly covers the corrected framing including the carved sentence: _"Edge-defining work is not speculation. ... Reserve 'speculation' for the narrow idle-fallback case."_
+5. Subsequently grep'd CLAUDE.md and discovered the rule **was already in the auto-loaded carved-sentence index** (CLAUDE.md lines ~415-440), explicitly stating _"Future-Otto: when the never-be-idle ladder surfaces 'speculative work,' check if it's edge-defining; if yes, frame as edge-defining-work in chat / commits / tick shards — not 'speculative work.'"_
 
 **The stronger finding**: the rule existed at THREE layers — memory topic file + MEMORY.md index entry + CLAUDE.md auto-loaded carved sentence — and Otto STILL defaulted to the wrong framing. **Even the auto-loaded layer wasn't sufficient.** The framing-pattern ("speculative work per never-be-idle") fired before the rule-check. Aaron's observation is validated more strongly than initially absorbed: it's not just "memory files alone are unreliable" — it's "even auto-loaded carved sentences aren't sufficient when the violating framing-pattern is the default mental model."
 
-This points at what Aaron's *"specialed indeex we build over time"* names: not a static rules surface, but a **working retrieval mechanism that actively surfaces relevant rules during in-flight inference** — semantic-index-shaped, not bullet-list-shaped. Layer-3 (CLAUDE.md auto-load) puts the rule in context; layer-4 (active retrieval) is the missing piece for high-violation-rate rules.
+This points at what Aaron's _"specialed indeex we build over time"_ names: not a static rules surface, but a **working retrieval mechanism that actively surfaces relevant rules during in-flight inference** — semantic-index-shaped, not bullet-list-shaped. Layer-3 (CLAUDE.md auto-load) puts the rule in context; layer-4 (active retrieval) is the missing piece for high-violation-rate rules.
 
 ## The 4-layer retrieval architecture (refined)
 
-| Layer | Mechanism | Reliability for high-violation rules | Notes |
-|---|---|---|---|
-| 1. Topic file existence | `memory/*.md` | Very low | Necessary substrate; not retrieval |
-| 2. MEMORY.md index entry | One-line title + link | Low | First 200 lines auto-loaded; titles must match keyword |
-| 3. CLAUDE.md carved sentence | Bullet in auto-loaded surface | Medium | Present in context but framing-pattern can fire first |
-| 4. Active retrieval (semantic index) | Working in-flight matcher | High (proposed) | Aaron's *"specialed indeex"* — not yet built |
+| Layer                                | Mechanism                     | Reliability for high-violation rules | Notes                                                  |
+| ------------------------------------ | ----------------------------- | ------------------------------------ | ------------------------------------------------------ |
+| 1. Topic file existence              | `memory/*.md`                 | Very low                             | Necessary substrate; not retrieval                     |
+| 2. MEMORY.md index entry             | One-line title + link         | Low                                  | First 200 lines auto-loaded; titles must match keyword |
+| 3. CLAUDE.md carved sentence         | Bullet in auto-loaded surface | Medium                               | Present in context but framing-pattern can fire first  |
+| 4. Active retrieval (semantic index) | Working in-flight matcher     | High (proposed)                      | Aaron's _"specialed indeex"_ — not yet built           |
 
 The empirical evidence from this tick is that for SOME rules, layers 1-3 are insufficient. The violation is the working-set / mental-model conflict that fires faster than the rule-check. Layer-4 is what closes the gap.
 
@@ -74,12 +74,12 @@ Aaron's insight identifies the **retrieval-layer gap**: even beacon-safe substra
 
 The architecture stack:
 
-| Layer | Retrieval reliability | Authoring cost |
-|---|---|---|
-| CLAUDE.md / AGENTS.md / equivalent | High (auto-loaded every wake) | High (conversion-tested + carved-sentence form) |
-| MEMORY.md index | Medium (first 200 lines auto-loaded) | Medium (single-line entries) |
-| Memory topic files | Low (explicit retrieval required) | Low (full prose acceptable) |
-| docs/research/, persona notebooks | Very low (deep search required) | Variable |
+| Layer                              | Retrieval reliability                | Authoring cost                                  |
+| ---------------------------------- | ------------------------------------ | ----------------------------------------------- |
+| CLAUDE.md / AGENTS.md / equivalent | High (auto-loaded every wake)        | High (conversion-tested + carved-sentence form) |
+| MEMORY.md index                    | Medium (first 200 lines auto-loaded) | Medium (single-line entries)                    |
+| Memory topic files                 | Low (explicit retrieval required)    | Low (full prose acceptable)                     |
+| docs/research/, persona notebooks  | Very low (deep search required)      | Variable                                        |
 
 **Insight**: the higher the retrieval-reliability, the higher the authoring cost — because the cost IS the conversion to carved-sentence beacon-safe form. Aaron's insight names the implicit principle: **carved sentences are the durable retrieval index**.
 
@@ -101,7 +101,7 @@ The architecture stack:
 
 **For longer-term substrate-tooling**:
 
-- Aaron 2026-05-03 named *"specialed indeex we build over time"* — a specialized index (likely semantic) that maps in-flight retrieval keywords to relevant topic files
+- Aaron 2026-05-03 named _"specialed indeex we build over time"_ — a specialized index (likely semantic) that maps in-flight retrieval keywords to relevant topic files
 - Candidate forms: vector-embedded semantic index over `memory/` + `docs/research/` + persona notebooks; keyword-tag index over memo frontmatter; cross-reference graph over composes_with relationships
 - B-0xxx backlog candidate: substrate-retrieval-index design (not authored this tick — would need scoping first)
 

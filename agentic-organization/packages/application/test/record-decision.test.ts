@@ -116,20 +116,23 @@ describe("record decision handler", () => {
   });
 
   test("records a business-validation doc consult outcome stamp for non-gate decisions", async () => {
-    const outcome = await recordDecision({
-      ...command,
-      title: "Product business validation",
-      decision: "The delivered behavior satisfies the accepted customer billing scope.",
-      docConsultOutcome: {
-        kind: RecordDecisionDocConsultOutcomeKind.BusinessValidation,
-        outcome: ContextPackBusinessValidationOutcome.Approved,
+    const outcome = await recordDecision(
+      {
+        ...command,
+        title: "Product business validation",
+        decision: "The delivered behavior satisfies the accepted customer billing scope.",
+        docConsultOutcome: {
+          kind: RecordDecisionDocConsultOutcomeKind.BusinessValidation,
+          outcome: ContextPackBusinessValidationOutcome.Approved,
+        },
       },
-    }, {
-      now: () => "2026-05-29T01:00:00.000Z",
-      createId: (prefix) => `${prefix}-001`,
-      discussionAnchorStateReader: createDiscussionAnchorStateReader(createDiscussionAnchor()),
-      workAnchorStateReader: createWorkAnchorStateReader([createFollowUpWorkItem("work-evidence-001")]),
-    });
+      {
+        now: () => "2026-05-29T01:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+        discussionAnchorStateReader: createDiscussionAnchorStateReader(createDiscussionAnchor()),
+        workAnchorStateReader: createWorkAnchorStateReader([createFollowUpWorkItem("work-evidence-001")]),
+      },
+    );
 
     equal(outcome.result.status, CommandResultStatus.Accepted);
     deepEqual(outcome.effects.docConsultOutcomeStamps, [

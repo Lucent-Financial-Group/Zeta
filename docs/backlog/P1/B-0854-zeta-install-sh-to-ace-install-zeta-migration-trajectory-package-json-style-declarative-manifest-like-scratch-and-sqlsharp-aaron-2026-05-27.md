@@ -19,16 +19,28 @@ composes_with:
   - B-0247
   - B-0852
   - B-0853
-tags: [ace-package-manager, zeta-on-ace, declarative-install, migration-trajectory, package-json, bunfig, install-graph, zeta-install-sh-replacement, scratch-sqlsharp-pattern, bootstrap-substrate]
+tags:
+  [
+    ace-package-manager,
+    zeta-on-ace,
+    declarative-install,
+    migration-trajectory,
+    package-json,
+    bunfig,
+    install-graph,
+    zeta-install-sh-replacement,
+    scratch-sqlsharp-pattern,
+    bootstrap-substrate,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
-> *"are we still using zeta-install instead of install.sh can we move closer to that?"*
+> _"are we still using zeta-install instead of install.sh can we move closer to that?"_
 >
-> (clarification) *"not zeta-install rename i mean using ace package manager that is the start like ../scratch and ../SQLSharp"*
+> (clarification) _"not zeta-install rename i mean using ace package manager that is the start like ../scratch and ../SQLSharp"_
 >
-> *"we just spoke about this earlier i thihnk you backloged some stuff"*
+> _"we just spoke about this earlier i thihnk you backloged some stuff"_
 
 Aaron is naming the trajectory from imperative-bash-installer (`zeta-install.sh`) toward declarative-package-manager-driven install (`ace install zeta`). Reference projects already operating this way in adjacent directories on the operator's machine:
 
@@ -194,9 +206,9 @@ It DOES:
 
 Aaron 2026-05-27 conversation arc (verbatim):
 
-1. *"are we still using zeta-install instead of install.sh can we move closer to that?"* (question)
-2. *"not zeta-install rename i mean using ace package manager that is the start like ../scratch and ../SQLSharp"* (clarification)
-3. *"we just spoke about this earlier i thihnk you backloged some stuff"* (reference to broader Ace cluster substrate)
+1. _"are we still using zeta-install instead of install.sh can we move closer to that?"_ (question)
+2. _"not zeta-install rename i mean using ace package manager that is the start like ../scratch and ../SQLSharp"_ (clarification)
+3. _"we just spoke about this earlier i thihnk you backloged some stuff"_ (reference to broader Ace cluster substrate)
 
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
 

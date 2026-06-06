@@ -17,12 +17,12 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 I had self-reflected in auto-loop-66's tick-history row:
 
-> *"Restraint reversal from auto-loop-65: the
+> _"Restraint reversal from auto-loop-65: the
 > scheduling-authority rule isn't 'never open PRs' — open
 > when the work advances the queue, not for volume's
-> sake."*
+> sake."_
 
-Aaron read it and confirmed: *"perfect self reflection."*
+Aaron read it and confirmed: _"perfect self reflection."_
 The framing is now endorsed and operative.
 
 ## Rule (confirmed phrasing)
@@ -37,8 +37,8 @@ free-work PR decisions reduce to one question per tick:
 - No → hold (restraint prevents noise)
 
 Both answers are legitimate. Neither is the default. The
-rule does not say *"open as many PRs as possible"* and it
-does not say *"open as few PRs as possible."* It asks the
+rule does not say _"open as many PRs as possible"_ and it
+does not say _"open as few PRs as possible."_ It asks the
 question and lets the answer determine the action.
 
 ## Why this framing matters
@@ -57,14 +57,14 @@ question and lets the answer determine the action.
 
 ### Reframes "prefer progress"
 
-*"Prefer progress"* composes with the advance-the-queue
+_"Prefer progress"_ composes with the advance-the-queue
 question: progress is not PR count, it's queue
 advancement. A tick that does task hygiene + reflection +
-tick-history without a new PR can be *progress* if that's
+tick-history without a new PR can be _progress_ if that's
 what the queue needed. A tick that opens 4 PRs can be
-*noise* if the queue didn't need them.
+_noise_ if the queue didn't need them.
 
-The test: *what did this tick leave better than it found?*
+The test: _what did this tick leave better than it found?_
 
 ## How to apply
 
@@ -82,8 +82,8 @@ The test: *what did this tick leave better than it found?*
 
 ### On tick-close reflection
 
-Every tick's close should be able to answer: *"did this
-tick advance the queue?"* Yes: name what advanced. No:
+Every tick's close should be able to answer: _"did this
+tick advance the queue?"_ Yes: name what advanced. No:
 name why restraint was the right call. The answer goes
 in the tick-history observations.
 

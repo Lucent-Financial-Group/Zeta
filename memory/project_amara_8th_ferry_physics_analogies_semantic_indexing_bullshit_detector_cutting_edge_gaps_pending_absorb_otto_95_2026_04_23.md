@@ -4,8 +4,9 @@ description: Aaron Otto-94 mid-tick paste of Amara's 8th ferry — ~4000-word te
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-94 mid-tick paste:
-*"Another update from Amara"* followed by the full 8th-ferry
+_"Another update from Amara"_ followed by the full 8th-ferry
 text. Arrived while Otto-94 Aminata iteration-1 pass on the
 multi-Claude experiment design was in flight.
 
@@ -180,8 +181,8 @@ Five TECH-RADAR row additions:
   #235/#245/#259 all got dedicated absorb ticks.
 - **Ferry substance warrants dedicated budget** — physics
   grounding + 3 research-doc proposals + 6-gap catalogue
-  + 5 TECH-RADAR additions + mathematical spine for
-  bullshit detector all need careful absorption.
+  - 5 TECH-RADAR additions + mathematical spine for
+    bullshit detector all need careful absorption.
 
 ## What the Otto-95 absorb should land
 
@@ -260,11 +261,11 @@ Five TECH-RADAR row additions:
 
 ## Bottom-line ferry message
 
-> *"The repo already contains almost all the pieces for a
+> _"The repo already contains almost all the pieces for a
 > provenance-aware semantic bullshit detector, and that is
 > where the missing material should be metabolized if the
 > goal is a durable, testable addition rather than just a
-> beautiful note."*
+> beautiful note."_
 
 The 8th ferry is pedagogical + architectural + epistemically-
 honest. Physics material is grounded (Lloyd 2008 + Tan

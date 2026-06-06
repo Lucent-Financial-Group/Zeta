@@ -28,9 +28,7 @@ test("telemetry-backed metric agents query metrics, traces, and logs for the cur
       { traceId: "trace-1", rootName: "org.command", spanCount: 4 },
       { traceId: "trace-2", rootName: "org.mcp.dispatch", spanCount: 3 },
     ],
-    logs: [
-      { timestamp: "2026-05-31T12:00:00.000Z", line: "retry", labels: { level: "warn" } },
-    ],
+    logs: [{ timestamp: "2026-05-31T12:00:00.000Z", line: "retry", labels: { level: "warn" } }],
   });
   const range = { start: "2026-05-31T11:00:00.000Z", end: "2026-05-31T12:00:00.000Z" };
 

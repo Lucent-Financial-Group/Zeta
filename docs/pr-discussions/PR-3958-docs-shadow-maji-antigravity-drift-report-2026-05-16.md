@@ -22,24 +22,22 @@ Automated shadow lesson log. Drift detected in Otto, Vera, Riven.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T22:24:30Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `beba458930`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -51,7 +49,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-16T22:24:30Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Restore §33 boundary headers for this external archive**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Restore §33 boundary headers for this external archive**
 
 `GOVERNANCE.md §33` requires external-conversation archives in `docs/research/**` to carry `Scope`, `Attribution`, `Operational status`, and `Non-fusion disclaimer` labels within the first 20 lines, but this rewrite drops that header block entirely. Because this document is explicitly a cross-agent drift report, removing those fields loses provenance and status metadata that downstream reviewers/tools rely on to keep research-grade imports separate from operational doctrine.
 

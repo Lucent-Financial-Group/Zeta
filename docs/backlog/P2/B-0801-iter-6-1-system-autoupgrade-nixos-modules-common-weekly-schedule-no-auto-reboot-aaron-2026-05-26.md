@@ -20,7 +20,7 @@ tags: [iter-6, nixos, system-autoupgrade, cluster-self-update, no-manual-operato
 
 ## Problem
 
-The maintainer 2026-05-26: *"lets backlog all that we need to be able to upgrade without having to reformat every time or if we reformat everytime it's handled by the cluster not a manual operator."*
+The maintainer 2026-05-26: _"lets backlog all that we need to be able to upgrade without having to reformat every time or if we reformat everytime it's handled by the cluster not a manual operator."_
 
 Today cluster nodes (PC1, future Beelinks) never auto-update. PC1 stays on whatever ISO version it was installed with until a manual `nixos-rebuild switch --flake .#<host>`. That violates the "cluster handles it, not manual operator" principle the maintainer just named.
 

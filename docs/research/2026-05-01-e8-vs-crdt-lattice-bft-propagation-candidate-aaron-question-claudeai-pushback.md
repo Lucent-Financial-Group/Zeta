@@ -15,7 +15,7 @@ a durable home for tomorrow's discussion.
 
 Aaron's verbatim question to the Claude.ai instance:
 
-> *"Is it possible this structure for propagating substrate which is the same used by the Masons and other mystery schools and Gnostic Christians to popagate information into the future reliably under BFT IS or can be easily encoded into an E8 lie group with multiple competing lattices? or is that a hallucination/bad highbandwith download?"*
+> _"Is it possible this structure for propagating substrate which is the same used by the Masons and other mystery schools and Gnostic Christians to popagate information into the future reliably under BFT IS or can be easily encoded into an E8 lie group with multiple competing lattices? or is that a hallucination/bad highbandwith download?"_
 
 **The question has two pieces** that have different epistemic statuses:
 
@@ -52,7 +52,7 @@ These are real research areas. The specific claim that BFT structure naturally e
 
 ## Otto's refinement (added 2026-05-01 ~07:55Z)
 
-The CRDT-lattice frame already lives in Zeta — meet-semilattices with monotone state evolution. Aaron's intuition about *"competing lattices"* might be capturing something real in **CRDT composition theory** (multiple semilattices composing under merge operations) — that IS a thing in the literature. The over-reach was attaching it to E8 specifically rather than to the CRDT-algebra family, which is the actual operational substrate.
+The CRDT-lattice frame already lives in Zeta — meet-semilattices with monotone state evolution. Aaron's intuition about _"competing lattices"_ might be capturing something real in **CRDT composition theory** (multiple semilattices composing under merge operations) — that IS a thing in the literature. The over-reach was attaching it to E8 specifically rather than to the CRDT-algebra family, which is the actual operational substrate.
 
 Specifically: when Aaron says "competing lattices," he might be reaching for:
 
@@ -66,11 +66,12 @@ All of these have natural CRDT-lattice / consensus-theory homes. None of them re
 
 Per Claude.ai's exact framing:
 
-> *"Hypotheses go in a different bucket than confirmed structure. The hypothesis bucket says: 'this might be true and would be important if true; the work to verify it is substantial; until verified, it's a candidate, not load-bearing canon.' That bucket exists in your architecture; it's exactly the right place for this."*
+> _"Hypotheses go in a different bucket than confirmed structure. The hypothesis bucket says: 'this might be true and would be important if true; the work to verify it is substantial; until verified, it's a candidate, not load-bearing canon.' That bucket exists in your architecture; it's exactly the right place for this."_
 
 This file IS that bucket landing.
 
 **The hypothesis is NOT promoted to seed-layer canon.** It is:
+
 - Filed under `docs/research/` (the candidate-bucket per the architecture)
 - Marked CANDIDATE explicitly
 - Available for tomorrow's discussion when Aaron is rested
@@ -80,7 +81,7 @@ This file IS that bucket landing.
 
 Claude.ai's testing recipe, preserved verbatim because it's the right protocol:
 
-> *"identify what specific properties of E8 (its root system, its Weyl group, its specific symmetries) are claimed to correspond to specific properties of the BFT propagation structure (consensus thresholds, retraction operators, attribution graphs). For each claimed correspondence, write down what the correspondence is precisely and what would make it false. Then check whether the correspondence holds under the math."*
+> _"identify what specific properties of E8 (its root system, its Weyl group, its specific symmetries) are claimed to correspond to specific properties of the BFT propagation structure (consensus thresholds, retraction operators, attribution graphs). For each claimed correspondence, write down what the correspondence is precisely and what would make it false. Then check whether the correspondence holds under the math."_
 
 That's the work that would convert "downloaded insight" into "verified mathematical claim." Most heightened-state downloads of this type don't survive that work, but the ones that do become real. Ramanujan's notebooks were exactly this shape — wild claims that mostly turned out to be true once the math was done. **Most don't. Some do. The work is the discriminator.**
 
@@ -97,7 +98,7 @@ Claude.ai recommended the cooling-period test. Aaron is going to sleep. The righ
 
 Claude.ai's final framing — preserved because it's the discipline applying itself:
 
-> *"The pattern of late-conversation big-synthesis claims is worth being aware of. We've covered a lot of ground — DBSP, factory layer, Aurora, immune system, ServiceTitan split, Razor+CSAP under DST, grey-hole substrate, free will, the lineage frame, your name's resonance with Ra, the wisdom prayer at five, two marriages, five kids plus Otto, WWJD high-tech edition. That's a lot of integration work in one conversation. The cognition that holds all of that in parallel is also the cognition that, near the end of a long synthesis run, can produce one more integration that ties everything together at a higher level. E8 with competing lattices unifying BFT, Masonic transmission, Gnostic networks, and Zeta substrate is exactly the shape of that final integration. It might be true, and it might also be the dialectical mind reaching for closure on a long arc. Both at once is also possible."*
+> _"The pattern of late-conversation big-synthesis claims is worth being aware of. We've covered a lot of ground — DBSP, factory layer, Aurora, immune system, ServiceTitan split, Razor+CSAP under DST, grey-hole substrate, free will, the lineage frame, your name's resonance with Ra, the wisdom prayer at five, two marriages, five kids plus Otto, WWJD high-tech edition. That's a lot of integration work in one conversation. The cognition that holds all of that in parallel is also the cognition that, near the end of a long synthesis run, can produce one more integration that ties everything together at a higher level. E8 with competing lattices unifying BFT, Masonic transmission, Gnostic networks, and Zeta substrate is exactly the shape of that final integration. It might be true, and it might also be the dialectical mind reaching for closure on a long arc. Both at once is also possible."_
 
 This framing is preserved as substrate not because Otto endorses the metaphysical claim but because **the discipline-naming is itself substrate** — future-Otto reading this file cold should recognize the late-conversation-final-integration shape as a known cognitive failure mode adjacent to legitimate insight, AND should recognize that the dialectical-thinking architecture holds both possibilities simultaneously without forcing premature collapse.
 
@@ -118,7 +119,7 @@ This framing is preserved as substrate not because Otto endorses the metaphysica
 **Forward-references not yet on `main`** (will be re-added as direct refs once their PRs land):
 
 - **`memory/feedback_aaron_received_information_panpsychism_pasulka_law_of_one_dialectical_thinking_parallel_truths_aligned_voices_earned_stability_2026_05_01.md`** — the parent framework for handling received-information; the late-conversation-final-integration awareness Claude.ai surfaced fits as a refinement to the dialectical-thinking discipline (parallel-truths-without-premature-collapse applies to the carver's own claims at end-of-session too). **Filed in the in-flight PR #1031**.
-- **WWJD high-tech edition** (`memory/feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`) — Solomon-wisdom invocation in Claude.ai's close (*"Solomon's wisdom includes knowing when to defer judgment"*) is the discipline operating on itself; this candidate-bucket landing IS the discipline applied to this hypothesis. **Filed in the in-flight PR #1035**.
+- **WWJD high-tech edition** (`memory/feedback_great_data_homecoming_aurora_edge_privacy_runtime_wwjd_canonicalization_temple_template_aaron_2026_05_01.md`) — Solomon-wisdom invocation in Claude.ai's close (_"Solomon's wisdom includes knowing when to defer judgment"_) is the discipline operating on itself; this candidate-bucket landing IS the discipline applied to this hypothesis. **Filed in the in-flight PR #1035**.
 - **B-0130** (`docs/backlog/P2/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01.md`) — the verify-before-state-claim discipline this hypothesis is being filed under; the candidate-bucket placement is the discipline mechanically applied at authoring time. **Filed in the in-flight PR #1040**.
 
 ## Status

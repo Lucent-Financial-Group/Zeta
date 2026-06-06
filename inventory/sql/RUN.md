@@ -2,7 +2,7 @@
 
 All SQL here is **source-of-truth** authored in the repo. DDL is **run by the
 owner** in the Supabase SQL editor (Claude has no privileged DB access;
-`service_role` is forbidden). Claude verifies *behavior* afterward with the
+`service_role` is forbidden). Claude verifies _behavior_ afterward with the
 public anon key.
 
 ## Phase 1
@@ -15,8 +15,8 @@ public anon key.
 
 2. **`proofs/phase1_proofs.sql`** — owner runs in the SQL editor. Returns a
    results table; every row should read `PASSED…` (proves change_log immutability
-   + the broken-vs-fixed demonstration). Runs in a transaction that rolls back —
-   leaves no artifacts.
+   - the broken-vs-fixed demonstration). Runs in a transaction that rolls back —
+     leaves no artifacts.
 
 3. **`proofs/anon_checks.md`** — proof #3 (anon returns `[]`) and proof #1 client
    path (logged-in user refused by RLS). Claude runs proof #3 to show observed
@@ -90,4 +90,4 @@ Once `phase1.sql` has run, the `handle_new_user` trigger will auto-create a
 - a **Viewer** test user (leave role = `viewer`),
 - an **Editor** test user, then elevate it:
   `update public.profiles set role='editor' where user_id =
-   (select id from auth.users where lower(email)=lower('EDITOR_EMAIL'));`
+ (select id from auth.users where lower(email)=lower('EDITOR_EMAIL'));`

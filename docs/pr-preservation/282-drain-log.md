@@ -139,7 +139,7 @@ Resolved.
 > "fail-to-YELLOW/RED"), but the earlier gate list defines
 > `G_evidence_independent`. Please make these references
 > consistent so it's clear which gate drives `plausible but
-> unresolved` / `likely confabulated`.
+unresolved` / `likely confabulated`.
 
 **Outcome:** FIX — same rename in mapping.
 
@@ -277,7 +277,7 @@ cadence tick.
 **Original comment (verbatim):**
 
 > P1: `G_carrier_overlap` defines `size(cone(q) ∩ cone(y)) /
-> size(cone(y))`, but `provenance cone(y)` is defined as
+size(cone(y))`, but `provenance cone(y)` is defined as
 > "things y cites/derives-from", which can be empty (no
 > citations). That makes the overlap ratio undefined / a
 > divide-by-zero in any implementation. Please define the
@@ -312,7 +312,7 @@ on empty cone.)
 > P1: The scoring section defines band-merging as
 > `min(..., G_evidence_independent, ...)` with "5 gates per
 > candidate", but later (Concern 1) states
-> `G_evidence_independent` is advisory-only and does *not*
+> `G_evidence_independent` is advisory-only and does _not_
 > participate in band-merging until an independent-oracle
 > substrate exists (v0 ships as a 4-gate min). Please
 > reconcile in the scoring definition itself (e.g., describe

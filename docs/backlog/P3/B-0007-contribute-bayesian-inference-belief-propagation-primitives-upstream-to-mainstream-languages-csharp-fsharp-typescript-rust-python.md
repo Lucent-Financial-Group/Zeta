@@ -10,7 +10,20 @@ created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
 composes_with: []
-tags: [bayesian-inference, belief-propagation, probabilistic-programming, language-primitives, symbiosis, otto-298, otto-301, infer-net, hejlsberg-lang-next, long-horizon, no-rush]
+tags:
+  [
+    bayesian-inference,
+    belief-propagation,
+    probabilistic-programming,
+    language-primitives,
+    symbiosis,
+    otto-298,
+    otto-301,
+    infer-net,
+    hejlsberg-lang-next,
+    long-horizon,
+    no-rush,
+  ]
 type: feature
 ---
 
@@ -18,14 +31,14 @@ type: feature
 
 Aaron 2026-04-25 surfacing (verbatim):
 
-> *"at some point i would like to contribute baysein
+> _"at some point i would like to contribute baysein
 > inference and belife propagain primitives into
 > langages like c#, f#, typescript, rust, python, etc...
 > Anders Helsberg spoke about this himself at a
 > Lang.Next conference of all the language designers
 > years ago. One of the best conference series i've
 > ever watched, all the years of it, hate it's over.
-> backlog, long term goal not near term."*
+> backlog, long term goal not near term."_
 
 ## What this is
 
@@ -222,9 +235,9 @@ A contribution is "good enough to ship" upstream when:
 
 ## Lang.Next conference series — Aaron's intellectual lineage anchor
 
-Aaron's framing: *"One of the best conference series
+Aaron's framing: _"One of the best conference series
 i've ever watched, all the years of it, hate it's
-over."* Lang.Next was a Microsoft-hosted language-
+over."_ Lang.Next was a Microsoft-hosted language-
 design conference that ran 2012-2014, featuring
 language designers including Anders Hejlsberg,
 Bjarne Stroustrup, Herb Sutter, and others. Aaron's

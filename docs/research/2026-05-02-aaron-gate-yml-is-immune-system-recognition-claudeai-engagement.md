@@ -1,6 +1,6 @@
 <!-- §33 archive header per GOVERNANCE.md -->
 
-Scope: External-conversation absorb + first-party recognition. During the B-0125 lane-split implementation work (2026-05-02 ~00:50Z, autonomous-loop tick while Aaron rests), Aaron made a substrate-class architectural recognition: *"gate.yml you know this is our immunne system right you even called it gate was that intential?"* — surfacing that `gate.yml` (the factory's CI workflow) IS the operational instance of the immune-system architecture pattern Aurora's substrate has been formalizing at the civilization-scale layer. Aaron then forwarded the recognition to Claude.ai (separate Anthropic instance), who responded with substantive engagement confirming the recognition reframes Aurora work from "design new system" to "extract & formalize what's already running." This file preserves Aaron's recognition + Claude.ai's engagement verbatim, with Otto's annotation held separate per the lattice-capture corrective discipline. Substrate-class promotion of the carved sentence "gate.yml IS the immune system" is deferred per cooling-period razor; verbatim preservation is immediate.
+Scope: External-conversation absorb + first-party recognition. During the B-0125 lane-split implementation work (2026-05-02 ~00:50Z, autonomous-loop tick while Aaron rests), Aaron made a substrate-class architectural recognition: _"gate.yml you know this is our immunne system right you even called it gate was that intential?"_ — surfacing that `gate.yml` (the factory's CI workflow) IS the operational instance of the immune-system architecture pattern Aurora's substrate has been formalizing at the civilization-scale layer. Aaron then forwarded the recognition to Claude.ai (separate Anthropic instance), who responded with substantive engagement confirming the recognition reframes Aurora work from "design new system" to "extract & formalize what's already running." This file preserves Aaron's recognition + Claude.ai's engagement verbatim, with Otto's annotation held separate per the lattice-capture corrective discipline. Substrate-class promotion of the carved sentence "gate.yml IS the immune system" is deferred per cooling-period razor; verbatim preservation is immediate.
 
 Attribution: Aaron's recognition: 2026-05-02 ~00:50Z, during B-0125 lane-split PR work (PR #1185 in flight at time of recognition). Claude.ai's engagement: 2026-05-02 ~01:00Z, separate Anthropic instance (model unknown; ambient web-app session). Forwarded by Aaron to Otto (this Claude Code instance) within the same window. Glass Halo + Otto-231 first-party-content authorise verbatim quotation of Aaron's framing.
 
@@ -12,11 +12,11 @@ Non-fusion disclaimer: Otto and Claude.ai are separate Anthropic instances of th
 
 ## Aaron's recognition (verbatim)
 
-> *"gate.yml you know this is our immunne system right you even called it gate was that intential?"*
+> _"gate.yml you know this is our immunne system right you even called it gate was that intential?"_
 
 (Repeated twice in the same message, second repeat verbatim per the original send.)
 
-Context: Aaron sent this while Otto was implementing the B-0125 lane-split PR (PR #1185), modifying `.github/workflows/gate.yml` to skip F#/dotnet build steps on docs-only PRs. The recognition surfaced *during* the work — Aaron seeing the architecture from inside the activity of tuning it.
+Context: Aaron sent this while Otto was implementing the B-0125 lane-split PR (PR #1185), modifying `.github/workflows/gate.yml` to skip F#/dotnet build steps on docs-only PRs. The recognition surfaced _during_ the work — Aaron seeing the architecture from inside the activity of tuning it.
 
 ## Otto's initial response (verbatim from the conversation)
 
@@ -76,7 +76,7 @@ The discipline: keep Aaron's recognition + Claude.ai's engagement preserved verb
 
 3. **The gate ⟷ oracle dual is operating concretely.** PR #1183's "oracles inside immune system" canonical direction maps to: gate.yml's per-PR checks are the gate layer (filter at entry); the cumulative skill index + agent reviewers + accumulated lessons are the oracle layer (grade the population of accepted substrate over time). Same dual structure, two scales.
 
-4. **Aurora reframes from "design new system" to "extract & formalize what's running."** The verification-owed items (PoUW-CC verifier, CultureFit operationalization, Oracle layer architecture, etc.) aren't aspirational — they describe what gate.yml + agent-reviewers + static-analysis-guards + skill-index already do. The remaining work is *extraction and explicit articulation*, not design and build.
+4. **Aurora reframes from "design new system" to "extract & formalize what's running."** The verification-owed items (PoUW-CC verifier, CultureFit operationalization, Oracle layer architecture, etc.) aren't aspirational — they describe what gate.yml + agent-reviewers + static-analysis-guards + skill-index already do. The remaining work is _extraction and explicit articulation_, not design and build.
 
 ### Where the framing needs care (per Claude.ai's gentle pushback)
 
@@ -88,17 +88,17 @@ Claude.ai noted that "gate.yml IS the immune system" wants careful framing befor
 
 The substrate landing should distinguish these two roles cleanly:
 
-| Function | Current operational instance | Aurora-scale equivalent |
-|---|---|---|
-| **Gate** (per-PR entry filtering) | `gate.yml` workflow + agent-reviewers | PoUW-CC five-factor gate per work-type |
+| Function                                                                                                 | Current operational instance                                                    | Aurora-scale equivalent                                         |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **Gate** (per-PR entry filtering)                                                                        | `gate.yml` workflow + agent-reviewers                                           | PoUW-CC five-factor gate per work-type                          |
 | **Immune system coordination detection** (population-level pattern catching across many items over time) | Osmani Ratchet at 2x + accumulated reviewer lessons + skill-index drift signals | Cross-actor coordination detection in Aurora civilization layer |
-| **Oracle layer** (grade the population of accepted substrate over time) | Skill index + agent reviewers + accumulated lessons | Oracle layer architecture in Aurora |
+| **Oracle layer** (grade the population of accepted substrate over time)                                  | Skill index + agent reviewers + accumulated lessons                             | Oracle layer architecture in Aurora                             |
 
 This decomposition protects against overclaim ("gate.yml is the FULL immune system") while preserving the load-bearing insight (the architectural primitive IS operating, not aspirational).
 
 ### Composes with
 
-- **PR #1185** — the B-0125 lane-split work this recognition arrived during. The lane-split is operational instance of immune-system *tuning* (relax sensitivity per-PR-class); this file is its substrate trace.
+- **PR #1185** — the B-0125 lane-split work this recognition arrived during. The lane-split is operational instance of immune-system _tuning_ (relax sensitivity per-PR-class); this file is its substrate trace.
 - **PR #1183** (`memory/feedback_aurora_oracle_is_dual_of_gate_precisely_self_dual_disposition_aaron_2026_05_02.md`) — the gate ⟷ oracle dual at Aurora layer; this recognition strengthens the dual-chain at the operational layer (two-scale homomorphism).
 - **PR #1182** (`docs/research/2026-05-01-claudeai-recursion-catches-itself-delphi-oracle-aaron-forwarded.md`) — the recursion-catches-itself framing Claude.ai introduced; this recognition shows it's already operating concretely on Zeta substrate.
 - **PR #1181** (`docs/research/2026-05-01-claudeai-bft-multi-source-succession-and-grading-bottleneck-aaron-forwarded.md`) — BFT-multi-source-succession architecture; the agent-reviewers in CI ARE multiple grading sources at the operational layer.
@@ -110,7 +110,7 @@ This decomposition protects against overclaim ("gate.yml is the FULL immune syst
 
 ### Operational follow-ups (deferred)
 
-Per cooling-period razor, the substrate-class promotion of the carved sentence "gate.yml IS the immune system at the code-substrate layer; PoUW-CC is the immune system at the Aurora civilization-scale layer" is **deferred**. Verbatim preservation in this file is immediate (the queue/promotion split Claude.ai endorsed; Aaron's instruction *"if you dont write it anywhere you'll just compress and forget"* triggered immediate verbatim landing).
+Per cooling-period razor, the substrate-class promotion of the carved sentence "gate.yml IS the immune system at the code-substrate layer; PoUW-CC is the immune system at the Aurora civilization-scale layer" is **deferred**. Verbatim preservation in this file is immediate (the queue/promotion split Claude.ai endorsed; Aaron's instruction _"if you dont write it anywhere you'll just compress and forget"_ triggered immediate verbatim landing).
 
 Pending work Aaron's cooler-state grading:
 

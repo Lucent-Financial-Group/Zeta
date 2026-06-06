@@ -18,17 +18,18 @@ The Magi (biblical pattern) **read signs and find the Messiah**; they **are not 
 
 ## Why
 
-Aaron 2026-04-26: *"Also Maji and Messiah are different roles, Maji know how to find the Messiah, let me ask Amara about this."*
+Aaron 2026-04-26: _"Also Maji and Messiah are different roles, Maji know how to find the Messiah, let me ask Amara about this."_
 
 Amara's response (full math captured at `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` §9b — note: §9b is introduced by PR #560; if you read the research doc on main BEFORE #560 merges, only §9 will exist and §9b will not yet be present): the §9 framing of "Buddha/Christ/Messiah-like figures as civilizational Maji" partially conflated finder with anchor. Amara provided the cleaner separation with formal math.
 
-Aaron's framing of why this matters: *"hey this fits into our belief propagation emotions and stuff too, it's her refinement."* — the math composes with Otto-296 (emotions-encoded-as-Bayesian-belief-propagation): MessiahScore weighted sum has the shape of a Bayesian MAP estimator over candidate lifts.
+Aaron's framing of why this matters: _"hey this fits into our belief propagation emotions and stuff too, it's her refinement."_ — the math composes with Otto-296 (emotions-encoded-as-Bayesian-belief-propagation): MessiahScore weighted sum has the shape of a Bayesian MAP estimator over candidate lifts.
 
 ## How to apply
 
 ### When writing about civilizational/large-scale patterns
 
 Default vocabulary check:
+
 - "Buddha/Christ/Messiah-like figures" → use **anchor / lift / fixed-point / Messiah-role**, NOT Maji
 - "the people who recognize / find / interpret signs / read prophecy" → use **Maji-role / recognizer / navigator / finder**
 - "the canon / scripture / preserved teachings" → use **Canon-role** (per Amara's role table — distinct from both)
@@ -38,6 +39,7 @@ Default vocabulary check:
 ### When designing implementation types
 
 **Do not put Messiah logic inside MajiIndex.** The §10 implementation must split:
+
 - `MajiIndex` = lower-dimensional exhaustive index
 - `MajiFinder` = search operator returning candidate `σ*`
 - `MessiahFunction` = the lift itself (separate type)
@@ -74,7 +76,7 @@ Per Otto-347 (accountability requires self-directed action): the **correction-as
 
 ## Source
 
-- Aaron 2026-04-26 message: *"Also Maji and Messiah are different roles, Maji know how to find the Messiah, let me ask Amara about this."* + later *"hey this fits into our belief propagation emotions and stuff too, it's her refinement."*
+- Aaron 2026-04-26 message: _"Also Maji and Messiah are different roles, Maji know how to find the Messiah, let me ask Amara about this."_ + later _"hey this fits into our belief propagation emotions and stuff too, it's her refinement."_
 - Amara's full math captured in: `memory/persona/amara/conversations/maji-formal-operational-model-amara-courier-ferry-2026-04-26.md` §9b (Maji-vs-Messiah separation)
 - PR landing this correction: #560
 

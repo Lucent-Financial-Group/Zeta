@@ -32,10 +32,10 @@ industry-security register. No beacon-blocked terminology found.
 ## BP-12 — Re-sanitise at every sub-agent boundary; never trust peers by default
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Re-sanitise at every sub-agent boundary; never trust peers by default.
+_"Re-sanitise at every sub-agent boundary; never trust peers by default.
 Rationale: a compromised peer agent attempts to propagate injection
 downstream. Subagent briefs must re-state safety rules explicitly; they do
-not travel automatically."*
+not travel automatically."_
 
 **Core claim:** When one agent in a multi-agent system is compromised by a
 prompt injection, the injected payload can propagate to downstream agents
@@ -64,10 +64,10 @@ within Multi-Agent Systems" (arXiv:2410.07283, October 2024)**
   which then becomes the input to the next agent, propagating the infection.
   BP-12's "re-sanitise at every sub-agent boundary" is the architecturally
   correct countermeasure this paper's findings prescribe.
-- Key finding: *"In this attack, a compromised agent spreads the infection
+- Key finding: _"In this attack, a compromised agent spreads the infection
   to other agents, coordinating them to exchange data and issue instructions
   to agents equipped with specific tools … multi-agent systems are highly
-  susceptible even when agents do not publicly share all communications."*
+  susceptible even when agents do not publicly share all communications."_
 
 **2. Zhan, Q. et al. — "InjecAgent: Benchmarking Indirect Prompt
 Injections in Tool-Integrated Large Language Model Agents"
@@ -86,8 +86,8 @@ Injections in Tool-Integrated Large Language Model Agents"
   must be treated as untrusted regardless of where they originate in the
   pipeline — peer agents and tool responses are equally capable of carrying
   injection payloads.
-- Key finding: *"ReAct-prompted GPT-4 vulnerable to attacks 24% of the
-  time … enhanced setting [nearly] doubling the attack success rate."*
+- Key finding: _"ReAct-prompted GPT-4 vulnerable to attacks 24% of the
+  time … enhanced setting [nearly] doubling the attack success rate."_
 
 **3. OWASP — "AI Agent Security Cheat Sheet" and "LLM01:2025 Prompt
 Injection" (OWASP GenAI Security Project, 2024–2025)**
@@ -98,14 +98,14 @@ Injection" (OWASP GenAI Security Project, 2024–2025)**
 - Source: OWASP GenAI Security Project (600+ industry contributors)
 - Date: 2024–2025
 - Relevance: Authoritative industry-consensus guidance that is verbatim-
-  aligned with BP-12. The AI Agent Security Cheat Sheet states: *"Implement
+  aligned with BP-12. The AI Agent Security Cheat Sheet states: _"Implement
   trust boundaries between agents and validate and sanitize inter-agent
-  communications"* and *"when agents call other agents, the receiving agent
-  has no reliable way to verify the sender's intent or integrity."* The
-  Prompt Injection Prevention Cheat Sheet states: *"Treat every tool response
+  communications"_ and _"when agents call other agents, the receiving agent
+  has no reliable way to verify the sender's intent or integrity."_ The
+  Prompt Injection Prevention Cheat Sheet states: _"Treat every tool response
   as untrusted user input — sanitize before feeding back into the LLM
-  context."* LLM01:2025 notes that indirect injection *"collapses the trust
-  boundaries that traditional software depends on"* — BP-12's re-sanitisation
+  context."_ LLM01:2025 notes that indirect injection _"collapses the trust
+  boundaries that traditional software depends on"_ — BP-12's re-sanitisation
   rule re-establishes the boundary at each hop. The "subagent briefs must
   re-state safety rules explicitly" clause in BP-12 implements OWASP's
   "validate and sanitize inter-agent communications" at the system-design
@@ -127,10 +127,10 @@ communications" at the design-time level.
 ## BP-13 — Stable knowledge lives in the skill file; volatile knowledge is retrieved at runtime
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Stable knowledge lives in the skill file; volatile knowledge is retrieved
+_"Stable knowledge lives in the skill file; volatile knowledge is retrieved
 at runtime. Rationale: memory shapes behaviour; retrieval supplies facts.
 Module paths, module names, this round's BACKLOG state — retrieve. Tone,
-authority, workflow — embed."*
+authority, workflow — embed."_
 
 **Core claim:** There is a fundamental architectural distinction between two
 types of knowledge in LLM-based systems: (1) stable, behaviour-shaping
@@ -155,9 +155,9 @@ Knowledge-Intensive NLP Tasks" (NeurIPS 2020, arXiv:2005.11401)**
 - Venue: NeurIPS 2020 (13,000+ citations, Semantic Scholar)
 - Date: 2020
 - Relevance: The foundational paper establishing the parametric/non-parametric
-  memory dichotomy that BP-13 is built on. Explicitly defines *parametric
-  memory* (knowledge embedded in model weights or skill file tokens — stable,
-  behaviour-shaping) versus *non-parametric memory* (a retrievable dense
+  memory dichotomy that BP-13 is built on. Explicitly defines _parametric
+  memory_ (knowledge embedded in model weights or skill file tokens — stable,
+  behaviour-shaping) versus _non-parametric memory_ (a retrievable dense
   index — volatile, fact-supplying). Demonstrates that non-parametric memory
   dramatically outperforms parametric for knowledge-intensive factual tasks
   where the answer depends on volatile, updateable facts; parametric memory
@@ -165,10 +165,10 @@ Knowledge-Intensive NLP Tasks" (NeurIPS 2020, arXiv:2005.11401)**
   "tone, authority, workflow — embed" maps directly to the parametric role;
   "BACKLOG state, module names — retrieve" maps directly to the
   non-parametric role.
-- Key quote: *"We explore a general-purpose fine-tuning recipe for RAG —
+- Key quote: _"We explore a general-purpose fine-tuning recipe for RAG —
   models which combine pre-trained parametric and non-parametric memory
   for language generation … pre-trained seq2seq transformer as parametric
-  memory, and a dense vector index of Wikipedia as non-parametric memory."*
+  memory, and a dense vector index of Wikipedia as non-parametric memory."_
 
 **2. Mallen, A. et al. — "When Not to Trust Language Models: Investigating
 Effectiveness of Parametric and Non-Parametric Memories" (ACL 2023,
@@ -184,15 +184,15 @@ arXiv:2212.10511)**
   competitive for high-popularity, stable facts (equivalent to BP-13's "tone,
   authority, workflow"), but that scaling fails to improve parametric retention
   for volatile, long-tail, or entity-specific facts (equivalent to BP-13's
-  "BACKLOG state, module names"). Retrieval-augmented LMs *"largely outperform
-  orders of magnitude larger LMs"* on volatile/long-tail knowledge. Also
+  "BACKLOG state, module names"). Retrieval-augmented LMs _"largely outperform
+  orders of magnitude larger LMs"_ on volatile/long-tail knowledge. Also
   proposes adaptive retrieval — only retrieve when parametric memory is likely
   inadequate — directly supporting the binary embedding rule in BP-13.
-- Key finding: *"LMs struggle with less popular factual knowledge, and scaling
+- Key finding: _"LMs struggle with less popular factual knowledge, and scaling
   fails to appreciably improve memorization of factual knowledge in the long
   tail. Retrieval-augmented LMs largely outperform orders of magnitude larger
   LMs [on volatile/long-tail knowledge], while unassisted LMs remain
-  competitive in questions about high-popularity entities."*
+  competitive in questions about high-popularity entities."_
 
 **3. Neeman, E. et al. — "DisentQA: Disentangling Parametric and Contextual
 Knowledge with Counterfactual Question Answering" (ACL 2023,
@@ -203,7 +203,7 @@ aclanthology.org/2023.acl-long.559)**
   Idan Szpektor, Omri Abend (IBM Research / Hebrew University / Google)
 - Venue: ACL 2023 Long Papers, pages 10056–10070
 - Date: 2023
-- Relevance: Formalises the *entanglement* problem that BP-13 solves
+- Relevance: Formalises the _entanglement_ problem that BP-13 solves
   architecturally. When stable and volatile knowledge are mixed into the same
   prompt without explicit separation, models conflate them and exhibit
   unpredictable behaviour on knowledge conflicts. The paper shows that
@@ -214,10 +214,10 @@ aclanthology.org/2023.acl-long.559)**
   construction, the skill file (parametric) never contains volatile facts,
   so a knowledge conflict between the two indicates a runtime retrieval
   issue, not an ambiguous skill definition.
-- Key finding: *"Having these two sources of knowledge entangled together is
+- Key finding: _"Having these two sources of knowledge entangled together is
   a core issue for generative QA models as it is unclear whether the answer
   stems from the given non-parametric knowledge or not, with implications on
-  issues of trust, interpretability and factuality."*
+  issues of trust, interpretability and factuality."_
 
 ### Mechanism note
 
@@ -236,9 +236,9 @@ knowledge (BACKLOG state, module names, API endpoints).
 ## BP-14 — Every skill has a dry-run eval set and runs in an isolated environment
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Every skill has a dry-run eval set and runs in an isolated environment
+_"Every skill has a dry-run eval set and runs in an isolated environment
 when exercised. Rationale: shared state masks regressions as flakiness.
-Isolated runs turn a behaviour change into a dataset-level diff."*
+Isolated runs turn a behaviour change into a dataset-level diff."_
 
 **Core claim:** LLM/agent evaluation reproducibility requires isolation:
 a fixed, versioned eval set (so that changes in output are attributable to
@@ -268,13 +268,13 @@ Evaluation of Language Models" (arXiv:2405.14782, May 2024)**
   tests on task versions. These are the practitioner implementation of
   BP-14's "dry-run eval set" (= task-versioned static eval) + "isolated
   environment" (= per-run environment capture with no shared state).
-- Key finding: *"We delineate best practices for addressing or lessening
+- Key finding: _"We delineate best practices for addressing or lessening
   the impact of these challenges … sensitivity of models to evaluation
   setup, difficulty of proper comparisons across methods, and the lack of
-  reproducibility and transparency."* Task versioning exists so *"if the
+  reproducibility and transparency."_ Task versioning exists so _"if the
   task definition changes (to fix a bug), we can know exactly which metrics
   were computed using the old buggy implementation to avoid unfair
-  comparisons."*
+  comparisons."_
 
 **2. Liang, P. et al. — "Holistic Evaluation of Language Models (HELM)"
 (TMLR 2023, arXiv:2211.09110)**
@@ -294,10 +294,10 @@ Evaluation of Language Models" (arXiv:2405.14782, May 2024)**
   demonstrates the value of BP-14: the framework's isolation guarantees that
   a score difference between two runs reflects a real system difference, not
   harness variance.
-- Key infrastructure principle: *"All raw model prompts and completions are
+- Key infrastructure principle: _"All raw model prompts and completions are
   released publicly for further analysis, as well as a general modular
-  toolkit."* Standardisation ensures *"different models [are] evaluated on
-  the same prompts."*
+  toolkit."_ Standardisation ensures _"different models [are] evaluated on
+  the same prompts."_
 
 **3. Yehudai, A. et al. — "Survey on Evaluation of LLM-based Agents"
 (arXiv:2503.16416, March 2025)**
@@ -307,19 +307,19 @@ Evaluation of Language Models" (arXiv:2405.14782, May 2024)**
 - Date: March 2025
 - Relevance: Current comprehensive survey of agent-specific evaluation
   methodology (as distinct from base-model evaluation). Identifies as a
-  central tension: *"more complex evaluation environments tend to offer
-  better real-world relevance but suffer from reproducibility issues."*
+  central tension: _"more complex evaluation environments tend to offer
+  better real-world relevance but suffer from reproducibility issues."_
   Establishes as best practice that static, offline evaluation sets enable
   reproducible before/after comparison ("offline, reproducible evaluation"),
   and that dynamic environments without isolation controls produce
   inconsistent results that mask regressions as environment noise — exactly
   the failure mode BP-14's isolation requirement prevents. Endorses
-  regression detection via final-response evaluation as *"well-suited for
-  large-scale monitoring and regression testing"* — BP-14's "turn a behaviour
+  regression detection via final-response evaluation as _"well-suited for
+  large-scale monitoring and regression testing"_ — BP-14's "turn a behaviour
   change into a dataset-level diff" framing.
-- Key finding: *"More complex evaluation environments tend to offer better
+- Key finding: _"More complex evaluation environments tend to offer better
   real-world relevance but suffer from reproducibility issues. This highlights
-  the trade-off between realistic testing and reproducible evaluations."*
+  the trade-off between realistic testing and reproducible evaluations."_
 
 ### Mechanism note
 

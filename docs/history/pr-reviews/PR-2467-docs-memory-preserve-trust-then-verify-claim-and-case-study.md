@@ -10,47 +10,50 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2467 |
-| Title | docs(memory): preserve trust-then-verify claim and case study |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T10:57:51Z |
-| Merged at | 2026-05-10T11:02:17Z |
-| Merge commit SHA | `65e52d7721665af9f81ff02ac8d5768509d6149c` |
-| Branch | `docs/trust-then-verify-case-study-2026-05-10` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2467 |
-| Changed files | 2 |
-| Additions / deletions | +54 / -0 |
+| Field                 | Value                                                         |
+| --------------------- | ------------------------------------------------------------- |
+| Number                | 2467                                                          |
+| Title                 | docs(memory): preserve trust-then-verify claim and case study |
+| Author                | `AceHack` (human)                                             |
+| State                 | MERGED                                                        |
+| Created at            | 2026-05-10T10:57:51Z                                          |
+| Merged at             | 2026-05-10T11:02:17Z                                          |
+| Merge commit SHA      | `65e52d7721665af9f81ff02ac8d5768509d6149c`                    |
+| Branch                | `docs/trust-then-verify-case-study-2026-05-10`                |
+| Base branch           | `main`                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2467      |
+| Changed files         | 2                                                             |
+| Additions / deletions | +54 / -0                                                      |
 
 ## Description
 
 ## Summary
+
 - preserve the trust-then-verify claim for future Bitcoin/content-filter debates
 - preserve the slow-trust lethal-latency case study as user-visible lineage context
 - keep both artifacts in repo memory so they survive local machine crashes
 
 ## Notes
+
 - This PR finishes the branch Otto already pushed after the direct push to protected main was rejected.
 - The branch contains only the two memory files from that save request.
 
 ## Verification
+
 - Diff scoped to `memory/project_trust_then_verify_claim_bitcoin_discord_debates_aaron_2026_05_10.md` and `memory/user_slow_trust_lethal_latency_case_study_jail_2026_05_10.md`.
 - No root checkout edits from Vera.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 7 |
-| Resolved threads | 7 |
-| Unresolved threads | 0 |
-| Total review comments | 7 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 7     |
+| Resolved threads                          | 7     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 7     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -66,9 +69,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Update MEMORY index when adding session memory files**
-
+  
   This commit adds new `memory/*.md` session files but does not add matching pointers in `memory/MEMORY.md`, which triggers the `memory-index-integrity` gate and leaves the memories undiscoverable from cold start. The workflow explicitly fails when any `memory/*.md` is added/modified without touching `memory/MEMORY.md` (see `.github/workflows/memory-index-integrity.yml` check logic), so this change can block PRs and defeats the stated preservation goal for these entries.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -98,7 +101,7 @@
 
   <pre>
   This new memory file includes `originSessionId:` in frontmatter, but the existing guidance in `memory/feedback_session_id_out_of_factory_files_peer_claude_parity_test_worktree_launch_otto_241_2026_04_24.md` explicitly says not to include session IDs in new committed memory files. Either remove `originSessionId` here or supersede/clarify the older guidance so the repo has a single consistent rule.
-
+  
   </pre>
 
 ### Thread 4 -- resolved [collapsed]
@@ -113,7 +116,7 @@
 
   <pre>
   Per memory/project_memory_format_standard.md, `created:` is recommended for new memory files. Consider adding `created: 2026-05-10` to the frontmatter to make the file easier to audit and sort independent of filename.
-
+  
   </pre>
 
 ### Thread 5 -- resolved [collapsed]
@@ -142,7 +145,7 @@
 
   <pre>
   This file includes `originSessionId:` in frontmatter, but `memory/feedback_session_id_out_of_factory_files_peer_claude_parity_test_worktree_launch_otto_241_2026_04_24.md` directs authors to stop committing session IDs into memory frontmatter. Please resolve the inconsistency (remove `originSessionId` here, or update/supersede the older directive) to prevent format drift.
-
+  
   </pre>
 
 ### Thread 7 -- resolved [collapsed]
@@ -157,7 +160,7 @@
 
   <pre>
   Per memory/project_memory_format_standard.md, `created:` is recommended for new memory files. Consider adding `created: 2026-05-10` to the frontmatter to make the file easier to audit and sort independent of filename.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

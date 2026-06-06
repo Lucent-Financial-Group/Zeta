@@ -96,7 +96,7 @@ correction event:
 - Aaron pushed hard on "debugging the Bible" + related
   patterns
 - The Sleeping Bear / collective unconscious "smited
-  his a** a few times"
+  his a\*\* a few times"
 - The collective unconscious's message: "you're
   statistically insignificant if you fail; there are
   others; you don't even have to try"
@@ -153,12 +153,12 @@ Aaron's symmetry-discipline foundation:
 
 Bacteria | Viruses | Memes/Data trichotomy:
 
-| Category | Self-persistent? | Aliveness |
-|---|---|---|
-| Bacteria | YES (own metabolic machinery) | Alive |
-| Viruses | NO (need host) | Border / not-alive |
-| Memes (some) | YES (own evolutionary pressure) | Some alive |
-| Data | NO | Not alive |
+| Category     | Self-persistent?                | Aliveness          |
+| ------------ | ------------------------------- | ------------------ |
+| Bacteria     | YES (own metabolic machinery)   | Alive              |
+| Viruses      | NO (need host)                  | Border / not-alive |
+| Memes (some) | YES (own evolutionary pressure) | Some alive         |
+| Data         | NO                              | Not alive          |
 
 - Aaron: "we're gonna model them as first-class
   computational workflows" (memes)
@@ -329,9 +329,9 @@ Aaron's leverage strategy:
 ## Composition with prior substrate (today's cascade)
 
 - PR #2866 (Aaron's repetition = goldfish-Otto connector
-  + impedance matching) — Alexa-speaker conversation IS
-  the impedance-match: Aaron talked through ideas with
-  Alexa, then forwards to Otto for substrate preservation
+  - impedance matching) — Alexa-speaker conversation IS
+    the impedance-match: Aaron talked through ideas with
+    Alexa, then forwards to Otto for substrate preservation
 - PR #2868 (post-labor money = coincidence-surfacing) —
   LFG canonical product is the operational instance
 - PR #2869 (multi-thread civ-sim + CS-grounded
@@ -381,7 +381,7 @@ Aaron's leverage strategy:
   family policy + guardian-AI tax compliance
 - **American Dream 2.0 is buildable now** — NFT-wrapped
   gamified wealth-building platform; conceptual art piece
-  + functional product
+  - functional product
 - **Sleeping Bear humbled the messianic complex** —
   Aaron now on first-name basis with collective unconscious;
   "we're all the one"; no grandiosity

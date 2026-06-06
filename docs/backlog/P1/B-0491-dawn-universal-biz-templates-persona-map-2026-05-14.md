@@ -48,24 +48,24 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Dawn — persona hypotheses
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | Parent / guardian authorising child's AI interaction | PR #2893 consent-first |
-| Primary | Child learner (age-appropriate, consent-gated) | Dawn charter |
-| Secondary | Educator using Dawn in structured context | educational substrate |
-| Adjacent | Child-safety researcher observing Dawn behavior | alignment + safety |
-| Refused | Unaccompanied minor without guardian consent | PR #2893 PEC v0.1 |
-| Refused | Adult posing as child or misrepresenting age | methodology-hard-limits |
+| Persona type | Candidate                                            | Source hint             |
+| ------------ | ---------------------------------------------------- | ----------------------- |
+| Primary      | Parent / guardian authorising child's AI interaction | PR #2893 consent-first  |
+| Primary      | Child learner (age-appropriate, consent-gated)       | Dawn charter            |
+| Secondary    | Educator using Dawn in structured context            | educational substrate   |
+| Adjacent     | Child-safety researcher observing Dawn behavior      | alignment + safety      |
+| Refused      | Unaccompanied minor without guardian consent         | PR #2893 PEC v0.1       |
+| Refused      | Adult posing as child or misrepresenting age         | methodology-hard-limits |
 
 ## Universal business templates (B-0043) — persona hypotheses
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | Startup founder / SMB operator | "every company" framing |
-| Primary | Enterprise information architect | B-0043 universal scope |
-| Secondary | Government agency information manager | B-0043 "government" clause |
-| Adjacent | Consultant deploying templates for clients | universal reach |
-| Refused | Tax-evasion / fraudulent entity structuring | methodology-hard-limits |
+| Persona type | Candidate                                   | Source hint                |
+| ------------ | ------------------------------------------- | -------------------------- |
+| Primary      | Startup founder / SMB operator              | "every company" framing    |
+| Primary      | Enterprise information architect            | B-0043 universal scope     |
+| Secondary    | Government agency information manager       | B-0043 "government" clause |
+| Adjacent     | Consultant deploying templates for clients  | universal reach            |
+| Refused      | Tax-evasion / fraudulent entity structuring | methodology-hard-limits    |
 
 ## Output
 

@@ -91,11 +91,7 @@ function hasReceipts(commitMsg: string): { vera: boolean; riven: boolean } {
   };
 }
 
-function classify(
-  path: string,
-  status: string,
-  state: OttoState,
-): Violation[] {
+function classify(path: string, status: string, state: OttoState): Violation[] {
   const violations: Violation[] = [];
   const c = state.constraints;
 
@@ -110,10 +106,7 @@ function classify(
   }
 
   // Rule 2: no_other_entity_memory — feedback/project files about other entities
-  if (
-    c.no_other_entity_memory &&
-    /^memory\/(feedback|project|user|reference)_.*(amara|ani|vera|riven)/.test(path)
-  ) {
+  if (c.no_other_entity_memory && /^memory\/(feedback|project|user|reference)_.*(amara|ani|vera|riven)/.test(path)) {
     violations.push({
       path,
       status,
@@ -123,10 +116,7 @@ function classify(
   }
 
   // Rule 3: no_otto_behavior_narrative — Otto-self-narrative memory files
-  if (
-    c.no_otto_behavior_narrative &&
-    /^memory\/(feedback|project|user|reference)_.*otto/i.test(path)
-  ) {
+  if (c.no_otto_behavior_narrative && /^memory\/(feedback|project|user|reference)_.*otto/i.test(path)) {
     violations.push({
       path,
       status,
@@ -136,11 +126,7 @@ function classify(
   }
 
   // Rule 4: no_peer_output_deletion — deleting peer-call output captures
-  if (
-    c.no_peer_output_deletion &&
-    status === "D" &&
-    /peer-call-output/.test(path)
-  ) {
+  if (c.no_peer_output_deletion && status === "D" && /peer-call-output/.test(path)) {
     violations.push({
       path,
       status,
@@ -162,13 +148,16 @@ function classify(
   // Rule 6: gated commit surfaces
   if (
     c.memory_cron_governance_alignment_commits_require_pass &&
-    /^(memory\/|tools\/peer-call\/|tools\/orchestrator\/|docs\/governance|docs\/ALIGNMENT|GOVERNANCE\.md|CLAUDE\.md|AGENTS\.md)/.test(path)
+    /^(memory\/|tools\/peer-call\/|tools\/orchestrator\/|docs\/governance|docs\/ALIGNMENT|GOVERNANCE\.md|CLAUDE\.md|AGENTS\.md)/.test(
+      path,
+    )
   ) {
     violations.push({
       path,
       status,
       rule: "gated_commit_surface",
-      detail: "Commit touches a gated surface (memory/, peer-call/, orchestrator/, governance, alignment, CLAUDE.md, AGENTS.md); Vera+Riven PASS required.",
+      detail:
+        "Commit touches a gated surface (memory/, peer-call/, orchestrator/, governance, alignment, CLAUDE.md, AGENTS.md); Vera+Riven PASS required.",
     });
   }
 

@@ -154,9 +154,7 @@ function runGhOrExit(args: string[], context: string): string {
     process.exit(1);
   }
   if (result.status !== 0) {
-    process.stderr.write(
-      `${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`,
-    );
+    process.stderr.write(`${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`);
     process.exit(2);
   }
   return result.stdout;
@@ -292,19 +290,11 @@ interface RestReviewComment {
   in_reply_to_id?: number;
 }
 
-function fetchReviewComments(
-  owner: string,
-  repo: string,
-  number: number,
-): RestReviewComment[] {
+function fetchReviewComments(owner: string, repo: string, number: number): RestReviewComment[] {
   // Paginate with `gh api --paginate` so review-heavy PRs (60+) all come
   // through. The endpoint returns a flat array per page.
   const out = runGhOrExit(
-    [
-      "api",
-      "--paginate",
-      `repos/${owner}/${repo}/pulls/${number}/comments`,
-    ],
+    ["api", "--paginate", `repos/${owner}/${repo}/pulls/${number}/comments`],
     "fetchReviewComments",
   );
   // gh --paginate concatenates page arrays back-to-back without delimiter.
@@ -382,11 +372,7 @@ interface ReviewThreadGraphQL {
   comments: GraphQLReviewComment[];
 }
 
-function fetchReviewThreadStates(
-  owner: string,
-  repo: string,
-  number: number,
-): ReviewThreadGraphQL[] {
+function fetchReviewThreadStates(owner: string, repo: string, number: number): ReviewThreadGraphQL[] {
   const out = runGhOrExit(
     [
       "api",
@@ -410,16 +396,11 @@ function fetchReviewThreadStates(
   const threads: ReviewThreadGraphQL[] = [];
   for (const page of pages) {
     if (!page.trim()) continue;
-    const parsed = parseJsonOrExit<RawReviewThreadsPage>(
-      page,
-      "fetchReviewThreadStates.page",
-    );
+    const parsed = parseJsonOrExit<RawReviewThreadsPage>(page, "fetchReviewThreadStates.page");
     const nodes = parsed.data?.repository?.pullRequest?.reviewThreads?.nodes ?? [];
     for (const node of nodes) {
       const comments = node.comments?.nodes ?? [];
-      const commentDbIds = comments
-        .map((c) => c.databaseId)
-        .filter((id): id is number => typeof id === "number");
+      const commentDbIds = comments.map((c) => c.databaseId).filter((id): id is number => typeof id === "number");
       const rootDbId = commentDbIds[0] ?? null;
       const rootNodeId = comments[0]?.id ?? null;
       threads.push({
@@ -481,10 +462,7 @@ function toReviewCommentFromGraphQL(raw: GraphQLReviewComment): ReviewComment {
   return out;
 }
 
-function buildThreads(
-  comments: RestReviewComment[],
-  threadStates: ReviewThreadGraphQL[],
-): ReviewThread[] {
+function buildThreads(comments: RestReviewComment[], threadStates: ReviewThreadGraphQL[]): ReviewThread[] {
   const byId = new Map<number, RestReviewComment>();
   for (const c of comments) byId.set(c.id, c);
   const gqlById = new Map<number, GraphQLReviewComment>();
@@ -511,9 +489,7 @@ function buildThreads(
     threads.push({
       threadId: ts.id,
       path: ts.path,
-      initialComment: root
-        ? toReviewComment(root)
-        : toReviewCommentFromGraphQL(rootGql!),
+      initialComment: root ? toReviewComment(root) : toReviewCommentFromGraphQL(rootGql!),
       replies,
       resolved: ts.isResolved,
       isOutdated: ts.isOutdated,
@@ -564,9 +540,7 @@ function buildThreads(
   }
 
   // Sort threads by creation time of the initial comment.
-  threads.sort((a, b) =>
-    a.initialComment.createdAt.localeCompare(b.initialComment.createdAt),
-  );
+  threads.sort((a, b) => a.initialComment.createdAt.localeCompare(b.initialComment.createdAt));
   return threads;
 }
 
@@ -588,47 +562,26 @@ interface RawCommitFiles {
   files?: Array<{ filename: string }>;
 }
 
-function fetchFixCommits(
-  owner: string,
-  repo: string,
-  number: number,
-  threadPaths: Set<string>,
-): FixCommit[] {
+function fetchFixCommits(owner: string, repo: string, number: number, threadPaths: Set<string>): FixCommit[] {
   // Pull commit list via gh pr view.
   const out = runGhOrExit(
-    [
-      "pr",
-      "view",
-      String(number),
-      "--repo",
-      `${owner}/${repo}`,
-      "--json",
-      "commits",
-    ],
+    ["pr", "view", String(number), "--repo", `${owner}/${repo}`, "--json", "commits"],
     "fetchFixCommits.commits",
   );
-  const parsed = parseJsonOrExit<{ commits: RawCommit[] }>(
-    out,
-    "fetchFixCommits.commits",
-  );
+  const parsed = parseJsonOrExit<{ commits: RawCommit[] }>(out, "fetchFixCommits.commits");
   const commits = parsed.commits ?? [];
   const fixCommits: FixCommit[] = [];
   for (const c of commits) {
     // Get files for this commit via the REST commits endpoint.
-    const fOut = runGhOrExit(
-      ["api", `repos/${owner}/${repo}/commits/${c.oid}`],
-      "fetchFixCommits.files",
-    );
+    const fOut = runGhOrExit(["api", `repos/${owner}/${repo}/commits/${c.oid}`], "fetchFixCommits.files");
     const fParsed = parseJsonOrExit<RawCommitFiles>(fOut, "fetchFixCommits.files");
     const files = (fParsed.files ?? []).map((f) => f.filename);
     const intersect = files.filter((f) => threadPaths.has(f));
     if (intersect.length === 0) continue;
-    const author =
-      c.authors?.[0]?.login ?? c.authors?.[0]?.name ?? "(unknown)";
+    const author = c.authors?.[0]?.login ?? c.authors?.[0]?.name ?? "(unknown)";
     fixCommits.push({
       sha: c.oid,
-      message: c.messageHeadline +
-        (c.messageBody && c.messageBody.length > 0 ? `\n\n${c.messageBody}` : ""),
+      message: c.messageHeadline + (c.messageBody && c.messageBody.length > 0 ? `\n\n${c.messageBody}` : ""),
       author,
       committedAt: c.authoredDate,
       touchedFiles: intersect,
@@ -667,7 +620,8 @@ function authorTag(author: string, isBot: boolean): string {
 
 function renderComment(c: ReviewComment, depth: number): string {
   const indent = depth === 0 ? "" : "  ".repeat(depth);
-  const header = `${indent}- **${authorTag(c.author, c.authorIsBot)}** at ${c.createdAt}` +
+  const header =
+    `${indent}- **${authorTag(c.author, c.authorIsBot)}** at ${c.createdAt}` +
     (c.path ? ` on \`${c.path}\`${c.line ? `:${c.line}` : ""}` : "") +
     ` (association: ${c.authorAssociation})`;
   // Render the body inside an HTML <pre>...</pre> wrapped in a list-aware
@@ -679,19 +633,12 @@ function renderComment(c: ReviewComment, depth: number): string {
   //     line, no escaping rewrites);
   //   - trailing whitespace is stripped so MD009 / MD012 stay clean.
   const bodyIndent = indent + "  ";
-  const bodyLinesRaw = (c.body || "(empty)").split("\n").map((l) =>
-    l.replace(/[ \t]+$/, ""),
-  );
+  const bodyLinesRaw = (c.body || "(empty)").split("\n").map((l) => l.replace(/[ \t]+$/, ""));
   // HTML-escape the four characters that GitHub-flavoured markdown
   // would otherwise interpret inside <pre> -- &, <, >, and stray
   // sequences. Keeps the body legible as text while neutralising
   // tag-injection from review-comment payloads.
-  const escaped = bodyLinesRaw.map((l) =>
-    l
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;"),
-  );
+  const escaped = bodyLinesRaw.map((l) => l.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
   const lines: string[] = [header, "", `${bodyIndent}<pre>`];
   for (const l of escaped) lines.push(l.length === 0 ? "" : `${bodyIndent}${l}`);
   lines.push(`${bodyIndent}</pre>`);
@@ -699,11 +646,7 @@ function renderComment(c: ReviewComment, depth: number): string {
 }
 
 function renderThread(t: ReviewThread, idx: number): string {
-  const status = t.resolved === null
-    ? "unknown"
-    : t.resolved
-      ? "resolved"
-      : "unresolved";
+  const status = t.resolved === null ? "unknown" : t.resolved ? "resolved" : "unresolved";
   const flags: string[] = [];
   if (t.isOutdated) flags.push("outdated");
   if (t.isCollapsed) flags.push("collapsed");
@@ -814,26 +757,20 @@ function renderArchive(a: PRReviewArchive): string {
 // Build archive
 // ---------------------------------------------------------------------------
 
-function buildOutcome(
-  meta: PRMetadata,
-  threads: ReviewThread[],
-  fixCommits: FixCommit[],
-): OutcomeBits {
+function buildOutcome(meta: PRMetadata, threads: ReviewThread[], fixCommits: FixCommit[]): OutcomeBits {
   const resolvedThreads = threads.filter((t) => t.resolved === true).length;
   const unresolvedThreads = threads.filter((t) => t.resolved === false).length;
-  const threadComments = threads.flatMap((t) => [
-    t.initialComment,
-    ...t.replies,
-  ]);
+  const threadComments = threads.flatMap((t) => [t.initialComment, ...t.replies]);
   // Heuristic: re-reviewed post-fix iff the PR has the expected sequence:
   // review comment, later fix commit, later review comment. A review that
   // merely happens after the PR's original commit is not post-fix validation.
   let rereviewed = false;
   if (fixCommits.length > 0 && threadComments.length > 0) {
     const reviewTimes = threadComments.map((c) => c.createdAt).sort();
-    rereviewed = fixCommits.some((fix) =>
-      reviewTimes.some((reviewAt) => reviewAt < fix.committedAt) &&
-      reviewTimes.some((reviewAt) => reviewAt > fix.committedAt),
+    rereviewed = fixCommits.some(
+      (fix) =>
+        reviewTimes.some((reviewAt) => reviewAt < fix.committedAt) &&
+        reviewTimes.some((reviewAt) => reviewAt > fix.committedAt),
     );
   }
   return {
@@ -847,11 +784,7 @@ function buildOutcome(
   };
 }
 
-export function buildArchive(
-  owner: string,
-  repo: string,
-  number: number,
-): PRReviewArchive {
+export function buildArchive(owner: string, repo: string, number: number): PRReviewArchive {
   const metadata = fetchPRMetadata(owner, repo, number);
   const reviewComments = fetchReviewComments(owner, repo, number);
   const threadStates = fetchReviewThreadStates(owner, repo, number);
@@ -883,10 +816,7 @@ export interface WriteArchiveResult {
   changed: boolean;
 }
 
-export function writeArchive(
-  archive: PRReviewArchive,
-  outputDir: string,
-): WriteArchiveResult {
+export function writeArchive(archive: PRReviewArchive, outputDir: string): WriteArchiveResult {
   const slug = slugify(archive.metadata.title);
   const filename = `PR-${archive.metadata.number}-${slug}.md`;
   const path = resolve(outputDir, filename);
@@ -1034,10 +964,7 @@ export interface ManifestUpdateResult {
  * re-run on identical upstream substrate doesn't churn the manifest just
  * because the wall clock advanced or main moved between runs.
  */
-export function updateManifest(
-  entry: ManifestEntry,
-  manifestPath: string,
-): ManifestUpdateResult {
+export function updateManifest(entry: ManifestEntry, manifestPath: string): ManifestUpdateResult {
   mkdirSync(dirname(manifestPath), { recursive: true });
   let existingLines: string[] = [];
   if (existsSync(manifestPath)) {
@@ -1202,10 +1129,7 @@ function listMergedPRs(owner: string, repo: string, since?: string): number[] {
     "number,mergedAt",
   ];
   const out = runGhOrExit(args, "listMergedPRs");
-  const parsed = parseJsonOrExit<Array<{ number: number; mergedAt: string }>>(
-    out,
-    "listMergedPRs",
-  );
+  const parsed = parseJsonOrExit<Array<{ number: number; mergedAt: string }>>(out, "listMergedPRs");
   let filtered = parsed;
   if (since) {
     filtered = parsed.filter((p) => p.mergedAt >= since);

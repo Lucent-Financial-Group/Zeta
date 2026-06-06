@@ -55,12 +55,7 @@ const REPO_ROOT = resolve(SCRIPT_DIR, "..", "..");
 const LEDGER_PATH = join(REPO_ROOT, "memory", "promotion-ledger.jsonl");
 const WONT_DO_PATH = join(REPO_ROOT, "docs", "WONT-DO.md");
 
-const VALID_STATES = new Set([
-  "Promoted",
-  "Pending-NOW",
-  "Pending-LATER",
-  "Declined",
-]);
+const VALID_STATES = new Set(["Promoted", "Pending-NOW", "Pending-LATER", "Declined"]);
 const VALID_FROM_STATES = new Set([...VALID_STATES, "(none)"]);
 const VALID_ACTORS = new Set(["vera", "otto", "aaron", "amara", "ani"]);
 
@@ -122,9 +117,7 @@ function parseLedger(): ParseResult {
     return {
       schemaDoc: null,
       transitions: [],
-      parseFailures: [
-        { lineNo: 0, reason: `ledger file not found: ${LEDGER_PATH}` },
-      ],
+      parseFailures: [{ lineNo: 0, reason: `ledger file not found: ${LEDGER_PATH}` }],
     };
   }
   const text = readFileSync(LEDGER_PATH, "utf8");
@@ -190,14 +183,8 @@ function parseLedger(): ParseResult {
       id: String(obj["id"]),
       from_state: String(obj["from_state"]),
       to_state: String(obj["to_state"]),
-      operational_artifact:
-        obj["operational_artifact"] === null
-          ? null
-          : String(obj["operational_artifact"]),
-      wont_do_pointer:
-        obj["wont_do_pointer"] === null
-          ? null
-          : String(obj["wont_do_pointer"]),
+      operational_artifact: obj["operational_artifact"] === null ? null : String(obj["operational_artifact"]),
+      wont_do_pointer: obj["wont_do_pointer"] === null ? null : String(obj["wont_do_pointer"]),
       rationale: String(obj["rationale"]),
       actor: String(obj["actor"]),
       lineNo,
@@ -229,7 +216,7 @@ function validate(parse: ParseResult): {
     failures.push({
       kind: "schema-doc-missing",
       lineNo: 1,
-      detail: "no kind=\"schema-doc\" record found on line 1",
+      detail: 'no kind="schema-doc" record found on line 1',
     });
   }
 
@@ -240,9 +227,7 @@ function validate(parse: ParseResult): {
   }
 
   // Sort transitions by ts ascending so impossible-move check sees true order.
-  const sortedByTs = [...parse.transitions].sort((a, b) =>
-    a.ts.localeCompare(b.ts),
-  );
+  const sortedByTs = [...parse.transitions].sort((a, b) => a.ts.localeCompare(b.ts));
 
   // Track latest state per id for impossible-move detection.
   const lastStateById = new Map<string, string>();
@@ -322,12 +307,8 @@ function validate(parse: ParseResult): {
         // (same supersession discipline as Promoted rows, per Vera 2026-05-06).
         // Strip optional #anchor for path-existence check.
         const hashIdx = t.wont_do_pointer.indexOf("#");
-        const pathOnly =
-          hashIdx >= 0
-            ? t.wont_do_pointer.slice(0, hashIdx)
-            : t.wont_do_pointer;
-        const anchor =
-          hashIdx >= 0 ? t.wont_do_pointer.slice(hashIdx + 1) : "";
+        const pathOnly = hashIdx >= 0 ? t.wont_do_pointer.slice(0, hashIdx) : t.wont_do_pointer;
+        const anchor = hashIdx >= 0 ? t.wont_do_pointer.slice(hashIdx + 1) : "";
         const full = resolveRepoPath(pathOnly);
         if (!existsSync(full)) {
           failures.push({
@@ -375,9 +356,7 @@ function validate(parse: ParseResult): {
   return { failures, warnings };
 }
 
-function projectCurrentState(
-  transitions: readonly Transition[],
-): Map<string, Transition> {
+function projectCurrentState(transitions: readonly Transition[]): Map<string, Transition> {
   // Latest-transition-per-id by ts (lexicographic ISO 8601 sorts correctly).
   const latest = new Map<string, Transition>();
   for (const t of transitions) {
@@ -393,7 +372,7 @@ function reportSchemaDoc(schemaDoc: SchemaDoc | null): void {
   console.log("## Schema-doc");
   console.log("");
   if (schemaDoc === null) {
-    console.log("  MISSING -- line 1 must carry kind=\"schema-doc\".");
+    console.log('  MISSING -- line 1 must carry kind="schema-doc".');
     console.log("");
     return;
   }
@@ -403,9 +382,7 @@ function reportSchemaDoc(schemaDoc: SchemaDoc | null): void {
     console.log(`  - origin: ${schemaDoc.origin.slice(0, 120)}${schemaDoc.origin.length > 120 ? "..." : ""}`);
   }
   if (schemaDoc.four_state_machine !== undefined) {
-    console.log(
-      `  - four_state_machine keys: ${Object.keys(schemaDoc.four_state_machine).join(" / ")}`,
-    );
+    console.log(`  - four_state_machine keys: ${Object.keys(schemaDoc.four_state_machine).join(" / ")}`);
   }
   console.log("");
 }
@@ -428,21 +405,12 @@ function reportProjection(latest: Map<string, Transition>): void {
     const list = buckets[t.to_state];
     if (list !== undefined) list.push(t);
   }
-  for (const state of [
-    "Promoted",
-    "Pending-NOW",
-    "Pending-LATER",
-    "Declined",
-  ] as const) {
+  for (const state of ["Promoted", "Pending-NOW", "Pending-LATER", "Declined"] as const) {
     const list = buckets[state] ?? [];
     console.log(`### ${state} (${list.length})`);
     for (const t of list.sort((a, b) => a.id.localeCompare(b.id))) {
-      const artifact =
-        t.operational_artifact !== null
-          ? ` -> ${t.operational_artifact}`
-          : "";
-      const pointer =
-        t.wont_do_pointer !== null ? ` -> ${t.wont_do_pointer}` : "";
+      const artifact = t.operational_artifact !== null ? ` -> ${t.operational_artifact}` : "";
+      const pointer = t.wont_do_pointer !== null ? ` -> ${t.wont_do_pointer}` : "";
       console.log(`  - ${t.id}${artifact}${pointer}  (actor=${t.actor})`);
     }
     console.log("");
@@ -480,10 +448,7 @@ function reportWarnings(warnings: readonly Warning[]): void {
   console.log("");
 }
 
-function reportActionables(
-  failures: readonly Failure[],
-  warnings: readonly Warning[],
-): void {
+function reportActionables(failures: readonly Failure[], warnings: readonly Warning[]): void {
   console.log("## Actionable items");
   console.log("");
   if (failures.length === 0 && warnings.length === 0) {
@@ -494,14 +459,10 @@ function reportActionables(
   for (const f of failures) {
     switch (f.kind) {
       case "schema-doc-missing":
-        console.log(
-          "  - Add a kind=\"schema-doc\" record on line 1 of memory/promotion-ledger.jsonl.",
-        );
+        console.log('  - Add a kind="schema-doc" record on line 1 of memory/promotion-ledger.jsonl.');
         break;
       case "schema-violation":
-        console.log(
-          `  - Fix schema-violation on line ${f.lineNo}: ${f.detail}`,
-        );
+        console.log(`  - Fix schema-violation on line ${f.lineNo}: ${f.detail}`);
         break;
       case "promoted-artifact-missing":
         console.log(
@@ -509,14 +470,10 @@ function reportActionables(
         );
         break;
       case "declined-pointer-missing":
-        console.log(
-          `  - Declined id=${f.id ?? "?"}: create / fix the wont_do_pointer path (line ${f.lineNo}).`,
-        );
+        console.log(`  - Declined id=${f.id ?? "?"}: create / fix the wont_do_pointer path (line ${f.lineNo}).`);
         break;
       case "declined-pointer-not-in-wont-do":
-        console.log(
-          `  - Declined id=${f.id ?? "?"}: add the anchor / id to docs/WONT-DO.md (line ${f.lineNo}).`,
-        );
+        console.log(`  - Declined id=${f.id ?? "?"}: add the anchor / id to docs/WONT-DO.md (line ${f.lineNo}).`);
         break;
     }
   }
@@ -574,15 +531,9 @@ async function main(): Promise<number> {
   console.log(`  - Validation failures: ${failures.length}`);
   console.log(`  - Warnings: ${warnings.length}`);
   console.log("");
-  console.log(
-    "Composes with: memory/identity-substrate-receipts.jsonl (sibling JSONL pattern),",
-  );
-  console.log(
-    "  tools/hygiene/audit-backlog-items.ts (sibling audit-* pattern),",
-  );
-  console.log(
-    "  docs/backlog/P1/B-0170* substrate-claim-checker (this audit IS the checker).",
-  );
+  console.log("Composes with: memory/identity-substrate-receipts.jsonl (sibling JSONL pattern),");
+  console.log("  tools/hygiene/audit-backlog-items.ts (sibling audit-* pattern),");
+  console.log("  docs/backlog/P1/B-0170* substrate-claim-checker (this audit IS the checker).");
 
   return failures.length > 0 ? 1 : 0;
 }
@@ -591,9 +542,7 @@ if (import.meta.main) {
   main().then(
     (code) => process.exit(code),
     (err) => {
-      process.stderr.write(
-        `fatal: ${err instanceof Error ? err.message : String(err)}\n`,
-      );
+      process.stderr.write(`fatal: ${err instanceof Error ? err.message : String(err)}\n`);
       process.exit(2);
     },
   );

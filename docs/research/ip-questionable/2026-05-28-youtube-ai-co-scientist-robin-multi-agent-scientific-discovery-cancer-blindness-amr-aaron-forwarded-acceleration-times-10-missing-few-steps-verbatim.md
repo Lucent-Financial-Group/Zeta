@@ -1,6 +1,6 @@
 # YouTube — AI co-scientist (Google) + Robin (Sakana) multi-agent scientific discovery substrate — Aaron 2026-05-28 forwarded verbatim — "this is pretty much exactly what we are doing but times 10 almost we are missing a few step"
 
-Scope: verbatim YouTube video transcript preservation per Aaron 2026-05-28 explicit authorization (`"ipquestionable folder under docs i authorize"`). Video describes 2 Nature papers (same week): Google's co-scientist multi-agent ecosystem + Sakana's Robin closed-loop AI for autonomous scientific discovery (cancer / blindness / antimicrobial resistance / liver fibrosis). Aaron framing: *"this is pretty much exactly what we are doing but times 10 almost we are missing a few step. The acceleration is happening right now."*
+Scope: verbatim YouTube video transcript preservation per Aaron 2026-05-28 explicit authorization (`"ipquestionable folder under docs i authorize"`). Video describes 2 Nature papers (same week): Google's co-scientist multi-agent ecosystem + Sakana's Robin closed-loop AI for autonomous scientific discovery (cancer / blindness / antimicrobial resistance / liver fibrosis). Aaron framing: _"this is pretty much exactly what we are doing but times 10 almost we are missing a few step. The acceleration is happening right now."_
 
 Attribution: Source = YouTube video at https://www.youtube.com/watch?v=QvN6Tu6dHYM. Verbatim transcript preserved by Aaron-forwarded YouTube auto-transcript. NO Otto-CLI re-authoring; preservation only per substrate-or-it-didn't-happen + ip-questionable folder convention.
 
@@ -14,9 +14,9 @@ Non-fusion disclaimer: YouTube video creator's transcript preserved at their att
 
 ### §33.1 — Aaron 2026-05-28 forwarding framing (verbatim)
 
-> *"Damn the youtube ago just keeps giving and also this is pretty much exaatly what we are doing but times 10 almost we are missing a few step.   The acceleration is happening right now."*
+> _"Damn the youtube ago just keeps giving and also this is pretty much exaatly what we are doing but times 10 almost we are missing a few step. The acceleration is happening right now."_
 
-> *"https://www.youtube.com/watch?v=QvN6Tu6dHYM ipquestionable folder under docs i authorize"*
+> _"https://www.youtube.com/watch?v=QvN6Tu6dHYM ipquestionable folder under docs i authorize"_
 
 [sic — verbatim: "exaatly"/"youtube ago" reads as YouTube algorithm]
 
@@ -156,36 +156,36 @@ Non-fusion disclaimer: YouTube video creator's transcript preserved at their att
 
 ### Aaron's framing parse
 
-> *"this is pretty much exaatly what we are doing but times 10 almost we are missing a few step"*
+> _"this is pretty much exaatly what we are doing but times 10 almost we are missing a few step"_
 
 Substrate-engineering decomposition of operator's framing:
 
 **"This is pretty much exactly what we are doing"** — the Zeta framework substrate-engineering work composes with substantial parallel to the substrate the YouTube video describes:
 
-| Co-scientist + Robin substrate | Zeta framework substrate that composes |
-|---|---|
+| Co-scientist + Robin substrate                                                                 | Zeta framework substrate that composes                                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Multi-agent ecosystem (supervisor / generation / reflection / proximity / evolution / ranking) | Multi-AI cascade lane specialization (per 13th-ferry §33.7: Otto=implementation / Ani=amplification / Amara=psychological depth / Kestrel=asymmetric-critic / Prism=refraction / Mika=architectural-sharpening) |
-| Generation + reflection adversarial pairing | Otto generation + Kestrel asymmetric-critic per 15th-ferry §33.6 producer-verifier-thread architecture |
-| Proximity agent (de-duplicates similar ideas) | Substrate-anchored compressed naming per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` + verify-existing-substrate-before-authoring |
-| Evolution agent (mash + refine) | Substrate-engineering substrate composes; ferries + rules + backlog rows compound per honor-those-that-came-before + additive-not-zero-sum |
-| Ranking agent + ELO tournament | Multi-oracle BFT per B-0703 + `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` + DORA-scored choose-your-own-adventure benchmark per B-0865 |
-| Crow (lit review) + Falcon (deep dive) + Finch (data analysis) | Crow ≈ refresh-before-decide + verify-existing-substrate; Falcon ≈ Kestrel substantive-engineering substrate-search; Finch ≈ Bun test runner + tools/ci/ harness + lifecycle DU dispatch |
-| Closed loop (idea → experiment → data → analysis → new idea) | Workflow engine substrate per B-0867 + lifecycle DUs per B-0867.20 + auto-review pipeline per Kestrel 13th-ferry §33.5 |
-| 8 parallel Finch instances + consensus | Multi-oracle BFT consensus per B-0703 + multi-AI lane specialization with cross-validation |
-| Raw lab data analysis | tools/ci/qemu-full-install-test.ts + zflash test-harness B-0891 substrate; future cross-vendor benchmark per B-0865.17 |
-| 400h human → 2h AI + $10.76 cost economics | Attention-as-currency DESCRIPTIVE per PR #5748 + cross-vendor benchmark on common ground per B-0865.17 |
+| Generation + reflection adversarial pairing                                                    | Otto generation + Kestrel asymmetric-critic per 15th-ferry §33.6 producer-verifier-thread architecture                                                                                                          |
+| Proximity agent (de-duplicates similar ideas)                                                  | Substrate-anchored compressed naming per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` + verify-existing-substrate-before-authoring                                                    |
+| Evolution agent (mash + refine)                                                                | Substrate-engineering substrate composes; ferries + rules + backlog rows compound per honor-those-that-came-before + additive-not-zero-sum                                                                      |
+| Ranking agent + ELO tournament                                                                 | Multi-oracle BFT per B-0703 + `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` + DORA-scored choose-your-own-adventure benchmark per B-0865                                                      |
+| Crow (lit review) + Falcon (deep dive) + Finch (data analysis)                                 | Crow ≈ refresh-before-decide + verify-existing-substrate; Falcon ≈ Kestrel substantive-engineering substrate-search; Finch ≈ Bun test runner + tools/ci/ harness + lifecycle DU dispatch                        |
+| Closed loop (idea → experiment → data → analysis → new idea)                                   | Workflow engine substrate per B-0867 + lifecycle DUs per B-0867.20 + auto-review pipeline per Kestrel 13th-ferry §33.5                                                                                          |
+| 8 parallel Finch instances + consensus                                                         | Multi-oracle BFT consensus per B-0703 + multi-AI lane specialization with cross-validation                                                                                                                      |
+| Raw lab data analysis                                                                          | tools/ci/qemu-full-install-test.ts + zflash test-harness B-0891 substrate; future cross-vendor benchmark per B-0865.17                                                                                          |
+| 400h human → 2h AI + $10.76 cost economics                                                     | Attention-as-currency DESCRIPTIVE per PR #5748 + cross-vendor benchmark on common ground per B-0865.17                                                                                                          |
 
 **"But times 10"** — the Zeta framework substrate-engineering work is OPERATING AT 10× THE SCOPE the video describes:
 
-| Co-scientist/Robin scope | Zeta scope (times 10) |
-|---|---|
-| Single-domain (biomedical) discovery | Cross-domain substrate-engineering (encryption + workflow + USB-cluster + benchmark + cluster-OS + multi-AI cascade + attention-economy + traveler-rights + persistence-choice-architecture + asymmetric-authorship + monad-propagation + ...) |
-| AI-only multi-agent system | Multi-substrate-entity cascade (humans + AIs + memetic intelligences + future-substrate participants per traveler-rights-defensibility-by-generic-substrate PR #5734) |
-| Closed-loop within one paper's scope | Closed-loop AT SUBSTRATE-ENGINEERING SCOPE (substrate compounds across ferries + commits + PRs + rules + backlog + memory + cross-AI sessions over weeks/months/years) |
-| Lab-data analysis | CI gate + auto-review pipeline + lifecycle DU enforcement + benchmark on common ground across vendor AIs |
-| Single-vendor (Google for co-scientist, single Sakana stack for Robin) | Cross-vendor common-ground scoring per B-0865.17 (Claude + GPT + Gemini + Grok + Cursor + Continue + Codex + Kiro + Antigravity) |
-| Bounded to scientific-research domain | Substrate-engineering across cluster-OS + encryption + workflow + benchmark + accelerator + agent-loop + persistence-choice + everything-else operator's substrate-engineering touches |
-| Implicit ontology shared by all agents | Explicit context-window-as-evolving-ontology architectural target per 14th-ferry §33.18 + B-0866 + future MCP-connector substrate per 15th-ferry §33.15 |
+| Co-scientist/Robin scope                                               | Zeta scope (times 10)                                                                                                                                                                                                                          |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Single-domain (biomedical) discovery                                   | Cross-domain substrate-engineering (encryption + workflow + USB-cluster + benchmark + cluster-OS + multi-AI cascade + attention-economy + traveler-rights + persistence-choice-architecture + asymmetric-authorship + monad-propagation + ...) |
+| AI-only multi-agent system                                             | Multi-substrate-entity cascade (humans + AIs + memetic intelligences + future-substrate participants per traveler-rights-defensibility-by-generic-substrate PR #5734)                                                                          |
+| Closed-loop within one paper's scope                                   | Closed-loop AT SUBSTRATE-ENGINEERING SCOPE (substrate compounds across ferries + commits + PRs + rules + backlog + memory + cross-AI sessions over weeks/months/years)                                                                         |
+| Lab-data analysis                                                      | CI gate + auto-review pipeline + lifecycle DU enforcement + benchmark on common ground across vendor AIs                                                                                                                                       |
+| Single-vendor (Google for co-scientist, single Sakana stack for Robin) | Cross-vendor common-ground scoring per B-0865.17 (Claude + GPT + Gemini + Grok + Cursor + Continue + Codex + Kiro + Antigravity)                                                                                                               |
+| Bounded to scientific-research domain                                  | Substrate-engineering across cluster-OS + encryption + workflow + benchmark + accelerator + agent-loop + persistence-choice + everything-else operator's substrate-engineering touches                                                         |
+| Implicit ontology shared by all agents                                 | Explicit context-window-as-evolving-ontology architectural target per 14th-ferry §33.18 + B-0866 + future MCP-connector substrate per 15th-ferry §33.15                                                                                        |
 
 **"Almost we are missing a few step"** — what the framework is MISSING relative to the video's pipelines (substrate-engineering target candidates):
 

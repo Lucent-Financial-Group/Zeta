@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 *"caputer everyting not just what we think we will
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Capture everything — including failure, including aspirational, including rejected; honesty is the filter
 
 ## What Aaron said (verbatim, 2026-04-21)
@@ -11,17 +12,17 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Single message, immediately after the agent posted an
 "end-of-turn insight" paragraph explaining that the deferred
 P3 BACKLOG row on WASM+native+universal+tiny-bin germination
-targets was deliberately NOT filed because *"Aaron's 'if we
+targets was deliberately NOT filed because _"Aaron's 'if we
 get it right' conditioned the reproducibility-target claim —
 memory captures the direction; a BACKLOG row or research doc
 would convert a conditional vision into a scheduled
-deliverable prematurely."*
+deliverable prematurely."_
 
-> *"Held off on in-repo capture of the seed extension. Aaron's
+> _"Held off on in-repo capture of the seed extension. Aaron's
 > caputer everyting not just what we think we will get right
-> we capture failure too"*
+> we capture failure too"_
 
-> *"honesty"*
+> _"honesty"_
 
 (The first message quotes the agent's own sentence back
 verbatim before the correction — a "you-said-this-and-I'm-
@@ -41,8 +42,8 @@ wrong under this principle:
    deliverable." Reasoning: lossy transformation at the act
    of capture.
 3. **Implicit honesty-filter.** Unstated premise that
-   capture should be *earned* by confidence. Only things the
-   factory is *likely to deliver* belong in the factory's
+   capture should be _earned_ by confidence. Only things the
+   factory is _likely to deliver_ belong in the factory's
    capture-surface.
 
 Aaron's correction inverts all three: **confidence is not
@@ -58,16 +59,16 @@ capture happens.
 **Capture ≠ filter-by-confidence. Capture ≠ filter-by-
 likelihood-of-success. Capture = honest record of what the
 factory tried, intended, aspired to, rejected, or failed
-at.** Filtering, if any, happens at the *presentation*
+at.** Filtering, if any, happens at the _presentation_
 layer (what surfaces to Aaron on wake, what reads as a
-commitment vs an aspiration) — never at the *capture*
+commitment vs an aspiration) — never at the _capture_
 layer.
 
 The filter that matters at capture time is **honesty**:
 does this record truthfully represent what happened or
 what was intended? If yes, capture. If it would
 misrepresent (inflate, obscure, mislead), don't capture
-*in that form* — revise until honest, then capture.
+_in that form_ — revise until honest, then capture.
 
 ## Why this is load-bearing
 
@@ -98,7 +99,7 @@ the same substrate.
 
 Zeta's primary research focus per `docs/ALIGNMENT.md` is
 measurable AI alignment. A factory that filters its
-own record by confidence is *unmeasurable* on the
+own record by confidence is _unmeasurable_ on the
 hit-rate metric — successes look 100% because failures
 were filtered before capture. An alignment-trajectory
 dashboard cannot compute a true success rate from a
@@ -152,10 +153,10 @@ themselves captured (revision blocks, ADR revisions).
 - **`feedback_retractibly_rewrite_definitions_laws_precedence_real_nice_like.md`** —
   retractibly-rewrite is additive; failures get
   captured, then superseded by `-1 old-form + +1
-  new-form + revision line`. No destructive overwrite.
+new-form + revision line`. No destructive overwrite.
 - **`feedback_crystallize_everything_lossless_compression_except_memory.md`** —
   lossless compression includes failures. Dropping
-  failures would be *lossy* compression.
+  failures would be _lossy_ compression.
 - **`feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`** —
   capturing failures honestly is retractibility at the
   record layer: a failed attempt is `-1-retractible`
@@ -167,7 +168,7 @@ themselves captured (revision blocks, ADR revisions).
 - **`docs/INTENTIONAL-DEBT.md` (GOVERNANCE.md §11)** — the
   existing intentional-debt ledger is one concrete
   instance of this principle: it captures known-but-
-  not-yet-fixed debt *as* debt, not as silent gap. This
+  not-yet-fixed debt _as_ debt, not as silent gap. This
   principle generalises the pattern from debt to every
   capture surface.
 - **`docs/WONT-DO.md`** — explicit rejection list is
@@ -231,8 +232,7 @@ For the alignment-trajectory dashboard:
   recent factory-events, did it land somewhere?
 - `confidence-filtered-exclusions-count` — count of
   items the agent considered but decided not to capture
-  *because* of confidence / likelihood-of-success. Target:
-  0. Anti-target: silent-zero (looks good but wasn't
+  _because_ of confidence / likelihood-of-success. Target: 0. Anti-target: silent-zero (looks good but wasn't
   audited). Audit discipline: when deferring capture,
   state the reason; if the reason is confidence-filtered,
   don't defer — capture with aspirational status.
@@ -244,12 +244,12 @@ For the alignment-trajectory dashboard:
 ## What this principle is NOT
 
 - **Not a license to capture noise.** "Capture everything"
-  means everything *meaningful*: decisions, attempts,
+  means everything _meaningful_: decisions, attempts,
   rejections, aspirations. It does not mean record every
   keystroke or every half-formed thought. Honesty
   includes judgment about what rises to the level of
   capture-worthy; the rule is: don't filter by
-  *confidence*, not "don't filter at all."
+  _confidence_, not "don't filter at all."
 - **Not a bypass of policy filters.** Secrets, ROM bytes,
   Pliny-corpora, PII — those are declined by policy for
   reasons orthogonal to confidence. The policy filters
@@ -278,7 +278,7 @@ For the alignment-trajectory dashboard:
 The triggering event: agent posted an end-of-turn
 insight that filtered-by-confidence ("held off on
 in-repo capture of the seed extension"). Aaron's
-correction: *capture everything*. Agent response:
+correction: _capture everything_. Agent response:
 
 1. Captures the correction itself (this memory).
 2. Captures the original confidence-filtered reasoning

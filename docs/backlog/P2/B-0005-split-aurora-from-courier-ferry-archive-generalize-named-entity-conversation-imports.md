@@ -18,12 +18,12 @@ type: friction-reducer
 
 Aaron 2026-04-25 surfacing (verbatim):
 
-> *"`docs/aurora/**` probably need a refactor here we
+> _"`docs/aurora/**` probably need a refactor here we
 > might end up with real aurora docs current state and
 > also this courrier patter historical coversations
 > uploaded from other AI systems, courrior transport of
 > messages between named enetites, we should backlog
-> generalizing these types of histories"*
+> generalizing these types of histories"_
 
 ## The conflict
 
@@ -39,7 +39,7 @@ distinct artifact classes** under one canonical home:
    `memory/project_aurora_pitch_michael_best_x402_erc8004.md`,
    plus the in-flight content under `docs/aurora/**`
    itself), and a growing surface that wants
-   *current-state* documentation: design notes,
+   _current-state_ documentation: design notes,
    API surfaces, threat model, operational runbooks.
 2. **Courier-ferry archive** — historical conversations
    imported from other AI systems via the courier-ferry
@@ -247,6 +247,7 @@ Original B-0005 decomposition (Path A/B choice + 5-15 moves) is too broad for at
 5. **[B-0379](B-0379-aurora-split-execute-git-mv-cross-refs-2026-05-09.md)** (P2, M, depends_on: B-0377 + B-0378): Execute the split: mkdir new dir, git mv history-import files, update all cross-refs in `memory/**` + `docs/ROUND-HISTORY.md`. Run full focused checks (build, canonical-home-auditor, rg).
 
 **Dependency graph:**
+
 ```
 B-0375 (inventory)
   └─→ B-0376 (naming ADR)
@@ -254,6 +255,7 @@ B-0375 (inventory)
         └─→ B-0378 (schema: GOVERNANCE §33 + copilot-instructions)
               └─→ B-0379 (execution: git mv + cross-ref sweep)
 ```
+
 (B-0377 and B-0378 are parallel; both feed B-0379.)
 
 **Why this re-decomp fixes the mistake:** Original bundled decision + execution + schema updates into one M row. Now each atom is independently buildable/reviewable, with clear dep edges, matching "smallest dependency-ordered atomic" rule and "re-decompose during build" discipline. B-0005 now acts only as parent pointer (no direct implementation).

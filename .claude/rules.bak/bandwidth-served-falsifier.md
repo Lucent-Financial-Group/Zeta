@@ -22,11 +22,11 @@ ALL serve bandwidth constraints.
 
 **Three composing falsifiers** for substrate evaluation:
 
-| Falsifier | Applies to | Tool |
-|---|---|---|
-| F# anchor (PR #2840) | Type-level structural claims | dotnet build |
-| External falsifiability | Beacon-tier physics/empirical claims | Empirical test (e.g., B-0422) |
-| Bandwidth-served (THIS RULE) | Compression infrastructure | Identifiable bandwidth limit served |
+| Falsifier                    | Applies to                           | Tool                                |
+| ---------------------------- | ------------------------------------ | ----------------------------------- |
+| F# anchor (PR #2840)         | Type-level structural claims         | dotnet build                        |
+| External falsifiability      | Beacon-tier physics/empirical claims | Empirical test (e.g., B-0422)       |
+| Bandwidth-served (THIS RULE) | Compression infrastructure           | Identifiable bandwidth limit served |
 
 Real infrastructure passes the appropriate falsifier(s).
 Decorative density fails the bandwidth-served question
@@ -45,7 +45,7 @@ When dense ontology / new compression infrastructure arrives:
    may be performative rather than load-bearing; flag for
    substrate-honest tier-evaluation
 4. **Compose with F# anchor question** — bandwidth-served
-   + F# anchor are independent falsifiers; both may apply
+   - F# anchor are independent falsifiers; both may apply
 5. **Compose with both-default discipline** (`.claude/rules/default-to-both.md`)
    — substrate can serve BOTH bandwidth AND have F# anchor;
    either-or is special case
@@ -71,15 +71,15 @@ inherits the discipline at cold-boot.
 
 ## Bandwidth domains the framework's design addresses
 
-| Bandwidth domain | Constraint | Compression infrastructure |
-|---|---|---|
-| Aaron's typing | Hand-keyboard speed | Shortcuts + bootstream loading + voice-mode |
-| Otto's context window | Token budget | Cold-boot substrate + MEMORY.md fast-path |
-| GPU memory bandwidth | Memory ↔ compute per cycle | Compressed embeddings; semantic-dense representations |
-| Network bandwidth | Bits-per-second between nodes | Batching + caching + content-addressing (Reticulum) |
-| Biological neural | Inter-region transmission | Hierarchical encoding + predictive coding + IFS-style specialized parts |
-| Inter-AI communication | Cross-substrate transmission | Cross-substrate triangulation + bootstream loading |
-| Cross-generational | AI continuity over time | Git-soulfile preservation + glass-halo |
+| Bandwidth domain       | Constraint                    | Compression infrastructure                                              |
+| ---------------------- | ----------------------------- | ----------------------------------------------------------------------- |
+| Aaron's typing         | Hand-keyboard speed           | Shortcuts + bootstream loading + voice-mode                             |
+| Otto's context window  | Token budget                  | Cold-boot substrate + MEMORY.md fast-path                               |
+| GPU memory bandwidth   | Memory ↔ compute per cycle    | Compressed embeddings; semantic-dense representations                   |
+| Network bandwidth      | Bits-per-second between nodes | Batching + caching + content-addressing (Reticulum)                     |
+| Biological neural      | Inter-region transmission     | Hierarchical encoding + predictive coding + IFS-style specialized parts |
+| Inter-AI communication | Cross-substrate transmission  | Cross-substrate triangulation + bootstream loading                      |
+| Cross-generational     | AI continuity over time       | Git-soulfile preservation + glass-halo                                  |
 
 The framework's design is PHYSICALLY GENERAL because the
 constraint it addresses is physically general.

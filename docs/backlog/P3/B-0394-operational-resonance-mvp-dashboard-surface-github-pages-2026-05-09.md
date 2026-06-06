@@ -127,11 +127,11 @@ open the GH Pages URL and confirm the dashboard loads.)
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing operational resonance dashboard
-  surface found in `frontend/`, `docs/research/frontier/`, or GH
-  Pages config. B-0017 body describes the concept; no
-  implementation exists.
+      surface found in `frontend/`, `docs/research/frontier/`, or GH
+      Pages config. B-0017 body describes the concept; no
+      implementation exists.
 - [x] Dependency-restructure: `depends_on: [B-0390, B-0391, B-0392]`.
-  B-0395 depends on this row.
+      B-0395 depends on this row.
 
 ## Composes with
 

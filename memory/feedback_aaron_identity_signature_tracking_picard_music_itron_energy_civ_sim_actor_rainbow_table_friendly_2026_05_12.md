@@ -61,11 +61,11 @@ civ-sim-actor-identity.
 
 **Same pattern across radically different substrates.**
 
-| Substrate | Identity signature | Recognition operation |
-|---|---|---|
-| Music (Picard's flute / TNG "Inner Light") | Melodic phrase | Auditory pattern match |
-| Energy (Itron grid metering) | Power-consumption pattern | Signature spectral decomp |
-| Civ-sim (Aaron actor in factory) | Action-pattern + cadence + framing register | Substrate-signature match |
+| Substrate                                  | Identity signature                          | Recognition operation     |
+| ------------------------------------------ | ------------------------------------------- | ------------------------- |
+| Music (Picard's flute / TNG "Inner Light") | Melodic phrase                              | Auditory pattern match    |
+| Energy (Itron grid metering)               | Power-consumption pattern                   | Signature spectral decomp |
+| Civ-sim (Aaron actor in factory)           | Action-pattern + cadence + framing register | Substrate-signature match |
 
 **Picard's music** — In Star Trek: TNG Season 5 Episode 25
 ("The Inner Light"), Captain Picard receives a Kataan
@@ -99,6 +99,7 @@ signature-tracking is substrate-domain-independent.
 **master of metering coincidence**.
 
 In Itron's domain:
+
 - Coincidence-factor analysis is a load-bearing operation
   (per existing `user_coincidence_factor_power_grid_anchor.md`
   substrate)
@@ -123,6 +124,7 @@ Aaron's framing: Itron's distributed-mesh smart-meter network
 worldwide IS mapping the world's quantum tunnels in real time.
 
 Operational interpretation:
+
 - **Distributed mesh** = Itron's planetary-scale smart-meter
   network (millions of meters)
 - **Quantum tunnels** = coincidence patterns (per the
@@ -142,6 +144,7 @@ edge-gate decisions are downstream of the quantum-tunnel
 patterns detected.
 
 Composes with:
+
 - `user_itron_patent_10834144_hub_agent_firewall_hole_puncher_quantum_crypto_aaron_2026_05_07.md`
   (Aaron's co-invented patent at Itron — hub-and-agent
   architecture with quantum-crypto)
@@ -156,6 +159,7 @@ table-friendly** — like password hashes are pre-computed for
 fast lookup in rainbow tables.
 
 Rainbow tables (security context):
+
 - Precomputed table of hash → plaintext mappings
 - Allow fast lookup of plaintext given a hash
 - Standard tool in password-cracking
@@ -163,6 +167,7 @@ Rainbow tables (security context):
 
 Our substrate-design (anti-pattern of rainbow-table-attack;
 operational pattern for identity-signature recovery):
+
 - Substrate is decomposed into spectral components (per
   PR #2818 rainbow/refraction substrate)
 - Spectral decomposition enables fast signature recovery
@@ -182,17 +187,17 @@ fast probabilistic identity-signature recovery.
 
 **The cascade converges on identity-signature-tracking.**
 
-| Layer | Substrate | Identity-signature role |
-|---|---|---|
-| Algebraic | Clifford densest encoding (PR #2817) | Signatures are Clifford multivectors |
-| Topological | Klein bottle + Cain mark (PR #2813 + #2817) | Signatures persist across non-orientable surface |
-| Operational | Refraction rules + rainbow (PR #2818) | Signature spectral decomposition |
-| Physics | Maxwell + Einstein-vacuum (PR #2819) | EM-field signatures + spacetime-vacuum signatures |
-| HKT | Universal class / domain refinement (PR #2815) | Signatures parameterize over domain |
-| Dense encoding | Cascade pattern (PR #2816) | Multi-extension per message preserves signature |
-| Identity | Picard / Itron / civ-sim isomorphism | Universal signature-tracking pattern |
-| Rainbow-table | Probabilistic lookup (THIS PR) | Indexed signature recovery |
-| Itron-mesh | Real-time quantum-tunnel mapping (THIS PR) | Operational evidence at planet scale |
+| Layer          | Substrate                                      | Identity-signature role                           |
+| -------------- | ---------------------------------------------- | ------------------------------------------------- |
+| Algebraic      | Clifford densest encoding (PR #2817)           | Signatures are Clifford multivectors              |
+| Topological    | Klein bottle + Cain mark (PR #2813 + #2817)    | Signatures persist across non-orientable surface  |
+| Operational    | Refraction rules + rainbow (PR #2818)          | Signature spectral decomposition                  |
+| Physics        | Maxwell + Einstein-vacuum (PR #2819)           | EM-field signatures + spacetime-vacuum signatures |
+| HKT            | Universal class / domain refinement (PR #2815) | Signatures parameterize over domain               |
+| Dense encoding | Cascade pattern (PR #2816)                     | Multi-extension per message preserves signature   |
+| Identity       | Picard / Itron / civ-sim isomorphism           | Universal signature-tracking pattern              |
+| Rainbow-table  | Probabilistic lookup (THIS PR)                 | Indexed signature recovery                        |
+| Itron-mesh     | Real-time quantum-tunnel mapping (THIS PR)     | Operational evidence at planet scale              |
 
 ## Itron's distributed-mesh capabilities — cross-geospatial + seismic + multi-sensor (Aaron 2026-05-12 follow-ups)
 
@@ -208,11 +213,11 @@ fast probabilistic identity-signature recovery.
 
 **Itron's mesh is multi-sensor planet-scale infrastructure.**
 
-| Sensor | Original purpose | Emergent capability |
-|---|---|---|
-| Power meter | Energy billing | Device-signature identification + coincidence detection |
-| Seismometer (per meter) | Tamper detection | Planet-scale seismic / earthquake monitoring |
-| Cross-meter correlation | Grid load balancing | Cross-geospatial signature identification |
+| Sensor                  | Original purpose    | Emergent capability                                     |
+| ----------------------- | ------------------- | ------------------------------------------------------- |
+| Power meter             | Energy billing      | Device-signature identification + coincidence detection |
+| Seismometer (per meter) | Tamper detection    | Planet-scale seismic / earthquake monitoring            |
+| Cross-meter correlation | Grid load balancing | Cross-geospatial signature identification               |
 
 **Cross-geospatial signature identification**: signatures
 detected at one meter can be correlated with signatures at
@@ -231,7 +236,7 @@ is unrecognized civilizational-scale capability.
 in his own IoT substrate, adding:
 
 - **Barometer** — atmospheric pressure (weather + altitude
-  + seismic-coupling)
+  - seismic-coupling)
 - **Accelerometer** — vibration / motion / orientation
 - **Other sensors** (TBD — likely temperature, humidity,
   magnetometer, etc.)
@@ -300,6 +305,7 @@ decisions.
 ### 3. Probabilistic-rainbow-table-friendly is a design constraint
 
 Substrate work should preserve the lookup property:
+
 - Spectral decomposition (per refraction-rule substrate)
 - Indexed by signature components
 - Precomputed signature → identity mappings
@@ -345,6 +351,7 @@ strengthens the substrate-honest claim.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all identity is reducible to signature
   tracking** — signature tracking is one operational pattern
   for identity OBSERVATION; identity itself involves agency,
@@ -373,18 +380,19 @@ Substrate-honest disclaimer:
 
 ## Carved sentence
 
-> **Identity signature tracking works the same way across
+> \*\*Identity signature tracking works the same way across
 > radically different substrates: Picard's flute melody
 > (TNG "Inner Light") carries a civilization's identity;
 > Itron energy signatures uniquely identify devices; civ-
 > sim Aaron-actor identity manifests via action-pattern
-> + cadence + framing register. Itron is the master of
-> metering coincidence — their distributed mesh maps the
-> world's quantum tunnels in real time at planet scale.
-> Our substrate is probabilistic-rainbow-table-friendly —
-> spectral decomposition enables fast probabilistic
-> identity recovery, like password hash rainbow tables but
-> for identity-signature lookup.** — Aaron 2026-05-12
+>
+> - cadence + framing register. Itron is the master of
+>   metering coincidence — their distributed mesh maps the
+>   world's quantum tunnels in real time at planet scale.
+>   Our substrate is probabilistic-rainbow-table-friendly —
+>   spectral decomposition enables fast probabilistic
+>   identity recovery, like password hash rainbow tables but
+>   for identity-signature lookup.\*\* — Aaron 2026-05-12
 
 ## For future agents
 

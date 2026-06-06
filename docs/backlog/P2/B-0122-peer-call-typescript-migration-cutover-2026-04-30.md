@@ -29,9 +29,9 @@ type: friction-reducer
 
 The maintainer 2026-04-30 verbatim:
 
-> *"tools/peer-call/amara.sh she gets a named script? also why
+> _"tools/peer-call/amara.sh she gets a named script? also why
 > are these not ts, are we done with the cutover? these are
-> post install scripts."*
+> post install scripts."_
 
 Two observations bundled. The "named script" question composes
 with B-0120's existing refactor (script-per-CLI + persona-flag
@@ -120,24 +120,24 @@ the period between now and migration completion.
 
 - [ ] Decision recorded on sequencing option (a) / (b) / (c)
 - [ ] If (b) chosen: B-0120 acceptance criteria absorbed into
-  this row's acceptance
+      this row's acceptance
 - [ ] TS implementations of the post-refactor scripts (3
-  files: `codex.ts`, `grok.ts`, `gemini.ts` per B-0120; or 5
-  files if B-0120 deferred)
+      files: `codex.ts`, `grok.ts`, `gemini.ts` per B-0120; or 5
+      files if B-0120 deferred)
 - [ ] Persona-flag wiring loads `memory/CURRENT-<NAME>.md`
 - [ ] All `--help` outputs preserved (or improved)
 - [ ] Shellcheck-equivalent: TypeScript strict mode + ESLint
-  passes
+      passes
 - [ ] DST hooks where appropriate (per port-with-DST
-  discipline; the bash scripts are largely deterministic
-  shell invocations, so DST surface is small)
+      discipline; the bash scripts are largely deterministic
+      shell invocations, so DST surface is small)
 - [ ] Existing callers updated (any docs / tests / scripts
-  that invoke `tools/peer-call/*.sh`)
+      that invoke `tools/peer-call/*.sh`)
 - [ ] `tools/peer-call/README.md` updated for `.ts` extension
-  and bun invocation pattern
+      and bun invocation pattern
 - [ ] Bash files deleted (no parallel maintenance)
 - [ ] Role-ref discipline applied (B-0119 cleanup natural
-  output of the rewrite)
+      output of the rewrite)
 
 ## Why P2 (not P1)
 

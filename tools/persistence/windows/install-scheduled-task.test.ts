@@ -1,5 +1,11 @@
 import { test, expect } from "bun:test";
-import { xmlEscape, substitutePlaceholders, toUtf16WithBom, parseArgs, defaultCloneDir } from "./install-scheduled-task";
+import {
+  xmlEscape,
+  substitutePlaceholders,
+  toUtf16WithBom,
+  parseArgs,
+  defaultCloneDir,
+} from "./install-scheduled-task";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -22,7 +28,14 @@ test("substitutePlaceholders fills all keys and XML-escapes values", () => {
 
 test("substitutePlaceholders throws on an unknown leftover placeholder", () => {
   expect(() =>
-    substitutePlaceholders("{{NOT_A_KEY}}", { USER_ID: "", WRAPPER_PATH: "", TASK_NAME: "", PWSH_PATH: "", CONHOST_PATH: "", REPO_ROOT: "" }),
+    substitutePlaceholders("{{NOT_A_KEY}}", {
+      USER_ID: "",
+      WRAPPER_PATH: "",
+      TASK_NAME: "",
+      PWSH_PATH: "",
+      CONHOST_PATH: "",
+      REPO_ROOT: "",
+    }),
   ).toThrow(/NOT_A_KEY/);
 });
 
@@ -41,7 +54,17 @@ test("parseArgs defaults: heartbeat-first, ref=main, no register/dry-run", () =>
 });
 
 test("parseArgs reads flags incl. --ref and --run-claude", () => {
-  const a = parseArgs(["--task-name", "Foo", "--ref", "feat/x", "--run-claude", "--model", "opus", "--dry-run", "--register"]);
+  const a = parseArgs([
+    "--task-name",
+    "Foo",
+    "--ref",
+    "feat/x",
+    "--run-claude",
+    "--model",
+    "opus",
+    "--dry-run",
+    "--register",
+  ]);
   expect(a.taskName).toBe("Foo");
   expect(a.ref).toBe("feat/x");
   expect(a.runClaude).toBe(true);
@@ -73,6 +96,6 @@ test("scheduled-task.xml: every placeholder substitutes, no leftovers, conhost s
     REPO_ROOT: "repo",
   });
   expect(out).not.toMatch(/\{\{[A-Z_]+\}\}/); // no leftover placeholders
-  expect(out).toContain("--headless");        // windowless launch shape preserved
-  expect(out).toContain("conhost.exe");       // conhost launcher present
+  expect(out).toContain("--headless"); // windowless launch shape preserved
+  expect(out).toContain("conhost.exe"); // conhost launcher present
 });

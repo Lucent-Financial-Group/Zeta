@@ -30,7 +30,7 @@ refinements:
    blobs largely converge).
 
 2. **Tree-numstat refinement** — `git diff origin/main..acehack/main
-   --numstat` showed 23 differing files (later 59 after more
+--numstat` showed 23 differing files (later 59 after more
    LFG-side substrate landed). Better metric — measures actual
    tree-state difference, not graph-walk count. But still
    overstates risk where the difference is a comment-level
@@ -88,10 +88,10 @@ ladder composes; skipping a step compromises the metric.
 
 ## Direction-of-diff matters (Amara precision)
 
-> *"If `origin/main..acehack/main` still shows AceHack's tree
+> _"If `origin/main..acehack/main` still shows AceHack's tree
 > as different, that can persist until AceHack itself is reset
 > or brought to LFG, even if LFG has just absorbed one piece
-> of AceHack content."*
+> of AceHack content."_
 
 Translation: when LFG receives content via forward-sync, the
 LFG-side tree changes; AceHack-side tree is unchanged until
@@ -100,8 +100,8 @@ AceHack itself is updated. So the diff direction
 after substantive forward-sync, until AceHack receives the
 LFG-newer content.
 
-The right question is NOT *"did the file count drop
-immediately?"* but *"did the content-loss surface shrink?"*
+The right question is NOT _"did the file count drop
+immediately?"_ but _"did the content-loss surface shrink?"_
 
 - Content-loss surface = AceHack-side content that hard-reset
   would erase.
@@ -168,12 +168,12 @@ This is the **4th catch in the Goodhart family** for this
 session's 0/0/0 work, but at a different shape — it's a
 META-CATCH that organizes the prior three:
 
-| Catch | Wrong metric | Right metric | Step on ladder |
-|---|---|---|---|
-| #1 (substrate-IS-amortized-precision, Aaron) | "substrate work = drift away from 0/0/0" | substrate work IS amortized-precision payoff | Below the ladder; recognizes substrate work as the rubric quality, not a count |
-| #2 (commit-count vs tree-numstat, Otto) | 145 commits ahead = 145 problems | tree-numstat 23-59 files | Step 1 → Step 2 |
-| #3 (sample-of-tree vs full clearance, Amara) | 19/23 sampled ALREADY-COVERED → cleared | full diff per-item classification required | Step 2 → Step 3 |
-| #4 (this) | tree-numstat = content-loss | content-equivalence classification + peer review = content-loss | Step 3 → Step 4 |
+| Catch                                        | Wrong metric                             | Right metric                                                    | Step on ladder                                                                 |
+| -------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| #1 (substrate-IS-amortized-precision, Aaron) | "substrate work = drift away from 0/0/0" | substrate work IS amortized-precision payoff                    | Below the ladder; recognizes substrate work as the rubric quality, not a count |
+| #2 (commit-count vs tree-numstat, Otto)      | 145 commits ahead = 145 problems         | tree-numstat 23-59 files                                        | Step 1 → Step 2                                                                |
+| #3 (sample-of-tree vs full clearance, Amara) | 19/23 sampled ALREADY-COVERED → cleared  | full diff per-item classification required                      | Step 2 → Step 3                                                                |
+| #4 (this)                                    | tree-numstat = content-loss              | content-equivalence classification + peer review = content-loss | Step 3 → Step 4                                                                |
 
 The ladder is the **synthesis** of these catches: each catch
 identifies the failure mode at a particular step; the ladder
@@ -220,12 +220,12 @@ Status when this catch landed:
 This catch + the worked example earn beads for several
 existing classes:
 
-| Class | Beads earned this session | Mechanism |
-|---|---|---|
-| **Amortized Precision** (Aaron 2026-04-28) | +1 (PR #700 merge — substrate work paid out at content-loss-surface level) | prediction-bearing trajectory: substrate work was kept and merged through reviewable path, producing the content-loss-surface drop the metric measures |
-| **Authority rule — default to reversible preservation** (Amara 2026-04-28) | +1 (forward-sync-first path produced reduction in content-loss surface; alternative — accept-loss-and-reset — would have lost #80/#81 substrate) | prediction-bearing trajectory: the rule predicted that taking the safe path would compound the right metric over the wrong (count) one |
-| **Class-Count Validity Drift** (Amara 2026-04-28) | +1 (caught my "tree-diff unchanged" framing where direction-of-diff was load-bearing) | detector reuse — the meta-class caught a count-based framing that hid the content-loss-surface change |
-| **Prediction-Bearing Class Reuse** (Amara 2026-04-28) | +1 (this memory's encoding event) | this catch is itself prediction-bearing (Amara predicted the content-loss-surface metric would compose better than tree-numstat; observation matches) |
+| Class                                                                      | Beads earned this session                                                                                                                        | Mechanism                                                                                                                                              |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Amortized Precision** (Aaron 2026-04-28)                                 | +1 (PR #700 merge — substrate work paid out at content-loss-surface level)                                                                       | prediction-bearing trajectory: substrate work was kept and merged through reviewable path, producing the content-loss-surface drop the metric measures |
+| **Authority rule — default to reversible preservation** (Amara 2026-04-28) | +1 (forward-sync-first path produced reduction in content-loss surface; alternative — accept-loss-and-reset — would have lost #80/#81 substrate) | prediction-bearing trajectory: the rule predicted that taking the safe path would compound the right metric over the wrong (count) one                 |
+| **Class-Count Validity Drift** (Amara 2026-04-28)                          | +1 (caught my "tree-diff unchanged" framing where direction-of-diff was load-bearing)                                                            | detector reuse — the meta-class caught a count-based framing that hid the content-loss-surface change                                                  |
+| **Prediction-Bearing Class Reuse** (Amara 2026-04-28)                      | +1 (this memory's encoding event)                                                                                                                | this catch is itself prediction-bearing (Amara predicted the content-loss-surface metric would compose better than tree-numstat; observation matches)  |
 
 ## Pickup for future Otto
 
@@ -285,15 +285,15 @@ where the question implies clearing a divergence:
 
 ## Direct Amara framing
 
-> *"commit-count divergence → tree-numstat divergence →
+> _"commit-count divergence → tree-numstat divergence →
 > content-loss surface. That is the right metric refinement
-> sequence."*
+> sequence."_
 
-> *"Hard-reset readiness should be measured by content-loss
+> _"Hard-reset readiness should be measured by content-loss
 > surface: which AceHack-side changes would actually
-> disappear if AceHack were reset to LFG main?"*
+> disappear if AceHack were reset to LFG main?"_
 
-> *"Do not reset on commit-count or tree-count alone. Reset
+> _"Do not reset on commit-count or tree-count alone. Reset
 > only when every remaining diff is classified as covered,
 > obsolete, intentional divergence, or explicitly
-> loss-accepted."*
+> loss-accepted."_

@@ -28,14 +28,27 @@ related_skills:
   - category-theory-expert
   - theoretical-mathematics-expert
   - ontology-expert
-tags: [category-theory-clifford-self-similarity, functors-preserve-structure-across-domains, self-propagating-pattern-with-feedback-as-categorical-structure, traveler-as-categorical-object-with-clifford-incarnation, coecke-abramsky-categorical-quantum-mechanics-precedent, baez-lauda-higher-dimensional-algebra-precedent, picturing-quantum-processes-graphical-calculus-bridge, compact-closed-monoidal-categories-with-fdhilb-functor, substrate-independence-via-functorial-preservation, two-substrates-describe-each-other-mutually-checkable, biology-computation-physics-culture-instantiations]
+tags:
+  [
+    category-theory-clifford-self-similarity,
+    functors-preserve-structure-across-domains,
+    self-propagating-pattern-with-feedback-as-categorical-structure,
+    traveler-as-categorical-object-with-clifford-incarnation,
+    coecke-abramsky-categorical-quantum-mechanics-precedent,
+    baez-lauda-higher-dimensional-algebra-precedent,
+    picturing-quantum-processes-graphical-calculus-bridge,
+    compact-closed-monoidal-categories-with-fdhilb-functor,
+    substrate-independence-via-functorial-preservation,
+    two-substrates-describe-each-other-mutually-checkable,
+    biology-computation-physics-culture-instantiations,
+  ]
 ---
 
 # B-0896 — Category-theory ↔ Clifford self-similarity exploration
 
 ## Context
 
-Aaron 2026-05-28 Turn 12 of the 5th Kestrel ferry: *"In category theory, functors between categories preserve structure across different domains. A self-propagating-pattern-with-feedback could be formalized as a specific category-theoretic structure that has instantiations in biology, computation, physics, and culture. we are going for a direction mapping to clifford space here so the two are self similar and can desribe each other."*
+Aaron 2026-05-28 Turn 12 of the 5th Kestrel ferry: _"In category theory, functors between categories preserve structure across different domains. A self-propagating-pattern-with-feedback could be formalized as a specific category-theoretic structure that has instantiations in biology, computation, physics, and culture. we are going for a direction mapping to clifford space here so the two are self similar and can desribe each other."_
 
 This row tracks the substrate-engineering direction: bidirectional mapping between (a) the categorical structure of traveler-as-self-propagating-pattern-with-feedback-channels and (b) the Clifford-algebraic incarnation of that structure in spacetime algebra Cl(1,3) or Cl(3,1).
 
@@ -62,7 +75,7 @@ The two substrates are SELF-SIMILAR — they describe the same underlying travel
 
 **Self-similarity (the load-bearing claim)**: the relationship between the categorical-traveler-substrate and the Clifford-algebraic-substrate must be at least an **equivalence of categories** (full + faithful + essentially-surjective functor F; equivalently, a quasi-inverse G with `G∘F ≃ Id` and `F∘G ≃ Id`) OR an **adjunction with round-trip laws** (F ⊣ G with unit `η: Id → G∘F` and counit `ε: F∘G → Id` satisfying the triangle identities) — NOT merely "a structure-preserving functor F."
 
-The reason: a single structure-preserving functor only gives an *interpretation* from one category into the other; it can be non-faithful (collapse distinct travelers/messages onto the same image) or non-full (miss morphisms in the target that have no source). Under interpretation alone, the two substrates do NOT describe each other — they describe one direction. The "mutually checkable" / "self-similar" / "describe each other" criterion REQUIRES the bidirectional round-trip structure of equivalence-or-adjunction.
+The reason: a single structure-preserving functor only gives an _interpretation_ from one category into the other; it can be non-faithful (collapse distinct travelers/messages onto the same image) or non-full (miss morphisms in the target that have no source). Under interpretation alone, the two substrates do NOT describe each other — they describe one direction. The "mutually checkable" / "self-similar" / "describe each other" criterion REQUIRES the bidirectional round-trip structure of equivalence-or-adjunction.
 
 Phase 1 (research-doc) must specify which of these stronger criteria the framework targets (equivalence vs adjunction) + justify the choice. Phase 3 (formal proof) must demonstrate the round-trip property in the chosen theorem-prover (Lean Mathlib4 has both `CategoryTheory.Equivalence` + `CategoryTheory.Adjunction` infrastructure). Falling short of equivalence-or-adjunction would land a weaker substrate-engineering claim (one-directional interpretation) and B-0896 would need to be re-scoped or re-titled.
 
@@ -72,13 +85,13 @@ Acceptance criterion sharpening per Codex P2 review on PR #5708: the row's claim
 
 The self-similarity isn't speculative — it's the foundation of categorical quantum mechanics + a body of research literature:
 
-| Reference | Substrate |
-|---|---|
-| Coecke + Abramsky, "Categorical quantum mechanics" (Handbook of Quantum Logic) | Compact closed monoidal categories with functors to FdHilb (finite-dimensional Hilbert spaces); the Clifford substrate is the FdHilb-side incarnation |
-| Coecke + Kissinger, "Picturing Quantum Processes" (Cambridge 2017) | Graphical calculus IS the categorical-Clifford bridge made operational; ZX-calculus is the proven concrete instance |
-| Baez + Lauda, "Prehistory of n-Categorical Physics" (2009) + "Higher-Dimensional Algebra" series | n-categories with Clifford-algebraic instantiations |
-| Doran + Lasenby + Gull, multi-particle GA papers | Tensor products of single-particle Clifford algebras = multi-traveler categorical product |
-| Lambek + Scott, "Introduction to Higher Order Categorical Logic" | Categorical-logical bridge; relevant for formal verification side |
+| Reference                                                                                        | Substrate                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Coecke + Abramsky, "Categorical quantum mechanics" (Handbook of Quantum Logic)                   | Compact closed monoidal categories with functors to FdHilb (finite-dimensional Hilbert spaces); the Clifford substrate is the FdHilb-side incarnation |
+| Coecke + Kissinger, "Picturing Quantum Processes" (Cambridge 2017)                               | Graphical calculus IS the categorical-Clifford bridge made operational; ZX-calculus is the proven concrete instance                                   |
+| Baez + Lauda, "Prehistory of n-Categorical Physics" (2009) + "Higher-Dimensional Algebra" series | n-categories with Clifford-algebraic instantiations                                                                                                   |
+| Doran + Lasenby + Gull, multi-particle GA papers                                                 | Tensor products of single-particle Clifford algebras = multi-traveler categorical product                                                             |
+| Lambek + Scott, "Introduction to Higher Order Categorical Logic"                                 | Categorical-logical bridge; relevant for formal verification side                                                                                     |
 
 The combination of these gives the established mathematical apparatus for the self-similarity. The novel work for B-0896 is applying this apparatus to the traveler-as-self-propagating-pattern substrate the framework is building.
 

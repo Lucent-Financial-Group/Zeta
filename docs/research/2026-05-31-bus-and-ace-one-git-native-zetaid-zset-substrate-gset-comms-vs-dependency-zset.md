@@ -4,6 +4,7 @@
 **Author:** Otto-CLI synthesis (answering an operator question; Aaron 2026-05-31)
 
 <!-- GOVERNANCE.md §33 boundary headers (this file imports a verbatim operator question) — literal labels, value-clean Operational status (passes the enum-strict check). -->
+
 Scope: research / synthesis — recognizing a shared canonical substrate under two backlog umbrellas (the agent-bus B-0954 and the Ace package-manager B-0824) in answer to an operator question.
 Attribution: the operator's question is quoted verbatim below; the recognition + tables are Otto-CLI synthesis, labeled as such. Speaker labels preserved.
 Operational status: research-grade
@@ -19,18 +20,18 @@ product-team agreement before either impl commits to it. NOT unilaterally landed
 
 ## The operator's question (verbatim, 2026-05-31)
 
-> *"does the bus and ace package manger have anyting in common?"*
+> _"does the bus and ace package manger have anyting in common?"_
 
 ## The short answer
 
 **Yes — they are the same substrate viewed two ways.** Both are a
 **git-native, ZetaId-keyed, declarative-entry store** whose current state is a
-**DBSP / Z-set view** folded over the entry stream. They differ in the *algebra*
+**DBSP / Z-set view** folded over the entry stream. They differ in the _algebra_
 of their entries, not the substrate:
 
-- **agent-bus** = a **grow-only set (G-Set CRDT)** of *messages* — append-only,
+- **agent-bus** = a **grow-only set (G-Set CRDT)** of _messages_ — append-only,
   per-topic TTL, never retracted; the view is "what's been said."
-- **Ace** = a **retraction-native Z-set** of *dependency facts* — add/remove a
+- **Ace** = a **retraction-native Z-set** of _dependency facts_ — add/remove a
   dep nets to a resolved view; the view is "the n-dimensional dependency state +
   its holographic projection" (B-0824).
 
@@ -40,48 +41,48 @@ the general case; the G-Set is the Z-set restricted to non-negative multiplicity
 
 ## The five things they share (the substrate)
 
-| # | Shared property | agent-bus (B-0954) | Ace (B-0824) |
-|---|---|---|---|
-| 1 | **git-native declarative-entry store, no PR** | envelopes are files on `main` (B-0858 heartbeat-folder / B-0890.1 folders-on-main) | dependency entries are files on `main`, same no-PR transport |
-| 2 | **ZetaId-keyed, disjoint-id = conflict-free** | `Category.Bus` ZetaId = filename + dedup key; disjoint files never collide → cross-machine / **Windows-safe** via git | each dependency/package fact is a ZetaId-keyed entry; same disjoint-key conflict-freedom |
-| 3 | **DBSP / Z-set view over the entry stream** | fold the envelopes → "current inbox / topic state" (incremental, retraction-only-via-TTL-expiry) | fold the dep facts → "resolved dependency view" (incremental, retraction-native: add/remove nets) |
-| 4 | **git as the cross-machine transport (CRDT merge)** | concurrent agents on different machines write disjoint envelope files → merge clean (G-Set) | concurrent dep edits on different machines write disjoint fact files → merge, then the Z-set fold resolves |
-| 5 | **declarative entries, not imperative commands** | an envelope is *data* (`--no-verify`; "topic + payload"), observed + folded — never executed | a dep fact is *data* (a claim about what depends on what), observed + folded into resolution |
+| #   | Shared property                                     | agent-bus (B-0954)                                                                                                    | Ace (B-0824)                                                                                               |
+| --- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 1   | **git-native declarative-entry store, no PR**       | envelopes are files on `main` (B-0858 heartbeat-folder / B-0890.1 folders-on-main)                                    | dependency entries are files on `main`, same no-PR transport                                               |
+| 2   | **ZetaId-keyed, disjoint-id = conflict-free**       | `Category.Bus` ZetaId = filename + dedup key; disjoint files never collide → cross-machine / **Windows-safe** via git | each dependency/package fact is a ZetaId-keyed entry; same disjoint-key conflict-freedom                   |
+| 3   | **DBSP / Z-set view over the entry stream**         | fold the envelopes → "current inbox / topic state" (incremental, retraction-only-via-TTL-expiry)                      | fold the dep facts → "resolved dependency view" (incremental, retraction-native: add/remove nets)          |
+| 4   | **git as the cross-machine transport (CRDT merge)** | concurrent agents on different machines write disjoint envelope files → merge clean (G-Set)                           | concurrent dep edits on different machines write disjoint fact files → merge, then the Z-set fold resolves |
+| 5   | **declarative entries, not imperative commands**    | an envelope is _data_ (`--no-verify`; "topic + payload"), observed + folded — never executed                          | a dep fact is _data_ (a claim about what depends on what), observed + folded into resolution               |
 
 Item 2 is the load-bearing one for the operator's current Windows pain: **the
 same disjoint-ZetaId-files-merge-clean property is why both are cross-OS-safe over
 git** — no shared mutable file, no lock, no PR coordination. (It is orthogonal to
-the long-*filename* limit, which is a Windows path-length issue, not a merge
+the long-_filename_ limit, which is a Windows path-length issue, not a merge
 issue.)
 
 ## Where they diverge (the algebra, not the substrate)
 
-| | agent-bus | Ace |
-|---|---|---|
-| Entry algebra | **G-Set** (grow-only; multiplicity ∈ {0,1}) | **Z-set** (multiplicity ∈ ℤ; +1 add / −1 retract) |
-| Lifetime | ephemeral (per-topic `TTL_MS`) | durable (deps persist until retracted) |
-| Retraction | only via TTL expiry (time, not algebra) | first-class (the Hopf-antipode / retraction-native edit) |
-| The view | "messages in flight" (comms) | "resolved n-dim dependency space + holographic projection" (B-0824) |
-| Read shape | newest-since-cursor (a feed) | a *resolution* (solve the constraint Z-set) |
-| Failure if wrong | a missed message | a wrong dependency graph (much higher stakes → Ace adds verification / upstream negotiation) |
+|                  | agent-bus                                   | Ace                                                                                          |
+| ---------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Entry algebra    | **G-Set** (grow-only; multiplicity ∈ {0,1}) | **Z-set** (multiplicity ∈ ℤ; +1 add / −1 retract)                                            |
+| Lifetime         | ephemeral (per-topic `TTL_MS`)              | durable (deps persist until retracted)                                                       |
+| Retraction       | only via TTL expiry (time, not algebra)     | first-class (the Hopf-antipode / retraction-native edit)                                     |
+| The view         | "messages in flight" (comms)                | "resolved n-dim dependency space + holographic projection" (B-0824)                          |
+| Read shape       | newest-since-cursor (a feed)                | a _resolution_ (solve the constraint Z-set)                                                  |
+| Failure if wrong | a missed message                            | a wrong dependency graph (much higher stakes → Ace adds verification / upstream negotiation) |
 
-So Ace is the *richer* instance: it needs retraction + resolution; the bus only
+So Ace is the _richer_ instance: it needs retraction + resolution; the bus only
 needs append + read. Building the bus first (B-0954) is building the **G-Set floor
 of the same substrate** Ace later extends to a Z-set.
 
-## The algebraic ladder — G-Set, Bag, Z-set (why these are *the* canonical containers)
+## The algebraic ladder — G-Set, Bag, Z-set (why these are _the_ canonical containers)
 
 Both names are real, standard terms from two different fields, and they sit on one
 algebraic ladder indexed by **what an element's count can be** and **how you merge**:
 
-| | element count | merge op | structure | retraction? | field of origin |
-|---|---|---|---|---|---|
-| **Set / G-Set** | {0, 1} (presence) | union / max | join-semilattice (idempotent) | no | CRDT (distributed systems) |
-| **Multiset / Bag** | ℕ (0, 1, 2, …) | sum | commutative monoid | no | combinatorics / counting |
-| **Z-set** | ℤ (… −1, 0, 1 …) | sum | abelian group | **yes** (negative count = retract) | DBSP / differential dataflow (databases) |
+|                    | element count     | merge op    | structure                     | retraction?                        | field of origin                          |
+| ------------------ | ----------------- | ----------- | ----------------------------- | ---------------------------------- | ---------------------------------------- |
+| **Set / G-Set**    | {0, 1} (presence) | union / max | join-semilattice (idempotent) | no                                 | CRDT (distributed systems)               |
+| **Multiset / Bag** | ℕ (0, 1, 2, …)    | sum         | commutative monoid            | no                                 | combinatorics / counting                 |
+| **Z-set**          | ℤ (… −1, 0, 1 …)  | sum         | abelian group                 | **yes** (negative count = retract) | DBSP / differential dataflow (databases) |
 
 - **G-Set = Grow-only Set** — the canonical first CRDT (Shapiro, Preguiça, Baquero &
-  Zawirski, *Conflict-free Replicated Data Types*, 2011, alongside G-Counter). `add`
+  Zawirski, _Conflict-free Replicated Data Types_, 2011, alongside G-Counter). `add`
   only; merge = **set union**, which is associative + commutative + **idempotent** →
   a join-semilattice → replicas always converge regardless of order or duplication.
   That idempotent-union convergence is exactly why the git-native bus is
@@ -93,24 +94,24 @@ algebraic ladder indexed by **what an element's count can be** and **how you mer
 
 **The honest relationship.** The intuition "G-Set = Z-set restricted to non-negative
 multiplicity" points the right way (drop retraction → lose the negatives), but the
-*precise* statement is that they merge with **different algebras**: G-Set merges with
+_precise_ statement is that they merge with **different algebras**: G-Set merges with
 idempotent union (add-twice = add-once); Z-set merges with group addition (add-twice =
 count 2, and you can subtract). The **Bag** sits exactly between — ℕ multiplicity,
 additive, but no negatives, so no retraction.
 
-**The through-line: each rung is the *free* structure of its kind over the key set** —
+**The through-line: each rung is the _free_ structure of its kind over the key set** —
 G-Set is the free join-semilattice, Bag the free commutative monoid, Z-set the free
 abelian group. "Free" = the most general object with that algebra and nothing extra,
-which is precisely why each is the *canonical* conflict-mergeable container at its
+which is precisely why each is the _canonical_ conflict-mergeable container at its
 level. (This free-object ladder **rhymes with** the Cayley-Dickson ladder — both are
-"add structure, change a property" ladders — but it is a *rhyme, not an identity*: the
+"add structure, change a property" ladders — but it is a _rhyme, not an identity_: the
 free constructions here are universal-free-object claims over a key set, whereas
 Cayley-Dickson is a dimension-doubling algebraic extension. Per the framework's
 Cayley-Dickson-as-RHYMES discipline, that link stays a rhyme, not a theorem.)
 
 **So the bus↔Ace split is just two rungs of one ladder:** the **bus is the G-Set
 rung** (append-only comms, no retraction needed); **Ace is the Z-set rung** (deps add
-*and* retract, netting to a resolved view). Build the bus first = build the bottom
+_and_ retract, netting to a resolved view). Build the bus first = build the bottom
 rung — and the Bag rung is there if a future ZetaId category ever needs
 counted-but-not-retractable entries.
 
@@ -133,7 +134,7 @@ engine. The practical payoff:
   rides the same engine in its degenerate (no-retraction) form.
 - **One transport story.** The no-PR / no-branch-protection direction
   (B-0890.1 folders-on-main; B-0953 Git-V2 handshake) is the transport for
-  *both*; the bus's legacy-bus bridge and Ace's continuous-upstream-negotiation
+  _both_; the bus's legacy-bus bridge and Ace's continuous-upstream-negotiation
   are both transport swaps over it, not reshapes.
 
 ## What this implies (substrate-honest)
@@ -153,8 +154,8 @@ architectural call, not a one-PR change.
 - [`B-0954`](../backlog/P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
   (agent-bus — the G-Set floor; Phase 1 in `tools/agent-bus/`)
 - [`B-0824`](../backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md)
-  + [`docs/agendas/ace-package-manager/AGENDA.md`](../agendas/ace-package-manager/AGENDA.md)
-  (Ace — the Z-set extension: n-dim dependency space + holographic projection)
+  - [`docs/agendas/ace-package-manager/AGENDA.md`](../agendas/ace-package-manager/AGENDA.md)
+    (Ace — the Z-set extension: n-dim dependency space + holographic projection)
 - [`B-0867.27`](../backlog/P2/B-0867.27-observe-simulate-fold-algebra-multi-language-build-ts-fsharp-csharp-rust-cross-language-compiler-parity-bft-aaron-2026-05-31.md)
   (observe / fold / simulate event algebra — the shared fold engine)
 - [`formal-analysis-computational-omniscience…`](2026-05-31-formal-analysis-computational-omniscience-over-simulation-state-space-under-deterministic-simulator.md)

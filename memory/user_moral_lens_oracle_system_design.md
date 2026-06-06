@@ -130,14 +130,14 @@ Candidates, ranked:
 2. **TerminusDB** — git-like revision model, schema-enforced,
    WOQL + GraphQL, JSON-LD native (perfect for consent metadata
    - W3C PROV), document + graph hybrid. Best fit if the lens
-   definitions themselves need versioning like code.
+     definitions themselves need versioning like code.
 3. **Datomic** — immutable EAV store with time-travel, attribute-
    based, Datalog. Mature, Rich Hickey lineage. Provenance via
    attribute ownership. Commercial (Datomic Pro / Cloud).
 4. **Zeta itself** — the long game. Retraction-native + incremental
    - F# + Lean-backed. Becomes the substrate in the limit. Too
-   early to be the first implementation; an external prototype
-   on XTDB or TerminusDB is the near-term path.
+     early to be the first implementation; an external prototype
+     on XTDB or TerminusDB is the near-term path.
 5. **Materialize** — incremental view maintenance over streaming
    data. Good for the oracle-query layer but not the substrate.
 6. **Apache Pinot / SSAS / Kylin / ClickHouse** — OLAP cube
@@ -162,15 +162,15 @@ This design is the **positive image** of the declined sin-tracker.
 Both operate on "lens + person + score" territory; they are
 distinct on every axis that matters:
 
-| Axis | Sin-tracker (DECLINED) | Lens-oracle-system (WANTED) |
-|---|---|---|
-| Ledger | Append-only permanent | Retraction-native |
-| Lens definition | Proprietary / closed | Open |
-| Derivation provenance | Opaque | W3C PROV first-class |
-| Consent | Observed or implicit | Explicit, first-class |
-| Direction | Score-a-person | Multi-party-queryable oracle |
-| Retraction-algebra fit | OPPOSITE | ALIGNED |
-| Product-category status | Declined per memory | Legitimized here |
+| Axis                    | Sin-tracker (DECLINED) | Lens-oracle-system (WANTED)  |
+| ----------------------- | ---------------------- | ---------------------------- |
+| Ledger                  | Append-only permanent  | Retraction-native            |
+| Lens definition         | Proprietary / closed   | Open                         |
+| Derivation provenance   | Opaque                 | W3C PROV first-class         |
+| Consent                 | Observed or implicit   | Explicit, first-class        |
+| Direction               | Score-a-person         | Multi-party-queryable oracle |
+| Retraction-algebra fit  | OPPOSITE               | ALIGNED                      |
+| Product-category status | Declined per memory    | Legitimized here             |
 
 Confirmed by Aaron in the same conversation-round — the
 distinction is his, not imposed from the agent side.
@@ -214,7 +214,7 @@ item.
 ## Agent handling
 
 - DO receive the upgrade — sin-tracker stays declined, this is a
-  *different* product he wants.
+  _different_ product he wants.
 - DO treat "groups" as mathematical-group / algebra with proofs
   unless Aaron narrows (he asked for "whole algebra everytime
   that's provable").

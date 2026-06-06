@@ -238,7 +238,9 @@ describe("cockroach command state store", () => {
       executor,
     }).createCommandStateStore();
 
-    const result = await store.recordCommandOutcome(createCommandOutcome({ includeContextPackInboxAnchorEffects: true }));
+    const result = await store.recordCommandOutcome(
+      createCommandOutcome({ includeContextPackInboxAnchorEffects: true }),
+    );
 
     equal(result.status, CommandOutcomePersistenceStatus.Committed);
     const insertInboxAnchor = executor.transactionStatements.find(
@@ -287,9 +289,11 @@ describe("cockroach command state store", () => {
       executor,
     }).createCommandStateStore();
 
-    const result = await store.recordCommandOutcome(createCommandOutcome({
-      includeContextPackAdvisoryPromotionDecisionEffects: true,
-    }));
+    const result = await store.recordCommandOutcome(
+      createCommandOutcome({
+        includeContextPackAdvisoryPromotionDecisionEffects: true,
+      }),
+    );
 
     equal(result.status, CommandOutcomePersistenceStatus.Committed);
     const insertDecision = executor.transactionStatements.find(
@@ -333,9 +337,11 @@ describe("cockroach command state store", () => {
       executor,
     }).createCommandStateStore();
 
-    const result = await store.recordCommandOutcome(createCommandOutcome({
-      includeContextPackInboxAnchorStatusTransitionEffects: true,
-    }));
+    const result = await store.recordCommandOutcome(
+      createCommandOutcome({
+        includeContextPackInboxAnchorStatusTransitionEffects: true,
+      }),
+    );
 
     equal(result.status, CommandOutcomePersistenceStatus.Committed);
     const updateInboxAnchorStatus = executor.transactionStatements.find(
@@ -379,12 +385,14 @@ describe("cockroach command state store", () => {
       executor,
     }).createCommandStateStore();
 
-    const result = await store.recordCommandOutcome(createCommandOutcome({
-      contextPackInboxAnchorStatusTransition: createContextPackInboxAnchorStatusTransition({
-        status: ContextPackInboxAnchorStatus.Snoozed,
-        snoozedUntil: "2026-05-26T13:00:00.000Z",
+    const result = await store.recordCommandOutcome(
+      createCommandOutcome({
+        contextPackInboxAnchorStatusTransition: createContextPackInboxAnchorStatusTransition({
+          status: ContextPackInboxAnchorStatus.Snoozed,
+          snoozedUntil: "2026-05-26T13:00:00.000Z",
+        }),
       }),
-    }));
+    );
 
     equal(result.status, CommandOutcomePersistenceStatus.Committed);
     const updateInboxAnchorStatus = executor.transactionStatements.find(
@@ -414,9 +422,11 @@ describe("cockroach command state store", () => {
       executor,
     }).createCommandStateStore();
 
-    const result = await store.recordCommandOutcome(createCommandOutcome({
-      includeContextPackInboxAnchorStatusTransitionEffects: true,
-    }));
+    const result = await store.recordCommandOutcome(
+      createCommandOutcome({
+        includeContextPackInboxAnchorStatusTransitionEffects: true,
+      }),
+    );
 
     equal(result.status, CommandOutcomePersistenceStatus.EffectConflict);
     if (result.status !== CommandOutcomePersistenceStatus.EffectConflict) {
@@ -780,7 +790,9 @@ function createRecordingExecutor(
             return {
               rows:
                 input.hasOverlappingScheduleBlock === true
-                  ? ([{ work_schedule_block_id: "work-schedule-block-existing-001" }] as readonly unknown[] as readonly Row[])
+                  ? ([
+                      { work_schedule_block_id: "work-schedule-block-existing-001" },
+                    ] as readonly unknown[] as readonly Row[])
                   : [],
             };
           }
@@ -1084,7 +1096,8 @@ function createCommandOutcome(
             contextPackAdvisoryPromotionDecisions: [
               {
                 decisionId: "context-pack-advisory-promotion-decision-001",
-                decisionKey: "org-lfg:engineering_director:99:project-agentic-org:team-runtime:work-outbox-001:" +
+                decisionKey:
+                  "org-lfg:engineering_director:99:project-agentic-org:team-runtime:work-outbox-001:" +
                   "management_blocker:synthesis_gap_hypothesis:summary-hash-owner-gap",
                 organizationId: "org-lfg",
                 status: ContextPackAdvisoryPromotionDecisionStatus.Approved,
@@ -1118,18 +1131,13 @@ function createCommandOutcome(
         : {}),
       ...(input.includeContextPackInboxAnchorStatusTransitionEffects === true
         ? {
-            contextPackInboxAnchorStatusTransitions: [
-              createContextPackInboxAnchorStatusTransition(),
-            ],
+            contextPackInboxAnchorStatusTransitions: [createContextPackInboxAnchorStatusTransition()],
           }
         : input.contextPackInboxAnchorStatusTransition === undefined
-        ? {}
-        : {
-            contextPackInboxAnchorStatusTransitions: [
-              input.contextPackInboxAnchorStatusTransition,
-            ],
-          }
-      ),
+          ? {}
+          : {
+              contextPackInboxAnchorStatusTransitions: [input.contextPackInboxAnchorStatusTransition],
+            }),
       ...(input.includeDocConsultOutcomeStamp === true
         ? {
             docConsultOutcomeStamps: [

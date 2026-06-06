@@ -76,6 +76,7 @@ Even if the systemd Environment is overridden by some future change, these two f
 Fixes the installer ISO’s first-boot automation failing under NixOS systemd’s minimal default `PATH`, so the unattended “zero-typing” flow can complete on real hardware.
 
 **Changes:**
+
 - Replaced `clear` with an ANSI terminal reset escape to remove reliance on `clear` being in `PATH`.
 - Invoked `nmtui` via an absolute path to avoid `PATH`-inheritance issues.
 - Set explicit `PATH` and `TERM` in the `zeta-first-boot` systemd unit to cover current and future bare command usage in the first-boot flow.
@@ -84,9 +85,9 @@ Fixes the installer ISO’s first-boot automation failing under NixOS systemd’
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh | Removes dependency on `clear` being available and pins `nmtui` to an absolute path for robustness under systemd. |
+| File                                                                  | Description                                                                                                                      |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh                | Removes dependency on `clear` being available and pins `nmtui` to an absolute path for robustness under systemd.                 |
 | full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Adds explicit `PATH`/`TERM` to the first-boot systemd unit to ensure all invoked tools are discoverable in the unit environment. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T00:21:32Z)

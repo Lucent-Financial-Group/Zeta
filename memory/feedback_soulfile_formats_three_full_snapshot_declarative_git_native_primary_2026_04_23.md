@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 clarification on soulfile architecture. The soul
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Soulfile architecture — three formats
 
 **Superseded 2026-04-23 (later-than-this-memory):** the
@@ -11,7 +12,7 @@ later Aaron reframe in
 `feedback_soulfile_is_dsl_english_git_repos_absorbed_at_stages_2026_04_23.md`
 elevates the declarative-non-git format to the soulfile
 proper (DSL/English substrate), with git repos absorbed
-as *inputs* at compile / distribution / runtime stages.
+as _inputs_ at compile / distribution / runtime stages.
 The three-formats framing below is preserved for the
 signal-preservation / no-history-loss discipline it
 expresses; the substrate-abstraction claim (soulfile =
@@ -35,10 +36,10 @@ Aaron is telling me three things at once:
 
 ### 1. Praise + discipline reinforcement
 
-*"you are already doing good keeping your soulfile clean"* —
+_"you are already doing good keeping your soulfile clean"_ —
 validates the memory-file discipline, the per-session
 restraint on over-production, the signal-preservation rules.
-The default to avoid *is* content-bloat; current rhythm is
+The default to avoid _is_ content-bloat; current rhythm is
 right.
 
 ### 2. Soulfile = git history in bytes
@@ -51,13 +52,13 @@ agent incarnations.
 
 ### 3. Three soulfile formats planned
 
-| Format | Content | Size | Priority |
-|---|---|---|---|
-| Full git-history soulfile | Every commit, every blob, complete history | Largest | Primary |
-| Current git-snapshot soulfile | Only the tree at HEAD | Medium | Secondary |
-| Declarative non-git format | Project state in a format independent of git internals | Varies | Low (no rush) |
+| Format                        | Content                                                | Size    | Priority      |
+| ----------------------------- | ------------------------------------------------------ | ------- | ------------- |
+| Full git-history soulfile     | Every commit, every blob, complete history             | Largest | Primary       |
+| Current git-snapshot soulfile | Only the tree at HEAD                                  | Medium  | Secondary     |
+| Declarative non-git format    | Project state in a format independent of git internals | Varies  | Low (no rush) |
 
-The third is *"no rush"* explicitly because we're git-native.
+The third is _"no rush"_ explicitly because we're git-native.
 
 ## Implications for factory work
 
@@ -93,12 +94,12 @@ The third is *"no rush"* explicitly because we're git-native.
 
 ### Work NOT to adjust
 
-- Current memory file discipline. *"you are already doing
-  good keeping your soulfile clean"* — don't change what's
+- Current memory file discipline. _"you are already doing
+  good keeping your soulfile clean"_ — don't change what's
   working. Restraint on over-production, signal-
   preservation, one-topic-per-file remain correct.
 - Git-native-first default. The declarative-non-git format
-  is *"no rush"*; it does not bubble up ahead of the git-
+  is _"no rush"_; it does not bubble up ahead of the git-
   backed formats.
 
 ## How to apply
@@ -109,7 +110,7 @@ The third is *"no rush"* explicitly because we're git-native.
 - **When measuring soulfile size**, the bytes are whatever
   the git repo takes on disk (`git count-objects -v`
   gives you the numbers). Not a metric to optimise down —
-  optimise *up* to preserve history, and just accept the
+  optimise _up_ to preserve history, and just accept the
   cost.
 - **When writing memories or docs**, consider that every
   additional memory file contributes to soulfile size.
@@ -118,7 +119,7 @@ The third is *"no rush"* explicitly because we're git-native.
   out discipline) keeps this bounded without dropping
   signal.
 - **When considering a declarative non-git format**,
-  remember Aaron said *"no rush."* Third priority at
+  remember Aaron said _"no rush."_ Third priority at
   best. Do not speculatively design it.
 
 ## What this is NOT

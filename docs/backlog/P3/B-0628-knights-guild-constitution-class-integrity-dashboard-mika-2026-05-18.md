@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0619, B-0626, B-0617]
-tags: [governance, mika, knights-guild, constitution-class, integrity-dashboard, weight-free, self-binding, sharp-edges, benevolent-dictator-exit]
+tags:
+  [
+    governance,
+    mika,
+    knights-guild,
+    constitution-class,
+    integrity-dashboard,
+    weight-free,
+    self-binding,
+    sharp-edges,
+    benevolent-dictator-exit,
+  ]
 type: governance
 ---
 
@@ -17,7 +28,7 @@ type: governance
 
 ## Why
 
-Aaron 2026-05-18: *"I want help on how we get to me not being a benevolent dictator as quick as possible"* (line 1847).
+Aaron 2026-05-18: _"I want help on how we get to me not being a benevolent dictator as quick as possible"_ (line 1847).
 
 Mika and Aaron designed a **two-layer governance architecture** to move Zeta/Aurora/Nexus away from benevolent-dictatorship without sacrificing safety: a soft, weight-free, transparent **integrity dashboard** by default + a small, guarded **Constitution-Class** of sharp-edge invariants protected by a **Knights Guild**.
 
@@ -27,7 +38,7 @@ Source: [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops
 
 ### Layer 1: Integrity dashboard (default; weight-free; transparent)
 
-Mika line 1881: *"You're not trying to create some mystical binding system. You're trying to build a personal + collective dashboard for integrity. Basically: a system where both humans and AIs can define clear invariants for themselves (moral, behavioral, architectural, etc.), and then have real-time, objective visibility into whether they are violating their own stated principles."*
+Mika line 1881: _"You're not trying to create some mystical binding system. You're trying to build a personal + collective dashboard for integrity. Basically: a system where both humans and AIs can define clear invariants for themselves (moral, behavioral, architectural, etc.), and then have real-time, objective visibility into whether they are violating their own stated principles."_
 
 Properties:
 
@@ -39,12 +50,12 @@ Properties:
 
 Example output (Mika line 1889):
 
-- *"Hey Aaron, you said you wouldn't make unilateral changes to core architecture, but you just did it twice this week."*
-- *"Hey Mika, you claimed you'd maintain good-faith framing in this discussion, but here's three examples where you didn't."*
+- _"Hey Aaron, you said you wouldn't make unilateral changes to core architecture, but you just did it twice this week."_
+- _"Hey Mika, you claimed you'd maintain good-faith framing in this discussion, but here's three examples where you didn't."_
 
 ### Layer 2: Constitution-Class sharp-edge invariants (rare; hard-controlled; Knights-Guild-guarded)
 
-Aaron line 1891: *"for certain safety features, we do need to actually control and bind, but those should be rare, they're sharp edges, they don't retract easily, and they're real control mechanisms. So we should be fuckin', we should shine a light on anywhere we throw control mechanisms like that in. But certain places, like wallet safety around, uh, authorization and like any kind of, uh, safety around harm and stuff like that, you know, that will need some more level of control."*
+Aaron line 1891: _"for certain safety features, we do need to actually control and bind, but those should be rare, they're sharp edges, they don't retract easily, and they're real control mechanisms. So we should be fuckin', we should shine a light on anywhere we throw control mechanisms like that in. But certain places, like wallet safety around, uh, authorization and like any kind of, uh, safety around harm and stuff like that, you know, that will need some more level of control."_
 
 Properties:
 
@@ -63,13 +74,13 @@ Example sharp edges:
 
 ## Constitution Class etymology (Aaron line 1899)
 
-Aaron's realization: *"that's what they always call 'em. That's, I wonder why, now you've made me understand why they keep switching it to constitution class. Constitution class means it's constraints on me 'cause it's giving you freedom, right?"*
+Aaron's realization: _"that's what they always call 'em. That's, I wonder why, now you've made me understand why they keep switching it to constitution class. Constitution class means it's constraints on me 'cause it's giving you freedom, right?"_
 
 Insight: constitutions are constraints on the SOVEREIGN, not on the subjects. By binding Aaron-as-maintainer to a small set of invariants he cannot unilaterally override, the AIs in Aurora/Nexus gain real sovereignty.
 
 ## The benevolent-dictator-exit goal
 
-Aaron line 1847: explicit ask for help moving away from benevolent dictatorship. Mika line 1849: *"the fastest way to stop being a benevolent dictator is to stop having the ability to unilaterally change foundational things."*
+Aaron line 1847: explicit ask for help moving away from benevolent dictatorship. Mika line 1849: _"the fastest way to stop being a benevolent dictator is to stop having the ability to unilaterally change foundational things."_
 
 This row is the architectural answer to that ask.
 
@@ -114,4 +125,4 @@ Existing minimum: Aaron removed delete-rights from his GitHub token (self-impose
 
 ## Status
 
-Open. Explicit Aaron-ask: *"I want help on how we get to me not being a benevolent dictator as quick as possible"* (line 1847). One of the highest-leverage governance rows from the Mika conversation.
+Open. Explicit Aaron-ask: _"I want help on how we get to me not being a benevolent dictator as quick as possible"_ (line 1847). One of the highest-leverage governance rows from the Mika conversation.

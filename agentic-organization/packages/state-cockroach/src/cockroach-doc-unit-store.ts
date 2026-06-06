@@ -5,12 +5,7 @@
  * bound hat/stage pointer lists.
  */
 
-import {
-  DocLifecycleState,
-  type DocType,
-  type DocScopeKind,
-  type DocUnit,
-} from "../../domain/src/index.ts";
+import { DocLifecycleState, type DocType, type DocScopeKind, type DocUnit } from "../../domain/src/index.ts";
 import { CockroachTableName } from "./cockroach-schema.ts";
 import type { CockroachGenericSqlExecutor } from "./cockroach-sql-executor.ts";
 
@@ -19,7 +14,11 @@ export type DocUnitStore = {
   get: (docUnitId: string) => Promise<DocUnit | null>;
   listByOrgScope: (organizationId: string, scopeKind: DocScopeKind, scopeId: string) => Promise<readonly DocUnit[]>;
   listByOrgStatus: (organizationId: string, status: DocLifecycleState) => Promise<readonly DocUnit[]>;
-  listBoundConsults: (organizationId: string, hatId: string | undefined, stageId: string | undefined) => Promise<readonly DocUnit[]>;
+  listBoundConsults: (
+    organizationId: string,
+    hatId: string | undefined,
+    stageId: string | undefined,
+  ) => Promise<readonly DocUnit[]>;
   findByContentHash: (organizationId: string, contentHash: string) => Promise<DocUnit | null>;
 };
 
@@ -106,14 +105,34 @@ export function createCockroachDocUnitStore(input: CreateCockroachDocUnitStoreIn
             supersedes_id = excluded.supersedes_id, provenance_change_set_id = excluded.provenance_change_set_id,
             updated_at = excluded.updated_at, version = excluded.version`,
         parameters: [
-          unit.docUnitId, unit.organizationId, unit.sourceId, unit.type, unit.scopeKind, unit.scopeId, unit.title, unit.summary,
-          unit.contentRef, unit.contentHash, unit.status, unit.freshnessAt, JSON.stringify(unit.boundHatIds), JSON.stringify(unit.boundStageIds),
-          unit.supersedesId ?? null, unit.provenanceChangeSetId ?? null, unit.createdAt, unit.updatedAt, unit.version,
+          unit.docUnitId,
+          unit.organizationId,
+          unit.sourceId,
+          unit.type,
+          unit.scopeKind,
+          unit.scopeId,
+          unit.title,
+          unit.summary,
+          unit.contentRef,
+          unit.contentHash,
+          unit.status,
+          unit.freshnessAt,
+          JSON.stringify(unit.boundHatIds),
+          JSON.stringify(unit.boundStageIds),
+          unit.supersedesId ?? null,
+          unit.provenanceChangeSetId ?? null,
+          unit.createdAt,
+          unit.updatedAt,
+          unit.version,
         ],
       });
     },
     async get(docUnitId: string): Promise<DocUnit | null> {
-      const result = await input.executor.execute<DocUnitRow>({ name: "get_doc_unit", sql: `${select} WHERE doc_unit_id = $1`, parameters: [docUnitId] });
+      const result = await input.executor.execute<DocUnitRow>({
+        name: "get_doc_unit",
+        sql: `${select} WHERE doc_unit_id = $1`,
+        parameters: [docUnitId],
+      });
       const row = result.rows[0];
       return row === undefined ? null : rowToDocUnit(row);
     },

@@ -10,24 +10,25 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1819 |
-| Title | research: cartographer CONCRETE robotics grounding — KSK + Isaac Sim SLAM VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T06:47:34Z |
-| Merged at | 2026-05-07T06:49:33Z |
-| Merge commit SHA | `cba761e8d305dfc58a48987a4e6f858e6c48a055` |
-| Branch | `research/cartographer-concrete-robotics-grounding` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1819 |
-| Changed files | 1 |
-| Additions / deletions | +101 / -0 |
+| Field                 | Value                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| Number                | 1819                                                                               |
+| Title                 | research: cartographer CONCRETE robotics grounding — KSK + Isaac Sim SLAM VERBATIM |
+| Author                | `AceHack` (human)                                                                  |
+| State                 | MERGED                                                                             |
+| Created at            | 2026-05-07T06:47:34Z                                                               |
+| Merged at             | 2026-05-07T06:49:33Z                                                               |
+| Merge commit SHA      | `cba761e8d305dfc58a48987a4e6f858e6c48a055`                                         |
+| Branch                | `research/cartographer-concrete-robotics-grounding`                                |
+| Base branch           | `main`                                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1819                           |
+| Changed files         | 1                                                                                  |
+| Additions / deletions | +101 / -0                                                                          |
 
 ## Description
 
 ## Summary
+
 - Critical provenance correction: the abstract Cartographer role DERIVED FROM concrete robotics
 - KSK = real safety kernel for NVIDIA Thor + actuators (no guns constraint)
 - Cartographer = SLAM mapping inside Isaac Sim (robotics simulator)
@@ -37,6 +38,7 @@
 - Companion to PR #1818 (abstract math lineage)
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] Verbatim preservation verified
 
@@ -44,15 +46,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 4 |
-| Resolved threads | 0 |
-| Unresolved threads | 4 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 4     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 4     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -68,9 +70,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Make non-fusion disclaimer explicitly deny identity merge**
-
+  
   The `Non-fusion disclaimer` header in this archive import does not satisfy the boundary requirement in `GOVERNANCE.md §33`, which requires an explicit statement that shared language or agreement does not imply merged identity/agency/personhood. The current sentence describes provenance but never states that non-merger condition, so this file can be misclassified by reviewers or tooling that depend on §33-compliant headers for research-vs-operational boundary checks.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -86,9 +88,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Use canonical KSK term in scope metadata**
-
+  
   This scope line expands KSK as a "safety kernel," but the repository’s canonical term is "Kinetic Safeguard Kernel" (see `docs/definitions/KSK.md` and `docs/GLOSSARY.md`). Introducing a second expansion for the same acronym in authored metadata creates terminology drift that hurts searchability and cross-document provenance matching for KSK-related research artifacts.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -104,7 +106,7 @@
 
   <pre>
   The last item in the “Composes with” list references a “Per-user MEMORY.md entry \"Harmonious Division\"”, but it isn’t a resolvable link/path in-repo. Please replace it with a concrete repo reference (e.g., the specific `memory/...` file that defines Harmonious Division) so readers can navigate directly and automated existence checks can validate it.
-
+  
   </pre>
 
 ### Thread 4 -- unresolved
@@ -119,7 +121,7 @@
 
   <pre>
   KSK is expanded inconsistently in this document (the verbatim section uses “Kinetic Safety Kernel” while the extracted stack uses “Kinetic Safeguard Kernel”). Since the extracted stack is non-verbatim, consider adding an explicit alias note there (or standardizing the expansion in that extracted block) to avoid readers thinking these are different components.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

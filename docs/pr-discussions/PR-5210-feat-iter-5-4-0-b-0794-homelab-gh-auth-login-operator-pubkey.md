@@ -19,10 +19,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Summary
 
 Implements **iter-5.4.0** — minimum-viable B-0794 homelab-mode device-registration substrate the maintainer's deferral named:
-> *"i'll wait till we have the install.sh and git native device registration into github is ready before i run again"*
+
+> _"i'll wait till we have the install.sh and git native device registration into github is ready before i run again"_
 
 Per Mika 2026-05-26 substrate (homelab-first; production-mode deferred):
-> *"USB ships with NO embedded credentials; first boot prompts gh auth login + operator authenticates + auto-copy operator's pubkey to authorized_keys"*
+
+> _"USB ships with NO embedded credentials; first boot prompts gh auth login + operator authenticates + auto-copy operator's pubkey to authorized_keys"_
 
 ## Changes
 
@@ -47,6 +49,7 @@ Per Mika 2026-05-26 substrate (homelab-first; production-mode deferred):
 ## What this enables for next re-flash
 
 After this lands → next ISO build triggers (push to `full-ai-cluster/**` matches the broadened trigger paths) → fresh artifact has:
+
 - iter-5.1 (wifi persist) + iter-5.2 (hostname inject) + iter-5.2.2 (install-time auto-gen + login banner) + iter-5.3 (password prompt) + **iter-5.4.0 (gh-auth + operator-pubkey-copy)**
 - Empirical UX: boot → 6.x prompts → gh auth login → operator authenticates → ssh from any of operator's GitHub-registered keys works on first boot
 
@@ -76,6 +79,7 @@ After this lands → next ISO build triggers (push to `full-ai-cluster/**` match
 This PR adds an iter-5.4.0 “homelab-mode” install-time flow that lets an operator authenticate with GitHub (`gh auth login`) and automatically inject their GitHub-registered SSH public keys into the freshly installed node’s `zeta` account, reducing post-install manual steps.
 
 **Changes:**
+
 - Adds a new Step 6.8 to `zeta-install.sh` to optionally run `gh auth login`, fetch SSH keys via `gh ssh-key list`, and write them into the target root under `/mnt/etc/zeta/operator-authorized-keys`.
 - Introduces a new NixOS module that reads `/etc/zeta/operator-authorized-keys` (if present) and contributes the parsed keys to `users.users.zeta.openssh.authorizedKeys.keys`.
 - Updates the installer ISO config and cluster common module imports to include and activate the new functionality.
@@ -84,12 +88,12 @@ This PR adds an iter-5.4.0 “homelab-mode” install-time flow that lets an ope
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds install-time GitHub auth + operator key capture step and updates the completion banner logic. |
-| full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Adds `gh` to installer ISO packages to support `gh auth login` during install. |
-| full-ai-cluster/nixos/modules/operator-authorized-keys.nix | New module to read captured operator keys file and inject into `zeta` authorized keys. |
-| full-ai-cluster/nixos/modules/common.nix | Imports the new operator-authorized-keys module for all cluster hosts. |
+| File                                                                  | Description                                                                                        |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh                   | Adds install-time GitHub auth + operator key capture step and updates the completion banner logic. |
+| full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Adds `gh` to installer ISO packages to support `gh auth login` during install.                     |
+| full-ai-cluster/nixos/modules/operator-authorized-keys.nix            | New module to read captured operator keys file and inject into `zeta` authorized keys.             |
+| full-ai-cluster/nixos/modules/common.nix                              | Imports the new operator-authorized-keys module for all cluster hosts.                             |
 
 ## Review threads
 

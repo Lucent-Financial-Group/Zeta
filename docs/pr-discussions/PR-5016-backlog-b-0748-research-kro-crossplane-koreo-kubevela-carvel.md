@@ -18,8 +18,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-25, two forwarded research dumps + extension:
 
-1. *"kro yes and we need lots of research in this area and backlog. composes with machine outside k8s and other things gitops like."*
-2. Then extension: *"we are alternatives to crd like clound native resource management to cross plane maybe it was one of thier competitors toolings"* — adding Radius + Terraform Controller + Pulumi K8s Operator
+1. _"kro yes and we need lots of research in this area and backlog. composes with machine outside k8s and other things gitops like."_
+2. Then extension: _"we are alternatives to crd like clound native resource management to cross plane maybe it was one of thier competitors toolings"_ — adding Radius + Terraform Controller + Pulumi K8s Operator
 
 ## Three verbatim research docs preserved
 
@@ -58,24 +58,22 @@ The spectrum thinking extends BEYOND k8s. B-0749 (queued follow-up) carves the "
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T22:39:52Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1f43e73818`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -87,7 +85,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T22:39:52Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align B-0748 scope numbers with backlog row**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align B-0748 scope numbers with backlog row**
 
 These notes label Radius as **Scope item 7** and Terraform/Pulumi as **Scope item 8**, but `B-0748` defines them as scope items **6** and **7** respectively. That mismatch causes durable cross-reference drift between `docs/research` and the canonical backlog row, so follow-up work can be tracked against the wrong acceptance criteria and appear incomplete even when implemented.
 
@@ -97,7 +95,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T22:39:52Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reference all scoped evaluations in matrix acceptance**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reference all scoped evaluations in matrix acceptance**
 
 The decision-matrix acceptance criteria currently requires cross-referencing scope items 1–5, but this same row adds tool evaluations in scope items 6 and 7. Keeping the acceptance text as-is means the final matrix can satisfy the checklist while omitting Radius/Terraform/Pulumi outputs, which weakens traceability for the newly added evaluation scope.
 

@@ -28,7 +28,7 @@ have them turn it off for enjoyment of the move ahaha, only the
 creator side of the movie really should care about the plot holes"
 
 The consumer relationship to a work requires **willing suspension
-of disbelief** (Coleridge 1817, *Biographia Literaria* ch. 14,
+of disbelief** (Coleridge 1817, _Biographia Literaria_ ch. 14,
 "poetic faith") — the consumer agrees to inhabit the world on
 its terms so that the world can do its work on them. A
 plot-hole-detector running during consumption pre-empts that

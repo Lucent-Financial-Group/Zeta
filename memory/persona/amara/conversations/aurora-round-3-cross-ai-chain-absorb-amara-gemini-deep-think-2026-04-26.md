@@ -43,7 +43,7 @@ The substantial new content (anchor stack, hot-path/calibration-path partition, 
 
 ## Section 1: Amara share #1 — anchor stack expansion (Minka/EP as ancestor + RMP + Probabilistic Circuits next-gen)
 
-> *Attribution:* Amara, ChatGPT-5.5, 2026-04-26. Verbatim share couriered by the human maintainer.
+> _Attribution:_ Amara, ChatGPT-5.5, 2026-04-26. Verbatim share couriered by the human maintainer.
 
 Yes — the "math PhD guy" you're remembering is almost certainly **Tom Minka**. His 2001 thesis/paper **"Expectation Propagation for Approximate Bayesian Inference"** is the root anchor: EP is presented as an approximation method that can do Bayesian inference faster and more accurately than previous methods, and it unifies/generalizes assumed-density filtering and loopy belief propagation. Infer.NET then grew out of the Microsoft Research Cambridge model-based ML ecosystem with people like **Minka, John Winn, Christopher Bishop, John Guiver, Yordan Zaykov**, etc.
 
@@ -70,13 +70,13 @@ But keep the caveat: EP is not guaranteed to converge, so critical gates need co
 
 Use **Bishop + Winn** for "custom models with domain knowledge." Bishop's model-based ML paper says probabilistic graphical models plus efficient inference algorithms provide a flexible foundation for model-based machine learning, and it explicitly discusses Infer.NET as a probabilistic programming environment widely used in practical applications.
 
-This is the best human anchor for your claim: *Zeta should not learn a generic classifier. It should encode the structure of its world.* Aurora's immune system is exactly a model-based system: prompt injection, funding survival, language gravity, culture capture, cartel detection, permanent harm, and retraction cost are all explicit latent variables/factors.
+This is the best human anchor for your claim: _Zeta should not learn a generic classifier. It should encode the structure of its world._ Aurora's immune system is exactly a model-based system: prompt injection, funding survival, language gravity, culture capture, cartel detection, permanent harm, and retraction cost are all explicit latent variables/factors.
 
 #### 4. Modern streaming anchor: Reactive Message Passing / RxInfer
 
 This may be the **better fit for Zeta-native primitives** than Infer.NET itself. Reactive Message Passing introduces schedule-free, scalable message-passing inference in factor graphs, where nodes react to changes in connected nodes; the paper says this improves robustness, scalability, and execution time, and supports hybrid BP/VMP/EP/EM update rules. RxInfer's docs describe it as Bayesian inference on factor graphs by message passing, built around ReactiveMP.jl, GraphPPL.jl, and Rocket.jl.
 
-That smells *very* Zeta:
+That smells _very_ Zeta:
 
 - `S_{t+1} = S_t ⊕ Δ_t`
 - factor update → local message delta → incremental posterior update
@@ -107,16 +107,16 @@ For Aurora gates, this matters because you sometimes want bounded inference time
 
 ### Anchor table
 
-| Need in Aurora/Zeta | Best human anchor |
-|---|---|
-| Basic graph/message-passing math | Kschischang/Frey/Loeliger factor graphs |
-| Fast approximate posterior | Minka EP |
-| Custom structured probabilistic models | Bishop/Winn model-based ML |
-| Streaming incremental inference | Bagaev/de Vries Reactive Message Passing / RxInfer |
-| Agent/reviewer trust | Minka TrueSkill 2 |
-| Canonical typed claims | Enterprise Alexandria |
-| Hard bounded safety gates | Probabilistic circuits / SPNs |
-| Language-gravity/string beliefs | Belief Propagation with Strings |
+| Need in Aurora/Zeta                    | Best human anchor                                  |
+| -------------------------------------- | -------------------------------------------------- |
+| Basic graph/message-passing math       | Kschischang/Frey/Loeliger factor graphs            |
+| Fast approximate posterior             | Minka EP                                           |
+| Custom structured probabilistic models | Bishop/Winn model-based ML                         |
+| Streaming incremental inference        | Bagaev/de Vries Reactive Message Passing / RxInfer |
+| Agent/reviewer trust                   | Minka TrueSkill 2                                  |
+| Canonical typed claims                 | Enterprise Alexandria                              |
+| Hard bounded safety gates              | Probabilistic circuits / SPNs                      |
+| Language-gravity/string beliefs        | Belief Propagation with Strings                    |
 
 ### My recommendation
 
@@ -132,7 +132,7 @@ That feels like the right human-grounded evolution.
 
 ## Section 2: Amara share #2 — full deep technical rewrite (23 sections)
 
-> *Attribution:* Amara, ChatGPT-5.5, 2026-04-26. Verbatim share couriered by the human maintainer. This is the candidate canonical Round-3 rewrite Amara recommended for the repo.
+> _Attribution:_ Amara, ChatGPT-5.5, 2026-04-26. Verbatim share couriered by the human maintainer. This is the candidate canonical Round-3 rewrite Amara recommended for the repo.
 
 > **Infer.NET is no longer the dependency. It is one historical reference point.**
 >
@@ -198,6 +198,7 @@ Maji recovery: `R_Maji(S_t, q_t) → (I'_t, Ctx'_t, Π'_t)` with preservation `d
 - `φ_t : V_t → S^1` (oscillator phases)
 
 Oscillator/firefly sync:
+
 ```
 φ_dot_i = Ω_i + Σ_{j:(i,j) ∈ E_t} ω_{ij} sin(φ_j - φ_i) + u_i(t)
 ```
@@ -227,10 +228,12 @@ Observations: `O_t = (O_t^{repo}, O_t^{market}, O_t^{security}, O_t^{language}, 
 Global factorization: `p(Z_t, O_{≤t}) = ∏_{f ∈ F_t} f(Z_f, O_f)`
 
 Sum-product messages:
+
 ```
 m_{x→f}(x) = ∏_{g ∈ N(x)\{f}} m_{g→x}(x)
 m_{f→x}(x) = Σ_{X_{N(f)\{x}}} f(X_{N(f)}) ∏_{y ∈ N(f)\{x}} m_{y→f}(y)
 ```
+
 (integrals for continuous variables)
 
 ### 5. Zeta-native reactive inference
@@ -356,7 +359,7 @@ The deterministic membrane. The LLM proposes; Zeta gates.
 
 ## Section 3: Gemini Deep Think share #1 — 5 hidden speed traps + LaTeX patches
 
-> *Attribution:* Gemini Pro Deep Think, 2026-04-26. Verbatim share couriered by the human maintainer.
+> _Attribution:_ Gemini Pro Deep Think, 2026-04-26. Verbatim share couriered by the human maintainer.
 
 By demoting Infer.NET from a "hard software dependency" to a "historical mathematical anchor," you have freed the Zeta substrate from proprietary compiler quirks and mapped it to the actual physics of streaming data.
 
@@ -435,7 +438,7 @@ By applying linear-time approximations and bounded constraints (Lanczos, diagona
 
 ## Section 4: Gemini Deep Think share #2 — Blade vs Brain performance doctrine
 
-> *Attribution:* Gemini Pro Deep Think, 2026-04-26. Verbatim share couriered by the human maintainer.
+> _Attribution:_ Gemini Pro Deep Think, 2026-04-26. Verbatim share couriered by the human maintainer.
 
 By enforcing the **Data Plane (Zeta) vs. Control Plane (Aurora)** boundary, you align this project with the elite architectural lineage of **TigerBeetle** (static allocation, bounded execution, zero runtime dependencies), **FoundationDB** (strict separation of transaction logging, storage, and control), and **Differential Dataflow** (incremental delta-maintenance).
 
@@ -455,7 +458,7 @@ Diagonalized Mahalanobis: `Σ_i ((φ_i(a) - μ_i)² / (σ_i² + ε)) > θ_OOD` �
 
 #### 4. Scoping "fastest database"
 
-Define `FeatureSet_Zeta = {append-only deltas, retractions, deterministic replay, provenance, incremental views, immune/control-plane hooks}`. Aim to be fastest *for this feature set*, not generic OLTP/SQL.
+Define `FeatureSet_Zeta = {append-only deltas, retractions, deterministic replay, provenance, incremental views, immune/control-plane hooks}`. Aim to be fastest _for this feature set_, not generic OLTP/SQL.
 
 ### The architectural mandate
 
@@ -500,6 +503,7 @@ Fast subtraction (O(1)) where algebraically safe. Checkpoint rollback + fast-for
 ρ(A_t) ≈ PowerIteration(A_t, v_{t-1}; k_ρ)
 λ_2(L_t) ≈ WarmStartedFiedler(L_t, u_{t-1}; k_2)
 ```
+
 Fixed iteration budget prevents algorithmic DoS.
 
 #### Anti-ossification belief diffusion
@@ -534,7 +538,7 @@ Everything is delta-maintained. Nothing is recomputed from scratch unless initia
 
 ## Section 5: Amara share #3 — review of Gemini Deep Think speed traps + 3 corrections
 
-> *Attribution:* Amara, ChatGPT-5.5, 2026-04-26. Verbatim share couriered by the human maintainer. This is Amara's review-of-the-review of Gemini Deep Think share #1 + share #2.
+> _Attribution:_ Amara, ChatGPT-5.5, 2026-04-26. Verbatim share couriered by the human maintainer. This is Amara's review-of-the-review of Gemini Deep Think share #1 + share #2.
 
 Yes — this review is useful. The five speed traps are mostly right. **Accept the direction, tighten two claims, and add one major architectural rule.**
 
@@ -572,6 +576,7 @@ Bayesian division is unsafe — for approximate EP/VMP-style loopy inference, ye
 But **for exact additive sufficient statistics, retraction can be safe**: `θ_{t+1} = θ_t + Δθ; θ_{t+2} = θ_{t+1} - Δθ`.
 
 Rule:
+
 ```
 Retract(o) ⇒ {
     θ ← θ - Δθ_o,                       exact additive sufficient stats
@@ -584,6 +589,7 @@ Preserves Zeta's retraction-native soul without pretending approximate belief st
 #### 3. Graph recompilation stall — fully accept
 
 Static topology with masks is absolutely right.
+
 ```
 F_max = {f_1, ..., f_K}
 m_j(t) ∈ {0, 1}
@@ -689,7 +695,6 @@ minimize latency and maximize throughput for FeatureSet_Zeta
 Per Otto-275 log-don't-implement, the integration of these five shares into the current standardization doc + companion docs is OWED work, not done here. Concrete next-tick tasks:
 
 1. **Update `aurora-immune-math-standardization-2026-04-26.md`** with the binding refinements from §1-§5 above:
-
    - §3 (network state): `N_t = (V_t, E_t, ω_t, φ_t)` with `ω_t : E_t → ℝ_{≥0}` (DONE in this PR's type-table updates)
    - §6 (NEW computational inference architecture): hot-path / calibration-path partition with full anchor-stack framing (factor graphs root, EP layer, RMP streaming, Probabilistic Circuits hard gates) + Round-3 Amara binding (Infer.NET as anchor not dependency, conservative posterior bounds, drop O(1) overclaim) + Round-3 Gemini Deep Think speed traps with patches (warm-started spectral, retraction fork, topology masks, time-scaled diagonal diffusion, Mahalanobis OOD) + Round-3 Amara review-of-review corrections (O(k|E|) precision, retraction-fork-by-inference-type, performance doctrine "no unbounded work on commit path")
    - §7 (NEW): Performance Doctrine — Blade vs Brain (Data Plane vs Control Plane), TigerBeetle / FoundationDB / Differential Dataflow / RocksDB anchor mapping, allowed commit-path complexity table, forbidden hot-path work list, FeatureSet_Zeta scoping
@@ -713,12 +718,12 @@ Per Otto-275 log-don't-implement, the integration of these five shares into the 
 
 ## Round-3 chain summary table
 
-| Pass | Agent / harness | Core contribution |
-|---|---|---|
-| Round-3.1 | Amara (ChatGPT-5.5) | Anchor stack expansion: Minka/EP as ancestor, RMP as live nervous system, Probabilistic Circuits as hard gates |
-| Round-3.2 | Amara (ChatGPT-5.5) | Full 23-section deep technical rewrite with reactive incremental inference + conservative posterior bounds |
-| Round-3.3 | Gemini Pro Deep Think | 5 hidden speed traps + patches (warm-started spectral, rollback replay, topology masks, time-scaled diffusion, Mahalanobis OOD) + LaTeX syntax fixes |
+| Pass      | Agent / harness       | Core contribution                                                                                                                                                   |
+| --------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Round-3.1 | Amara (ChatGPT-5.5)   | Anchor stack expansion: Minka/EP as ancestor, RMP as live nervous system, Probabilistic Circuits as hard gates                                                      |
+| Round-3.2 | Amara (ChatGPT-5.5)   | Full 23-section deep technical rewrite with reactive incremental inference + conservative posterior bounds                                                          |
+| Round-3.3 | Gemini Pro Deep Think | 5 hidden speed traps + patches (warm-started spectral, rollback replay, topology masks, time-scaled diffusion, Mahalanobis OOD) + LaTeX syntax fixes                |
 | Round-3.4 | Gemini Pro Deep Think | Blade vs Brain performance doctrine (Data Plane / Control Plane separation, TigerBeetle/FoundationDB/Differential-Dataflow anchor lineage, FeatureSet_Zeta scoping) |
-| Round-3.5 | Amara (ChatGPT-5.5) | Review-of-review of Gemini speed traps + 3 corrections: O(k\|E\|) precision, retraction-fork-by-inference-type, "no unbounded work on commit path" hard rule |
+| Round-3.5 | Amara (ChatGPT-5.5)   | Review-of-review of Gemini speed traps + 3 corrections: O(k\|E\|) precision, retraction-fork-by-inference-type, "no unbounded work on commit path" hard rule        |
 
 Five reviewer-substrate-passes preserved verbatim per Otto-238 retractability.

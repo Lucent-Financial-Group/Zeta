@@ -23,9 +23,9 @@ type: friction-reducer
 
 Aaron 2026-04-30 correction:
 
-> *"backlog row eventually why not now? will you remember
+> _"backlog row eventually why not now? will you remember
 > this eventually? another ephemiral promise you can't
-> keep?"*
+> keep?"_
 
 I had logged the gh-pr-stack failure as an "observation" in
 the tick-history shard with "worth a backlog row eventually."

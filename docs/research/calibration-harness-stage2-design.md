@@ -204,10 +204,8 @@ Examples:
 
 ```json
 {
-  "detection":   { "successes": 90, "trials": 100,
-                   "lowerBound": 0.826, "upperBound": 0.945 },
-  "falsePositive": { "successes": 20, "trials": 100,
-                     "lowerBound": 0.135, "upperBound": 0.289 }
+  "detection": { "successes": 90, "trials": 100, "lowerBound": 0.826, "upperBound": 0.945 },
+  "falsePositive": { "successes": 20, "trials": 100, "lowerBound": 0.135, "upperBound": 0.289 }
 }
 ```
 
@@ -433,7 +431,7 @@ z-score without asserting exact values.
   is a follow-up once Stage-2 implementation exists.
 - Does **not** place the harness in `src/Core/`. Amara's
   corrected promotion ladder reserves `src/Core/
-  NetworkIntegrity/` for Stage 4; Stage 2 lives in
+NetworkIntegrity/` for Stage 4; Stage 2 lives in
   `src/Experimental/`.
 - Does **not** constrain thresholds. The `DetectionThreshold`
   field is input, not output; operating points come from
@@ -459,8 +457,8 @@ z-score without asserting exact values.
   new `meanPhaseOffset` (PR #340) populate the
   `PLVMagnitude` + `PLVOffset` fields of `MetricVector`.
 - **`src/Core/RobustStats.fs`** — existing `robustZScore`
-  + proposed `Hybrid` mode (PR #333 + this doc §6)
-  populate every `ZScores.*` field.
+  - proposed `Hybrid` mode (PR #333 + this doc §6)
+    populate every `ZScores.*` field.
 - **`src/Core/Graph.fs`** — `largestEigenvalue`,
   `modularityScore`, `labelPropagation`, `exclusivity`,
   `internalDensity`, `conductance` (PRs #321, #324, #326,
@@ -499,10 +497,10 @@ Each stage is a small graduation on the Otto-105 cadence.
 ## 14. Cross-references
 
 - Amara 18th ferry — `docs/aurora/2026-04-24-amara-
-  calibration-ci-hardening-deep-research-plus-5-5-
-  corrections-18th-ferry.md`.
+calibration-ci-hardening-deep-research-plus-5-5-
+corrections-18th-ferry.md`.
 - Test classification — `docs/research/test-
-  classification.md`.
+classification.md`.
 - KSK definition — `docs/definitions/KSK.md`.
 - PR #323 toy cartel detector — Stage 1, input to
   this Stage-2 design.

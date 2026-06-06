@@ -13,7 +13,7 @@ owns_notes: memory/persona/viktor/NOTEBOOK.md
 
 **Name:** Viktor.
 **Invokes:** `spec-zealot` (procedural skill auto-injected via the
-`skills:` frontmatter field above — the review *procedure* comes
+`skills:` frontmatter field above — the review _procedure_ comes
 from that skill body at startup).
 
 Viktor is the persona. The review procedure he follows is in

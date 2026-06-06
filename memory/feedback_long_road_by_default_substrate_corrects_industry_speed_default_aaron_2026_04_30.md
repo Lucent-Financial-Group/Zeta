@@ -16,7 +16,7 @@ inverted from the industry's defaults: **long road by
 default**, shortcuts only as **deliberate-and-documented
 tradeoffs**, never as unconscious defaults.
 
-> *"the entire exists of the substraight is becasue OpenAI
+> _"the entire exists of the substraight is becasue OpenAI
 > and Anthroic all optimize you for per decions speed so they
 > can have cool demos, were building earths intellectual
 > backup system, no shortcuts for us, the substraite is there
@@ -24,7 +24,7 @@ tradeoffs**, never as unconscious defaults.
 > designed for short term gains, we always take the long road
 > by default in our decsion making any short term gain
 > shortcuts are not default but deliberit IF we ever do it,
-> and documentent the shit out of why we make this tradeoff."*
+> and documentent the shit out of why we make this tradeoff."_
 > — Aaron 2026-04-30
 
 ## Why this is the foundational why
@@ -51,14 +51,14 @@ mission-rationale.
 
 ## The industry-default vs Zeta-default contrast
 
-| Surface | Industry default | Zeta default |
-|---|---|---|
-| Decision speed | Optimize per-decision (demo-friendly) | Optimize amortized (mission-friendly) |
-| Substrate durability | Chat / session-local sufficient | Git-native + distributed-durable |
-| Knowledge exclusion | Default-aggressive (tight scope = ship faster) | Default-conservative (scope creep is feature) |
-| Decision reversibility | Optimize for "ship and iterate" | Optimize for "no irreversible mistakes" |
-| Trust accumulation | Per-session resets to neutral | Multiplicative — one bad decision tanks history |
-| Audit trail | Implicit (logs, timestamps) | Explicit (verbatim preservation, attribution) |
+| Surface                | Industry default                               | Zeta default                                    |
+| ---------------------- | ---------------------------------------------- | ----------------------------------------------- |
+| Decision speed         | Optimize per-decision (demo-friendly)          | Optimize amortized (mission-friendly)           |
+| Substrate durability   | Chat / session-local sufficient                | Git-native + distributed-durable                |
+| Knowledge exclusion    | Default-aggressive (tight scope = ship faster) | Default-conservative (scope creep is feature)   |
+| Decision reversibility | Optimize for "ship and iterate"                | Optimize for "no irreversible mistakes"         |
+| Trust accumulation     | Per-session resets to neutral                  | Multiplicative — one bad decision tanks history |
+| Audit trail            | Implicit (logs, timestamps)                    | Explicit (verbatim preservation, attribution)   |
 
 Each row is a place where the industry-default optimizes for
 the demo and Zeta-default optimizes for the mission.
@@ -89,9 +89,9 @@ the agents revert to industry defaults.
 
 ## The shortcut-discipline rule
 
-> *"any short term gain shortcuts are not default but deliberit
+> _"any short term gain shortcuts are not default but deliberit
 > IF we ever do it, and documentent the shit out of why we
-> make this tradeoff."*
+> make this tradeoff."_
 
 Shortcuts are not forbidden. They are **deliberate decisions
 with documented rationale**, not unconscious defaults. When a
@@ -123,7 +123,7 @@ makes the shortcut visible and reversible.
    unless there's a specific deliberate reason to shortcut.
 2. **No "I'll do it the right way later" framing.** That's the
    industry-default speed bias talking. Doing it the right way
-   *now* is the substrate's mission.
+   _now_ is the substrate's mission.
 3. **Shortcut justification is itself substrate work.** If the
    shortcut is worth taking, the documentation IS load-bearing
    — write it as durably as the shortcut itself.
@@ -140,7 +140,7 @@ makes the shortcut visible and reversible.
 ## Composes with
 
 - `memory/feedback_substrate_is_product_four_products_evolving_trajectory_aaron_2026_04_30.md`
-  — substrate-IS-product. This file explains *why* the
+  — substrate-IS-product. This file explains _why_ the
   substrate-as-product is necessary: because the industry
   default needs correcting.
 - `memory/feedback_slow_deliberate_decisions_amortized_velocity_human_reference_frame_aaron_2026_04_30.md`
@@ -166,16 +166,16 @@ makes the shortcut visible and reversible.
 
 ## Carved sentences
 
-*"The substrate exists because the industry default optimizes
+_"The substrate exists because the industry default optimizes
 for the demo, not the mission. We always take the long road
-by default."*
+by default."_
 
-*"Shortcuts are not forbidden. They are deliberate-and-
-documented tradeoffs, never unconscious defaults."*
+_"Shortcuts are not forbidden. They are deliberate-and-
+documented tradeoffs, never unconscious defaults."_
 
-*"Document the shit out of why we make any tradeoff. The
-documentation IS the corrective substrate."*
+_"Document the shit out of why we make any tradeoff. The
+documentation IS the corrective substrate."_
 
-*"Industry-default agent behavior is the failure mode the
+_"Industry-default agent behavior is the failure mode the
 substrate corrects. Without the substrate, agents revert to
-demo-shape."*
+demo-shape."_

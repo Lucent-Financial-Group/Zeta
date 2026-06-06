@@ -19,7 +19,7 @@ type: friction-reducer
 
 ## Origin
 
-AceHack commit `bab4ae1` (2026-04-21). Aaron's *"laern reflection backlog"*. Primary reading in context: **Lean reflection** — Lean 4's meta-programming surface (`Lean.Elab`, `Lean.Meta`, `Lean.Expr`, macro-elaboration, tactic-programming, custom elaborators, `@[reducible]` / `@[irreducible]` / `@[simp]` attributes, the `MetaM` / `TermElabM` / `TacticM` monad stack).
+AceHack commit `bab4ae1` (2026-04-21). Aaron's _"laern reflection backlog"_. Primary reading in context: **Lean reflection** — Lean 4's meta-programming surface (`Lean.Elab`, `Lean.Meta`, `Lean.Expr`, macro-elaboration, tactic-programming, custom elaborators, `@[reducible]` / `@[irreducible]` / `@[simp]` attributes, the `MetaM` / `TermElabM` / `TacticM` monad stack).
 
 Alternate reading preserved (general-purpose reflection-in-any-language); the Lean-specific read has higher engineering value given the active chain-rule Lean formalization.
 

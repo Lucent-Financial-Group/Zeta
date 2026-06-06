@@ -12,7 +12,7 @@ introduce or upgrade a dependency.
 
 - OWASP Software Component Verification Standard (SCVS) —
   <https://owasp.org/www-project-software-component-verification-standard/>
-- NIST SP 800-218 *Secure Software Development Framework (SSDF)*
+- NIST SP 800-218 _Secure Software Development Framework (SSDF)_
   PW.4 (Reuse existing, well-secured software) —
   <https://csrc.nist.gov/Projects/ssdf>
 - SLSA supply-chain levels spec — <https://slsa.dev/>
@@ -20,23 +20,23 @@ introduce or upgrade a dependency.
   <https://docs.github.com/en/code-security/supply-chain-security>
 - Canonical incidents (both mutable-tag class):
   - **CVE-2025-30066** — tj-actions/changed-files tag-rewrite
-      cascade (March 2025), malicious commit landed on 23,000+
-      repos via a single mutable `@v1` tag.
+    cascade (March 2025), malicious commit landed on 23,000+
+    repos via a single mutable `@v1` tag.
   - **Trivy TeamPCP attack** — 2026-03-19, Aqua Security's
-      Trivy scanner ecosystem compromised by force-push of 76 of
-      77 version tags on `aquasecurity/trivy-action` + 7 of 7 on
-      `aquasecurity/setup-trivy`, plus a malicious binary
-      `v0.69.4` published via a compromised `aqua-bot` service
-      account. Even SHA-pinned consumers were hit if they bumped
-      during the window. This attack targets a *security
-      scanner itself* — it is the canonical case study for the
-      "content-review-is-load-bearing" policy above: a SHA-256
-      of a compromised release binary is still a valid SHA-256.
-      Referenced in Semgrep rule `gha-action-mutable-tag`,
-      Incident Playbook A, and the scanner-landscape research
-      doc (`docs/research/vuln-and-dep-scanner-landscape-2026-
-      04-22.md`) — which defers Trivy adoption pending
-      rebuild-trust signals.
+    Trivy scanner ecosystem compromised by force-push of 76 of
+    77 version tags on `aquasecurity/trivy-action` + 7 of 7 on
+    `aquasecurity/setup-trivy`, plus a malicious binary
+    `v0.69.4` published via a compromised `aqua-bot` service
+    account. Even SHA-pinned consumers were hit if they bumped
+    during the window. This attack targets a _security
+    scanner itself_ — it is the canonical case study for the
+    "content-review-is-load-bearing" policy above: a SHA-256
+    of a compromised release binary is still a valid SHA-256.
+    Referenced in Semgrep rule `gha-action-mutable-tag`,
+    Incident Playbook A, and the scanner-landscape research
+    doc (`docs/research/vuln-and-dep-scanner-landscape-2026-
+  04-22.md`) — which defers Trivy adoption pending
+    rebuild-trust signals.
 
 Re-read against current revisions of these sources every 5-10
 rounds (FACTORY-HYGIENE row 41, same cadence as GHA safe-patterns).
@@ -65,16 +65,16 @@ the manifest plus repository signature verification.
 
 ### Content review is the load-bearing step — the pin caches it
 
-The immutable identifier is *how* we lock a decision, but the
+The immutable identifier is _how_ we lock a decision, but the
 decision itself is **content review at first pin**. A SHA-256 that
 points at malicious code is still malicious; the protection is
 reading the content before it runs, not the hash on its own.
 
-In this factory, Aaron's standing policy (2026-04-22) is: *"never
+In this factory, Aaron's standing policy (2026-04-22) is: _"never
 run a script you download without checking it for vulnerability,
 trojans and things of that nature even like gist and stuff, it's
 fine to download and run bash and things like that just validate
-them first."* So the actual author-time protocol is:
+them first."_ So the actual author-time protocol is:
 
 1. **Download to disk**, do not execute.
 2. **Read the script in full** — check for sudo / privilege
@@ -95,7 +95,7 @@ prevents validation:
 - **At first contact, `curl | bash` is disallowed** — the pipe
   executes the bytes before any human or lint has read them,
   which makes step 2 impossible. Use `curl -o path && bash
-  path` (or equivalent split) so the content lands on disk
+path` (or equivalent split) so the content lands on disk
   first.
 - **After SHA-256-pinning, `curl <pinned-url> | bash` becomes
   acceptable** in automation — the pin is the cached review,
@@ -109,12 +109,12 @@ Zeta has four classes of supply-chain surface. Each has a
 different current enforcement level — **which is itself the
 dominant residual risk** when an ingress is bumped.
 
-| Class | Immutable-pin enforced? | Author-time tooling | Reactive playbook |
-|---|---|---|---|
-| GitHub Actions (`.github/workflows/**`) | **Yes** — Semgrep `gha-action-mutable-tag` + convention of trailing `# vX.Y.Z` comment | Required by rule; lint hard-fails on mutable tags | INCIDENT-PLAYBOOK Playbook A (third-party action compromise) |
-| NuGet packages (`Directory.Packages.props`) | **Partial** — central version management + exact versions. `packages.lock.json` not yet adopted (SDL #7 deliverable). | `tools/audit-packages.sh` + `package-auditor` skill (manual) | INCIDENT-PLAYBOOK Playbook C (NuGet dep poisoning) |
-| Toolchain installers (`tools/setup/manifests/{brew,apt,dotnet-tools,uv-tools,verifiers}`) | **Partial** — versions declared per manifest; not all artefacts carry SHA-256. | `tools/setup/install.sh` is the single consumer; `ensure-*` scripts are opportunistic | INCIDENT-PLAYBOOK Playbook B (toolchain installer hijack mid-setup) |
-| MSBuild `.targets` auto-imported via NuGet | **No** — SDL #7 open deliverable; any package may ship executable MSBuild logic that runs during `dotnet build`. | Manual review; no allowlist yet | Playbook C covers the exploit path |
+| Class                                                                                     | Immutable-pin enforced?                                                                                               | Author-time tooling                                                                   | Reactive playbook                                                   |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| GitHub Actions (`.github/workflows/**`)                                                   | **Yes** — Semgrep `gha-action-mutable-tag` + convention of trailing `# vX.Y.Z` comment                                | Required by rule; lint hard-fails on mutable tags                                     | INCIDENT-PLAYBOOK Playbook A (third-party action compromise)        |
+| NuGet packages (`Directory.Packages.props`)                                               | **Partial** — central version management + exact versions. `packages.lock.json` not yet adopted (SDL #7 deliverable). | `tools/audit-packages.sh` + `package-auditor` skill (manual)                          | INCIDENT-PLAYBOOK Playbook C (NuGet dep poisoning)                  |
+| Toolchain installers (`tools/setup/manifests/{brew,apt,dotnet-tools,uv-tools,verifiers}`) | **Partial** — versions declared per manifest; not all artefacts carry SHA-256.                                        | `tools/setup/install.sh` is the single consumer; `ensure-*` scripts are opportunistic | INCIDENT-PLAYBOOK Playbook B (toolchain installer hijack mid-setup) |
+| MSBuild `.targets` auto-imported via NuGet                                                | **No** — SDL #7 open deliverable; any package may ship executable MSBuild logic that runs during `dotnet build`.      | Manual review; no allowlist yet                                                       | Playbook C covers the exploit path                                  |
 
 If you bump or add something in a class marked Partial / No, the
 pre-add checklist is **load-bearing** — the lint won't save you.

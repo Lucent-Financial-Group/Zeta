@@ -61,6 +61,7 @@ Adds precise hardware mapping (kubectl-queryable + visual diagrams), a guided in
 This PR adds an AI-cluster hardware inventory and provisioning workflow by deploying Node Feature Discovery (NFD) for scheduler-queryable node labels, installing `hwloc/lstopo` across hosts (and in the USB installer ISO), and introducing tooling/docs to capture and commit per-node topology artifacts. It also adds a guided `zeta-install` script to perform a standard 2×NVMe install path from the USB ISO.
 
 **Changes:**
+
 - Add ArgoCD Application for NFD with Helm values tuned for cluster-wide discovery.
 - Install `hwloc` on cluster nodes and the USB installer, and add a `zeta-install` guided installer into the ISO.
 - Add `tools/cluster-inventory/` to capture NFD labels + `lstopo` XML and render SVGs into `docs/cluster-hardware/<node>/`.
@@ -72,18 +73,18 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 8 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | New guided installer script for the standard 2×NVMe provisioning flow. |
-| full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Adds `hwloc` and bakes `zeta-install` into the installer ISO; updates on-USB runbook text. |
-| full-ai-cluster/tools/cluster-inventory/README.md | Documents the inventory workflow, query patterns, and rescue workflow notes. |
-| full-ai-cluster/tools/cluster-inventory/capture.sh | New capture script to collect NFD labels + lstopo XML and render SVGs per node. |
-| full-ai-cluster/nixos/modules/common.nix | Adds `hwloc` to the common node package set. |
-| full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml | New ArgoCD Application deploying NFD via Helm with PCI discovery tuning. |
+| File                                                                     | Description                                                                                |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh                      | New guided installer script for the standard 2×NVMe provisioning flow.                     |
+| full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix    | Adds `hwloc` and bakes `zeta-install` into the installer ISO; updates on-USB runbook text. |
+| full-ai-cluster/tools/cluster-inventory/README.md                        | Documents the inventory workflow, query patterns, and rescue workflow notes.               |
+| full-ai-cluster/tools/cluster-inventory/capture.sh                       | New capture script to collect NFD labels + lstopo XML and render SVGs per node.            |
+| full-ai-cluster/nixos/modules/common.nix                                 | Adds `hwloc` to the common node package set.                                               |
+| full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml | New ArgoCD Application deploying NFD via Helm with PCI discovery tuning.                   |
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T16:39:48Z)
-
 
 ### 💡 Codex Review
 
@@ -91,17 +92,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `dbec671e93`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -161,7 +161,7 @@ P1: `deviceClassWhitelist` entry `"0c80"` is commented as “NVMe sub-class”, 
 
 **@chatgpt-codex-connector** (2026-05-25T16:39:48Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Parse labels from JSON instead of map string output**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Parse labels from JSON instead of map string output**
 
 This pipeline assumes `kubectl` emits comma-separated, quoted labels, but `-o jsonpath='{.metadata.labels}'` prints maps via Go `String()` formatting (for example `map[...]`), so the `tr`/`grep '^"feature.node.kubernetes.io'` filter never matches and `nfd-labels.txt` is effectively empty. That breaks the core inventory artifact this script is meant to produce.
 
@@ -171,7 +171,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T16:39:48Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Tolerate missing label groups when building summaries**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Tolerate missing label groups when building summaries**
 
 With `set -euo pipefail`, each `grep ... | head -10` in the summary block can terminate the whole script when a node has zero matches for that category (grep exits 1). In practice this makes capture brittle and can abort processing remaining nodes even though missing categories should be valid inventory output.
 
@@ -181,7 +181,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T16:39:48Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Validate BOOT_DISK against discovered NVMe list**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Validate BOOT_DISK against discovered NVMe list**
 
 The selected `BOOT_DISK` is never checked to be one of the two enumerated NVMes. If an operator types another existing device path, the script still derives `DATA_DISK` from the NVMe list and then runs destructive `wipefs`/`sgdisk` on both paths, which can erase an unintended disk.
 

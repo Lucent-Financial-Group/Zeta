@@ -11,8 +11,8 @@ metadata:
   namespace: models
 data:
   model: "deepseek-coder:33b"
-  served-by: "ollama|vllm"   # set to whichever you enabled
+  served-by: "ollama|vllm" # set to whichever you enabled
   endpoint-ollama: "http://ollama.ollama.svc.cluster.local:11434"
-  endpoint-vllm:   "http://vllm.vllm.svc.cluster.local:8000"
-  size-vram-gb: "24"   # rough VRAM target for q4 quant
+  endpoint-vllm: "http://vllm.vllm.svc.cluster.local:8000"
+  size-vram-gb: "24" # rough VRAM target for q4 quant
   license: "deepseek-license-v1"

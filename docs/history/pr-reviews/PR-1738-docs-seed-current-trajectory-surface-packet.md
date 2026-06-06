@@ -10,46 +10,49 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1738 |
-| Title | docs: seed current trajectory surface packet |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-06T20:12:09Z |
-| Merged at | 2026-05-06T20:14:09Z |
-| Merge commit SHA | `6e179e43feff833458bfd16b0e8c8b9fa8fe81ee` |
-| Branch | `claim/task-pr659-current-trajectory-packet` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1738 |
-| Changed files | 1 |
-| Additions / deletions | +67 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1738                                                     |
+| Title                 | docs: seed current trajectory surface packet             |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-06T20:12:09Z                                     |
+| Merged at             | 2026-05-06T20:14:09Z                                     |
+| Merge commit SHA      | `6e179e43feff833458bfd16b0e8c8b9fa8fe81ee`               |
+| Branch                | `claim/task-pr659-current-trajectory-packet`             |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1738 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +67 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - add a minimal current-state trajectory packet at `docs/trajectories/factory-trajectory-surface/RESUME.md`
 - preserve PR #659 as superseded provenance instead of bulk-resolving its stale 67-thread branch
 - define the small packet shape for future trajectory lanes and list candidate child packets without creating them all at once
 
 ## Checks
+
 - `git diff --check origin/main..HEAD`
 - `bunx markdownlint-cli2 docs/trajectories/factory-trajectory-surface/RESUME.md`
 
 ## Coordination
+
 This follows the Vera #659 triage claim recommendation: land a fresh current-state anchor first, then close the legacy #659 branch after replacement substrate exists.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -79,7 +82,7 @@ This follows the Vera #659 triage claim recommendation: land a fresh current-sta
 
   <pre>
   Trajectory RESUME packets elsewhere use a consistent header metadata style (e.g., `**Status**`, `**Current blocker**`, `**Next concrete action**`, `**Last updated**` in docs/trajectories/typescript-bun-migration/RESUME.md:3-8). Consider matching that formatting here to keep the trajectory packet surface uniform and easy to scan.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

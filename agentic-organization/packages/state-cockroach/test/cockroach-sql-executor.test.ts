@@ -6,10 +6,7 @@ import {
   createCockroachSqlExecutor,
   type CockroachSqlClient,
 } from "../src/index.ts";
-import {
-  RecordingTelemetry,
-  TelemetrySpanStatusCode,
-} from "../../observability/src/index.ts";
+import { RecordingTelemetry, TelemetrySpanStatusCode } from "../../observability/src/index.ts";
 
 describe("cockroach SQL executor", () => {
   test("adapts a generic Cockroach client to statement executors", async () => {

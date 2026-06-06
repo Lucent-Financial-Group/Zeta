@@ -20,21 +20,21 @@ type: evaluation
 
 ## Origin
 
-Aaron 2026-05-30 (during the Docker Ubuntu+NixOS test build): *"i would also say
+Aaron 2026-05-30 (during the Docker Ubuntu+NixOS test build): _"i would also say
 nixos is our primary we should put on backlog and evaluate what ubuntu is bringing
-us, the community of ubuntu is really why i'm thinking ubuntu matters."*
+us, the community of ubuntu is really why i'm thinking ubuntu matters."_
 
 ## The question
 
 **NixOS is the primary target — declarative BY CONSTRUCTION.** Aaron 2026-05-30
-(the deeper rationale): *"nix is what boots the usb/iso our real hardware boots
+(the deeper rationale): _"nix is what boots the usb/iso our real hardware boots
 cause it's declarative. ubuntu is not on its dependency management — we use
-install.sh to make ubuntu work like nixos with declarative dependencies."*
+install.sh to make ubuntu work like nixos with declarative dependencies."_
 
 This is the load-bearing distinction:
 
 - **NixOS** boots the **real hardware** (the USB/ISO that boots actual machines)
-  *because* the whole system — OS config + dependency closure — is declarative and
+  _because_ the whole system — OS config + dependency closure — is declarative and
   reproducible by construction. No bridge needed; declarativeness is native.
 - **Ubuntu** is **imperative** in its dependency management (apt, ad-hoc installs).
   It has no native declarative-deps property.
@@ -44,16 +44,16 @@ This is the load-bearing distinction:
   Ubuntu behave like NixOS." That's the entropy-lever framing applied to a
   non-declarative base OS.
 
-So NixOS is primary not just by preference but by *kind*: it IS the declarative
-substrate; Ubuntu is made to *act* declarative via install.sh. The cost of Ubuntu
+So NixOS is primary not just by preference but by _kind_: it IS the declarative
+substrate; Ubuntu is made to _act_ declarative via install.sh. The cost of Ubuntu
 is maintaining that simulation layer (the install.sh Ubuntu path + apt deps +
 floating-binary installs); the value is what the next paragraph weighs.
 
 **Ubuntu's value is community/contributor reach**, not technical superiority.
-Aaron's framing: Ubuntu matters because of its *community* — contributor
+Aaron's framing: Ubuntu matters because of its _community_ — contributor
 familiarity, the default-mental-model for most devs, GitHub-hosted runner
 ubiquity (ubuntu-latest is the CI default), and the volume of Ubuntu-targeting
-prior art. The question is whether that reach justifies Ubuntu as a *first-class*
+prior art. The question is whether that reach justifies Ubuntu as a _first-class_
 install/CI target or whether it's community-convenience only.
 
 ## What to evaluate
@@ -82,7 +82,7 @@ install/CI target or whether it's community-convenience only.
 
 Surfaced alongside the Docker Ubuntu+NixOS install.sh test pair (both OSes run
 install.sh in containers; per Aaron's "center our docker tests around ubuntu and
-nixos"). This row is the *strategic* counterpart: building the Ubuntu test does not
+nixos"). This row is the _strategic_ counterpart: building the Ubuntu test does not
 by itself decide Ubuntu's long-term support tier — this row does. NixOS-primary is
 the standing default; Ubuntu is retained pending this evaluation because of its
 community reach.

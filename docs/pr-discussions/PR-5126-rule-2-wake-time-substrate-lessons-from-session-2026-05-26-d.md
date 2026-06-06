@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per the maintainer 2026-05-26: *"should save some claude.md updates or something so you rmember"*. Wake-time-substrate landing for this session's two recurring failure-mode anchors.
+Per the maintainer 2026-05-26: _"should save some claude.md updates or something so you rmember"_. Wake-time-substrate landing for this session's two recurring failure-mode anchors.
 
 Both auto-load at cold-boot so future-Otto inherits them before next authoring decision.
 
@@ -27,12 +27,13 @@ Both auto-load at cold-boot so future-Otto inherits them before next authoring d
 B-0805 sub-target 3 landing. Extends `.claude/rules/search-first-authority.md` (Otto-364) into dep-pin + substrate-path-assertion scope. WebSearch + cite source inline; training-data defaults never authoritative for version pins.
 
 Empirical anchors landed in rule body:
+
 - NixOS 24.11 pinned past EOL (B-0800)
 - Cascade #4 ISO audit asserted wrong NixOS layout (PR #5125 fix)
 
 ### Rule 2 (UPDATED) — `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-...md`
 
-Recurrence anchor: this session the authoring agent CITED the rule as authorization for the exact failure mode the rule was supposed to prevent (silent-punt on 30 stale Otto-CLI PRs without discriminator pass). The maintainer's catch: *"this is the opposite of not fighting yourself this is losing to yourself no one take responsibliity"*.
+Recurrence anchor: this session the authoring agent CITED the rule as authorization for the exact failure mode the rule was supposed to prevent (silent-punt on 30 stale Otto-CLI PRs without discriminator pass). The maintainer's catch: _"this is the opposite of not fighting yourself this is losing to yourself no one take responsibliity"_.
 
 Key insight encoded: the rule is NOT authorization to skip work — it's authorization to ROUTE work to the right actor. Routing requires the discriminator pass.
 

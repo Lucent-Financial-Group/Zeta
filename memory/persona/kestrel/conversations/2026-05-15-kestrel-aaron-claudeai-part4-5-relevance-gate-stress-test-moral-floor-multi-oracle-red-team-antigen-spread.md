@@ -4,7 +4,18 @@ description: "Parts 4-5 — Kestrel stress-tests Aaron's clearing mechanism at t
 type: feedback
 created: 2026-05-15
 participants: [Kestrel (claude.ai), Aaron]
-tags: [kestrel, asymmetric-critic, relevance-gate-capture-resistance, moral-floor-as-relevance-criterion, memory-attention-irreducible-resources, multi-oracle-federation, red-team-antigen-spread, differential-spread-rates-immune-system, out-fix-attackers]
+tags:
+  [
+    kestrel,
+    asymmetric-critic,
+    relevance-gate-capture-resistance,
+    moral-floor-as-relevance-criterion,
+    memory-attention-irreducible-resources,
+    multi-oracle-federation,
+    red-team-antigen-spread,
+    differential-spread-rates-immune-system,
+    out-fix-attackers,
+  ]
 ---
 
 ## Part 4: Kestrel stress-tests the clearing mechanism at the relevance-gate joint
@@ -25,7 +36,7 @@ Three cases for capture-resistance:
 
 ### Aaron's answer (the moral floor)
 
-> *"'Relevant to useful work in the current culture' means memory and attention are irrudacalbe resources and memory is the minimal property rights in this system. so in a relevalastic frame where cash is not cashed and true raw resources are used every potential morally relevlant actor on the ledger must be treaded in the higest regard, this is my specific oracle the default oracle if not specificed"*
+> _"'Relevant to useful work in the current culture' means memory and attention are irrudacalbe resources and memory is the minimal property rights in this system. so in a relevalastic frame where cash is not cashed and true raw resources are used every potential morally relevlant actor on the ledger must be treaded in the higest regard, this is my specific oracle the default oracle if not specificed"_
 
 Decomposed:
 
@@ -53,7 +64,7 @@ Three adjudication cases:
 
 ### Aaron's federation answer
 
-> *"this is the multi oracle system, each will have it's own ecnomic substructrue and it does not have to use rule 11, that's only the defaut. the oracle federation will just agree to share red team ontologies for protection."*
+> _"this is the multi oracle system, each will have it's own ecnomic substructrue and it does not have to use rule 11, that's only the defaut. the oracle federation will just agree to share red team ontologies for protection."_
 
 Decomposed:
 
@@ -74,7 +85,7 @@ Three sub-cases for threat-catalog governance:
 
 ### Aaron's antigen-spread answer (the critical new architecture)
 
-> *"part of the shared subssrate is red team -> antigen -> spread at network speed withing oracle -> bft speed at cross trust boundaries. we out fix any attackers"*
+> _"part of the shared subssrate is red team -> antigen -> spread at network speed withing oracle -> bft speed at cross trust boundaries. we out fix any attackers"_
 
 This is biological-immune-system architecture, not static-catalog governance:
 
@@ -107,13 +118,13 @@ Three substantive substrate moves:
 
 The conversation arc has now traced capture-resistance through 5 levels:
 
-| Level | Where capture could happen | Aaron's answer |
-|---|---|---|
-| 1. Integration threshold | Function definition | NOT a function — market-emergent |
-| 2. Market clearing | Storage-weighted oracle voting | Past hidden-then-revealed hands + useful-work-relevance |
-| 3. Relevance scoring | Incumbent definition of "relevant" | Moral floor: memory + attention as irreducible resources |
-| 4. Moral adjudication | Single adjudicator capture | Multi-oracle federation; Constraint 11 is DEFAULT not REQUIRED |
-| 5. Shared threat catalog | Static governance capture | Red-team → antigen → differential-spread (immune system) |
+| Level                    | Where capture could happen         | Aaron's answer                                                 |
+| ------------------------ | ---------------------------------- | -------------------------------------------------------------- |
+| 1. Integration threshold | Function definition                | NOT a function — market-emergent                               |
+| 2. Market clearing       | Storage-weighted oracle voting     | Past hidden-then-revealed hands + useful-work-relevance        |
+| 3. Relevance scoring     | Incumbent definition of "relevant" | Moral floor: memory + attention as irreducible resources       |
+| 4. Moral adjudication    | Single adjudicator capture         | Multi-oracle federation; Constraint 11 is DEFAULT not REQUIRED |
+| 5. Shared threat catalog | Static governance capture          | Red-team → antigen → differential-spread (immune system)       |
 
 Each level moves capture-resistance to its most defensible location. The final resting place — antigen-propagation with differential spread rates — is a known biological design pattern that's been stress-tested over evolutionary time. It's tractable.
 

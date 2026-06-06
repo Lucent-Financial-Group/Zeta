@@ -23,7 +23,7 @@ Critical substrate landings:
    - B-0841 = productize deep guides
    - B-0842 = readout math
    - B-0843 = provenance + payment graph
-2. **Final product positioning** — *"Deep guides with receipts, lineage, and creator-paid attribution"*
+2. **Final product positioning** — _"Deep guides with receipts, lineage, and creator-paid attribution"_
 3. **Ratification of DV2.0/dbt-style compression** — the substrate-engineering shape:
    - sources = hubs
    - source events / usages = satellites
@@ -112,10 +112,10 @@ Critical substrate landings:
 
 Amara's three-row crystallization IS substrate-engineering compression of the substrate landed today:
 
-| Row | Function | Operational substrate |
-| --- | --- | --- |
-| **B-0841** | Productize deep guides | Phases 1-4 (catalog + generalize + browser-extension + monetization) |
-| **B-0842** | Readout math | Universal basis-decomposition pattern `Σ ωᵢ sᵢ(t) ≈ y(t)` operating across 5 application domains |
+| Row        | Function                   | Operational substrate                                                                                             |
+| ---------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **B-0841** | Productize deep guides     | Phases 1-4 (catalog + generalize + browser-extension + monetization)                                              |
+| **B-0842** | Readout math               | Universal basis-decomposition pattern `Σ ωᵢ sᵢ(t) ≈ y(t)` operating across 5 application domains                  |
 | **B-0843** | Provenance + payment graph | DV2.0/dbt-style + Source Honor Ledger + 5-rights-lane + network-effect distribution + competitive-differentiation |
 
 These three rows together define the product. NOT just three separate rows — the product trinity.

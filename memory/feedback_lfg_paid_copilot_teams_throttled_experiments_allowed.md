@@ -9,7 +9,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 AceHack cannot provide**, not a forbidden paid surface. The
 routine-work rule stays: day-to-day PRs target AceHack
 (free CI, free Copilot) and bulk-sync every ~10 PRs to LFG.
-*In parallel* the factory may run **LFG-only experiments**
+_In parallel_ the factory may run **LFG-only experiments**
 at a slower cadence (**not every round**) against Copilot
 Business features, Teams plan capabilities, and anything else
 not available on the free tier.
@@ -54,16 +54,16 @@ not available on the free tier.
 - Actions billing endpoint requires `admin:org` scope; the
   authenticated token does not currently carry it. Free-credit
   burn monitoring via gh CLI needs `gh auth refresh -h
-  github.com -s admin:org` first.
+github.com -s admin:org` first.
 
 **Four permission classes on LFG settings:**
 
-| Class | Permission | Examples |
-|---|---|---|
-| Free to change | Standing permission, no ask | Branch rulesets, action permissions, secret-scanning, Dependabot config, Copilot model choice, merge-queue, workflow permissions, Discussions/Projects toggles |
-| Needs ask | Change requires Aaron confirm | Anything touching billing-plan tier, seat count, visibility of private-by-default content, legal-facing settings (verified-domains etc.) |
-| Forbidden | Never change without renegotiation | The **$0 budget cap** (load-bearing cost-stop; if raised the build can cost real money); **Aaron's personal info** (email, 2FA, payment methods, SSH keys, account settings) |
-| Agent-scope | Agent controls these by default | Agent's own GitHub identity, agent-owned workflow files, `.github/` config declared in-repo |
+| Class          | Permission                         | Examples                                                                                                                                                                     |
+| -------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Free to change | Standing permission, no ask        | Branch rulesets, action permissions, secret-scanning, Dependabot config, Copilot model choice, merge-queue, workflow permissions, Discussions/Projects toggles               |
+| Needs ask      | Change requires Aaron confirm      | Anything touching billing-plan tier, seat count, visibility of private-by-default content, legal-facing settings (verified-domains etc.)                                     |
+| Forbidden      | Never change without renegotiation | The **$0 budget cap** (load-bearing cost-stop; if raised the build can cost real money); **Aaron's personal info** (email, 2FA, payment methods, SSH keys, account settings) |
+| Agent-scope    | Agent controls these by default    | Agent's own GitHub identity, agent-owned workflow files, `.github/` config declared in-repo                                                                                  |
 
 **How to apply:**
 
@@ -115,34 +115,33 @@ not available on the free tier.
    starts failing" as the late-warning signal.
 
 7. **Enterprise upgrade — two independent triggers.**
-
    - **Trigger A: capability-driven (original).** Aaron
-     2026-04-22: *"if there are you find it useful over
+     2026-04-22: _"if there are you find it useful over
      there and want more time, i can upgrade to the
      enterprise plan but **only if** it's enough stuff
      you can do only over there we end up with a large
-     backlog."* An LFG-only backlog of ≥10 meaningful
+     backlog."_ An LFG-only backlog of ≥10 meaningful
      items that can't be done on AceHack. Below that
      threshold, no upgrade request on capability grounds.
 
    - **Trigger B: credit-exhaustion escape valve (added
      2026-04-22 during three-repo-split Stage 1 gate
-     work).** Aaron: *"If i need more credits i can buy
-     enterprise."* Enterprise is available as an
-     *upgrade-to-continue* path when free-tier credit
+     work).** Aaron: _"If i need more credits i can buy
+     enterprise."_ Enterprise is available as an
+     _upgrade-to-continue_ path when free-tier credit
      exhaustion would block load-bearing work. This is an
      Aaron decision triggered by evidence-based burn
      projection (see
      `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
      §Blockers + `docs/budget-history/README.md`). The
-     factory's job is to *project the burn* against
+     factory's job is to _project the burn_ against
      remaining free-tier runway so Aaron's upgrade call
      is evidence-driven, not surprise-driven.
 
    The two triggers are independent and compose: Trigger A
-   answers *"is it worth upgrading for new capabilities?"*;
-   Trigger B answers *"is it worth upgrading to avoid
-   pausing current work?"*. Both resolve to Aaron-decision.
+   answers _"is it worth upgrading for new capabilities?"_;
+   Trigger B answers _"is it worth upgrading to avoid
+   pausing current work?"_. Both resolve to Aaron-decision.
    The factory never initiates an upgrade; it only
    surfaces the evidence that would prompt the decision.
 

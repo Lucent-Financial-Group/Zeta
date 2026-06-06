@@ -406,9 +406,7 @@ export function main(argv: readonly string[]): 0 | 1 | 64 {
     }
   }
 
-  const shards = args.files
-    ? args.files.map((f) => resolve(f))
-    : walkShards(SHARD_DIR);
+  const shards = args.files ? args.files.map((f) => resolve(f)) : walkShards(SHARD_DIR);
 
   if (shards.length === 0) {
     if (args.files) {
@@ -438,17 +436,25 @@ export function main(argv: readonly string[]): 0 | 1 | 64 {
   }
 
   if (args.json) {
-    process.stdout.write(JSON.stringify({
-      shardsScanned: shards.length,
-      findings,
-      newFindings,
-      baselineMatched,
-      baselineLoaded: baseline.length,
-    }, null, 2) + "\n");
+    process.stdout.write(
+      JSON.stringify(
+        {
+          shardsScanned: shards.length,
+          findings,
+          newFindings,
+          baselineMatched,
+          baselineLoaded: baseline.length,
+        },
+        null,
+        2,
+      ) + "\n",
+    );
   } else if (findings.length === 0) {
     process.stdout.write(`ok: scanned ${shards.length} tick shards; 0 broken relative-path links\n`);
   } else if (args.baseline) {
-    process.stdout.write(`scanned ${shards.length} tick shards; ${findings.length} broken relative-path links (${baselineMatched.length} grandfathered by baseline, ${newFindings.length} new):\n\n`);
+    process.stdout.write(
+      `scanned ${shards.length} tick shards; ${findings.length} broken relative-path links (${baselineMatched.length} grandfathered by baseline, ${newFindings.length} new):\n\n`,
+    );
     if (newFindings.length > 0) {
       process.stdout.write("NEW findings (not in baseline):\n");
       for (const f of newFindings) {

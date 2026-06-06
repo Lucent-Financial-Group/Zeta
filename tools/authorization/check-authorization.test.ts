@@ -2,11 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  checkAuthorization,
-  formatInterpretation,
-  formatShardField,
-} from "./check-authorization.ts";
+import { checkAuthorization, formatInterpretation, formatShardField } from "./check-authorization.ts";
 
 function makeTempRoot(): string {
   const root = mkdtempSync(join(tmpdir(), "auth-check-"));
@@ -148,8 +144,7 @@ describe("formatInterpretation", () => {
       queriedAt: "2026-05-08T12:00:00Z",
       result: {
         operative: null,
-        reason:
-          "no operative pace authorization found; default to never-idle floor per CLAUDE.md",
+        reason: "no operative pace authorization found; default to never-idle floor per CLAUDE.md",
         allCandidates: [],
         filteredOut: [],
       },

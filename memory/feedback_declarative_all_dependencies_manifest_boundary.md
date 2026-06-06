@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 — every dependency lives in a manifest (Director
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule.** Every dependency used by any part of the factory (CI,
 dev laptop, devcontainer, runtime) lives in a manifest file that
 a scanner or bot can parse. No inline `pip install <pkg>`,
@@ -13,9 +14,9 @@ block unless that step is explicitly pulling from a manifest
 (e.g. `pip install -r requirements.txt`,
 `npm ci`).
 
-Aaron's exact words (2026-04-22): *"declartive seems like a good
+Aaron's exact words (2026-04-22): _"declartive seems like a good
 decision now for all dependencies anything outside a manifest is
-unenforced."*
+unenforced."_
 
 **Why.** Dependabot, OSV-Scanner, `dotnet list package --vulnerable`,
 and every other automated dependency auditor keys on **manifest
@@ -23,10 +24,11 @@ files**. A shell string like `pip install semgrep` or
 `npm install -g markdownlint-cli2@0.18.1` is a string the
 scanner cannot read — it's invisible to the declarative-update
 pipeline even when it pins an exact version. Worse, the SHA-pin
-+ content-review policy from
-`docs/security/SUPPLY-CHAIN-SAFE-PATTERNS.md` cannot be applied
-to something that never enters a manifest because there is no
-pin surface to review in the first place.
+
+- content-review policy from
+  `docs/security/SUPPLY-CHAIN-SAFE-PATTERNS.md` cannot be applied
+  to something that never enters a manifest because there is no
+  pin surface to review in the first place.
 
 Aaron's principle generalises the content-review-is-load-bearing
 rule: the manifest is where review lands, so anything bypassing
@@ -74,7 +76,7 @@ shipped) precisely because the pip dep was invisible.
     but runner-version pins cover it).
   - Any `curl | bash` that isn't routed through a
     `tools/setup/manifests/` entry.
-  Every hit is a BACKLOG row or an in-flight fix.
+    Every hit is a BACKLOG row or an in-flight fix.
 
 - **Dependabot.yml mirrors the manifest inventory.** Every
   ecosystem we manifest gets a Dependabot block pointed at the
@@ -91,12 +93,12 @@ shipped) precisely because the pip dep was invisible.
   2. A BACKLOG row tracking when it moves into a manifest.
   3. Content-review notes per
      `feedback_download_scripts_validate_contents_before_executing`.
-  Default: no exception. The friction is the enforcement.
+     Default: no exception. The friction is the enforcement.
 
 - **Shipped vs factory hygiene (per
   `feedback_shipped_hygiene_visible_to_project_under_construction`).**
   This rule applies to the **factory** itself (Zeta's CI and
-  dev-setup). It is also a *shipped* rule in the sense that
+  dev-setup). It is also a _shipped_ rule in the sense that
   downstream projects adopting the factory inherit the same
   enforcement boundary — a factory whose own CI violates its
   declarative-manifest policy ships a bad template.
@@ -112,6 +114,7 @@ shipped) precisely because the pip dep was invisible.
   residual-risk for this class.
 
 **Related memories.**
+
 - `feedback_download_scripts_validate_contents_before_executing`
   — the content-review half of the same posture. Review is the
   load-bearing step; manifests are where review lands.
@@ -127,11 +130,12 @@ shipped) precisely because the pip dep was invisible.
   — scope note; applies factory-wide.
 
 **Landed this round (evidence pin).** Round 44:
+
 - **Initial landing (reverted mid-round):** created
   `tools/ci/requirements.txt` (semgrep==1.160.0) + added a `pip`
   block to `.github/dependabot.yml` pointing at `/tools/ci`.
-  Aaron caught this as a canonical-home mistake: *"why don't we
-  run semgrep that is part of our build machine setup?"* — there
+  Aaron caught this as a canonical-home mistake: _"why don't we
+  run semgrep that is part of our build machine setup?"_ — there
   was already `tools/setup/manifests/uv-tools` installed by
   `common/python-tools.sh` that was the correct home. Pivoted
   the same turn.
@@ -147,7 +151,7 @@ shipped) precisely because the pip dep was invisible.
     only; header comment explains why the uv-tools manifest is
     intentionally not Dependabot-tracked.
   - `.github/workflows/gate.yml` gained a new `lint (dotnet
-    vulnerable)` job enforcing the NuGet manifest against the
+vulnerable)` job enforcing the NuGet manifest against the
     NuGet vulnerability feed.
   - BACKLOG row added: "uv-tools manifest drift scan (round 44
     pivot compensator)" — because uv-tools is not a Dependabot
@@ -159,7 +163,7 @@ shipped) precisely because the pip dep was invisible.
 
 **Pivot lesson (meta, round 44).** The enforcement boundary is
 the manifest, but "which manifest" is a placement question: new
-dep → survey existing manifest homes *before* introducing a new
+dep → survey existing manifest homes _before_ introducing a new
 file. Parallel manifests for the same category (e.g.
 `tools/ci/requirements.txt` alongside
 `tools/setup/manifests/uv-tools`) are worse than the shell-string

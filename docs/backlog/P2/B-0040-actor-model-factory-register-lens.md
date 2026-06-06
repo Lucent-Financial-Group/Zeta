@@ -9,17 +9,34 @@ ask: Aaron 2026-04-21 — research track on whether the actor model's vocabulary
 created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
-composes_with: [project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md, feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md, B-0038, B-0251]
-tags: [actor-model, vocabulary-as-lens, hewitt, meijer, akka, orleans, service-fabric, async-agentic, no-bottlenecks, research-grade]
+composes_with:
+  [
+    project_factory_positioning_fully_asynchronous_agentic_ai_aaron_2026_04_21.md,
+    feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md,
+    B-0038,
+    B-0251,
+  ]
+tags:
+  [
+    actor-model,
+    vocabulary-as-lens,
+    hewitt,
+    meijer,
+    akka,
+    orleans,
+    service-fabric,
+    async-agentic,
+    no-bottlenecks,
+    research-grade,
+  ]
 type: friction-reducer
-
 ---
 
 # B-0040 — Actor model as factory-register lens
 
 ## Origin
 
-AceHack commit `8e66e44` (2026-04-21). Filed alongside the superfluid + persistable* + shape-shifter substrate-property cluster as the next-layer-up question: does actor-model vocabulary apply to factory coordination?
+AceHack commit `8e66e44` (2026-04-21). Filed alongside the superfluid + persistable\* + shape-shifter substrate-property cluster as the next-layer-up question: does actor-model vocabulary apply to factory coordination?
 
 ## Scope
 
@@ -59,7 +76,7 @@ Workshop paper on agent-orchestration-patterns-borrowing-from-actor-model.
 
 - `docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md` —
   comprehensive prior-art catalog covering scope items (a)–(f); already exists.
-- Related backlog: B-0038 (superfluid/persistable* cluster), B-0251 (durable-computation-
+- Related backlog: B-0038 (superfluid/persistable\* cluster), B-0251 (durable-computation-
   stack incl. Orleans), B-0253 (realtime-interloop-messaging via Orleans grains), B-0254
   (infernet probabilistic triangulation).
 - No existing skill or memory covers the applicability-assessment + vocab-crossing +

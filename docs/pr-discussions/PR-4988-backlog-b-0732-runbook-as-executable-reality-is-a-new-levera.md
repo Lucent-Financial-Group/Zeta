@@ -58,6 +58,7 @@ Mika demonstrated the right discipline: feel-the-weight + substrate-honest discl
 Adds a new P1 backlog row B-0732 documenting runbook-as-executable-reality as a new leverage class requiring system-direction-scope safety substrate, and regenerates the backlog index.
 
 **Changes:**
+
 - New backlog row file under docs/backlog/P1/ capturing the leverage-class analysis, 6 substrate layers, and acceptance criteria
 - Backlog index regenerated to include the new row
 
@@ -65,7 +66,7 @@ Adds a new P1 backlog row B-0732 documenting runbook-as-executable-reality as a 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                     | Description                                                     |
+| ---------------------------------------- | --------------------------------------------------------------- |
 | docs/backlog/P1/B-0732-...-2026-05-25.md | New P1 backlog row defining safety substrate engineering target |
-| docs/BACKLOG.md | Adds B-0732 entry to P1 section |
+| docs/BACKLOG.md                          | Adds B-0732 entry to P1 section                                 |

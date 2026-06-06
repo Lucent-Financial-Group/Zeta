@@ -90,7 +90,10 @@ test("Cockroach context-pack advisory promotion decision store drops malformed d
 
   const decisions = await store.listForPromotion(request);
 
-  deepEqual(decisions.map((decision) => decision.decisionId), ["decision-good"]);
+  deepEqual(
+    decisions.map((decision) => decision.decisionId),
+    ["decision-good"],
+  );
 });
 
 test("Cockroach context-pack advisory promotion decision store suppresses older approvals after newer revocation", async () => {
@@ -173,12 +176,13 @@ function fakeExecutor(
       statements.push(statement);
       return { rows: rows as Row[] };
     },
-    executeTransaction: async (operation) => await operation({
-      execute: async <Row = Record<string, unknown>>(statement: CockroachAnySqlStatement) => {
-        statements.push(statement);
-        return { rows: rows as Row[] };
-      },
-    }),
+    executeTransaction: async (operation) =>
+      await operation({
+        execute: async <Row = Record<string, unknown>>(statement: CockroachAnySqlStatement) => {
+          statements.push(statement);
+          return { rows: rows as Row[] };
+        },
+      }),
   };
 }
 
@@ -210,7 +214,8 @@ function writeDecisionInput(input: {
 }): ContextPackAdvisoryPromotionDecisionWriteInput {
   return {
     decisionId: "decision-promote-owner-gap",
-    decisionKey: "org-lfg:engineering_director:99:project-billing:team-platform:work-billing:management_blocker:synthesis_gap_hypothesis:" +
+    decisionKey:
+      "org-lfg:engineering_director:99:project-billing:team-platform:work-billing:management_blocker:synthesis_gap_hypothesis:" +
       input.fingerprint.summaryHash,
     organizationId: "org-lfg",
     status: ContextPackAdvisoryPromotionDecisionStatus.Approved,
@@ -285,26 +290,30 @@ function promotionRequest(): ContextPackAdvisoryPromotionPolicyRequest {
       },
     },
     deterministicItems: [],
-    advisoryItems: [{
-      id: "synthesis:engineering_director:42:99:gap:0",
-      kind: ContextPackItemKind.SynthesisGapHypothesis,
-      title: "Gap hypothesis",
-      summary: "Ownership evidence may be missing.",
-      sourceRef: "synthesis:engineering_director:42:gap:0",
-      required: false,
-      freshness: ContextPackFreshness.Live,
-      confidence: 0.9,
-      reasons: ["gap_hypothesis"],
-      citationRefs: ["doc:billing-brd", "context_requirement:owner"],
-      sourcePointers: [{
-        kind: ContextPackSourcePointerKind.DocUnit,
-        docUnitId: "billing-brd",
-        contentRef: "git://docs/billing.md",
-        contentHash: "hash",
-        sourceId: "source-main",
-        version: 1,
-      }],
-    }],
+    advisoryItems: [
+      {
+        id: "synthesis:engineering_director:42:99:gap:0",
+        kind: ContextPackItemKind.SynthesisGapHypothesis,
+        title: "Gap hypothesis",
+        summary: "Ownership evidence may be missing.",
+        sourceRef: "synthesis:engineering_director:42:gap:0",
+        required: false,
+        freshness: ContextPackFreshness.Live,
+        confidence: 0.9,
+        reasons: ["gap_hypothesis"],
+        citationRefs: ["doc:billing-brd", "context_requirement:owner"],
+        sourcePointers: [
+          {
+            kind: ContextPackSourcePointerKind.DocUnit,
+            docUnitId: "billing-brd",
+            contentRef: "git://docs/billing.md",
+            contentHash: "hash",
+            sourceId: "source-main",
+            version: 1,
+          },
+        ],
+      },
+    ],
     omissions: [],
     curationPlan: {
       profileId: ContextPackCurationProfileId.ManagementBlocker,

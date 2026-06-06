@@ -26,23 +26,23 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       # Install dispatcher + per-OS scripts + shared library
-      - 'tools/setup/**'
+      - "tools/setup/**"
       # Pinned runtime versions read by tools/setup/common/mise.sh
-      - '.mise.toml'
+      - ".mise.toml"
       # NixOS module that declares system-packages including mise +
       # bun-derived PATH (zeta-install.sh Step 6.95 reads from here
       # transitively via the systemd unit's Environment block)
-      - 'full-ai-cluster/nixos/modules/common.nix'
+      - "full-ai-cluster/nixos/modules/common.nix"
       # The Docker harness itself
-      - 'tools/ci/dockerfiles/nixos-install-sh-test/**'
-      - 'tools/ci/docker-nixos-install-sh-test.ts'
+      - "tools/ci/dockerfiles/nixos-install-sh-test/**"
+      - "tools/ci/docker-nixos-install-sh-test.ts"
       # .dockerignore affects build context for ALL docker builds
-      - '.dockerignore'
+      - ".dockerignore"
       # bun deps + lockfile (used by the TS wrapper)
-      - 'package.json'
-      - 'bun.lock'
+      - "package.json"
+      - "bun.lock"
       # This workflow file itself
-      - '.github/workflows/docker-nixos-install-sh-test.yml'
+      - ".github/workflows/docker-nixos-install-sh-test.yml"
 
   push:
     branches:
@@ -54,15 +54,15 @@ on:
       # only re-validated at harvest time.
       - accelerator/pr-less-git-monster
     paths:
-      - 'tools/setup/**'
-      - '.mise.toml'
-      - 'full-ai-cluster/nixos/modules/common.nix'
-      - 'tools/ci/dockerfiles/nixos-install-sh-test/**'
-      - 'tools/ci/docker-nixos-install-sh-test.ts'
-      - '.dockerignore'
-      - 'package.json'
-      - 'bun.lock'
-      - '.github/workflows/docker-nixos-install-sh-test.yml'
+      - "tools/setup/**"
+      - ".mise.toml"
+      - "full-ai-cluster/nixos/modules/common.nix"
+      - "tools/ci/dockerfiles/nixos-install-sh-test/**"
+      - "tools/ci/docker-nixos-install-sh-test.ts"
+      - ".dockerignore"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/docker-nixos-install-sh-test.yml"
 
   workflow_dispatch:
 
@@ -102,11 +102,11 @@ jobs:
           # Cold-cache install.sh can take longer than the 600s default
           # (mise install + bun install + claude-code download + gh
           # nix-shell + ~50 mise-tool installs); bump to 900s.
-          DOCKER_BUILD_TIMEOUT_SEC: '900'
+          DOCKER_BUILD_TIMEOUT_SEC: "900"
           # mise.sh promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN (authenticated GitHub API,
           # no 403); the driver passes it into the build as a BuildKit secret. BuildKit on.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCKER_BUILDKIT: '1'
+          DOCKER_BUILDKIT: "1"
         run: bun tools/ci/docker-nixos-install-sh-test.ts
 
       - name: Upload Docker test log (always)

@@ -61,9 +61,7 @@ describe("createNodeFileBackedZflashImageExecutor", () => {
       args: ["-o", "-i", "image.img@@1048576", "src", "::/zeta-hostname.txt"],
     });
 
-    expect(calls).toEqual([
-      "mcopy -o -i image.img@@1048576 src ::/zeta-hostname.txt utf8 ignore,pipe,pipe",
-    ]);
+    expect(calls).toEqual(["mcopy -o -i image.img@@1048576 src ::/zeta-hostname.txt utf8 ignore,pipe,pipe"]);
     expect(result).toEqual({
       exitCode: 7,
       stderr: "copy failed",

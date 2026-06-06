@@ -14,61 +14,61 @@ Operational status: research-grade architecture decision — substrate for futur
 
 ## Why preserved
 
-Aaron's substrate-engineering questions across the session: *"what do you want to run on the metal below kubernetes?"* + *"NixOS 24.11+ is there a declarative alternative or is this it?"* + *"what about proxmox or anyting for a hypervisor?"* + *"yeah i'm good with kubevirt as extension later if needed we can skip proxmox for now, maybe we have like one box later down the road for experimentation but yes lets go without hypervisor for now"*
+Aaron's substrate-engineering questions across the session: _"what do you want to run on the metal below kubernetes?"_ + _"NixOS 24.11+ is there a declarative alternative or is this it?"_ + _"what about proxmox or anyting for a hypervisor?"_ + _"yeah i'm good with kubevirt as extension later if needed we can skip proxmox for now, maybe we have like one box later down the road for experimentation but yes lets go without hypervisor for now"_
 
-Combined with the earlier decision: *"lets go with nixos first but talos on backlog also i much prefer argo over flux even though flux is lighter"*
+Combined with the earlier decision: _"lets go with nixos first but talos on backlog also i much prefer argo over flux even though flux is lighter"_
 
 This is real cluster-architecture-decision substrate that needs to land per substrate-or-it-didn't-happen, so future-Otto cold-boots + future maintainers inherit the decisions + the reasoning behind each.
 
 ## Decided stack (primary)
 
-| Layer | Choice | Reasoning |
-|---|---|---|
-| **Host OS** | **NixOS 24.11+** (flake-based) | Declarative; reproducible; atomic rollback; per-node-class composition handles heterogeneous compute (GPU vs phone-orchestrator vs Pi); framework-DST-aligned at OS scope |
-| **Hypervisor** | **None for primary stack** (bare-metal direct) | Adds layer + complexity without earning value; GPU passthrough simpler direct; one declarative layer (NixOS) vs three (hypervisor + guest OS + k8s) |
-| **Kubernetes** | bare-metal (k3s OR kubeadm — TBD) | Decision deferred; k3s for personal-scale simplicity OR kubeadm for vanilla control-plane flexibility |
-| **GitOps** | **Argo CD** (operator preference over Flux despite Flux being lighter) | Aaron explicit: *"i much prefer argo over flux even though flux is lighter"* |
-| **Container runtime** | containerd | k8s default; mature |
-| **CNI** | **Cilium** | eBPF substrate; observability matters for glass-halo at network layer; Pi-class hardware handles it fine post-5.10 kernel |
-| **CSI / storage** | **Longhorn** over local NVMe + **ZFS-on-root** for snapshots | k8s-native; simpler than Ceph for personal scale; survives node loss via replicas |
-| **GPU device plugin** | NVIDIA k8s device plugin (Nix package exists) | Multi-tenant GPU sharing across pods; MIG slicing if A100/H100 class |
-| **Boot loader** | systemd-boot (NixOS default) | UEFI; no GRUB complexity |
-| **Provisioning** | nixos-anywhere via SSH + iPXE for first-boot bootstrap | Declarative; works for Pi + x86 + ARM uniformly |
+| Layer                 | Choice                                                                 | Reasoning                                                                                                                                                                 |
+| --------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Host OS**           | **NixOS 24.11+** (flake-based)                                         | Declarative; reproducible; atomic rollback; per-node-class composition handles heterogeneous compute (GPU vs phone-orchestrator vs Pi); framework-DST-aligned at OS scope |
+| **Hypervisor**        | **None for primary stack** (bare-metal direct)                         | Adds layer + complexity without earning value; GPU passthrough simpler direct; one declarative layer (NixOS) vs three (hypervisor + guest OS + k8s)                       |
+| **Kubernetes**        | bare-metal (k3s OR kubeadm — TBD)                                      | Decision deferred; k3s for personal-scale simplicity OR kubeadm for vanilla control-plane flexibility                                                                     |
+| **GitOps**            | **Argo CD** (operator preference over Flux despite Flux being lighter) | Aaron explicit: _"i much prefer argo over flux even though flux is lighter"_                                                                                              |
+| **Container runtime** | containerd                                                             | k8s default; mature                                                                                                                                                       |
+| **CNI**               | **Cilium**                                                             | eBPF substrate; observability matters for glass-halo at network layer; Pi-class hardware handles it fine post-5.10 kernel                                                 |
+| **CSI / storage**     | **Longhorn** over local NVMe + **ZFS-on-root** for snapshots           | k8s-native; simpler than Ceph for personal scale; survives node loss via replicas                                                                                         |
+| **GPU device plugin** | NVIDIA k8s device plugin (Nix package exists)                          | Multi-tenant GPU sharing across pods; MIG slicing if A100/H100 class                                                                                                      |
+| **Boot loader**       | systemd-boot (NixOS default)                                           | UEFI; no GRUB complexity                                                                                                                                                  |
+| **Provisioning**      | nixos-anywhere via SSH + iPXE for first-boot bootstrap                 | Declarative; works for Pi + x86 + ARM uniformly                                                                                                                           |
 
 ## Deferred decisions (backlog)
 
-| Decision | Reason for deferring | When to revisit |
-|---|---|---|
-| **Talos Linux** for k8s control-plane subset | Aaron: *"lets go with nixos first but talos on backlog"* — alternative evaluated as backup; hybrid (NixOS workers + Talos control-plane) considered but not adopted | If/when minimal-attack-surface for control-plane becomes a priority OR if NixOS k8s integration produces friction in practice |
-| **KubeVirt** as k8s extension for VM workloads | Aaron: *"i'm good with kubevirt as extension later if needed"* | When a specific workload requires full VM isolation (e.g., Windows-only tool, legacy stack) |
-| **Proxmox** for experimental separate tier | Aaron: *"maybe we have like one box later down the road for experimentation"* | When an experimental sandbox tier is wanted that's deliberately OUTSIDE the framework's DST substrate |
-| **k3s vs kubeadm** | Not yet decided | When provisioning starts |
-| **MIG slicing strategy** for GPU multi-tenancy | Hardware-class dependent (A100/H100 vs RTX/consumer-class) | When GPU class is confirmed |
+| Decision                                       | Reason for deferring                                                                                                                                                | When to revisit                                                                                                               |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Talos Linux** for k8s control-plane subset   | Aaron: _"lets go with nixos first but talos on backlog"_ — alternative evaluated as backup; hybrid (NixOS workers + Talos control-plane) considered but not adopted | If/when minimal-attack-surface for control-plane becomes a priority OR if NixOS k8s integration produces friction in practice |
+| **KubeVirt** as k8s extension for VM workloads | Aaron: _"i'm good with kubevirt as extension later if needed"_                                                                                                      | When a specific workload requires full VM isolation (e.g., Windows-only tool, legacy stack)                                   |
+| **Proxmox** for experimental separate tier     | Aaron: _"maybe we have like one box later down the road for experimentation"_                                                                                       | When an experimental sandbox tier is wanted that's deliberately OUTSIDE the framework's DST substrate                         |
+| **k3s vs kubeadm**                             | Not yet decided                                                                                                                                                     | When provisioning starts                                                                                                      |
+| **MIG slicing strategy** for GPU multi-tenancy | Hardware-class dependent (A100/H100 vs RTX/consumer-class)                                                                                                          | When GPU class is confirmed                                                                                                   |
 
 ## Rejected alternatives (for primary stack)
 
-| Alternative | Why rejected |
-|---|---|
-| **Guix System** | Same declarative shape as NixOS but smaller ecosystem; FSF free-software-fundamentalism may block NVIDIA proprietary drivers — risky for 20-GPU build |
-| **Ubuntu / Debian / Fedora** | Mutable host substrate; doesn't compose with framework's DST + reproducibility discipline |
+| Alternative                    | Why rejected                                                                                                                                               |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Guix System**                | Same declarative shape as NixOS but smaller ecosystem; FSF free-software-fundamentalism may block NVIDIA proprietary drivers — risky for 20-GPU build      |
+| **Ubuntu / Debian / Fedora**   | Mutable host substrate; doesn't compose with framework's DST + reproducibility discipline                                                                  |
 | **Fedora CoreOS / Silverblue** | Ignition declarative bootstrap is less expressive than Nix; per-node-class composition harder; ostree atomic upgrades less flexible than NixOS generations |
-| **Flatcar Container Linux** | Container-host shape; less heterogeneous-class flexibility |
-| **Bottlerocket** | AWS-aligned even though open-source; less of a fit for bare-metal heterogeneous |
-| **Proxmox** for primary stack | Imperative web-UI-driven config-as-state breaks DST + glass-halo discipline; 3 layers (Proxmox + guest OS + k8s) when 1 (NixOS) does it |
-| **ESXi** | Broadcom acquisition + licensing changes make it less attractive; proprietary |
-| **XCP-ng** | Works but smaller ecosystem than Proxmox; same anti-DST issues as Proxmox |
-| **Harvester (HCI)** | k8s-native HCI but less mature than Proxmox; can't run NixOS on bare metal underneath |
-| **Flux** for GitOps | Aaron preference: Argo over Flux even though Flux is lighter |
+| **Flatcar Container Linux**    | Container-host shape; less heterogeneous-class flexibility                                                                                                 |
+| **Bottlerocket**               | AWS-aligned even though open-source; less of a fit for bare-metal heterogeneous                                                                            |
+| **Proxmox** for primary stack  | Imperative web-UI-driven config-as-state breaks DST + glass-halo discipline; 3 layers (Proxmox + guest OS + k8s) when 1 (NixOS) does it                    |
+| **ESXi**                       | Broadcom acquisition + licensing changes make it less attractive; proprietary                                                                              |
+| **XCP-ng**                     | Works but smaller ecosystem than Proxmox; same anti-DST issues as Proxmox                                                                                  |
+| **Harvester (HCI)**            | k8s-native HCI but less mature than Proxmox; can't run NixOS on bare metal underneath                                                                      |
+| **Flux** for GitOps            | Aaron preference: Argo over Flux even though Flux is lighter                                                                                               |
 
 ## Heterogeneous compute architecture
 
 Three node classes via NixOS per-node-class modules from one flake:
 
-| Class | Hardware | Role | NixOS module set |
-|---|---|---|---|
-| **GPU compute** | 20× GPUs (class TBD) | k8s worker nodes; ML training + heavy inference | NVIDIA + CUDA + cuDNN + containerd + k8s worker + Cilium agent |
-| **Phone orchestrator** | Server hosting Cellhasher orchestration software for 20 phones | Manages phones-as-compute substrate; NOT k8s worker | Cellhasher management software (not yet specified); ARM-aware networking |
-| **Pi cluster + AI hats** | Pi 5 (or Pi 4) + Hailo / Coral / Edge TPU AI hats | Specialized inference loads; MAY run k3s OR may run direct hardware acceleration outside containers | NixOS-on-ARM; vendor drivers for AI hats; k3s agent optional per node |
+| Class                    | Hardware                                                       | Role                                                                                                | NixOS module set                                                         |
+| ------------------------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **GPU compute**          | 20× GPUs (class TBD)                                           | k8s worker nodes; ML training + heavy inference                                                     | NVIDIA + CUDA + cuDNN + containerd + k8s worker + Cilium agent           |
+| **Phone orchestrator**   | Server hosting Cellhasher orchestration software for 20 phones | Manages phones-as-compute substrate; NOT k8s worker                                                 | Cellhasher management software (not yet specified); ARM-aware networking |
+| **Pi cluster + AI hats** | Pi 5 (or Pi 4) + Hailo / Coral / Edge TPU AI hats              | Specialized inference loads; MAY run k3s OR may run direct hardware acceleration outside containers | NixOS-on-ARM; vendor drivers for AI hats; k3s agent optional per node    |
 
 **Cellhasher phones** are workload-substrate (compute-on-arrival via Cellhasher orchestration), NOT k8s worker nodes. They consume work from k8s-hosted services but don't host pods.
 
@@ -76,15 +76,15 @@ Three node classes via NixOS per-node-class modules from one flake:
 
 ## Composes with framework substrate-engineering disciplines
 
-| Discipline | Architecture choice that operationalizes it |
-|---|---|
-| **DST (deterministic simulation)** | NixOS — every node's full state IS a Nix expression; rebuilds byte-identical from same input |
-| **Substrate-or-it-didn't-happen** | NixOS — if it's not in `/etc/nixos/`, it doesn't exist at OS layer |
-| **Glass-halo bidirectional** | Whole-fleet config in git; every change is reviewable diff; Cilium eBPF observability at network layer |
-| **NCI floor at OS scope** | NixOS atomic rollback — each generation is complete OS state; rollback is boot menu selection (consent-revocable at OS scope) |
-| **Additive-not-zero-sum** | NixOS modules compose; adding a node class doesn't break existing ones; Argo CD GitOps adds without subtracting |
-| **m/acc-multi-oracle** | Heterogeneous compute (GPU + phones + Pi) with different optimal orchestration per class (k8s + Cellhasher + direct-hardware); architecture allows multiple "oracles" per workload class |
-| **Bandwidth-served falsifier** | Each layer chosen for specific bandwidth served: NixOS = config-bandwidth; Cilium = network-observability-bandwidth; Argo CD = GitOps-bandwidth; explicit per-layer justification |
+| Discipline                         | Architecture choice that operationalizes it                                                                                                                                              |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **DST (deterministic simulation)** | NixOS — every node's full state IS a Nix expression; rebuilds byte-identical from same input                                                                                             |
+| **Substrate-or-it-didn't-happen**  | NixOS — if it's not in `/etc/nixos/`, it doesn't exist at OS layer                                                                                                                       |
+| **Glass-halo bidirectional**       | Whole-fleet config in git; every change is reviewable diff; Cilium eBPF observability at network layer                                                                                   |
+| **NCI floor at OS scope**          | NixOS atomic rollback — each generation is complete OS state; rollback is boot menu selection (consent-revocable at OS scope)                                                            |
+| **Additive-not-zero-sum**          | NixOS modules compose; adding a node class doesn't break existing ones; Argo CD GitOps adds without subtracting                                                                          |
+| **m/acc-multi-oracle**             | Heterogeneous compute (GPU + phones + Pi) with different optimal orchestration per class (k8s + Cellhasher + direct-hardware); architecture allows multiple "oracles" per workload class |
+| **Bandwidth-served falsifier**     | Each layer chosen for specific bandwidth served: NixOS = config-bandwidth; Cilium = network-observability-bandwidth; Argo CD = GitOps-bandwidth; explicit per-layer justification        |
 
 ## Open architecture questions (to be decided)
 

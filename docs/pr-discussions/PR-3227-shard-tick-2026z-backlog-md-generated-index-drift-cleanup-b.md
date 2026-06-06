@@ -64,6 +64,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Tick shard file documenting the 2026-05-14T20:26Z autonomous-loop tick. Records the BACKLOG.md index-drift cleanup landed via #3226 and catalogs two new multi-Otto branch-state contamination incidents with their workarounds.
 
 **Changes:**
+
 - Adds a new tick-history file under `docs/hygiene-history/ticks/2026/05/14/` per per-tick discipline
 - Documents the BACKLOG.md drift investigation that surfaced B-0517/B-0518/B-0519 missing from the generated index
 - Captures two new branch-contamination patterns and the `gh pr create --head` defense

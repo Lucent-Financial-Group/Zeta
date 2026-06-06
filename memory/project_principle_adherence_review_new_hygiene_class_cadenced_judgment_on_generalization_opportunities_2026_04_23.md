@@ -31,28 +31,28 @@ prevention-layer meta-audit) even enforces the
 "classification" of each row as prevention-bearing /
 detection-only-justified / detection-only-gap.
 
-Aaron names a **distinct class**: *judgment-based review
+Aaron names a **distinct class**: _judgment-based review
 that sweeps for generalization opportunities of named
-principles*. The review asks not *"did we do X?"* (binary)
-but *"are we applying principle P consistently wherever P
-applies?"* (scope-extension).
+principles_. The review asks not _"did we do X?"_ (binary)
+but _"are we applying principle P consistently wherever P
+applies?"_ (scope-extension).
 
 ## Why this is different from existing hygiene
 
-| Existing hygiene | Principle-adherence review |
-|---|---|
-| Mechanical / verifiable | Judgment-based |
-| Tool emits pass/fail | Agent emits candidate list |
-| Frequency: often (per-build / per-round) | Frequency: lower (every 10-20 rounds per principle) |
-| Output: finding / audit doc | Output: ROUND-HISTORY row + BACKLOG rows per opportunity |
-| Prevents specific regressions | Surfaces application gaps |
-| Covers *rules* | Covers *principles* |
+| Existing hygiene                         | Principle-adherence review                               |
+| ---------------------------------------- | -------------------------------------------------------- |
+| Mechanical / verifiable                  | Judgment-based                                           |
+| Tool emits pass/fail                     | Agent emits candidate list                               |
+| Frequency: often (per-build / per-round) | Frequency: lower (every 10-20 rounds per principle)      |
+| Output: finding / audit doc              | Output: ROUND-HISTORY row + BACKLOG rows per opportunity |
+| Prevents specific regressions            | Surfaces application gaps                                |
+| Covers _rules_                           | Covers _principles_                                      |
 
 The distinction is important because the two classes
 compose differently:
 
 - Mechanical hygiene catches rule-breaks.
-- Principle-adherence review catches *unused-scope*.
+- Principle-adherence review catches _unused-scope_.
 
 You can satisfy every mechanical rule and still miss
 opportunities where a named principle applies but isn't
@@ -87,20 +87,20 @@ is per-candidate downstream work.
 
 From existing session memory:
 
-| Principle | Current scope | Potential generalization review |
-|---|---|---|
-| Git-native, host-neutral | PR review archive, soulfile substrate | CI artifact storage? fire-history transport? skills distribution? |
-| In-repo-first (Option D) | memories migration | research docs? persona notebooks? per-user reference docs? |
-| Samples-vs-production discipline | code samples | docs samples? skill examples? research examples? |
-| Applied-default-theoretical-opt-in | Craft modules | ADRs? research docs? memory files? |
-| Honest-about-error | commit messages | persona notebooks? memories? responses to humans? |
-| Codex-as-substantive-reviewer | PR thread responses | memory reviews? spec reviews? research reviews? |
-| Detect-first-action-second | hygiene audits | security audits? performance audits? skill-tune-up? |
-| Honor-those-that-came-before | retired personas | retired skills? retired BACKLOG rows? retired memories? |
-| Docker-for-reproducibility | multi-agent peer review | devcontainer / demos / benchmarks / Craft / CI |
-| CLI-first-prototyping | multi-agent peer review | any new tooling? new integrations? |
-| Trust-based-approval | PR reviews | memory writes? skill edits? BACKLOG additions? |
-| Split-attention | tick rhythm | parallel work in general? background hygiene + foreground substrate is already named |
+| Principle                          | Current scope                         | Potential generalization review                                                      |
+| ---------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ |
+| Git-native, host-neutral           | PR review archive, soulfile substrate | CI artifact storage? fire-history transport? skills distribution?                    |
+| In-repo-first (Option D)           | memories migration                    | research docs? persona notebooks? per-user reference docs?                           |
+| Samples-vs-production discipline   | code samples                          | docs samples? skill examples? research examples?                                     |
+| Applied-default-theoretical-opt-in | Craft modules                         | ADRs? research docs? memory files?                                                   |
+| Honest-about-error                 | commit messages                       | persona notebooks? memories? responses to humans?                                    |
+| Codex-as-substantive-reviewer      | PR thread responses                   | memory reviews? spec reviews? research reviews?                                      |
+| Detect-first-action-second         | hygiene audits                        | security audits? performance audits? skill-tune-up?                                  |
+| Honor-those-that-came-before       | retired personas                      | retired skills? retired BACKLOG rows? retired memories?                              |
+| Docker-for-reproducibility         | multi-agent peer review               | devcontainer / demos / benchmarks / Craft / CI                                       |
+| CLI-first-prototyping              | multi-agent peer review               | any new tooling? new integrations?                                                   |
+| Trust-based-approval               | PR reviews                            | memory writes? skill edits? BACKLOG additions?                                       |
+| Split-attention                    | tick rhythm                           | parallel work in general? background hygiene + foreground substrate is already named |
 
 The catalogue is **first-pass**; review protocol decides
 cadence + owner + output per principle.
@@ -113,8 +113,8 @@ For each principle:
    memory citation.
 2. **Current scope** — where is the principle currently
    applied (1-2 concrete in-repo / in-memory examples)?
-3. **Sweep** — walk the project asking *"does this
-   principle apply here that we haven't applied it yet?"*
+3. **Sweep** — walk the project asking _"does this
+   principle apply here that we haven't applied it yet?"_
 4. **Candidates** — emit a list with per-candidate
    proposed-action (new BACKLOG row, ADR, skill, doc)
 5. **Surface** — file a ROUND-HISTORY row noting the
@@ -146,14 +146,14 @@ All three likely compose; research decides defaults.
 
 - **FACTORY-HYGIENE row #23** (missing-hygiene-class gap-
   finder) — sibling meta-audit but at a different layer.
-  Row #23 asks *"what hygiene classes don't we run?"*;
-  this row asks *"of principles we already run, where
-  else do they apply?"*
+  Row #23 asks _"what hygiene classes don't we run?"_;
+  this row asks _"of principles we already run, where
+  else do they apply?"_
 - **FACTORY-HYGIENE row #22** (symmetry-opportunities) —
   mirror shape but different discriminator. Symmetry
-  asks about *pair-completion* (A exists, is B's mirror
-  needed?); principle-adherence asks about *scope-
-  extension* (principle P applied here, where else does
+  asks about _pair-completion_ (A exists, is B's mirror
+  needed?); principle-adherence asks about _scope-
+  extension_ (principle P applied here, where else does
   P apply?)
 - **FACTORY-HYGIENE row #41** (orthogonal-axes audit) —
   pairs as meta-audit triad (row #23 existence / row #41

@@ -38,8 +38,8 @@ URLs (mirrors) so a transient outage of one mirror tries the next before degradi
 ## Why deferred (operator 2026-06-01)
 
 Single-URL + cache-fallback is enough for the first remote-registry slice. Mirror/failover
-is a resilience enhancement, not a capability gap. Operator: *"everything we skipped lets
-slice off for further enhancements."*
+is a resilience enhancement, not a capability gap. Operator: _"everything we skipped lets
+slice off for further enhancements."_
 
 ## Composes with
 

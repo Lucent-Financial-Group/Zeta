@@ -37,24 +37,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T01:16:54Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `240cbe7445`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -67,6 +65,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard for 2026-05-25 01:12Z to record dotgit-saturation anchor #16 observations (third consecutive 0-stuck-proc reading) and the concurrent “Lior went idle” snapshot, with cross-links to prior shards and relevant `.claude/rules/*` substrate.
 
 **Changes:**
+
 - Add `0112Z` tick shard capturing observed metrics (PR counts, worktree count, rate limits, proc readings) and anchor-table update.
 - Extend the dotgit-saturation “A/B discrimination” narrative with a third reading and “composes-with” cross-references.
 
@@ -84,7 +83,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-25T01:16:55Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct the inferred new PR IDs**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct the inferred new PR IDs**
 
 This line infers that the two PRs added between 0042Z and 0112Z were `#4890` and `#4891`, but the same shard already states those IDs were part of the unchanged 0042Z non-`lior-*` set; this creates an internal contradiction in the audit record. Because these tick shards are used as substrate for later lane-share and trend analysis, misattributing which PRs were newly introduced can skew downstream reasoning and should be replaced with verified IDs (or left explicitly unknown).
 

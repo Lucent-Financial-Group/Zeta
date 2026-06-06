@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- **Slice**: B-0424.6 — ADR 2026-04-22 checklist item: *"Semgrep rule for GHA inline-untrusted-in-run injection (already landed on Zeta; generalise to Forge + ace)"*
+- **Slice**: B-0424.6 — ADR 2026-04-22 checklist item: _"Semgrep rule for GHA inline-untrusted-in-run injection (already landed on Zeta; generalise to Forge + ace)"_
 - Adds `tools/scaffold/forge/.semgrep.yml` and `tools/scaffold/ace/.semgrep.yml`, each containing the `gha-untrusted-in-run-line` rule (Rule 17 from Zeta's `.semgrep.yml`)
 - Updates `create-repo.ts` step07 manual steps: step 3 is now "wire gate workflow" since the config file is now scaffolded (only CI job wiring deferred to Stage 2)
 - Updates `tools/scaffold/README.md` template tree listing and manual-steps note
@@ -34,6 +34,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Context
 
 B-0424 Stage 1 is the three-repo split scaffold (`LFG/Forge` + `LFG/ace`). Previous slices:
+
 - B-0424.1: pre-start gate + scope decision (scaffold deferred actual creation)
 - B-0424.2: `scaffold-stage1-create-repos.yml` CI dispatch workflow
 - B-0424.3–B-0424.4: governance templates + `create-repo.ts` tool
@@ -54,6 +55,7 @@ operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file
 Adds Semgrep governance to the Stage-1 scaffold templates for the Forge and ace repos, ensuring the GitHub Actions inline-untrusted-in-`run:` injection rule is present from day one and reflected in the scaffold tool/docs.
 
 **Changes:**
+
 - Add `.semgrep.yml` to both `tools/scaffold/forge/` and `tools/scaffold/ace/` containing `gha-untrusted-in-run-line`.
 - Update scaffold docs + `create-repo.ts` step-07 manual steps to reflect that only CI wiring remains manual (Stage 2).
 - Extend the existing dry-run tests to assert `.semgrep.yml` is included in the scaffolded file set.
@@ -65,13 +67,14 @@ Copilot reviewed 5 out of 6 changed files in this pull request and generated 2 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| tools/scaffold/README.md | Updates template tree listing and manual-step guidance to include Semgrep wiring. |
-| tools/scaffold/forge/.semgrep.yml | Adds Forge Semgrep config with the GHA injection rule. |
-| tools/scaffold/ace/.semgrep.yml | Adds ace Semgrep config with the same GHA injection rule. |
-| tools/scaffold/create-repo.ts | Adjusts step-07 manual steps to “wire gate workflow” now that `.semgrep.yml` is scaffolded. |
-| tools/scaffold/create-repo.test.ts | Adds assertions that `.semgrep.yml` is present in step-06 planned scaffold files. |
+| File                               | Description                                                                                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| tools/scaffold/README.md           | Updates template tree listing and manual-step guidance to include Semgrep wiring.           |
+| tools/scaffold/forge/.semgrep.yml  | Adds Forge Semgrep config with the GHA injection rule.                                      |
+| tools/scaffold/ace/.semgrep.yml    | Adds ace Semgrep config with the same GHA injection rule.                                   |
+| tools/scaffold/create-repo.ts      | Adjusts step-07 manual steps to “wire gate workflow” now that `.semgrep.yml` is scaffolded. |
+| tools/scaffold/create-repo.test.ts | Adds assertions that `.semgrep.yml` is present in step-06 planned scaffold files.           |
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-13T20:31:15Z)

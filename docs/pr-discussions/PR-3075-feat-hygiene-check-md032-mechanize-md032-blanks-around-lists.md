@@ -39,7 +39,7 @@ Recognises:
 - **YAML front matter**: skipped per markdownlint behavior
 - **Markdownlint-cli2 ignore globs**: applied via JSONC parse
 - **Lazy unindented list-item paragraph continuations**: don't end the list
-- **Thematic break (`---`, `***`, `___`)**: terminates list
+- **Thematic break (`---`, `\***`, `\_\_\_`)\*\*: terminates list
 - **Blockquote-line after top-level list**: terminates list (continues blockquoted list)
 - **MD032 after-list side**: heading / thematic break / fence / blockquote directly after a list (no blank) fires MD032 too
 - **Staged-blob reads**: `--staged` reads via `git show :path` (the index), not the working tree
@@ -55,24 +55,24 @@ bun tools/hygiene/check-md032-blanks-around-lists.ts --staged
 
 ## Review-trail
 
-| Round | Findings | Resolution |
-|---|---|---|
-| 1 | 4 (P0 unused param, P1 list-marker indent, P2 fenced-code blocks, P2 docstring drift) | commit `3158f6a` |
-| 2 | 8 (heading-not-list-friendly, `inList`-guarded continuation, fence i=0 start, fence-char/len matching, checkFiles read-error surfacing, stagedMarkdownFiles throws) | `6c436bd` + `c15613c` |
-| 3 | 1 (P2 include renames `--diff-filter=AMR`) | `9bfdde9` |
-| 4 | 5 (P1 closer rejects info string, P1 reviewer-name role-ref discipline ×2, P2 export main, P2 PR-description test count) | `579dce9` + body edit |
-| 5 | 1 stale-snapshot duplicate of round 4 | already in `579dce9` |
-| 6 | 4 (P1 markdownlint ignore globs, P1 paren ordered-list, P2 test coverage ×2) | `3ebca13` + merge `27cb70d` |
-| 7 | 2 (P2 YAML front-matter skip, 1 stale-snapshot) | `3649327` |
-| 8 | 4 (P1 lazy continuations, P1 9-digit cap, P1 fence info-string rejection, P2 spawnSync.error.message) | `acd8ff8` |
-| 9 | 2 (P1 blockquote-context lists + blockquoted blank, 1 stale-snapshot) | `117fa7b` |
-| 10 | 4 (P1 tilde-fence info-strings allow tilde; P1 fence-keeps-list-context for fence-inside-list-item; P1 test invert; P2 PR body) | `a86a524` + body edit |
-| 11 | 4 (1 P1 require → import; 3 stale-snapshot duplicates) | `8498772` |
-| 12 | 3 (P1 heading-terminates-list; P1 blockquote-fence regex; P1 flush-left fence split) | `7c5f079` |
-| 13 | 1 (P1 `--staged` reads index blob via `git show :path`) | `263b7b4` |
-| 14 | 6 (P1 permissive blockquote spacing; P1 fence-blockquote-terminates-list; P1 fail-loud staged blob; P1 test git() helper; P2 PR body stale; +1 inverted) | `11fcbd5` |
-| 15 | 1 (P1 thematic break + blockquote terminates + inList type lift to top/block) | `9fdb083` |
-| 16 | 5 (P1 after-list MD032 side; P1 blockquote inner-indent cap 0-3; P2 double-git-call refactor; P2 PR body stale; +1 test invert) | this commit + body edit |
+| Round | Findings                                                                                                                                                            | Resolution                  |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| 1     | 4 (P0 unused param, P1 list-marker indent, P2 fenced-code blocks, P2 docstring drift)                                                                               | commit `3158f6a`            |
+| 2     | 8 (heading-not-list-friendly, `inList`-guarded continuation, fence i=0 start, fence-char/len matching, checkFiles read-error surfacing, stagedMarkdownFiles throws) | `6c436bd` + `c15613c`       |
+| 3     | 1 (P2 include renames `--diff-filter=AMR`)                                                                                                                          | `9bfdde9`                   |
+| 4     | 5 (P1 closer rejects info string, P1 reviewer-name role-ref discipline ×2, P2 export main, P2 PR-description test count)                                            | `579dce9` + body edit       |
+| 5     | 1 stale-snapshot duplicate of round 4                                                                                                                               | already in `579dce9`        |
+| 6     | 4 (P1 markdownlint ignore globs, P1 paren ordered-list, P2 test coverage ×2)                                                                                        | `3ebca13` + merge `27cb70d` |
+| 7     | 2 (P2 YAML front-matter skip, 1 stale-snapshot)                                                                                                                     | `3649327`                   |
+| 8     | 4 (P1 lazy continuations, P1 9-digit cap, P1 fence info-string rejection, P2 spawnSync.error.message)                                                               | `acd8ff8`                   |
+| 9     | 2 (P1 blockquote-context lists + blockquoted blank, 1 stale-snapshot)                                                                                               | `117fa7b`                   |
+| 10    | 4 (P1 tilde-fence info-strings allow tilde; P1 fence-keeps-list-context for fence-inside-list-item; P1 test invert; P2 PR body)                                     | `a86a524` + body edit       |
+| 11    | 4 (1 P1 require → import; 3 stale-snapshot duplicates)                                                                                                              | `8498772`                   |
+| 12    | 3 (P1 heading-terminates-list; P1 blockquote-fence regex; P1 flush-left fence split)                                                                                | `7c5f079`                   |
+| 13    | 1 (P1 `--staged` reads index blob via `git show :path`)                                                                                                             | `263b7b4`                   |
+| 14    | 6 (P1 permissive blockquote spacing; P1 fence-blockquote-terminates-list; P1 fail-loud staged blob; P1 test git() helper; P2 PR body stale; +1 inverted)            | `11fcbd5`                   |
+| 15    | 1 (P1 thematic break + blockquote terminates + inList type lift to top/block)                                                                                       | `9fdb083`                   |
+| 16    | 5 (P1 after-list MD032 side; P1 blockquote inner-indent cap 0-3; P2 double-git-call refactor; P2 PR body stale; +1 test invert)                                     | this commit + body edit     |
 
 39 substantive findings across 16 rounds; 6 stale-snapshot duplicates.
 
@@ -96,24 +96,22 @@ The session also generated MD018 ×2 + MD038 ×N + MD056 ×1 findings on tick sh
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T00:35:57Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `36b86136f9`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -126,6 +124,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a Bun/TypeScript hygiene helper for locally detecting common MD032 “blank line before list” failures before CI.
 
 **Changes:**
+
 - Adds `check-md032-blanks-around-lists.ts` CLI/helper with explicit file and `--staged` modes.
 - Adds Bun tests for common clean/dirty list-start patterns and unreadable-file behavior.
 
@@ -133,24 +132,28 @@ Adds a Bun/TypeScript hygiene helper for locally detecting common MD032 “blank
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `tools/hygiene/check-md032-blanks-around-lists.ts` | Implements the MD032 pre-check scanner and CLI. |
+| File                                                    | Description                                                |
+| ------------------------------------------------------- | ---------------------------------------------------------- |
+| `tools/hygiene/check-md032-blanks-around-lists.ts`      | Implements the MD032 pre-check scanner and CLI.            |
 | `tools/hygiene/check-md032-blanks-around-lists.test.ts` | Adds unit tests for scanner behavior and unreadable files. |
-
 
 <details>
 <summary>Comments suppressed due to low confidence (4)</summary>
 
 **tools/hygiene/check-md032-blanks-around-lists.ts:148**
-* P1: A `git diff` failure is converted into an empty file list, and `main` then exits successfully as “no staged .md files.” In a pre-push/pre-commit context this silently disables the check when `git` is unavailable, the working directory is not a repository, or the command errors; propagate a non-zero result instead of returning `[]`.
+
+- P1: A `git diff` failure is converted into an empty file list, and `main` then exits successfully as “no staged .md files.” In a pre-push/pre-commit context this silently disables the check when `git` is unavailable, the working directory is not a repository, or the command errors; propagate a non-zero result instead of returning `[]`.
+
 ```
   if (r.status !== 0) {
     console.error(`git diff failed: ${r.stderr ?? ""}`);
     return [];
 ```
+
 **tools/hygiene/check-md032-blanks-around-lists.ts:97**
-* P1: The scanner does not track fenced code blocks, so valid Markdown examples can be reported as MD032 violations. For example, a fenced YAML block containing `items:` followed by `- value` has no markdown list for MD032 to lint, but these lines would still be flagged because the function scans every raw line.
+
+- P1: The scanner does not track fenced code blocks, so valid Markdown examples can be reported as MD032 violations. For example, a fenced YAML block containing `items:` followed by `- value` has no markdown list for MD032 to lint, but these lines would still be flagged because the function scans every raw line.
+
 ```
   for (let i = 1; i < lines.length; i++) {
     const cur = lines[i] ?? "";
@@ -158,16 +161,22 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
     const prev = lines[i - 1] ?? "";
     if (isBlank(prev) || isListFriendlyLeading(prev)) continue;
 ```
+
 **tools/hygiene/check-md032-blanks-around-lists.ts:95**
-* P1: This only checks the blank line before a list starts, but MD032 also requires a blank line after a list block. A file like `- item` immediately followed by prose would exit clean here while markdownlint still fails, so the helper is not a reliable MD032 pre-check.
+
+- P1: This only checks the blank line before a list starts, but MD032 also requires a blank line after a list block. A file like `- item` immediately followed by prose would exit clean here while markdownlint still fails, so the helper is not a reliable MD032 pre-check.
+
 ```
   // Walk pairwise: each list-start line is checked against the line before.
   for (let i = 1; i < lines.length; i++) {
     const cur = lines[i] ?? "";
     if (!isListItemStart(cur)) continue;
 ```
+
 **tools/hygiene/check-md032-blanks-around-lists.ts:122**
-* P1: Explicitly provided files that cannot be read are treated as clean, so `bun ... missing.md` exits 0 with “no MD032 findings.” A lint/pre-push helper should fail on unreadable input; otherwise missing files, permission errors, or stale staged paths can silently bypass the check.
+
+- P1: Explicitly provided files that cannot be read are treated as clean, so `bun ... missing.md` exits 0 with “no MD032 findings.” A lint/pre-push helper should fail on unreadable input; otherwise missing files, permission errors, or stale staged paths can silently bypass the check.
+
 ```
       // Unreadable — skip silently. The audit-duplicate-row-ids tool's
       // round-2 review pushed in the opposite direction (surface read
@@ -175,6 +184,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
       // see the broken file at push time or in CI anyway.
       continue;
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-14T00:48:00Z)
@@ -185,24 +195,22 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 6 c
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T00:48:59Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6f20e2d938`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -238,24 +246,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T00:58:42Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `6c436bd53d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -267,38 +273,45 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 7 out of 7 changed files in this pull request and generated 5 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **tools/hygiene/check-md032-blanks-around-lists.ts:237**
-* P1: `--staged` scans every staged `.md` file without applying the repository's markdownlint ignore list (for example `memory/**`, `docs/pr-preservation/**`, `docs/history/pr-reviews/**`, and date-prefixed `docs/research/**` are ignored in .markdownlint-cli2.jsonc). Once this is used as the pre-push path, it can fail on files that markdownlint CI deliberately skips, so the helper no longer matches the rule it is meant to pre-check.
+
+- P1: `--staged` scans every staged `.md` file without applying the repository's markdownlint ignore list (for example `memory/**`, `docs/pr-preservation/**`, `docs/history/pr-reviews/**`, and date-prefixed `docs/research/**` are ignored in .markdownlint-cli2.jsonc). Once this is used as the pre-push path, it can fail on files that markdownlint CI deliberately skips, so the helper no longer matches the rule it is meant to pre-check.
+
 ```
   if (r.status !== 0) {
     throw new Error(`git diff --cached failed: ${r.stderr?.trim() ?? "unknown error"}`);
   }
   return (r.stdout ?? "")
 ```
+
 **tools/hygiene/check-md032-blanks-around-lists.ts:229**
-* P1: The staged-file path excludes renamed markdown files because `--diff-filter=AM` omits `R` statuses. A renamed `.md` file that is edited in the same commit can still fail markdownlint in CI, but `--staged` will not scan it locally, leaving a false negative in the pre-check.
+
+- P1: The staged-file path excludes renamed markdown files because `--diff-filter=AM` omits `R` statuses. A renamed `.md` file that is edited in the same commit can still fail markdownlint in CI, but `--staged` will not scan it locally, leaving a false negative in the pre-check.
+
 ```
  */
 function stagedMarkdownFiles(repoRoot: string): string[] {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
   const r = spawnSync(
 ```
+
 **tools/hygiene/check-md032-blanks-around-lists.ts:237**
-* P1: `--staged` identifies paths from the index but then returns working-tree file paths for `readFileSync` to scan. If the staged content differs from the working tree, this can miss a violation that is actually staged for commit (or fail on an unstaged edit that CI will not see); a staged checker needs to read the blob from the index or otherwise ensure it scans the same content that will be committed.
+
+- P1: `--staged` identifies paths from the index but then returns working-tree file paths for `readFileSync` to scan. If the staged content differs from the working tree, this can miss a violation that is actually staged for commit (or fail on an unstaged edit that CI will not see); a staged checker needs to read the blob from the index or otherwise ensure it scans the same content that will be committed.
+
 ```
   if (r.status !== 0) {
     throw new Error(`git diff --cached failed: ${r.stderr?.trim() ?? "unknown error"}`);
   }
   return (r.stdout ?? "")
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T01:09:35Z)
-
 
 ### 💡 Codex Review
 
@@ -306,17 +319,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `0e0563f99f`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -338,24 +350,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T01:17:58Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `f1b1a3e34d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -369,24 +379,22 @@ Copilot reviewed 11 out of 11 changed files in this pull request and generated 4
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T01:36:56Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `73ba37e98a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -398,16 +406,18 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 13 out of 13 changed files in this pull request and generated 4 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/check-md032-blanks-around-lists.ts:210**
-* P1: Clearing `inList` on fence close also breaks list context for fences nested inside list items. After an indented fenced block in a list item, the following sibling list item is valid without an intervening blank, but this reset makes it look like a fresh list after the non-blank closing fence and can produce a false MD032 finding.
+
+- P1: Clearing `inList` on fence close also breaks list context for fences nested inside list items. After an indented fenced block in a list item, the following sibling list item is valid without an intervening blank, but this reset makes it look like a fresh list after the non-blank closing fence and can produce a false MD032 finding.
+
 ```
         openFence = null;
         inList = false;
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-14T01:49:32Z)
@@ -418,24 +428,22 @@ Copilot reviewed 15 out of 15 changed files in this pull request and generated 4
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T01:56:54Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `dce1206183`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -447,12 +455,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 17 out of 17 changed files in this pull request and generated 2 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **tools/hygiene/check-md032-blanks-around-lists.ts:269**
-* P1: This branch keeps `inList` true for every non-blank non-list line, including ATX headings, despite the comment saying headings end the list. After a prior list, `- a\n# Heading\n- b` will skip the predecessor check for `- b`, so the local helper misses the heading-then-list MD032 failure that CI still reports.
+
+- P1: This branch keeps `inList` true for every non-blank non-list line, including ATX headings, despite the comment saying headings end the list. After a prior list, `- a\n# Heading\n- b` will skip the predecessor check for `- b`, so the local helper misses the heading-then-list MD032 failure that CI still reports.
+
 ```
       // Non-list, non-blank, non-heading, non-fence line. CommonMark
       // allows BOTH indented and lazy (unindented) continuations of a
@@ -460,8 +469,11 @@ Copilot reviewed 17 out of 17 changed files in this pull request and generated 2
       // list block only ends on a blank line, an ATX heading, or a
       // fence boundary (all handled above). The earlier algorithm reset
 ```
+
 **tools/hygiene/check-md032-blanks-around-lists.ts:213**
-* P1: Preserving `inList` across every fence transition is too broad. A flush-left fenced block after a list is not a lazy list-item continuation in CommonMark, so `- item\n```\ncode\n```\n- next` should check the second bullet against the fence close; this state retention lets that CI MD032 failure pass locally.
+
+- P1: Preserving `inList` across every fence transition is too broad. A flush-left fenced block after a list is not a lazy list-item continuation in CommonMark, so `- item\n```\ncode\n```\n- next` should check the second bullet against the fence close; this state retention lets that CI MD032 failure pass locally.
+
 ```
         // Do NOT reset `inList` — a fenced code block can be a child
         // block inside a list item (e.g. `- item\n  \`\`\`\n  code\n
@@ -472,6 +484,7 @@ Copilot reviewed 17 out of 17 changed files in this pull request and generated 2
         // (pre-CI review P1 on PR #3075 round 10).
         openFence = { char: fence.char, len: fence.len };
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-14T02:08:06Z)
@@ -488,24 +501,22 @@ Copilot reviewed 21 out of 21 changed files in this pull request and generated 6
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T02:21:36Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `2855393608`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -517,19 +528,20 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 23 out of 23 changed files in this pull request and generated 5 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/check-md032-blanks-around-lists.ts:169**
-* P1: `fenceInfo` still only accepts zero or one space after each blockquote marker, so valid blockquoted fences like `>   ```ts` are not recognized even though CommonMark allows the remaining indentation before the fence. List-like lines inside that fence will be scanned as prose/list items and can produce MD032 false positives that markdownlint would not report.
+
+- P1: `fenceInfo` still only accepts zero or one space after each blockquote marker, so valid blockquoted fences like `>   ```ts` are not recognized even though CommonMark allows the remaining indentation before the fence. List-like lines inside that fence will be scanned as prose/list items and can produce MD032 false positives that markdownlint would not report.
+
 ```
   // prose lines do not get a free pass.
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T02:33:03Z)
-
 
 ### 💡 Codex Review
 
@@ -537,17 +549,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9fdb083cee`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -559,19 +570,20 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 24 out of 24 changed files in this pull request and generated 5 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/check-md032-blanks-around-lists.ts:448**
-* This inline comment still says the default read-error path is for `--staged` mode, but staged scanning no longer reaches this filesystem-read branch. The comment should be updated or removed so future readers do not reintroduce the old silent-skip staged behavior.
+
+- This inline comment still says the default read-error path is for `--staged` mode, but staged scanning no longer reaches this filesystem-read branch. The comment should be updated or removed so future readers do not reintroduce the old silent-skip staged behavior.
+
 ```
       content = readFileSync(f, "utf-8");
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T02:44:12Z)
-
 
 ### 💡 Codex Review
 
@@ -579,17 +591,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `47a7adc5a5`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -597,24 +608,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T02:54:44Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5dbeafedc9`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -632,9 +641,9 @@ Copilot reviewed 24 out of 24 changed files in this pull request and generated 6
 
 **@chatgpt-codex-connector** (2026-05-14T00:35:57Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Ignore list-like lines inside fenced code blocks**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Ignore list-like lines inside fenced code blocks**
 
-`findMd032Violations` applies the MD032 heuristic to every raw line pair and never tracks fenced-code/frontmatter regions, so a code sample like ```` ```\nLabel:\n- option\n``` ```` is reported as a violation even though markdownlint does not lint list structure inside code fences. This creates false positives (and, once hooked into pre-push, can block otherwise clean docs), so the checker should skip non-Markdown-content regions before evaluating list boundaries.
+`findMd032Violations` applies the MD032 heuristic to every raw line pair and never tracks fenced-code/frontmatter regions, so a code sample like ` ```\nLabel:\n- option\n``` ` is reported as a violation even though markdownlint does not lint list structure inside code fences. This creates false positives (and, once hooked into pre-push, can block otherwise clean docs), so the checker should skip non-Markdown-content regions before evaluating list boundaries.
 
 Useful? React with 👍 / 👎.
 
@@ -657,6 +666,7 @@ P2: This function comment is stale: `checkFiles` does not emit to stderr and ret
 P1: `\s*` treats four-space indented code as a list marker, but CommonMark only allows list markers indented 0–3 spaces. A code block line like `    - option` after non-blank text can be reported as an MD032 violation even though markdownlint would ignore it as code.
 
 This issue also appears in the following locations of the same file:
+
 - line 92
 - line 93
 - line 118
@@ -726,9 +736,9 @@ Fixed: `checkFiles` gains an optional `surfaceReadErrors: boolean` parameter (de
 
 **@chatgpt-codex-connector** (2026-05-14T00:48:59Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Track matching fence delimiters before leaving code blocks**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Track matching fence delimiters before leaving code blocks**
 
-The fenced-code handling flips `inFencedCode` on every line that starts with ``` or ~~~, but it does not remember the opening delimiter type/length. That means an outer fence like ````...```` containing a literal ``` line (or a backtick fence containing `~~~`) will toggle out early and then incorrectly flag list lines that are still inside code as MD032 violations. In pre-push usage this can block valid Markdown docs that embed fence examples.
+The fenced-code handling flips `inFencedCode` on every line that starts with `or ~~~, but it does not remember the opening delimiter type/length. That means an outer fence like ````...```` containing a literal` line (or a backtick fence containing `~~~`) will toggle out early and then incorrectly flag list lines that are still inside code as MD032 violations. In pre-push usage this can block valid Markdown docs that embed fence examples.
 
 Useful? React with 👍 / 👎.
 
@@ -736,7 +746,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T00:48:59Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Return failure when staged-file discovery errors**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Return failure when staged-file discovery errors**
 
 If `git diff --name-only --cached` fails, the helper logs an error but returns an empty list, and `main()` then treats that as "no staged .md files" and exits 0. This silently bypasses the MD032 gate in exactly the situations where staged-file discovery is broken (for example, git invocation/environment issues), so the check can report success without actually scanning anything.
 
@@ -746,7 +756,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T00:58:42Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include renamed staged Markdown files in --staged scan**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Include renamed staged Markdown files in --staged scan**
 
 Update the staged-file filter to include renames; `--diff-filter=AM` drops files with `R` status, so a staged `git mv old.md new.md` (with edits) is skipped by `--staged` even though markdownlint will still lint `new.md` in CI. I verified this behavior by checking `git diff --name-status --cached` (`R...`) versus `git diff --name-only --cached --diff-filter=AM` (empty), which means this gate can report success without scanning changed Markdown content.
 
@@ -759,6 +769,7 @@ Useful? React with 👍 / 👎.
 P1: The same `fenceInfo` parser is used for closers, but it accepts fence markers followed by an info string or other text. CommonMark closing fences may be followed only by spaces, so a line like an inner same-delimiter ` ```ts` example inside an outer fence is treated as closing here even though markdownlint would keep the code block open; subsequent list-like lines in the sample can be falsely reported as MD032 violations.
 
 This issue also appears in the following locations of the same file:
+
 - line 226
 - line 234
 - line 234
@@ -791,9 +802,9 @@ P2: The PR description still says the helper has 12 tests, but this file now con
 
 **@chatgpt-codex-connector** (2026-05-14T01:09:35Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Treat fenced closers as valid only with trailing whitespace**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Treat fenced closers as valid only with trailing whitespace**
 
-`findMd032Violations` closes an open fence whenever a line starts with a matching run (`fence.len >= openFence.len`), but CommonMark closers are only valid when nothing except spaces/tabs follows the run. With the current check, a code-sample line like ```` ```md ```` (or `~~~yaml`) inside a fenced block is treated as a closer, so subsequent list-like lines in that block can be falsely reported as MD032 violations and block the pre-push gate.
+`findMd032Violations` closes an open fence whenever a line starts with a matching run (`fence.len >= openFence.len`), but CommonMark closers are only valid when nothing except spaces/tabs follows the run. With the current check, a code-sample line like ` ```md ` (or `~~~yaml`) inside a fenced block is treated as a closer, so subsequent list-like lines in that block can be falsely reported as MD032 violations and block the pre-push gate.
 
 Useful? React with 👍 / 👎.
 
@@ -829,7 +840,7 @@ P2: The new non-zero-git failure behavior in `--staged` mode is not covered by t
 
 **@chatgpt-codex-connector** (2026-05-14T01:17:58Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Skip YAML front matter while scanning for list starts**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Skip YAML front matter while scanning for list starts**
 
 The scanner now tracks fenced code, but it still has no state for YAML front matter, so list-like metadata lines (e.g., `tags:` followed by `- item`) are treated as MD032 violations even though markdownlint ignores front matter content. This creates false positives on valid docs and can block a pre-push gate for files whose only "violation" is metadata formatting.
 
@@ -839,7 +850,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T01:17:58Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Honor markdownlint ignore globs in staged-file selection**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Honor markdownlint ignore globs in staged-file selection**
 
 `--staged` currently scans every staged `*.md` path, but markdownlint in this repo excludes large path sets (for example `memory/**` and several archive directories) via `.markdownlint-cli2.jsonc`. Because this helper does not apply the same ignore surface, it can fail locally on files that CI intentionally does not lint, creating avoidable gate mismatches and false blocking behavior.
 
@@ -873,9 +884,9 @@ P2: When `spawnSync` fails before producing stderr (for example, `git` is missin
 
 **@chatgpt-codex-connector** (2026-05-14T01:36:56Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Recognize list markers in blockquote context**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Recognize list markers in blockquote context**
 
-`isListItemStart` only matches markers at the start of a line with optional spaces, so it never treats `> - item` or `> 1. item` as list starts. `markdownlint` MD032 *does* enforce blank lines for lists inside blockquotes, so `--staged` can report clean while CI still fails on blockquoted list violations (for example, `> Label:` followed by `> - item`).
+`isListItemStart` only matches markers at the start of a line with optional spaces, so it never treats `> - item` or `> 1. item` as list starts. `markdownlint` MD032 _does_ enforce blank lines for lists inside blockquotes, so `--staged` can report clean while CI still fails on blockquoted list violations (for example, `> Label:` followed by `> - item`).
 
 Useful? React with 👍 / 👎.
 
@@ -883,7 +894,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T01:36:56Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Restrict ordered-list marker width to CommonMark limits**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Restrict ordered-list marker width to CommonMark limits**
 
 The ordered-list regex uses `\d+[.)]`, which treats 10+ digit prefixes as list markers. CommonMark/markdownlint only accept ordered markers with 1–9 digits, so prose like `1234567890) value` after a label can be falsely flagged by this helper even though MD032 would not fire in CI.
 
@@ -943,7 +954,7 @@ P1: This fixture locks in the same CommonMark mismatch: a tilde-fence info strin
 
 **@chatgpt-codex-connector** (2026-05-14T01:56:55Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reset list state on non-paragraph block boundaries**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Reset list state on non-paragraph block boundaries**
 
 `inList` is left unchanged for every non-list/non-blank line, so block boundaries like headings or thematic breaks do not terminate the prior list. In a file such as `- item a` / `## Heading` / `- item b`, `markdownlint-cli2` reports MD032 for the second bullet, but this helper treats it as part of the existing list and skips the predecessor check, producing a false negative and allowing `--staged` to pass when CI lint will fail.
 
@@ -956,6 +967,7 @@ Useful? React with 👍 / 👎.
 P1: Fenced code detection does not allow blockquote prefixes, but CommonMark parses `> ```...`/`> ~~~...` as fenced code inside a blockquote. A blockquoted code sample that contains `> Label:` followed by `> - item` will be reported as MD032 even though markdownlint treats it as code and ignores it.
 
 This issue also appears in the following locations of the same file:
+
 - line 206
 - line 265
 
@@ -1011,7 +1023,7 @@ P2: The PR description says this file contains 45 tests, but the current test fi
 
 **@chatgpt-codex-connector** (2026-05-14T02:21:36Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Reset list context on non-paragraph block boundaries**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Reset list context on non-paragraph block boundaries**
 
 `findMd032Violations` keeps `inList` true for every non-blank/non-heading/non-fence line, so constructs that actually terminate a list (for example a thematic break or blockquote) are treated as lazy paragraph continuation. That causes false negatives where a subsequent list start is not checked, e.g. `- a` / `---` / `- b` or `- a` / `> quote` / `- b` passes this helper while `markdownlint-cli2` reports MD032 for the later list item. This leaves the staged pre-check out of sync with CI and can let MD032 failures through.
 
@@ -1053,9 +1065,9 @@ P1: This assertion locks in a false negative for MD032's “blank after list” 
 
 **@chatgpt-codex-connector** (2026-05-14T02:33:03Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Parse blockquoted fences with extra content indentation**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Parse blockquoted fences with extra content indentation**
 
-Update `fenceInfo` to recognize fenced code lines after a blockquote marker when the quoted content is indented (for example `>  ````). CommonMark allows a `>` marker plus optional following space and then up to three spaces of content indentation, so these lines still open/close fences. With the current `(?:>\s?)*(` regex, such fences are missed, the scanner treats inner `>  - item` lines as real list items, and it can report MD032 findings that markdownlint itself does not report.
+Update `fenceInfo` to recognize fenced code lines after a blockquote marker when the quoted content is indented (for example `>  ````). CommonMark allows a `>`marker plus optional following space and then up to three spaces of content indentation, so these lines still open/close fences. With the current`(?:>\s?)\*(`regex, such fences are missed, the scanner treats inner`> - item` lines as real list items, and it can report MD032 findings that markdownlint itself does not report.
 
 Useful? React with 👍 / 👎.
 
@@ -1069,7 +1081,7 @@ P1: This thematic-break detector does not account for blockquote prefixes, so a 
 
 **@copilot-pull-request-reviewer** (2026-05-14T02:43:20Z):
 
-P1: `fenceInfo` only permits zero or one space after each blockquote marker before the fence. CommonMark still allows an indented fenced block inside a blockquote (for example `>   ````, with the extra spaces as inner indentation), so this helper will miss that valid fence and can flag list-like content inside it even though markdownlint treats it as fenced code.
+P1: `fenceInfo` only permits zero or one space after each blockquote marker before the fence. CommonMark still allows an indented fenced block inside a blockquote (for example `> ````, with the extra spaces as inner indentation), so this helper will miss that valid fence and can flag list-like content inside it even though markdownlint treats it as fenced code.
 
 ### Thread 59: tools/hygiene/check-md032-blanks-around-lists.ts:94 (resolved)
 
@@ -1095,7 +1107,7 @@ This issue also appears on line 448 of the same file.
 
 **@chatgpt-codex-connector** (2026-05-14T02:44:12Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Skip HTML comment regions before MD032 scanning**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Skip HTML comment regions before MD032 scanning**
 
 The line scanner applies list-boundary checks to every non-fence line, so list-like text inside HTML comments (including `markdownlint-disable`/`markdownlint-enable` blocks) is treated as real Markdown content. `markdownlint` ignores comment content for MD032, so this creates local false positives and can block `--staged` even when CI lint passes. A minimal reproduction is a commented example like `<!--\nLabel:\n- item\n-->`, which this branch will flag at the list line.
 
@@ -1105,7 +1117,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T02:54:45Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Preserve Markdown tokens on lines with inline HTML comments**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Preserve Markdown tokens on lines with inline HTML comments**
 
 Treating any line containing `<!--` as entirely comment content causes false negatives for real MD032 cases when list syntax shares that line with an inline comment. For example, `Label:\n- item <!-- note -->` and `- item <!-- note -->\n## Heading` both trigger MD032 in `markdownlint-cli2`, but this scanner skips the list line and never enters list state, so `--staged` can pass while CI fails. The parser should only ignore the comment span itself (or only full-line comment blocks), not discard the whole line unconditionally.
 

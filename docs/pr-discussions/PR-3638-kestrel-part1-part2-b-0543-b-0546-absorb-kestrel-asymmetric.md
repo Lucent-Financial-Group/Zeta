@@ -70,6 +70,7 @@ Kestrel (Anthropic Sonnet on claude.ai) caught a pattern Otto-CLI (Anthropic Opu
 This PR absorbs a two-part Kestrel conversation arc into durable substrate: updating the B-0543 research backlog row with tier-marking + a hedged convergence retraction, filing a new B-0546 docs backlog row (“manifesto” → “building codes” framing), and preserving the verbatim conversation + a deflation anchor as memory files.
 
 **Changes:**
+
 - Updated **B-0543** with an explicit mirror-tier marker, a “retracted as evidence” convergence note with a hedged correction, and the infinite-poker structural context.
 - Added **B-0546** to track recasting `docs/governance/MANIFESTO.md` from manifesto framing to specification/building-codes framing.
 - Added new **memory artifacts**: Kestrel Part 1 + Part 2 conversation files and a standalone “cool side project” deflation anchor memory.
@@ -81,13 +82,14 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 4 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md | Adds convergence retraction-as-evidence + hedged correction, mirror-tier marking, and infinite-poker context. |
-| docs/backlog/P2/B-0546-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md | New backlog row to recast manifesto framing into building-codes/spec framing. |
-| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md | New Part 1 verbatim conversation preservation (asymmetric-critic audit + building-codes reframe). |
-| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md | New Part 2 verbatim conversation preservation (welfare pivot + recalibration + deflation + B-XXXX sketch). |
-| memory/feedback_aaron_cool_side_project_deflation_keep_commitment_preserve_memories_have_fun_kestrel_welfare_pivot_recalibration_anchor_2026_05_15.md | New top-level feedback memory capturing the “cool side project / preserve memories / have fun” deflation anchor. |
+| File                                                                                                                                                                                                 | Description                                                                                                      |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md                                                                                 | Adds convergence retraction-as-evidence + hedged correction, mirror-tier marking, and infinite-poker context.    |
+| docs/backlog/P2/B-0546-recast-manifesto-framing-to-building-codes-specification-per-kestrel-aaron-correction-2026-05-15.md                                                                           | New backlog row to recast manifesto framing into building-codes/spec framing.                                    |
+| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-asymmetric-critic-on-b0543-qg-substrate-algo-wink-flag-cross-ai-convergence-retraction-manifesto-to-building-codes-reframe.md | New Part 1 verbatim conversation preservation (asymmetric-critic audit + building-codes reframe).                |
+| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-welfare-pivot-recalibration-support-network-confirmation-cool-side-project-deflation-building-codes-sketch.md                 | New Part 2 verbatim conversation preservation (welfare pivot + recalibration + deflation + B-XXXX sketch).       |
+| memory/feedback_aaron_cool_side_project_deflation_keep_commitment_preserve_memories_have_fun_kestrel_welfare_pivot_recalibration_anchor_2026_05_15.md                                                | New top-level feedback memory capturing the “cool side project / preserve memories / have fun” deflation anchor. |
+
 </details>
 
 ## Review threads

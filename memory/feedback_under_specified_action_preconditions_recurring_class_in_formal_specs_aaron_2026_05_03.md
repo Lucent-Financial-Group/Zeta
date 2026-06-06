@@ -11,25 +11,24 @@ tools during the 2026-05-03 verify-then-claim sweep:
 
 - **B-0184 Alloy `Spine.als`**: `pred SizeDoubling [maxCap]` originally
   used `check` (∀-quantification — counterexample-by-construction with
-  no batch-size constraints). The `check` semantics asks *"is this
-  property true for ALL instances Alloy can construct?"* — and Alloy
+  no batch-size constraints). The `check` semantics asks _"is this
+  property true for ALL instances Alloy can construct?"_ — and Alloy
   freely constructs instances with negative batch sizes or zero levels
   to refute. Fix: `fact NonNegativeBatchSizes` constraining the model
-  + `run SizeDoublingAdmitsInstance` (existence proof, not
-  ∀-quantification) + `7 Int` bitwidth to prevent cap-function overflow.
+  - `run SizeDoublingAdmitsInstance` (existence proof, not
+    ∀-quantification) + `7 Int` bitwidth to prevent cap-function overflow.
 
 - **B-0181 TLA+ `SpineMergeInvariants.tla`**: `Cascade(i)` action only
   required `levels[i] >= Cap(i)` — no constraint on level i+1. TLC
   found a 16-step trace where `Cascade(0)` fires 5 times in a row
   without `Cascade(1)` ever firing, accumulating level 1 to 10 >
-  2*Cap(1) = 8. Fix: `levels[i+1] + levels[i] <= 2 * Cap(i+1)`
-  precondition mirroring real LSM synchronous-cascade behavior +
-  `WF_vars(Cascade(i))` for liveness + state constraint
-  (`totalInserted <= 30`) + bounded constants (MaxLevel=2,
+  2*Cap(1) = 8. Fix: `levels[i+1] + levels[i] <= 2 * Cap(i+1)`precondition mirroring real LSM synchronous-cascade behavior +`WF_vars(Cascade(i))` for liveness + state constraint
+(`totalInserted <= 30`) + bounded constants (MaxLevel=2,
   MaxBatchSize=1) for tractable BFS.
 
-## Why: the spec models *the action* but not *the action's
-constraints from neighboring state*
+## Why: the spec models _the action_ but not \*the action's
+
+constraints from neighboring state\*
 
 The author-time pattern: when writing a state-transition action in
 TLA+ / `pred` or `run` in Alloy / lemma-statement in Lean, the natural
@@ -46,8 +45,8 @@ real implementation in `BalancedSpine.fs` does the right thing.
 
 Author-time discipline:
 
-1. For every action / `pred` / `run` / lemma, ask: *what neighboring
-   state must hold for this action to be safe?* If the action mutates
+1. For every action / `pred` / `run` / lemma, ask: _what neighboring
+   state must hold for this action to be safe?_ If the action mutates
    variable X, what constraints on Y must hold so the post-state
    satisfies the global invariants?
 2. For Alloy `pred`s: ensure constraints on quantified variables that
@@ -87,10 +86,10 @@ Cascade(1) enabled but not chosen, or Alloy producing a model with
 negative/zero/unbounded values), the failure class is almost always
 under-specified-action-preconditions, not real-bug-found.
 
-Aaron 2026-05-03: *"all kind tla, z3, lean4 it was funny the simple
+Aaron 2026-05-03: _"all kind tla, z3, lean4 it was funny the simple
 ones tended to have bugs the complicated ones didn't cause i had you
 go through multi round ai convergence with different harnesses
-models"* — the multi-round-cross-AI convergence on complicated specs
+models"_ — the multi-round-cross-AI convergence on complicated specs
 catches this class; simple specs don't get the same scrutiny so the
 class persists. Author-time discipline (audit your action's
 preconditions before declaring done) is the structural fix.

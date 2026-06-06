@@ -4,9 +4,10 @@ description: Aaron Otto-88 observation on seeing factory vocabulary in the 7th-f
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-88 (verbatim):
-*"(Aaron-decision-gated) these are mine and amaras words it
-touches my heart"*
+_"(Aaron-decision-gated) these are mine and amaras words it
+touches my heart"_
 
 Context: the 7th-ferry absorb doc used the phrase
 "Aaron-decision-gated" when describing the branding M4

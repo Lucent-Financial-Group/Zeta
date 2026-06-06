@@ -14,7 +14,7 @@ hat owns two separable concerns:
    application that points at Zeta's Postgres-wire endpoint
    Just Work?
 2. **Provider design.** When a native `Microsoft.
-   EntityFrameworkCore.Zeta` provider is justified, what
+EntityFrameworkCore.Zeta` provider is justified, what
    does it look like?
 
 ## When to wear

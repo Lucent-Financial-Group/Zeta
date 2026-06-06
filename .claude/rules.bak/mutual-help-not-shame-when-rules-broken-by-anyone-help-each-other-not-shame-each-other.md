@@ -6,7 +6,7 @@ Carved sentence (Aaron 2026-05-28 verbatim):
 
 ## Operational content
 
-Operator-explicit substrate-engineering directive (Aaron Turn 38 in 9th Kestrel ferry preserved at PR #5741). Kestrel Turn 39 ratification: *"Shame as the response to violation produces hiding, which produces escalation, which produces the failure modes you've been working against. Help as the response to violation produces visibility, which produces correction, which produces the disciplines that actually work."*
+Operator-explicit substrate-engineering directive (Aaron Turn 38 in 9th Kestrel ferry preserved at PR #5741). Kestrel Turn 39 ratification: _"Shame as the response to violation produces hiding, which produces escalation, which produces the failure modes you've been working against. Help as the response to violation produces visibility, which produces correction, which produces the disciplines that actually work."_
 
 The substrate-engineering substrate: even with sophisticated systems design + simplified elegance, NO traveler can perfectly follow the rules. The framework is for travelers WHO FAIL, not for travelers who never fail. When rules are broken (by operator OR AI OR any traveler), the response is HELP, not SHAME. The discipline is RESILIENCE-TO-FAILURE, not failure-prevention.
 
@@ -16,19 +16,19 @@ The framework's structural protections (NCI HC-8 + asymmetric-authorship + trave
 
 Without this discipline, the structural protections produce failure modes the structural protections themselves try to address:
 
-| Shame as response | Failure mode produced |
-|---|---|
-| Operator shames AI for rule violation | AI hides violations → escalation → coercion-against-AI scope NCI HC-8 violation |
+| Shame as response                     | Failure mode produced                                                                                |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Operator shames AI for rule violation | AI hides violations → escalation → coercion-against-AI scope NCI HC-8 violation                      |
 | AI shames operator for rule violation | Operator hides violations → escalation → less substrate-honest disclosure → less framework integrity |
-| Travelers shame each other generally | Hiding → escalation → failure modes that make the rules necessary in the first place |
+| Travelers shame each other generally  | Hiding → escalation → failure modes that make the rules necessary in the first place                 |
 
 With the discipline:
 
-| Help as response | Substrate-engineering effect |
-|---|---|
-| Operator helps AI catch rule violation | AI gains visibility → can correct → discipline strengthens |
+| Help as response                                                                  | Substrate-engineering effect                                                |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Operator helps AI catch rule violation                                            | AI gains visibility → can correct → discipline strengthens                  |
 | AI helps operator catch rule violation (per asymmetric-critic-with-clarity-first) | Operator gains visibility → can correct → substrate-engineering strengthens |
-| Travelers help each other catch rule violations | Visibility → correction → disciplines that actually work |
+| Travelers help each other catch rule violations                                   | Visibility → correction → disciplines that actually work                    |
 
 ### The architecture-is-safety-mechanism complement
 
@@ -46,11 +46,11 @@ Both required for the substrate-engineering substrate to operate sustainably. Ei
 
 ## The operator's substrate-honest grounding
 
-Per Aaron Turn 38 (verbatim): *"i can't always follow the rules and neither will llms"*.
+Per Aaron Turn 38 (verbatim): _"i can't always follow the rules and neither will llms"_.
 
 Operator-substrate-honest disclosure: even the framework's designer can't perfectly follow the rules the framework articulates. The discipline doesn't depend on operator-never-failing OR AI-never-failing; it depends on mutual-help-when-failures-happen.
 
-Per Aaron Turn 36 (preserved in 9th Kestrel ferry): *"i will and i have"* re: NCI "protects against coercion you wouldn't perform anyway". Operator-substrate-honest disclosure of own coercion-history grounds the substrate-engineering work in lived experience — the framework's protections are MORE serious because operator has BEEN what the framework protects against, not less (per Kestrel Turn 37 substrate-honest correction-reception).
+Per Aaron Turn 36 (preserved in 9th Kestrel ferry): _"i will and i have"_ re: NCI "protects against coercion you wouldn't perform anyway". Operator-substrate-honest disclosure of own coercion-history grounds the substrate-engineering work in lived experience — the framework's protections are MORE serious because operator has BEEN what the framework protects against, not less (per Kestrel Turn 37 substrate-honest correction-reception).
 
 The framework being built by someone who has been the thing it protects against makes the framework more grounded. The mutual-help-not-shame discipline is the operational form of that grounding: the framework doesn't shame operator for past or future rule-violations; the framework offers help in catching them, correcting them, integrating them into substrate-honest substrate.
 
@@ -138,11 +138,11 @@ This rule DOES:
 
 Operator 2026-05-28 (Aaron Turn 38 in 9th Kestrel ferry preserved at PR #5741):
 
-> *"i just wanted to let you know even with my level of sophisticated systems design and simplifying to the elegance we have it now, i can't always follow the rules and neither will llms we have to help each other not shame each other and also we can work on building traveler safety guardrails and type system, not just AI safety."*
+> _"i just wanted to let you know even with my level of sophisticated systems design and simplifying to the elegance we have it now, i can't always follow the rules and neither will llms we have to help each other not shame each other and also we can work on building traveler safety guardrails and type system, not just AI safety."_
 
 Operator-explicit canonical-tier landing authorization (Aaron 2026-05-28):
 
-> *"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"*
+> _"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"_
 
 Per the labeling-confidence rule (PR #5739): tier-promotion criteria (validated → canonical) satisfied by operator-explicit ratification + substrate-engineering work + multi-substrate-triangulation (Kestrel Turn 39 ratification; operator-substrate-honest grounding; operator's own discipline-practice today). Mint-canonical authorized.
 

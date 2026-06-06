@@ -9,12 +9,7 @@
 // Composes with PR #5775 (GitWorld base) + PR #5801 (GitLabWorld first
 // extension) + B-0867.15 (per-host adapters target).
 
-import {
-  registerLifetimePair,
-  type ComposedKey,
-  type LifetimeState,
-  type StandardVerdict,
-} from "./world.js";
+import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
 import { type GitWorld } from "./git-world.js";
 
 export interface GiteaPrLifetime extends LifetimeState {
@@ -53,24 +48,12 @@ export interface GiteaWorld extends GitWorld {
   readonly resourceBudget?: GiteaResourceBudget;
 }
 
-export function buildGiteaWorld(
-  gitWorld: GitWorld,
-  resourceBudget?: GiteaResourceBudget,
-): GiteaWorld {
+export function buildGiteaWorld(gitWorld: GitWorld, resourceBudget?: GiteaResourceBudget): GiteaWorld {
   return {
     ...gitWorld,
     forgeSpecialization: "gitea",
-    prUniverse: [
-      { kind: "draft" },
-      { kind: "open" },
-      { kind: "approved" },
-      { kind: "merged" },
-      { kind: "closed" },
-    ],
-    reviewUniverse: [
-      { kind: "unresolved" },
-      { kind: "resolved" },
-    ],
+    prUniverse: [{ kind: "draft" }, { kind: "open" }, { kind: "approved" }, { kind: "merged" }, { kind: "closed" }],
+    reviewUniverse: [{ kind: "unresolved" }, { kind: "resolved" }],
     actionUniverse: [
       { kind: "queued" },
       { kind: "running" },
@@ -87,14 +70,9 @@ export type GiteaFeedback =
   | { kind: "ResourceBudgetExhausted"; resetAt: number }
   | { kind: "MergeBlocked"; reason: string };
 
-export type GiteaResult<T> =
-  | { ok: true; world: T }
-  | { ok: false; feedback: GiteaFeedback };
+export type GiteaResult<T> = { ok: true; world: T } | { ok: false; feedback: GiteaFeedback };
 
-export function canAffordGitea(
-  world: GiteaWorld,
-  restCost: number,
-): GiteaResult<GiteaWorld> {
+export function canAffordGitea(world: GiteaWorld, restCost: number): GiteaResult<GiteaWorld> {
   const budget = world.resourceBudget;
   if (!budget) return { ok: true, world };
   if (restCost > budget.restRemaining) {
@@ -106,11 +84,7 @@ export function canAffordGitea(
   return { ok: true, world };
 }
 
-export function registerInGitea<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function registerInGitea<A extends LifetimeState, B extends LifetimeState, T>(
   world: GiteaWorld,
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,
@@ -126,10 +100,7 @@ export const GITEA_PR_UNIVERSE: ReadonlyArray<GiteaPrLifetime> = [
   { kind: "closed" },
 ];
 
-export const GITEA_REVIEW_UNIVERSE: ReadonlyArray<GiteaReviewLifetime> = [
-  { kind: "unresolved" },
-  { kind: "resolved" },
-];
+export const GITEA_REVIEW_UNIVERSE: ReadonlyArray<GiteaReviewLifetime> = [{ kind: "unresolved" }, { kind: "resolved" }];
 
 export const GITEA_ACTION_UNIVERSE: ReadonlyArray<GiteaActionLifetime> = [
   { kind: "queued" },

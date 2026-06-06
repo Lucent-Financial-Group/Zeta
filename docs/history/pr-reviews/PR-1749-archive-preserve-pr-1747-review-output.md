@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1749 |
-| Title | archive: preserve PR 1747 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-06T23:18:59Z |
-| Merged at | 2026-05-06T23:22:35Z |
-| Merge commit SHA | `8f088cc5f8a580340447c9b694bbe58ce09c1793` |
-| Branch | `codex/archive-pr1747-review-output` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1749 |
-| Changed files | 2 |
-| Additions / deletions | +98 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1749                                                     |
+| Title                 | archive: preserve PR 1747 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-06T23:18:59Z                                     |
+| Merged at             | 2026-05-06T23:22:35Z                                     |
+| Merge commit SHA      | `8f088cc5f8a580340447c9b694bbe58ce09c1793`               |
+| Branch                | `codex/archive-pr1747-review-output`                     |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1749 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +98 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - preserves the PR #1747 review archive that the post-merge workflow generated but could not push to protected main
 - appends the corresponding docs/github/prs/manifest.jsonl entry through the normal PR path
 - keeps the failed direct-push workflow as signal; this PR is the branch-protection-safe recovery path
 
 ## Checks
+
 - git diff --check
 - git diff --cached --check
 - bun tools/hygiene/check-archive-header-section33.ts
@@ -40,15 +42,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

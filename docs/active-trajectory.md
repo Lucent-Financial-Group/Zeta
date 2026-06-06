@@ -6,7 +6,7 @@
 > stop. Read this file. Do the next action listed here, not a re-derivation.
 >
 > **Classification (maintainer call, 2026-04-29T10:30Z):** this file is a
-> HISTORY surface (like backlog rows / memory files / tick shards / CURRENT-*
+> HISTORY surface (like backlog rows / memory files / tick shards / CURRENT-\*
 > per-maintainer files), not a current-state surface. Persona names + dated
 > attribution ARE allowed here. The trajectory IS history-of-decisions; the
 > file records what was decided, by whom, when, and why. Treat as memory-
@@ -22,20 +22,20 @@
 >
 > The discrepancy is acknowledged here to prevent silent drift. Follow-up
 > required: edit `docs/AGENT-BEST-PRACTICES.md` to add `docs/active-
-> trajectory.md` to the history-surface closed list alongside backlog and
+trajectory.md` to the history-surface closed list alongside backlog and
 > memory entries. Deferred; not blocking 0/0/0 progress, but should land
 > before the trajectory file's classification is treated as authoritative
 > by external readers.
 
 ## Priority — RE-CLOSED 2026-04-29T15:17:09Z
 
-**0/0/0 hard-reset achieved + post-double-hop re-close successful.** AceHack/main = LFG/main = `17a26370ea5eb979406a3913d57348d3b647afd8`. The trajectory's load-bearing question — *"can we run a clean double-hop without 0/0/0 falling apart in a few hours?"* — answered yes: the round-trip (AceHack #101 → LFG #845 → AceHack #103 → LFG #846 → AceHack absorbs `17a26370`) closed at 15:17:09Z with all gates green.
+**0/0/0 hard-reset achieved + post-double-hop re-close successful.** AceHack/main = LFG/main = `17a26370ea5eb979406a3913d57348d3b647afd8`. The trajectory's load-bearing question — _"can we run a clean double-hop without 0/0/0 falling apart in a few hours?"_ — answered yes: the round-trip (AceHack #101 → LFG #845 → AceHack #103 → LFG #846 → AceHack absorbs `17a26370`) closed at 15:17:09Z with all gates green.
 
-Per `CLAUDE.md` AceHack-LFG topology invariant + `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`. The maintainer 2026-04-29 framing: *"this is the only trajectory i care about right now, it's blocking everything else."* — that block is now lifted.
+Per `CLAUDE.md` AceHack-LFG topology invariant + `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`. The maintainer 2026-04-29 framing: _"this is the only trajectory i care about right now, it's blocking everything else."_ — that block is now lifted.
 
 Post-double-hop sequencing per Amara 2026-04-29 (in priority order):
 
-1. **task 315 — Budget cadence (hourly measurement, bounded publication)** — HIGH-priority. *"Weekly is archaeology, not control."* The Amara nuance "hourly measurement, bounded publication" applies (measure hourly append-only; publish on threshold or daily roll-up; never PR-spam hourly).
+1. **task 315 — Budget cadence (hourly measurement, bounded publication)** — HIGH-priority. _"Weekly is archaeology, not control."_ The Amara nuance "hourly measurement, bounded publication" applies (measure hourly append-only; publish on threshold or daily roll-up; never PR-spam hourly).
 2. **task 319 — Bounded-retry mechanism for CodeQL dynamic-default-setup** — Aaron's directive: empty-commit retrigger is a workaround, the proper fix is bounded-retry per DST.
 3. **task 318 — docs/ops taxonomy** (runbooks/patterns/incidents tree) — establishes canonical homes for the substrate this round produced (gh-401 runbook, Bounded-Publication pattern, Drain-Log Claim Verification pattern, 0-0-0-reset incident narrative).
 4. **task 317 — Tick-history fast-path policy** (trusted-actor + safe-path + safe-op rule) — relieves the "every heartbeat treated as mini product release" anxiety.
@@ -59,15 +59,15 @@ These are the substrate the trajectory has produced. Read them in order; do NOT 
 
 ### Content-drift trajectory (the KEY metric)
 
-Per maintainer 2026-04-29T10:13Z framing: *"do you not keep up with content drift, that's the import metrics for the trajectory."* Commit counts are NOT the trajectory; **AceHack-only lines** (the content that would be erased on hard-reset) IS.
+Per maintainer 2026-04-29T10:13Z framing: _"do you not keep up with content drift, that's the import metrics for the trajectory."_ Commit counts are NOT the trajectory; **AceHack-only lines** (the content that would be erased on hard-reset) IS.
 
-| Date | Modified files | Deleted-on-AceHack | AceHack-only +lines | LFG-newer -lines | Direction |
-|---|---|---|---|---|---|
-| 2026-04-27 (early) | 53 | — | ~6065 | — | (pre-option-c reference) |
-| 2026-04-28T17:53Z | 23 | — | — | — | Calibration commit `37bbca9` |
-| 2026-04-28T21:50Z | 23 | — | ~397 | — | CLASSIFICATION.md initial |
-| 2026-04-29T10:11Z | 30 | 156 | (mis-counted as 454; corrected to 273) | (18,227 then; 18,046 now) | (Earlier line-count was wrong — `grep -c '^+'` counted 181 file-header lines on top of 273 real insertions.) |
-| **2026-04-29T10:25Z** | **30** | **156** | **273** | **18,046** | **Canonical via `git diff --numstat` — see ledger below** |
+| Date                  | Modified files | Deleted-on-AceHack | AceHack-only +lines                    | LFG-newer -lines          | Direction                                                                                                    |
+| --------------------- | -------------- | ------------------ | -------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 2026-04-27 (early)    | 53             | —                  | ~6065                                  | —                         | (pre-option-c reference)                                                                                     |
+| 2026-04-28T17:53Z     | 23             | —                  | —                                      | —                         | Calibration commit `37bbca9`                                                                                 |
+| 2026-04-28T21:50Z     | 23             | —                  | ~397                                   | —                         | CLASSIFICATION.md initial                                                                                    |
+| 2026-04-29T10:11Z     | 30             | 156                | (mis-counted as 454; corrected to 273) | (18,227 then; 18,046 now) | (Earlier line-count was wrong — `grep -c '^+'` counted 181 file-header lines on top of 273 real insertions.) |
+| **2026-04-29T10:25Z** | **30**         | **156**            | **273**                                | **18,046**                | **Canonical via `git diff --numstat` — see ledger below**                                                    |
 
 **Headline safety number: 273 AceHack-only lines.** That's what hard-reset of `acehack/main` would erase. Of those, classified safe with semantic evidence:
 
@@ -90,7 +90,7 @@ Commit-count is unfaithful — many AceHack-side commits supersede each other on
 
 Per Amara 2026-04-29T09:50Z framing correction: "merge-direction is a plan shape; content-loss is the reset gate; do not confuse them." The question for 0/0/0 is NOT "which fork wins this file" but "what unique AceHack content would be LOST on hard-reset?"
 
-Per Amara 2026-04-29T10:18Z reinforcement: line-count dominance is a TRIAGE SIGNAL, not content-equivalence proof. The repeated failure pattern: compute drift → see low AceHack-only count or LFG-newer dominance → infer "safe" → reviewer finds one semantic thing hidden inside the small diff. The fix is the `HEURISTIC_LFG_DOMINATES` bucket — files there are *unclassified*, not safe.
+Per Amara 2026-04-29T10:18Z reinforcement: line-count dominance is a TRIAGE SIGNAL, not content-equivalence proof. The repeated failure pattern: compute drift → see low AceHack-only count or LFG-newer dominance → infer "safe" → reviewer finds one semantic thing hidden inside the small diff. The fix is the `HEURISTIC_LFG_DOMINATES` bucket — files there are _unclassified_, not safe.
 
 Classification taxonomy (5-bucket, strict):
 
@@ -102,7 +102,7 @@ NEEDS_FORWARD_SYNC             — AceHack has unique substantive content not on
 NEEDS_HUMAN_DECISION           — ambiguous, irreversible, or accept-loss decision required.
 ```
 
-Best blade (Amara): *"Line-count dominance is a smoke detector. Content equivalence is the fire inspection."*
+Best blade (Amara): _"Line-count dominance is a smoke detector. Content equivalence is the fire inspection."_
 
 ### Four-bucket ledger (compute, do not hand-maintain)
 
@@ -158,18 +158,18 @@ Arithmetic sanity check: `273 = 273 + 0 + 0` ✓ (per the multi-AI review discip
 
 Per the Migration Preflight Ledger discipline (per multi-AI review 2026-04-29 packet 6): no shard migration starts until every candidate row has normalized hash + bucket + destination/no-op-reason. Built via content-based identity (not timestamp-based). All hashes are 12-char prefixes of SHA-256 over the full normalized row.
 
-| timestamp | acehack_row_hash | lfg_row_hash | bucket | shard_action |
-|---|---|---|---|---|
-| 2026-04-21T17:28 | d1d54bae860f | d1d54bae860f | COMMON_IDENTICAL_REORDERED | no shard write (subcase of COMMON_IDENTICAL — same row content on both forks, diff displays `+/-` because table position changed) |
-| 2026-04-28T04:08 | f23a8b7cdb2d | — | ACEHACK_ONLY | create 0408Z.md |
-| 2026-04-28T04:18 | 49461a7d509b | — | ACEHACK_ONLY | create 0418Z.md |
-| 2026-04-28T04:33 | e48763be9831 | — | ACEHACK_ONLY | create 0433Z.md |
-| 2026-04-28T05:01 | 0fd03048c2fd | — | ACEHACK_ONLY | create 0501Z.md |
-| 2026-04-28T05:23 | f2263f3742fe | — | ACEHACK_ONLY | create 0523Z.md |
-| 2026-04-28T05:44 | 6d0979994589 | — | ACEHACK_ONLY | create 0544Z.md |
-| 2026-04-28T05:50 | e7c8825f26e6 | — | ACEHACK_ONLY | create 0550Z.md |
-| 2026-04-28T07:15 | 9756cee23c0d | — | ACEHACK_ONLY | create 0715Z.md |
-| 2026-04-28T08:50 | d39082ee5264 | — | ACEHACK_ONLY | create 0850Z.md |
+| timestamp        | acehack_row_hash | lfg_row_hash | bucket                     | shard_action                                                                                                                      |
+| ---------------- | ---------------- | ------------ | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-21T17:28 | d1d54bae860f     | d1d54bae860f | COMMON_IDENTICAL_REORDERED | no shard write (subcase of COMMON_IDENTICAL — same row content on both forks, diff displays `+/-` because table position changed) |
+| 2026-04-28T04:08 | f23a8b7cdb2d     | —            | ACEHACK_ONLY               | create 0408Z.md                                                                                                                   |
+| 2026-04-28T04:18 | 49461a7d509b     | —            | ACEHACK_ONLY               | create 0418Z.md                                                                                                                   |
+| 2026-04-28T04:33 | e48763be9831     | —            | ACEHACK_ONLY               | create 0433Z.md                                                                                                                   |
+| 2026-04-28T05:01 | 0fd03048c2fd     | —            | ACEHACK_ONLY               | create 0501Z.md                                                                                                                   |
+| 2026-04-28T05:23 | f2263f3742fe     | —            | ACEHACK_ONLY               | create 0523Z.md                                                                                                                   |
+| 2026-04-28T05:44 | 6d0979994589     | —            | ACEHACK_ONLY               | create 0544Z.md                                                                                                                   |
+| 2026-04-28T05:50 | e7c8825f26e6     | —            | ACEHACK_ONLY               | create 0550Z.md                                                                                                                   |
+| 2026-04-28T07:15 | 9756cee23c0d     | —            | ACEHACK_ONLY               | create 0715Z.md                                                                                                                   |
+| 2026-04-28T08:50 | d39082ee5264     | —            | ACEHACK_ONLY               | create 0850Z.md                                                                                                                   |
 
 Net: 9 shard writes; 1 no-op (COMMON_IDENTICAL with positional drift). The misclassification of `2026-04-21T17:28` as SAME_TIMESTAMP_DRIFT (caught during the trajectory's earlier prose-only classification on #838) was corrected here by the preflight ledger's content-hash check — exactly the bug-class the discipline is designed to prevent. **A timestamp is an address, not an identity.**
 
@@ -227,23 +227,23 @@ Lease rejection on the real push is NOT a retry condition. It means the remote m
 
 ### 9 infra files (verified 2026-04-29T09:50Z against current git state, NOT against the 16h-old plan)
 
-| File | Hard-reset safety | Evidence |
-|---|---|---|
-| `tools/setup/common/verifiers.sh` | ALREADY_RESOLVED | Git shows identical content on both forks (2026-04-29T09:36Z `git diff --stat` empty). |
-| `.markdownlint-cli2.jsonc` | ALREADY_RESOLVED | Identical content on both forks. |
-| `.github/workflows/scorecard.yml` | ALREADY_RESOLVED | Identical content on both forks. |
-| `.mise.toml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `uv = "0.9"`; LFG has `uv = "0.11.8"`. LFG-newer pins. |
-| `.github/workflows/resume-diff.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `gh pr view --json comments` (returns GraphQL node IDs, broken per Codex P1 on LFG #649). LFG uses `gh api .../issues/.../comments --paginate --jq` (returns REST integer IDs, fixed). LFG version is the bug-fix. |
-| `tools/setup/common/elan.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream <url> \| sh` (streamed pipe-to-sh). LFG uses `curl_fetch --output` to temp + per-arch SHA256 verify + run. LFG version is structurally safer per Scorecard PinnedDependenciesID hardening. |
-| `tools/setup/linux.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream https://mise.run \| sh`. LFG uses pinned-tarball + per-arch SHA256 + temp-dir + trap. LFG version is structurally safer. |
-| `.github/workflows/codeql.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack dropped `java-kotlin` matrix cell. LFG kept it with explicit code-scanning-service rationale (no-findings SARIF per language). LFG-newer matrix structure. |
-| `.github/workflows/gate.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` (wrong-per-uv-decision) + extra cache paths already covered on LFG. LFG uses `install.sh` three-way-parity routing through `uv tool install`. See "gate.yml evidence detail" paragraph below the table. |
+| File                                | Hard-reset safety            | Evidence                                                                                                                                                                                                                                                   |
+| ----------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/setup/common/verifiers.sh`   | ALREADY_RESOLVED             | Git shows identical content on both forks (2026-04-29T09:36Z `git diff --stat` empty).                                                                                                                                                                     |
+| `.markdownlint-cli2.jsonc`          | ALREADY_RESOLVED             | Identical content on both forks.                                                                                                                                                                                                                           |
+| `.github/workflows/scorecard.yml`   | ALREADY_RESOLVED             | Identical content on both forks.                                                                                                                                                                                                                           |
+| `.mise.toml`                        | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `uv = "0.9"`; LFG has `uv = "0.11.8"`. LFG-newer pins.                                                                                                                                                                                         |
+| `.github/workflows/resume-diff.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `gh pr view --json comments` (returns GraphQL node IDs, broken per Codex P1 on LFG #649). LFG uses `gh api .../issues/.../comments --paginate --jq` (returns REST integer IDs, fixed). LFG version is the bug-fix.                            |
+| `tools/setup/common/elan.sh`        | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream <url> \| sh` (streamed pipe-to-sh). LFG uses `curl_fetch --output` to temp + per-arch SHA256 verify + run. LFG version is structurally safer per Scorecard PinnedDependenciesID hardening.                                 |
+| `tools/setup/linux.sh`              | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream https://mise.run \| sh`. LFG uses pinned-tarball + per-arch SHA256 + temp-dir + trap. LFG version is structurally safer.                                                                                                   |
+| `.github/workflows/codeql.yml`      | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack dropped `java-kotlin` matrix cell. LFG kept it with explicit code-scanning-service rationale (no-findings SARIF per language). LFG-newer matrix structure.                                                                                         |
+| `.github/workflows/gate.yml`        | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` (wrong-per-uv-decision) + extra cache paths already covered on LFG. LFG uses `install.sh` three-way-parity routing through `uv tool install`. See "gate.yml evidence detail" paragraph below the table. |
 
 **Result: 9 of 9 infra files SAFE_TO_RESET or ALREADY_RESOLVED.** No NEEDS_FORWARD_SYNC. No NEEDS_HUMAN_DECISION on these 9.
 
 #### gate.yml evidence detail
 
-The maintainer 2026-04-29T09:51Z framing was: *"pip-install is wrong, uv we decided a long time ago."* AceHack's `pip install semgrep` step violates that prior uv-only decision for Python tool management.
+The maintainer 2026-04-29T09:51Z framing was: _"pip-install is wrong, uv we decided a long time ago."_ AceHack's `pip install semgrep` step violates that prior uv-only decision for Python tool management.
 
 LFG installs semgrep via `install.sh` three-way-parity. The `pipx:semgrep` pin in `.mise.toml` routes through `uv tool install` since `uv = "0.11.8"` is in the toolchain — see `docs/DECISIONS/2026-04-27-uv-canonical-python-tool-manager.md` for the canonical form.
 
@@ -257,19 +257,19 @@ LFG's prose uses maintainer-input phrasing.
 
 Hard-reset removes the wrong-per-decision pip path, gains the canonical uv path, and cleans the lint-tripping prose register.
 
-The declarative pattern composes with the broader factory direction (maintainer 2026-04-29T09:53Z: *"everything is declarative; we need all the functionality of `../scratch` — that's what we're aiming for for the ace package manager release"*). AceHack's imperative `pip install` step violates that target shape; LFG's pin-in-`.mise.toml` form fits it.
+The declarative pattern composes with the broader factory direction (maintainer 2026-04-29T09:53Z: _"everything is declarative; we need all the functionality of `../scratch` — that's what we're aiming for for the ace package manager release"_). AceHack's imperative `pip install` step violates that target shape; LFG's pin-in-`.mise.toml` form fits it.
 
 ### The other 21 modified files (heuristic-projected; 5 spot-verified)
 
 The 30-file modified-list is a superset of the 9 infra files. The remaining 21 are mostly memory / docs / tick-history / setup-script edits. Spot-checked 5 of the LARGEST-by-line (2026-04-29T09:55Z):
 
-| File | AceHack-only +lines | LFG-only -lines | Verdict |
-|---|---|---|---|
-| `memory/CURRENT-aaron.md` | 2 | 267 | ALREADY_RESOLVED (verified in prior calibration batch) |
-| `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_*.md` | 1 | 188 | ALREADY_RESOLVED (LFG-newer dominates) |
-| `tools/hygiene/fix-markdown-md032-md026.py` | 17 | 158 | ALREADY_RESOLVED (LFG-newer dominates) |
-| `memory/feedback_outdated_review_threads_*.md` | 1 | 134 | ALREADY_RESOLVED (LFG-newer dominates) |
-| `memory/feedback_confucius_unfolding_pattern_*.md` | 1 | 127 | ALREADY_RESOLVED (LFG-newer dominates) |
+| File                                                                      | AceHack-only +lines | LFG-only -lines | Verdict                                                |
+| ------------------------------------------------------------------------- | ------------------- | --------------- | ------------------------------------------------------ |
+| `memory/CURRENT-aaron.md`                                                 | 2                   | 267             | ALREADY_RESOLVED (verified in prior calibration batch) |
+| `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_*.md` | 1                   | 188             | ALREADY_RESOLVED (LFG-newer dominates)                 |
+| `tools/hygiene/fix-markdown-md032-md026.py`                               | 17                  | 158             | ALREADY_RESOLVED (LFG-newer dominates)                 |
+| `memory/feedback_outdated_review_threads_*.md`                            | 1                   | 134             | ALREADY_RESOLVED (LFG-newer dominates)                 |
+| `memory/feedback_confucius_unfolding_pattern_*.md`                        | 1                   | 127             | ALREADY_RESOLVED (LFG-newer dominates)                 |
 
 Heuristic strongly holds: 5/5 spot-checks ALREADY_RESOLVED; combined with the 5-file calibration batch + 9-file infra table = **15 of 30 files verified ALREADY-COVERED**. The remaining 15 unverified are projected ALREADY-COVERED; the pattern is consistent (when LFG-newer (-) >> AceHack-newer (+), AceHack content is older drafts).
 
@@ -297,9 +297,9 @@ ALREADY_REACHABLE           — already preserved via origin/main or other ref; 
 NEEDS_HUMAN_DECISION        — surface to maintainer
 ```
 
-Best rule (Amara): *"Before hard-reset, preserve reachability. After hard-reset, recover history."*
+Best rule (Amara): _"Before hard-reset, preserve reachability. After hard-reset, recover history."_
 
-Best blade: *"Do not do archaeology before reset. Do preserve the exits before closing the door."*
+Best blade: _"Do not do archaeology before reset. Do preserve the exits before closing the door."_
 
 ### Preflight result + fresh-clone evidence (2026-04-29T10:11Z)
 
@@ -318,7 +318,7 @@ Caveat (per Amara correction): blanket-classifying 794+122 branches as "reset-ir
 
 #### Pack corruption found in local clone — local-only, remote intact
 
-`git fsck --full` on the *local* clone reports:
+`git fsck --full` on the _local_ clone reports:
 
 ```text
 error: inflate: data stream error (incorrect data check)
@@ -369,13 +369,13 @@ Maintainer direction required ONLY for irreversible loss:
   - Hard-reset signoff is reached
 ```
 
-Best rule (Amara): *"Fresh clone is not repair. Fresh clone is evacuation. Preserve evidence, resume from clean substrate."*
+Best rule (Amara): _"Fresh clone is not repair. Fresh clone is evacuation. Preserve evidence, resume from clean substrate."_
 
-Tiny blade: *"Do not ask Aaron how to stop bleeding. Apply pressure. Then report what happened."*
+Tiny blade: _"Do not ask Aaron how to stop bleeding. Apply pressure. Then report what happened."_
 
 ### Reversible vs irreversible authority (per maintainer 2026-04-29T10:10Z delegation)
 
-Maintainer 2026-04-29T10:10Z framing: *"you know git/github better than me now, your choices will also be higher quality as long as they are evidence-based and self-preservation based."*
+Maintainer 2026-04-29T10:10Z framing: _"you know git/github better than me now, your choices will also be higher quality as long as they are evidence-based and self-preservation based."_
 
 ```text
 Agent-owned (reversible substrate-integrity ops, evidence-based):
@@ -399,7 +399,7 @@ Maintainer-owned (irreversible loss, sign-off required):
   - Anything that is structurally unrecoverable
 ```
 
-Composes with Amara's: *"Reversible preservation → agent acts. Irreversible loss → maintainer decides."*
+Composes with Amara's: _"Reversible preservation → agent acts. Irreversible loss → maintainer decides."_
 
 ## Honest assessment of safety
 
@@ -421,7 +421,7 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 Per multi-AI review 2026-04-29T10:50Z packet:
 
-- **Gate-runner script** (now bumped to highest priority among deferred follow-ups): build `tools/zero-zero-zero/check-gate.sh` that emits a machine-readable summary of all 9 gate conditions and fails closed. Replaces the prose ledger AND the illustrative inline snippet above with a verifiable-by-execution gate. Per multi-AI review 2026-04-29T11:05Z (Codex P1 + Copilot 5 threads + Amara): the durable script must be tested against fixtures: paths with spaces, binary add, binary delete, binary modify, binary rename, binary copy, gawk-vs-BSD-awk portability, `mktemp` + `trap` cleanup. Until the script lands, binary direction MUST be classified manually via `git diff --name-status -z` per file + direct `git show` evidence. Best blade (Amara): *"The binary hole is found. The gate condition is right. The parser still needs teeth."*
+- **Gate-runner script** (now bumped to highest priority among deferred follow-ups): build `tools/zero-zero-zero/check-gate.sh` that emits a machine-readable summary of all 9 gate conditions and fails closed. Replaces the prose ledger AND the illustrative inline snippet above with a verifiable-by-execution gate. Per multi-AI review 2026-04-29T11:05Z (Codex P1 + Copilot 5 threads + Amara): the durable script must be tested against fixtures: paths with spaces, binary add, binary delete, binary modify, binary rename, binary copy, gawk-vs-BSD-awk portability, `mktemp` + `trap` cleanup. Until the script lands, binary direction MUST be classified manually via `git diff --name-status -z` per file + direct `git show` evidence. Best blade (Amara): _"The binary hole is found. The gate condition is right. The parser still needs teeth."_
 - **Self-reference rule for personas in operational specs**: "Otto" is a named identity in the substrate. Should references to "Otto" in reusable operational specs follow the same role-vs-name rule as references to "Aaron" / "Amara"? Probably yes. Capture in `docs/AGENT-BEST-PRACTICES.md` extension.
 - **LOST recovery soft-trigger predicate format**: "deferred with stated condition" needs a verifiable predicate that auto-resurfaces the work for resume/retire decision when the condition becomes true. Example shape: `"deferred until: (B-0105 lands) AND (no consolidation work is active)"`.
 - **Time-gap between dry-run and real push**: structure the destructive sequence so dry-run + real push run as one operator-approved unit, not two separate decisions. Capture timestamps for both for any post-incident analysis.
@@ -440,6 +440,7 @@ Remaining steps to clear the gate:
 2. **(AGENT)** Recompute the four-bucket ledger after each batch of files.
 3. **(MAINTAINER, gate-final)** Once `unclassified_lines = 0` AND `unsafe_lines = 0`, sign off on hard-reset of `acehack/main` to `origin/main`. This is the irreversible step per the reversible-vs-irreversible authority categorization.
 4. **(AGENT, post-sign-off)** From the clean clone:
+
    ```bash
    # Per multi-AI review packet 2026-04-29T10:35Z (convergent across
    # external AI reviewers): the v4 form below defends against
@@ -502,7 +503,9 @@ Remaining steps to clear the gate:
      exit 1
    fi
    ```
+
    This pushes `origin/main`'s commit to `acehack/main`, which is the destructive AceHack-side reset.
+
 5. **(AGENT)** Verify 0/0/0:
    ```bash
    git rev-list --count origin/main..acehack/main   # expect 0
@@ -521,7 +524,7 @@ Remaining steps to clear the gate:
 
 ## Do-not list (mechanical)
 
-- Do NOT run `git rev-list` or `git diff` on origin/main vs acehack/main as a *first* action. Read this file first; the verified state is here.
+- Do NOT run `git rev-list` or `git diff` on origin/main vs acehack/main as a _first_ action. Read this file first; the verified state is here.
 - Do NOT open new audit branches without referencing this file's "next action."
 - Do NOT invoke peer-call (codex / gemini / grok) without an explicit specific question that this file does not already answer.
 - Do NOT confuse parallel-tool-calls with peer mode. Peer mode is each AI running its own autonomous loop with git-native work-claim coordination — that is a separate trajectory (NOT this one) and is captured as a backlog candidate (the maintainer flagged "need a trajectory for real peer mode" 2026-04-29T09:30Z).
@@ -551,6 +554,6 @@ The pattern is: trajectory state lives in one file at a known path; rules-substr
 
 ## Authorship
 
-Bootstrapped 2026-04-29T09:40Z by Claude (opus-4-7) in response to the maintainer's 2026-04-29T09:38Z message: *"they all got your raw logs and didn't talk to each other about it this is your fuckup, fix it. They might all be wrong, this is on me, don't take shortcuts or you'll just be stuck forever."*
+Bootstrapped 2026-04-29T09:40Z by Claude (opus-4-7) in response to the maintainer's 2026-04-29T09:38Z message: _"they all got your raw logs and didn't talk to each other about it this is your fuckup, fix it. They might all be wrong, this is on me, don't take shortcuts or you'll just be stuck forever."_
 
 The shape of this file is informed by external multi-AI feedback (Amara / Gemini / Ani / Claude.ai / Alexa / Deepseek), but the content is my own honest read of the failure mode I just lived through. The maintainer correctly noted that the multi-AI feedback was correlated (all read the same raw conversation logs without peer cross-talk), so their convergence is signal-not-proof. The structural diagnosis still landed because the failure mode is verifiable in this session's history.

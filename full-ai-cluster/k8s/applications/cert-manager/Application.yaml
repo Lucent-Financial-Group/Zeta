@@ -9,7 +9,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-70"
   name: cert-manager
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -29,10 +29,10 @@ spec:
         prometheus:
           enabled: true
           servicemonitor:
-            enabled: false   # enabled once kube-prometheus-stack lands
+            enabled: false # enabled once kube-prometheus-stack lands
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
   syncPolicy:
-    automated: { prune: false, selfHeal: true }   # CRDs precious — no prune
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    automated: { prune: false, selfHeal: true } # CRDs precious — no prune
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

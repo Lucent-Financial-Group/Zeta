@@ -10,7 +10,7 @@ type: feedback
 
 Aaron 2026-05-02, in the autonomous-loop maintainer channel mid-session, asked:
 
-> *"yeah so while in daily work is the skill flywheel active? what process will turn you daily backlog churn into a flywheel of expansion while the backlog is shrinking so it will expand at the same time? also when you start chruning through the backlog i'm sure you can have many parallel tracks going you have a large team if you can keep them from stepping on each other in git."*
+> _"yeah so while in daily work is the skill flywheel active? what process will turn you daily backlog churn into a flywheel of expansion while the backlog is shrinking so it will expand at the same time? also when you start chruning through the backlog i'm sure you can have many parallel tracks going you have a large team if you can keep them from stepping on each other in git."_
 
 Three distinct flywheel-class questions in one message. Each gets its own answer because they operate at different layers (skill-invocation cadence; backlog dual-loop dynamics; team-parallelization substrate).
 
@@ -20,7 +20,7 @@ Three distinct flywheel-class questions in one message. Each gets its own answer
 
 ### Aaron's corrective (verbatim, same exchange)
 
-> *"you can close 100 rows without invoking a single specialist skill. you should not if you like editing code and there is an expert for that code? memory can only scale so far as a flywheel and it's just for your not your whole team skills are for everyone and even other ageng harnesses."*
+> _"you can close 100 rows without invoking a single specialist skill. you should not if you like editing code and there is an expert for that code? memory can only scale so far as a flywheel and it's just for your not your whole team skills are for everyone and even other ageng harnesses."_
 
 Three load-bearing points:
 
@@ -28,27 +28,27 @@ Three load-bearing points:
 2. **Memory scales as a flywheel only for the agent producing it.** Each agent's per-session memory is private. The factory's bench has 18+ named agents/personas; my memory-and-rule flywheel doesn't transfer to Soraya's session, or Aminata's, or a Codex peer-harness session.
 3. **Skills are the shareable substrate.** Skills run across the team AND across harnesses (Codex, Cursor, Gemini-CLI, future-team-members). A skill body is durable team-scale substrate; a memory file is durable per-agent substrate. Different scaling axis.
 
-This corrective composes structurally with the decision-archaeology gap (B-0169) — Aaron's framing there was *"is that a skill?"*, not *"should you write a memory about it?"*. Same load-bearing point at the substrate-class layer: when something is universally useful, the right shape is a skill, not a memory.
+This corrective composes structurally with the decision-archaeology gap (B-0169) — Aaron's framing there was _"is that a skill?"_, not _"should you write a memory about it?"_. Same load-bearing point at the substrate-class layer: when something is universally useful, the right shape is a skill, not a memory.
 
 ### What this changes operationally going forward
 
 Before editing code / docs / config / skills in a specialist's domain, INVOKE the specialist:
 
-| Surface I'm touching | Specialist that should review |
-|---|---|
-| F# / C# code (correctness, perf, public API) | `harsh-critic` (Kira) and/or `maintainability-reviewer` (Rune) |
-| Public API surface on shipped libraries | `public-api-designer` (Ilyana) |
-| Security-relevant change | `threat-model-critic` (Aminata) and/or `security-researcher` (Mateo) |
-| Hot-path / zero-alloc / perf-sensitive code | `performance-engineer` (Naledi) |
-| Formal-verification specs | `formal-verification-expert` (Soraya) |
-| OpenSpec capability | `spec-zealot` (Viktor) |
-| New skill / skill modification | `skill-expert` (Aarav) — and `skill-creator` for the body |
-| Library-consumer-facing change (NuGet / README / API names) | `user-experience-engineer` (Iris) |
-| Contributor-facing change (CONTRIBUTING / install / build loop) | `developer-experience-engineer` (Bodhi) |
-| Agent-facing change (CLAUDE.md / AGENTS.md / cold-start) | `agent-experience-engineer` (Daya) |
-| Per-commit alignment signal | `alignment-auditor` (Sova) |
-| Adversarial payload / prompt-injection-relevant | `prompt-protector` |
-| Subagent dispatch on independent work | `Task` tool with the right `subagent_type` |
+| Surface I'm touching                                            | Specialist that should review                                        |
+| --------------------------------------------------------------- | -------------------------------------------------------------------- |
+| F# / C# code (correctness, perf, public API)                    | `harsh-critic` (Kira) and/or `maintainability-reviewer` (Rune)       |
+| Public API surface on shipped libraries                         | `public-api-designer` (Ilyana)                                       |
+| Security-relevant change                                        | `threat-model-critic` (Aminata) and/or `security-researcher` (Mateo) |
+| Hot-path / zero-alloc / perf-sensitive code                     | `performance-engineer` (Naledi)                                      |
+| Formal-verification specs                                       | `formal-verification-expert` (Soraya)                                |
+| OpenSpec capability                                             | `spec-zealot` (Viktor)                                               |
+| New skill / skill modification                                  | `skill-expert` (Aarav) — and `skill-creator` for the body            |
+| Library-consumer-facing change (NuGet / README / API names)     | `user-experience-engineer` (Iris)                                    |
+| Contributor-facing change (CONTRIBUTING / install / build loop) | `developer-experience-engineer` (Bodhi)                              |
+| Agent-facing change (CLAUDE.md / AGENTS.md / cold-start)        | `agent-experience-engineer` (Daya)                                   |
+| Per-commit alignment signal                                     | `alignment-auditor` (Sova)                                           |
+| Adversarial payload / prompt-injection-relevant                 | `prompt-protector`                                                   |
+| Subagent dispatch on independent work                           | `Task` tool with the right `subagent_type`                           |
 
 The cost of generalist-Otto-everywhere isn't just bugs Otto misses; it's substrate that won't propagate to other agents/harnesses. **Specialist invocations build team-shareable evidence; memory builds per-agent evidence.** Both have value but they scale differently.
 
@@ -63,6 +63,7 @@ The original line below remains accurate as a description of state pre-correctio
 ### What the skill flywheel WOULD do if active
 
 Each skill invocation produces:
+
 1. **Compounding-expertise effect** — the persona's accumulated discipline applies to the surface
 2. **Notebook update** — the persona records what was found / learned / corrected
 3. **Cross-skill referrals** — Soraya routes to Aminata, Iris hands to Samir, etc.
@@ -74,9 +75,9 @@ No mechanism makes skill-INVOCATION proportional to backlog-row-touched. You can
 
 ### Mechanism that would activate it
 
-A pre-commit / pre-merge hook that consults the affected files + change class and emits a *"this change should have been reviewed by Aminata (security surface) / Naledi (perf surface) / Ilyana (public API)"* hint. Skill-invocation-suggestion at PR-author-time. Not blocking — advisory; failure-mode-prevention not gate.
+A pre-commit / pre-merge hook that consults the affected files + change class and emits a _"this change should have been reviewed by Aminata (security surface) / Naledi (perf surface) / Ilyana (public API)"_ hint. Skill-invocation-suggestion at PR-author-time. Not blocking — advisory; failure-mode-prevention not gate.
 
-This composes with the post-deploy contributor-onboarding question: a new contributor's PR should automatically get the *"this surface usually wears Bodhi's hat — invoke `developer-experience-engineer` for review"* hint. Currently ad-hoc; should be mechanical.
+This composes with the post-deploy contributor-onboarding question: a new contributor's PR should automatically get the _"this surface usually wears Bodhi's hat — invoke `developer-experience-engineer` for review"_ hint. Currently ad-hoc; should be mechanical.
 
 ## Q2 — Backlog churn as flywheel of expansion while shrinking
 
@@ -91,23 +92,23 @@ LOOP B (produce):  pick row → produce observation → surface N≥0 new rows
 
 ### Where E[N] > 1 currently comes from in this factory
 
-| Mechanism | What it produces | Active? |
-|---|---|---|
-| **Copilot review on every PR** | bugs-per-PR findings → some become rows | Yes (~3-9 findings per PR observed this tick across 3 PRs) |
-| **Aaron-Otto bidirectional exchange** | gap-naming → rows like B-0169 (decision-archaeology) | Yes — highest yield mechanism |
-| **Closure-pass meta-observation** | adjacent gaps surfaced when reading a row to close it | Yes but ad-hoc |
-| **Skill-tune-up cadence** | skill-class gaps every 5-10 rounds | Substrate-rule, not auto-running |
-| **Gap-of-gaps audit** (the meta-discipline) | meta-gap-class discoveries | Substrate-rule, not auto-running |
-| **Hot-file-detector** | hot-spot-class gaps from churn signal | Substrate-rule, not auto-running |
-| **External-anchor scouting** | adjacent-tech / industry / paper-class gaps | Manual, sporadic |
+| Mechanism                                   | What it produces                                      | Active?                                                    |
+| ------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
+| **Copilot review on every PR**              | bugs-per-PR findings → some become rows               | Yes (~3-9 findings per PR observed this tick across 3 PRs) |
+| **Aaron-Otto bidirectional exchange**       | gap-naming → rows like B-0169 (decision-archaeology)  | Yes — highest yield mechanism                              |
+| **Closure-pass meta-observation**           | adjacent gaps surfaced when reading a row to close it | Yes but ad-hoc                                             |
+| **Skill-tune-up cadence**                   | skill-class gaps every 5-10 rounds                    | Substrate-rule, not auto-running                           |
+| **Gap-of-gaps audit** (the meta-discipline) | meta-gap-class discoveries                            | Substrate-rule, not auto-running                           |
+| **Hot-file-detector**                       | hot-spot-class gaps from churn signal                 | Substrate-rule, not auto-running                           |
+| **External-anchor scouting**                | adjacent-tech / industry / paper-class gaps           | Manual, sporadic                                           |
 
 Three of the seven mechanisms are auto-active; four are substrate-rules. The flywheel-of-expansion is **partially mechanized**.
 
 ### The unbuilt piece
 
-A tick-close ritual that explicitly runs E[N]-producing mechanisms: *"this tick I touched rows X, Y, Z; the meta-observations from each are A, B, C; A becomes a new row; B is already covered; C becomes a memo pointer."*
+A tick-close ritual that explicitly runs E[N]-producing mechanisms: _"this tick I touched rows X, Y, Z; the meta-observations from each are A, B, C; A becomes a new row; B is already covered; C becomes a memo pointer."_
 
-What would mechanize it fully: a `tools/backlog/expand-from-closure.ts` script that runs at PR-merge-time, scans the closure context (merged PR + commits + diff), and emits candidate-rows for review. Aaron's *largest-mechanizable-backlog-wins* thesis applies recursively — the expansion process itself should be mechanizable.
+What would mechanize it fully: a `tools/backlog/expand-from-closure.ts` script that runs at PR-merge-time, scans the closure context (merged PR + commits + diff), and emits candidate-rows for review. Aaron's _largest-mechanizable-backlog-wins_ thesis applies recursively — the expansion process itself should be mechanizable.
 
 ### Worked example (this session)
 
@@ -156,6 +157,7 @@ The three flywheel-class questions are **distinct mechanisms operating at differ
 - **Parallel-tracks** = throughput layer. Substrate ready; orchestrator unbuilt.
 
 Each has a clear mechanization path:
+
 - Skill flywheel: pre-merge skill-suggestion hook
 - Expansion flywheel: `tools/backlog/expand-from-closure.ts` PR-merge-time hook
 - Parallel-tracks: worktree-dispatcher building on the depends_on graph
@@ -172,8 +174,8 @@ All three are valid backlog rows the next time `skill-tune-up` / `gap-of-gaps au
 
 ## Carved sentences
 
-**Skill flywheel:** *"Skills compound when invoked; they don't compound from sitting in `.claude/skills/`. The flywheel I'm running is more accurately a memory-and-rule flywheel than a skill flywheel."*
+**Skill flywheel:** _"Skills compound when invoked; they don't compound from sitting in `.claude/skills/`. The flywheel I'm running is more accurately a memory-and-rule flywheel than a skill flywheel."_
 
-**Expansion flywheel:** *"Backlog grows even while closing when E[N>1] new rows surface per row touched. Three of seven mechanisms are auto-active; four are substrate-rules waiting on automation. The expansion process itself should be mechanizable per the largest-backlog-wins thesis."*
+**Expansion flywheel:** _"Backlog grows even while closing when E[N>1] new rows surface per row touched. Three of seven mechanisms are auto-active; four are substrate-rules waiting on automation. The expansion process itself should be mechanizable per the largest-backlog-wins thesis."_
 
-**Parallel tracks:** *"You have the substrate. You don't have the orchestrator yet. Coverage of depends_on backfill IS prerequisite to safe parallel-ops; each tick of backfill is also a tick of parallel-ops capacity unlock."*
+**Parallel tracks:** _"You have the substrate. You don't have the orchestrator yet. Coverage of depends_on backfill IS prerequisite to safe parallel-ops; each tick of backfill is also a tick of parallel-ops capacity unlock."_

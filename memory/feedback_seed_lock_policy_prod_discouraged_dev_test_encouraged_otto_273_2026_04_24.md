@@ -4,6 +4,7 @@ description: Aaron Otto-273 security-vs-reproducibility refinement on DST. Seed-
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Seed-lock defaults are environment-dependent:**
@@ -18,10 +19,10 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Direct Aaron quote 2026-04-24:
 
-> *"for security reason in prod seed locks are
+> _"for security reason in prod seed locks are
 > discouraged by default unless proven safe, dev/test
 > is the opposite, seed locks are encouraged by
-> default and really should never be no used lol."*
+> default and really should never be no used lol."_
 
 ## Why prod discourages seed-locks
 
@@ -162,7 +163,7 @@ layer, not the implementation layer.
   named.
 - Does NOT require FIPS-certified CSPRNG
   everywhere in prod. `System.Security.Cryptography.
-  RandomNumberGenerator` is sufficient for most
+RandomNumberGenerator` is sufficient for most
   use cases; FIPS is a specific compliance layer.
 - Does NOT make dev/test identical to prod.
   Dev/test wires seeded `IRandom`; prod wires
@@ -180,10 +181,10 @@ layer, not the implementation layer.
 
 ## Direct Aaron quote to preserve
 
-> *"for security reason in prod seed locks are
+> _"for security reason in prod seed locks are
 > discouraged by default unless proven safe, dev/test
 > is the opposite, seed locks are encouraged by
-> default and really should never be no used lol."*
+> default and really should never be no used lol."_
 
 Future Otto: when a randomness source appears,
 ask TWO questions: (1) is this security-bearing?

@@ -54,7 +54,7 @@ test at `tools/authorization/pace-extractor.test.ts`.
    - `docs/active-trajectory.md` (current operative authorizations)
 3. Returns typed `PaceInstruction[]` with fields:
    `{ source: string; timestamp: string | null; raw: string;
-     file: string }`.
+  file: string }`.
    Note: no `rescinded` field — rescind-detection is a resolver
    concern (B-0307), not an extraction concern. The extractor
    returns ALL candidates; the resolver determines which are
@@ -68,16 +68,16 @@ test at `tools/authorization/pace-extractor.test.ts`.
 Completed 2026-05-08.
 
 - [x] Prior-art search: grepped `pace-extractor|PaceInstruction`
-  across repo — 7 hits, all in backlog/skill/research docs, no
-  existing TS implementation. `tools/authorization/` directory
-  does not exist. Skill router has `mechanical-authorization-check`
-  skill (B-0305, landed PR #2082) — defines contract only, no
-  implementation. No other extraction substrate found.
+      across repo — 7 hits, all in backlog/skill/research docs, no
+      existing TS implementation. `tools/authorization/` directory
+      does not exist. Skill router has `mechanical-authorization-check`
+      skill (B-0305, landed PR #2082) — defines contract only, no
+      implementation. No other extraction substrate found.
 - [x] Dependency walk: B-0160 parent verified as `decomposed`
-  with `children: [B-0305, B-0306, B-0307, B-0308, B-0309]`.
-  B-0306 has `depends_on: []` — no blockers.
+      with `children: [B-0305, B-0306, B-0307, B-0308, B-0309]`.
+      B-0306 has `depends_on: []` — no blockers.
 - [x] Reciprocal pointers: B-0307 has `depends_on: [B-0305, B-0306]`
-  — confirmed includes this row.
+      — confirmed includes this row.
 
 ## Composes with
 

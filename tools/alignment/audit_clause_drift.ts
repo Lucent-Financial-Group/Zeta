@@ -94,8 +94,16 @@ function parseArgs(argv: readonly string[]): ParseResult {
   while (i < argv.length) {
     const arg = argv[i] ?? "";
     if (arg === "-h" || arg === "--help") return { kind: "help" };
-    if (arg === "--json") { state.json = true; i += 1; continue; }
-    if (arg === "--md") { state.md = true; i += 1; continue; }
+    if (arg === "--json") {
+      state.json = true;
+      i += 1;
+      continue;
+    }
+    if (arg === "--md") {
+      state.md = true;
+      i += 1;
+      continue;
+    }
     if (arg === "--base") {
       const next = argv[i + 1];
       if (next === undefined) return { kind: "error", message: "audit_clause_drift: --base requires a ref" };
@@ -305,7 +313,9 @@ function emitMd(r: DriftResult): string {
 
 function emitHuman(r: DriftResult): string {
   const lines: string[] = [];
-  lines.push(`clause_drift base=${r.baseRef} head=${r.headRef} base_clauses=${String(r.baseClauses)} head_clauses=${String(r.headClauses)} diffs=${String(r.diffs.length)}`);
+  lines.push(
+    `clause_drift base=${r.baseRef} head=${r.headRef} base_clauses=${String(r.baseClauses)} head_clauses=${String(r.headClauses)} diffs=${String(r.diffs.length)}`,
+  );
   lines.push("");
 
   if (r.diffs.length === 0) {
@@ -314,13 +324,14 @@ function emitHuman(r: DriftResult): string {
   }
 
   for (const d of r.diffs) {
-    const label = d.kind === "added"
-      ? `+ ${d.id} "${d.headTitle ?? ""}"`
-      : d.kind === "removed"
-        ? `- ${d.id} "${d.baseTitle ?? ""}"`
-        : d.kind === "title-changed"
-          ? `~ ${d.id} "${d.baseTitle ?? ""}" -> "${d.headTitle ?? ""}"`
-          : `~ ${d.id} "${d.baseTitle ?? ""}" (body changed)`;
+    const label =
+      d.kind === "added"
+        ? `+ ${d.id} "${d.headTitle ?? ""}"`
+        : d.kind === "removed"
+          ? `- ${d.id} "${d.baseTitle ?? ""}"`
+          : d.kind === "title-changed"
+            ? `~ ${d.id} "${d.baseTitle ?? ""}" -> "${d.headTitle ?? ""}"`
+            : `~ ${d.id} "${d.baseTitle ?? ""}" (body changed)`;
     lines.push(label);
 
     if (d.dependentSurfaces.length > 0) {
@@ -335,7 +346,7 @@ export function main(argv: readonly string[]): ExitCode {
   if (parsed.kind === "help") {
     process.stdout.write(
       "Usage: audit_clause_drift.ts [--base REF] [--head REF] [--json | --md]\n" +
-      "  Defaults: --base <default-branch> --head HEAD\n",
+        "  Defaults: --base <default-branch> --head HEAD\n",
     );
     return 0;
   }
@@ -357,9 +368,7 @@ export function main(argv: readonly string[]): ExitCode {
     process.stdout.write(`${emitHuman(result)}\n`);
   }
 
-  const hasRemovalOrChange = result.diffs.some(
-    (d) => d.kind === "removed" || d.kind === "body-changed",
-  );
+  const hasRemovalOrChange = result.diffs.some((d) => d.kind === "removed" || d.kind === "body-changed");
   return hasRemovalOrChange ? 1 : 0;
 }
 

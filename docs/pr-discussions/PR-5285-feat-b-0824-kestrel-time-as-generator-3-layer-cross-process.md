@@ -74,7 +74,7 @@ Third-AI substrate cascade on B-0824 over 2026-05-26 (after PR #5277 DeepSeek/Pr
 
 - [x] Worktree freshness verified pre-commit (\`ls-tree HEAD = 61\`, \`status --short = 0\`)
 - [x] Post-commit canary green (\`ls-tree HEAD == ls-tree HEAD~1 == 61\`)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] No primary-checkout contamination (isolated worktree at \`/private/tmp/zeta-kestrel-cross-process-determinism-2026-05-26\`)
 - [ ] CI green (required checks)
 - [ ] Copilot review pass

@@ -9,7 +9,32 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0998]
 composes_with: [B-0998, B-0999, B-0985, B-0428, B-0547, B-0543, B-0544]
-tags: [infer-net, infernet-rewrite, bayesian-inference, factor-graph, message-passing, belief-propagation, expectation-propagation, vmp, gibbs, sum-product, semiring, dbsp, nested-circuit, fixpoint, conjugate-prior, exponential-family, seed-core, seed-ce, model-dsl, incremental-inference, fsharp, research, aaron]
+tags:
+  [
+    infer-net,
+    infernet-rewrite,
+    bayesian-inference,
+    factor-graph,
+    message-passing,
+    belief-propagation,
+    expectation-propagation,
+    vmp,
+    gibbs,
+    sum-product,
+    semiring,
+    dbsp,
+    nested-circuit,
+    fixpoint,
+    conjugate-prior,
+    exponential-family,
+    seed-core,
+    seed-ce,
+    model-dsl,
+    incremental-inference,
+    fsharp,
+    research,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,7 +42,7 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02: *"we want to rewrite infer.net completely maybe this is our reason to start"* — said while standing up the seed core in F# (B-0998). This is **not new scope**: it is the framework's long-stated inference future-state finally getting its starting point. `peer-call-infrastructure` already names it — *"future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer"* — and B-0998 defined the seed as *"an F# computation-expression DSL over a reduced Bayesian Infer.NET model."* The seed CE **is** the model-building frontend of this engine. Aaron's instinct is right: the seed core is the place to start the rewrite.
+Aaron 2026-06-02: _"we want to rewrite infer.net completely maybe this is our reason to start"_ — said while standing up the seed core in F# (B-0998). This is **not new scope**: it is the framework's long-stated inference future-state finally getting its starting point. `peer-call-infrastructure` already names it — _"future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer"_ — and B-0998 defined the seed as _"an F# computation-expression DSL over a reduced Bayesian Infer.NET model."_ The seed CE **is** the model-building frontend of this engine. Aaron's instinct is right: the seed core is the place to start the rewrite.
 
 ## License posture — clean F# reimplementation (MIT)
 
@@ -25,30 +50,30 @@ Infer.NET is **MIT-licensed open-source** ([dotnet/infer](https://github.com/dot
 
 ## Clean-room spec from formal-proof papers + formal verification (Aaron 2026-06-02)
 
-Aaron 2026-06-02: *"there are papers for everything in f# with formal proofs we can borrow and use for cleanroom spec."* The **clean-room spec source is the peer-reviewed literature with formal proofs**, not dotnet/infer's code — the *strongest* clean-room posture (spec-from-published-math, implementation-in-F#) AND it adds a **formal-verification dimension**: the algorithms come with *proven* properties, so the implementation gets test obligations + property tests + candidate machine-checked proofs for free.
+Aaron 2026-06-02: _"there are papers for everything in f# with formal proofs we can borrow and use for cleanroom spec."_ The **clean-room spec source is the peer-reviewed literature with formal proofs**, not dotnet/infer's code — the _strongest_ clean-room posture (spec-from-published-math, implementation-in-F#) AND it adds a **formal-verification dimension**: the algorithms come with _proven_ properties, so the implementation gets test obligations + property tests + candidate machine-checked proofs for free.
 
-| Algorithm | Clean-room spec paper (study-and-cite) | The proven property → F# obligation |
-|---|---|---|
-| Factor graphs / **sum-product BP** | Kschischang, Frey, Loeliger, *"Factor Graphs and the Sum-Product Algorithm"* (IEEE IT 2001) | BP is **exact on trees** → property test: tree-BP marginals = brute-force marginals |
-| **Expectation Propagation** | Minka, *"Expectation Propagation for approximate Bayesian inference"* (UAI 2001) + thesis | EP fixed point = **stationary point of the (local) divergence** → fixed-point + moment-match law |
-| **Variational Message Passing** | Winn & Bishop, *"Variational Message Passing"* (JMLR 2005) | VMP **monotonically increases the ELBO** → monotonicity property test |
-| EP / VMP / BP **unified** | Minka, *"Divergence measures and message passing"* (MSR-TR 2005) | all three = message passing minimizing an α-divergence → one message-op algebra, three projections |
-| Exponential-family / conjugacy | std exp-family + conjugate-prior literature (Bishop PRML ch.2/10) | conjugate update = exact message product → conjugate-exactness test vs `BayesianAggregate` |
+| Algorithm                          | Clean-room spec paper (study-and-cite)                                                      | The proven property → F# obligation                                                                |
+| ---------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Factor graphs / **sum-product BP** | Kschischang, Frey, Loeliger, _"Factor Graphs and the Sum-Product Algorithm"_ (IEEE IT 2001) | BP is **exact on trees** → property test: tree-BP marginals = brute-force marginals                |
+| **Expectation Propagation**        | Minka, _"Expectation Propagation for approximate Bayesian inference"_ (UAI 2001) + thesis   | EP fixed point = **stationary point of the (local) divergence** → fixed-point + moment-match law   |
+| **Variational Message Passing**    | Winn & Bishop, _"Variational Message Passing"_ (JMLR 2005)                                  | VMP **monotonically increases the ELBO** → monotonicity property test                              |
+| EP / VMP / BP **unified**          | Minka, _"Divergence measures and message passing"_ (MSR-TR 2005)                            | all three = message passing minimizing an α-divergence → one message-op algebra, three projections |
+| Exponential-family / conjugacy     | std exp-family + conjugate-prior literature (Bishop PRML ch.2/10)                           | conjugate update = exact message product → conjugate-exactness test vs `BayesianAggregate`         |
 
 **Formal-verification routing** (per `formal-verification-expert` / Soraya, BP-16): the proven laws above become (a) **FsCheck property tests** + `LawRunner.fs` law-suites by default; (b) candidate **Lean / Z3** machine-checked proofs for the load-bearing invariants (semiring axioms; BP-exact-on-trees; EP moment-match idempotence; VMP ELBO-monotonicity). The F# compiler is the first asymmetric critic (`fsharp-anchor` — `dotnet build` = sanity); the papers' proofs are the second (the property/proof obligations the impl must satisfy). Spec from papers → referee (B-0997) against the papers' worked examples, not against dotnet/infer outputs alone.
 
 ## What it builds ON (verify-existing-substrate — compose, don't parallel-mint)
 
-The engine sits on rich existing substrate; the rewrite is largely *filling the probabilistic gaps the interfaces already anticipate*:
+The engine sits on rich existing substrate; the rewrite is largely _filling the probabilistic gaps the interfaces already anticipate_:
 
-| Existing substrate | Role in the inference engine |
-|---|---|
-| **`Semiring.fs` `ISemiring<'W>`** (IntegerRing, IntervalRing; doc names "probabilistic, Gaussian … semirings" as intent) | BP is the **sum-product algorithm over a semiring**; the **message types are the missing probabilistic semirings** (Gaussian / log / tropical-for-MAP) |
-| **`Circuit.fs` / `NestedCircuit.fs`** (`Fixedpoint`; DBSP §5-6 recursive-query-to-fixed-point) | message-passing-to-convergence ≡ **iterate a nested circuit to a fixed point** → the inference **scheduler** is already here; inference runs **on DBSP** (→ incremental re-inference on a data delta) |
-| **`BayesianAggregate.fs`** (BetaBernoulli / NormalInverseGamma / DirichletMultinomial conjugate updates) | conjugate updates **are the closed-form messages** (the exact exponential-family message products) |
-| **`Algebra.fs` / `ZSet` / `GSet` / `Bag`** (weighted structures over semirings) | weighted-support distributions; discrete/categorical messages |
-| **`CayleyDickson.fs` / `Vector` / `Wall`** (B-0998 slice 1, #6587) | the geometric/vector substrate; the seed-CE nouns |
-| **seed CE** (B-0998) | the **model DSL** — `seed { let! x = gaussian …; observe …; … }` builds the factor graph |
+| Existing substrate                                                                                                       | Role in the inference engine                                                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`Semiring.fs` `ISemiring<'W>`** (IntegerRing, IntervalRing; doc names "probabilistic, Gaussian … semirings" as intent) | BP is the **sum-product algorithm over a semiring**; the **message types are the missing probabilistic semirings** (Gaussian / log / tropical-for-MAP)                                                |
+| **`Circuit.fs` / `NestedCircuit.fs`** (`Fixedpoint`; DBSP §5-6 recursive-query-to-fixed-point)                           | message-passing-to-convergence ≡ **iterate a nested circuit to a fixed point** → the inference **scheduler** is already here; inference runs **on DBSP** (→ incremental re-inference on a data delta) |
+| **`BayesianAggregate.fs`** (BetaBernoulli / NormalInverseGamma / DirichletMultinomial conjugate updates)                 | conjugate updates **are the closed-form messages** (the exact exponential-family message products)                                                                                                    |
+| **`Algebra.fs` / `ZSet` / `GSet` / `Bag`** (weighted structures over semirings)                                          | weighted-support distributions; discrete/categorical messages                                                                                                                                         |
+| **`CayleyDickson.fs` / `Vector` / `Wall`** (B-0998 slice 1, #6587)                                                       | the geometric/vector substrate; the seed-CE nouns                                                                                                                                                     |
+| **seed CE** (B-0998)                                                                                                     | the **model DSL** — `seed { let! x = gaussian …; observe …; … }` builds the factor graph                                                                                                              |
 
 No factor-graph / BP / EP engine exists yet (greenfield), but the floor under it is substantial.
 
@@ -89,7 +114,7 @@ Stock Infer.NET recompiles/re-runs inference on data change. Built on DBSP neste
 
 - **B-0998** (seed CE — the model DSL; slice-1 `Vector`/`Wall` #6587) · **B-0999** (hex-core domains-as-adapters; physics adapter = the Clifford/message geometry) · **B-0985** (six reservoir walls) · **B-0428 / B-0547** (F# fork for AI safety / Clifford) · **B-0543 / B-0544** (Remember-When + Pay-Attention seed → categorical primitives)
 - existing F#: `Semiring.fs` (ISemiring), `Circuit.fs`/`NestedCircuit.fs` (fixpoint scheduler), `BayesianAggregate.fs` (conjugate messages), `Algebra.fs`/`ZSet`, `CayleyDickson.fs`
-- rules: `verify-existing-substrate-before-authoring` (compose the semiring/DBSP/conjugate substrate), `bcl-interface-boundary-own-your-interfaces-hexagonal` (own the inference interfaces; dotnet/infer is a *reference*, adapt-in not depend-on), `numerical-algebra-shaped-into-the-generic-math-interface` (distributions/semirings → generic-math), `monad-propagation-pattern` (the seed CE Result/Dist monad shape), `zeta-ships-with-skills-immediate-value` (slices ship value; engine crystallizes later), `honor-those-that-came-before` (cite dotnet/infer, MIT), `razor-discipline` + `god-tier-claims-high-signal-high-suspicion-dont-collapse` (incremental-advantage is a hypothesis to measure), `dst-plus-persist-plus-generator-time-plus-feedback...` (DST over the inference)
+- rules: `verify-existing-substrate-before-authoring` (compose the semiring/DBSP/conjugate substrate), `bcl-interface-boundary-own-your-interfaces-hexagonal` (own the inference interfaces; dotnet/infer is a _reference_, adapt-in not depend-on), `numerical-algebra-shaped-into-the-generic-math-interface` (distributions/semirings → generic-math), `monad-propagation-pattern` (the seed CE Result/Dist monad shape), `zeta-ships-with-skills-immediate-value` (slices ship value; engine crystallizes later), `honor-those-that-came-before` (cite dotnet/infer, MIT), `razor-discipline` + `god-tier-claims-high-signal-high-suspicion-dont-collapse` (incremental-advantage is a hypothesis to measure), `dst-plus-persist-plus-generator-time-plus-feedback...` (DST over the inference)
 - `peer-call-infrastructure` rule (the BP/EP future-state this row starts)
 
 ## Sources (search-first, 2026-06-02)
@@ -100,4 +125,4 @@ Stock Infer.NET recompiles/re-runs inference on data change. Built on DBSP neste
 
 ## Substrate-honest framing
 
-`[labeling-confidence: established core (BP/EP/sum-product/semiring/MIT-Infer.NET); hypothesized DBSP-incremental-inference advantage to measure; XL multi-year per zeta-ships-with-skills]`. This is the framework's long-stated Zeta-Infer.NET-BP/EP future-state (peer-call rule) getting its starting point at the seed core — not new scope. The "rewrite completely" is honest because Infer.NET is MIT (clean reimplementation, not concept-only), and the engine composes substantial existing substrate (semiring + DBSP nested-circuit + conjugate messages) rather than starting from zero. Incremental-inference-on-DBSP is the differentiator to *measure*, held don't-collapse until benchmarked vs dotnet/infer.
+`[labeling-confidence: established core (BP/EP/sum-product/semiring/MIT-Infer.NET); hypothesized DBSP-incremental-inference advantage to measure; XL multi-year per zeta-ships-with-skills]`. This is the framework's long-stated Zeta-Infer.NET-BP/EP future-state (peer-call rule) getting its starting point at the seed core — not new scope. The "rewrite completely" is honest because Infer.NET is MIT (clean reimplementation, not concept-only), and the engine composes substantial existing substrate (semiring + DBSP nested-circuit + conjugate messages) rather than starting from zero. Incremental-inference-on-DBSP is the differentiator to _measure_, held don't-collapse until benchmarked vs dotnet/infer.

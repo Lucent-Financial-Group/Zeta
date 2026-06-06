@@ -22,24 +22,22 @@ Registers the missed-substrate-detector as a persistent macOS launchd service an
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-13T23:33:19Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `699eec10ba`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -52,6 +50,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Registers the existing `tools/bg/missed-substrate-detector.ts` as a persistent macOS `launchd` job (5-minute interval, RunAtLoad) and documents the new background-services architecture in `docs/AUTONOMOUS-LOOP.md`. The B-0442 backlog row is updated to mark slice 6 acceptance criteria complete. A separate, unrelated step is also added to the Lior loop-tick prompt.
 
 **Changes:**
+
 - Adds `.gemini/launchd/com.zeta.missed-substrate-detector.plist` launchd job (300s interval) with hardcoded user-specific paths matching existing sibling plist convention.
 - Documents the background-services daemons in `docs/AUTONOMOUS-LOOP.md` "Related artifacts" and ticks two boxes in the B-0442 backlog row.
 - Adds an unrelated step 10 (BACKLOG DECOMPOSITION) to `.gemini/bin/lior-loop-tick.ts`.
@@ -60,12 +59,12 @@ Registers the existing `tools/bg/missed-substrate-detector.ts` as a persistent m
 
 Copilot reviewed 3 out of 4 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| .gemini/launchd/com.zeta.missed-substrate-detector.plist | New launchd plist registering the detector; hardcoded `/Users/acehack/...` and `/opt/homebrew/bin/bun` paths. |
-| docs/AUTONOMOUS-LOOP.md | New "Background Services Architecture" entry referencing both detectors, though only one is wired to launchd here. |
-| docs/backlog/P1/B-0442-...-2026-05-13.md | Marks slice 6 acceptance criteria (launchd + AUTONOMOUS-LOOP doc) as landed. |
-| .gemini/bin/lior-loop-tick.ts | Adds step 10 on backlog decomposition — outside the stated PR scope. |
+| File                                                     | Description                                                                                                        |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| .gemini/launchd/com.zeta.missed-substrate-detector.plist | New launchd plist registering the detector; hardcoded `/Users/acehack/...` and `/opt/homebrew/bin/bun` paths.      |
+| docs/AUTONOMOUS-LOOP.md                                  | New "Background Services Architecture" entry referencing both detectors, though only one is wired to launchd here. |
+| docs/backlog/P1/B-0442-...-2026-05-13.md                 | Marks slice 6 acceptance criteria (launchd + AUTONOMOUS-LOOP doc) as landed.                                       |
+| .gemini/bin/lior-loop-tick.ts                            | Adds step 10 on backlog decomposition — outside the stated PR scope.                                               |
 
 ### COMMENTED — @AceHack (2026-05-13T23:43:16Z)
 
@@ -89,7 +88,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-13T23:33:19Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Run detector in one-shot mode under launchd interval**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Run detector in one-shot mode under launchd interval**
 
 This launchd job invokes `missed-substrate-detector.ts` without `--once`, so it enters `runDaemon` and never exits, while the plist also sets `StartInterval=300`. The detector docs and CLI contract treat interval schedulers (launchd/cron) as one-shot drivers, and daemon mode is for standalone execution; running daemon mode here can block scheduler-controlled restarts/reconfigs and causes runaway overlap if reused under cron. Add `--once` to `ProgramArguments` (or remove `StartInterval` and manage cadence entirely in-process) so scheduler semantics are deterministic.
 

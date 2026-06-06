@@ -22,7 +22,14 @@ function sampleEvent(): FrontmatterEvent {
     aggregateId: asZetaIdDecimal("7"),
     op: EventOp.Upsert,
     schemaVersion: 2,
-    fields: { status: "ready", title: "fix the thing", estimate: 3, blocked: false, reviewer_ids: ["8", "9"], code: "42" },
+    fields: {
+      status: "ready",
+      title: "fix the thing",
+      estimate: 3,
+      blocked: false,
+      reviewer_ids: ["8", "9"],
+      code: "42",
+    },
   };
 }
 
@@ -39,14 +46,24 @@ test("reserved metadata keys are separated from field columns", () => {
   const parsed = parseEvent(serializeEvent(sampleEvent()));
   if (parsed.outcome !== "ok") throw new Error("expected ok");
   // no $-prefixed key leaks into fields
-  equal(Object.keys(parsed.event.fields).some((k) => k.startsWith("$")), false);
+  equal(
+    Object.keys(parsed.event.fields).some((k) => k.startsWith("$")),
+    false,
+  );
   // number-looking string field survives as a string
   equal(parsed.event.fields.code, "42");
   equal(parsed.event.fields.estimate, 3);
 });
 
 test("retract event needs no fields", () => {
-  const event: FrontmatterEvent = { id: zetaIdWithTimestamp(2000), table: "task", aggregateId: asZetaIdDecimal("7"), op: EventOp.Retract, schemaVersion: 1, fields: {} };
+  const event: FrontmatterEvent = {
+    id: zetaIdWithTimestamp(2000),
+    table: "task",
+    aggregateId: asZetaIdDecimal("7"),
+    op: EventOp.Retract,
+    schemaVersion: 1,
+    fields: {},
+  };
   const parsed = parseEvent(serializeEvent(event));
   if (parsed.outcome !== "ok") throw new Error("expected ok");
   deepEqual(parsed.event, event);

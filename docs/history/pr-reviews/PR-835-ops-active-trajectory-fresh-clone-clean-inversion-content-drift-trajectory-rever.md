@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 835 |
-| Title | ops(active-trajectory): fresh-clone-clean inversion + content-drift trajectory + reversible/irreversible authority |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T10:19:43Z |
-| Merged at | 2026-04-29T10:53:39Z |
-| Merge commit SHA | `0110a5f930be3ef4ec6a2a460031227d16b4ceb6` |
-| Branch | `zero-zero-zero-fresh-clone-clean-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/835 |
-| Changed files | 1 |
-| Additions / deletions | +333 / -24 |
+| Field                 | Value                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Number                | 835                                                                                                                |
+| Title                 | ops(active-trajectory): fresh-clone-clean inversion + content-drift trajectory + reversible/irreversible authority |
+| Author                | `AceHack` (human)                                                                                                  |
+| State                 | MERGED                                                                                                             |
+| Created at            | 2026-04-29T10:19:43Z                                                                                               |
+| Merged at             | 2026-04-29T10:53:39Z                                                                                               |
+| Merge commit SHA      | `0110a5f930be3ef4ec6a2a460031227d16b4ceb6`                                                                         |
+| Branch                | `zero-zero-zero-fresh-clone-clean-2026-04-29`                                                                      |
+| Base branch           | `main`                                                                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/835                                                            |
+| Changed files         | 1                                                                                                                  |
+| Additions / deletions | +333 / -24                                                                                                         |
 
 ## Description
 
@@ -65,15 +65,15 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 13 |
-| Resolved threads | 12 |
-| Unresolved threads | 1 |
-| Total review comments | 13 |
-| Total fix commits (touching thread paths) | 11 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 13    |
+| Resolved threads                          | 12    |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 13    |
+| Total fix commits (touching thread paths) | 11    |
 
 ## Review threads
 
@@ -87,7 +87,6 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T10:23:42Z on `docs/active-trajectory.md`:285 (association: NONE)
   P0: The hard-reset command’s `--force-with-lease=acehack/main` is not leasing the remote ref you’re updating (`refs/heads/main`). That can effectively degrade the safety check (i.e., behave like an unsafe forced update if the remote advanced). Use `--force-with-lease` without an explicit refname (so Git leases against the matching remote-tracking ref), or lease the exact remote ref you’re pushing (e.g., `refs/heads/main` with an explicit expected SHA), and fetch the `acehack` remote immediately before pushing so the lease compares against fresh remote-tracking data.
-  
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -99,7 +98,6 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T10:23:42Z on `docs/active-trajectory.md`:258 (association: NONE)
   P1: New prose here uses persona/human first-name attribution (e.g., “per Amara …”; later also “Aaron”). `docs/active-trajectory.md` is a current-state doc, so it should use role-refs instead of names per the project convention (docs/AGENT-BEST-PRACTICES.md:284-346). Suggest rewriting these attributions to role-refs (e.g., “the maintainer”, “the corruption-triage note”) or pointing at the relevant `memory/feedback_*.md` entry without embedding names in the narrative.
-  
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -110,10 +108,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T10:27:53Z on `docs/active-trajectory.md`:332 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Use correct lease ref in reset push command**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Use correct lease ref in reset push command**
+
   The documented reset command uses `--force-with-lease=acehack/main` while pushing to `refs/heads/main`; that lease ref does not target the destination branch and in practice causes Git to reject non-fast-forward updates as `fetch first` instead of performing the intended forced reset. In the stated hard-reset scenario (branches diverged), this makes the runbook’s “destructive reset” step fail or behave differently than claimed; use a lease for `main`/`refs/heads/main` so the guard applies to the branch being rewritten.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 4 -- resolved [outdated, collapsed]
@@ -125,10 +123,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T10:27:53Z on `docs/active-trajectory.md`:314 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Align next-action status with signoff gate criteria**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Align next-action status with signoff gate criteria**
+
   This section declares hard-reset is "ready pending maintainer sign-off" even though the same document’s strict gate states signoff eligibility requires `unclassified_lines = 0` and explicitly records `unclassified_lines = 176` (currently not signoff-eligible). That contradiction can trigger an irreversible reset before the documented safety gate is satisfied, so the next-action status should remain blocked until those unclassified lines are resolved or the gate definition is updated.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 5 -- resolved [outdated, collapsed]
@@ -152,7 +150,6 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T10:34:50Z on `docs/active-trajectory.md`:344 (association: NONE)
   This doc embeds a specific PR number (“PR #835”) as the rationale for the `--force-with-lease` guidance. PR numbers are repo-host-specific and can be ambiguous once the doc is copied/split across forks; prefer citing a stable in-repo artifact (commit hash, memory entry, or a file path) instead of a bare PR number.
-  
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -185,10 +182,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T10:36:10Z on `docs/active-trajectory.md`:95 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Count binary diffs in reset-loss ledger**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Count binary diffs in reset-loss ledger**
+
   The new ledger script silently excludes binary changes via `$1 != "-" && $2 != "-"`, but `git diff --numstat` emits `-`/`-` for binary files; this means any AceHack-only binary content is dropped from `potential_loss_lines` and `modified_files`. In a hard-reset decision flow, that can misstate loss exposure and allow sign-off while unclassified binary changes still exist, so binary rows should be tracked explicitly (e.g., counted as unclassified/unsafe) instead of filtered out.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 10 -- resolved [outdated, collapsed]
@@ -201,7 +198,6 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T10:46:22Z on `docs/active-trajectory.md`:17 (association: NONE)
   The file is being reclassified as a HISTORY surface and says this extends the closed-list rule, but `docs/AGENT-BEST-PRACTICES.md` still defines the history-surface list as closed and does not include `docs/active-trajectory.md` (see that list around lines ~284-312). Leaving the central rule unchanged makes the repo guidance internally inconsistent for future editors/agents. Consider landing the `docs/AGENT-BEST-PRACTICES.md` update in the same PR (or, if that must be deferred, soften this block to avoid implying the global rule has already changed).
-  
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -223,10 +219,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T10:48:30Z on `docs/active-trajectory.md`:400 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Stop execution when dry-run push check fails**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Stop execution when dry-run push check fails**
+
   The new gate requires a clean dry-run before the destructive force-push, but this command is not checked for success, so a failed dry-run still falls through to the real `git push` in the next block. In bash, commands continue by default unless explicitly guarded, so this can bypass the intended preflight and execute the irreversible step without satisfying the documented `dry-run push shape = clean` condition.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 13 -- unresolved
@@ -238,10 +234,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T10:55:02Z on `docs/active-trajectory.md`:109 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Make ledger fail when diff refs are missing**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Make ledger fail when diff refs are missing**
+
   The ledger command pipelines `git diff --numstat origin/main..acehack/main` into `awk` without `pipefail` or an explicit status check, so a failed diff (e.g., missing/stale remote refs, typoed ref names, or fetch failure) still emits zero/empty totals from `awk` and can be misread as low/no loss risk. In this workflow that can incorrectly satisfy safety gates before an irreversible reset; guard this pipeline so any `git diff` error aborts instead of producing synthetic counts.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

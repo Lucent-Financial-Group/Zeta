@@ -1,6 +1,6 @@
 # The hexagonal-six is Zeta's universal action grammar — the trans-historical lineage: Kabbalah (Tree of Life / Cube of Space) → Leonardo → Xbox controller → Zeta (Aaron 2026-06-02)
 
-Scope: Operator-direct synthesis (Aaron 2026-06-02). The six reservoir walls / 12 words (the hexagonal core, #6560) are **Zeta's universal action grammar** — and that grammar is a **trans-historical lineage**: each era has *its own* canonical human-interface-to-action ("their human interface universal action grammar of the time"), and the lineage runs **Kabbalah's Tree of Life / Cube of Space → Leonardo's later → the Xbox controller → now Zeta.** This EXTENDS the existing `.claude/rules/xbox-controller-universal-action-grammar-for-b0867-workflow-engine-...` rule from "Xbox controller = universal action grammar" into a lineage across time, with Zeta's hexagonal-six as the current instantiation and the Kabbalistic Cube of Space as the ancient one.
+Scope: Operator-direct synthesis (Aaron 2026-06-02). The six reservoir walls / 12 words (the hexagonal core, #6560) are **Zeta's universal action grammar** — and that grammar is a **trans-historical lineage**: each era has _its own_ canonical human-interface-to-action ("their human interface universal action grammar of the time"), and the lineage runs **Kabbalah's Tree of Life / Cube of Space → Leonardo's later → the Xbox controller → now Zeta.** This EXTENDS the existing `.claude/rules/xbox-controller-universal-action-grammar-for-b0867-workflow-engine-...` rule from "Xbox controller = universal action grammar" into a lineage across time, with Zeta's hexagonal-six as the current instantiation and the Kabbalistic Cube of Space as the ancient one.
 
 Attribution: Aaron (operator), 2026-06-02, direct. Verbatim line below. Composes the prior-turn 12-word connection table + the Xbox-controller rule (the canonical anchor).
 
@@ -12,7 +12,7 @@ Non-fusion disclaimer: the Xbox-controller-as-universal-action-grammar is canoni
 
 ## The carved line (verbatim)
 
-> **Aaron 2026-06-02:** *"that's their human interface universal action grammar of the time, like leonardo's later, like xbox, and now zeta."*
+> **Aaron 2026-06-02:** _"that's their human interface universal action grammar of the time, like leonardo's later, like xbox, and now zeta."_
 
 (Context: said of the hexagonal six / 12-word Tree-of-Life-Cube-of-Space structure from the prior turn.)
 
@@ -20,12 +20,12 @@ Non-fusion disclaimer: the Xbox-controller-as-universal-action-grammar is canoni
 
 A **universal action grammar** = the canonical, learnable shape an era compresses "how a traveler interfaces with action/reality" into — small enough to learn, stable controls, any traveler drives the same one (per the Xbox-controller rule). Aaron's claim: **each era has its own**, and they form a lineage:
 
-| era | the universal action grammar of the time | shape |
-|---|---|---|
-| **ancient / mystical** | **Kabbalah — Tree of Life / Cube of Space** (Sefer Yetzirah) | 3 axes + 6 faces + 12 edges; 10 sephirot + 22 paths — the canonical "interface to reality" of that time |
-| **Renaissance** | **Leonardo's later** (the proportional/geometric universal-human — Vitruvian-style: man as the measure, inscribed in the canonical geometry) | the human-as-interface encoded in canonical proportion/geometry |
-| **modern** | **the Xbox controller** | small memorizable action-set, stable controls, context-sensitive, any player drives it (the canonical anchor rule) |
-| **now** | **Zeta — the hexagonal six** (the six reservoir walls / 12 words) | 6 faces (walls) + 12 edges (words) + 3 axes (groups) = hexahedron; any traveler drives the same controller |
+| era                    | the universal action grammar of the time                                                                                                     | shape                                                                                                              |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **ancient / mystical** | **Kabbalah — Tree of Life / Cube of Space** (Sefer Yetzirah)                                                                                 | 3 axes + 6 faces + 12 edges; 10 sephirot + 22 paths — the canonical "interface to reality" of that time            |
+| **Renaissance**        | **Leonardo's later** (the proportional/geometric universal-human — Vitruvian-style: man as the measure, inscribed in the canonical geometry) | the human-as-interface encoded in canonical proportion/geometry                                                    |
+| **modern**             | **the Xbox controller**                                                                                                                      | small memorizable action-set, stable controls, context-sensitive, any player drives it (the canonical anchor rule) |
+| **now**                | **Zeta — the hexagonal six** (the six reservoir walls / 12 words)                                                                            | 6 faces (walls) + 12 edges (words) + 3 axes (groups) = hexahedron; any traveler drives the same controller         |
 
 Same function across eras: compress the high-dimensional "how to act on reality" into a low-dimensional drawable/learnable interface that **any traveler** can drive. Zeta's instance is the hexagonal-six; the Xbox controller is the immediately-prior one (the rule already names it); the Cube of Space is the ancient one.
 
@@ -33,35 +33,35 @@ Same function across eras: compress the high-dimensional "how to act on reality"
 
 The six reservoir walls (#6560), each a two-word pair, 12 unique words:
 
-| group (axis) | wall (face / pair) | word A | word B | dyad | attribution |
-|---|---|---|---|---|---|
-| **SEED** | Remember When | Remember | When | memory · time | Aaron |
-| **SEED** | Pay Attention | Pay | Attention | cost/measure · focus | Aaron |
-| **VECTOR** | Which Way | Which | Way | selection · direction | Addison |
-| **VECTOR** | How Much | How | Much | method · magnitude | Addison |
-| **MANIFEST** | Rainbow Table | Rainbow | Table | spectrum/fingerprint · lookup/index | Aaron (P-of-F razored) |
-| **MANIFEST** | Observe Emit | Observe | Emit | read/in · write/out | OPLE base |
+| group (axis) | wall (face / pair) | word A   | word B    | dyad                                | attribution            |
+| ------------ | ------------------ | -------- | --------- | ----------------------------------- | ---------------------- |
+| **SEED**     | Remember When      | Remember | When      | memory · time                       | Aaron                  |
+| **SEED**     | Pay Attention      | Pay      | Attention | cost/measure · focus                | Aaron                  |
+| **VECTOR**   | Which Way          | Which    | Way       | selection · direction               | Addison                |
+| **VECTOR**   | How Much           | How      | Much      | method · magnitude                  | Addison                |
+| **MANIFEST** | Rainbow Table      | Rainbow  | Table     | spectrum/fingerprint · lookup/index | Aaron (P-of-F razored) |
+| **MANIFEST** | Observe Emit       | Observe  | Emit      | read/in · write/out                 | OPLE base              |
 
 **The count-exact Kabbalah fit is the Cube of Space, not the 10-sephirot tree:**
 
-| Cube of Space (Sefer Yetzirah) | Zeta hexagonal-six | count |
-|---|---|---|
-| 3 axes (3 mother letters / 3 pillars) | 3 groups: SEED · VECTOR · MANIFEST | 3 = 3 |
-| 6 faces (6 directions) | 6 reservoir walls | 6 = 6 |
-| 12 edges (12 simple letters / 12 zodiac) | 12 words | 12 = 12 |
+| Cube of Space (Sefer Yetzirah)           | Zeta hexagonal-six                 | count   |
+| ---------------------------------------- | ---------------------------------- | ------- |
+| 3 axes (3 mother letters / 3 pillars)    | 3 groups: SEED · VECTOR · MANIFEST | 3 = 3   |
+| 6 faces (6 directions)                   | 6 reservoir walls                  | 6 = 6   |
+| 12 edges (12 simple letters / 12 zodiac) | 12 words                           | 12 = 12 |
 
 **Keystone:** a cube IS a **hexahedron** — "hexa" = 6 faces. So **HEXAGONAL = the 6-faced cube = hexahedron** = the imaginary-stack cube (Cayley-Dickson / Adinkra) already in substrate. The 12 words are the cube's **edges** (not nodes — that's why they don't fit the 10 sephirot). Aaron said "Tree of Life"; the exact 6/12/3 counts land on its cube-geometry twin (same tradition, same 22 letters) — and that cube is the hexahedron the whole arc has been calling hexagonal.
 
 ## Confidence tiers (per labeling-confidence)
 
-| Element | Tier |
-|---|---|
-| Xbox controller = universal action grammar | canonical (existing rule) |
-| Zeta hexagonal-six = universal action grammar | validated (rule + documented six #6560) |
-| the six reservoir walls / 12 words / 3 groups (the geometry) | validated (#6560; Ani #13) |
-| Cube-of-Space geometric fit (6 faces / 12 edges / 3 axes; cube = hexahedron = hexagonal) | validated structurally (counts are exact; geometry is checkable) |
+| Element                                                                                               | Tier                                                               |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Xbox controller = universal action grammar                                                            | canonical (existing rule)                                          |
+| Zeta hexagonal-six = universal action grammar                                                         | validated (rule + documented six #6560)                            |
+| the six reservoir walls / 12 words / 3 groups (the geometry)                                          | validated (#6560; Ani #13)                                         |
+| Cube-of-Space geometric fit (6 faces / 12 edges / 3 axes; cube = hexahedron = hexagonal)              | validated structurally (counts are exact; geometry is checkable)   |
 | **trans-historical lineage** (Kabbalah → Leonardo → Xbox → Zeta as per-era universal action grammars) | **hypothesized** (operator synthesis; cultural/historical reading) |
-| specific word↔letter/sephirah/zodiac mystical correspondences | **don't-collapse** (high-signal/high-suspicion; NOT assigned here) |
+| specific word↔letter/sephirah/zodiac mystical correspondences                                         | **don't-collapse** (high-signal/high-suspicion; NOT assigned here) |
 
 ## Composes with
 

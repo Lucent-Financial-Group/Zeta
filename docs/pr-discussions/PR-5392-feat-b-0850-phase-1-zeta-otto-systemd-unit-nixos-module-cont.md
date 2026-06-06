@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-27 (verbatim):
 
-> *\"so our usb after gh and claude device code login it should reboot with a claude service using my gh login\"*
+> _\"so our usb after gh and claude device code login it should reboot with a claude service using my gh login\"_
 
 Direct composition with iter-5.5.0 substrate (PR #5388 + #5389) which persists creds + pre-clones repo + installs claude. This PR adds the systemd unit so claude auto-starts on reboot AS A SERVICE.
 
@@ -33,10 +33,10 @@ Direct composition with iter-5.5.0 substrate (PR #5388 + #5389) which persists c
 ## Operator usage
 
 \`\`\`bash
-systemctl status zeta-otto      # current state
-journalctl -u zeta-otto -f      # live logs
-systemctl restart zeta-otto     # restart
-systemctl disable zeta-otto     # stop auto-start (NCI HC-8 revocable)
+systemctl status zeta-otto # current state
+journalctl -u zeta-otto -f # live logs
+systemctl restart zeta-otto # restart
+systemctl disable zeta-otto # stop auto-start (NCI HC-8 revocable)
 \`\`\`
 
 ## Operator-tunable options
@@ -62,6 +62,7 @@ systemctl disable zeta-otto     # stop auto-start (NCI HC-8 revocable)
 Adds a NixOS module to run “zeta-otto” as a persistent systemd service (outside Kubernetes) and enables it on the control-plane host, relying on the iter-5.5.0 install substrate for persisted `gh`/`claude` credentials and a pre-cloned repo.
 
 **Changes:**
+
 - Introduces `zeta.otto.*` NixOS module options and a `zeta-otto` systemd unit that loops `claude --print` on a tick interval.
 - Imports the new module into the shared cluster baseline.
 - Opts the control-plane host into running the service at boot.
@@ -70,11 +71,11 @@ Adds a NixOS module to run “zeta-otto” as a persistent systemd service (outs
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 7 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/nixos/modules/zeta-otto.nix | New NixOS module defining `zeta-otto` systemd service + options + an operator hint file. |
-| full-ai-cluster/nixos/modules/common.nix | Imports the new `zeta-otto` module into the baseline module set. |
-| full-ai-cluster/nixos/hosts/control-plane/configuration.nix | Enables `zeta.otto.enable = true` on the control-plane node. |
+| File                                                        | Description                                                                              |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| full-ai-cluster/nixos/modules/zeta-otto.nix                 | New NixOS module defining `zeta-otto` systemd service + options + an operator hint file. |
+| full-ai-cluster/nixos/modules/common.nix                    | Imports the new `zeta-otto` module into the baseline module set.                         |
+| full-ai-cluster/nixos/hosts/control-plane/configuration.nix | Enables `zeta.otto.enable = true` on the control-plane node.                             |
 
 ## Review threads
 

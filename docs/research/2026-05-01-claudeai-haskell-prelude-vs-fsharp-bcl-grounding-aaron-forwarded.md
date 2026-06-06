@@ -2,7 +2,7 @@
 
 **Scope:** External-conversation absorb. Captures Claude.ai's response to a question about whether to ground the substrate ontology / taxonomy in Haskell's prelude (typeclass + laws) or F#/BCL (executable interfaces). The substantive recommendation: use both for different purposes — Haskell's prelude vocabulary for grounding the **taxonomy structure** (typeclasses force law-shaped framing); F#/BCL for grounding the **executable substrate** (BCL types are what the factory ships). Cites authoritative sources for both layers (Mac Lane / Awodey / Riehl for category theory; Yorgey's Typeclassopedia as the canonical Haskell realization; FSharp.Core / FSharpPlus for the F# port).
 
-**Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01). Forwarded by Aaron to Otto in this session 2026-05-01 ~10:29Z. Aaron's framing: *"I'm going to give in reverse because the last message seem the most useful"* — meaning more Claude.ai messages on the same thread are incoming; this one is captured first because it's load-bearing.
+**Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01). Forwarded by Aaron to Otto in this session 2026-05-01 ~10:29Z. Aaron's framing: _"I'm going to give in reverse because the last message seem the most useful"_ — meaning more Claude.ai messages on the same thread are incoming; this one is captured first because it's load-bearing.
 
 **Operational status:** research-grade
 
@@ -16,44 +16,44 @@
 
 > *"What each gives you. Haskell's prelude is designed as a small set of typeclasses (Functor, Applicative, Monad, Foldable, Traversable, Monoid, Semigroup, Eq, Ord, Show, Read) plus their laws. The laws are the load-bearing part — `fmap id = id`, `fmap (f . g) = fmap f . fmap g`, the monad laws, monoid associativity. Each typeclass has a categorical correspondent (Functor is the obvious one; Monad is Kleisli triple; Applicative is lax monoidal functor; Traversable is naturality of distribution). The laws *are* the categorical content forced into types."*
 
-> *"F# / BCL inherits less of that structure explicitly. F# has computation expressions which are monadic in shape but the laws aren't enforced or stated as part of the language. The BCL has interfaces (IEnumerable, IComparable, IEquatable, IDisposable) but they're protocol-shaped rather than law-shaped. F#'s `Map`, `Bind`, `List`, `Seq` operations behave categorically but the categorical structure is implicit."*
+> _"F# / BCL inherits less of that structure explicitly. F# has computation expressions which are monadic in shape but the laws aren't enforced or stated as part of the language. The BCL has interfaces (IEnumerable, IComparable, IEquatable, IDisposable) but they're protocol-shaped rather than law-shaped. F#'s `Map`, `Bind`, `List`, `Seq` operations behave categorically but the categorical structure is implicit."_
 
-> *"For grounding a substrate ontology, the difference matters. Haskell's prelude tells you 'here are the structures, here are the laws they obey.' F#'s tells you 'here are the operations, here's how to call them.' The first is closer to what you want for taxonomy work; the second is closer to what you want for engineering work."*
+> _"For grounding a substrate ontology, the difference matters. Haskell's prelude tells you 'here are the structures, here are the laws they obey.' F#'s tells you 'here are the operations, here's how to call them.' The first is closer to what you want for taxonomy work; the second is closer to what you want for engineering work."_
 
 ## The mismatch worth flagging (Claude.ai)
 
-> *"The taxonomy work you've been doing is mostly not about code shape. Forward-reference, stale-filename, deferred-per-policy — these are about substrate hygiene patterns, review-finding classes, organizational state. They're not asking 'what's the right interface' or 'should this be Seq vs IEnumerable.' They're asking 'what kind of structural pattern is this finding.'"*
+> _"The taxonomy work you've been doing is mostly not about code shape. Forward-reference, stale-filename, deferred-per-policy — these are about substrate hygiene patterns, review-finding classes, organizational state. They're not asking 'what's the right interface' or 'should this be Seq vs IEnumerable.' They're asking 'what kind of structural pattern is this finding.'"_
 
-> *"For that work, Haskell's prelude is closer-fit because the typeclasses are themselves structural patterns. Functor = 'things that can be mapped over preserving structure.' Monad = 'things that compose with continuation.' Monoid = 'things with associative combination and identity.' These map onto substrate-pattern claims in a way that BCL interfaces don't."*
+> _"For that work, Haskell's prelude is closer-fit because the typeclasses are themselves structural patterns. Functor = 'things that can be mapped over preserving structure.' Monad = 'things that compose with continuation.' Monoid = 'things with associative combination and identity.' These map onto substrate-pattern claims in a way that BCL interfaces don't."_
 
-> *"The BCL gives you 'this implements IEnumerable' which is a protocol assertion. Haskell gives you 'this is a Functor and obeys these two laws' which is a structural assertion with verification criteria. Verification criteria are what you want for the taxonomy."*
+> _"The BCL gives you 'this implements IEnumerable' which is a protocol assertion. Haskell gives you 'this is a Functor and obeys these two laws' which is a structural assertion with verification criteria. Verification criteria are what you want for the taxonomy."_
 
 ## The recommendation (Claude.ai)
 
-> *"Use both, but for different purposes. Haskell's prelude (specifically the typeclass hierarchy and laws) for grounding the taxonomy itself. When proposing a new class, ask: is this morphism a functor application that wasn't uniform? Is this a monad-laws violation? Is this an associativity failure? The Haskell vocabulary forces precision because the laws are explicit."*
+> _"Use both, but for different purposes. Haskell's prelude (specifically the typeclass hierarchy and laws) for grounding the taxonomy itself. When proposing a new class, ask: is this morphism a functor application that wasn't uniform? Is this a monad-laws violation? Is this an associativity failure? The Haskell vocabulary forces precision because the laws are explicit."_
 
-> *"F# / BCL for grounding the executable substrate the taxonomy describes. When the taxonomy says 'this class fires when refs go stale across renames,' the implementation lives in F# code that operates over BCL types (file paths as strings, refs as records, the renaming as a function). The taxonomy's content is the substrate; the substrate's implementation is F#/BCL."*
+> _"F# / BCL for grounding the executable substrate the taxonomy describes. When the taxonomy says 'this class fires when refs go stale across renames,' the implementation lives in F# code that operates over BCL types (file paths as strings, refs as records, the renaming as a function). The taxonomy's content is the substrate; the substrate's implementation is F#/BCL."_
 
-> *"The two layers compose: Haskell-prelude vocabulary describes the taxonomy structure; F#/BCL idioms implement the taxonomy's checkers and validators."*
+> _"The two layers compose: Haskell-prelude vocabulary describes the taxonomy structure; F#/BCL idioms implement the taxonomy's checkers and validators."_
 
 ## The Yorgey/Typeclassopedia anchor
 
-> *"Better: ground in the categorical concepts the prelude implements, with the prelude as one realization of those concepts. Cite Mac Lane or Awodey or Riehl for the math; cite Haskell for the realization; treat the realization as illustrative not canonical. That way the grounding is in the math, not in any particular language's choices."*
+> _"Better: ground in the categorical concepts the prelude implements, with the prelude as one realization of those concepts. Cite Mac Lane or Awodey or Riehl for the math; cite Haskell for the realization; treat the realization as illustrative not canonical. That way the grounding is in the math, not in any particular language's choices."_
 
-> *"The HaskellWiki 'Typeclassopedia' by Brent Yorgey is probably the single best resource for this — it explains the typeclass hierarchy with both the categorical content and the practical Haskell usage, and it's citable. That's a good Beacon anchor."*
+> _"The HaskellWiki 'Typeclassopedia' by Brent Yorgey is probably the single best resource for this — it explains the typeclass hierarchy with both the categorical content and the practical Haskell usage, and it's citable. That's a good Beacon anchor."_
 
 ## Specific worked example Claude.ai cited
 
-> *"'Stale-filename' being a functor that wasn't applied uniformly is a precise statement: there's a renaming functor from one filesystem state to another, and the violation is that not all morphisms got the functor's action applied. That's a Haskell-grounded claim."*
+> _"'Stale-filename' being a functor that wasn't applied uniformly is a precise statement: there's a renaming functor from one filesystem state to another, and the violation is that not all morphisms got the functor's action applied. That's a Haskell-grounded claim."_
 
 This is a precise re-framing of the v2 taxonomy's class #10 (stale-filename-cross-reference). The corrective discipline isn't just "paste the actual filename" — it's "the renaming functor must be applied uniformly across all morphisms (cross-references) that depend on the old name." The claim has verification criteria (all morphisms updated; functor laws preserved) where the v2 taxonomy currently has only a heuristic (paste-from-actual).
 
 ## The two-layer composition (Claude.ai's net)
 
-| Layer | Grounding | Example anchors |
-|---|---|---|
-| **Taxonomy structure** (conceptual) | Haskell-prelude-shape categorical concepts (typeclasses + laws) | Mac Lane *Categories for the Working Mathematician*; Awodey *Category Theory*; Riehl *Category Theory in Context*; Yorgey *Typeclassopedia* |
-| **Executable substrate** (operational) | F#/BCL idioms + interfaces | Microsoft FSharp.Core; FSharpPlus (adds Haskell-prelude-shape typeclasses to F#); BCL `IEnumerable` / `IObservable` / `IDisposable` / `IComparable<T>` / `IEqualityComparer<T>` |
+| Layer                                  | Grounding                                                       | Example anchors                                                                                                                                                                 |
+| -------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Taxonomy structure** (conceptual)    | Haskell-prelude-shape categorical concepts (typeclasses + laws) | Mac Lane _Categories for the Working Mathematician_; Awodey _Category Theory_; Riehl _Category Theory in Context_; Yorgey _Typeclassopedia_                                     |
+| **Executable substrate** (operational) | F#/BCL idioms + interfaces                                      | Microsoft FSharp.Core; FSharpPlus (adds Haskell-prelude-shape typeclasses to F#); BCL `IEnumerable` / `IObservable` / `IDisposable` / `IComparable<T>` / `IEqualityComparer<T>` |
 
 The two layers compose cleanly because F# CAN implement the same categorical structures Haskell defines. F# remains the implementation language; Haskell-shape concepts ARE what's being reasoned about ABOVE the implementation.
 
@@ -72,7 +72,7 @@ This is a v3 candidate, not a v2 retrofit. The v2 taxonomy IS the navigable map 
 
 ## The instruction-precision Claude.ai flagged
 
-> *"Worth being explicit about which question you're grounding when you give the instruction. 'Ground the taxonomy in Haskell-prelude-shape categorical concepts' is a different instruction than 'ground the executable substrate in F# and BCL idioms.' Both might be correct in their own scope; conflating them produces vague grounding."*
+> _"Worth being explicit about which question you're grounding when you give the instruction. 'Ground the taxonomy in Haskell-prelude-shape categorical concepts' is a different instruction than 'ground the executable substrate in F# and BCL idioms.' Both might be correct in their own scope; conflating them produces vague grounding."_
 
 This is a discipline observation worth absorbing: **grounding-question precision** is its own meta-discipline. When asking "should we ground X?", ask first "ground for what work?" — the answer depends on whether the work is conceptual (taxonomy) or executable (implementation).
 
@@ -107,6 +107,6 @@ The cited memory filenames are not present in the current repo tree at time of t
 
 ## Carved candidate (not seed-layer)
 
-> *"Haskell-prelude vocabulary for the taxonomy structure. F#/BCL for the executable substrate. The two layers compose; conflating them produces vague grounding."*
+> _"Haskell-prelude vocabulary for the taxonomy structure. F#/BCL for the executable substrate. The two layers compose; conflating them produces vague grounding."_
 
 The propagation test: ~25 words encoding the two-layer discipline + the conflation-as-failure-mode. Future-Otto reading this should land on the layer-discrimination as the operational shape — same family as the §33 in-scope-vs-out-of-scope distinction (different surfaces have different rules).

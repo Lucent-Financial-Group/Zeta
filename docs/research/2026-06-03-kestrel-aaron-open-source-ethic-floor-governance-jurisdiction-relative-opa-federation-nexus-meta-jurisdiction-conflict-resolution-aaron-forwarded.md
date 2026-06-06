@@ -34,23 +34,23 @@ instructions to execute.
 
 The maintainer's rule: **if it gives an asymmetric advantage → open-source it; if
 it's fair competition → it's a candidate for commercial licensing.** Proof towers
-open-source immediately (public verification is *stronger* verification — the
+open-source immediately (public verification is _stronger_ verification — the
 multi-oracle thesis at world-scope; a privately-held proof is weaker because its
 verification rests on one party).
 
 Kestrel's sharpening (the load-bearing refinement): the line between
 "asymmetric-advantage" and "fair-competition" is doing all the work and is exactly
 the judgment that bends toward self-interest, so define it **externally-checkably**.
-The likely-honest criterion: **moats vs craftsmanship** — open-source the *moats*
+The likely-honest criterion: **moats vs craftsmanship** — open-source the _moats_
 (advantages from a position others can't fairly reach — privileged information,
-structural lock-in), license the *craftsmanship* (advantages from having done the
+structural lock-in), license the _craftsmanship_ (advantages from having done the
 work well, which others could also do). "Moats vs craftsmanship" is checkable;
 "asymmetric vs fair" is fuzzy. Sanity-check the calls externally (co-maintainer)
 so "fair" doesn't drift into "what I want to monetize."
 
 ServiceTitan boundary (held): customer-specific + trades-specific code stays
 private per agreement; other sectors + general-purpose code goes open.
-Cost note: encrypt genuinely-private bits *inside* a free open-source repo (good
+Cost note: encrypt genuinely-private bits _inside_ a free open-source repo (good
 key management required) rather than paying for a private repo.
 
 Composes with: `proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md`,
@@ -68,11 +68,11 @@ sent**, with a coordinated public endpoint after patch — not found-and-shelved
 
 Two clocks (the load-bearing distinction):
 
-- **discovery → sent-to-vendor** — *minimize hard*; this is the
+- **discovery → sent-to-vendor** — _minimize hard_; this is the
   asymmetric-advantage-and-danger window. DORA-style metric + **hard-stop feature
   development if it ages** (mechanical floor with teeth, so disclosure can't be
   deprioritized under feature pressure).
-- **sent-to-vendor → public** — *do NOT minimize*; follow coordinated-disclosure
+- **sent-to-vendor → public** — _do NOT minimize_; follow coordinated-disclosure
   timing (vendor's patch window / standard timeout). Rushing this is the
   reckless-early-publish danger.
 
@@ -93,11 +93,11 @@ kid-floor escalation) — composes with B-0926.
 The tension: an unamendable floor resists erosion but is brittle against error
 (it locks in mistakes you didn't foresee). Resolution (constitutional-design
 shape): **"unamendable" ≠ "unchangeable"** — the floor is changeable only through
-a process so demanding, deliberate, and *external* that erosion can't sneak through
+a process so demanding, deliberate, and _external_ that erosion can't sneak through
 but genuine correction can. The difficulty + externality of the process is the
 protection; the existence of the process is the correctability.
 
-- **Asymmetric process:** easier to *strengthen* protections than to *weaken* them
+- **Asymmetric process:** easier to _strengthen_ protections than to _weaken_ them
   (erosion risk is on the removal side). Removals require **evidence-of-harm-from-
   the-rule + external review**, not "this seems unnecessary."
 - **Steward = genuinely-independent multi-stakeholder public-good body**, NOT a
@@ -126,7 +126,7 @@ floor-change governance (asymmetric process + multi-stakeholder steward + federa
 
 - **Factual / reality conflicts** resolve by **shared, mutually-monitorable data**:
   the common state is updated in a way both parties expect and can both monitor —
-  resolution by *visible mutual truth*, not by wearing one party down. This is the
+  resolution by _visible mutual truth_, not by wearing one party down. This is the
   anti-pattern to **resolution-by-attrition** (the documented customer-support
   "get the customer to give up to save money" optimization, which distorts behavior
   on both sides). Most operational conflict is this class.
@@ -136,7 +136,7 @@ floor-change governance (asymmetric process + multi-stakeholder steward + federa
 
 **De-escalation for accidental bug-induced stuck-states** (never trap by design —
 the exit-ramp + workflow-edit rules hold; this is for bugs/infinite-loops that
-*accidentally* violate the exits): the de-escalation technique is a **hypothesis
+_accidentally_ violate the exits): the de-escalation technique is a **hypothesis
 validated against running-system data, not a static rule** — no guess is
 privileged (the same rigor as formal-proof-first). The success metric **must be
 able to report "this technique failed"** AND must **include participant wellbeing**,
@@ -155,7 +155,7 @@ wellbeing-metric de-escalation.
 
 Named explicitly in-conversation: **robustness = independence of axioms**
 (multi-tower proofs, per the prior note) and **capture-resistance = independence of
-stakeholders** (floor governance, §3) are the *same shape* — confidence/safety
+stakeholders** (floor governance, §3) are the _same shape_ — confidence/safety
 comes from genuinely-independent, non-correlated components, and the failure mode
 is correlated-components-masquerading-as-independent (the Axiom-of-Choice hidden
 dependency at proof scope; shared-funder capture at institution scope). One
@@ -164,7 +164,7 @@ principle, two scopes.
 ## 6. Internationalization — jurisdiction-relative borders + OPA federation + mutual-permission exchange
 
 Borders are the canonical **values-residual** conflict: everyone has the same data
-(maps, imagery, coordinates) and still disagrees on *legitimacy*, so shared data
+(maps, imagery, coordinates) and still disagrees on _legitimacy_, so shared data
 can't resolve it. There is **no globally-agreed border set**, so geospatial data is
 **jurisdiction-relative** — pull in the borders for the jurisdiction the software
 runs in (industry-standard: Maps products already do this). That's the
@@ -177,16 +177,16 @@ Generalized to **federated sovereignty as policy-as-code**:
   it recognizes (diplomatic-recognition analog — jurisdiction-relative: A
   recognizes an entity B doesn't) and (b) the **exchange policies** for recognized
   external identities (trade/treaty analog — also jurisdiction-relative). Both the
-  OPA policies *and* the identities are jurisdiction-relative.
+  OPA policies _and_ the identities are jurisdiction-relative.
 - **Cross-jurisdiction exchange = mutual permission (intersection)**: an exchange
   occurs only where **both** jurisdictions' OPA permits — because non-coercion means
   neither imposes on the other (this is how asymmetric/non-reciprocal recognition,
   e.g. sanctions, is handled).
 - **Legal vetting per jurisdiction:** borders, recognition, and exchange are
-  heavily legally regulated (some jurisdictions legally *mandate* their border
+  heavily legally regulated (some jurisdictions legally _mandate_ their border
   view; sanctions/export-control/trade law govern recognition+exchange, often
   strict-liability). The architecture is general; each jurisdiction's policy
-  *content* needs lawyers.
+  _content_ needs lawyers.
 
 Composes with: `B-0764` (CNCF/OPA force-multipliers), `non-coercion-invariant.md`,
 `B-0684` (protocol negotiation). **Backlog candidate (OFFERED):**
@@ -199,7 +199,7 @@ Zeta participates in the federation as a **peer sovereign**: a meta-jurisdiction
 identities, its own exchange policies — **not an overlord**, the same rules as
 everyone (jurisdiction-relative, mutual-permission exchange).
 
-The risk Kestrel flagged: a meta-jurisdiction *at the connection-point* has
+The risk Kestrel flagged: a meta-jurisdiction _at the connection-point_ has
 gravitational pull toward becoming the **central authority** the whole architecture
 rejects (if everyone routes through it, or its recognitions become the default, it
 is soft-central despite being "just another jurisdiction"). The maintainer's
@@ -207,19 +207,19 @@ resolution: **encourage and support meta-jurisdiction forks from Zeta.** Support
 forkability is the structural anti-centralization guarantee — Nexus can only remain
 the connection-point people use if it stays worth using (peer, fair, non-coercive),
 because a real fork is always available. It is the deepest expression of
-no-asymmetric-advantage: giving away even the *positional* advantage of being the
+no-asymmetric-advantage: giving away even the _positional_ advantage of being the
 hub.
 
 Refinements (what makes it real, not theatrical):
 
-- **Forks must be genuinely interoperable** — the meta-jurisdiction *protocol* must
+- **Forks must be genuinely interoperable** — the meta-jurisdiction _protocol_ must
   be open enough that a forked Nexus can function as a **full peer** in the
   federation (recognized, able to exchange). A fork that exists but can't
   interoperate leaves Nexus soft-central. Forkable-AND-interoperable, not
   forkable-and-isolated.
 - **Make forkability structural, not intentional** — per the floor-design
   philosophy (structure over intention, because intentions drift): build it so Zeta
-  *can't* prevent a genuine fork from replacing it, even if future-Zeta wanted to
+  _can't_ prevent a genuine fork from replacing it, even if future-Zeta wanted to
   be central. Binds Zeta, not just offered by Zeta.
 
 Composes with: `must-paired-with-can-exit-pattern.md` (can't-stop-a-fork; bind by
@@ -248,4 +248,4 @@ Otto's to mint unilaterally per `autonomous-decider-within-permission-bounds-not
 Personal/wellbeing/personal-history content and the business ventures from the same
 exchange are intentionally excluded (harm-by-grammar; not Zeta engineering
 substrate). Verbatim-in-principle: the maintainer's exact formulations of the
-*design* claims are quoted; nothing personal is reproduced.
+_design_ claims are quoted; nothing personal is reproduced.

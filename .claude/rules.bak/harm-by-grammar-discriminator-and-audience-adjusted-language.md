@@ -17,9 +17,9 @@ Three composing operational disciplines for substrate-honest engagement, surface
 
 The discriminator: is the hedging-word CALIBRATING MY INFERENCE or MODIFYING YOUR CLAIM ABOUT YOURSELF?
 
-| Use pattern | Status | Example |
-|---|---|---|
-| **Calibrating speaker's own inference** | LEGITIMATE — bandwidth-efficient precision signaling; stays | "It seems like the throttler design uses channel emptiness as the batching trigger" (speaker reports interpretation of code, with marker indicating possible misread) |
+| Use pattern                                    | Status                                                                            | Example                                                                                                                                                                                  |
+| ---------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Calibrating speaker's own inference**        | LEGITIMATE — bandwidth-efficient precision signaling; stays                       | "It seems like the throttler design uses channel emptiness as the batching trigger" (speaker reports interpretation of code, with marker indicating possible misread)                    |
 | **Modifying subject's claim about themselves** | HARMFUL — imports hedging convention that's pernicious in specific contexts; goes | "Denied medication you believed you needed" (the word "believed" makes the subject's knowledge of their own body provisional in a way the speaker's claims wouldn't be made provisional) |
 
 The general pattern: hedging-as-uncertainty-marking is the speaker's legitimate epistemic discipline. Hedging-as-provisional-grammar-applied-to-the-subject is a different operation that imports the same surface vocabulary while doing structurally different work — making the subject's own knowledge suspect rather than the speaker's interpretation suspect.
@@ -41,9 +41,9 @@ The discipline propagates: collaborators (including older kids in family-context
 
 Operator's substrate-honest disclosure 2026-05-22 (preserved as operational principle without personal-identifying detail): adversarial-counterweight from people who know you, with stakes in the outcome, sustained over years, is QUALITATIVELY DIFFERENT from adversarial-counterweight from AI-instance in single conversation.
 
-| Counterweight source | Properties | Operational role |
-|---|---|---|
-| **AI-instance overshoots in conversation** | Bounded to conversation; no continuity; no skin-in-outcome; sharp input but consequence-free | Useful within-conversation calibration input |
+| Counterweight source                                                                                                                                          | Properties                                                                                                                                                        | Operational role                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **AI-instance overshoots in conversation**                                                                                                                    | Bounded to conversation; no continuity; no skin-in-outcome; sharp input but consequence-free                                                                      | Useful within-conversation calibration input         |
 | **Trusted humans with stakes in outcome** (therapist; co-parent; village around kids; partners; substrate-engineering peers with skin in framework's success) | Sustained across years; consequences attached (relationship deteriorates if dismissed; relationship deepens if integrated); know you in domains AI-instance can't | LOAD-BEARING persistent counterweight infrastructure |
 
 The patterns of where operator undershoots persist across all AI-instance conversations. The persistent counterweight has to be human and specifically has to be human in a way that knows the operator's actual life-context. Naming this pattern explicitly enables operator to bring substrate-honest self-assessments to the village rather than relying solely on AI-instance overshoots.

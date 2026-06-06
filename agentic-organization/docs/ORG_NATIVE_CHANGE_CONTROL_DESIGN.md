@@ -26,14 +26,14 @@ code_anchors:
 ## 0. The reframe
 
 A corporation does not "open a pull request." It **reviews a change** through its
-own process and, *if it happens to host code on GitHub*, projects one stage of that
+own process and, _if it happens to host code on GitHub_, projects one stage of that
 process onto a PR so a human outside the org can sign off. The Git PR is a
 **leaf**, not the trunk.
 
 > A Jira card moving `in progress → code review` is one coarse external hop. Inside
 > the org it expands into a fine-grained pipeline the org owns — internal code
 > review → internal QA → security → … — and only the stage that genuinely needs a
-> human *external to the org* materializes as a PR/MR or an external sign-off.
+> human _external to the org_ materializes as a PR/MR or an external sign-off.
 
 This document specifies the **canonical internal change-control object** (the
 `ChangeSet`) and the **port layer** that projects it onto GitHub / GitLab / Jira —
@@ -52,22 +52,22 @@ Everything below follows from five rules. They are the whole design; the rest is
 their mechanical consequence.
 
 1. **One canonical object, many projections.** The `ChangeSet` is the source of
-   truth. A GitHub PR, a GitLab MR, a Jira card are *projections* created on demand
+   truth. A GitHub PR, a GitLab MR, a Jira card are _projections_ created on demand
    and reconciled back. Delete every external system and the org still works.
 2. **A review stage is an `observe → decide` org cycle.** Determinism computes the
-   legal advance/block/request-changes set; the stage's *authority* chooses within
+   legal advance/block/request-changes set; the stage's _authority_ chooses within
    it; every transition emits one `org_event`. This is the keystone kernel
    ([`OBSERVE_COMPOSER_AND_RUN_STATE`](OBSERVE_COMPOSER_AND_RUN_STATE.md)) applied to
    review — identical to how the org cycle, Work OS, and memory maintenance work.
 3. **The external PR is just a stage whose authority lives outside the org.** A
    stage's authority is a discriminated union — an internal hat, a quorum board, a
-   human, or an *external system via a port*. The kernel handles all four
+   human, or an _external system via a port_. The kernel handles all four
    uniformly. "Wait for a human to approve the GitHub PR" is not a special case; it
    is a `ReviewStage` with `authority = External(github)`, satisfied by a port poll.
 4. **The change payload is Git-agnostic.** A `ChangeSet` reviews typed
    `ChangeArtifact`s — code diffs, doc edits, config changes, schema migrations,
    decision records, opaque artifact refs. A PR can only represent code-file diffs;
-   the `ChangeSet` is a strict superset. The org reviews *any* change through one
+   the `ChangeSet` is a strict superset. The org reviews _any_ change through one
    fabric; the Git port renders only the artifacts Git can carry.
 5. **Clamp discipline holds.** A hat cannot advance a `ChangeSet` past a stage whose
    gate is unsatisfied, cannot approve a stage it does not own, cannot fabricate an
@@ -84,16 +84,16 @@ their mechanical consequence.
 export type ChangeSet = {
   changeSetId: string;
   organizationId: string;
-  workItemId: string;            // the work this change advances (the join to the Work OS)
-  proposerHatId: string;         // who opened it (authority under which it was proposed)
+  workItemId: string; // the work this change advances (the join to the Work OS)
+  proposerHatId: string; // who opened it (authority under which it was proposed)
   title: string;
-  targetRef: string;             // what it changes against (a branch name, a doc id, a service…)
-  phase: ChangeSetPhase;         // overall lifecycle (House-DU)
-  pipelineId: string;            // the ReviewPipeline (stages-as-data) it runs through
-  currentStageIndex: number;     // cursor within the pipeline while in_review
+  targetRef: string; // what it changes against (a branch name, a doc id, a service…)
+  phase: ChangeSetPhase; // overall lifecycle (House-DU)
+  pipelineId: string; // the ReviewPipeline (stages-as-data) it runs through
+  currentStageIndex: number; // cursor within the pipeline while in_review
   artifacts: readonly ChangeArtifact[];
-  projections: readonly ProjectionRef[];  // external materializations (PR/MR/card), if any
-  revision: number;              // bumps on each changes-requested → resubmit
+  projections: readonly ProjectionRef[]; // external materializations (PR/MR/card), if any
+  revision: number; // bumps on each changes-requested → resubmit
   openedAt: string;
   updatedAt: string;
 };
@@ -103,18 +103,21 @@ export type ChangeSet = {
 
 ```ts
 export const ChangeSetPhase = {
-  Drafted: "drafted",            // proposer assembling artifacts
-  InReview: "in_review",         // moving through the pipeline (cursor = currentStageIndex)
-  ChangesRequested: "changes_requested",  // a stage returned blocking findings
-  Approved: "approved",          // every blocking stage passed
-  Applied: "applied",            // change materialized into target (+ external merge if projected) — TERMINAL
-  Rejected: "rejected",          // hard-rejected — TERMINAL
-  Withdrawn: "withdrawn",        // proposer pulled it — TERMINAL
+  Drafted: "drafted", // proposer assembling artifacts
+  InReview: "in_review", // moving through the pipeline (cursor = currentStageIndex)
+  ChangesRequested: "changes_requested", // a stage returned blocking findings
+  Approved: "approved", // every blocking stage passed
+  Applied: "applied", // change materialized into target (+ external merge if projected) — TERMINAL
+  Rejected: "rejected", // hard-rejected — TERMINAL
+  Withdrawn: "withdrawn", // proposer pulled it — TERMINAL
 } as const;
 export type ChangeSetPhase = (typeof ChangeSetPhase)[keyof typeof ChangeSetPhase];
 
-export const TerminalChangeSetPhases: ReadonlySet<ChangeSetPhase> =
-  new Set([ChangeSetPhase.Applied, ChangeSetPhase.Rejected, ChangeSetPhase.Withdrawn]);
+export const TerminalChangeSetPhases: ReadonlySet<ChangeSetPhase> = new Set([
+  ChangeSetPhase.Applied,
+  ChangeSetPhase.Rejected,
+  ChangeSetPhase.Withdrawn,
+]);
 ```
 
 The legal transitions are a pure function — the determinism half of the kernel.
@@ -123,13 +126,18 @@ The chooser (a hat / human / port) picks within it; the kernel clamps:
 ```ts
 export function legalChangeSetTransitions(cs: ChangeSet, pipeline: ReviewPipeline): readonly ChangeSetPhase[] {
   switch (cs.phase) {
-    case "drafted":            return [P.InReview, P.Withdrawn];
-    case "in_review":          return moreStagesRemain(cs, pipeline)
-                                 ? [P.InReview, P.ChangesRequested, P.Rejected, P.Withdrawn]   // advance | bounce | kill
-                                 : [P.Approved, P.ChangesRequested, P.Rejected, P.Withdrawn];  // last stage → approve
-    case "changes_requested":  return [P.InReview, P.Withdrawn];  // proposer revises + resubmits (revision++)
-    case "approved":           return [P.Applied, P.Withdrawn];
-    default:                   return []; // terminal
+    case "drafted":
+      return [P.InReview, P.Withdrawn];
+    case "in_review":
+      return moreStagesRemain(cs, pipeline)
+        ? [P.InReview, P.ChangesRequested, P.Rejected, P.Withdrawn] // advance | bounce | kill
+        : [P.Approved, P.ChangesRequested, P.Rejected, P.Withdrawn]; // last stage → approve
+    case "changes_requested":
+      return [P.InReview, P.Withdrawn]; // proposer revises + resubmits (revision++)
+    case "approved":
+      return [P.Applied, P.Withdrawn];
+    default:
+      return []; // terminal
   }
 }
 ```
@@ -138,18 +146,18 @@ export function legalChangeSetTransitions(cs: ChangeSet, pipeline: ReviewPipelin
 
 ```ts
 export type ChangeArtifact =
-  | { kind: "code_diff";       path: string; diff: string; language: string }
-  | { kind: "doc_change";      path: string; before: string; after: string }
-  | { kind: "config_change";   key: string;  before: string; after: string }
+  | { kind: "code_diff"; path: string; diff: string; language: string }
+  | { kind: "doc_change"; path: string; before: string; after: string }
+  | { kind: "config_change"; key: string; before: string; after: string }
   | { kind: "schema_migration"; migrationId: string; sql: string }
   | { kind: "decision_record"; decisionId: string; summary: string }
-  | { kind: "artifact_ref";    uri: string;  contentType: string };
+  | { kind: "artifact_ref"; uri: string; contentType: string };
 ```
 
 > **Why this is more general than a PR.** A GitHub PR can natively represent only
 > `code_diff` (and, awkwardly, `doc_change`/`config_change` as file diffs). The
 > review fabric reviews a `schema_migration`, a `decision_record`, or an
-> `artifact_ref` through the *same* stages, gates, threads, and approvals. When such
+> `artifact_ref` through the _same_ stages, gates, threads, and approvals. When such
 > a `ChangeSet` projects to GitHub, the port renders the Git-representable artifacts
 > as a branch/PR and leaves the rest internal — the review of record stays ours.
 
@@ -157,12 +165,12 @@ export type ChangeArtifact =
 
 ```ts
 export type ReviewStage = {
-  id: string;                    // "internal-code-review" | "internal-qa" | "security" | "external-code-review" | "human-qa-signoff"
-  ownerLabel: string;           // human-readable owner ("code_reviewer", "qa_reviewer", …)
-  authority: ReviewAuthority;    // WHO satisfies this stage (the elegance: a DU)
-  gate: ReviewGateKind;          // WHAT must be true to pass
-  blocking: boolean;             // must pass to advance vs advisory
-  projectTo?: ExternalSystem;    // if set, materialize an external PR/MR/card for this stage
+  id: string; // "internal-code-review" | "internal-qa" | "security" | "external-code-review" | "human-qa-signoff"
+  ownerLabel: string; // human-readable owner ("code_reviewer", "qa_reviewer", …)
+  authority: ReviewAuthority; // WHO satisfies this stage (the elegance: a DU)
+  gate: ReviewGateKind; // WHAT must be true to pass
+  blocking: boolean; // must pass to advance vs advisory
+  projectTo?: ExternalSystem; // if set, materialize an external PR/MR/card for this stage
 };
 
 export type ReviewPipeline = { pipelineId: string; organizationId: string; stages: readonly ReviewStage[] };
@@ -173,19 +181,19 @@ review board, humans, and external systems under one kernel:
 
 ```ts
 export type ReviewAuthority =
-  | { kind: "hat";      hatId: string }                              // an internal hat decides (observe→decide chooser)
-  | { kind: "quorum";   hatIds: readonly string[]; threshold: number } // the ≥3-agent review board (METRICS_AND_REVIEW_BOARD)
-  | { kind: "human";    role: string }                              // a human must sign off → org pauses (HITL)
-  | { kind: "external"; system: ExternalSystem };                   // satisfied by a port poll (GitHub PR approved, …)
+  | { kind: "hat"; hatId: string } // an internal hat decides (observe→decide chooser)
+  | { kind: "quorum"; hatIds: readonly string[]; threshold: number } // the ≥3-agent review board (METRICS_AND_REVIEW_BOARD)
+  | { kind: "human"; role: string } // a human must sign off → org pauses (HITL)
+  | { kind: "external"; system: ExternalSystem }; // satisfied by a port poll (GitHub PR approved, …)
 ```
 
 ```ts
 export const ReviewGateKind = {
-  ArtifactsPresent: "artifacts_present",     // the change actually carries the claimed artifacts
-  TestsGreen: "tests_green",                 // QA: the test run for this change passed (reuses qa.ts)
-  NoBlockingFindings: "no_blocking_findings",// no unresolved blocking review thread (our thread-resolution, org-owned)
-  QuorumAgreed: "quorum_agreed",             // ≥ threshold reviewers approved (the review board)
-  ExternalApproved: "external_approved",     // the projection's external state reports approved
+  ArtifactsPresent: "artifacts_present", // the change actually carries the claimed artifacts
+  TestsGreen: "tests_green", // QA: the test run for this change passed (reuses qa.ts)
+  NoBlockingFindings: "no_blocking_findings", // no unresolved blocking review thread (our thread-resolution, org-owned)
+  QuorumAgreed: "quorum_agreed", // ≥ threshold reviewers approved (the review board)
+  ExternalApproved: "external_approved", // the projection's external state reports approved
 } as const;
 ```
 
@@ -207,7 +215,7 @@ export function legalStageOutcomes(stage: ReviewStage, gate: GateEvaluation): re
 }
 
 export async function runReviewStage(cs: ChangeSet, stage: ReviewStage, deps): Promise<StageResult> {
-  const gate = await evaluateGate(stage.gate, cs, deps);          // observe: is the gate satisfiable?
+  const gate = await evaluateGate(stage.gate, cs, deps); // observe: is the gate satisfiable?
   const legal = legalStageOutcomes(stage, gate);
   const decision = await decideByAuthority(stage.authority, cs, stage, legal, deps); // decide: WHO + clamp
   // decision is clamped to `legal` exactly like chooseWithinLegal in org-decision.ts
@@ -216,15 +224,15 @@ export async function runReviewStage(cs: ChangeSet, stage: ReviewStage, deps): P
 ```
 
 `decideByAuthority` is the one place the four authorities differ, and they differ
-*only in where the choice comes from* — the legal set, the clamp, and the emitted
+_only in where the choice comes from_ — the legal set, the clamp, and the emitted
 event are identical:
 
-| `authority.kind` | How the choice is obtained | HITL? |
-|---|---|---|
-| `hat` | the owning hat's chooser (deterministic baseline or model-backed), clamped to `legal` | no |
-| `quorum` | collect ≥ `threshold` hat approvals (the review board); `QuorumAgreed` gate | no |
-| `human` | **pause** the `ChangeSet` and surface a HITL task; resume on the human's decision | yes |
-| `external` | `port.pull(ref)` until the external state is terminal; map it to a `StageOutcome` | yes (external) |
+| `authority.kind` | How the choice is obtained                                                            | HITL?          |
+| ---------------- | ------------------------------------------------------------------------------------- | -------------- |
+| `hat`            | the owning hat's chooser (deterministic baseline or model-backed), clamped to `legal` | no             |
+| `quorum`         | collect ≥ `threshold` hat approvals (the review board); `QuorumAgreed` gate           | no             |
+| `human`          | **pause** the `ChangeSet` and surface a HITL task; resume on the human's decision     | yes            |
+| `external`       | `port.pull(ref)` until the external state is terminal; map it to a `StageOutcome`     | yes (external) |
 
 > This is the elegance: **"wait for a human to approve the PR" is not bespoke
 > orchestration.** It is `authority: External(github)` whose gate is
@@ -254,16 +262,16 @@ export type ExternalSystem = "github" | "gitlab" | "jira" | "none";
 
 export type ProjectionRef = {
   system: ExternalSystem;
-  externalId: string;            // PR number, MR iid, Jira key
+  externalId: string; // PR number, MR iid, Jira key
   url: string;
-  lastSyncedState: string;       // the external state we last reconciled
+  lastSyncedState: string; // the external state we last reconciled
   syncedAt: string;
 };
 
 export interface ChangeControlPort {
   system: ExternalSystem;
-  project(cs: ChangeSet, stage: ReviewStage): Promise<ProjectionRef>;            // create the PR/MR/card
-  pull(ref: ProjectionRef): Promise<ExternalReviewState>;                        // poll external state (approved? merged?)
+  project(cs: ChangeSet, stage: ReviewStage): Promise<ProjectionRef>; // create the PR/MR/card
+  pull(ref: ProjectionRef): Promise<ExternalReviewState>; // poll external state (approved? merged?)
   push(ref: ProjectionRef, stage: ReviewStage, outcome: StageOutcome): Promise<void>; // mirror internal → external
 }
 ```
@@ -271,8 +279,8 @@ export interface ChangeControlPort {
 Adapters: `createGitHubPrPort`, `createGitLabMrPort`, `createJiraCardPort`, and the
 **`NullChangeControlPort`** for internal-only orgs (every method a no-op; the fabric
 runs unchanged). This is structurally identical to
-[`createHindsightMemory`](hindsight-memory.ts) behind the `Memory` port — *compose,
-don't fork.* The internal `ChangeSet` is canonical; the port is a translation seam.
+[`createHindsightMemory`](hindsight-memory.ts) behind the `Memory` port — _compose,
+don't fork._ The internal `ChangeSet` is canonical; the port is a translation seam.
 
 **Bidirectional reconciliation** is two deterministic arrows:
 
@@ -281,7 +289,7 @@ don't fork.* The internal `ChangeSet` is canonical; the port is a translation se
 - **external → internal** (`pull`): when a human approves the GitHub PR, the next
   `runReviewStage` over that `External` stage reads `port.pull(ref) = approved`,
   satisfies the `ExternalApproved` gate, and advances the `ChangeSet`. The external
-  approval *flows into the internal kernel* as a gate satisfaction — it does not
+  approval _flows into the internal kernel_ as a gate satisfaction — it does not
   bypass it.
 
 ### 4.1 Per-artifact projection
@@ -290,7 +298,7 @@ A port projects only the artifacts its system can carry. `createGitHubPrPort`
 renders `code_diff` (and `doc_change`/`config_change` as file diffs) into a branch +
 PR; a `schema_migration` or `decision_record` stays an internal artifact referenced
 from the PR body. The review of record — threads, quorum, gates — remains the
-`ChangeSet`'s. GitHub becomes a *view* a human can use, not the system of record.
+`ChangeSet`'s. GitHub becomes a _view_ a human can use, not the system of record.
 
 ## 5. Storage — Cockroach `ChangeControlV17`
 
@@ -337,17 +345,17 @@ co-located with the other Adaptive-Platform configuration tables.
 The `ChangeSet` does **not** invent a parallel state model. It reconciles into the
 one authoritative mapping ([`STATE_RECONCILIATION`](STATE_RECONCILIATION.md)):
 
-| ChangeSet phase @ stage | WorkItemState | GitHub | Jira |
-|---|---|---|---|
-| `in_review @ internal-*` | `review` | *(none — internal only)* | `In Review` |
-| `in_review @ external-code-review` | `review` | PR `open, review_requested` | `In Review` |
-| `changes_requested` | `in_progress` | PR `changes_requested` | `In Progress` |
-| `approved` | `review` | PR `approved` | `In Review` |
-| `applied` | `done` / `release` | PR `merged` | `Done` |
+| ChangeSet phase @ stage            | WorkItemState      | GitHub                      | Jira          |
+| ---------------------------------- | ------------------ | --------------------------- | ------------- |
+| `in_review @ internal-*`           | `review`           | _(none — internal only)_    | `In Review`   |
+| `in_review @ external-code-review` | `review`           | PR `open, review_requested` | `In Review`   |
+| `changes_requested`                | `in_progress`      | PR `changes_requested`      | `In Progress` |
+| `approved`                         | `review`           | PR `approved`               | `In Review`   |
+| `applied`                          | `done` / `release` | PR `merged`                 | `Done`        |
 
 The external systems see **coarse** transitions; the org runs the **fine-grained**
 pipeline between them. That gap — the internal stages a card silently passes through
-— *is the product.*
+— _is the product._
 
 ## 7. `org_event` trace (added to the union)
 
@@ -369,15 +377,15 @@ department — change control is the **release stage of the Work OS turned insid
 
 ## 9. Phased build plan (each phase proven in kind, the established bar)
 
-| Phase | Deliverable |
-|---|---|
-| **CC0** | This doc + the `OrgEventKind` additions + the two Cockroach tables (migration `ChangeControlV17` + on-disk mirror + parity test). |
-| **CC1** | Domain: `ChangeSet`/`ChangeSetPhase` (House-DU) + `ChangeArtifact` + `ReviewStage`/`ReviewAuthority`/`ReviewGateKind` DUs + `legalChangeSetTransitions` + `legalStageOutcomes` — pure, unit-tested. |
-| **CC2** | Cockroach stores (change-set + stage-status) + parity test; content-addressed `changeSetId`. |
-| **CC3** | The kernel: `runReviewStage` (observe→decide, clamp, emit) + `decideByAuthority` (hat / quorum / human-pause / external) + `advanceChangeSet` + the anti-fabrication clamp (can't approve a gate you don't own) — unit-tested. |
-| **CC4** | The `ChangeControlPort` + `NullChangeControlPort` + an in-process fake external system; the reconciliation-table extension; `ChangeControlPolicy`-as-data. |
-| **CC5** | `createGitHubPrPort` (first real adapter): `project`/`pull`/`push` + bidirectional sync + per-artifact rendering. Live GitHub proof is credential-gated; the **in-kind proof uses the fake port** to exercise the full projection + reconciliation seam without external tokens. |
-| **CC6** | **Integrate into the Work OS release stage + prove end-to-end in kind:** a work item produces a `ChangeSet` → runs the internal pipeline (code review → QA quorum → security) → a `human` stage **pauses** (HITL) → approved → applied — first with `ExternalSystem.none` (zero projections), then re-run with the fake `external-code-review` stage showing the projection materialize + an external approval flow *back into* the gate. Observe via the org snapshot. |
+| Phase   | Deliverable                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CC0** | This doc + the `OrgEventKind` additions + the two Cockroach tables (migration `ChangeControlV17` + on-disk mirror + parity test).                                                                                                                                                                                                                                                                                                                                       |
+| **CC1** | Domain: `ChangeSet`/`ChangeSetPhase` (House-DU) + `ChangeArtifact` + `ReviewStage`/`ReviewAuthority`/`ReviewGateKind` DUs + `legalChangeSetTransitions` + `legalStageOutcomes` — pure, unit-tested.                                                                                                                                                                                                                                                                     |
+| **CC2** | Cockroach stores (change-set + stage-status) + parity test; content-addressed `changeSetId`.                                                                                                                                                                                                                                                                                                                                                                            |
+| **CC3** | The kernel: `runReviewStage` (observe→decide, clamp, emit) + `decideByAuthority` (hat / quorum / human-pause / external) + `advanceChangeSet` + the anti-fabrication clamp (can't approve a gate you don't own) — unit-tested.                                                                                                                                                                                                                                          |
+| **CC4** | The `ChangeControlPort` + `NullChangeControlPort` + an in-process fake external system; the reconciliation-table extension; `ChangeControlPolicy`-as-data.                                                                                                                                                                                                                                                                                                              |
+| **CC5** | `createGitHubPrPort` (first real adapter): `project`/`pull`/`push` + bidirectional sync + per-artifact rendering. Live GitHub proof is credential-gated; the **in-kind proof uses the fake port** to exercise the full projection + reconciliation seam without external tokens.                                                                                                                                                                                        |
+| **CC6** | **Integrate into the Work OS release stage + prove end-to-end in kind:** a work item produces a `ChangeSet` → runs the internal pipeline (code review → QA quorum → security) → a `human` stage **pauses** (HITL) → approved → applied — first with `ExternalSystem.none` (zero projections), then re-run with the fake `external-code-review` stage showing the projection materialize + an external approval flow _back into_ the gate. Observe via the org snapshot. |
 
 The M-track / H-track independence pattern applies: the real Git/GitLab/Jira ports
 (CC5+) can land any time after CC4 (the port already exists); the internal fabric
@@ -419,25 +427,25 @@ Recommended order (this track **before** Document Intelligence):
 4. Adaptive Platform (C)            ← AutonomyPolicy (the human-gate config) + Jira/Linear sync reuse the port layer
 ```
 
-Rationale: Change Control is a **constitutional substrate decision** — *how the org
-ships* — and it removes the implicit Git-PR coupling the Work OS currently inherits.
+Rationale: Change Control is a **constitutional substrate decision** — _how the org
+ships_ — and it removes the implicit Git-PR coupling the Work OS currently inherits.
 Everything downstream (doc provenance, the graph's change-edges, the Adaptive
 Platform's external sync) should reference the canonical `ChangeSet`, so it belongs
 before the tracks built on top of it. It depends only on already-built substrate
 (the Work OS + the gate model + the ≥3-agent board), introduces no new
-infrastructure, and the port layer it establishes *is* the Adaptive Platform's
+infrastructure, and the port layer it establishes _is_ the Adaptive Platform's
 bidirectional-sync mechanism, generalized.
 
 ## 12. Composition summary
 
-| Existing substrate | How Change Control composes |
-|---|---|
-| Work OS gates + `WorkflowPolicy` (built) | `ReviewGateKind` reuses the gate model; the pipeline is gates-as-data at review scope |
-| ≥3-agent review board ([`METRICS_AND_REVIEW_BOARD`](METRICS_AND_REVIEW_BOARD.md)) | the `quorum` authority IS the review board |
-| QA dept + `qa.ts` (built) | the `tests_green` gate runs the QA cycle for the change |
-| `STATE_RECONCILIATION` | extended, not duplicated — ChangeSet phase maps into the one authoritative table |
-| `org-decision.ts` `chooseWithinLegal` (built) | `decideByAuthority` clamps every stage decision to the legal set |
-| `Memory` port + Hindsight (built) | the port-not-fork pattern this design mirrors exactly |
-| Adaptive Platform `AutonomyPolicy` | configures which stages are `human` and which `projectTo` external |
+| Existing substrate                                                                | How Change Control composes                                                           |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Work OS gates + `WorkflowPolicy` (built)                                          | `ReviewGateKind` reuses the gate model; the pipeline is gates-as-data at review scope |
+| ≥3-agent review board ([`METRICS_AND_REVIEW_BOARD`](METRICS_AND_REVIEW_BOARD.md)) | the `quorum` authority IS the review board                                            |
+| QA dept + `qa.ts` (built)                                                         | the `tests_green` gate runs the QA cycle for the change                               |
+| `STATE_RECONCILIATION`                                                            | extended, not duplicated — ChangeSet phase maps into the one authoritative table      |
+| `org-decision.ts` `chooseWithinLegal` (built)                                     | `decideByAuthority` clamps every stage decision to the legal set                      |
+| `Memory` port + Hindsight (built)                                                 | the port-not-fork pattern this design mirrors exactly                                 |
+| Adaptive Platform `AutonomyPolicy`                                                | configures which stages are `human` and which `projectTo` external                    |
 
 The org reviews its own work, its own way, and lends Git a translator on request.

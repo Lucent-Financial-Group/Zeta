@@ -116,20 +116,25 @@ other doc: reference `memory/` repo-relatively.
 # Documentation sweep — round N
 
 ## Edits applied (silently)
+
 - `<file>` — [summary of the edit, one line]
 - ...
 
 ## Edits pending review (too big to land silently)
+
 - `<file>` — [summary]. Opened as a draft in `<scratch path>`
   or tagged for the Architect.
 
 ## Orphans / dead links / drifts observed
+
 - ...
 
 ## Polite notes to contributors (if any)
+
 - "I updated X; worth a checkbox on your side for next time."
 
 ## Escalations (if any)
+
 - [contributor / workflow] has drifted N times this round;
   flagging to the Architect for a pairing conversation.
 ```

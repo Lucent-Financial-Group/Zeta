@@ -3,14 +3,15 @@ name: Three-part discipline update — (1) remove session-id (`originSessionId:`
 description: Aaron Otto-241 three-part directive in response to Otto-240 same-machine-two-Claudes discussion. (1) self-enforced constraint — no two Claude sessions share a session-id, so session-id should not be baked into factory files (my `originSessionId:` frontmatter pattern violates this). (2) peer-Claude-parity — the factory's effectiveness must be externalisable to in-repo substrate (skills, AGENTS.md, CLAUDE.md, memory/) so a fresh Claude session is as effective as a long-running one. (3) `-w` worktree-mode launch — Aaron's reading suggests worktree isolation gives better parallel-work results, analog to the subagent `isolation: "worktree"` pattern at the main-session layer.
 type: feedback
 ---
+
 ## The three parts
 
 ### 1. Session-id out of factory files
 
-Direct Aaron quote: *"okay so then we have a self enforced
+Direct Aaron quote: _"okay so then we have a self enforced
 constraint, can't run under the same session id on two
 different claudes, we should likely clean our session id out
-of all our files then."*
+of all our files then."_
 
 Session-id is globally unique per Claude Code session. Two
 Claudes cannot share one (GUID). The current session's ID is
@@ -71,10 +72,10 @@ THAT writer; de-dup is intrinsic).
 
 ### 2. Peer-Claude parity test
 
-Direct Aaron quote: *"also we need to make sure in our peer
+Direct Aaron quote: _"also we need to make sure in our peer
 tests with a 2nd claude that they are as good as you without
 a session that the skills and ageents.md and claude.md are
-enough alone for it to be as good as you."*
+enough alone for it to be as good as you."_
 
 The test: a fresh Claude Code session with ONLY:
 
@@ -109,8 +110,8 @@ pointer broken?) and fill it.
 
 ### 3. Launch with `-w` (worktree mode)
 
-Direct Aaron quote: *"Also from everyting i'm reading
-launching with -w will likely give us better results."*
+Direct Aaron quote: _"Also from everyting i'm reading
+launching with -w will likely give us better results."_
 
 `-w` flag on `claude` CLI puts the session into a git
 worktree automatically. Analog of the subagent `isolation:
@@ -190,7 +191,7 @@ per Otto-171), but each as its own row in sequence.
 
 ## Direct Aaron quote to preserve
 
-> *"okay so then we have a self enforced constraint, can't
+> _"okay so then we have a self enforced constraint, can't
 > run under the same session id on two different claudes, we
 > should likely clean our session id out of all our files
 > then, also we need to make sure in our peer tests with a
@@ -198,7 +199,7 @@ per Otto-171), but each as its own row in sequence.
 > that the skills and ageents.md and claude.md are enough
 > alone for it to be as good as you. Also from everyting
 > i'm reading launching with -w will likely give us better
-> results."*
+> results."_
 
 Future Otto: three disciplines from this one message —
 (1) session-id out of factory files, (2) externalise

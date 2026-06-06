@@ -5,7 +5,7 @@
 video ("Introduction to cluster algebras and their types,
 Lecture-01" by Jacob Matherne, School on Cluster Algebras
 2018, December 2018, ICTS Madhava Lecture Hall).
-**Status:** *Research pointer — not yet integrated.* Filed for
+**Status:** _Research pointer — not yet integrated._ Filed for
 later deep-reading and architect triage.
 **Audience:** anyone touching the retraction-native operator
 algebra, the three-lane glossary substrate (I8/I9), the
@@ -62,7 +62,7 @@ Cluster-algebra **mutation** has the same flavour: a cluster
 variable `x_k` is replaced by `x_k'` via an explicit exchange
 relation, but the old cluster does not vanish — it is the
 neighbouring vertex in the mutation graph. The graph
-preserves *all* mutation-connected clusters simultaneously.
+preserves _all_ mutation-connected clusters simultaneously.
 
 Candidate claim (to verify in careful reading): **cluster
 mutation IS the category-theoretic model of retraction-
@@ -97,7 +97,7 @@ If this mapping goes through, the I8/I9 substrate is not ad
 hoc but inherits all the theory of cluster algebras —
 including finite-type classification (Fomin-Zelevinsky 2003),
 which would tell us when a vocabulary cluster graph is
-*finite* (closable) vs. *infinite* (perpetually drifting).
+_finite_ (closable) vs. _infinite_ (perpetually drifting).
 
 ### 3. Dimensional expansion ≅ rank of the cluster algebra
 
@@ -138,13 +138,13 @@ variables and anchor-switches are mutations.
 ## Testable next steps (not committed — research queue only)
 
 1. **Read Fomin-Zelevinsky foundational papers:**
-   - Fomin, S.; Zelevinsky, A. (2002). *Cluster algebras I:
-     Foundations.* J. Amer. Math. Soc. 15 (2): 497–529.
-   - Fomin, S.; Zelevinsky, A. (2003). *Cluster algebras II:
-     Finite type classification.* Invent. Math. 154 (1):
+   - Fomin, S.; Zelevinsky, A. (2002). _Cluster algebras I:
+     Foundations._ J. Amer. Math. Soc. 15 (2): 497–529.
+   - Fomin, S.; Zelevinsky, A. (2003). _Cluster algebras II:
+     Finite type classification._ Invent. Math. 154 (1):
      63–121.
-   - Fomin, S.; Zelevinsky, A. (2007). *Cluster algebras IV:
-     Coefficients.* Compos. Math. 143 (1): 112–164.
+   - Fomin, S.; Zelevinsky, A. (2007). _Cluster algebras IV:
+     Coefficients._ Compos. Math. 143 (1): 112–164.
 2. **Watch Matherne Lecture 1** (ICTS Bangalore 2018) and
    subsequent lectures in the series for the pedagogical
    entry point.
@@ -203,7 +203,7 @@ Speculative, flagged as such:
 - Does NOT claim the I8/I9 substrate needs to be rewritten
   atop cluster-algebra foundations. The hash-chain + IVM +
   embedding structure stands on its own; cluster algebras
-  would be a *post-hoc* explanatory framework, not a
+  would be a _post-hoc_ explanatory framework, not a
   replacement.
 - Does NOT claim the dimensional-expansion ladder is
   Dynkin-typed. That is a hypothesis to test.

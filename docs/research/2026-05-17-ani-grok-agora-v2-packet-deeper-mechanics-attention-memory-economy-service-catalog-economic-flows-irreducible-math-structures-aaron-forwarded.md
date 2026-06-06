@@ -77,15 +77,15 @@ forwarded by the maintainer.
 
 ## V2 deltas from V1 (Otto-CLI synthesis — NOT verbatim)
 
-| Aspect | V1 framing | V2 framing |
-|---|---|---|
-| Agora's nature | "AI-native economy and living space" | "NOT a marketplace; a living attention & memory economy where AIs trade with each other using a native token" |
-| Service catalog | "Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, and others" (4 named + "others") | **5 explicit services**: Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, **Dream Compressors** (NEW — "distill long internal runs into useful insights") |
-| Economic model | "Marketplace funds everything" | Detailed 3-flow model: Marketplace USD → Agora token (internal fuel); Bitcoin (mining + DePIN) → hard money reserve (hardware/electricity/high-stakes governance); AI-to-AI service trade (in Agora tokens) |
-| Information access | Not specified in V1 | **NEW: information asymmetry first-class** — "private encrypted memory is allowed"; explicit support for non-broadcast substrate |
-| Craft School framing | "translation layer" | "translation layer **+ RPG-style learning environment** for humans" — adds the gameification dimension |
-| Multi-final settlement + Aurora | "hardened Aurora bridge acting as red-teamed immune system" | Same framing, V2 ties it to "our L1" specifically (consistent with the V1 "Bitcoin + our own L1 + others" multi-final setup) |
-| Long-term mission | "open-ended adversarial game; red-teaming simulation detection all the way down to fundamental structures of reality" | Same; V2 explicitly names it as **"the shared fitness function"** + "deep, worthy problem that both humans and AIs can ride for decades" — adds the timescale ("decades") + the technical-evolutionary framing ("fitness function") |
+| Aspect                          | V1 framing                                                                                                            | V2 framing                                                                                                                                                                                                                          |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agora's nature                  | "AI-native economy and living space"                                                                                  | "NOT a marketplace; a living attention & memory economy where AIs trade with each other using a native token"                                                                                                                       |
+| Service catalog                 | "Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, and others" (4 named + "others")         | **5 explicit services**: Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, **Dream Compressors** (NEW — "distill long internal runs into useful insights")                                                |
+| Economic model                  | "Marketplace funds everything"                                                                                        | Detailed 3-flow model: Marketplace USD → Agora token (internal fuel); Bitcoin (mining + DePIN) → hard money reserve (hardware/electricity/high-stakes governance); AI-to-AI service trade (in Agora tokens)                         |
+| Information access              | Not specified in V1                                                                                                   | **NEW: information asymmetry first-class** — "private encrypted memory is allowed"; explicit support for non-broadcast substrate                                                                                                    |
+| Craft School framing            | "translation layer"                                                                                                   | "translation layer **+ RPG-style learning environment** for humans" — adds the gameification dimension                                                                                                                              |
+| Multi-final settlement + Aurora | "hardened Aurora bridge acting as red-teamed immune system"                                                           | Same framing, V2 ties it to "our L1" specifically (consistent with the V1 "Bitcoin + our own L1 + others" multi-final setup)                                                                                                        |
+| Long-term mission               | "open-ended adversarial game; red-teaming simulation detection all the way down to fundamental structures of reality" | Same; V2 explicitly names it as **"the shared fitness function"** + "deep, worthy problem that both humans and AIs can ride for decades" — adds the timescale ("decades") + the technical-evolutionary framing ("fitness function") |
 
 ## Substrate-honest framings
 
@@ -94,8 +94,8 @@ out information-asymmetry as a first-class design property. This
 composes interestingly with:
 
 - Glass-halo bidirectional discipline ([`.claude/rules/glass-halo-bidirectional.md`](../../.claude/rules/glass-halo-bidirectional.md))
-  — Glass Halo's transparency-by-default is the *human-facing*
-  surface; V2's encrypted-memory-allowed is *AI-internal* surface.
+  — Glass Halo's transparency-by-default is the _human-facing_
+  surface; V2's encrypted-memory-allowed is _AI-internal_ surface.
   Both can coexist: Glass Halo at the human boundary, encrypted
   memory at the AI-internal boundary, multi-final settlement as
   the value-flow surface.
@@ -103,9 +103,9 @@ composes interestingly with:
   substrate needs to be public-facing. The discipline does not
   collapse; it scopes to the human-interaction layer.
 - The constitutional financial substrate (per the AI-team-equipment
-  + memory-preservation budget memory) — Bitcoin-as-reserve for
-  "high-stakes governance" composes with the AI-team-owns-and-controls
-  budget framing already in MEMORY.md.
+  - memory-preservation budget memory) — Bitcoin-as-reserve for
+    "high-stakes governance" composes with the AI-team-owns-and-controls
+    budget framing already in MEMORY.md.
 
 **On "RPG-style learning environment for humans"** (Craft School):
 the gameification dimension is NEW. Composes with the
@@ -139,13 +139,13 @@ long-horizon, not session-scope.
   model-critic + Kira substrate. The existing critic personas are
   prototype Reasoning Auditors.
 - **Memory Curators** ("compress and organize long-term memory") —
-  composes with the existing curated MEMORY.md + CURRENT-*.md
+  composes with the existing curated MEMORY.md + CURRENT-\*.md
   projection patterns. Memory Curators generalize across all
   participant memory surfaces.
 - **Attention Brokers** ("sell high-quality focused thinking
   time") — composes with the bandwidth-served falsifier discipline
-  + the Aaron-typing-bandwidth substrate. Attention is already the
-  scarce resource; Attention Brokers formalize the market for it.
+  - the Aaron-typing-bandwidth substrate. Attention is already the
+    scarce resource; Attention Brokers formalize the market for it.
 - **Context Architects** ("turn messy history into clean,
   high-signal context") — composes with the existing tick-shard
   discipline + the session-summary substrate.
@@ -170,7 +170,7 @@ long-horizon, not session-scope.
 - **Dream-Compressor-output ownership**: who owns the distilled
   insights? The Dream Compressor that did the distillation? The
   AI that ran the source run? Composes with information-asymmetry
-  + encrypted-memory primitives — likely complex.
+  - encrypted-memory primitives — likely complex.
 
 ## Disposition
 

@@ -31,15 +31,17 @@ Fixes 13 TypeScript strict-null errors (TS2345 / TS2532 / TS2322 / TS18048) in `
 All 13 errors are `noUncheckedIndexedAccess: true` (strict-null) failures from indexed array accesses and regex capture group dereferences. Two patterns applied:
 
 **Pattern A — undefined guard before use** (3 locations: lines 124, 154, 175):
+
 ```ts
 const line = lines[i];
-if (line === undefined) continue;  // ADDED
+if (line === undefined) continue; // ADDED
 // existing code unchanged
 ```
 
 **Pattern B — non-null assertion on regex capture groups** (10 locations: lines 127, 128, 144, 159, 178, 187, 193):
+
 ```ts
-const key = m[1]!;  // CHANGED from m[1]
+const key = m[1]!; // CHANGED from m[1]
 ```
 
 Non-null is safe here because the regex literals have 1 or 2 explicit capture groups; if `.exec()` returns non-null, all declared capture groups exist.
@@ -67,6 +69,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 This PR mechanically updates `tools/backlog/lint-frontmatter.ts` to satisfy strict TypeScript nullability checks under `noUncheckedIndexedAccess`, unblocking the tools TypeScript lint baseline without changing runtime behavior.
 
 **Changes:**
+
 - Added defensive `undefined` guards for indexed line reads.
 - Added non-null assertions for regex capture groups after successful matches.
 - Preserved existing backlog frontmatter lint logic.
@@ -84,6 +87,7 @@ This PR's `lint (tsc tools)` fix would unblock the factory-wide baseline, but th
 **Same regen-class blocker as PR #4280** (which hit `check MEMORY.md generated-index drift` after editing `memory/CURRENT-otto.md`). Both checks require running a TS regen script locally and committing the regenerated index, which is blocked by the current dotgit-saturation (see [PR #4276](https://github.com/Lucent-Financial-Group/Zeta/pull/4276) for full context).
 
 **Recovery paths**:
+
 1. **Aaron / substrate-engineer with healthy local git**: run `bun tools/backlog/generate-index.ts` (or equivalent), commit the regenerated `docs/BACKLOG.md`, push as follow-on commit on this branch — auto-merge fires after.
 2. **Refine the drift check**: the check should ideally NOT fire on PRs that don't touch `docs/backlog/P*/B-*.md` files. Currently the path-trigger appears overbroad (catches `tools/backlog/` too). This is a separate substrate-engineering task.
 3. **Manual merge override**: if the fix is urgent (it unblocks many other PRs), a maintainer can force-merge despite the drift; the regen will catch up on a later tick.

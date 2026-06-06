@@ -17,12 +17,23 @@ composes_with:
   - B-0802
   - B-0803
   - B-0805
-tags: [iter-6, distro-upgrade, runbook, canary-rollout, automation, cross-channel, nixos, full-ai-cluster, no-manual-operator]
+tags:
+  [
+    iter-6,
+    distro-upgrade,
+    runbook,
+    canary-rollout,
+    automation,
+    cross-channel,
+    nixos,
+    full-ai-cluster,
+    no-manual-operator,
+  ]
 ---
 
 ## Problem
 
-The maintainer 2026-05-26: *"lets backlog all that we need to be able to upgrade without having to reformat every time or if we reformat everytime it's handled by the cluster not a manual operator."*
+The maintainer 2026-05-26: _"lets backlog all that we need to be able to upgrade without having to reformat every time or if we reformat everytime it's handled by the cluster not a manual operator."_
 
 [B-0801](B-0801-iter-6-1-system-autoupgrade-nixos-modules-common-weekly-schedule-no-auto-reboot-aaron-2026-05-26.md) `system.autoUpgrade` handles within-channel bumps (e.g., `nixos-25.11` channel commits over time). It does NOT handle cross-channel jumps like `nixos-25.11` → `nixos-26.05` because those usually have breaking changes that need:
 

@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 853 |
-| Title | docs(aurora): AgencySignature × Layered Actor Identity integration writeup for Amara (2026-04-29) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T17:32:18Z |
-| Merged at | 2026-04-29T18:00:35Z |
-| Merge commit SHA | `1da672eeb41a7b9a01933d41b827cadd037a4af0` |
-| Branch | `writeup-amara-agencysignature-layered-actor-identity-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/853 |
-| Changed files | 1 |
-| Additions / deletions | +241 / -0 |
+| Field                 | Value                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| Number                | 853                                                                                               |
+| Title                 | docs(aurora): AgencySignature × Layered Actor Identity integration writeup for Amara (2026-04-29) |
+| Author                | `AceHack` (human)                                                                                 |
+| State                 | MERGED                                                                                            |
+| Created at            | 2026-04-29T17:32:18Z                                                                              |
+| Merged at             | 2026-04-29T18:00:35Z                                                                              |
+| Merge commit SHA      | `1da672eeb41a7b9a01933d41b827cadd037a4af0`                                                        |
+| Branch                | `writeup-amara-agencysignature-layered-actor-identity-2026-04-29`                                 |
+| Base branch           | `main`                                                                                            |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/853                                           |
+| Changed files         | 1                                                                                                 |
+| Additions / deletions | +241 / -0                                                                                         |
 
 ## Description
 
@@ -43,7 +43,7 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
   1. Confirm layering shape (additive vs trailer-as-pointer)
   2. Pick binding primitive (Ed25519 + registry vs GitHub-native commit verification MVP vs sigstore/OIDC)
   3. Define v1 → v2 migration window
-- Carved blade (proposed, awaiting Amara concurrence): *"Identity is structured. Identity is bound. AgencySignature is the binding wire format. Trailer fields carry actor + capabilities + claim. Reconciler verifies binding before trusting attribution. No bound identity = no claim authority."*
+- Carved blade (proposed, awaiting Amara concurrence): _"Identity is structured. Identity is bound. AgencySignature is the binding wire format. Trailer fields carry actor + capabilities + claim. Reconciler verifies binding before trusting attribution. No bound identity = no claim authority."_
 
 ## Status
 
@@ -66,22 +66,22 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
 - [x] No code changes, no CI risk
 - [x] No memory/ changes, paired-edit check N/A
 - [x] Cites existing AgencySignature v1 spec + the four ferry-7/9/10/12 research docs
-- [x] Cites existing tools/hygiene/{validate,audit}-agencysignature-* implementation
+- [x] Cites existing tools/hygiene/{validate,audit}-agencysignature-\* implementation
 - [x] Glass Halo radical-honesty register: research-grade caveat at top + bottom of doc
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 13 |
-| Resolved threads | 6 |
-| Unresolved threads | 7 |
-| Total review comments | 19 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 13    |
+| Resolved threads                          | 6     |
+| Unresolved threads                        | 7     |
+| Total review comments                     | 19    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -101,11 +101,11 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:39:28Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:45 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-29T17:39:28Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:45 (association: MEMBER)
 
-    <pre>
-    Fixed in 9246fc8 — reworded to reflect current reality: validator + auditor exist as scripts but are NOT yet wired into required CI/branch-protection. Added explicit enforcement-status caveat to the validator + auditor + fail-open-with-receipts entries. Wiring as enforced gate composes with task #300 (AgencySignature v1 squash-merge survival design).
-    </pre>
+  <pre>
+  Fixed in 9246fc8 — reworded to reflect current reality: validator + auditor exist as scripts but are NOT yet wired into required CI/branch-protection. Added explicit enforcement-status caveat to the validator + auditor + fail-open-with-receipts entries. Wiring as enforced gate composes with task #300 (AgencySignature v1 squash-merge survival design).
+  </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -130,11 +130,11 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:39:30Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:151 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-29T17:39:30Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:151 (association: MEMBER)
 
-    <pre>
-    Fixed in 9246fc8 — substantive correction. The v1 enforcement scripts hardcode Agency-Signature-Version=1 and require Agent: as a key, so v2 trailers would currently fail validation. Updated the writeup to spell out the rollout sequence: (a) validator accepts Version 1|2, (b) emit Agent: alongside Actor: during migration window, (c) auditor extends to four-state (LEGACY / CORRECT-V1 / CORRECT-V2 / REGRESSION), (d) drop dual Agent: emission once consumers are v2-aware. This makes the migration honest about what has to change in the existing scripts before v2 trailers can land.
-    </pre>
+  <pre>
+  Fixed in 9246fc8 — substantive correction. The v1 enforcement scripts hardcode Agency-Signature-Version=1 and require Agent: as a key, so v2 trailers would currently fail validation. Updated the writeup to spell out the rollout sequence: (a) validator accepts Version 1|2, (b) emit Agent: alongside Actor: during migration window, (c) auditor extends to four-state (LEGACY / CORRECT-V1 / CORRECT-V2 / REGRESSION), (d) drop dual Agent: emission once consumers are v2-aware. This makes the migration honest about what has to change in the existing scripts before v2 trailers can land.
+  </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -155,11 +155,11 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:39:32Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:111 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-29T17:39:32Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:111 (association: MEMBER)
 
-    <pre>
-    Fixed in 9246fc8 — aligned both the mapping table and the v2-example explanation. Task: keeps v1 meaning (task / ticket pointer); Claim: is a NEW v2 field carrying claim_id. Mapping table now shows: Task → task/ticket pointer; Claim (v2-new) → claim_id. Removes the ambiguity Copilot flagged.
-    </pre>
+  <pre>
+  Fixed in 9246fc8 — aligned both the mapping table and the v2-example explanation. Task: keeps v1 meaning (task / ticket pointer); Claim: is a NEW v2 field carrying claim_id. Mapping table now shows: Task → task/ticket pointer; Claim (v2-new) → claim_id. Removes the ambiguity Copilot flagged.
+  </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -184,11 +184,11 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:51:52Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:99 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-29T17:51:52Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:99 (association: MEMBER)
 
-    <pre>
-    Fixed in b9c1d59 — updated the v2 example to show `Agent:` retained alongside `Actor:` during the migration window (with inline comment explaining the v1-reader compat rationale). Now the example matches the rollout-sequence text below: v1 validator accepts v2 trailers because `Agent:` is still present; once all consumers are v2-aware, drop the dual emission. Internal-consistency restored. Otto-362 in action.
-    </pre>
+  <pre>
+  Fixed in b9c1d59 — updated the v2 example to show `Agent:` retained alongside `Actor:` during the migration window (with inline comment explaining the v1-reader compat rationale). Now the example matches the rollout-sequence text below: v1 validator accepts v2 trailers because `Agent:` is still present; once all consumers are v2-aware, drop the dual emission. Internal-consistency restored. Otto-362 in action.
+  </pre>
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -210,11 +210,11 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:58:47Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:139 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-29T17:58:47Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:139 (association: MEMBER)
 
-    <pre>
-    Fixed in e4d4b04 — substantive security correction. Updated to: at E0/E1, trust ONLY the GitHub account actor (github.actor / pull_request.user.login). Commit author metadata + Agent: / Credential-Identity: trailer fields are user-supplied and trivially spoofable via 'git commit --author=...'. Trailer fields become intent declarations the reviewer cross-checks before E2+ promotion. Registered key binds at E3+. Good catch — would have shipped the wrong threat model.
-    </pre>
+  <pre>
+  Fixed in e4d4b04 — substantive security correction. Updated to: at E0/E1, trust ONLY the GitHub account actor (github.actor / pull_request.user.login). Commit author metadata + Agent: / Credential-Identity: trailer fields are user-supplied and trivially spoofable via 'git commit --author=...'. Trailer fields become intent declarations the reviewer cross-checks before E2+ promotion. Registered key binds at E3+. Good catch — would have shipped the wrong threat model.
+  </pre>
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -236,11 +236,11 @@ Single research-grade doc landing for Aaron to send to Amara. Integration analys
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:58:49Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:159 (association: MEMBER)
+- **`AceHack` (human)** at 2026-04-29T17:58:49Z on `docs/aurora/2026-04-29-agencysignature-layered-actor-identity-integration-writeup-for-amara.md`:159 (association: MEMBER)
 
-    <pre>
-    Fixed in e4d4b04 — clarified the two enforcement paths are separate semantics: malformed-but-honest (parser fail, missing key, broken blank-line discipline) → record + continue (fail-open-with-receipts from ferry-9). Forged-or-impersonation (Signed-By doesn't verify against registered Actor's public key) → BLOCK + flag as 'unauthorized_actor_assertion'. Only the malformed-honest class takes the fail-open path; binding violations always block. Removes the validator/reconciler ambiguity.
-    </pre>
+  <pre>
+  Fixed in e4d4b04 — clarified the two enforcement paths are separate semantics: malformed-but-honest (parser fail, missing key, broken blank-line discipline) → record + continue (fail-open-with-receipts from ferry-9). Forged-or-impersonation (Signed-By doesn't verify against registered Actor's public key) → BLOCK + flag as 'unauthorized_actor_assertion'. Only the malformed-honest class takes the fail-open path; binding violations always block. Removes the validator/reconciler ambiguity.
+  </pre>
 
 ### Thread 7 -- unresolved
 

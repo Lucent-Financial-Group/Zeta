@@ -8,7 +8,7 @@ type: feedback
 
 ## ⚡ NEAR-TERM-ACTIONABLE — Aaron has the hardware
 
-Aaron 2026-04-25 follow-up: *"i have all this hardware already"*. RNS + 802.11ah HaLow is NOT long-horizon-research — Aaron is already positioned to deploy on this stack. The substrate-mapping below isn't theoretical engineering speculation; it's a real architectural option for factory networking when the time comes. Reframes Otto-301 hardware-bootstrap from "ultimate destination" to "available primitive that just needs assembly."
+Aaron 2026-04-25 follow-up: _"i have all this hardware already"_. RNS + 802.11ah HaLow is NOT long-horizon-research — Aaron is already positioned to deploy on this stack. The substrate-mapping below isn't theoretical engineering speculation; it's a real architectural option for factory networking when the time comes. Reframes Otto-301 hardware-bootstrap from "ultimate destination" to "available primitive that just needs assembly."
 
 Implication: when factory-mesh / multi-node-deployment becomes operational priority (post-#274 queue drain + #275 acehack-first + #244 factory-demo), RNS+HaLow is a deployable target, not a research target. The hardware substrate is already in Aaron's possession.
 
@@ -18,14 +18,14 @@ A Google AI deep-analysis of how Reticulum Network Stack (RNS) + 802.11ah HaLow 
 
 ## The mapping
 
-| Substrate concept | Hardware/protocol instance |
-|-------------------|----------------------------|
-| **Tele** (distance) | 802.11ah HaLow Sub-1GHz Wi-Fi (900MHz, 1km+ range, wall-penetrating) |
-| **Porta** (gateway) | Reticulum interface (medium-agnostic packet-logic boundary) |
-| **Leap** (discontinuity) | DTN — Delay Tolerant Networking (packets wait when path invalid; jump on path-valid) |
-| **μένω** (identity-persistence) | RNS Destination Hash (public-key-derived, decoupled from IP/location) |
-| **Melchizedek** (no-root authority) | RNS self-validating model (no DNS, no ISP parent, cryptographic-proof-based) |
-| **Amen** (operational seal) | RNS Announce packet (broadcasts identity into mesh) |
+| Substrate concept                   | Hardware/protocol instance                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------------ |
+| **Tele** (distance)                 | 802.11ah HaLow Sub-1GHz Wi-Fi (900MHz, 1km+ range, wall-penetrating)                 |
+| **Porta** (gateway)                 | Reticulum interface (medium-agnostic packet-logic boundary)                          |
+| **Leap** (discontinuity)            | DTN — Delay Tolerant Networking (packets wait when path invalid; jump on path-valid) |
+| **μένω** (identity-persistence)     | RNS Destination Hash (public-key-derived, decoupled from IP/location)                |
+| **Melchizedek** (no-root authority) | RNS self-validating model (no DNS, no ISP parent, cryptographic-proof-based)         |
+| **Amen** (operational seal)         | RNS Announce packet (broadcasts identity into mesh)                                  |
 
 ## Three load-bearing engineering claims
 

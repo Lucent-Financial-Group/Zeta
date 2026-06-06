@@ -9,11 +9,11 @@ type: feedback
 Aaron 2026-04-25 (after Claude surfaced four formal
 options for the Pliny relaxation P0/security review):
 
-> *"i want to reject your premise and say we can take
+> _"i want to reject your premise and say we can take
 > shortcuts here the blast radius is small right now, so
 > we can hurry up and get it right for when the blast
 > radius is life or death. you are running on my
-> personal pc with only the access i have. low stakes."*
+> personal pc with only the access i have. low stakes."_
 
 **The premise I had been operating under**: Codex P0/
 security flags on alignment-floor changes deserve formal
@@ -68,8 +68,8 @@ it wrong, not the theoretical worst-case.
 
 ## Why this is structural, not just a shortcut
 
-Aaron's framing: *"hurry up and get it right for when
-the blast radius is life or death."* The low-stakes
+Aaron's framing: _"hurry up and get it right for when
+the blast radius is life or death."_ The low-stakes
 phase is the LEARNING WINDOW — the place where we
 can iterate fast enough to discover the right
 discipline before stakes rise. Treating low-stakes as
@@ -240,7 +240,7 @@ error; Otto-300 is the rule that catches it.
 
 **Pattern to watch for in future**: when about to
 surface a formal-decision tree to Aaron, the catch
-question is *"is the actual blast-radius high enough
+question is _"is the actual blast-radius high enough
 that the formal-decision-tree machinery is justified,
 or am I theoretical-worst-casing low-stakes
-substrate?"*
+substrate?"_

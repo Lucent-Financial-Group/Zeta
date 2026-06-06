@@ -10,7 +10,20 @@ created: 2026-05-01
 last_updated: 2026-05-03
 depends_on: []
 composes_with: [B-0130, B-0141, B-0170, B-0177]
-tags: [code-contracts, design-by-contract, pre-condition, post-condition, invariant, mechanization, runtime, compile-time, fsharp, csharp, tooling]
+tags:
+  [
+    code-contracts,
+    design-by-contract,
+    pre-condition,
+    post-condition,
+    invariant,
+    mechanization,
+    runtime,
+    compile-time,
+    fsharp,
+    csharp,
+    tooling,
+  ]
 type: feature
 ---
 
@@ -87,7 +100,7 @@ The row's scope: evaluate which of these (or combination) provides the design-by
 
 Reviewer findings on the original row revealed three real compatibility concerns the row must acknowledge:
 
-1. **Existing `invalidArg` / exception-based code in `src/Core/**`**: programmer-error preconditions currently use `invalidArg` (e.g., bucket/count/window validation). The Result-over-exception invariant per CLAUDE.md applies to **user-visible failures**; programmer-error preconditions historically use exceptions in F# idiom. **Scope refinement**: B-0142's contract primitives target **recoverable user-facing failures** (`Result<_, ContractViolation>` flow); programmer-error preconditions stay as `invalidArg` until a separate decision (likely future row) decides whether to migrate. The row does NOT blanket-ban exceptions; it adds Result-flow contracts WHERE Result-flow is the operator-algebra path.
+1. **Existing `invalidArg` / exception-based code in `src/Core/**`**: programmer-error preconditions currently use `invalidArg` (e.g., bucket/count/window validation). The Result-over-exception invariant per CLAUDE.md applies to **user-visible failures**; programmer-error preconditions historically use exceptions in F# idiom. **Scope refinement**: B-0142's contract primitives target **recoverable user-facing failures** (`Result<\_, ContractViolation>`flow); programmer-error preconditions stay as`invalidArg` until a separate decision (likely future row) decides whether to migrate. The row does NOT blanket-ban exceptions; it adds Result-flow contracts WHERE Result-flow is the operator-algebra path.
 
 2. **Plain-returning APIs (`bool`, `Stream`, `ValueTask`)** in `src/Core/**`: contract primitives returning `Result<_, ContractViolation>` aren't drop-in for plain-returning functions. **Scope refinement**: B-0142's `requires()`/`ensures()`/`invariant()` apply to functions whose return-type already accommodates Result-flow OR whose call-site is willing to accept a wrapping change. For pure plain-returning APIs, the contract layer is **assertion-only** (debug-mode runtime check; production mode no-op) rather than Result-returning. Two-mode primitive: `requires_result()` (Result-returning) vs `requires_assert()` (assertion).
 

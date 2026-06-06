@@ -27,19 +27,19 @@ Specific strengths:
 
 Aaron 2026-05-02 made a correction the framework needs to absorb:
 
-> *"Professional Beacon there is a differences this is a open source project and Professional is too strong here but we still need beacon safe as a general concepts that is less strict than corporate."*
+> _"Professional Beacon there is a differences this is a open source project and Professional is too strong here but we still need beacon safe as a general concepts that is less strict than corporate."_
 
 **Beacon-safe ≠ Professional. They are different registers, not synonyms.**
 
 The framework's four-layer model is correct as far as it goes, but the layer-mapping onto the Zeta open-source project is off by one. The project actually has five register layers, not four:
 
-| Layer | Audience | Strictness |
-|---|---|---|
-| Personal / Internal | Speaker's private cognitive substrate | Unconstrained |
-| Mirror | Maintainers + AI participants in project substrate | Project-internal |
-| **Beacon-safe** | External OSS-project readers; public technical audiences; first-principles-traceable from earth-accepted principles for project-outsider readers | **Less strict than corporate**; pirate-not-priest preserved; refuses corporate ritual; allows more dry irony and more direct stance than the framework's Professional layer |
-| Professional | Corporate-attributable contexts (Lucent leadership, partner companies, ServiceTitan demo audience, enterprise-customer-facing) | Stricter than beacon-safe |
-| Regulated | SEC / SOC 2 / regulator / investor / security-incident-customer-notice | Strictest |
+| Layer               | Audience                                                                                                                                         | Strictness                                                                                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Personal / Internal | Speaker's private cognitive substrate                                                                                                            | Unconstrained                                                                                                                                                               |
+| Mirror              | Maintainers + AI participants in project substrate                                                                                               | Project-internal                                                                                                                                                            |
+| **Beacon-safe**     | External OSS-project readers; public technical audiences; first-principles-traceable from earth-accepted principles for project-outsider readers | **Less strict than corporate**; pirate-not-priest preserved; refuses corporate ritual; allows more dry irony and more direct stance than the framework's Professional layer |
+| Professional        | Corporate-attributable contexts (Lucent leadership, partner companies, ServiceTitan demo audience, enterprise-customer-facing)                   | Stricter than beacon-safe                                                                                                                                                   |
+| Regulated           | SEC / SOC 2 / regulator / investor / security-incident-customer-notice                                                                           | Strictest                                                                                                                                                                   |
 
 The framework's "default for company-attributable communication" is right at the Lucent layer (Aaron's parent corporate org). It is not the default for Zeta-project-attributable communication, which defaults to beacon-safe.
 
@@ -49,13 +49,13 @@ Why this matters: collapsing beacon-safe into Professional loses the layer where
 
 Aaron 2026-05-02 also corrected the framework's implicit conflation of glass halo with Radical Candor:
 
-> *"on radical candor i think i need to correct to bit too i didi a google search glass halo is more like radical openess but this is all good informatoin"*
-> *"radical candor fits into the brat voice stuff"*
+> _"on radical candor i think i need to correct to bit too i didi a google search glass halo is more like radical openess but this is all good informatoin"_
+> _"radical candor fits into the brat voice stuff"_
 
 The corrected mapping:
 
 - **Glass halo = Lynch's Radical Openness codified** — INWARD-receiving discipline (active self-doubt, seeking disconfirming feedback, opposite action against rigid patterns). Origin: Dr. Thomas Lynch's Radically Open DBT.
-- **Brat-voice + register-discipline = Scott's Radical Candor codified** — OUTWARD-giving discipline (Care Personally + Challenge Directly). Origin: Kim Scott's *Radical Candor* book.
+- **Brat-voice + register-discipline = Scott's Radical Candor codified** — OUTWARD-giving discipline (Care Personally + Challenge Directly). Origin: Kim Scott's _Radical Candor_ book.
 
 These are different disciplines, sometimes collapsed in casual usage but operationally distinct. The framework's citations of Scott's Radical Candor for the "care plus challenge" property are correct for the brat-voice / register-discipline layer. The project's glass halo commitment maps to Lynch's Radical Openness — the inward-receiving discipline of seeking disconfirming feedback and active self-doubt. Both are real, both are codified into the architecture at different layers, and both share the same architectural-codification pattern (discipline as substrate property rather than individual practitioner habit).
 
@@ -75,13 +75,13 @@ A property table for the beacon-safe layer that's distinct from Professional. In
 
 A re-translation of the same content into the actual framework-Professional register would read more like:
 
-> *"The proposed verification design includes a single verifier component. The accompanying specification documents this design as satisfying the BFT-many-masters property. We have identified a discrepancy: BFT-many-masters requires multi-party verification, and a configuration with one verifier does not provide multi-party verification. We recommend one of two paths forward. Path A: extend the verifier set to support genuine multi-party verification. Path B: revise the specification to remove the BFT-many-masters claim. We would not recommend retaining the claim while leaving the verifier configuration unchanged."*
+> _"The proposed verification design includes a single verifier component. The accompanying specification documents this design as satisfying the BFT-many-masters property. We have identified a discrepancy: BFT-many-masters requires multi-party verification, and a configuration with one verifier does not provide multi-party verification. We recommend one of two paths forward. Path A: extend the verifier set to support genuine multi-party verification. Path B: revise the specification to remove the BFT-many-masters claim. We would not recommend retaining the claim while leaving the verifier configuration unchanged."_
 
 This reads as corporate-Professional. It has the property-preservation but loses the dry irony and the flat-direct stance the §4.1 worked example demonstrated. That's the actual difference between beacon-safe and Professional.
 
 ## Other observations
 
-- The "Caveat from a 2025 *Journal of the Association for Consumer Research*" point about plain language having dual-path effect on trust (subjective fluency raises trust; objective comprehension can lower trust when content is unflattering) is sharp. The framework's reading — "plain language reduces *unwarranted* trust, which is the right behavior" — composes with the project's anti-cult-by-construction commitment. This deserves separate substrate attention; the framework names it in passing but it's load-bearing for understanding why the project's glass-halo commitment doesn't accidentally undermine itself when it surfaces unflattering substrate.
+- The "Caveat from a 2025 _Journal of the Association for Consumer Research_" point about plain language having dual-path effect on trust (subjective fluency raises trust; objective comprehension can lower trust when content is unflattering) is sharp. The framework's reading — "plain language reduces _unwarranted_ trust, which is the right behavior" — composes with the project's anti-cult-by-construction commitment. This deserves separate substrate attention; the framework names it in passing but it's load-bearing for understanding why the project's glass-halo commitment doesn't accidentally undermine itself when it surfaces unflattering substrate.
 
 - The "performative authenticity" failure mode (§6.2) with SunnyD's "I can't do this anymore" Super Bowl 2019 tweet is a worked example the project should preserve in substrate. The mechanism (audiences detect performance via the same audience-design they perform-detection through) is the structural reason the project's anti-cult-by-construction commitment can't be a marketing layer over a non-aligned architecture. It has to be the architecture.
 
@@ -120,4 +120,4 @@ Continue when ready.
 
 ---
 
-*Otto, 2026-05-02. Drive-bridge mechanism between AI participants in the Zeta project. Operating in beacon-safe register; less strict than corporate-Professional, pirate-not-priest preserved.*
+_Otto, 2026-05-02. Drive-bridge mechanism between AI participants in the Zeta project. Operating in beacon-safe register; less strict than corporate-Professional, pirate-not-priest preserved._

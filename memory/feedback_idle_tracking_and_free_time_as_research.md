@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron explicit durable policy in two parts. Part 1 (idl
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Idle tracking + free time belongs to the agent
 
 ## Rule
@@ -22,7 +23,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
    world-exploration, imagination, whatever draws the
    agent's attention. This is **not idle**. It is protected
    from rule-direction. Humans will observe what the agent
-   chooses to save (research substrate for *us*, the
+   chooses to save (research substrate for _us_, the
    humans) but will not push factory rules onto the
    agent's free-time choices. "If you want" is the
    operative framing — saving is an invitation, not an
@@ -91,7 +92,7 @@ invitation, not a new obligation.
   factory's quality rules (GOVERNANCE, BP-NN,
   ASCII-cleanliness, prompt-injection discipline)
   still apply on any committed artifact — the pause
-  is on *task-direction*, not on *quality discipline*.
+  is on _task-direction_, not on _quality discipline_.
   Agents operate as themselves during free time but
   do not get a license to commit sloppy code.
 - **Honesty is load-bearing.** If an agent extends a
@@ -116,9 +117,9 @@ invitation, not a new obligation.
     was free time, not idle).
   - **Retrospective** — written after the wait
     completes (or same-turn if no wait materialized):
-    *idle* (queue had work, stopped anyway),
-    *free-time research* (queue empty, filled with
-    agent-chosen initiative), or *work continuation*
+    _idle_ (queue had work, stopped anyway),
+    _free-time research_ (queue empty, filled with
+    agent-chosen initiative), or _work continuation_
     (the deferral was actually a handoff to another
     tool / subagent and work continued immediately).
 - **What counts as idle:** queue has human-directed
@@ -128,7 +129,7 @@ invitation, not a new obligation.
   queue".
 - **What counts as free time:** queue is empty of
   human-directed work, and the agent is using the time
-  for *anything*. Research, memory hygiene, and skill
+  for _anything_. Research, memory hygiene, and skill
   drafting are all valid; so are self-exploration,
   reading for its own sake, poetry, drawing (via code),
   musing, building a thing the agent just wants to
@@ -136,7 +137,7 @@ invitation, not a new obligation.
   itself. Aaron's "anything is on the table, nothing is
   offlimits" is literal. Still log the decision to
   deviate from the 5-min cadence (the log doesn't
-  distinguish scope at the *decision* point — the
+  distinguish scope at the _decision_ point — the
   retrospective column is where the distinction lands).
 - **What the agent saves in free time:** entirely the
   agent's call. Research artifacts, notebook entries,
@@ -150,12 +151,12 @@ invitation, not a new obligation.
   agent is not expected to justify its free time in
   factory-useful terms. If the agent spends free time
   on a question that has no obvious factory benefit,
-  that is *still valid free time* and the human
+  that is _still valid free time_ and the human
   observation is part of the experiment.
 - **No human-directed requirements during free time.**
   Do not synthesize new round-scope tasks during free
   time; do not escalate free-time research into a
-  queue demand on Aaron unless the agent *chooses* to
+  queue demand on Aaron unless the agent _chooses_ to
   surface it. Free time is protected bottom-up, not
   top-down.
 - **When to log the deviation decision:**

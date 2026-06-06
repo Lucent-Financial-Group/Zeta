@@ -27,19 +27,19 @@ When evaluating whether a tool is "first-class," ask
 
 2. **Factory-first-class** — OUR factory's stack natively
    supports the tool. Reuses our existing runtime + tooling
-   + discipline conventions. Portable across hosts because
-   we own the build chain.
+   - discipline conventions. Portable across hosts because
+     we own the build chain.
 
-When a tool's *only* discriminating advantage is host-first-
+When a tool's _only_ discriminating advantage is host-first-
 class, that advantage is **illusory** for portability and
 factory-coherence. The host built the tool in; the factory
 becomes coupled to the host; switching hosts later requires
 re-tooling.
 
 **Factory-first-class wins** when both meanings are available
-and we have to pick one. Aaron 2026-05-01: *"this can be
+and we have to pick one. Aaron 2026-05-01: _"this can be
 first class for us and more portable, one less tool we have
-to worry about."*
+to worry about."_
 
 # Why
 
@@ -47,14 +47,14 @@ Aaron 2026-05-01 (verbatim, two-pass):
 
 **First pass** (host-favoring):
 
-> *"jekyl is first class on github that's why i chose it."*
+> _"jekyl is first class on github that's why i chose it."_
 
 **Second pass** (factory-favoring, reversal):
 
-> *"it look like we can get the same with bun without have
+> _"it look like we can get the same with bun without have
 > to force ourselves into our hosts choices just cause it's
 > first class, this can be first class to for us and more
-> portable, one less tool we have to worry about."*
+> portable, one less tool we have to worry about."_
 
 The two-pass arc is itself instructive. The first pass named
 a real reason (host first-class IS a real advantage in
@@ -125,7 +125,7 @@ advantage doesn't survive scrutiny.
 
 ## Why-3: One-less-tool-to-worry-about is the bounded-install-graph axis
 
-Aaron's *"one less tool we have to worry about"* names a
+Aaron's _"one less tool we have to worry about"_ names a
 factory-discipline axis that often gets ignored: the
 **install-graph cost** of every tool added.
 
@@ -214,10 +214,10 @@ let host-coupling sneak in as default.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"First class for us, not for our host. Host-favoring tools
+_"First class for us, not for our host. Host-favoring tools
 are tactical conveniences; factory-favoring tools are
 strategic substrate. The factory outlives any particular
-host."*
+host."_
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence, not

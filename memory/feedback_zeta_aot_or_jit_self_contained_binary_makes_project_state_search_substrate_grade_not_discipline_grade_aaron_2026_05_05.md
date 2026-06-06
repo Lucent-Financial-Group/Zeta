@@ -1,6 +1,6 @@
 ---
-name: 'Zeta is purpose-built for project-state-search as first-class surface -- AOT or JIT, all-in-one self-contained binary makes it substrate-grade not discipline-grade (Aaron 2026-05-05)'
-description: 'Aarons same-tick architectural extension to my Otto-364 project-state-grep insight (PR 1677 landing): Zeta is purpose-built for project-state-search-as-first-class via AOT-or-JIT all-in-one self-contained binary. The disclosure is the substrate-level answer to how project-state-grep becomes substrate-grade rather than discipline-grade: make the project-state BE the binary, no external dependencies, query-and-binary unified. Composes with PR 1677 peer-call-as-early-red-team / Zeta-Infer.NET-BP/EP-as-future-substrate roadmap, the substrate-vs-license architectural shape (Houman-keylogger PR 1648 + preferred-stock PR 1651 + Sylar-Spock PR 1655), and universal-register-as-MDL (PR 1655 Landing 6).'
+name: "Zeta is purpose-built for project-state-search as first-class surface -- AOT or JIT, all-in-one self-contained binary makes it substrate-grade not discipline-grade (Aaron 2026-05-05)"
+description: "Aarons same-tick architectural extension to my Otto-364 project-state-grep insight (PR 1677 landing): Zeta is purpose-built for project-state-search-as-first-class via AOT-or-JIT all-in-one self-contained binary. The disclosure is the substrate-level answer to how project-state-grep becomes substrate-grade rather than discipline-grade: make the project-state BE the binary, no external dependencies, query-and-binary unified. Composes with PR 1677 peer-call-as-early-red-team / Zeta-Infer.NET-BP/EP-as-future-substrate roadmap, the substrate-vs-license architectural shape (Houman-keylogger PR 1648 + preferred-stock PR 1651 + Sylar-Spock PR 1655), and universal-register-as-MDL (PR 1655 Landing 6)."
 type: feedback
 ---
 
@@ -10,17 +10,17 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 same-tick verbatim:
 
-- *"zeta is purpuse build for this with aot or jit all in one binaires"* (Zeta is purpose-built for this with AOT or JIT, all-in-one binaries)
-- *"self contiined"* (self-contained)
+- _"zeta is purpuse build for this with aot or jit all in one binaires"_ (Zeta is purpose-built for this with AOT or JIT, all-in-one binaries)
+- _"self contiined"_ (self-contained)
 
-The "this" is my just-landed Otto-364 extension insight: *"search-first-authority extends to project-state — not just upstream version numbers but also 'does this directory exist', 'what tools are wired up', 'what scripts ship'. Project-state-grep is a first-class search surface alongside WebSearch."* Aaron's reply names Zeta itself as the **substrate-graduation** that makes this property hold at substrate-level rather than relying on discipline.
+The "this" is my just-landed Otto-364 extension insight: _"search-first-authority extends to project-state — not just upstream version numbers but also 'does this directory exist', 'what tools are wired up', 'what scripts ship'. Project-state-grep is a first-class search surface alongside WebSearch."_ Aaron's reply names Zeta itself as the **substrate-graduation** that makes this property hold at substrate-level rather than relying on discipline.
 
 ## Discipline-grade vs substrate-grade — the architectural distinction
 
-| Layer | Project-state-search property | How it holds |
-|---|---|---|
-| Discipline-grade (current Otto practice) | "Always grep before asserting" | Held by Otto's discipline + CLAUDE.md rule + memory training |
-| Substrate-grade (Zeta target) | Project-state IS the binary; query-and-binary unified | Held by AOT-or-JIT all-in-one self-contained binary architecture |
+| Layer                                    | Project-state-search property                         | How it holds                                                     |
+| ---------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------- |
+| Discipline-grade (current Otto practice) | "Always grep before asserting"                        | Held by Otto's discipline + CLAUDE.md rule + memory training     |
+| Substrate-grade (Zeta target)            | Project-state IS the binary; query-and-binary unified | Held by AOT-or-JIT all-in-one self-contained binary architecture |
 
 **The substrate-graduation pattern** Aaron has named multiple times is operative here:
 
@@ -61,7 +61,7 @@ PR 1677 cold-boot pointer landed `tools/peer-call/` infrastructure as Otto's ear
 
 ## Carved sentence
 
-> *Project-state-search is first-class. Discipline holds it today; AOT-or-JIT all-in-one self-contained binary makes it hold tomorrow. Zeta is purpose-built for this — the binary IS the project-state, query and binary are unified, no external dependencies. Substrate-or-it-didnt-happen at the binary-construction level.*
+> _Project-state-search is first-class. Discipline holds it today; AOT-or-JIT all-in-one self-contained binary makes it hold tomorrow. Zeta is purpose-built for this — the binary IS the project-state, query and binary are unified, no external dependencies. Substrate-or-it-didnt-happen at the binary-construction level._
 
 ## Daylight-integration hooks (planned)
 

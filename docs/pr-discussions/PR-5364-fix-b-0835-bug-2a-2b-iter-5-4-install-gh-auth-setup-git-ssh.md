@@ -22,20 +22,20 @@ Aaron's screen photo (verbatim console output from re-flashed USB run after Bug 
 
 \`\`\`
 [iter-5.4.0] Run gh auth login now? [Y/n]: Y
-[iter-5.4.0]   running 'gh auth login' (interactive)...
+[iter-5.4.0] running 'gh auth login' (interactive)...
 ! First copy your one-time code: D30B-468F
 Open this URL to continue in your web browser: https://github.com/login/device
 ■ Authentication complete.
 ! Authentication credentials saved in plain text
 ■ Logged in as AceHack
-[iter-5.4.0]   gh auth login: SUCCESS
-[iter-5.4.0]   fetching operator's SSH pubkeys via 'gh ssh-key list'...
-[iter-5.4.0]   WARN: 'gh ssh-key list' failed; no keys written
-[iter-5.4.0]   (gh auth succeeded but the user has no SSH keys
-[iter-5.4.0]   registered with GitHub, OR the jq/tee pipe broke)
+[iter-5.4.0] gh auth login: SUCCESS
+[iter-5.4.0] fetching operator's SSH pubkeys via 'gh ssh-key list'...
+[iter-5.4.0] WARN: 'gh ssh-key list' failed; no keys written
+[iter-5.4.0] (gh auth succeeded but the user has no SSH keys
+[iter-5.4.0] registered with GitHub, OR the jq/tee pipe broke)
 [iter-5.4.1] ── self-registration commit+push (B-0812) ──
-[iter-5.4.1]   maintainer:  AceHack
-[iter-5.4.1]   node-name:   node-efe404
+[iter-5.4.1] maintainer: AceHack
+[iter-5.4.1] node-name: node-efe404
 Switched to a new branch 'register-node-efe404-20260527T0005332'
 Username for 'https://github.com': acehack
 Password for 'https://acehack@github.com':
@@ -60,7 +60,7 @@ Defers opt-in \`--with-ssh-key-scope\` flag to future B-NNNN (security tradeoff:
 ## Files
 
 - \`full-ai-cluster/usb-nixos-installer/zeta-install.sh\` — \`gh auth setup-git\` after login; stderr-capturing ssh-key-list with 3-way discrimination (success / empty-with-scope-error / empty-no-scope-error / pipe-broke)
-- \`docs/backlog/P1/B-0835-*.md\` — Bug 2a + 2b verbatim empirical anchors + fix specs + acceptance criteria for 3rd physical test
+- \`docs/backlog/P1/B-0835-\*.md\` — Bug 2a + 2b verbatim empirical anchors + fix specs + acceptance criteria for 3rd physical test
 
 ## Acceptance for next physical test cycle
 

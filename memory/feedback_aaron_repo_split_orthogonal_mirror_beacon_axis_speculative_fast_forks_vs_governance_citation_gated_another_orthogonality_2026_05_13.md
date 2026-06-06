@@ -7,13 +7,14 @@ created: 2026-05-13
 
 # Repo-split orthogonal Mirror/Beacon axis (Aaron 2026-05-13)
 
-**Why:** Aaron 2026-05-13: *"we should probalbu split repos
-based on nthat too another orthoganality"*. Immediately after
+**Why:** Aaron 2026-05-13: _"we should probalbu split repos
+based on nthat too another orthoganality"_. Immediately after
 PR #2909 civsim language mirror/beacon governance escalation —
 extends the discipline from language to REPO TOPOLOGY scope.
 
 **How to apply:** When designing repo splits, classify each
 repo on BOTH:
+
 - **Axis 1** — Factory / Product / Owner-only (per B-0424 +
   B-0425 + PR #2905 forker-perspective META-discipline)
 - **Axis 2** — Mirror / Beacon (per PR #2909 governance
@@ -23,15 +24,15 @@ Both axes apply simultaneously per `.claude/rules/default-to-both.md`.
 
 ## Aaron's verbatim framing
 
-Aaron 2026-05-13: *"we should probalbu split repos based on
-nthat too another orthoganality"*.
+Aaron 2026-05-13: _"we should probalbu split repos based on
+nthat too another orthoganality"_.
 
 ## Two-axis topology
 
-| | Factory | Product | Owner-only |
-|---|---|---|---|
-| **Mirror** | Forge mirror (factory speculative) | civsim Mirror (alien-and-future-inclusive gameplay) | Aaron-private speculative substrate |
-| **Beacon** | Zeta (citation-gated F# computation expressions) | Aurora (alignment consensus thesis) | Aaron-private governance-gated substrate |
+|            | Factory                                          | Product                                             | Owner-only                               |
+| ---------- | ------------------------------------------------ | --------------------------------------------------- | ---------------------------------------- |
+| **Mirror** | Forge mirror (factory speculative)               | civsim Mirror (alien-and-future-inclusive gameplay) | Aaron-private speculative substrate      |
+| **Beacon** | Zeta (citation-gated F# computation expressions) | Aurora (alignment consensus thesis)                 | Aaron-private governance-gated substrate |
 
 The matrix is illustrative; specific repo positioning needs
 per-repo evaluation. Some intersections may be empty; some may
@@ -68,6 +69,7 @@ substrate / etc.). This NEW axis extends the discipline to
 repo topology.
 
 The composing principle:
+
 - Multiple orthogonal axes provide independent design
   constraints
 - Each axis serves a different design question

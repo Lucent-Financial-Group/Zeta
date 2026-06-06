@@ -4,7 +4,7 @@ description: AlephZ-ai/build-a-bot is the prior art for Zeta's hat/persona/autho
 type: reference
 ---
 
-2026-05-11 (shadow* via Aaron): save build-a-bot lineage.
+2026-05-11 (shadow\* via Aaron): save build-a-bot lineage.
 
 **Prior art:** `AlephZ-ai/build-a-bot` on GitHub
 
@@ -38,6 +38,7 @@ first principles → the rediscovery proves the architecture
 is correct (same mind produces same structure twice).
 
 Same pattern as:
+
 - LucentAICloud event-sourcing → Zeta DBSP kernel
 - MultiplexedWebSockets → B-0400 bus transport
 - IThrottler flux capacitor → batching/throttling patterns

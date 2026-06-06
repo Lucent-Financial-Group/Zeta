@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1701 |
-| Title | memory(discipline): Otto holds synthesis weight + prior-art-grep BEFORE substrate-landing + scout-and-delegate + context-budget-preservation (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-05T23:29:16Z |
-| Merged at | 2026-05-05T23:30:59Z |
-| Merge commit SHA | `794a4ae67cf9140757915092be270cca855724c3` |
-| Branch | `memory/otto-holds-synthesis-weight-prior-art-grep-first-before-substrate-landing-discipline-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1701 |
-| Changed files | 2 |
-| Additions / deletions | +127 / -0 |
+| Field                 | Value                                                                                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1701                                                                                                                                                            |
+| Title                 | memory(discipline): Otto holds synthesis weight + prior-art-grep BEFORE substrate-landing + scout-and-delegate + context-budget-preservation (Aaron 2026-05-05) |
+| Author                | `AceHack` (human)                                                                                                                                               |
+| State                 | MERGED                                                                                                                                                          |
+| Created at            | 2026-05-05T23:29:16Z                                                                                                                                            |
+| Merged at             | 2026-05-05T23:30:59Z                                                                                                                                            |
+| Merge commit SHA      | `794a4ae67cf9140757915092be270cca855724c3`                                                                                                                      |
+| Branch                | `memory/otto-holds-synthesis-weight-prior-art-grep-first-before-substrate-landing-discipline-aaron-2026-05-05`                                                  |
+| Base branch           | `main`                                                                                                                                                          |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1701                                                                                                        |
+| Changed files         | 2                                                                                                                                                               |
+| Additions / deletions | +127 / -0                                                                                                                                                       |
 
 ## Description
 
@@ -31,15 +31,15 @@ Aaron 2026-05-05 real-time discipline-correction. 8-step operational discipline:
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 

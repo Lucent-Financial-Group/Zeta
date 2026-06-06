@@ -8,8 +8,8 @@ type: feedback
 
 ## The rule (Aaron verbatim 2026-04-28T19:09Z)
 
-> *"the metric self-heals. i love self healing"*
-> *"sounds like a good thing to remember"*
+> _"the metric self-heals. i love self healing"_
+> _"sounds like a good thing to remember"_
 
 Captured as substrate per the explicit log-in-substrate signal.
 
@@ -31,6 +31,7 @@ A **self-healing metric** is one where:
 ## The example that named the rule
 
 **Scorecard SASTID 28/30** (2026-04-28):
+
 - Pre-path-gate commits in Scorecard's "recent 30 merged PRs"
   window had no SAST signal because the path-gate hadn't been
   active yet.

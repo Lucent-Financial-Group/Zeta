@@ -84,7 +84,7 @@ reason.
 - ✅ Rust verified (1.94.1 Homebrew, latest available)
 - ✅ `docs/INSTALLED.md` dependency ledger
 - ✅ 5 reviewer SKILL.md files (`.claude/skills/dbsp-{race-hunter,
-  claims-tester, package-auditor, product-manager, harsh-critic}/`)
+claims-tester, package-auditor, product-manager, harsh-critic}/`)
 - ✅ 3 additional TLA+ specs now pass TLC (SpineMerge still fails — real
   modelling bug, roadmap)
 - ✅ `AGENTS.md` — greenfield policy, no backcompat, large refactors

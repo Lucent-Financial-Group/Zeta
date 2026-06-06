@@ -18,9 +18,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ## The update
 
 Small refinement to the **Otto-52 multi-agent Docker
-peer-review directive** (*"We can simulate eventually two
+peer-review directive** (_"We can simulate eventually two
 AIs in their own docker containers that approve each
-other's PRs like peer review"*).
+other's PRs like peer review"_).
 
 Aaron's update: **CLI tools come first; Docker comes
 later.** Testing multi-agent coordination doesn't require
@@ -40,8 +40,8 @@ with lower overhead and faster iteration.
 
 ### Why Docker still matters later
 
-Aaron's framing: *"docker is good to test isolation that it
-will also work on 'another machine' and is reproducable"*.
+Aaron's framing: _"docker is good to test isolation that it
+will also work on 'another machine' and is reproducable"_.
 Docker's role in the peer-review pattern is:
 
 - **Isolation** — one agent can't accidentally read the
@@ -49,8 +49,8 @@ Docker's role in the peer-review pattern is:
   enforces the "peer" in peer-review at the OS level
 - **"Another machine" demonstration** — proves the
   coordination pattern is portable, not laptop-local; ties
-  to Aaron's *"20 different PCs I can run this on once the
-  multi agent coordinate is there"*
+  to Aaron's _"20 different PCs I can run this on once the
+  multi agent coordinate is there"_
 - **Reproducibility** — pinned base image + pinned entrypoint
   = the next reviewer or auditor can replay the exact
   session
@@ -70,7 +70,7 @@ Two approaches possible without Docker:
    the underlying `.git` object store. Cheap to set up.
 3. **Different claude sessions** — `claude -w` (per
    `memory/reference_claude_code_w_flag_is_worktree_not_
-   workstream_cowork_is_separate_product_2026_04_23.md`)
+workstream_cowork_is_separate_product_2026_04_23.md`)
    for worktree isolation within one machine; separate
    MEMORY surfaces per session.
 
@@ -123,21 +123,21 @@ on the 20 PCs Aaron mentioned — provable portability, not
 ## Composes with
 
 - `project_frontier_becomes_canonical_bootstrap_home_stop_
-  signal_when_ready_agent_owns_construction_2026_04_23.md`
+signal_when_ready_agent_owns_construction_2026_04_23.md`
   — multi-repo + multi-agent patterns compose at Frontier
   bootstrap time
 - `feedback_aaron_trust_based_approval_pattern_approves_
-  without_comprehending_details_2026_04_23.md` — one
+without_comprehending_details_2026_04_23.md` — one
   motivation for multi-agent peer review is reducing
   dependency on Aaron's batch-approval bandwidth; CLI-first
   prototype tests this at lower cost
 - `project_factory_is_git_native_github_first_host_hygiene_
-  cadences_for_frictionless_operation_2026_04_23.md` —
+cadences_for_frictionless_operation_2026_04_23.md` —
   git-native first-host positioning: CLI tools are
   git-native; Docker is one host-runtime choice among
   several (could be Podman, containerd, etc.)
 - `reference_claude_code_w_flag_is_worktree_not_workstream_
-  cowork_is_separate_product_2026_04_23.md` — worktree
+cowork_is_separate_product_2026_04_23.md` — worktree
   isolation is a building block for CLI-first multi-agent
   coordination
 - `feedback_never_idle_speculative_work_over_waiting.md` —

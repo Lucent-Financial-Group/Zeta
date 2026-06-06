@@ -26,18 +26,18 @@ deserve the same WebSearch discipline.
 
 ### What counts as a dep-pin authoring action
 
-| Authoring surface | Examples |
-|---|---|
-| **Nix flake inputs** | `nixpkgs.url`, `nix-darwin.url`, third-party-flake URLs |
-| **NixOS module package references** | package versions in `environment.systemPackages`, helm-chart-sourced apps |
-| **ArgoCD `Application` resources** | `spec.source.targetRevision`, `spec.source.helm.chart`, `spec.source.repoURL` |
-| **Helm chart targetRevisions** | chart version strings |
-| **Container image tags** | image:tag literals in NixOS modules / K8s manifests |
-| **mise runtimes** | `.mise.toml` runtime versions |
-| **Substrate-path assertions in audit/lint tools** | REQUIRED_FILES lists, EXPECTED_PATHS, golden-output paths |
-| **GitHub Actions runners + uses pins** | runner image (`ubuntu-24.04`), action SHA pins + version comments |
-| **External-API endpoint references** | OpenAI/Anthropic/etc. API version strings |
-| **Project / framework version references** | NixOS release names, K8s versions, etc. |
+| Authoring surface                                 | Examples                                                                      |
+| ------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Nix flake inputs**                              | `nixpkgs.url`, `nix-darwin.url`, third-party-flake URLs                       |
+| **NixOS module package references**               | package versions in `environment.systemPackages`, helm-chart-sourced apps     |
+| **ArgoCD `Application` resources**                | `spec.source.targetRevision`, `spec.source.helm.chart`, `spec.source.repoURL` |
+| **Helm chart targetRevisions**                    | chart version strings                                                         |
+| **Container image tags**                          | image:tag literals in NixOS modules / K8s manifests                           |
+| **mise runtimes**                                 | `.mise.toml` runtime versions                                                 |
+| **Substrate-path assertions in audit/lint tools** | REQUIRED_FILES lists, EXPECTED_PATHS, golden-output paths                     |
+| **GitHub Actions runners + uses pins**            | runner image (`ubuntu-24.04`), action SHA pins + version comments             |
+| **External-API endpoint references**              | OpenAI/Anthropic/etc. API version strings                                     |
+| **Project / framework version references**        | NixOS release names, K8s versions, etc.                                       |
 
 ### Required process per dep-pin authoring action
 
@@ -83,7 +83,7 @@ at the moment the next-token decision is being made.
 
 ### Anchor 1 — NixOS 24.11 pinned past EOL (B-0800 / 2026-05-26)
 
-`full-ai-cluster/flake.nix` shipped initially with `nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11"`. The maintainer 2026-05-26 asked: *"is there a 25 we should go ahead and distro upgrade we don't want to be behind"*. WebSearch surfaced: NixOS 25.11 "Xantusia" current stable (released 2025-11-30; EOL 2026-06-30); 24.11 EOL'd 2025-06-30 — past EOL when our flake was authored. Substrate-honest finding: the training-data default for "latest NixOS channel" had drifted stale by 1 year + 2 channel releases. Backlogged as [B-0800](../../docs/backlog/P1/B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md).
+`full-ai-cluster/flake.nix` shipped initially with `nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11"`. The maintainer 2026-05-26 asked: _"is there a 25 we should go ahead and distro upgrade we don't want to be behind"_. WebSearch surfaced: NixOS 25.11 "Xantusia" current stable (released 2025-11-30; EOL 2026-06-30); 24.11 EOL'd 2025-06-30 — past EOL when our flake was authored. Substrate-honest finding: the training-data default for "latest NixOS channel" had drifted stale by 1 year + 2 channel releases. Backlogged as [B-0800](../../docs/backlog/P1/B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md).
 
 ### Anchor 2 — cascade #4 ISO audit asserted wrong NixOS layout (P0 fix-fwd / 2026-05-26)
 
@@ -132,6 +132,6 @@ This rule DOES:
 
 The maintainer 2026-05-26 substrate-honest catch:
 
-> *"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"*
+> _"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"_
 
 That sentence names BOTH the systemic gap (training-data version-pin staleness across nix + argocd + downstream) AND the agent-discipline failure mode (Otto-defaults-to-plausible-but-unverified). [B-0805](../../docs/backlog/P1/B-0805-iter-6-5-all-deps-current-version-audit-nix-flake-argocd-helm-charts-otto-training-data-stale-defaults-must-search-first-aaron-2026-05-26.md) names both at backlog scope as a capstone; this rule lands the agent-discipline half at wake-time substrate scope so the gap doesn't re-open in every future authoring action.

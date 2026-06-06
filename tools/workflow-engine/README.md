@@ -26,13 +26,13 @@ PoC scaffold for the workflow engine v1 spec ([B-0867](../../docs/backlog/P1/B-0
 
 ## Otto's 5 modifications baked into types
 
-| Mod | Substrate |
-|---|---|
-| **Mod 1** — escape-hatch action in every state | `ActionClass === "escape-hatch"`; `validateStateOtto5Mods` rejects states missing it |
-| **Mod 2** — grammar-extension is first-class action | `ActionClass === "grammar-extension"`; `validateCatalog` rejects catalogs missing it |
-| **Mod 3** — ban-if scope SHIPPED code only NOT cognition | Discipline at PR-review scope; not type-enforced (cognition isn't ship-target) |
-| **Mod 4** — append-only-vs-PR discriminator IN grammar | `ActionGate` type — every `Action` declares `gate: "append-only" \| "pr-gated"` |
-| **Mod 5** — menu-generation contributable | `ActionClass === "menu-contribution"`; seed action `menu-contribute` |
+| Mod                                                      | Substrate                                                                            |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Mod 1** — escape-hatch action in every state           | `ActionClass === "escape-hatch"`; `validateStateOtto5Mods` rejects states missing it |
+| **Mod 2** — grammar-extension is first-class action      | `ActionClass === "grammar-extension"`; `validateCatalog` rejects catalogs missing it |
+| **Mod 3** — ban-if scope SHIPPED code only NOT cognition | Discipline at PR-review scope; not type-enforced (cognition isn't ship-target)       |
+| **Mod 4** — append-only-vs-PR discriminator IN grammar   | `ActionGate` type — every `Action` declares `gate: "append-only" \| "pr-gated"`      |
+| **Mod 5** — menu-generation contributable                | `ActionClass === "menu-contribution"`; seed action `menu-contribute`                 |
 
 ## Integration point for Mika's "clean minimal tick" spec
 

@@ -31,7 +31,7 @@ These aren't just per-PR fixes. They're LESSONS that should scale.
 
 ### The compound-lessons discipline
 
-Per Aaron's *"compound it's lessons"* + ARC3 reference:
+Per Aaron's _"compound it's lessons"_ + ARC3 reference:
 
 1. **Recognize**: when an advisory AI catch is RIGHT, it's teaching us something.
 2. **Capture**: don't just resolve the thread — the lesson goes into substrate (Otto-NNN file, BACKLOG row, OR existing memory file annotation).
@@ -44,6 +44,7 @@ Compare to compound-interest at the discipline scale: each lesson learned and su
 Otto-204c ARC3 (reflection-cycle-3) — sessions can integrate what they learn within-session. Otto-324 extends ARC3 to advisory-AI: their catches are lessons that integrate INTO our substrate, persisting across our sessions.
 
 The reflection-cycle is now bidirectional:
+
 - We integrate THEIR lessons → durable substrate.
 - They (eventually) integrate OUR teaching-replies → their training data + future sessions.
 

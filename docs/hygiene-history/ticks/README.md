@@ -124,9 +124,9 @@ block placed below the pipe-row and H1:
 
 ```yaml
 tick: "<ISO 8601 UTC timestamp>"
-agent: otto        # or vera, kenji, etc.
-mode: autonomous   # or interactive
-operative-authorization: "<source> <date>: \"<raw>\""  # B-0308
+agent: otto # or vera, kenji, etc.
+mode: autonomous # or interactive
+operative-authorization: '<source> <date>: "<raw>"' # B-0308
 ```
 
 <rich body content here>
@@ -182,7 +182,7 @@ written, the write MUST either (a) succeed silently if the
 new content is byte-identical to the existing content
 (idempotent re-write — common under retry / replay
 conditions), OR (b) fail closed and a unique-suffix path MUST
-be chosen. Silent *overwrites* (different content, same path)
+be chosen. Silent _overwrites_ (different content, same path)
 are forbidden — they would erase prior liveness evidence and
 re-introduce the failure mode shard transport was designed to
 eliminate. The `HHMMSSZ-<short-content-hash>.md` form makes
@@ -193,7 +193,7 @@ simpler `HHMMZ.md` form is used).
 
 **Mixed-format-sort caveat** (per the 2026-04-30 hardening
 review): the recommended `HHMMSSZ-<short-content-hash>.md`
-form sorts lexicographically *before* same-minute `HHMMZ.md`
+form sorts lexicographically _before_ same-minute `HHMMZ.md`
 entries (e.g., `0210Z.md` vs `021001Z-abc.md` — the longer
 form sorts earlier despite being later in real time). Two
 mitigations: (1) the generator (when it lands per task #276)
@@ -205,7 +205,7 @@ not mix.
 
 **Scope of conflict-elimination claim** (per the deep-research
 external-AI's hardening review): shard transport eliminates the
-*old EOF-append collision class* for new tick rows. It does NOT
+_old EOF-append collision class_ for new tick rows. It does NOT
 eliminate all conflict classes — same-timestamp filename
 collisions, README/schema edits, generator output conflicts,
 and directory/index conflicts remain possible. Engineering
@@ -272,7 +272,7 @@ The hotspot returns iff the read surface tries to be a write surface.
 
 The choice was made 2026-04-29 per the converged stance from
 the multi-AI synthesis arc + Aaron's explicit delegation
-(*"this falls under your call"*).
+(_"this falls under your call"_).
 
 ## What this directory does NOT do
 

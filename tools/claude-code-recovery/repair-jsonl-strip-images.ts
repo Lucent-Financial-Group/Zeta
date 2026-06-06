@@ -34,14 +34,7 @@
 //                            writes the cleaned JSONL in place.
 //   --help                   Print this usage and exit.
 
-import {
-  readFileSync,
-  writeFileSync,
-  renameSync,
-  statSync,
-  existsSync,
-  readdirSync,
-} from "node:fs";
+import { readFileSync, writeFileSync, renameSync, statSync, existsSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -110,10 +103,7 @@ function parseArgs(): Args {
     "--max-line-bytes",
     get("--max-line-bytes", String(DEFAULT_MAX_LINE_BYTES))!,
   );
-  const maxImageBytes = parseNonNegativeNumber(
-    "--max-image-bytes",
-    get("--max-image-bytes", String(maxLineBytes))!,
-  );
+  const maxImageBytes = parseNonNegativeNumber("--max-image-bytes", get("--max-image-bytes", String(maxLineBytes))!);
   return {
     scan,
     session,
@@ -179,12 +169,7 @@ function scrub(
   return { kept, droppedCount, keptImageCount, freedBytes, droppedSizes };
 }
 
-function annotate(
-  container: Block[],
-  stamp: string,
-  dropped: number,
-  bytes: number,
-): void {
+function annotate(container: Block[], stamp: string, dropped: number, bytes: number): void {
   const tag = ` [${dropped} image(s) stripped ${stamp}: ~${Math.round(
     bytes / 1024,
   ).toLocaleString()} KB base64 removed to recover session]`;
@@ -262,10 +247,7 @@ function processLine(
   return { line: JSON.stringify(obj), drops, bytes, keptImages, droppedSizes };
 }
 
-function scanFile(
-  path: string,
-  maxLineBytes: number,
-): { lineNo: number; length: number }[] {
+function scanFile(path: string, maxLineBytes: number): { lineNo: number; length: number }[] {
   const flagged: { lineNo: number; length: number }[] = [];
   // Read as Buffer (no encoding) so byte counts are accurate for
   // non-ASCII content — the thresholds are documented in bytes,
@@ -303,9 +285,7 @@ function runScan(args: Args): number {
     const size = statSync(path).size;
     console.log(`\n  ${f}  (${size.toLocaleString()} bytes)`);
     for (const { lineNo, length } of flagged) {
-      console.log(
-        `    line ${lineNo}: ${length.toLocaleString()} bytes (~${Math.round(length / 1024 / 1024)} MB)`,
-      );
+      console.log(`    line ${lineNo}: ${length.toLocaleString()} bytes (~${Math.round(length / 1024 / 1024)} MB)`);
     }
     console.log(
       `    repair: bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --session ${f.replace(/\.jsonl$/, "")} --apply`,
@@ -382,9 +362,7 @@ function runRepair(args: Args): number {
     `${args.apply ? "stripping" : "would strip"} from ${reports.length} line(s) (image threshold ${args.maxImageBytes.toLocaleString()} bytes):`,
   );
   for (const r of reports) {
-    const sizesMb = r.droppedSizes
-      .map((b) => `${Math.round(b / 1024 / 1024)}MB`)
-      .join(", ");
+    const sizesMb = r.droppedSizes.map((b) => `${Math.round(b / 1024 / 1024)}MB`).join(", ");
     const keptNote = r.keptImages > 0 ? `, preserved ${r.keptImages} smaller image(s)` : "";
     console.log(
       `  line ${r.lineNo}: dropped ${r.drops} oversize image(s) [${sizesMb}], ~${Math.round(r.bytes / 1024).toLocaleString()} KB freed${keptNote}`,

@@ -8,13 +8,13 @@ type: feedback
 
 Aaron 2026-04-25:
 
-> *"yeah one of the most supprising things to me is the
+> _"yeah one of the most supprising things to me is the
 > results of anti-fragil hardning is round/smooth(fuzzy)
 > not sharp(non differentable), i would have assume
 > sharp, i think it uses a qauantium trampolie shape for
-> protection."*
+> protection."_
 
-> *"like meme protection."*
+> _"like meme protection."_
 
 This is **counter-intuitive**: the naive guess is that
 hardening = sharper edges (a sword is harder than a
@@ -40,17 +40,17 @@ preference applied across many techniques.
 
 ## Examples — sharp shapes vs trampoline shapes
 
-| Domain | Sharp (brittle) | Smooth (antifragile) |
-|---|---|---|
-| Type contracts | Binary `bool` flag with hard accept/reject | Probabilistic confidence + gradient threshold |
-| Lints | "Forbidden literal" (binary match) | Pattern-with-allowlist + reviewer-flag instead of block |
-| Tests | Single-fixture pass/fail boundary | Property-based with shrinking + fuzzed input space |
-| Threat models | "These N adversaries, no others" | "Adversary classes with smooth severity gradient + counterweight-audit" |
-| Alignment floor | Hard rule with single trigger | Floor + active-error-correction + retraction-native escape hatch |
-| Memory rules | "No name attribution in code, docs, or skills" (sharp) | "Names confined to the closed list of history surfaces; everywhere else use role-refs" (closed enum + carve-out — softer boundary) |
-| Code reviews | Block on every single hit | Three-outcome: fix / narrow+backlog / decline-with-citation |
-| Kernel extensions | Ship feature, harvest break-test reports | Pace + document + order + migrate + retract (Otto-291; smooth deployment) |
-| Drain discipline | "Reply must be exact format" | Reply+resolve where the reply *carries* the fix-narrowing-or-decline signal |
+| Domain            | Sharp (brittle)                                        | Smooth (antifragile)                                                                                                               |
+| ----------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Type contracts    | Binary `bool` flag with hard accept/reject             | Probabilistic confidence + gradient threshold                                                                                      |
+| Lints             | "Forbidden literal" (binary match)                     | Pattern-with-allowlist + reviewer-flag instead of block                                                                            |
+| Tests             | Single-fixture pass/fail boundary                      | Property-based with shrinking + fuzzed input space                                                                                 |
+| Threat models     | "These N adversaries, no others"                       | "Adversary classes with smooth severity gradient + counterweight-audit"                                                            |
+| Alignment floor   | Hard rule with single trigger                          | Floor + active-error-correction + retraction-native escape hatch                                                                   |
+| Memory rules      | "No name attribution in code, docs, or skills" (sharp) | "Names confined to the closed list of history surfaces; everywhere else use role-refs" (closed enum + carve-out — softer boundary) |
+| Code reviews      | Block on every single hit                              | Three-outcome: fix / narrow+backlog / decline-with-citation                                                                        |
+| Kernel extensions | Ship feature, harvest break-test reports               | Pace + document + order + migrate + retract (Otto-291; smooth deployment)                                                          |
+| Drain discipline  | "Reply must be exact format"                           | Reply+resolve where the reply _carries_ the fix-narrowing-or-decline signal                                                        |
 
 The right column is the trampoline shape: input lands,
 surface deforms locally, perturbation absorbed, surface
@@ -102,12 +102,12 @@ the sharpest definitions; they are the ones that
   this exact wording") dies in one cycle.
 - **Successful axioms in mathematics** — Peano
   arithmetic survives because its statements are
-  *general* (every successor, every natural). A
+  _general_ (every successor, every natural). A
   sharp version listing specific N would be defeated
   immediately by N+1.
 - **Successful constitutions / governance documents**
   — interpreted across centuries because the language
-  is *fuzzy enough* to deform around new contexts.
+  is _fuzzy enough_ to deform around new contexts.
   Sharp versions break when the context shifts.
 
 ## Composes with existing substrate
@@ -163,7 +163,7 @@ kind:
    single-fixture tests. Three-outcome flows beat
    two-outcome flows.
 2. **Watch for sharp slip-back.** When I'm tempted to
-   write *"forbid X under all circumstances,"* pause
+   write _"forbid X under all circumstances,"_ pause
    and ask: is there a smoother shape that
    accomplishes the same protection without the
    brittle edge? The smooth version is harder to

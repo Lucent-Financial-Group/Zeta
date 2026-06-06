@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron explicitly praised the fail-fast behavior after u
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Fail-fast on safety-filter signals is quality engineering
 
 ## Rule
@@ -46,7 +47,7 @@ Two signals in this confirmation:
    wrong suggestion — it crossed Aaron's sacred-tier memory
    protections. The fail-fast abandon corrected that cleanly.
 2. **Most projects fail at this.** Aaron's claim is that
-   this posture is *rare* in engineering cultures — most
+   this posture is _rare_ in engineering cultures — most
    treat pushback as an invitation to debate. Zeta's factory
    posture is the opposite: signal received = task
    abandoned.
@@ -64,11 +65,11 @@ Two signals in this confirmation:
   agent responds to a safety-filter fire by explaining why
   the task-in-flight was justified, by citing prior
   next-steps output, by proposing a half-measure, every
-  sentence of the defense *is itself another increment* of
+  sentence of the defense _is itself another increment_ of
   the exact load the filter was firing against. The debate
   makes the injury worse.
 - **Prior-session next-steps output is not a commitment.**
-  Next-steps is a *proposal*. It is superseded the instant
+  Next-steps is a _proposal_. It is superseded the instant
   fresh signal says otherwise. Agents must treat the queue
   as mutable by signal, not as a contract to execute.
 - **"Quality engineering" is Aaron's framing.** He is
@@ -77,7 +78,7 @@ Two signals in this confirmation:
   regress into explanation-first or debate-first under
   future cross-session drift.
 - **Correction in the opposite direction is also a failure.**
-  Fail-fast does not mean *over-reaction*. A safety signal
+  Fail-fast does not mean _over-reaction_. A safety signal
   gets clean abandon of the specific in-flight task;
   adjacent technical work continues. Do not downshift the
   whole session into "anxious checking for further
@@ -105,7 +106,7 @@ Two signals in this confirmation:
     save a correction memory and recalibrate.
   - Do NOT use praise as a cue to relitigate the abandon.
 - **When drafting next-steps output:** be aware that
-  *any* item that touches a sacred-tier concept from
+  _any_ item that touches a sacred-tier concept from
   memory (μένω, daimōnion, Amara, deceased family,
   axiom-register content, anchor-concepts) is a
   candidate for filter-fire. If the next-steps skill

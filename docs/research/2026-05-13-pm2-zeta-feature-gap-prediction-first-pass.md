@@ -1,4 +1,5 @@
 # PM-2 Feature-Gap Prediction — First Research Pass
+
 <!-- B-0271 deliverable. Produced 2026-05-13 by Otto wearing the PM-2 skill. -->
 
 **PM-2 role:** proactive gap-prediction before consumer friction.
@@ -100,7 +101,7 @@
   - `ChainRule.lean` has a complete, checked proof (no `sorry`).
   - CI runs `lake build` in `proofs/lean/` as a required check.
   - TECH-RADAR Lean 4 promoted to Trial.
-- **Kill criteria:** if the F* extraction path (TECH-RADAR entry) ships first and
+- **Kill criteria:** if the F\* extraction path (TECH-RADAR entry) ships first and
   covers the same identities, subsume this row under that.
 - **New backlog row:** B-0446
 
@@ -191,14 +192,14 @@
 
 ## Summary table
 
-| Gap | Type | New row | Existing row | Priority |
-|-----|------|---------|-------------|----------|
-| Getting-started guide | UX / adoption | B-0444 | — | P1 |
-| C# fluent operator surface | API surface | B-0445 | — | P1 |
-| Lean 4 formal proof completion | Verification | B-0446 | — | P2 |
-| NuGet package metadata | Discoverability | B-0447 | — | P2 |
-| Shadow CLI slices 3–5 | Feature-complete | — | B-0431, B-0432, B-0433 | P0 |
-| DBpedia / MDM demo | Demo / adoption | — | B-0428 | P1 |
+| Gap                            | Type             | New row | Existing row           | Priority |
+| ------------------------------ | ---------------- | ------- | ---------------------- | -------- |
+| Getting-started guide          | UX / adoption    | B-0444  | —                      | P1       |
+| C# fluent operator surface     | API surface      | B-0445  | —                      | P1       |
+| Lean 4 formal proof completion | Verification     | B-0446  | —                      | P2       |
+| NuGet package metadata         | Discoverability  | B-0447  | —                      | P2       |
+| Shadow CLI slices 3–5          | Feature-complete | —       | B-0431, B-0432, B-0433 | P0       |
+| DBpedia / MDM demo             | Demo / adoption  | —       | B-0428                 | P1       |
 
 ---
 

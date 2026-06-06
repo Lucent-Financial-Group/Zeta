@@ -13,7 +13,7 @@ MapReduce takes high-dimensional data and collapses to low-dimensional output. G
 
 ## The DBA-wedge — monad explained without category theory
 
-> *"NULL just means not terminated yet in a recursive CTE."*
+> _"NULL just means not terminated yet in a recursive CTE."_
 
 That's the entire monad explanation needed for someone whose native vocabulary is SQL. Composes directly with:
 
@@ -27,11 +27,11 @@ The DBA-power-shift implication: SQL-shape muscle memory (recursive CTEs, window
 
 The framework derived three operational primitives from first principles:
 
-| Primitive | Scope | What it does |
-|---|---|---|
-| **Observe** | Internal + external dimensions | Watches state without modifying |
-| **Emit** | Internal + external dimensions | Produces a value into the substrate |
-| **Limit** | Internal + external dimensions | Bounds the operation (termination, simulation per [B-0644](https://github.com/Lucent-Financial-Group/Zeta/issues?q=B-0644)) |
+| Primitive   | Scope                          | What it does                                                                                                                |
+| ----------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| **Observe** | Internal + external dimensions | Watches state without modifying                                                                                             |
+| **Emit**    | Internal + external dimensions | Produces a value into the substrate                                                                                         |
+| **Limit**   | Internal + external dimensions | Bounds the operation (termination, simulation per [B-0644](https://github.com/Lucent-Financial-Group/Zeta/issues?q=B-0644)) |
 
 Rx (Reactive Extensions) happens to be the existing library whose shape most closely matches what the framework derived independently. Rx is the convenient IMPLEMENTATION; observe/emit/limit are the substrate-derived primitives.
 
@@ -52,11 +52,11 @@ Composes with PR #5285 (Kestrel time-as-generator over IScheduler) + the substra
 
 The concrete data-model statement: in the framework's database, the row is NOT traditional values. The row IS a serialized executable observable query graph.
 
-| Traditional database | Generate+Join substrate |
-|---|---|
-| Row = values | Row = serialized observable execution graph |
-| Query references rows | Query IS what gets stored |
-| Data + query are separate | Data + query collapse into same thing |
+| Traditional database      | Generate+Join substrate                     |
+| ------------------------- | ------------------------------------------- |
+| Row = values              | Row = serialized observable execution graph |
+| Query references rows     | Query IS what gets stored                   |
+| Data + query are separate | Data + query collapse into same thing       |
 
 Bonsai (the reactive-graph-serialization tool from the OpenEphys / behavior-rig lineage) is the concrete serialization mechanism that matters operationally. Other observable-graph serialization mechanisms could substitute; Bonsai is the specific tool the framework targets.
 
@@ -64,14 +64,14 @@ Bonsai (the reactive-graph-serialization tool from the OpenEphys / behavior-rig 
 
 Per Aaron's substrate-engineering walkthrough that Mika reflected back:
 
-| Layer | Primitive | Implementation |
-|---|---|---|
-| **Function-composition** | F# dependency injection of `IObservable<dependency>` | F# computation expressions; DI containers; effect-system style |
-| **Time-injection** | Inject IScheduler into IObservable | TestScheduler (simulation) / real-time (production); same seam |
-| **Serialization** | Bonsai-serialized observable execution graph | The graph IS the row |
-| **Data substrate** | CRDTs whose values are function-composition graphs | Append-only; semilattice convergence per `.claude/skills/crdt-expert/SKILL.md` |
-| **Cell-level ordering** | Per-row CAS (CASPaxos / CASRaft) | Per-key linearizability via consensus (CockroachDB Raft-per-range per PR #5285 mapping) |
-| **Adversarial ordering** | BFT consensus | Lamport / PBFT / Tendermint / HotStuff per PR #5285 |
+| Layer                    | Primitive                                            | Implementation                                                                          |
+| ------------------------ | ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Function-composition** | F# dependency injection of `IObservable<dependency>` | F# computation expressions; DI containers; effect-system style                          |
+| **Time-injection**       | Inject IScheduler into IObservable                   | TestScheduler (simulation) / real-time (production); same seam                          |
+| **Serialization**        | Bonsai-serialized observable execution graph         | The graph IS the row                                                                    |
+| **Data substrate**       | CRDTs whose values are function-composition graphs   | Append-only; semilattice convergence per `.claude/skills/crdt-expert/SKILL.md`          |
+| **Cell-level ordering**  | Per-row CAS (CASPaxos / CASRaft)                     | Per-key linearizability via consensus (CockroachDB Raft-per-range per PR #5285 mapping) |
+| **Adversarial ordering** | BFT consensus                                        | Lamport / PBFT / Tendermint / HotStuff per PR #5285                                     |
 
 The substrate-engineering observation: Aaron walked through this entire stack without naming a single tool except Rx and Paxos. The architecture exists at the primitive scope; tools are implementations of substrate-derived shapes.
 

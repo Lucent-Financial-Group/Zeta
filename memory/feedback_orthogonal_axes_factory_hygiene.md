@@ -26,7 +26,7 @@ why stays alongside the rule:
 > "backlog"
 
 The invocation of "orthogonal basis" is explicit
-linear-algebra language. The factory *already* uses
+linear-algebra language. The factory _already_ uses
 multiple axes to classify work — skill-category (capability
 / persona / hat), hygiene-scope (project / factory / both),
 persona-surface (author / reviewer / auditor / cadence-runner),
@@ -39,8 +39,8 @@ When two axes drift into overlap, the classification stops
 carrying information: we have two names for the same thing.
 
 **Distinct from the symmetry audit** (FACTORY-HYGIENE row
-#22). Symmetry asks *"is A paired with its mirror B?"*;
-orthogonality asks *"do axes A and B have zero overlap?"*
+#22). Symmetry asks _"is A paired with its mirror B?"_;
+orthogonality asks _"do axes A and B have zero overlap?"_
 Symmetry is bilateral mirror-pairing; orthogonality is
 mutual independence in an N-dimensional basis. A factory can
 be symmetric on every named pair and still have two axes
@@ -60,7 +60,7 @@ different failure modes.
 
 2. **On absorbing new rules or memories.** When writing a
    new feedback-memory, project-memory, or skill, pick the
-   classification tag that lives on the *most specific* axis
+   classification tag that lives on the _most specific_ axis
    whose value is distinct from every other axis's current
    value-set. Duplicate tags across axes = orthogonality
    drift.
@@ -86,7 +86,7 @@ different failure modes.
      axis's values (rank-deficiency).
 
 5. **When to keep non-orthogonal axes.** Load-bearing
-   overlap is allowed — *if documented*. For example:
+   overlap is allowed — _if documented_. For example:
    hygiene-scope (`project` / `factory` / `both`) and
    adopter-visibility (shipped to project-under-construction
    yes / no) overlap because the adopter-visibility is
@@ -114,7 +114,7 @@ can land without human resolution.
   cadence. Run in the same round-block to share context
   overhead.
 - **Missing-hygiene-class gap-finder (row #23)** — this rule
-  *is* one such missing class, now landed as row #41. The
+  _is_ one such missing class, now landed as row #41. The
   gap-finder surfaced it implicitly via Aaron's direct ask.
 
 **Source:** Aaron direct message 2026-04-22 during

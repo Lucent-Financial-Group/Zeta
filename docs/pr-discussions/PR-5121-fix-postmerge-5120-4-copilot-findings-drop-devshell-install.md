@@ -43,6 +43,7 @@ The 4th post-merge thread (exit-3 doc) is stale — already widened on main by 5
 This PR removes automatic execution of `tools/setup/install.sh` from the `full-ai-cluster` Nix devShell (avoiding side effects and NixOS breakage) and tightens accompanying commentary about the install-script contract and 7z provenance in CI vs local setup.
 
 **Changes:**
+
 - Stop auto-running `tools/setup/install.sh` on `nix develop` entry; replace with a manual hint in the devShell `shellHook`.
 - Reframe devShell comments to align with `GOVERNANCE.md §24` (three install.sh consumers) and remove the prior “4th consumer” framing.
 - Update the workflow audit-step comment to describe where 7z comes from in CI vs local environments.
@@ -51,10 +52,10 @@ This PR removes automatic execution of `tools/setup/install.sh` from the `full-a
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `full-ai-cluster/flake.nix` | Removes install.sh auto-run from devShell hook; updates explanatory comments and prints a manual host-setup hint. |
-| `.github/workflows/build-ai-cluster-iso.yml` | Comment-only clarification about 7z dependency provenance for the ISO audit step. |
+| File                                         | Description                                                                                                       |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `full-ai-cluster/flake.nix`                  | Removes install.sh auto-run from devShell hook; updates explanatory comments and prints a manual host-setup hint. |
+| `.github/workflows/build-ai-cluster-iso.yml` | Comment-only clarification about 7z dependency provenance for the ISO audit step.                                 |
 
 ## Review threads
 

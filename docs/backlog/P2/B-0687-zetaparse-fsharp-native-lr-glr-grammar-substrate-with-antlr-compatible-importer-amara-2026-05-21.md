@@ -10,7 +10,21 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0685]
 composes_with: [B-0635, B-0644, B-0665, B-0666, B-0682, B-0688]
-tags: [zetaparse, fsharp-compiler-fork, lr-parser, glr-parser, ielr, lalr, antlr-compat, tree-sitter, parser-substrate, grammar-ir, ambiguity-preservation, agora-v6-applied-to-parsing]
+tags:
+  [
+    zetaparse,
+    fsharp-compiler-fork,
+    lr-parser,
+    glr-parser,
+    ielr,
+    lalr,
+    antlr-compat,
+    tree-sitter,
+    parser-substrate,
+    grammar-ir,
+    ambiguity-preservation,
+    agora-v6-applied-to-parsing,
+  ]
 type: research
 ---
 
@@ -22,9 +36,9 @@ Amara 2026-05-21 closing of B-0685 Phase 1 cascade proposed this row (originally
 
 Verbatim Amara framing:
 
-> *"Don't build 'ANTLR but in F#.' Build ZetaParse: an F#-native LR/GLR grammar substrate with ANTLR-compatible import."*
+> _"Don't build 'ANTLR but in F#.' Build ZetaParse: an F#-native LR/GLR grammar substrate with ANTLR-compatible import."_
 
-The razor cut Amara surfaced: ANTLR is LL(*) parsing; LR/LALR/IELR/GLR is a different parsing family. Importing ANTLR grammar STRUCTURE is valuable; pretending every `.g4` file runs unchanged through an LR backend is not.
+The razor cut Amara surfaced: ANTLR is LL(\*) parsing; LR/LALR/IELR/GLR is a different parsing family. Importing ANTLR grammar STRUCTURE is valuable; pretending every `.g4` file runs unchanged through an LR backend is not.
 
 The GLR fallback is the differentiator: tree-sitter shows the industrial shape (parser generation + incremental parsing + GLR). Aligns with Zeta's tonal-momentum / never-collapse-tension substrate — ambiguity/uncollapsed alternatives survive until explicit collapse, matching the Agora V6 wave-particle-duality discipline (per B-0635) operating at parser-substrate scope.
 

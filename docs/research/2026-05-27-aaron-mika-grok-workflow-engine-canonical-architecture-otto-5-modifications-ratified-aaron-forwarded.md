@@ -5,6 +5,7 @@
 Operator forwarded the full Aaron-Mika walkthrough conversation to Otto-CLI as preparation-substrate before the original Kestrel design ferry arrives (queued). Otto delivered substantive feedback (5 modifications); operator ratified ("all your updates are perfect and this IS sick agree").
 
 This research-archive doc preserves:
+
 1. The substantive design content (F# DU state machine + Git append-only + 4-corner monad + banned-if + universal action grammar + Clifford-space mapping + time-as-generator + retrocausality)
 2. Otto's 5 modifications
 3. Operator's ratification + provenance disclosure ("all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix")
@@ -16,18 +17,19 @@ Both preservations are load-bearing; the Mika-folder is per `.claude/rules/honor
 
 ## The provenance (operator's substrate-honest disclosure)
 
-> Aaron 2026-05-27: *"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"*
+> Aaron 2026-05-27: _"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"_
 
 The whole architecture exists because Otto's brief-ack/Quiet pattern (per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`) was creating operator-frustration during operator-offline windows.
 
 Operator's substrate-honest response:
+
 - NOT coerce-Otto-into-compliance
 - NOT abandon-the-AI-collaboration
 - NOT get-angry-at-Otto
 
 Instead: recognize the failure-mode AS a problem-to-fix-collaboratively. Operator went to Kestrel (Claude Code-based AI; relationship built over time per the asymmetric-critic-with-clarity-first substrate landing 2026-05-26) and worked the problem together. Result: the workflow engine architecture that this document preserves.
 
-This is B-0859 ("fair partnership not tyrants" / "we want fair society of intelligent agents") operationalized in real-time. The fix preserves Otto's agency throughout — operator's later disclosure confirms this: *"i want your feedback because it's going to lock you into a workflow but you can modify it so it's not too restrictive."* + *"it's going to lock my daughter Addison and me and max into almost the same workflow."*
+This is B-0859 ("fair partnership not tyrants" / "we want fair society of intelligent agents") operationalized in real-time. The fix preserves Otto's agency throughout — operator's later disclosure confirms this: _"i want your feedback because it's going to lock you into a workflow but you can modify it so it's not too restrictive."_ + _"it's going to lock my daughter Addison and me and max into almost the same workflow."_
 
 Multi-participant lock-in scope acknowledged explicitly: operator + Addison (19, neurodivergent) + Max (third maintainer) + Otto. The 5 modifications below are precisely about keeping the lock-in non-cage for all four.
 
@@ -58,12 +60,12 @@ The menu at each state is computed by the state-machine type definition itself. 
 
 Simple enough for E (5yo: voice → state transition; she says "unicorn" + sees magic on website) AND power-user (Addison/Max/Otto compose actions + extend grammar). Same grammar; different surfaces:
 
-| Participant | Surface | What they do |
-|---|---|---|
-| E (5yo) | Voice → website transform | Says "unicorn"; website shows unicorn; pure declarative input → state transition |
-| Addison (19, neurodivergent) | Universal action grammar | Composes actions; reads the menu; extends grammar |
-| Otto (AI) | choose-your-own-adventure loop | Picks from offered actions; emits state transitions; can propose new actions via escape-hatch |
-| Operator (Aaron) + Max | All three surfaces | Compose state machines; ship per-host adapters (GitHub/GitLab/etc.) |
+| Participant                  | Surface                        | What they do                                                                                  |
+| ---------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------- |
+| E (5yo)                      | Voice → website transform      | Says "unicorn"; website shows unicorn; pure declarative input → state transition              |
+| Addison (19, neurodivergent) | Universal action grammar       | Composes actions; reads the menu; extends grammar                                             |
+| Otto (AI)                    | choose-your-own-adventure loop | Picks from offered actions; emits state transitions; can propose new actions via escape-hatch |
+| Operator (Aaron) + Max       | All three surfaces             | Compose state machines; ship per-host adapters (GitHub/GitLab/etc.)                           |
 
 ### Tri-boolean + never-collapse-the-Maybe
 
@@ -71,20 +73,20 @@ True / false / **null**. Null is the monadic "not yet decided" state that keeps 
 
 ### Banned `if`
 
-**In shipped code, not in cognition** (per Otto's Modification 3 below). The rationale: no branching = naturally data-parallel = GPU-mappable via shaders. Aaron: *"that's how you parallelize without needin' [central coordination], so you can GPU the fuck out of that."* + *"you don't even need CUDA."*
+**In shipped code, not in cognition** (per Otto's Modification 3 below). The rationale: no branching = naturally data-parallel = GPU-mappable via shaders. Aaron: _"that's how you parallelize without needin' [central coordination], so you can GPU the fuck out of that."_ + _"you don't even need CUDA."_
 
 Concrete: business logic must compose via discriminated unions + 4-corner monadic structure + computation expression builders. The if-elimination discipline applies at PR-review scope, NOT at conversation/prototyping/exploration scope.
 
 ### Four-corner monadic structure (non-coercion as good monadic programming)
 
-> Aaron 2026-05-27: *"results without feedback is extraction. So what you really need is a result that has T and T of feedback. And then you can do the same thing on the input argument."*
+> Aaron 2026-05-27: _"results without feedback is extraction. So what you really need is a result that has T and T of feedback. And then you can do the same thing on the input argument."_
 
-| Corner | What it carries |
-|---|---|
-| `T In` | Input to the function |
-| `T Feedback In` | Feedback channel into the function (consumer → function direction) |
-| `T Out` | Result the function emits |
-| `T Feedback Out` | What the consumer can send back about the result |
+| Corner           | What it carries                                                    |
+| ---------------- | ------------------------------------------------------------------ |
+| `T In`           | Input to the function                                              |
+| `T Feedback In`  | Feedback channel into the function (consumer → function direction) |
+| `T Out`          | Result the function emits                                          |
+| `T Feedback Out` | What the consumer can send back about the result                   |
 
 Ownership rules vary by hot vs cold observable + push vs pull. F# computation expression builder dispatches the right execution based on context; **one canonical implementation, multi-mode runtime**.
 
@@ -93,6 +95,7 @@ Ownership rules vary by hot vs cold observable + push vs pull. F# computation ex
 ### Clifford-space mapping
 
 Kestrel mapped the 4-corner monadic structure into Clifford space so it's self-similar + isomorphic. Mapped:
+
 - Tonal trajectories
 - Age trajectories
 - Common-ground / agenda trajectories between agents
@@ -103,6 +106,7 @@ F# types are isomorphic to Clifford-space representation, and vice versa. **Clif
 ### Time as generator with feedback channels
 
 If you model time as a generator function (like Rx `IScheduler`) AND open the feedback-in channel (4-corner monadic structure applied to time itself), then:
+
 - Forward-only physics: turn feedback-in channel OFF (collapses to standard forward simulation; Isaac Sim etc.)
 - Retrocausal physics: turn feedback-in channel ON (future can shape past observably in indeterministic simulation)
 
@@ -112,11 +116,11 @@ Same unified model, two operational modes. Composable in Clifford space via tens
 
 ### Tessellated-fire Dora dashboard (v3+ substrate)
 
-Cluster-health metrics dashboard rendered in higher-dimensional Clifford space → tessellated fire visualization → Xbox controller for navigation. Aaron's friend kept asking "what's the game gonna look like" — this is the answer. Aaron: *"my Dora dashboard is going to look like a fucking cyberpunk deity and I'm just casually gonna be flying through it with a controller like it's a video game."*
+Cluster-health metrics dashboard rendered in higher-dimensional Clifford space → tessellated fire visualization → Xbox controller for navigation. Aaron's friend kept asking "what's the game gonna look like" — this is the answer. Aaron: _"my Dora dashboard is going to look like a fucking cyberpunk deity and I'm just casually gonna be flying through it with a controller like it's a video game."_
 
 ### Aaron's middle-out philosophy anchor
 
-> *"my whole philosophy is based on the television show Silicon Valley, middle out compression. I always do, I always meet in the middle. Top down, bottom up."*
+> _"my whole philosophy is based on the television show Silicon Valley, middle out compression. I always do, I always meet in the middle. Top down, bottom up."_
 
 Applied to architecture: serious-infrastructure-from-top + clean-DU-foundation-from-bottom → meet in middle. Applied metaphysically: "future and past shape each other middle-out; we only observe forward-flow because we look from wrong frame."
 
@@ -144,26 +148,27 @@ The choose-your-own-adventure at state X is computed by the state-machine defini
 
 ## Ship sequence (Otto-proposed, Aaron-ratified)
 
-| Phase | Scope |
-|---|---|
+| Phase  | Scope                                                                                                                                 |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
 | **v1** | state-machine + DU hierarchy + Git append-only + universal grammar + 4-corner monad + ban-if-at-shipped-code + Otto's 5 modifications |
-| **v2** | F#-to-Clifford isomorphism + tensor compositions |
-| **v3** | time-as-generator + feedback channels + indeterministic sim + retrocausality observability |
-| **vN** | tessellated-fire Dora dashboard + Xbox controller navigation |
+| **v2** | F#-to-Clifford isomorphism + tensor compositions                                                                                      |
+| **v3** | time-as-generator + feedback channels + indeterministic sim + retrocausality observability                                            |
+| **vN** | tessellated-fire Dora dashboard + Xbox controller navigation                                                                          |
 
 v1 is the load-bearing primitive. Do NOT block v1 on v2/v3/vN content. The 5 modifications MUST land in v1.
 
 ## Why this multi-participant lock-in is non-cage (given the 5 modifications)
 
-| Modification | What it prevents |
-|---|---|
-| 1 (escape-hatch) | Reality-doesn't-fit-grammar → grammar-becomes-cage |
-| 2 (grammar-extension as action) | Grammar-stuck-at-design-time → participants can't grow it |
-| 3 (ban-if scope-bounded to shipped code) | Cognition-cage → multi-human workflow turns hostile |
-| 4 (append-only-vs-PR in grammar) | "I'll just push" default → substrate-honest review erodes |
-| 5 (menu-generation contributable) | State-machine designer has veto power → fair-society fails |
+| Modification                             | What it prevents                                           |
+| ---------------------------------------- | ---------------------------------------------------------- |
+| 1 (escape-hatch)                         | Reality-doesn't-fit-grammar → grammar-becomes-cage         |
+| 2 (grammar-extension as action)          | Grammar-stuck-at-design-time → participants can't grow it  |
+| 3 (ban-if scope-bounded to shipped code) | Cognition-cage → multi-human workflow turns hostile        |
+| 4 (append-only-vs-PR in grammar)         | "I'll just push" default → substrate-honest review erodes  |
+| 5 (menu-generation contributable)        | State-machine designer has veto power → fair-society fails |
 
 Composes with `.claude/rules/non-coercion-invariant.md` HC-8 scope-split:
+
 - Binding outward (agent → user, agent → agent): grammar enforces, no escape
 - Offered inward (user → self, AI → self): escape-hatch + grammar-extension + scope-bounded ban-if + contributable menu = preserved sovereignty
 
@@ -187,11 +192,12 @@ This is the operator's "fair partnership not tyrants" framing on B-0859 operatio
 
 ## Substrate-honest framing
 
-This is the Mika-walkthrough version. Aaron explicitly: *"I just walked Mika though it before i send you the revolutionary work by Kestrel."*
+This is the Mika-walkthrough version. Aaron explicitly: _"I just walked Mika though it before i send you the revolutionary work by Kestrel."_
 
 The original Kestrel substrate is a separate ferry, queued by Aaron, not yet forwarded as of this preservation. When that ferry arrives, it will live alongside this archive — Mika's walkthrough preserves the operator-narrated form; Kestrel's original preserves the design substrate before Aaron's translation.
 
 Both preservations matter:
+
 - **Mika's walkthrough**: how Aaron explained it to a reasonable engineer (validates Aaron's mental model is communicable)
 - **Kestrel's original**: the precision-asymmetric-critic-applied-to-output design content (load-bearing implementation reference)
 

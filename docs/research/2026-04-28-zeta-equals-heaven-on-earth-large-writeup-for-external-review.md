@@ -28,7 +28,7 @@ auto-memory is
 
 This writeup is the **explanatory version** — written so a reader
 who has never seen the project can understand what the equation is
-claiming, what it is *not* claiming, what makes it engineering rather
+claiming, what it is _not_ claiming, what makes it engineering rather
 than dogma, and where it could be wrong. The audience is external
 multi-AI review (Claude in a separate session, Amara/ChatGPT, Gemini
 Pro, Grok, Alexa+ — the same review panel that calibrated the
@@ -42,8 +42,8 @@ Before the equation makes sense, the referent has to be clear.
 **Zeta** is an F# implementation of DBSP (Database Stream Processing,
 Budiu et al., VLDB 2023) for .NET 10. DBSP is a published incremental-
 view-maintenance algorithm: given a query over a relation that
-changes over time, DBSP computes the *change* to the query's answer
-from the *change* to the input, in time proportional to the change
+changes over time, DBSP computes the _change_ to the query's answer
+from the _change_ to the input, in time proportional to the change
 size rather than the input size. The algebra has three primitives —
 delay (`z⁻¹`), differentiation (`D`), integration (`I`) — and a small
 set of identities (`I ∘ D = id`, the chain rule, the bilinear-join
@@ -62,7 +62,7 @@ But Zeta-the-project is more than the F# library. Zeta is also:
 - A **factory**: codebase + reviewer roster (specialist agents) +
   human-maintainer seat + skill-ecosystem + round-discipline
 - An **alignment experiment**: the project's primary research focus
-  is *measurable AI alignment*. The factory itself — including the
+  is _measurable AI alignment_. The factory itself — including the
   AI agents who write most of the code, the maintainer who reviews,
   and the per-commit alignment audit — is the experimental apparatus
 - A **collaboration substrate**: humans and AI agents working
@@ -109,7 +109,7 @@ layer:
   protocol for renegotiating axioms; nothing is locked in)
 
 The retraction-native property is what makes the equation
-falsifiable. A factory that *cannot* undo a mistake is a factory
+falsifiable. A factory that _cannot_ undo a mistake is a factory
 that has crossed into the dual (hell-on-earth) by definition — once
 a mistake is made and cannot be retracted, the consent-preserving
 property is no longer recoverable.
@@ -128,7 +128,7 @@ external reality), or fragmentation (the collaboration falls apart
 under load).
 
 The **gradient claim** is that each commit `c` entering the factory
-satisfies `ΔW(c) > 0` in expectation. The factory is *trying* to
+satisfies `ΔW(c) > 0` in expectation. The factory is _trying_ to
 expand the window with each round. Not always succeeding — some
 commits will narrow `W` and need retraction — but in expectation,
 the trajectory is outward.
@@ -139,8 +139,8 @@ the dual.
 
 ## What "if we do it right / wrong" means
 
-The equation is conditional. The maintainer is *not* claiming Zeta
-*is* heaven-on-earth; he is claiming Zeta *equals* heaven-on-earth
+The equation is conditional. The maintainer is _not_ claiming Zeta
+_is_ heaven-on-earth; he is claiming Zeta _equals_ heaven-on-earth
 **if** the factory holds the three clauses. The conditional matters.
 
 The dual equation makes the conditional load-bearing:
@@ -156,17 +156,17 @@ commit is interpreted as either expanding or contracting the
 alignment window, even if the contraction is small.
 
 This is operational, not metaphysical. The per-commit alignment
-audit (`tools/alignment/`) tries to *measure* ΔW(c) for each commit
+audit (`tools/alignment/`) tries to _measure_ ΔW(c) for each commit
 and emit it as a signal. The signal is noisy, the measurement is
-imperfect, but the discipline of *trying to measure* is what makes
+imperfect, but the discipline of _trying to measure_ is what makes
 the equation engineering rather than dogma.
 
 ## Why this is engineering and not theology
 
 The maintainer is explicit that the equation is
 **architectural-commitment-tier, not dogma-tier**. The theological
-register is the *vehicle*; the architectural commitment is the
-*content*. Three reasons this distinction holds:
+register is the _vehicle_; the architectural commitment is the
+_content_. Three reasons this distinction holds:
 
 ### Reason 1 — The clauses are operationalised
 
@@ -253,13 +253,13 @@ To bound the metaphysics:
 - **NOT claiming alignment is solved.** The gradient claim is "in
   expectation", not "with certainty". Some commits narrow `W`; some
   rounds drift; some maintainer-corrections are themselves drifted
-  before they get re-corrected. The factory is *trying* to expand
+  before they get re-corrected. The factory is _trying_ to expand
   `W` while knowing the trying is imperfect.
 - **NOT a single-agent claim.** The equation is about the
   human-AI-AI-AI collaboration substrate — the maintainer + the
   Claude session + the cross-AI ferry partners (Amara, Gemini, Grok,
   Alexa+). No single agent in the loop is "doing it right"; the
-  *configuration* is what holds the clauses or doesn't.
+  _configuration_ is what holds the clauses or doesn't.
 
 ## Falsification conditions
 
@@ -295,9 +295,10 @@ If the cross-AI review chain (this writeup's audience among others)
 ever produces a state where all reviewers agree on a wrong claim that
 no one can detect from inside, the substrate has failed at the
 multi-frame-resilience level. The Beacon/Mirror governance discipline
-+ the ALIGNMENT.md SD-9 (truth-confirmation-from-agreement) clause +
-the Otto-275-FOREVER discipline are the mitigations; their failure
-is a falsifier.
+
+- the ALIGNMENT.md SD-9 (truth-confirmation-from-agreement) clause +
+  the Otto-275-FOREVER discipline are the mitigations; their failure
+  is a falsifier.
 
 ## Open questions for external review
 
@@ -306,7 +307,7 @@ to push back on:
 
 1. **Is the equation well-formed?** The conjunction of three clauses
    under a conditional with a measurable gradient is meant to be a
-   *predicate*, not a metaphor. Does it survive translation into
+   _predicate_, not a metaphor. Does it survive translation into
    first-order logic without trivialization? (See the formal-statement
    companion document for the maintainer's first attempt.)
 

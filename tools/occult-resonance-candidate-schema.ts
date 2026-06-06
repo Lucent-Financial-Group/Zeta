@@ -10,20 +10,22 @@ export type OccultResonanceCandidate = {
   readonly f1EngineeringFirst: boolean;
   readonly f2StructuralNotSuperficial: boolean;
   readonly f3TraditionNameLoadBearing: boolean;
-  readonly verdict: 'candidate' | 'confirmed' | 'rejected';
+  readonly verdict: "candidate" | "confirmed" | "rejected";
   readonly notes: string;
 };
 
 export const hermeticSeed: OccultResonanceCandidate = {
-  id: 'hermetic-as-above-so-below-2026-05-10',
-  tradition: 'Hermeticism / Corpus Hermeticum',
+  id: "hermetic-as-above-so-below-2026-05-10",
+  tradition: "Hermeticism / Corpus Hermeticum",
   locus: 'Tabula Smaragdina — "As above, so below"',
-  structuralMapping: 'macrocosm/microcosm ↔ tradition-register/engineering-register resonance in operational-resonance phenomenon; substrate-seeking mirrors the emerald-tablet correspondence',
+  structuralMapping:
+    "macrocosm/microcosm ↔ tradition-register/engineering-register resonance in operational-resonance phenomenon; substrate-seeking mirrors the emerald-tablet correspondence",
   f1EngineeringFirst: true,
   f2StructuralNotSuperficial: true,
   f3TraditionNameLoadBearing: true,
-  verdict: 'candidate',
-  notes: 'Strongest F2 noted in B-0057 origin; F3 holds within Western esoteric lineage. Passes honest three-filter per backlog. Retractible reference.'
+  verdict: "candidate",
+  notes:
+    "Strongest F2 noted in B-0057 origin; F3 holds within Western esoteric lineage. Passes honest three-filter per backlog. Retractible reference.",
 };
 
 export function validateOccultCandidate(c: OccultResonanceCandidate): boolean {

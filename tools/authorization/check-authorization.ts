@@ -11,19 +11,14 @@
 
 import { resolve } from "node:path";
 import { extractPaceInstructions } from "./pace-extractor.ts";
-import {
-  resolveAuthorization,
-  type AuthorizationResult,
-} from "./resolve-authorization.ts";
+import { resolveAuthorization, type AuthorizationResult } from "./resolve-authorization.ts";
 
 export interface CheckOutput {
   queriedAt: string;
   result: AuthorizationResult;
 }
 
-export async function checkAuthorization(
-  rootPath: string,
-): Promise<CheckOutput> {
+export async function checkAuthorization(rootPath: string): Promise<CheckOutput> {
   const instructions = await extractPaceInstructions(rootPath);
   const result = resolveAuthorization(instructions);
   return {

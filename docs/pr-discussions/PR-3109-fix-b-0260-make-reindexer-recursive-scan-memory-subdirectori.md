@@ -69,6 +69,7 @@ bun tools/memory/validate-memory-parity.ts → 672/672 covered, 0 gaps, 0 missin
 Fixes B-0260 by making the memory reindexer recursive so files in `memory/` subdirectories (e.g., `memory/observed-phenomena/`) are included in `MEMORY.md`. Resolves the final 2 parity gaps (672/672 covered).
 
 **Changes:**
+
 - Replaces non-recursive `collectEntries` with a `collectEntriesRecursive` helper using `readdir({ withFileTypes: true })`, storing `filename` as a path relative to `baseDir`.
 - Adds 2 tests covering recursive discovery and subdir-relative filename.
 - Marks B-0260 closed (backlog row + regenerated `docs/BACKLOG.md`) and updates `MEMORY.md` heap-count footer (1103 → 1130).
@@ -80,18 +81,18 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| tools/memory/reindex-memory-md.ts | Recursive scan + relative-path filename for entries. |
-| tools/memory/reindex-memory-md.test.ts | Adds two tests for recursive subdir scanning. |
-| tools/memory/testdata/subdir/gamma_2026_05_14.md | Test fixture under a subdir. |
-| memory/MEMORY.md | Footer heap-count updated to reflect new total. |
-| docs/backlog/P1/B-0260-...md | Status → closed with closure notes. |
-| docs/BACKLOG.md | Regenerated index entry checkbox for B-0260. |
+| File                                             | Description                                          |
+| ------------------------------------------------ | ---------------------------------------------------- |
+| tools/memory/reindex-memory-md.ts                | Recursive scan + relative-path filename for entries. |
+| tools/memory/reindex-memory-md.test.ts           | Adds two tests for recursive subdir scanning.        |
+| tools/memory/testdata/subdir/gamma_2026_05_14.md | Test fixture under a subdir.                         |
+| memory/MEMORY.md                                 | Footer heap-count updated to reflect new total.      |
+| docs/backlog/P1/B-0260-...md                     | Status → closed with closure notes.                  |
+| docs/BACKLOG.md                                  | Regenerated index entry checkbox for B-0260.         |
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T07:10:13Z)
-
 
 ### 💡 Codex Review
 
@@ -99,17 +100,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `895b51c111`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -125,7 +125,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-14T07:10:14Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Normalize subdirectory paths to POSIX separators**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Normalize subdirectory paths to POSIX separators**
 
 Using `relative(baseDir, itemPath)` stores OS-native separators, so on Windows subdirectory entries become `subdir\file.md`. That breaks the intended parity fix in this commit because `validate-memory-parity.ts` and old index links are slash-based (`/`), so `reindexedSet.has(filename)` will miss these files and report false `gap-no-frontmatter` results; the generated `MEMORY.md` links are also non-portable. Normalize `filename` to POSIX form before storing/rendering to keep behavior consistent across platforms.
 

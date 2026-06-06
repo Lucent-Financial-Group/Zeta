@@ -53,31 +53,31 @@ BP-1 through BP-28 as enumerated in
 
 ### Slice progress
 
-| Rule | Status | Research landing |
-| --- | --- | --- |
-| BP-10 | anchored (slice 1, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md` |
-| BP-11 | anchored (slice 1, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md` |
-| BP-03 | anchored (slice 2, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
-| BP-07 | anchored (slice 2, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
-| BP-16 | anchored (slice 2, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
-| BP-04 | anchored (slice 3, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
-| BP-08 | anchored (slice 3, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
-| BP-09 | anchored (slice 3, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
-| BP-12 | anchored (slice 4, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
-| BP-13 | anchored (slice 4, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
-| BP-14 | anchored (slice 4, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
-| BP-01 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
-| BP-02 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
-| BP-15 | anchored (slice 5, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
-| BP-05 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
-| BP-06 | anchored (slice 6, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` |
-| BP-17 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
-| BP-18 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
-| BP-19 | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
-| BP-20 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
-| BP-21 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
-| BP-22 | anchored (slice 8, 2026-05-10) | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
-| BP-23–BP-28 | anchor-pending | slices 9+ |
+| Rule        | Status                               | Research landing                                                      |
+| ----------- | ------------------------------------ | --------------------------------------------------------------------- |
+| BP-10       | anchored (slice 1, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md`      |
+| BP-11       | anchored (slice 1, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice1-bp10-bp11.md`      |
+| BP-03       | anchored (slice 2, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
+| BP-07       | anchored (slice 2, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
+| BP-16       | anchored (slice 2, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice2-bp03-bp07-bp16.md` |
+| BP-04       | anchored (slice 3, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
+| BP-08       | anchored (slice 3, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
+| BP-09       | anchored (slice 3, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice3-bp04-bp08-bp09.md` |
+| BP-12       | anchored (slice 4, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
+| BP-13       | anchored (slice 4, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
+| BP-14       | anchored (slice 4, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice4-bp12-bp13-bp14.md` |
+| BP-01       | anchored (slice 5, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
+| BP-02       | anchored (slice 5, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
+| BP-15       | anchored (slice 5, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice5-bp01-bp02-bp15.md` |
+| BP-05       | anchored (slice 6, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md`      |
+| BP-06       | anchored (slice 6, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md`      |
+| BP-17       | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
+| BP-18       | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
+| BP-19       | anchor-pending (slice 7 in progress) | `docs/research/bp-nn-rules-external-anchors-slice7-bp17-bp18-bp19.md` |
+| BP-20       | anchored (slice 8, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
+| BP-21       | anchored (slice 8, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
+| BP-22       | anchored (slice 8, 2026-05-10)       | `docs/research/bp-nn-rules-external-anchors-slice8-bp20-bp21-bp22.md` |
+| BP-23–BP-28 | anchor-pending                       | slices 9+                                                             |
 
 **Slice-1 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice1
 **Slice-2 landing:** PR fix/B-0314-bp-nn-anchor-backfill-slice2
@@ -97,7 +97,7 @@ BP-1 through BP-28 as enumerated in
 - Searched: `.claude/rules/`, `docs/research/` for existing BP-NN anchor work.
 - Found: no prior research doc exists for BP-NN anchors. B-0313 (slice 1)
   established the citation format used here (research doc at `docs/research/`
-  + inline citations in source doc).
+  - inline citations in source doc).
 - Memory files read: `feedback_never_idle_speculative_work_over_waiting.md`
   (operational context); B-0060 B-0311 B-0313 backlog rows (parent + sibling
   shape).

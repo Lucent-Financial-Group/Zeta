@@ -84,13 +84,13 @@ Shipped in commit `1121b239` via PR #2391 (2026-05-10).
 
 All acceptance criteria verified:
 
-| # | Criterion | Status |
-|---|-----------|--------|
-| 1 | `ISemiring<'W>` has no `Negate` | ✓ `src/Core/Semiring.fs:14-18` |
-| 2 | `IRing<'W> : ISemiring<'W>` adds `Negate` with axiom doc | ✓ `src/Core/Semiring.fs:20-28` |
-| 3 | `IntegerRing` implements `IRing<int64>` | ✓ `src/Core/Semiring.fs:45-46` |
-| 4 | `IntervalRing` implements `IRing<IntervalWeight>` with point-interval scope note | ✓ `src/Core/Semiring.fs:115-122` |
-| 5 | `TropicalSemiring` implements `ISemiring<TropicalWeight>` only — no `Negate`, no throwing | ✓ `src/Core/NovelMath.fs:66-76` |
-| 6 | Retraction callers constrained to `IRing<'W>` | ✓ `IntegerRing.Instance : IRing<int64>`, `IntervalRing.Instance : IRing<IntervalWeight>` |
-| 7 | All semiring tests pass; `TropicalSemiring` non-`IRing` test present | ✓ 25/25 tests pass |
-| 8 | `dotnet build -c Release` → 0 warnings 0 errors | ✓ confirmed 2026-05-10 |
+| #   | Criterion                                                                                 | Status                                                                                   |
+| --- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1   | `ISemiring<'W>` has no `Negate`                                                           | ✓ `src/Core/Semiring.fs:14-18`                                                           |
+| 2   | `IRing<'W> : ISemiring<'W>` adds `Negate` with axiom doc                                  | ✓ `src/Core/Semiring.fs:20-28`                                                           |
+| 3   | `IntegerRing` implements `IRing<int64>`                                                   | ✓ `src/Core/Semiring.fs:45-46`                                                           |
+| 4   | `IntervalRing` implements `IRing<IntervalWeight>` with point-interval scope note          | ✓ `src/Core/Semiring.fs:115-122`                                                         |
+| 5   | `TropicalSemiring` implements `ISemiring<TropicalWeight>` only — no `Negate`, no throwing | ✓ `src/Core/NovelMath.fs:66-76`                                                          |
+| 6   | Retraction callers constrained to `IRing<'W>`                                             | ✓ `IntegerRing.Instance : IRing<int64>`, `IntervalRing.Instance : IRing<IntervalWeight>` |
+| 7   | All semiring tests pass; `TropicalSemiring` non-`IRing` test present                      | ✓ 25/25 tests pass                                                                       |
+| 8   | `dotnet build -c Release` → 0 warnings 0 errors                                           | ✓ confirmed 2026-05-10                                                                   |

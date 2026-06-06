@@ -109,9 +109,7 @@ describe("type-specific lifecycle rules", () => {
   });
 
   test("Task rules are a (possibly empty) subset of Defect rules", () => {
-    const defectRequirements = new Set(
-      typeSpecificRulesFor(WorkItemType.Defect).map((rule) => rule.requirement),
-    );
+    const defectRequirements = new Set(typeSpecificRulesFor(WorkItemType.Defect).map((rule) => rule.requirement));
     const taskRules = typeSpecificRulesFor(WorkItemType.Task);
     const notSubset = taskRules.filter((rule) => !defectRequirements.has(rule.requirement));
     deepEqual(notSubset, []);

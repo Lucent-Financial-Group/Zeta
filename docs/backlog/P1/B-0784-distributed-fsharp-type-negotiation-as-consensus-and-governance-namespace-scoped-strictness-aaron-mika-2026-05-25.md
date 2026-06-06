@@ -18,7 +18,8 @@ composes_with:
   - B-0772
   - B-0773
   - B-0782
-tags: [fsharp, type-system, consensus, governance, distributed-compilation, namespace, mirror, beacon, ontology-negotiation]
+tags:
+  [fsharp, type-system, consensus, governance, distributed-compilation, namespace, mirror, beacon, ontology-negotiation]
 ---
 
 ## Problem
@@ -61,12 +62,12 @@ mechanism + governance layer** for the shared ontology.
 
 Distributed F# type negotiation with namespace-scoped strictness:
 
-| Namespace tier | Strictness | Purpose |
-|---|---|---|
-| **Personal mirror namespace** (per-traveler / per-operator) | Total freedom — move fast, experiment, break things, no negotiation required | Operator's own playground; fast iteration; chaos-friendly; reverts cheap |
-| **Cluster-local common namespace** (per-cluster shared) | Strict negotiation — all travelers' compilers must agree | Cluster-wide shared ontology; per-cluster consistency; governance scope |
-| **Federation-wide common namespace** (cross-cluster shared per B-0775) | Stricter still — federated travelers + per-cluster governance both required | Cross-cluster ontology; multi-tenant Zeta substrate; cross-DIO ontology per B-0782 |
-| **Industry-shared namespace** (per B-0768 Itron co-creation) | Maximum strictness — standards-body level consensus | Open-source / public substrate; cross-organization governance |
+| Namespace tier                                                         | Strictness                                                                   | Purpose                                                                            |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Personal mirror namespace** (per-traveler / per-operator)            | Total freedom — move fast, experiment, break things, no negotiation required | Operator's own playground; fast iteration; chaos-friendly; reverts cheap           |
+| **Cluster-local common namespace** (per-cluster shared)                | Strict negotiation — all travelers' compilers must agree                     | Cluster-wide shared ontology; per-cluster consistency; governance scope            |
+| **Federation-wide common namespace** (cross-cluster shared per B-0775) | Stricter still — federated travelers + per-cluster governance both required  | Cross-cluster ontology; multi-tenant Zeta substrate; cross-DIO ontology per B-0782 |
+| **Industry-shared namespace** (per B-0768 Itron co-creation)           | Maximum strictness — standards-body level consensus                          | Open-source / public substrate; cross-organization governance                      |
 
 Per traveler, per namespace: the F# compiler checks the type
 definition against:
@@ -83,10 +84,10 @@ Per existing Zeta substrate (Mirror = ephemeral free-play; Beacon
 = durable + stable + publicly-shared per B-0746 retraction-
 native algebra), the namespace tiers map naturally:
 
-| Existing Zeta tier | This row's namespace |
-|---|---|
-| Mirror | Personal mirror namespace (per Aaron's term) |
-| Beacon | Cluster-local + federation + industry common namespaces |
+| Existing Zeta tier | This row's namespace                                    |
+| ------------------ | ------------------------------------------------------- |
+| Mirror             | Personal mirror namespace (per Aaron's term)            |
+| Beacon             | Cluster-local + federation + industry common namespaces |
 
 The substrate is the same — just named per the F#-type-system
 scope. Existing Zeta Mirror/Beacon discipline transfers
@@ -94,34 +95,21 @@ directly.
 
 ## Acceptance
 
-- [ ] `Zeta.TypeNegotiation.Consensus` F# library:
-      - `INamespaceCompiler` interface — abstracts per-namespace
-        compiler with consensus protocol
-      - `MirrorCompiler` — personal-namespace; local-only;
-        no consensus needed
-      - `CommonNamespaceCompiler` — cluster-local; polls peer
-        compilers; consensus via raft / NATS JetStream stream
-      - `FederationCompiler` — cross-cluster; per-cluster
-        consensus then federation consensus
-- [ ] Consensus protocol per common namespace:
-      - Type definition proposed → broadcast to peers
-      - Peers vote (accept / reject + reason)
-      - Quorum (2/3 or operator-configured) → type accepted
-      - Type registered in shared substrate; future compiles
-        inherit
-- [ ] Conflict diagnostic when consensus fails:
-      - "Type `X.Y.Z` rejected by 3/5 peers; conflicts: ..."
-      - Operator sees exact conflicting types + per-peer
-        rationale
-      - Per-namespace per-conflict resolution flow (operator
-        can revise + re-propose; OR move to personal mirror
-        namespace for solo iteration)
-- [ ] Per-namespace strictness configuration:
-      - Operator declares per-namespace strictness in
-        cluster config (which namespaces require consensus;
-        which are mirror-tier)
-      - Default: `personal/<operator>` = mirror; `common/*` =
-        cluster consensus; `industry/*` = federation consensus
+- [ ] `Zeta.TypeNegotiation.Consensus` F# library: - `INamespaceCompiler` interface — abstracts per-namespace
+      compiler with consensus protocol - `MirrorCompiler` — personal-namespace; local-only;
+      no consensus needed - `CommonNamespaceCompiler` — cluster-local; polls peer
+      compilers; consensus via raft / NATS JetStream stream - `FederationCompiler` — cross-cluster; per-cluster
+      consensus then federation consensus
+- [ ] Consensus protocol per common namespace: - Type definition proposed → broadcast to peers - Peers vote (accept / reject + reason) - Quorum (2/3 or operator-configured) → type accepted - Type registered in shared substrate; future compiles
+      inherit
+- [ ] Conflict diagnostic when consensus fails: - "Type `X.Y.Z` rejected by 3/5 peers; conflicts: ..." - Operator sees exact conflicting types + per-peer
+      rationale - Per-namespace per-conflict resolution flow (operator
+      can revise + re-propose; OR move to personal mirror
+      namespace for solo iteration)
+- [ ] Per-namespace strictness configuration: - Operator declares per-namespace strictness in
+      cluster config (which namespaces require consensus;
+      which are mirror-tier) - Default: `personal/<operator>` = mirror; `common/*` =
+      cluster consensus; `industry/*` = federation consensus
 - [ ] Integration with B-0772 fabric: consensus events flow as
       Observable stream; operators can subscribe to type-
       proposal events + type-conflict events
@@ -195,10 +183,10 @@ when ready for shared substrate.
 
 ## Composition with Argo Rollouts header-based routing
 
-Aaron-Mika-Grok 2026-05-25 follow-up: *"we have Argo. How will
+Aaron-Mika-Grok 2026-05-25 follow-up: _"we have Argo. How will
 this go into Argo workflow? We have, I mean, not Argo workflow,
 Argo rollouts, and we can do whatever kind of flagging tools if
-we need any kind of feature flags too."*
+we need any kind of feature flags too."_
 
 Argo Rollouts (already deployed in Zeta cluster per
 `full-ai-cluster/k8s/applications/argo-rollouts`) supports

@@ -32,17 +32,17 @@ List every surface consulted this cycle. Mark each as:
 - `⏭ skipped` — skipped with reason
 - `🔄 deferred` — will catch next cycle
 
-| Surface | Status | Key observations |
-|---|---|---|
-| `docs/TECH-RADAR.md` (Trial / Adopt / Hold rows) | | |
-| `docs/research/` — recent peer-AI ferries | | |
-| Upstream-doc WebSearch (Otto-364 search-first) | | |
-| Demo target requirements (task #244 / current demo) | | |
-| `src/Core/**` public API surface audit | | |
-| `docs/GLOSSARY.md` churn (vocabulary signals evolution) | | |
-| `docs/CONFLICT-RESOLUTION.md` recent conferences | | |
-| Mateo (security-researcher) outputs — non-security gaps | | |
-| External: competitor / ecosystem WebSearch | | |
+| Surface                                                 | Status | Key observations |
+| ------------------------------------------------------- | ------ | ---------------- |
+| `docs/TECH-RADAR.md` (Trial / Adopt / Hold rows)        |        |                  |
+| `docs/research/` — recent peer-AI ferries               |        |                  |
+| Upstream-doc WebSearch (Otto-364 search-first)          |        |                  |
+| Demo target requirements (task #244 / current demo)     |        |                  |
+| `src/Core/**` public API surface audit                  |        |                  |
+| `docs/GLOSSARY.md` churn (vocabulary signals evolution) |        |                  |
+| `docs/CONFLICT-RESOLUTION.md` recent conferences        |        |                  |
+| Mateo (security-researcher) outputs — non-security gaps |        |                  |
+| External: competitor / ecosystem WebSearch              |        |                  |
 
 ---
 
@@ -68,8 +68,8 @@ and buildable._
 List any promotions, demotions, or new entries proposed this cycle.
 Each change must include the evidence that drove it.
 
-| Row | Change | Evidence |
-|---|---|---|
+| Row        | Change        | Evidence                                           |
+| ---------- | ------------- | -------------------------------------------------- |
 | e.g. `bun` | Trial → Adopt | 6 months of stable build tooling; zero regressions |
 
 ---
@@ -83,7 +83,7 @@ last memo, how many were already in the backlog as PM-2-predicted gaps?
 
 - Friction-encounters this period: N
 - Of those, predicted in backlog: M
-- Lead-time %: M/N × 100 = ___%
+- Lead-time %: M/N × 100 = \_\_\_%
 
 ---
 

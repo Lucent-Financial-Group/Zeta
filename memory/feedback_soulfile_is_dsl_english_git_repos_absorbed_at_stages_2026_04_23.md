@@ -100,7 +100,7 @@ git's specific storage format.
 
 ## Candidate stage boundaries (Aaron delegated)
 
-Aaron said *"You can figure out the proper stages"* — my
+Aaron said _"You can figure out the proper stages"_ — my
 first-pass shape:
 
 ### Stage 1 — Compile-time (packing / staging)

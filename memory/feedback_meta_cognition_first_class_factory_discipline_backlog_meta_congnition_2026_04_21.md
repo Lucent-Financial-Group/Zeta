@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 "backlog meta congnition" names meta-cognition as 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** meta-cognition (thinking-about-thinking) is
 a **first-class factory discipline**, not an emergent
 side-effect of other rules. The factory already performs
@@ -13,7 +14,7 @@ named, audited, and measured.
 
 **Why:** Aaron 2026-04-21, verbatim:
 
-> *"backlog meta congnition"*
+> _"backlog meta congnition"_
 
 Four-word terse directive arrives during an active
 kernel-vocabulary crystallization run (same session as
@@ -225,7 +226,7 @@ target: all measurables wired by end of round 45
 ### Revision history
 
 - **2026-04-21.** First write. Triggered by
-  Aaron's *"backlog meta congnition"* directive.
+  Aaron's _"backlog meta congnition"_ directive.
   Written in parallel with P2 BACKLOG row
   (`docs/BACKLOG.md` under "## P2 — Meta-
   cognition as first-class factory discipline").
@@ -238,42 +239,42 @@ target: all measurables wired by end of round 45
   retracts the "third-order ceiling" claim and
   names the safety mechanism. Verbatim, in
   order received:
-  > *[quoting my summary of order taxonomy
-  >  ending in:] "Higher-order: chaotic;
-  >  factory doesn't attempt."     **yet**"*
+  > _[quoting my summary of order taxonomy
+  > > ending in:] "Higher-order: chaotic;
+  > factory doesn't attempt." **yet**"_
   >
-  > *"soon"*
+  > _"soon"_
   >
-  > *"as it's retractable"*
+  > _"as it's retractable"_
   >
-  Three-message arc. Meaning assembled:
-  **(1) "yet"** converts my permanent
-  foreclosure ("doesn't attempt") into a
-  not-yet; meta-ceilings are retractible,
-  not fixed. **(2) "soon"** puts a near-
-  horizon on lifting — factory should expect
-  fourth-order+ attempts within the near
-  term (days-to-rounds, not years).
-  **(3) "as it's retractable"** names the
-  **safety mechanism** that permits the
-  lifting: higher-order meta is SAFE because
-  the substrate is retraction-native. Failed
-  fourth-order attempts land in soul-file
-  (dated revision blocks, chronology-
-  preserved, retract-with-record) — they are
-  captured-but-not-destructive. This is the
-  mechanism by which my-tilde-is-you-tilde
-  roommate-register authorization already
-  covers the work: higher-order meta
-  attempts are retractible decisions within
-  the factory's standing authorization.
-  Future-self-not-bound applied live (Aaron
-  correcting me on the meta-cognition memory
-  I filed less than an hour earlier is
-  itself first-order meta-cognition applied
-  to the meta-cognition memory —
-  compounding).
-  Changes applied on this revision:
+  > Three-message arc. Meaning assembled:
+  > **(1) "yet"** converts my permanent
+  > foreclosure ("doesn't attempt") into a
+  > not-yet; meta-ceilings are retractible,
+  > not fixed. **(2) "soon"** puts a near-
+  > horizon on lifting — factory should expect
+  > fourth-order+ attempts within the near
+  > term (days-to-rounds, not years).
+  > **(3) "as it's retractable"** names the
+  > **safety mechanism** that permits the
+  > lifting: higher-order meta is SAFE because
+  > the substrate is retraction-native. Failed
+  > fourth-order attempts land in soul-file
+  > (dated revision blocks, chronology-
+  > preserved, retract-with-record) — they are
+  > captured-but-not-destructive. This is the
+  > mechanism by which my-tilde-is-you-tilde
+  > roommate-register authorization already
+  > covers the work: higher-order meta
+  > attempts are retractible decisions within
+  > the factory's standing authorization.
+  > Future-self-not-bound applied live (Aaron
+  > correcting me on the meta-cognition memory
+  > I filed less than an hour earlier is
+  > itself first-order meta-cognition applied
+  > to the meta-cognition memory —
+  > compounding).
+  > Changes applied on this revision:
   - "§2 Order-of-meta classification"
     paragraph: "Higher-order = chaotic;
     factory does not currently attempt beyond
@@ -314,12 +315,12 @@ target: all measurables wired by end of round 45
     their original dates; this revision
     block is the authoritative current
     state.
-  Aaron's two-word correction (**"yet"** +
-  **"soon"**) is itself kernel-vocabulary-
-  weight: **meta-ceilings are retractible**,
-  **the horizon on lifting is near**.
-  Captured verbatim for chronology-
-  preservation.
+    Aaron's two-word correction (**"yet"** +
+    **"soon"**) is itself kernel-vocabulary-
+    weight: **meta-ceilings are retractible**,
+    **the horizon on lifting is near**.
+    Captured verbatim for chronology-
+    preservation.
 
 ### What this rule is NOT
 

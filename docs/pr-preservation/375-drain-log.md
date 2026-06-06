@@ -148,7 +148,7 @@ reply (verbatim), resolution commit.
 - Original comment (verbatim):
   > P0: The actionlint install step executes a remote script from
   > raw.githubusercontent.com (`bash <(curl … download-
-  > actionlint.bash)`), which is an unsafe "download & execute"
+actionlint.bash)`), which is an unsafe "download & execute"
   > pattern and defeats the stated "pinned" intent (the script
   > contents can change independently of `ACTIONLINT_VERSION`).
   > Prefer downloading a specific release artifact (binary/tarball)
@@ -166,7 +166,7 @@ reply (verbatim), resolution commit.
   > No runtime network fetch, no execute-what-you-download. The
   > current `lint (actionlint)` job has one `run:` line after
   > toolchain install: `actionlint -color -ignore 'unknown
-  > permission scope "administration"'`. Resolving as
+permission scope "administration"'`. Resolving as
   > superseded-by-landed-work.
 - Resolution commit: 3763d50 (landed before this drain)
 
@@ -197,7 +197,7 @@ reply (verbatim), resolution commit.
 - Original comment (verbatim):
   > P1: Keep existing required check context until settings
   > migrate. This matrix rename drops the `build-and-test
-  > (ubuntu-22.04)` status context immediately, but the repo's
+(ubuntu-22.04)` status context immediately, but the repo's
   > required-check snapshot still lists that exact context under
   > `default_branch_protection.required_status_checks.contexts`
   > (`tools/hygiene/github-settings.expected.json`, line 134). On
@@ -210,7 +210,7 @@ reply (verbatim), resolution commit.
 - Reply (verbatim):
   > Good catch — verified via
   > `gh api repos/Lucent-Financial-Group/Zeta/branches/main/
-  > protection` that live branch protection still requires
+protection` that live branch protection still requires
   > `build-and-test (ubuntu-22.04)`, and
   > `tools/hygiene/github-settings.expected.json:134` also lists
   > it. Chose the atomic-update option in this drain rather than a
@@ -247,7 +247,7 @@ reply (verbatim), resolution commit.
 - Reply (verbatim):
   > Fair concern. Short-term mitigation is already in place: the
   > mise cache step ahead of the install step (`Cache mise
-  > runtimes` keyed on `.mise.toml`) warm-starts the runtime
+runtimes` keyed on `.mise.toml`) warm-starts the runtime
   > downloads after the first green run on main, so the steady-
   > state install-time is dominated by `mise trust` + activation
   > rather than full downloads. The 5-minute budget has been

@@ -34,24 +34,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-22T19:45:00Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `2744652015`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -63,7 +61,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-22T19:45:00Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove family-specific details from opaque-pointer archive**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove family-specific details from opaque-pointer archive**
 
 This archive claims family-member details are abstracted until explicit consent, but this quoted passage still records concrete child-specific data (`"4 year old"`, `"older kids"`) that goes beyond opaque-pointer labels. Because memory files are durable substrate, this creates an irreversible consent-scope leak and makes downstream tooling/reviewers falsely treat the document as policy-compliant when it is not.
 

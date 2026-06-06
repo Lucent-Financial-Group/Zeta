@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2364 |
-| Title | fix(B-0365): use status: closed so generate-index emits [x] |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-09T22:53:11Z |
-| Merged at | 2026-05-09T22:54:43Z |
-| Merge commit SHA | `1cb3cc8bf57984919a0d825355066bd1f6e5bca7` |
-| Branch | `fix/b0365-status-closed-generate-index` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2364 |
-| Changed files | 5 |
-| Additions / deletions | +5 / -5 |
+| Field                 | Value                                                       |
+| --------------------- | ----------------------------------------------------------- |
+| Number                | 2364                                                        |
+| Title                 | fix(B-0365): use status: closed so generate-index emits [x] |
+| Author                | `AceHack` (human)                                           |
+| State                 | MERGED                                                      |
+| Created at            | 2026-05-09T22:53:11Z                                        |
+| Merged at             | 2026-05-09T22:54:43Z                                        |
+| Merge commit SHA      | `1cb3cc8bf57984919a0d825355066bd1f6e5bca7`                  |
+| Branch                | `fix/b0365-status-closed-generate-index`                    |
+| Base branch           | `main`                                                      |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2364    |
+| Changed files         | 5                                                           |
+| Additions / deletions | +5 / -5                                                     |
 
 ## Description
 
@@ -37,6 +37,7 @@
 ## Changes
 
 Five per-row files changed `status: done` → `status: closed`:
+
 - B-0365.1, B-0365.2, B-0365.3, B-0365.4, B-0365.6
 
 ## Build gate
@@ -48,15 +49,15 @@ Five per-row files changed `status: done` → `status: closed`:
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 0 |
-| Unresolved threads | 1 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -72,9 +73,9 @@ Five per-row files changed `status: done` → `status: closed`:
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep B-0365.6 open until its declared dependency lands**
-
+  
   Changing this row to `status: closed` makes tooling treat it as landed, but the same file still declares `depends_on: [B-0365.1, ..., B-0365.5]` while `B-0365.5` is currently `status: open`. Per `tools/backlog/README.md`, `depends_on` is a hard prerequisite (“this row cannot land until each listed row lands”), so this status flip introduces an inconsistent backlog state and can misreport progress in generated index / pickup flows. Either keep `B-0365.6` non-closed until `B-0365.5` lands, or remove/adjust the dependency list.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

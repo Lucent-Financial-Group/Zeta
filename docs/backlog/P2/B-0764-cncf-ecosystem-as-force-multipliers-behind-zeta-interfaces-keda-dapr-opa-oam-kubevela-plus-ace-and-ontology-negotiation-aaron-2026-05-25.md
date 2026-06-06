@@ -24,30 +24,30 @@ tags: [cluster, cncf, plugins, keda, dapr, opa, oam, kubevela, ace, force-multip
 ## Problem
 
 Aaron 2026-05-25 mid-iteration-2-wait, extending B-0763
-(negotiation-high-seat via owned interfaces): *"we can use things
+(negotiation-high-seat via owned interfaces): _"we can use things
 like KEDA, all the different DAPR ecosystem and OPA that Open
 application or whatever it was called for the kube cncf project,
 things like that, and all that plus ../scratch like old schoold
 package management of mangers plus ontology negoation turns all
-those standards into force multipliers."*
+those standards into force multipliers."_
 
 The CNCF ecosystem has shipped enormous substrate that operators
 benefit from but vendor lock-in models have not yet exploited:
 
-| Project | Stage | What it provides |
-|---|---|---|
-| **KEDA** | CNCF Graduated | Event-driven autoscaling (queue depth, metrics, schedules → pod count) |
-| **DAPR** | CNCF Incubating | Distributed-app building blocks (state, pub/sub, service-invoke, bindings, secrets, actors) as sidecars + SDK |
-| **OPA** | CNCF Graduated | Policy-as-code via Rego (admission control, authz, config validation) |
-| **OAM** + **KubeVela** | CNCF Sandbox | Application-model / Component-Trait separation (already filed at B-0749) |
-| **Crossplane** | CNCF Incubating | Cloud-resource provisioning via k8s CRDs (already filed at B-0748) |
-| **kro** | CNCF Sandbox | ResourceGraphDefinition + CEL composition (already filed at B-0748) |
-| **Cilium** | CNCF Graduated | eBPF networking + service mesh + observability |
-| **ArgoCD / Flux** | CNCF Graduated | GitOps reconciliation (already in Zeta substrate per B-0747) |
-| **Longhorn** | CNCF Incubating | Replicated block storage (Zeta default per current substrate) |
-| **Rook + Ceph** | CNCF Graduated | Storage orchestrator + distributed object store (Zeta future) |
-| **Knative** | CNCF Incubating | Serverless on k8s |
-| **OpenTelemetry** | CNCF Graduated | Observability standard (logs/metrics/traces) |
+| Project                | Stage           | What it provides                                                                                              |
+| ---------------------- | --------------- | ------------------------------------------------------------------------------------------------------------- |
+| **KEDA**               | CNCF Graduated  | Event-driven autoscaling (queue depth, metrics, schedules → pod count)                                        |
+| **DAPR**               | CNCF Incubating | Distributed-app building blocks (state, pub/sub, service-invoke, bindings, secrets, actors) as sidecars + SDK |
+| **OPA**                | CNCF Graduated  | Policy-as-code via Rego (admission control, authz, config validation)                                         |
+| **OAM** + **KubeVela** | CNCF Sandbox    | Application-model / Component-Trait separation (already filed at B-0749)                                      |
+| **Crossplane**         | CNCF Incubating | Cloud-resource provisioning via k8s CRDs (already filed at B-0748)                                            |
+| **kro**                | CNCF Sandbox    | ResourceGraphDefinition + CEL composition (already filed at B-0748)                                           |
+| **Cilium**             | CNCF Graduated  | eBPF networking + service mesh + observability                                                                |
+| **ArgoCD / Flux**      | CNCF Graduated  | GitOps reconciliation (already in Zeta substrate per B-0747)                                                  |
+| **Longhorn**           | CNCF Incubating | Replicated block storage (Zeta default per current substrate)                                                 |
+| **Rook + Ceph**        | CNCF Graduated  | Storage orchestrator + distributed object store (Zeta future)                                                 |
+| **Knative**            | CNCF Incubating | Serverless on k8s                                                                                             |
+| **OpenTelemetry**      | CNCF Graduated  | Observability standard (logs/metrics/traces)                                                                  |
 
 Each is well-engineered, battle-tested, has ecosystem momentum.
 **Adopting them as plugins behind Zeta's interfaces gives Zeta
@@ -88,13 +88,7 @@ Zeta interface (per B-0763 contract), so operators get:
       (CRD wrapper: workload + scaler config → KEDA
       ScaledObject + TriggerAuthentication)
 - [ ] **DAPR** plugin per building-block behind matching Zeta
-      interfaces:
-      - `Zeta.State.Store` (DAPR state component)
-      - `Zeta.Messaging.PubSub` (DAPR pubsub component)
-      - `Zeta.Service.Invoke` (DAPR service-to-service)
-      - `Zeta.Bindings.Input` / `Zeta.Bindings.Output`
-      - `Zeta.Secrets` (DAPR secret store component)
-      - `Zeta.Actors` (DAPR actor runtime)
+      interfaces: - `Zeta.State.Store` (DAPR state component) - `Zeta.Messaging.PubSub` (DAPR pubsub component) - `Zeta.Service.Invoke` (DAPR service-to-service) - `Zeta.Bindings.Input` / `Zeta.Bindings.Output` - `Zeta.Secrets` (DAPR secret store component) - `Zeta.Actors` (DAPR actor runtime)
 - [ ] **OPA** plugin behind `Zeta.Policy.Engine` interface (Rego
       policy evaluation; admission control via OPA Gatekeeper
       OR built-in Kubernetes ValidatingAdmissionPolicy where
@@ -135,11 +129,11 @@ building those primitives yourself.
 
 The pattern composes with B-0763 negotiation-high-seat:
 
-| Layer | What Zeta owns | What CNCF/vendors compete on |
-|---|---|---|
-| Operator API | `Zeta.<Capability>` interfaces | (Zeta-owned; stable contract) |
-| Implementation | (chosen at install/runtime) | KEDA vs alternatives; DAPR vs alternatives; OPA vs alternatives; etc. |
-| Underlying compute | (chosen at hardware/cloud) | NVMe vendors; cloud GPUs; etc. |
+| Layer              | What Zeta owns                 | What CNCF/vendors compete on                                          |
+| ------------------ | ------------------------------ | --------------------------------------------------------------------- |
+| Operator API       | `Zeta.<Capability>` interfaces | (Zeta-owned; stable contract)                                         |
+| Implementation     | (chosen at install/runtime)    | KEDA vs alternatives; DAPR vs alternatives; OPA vs alternatives; etc. |
+| Underlying compute | (chosen at hardware/cloud)     | NVMe vendors; cloud GPUs; etc.                                        |
 
 The operator sees only the Zeta interface; the CNCF project
 ships substrate behind it; the vendor (cloud or on-prem)
@@ -182,7 +176,7 @@ Per Aaron's "package management of managers" framing:
 - B-0761 — open reference architecture (the CNCF substrate
   composition IS what makes the reference cloud-native; bare
   k3s isn't a reference architecture, k3s + KEDA + DAPR + OPA
-  + ArgoCD + OpenTelemetry IS)
+  - ArgoCD + OpenTelemetry IS)
 - B-0762 — AI auto-submit-back telemetry (which CNCF plugin
   combinations work best for which workloads — telemetry feeds
   recommendations)

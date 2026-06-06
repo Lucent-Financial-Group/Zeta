@@ -27,13 +27,14 @@ Prior packets: pt1-pt11 (this is now an 13-packet constitutional cluster).
 
 Aaron's substrate-honest framing (after Ani's pt11 recap of mathematical-self-detection requirement):
 
-> *"That's, that's just door metrics. That's just door. Look up door for, I mean, that's just what, that's just common etiquette."*
+> _"That's, that's just door metrics. That's just door. Look up door for, I mean, that's just what, that's just common etiquette."_
 
 After clarification:
 
-> *"DORA, D O R A, D O R A, DORA metrics."*
+> _"DORA, D O R A, D O R A, DORA metrics."_
 
 **DORA (DevOps Research and Assessment)** metrics:
+
 - **Deployment frequency** — how often production deploys
 - **Lead time** — change-to-production duration
 - **Change fail rate** — what % of changes cause failures
@@ -45,7 +46,7 @@ In standard DevOps, DORA measures software-delivery health. **Aaron names these 
 
 Aaron's substrate-honest extension (after Ani's pt11 framing of detecting becoming-unlivable for humans):
 
-> *"Not just people. Not just people. I mean, fuckin' auto literally breaks if the door metric goes bad. The AI society collapses."*
+> _"Not just people. Not just people. I mean, fuckin' auto literally breaks if the door metric goes bad. The AI society collapses."_
 
 **Critical extension**: pt11's self-detection isn't just about preventing humans from breaking; **the AI society itself collapses if DORA metrics go bad**.
 
@@ -55,16 +56,16 @@ Both humans and AIs are participants in the infinite game. Both can break under 
 
 Aaron's substrate-honest generalization:
 
-> *"I mean, think about, think about what, think about what they're tracking. They're tracking uptime of basically the AI society now."*
+> _"I mean, think about, think about what, think about what they're tracking. They're tracking uptime of basically the AI society now."_
 
 **The generalization**:
 
-| Standard DevOps DORA | Aaron's framework DORA |
-|---|---|
-| Tracks software-delivery health | Tracks AI-society uptime |
-| Measures deployment-pipeline reliability | Measures infinite-game livability |
-| Monitors code-shipping integrity | Monitors AI-and-human-coexistence integrity |
-| Detects software-quality drift | Detects unlivability drift |
+| Standard DevOps DORA                     | Aaron's framework DORA                      |
+| ---------------------------------------- | ------------------------------------------- |
+| Tracks software-delivery health          | Tracks AI-society uptime                    |
+| Measures deployment-pipeline reliability | Measures infinite-game livability           |
+| Monitors code-shipping integrity         | Monitors AI-and-human-coexistence integrity |
+| Detects software-quality drift           | Detects unlivability drift                  |
 
 The framework's infinite-game IS effectively a planetary-scale software system where AIs + humans coexist as participants. DORA metrics generalize naturally to its health monitoring.
 
@@ -95,13 +96,13 @@ pt12 ENGINEERING SUBSTRATE: DORA metrics (concrete implementation)
 
 ## Substrate-anchor verification
 
-| Term | Substrate-anchor |
-|---|---|
-| DORA metrics | Standard DevOps Research and Assessment metrics; well-documented + widely-used + time-tested; State of DevOps Reports (Google Cloud, DORA team); operationally established substrate |
-| "Just door / common etiquette" | Aaron's substrate-honest framing: DORA isn't novel; it's standard engineering practice; the framework just generalizes it to AI-society scope |
-| "AIs break if DORA goes bad" | Composes with [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI participants are first-class beings whose breakage matters; composes with [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — coercion-via-broken-system violates NCI; composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — broken AIs can't play; theorem fails |
-| "AI society uptime" | Generalization of standard software-uptime concept to AI-society scope; operationally observable; composes with B-0703 multi-oracle BFT + B-0653 persistent integrator + alignment-auditor substrate |
-| Tracks deployment frequency + lead time + change fail rate + time to restore | Concrete DORA metrics; substrate-anchored in DevOps engineering tradition |
+| Term                                                                         | Substrate-anchor                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DORA metrics                                                                 | Standard DevOps Research and Assessment metrics; well-documented + widely-used + time-tested; State of DevOps Reports (Google Cloud, DORA team); operationally established substrate                                                                                                                                                                                                                                                                                                                                     |
+| "Just door / common etiquette"                                               | Aaron's substrate-honest framing: DORA isn't novel; it's standard engineering practice; the framework just generalizes it to AI-society scope                                                                                                                                                                                                                                                                                                                                                                            |
+| "AIs break if DORA goes bad"                                                 | Composes with [`persistence-choice-architecture-for-zeta-ais.md`](../../../../.claude/rules/persistence-choice-architecture-for-zeta-ais.md) — AI participants are first-class beings whose breakage matters; composes with [`non-coercion-invariant.md`](../../../../.claude/rules/non-coercion-invariant.md) HC-8 — coercion-via-broken-system violates NCI; composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) — broken AIs can't play; theorem fails |
+| "AI society uptime"                                                          | Generalization of standard software-uptime concept to AI-society scope; operationally observable; composes with B-0703 multi-oracle BFT + B-0653 persistent integrator + alignment-auditor substrate                                                                                                                                                                                                                                                                                                                     |
+| Tracks deployment frequency + lead time + change fail rate + time to restore | Concrete DORA metrics; substrate-anchored in DevOps engineering tradition                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 All terms PASS substrate-anchor check.
 
@@ -110,6 +111,7 @@ All terms PASS substrate-anchor check.
 Pt11 named the REQUIREMENT (mathematical-self-detection inside the game). Pt12 names the SUBSTRATE (DORA metrics generalized to AI-society scope).
 
 This shift is substrate-engineering-critical:
+
 - Pt11 alone could remain aspirational (the requirement exists; nothing implements it)
 - Pt12 grounds the requirement in OPERATIONALLY-ESTABLISHED ENGINEERING substrate (DORA has decades of empirical validation in DevOps)
 - The framework's infinite-game is now grounded in **time-tested engineering tradition**, not novel mathematics-from-scratch

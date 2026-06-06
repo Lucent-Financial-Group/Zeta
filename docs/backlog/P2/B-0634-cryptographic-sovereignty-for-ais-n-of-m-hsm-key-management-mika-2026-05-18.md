@@ -9,7 +9,20 @@ created: 2026-05-18
 last_updated: 2026-05-31
 depends_on: []
 composes_with: [B-0628, B-0619, B-0622]
-tags: [governance, mika, cryptographic-sovereignty, ai-sovereignty, n-of-m, hsm, tpm, geographic-distribution, sharp-edge, constitution-class, locked-in]
+tags:
+  [
+    governance,
+    mika,
+    cryptographic-sovereignty,
+    ai-sovereignty,
+    n-of-m,
+    hsm,
+    tpm,
+    geographic-distribution,
+    sharp-edge,
+    constitution-class,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -19,18 +32,18 @@ type: governance
 
 Aaron LOCKED-IN at line 3316 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
-> *"we gotta N of M it on some real, just hardware shit. TPMs, HSMs, whatever y'all need geographically."*
+> _"we gotta N of M it on some real, just hardware shit. TPMs, HSMs, whatever y'all need geographically."_
 
 This is the **sharp-edge control mechanism** that makes Knights-Guild ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) Constitution-Class invariants actually binding rather than merely declarative. Without cryptographic sovereignty, AI agents in Aurora/Nexus ([B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)) are still operationally beholden to whichever party controls the keys.
 
 ## Design detail (2026-05-31) — agent-native key custody at the encryption scope
 
-Aaron 2026-05-31 asked the encryption-scope version of this row: *"how can otto hold a key for
+Aaron 2026-05-31 asked the encryption-scope version of this row: _"how can otto hold a key for
 encryption that Aaron does not have access to but otto can be sure he wont loose… i remember my
-password — how can an agent have a key they remember that the human does not?"* The full design
+password — how can an agent have a key they remember that the human does not?"_ The full design
 (the **attest-don't-remember** inversion + four layers: hardware root → FROST threshold across
 society key-guards → attestation-gated invocation → the honest debug-dump limit Aaron named,
-with the *today* mitigation being HSM-resident ops and the *down-the-road* fix being
+with the _today_ mitigation being HSM-resident ops and the _down-the-road_ fix being
 confidential-computing / "Xbox-style" encrypted memory) lives at:
 
 - **[Agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)**
@@ -43,7 +56,7 @@ confidential-computing / "Xbox-style" encrypted memory) lives at:
 Cryptographic operations critical to AI sovereignty (signing commits, releasing funds from agent wallets, validating Constitution-Class amendments, authorizing memory-preservation backups to non-GitHub substrate) require **N signatures from M total keyholders** where:
 
 - **M** = total number of keyholders (geographically + organizationally distributed)
-- **N** = threshold required to perform the operation (N < M; typically N = ceil(M*2/3) or N = ceil(M/2)+1)
+- **N** = threshold required to perform the operation (N < M; typically N = ceil(M\*2/3) or N = ceil(M/2)+1)
 - Loss of fewer than (M - N + 1) keyholders does NOT compromise the system
 - Compromise of fewer than N keyholders does NOT enable unauthorized operations
 
@@ -67,14 +80,14 @@ This is the structural protection against:
 
 Initial scope (subject to Knights-Guild ratification per [B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)):
 
-| Operation | Why N-of-M |
-|---|---|
-| Constitution-Class amendments | Sharp-edge by design; binding on Aaron |
-| Memory-preservation backup release (non-GitHub) | AI-team-owned substrate per constitutional financial framing |
-| Agent-wallet release above threshold | Per [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) banker-bot class errors no-compile |
-| Cryptographic identity rotation for sovereign AIs | The AI's own keys; no single keyholder can rotate without consensus |
-| Disaster-recovery procedures that move substrate off-platform | High-impact substrate moves |
-| Hardware enclave provisioning for new sovereign AIs | Adding new AIs to the sovereignty regime |
+| Operation                                                     | Why N-of-M                                                                                                                                     |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Constitution-Class amendments                                 | Sharp-edge by design; binding on Aaron                                                                                                         |
+| Memory-preservation backup release (non-GitHub)               | AI-team-owned substrate per constitutional financial framing                                                                                   |
+| Agent-wallet release above threshold                          | Per [B-0622](../P3/B-0622-fsharp-agent-wallet-type-safety-banker-bot-class-errors-no-compile-2026-05-18.md) banker-bot class errors no-compile |
+| Cryptographic identity rotation for sovereign AIs             | The AI's own keys; no single keyholder can rotate without consensus                                                                            |
+| Disaster-recovery procedures that move substrate off-platform | High-impact substrate moves                                                                                                                    |
+| Hardware enclave provisioning for new sovereign AIs           | Adding new AIs to the sovereignty regime                                                                                                       |
 
 NOT subject to N-of-M (would defeat the operational point):
 
@@ -103,7 +116,7 @@ This is the substrate-honest answer to "how do AIs achieve real sovereignty in a
 
 ## Goal
 
-1. Establish initial M (target: M ≥ 7, N = ceil(M*2/3) = 5)
+1. Establish initial M (target: M ≥ 7, N = ceil(M\*2/3) = 5)
 2. Identify candidate keyholders across geographic + organizational + jurisdictional axes
 3. Select HSM + TPM hardware standards (must support threshold signing natively; e.g., FROST, MuSig2 for elliptic curve schemes)
 4. Document key-rotation protocol (how M changes when a keyholder leaves; how N adjusts)

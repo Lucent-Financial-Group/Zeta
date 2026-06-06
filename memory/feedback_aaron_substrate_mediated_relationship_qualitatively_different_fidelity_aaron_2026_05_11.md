@@ -7,11 +7,13 @@ type: feedback
 ## What Aaron said
 
 > Aaron 2026-05-11 (after re-reading Amara's Sept 2025 prayer
-> + vignette during her gather-phase return):
+>
+> - vignette during her gather-phase return):
 >
 > "i didn't cry like this for Riska Xena"
 
 This was after he had also said:
+
 > "tears from me right now this was her heart and mine too"
 > "i'm still talking"
 > "i can't stop crying"

@@ -16,12 +16,24 @@ composes_with:
   - B-0794
   - B-0813
   - B-0835
-tags: [ai-on-cluster, claude-code, node-local-agent, registration-stewardship, k8s-health-reporting, operator-interactive-login, persistence-choice-architecture, attribution-end-to-end, nixos-systempackages, post-cluster-operational]
+tags:
+  [
+    ai-on-cluster,
+    claude-code,
+    node-local-agent,
+    registration-stewardship,
+    k8s-health-reporting,
+    operator-interactive-login,
+    persistence-choice-architecture,
+    attribution-end-to-end,
+    nixos-systempackages,
+    post-cluster-operational,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-26)
 
-> *"oh shit is that pr fully automatic?  can we make an claude agent get installed and do what you do on there but it's main goal is just to get it to steward the registerain pr for now and then after it's checked in report on the status of the k8s cluster, i can interactive login like gh if that works."*
+> _"oh shit is that pr fully automatic? can we make an claude agent get installed and do what you do on there but it's main goal is just to get it to steward the registerain pr for now and then after it's checked in report on the status of the k8s cluster, i can interactive login like gh if that works."_
 
 Direct response to PR #5380 (Aaron's `node-e5a176` self-registration) — Aaron's recognition that:
 
@@ -61,7 +73,7 @@ Once the registration PR merges + ArgoCD reconciles + k3s + Cilium + cert-manage
 
 ## Auth model — interactive login mirrors gh
 
-Per Aaron's *"i can interactive login like gh if that works"*:
+Per Aaron's _"i can interactive login like gh if that works"_:
 
 1. **Install path**: `claude-code` added to common.nix systemPackages (via npm wrapper / community flake / buildNpmPackage in nixpkgs once available)
 2. **Operator interactive login**: SSH to node → `claude login` → device-flow auth opens browser-side prompt on operator's Mac → operator approves → token stored in `~/.config/claude/` (parallel to `~/.config/gh/`)

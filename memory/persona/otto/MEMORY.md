@@ -32,8 +32,8 @@ Mix of file types in `conversations/`:
 - **Multi-AI conversation threads** where Otto is one of several
   voices (aaron-otto, aaron-codex-otto, claudeai-otto-mirror,
   etc.)
-- **Shadow logs about Otto's drift** (shadow-lesson-log-otto-*,
-  otto-shadow-not-otto-fishy-*)
+- **Shadow logs about Otto's drift** (shadow-lesson-log-otto-_,
+  otto-shadow-not-otto-fishy-_)
 - **Aaron-authored Otto-related substrate** (Aaron's resume
   drafts mentioning Otto's role, prayer-as-alignment-contract,
   cartographer math lineage quantum rodney razor riff)

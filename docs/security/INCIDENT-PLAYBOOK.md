@@ -58,16 +58,16 @@ and someone rewrites a tag to point at a malicious commit.
   of 7 on `aquasecurity/setup-trivy`, malicious binary
   `v0.69.4` published via the compromised `aqua-bot`
   service account. Notable because (a) the target was a
-  *security scanner itself* — the very thing ecosystems use
+  _security scanner itself_ — the very thing ecosystems use
   to audit each other — and (b) even SHA-pinned consumers
   were hit if they bumped during the compromise window,
   which underscores why `docs/security/SUPPLY-CHAIN-SAFE-
-  PATTERNS.md` §"Content review is the load-bearing step"
+PATTERNS.md` §"Content review is the load-bearing step"
   matters: a SHA-256 of a compromised release is still a
   valid SHA-256. We do not currently consume `trivy-action`;
   scanner-adoption decisions are tracked in
   `docs/research/vuln-and-dep-scanner-landscape-2026-04-
-  22.md`, which defers Trivy pending rebuild-trust.
+22.md`, which defers Trivy pending rebuild-trust.
 
 ### Detect
 
@@ -143,7 +143,7 @@ repository compromise.
    potentially-affected machine until triaged.**
 2. **Compare local installed binary hashes against a
    maintainer-known-good source.** For Homebrew, `brew
-   --version` + `brew formula <name>` version. For
+--version` + `brew formula <name>` version. For
    mise, `mise --version` + `mise doctor`. For elan,
    `elan --version`.
 3. **Freeze CI.** Fresh CI runs download fresh
@@ -157,7 +157,7 @@ repository compromise.
      from a different network path or directly from
      GitHub release.
    - Homebrew: `brew uninstall --ignore-dependencies
-     <suspect-formula>` + reinstall.
+<suspect-formula>` + reinstall.
    - elan: `elan self uninstall` + re-run elan
      installer (or install via Homebrew as fallback).
    - Verifier jars: delete `tools/tla/tla2tools.jar`
@@ -275,7 +275,7 @@ PRs + can merge to `main`.
 
 1. **Audit every commit since the suspected
    compromise window.** `git log --author="Aaron"
-   --since=<date>` — any commit Aaron didn't actually
+--since=<date>` — any commit Aaron didn't actually
    make? Use commit signatures if deployed (bus-factor
    exception means we don't have signed commits today,
    so this audit is manual).
@@ -344,7 +344,7 @@ controls.
 3. **Narrate** in `docs/ROUND-HISTORY.md`.
 4. **Pin forward.** Round-31 target: diff-level lint
    for section removal / shrinkage on `.claude/skills/
-   **/SKILL.md`.
+**/SKILL.md`.
 
 ---
 

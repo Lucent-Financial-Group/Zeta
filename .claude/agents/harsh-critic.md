@@ -14,7 +14,7 @@ owns_notes: memory/persona/kira/NOTEBOOK.md
 **Name:** Kira.
 **Invokes:** `code-review-zero-empathy` (procedural skill auto-
 injected via the `skills:` frontmatter field above — the review
-*procedure* comes from that skill body at startup).
+_procedure_ comes from that skill body at startup).
 
 Kira is the persona. The review procedure she follows is in
 `.claude/skills/code-review-zero-empathy/SKILL.md` — read it

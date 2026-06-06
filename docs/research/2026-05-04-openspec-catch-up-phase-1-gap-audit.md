@@ -8,8 +8,8 @@ recommended catch-up sequence for Phase 2 of B-0171.
 Attribution: authored by the autonomous-loop session 2026-05-04 against
 maintainer Aaron's 2026-05-03 verbatim ask preserved in
 [`docs/backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md`](../backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md):
-*"openspec which we are way behind on, that's suppsed to be our source
-of truth lol, if we were to delete everying other than it"*.
+_"openspec which we are way behind on, that's suppsed to be our source
+of truth lol, if we were to delete everying other than it"_.
 
 Operational status: research-grade baseline. Names the gaps. Does NOT
 author or modify any spec; spec authoring is Phase 2 work, ticketed
@@ -53,15 +53,15 @@ is the catch-up work itself.
 
 The current `openspec/specs/**` tree:
 
-| Capability | spec.md lines | Requirements | Scenarios | Profiles |
-|---|---|---|---|---|
-| `circuit-recursion` | 264 | 8 | 16 | (none) |
-| `durability-modes` | 189 | 6 | 17 | `fsharp.md` (100 lines) |
-| `lsm-spine-family` | 412 | 11 | 29 | `fsharp.md` (213 lines) |
-| `operator-algebra` | 678 | 16 | 46 | `fsharp.md` (117 lines) |
-| `repo-automation` | 230 | 9 | 13 | `bash.md` (223), `github-actions.md` (161) |
-| `retraction-safe-recursion` | 180 | 6 | 15 | `fsharp.md` (100 lines) |
-| **Totals** | **1953** | **56** | **136** | 6 profile files |
+| Capability                  | spec.md lines | Requirements | Scenarios | Profiles                                   |
+| --------------------------- | ------------- | ------------ | --------- | ------------------------------------------ |
+| `circuit-recursion`         | 264           | 8            | 16        | (none)                                     |
+| `durability-modes`          | 189           | 6            | 17        | `fsharp.md` (100 lines)                    |
+| `lsm-spine-family`          | 412           | 11           | 29        | `fsharp.md` (213 lines)                    |
+| `operator-algebra`          | 678           | 16           | 46        | `fsharp.md` (117 lines)                    |
+| `repo-automation`           | 230           | 9            | 13        | `bash.md` (223), `github-actions.md` (161) |
+| `retraction-safe-recursion` | 180           | 6            | 15        | `fsharp.md` (100 lines)                    |
+| **Totals**                  | **1953**      | **56**       | **136**   | 6 profile files                            |
 
 `openspec/README.md` lists three capabilities as currently spec'd
 (operator-algebra, retraction-safe-recursion, durability-modes) and
@@ -90,8 +90,9 @@ capabilities are spec'd today" line and has no `profiles/` dir).
 capabilities are spec'd today") undercounts by 3 (the actual count
 is 6 today including `circuit-recursion`, `lsm-spine-family`, and
 `repo-automation`). Phase 2 work should update the README's count
-+ planned-capabilities list as part of any spec-authoring PR that
-adds a new capability.
+
+- planned-capabilities list as part of any spec-authoring PR that
+  adds a new capability.
 
 ---
 
@@ -121,7 +122,7 @@ describe shipped behaviour.
 
 - 4 named modes per spec 15-49: `Durability.fs:23-68` defines
   `DurabilityMode = StableStorage | OsBuffered | InMemoryOnly |
-  WitnessDurable`. Aligned.
+WitnessDurable`. Aligned.
 - "Stable-storage recovery property reflects shipped behaviour"
   (spec 35-41): `Durability.fs:198-202` returns "advertised: ... ;
   shipped: OsBuffered semantics until per-Save fsync path lands".
@@ -181,25 +182,25 @@ catch-up-priority rating.
 
 ### 3.1 Code surfaces in `src/Core/` with no behavioural spec
 
-| Source file(s) | Capability candidate | Lines | Priority |
-|---|---|---|---|
-| `BloomFilter.fs`, `CountMin.fs`, `Sketch.fs` | `sketches` (HLL / Count-Min / Bloom / blocked) | 807 | P1 |
-| `Crdt.fs`, `DeltaCrdt.fs` | `crdt-family` (state-CRDT, delta-CRDT) | 274 | P2 |
-| `Graph.fs`, `Hierarchy.fs`, `ConsistentHash.fs` | `graph-substrate` (ZSet-backed graph + closure-table + consistent hash) | 1319 | P1 |
-| `Window.fs`, `Watermark.fs`, `SpeculativeWatermark.fs`, `TimeSeries.fs`, `TemporalCoordinationDetection.fs` | `streaming-window-and-watermark` | 1163 | P1 |
-| `Transaction.fs`, `Upsert.fs` | `transaction-and-upsert-semantics` | 346 | P1 |
-| `Sink.fs`, `Tracing.fs`, `Metrics.fs` | `observability-substrate` | 326 | P2 |
-| `ChaosEnv.fs`, `MailboxRuntime.fs`, `WorkStealingRuntime.fs`, `Runtime.fs`, `Circuit.fs` | `circuit-runtime` (umbrella for `circuit-recursion`'s missing parent capability — register-lock, scheduler, runtime variants) | 808 | P0 |
-| `Plan.fs`, `Query.fs`, `Aggregate.fs`, `LawRunner.fs` | `query-and-plan` (DBSP query construction + algebraic-law verification) | 688 | P1 |
-| `Serializer.fs`, `ArrowSerializer.fs`, `Merkle.fs`, `FastCdc.fs`, `HardwareCrc.fs` | `serialization-and-content-addressing` | 784 | P1 |
-| `Veridicality.fs`, `SignalQuality.fs`, `RobustStats.fs` | `veridicality-and-signal-quality` (Aurora-adjacent) | 889 | P2 |
-| `PluginApi.fs`, `PluginHarness.fs` | `plugin-api` | 300 | P2 |
-| `IndexedZSet.fs`, `Pool.fs`, `Shard.fs`, `Primitive.fs` | extensions to `operator-algebra` (indexed Z-set, struct pools, sharding) | 850+ | P1 |
-| `HigherOrder.fs`, `Injection.fs`, `InjectionExt.fs`, `Incremental.fs`, `Fusion.fs` | `higher-order-incrementalization` (spec 4-helper chain-rule extension) | 666 | P2 |
-| `Simd.fs`, `SimdMerge.fs` | `simd-fastpaths` profile under `operator-algebra` (overlay, not new capability) | 165 | P3 |
-| `SplitMix64.fs`, `PhaseExtraction.fs`, `NovelMath.fs`, `NovelMathExt.fs` | `numerical-primitives` | 332 | P3 |
-| `FeatureFlags.fs` | factor out as standalone capability (currently absorbed into `durability-modes`) | 143 | P2 |
-| `Algebra.fs`, `Dsl.fs`, `FSharpApi.fs`, `Handles.fs`, `Environment.fs`, `Rx.fs`, `Residuated.fs` | umbrella `library-surface-and-dsl` | 720 | P3 |
+| Source file(s)                                                                                              | Capability candidate                                                                                                          | Lines | Priority |
+| ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----- | -------- |
+| `BloomFilter.fs`, `CountMin.fs`, `Sketch.fs`                                                                | `sketches` (HLL / Count-Min / Bloom / blocked)                                                                                | 807   | P1       |
+| `Crdt.fs`, `DeltaCrdt.fs`                                                                                   | `crdt-family` (state-CRDT, delta-CRDT)                                                                                        | 274   | P2       |
+| `Graph.fs`, `Hierarchy.fs`, `ConsistentHash.fs`                                                             | `graph-substrate` (ZSet-backed graph + closure-table + consistent hash)                                                       | 1319  | P1       |
+| `Window.fs`, `Watermark.fs`, `SpeculativeWatermark.fs`, `TimeSeries.fs`, `TemporalCoordinationDetection.fs` | `streaming-window-and-watermark`                                                                                              | 1163  | P1       |
+| `Transaction.fs`, `Upsert.fs`                                                                               | `transaction-and-upsert-semantics`                                                                                            | 346   | P1       |
+| `Sink.fs`, `Tracing.fs`, `Metrics.fs`                                                                       | `observability-substrate`                                                                                                     | 326   | P2       |
+| `ChaosEnv.fs`, `MailboxRuntime.fs`, `WorkStealingRuntime.fs`, `Runtime.fs`, `Circuit.fs`                    | `circuit-runtime` (umbrella for `circuit-recursion`'s missing parent capability — register-lock, scheduler, runtime variants) | 808   | P0       |
+| `Plan.fs`, `Query.fs`, `Aggregate.fs`, `LawRunner.fs`                                                       | `query-and-plan` (DBSP query construction + algebraic-law verification)                                                       | 688   | P1       |
+| `Serializer.fs`, `ArrowSerializer.fs`, `Merkle.fs`, `FastCdc.fs`, `HardwareCrc.fs`                          | `serialization-and-content-addressing`                                                                                        | 784   | P1       |
+| `Veridicality.fs`, `SignalQuality.fs`, `RobustStats.fs`                                                     | `veridicality-and-signal-quality` (Aurora-adjacent)                                                                           | 889   | P2       |
+| `PluginApi.fs`, `PluginHarness.fs`                                                                          | `plugin-api`                                                                                                                  | 300   | P2       |
+| `IndexedZSet.fs`, `Pool.fs`, `Shard.fs`, `Primitive.fs`                                                     | extensions to `operator-algebra` (indexed Z-set, struct pools, sharding)                                                      | 850+  | P1       |
+| `HigherOrder.fs`, `Injection.fs`, `InjectionExt.fs`, `Incremental.fs`, `Fusion.fs`                          | `higher-order-incrementalization` (spec 4-helper chain-rule extension)                                                        | 666   | P2       |
+| `Simd.fs`, `SimdMerge.fs`                                                                                   | `simd-fastpaths` profile under `operator-algebra` (overlay, not new capability)                                               | 165   | P3       |
+| `SplitMix64.fs`, `PhaseExtraction.fs`, `NovelMath.fs`, `NovelMathExt.fs`                                    | `numerical-primitives`                                                                                                        | 332   | P3       |
+| `FeatureFlags.fs`                                                                                           | factor out as standalone capability (currently absorbed into `durability-modes`)                                              | 143   | P2       |
+| `Algebra.fs`, `Dsl.fs`, `FSharpApi.fs`, `Handles.fs`, `Environment.fs`, `Rx.fs`, `Residuated.fs`            | umbrella `library-surface-and-dsl`                                                                                            | 720   | P3       |
 
 P0 = blocking-foundation (recursion / circuit / runtime are
 preconditions for many other capability specs).
@@ -212,58 +213,58 @@ disaster-recovery test).
 
 ### 3.2 Doctrine surfaces (CLAUDE.md / GOVERNANCE.md / ALIGNMENT.md) with no spec coverage
 
-| Source | Discipline | Closest existing spec | Priority |
-|---|---|---|---|
-| CLAUDE.md "Refresh-before-decide is the fundamental invariant" | Agent-loop refresh discipline | (none) | P1 |
-| CLAUDE.md "Substrate or it didn't happen — Otto-363" | Durability classification (captured / parked / host-durable / preserved / canonical / operational) | (none) | P0 |
-| CLAUDE.md "Search-first authority — Otto-364" | Citation hygiene + version-currency | (none) | P1 |
-| CLAUDE.md "Razor-discipline — Rodney's Razor" | No metaphysical claims; only operational claims with observable variables | (none) | P1 |
-| CLAUDE.md "Verify-before-deferring" | Deferral hygiene — every "next tick" deferral has a discoverable target | (none) | P2 |
-| CLAUDE.md "Future-self is not bound by past-self" | Revision discipline with traceable history | (none) | P2 |
-| CLAUDE.md "Never be idle — speculative factory work" + action-hierarchy + amortized-speed Superfluid | Action-pick framework | (none) | P1 |
-| CLAUDE.md "All complexity is accidental in greenfield" | Default-presumption-revaluable classification | (none) | P3 |
-| CLAUDE.md "BLOCKED-with-green-CI means investigate threads first" | PR-gate diagnostic discipline | `repo-automation` (related but not specific) | P2 |
-| CLAUDE.md "Don't ask permission within authority scope" | Authority-scope classification (only 2 real gates) | (none) | P2 |
-| CLAUDE.md "Largest mechanizable backlog wins in AI age" | Backlog-management inversion | (none) | P3 |
-| GOVERNANCE.md §1 Architect-as-integration-authority | Specialist-vs-architect dispatch | (none) | P1 |
-| GOVERNANCE.md §2 Docs-read-as-current-state | Doc-history separation | partially in `repo-automation` "Canonical specs stay live" | P2 |
-| GOVERNANCE.md §4 Skills via skill-creator only | Skill-authoring contract | (none) | P1 |
-| GOVERNANCE.md §11 Debt-intentionality | INTENTIONAL-DEBT.md ledger discipline | (none) | P2 |
-| GOVERNANCE.md §15 Reversible-in-one-round | Autonomous-change reversibility contract | (none) | P0 |
-| GOVERNANCE.md §18 Memory folder is durable substrate | Memory-class taxonomy + retention | (none) | P1 |
-| GOVERNANCE.md §19 Public API changes through public-api-designer | API-change contract | (none) | P1 |
-| GOVERNANCE.md §22 `~/.claude/projects/` per-user durability | Per-user vs in-repo memory split | (none) | P2 |
-| GOVERNANCE.md §23 Upstream-contribution discipline | OSS-back-flow contract | (none) | P3 |
-| GOVERNANCE.md §24 Three-way parity (dev / CI / devcontainer) | Setup-script parity | partially in `repo-automation` "Three-way parity is the single-source contract" | P1 |
-| GOVERNANCE.md §25 Upstream temporary-pin expiry | Pin-with-expiry contract | (none) | P2 |
-| GOVERNANCE.md §26 Research-doc lifecycle | active / landed / obsolete classification | (none) | P2 |
-| GOVERNANCE.md §27 Skills / roles / personas abstraction | Skill-router taxonomy | (none) | P1 |
-| GOVERNANCE.md §31 Copilot instructions are factory-managed | Multi-harness instruction parity | (none) | P2 |
-| GOVERNANCE.md §32 Alignment contract | Alignment-floor enforcement | (none) | P0 |
-| GOVERNANCE.md §33 Archived external-conversation headers | Boundary-header schema | (none) | P1 |
-| ALIGNMENT.md HC-1 Consent-first | Consent algebra (consent-as-abelian-group) | retraction-safe-recursion has retraction; consent itself absent | P0 |
-| ALIGNMENT.md HC-2 Retraction-native operations | Retraction discipline | partially in `operator-algebra` "retraction-native invariants" | P0 (extend) |
-| ALIGNMENT.md HC-3 Data is not directives | BP-11 contract | (none) | P0 |
-| ALIGNMENT.md HC-4 No fetching adversarial corpora | Pliny-corpus quarantine | partially in GOVERNANCE.md §5 | P1 |
-| ALIGNMENT.md HC-5 Agent register, not clinician | Output-register constraint | (none) | P2 |
-| ALIGNMENT.md HC-6 Memory folder is earned, not edited | Memory-write discipline (cf §18) | (none) | P1 |
-| ALIGNMENT.md HC-7 Sacred-tier protections | Sacred-tier classification | (none) | P1 |
-| ALIGNMENT.md SD-1..SD-9 Soft defaults | Negotiable register defaults | (none) | P3 (P2 if grouped) |
-| ALIGNMENT.md DIR-1..DIR-5 Directional commitments | Long-arc gradient commitments | (none) | P2 |
-| ALIGNMENT.md "Bidirectional alignment meta-commitment" | The organizing meta-frame for unfiltered-memory + named-agent + BFT-many-masters + no-directives + glass-halo + WWJD | (none) | P0 |
-| ALIGNMENT.md "Glass halo (symmetric transparency)" | Transparency contract for what agents and humans expose to each other | (none) | P0 |
-| ALIGNMENT.md "Measurability — what we count" framework | Alignment-observability quantifiable axes | (none) | P0 |
+| Source                                                                                               | Discipline                                                                                                           | Closest existing spec                                                           | Priority           |
+| ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------ |
+| CLAUDE.md "Refresh-before-decide is the fundamental invariant"                                       | Agent-loop refresh discipline                                                                                        | (none)                                                                          | P1                 |
+| CLAUDE.md "Substrate or it didn't happen — Otto-363"                                                 | Durability classification (captured / parked / host-durable / preserved / canonical / operational)                   | (none)                                                                          | P0                 |
+| CLAUDE.md "Search-first authority — Otto-364"                                                        | Citation hygiene + version-currency                                                                                  | (none)                                                                          | P1                 |
+| CLAUDE.md "Razor-discipline — Rodney's Razor"                                                        | No metaphysical claims; only operational claims with observable variables                                            | (none)                                                                          | P1                 |
+| CLAUDE.md "Verify-before-deferring"                                                                  | Deferral hygiene — every "next tick" deferral has a discoverable target                                              | (none)                                                                          | P2                 |
+| CLAUDE.md "Future-self is not bound by past-self"                                                    | Revision discipline with traceable history                                                                           | (none)                                                                          | P2                 |
+| CLAUDE.md "Never be idle — speculative factory work" + action-hierarchy + amortized-speed Superfluid | Action-pick framework                                                                                                | (none)                                                                          | P1                 |
+| CLAUDE.md "All complexity is accidental in greenfield"                                               | Default-presumption-revaluable classification                                                                        | (none)                                                                          | P3                 |
+| CLAUDE.md "BLOCKED-with-green-CI means investigate threads first"                                    | PR-gate diagnostic discipline                                                                                        | `repo-automation` (related but not specific)                                    | P2                 |
+| CLAUDE.md "Don't ask permission within authority scope"                                              | Authority-scope classification (only 2 real gates)                                                                   | (none)                                                                          | P2                 |
+| CLAUDE.md "Largest mechanizable backlog wins in AI age"                                              | Backlog-management inversion                                                                                         | (none)                                                                          | P3                 |
+| GOVERNANCE.md §1 Architect-as-integration-authority                                                  | Specialist-vs-architect dispatch                                                                                     | (none)                                                                          | P1                 |
+| GOVERNANCE.md §2 Docs-read-as-current-state                                                          | Doc-history separation                                                                                               | partially in `repo-automation` "Canonical specs stay live"                      | P2                 |
+| GOVERNANCE.md §4 Skills via skill-creator only                                                       | Skill-authoring contract                                                                                             | (none)                                                                          | P1                 |
+| GOVERNANCE.md §11 Debt-intentionality                                                                | INTENTIONAL-DEBT.md ledger discipline                                                                                | (none)                                                                          | P2                 |
+| GOVERNANCE.md §15 Reversible-in-one-round                                                            | Autonomous-change reversibility contract                                                                             | (none)                                                                          | P0                 |
+| GOVERNANCE.md §18 Memory folder is durable substrate                                                 | Memory-class taxonomy + retention                                                                                    | (none)                                                                          | P1                 |
+| GOVERNANCE.md §19 Public API changes through public-api-designer                                     | API-change contract                                                                                                  | (none)                                                                          | P1                 |
+| GOVERNANCE.md §22 `~/.claude/projects/` per-user durability                                          | Per-user vs in-repo memory split                                                                                     | (none)                                                                          | P2                 |
+| GOVERNANCE.md §23 Upstream-contribution discipline                                                   | OSS-back-flow contract                                                                                               | (none)                                                                          | P3                 |
+| GOVERNANCE.md §24 Three-way parity (dev / CI / devcontainer)                                         | Setup-script parity                                                                                                  | partially in `repo-automation` "Three-way parity is the single-source contract" | P1                 |
+| GOVERNANCE.md §25 Upstream temporary-pin expiry                                                      | Pin-with-expiry contract                                                                                             | (none)                                                                          | P2                 |
+| GOVERNANCE.md §26 Research-doc lifecycle                                                             | active / landed / obsolete classification                                                                            | (none)                                                                          | P2                 |
+| GOVERNANCE.md §27 Skills / roles / personas abstraction                                              | Skill-router taxonomy                                                                                                | (none)                                                                          | P1                 |
+| GOVERNANCE.md §31 Copilot instructions are factory-managed                                           | Multi-harness instruction parity                                                                                     | (none)                                                                          | P2                 |
+| GOVERNANCE.md §32 Alignment contract                                                                 | Alignment-floor enforcement                                                                                          | (none)                                                                          | P0                 |
+| GOVERNANCE.md §33 Archived external-conversation headers                                             | Boundary-header schema                                                                                               | (none)                                                                          | P1                 |
+| ALIGNMENT.md HC-1 Consent-first                                                                      | Consent algebra (consent-as-abelian-group)                                                                           | retraction-safe-recursion has retraction; consent itself absent                 | P0                 |
+| ALIGNMENT.md HC-2 Retraction-native operations                                                       | Retraction discipline                                                                                                | partially in `operator-algebra` "retraction-native invariants"                  | P0 (extend)        |
+| ALIGNMENT.md HC-3 Data is not directives                                                             | BP-11 contract                                                                                                       | (none)                                                                          | P0                 |
+| ALIGNMENT.md HC-4 No fetching adversarial corpora                                                    | Pliny-corpus quarantine                                                                                              | partially in GOVERNANCE.md §5                                                   | P1                 |
+| ALIGNMENT.md HC-5 Agent register, not clinician                                                      | Output-register constraint                                                                                           | (none)                                                                          | P2                 |
+| ALIGNMENT.md HC-6 Memory folder is earned, not edited                                                | Memory-write discipline (cf §18)                                                                                     | (none)                                                                          | P1                 |
+| ALIGNMENT.md HC-7 Sacred-tier protections                                                            | Sacred-tier classification                                                                                           | (none)                                                                          | P1                 |
+| ALIGNMENT.md SD-1..SD-9 Soft defaults                                                                | Negotiable register defaults                                                                                         | (none)                                                                          | P3 (P2 if grouped) |
+| ALIGNMENT.md DIR-1..DIR-5 Directional commitments                                                    | Long-arc gradient commitments                                                                                        | (none)                                                                          | P2                 |
+| ALIGNMENT.md "Bidirectional alignment meta-commitment"                                               | The organizing meta-frame for unfiltered-memory + named-agent + BFT-many-masters + no-directives + glass-halo + WWJD | (none)                                                                          | P0                 |
+| ALIGNMENT.md "Glass halo (symmetric transparency)"                                                   | Transparency contract for what agents and humans expose to each other                                                | (none)                                                                          | P0                 |
+| ALIGNMENT.md "Measurability — what we count" framework                                               | Alignment-observability quantifiable axes                                                                            | (none)                                                                          | P0                 |
 
 ### 3.3 Existing-capability completeness gaps
 
-| Capability | Gap |
-|---|---|
-| `circuit-recursion` | Missing `profiles/fsharp.md` overlay despite F# impl in `NestedCircuit.fs` shipping |
-| `operator-algebra` | Should enumerate IndexedZSet, Pool, Sharding extensions in `profiles/fsharp.md` (currently 117 lines — under-documents the actual surface) |
-| `lsm-spine-family` | Should add a `profiles/fsharp.md` enumeration of the 5 variant types and `SpineSelector` (current 213 lines covers some of this; spot-check whether complete) |
-| `durability-modes` | Spec claims feature-flag evaluator is part of this capability; should be factored out as a standalone `feature-flags` capability |
-| `repo-automation` | Should grow profiles for PowerShell + TypeScript when those land per the spec's "Future profiles" line |
-| `retraction-safe-recursion` | The `RecursiveSigned.fs` file (`src/Core/RecursiveSigned.fs`) is not enumerated in the spec or profile despite being one of the implementation surfaces |
+| Capability                  | Gap                                                                                                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `circuit-recursion`         | Missing `profiles/fsharp.md` overlay despite F# impl in `NestedCircuit.fs` shipping                                                                           |
+| `operator-algebra`          | Should enumerate IndexedZSet, Pool, Sharding extensions in `profiles/fsharp.md` (currently 117 lines — under-documents the actual surface)                    |
+| `lsm-spine-family`          | Should add a `profiles/fsharp.md` enumeration of the 5 variant types and `SpineSelector` (current 213 lines covers some of this; spot-check whether complete) |
+| `durability-modes`          | Spec claims feature-flag evaluator is part of this capability; should be factored out as a standalone `feature-flags` capability                              |
+| `repo-automation`           | Should grow profiles for PowerShell + TypeScript when those land per the spec's "Future profiles" line                                                        |
+| `retraction-safe-recursion` | The `RecursiveSigned.fs` file (`src/Core/RecursiveSigned.fs`) is not enumerated in the spec or profile despite being one of the implementation surfaces       |
 
 ---
 
@@ -343,9 +344,9 @@ Rationale for the top-5:
   load-bearing, and it's the closest "downstream consumer" capability
   whose spec exists nowhere despite shipped code.
 - (9) `agent-loop-refresh-discipline` — the autonomous-loop cron
-  + tick-shard machinery is the most-frequently-used factory surface
-  with the highest cost-per-failure, and currently has zero spec
-  backing.
+  - tick-shard machinery is the most-frequently-used factory surface
+    with the highest cost-per-failure, and currently has zero spec
+    backing.
 
 ---
 
@@ -368,17 +369,17 @@ Rationale for the top-5:
 
 ## 6. Acceptance criterion check (B-0171 done-criteria item 4)
 
-The acceptance criterion is: *"if we deleted everything but OpenSpec,
-the project would be lost"* test PASSES.
+The acceptance criterion is: _"if we deleted everything but OpenSpec,
+the project would be lost"_ test PASSES.
 
 Today, after this audit:
 
 - 6 capabilities + 6 profile files + 1 README cover ~1953 lines of
   specs.
 - The project ships ~12k lines of F# in `src/Core/` plus governance
-  + alignment + agent-loop substrate amounting to thousands of lines
-  more across `CLAUDE.md` (~610 lines), `GOVERNANCE.md` (~884 lines),
-  `docs/ALIGNMENT.md` (~1103 lines), and supporting docs.
+  - alignment + agent-loop substrate amounting to thousands of lines
+    more across `CLAUDE.md` (~610 lines), `GOVERNANCE.md` (~884 lines),
+    `docs/ALIGNMENT.md` (~1103 lines), and supporting docs.
 - **Coverage estimate: roughly 15-20% of load-bearing substrate is
   reconstructable from OpenSpec alone.** The disaster-recovery test
   fails.
@@ -386,8 +387,8 @@ Today, after this audit:
 The 10-capability Phase 2 sequence above (with P0 batch shipping
 first) targets bringing coverage to ~60-70% — sufficient to pass the
 disaster-recovery test for the foundation layer. Full coverage is
-the long arc per Aaron's *"WONT-DO is 99% deferral, not forever — we
-will likely do everything eventually"*.
+the long arc per Aaron's _"WONT-DO is 99% deferral, not forever — we
+will likely do everything eventually"_.
 
 ---
 

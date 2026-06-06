@@ -44,24 +44,22 @@ Not yet collapsing the arc to "terminated"; awaits 16th anchor at 18:07Z+ to eit
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T16:12:41Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `7466e1a549`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -74,6 +72,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds an in-repo tick shard documenting the 16:07Z (15th) dotgit-saturation observation, capturing a second consecutive 0-stuck-procs reading and related operational measurements for the ongoing hygiene-history arc.
 
 **Changes:**
+
 - Adds a new tick shard for 2026-05-24 16:07Z with observed-state measurements and an updated 15-anchor rolling table.
 - Records hypothesis status and next-tick observation candidates to guide the subsequent 18:07Z anchor.
 
@@ -83,7 +82,7 @@ Adds an in-repo tick shard documenting the 16:07Z (15th) dotgit-saturation obser
 
 **@chatgpt-codex-connector** (2026-05-24T16:12:41Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align peer-fleet threshold with recorded baseline**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align peer-fleet threshold with recorded baseline**
 
 The `18:07Z peer-fleet count` criterion uses `5` as the starting total, but this shard records `peer = 9` and `Lior = 1` (baseline `10`), so the decision rule is internally inconsistent. That can misclassify the next anchor (e.g., a drop from 10 to 6 would be meaningful drain but would fail the current `5 -> <5` test), which weakens the experiment log’s comparability across anchors.
 

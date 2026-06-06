@@ -13,11 +13,7 @@ import {
   DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
   contextPackAdvisoryPromotionDecisionKeyFor,
 } from "../context-pack-advisory-promotion-policy.ts";
-import type {
-  Clock,
-  CommandEffects,
-  IdGenerator,
-} from "../ports.ts";
+import type { Clock, CommandEffects, IdGenerator } from "../ports.ts";
 import type {
   ContextPackAdvisoryPromotionDecisionWriteInput,
   ContextPackAdvisoryPromotionFingerprint,
@@ -43,7 +39,8 @@ export const AuthorContextPackAdvisoryPromotionDecisionValidationErrorMessage = 
   EvidenceRefsRequired: "context-pack advisory-promotion decision evidence refs are required",
   FingerprintCitationRefsInvalid: "context-pack advisory-promotion decision fingerprint citation refs are invalid",
   FingerprintItemKindInvalid: "context-pack advisory-promotion decision fingerprint item kind is invalid",
-  FingerprintSourcePointerKeysInvalid: "context-pack advisory-promotion decision fingerprint source pointer keys are invalid",
+  FingerprintSourcePointerKeysInvalid:
+    "context-pack advisory-promotion decision fingerprint source pointer keys are invalid",
   FingerprintSummaryHashRequired: "context-pack advisory-promotion decision fingerprint summary hash is required",
   HatAssignmentRequired: "context-pack advisory-promotion decision hat assignment is required",
   HatRequired: "context-pack advisory-promotion decision hat is required",
@@ -96,11 +93,13 @@ export async function authorContextPackAdvisoryPromotionDecision(
     result: {
       commandId: command.commandId,
       status: CommandResultStatus.Accepted,
-      artifacts: [{
-        artifactType: CommandResultArtifactType.ContextPackAdvisoryPromotionDecision,
-        artifactId: decision.decisionId,
-        label: decision.lifecycleBlocker,
-      }],
+      artifacts: [
+        {
+          artifactType: CommandResultArtifactType.ContextPackAdvisoryPromotionDecision,
+          artifactId: decision.decisionId,
+          label: decision.lifecycleBlocker,
+        },
+      ],
       auditEventIds: [auditEvent.auditEventId],
       contextPackAdvisoryPromotionDecision: decision,
       idempotency: {
@@ -256,8 +255,7 @@ function isContextPackAdvisoryPromotionDecisionStatus(
 }
 
 function isStringList(value: unknown): value is readonly string[] {
-  return Array.isArray(value) &&
-    value.every((entry) => typeof entry === "string" && entry.trim().length > 0);
+  return Array.isArray(value) && value.every((entry) => typeof entry === "string" && entry.trim().length > 0);
 }
 
 function createRejectedValidationOutcome(
@@ -314,11 +312,8 @@ function createEmptyWorkAnchorCommandEffects(): NonNullable<CommandEffects["work
   };
 }
 
-function optionalValue<Key extends string>(
-  key: Key,
-  value: string | undefined,
-): { [Property in Key]?: string } {
-  return value === undefined ? {} : { [key]: value } as { [Property in Key]?: string };
+function optionalValue<Key extends string>(key: Key, value: string | undefined): { [Property in Key]?: string } {
+  return value === undefined ? {} : ({ [key]: value } as { [Property in Key]?: string });
 }
 
 function isBlank(value: unknown): boolean {

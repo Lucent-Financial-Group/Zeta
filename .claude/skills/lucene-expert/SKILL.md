@@ -69,15 +69,15 @@ query for prefix matching).
 
 ## Field type configuration
 
-| Option | Meaning | Size cost |
-|---|---|---|
-| Indexed | Searchable | Posting list |
-| Stored | Retrievable as original | Full field in stored fields |
-| Tokenised | Analyzer runs | Multiple terms |
-| Doc-values | Columnar (sort, facet, agg) | Per-doc column |
-| Term vectors | Per-doc term list | Significant |
-| Norms | Length normalisation for scoring | 1 byte/doc/field |
-| Position | Phrase queries, highlighting | Per-occurrence |
+| Option       | Meaning                          | Size cost                   |
+| ------------ | -------------------------------- | --------------------------- |
+| Indexed      | Searchable                       | Posting list                |
+| Stored       | Retrievable as original          | Full field in stored fields |
+| Tokenised    | Analyzer runs                    | Multiple terms              |
+| Doc-values   | Columnar (sort, facet, agg)      | Per-doc column              |
+| Term vectors | Per-doc term list                | Significant                 |
+| Norms        | Length normalisation for scoring | 1 byte/doc/field            |
+| Position     | Phrase queries, highlighting     | Per-occurrence              |
 
 **Rule.** "Indexed + stored + tokenised" is the common
 default but can be overkill. A pure ID field is `StringField`
@@ -250,7 +250,7 @@ tenant services.
 
 **Rule.** In Zeta-adjacent .NET work, Lucene.NET is the
 default embedded FTS library. Don't PInvoke JVM Lucene;
-don't assume Lucene.NET has *this* year's JVM Lucene
+don't assume Lucene.NET has _this_ year's JVM Lucene
 features.
 
 ## Version-history gotchas
@@ -282,7 +282,7 @@ features.
 - **Elasticsearch-level** → `elasticsearch-expert`.
 - **Solr-level** → `solr-expert`.
 - **Library class / alternatives** → `search-engine-
-  library-expert`.
+library-expert`.
 - **BM25 / LTR tuning** → `search-relevance-expert`.
 - **Tokenisers** → `text-analysis-expert`.
 - **IR theory** → `full-text-search-expert`.
@@ -310,7 +310,7 @@ features.
 
 ## Reference patterns
 
-- McCandless, Hatcher, Gospodnetić — *Lucene in Action*
+- McCandless, Hatcher, Gospodnetić — _Lucene in Action_
   (2nd, 2010; dated but still foundational).
 - Lucene Javadocs (`lucene.apache.org/core`).
 - Lucene.NET docs (`lucenenet.apache.org`).

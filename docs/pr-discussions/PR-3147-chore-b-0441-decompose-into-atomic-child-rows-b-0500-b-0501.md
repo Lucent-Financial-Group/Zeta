@@ -22,14 +22,15 @@ B-0441 (backlog-ready-notifier background service) had slices 1+2+4 already ship
 
 **Child rows created:**
 
-| Row | Slice | What | Effort | Deps |
-|-----|-------|------|--------|------|
-| B-0500 | 3 | Wire `isAgentQueueEmpty` guard into `pollOnce` (currently publishes unconditionally; function exists but is not called from the poll loop) | XS | none |
-| B-0501 | 5a | Assignment history dedup / cooldown (avoid re-publishing same row within configurable window) | S | none |
-| B-0502 | 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` update (same pattern as `com.zeta.missed-substrate-detector.plist`) | XS | none |
-| B-0460 | 5.2 | Agent-side `work-assignment` subscriber handler — explicitly referenced in B-0449 as "B-0460" but the file never existed | S | B-0449 |
+| Row    | Slice | What                                                                                                                                       | Effort | Deps   |
+| ------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------ | ------ |
+| B-0500 | 3     | Wire `isAgentQueueEmpty` guard into `pollOnce` (currently publishes unconditionally; function exists but is not called from the poll loop) | XS     | none   |
+| B-0501 | 5a    | Assignment history dedup / cooldown (avoid re-publishing same row within configurable window)                                              | S      | none   |
+| B-0502 | 6     | launchd plist + `docs/AUTONOMOUS-LOOP.md` update (same pattern as `com.zeta.missed-substrate-detector.plist`)                              | XS     | none   |
+| B-0460 | 5.2   | Agent-side `work-assignment` subscriber handler — explicitly referenced in B-0449 as "B-0460" but the file never existed                   | S      | B-0449 |
 
 **Parent row updated:**
+
 - `children:` field added to frontmatter
 - TBD decomposition hint replaced with formal slice-status table
 - Pre-start checklist items ticked (prior-art search, dependency check, decomposition done)
@@ -64,6 +65,7 @@ operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file
 Decomposes parent backlog row B-0441 (backlog-ready-notifier background service) into four atomic child rows so the remaining slices (3, 5a, 5.2, 6) can be picked up independently. No code changes — this PR adds planning documents and updates the parent row's frontmatter and slice table.
 
 **Changes:**
+
 - Creates four new P1 backlog rows: B-0500 (queue-state guard wiring), B-0501 (assignment-history cooldown), B-0502 (launchd plist + docs), B-0460 (work-assignment subscriber handler, depends on B-0449).
 - Updates parent B-0441: adds `children:` frontmatter, bumps `last_updated`, replaces TBD slice list with a concrete slice-status table, and checks off pre-start checklist items.
 
@@ -74,11 +76,12 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated no 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
+| File                                  | Description                                                                                                           |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0500-…2026-05-14.md | New row: wire existing `isAgentQueueEmpty` into `pollOnce`; adds `targetAgent` config + `queueBusy` PollResult field. |
-| docs/backlog/P1/B-0501-…2026-05-14.md | New row: assignment-history dedup with cooldown window, atomic file write, adapter injection. |
-| docs/backlog/P1/B-0502-…2026-05-14.md | New row: launchd plist + AUTONOMOUS-LOOP.md/README updates; `StartInterval: 600` matching default poll interval. |
-| docs/backlog/P1/B-0460-…2026-05-14.md | New row: agent-side subscriber handler for `work-assignment` topic; depends on B-0449. |
-| docs/backlog/P1/B-0441-…2026-05-13.md | Parent updated with `children:`, completed checklist, formalized slice-status table. |
+| docs/backlog/P1/B-0501-…2026-05-14.md | New row: assignment-history dedup with cooldown window, atomic file write, adapter injection.                         |
+| docs/backlog/P1/B-0502-…2026-05-14.md | New row: launchd plist + AUTONOMOUS-LOOP.md/README updates; `StartInterval: 600` matching default poll interval.      |
+| docs/backlog/P1/B-0460-…2026-05-14.md | New row: agent-side subscriber handler for `work-assignment` topic; depends on B-0449.                                |
+| docs/backlog/P1/B-0441-…2026-05-13.md | Parent updated with `children:`, completed checklist, formalized slice-status table.                                  |
+
 </details>

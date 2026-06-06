@@ -78,8 +78,8 @@ export interface MutationRequest {
 // ---------------------------------------------------------------------------
 
 export interface MutationLogEntry {
-  readonly id: string;           // UUID-v4
-  readonly timestamp: string;    // ISO-8601
+  readonly id: string; // UUID-v4
+  readonly timestamp: string; // ISO-8601
   readonly surfaceId: string;
   readonly action: string;
   readonly inverseAction: string;
@@ -129,8 +129,10 @@ export interface MutableGitHubSessionDriver {
   newContext(storageStatePath: string): Promise<MutableGitHubSessionContext>;
 }
 
-export interface MutationOptions
-  extends Pick<GitHubSessionOptions, "storageStatePath" | "expectedUsername" | "profileUrl" | "env"> {
+export interface MutationOptions extends Pick<
+  GitHubSessionOptions,
+  "storageStatePath" | "expectedUsername" | "profileUrl" | "env"
+> {
   readonly driver?: MutableGitHubSessionDriver;
   /** Override authorized surfaces path (for testing). */
   readonly authorizedSurfacesPath?: string;
@@ -167,7 +169,9 @@ function authorizeRequest(surfaces: AuthorizedSurface[], request: MutationReques
 function inverseOf(action: string): string {
   if (action === "toggle-on") return "toggle-off";
   if (action === "toggle-off") return "toggle-on";
-  throw new MutationExecutionError(`No known inverse for action "${action}". Add an inverse mapping before using this action.`);
+  throw new MutationExecutionError(
+    `No known inverse for action "${action}". Add an inverse mapping before using this action.`,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -216,11 +220,7 @@ async function captureSnapshot(
 // Mutation executor
 // ---------------------------------------------------------------------------
 
-async function executeAction(
-  page: MutableGitHubSessionPage,
-  action: string,
-  params: MutationParams,
-): Promise<void> {
+async function executeAction(page: MutableGitHubSessionPage, action: string, params: MutationParams): Promise<void> {
   switch (action) {
     case "toggle-on":
     case "toggle-off": {
@@ -256,10 +256,7 @@ async function executeAction(
  *
  * The drain log entry returned here is written to disk by B-0322 (drain-log.ts).
  */
-export async function mutate(
-  request: MutationRequest,
-  options: MutationOptions = {},
-): Promise<MutationResult> {
+export async function mutate(request: MutationRequest, options: MutationOptions = {}): Promise<MutationResult> {
   // 1. Load authorized surfaces
   let surfaces: AuthorizedSurface[];
   try {
@@ -349,8 +346,7 @@ export async function mutate(
       try {
         appendEntry(drainLogEntry, logPath);
       } catch (err) {
-        drainLogWriteError =
-          `Failed to append drain-log entry to ${logPath}: ${err instanceof Error ? err.message : String(err)}`;
+        drainLogWriteError = `Failed to append drain-log entry to ${logPath}: ${err instanceof Error ? err.message : String(err)}`;
       }
     }
 
@@ -393,7 +389,7 @@ async function createDefaultMutableDriver(): Promise<MutableGitHubSessionDriver>
 
   return {
     async newContext(storageStatePath: string): Promise<MutableGitHubSessionContext> {
-      const browser = await chromium.launch({ headless: true }) as {
+      const browser = (await chromium.launch({ headless: true })) as {
         newContext(opts: { storageState: string }): Promise<unknown>;
         close(): Promise<void>;
       };

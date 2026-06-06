@@ -128,7 +128,9 @@ async function main() {
   }
   const id = created["id"] as number;
   const v0 = created["version"] as number;
-  line(`created id=${id} version=${v0} is_archived=${created["is_archived"]} notes=${JSON.stringify(created["notes"])}`);
+  line(
+    `created id=${id} version=${v0} is_archived=${created["is_archived"]} notes=${JSON.stringify(created["notes"])}`,
+  );
   line("");
 
   // ---------------------------------------------------------------------------
@@ -158,8 +160,11 @@ async function main() {
   const utc = String(row["changed_at"]);
   line(`UTC stored:     ${utc}`);
   line(`Local display:  ${new Date(utc).toLocaleString()}  (tz=${Intl.DateTimeFormat().resolvedOptions().timeZone})`);
-  const aOk = row["field"] === "notes" && row["old_value"] === "orig" && row["new_value"] === "edited-by-phase4-proof-a";
-  line(`(a) ASSERTION field=notes, old="orig" -> new="edited-by-phase4-proof-a", actor present, UTC present: ${aOk ? "PASS" : "FAIL"}`);
+  const aOk =
+    row["field"] === "notes" && row["old_value"] === "orig" && row["new_value"] === "edited-by-phase4-proof-a";
+  line(
+    `(a) ASSERTION field=notes, old="orig" -> new="edited-by-phase4-proof-a", actor present, UTC present: ${aOk ? "PASS" : "FAIL"}`,
+  );
   line("");
 
   // ---------------------------------------------------------------------------
@@ -174,13 +179,17 @@ async function main() {
     prefer: "return=representation",
   });
   const guardedRows = arr(guardedStale.body).length;
-  line(`FIXED  (guarded, WHERE version=${v0} stale): http ${guardedStale.status}, rows affected=${guardedRows}  -> expect 0 = REJECTED`);
+  line(
+    `FIXED  (guarded, WHERE version=${v0} stale): http ${guardedStale.status}, rows affected=${guardedRows}  -> expect 0 = REJECTED`,
+  );
   line(`  raw body: ${JSON.stringify(guardedStale.body)}`);
 
   // confirm the value did NOT change
   const checkB = await rest("GET", `items?id=eq.${id}&select=notes,version`, token);
   const cur = arr(checkB.body)[0] as Record<string, unknown> | undefined;
-  line(`  current notes after rejected stale save: ${JSON.stringify(cur?.["notes"])} (version=${cur?.["version"]}) -> unchanged from (a)`);
+  line(
+    `  current notes after rejected stale save: ${JSON.stringify(cur?.["notes"])} (version=${cur?.["version"]}) -> unchanged from (a)`,
+  );
 
   // BROKEN (no version guard): WHERE id=? -> 1 row (the silent overwrite the guard prevents)
   const unguarded = await rest("PATCH", `items?id=eq.${id}`, token, {
@@ -188,9 +197,13 @@ async function main() {
     prefer: "return=representation",
   });
   const unguardedRows = arr(unguarded.body).length;
-  line(`BROKEN (no version guard, WHERE id only):    http ${unguarded.status}, rows affected=${unguardedRows}  -> 1 = the silent overwrite the guard prevents`);
+  line(
+    `BROKEN (no version guard, WHERE id only):    http ${unguarded.status}, rows affected=${unguardedRows}  -> 1 = the silent overwrite the guard prevents`,
+  );
   const bOk = guardedRows === 0 && unguardedRows === 1;
-  line(`(b) ASSERTION guarded-stale=0 rows (rejected) AND unguarded=1 row (breach demonstrated): ${bOk ? "PASS" : "FAIL"}`);
+  line(
+    `(b) ASSERTION guarded-stale=0 rows (rejected) AND unguarded=1 row (breach demonstrated): ${bOk ? "PASS" : "FAIL"}`,
+  );
   line("");
 
   // ---------------------------------------------------------------------------
@@ -198,7 +211,10 @@ async function main() {
   // ---------------------------------------------------------------------------
   line("---- (c) PROOF: archive then un-archive; data + history intact ----");
   // re-read current version to guard the archive write
-  const pre = arr((await rest("GET", `items?id=eq.${id}&select=version,name,qty,notes`, token)).body)[0] as Record<string, unknown>;
+  const pre = arr((await rest("GET", `items?id=eq.${id}&select=version,name,qty,notes`, token)).body)[0] as Record<
+    string,
+    unknown
+  >;
   const vc0 = pre["version"] as number;
 
   const arch = await rest("PATCH", `items?id=eq.${id}&version=eq.${vc0}`, token, {
@@ -206,7 +222,9 @@ async function main() {
     prefer: "return=representation",
   });
   const archived = arr(arch.body)[0] as Record<string, unknown> | undefined;
-  line(`archive: is_archived -> ${archived?.["is_archived"]} (version ${vc0} -> ${archived?.["version"]}), http ${arch.status}`);
+  line(
+    `archive: is_archived -> ${archived?.["is_archived"]} (version ${vc0} -> ${archived?.["version"]}), http ${arch.status}`,
+  );
   const vc1 = (archived?.["version"] as number) ?? vc0;
 
   const unarch = await rest("PATCH", `items?id=eq.${id}&version=eq.${vc1}`, token, {
@@ -214,14 +232,16 @@ async function main() {
     prefer: "return=representation",
   });
   const unarchived = arr(unarch.body)[0] as Record<string, unknown> | undefined;
-  line(`un-archive (undo): is_archived -> ${unarchived?.["is_archived"]} (version ${vc1} -> ${unarchived?.["version"]}), http ${unarch.status}`);
+  line(
+    `un-archive (undo): is_archived -> ${unarchived?.["is_archived"]} (version ${vc1} -> ${unarchived?.["version"]}), http ${unarch.status}`,
+  );
 
   // data intact: name/qty unchanged through archive cycle
   const dataIntact =
-    unarchived?.["name"] === pre["name"] &&
-    unarchived?.["qty"] === pre["qty"] &&
-    unarchived?.["is_archived"] === false;
-  line(`data intact through cycle: name=${JSON.stringify(unarchived?.["name"])} qty=${unarchived?.["qty"]} is_archived=${unarchived?.["is_archived"]} -> ${dataIntact ? "OK" : "MISMATCH"}`);
+    unarchived?.["name"] === pre["name"] && unarchived?.["qty"] === pre["qty"] && unarchived?.["is_archived"] === false;
+  line(
+    `data intact through cycle: name=${JSON.stringify(unarchived?.["name"])} qty=${unarchived?.["qty"]} is_archived=${unarchived?.["is_archived"]} -> ${dataIntact ? "OK" : "MISMATCH"}`,
+  );
 
   // history intact: INSERT + the two is_archived rows (true, then false) both present, nothing deleted
   const hist = await rest(
@@ -232,13 +252,17 @@ async function main() {
   const histRows = arr(hist.body) as Record<string, unknown>[];
   line(`full per-item history (${histRows.length} rows, append-only, oldest-first):`);
   for (const h of histRows) {
-    line(`  #${h["id"]} ${h["action"]}${h["field"] ? " " + h["field"] : ""}: ${JSON.stringify(h["old_value"])} -> ${JSON.stringify(h["new_value"])}  @ ${h["changed_at"]}`);
+    line(
+      `  #${h["id"]} ${h["action"]}${h["field"] ? " " + h["field"] : ""}: ${JSON.stringify(h["old_value"])} -> ${JSON.stringify(h["new_value"])}  @ ${h["changed_at"]}`,
+    );
   }
   const archTrueRow = histRows.find((h) => h["field"] === "is_archived" && h["new_value"] === "true");
   const archFalseRow = histRows.find((h) => h["field"] === "is_archived" && h["new_value"] === "false");
   const insertRow = histRows.find((h) => h["action"] === "INSERT");
   const cOk = !!insertRow && !!archTrueRow && !!archFalseRow && dataIntact;
-  line(`(c) ASSERTION INSERT row + is_archived false->true + true->false all present, data intact: ${cOk ? "PASS" : "FAIL"}`);
+  line(
+    `(c) ASSERTION INSERT row + is_archived false->true + true->false all present, data intact: ${cOk ? "PASS" : "FAIL"}`,
+  );
   line("");
 
   // ---------------------------------------------------------------------------
@@ -262,7 +286,10 @@ async function main() {
   // CLEANUP: leave the throwaway item ARCHIVED (cannot DELETE via client — no
   // DELETE policy). Flag for owner SQL-editor cleanup, like the Phase-1 proof item.
   // ---------------------------------------------------------------------------
-  const finalVer = arr((await rest("GET", `items?id=eq.${id}&select=version`, token)).body)[0] as Record<string, unknown>;
+  const finalVer = arr((await rest("GET", `items?id=eq.${id}&select=version`, token)).body)[0] as Record<
+    string,
+    unknown
+  >;
   await rest("PATCH", `items?id=eq.${id}&version=eq.${finalVer["version"]}`, token, {
     body: { is_archived: true, notes: "phase4-proof artifact — owner: remove in SQL editor before launch" },
     prefer: "return=representation",
@@ -273,7 +300,9 @@ async function main() {
   line("");
 
   const allPass = aOk && bOk && cOk && dOk;
-  line(`=== SUMMARY: (a)=${aOk ? "PASS" : "FAIL"} (b)=${bOk ? "PASS" : "FAIL"} (c)=${cOk ? "PASS" : "FAIL"} (d)=${dOk ? "PASS" : "FAIL"} ===`);
+  line(
+    `=== SUMMARY: (a)=${aOk ? "PASS" : "FAIL"} (b)=${bOk ? "PASS" : "FAIL"} (c)=${cOk ? "PASS" : "FAIL"} (d)=${dOk ? "PASS" : "FAIL"} ===`,
+  );
   process.exit(allPass ? 0 : 1);
 }
 

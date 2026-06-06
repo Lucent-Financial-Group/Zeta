@@ -55,9 +55,7 @@ function runReindex(): void {
   if (result.status !== 0) {
     // Non-fatal: log to stderr so it's visible but don't block the write.
     process.stderr.write(
-      `[post-write-memory-reindex] reindex failed (exit ${result.status ?? "?"}): ` +
-        (result.stderr ?? "") +
-        "\n",
+      `[post-write-memory-reindex] reindex failed (exit ${result.status ?? "?"}): ` + (result.stderr ?? "") + "\n",
     );
   }
 }

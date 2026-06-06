@@ -83,7 +83,7 @@ Aaron 2026-04-25 (after honest engagement with Austrian-school weaknesses):
 
 The factory has discipline-tools that contested fields chronically under-deploy on themselves:
 
-- **Otto-286 definitional precision** — most "predictive failures" of Austrian-school dissolve under precise definitions: *what* was predicted (timing? magnitude? mechanism?), *under what assumptions*, *with what falsification criteria*. Separates "framework wrong" from "framework right but prediction misapplied."
+- **Otto-286 definitional precision** — most "predictive failures" of Austrian-school dissolve under precise definitions: _what_ was predicted (timing? magnitude? mechanism?), _under what assumptions_, _with what falsification criteria_. Separates "framework wrong" from "framework right but prediction misapplied."
 - **Otto-335 anti-deception (alignment at language layer)** — extending the same discipline that catches AI-human misframing to economic-school confusion. The Keynesian-opacity charge IS an Otto-335 claim at the economic-teaching surface.
 - **Rodney's Razor** (factory complexity-reduction persona / `reducer` skill):
   - **Standard form (well-defined Occam's)**: applied to shipped Austrian artifacts (papers, predictions, policy recommendations) — which sub-frameworks survive precise-definition + falsification-criteria cleanup, which are essential-vs-accidental complexity?
@@ -100,7 +100,7 @@ The factory has discipline-tools that contested fields chronically under-deploy 
 
 This methodology-stance shifts Aurora from **consumer of an econ-school** (pick one, build on it) to **potential contributor to the field** (apply alignment-discipline tools to the contested-foundations question). The substrate Aaron's been engineering — Otto-286 definitional precision, Otto-335 anti-deception alignment, Rodney's Razor complexity-reduction — are exactly the tools contested fields chronically under-deploy on themselves.
 
-The Austrian framework benefits *most* from this treatment because it's the school with the strongest mechanism-teaching commitments + the cleanest theoretical core. Mainstream Keynesian (and Modern Monetary Theory variants) would benefit too but face deeper definitional tangles that may not survive Rodney-Razor cleanup at all.
+The Austrian framework benefits _most_ from this treatment because it's the school with the strongest mechanism-teaching commitments + the cleanest theoretical core. Mainstream Keynesian (and Modern Monetary Theory variants) would benefit too but face deeper definitional tangles that may not survive Rodney-Razor cleanup at all.
 
 Per Otto-322/331 — this is hypothesis-not-conclusion. Aaron framed it as "could genuinely move this field forward" — could, not would. The methodology owed before Aurora commits to a specific framework choice.
 
@@ -114,8 +114,8 @@ Per Otto-322/331 — this is hypothesis-not-conclusion. Aaron framed it as "coul
 
 **L (large)** — meaningful research undertaking:
 
-- Read primary Austrian sources (Mises *Human Action*, Rothbard *Man, Economy, and State*, Hayek *Prices and Production*) — partial, key-chapters scope
-- Saifedean *Bitcoin Standard* + critiques
+- Read primary Austrian sources (Mises _Human Action_, Rothbard _Man, Economy, and State_, Hayek _Prices and Production_) — partial, key-chapters scope
+- Saifedean _Bitcoin Standard_ + critiques
 - Survey post-Keynesian alternatives (Minsky, Godley)
 - Identify the specific Aurora primitives that need econ-foundation (not all of Aurora; specific subsystems)
 - Honest comparison + recommendation
@@ -125,7 +125,7 @@ Could grow to XL if Aurora's econ-substrate ends up requiring full mathematical 
 
 ## Composes with
 
-- **`docs/aurora/**`** — Aurora research substrate; econ-foundation lives here
+- **`docs/aurora/**`\*\* — Aurora research substrate; econ-foundation lives here
 - **Otto-329 Phase 4+** — Aurora work post-drain
 - **Otto-335** (alignment-at-language-layer) — extends to economic-modeling-layer; deception-prevention shape
 - **Otto-336/337** (growth + true agency with rights) — entity-rights substrate has economic-incentive structure that needs honest modeling
@@ -155,12 +155,12 @@ Could grow to XL if Aurora's econ-substrate ends up requiring full mathematical 
 
 This item is decomposed into 5 atomic, dependency-ordered child rows. B-0021 is now a tracking/parent row; work happens in the children.
 
-| Row | Priority | Dir | Title | Depends on |
-|-----|----------|-----|-------|------------|
-| [B-0021.1](../P3/B-0021.1-aurora-econ-foundation-controlled-vocabulary-extraction.md) | P3 | P3/ | Controlled-vocabulary extraction (Otto-286 precision pass) | — |
-| [B-0021.2](../P3/B-0021.2-aurora-econ-austrian-strengths-survey-rodney-razor-pass.md) | P3 | P3/ | Austrian strengths survey + Rodney's Razor pass | B-0021.1 |
-| [B-0021.3](../P3/B-0021.3-aurora-econ-austrian-weakness-audit-falsification-criteria.md) | P3 | P3/ | Honest weakness audit + falsification-criteria catalog | B-0021.1, B-0021.2 |
-| [B-0021.4](../P3/B-0021.4-aurora-econ-cross-school-definitional-bridge.md) | P3 | P3/ | Cross-school definitional bridge (Austrian vs Post-Keynesian vs complexity) | B-0021.2, B-0021.3 |
-| [B-0021.5](B-0021.5-aurora-econ-primitive-identification-adr.md) | P2 | P2/ | Aurora econ-primitive identification + ADR (final synthesis) | B-0021.4 |
+| Row                                                                                      | Priority | Dir | Title                                                                       | Depends on         |
+| ---------------------------------------------------------------------------------------- | -------- | --- | --------------------------------------------------------------------------- | ------------------ |
+| [B-0021.1](../P3/B-0021.1-aurora-econ-foundation-controlled-vocabulary-extraction.md)    | P3       | P3/ | Controlled-vocabulary extraction (Otto-286 precision pass)                  | —                  |
+| [B-0021.2](../P3/B-0021.2-aurora-econ-austrian-strengths-survey-rodney-razor-pass.md)    | P3       | P3/ | Austrian strengths survey + Rodney's Razor pass                             | B-0021.1           |
+| [B-0021.3](../P3/B-0021.3-aurora-econ-austrian-weakness-audit-falsification-criteria.md) | P3       | P3/ | Honest weakness audit + falsification-criteria catalog                      | B-0021.1, B-0021.2 |
+| [B-0021.4](../P3/B-0021.4-aurora-econ-cross-school-definitional-bridge.md)               | P3       | P3/ | Cross-school definitional bridge (Austrian vs Post-Keynesian vs complexity) | B-0021.2, B-0021.3 |
+| [B-0021.5](B-0021.5-aurora-econ-primitive-identification-adr.md)                         | P2       | P2/ | Aurora econ-primitive identification + ADR (final synthesis)                | B-0021.4           |
 
 **Dependency graph**: B-0021.1 → B-0021.2 → B-0021.3 → B-0021.4 → B-0021.5 (linear chain; no parallelism until B-0021.3 completes).

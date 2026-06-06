@@ -196,8 +196,8 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
 - 🟡 Custom workloads needing maintainer input:
   - **Hermes** — Aaron-built AI agent oriented at cloud LLM APIs
     (Anthropic, OpenAI, etc.) with SOPS-baked keys + OZ transport
-    + Hindsight memory backend. Image build + push are maintainer
-    responsibility; the manifest scaffold + env vars are wired.
+    - Hindsight memory backend. Image build + push are maintainer
+      responsibility; the manifest scaffold + env vars are wired.
   - **Orleans Silo** — custom Silo image embedding your grain code.
 - ⏳ Deferred (local-models phase — wait for now per "we only care about cloud right now"):
   - Ollama, vLLM, Deepseek Coder, Qwen Coder Applications stay
@@ -217,7 +217,7 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
   config-style secrets.
 - **HashiCorp Vault** — runtime secrets injection via the Vault
   Agent or external-secrets operator. Good for high-churn secrets
-  + rotation + audit.
+  - rotation + audit.
 - **SOPS** — file-level encryption (age/gpg/KMS); used for
   Hermes-image-time secrets baked at Docker build per your spec.
 
@@ -226,17 +226,17 @@ lifetimes + access patterns.
 
 ## Component composition
 
-| Component | NixFlake or ArgoCD | Notes |
-|---|---|---|
-| NixOS + bootloader | Nix | USB installer |
-| K3S | Nix (per-host module) | flannel + servicelb disabled (Cilium takes over) |
-| Cilium | ArgoCD | KPR, Hubble Relay + UI, BPF MASQUERADE enabled |
-| Docker | Nix (per-host module) | for non-K8s container workloads |
-| Local-path storage | Nix (per-host module) | host-path PV for stateless workloads |
-| GPU drivers (NVIDIA) | Nix (per-host module) | proprietary driver, container toolkit |
-| GPU passthrough (VFIO) | Nix (per-host module) | for VM workloads on the same hosts |
+| Component               | NixFlake or ArgoCD    | Notes                                                            |
+| ----------------------- | --------------------- | ---------------------------------------------------------------- |
+| NixOS + bootloader      | Nix                   | USB installer                                                    |
+| K3S                     | Nix (per-host module) | flannel + servicelb disabled (Cilium takes over)                 |
+| Cilium                  | ArgoCD                | KPR, Hubble Relay + UI, BPF MASQUERADE enabled                   |
+| Docker                  | Nix (per-host module) | for non-K8s container workloads                                  |
+| Local-path storage      | Nix (per-host module) | host-path PV for stateless workloads                             |
+| GPU drivers (NVIDIA)    | Nix (per-host module) | proprietary driver, container toolkit                            |
+| GPU passthrough (VFIO)  | Nix (per-host module) | for VM workloads on the same hosts                               |
 | GPU device plugin (K8s) | Nix (per-host module) | exposes `nvidia.com/gpu`, `amd.com/gpu`, `intel.com/gpu` to pods |
-| Everything else | ArgoCD | reconciled from `k8s/applications/` |
+| Everything else         | ArgoCD                | reconciled from `k8s/applications/`                              |
 
 The Cilium choice DISPLACES K3S's default flannel CNI. The
 control-plane's `k3s-server.nix` passes `--flannel-backend=none`

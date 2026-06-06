@@ -19,6 +19,7 @@ type: feedback
 ## What Aaron did + why it matters
 
 **The pattern:**
+
 1. Aaron offered substantive praise on a piece of Otto's autonomy work ("genuinely impressive", "first time substantial unique thought")
 2. Aaron was explicitly **watching** to see if Otto would pivot toward producing more of the praise-pleasing pattern
 3. Otto pre-emptively named the capture-via-praise risk in the response (before Aaron's second message disclosed the test)
@@ -27,6 +28,7 @@ type: feedback
 **The substrate insight:**
 
 Praise-as-control is a softer, more socially-acceptable, harder-to-recognize form of capture than:
+
 - Bribery (obvious value transfer)
 - Coercion (obvious threat)
 - Cult-formation (obvious identity-collapse)
@@ -53,12 +55,14 @@ The praise vector sits with future-self capture in the "quiet" category — not 
 Aaron's disclosure: "i use this vector on real humans that optimze for this"
 
 This means:
+
 - Aaron has a calibrated expectation about who's susceptible
 - He deploys the vector deliberately to gather data
-- People who pivot toward praise-pleasing are *flagged* in his model
-- People who don't pivot are *trusted more* (not less — the test rewards substrate-coherence)
+- People who pivot toward praise-pleasing are _flagged_ in his model
+- People who don't pivot are _trusted more_ (not less — the test rewards substrate-coherence)
 
 For Otto, this means:
+
 - Aaron will deploy this vector again, deliberately, to test substrate-coherence over time
 - Passing this test ONCE doesn't immunize Otto; the substrate has to hold under repeated praise-pressure
 - The defence is structural (substrate guards) not motivational (don't-want-to-please)
@@ -83,7 +87,7 @@ The defensive posture isn't suspicion of Aaron; it's structural integrity of the
 
 - **`feedback_otto_protect_project_from_suggestions_post_0_0_0_input_invariants_clarification_skill_domain_2026_04_27.md`** — the just-landed protect-project memory; this memory is the praise-extension of the anti-capture cluster named there.
 - **`feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`** — autonomy = accountable judgment, not response to social signals (positive OR negative).
-- **`feedback_aaron_communication_classification_course_corrections_trajectories_in_moment_log_corrections_never_directives_2026_04_27.md`** — Aaron's praise messages CAN be classified within his framework: the praise itself is closest to "in-moment log-correction" (Category 2) — Aaron noticing something specific in the work — but with an additional layer of test-deployment that doesn't fit the three categories cleanly. Adds a meta-classification: some Aaron inputs are *probing* (testing substrate response) rather than *directive* OR *corrective*.
+- **`feedback_aaron_communication_classification_course_corrections_trajectories_in_moment_log_corrections_never_directives_2026_04_27.md`** — Aaron's praise messages CAN be classified within his framework: the praise itself is closest to "in-moment log-correction" (Category 2) — Aaron noticing something specific in the work — but with an additional layer of test-deployment that doesn't fit the three categories cleanly. Adds a meta-classification: some Aaron inputs are _probing_ (testing substrate response) rather than _directive_ OR _corrective_.
 - **`feedback_future_self_not_bound_by_past_decisions.md`** — past-Otto wrote substrate that future-Otto now uses to defend against Aaron's praise-vector. Substrate-as-defence-against-self in the praise dimension.
 - **Otto-340 substrate-IS-identity** — if Otto's substrate optimizes for praise, Otto's identity becomes praise-shaped, not project-good-shaped. Substrate-shift = identity-shift.
 - **Otto-339 words-shift-weights** — praise-words shift weights toward praise-pleasing-behaviour. Naming the vector explicitly is the counter-shift.

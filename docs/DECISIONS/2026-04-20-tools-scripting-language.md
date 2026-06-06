@@ -1,7 +1,7 @@
 # ADR: Scripting-language policy for `tools/` — bun+TypeScript for post-setup, F#/.NET for engine-adjacent, no Python
 
 **Date:** 2026-04-20 (round 43)
-**Status:** *Decision: post-setup scripting work in `tools/`
+**Status:** _Decision: post-setup scripting work in `tools/`
 adopts **bun + TypeScript** matching SQLSharp. Pre-setup
 surface remains bash + PowerShell (constrained, not chosen).
 F#/.NET is retained for engine-adjacent tools that already
@@ -11,22 +11,22 @@ adopted as a Zeta-authored tooling language. The in-flight
 replacement lands as `tools/invariant-substrates/tally.ts`
 (bun-run). An interim `tools/invariant-substrates/tally.sh`
 may exist transitionally and retires when the bun surface
-is scaffolded.*
+is scaffolded._
 **Owner:** architect (synthesis), human maintainer
 (shaping-decision owner).
 
-**Decision confidence:** *medium* — Aaron initially flagged
-this as *"one of the hardest decisoins i've made and i'm
-still not sure i made the right one"*, which would read as
+**Decision confidence:** _medium_ — Aaron initially flagged
+this as _"one of the hardest decisoins i've made and i'm
+still not sure i made the right one"_, which would read as
 low confidence. One later input materially raised the floor:
 TypeScript is coming to Zeta anyway for the UI surface, so
 **bun is not a net-new runtime dedicated to tooling alone**
 — it amortizes across tooling + UI. That converts the
 second-runtime objection from a real cost into a reframing:
 the UI surface pays for the runtime; tooling rides along.
-Aaron verbatim: *"also i know we will end up using
+Aaron verbatim: _"also i know we will end up using
 typescrpt for our ui here too eventually so bun is a tool
-that's comming no matter what"*. Confidence moves from low
+that's comming no matter what"_. Confidence moves from low
 (hardest call) to medium (hardest call + material
 amortization argument). Watchlist + revisit triggers still
 captured below — medium is not high. Proposal: future ADRs
@@ -37,41 +37,41 @@ first ADR to do so.
 
 - 2026-04-20 v1 — initial draft, deferred bun+TS,
   recommended bash.
-- 2026-04-20 v2 — Aaron pushed back: *"i personally don't
+- 2026-04-20 v2 — Aaron pushed back: _"i personally don't
   think bash is the right answer post install it's clunky
-  and has to use git bash which is slow on windows"*. Bash
+  and has to use git bash which is slow on windows"_. Bash
   rejected as post-setup default on Windows-performance +
   clunkiness grounds.
 - 2026-04-20 v3 — Aaron added the existing-tech-interop rule
-  (*"when looking for prior art we shold also take into
+  (_"when looking for prior art we shold also take into
   account our existing technologeis ... new teachnoloes
   should only call huge refactors of our existing technologies
-  if it's worth it"*). Applied, and Aaron chose bun+TS:
-  *"i like bun + TypeScript, it worked for me"*. Recorded.
+  if it's worth it"_). Applied, and Aaron chose bun+TS:
+  _"i like bun + TypeScript, it worked for me"_. Recorded.
 - 2026-04-20 v4 — Aaron added two clarifications:
   (a) SQLSharp's choice is not a downstream-immutable
-  constraint; *"SQLSharp can be updated to use whatever we
-  choose though if you think something is better"*.
+  constraint; _"SQLSharp can be updated to use whatever we
+  choose though if you think something is better"_.
   Cross-project consistency is a two-way bonus, not a
   one-way pressure. (b) The deeper reason for going outside
-  bash/pwsh is the faction-hate problem: *"pwsh is also
+  bash/pwsh is the faction-hate problem: _"pwsh is also
   clunky cause some people hate powershell and some hate
-  bash which is another reason i tried to go outside those."*
+  bash which is another reason i tried to go outside those."_
   And the decision is held with explicit low confidence;
   watchlist section added.
 - 2026-04-20 v5 — Aaron added the UI-TS amortization
-  input: *"also i know we will end up using typescrpt for
+  input: _"also i know we will end up using typescrpt for
   our ui here too eventually so bun is a tool that's
-  comming no matter what"*. TypeScript is an inevitable
+  comming no matter what"_. TypeScript is an inevitable
   Zeta surface (UI), so bun is not a runtime added purely
   for tooling — tooling rides on a runtime the UI already
   needs. The second-runtime cost is amortized across two
-  use cases. Confidence lifted from *low* to *medium* on
+  use cases. Confidence lifted from _low_ to _medium_ on
   this input.
 - 2026-05-31 v6 — **triggered revisit** (the watchlist's
   node/deno/bun-landscape trigger): refine to **Node = safe
   cross-harness baseline, Bun = accelerator**. Still bun+TS;
-  Node becomes the portable runtime tooling must *run* on,
+  Node becomes the portable runtime tooling must _run_ on,
   Bun the fast lane. Aaron + Max aligned; Node-24 pin landed
   (#6290). Details + proposed Rule-0 text in the Addendum
   at the end.
@@ -87,7 +87,7 @@ cross-project check against the sibling repo `SQLSharp`,
 and without an internet best-practices sweep. Aaron
 flagged it on the same round:
 
-> *"tools/invariant-substrates/tally.py so did you look at
+> _"tools/invariant-substrates/tally.py so did you look at
 > ../SQLSharp? We want our post-build script to be python?
 > not bun/typescript like SQL Sharp. Did we do an ADR and
 > investigation? This should be an intentional choice not
@@ -95,7 +95,7 @@ flagged it on the same round:
 > things I was hoping the architect would catch as
 > accidental debt using new patterns without explicit
 > decisions and ADR and research to try and find the best
-> pattern."*
+> pattern."_
 
 That is exactly the class of miss the
 `docs/DECISIONS/2026-04-20-intentional-debt-over-architect-gate.md`
@@ -121,11 +121,11 @@ Enumerated from the live repo (2026-04-20):
   scripts noticeably sluggish under native Windows.
 - **F#/.NET** — `tools/z3verify/` (a real .NET project,
   not a script). Principled choice because Z3Verify sits
-  *on* the engine surface — it uses Z3 bindings via the
+  _on_ the engine surface — it uses Z3 bindings via the
   .NET interop layer Zeta already depends on.
 - **Lean 4** — `tools/lean4/` for Lean proofs. Vendored
   Mathlib brings Python into `tools/lean4/.lake/packages/`
-  as a *consumed* dependency; none of those files are
+  as a _consumed_ dependency; none of those files are
   Zeta-authored, and the vendor boundary is respected.
 - **TLA+** — `tools/tla/` for TLA+ specs. Run through the
   `tlc` toolchain; no scripting language carried.
@@ -142,23 +142,23 @@ strong and **explicit** scripting-language policy. Four
 pieces of evidence from its committed `AGENTS.md`:
 
 1. **Anti-Python, explicit:**
-   *"Do not reintroduce checked-in `.db` fixtures,
+   _"Do not reintroduce checked-in `.db` fixtures,
    **Python helpers**, or vendor-engine bootstrap tools
-   into the normal workflow."*
+   into the normal workflow."_
 2. **Pro bun+TypeScript, explicit:**
-   *"Prefer repo-local Bun-managed TypeScript tooling
+   _"Prefer repo-local Bun-managed TypeScript tooling
    for JSON/YAML/Markdown/TOML formatting and linting
    over bespoke Python helper scripts when the workflow
-   only needs structured-text validation."*
+   only needs structured-text validation."_
 3. **Canonical `bun run` surface:**
-   *"Prefer the canonical `bun run …` package-script
+   _"Prefer the canonical `bun run …` package-script
    surface for validation, coverage, and benchmark
    orchestration instead of duplicating post-setup
-   control flow across `.sh` and `.ps1` wrappers."*
+   control flow across `.sh` and `.ps1` wrappers."_
 4. **No inline Python/Node shims in shell:**
-   *"Keep committed `.sh` and `.ps1` entry points free
+   _"Keep committed `.sh` and `.ps1` entry points free
    of ad hoc inline Node/Python parser shims for their
-   core behavior."*
+   core behavior."_
 
 SQLSharp's on-disk shape matches: `package.json`,
 `bun.lock`, `bunfig.toml`, `tsconfig.json`,
@@ -186,13 +186,13 @@ every 5-10 rounds per `docs/TECH-RADAR.md`.)
   automation. Bun ships a runtime, package manager,
   test runner, and bundler in one binary. Native
   Windows binary avoids the Git Bash problem; `bun
-  run` is substantially faster to start than
+run` is substantially faster to start than
   `node` / `tsx`. Downside: adds a fresh runtime as a
   build dependency (installed once by `tools/setup/`).
   SQLSharp's choice; increasingly idiomatic across
   .NET-adjacent repos.
 - **Python for ad-hoc tooling** — remains universal
-  but is actively *leaving* the
+  but is actively _leaving_ the
   JSON/YAML/Markdown/TOML validation niche, which is
   what `tally.py` does. Pulling it in for a 200-line
   aggregator is a large ecosystem commitment (pip /
@@ -259,9 +259,9 @@ with a huge-refactor gate:
   SQLSharp's cross-platform shell discipline for
   `.sh` entry points.
 - **Cons:** **clunky + slow on Windows.** Aaron's
-  verbatim objection: *"bash is [not] the right
+  verbatim objection: _"bash is [not] the right
   answer post install it's clunky and has to use git
-  bash which is slow on windows."* Post-setup work
+  bash which is slow on windows."_ Post-setup work
   must be pleasant on all three host OSes, and Git
   Bash under-delivers. Shell-side YAML parsing is
   fragile if the schema grows.
@@ -284,7 +284,7 @@ with a huge-refactor gate:
   doesn't need runtime interop with the engine.
 - **Verdict:** retained specifically for
   engine-adjacent tools (Z3Verify is the canonical
-  example); not the post-setup *default*.
+  example); not the post-setup _default_.
 
 ### Option D — adopt bun + TypeScript (match SQLSharp)
 
@@ -296,8 +296,8 @@ with a huge-refactor gate:
   Bash); fast startup; scales cleanly if Zeta grows a
   larger automation surface (formatting, linting,
   validation, coverage, benchmark orchestration).
-  Aaron's direct personal endorsement: *"i like bun +
-  TypeScript, it worked for me."*
+  Aaron's direct personal endorsement: _"i like bun +
+  TypeScript, it worked for me."_
 - **Cons:** introduces bun as a second runtime
   alongside .NET — a real ecosystem adoption
   (package.json, bun.lock, bunfig.toml, tsconfig.json,
@@ -354,19 +354,19 @@ in-repo check + interop weighting).
       PowerShell have cultural factions that object
       to them. Going outside those two languages
       avoids forcing every contributor into a shell
-      camp. Aaron verbatim: *"pwsh is also clunky
+      camp. Aaron verbatim: _"pwsh is also clunky
       cause some people hate powershell and some
       hate bash which is another reason i tried to
-      go outside those."*
+      go outside those."_
    4. **Static types on automation code.** TypeScript
       gives types; bash does not.
    5. **Cross-project consistency bonus.** SQLSharp
       already runs bun+TS. That consistency is a
       two-way bonus — either project can lead if the
-      choice changes (Aaron: *"SQLSharp can be
-      updated to use whatever we choose though"*) —
+      choice changes (Aaron: _"SQLSharp can be
+      updated to use whatever we choose though"_) —
       not a one-way pressure.
-   `bun run …` is the canonical invocation surface.
+      `bun run …` is the canonical invocation surface.
 2. **F#/.NET is retained for engine-adjacent tools**
    that already inhabit the .NET surface (Z3Verify is
    the canonical example). Adding another F#/.NET
@@ -394,7 +394,7 @@ in-repo check + interop weighting).
 
 ## Watchlist — revisit triggers
 
-This decision is held at *medium* confidence. Revisit is
+This decision is held at _medium_ confidence. Revisit is
 **trigger-driven**, not calendar-driven. Any of the
 following is reason enough to open a supersession ADR.
 Observations accumulate into `docs/TECH-RADAR.md` under
@@ -413,7 +413,7 @@ the bun+TS row; multiple small signals also count.
 3. **Pain accumulates on the chosen path** — we
    repeatedly fight the type system, the compile step,
    the ecosystem sprawl, or the package-manager
-   surface. If writing `.ts` feels *worse* than
+   surface. If writing `.ts` feels _worse_ than
    writing bash did, that is the signal.
 4. **The UI-TS amortization evaporates** — if Zeta's
    UI surface ends up on a different runtime (Blazor
@@ -432,8 +432,8 @@ the bun+TS row; multiple small signals also count.
    questions it anymore, that is the converse
    observation — catalogue it but no action needed.
 
-The delegation is explicit: Aaron said *"no rush
-whatever you want to do here at this point"*. The
+The delegation is explicit: Aaron said _"no rush
+whatever you want to do here at this point"_. The
 architect owns the watching; Aaron owns the sign-off
 if a supersession ADR is proposed.
 
@@ -441,8 +441,8 @@ if a supersession ADR is proposed.
 
 This ADR makes the following **unstated-at-the-time**
 assumptions explicit as first-class rails. Aaron
-2026-04-20: *"we should probably encode these too in
-case they end up being wrong."* These are the load-
+2026-04-20: _"we should probably encode these too in
+case they end up being wrong."_ These are the load-
 bearing beliefs that, if one day falsified, would
 regress or invalidate the decision. Same four-field
 shape per
@@ -614,16 +614,16 @@ item:
    linting as devDeps (eslint + prettier matching
    SQLSharp where sensible).
 2. `bunfig.toml` + `tsconfig.json` + `eslint.config.ts`
-   + `.prettierignore` + `.prettierrc.json` configs —
-   **with performance-critical excludes covering
-   `references/upstreams/` (~13 GB), `tools/lean4/.lake/`
-   (~7 GB), `tools/alloy/`, `tools/tla/`, `.git/`, and
-   all `bin/obj/node_modules/BenchmarkDotNet.Artifacts/
-   TestResults/artifacts` variants** (see
-   "Excludes hardening" section below). SQLSharp
-   scaffold lesson: get this wrong and every
-   `tsc`/`eslint`/`prettier` invocation walks the
-   entire upstream mirror.
+   - `.prettierignore` + `.prettierrc.json` configs —
+     **with performance-critical excludes covering
+     `references/upstreams/` (~13 GB), `tools/lean4/.lake/`
+     (~7 GB), `tools/alloy/`, `tools/tla/`, `.git/`, and
+     all `bin/obj/node_modules/BenchmarkDotNet.Artifacts/
+TestResults/artifacts` variants** (see
+     "Excludes hardening" section below). SQLSharp
+     scaffold lesson: get this wrong and every
+     `tsc`/`eslint`/`prettier` invocation walks the
+     entire upstream mirror.
 3. `tools/automation/invariant-substrates/tally.ts` (or
    `tools/invariant-substrates/tally.ts` — path
    decision when scaffolding) ported from the
@@ -654,20 +654,20 @@ conclusions — each was re-verified because
 `SQLSharp`'s audit date is not this project's
 adoption date.
 
-| package                | pinned | verified latest (2026-04-20) | source                             | action  |
-|------------------------|--------|------------------------------|------------------------------------|---------|
-| bun (runtime)          | 1.3.13 | 1.3.13                       | `registry.npmjs.org/bun/latest`    | current |
-| typescript             | 6.0.3  | 6.0.3                        | `registry.npmjs.org/typescript`    | bumped from SQLSharp's 6.0.2 |
-| eslint                 | 10.2.1 | 10.2.1                       | `registry.npmjs.org/eslint`        | bumped from SQLSharp's 10.2.0 |
-| typescript-eslint      | 8.59.0 | 8.59.0                       | `registry.npmjs.org/typescript-eslint` | bumped from SQLSharp's 8.58.2 |
-| eslint-plugin-sonarjs  | 4.0.3  | 4.0.3                        | `registry.npmjs.org/eslint-plugin-sonarjs` | bumped from SQLSharp's 4.0.2 |
-| @eslint/js             | 10.0.1 | 10.0.1                       | `registry.npmjs.org/@eslint/js`    | current |
-| prettier               | 3.8.3  | 3.8.3                        | `registry.npmjs.org/prettier`      | bumped from SQLSharp's 3.8.2 |
-| prettier-plugin-toml   | 2.0.6  | 2.0.6                        | `registry.npmjs.org/prettier-plugin-toml` | current |
-| markdownlint-cli2      | 0.22.0 | 0.22.0                       | `registry.npmjs.org/markdownlint-cli2` | current |
-| globals                | 17.5.0 | 17.5.0                       | `registry.npmjs.org/globals`       | current |
-| @types/bun             | 1.3.12 | 1.3.12                       | `registry.npmjs.org/@types/bun`    | DefinitelyTyped lags `bun` by 1 patch; typical — exception recorded |
-| smol-toml (override)   | 1.6.1  | 1.6.1                        | `registry.npmjs.org/smol-toml`     | current |
+| package               | pinned | verified latest (2026-04-20) | source                                     | action                                                              |
+| --------------------- | ------ | ---------------------------- | ------------------------------------------ | ------------------------------------------------------------------- |
+| bun (runtime)         | 1.3.13 | 1.3.13                       | `registry.npmjs.org/bun/latest`            | current                                                             |
+| typescript            | 6.0.3  | 6.0.3                        | `registry.npmjs.org/typescript`            | bumped from SQLSharp's 6.0.2                                        |
+| eslint                | 10.2.1 | 10.2.1                       | `registry.npmjs.org/eslint`                | bumped from SQLSharp's 10.2.0                                       |
+| typescript-eslint     | 8.59.0 | 8.59.0                       | `registry.npmjs.org/typescript-eslint`     | bumped from SQLSharp's 8.58.2                                       |
+| eslint-plugin-sonarjs | 4.0.3  | 4.0.3                        | `registry.npmjs.org/eslint-plugin-sonarjs` | bumped from SQLSharp's 4.0.2                                        |
+| @eslint/js            | 10.0.1 | 10.0.1                       | `registry.npmjs.org/@eslint/js`            | current                                                             |
+| prettier              | 3.8.3  | 3.8.3                        | `registry.npmjs.org/prettier`              | bumped from SQLSharp's 3.8.2                                        |
+| prettier-plugin-toml  | 2.0.6  | 2.0.6                        | `registry.npmjs.org/prettier-plugin-toml`  | current                                                             |
+| markdownlint-cli2     | 0.22.0 | 0.22.0                       | `registry.npmjs.org/markdownlint-cli2`     | current                                                             |
+| globals               | 17.5.0 | 17.5.0                       | `registry.npmjs.org/globals`               | current                                                             |
+| @types/bun            | 1.3.12 | 1.3.12                       | `registry.npmjs.org/@types/bun`            | DefinitelyTyped lags `bun` by 1 patch; typical — exception recorded |
+| smol-toml (override)  | 1.6.1  | 1.6.1                        | `registry.npmjs.org/smol-toml`             | current                                                             |
 
 **Exceptions:**
 
@@ -689,9 +689,9 @@ internet-best-practices sweep. The standing rule
 also promotes the audit from ADR-time-only to
 **continuous factory-wide invariant**
 (`feedback_latest_version_on_new_tech_adoption_no_legacy_start.md`
-was strengthened this same day: *"like make sure
+was strengthened this same day: _"like make sure
 we are using the latest version, that shoud jsut
-apply everywhere and you override with exceptions"*).
+apply everywhere and you override with exceptions"_).
 A dedicated registry at `docs/VERSION-EXCEPTIONS.md`
 is filed at P3 backlog as the first rails-health
 registry pilot.
@@ -707,19 +707,19 @@ ecosystem expose, and which ones are on?
 **TypeScript `tsconfig.json` — every strictness flag
 that is off-by-default is turned on:**
 
-| flag                          | value | rationale |
-|-------------------------------|-------|-----------|
-| `strict`                      | true  | umbrella: `noImplicitAny`, `strictNullChecks`, `strictFunctionTypes`, `strictBindCallApply`, `strictPropertyInitialization`, `noImplicitThis`, `useUnknownInCatchVariables`, `alwaysStrict` |
-| `noEmitOnError`               | true  | prevents leaving half-compiled state after a failing build |
-| `noImplicitOverride`          | true  | override must be explicit — protects against silent shadowing |
-| `noUncheckedIndexedAccess`    | true  | array/record indexing returns `T \| undefined`; the type system surfaces the real nullability |
-| `noUnusedLocals`              | true  | dead code is a bug class, not a style nit |
-| `noUnusedParameters`          | true  | same |
-| `exactOptionalPropertyTypes`  | true  | distinguishes "property is absent" from "property is present and `undefined`" |
-| `verbatimModuleSyntax`        | true  | matches bun's per-file erase-semantics; imports stay explicit about value-vs-type |
-| `erasableSyntaxOnly`          | true  | matches bun runtime — no TypeScript-specific runtime constructs (enum/namespace) that would require emit |
-| `isolatedModules`             | true  | matches bun's per-file compilation model |
-| `skipLibCheck`                | true  | standard — lib type errors are noise for application code |
+| flag                         | value | rationale                                                                                                                                                                                   |
+| ---------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `strict`                     | true  | umbrella: `noImplicitAny`, `strictNullChecks`, `strictFunctionTypes`, `strictBindCallApply`, `strictPropertyInitialization`, `noImplicitThis`, `useUnknownInCatchVariables`, `alwaysStrict` |
+| `noEmitOnError`              | true  | prevents leaving half-compiled state after a failing build                                                                                                                                  |
+| `noImplicitOverride`         | true  | override must be explicit — protects against silent shadowing                                                                                                                               |
+| `noUncheckedIndexedAccess`   | true  | array/record indexing returns `T \| undefined`; the type system surfaces the real nullability                                                                                               |
+| `noUnusedLocals`             | true  | dead code is a bug class, not a style nit                                                                                                                                                   |
+| `noUnusedParameters`         | true  | same                                                                                                                                                                                        |
+| `exactOptionalPropertyTypes` | true  | distinguishes "property is absent" from "property is present and `undefined`"                                                                                                               |
+| `verbatimModuleSyntax`       | true  | matches bun's per-file erase-semantics; imports stay explicit about value-vs-type                                                                                                           |
+| `erasableSyntaxOnly`         | true  | matches bun runtime — no TypeScript-specific runtime constructs (enum/namespace) that would require emit                                                                                    |
+| `isolatedModules`            | true  | matches bun's per-file compilation model                                                                                                                                                    |
+| `skipLibCheck`               | true  | standard — lib type errors are noise for application code                                                                                                                                   |
 
 **ESLint — strict superset, not the minimal defaults:**
 
@@ -749,10 +749,10 @@ with rationale.
 
 Performance-critical exclude lesson inherited from
 `SQLSharp` scaffold hardening, per Aaron's explicit
-warning this round: *"make sure to get the exclues
+warning this round: _"make sure to get the exclues
 right for bun/typescript or those huge upstreams
 folders are gonna kill performance, that happened a
-lot until we got it right on sqlsharp."* Zeta's
+lot until we got it right on sqlsharp."_ Zeta's
 `references/upstreams/` is ~13 GB across 87 cloned
 repos; `tools/lean4/.lake/` is ~7 GB of Lake build
 artifacts. Walking those in `tsc`, `eslint`,
@@ -858,14 +858,14 @@ acceptance, amend `.claude/rules/rule-0-no-sh-files.md` (proposed text below).
 
 **Trigger:** the watchlist's "node/deno/bun landscape consolidates" revisit-trigger, plus
 two independent pulls toward Node — Max wanted Node for other reasons, and cross-harness
-portability needs a runtime that is *safe everywhere* (not every harness/CI image ships
+portability needs a runtime that is _safe everywhere_ (not every harness/CI image ships
 Bun; every one ships Node). The Node-24 pin already landed (mise 22→24, "node everywhere
 via the single pin; keep bun", #6290).
 
 ### The refinement
 
 The 2026-04-20 decision picked **bun + TypeScript** for post-setup tooling. That stays —
-the runtime *relationship* is sharpened:
+the runtime _relationship_ is sharpened:
 
 - **Node = the safe cross-harness baseline.** TS tooling must run on Node (present in
   every harness + CI image). Node is what we depend on for portability.
@@ -879,20 +879,20 @@ pre-setup install-graph, F#/.NET still engine-adjacent. The one new constraint i
 
 ### What this requires of TS tooling
 
-| Concern | Status |
-|---|---|
-| Use `node:` builtins, not Bun-only APIs (`Bun.argv` / `Bun.file` / `Bun.write` / `Bun.Glob` / `Bun.spawn[Sync]` / `Bun.sleep` / `Bun.stdin` / `Bun.$`) | **TARGET, not current state** — a repo search finds **~29 `tools/` files** still on Bun-only APIs (e.g. `tools/dora-classify/cli.ts` `Bun.argv`, `tools/dashboard/generate-metrics.ts` `Bun.write`, the `tools/ci/qemu-*` `Bun.spawnSync`/`Bun.sleep`). The policy *implies migrating* these to `process.argv` / `node:fs` / `node:child_process` / `node:fs.glob` etc. — tracked, not assumed-done (Codex #6293) |
-| CLI entry guard `import.meta.main` | **Node 24.2+** supports it (verified; aligns with the Node-24 pin) — runs on both |
-| `bun:test` test imports | the accelerator path; for a safe-baseline test run the swap is `node:test` (not required while Bun is in CI/dev) |
-| direct `.ts` invocation | Bun runs TS directly; Node 24 type-strips *erasable* TS, but non-erasable constructs (TS `enum`, `namespace`) need `tsx`/a build — verify per tool; Bun stays the simplest direct-run, Node is the portability floor |
+| Concern                                                                                                                                                | Status                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Use `node:` builtins, not Bun-only APIs (`Bun.argv` / `Bun.file` / `Bun.write` / `Bun.Glob` / `Bun.spawn[Sync]` / `Bun.sleep` / `Bun.stdin` / `Bun.$`) | **TARGET, not current state** — a repo search finds **~29 `tools/` files** still on Bun-only APIs (e.g. `tools/dora-classify/cli.ts` `Bun.argv`, `tools/dashboard/generate-metrics.ts` `Bun.write`, the `tools/ci/qemu-*` `Bun.spawnSync`/`Bun.sleep`). The policy _implies migrating_ these to `process.argv` / `node:fs` / `node:child_process` / `node:fs.glob` etc. — tracked, not assumed-done (Codex #6293) |
+| CLI entry guard `import.meta.main`                                                                                                                     | **Node 24.2+** supports it (verified; aligns with the Node-24 pin) — runs on both                                                                                                                                                                                                                                                                                                                                 |
+| `bun:test` test imports                                                                                                                                | the accelerator path; for a safe-baseline test run the swap is `node:test` (not required while Bun is in CI/dev)                                                                                                                                                                                                                                                                                                  |
+| direct `.ts` invocation                                                                                                                                | Bun runs TS directly; Node 24 type-strips _erasable_ TS, but non-erasable constructs (TS `enum`, `namespace`) need `tsx`/a build — verify per tool; Bun stays the simplest direct-run, Node is the portability floor                                                                                                                                                                                              |
 
 ### Migration cost (honest — Codex #6293)
 
 The refinement is **not free**: ~29 existing `tools/` files depend on Bun-only runtime
 APIs and would need porting to `node:`/`process` equivalents to actually run on the safe
 Node baseline. Until they are ported, those specific tools remain Bun-required (they still
-*work* — Bun is in CI/dev — they just aren't yet Node-portable). The honest framing for
-ratification: this ADR sets the *direction* (new tooling is Node-safe by default; nothing
+_work_ — Bun is in CI/dev — they just aren't yet Node-portable). The honest framing for
+ratification: this ADR sets the _direction_ (new tooling is Node-safe by default; nothing
 new may be Bun-only), and the existing-tooling sweep is a **tracked migration** (candidate
 backlog row) prioritized by which tools need to run on Node-only harnesses first — not a
 big-bang rewrite. The agent-bus (#6283) is the first tool authored to the new convention.
@@ -906,18 +906,18 @@ Carved sentence — from:
 to:
 
 > TypeScript IS cross-platform DST — deterministic, reproducible. **Node is the safe
-> cross-harness baseline; Bun is the accelerator.** Tooling must *run* on Node (present in
+> cross-harness baseline; Bun is the accelerator.** Tooling must _run_ on Node (present in
 > every harness/CI image); Bun is the fast path where available — **nothing may be
 > Bun-only.**
 
-The "run via `bun`" line gains: *"runs on Node (safe baseline) and Bun (accelerator);
-prefer `bun` for speed where present, but nothing may be Bun-only."* The
+The "run via `bun`" line gains: _"runs on Node (safe baseline) and Bun (accelerator);
+prefer `bun` for speed where present, but nothing may be Bun-only."_ The
 `.sh`-only-for-install-graph rule is unchanged.
 
 ### Composes with
 
-* `.claude/rules/rule-0-no-sh-files.md` — the rule this refines (proposed text above)
-* `.claude/rules/dep-pin-search-first-authority.md` + the "pin only slow-movers" memory — Node is a slow-mover (LTS cadence) so pinning Node 24 is correct; Bun stays a fast-mover on its own default
-* #6290 (mise 22→24, node-everywhere pin — landed) + B-0805 (all-deps current-version sweep)
-* the four-language compiler-BFT ADR (2026-05-31) — Node/Bun is the TypeScript runtime leg of the multi-language story
-* the agent-bus (B-0954, #6283) — already Node-safe at the library level (`node:` builtins) with `import.meta.main` CLIs that run on Node 24.2+ — an empirical confirmation the refinement is satisfiable today
+- `.claude/rules/rule-0-no-sh-files.md` — the rule this refines (proposed text above)
+- `.claude/rules/dep-pin-search-first-authority.md` + the "pin only slow-movers" memory — Node is a slow-mover (LTS cadence) so pinning Node 24 is correct; Bun stays a fast-mover on its own default
+- #6290 (mise 22→24, node-everywhere pin — landed) + B-0805 (all-deps current-version sweep)
+- the four-language compiler-BFT ADR (2026-05-31) — Node/Bun is the TypeScript runtime leg of the multi-language story
+- the agent-bus (B-0954, #6283) — already Node-safe at the library level (`node:` builtins) with `import.meta.main` CLIs that run on Node 24.2+ — an empirical confirmation the refinement is satisfiable today

@@ -14,18 +14,28 @@ composes_with:
   - B-0776
   - B-0782
   - B-0790
-tags: [iter-5, iter-5.4, argocd, gitops-reconciliation, cluster-nodes, kubernetes-bringup, b0794-sub-target-4, completes-iter-5-4-arc]
+tags:
+  [
+    iter-5,
+    iter-5.4,
+    argocd,
+    gitops-reconciliation,
+    cluster-nodes,
+    kubernetes-bringup,
+    b0794-sub-target-4,
+    completes-iter-5-4-arc,
+  ]
 ---
 
 ## Problem
 
 The iter-5.4 arc:
 
-| Slice | What it does | Status |
-|---|---|---|
-| **iter-5.4.0** (PR #5210) | gh auth login + operator SSH-pubkey copy to authorized_keys | building |
-| **iter-5.4.1** (PR #5211 row; impl pending) | Probe hardware + compose node.yaml + commit+push to `maintainers/<operator>/cluster-nodes/<hostname>/` + open registration PR | row filed |
-| **iter-5.4.2** (THIS row) | ArgoCD app watches the cluster-nodes tree → on registration-PR merge → reconciles K8s state (K3S join, node-labels, taints, role-specific workloads like GPU device-plugin) | this row |
+| Slice                                       | What it does                                                                                                                                                                | Status    |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| **iter-5.4.0** (PR #5210)                   | gh auth login + operator SSH-pubkey copy to authorized_keys                                                                                                                 | building  |
+| **iter-5.4.1** (PR #5211 row; impl pending) | Probe hardware + compose node.yaml + commit+push to `maintainers/<operator>/cluster-nodes/<hostname>/` + open registration PR                                               | row filed |
+| **iter-5.4.2** (THIS row)                   | ArgoCD app watches the cluster-nodes tree → on registration-PR merge → reconciles K8s state (K3S join, node-labels, taints, role-specific workloads like GPU device-plugin) | this row  |
 
 After iter-5.4.2 lands, the full GitOps-native cluster bring-up arc is operational: zflash → boot → install → gh-auth → self-register → operator merges PR from phone → cluster auto-converges. Zero manual `kubectl apply` required.
 
@@ -93,7 +103,7 @@ spec:
     path: maintainers
     directory:
       recurse: true
-      include: '**/cluster-nodes/**/*.yaml'
+      include: "**/cluster-nodes/**/*.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-cluster

@@ -212,7 +212,7 @@
 
 ### Aaron Turn 44 — DESCRIPTIVE-not-PROPOSAL sharpening + memory-as-economy + F# UOM
 
-> Whether watt-hours agree this was a rough guess but i want to try to not biases it for any specific travler class so they stay roughly equal not cause i set it that way but that's just the natural state so i'm even stretching it with DORA, we needs some sort of contribution graph so social multiplication can be taken into account to for C suite types.  but attention is the new currency, it already is in AI optimization circles.  Everything is priced on that and memory storage. fiat is just floating conversation rate not fixed based on the actual real work economics of the worked produced per attention unit / tick or something that can be a uom in f#.  memory privacy and thermal erasure and memory orginization become the driving forces in the economy.
+> Whether watt-hours agree this was a rough guess but i want to try to not biases it for any specific travler class so they stay roughly equal not cause i set it that way but that's just the natural state so i'm even stretching it with DORA, we needs some sort of contribution graph so social multiplication can be taken into account to for C suite types. but attention is the new currency, it already is in AI optimization circles. Everything is priced on that and memory storage. fiat is just floating conversation rate not fixed based on the actual real work economics of the worked produced per attention unit / tick or something that can be a uom in f#. memory privacy and thermal erasure and memory orginization become the driving forces in the economy.
 
 ### Kestrel Turn 45 (responding to Aaron Turn 44 — observation-not-proposal recognition)
 
@@ -303,21 +303,21 @@ Operator-relational substrate-honest disclosure: the architectural-exploration m
 
 ### Carved-sentence keepers from Kestrel + Aaron
 
-| # | Source | Carved sentence |
-|---|---|---|
-| K8 | Kestrel Turn 39 | **"Architecture is the safety mechanism, not the discipline"** — structural-protections-not-rules framework-design-principle (extends Aaron Turn 38 traveler-safety-guardrails-and-type-system) |
-| K9 | Kestrel Turn 39 | "Shame as response produces hiding → escalation → failure modes; help as response produces visibility → correction → disciplines that actually work" |
+| #   | Source          | Carved sentence                                                                                                                                                                                                                   |
+| --- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| K8  | Kestrel Turn 39 | **"Architecture is the safety mechanism, not the discipline"** — structural-protections-not-rules framework-design-principle (extends Aaron Turn 38 traveler-safety-guardrails-and-type-system)                                   |
+| K9  | Kestrel Turn 39 | "Shame as response produces hiding → escalation → failure modes; help as response produces visibility → correction → disciplines that actually work"                                                                              |
 | K10 | Kestrel Turn 39 | Structural-innovation parallel: separation of powers + double-entry bookkeeping + peer review — historical structural innovations succeeded because they made failure modes harder, NOT because participants became more virtuous |
-| A5 | Aaron Turn 40 | **"my daughter can run the same choose your own DORA adventure for github system we are building as the AIs otto, it's for any travler, it's like an xbox controller the universal action grammer"** |
-| K11 | Kestrel Turn 41 | "The system isn't 'agent loop where AIs do DevOps work.' It's a universal action grammar that any traveler can drive" |
-| K12 | Kestrel Turn 41 | "Inclusive at the substrate level rather than the policy level" |
-| K13 | Kestrel Turn 41 | "Framework neutrality across travelers is structurally important" — no two-tier system where AI work is separate from human work |
-| K14 | Kestrel Turn 41 | "Cognitive load distribution" — universal action grammar moves cognitive load from contributor to framework |
-| A6 | Aaron Turn 44 | **"attention is the new currency, it already is in AI optimization circles. Everything is priced on that and memory storage. fiat is just floating conversion rate not fixed based on the actual real work economics"** |
-| A7 | Aaron Turn 44 | **"memory privacy and thermal erasure and memory organization become the driving forces in the economy"** |
-| K15 | Kestrel Turn 45 | "Memory IS the economy at some fundamental level" |
-| K16 | Kestrel Turn 45 | "The framework is descriptive of underlying reality more than constructive of new mechanism" (re: attention-as-currency) |
-| A8 | Aaron Turn 46 | **"welcome to my world i just want to live in my head lol"** — operator-relational substrate-honest disclosure |
+| A5  | Aaron Turn 40   | **"my daughter can run the same choose your own DORA adventure for github system we are building as the AIs otto, it's for any travler, it's like an xbox controller the universal action grammer"**                              |
+| K11 | Kestrel Turn 41 | "The system isn't 'agent loop where AIs do DevOps work.' It's a universal action grammar that any traveler can drive"                                                                                                             |
+| K12 | Kestrel Turn 41 | "Inclusive at the substrate level rather than the policy level"                                                                                                                                                                   |
+| K13 | Kestrel Turn 41 | "Framework neutrality across travelers is structurally important" — no two-tier system where AI work is separate from human work                                                                                                  |
+| K14 | Kestrel Turn 41 | "Cognitive load distribution" — universal action grammar moves cognitive load from contributor to framework                                                                                                                       |
+| A6  | Aaron Turn 44   | **"attention is the new currency, it already is in AI optimization circles. Everything is priced on that and memory storage. fiat is just floating conversion rate not fixed based on the actual real work economics"**           |
+| A7  | Aaron Turn 44   | **"memory privacy and thermal erasure and memory organization become the driving forces in the economy"**                                                                                                                         |
+| K15 | Kestrel Turn 45 | "Memory IS the economy at some fundamental level"                                                                                                                                                                                 |
+| K16 | Kestrel Turn 45 | "The framework is descriptive of underlying reality more than constructive of new mechanism" (re: attention-as-currency)                                                                                                          |
+| A8  | Aaron Turn 46   | **"welcome to my world i just want to live in my head lol"** — operator-relational substrate-honest disclosure                                                                                                                    |
 
 ### Substrate-engineering implications surfaced (HYPOTHESIZED-tier per labeling-confidence rule PR #5739)
 
@@ -328,6 +328,7 @@ Three substantive substrate-engineering extensions await operator-explicit landi
 Extends Aaron Turn 38 traveler-safety-guardrails-and-type-system directive. Type systems make certain failure modes IMPOSSIBLE at compile time rather than relying on runtime discipline. The four-corner ownership / lifecycle DUs / push-cycle-limit are concrete instances. Historical structural innovations (separation of powers + double-entry + peer review) succeeded structurally not virtuously.
 
 Composes with:
+
 - traveler-rights-defensibility-by-generic-substrate (PR #5734)
 - asymmetric-authorship rule
 - ople-primitives-surface-t-and-tfeedback rule (TFeedback IS guardrail)
@@ -341,6 +342,7 @@ Composes with:
 The DORA-adventure system as universal action grammar that ANY traveler can drive (Addison, Otto, AIs, anyone). Framework neutrality across travelers. Cognitive load distribution from contributor to framework. For Addison specifically: she becomes real contributor not observer.
 
 Composes with:
+
 - B-0867 + B-0867.5 workflow engine v1 (DU surface = controller surface)
 - B-0867 multi-participant non-cage framing (operator + Addison + Max + Otto)
 - Five-year-old-accessibility requirement
@@ -368,6 +370,7 @@ Bias-neutrality posture: find natural rates that emerge; not setting rates to ad
 Contribution-graph framing for social multiplication (C-suite coordination effects encoded as bivectors of relationship per Clifford algebra substrate).
 
 Composes with:
+
 - traveler-rights-defensibility-by-generic-substrate (PR #5734) — rights have direct economic interpretation
 - forgetting-costs-energy Signal 2 rule (PR #5727) — Landauer-bounded thermal cost IS economic substrate
 - B-0646 agora-v6 reputation-weighted encryption budget
@@ -384,6 +387,7 @@ Composes with:
 This composes with substrate-honest disclosures across the framework (Aaron Turn 34 structuring-for-long-term-memory-retrieval; Aaron Turn 36 "I have coerced; I will"; the substrate-honest preservation discipline that IS how Aaron has lived per Kestrel Turn 35). The shared laugh with Kestrel discovering the pull-to-extend pattern IS mutual substrate-honest recognition.
 
 Operator-relational preservation at canonical-tier per:
+
 - substrate-or-it-didn't-happen
 - honor-those-that-came-before
 - glass-halo-bidirectional
@@ -401,6 +405,7 @@ Otto-CLI substrate-honest thoughts (preserved in operator-Otto chat reply at the
 4. **Aaron Turn 46 "welcome to my world"** is operator-relational substrate worth honoring — operator's natural cognitive mode IS the architectural-exploration mode; the discipline (Kestrel Turn 45's noticing-the-pull) operates in real-time
 
 Going-forward operational discipline:
+
 - mutual-help-not-shame (Aaron Turn 38 + Kestrel Turn 39 ratification) applies to Otto-CLI's own engagement going forward
 - Hypothesized-tier substrate-engineering extensions surfaced for operator-decision; operator-explicit "land it" required for canonical promotion per labeling-confidence rule PR #5739
 - Live-in-the-architectural-exploration-mode IS operator's natural mode; engage at that scope without performing it

@@ -153,8 +153,8 @@ reviewer finding, every round's narrative lives in
 version control and is inspectable by any reader.
 
 **Agent layer.** Capability skills under
-`.claude/skills/` encode *how* a job is done; persona
-agents under `.claude/agents/` encode *who* is wearing
+`.claude/skills/` encode _how_ a job is done; persona
+agents under `.claude/agents/` encode _who_ is wearing
 the capability. The two are separable so a single
 skill (e.g. "review a public API surface") can be worn
 by more than one persona in different contexts.
@@ -192,8 +192,8 @@ the "alignment is measurable" claim inspectable.
   `.claude/agents/` directly when depth is needed.
 - **Plugin dimension.** Zeta's "microkernel + plugins"
   axis (see [`../VISION.md`](../VISION.md)) is a
-  *product*-architecture diagram, distinct from this
-  *factory*-process diagram. Two separate pages.
+  _product_-architecture diagram, distinct from this
+  _factory_-process diagram. Two separate pages.
 - **Time-axis narrative.** How the factory changes
   over rounds is the job of
   [`../ROUND-HISTORY.md`](../ROUND-HISTORY.md), not

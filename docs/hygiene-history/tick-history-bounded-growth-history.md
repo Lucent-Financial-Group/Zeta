@@ -15,7 +15,7 @@ fire-history (this file) so row #44 stays honest.
 ## Per-fire schema
 
 | date (UTC) | agent | line-count | threshold | pct | status | notes |
-|---|---|---|---|---|---|---|
+| ---------- | ----- | ---------- | --------- | --- | ------ | ----- |
 
 - **date** — `YYYY-MM-DDTHH:MM:SSZ` when the audit ran.
 - **agent** — who or what invoked the audit (tick-close,
@@ -37,7 +37,7 @@ archive-action-taken and the new line count after the move.
 
 ## Log
 
-| date | agent | line-count | threshold | pct | status | notes |
-|---|---|---|---|---|---|---|
-| 2026-04-22T (round-44 tick, first-fire bootstrap) | opus-4-7 / session round-44 | 96 | 500 | 19% | within bounds | First-fire bootstrap. Row #49 landed this tick; audit script `tools/hygiene/audit-tick-history-bounded-growth.sh` landed this tick; file header threshold lowered from 5000 to 500 per the script's mini-ADR. Current file (96 lines) has ~400 lines of remaining headroom. |
-| 2026-04-22T (round-44 tick, post-dbt-research append) | opus-4-7 / session round-44 (post-compaction) | 110 | 500 | 22% | within bounds | Post-commit-`d25bc66` + tick-history-append audit. Two bounded-growth-history rows inside the first round of the row's existence = the cadence works. 390 lines of remaining headroom. |
+| date                                                  | agent                                         | line-count | threshold | pct | status        | notes                                                                                                                                                                                                                                                                       |
+| ----------------------------------------------------- | --------------------------------------------- | ---------- | --------- | --- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-22T (round-44 tick, first-fire bootstrap)     | opus-4-7 / session round-44                   | 96         | 500       | 19% | within bounds | First-fire bootstrap. Row #49 landed this tick; audit script `tools/hygiene/audit-tick-history-bounded-growth.sh` landed this tick; file header threshold lowered from 5000 to 500 per the script's mini-ADR. Current file (96 lines) has ~400 lines of remaining headroom. |
+| 2026-04-22T (round-44 tick, post-dbt-research append) | opus-4-7 / session round-44 (post-compaction) | 110        | 500       | 22% | within bounds | Post-commit-`d25bc66` + tick-history-append audit. Two bounded-growth-history rows inside the first round of the row's existence = the cadence works. 390 lines of remaining headroom.                                                                                      |

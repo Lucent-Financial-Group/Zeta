@@ -1,10 +1,7 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  CommandType,
-  type ContextPackInboxAnchor,
-} from "../../domain/src/index.ts";
+import { CommandType, type ContextPackInboxAnchor } from "../../domain/src/index.ts";
 import {
   CommandErrorCode,
   CommandResultArtifactType,
@@ -77,28 +74,31 @@ describe("update context-pack inbox anchor status handler", () => {
     equal(result.contextPackInboxAnchor?.inboxAnchorId, command.inboxAnchorId);
     equal(result.contextPackInboxAnchorStatusTransition?.status, ContextPackInboxAnchorStatus.Read);
     equal(result.contextPackInboxAnchorStatusTransition?.changedAt, ContextPackInboxAnchorStatusTestTime.ChangedAt);
-    deepEqual(outcome.effects.contextPackInboxAnchorStatusTransitions, [
-      result.contextPackInboxAnchorStatusTransition,
+    deepEqual(outcome.effects.contextPackInboxAnchorStatusTransitions, [result.contextPackInboxAnchorStatusTransition]);
+    deepEqual(result.artifacts, [
+      {
+        artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
+        artifactId: command.inboxAnchorId,
+        label: "Director context pack is stale",
+      },
     ]);
-    deepEqual(result.artifacts, [{
-      artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
-      artifactId: command.inboxAnchorId,
-      label: "Director context pack is stale",
-    }]);
     deepEqual(result.auditEventIds, [ContextPackInboxAnchorStatusTestId.Audit]);
   });
 
   test("rejects malformed target statuses before emitting effects", async () => {
-    const outcome = await updateContextPackInboxAnchorStatus({
-      ...command,
-      status: "archived",
-    } as unknown as UpdateContextPackInboxAnchorStatusCommand, {
-      now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
-      createId: (prefix) => `${prefix}-001`,
-      contextPackInboxAnchorStateReader: {
-        findContextPackInboxAnchor: async () => createInboxAnchor(),
+    const outcome = await updateContextPackInboxAnchorStatus(
+      {
+        ...command,
+        status: "archived",
+      } as unknown as UpdateContextPackInboxAnchorStatusCommand,
+      {
+        now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
+        createId: (prefix) => `${prefix}-001`,
+        contextPackInboxAnchorStateReader: {
+          findContextPackInboxAnchor: async () => createInboxAnchor(),
+        },
       },
-    });
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Rejected);
@@ -108,16 +108,19 @@ describe("update context-pack inbox anchor status handler", () => {
   });
 
   test("rejects unread target status because unread is owned by anchor creation", async () => {
-    const outcome = await updateContextPackInboxAnchorStatus({
-      ...command,
-      status: ContextPackInboxAnchorStatus.Unread,
-    }, {
-      now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
-      createId: (prefix) => `${prefix}-001`,
-      contextPackInboxAnchorStateReader: {
-        findContextPackInboxAnchor: async () => createInboxAnchor(),
+    const outcome = await updateContextPackInboxAnchorStatus(
+      {
+        ...command,
+        status: ContextPackInboxAnchorStatus.Unread,
       },
-    });
+      {
+        now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
+        createId: (prefix) => `${prefix}-001`,
+        contextPackInboxAnchorStateReader: {
+          findContextPackInboxAnchor: async () => createInboxAnchor(),
+        },
+      },
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Rejected);
@@ -127,39 +130,46 @@ describe("update context-pack inbox anchor status handler", () => {
   });
 
   test("emits a snoozed transition with a required wake time for deferred inbox anchors", async () => {
-    const outcome = await updateContextPackInboxAnchorStatus({
-      ...command,
-      status: ContextPackInboxAnchorStatus.Snoozed,
-      snoozedUntil: ContextPackInboxAnchorStatusTestTime.SnoozedUntil,
-    }, {
-      now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
-      createId: (prefix) => `${prefix}-001`,
-      contextPackInboxAnchorStateReader: {
-        findContextPackInboxAnchor: async () => createInboxAnchor(),
+    const outcome = await updateContextPackInboxAnchorStatus(
+      {
+        ...command,
+        status: ContextPackInboxAnchorStatus.Snoozed,
+        snoozedUntil: ContextPackInboxAnchorStatusTestTime.SnoozedUntil,
       },
-    });
+      {
+        now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
+        createId: (prefix) => `${prefix}-001`,
+        contextPackInboxAnchorStateReader: {
+          findContextPackInboxAnchor: async () => createInboxAnchor(),
+        },
+      },
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Accepted);
     equal(result.contextPackInboxAnchorStatusTransition?.status, ContextPackInboxAnchorStatus.Snoozed);
-    equal(result.contextPackInboxAnchorStatusTransition?.snoozedUntil, ContextPackInboxAnchorStatusTestTime.SnoozedUntil);
-    deepEqual(outcome.effects.contextPackInboxAnchorStatusTransitions, [
-      result.contextPackInboxAnchorStatusTransition,
-    ]);
+    equal(
+      result.contextPackInboxAnchorStatusTransition?.snoozedUntil,
+      ContextPackInboxAnchorStatusTestTime.SnoozedUntil,
+    );
+    deepEqual(outcome.effects.contextPackInboxAnchorStatusTransitions, [result.contextPackInboxAnchorStatusTransition]);
   });
 
   test("rejects snoozed status transitions without a future wake time", async () => {
-    const outcome = await updateContextPackInboxAnchorStatus({
-      ...command,
-      status: ContextPackInboxAnchorStatus.Snoozed,
-      snoozedUntil: ContextPackInboxAnchorStatusTestTime.ChangedAt,
-    }, {
-      now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
-      createId: (prefix) => `${prefix}-001`,
-      contextPackInboxAnchorStateReader: {
-        findContextPackInboxAnchor: async () => createInboxAnchor(),
+    const outcome = await updateContextPackInboxAnchorStatus(
+      {
+        ...command,
+        status: ContextPackInboxAnchorStatus.Snoozed,
+        snoozedUntil: ContextPackInboxAnchorStatusTestTime.ChangedAt,
       },
-    });
+      {
+        now: () => ContextPackInboxAnchorStatusTestTime.ChangedAt,
+        createId: (prefix) => `${prefix}-001`,
+        contextPackInboxAnchorStateReader: {
+          findContextPackInboxAnchor: async () => createInboxAnchor(),
+        },
+      },
+    );
     const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Rejected);

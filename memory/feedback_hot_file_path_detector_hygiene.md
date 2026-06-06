@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 — hot git file paths need a periodic detector; h
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Files with unusually high git churn are **refactor signals**, not
 just activity. When a file sits at the top of a commit-count
 ranking and is also a frequent merge-conflict source, that's
@@ -12,10 +13,10 @@ per-round files, extraction of a hot section, etc.).
 
 **Why:** Aaron 2026-04-21, immediately after the PR #31 5-file
 merge-tangle and my `docs/ROUND-HISTORY.md` 324→365 recovery:
-*"hot file path detector probably needs refactor if we find hot
-git file paths as we just noticed, another hygene"* and *"detecting
+_"hot file path detector probably needs refactor if we find hot
+git file paths as we just noticed, another hygene"_ and _"detecting
 hot files i wonder if you can just use git history for that and see
-what changes the most"*. Confirmed pattern: `docs/ROUND-HISTORY.md`
+what changes the most"_. Confirmed pattern: `docs/ROUND-HISTORY.md`
 at 33 changes / 60 days is the #1 conflict-prone hot file;
 `docs/BACKLOG.md` at 26 already has an in-flight split ADR for the
 same reason.
@@ -28,7 +29,7 @@ git log --since="60 days ago" --name-only --pretty=format: \
 ```
 
 Cheap, deterministic, zero dependencies, cadenced. No index needed;
-git history *is* the index.
+git history _is_ the index.
 
 **Empirical ranking at time of landing (60-day window, 2026-04-21):**
 
@@ -50,7 +51,7 @@ git history *is* the index.
 - **Decision output per hot path:** one of four — `refactor-split`
   (per-row, per-round, per-section), `consolidate-reduce` (merge
   with another doc to reduce churn across both), `accept-as-
-  append-only` (some files should churn — ROUND-HISTORY may be
+append-only` (some files should churn — ROUND-HISTORY may be
   legitimately append-only, so split into per-round files rather
   than trimming), or `observe` (threshold not yet reached).
 - **Threshold heuristic (tentative):** >20 changes in 60d on a
@@ -59,7 +60,7 @@ git history *is* the index.
 - **Pair with merge-tangle fingerprints.** A hot file is worse if
   it's also in a recent merge-conflict list (PR #31's 5-file
   fingerprint). Cross-reference against `docs/research/parallel-
-  worktree-safety-2026-04-22.md` §9 incident log.
+worktree-safety-2026-04-22.md` §9 incident log.
 - **The hygiene is additive, not destructive.** Don't delete hot
   files; refactor them. Retaining history / semantics is non-
   negotiable (per preserve-original-and-every-transformation).

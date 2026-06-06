@@ -120,12 +120,10 @@ export function contextPackInboxWorkflowViewFor(
     .filter((anchor) => anchor.status !== ContextPackInboxAnchorStatus.Dismissed)
     .map(contextPackInboxWorkflowItemFor)
     .sort(compareContextPackInboxWorkflowItem);
-  const batches = CONTEXT_PACK_INBOX_WORKFLOW_BATCH_ORDER
-    .map((kind) => ({
-      kind,
-      items: items.filter((item) => contextPackInboxWorkflowBatchKindFor(item, input.observedAt) === kind),
-    }))
-    .filter((batch) => batch.items.length > 0);
+  const batches = CONTEXT_PACK_INBOX_WORKFLOW_BATCH_ORDER.map((kind) => ({
+    kind,
+    items: items.filter((item) => contextPackInboxWorkflowBatchKindFor(item, input.observedAt) === kind),
+  })).filter((batch) => batch.items.length > 0);
 
   return {
     organizationId: input.organizationId,
@@ -141,9 +139,11 @@ function contextPackInboxAnchorMatchesWorkflowInput(
   anchor: ContextPackInboxAnchor,
   input: ContextPackInboxWorkflowViewInput,
 ): boolean {
-  return anchor.organizationId === input.organizationId &&
+  return (
+    anchor.organizationId === input.organizationId &&
     anchor.targetHatAssignmentId === input.targetHatAssignmentId &&
-    (anchor.targetAgentId === undefined || anchor.targetAgentId === input.targetAgentId);
+    (anchor.targetAgentId === undefined || anchor.targetAgentId === input.targetAgentId)
+  );
 }
 
 function contextPackInboxWorkflowItemFor(anchor: ContextPackInboxAnchor): ContextPackInboxWorkflowItem {
@@ -167,10 +167,7 @@ function contextPackInboxWorkflowItemFor(anchor: ContextPackInboxAnchor): Contex
   };
 }
 
-function compareContextPackInboxWorkflowItem(
-  a: ContextPackInboxWorkflowItem,
-  b: ContextPackInboxWorkflowItem,
-): number {
+function compareContextPackInboxWorkflowItem(a: ContextPackInboxWorkflowItem, b: ContextPackInboxWorkflowItem): number {
   const priorityDelta = priorityRankFor(a.priority) - priorityRankFor(b.priority);
   if (priorityDelta !== 0) return priorityDelta;
   const deliveredDelta = Date.parse(a.deliveredAt) - Date.parse(b.deliveredAt);
@@ -199,10 +196,7 @@ function contextPackInboxWorkflowBatchKindFor(
     : ContextPackInboxWorkflowBatchKind.NormalUnread;
 }
 
-function contextPackInboxAnchorSnoozedUntilIsDue(
-  snoozedUntil: string | undefined,
-  observedAt: string,
-): boolean {
+function contextPackInboxAnchorSnoozedUntilIsDue(snoozedUntil: string | undefined, observedAt: string): boolean {
   if (snoozedUntil === undefined) return false;
   const snoozedUntilMs = Date.parse(snoozedUntil);
   const observedAtMs = Date.parse(observedAt);

@@ -24,12 +24,12 @@ That last message is the binding instruction to track Windows separately from th
 
 The CI cadence split (per-PR fast / per-merge slow) is a single decision Aaron made and Otto implemented in one PR. The Windows work has multiple stages, multiple actors, and a long-tail polish phase:
 
-| Stage | Owner | Unlock | Status |
-|------:|:------|:-------|:-------|
-| 1 | Otto | (none — start now) | DONE — gate.yml dynamic matrix includes windows-2025 + windows-11-arm on push-to-main, marked `continue-on-error: true` |
-| 2 | Otto (or peer-agent) | Stage 1 lands | **TBD** — author `tools/setup/install.ps1` (PowerShell sibling to install.sh per Otto-235 4-shell target). Aaron: "not rush on this." |
-| 3 | Peer-mode agent on Aaron's Windows laptop | Aaron's Windows laptop online + peer-mode protocol shipped | **BLOCKED ON PEER-MODE** — agent picks up where Stage 2 leaves off, fixes Windows-specific issues (path separators, line endings, etc.) until legs land green |
-| 4 | Otto (or peer-agent) | Stage 3 produces consistently-green legs | **TBD** — flip `continue-on-error` to `false` in gate.yml so Windows failures gate per-merge; update memory + this trajectory file to reflect green state |
+| Stage | Owner                                     | Unlock                                                     | Status                                                                                                                                                        |
+| ----: | :---------------------------------------- | :--------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|     1 | Otto                                      | (none — start now)                                         | DONE — gate.yml dynamic matrix includes windows-2025 + windows-11-arm on push-to-main, marked `continue-on-error: true`                                       |
+|     2 | Otto (or peer-agent)                      | Stage 1 lands                                              | **TBD** — author `tools/setup/install.ps1` (PowerShell sibling to install.sh per Otto-235 4-shell target). Aaron: "not rush on this."                         |
+|     3 | Peer-mode agent on Aaron's Windows laptop | Aaron's Windows laptop online + peer-mode protocol shipped | **BLOCKED ON PEER-MODE** — agent picks up where Stage 2 leaves off, fixes Windows-specific issues (path separators, line endings, etc.) until legs land green |
+|     4 | Otto (or peer-agent)                      | Stage 3 produces consistently-green legs                   | **TBD** — flip `continue-on-error` to `false` in gate.yml so Windows failures gate per-merge; update memory + this trajectory file to reflect green state     |
 
 Each stage has different prerequisites and actors. That's the trajectory shape.
 
@@ -49,7 +49,7 @@ Stage 2 is the next concrete unit of work. It's deferrable per Aaron ("not rush"
 
 ## Reference patterns to study (NOT copy verbatim)
 
-Aaron 2026-04-27: *"when doing windows make sure to look at ../scratch they have good practices and are tested working"* — followed by *"understand it don't copy the code verbatium, you probably know that by know i'm just being repetivie to make sure"*.
+Aaron 2026-04-27: _"when doing windows make sure to look at ../scratch they have good practices and are tested working"_ — followed by _"understand it don't copy the code verbatium, you probably know that by know i'm just being repetivie to make sure"_.
 
 `../scratch` (laptop-only, Aaron's adjacent project — see the laptop-only-source-integration memory) has a mature PowerShell-based Windows setup pattern that's worth studying:
 

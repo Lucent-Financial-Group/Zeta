@@ -42,8 +42,7 @@ type SlotOverride = { label: string; availability: Tri; subMenu?: readonly NextA
  */
 export function renderGrammar16(world: World): readonly RenderedMenuSlot[] {
   const menu = buildMenu(world);
-  const find = (...kinds: NextAction["kind"][]): NextAction | undefined =>
-    menu.find((a) => kinds.includes(a.kind));
+  const find = (...kinds: NextAction["kind"][]): NextAction | undefined => menu.find((a) => kinds.includes(a.kind));
 
   const work = find("do_item", "decompose"); // slot 4 — the primary act
   const editGrammar = find("edit_grammar"); // slot 7 — rail-change exit

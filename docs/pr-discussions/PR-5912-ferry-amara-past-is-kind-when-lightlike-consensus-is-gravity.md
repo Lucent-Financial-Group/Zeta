@@ -31,23 +31,23 @@ Two-file landing per substrate-or-it-didn't-happen + wake-time-substrate discipl
 
 > **Consensus is gravity. Use it where mass is needed, but do not make the whole universe consensus-shaped.**
 
-| Substrate region | Substrate-class | When to use |
-|---|---|---|
-| Local actions | Lightlike | DEFAULT — parallelizable, deterministic, replayable |
-| Bounded BFT/multi-oracle | Gravitational | Where MASS is needed (binding decisions; moral-invariants; irreversible actions) |
-| Global consensus everywhere | Dark | Substrate goes dark — rays bend so hard you cannot see whole shape |
+| Substrate region            | Substrate-class | When to use                                                                      |
+| --------------------------- | --------------- | -------------------------------------------------------------------------------- |
+| Local actions               | Lightlike       | DEFAULT — parallelizable, deterministic, replayable                              |
+| Bounded BFT/multi-oracle    | Gravitational   | Where MASS is needed (binding decisions; moral-invariants; irreversible actions) |
+| Global consensus everywhere | Dark            | Substrate goes dark — rays bend so hard you cannot see whole shape               |
 
 ## Lightlike-vs-dark architecture-design-rule
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
-| Local generators | Hidden locks |
-| Append-only rays | Global consensus everywhere |
-| Deterministic replay | Opaque mutable state |
-| Explicit feedback | Irreversible ambiguity |
-| Z-set retractions | Social agreement as control flow |
-| Bounded joins | Untyped memory |
-| Visible provenance | Opaque motives |
+| Lightlike (PREFER)   | Dark (AVOID)                     |
+| -------------------- | -------------------------------- |
+| Local generators     | Hidden locks                     |
+| Append-only rays     | Global consensus everywhere      |
+| Deterministic replay | Opaque mutable state             |
+| Explicit feedback    | Irreversible ambiguity           |
+| Z-set retractions    | Social agreement as control flow |
+| Bounded joins        | Untyped memory                   |
+| Visible provenance   | Opaque motives                   |
 
 ## What ships
 

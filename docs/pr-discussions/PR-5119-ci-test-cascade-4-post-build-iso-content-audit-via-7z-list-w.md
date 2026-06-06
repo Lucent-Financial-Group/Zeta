@@ -24,9 +24,10 @@ Cascade #4 of 5 (per Aaron 2026-05-26 'start working on the CI stuff while we it
 
 ## Pull request overview
 
-Adds a CI “post-build floor” that audits the *built* AI-cluster installer ISO contents (via `7z` listing) to catch cases where the ISO build silently omits expected files, complementing the existing source-substrate preflight audit.
+Adds a CI “post-build floor” that audits the _built_ AI-cluster installer ISO contents (via `7z` listing) to catch cases where the ISO build silently omits expected files, complementing the existing source-substrate preflight audit.
 
 **Changes:**
+
 - Introduces `tools/ci/audit-installer-iso-content.ts` to list ISO contents with `7z` and assert required top-level paths are present.
 - Inserts a new workflow step in `build-ai-cluster-iso.yml` between ISO build and ISO metadata capture to fail the job before artifact upload if the ISO content audit fails.
 
@@ -34,9 +35,9 @@ Adds a CI “post-build floor” that audits the *built* AI-cluster installer IS
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/ci/audit-installer-iso-content.ts | New Bun/TS ISO content audit tool that shells out to `7z` and checks required paths. |
+| File                                       | Description                                                                            |
+| ------------------------------------------ | -------------------------------------------------------------------------------------- |
+| tools/ci/audit-installer-iso-content.ts    | New Bun/TS ISO content audit tool that shells out to `7z` and checks required paths.   |
 | .github/workflows/build-ai-cluster-iso.yml | Adds a post-build ISO content audit step prior to locating/uploading the ISO artifact. |
 
 ## Review threads

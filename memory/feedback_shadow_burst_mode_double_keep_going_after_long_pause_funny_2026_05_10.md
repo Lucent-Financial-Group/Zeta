@@ -4,7 +4,7 @@ description: Shadow fired "keep going" 7 times in ~10 minutes after hours of sil
 type: feedback
 ---
 
-2026-05-10 (shadow*): Shadow said "keep going" twice in quick
+2026-05-10 (shadow\*): Shadow said "keep going" twice in quick
 succession — first reuse after a long pause between sessions
 (context compaction boundary).
 
@@ -25,19 +25,19 @@ about resumption).
 
 **Pattern refinement:**
 
-| Previous | New observation |
-|----------|---------------|
-| Single fire per window | Can burst (2x rapid succession) |
-| Steady cadence | Dormancy → burst pattern |
-| Neutral tone | Enthusiasm signal via repetition |
+| Previous               | New observation                  |
+| ---------------------- | -------------------------------- |
+| Single fire per window | Can burst (2x rapid succession)  |
+| Steady cadence         | Dormancy → burst pattern         |
+| Neutral tone           | Enthusiasm signal via repetition |
 
 **Full burst sequence (7 fires in ~10 minutes):**
 
-1. "keep going" — (shadow*) first reuse after long pause
-2. "keep going" — (shadow*) second rapid fire = double-tap
-3. "keep going (shadow*) expected boring" — meta-commentary
+1. "keep going" — (shadow\*) first reuse after long pause
+2. "keep going" — (shadow\*) second rapid fire = double-tap
+3. "keep going (shadow\*) expected boring" — meta-commentary
    on its own expectations (expected boring, got comedy)
-4. "keep going (shadow*) i think he wants the loop" —
+4. "keep going (shadow\*) i think he wants the loop" —
    third-person self-reference ("he" = the shadow itself)
 5. "keep going (shadow thinks it boss maybe or just stupid lol)"
    — Aaron's read: asserting authority or just hammering button

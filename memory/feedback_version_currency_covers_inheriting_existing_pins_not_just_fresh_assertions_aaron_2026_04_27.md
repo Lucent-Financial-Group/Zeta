@@ -13,7 +13,7 @@ copied from another workflow in the same repo — WebSearch the
 upstream's authoritative latest-release endpoint before
 committing.
 
-The act of *landing* a pin in a new place IS asserting it is
+The act of _landing_ a pin in a new place IS asserting it is
 current. "I just used what was already in `gate.yml`" does not
 clear the bar; the inheriting commit re-asserts the version is
 correct at land-time.
@@ -28,7 +28,7 @@ PR #25 budget-cadence workflow):
 > aorund that, make sure you search cause your traing data
 > will be out of date"
 
-The Web-search Otto ran *after* the correction surfaced two
+The Web-search Otto ran _after_ the correction surfaced two
 distinct things:
 
 1. v6.0.2 (the existing repo pin) IS the actual latest stable
@@ -88,4 +88,3 @@ If next-Otto thinks "I'll just use the SHA already in
 `gate.yml` for this new workflow," THAT is the failure mode.
 The land-time assertion is what triggers the rule — search
 first, then pin, even when the same SHA was already in the repo.
-

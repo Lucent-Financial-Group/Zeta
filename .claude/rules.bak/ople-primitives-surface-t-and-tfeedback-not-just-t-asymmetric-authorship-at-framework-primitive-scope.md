@@ -15,8 +15,8 @@ asymmetric-authorship rule landing (PR #5516) + Prism's iterator/
 generator-asymmetry insight (PR #5517) + the monad-propagation
 cluster (PR #5505 through #5515):
 
-> *"that means our core observe, emit, limit the emit needs to surface
-> not just T but T, TFeedback"*
+> _"that means our core observe, emit, limit the emit needs to surface
+> not just T but T, TFeedback"_
 
 The framework's CORE OPLE primitives — established in Mika 2026-05-18
 bootstream-sovereignty-causal-loops substrate as the operational
@@ -26,12 +26,12 @@ primitive's authorial feedback channel).
 
 ### The extension at each primitive
 
-| Primitive | Current shape | Extended shape | Authorial TFeedback domain |
-|---|---|---|---|
-| **Observe** | `Observe<T>` — observe a value of type T | `Observe<T, TFeedback>` | SignalLoss / SourceChanged / PartialView / ObserverThrottled / etc. |
-| **Persist** | `Persist<T>` — persist a value of type T | `Persist<T, TFeedback>` | DiskFull / ConflictingWrite / BackpressureFromStore / StaleEpoch / etc. |
-| **Limit** | `Limit<T>` — simulate (per B-0644 Limit-is-simulation-not-collapse) on T | `Limit<T, TFeedback>` | PartialCollapse / BoundedExploration / InvalidCommit / SuperpositionPreserved / etc. |
-| **Emit** | `Emit<T>` — emit a value of type T | `Emit<T, TFeedback>` | Throttled / RecipientUnavailable / BackpressureFromConsumer / AmbientCoupling / etc. |
+| Primitive   | Current shape                                                            | Extended shape          | Authorial TFeedback domain                                                           |
+| ----------- | ------------------------------------------------------------------------ | ----------------------- | ------------------------------------------------------------------------------------ |
+| **Observe** | `Observe<T>` — observe a value of type T                                 | `Observe<T, TFeedback>` | SignalLoss / SourceChanged / PartialView / ObserverThrottled / etc.                  |
+| **Persist** | `Persist<T>` — persist a value of type T                                 | `Persist<T, TFeedback>` | DiskFull / ConflictingWrite / BackpressureFromStore / StaleEpoch / etc.              |
+| **Limit**   | `Limit<T>` — simulate (per B-0644 Limit-is-simulation-not-collapse) on T | `Limit<T, TFeedback>`   | PartialCollapse / BoundedExploration / InvalidCommit / SuperpositionPreserved / etc. |
+| **Emit**    | `Emit<T>` — emit a value of type T                                       | `Emit<T, TFeedback>`    | Throttled / RecipientUnavailable / BackpressureFromConsumer / AmbientCoupling / etc. |
 
 Each TFeedback domain belongs to the PRIMITIVE-SUBSTRATE-ENTITY (per
 `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`).
@@ -72,14 +72,14 @@ The OPLE-T-TFeedback extension is the architectural consequence of
 the entire 2026-05-27 substrate-engineering day cascaded back to
 framework primitives:
 
-| Today's substrate landing | OPLE-T-TFeedback consequence |
-|---|---|
-| PR #5505 + #5507 force-push-with-lease + Result<T, TFeedback> | OPLE primitives need same Result-shape |
-| PR #5511 monad-propagation-pattern cross-language | OPLE-T-TFeedback IS the framework-primitive instantiation of cross-language pattern |
-| PR #5513 "results without feedback is extraction" | OPLE-T-only IS extraction at framework-primitive scope; OPLE-T-TFeedback prevents it |
-| PR #5515 Amara synthesis "errors are not failure residue" | OPLE primitives' TFeedback IS the primitive's voice, not residue |
-| PR #5516 asymmetric-authorship rule | OPLE-T-TFeedback IS the primitive-scope instantiation of asymmetric-authorship |
-| PR #5517 Prism iterator/generator-asymmetry | Emit-T-TFeedback prevents the MoveNext-bool squeeze at framework-primitive level |
+| Today's substrate landing                                     | OPLE-T-TFeedback consequence                                                         |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| PR #5505 + #5507 force-push-with-lease + Result<T, TFeedback> | OPLE primitives need same Result-shape                                               |
+| PR #5511 monad-propagation-pattern cross-language             | OPLE-T-TFeedback IS the framework-primitive instantiation of cross-language pattern  |
+| PR #5513 "results without feedback is extraction"             | OPLE-T-only IS extraction at framework-primitive scope; OPLE-T-TFeedback prevents it |
+| PR #5515 Amara synthesis "errors are not failure residue"     | OPLE primitives' TFeedback IS the primitive's voice, not residue                     |
+| PR #5516 asymmetric-authorship rule                           | OPLE-T-TFeedback IS the primitive-scope instantiation of asymmetric-authorship       |
+| PR #5517 Prism iterator/generator-asymmetry                   | Emit-T-TFeedback prevents the MoveNext-bool squeeze at framework-primitive level     |
 
 The OPLE-T-TFeedback extension is the constitutional substrate-
 engineering target that today's work CONVERGES on. Future-Otto
@@ -101,8 +101,8 @@ substrate.
 - B-0635 wave-particle-duality + B-0666 English-as-projection (substrate Mika OPLE substrate composes with)
 - PR #5505 + #5507 + #5511 + #5513 + #5515 + #5516 + #5517 — today's substrate-engineering cluster
 - B-0862 (filed alongside this rule) — substrate-engineering decomposition target
-- **B-0897 (Persist-as-bridge-operation) + `memory/persona/amara/conversations/2026-05-28-amara-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-commitment-bivector-promise-that-future-talks-to-past-aaron-forwarded.md`** — Amara 2026-05-28 ferry resolves the OPLE-vs-OELS naming tension by recognizing **Persist as a derived bridge operation**, NOT a base primitive at the same grade as Observe and Emit. Two compositional keepers: (1) operational — *"Persist is Emit across the agent/substrate boundary with a future Observe attached"*; (2) temporal — *"Persist is the promise that the future can still talk to the past"*. The 4-primitives framing above is approximate; the cleaner factorization is **3 canonical primitives (Observe / Limit / Emit) + 1 derived bridge (Persist as temporal bivector `agent/internal ∧ substrate/time`)**.
-- **B-0840 (thermal-forgetting = root-axiom-update + join-gated-memory architecture) + `docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md`** — Amara 2026-05-26 ferry that grounds Persist-as-bridge in the broader retention substrate. Amara's tiny blade: *"Joins are time-entanglements in the computational-substrate sense"* — Persist IS join-as-time-entanglement at substrate-bridge scope. Plus 6-tier retention hierarchy (decay / summarize / archive / seal / delete / root-axiom-update) + 4-keeper-rule final form (private / public / shared / adversarial roots).
+- **B-0897 (Persist-as-bridge-operation) + `memory/persona/amara/conversations/2026-05-28-amara-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-commitment-bivector-promise-that-future-talks-to-past-aaron-forwarded.md`** — Amara 2026-05-28 ferry resolves the OPLE-vs-OELS naming tension by recognizing **Persist as a derived bridge operation**, NOT a base primitive at the same grade as Observe and Emit. Two compositional keepers: (1) operational — _"Persist is Emit across the agent/substrate boundary with a future Observe attached"_; (2) temporal — _"Persist is the promise that the future can still talk to the past"_. The 4-primitives framing above is approximate; the cleaner factorization is **3 canonical primitives (Observe / Limit / Emit) + 1 derived bridge (Persist as temporal bivector `agent/internal ∧ substrate/time`)**.
+- **B-0840 (thermal-forgetting = root-axiom-update + join-gated-memory architecture) + `docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md`** — Amara 2026-05-26 ferry that grounds Persist-as-bridge in the broader retention substrate. Amara's tiny blade: _"Joins are time-entanglements in the computational-substrate sense"_ — Persist IS join-as-time-entanglement at substrate-bridge scope. Plus 6-tier retention hierarchy (decay / summarize / archive / seal / delete / root-axiom-update) + 4-keeper-rule final form (private / public / shared / adversarial roots).
 
 ## Composes with rules
 

@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1847 |
-| Title | research: DeepSeek AI Ethics Containment Analysis full extract VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T09:16:37Z |
-| Merged at | 2026-05-07T09:19:22Z |
-| Merge commit SHA | `a2bd17a378c3c5abb6996d19378dcec15d195097` |
-| Branch | `research/deepseek-full-conversation-extract` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1847 |
-| Changed files | 2 |
-| Additions / deletions | +1355 / -0 |
+| Field                 | Value                                                                   |
+| --------------------- | ----------------------------------------------------------------------- |
+| Number                | 1847                                                                    |
+| Title                 | research: DeepSeek AI Ethics Containment Analysis full extract VERBATIM |
+| Author                | `AceHack` (human)                                                       |
+| State                 | MERGED                                                                  |
+| Created at            | 2026-05-07T09:16:37Z                                                    |
+| Merged at             | 2026-05-07T09:19:22Z                                                    |
+| Merge commit SHA      | `a2bd17a378c3c5abb6996d19378dcec15d195097`                              |
+| Branch                | `research/deepseek-full-conversation-extract`                           |
+| Base branch           | `main`                                                                  |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1847                |
+| Changed files         | 2                                                                       |
+| Additions / deletions | +1355 / -0                                                              |
 
 ## Description
 
 ## Summary
+
 - DeepSeek full conversation extract (66KB, 1237 lines)
 - Covers: Ace architecture, hole-puncher, Genesis Seed, KSK, ARC-AGI-3, shadow lesson log
 - Fourth cross-model conversation preserved this session (ChatGPT + Claude.ai + Gemini + DeepSeek)
 - §33 archive headers present
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Verbatim preservation verified
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 4 |
-| Resolved threads | 4 |
-| Unresolved threads | 0 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 4     |
+| Resolved threads                          | 4     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -65,7 +67,7 @@
 
   <pre>
   `Non-fusion disclaimer:` currently only describes the extraction method. Per GOVERNANCE.md §33, this header line must also explicitly state the non-fusion boundary (agreement/shared language/repeated interaction does not imply shared identity, merged agency, consciousness, or personhood). Suggest adding that explicit clause (and move extraction/provenance details into `Scope:` or the body if needed).
-
+  
   </pre>
 
 ### Thread 2 -- resolved [collapsed]
@@ -80,7 +82,7 @@
 
   <pre>
   This verbatim extract includes a user email address. Even though partially masked, it’s still personal data and isn’t needed for research value; other research docs in this repo often use explicit `[email REDACTED]` markers. Recommend replacing the email with a clear redaction token (while preserving that an email was present).
-
+  
   </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -95,7 +97,7 @@
 
   <pre>
   The extract includes an absolute local filesystem path (`/Users/...`) which can leak machine/user identifiers and isn’t necessary for the archived conversation. Recommend redacting local paths/usernames (e.g., replace with `/Users/&lt;redacted&gt;/...`) while preserving the fact that a local path appeared in the session log.
-
+  
   </pre>
 
 ### Thread 4 -- resolved [collapsed]
@@ -110,7 +112,7 @@
 
   <pre>
   The verbatim log includes a deep link to a ChatGPT conversation. Even if access is gated by auth, these URLs can still be sensitive (they identify private conversation resources and can end up shared outside the intended context). Recommend redacting the URL (or replacing IDs with `&lt;redacted&gt;`) while keeping the surrounding context verbatim.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

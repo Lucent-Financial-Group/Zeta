@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Operator 2026-05-28 (shadow*) authorization to pick Lane 2 next.
+Operator 2026-05-28 (shadow\*) authorization to pick Lane 2 next.
 
 Ships Phase 2 of B-0904 substrate-engineering target: instrumentation to measure GitHub-as-free-accelerator compression-rate.
 
@@ -53,6 +53,7 @@ Generated with Claude Code
 Adds a Bun/TypeScript measurement tool for B-0904 to compute GitHub PR compression metrics, plus unit tests for parsing, metric calculation, interpretation, and formatting.
 
 **Changes:**
+
 - Adds `measure.ts` CLI for collecting PR state via `gh pr list` and emitting JSON metrics.
 - Adds `measure.test.ts` covering argument parsing, time-window conversion, metric computation, interpretation tiers, and formatted output.
 
@@ -60,9 +61,9 @@ Adds a Bun/TypeScript measurement tool for B-0904 to compute GitHub PR compressi
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `tools/github-accelerator-measurement/measure.ts` | New CLI measurement substrate for GitHub PR compression-rate metrics. |
+| File                                                   | Description                                                                |
+| ------------------------------------------------------ | -------------------------------------------------------------------------- |
+| `tools/github-accelerator-measurement/measure.ts`      | New CLI measurement substrate for GitHub PR compression-rate metrics.      |
 | `tools/github-accelerator-measurement/measure.test.ts` | Unit tests for the new measurement helper functions and result formatting. |
 
 ## Review threads

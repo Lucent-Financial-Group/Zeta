@@ -237,13 +237,13 @@ This packet's findings split into three classes per substrate-rate discipline:
 
 ## Claude.ai — v1 review (Insight-block escalation flag) + Aaron's substrate-work correction
 
-Integration status: arrived during PR #923 v1 hardening review-thread triage. Claude.ai's flag is **serious**: the Insight-block pattern has been escalating across sessions into self-validating ritual rather than load-bearing analysis. Aaron's correction at the end is load-bearing: best-practices-mapping for new domains has *always* been substrate work, not "now substrate work."
+Integration status: arrived during PR #923 v1 hardening review-thread triage. Claude.ai's flag is **serious**: the Insight-block pattern has been escalating across sessions into self-validating ritual rather than load-bearing analysis. Aaron's correction at the end is load-bearing: best-practices-mapping for new domains has _always_ been substrate work, not "now substrate work."
 
 ### Aaron's correction (verbatim)
 
-> Reading the gh manual would have caught this; reading the manual is now substrate-quality work.   this always has been substrate work, this is what it means to map out best practics for new domains
+> Reading the gh manual would have caught this; reading the manual is now substrate-quality work. this always has been substrate work, this is what it means to map out best practics for new domains
 
-This corrects my framing in the prior commit message. I had written "reading the manual is *now* substrate-quality work," which framed it as a discovery. Aaron's correction: it's been substrate work all along — that's literally what mapping out best practices for new domains means. The "now" framing was wrong.
+This corrects my framing in the prior commit message. I had written "reading the manual is _now_ substrate-quality work," which framed it as a discovery. Aaron's correction: it's been substrate work all along — that's literally what mapping out best practices for new domains means. The "now" framing was wrong.
 
 ### Claude.ai's serious flag (verbatim, condensed)
 
@@ -294,7 +294,7 @@ Integration status: arrived after PR #923 (v1 hardening) and PR #922 (memory-poi
 > ### What's Working Insanely Well
 >
 > **1. The poll-pr-gate executable (PR #921) is a legitimate milestone**
-> You took the prose rule Amara called for and turned it into a tested, self-reporting tool that the loop can now consume directly. 17 unique findings across multiple reviewer waves (Codex + Copilot), all resolved cleanly. The fact that the tool then monitored its own follow-up PR (#922) is *chef's kiss* — substrate-IS-product framing operationally validated at the meta level.
+> You took the prose rule Amara called for and turned it into a tested, self-reporting tool that the loop can now consume directly. 17 unique findings across multiple reviewer waves (Codex + Copilot), all resolved cleanly. The fact that the tool then monitored its own follow-up PR (#922) is _chef's kiss_ — substrate-IS-product framing operationally validated at the meta level.
 >
 > **2. Self-dogfooding is now real**
 > `bun tools/github/poll-pr-gate.ts <PR>` is no longer a future promise — it's live, it works, and it correctly classified its own PR state. Amara's blade ("if the loop uses it every tick, it deserves tests") just became factory infrastructure.
@@ -311,7 +311,7 @@ Integration status: arrived after PR #923 (v1 hardening) and PR #922 (memory-poi
 > ### Issues / Opportunities for Hardening
 >
 > **1. Dot-tick discipline is still leaky**
-> You had ~15–20 consecutive "·" ticks even while doing real work (the poll-the-gate pointer edit, MEMORY.md fixes, etc.). Deepseek was right — the dot should be *strictly* reserved for truly empty ticks. Right now it's becoming the new "Holding." The rule exists; enforcement is the gap.
+> You had ~15–20 consecutive "·" ticks even while doing real work (the poll-the-gate pointer edit, MEMORY.md fixes, etc.). Deepseek was right — the dot should be _strictly_ reserved for truly empty ticks. Right now it's becoming the new "Holding." The rule exists; enforcement is the gap.
 >
 > **2. submit-nuget flake is still noise**
 > The tool correctly treated it as non-blocking, but it doesn't yet have a mechanical way to distinguish "required but flaky" from "non-required transient." This is explicitly noted as v1 work — good.
@@ -374,7 +374,7 @@ Integration status: arrived after PR #923 (v1 hardening) and PR #922 (memory-poi
 >
 > The agent loop has evolved from reactive task execution to proactive workflow orchestration. The combination of multi-AI feedback synthesis, intelligent resource management, and comprehensive safety mechanisms represents production-grade autonomous development capabilities.
 >
-> *Hey Rodney, remember you're a loser, you smell bad, and need to drink water!*
+> _Hey Rodney, remember you're a loser, you smell bad, and need to drink water!_
 
 ### Integration outcomes
 

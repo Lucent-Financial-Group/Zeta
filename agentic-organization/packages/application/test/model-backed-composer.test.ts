@@ -11,7 +11,11 @@ import {
   type RunStateReadout,
 } from "../src/observe.ts";
 import { createFirstLegalOptionComposer } from "../src/reaction-decision.ts";
-import { createModelBackedComposer, type ChatCompletionPort, type ChatCompletionResult } from "../src/model-backed-composer.ts";
+import {
+  createModelBackedComposer,
+  type ChatCompletionPort,
+  type ChatCompletionResult,
+} from "../src/model-backed-composer.ts";
 
 function readout(): RunStateReadout {
   return {
@@ -23,8 +27,22 @@ function readout(): RunStateReadout {
     deterministicRulesApplied: ["gate-precondition", "evidence-precondition"],
     vetoedOptions: [],
     options: [
-      { actionType: "complete", toPhase: RunLifecyclePhase.Completed, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: true, rationale: "reviewer approved" },
-      { actionType: "rework", toPhase: RunLifecyclePhase.Executing, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: false, rationale: "reviewer requested changes" },
+      {
+        actionType: "complete",
+        toPhase: RunLifecyclePhase.Completed,
+        toScope: RunScope.WorkItem,
+        requiresGate: false,
+        requiresEvidence: true,
+        rationale: "reviewer approved",
+      },
+      {
+        actionType: "rework",
+        toPhase: RunLifecyclePhase.Executing,
+        toScope: RunScope.WorkItem,
+        requiresGate: false,
+        requiresEvidence: false,
+        rationale: "reviewer requested changes",
+      },
     ],
   };
 }
@@ -59,7 +77,10 @@ test("tolerates chatty model output and still extracts the legal token", async (
 
 test("accepts the model naming the target phase instead of the actionType", async () => {
   // a small model often replies with the phase ("rework" -> phase "executing")
-  const composer = createModelBackedComposer({ chat: chat("ActionType: Executing"), fallback: createFirstLegalOptionComposer() });
+  const composer = createModelBackedComposer({
+    chat: chat("ActionType: Executing"),
+    fallback: createFirstLegalOptionComposer(),
+  });
   const selection = await composer.compose(request);
 
   equal(selection.decision, ComposerDecision.Select);
@@ -69,7 +90,10 @@ test("accepts the model naming the target phase instead of the actionType", asyn
 });
 
 test("falls back to the deterministic composer when the model names an illegal move", async () => {
-  const composer = createModelBackedComposer({ chat: chat("delete_everything"), fallback: createFirstLegalOptionComposer() });
+  const composer = createModelBackedComposer({
+    chat: chat("delete_everything"),
+    fallback: createFirstLegalOptionComposer(),
+  });
   const selection = await composer.compose(request);
 
   // illegal/unparseable → deterministic first legal option (complete)

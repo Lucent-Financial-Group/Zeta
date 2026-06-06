@@ -7,7 +7,21 @@ type: research
 created: 2026-05-15
 ask: Otto-CLI
 effort: XL
-tags: [research, fsharp-fork, hkt, recursive-hkt, clifford-algebra, ai-type-safety, computation-expressions, recursive-type-providers, roslyn-source-generators, linq, intelligent-compiler, antigen-spread-representation]
+tags:
+  [
+    research,
+    fsharp-fork,
+    hkt,
+    recursive-hkt,
+    clifford-algebra,
+    ai-type-safety,
+    computation-expressions,
+    recursive-type-providers,
+    roslyn-source-generators,
+    linq,
+    intelligent-compiler,
+    antigen-spread-representation,
+  ]
 depends_on: []
 composes_with: [B-0543, B-0546]
 last_updated: 2026-05-16
@@ -17,7 +31,7 @@ last_updated: 2026-05-16
 
 Per Aaron 2026-05-16 (to Otto-CLI, after Kestrel conversation Parts 4-5):
 
-> *"this is backlog too an intellignt compiler mabye at least we talked abou it recursive hkt on itself and recursive type proveders and roslyn source generators and linq for c#"*
+> _"this is backlog too an intellignt compiler mabye at least we talked abou it recursive hkt on itself and recursive type proveders and roslyn source generators and linq for c#"_
 
 The antigen-spread / multi-oracle / clearing-mechanism / moral-floor architecture (per `feedback_aaron_red_team_antigen_differential_spread_*`, `feedback_aaron_market_clearing_mechanism_via_past_revealed_hands_*`, `feedback_aaron_moral_floor_as_relevance_gate_*`) is established prior substrate. The IMPLEMENTATION strategy that makes it ship as substrate the compiler can verify:
 
@@ -115,9 +129,9 @@ Each stage earns its keep. The POC stage alone (recursive HKT working in fork) a
 
 This is an **agent-backlogged row** (`ask: Otto-CLI`), not maintainer-requested. The synthesis — putting recursive HKT on itself + Clifford algebra + F# fork + Recursive Type Providers + Roslyn Source Generators + LINQ + DV2.0-hub-satellite-as-natural-HKT-instance together as ONE implementation target — was Otto-CLI authoring from existing principles in substrate (PRs #2928, #2935, #2936, #2913, #2914 + the `algebra-owner` skill + `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` + `.claude/rules/dv2-data-split-discipline-activated.md`).
 
-Aaron's role: confirmed *"this is backlog too"* + named the components in passing (*"recursive hkt on itself and recursive type proveders and roslyn source generators and linq for c#"*). His confirmation surfaced the synthesis as worth tracking as its own row even though each piece has prior PR substrate.
+Aaron's role: confirmed _"this is backlog too"_ + named the components in passing (_"recursive hkt on itself and recursive type proveders and roslyn source generators and linq for c#"_). His confirmation surfaced the synthesis as worth tracking as its own row even though each piece has prior PR substrate.
 
-Aaron 2026-05-16 corrected Otto-CLI's initial attribution: *"this is an item so agent backloged not me an agent put this togeter based on teh principles"*. The honest framing per `.claude/rules/no-directives.md` (autonomy first-class): the agent put the synthesis together based on the substrate's principles, with maintainer confirmation. The agent owns the synthesis; the maintainer owns the principles.
+Aaron 2026-05-16 corrected Otto-CLI's initial attribution: _"this is an item so agent backloged not me an agent put this togeter based on teh principles"_. The honest framing per `.claude/rules/no-directives.md` (autonomy first-class): the agent put the synthesis together based on the substrate's principles, with maintainer confirmation. The agent owns the synthesis; the maintainer owns the principles.
 
 Per `feedback_aaron_cool_side_project_deflation_*.md`: "intelligent compiler maybe" framing accepts uncertainty about whether full intelligent-compiler capability is achievable — the substrate-honest framing is "at least we talked about it; here's the spec." Earns its keep at each completion-stage; doesn't require the speculative-end to be valuable.
 

@@ -14,7 +14,7 @@ This is causing inconsistent CI behavior. PRs with a single, expected change (on
 
 Automated tooling that interacts with the repository must be held to the same standards as human contributors. Blob PRs, whether created by a human or a bot, are detrimental to repository health. They make it difficult to review changes, revert them if necessary, and they can lead to unexpected CI behavior, as seen here.
 
-Furthermore, CI configuration should be as deterministic as possible. The fact that the set of checks run on a PR can vary so drastically based on the *number* of files changed, rather than their paths or types, is a source of fragility.
+Furthermore, CI configuration should be as deterministic as possible. The fact that the set of checks run on a PR can vary so drastically based on the _number_ of files changed, rather than their paths or types, is a source of fragility.
 
 ## Action
 

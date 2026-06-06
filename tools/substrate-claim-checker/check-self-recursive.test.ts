@@ -51,10 +51,7 @@ describe("parseDirective", () => {
   });
 
   test("parses mixed-topic array preserving order", () => {
-    expect(parseDirective("[count, existence]")).toEqual([
-      "count",
-      "existence",
-    ]);
+    expect(parseDirective("[count, existence]")).toEqual(["count", "existence"]);
   });
 
   test("parses array preserving order and duplicates", () => {
@@ -85,10 +82,7 @@ describe("parseDirective", () => {
 
   test("strips YAML inline comments after array form", () => {
     expect(parseDirective("[count] # outer note")).toEqual(["count"]);
-    expect(parseDirective("[count, count] #dup-with-note")).toEqual([
-      "count",
-      "count",
-    ]);
+    expect(parseDirective("[count, count] #dup-with-note")).toEqual(["count", "count"]);
   });
 
   test("preserves `#` inside a quoted token (no preceding whitespace)", () => {
@@ -115,8 +109,7 @@ describe("checkFile", () => {
   test("frontmatter without self-check -> no findings", () => {
     const dir = tmp();
     try {
-      const body =
-        "---\ntitle: a memo\n---\n\n# Body\n\nClaims 5 rows below.\n\n| a | b |\n|---|---|\n| 1 | 2 |\n";
+      const body = "---\ntitle: a memo\n---\n\n# Body\n\nClaims 5 rows below.\n\n| a | b |\n|---|---|\n| 1 | 2 |\n";
       const f = write(dir, "no-directive.md", body);
       const result = checkFile(f);
       expect(result.ok).toBe(true);
@@ -273,9 +266,7 @@ in its body even though no such path exists.
       expect(result.ok).toBe(true);
       expect(result.findings.length).toBeGreaterThan(0);
       expect(result.findings[0]!.topic).toBe("existence");
-      expect(result.findings[0]!.reason).toContain(
-        "tools/nonexistent-subdir/missing-file.md",
-      );
+      expect(result.findings[0]!.reason).toContain("tools/nonexistent-subdir/missing-file.md");
       expect(result.findings[0]!.reason).toContain("does not exist");
     } finally {
       rmSync(dir, { recursive: true, force: true });

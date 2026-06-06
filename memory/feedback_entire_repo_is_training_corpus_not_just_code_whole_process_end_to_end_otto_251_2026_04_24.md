@@ -4,6 +4,7 @@ description: Aaron Otto-251 expands the training-corpus framing beyond PR review
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **The entire git repository — all its commits, messages,
@@ -15,10 +16,10 @@ artifact is supervised-learning signal.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"when i say this repo is for research that's basically
+> _"when i say this repo is for research that's basically
 > wait i mean this githitory is a gold mine of high quality
 > signals around code and the whole process end to end
-> including devops eventually."*
+> including devops eventually."_
 
 ## Scope — what counts as training signal
 
@@ -52,7 +53,7 @@ Direct Aaron quote 2026-04-24:
   definitions, scope, discipline
 - **CLAUDE.md + AGENTS.md + GOVERNANCE.md** — the top-level
   operating discipline
-- **`openspec/specs/**`** — behavioural specs
+- **`openspec/specs/**`\*\* — behavioural specs
 
 ### Layer 4: ops + devops (the "eventually" Aaron named)
 
@@ -115,8 +116,8 @@ Short-circuit through any layer = signal loss at that layer.
    and option-comparative.
 
 6. **Skills + agents** are training signal for the
-   discipline-encoding sub-corpus. Document the *why*
-   behind the *how*.
+   discipline-encoding sub-corpus. Document the _why_
+   behind the _how_.
 
 7. **CI + install scripts** are training signal for the
    devops-reasoning sub-corpus. Comments explaining
@@ -161,10 +162,10 @@ Short-circuit through any layer = signal loss at that layer.
 
 ## Direct Aaron quote to preserve
 
-> *"when i say this repo is for research that's basically
+> _"when i say this repo is for research that's basically
 > wait i mean this githitory is a gold mine of high quality
 > signals around code and the whole process end to end
-> including devops eventually."*
+> including devops eventually."_
 
 Future Otto: treat every artifact you author as training
 signal for the factory's self-improvement loop. Prose in

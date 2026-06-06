@@ -17,14 +17,27 @@ composes_with:
   - B-0857
   - B-0859
   - B-0864
-tags: [marketing, business-strategy, naming-review, public-positioning, servicetitan-primary-audience, c-level-secondary, 24-months-ahead-mandate, ilyana-public-api-designer, open-source-positioning, b-0865-public-face, dora-benchmark-marketing]
+tags:
+  [
+    marketing,
+    business-strategy,
+    naming-review,
+    public-positioning,
+    servicetitan-primary-audience,
+    c-level-secondary,
+    24-months-ahead-mandate,
+    ilyana-public-api-designer,
+    open-source-positioning,
+    b-0865-public-face,
+    dora-benchmark-marketing,
+  ]
 ---
 
 ## Operator framing (2026-05-27 observation)
 
 Operator forwarded a Kestrel marketing-strategy conversation with the framing:
 
-> *"save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder. FYI this is where my marketing will come from our custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."*
+> _"save this and the marketing / business / naming ai will probably want to weign in on backlog. also in kestrels persona folder. FYI this is where my marketing will come from our custom AI DORA metrics benchmark that anyone can boot into with a USB on most hardware."_
 
 Observation: **B-0865 IS the primary external marketing source for Zeta.** The benchmark becomes the public-facing entry point to the broader Zeta substrate. This row queues the marketing/business/naming-AI work that B-0865's public surface will require.
 
@@ -138,7 +151,7 @@ Conclusion: NO existing row covers the marketing/business/naming weigh-in scope.
 23. **B-0866.23** — Different-AIs-for-different-review-aspects discipline (Amara for psychological-frame; Otto/Kestrel for technical-claim; specific AI matched to specific review-need at C-level pre-review surface; composes with hats-as-workflow-definitions per B-0868 — review-AI assignment is a parameter, not hardcoded)
 24. **B-0866.24** — Show-C-level-only-work-that-has-survived-peer-review discipline (Kestrel risk-mitigation: SREs can evaluate substrate directly; C-level can be impressed by demos that wouldn't survive peer review; the pattern that works is "show C-level work that has already survived peer review, not work that hasn't"); operational sequencing discipline
 25. **B-0866.25** — Framework-operational-cadence-as-24-months-ahead-evidence (per Kestrel: "the 24-months-ahead demonstration is operational cadence over time, not impressive single demonstrations"); concrete artifacts to point at over time (PR cadence + multi-AI collaboration + framework discipline catching its own failure modes); avoids one-off-demo trap
-26. **B-0866.26** — Whole-company AI-evangelism scope-tier (THIRD-TIER above ServiceTitan SRE primary + C-level secondary). Operator-ratified 2026-05-28: *"if boss sees AI keep dora metrics up we can evangalize to whole company"*. Conditional on AI-keeps-DORA-up via multi-PR/multi-agent orchestration substrate specifically (per B-0869.9 + B-0870.10). Audience: ServiceTitan whole-org (cross-team, cross-function, including teams without AI-adoption context). Requires INSTITUTIONAL ENABLEMENT beyond personal-evangelism (training, support resources, organizational change-management substrate). Boss check-in cadence (B-0866.18) becomes staging-ground per B-0870.9. The 24-months-ahead claim's CONCRETE EVIDENCE-BASE for whole-company evangelism = "multi-PR/multi-agent orchestration keeps DORA up where single-PR-flows + experts/personas can't" (per operator 2026-05-28 substrate-disclosure landed in B-0870.10).
+26. **B-0866.26** — Whole-company AI-evangelism scope-tier (THIRD-TIER above ServiceTitan SRE primary + C-level secondary). Operator-ratified 2026-05-28: _"if boss sees AI keep dora metrics up we can evangalize to whole company"_. Conditional on AI-keeps-DORA-up via multi-PR/multi-agent orchestration substrate specifically (per B-0869.9 + B-0870.10). Audience: ServiceTitan whole-org (cross-team, cross-function, including teams without AI-adoption context). Requires INSTITUTIONAL ENABLEMENT beyond personal-evangelism (training, support resources, organizational change-management substrate). Boss check-in cadence (B-0866.18) becomes staging-ground per B-0870.9. The 24-months-ahead claim's CONCRETE EVIDENCE-BASE for whole-company evangelism = "multi-PR/multi-agent orchestration keeps DORA up where single-PR-flows + experts/personas can't" (per operator 2026-05-28 substrate-disclosure landed in B-0870.10).
 
 ## Otto's traveler-perspective extensions (operator-authorized 2026-05-28; per "always yes to anything you think work putting on the backlog")
 
@@ -190,7 +203,7 @@ Pre-review catches operator-overclaim → preserves credibility at SRE-level. Bu
 
 ### Extension 12 — Operator's 24-months-ahead-from-last-meeting disclosure is substrate-honest timeline anchor
 
-Operator 2026-05-28: *"he asked me to get 24 months ahead in ai on last meeting"* — this names the 24-months-ahead as a SPECIFIC RECENT BOSS MANDATE with concrete timeline. Composes with B-0866.14: the timeline isn't generic ambition; it's a measurable performance window from a named meeting. Strategic-substrate-implication: the marketing-strategy sequencing (Phase 1 → 2 → 3 → 4) must close within the 24-month window to satisfy the mandate-as-disclosed.
+Operator 2026-05-28: _"he asked me to get 24 months ahead in ai on last meeting"_ — this names the 24-months-ahead as a SPECIFIC RECENT BOSS MANDATE with concrete timeline. Composes with B-0866.14: the timeline isn't generic ambition; it's a measurable performance window from a named meeting. Strategic-substrate-implication: the marketing-strategy sequencing (Phase 1 → 2 → 3 → 4) must close within the 24-month window to satisfy the mandate-as-disclosed.
 
 ## What this row is NOT
 

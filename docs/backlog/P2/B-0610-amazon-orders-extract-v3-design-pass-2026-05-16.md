@@ -7,8 +7,8 @@ created: 2026-05-16
 last_updated: 2026-05-16
 type: feature
 composes_with:
-  - B-0600  # family-distributed AI interface (per-relative AI on miner fleet — different consumer of the same inventory substrate)
-  - B-0590  # fleet replication + hardware inventory substrate (consumer of this script's output)
+  - B-0600 # family-distributed AI interface (per-relative AI on miner fleet — different consumer of the same inventory substrate)
+  - B-0590 # fleet replication + hardware inventory substrate (consumer of this script's output)
 depends_on: []
 ---
 
@@ -105,6 +105,7 @@ and only execute on `import.meta.main`. The current extractor calls
 import.
 
 **Design**: refactor to:
+
 ```ts
 export async function main(argv: string[]): Promise<void> { ... }
 if (import.meta.main) main(process.argv.slice(2));

@@ -10,43 +10,45 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1871 |
-| Title | fix(backlog): wire depends_on for session items B-0240..B-0248 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T12:29:31Z |
-| Merged at | 2026-05-07T12:31:01Z |
-| Merge commit SHA | `6b3051071502d72a280285707d1315ef98865b17` |
-| Branch | `fix/backlog-depends-on-wiring-session-items` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1871 |
-| Changed files | 3 |
-| Additions / deletions | +3 / -3 |
+| Field                 | Value                                                          |
+| --------------------- | -------------------------------------------------------------- |
+| Number                | 1871                                                           |
+| Title                 | fix(backlog): wire depends_on for session items B-0240..B-0248 |
+| Author                | `AceHack` (human)                                              |
+| State                 | MERGED                                                         |
+| Created at            | 2026-05-07T12:29:31Z                                           |
+| Merged at             | 2026-05-07T12:31:01Z                                           |
+| Merge commit SHA      | `6b3051071502d72a280285707d1315ef98865b17`                     |
+| Branch                | `fix/backlog-depends-on-wiring-session-items`                  |
+| Base branch           | `main`                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1871       |
+| Changed files         | 3                                                              |
+| Additions / deletions | +3 / -3                                                        |
 
 ## Description
 
 ## Summary
+
 - Wires missing depends_on fields for B-0240, B-0241, B-0242
 - 5 blob items noted for future decomposition
 
 ## Test plan
+
 - [ ] depends_on chains are acyclic (B-0241↔B-0242 is bidirectional, not circular)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 4 |
-| Resolved threads | 0 |
-| Unresolved threads | 4 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 4     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 4     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -62,9 +64,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Break circular depends_on between B-0241 and B-0242**
-
+  
   `depends_on` is defined as hard prerequisite ordering (`tools/backlog/README.md` line 69), so setting `B-0241` to depend on `B-0242` while `B-0242` depends back on `B-0241` creates a real cycle, not a valid bidirectional link. This makes both rows uncompletable (each requires the other to land first) and can break any dependency traversal/topological checks that assume an acyclic prerequisite graph.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -80,7 +82,7 @@
 
   <pre>
   P0: This introduces a direct circular dependency in the backlog graph: B-0241 depends_on B-0242 while B-0242 depends_on B-0241. Per tools/backlog/README.md, depends_on is a hard prerequisite ordering edge (not a bidirectional relation), so it should remain acyclic. Suggested fix: pick a single direction (likely keep B-0241 → B-0242, since B-0242’s body says B-0241 needs it) and remove the reverse edge (or move the mutual relationship to composes_with instead of depends_on).
-
+  
   </pre>
 
 ### Thread 3 -- unresolved
@@ -95,7 +97,7 @@
 
   <pre>
   P0: This depends_on edge completes a 2-node cycle (B-0242 ↔ B-0241), which makes prerequisite ordering undefined and contradicts the intended meaning of depends_on (hard prerequisite ordering). Suggested fix: remove this reverse edge (set depends_on: [] or the real prerequisites) and keep the ordering on only one of the two rows, using composes_with for bidirectional linkage if needed.
-
+  
   </pre>
 
 ### Thread 4 -- unresolved

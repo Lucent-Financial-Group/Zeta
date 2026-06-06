@@ -4,6 +4,7 @@ description: Files with a sequence of entries (MEMORY.md index, ROUND-HISTORY, p
 type: feedback
 originSessionId: 2ac0e518-3eeb-45c2-a5dc-da0e168fe9c4
 ---
+
 Any file in the Zeta project that accumulates a sequence of
 entries over time is ordered **newest-first**: the most
 recent entry is at the top, older entries trail below. This

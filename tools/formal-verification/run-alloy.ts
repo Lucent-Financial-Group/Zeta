@@ -28,11 +28,7 @@ type ExitCode = 0 | 1 | 2 | 3;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 // Curated catalogue (matches F# Alloy.Runner.Tests.fs registration).
-const CATALOGUE: readonly string[] = [
-  "Spine",
-  "InfoTheoreticSharder",
-  "ThreeColoring",
-];
+const CATALOGUE: readonly string[] = ["Spine", "InfoTheoreticSharder", "ThreeColoring"];
 
 function repoRoot(): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
@@ -130,13 +126,7 @@ function compileRunnerIfNeeded(toolchain: Toolchain): boolean {
   }
   const result = spawnSync(
     toolchain.javacPath,
-    [
-      "-cp",
-      toolchain.alloyJarPath,
-      "-d",
-      toolchain.runnerClassDir,
-      toolchain.alloyRunnerSource,
-    ],
+    ["-cp", toolchain.alloyJarPath, "-d", toolchain.runnerClassDir, toolchain.alloyRunnerSource],
     {
       encoding: "utf8",
       maxBuffer: SPAWN_MAX_BUFFER,
@@ -144,9 +134,7 @@ function compileRunnerIfNeeded(toolchain: Toolchain): boolean {
     },
   );
   if (result.status !== 0) {
-    process.stderr.write(
-      `ERROR: javac failed compiling AlloyRunner.java (exit ${String(result.status)})\n`,
-    );
+    process.stderr.write(`ERROR: javac failed compiling AlloyRunner.java (exit ${String(result.status)})\n`);
     if (result.stderr) process.stderr.write(`${result.stderr}\n`);
     return false;
   }
@@ -174,15 +162,11 @@ function runAlloy(toolchain: Toolchain, specName: string): AlloyResult {
   // Windows here too; we match.
   const classpathSep = process.platform === "win32" ? ";" : ":";
   const cp = `${toolchain.alloyJarPath}${classpathSep}${toolchain.runnerClassDir}`;
-  const result = spawnSync(
-    toolchain.javaPath,
-    ["-cp", cp, "AlloyRunner", specFile],
-    {
-      encoding: "utf8",
-      maxBuffer: SPAWN_MAX_BUFFER,
-      timeout: 60_000,
-    },
-  );
+  const result = spawnSync(toolchain.javaPath, ["-cp", cp, "AlloyRunner", specFile], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+    timeout: 60_000,
+  });
   const stdout = result.stdout ?? "";
   const stderr = result.stderr ?? "";
   // AlloyRunner emits "OK ..." per command that proves; "FAIL " (with
@@ -203,9 +187,7 @@ function specExists(toolchain: Toolchain, specName: string): boolean {
 
 function runOne(toolchain: Toolchain, specName: string): ExitCode {
   if (!specExists(toolchain, specName)) {
-    process.stderr.write(
-      `ERROR: ${specName}.als not found in ${toolchain.specsPath}\n`,
-    );
+    process.stderr.write(`ERROR: ${specName}.als not found in ${toolchain.specsPath}\n`);
     return 1;
   }
   process.stdout.write(`running Alloy on ${specName}...\n`);
@@ -233,9 +215,7 @@ function runAll(toolchain: Toolchain): ExitCode {
     if (!specExists(toolchain, specName)) {
       // Missing-from-catalogue is catalogue drift (rename / delete),
       // NOT acceptable skip. Treat as failure to gate against drift.
-      process.stderr.write(
-        `MISSING: ${specName} (no .als in ${toolchain.specsPath})\n`,
-      );
+      process.stderr.write(`MISSING: ${specName} (no .als in ${toolchain.specsPath})\n`);
       missing.push(specName);
       continue;
     }
@@ -245,9 +225,7 @@ function runAll(toolchain: Toolchain): ExitCode {
       process.stdout.write(`  OK: ${specName}\n`);
       passed.push(specName);
     } else {
-      process.stderr.write(
-        `  FAIL: ${specName} (exit ${String(result.exitCode)})\n`,
-      );
+      process.stderr.write(`  FAIL: ${specName} (exit ${String(result.exitCode)})\n`);
       failed.push(specName);
       failureDetails.push({ spec: specName, result });
     }
@@ -259,9 +237,7 @@ function runAll(toolchain: Toolchain): ExitCode {
   if (failureDetails.length > 0) {
     process.stderr.write("\n--- failure details ---\n");
     for (const fd of failureDetails) {
-      process.stderr.write(
-        `\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-alloy.ts ${fd.spec})\n`,
-      );
+      process.stderr.write(`\n[${fd.spec}] (rerun with: bun tools/formal-verification/run-alloy.ts ${fd.spec})\n`);
       const tail = fd.result.stdout.split("\n").slice(-30).join("\n");
       process.stderr.write(tail);
       if (!tail.endsWith("\n")) process.stderr.write("\n");

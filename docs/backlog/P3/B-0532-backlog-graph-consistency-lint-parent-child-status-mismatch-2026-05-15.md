@@ -17,24 +17,24 @@ type: feature
 
 ## Origin
 
-PR [#3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (2026-05-15) shipped a row-status flip closing parent `B-0442` without closing children `B-0504` + `B-0505`. The result was a silent backlog-graph inconsistency: parent said *"I'm closed"*, two of three declared children still said *"I'm open"*. Caught by Codex + Copilot review (P1 + P2 findings) before merge — the substrate-honest catch took 4 review-thread cycles to fully resolve.
+PR [#3518](https://github.com/Lucent-Financial-Group/Zeta/pull/3518) (2026-05-15) shipped a row-status flip closing parent `B-0442` without closing children `B-0504` + `B-0505`. The result was a silent backlog-graph inconsistency: parent said _"I'm closed"_, two of three declared children still said _"I'm open"_. Caught by Codex + Copilot review (P1 + P2 findings) before merge — the substrate-honest catch took 4 review-thread cycles to fully resolve.
 
 Same shape as the spec-vs-impl-drift problem at row-internal scope: visible-symbol fixes alone aren't sufficient. The graph has structure that must stay coherent under updates.
 
 ## The failure-class pattern
 
-| Step | What happened | What this lint catches |
-|------|---------------|-----------------------|
-| 1 | Row X declares `children: [Y, Z]` in frontmatter | (graph edge) |
-| 2 | Y + Z's work lands via some PR | (no action; Y/Z still `status: open` until explicit flip) |
-| 3 | Future agent verifies X's acceptance items checked-off, flips `status: open` → `closed` | DETECT: X is closed, Y or Z still open |
+| Step | What happened                                                                           | What this lint catches                                    |
+| ---- | --------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 1    | Row X declares `children: [Y, Z]` in frontmatter                                        | (graph edge)                                              |
+| 2    | Y + Z's work lands via some PR                                                          | (no action; Y/Z still `status: open` until explicit flip) |
+| 3    | Future agent verifies X's acceptance items checked-off, flips `status: open` → `closed` | DETECT: X is closed, Y or Z still open                    |
 
 The inverse case also matters:
 
-| Step | What happened | What this lint catches |
-|------|---------------|-----------------------|
-| 1 | Row Y declares `parent: X` | (graph edge) |
-| 2 | All children of X are `status: closed`, but X is still `status: open` | DETECT: X should be reviewable for closure |
+| Step | What happened                                                         | What this lint catches                     |
+| ---- | --------------------------------------------------------------------- | ------------------------------------------ |
+| 1    | Row Y declares `parent: X`                                            | (graph edge)                               |
+| 2    | All children of X are `status: closed`, but X is still `status: open` | DETECT: X should be reviewable for closure |
 
 The first case is a hard error (graph inconsistency landed); the second is a soft warning (closure candidate flagged for next-tick attention).
 

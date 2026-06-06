@@ -15,11 +15,7 @@ import {
   type AgenticActor,
   type SupervisorSignal,
 } from "../../domain/src/index.ts";
-import {
-  CommandErrorCode,
-  CommandResultArtifactType,
-  CommandResultStatus,
-} from "../src/command-result.ts";
+import { CommandErrorCode, CommandResultArtifactType, CommandResultStatus } from "../src/command-result.ts";
 import {
   SupervisorSignalTriageValidationErrorMessage,
   triageSupervisorSignal,
@@ -89,43 +85,46 @@ describe("triage supervisor signal handler", () => {
         },
       },
     ]);
-    deepEqual(outcome.effects.outboxEvents.map((event) => event.envelope), [
-      {
-        eventId: "evt-001",
-        eventType: AgenticEventType.WorkItemChanged,
-        schemaVersion: "agentic.org.event.v1",
-        occurredAt: "2026-05-29T14:45:00.000Z",
-        actor,
-        scope: {
-          organizationId: "org-lfg",
-          projectId: "project-agentic-org",
-          teamId: "team-runtime",
-          workItemId: "work-item-001",
+    deepEqual(
+      outcome.effects.outboxEvents.map((event) => event.envelope),
+      [
+        {
+          eventId: "evt-001",
+          eventType: AgenticEventType.WorkItemChanged,
+          schemaVersion: "agentic.org.event.v1",
+          occurredAt: "2026-05-29T14:45:00.000Z",
+          actor,
+          scope: {
+            organizationId: "org-lfg",
+            projectId: "project-agentic-org",
+            teamId: "team-runtime",
+            workItemId: "work-item-001",
+          },
+          aggregate: {
+            aggregateId: "work-item-001",
+            aggregateType: AgenticAggregateType.WorkItem,
+            aggregateVersion: 1,
+          },
+          trace: {
+            commandId: "cmd-triage-001",
+            correlationId: "corr-triage-001",
+            causationId: "supervisor-signal-001",
+            traceId: "trace-triage-001",
+            idempotencyKey: "idem-triage-001",
+          },
+          replay: {
+            isReplay: false,
+          },
+          payload: {
+            state: WorkItemState.Created,
+            title: "Add durable runtime telemetry dashboard",
+            workItemType: WorkItemType.Task,
+            triagedSupervisorSignalId: "supervisor-signal-001",
+            triageActionType: SupervisorTriageActionType.OpenWorkItem,
+          },
         },
-        aggregate: {
-          aggregateId: "work-item-001",
-          aggregateType: AgenticAggregateType.WorkItem,
-          aggregateVersion: 1,
-        },
-        trace: {
-          commandId: "cmd-triage-001",
-          correlationId: "corr-triage-001",
-          causationId: "supervisor-signal-001",
-          traceId: "trace-triage-001",
-          idempotencyKey: "idem-triage-001",
-        },
-        replay: {
-          isReplay: false,
-        },
-        payload: {
-          state: WorkItemState.Created,
-          title: "Add durable runtime telemetry dashboard",
-          workItemType: WorkItemType.Task,
-          triagedSupervisorSignalId: "supervisor-signal-001",
-          triageActionType: SupervisorTriageActionType.OpenWorkItem,
-        },
-      },
-    ]);
+      ],
+    );
   });
 
   test("rejects triage when the supervisor signal cannot be found", async () => {

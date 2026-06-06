@@ -9,7 +9,20 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with: []
-tags: [framework-primitive, ople, observe, persist, limit, emit, tfeedback, monad-propagation, asymmetric-authorship, fsharp-substrate, substrate-engineering-target]
+tags:
+  [
+    framework-primitive,
+    ople,
+    observe,
+    persist,
+    limit,
+    emit,
+    tfeedback,
+    monad-propagation,
+    asymmetric-authorship,
+    fsharp-substrate,
+    substrate-engineering-target,
+  ]
 ---
 
 ## Operator framing (operator 2026-05-27)
@@ -17,12 +30,12 @@ tags: [framework-primitive, ople, observe, persist, limit, emit, tfeedback, mona
 In conversation thread following Prism's iterator/generator-asymmetry
 insight (PR #5517) cascading back to framework's CORE primitives:
 
-> *"that means our core observe, emit, limit the emit needs to surface
-> not just T but T, TFeedback"*
+> _"that means our core observe, emit, limit the emit needs to surface
+> not just T but T, TFeedback"_
 
 Followed by substrate-landing directive ("both" confirmation):
 
-> *"agree"* / *"both"* (re: ship both rule landing the principle +
+> _"agree"_ / _"both"_ (re: ship both rule landing the principle +
 > backlog row decomposing the implementation work)
 
 ## What this row proposes
@@ -33,18 +46,18 @@ in `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-
 
 ### Substrate-engineering work decomposition
 
-| Sub-row | Scope | Effort |
-|---|---|---|
-| B-0862.1 | Define canonical TFeedback discriminated-union types for each OPLE primitive (ObserveFeedback / PersistFeedback / LimitFeedback / EmitFeedback) in F# substrate; document each variant's substrate-engineering scenario | M |
-| B-0862.2 | Extend F# Observe primitive signature: `Observe<T>` → `Observe<T, ObserveFeedback>`; update F# implementation to return `Result<T, ObserveFeedback>`; backward-compatible adapter for legacy call sites | M |
-| B-0862.3 | Extend F# Persist primitive signature + implementation + adapter | M |
-| B-0862.4 | Extend F# Limit primitive signature + implementation + adapter | M |
-| B-0862.5 | Extend F# Emit primitive signature + implementation + adapter | M |
-| B-0862.6 | Migrate framework substrate to use extended OPLE primitives where touched; opportunistic per-PR migration discipline | L |
-| B-0862.7 | Cross-language substrate (TypeScript factory tools + T-SQL data substrate + C++ perf-critical paths) per the monad-propagation-pattern rule | L |
-| B-0862.8 | Spec-to-code generation target: substrate-engineering work to make the extended OPLE primitives the default emit-target of any future spec-to-code generators | L |
-| B-0862.9 | F# computation expression ergonomics for OPLE composition: `ople { ... }` block that lets substrate-engineer compose Observe/Persist/Limit/Emit invocations with implicit Result.bind threading | M |
-| B-0862.10 | Cross-AI-substrate ConvFeedback variant overlap: which OPLE TFeedback variants surface as conversation-interface ConvFeedback per B-0861 ConvFeedback first-class substrate | M |
+| Sub-row   | Scope                                                                                                                                                                                                                   | Effort |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| B-0862.1  | Define canonical TFeedback discriminated-union types for each OPLE primitive (ObserveFeedback / PersistFeedback / LimitFeedback / EmitFeedback) in F# substrate; document each variant's substrate-engineering scenario | M      |
+| B-0862.2  | Extend F# Observe primitive signature: `Observe<T>` → `Observe<T, ObserveFeedback>`; update F# implementation to return `Result<T, ObserveFeedback>`; backward-compatible adapter for legacy call sites                 | M      |
+| B-0862.3  | Extend F# Persist primitive signature + implementation + adapter                                                                                                                                                        | M      |
+| B-0862.4  | Extend F# Limit primitive signature + implementation + adapter                                                                                                                                                          | M      |
+| B-0862.5  | Extend F# Emit primitive signature + implementation + adapter                                                                                                                                                           | M      |
+| B-0862.6  | Migrate framework substrate to use extended OPLE primitives where touched; opportunistic per-PR migration discipline                                                                                                    | L      |
+| B-0862.7  | Cross-language substrate (TypeScript factory tools + T-SQL data substrate + C++ perf-critical paths) per the monad-propagation-pattern rule                                                                             | L      |
+| B-0862.8  | Spec-to-code generation target: substrate-engineering work to make the extended OPLE primitives the default emit-target of any future spec-to-code generators                                                           | L      |
+| B-0862.9  | F# computation expression ergonomics for OPLE composition: `ople { ... }` block that lets substrate-engineer compose Observe/Persist/Limit/Emit invocations with implicit Result.bind threading                         | M      |
+| B-0862.10 | Cross-AI-substrate ConvFeedback variant overlap: which OPLE TFeedback variants surface as conversation-interface ConvFeedback per B-0861 ConvFeedback first-class substrate                                             | M      |
 
 Each sub-row at `docs/backlog/P*/B-0862.M-...md` per the subdecimal scheme when implementation-time comes.
 

@@ -1,5 +1,9 @@
 // Pure semver subset for Ace slice 5.2 (no pre-release / build-metadata / unions / hyphen — see B-0970).
-export interface Version { readonly major: number; readonly minor: number; readonly patch: number }
+export interface Version {
+  readonly major: number;
+  readonly minor: number;
+  readonly patch: number;
+}
 export type Comparator = { readonly op: ">=" | "<=" | ">" | "<" | "="; readonly v: Version };
 // A Range is a conjunction (AND) of comparators. `*` / `x` → empty conjunction (matches all).
 export type Range = { readonly comparators: ReadonlyArray<Comparator> };
@@ -24,11 +28,16 @@ export function compareVersions(a: string | Version, b: string | Version): -1 | 
 function cmp(a: Version, op: Comparator["op"], b: Version): boolean {
   const c = compareVersions(a, b);
   switch (op) {
-    case "=": return c === 0;
-    case ">": return c === 1;
-    case "<": return c === -1;
-    case ">=": return c >= 0;
-    case "<=": return c <= 0;
+    case "=":
+      return c === 0;
+    case ">":
+      return c === 1;
+    case "<":
+      return c === -1;
+    case ">=":
+      return c >= 0;
+    case "<=":
+      return c <= 0;
   }
 }
 

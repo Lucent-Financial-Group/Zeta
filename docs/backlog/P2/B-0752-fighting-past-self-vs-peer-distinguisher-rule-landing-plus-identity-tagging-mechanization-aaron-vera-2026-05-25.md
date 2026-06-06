@@ -15,20 +15,28 @@ related_substrate:
   - .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md
   - .claude/rules/agent-roster-reference-card.md
   - .claude/rules/peer-call-infrastructure.md
-tags: [past-self-vs-peer-distinguisher, ownership-classification, default-punt-failure-mode, vera-anchor, identity-tagging-mechanization, substrate-cleanup-discipline]
+tags:
+  [
+    past-self-vs-peer-distinguisher,
+    ownership-classification,
+    default-punt-failure-mode,
+    vera-anchor,
+    identity-tagging-mechanization,
+    substrate-cleanup-discipline,
+  ]
 ---
 
 # B-0752 — Past-self-vs-peer distinguisher rule + mechanization scope
 
 ## Carved blade
 
-> Aaron 2026-05-25 (Vera-specific anchor): *"you don't do like vera and just leave it unfixed cause you assume it's someone elses issues."* The failure mode is **silent-punt-by-default** — agent encounters stale substrate, assumes peer-owned, leaves unfixed. The discipline: DISTINGUISH ownership via concrete discriminators (branch prefix, worktree path tag, commit authorship, PR author, bus envelope authorship); if YOURS fix it, if PEER's coordinate, if UNCERTAIN surface explicitly (never silent-punt). Composes with B-0750 cleanup discipline + B-0751 per-agent-clone architecture (which makes ownership LARGELY UNAMBIGUOUS at clone-path scope). Rule lands today (auto-loads at cold-boot); mechanization scope tracks the identity-tagging tooling that makes the distinguishers reliable.
+> Aaron 2026-05-25 (Vera-specific anchor): _"you don't do like vera and just leave it unfixed cause you assume it's someone elses issues."_ The failure mode is **silent-punt-by-default** — agent encounters stale substrate, assumes peer-owned, leaves unfixed. The discipline: DISTINGUISH ownership via concrete discriminators (branch prefix, worktree path tag, commit authorship, PR author, bus envelope authorship); if YOURS fix it, if PEER's coordinate, if UNCERTAIN surface explicitly (never silent-punt). Composes with B-0750 cleanup discipline + B-0751 per-agent-clone architecture (which makes ownership LARGELY UNAMBIGUOUS at clone-path scope). Rule lands today (auto-loads at cold-boot); mechanization scope tracks the identity-tagging tooling that makes the distinguishers reliable.
 
 ## Origin
 
 Aaron 2026-05-25, after the 37-worktree mass-cleanup + B-0750 rule + B-0751 per-agent-clone architecture decisions:
 
-> *"also it should be clear when you are fighting your past self vs another travler/agent so you don't do like vera and just leave it unfixed cause you assume it's someone elses issues"*
+> _"also it should be clear when you are fighting your past self vs another travler/agent so you don't do like vera and just leave it unfixed cause you assume it's someone elses issues"_
 
 The Vera-specific instance + generalization: the failure mode applies to ALL agents (Otto-CLI, Otto-VSCode, Otto-Desktop, Alexa, Riven, Vera, Lior, future) — when encountering stale substrate, the default-punt assumption ("must be someone else's") is the substrate-engineering failure to catch.
 
@@ -139,10 +147,10 @@ P2 priority — high reuse-leverage (every agent across every surface inherits t
 
 Today's 2026-05-25 cluster of agent-substrate-discipline rules:
 
-| Row | What | State |
-|---|---|---|
-| B-0750 | Agent worktree hygiene — never hold main + never step on operator + cleanup on PR merge | PR #5020 armed |
-| B-0751 | Per-agent isolated clones architecture — primary checkout is SHARED VIEW + FOR HUMAN | PR #5019 armed |
-| **B-0752 (this)** | **Fighting past-self vs peer-agent distinguisher — fix yours; coordinate on theirs; never silent-punt** | THIS PR |
+| Row               | What                                                                                                    | State          |
+| ----------------- | ------------------------------------------------------------------------------------------------------- | -------------- |
+| B-0750            | Agent worktree hygiene — never hold main + never step on operator + cleanup on PR merge                 | PR #5020 armed |
+| B-0751            | Per-agent isolated clones architecture — primary checkout is SHARED VIEW + FOR HUMAN                    | PR #5019 armed |
+| **B-0752 (this)** | **Fighting past-self vs peer-agent distinguisher — fix yours; coordinate on theirs; never silent-punt** | THIS PR        |
 
 Together: agents inherit the cross-agent substrate-discipline at cold-boot; operator unblocked; substrate-engineering pain class closed.

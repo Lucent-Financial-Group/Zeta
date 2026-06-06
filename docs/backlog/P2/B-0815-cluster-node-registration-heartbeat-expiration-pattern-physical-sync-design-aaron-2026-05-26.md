@@ -28,7 +28,7 @@ Drift scenarios:
 - Machine offline for an extended period → indeterminate (operationally dead? offline temporarily? maintenance window?)
 - Hardware changed (GPU swap, disk replace) but `node.yaml`'s `hardware:` block still shows old → reconciler routes workloads to wrong specs
 
-The maintainer 2026-05-26: *"the next step will be how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"*.
+The maintainer 2026-05-26: _"the next step will be how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"_.
 
 ## Target
 
@@ -127,6 +127,6 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.cl
 
 The maintainer 2026-05-26 in the iter-5.4 substrate-engineering session, immediately after requesting the deregister tool (B-0814):
 
-> *"Or the next step will be how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"*
+> _"Or the next step will be how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"_
 
 Filed as P2 (not P1) because deregister tool (B-0814) covers the manual deletion case the maintainer named first; the automatic heartbeat/expiration is the second-order extension. Once iter-5.4.1 + 5.4.2 + B-0814 land + validate, B-0815 becomes the natural follow-on.

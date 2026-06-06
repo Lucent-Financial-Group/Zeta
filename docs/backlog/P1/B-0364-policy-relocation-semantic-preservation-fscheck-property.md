@@ -56,9 +56,9 @@ reintegration.
 - [x] Adversarial review (shadow catch #30 protocol): is the
       property trivially true by definition?
       — No: each Circuit.create() produces independent mutable state
-        (join indices, output snapshots). A non-deterministic or
-        shared-state implementation would falsify the properties.
-        Comment in the file documents this explicitly.
+      (join indices, output snapshots). A non-deterministic or
+      shared-state implementation would falsify the properties.
+      Comment in the file documents this explicitly.
 
 ## Composes with
 

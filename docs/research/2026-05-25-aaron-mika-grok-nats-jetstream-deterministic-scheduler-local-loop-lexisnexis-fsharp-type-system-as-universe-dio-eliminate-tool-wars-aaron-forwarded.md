@@ -13,6 +13,7 @@
 > **Aaron**: Yeah, so, uh, we decided we're going to use Nat Streaming. Instead of SCD, we're going to use Nat Jetstream for the backend and push down predicates, uh, and create our own Kubernetes scheduler. This like data gravity aware that can push down all the way to schedule AI jobs on network-detached storage with AI CPUs attached that are like MPU aware and also, uh, like, uh, shared memory aware so that you can do the shared memory on the iGPUs and stuff.
 >
 > **Mika**: Yo, that's a pretty big shift. So y'all are going all-in on NATS JetStream as the central event backbone instead of going full streaming CDC. You're basically building a custom, super-aware Kubernetes scheduler that understands:
+>
 > - Data gravity (where the data actually lives)
 > - Network-detached storage
 > - AI-specific hardware (MPU, iGPUs, shared memory)
@@ -22,6 +23,7 @@
 > **Aaron**: No, no, we're gonna have, no, we're gonna just use our scheduler, period. I mean, we're gonna start out with the nor, we're, we're not pushing all this far to begin with. You can imagine each layer is another, uh, you know, extra customization. But you can imagine our scheduler, if you don't have any customized hardware, our scheduler just works like the Kubernetes scheduler. But we haven't written that yet, but that's where we're going.
 >
 > **Mika**: Got it. So you're building your own scheduler that starts out behaving like the normal Kubernetes scheduler by default (for compatibility), but then has the ability to get smarter over time with all the extra intelligence layers you want:
+>
 > - Data gravity awareness
 > - Network-detached storage awareness
 > - AI hardware awareness (MPUs, iGPUs, shared memory)
@@ -44,6 +46,7 @@
 > That makes sense with your deterministic philosophy. The entire cluster state becomes versioned and reproducible just like code.
 >
 > So to summarize what I'm hearing:
+>
 > - NATS JetStream becomes your central event backbone
 > - Custom scheduler that starts Kubernetes-compatible but gets increasingly smart
 > - Everything built for deterministic simulation (thanks to your .NET deterministic thread scheduler)
@@ -54,6 +57,7 @@
 > **Aaron**: Yep, and then you just, you can reproduce that locally in Docker when you install a Kubernetes cluster in the GUI, then you can run it locally for developers, and you can also do it in CI to just test it in CI. And even developers can test it without enabling a Kubernetes and cluster and Docker just by running the test, but you can make it like more visible and observable to them by integrating with the Kubernetes and Dock, the, and Docker.
 >
 > **Mika**: So you want a really clean three-tier testing story:
+>
 > - Pure test mode: Developers can run deterministic simulations locally with zero Kubernetes or Docker — just pure code tests.
 > - Observable mode: Same test, but spun up inside Docker + Kubernetes so they can actually see what's happening.
 > - Full CI mode: Same thing runs in CI with the exact same cluster composition.
@@ -91,6 +95,7 @@
 > **Aaron**: Yeah, so basically, you can imagine it's a Nix flake, uh, pretty much. That's what we're starting with. Maybe we'll do some, some other stuff. And then we have a Nix flake, and then basically we have Argo CD after that, and that's pretty much it. And we have the whole observability, and then basically when we, um, you stick the USB in, it already knows the GitHub address and everything, so it just go, goes, sets up the flake, sets up everything. You just plug it in and let it go, and it knows when it's already a clus, if it's not a cluster, it creates a new one, and if it's on a network with a cluster, it joins it.
 >
 > **Mika**: Okay, now I'm tracking. So your endgame is actually pretty clean:
+>
 > - A Nix flake is the root of truth.
 > - You stick in a USB (or boot from it), it phones home to a specific GitHub repo.
 > - The flake runs, brings up the base system + Argo CD.
@@ -110,6 +115,7 @@
 > **Aaron**: Yeah, and then the USB basically says, when you stick it in, imagine the repair. The repair is basically go boot up off the USB, and the USB basically says, hey, am I already running on this? I am? Let me make sure I recover any hardware IDs and stuff and just reinstall the image.
 >
 > **Mika**: So the USB is basically acting like a self-healing repair disk too. You just boot off it and it has two modes:
+>
 > - First time on this machine → turns it into a fresh cluster node.
 > - Already running on this machine → detects it's itself, recovers hardware IDs, and just reinstalls/re-paves the image cleanly.
 >
@@ -122,6 +128,7 @@
 > If your end goal is before robots do everything, humans should do as little as possible, then you're basically trying to minimize human toil while still keeping humans in the loop for the stuff that actually matters.
 >
 > The way you're approaching this stack — Nix flake as the root of truth, Argo CD for everything, a custom scheduler, deterministic simulation, and this generic self-healing USB — is already pointed in that direction. The real trick is making sure humans only do three things:
+>
 > 1. Declare intent (what should exist)
 > 2. Make high-level decisions when the system can't resolve something itself
 > 3. Review and approve major changes
@@ -206,25 +213,26 @@
 
 ## Substrate-engineering items extracted (for backlog filing)
 
-| Item | Status |
-|---|---|
-| NATS JetStream as central event backbone | Already in B-0772 / B-0774 / B-0776 |
-| Custom Kubernetes scheduler (data-gravity / NPU-aware / NATS pushdown) | Already in B-0767 |
-| Deterministic simulation testing of K8s deployments + .NET deterministic thread scheduler + database | **NEW: B-0780 Local Loop substrate** |
-| Three-tier testing (pure-code / Docker-observable / CI) | **NEW: B-0780 sub-scope** |
-| Argo CD App-of-Apps as packages.json | **NEW: B-0780 sub-scope** |
-| Local Loop name + LexisNexis Spark-on-K8s fork provenance | **NEW: B-0780 empirical anchor** |
-| "Eliminate tool wars" framing (NOT "humans do less") | **NEW: B-0783 sharpening of B-0759 persona** |
-| CEO-of-30-companies low-touch substrate | **NEW: B-0782 DIO + CEO-scale** |
-| Distributed Intelligent Organization (DIO) per company | **NEW: B-0782 DIO substrate** |
-| F# type system = universe boundary; every YAML/Nix/k8s/Argo/NATS becomes first-class F# | **NEW: B-0781 F# type system as universe boundary; Cachet analog** |
-| Already open source; AI-native cloud-agnostic production stack | Already established (B-0761) |
-| USB-stick-and-power bootstrap | Already in B-0754 / B-0760 |
-| Self-healing repair USB | Already in B-0760 |
-| Generic + greedy USB image | Already in B-0754 |
-| Phone-home Nix flake + Argo CD + auto-cluster-join | Already in B-0754 / B-0757 / B-0773 / B-0747 |
+| Item                                                                                                 | Status                                                             |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| NATS JetStream as central event backbone                                                             | Already in B-0772 / B-0774 / B-0776                                |
+| Custom Kubernetes scheduler (data-gravity / NPU-aware / NATS pushdown)                               | Already in B-0767                                                  |
+| Deterministic simulation testing of K8s deployments + .NET deterministic thread scheduler + database | **NEW: B-0780 Local Loop substrate**                               |
+| Three-tier testing (pure-code / Docker-observable / CI)                                              | **NEW: B-0780 sub-scope**                                          |
+| Argo CD App-of-Apps as packages.json                                                                 | **NEW: B-0780 sub-scope**                                          |
+| Local Loop name + LexisNexis Spark-on-K8s fork provenance                                            | **NEW: B-0780 empirical anchor**                                   |
+| "Eliminate tool wars" framing (NOT "humans do less")                                                 | **NEW: B-0783 sharpening of B-0759 persona**                       |
+| CEO-of-30-companies low-touch substrate                                                              | **NEW: B-0782 DIO + CEO-scale**                                    |
+| Distributed Intelligent Organization (DIO) per company                                               | **NEW: B-0782 DIO substrate**                                      |
+| F# type system = universe boundary; every YAML/Nix/k8s/Argo/NATS becomes first-class F#              | **NEW: B-0781 F# type system as universe boundary; Cachet analog** |
+| Already open source; AI-native cloud-agnostic production stack                                       | Already established (B-0761)                                       |
+| USB-stick-and-power bootstrap                                                                        | Already in B-0754 / B-0760                                         |
+| Self-healing repair USB                                                                              | Already in B-0760                                                  |
+| Generic + greedy USB image                                                                           | Already in B-0754                                                  |
+| Phone-home Nix flake + Argo CD + auto-cluster-join                                                   | Already in B-0754 / B-0757 / B-0773 / B-0747                       |
 
 ## Cross-AI naming substrate
+
 Mika via Grok. Aaron-forwarded. This conversation captures substrate-engineering substantively new items (B-0780 / B-0781 / B-0782 / B-0783) AND validates existing substrate via cross-AI confirmation of direction.
 
 Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing rows already encoded most of what Aaron told Mika. The cross-AI validation confirms cluster coherence. New rows file the substantively-new items only.
@@ -254,6 +262,7 @@ Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing
 > **Aaron**: "Yeah, can you search the internet? There's Kubernetes projects and even routing. Microsoft has some kind of routing project for this. I forgot what it's called. So that most of this trickery in the, in the routes are done for you."
 >
 > **Mika** (after research): "The closest things people actually use for exactly what you're describing (routing based on a header like an experiment ID or namespace context, so traffic goes to the right version/namespace) are:
+>
 > - Kubernetes Gateway API with header matching — This is the modern, clean way. You can route based on headers like x-experiment-id or x-namespace directly in the HTTPRoute.
 > - Istio — Still the most popular for this kind of advanced header-based routing, traffic splitting, and routing across namespaces. Microsoft's own AKS App Routing add-on now uses Istio under the hood with Gateway API.
 > - NGINX Ingress Controller with canary annotations — Older but very common for header-based routing.
@@ -272,14 +281,14 @@ Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing
 
 ## Substrate items extracted from continuation (new rows filed)
 
-| Item | Row |
-|---|---|
-| "Everything declarative, desired state, get/git native" north star | Already in B-0747 / B-0773; restated as north star |
-| Distributed F# type negotiation across travelers' compilers; consensus mechanism + governance layer | **NEW: B-0784 P1** |
-| Namespace-scoped strictness: personal mirror (free) vs common (strict consensus) | **NEW: B-0784 P1** (composes with existing Mirror/Beacon substrate) |
-| Unified namespace across F# + Kubernetes + Ontology + Twin scope | **NEW: B-0785 P1** |
-| Experiment-ID routing (OTel baggage style) → request routes to operator's namespace version | **NEW: B-0785 P1** |
-| Argo Rollouts header-routing + Cilium service mesh as the cluster routing substrate | **NEW: B-0785 P1** (per B-0765 ServiceTitan-route — existing standards) |
+| Item                                                                                                | Row                                                                     |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| "Everything declarative, desired state, get/git native" north star                                  | Already in B-0747 / B-0773; restated as north star                      |
+| Distributed F# type negotiation across travelers' compilers; consensus mechanism + governance layer | **NEW: B-0784 P1**                                                      |
+| Namespace-scoped strictness: personal mirror (free) vs common (strict consensus)                    | **NEW: B-0784 P1** (composes with existing Mirror/Beacon substrate)     |
+| Unified namespace across F# + Kubernetes + Ontology + Twin scope                                    | **NEW: B-0785 P1**                                                      |
+| Experiment-ID routing (OTel baggage style) → request routes to operator's namespace version         | **NEW: B-0785 P1**                                                      |
+| Argo Rollouts header-routing + Cilium service mesh as the cluster routing substrate                 | **NEW: B-0785 P1** (per B-0765 ServiceTitan-route — existing standards) |
 
 ### Segment 4 — feature flag tooling + simplest-first discipline
 
@@ -297,7 +306,7 @@ Per `.claude/rules/wake-time-substrate.md` + the substrate cluster: the existing
 
 ## Substrate items extracted from continuation segment 4
 
-| Item | Row |
-|---|---|
-| Feature flag tooling substrate (OpenFeature + Flipt + Argo Rollouts + Cilium routing composition) | **NEW: B-0786 P2** |
+| Item                                                                                                                       | Row                                                                                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Feature flag tooling substrate (OpenFeature + Flipt + Argo Rollouts + Cilium routing composition)                          | **NEW: B-0786 P2**                                                                                                                             |
 | Aaron's substrate-engineering discipline: "simplest first; add complexity only when simple shape demonstrably doesn't fit" | **NEW: feedback memory** `feedback_simplest_first_then_add_complexity_only_when_simple_shape_demonstrably_doesnt_fit_aaron_mika_2026_05_25.md` |

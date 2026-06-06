@@ -53,10 +53,10 @@ spec:
         # (daemonset, runs on every node), and gc (cleans up labels
         # for deleted nodes). All three on by default.
         master:
-          replicaCount: 1   # bump to 2 for HA once we have 5+ nodes
+          replicaCount: 1 # bump to 2 for HA once we have 5+ nodes
           resources:
             requests: { cpu: 100m, memory: 128Mi }
-            limits:   { cpu: 500m, memory: 512Mi }
+            limits: { cpu: 500m, memory: 512Mi }
 
         worker:
           # Tolerate everything — workers need to discover features
@@ -65,7 +65,7 @@ spec:
             - operator: Exists
           resources:
             requests: { cpu: 50m, memory: 64Mi }
-            limits:   { cpu: 200m, memory: 256Mi }
+            limits: { cpu: 200m, memory: 256Mi }
           # Enable additional source plugins beyond the defaults.
           # cpu / kernel / memory / network / pci / storage / system /
           # usb are on by default; we explicitly turn on `local` for
@@ -74,10 +74,10 @@ spec:
             sources:
               pci:
                 deviceClassWhitelist:
-                  - "0200"  # network controllers
-                  - "03"    # display controllers (GPUs)
-                  - "0c80"  # NVMe sub-class
-                  - "12"    # processing accelerators
+                  - "0200" # network controllers
+                  - "03" # display controllers (GPUs)
+                  - "0c80" # NVMe sub-class
+                  - "12" # processing accelerators
                 deviceLabelFields:
                   - "vendor"
                   - "device"
@@ -87,7 +87,7 @@ spec:
           replicaCount: 1
           resources:
             requests: { cpu: 50m, memory: 64Mi }
-            limits:   { cpu: 200m, memory: 256Mi }
+            limits: { cpu: 200m, memory: 256Mi }
 
         # NodeFeatureRule CRDs let you derive custom labels from raw
         # features. Default rules cover the common stuff (GPU vendor

@@ -4,17 +4,44 @@ import { test } from "node:test";
 import { DocType, DocScopeKind, DocLifecycleState, type DocEntity, type DocUnit } from "../../domain/src/index.ts";
 import { runRetrieval, type RetrievalContext } from "../src/index.ts";
 
-const billing: DocEntity = { docEntityId: "ent-billing", organizationId: "org-lfg", canonicalName: "Billing", kind: "service", aliases: ["the billing service", "services/billing"], createdAt: "t", updatedAt: "t" };
+const billing: DocEntity = {
+  docEntityId: "ent-billing",
+  organizationId: "org-lfg",
+  canonicalName: "Billing",
+  kind: "service",
+  aliases: ["the billing service", "services/billing"],
+  createdAt: "t",
+  updatedAt: "t",
+};
 
 function u(over: Partial<DocUnit>): DocUnit {
   return {
-    docUnitId: "u", organizationId: "org-lfg", sourceId: "s", type: DocType.Runbook, scopeKind: DocScopeKind.Department,
-    scopeId: "eng", title: "t", summary: "", contentRef: "ref", contentHash: "h", status: DocLifecycleState.Active,
-    freshnessAt: "2026-05-30T00:00:00Z", boundHatIds: [], boundStageIds: [], createdAt: "2026-05-01T00:00:00Z", updatedAt: "2026-05-01T00:00:00Z", version: 1, ...over,
+    docUnitId: "u",
+    organizationId: "org-lfg",
+    sourceId: "s",
+    type: DocType.Runbook,
+    scopeKind: DocScopeKind.Department,
+    scopeId: "eng",
+    title: "t",
+    summary: "",
+    contentRef: "ref",
+    contentHash: "h",
+    status: DocLifecycleState.Active,
+    freshnessAt: "2026-05-30T00:00:00Z",
+    boundHatIds: [],
+    boundStageIds: [],
+    createdAt: "2026-05-01T00:00:00Z",
+    updatedAt: "2026-05-01T00:00:00Z",
+    version: 1,
+    ...over,
   };
 }
 
-const ctx: RetrievalContext = { organizationId: "org-lfg", stageId: "release", scopes: [{ kind: DocScopeKind.Department, id: "eng" }] };
+const ctx: RetrievalContext = {
+  organizationId: "org-lfg",
+  stageId: "release",
+  scopes: [{ kind: DocScopeKind.Department, id: "eng" }],
+};
 
 test("Stage 1 scope pre-filter: a wrong-team doc NEVER surfaces, even if lexically identical", () => {
   const corpus = [
@@ -24,7 +51,10 @@ test("Stage 1 scope pre-filter: a wrong-team doc NEVER surfaces, even if lexical
   const r = runRetrieval("how to deploy", ctx, corpus, []);
   equal(r.diagnostics.corpusSize, 2);
   equal(r.diagnostics.afterScope, 1, "scope cut the corpus to the legal slice");
-  ok(r.hits.every((h) => h.unit.docUnitId !== "sales-deploy"), "the wrong-team doc is unreachable");
+  ok(
+    r.hits.every((h) => h.unit.docUnitId !== "sales-deploy"),
+    "the wrong-team doc is unreachable",
+  );
 });
 
 test("Stage 2/3 entity anchoring: a unit about 'Billing' surfaces for 'the billing service' (RAG recall miss)", () => {
@@ -39,7 +69,14 @@ test("Stage 2/3 entity anchoring: a unit about 'Billing' surfaces for 'the billi
 });
 
 test("Stage 4 summary-first: hits carry a summary + a drill pointer (contentRef), not raw chunks", () => {
-  const corpus = [u({ docUnitId: "x", title: "Release checklist", summary: "tag, build, sign, ship", contentRef: "git:RELEASE.md#Release checklist" })];
+  const corpus = [
+    u({
+      docUnitId: "x",
+      title: "Release checklist",
+      summary: "tag, build, sign, ship",
+      contentRef: "git:RELEASE.md#Release checklist",
+    }),
+  ];
   const r = runRetrieval("release checklist", ctx, corpus, []);
   equal(r.hits[0]!.unit.summary, "tag, build, sign, ship");
   equal(r.hits[0]!.unit.contentRef, "git:RELEASE.md#Release checklist");
@@ -62,11 +99,20 @@ test("Stage 6 KPI rerank: usefulness (consult outcomes) beats raw similarity", (
 test("Stage 7 staleness: a stale unit is demoted below an equally-similar active one", () => {
   const corpus = [
     u({ docUnitId: "fresh", status: DocLifecycleState.Active, title: "Release runbook", summary: "release steps" }),
-    u({ docUnitId: "old", status: DocLifecycleState.Stale, scopeId: "eng", title: "Release runbook", summary: "release steps" }),
+    u({
+      docUnitId: "old",
+      status: DocLifecycleState.Stale,
+      scopeId: "eng",
+      title: "Release runbook",
+      summary: "release steps",
+    }),
   ];
   // stale units are not retrieval-eligible, so they are scoped out entirely (the strongest demotion)
   const r = runRetrieval("release steps", ctx, corpus, []);
-  ok(r.hits.every((h) => h.unit.docUnitId !== "old"), "a stale unit does not surface in default retrieval");
+  ok(
+    r.hits.every((h) => h.unit.docUnitId !== "old"),
+    "a stale unit does not surface in default retrieval",
+  );
   equal(r.hits[0]!.unit.docUnitId, "fresh");
 });
 
@@ -81,42 +127,70 @@ test("Stage 7 conflict: two active load-bearing same-topic units that disagree a
 
 test("Stage 8 deterministic consult: a stage-bound handbook is ALWAYS injected regardless of the query", () => {
   const corpus = [
-    u({ docUnitId: "bound", type: DocType.Handbook, scopeId: "docs", title: "Release Handbook", summary: "irrelevant to the query text", boundStageIds: ["release"] }),
+    u({
+      docUnitId: "bound",
+      type: DocType.Handbook,
+      scopeId: "docs",
+      title: "Release Handbook",
+      summary: "irrelevant to the query text",
+      boundStageIds: ["release"],
+    }),
     u({ docUnitId: "lexical", title: "Something else", summary: "matches the query words exactly" }),
   ];
   const r = runRetrieval("something else", ctx, corpus, []);
-  ok(r.consulted.some((c) => c.docUnitId === "bound"), "the stage-bound handbook is consulted deterministically");
+  ok(
+    r.consulted.some((c) => c.docUnitId === "bound"),
+    "the stage-bound handbook is consulted deterministically",
+  );
   equal(r.diagnostics.deterministicConsults, 1);
 });
 
 test("Stage 8 deterministic consult: a hat-bound handbook is ALWAYS injected regardless of the query", () => {
   const corpus = [
-    u({ docUnitId: "hat-bound", type: DocType.Handbook, scopeId: "docs", title: "Director Handbook", summary: "no overlapping words", boundHatIds: ["engineering_director"] }),
+    u({
+      docUnitId: "hat-bound",
+      type: DocType.Handbook,
+      scopeId: "docs",
+      title: "Director Handbook",
+      summary: "no overlapping words",
+      boundHatIds: ["engineering_director"],
+    }),
     u({ docUnitId: "lexical", title: "Something else", summary: "matches the query words exactly" }),
   ];
   const hatOnlyContext: RetrievalContext = { organizationId: ctx.organizationId, scopes: ctx.scopes };
-  const r = runRetrieval(
-    "something else",
-    { ...hatOnlyContext, hatId: "engineering_director" },
-    corpus,
-    [],
+  const r = runRetrieval("something else", { ...hatOnlyContext, hatId: "engineering_director" }, corpus, []);
+  ok(
+    r.consulted.some((c) => c.docUnitId === "hat-bound"),
+    "the hat-bound handbook is consulted deterministically",
   );
-  ok(r.consulted.some((c) => c.docUnitId === "hat-bound"), "the hat-bound handbook is consulted deterministically");
   equal(r.diagnostics.deterministicConsults, 1);
 });
 
 test("profile-preferred doc types surface inside scope without relying on lexical overlap", () => {
   const corpus = [
-    u({ docUnitId: "project-brd", type: DocType.Brd, scopeId: "eng", title: "Customer rulebook", summary: "No shared query words." }),
-    u({ docUnitId: "project-runbook", type: DocType.Runbook, scopeId: "eng", title: "Customer runbook", summary: "No shared query words." }),
-    u({ docUnitId: "other-brd", type: DocType.Brd, scopeId: "sales", title: "Customer rulebook", summary: "No shared query words." }),
+    u({
+      docUnitId: "project-brd",
+      type: DocType.Brd,
+      scopeId: "eng",
+      title: "Customer rulebook",
+      summary: "No shared query words.",
+    }),
+    u({
+      docUnitId: "project-runbook",
+      type: DocType.Runbook,
+      scopeId: "eng",
+      title: "Customer runbook",
+      summary: "No shared query words.",
+    }),
+    u({
+      docUnitId: "other-brd",
+      type: DocType.Brd,
+      scopeId: "sales",
+      title: "Customer rulebook",
+      summary: "No shared query words.",
+    }),
   ];
-  const r = runRetrieval(
-    "billing blocker",
-    { ...ctx, preferredDocTypes: [DocType.Brd] },
-    corpus,
-    [],
-  );
+  const r = runRetrieval("billing blocker", { ...ctx, preferredDocTypes: [DocType.Brd] }, corpus, []);
 
   equal(r.hits[0]?.unit.docUnitId, "project-brd");
   ok(r.hits[0]?.reasons.includes(`preferred-doc-type:${DocType.Brd}`));

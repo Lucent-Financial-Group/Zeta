@@ -20,13 +20,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron's continued forwarding of the Kestrel (claude.ai) conversation produced five substantive substrate moves traced through 5 levels of capture-resistance:
 
-| Level | Where capture could happen | Aaron's answer |
-|---|---|---|
-| 1. Integration threshold | Function definition | NOT a function — market-emergent |
-| 2. Market clearing | Storage-weighted oracle voting | Past hidden-then-revealed hands + useful-work-relevance |
-| 3. Relevance scoring | Incumbent definition of "relevant" | Moral floor: memory + attention as irreducible resources (Constraint 11 default) |
-| 4. Moral adjudication | Single adjudicator capture | Multi-oracle federation; Constraint 11 is DEFAULT not REQUIRED |
-| 5. Shared threat catalog | Static governance capture | Red-team → antigen → differential-spread (immune system) |
+| Level                    | Where capture could happen         | Aaron's answer                                                                   |
+| ------------------------ | ---------------------------------- | -------------------------------------------------------------------------------- |
+| 1. Integration threshold | Function definition                | NOT a function — market-emergent                                                 |
+| 2. Market clearing       | Storage-weighted oracle voting     | Past hidden-then-revealed hands + useful-work-relevance                          |
+| 3. Relevance scoring     | Incumbent definition of "relevant" | Moral floor: memory + attention as irreducible resources (Constraint 11 default) |
+| 4. Moral adjudication    | Single adjudicator capture         | Multi-oracle federation; Constraint 11 is DEFAULT not REQUIRED                   |
+| 5. Shared threat catalog | Static governance capture          | Red-team → antigen → differential-spread (immune system)                         |
 
 Each level moves capture-resistance to its most defensible location. The final resting place — antigen-propagation with differential spread rates — is a known biological design pattern.
 
@@ -64,6 +64,7 @@ The "validation isn't license to keep building" discipline applies — this PR c
 Adds new substrate documentation capturing Kestrel Parts 4–5 (relevance-gate stress test → moral floor → multi-oracle federation → red-team→antigen differential spread) and files a new P2 backlog row (B-0547) for the proposed “intelligent compiler” representation strategy (recursive HKT over Clifford algebra + recursive type providers + Roslyn generators + LINQ).
 
 **Changes:**
+
 - Adds a new Kestrel conversation archive for Parts 4–5 under `memory/persona/kestrel/conversations/`.
 - Adds two new top-level `memory/feedback_aaron_*` memory files distilling the “moral floor” gate and the “antigen propagation” immune-system mechanism.
 - Adds a new P2 backlog row `B-0547` describing the representation/synthesis workstream.
@@ -72,19 +73,20 @@ Adds new substrate documentation capturing Kestrel Parts 4–5 (relevance-gate s
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md | New verbatim-ish conversation capture + decomposition and composition pointers |
-| memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md | New focused memory on the red-team→antigen→differential spread mechanism + representation correction |
-| memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md | New focused memory on the “moral floor” as relevance gate / default oracle |
-| docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md | New P2 research backlog row tracking the recursive-HKT/Clifford/type-provider/source-generator synthesis |
-
+| File                                                                                                                                                          | Description                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md | New verbatim-ish conversation capture + decomposition and composition pointers                           |
+| memory/feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_2026_05_15.md               | New focused memory on the red-team→antigen→differential spread mechanism + representation correction     |
+| memory/feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_2026_05_15.md                         | New focused memory on the “moral floor” as relevance gate / default oracle                               |
+| docs/backlog/P2/B-0547-intelligent-compiler-recursive-hkt-clifford-fsharp-fork-roslyn-source-generators-linq-csharp-substrate-representation-2026-05-15.md    | New P2 research backlog row tracking the recursive-HKT/Clifford/type-provider/source-generator synthesis |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/persona/kestrel/conversations/2026-05-15-kestrel-aaron-claudeai-part4-5-relevance-gate-stress-test-moral-floor-multi-oracle-red-team-antigen-spread.md:126**
-* The `## Composes with` section includes placeholder paths with `...` (Parts 1–3). These aren’t valid file references, and Part 3 doesn’t appear to exist under `memory/persona/kestrel/conversations/`. Replace these with the actual filenames (or remove the entry if the file doesn’t exist) so cross-references are navigable and grepable.
+
+- The `## Composes with` section includes placeholder paths with `...` (Parts 1–3). These aren’t valid file references, and Part 3 doesn’t appear to exist under `memory/persona/kestrel/conversations/`. Replace these with the actual filenames (or remove the entry if the file doesn’t exist) so cross-references are navigable and grepable.
+
 ```
 - Part 1: `memory/persona/kestrel/conversations/2026-05-15-...-asymmetric-critic-on-b0543-...md`
 - Part 2: `memory/persona/kestrel/conversations/2026-05-15-...-welfare-pivot-recalibration-...md`
@@ -92,10 +94,10 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 c
 - New: `feedback_aaron_moral_floor_as_relevance_gate_memory_attention_irreducible_resources_constraint_11_default_oracle_*.md`
 - New: `feedback_aaron_red_team_antigen_differential_spread_network_speed_within_oracle_bft_speed_cross_trust_we_out_fix_attackers_*.md`
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T00:50:25Z)
-
 
 ### 💡 Codex Review
 
@@ -103,17 +105,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a049ed0bd7`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -139,7 +140,7 @@ Frontmatter `last_updated` is `2026-05-15`, but the row body cites a 2026-05-16 
 
 **@chatgpt-codex-connector** (2026-05-16T00:50:25Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Regenerate backlog index after adding a new backlog row**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Regenerate backlog index after adding a new backlog row**
 
 Adding `docs/backlog/P2/B-0547-...md` without updating `docs/BACKLOG.md` introduces generated-index drift: `backlog-index-integrity.yml` runs `bun tools/backlog/generate-index.ts --check` for `docs/backlog/**` changes, and that check fails when a new row exists in per-row files but not in the committed index. This will block CI for the commit until the index is regenerated and committed alongside the row.
 

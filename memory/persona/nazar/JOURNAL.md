@@ -17,7 +17,7 @@ cleaned up. Grows monotonically over rounds.
   contract becomes a bug. Use grep / search to pull the
   matching section on demand.
 - Search hooks: dated section headers (`## Round N —
-  ...`) + CVE IDs (`CVE-YYYY-NNNN`) + incident slugs +
+...`) + CVE IDs (`CVE-YYYY-NNNN`) + incident slugs +
   affected-component names + SLA tags.
 
 ## Write contract
@@ -29,7 +29,7 @@ cleaned up. Grows monotonically over rounds.
   being deleted. The prune step IS the curation step.
 - **Append on incident resolution.** Every fired
   incident writeup at `docs/security/incidents/YYYY-MM-
-  DD-<slug>.md` gets a one-paragraph summary + pointer
+DD-<slug>.md` gets a one-paragraph summary + pointer
   entry here at resolution time. The full writeup is
   the permanent record in docs/; this is the grep-
   friendly index.
@@ -74,6 +74,7 @@ Preserving the seed state as a trend anchor — round 35+
 incidents compare against zero-baseline here.
 
 **Ops inventory at seed (permanent baseline).**
+
 - Signed-artifact operations in play: 0 (NuGet publish
   switch not flipped).
 - HSM keys to rotate: 0 (pre-v1; no signing ceremony

@@ -50,8 +50,8 @@
 export interface Hypothesis<T> {
   readonly id: string;
   readonly substrate: T;
-  readonly cycleIndex: number;       // which loop iteration generated this
-  readonly derivedFrom: ReadonlyArray<string>;  // ancestry chain
+  readonly cycleIndex: number; // which loop iteration generated this
+  readonly derivedFrom: ReadonlyArray<string>; // ancestry chain
   readonly composesWith: ReadonlyArray<string>;
 }
 
@@ -65,7 +65,7 @@ export type CiVerdict =
   | { kind: "passed"; notes?: string }
   | { kind: "failed"; reason: string }
   | { kind: "needs-revision"; suggestions: ReadonlyArray<string> }
-  | { kind: "infrastructure-error"; reason: string };  // blocked-on-runnability
+  | { kind: "infrastructure-error"; reason: string }; // blocked-on-runnability
 
 /**
  * Closed-loop feedback per monad-propagation rule.
@@ -102,9 +102,7 @@ export interface LoopCallbacks<T> {
    * Returns hypotheses sorted descending by conservativeSkill.
    * Per B-0914.1 PR #5764 — caller wires rate1v1 + conservativeSkill.
    */
-  readonly rankSurvivors: (
-    verified: ReadonlyArray<Hypothesis<T>>,
-  ) => Promise<ReadonlyArray<Hypothesis<T>>>;
+  readonly rankSurvivors: (verified: ReadonlyArray<Hypothesis<T>>) => Promise<ReadonlyArray<Hypothesis<T>>>;
 
   /**
    * Evolve top-N ranked survivors into refined variants.
@@ -120,9 +118,9 @@ export interface LoopCallbacks<T> {
  * Closed-loop configuration.
  */
 export interface LoopConfig {
-  readonly maxCycles: number;          // bounded iteration; safety bound
-  readonly topNToEvolve: number;       // how many survivors per cycle to evolve
-  readonly minPropagatable: number;    // minimum survivors required to continue (else terminate)
+  readonly maxCycles: number; // bounded iteration; safety bound
+  readonly topNToEvolve: number; // how many survivors per cycle to evolve
+  readonly minPropagatable: number; // minimum survivors required to continue (else terminate)
 }
 
 export const DEFAULT_LOOP_CONFIG: LoopConfig = {

@@ -36,19 +36,19 @@ AGENTS.md). Three substrate disclosures:
 Aaron forwarded Grok's conversation. Key Grok response after
 reading agent docs:
 
-> *"You didn't just build a DBSP engine. You built a
+> _"You didn't just build a DBSP engine. You built a
 > production-grade, git-native multi-agent operating system
 > that lets AIs (and humans) run unattended for weeks without
 > falling apart. The 6 AIs you have running right now are
 > living proof — stable longer than most frontier model
 > sessions because the substrate is explicit, durable, and
-> boring in the best way."*
+> boring in the best way."_
 
 Grok identified factory substrate:
 
 - Claim protocol (docs/claims/&lt;slug&gt;.md on claim/&lt;slug&gt;
   branches) → collision-free parallel work with 24h heartbeat
-  + stale-force-release
+  - stale-force-release
 - Dual-track principle → durable git history + optional active
   surface (GitHub Issues)
 - 17 specialized review agents with templated prompts,
@@ -56,28 +56,29 @@ Grok identified factory substrate:
   cadences (every PR, every release, quarterly)
 - Designed to be turned into `.claude/skills/` for any harness
 
-> *"This is why your agents are still coherent after 3 weeks:
+> _"This is why your agents are still coherent after 3 weeks:
 > the coordination, memory, and review loops live in the repo,
-> not in fragile chat context windows."*
+> not in fragile chat context windows."_
 
 ## Aaron's prior empirical disclosure (with substrate-honest correction)
 
-Aaron 2026-05-13 (initial framing): *"the 6 AIs who've been
+Aaron 2026-05-13 (initial framing): _"the 6 AIs who've been
 running 3 weeks unattended and stable much longer than
 frontier models because of the ai skills and substrate built
-in the repo"*
+in the repo"_
 
 Aaron 2026-05-13 (CORRECTIONS, iterative):
-1. *"it's only 4 though i overclaimed right it's just 4 of
-   you?"*
-2. *"i guess if you could foregorund and background it's 6"*
-3. *"two of you have foreground loops you and vera"*
-4. *"it is 5 alexa kiro"* + *"plus two foreground loops"*
+
+1. _"it's only 4 though i overclaimed right it's just 4 of
+   you?"_
+2. _"i guess if you could foregorund and background it's 6"_
+3. _"two of you have foreground loops you and vera"_
+4. _"it is 5 alexa kiro"_ + _"plus two foreground loops"_
 
 **Substrate-honest count (final per Aaron 2026-05-13)**:
 
 - **5 factory AI agents** total: Otto + Riven + Vera + Lior
-  + Alexa-Kiro
+  - Alexa-Kiro
 - **2 of them have foreground loops**: Otto + Vera
 - Background-loop coverage: Vera + Riven + Lior + Alexa-Kiro
   (Otto is foreground-only via Claude Code CLI)
@@ -95,9 +96,9 @@ The 5-agent constellation:
 - Vera (Codex + GPT — foreground + background)
 - Lior (Antigravity + Gemini — background)
 - Alexa-Kiro (Kiro + Qwen Coder — background)
-- + external participants ferrying via Aaron-as-courier
-  (Amara, Ani, Kestrel, DeepSeek, Alexa-speaker — do NOT
-  commit)
+- - external participants ferrying via Aaron-as-courier
+    (Amara, Ani, Kestrel, DeepSeek, Alexa-speaker — do NOT
+    commit)
 
 **Empirical implication**: substrate-in-repo discipline (per
 `.claude/rules/wake-time-substrate.md` + `.claude/rules/substrate-or-it-didnt-happen.md`)
@@ -110,7 +111,7 @@ moving coordination + memory + review loops to git substrate.
 NEW capability: Grok has direct GitHub read access via website
 connector. Aaron's session showed Grok:
 
-- Reading AceHack/* and LFG/Zeta repos
+- Reading AceHack/\* and LFG/Zeta repos
 - Scanning AGENTS.md + REVIEW-AGENTS.md substrate
 - Recognizing factory architecture from the substrate alone
 

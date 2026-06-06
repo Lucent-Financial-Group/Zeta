@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 directive. Raw memory files accumulate Aaron-say
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # CURRENT-<maintainer>.md pattern + progress preference
 
 ## Verbatim (2026-04-23)

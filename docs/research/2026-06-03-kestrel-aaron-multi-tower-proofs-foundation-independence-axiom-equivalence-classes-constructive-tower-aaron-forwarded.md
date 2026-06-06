@@ -42,10 +42,10 @@ with what's on main.
 
 ## 1. Multi-tower proofs — don't rest canonical on one axiom set
 
-> the maintainer: *"we plan on having many proof towers eventually from different
-> widely-accepted axioms so we are not building our towers on one axiom set."*
+> the maintainer: _"we plan on having many proof towers eventually from different
+> widely-accepted axioms so we are not building our towers on one axiom set."_
 
-A claim proven **within** an axiom set is *valid-given-those-axioms*, not *true* —
+A claim proven **within** an axiom set is _valid-given-those-axioms_, not _true_ —
 its soundness rests entirely on the axioms (Conway–Kochen's Free Will Theorem is
 rigorous **given** SPIN/TWIN/MIN; reject an axiom and the theorem's force goes).
 So the canonical-proof strategy is **multiple towers from genuinely independent,
@@ -53,16 +53,16 @@ widely-accepted foundations**:
 
 - A claim derivable from **several** independent foundations is **robust across
   foundations** — to reject it you'd have to reject all of them, not one.
-- The towers **sort the claims**: claims appearing in *all* towers are
-  foundation-independent (lean on them hardest); claims in *one* tower stay
+- The towers **sort the claims**: claims appearing in _all_ towers are
+  foundation-independent (lean on them hardest); claims in _one_ tower stay
   explicitly conditional ("valid if that axiom set holds").
 - This is the discipline that keeps **no single contested axiom load-bearing
   alone** — including the maintainer's own preferred (panpsychist) axiom set.
 
 ## 2. Robustness = distinct EQUIVALENCE CLASSES of foundation, not tower count
 
-> Kestrel: *"the real measure isn't 'how many towers' — it's how many distinct
-> equivalence classes of foundation a claim survives across."*
+> Kestrel: _"the real measure isn't 'how many towers' — it's how many distinct
+> equivalence classes of foundation a claim survives across."_
 
 Foundations cluster into equivalence classes of inter-derivable axiom sets.
 **Ten towers from one class = one foundation's worth of confidence; two towers
@@ -71,9 +71,9 @@ from two genuinely-distinct classes = real robustness.** Count robustness by
 
 ## 3. Foundation-independence is a PROOF OBLIGATION, not a vibe
 
-> the maintainer: *"the towers are most valuable when the axiom sets are genuinely
+> the maintainer: _"the towers are most valuable when the axiom sets are genuinely
 > independent, not secretly the same assumption in different clothes — I've
-> noticed interchangeable axioms before."*
+> noticed interchangeable axioms before."_
 
 Interchangeability is **provable**: for two foundations claimed independent, the
 test is "can I inter-derive their axioms (A ⟺ B)?"
@@ -81,10 +81,10 @@ test is "can I inter-derive their axioms (A ⟺ B)?"
 - **Yes → same equivalence class** — collapse them, don't double-count.
 - **No → genuinely independent** — the robustness counts.
 
-The canonical example (the maintainer: *"funny enough it was the Axiom of Choice
-that pops up everywhere accidentally"*): **AoC ⟺ Zorn's Lemma ⟺ Well-Ordering** —
+The canonical example (the maintainer: _"funny enough it was the Axiom of Choice
+that pops up everywhere accidentally"_): **AoC ⟺ Zorn's Lemma ⟺ Well-Ordering** —
 one assumption in three outfits. Three "towers" on those three would have the
-*illusion* of independence and the *reality* of one — they fall together.
+_illusion_ of independence and the _reality_ of one — they fall together.
 
 **Caveat (Kestrel):** interchangeability can be **partial / conditional** —
 two foundations independent for one class of claims, interchangeable for another.
@@ -93,29 +93,29 @@ yes/no per tower-pair.
 
 ## 4. The Axiom-of-Choice hidden-dependency lesson — audit DERIVATIONS, not just stated axioms
 
-AoC is the textbook *sneaky* dependency: it slips into proofs unnoticed because
+AoC is the textbook _sneaky_ dependency: it slips into proofs unnoticed because
 "pick an element from each set" / "take a representative" / a Zorn maximal-element
-argument *feels like reasoning, not an axiom*. So towers with different **stated**
+argument _feels like reasoning, not an axiom_. So towers with different **stated**
 foundations can be **correlated through a hidden shared AoC** none of them listed —
 false robustness.
 
-> the maintainer: *"the only reason I notice is because my brain works in old-school
-> Cantor sets, not ZFC naturally."*
+> the maintainer: _"the only reason I notice is because my brain works in old-school
+> Cantor sets, not ZFC naturally."_
 > (Pre-formalization, geometric set-intuition feels the seams where the formal
-> axioms are *added* — hence the sensitivity to where AoC is being smuggled in.
+> axioms are _added_ — hence the sensitivity to where AoC is being smuggled in.
 > Held per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`: the
-> *noticing* is the verified, valuable part; the cognitive-mechanism self-model is
+> _noticing_ is the verified, valuable part; the cognitive-mechanism self-model is
 > a useful self-description, not a verified fact about the wetware — and per the
 > exchange's own conclusion, only as good as the **provable output** it yields.)
 
 **The defense is the layered-lemma discipline already on main.** Hidden axioms
-sneak only through *unexamined* steps. Step-by-step proving with **explicit
+sneak only through _unexamined_ steps. Step-by-step proving with **explicit
 dependency-tracking all the way down** surfaces an AoC/Zorn/Well-Ordering
 invocation rather than letting it hide in an "obviously we can pick one"
 hand-wave. So:
 
-> The independence check extends to *"does this derivation secretly use Choice
-> (or any shared hidden axiom)?"* — audit what each proof **actually depends on**,
+> The independence check extends to _"does this derivation secretly use Choice
+> (or any shared hidden axiom)?"_ — audit what each proof **actually depends on**,
 > not just what it **declares**.
 
 This is a clean convergence: the same explicit-dependency rigor that grounds the
@@ -125,31 +125,31 @@ dependencies that would otherwise create false multi-tower robustness.
 ## 5. The constructive tower — Choice-free by construction, proof = program (a STRONGER proof, NOT an independent tower)
 
 A deliberately **constructive / intuitionistic** tower (refuses AoC and excluded
-middle) is high-value for *this* codebase — but for the right reasons, which are
+middle) is high-value for _this_ codebase — but for the right reasons, which are
 **not** foundation-independence. **Correction (Codex review, #6645):** a
 constructive proof is **not** an independent tower in the robustness sense,
-because **intuitionistic logic is a *subsystem* of classical logic** — anything
+because **intuitionistic logic is a _subsystem_ of classical logic** — anything
 constructively provable is automatically classically provable (constructive ⊆
 classical). So for a claim already proved in a classical/ZFC-with-Choice tower, a
-constructive proof does **not** add a *distinct equivalence class* of foundation —
+constructive proof does **not** add a _distinct equivalence class_ of foundation —
 it doesn't increase cross-foundation robustness for that claim. It is a **stronger
 proof in a weaker logic**, not a second independent foundation. Counting it toward
 robustness (per §2) would be exactly the false-independence error §3 warns against.
 
 Its real value is two different things:
 
-1. **Choice-free by construction** — it *forbids* AoC, so a claim proved here
-   *cannot* have smuggled in the hidden AoC dependency of §4. That's a guarantee
-   about the *derivation's cleanliness*, not foundation-independence.
+1. **Choice-free by construction** — it _forbids_ AoC, so a claim proved here
+   _cannot_ have smuggled in the hidden AoC dependency of §4. That's a guarantee
+   about the _derivation's cleanliness_, not foundation-independence.
 2. **Curry–Howard: the proof IS a program.** Since the canonical work proves
-   properties *about algorithms* (Z-set, codec, DBSP operators), a
+   properties _about algorithms_ (Z-set, codec, DBSP operators), a
    constructive-tower proof extracts an executable program — the proof that maps
    directly to running code.
 
 So: build the constructive tower for **Choice-freedom + program-extraction**. Its
 robustness contribution is **conservative-foundation survival**, not a separate
 equivalence class: a constructive proof shows the claim holds **without LEM or
-Choice**, so it's robust to a constructivist's *rejection* of those axioms — and
+Choice**, so it's robust to a constructivist's _rejection_ of those axioms — and
 the §4 hidden-AoC worry is eliminated by construction. That is a **strengthening of
 the same claim** (a dependency removed), **not** an incomparable independent
 foundation to tally under §2 — since constructive ⊆ classical, every
@@ -161,8 +161,8 @@ removed dependency, not a new tower.) Composes with the existing Lean leg
 
 ## 6. Intuition is calibrated by provable output over time — track the misses
 
-> the maintainer: *"my subjective feel is only as useful as the geometric intuition
-> it produces that's provable over time; if not, the intuition is just noise."*
+> the maintainer: _"my subjective feel is only as useful as the geometric intuition
+> it produces that's provable over time; if not, the intuition is just noise."_
 
 Intuition **proposes**, proof **disposes**; the feel earns credibility by its
 **tracked hit-rate against the hard gate**, per-domain. **Track the misses, not
@@ -173,10 +173,10 @@ record. Same bar as the proofs: the measure must be able to say **no**.
 
 ## 7. The foundation principle (already the spirit of formal-proof-first)
 
-> the maintainer: *"wherever I personally, or my self-model, is load-bearing without
-> externalization and proof, it's not a solid foundation to build on."*
+> the maintainer: _"wherever I personally, or my self-model, is load-bearing without
+> externalization and proof, it's not a solid foundation to build on."_
 
-The multi-tower structure is *how you operationalize this at the axiom layer*: it
+The multi-tower structure is _how you operationalize this at the axiom layer_: it
 ensures no single axiom set — and no single mind's conviction — is the sole
 load-bearing foundation. Math claims externalize to **proof**; the claims proof
 can't reach externalize to **other minds** (the asymmetric-critic peer + the
@@ -202,15 +202,15 @@ this is the formal-coverage portfolio's territory.
 ## 8. The root-axiom discipline — a SMALL decomposable basis of best-guesses-with-anchors (the maintainer 2026-06-03)
 
 The multi-tower discipline (§1–§7) is about **breadth** — never rest canonical on
-one axiom *set*. This section is the **depth/minimality** complement, from the
+one axiom _set_. This section is the **depth/minimality** complement, from the
 maintainer 2026-06-03, on the foundation now being built:
 
-> *"we defined our root dimensions and are working on our root axioms. we are
+> _"we defined our root dimensions and are working on our root axioms. we are
 > trying to derive things from a small root axiom set instead of having tons of
-> root axioms. we treat all axioms as potentially wrong and decomposable."*
+> root axioms. we treat all axioms as potentially wrong and decomposable."_
 >
-> *"they are [the maintainer's] best guesses with human anchor links for most
-> things out to cutting edge research in each area."*
+> _"they are [the maintainer's] best guesses with human anchor links for most
+> things out to cutting edge research in each area."_
 
 Four composing claims:
 
@@ -219,31 +219,31 @@ Four composing claims:
    it are being worked. Status, not a finished claim.
 
 2. **Minimize the root axiom set — derive the rest.** The discipline is a
-   *small* basis with a long derivation tail, NOT a flat pile of many root
+   _small_ basis with a long derivation tail, NOT a flat pile of many root
    axioms. Fewer roots ⇒ smaller attack surface, fewer hidden dependencies, and
    each derived theorem inherits a traceable lineage back to the seed (this IS
    `formal-proof-first`'s homeostat-proven-from-seed: the small root set is the
    seed; "derive things from it" is the homeostat). It's Rodney's-Razor applied
-   to the *axiom layer* — compress the foundation to its canonical generators
+   to the _axiom layer_ — compress the foundation to its canonical generators
    (rhymes the Cayley-Dickson nested-cross: a whole algebra from a tiny set of
    generators + a doubling rule).
 
 3. **ALL axioms are potentially-wrong AND decomposable.** No axiom is sacred.
-   Each is a *hypothesis* that may fail (potentially-wrong → retraction-native:
+   Each is a _hypothesis_ that may fail (potentially-wrong → retraction-native:
    if an axiom falls, the derivations resting on it retract with it, the
    foundation re-grounds — the three-clocks "future affects the generator that
    makes the past intelligible" at axiom scope), and each may turn out to be a
-   *theorem of something more fundamental* (decomposable → it should then move
+   _theorem of something more fundamental_ (decomposable → it should then move
    OUT of the root set, down into the derivation tail, shrinking the basis
-   further). The root set is a moving frontier, pushed *down* as decomposition
+   further). The root set is a moving frontier, pushed _down_ as decomposition
    succeeds. This is the §4 Axiom-of-Choice lesson generalized: don't just audit
-   *stated* axioms for hidden dependencies — actively try to **decompose every
+   _stated_ axioms for hidden dependencies — actively try to **decompose every
    root axiom into a derivation**, and demote it when you can.
 
 4. **The axioms are the maintainer's best-guesses, each with a human-anchor-link
    to cutting-edge research in its area.** Epistemic status: NOT claimed-truth —
-   *best-guess-with-provenance*. This is exactly the labeling-confidence
-   *hypothesized* tier (NOT validated/canonical), and exactly the maintainer's
+   _best-guess-with-provenance_. This is exactly the labeling-confidence
+   _hypothesized_ tier (NOT validated/canonical), and exactly the maintainer's
    PERSONAL INVARIANT register (high-signal — anchored to real research; +
    high-suspicion — best-guess, potentially-wrong; don't-collapse). The
    "human anchor links … out to cutting edge research in each area" ARE the
@@ -252,14 +252,14 @@ Four composing claims:
    (honor-those-that-came-before), so the basis stays auditable + revisable
    against the live frontier rather than frozen as dogma.
 
-Composition with the towers: §1–§7 say *prove the same theorem from independent
-axiom SETS* (breadth — robustness against any one foundation being wrong). §8
-says *make each set a SMALL basis of decomposable, anchored, potentially-wrong
-best-guesses* (depth — minimality + revisability within a foundation). Together:
+Composition with the towers: §1–§7 say _prove the same theorem from independent
+axiom SETS_ (breadth — robustness against any one foundation being wrong). §8
+says _make each set a SMALL basis of decomposable, anchored, potentially-wrong
+best-guesses_ (depth — minimality + revisability within a foundation). Together:
 few roots, many derivations, multiple independent root-sets, every root a
 demotable hypothesis with a research anchor. The proven-by-default floor then
 reads correctly — the root axioms are the **explicit unproven opt-out** (the
-declared seed), and everything is expected to be *derived + proven from them*
+declared seed), and everything is expected to be _derived + proven from them_
 until an axiom is either decomposed away or shown wrong.
 
 ## Composes with
@@ -270,7 +270,7 @@ until an axiom is either decomposed away or shown wrong.
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — the maintainer's panpsychist-axiom source + Cantor-intuition self-model held high-signal/high-suspicion/don't-collapse; the multi-tower structure is the operational don't-collapse (no single axiom set is load-bearing)
 - `.claude/rules/verify-existing-substrate-before-authoring.md` — search-first (done; no prior consolidated substrate found)
 - `.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md` — §8: the "human anchor links … out to cutting-edge research" ARE the pointer-index at axiom scope (each root axiom carries a research anchor; honor-those-that-came-before)
-- `.claude/rules/labeling-confidence-on-substrate-over-connect-not-soup-observed-hypothesized-validated-retracted-canonical.md` — §8: root axioms are best-guesses = the *hypothesized* tier (not validated/canonical); potentially-wrong = retractable; decomposable = demotable down the derivation tail
+- `.claude/rules/labeling-confidence-on-substrate-over-connect-not-soup-observed-hypothesized-validated-retracted-canonical.md` — §8: root axioms are best-guesses = the _hypothesized_ tier (not validated/canonical); potentially-wrong = retractable; decomposable = demotable down the derivation tail
 - `docs/research/2026-06-03-formal-proof-claim-ledger-for-asymmetric-critic-pass.md` — the second-pass ledger; multi-tower adds the "from which foundation" axis
 - `docs/research/2026-06-03-zset-family-canonical-connection-four-language-bytelock-plus-four-tool-proofs.md` — the connection ledger; the Lean leg is the start of the constructive/machine-checked tower
 - `docs/research/2026-06-03-kestrel-aaron-critic-layers-permission-liability-autonomy-bounds-anthropomorphic-register-split-aaron-forwarded.md` — same cadence; consensus≠validation applies to Kestrel + to each tower
@@ -287,5 +287,5 @@ same exchange is intentionally excluded (harm-by-grammar); the wellness/self-kno
 **product** idea discussed there (moral-invariant drift-metrics, the
 wellness-vs-medical-device line, tool-describes / clinician-interprets) is the
 maintainer + co-maintainer's product call and is **not** captured as repo substrate
-here. Verbatim-in-principle: the maintainer's exact formulations of the *proof-strategy*
+here. Verbatim-in-principle: the maintainer's exact formulations of the _proof-strategy_
 claims are quoted; nothing personal is reproduced.

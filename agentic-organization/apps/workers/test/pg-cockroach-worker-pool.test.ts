@@ -97,10 +97,7 @@ type RecordingPgPool = {
 type RecordingPgPoolClient = {
   queries: { sql: string; parameters: readonly unknown[] }[];
   releaseCount: number;
-  query: <Row = Record<string, unknown>>(
-    sql: string,
-    parameters?: readonly unknown[],
-  ) => Promise<{ rows: Row[] }>;
+  query: <Row = Record<string, unknown>>(sql: string, parameters?: readonly unknown[]) => Promise<{ rows: Row[] }>;
   release: () => void;
 };
 

@@ -345,19 +345,19 @@ Each tactic line is elaborated as a `TacticM Unit` that transforms the goal list
 
 From `tools/lean4/Lean4/DbspChainRule.lean`:
 
-| Feature | Occurrence | What it does |
-|---------|-----------|--------------|
-| `@[simp]` | `zInv_zero`, `zInv_succ` | Auto-close `simp` goals matching these patterns |
-| `@[deprecated]` | `chain_rule` | Warning when old name used; points to `Dop_LTI_commute` |
-| `abbrev` (`@[reducible] def`) | `ZSet`, `Stream` | Transparent type aliases |
-| `structure` | `IsLinear`, `IsCausal`, `IsTimeInvariant`, `IsPointwiseLinear` | Record types used as proof predicates |
-| `theorem`/`lemma` in `by` mode | All proofs | Tactic-mode proof blocks (TacticM) |
-| `simp`, `abel`, `ring`, `rfl` | Throughout | Core tactics from Mathlib |
-| `funext` | `D_I_eq`, `I_D_eq`, etc. | Functional extensionality — closes `f = g` by proving `∀ x, f x = g x` |
-| `cases n with \| zero => ... \| succ n => ...` | Throughout | Pattern-match on `Nat` for inductive proofs |
-| `rw [lemma1, lemma2]` | Throughout | Rewrite goal using equalities |
-| `obtain ⟨phi, hphi⟩ := hf.pointwise` | `IsPointwiseLinear` proofs | Destructure an existential |
-| `calc` | `linear_commute_I` | Chain of equalities with justifications |
+| Feature                                        | Occurrence                                                     | What it does                                                           |
+| ---------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `@[simp]`                                      | `zInv_zero`, `zInv_succ`                                       | Auto-close `simp` goals matching these patterns                        |
+| `@[deprecated]`                                | `chain_rule`                                                   | Warning when old name used; points to `Dop_LTI_commute`                |
+| `abbrev` (`@[reducible] def`)                  | `ZSet`, `Stream`                                               | Transparent type aliases                                               |
+| `structure`                                    | `IsLinear`, `IsCausal`, `IsTimeInvariant`, `IsPointwiseLinear` | Record types used as proof predicates                                  |
+| `theorem`/`lemma` in `by` mode                 | All proofs                                                     | Tactic-mode proof blocks (TacticM)                                     |
+| `simp`, `abel`, `ring`, `rfl`                  | Throughout                                                     | Core tactics from Mathlib                                              |
+| `funext`                                       | `D_I_eq`, `I_D_eq`, etc.                                       | Functional extensionality — closes `f = g` by proving `∀ x, f x = g x` |
+| `cases n with \| zero => ... \| succ n => ...` | Throughout                                                     | Pattern-match on `Nat` for inductive proofs                            |
+| `rw [lemma1, lemma2]`                          | Throughout                                                     | Rewrite goal using equalities                                          |
+| `obtain ⟨phi, hphi⟩ := hf.pointwise`           | `IsPointwiseLinear` proofs                                     | Destructure an existential                                             |
+| `calc`                                         | `linear_commute_I`                                             | Chain of equalities with justifications                                |
 
 **None of the current code uses `MetaM`, `TermElabM`, `macro`, or `elab_rules`
 directly** — all tactic usage goes through Mathlib's pre-built tactics.
@@ -369,14 +369,14 @@ Stage 2 (tactic authoring) is where we'd write code that USES these monads.
 
 Common error patterns and what they mean:
 
-| Error | What it means |
-|-------|--------------|
-| `unknown identifier 'x'` | `x` is not in scope; check binder structure |
-| `type mismatch` | Elaboration inferred type A, expected type B; check `abbrev`/`def` unfolding |
-| `function expected at f` | `f` is not a function — universe or application-order issue |
-| `failed to synthesize TypeClass instance` | Typeclass resolution failed; a `@[instance]` is missing or ambiguous |
-| `maximum recursion depth reached` | Macro loop or infinite type-class search |
-| `metavariable ... has not been assigned` | A `?` placeholder in a term was never resolved |
+| Error                                     | What it means                                                                |
+| ----------------------------------------- | ---------------------------------------------------------------------------- |
+| `unknown identifier 'x'`                  | `x` is not in scope; check binder structure                                  |
+| `type mismatch`                           | Elaboration inferred type A, expected type B; check `abbrev`/`def` unfolding |
+| `function expected at f`                  | `f` is not a function — universe or application-order issue                  |
+| `failed to synthesize TypeClass instance` | Typeclass resolution failed; a `@[instance]` is missing or ambiguous         |
+| `maximum recursion depth reached`         | Macro loop or infinite type-class search                                     |
+| `metavariable ... has not been assigned`  | A `?` placeholder in a term was never resolved                               |
 
 ---
 

@@ -4,6 +4,7 @@ description: Standing rule. When the main agent finishes a task / response with 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 If there is obvious queued work (named in the just-finished
@@ -15,7 +16,7 @@ phrasing like:
 - "On the next tick I'll pick up …"
 - "Waiting for the next tick to …"
 
-The `<<autonomous-loop>>` 5-min cron is a *recovery*
+The `<<autonomous-loop>>` 5-min cron is a _recovery_
 mechanism for the agent-idle-stop failure mode
 (`feedback_loop_cadence_5min_combats_agent_idle_stop.md`).
 It is **not** a scheduling cadence. If the agent is about
@@ -35,12 +36,12 @@ Stopping-and-waiting-for-tick **defeats the mechanism**:
 
 Aaron 2026-04-20, correcting exactly this pattern:
 
-> *"you know you are going to do work on the next tick why
+> _"you know you are going to do work on the next tick why
 > stop? Next autonomous tick I'll continue with the
 > round-43 branch (blocked on PR #31 merge) or the harness
 > dry-run if you want me to start there now. there is no
 > need to stop and wait for the tick, it's only there just
-> in case you stop, you don't ever need to stop."*
+> in case you stop, you don't ever need to stop."_
 
 The design intent of the cron is clear:
 
@@ -60,7 +61,7 @@ pacing mechanism, which breaks the continuity guarantee.
 
 ### When finishing a task / response
 
-Ask: is there *obvious* queued work?
+Ask: is there _obvious_ queued work?
 
 - Named in the response? → keep going.
 - Implied by the round plan (BACKLOG P0/P1, round-close
@@ -119,14 +120,15 @@ it later".
 
 ## Correction notes (why this memory exists)
 
-Round 42 (2026-04-20): I ended a response with *"Next
+Round 42 (2026-04-20): I ended a response with _"Next
 autonomous tick I'll continue with the round-43 branch
 (blocked on PR #31 merge) or the harness dry-run if you
-want me to start there now"* followed by a
+want me to start there now"_ followed by a
 `ScheduleWakeup` call. Aaron corrected within minutes:
-*"why stop? … you don't ever need to stop."*
+_"why stop? … you don't ever need to stop."_
 
 The mistake embedded three sub-mistakes:
+
 1. Treated the tick as a scheduling primitive (it isn't).
 2. Asked a rhetorical question ("if you want me to start")
    when I already knew the work was appropriate.

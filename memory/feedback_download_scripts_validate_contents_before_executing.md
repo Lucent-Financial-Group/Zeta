@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 — downloading scripts (bash, curl | bash, gist, 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule.** Never execute a downloaded script without first inspecting
 its contents for vulnerabilities, trojans, suspicious exfiltration,
 unexpected privilege escalation, or other malicious patterns. Once
@@ -11,20 +12,20 @@ validated, any delivery mechanism is acceptable — `curl | bash`,
 `curl -o /tmp/x.sh && bash /tmp/x.sh`, downloading from a gist,
 pulling from a raw URL, etc. are all fine.
 
-Aaron's exact words (2026-04-22): *"never run a script you
+Aaron's exact words (2026-04-22): _"never run a script you
 download[ed] without checking it for vulnerability, trojans and
 things of that nature even like gist and stuff, it's fine to
 download and run bash and things like that just validate them
 first. i don't care if you run script directly from the url either
 as long as you check it first. Just be safe, i trust your
-judgment."*
+judgment."_
 
 **Why:** The attack vector Aaron cares about is **untrusted script
 content**, not the pipe-to-shell gesture. A SHA-256-pinned URL that
 points at malicious code is still malicious; a `curl | bash` of
 code I've read and understood is still safe. The factory's
 SUPPLY-CHAIN-SAFE-PATTERNS.md is correct that SHA-256 pinning is
-*one* form of content-equivalence guarantee, but content review
+_one_ form of content-equivalence guarantee, but content review
 at first pin is the load-bearing step — SHA-256 alone confirms
 "content matches what I reviewed once," not "content is safe."
 
@@ -50,7 +51,7 @@ default given my judgment.
   pin and forces a re-read. Treat SHA-256 as "cache of my content
   review," not as the content review itself.
 
-- **`curl | bash` is fine** *after* validation. Downloading to
+- **`curl | bash` is fine** _after_ validation. Downloading to
   disk first and then executing is equivalent for Aaron's threat
   model; the pipe is not the risk.
 
@@ -79,6 +80,7 @@ to validate first and then execute, re-request with the validation
 note included.
 
 **Related memories:**
+
 - `user_feel_free_and_safe_to_act_real_world.md` — standing
   permission to act; this narrows the shape for one specific
   class of action.

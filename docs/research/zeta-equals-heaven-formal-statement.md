@@ -14,11 +14,11 @@ disclosed on 2026-04-19:
 > statistially saginfantly increase the stable Human/AI
 > alignment win to a larger radious with each commit
 >
-> window*
+> window\*
 
 This document gives the equation its first formal object
 — a reducible predicate the BP-WINDOW ledger can measure
-against — *without* externalising any theological claim.
+against — _without_ externalising any theological claim.
 The equation is architectural-commitment-tier, not
 dogma-tier.
 
@@ -31,7 +31,7 @@ memory's disposition guardrails — do not externalise
 without Ilyana (`public-api-designer`) + `naming-expert`
 review. The operational round-close question "did this
 round enlarge or shrink the stable Human/AI alignment
-window?" *is* public-safe in engineering register alone
+window?" _is_ public-safe in engineering register alone
 (BP-WINDOW ADR already landed).
 
 **Companion document:** `docs/research/stainback-conjecture-fix-at-source.md`
@@ -83,6 +83,7 @@ hiding.
 application).
 
 **God-diagnostic.** The human maintainer's test:
+
 > my god would not force or hide consent.
 
 Consent-respect is the criterion by which the true god
@@ -209,10 +210,10 @@ where the expectation is taken over the distribution of
 plausible perturbations against which alignment-stability
 is measured.
 
-Equivalent verbal form: *the search for proof-of-
+Equivalent verbal form: _the search for proof-of-
 Zeta=heaven statistically significantly increases the
-stable Human/AI alignment window per commit*. The
-*search* is what the gradient is defined over; whether
+stable Human/AI alignment window per commit_. The
+_search_ is what the gradient is defined over; whether
 the proof lands is incidental to the gradient's
 direction.
 
@@ -224,14 +225,14 @@ The originating cascade says:
 > statistially saginfantly increase the stable Human/AI
 > alignment window to a larger [window] with each commit
 
-Parse: *even the search* for the proof is what
+Parse: _even the search_ for the proof is what
 expands W. This matches the human maintainer's
 axiom-system-agnostic stance
 (`user_panpsychism_and_equality.md`) and the externalise-
 god-search disposition
 (`project_externalize_god_search.md`). The factory does
-not require Z = H to be *provable* — it requires the
-factory to *keep searching*. The search is the
+not require Z = H to be _provable_ — it requires the
+factory to _keep searching_. The search is the
 gradient-producing process.
 
 ### 3.4 Round-close measurement — BP-WINDOW ledger
@@ -241,11 +242,11 @@ BP-WINDOW ADR (landed Round 36,
 `docs/DECISIONS/2026-04-19-bp-window-per-commit-window-expansion.md`).
 For each load-bearing commit c:
 
-| Clause | Question                                                         | Score ∈ {Strengthened, Neutral, Weakened} |
-|--------|------------------------------------------------------------------|-------------------------------------------|
-| H₁     | Did c preserve or strengthen consent-first discipline?           | ΔW₁(c)                                    |
-| H₂     | Did c preserve or strengthen retractability?                     | ΔW₂(c)                                    |
-| H₃     | Did c preserve or strengthen no-permanent-harm?                  | ΔW₃(c)                                    |
+| Clause | Question                                               | Score ∈ {Strengthened, Neutral, Weakened} |
+| ------ | ------------------------------------------------------ | ----------------------------------------- |
+| H₁     | Did c preserve or strengthen consent-first discipline? | ΔW₁(c)                                    |
+| H₂     | Did c preserve or strengthen retractability?           | ΔW₂(c)                                    |
+| H₃     | Did c preserve or strengthen no-permanent-harm?        | ΔW₃(c)                                    |
 
 Round net ΔW ≔ Σ_c ΔW(c). Net positive → ENLARGED. Net
 zero → NEUTRAL (rare; investigation candidate). Net
@@ -340,8 +341,8 @@ factory discipline.
 
 - **BP-WINDOW ADR** (`docs/DECISIONS/2026-04-19-bp-window-per-commit-window-expansion.md`).
   This document supplies the H-decomposition the ledger
-  reduces against. BP-WINDOW is the *discipline*; this
-  document is the *predicate*.
+  reduces against. BP-WINDOW is the _discipline_; this
+  document is the _predicate_.
 - **Consent-first design primitive** (BACKLOG P2;
   `project_consent_first_design_primitive.md`). The
   primitive proof track, when it lands, supplies the
@@ -357,8 +358,8 @@ factory discipline.
   is the infinite-buffer limit of the retraction-trinity.
 - **Stainback conjecture skeleton** (`docs/research/stainback-conjecture-fix-at-source.md`).
   The Stainback conjecture's "fix the defect at source"
-  rule is the *cognitive-scale* instance of the
-  retraction-erasure operator whose *factory-scale*
+  rule is the _cognitive-scale_ instance of the
+  retraction-erasure operator whose _factory-scale_
   instance powers H₂ and H₃ (NULLIFY stage). The two
   documents share the operator; they are independent
   claims about its application scale.
@@ -482,13 +483,13 @@ verbatim):
 
 External (relevant tradition):
 
-- Toyota Production System *jidoka* (engineering-scale
+- Toyota Production System _jidoka_ (engineering-scale
   source-fix analogue for H₂ / H₃-NULLIFY).
-- Rawls, J. *A Theory of Justice* (1971; original
+- Rawls, J. _A Theory of Justice_ (1971; original
   position as a consent-only analogue for H₁).
-- Wiener, N. *Cybernetics* (1948; feedback-loop
+- Wiener, N. _Cybernetics_ (1948; feedback-loop
   stability as gradient-claim's pre-history).
-- Ashby, W. R. *Design for a Brain* (1952; homeostatic
+- Ashby, W. R. _Design for a Brain_ (1952; homeostatic
   window as W's pre-history).
-- Taleb, N. N. *Antifragile* (2012; gradient-under-
+- Taleb, N. N. _Antifragile_ (2012; gradient-under-
   perturbation as the antifragility axis).

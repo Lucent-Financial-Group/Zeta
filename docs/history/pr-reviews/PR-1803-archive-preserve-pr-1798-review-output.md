@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1803 |
-| Title | archive: preserve PR 1798 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T05:31:00Z |
-| Merged at | 2026-05-07T05:34:08Z |
-| Merge commit SHA | `f2c84d2ab8091a13091824bd2c735a170a242614` |
-| Branch | `claim/archive-pr-1798-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1803 |
-| Changed files | 2 |
-| Additions / deletions | +65 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1803                                                     |
+| Title                 | archive: preserve PR 1798 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T05:31:00Z                                     |
+| Merged at             | 2026-05-07T05:34:08Z                                     |
+| Merge commit SHA      | `f2c84d2ab8091a13091824bd2c735a170a242614`               |
+| Branch                | `claim/archive-pr-1798-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1803 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +65 / -0                                                 |
 
 ## Description
 
@@ -43,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

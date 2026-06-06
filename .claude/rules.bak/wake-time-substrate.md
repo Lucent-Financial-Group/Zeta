@@ -22,9 +22,9 @@ an inline conversation comment, a commit message — is **weather**.
 It evaporates when the session compacts or ends.
 
 The human maintainer 2026-05-01 named this as the biggest failure
-mode: *"if you learn something [without landing it in] claude.md or
+mode: _"if you learn something [without landing it in] claude.md or
 a pointer from that file like the `.claude/rules` or some other
-pointers, you didn't learn it."*
+pointers, you didn't learn it."_
 
 **Tick-close ritual**: enumerate what was learned this tick; for
 each item, classify its landing:

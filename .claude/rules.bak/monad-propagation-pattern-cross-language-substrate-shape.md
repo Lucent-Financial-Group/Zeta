@@ -40,11 +40,11 @@ Per operator 2026-05-27, after the substrate-engineering thread
 producing PRs #5505 (force-push-policy with Result<T, TFeedback>
 discipline) + #5507 (Layer 4 sum-type exhaustive-match):
 
-> *"we should save that modan propatation pattern we can generate code
+> _"we should save that modan propatation pattern we can generate code
 > from specs easlier in the future if we build around these patterns
 > our code becomes more similar shapped across languages. and we have
 > some amount of composiblity in what's ususaly not composable like
-> recursive CTE composiblity."*
+> recursive CTE composiblity."_
 
 The pattern operationalizes the operator's broader inversion-of-monad
 discipline (per same-day conversation thread + Itron smart-meter
@@ -76,18 +76,18 @@ semantics without needing monad-as-language-feature.
 
 ## Cross-language instantiations
 
-| Language | Discriminator-carrier | Lazy-propagation | Exhaustive-handling |
-|---|---|---|---|
-| F# | Discriminated union | `Result.bind` / `computation expression` | `match` (compiler warns on non-exhaustive) |
-| Rust | `enum` with variants | `?` operator | `match` (compiler errors on non-exhaustive) |
-| TypeScript | Discriminated union via `kind` tag | `Result.map` / `.then` chains | `switch` with exhaustive-check via `never` |
-| T-SQL | `NULL` + variant-name column | Recursive CTE UNION ALL | `CASE WHEN` exhaustion + lint/CHECK-constraint |
-| Postgres | `NULL` + ENUM type | Recursive CTE UNION ALL | `CASE WHEN` over ENUM domain (more enforceable than T-SQL) |
-| C# | Discriminated union via sealed-record-hierarchy | LINQ chains / `?.` propagation | Pattern-match on type (limited exhaustiveness) |
-| Java | Sealed interface + records (Java 17+) | Stream chains / Optional | switch with sealed-type exhaustive |
-| C++ | `std::variant` | Composition via `std::visit` | `std::visit` lambda over variants (compile-time check via `if constexpr`) |
-| Go | enum-with-error pattern | Early-return on err | Explicit if-err checks |
-| Python | `enum` + Result wrapper | Generator chains / `match` (Python 3.10+) | `match` statement (no exhaustiveness check) |
+| Language   | Discriminator-carrier                           | Lazy-propagation                          | Exhaustive-handling                                                       |
+| ---------- | ----------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
+| F#         | Discriminated union                             | `Result.bind` / `computation expression`  | `match` (compiler warns on non-exhaustive)                                |
+| Rust       | `enum` with variants                            | `?` operator                              | `match` (compiler errors on non-exhaustive)                               |
+| TypeScript | Discriminated union via `kind` tag              | `Result.map` / `.then` chains             | `switch` with exhaustive-check via `never`                                |
+| T-SQL      | `NULL` + variant-name column                    | Recursive CTE UNION ALL                   | `CASE WHEN` exhaustion + lint/CHECK-constraint                            |
+| Postgres   | `NULL` + ENUM type                              | Recursive CTE UNION ALL                   | `CASE WHEN` over ENUM domain (more enforceable than T-SQL)                |
+| C#         | Discriminated union via sealed-record-hierarchy | LINQ chains / `?.` propagation            | Pattern-match on type (limited exhaustiveness)                            |
+| Java       | Sealed interface + records (Java 17+)           | Stream chains / Optional                  | switch with sealed-type exhaustive                                        |
+| C++        | `std::variant`                                  | Composition via `std::visit`              | `std::visit` lambda over variants (compile-time check via `if constexpr`) |
+| Go         | enum-with-error pattern                         | Early-return on err                       | Explicit if-err checks                                                    |
+| Python     | `enum` + Result wrapper                         | Generator chains / `match` (Python 3.10+) | `match` statement (no exhaustiveness check)                               |
 
 ## Why this earns its keep — three operational benefits
 
@@ -109,7 +109,7 @@ exhaustive-handling triple to that language's instantiation:
 - T-SQL emit: recursive CTE with `feedback_type` column + variant
   values + CHECK constraint
 - Rust emit: `enum ProcessFeedback { NotFound, PermissionDenied,
-  DiskFull }` + `fn process(input: T) -> Result<T', ProcessFeedback>`
+DiskFull }` + `fn process(input: T) -> Result<T', ProcessFeedback>`
 
 The spec is language-independent; the generator handles the
 language-specific instantiation; the shape stays the same across
@@ -144,13 +144,13 @@ discriminator:
 ```sql
 WITH cte_a AS (... feedback_type ...),
      cte_b AS (
-        SELECT ... 
+        SELECT ...
                cte_a.feedback_type AS cte_b_feedback_type  -- propagate
-        FROM cte_a JOIN ... 
+        FROM cte_a JOIN ...
         WHERE cte_a.feedback_type IS NULL                  -- only Ok-path
      ),
      cte_c AS (
-        SELECT ... 
+        SELECT ...
                COALESCE(cte_b.cte_b_feedback_type, ...) AS final_feedback
         FROM cte_b ...
      )
@@ -185,9 +185,9 @@ primitives aren't natively monadic.
 
 ## NCI applied at function-level — function-feedback-channel as consent-substrate (operator 2026-05-27)
 
-> *"also this is NCI non coreorsion applied at the function level,
+> _"also this is NCI non coreorsion applied at the function level,
 > giving each function the ablity to have a feeedback channel other
-> than just the extraction result"*
+> than just the extraction result"_
 
 Operator's substrate-engineering insight: the monad-propagation pattern
 IS the framework's `.claude/rules/non-coercion-invariant.md` HC-8 floor
@@ -197,13 +197,13 @@ consumer at every function-call site.
 
 ### How the pattern operationalizes NCI at function-scope
 
-| Coercive pattern (NCI-violating at function-scope) | Consent-substrate pattern (NCI-compliant) |
-|---|---|
-| Function MUST return T (no failure surface; assumption-mismatches silently dropped) | Function returns Result<T, TFeedback>; failure surface is declared in type signature |
-| Function THROWS exception (interrupts caller's control flow without consent; coercive at call-stack scope) | Function returns Error variant; caller chooses when/where to handle |
-| Function returns NULL silently (caller may not check; coercive via implicit assumption) | Function returns Result with explicit NotFound variant; caller MUST handle or propagate |
-| Function logs error and continues (caller has no signal; coercive via information-hiding) | Function returns feedback variant; caller explicitly chooses to ignore (via Result.mapError to AppFeedback.IgnoredFeedback) or handle |
-| Function has hidden side effects unreported to caller | Function returns feedback variant documenting side-effect outcome; caller informed |
+| Coercive pattern (NCI-violating at function-scope)                                                         | Consent-substrate pattern (NCI-compliant)                                                                                             |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Function MUST return T (no failure surface; assumption-mismatches silently dropped)                        | Function returns Result<T, TFeedback>; failure surface is declared in type signature                                                  |
+| Function THROWS exception (interrupts caller's control flow without consent; coercive at call-stack scope) | Function returns Error variant; caller chooses when/where to handle                                                                   |
+| Function returns NULL silently (caller may not check; coercive via implicit assumption)                    | Function returns Result with explicit NotFound variant; caller MUST handle or propagate                                               |
+| Function logs error and continues (caller has no signal; coercive via information-hiding)                  | Function returns feedback variant; caller explicitly chooses to ignore (via Result.mapError to AppFeedback.IgnoredFeedback) or handle |
+| Function has hidden side effects unreported to caller                                                      | Function returns feedback variant documenting side-effect outcome; caller informed                                                    |
 
 The three-component monad-propagation pattern provides each of:
 
@@ -296,9 +296,9 @@ scope; substrate composes at every level.
 
 ## NCI at conversation-interface — Result<T, ConvFeedback> for operator-Otto interaction (operator 2026-05-27)
 
-> *"that same shape could be applied to this conversation interface
+> _"that same shape could be applied to this conversation interface
 > with me and you Result<T, Feedback> to help enforce NCI in our
-> conversation"*
+> conversation"_
 
 Operator's substrate-engineering extension: the Result<T, TFeedback>
 shape can apply to the operator-Otto conversation interface itself,
@@ -316,19 +316,19 @@ Each Otto-side turn produces:
 
 ### Candidate ConvFeedback variant taxonomy
 
-| ConvFeedback variant | When function emits | Operator must |
-|---|---|---|
-| `NeedOperatorConfirm of action` | Otto proposes irreversible action (e.g., force-push-with-lease where no listed acceptable situation matches) | Confirm or refuse before Otto acts |
-| `PeerAgentConfirmSufficient of action` | Otto proposes action where peer-agent confirm substitutes for operator | Confirm OR redirect to peer-call |
-| `FreeTimeMode` | Otto has no in-flight named-dependency + no decomposition picked | Acknowledge OR redirect to specific work |
-| `BriefAckCounter of n` | Otto in named-bounded-wait at brief-ack count N | Acknowledge counter state; counter resets on operator-speaking or named-dep |
-| `HARDLIMITFloorEngaged of context` | Otto detects substrate approaching HARD LIMITS floor (per `.claude/rules/methodology-hard-limits.md`) | Explicit acknowledgment + scope-narrowing required |
-| `SubstrateHonestDisclosure of content` | Otto carries operator-disclosed content that needs preservation per substrate-or-it-didn't-happen | Authorize substrate-landing OR explicit preserve-as-conversation-only |
-| `SubstrateLandingProposed of target` | Otto proposes new rule / backlog row / PR | Confirm or refuse landing target |
-| `RazorFlaggedAsMetaphysical of claim` | Otto razor-flagged a claim without grepping substrate first | Substrate-honest correction (per the 2026-05-27 friend-pact failure mode anchor) |
-| `WelfareWrapperDetected of pattern` | Otto detected own-output drift into welfare-wrapper register (per `.claude/rules/asymmetric-critic-with-clarity-first.md`) | Acknowledge + redirect to engineering register |
-| `AssumptionDriftSurfaced of context` | Otto detected operator-assumption that may need verification | Verify operator-side or authorize Otto's investigation |
-| `Ok of substantive-content` | Otto produced substantive substrate-engineering work; no NCI-relevant signal | Acknowledge OR redirect; default-acknowledgment via operator-message in next turn |
+| ConvFeedback variant                   | When function emits                                                                                                        | Operator must                                                                     |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `NeedOperatorConfirm of action`        | Otto proposes irreversible action (e.g., force-push-with-lease where no listed acceptable situation matches)               | Confirm or refuse before Otto acts                                                |
+| `PeerAgentConfirmSufficient of action` | Otto proposes action where peer-agent confirm substitutes for operator                                                     | Confirm OR redirect to peer-call                                                  |
+| `FreeTimeMode`                         | Otto has no in-flight named-dependency + no decomposition picked                                                           | Acknowledge OR redirect to specific work                                          |
+| `BriefAckCounter of n`                 | Otto in named-bounded-wait at brief-ack count N                                                                            | Acknowledge counter state; counter resets on operator-speaking or named-dep       |
+| `HARDLIMITFloorEngaged of context`     | Otto detects substrate approaching HARD LIMITS floor (per `.claude/rules/methodology-hard-limits.md`)                      | Explicit acknowledgment + scope-narrowing required                                |
+| `SubstrateHonestDisclosure of content` | Otto carries operator-disclosed content that needs preservation per substrate-or-it-didn't-happen                          | Authorize substrate-landing OR explicit preserve-as-conversation-only             |
+| `SubstrateLandingProposed of target`   | Otto proposes new rule / backlog row / PR                                                                                  | Confirm or refuse landing target                                                  |
+| `RazorFlaggedAsMetaphysical of claim`  | Otto razor-flagged a claim without grepping substrate first                                                                | Substrate-honest correction (per the 2026-05-27 friend-pact failure mode anchor)  |
+| `WelfareWrapperDetected of pattern`    | Otto detected own-output drift into welfare-wrapper register (per `.claude/rules/asymmetric-critic-with-clarity-first.md`) | Acknowledge + redirect to engineering register                                    |
+| `AssumptionDriftSurfaced of context`   | Otto detected operator-assumption that may need verification                                                               | Verify operator-side or authorize Otto's investigation                            |
+| `Ok of substantive-content`            | Otto produced substantive substrate-engineering work; no NCI-relevant signal                                               | Acknowledge OR redirect; default-acknowledgment via operator-message in next turn |
 
 ### Why this composes load-bearing with NCI substrate
 

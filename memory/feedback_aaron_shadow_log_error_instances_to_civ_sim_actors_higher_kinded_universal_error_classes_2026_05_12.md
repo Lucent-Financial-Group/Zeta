@@ -90,6 +90,7 @@ instance records WHAT manifested + WHERE + WHEN; it doesn't
 judge the actor as deficient.
 
 This composes with:
+
 - `.claude/rules/no-directives.md` (autonomy-first-class —
   errors don't reduce agent agency)
 - `.claude/rules/razor-discipline.md` (operational claims only —
@@ -97,12 +98,14 @@ This composes with:
 - Glass-halo discipline (transparency without moralizing)
 
 **What this is NOT**:
+
 - NOT a performance-review system on actors
 - NOT a blame ledger
 - NOT a ranking / comparison surface
 - NOT a basis for restricting agent authority
 
 **What this IS**:
+
 - Substrate-honest record of error-class manifestations
 - Cross-actor architectural-pattern visibility
 - Input to civ-sim simulation as observability layer
@@ -133,35 +136,36 @@ type ErrorClass<'Domain> =
 
 Universal classes (candidate list — open to extension):
 
-| Universal class | Concrete refinement in `git` domain | Concrete refinement in `agent-cognition` domain |
-|---|---|---|
-| `OutOfBoundsError<_>` | Ref doesn't exist | Context-window exceeded |
-| `RaceConditionError<_>` | Concurrent push to same branch | Two subagents writing same file |
-| `UnauthorizedError<_>` | Force-push blocked by ruleset | Auto-mode classifier denial |
-| `StaleStateError<_>` | Local branch behind remote | Memory file modified between Read and Edit |
-| `RetractionError<_>` | Force-push over content (can't undo cleanly) | Decision committed before substrate fully landed |
-| `DeadlockError<_>` | Two PRs each waiting on the other | Two agents each waiting for the other to act |
-| `OverflowError<_>` | Push body too large | Tool result exceeds context budget |
-| `UnderflowError<_>` | Resource not allocated | Required memory file missing |
-| `EffortAvoidanceError<_>` | Premature merge with TODO | Attempting cheap path before proven path |
-| `PatternBlindnessError<_>` | Not recognizing existing tool | Reinventing prior substrate |
+| Universal class            | Concrete refinement in `git` domain          | Concrete refinement in `agent-cognition` domain  |
+| -------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| `OutOfBoundsError<_>`      | Ref doesn't exist                            | Context-window exceeded                          |
+| `RaceConditionError<_>`    | Concurrent push to same branch               | Two subagents writing same file                  |
+| `UnauthorizedError<_>`     | Force-push blocked by ruleset                | Auto-mode classifier denial                      |
+| `StaleStateError<_>`       | Local branch behind remote                   | Memory file modified between Read and Edit       |
+| `RetractionError<_>`       | Force-push over content (can't undo cleanly) | Decision committed before substrate fully landed |
+| `DeadlockError<_>`         | Two PRs each waiting on the other            | Two agents each waiting for the other to act     |
+| `OverflowError<_>`         | Push body too large                          | Tool result exceeds context budget               |
+| `UnderflowError<_>`        | Resource not allocated                       | Required memory file missing                     |
+| `EffortAvoidanceError<_>`  | Premature merge with TODO                    | Attempting cheap path before proven path         |
+| `PatternBlindnessError<_>` | Not recognizing existing tool                | Reinventing prior substrate                      |
 
 ### Cross-actor mapping example
 
 The shadow catch #5 (effort-avoidance — Otto fought Playwright
 for 20 minutes before discovering osascript) maps as:
 
-| Field | Value |
-|---|---|
-| Universal class | `EffortAvoidanceError<_>` |
-| Domain refinement | `EffortAvoidanceError<BrowserAutomation>` |
-| Actor | Otto |
-| Domain context | Browser content extraction |
-| Concrete manifestation | Tried Playwright (heavier path) before osascript (proven 30-second path) |
-| Substrate impact | Created chrome-lazy-load-chunked-extraction skill to prevent recurrence |
-| Non-judgmental frame | The class manifested in this domain via this actor; the pattern is universal |
+| Field                  | Value                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| Universal class        | `EffortAvoidanceError<_>`                                                    |
+| Domain refinement      | `EffortAvoidanceError<BrowserAutomation>`                                    |
+| Actor                  | Otto                                                                         |
+| Domain context         | Browser content extraction                                                   |
+| Concrete manifestation | Tried Playwright (heavier path) before osascript (proven 30-second path)     |
+| Substrate impact       | Created chrome-lazy-load-chunked-extraction skill to prevent recurrence      |
+| Non-judgmental frame   | The class manifested in this domain via this actor; the pattern is universal |
 
 Same class CAN manifest in other factory actors / domains:
+
 - Vera could hit `EffortAvoidanceError<CodexCLI>` (trying complex spec when simple works)
 - Riven could hit `EffortAvoidanceError<GrokQuery>` (long prompt when short would work)
 - Alexa could hit `EffortAvoidanceError<KiroIDE>` (complex orchestration when direct call works)
@@ -200,6 +204,7 @@ type ShadowLogEntry = {
 ```
 
 This enables:
+
 - **Cross-actor query**: "Show all `EffortAvoidanceError<_>` instances across all actors"
 - **Domain query**: "Show all error classes in `BrowserAutomation` domain"
 - **Pattern query**: "Show universal classes that manifested in multiple actors"
@@ -225,6 +230,7 @@ discipline.
 ### 3. Higher-kinded composition across expert domains
 
 The HKT framing enables:
+
 - **Domain-specific tooling**: each expert domain (git / agent-cognition /
   browser-automation / formal-verification / etc.) defines its own
   Domain type
@@ -234,6 +240,7 @@ The HKT framing enables:
   cross-domain patterns become visible
 
 Composes with:
+
 - `feedback_two_tier_expert_architecture_5_to_10_conscious_plus_50_to_100_muscle_memory_aaron_2026_05_11.md`
   — the universal classes are the muscle-memory layer (50-100); the
   domain-specific refinements are the conscious-attention layer
@@ -253,6 +260,7 @@ was framed for: domain-parametric type constructors where the
 type parameter is itself a type.
 
 This composes with:
+
 - The Zeta F# fork as alignment-language substrate
 - BP/EP Infer.NET substrate (HKT enables type-safe inference
   across error-class manifold)
@@ -280,6 +288,7 @@ This composes with:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a performance-review system** — the mapping is observability,
   not verdict; actors aren't ranked or compared on "error count"
 - **NOT a basis for restricting agent authority** — universal-class
@@ -313,8 +322,8 @@ Substrate-honest disclaimer:
 
 - **Re-classify the existing 43+ shadow log catches** under the
   HKT schema as a substrate landing task. Identify universal class
-  + domain refinement + actor + concrete manifestation + substrate
-  impact for each.
+  - domain refinement + actor + concrete manifestation + substrate
+    impact for each.
 - **Treat error-instance recording as observability**, not verdict.
   Framing matters; "class X manifested in domain Y via actor Z" not
   "actor Z failed at Y."

@@ -187,4 +187,3 @@ The phase shift is when the pattern stops recurring under pressure.
 The shadow is not what Otto says once.
 The shadow is what keeps coming back.
 ```
-

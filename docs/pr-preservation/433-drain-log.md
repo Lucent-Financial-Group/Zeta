@@ -33,10 +33,10 @@ catching three orthogonal algorithm-correctness improvements.
     invariants 1-5) two facts somehow both end up active
     simultaneously (which shouldn't happen but invariant-6 provides
     a deterministic fallback), priority breaks the tie.
-  Conflating them muddled the rendering rules: the renderer needs
-  to know which invariant a check is enforcing — chain_head
-  liveness (read invariant 2) vs winner-selection-when-multiple-
-  active (read invariant 6).
+    Conflating them muddled the rendering rules: the renderer needs
+    to know which invariant a check is enforcing — chain_head
+    liveness (read invariant 2) vs winner-selection-when-multiple-
+    active (read invariant 6).
 - Outcome: **FIX** — distinguished the two concepts in the spec:
   Invariant 2 covers chain_head liveness; Invariant 6 covers
   priority-tie-break-for-winner. Renderer rules now cite the
@@ -53,7 +53,7 @@ catching three orthogonal algorithm-correctness improvements.
   stray backtick. The strip rule needed to be paired-delimiter-
   only, not raw-character-removal.
 - Outcome: **FIX** — rule reformulated as "Strip markdown
-  formatting *delimiters* — i.e. unwrap text from paired
+  formatting _delimiters_ — i.e. unwrap text from paired
   emphasis/code spans rather than removing every occurrence of
   those characters as raw chars":
   - `**text**` → `text` (paired `**` removed, content kept)
@@ -62,9 +62,9 @@ catching three orthogonal algorithm-correctness improvements.
     `text` matches `[A-Za-z0-9-]+`; preserves identifiers like
     `_internal_var` or `__private`)
   - `` `text` `` → `text` (paired backticks removed)
-  Single occurrences and unpaired delimiters NOT stripped —
-  `_internal_var` stays as `_internal_var`, `a_b_c` stays as
-  `a_b_c`, stray backtick survives.
+    Single occurrences and unpaired delimiters NOT stripped —
+    `_internal_var` stays as `_internal_var`, `a_b_c` stays as
+    `a_b_c`, stray backtick survives.
 
 ### Thread 3 — MEMORY.md dedup by source_path (multiple typed facts → one index row)
 
@@ -72,7 +72,7 @@ catching three orthogonal algorithm-correctness improvements.
 - Severity: P1 (rendering correctness)
 - Finding: parent's `MEMORY.md` index rendering rule didn't
   specify dedup behavior when the same memory file (same
-  `source_path`) has multiple typed facts (e.g., user_*.md
+  `source_path`) has multiple typed facts (e.g., user\_\*.md
   containing both feedback + preference facts). Without dedup, the
   index would have one row per fact instead of one row per file.
 - Outcome: **FIX** — dedup-by-source_path: multiple typed facts
@@ -92,7 +92,7 @@ catching three orthogonal algorithm-correctness improvements.
    (both involve "which fact wins") but apply at different points
    in the algorithm (one normal-case, one fallback). Codex catches
    conflation reliably; fix template is to enumerate the invariants
-   + cite the specific one each check enforces.
+   - cite the specific one each check enforces.
 
 2. **Paired-delimiter-vs-raw-character is a normalization-rule
    precision class.** Thread 2's "Strip markdown formatting" rule
@@ -122,8 +122,8 @@ catching three orthogonal algorithm-correctness improvements.
    - #434 (second cascade): CC schema alignment with live
      `docs/CONTRIBUTOR-CONFLICTS.md` headers + idempotent-
      generator strategy + Open-table targeting
-   Algorithm-design specs benefit from multiple cascade waves;
-   each wave catches a different class of correctness gap.
+     Algorithm-design specs benefit from multiple cascade waves;
+     each wave catches a different class of correctness gap.
 
 ## Final resolution
 

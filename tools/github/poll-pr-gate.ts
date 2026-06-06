@@ -58,13 +58,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 type GateState = "CLEAN" | "BLOCKED" | "DIRTY" | "UNSTABLE" | "UNKNOWN";
-type NextAction =
-  | "wait-ci"
-  | "fix-failed-checks"
-  | "resolve-threads"
-  | "rebase"
-  | "verify-merge"
-  | "none";
+type NextAction = "wait-ci" | "fix-failed-checks" | "resolve-threads" | "rebase" | "verify-merge" | "none";
 
 interface CheckRollupItem {
   status?: string;
@@ -144,10 +138,7 @@ const PENDING_STATUSES = new Set([
   "WAITING",
 ]);
 
-function classifyChecks(
-  rollup: CheckRollupItem[],
-  filter?: (item: CheckRollupItem) => boolean,
-): CheckCounts {
+function classifyChecks(rollup: CheckRollupItem[], filter?: (item: CheckRollupItem) => boolean): CheckCounts {
   let ok = 0;
   let inProgress = 0;
   let pending = 0;
@@ -173,10 +164,7 @@ function classifyChecks(
   return { ok, inProgress, pending, failed };
 }
 
-function nonRequiredFailures(
-  rollup: CheckRollupItem[],
-  requiredNames: Set<string>,
-): string[] {
+function nonRequiredFailures(rollup: CheckRollupItem[], requiredNames: Set<string>): string[] {
   const failures: string[] = [];
   for (const c of rollup) {
     if (c.name && requiredNames.has(c.name)) continue;
@@ -220,10 +208,7 @@ function nextAction(report: Omit<GateReport, "nextAction">): NextAction {
   // peer review — "a failed check is not automatically a failed gate").
   if (report.requiredChecks.failed > 0) return "fix-failed-checks";
   if (report.unresolvedThreads > 0) return "resolve-threads";
-  if (
-    report.requiredChecks.inProgress > 0 ||
-    report.requiredChecks.pending > 0
-  ) {
+  if (report.requiredChecks.inProgress > 0 || report.requiredChecks.pending > 0) {
     return "wait-ci";
   }
   return "none";
@@ -245,19 +230,10 @@ export function buildReport(pr: PullRequestData): GateReport {
     ? classifyChecks(rollup, (c) => Boolean(c.name && requiredNames.has(c.name)))
     : checks;
   const warnings = haveRequiredMetadata
-    ? nonRequiredFailures(rollup, requiredNames).map(
-        (name) => `non-required check failed: ${name}`,
-      )
+    ? nonRequiredFailures(rollup, requiredNames).map((name) => `non-required check failed: ${name}`)
     : [];
-  const unresolvedThreads = (pr.reviewThreads?.nodes ?? []).filter(
-    (t) => !t.isResolved,
-  ).length;
-  const gate = classifyGate(
-    pr.mergeStateStatus,
-    pr.state,
-    requiredChecks,
-    unresolvedThreads,
-  );
+  const unresolvedThreads = (pr.reviewThreads?.nodes ?? []).filter((t) => !t.isResolved).length;
+  const gate = classifyGate(pr.mergeStateStatus, pr.state, requiredChecks, unresolvedThreads);
   const partial: Omit<GateReport, "nextAction"> = {
     number: pr.number,
     state: pr.state,
@@ -296,9 +272,7 @@ function runGhOrExit(args: string[], context: string): string {
     process.exit(1);
   }
   if (result.status !== 0) {
-    process.stderr.write(
-      `${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`,
-    );
+    process.stderr.write(`${context}: gh exited ${result.status}: ${result.stderr || result.stdout}\n`);
     process.exit(2);
   }
   return result.stdout;
@@ -315,11 +289,7 @@ function parseJsonOrExit<T>(raw: string, context: string): T {
   }
 }
 
-function fetchPR(
-  owner: string,
-  repo: string,
-  number: number,
-): PullRequestData {
+function fetchPR(owner: string, repo: string, number: number): PullRequestData {
   // Use `gh pr view --json` which flattens StatusCheckRollup into a uniform
   // array (CheckRun + StatusContext both surfaced as items with status/
   // conclusion/name fields). Pair with a separate `gh api graphql` call for
@@ -348,18 +318,7 @@ function fetchPR(
   let hasNextPage = true;
   const threadsQuery = `query=query($o:String!,$r:String!,$n:Int!,$endCursor:String){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:100,after:$endCursor){pageInfo{hasNextPage endCursor}nodes{isResolved}}}}}`;
   while (hasNextPage) {
-    const args = [
-      "api",
-      "graphql",
-      "-f",
-      threadsQuery,
-      "-F",
-      `o=${owner}`,
-      "-F",
-      `r=${repo}`,
-      "-F",
-      `n=${number}`,
-    ];
+    const args = ["api", "graphql", "-f", threadsQuery, "-F", `o=${owner}`, "-F", `r=${repo}`, "-F", `n=${number}`];
     if (endCursor !== null) args.push("-f", `endCursor=${endCursor}`);
     const pageStdout = runGhOrExit(args, "fetchPR.gh-graphql-threads");
     const parsed = parseJsonOrExit<{
@@ -394,16 +353,7 @@ function fetchPR(
   let requiredCheckNames: string[] | undefined;
   const requiredResult = spawnSync(
     "gh",
-    [
-      "pr",
-      "checks",
-      String(number),
-      "--repo",
-      `${owner}/${repo}`,
-      "--required",
-      "--json",
-      "name",
-    ],
+    ["pr", "checks", String(number), "--repo", `${owner}/${repo}`, "--required", "--json", "name"],
     { encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER },
   );
   // `gh pr checks` exit codes (per `gh help exit-codes`):
@@ -422,9 +372,7 @@ function fetchPR(
       const required = JSON.parse(requiredResult.stdout) as Array<{
         name?: string;
       }>;
-      requiredCheckNames = required
-        .map((r) => r.name)
-        .filter((n): n is string => typeof n === "string");
+      requiredCheckNames = required.map((r) => r.name).filter((n): n is string => typeof n === "string");
     } catch {
       // Parse error — leave undefined so buildReport falls back to v0.
     }
@@ -458,8 +406,7 @@ function normalizeRollup(rollup: unknown[]): CheckRollupItem[] {
     if (typeof c.state === "string" && c.status === undefined) {
       const state = c.state as string;
       const isPendingState = PENDING_STATE_LITERALS.has(state);
-      const name =
-        (c.context as string | undefined) ?? (c.name as string | undefined);
+      const name = (c.context as string | undefined) ?? (c.name as string | undefined);
       const item: CheckRollupItem = {
         status: isPendingState ? "PENDING" : "COMPLETED",
       };

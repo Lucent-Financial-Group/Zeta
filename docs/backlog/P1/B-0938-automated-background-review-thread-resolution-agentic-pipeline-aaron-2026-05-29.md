@@ -19,7 +19,7 @@ tags: [agent-autonomy, pr-reviews, thread-resolution, self-correction, worktree-
 
 ## Operator framing 2026-05-29
 
-> *"Hey this is great progress Lior please keep a check thanks and see that comments are resolved are your background agets setup to do that if not lets write up and ADR"*
+> _"Hey this is great progress Lior please keep a check thanks and see that comments are resolved are your background agets setup to do that if not lets write up and ADR"_
 
 ## Existing substrate this composes with
 

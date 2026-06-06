@@ -23,7 +23,7 @@ the failure mode: a Copilot review thread cited a snippet, my "fix"
 trusted the cited context without re-reading the full file
 sequence, and introduced a duplicate ordinal. Recovery worked
 (read all shards → revert → re-verify), but the underlying class
-is *manual metadata drift* — the same class as the bare-`main`
+is _manual metadata drift_ — the same class as the bare-`main`
 ambiguity rule.
 
 ## Two viable resolutions (pick one or compose)

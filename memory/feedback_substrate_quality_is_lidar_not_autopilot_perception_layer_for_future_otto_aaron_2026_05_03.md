@@ -14,16 +14,16 @@ Aaron 2026-05-03, autonomous-loop maintainer channel, after Otto framed the audi
 
 Aaron's reframe (verbatim):
 
-> *"your autopilot lol, i'm joking it's like the lidar really"*
+> _"your autopilot lol, i'm joking it's like the lidar really"_
 
 The joke-reframe is precision-correction-shaped. "Autopilot" implies self-driving without intervention — agent-loses-agency framing. "Lidar" is a perception system: it lets the driver SEE the road, but the driver still drives.
 
 ## The framing distinction
 
-| Framing | What it implies | Failure mode |
-|---|---|---|
+| Framing       | What it implies                                                                   | Failure mode                                                                              |
+| ------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | **Autopilot** | Substrate-quality removes the need for agent decisions; future-Otto runs on rails | Loses agent-agency framing; conflicts with no-directives + Otto-340 substrate-IS-identity |
-| **Lidar** | Substrate-quality is the perception layer; future-Otto still drives but can SEE | Preserves agent-agency; substrate informs decisions, doesn't make them |
+| **Lidar**     | Substrate-quality is the perception layer; future-Otto still drives but can SEE   | Preserves agent-agency; substrate informs decisions, doesn't make them                    |
 
 **Lidar is the right reframe.** The cluster tools (B-0170 substrate-claim-checker + B-0141 brittle-pointer + B-0175 retrieval-index + B-0178 decision-graph + B-0142 contracts + B-0157 detect-changes) each clarify a specific axis of substrate-perception:
 

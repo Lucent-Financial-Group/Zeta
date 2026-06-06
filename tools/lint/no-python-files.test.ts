@@ -83,10 +83,7 @@ describe("no-python-files", () => {
   test("returns 0 when the only .py file is allowlisted", () => {
     writeAllowlist(repoRoot, "tools/setup/common/legacy.py\n");
     mkdirSync(join(repoRoot, "tools", "setup", "common"), { recursive: true });
-    writeFileSync(
-      join(repoRoot, "tools", "setup", "common", "legacy.py"),
-      "print('hi')\n",
-    );
+    writeFileSync(join(repoRoot, "tools", "setup", "common", "legacy.py"), "print('hi')\n");
     const { result, stdout } = captureStdout(() => main([]));
     expect(result).toBe(0);
     expect(stdout).toContain("1 allowlisted");
@@ -97,10 +94,7 @@ describe("no-python-files", () => {
     mkdirSync(join(repoRoot, "references", "prior-art", "project"), {
       recursive: true,
     });
-    writeFileSync(
-      join(repoRoot, "references", "prior-art", "project", "main.py"),
-      "x = 1\n",
-    );
+    writeFileSync(join(repoRoot, "references", "prior-art", "project", "main.py"), "x = 1\n");
     const { result } = captureStdout(() => main([]));
     expect(result).toBe(0);
   });
@@ -131,10 +125,7 @@ describe("no-python-files", () => {
   });
 
   test("comment and blank lines in the allowlist are ignored", () => {
-    writeAllowlist(
-      repoRoot,
-      "# leading comment\n\n  # indented comment\nrogue.py\n",
-    );
+    writeAllowlist(repoRoot, "# leading comment\n\n  # indented comment\nrogue.py\n");
     writeFileSync(join(repoRoot, "rogue.py"), "print('hi')\n");
     const { result } = captureStdout(() => main([]));
     expect(result).toBe(0);

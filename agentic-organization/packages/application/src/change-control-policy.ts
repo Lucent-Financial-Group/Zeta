@@ -13,7 +13,14 @@
  * stages — that is the whole "PRs are an optional port" claim, in data.
  */
 
-import { ExternalSystem, ReviewGateKind, stageRequiresHuman, type AutonomyPolicy, type ReviewPipeline, type ReviewStage } from "../../domain/src/index.ts";
+import {
+  ExternalSystem,
+  ReviewGateKind,
+  stageRequiresHuman,
+  type AutonomyPolicy,
+  type ReviewPipeline,
+  type ReviewStage,
+} from "../../domain/src/index.ts";
 
 export const ReviewPipelineId = {
   InternalOnly: "internal-only",
@@ -30,9 +37,27 @@ export type ChangeControlPolicy = {
 
 function internalStages(): readonly ReviewStage[] {
   return [
-    { id: "internal-code-review", ownerLabel: "code_reviewer", authority: { kind: "hat", hatId: "code_reviewer" }, gate: ReviewGateKind.NoBlockingFindings, blocking: true },
-    { id: "internal-qa", ownerLabel: "qa_reviewer", authority: { kind: "hat", hatId: "qa_reviewer" }, gate: ReviewGateKind.TestsGreen, blocking: true },
-    { id: "security", ownerLabel: "security_review", authority: { kind: "quorum", hatIds: ["security_a", "security_b", "security_c"], threshold: 3 }, gate: ReviewGateKind.QuorumAgreed, blocking: true },
+    {
+      id: "internal-code-review",
+      ownerLabel: "code_reviewer",
+      authority: { kind: "hat", hatId: "code_reviewer" },
+      gate: ReviewGateKind.NoBlockingFindings,
+      blocking: true,
+    },
+    {
+      id: "internal-qa",
+      ownerLabel: "qa_reviewer",
+      authority: { kind: "hat", hatId: "qa_reviewer" },
+      gate: ReviewGateKind.TestsGreen,
+      blocking: true,
+    },
+    {
+      id: "security",
+      ownerLabel: "security_review",
+      authority: { kind: "quorum", hatIds: ["security_a", "security_b", "security_c"], threshold: 3 },
+      gate: ReviewGateKind.QuorumAgreed,
+      blocking: true,
+    },
   ];
 }
 
@@ -46,8 +71,21 @@ export function buildGitHubGatedPipeline(organizationId: string): ReviewPipeline
     organizationId,
     stages: [
       ...internalStages(),
-      { id: "external-code-review", ownerLabel: "external:github", authority: { kind: "external", system: ExternalSystem.GitHub }, gate: ReviewGateKind.ExternalApproved, blocking: true, projectTo: ExternalSystem.GitHub },
-      { id: "human-qa-signoff", ownerLabel: "human:qa_lead", authority: { kind: "human", role: "qa_lead" }, gate: ReviewGateKind.NoBlockingFindings, blocking: true },
+      {
+        id: "external-code-review",
+        ownerLabel: "external:github",
+        authority: { kind: "external", system: ExternalSystem.GitHub },
+        gate: ReviewGateKind.ExternalApproved,
+        blocking: true,
+        projectTo: ExternalSystem.GitHub,
+      },
+      {
+        id: "human-qa-signoff",
+        ownerLabel: "human:qa_lead",
+        authority: { kind: "human", role: "qa_lead" },
+        gate: ReviewGateKind.NoBlockingFindings,
+        blocking: true,
+      },
     ],
   };
 }

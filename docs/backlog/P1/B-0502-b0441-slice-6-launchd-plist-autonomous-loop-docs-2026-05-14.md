@@ -19,6 +19,7 @@ type: chore
 ## Origin
 
 B-0441 acceptance criterion:
+
 > "Runs under existing launchd / cron infrastructure"
 > "Documented in `docs/AUTONOMOUS-LOOP.md`"
 

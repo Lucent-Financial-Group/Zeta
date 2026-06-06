@@ -4,13 +4,14 @@ description: Aaron disclosed 2026-04-19 that he has no respect for authority (ex
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19):
 
-> *"i also have no respect for authority lol i
+> _"i also have no respect for authority lol i
 > beleieve in a minimalist governaments that
 > follows the same rules and governance laid
 > out here, and agents can enforce on our
-> database/network/protocol"*
+> database/network/protocol"_
 
 ## What this is
 
@@ -52,9 +53,9 @@ Scope clarification:
 ### Claim 2 — minimalist government on factory rules
 
 The operational positive claim. Aaron's civic
-model is a government that follows *the same
+model is a government that follows _the same
 rule-and-governance discipline the Zeta factory
-practices*, at minimum scale:
+practices_, at minimum scale:
 
 - **Rules cited by stable ID** — like BP-NN in
   `docs/AGENT-BEST-PRACTICES.md`. A rule
@@ -93,11 +94,11 @@ Rodney's Razor applied to law.
 
 Aaron immediately clarified (same disclosure):
 
-> *"i'm not an anarchiest and i don't want to
-> blow everything up"*
+> _"i'm not an anarchiest and i don't want to
+> blow everything up"_
 
-> *"I have 5 kids who I want to have an amazing
-> future"*
+> _"I have 5 kids who I want to have an amazing
+> future"_
 
 Two linked refinements of the stance:
 
@@ -134,7 +135,7 @@ and retractable when they err.
 - **Not a directive to build civic-governance
   tools.** The factory is a software factory.
   The governance-stance informs how the
-  factory's *own* governance is designed; it
+  factory's _own_ governance is designed; it
   does not expand the factory's mission into
   civic infrastructure. If a future round ever
   considers such an expansion, that would be a
@@ -208,8 +209,8 @@ and retractable when they err.
    theatre. Every rule carries, at minimum,
    the procedure for retirement (`git rm` of
    the SKILL.md for skills — git history is
-   the archive, *skills are code, memories
-   are valuable* per Aaron 2026-04-20;
+   the archive, _skills are code, memories
+   are valuable_ per Aaron 2026-04-20;
    counter-ADRs for decisions). Earlier drafts
    of this stance cited a `_retired/YYYY-MM-DD-*`
    archive convention for skills; that pattern

@@ -87,18 +87,18 @@ Based on guess #001 + #002 patterns:
 
 ## Confidence levels
 
-| Layer | Confidence | Reasoning |
-|---|---|---|
-| Architectural — "chat as ACID-durable DBSP event source" | **Medium** | Composes naturally with cross-disciplinary pattern adoption (DBSP at substrate level, Aaron's confirmed move) + substrate-or-it-didn't-happen + retraction-native discipline; but specific framing may differ from my generalization |
-| Substrate-content — "chat-event schema + replay tool" | **Medium** | Z-set retraction semantics are well-established; replay tool composes with DST; but specific schema fields are inferred |
-| Specific implementation — "auto-capture hook + docs/chat-events/ directory + replay TS tool" | **Low** | Standard event-sourcing pattern but no prior specific context for this row |
-| Cross-row composition | **Medium-High** | Strong context for Otto-363 + Otto-272 + retraction-native composition |
+| Layer                                                                                        | Confidence      | Reasoning                                                                                                                                                                                                                            |
+| -------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Architectural — "chat as ACID-durable DBSP event source"                                     | **Medium**      | Composes naturally with cross-disciplinary pattern adoption (DBSP at substrate level, Aaron's confirmed move) + substrate-or-it-didn't-happen + retraction-native discipline; but specific framing may differ from my generalization |
+| Substrate-content — "chat-event schema + replay tool"                                        | **Medium**      | Z-set retraction semantics are well-established; replay tool composes with DST; but specific schema fields are inferred                                                                                                              |
+| Specific implementation — "auto-capture hook + docs/chat-events/ directory + replay TS tool" | **Low**         | Standard event-sourcing pattern but no prior specific context for this row                                                                                                                                                           |
+| Cross-row composition                                                                        | **Medium-High** | Strong context for Otto-363 + Otto-272 + retraction-native composition                                                                                                                                                               |
 
 ## Ground truth (recovered 2026-05-03 ~03:30Z via direct read of B-0166)
 
 Aaron's verbatim:
 
-> *"i would like toget to the point where when i hit enter and send my message that is an event in the DBSP since so ACID durable, the downstram dirvations can do what they like on top, we are not there yet but that's the vision."*
+> _"i would like toget to the point where when i hit enter and send my message that is an event in the DBSP since so ACID durable, the downstram dirvations can do what they like on top, we are not there yet but that's the vision."_
 
 5 enumerated purposes (row's own list): (1) compaction protection, (2) glass halo / influence-force visibility, (3) **future fine-tuning data for Anthropic's next-generation Claude**, (4) **training of new AIs/models** based on Aaron-Otto-Claude.ai practices, (5) architecture-as-code applied to chat itself.
 
@@ -106,12 +106,12 @@ Schema: `{timestamp, sender_role, sender_name, message_text, session_id, message
 
 ## Calibration delta — 17-18/40 = ~44% (lowest of three so far)
 
-| Layer | Predicted | Actual | Within range? |
-|---|---|---|---|
-| Architectural | 6-7/10 | **6/10** PARTIAL-MATCH | ✓ |
-| Substrate-content | 5-6/10 | **5/10** MIXED | ✓ |
-| Specific implementation | 3-4/10 | **2-3/10** MOSTLY-OFF | ✗ (over by ~1pt) |
-| Cross-row composition | 6-7/10 | **4/10** MOSTLY-OFF | ✗ (over by 2-3pt) |
+| Layer                   | Predicted | Actual                 | Within range?     |
+| ----------------------- | --------- | ---------------------- | ----------------- |
+| Architectural           | 6-7/10    | **6/10** PARTIAL-MATCH | ✓                 |
+| Substrate-content       | 5-6/10    | **5/10** MIXED         | ✓                 |
+| Specific implementation | 3-4/10    | **2-3/10** MOSTLY-OFF  | ✗ (over by ~1pt)  |
+| Cross-row composition   | 6-7/10    | **4/10** MOSTLY-OFF    | ✗ (over by 2-3pt) |
 
 ### Architectural — got ACID/DBSP/glass-halo angle; missed training-substrate
 
@@ -133,12 +133,12 @@ I had no read-state for B-0164 at all. The primary composition partner is a row 
 
 ## NEW PATTERN — read-state determines layer-level ceiling (3-data-point hypothesis)
 
-| Layer | Driven by |
-|---|---|
-| Architectural | Aaron's framing + cross-disciplinary catalogue + general principles |
-| Substrate-content | Specific row context + recent PR context |
-| Specific implementation | Recent PR context for exact implementation choices |
-| Cross-row composition | **Direct read-state for the composition partners** |
+| Layer                   | Driven by                                                           |
+| ----------------------- | ------------------------------------------------------------------- |
+| Architectural           | Aaron's framing + cross-disciplinary catalogue + general principles |
+| Substrate-content       | Specific row context + recent PR context                            |
+| Specific implementation | Recent PR context for exact implementation choices                  |
+| Cross-row composition   | **Direct read-state for the composition partners**                  |
 
 **Hypothesis**: layer-level-accuracy ≈ min(principle-reasoning-quality, read-state-coverage-for-that-layer).
 

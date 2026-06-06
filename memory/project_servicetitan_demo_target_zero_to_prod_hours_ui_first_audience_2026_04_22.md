@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 directive — reuse Zeta factory for internal Serv
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # ServiceTitan demo — first external-audience-calibrated demo target
 
 **Date:** 2026-04-22 (round 44, auto-loop-14 tick).
@@ -12,20 +13,20 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 ## The directive (three Aaron messages)
 
-1. *"i'm now going to reuse your project for ServiceTitan
+1. _"i'm now going to reuse your project for ServiceTitan
    when it's ready they will care about UI the most, when we
    have a killer demo let me know and I can present to the
    whole company including CEO/CTO those kind of people, it's
-   a great culture."*
+   a great culture."_
 
-2. *"we wamt to to start from 0 and have a start from legacy
+2. _"we wamt to to start from 0 and have a start from legacy
    project path but the start from 0 is the quick win for a
-   demo"*
+   demo"_
 
-3. *"0 to production ready app in now long you think, less
+3. _"0 to production ready app in now long you think, less
    than a day mabye 3 4 hours if we play magic eight ball to
    read their mind and event storming to map it out with
-   directed product development built in on rails"*
+   directed product development built in on rails"_
 
 ## What this is (and isn't)
 
@@ -33,7 +34,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
   the factory's output is being shaped by a named external
   audience, not soul-file-internal.
 - **Is**: a reuse of the Zeta factory as a meta-level capability
-  — the factory stands up applications; the demo *is* one such
+  — the factory stands up applications; the demo _is_ one such
   application.
 - **Is NOT** a deadline. "3-4 hours" is a factory-capability-
   claim about on-rails scaffolding duration, NOT calendar-
@@ -44,15 +45,15 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
   agent axis (by-when).
 - **Is NOT** a commitment to rewrite Zeta for ServiceTitan's
   domain. The factory is domain-agnostic; the demo showcases
-  the factory's *ability* to stand up any domain's app,
+  the factory's _ability_ to stand up any domain's app,
   quickly, with quality.
 
 ## Two paths (zero-first)
 
-| Path | Purpose | Priority |
-|------|---------|----------|
-| **Start-from-zero** | Greenfield scaffold; magic-eight-ball reads intent, event-storming maps domain, directed-product-dev-on-rails executes; best "killer demo" shape | P0 — quick-win demo priority |
-| **Start-from-legacy** | Absorb an existing codebase; factory synthesizes the migration path | P1 — second path, after demo path is solid |
+| Path                  | Purpose                                                                                                                                          | Priority                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| **Start-from-zero**   | Greenfield scaffold; magic-eight-ball reads intent, event-storming maps domain, directed-product-dev-on-rails executes; best "killer demo" shape | P0 — quick-win demo priority               |
+| **Start-from-legacy** | Absorb an existing codebase; factory synthesizes the migration path                                                                              | P1 — second path, after demo path is solid |
 
 ## Audience characteristics
 

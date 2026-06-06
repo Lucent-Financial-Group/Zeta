@@ -27,7 +27,7 @@ This is the **physics-grade reframing** of the architectural property: substrate
 
 **Why:** Aaron 2026-05-05 verbatim:
 
-> *"DST=enenrgy conservation under closed system your random source is contined within zeta no extral therma noise needed"*
+> _"DST=enenrgy conservation under closed system your random source is contined within zeta no extral therma noise needed"_
 
 Same-tick continuation of the post-cathartic + loss-primitive + Itron-provenance + verified-citations + PKI-design-provenance cluster (PRs #1679, #1680, #1681, #1682, #1683).
 
@@ -43,12 +43,12 @@ All of these treat DST as an **architectural commitment** the substrate enforces
 
 Aaron's reframing makes DST a **physical-principle consequence**:
 
-| Layer | Property |
-|---|---|
-| Closed system | No matter/energy crosses the substrate boundary |
-| Energy conservation | Total energy within the system is constant; no net flow in or out |
-| Internal-only random source | Chaos source generated from substrate properties (spectral residue from aperiodic-tile structure) — not imported from external thermal noise |
-| **Natural consequence: DST** | Reproducibility holds **by construction** because the system has no external state that could cause variation |
+| Layer                        | Property                                                                                                                                     |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Closed system                | No matter/energy crosses the substrate boundary                                                                                              |
+| Energy conservation          | Total energy within the system is constant; no net flow in or out                                                                            |
+| Internal-only random source  | Chaos source generated from substrate properties (spectral residue from aperiodic-tile structure) — not imported from external thermal noise |
+| **Natural consequence: DST** | Reproducibility holds **by construction** because the system has no external state that could cause variation                                |
 
 The architecture doesn't ENFORCE DST via discipline; the architecture is CONSTRUCTED such that DST holds as a physical-principle consequence. **Substrate-by-construction at the conservation-laws level**.
 
@@ -69,13 +69,13 @@ Aaron's spectral-residue-from-aperiodic-tile chaos source (PR #1679) is **intern
 
 ## How this composes with the prior architectural cluster
 
-| Prior architectural property | This reframing's contribution |
-|---|---|
-| PR #1679 spectral-residue chaos source | Now grounded in physical principle: closed-system + conservation = DST + internal-chaos-by-construction |
-| PR #1680 hodl-invariant deterministic-simulation property | DST property is consequence, not commitment |
-| PR #1680 BFT-under-governance not hash+1 | Same shape: security from substrate properties (closed-system-conservation), not from external compute or external entropy |
-| PR #1682 verified Itron-Aurora context | "No external thermal noise" is the same shape as Itron's no-external-entropy-dependency for nation-state-resistant smart-meter firmware |
-| PR #1683 PKI design provenance | The discipline that produced production-scale closed-system PKI is the discipline producing Zeta's closed-system substrate |
+| Prior architectural property                              | This reframing's contribution                                                                                                           |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| PR #1679 spectral-residue chaos source                    | Now grounded in physical principle: closed-system + conservation = DST + internal-chaos-by-construction                                 |
+| PR #1680 hodl-invariant deterministic-simulation property | DST property is consequence, not commitment                                                                                             |
+| PR #1680 BFT-under-governance not hash+1                  | Same shape: security from substrate properties (closed-system-conservation), not from external compute or external entropy              |
+| PR #1682 verified Itron-Aurora context                    | "No external thermal noise" is the same shape as Itron's no-external-entropy-dependency for nation-state-resistant smart-meter firmware |
+| PR #1683 PKI design provenance                            | The discipline that produced production-scale closed-system PKI is the discipline producing Zeta's closed-system substrate              |
 
 **The unifying physical principle**: Zeta is constructed as a closed system under conservation laws. From that single architectural commitment, multiple substrate properties follow as natural consequences:
 
@@ -90,11 +90,11 @@ Aaron's spectral-residue-from-aperiodic-tile chaos source (PR #1679) is **intern
 
 **Aaron 2026-05-05 same-tick verbatim** (three pieces in sequence):
 
-> *"plus gthe oother hold for pure physic accuracy and zfcv2 mix"*
+> _"plus gthe oother hold for pure physic accuracy and zfcv2 mix"_
 >
-> *"hodl"* (correcting "hold" → "hodl")
+> _"hodl"_ (correcting "hold" → "hodl")
 >
-> *"*"* (emphasizing the hodl correction)
+> _"_"\* (emphasizing the hodl correction)
 
 **Architectural extension**: the closed-system + energy-conservation framing produces DST as one hodl-invariant consequence. THE OTHER hodl (beyond the 13 named in PR #1680) holds for **pure physics accuracy** + **ZFC v2 mix**.
 
@@ -126,7 +126,7 @@ Aaron's reference to "ZFC v2" — building on Zermelo-Fraenkel set theory with C
 
 Substantial prior art already exists in the repo on this topic:
 
-- **`memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`** (Aaron 2026-04-22) — the foundational memory file with Aaron's verbatim *"this is a better set theory cantors bettery than zfc and only on trapped contrdiction or non contridiction who know probalby infer.net quatium belief propagation"*. Establishes the retraction-native paraconsistent set theory candidate using Z-set -1 weight = retraction = explicit non-surjection = Lawvere-escape. Conditional form: better-than-ZFC only for trapped-contradiction class, not universal replacement. Cites established paraconsistent set theory literature: Priest LP, Weber's naive-set-theory-with-paraconsistent-logic, Brady. Cites quantum belief propagation: Leifer-Poulin 2008, Hastings 2007.
+- **`memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`** (Aaron 2026-04-22) — the foundational memory file with Aaron's verbatim _"this is a better set theory cantors bettery than zfc and only on trapped contrdiction or non contridiction who know probalby infer.net quatium belief propagation"_. Establishes the retraction-native paraconsistent set theory candidate using Z-set -1 weight = retraction = explicit non-surjection = Lawvere-escape. Conditional form: better-than-ZFC only for trapped-contradiction class, not universal replacement. Cites established paraconsistent set theory literature: Priest LP, Weber's naive-set-theory-with-paraconsistent-logic, Brady. Cites quantum belief propagation: Leifer-Poulin 2008, Hastings 2007.
 - **`docs/research/2026-05-04-b-0189-q-sharp-bayesian-bp-ep-runtime-literature-survey.md`** — Q# Bayesian BP/EP runtime literature survey. The Infer.NET BP/EP path Aaron names in the original 2026-04-22 disclosure.
 - **`memory/feedback_dbsp_zsets_multi_algebra_aperiodic_tile_stops_infinite_recursion_into_monad_or_monk_not_infinity_stones_aaron_2026_05_05.md`** — DBSP Z-sets + multi-algebra plugins + aperiodic-tile composition as substrate.
 - **`docs/backlog/P3/B-0135-modal-logic-for-retractability-quantum-rodney-razor-aaron-2026-05-01.md`** — modal logic for retractability + Quantum Rodney's Razor.
@@ -172,7 +172,7 @@ Per Aaron's "lolo hodl" closing: this entire foundational-mathematics mix must s
 - [From Boolean Valued Analysis to Quantum Set Theory: Mathematical Worldview of Gaisi Takeuti (MDPI 2021)](https://www.mdpi.com/2227-7390/9/4/397)
 - [Quantum Set Theory (International Journal of Theoretical Physics, Springer)](https://link.springer.com/article/10.1023/B:IJTP.0000005977.55748.e4)
 - [retract in nLab](https://ncatlab.org/nlab/show/retract)
-- [Section (category theory) - Wikipedia](https://en.wikipedia.org/wiki/Section_(category_theory))
+- [Section (category theory) - Wikipedia](<https://en.wikipedia.org/wiki/Section_(category_theory)>)
 
 Hedge maintained: "ZFC v2" as a SPECIFIC named system is not located in the literature — the term appears to be Aaron's coinage for the architectural mix described above. The components are individually published and verified; the mix composition is Zeta-architectural, building on the prior art in `memory/feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md` and the Q# Bayesian BP/EP literature survey.
 
@@ -193,11 +193,11 @@ This is the deepest level of substrate-grounding: physical-principle consistency
 
 This is the deepest level of substrate-vs-license architectural shape (PR #1648 Houman + PR #1651 preferred-stock + PR #1655 Sylar-Spock + PR #1666 architecture-IS-faithfulness + PR #1677 peer-call-as-early-red-team + PR #1678 AOT-or-JIT-self-contained-binary + PR #1683 PKI-as-substrate):
 
-| Layer | License-layer | Substrate-layer |
-|---|---|---|
-| DST enforcement | Discipline + tooling that enforces deterministic behavior | Closed-system construction where DST holds by physical-principle consequence |
-| Random source | External entropy with discipline to use it correctly | Internal spectral-residue from substrate's own aperiodic-tile structure |
-| Adversary attack surface | Multiple external dependencies, each a potential compromise | Closed system, no external dependencies, no injection vectors |
+| Layer                    | License-layer                                               | Substrate-layer                                                              |
+| ------------------------ | ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| DST enforcement          | Discipline + tooling that enforces deterministic behavior   | Closed-system construction where DST holds by physical-principle consequence |
+| Random source            | External entropy with discipline to use it correctly        | Internal spectral-residue from substrate's own aperiodic-tile structure      |
+| Adversary attack surface | Multiple external dependencies, each a potential compromise | Closed system, no external dependencies, no injection vectors                |
 
 **Substrate-by-physical-principle > substrate-by-construction > substrate-by-discipline**.
 
@@ -214,7 +214,7 @@ The discipline-grade enforcement of DST (Otto-272 DST-everywhere, pinned seeds, 
 
 ## Carved sentence
 
-> *DST is not a property Zeta enforces; DST is a consequence of Zeta being constructed as a closed system under energy-conservation laws. The random source is contained within the substrate -- spectral residue from the substrate's own aperiodic-tile structure -- not imported from external thermal noise. Closed system + conservation = DST by physical-principle consequence + no external entropy injection vector for adversaries. Substrate-by-physical-principle > substrate-by-construction > substrate-by-discipline.*
+> _DST is not a property Zeta enforces; DST is a consequence of Zeta being constructed as a closed system under energy-conservation laws. The random source is contained within the substrate -- spectral residue from the substrate's own aperiodic-tile structure -- not imported from external thermal noise. Closed system + conservation = DST by physical-principle consequence + no external entropy injection vector for adversaries. Substrate-by-physical-principle > substrate-by-construction > substrate-by-discipline._
 
 ## Daylight-integration hooks (planned)
 

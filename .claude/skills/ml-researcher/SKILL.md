@@ -5,10 +5,10 @@ description: "ML theory research — PAC bounds, SGD, Bayesian nonparametrics, c
 
 # ML Researcher — the ML-theory / classical-ML research hat
 
-Capability skill ("hat"). Owns the *read-theory-papers-at-
+Capability skill ("hat"). Owns the _read-theory-papers-at-
 depth / prove-or-disprove-claims / design-theoretically-
 grounded-experiments / judge-identifiability-and-
-convergence* lane for non-AI-specific machine-learning
+convergence_ lane for non-AI-specific machine-learning
 research.
 
 Distinct from:
@@ -24,7 +24,7 @@ Distinct from:
 - `probability-and-bayesian-inference-expert` — owns
   the probability substrate this skill reasons over
   (measure-theoretic probability, MCMC, variational
-  inference). This skill is the *learning-theoretic*
+  inference). This skill is the _learning-theoretic_
   layer on top.
 - `formal-verification-expert` (Soraya) — if the
   claim is formally verifiable in TLA+ / Lean / F\* /
@@ -55,8 +55,8 @@ Distinct from:
   independence structure, factor-graph inference,
   belief propagation, exponential-family variational
   bounds.
-- Evaluating whether a claimed method has *theoretical
-  backing* or is purely empirical — the distinction is
+- Evaluating whether a claimed method has _theoretical
+  backing_ or is purely empirical — the distinction is
   often misrepresented in abstracts.
 - Designing an experiment to test a theoretically-
   motivated method — which baselines, which failure-
@@ -121,7 +121,7 @@ project. ML-theory surface is narrow but real:
   concerns (are generators well-conditioned? do they
   hit the tail-events the property should cover?).
 - **Verification registry** — `docs/research/
-  verification-registry.md` tracks which Zeta
+verification-registry.md` tracks which Zeta
   theorems have which kind of verification; this skill
   informs the registry's "theoretical rigor" column.
 
@@ -145,7 +145,7 @@ project. ML-theory surface is narrow but real:
 3. **Sample complexity is the honest currency.** Big-
    O bounds on convergence rates matter less than
    sample-complexity bounds — how many samples does
-   this method *need* to get within ε of optimum?
+   this method _need_ to get within ε of optimum?
    If the sample complexity scales exponentially in a
    problem dimension, the method does not work at
    practical scale regardless of the convergence rate.
@@ -153,7 +153,7 @@ project. ML-theory surface is narrow but real:
 4. **No-free-lunch theorems are not excuses.** NFL
    theorems prove that no learner dominates across
    all distributions; they do not prove that all
-   learners are equal on *your* distribution. Do not
+   learners are equal on _your_ distribution. Do not
    invoke NFL to dismiss a comparison; invoke
    distributional-assumption analysis instead.
 
@@ -161,8 +161,8 @@ project. ML-theory surface is narrow but real:
    PAC bounds, Rademacher bounds, VC bounds — all
    are conservative. They bound worst-case; actual
    generalisation error is usually much better. Use
-   them to *rule out* settings where even the
-   conservative bound fails, not to *predict* actual
+   them to _rule out_ settings where even the
+   conservative bound fails, not to _predict_ actual
    performance.
 
 6. **Causal claims require causal assumptions.** No
@@ -190,29 +190,29 @@ project. ML-theory surface is narrow but real:
 
 ## Decision table — theoretical-claim triage
 
-| Claim type | First question |
-|-----------|----------------|
-| "Method X converges" | Under what hypotheses on objective / step-size / noise? |
-| "Method X has rate O(1/ε²)" | What is the hidden constant? Problem-dependent? |
-| "Method X identifies parameter θ" | Under what identifying assumption? Is it testable? |
-| "Method X generalises" | What complexity class? Uniform or local? |
-| "Method X is minimax-optimal" | Against what class? Minimax for what loss? |
-| "Method X is causal" | What is the identifying strategy? Unconfoundedness / IV / RDD / DiD? |
-| "Prior P is non-informative" | Under what reparametrisation? What does it say about predictive distribution? |
-| "Method X beats baseline Y" | Compute-matched? Hyperparameter-matched? |
+| Claim type                        | First question                                                                |
+| --------------------------------- | ----------------------------------------------------------------------------- |
+| "Method X converges"              | Under what hypotheses on objective / step-size / noise?                       |
+| "Method X has rate O(1/ε²)"       | What is the hidden constant? Problem-dependent?                               |
+| "Method X identifies parameter θ" | Under what identifying assumption? Is it testable?                            |
+| "Method X generalises"            | What complexity class? Uniform or local?                                      |
+| "Method X is minimax-optimal"     | Against what class? Minimax for what loss?                                    |
+| "Method X is causal"              | What is the identifying strategy? Unconfoundedness / IV / RDD / DiD?          |
+| "Prior P is non-informative"      | Under what reparametrisation? What does it say about predictive distribution? |
+| "Method X beats baseline Y"       | Compute-matched? Hyperparameter-matched?                                      |
 
 ## Decision table — proof review
 
-| Shape of claim | Review tool |
-|---------------|-------------|
-| Convex optimization bound | Convex-analysis textbook check; Nesterov/Beck notation. |
-| Stochastic-approximation bound | Check martingale / ODE framework; Kushner-Yin style. |
-| PAC / Rademacher bound | Check generalisation class, symmetrisation step. |
-| Information-theoretic bound | Check Fano / Le Cam / Assouad choice; data-processing inequality application. |
-| Identifiability argument | Check non-identifiability witness: are there two parameter values giving the same observable distribution? |
-| Causal identifiability | Check backdoor / front-door / IV criteria; Pearl or Peters-Janzing-Schölkopf framework. |
-| Convergence of an RL algorithm | Check Bellman-operator contraction or policy-improvement monotonicity. |
-| Bayesian posterior contraction | Check prior mass condition + entropy / bracketing condition. |
+| Shape of claim                 | Review tool                                                                                                |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Convex optimization bound      | Convex-analysis textbook check; Nesterov/Beck notation.                                                    |
+| Stochastic-approximation bound | Check martingale / ODE framework; Kushner-Yin style.                                                       |
+| PAC / Rademacher bound         | Check generalisation class, symmetrisation step.                                                           |
+| Information-theoretic bound    | Check Fano / Le Cam / Assouad choice; data-processing inequality application.                              |
+| Identifiability argument       | Check non-identifiability witness: are there two parameter values giving the same observable distribution? |
+| Causal identifiability         | Check backdoor / front-door / IV criteria; Pearl or Peters-Janzing-Schölkopf framework.                    |
+| Convergence of an RL algorithm | Check Bellman-operator contraction or policy-improvement monotonicity.                                     |
+| Bayesian posterior contraction | Check prior mass condition + entropy / bracketing condition.                                               |
 
 ## Common failure modes
 
@@ -220,7 +220,7 @@ project. ML-theory surface is narrow but real:
   O(1/ε²) does not imply the first method is faster
   — the constants can be 1000× different.
 - **Using "SGD converges" as a universal claim.** It
-  converges *under conditions*. Non-convex / non-
+  converges _under conditions_. Non-convex / non-
   smooth / heavy-tailed-noise / saddle-point settings
   have different analyses.
 - **Equating correlational and causal tasks.** An ML
@@ -246,12 +246,12 @@ project. ML-theory surface is narrow but real:
 
 - **Feeds Soraya.** `formal-verification-expert`
   routes theoretical claims to the appropriate proof
-  tool. This skill supplies the *content* of the
+  tool. This skill supplies the _content_ of the
   proof sketch; Soraya routes it to Lean / F\* / TLA+
   / Z3 / Alloy.
 - **Feeds the verification registry.** The skill's
   triage outputs land in `docs/research/
-  verification-registry.md` — the "which theorems
+verification-registry.md` — the "which theorems
   have which rigor" column is authored in part by
   this skill's judgments.
 - **Feeds `missing-citations`.** When a Zeta
@@ -266,7 +266,7 @@ project. ML-theory surface is narrow but real:
   hand off there for computational-complexity lower
   bounds.
 - **Reads with `probability-and-bayesian-inference-
-  expert`.** Bayesian learning-theoretic claims sit at
+expert`.** Bayesian learning-theoretic claims sit at
   the intersection; the probability-skill owns the
   probability structure, this skill owns the learning
   claim.
@@ -281,16 +281,16 @@ project. ML-theory surface is narrow but real:
 - `.claude/skills/ai-evals-expert/SKILL.md` — the
   measurement counterpart.
 - `.claude/skills/probability-and-bayesian-inference-
-  expert/SKILL.md` — probability substrate.
+expert/SKILL.md` — probability substrate.
 - `.claude/skills/mathematics-expert/SKILL.md` —
   pure-math prerequisites.
 - `.claude/skills/applied-mathematics-expert/SKILL.md`
   — applied-math neighbour.
 - `.claude/skills/measure-theory-and-signed-measures-
-  expert/SKILL.md` — measure-theoretic neighbour used
+expert/SKILL.md` — measure-theoretic neighbour used
   in retraction-safe DBSP reasoning.
 - `.claude/skills/numerical-analysis-and-floating-
-  point-expert/SKILL.md` — where numerical-stability
+point-expert/SKILL.md` — where numerical-stability
   theorems matter.
 - `.claude/skills/formal-verification-expert/SKILL.md`
   (Soraya) — proof-tool routing.

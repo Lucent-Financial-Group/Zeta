@@ -18,29 +18,29 @@ The problem is: how do we implement a lightweight, git-native, real-time monitor
 
 ## Considered Options
 
-* **Option 1: Polling-based Manual Telemetry (Status Quo)** — Occasionally run cron scripts that query the GitHub REST API, parse JSON payloads, compute average merge durations, and dump static text files.
-* **Option 2: Reactive Push-based Observable Monitoring via 128-bit Index IDs** — Establish a push-based event observer stream in TypeScript (using observables) that consumes GitHub webhooks or worldview events. Each PR event is mapped to a canonical 128-bit `ZetaId` observation committed to git-native telemetry logs, allowing $O(1)$ bit-level indexing and real-time Differential Dataflow (DBSP) projection of the Friction Coefficient ($\mu$).
+- **Option 1: Polling-based Manual Telemetry (Status Quo)** — Occasionally run cron scripts that query the GitHub REST API, parse JSON payloads, compute average merge durations, and dump static text files.
+- **Option 2: Reactive Push-based Observable Monitoring via 128-bit Index IDs** — Establish a push-based event observer stream in TypeScript (using observables) that consumes GitHub webhooks or worldview events. Each PR event is mapped to a canonical 128-bit `ZetaId` observation committed to git-native telemetry logs, allowing $O(1)$ bit-level indexing and real-time Differential Dataflow (DBSP) projection of the Friction Coefficient ($\mu$).
 
 ## Pros & Cons of the Options
 
 ### Option 1: Polling-based Manual Telemetry
 
-* **Pros:** Simpler initial implementation; requires no modifications to the existing `ZetaId` bit-packing code.
-* **Cons:** High computational and API rate limit overhead; does not scale; lacks real-time responsiveness; telemetry is stored in heavy, raw JSON rather than a compressed, git-native indexing format.
+- **Pros:** Simpler initial implementation; requires no modifications to the existing `ZetaId` bit-packing code.
+- **Cons:** High computational and API rate limit overhead; does not scale; lacks real-time responsiveness; telemetry is stored in heavy, raw JSON rather than a compressed, git-native indexing format.
 
 ### Option 2: Reactive Push-based Observable Monitoring via 128-bit Index IDs
 
-* **Pros:**
-  * **Real-time Observability:** Built-in push streams process events instantly, updating the dashboard incrementally with zero lag.
-  * **Compressed, Git-Native Telemetry:** Storing friction events as hex-encoded 128-bit `ZetaId` tokens inside git history provides built-in durability, cryptographically verifiable provenance, and zero database dependency.
-  * **High-Speed Telemetry Indexing:** Telemetry can be parsed and queried in $O(1)$ by bit-masking the `ZetaId` components (persona, Category=5, momentum, location, timestamp).
-* **Cons:**
-  * **Implementation Complexity:** Requires building a reactive observable pipeline in TypeScript and integrating it with the local worldview poller.
-  * **Telemetrical Footprint:** Small commits are introduced to record the telemetry tokens on the `agent-heartbeats` branch or in-repo logs.
+- **Pros:**
+  - **Real-time Observability:** Built-in push streams process events instantly, updating the dashboard incrementally with zero lag.
+  - **Compressed, Git-Native Telemetry:** Storing friction events as hex-encoded 128-bit `ZetaId` tokens inside git history provides built-in durability, cryptographically verifiable provenance, and zero database dependency.
+  - **High-Speed Telemetry Indexing:** Telemetry can be parsed and queried in $O(1)$ by bit-masking the `ZetaId` components (persona, Category=5, momentum, location, timestamp).
+- **Cons:**
+  - **Implementation Complexity:** Requires building a reactive observable pipeline in TypeScript and integrating it with the local worldview poller.
+  - **Telemetrical Footprint:** Small commits are introduced to record the telemetry tokens on the `agent-heartbeats` branch or in-repo logs.
 
 ## Decision Outcome
 
-* **Chosen Option:** Option 2: Reactive Push-based Observable Monitoring via 128-bit Index IDs, because it provides real-time, low-overhead telemetry that composes cleanly with our existing `ZetaId` bit-packing architecture and our commitment to substrate-honesty.
+- **Chosen Option:** Option 2: Reactive Push-based Observable Monitoring via 128-bit Index IDs, because it provides real-time, low-overhead telemetry that composes cleanly with our existing `ZetaId` bit-packing architecture and our commitment to substrate-honesty.
 
 ### Consequences & Telemetry Mapping
 

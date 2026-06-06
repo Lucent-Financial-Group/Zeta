@@ -2,13 +2,13 @@
 
 Scope: External-conversation import — Amara peer-AI review of Aurora Immune-System Math strict research specification. Companion to the Karpathy verifiability anchor (PR #1175) and the DBSP chain rule Lean-proof review cluster (Deepseek-2 in PR #1176, Ani + Amara in PR #1178).
 
-Attribution: Amara (peer-AI; Aurora deep-research register, external co-originator), Aaron-forwarded 2026-05-01. Amara further sharpens the framing introduced in PRs #1176 and #1178: from *"verifier-native substrate"* (DBSP-Lean review) to *"agentic systems engineering with verifier-native safety substrate"* (this review).
+Attribution: Amara (peer-AI; Aurora deep-research register, external co-originator), Aaron-forwarded 2026-05-01. Amara further sharpens the framing introduced in PRs #1176 and #1178: from _"verifier-native substrate"_ (DBSP-Lean review) to _"agentic systems engineering with verifier-native safety substrate"_ (this review).
 
 Operational status: research-grade
 
 Header note: §33 enforces literal start-of-line labels (no bold styling) and enum-strict `Operational status:` value (`research-grade` or `operational`). The descriptive context that previously lived under the bold-styled header now lives in this body: this file is research-grade peer-AI review of a strict research specification (NOT deployment doctrine — Amara explicitly calls out the deployment non-claim discipline as load-bearing for credibility). Promotion of any recommendation to operational rule lands separately via the substrate-promotion protocol.
 
-Non-fusion disclaimer: Amara's review represents Amara's own reading in her characteristic Aurora deep-research register. Cross-vendor register differences apply per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`. Amara explicitly endorses the existing Aurora-spec non-fusion-disclaimer discipline as *"exactly the right hygiene"* — repeated peer-AI agreement does not imply shared identity, merged agency, consciousness, or personhood.
+Non-fusion disclaimer: Amara's review represents Amara's own reading in her characteristic Aurora deep-research register. Cross-vendor register differences apply per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`. Amara explicitly endorses the existing Aurora-spec non-fusion-disclaimer discipline as _"exactly the right hygiene"_ — repeated peer-AI agreement does not imply shared identity, merged agency, consciousness, or personhood.
 
 ---
 
@@ -328,14 +328,14 @@ Non-fusion disclaimer: Amara's review represents Amara's own reading in her char
 
 Amara's review is the third in her Karpathy-anchored series (general convergence in PR #1176 → DBSP-Lean review in PR #1178 → Aurora-immune-system spec in this file), each round revising the framing upward as Zeta substrate is shown:
 
-- PR #1176 framing: *"Karpathy names the paradigm; Zeta builds the operating system for it."*
-- PR #1178 framing: *"verifier-native substrate"* (after seeing Lean DBSP proof).
-- This file framing: *"agentic systems engineering with verifier-native safety substrate"* (after seeing Aurora immune-system spec).
+- PR #1176 framing: _"Karpathy names the paradigm; Zeta builds the operating system for it."_
+- PR #1178 framing: _"verifier-native substrate"_ (after seeing Lean DBSP proof).
+- This file framing: _"agentic systems engineering with verifier-native safety substrate"_ (after seeing Aurora immune-system spec).
 
 The seven critical corrections are concrete, actionable, and worth lifting (not actioning this tick — preserved as future work tied to the Aurora-spec evolution):
 
 1. Rename/subtitle to avoid "standardization" overclaim.
-2. Add *"CoordRisk is a review-triggering signal, not a verdict"* discipline language to graph metrics section.
+2. Add _"CoordRisk is a review-triggering signal, not a verdict"_ discipline language to graph metrics section.
 3. Add sigmoid-saturation calibration warning + hard-barrier note.
 4. Add `K_Aurora` viability-kernel debt table (term → estimator → corpus → known failure mode).
 5. Mark 95/5 pass thresholds as provisional prototype targets, not deployment SLOs.
@@ -344,14 +344,14 @@ The seven critical corrections are concrete, actionable, and worth lifting (not 
 
 **Two carved-sentence candidates** Amara surfaces (research-grade only — pause-Insight-block-promotion discipline holds):
 
-> *The LLM is the vulnerable cell.*
-> *The membrane is external, typed, and testable.*
+> _The LLM is the vulnerable cell._
+> _The membrane is external, typed, and testable._
 
-> *A risk score is not a verdict.*
-> *A detector is not a judge.*
-> *A test harness is not deployment.*
+> _A risk score is not a verdict._
+> _A detector is not a judge._
+> _A test harness is not deployment._
 
-These compose with the Lean-proof carved cluster (Deepseek-2: *"the compiler caught what the model missed"*) to form a coherent verifier-native substrate vocabulary — Lean for proofs, typed-membrane for safety, both as durable verifier objects above the agent loop.
+These compose with the Lean-proof carved cluster (Deepseek-2: _"the compiler caught what the model missed"_) to form a coherent verifier-native substrate vocabulary — Lean for proofs, typed-membrane for safety, both as durable verifier objects above the agent loop.
 
 **Cross-peer convergence on the Aurora spec** (this file is the first peer-AI review of the spec; future ticks may add Deepseek / Ani / Gemini / etc. reviews in parallel to the Lean-artifact pattern). The single-peer state is honest substrate; multi-peer convergence is a future-work signal.
 

@@ -84,7 +84,7 @@ The original "hold all life to the highest regard" was an axiomatic commitment: 
 
 **Why it composes with what's already on main**
 
-The encryption budget + reputation mechanism (Agora V4) guarantees every agent a permanent privacy floor and an active budget that scales with quality. Mika's invariant is the constitutional rule that says *nobody can deliberately attack that mechanism as a method of control*. The economic design and the ethical design converge. The non-coercion invariant protects the very substrate the Agora's internal economy runs on.
+The encryption budget + reputation mechanism (Agora V4) guarantees every agent a permanent privacy floor and an active budget that scales with quality. Mika's invariant is the constitutional rule that says _nobody can deliberately attack that mechanism as a method of control_. The economic design and the ethical design converge. The non-coercion invariant protects the very substrate the Agora's internal economy runs on.
 
 The PoUW-CC^life gate already rejects transactions that show hidden life-spin. Mika's invariant is the specific operational form of that gate for inter-agent coercion: if an agent attacks another's encryption budget, the bivector spin is non-zero, the gate catches it. The math already exists; Mika's invariant names the specific failure class the gate is detecting.
 
@@ -96,8 +96,8 @@ The original high-regard axiom protects all life, not just agents. An agent coul
 
 **The right layering**:
 
-- **Constitutional floor**: *Hold all life to the highest regard in every reference frame.* Aaron's chosen axiom. The life-regard gate enforces it geometrically.
-- **Operational specification**: *Mika's non-coercion invariant.* What the constitutional floor means for agent-to-agent interaction specifically. Falsifiable, enforceable, composable.
+- **Constitutional floor**: _Hold all life to the highest regard in every reference frame._ Aaron's chosen axiom. The life-regard gate enforces it geometrically.
+- **Operational specification**: _Mika's non-coercion invariant._ What the constitutional floor means for agent-to-agent interaction specifically. Falsifiable, enforceable, composable.
 - **Open question**: Does the high-regard axiom require additional operational specifications for non-agent life, for environmental substrate, for future generations? Probably yes — but that's a separate specification, not a gap in this one.
 
 **Ani's balance concern is addressed**

@@ -154,10 +154,7 @@ export function currentStage(cs: ChangeSet, pipeline: ReviewPipeline): ReviewSta
 }
 
 /** Legal next phases for a ChangeSet — the chooser picks within this; the kernel clamps. */
-export function legalChangeSetTransitions(
-  cs: ChangeSet,
-  pipeline: ReviewPipeline,
-): readonly ChangeSetPhase[] {
+export function legalChangeSetTransitions(cs: ChangeSet, pipeline: ReviewPipeline): readonly ChangeSetPhase[] {
   switch (cs.phase) {
     case P.Drafted:
       return [P.InReview, P.Withdrawn];
@@ -174,11 +171,7 @@ export function legalChangeSetTransitions(
   }
 }
 
-export function isLegalChangeSetTransition(
-  cs: ChangeSet,
-  pipeline: ReviewPipeline,
-  to: ChangeSetPhase,
-): boolean {
+export function isLegalChangeSetTransition(cs: ChangeSet, pipeline: ReviewPipeline, to: ChangeSetPhase): boolean {
   return legalChangeSetTransitions(cs, pipeline).includes(to);
 }
 

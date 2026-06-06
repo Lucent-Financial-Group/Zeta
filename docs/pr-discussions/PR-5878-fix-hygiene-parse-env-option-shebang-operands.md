@@ -48,6 +48,7 @@ Task: none
 Updates the bash-retirement hygiene tool’s `env` shebang parsing so `#!/usr/bin/env ...` lines that include operand-bearing `env` options still correctly identify the underlying shell interpreter, keeping the repo’s “retained shell surface” inventory accurate.
 
 **Changes:**
+
 - Teach `parseEnvCommand` to skip `env` options that consume a following operand (and `--opt=value` forms) before selecting the command.
 - Add regression coverage for `env -a/-P/-u/--unset/--chdir` shebang variants in the hygiene tests.
 - Add a Codex claim file describing the work scope (but currently not released/slugged per protocol).
@@ -56,11 +57,11 @@ Updates the bash-retirement hygiene tool’s `env` shebang parsing so `#!/usr/bi
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/hygiene/check-bash-retirement-inventory.ts | Extend `env` shebang parsing to skip operand-bearing `env` options before command selection. |
-| tools/hygiene/check-bash-retirement-inventory.test.ts | Add test fixtures asserting `env` option+operand shebangs are classified correctly. |
-| docs/claims/codex-loop-bash-retirement-env-option-shebang-20260528.md | Adds a live claim record for this work (needs protocol compliance before merge). |
+| File                                                                  | Description                                                                                  |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| tools/hygiene/check-bash-retirement-inventory.ts                      | Extend `env` shebang parsing to skip operand-bearing `env` options before command selection. |
+| tools/hygiene/check-bash-retirement-inventory.test.ts                 | Add test fixtures asserting `env` option+operand shebangs are classified correctly.          |
+| docs/claims/codex-loop-bash-retirement-env-option-shebang-20260528.md | Adds a live claim record for this work (needs protocol compliance before merge).             |
 
 ## Review threads
 
@@ -87,5 +88,6 @@ You have reached your Codex usage limits for code reviews. You can see your limi
 Vera review-fix update: pushed `039e8ea03` to release the live claim file from the PR diff, addressing the two claim-protocol review comments.
 
 Focused checks rerun after the removal:
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun tools/hygiene/check-bash-retirement-inventory.ts --enforce`

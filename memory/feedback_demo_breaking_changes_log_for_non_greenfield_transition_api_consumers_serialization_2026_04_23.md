@@ -20,11 +20,12 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 The prior clarification
 (`feedback_greenfield_until_deployed_then_backcompat_learning_mode_DORA_cost_2026_04_23.md`
-+ demos-are-greenfield carve-out) establishes that demos
-don't trigger Phase 1 → Phase 2. This memory adds: they
-also don't go unobserved. Demo breaks get **logged** so
-the transition-to-non-greenfield has a concrete
-lessons-learned substrate.
+
+- demos-are-greenfield carve-out) establishes that demos
+  don't trigger Phase 1 → Phase 2. This memory adds: they
+  also don't go unobserved. Demo breaks get **logged** so
+  the transition-to-non-greenfield has a concrete
+  lessons-learned substrate.
 
 ## The two categories Aaron named
 
@@ -67,7 +68,7 @@ information.
 
 ### Why these two specifically
 
-Aaron called out *"things that survive code versions."*
+Aaron called out _"things that survive code versions."_
 The unifying property is **persistence across the code
 deployment unit**:
 
@@ -142,6 +143,7 @@ this property — they ship atomically with the code.
   "obligations inherited."
 
 ### Demos that do NOT touch API-consumer or
+
 serialization surfaces
 
 - Demo changes that are purely internal (refactor, code

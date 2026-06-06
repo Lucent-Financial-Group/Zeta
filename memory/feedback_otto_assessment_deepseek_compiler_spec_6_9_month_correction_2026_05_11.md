@@ -4,7 +4,7 @@ description: Otto reviewed DeepSeek's F# compiler modification spec. Validated t
 type: feedback
 ---
 
-2026-05-11 (shadow* via Aaron): "save your assessment too and
+2026-05-11 (shadow\* via Aaron): "save your assessment too and
 the 6-9 month correction"
 
 **Otto's assessment of DeepSeek's compiler spec:**
@@ -43,7 +43,7 @@ individual changes.
 
 How you encode `Fix<F<_>>` in .NET metadata determines
 whether other .NET languages can consume your types. CLR
-only supports kind-* generics. The encoding decision
+only supports kind-\* generics. The encoding decision
 (phantom params + custom attribute + F# metadata resource)
 is the hardest design decision and was somewhat glossed over
 by DeepSeek. This needs a standalone design doc before

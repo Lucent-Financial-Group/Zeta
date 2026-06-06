@@ -9,7 +9,21 @@ created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
 composes_with: [B-0764, B-0684]
-tags: [federation, sovereignty, opa, jurisdiction-relative, geospatial, borders, non-coercion, meta-jurisdiction, nexus, forkability, internationalization, aaron]
+tags:
+  [
+    federation,
+    sovereignty,
+    opa,
+    jurisdiction-relative,
+    geospatial,
+    borders,
+    non-coercion,
+    meta-jurisdiction,
+    nexus,
+    forkability,
+    internationalization,
+    aaron,
+  ]
 type: design
 ---
 
@@ -22,7 +36,7 @@ Preserved engineering substrate: `docs/research/2026-06-03-kestrel-aaron-open-so
 ## Why
 
 Borders are the canonical **values-residual** conflict (B-1014): everyone has the same
-data and still disagrees on *legitimacy*, so shared data can't resolve it, and there is
+data and still disagrees on _legitimacy_, so shared data can't resolve it, and there is
 **no globally-agreed border set**. The honest answer is to **faithfully represent the
 disagreement** — jurisdiction-relative — rather than pick a side via a single global truth.
 

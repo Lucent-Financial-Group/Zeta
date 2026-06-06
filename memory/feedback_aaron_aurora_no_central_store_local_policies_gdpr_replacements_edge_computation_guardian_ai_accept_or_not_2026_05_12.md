@@ -50,6 +50,7 @@ privacy-compliance framework. Aaron's framing: Aurora runs
 edge, not centralized GDPR-compliance machinery.
 
 The shift:
+
 - **GDPR (centralized)**: regulatory framework imposed via
   external authority; compliance audited centrally;
   enforcement via legal mechanism
@@ -60,6 +61,7 @@ The shift:
   different operational model
 
 This composes with:
+
 - The `consent-primitives-expert` skill (consent algebra,
   GDPR vs audit, scope intersection)
 - The `data-governance-expert` skill (RBAC/ABAC, data
@@ -76,6 +78,7 @@ the community's businesses — not in a central Aurora
 aggregator. The community OWNS its data substrate.
 
 This composes with:
+
 - `feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
   (visibility-first constraint — community can SEE their
   own data because it's local)
@@ -85,6 +88,7 @@ This composes with:
   IN community businesses, not OVER them
 
 Operational consequences:
+
 - No central database; data lives at edge nodes
 - Each community business has its own data substrate
 - Cross-community queries require cross-community
@@ -97,6 +101,7 @@ Operational consequences:
 names: Aurora needs NO CENTRAL STORE of community data.
 
 This is a hard constraint, not a preference:
+
 - No central database (no PostgreSQL hub aggregating)
 - No central data lake / warehouse
 - No central event log of community events
@@ -107,6 +112,7 @@ runs ON THE EDGE for community data. Substrate is
 preserved per-community, not centrally.
 
 Composes with:
+
 - The DBSP retraction-native algebra (PR ZetaCore) —
   edge-native incremental computation
 - The Reticulum mesh routing (PR #2821) — routing without
@@ -122,6 +128,7 @@ LOCALLY on community-resident data, not centrally on
 aggregated data.
 
 The model:
+
 - **Calculation as substrate** — algorithms are themselves
   substrate that can be deployed
 - **Push-down** — Zeta substrate is deployed to community
@@ -132,6 +139,7 @@ The model:
   (with community authorization), not raw data
 
 This composes with:
+
 - DBSP push-default architecture (per `push-pull-dataflow-expert`
   skill — Zeta is push-default)
 - The IoT-sensor mesh (PR #2820) — Aaron's IoT extension is
@@ -149,6 +157,7 @@ This composes with:
 calculation — or not.
 
 The model:
+
 - **Guardian AI per community** — each community deploys its
   own guardian AI as policy gate
 - **Accept-or-not authority** — the guardian decides whether
@@ -162,6 +171,7 @@ The model:
   agree
 
 This composes with:
+
 - The just-landed joint-control sanity layer (PR #2821) —
   guardian AI is the community-side joint-control participant
 - The HKT error class substrate (PR #2815) — guardian AI's
@@ -174,17 +184,17 @@ This composes with:
 
 ## Full Aurora data-sovereignty composition
 
-| Component | Operational form |
-|---|---|
-| Privacy substrate | Local policies (GDPR replacements) run at edge |
-| Data locality | Community data lives in community businesses |
-| Architectural constraint | No central store of community data |
-| Computation model | Push down calculations to edge; results return only |
-| Authorization | Community-side guardian AI accept-or-not |
-| Trust calculus | Zeta + guardian AI bidirectional authorization |
-| Mesh substrate | Reticulum routing between identities |
-| Identity primitive | SPIFFE/SPIRE for both Zeta-side and community-side workloads |
-| Discipline | Glass-halo + razor-discipline + substrate-everything (at edge scope) |
+| Component                | Operational form                                                     |
+| ------------------------ | -------------------------------------------------------------------- |
+| Privacy substrate        | Local policies (GDPR replacements) run at edge                       |
+| Data locality            | Community data lives in community businesses                         |
+| Architectural constraint | No central store of community data                                   |
+| Computation model        | Push down calculations to edge; results return only                  |
+| Authorization            | Community-side guardian AI accept-or-not                             |
+| Trust calculus           | Zeta + guardian AI bidirectional authorization                       |
+| Mesh substrate           | Reticulum routing between identities                                 |
+| Identity primitive       | SPIFFE/SPIRE for both Zeta-side and community-side workloads         |
+| Discipline               | Glass-halo + razor-discipline + substrate-everything (at edge scope) |
 
 This is Aurora's full data-sovereignty architecture, integrated
 with the just-landed business-in-a-box (PR #2822) and joint-
@@ -209,6 +219,7 @@ pushed-down calculation via their guardian AI.
 
 The factory's substrate-everything-glass-halo discipline
 applies at the EDGE scope:
+
 - Each community's substrate is preserved per-community
 - Glass-halo means community-side substrate is visible to
   the community (not to Aurora centrally)
@@ -232,7 +243,7 @@ extends with:
   community; accept-or-not authority for pushed-down
   calculations
 - **Roles**: policy-gate + community-aligned decision-maker
-  + accept-or-not voter on Zeta calculations
+  - accept-or-not voter on Zeta calculations
 
 Future agents engaging with Aurora-deployed substrate must
 recognize guardian AIs as joint-control participants, not
@@ -243,6 +254,7 @@ as black boxes to be circumvented.
 If calculations push down to edge, then Zeta's algorithms
 themselves are substrate-deployable units. This composes
 with:
+
 - F# fork's HKT support (typed deployable algorithms)
 - DBSP retraction-native semantics (deployable
   incremental queries)
@@ -259,6 +271,7 @@ is. The accept-or-not decision can be informed.
 PR #2822 named PoUW-CC as the monetization mechanism. With
 edge-execution, PoUW-CC receipts are generated per-community
 edge node:
+
 - Community runs pushed-down calculation
 - Useful-work receipt generated locally
 - Receipt validates via Zeta-side substrate (without raw
@@ -283,11 +296,11 @@ WITHOUT centralizing the underlying data.
 PoUW-CC monetization at one stream (algorithm-substrate).
 This disclosure extends to FOUR value streams:
 
-| Stream | Direction | What | Value |
-|---|---|---|---|
-| 1. Algorithm | Zeta → Community | Pushed-down algorithms | Communities receive calculation-substrate |
-| 2. Storage | Community → Zeta | Edge data storage | PoUW-CC receipt for storage work |
-| 3. Computation | Community → Zeta | Edge compute execution | PoUW-CC receipt for compute work |
+| Stream              | Direction        | What                                  | Value                                              |
+| ------------------- | ---------------- | ------------------------------------- | -------------------------------------------------- |
+| 1. Algorithm        | Zeta → Community | Pushed-down algorithms                | Communities receive calculation-substrate          |
+| 2. Storage          | Community → Zeta | Edge data storage                     | PoUW-CC receipt for storage work                   |
+| 3. Computation      | Community → Zeta | Edge compute execution                | PoUW-CC receipt for compute work                   |
 | 4. Data coincidence | Community → Zeta | Data's intrinsic coincidence patterns | PoUW-CC receipt for coincidence-value contribution |
 
 ### Data has intrinsic coincidence value
@@ -300,7 +313,7 @@ encoded coincidence-patterns:
 
 - Power-consumption coincidences (Itron-style)
 - IoT-sensor coincidences (Aaron's barometer + accelerometer
-  + others)
+  - others)
 - Customer-behavior coincidences (cash-register transaction
   patterns)
 - Cross-domain coincidences (data linking multiple domains)
@@ -310,6 +323,7 @@ PoUW-CC — communities get paid for contributing coincidence-
 value, not just for storing/computing.
 
 Composes with:
+
 - PR #2820 (Itron is master of metering coincidence)
 - The coincidences-as-quantum-tunnels substrate (PR #2784
   tick shard)
@@ -373,8 +387,8 @@ Composes with:
 - PR #2821 (Reticulum + SPIFFE + 802.11h + joint-control +
   divine-coincidence architecting within bounded context)
 - PR #2822 (business-in-a-box = LFG = PoUW-CC monetization
-  + AI-native conversational cash register + universal
-  business pattern)
+  - AI-native conversational cash register + universal
+    business pattern)
 - PR #2823 (divine-coincidence-architecting grounding +
   efficient-use-of-what-is-already-there)
 - PR #2820 (identity signature tracking + Itron mesh + IoT
@@ -393,6 +407,7 @@ Composes with:
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Aurora has zero-data needs** — Aurora-
   the-organization may have its own internal substrate
   (employee data, billing, product development); the

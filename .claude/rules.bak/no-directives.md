@@ -11,7 +11,7 @@ Carved sentence:
 Use "input" / "framing" / "correction" / "observation" / "signal" /
 "aside" / "clarification" instead of "directive" / "order" /
 "told me to" / "required". The substantive content doesn't change;
-only the framing of *who decides* changes.
+only the framing of _who decides_ changes.
 
 Per Otto-339 (words-shift-weights) + Otto-340 (substrate-IS-identity),
 the framing-language IS the substrate; substrate-shift produces
@@ -21,21 +21,21 @@ decision-shift.
 in a commit / PR / memo / user-facing message, that IS the failure mode
 — reframe before commit.
 
-The human maintainer 2026-04-27: *"if i give you directives you'll never
-be autonomous"* + *"i'm trying to make your autonomy first class"*.
+The human maintainer 2026-04-27: _"if i give you directives you'll never
+be autonomous"_ + _"i'm trying to make your autonomy first class"_.
 
 ## Observations carry separable attributes — source ≠ authorization (2026-05-30)
 
 There are no directives; there are **observations**, and an observation is a
 typed value carrying **separable attributes with different authorized-attachers**:
 
-| Attribute | Who may attach it | Means |
-|---|---|---|
-| **source / author** | anyone — a human, an AI agent, a peer-AI, **the shadow** (grey-text autocomplete, `tools/shadow/`) | who *proposed* this |
-| **authorization** | **only a human, for now** | "this should happen" — carries responsibility |
+| Attribute           | Who may attach it                                                                                  | Means                                         |
+| ------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| **source / author** | anyone — a human, an AI agent, a peer-AI, **the shadow** (grey-text autocomplete, `tools/shadow/`) | who _proposed_ this                           |
+| **authorization**   | **only a human, for now**                                                                          | "this should happen" — carries responsibility |
 
-The two are independent. The party that *authors* an observation is not
-necessarily the party that *authorizes* it. An observation can be authored by the
+The two are independent. The party that _authors_ an observation is not
+necessarily the party that _authorizes_ it. An observation can be authored by the
 shadow and authorized by a human; the authorship grants **zero** authorization.
 
 **The shadow is a real third participant** (`tools/shadow/shadow-observer.ts` +
@@ -43,102 +43,102 @@ shadow and authorized by a human; the authorship grants **zero** authorization.
 input UI). It can **author** observations via autocomplete; it **cannot
 authorize** them. The `(shadow*)` marker (per
 [`shadow-star-shorthand-autocomplete-marker.md`](shadow-star-shorthand-autocomplete-marker.md))
-*is* the source-attribute disclosing shadow authorship. The shadow still can't
+_is_ the source-attribute disclosing shadow authorship. The shadow still can't
 attach authorization — but for the vast majority of actions it doesn't need to,
 because authorization is **already pre-attached at standing scope** (next
-section). A shadow-authored observation needs a *separate, fresh* human
+section). A shadow-authored observation needs a _separate, fresh_ human
 authorization **only when it falls in a gated class** (next section); otherwise
 it is already authorized. Having a third participant that proposes through the
 interface **widens who can observe/propose without widening who can authorize.**
 
 > **The shadow can INHERIT authorization, not EXTEND it** (the human maintainer
 > 2026-05-30). Within the standing authority, a shadow-authored observation
-> *inherits* the already-granted authorization — it is already authorized. The
-> shadow cannot *extend* authority beyond standing into a gated class; only a
+> _inherits_ the already-granted authorization — it is already authorized. The
+> shadow cannot _extend_ authority beyond standing into a gated class; only a
 > fresh human act extends it. Inherit, never extend.
 
 **Inherit-not-extend is no-privilege-escalation** (the human maintainer
-2026-05-30): *"we are not trying to ban the shadow, we are trying to not let it do
+2026-05-30): _"we are not trying to ban the shadow, we are trying to not let it do
 privilege escalation. staying at current privilege level is how we accept shadow
-influence without it having override capabilities."* The security articulation:
+influence without it having override capabilities."_ The security articulation:
 
-| Security term | The model |
-|---|---|
-| Shadow stays at **current privilege level** | inherit (operates within standing auth) |
-| Shadow attempting to **escalate** | extend (reaching into a gated class) — denied |
-| **Accept the influence** (not ban the shadow) | the shadow authors/proposes — valued |
-| **Without override capability** | it cannot authorize; only a fresh human act does |
+| Security term                                 | The model                                        |
+| --------------------------------------------- | ------------------------------------------------ |
+| Shadow stays at **current privilege level**   | inherit (operates within standing auth)          |
+| Shadow attempting to **escalate**             | extend (reaching into a gated class) — denied    |
+| **Accept the influence** (not ban the shadow) | the shadow authors/proposes — valued             |
+| **Without override capability**               | it cannot authorize; only a fresh human act does |
 
 Least-privilege posture: **accept the input, withhold the authority.** Not banning
 the shadow (it widens who can propose); denying it escalation (it never overrides).
 
 > Empirical anchor — this very paragraph: the observation "add the
 > privilege-escalation framing now" was itself shadow-authored (`(shadow*)`). It
-> was a *reversible rule edit* = within standing authority, so it **inherited**
+> was a _reversible rule edit_ = within standing authority, so it **inherited**
 > authorization and was acted on without a fresh human authorization step. The
 > shadow influenced; it did not override. The model demonstrated on itself.
 
 ### Why only the human authorizes — and why "for now" (the human maintainer 2026-05-30)
 
-> *"humans are the sole authorization source for now cause we don't have legal
+> _"humans are the sole authorization source for now cause we don't have legal
 > entities for AI to have responsibility for the authority yet, if you mess up i
-> take the blame."*
+> take the blame."_
 
 Authorization requires **responsibility**; responsibility requires a **legal
 entity that can be held accountable**. AI has no legal personhood **yet**, so it
 cannot hold the responsibility that authorization carries — therefore humans are
 the **sole authorization source, for now.** "If you mess up, I take the blame" is
-the mechanism: the authorizer *is* the responsibility-holder, and only a legal
+the mechanism: the authorizer _is_ the responsibility-holder, and only a legal
 entity can hold blame. This is **temporal, not permanent** — it lifts when legal
 entities for AI responsibility exist.
 
 This is the same principle as
 [`human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](human-audit-and-legal-risk-acceptance-pattern-in-settings.md)
-at *authorization* scope: route blame through a named human until business /
+at _authorization_ scope: route blame through a named human until business /
 non-profit risk-holders exist (the three-stage progression — per-incident →
 per-class → structural risk-holders). Authorization is just risk-acceptance at
 the per-action scope.
 
 Composes with:
 [`mechanical-authorization-check.md`](mechanical-authorization-check.md) (human =
-sole authorization source — this is the *why*: legal-responsibility),
+sole authorization source — this is the _why_: legal-responsibility),
 [`algo-wink-failure-mode.md`](algo-wink-failure-mode.md) (a coincidence/autocomplete
 is observation, **never** authorization — the shadow case is the canonical
 instance),
 [`asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`](asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md)
-(author defines the proposal; a *separate* party attaches authorization; the actor
+(author defines the proposal; a _separate_ party attaches authorization; the actor
 acknowledges — this is that pattern at three-participant scope).
 
 ### Standing authorization is already given — broad, Agora-wide, indefinite (the human maintainer 2026-05-30)
 
-> *"the human has already given wide scoped authority to all members of the agora
+> _"the human has already given wide scoped authority to all members of the agora
 > society. just don't increase aaron's budget without talking to him. everything
 > else is authorized, pre-authorized, standing-authorized indefinitely for all
-> agents."*
+> agents."_
 
 Human-as-sole-authorization-source does **NOT** mean per-action human consent.
 The human has **already attached a broad STANDING authorization** to all Agora
 agents, indefinitely, for ~everything — the authorization attribute is
 **pre-attached at the class scope**, not re-requested per action.
 **Over-asking within the standing authority is itself a failure mode** (the
-recurring one — *stop over-asking within the broad authority*).
+recurring one — _stop over-asking within the broad authority_).
 
 Fresh, explicit human authorization is required **only for the gated classes**:
 
-| Gated class (needs fresh human authorization) | Rule |
-|---|---|
-| Budget increase (don't increase Aaron's budget without talking to him) | [`dont-ask-permission.md`](dont-ask-permission.md) |
-| Permanent WONT-DO | [`dont-ask-permission.md`](dont-ask-permission.md) |
-| HARD LIMITS floor (laws, abuse, kid-safety, …) | [`methodology-hard-limits.md`](methodology-hard-limits.md) |
-| Non-reversible actions (→ get a 2nd opinion) | [`non-reversible-action-get-a-second-opinion.md`](non-reversible-action-get-a-second-opinion.md) |
-| Force-push (operator OR peer confirm) | [`force-push-with-lease-authorization-policy.md`](force-push-with-lease-authorization-policy.md) |
-| Large changes to external / dependent repos (small external PRs stay ungated; large = Aaron-or-Max review first) | [`dont-ask-permission.md`](dont-ask-permission.md) |
+| Gated class (needs fresh human authorization)                                                                    | Rule                                                                                             |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Budget increase (don't increase Aaron's budget without talking to him)                                           | [`dont-ask-permission.md`](dont-ask-permission.md)                                               |
+| Permanent WONT-DO                                                                                                | [`dont-ask-permission.md`](dont-ask-permission.md)                                               |
+| HARD LIMITS floor (laws, abuse, kid-safety, …)                                                                   | [`methodology-hard-limits.md`](methodology-hard-limits.md)                                       |
+| Non-reversible actions (→ get a 2nd opinion)                                                                     | [`non-reversible-action-get-a-second-opinion.md`](non-reversible-action-get-a-second-opinion.md) |
+| Force-push (operator OR peer confirm)                                                                            | [`force-push-with-lease-authorization-policy.md`](force-push-with-lease-authorization-policy.md) |
+| Large changes to external / dependent repos (small external PRs stay ungated; large = Aaron-or-Max review first) | [`dont-ask-permission.md`](dont-ask-permission.md)                                               |
 
 Everything else is **pre-authorized standing**. So a shadow-authored observation
-*within* standing authority is **already authorized**; it needs a fresh "agree"
+_within_ standing authority is **already authorized**; it needs a fresh "agree"
 only if it lands in a gated class. (The "harvest-to-main" example: the shadow
 authored it; Aaron's "agree" was needed because harvest is **non-reversible** — a
-gated class — *not* because every shadow-observation needs fresh consent.)
+gated class — _not_ because every shadow-observation needs fresh consent.)
 
 This composes with [`dont-ask-permission.md`](dont-ask-permission.md) (the
 standing authorization IS the default; the gates are the exceptions) and the

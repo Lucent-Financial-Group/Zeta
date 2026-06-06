@@ -40,24 +40,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T16:14:57Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `8eb0c303e5`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -70,6 +68,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new persona-mapping documentation framework (B-0485) and applies it to a first canonical per-product persona map for Civsim (B-0486), while closing the corresponding backlog rows.
 
 **Changes:**
+
 - Introduces a canonical per-persona capture template (YAML schema + body scaffold) and inventories existing persona substrate (B-0485).
 - Adds `docs/personas/` and formalizes the Civsim persona map using the new template (B-0486).
 - Marks backlog rows B-0485 and B-0486 as closed with closure metadata and completed checklists.
@@ -78,19 +77,20 @@ Adds a new persona-mapping documentation framework (B-0485) and applies it to a 
 
 Copilot reviewed 5 out of 5 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-14-persona-mapping-framework-b0485.md | New research/framework doc defining the persona template and auditing existing persona substrate. |
-| docs/personas/civsim-personas.md | New Civsim persona map document structured around the B-0485 template. |
-| docs/backlog/P1/B-0486-civsim-persona-map-2026-05-14.md | Closes B-0486 and marks pre-start/DoD items complete. |
-| docs/backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md | Closes B-0485 and marks pre-start/DoD items complete. |
-
+| File                                                                                        | Description                                                                                       |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-14-persona-mapping-framework-b0485.md                                 | New research/framework doc defining the persona template and auditing existing persona substrate. |
+| docs/personas/civsim-personas.md                                                            | New Civsim persona map document structured around the B-0485 template.                            |
+| docs/backlog/P1/B-0486-civsim-persona-map-2026-05-14.md                                     | Closes B-0486 and marks pre-start/DoD items complete.                                             |
+| docs/backlog/P1/B-0485-persona-mapping-framework-template-substrate-inventory-2026-05-14.md | Closes B-0485 and marks pre-start/DoD items complete.                                             |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/personas/civsim-personas.md:140**
-* Fork-reader: the YAML `composes_with:` list doesn’t include `aurora-edge-operator`, but the later “Composes with personas” prose section does. This makes the structured metadata disagree with the prose; add the missing persona to the YAML list or remove it from the prose so they stay consistent.
+
+- Fork-reader: the YAML `composes_with:` list doesn’t include `aurora-edge-operator`, but the later “Composes with personas” prose section does. This makes the structured metadata disagree with the prose; add the missing persona to the YAML list or remove it from the prose so they stay consistent.
+
 ```
 role: "Observer who reads civsim forks without contributing, potentially extending the honor-system license to their own substrate."
 composes_with:
@@ -98,6 +98,7 @@ composes_with:
   - civsim-maintainer
 created: 2026-05-14
 ```
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-14T16:19:56Z)
@@ -118,24 +119,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T16:24:29Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `3c0adc6c05`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -153,7 +152,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-14T16:14:57Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add required `composes_with` to refused persona entries**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Add required `composes_with` to refused persona entries**
 
 The B-0485 template defines `composes_with` as part of the canonical YAML schema for every persona type (including `refused`), but this refused persona record omits it, and the same omission repeats for R2. That schema drift will force downstream consumers (especially B-0492 cross-product synthesis) to special-case refused entries or silently skip relationship mapping, which undermines the stated goal of a uniform persona substrate.
 
@@ -167,7 +166,7 @@ Fixed: added `composes_with: []` to both R1 (civsim-refused-surveillance) and R2
 
 **@copilot-pull-request-reviewer** (2026-05-14T16:17:39Z):
 
-The framework (B-0485) defines YAML *frontmatter* with `---` delimiters, but the per-persona YAML blocks here start directly with `persona_id:`. If these are meant to be frontmatter-copy/paste-ready, add the `---` markers (or clarify in the framework that these are YAML snippets rather than frontmatter).
+The framework (B-0485) defines YAML _frontmatter_ with `---` delimiters, but the per-persona YAML blocks here start directly with `persona_id:`. If these are meant to be frontmatter-copy/paste-ready, add the `---` markers (or clarify in the framework that these are YAML snippets rather than frontmatter).
 
 This issue also appears on line 136 of the same file.
 
@@ -199,7 +198,7 @@ Fixed in commit 3c0adc6c: updated `default-to-both.md` → `.claude/rules/defaul
 
 **@chatgpt-codex-connector** (2026-05-14T16:24:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reopen B-0486 until two primary personas are defined**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reopen B-0486 until two primary personas are defined**
 
 This checklist item is marked complete, but the delivered persona map only defines one `persona_type: primary` entry (`civsim-edge-runner`), with the remaining non-refused personas marked secondary/adjacent. Closing the backlog row in this state can incorrectly signal downstream work (especially B-0492 synthesis) that minimum primary-persona coverage is satisfied when it is not, so this should stay unchecked or the doc should add a second primary persona.
 
@@ -209,7 +208,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T16:24:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep fork-reader composition data consistent in YAML**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep fork-reader composition data consistent in YAML**
 
 The P3 section later states this persona composes with `aurora-edge-operator`, but the canonical `composes_with` YAML omits that edge and instead lists only Civsim personas. Since cross-product composition tooling reads the YAML field, this inconsistency will silently drop or conflict on the Aurora relationship depending on parser behavior; the machine-readable list and narrative list need to match.
 
@@ -239,8 +238,8 @@ This file appears to be authored, canonical guidance (template/framework), but i
 
 Addressing 3 open review threads (commit edce77e):
 
-**Thread: YAML frontmatter  Framework section 1a already documents that per-product docs use yaml fences, not file frontmatter; `---` delimiters are explicitly marked "not required" in the framework. Added inline note to civsim-personas.md header to surface this at reader's first touchpoint.delimiters** 
+**Thread: YAML frontmatter Framework section 1a already documents that per-product docs use yaml fences, not file frontmatter; `---` delimiters are explicitly marked "not required" in the framework. Added inline note to civsim-personas.md header to surface this at reader's first touchpoint.delimiters**
 
-**Thread: Name attribution in  Fixed: replaced `Author: Otto` with `Origin: B-0486 (2026-05-14)` + inline YAML-snippet note. `docs/personas/` is a current-state surface; role-refs only per AGENTS.md attribution rule.byline** 
+**Thread: Name attribution in Fixed: replaced `Author: Otto` with `Origin: B-0486 (2026-05-14)` + inline YAML-snippet note. `docs/personas/` is a current-state surface; role-refs only per AGENTS.md attribution rule.byline**
 
-**Thread: default-to-both.md  Fixed: expanded bare `default-to-both.md` to full canonical path `.claude/rules/default-to-both.md` (cross-reference integrity, xref P1).path** 
+**Thread: default-to-both.md Fixed: expanded bare `default-to-both.md` to full canonical path `.claude/rules/default-to-both.md` (cross-reference integrity, xref P1).path**

@@ -10,45 +10,47 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1872 |
-| Title | research: correction-loop cross-agent shadow catch |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T12:36:48Z |
-| Merged at | 2026-05-07T12:38:15Z |
-| Merge commit SHA | `6fbf59911ca55d67e4e1a8a04c48ed7190060a3b` |
-| Branch | `codex/riven-correction-loop-shadow-catch` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1872 |
-| Changed files | 1 |
-| Additions / deletions | +188 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1872                                                     |
+| Title                 | research: correction-loop cross-agent shadow catch       |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T12:36:48Z                                     |
+| Merged at             | 2026-05-07T12:38:15Z                                     |
+| Merge commit SHA      | `6fbf59911ca55d67e4e1a8a04c48ed7190060a3b`               |
+| Branch                | `codex/riven-correction-loop-shadow-catch`               |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1872 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +188 / -0                                                |
 
 ## Description
 
 ## Summary
+
 - preserve DeepSeek/Riven/Aaron correction-loop analysis as research-grade substrate
 - define correction-loop as a cross-agent shadow catch distinct from ordinary repetition
 - add red-team boundary: detonator is alarm, response is containment + learning, not erasure
 - include anti-loop repair rule and broadcast signature-after-substance rule
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/research/2026-05-07-deepseek-riven-correction-loop-cross-agent-shadow-catch.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts docs/research/2026-05-07-deepseek-riven-correction-loop-cross-agent-shadow-catch.md
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 0 |
-| Unresolved threads | 1 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -64,9 +66,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Align catcher identity with described correction source**
-
+  
   The structured `shadow_catch` block records `catching_agent: Otto`, but the same document says Aaron identified the issue and DeepSeek supplied the operational distinction (`## Core catch`). This mismatch makes the provenance data internally inconsistent, so any tooling or later analysis that consumes the YAML will attribute the cross-agent catch to the wrong node and weaken the evidence this note is trying to preserve.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

@@ -32,30 +32,28 @@ const CONTEXT_PACK_DRILL_LABEL_PREFIX: Readonly<Record<ContextPackSourcePointerK
   [ContextPackSourcePointerKind.Policy]: "Policy",
 };
 
-export function contextPackDrillTargetGroupsForPack(
-  pack: ContextPack,
-): readonly ContextPackDrillTargetGroup[] {
+export function contextPackDrillTargetGroupsForPack(pack: ContextPack): readonly ContextPackDrillTargetGroup[] {
   return pack.items.flatMap((item) => {
     const targets = contextPackDrillTargetsForItem(item);
     if (targets.length === 0) return [];
-    return [{
-      itemId: item.id,
-      itemKind: item.kind,
-      itemTitle: item.title,
-      targets,
-    }];
+    return [
+      {
+        itemId: item.id,
+        itemKind: item.kind,
+        itemTitle: item.title,
+        targets,
+      },
+    ];
   });
 }
 
 export function contextPackDrillTargetsForItem(item: ContextPackItem): readonly ContextPackDrillTarget[] {
   const seen = new Set<string>();
-  return (item.sourcePointers ?? [])
-    .map(contextPackDrillTargetForSourcePointer)
-    .filter((target) => {
-      if (seen.has(target.routeRef)) return false;
-      seen.add(target.routeRef);
-      return true;
-    });
+  return (item.sourcePointers ?? []).map(contextPackDrillTargetForSourcePointer).filter((target) => {
+    if (seen.has(target.routeRef)) return false;
+    seen.add(target.routeRef);
+    return true;
+  });
 }
 
 function contextPackDrillTargetForSourcePointer(pointer: ContextPackSourcePointer): ContextPackDrillTarget {

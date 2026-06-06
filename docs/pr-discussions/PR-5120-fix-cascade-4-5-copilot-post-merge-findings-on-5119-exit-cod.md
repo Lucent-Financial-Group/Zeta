@@ -27,6 +27,7 @@ Post-merge Copilot review on #5119 surfaced 5 real findings on the cascade-4 ISO
 Fix-forward follow-up to the cascade-4 installer ISO content audit introduced in #5119, addressing post-merge findings around exit-code semantics, ISO listing robustness, and CI workflow safety under `set -u`.
 
 **Changes:**
+
 - Refactors ISO listing to parse `7z l -slt` into `{path,size}` entries and adds a non-empty assertion for `nix-store.squashfs`.
 - Reconciles error handling to return structured error kinds, mapping them to the documented exit-code contract; improves spawn failure diagnostics.
 - Hardens the “Audit installer ISO content” workflow step by mirroring the explicit 0/1+ ISO candidate checks used later in the job.
@@ -35,10 +36,10 @@ Fix-forward follow-up to the cascade-4 installer ISO content audit introduced in
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/ci/audit-installer-iso-content.ts | Adds structured `7z -slt` parsing + non-empty squashfs assertion, and refines error/exit-code handling. |
-| .github/workflows/build-ai-cluster-iso.yml | Adds explicit ISO candidate count checks in the audit step to avoid `set -u` unbound-array failures. |
+| File                                       | Description                                                                                             |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| tools/ci/audit-installer-iso-content.ts    | Adds structured `7z -slt` parsing + non-empty squashfs assertion, and refines error/exit-code handling. |
+| .github/workflows/build-ai-cluster-iso.yml | Adds explicit ISO candidate count checks in the audit step to avoid `set -u` unbound-array failures.    |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T07:27:07Z)
 
@@ -82,7 +83,7 @@ P0: Running tools/setup/install.sh automatically on every `nix develop` shell en
 
 **@copilot-pull-request-reviewer** (2026-05-26T07:27:06Z):
 
-P1: The comment claims host tooling like "mkpasswd" comes from tools/setup/install.sh manifests, but mkpasswd doesn’t appear in tools/setup/manifests/{apt,brew} (and in this repo it’s typically provided via nixpkgs). Also, GOVERNANCE.md §24 describes install.sh as having *three* consumers; saying the devShell is a "4th" consumer while citing §24 reads inconsistent. Please reword these comments to match the actual sources-of-truth (or update the referenced truth if the contract is changing).
+P1: The comment claims host tooling like "mkpasswd" comes from tools/setup/install.sh manifests, but mkpasswd doesn’t appear in tools/setup/manifests/{apt,brew} (and in this repo it’s typically provided via nixpkgs). Also, GOVERNANCE.md §24 describes install.sh as having _three_ consumers; saying the devShell is a "4th" consumer while citing §24 reads inconsistent. Please reword these comments to match the actual sources-of-truth (or update the referenced truth if the contract is changing).
 
 ### Thread 7: .github/workflows/build-ai-cluster-iso.yml:144 (resolved)
 

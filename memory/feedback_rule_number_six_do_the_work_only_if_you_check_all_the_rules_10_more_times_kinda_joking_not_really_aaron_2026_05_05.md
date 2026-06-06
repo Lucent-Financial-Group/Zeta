@@ -10,17 +10,17 @@ type: feedback
 
 Aaron 2026-05-05 verbatim, after Rules 1-5:
 
-> *"rule 6 do thework only if you check all the rules 10 more times"*
+> _"rule 6 do thework only if you check all the rules 10 more times"_
 >
-> *"times"* (correction)
+> _"times"_ (correction)
 >
-> *"lol"*
+> _"lol"_
 >
-> *"kinda joking not really"*
+> _"kinda joking not really"_
 
 ## What this rule is and is NOT
 
-**Half-joke; load-bearing point is real:** the agent's prior-art-search-failures this session prove that 1 pass through Rules 1-5 is not enough. The default cadence on Rules 1-5 is 10x not 1x. Aaron *kinda joking not really* names the asymmetric-cost: cheap to grep, expensive to author-and-cleanup-the-duplicate. 10 cheap searches are still cheaper than 1 expensive duplicate-cleanup.
+**Half-joke; load-bearing point is real:** the agent's prior-art-search-failures this session prove that 1 pass through Rules 1-5 is not enough. The default cadence on Rules 1-5 is 10x not 1x. Aaron _kinda joking not really_ names the asymmetric-cost: cheap to grep, expensive to author-and-cleanup-the-duplicate. 10 cheap searches are still cheaper than 1 expensive duplicate-cleanup.
 
 **Not literal 10:** the multiplier is "more than once". The point is variation: vary query terms, vary surfaces, vary scope. Each variation costs ~30 seconds; the duplicate-cleanup costs hours.
 
@@ -41,10 +41,11 @@ Before doing the work (Write / Edit / propose-PR / commit substrate):
 ## Why "kinda joking not really"
 
 The session that produced this rule had:
+
 - 4 consecutive prior-art-search-failures within 2 hours
 - The agent shipped Rule #1 + #2 + #3 + #4 + #5 as memory files
 - Then immediately proceeded to commit them WITHOUT updating CLAUDE.md (the auto-loaded wake-time surface)
-- Aaron caught this with: *"CLAUDE.md IN THE FUCING FILE THIS IS THE ONOY THING YOU LOAD AND YOU STILL FORGET"*
+- Aaron caught this with: _"CLAUDE.md IN THE FUCING FILE THIS IS THE ONOY THING YOU LOAD AND YOU STILL FORGET"_
 
 The pattern: even within the same tick that lands Rules 1-5, the agent forgets to apply them to itself. Rule 6 is the multiplier that catches this: 10x checks BEFORE the work, including the "did the substrate land where future-agents will actually read it" check.
 
@@ -61,4 +62,4 @@ When you wake and have an impulse to do work, the cascade is Rules 1-6. Check 10
 
 ## Attribution
 
-Aaron 2026-05-05 named Rule #6 explicitly + named it *"kinda joking not really"* — the half-joke framing IS the rule's calibration. The agent absorbed + landed this memory file as the cascade-closer.
+Aaron 2026-05-05 named Rule #6 explicitly + named it _"kinda joking not really"_ — the half-joke framing IS the rule's calibration. The agent absorbed + landed this memory file as the cascade-closer.

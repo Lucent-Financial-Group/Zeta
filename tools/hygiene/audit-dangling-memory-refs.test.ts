@@ -3,12 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import {
-  auditSurface,
-  findEdgesInFile,
-  isDangling,
-  runAudit,
-} from "./audit-dangling-memory-refs";
+import { auditSurface, findEdgesInFile, isDangling, runAudit } from "./audit-dangling-memory-refs";
 
 function setupFixtureRepo(): { root: string; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), "audit-dangling-memory-refs-test-"));
@@ -151,11 +146,7 @@ describe("auditSurface", () => {
     const { root, cleanup } = setupFixtureRepo();
     try {
       mkdirSync(join(root, "surface"), { recursive: true });
-      writeFileSync(
-        join(root, "surface", "citing.md"),
-        "see memory/feedback_missing.md\n",
-        "utf8",
-      );
+      writeFileSync(join(root, "surface", "citing.md"), "see memory/feedback_missing.md\n", "utf8");
       process.env["REPO_ROOT"] = root;
       const r = auditSurface("surface");
       expect(r.scanned).toBe(1);
@@ -173,23 +164,15 @@ describe("runAudit", () => {
   // Real-tree scans can exceed bun:test's default 5s timeout when crossing
   // multiple substrate surfaces (1000+ files). 30s gives comfortable
   // headroom for CI runners.
-  test(
-    "aggregates across multiple surfaces",
-    () => {
-      const out = runAudit([".claude/agents", ".claude/skills"]);
-      expect(out.surfaces).toHaveLength(2);
-      expect(out.totals.surfacesScanned).toBe(2);
-    },
-    30000,
-  );
+  test("aggregates across multiple surfaces", () => {
+    const out = runAudit([".claude/agents", ".claude/skills"]);
+    expect(out.surfaces).toHaveLength(2);
+    expect(out.totals.surfacesScanned).toBe(2);
+  }, 30000);
 
-  test(
-    "produces a totals.danglingEdges field that matches summed surfaces",
-    () => {
-      const out = runAudit([".claude/agents", ".claude/skills"]);
-      const summed = out.surfaces.reduce((acc, s) => acc + s.edges.length, 0);
-      expect(out.totals.danglingEdges).toBe(summed);
-    },
-    30000,
-  );
+  test("produces a totals.danglingEdges field that matches summed surfaces", () => {
+    const out = runAudit([".claude/agents", ".claude/skills"]);
+    const summed = out.surfaces.reduce((acc, s) => acc + s.edges.length, 0);
+    expect(out.totals.danglingEdges).toBe(summed);
+  }, 30000);
 });

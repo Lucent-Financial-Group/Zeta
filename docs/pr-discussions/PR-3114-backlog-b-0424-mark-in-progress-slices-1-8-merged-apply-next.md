@@ -52,6 +52,7 @@ After `--apply`, six manual follow-ups remain (documented in the updated backlog
 Documentation-only backlog update for B-0424, marking Stage 1 scaffold work as partially complete and documenting the remaining repo-creation execution step.
 
 **Changes:**
+
 - Updates B-0424 frontmatter metadata and status.
 - Adds a completed-slices table for B-0424.1–B-0424.8.
 - Documents dry-run verification, `--apply` commands, and post-apply manual follow-ups.

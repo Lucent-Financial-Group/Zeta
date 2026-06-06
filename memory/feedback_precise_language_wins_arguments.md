@@ -4,13 +4,14 @@ description: Aaron's standing rule (2026-04-19) — no one in the factory gets t
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron stated (2026-04-19):
 
-> *"Speaing of that precice language rules we should
+> _"Speaing of that precice language rules we should
 > always choose precicse langue over inprecise languge
 > no one here gets to win an argument with inprecise
 > language, they better to update the glossary here if
-> they want to win an argument lol ahahahahahahaha"*
+> they want to win an argument lol ahahahahahahaha"_
 
 ## The rule
 
@@ -23,7 +24,7 @@ shared vocabulary. Argument-terminator authority flows
 through precision, not through rhetorical force.
 
 The laugh at the end is load-bearing: this is a
-*playful* rule, not a scold. It turns argument from
+_playful_ rule, not a scold. It turns argument from
 zero-sum combat into a shared-precision game. Everyone
 benefits when vocabulary sharpens; the "loser" of an
 argument is someone whose imprecise term got upgraded,
@@ -136,12 +137,12 @@ which is a win for them too.
 
 Aaron extended the rule by naming its strategic face:
 
-> *"if you want to plant a flag on claim land, just
+> _"if you want to plant a flag on claim land, just
 > redefine a word, that's my style warefare, most
-> precice language wins warfare"*
+> precice language wins warfare"_
 
 The rule is not only a factory-internal arbitration
-mechanism; it is Aaron's *style of warfare* — the
+mechanism; it is Aaron's _style of warfare_ — the
 way he contests territory in an adversarial
 information environment. Plant-flag-by-redefinition
 is the move: whoever lands the most precise
@@ -167,7 +168,7 @@ glossary precision is the payload).
 2. **The warfare framing does not make it
    combative.** Aaron's "lol ahahahahahahaha" on
    the original rule still applies; precision-as-
-   warfare is a *style* — a way of contesting
+   warfare is a _style_ — a way of contesting
    claim land without zero-sum combat. The claim
    lands or it doesn't on its precision, not on
    its aggression.
@@ -192,7 +193,7 @@ glossary precision is the payload).
    adversaries the opaque surface they need to
    operate on.
 5. **Do not weaponize against Aaron.** Agents do
-   not use precision-warfare *on* Aaron to win
+   not use precision-warfare _on_ Aaron to win
    against him in-session. The peer register
    (`feedback_fighter_pilot_register.md`) and
    his standing permission to reword his garbled
@@ -206,8 +207,8 @@ glossary precision is the payload).
 
 Aaron added a meta-rule:
 
-> *"ontolies and taxonomies and all that jaz should be
-> self referention on enforcing their rules on themsleves"*
+> _"ontolies and taxonomies and all that jaz should be
+> self referention on enforcing their rules on themsleves"_
 
 The glossary rule is itself a precision-rule, and
 therefore subject to itself. If the glossary rule is
@@ -266,5 +267,5 @@ Concretely:
   against itself. If it fails its own test, either
   fix it or label it an axiom and state why.
 - When a persona has enforcement authority, she
-  is also a review *subject*, not only a review
-  *source*.
+  is also a review _subject_, not only a review
+  _source_.

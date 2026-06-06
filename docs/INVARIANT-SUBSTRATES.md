@@ -21,9 +21,9 @@ without an invariant substrate, the factory has drifted. The
 absence is a P1 finding for the Architect and a queue item for
 whoever owns the layer.
 
-Aaron's framing (2026-04-20): *"my brain basically does
+Aaron's framing (2026-04-20): _"my brain basically does
 invariant based programming in my head and i have to translate
-the invariant in my head into code."* The substrates are the
+the invariant in my head into code."_ The substrates are the
 externalisation of that cognitive act — the declaration-itself
 is the value. Mechanical verification is a second-order payoff.
 
@@ -40,25 +40,25 @@ declarative substrate that carries their invariants, the
 checker portfolio that can verify them, and the status of the
 substrate today.
 
-| Layer | Substrate | Primary checkers | Status |
-|---|---|---|---|
-| **Spec** — behavioural contracts | `openspec/specs/**/spec.md` | `spec-zealot` (discipline) | shipped |
-| **Protocol** — concurrent state machines | `tools/tla/specs/*.tla` | TLA+/TLC | shipped |
-| **Proof** — theorems about the algebra | `tools/lean4/Lean4/*.lean` | Lean 4 + Mathlib | shipped |
-| **Constraint** — pointwise axioms | `tests/Tests.FSharp/FormalVerificationTests.fs` (Z3 queries) | Z3 SMT | shipped |
-| **Property** — law-checking across generated domains | FsCheck properties in `tests/Tests.FSharp/` | FsCheck, Stryker | shipped |
-| **Data** — Z-set multiplicity invariants | operator-algebra types in `src/Core/**` | F# type system, DBSP laws, FsCheck | shipped |
-| **Code (refinement)** — function-level pre/post-conditions | LiquidF# (evaluation in flight — `docs/research/liquidfsharp-evaluation.md`) | SMT via LiquidF# | evaluation |
-| **Skill** — agent-scope invariants | `.claude/skills/<name>/skill.yaml` | `alloy`, `semgrep`, `fscheck`, `tla` (per-claim hints) | two pilots landed (`prompt-protector`, `skill-tune-up`) |
-| **Agent behaviour** — empirical outcome claims | `plugin:skill-creator` eval harness (`evals/` + benchmark.json) | grader + comparator subagents | shipped (used round 42-43) |
-| **Policy / governance** — repo-wide invariants | `docs/AGENT-BEST-PRACTICES.md` (stable BP-NN rules) | `skill-tune-up` lint, reviewer roster | shipped |
-| **Ontology** — canonical-home rules | `.claude/skills/canonical-home-auditor/SKILL.md` map | `canonical-home-auditor` | shipped (round 40) |
+| Layer                                                      | Substrate                                                                    | Primary checkers                                       | Status                                                  |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- |
+| **Spec** — behavioural contracts                           | `openspec/specs/**/spec.md`                                                  | `spec-zealot` (discipline)                             | shipped                                                 |
+| **Protocol** — concurrent state machines                   | `tools/tla/specs/*.tla`                                                      | TLA+/TLC                                               | shipped                                                 |
+| **Proof** — theorems about the algebra                     | `tools/lean4/Lean4/*.lean`                                                   | Lean 4 + Mathlib                                       | shipped                                                 |
+| **Constraint** — pointwise axioms                          | `tests/Tests.FSharp/FormalVerificationTests.fs` (Z3 queries)                 | Z3 SMT                                                 | shipped                                                 |
+| **Property** — law-checking across generated domains       | FsCheck properties in `tests/Tests.FSharp/`                                  | FsCheck, Stryker                                       | shipped                                                 |
+| **Data** — Z-set multiplicity invariants                   | operator-algebra types in `src/Core/**`                                      | F# type system, DBSP laws, FsCheck                     | shipped                                                 |
+| **Code (refinement)** — function-level pre/post-conditions | LiquidF# (evaluation in flight — `docs/research/liquidfsharp-evaluation.md`) | SMT via LiquidF#                                       | evaluation                                              |
+| **Skill** — agent-scope invariants                         | `.claude/skills/<name>/skill.yaml`                                           | `alloy`, `semgrep`, `fscheck`, `tla` (per-claim hints) | two pilots landed (`prompt-protector`, `skill-tune-up`) |
+| **Agent behaviour** — empirical outcome claims             | `plugin:skill-creator` eval harness (`evals/` + benchmark.json)              | grader + comparator subagents                          | shipped (used round 42-43)                              |
+| **Policy / governance** — repo-wide invariants             | `docs/AGENT-BEST-PRACTICES.md` (stable BP-NN rules)                          | `skill-tune-up` lint, reviewer roster                  | shipped                                                 |
+| **Ontology** — canonical-home rules                        | `.claude/skills/canonical-home-auditor/SKILL.md` map                         | `canonical-home-auditor`                               | shipped (round 40)                                      |
 
 Rows are not ranked. A P0 correctness claim can land at the
 proof layer (Lean) or the property layer (FsCheck) or the skill
-layer (skill.yaml). The decision is always: *which layer does
+layer (skill.yaml). The decision is always: _which layer does
 this invariant most naturally live at, and which checker fits
-that layer's substrate?* See `BP-16` for the cross-check rule
+that layer's substrate?_ See `BP-16` for the cross-check rule
 when a P0 invariant needs ≥ 2 independent checkers.
 
 ## Three-tier discipline
@@ -87,9 +87,9 @@ each tier. The count is the honest backlog: every
 every `observed` is a candidate for promotion to `verified`.
 Rounds tick the count down.
 
-Aaron's framing (2026-04-20): *"so they are not speculative
+Aaron's framing (2026-04-20): _"so they are not speculative
 guesses they are confirmed with data, i like data driven
-everything lol."* The hypothesis tier is the start, not the
+everything lol."_ The hypothesis tier is the start, not the
 destination.
 
 The first concrete pilot of this pattern is
@@ -202,8 +202,8 @@ verified, across all substrates.
   What is mandated is the posture: every layer has a
   declarative substrate with tiered invariants.
 - **Does not obsolete prose.** SKILL.md bodies, ADRs, and
-  GOVERNANCE sections keep explaining *why*. The substrate
-  declares *what is true* in a form a checker can read.
+  GOVERNANCE sections keep explaining _why_. The substrate
+  declares _what is true_ in a form a checker can read.
 - **Does not replace the reviewer roster.** Invariants land
   in substrates; reviewers still catch the things humans and
   agents get wrong that no substrate claims to cover.
@@ -220,7 +220,7 @@ verified, across all substrates.
 - **Microsoft Code Contracts (2008-2017)** — the archived
   .NET implementation. Post-mortem lessons inform every row
   of the table above.
-- **Dafny, F*, LiquidHaskell, Liquid Types** — the refinement-
+- **Dafny, F\*, LiquidHaskell, Liquid Types** — the refinement-
   types lineage Zeta is evaluating via LiquidF# for the code
   layer.
 - **TLA+ (Leslie Lamport, 1999-)** — the protocol-layer

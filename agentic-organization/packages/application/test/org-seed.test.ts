@@ -43,10 +43,16 @@ test("supervises is the exact reverse of reportsTo (no inconsistency possible)",
   const byId = new Map(hats.map((h) => [h.id, h]));
   for (const hat of hats) {
     for (const child of hat.supervisesHatIds) {
-      ok(byId.get(child)?.reportsToHatIds.includes(hat.id), `${hat.id} supervises ${child} but ${child} does not report to it`);
+      ok(
+        byId.get(child)?.reportsToHatIds.includes(hat.id),
+        `${hat.id} supervises ${child} but ${child} does not report to it`,
+      );
     }
     for (const parent of hat.reportsToHatIds) {
-      ok(byId.get(parent)?.supervisesHatIds.includes(hat.id), `${hat.id} reports to ${parent} but is not supervised by it`);
+      ok(
+        byId.get(parent)?.supervisesHatIds.includes(hat.id),
+        `${hat.id} reports to ${parent} but is not supervised by it`,
+      );
     }
   }
 });

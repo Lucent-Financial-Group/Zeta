@@ -22,24 +22,24 @@ tags: [cluster, ip-kvm, comet-pro, gl-inet, remote, bios, headless, repair, hard
 ## Problem
 
 Aaron 2026-05-25 mid-iteration-2-wait (iter-2 USB just flashed,
-ready for cluster node 1 test): *"is usb stuff on main and new
+ready for cluster node 1 test): _"is usb stuff on main and new
 iso built also with pc two we are going to add gl.net comet pro
-and see if you can do complete remote setup even bios stuff."*
+and see if you can do complete remote setup even bios stuff."_
 
 PC 2 (second cluster node) will have a [GL.iNet Comet Pro][comet]
 IP-KVM attached. The Comet Pro provides everything needed for
 **complete remote setup including BIOS**:
 
-| Comet Pro capability | What it enables for Zeta cluster bring-up |
-|---|---|
-| HDMI capture (1080p60) | Agent SEES the BIOS / boot menu / OS console remotely via web UI |
-| USB HID injection (keyboard + mouse) | Agent TYPES into BIOS / boot menu / OS console remotely |
-| USB mass-storage emulation | Agent PRESENTS the Zeta installer ISO as a virtual USB drive — no physical USB stick required on PC 2 |
-| ATX power control (with optional cable) | Agent POWERS the box on/off + reboots remotely |
-| Wake-on-LAN | Power-on without ATX cable if motherboard supports WOL |
-| Web UI + API | Standards-layer interface (per B-0765 ServiceTitan route) — REST + WebRTC for stream + HID |
-| BliKVM-derived firmware | Open-source-friendly; hackable; community substrate |
-| Local network or Tailscale / Headscale (per Zeta substrate) | Operator's network OR Zeta's existing zero-trust mesh; no exposed public ports needed |
+| Comet Pro capability                                        | What it enables for Zeta cluster bring-up                                                             |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| HDMI capture (1080p60)                                      | Agent SEES the BIOS / boot menu / OS console remotely via web UI                                      |
+| USB HID injection (keyboard + mouse)                        | Agent TYPES into BIOS / boot menu / OS console remotely                                               |
+| USB mass-storage emulation                                  | Agent PRESENTS the Zeta installer ISO as a virtual USB drive — no physical USB stick required on PC 2 |
+| ATX power control (with optional cable)                     | Agent POWERS the box on/off + reboots remotely                                                        |
+| Wake-on-LAN                                                 | Power-on without ATX cable if motherboard supports WOL                                                |
+| Web UI + API                                                | Standards-layer interface (per B-0765 ServiceTitan route) — REST + WebRTC for stream + HID            |
+| BliKVM-derived firmware                                     | Open-source-friendly; hackable; community substrate                                                   |
+| Local network or Tailscale / Headscale (per Zeta substrate) | Operator's network OR Zeta's existing zero-trust mesh; no exposed public ports needed                 |
 
 [comet]: https://www.gl-inet.com/products/gl-rm10/
 
@@ -49,7 +49,7 @@ repair-tool (B-0760), and the cluster-install substrate cluster:
 **PC 2 bring-up flow becomes**:
 
 1. Aaron unboxes PC 2 + plugs in Comet Pro (HDMI + USB-C to PC 2
-   + ethernet to network + power) — 5 minutes of physical work
+   - ethernet to network + power) — 5 minutes of physical work
 2. Agent connects to Comet Pro web API
 3. Agent presents Zeta installer ISO as virtual USB
 4. Agent powers PC 2 on; presses BIOS key during POST; sets
@@ -111,7 +111,7 @@ Zeta substrate that wraps Comet Pro into a coherent
       correctly (Claude vision API or local AI vision per
       Zeta substrate)
 - [ ] Mass-storage virtual-USB ISO presentation: agent mounts
-      ~/Downloads/zeta-installer-*.iso (or CI-built artifact)
+      ~/Downloads/zeta-installer-\*.iso (or CI-built artifact)
       as virtual USB on the Comet Pro
 - [ ] End-to-end PC 2 bring-up demonstrated: from "Comet Pro
       plugged in, network reachable" → "cluster node joined +
@@ -155,13 +155,13 @@ operator-facing interface.
 
 ## Why this is load-bearing for the cluster substrate
 
-| Without Comet Pro integration | With Comet Pro integration |
-|---|---|
-| Operator must physically attend each node for first install + every BIOS-level change | Zero-physical-access for everything except the initial 5-min plug-in of Comet Pro itself |
-| Repair-tool semantics (B-0760) require physical access to plug in USB | Repair fully remote via virtual-USB mount |
-| 3-node HA promise (B-0756) requires Aaron to drive 3 hours to remote site if all 3 fail | Aaron can repair from anywhere with network access |
-| Reference architecture (B-0761) limited to "buyers who have physical access to all nodes" | Reference architecture works for distributed / colo / edge deployments where physical access is expensive |
-| ARC-AGI benchmark scenarios (B-0761) limited to scenarios humans can stage | Benchmark scenarios can include "5-node cluster gets rebuilt remotely from cold-iron after 3 simultaneous node failures" |
+| Without Comet Pro integration                                                             | With Comet Pro integration                                                                                               |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Operator must physically attend each node for first install + every BIOS-level change     | Zero-physical-access for everything except the initial 5-min plug-in of Comet Pro itself                                 |
+| Repair-tool semantics (B-0760) require physical access to plug in USB                     | Repair fully remote via virtual-USB mount                                                                                |
+| 3-node HA promise (B-0756) requires Aaron to drive 3 hours to remote site if all 3 fail   | Aaron can repair from anywhere with network access                                                                       |
+| Reference architecture (B-0761) limited to "buyers who have physical access to all nodes" | Reference architecture works for distributed / colo / edge deployments where physical access is expensive                |
+| ARC-AGI benchmark scenarios (B-0761) limited to scenarios humans can stage                | Benchmark scenarios can include "5-node cluster gets rebuilt remotely from cold-iron after 3 simultaneous node failures" |
 
 The Comet Pro substrate extends Zeta's reach from
 "home-lab where Aaron walks to each node" to "distributed
@@ -199,13 +199,13 @@ deployment surface.
 
 ## Hardware vendor BIOS notes (per Aaron's PC 2 — fill in once known)
 
-| Component | Vendor | Notes |
-|---|---|---|
-| Motherboard | TBD (Aaron to confirm) | BIOS vendor + BIOS-entry-key + UEFI secure boot policy |
-| BIOS / UEFI | TBD | AMI / Phoenix / Insyde / Award |
-| NVMe / SATA / HDD layout | TBD | per B-0754 greedy N-disk + B-0758 USB-persistent-OS triage |
-| GPU | TBD | per B-0755 worker-gpu role |
-| ATX power header pin layout | TBD | for Comet Pro power-control cable |
+| Component                   | Vendor                 | Notes                                                      |
+| --------------------------- | ---------------------- | ---------------------------------------------------------- |
+| Motherboard                 | TBD (Aaron to confirm) | BIOS vendor + BIOS-entry-key + UEFI secure boot policy     |
+| BIOS / UEFI                 | TBD                    | AMI / Phoenix / Insyde / Award                             |
+| NVMe / SATA / HDD layout    | TBD                    | per B-0754 greedy N-disk + B-0758 USB-persistent-OS triage |
+| GPU                         | TBD                    | per B-0755 worker-gpu role                                 |
+| ATX power header pin layout | TBD                    | for Comet Pro power-control cable                          |
 
 Once Aaron confirms PC 2 hardware, this section gets concrete.
 Until then, agent uses vision + per-vendor handler library to

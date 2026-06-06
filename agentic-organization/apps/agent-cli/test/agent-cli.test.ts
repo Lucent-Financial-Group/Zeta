@@ -181,7 +181,11 @@ test("formatAgentCliScreen prints context pack status, items, omissions, contrad
   ok(rendered.includes("refs=legal_action:meta.escalate"));
   ok(rendered.includes("context drill targets:"));
   ok(rendered.includes("- context drill doc-brd doc_unit:doc-brd:v1 Document doc-brd"));
-  ok(rendered.includes("- context drill mem-1 hindsight_memory:hindsight:mem-1 Memory mem-1 governance=work/active weight=0.81 floor=0.35"));
+  ok(
+    rendered.includes(
+      "- context drill mem-1 hindsight_memory:hindsight:mem-1 Memory mem-1 governance=work/active weight=0.81 floor=0.35",
+    ),
+  );
   ok(rendered.includes("- context omission access_denied decision-redacted: redacted by policy"));
   ok(rendered.includes("- context contradiction: BRD conflicts with stale ADR"));
   ok(rendered.includes("- context stale input: adr-old"));
@@ -213,13 +217,21 @@ test("formatAgentCliScreen prints advisory-promotion candidates with derived fin
   });
 
   ok(rendered.includes("context advisory-promotion candidates:"));
-  ok(rendered.includes(`- advisory promotion candidate synthesis-gap-owner profile=management_blocker fingerprint=${fingerprint.itemKind}:${fingerprint.summaryHash}`));
+  ok(
+    rendered.includes(
+      `- advisory promotion candidate synthesis-gap-owner profile=management_blocker fingerprint=${fingerprint.itemKind}:${fingerprint.summaryHash}`,
+    ),
+  );
   ok(rendered.includes("status=unknown"));
   ok(rendered.includes("title=Owner gap"));
   ok(rendered.includes("citations=context_requirement:owner,doc:billing-brd"));
   ok(rendered.includes("sourcePointers=doc_unit:doc-brd:1"));
   ok(rendered.includes("evidence=context_requirement:owner,doc:billing-brd,synthesis-gap-owner,synthesis:gap-owner"));
-  ok(rendered.includes("command=--context-advisory-promotion-item synthesis-gap-owner --context-advisory-promotion-status approved --context-advisory-promotion-blocker <text>"));
+  ok(
+    rendered.includes(
+      "command=--context-advisory-promotion-item synthesis-gap-owner --context-advisory-promotion-status approved --context-advisory-promotion-blocker <text>",
+    ),
+  );
   ok(!rendered.includes("advisory promotion candidate doc-brd"));
 });
 
@@ -313,9 +325,7 @@ test("selectFirstTrueSlot prefers executable work over page navigation", () => {
   );
   equal(
     selectFirstTrueSlot({
-      slots: [
-        { index: 1, direction: "navigate.next", label: "next prompt-flow page", availability: "T" },
-      ],
+      slots: [{ index: 1, direction: "navigate.next", label: "next prompt-flow page", availability: "T" }],
     }),
     1,
   );
@@ -371,12 +381,20 @@ test("createModelBackedMenuSelector includes bounded context pack evidence in th
   ok(prompts[0]?.user.includes("Required context:"));
   ok(prompts[0]?.user.includes("- business_document doc-brd: BRD"));
   ok(prompts[0]?.user.includes("Attention lanes:"));
-  ok(prompts[0]?.user.includes("- required_documents priority=20 required=true refs=item:doc-brd objective=Resolve against approved docs"));
+  ok(
+    prompts[0]?.user.includes(
+      "- required_documents priority=20 required=true refs=item:doc-brd objective=Resolve against approved docs",
+    ),
+  );
   ok(prompts[0]?.user.includes("- memory priority=50 required=false refs=item:mem-1 objective=Use advisory memory"));
   ok(prompts[0]?.user.includes("Attention lane details:"));
   ok(prompts[0]?.user.includes("- lane=memory item memory_pointer mem-1: Prior blocker memory"));
   ok(prompts[0]?.user.includes("- lane=omissions omission access_denied decision-redacted: redacted by policy"));
-  ok(prompts[0]?.user.includes("- legal_actions priority=70 required=true refs=legal_action:meta.escalate objective=Pick legal next action"));
+  ok(
+    prompts[0]?.user.includes(
+      "- legal_actions priority=70 required=true refs=legal_action:meta.escalate objective=Pick legal next action",
+    ),
+  );
   ok(prompts[0]?.user.includes("Context omissions: 1"));
   ok(prompts[0]?.user.includes("Metrics:"));
   ok(prompts[0]?.user.includes("- queue pressure: 3"));
@@ -388,7 +406,10 @@ test("createModelBackedMenuSelector includes bounded inbox workflow evidence in 
     chat: {
       complete: async (request) => {
         prompts.push(request);
-        return { content: JSON.stringify({ slot: 4, reason: "urgent inbox wakeup supports execution" }), model: "llama3.1" };
+        return {
+          content: JSON.stringify({ slot: 4, reason: "urgent inbox wakeup supports execution" }),
+          model: "llama3.1",
+        };
       },
     },
     fallback: selectFirstTrueSlot,
@@ -400,8 +421,16 @@ test("createModelBackedMenuSelector includes bounded inbox workflow evidence in 
 
   equal(selected, 4);
   ok(prompts[0]?.user.includes("Inbox workflow: total=2 urgent=1 normal=0 due=0 future=1 read=0"));
-  ok(prompts[0]?.user.includes("- urgent_unread inbox-release-blocker urgent/unread: Release blocker inbox actions=mark_read,snooze"));
-  ok(prompts[0]?.user.includes("- snoozed_future inbox-director-review normal/snoozed until=2026-05-31T14:30:00.000Z: Director review inbox actions=mark_read"));
+  ok(
+    prompts[0]?.user.includes(
+      "- urgent_unread inbox-release-blocker urgent/unread: Release blocker inbox actions=mark_read,snooze",
+    ),
+  );
+  ok(
+    prompts[0]?.user.includes(
+      "- snoozed_future inbox-director-review normal/snoozed until=2026-05-31T14:30:00.000Z: Director review inbox actions=mark_read",
+    ),
+  );
 });
 
 test("createModelBackedMenuSelector rejects free-form slot text instead of regex-parsing it", async () => {
@@ -436,7 +465,7 @@ test("createModelBackedMenuSelector records selector rejection evidence when the
     reason: "fallback_after_selector_rejection",
     selectorRejection: {
       reason: "non_selectable_slot",
-      rawOutput: "{\"slot\":5,\"reason\":\"try blocked slot\"}",
+      rawOutput: '{"slot":5,"reason":"try blocked slot"}',
       rejectedIndex: 5,
       fallbackIndex: 4,
     },
@@ -478,12 +507,14 @@ test("runAgentCliCycle carries selector rejection evidence into observe-act tick
 
   equal(result.exitCode, 0);
   equal(result.evidence?.selectedIndex, 4);
-  deepEqual(result.evidence?.selectorRejections, [{
-    reason: "non_selectable_slot",
-    rawOutput: "{\"slot\":15,\"reason\":\"escalate instead\"}",
-    rejectedIndex: 15,
-    fallbackIndex: 4,
-  }]);
+  deepEqual(result.evidence?.selectorRejections, [
+    {
+      reason: "non_selectable_slot",
+      rawOutput: '{"slot":15,"reason":"escalate instead"}',
+      rejectedIndex: 15,
+      fallbackIndex: 4,
+    },
+  ]);
 });
 
 test("createAgentCliSelectorFromEnv wires a local Ollama selector when configured", async () => {
@@ -495,7 +526,9 @@ test("createAgentCliSelectorFromEnv wires a local Ollama selector when configure
     },
     fetchImpl: (async (url, init) => {
       calls.push({ url: String(url), body: JSON.parse(String(init?.body)) });
-      return new Response(JSON.stringify({ message: { content: JSON.stringify({ slot: 4, reason: "execute" }) }, model: "llama3.1" }));
+      return new Response(
+        JSON.stringify({ message: { content: JSON.stringify({ slot: 4, reason: "execute" }) }, model: "llama3.1" }),
+      );
     }) as typeof fetch,
   });
 
@@ -612,28 +645,34 @@ test("runAgentCliCycle dispatches typed inbox workflow actions from durable work
         snoozedDueCount: 0,
         snoozedFutureCount: 0,
       },
-      batches: [{
-        kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
-        items: [{
-          inboxAnchorId: "inbox-release-blocker",
-          organizationId: "org-1",
-          projectId: "project-1",
-          teamId: "team-release",
-          workItemId: "work-from-workflow-item",
-          targetHatAssignmentId: "99",
-          targetAgentId: "agent-release-1",
-          title: "Release blocker inbox",
-          summary: "Release operator wakeup was triggered by missing gate evidence.",
-          priority: ContextPackInboxAnchorPriority.Urgent,
-          status: ContextPackInboxAnchorStatus.Unread,
-          deliveredAt: "2026-05-31T00:40:00.000Z",
-          actions: [{
-            kind: ContextPackInboxWorkflowActionKind.MarkRead,
-            targetStatus: ContextPackInboxAnchorStatus.Read,
-            requiresSnoozedUntil: false,
-          }],
-        }],
-      }],
+      batches: [
+        {
+          kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
+          items: [
+            {
+              inboxAnchorId: "inbox-release-blocker",
+              organizationId: "org-1",
+              projectId: "project-1",
+              teamId: "team-release",
+              workItemId: "work-from-workflow-item",
+              targetHatAssignmentId: "99",
+              targetAgentId: "agent-release-1",
+              title: "Release blocker inbox",
+              summary: "Release operator wakeup was triggered by missing gate evidence.",
+              priority: ContextPackInboxAnchorPriority.Urgent,
+              status: ContextPackInboxAnchorStatus.Unread,
+              deliveredAt: "2026-05-31T00:40:00.000Z",
+              actions: [
+                {
+                  kind: ContextPackInboxWorkflowActionKind.MarkRead,
+                  targetStatus: ContextPackInboxAnchorStatus.Read,
+                  requiresSnoozedUntil: false,
+                },
+              ],
+            },
+          ],
+        },
+      ],
     }),
     runCommand: async (commandType, command) => {
       commands.push(`${commandType}:${JSON.stringify(command)}`);
@@ -692,26 +731,32 @@ test("runAgentCliCycle rejects inbox snooze actions without a wake time", async 
         snoozedDueCount: 0,
         snoozedFutureCount: 0,
       },
-      batches: [{
-        kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
-        items: [{
-          inboxAnchorId: "inbox-release-blocker",
-          organizationId: "org-1",
-          projectId: "project-1",
-          targetHatAssignmentId: "99",
-          targetAgentId: "agent-release-1",
-          title: "Release blocker inbox",
-          summary: "Release operator wakeup was triggered by missing gate evidence.",
-          priority: ContextPackInboxAnchorPriority.Urgent,
-          status: ContextPackInboxAnchorStatus.Unread,
-          deliveredAt: "2026-05-31T00:40:00.000Z",
-          actions: [{
-            kind: ContextPackInboxWorkflowActionKind.Snooze,
-            targetStatus: ContextPackInboxAnchorStatus.Snoozed,
-            requiresSnoozedUntil: true,
-          }],
-        }],
-      }],
+      batches: [
+        {
+          kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
+          items: [
+            {
+              inboxAnchorId: "inbox-release-blocker",
+              organizationId: "org-1",
+              projectId: "project-1",
+              targetHatAssignmentId: "99",
+              targetAgentId: "agent-release-1",
+              title: "Release blocker inbox",
+              summary: "Release operator wakeup was triggered by missing gate evidence.",
+              priority: ContextPackInboxAnchorPriority.Urgent,
+              status: ContextPackInboxAnchorStatus.Unread,
+              deliveredAt: "2026-05-31T00:40:00.000Z",
+              actions: [
+                {
+                  kind: ContextPackInboxWorkflowActionKind.Snooze,
+                  targetStatus: ContextPackInboxAnchorStatus.Snoozed,
+                  requiresSnoozedUntil: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
     }),
     runCommand: async (commandType, command) => {
       commands.push(`${commandType}:${JSON.stringify(command)}`);
@@ -776,11 +821,21 @@ test("runAgentCliCycle renders tenant curation authoring preview without dispatc
   equal(result.actionResult?.outcome, "rejected");
   deepEqual(commands, []);
   ok(rendered.includes("tenant context-pack curation authoring:"));
-  ok(rendered.includes("- profile security_control focus=security_control docs=policy,adr,decision_record,architecture,runbook terms=credential proxy,least privilege,policy,audit evidence,decision"));
-  ok(rendered.includes("- lane memory defaultPriority=50 required=false objective=Use scoped memory only as advisory color after source-of-truth context."));
+  ok(
+    rendered.includes(
+      "- profile security_control focus=security_control docs=policy,adr,decision_record,architecture,runbook terms=credential proxy,least privilege,policy,audit evidence,decision",
+    ),
+  );
+  ok(
+    rendered.includes(
+      "- lane memory defaultPriority=50 required=false objective=Use scoped memory only as advisory color after source-of-truth context.",
+    ),
+  );
   ok(rendered.includes("tenant curation preview: profile=security_control focus=security_control policy="));
   ok(rendered.includes("tenant curation preview docs: policy,adr,decision_record,architecture,runbook"));
-  ok(rendered.includes("tenant curation preview query: credential proxy,least privilege,policy,audit evidence,decision"));
+  ok(
+    rendered.includes("tenant curation preview query: credential proxy,least privilege,policy,audit evidence,decision"),
+  );
   ok(rendered.includes("- preview lane legal_actions priority=6"));
   ok(rendered.includes("- preview required lane memory"));
   ok(rendered.includes(`- preview instruction ${ContextPackCurationProfileInstruction.SecurityControl}`));
@@ -827,9 +882,21 @@ test("runAgentCliCycle renders tenant completeness authoring preview without dis
   equal(result.actionResult?.outcome, "rejected");
   deepEqual(commands, []);
   ok(rendered.includes("tenant context-pack completeness authoring:"));
-  ok(rendered.includes("- completeness set release_readiness_core requirements=release_deployment_evidence:evidence:active_scope,release_readiness_meeting:meeting:active_scope"));
-  ok(rendered.includes(`- completeness preview omission context_requirement:${TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence} not_indexed: release deployment evidence is required`));
-  ok(rendered.includes(`- completeness preview omission context_requirement:${TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting} not_indexed: release readiness meeting notes are required`));
+  ok(
+    rendered.includes(
+      "- completeness set release_readiness_core requirements=release_deployment_evidence:evidence:active_scope,release_readiness_meeting:meeting:active_scope",
+    ),
+  );
+  ok(
+    rendered.includes(
+      `- completeness preview omission context_requirement:${TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence} not_indexed: release deployment evidence is required`,
+    ),
+  );
+  ok(
+    rendered.includes(
+      `- completeness preview omission context_requirement:${TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting} not_indexed: release readiness meeting notes are required`,
+    ),
+  );
   ok(rendered.includes("- completeness preview blocker release deployment evidence is required"));
   ok(rendered.includes("- completeness preview blocker release readiness meeting notes are required"));
   ok(rendered.includes("- completeness preview evidence context_policy:tenant_release_readiness_core:v1"));
@@ -876,8 +943,16 @@ test("runAgentCliCycle renders tenant synthesis-requirement authoring preview wi
   equal(result.actionResult?.outcome, "rejected");
   deepEqual(commands, []);
   ok(rendered.includes("tenant context-pack synthesis-requirement authoring:"));
-  ok(rendered.includes(`- synthesis set release_readiness_core requirements=tenant_release_readiness_model_briefing:${TenantContextPackSynthesisRequirementReason.TenantRequiresReleaseReadinessBriefing} phases=awaiting_review scopes=work_item,project`));
-  ok(rendered.includes(`tenant synthesis preview: decision=required reason=${TenantContextPackSynthesisRequirementReason.TenantRequiresReleaseReadinessBriefing} policy=`));
+  ok(
+    rendered.includes(
+      `- synthesis set release_readiness_core requirements=tenant_release_readiness_model_briefing:${TenantContextPackSynthesisRequirementReason.TenantRequiresReleaseReadinessBriefing} phases=awaiting_review scopes=work_item,project`,
+    ),
+  );
+  ok(
+    rendered.includes(
+      `tenant synthesis preview: decision=required reason=${TenantContextPackSynthesisRequirementReason.TenantRequiresReleaseReadinessBriefing} policy=`,
+    ),
+  );
 });
 
 test("runAgentCliCycle dispatches advisory-promotion decisions from visible synthesis gap items", async () => {
@@ -1234,10 +1309,12 @@ test("runAgentCliCycle records context refresh reason when an agent wakes with a
   });
 
   equal(result.exitCode, 0);
-  deepEqual(latestLookups, [{
-    organizationId: "org-1",
-    agentId: "agent-director-1",
-  }]);
+  deepEqual(latestLookups, [
+    {
+      organizationId: "org-1",
+      agentId: "agent-director-1",
+    },
+  ]);
   equal(result.evidence?.contextRefreshReason, ContextPackRefreshReason.HatAssignmentChanged);
   equal(result.evidence?.previousContextPackId, "ctx-previous-assignment");
   equal(result.evidence?.contextRefreshRequiresBuild, true);
@@ -1803,14 +1880,28 @@ test("runAgentCliCycle can select edit-grammar/branch without dispatching side e
   equal(result.exitCode, 0);
   equal(result.actionResult?.outcome, "grammar_branch_requested");
   ok(stdout.join("\n").includes("[07] T branch.fork edit-grammar / branch"));
-  ok(stdout.join("\n").includes("action: grammar-branch requested edit-grammar/branch selected; no side effects for this tick"));
+  ok(
+    stdout
+      .join("\n")
+      .includes("action: grammar-branch requested edit-grammar/branch selected; no side effects for this tick"),
+  );
   equal(result.evidence?.selectedIndex, 7);
 });
 
 test("runAgentCliCycle can select history retract/redo without dispatching side effects", async () => {
   for (const [slotIndex, label, outcome, actionLine] of [
-    [10, "history.retract retract", "history_retract_requested", "action: history-retract requested history.retract selected; no ledger mutation for this tick"],
-    [11, "history.redo redo", "history_redo_requested", "action: history-redo requested history.redo selected; no ledger mutation for this tick"],
+    [
+      10,
+      "history.retract retract",
+      "history_retract_requested",
+      "action: history-retract requested history.retract selected; no ledger mutation for this tick",
+    ],
+    [
+      11,
+      "history.redo redo",
+      "history_redo_requested",
+      "action: history-redo requested history.redo selected; no ledger mutation for this tick",
+    ],
   ] as const) {
     const stdout: string[] = [];
     const result = await runAgentCliCycle({
@@ -1858,17 +1949,7 @@ test("runAgentCliCycle rejects vetoed work slots while keeping all-vetoed meta c
   let dispatched = false;
   const stdout: string[] = [];
   const result = await runAgentCliCycle({
-    argv: [
-      "observe",
-      "--hat",
-      "release_operator",
-      "--scope",
-      "run",
-      "--phase",
-      "observing",
-      "--select-index",
-      "4",
-    ],
+    argv: ["observe", "--hat", "release_operator", "--scope", "run", "--phase", "observing", "--select-index", "4"],
     now: () => "2026-05-31T12:00:00.000Z",
     writeStdout: (text) => stdout.push(text),
     deterministicRules: [
@@ -1975,13 +2056,15 @@ test("runAgentCliCycle renders prompt-flow tasks and loads selected context", as
 
 test("runAgentCliCycle renders prompt-flow overflow pages and reobserve page navigation", async () => {
   const stdout: string[] = [];
-  const tasks = Array.from({ length: 3 }, (_, index) => promptFlowTask({
-    taskId: `task-${index + 1}`,
-    promptFlowId: `flow-${index + 1}`,
-    label: `Task ${index + 1}`,
-    actionClass: ActionClass.WriteCode,
-    priority: 100 - index,
-  }));
+  const tasks = Array.from({ length: 3 }, (_, index) =>
+    promptFlowTask({
+      taskId: `task-${index + 1}`,
+      promptFlowId: `flow-${index + 1}`,
+      label: `Task ${index + 1}`,
+      actionClass: ActionClass.WriteCode,
+      priority: 100 - index,
+    }),
+  );
 
   const result = await runAgentCliCycle({
     argv: [
@@ -2033,13 +2116,15 @@ test("runAgentCliCycle renders prompt-flow overflow pages and reobserve page nav
 });
 
 test("runAgentCliCycle binds selected prompt-flow task identity into evidence", async () => {
-  const tasks = Array.from({ length: 3 }, (_, index) => promptFlowTask({
-    taskId: `task-${index + 1}`,
-    promptFlowId: `flow-${index + 1}`,
-    label: "Duplicate label",
-    actionClass: ActionClass.WriteCode,
-    priority: 100 - index,
-  }));
+  const tasks = Array.from({ length: 3 }, (_, index) =>
+    promptFlowTask({
+      taskId: `task-${index + 1}`,
+      promptFlowId: `flow-${index + 1}`,
+      label: "Duplicate label",
+      actionClass: ActionClass.WriteCode,
+      priority: 100 - index,
+    }),
+  );
 
   const result = await runAgentCliCycle({
     argv: [
@@ -2499,83 +2584,87 @@ test("createAgentCliPromptFlowTasksFromEnv compiles durable definitions and runs
 
 test("createAgentCliPromptFlowTasksFromEnv rejects invalid durable prompt-flow definitions before observe", () => {
   throws(
-    () => createAgentCliPromptFlowTasksFromEnv({
-      env: {
-        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
-          promptFlowDefinition({
-            allowedHatIds: [],
-            phases: [
-              {
-                ...promptFlowDefinition().phases[0]!,
-                requiredEvidenceRefs: [],
-              },
-            ],
-          }),
-        ]),
-        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
-      },
-    }),
+    () =>
+      createAgentCliPromptFlowTasksFromEnv({
+        env: {
+          AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+            promptFlowDefinition({
+              allowedHatIds: [],
+              phases: [
+                {
+                  ...promptFlowDefinition().phases[0]!,
+                  requiredEvidenceRefs: [],
+                },
+              ],
+            }),
+          ]),
+          AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+        },
+      }),
     /AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON failed lint/,
   );
 });
 
 test("createAgentCliPromptFlowTasksFromEnv rejects blank durable visible strings before observe", () => {
   throws(
-    () => createAgentCliPromptFlowTasksFromEnv({
-      env: {
-        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
-          promptFlowDefinition({
-            name: "   ",
-            phases: [{ ...promptFlowDefinition().phases[0]!, label: "   " }],
-          }),
-        ]),
-        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
-      },
-    }),
+    () =>
+      createAgentCliPromptFlowTasksFromEnv({
+        env: {
+          AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+            promptFlowDefinition({
+              name: "   ",
+              phases: [{ ...promptFlowDefinition().phases[0]!, label: "   " }],
+            }),
+          ]),
+          AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+        },
+      }),
     /prompt-flow definition name must be a non-empty string/,
   );
 });
 
 test("createAgentCliPromptFlowTasksFromEnv rejects blank strings inside durable phase arrays", () => {
   throws(
-    () => createAgentCliPromptFlowTasksFromEnv({
-      env: {
-        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
-          promptFlowDefinition({
-            phases: [
-              {
-                ...promptFlowDefinition().phases[0]!,
-                directions: [""],
-              },
-            ],
-          }),
-        ]),
-        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
-      },
-    }),
+    () =>
+      createAgentCliPromptFlowTasksFromEnv({
+        env: {
+          AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+            promptFlowDefinition({
+              phases: [
+                {
+                  ...promptFlowDefinition().phases[0]!,
+                  directions: [""],
+                },
+              ],
+            }),
+          ]),
+          AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+        },
+      }),
     /prompt-flow task directions must contain only non-empty strings/,
   );
 });
 
 test("createAgentCliPromptFlowTasksFromEnv rejects durable runs that cannot compile into observe-visible tasks", () => {
   throws(
-    () => createAgentCliPromptFlowTasksFromEnv({
-      env: {
-        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([promptFlowDefinition()]),
-        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([
-          {
-            runId: "pfr-typo",
-            promptFlowId: "flow-code-change",
-            definitionVersion: "1.0.0",
-            workItemId: "work-compile-1",
-            scope: RunScope.WorkItem,
-            currentPhaseId: "missing-phase",
-            state: PromptFlowRunState.RunningPhase,
-            priority: 42,
-          },
-        ]),
-      },
-    }),
+    () =>
+      createAgentCliPromptFlowTasksFromEnv({
+        env: {
+          AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([promptFlowDefinition()]),
+          AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([
+            {
+              runId: "pfr-typo",
+              promptFlowId: "flow-code-change",
+              definitionVersion: "1.0.0",
+              workItemId: "work-compile-1",
+              scope: RunScope.WorkItem,
+              currentPhaseId: "missing-phase",
+              state: PromptFlowRunState.RunningPhase,
+              priority: 42,
+            },
+          ]),
+        },
+      }),
     /AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON failed compile coverage/,
   );
 });
@@ -2593,49 +2682,46 @@ test("createAgentCliPromptFlowTasksFromEnv rejects duplicate durable run ids bef
   };
 
   throws(
-    () => createAgentCliPromptFlowTasksFromEnv({
-      env: {
-        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([promptFlowDefinition()]),
-        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([
-          run,
-          { ...run, currentPhaseId: "missing-phase" },
-        ]),
-      },
-    }),
+    () =>
+      createAgentCliPromptFlowTasksFromEnv({
+        env: {
+          AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([promptFlowDefinition()]),
+          AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([run, { ...run, currentPhaseId: "missing-phase" }]),
+        },
+      }),
     /AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON contains duplicate run ids: pfr-duplicate/,
   );
 });
 
 test("createAgentCliPromptFlowTasksFromEnv rejects duplicate durable definition keys", () => {
   throws(
-    () => createAgentCliPromptFlowTasksFromEnv({
-      env: {
-        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
-          promptFlowDefinition(),
-          promptFlowDefinition({ name: "Duplicate flow" }),
-        ]),
-        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
-      },
-    }),
+    () =>
+      createAgentCliPromptFlowTasksFromEnv({
+        env: {
+          AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+            promptFlowDefinition(),
+            promptFlowDefinition({ name: "Duplicate flow" }),
+          ]),
+          AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+        },
+      }),
     /AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON contains duplicate definition keys: flow-code-change@1.0.0/,
   );
 });
 
 test("createAgentCliPromptFlowTasksFromEnv rejects duplicate durable phase ids", () => {
   throws(
-    () => createAgentCliPromptFlowTasksFromEnv({
-      env: {
-        AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
-          promptFlowDefinition({
-            phases: [
-              promptFlowDefinition().phases[0]!,
-              { ...promptFlowDefinition().phases[1]!, phaseId: "context" },
-            ],
-          }),
-        ]),
-        AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
-      },
-    }),
+    () =>
+      createAgentCliPromptFlowTasksFromEnv({
+        env: {
+          AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON: JSON.stringify([
+            promptFlowDefinition({
+              phases: [promptFlowDefinition().phases[0]!, { ...promptFlowDefinition().phases[1]!, phaseId: "context" }],
+            }),
+          ]),
+          AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON: JSON.stringify([]),
+        },
+      }),
     /prompt-flow definition flow-code-change@1.0.0 contains duplicate phase ids: context/,
   );
 });
@@ -2680,14 +2766,16 @@ function contextReadout(): ContextReadout {
     freshness: ContextPackFreshness.Current,
     confidence: 1,
     reasons: ["stage-bound"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.DocUnit,
-      docUnitId,
-      contentRef: "docs/project/brd.md",
-      contentHash: "hash-brd",
-      sourceId: "source-main",
-      version: 1,
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.DocUnit,
+        docUnitId,
+        contentRef: "docs/project/brd.md",
+        contentHash: "hash-brd",
+        sourceId: "source-main",
+        version: 1,
+      },
+    ],
   };
   const optionalItem = {
     id: memoryId,
@@ -2699,12 +2787,14 @@ function contextReadout(): ContextReadout {
     freshness: ContextPackFreshness.Current,
     confidence: 0.7,
     reasons: ["hat-scoped recall"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.HindsightMemory,
-      providerId: "hindsight",
-      memoryId,
-      advisory: true,
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.HindsightMemory,
+        providerId: "hindsight",
+        memoryId,
+        advisory: true,
+      },
+    ],
   };
   const pack = {
     id: "ctx-pack-1",
@@ -2805,42 +2895,46 @@ function contextReadout(): ContextReadout {
         itemId: docUnitId,
         itemKind: ContextPackItemKind.BusinessDocument,
         itemTitle: "BRD",
-        targets: [{
-          targetKind: ContextPackSourcePointerKind.DocUnit,
-          targetId: docUnitId,
-          routeRef: "doc_unit:doc-brd:v1",
-          label: "Document doc-brd",
-          sourcePointer: requiredItem.sourcePointers[0]!,
-        }],
+        targets: [
+          {
+            targetKind: ContextPackSourcePointerKind.DocUnit,
+            targetId: docUnitId,
+            routeRef: "doc_unit:doc-brd:v1",
+            label: "Document doc-brd",
+            sourcePointer: requiredItem.sourcePointers[0]!,
+          },
+        ],
       },
       {
         itemId: memoryId,
         itemKind: ContextPackItemKind.MemoryPointer,
         itemTitle: "Prior blocker memory",
-        targets: [{
-          targetKind: ContextPackSourcePointerKind.HindsightMemory,
-          targetId: memoryId,
-          routeRef: "hindsight_memory:hindsight:mem-1",
-          label: "Memory mem-1",
-          sourcePointer: optionalItem.sourcePointers[0]!,
-          governance: {
-            tier: MemoryTier.Work,
-            phase: MemoryPhase.Active,
-            scope: "work-1",
-            weight: 0.81,
-            readFloor: 0.35,
-            freshnessAt: "2026-05-29T00:00:00.000Z",
-            outcome: {
-              successCount: 4,
-              failureCount: 1,
-              inconclusiveCount: 0,
-            },
-            utility: {
-              injectedCount: 8,
-              citedCount: 6,
+        targets: [
+          {
+            targetKind: ContextPackSourcePointerKind.HindsightMemory,
+            targetId: memoryId,
+            routeRef: "hindsight_memory:hindsight:mem-1",
+            label: "Memory mem-1",
+            sourcePointer: optionalItem.sourcePointers[0]!,
+            governance: {
+              tier: MemoryTier.Work,
+              phase: MemoryPhase.Active,
+              scope: "work-1",
+              weight: 0.81,
+              readFloor: 0.35,
+              freshnessAt: "2026-05-29T00:00:00.000Z",
+              outcome: {
+                successCount: 4,
+                failureCount: 1,
+                inconclusiveCount: 0,
+              },
+              utility: {
+                injectedCount: 8,
+                citedCount: 6,
+              },
             },
           },
-        }],
+        ],
       },
     ],
     summary: {
@@ -2887,17 +2981,19 @@ function advisoryPromotionContextReadout(): ContextReadout {
     confidence: 0.72,
     reasons: ["grounded synthesis gap"],
     citationRefs: ["doc:billing-brd", "context_requirement:owner"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.DocUnit,
-      docUnitId: "doc-brd",
-      contentRef: "docs/project/brd.md",
-      contentHash: "hash-brd",
-      sourceId: "source-main",
-      version: 1,
-      organizationId: "org-lfg",
-      scopeKind: DocScopeKind.Project,
-      scopeId: "project-billing",
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.DocUnit,
+        docUnitId: "doc-brd",
+        contentRef: "docs/project/brd.md",
+        contentHash: "hash-brd",
+        sourceId: "source-main",
+        version: 1,
+        organizationId: "org-lfg",
+        scopeKind: DocScopeKind.Project,
+        scopeId: "project-billing",
+      },
+    ],
   };
   const scopedExistingItems = readout.pack.items.map((item) => ({
     ...item,
@@ -2909,7 +3005,7 @@ function advisoryPromotionContextReadout(): ContextReadout {
             scopeKind: DocScopeKind.Project,
             scopeId: "project-billing",
           }
-        : pointer
+        : pointer,
     ),
   }));
   const baseCurationPlan = readout.pack.curationPlan;
@@ -2979,53 +3075,59 @@ function contextPackInboxWorkflowView(): ContextPackInboxWorkflowView {
     batches: [
       {
         kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
-        items: [{
-          inboxAnchorId: "inbox-release-blocker",
-          organizationId: "org-1",
-          projectId: "project-1",
-          teamId: "team-release",
-          workItemId: "work-1",
-          targetHatAssignmentId: "99",
-          targetAgentId: "agent-release-1",
-          title: "Release blocker inbox",
-          summary: "Release operator wakeup was triggered by missing gate evidence.",
-          priority: ContextPackInboxAnchorPriority.Urgent,
-          status: ContextPackInboxAnchorStatus.Unread,
-          deliveredAt: "2026-05-31T00:40:00.000Z",
-          actions: [
-            {
-              kind: ContextPackInboxWorkflowActionKind.MarkRead,
-              targetStatus: ContextPackInboxAnchorStatus.Read,
-              requiresSnoozedUntil: false,
-            },
-            {
-              kind: ContextPackInboxWorkflowActionKind.Snooze,
-              targetStatus: ContextPackInboxAnchorStatus.Snoozed,
-              requiresSnoozedUntil: true,
-            },
-          ],
-        }],
+        items: [
+          {
+            inboxAnchorId: "inbox-release-blocker",
+            organizationId: "org-1",
+            projectId: "project-1",
+            teamId: "team-release",
+            workItemId: "work-1",
+            targetHatAssignmentId: "99",
+            targetAgentId: "agent-release-1",
+            title: "Release blocker inbox",
+            summary: "Release operator wakeup was triggered by missing gate evidence.",
+            priority: ContextPackInboxAnchorPriority.Urgent,
+            status: ContextPackInboxAnchorStatus.Unread,
+            deliveredAt: "2026-05-31T00:40:00.000Z",
+            actions: [
+              {
+                kind: ContextPackInboxWorkflowActionKind.MarkRead,
+                targetStatus: ContextPackInboxAnchorStatus.Read,
+                requiresSnoozedUntil: false,
+              },
+              {
+                kind: ContextPackInboxWorkflowActionKind.Snooze,
+                targetStatus: ContextPackInboxAnchorStatus.Snoozed,
+                requiresSnoozedUntil: true,
+              },
+            ],
+          },
+        ],
       },
       {
         kind: ContextPackInboxWorkflowBatchKind.SnoozedFuture,
-        items: [{
-          inboxAnchorId: "inbox-director-review",
-          organizationId: "org-1",
-          projectId: "project-1",
-          targetHatAssignmentId: "99",
-          targetAgentId: "agent-release-1",
-          title: "Director review inbox",
-          summary: "Director requested a later review of the release decision.",
-          priority: ContextPackInboxAnchorPriority.Normal,
-          status: ContextPackInboxAnchorStatus.Snoozed,
-          deliveredAt: "2026-05-31T00:45:00.000Z",
-          snoozedUntil: "2026-05-31T14:30:00.000Z",
-          actions: [{
-            kind: ContextPackInboxWorkflowActionKind.MarkRead,
-            targetStatus: ContextPackInboxAnchorStatus.Read,
-            requiresSnoozedUntil: false,
-          }],
-        }],
+        items: [
+          {
+            inboxAnchorId: "inbox-director-review",
+            organizationId: "org-1",
+            projectId: "project-1",
+            targetHatAssignmentId: "99",
+            targetAgentId: "agent-release-1",
+            title: "Director review inbox",
+            summary: "Director requested a later review of the release decision.",
+            priority: ContextPackInboxAnchorPriority.Normal,
+            status: ContextPackInboxAnchorStatus.Snoozed,
+            deliveredAt: "2026-05-31T00:45:00.000Z",
+            snoozedUntil: "2026-05-31T14:30:00.000Z",
+            actions: [
+              {
+                kind: ContextPackInboxWorkflowActionKind.MarkRead,
+                targetStatus: ContextPackInboxAnchorStatus.Read,
+                requiresSnoozedUntil: false,
+              },
+            ],
+          },
+        ],
       },
     ],
   };

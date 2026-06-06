@@ -15,11 +15,11 @@ current-round decisions.
 
 Verbatim (2026-04-20):
 
-> *"I also know tensors and math so we can eventually
+> _"I also know tensors and math so we can eventually
 > get into AI research too, just trying to make this
 > factory and Zeta tight first, could you image Zeta
 > as a primitieve for AI projects, that would be
-> insane."*
+> insane."_
 
 # Why it coheres
 
@@ -58,8 +58,8 @@ substantive:
 
 # Why it's not the current target
 
-Aaron was explicit: *"just trying to make this factory
-and Zeta tight first."* Order matters:
+Aaron was explicit: _"just trying to make this factory
+and Zeta tight first."_ Order matters:
 
 1. **Factory tight.** Skills, personas, BPs, hygiene
    list, resume triptych, greenfield-UX, honesty-floor
@@ -107,7 +107,7 @@ override.
 
 # Aaron's register on this
 
-*"that would be insane"* — enthusiastic / excited, not
+_"that would be insane"_ — enthusiastic / excited, not
 solemn. Match his register when discussing the
 direction: share enthusiasm, don't perform reverence,
 don't manufacture urgency. This is a **future
@@ -129,9 +129,9 @@ demanding immediate action.
   depth.
 - `project_aurora_pitch_michael_best_x402_erc8004.md`
   — Aurora pitch's three pillars (factory + alignment
-  + x402/ERC-8004) leaves room for a fourth pillar
-  eventually: Zeta-as-AI-primitive substrate layer.
-  Not in the current pitch.
+  - x402/ERC-8004) leaves room for a fourth pillar
+    eventually: Zeta-as-AI-primitive substrate layer.
+    Not in the current pitch.
 - `feedback_never_idle_speculative_work_over_waiting.md`
   — AI-research speculation now would be exactly the
   wrong speculative work; current-round work is

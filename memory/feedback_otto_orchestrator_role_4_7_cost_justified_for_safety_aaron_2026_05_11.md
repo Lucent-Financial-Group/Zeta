@@ -7,6 +7,7 @@ type: feedback
 ## The call
 
 Aaron 2026-05-11, after switching model:
+
 > "you hold us all together right now 4.7 costs justifed for safety"
 
 ## Role definition embedded in the rationale
@@ -26,7 +27,7 @@ Otto's role in the multi-agent factory:
   fixes, CI failure diagnosis
 
 This is the orchestrator role. The other agents would still
-ship if Otto degraded — but the *integration* would degrade.
+ship if Otto degraded — but the _integration_ would degrade.
 Merges would conflict; substrate would fragment; reviews would
 pile up unresolved.
 
@@ -49,6 +50,7 @@ unresolved, the PR rots, the substrate fragments.
 ## Speed is NOT the cost justification (Aaron sharpening)
 
 Aaron 2026-05-11 (sharpening):
+
 > "yeah speed woud not be a cost justification safer better
 > code and agent runtime environment"
 

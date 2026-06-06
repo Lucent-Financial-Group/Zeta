@@ -15,17 +15,17 @@ sparse-columns + timestamp.
 
 ## The wide-column canon
 
-| System | Lineage | Default guarantee |
-|---|---|---|
-| **Apache Cassandra** | DynamoDB + Bigtable papers | AP, tunable |
-| **ScyllaDB** | Cassandra-wire, C++ rewrite | Same, faster |
-| **Apache HBase** | Bigtable paper, HDFS-backed | CP |
-| **Google Bigtable** | Original (2006 paper) | Strong within row |
-| **Amazon Keyspaces** | Cassandra-wire managed | AP-ish |
-| **Cosmos DB (Cassandra)** | Azure multi-model | tunable |
-| **DataStax Astra** | Managed Cassandra | AP, tunable |
-| **Accumulo** | Bigtable + cell-level security | CP |
-| **Azure Table Storage** | Wide-column-ish KV | Strong |
+| System                    | Lineage                        | Default guarantee |
+| ------------------------- | ------------------------------ | ----------------- |
+| **Apache Cassandra**      | DynamoDB + Bigtable papers     | AP, tunable       |
+| **ScyllaDB**              | Cassandra-wire, C++ rewrite    | Same, faster      |
+| **Apache HBase**          | Bigtable paper, HDFS-backed    | CP                |
+| **Google Bigtable**       | Original (2006 paper)          | Strong within row |
+| **Amazon Keyspaces**      | Cassandra-wire managed         | AP-ish            |
+| **Cosmos DB (Cassandra)** | Azure multi-model              | tunable           |
+| **DataStax Astra**        | Managed Cassandra              | AP, tunable       |
+| **Accumulo**              | Bigtable + cell-level security | CP                |
+| **Azure Table Storage**   | Wide-column-ish KV             | Strong            |
 
 ## The data model
 
@@ -80,13 +80,13 @@ normalised.
 
 ## Partition key hazards
 
-| Anti-pattern | Result |
-|---|---|
-| `user_id` alone for 10B events | Partition = 10GB, read pain |
-| `(user_id, year)` | Hot year-partition |
-| `uuid` alone (fine-grained) | Tiny partitions, node imbalance fine |
-| Timestamp as partition key | Hotspot on new data |
-| Monotonic counter | Hotspot |
+| Anti-pattern                   | Result                               |
+| ------------------------------ | ------------------------------------ |
+| `user_id` alone for 10B events | Partition = 10GB, read pain          |
+| `(user_id, year)`              | Hot year-partition                   |
+| `uuid` alone (fine-grained)    | Tiny partitions, node imbalance fine |
+| Timestamp as partition key     | Hotspot on new data                  |
+| Monotonic counter              | Hotspot                              |
 
 **Rule.** Partition size sweet spot: 10-100 MB, up to
 100k rows. Below → overhead; above → read cost +
@@ -101,12 +101,12 @@ compaction pain.
 
 ### Compaction strategies
 
-| Strategy | Use |
-|---|---|
-| **Size-Tiered (STCS)** | Write-heavy default |
-| **Leveled (LCS)** | Read-heavy, predictable read amp |
-| **Time-Window (TWCS)** | Time-series with TTL |
-| **Unified (UCS)** | Scylla, adaptive |
+| Strategy               | Use                              |
+| ---------------------- | -------------------------------- |
+| **Size-Tiered (STCS)** | Write-heavy default              |
+| **Leveled (LCS)**      | Read-heavy, predictable read amp |
+| **Time-Window (TWCS)** | Time-series with TTL             |
+| **Unified (UCS)**      | Scylla, adaptive                 |
 
 **Rule.** TWCS for time-series TTL data. LCS for reads
 dominating writes. STCS for write-dominated. Picking
@@ -114,7 +114,7 @@ wrong = ongoing pain.
 
 ## Tombstones — the silent killer
 
-- Deletes + TTL expires write *tombstones*.
+- Deletes + TTL expires write _tombstones_.
 - Tombstones live for `gc_grace_seconds` (default 10
   days) for anti-entropy correctness.
 - Reading past thousands of tombstones is slow.
@@ -130,15 +130,15 @@ CONSISTENCY LOCAL_QUORUM;
 SELECT ...;
 ```
 
-| Level | Who acks |
-|---|---|
-| `ONE` | Any replica |
-| `LOCAL_ONE` | Any local-DC replica |
-| `QUORUM` | `floor(RF/2)+1` replicas |
-| `LOCAL_QUORUM` | Quorum of local DC |
-| `ALL` | Every replica |
-| `EACH_QUORUM` | Quorum per DC |
-| `SERIAL` / `LOCAL_SERIAL` | Paxos |
+| Level                     | Who acks                 |
+| ------------------------- | ------------------------ |
+| `ONE`                     | Any replica              |
+| `LOCAL_ONE`               | Any local-DC replica     |
+| `QUORUM`                  | `floor(RF/2)+1` replicas |
+| `LOCAL_QUORUM`            | Quorum of local DC       |
+| `ALL`                     | Every replica            |
+| `EACH_QUORUM`             | Quorum per DC            |
+| `SERIAL` / `LOCAL_SERIAL` | Paxos                    |
 
 With `RF=3`:
 
@@ -259,7 +259,7 @@ are tempting but fragile.
 
 - **Cross-model** → `database-systems-expert`.
 - **Time-series specifics** → `time-series-database-
-  expert`.
+expert`.
 - **Columnar-OLAP** → `columnar-storage-expert`.
 - **LWT / Paxos** → `distributed-consensus-expert`.
 - **Gossip** → `gossip-protocols-expert`.
@@ -286,11 +286,11 @@ are tempting but fragile.
 
 ## Reference patterns
 
-- Chang et al. — *Bigtable: A Distributed Storage
-  System* (OSDI 2006).
-- DeCandia et al. — *Dynamo: Amazon's Highly Available
-  Key-Value Store* (SOSP 2007).
-- Carpenter & Hewitt — *Cassandra: The Definitive Guide*.
+- Chang et al. — _Bigtable: A Distributed Storage
+  System_ (OSDI 2006).
+- DeCandia et al. — _Dynamo: Amazon's Highly Available
+  Key-Value Store_ (SOSP 2007).
+- Carpenter & Hewitt — _Cassandra: The Definitive Guide_.
 - ScyllaDB docs.
 - HBase Reference Guide.
 - Google Bigtable docs.

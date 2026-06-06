@@ -38,6 +38,7 @@ Follow-up: close #5049 with substrate-recoverable cross-link.
 Re-lands backlog row **B-0763** describing the “Zeta-owned interfaces → vendor-swappable plugins” strategy, and updates the generated backlog index accordingly.
 
 **Changes:**
+
 - Adds new per-row backlog file for **B-0763** under `docs/backlog/P2/`.
 - Regenerates `docs/BACKLOG.md` to include the new row link.
 
@@ -45,10 +46,10 @@ Re-lands backlog row **B-0763** describing the “Zeta-owned interfaces → vend
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                            | Description                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0763-cloud-native-plugins-fit-zeta-shape-not-vice-versa-negotiation-high-seat-vendor-swap-aaron-2026-05-25.md | New backlog row capturing the plugin/interface “negotiation high seat” concept plus acceptance criteria. |
-| docs/BACKLOG.md | Regenerated index entry adding B-0763 to the P2 list. |
+| docs/BACKLOG.md                                                                                                                 | Regenerated index entry adding B-0763 to the P2 list.                                                    |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T04:43:00Z)
 

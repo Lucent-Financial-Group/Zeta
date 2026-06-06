@@ -12,7 +12,7 @@ spec:
     Always namespace-scoped — the operator rejects bindings whose
     HatBinding namespace differs from the wearer's permitted scope.
   authority:
-    namespaces: []  # any single namespace at bind time
+    namespaces: [] # any single namespace at bind time
     rules:
       - apiGroups: ["apps"]
         resources: ["deployments", "statefulsets", "daemonsets"]

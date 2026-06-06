@@ -173,10 +173,7 @@ describe("persist → restore round-trip via tmpdir", () => {
     const firstPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, firstRoot);
     if ("error" in firstPlan) throw new Error(firstPlan.error);
     expect(applyPlan(firstPlan)).toBe(1);
-    const firstGhPath = resolveCredPaths(
-      DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!,
-      firstRoot,
-    )[0]!;
+    const firstGhPath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, firstRoot)[0]!;
     expect(readFileSync(firstGhPath, "utf8")).toBe("RETENTION-TOKEN-VALUE");
 
     // Simulates root reformat: target root is removed while ESP blob remains.
@@ -185,10 +182,7 @@ describe("persist → restore round-trip via tmpdir", () => {
     const reformatPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, secondRoot);
     if ("error" in reformatPlan) throw new Error(reformatPlan.error);
     expect(applyPlan(reformatPlan)).toBe(1);
-    const secondGhPath = resolveCredPaths(
-      DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!,
-      secondRoot,
-    )[0]!;
+    const secondGhPath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, secondRoot)[0]!;
     expect(readFileSync(secondGhPath, "utf8")).toBe("RETENTION-TOKEN-VALUE");
 
     const idempotentPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, secondRoot);

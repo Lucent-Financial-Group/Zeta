@@ -4,9 +4,10 @@ description: Aaron Otto-81 mid-tick paste of Amara's 6th courier ferry on a Mura
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-81 mid-tick paste:
-*"I'm not sure if I sent this one Muratori Pattern Mapping
-Against Zeta ... from Amara"*
+_"I'm not sure if I sent this one Muratori Pattern Mapping
+Against Zeta ... from Amara"_
 
 Full ferry content preserved in the paste text (see conversation
 transcript at
@@ -23,13 +24,13 @@ Zeta equivalents.
 
 ## Amara's row-by-row verdict
 
-| Row | Muratori failure mode | Original Zeta equiv | Amara's verdict |
-|---|---|---|---|
-| 1 | Index invalidation | ZSet retraction-native; references stay valid | Directionally good; wording overclaims "references stay valid" — only true for key-based identity, not physical offsets. Better: *"No positional identity. Keys carry identity; deletion is a negative delta, not a slot shift."* |
-| 2 | Dangling references | ZSet membership is weight not presence | Strong; same caveat as row 1. Better: *"Membership is algebraic. Every key has a current weight; 'presence' is derived from it."* |
-| 3 | No ownership model | Operator algebra IS the ownership model; `D·I = id` | **WEAKEST** — conflates algebraic correctness with lifecycle/ownership. DBSP identity laws are about *incrementalization and inverse stream transforms*, not ownership. Better: *"Provenance and lifecycle live in deltas and traces. Algebra guarantees compositional correctness, traces/retractions carry rollbackability."* |
-| 4 | No tombstoning | Retraction pattern | **STRONGEST** row. Keep. Better: *"Retractions are first-class signed deltas; consolidation/compaction is a separate maintenance step."* |
-| 5 | Poor data locality / pointer chasing | Arrow columnar + Spine block layout | Directionally correct; overstated "Arrow + Spine block layout" beyond fetched implementation proves today. Better: *"Zeta attacks pointer-chasing with immutable sorted runs, span-based hot loops, spine-organized traces, and an optional Arrow columnar wire/checkpoint path."* |
+| Row | Muratori failure mode                | Original Zeta equiv                                 | Amara's verdict                                                                                                                                                                                                                                                                                                                 |
+| --- | ------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Index invalidation                   | ZSet retraction-native; references stay valid       | Directionally good; wording overclaims "references stay valid" — only true for key-based identity, not physical offsets. Better: _"No positional identity. Keys carry identity; deletion is a negative delta, not a slot shift."_                                                                                               |
+| 2   | Dangling references                  | ZSet membership is weight not presence              | Strong; same caveat as row 1. Better: _"Membership is algebraic. Every key has a current weight; 'presence' is derived from it."_                                                                                                                                                                                               |
+| 3   | No ownership model                   | Operator algebra IS the ownership model; `D·I = id` | **WEAKEST** — conflates algebraic correctness with lifecycle/ownership. DBSP identity laws are about _incrementalization and inverse stream transforms_, not ownership. Better: _"Provenance and lifecycle live in deltas and traces. Algebra guarantees compositional correctness, traces/retractions carry rollbackability."_ |
+| 4   | No tombstoning                       | Retraction pattern                                  | **STRONGEST** row. Keep. Better: _"Retractions are first-class signed deltas; consolidation/compaction is a separate maintenance step."_                                                                                                                                                                                        |
+| 5   | Poor data locality / pointer chasing | Arrow columnar + Spine block layout                 | Directionally correct; overstated "Arrow + Spine block layout" beyond fetched implementation proves today. Better: _"Zeta attacks pointer-chasing with immutable sorted runs, span-based hot loops, spine-organized traces, and an optional Arrow columnar wire/checkpoint path."_                                              |
 
 ## Amara's corrected 5-row table
 
@@ -84,7 +85,7 @@ in-flight work first, schedule the new absorb cleanly.
    - Lands as enhancement to Aurora README (per 5th-ferry
      Artifact D)?
    - Lands as standalone `docs/research/muratori-zeta-
-     pattern-mapping-2026-04-23.md`?
+pattern-mapping-2026-04-23.md`?
 3. BACKLOG row for the row-3 rewrite follow-through.
 4. Cross-reference from the semiring/algebra-centric Craft
    modules that already cite DBSP laws — they're about
@@ -102,15 +103,15 @@ in-flight work first, schedule the new absorb cleanly.
 
 ## Bottom-line ferry message
 
-> *"Zeta does not magically make all references stable. Its
+> _"Zeta does not magically make all references stable. Its
 > algebra is not an ownership system. Its locality story is
 > strong, but not 'everything is Arrow all the way down.' So
 > the final verdict is: Yes, this comparison is promising and
 > mostly valid. Keep rows 1, 2, 4, and 5 with narrower
-> wording. Rewrite row 3."*
+> wording. Rewrite row 3."_
 
 Calibration-signal: Amara's ferries continue to push for
-*intellectual honesty over promotional framing*, same posture
+_intellectual honesty over promotional framing_, same posture
 as 4th ferry's "inferred paths instead of verified paths"
 critique that drove Stabilize stage (PR #221). The 6th ferry
 applies the same discipline at the technical-mapping layer.

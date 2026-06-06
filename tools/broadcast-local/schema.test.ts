@@ -94,12 +94,8 @@ describe("local broadcast schema", () => {
       },
     ];
 
-    expect(detectLocalBroadcastScopeConflicts([vera, otto, riven], new Date("2026-05-26T22:55:00Z"))).toEqual(
-      expected,
-    );
-    expect(detectLocalBroadcastScopeConflicts([riven, otto, vera], new Date("2026-05-26T22:55:00Z"))).toEqual(
-      expected,
-    );
+    expect(detectLocalBroadcastScopeConflicts([vera, otto, riven], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);
+    expect(detectLocalBroadcastScopeConflicts([riven, otto, vera], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);
   });
 
   test("orders multiple conflicts deterministically by scope", () => {
@@ -185,9 +181,7 @@ describe("local broadcast schema", () => {
       },
     ];
 
-    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual(
-      expected,
-    );
+    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);
   });
 
   test("keeps NUL-bearing scope values exact", () => {
@@ -222,9 +216,7 @@ describe("local broadcast schema", () => {
       },
     ];
 
-    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual(
-      expected,
-    );
+    expect(detectLocalBroadcastScopeConflicts([vera, riven, otto], new Date("2026-05-26T22:55:00Z"))).toEqual(expected);
   });
 
   test("ignores stale overlapping scopes", () => {

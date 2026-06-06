@@ -96,6 +96,7 @@ _(no body)_
 Adds a Bun/TypeScript recovery utility and companion documentation/skill to repair Claude Code session JSONL files that can’t be reopened due to oversize pasted image attachments (base64 ballooning a single JSONL line past the harness load limit).
 
 **Changes:**
+
 - Introduces `repair-jsonl-strip-images.ts` to scan session JSONL files for oversize lines and strip only oversize image blocks (dry-run by default, backup + validation on apply).
 - Documents usage, thresholds, and the agent/operator split for safe `--apply` execution.
 - Adds a `claude-session-recovery` skill to guide operators through scan → dry-run → operator-run apply.
@@ -104,11 +105,11 @@ Adds a Bun/TypeScript recovery utility and companion documentation/skill to repa
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 7 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/claude-code-recovery/repair-jsonl-strip-images.ts | New CLI tool to scan/repair Claude Code session JSONL lines corrupted by oversize image blocks. |
-| tools/claude-code-recovery/README.md | Usage and operational guidance for applying the recovery tool safely. |
-| .claude/skills/claude-session-recovery/SKILL.md | New skill to route “session won’t open due to image” incidents into the scripted recovery procedure. |
+| File                                                    | Description                                                                                          |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| tools/claude-code-recovery/repair-jsonl-strip-images.ts | New CLI tool to scan/repair Claude Code session JSONL lines corrupted by oversize image blocks.      |
+| tools/claude-code-recovery/README.md                    | Usage and operational guidance for applying the recovery tool safely.                                |
+| .claude/skills/claude-session-recovery/SKILL.md         | New skill to route “session won’t open due to image” incidents into the scripted recovery procedure. |
 
 ### COMMENTED — @github-advanced-security (2026-05-26T02:29:59Z)
 
@@ -153,7 +154,7 @@ This tool hard-codes a maintainer-specific Claude project slug (and embeds a use
 
 **@copilot-pull-request-reviewer** (2026-05-26T02:24:47Z):
 
-Argument parsing accepts flags without values (e.g., "--slug" at end) and then proceeds with undefined/NaN values (Number(undefined) => NaN), which will cause confusing behavior later. Add validation that every value-taking flag has a following non-flag token, and reject invalid numbers; also consider allowing numeric underscores by normalizing (remove '_' / ',' before Number) since the help/comments show underscore-separated literals.
+Argument parsing accepts flags without values (e.g., "--slug" at end) and then proceeds with undefined/NaN values (Number(undefined) => NaN), which will cause confusing behavior later. Add validation that every value-taking flag has a following non-flag token, and reject invalid numbers; also consider allowing numeric underscores by normalizing (remove '\_' / ',' before Number) since the help/comments show underscore-separated literals.
 
 ### Thread 5: tools/claude-code-recovery/repair-jsonl-strip-images.ts:312 (resolved)
 

@@ -45,14 +45,14 @@ partial order) rather than a scalar. Strictly more expressive.
 
 ### Timely frontier > Flink watermark
 
-Materialize/Timely represents progress as a *set* `{(worker, time)}`
+Materialize/Timely represents progress as a _set_ `{(worker, time)}`
 — an antichain in the partial order. DBSP's nested-scope clock is
 already a product of frontiers; we're closer to Timely than Flink.
 
 ### Speculation + rollback (Millwheel, Dataflow)
 
 Emit optimistically with confidence `< 100%`; retract on late
-data. **DBSP wins here for free** because retraction *is* the
+data. **DBSP wins here for free** because retraction _is_ the
 delta algebra. We're already RETRACTING-native.
 
 ## Our decisions

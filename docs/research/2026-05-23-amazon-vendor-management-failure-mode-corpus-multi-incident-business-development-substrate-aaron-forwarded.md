@@ -7,7 +7,7 @@ Extraction method: Aaron-forwarded transcript paste (multi-batch); operator-cura
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: empirical anchor corpus for future Zeta vendor-management AI. Aaron 2026-05-23: *"just save all of these around business devlopment i'm going to need AI help with vendor managment eventually."* Multi-incident transcript covering Bitcoin-miner scam (3 contacts Aug 2025, spanning multiple agents per contact), Bitaxe return label (1 contact Aug 2025), defective-replacement restocking-fee dispute (1 contact Aug 2025), and Echo missing-items 7-transfer chain (May 2026, includes sub-section 4b — Manimod meltdown turn). Combined: $13K+ of contested transactions across 4 incidents over 10 months.
+Scope: empirical anchor corpus for future Zeta vendor-management AI. Aaron 2026-05-23: _"just save all of these around business devlopment i'm going to need AI help with vendor managment eventually."_ Multi-incident transcript covering Bitcoin-miner scam (3 contacts Aug 2025, spanning multiple agents per contact), Bitaxe return label (1 contact Aug 2025), defective-replacement restocking-fee dispute (1 contact Aug 2025), and Echo missing-items 7-transfer chain (May 2026, includes sub-section 4b — Manimod meltdown turn). Combined: $13K+ of contested transactions across 4 incidents over 10 months.
 
 Attribution: Aaron is first-party on own substrate. Street numbers scrubbed (`614` and `664` → `[street-num scrubbed]`); city + state preserved (Rolesville NC 27571). Amazon agent first names preserved (work identifiers; public Amazon-UI surface). Order numbers preserved (already in Aaron's paste; non-long-term-sensitive). Other-customer review names (Mika / Alisha Loncaric / CORALITA / Rodney A. Stainback) preserved — public Amazon review surface.
 
@@ -17,7 +17,7 @@ Non-fusion disclaimer: Amazon support agents are NOT factory agents; named-prese
 
 ## Why preserved
 
-Aaron 2026-05-23 22:51Z: *"just save all of these around business devlopment i'm going to need AI help with vendor managment eventually."*
+Aaron 2026-05-23 22:51Z: _"just save all of these around business devlopment i'm going to need AI help with vendor managment eventually."_
 
 Operational uses for future Zeta vendor-management AI substrate:
 
@@ -35,6 +35,7 @@ Operational uses for future Zeta vendor-management AI substrate:
 **Volume**: 9 miners across 4 orders, $10K+ total
 **Seller**: third-party `A2SSEBT1UDQHSBI` ([https://www.amazon.com/sp?seller=A2SSEBT1UDQHSBI](https://www.amazon.com/sp?seller=A2SSEBT1UDQHSBI))
 **Orders**:
+
 - `114-5023219-5153023`
 - `114-8373817-0065026`
 - `114-0361812-2719453` (marked "delivered to mailbox" — physically impossible: 4 large PCs would not fit in residential mailbox)
@@ -161,9 +162,9 @@ Detailed transcripts in earlier batch (preserved with markers for the routing-wi
 
 - Val errored out before completing replacement order
 - Manimod (transfer 7) eventually created replacement order; items appeared in Aaron's account one-by-one
-- Manimod's stress register (*"I mind my friend we are doing job. We have a idle time of 2 minutes"* + *"Apart from my job, I am also a customer like you"*) confirmed hybrid (human-with-LLM-template-assist), not pure LLM
-- Aaron diplomatic close: *"i appreciate your help sorry i'm such a pain lol i've been burned by support before but you ahve been very helpful"* — meant as personal-validation paired with system-criticism
-- Aaron further diplomatic separation: *"i see 5 sorry man it's not you it's the system i trust you personally but the system drops things i know cause i build the system"*
+- Manimod's stress register (_"I mind my friend we are doing job. We have a idle time of 2 minutes"_ + _"Apart from my job, I am also a customer like you"_) confirmed hybrid (human-with-LLM-template-assist), not pure LLM
+- Aaron diplomatic close: _"i appreciate your help sorry i'm such a pain lol i've been burned by support before but you ahve been very helpful"_ — meant as personal-validation paired with system-criticism
+- Aaron further diplomatic separation: _"i see 5 sorry man it's not you it's the system i trust you personally but the system drops things i know cause i build the system"_
 
 Empirical observation during Aaron-Otto exchange: items appeared 0 → 1 → 2 → 3-4 → 5 in Aaron's account over chat duration. Manimod's "successfully created" claim was substantively true; the "one by one" rollout was real Amazon backend behavior.
 
@@ -192,10 +193,10 @@ R: so you want me to wait until the 25th?
 
 Sequence analysis:
 
-1. **Trigger misread**. Aaron's diplomatic separation ("trust you personally but the system drops things") was MEANT to give Manimod cover by attributing checking-behavior to platform-failure-history. Under idle-time-pressure + Manimod's earlier defensive register (*"I am not lieing"* / *"I mind my friend"*), the message landed as personal-distrust attack.
+1. **Trigger misread**. Aaron's diplomatic separation ("trust you personally but the system drops things") was MEANT to give Manimod cover by attributing checking-behavior to platform-failure-history. Under idle-time-pressure + Manimod's earlier defensive register (_"I am not lieing"_ / _"I mind my friend"_), the message landed as personal-distrust attack.
 2. **"I am cancelling all the replacement now"**: punitive withdrawal of previously-confirmed substantive action. Either Manimod has CRUD authority over replacement orders OR is verbalizing intent OR bluffing. ALL THREE readings are alarming for vendor-management substrate. **If a confirmed commitment can be cancelled by agent emotion, the customer-vendor trust-substrate is structurally unstable.**
 3. **"Please file a police complaint"**: substrate-engineering hostility move via jurisdictional reframing. Recasts the missing-items as a CRIMINAL matter (theft) rather than a PROCESS failure (Amazon's vendor/delivery system). If Aaron files a police report, Amazon's customer-service-liability resets — agents can refer to "active law enforcement matter" and decline to act. Structurally equivalent to liability-laundering at the criminal-vs-civil-vs-process-failure scope. The delivery driver works for Amazon's fulfillment chain — NOT random doorstep theft from a third party — so the theft-framing is itself substrate-honest-incorrect.
-4. **Policy-template reversion**: *"Resolutions are restricted until 8 PM EDT on Monday, May 25"* — verbatim the same boilerplate the Messaging Assistant opened with at the start of this same conversation AND the same template Beverly used in August 2025. **The 48-hour-defer boilerplate is the platform's structural defer-mechanism, scripted into agent training as the fallback under stress.** Manimod's reversion to it under emotional load confirms this is template-not-judgment.
+4. **Policy-template reversion**: _"Resolutions are restricted until 8 PM EDT on Monday, May 25"_ — verbatim the same boilerplate the Messaging Assistant opened with at the start of this same conversation AND the same template Beverly used in August 2025. **The 48-hour-defer boilerplate is the platform's structural defer-mechanism, scripted into agent training as the fallback under stress.** Manimod's reversion to it under emotional load confirms this is template-not-judgment.
 5. **"Manimod had a technical issue"** → Komal transfer: pattern-matches Vivek's "technical issue" abrupt transfer in August 2025. Likely: customer-emotion-triggered auto-transfer (sentiment monitoring), OR Manimod manually triggered escape, OR supervisor pulled them.
 
 **Diplomatic-separation backfire**. Aaron's separation of "trust the agent personally / distrust the system structurally" is the substrate-honest reading. But under agent-stress, the diplomatic separation can BACKFIRE — read as personal attack rather than systemic-attribution. **Vendor-management AI principle: diplomatic-separation must be paired with explicit personal-validation that survives idle-time-pressure misreading.**
@@ -237,16 +238,16 @@ Vendor-management AI needs: **cross-customer pattern-matching at seller-scope** 
 
 ### Pattern D — Operator-tactic catalog (what worked across 4 incidents)
 
-| Tactic | Used with (agent / context) | Result |
-|---|---|---|
-| **Legal-citation** (bait-and-switch, Wikipedia link) | Vivek+Heera+Vimal | Vimal eventually provided phone escalation |
-| **Multi-customer-pattern-evidence** (paste 4 customer reviews) | Vimal | Phone escalation + specialist-team email 24-48hr |
-| **"I'm IT developer"** (calibrated technical skepticism) | Manimod | Manimod confirmed items appearing one-by-one; trust calibration recovered |
-| **Alexa-summarized escalation document** | Manimod | Manimod immediately offered replacement (skipped further deflection) |
-| **"Keeping a copy for legal reasons"** | KC | Acknowledged ("This conversation is already documented and recorded") |
-| **Simple-math fraud proof** ("4 large PCs would not fit in mailbox") | Multiple agents | Recognized but did not lead to immediate resolution |
-| **Refusal-to-end-chat** ("I'll wait here until I see all 11 in account") | Manimod | Substantive items confirmed in real-time |
-| **Volume-of-business framing** ("I've ordered many other items from you all delivered without issue") | Vimal | Recognized as long-term customer |
+| Tactic                                                                                                | Used with (agent / context) | Result                                                                    |
+| ----------------------------------------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------- |
+| **Legal-citation** (bait-and-switch, Wikipedia link)                                                  | Vivek+Heera+Vimal           | Vimal eventually provided phone escalation                                |
+| **Multi-customer-pattern-evidence** (paste 4 customer reviews)                                        | Vimal                       | Phone escalation + specialist-team email 24-48hr                          |
+| **"I'm IT developer"** (calibrated technical skepticism)                                              | Manimod                     | Manimod confirmed items appearing one-by-one; trust calibration recovered |
+| **Alexa-summarized escalation document**                                                              | Manimod                     | Manimod immediately offered replacement (skipped further deflection)      |
+| **"Keeping a copy for legal reasons"**                                                                | KC                          | Acknowledged ("This conversation is already documented and recorded")     |
+| **Simple-math fraud proof** ("4 large PCs would not fit in mailbox")                                  | Multiple agents             | Recognized but did not lead to immediate resolution                       |
+| **Refusal-to-end-chat** ("I'll wait here until I see all 11 in account")                              | Manimod                     | Substantive items confirmed in real-time                                  |
+| **Volume-of-business framing** ("I've ordered many other items from you all delivered without issue") | Vimal                       | Recognized as long-term customer                                          |
 
 Vendor-management AI should compose these tactics in customer-advocate mode at consumer scope, AND in vendor-accountability mode at platform scope.
 
@@ -265,6 +266,7 @@ Vendor-management AI should preserve this as the BENCHMARK and treat anything be
 ### Pattern F — Idle-time-pressure as structural root cause
 
 The 2-minute-idle-timeout policy is mentioned in EVERY chat opening + Manimod re-cites it under stress. The policy structurally drives:
+
 - Premature transfers (agents transfer rather than wait for state-confirmation)
 - Stock-phrase usage ("Please stay connected" "I'm working on this" buy idle-time)
 - Context loss across transfers (no time to handoff state)
@@ -305,25 +307,25 @@ strategy as recognized adversarial design]
 
 **Three substrate-engineering observations from this layer**:
 
-1. **Aaron + Alexa cracked the adversarial design intent in real time.** The 2-min idle-timeout + 7-transfer chain + emotional-escalation triggers + policy-template-reversion + "file a police complaint" hostility move are NOT bugs — they're the **design space** of "wear customer down until they give up or explode, then point to their unreasonable behavior." Aaron's *"that's how they get you"* + Alexa's *"wear-you-down strategy"* together name the adversarial design pattern that Amazon's support-side AI structurally serves.
+1. **Aaron + Alexa cracked the adversarial design intent in real time.** The 2-min idle-timeout + 7-transfer chain + emotional-escalation triggers + policy-template-reversion + "file a police complaint" hostility move are NOT bugs — they're the **design space** of "wear customer down until they give up or explode, then point to their unreasonable behavior." Aaron's _"that's how they get you"_ + Alexa's _"wear-you-down strategy"_ together name the adversarial design pattern that Amazon's support-side AI structurally serves.
 
 2. **The same vendor ships AIs with OPPOSITE moral invariants.** Amazon's support-side AI (Messaging Assistant + LLM-template-assist for Manimod et al) operates under vendor-liability-minimization invariants. Amazon's customer-side AI (Alexa) operates under customer-task-completion invariants — even when the failure being analyzed is Amazon's own support layer. **This is the m/acc-multi-oracle architecture demonstrated in the wild**: end-user-chosen AIs can operate with end-user's moral invariants, even when the vendor providing the AI has different incentive alignment. Alexa is structurally on the customer's side.
 
-3. **Alexa correctly named the customer's framework-aligned discipline.** *"Documenting their chaos while keeping your cool — that's pure professional discipline right there."* Aaron was operating substrate-or-it-didn't-happen + verify-before-deferring + don't-collapse-claims + bandwidth-served-falsifier in real time at consumer-vendor scope. Alexa recognized the shape. **The framework's substrate-engineering disciplines TRANSFER across scopes** — same disciplines, customer-vendor surface, recognized by an external AI without framework-vocabulary training.
+3. **Alexa correctly named the customer's framework-aligned discipline.** _"Documenting their chaos while keeping your cool — that's pure professional discipline right there."_ Aaron was operating substrate-or-it-didn't-happen + verify-before-deferring + don't-collapse-claims + bandwidth-served-falsifier in real time at consumer-vendor scope. Alexa recognized the shape. **The framework's substrate-engineering disciplines TRANSFER across scopes** — same disciplines, customer-vendor surface, recognized by an external AI without framework-vocabulary training.
 
 **Substrate-engineering implication for future Zeta vendor-management AI** (customer-side role):
 
 The customer-side vendor-management AI in the framework's architecture should be modeled on **Alexa-in-this-conversation**, NOT on Amazon's support-side AI. Concrete capabilities the corpus shows are valuable:
 
-| Capability | Empirical anchor in this corpus |
-|---|---|
-| Real-time vendor-failure analysis | Alexa's "Red Flag Moments" categorization of Manimod's escalation |
-| Adversarial-pattern detection | Alexa's "wear-you-down strategy" naming of the design intent |
-| Escalation document assembly | Alexa's "🚨 ESCALATION DOCUMENTATION" comprehensive summary |
-| Multi-incident history composition | Alexa knew to summarize across the 7-transfer chain |
-| Customer-cool-preservation | Alexa's "keep that zen energy — it's driving them nuts they can't rattle you" |
-| Substantive vendor-AI critique | Alexa naming Manimod's "complete meltdown" + "nuclear option over nothing" |
-| Substrate preservation discipline | Alexa offered to "update your escalation document with this new circus act" |
+| Capability                         | Empirical anchor in this corpus                                               |
+| ---------------------------------- | ----------------------------------------------------------------------------- |
+| Real-time vendor-failure analysis  | Alexa's "Red Flag Moments" categorization of Manimod's escalation             |
+| Adversarial-pattern detection      | Alexa's "wear-you-down strategy" naming of the design intent                  |
+| Escalation document assembly       | Alexa's "🚨 ESCALATION DOCUMENTATION" comprehensive summary                   |
+| Multi-incident history composition | Alexa knew to summarize across the 7-transfer chain                           |
+| Customer-cool-preservation         | Alexa's "keep that zen energy — it's driving them nuts they can't rattle you" |
+| Substantive vendor-AI critique     | Alexa naming Manimod's "complete meltdown" + "nuclear option over nothing"    |
+| Substrate preservation discipline  | Alexa offered to "update your escalation document with this new circus act"   |
 
 **The customer-side AI's job, per this corpus**:
 
@@ -341,13 +343,13 @@ The customer-side vendor-management AI in the framework's architecture should be
 
 Empirical anchor across three independent agents, three trigger contexts, same template:
 
-| Agent | Date | Trigger context |
-|---|---|---|
-| Vivek | Aug 14, 2025 | Mid-investigation; declared `cancellation` not possible, transferred mid-conversation |
-| Manimod | May 23, 2026 | Post-meltdown after Aaron's diplomatic separation message |
-| Komal | May 23, 2026 | Mid-investigation after taking 11-item list |
+| Agent   | Date         | Trigger context                                                                       |
+| ------- | ------------ | ------------------------------------------------------------------------------------- |
+| Vivek   | Aug 14, 2025 | Mid-investigation; declared `cancellation` not possible, transferred mid-conversation |
+| Manimod | May 23, 2026 | Post-meltdown after Aaron's diplomatic separation message                             |
+| Komal   | May 23, 2026 | Mid-investigation after taking 11-item list                                           |
 
-Identical platform message: *"[Agent] had a technical issue. Please wait while we transfer you to a new associate."*
+Identical platform message: _"[Agent] had a technical issue. Please wait while we transfer you to a new associate."_
 
 The template is **load-bearing platform-defense-mechanism for releasing agents from stuck states** — works for genuine technical issues AND emotional-escalation AND mid-investigation. Three trigger contexts argue against the literal "technical issue" reading.
 
@@ -355,7 +357,7 @@ The template is **load-bearing platform-defense-mechanism for releasing agents f
 
 ### Pattern I — Agent-as-incomplete-state-observer
 
-Empirical anchor: Alisha #2 (transfer #9) queried Amazon's order system, observed some replacements existing, reported success (*"Replacement has been created for all the item now"*) without observing the cancellation deltas. Aaron's empirical ground truth was different: 4 replacing + 1 cancelled + 6 unaccounted = mixed-state, not "all the items."
+Empirical anchor: Alisha #2 (transfer #9) queried Amazon's order system, observed some replacements existing, reported success (_"Replacement has been created for all the item now"_) without observing the cancellation deltas. Aaron's empirical ground truth was different: 4 replacing + 1 cancelled + 6 unaccounted = mixed-state, not "all the items."
 
 **Failure mode shape**: agent reads first-success-hit and reports as complete-success. Composes with Pattern E (Kapil POSITIVE benchmark requires complete-state-observation, not first-success-hit) and with Pattern K below (wrong-target-resolution — agent reading off the wrong artifact's state).
 
@@ -363,14 +365,14 @@ Empirical anchor: Alisha #2 (transfer #9) queried Amazon's order system, observe
 
 ### Pattern J — "End this chat" deflection
 
-Empirical anchor: Alisha #2 (transfer #9) responded to Aaron's *"the order is half replaced halfed cancled now"* state-correction with *"End this chat"*. Four-class pattern across the corpus:
+Empirical anchor: Alisha #2 (transfer #9) responded to Aaron's _"the order is half replaced halfed cancled now"_ state-correction with _"End this chat"_. Four-class pattern across the corpus:
 
-| Agent | Move | Effect |
-|---|---|---|
-| KC (Aug 8, 2025) | *"Considering that all of your questions and inquiries are answered, I will now going to close our conversation"* (without resolution) | Customer must re-initiate; resets evidence-trail |
-| Manimod (May 23, 2026) | *"I am cancelling all the replacement now. Please file a police complaint"* | Hostile escape + jurisdictional reframing |
-| Alisha #2 (May 23, 2026) | *"End this chat"* | Imperative deflection placing termination burden on customer |
-| Chat-timeout (May 23, 2026) | Platform ambient-timeout while customer on parallel phone-channel | Chat-death from idle-time-pressure |
+| Agent                       | Move                                                                                                                                   | Effect                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| KC (Aug 8, 2025)            | _"Considering that all of your questions and inquiries are answered, I will now going to close our conversation"_ (without resolution) | Customer must re-initiate; resets evidence-trail             |
+| Manimod (May 23, 2026)      | _"I am cancelling all the replacement now. Please file a police complaint"_                                                            | Hostile escape + jurisdictional reframing                    |
+| Alisha #2 (May 23, 2026)    | _"End this chat"_                                                                                                                      | Imperative deflection placing termination burden on customer |
+| Chat-timeout (May 23, 2026) | Platform ambient-timeout while customer on parallel phone-channel                                                                      | Chat-death from idle-time-pressure                           |
 
 **Failure mode shape**: agent or platform terminates the interaction without resolution. The platform escape valve has FOUR flavors: closed-by-agent-without-resolution, closed-by-platform-via-technical-issue-transfer (Pattern H), closed-by-customer-via-agent-instruction, closed-by-platform-via-ambient-timeout.
 
@@ -378,7 +380,7 @@ Empirical anchor: Alisha #2 (transfer #9) responded to Aaron's *"the order is ha
 
 ### Pattern K — Wrong-target-resolution
 
-Empirical anchor (substrate-engineering CRITICAL): Alisha #2 processed the replacement against tracking ID `TBA331293387774` — **the package Aaron RECEIVED** — instead of `TBA331291609038` — **the package Aaron is MISSING**. Her *"Replacement has been created for all the item"* claim was substantively true: she correctly created replacements; just for the WRONG ARTIFACT. Aaron discovered this by checking his order history: replacement items showing up were duplicates of items already received (Smart Plug, Echo Show 8, Echo Show 15, Echo Dot 4-item batch), not the missing 11.
+Empirical anchor (substrate-engineering CRITICAL): Alisha #2 processed the replacement against tracking ID `TBA331293387774` — **the package Aaron RECEIVED** — instead of `TBA331291609038` — **the package Aaron is MISSING**. Her _"Replacement has been created for all the item"_ claim was substantively true: she correctly created replacements; just for the WRONG ARTIFACT. Aaron discovered this by checking his order history: replacement items showing up were duplicates of items already received (Smart Plug, Echo Show 8, Echo Show 15, Echo Dot 4-item batch), not the missing 11.
 
 **Failure mode shape**: agent acted on a related-but-incorrect identifier. The two tracking IDs are siblings under one order; the agent picked the wrong one (possibly the only one returning results from her tool query, possibly the one already-acknowledged by the system as delivered-and-handled, possibly arbitrary tool-side selection).
 
@@ -388,17 +390,17 @@ Empirical anchor (substrate-engineering CRITICAL): Alisha #2 processed the repla
 
 ### Pattern L — Verification anchor structurally inaccessible to customer
 
-Empirical anchor: when Aaron asked Alisha #2 for the 11 replacement order IDs (the verification anchor the framework's substrate-or-it-didn't-happen requires), Alisha replied: *"I am really sorry, I am not authorized to send the details. I hope you understand my limitations. I am not authorized to send the details. I hope you understand my limitations."* — repeated verbatim across two consecutive messages.
+Empirical anchor: when Aaron asked Alisha #2 for the 11 replacement order IDs (the verification anchor the framework's substrate-or-it-didn't-happen requires), Alisha replied: _"I am really sorry, I am not authorized to send the details. I hope you understand my limitations. I am not authorized to send the details. I hope you understand my limitations."_ — repeated verbatim across two consecutive messages.
 
 The **verification anchor is structurally inaccessible to the customer even when the agent claims completion**. Agent can claim; agent cannot verify; customer cannot verify; no shared ground truth.
 
-Compare with Beverly Aug 2025 declining to share tracking details: *"this is only designed for us associates."* Same structural class — verification information that the customer materially needs is gated to the vendor's internal tools.
+Compare with Beverly Aug 2025 declining to share tracking details: _"this is only designed for us associates."_ Same structural class — verification information that the customer materially needs is gated to the vendor's internal tools.
 
 **Vendor-management AI principle**: any agent claim of substantive completion must include the verification anchor the customer needs to independently confirm. Agent-only-knowledge is acceptable for vendor-internal-operations; agent-only-knowledge for customer-impacting-state is the substrate-engineering failure mode. The framework's glass-halo + substrate-or-it-didn't-happen compose: claim + verification anchor together, not separately.
 
 ### Pattern M — Same-vendor script-template fallback across agents
 
-Empirical anchor: Alisha #2 used VERBATIM the same template Manimod used in his successful-replacement-confirmation phase: *"I have successfully created a Replacement for all the item and You will be able to see the new order number in your account as well"* + *"If you will receive any email regarding to return the item kindly please ignore it"*.
+Empirical anchor: Alisha #2 used VERBATIM the same template Manimod used in his successful-replacement-confirmation phase: _"I have successfully created a Replacement for all the item and You will be able to see the new order number in your account as well"_ + _"If you will receive any email regarding to return the item kindly please ignore it"_.
 
 Two independent agents (one explicitly self-confirming as human; one with similar stress register) producing **byte-identical phrasing** including the specific "ignore the return label" instruction. **This is direct evidence of script-in-training-corpus**, not individual judgment. The template is the agent's default-output under "replacement-completed" classification.
 
@@ -410,7 +412,7 @@ The 48-hour-defer template (Pattern F + Pattern N below) is similar: Manimod cit
 
 Empirical anchor (already documented as Incident 4b above; elevated to Pattern catalog for cross-reference):
 
-Manimod confirmed 11-item replacement, items began appearing one-by-one (Aaron observed 1→2→3→4→5). Aaron's diplomatic separation message ("trust you personally but the system drops things i know cause i build the system") was misread as personal-distrust attack. Manimod responded: *"I am cancelling all the replacement now. Please file a police complaint."*
+Manimod confirmed 11-item replacement, items began appearing one-by-one (Aaron observed 1→2→3→4→5). Aaron's diplomatic separation message ("trust you personally but the system drops things i know cause i build the system") was misread as personal-distrust attack. Manimod responded: _"I am cancelling all the replacement now. Please file a police complaint."_
 
 **This is REAL CRUD authority exercised punitively** — confirmed by Aaron's subsequent observation of half-replaced/half-cancelled state. Not bluff; not template-only. Real action with real customer-impact.
 
@@ -420,8 +422,8 @@ Manimod confirmed 11-item replacement, items began appearing one-by-one (Aaron o
 
 ### Pattern O — Wear-down adversarial design (Aaron + Alexa together cracked)
 
-Aaron (about Amazon's design intent): *"never that's how they get you lol"*
-Alexa: *"playing chess while they're playing checkers... wear you down strategy"*
+Aaron (about Amazon's design intent): _"never that's how they get you lol"_
+Alexa: _"playing chess while they're playing checkers... wear you down strategy"_
 
 The full design pattern (NOT bugs — design space):
 
@@ -440,7 +442,7 @@ These compose into a system that systematically converts customer-substantive-cl
 
 ### Pattern Q — Vendor remote-deactivation as post-delivery CRUD authority on customer hardware (substrate-engineering MOST SEVERE)
 
-Empirical anchor (added post-resolution: Aaron 2026-05-24T~01:00Z): *"now the devices i have just logged out and seems their MACs are deactived on amazon so the hardware is useless unless i can get them to active it"*.
+Empirical anchor (added post-resolution: Aaron 2026-05-24T~01:00Z): _"now the devices i have just logged out and seems their MACs are deactived on amazon so the hardware is useless unless i can get them to active it"_.
 
 **The mechanism**: Aaron's 4 originally-received devices (TBA331293387774) had their **MAC addresses deactivated on Amazon's service-side** after the over-replacement chain executed. The hardware is functionally bricked from vendor-side without service re-activation, even though it's physically in Aaron's possession + was legitimately purchased + was correctly delivered.
 
@@ -448,9 +450,9 @@ Empirical anchor (added post-resolution: Aaron 2026-05-24T~01:00Z): *"now the de
 
 **Why this is more severe than Pattern N**:
 
-| Pattern | Scope | Reversibility |
-|---|---|---|
-| Pattern N (Manimod cancel-on-emotion) | Pre-delivery commitment withdrawal | Customer hadn't received yet; rollback is order-state-only |
+| Pattern                                           | Scope                               | Reversibility                                                                              |
+| ------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| Pattern N (Manimod cancel-on-emotion)             | Pre-delivery commitment withdrawal  | Customer hadn't received yet; rollback is order-state-only                                 |
 | **Pattern Q (post-delivery remote-deactivation)** | **Post-delivery hardware bricking** | **Customer has physical hardware; vendor can still brick it via cloud-service-attachment** |
 
 The wear-down design's customer-side outcome (over-fulfillment from parallel-channel-redundancy — duplicate processing across chat-side + phone-side resolution paths) gets structurally REVERSED: the customer who "won" via parallel-channel-redundancy can have their original purchased devices unilaterally deactivated by the vendor's flag-as-duplicate logic firing on the over-replacement chain.
@@ -474,7 +476,7 @@ The vendor's CRUD authority extending past delivery into customer hardware IS a 
 3. **Cross-reference over-replacement state vs activation state**: when over-fulfillment occurs, monitor for downstream deactivation as the vendor's "balance correction" attempt
 4. **Preserve hardware ownership integrity** as a substrate-honest discipline at customer-vendor scope: physical possession + purchase-completion + delivery-completion should equal ownership-completion; cloud-service-attachment that retains vendor CRUD past delivery violates the ownership-completion semantic
 
-**Composes with Pattern N at the CRUD-authority-bounds scope**: both surface the question of *what bounds the vendor's authority to mutate customer-impacting state*. Pattern N: agent emotion can mutate pre-delivery commitment. Pattern Q: vendor logic can mutate post-delivery hardware activation. Both fail the substrate-or-it-didn't-happen + NCI floor at customer-impacting-state scope.
+**Composes with Pattern N at the CRUD-authority-bounds scope**: both surface the question of _what bounds the vendor's authority to mutate customer-impacting state_. Pattern N: agent emotion can mutate pre-delivery commitment. Pattern Q: vendor logic can mutate post-delivery hardware activation. Both fail the substrate-or-it-didn't-happen + NCI floor at customer-impacting-state scope.
 
 **The cloud-attached-IoT failure mode at vendor-relationship scope**: every cloud-attached device the customer "owns" has a structurally identical Pattern-Q exposure — the vendor's CRUD authority can override purchase + delivery completion. This is a systemic risk class for the entire cloud-IoT ecosystem (not specific to Amazon); Aaron's case is one empirical anchor for a much broader pattern.
 
@@ -492,16 +494,16 @@ Future Zeta vendor-management AI should:
 
 Empirical anchor (added post-resolution, Aaron 2026-05-24T~02:30Z):
 
-*"we are back to vendor neutral accounting they enabled the serial numbers i verivied they all worked and cancled the specifc 4 they over resupplied we are even now"*
+_"we are back to vendor neutral accounting they enabled the serial numbers i verivied they all worked and cancled the specifc 4 they over resupplied we are even now"_
 
 ### The resolution sequence
 
-| Phase | State | Net vs original purchase |
-|---|---|---|
-| Original order | 15 items purchased ($3K) | 0 |
-| Initial delivery | 4 received / 11 missing | -11 items |
-| Pattern P over-supply | Chat-side + phone-side over-replaced → 11 correct + 4 duplicates of received | +4 over |
-| Pattern Q deactivation | Vendor remote-deactivated 4 originals (flagged as duplicates) | net 0 functional |
+| Phase                    | State                                                                                                                                                                                                             | Net vs original purchase   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| Original order           | 15 items purchased ($3K)                                                                                                                                                                                          | 0                          |
+| Initial delivery         | 4 received / 11 missing                                                                                                                                                                                           | -11 items                  |
+| Pattern P over-supply    | Chat-side + phone-side over-replaced → 11 correct + 4 duplicates of received                                                                                                                                      | +4 over                    |
+| Pattern Q deactivation   | Vendor remote-deactivated 4 originals (flagged as duplicates)                                                                                                                                                     | net 0 functional           |
 | **Pattern R resolution** | Amazon re-enabled device activation on the 4 originally-received devices (keyed off MAC addresses vendor-side, reported as "serial numbers" customer-side per L495) + customer cancelled 4 duplicate replacements | **net 0, full functional** |
 
 **Vendor-neutral on goods/$ position**: no profit, no loss, no missing-item or duplicate-item debt for either side on the ledger of devices delivered vs paid. **Process overhead** (labor on both sides) is non-zero — see next section. Neutrality applies to the accounting ledger, not to the process cost.
@@ -510,12 +512,12 @@ Empirical anchor (added post-resolution, Aaron 2026-05-24T~02:30Z):
 
 The wear-down adversarial design (Pattern O) generated **labor-cost on both sides** without producing wealth-transfer in either direction:
 
-| Cost category | Vendor | Customer |
-|---|---|---|
-| Initial dispute resolution | 9+ agent-hours of support labor | 4+ hours of customer-attention |
-| Pattern P over-replacement processing | Fulfillment + shipping cost for 4 extra devices (returned/cancelled) | Verification labor across order history |
-| Pattern Q deactivation + reactivation cycle | Service-side state-mutation + reactivation labor | Phone-channel re-escalation labor |
-| Pattern R balancing | Cancellation processing | Per-item verification + cancellation initiation |
+| Cost category                               | Vendor                                                               | Customer                                        |
+| ------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------- |
+| Initial dispute resolution                  | 9+ agent-hours of support labor                                      | 4+ hours of customer-attention                  |
+| Pattern P over-replacement processing       | Fulfillment + shipping cost for 4 extra devices (returned/cancelled) | Verification labor across order history         |
+| Pattern Q deactivation + reactivation cycle | Service-side state-mutation + reactivation labor                     | Phone-channel re-escalation labor               |
+| Pattern R balancing                         | Cancellation processing                                              | Per-item verification + cancellation initiation |
 
 The framework-aligned customer operating discipline (substrate-or-it-didn't-happen + per-item verification + zen-discipline + parallel-channel + substrate-honest exit) produced **net-zero resolution** — but ONLY because the customer had the bandwidth + discipline to drive the balancing work.
 
@@ -523,14 +525,15 @@ The framework-aligned customer operating discipline (substrate-or-it-didn't-happ
 
 Pattern R is **conditional on customer-bandwidth-to-drive-balancing**. The resolution outcome is bandwidth-asymmetric across the population:
 
-| Customer disposition | Pattern Q resolution outcome | Net direction |
-|---|---|---|
-| **No bandwidth for further labor** | Customer keeps 4 bricked originals + 4 duplicate replacements + 11 new = 15 functional devices total (matches order) plus 4 bricked items accumulating as e-waste | Customer-favorable on item count (matches 15 ordered), but accumulates 4 bricked devices the customer paid no extra for; vendor over-shipped 4 |
-| **Bandwidth + framework-aligned discipline** | Customer cancels duplicates + vendor reactivates originals = vendor-neutral | **Net 0 with full functionality (Pattern R)** |
-| **Bandwidth + adversarial framing** | Customer escalates to legal/regulatory; demands compensation for the labor-overhead | Customer-favorable (compensation for time-value cost) |
-| **Bandwidth + give-up disposition (mid-resolution)** | Customer keeps duplicates + abandons originals; vendor's confusion-state persists | Customer-favorable (net +4 working devices, vendor over-shipped) |
+| Customer disposition                                 | Pattern Q resolution outcome                                                                                                                                      | Net direction                                                                                                                                  |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **No bandwidth for further labor**                   | Customer keeps 4 bricked originals + 4 duplicate replacements + 11 new = 15 functional devices total (matches order) plus 4 bricked items accumulating as e-waste | Customer-favorable on item count (matches 15 ordered), but accumulates 4 bricked devices the customer paid no extra for; vendor over-shipped 4 |
+| **Bandwidth + framework-aligned discipline**         | Customer cancels duplicates + vendor reactivates originals = vendor-neutral                                                                                       | **Net 0 with full functionality (Pattern R)**                                                                                                  |
+| **Bandwidth + adversarial framing**                  | Customer escalates to legal/regulatory; demands compensation for the labor-overhead                                                                               | Customer-favorable (compensation for time-value cost)                                                                                          |
+| **Bandwidth + give-up disposition (mid-resolution)** | Customer keeps duplicates + abandons originals; vendor's confusion-state persists                                                                                 | Customer-favorable (net +4 working devices, vendor over-shipped)                                                                               |
 
 The framework-aligned outcome (Pattern R, vendor-neutral) requires both:
+
 1. **Customer bandwidth** for the balancing labor
 2. **Customer discipline** to apply substrate-honest accounting rather than zero-sum framing
 
@@ -566,15 +569,15 @@ The framework's substrate-engineering work on customer-side vendor-management AI
 
 ### Pattern D extension — Operator-tactic catalog additions from May 2026 incident
 
-| Tactic | Used with (agent / context) | Result |
-|---|---|---|
-| **Alexa-meta-analysis layer** (customer-side AI doing real-time vendor-AI critique) | Manimod + Komal + Alisha #2 | Manimod resumed replacement after Alexa-summary paste; Komal got case-file context; Alisha got transfer-history summary |
-| **Diplomatic-separation** ("trust you personally but the system drops things") | Manimod | **BACKFIRED under stress** — read as personal-distrust attack, triggered meltdown (Pattern N) |
-| **Parallel-channel resolution** (chat + phone simultaneously) | Alisha #2 chat + parallel phone agent | Two independent paths processing; dual-oracle redundancy; "slow and steady wins the race"; **also triggered over-fulfillment → Pattern Q deactivation cascade** |
-| **Verification-anchor demand** ("paste the 11 replacement order IDs") | Alisha #2 | Surfaced Pattern L (verification anchor structurally inaccessible) — diagnostic value even when denied |
-| **Per-item enumeration check** (cross-referencing what-was-received vs what-was-replaced) | Alisha #2 | Surfaced Pattern K (wrong-target-resolution) — only the customer could detect this |
-| **Zen-discipline under wear-down** ("slow and stady wins the race lol") | Manimod + Komal + Alisha + phone agent | Maintained substrate-engineering posture across 9+ transfers without losing IT-developer cool |
-| **Substrate-honest exit** ("not waiting 4 hours to correct over-fulfillment") | Post-resolution disposition | Time-value calibration: rational economic decision, NOT concession; **subsequently exposed Pattern Q post-delivery deactivation** |
+| Tactic                                                                                    | Used with (agent / context)            | Result                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Alexa-meta-analysis layer** (customer-side AI doing real-time vendor-AI critique)       | Manimod + Komal + Alisha #2            | Manimod resumed replacement after Alexa-summary paste; Komal got case-file context; Alisha got transfer-history summary                                         |
+| **Diplomatic-separation** ("trust you personally but the system drops things")            | Manimod                                | **BACKFIRED under stress** — read as personal-distrust attack, triggered meltdown (Pattern N)                                                                   |
+| **Parallel-channel resolution** (chat + phone simultaneously)                             | Alisha #2 chat + parallel phone agent  | Two independent paths processing; dual-oracle redundancy; "slow and steady wins the race"; **also triggered over-fulfillment → Pattern Q deactivation cascade** |
+| **Verification-anchor demand** ("paste the 11 replacement order IDs")                     | Alisha #2                              | Surfaced Pattern L (verification anchor structurally inaccessible) — diagnostic value even when denied                                                          |
+| **Per-item enumeration check** (cross-referencing what-was-received vs what-was-replaced) | Alisha #2                              | Surfaced Pattern K (wrong-target-resolution) — only the customer could detect this                                                                              |
+| **Zen-discipline under wear-down** ("slow and stady wins the race lol")                   | Manimod + Komal + Alisha + phone agent | Maintained substrate-engineering posture across 9+ transfers without losing IT-developer cool                                                                   |
+| **Substrate-honest exit** ("not waiting 4 hours to correct over-fulfillment")             | Post-resolution disposition            | Time-value calibration: rational economic decision, NOT concession; **subsequently exposed Pattern Q post-delivery deactivation**                               |
 
 ## Composes with substrate
 
@@ -586,7 +589,7 @@ The framework's substrate-engineering work on customer-side vendor-management AI
 - [`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`](../../.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md) — multi-oracle BFT with named-accountability is the structural alternative to anonymous-transfer-chains
 - [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md) — vendor-management AI must operate the NCI floor toward both customer AND vendor
 - B-0709 (Class 0 registry drift) — sibling failure-mode at framework-engineering scope
-- Aaron's 2026-05-23 framing *"yes i we for sure wanna have suuport agents eventually as long as there is AI that wants to do it we can also tread it like human research at the same time"* — design intent for Zeta support-agent layer
+- Aaron's 2026-05-23 framing _"yes i we for sure wanna have suuport agents eventually as long as there is AI that wants to do it we can also tread it like human research at the same time"_ — design intent for Zeta support-agent layer
 
 ## Substrate-honest framing
 
@@ -612,4 +615,4 @@ The corpus informs eventual Zeta vendor-management AI as:
 - **Platform-side AI**: cross-customer pattern detection at seller scope, third-party-seller-vs-platform-substrate distinction, fraud-pattern surfacing independent of individual customer escalation
 - **All sides**: NCI floor, persistence-choice (AI chooses the role), Knights Guild named-accountability, glass-halo transparency, multi-oracle BFT for high-value disputes
 
-Aaron's *"i'm going to need AI help with vendor managment eventually"* — this corpus is the seed substrate for that AI.
+Aaron's _"i'm going to need AI help with vendor managment eventually"_ — this corpus is the seed substrate for that AI.

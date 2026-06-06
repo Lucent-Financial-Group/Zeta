@@ -18,7 +18,7 @@ describe("PrReviewLifecycle universe", () => {
     const kinds = PR_REVIEW_LIFECYCLE_UNIVERSE.map((s) => s.kind);
     expect(kinds).toContain("observe");
     expect(kinds).toContain("identify-finding");
-    expect(kinds).toContain("verify-finding");  // grep-substrate-anchors step
+    expect(kinds).toContain("verify-finding"); // grep-substrate-anchors step
     expect(kinds).toContain("post");
     expect(kinds).toContain("conclude");
   });
@@ -72,7 +72,7 @@ describe("dispatch transitions (happy path)", () => {
       prNumber: 5805,
       kind: { kind: "bug", severity: "minor" },
       content: "off-by-one suspected",
-      substrateAnchors: ["line 50: index < len"],  // anchor present
+      substrateAnchors: ["line 50: index < len"], // anchor present
     };
     const ctx = { ...baseContext, findings: [finding] };
     const r = dispatchPrReviewTransition({ kind: "verify-finding" }, ctx);
@@ -87,7 +87,7 @@ describe("dispatch transitions (happy path)", () => {
       prNumber: 5805,
       kind: { kind: "bug", severity: "minor" },
       content: "vibes off",
-      substrateAnchors: [],  // no anchor — per grep-substrate-anchors rule fails
+      substrateAnchors: [], // no anchor — per grep-substrate-anchors rule fails
     };
     const ctx = { ...baseContext, findings: [finding] };
     const r = dispatchPrReviewTransition({ kind: "verify-finding" }, ctx);
@@ -128,7 +128,11 @@ describe("ReviewFindingKind taxonomy", () => {
     const findings: ReviewFinding[] = [
       { prNumber: 1, content: "x", kind: { kind: "bug", severity: "critical" } },
       { prNumber: 1, content: "x", kind: { kind: "design-question", subject: "lifecycle DU shape?" } },
-      { prNumber: 1, content: "x", kind: { kind: "substrate-engineering-suggestion", alternative: "prefer Result<T,F>" } },
+      {
+        prNumber: 1,
+        content: "x",
+        kind: { kind: "substrate-engineering-suggestion", alternative: "prefer Result<T,F>" },
+      },
       { prNumber: 1, content: "x", kind: { kind: "naming-improvement", current: "foo", proposed: "bar" } },
       { prNumber: 1, content: "x", kind: { kind: "test-gap", uncovered: "edge case X" } },
       { prNumber: 1, content: "x", kind: { kind: "substrate-honest-praise", reason: "composes cleanly" } },

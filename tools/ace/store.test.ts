@@ -3,7 +3,20 @@ import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSy
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
-import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath, bundledRegistryPath, registryPath, loadRegistry, listRegistry, addRegistryEntry } from "./store.ts";
+import {
+  contentHash,
+  installPackage,
+  validatePackagePaths,
+  loadTrustStore,
+  addTrustedKey,
+  listTrustedKeys,
+  trustStorePath,
+  bundledRegistryPath,
+  registryPath,
+  loadRegistry,
+  listRegistry,
+  addRegistryEntry,
+} from "./store.ts";
 
 describe("contentHash", () => {
   test("sha256 of known bytes matches the sha256:<hex> form", () => {
@@ -23,8 +36,7 @@ describe("installPackage", () => {
   // content_hash is the sha256 of the canonical JSON of `files`.
   function makePkg(files: Record<string, string>, name = "demo") {
     const filesJson = JSON.stringify(files);
-    const content_hash =
-      "sha256:" + createHash("sha256").update(new TextEncoder().encode(filesJson)).digest("hex");
+    const content_hash = "sha256:" + createHash("sha256").update(new TextEncoder().encode(filesJson)).digest("hex");
     return {
       pkg: { manifest: { format_version: 1, name, version: "1.0.0", content_hash }, files },
       content_hash,
@@ -100,11 +112,26 @@ describe("installPackage", () => {
   test("installPackage ignores a manifest's dependencies field (leaf back-compat)", () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const files = { "r.txt": "hi" };
-    const content_hash = "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const content_hash =
+      "sha256:" +
+      createHash("sha256")
+        .update(new TextEncoder().encode(JSON.stringify(files)))
+        .digest("hex");
     const pkg = {
       manifest: {
-        format_version: 1, name: "demo", version: "1.0.0", content_hash,
-        dependencies: [{ kind: "inline" as const, name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "sha256:deadbeef" }],
+        format_version: 1,
+        name: "demo",
+        version: "1.0.0",
+        content_hash,
+        dependencies: [
+          {
+            kind: "inline" as const,
+            name: "x",
+            version: "1.0.0",
+            url: "http://e/x.json",
+            package_hash: "sha256:deadbeef",
+          },
+        ],
       },
       files,
     };
@@ -115,19 +142,44 @@ describe("installPackage", () => {
 
 describe("validatePackagePaths", () => {
   test("returns null for safe paths", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "ok.txt": "y" } })).toBeNull();
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "ok.txt": "y" },
+      }),
+    ).toBeNull();
   });
   test("returns the offending path for '..' traversal", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "../escape": "y" } })).toBe("../escape");
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "../escape": "y" },
+      }),
+    ).toBe("../escape");
   });
   test("returns the offending path for an absolute path", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "/etc/passwd": "y" } })).toBe("/etc/passwd");
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "/etc/passwd": "y" },
+      }),
+    ).toBe("/etc/passwd");
   });
   test("returns the offending path for a Windows drive-absolute path", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "C:\\Windows\\system.ini": "y" } })).toBe("C:\\Windows\\system.ini");
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "C:\\Windows\\system.ini": "y" },
+      }),
+    ).toBe("C:\\Windows\\system.ini");
   });
   test("returns the offending path for a Windows drive-relative path", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "C:evil": "y" } })).toBe("C:evil");
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "C:evil": "y" },
+      }),
+    ).toBe("C:evil");
   });
 });
 
@@ -137,13 +189,16 @@ describe("trust store", () => {
     const bundled = join(dir, "bundled.json");
     const user = join(dir, "user.json");
     writeFileSync(bundled, JSON.stringify([{ key_id: "ed25519:aaaa", public_key: "B", label: "root" }]));
-    writeFileSync(user, JSON.stringify([
-      { key_id: "ed25519:bbbb", public_key: "U", label: "mine" },
-      { key_id: "ed25519:aaaa", public_key: "B2", label: "root-override" },
-    ]));
+    writeFileSync(
+      user,
+      JSON.stringify([
+        { key_id: "ed25519:bbbb", public_key: "U", label: "mine" },
+        { key_id: "ed25519:aaaa", public_key: "B2", label: "root-override" },
+      ]),
+    );
     const m = loadTrustStore(bundled, user);
     expect(m.size).toBe(2);
-    expect(m.get("ed25519:aaaa")?.source).toBe("user");      // user overrides bundled
+    expect(m.get("ed25519:aaaa")?.source).toBe("user"); // user overrides bundled
     expect(m.get("ed25519:aaaa")?.public_key).toBe("B2");
     expect(m.get("ed25519:bbbb")?.source).toBe("user");
   });
@@ -221,7 +276,6 @@ describe("trust store", () => {
     expect(statSync(user).mode & 0o077).toBe(0);
   });
 
-
   test("addTrustedKey tightens a pre-existing permissive ~/.ace dir to 0o700 on POSIX", () => {
     const parent = mkdtempSync(join(tmpdir(), "ace-trustdir-"));
     const aceDir = join(parent, ".ace");
@@ -256,9 +310,15 @@ describe("registry paths + empty load", () => {
 describe("registry load + list", () => {
   test("loadRegistry unions bundled+user; user overrides on (name,version)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
-    const b = join(dir, "b.json"); const u = join(dir, "u.json");
+    const b = join(dir, "b.json");
+    const u = join(dir, "u.json");
     writeFileSync(b, JSON.stringify({ libfoo: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
-    writeFileSync(u, JSON.stringify({ libfoo: { "1.0.0": { url: "U", package_hash: "sha256:u" }, "2.0.0": { url: "U2", package_hash: "sha256:u2" } } }));
+    writeFileSync(
+      u,
+      JSON.stringify({
+        libfoo: { "1.0.0": { url: "U", package_hash: "sha256:u" }, "2.0.0": { url: "U2", package_hash: "sha256:u2" } },
+      }),
+    );
     const m = loadRegistry(b, u);
     expect(m.get("libfoo")?.get("1.0.0")?.url).toBe("U");
     expect(m.get("libfoo")?.get("2.0.0")?.url).toBe("U2");
@@ -273,7 +333,8 @@ describe("registry load + list", () => {
   });
   test("listRegistry reports source per entry, user overriding bundled", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
-    const b = join(dir, "b.json"); const u = join(dir, "u.json");
+    const b = join(dir, "b.json");
+    const u = join(dir, "u.json");
     writeFileSync(b, JSON.stringify({ a: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
     writeFileSync(u, JSON.stringify({ a: { "1.0.0": { url: "U", package_hash: "sha256:u" } } }));
     const rows = listRegistry(b, u);
@@ -302,9 +363,18 @@ describe("addRegistryEntry", () => {
   test("re-add with DIFFERING url/hash overwrites stale pin (updated:true); identical re-add is a no-op (updated:false)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
     const u = join(dir, "registry.json");
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({ added: true, updated: false });
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({ added: false, updated: false }); // identical -> idempotent no-op
-    expect(addRegistryEntry("libfoo", "1.0.0", { url: "NEW", package_hash: "sha256:new" }, u)).toEqual({ added: false, updated: true }); // corrected -> overwrite stale pin
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({
+      added: true,
+      updated: false,
+    });
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "OLD", package_hash: "sha256:old" }, u)).toEqual({
+      added: false,
+      updated: false,
+    }); // identical -> idempotent no-op
+    expect(addRegistryEntry("libfoo", "1.0.0", { url: "NEW", package_hash: "sha256:new" }, u)).toEqual({
+      added: false,
+      updated: true,
+    }); // corrected -> overwrite stale pin
     const e = loadRegistry(join(dir, "missing.json"), u).get("libfoo")?.get("1.0.0");
     expect(e?.url).toBe("NEW");
     expect(e?.package_hash).toBe("sha256:new");
@@ -331,16 +401,33 @@ describe("addRegistryEntry", () => {
   });
 });
 
-import { readRegistriesConfig, writeRegistryRemote, removeRegistryRemote, registriesPath, registryCacheDir } from "./store.ts";
+import {
+  readRegistriesConfig,
+  writeRegistryRemote,
+  removeRegistryRemote,
+  registriesPath,
+  registryCacheDir,
+} from "./store.ts";
 
 describe("remote-registry config", () => {
   let home: string, savedHome: string | undefined, savedUP: string | undefined;
-  beforeEach(() => { savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
-    home = mkdtempSync(join(tmpdir(), "ace-cfg-")); process.env.HOME = home; process.env.USERPROFILE = home; });
-  afterEach(() => { if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
-    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+  beforeEach(() => {
+    savedHome = process.env.HOME;
+    savedUP = process.env.USERPROFILE;
+    home = mkdtempSync(join(tmpdir(), "ace-cfg-"));
+    process.env.HOME = home;
+    process.env.USERPROFILE = home;
+  });
+  afterEach(() => {
+    if (savedHome !== undefined) process.env.HOME = savedHome;
+    else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP;
+    else delete process.env.USERPROFILE;
+  });
 
-  test("empty/missing → { remotes: [] }", () => { expect(readRegistriesConfig().remotes).toEqual([]); });
+  test("empty/missing → { remotes: [] }", () => {
+    expect(readRegistriesConfig().remotes).toEqual([]);
+  });
   test("add → read round-trips; key_id required", () => {
     writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:abc" });
     expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/index.json", key_id: "ed25519:abc" }]);
@@ -349,12 +436,17 @@ describe("remote-registry config", () => {
     writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:abc" });
     const r = writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 });
     expect(r.updated).toBe(true);
-    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 }]);
+    expect(readRegistriesConfig().remotes).toEqual([
+      { url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 },
+    ]);
   });
   test("malformed entries dropped (no key_id)", () => {
     const p = registriesPath();
     require("node:fs").mkdirSync(require("node:path").dirname(p), { recursive: true });
-    require("node:fs").writeFileSync(p, JSON.stringify({ remotes: [{ url: "https://r/x" }, { url: "https://r/y", key_id: "ed25519:k" }] }));
+    require("node:fs").writeFileSync(
+      p,
+      JSON.stringify({ remotes: [{ url: "https://r/x" }, { url: "https://r/y", key_id: "ed25519:k" }] }),
+    );
     expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/y", key_id: "ed25519:k" }]);
   });
   test("remove", () => {
@@ -363,15 +455,22 @@ describe("remote-registry config", () => {
     expect(readRegistriesConfig().remotes).toEqual([]);
     expect(removeRegistryRemote("https://nope").removed).toBe(false);
   });
-  test("cacheDir under ~/.ace", () => { expect(registryCacheDir()).toBe(join(home, ".ace", "registry-cache")); });
+  test("cacheDir under ~/.ace", () => {
+    expect(registryCacheDir()).toBe(join(home, ".ace", "registry-cache"));
+  });
   test("malformed key_id dropped (empty or wrong prefix)", () => {
     const p = registriesPath();
     require("node:fs").mkdirSync(require("node:path").dirname(p), { recursive: true });
-    require("node:fs").writeFileSync(p, JSON.stringify({ remotes: [
-      { url: "https://r/a", key_id: "" },
-      { url: "https://r/b", key_id: "notprefixed" },
-      { url: "https://r/c", key_id: "ed25519:ok" },
-    ] }));
+    require("node:fs").writeFileSync(
+      p,
+      JSON.stringify({
+        remotes: [
+          { url: "https://r/a", key_id: "" },
+          { url: "https://r/b", key_id: "notprefixed" },
+          { url: "https://r/c", key_id: "ed25519:ok" },
+        ],
+      }),
+    );
     expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/c", key_id: "ed25519:ok" }]);
   });
 });

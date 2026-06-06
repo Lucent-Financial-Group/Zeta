@@ -36,8 +36,8 @@ the scaffolding around the model as a first-class artifact.
 
 ## Addy Osmani — "Agent Harness Engineering" (2026-04-19)
 
-> *"A decent model with a great harness beats a great
-> model with a bad harness."*
+> _"A decent model with a great harness beats a great
+> model with a bad harness."_
 
 Direct hits with our work:
 
@@ -45,8 +45,8 @@ Direct hits with our work:
 
 Osmani:
 
-> *"Every line in a good `AGENTS.md` should be traceable
-> back to a specific thing that went wrong."*
+> _"Every line in a good `AGENTS.md` should be traceable
+> back to a specific thing that went wrong."_
 
 Our `caused_by:` frontmatter field on every memory file
 captures exactly this — the failure-trace lineage. The
@@ -96,22 +96,22 @@ different underlying models, suggesting the industry is
 discovering load-bearing architectural primitives.
 
 This is direct external validation for the maintainer's
-2026-05-01 framing: *"we are going to have to solve this
+2026-05-01 framing: _"we are going to have to solve this
 for every harness, maybe the right general solution is
-substrate-discovery.ts in claude.md and agents.md."* The
+substrate-discovery.ts in claude.md and agents.md."_ The
 convergence implies cross-harness substrate is a real
 investment with industry payoff, not just Zeta-specific.
 
 ### Other Osmani components mapping to our infrastructure
 
-| Osmani Component | Zeta Counterpart |
-|---|---|
-| State & Persistence (filesystem + Git) | The repo itself; LFG-canonical workflow |
-| Execution (Bash, sandboxed code) | tools/, peer-call/, gh CLI |
-| Knowledge Management (AGENTS.md, web search, MCP) | CLAUDE.md + AGENTS.md + memory/ + WebSearch + plugin MCPs |
-| Context Engineering (compaction, progressive disclosure) | Skill router + memory-on-demand + tick-history compaction |
-| Loop Control (hooks, type-checking, approval gates) | dotnet build gate + bun test + pre-commit + branch protection |
-| Long-Horizon Work (planning, Ralph loops, multi-session) | Autonomous loop + cron + tick-history |
+| Osmani Component                                         | Zeta Counterpart                                              |
+| -------------------------------------------------------- | ------------------------------------------------------------- |
+| State & Persistence (filesystem + Git)                   | The repo itself; LFG-canonical workflow                       |
+| Execution (Bash, sandboxed code)                         | tools/, peer-call/, gh CLI                                    |
+| Knowledge Management (AGENTS.md, web search, MCP)        | CLAUDE.md + AGENTS.md + memory/ + WebSearch + plugin MCPs     |
+| Context Engineering (compaction, progressive disclosure) | Skill router + memory-on-demand + tick-history compaction     |
+| Loop Control (hooks, type-checking, approval gates)      | dotnet build gate + bun test + pre-commit + branch protection |
+| Long-Horizon Work (planning, Ralph loops, multi-session) | Autonomous loop + cron + tick-history                         |
 
 Validates the existing infrastructure shape; suggests
 ratchet steps for missing pieces (e.g., Ralph-loop pattern
@@ -119,7 +119,7 @@ worth investigating).
 
 ## Birgitta Böckeler / Martin Fowler — "Harness Engineering for Coding Agent Users" (2026-04-02)
 
-> *"Agent = Model + Harness."*
+> _"Agent = Model + Harness."_
 
 Same foundational framing as Osmani.
 
@@ -128,12 +128,14 @@ Same foundational framing as Osmani.
 Böckeler classifies controls along two axes:
 
 **Execution Type:**
+
 - **Computational** (deterministic): linters, type
   checkers, tests, static analysis
 - **Inferential** (semantic): LLM-based review, custom
   code judges
 
 **Direction:**
+
 - **Guides (feedforward)**: prevent unwanted outputs before
   generation (e.g., docs, LSP, code mods)
 - **Sensors (feedback)**: observe and self-correct after
@@ -141,17 +143,17 @@ Böckeler classifies controls along two axes:
 
 Maps cleanly to our infrastructure:
 
-| Control | Type | Direction | Zeta Example |
-|---|---|---|---|
-| `dotnet build -c Release` gate | Computational | Sensor | F# build must produce 0 warnings |
-| `bun test` | Computational | Sensor | DST-grade-A test runs |
-| `markdownlint-cli2` | Computational | Sensor | Document hygiene |
-| `tools/lint/no-directives-otto-prose.sh` | Computational | Guide | Persona-name discipline lint |
-| Codex / Copilot review | Inferential | Sensor | PR threads |
-| CLAUDE.md / AGENTS.md / memory pointers | Inferential | Guide | Wake-time discipline |
-| Skill router substrate inventory | Inferential | Guide | Pre-action substrate-discovery |
-| Pre-commit hooks (BP-10 ASCII clean) | Computational | Guide | Block bad commits |
-| poll-pr-gate-batch.ts | Computational | Sensor | Refresh world model |
+| Control                                  | Type          | Direction | Zeta Example                     |
+| ---------------------------------------- | ------------- | --------- | -------------------------------- |
+| `dotnet build -c Release` gate           | Computational | Sensor    | F# build must produce 0 warnings |
+| `bun test`                               | Computational | Sensor    | DST-grade-A test runs            |
+| `markdownlint-cli2`                      | Computational | Sensor    | Document hygiene                 |
+| `tools/lint/no-directives-otto-prose.sh` | Computational | Guide     | Persona-name discipline lint     |
+| Codex / Copilot review                   | Inferential   | Sensor    | PR threads                       |
+| CLAUDE.md / AGENTS.md / memory pointers  | Inferential   | Guide     | Wake-time discipline             |
+| Skill router substrate inventory         | Inferential   | Guide     | Pre-action substrate-discovery   |
+| Pre-commit hooks (BP-10 ASCII clean)     | Computational | Guide     | Block bad commits                |
+| poll-pr-gate-batch.ts                    | Computational | Sensor    | Refresh world model              |
 
 The two-dimension matrix is a useful audit framework — for
 each new tool / discipline, classify on both axes and check
@@ -159,7 +161,7 @@ whether existing coverage is balanced.
 
 ### "Harness templates" maps to substrate-discovery.ts
 
-Böckeler introduces *"harness templates"* — pre-packaged
+Böckeler introduces _"harness templates"_ — pre-packaged
 guide-and-sensor bundles for common service topologies. The
 concept: portability through standardized patterns rather
 than explicit transfer mechanisms.
@@ -175,16 +177,17 @@ beats per-harness reinvention."
 
 Böckeler:
 
-> *"The human's job... is to steer the agent by iterating
-> on the harness."*
+> _"The human's job... is to steer the agent by iterating
+> on the harness."_
 
 Calibrates against Aaron's "no directives" framing
 (`feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`).
 Both can be true: Aaron + Otto operate as accountable peers
 on Aaron's input ("framing" not "directives"), AND Aaron
 steers via harness iteration (ratchet steps via memory file
-+ CLAUDE.md bullet authoring). The "steering" happens at
-the substrate layer, not the per-action layer.
+
+- CLAUDE.md bullet authoring). The "steering" happens at
+  the substrate layer, not the per-action layer.
 
 # How to apply
 
@@ -250,10 +253,10 @@ When making architectural decisions on substrate / discovery
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Agent harness engineering is the discipline; the ratchet
+_"Agent harness engineering is the discipline; the ratchet
 pattern is the loop; caused_by is the trace; convergence
 across harnesses is the validation. Every wake-time line
-earns its place by tracing to a specific failure."*
+earns its place by tracing to a specific failure."_
 (Synthesis from Osmani + Böckeler 2026-04 + the human
 maintainer 2026-05-01.)
 

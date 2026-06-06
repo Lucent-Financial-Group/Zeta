@@ -26,11 +26,11 @@ Aaron's original framing used "homebase" overloaded with two meanings (Mirror-re
 - **B) staging / publication** — emphasizes the publishing pipeline
 - **C) dev-mirror / project-trunk** — encodes the 0-divergence invariant in the name (a "mirror" is by definition identical to what it mirrors; "trunk" preserves "where all contributors coordinate")
 
-Otto initially leaned A. **Aaron picked C** with the explicit reasoning: *"'dev-mirror' makes the 0-divergence target operationally obvious, this is what you keep missing the 0 ahead 0 behind. i'd love for this to be obvious to future you."*
+Otto initially leaned A. **Aaron picked C** with the explicit reasoning: _"'dev-mirror' makes the 0-divergence target operationally obvious, this is what you keep missing the 0 ahead 0 behind. i'd love for this to be obvious to future you."_
 
 The decisive factor: **Otto repeatedly forgets the 0-ahead-0-behind invariant** between ticks. Option A ("working fork") doesn't reinforce it — a "working fork" can plausibly have unique stuff. Option C ("dev-mirror fork") DOES reinforce it — a mirror, by name, is identical to what it mirrors. The name itself becomes the discipline.
 
-This is **Otto-340 substrate-IS-identity** applied to vocabulary: the term shapes the thinking. Calling AceHack a "dev-mirror" forces the question every wake: *is it actually mirroring? if not, why?*
+This is **Otto-340 substrate-IS-identity** applied to vocabulary: the term shapes the thinking. Calling AceHack a "dev-mirror" forces the question every wake: _is it actually mirroring? if not, why?_
 
 ### AceHack = dev-mirror fork (Aaron + agents)
 
@@ -43,14 +43,14 @@ This is **Otto-340 substrate-IS-identity** applied to vocabulary: the term shape
 
 - **Who**: ALL contributors. Aaron, Otto, named personas, peer AIs (Amara/GPT, Gemini, Codex, Cursor), future human contributors, future AI contributors not yet on board.
 - **What**: The trunk where all branches meet. Where the project lives for anyone who isn't Aaron-and-his-agents. NuGet pointers, README links, external collaborators' clones.
-- **Why "project-trunk"?**: "Trunk" is git-native (mainline, stable, where branches diverge from and merge back to). "Project" prefix preserves Aaron's framing that this is *the project's* trunk — independent of any particular maintainer-agent pair.
+- **Why "project-trunk"?**: "Trunk" is git-native (mainline, stable, where branches diverge from and merge back to). "Project" prefix preserves Aaron's framing that this is _the project's_ trunk — independent of any particular maintainer-agent pair.
 - **Public surface?**: Yes. This is the project's canonical identity to the world.
 
-**The two are NOT the same role.** Dev-mirror is *for Aaron's working pair*. Project-trunk is *for the project (all contributors)*. The dev-mirror MIRRORS the project-trunk; that's the relationship the names encode.
+**The two are NOT the same role.** Dev-mirror is _for Aaron's working pair_. Project-trunk is _for the project (all contributors)_. The dev-mirror MIRRORS the project-trunk; that's the relationship the names encode.
 
 ### Mirror-register lineage (preserved, not used going forward)
 
-Aaron's original framing — "AceHack is our poor mans homebase, LFG is the projects homebase for all contributors to coordinate" — is preserved here as Mirror-register lineage. The term "homebase" carried two meanings *for Aaron* (working-area-for-his-pair AND canonical-place-for-the-project) but doesn't communicate cleanly to future-Otto or other contributors. The Beacon-register replacement ("dev-mirror / project-trunk") is what factory substrate uses going forward. See `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md` for the protocol.
+Aaron's original framing — "AceHack is our poor mans homebase, LFG is the projects homebase for all contributors to coordinate" — is preserved here as Mirror-register lineage. The term "homebase" carried two meanings _for Aaron_ (working-area-for-his-pair AND canonical-place-for-the-project) but doesn't communicate cleanly to future-Otto or other contributors. The Beacon-register replacement ("dev-mirror / project-trunk") is what factory substrate uses going forward. See `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md` for the protocol.
 
 ## Strategic reframe — what changed
 
@@ -111,9 +111,9 @@ Once both are zero, factory has "started." Any subsequent divergence is a violat
 
 Source: forwarded multi-AI feedback packet 2026-04-29.
 
-> *"No AceHack-only files ≠ no AceHack-only content."*
-> *"Same path is not same substrate."*
-> *"Hard reset is allowed only after content-loss proof, not content-loss confidence."*
+> _"No AceHack-only files ≠ no AceHack-only content."_
+> _"Same path is not same substrate."_
+> _"Hard reset is allowed only after content-loss proof, not content-loss confidence."_
 
 ### What went wrong (saved by peer review)
 

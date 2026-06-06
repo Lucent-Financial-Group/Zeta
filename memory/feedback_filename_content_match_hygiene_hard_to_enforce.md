@@ -11,8 +11,8 @@ Aaron verbatim, 2026-04-22, after I landed the
 `vision-research-backlog-pipeline.md` → `crystallization-loop.md`
 rename:
 
-> *"add filename does not match contents hygene, that's a hard
-> one it's not like you can read every file backlog"*
+> _"add filename does not match contents hygene, that's a hard
+> one it's not like you can read every file backlog"_
 
 ## The rule
 
@@ -32,7 +32,7 @@ failure mode this prevents:
 ## Why the rule: filenames are a first-line index
 
 An agent or human scanning a directory listing reads filenames
-*before* file contents. A filename that lies about its content
+_before_ file contents. A filename that lies about its content
 wastes the reader's attention: they have to open the file to
 correct the lie, or worse, they skip a file that's actually
 relevant because its filename misled them. In a factory where
@@ -50,7 +50,7 @@ repo surface**.
 
 ## Why enforcement is hard — Aaron's acknowledgment
 
-Aaron said: *"it's not like you can read every file backlog"*
+Aaron said: _"it's not like you can read every file backlog"_
 — the enforcement can't be exhaustive. Reading every file
 every round to check filename-content match is O(N files) per
 round; the factory has hundreds of markdown files; the agent
@@ -58,7 +58,7 @@ cannot afford the read budget.
 
 **Honest acceptance:** this hygiene class is opportunistic +
 sample-based, not exhaustive. The rule is how to behave when
-filename-content mismatch is *detected*, not a claim that
+filename-content mismatch is _detected_, not a claim that
 every mismatch will be detected immediately.
 
 ## How to apply — three triggers
@@ -74,7 +74,7 @@ ROI channel because it piggybacks on work already happening —
 no separate audit cost.
 
 **Trigger 2 — on-concept-rename (proactive):**
-When an agent renames a *concept* (pipeline → loop;
+When an agent renames a _concept_ (pipeline → loop;
 cartographer framing; materia vocabulary), it **must
 immediately grep for files named after the old concept** and
 either rename them or file a corrective BACKLOG row. The

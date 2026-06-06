@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Adds Max's near-term primary workstream — **owning the tier-2 Docker Desktop + Kubernetes dev-experience** for the Zeta cluster substrate — to his persona files.
 
-Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this updated responsiblity and i'll send him a link once it's on master."* This PR puts the updated persona on `main` so Aaron can send Max a permanent URL.
+Aaron 2026-05-25: _"okay can you make a pr and up maxes persona with this updated responsiblity and i'll send him a link once it's on master."_ This PR puts the updated persona on `main` so Aaron can send Max a permanent URL.
 
 ## Workstream scope (added to PERSONA.md + STARTING-POINT.md)
 
@@ -41,7 +41,7 @@ Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this update
 
 - [x] markdownlint clean
 - [x] No new files (only edits to existing persona files)
-- [x] Cross-references resolve (B-0780, B-0759, B-0770, B-0776, B-0786, zflash-setup.ts, zeta-install.sh, .claude/rules/*)
+- [x] Cross-references resolve (B-0780, B-0759, B-0770, B-0776, B-0786, zflash-setup.ts, zeta-install.sh, .claude/rules/\*)
 - [ ] CI passes (gate workflow + CodeQL)
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -55,6 +55,7 @@ Aaron 2026-05-25: *"okay can you make a pr and up maxes persona with this update
 Documentation-only PR adding Max's near-term workstream (tier-2 Docker Desktop + Kubernetes dev-experience) to his persona files under `memory/persona/max/`. Both files are on the history-surface allowlist (`memory/**`), so persona name attribution is in-policy.
 
 **Changes:**
+
 - Adds "Current focus" section to `PERSONA.md` describing the tier-2 workstream, sub-scopes, topology, Touch ID integration, and skills/scripts encoding contract
 - Adds matching "Current focus" section to `STARTING-POINT.md` with cold-boot reading list, applicable disciplines, first deliverables, and updated 30-day success metrics
 
@@ -62,10 +63,10 @@ Documentation-only PR adding Max's near-term workstream (tier-2 Docker Desktop +
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/max/PERSONA.md | New "Current focus — tier-2 Docker Desktop dev-experience workstream" section with tier table, sub-scopes, topology, Touch ID pattern, encoding contract, and composes-with links |
-| memory/persona/max/STARTING-POINT.md | New "Current focus" section with cold-boot reading list, disciplines, concrete first deliverables, and 30-day success metrics |
+| File                                 | Description                                                                                                                                                                       |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| memory/persona/max/PERSONA.md        | New "Current focus — tier-2 Docker Desktop dev-experience workstream" section with tier table, sub-scopes, topology, Touch ID pattern, encoding contract, and composes-with links |
+| memory/persona/max/STARTING-POINT.md | New "Current focus" section with cold-boot reading list, disciplines, concrete first deliverables, and 30-day success metrics                                                     |
 
 ## General comments
 

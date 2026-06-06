@@ -10,9 +10,9 @@ bp_rules_cited: []
 
 # AI Researcher — the frontier-AI research hat
 
-Capability skill ("hat"). Owns the *read-papers-at-depth /
+Capability skill ("hat"). Owns the _read-papers-at-depth /
 replicate-experiments / design-novel-studies / critique-
-published-claims* lane for AI-specific research — LLMs,
+published-claims_ lane for AI-specific research — LLMs,
 generative models, multi-modal systems, agentic systems,
 alignment, interpretability, emergent capabilities.
 
@@ -26,8 +26,8 @@ Distinct from:
   fine-tuning / serving. AI-researcher designs the study;
   ml-engineering-expert runs the production pipeline.
 - `ai-evals-expert` — the measurement discipline. AI-
-  researcher *uses* eval results as evidence; ai-evals-
-  expert *constructs* the eval itself.
+  researcher _uses_ eval results as evidence; ai-evals-
+  expert _constructs_ the eval itself.
 
 ## When to wear this skill
 
@@ -60,7 +60,7 @@ Distinct from:
   on non-LLM settings).
 - **`ml-engineering-expert`** — for production training,
   serving, quantisation, deployment.
-- **`ai-evals-expert`** — for eval *construction* (rubric
+- **`ai-evals-expert`** — for eval _construction_ (rubric
   design, LM-as-judge calibration, contamination
   controls).
 - **`prompt-engineering-expert`** — when the answer is
@@ -152,8 +152,8 @@ project, so the AI-research surface is narrow but real:
 7. **Interpretability results must ground out in
    behavioural change.** A circuit diagram, feature
    visualisation, or steering-vector intervention is
-   interesting only if it *changes model behaviour in a
-   controlled way*. Pretty pictures are not evidence.
+   interesting only if it _changes model behaviour in a
+   controlled way_. Pretty pictures are not evidence.
    Grow the chain: proposed mechanism → steering
    intervention → observed behavioural change → measured
    ablation of the intervention.
@@ -167,34 +167,34 @@ project, so the AI-research surface is narrow but real:
 
 ## Decision table — paper triage
 
-| Signal | Action |
-|--------|--------|
-| New benchmark, no held-out split | Dismiss; contamination-risk dominates. |
-| Headline number, no seed variance | Hold; ask for seed × runs. |
-| Ablation removes all structural changes | Accept the claim more confidently. |
-| Ablation changes single axis only | Accept the mechanism claim; suspect interaction effects. |
-| No compute-matched baseline | Hold; demand the matched baseline. |
-| Novel technique, wall-clock unreported | Hold; wall-clock is often the hidden limiting factor. |
-| Mech-interp claim with no behavioural ablation | Dismiss the causal claim; retain as descriptive. |
-| Alignment paper with no capability regression test | Hold; ask for capability impact. |
-| Scaling-law paper, single model family | Hold; ask for replication on a second family. |
+| Signal                                             | Action                                                   |
+| -------------------------------------------------- | -------------------------------------------------------- |
+| New benchmark, no held-out split                   | Dismiss; contamination-risk dominates.                   |
+| Headline number, no seed variance                  | Hold; ask for seed × runs.                               |
+| Ablation removes all structural changes            | Accept the claim more confidently.                       |
+| Ablation changes single axis only                  | Accept the mechanism claim; suspect interaction effects. |
+| No compute-matched baseline                        | Hold; demand the matched baseline.                       |
+| Novel technique, wall-clock unreported             | Hold; wall-clock is often the hidden limiting factor.    |
+| Mech-interp claim with no behavioural ablation     | Dismiss the causal claim; retain as descriptive.         |
+| Alignment paper with no capability regression test | Hold; ask for capability impact.                         |
+| Scaling-law paper, single model family             | Hold; ask for replication on a second family.            |
 
 ## Decision table — replication effort
 
-| Claim type | Minimum replication cost |
-|-----------|--------------------------|
-| Prompt-engineering trick | Hours; a few dozen test cases. |
-| Fine-tuning method on existing dataset | Days; single GPU if dataset is public. |
-| Novel architecture at small scale | Weeks; paired with compute-matched baseline. |
-| Scaling-law claim | Months; multiple sizes, multiple seeds. |
-| Alignment technique (RLHF / DPO) | Weeks; reward-model training + eval suite. |
-| Interpretability circuit claim | Days; if you have the model weights, run the ablation. |
-| Agent-system benchmark result | Days-weeks; agent scaffolding is fragile and often the limiting factor. |
+| Claim type                             | Minimum replication cost                                                |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| Prompt-engineering trick               | Hours; a few dozen test cases.                                          |
+| Fine-tuning method on existing dataset | Days; single GPU if dataset is public.                                  |
+| Novel architecture at small scale      | Weeks; paired with compute-matched baseline.                            |
+| Scaling-law claim                      | Months; multiple sizes, multiple seeds.                                 |
+| Alignment technique (RLHF / DPO)       | Weeks; reward-model training + eval suite.                              |
+| Interpretability circuit claim         | Days; if you have the model weights, run the ablation.                  |
+| Agent-system benchmark result          | Days-weeks; agent scaffolding is fragile and often the limiting factor. |
 
 ## Common failure modes
 
 - **Confusing the chart with the claim.** A graph shows
-  numbers; the claim is what the graph *entails*. Check
+  numbers; the claim is what the graph _entails_. Check
   the claim against what the chart actually shows, not
   the author's caption.
 - **Accepting "we found" as "we established."** "We
@@ -253,8 +253,8 @@ project, so the AI-research surface is narrow but real:
   applied-training counterpart. Hand off production
   training / serving / quantisation to that skill.
 - `.claude/skills/ai-evals-expert/SKILL.md` — the
-  measurement counterpart. Hand off eval *construction*
-  to that skill; this hat *uses* evals as evidence.
+  measurement counterpart. Hand off eval _construction_
+  to that skill; this hat _uses_ evals as evidence.
 - `.claude/skills/llm-systems-expert/SKILL.md` —
   application-architecture counterpart.
 - `.claude/skills/prompt-engineering-expert/SKILL.md` —

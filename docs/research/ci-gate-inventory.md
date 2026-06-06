@@ -21,8 +21,8 @@ Three phases, ordered by cost-per-signal:
   Scheduled weekly at most, plus `workflow_dispatch`. Never
   per-PR.
 
-Aaron's round-29 framing: *"we have to be so careful when
-running the CI stuff it's all so slow."* Phase discipline is
+Aaron's round-29 framing: _"we have to be so careful when
+running the CI stuff it's all so slow."_ Phase discipline is
 the cost-control lens. A gate moves up a phase only with a
 stated reason.
 
@@ -30,12 +30,12 @@ stated reason.
 
 ### Phase 1 — every PR
 
-| # | Gate | Command | Runtime (est.) | Matrix | Needs | Failure |
-|---|---|---|---|---|---|---|
-| 1 | **Build** | `dotnet build Zeta.sln -c Release` | 1-2 min | ubuntu-22.04 + macos-14 | dotnet 10.x | hard-fail; `0 Warning(s)` required (TreatWarningsAsErrors is on) |
-| 2 | **Test** | `dotnet test Zeta.sln -c Release --no-build` | 2-5 min | ubuntu + macos | dotnet 10.x; test deps via nuget cache | hard-fail on red |
-| 3 | **Lint — Semgrep** | `semgrep --config .semgrep.yml` | 30-60 s | ubuntu only (single OS is fine for lint) | python 3.x, semgrep pip pkg | hard-fail on any rule match |
-| 4 | **Install-script two-run contract** | `tools/setup/install.sh && tools/setup/install.sh` (the `&&` is the contract — both must succeed) | +2-3 min over setup itself; see §three-way-parity | ubuntu + macos | the setup script itself | hard-fail if second run mutates state or downloads |
+| #   | Gate                                | Command                                                                                           | Runtime (est.)                                    | Matrix                                   | Needs                                  | Failure                                                          |
+| --- | ----------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
+| 1   | **Build**                           | `dotnet build Zeta.sln -c Release`                                                                | 1-2 min                                           | ubuntu-22.04 + macos-14                  | dotnet 10.x                            | hard-fail; `0 Warning(s)` required (TreatWarningsAsErrors is on) |
+| 2   | **Test**                            | `dotnet test Zeta.sln -c Release --no-build`                                                      | 2-5 min                                           | ubuntu + macos                           | dotnet 10.x; test deps via nuget cache | hard-fail on red                                                 |
+| 3   | **Lint — Semgrep**                  | `semgrep --config .semgrep.yml`                                                                   | 30-60 s                                           | ubuntu only (single OS is fine for lint) | python 3.x, semgrep pip pkg            | hard-fail on any rule match                                      |
+| 4   | **Install-script two-run contract** | `tools/setup/install.sh && tools/setup/install.sh` (the `&&` is the contract — both must succeed) | +2-3 min over setup itself; see §three-way-parity | ubuntu + macos                           | the setup script itself                | hard-fail if second run mutates state or downloads               |
 
 **Phase-1 cost sketch.** Per PR push, 2 OS × (5-7 min) = ~15
 min wall-clock under `fail-fast: false`. With the NuGet cache
@@ -43,13 +43,13 @@ warm: ~10 min. Measurable after first three runs.
 
 ### Phase 2 — scheduled (daily or weekly)
 
-| # | Gate | Command | Runtime (est.) | Cadence | Needs | Failure |
-|---|---|---|---|---|---|---|
-| 5 | **TLC model checker** | `tools/run-tlc.sh` (runs every .tla in `tools/tla/specs/`) | 5-30 min (variance high; SpineMergeInvariants is the long tail) | daily | JDK 21; tla2tools.jar | hard-fail; upload any `*_TTrace_*` artefacts to the run |
-| 6 | **Alloy checker** | `java -cp alloy.jar:obj AlloyRunner tools/alloy/specs/*.als` | 2-10 min | daily | JDK 21; alloy.jar | hard-fail |
-| 7 | **Lean proof** | `cd tools/lean4 && lake build` | 2-5 min steady-state with cached mathlib; 20-60 min on cold cache | daily | elan/lake/lean at pinned toolchain; cached mathlib .olean dir | hard-fail |
-| 8 | **CodeQL** | GitHub CodeQL workflow on C# + F# | 5-10 min | weekly | GitHub CodeQL action (Microsoft-owned — acceptable pin) | hard-fail on new HIGH/CRITICAL alerts |
-| 9 | **Dependency audit** | `dotnet list package --vulnerable --include-transitive` + `semgrep --config p/security-audit` | 1-2 min | daily | dotnet 10.x; semgrep | hard-fail on new HIGH/CRITICAL CVE |
+| #   | Gate                  | Command                                                                                       | Runtime (est.)                                                    | Cadence | Needs                                                         | Failure                                                 |
+| --- | --------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------- | ------------------------------------------------------------- | ------------------------------------------------------- |
+| 5   | **TLC model checker** | `tools/run-tlc.sh` (runs every .tla in `tools/tla/specs/`)                                    | 5-30 min (variance high; SpineMergeInvariants is the long tail)   | daily   | JDK 21; tla2tools.jar                                         | hard-fail; upload any `*_TTrace_*` artefacts to the run |
+| 6   | **Alloy checker**     | `java -cp alloy.jar:obj AlloyRunner tools/alloy/specs/*.als`                                  | 2-10 min                                                          | daily   | JDK 21; alloy.jar                                             | hard-fail                                               |
+| 7   | **Lean proof**        | `cd tools/lean4 && lake build`                                                                | 2-5 min steady-state with cached mathlib; 20-60 min on cold cache | daily   | elan/lake/lean at pinned toolchain; cached mathlib .olean dir | hard-fail                                               |
+| 8   | **CodeQL**            | GitHub CodeQL workflow on C# + F#                                                             | 5-10 min                                                          | weekly  | GitHub CodeQL action (Microsoft-owned — acceptable pin)       | hard-fail on new HIGH/CRITICAL alerts                   |
+| 9   | **Dependency audit**  | `dotnet list package --vulnerable --include-transitive` + `semgrep --config p/security-audit` | 1-2 min                                                           | daily   | dotnet 10.x; semgrep                                          | hard-fail on new HIGH/CRITICAL CVE                      |
 
 **Phase-2 cost sketch.** Daily runs: ~45 min of total
 wall-clock across 5 jobs (some parallelisable). Weekly
@@ -59,10 +59,10 @@ spacing.
 
 ### Phase 3 — opt-in / scheduled-weekly
 
-| # | Gate | Command | Runtime (est.) | Cadence | Needs | Failure |
-|---|---|---|---|---|---|---|
-| 10 | **Stryker mutation testing** | `dotnet stryker --config-file stryker-config.json` | 60-180 min | weekly + manual | dotnet stryker (global tool); full test suite green | hard-fail if `break` threshold (50%) missed; moderate cost if `low` (60%) missed — flag, don't fail (initially) |
-| 11 | **Bench regression** | `dotnet run --project bench/Benchmarks -c Release` | 15-30 min per config | weekly + manual | BenchmarkDotNet; long warmup | no hard-fail yet (no published baseline); record + artefact upload |
+| #   | Gate                         | Command                                            | Runtime (est.)       | Cadence         | Needs                                               | Failure                                                                                                         |
+| --- | ---------------------------- | -------------------------------------------------- | -------------------- | --------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| 10  | **Stryker mutation testing** | `dotnet stryker --config-file stryker-config.json` | 60-180 min           | weekly + manual | dotnet stryker (global tool); full test suite green | hard-fail if `break` threshold (50%) missed; moderate cost if `low` (60%) missed — flag, don't fail (initially) |
+| 11  | **Bench regression**         | `dotnet run --project bench/Benchmarks -c Release` | 15-30 min per config | weekly + manual | BenchmarkDotNet; long warmup                        | no hard-fail yet (no published baseline); record + artefact upload                                              |
 
 **Phase-3 cost sketch.** Weekly Stryker alone is ~1-3 hrs.
 That's the reason it's never per-PR — one mutation run for
@@ -70,14 +70,14 @@ every 10 PRs would eat the CI budget.
 
 ## Gates we explicitly skip on day 1
 
-| Gate | Why skipped |
-|---|---|
-| **Coverage collection** | No coverage baseline exists. Collection without a diff target is just noise. Add when we have a published baseline and a tool like `coverlet` + `reportgenerator` in the install script. |
-| **Coverage diff vs base** | Depends on coverage collection. See `../SQLSharp/reusable-coverage-collect.yml` for the shape when we adopt it. Backlog. |
-| **Benchmark diff vs base** | Depends on a baseline. No benchmark has a committed "this is the expected throughput" file yet. Naledi's next perf round delivers the baseline. |
-| **PR-comment bot (coverage/bench diffs)** | Backlog per Aaron round-29 call. `$GITHUB_STEP_SUMMARY` is the reporting surface until a diff flow exists. |
-| **Fantomas format check** | Zeta doesn't currently enforce Fantomas. Adding it = code churn plus new gate; separate decision. |
-| **fsharplint** | Same — not currently adopted; not a day-1 gate. |
+| Gate                                      | Why skipped                                                                                                                                                                              |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Coverage collection**                   | No coverage baseline exists. Collection without a diff target is just noise. Add when we have a published baseline and a tool like `coverlet` + `reportgenerator` in the install script. |
+| **Coverage diff vs base**                 | Depends on coverage collection. See `../SQLSharp/reusable-coverage-collect.yml` for the shape when we adopt it. Backlog.                                                                 |
+| **Benchmark diff vs base**                | Depends on a baseline. No benchmark has a committed "this is the expected throughput" file yet. Naledi's next perf round delivers the baseline.                                          |
+| **PR-comment bot (coverage/bench diffs)** | Backlog per Aaron round-29 call. `$GITHUB_STEP_SUMMARY` is the reporting surface until a diff flow exists.                                                                               |
+| **Fantomas format check**                 | Zeta doesn't currently enforce Fantomas. Adding it = code churn plus new gate; separate decision.                                                                                        |
+| **fsharplint**                            | Same — not currently adopted; not a day-1 gate.                                                                                                                                          |
 
 ## The three-way-parity install-script test
 
@@ -156,11 +156,11 @@ ledger for history.
 
 ## Cost accounting summary
 
-| Phase | Cadence | Wall-clock/run | Monthly minutes (est.) |
-|---|---|---|---|
-| 1 | every PR + push-to-main | 15 min (2 OS × 7 min) | highly PR-volume dependent; 10-30 hrs at modest volume |
-| 2 | daily | 45 min (5 jobs, partial parallelism) | ~20 hrs |
-| 3 | weekly | 90-120 min | ~8 hrs |
+| Phase | Cadence                 | Wall-clock/run                       | Monthly minutes (est.)                                 |
+| ----- | ----------------------- | ------------------------------------ | ------------------------------------------------------ |
+| 1     | every PR + push-to-main | 15 min (2 OS × 7 min)                | highly PR-volume dependent; 10-30 hrs at modest volume |
+| 2     | daily                   | 45 min (5 jobs, partial parallelism) | ~20 hrs                                                |
+| 3     | weekly                  | 90-120 min                           | ~8 hrs                                                 |
 
 Figures are deliberately imprecise. We measure after first
 three runs of each gate and update this table.
@@ -176,7 +176,7 @@ three runs of each gate and update this table.
    baseline.
 3. **Lean proof cold-cache story.** `lake build` on a
    cold cache (no mathlib .olean) is 20-60 min. `actions/
-   cache` on the mathlib dir brings it to ~2-5 min steady-
+cache` on the mathlib dir brings it to ~2-5 min steady-
    state. Confirm we invest in the mathlib cache from day
    one of Phase 2? Recommend yes.
 4. **Fantomas / fsharplint adoption.** Both exist in the

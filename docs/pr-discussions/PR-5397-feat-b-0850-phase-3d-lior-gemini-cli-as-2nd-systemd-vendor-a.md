@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per operator authorization *"drive forward with whatever interests you most"* — shipping B-0850 Phase 3d (Lior/Gemini = 2nd vendor) to move toward the ≥3-systemd-agents target.
+Per operator authorization _"drive forward with whatever interests you most"_ — shipping B-0850 Phase 3d (Lior/Gemini = 2nd vendor) to move toward the ≥3-systemd-agents target.
 
 ## 3 changes
 
@@ -28,13 +28,13 @@ Per operator authorization *"drive forward with whatever interests you most"* �
 
 ## Vendor diversity progression
 
-| Phase | Persona | Vendor | Status |
-|---|---|---|---|
-| 1 (PR #5392) | otto | Anthropic Claude | shipped |
-| 3d (THIS PR) | **lior** | **Google Gemini** | **shipped** |
-| 3a | alexa | Alibaba Qwen (Kiro) | pending |
-| 3b | riven | xAI Grok | pending |
-| 3c | vera | OpenAI Codex | pending |
+| Phase        | Persona  | Vendor              | Status      |
+| ------------ | -------- | ------------------- | ----------- |
+| 1 (PR #5392) | otto     | Anthropic Claude    | shipped     |
+| 3d (THIS PR) | **lior** | **Google Gemini**   | **shipped** |
+| 3a           | alexa    | Alibaba Qwen (Kiro) | pending     |
+| 3b           | riven    | xAI Grok            | pending     |
+| 3c           | vera     | OpenAI Codex        | pending     |
 
 After this PR: 2/5 personas + 2 vendors enabled. One more vendor (3c Vera/Codex likely next since codex CLI is also npm-installable) hits the ≥3 BFT floor.
 
@@ -43,6 +43,7 @@ After this PR: 2/5 personas + 2 vendors enabled. One more vendor (3c Vera/Codex 
 PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (B-0850 Phase 1 + 3 refactor) · B-0848 · B-0847 · B-0796
 
 Sources:
+
 - [@google/gemini-cli on npm](https://www.npmjs.com/package/@google/gemini-cli)
 - [Gemini CLI authentication docs](https://geminicli.com/docs/get-started/authentication/)
 

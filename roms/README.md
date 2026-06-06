@@ -107,12 +107,12 @@ When the OS-interface emulator implementation activates
 
 Per the human maintainer directive during an autonomous-loop session (2026-04-24):
 
-> *"if there are any you need bios files you can't create
-> yourself lets remove those"* + *"just keep the ones you
-> don't need anything but your code"* + *"open source bios
-> is fine too"* + *"keeping only those that work standalone
+> _"if there are any you need bios files you can't create
+> yourself lets remove those"_ + _"just keep the ones you
+> don't need anything but your code"_ + _"open source bios
+> is fine too"_ + _"keeping only those that work standalone
 > or have viable open BIOS replacements or ones we can
-> write ourself from scratch without cheating"*
+> write ourself from scratch without cheating"_
 
 The rule: **self-contained emulator code + safe-to-
 redistribute ROM must be enough to boot something**.

@@ -8,8 +8,8 @@ calibration protocol** (Aaron 2026-05-03; canonical memo:
 
 Each file in this directory is an **in-the-moment guess** about Aaron's
 architectural intent for a specific substrate choice — saved BEFORE Otto
-researches ground truth. Per Aaron 2026-05-03 verbatim *"your inital
-guess in the moment will say a lot about ottos frontier ability"*, the
+researches ground truth. Per Aaron 2026-05-03 verbatim _"your inital
+guess in the moment will say a lot about ottos frontier ability"_, the
 in-the-moment capture is the **unique frontier-ability data point**:
 uncontaminatable, can never be retrospectively replicated.
 
@@ -19,7 +19,7 @@ Each guess file uses the format `<date>-<topic-slug>.md` with this body
 structure:
 
 1. **Target** — the architectural choice being inferred (substrate path
-   + line numbers if applicable; PR # if known)
+   - line numbers if applicable; PR # if known)
 2. **Read state at guess time** — what Otto had ALREADY READ before
    making the guess (commit SHAs, prior memos, prior research). This
    bounds the inference fairly
@@ -47,8 +47,8 @@ structure:
 
 ## Cross-model retroactive replay
 
-Per Aaron 2026-05-03 *"you can also test othr models after the fact and
-just hid the conclusions from them"*, this directory's guesses can be
+Per Aaron 2026-05-03 _"you can also test othr models after the fact and
+just hid the conclusions from them"_, this directory's guesses can be
 retroactively replayed against other models:
 
 1. Pick an architectural choice with both Otto's in-the-moment guess +

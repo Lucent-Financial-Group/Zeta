@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2517 |
-| Title | research(B-0314): slice-6 external anchors — BP-05, BP-06 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T18:16:04Z |
-| Merged at | 2026-05-10T18:17:43Z |
-| Merge commit SHA | `23312eca48e79873db52607c1b56abce1e187e50` |
-| Branch | `fix/B-0314-bp-nn-anchor-backfill-slice6` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2517 |
-| Changed files | 3 |
-| Additions / deletions | +247 / -2 |
+| Field                 | Value                                                     |
+| --------------------- | --------------------------------------------------------- |
+| Number                | 2517                                                      |
+| Title                 | research(B-0314): slice-6 external anchors — BP-05, BP-06 |
+| Author                | `AceHack` (human)                                         |
+| State                 | MERGED                                                    |
+| Created at            | 2026-05-10T18:16:04Z                                      |
+| Merged at             | 2026-05-10T18:17:43Z                                      |
+| Merge commit SHA      | `23312eca48e79873db52607c1b56abce1e187e50`                |
+| Branch                | `fix/B-0314-bp-nn-anchor-backfill-slice6`                 |
+| Base branch           | `main`                                                    |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2517  |
+| Changed files         | 3                                                         |
+| Additions / deletions | +247 / -2                                                 |
 
 ## Description
 
@@ -34,11 +34,11 @@
 
 ## Artifacts
 
-| File | Change |
-|------|--------|
-| `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` | New — full anchor dossier, beacon-safety pass |
-| `docs/AGENT-BEST-PRACTICES.md` | Inline `External anchors:` blocks added to BP-05 and BP-06 |
-| `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md` | Slice-6 progress rows + Slice-6 landing line |
+| File                                                             | Change                                                     |
+| ---------------------------------------------------------------- | ---------------------------------------------------------- |
+| `docs/research/bp-nn-rules-external-anchors-slice6-bp05-bp06.md` | New — full anchor dossier, beacon-safety pass              |
+| `docs/AGENT-BEST-PRACTICES.md`                                   | Inline `External anchors:` blocks added to BP-05 and BP-06 |
+| `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md`           | Slice-6 progress rows + Slice-6 landing line               |
 
 ## Focused checks
 
@@ -55,15 +55,15 @@ Slice 6 of B-0314 (BP-NN rule external-anchor backfill). Slices 1–5 covered BP
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 0 |
-| Unresolved threads | 1 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -79,9 +79,9 @@ Slice 6 of B-0314 (BP-NN rule external-anchor backfill). Slices 1–5 covered BP
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep `last_updated` in ISO date format**
-
+  
   Use a plain `YYYY-MM-DD` value for `last_updated` instead of appending `"(slice-6)"`. The backlog schema explicitly requires `last_updated` to be `YYYY-MM-DD` (`tools/backlog/README.md`), and this row now violates that contract, which undermines machine-readability and consistency for backlog tooling that consumes frontmatter fields.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

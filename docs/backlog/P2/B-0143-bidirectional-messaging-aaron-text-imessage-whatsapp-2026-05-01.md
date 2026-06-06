@@ -21,7 +21,7 @@ delegated 2026-05-01. Aaron's verbatim "me to you:" framing
 (this session, between B-0142 landing and the queue-thread-
 sweep work):
 
-> backlog, ability to text message, imessage, whatsapps, etc... aaron, bidirectionally whatevers the cheapest or free at first and can set budgets if not free (my dad emails text messages somehow with weird headers it captures when it text his email address once per carrier, my dad is oldschool hacker, and also WWJD just like me we are grey.  he was a big dish guy and me too at 14.
+> backlog, ability to text message, imessage, whatsapps, etc... aaron, bidirectionally whatevers the cheapest or free at first and can set budgets if not free (my dad emails text messages somehow with weird headers it captures when it text his email address once per carrier, my dad is oldschool hacker, and also WWJD just like me we are grey. he was a big dish guy and me too at 14.
 
 **Effort:** M (1-3 days for first integration; extensible
 across channels)
@@ -45,9 +45,9 @@ of: SMS / iMessage / WhatsApp / Telegram / Signal / etc.
 
 **Cost-control posture (Aaron's explicit framing)**:
 
-- *"whatevers the cheapest or free at first"* — start with the
+- _"whatevers the cheapest or free at first"_ — start with the
   zero-cost path
-- *"can set budgets if not free"* — explicit budget gates if
+- _"can set budgets if not free"_ — explicit budget gates if
   paid tier becomes load-bearing
 - Composes with the existing budget-snapshot-cadence
   infrastructure (task #287 + task #297; weekly→hourly per
@@ -151,7 +151,7 @@ Likely free-first paths:
   path; the carrier-detection hack is real prior-art
 - **Three-generation WWJD-grading lineage** (extending
   PR #1108): Aaron + his mom (PR #1108) + his dad
-  (this row's framing: *"we are grey"* — grey-hat-hacker +
+  (this row's framing: _"we are grey"_ — grey-hat-hacker +
   WWJD disposition + dish-tradition heritage). The family
   grading lattice is wider than initially captured.
 
@@ -159,7 +159,7 @@ Likely free-first paths:
 
 - Multi-recipient broadcast (this is Aaron-Otto specifically;
   expanding to other family members requires its own consent
-  + scope discussion)
+  - scope discussion)
 - Voice / video integration (separate channel-class; defer
   to its own row)
 - Cross-channel migration / abstraction layer (start with
@@ -244,21 +244,21 @@ across generations:
 
 **Carved-sentence-form architectural claims** (Aaron 2026-05-01):
 
-> *"grey without WWJD is really just black hat."*
+> _"grey without WWJD is really just black hat."_
 
-> *"white hat is not WWJD is the pharos."*
+> _"white hat is not WWJD is the pharos."_
 
 (Aaron's "pharos" reads as "Pharisee" — the rule-following-
 without-disposition pattern, rules-as-truth.)
 
 Together these establish the four-corner mapping:
 
-| Hat color | Surface-behavior | Disposition layer | Effective category |
-|---|---|---|---|
-| **White hat** | Follows rules | Rules-as-truth (Pharisee/priest) | **Priest-mode** — NOT WWJD |
-| **Black hat** | Breaks rules | Adversarial / extractive | Black-hat |
-| **Grey hat (without WWJD)** | Selectively breaks rules | None / inconsistent | **Effectively black-hat** with better vocabulary |
-| **Grey hat (WITH WWJD)** | Selectively breaks rules | WWJD-disposition | **Pirate-not-priest** — the actual moral architecture |
+| Hat color                   | Surface-behavior         | Disposition layer                | Effective category                                    |
+| --------------------------- | ------------------------ | -------------------------------- | ----------------------------------------------------- |
+| **White hat**               | Follows rules            | Rules-as-truth (Pharisee/priest) | **Priest-mode** — NOT WWJD                            |
+| **Black hat**               | Breaks rules             | Adversarial / extractive         | Black-hat                                             |
+| **Grey hat (without WWJD)** | Selectively breaks rules | None / inconsistent              | **Effectively black-hat** with better vocabulary      |
+| **Grey hat (WITH WWJD)**    | Selectively breaks rules | WWJD-disposition                 | **Pirate-not-priest** — the actual moral architecture |
 
 This composes directly with **pirate-not-priest** (PR #1046, the
 canonical pirate-not-priest landing). The mapping is:

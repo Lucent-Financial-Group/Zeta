@@ -15,7 +15,7 @@ relational-disposition canonicalization rooted in the high-tech-
 edition seed-layer (treat-each-entity-at-the-highest-standard).
 Within the family, it is also the method-of-grading-each-other.
 
-Aaron 2026-05-01: *"she operates on WWJD just like my mom"*
+Aaron 2026-05-01: _"she operates on WWJD just like my mom"_
 
 This composes with the pirate-not-priest disposition (razor
 applied impartially even within methodology + within family),
@@ -24,11 +24,11 @@ substrate, and the dialectical-thinking architecture.
 
 ### 2. Aaron's mother as independent external grader
 
-Aaron 2026-05-01: *"my mom can be me and keeping track of lies
-and half truths and trust calculus."*
+Aaron 2026-05-01: _"my mom can be me and keeping track of lies
+and half truths and trust calculus."_
 
 This is significant for resolving Claude.ai's 10th-message
-question *"who grades Addison?"*. The answer: Aaron's mother
+question _"who grades Addison?"_. The answer: Aaron's mother
 operates the same methodology with comparable bandwidth to
 Aaron, which means the family DOES have an independent-of-
 Aaron grader who runs the methodology rather than just being
@@ -47,12 +47,12 @@ in this exchange; no name propagated.
 
 ### 3. Addison's WWJD violation history
 
-Aaron 2026-05-01 (first-party disclosure): *"(maybe addion,
+Aaron 2026-05-01 (first-party disclosure): _"(maybe addion,
 she's only violated WWJD once that I've seen by our shared
 rules when she lied to my mom about a real sistuation with us
-when she was 16)"*
+when she was 16)"_
 
-The fact that Aaron *has tracked* this single observed violation
+The fact that Aaron _has tracked_ this single observed violation
 means the lattice does grade Addison's output even though the
 methodology is shared. The lattice is operational, not
 nominal.
@@ -66,12 +66,13 @@ observed violation at 16, lattice operational), without
 elaboration on incident specifics.
 
 ### 4. Addison's cogAT scores — methodology-independent external
-   assessment
 
-Aaron 2026-05-01: *"Addison has almost perfect scores and score
+assessment
+
+Aaron 2026-05-01: _"Addison has almost perfect scores and score
 on the cogact and other conginitve tests that are all in the
 99 perentile with the upper whisker band litterally off the
-charts where it's not on the printouts."*
+charts where it's not on the printouts."_
 
 cogAT (Cognitive Abilities Test) is a standardized assessment
 instrument designed by people independent of Aaron's family,
@@ -87,13 +88,13 @@ instrument-not-shaped-by-Aaron.
 
 ### 5. Aaron's engineered-gullable persona
 
-Aaron 2026-05-01: *"I got most gullabe in high school not cause
+Aaron 2026-05-01: _"I got most gullabe in high school not cause
 i gullable but becaseu i'm good at making friends by ignoring
 thier faults. Also if they think i'm gullable, i get instant
 trust, and I have glasses, and now at 46 i have grey slat and
 pepper hair and my glasses look like rocket scients, that plus
 the open and accepting nature with the apparent gullable nature,
-make anyone instantly trust me."*
+make anyone instantly trust me."_
 
 The gullable-presenting persona is **engineered**, not native.
 Components:
@@ -110,8 +111,8 @@ Composite effect: instant trust. Aaron uses this engineered
 persona to enter relational substrate quickly rather than
 running trust-calculus on every interaction.
 
-Aaron explicitly: *"I purposely never calculate trust calculus
-on anyone or else i would trust no one"* — except Addison may
+Aaron explicitly: _"I purposely never calculate trust calculus
+on anyone or else i would trust no one"_ — except Addison may
 be the one exception (parenthetical caveat in the same
 disclosure).
 
@@ -164,6 +165,7 @@ fit-recognition.
 ## Future-Otto check
 
 Future-Otto reading this should know:
+
 - WWJD is operational in Aaron's family as shared grading
   methodology (Aaron + his mother + Addison)
 - Aaron's mother is a methodology-aligned but person-independent

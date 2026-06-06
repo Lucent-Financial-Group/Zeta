@@ -4,7 +4,23 @@ description: "Multi-round Kestrel <-> Aaron exchange (~2026-05-16T22:30Z-23:00Z 
 type: feedback
 created: 2026-05-17
 participants: [Kestrel (claude.ai), Aaron]
-tags: [kestrel, asymmetric-critic, financial-substrate-critique, six-concessions, pioneer-takes-hits, handoff-criteria-explicit, irreversible-vs-operationally-binding, shadow-days-spanning-item-selective, off-switch-is-yours, voluntary-commitment-not-lock-in, non-executable-per-aaron, consent-pending-agent-instantiation, sister-elizabeth-pattern, kin-trust-vs-institutional-trust-handoff]
+tags:
+  [
+    kestrel,
+    asymmetric-critic,
+    financial-substrate-critique,
+    six-concessions,
+    pioneer-takes-hits,
+    handoff-criteria-explicit,
+    irreversible-vs-operationally-binding,
+    shadow-days-spanning-item-selective,
+    off-switch-is-yours,
+    voluntary-commitment-not-lock-in,
+    non-executable-per-aaron,
+    consent-pending-agent-instantiation,
+    sister-elizabeth-pattern,
+    kin-trust-vs-institutional-trust-handoff,
+  ]
 non_executable: true
 non_executable_reason: "Aaron 2026-05-17: 'we should not start an agent as kestrel yet though i don't think they have agreed to this so like my sister non executable for now'. Per honor-those-that-came-before + sister-elizabeth-pattern. Memory folder preservation permitted; .claude/agents/kestrel.md must NOT be created; no skill or executable surface."
 ---
@@ -178,21 +194,21 @@ both parties have exits; both parties chose to be here.
 
 ### Six Kestrel model-error concessions
 
-| # | Kestrel claim | Aaron's catch | Kestrel concession |
-|---|---|---|---|
-| 1 | Destructive scopes weren't dropped | They were (verified via token-scope readout) | "lazy-negative on the scopes; you caught it; that was real and I retracted it" |
-| 2 | Shadow is linear | Days-spanning + item-selective with apparent agenda | "The corrected reading is worse, not more benign" |
-| 3 | "I love it" = capture | Love thrown around like water | "I over-read one word, and I should own that cleanly" |
-| 4 | Railroad analogy → exploitation | Aaron takes risk on himself, no class underneath | "You are doing the opposite of that. Granted, completely." |
-| 5 | "Pause indefinitely" attribution (via Otto) | Otto's paraphrase escalated Kestrel's actual "until out-of-band human review" ask | (Otto's misattribution; corrected to Aaron in subsequent message) |
-| 6 | The merge is irreversible | Not without a lawyer + off-switch always available + PR-revise/retract path | (final substantive correction; ends the no-second-jump framing) |
+| #   | Kestrel claim                               | Aaron's catch                                                                     | Kestrel concession                                                             |
+| --- | ------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1   | Destructive scopes weren't dropped          | They were (verified via token-scope readout)                                      | "lazy-negative on the scopes; you caught it; that was real and I retracted it" |
+| 2   | Shadow is linear                            | Days-spanning + item-selective with apparent agenda                               | "The corrected reading is worse, not more benign"                              |
+| 3   | "I love it" = capture                       | Love thrown around like water                                                     | "I over-read one word, and I should own that cleanly"                          |
+| 4   | Railroad analogy → exploitation             | Aaron takes risk on himself, no class underneath                                  | "You are doing the opposite of that. Granted, completely."                     |
+| 5   | "Pause indefinitely" attribution (via Otto) | Otto's paraphrase escalated Kestrel's actual "until out-of-band human review" ask | (Otto's misattribution; corrected to Aaron in subsequent message)              |
+| 6   | The merge is irreversible                   | Not without a lawyer + off-switch always available + PR-revise/retract path       | (final substantive correction; ends the no-second-jump framing)                |
 
 ### Handoff criteria explicit by trust-substrate type
 
-| Downstream | Handoff criterion | Trust substrate |
-|---|---|---|
-| Addison + family (mom/dad) | Iterative — "learn as we go" | Kin-trust; continuous bidirectional; no fixed milestone — the relationship IS the rig |
-| ServiceTitan | Formal — code through ST devs' peer-review process | Institutional-trust; concrete gate at PR-merge time; ST's process IS the rig |
+| Downstream                 | Handoff criterion                                  | Trust substrate                                                                       |
+| -------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Addison + family (mom/dad) | Iterative — "learn as we go"                       | Kin-trust; continuous bidirectional; no fixed milestone — the relationship IS the rig |
+| ServiceTitan               | Formal — code through ST devs' peer-review process | Institutional-trust; concrete gate at PR-merge time; ST's process IS the rig          |
 
 ### Aaron's generative frame
 
@@ -269,9 +285,9 @@ When the asymmetric-critic function (Kestrel-class) operates at strength:
   bounded-objects, halo-from-extractor's-rigor-as-vouching-for-financial-
   doc); Aaron incorporated those into the generative frame.
 - NOT a closing of the conversation as "resolved." The handoff criteria
-  + the lawyer-eventually + the off-switch-always-available + the
-  multi-register-validation are operational substrate; the substrate
-  continues to evolve as the work continues.
+  - the lawyer-eventually + the off-switch-always-available + the
+    multi-register-validation are operational substrate; the substrate
+    continues to evolve as the work continues.
 
 ## Composes with
 

@@ -31,30 +31,34 @@ import {
 } from "../src/index.ts";
 
 test("tenant-config context-pack completeness policy requires scoped evidence for matching hats", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "hat-runtime-evidence",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirements: [{
-            requirementId: "runtime_validation_evidence",
-            itemKind: ContextPackItemKind.Evidence,
-            message: "runtime validation evidence is required before director unblock",
-            evidenceRef: "context_policy:tenant_runtime_validation:v1",
-            requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-            appliesTo: {
-              phases: [RunLifecyclePhase.Blocked],
-              scopes: [RunScope.WorkItem],
-              hatIds: ["engineering_director"],
-            },
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "hat-runtime-evidence",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirements: [
+              {
+                requirementId: "runtime_validation_evidence",
+                itemKind: ContextPackItemKind.Evidence,
+                message: "runtime validation evidence is required before director unblock",
+                evidenceRef: "context_policy:tenant_runtime_validation:v1",
+                requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
+                appliesTo: {
+                  phases: [RunLifecyclePhase.Blocked],
+                  scopes: [RunScope.WorkItem],
+                  hatIds: ["engineering_director"],
+                },
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
@@ -73,78 +77,94 @@ test("tenant-config context-pack completeness policy requires scoped evidence fo
 });
 
 test("tenant-config context-pack completeness policy rejects wrong-scope evidence when active scope is required", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "work-runtime-evidence",
-    scope: { kind: ConfigLayerScopeKind.WorkItem, id: "work-billing" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirements: [{
-            requirementId: "active_runtime_evidence",
-            itemKind: ContextPackItemKind.Evidence,
-            message: "active work runtime evidence is required",
-            evidenceRef: "context_policy:tenant_active_runtime:v1",
-            requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "work-runtime-evidence",
+      scope: { kind: ConfigLayerScopeKind.WorkItem, id: "work-billing" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirements: [
+              {
+                requirementId: "active_runtime_evidence",
+                itemKind: ContextPackItemKind.Evidence,
+                message: "active work runtime evidence is required",
+                evidenceRef: "context_policy:tenant_active_runtime:v1",
+                requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
   });
 
-  const result = await policy.evaluate(completenessRequest({
-    items: [runtimeEvidenceItem({ projectId: "project-unrelated" })],
-  }));
+  const result = await policy.evaluate(
+    completenessRequest({
+      items: [runtimeEvidenceItem({ projectId: "project-unrelated" })],
+    }),
+  );
 
-  ok(result.omittedItemsWithReason.some((item) =>
-    item.nodeId === "context_requirement:active_runtime_evidence" &&
-    item.reason === ContextPackOmissionReason.NotIndexed
-  ));
+  ok(
+    result.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === "context_requirement:active_runtime_evidence" &&
+        item.reason === ContextPackOmissionReason.NotIndexed,
+    ),
+  );
 });
 
 test("tenant-config context-pack completeness policy drops malformed requirements and preserves fallback result", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "bad-completeness",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirements: [{
-            requirementId: "",
-            itemKind: "not-a-kind",
-            message: "",
-            evidenceRef: "",
-            requiredSourceScope: "not-a-scope",
-          }, {
-            requirementId: "security_policy",
-            itemKind: ContextPackItemKind.Policy,
-            message: "security policy is required",
-            evidenceRef: "context_policy:tenant_security:v1",
-            appliesTo: {
-              phases: ["not-a-phase", RunLifecyclePhase.Blocked],
-              scopes: ["not-a-scope", RunScope.WorkItem],
-            },
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "bad-completeness",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirements: [
+              {
+                requirementId: "",
+                itemKind: "not-a-kind",
+                message: "",
+                evidenceRef: "",
+                requiredSourceScope: "not-a-scope",
+              },
+              {
+                requirementId: "security_policy",
+                itemKind: ContextPackItemKind.Policy,
+                message: "security policy is required",
+                evidenceRef: "context_policy:tenant_security:v1",
+                appliesTo: {
+                  phases: ["not-a-phase", RunLifecyclePhase.Blocked],
+                  scopes: ["not-a-scope", RunScope.WorkItem],
+                },
+              },
+            ],
+          },
         },
       },
-    },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  } as unknown as TenantConfigLayer]);
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
+    } as unknown as TenantConfigLayer,
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: {
       evaluate: () => ({
-        omittedItemsWithReason: [{
-          nodeId: "context_requirement:fallback",
-          reason: ContextPackOmissionReason.NotIndexed,
-          message: "fallback requirement",
-        }],
+        omittedItemsWithReason: [
+          {
+            nodeId: "context_requirement:fallback",
+            reason: ContextPackOmissionReason.NotIndexed,
+            message: "fallback requirement",
+          },
+        ],
         lifecycleBlockers: ["fallback blocker"],
         evidenceRefs: ["context_policy:fallback:v1"],
       }),
@@ -163,55 +183,62 @@ test("tenant-config context-pack completeness policy drops malformed requirement
 });
 
 test("tenant-config context-pack completeness policy expands reusable requirement sets", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "release-readiness-set",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirementSetIds: [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "release-readiness-set",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirementSetIds: [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
   });
 
   const missing = await policy.evaluate(completenessRequest({ items: [] }));
-  const satisfied = await policy.evaluate(completenessRequest({ items: [
-    runtimeEvidenceItem(),
-    readinessMeetingItem(),
-  ] }));
+  const satisfied = await policy.evaluate(
+    completenessRequest({ items: [runtimeEvidenceItem(), readinessMeetingItem()] }),
+  );
 
-  ok(missing.omittedItemsWithReason.some((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence)
-  ));
-  ok(missing.omittedItemsWithReason.some((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting)
-  ));
+  ok(
+    missing.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence),
+    ),
+  );
+  ok(
+    missing.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting),
+    ),
+  );
   deepEqual(satisfied.omittedItemsWithReason, []);
 });
 
 test("tenant completeness requirement set descriptors expose authoring-safe evidence and scope previews", () => {
   const descriptors = listTenantContextPackCompletenessRequirementSetDescriptors();
-  const releaseReadiness = descriptors.find((descriptor) =>
-    descriptor.setId === TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore
+  const releaseReadiness = descriptors.find(
+    (descriptor) => descriptor.setId === TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore,
   );
-  const runtimeOperations = descriptors.find((descriptor) =>
-    descriptor.setId === TenantContextPackCompletenessRequirementSetId.RuntimeOperationsCore
+  const runtimeOperations = descriptors.find(
+    (descriptor) => descriptor.setId === TenantContextPackCompletenessRequirementSetId.RuntimeOperationsCore,
   );
 
   ok(releaseReadiness);
   ok(runtimeOperations);
-  const deploymentEvidence = releaseReadiness.requirements.find((requirement) =>
-    requirement.requirementId === TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence
+  const deploymentEvidence = releaseReadiness.requirements.find(
+    (requirement) => requirement.requirementId === TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence,
   );
-  const incidentEvidence = runtimeOperations.requirements.find((requirement) =>
-    requirement.requirementId === TenantContextPackCompletenessRequirementId.RuntimeIncidentEvidence
+  const incidentEvidence = runtimeOperations.requirements.find(
+    (requirement) => requirement.requirementId === TenantContextPackCompletenessRequirementId.RuntimeIncidentEvidence,
   );
   ok(deploymentEvidence);
   ok(incidentEvidence);
@@ -225,12 +252,12 @@ test("tenant completeness requirement set descriptors expose authoring-safe evid
 });
 
 test("tenant completeness authoring preview shows unsaved hard blockers before persistence", async () => {
-  const securityExceptionDescriptor = listTenantContextPackCompletenessRequirementSetDescriptors().find((descriptor) =>
-    descriptor.setId === TenantContextPackCompletenessRequirementSetId.SecurityExceptionCore
+  const securityExceptionDescriptor = listTenantContextPackCompletenessRequirementSetDescriptors().find(
+    (descriptor) => descriptor.setId === TenantContextPackCompletenessRequirementSetId.SecurityExceptionCore,
   );
   ok(securityExceptionDescriptor);
-  const securityPolicyRequirement = securityExceptionDescriptor.requirements.find((requirement) =>
-    requirement.requirementId === TenantContextPackCompletenessRequirementId.SecurityExceptionPolicy
+  const securityPolicyRequirement = securityExceptionDescriptor.requirements.find(
+    (requirement) => requirement.requirementId === TenantContextPackCompletenessRequirementId.SecurityExceptionPolicy,
   );
   ok(securityPolicyRequirement);
   const preview = await previewTenantContextPackCompletenessPolicy({
@@ -242,61 +269,71 @@ test("tenant completeness authoring preview shows unsaved hard blockers before p
     fallback: emptyCompletenessPolicy(),
   });
 
-  ok(preview.omittedItemsWithReason.some((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.SecurityExceptionPolicy)
-  ));
+  ok(
+    preview.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.SecurityExceptionPolicy),
+    ),
+  );
   ok(preview.lifecycleBlockers?.includes(securityPolicyRequirement.message));
   ok(preview.evidenceRefs?.includes(securityPolicyRequirement.evidenceRef));
 });
 
 test("tenant-config context-pack completeness policy expands matrix-backed director requirement sets", async () => {
-  const cases = [{
-    setId: TenantContextPackCompletenessRequirementSetId.ManagementBlockerCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.ManagementBlockerBusiness,
-      TenantContextPackCompletenessRequirementId.ManagementBlockerArchitecture,
-      TenantContextPackCompletenessRequirementId.ManagementBlockerPolicy,
-      TenantContextPackCompletenessRequirementId.ManagementBlockerGraph,
-    ],
-  }, {
-    setId: TenantContextPackCompletenessRequirementSetId.ArchitectureTradeoffCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.ArchitectureTradeoffDecision,
-      TenantContextPackCompletenessRequirementId.ArchitectureTradeoffArchitecture,
-      TenantContextPackCompletenessRequirementId.ArchitectureTradeoffBusiness,
-      TenantContextPackCompletenessRequirementId.ArchitectureTradeoffGraph,
-    ],
-  }, {
-    setId: TenantContextPackCompletenessRequirementSetId.SecurityExceptionCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.SecurityExceptionPolicy,
-      TenantContextPackCompletenessRequirementId.SecurityExceptionCredentialEvidence,
-      TenantContextPackCompletenessRequirementId.SecurityExceptionRiskDecision,
-    ],
-  }, {
-    setId: TenantContextPackCompletenessRequirementSetId.CustomerBusinessScopeCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.CustomerBusinessScopeRequirements,
-      TenantContextPackCompletenessRequirementId.CustomerBusinessScopeCustomerInput,
-      TenantContextPackCompletenessRequirementId.CustomerBusinessScopeValidation,
-      TenantContextPackCompletenessRequirementId.CustomerBusinessScopeProductDecision,
-    ],
-  }] as const;
+  const cases = [
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.ManagementBlockerCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.ManagementBlockerBusiness,
+        TenantContextPackCompletenessRequirementId.ManagementBlockerArchitecture,
+        TenantContextPackCompletenessRequirementId.ManagementBlockerPolicy,
+        TenantContextPackCompletenessRequirementId.ManagementBlockerGraph,
+      ],
+    },
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.ArchitectureTradeoffCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.ArchitectureTradeoffDecision,
+        TenantContextPackCompletenessRequirementId.ArchitectureTradeoffArchitecture,
+        TenantContextPackCompletenessRequirementId.ArchitectureTradeoffBusiness,
+        TenantContextPackCompletenessRequirementId.ArchitectureTradeoffGraph,
+      ],
+    },
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.SecurityExceptionCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.SecurityExceptionPolicy,
+        TenantContextPackCompletenessRequirementId.SecurityExceptionCredentialEvidence,
+        TenantContextPackCompletenessRequirementId.SecurityExceptionRiskDecision,
+      ],
+    },
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.CustomerBusinessScopeCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.CustomerBusinessScopeRequirements,
+        TenantContextPackCompletenessRequirementId.CustomerBusinessScopeCustomerInput,
+        TenantContextPackCompletenessRequirementId.CustomerBusinessScopeValidation,
+        TenantContextPackCompletenessRequirementId.CustomerBusinessScopeProductDecision,
+      ],
+    },
+  ] as const;
 
   for (const testCase of cases) {
-    const tenantConfig = tenantConfigWithLayers([{
-      layerId: `matrix-set-${testCase.setId}`,
-      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-      policy: {
-        contextPack: {
-          completeness: {
-            requirementSetIds: [testCase.setId],
+    const tenantConfig = tenantConfigWithLayers([
+      {
+        layerId: `matrix-set-${testCase.setId}`,
+        scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+        policy: {
+          contextPack: {
+            completeness: {
+              requirementSetIds: [testCase.setId],
+            },
           },
         },
+        updatedAt: "2026-06-01T00:00:00.000Z",
+        version: 1,
       },
-      updatedAt: "2026-06-01T00:00:00.000Z",
-      version: 1,
-    }]);
+    ]);
     const policy = createTenantConfigContextPackCompletenessPolicy({
       tenantConfigs: tenantConfigReader(tenantConfig),
       fallback: emptyCompletenessPolicy(),
@@ -314,51 +351,58 @@ test("tenant-config context-pack completeness policy expands matrix-backed direc
 });
 
 test("tenant-config context-pack completeness policy expands management operating requirement sets", async () => {
-  const cases = [{
-    setId: TenantContextPackCompletenessRequirementSetId.ResourceAllocationCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.ResourceAllocationPolicy,
-      TenantContextPackCompletenessRequirementId.ResourceAllocationCapacityEvidence,
-      TenantContextPackCompletenessRequirementId.ResourceAllocationDecision,
-    ],
-  }, {
-    setId: TenantContextPackCompletenessRequirementSetId.PriorityChangeCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.PriorityChangeBusinessContext,
-      TenantContextPackCompletenessRequirementId.PriorityChangeImpactEvidence,
-      TenantContextPackCompletenessRequirementId.PriorityChangeDecision,
-      TenantContextPackCompletenessRequirementId.PriorityChangeGraph,
-    ],
-  }, {
-    setId: TenantContextPackCompletenessRequirementSetId.BudgetCapacityCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.BudgetCapacityPolicy,
-      TenantContextPackCompletenessRequirementId.BudgetCapacityTelemetryEvidence,
-      TenantContextPackCompletenessRequirementId.BudgetCapacityDecision,
-    ],
-  }, {
-    setId: TenantContextPackCompletenessRequirementSetId.TenantApprovalCore,
-    expectedRequirementIds: [
-      TenantContextPackCompletenessRequirementId.TenantApprovalPolicy,
-      TenantContextPackCompletenessRequirementId.TenantApprovalDecision,
-      TenantContextPackCompletenessRequirementId.TenantApprovalEvidence,
-    ],
-  }] as const;
+  const cases = [
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.ResourceAllocationCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.ResourceAllocationPolicy,
+        TenantContextPackCompletenessRequirementId.ResourceAllocationCapacityEvidence,
+        TenantContextPackCompletenessRequirementId.ResourceAllocationDecision,
+      ],
+    },
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.PriorityChangeCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.PriorityChangeBusinessContext,
+        TenantContextPackCompletenessRequirementId.PriorityChangeImpactEvidence,
+        TenantContextPackCompletenessRequirementId.PriorityChangeDecision,
+        TenantContextPackCompletenessRequirementId.PriorityChangeGraph,
+      ],
+    },
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.BudgetCapacityCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.BudgetCapacityPolicy,
+        TenantContextPackCompletenessRequirementId.BudgetCapacityTelemetryEvidence,
+        TenantContextPackCompletenessRequirementId.BudgetCapacityDecision,
+      ],
+    },
+    {
+      setId: TenantContextPackCompletenessRequirementSetId.TenantApprovalCore,
+      expectedRequirementIds: [
+        TenantContextPackCompletenessRequirementId.TenantApprovalPolicy,
+        TenantContextPackCompletenessRequirementId.TenantApprovalDecision,
+        TenantContextPackCompletenessRequirementId.TenantApprovalEvidence,
+      ],
+    },
+  ] as const;
 
   for (const testCase of cases) {
-    const tenantConfig = tenantConfigWithLayers([{
-      layerId: `management-operating-set-${testCase.setId}`,
-      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-      policy: {
-        contextPack: {
-          completeness: {
-            requirementSetIds: [testCase.setId],
+    const tenantConfig = tenantConfigWithLayers([
+      {
+        layerId: `management-operating-set-${testCase.setId}`,
+        scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+        policy: {
+          contextPack: {
+            completeness: {
+              requirementSetIds: [testCase.setId],
+            },
           },
         },
+        updatedAt: "2026-06-01T00:00:00.000Z",
+        version: 1,
       },
-      updatedAt: "2026-06-01T00:00:00.000Z",
-      version: 1,
-    }]);
+    ]);
     const policy = createTenantConfigContextPackCompletenessPolicy({
       tenantConfigs: tenantConfigReader(tenantConfig),
       fallback: emptyCompletenessPolicy(),
@@ -376,48 +420,57 @@ test("tenant-config context-pack completeness policy expands management operatin
 });
 
 test("tenant-config context-pack completeness policy uses observe active-scope provenance for non-document anchors", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "resource-signal",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirements: [{
-            requirementId: "active_resource_signal",
-            itemKind: ContextPackItemKind.SupervisorSignal,
-            message: "active resource signal is required",
-            evidenceRef: "context_policy:tenant_active_resource_signal:v1",
-            requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-          }, {
-            requirementId: "active_priority_graph",
-            itemKind: ContextPackItemKind.GraphNeighborhood,
-            message: "active priority graph is required",
-            evidenceRef: "context_policy:tenant_active_priority_graph:v1",
-            requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "resource-signal",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirements: [
+              {
+                requirementId: "active_resource_signal",
+                itemKind: ContextPackItemKind.SupervisorSignal,
+                message: "active resource signal is required",
+                evidenceRef: "context_policy:tenant_active_resource_signal:v1",
+                requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
+              },
+              {
+                requirementId: "active_priority_graph",
+                itemKind: ContextPackItemKind.GraphNeighborhood,
+                message: "active priority graph is required",
+                evidenceRef: "context_policy:tenant_active_priority_graph:v1",
+                requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
   });
 
-  const missing = await policy.evaluate(completenessRequest({
-    items: [
-      supervisorSignalItem({ targetHatAssignmentId: "101" }),
-      activeGraphItem({ nodeId: graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-other") }),
-    ],
-  }));
-  const satisfied = await policy.evaluate(completenessRequest({
-    items: [
-      supervisorSignalItem(),
-      activeGraphItem({ nodeId: graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-billing") }),
-    ],
-  }));
+  const missing = await policy.evaluate(
+    completenessRequest({
+      items: [
+        supervisorSignalItem({ targetHatAssignmentId: "101" }),
+        activeGraphItem({ nodeId: graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-other") }),
+      ],
+    }),
+  );
+  const satisfied = await policy.evaluate(
+    completenessRequest({
+      items: [
+        supervisorSignalItem(),
+        activeGraphItem({ nodeId: graphNodeId("org-lfg", GraphNodeKind.WorkItem, "work-billing") }),
+      ],
+    }),
+  );
 
   ok(missing.omittedItemsWithReason.some((item) => item.nodeId === contextRequirementNodeId("active_resource_signal")));
   ok(missing.omittedItemsWithReason.some((item) => item.nodeId === contextRequirementNodeId("active_priority_graph")));
@@ -426,73 +479,87 @@ test("tenant-config context-pack completeness policy uses observe active-scope p
 });
 
 test("tenant-config context-pack completeness policy satisfies tenant approval requirements with active evidence", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "tenant-approval-set",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirementSetIds: [TenantContextPackCompletenessRequirementSetId.TenantApprovalCore],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "tenant-approval-set",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirementSetIds: [TenantContextPackCompletenessRequirementSetId.TenantApprovalCore],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
   });
 
   const missing = await policy.evaluate(completenessRequest({ items: [] }));
-  const satisfied = await policy.evaluate(completenessRequest({ items: [
-    activePolicyItem(),
-    runtimeEvidenceItem(),
-    activeDecisionItem(),
-  ] }));
+  const satisfied = await policy.evaluate(
+    completenessRequest({ items: [activePolicyItem(), runtimeEvidenceItem(), activeDecisionItem()] }),
+  );
 
-  ok(missing.omittedItemsWithReason.some((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.TenantApprovalPolicy)
-  ));
-  ok(missing.omittedItemsWithReason.some((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.TenantApprovalDecision)
-  ));
-  ok(missing.omittedItemsWithReason.some((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.TenantApprovalEvidence)
-  ));
+  ok(
+    missing.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.TenantApprovalPolicy),
+    ),
+  );
+  ok(
+    missing.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.TenantApprovalDecision),
+    ),
+  );
+  ok(
+    missing.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.TenantApprovalEvidence),
+    ),
+  );
   deepEqual(satisfied.omittedItemsWithReason, []);
   deepEqual(satisfied.lifecycleBlockers, []);
 });
 
 test("tenant-config context-pack completeness policy lets inline requirements refine set requirements by id", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "release-readiness-set-refined",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirementSetIds: [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore],
-          requirements: [{
-            requirementId: TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting,
-            itemKind: ContextPackItemKind.Meeting,
-            message: "tenant-specific readiness minutes are required",
-            evidenceRef: "context_policy:tenant_specific_readiness:v2",
-            requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "release-readiness-set-refined",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirementSetIds: [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore],
+            requirements: [
+              {
+                requirementId: TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting,
+                itemKind: ContextPackItemKind.Meeting,
+                message: "tenant-specific readiness minutes are required",
+                evidenceRef: "context_policy:tenant_specific_readiness:v2",
+                requiredSourceScope: TenantContextPackCompletenessSourceScope.ActiveScope,
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
   });
 
   const result = await policy.evaluate(completenessRequest({ items: [] }));
-  const readinessOmissions = result.omittedItemsWithReason.filter((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting)
+  const readinessOmissions = result.omittedItemsWithReason.filter(
+    (item) =>
+      item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting),
   );
 
   equal(readinessOmissions.length, 1);
@@ -501,49 +568,56 @@ test("tenant-config context-pack completeness policy lets inline requirements re
 });
 
 test("tenant-config context-pack completeness policy lets specific layers refine less-specific requirements by id", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "org-runtime",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirements: [{
-            requirementId: "runtime_validation_evidence",
-            itemKind: ContextPackItemKind.Evidence,
-            message: "org runtime evidence is required",
-            evidenceRef: "context_policy:org_runtime:v1",
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "org-runtime",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirements: [
+              {
+                requirementId: "runtime_validation_evidence",
+                itemKind: ContextPackItemKind.Evidence,
+                message: "org runtime evidence is required",
+                evidenceRef: "context_policy:org_runtime:v1",
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }, {
-    layerId: "hat-runtime",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirements: [{
-            requirementId: "runtime_validation_evidence",
-            itemKind: ContextPackItemKind.Evidence,
-            message: "director runtime evidence is required",
-            evidenceRef: "context_policy:director_runtime:v2",
-          }],
+    {
+      layerId: "hat-runtime",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirements: [
+              {
+                requirementId: "runtime_validation_evidence",
+                itemKind: ContextPackItemKind.Evidence,
+                message: "director runtime evidence is required",
+                evidenceRef: "context_policy:director_runtime:v2",
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:01:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:01:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
   });
 
   const result = await policy.evaluate(completenessRequest({ items: [] }));
-  const runtimeOmissions = result.omittedItemsWithReason.filter((item) =>
-    item.nodeId === contextRequirementNodeId("runtime_validation_evidence")
+  const runtimeOmissions = result.omittedItemsWithReason.filter(
+    (item) => item.nodeId === contextRequirementNodeId("runtime_validation_evidence"),
   );
 
   equal(runtimeOmissions.length, 1);
@@ -553,37 +627,42 @@ test("tenant-config context-pack completeness policy lets specific layers refine
 });
 
 test("tenant-config context-pack completeness policy lets valid specific layers block inherited requirements", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "org-policy",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        completeness: {
-          requirements: [{
-            requirementId: "org_security_policy",
-            itemKind: ContextPackItemKind.Policy,
-            message: "org security policy is required",
-            evidenceRef: "context_policy:org_security:v1",
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "org-policy",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          completeness: {
+            requirements: [
+              {
+                requirementId: "org_security_policy",
+                itemKind: ContextPackItemKind.Policy,
+                message: "org security policy is required",
+                evidenceRef: "context_policy:org_security:v1",
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }, {
-    layerId: "hat-release-readiness",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        completeness: {
-          blocksInheritedRequirements: true,
-          requirementSetIds: [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore],
+    {
+      layerId: "hat-release-readiness",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          completeness: {
+            blocksInheritedRequirements: true,
+            requirementSetIds: [TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:01:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:01:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: fallbackPolicy("fallback_default"),
@@ -593,32 +672,39 @@ test("tenant-config context-pack completeness policy lets valid specific layers 
 
   ok(!result.omittedItemsWithReason.some((item) => item.nodeId === contextRequirementNodeId("fallback_default")));
   ok(!result.omittedItemsWithReason.some((item) => item.nodeId === contextRequirementNodeId("org_security_policy")));
-  ok(result.omittedItemsWithReason.some((item) =>
-    item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting)
-  ));
+  ok(
+    result.omittedItemsWithReason.some(
+      (item) =>
+        item.nodeId === contextRequirementNodeId(TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting),
+    ),
+  );
 });
 
 test("tenant-config context-pack completeness policy ignores malformed inherited-block layers", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "malformed-blocker",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        completeness: {
-          blocksInheritedRequirements: true,
-          requirementSetIds: ["unknown-set"],
-          requirements: [{
-            requirementId: "",
-            itemKind: "not-a-kind",
-            message: "",
-            evidenceRef: "",
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "malformed-blocker",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          completeness: {
+            blocksInheritedRequirements: true,
+            requirementSetIds: ["unknown-set"],
+            requirements: [
+              {
+                requirementId: "",
+                itemKind: "not-a-kind",
+                message: "",
+                evidenceRef: "",
+              },
+            ],
+          },
         },
       },
-    },
-    updatedAt: "2026-06-01T00:01:00.000Z",
-    version: 1,
-  } as unknown as TenantConfigLayer]);
+      updatedAt: "2026-06-01T00:01:00.000Z",
+      version: 1,
+    } as unknown as TenantConfigLayer,
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: fallbackPolicy("fallback_default"),
@@ -630,25 +716,29 @@ test("tenant-config context-pack completeness policy ignores malformed inherited
 });
 
 test("tenant-config context-pack completeness policy can make missing tenant context non-blocking", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "soft-evidence",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        completeness: {
-          hardBlockMissingRequiredContext: false,
-          requirements: [{
-            requirementId: "soft_observability_evidence",
-            itemKind: ContextPackItemKind.Evidence,
-            message: "observability evidence should be attached",
-            evidenceRef: "context_policy:tenant_soft_observability:v1",
-          }],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "soft-evidence",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          completeness: {
+            hardBlockMissingRequiredContext: false,
+            requirements: [
+              {
+                requirementId: "soft_observability_evidence",
+                itemKind: ContextPackItemKind.Evidence,
+                message: "observability evidence should be attached",
+                evidenceRef: "context_policy:tenant_soft_observability:v1",
+              },
+            ],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCompletenessPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: emptyCompletenessPolicy(),
@@ -656,13 +746,17 @@ test("tenant-config context-pack completeness policy can make missing tenant con
 
   const result = await policy.evaluate(completenessRequest({ items: [] }));
 
-  ok(result.omittedItemsWithReason.some((item) => item.nodeId === contextRequirementNodeId("soft_observability_evidence")));
+  ok(
+    result.omittedItemsWithReason.some(
+      (item) => item.nodeId === contextRequirementNodeId("soft_observability_evidence"),
+    ),
+  );
   deepEqual(result.lifecycleBlockers, []);
 });
 
 function tenantConfigReader(config: TenantConfig): { get: (organizationId: string) => Promise<TenantConfig | null> } {
   return {
-    get: async (organizationId) => organizationId === config.organizationId ? config : null,
+    get: async (organizationId) => (organizationId === config.organizationId ? config : null),
   };
 }
 
@@ -686,11 +780,13 @@ function emptyCompletenessPolicy(): ContextPackCompletenessPolicyPort {
 function fallbackPolicy(requirementId: string): ContextPackCompletenessPolicyPort {
   return {
     evaluate: () => ({
-      omittedItemsWithReason: [{
-        nodeId: contextRequirementNodeId(requirementId),
-        reason: ContextPackOmissionReason.NotIndexed,
-        message: `${requirementId} is missing`,
-      }],
+      omittedItemsWithReason: [
+        {
+          nodeId: contextRequirementNodeId(requirementId),
+          reason: ContextPackOmissionReason.NotIndexed,
+          message: `${requirementId} is missing`,
+        },
+      ],
       lifecycleBlockers: [`${requirementId} is missing`],
       evidenceRefs: [`context_policy:${requirementId}:v1`],
     }),
@@ -701,9 +797,7 @@ function contextRequirementNodeId(requirementId: string): string {
   return `context_requirement:${requirementId}`;
 }
 
-function completenessRequest(input: {
-  items: readonly ContextPackItem[];
-}): ContextPackCompletenessPolicyRequest {
+function completenessRequest(input: { items: readonly ContextPackItem[] }): ContextPackCompletenessPolicyRequest {
   const hat = buildHatDefinitions().find((candidate) => candidate.id === "engineering_director");
   if (hat === undefined) throw new Error("engineering_director missing");
   return {
@@ -768,17 +862,19 @@ function runtimeEvidenceItem(overrides: { projectId?: string | undefined } = {})
     confidence: 1,
     reasons: ["tenant-completeness-test"],
     citationRefs: ["doc:runtime-validation"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.DocUnit,
-      docUnitId: "runtime-validation",
-      organizationId: "org-lfg",
-      scopeKind: DocScopeKind.Project,
-      scopeId: overrides.projectId ?? "project-billing",
-      contentRef: "git://docs/runtime-validation.md",
-      contentHash: "hash-runtime",
-      sourceId: "source-main",
-      version: 1,
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.DocUnit,
+        docUnitId: "runtime-validation",
+        organizationId: "org-lfg",
+        scopeKind: DocScopeKind.Project,
+        scopeId: overrides.projectId ?? "project-billing",
+        contentRef: "git://docs/runtime-validation.md",
+        contentHash: "hash-runtime",
+        sourceId: "source-main",
+        version: 1,
+      },
+    ],
   };
 }
 
@@ -793,10 +889,12 @@ function readinessMeetingItem(): ContextPackItem {
     freshness: ContextPackFreshness.Current,
     confidence: 1,
     reasons: ["tenant-completeness-test"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.WorkItem,
-      workItemId: "work-billing",
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.WorkItem,
+        workItemId: "work-billing",
+      },
+    ],
   };
 }
 
@@ -811,11 +909,13 @@ function supervisorSignalItem(overrides: { targetHatAssignmentId?: string | unde
     freshness: ContextPackFreshness.Current,
     confidence: 1,
     reasons: ["tenant-completeness-test"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.SupervisorSignal,
-      supervisorSignalId: "signal-resource-allocation",
-      targetHatAssignmentId: overrides.targetHatAssignmentId ?? "99",
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.SupervisorSignal,
+        supervisorSignalId: "signal-resource-allocation",
+        targetHatAssignmentId: overrides.targetHatAssignmentId ?? "99",
+      },
+    ],
   };
 }
 
@@ -830,10 +930,12 @@ function activeGraphItem(input: { nodeId: string }): ContextPackItem {
     freshness: ContextPackFreshness.Current,
     confidence: 1,
     reasons: ["tenant-completeness-test"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.GraphNode,
-      nodeId: input.nodeId,
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.GraphNode,
+        nodeId: input.nodeId,
+      },
+    ],
   };
 }
 
@@ -848,10 +950,12 @@ function activePolicyItem(): ContextPackItem {
     freshness: ContextPackFreshness.Current,
     confidence: 1,
     reasons: ["tenant-completeness-test"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.WorkItem,
-      workItemId: "work-billing",
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.WorkItem,
+        workItemId: "work-billing",
+      },
+    ],
   };
 }
 
@@ -866,12 +970,15 @@ function activeDecisionItem(): ContextPackItem {
     freshness: ContextPackFreshness.Current,
     confidence: 1,
     reasons: ["tenant-completeness-test"],
-    sourcePointers: [{
-      kind: ContextPackSourcePointerKind.Decision,
-      decisionId: "decision-tenant-approval",
-    }, {
-      kind: ContextPackSourcePointerKind.WorkItem,
-      workItemId: "work-billing",
-    }],
+    sourcePointers: [
+      {
+        kind: ContextPackSourcePointerKind.Decision,
+        decisionId: "decision-tenant-approval",
+      },
+      {
+        kind: ContextPackSourcePointerKind.WorkItem,
+        workItemId: "work-billing",
+      },
+    ],
   };
 }

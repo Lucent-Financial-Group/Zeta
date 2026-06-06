@@ -24,26 +24,26 @@ shared throw-safe helper and guards every untrusted-input `packageHash` reach.
 `packageHash(pkg)` throws on a malformed field. Untrusted-input reaches (the **root**
 package is untrusted in every install/update; **deps/nodes** are untrusted fetched JSON):
 
-| Reach | Site | Path | Pre-fix surface |
-|---|---|---|---|
-| root | `resolve.ts:43` `packageHash(root)` | default graph install / update | throw escapes `resolve()` → `main()` → `ace: fatal:` |
-| root | `lockfile.ts:80` `verifyRootMatchesLock` | `install --frozen` (runs **before** any ace.ts guard) | throw escapes → `ace: fatal:` |
-| root | `lockfile.ts:92` `buildLeafLockfile` | **leaf** (no-deps) default install + update lock write | throw escapes → `ace: fatal:` |
-| root | `lockfile.ts:43` `buildLockfile` root | graph install / update lock write | reached only after resolve already hashed the root (defense-in-depth) |
-| dep | `lockfile.ts:39` `buildLockfile` dep | graph lock write | reached only after resolve already hashed each dep (defense-in-depth) |
-| dep | `resolve.ts` dep `packageHash(dep)` | graph resolve | **already guarded** (try/catch → invalid-package) — the pattern to mirror |
-| root | registry-add `packageHash(pkg)` | `ace registry add` (no `--hash`) | shape-guarded object-ness **only** → throw escapes → `ace: fatal:` |
-| node | frozen-node `packageHash(np)` (×2) | `install --frozen` fetched nodes | shape-guarded object-ness **only** → throw escapes → `ace: fatal:` |
-| node | `preflightGraph` `packageHash(node)` | install + update | defense-in-depth (resolve catches root/dep upstream) |
+| Reach | Site                                     | Path                                                   | Pre-fix surface                                                           |
+| ----- | ---------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| root  | `resolve.ts:43` `packageHash(root)`      | default graph install / update                         | throw escapes `resolve()` → `main()` → `ace: fatal:`                      |
+| root  | `lockfile.ts:80` `verifyRootMatchesLock` | `install --frozen` (runs **before** any ace.ts guard)  | throw escapes → `ace: fatal:`                                             |
+| root  | `lockfile.ts:92` `buildLeafLockfile`     | **leaf** (no-deps) default install + update lock write | throw escapes → `ace: fatal:`                                             |
+| root  | `lockfile.ts:43` `buildLockfile` root    | graph install / update lock write                      | reached only after resolve already hashed the root (defense-in-depth)     |
+| dep   | `lockfile.ts:39` `buildLockfile` dep     | graph lock write                                       | reached only after resolve already hashed each dep (defense-in-depth)     |
+| dep   | `resolve.ts` dep `packageHash(dep)`      | graph resolve                                          | **already guarded** (try/catch → invalid-package) — the pattern to mirror |
+| root  | registry-add `packageHash(pkg)`          | `ace registry add` (no `--hash`)                       | shape-guarded object-ness **only** → throw escapes → `ace: fatal:`        |
+| node  | frozen-node `packageHash(np)` (×2)       | `install --frozen` fetched nodes                       | shape-guarded object-ness **only** → throw escapes → `ace: fatal:`        |
+| node  | `preflightGraph` `packageHash(node)`     | install + update                                       | defense-in-depth (resolve catches root/dep upstream)                      |
 
-**Correction to an earlier draft of this doc:** the leaf (no-deps) install path is *not*
+**Correction to an earlier draft of this doc:** the leaf (no-deps) install path is _not_
 `packageHash`-free. Its integrity/extract step uses only `content_hash`, but its **lockfile
 write** goes through `buildLeafLockfile`, which computes `packageHash(root)` — so a
 malformed leaf root reaches `packageHash` and must be guarded.
 
 Two **overconfident comments** to correct: the frozen-node and registry-add shape-guards
 both claim their object-ness check prevents a `packageHash` throw. It does not —
-object-ness says nothing about field *values*; a float/lone-surrogate field still throws
+object-ness says nothing about field _values_; a float/lone-surrogate field still throws
 past them. The comments now state the real division: object-ness guard covers shape;
 `safePackageHash` covers the field-value throw.
 
@@ -53,13 +53,13 @@ past them. The comments now state the real division: object-ness guard covers sh
    `safePackageHash(pkg): { ok: true; hash } | { ok: false; reason }` — one `try/catch`
    that maps the `toTagged` throw to a reason string. `packageHash` itself is unchanged
    (trusted callers keep it). This is the `Result<T, TFeedback>` shape at primitive scope:
-   the malformed-field outcome becomes a *value* the caller must handle, not an escaping
+   the malformed-field outcome becomes a _value_ the caller must handle, not an escaping
    exception.
 
 2. **Guard the untrusted ROOT once, at command entry.** The root flows through several
    `packageHash`-using helpers depending on the path (`resolve`, `verifyRootMatchesLock`,
    `buildLockfile`, `buildLeafLockfile`, `preflightGraph`), and the frozen-path
-   `verifyRootMatchesLock` runs *before* any per-path guard. So `safePackageHash(pkg)` is
+   `verifyRootMatchesLock` runs _before_ any per-path guard. So `safePackageHash(pkg)` is
    applied **once at the top of the `install` and `update` command handlers** — right after
    the shape + signature gates, before any graph/leaf/frozen branch — refusing a malformed
    root as `invalid-package` (`install` exit 1 / `update` exit 1) before any helper hashes
@@ -90,13 +90,13 @@ past them. The comments now state the real division: object-ness guard covers sh
   well-formed package; not-ok (reason mentions "safe integer" / "lone surrogate") for a
   float field and a lone-surrogate field.
 - **Behavioural — `resolve.test.ts`:** a root with a float / lone-surrogate manifest field
-  → `await resolve(badRoot, …)` returns `invalid-package` (pre-fix it *threw* → the `await`
+  → `await resolve(badRoot, …)` returns `invalid-package` (pre-fix it _threw_ → the `await`
   rejects → falsifying).
 - **Behavioural — `ace.test.ts`:**
   - `ace registry add <name> <ver> <float-field-pkg>` → `await main([...])` returns `65`
-    (pre-fix `main()` *threw* → rejects → falsifying).
+    (pre-fix `main()` _threw_ → rejects → falsifying).
   - `ace install <leaf-no-deps float-field root> --allow-no-signature` → `await main([...])`
-    returns `1` (pre-fix `main()` *threw* through `buildLeafLockfile` → rejects →
+    returns `1` (pre-fix `main()` _threw_ through `buildLeafLockfile` → rejects →
     falsifying). This exercises the early root guard covering the `buildLeafLockfile` reach.
 - **Coverage honesty:** the frozen-path root (`verifyRootMatchesLock`) and frozen fetched
   nodes are guarded (entry root-guard + frozen-node `safePackageHash`) and covered by the

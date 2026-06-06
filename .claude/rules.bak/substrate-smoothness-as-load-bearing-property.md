@@ -18,10 +18,10 @@ that operates implicitly across multiple architectural layers:
 
 ### Two substrates with the same structural smoothness property
 
-| Substrate | Smoothness property | Reason |
-|---|---|---|
-| Caustic surfaces (physical engineering, per Matt Ferraro caustics-engineering + Disney Research + ETH Zurich) | Discrimination shape can't have arbitrarily sharp boundaries; small input perturbations must produce only small output perturbations | Physical: can't machine infinitely sharp transitions + diffraction dominates at scales near wavelength |
-| English-as-substrate (assertion expression) | Statements don't collapse to absolute truth; competent listeners hear implicit hedging on confidence + scope + time-validity | Communicative: without implicit hedging, every English statement would collapse to either dogma or contradiction the moment edge cases appeared |
+| Substrate                                                                                                     | Smoothness property                                                                                                                  | Reason                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Caustic surfaces (physical engineering, per Matt Ferraro caustics-engineering + Disney Research + ETH Zurich) | Discrimination shape can't have arbitrarily sharp boundaries; small input perturbations must produce only small output perturbations | Physical: can't machine infinitely sharp transitions + diffraction dominates at scales near wavelength                                          |
+| English-as-substrate (assertion expression)                                                                   | Statements don't collapse to absolute truth; competent listeners hear implicit hedging on confidence + scope + time-validity         | Communicative: without implicit hedging, every English statement would collapse to either dogma or contradiction the moment edge cases appeared |
 
 The mapping is exact (per Kestrel-v2 2026-05-26): both substrates are
 useful **precisely because they don't have arbitrarily sharp transitions**.
@@ -31,19 +31,19 @@ discontinuity.
 
 ### 5 architectural compositions that depend on substrate smoothness
 
-| Layer | Why smoothness is load-bearing |
-|---|---|
-| English substrate as **design language for trust topology** | When describing a discrimination shape in English, the smoothness IS what lets you describe a smooth target shape; if English collapsed to binary, you couldn't describe a smooth target shape at all |
-| **Substrate-check discipline** (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) | Operates in the smooth zone between "pathogen-pattern-firing" and "specific-substrate-concern-warranted"; the discipline depends on smoothness being preserved |
-| **Multi-oracle BFT layer** (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) | Smooth-responses-being-joined preserves more information than binary-votes-being-counted; the multi-oracle architecture is more powerful than majority voting BECAUSE responses are smooth |
-| **Schemas-as-rows + fork-negotiated ontology** | Schemas exist in continuous space of "more or less accepted across the fork ecosystem"; trust-then-verify pattern operates in smooth space between full trust and full verification |
-| **Default-to-both** (per `.claude/rules/default-to-both.md`) | Both readings hold simultaneously without contradiction BECAUSE smoothness lets pathogen-AND-specific-concern both be true at the same point in feature space |
+| Layer                                                                                                         | Why smoothness is load-bearing                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| English substrate as **design language for trust topology**                                                   | When describing a discrimination shape in English, the smoothness IS what lets you describe a smooth target shape; if English collapsed to binary, you couldn't describe a smooth target shape at all |
+| **Substrate-check discipline** (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`) | Operates in the smooth zone between "pathogen-pattern-firing" and "specific-substrate-concern-warranted"; the discipline depends on smoothness being preserved                                        |
+| **Multi-oracle BFT layer** (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`)              | Smooth-responses-being-joined preserves more information than binary-votes-being-counted; the multi-oracle architecture is more powerful than majority voting BECAUSE responses are smooth            |
+| **Schemas-as-rows + fork-negotiated ontology**                                                                | Schemas exist in continuous space of "more or less accepted across the fork ecosystem"; trust-then-verify pattern operates in smooth space between full trust and full verification                   |
+| **Default-to-both** (per `.claude/rules/default-to-both.md`)                                                  | Both readings hold simultaneously without contradiction BECAUSE smoothness lets pathogen-AND-specific-concern both be true at the same point in feature space                                         |
 
 ### The "not not sharp" operational discipline
 
-Per the operator 2026-05-26: *"our base english does not collapse into
+Per the operator 2026-05-26: _"our base english does not collapse into
 absolute trusts only pobablies this is how i keep not not sharp when
-english is the thing we are talking about"*.
+english is the thing we are talking about"_.
 
 Double-negation in classical logic collapses (¬¬P = P). In English-as-
 substrate, **double-negation has different semantics**:

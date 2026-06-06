@@ -27,12 +27,12 @@ difference between three states without reading a local broadcast bus:
 
 `tools/claims/remote-only-state.ts` now classifies every remote `claim/*` ref:
 
-| Disposition | Meaning | Required behavior |
-|---|---|---|
-| `active` | Claim head is not reachable from `origin/main`. | Treat the path set as owned until release, handoff, or documented stale force-release. |
+| Disposition            | Meaning                                                                          | Required behavior                                                                                                         |
+| ---------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `active`               | Claim head is not reachable from `origin/main`.                                  | Treat the path set as owned until release, handoff, or documented stale force-release.                                    |
 | `merged-claim-residue` | Claim head is reachable from `origin/main` and the claim file is still readable. | Do not call the path free from branch absence alone. Add a release commit or cleanup receipt before clearing the residue. |
-| `missing-claim-file` | Claim branch exists but the expected claim file is missing. | Inspect branch history; retire the remote ref only after recording release evidence. |
-| `merge-state-unknown` | Local git cannot prove reachability against `origin/main`. | Refresh remote refs and retry before force-releasing or overlapping the path set. |
+| `missing-claim-file`   | Claim branch exists but the expected claim file is missing.                      | Inspect branch history; retire the remote ref only after recording release evidence.                                      |
+| `merge-state-unknown`  | Local git cannot prove reachability against `origin/main`.                       | Refresh remote refs and retry before force-releasing or overlapping the path set.                                         |
 
 The classifier uses only git surfaces available to a fresh clone:
 

@@ -2,10 +2,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { buildGitWorld } from "./git-world.js";
-import {
-  buildCodebergWorld,
-  CODEBERG_CONSERVATIVE_BUDGET,
-} from "./codeberg-world.js";
+import { buildCodebergWorld, CODEBERG_CONSERVATIVE_BUDGET } from "./codeberg-world.js";
 
 describe("CodebergWorld extends GiteaWorld + adds Codeberg-specifics", () => {
   test("inherits forgeName + base GitWorld substrate", () => {

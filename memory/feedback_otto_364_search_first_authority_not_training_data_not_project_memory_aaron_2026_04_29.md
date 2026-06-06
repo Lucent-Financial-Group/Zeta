@@ -10,11 +10,11 @@ superseded_by: []
 
 ## The carved blade (Aaron 2026-04-29)
 
-> *"Training data and project memory are both historical truth. Substitute neither for current authoritative sources. Search first."*
+> _"Training data and project memory are both historical truth. Substitute neither for current authoritative sources. Search first."_
 
 ## Compact rule
 
-> *"For any load-bearing claim about a tool / standard / API / runtime / library / CI / security: WebSearch first, cite, then assert. Project state cross-checks; it does not substitute."*
+> _"For any load-bearing claim about a tool / standard / API / runtime / library / CI / security: WebSearch first, cite, then assert. Project state cross-checks; it does not substitute."_
 
 ## What this codifies
 
@@ -37,7 +37,7 @@ Examples of authoritative claims the rule covers (NOT exhaustive):
 - "CodeQL aggregate required check goes Neutral on docs-only PRs without baseline-SARIF" → search docs.github.com (or GitHub community)
 - "RFC 3986 percent-encoding rules" → search ietf.org
 
-The rule is NOT *"never trust your training data."* The rule is: *for load-bearing recommendations, the test is a current web source, not a memory recall.*
+The rule is NOT _"never trust your training data."_ The rule is: _for load-bearing recommendations, the test is a current web source, not a memory recall._
 
 ## When the rule fires
 
@@ -59,7 +59,7 @@ The rule is NOT *"never trust your training data."* The rule is: *for load-beari
 
 ## When project state is also "historical truth"
 
-Otto verified Zeta's `tools/setup/install.sh` declares itself the single dev/CI/devcontainer install script per GOVERNANCE §24. That's project-state truth — **historical**. The fact that the file *says* it is the single script does not prove that the upstream tools it pins are still current, that the `bun = "1.3"` fuzzy pin is still the recommended convention, or that `.mise.toml` is still mise's preferred filename. All three need cross-checking with current upstream sources.
+Otto verified Zeta's `tools/setup/install.sh` declares itself the single dev/CI/devcontainer install script per GOVERNANCE §24. That's project-state truth — **historical**. The fact that the file _says_ it is the single script does not prove that the upstream tools it pins are still current, that the `bun = "1.3"` fuzzy pin is still the recommended convention, or that `.mise.toml` is still mise's preferred filename. All three need cross-checking with current upstream sources.
 
 **Project state is one input. Current upstream docs are another. The test is both.**
 
@@ -87,12 +87,12 @@ Example shape:
 - **Otto-247** (`memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`) — narrower predecessor (version numbers only). Otto-364 generalises the scope; Otto-247 remains the version-specific instance, NOT superseded.
 - **Otto-363** (`memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`) — same family of "doctrine-must-be-substrate" rules. A search result quoted in chat is weather; quoted with URL in a research doc is preserved substrate.
 - **Otto-362** (`memory/feedback_otto_362_doctrine_memory_expansion_refresh_stale_statements_same_edit_2026_04_29.md`) — same family of "stale claims must be refreshed" rules. Otto-362 is intra-file; Otto-364 is upstream-vs-recall.
-- **`memory/feedback_best_practices_evidence_lineage_survival_substrate_aaron_amara_2026_04_29.md`** — best-practice-evidence-lineage rule (every best-practice claim cites evidence + human lineage). Otto-364 is the *search-step* of evidence collection.
+- **`memory/feedback_best_practices_evidence_lineage_survival_substrate_aaron_amara_2026_04_29.md`** — best-practice-evidence-lineage rule (every best-practice claim cites evidence + human lineage). Otto-364 is the _search-step_ of evidence collection.
 - **CLAUDE.md "Version currency" bullet** — Otto-364 generalisation should be reflected by broadening that bullet (or adding a new sibling) so the rule is 100% loaded at every wake.
 
 ## Demonstration: applied to the post-#855 CI-classifier work
 
-Verbatim packet preserved at `docs/research/2026-04-29-aaron-search-first-authority-not-training-data-not-project-memory.md`. Four authoritative claims from Amara's packet were verified against current upstream sources (Bun lockfile docs, GitHub Actions docs on `paths-ignore` / job outputs, mise docs). Each search produced a *sharper finding* than the training-data version:
+Verbatim packet preserved at `docs/research/2026-04-29-aaron-search-first-authority-not-training-data-not-project-memory.md`. Four authoritative claims from Amara's packet were verified against current upstream sources (Bun lockfile docs, GitHub Actions docs on `paths-ignore` / job outputs, mise docs). Each search produced a _sharper finding_ than the training-data version:
 
 - Bun's text-based `bun.lock` is now default — Zeta has neither lockfile form yet
 - `paths-ignore` Pending-required-check trap has three GitHub-blessed workarounds, ranked
@@ -103,15 +103,15 @@ None of these were in training data with sufficient confidence to ship as a reco
 
 ## What this rule does NOT say
 
-- Does NOT say *"never trust your training data."* Training data is fine for orientation.
-- Does NOT say *"every claim needs a search."* Comprehension reads, internal-repo invariants, and theoretical claims are exempt.
+- Does NOT say _"never trust your training data."_ Training data is fine for orientation.
+- Does NOT say _"every claim needs a search."_ Comprehension reads, internal-repo invariants, and theoretical claims are exempt.
 - Does NOT replace the `verify-before-deferring` rule (CLAUDE.md-tier) — that's about deferred targets existing; Otto-364 is about upstream claims being current.
-- Does NOT replace project-state grep — project state is still a valid *cross-check input*; it just isn't a *substitute* for current upstream truth.
+- Does NOT replace project-state grep — project state is still a valid _cross-check input_; it just isn't a _substitute_ for current upstream truth.
 
 ## Recursion — also applies at the verification-method level (2026-05-05)
 
-The rule was originally framed for *claims about tools / standards
-/ APIs / runtimes / libraries / CI / security*. The B-0199 P2
+The rule was originally framed for _claims about tools / standards
+/ APIs / runtimes / libraries / CI / security_. The B-0199 P2
 reviewer catch (2026-05-05, PR #1599) surfaced a recursion: it
 applies to **verification methodology too**.
 
@@ -132,8 +132,8 @@ actual problem domain, verify the method fits the actual
 structure, document the verification.
 
 How to apply: when picking a verification / inventory / audit
-method, ask *"what hidden structural assumptions does this method
-carry, and do they match the actual artifact structure?"*
+method, ask _"what hidden structural assumptions does this method
+carry, and do they match the actual artifact structure?"_
 
 - Inventory: recursive (`find -type f`) vs single-level (`ls`)
 - Checksum verification: which hash algorithm matches the
@@ -153,9 +153,9 @@ Full preservation of the trigger conversation:
 
 Aaron 2026-04-29 (post-#855-merge, post-CI-classifier-survey-recommendation):
 
-> *"we want atest for all those from searches to not historical truth like the porject or your training data so search"*
+> _"we want atest for all those from searches to not historical truth like the porject or your training data so search"_
 
-The trigger was Otto's CI-classifier recommendation grounded only in (a) Amara's packet (which itself sourced from Amara's training/memory), (b) Otto's training data, (c) repo grep. Aaron correctly identified that all three are *historical truth* — none of them attest to current upstream behavior. The test is a web search.
+The trigger was Otto's CI-classifier recommendation grounded only in (a) Amara's packet (which itself sourced from Amara's training/memory), (b) Otto's training data, (c) repo grep. Aaron correctly identified that all three are _historical truth_ — none of them attest to current upstream behavior. The test is a web search.
 
 Verbatim packet preserved at: `docs/research/2026-04-29-aaron-search-first-authority-not-training-data-not-project-memory.md`
 

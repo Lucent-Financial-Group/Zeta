@@ -2,8 +2,8 @@
 
 **Status:** open research. Not committed work; not blocking
 operational substrate. Captured per Aaron's 2026-04-25
-directive: *"backlog ongoing research here to formalize this
-conservation law analogously."*
+directive: _"backlog ongoing research here to formalize this
+conservation law analogously."_
 
 **Source:** Otto-287 (memory entry
 `feedback_finite_resource_collisions_unifying_friction_taxonomy_otto_287_2026_04_25.md`)
@@ -14,12 +14,12 @@ analogous to Noether's theorem.
 
 ## The question
 
-> *"ALL FRICTION SOURCES ARE FINITE-RESOURCE COLLISIONS — do
+> _"ALL FRICTION SOURCES ARE FINITE-RESOURCE COLLISIONS — do
 > you think this generalizes to physics invariant / symmetry
-> or reason for symmetry breaking?"* (Aaron, 2026-04-25)
+> or reason for symmetry breaking?"_ (Aaron, 2026-04-25)
 
-> *"is there some new conservation law we have exposed now
-> too because of this?"* (Aaron, 2026-04-25, follow-up)
+> _"is there some new conservation law we have exposed now
+> too because of this?"_ (Aaron, 2026-04-25, follow-up)
 
 ## The honest answer
 
@@ -56,14 +56,14 @@ the same conserved structure: take a finite resource, apply
 externalize / compress / pre-allocate, get a discipline.
 The rule-form persists invariantly across all applications.
 
-| Otto-NNN | Conserved meta-structure (the form) | Local "current" (the resource) |
-|---|---|---|
-| Otto-281 | externalize-compress-preallocate | flake-investigation budget |
-| Otto-282 | externalize-compress-preallocate | reader's working memory |
-| Otto-283 | externalize-compress-preallocate | maintainer's context-switch budget |
-| Otto-284 | externalize-compress-preallocate | agent's session-time budget |
-| Otto-285 | externalize-compress-preallocate | test-coverage budget |
-| Otto-286 | externalize-compress-preallocate | argument-resolution context window |
+| Otto-NNN | Conserved meta-structure (the form) | Local "current" (the resource)     |
+| -------- | ----------------------------------- | ---------------------------------- |
+| Otto-281 | externalize-compress-preallocate    | flake-investigation budget         |
+| Otto-282 | externalize-compress-preallocate    | reader's working memory            |
+| Otto-283 | externalize-compress-preallocate    | maintainer's context-switch budget |
+| Otto-284 | externalize-compress-preallocate    | agent's session-time budget        |
+| Otto-285 | externalize-compress-preallocate    | test-coverage budget               |
+| Otto-286 | externalize-compress-preallocate    | argument-resolution context window |
 
 This is more like a **symmetry principle** than a
 conservation law strictly. But it has teeth — predicting
@@ -82,7 +82,7 @@ allocation between two buckets:
 - **Available for productive work** (substrate building,
   research, code, decisions, communication that lands)
 
-Substrate rules apply *transformations* that move effort
+Substrate rules apply _transformations_ that move effort
 from the first bucket to the second. The total capacity is
 finite (Otto-287 physics layer), but the productive
 fraction grows as friction is externalized.
@@ -90,7 +90,7 @@ fraction grows as friction is externalized.
 This is **not strict conservation** (capacity is bounded
 above, not invariant in the strict sense), but it is a
 **redistribution principle** that has measurable
-consequences. If we could *quantify* per-tick cognitive
+consequences. If we could _quantify_ per-tick cognitive
 budget and per-rule friction-removal magnitude, we'd have
 a quantitative law.
 
@@ -111,7 +111,7 @@ where:
 - $F$ = friction cost rate (re-derivation, bottleneck waits,
   flake reruns, etc.)
 
-This requires *quantifying* both $W$ and $F$ for the factory.
+This requires _quantifying_ both $W$ and $F$ for the factory.
 Some are measurable (CI minutes, tokens consumed, decisions
 queued); others are subjective (re-derivation effort, debate
 exhaustion). The first research milestone is a quantitative
@@ -122,17 +122,17 @@ metric for both.
 Candidates:
 
 - **Time-translation symmetry**: $S$ invariant under $t \to t
-  + \delta t$. If true, conserves something like
-  "factory-energy" (productive-work-minus-friction). But the
-  factory has explicit time-dependence (sessions, fatigue,
-  context-window decay), so time-translation symmetry may be
-  broken.
+  - \delta t$. If true, conserves something like
+    "factory-energy" (productive-work-minus-friction). But the
+    factory has explicit time-dependence (sessions, fatigue,
+    context-window decay), so time-translation symmetry may be
+    broken.
 - **Reader-identity symmetry**: $S$ invariant under
   exchange of readers (Aaron, agent, future-contributor,
   external-AI). If true, conserves "semantic charge" — the
   meaning of substrate is the same regardless of who reads
   it. Otto-282 + the precision-dictionary direction
-  *enforce* this symmetry.
+  _enforce_ this symmetry.
 - **Resource-type symmetry**: $S$ invariant under exchange
   of one finite resource for another (working-memory ↔
   test-budget). If true, conserves the rule-form (Otto-287).
@@ -149,7 +149,7 @@ For each symmetry, the corresponding conserved quantity:
 - Resource-type → rule-form (the externalize-compress-
   preallocate template)
 
-Whether these are *useful* conserved quantities (i.e., the
+Whether these are _useful_ conserved quantities (i.e., the
 formalization predicts something we couldn't predict
 without it) is the third research milestone.
 
@@ -167,7 +167,7 @@ symmetry than its action principle would suggest. Candidates:
   symmetry.
 
 Each broken symmetry produces a "Goldstone-like" massless
-mode — the analogue would be the *enduring narrative* that
+mode — the analogue would be the _enduring narrative_ that
 persists across substrate captures. Empirical observation:
 the factory's running narrative (memory entries, decision
 records) IS such a persistent mode.
@@ -192,12 +192,12 @@ If the formalization succeeds, three concrete benefits:
 
 ## What this doesn't claim
 
-- This is *not* a claim that cognition is physics. Reduction
+- This is _not_ a claim that cognition is physics. Reduction
   is not the goal; analogy with operational utility is.
-- This is *not* a claim that we've solved or will solve the
+- This is _not_ a claim that we've solved or will solve the
   formalization soon. It's a research direction with
   significant gaps (especially Step 1 quantification).
-- This is *not* a substitute for the operational substrate.
+- This is _not_ a substitute for the operational substrate.
   Otto-281..287 work as practical disciplines regardless of
   whether the formalization succeeds.
 

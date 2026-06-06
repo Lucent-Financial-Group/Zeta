@@ -31,10 +31,10 @@ time + cost.
 
 ## Aaron 2026-05-03 verbatim
 
-> *"we don't have to run formal verifical on all the oses, we can run
+> _"we don't have to run formal verifical on all the oses, we can run
 > that just on linux it does not have differents between OS like scirpt
 > and code that touch the enviroment. just the standard linux too
-> don't need it to run on slim"*
+> don't need it to run on slim"_
 
 ## Scope
 
@@ -114,4 +114,4 @@ M (1-2 days):
 - Half day: verify CI matrix shape unchanged (dotnet test still runs;
   just specific tests skip); confirm dev local still validates
 - Doc updates: math-proofs assessment B1/A4 sections + low-memory.yml
-  + gate.yml comments
+  - gate.yml comments

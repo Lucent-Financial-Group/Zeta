@@ -27,11 +27,11 @@ tags: [strategy, standards, control-plane, ontology-negotiation, adoption, servi
 
 Aaron 2026-05-25 mid-iteration-2-wait, sharpening the strategic
 substrate from B-0763 (negotiation-high-seat) and B-0764
-(CNCF-ecosystem as force multipliers): *"i always follow the
+(CNCF-ecosystem as force multipliers): _"i always follow the
 service titan route now take advantage of existing control
 interfaces/structure to spread faster and then our ontology
 negoation can happen at the standards layer instead of each
-project/cluster itself."*
+project/cluster itself."_
 
 The ServiceTitan strategic principle: **don't invent your own
 control plane / interface / structure to compete with existing
@@ -45,12 +45,12 @@ workflows. The new value happened within the existing interfaces.
 Applied to Zeta cluster-infrastructure substrate, this sharpens
 B-0763's "Zeta defines interfaces" framing:
 
-| B-0763 abstract framing | B-0765 ServiceTitan sharpening |
-|---|---|
+| B-0763 abstract framing                    | B-0765 ServiceTitan sharpening                                                                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Zeta defines interfaces; vendors implement | INSTEAD: Zeta uses EXISTING standard interfaces (k8s CRDs, OAM Components, Crossplane Compositions, Helm charts, OCI artifacts, ArgoCD Applications, Flux Kustomizations) |
-| Plug CNCF projects behind Zeta interfaces | INSTEAD: contribute Zeta substrate AS standard k8s CRDs / OAM Components / Helm charts that operators using existing tooling can already consume |
-| Vendor-swap via Zeta plugin layer | INSTEAD: vendor-swap happens at the EXISTING standards layer (k8s CRD substitution, OAM Trait swap, etc.); Zeta inherits the mechanism for free |
-| Operator adoption requires Zeta interfaces | INSTEAD: operator already using k8s + ArgoCD + KubeVela ALREADY consumes Zeta substrate; adoption cost ≈ adding our chart/CRD to their existing manifests |
+| Plug CNCF projects behind Zeta interfaces  | INSTEAD: contribute Zeta substrate AS standard k8s CRDs / OAM Components / Helm charts that operators using existing tooling can already consume                          |
+| Vendor-swap via Zeta plugin layer          | INSTEAD: vendor-swap happens at the EXISTING standards layer (k8s CRD substitution, OAM Trait swap, etc.); Zeta inherits the mechanism for free                           |
+| Operator adoption requires Zeta interfaces | INSTEAD: operator already using k8s + ArgoCD + KubeVela ALREADY consumes Zeta substrate; adoption cost ≈ adding our chart/CRD to their existing manifests                 |
 
 ## Why this is the load-bearing strategic policy
 
@@ -88,7 +88,7 @@ in parallel to them:
 - ARC-AGI reference architecture (B-0761) — published AS a
   reference GitOps repo any operator can `argocd app create`
   against; benchmark scenarios shipped AS standard ResourceGraphs
-  + Compositions + Charts
+  - Compositions + Charts
 - Telemetry flywheel (B-0762) — shipped AS standard OpenTelemetry
   exporters + ArgoCD ApplicationSet diff submitters
 - CNCF force multipliers (B-0764) — every CNCF project Zeta

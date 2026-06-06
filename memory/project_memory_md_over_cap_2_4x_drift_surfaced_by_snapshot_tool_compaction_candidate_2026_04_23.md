@@ -160,7 +160,7 @@ roadmap.
 ## Composes with
 
 - `feedback_current_memory_per_maintainer_distillation_
-  pattern_prefer_progress_2026_04_23.md` — CURRENT-*
+pattern_prefer_progress_2026_04_23.md` — CURRENT-\*
   files are already one class of compression; this is a
   sibling layer (index compression)
 - `project_amara_4th_ferry_...` memory (PR #221 absorb) —

@@ -4,16 +4,17 @@ description: Standing rule. The repo's DEFAULT STATE is that every pinned versio
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The rule** (Aaron 2026-04-20, two messages):
 
-> *"also we want to ask what's the latest version,
-> we don't want to start on legacy"*
+> _"also we want to ask what's the latest version,
+> we don't want to start on legacy"_
 
 Strengthened same day:
 
-> *"like make sure we are using the latest version,
+> _"like make sure we are using the latest version,
 > that shoud jsut apply everywhere and you override
-> with exceptions"*
+> with exceptions"_
 
 Reading: the rule is not adoption-time only. It is a
 **factory-wide continuous default**. At any round,

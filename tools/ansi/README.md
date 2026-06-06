@@ -10,7 +10,7 @@ life can be seen living") + the iTerm copy-with-styles answer.
   that gives back **plain text** — the color is gone (it was never in the clipboard
   as data). iTerm's `Cmd+Opt+C` ("Copy with Styles") preserves color **only** into a
   rich-text target (Slack/email/Notes); a Markdown/`.txt`/code-editor target strips it.
-- An agent (Otto) receives **plain text** — it never "sees" rendered color. It *can*
+- An agent (Otto) receives **plain text** — it never "sees" rendered color. It _can_
   read **literal** ANSI escape codes (`^[[38;5;203m…` as characters), but not painted color.
 
 ## The fix — color as literal text, both ways

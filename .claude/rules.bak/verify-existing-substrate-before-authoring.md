@@ -27,6 +27,7 @@ pin authoring time; this rule catches it at substrate-authoring time.
 ### Required process before authoring NEW substrate
 
 1. **Grep for the topic across substrate surfaces**:
+
    ```bash
    # Pattern: search agenda + trajectory + backlog + rules + skills + memory + research.
    # Use grep -F (fixed-string) so $topic is treated as a literal, not a
@@ -47,7 +48,7 @@ pin authoring time; this rule catches it at substrate-authoring time.
    Earlier draft used `find ... -type d | grep` (filename/directory-name
    filtering only) plus `ls memory/*${topic}*` (shell glob expansion which
    breaks on topics with spaces / metacharacters); both fail to surface
-   substrate that mentions the topic in *content* without the keyword in
+   substrate that mentions the topic in _content_ without the keyword in
    the filename. Three Copilot findings on #5131 named this exact gap;
    the content-search via `grep -rlF` is the robust form across topics.
 
@@ -130,18 +131,18 @@ manager CLI in-progress at B-0288" without reading:
   (canonical Aaron 2026-05-07 disclosure: unrestricted local models +
   Guardian/KSK + Bond Curve + Itron composition)
 - 7+ related backlog rows (B-0247, B-0287, B-0288, B-0424, B-0742, B-0777)
-- Research substrate (3+ docs/research/*ace* files)
+- Research substrate (3+ docs/research/_ace_ files)
 
-The maintainer 2026-05-26 caught it: *"that is what ace has been since
+The maintainer 2026-05-26 caught it: _"that is what ace has been since
 we first talked about it you just keep forgetting we have substantial
-backlog around this"*. Fixed in PR #5130 by rewriting the Ace section
+backlog around this"_. Fixed in PR #5130 by rewriting the Ace section
 with proper substrate citation + restating as "B-0806 sits INSIDE the
 Ace agenda, not parallel to it."
 
 ### Anchor 3 — B-0806 hat/fork-negotiation NOT integrated into architecture (PR #5130 follow-on)
 
 After the Anchor 2 correction, the maintainer 2026-05-26 caught a third
-gap: *"i'm assuming you have the hat / fork negoation for ace too"*.
+gap: _"i'm assuming you have the hat / fork negoation for ace too"_.
 Hats + fork-negotiation were CITED in the substrate-table after Anchor 2
 but NOT integrated into B-0806's architectural flow. The Ace agenda
 specifies hats + multi-oracle BFT as load-bearing primitives + B-0741
@@ -155,11 +156,11 @@ sub-row to re-file per Tier 3.
 
 ## The composition with dep-pin-search-first-authority
 
-| Surface | Rule that catches it |
-|---|---|
-| Version pin (nix input, helm chart, container tag, mise runtime, REQUIRED_FILES list) | [`dep-pin-search-first-authority.md`](dep-pin-search-first-authority.md) |
-| NEW substrate authoring (backlog row, rule, skill, agenda, architectural framing) | THIS RULE |
-| Existing-rule citation as authorization for action | [`fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`](fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md) |
+| Surface                                                                               | Rule that catches it                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Version pin (nix input, helm chart, container tag, mise runtime, REQUIRED_FILES list) | [`dep-pin-search-first-authority.md`](dep-pin-search-first-authority.md)                                                                                                                                             |
+| NEW substrate authoring (backlog row, rule, skill, agenda, architectural framing)     | THIS RULE                                                                                                                                                                                                            |
+| Existing-rule citation as authorization for action                                    | [`fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`](fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md) |
 
 All three are "Otto-defaults-to-plausible-but-unverified" at different
 scopes. Together they cover the surfaces today's empirical evidence
@@ -234,9 +235,9 @@ today doesn't extend to substrate-authoring; this rule does.
 
 The maintainer 2026-05-26 substrate-honest catches (verbatim):
 
-1. *"that is what ace has been since we first talked about it you just
-   keep forgetting we have substantial backlog around this"* (Anchor 2)
-2. *"i'm assuming you have the hat / fork negoation for ace too"*
+1. _"that is what ace has been since we first talked about it you just
+   keep forgetting we have substantial backlog around this"_ (Anchor 2)
+2. _"i'm assuming you have the hat / fork negoation for ace too"_
    (Anchor 3)
 
 Both phrasings name the gap: "you keep forgetting" / "i'm assuming you

@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 852 |
-| Title | doctrine(agent-orchestra): v3+v4 expansion — layered actor identity + public claim intake + identity binding (Aaron + Amara 2026-04-29) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T17:24:52Z |
-| Merged at | 2026-04-29T18:10:24Z |
-| Merge commit SHA | `33ad7a8b5fb304fff06dca5005cba1db011dbf1f` |
-| Branch | `doctrine-agent-orchestra-v3-public-intake-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/852 |
-| Changed files | 2 |
-| Additions / deletions | +565 / -16 |
+| Field                 | Value                                                                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 852                                                                                                                                     |
+| Title                 | doctrine(agent-orchestra): v3+v4 expansion — layered actor identity + public claim intake + identity binding (Aaron + Amara 2026-04-29) |
+| Author                | `AceHack` (human)                                                                                                                       |
+| State                 | MERGED                                                                                                                                  |
+| Created at            | 2026-04-29T17:24:52Z                                                                                                                    |
+| Merged at             | 2026-04-29T18:10:24Z                                                                                                                    |
+| Merge commit SHA      | `33ad7a8b5fb304fff06dca5005cba1db011dbf1f`                                                                                              |
+| Branch                | `doctrine-agent-orchestra-v3-public-intake-2026-04-29`                                                                                  |
+| Base branch           | `main`                                                                                                                                  |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/852                                                                                 |
+| Changed files         | 2                                                                                                                                       |
+| Additions / deletions | +565 / -16                                                                                                                              |
 
 ## Description
 
@@ -28,6 +28,7 @@
 **Doctrine expansion. Protocol still NOT operational.** This PR lands two follow-up doctrine packets from Aaron + Amara 2026-04-29, captured immediately after #851 (the v2-corrected doctrine memory) merged. Same shape as #851: doctrine memory only, no implementation, every new surface marked `[planned]` and tracked under explicit follow-up tasks.
 
 This is the **fourth doctrine packet** in a 2-hour cluster:
+
 - #850 (merged): parallel-agent worktree isolation + best-practices evidence/lineage
 - #851 (merged): Zeta Agent Orchestra v1 + v2 review corrections
 - This PR: v3 expansion — layered actor identity + public claim intake
@@ -45,13 +46,14 @@ maintainer_id / host_id / harness_id / role_id / actor_id / session_id
 ```
 
 Examples:
+
 - `aaron-mac/claude-code/coordinator`
 - `aaron-windows/codex-cli/patch-peer`
 - `aaron-windows/gemini-cli/review-peer`
 
 The four-axis split gives revocation precision without identity spam. A single host can run many harnesses with different trust profiles; the role/actor split lets a different harness fill the same pinned role later. Carved rule:
 
-> *"Use Mac/Windows as host IDs, not agent IDs. Use named actor IDs at the host + harness + role level."*
+> _"Use Mac/Windows as host IDs, not agent IDs. Use named actor IDs at the host + harness + role level."_
 
 ### 2. Public claim intake layer (Aaron + Amara)
 
@@ -63,6 +65,7 @@ Active Claim  = "The project granted this actor a lane."
 ```
 
 External actors create requests; only maintainers / authorized automation promote requests to active claims. New surfaces (all `[planned]`):
+
 - `CONTRIBUTING.md`
 - `AGENTS.md` autonomous-agent intake block (10 rules)
 - `.github/ISSUE_TEMPLATE/claim_request.yml`
@@ -71,7 +74,7 @@ External actors create requests; only maintainers / authorized automation promot
 - `docs/ops/coordination/claims/README.md`
 - `tools/claims/reconcile-claims.ts` (sync reconciler)
 
-Source-of-truth rule: GitHub Issue/PR = live operational truth; git mirror = durable summarized truth. Drift states explicit (`synced` / `stale` / `drift` / `failed` / `pending`). Safety: *no `stale` / `drift` claim authorizes mutation*.
+Source-of-truth rule: GitHub Issue/PR = live operational truth; git mirror = durable summarized truth. Drift states explicit (`synced` / `stale` / `drift` / `failed` / `pending`). Safety: _no `stale` / `drift` claim authorizes mutation_.
 
 External safety levels E0-E5:
 
@@ -117,7 +120,7 @@ These compose with the seven follow-ups already created for #851 (#325-#331) and
 
 - `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md` — same doctrine memory file, expanded with v3 sections (layered actor identity, public claim intake layer, drift discipline, E0-E5 safety levels, high-risk file class list, public-AGENTS.md instruction text, v3 carved sentences, v3 trigger memory entries).
 
-No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up issues bind the work. Future PRs implement layers."*
+No code, no implementation. Per Amara: _"Doctrine captures the design. Follow-up issues bind the work. Future PRs implement layers."_
 
 ## Test plan
 
@@ -131,15 +134,15 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 26 |
-| Resolved threads | 21 |
-| Unresolved threads | 5 |
-| Total review comments | 47 |
-| Total fix commits (touching thread paths) | 9 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 26    |
+| Resolved threads                          | 21    |
+| Unresolved threads                        | 5     |
+| Total review comments                     | 47    |
+| Total fix commits (touching thread paths) | 9     |
 
 ## Review threads
 
@@ -159,8 +162,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:35:31Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:508 (association: MEMBER)
-    Fixed in 8b712ae — reconciled to consistent 'Untracked follow-up in TaskList session-local; graduates to a GitHub issue on land per the same rule used for v2/v4 doctrine items'. Removes the apparent contradiction between 'Tracked under follow-up tasks' and the later 'Untracked follow-up' wording.
+- **`AceHack` (human)** at 2026-04-29T17:35:31Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:508 (association: MEMBER)
+  Fixed in 8b712ae — reconciled to consistent 'Untracked follow-up in TaskList session-local; graduates to a GitHub issue on land per the same rule used for v2/v4 doctrine items'. Removes the apparent contradiction between 'Tracked under follow-up tasks' and the later 'Untracked follow-up' wording.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -178,8 +181,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:35:33Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:533 (association: MEMBER)
-    Fixed in 8b712ae — aligned the public entrypoints list to use `docs/ops/runbooks/start-agent-claim.md` (single runbook that covers both the internal start-claim flow and the public-request flow). The earlier `request-agent-claim.md` was a phantom path that didn't match the next-PR section's `start-agent-claim.md`. Single-runbook design avoids the cross-reference drift Copilot flagged.
+- **`AceHack` (human)** at 2026-04-29T17:35:33Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:533 (association: MEMBER)
+  Fixed in 8b712ae — aligned the public entrypoints list to use `docs/ops/runbooks/start-agent-claim.md` (single runbook that covers both the internal start-claim flow and the public-request flow). The earlier `request-agent-claim.md` was a phantom path that didn't match the next-PR section's `start-agent-claim.md`. Single-runbook design avoids the cross-reference drift Copilot flagged.
 
 ### Thread 3 -- resolved [collapsed]
 
@@ -197,8 +200,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:35:35Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:347 (association: MEMBER)
-    Fixed in 8b712ae — updated the V2-constraints bullet to acknowledge that actor identity is now specified at the doctrine level by the v3 layered-identity section (`maintainer_id / host_id / harness_id / role_id / actor_id / session_id`), but is not yet implemented (no actors registry, no signed binding). Implementation gates explicitly named: tasks #325 (Layer 0/1 spec) + #335 (identity binding).
+- **`AceHack` (human)** at 2026-04-29T17:35:35Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:347 (association: MEMBER)
+  Fixed in 8b712ae — updated the V2-constraints bullet to acknowledge that actor identity is now specified at the doctrine level by the v3 layered-identity section (`maintainer_id / host_id / harness_id / role_id / actor_id / session_id`), but is not yet implemented (no actors registry, no signed binding). Implementation gates explicitly named: tasks #325 (Layer 0/1 spec) + #335 (identity binding).
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -213,8 +216,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:35:38Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:346 (association: MEMBER)
-    Fixed in 8b712ae — renamed section header to 'v2 / v3 / v4 review-driven additions (2026-04-29 multi-AI reviews)' with explicit explanation that sections are interleaved by topic (not by version round) and the file is incrementally edited within itself; commit messages preserve round-by-round lineage. The same renaming applied to the constraints section header below.
+- **`AceHack` (human)** at 2026-04-29T17:35:38Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:346 (association: MEMBER)
+  Fixed in 8b712ae — renamed section header to 'v2 / v3 / v4 review-driven additions (2026-04-29 multi-AI reviews)' with explicit explanation that sections are interleaved by topic (not by version round) and the file is incrementally edited within itself; commit messages preserve round-by-round lineage. The same renaming applied to the constraints section header below.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -225,16 +228,16 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T17:36:53Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:773 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point identity-gate tracking to the correct task range**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point identity-gate tracking to the correct task range**
+
   This bullet says identity/revocation implementation is gated by `#325 + #335`, but later the same document states the surviving orchestra task set is `#325-#334` (line 987). Using `#335` here points readers at an out-of-scope tracking object, so implementers can follow the wrong work item and falsely conclude the identity-binding gate is covered when it is not.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:42:00Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:773 (association: MEMBER)
-    Fixed in ce32342 — updated the line-987 reference from `#325-#334` to `#325-#338` (the v4 tasks I created for identity binding (#335), capabilities-as-primitive (#336), harness pre-action freshness check (#337), and DoS + prompt-injection defense (#338)). Now consistent with the line-773 reference to #325 + #335. Good catch — the file had absorbed v4 substrate but the trailing summary still cited the v3-only range.
+- **`AceHack` (human)** at 2026-04-29T17:42:00Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:773 (association: MEMBER)
+  Fixed in ce32342 — updated the line-987 reference from `#325-#334` to `#325-#338` (the v4 tasks I created for identity binding (#335), capabilities-as-primitive (#336), harness pre-action freshness check (#337), and DoS + prompt-injection defense (#338)). Now consistent with the line-773 reference to #325 + #335. Good catch — the file had absorbed v4 substrate but the trailing summary still cited the v3-only range.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -245,15 +248,15 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-29T17:41:39Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:778 (association: NONE)
-  P1: This bullet says “None of these surfaces exist yet (all `[planned]`)”, but several listed surfaces already exist (`CONTRIBUTING.md`, `AGENTS.md`, `.github/PULL_REQUEST_TEMPLATE.md`). Please adjust this sentence to reflect that the *claim-intake content* is planned/absent, not the files themselves.
+  P1: This bullet says “None of these surfaces exist yet (all `[planned]`)”, but several listed surfaces already exist (`CONTRIBUTING.md`, `AGENTS.md`, `.github/PULL_REQUEST_TEMPLATE.md`). Please adjust this sentence to reflect that the _claim-intake content_ is planned/absent, not the files themselves.
   ```suggestion
   - **Public intake layer required before strangers can contribute safely** — Claim Request ≠ Active Claim distinction; CONTRIBUTING.md + AGENTS.md autonomous-agent intake block + .github/ISSUE_TEMPLATE/claim_request.yml + reconciler tool + safety levels E0-E5 + high-risk file class block. The required claim-intake content across these surfaces is not in place yet (some container files already exist; the intake-specific additions remain `[planned]`); without them, an autonomous agent discovering the repo on GitHub has no safe entrypoint and will either over-reach or be turned away.
   ```
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:49:26Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:778 (association: MEMBER)
-    Fixed in b0b388a — reworded to clarify the claim-intake *content* is planned, not the container files. CONTRIBUTING.md + AGENTS.md + .github/PULL_REQUEST_TEMPLATE.md exist as containers; the intake-specific additions inside them are [planned].
+- **`AceHack` (human)** at 2026-04-29T17:49:26Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:778 (association: MEMBER)
+  Fixed in b0b388a — reworded to clarify the claim-intake _content_ is planned, not the container files. CONTRIBUTING.md + AGENTS.md + .github/PULL_REQUEST_TEMPLATE.md exist as containers; the intake-specific additions inside them are [planned].
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -271,8 +274,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:49:29Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:773 (association: MEMBER)
-    Fixed in b0b388a — disambiguated as TaskList session-local IDs (not GitHub issue IDs). Reworded to: 'TaskList #325 (Layer 0/1 spec) + TaskList #335 (this session; will graduate to GitHub issue ID on land)'. Removes the cross-reference collision risk Copilot flagged.
+- **`AceHack` (human)** at 2026-04-29T17:49:29Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:773 (association: MEMBER)
+  Fixed in b0b388a — disambiguated as TaskList session-local IDs (not GitHub issue IDs). Reworded to: 'TaskList #325 (Layer 0/1 spec) + TaskList #335 (this session; will graduate to GitHub issue ID on land)'. Removes the cross-reference collision risk Copilot flagged.
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -290,8 +293,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:49:30Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:807 (association: MEMBER)
-    Fixed in b0b388a — link marked [planned] with explicit pointer to PR #853 (where the writeup file actually lives until that PR merges). The file does not exist on main yet; this acknowledges the pre-merge state honestly rather than referencing a phantom path.
+- **`AceHack` (human)** at 2026-04-29T17:49:30Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:807 (association: MEMBER)
+  Fixed in b0b388a — link marked [planned] with explicit pointer to PR #853 (where the writeup file actually lives until that PR merges). The file does not exist on main yet; this acknowledges the pre-merge state honestly rather than referencing a phantom path.
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -303,16 +306,17 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 - **`Copilot` (bot)** at 2026-04-29T17:41:40Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:899 (association: NONE)
   P1: This status says the auto-expiration mechanism is “implemented in reconciler,” but earlier in this document the reconciler is explicitly `[planned]` / not yet implemented. To avoid false-progress drift, reword this as a doctrine requirement for the reconciler rather than already-implemented behavior.
+
   ```suggestion
   **Status**: *Active doctrine; reconciler must enforce this once implemented.*
-  
+
   External agents that file claim requests need a time-bounded expectation. Rule: **claim requests auto-expire after N days without maintainer response.** The claim-request form tells the requester upfront: *"Your request will expire on [date] if no maintainer responds,"* and the reconciler must apply that expiry when this pathway is implemented.
   ```
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:49:33Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:899 (association: MEMBER)
-    Fixed in b0b388a — reworded auto-expire status from 'mechanism implemented in reconciler' to 'Active doctrine; reconciler must enforce this once implemented'. Added explicit cross-reference: the reconciler itself is [planned] per task #333; the auto-expire requirement lives in doctrine here so it lands in the reconciler at first implementation. Removes the false-progress drift Copilot flagged.
+- **`AceHack` (human)** at 2026-04-29T17:49:33Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:899 (association: MEMBER)
+  Fixed in b0b388a — reworded auto-expire status from 'mechanism implemented in reconciler' to 'Active doctrine; reconciler must enforce this once implemented'. Added explicit cross-reference: the reconciler itself is [planned] per task #333; the auto-expire requirement lives in doctrine here so it lands in the reconciler at first implementation. Removes the false-progress drift Copilot flagged.
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -330,8 +334,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:49:35Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed in b0b388a — index entry now marks the [planned] CONTENT additions inside the existing CONTRIBUTING.md and AGENTS.md, not the files themselves. The truncated writeup path ('agencysignature-...') is now the full file path with [planned] marker and PR #853 cross-reference. The index stays mechanically navigable.
+- **`AceHack` (human)** at 2026-04-29T17:49:35Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed in b0b388a — index entry now marks the [planned] CONTENT additions inside the existing CONTRIBUTING.md and AGENTS.md, not the files themselves. The truncated writeup path ('agencysignature-...') is now the full file path with [planned] marker and PR #853 cross-reference. The index stays mechanically navigable.
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -346,8 +350,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:49:37Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed via gh pr edit — PR title now reads: 'doctrine(agent-orchestra): v3+v4 expansion — layered actor identity + public claim intake + identity binding (Aaron + Amara 2026-04-29)'. Aligns with the actual scope of the doctrine memory + index entry. v4 is intentional in this PR (the v4 corrections came in mid-flight as a five-AI re-review of v3, and Amara's synthesis flagged identity-binding as a hard pre-Layer-2 requirement — splitting it into a separate PR would have created the same internal-contradiction class Otto-362 was just filed to prevent).
+- **`AceHack` (human)** at 2026-04-29T17:49:37Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed via gh pr edit — PR title now reads: 'doctrine(agent-orchestra): v3+v4 expansion — layered actor identity + public claim intake + identity binding (Aaron + Amara 2026-04-29)'. Aligns with the actual scope of the doctrine memory + index entry. v4 is intentional in this PR (the v4 corrections came in mid-flight as a five-AI re-review of v3, and Amara's synthesis flagged identity-binding as a hard pre-Layer-2 requirement — splitting it into a separate PR would have created the same internal-contradiction class Otto-362 was just filed to prevent).
 
 ### Thread 12 -- resolved [outdated, collapsed]
 
@@ -358,16 +362,16 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T17:51:11Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:793 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Encode actor IDs before using them as registry filenames**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Encode actor IDs before using them as registry filenames**
+
   The binding rule stores actors at `actors/<actor_id>.yaml`, but the same document defines actor IDs as URI-like values (for example `zeta://...`) and slash-delimited identities. Using raw IDs as filenames will produce nested paths and, on Windows hosts, invalid names because `:` is not allowed in file names. This makes the actor-registry layout non-portable and ambiguous at implementation time; define a canonical filename encoding (or separate `actor_key` field) before this path contract is consumed.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:53:11Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:793 (association: MEMBER)
-    Fixed in e3f5d67 — defined canonical actor-id filename encoding. Replace '://' with '--', '/' with '_', lowercase the result. Example: 'zeta://aaron-mac/claude-code/coordinator' → 'actors/zeta--aaron-mac_claude-code_coordinator.yaml'. Cross-platform safe (no ':' or nested paths). Registry record carries the original URI in actor_id: field; filename is the lookup key only, not the source of truth for the ID. Good catch — would have bitten Windows peers immediately.
+- **`AceHack` (human)** at 2026-04-29T17:53:11Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:793 (association: MEMBER)
+  Fixed in e3f5d67 — defined canonical actor-id filename encoding. Replace '://' with '--', '/' with '\_', lowercase the result. Example: 'zeta://aaron-mac/claude-code/coordinator' → 'actors/zeta--aaron-mac_claude-code_coordinator.yaml'. Cross-platform safe (no ':' or nested paths). Registry record carries the original URI in actor_id: field; filename is the lookup key only, not the source of truth for the ID. Good catch — would have bitten Windows peers immediately.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -378,16 +382,16 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T17:51:11Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:618 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add `rejected` to the canonical claim-status enum**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Add `rejected` to the canonical claim-status enum**
+
   This schema enumerates mirror `status` without `rejected`, but later in the same update `rejected` is introduced as a distinct operational state from `revoked`. Leaving the enum inconsistent in the doctrine file is likely to propagate into reconciler/CI implementations that reject or misclassify `rejected` claims, recreating the ambiguous triage state the new rule is trying to eliminate.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:53:13Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:618 (association: MEMBER)
-    Fixed in e3f5d67 — added 'rejected' to the canonical claim-status enum (now: requested | active | blocked | done | expired | rejected | revoked) with inline comment cross-referencing the v4 Deepseek catch that introduced rejected as distinct from revoked. Internal-consistency restored. Prevents future reconciler/CI implementations from misclassifying rejected claims.
+- **`AceHack` (human)** at 2026-04-29T17:53:13Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:618 (association: MEMBER)
+  Fixed in e3f5d67 — added 'rejected' to the canonical claim-status enum (now: requested | active | blocked | done | expired | rejected | revoked) with inline comment cross-referencing the v4 Deepseek catch that introduced rejected as distinct from revoked. Internal-consistency restored. Prevents future reconciler/CI implementations from misclassifying rejected claims.
 
 ### Thread 14 -- resolved [collapsed]
 
@@ -402,8 +406,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:58:42Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:343 (association: MEMBER)
-    The PR title is already 'doctrine(agent-orchestra): v3+v4 expansion — layered actor identity + public claim intake + identity binding (Aaron + Amara 2026-04-29)' (verified via gh pr view). The PR body explicitly enumerates v4 tasks #335-#338. Reviewer may have been looking at a stale snapshot — the title-fix landed earlier this round. Resolving as already-fixed.
+- **`AceHack` (human)** at 2026-04-29T17:58:42Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:343 (association: MEMBER)
+  The PR title is already 'doctrine(agent-orchestra): v3+v4 expansion — layered actor identity + public claim intake + identity binding (Aaron + Amara 2026-04-29)' (verified via gh pr view). The PR body explicitly enumerates v4 tasks #335-#338. Reviewer may have been looking at a stale snapshot — the title-fix landed earlier this round. Resolving as already-fixed.
 
 ### Thread 15 -- resolved [outdated, collapsed]
 
@@ -421,8 +425,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:58:45Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:987 (association: MEMBER)
-    Fixed in 9b8a20e — corrected version→task attribution. v2 added #325-#331 (Layer 0/1 spec + Layer 2-5 follow-ups); v3 added #332-#334 (public-intake + reconciler + safety levels); v4 added #335-#338 (binding + capabilities + freshness + DoS/injection). Previous wording 'v3 added #325-#334' incorrectly attributed the v2-era tasks to v3.
+- **`AceHack` (human)** at 2026-04-29T17:58:45Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:987 (association: MEMBER)
+  Fixed in 9b8a20e — corrected version→task attribution. v2 added #325-#331 (Layer 0/1 spec + Layer 2-5 follow-ups); v3 added #332-#334 (public-intake + reconciler + safety levels); v4 added #335-#338 (binding + capabilities + freshness + DoS/injection). Previous wording 'v3 added #325-#334' incorrectly attributed the v2-era tasks to v3.
 
 ### Thread 16 -- resolved [outdated, collapsed]
 
@@ -437,8 +441,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:03:32Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:362 (association: MEMBER)
-    Fixed in 3cfa87a — updated v3 actor_id examples to canonical v4 form with 'zeta://' trust-domain prefix throughout. Added inline note on the actor_id definition line that v3 originally introduced the unprefixed form, which v4 supersedes. Cold-start readers will internalize the correct canonical shape.
+- **`AceHack` (human)** at 2026-04-29T18:03:32Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:362 (association: MEMBER)
+  Fixed in 3cfa87a — updated v3 actor_id examples to canonical v4 form with 'zeta://' trust-domain prefix throughout. Added inline note on the actor_id definition line that v3 originally introduced the unprefixed form, which v4 supersedes. Cold-start readers will internalize the correct canonical shape.
 
 ### Thread 17 -- resolved [outdated, collapsed]
 
@@ -459,8 +463,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:03:36Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:382 (association: MEMBER)
-    Fixed in 3cfa87a — completed the 'different harness filling the same pinned role' YAML record with maintainer_id, host_id, harness_id, and the prefixed actor_id. Readers won't copy a half-shaped template.
+- **`AceHack` (human)** at 2026-04-29T18:03:36Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:382 (association: MEMBER)
+  Fixed in 3cfa87a — completed the 'different harness filling the same pinned role' YAML record with maintainer_id, host_id, harness_id, and the prefixed actor_id. Readers won't copy a half-shaped template.
 
 ### Thread 18 -- resolved [outdated, collapsed]
 
@@ -478,8 +482,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:03:40Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:792 (association: MEMBER)
-    Fixed in 3cfa87a — replaced the imprecise '.well-known' wording with the actual Windows constraints: forbidden chars (: / \\ * ? \" < > |), no trailing dot or space, no Windows reserved device names (CON/PRN/AUX/NUL/COM1-9/LPT1-9). Implementable spec instead of vague guidance.
+- **`AceHack` (human)** at 2026-04-29T18:03:40Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:792 (association: MEMBER)
+  Fixed in 3cfa87a — replaced the imprecise '.well-known' wording with the actual Windows constraints: forbidden chars (: / \\ \* ? \" < > |), no trailing dot or space, no Windows reserved device names (CON/PRN/AUX/NUL/COM1-9/LPT1-9). Implementable spec instead of vague guidance.
 
 ### Thread 19 -- resolved [outdated, collapsed]
 
@@ -497,8 +501,8 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:03:44Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:783 (association: MEMBER)
-    Fixed in 3cfa87a — reframed the past-tense 'After v3 landed in PR #852' to 'During the v3 draft in PR #852, five reviewers re-reviewed and Amara synthesized v4 mid-flight before merge'. Removes the false-progress drift while the PR is still open.
+- **`AceHack` (human)** at 2026-04-29T18:03:44Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:783 (association: MEMBER)
+  Fixed in 3cfa87a — reframed the past-tense 'After v3 landed in PR #852' to 'During the v3 draft in PR #852, five reviewers re-reviewed and Amara synthesized v4 mid-flight before merge'. Removes the false-progress drift while the PR is still open.
 
 ### Thread 20 -- resolved [outdated, collapsed]
 
@@ -509,16 +513,16 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T18:05:41Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:795 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Make actor-id filename encoding collision-safe**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Make actor-id filename encoding collision-safe**
+
   The canonical registry filename mapping (`replace '://' with '--', '/' with '_', lowercase`) is not injective, so two distinct actor IDs can resolve to the same file (for example, IDs that differ by slash vs underscore placement). Because this file is the lookup key for actor binding, a collision can overwrite or alias identities and break attribution/revocation guarantees. Define a reversible encoding (or add an explicit collision-proof key) before this path contract is implemented.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:07:58Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:795 (association: MEMBER)
-    Fixed in 28f7bbf — replaced the previous lossy encoding (replace + lowercase) with RFC 3986 percent-encoding (case-preserving). Now reversible and collision-free: two distinct actor IDs cannot alias to the same filename. Example: 'zeta://aaron-mac/claude-code/coordinator' → 'actors/zeta%3A%2F%2Faaron-mac%2Fclaude-code%2Fcoordinator.yaml'. Decoding the basename always recovers the original byte-for-byte. Good catch — would have caused attribution/revocation aliasing in production.
+- **`AceHack` (human)** at 2026-04-29T18:07:58Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:795 (association: MEMBER)
+  Fixed in 28f7bbf — replaced the previous lossy encoding (replace + lowercase) with RFC 3986 percent-encoding (case-preserving). Now reversible and collision-free: two distinct actor IDs cannot alias to the same filename. Example: 'zeta://aaron-mac/claude-code/coordinator' → 'actors/zeta%3A%2F%2Faaron-mac%2Fclaude-code%2Fcoordinator.yaml'. Decoding the basename always recovers the original byte-for-byte. Good catch — would have caused attribution/revocation aliasing in production.
 
 ### Thread 21 -- resolved [outdated, collapsed]
 
@@ -529,16 +533,16 @@ No code, no implementation. Per Amara: *"Doctrine captures the design. Follow-up
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T18:05:41Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:622 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align claim mirror actor_id format with trust-domain IDs**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align claim mirror actor_id format with trust-domain IDs**
+
   The claim mirror schema still uses `actor_id: external:<...>`, but later in the same doctrine the required external form is `zeta-external://...`. If implementers follow this schema line, they will persist non-namespaced IDs that won’t match the trust-domain identity model used for binding and policy checks, causing inconsistent authorization behavior across claim intake and reconciler logic.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T18:08:00Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:622 (association: MEMBER)
-    Fixed in 28f7bbf — updated claim mirror schema from 'actor_id: external:<...>' to 'actor_id: zeta-external://github/<github-login-or-agent-id>' with inline cross-reference to the v4 binding rule. Implementers will persist correctly-namespaced IDs that match the binding/policy model. Removes the schema drift across intake/reconciler/binding logic.
+- **`AceHack` (human)** at 2026-04-29T18:08:00Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:622 (association: MEMBER)
+  Fixed in 28f7bbf — updated claim mirror schema from 'actor_id: external:<...>' to 'actor_id: zeta-external://github/<github-login-or-agent-id>' with inline cross-reference to the v4 binding rule. Implementers will persist correctly-namespaced IDs that match the binding/policy model. Removes the schema drift across intake/reconciler/binding logic.
 
 ### Thread 22 -- unresolved
 

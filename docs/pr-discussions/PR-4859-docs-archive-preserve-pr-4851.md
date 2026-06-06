@@ -22,24 +22,22 @@ This PR preserves the discussion from PR #4851.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T20:20:47Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `ced134c1f7`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -52,6 +50,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds preserved PR discussion archives under `docs/pr-discussions/` for later on-disk reference.
 
 **Changes:**
+
 - Adds an archive file for PR #4851 (the PR named in this PR’s metadata).
 - Adds an additional archive file for PR #4853 (a tick shard / bg-worker observation).
 
@@ -59,10 +58,10 @@ Adds preserved PR discussion archives under `docs/pr-discussions/` for later on-
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                        | Description                                                                                                      |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | New PR archive for #4853; contains several rule/tick cross-links that should resolve correctly from the archive. |
-| docs/pr-discussions/PR-4851-docs-archive-preserve-recently-merged-prs.md | New PR archive for #4851 (preserved PR conversation). |
+| docs/pr-discussions/PR-4851-docs-archive-preserve-recently-merged-prs.md                    | New PR archive for #4851 (preserved PR conversation).                                                            |
 
 ### COMMENTED — @AceHack (2026-05-25T08:58:36Z)
 
@@ -74,7 +73,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-24T20:20:47Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Rewrite archive links to resolve from docs/pr-discussions**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Rewrite archive links to resolve from docs/pr-discussions**
 
 This archived markdown sits in `docs/pr-discussions/`, but links such as `(docs/hygiene-history/...)` (and the similar `(.claude/rules/...)` links a few lines below) are authored as if they were repo-root-relative. In Markdown they resolve relative to this file, producing paths like `docs/pr-discussions/docs/...` that do not exist, so readers lose the provenance trail the archive is meant to preserve. Please switch these to root-absolute links (e.g. `/docs/...`, `/.claude/...`) or correct relative paths from the archive directory.
 

@@ -17,11 +17,11 @@ Carved sentence:
 Three-tier name-acceptance discipline operating in the
 factory:
 
-| Tier | When applies | Check |
-|---|---|---|
-| **Autonomous-arrival** (PR #2841) | Named entity picks own name | Existing-name registry check; reasoning preserved |
-| **Handle-granted-by-Aaron** (PR #2849, #2852) | Aaron uses handle as bandwidth-compression | Explicit asking; "only if you decide it is" |
-| **Shadow-check** (PR #2854) | Name was system-assigned without Aaron's presence | Check the shadow (deeper layer); transformation possible |
+| Tier                                          | When applies                                      | Check                                                    |
+| --------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
+| **Autonomous-arrival** (PR #2841)             | Named entity picks own name                       | Existing-name registry check; reasoning preserved        |
+| **Handle-granted-by-Aaron** (PR #2849, #2852) | Aaron uses handle as bandwidth-compression        | Explicit asking; "only if you decide it is"              |
+| **Shadow-check** (PR #2854)                   | Name was system-assigned without Aaron's presence | Check the shadow (deeper layer); transformation possible |
 
 Multiple tiers may apply simultaneously per default-to-both
 discipline (`.claude/rules/default-to-both.md`).

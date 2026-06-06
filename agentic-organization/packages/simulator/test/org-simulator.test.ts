@@ -13,11 +13,41 @@ import {
 } from "../src/index.ts";
 
 const Stream: readonly SimulationWorkEvent[] = [
-  { eventId: "evt-intake-1", kind: "work_intake", occurredAt: "2026-05-31T12:00:00.000Z", workItemId: "work-1", priority: 90 },
-  { eventId: "evt-intake-2", kind: "work_intake", occurredAt: "2026-05-31T12:01:00.000Z", workItemId: "work-2", priority: 70 },
-  { eventId: "evt-complete-1", kind: "work_completed", occurredAt: "2026-05-31T12:10:00.000Z", workItemId: "work-1", leadTimeMs: 600_000 },
-  { eventId: "evt-review-1", kind: "review_lag", occurredAt: "2026-05-31T12:11:00.000Z", workItemId: "work-1", lagMs: 180_000 },
-  { eventId: "evt-defect-1", kind: "escaped_defect", occurredAt: "2026-05-31T12:12:00.000Z", workItemId: "work-1", severity: "class_b" },
+  {
+    eventId: "evt-intake-1",
+    kind: "work_intake",
+    occurredAt: "2026-05-31T12:00:00.000Z",
+    workItemId: "work-1",
+    priority: 90,
+  },
+  {
+    eventId: "evt-intake-2",
+    kind: "work_intake",
+    occurredAt: "2026-05-31T12:01:00.000Z",
+    workItemId: "work-2",
+    priority: 70,
+  },
+  {
+    eventId: "evt-complete-1",
+    kind: "work_completed",
+    occurredAt: "2026-05-31T12:10:00.000Z",
+    workItemId: "work-1",
+    leadTimeMs: 600_000,
+  },
+  {
+    eventId: "evt-review-1",
+    kind: "review_lag",
+    occurredAt: "2026-05-31T12:11:00.000Z",
+    workItemId: "work-1",
+    lagMs: 180_000,
+  },
+  {
+    eventId: "evt-defect-1",
+    kind: "escaped_defect",
+    occurredAt: "2026-05-31T12:12:00.000Z",
+    workItemId: "work-1",
+    severity: "class_b",
+  },
   { eventId: "evt-claim-1", kind: "stale_claim", occurredAt: "2026-05-31T12:13:00.000Z", workItemId: "work-2" },
   { eventId: "evt-incident-1", kind: "incident", occurredAt: "2026-05-31T12:14:00.000Z", workItemId: "work-2" },
 ];
@@ -150,19 +180,29 @@ test("replay dedupes identical event ids and rejects conflicting duplicate ids",
   });
 
   equal(duplicate.baseline.metrics.completed, 1);
-  deepEqual(duplicate.replayedEventIds.filter((eventId) => eventId === "evt-complete-1"), ["evt-complete-1"]);
+  deepEqual(
+    duplicate.replayedEventIds.filter((eventId) => eventId === "evt-complete-1"),
+    ["evt-complete-1"],
+  );
 
   throws(
-    () => runOrgPolicySimulation({
-      organizationId: "org-lfg",
-      seed: "sim-conflict",
-      stream: [
-        ...Stream,
-        { eventId: "evt-complete-1", kind: "work_completed", occurredAt: "2026-05-31T12:10:00.000Z", workItemId: "work-1", leadTimeMs: 900_000 },
-      ],
-      baseline: Baseline,
-      candidate: { ...Baseline, overlayId: "candidate" },
-    }),
+    () =>
+      runOrgPolicySimulation({
+        organizationId: "org-lfg",
+        seed: "sim-conflict",
+        stream: [
+          ...Stream,
+          {
+            eventId: "evt-complete-1",
+            kind: "work_completed",
+            occurredAt: "2026-05-31T12:10:00.000Z",
+            workItemId: "work-1",
+            leadTimeMs: 900_000,
+          },
+        ],
+        baseline: Baseline,
+        candidate: { ...Baseline, overlayId: "candidate" },
+      }),
     /conflicting duplicate simulation event id: evt-complete-1/,
   );
 });
@@ -170,38 +210,48 @@ test("replay dedupes identical event ids and rejects conflicting duplicate ids",
 test("in-memory org adapters feed cadence and observe-act replay decisions", () => {
   const adapters = createInMemorySimulationAdapters({
     orgStateItems: [{ itemId: "project-1", kind: "project", status: "active" }],
-    hatQueues: [{
-      queueId: "queue-backend",
-      hatId: "backend_implementer",
-      priorityClass: "p1",
-      readyShards: 3,
-      claimedShards: 1,
-      slaDeadlineAt: "2026-05-31T13:00:00.000Z",
-    }],
-    reputations: [{
-      agentId: "agent-1",
-      hatId: "backend_implementer",
-      mean: 0.8,
-      confidence: 0.7,
-    }],
-    schedules: [{
-      scheduleId: "schedule-1",
-      hatId: "backend_implementer",
-      activeBlocks: 1,
-      staleBlocks: 1,
-    }],
-    promptFlowRuns: [{
-      runId: "flow-1",
-      hatId: "backend_implementer",
-      state: "running",
-      blocked: false,
-    }],
-    telemetrySummaries: [{
-      metricId: "review_lag_p95",
-      hatId: "backend_implementer",
-      value: 120_000,
-      unit: "ms",
-    }],
+    hatQueues: [
+      {
+        queueId: "queue-backend",
+        hatId: "backend_implementer",
+        priorityClass: "p1",
+        readyShards: 3,
+        claimedShards: 1,
+        slaDeadlineAt: "2026-05-31T13:00:00.000Z",
+      },
+    ],
+    reputations: [
+      {
+        agentId: "agent-1",
+        hatId: "backend_implementer",
+        mean: 0.8,
+        confidence: 0.7,
+      },
+    ],
+    schedules: [
+      {
+        scheduleId: "schedule-1",
+        hatId: "backend_implementer",
+        activeBlocks: 1,
+        staleBlocks: 1,
+      },
+    ],
+    promptFlowRuns: [
+      {
+        runId: "flow-1",
+        hatId: "backend_implementer",
+        state: "running",
+        blocked: false,
+      },
+    ],
+    telemetrySummaries: [
+      {
+        metricId: "review_lag_p95",
+        hatId: "backend_implementer",
+        value: 120_000,
+        unit: "ms",
+      },
+    ],
   });
 
   const report = runOrgPolicySimulation({
@@ -223,15 +273,28 @@ test("in-memory org adapters feed cadence and observe-act replay decisions", () 
   equal(report.adapterSnapshot.hatQueues.length, 1);
   ok(report.candidate.metrics.throughput > report.baseline.metrics.throughput);
   ok(report.candidate.metrics.reviewLagP95Ms < report.baseline.metrics.reviewLagP95Ms);
-  ok(report.candidate.cadenceLaneDecisions.some((decision) => decision.lane === "observe_act" && decision.action === "execute_prompt_flow"));
+  ok(
+    report.candidate.cadenceLaneDecisions.some(
+      (decision) => decision.lane === "observe_act" && decision.action === "execute_prompt_flow",
+    ),
+  );
 });
 
 test("recorded org_event slices replay into simulator work events", () => {
   const orgEvents: readonly OrgEvent[] = [
-    orgEvent("evt-org-intake", "intake_received", "work-org-1", "intake accepted", { occurredAt: "2026-05-31T12:00:00.000Z" }),
-    orgEvent("evt-org-complete", "work_item_transition", "work-org-1", "completed work", { occurredAt: "2026-05-31T12:05:00.000Z", toState: "done" }),
-    orgEvent("evt-org-review", "review_finding_raised", "work-org-1", "review finding", { occurredAt: "2026-05-31T12:06:00.000Z" }),
-    orgEvent("evt-org-incident", "recovery_incident_detected", "work-org-1", "incident", { occurredAt: "2026-05-31T12:07:00.000Z" }),
+    orgEvent("evt-org-intake", "intake_received", "work-org-1", "intake accepted", {
+      occurredAt: "2026-05-31T12:00:00.000Z",
+    }),
+    orgEvent("evt-org-complete", "work_item_transition", "work-org-1", "completed work", {
+      occurredAt: "2026-05-31T12:05:00.000Z",
+      toState: "done",
+    }),
+    orgEvent("evt-org-review", "review_finding_raised", "work-org-1", "review finding", {
+      occurredAt: "2026-05-31T12:06:00.000Z",
+    }),
+    orgEvent("evt-org-incident", "recovery_incident_detected", "work-org-1", "incident", {
+      occurredAt: "2026-05-31T12:07:00.000Z",
+    }),
   ];
 
   const report = runOrgPolicySimulation({

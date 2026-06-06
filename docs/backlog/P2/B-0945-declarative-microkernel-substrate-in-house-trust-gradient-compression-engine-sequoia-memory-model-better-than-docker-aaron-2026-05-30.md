@@ -15,7 +15,20 @@ composes_with:
   - docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md
   - full-ai-cluster/nixos/
   - .claude/rules/references-upstreams-not-our-code-search-excludes.md
-tags: [microkernel, declarative, nixos, sequoia, memory-model, trust-gradient, compression-engine, capability-security, supply-chain, better-than-docker, substrate-deployment]
+tags:
+  [
+    microkernel,
+    declarative,
+    nixos,
+    sequoia,
+    memory-model,
+    trust-gradient,
+    compression-engine,
+    capability-security,
+    supply-chain,
+    better-than-docker,
+    substrate-deployment,
+  ]
 type: feature
 ---
 
@@ -23,14 +36,14 @@ type: feature
 
 ## The directive / vision (Aaron 2026-05-30)
 
-> *"we can have declarative microkernels that's close to what we are doing with nixos but it's a
+> _"we can have declarative microkernels that's close to what we are doing with nixos but it's a
 > 3rd party depeddency and it does not have the stanford sequoia memory model over our trust
-> gradient v8 polymorphic basyian compression engine"*
+> gradient v8 polymorphic basyian compression engine"_
 
 Prior message (the framing):
 
-> *"microkernons is on backlog too, i have lots of microkernal experience this is way better than
-> docker."*
+> _"microkernons is on backlog too, i have lots of microkernal experience this is way better than
+> docker."_
 
 Substrate-honest note: a broad search 2026-05-30 found **no existing microkernel backlog row** --
 it had been discussed but never landed (weather). This row closes that gap with the full vision.
@@ -54,14 +67,14 @@ on a **microkernel architecture** (minimal trusted-computing-base, capability-ba
 
 ## Why better than docker
 
-| | Docker / containers | Declarative microkernel substrate |
-|---|---|---|
-| Trusted-computing-base | the whole Linux monolith (huge; shared-kernel attack surface) | minimal microkernel TCB + capability isolation |
-| Isolation model | namespaces/cgroups over a shared monolithic kernel | capability-based, microkernel-enforced |
-| Reproducibility | image layers (drift-prone) | declarative (NixOS-grade) + reproducible |
-| Supply chain | base images pull huge 3rd-party trees | in-house; supply-chain-doctrine-aligned (see below) |
-| Trust model | flat | over the trust gradient |
-| Runs our engine | as a generic workload | NATIVELY (Sequoia memory model + trust-gradient + compression engine) |
+|                        | Docker / containers                                           | Declarative microkernel substrate                                     |
+| ---------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Trusted-computing-base | the whole Linux monolith (huge; shared-kernel attack surface) | minimal microkernel TCB + capability isolation                        |
+| Isolation model        | namespaces/cgroups over a shared monolithic kernel            | capability-based, microkernel-enforced                                |
+| Reproducibility        | image layers (drift-prone)                                    | declarative (NixOS-grade) + reproducible                              |
+| Supply chain           | base images pull huge 3rd-party trees                         | in-house; supply-chain-doctrine-aligned (see below)                   |
+| Trust model            | flat                                                          | over the trust gradient                                               |
+| Runs our engine        | as a generic workload                                         | NATIVELY (Sequoia memory model + trust-gradient + compression engine) |
 
 A microkernel's minimal TCB + capability isolation is a far smaller attack surface than docker
 riding the Linux-monolith shared kernel; declarative config gives NixOS-grade reproducibility;
@@ -90,9 +103,9 @@ declarative cluster substrate (full-ai-cluster/nixos/) until the in-house microk
 
 ## Staging -- a REAL microkernel that runs in userspace, under justbash (operator 2026-05-30)
 
-> *"before we go microkernel we could take our fuse and do something like justbash"*
+> _"before we go microkernel we could take our fuse and do something like justbash"_
 
-> *"so it's an actual real microkernal under justbash but it just runs in userspace too"*
+> _"so it's an actual real microkernal under justbash but it just runs in userspace too"_
 
 This is NOT "userspace layer first, then a separate microkernel later." It is **ONE real
 microkernel** (capabilities, minimal TCB -- the actual architecture) that **runs in USERSPACE

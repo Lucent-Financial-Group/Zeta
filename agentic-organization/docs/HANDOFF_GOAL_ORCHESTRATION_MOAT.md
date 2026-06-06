@@ -26,7 +26,7 @@ You are working in **`agentic-organization/`**, a **cluster-native AI-organizati
 system**: software that runs an entire software organization (departments, roles, work pipelines,
 reviews, releases, memory, knowledge) as durable, observable, **rule-enforced** state — with AI
 agents doing the work inside it. It is NOT a chatbot, NOT a single-agent loop, NOT a workflow
-engine you configure with YAML. It is an *organization as a deterministic state machine*.
+engine you configure with YAML. It is an _organization as a deterministic state machine_.
 
 **Stack / non-negotiables (learn these before writing a line):**
 
@@ -49,6 +49,7 @@ engine you configure with YAML. It is an *organization as a deterministic state 
 ## 1. The mental model — the thing that makes us different (internalize this)
 
 The heart is the **observe→decide kernel**:
+
 > Determinism computes the **legal set** of next transitions; an actor (a hat/human/external
 > system) picks **within** it; every transition emits exactly one `org_event`. An unsatisfied
 > gate cannot be approved. There is no bypass path.
@@ -99,7 +100,7 @@ Then get the environment live:
 ## 3. The competitive thesis (why we are building this)
 
 The reference project, **gastown** (cloned read-only at `references/` — gitignored, ~441K LOC Go,
-older + many more contributors), is a *local-first* (Dolt + tmux + git, single host) AI workspace
+older + many more contributors), is a _local-first_ (Dolt + tmux + git, single host) AI workspace
 orchestrator. Per `GASTOWN_FULL_IMPL_COMPARISON.md`:
 
 - **We out-architected them** decisively: enforced-gate kernel (theirs is **prose workflows on an
@@ -107,7 +108,7 @@ orchestrator. Per `GASTOWN_FULL_IMPL_COMPARISON.md`:
   ports (theirs is **tmux shims + JSONL scraping** that break on Claude Code updates), hat-pattern
   with no SPOF (theirs is **Mayor/Deacon/Witness singletons**). Their unbuilt "Factory Worker API"
   endgame is literally our starting point.
-- **They out-shipped us** on specific *tooling we can build on top of our kernel*: a real
+- **They out-shipped us** on specific _tooling we can build on top of our kernel_: a real
   **batch-then-bisect merge queue** (Refinery), a **Class A/B model-eval harness** (gt-model-eval),
   a **persistent agent pool**, **recovery scanners**, **layered config**, an **escalation ladder**,
   an **emergency stop**, and a **durable/ephemeral comms split**.
@@ -124,7 +125,7 @@ All of this is specified in `docs/ORCHESTRATION_MOAT_ROADMAP.md` (Parts 1/2/3). 
 each item is one phase = TDD → SOLID → subagent review → prove in kind → commit → record in
 NORTH_STAR. The roadmap's item IDs (M1, M4, G3, …) are referenced here:
 
-1. **M1 Conformance checker + M4 clamp property tests** *(do first — cheapest, highest leverage).*
+1. **M1 Conformance checker + M4 clamp property tests** _(do first — cheapest, highest leverage)._
    Replay the `org_events` ledger back through the kernel and assert every transition was in its
    `legal<X>Transitions` set. Ship as: a pure `replayLedger(events): ConformanceReport`
    (`packages/application/src/conformance.ts`), a CI gate, and a live cadence lane. M4: a generative
@@ -164,16 +165,16 @@ determinism unlocks that nobody else can do.** As you build, continuously ask:
 
 - **What does "the org is replayable + provable" let us do that a prose-workflow system cannot?**
   (Conformance proof is the first answer. Find the next ones: time-travel debugging of any decision;
-  counterfactual replay; bisecting *which org_event* caused a bad outcome; a "trust score" per hat
+  counterfactual replay; bisecting _which org_event_ caused a bad outcome; a "trust score" per hat
   derived from its conformance + KPI history.)
 - **What does "decide() is a pure function" let us compose?** (Simulation is one. Find more:
   speculative parallel execution of multiple policies; a planner that searches the legal-transition
   space; differentiating "what the rules allow" from "what the agent chose" to learn better rules.)
-- **How do rules + pipelines yield *unbounded* orchestration?** The kernel makes each transition
+- **How do rules + pipelines yield _unbounded_ orchestration?** The kernel makes each transition
   safe; composition makes the org arbitrarily deep. The win is that **new capabilities are new
   legal-transition functions + new lanes, never new bypasses** — the safety floor holds as the
   capability ceiling rises without bound. Look for the primitives that make adding a whole new
-  *department* or *pipeline class* a config + a clamp, not a rewrite.
+  _department_ or _pipeline class_ a config + a clamp, not a rewrite.
 - **Which gastown technologies, reimagined on our substrate, become more powerful than theirs?**
   (Their merge queue is git-only; ours integrates with the change-control kernel + provider-generic
   ports + the conformance checker. Their model-eval is a one-off benchmark; ours feeds a closed
@@ -197,7 +198,7 @@ roadmap is a living artifact; improving it is part of the goal.
 - **Subagent review at each phase:** dispatch a code-reviewer subagent on the diff; apply
   high-confidence findings with regression tests before committing.
 - **Commit after each phase** with the trailer `Co-Authored-By: Claude Opus 4.8 (1M context)
-  <noreply@anthropic.com>`, and append a track section to `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md`.
+<noreply@anthropic.com>`, and append a track section to `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md`.
 - **Definition of done per phase:** tsc 0; `npm test` 0 fail; **the new behavior end-to-end proven in
   KIND with a passing PROOF report on the rebuilt image** (Section 7); subagent-reviewed; committed;
   recorded in NORTH_STAR.
@@ -213,11 +214,11 @@ phase you build. There are three test tiers; the third (KIND) is the one a check
 
 1. **Fast hermetic unit/contract tests** (`npm test`, ~845 of them, 0 network). Pure logic against
    the in-memory fakes in `packages/state`. These run on every change and in `ci.yml`. They prove
-   the *logic* is correct in isolation.
+   the _logic_ is correct in isolation.
 2. **Env-gated integration/contract tests** (`npm run test:integration`, the 7 that skip locally).
-   The *same* code against **real** Cockroach + NATS, gated on `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL`
-   + `AGENTIC_ORG_NATS_INTEGRATION_SERVERS`. They prove the *adapters* speak the real wire. `ci.yml`'s
-   sibling `integration.yml` stands real containers and runs them green (and fails if any skips).
+   The _same_ code against **real** Cockroach + NATS, gated on `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL`
+   - `AGENTIC_ORG_NATS_INTEGRATION_SERVERS`. They prove the _adapters_ speak the real wire. `ci.yml`'s
+     sibling `integration.yml` stands real containers and runs them green (and fails if any skips).
 3. **KIND end-to-end proofs** (`deploy/run-*.ts`). The whole stack, live in the cluster. **This is
    the checkpoint gate.** Each proof exercises the exact adapters + migrations + kernel against the
    in-cluster Cockroach and prints a JSON PROOF report. "Skipped locally" ≠ "unverified" precisely
@@ -317,7 +318,7 @@ appears in any call, prints PROOF: PASS. Never fabricate a real external call.
   proof matches HEAD.
 - **The 7 skipped tests are correct** when skipped locally (no live DB/NATS in the fast harness).
   `npm run test:integration` against live Cockroach+NATS runs them green; `.github/workflows/
-  integration.yml` does this in CI. Don't "fix" the skips.
+integration.yml` does this in CI. Don't "fix" the skips.
 
 ## 9. Definition of done (the whole goal)
 
@@ -331,8 +332,8 @@ which improves those rules through its own enforced change control — is the mo
 
 ---
 
-*References: `docs/ORCHESTRATION_MOAT_ROADMAP.md` (the plan), `docs/GASTOWN_FULL_IMPL_COMPARISON.md`
+_References: `docs/ORCHESTRATION_MOAT_ROADMAP.md` (the plan), `docs/GASTOWN_FULL_IMPL_COMPARISON.md`
 (the competitive context), `docs/GASTOWN_REFERENCE_ANALYSIS.md` (the original conceptual analysis),
 `docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md` (shipped-vs-deferred ground truth),
 `docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md` (system overview). Reference project read-only at
-`references/` (gitignored).*
+`references/` (gitignored)._

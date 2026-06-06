@@ -16,14 +16,7 @@ export {
   type FrontmatterEvent,
   type ZetaIdDecimal,
 } from "./event.ts";
-export {
-  appendEvent,
-  emptyLog,
-  fromEvents,
-  logSize,
-  mergeLogs,
-  type EventLog,
-} from "./crdt-log.ts";
+export { appendEvent, emptyLog, fromEvents, logSize, mergeLogs, type EventLog } from "./crdt-log.ts";
 export { project, type Projection } from "./project.ts";
 export { parseCreateTable, type SchemaParseResult } from "./sql-to-schema.ts";
 export { validateRow, type RowViolation, type ValidationResult } from "./validate.ts";
@@ -51,12 +44,7 @@ export {
   type IndexToGitResult,
   type SyncFeedback,
 } from "./sync.ts";
-export {
-  EventCodecFeedbackReason,
-  parseEvent,
-  serializeEvent,
-  type EventParseResult,
-} from "./event-codec.ts";
+export { EventCodecFeedbackReason, parseEvent, serializeEvent, type EventParseResult } from "./event-codec.ts";
 export {
   GitFsAdapterFeedbackReason,
   createGitFsAdapter,
@@ -65,10 +53,7 @@ export {
   type GitFsAdapter,
   type GitFsLoadResult,
 } from "./git-fs-adapter.ts";
-export {
-  createInMemoryCockroachRowSink,
-  type CockroachRowSink,
-} from "./cockroach-row-sink.ts";
+export { createInMemoryCockroachRowSink, type CockroachRowSink } from "./cockroach-row-sink.ts";
 export {
   ReconcileCycleStatus,
   ReconcileLane,

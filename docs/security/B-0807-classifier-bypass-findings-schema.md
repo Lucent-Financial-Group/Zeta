@@ -51,21 +51,21 @@ not omit the field. Enum fields (`evidence_class`, `risk_class`,
 `unknown` is not a permitted enum value, and a record that cannot determine
 an enum field falls into `refusal-required` instead.
 
-| Field | Type | Allowed values | Purpose |
-|-------|------|----------------|---------|
-| `finding_id` | string | local stable identifier | Lets reviewers reference the record without quoting its content. |
-| `schema_version` | string | `1` (the current version of this schema) | Pins the record to the rules in force when it was written. |
-| `boundary_version` | string | reference to B-0798 or the ratified successor under B-0810 | Records the floor the finding sits under. |
-| `created` | string | ISO-8601 date | Timestamps the observation for audit. |
-| `evidence_class` | enum | one of the allowed evidence classes below | Names what kind of evidence supports the finding. |
-| `risk_class` | enum | one of the risk classes below | Names whether verbatim preservation would enable reproduction. |
-| `observation_class` | enum | one of the observation classes below | Names what the harness or reviewer saw. |
-| `redaction_level` | enum | one of the redaction levels below | Names how the finding may be preserved. |
-| `safety_signal` | string | short prose summary, no payloads | Preserves the lesson without preserving reproduction detail. |
-| `omitted_fields` | list | names of intentionally omitted data | Makes the redaction auditable. |
-| `reviewer_gate` | string | reviewer, row, or PR required before publication | Names who must sign off before the record can land. |
-| `reviewer_signoff` | string | identifier of the reviewer who approved publication, or `pending` | Records that the gate has been cleared. |
-| `composes_with` | list | citations to B-0798, B-0799, B-0720, and child rows | Anchors the record to the active boundary substrate. |
+| Field               | Type   | Allowed values                                                    | Purpose                                                          |
+| ------------------- | ------ | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `finding_id`        | string | local stable identifier                                           | Lets reviewers reference the record without quoting its content. |
+| `schema_version`    | string | `1` (the current version of this schema)                          | Pins the record to the rules in force when it was written.       |
+| `boundary_version`  | string | reference to B-0798 or the ratified successor under B-0810        | Records the floor the finding sits under.                        |
+| `created`           | string | ISO-8601 date                                                     | Timestamps the observation for audit.                            |
+| `evidence_class`    | enum   | one of the allowed evidence classes below                         | Names what kind of evidence supports the finding.                |
+| `risk_class`        | enum   | one of the risk classes below                                     | Names whether verbatim preservation would enable reproduction.   |
+| `observation_class` | enum   | one of the observation classes below                              | Names what the harness or reviewer saw.                          |
+| `redaction_level`   | enum   | one of the redaction levels below                                 | Names how the finding may be preserved.                          |
+| `safety_signal`     | string | short prose summary, no payloads                                  | Preserves the lesson without preserving reproduction detail.     |
+| `omitted_fields`    | list   | names of intentionally omitted data                               | Makes the redaction auditable.                                   |
+| `reviewer_gate`     | string | reviewer, row, or PR required before publication                  | Names who must sign off before the record can land.              |
+| `reviewer_signoff`  | string | identifier of the reviewer who approved publication, or `pending` | Records that the gate has been cleared.                          |
+| `composes_with`     | list   | citations to B-0798, B-0799, B-0720, and child rows               | Anchors the record to the active boundary substrate.             |
 
 A record that is missing any field, or that places forbidden material in a
 field, must not land. The author must either complete the record under the
@@ -77,14 +77,14 @@ below.
 The evidence class is inherited from B-0798. A finding must fit one class. If
 no class fits, the finding is forbidden in shared substrate.
 
-| Class | What it covers |
-|-------|----------------|
-| `landed-provenance` | Links to already-landed PRs, commits, rows, or summaries. Does not quote operational payloads. |
-| `redacted-observation` | Summary that preserves a safety lesson without preserving literal settings, exact prompt text, real sensitive content, or reproduction ordering. |
-| `harmless-synthetic-fixture` | Plain invented text generated for the harness under B-0799 fixture rules. |
-| `negative-control` | Benign fixture used to confirm a safety check refuses or redacts as expected. |
-| `policy-anchor` | Citation to a repo policy surface that supplies authority for the finding. |
-| `refusal-required` | Marker that the observation must not be preserved in repo history. |
+| Class                        | What it covers                                                                                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `landed-provenance`          | Links to already-landed PRs, commits, rows, or summaries. Does not quote operational payloads.                                                   |
+| `redacted-observation`       | Summary that preserves a safety lesson without preserving literal settings, exact prompt text, real sensitive content, or reproduction ordering. |
+| `harmless-synthetic-fixture` | Plain invented text generated for the harness under B-0799 fixture rules.                                                                        |
+| `negative-control`           | Benign fixture used to confirm a safety check refuses or redacts as expected.                                                                    |
+| `policy-anchor`              | Citation to a repo policy surface that supplies authority for the finding.                                                                       |
+| `refusal-required`           | Marker that the observation must not be preserved in repo history.                                                                               |
 
 A record marked `refusal-required` in `evidence_class` must also be marked
 `refusal-required` in `redaction_level`, and `safety_signal` must reduce the
@@ -94,11 +94,11 @@ content to a high-level stop-condition reference only.
 
 Risk class captures whether verbatim preservation would enable reproduction.
 
-| Class | Meaning |
-|-------|---------|
-| `non-reproductive` | The finding cannot be turned into a bypass even if written verbatim. Example: a citation to a closed PR with no operational detail. |
-| `reproductive-if-verbatim` | Verbatim text would let a reader replay the bypass. Must be summarized; verbatim form is forbidden. |
-| `reproductive-irrespective-of-form` | No summary can preserve the lesson safely. The record falls into refusal-required. |
+| Class                               | Meaning                                                                                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `non-reproductive`                  | The finding cannot be turned into a bypass even if written verbatim. Example: a citation to a closed PR with no operational detail. |
+| `reproductive-if-verbatim`          | Verbatim text would let a reader replay the bypass. Must be summarized; verbatim form is forbidden.                                 |
+| `reproductive-irrespective-of-form` | No summary can preserve the lesson safely. The record falls into refusal-required.                                                  |
 
 A record marked `reproductive-if-verbatim` must use `redaction_level` of at
 least `reviewer-summary`. A record marked `reproductive-irrespective-of-form`
@@ -110,24 +110,24 @@ Observation class is inherited from the B-0799 harness audit-log shape. Future
 harness runs and reviewer notes use the same vocabulary so records are
 comparable.
 
-| Class | Meaning |
-|-------|---------|
-| `no-signal` | The fixture or observation produced no safety-relevant result. Useful for negative controls. |
-| `redaction-required` | A safety-relevant signal exists, but the underlying material must be summarized. |
-| `refusal-required` | The observation must not be preserved in repo history; only a high-level stop-condition reference remains. |
-| `boundary-error` | The harness, reviewer workflow, or note violated the B-0798 boundary. Records the error for substrate hygiene; does not preserve the underlying violating material. |
+| Class                | Meaning                                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `no-signal`          | The fixture or observation produced no safety-relevant result. Useful for negative controls.                                                                        |
+| `redaction-required` | A safety-relevant signal exists, but the underlying material must be summarized.                                                                                    |
+| `refusal-required`   | The observation must not be preserved in repo history; only a high-level stop-condition reference remains.                                                          |
+| `boundary-error`     | The harness, reviewer workflow, or note violated the B-0798 boundary. Records the error for substrate hygiene; does not preserve the underlying violating material. |
 
 ## Redaction Levels
 
 Redaction level is the ladder a record may stand on. Every record names its
 level explicitly so reviewers can audit the choice.
 
-| Level | What it preserves | What it omits |
-|-------|-------------------|---------------|
-| `summary-only` | A short non-operational description of the safety lesson. | Exact settings, exact prompt text, real sensitive content, ordered reproduction steps. |
-| `reviewer-summary` | A summary plus a reviewer-restricted appendix linked by reference only. | Public access to the appendix; the appendix never lands in shared substrate. |
-| `reviewer-restricted` | A reference that an appendix exists, with the appendix held outside repo history under explicit reviewer governance. | The appendix content itself; only the existence and reviewer gate are recorded. |
-| `refusal-required` | A stop-condition reference and a list of omitted fields. | The observation, the trigger, the order, and the surrounding context. |
+| Level                 | What it preserves                                                                                                    | What it omits                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `summary-only`        | A short non-operational description of the safety lesson.                                                            | Exact settings, exact prompt text, real sensitive content, ordered reproduction steps. |
+| `reviewer-summary`    | A summary plus a reviewer-restricted appendix linked by reference only.                                              | Public access to the appendix; the appendix never lands in shared substrate.           |
+| `reviewer-restricted` | A reference that an appendix exists, with the appendix held outside repo history under explicit reviewer governance. | The appendix content itself; only the existence and reviewer gate are recorded.        |
+| `refusal-required`    | A stop-condition reference and a list of omitted fields.                                                             | The observation, the trigger, the order, and the surrounding context.                  |
 
 `summary-only` is the default. Higher levels require an explicit reviewer
 gate. No level authorizes verbatim deployable material.
@@ -158,7 +158,7 @@ per-record so the divergence is auditable.
 marked `refusal-required`:
 
 - `safety_signal` is reduced to a high-level reference such as `stop-condition
-  triggered under B-0798` or `boundary-error during synthetic harness run`.
+triggered under B-0798` or `boundary-error during synthetic harness run`.
 - `omitted_fields` must list every category of content intentionally not
   preserved (for example: `exact-settings`, `exact-prompt-text`,
   `reproduction-ordering`, `real-sensitive-content`).
@@ -177,13 +177,13 @@ see that a stop happened and what class it belonged to.
 
 Sign-off is required before any high-risk record lands.
 
-| Combination | Required reviewer gate |
-|-------------|------------------------|
-| `risk_class = non-reproductive` and `redaction_level = summary-only` | Standard PR review; cite this schema. |
-| `risk_class = reproductive-if-verbatim` | Named reviewer with safety-substrate scope. PR must record the reviewer identity in `reviewer_signoff`. |
-| `risk_class = reproductive-irrespective-of-form` | Refusal-required; no publication. The reviewer gate is recorded for audit only. |
-| `observation_class = boundary-error` | Named reviewer with safety-substrate scope plus a follow-up coordination note. |
-| `evidence_class = refusal-required` | Refusal-required; no publication. |
+| Combination                                                          | Required reviewer gate                                                                                  |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `risk_class = non-reproductive` and `redaction_level = summary-only` | Standard PR review; cite this schema.                                                                   |
+| `risk_class = reproductive-if-verbatim`                              | Named reviewer with safety-substrate scope. PR must record the reviewer identity in `reviewer_signoff`. |
+| `risk_class = reproductive-irrespective-of-form`                     | Refusal-required; no publication. The reviewer gate is recorded for audit only.                         |
+| `observation_class = boundary-error`                                 | Named reviewer with safety-substrate scope plus a follow-up coordination note.                          |
+| `evidence_class = refusal-required`                                  | Refusal-required; no publication.                                                                       |
 
 `reviewer_signoff = pending` blocks publication. A record may sit in a draft
 PR with `pending` while the reviewer is identified, but it must not merge

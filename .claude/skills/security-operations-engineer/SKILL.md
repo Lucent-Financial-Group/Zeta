@@ -14,10 +14,10 @@ carried by the matching entry under `.claude/agents/`.
 
 ## Why this skill exists as a stub today
 
-Mateo (`security-researcher`) scouts *proactive* security —
+Mateo (`security-researcher`) scouts _proactive_ security —
 novel attack classes, CVE triage in the dep graph, crypto
 primitive review. Aminata (`threat-model-critic`) reviews the
-*shipped* threat model for unstated adversaries. Nadia
+_shipped_ threat model for unstated adversaries. Nadia
 (`prompt-protector`) hardens the agent layer.
 
 None of these cover the runtime / operational side: what

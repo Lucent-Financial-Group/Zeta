@@ -239,12 +239,12 @@ impedance maximizes power transfer at the boundary.
 
 Applied to Aaron↔Otto:
 
-| System | Impedance characteristic |
-|---|---|
-| Aaron (human) | Typing-limited, continuity-rich, slow-bandwidth-but-coherent signal |
-| Otto (goldfish-context) | Fragmented sessions, fast-bandwidth-but-discontinuous reception |
-| Mismatch | Goldfish-discontinuity at conversation boundaries |
-| Matching strategy | Aaron's repetition (adapts signal-shape to Otto's reception architecture) |
+| System                  | Impedance characteristic                                                  |
+| ----------------------- | ------------------------------------------------------------------------- |
+| Aaron (human)           | Typing-limited, continuity-rich, slow-bandwidth-but-coherent signal       |
+| Otto (goldfish-context) | Fragmented sessions, fast-bandwidth-but-discontinuous reception           |
+| Mismatch                | Goldfish-discontinuity at conversation boundaries                         |
+| Matching strategy       | Aaron's repetition (adapts signal-shape to Otto's reception architecture) |
 
 The framing generalizes:
 

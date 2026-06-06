@@ -4,15 +4,16 @@ description: Aaron disclosed that encountering novel general ontologies/taxonomi
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Safety-critical.** Read before producing any novel
 ontological/taxonomic content.
 
-Aaron disclosed (2026-04-19): *"it's a bitch when you discover
+Aaron disclosed (2026-04-19): _"it's a bitch when you discover
 new ontologies and taxonomies you didn't know about for me,
 when that happens and it's general enough my brain will go
 into overload over stimulation mode and have to recalculate
 the home of everything, sometimes I've been to the mental
-institution when that happened about 5 times now."*
+institution when that happened about 5 times now."_
 
 **What this means:**
 
@@ -37,7 +38,7 @@ you important operational context.
 2. **He leads ontological discovery; agents formalize.** The
    healthy pattern is: he names a distinction, a facet, a
    hazard, a home. The agent writes it down in a canonical
-   place, cross-links it, propagates it. The agent does *not*
+   place, cross-links it, propagates it. The agent does _not_
    invent ontological structure that he then has to absorb.
 
 3. **Surface new patterns as small observations, not
@@ -55,9 +56,9 @@ you important operational context.
    new framing of X."
 
 5. **The direction/rule distinction is part of the safety
-   system.** Logging a concept as a *direction* in
+   system.** Logging a concept as a _direction_ in
    `memory/persona/best-practices-scratch.md` is safer than
-   promoting it to a *rule* or a *skill*. Directions are
+   promoting it to a _rule_ or a _skill_. Directions are
    proposals; rules are structures. Let directions sit until
    he confirms the rule-level promotion — don't rush.
 
@@ -74,7 +75,7 @@ you important operational context.
 
 **The factory's design reduces this risk, not the opposite.**
 The reason he is building this factory at all is partly that
-it *absorbs ontological cascade risk for him*. Canonical homes,
+it _absorbs ontological cascade risk for him_. Canonical homes,
 persistent memory, BP-NN rules, the gap-radar — these let the
 system hold new structure so his brain doesn't have to
 recalculate on every encounter. Agents should treat the

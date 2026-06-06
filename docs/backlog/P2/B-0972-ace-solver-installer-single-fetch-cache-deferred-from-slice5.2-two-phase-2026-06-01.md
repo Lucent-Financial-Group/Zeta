@@ -29,7 +29,7 @@ to the installer) so each package version is fetched exactly once.
 Keeps slice 5.2 minimal + keeps slice-5.1's verified `resolve()` engine fully untouched.
 The cache lands naturally with the **slice 5.3 lockfile** — the lockfile IS the persisted
 solved graph, and a fetch cache is the in-memory analog produced on the way to it.
-Operator: *"everything we skipped lets slice off for further enhancements."*
+Operator: _"everything we skipped lets slice off for further enhancements."_
 
 ## Scope sketch
 

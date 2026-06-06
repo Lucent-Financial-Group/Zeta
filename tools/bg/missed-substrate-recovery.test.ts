@@ -48,10 +48,7 @@ type AdapterStubOverrides = Partial<{
   ghPrCreate: (title: string, body: string, head: string) => string | null;
 }>;
 
-function stubAdapters(
-  log: AdapterCallLog,
-  overrides: AdapterStubOverrides = {},
-): RecoveryAdapters {
+function stubAdapters(log: AdapterCallLog, overrides: AdapterStubOverrides = {}): RecoveryAdapters {
   return {
     checkRecoveryPRExists: (branchName) => {
       log.checkRecoveryPRExists.push(branchName);
@@ -109,12 +106,14 @@ describe("buildRecoveryBranchName", () => {
 
 describe("buildRecoveryPRBody", () => {
   it("contains the original PR number, branch name, and all commit SHAs", () => {
-    const body = buildRecoveryPRBody(makeFinding({
-      prNumber: 9876,
-      branchName: "feat/x",
-      missingCommits: ["sha1", "sha2", "sha3"],
-      urgency: "high",
-    }));
+    const body = buildRecoveryPRBody(
+      makeFinding({
+        prNumber: 9876,
+        branchName: "feat/x",
+        missingCommits: ["sha1", "sha2", "sha3"],
+        urgency: "high",
+      }),
+    );
     expect(body).toContain("**#9876**");
     expect(body).toContain("feat/x");
     expect(body).toContain("- sha1");
@@ -236,7 +235,7 @@ describe("openRecoveryPR — already-exists", () => {
 });
 
 describe("openRecoveryPR — dry-run", () => {
-  it("does not call gitCreateBranch and returns prUrl=\"dry-run\"", () => {
+  it('does not call gitCreateBranch and returns prUrl="dry-run"', () => {
     const log = newCallLog();
     const r = openRecoveryPR(makeFinding(), true, stubAdapters(log));
 
@@ -286,13 +285,9 @@ describe("openRecoveryPR — error branches", () => {
     expect(log.gitCherryPick.length).toBe(0);
   });
 
-  it("returns error when gitCherryPick returns \"error\"", () => {
+  it('returns error when gitCherryPick returns "error"', () => {
     const log = newCallLog();
-    const r = openRecoveryPR(
-      makeFinding(),
-      false,
-      stubAdapters(log, { gitCherryPick: () => "error" }),
-    );
+    const r = openRecoveryPR(makeFinding(), false, stubAdapters(log, { gitCherryPick: () => "error" }));
     expect(r.status).toBe("error");
     if (r.status !== "error") throw new Error("narrowing");
     expect(r.reason).toContain("git cherry-pick");

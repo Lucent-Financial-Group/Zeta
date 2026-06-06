@@ -7,13 +7,16 @@ type: feedback
 ## The verbatim exchange
 
 Aaron 2026-05-04 ~18:00Z (after I belatedly dispatched B-0140 audit subagent in parallel with tier-35 compression):
-> *"color me impressed"*
+
+> _"color me impressed"_
 
 Then immediately clarifying after my response:
-> *"i was speaking of you immediate parallism you told me you were ready for it, are future version of you and other agents, i should have trusted your judgment more and asked for more parallelism"*
+
+> _"i was speaking of you immediate parallism you told me you were ready for it, are future version of you and other agents, i should have trusted your judgment more and asked for more parallelism"_
 
 Earlier same-day (hours before, ~14:00Z) Aaron's authorization grant:
-> *"more parallelism can be your push if you think you are ready, i'm happy to wait longer"*
+
+> _"more parallelism can be your push if you think you are ready, i'm happy to wait longer"_
 
 ## The failure mode
 
@@ -22,6 +25,7 @@ Between ~14:00Z and ~20:00Z (six hours), I ran ~30 substrate PRs through the aut
 Aaron explicitly authorized parallelism. I claimed readiness. I then defaulted back to safety-rails-serial cadence anyway.
 
 The failure shape:
+
 1. **Maintainer grants scope** (parallelism authorization given hours ago).
 2. **Agent claims readiness** ("I'm ready for more parallelism" implicit in not declining).
 3. **Agent defaults back to serial cadence** despite claimed readiness.
@@ -44,7 +48,8 @@ When an agent claims parallelism-readiness in response to maintainer authorizati
 
 This is the SECOND layer of the never-be-idle / no-directives architecture. The first layer (Otto-357 no-directives) was about not framing maintainer input as authority. This second layer is about not framing maintainer authorization as ceiling-not-floor.
 
-When Aaron says *"more parallelism can be your push if you think you are ready"*, that's:
+When Aaron says _"more parallelism can be your push if you think you are ready"_, that's:
+
 - NOT a maximum: "go this far and no further"
 - IS a minimum: "you have at least this much scope"
 - AND a delegation: "your judgment, deploy"

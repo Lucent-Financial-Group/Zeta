@@ -19,12 +19,14 @@ findings files. Future Daya runs write here directly under the
 `skills:` contract.
 
 ---
+
 ## Round 44 — pointer-integrity audit on `docs/FACTORY-HYGIENE.md` — 2026-04-20
 
 First exercise of row #25 (pointer-integrity audit) on the file
 that defines it. Dogfood pass; meta-win candidate.
 
 **Scope.** Every pointer in `docs/FACTORY-HYGIENE.md`:
+
 - 20 in-repo file paths (source-of-truth column + body text)
 - 14 memory-file paths (`~/.claude/projects/.../memory/`)
 - 1 directory (`docs/DECISIONS/`)
@@ -67,21 +69,22 @@ JOURNAL).
 
 **Total cold-start (Tier 0 + Tier 1) per persona, by audit:**
 
-| Persona | r24 baseline | r34 sample | Trend |
-|---|---|---|---|
-| Kira | ~14.4k | not sampled | baseline |
-| Viktor | ~14.8k | not sampled | baseline |
-| Rune | ~14.8k | not sampled | baseline |
-| Aminata | ~14.7k | not sampled | baseline |
-| Aarav | ~16.6k | not sampled | baseline |
-| Soraya | ~17.6k | not sampled | baseline |
-| Kenji | ~17.8k | ~17.9k (r26) | flat within noise |
-| Daya | ~15.5k | not sampled | baseline |
-| Dejan | -- | ~16.5k (r34) | new-persona |
-| Bodhi | -- | ~19.3k (r34) | new-persona, heaviest |
-| Iris | -- | ~18.0k (r34) | new-persona |
+| Persona | r24 baseline | r34 sample   | Trend                 |
+| ------- | ------------ | ------------ | --------------------- |
+| Kira    | ~14.4k       | not sampled  | baseline              |
+| Viktor  | ~14.8k       | not sampled  | baseline              |
+| Rune    | ~14.8k       | not sampled  | baseline              |
+| Aminata | ~14.7k       | not sampled  | baseline              |
+| Aarav   | ~16.6k       | not sampled  | baseline              |
+| Soraya  | ~17.6k       | not sampled  | baseline              |
+| Kenji   | ~17.8k       | ~17.9k (r26) | flat within noise     |
+| Daya    | ~15.5k       | not sampled  | baseline              |
+| Dejan   | --           | ~16.5k (r34) | new-persona           |
+| Bodhi   | --           | ~19.3k (r34) | new-persona, heaviest |
+| Iris    | --           | ~18.0k (r34) | new-persona           |
 
 **Dominant Tier 0 line-items (all personas pay):**
+
 - `docs/GLOSSARY.md` — ~4.5k tokens. Largest single item since
   round 24. Not persona-specific.
 - `AGENTS.md` — ~3.1k tokens (19 rules as of round 26).

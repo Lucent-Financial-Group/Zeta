@@ -20,10 +20,7 @@
 //   2   one or more rows lack classification OR are detection-only-gap
 
 import { readFileSync } from "node:fs";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
 
@@ -69,11 +66,7 @@ function trimSpaces(s: string): string {
   return s.slice(i, j);
 }
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -239,9 +232,7 @@ function emitReport(args: Args, r: AuditResult): string {
 export function main(argv: readonly string[]): AuditExitCode {
   const parsed = parseArgs(argv);
   if (parsed.kind === "help") {
-    process.stdout.write(
-      "Usage: audit-missing-prevention-layers.ts [--classify FILE]\n",
-    );
+    process.stdout.write("Usage: audit-missing-prevention-layers.ts [--classify FILE]\n");
     return 0;
   }
   if (parsed.kind === "error") {

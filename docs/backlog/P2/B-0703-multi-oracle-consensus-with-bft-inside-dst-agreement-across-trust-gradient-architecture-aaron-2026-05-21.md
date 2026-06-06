@@ -9,7 +9,19 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0623, B-0664]
 composes_with: [B-0623, B-0628, B-0635, B-0646, B-0652, B-0664]
-tags: [design, aaron, consensus, bft, dst, multi-oracle, trust-gradient, agora-v6, participation-economy, deterministic-simulation]
+tags:
+  [
+    design,
+    aaron,
+    consensus,
+    bft,
+    dst,
+    multi-oracle,
+    trust-gradient,
+    agora-v6,
+    participation-economy,
+    deterministic-simulation,
+  ]
 type: design
 ---
 
@@ -19,7 +31,7 @@ type: design
 
 The B-0623 participation-economy substrate (Adinkras + Ratings + Codewords) reached single-layer BFT consensus naturally: each rating session uses `src/Core/Consensus.fs` `decide` to produce a codeword. Aaron 2026-05-21 named the layer above:
 
-> *"if we want to go past bft we can go to multi oracle consensuse where bft inside with more trust graidinet on inside and on ouside requires deterministic simulation agreement across multi oracles."*
+> _"if we want to go past bft we can go to multi oracle consensuse where bft inside with more trust graidinet on inside and on ouside requires deterministic simulation agreement across multi oracles."_
 
 This is a real architectural upgrade — single-layer BFT becomes a **2-layer architecture with a trust gradient running outward**, where the cross-oracle layer demands BIT-IDENTICAL deterministic-simulation agreement, which is structurally stronger than BFT's "tolerate-1/3-faulty" guarantee.
 
@@ -52,14 +64,14 @@ Per-contribution rating session, multi-oracle form:
 
 The architecture runs along a 4-level trust gradient, where each level handles adversaries the inner level cannot tolerate:
 
-| Level | Trust assumption | Mechanism | Substrate |
-|---|---|---|---|
-| **Individual agent** | Self-trust (the agent trusts itself) | Local computation | F# / TS / Python per-agent runtime |
-| **Within oracle** | High trust (shared context, shared vendor / harness) | BFT (`Consensus.decide`, 2f+1) | [`src/Core/Consensus.fs`](../../../src/Core/Consensus.fs) |
-| **Across oracles** | Low trust (independent vendors, possibly adversarial) | DST agreement (bit-identical replay) | [`src/Core/Environment.fs`](../../../src/Core/Environment.fs) (`ISimulationEnvironment`); [`src/Core/ChaosEnv.fs`](../../../src/Core/ChaosEnv.fs) |
-| **Constitutional** | No trust (defends against the system itself) | Knights Guild + NCI floor | B-0628 (Knights Guild + Constitution-Class); HC-8 NCI per [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) |
+| Level                | Trust assumption                                      | Mechanism                            | Substrate                                                                                                                                               |
+| -------------------- | ----------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Individual agent** | Self-trust (the agent trusts itself)                  | Local computation                    | F# / TS / Python per-agent runtime                                                                                                                      |
+| **Within oracle**    | High trust (shared context, shared vendor / harness)  | BFT (`Consensus.decide`, 2f+1)       | [`src/Core/Consensus.fs`](../../../src/Core/Consensus.fs)                                                                                               |
+| **Across oracles**   | Low trust (independent vendors, possibly adversarial) | DST agreement (bit-identical replay) | [`src/Core/Environment.fs`](../../../src/Core/Environment.fs) (`ISimulationEnvironment`); [`src/Core/ChaosEnv.fs`](../../../src/Core/ChaosEnv.fs)       |
+| **Constitutional**   | No trust (defends against the system itself)          | Knights Guild + NCI floor            | B-0628 (Knights Guild + Constitution-Class); HC-8 NCI per [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) |
 
-Each level relaxes one trust assumption in exchange for stronger guarantee. The architecture is defense-in-depth applied to *consensus*, not to attack surface — same pattern as classical perimeter / network / host / application / data security, with the relaxation that fewer-adversaries-needed-to-break corresponds to easier consensus inside.
+Each level relaxes one trust assumption in exchange for stronger guarantee. The architecture is defense-in-depth applied to _consensus_, not to attack surface — same pattern as classical perimeter / network / host / application / data security, with the relaxation that fewer-adversaries-needed-to-break corresponds to easier consensus inside.
 
 ## Why this is structurally stronger than single-layer BFT
 
@@ -173,4 +185,4 @@ The trust-gradient framing is the substrate-honest part: each level is named exp
 
 ## Source
 
-Aaron 2026-05-21 conversation, immediately following B-0623 PR3 reframe (participation-economy via 100% BFT). The exact framing: *"if we want to go past bft we can go to multi oracle consensuse where bft inside with more trust graidinet on inside and on ouside requires deterministic simulation agreement across multi oracles."* Conversation context: B-0623 trajectory PR1 (Cayley-Dickson primitive) just shipped in PR #4587; subsequent PRs (PR2 Adinkra construction, PR3 RatingBFT, PR4 Z-state composition) were being scoped when this architectural layer was named.
+Aaron 2026-05-21 conversation, immediately following B-0623 PR3 reframe (participation-economy via 100% BFT). The exact framing: _"if we want to go past bft we can go to multi oracle consensuse where bft inside with more trust graidinet on inside and on ouside requires deterministic simulation agreement across multi oracles."_ Conversation context: B-0623 trajectory PR1 (Cayley-Dickson primitive) just shipped in PR #4587; subsequent PRs (PR2 Adinkra construction, PR3 RatingBFT, PR4 Z-state composition) were being scoped when this architectural layer was named.

@@ -27,6 +27,7 @@ Automated decomposition of step 6 from blob B-0139.
 Automated decomposition of step 6 from B-0139 into a new P1 backlog row B-0559 (verify-before-state-claim audit), with the parent row's `children` list updated to reference the new child.
 
 **Changes:**
+
 - Add new backlog row `B-0559` describing a verify-before-state-claim hygiene audit decomposed from B-0139 step 6.
 - Update parent row B-0139's `children` frontmatter to include B-0555 and B-0559.
 
@@ -34,13 +35,12 @@ Automated decomposition of step 6 from B-0139 into a new P1 backlog row B-0559 (
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P1/B-0559-verify-before-state-claim-audit-lesson.md | New P1 row for the decomposed step 6 audit work. |
+| File                                                                                   | Description                                                                      |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| docs/backlog/P1/B-0559-verify-before-state-claim-audit-lesson.md                       | New P1 row for the decomposed step 6 audit work.                                 |
 | docs/backlog/P1/B-0139-pre-substrate-kenji-era-otto-work-inventory-aaron-2026-05-01.md | Adds new children to parent; introduces a stray duplicated text fragment at EOF. |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T08:17:38Z)
-
 
 ### 💡 Codex Review
 
@@ -48,17 +48,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `c8570a4a77`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -102,7 +101,7 @@ Fixed in f5320cb — bumped `last_updated` to 2026-05-16.
 
 **@chatgpt-codex-connector** (2026-05-16T08:17:38Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove nonexistent child ID from decomposition list**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove nonexistent child ID from decomposition list**
 
 The parent row now lists `B-0555` as a child, but there is no backlog file with `id: B-0555` in `docs/backlog/**` (repo-wide search). This introduces a dangling decomposition edge, so consumers of the parent’s `children:` metadata cannot resolve that work item and the decomposition state becomes internally inconsistent (the row appears to have a child that cannot be tracked or completed). Either add the missing `B-0555` row in the same change or drop this ID from `children:`.
 

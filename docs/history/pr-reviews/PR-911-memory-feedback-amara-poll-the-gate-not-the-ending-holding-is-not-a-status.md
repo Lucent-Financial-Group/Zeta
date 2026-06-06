@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 911 |
-| Title | memory(feedback): Amara — poll the gate, not the ending; "Holding." is not a status |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-30T10:55:52Z |
-| Merged at | 2026-04-30T14:41:05Z |
-| Merge commit SHA | `841fb03790427fc60bec858408dba62fd2e95b94` |
-| Branch | `ops/memory-amara-poll-gate-not-ending-2026-04-30` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/911 |
-| Changed files | 3 |
-| Additions / deletions | +959 / -0 |
+| Field                 | Value                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| Number                | 911                                                                                 |
+| Title                 | memory(feedback): Amara — poll the gate, not the ending; "Holding." is not a status |
+| Author                | `AceHack` (human)                                                                   |
+| State                 | MERGED                                                                              |
+| Created at            | 2026-04-30T10:55:52Z                                                                |
+| Merged at             | 2026-04-30T14:41:05Z                                                                |
+| Merge commit SHA      | `841fb03790427fc60bec858408dba62fd2e95b94`                                          |
+| Branch                | `ops/memory-amara-poll-gate-not-ending-2026-04-30`                                  |
+| Base branch           | `main`                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/911                             |
+| Changed files         | 3                                                                                   |
+| Additions / deletions | +959 / -0                                                                           |
 
 ## Description
 
@@ -32,6 +32,7 @@
 Amara caught a real anti-pattern in Otto's autonomous-loop wait-behavior 2026-04-30. After #909 merged at 08:19Z, Otto held position ~2.5 hours / ~30+ ticks polling `gh pr list --state merged --author "@me"` (always returned `[]` because no PR in flight) and emitting empty `Holding.` each tick.
 
 Lands two artifacts:
+
 - Memory file `feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md` — operational rule for future-Otto
 - Research doc `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md` — Amara's verbatim catch + Otto's acknowledgment
 
@@ -47,15 +48,15 @@ Plus MEMORY.md index pointer.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 17 |
-| Resolved threads | 17 |
-| Unresolved threads | 0 |
-| Total review comments | 17 |
-| Total fix commits (touching thread paths) | 11 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 17    |
+| Resolved threads                          | 17    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 17    |
+| Total fix commits (touching thread paths) | 11    |
 
 ## Review threads
 
@@ -68,10 +69,10 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T10:57:37Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:95 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include StatusContext entries when summarizing CI state**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Include StatusContext entries when summarizing CI state**
+
   The lane-poll command filters `statusCheckRollup` down to `CheckRun` only, which can undercount or miss required checks that arrive as `StatusContext` nodes; this can report a PR as effectively clear (`0 failed`/all-success) while a required status context is still pending or failing. That directly weakens the “poll the gate” rule because the gate summary can become false. This repo’s own guidance already documents the union shape (`memory/feedback_no_required_approval_on_zeta_BLOCKED_means_threads_or_ci_aaron_2026_04_28.md` lines 99–101), so the new query should aggregate both node types.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -84,7 +85,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T10:58:40Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:96 (association: NONE)
   P1: The jq query in this `gh pr view ... -q` example has unescaped double-quotes inside a double-quoted jq string (e.g., `.conclusion == "SUCCESS"`). As written, the shell/jq quoting will break, so copy/paste won’t work. Escape the inner quotes (or restructure the jq expression) so the snippet is syntactically valid.
-  
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -96,7 +96,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T10:58:40Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:106 (association: NONE)
   P1: This GraphQL example uses `pullRequest(number:N)` which isn’t valid GraphQL argument syntax (should be `number: N`, or use a proper variable). As written, the query will fail if someone copies it; align it with the working example shown later in the research doc (`pullRequest(number:866)`).
-  
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -107,10 +106,10 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T11:03:13Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:175 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Treat all blocking check conclusions as failures**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Treat all blocking check conclusions as failures**
+
   The CI summary only increments failures for `conclusion == "FAILURE"`, but GitHub check conclusions that can still block merge also include values like `CANCELLED`, `TIMED_OUT`, `STARTUP_FAILURE`, and `ACTION_REQUIRED` (GitHub GraphQL `CheckConclusionState`). In those states this report can incorrectly show `0 failed`, which undermines the "poll the gate" rule by hiding real blockers and can lead to stale or wrong next-action planning.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 5 -- resolved [outdated, collapsed]
@@ -122,10 +121,10 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T11:03:13Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:186 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Avoid truncating unresolved thread counts at 50**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Avoid truncating unresolved thread counts at 50**
+
   The review-thread query hard-caps results at `first:50` without pagination, so PRs with more than 50 threads can report an incomplete unresolved-thread count. Because this document uses unresolved-thread count as an auto-merge pre-flight signal, truncation can produce false "clear" lane-state output and incorrect merge readiness decisions on large discussion-heavy PRs.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -138,7 +137,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T11:10:22Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:334 (association: NONE)
   `AUTONOMOUS-LOOP.md` is referenced without the `docs/` prefix here. The canonical file path in this repo is `docs/AUTONOMOUS-LOOP.md`, so this reference is likely a broken/ambiguous xref in rendered Markdown. Update the reference (and any adjacent wording) to use the full path so the link is navigable.
-  
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -149,10 +147,10 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T11:16:18Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:186 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Count STALE check conclusions as gate-blocking failures**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Count STALE check conclusions as gate-blocking failures**
+
   The lane-summary jq filter treats `CheckRun` failures as only `FAILURE`, `CANCELLED`, `TIMED_OUT`, `STARTUP_FAILURE`, and `ACTION_REQUIRED`, but omits `STALE`; GitHub’s `CheckConclusionState` includes `STALE`, and required checks must be in a successful state (`success`/`neutral`/`skipped`) to merge. In the `STALE` case this report can show `0 failed`/`0 in-progress` even though the gate is still not merge-ready, which recreates the false-clear CI signal this memory is trying to prevent.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -164,10 +162,10 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T11:22:42Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:189 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Count neutral and skipped check runs as successful**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Count neutral and skipped check runs as successful**
+
   The `CheckRun` success predicate only accepts `"SUCCESS"`, but GitHub’s required-check semantics treat `success`, `neutral`, and `skipped` as passing states. With the current filter, a required check that concludes `NEUTRAL` or `SKIPPED` is counted in total checks but in none of success/pending/failed, which can leave the lane summary looking not-ready even when merge gates are actually satisfied and can reintroduce unnecessary wait-loop churn.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 9 -- resolved [outdated, collapsed]
@@ -180,7 +178,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T11:22:58Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:189 (association: NONE)
   P1: In the `gh pr view ... -q` snippet, `success: (.conclusion == "SUCCESS")` conflicts with the preceding text that treats `NEUTRAL` and `SKIPPED` as merge-satisfying conclusions. As written, checks with `NEUTRAL`/`SKIPPED` will be counted as neither success nor failed, making `ciSummary` inaccurate. Update the predicate (or the surrounding explanation) so the snippet and the stated success set match.
-  
 
 ### Thread 10 -- resolved [collapsed]
 
@@ -192,7 +189,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T11:32:27Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:305 (association: NONE)
   In the `gh pr view ... -q` jq filter, `IN` is used as if it accepts a variadic list (`IN("SUCCESS","NEUTRAL","SKIPPED")`, etc.). In jq, `IN` tests membership against a set (array/object), so this form will error at runtime and the snippet won’t work as written. Use a single array/object argument for the membership test (or an `index(...) != null` style predicate) for both the `CheckRun` and `StatusContext` branches.
-  
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -204,7 +200,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T11:32:28Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:84 (association: NONE)
   `B-0109` is referenced here as an existing allowlist rule, but there doesn’t appear to be any `B-0109` backlog row/doc in the repo (no matches in `docs/` or `docs/backlog/`). This reads like a dangling cross-reference; either link to the actual canonical backlog/doc location (if it exists under a different ID/path) or remove/rename the `B-0109` reference so future readers can resolve it.
-  
 
 ### Thread 12 -- resolved [collapsed]
 
@@ -216,7 +211,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T11:32:28Z on `memory/persona/amara/conversations/2026-04-30-amara-poll-gate-not-ending-holding-is-not-status.md`:250 (association: NONE)
   This references `B-0108` as an existing backlog row, but `B-0108` doesn’t appear anywhere else in the repo (no matches in `docs/BACKLOG.md` or `docs/backlog/**`). If this is meant to be a durable pointer, consider linking to the actual backlog artifact (or correcting the ID) so the reference is resolvable later.
-  
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -228,7 +222,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T12:12:03Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:86 (association: NONE)
   P1: Broken cross-reference: this text points at `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`, but that file doesn’t exist in the repo. Either add the backlog artifact in this PR, or replace the path with a durable reference that exists now (e.g., a PR link) and only add the file link once it lands.
-  
 
 ### Thread 14 -- resolved [outdated, collapsed]
 
@@ -240,7 +233,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T12:12:03Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:231 (association: NONE)
   P1: This references “B-0111” as the place where a tested/fixture-backed script will live, but there’s no corresponding backlog artifact in-tree (and no link for readers). Consider either adding the B-0111 backlog row in the same PR, or replacing this with a concrete in-repo pointer (or PR/issue link) so the reference is actionable and doesn’t rot.
-  
 
 ### Thread 15 -- resolved [outdated, collapsed]
 
@@ -251,10 +243,10 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T12:12:46Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:31 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Preserve tick visibility when no PR is active**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Preserve tick visibility when no PR is active**
+
   Replace the `emit nothing` guidance with an explicit non-PR heartbeat/status row. In this repo, autonomous-loop observability depends on per-tick durable logging (`docs/AUTONOMOUS-LOOP.md` states the tick fire-log is appended every tick), so suppressing output when no PR is in flight makes normal operation indistinguishable from a stalled scheduler and weakens the liveness signal this rule is meant to improve.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 16 -- resolved [outdated, collapsed]
@@ -266,10 +258,10 @@ Plus MEMORY.md index pointer.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T12:53:13Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:111 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Verify merge commit by ancestry, not `main` HEAD equality**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Verify merge commit by ancestry, not `main` HEAD equality**
+
   The post-merge verification step requires `commits/main` to exactly match the squash commit SHA from `gh pr merge`, but this is not stable when another PR merges before verification runs. In that common concurrent-merge case, this rule will falsely classify a successful merge as a blocker and can trigger unnecessary conservative-disable behavior. The verification should check that the announced merge commit is reachable from `origin/main` (or appears in recent main history), not that it is the current tip.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 17 -- resolved [outdated, collapsed]
@@ -282,7 +274,6 @@ Plus MEMORY.md index pointer.
 
 - **`Copilot` (bot)** at 2026-04-30T14:28:16Z on `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`:279 (association: NONE)
   Reference to backlog item `B-0111` appears to be dangling: a repo-wide search only finds `B-0111` here, and there is no corresponding `docs/backlog/**/B-0111-*.md` row. Either add the backlog row (preferred if this work is intended) or remove/replace the reference so the pointer is resolvable.
-  
 
 ## Fix commits (touching thread paths)
 

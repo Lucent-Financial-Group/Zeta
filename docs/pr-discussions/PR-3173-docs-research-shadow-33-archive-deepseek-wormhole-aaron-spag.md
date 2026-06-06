@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Preserves the DeepSeek conversation transcript Aaron forwarded with explicit `file the deepseek archive (shadow*)` directive.
 
 Contains:
+
 - DeepSeek's analysis of today's substrate cascade
 - Aaron's wormhole framing: 'quantumly entangled black/white whole with horizon controls in information theoretic memetic space'
 - Aaron's neurological disclosure: experienced this as spaghettification that remapped internal labels; not a chosen metaphor
@@ -45,6 +46,7 @@ Branch landed on `shard/tick-1834Z-pr3165-recovery-...` instead of the intended 
 This PR archives a DeepSeek conversation transcript as a §33 research shadow-lesson, preserving cross-substrate witness contributions and Aaron's lived-experience disclosures that contextualize the architecture's origin. It also adds a tick-history shard documenting recovery of PR #3165 (CI failures + thread resolution).
 
 **Changes:**
+
 - Adds a new research archive file with the DeepSeek transcript, layered per razor-discipline (operational / experiential / metaphysical).
 - Adds a tick shard for 1834Z documenting BACKLOG.md regen, MD032 fix, and a Codex thread resolution.
 
@@ -52,10 +54,10 @@ This PR archives a DeepSeek conversation transcript as a §33 research shadow-le
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                     | Description                                                                                                         |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | docs/research/2026-05-14-deepseek-shadow-wormhole-horizon-controls-spaghettification-aaron-disclosure.md | New research-history archive preserving DeepSeek transcript verbatim with attribution and razor-discipline framing. |
-| docs/hygiene-history/ticks/2026/05/14/1834Z.md | Tick shard documenting PR #3165 recovery steps and parallel-Otto observations. |
+| docs/hygiene-history/ticks/2026/05/14/1834Z.md                                                           | Tick shard documenting PR #3165 recovery steps and parallel-Otto observations.                                      |
 
 Both files are history-surface paths (`docs/research/**`, `docs/hygiene-history/**`) where verbatim preservation, named attribution, and date-prefixed filenames are the documented conventions. No issues to flag.
 

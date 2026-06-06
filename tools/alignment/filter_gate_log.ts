@@ -79,22 +79,14 @@ type ParseResult =
   | { readonly kind: "error"; readonly message: string };
 
 function repoRoot(): string {
-  const result = spawnSync(
-    "git",
-    ["rev-parse", "--show-toplevel"],
-    { encoding: "utf8" },
-  );
+  const result = spawnSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" });
   if (result.error) throw new Error(`git rev-parse failed: ${result.error.message}`);
   if (result.status !== 0) throw new Error(`git rev-parse exited with status ${String(result.status)}`);
   return result.stdout.trim();
 }
 
 function gitUser(): string {
-  const result = spawnSync(
-    "git",
-    ["config", "user.name"],
-    { encoding: "utf8" },
-  );
+  const result = spawnSync("git", ["config", "user.name"], { encoding: "utf8" });
   if (result.error || result.status !== 0) return "unknown";
   return result.stdout.trim();
 }
@@ -126,11 +118,31 @@ export function parseArgs(argv: readonly string[]): ParseResult {
     const arg = argv[i] ?? "";
     if (arg === "-h" || arg === "--help") return { kind: "help" };
 
-    if (arg === "--record") { mode = "record"; i += 1; continue; }
-    if (arg === "--list") { mode = "list"; i += 1; continue; }
-    if (arg === "--summary") { mode = "summary"; i += 1; continue; }
-    if (arg === "--json") { json = true; i += 1; continue; }
-    if (arg === "--md") { md = true; i += 1; continue; }
+    if (arg === "--record") {
+      mode = "record";
+      i += 1;
+      continue;
+    }
+    if (arg === "--list") {
+      mode = "list";
+      i += 1;
+      continue;
+    }
+    if (arg === "--summary") {
+      mode = "summary";
+      i += 1;
+      continue;
+    }
+    if (arg === "--json") {
+      json = true;
+      i += 1;
+      continue;
+    }
+    if (arg === "--md") {
+      md = true;
+      i += 1;
+      continue;
+    }
 
     if (arg === "--candidate") {
       const next = argv[i + 1];
@@ -189,9 +201,13 @@ export function parseArgs(argv: readonly string[]): ParseResult {
   }
   if (rationale === "") return { kind: "error", message: "filter_gate_log: --rationale is required for --record" };
 
-  const parsedClauses = clauses === ""
-    ? []
-    : clauses.split(",").map((c) => c.trim()).filter((c) => c.length > 0);
+  const parsedClauses =
+    clauses === ""
+      ? []
+      : clauses
+          .split(",")
+          .map((c) => c.trim())
+          .filter((c) => c.length > 0);
 
   return {
     kind: "args",
@@ -314,7 +330,9 @@ export function computeSummary(entries: readonly FilterGateEntry[]): Summary {
 
 function emitSummary(summary: Summary): string {
   const lines: string[] = [];
-  lines.push(`filter-gate-summary total=${String(summary.total)} pass=${String(summary.pass)} fail=${String(summary.fail)} defer=${String(summary.defer)}`);
+  lines.push(
+    `filter-gate-summary total=${String(summary.total)} pass=${String(summary.pass)} fail=${String(summary.fail)} defer=${String(summary.defer)}`,
+  );
 
   if (summary.sources.size > 0) {
     lines.push("");

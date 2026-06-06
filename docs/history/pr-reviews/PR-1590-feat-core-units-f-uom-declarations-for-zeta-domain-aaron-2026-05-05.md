@@ -10,26 +10,26 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1590 |
-| Title | feat(core/units): F# UoM declarations for Zeta domain (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-05T06:13:17Z |
-| Merged at | 2026-05-05T06:56:33Z |
-| Merge commit SHA | `ce633cbaea7966c156fd0ddb4bf60f9a8e5266f1` |
-| Branch | `feat/core-units-uom-zeta-bug-class-prevention-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1590 |
-| Changed files | 4 |
-| Additions / deletions | +372 / -0 |
+| Field                 | Value                                                                    |
+| --------------------- | ------------------------------------------------------------------------ |
+| Number                | 1590                                                                     |
+| Title                 | feat(core/units): F# UoM declarations for Zeta domain (Aaron 2026-05-05) |
+| Author                | `AceHack` (human)                                                        |
+| State                 | MERGED                                                                   |
+| Created at            | 2026-05-05T06:13:17Z                                                     |
+| Merged at             | 2026-05-05T06:56:33Z                                                     |
+| Merge commit SHA      | `ce633cbaea7966c156fd0ddb4bf60f9a8e5266f1`                               |
+| Branch                | `feat/core-units-uom-zeta-bug-class-prevention-aaron-2026-05-05`         |
+| Base branch           | `main`                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1590                 |
+| Changed files         | 4                                                                        |
+| Additions / deletions | +372 / -0                                                                |
 
 ## Description
 
 ## Summary
 
-Aaron 2026-05-05 forwarded Claude.ai UoM-examples-for-Otto + license: *"code is safe to change easy to reverse and we can prove if its right later, it's not just the proofs test the code the code tests the formal verificatins too."*
+Aaron 2026-05-05 forwarded Claude.ai UoM-examples-for-Otto + license: _"code is safe to change easy to reverse and we can prove if its right later, it's not just the proofs test the code the code tests the formal verificatins too."_
 
 Four highest-pay UoM declarations:
 
@@ -57,15 +57,15 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 20 |
-| Resolved threads | 20 |
-| Unresolved threads | 0 |
-| Total review comments | 20 |
-| Total fix commits (touching thread paths) | 7 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 20    |
+| Resolved threads                          | 20    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 20    |
+| Total fix commits (touching thread paths) | 7     |
 
 ## Review threads
 
@@ -78,10 +78,10 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T06:15:39Z on `src/Core/Units.fs`:139 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Model per-tick rates as reciprocal ticks**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Model per-tick rates as reciprocal ticks**
+
   `expectedArrivals` currently relies on `float (rate * windowFloat)` to erase units, but that is only needed because `per_tick` is declared as an independent measure rather than a reciprocal of `tick`; as written, `rate * windowFloat` has unit `<per_tick tick>`, not dimensionless, so the function bypasses the type checker at the exact boundary it is supposed to protect. This can hide unit mistakes in arrival-rate math (for example, combining a non-reciprocal rate with ticks still compiles once cast to `float`). Define the rate unit as reciprocal time (e.g. `1/tick`) and keep the computation unit-safe without erasing measures.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -127,7 +127,6 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 - **`Copilot` (bot)** at 2026-05-05T06:17:16Z on `src/Core/Units.fs`:27 (association: NONE)
   The `Lineage:` reference points to `docs/research/2026-05-05-claudeai-knights-knaves-round-table-harmonious-division-bootstrap-razor-aaron-forwarded-preservation.md`, but that file does not exist in the repo. Please update the reference to an existing path (or add the missing doc) so the cross-reference is resolvable.
-  
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -139,7 +138,6 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 - **`Copilot` (bot)** at 2026-05-05T06:17:16Z on `src/Core/Units.fs`:69 (association: NONE)
   "DST timing" reads like a typo/ambiguous acronym in this context (the surrounding comments are about DBSP logical time vs wall-clock). Consider clarifying or correcting the term so readers don’t misinterpret it.
-  
 
 ### Thread 7 -- resolved [collapsed]
 
@@ -151,7 +149,6 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 - **`Copilot` (bot)** at 2026-05-05T06:17:16Z on `src/Core/Units.fs`:143 (association: NONE)
   `wallToLogical` converts `d / rate` to `int64` via truncation, but the rounding semantics aren’t documented. Since this can change behavior at tick boundaries, consider making the rounding explicit (floor/ceil/round) or documenting that this is truncation so callers can choose appropriately.
-  
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -162,10 +159,10 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T06:23:56Z on `src/Core/Units.fs`:66 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reuse existing tick/ms measures instead of redefining them**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reuse existing tick/ms measures instead of redefining them**
+
   `tick` and `ms` are already declared at namespace scope in `src/Core/Window.fs` (lines 13-14), but this commit introduces a second pair inside `Units` with a different identity (`Zeta.Core.Units.tick/ms`). That makes UoM values non-interoperable across the core library: a value typed with the existing `Zeta.Core.tick` cannot be passed to `logicalToWall`/`expectedArrivals` without unsafe re-casting, which undermines the additive-safety goal and will cause avoidable type friction as more APIs adopt UoM.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 9 -- resolved [collapsed]
@@ -177,10 +174,10 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T06:27:56Z on `src/Core/Units.fs`:143 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Guard zero/invalid tick rates before int64 conversion**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Guard zero/invalid tick rates before int64 conversion**
+
   `wallToLogical` divides by `rate` and immediately casts to `int64`, so a caller-supplied `rate` of `0.0<ms/tick>` (or `NaN`) yields `Infinity`/`NaN` and then throws `OverflowException` at runtime instead of returning a typed failure. Because these helpers are public conversion boundaries, a misconfigured tick-rate can crash scheduling paths; add explicit validation of `rate` before division (and apply the same check to the floor/ceil variants).
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 10 -- resolved [outdated, collapsed]
@@ -193,7 +190,6 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 - **`Copilot` (bot)** at 2026-05-05T06:30:14Z on `src/Core/Units.fs`:67 (association: NONE)
   `tick`/`ms` are already declared as measures at the `Zeta.Core` namespace level (see `src/Core/Window.fs:13-14`). Introducing a second `tick`/`ms` under `Zeta.Core.Units` will produce nominally-distinct UoMs and make types like `int64<tick>` incompatible across modules, which will be confusing for consumers and makes it hard to adopt these helpers alongside existing time-series code. Consider centralizing the canonical `tick`/`ms` measures in one place (e.g., define them once in `Units.fs` and remove the duplicates from `Window.fs`, updating references), or rename these measures to avoid a same-concept double-definition.
-  
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -226,10 +222,10 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T06:34:51Z on `src/Core/Units.fs`:148 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Guard millisecond-to-nanosecond overflow**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Guard millisecond-to-nanosecond overflow**
+
   `msToNs` multiplies an `int64<ms>` by `1_000_000` using plain integer arithmetic, so inputs above roughly `9_223_372_036_854<ms>` overflow the `int64` range and produce a wrapped value instead of a valid duration. Because this helper is a unit-conversion boundary and is documented as "always safe," silent overflow here can corrupt downstream timing calculations for large or malformed inputs.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 14 -- resolved [outdated, collapsed]
@@ -241,10 +237,10 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T06:40:41Z on `src/Core/Units.fs`:165 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Use checked arithmetic in applyDelta**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Use checked arithmetic in applyDelta**
+
   `applyDelta` currently uses plain `+` on `int64`, so `state=Int64.MaxValue<weight>` with any positive `delta` silently wraps to a negative weight instead of surfacing overflow. This contradicts the overflow-safety pattern used in core weight math (for example `ZSet` operations use `Checked.(+)` and have overflow tests), and can corrupt multiplicities in callers that treat this helper as the safe boundary for weight updates.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 15 -- resolved [collapsed]
@@ -257,7 +253,6 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 - **`Copilot` (bot)** at 2026-05-05T06:42:52Z on `src/Core/Units.fs`:130 (association: NONE)
   P0: `float t` is applied to `t: int64<tick>`. Converting measured `int64<tick>` directly with `float` typically does not type-check; you likely need to explicitly erase the measure before conversion (as you already do with `float (d / rate)` in the floor/ceil helpers) and then re-apply the measure via `LanguagePrimitives.FloatWithMeasure<tick>`.
-  
 
 ### Thread 16 -- resolved [collapsed]
 
@@ -269,7 +264,6 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 - **`Copilot` (bot)** at 2026-05-05T06:42:53Z on `src/Core/Units.fs`:143 (association: NONE)
   P0: `int64 (d / rate)` attempts to cast a measured float (`d/rate` has unit `<tick>`) to `int64`. This generally won’t type-check without first erasing the unit (e.g., convert to plain `float` before the `int64` cast), which is consistent with how `wallToLogicalFloor/Ceil` are implemented.
-  
 
 ### Thread 17 -- resolved [collapsed]
 
@@ -281,7 +275,6 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 
 - **`Copilot` (bot)** at 2026-05-05T06:42:53Z on `src/Core/Units.fs`:181 (association: NONE)
   P0: `float window` is applied to `window: int64<tick>`. As with `logicalToWall`, converting measured `int64<tick>` directly via `float` is likely to fail to type-check; explicitly erase the measure before converting, then re-tag with `FloatWithMeasure<tick>`.
-  
 
 ### Thread 18 -- resolved [outdated, collapsed]
 
@@ -314,10 +307,10 @@ Existing code without UoM annotations stays untouched. Consumers opt in by annot
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T06:45:13Z on `src/Core/Units.fs`:130 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate tick rate in logical-to-wall conversion**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Validate tick rate in logical-to-wall conversion**
+
   `logicalToWall` does not enforce the same positive-rate precondition that the `wallToLogical*` functions enforce, so a misconfigured `rate` silently produces nonsensical output (`0.0<ms>` for all ticks when rate is zero, negative wall time for positive ticks when rate is negative, and NaN propagation for non-finite rates). Because this helper is a public unit-conversion boundary, silently accepting invalid rates can corrupt scheduler timing and break round-trip expectations without an explicit failure.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

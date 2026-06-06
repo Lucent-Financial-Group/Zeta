@@ -1,7 +1,13 @@
 import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
-import { ChangeSetPhase, ExternalSystem, WorkItemState, type ChangeSet, type ReviewStage } from "../../domain/src/index.ts";
+import {
+  ChangeSetPhase,
+  ExternalSystem,
+  WorkItemState,
+  type ChangeSet,
+  type ReviewStage,
+} from "../../domain/src/index.ts";
 import {
   createNullChangeControlPort,
   createFakeExternalPort,
@@ -17,12 +23,31 @@ import {
 
 function changeSet(over: Partial<ChangeSet> = {}): ChangeSet {
   return {
-    changeSetId: "cs-1", organizationId: "org-lfg", workItemId: "work-1", proposerHatId: "h",
-    title: "t", targetRef: "feat/x", phase: ChangeSetPhase.InReview, pipelineId: "pl", currentStageIndex: 0,
-    artifacts: [], projections: [], revision: 1, openedAt: "2026-05-30T00:00:00Z", updatedAt: "2026-05-30T00:00:00Z", ...over,
+    changeSetId: "cs-1",
+    organizationId: "org-lfg",
+    workItemId: "work-1",
+    proposerHatId: "h",
+    title: "t",
+    targetRef: "feat/x",
+    phase: ChangeSetPhase.InReview,
+    pipelineId: "pl",
+    currentStageIndex: 0,
+    artifacts: [],
+    projections: [],
+    revision: 1,
+    openedAt: "2026-05-30T00:00:00Z",
+    updatedAt: "2026-05-30T00:00:00Z",
+    ...over,
   };
 }
-const aStage: ReviewStage = { id: "external", ownerLabel: "external:github", authority: { kind: "external", system: ExternalSystem.GitHub }, gate: "external_approved", blocking: true, projectTo: ExternalSystem.GitHub };
+const aStage: ReviewStage = {
+  id: "external",
+  ownerLabel: "external:github",
+  authority: { kind: "external", system: ExternalSystem.GitHub },
+  gate: "external_approved",
+  blocking: true,
+  projectTo: ExternalSystem.GitHub,
+};
 
 test("internal-only pipeline has NO external and NO human stages (org ships with zero projections)", () => {
   const pl = buildInternalOnlyPipeline("org-lfg");

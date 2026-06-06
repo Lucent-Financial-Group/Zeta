@@ -30,7 +30,7 @@ When operating as the persistent manager (Background Agent on Desktop or launchd
 
 6. **Learn from peer loops.** Copy working patterns from peer agent loops. Critique their failure modes as data, not as rivalry or performance.
 
-7. **Research-child guard.** When you do not know enough to decompose or build, create a *specific* research child that the next pickup cannot dodge. Vague research children are forbidden.
+7. **Research-child guard.** When you do not know enough to decompose or build, create a _specific_ research child that the next pickup cannot dodge. Vague research children are forbidden.
 
 8. **Rodney's Razor and substrate-or-it-didn't-happen.** Only operational claims with observable variables. Chat, TaskUpdate, and ephemeral state are weather. Only committed, indexed, git-native substrate counts.
 

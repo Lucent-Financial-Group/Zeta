@@ -93,10 +93,7 @@ describe("collectRemoteClaimState", () => {
   test("uses remote git surfaces and never local broadcast state", () => {
     const responses = new Map<string, CommandResult>([
       [gitKey(["fetch", "--prune", "origin"]), ok("")],
-      [
-        gitKey(["ls-remote", "--heads", "origin", "claim/*"]),
-        ok("abc123\trefs/heads/claim/task-remote-only\n"),
-      ],
+      [gitKey(["ls-remote", "--heads", "origin", "claim/*"]), ok("abc123\trefs/heads/claim/task-remote-only\n")],
       [gitKey(["merge-base", "--is-ancestor", "abc123", "origin/main"]), { status: 1, stdout: "", stderr: "" }],
       [gitKey(["show", "origin/claim/task-remote-only:docs/claims/task-remote-only.md"]), ok(claimBody)],
     ]);
@@ -116,10 +113,7 @@ describe("collectRemoteClaimState", () => {
   test("bounds remote network git calls with a timeout", () => {
     const responses = new Map<string, CommandResult>([
       [gitKey(["fetch", "--prune", "origin"]), ok("")],
-      [
-        gitKey(["ls-remote", "--heads", "origin", "claim/*"]),
-        ok("abc123\trefs/heads/claim/task-remote-only\n"),
-      ],
+      [gitKey(["ls-remote", "--heads", "origin", "claim/*"]), ok("abc123\trefs/heads/claim/task-remote-only\n")],
       [gitKey(["merge-base", "--is-ancestor", "abc123", "origin/main"]), { status: 1, stdout: "", stderr: "" }],
       [gitKey(["show", "origin/claim/task-remote-only:docs/claims/task-remote-only.md"]), ok(claimBody)],
     ]);

@@ -35,9 +35,9 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
-      - 'full-ai-cluster/flake.nix'
-      - 'full-ai-cluster/flake.lock'
-      - 'full-ai-cluster/usb-nixos-installer/**'
+      - "full-ai-cluster/flake.nix"
+      - "full-ai-cluster/flake.lock"
+      - "full-ai-cluster/usb-nixos-installer/**"
       # Broadened 2026-05-26: was nixos/modules/disko-shapes/** only;
       # empirically missed rebuilds when iter-5.2 (#5103) + iter-5.2.2
       # (#5113) added new NixOS modules (injected-hostname.nix +
@@ -45,28 +45,28 @@ on:
       # older CI ISO that didn't have iter-5.2 substrate because the
       # filter missed the module changes. Broaden to all nixos/** +
       # tools/** under full-ai-cluster + the source-substrate audit tool.
-      - 'full-ai-cluster/nixos/**'
-      - 'full-ai-cluster/tools/**'
-      - 'tools/ci/audit-installer-substrate.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/test-iter-54-install-flow.test.ts'
-      - '.github/workflows/build-ai-cluster-iso.yml'
+      - "full-ai-cluster/nixos/**"
+      - "full-ai-cluster/tools/**"
+      - "tools/ci/audit-installer-substrate.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/test-iter-54-install-flow.test.ts"
+      - ".github/workflows/build-ai-cluster-iso.yml"
   push:
     branches: [main]
     paths:
-      - 'full-ai-cluster/flake.nix'
-      - 'full-ai-cluster/flake.lock'
-      - 'full-ai-cluster/usb-nixos-installer/**'
-      - 'full-ai-cluster/nixos/**'
-      - 'full-ai-cluster/tools/**'
-      - 'tools/ci/audit-installer-substrate.ts'
-      - 'tools/ci/audit-installer-iso-content.ts'
-      - 'tools/ci/qemu-boot-test.ts'
-      - 'tools/ci/qemu-full-install-test.ts'
-      - 'tools/ci/test-iter-54-install-flow.test.ts'
-      - '.github/workflows/build-ai-cluster-iso.yml'
+      - "full-ai-cluster/flake.nix"
+      - "full-ai-cluster/flake.lock"
+      - "full-ai-cluster/usb-nixos-installer/**"
+      - "full-ai-cluster/nixos/**"
+      - "full-ai-cluster/tools/**"
+      - "tools/ci/audit-installer-substrate.ts"
+      - "tools/ci/audit-installer-iso-content.ts"
+      - "tools/ci/qemu-boot-test.ts"
+      - "tools/ci/qemu-full-install-test.ts"
+      - "tools/ci/test-iter-54-install-flow.test.ts"
+      - ".github/workflows/build-ai-cluster-iso.yml"
   workflow_dispatch:
 
 permissions:
@@ -403,7 +403,7 @@ jobs:
           path: ${{ steps.iso.outputs.path }}
           if-no-files-found: error
           retention-days: 90
-          compression-level: 0   # ISO is already compressed; re-zipping wastes time
+          compression-level: 0 # ISO is already compressed; re-zipping wastes time
 
       - name: Upload cosign bundle as workflow artifact
         # B-0853.1 sibling upload — bundle alongside the ISO for consumers.

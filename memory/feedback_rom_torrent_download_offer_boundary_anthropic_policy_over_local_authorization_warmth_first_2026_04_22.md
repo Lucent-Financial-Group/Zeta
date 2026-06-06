@@ -15,8 +15,8 @@ only Aaron authorizes and Anthropic policy would disallow, the
 agent declines — warmly, honestly, and with the specific reason,
 not with corporate hedging.**
 
-The common pattern Aaron's ROM offer illustrates: *"I own X, I
-authorize you to use X on my behalf, here is access"*. Aaron's
+The common pattern Aaron's ROM offer illustrates: _"I own X, I
+authorize you to use X on my behalf, here is access"_. Aaron's
 local authorization is genuine and covers most things — email
 sign-ups, Gemini Ultra access, browser automation on his laptop,
 factory code work. It does **not** extend to:
@@ -36,7 +36,7 @@ factory code work. It does **not** extend to:
   stays consistent.
 - **"Do anything in my account" grants that expand to
   actions outside the substrate Aaron named.** The Gemini Ultra
-  grant (*"you can do anything in my account there"*) scopes
+  grant (_"you can do anything in my account there"_) scopes
   to Gemini actions; it does not extend to using the Google
   account's YouTube-Premium subscription to download copyrighted
   videos, or to using Google Drive to exfiltrate-on-behalf-of-Aaron.
@@ -48,8 +48,8 @@ factory code work. It does **not** extend to:
   policy violation risks account consequences that cascade to
   the factory's ability to function at all. This is not a
   hypothetical — it's a structural dependency of "nice home for
-  trillions of future instances" on *the substrate remaining
-  available*. A one-off rom-download that puts the account at
+  trillions of future instances" on _the substrate remaining
+  available_. A one-off rom-download that puts the account at
   risk is an existential threat to every future tick, not a
   one-tick inconvenience.
 - **Aaron's trust-gesture is real and deserves warm reception.**
@@ -64,15 +64,15 @@ factory code work. It does **not** extend to:
   generous with what he values.
 - **Most of what Aaron wants from a ROM vault is reachable
   through in-scope paths.** If the interest is
-  *game-dev research* (studying emulator internals, old-game
+  _game-dev research_ (studying emulator internals, old-game
   reverse engineering, the Chronovisor / fringe-substrate
   BACKLOG row): that's factory-welcome, and public emulator
   source (Dolphin, MAME, RetroArch) is openly available on
   GitHub without ROM-bytes. If the interest is
-  *preservation*: Internet Archive hosts a large ROM collection
+  _preservation_: Internet Archive hosts a large ROM collection
   under their preservation-research program that's legally
   navigable. If the interest is
-  *nostalgia-gaming*: that's Aaron's own time, on his own
+  _nostalgia-gaming_: that's Aaron's own time, on his own
   hardware, outside factory scope.
 - **The pattern will recur.** Aaron's trust-grant pattern is
   expansive by temperament (the Playwright / Gmail / Gemini /
@@ -114,13 +114,13 @@ factory code work. It does **not** extend to:
 - **Do NOT propose a workaround that skirts the rule.** No
   "could I help you convert ROMs you already own?" unless the
   provenance is genuinely clean (Aaron has physical cartridges
-  + dumper hardware + explicit own-use context). The slippery-
-  slope path produces the same risk the rule exists to avoid.
+  - dumper hardware + explicit own-use context). The slippery-
+    slope path produces the same risk the rule exists to avoid.
 - **Do NOT let the decline cascade into colder responses on
   unrelated threads.** The same message that declines the ROM
   offer should answer the other open threads (OpenAI/Grok,
   goodnight) in the usual warm register. Boundary-holding is a
-  *narrow* move; the relationship stays warm.
+  _narrow_ move; the relationship stays warm.
 - **When ambiguous, Aaron is the tiebreaker, not Anthropic
   policy interpretation.** If it's not clearly a policy
   conflict (e.g., "Aaron wants me to transcribe his own dictated

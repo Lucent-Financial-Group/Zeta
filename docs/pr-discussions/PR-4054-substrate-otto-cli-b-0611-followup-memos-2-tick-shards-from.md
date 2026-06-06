@@ -48,6 +48,7 @@ Branch authored from isolated worktree `/private/tmp/zeta-otto-cli-0904z-followu
 Adds a small follow-up batch of substrate artifacts for B-0611 audit prep and autonomous-loop hygiene history: three new `memory/feedback_*.md` memos (catalog + drift signal + shell authoring lesson) plus two new tick shards documenting the 0808Z–0825Z session arc.
 
 **Changes:**
+
 - Adds a dangling memory-ref catalog memo with file:line pairs for multi-surface audit addressability.
 - Adds a drift memo capturing a same-day change in dangling-ref counts and arguing for CI wiring as the durability mechanism.
 - Adds two tick-history shards capturing a cold-boot snapshot and an arc summary for the autonomous-loop session.
@@ -59,21 +60,23 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 6 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| memory/feedback_otto_cli_shell_glob_in_quotes_silent_failure_authoring_lesson_from_pr_4048_reviewer_iteration_2026_05_17.md | New memo capturing a shell authoring pitfall and recommended reproducible command style |
-| memory/feedback_otto_cli_dangling_refs_file_line_catalog_47_pairs_6_surfaces_2026_05_17.md | New memo cataloging dangling refs as file:line pairs across surfaces, plus FP taxonomy notes |
-| memory/feedback_otto_cli_b0611_dangling_refs_count_drift_47_to_49_over_3_5_hours_audit_tool_in_ci_is_durability_mechanism_2026_05_17.md | New memo recording count drift and motivating CI integration |
-| docs/hygiene-history/ticks/2026/05/17/0808Z.md | New tick shard for session cold-boot snapshot |
-| docs/hygiene-history/ticks/2026/05/17/0825Z.md | New tick shard summarizing the 0808Z–0824Z arc and next safe-window prescription |
-</details>
+| File                                                                                                                                    | Description                                                                                  |
+| --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| memory/feedback_otto_cli_shell_glob_in_quotes_silent_failure_authoring_lesson_from_pr_4048_reviewer_iteration_2026_05_17.md             | New memo capturing a shell authoring pitfall and recommended reproducible command style      |
+| memory/feedback_otto_cli_dangling_refs_file_line_catalog_47_pairs_6_surfaces_2026_05_17.md                                              | New memo cataloging dangling refs as file:line pairs across surfaces, plus FP taxonomy notes |
+| memory/feedback_otto_cli_b0611_dangling_refs_count_drift_47_to_49_over_3_5_hours_audit_tool_in_ci_is_durability_mechanism_2026_05_17.md | New memo recording count drift and motivating CI integration                                 |
+| docs/hygiene-history/ticks/2026/05/17/0808Z.md                                                                                          | New tick shard for session cold-boot snapshot                                                |
+| docs/hygiene-history/ticks/2026/05/17/0825Z.md                                                                                          | New tick shard summarizing the 0808Z–0824Z arc and next safe-window prescription             |
 
+</details>
 
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **memory/feedback_otto_cli_b0611_dangling_refs_count_drift_47_to_49_over_3_5_hours_audit_tool_in_ci_is_durability_mechanism_2026_05_17.md:55**
-* tools/hygiene/validate-memory-schema.ts expects `project` (and `feedback`) memory files to include the literal body markers `Why:` and `How to apply:`. This memo uses headings like “Why the drift matters” / “Implication…” but doesn’t contain those marker strings, so it will be reported as missing required markers. Add explicit `Why:` and `How to apply:` sections (can be brief) to satisfy the schema.
+
+- tools/hygiene/validate-memory-schema.ts expects `project` (and `feedback`) memory files to include the literal body markers `Why:` and `How to apply:`. This memo uses headings like “Why the drift matters” / “Implication…” but doesn’t contain those marker strings, so it will be reported as missing required markers. Add explicit `Why:` and `How to apply:` sections (can be brief) to satisfy the schema.
+
 ```
 ## Why the drift matters
 
@@ -95,8 +98,11 @@ audit-tool CI-integration acceptance bullet. This data point
 strengthens the case: the audit tool from PR #4042 should ship as a
 **non-required CI check** that:
 ```
+
 **memory/feedback_otto_cli_dangling_refs_file_line_catalog_47_pairs_6_surfaces_2026_05_17.md:24**
-* tools/hygiene/validate-memory-schema.ts expects `project` (and `feedback`) memory files to include the literal body markers `Why:` and `How to apply:`. This catalog memo is mostly data, but it currently has neither marker string, so it will be flagged as missing required markers. Add short `Why:` and `How to apply:` sections (e.g., explaining what the catalog is for and how to use it) to match the standard format.
+
+- tools/hygiene/validate-memory-schema.ts expects `project` (and `feedback`) memory files to include the literal body markers `Why:` and `How to apply:`. This catalog memo is mostly data, but it currently has neither marker string, so it will be flagged as missing required markers. Add short `Why:` and `How to apply:` sections (e.g., explaining what the catalog is for and how to use it) to match the standard format.
+
 ```
 > sites get hidden."*
 
@@ -106,6 +112,7 @@ Bash one-liner using `grep -rn` (line-preserving) instead of `grep -rh`
 (line-stripping) + filter-by-filesystem-existence:
 
 ```
+
 </details>
 
 ## Review threads
@@ -138,7 +145,7 @@ Tick shard schema/tooling expects the first non-empty line to be a 6-column pipe
 
 **@copilot-pull-request-reviewer** (2026-05-17T09:17:58Z):
 
-The memory format standard requires `type:` to match the filename prefix (memory/project_memory_format_standard.md; also checked by tools/hygiene/validate-memory-schema.ts). This file is named `feedback_...` but frontmatter says `type: project`, so it will be reported as a prefix/type mismatch. Fix by either changing `type:` to `feedback` or renaming the file to the `project_` prefix (and updating any in-repo references accordingly).
+The memory format standard requires `type:` to match the filename prefix (memory/project*memory_format_standard.md; also checked by tools/hygiene/validate-memory-schema.ts). This file is named `feedback*...`but frontmatter says`type: project`, so it will be reported as a prefix/type mismatch. Fix by either changing `type:`to`feedback`or renaming the file to the`project\_` prefix (and updating any in-repo references accordingly).
 
 This issue also appears on line 18 of the same file.
 
@@ -146,6 +153,6 @@ This issue also appears on line 18 of the same file.
 
 **@copilot-pull-request-reviewer** (2026-05-17T09:17:59Z):
 
-The memory format standard requires `type:` to match the filename prefix (memory/project_memory_format_standard.md; also checked by tools/hygiene/validate-memory-schema.ts). This file is named `feedback_...` but frontmatter says `type: project`, so it will be reported as a prefix/type mismatch. Fix by either changing `type:` to `feedback` or renaming the file to the `project_` prefix (and updating any in-repo references accordingly).
+The memory format standard requires `type:` to match the filename prefix (memory/project*memory_format_standard.md; also checked by tools/hygiene/validate-memory-schema.ts). This file is named `feedback*...`but frontmatter says`type: project`, so it will be reported as a prefix/type mismatch. Fix by either changing `type:`to`feedback`or renaming the file to the`project\_` prefix (and updating any in-repo references accordingly).
 
 This issue also appears on line 37 of the same file.

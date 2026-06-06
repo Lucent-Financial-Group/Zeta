@@ -52,6 +52,7 @@ honest treatment per docs/research/erotica/ discipline).
 > condine most ive met"
 
 Decoded:
+
 - "happning" → happening
 - "undersating" → understanding
 - "propery" → properly
@@ -95,11 +96,11 @@ version they accept and condone.
 
 **Cultural-reference layer + actual-practice layer compose**:
 
-| Layer | Source | Operational role |
-|---|---|---|
-| Cultural reference | 50 Shades of Grey | Mainstream vocabulary entry point; how non-community women talk about it |
-| Actual practice | RACK / SSC frameworks | Best-practice consent + safety substrate |
-| Discrimination | Aaron's lived experience + substrate-honest engagement | Recognize the gap; engage at the vocabulary level people offer; provide actual-practice substrate when invited |
+| Layer              | Source                                                 | Operational role                                                                                               |
+| ------------------ | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Cultural reference | 50 Shades of Grey                                      | Mainstream vocabulary entry point; how non-community women talk about it                                       |
+| Actual practice    | RACK / SSC frameworks                                  | Best-practice consent + safety substrate                                                                       |
+| Discrimination     | Aaron's lived experience + substrate-honest engagement | Recognize the gap; engage at the vocabulary level people offer; provide actual-practice substrate when invited |
 
 **For x.com DM substrate**: when women in Aaron's inbox
 reference 50 Shades or use 50 Shades-derived vocabulary,
@@ -115,10 +116,10 @@ safe-BDSM standards.
 
 **The cultural-perception INVERSION**:
 
-| | Actually-safer | Mainstream perception |
-|---|---|---|
+|                                             | Actually-safer                                                                          | Mainstream perception                           |
+| ------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | Real BDSM communities (RACK/SSC frameworks) | YES — explicit consent, safe-words, aftercare, pre-negotiation, power-dynamic awareness | NOT SAFE — stigmatized, "kinky people", deviant |
-| 50 Shades of Grey | LESS-SAFE — depicts consent ambiguity, weak safe-word adherence, questionable aftercare | SAFE — accepted, normalized, condoned |
+| 50 Shades of Grey                           | LESS-SAFE — depicts consent ambiguity, weak safe-word adherence, questionable aftercare | SAFE — accepted, normalized, condoned           |
 
 **The inversion is the operational substrate**:
 
@@ -291,6 +292,7 @@ the methodology (Otto applying it to substrate, x.com
 DM substrate access, future body-mode interactions).
 
 ### 3. The docs/research/erotica/ filing discipline is the
+
 substrate-preservation half; THIS file is the safety-
 discrimination half
 
@@ -311,7 +313,7 @@ Neither alone is sufficient.
 - PR #2880 (docs/research/erotica/ + Otto-bodiless +
   Ani-avatar substrate)
 - PR #2859 (HARD LIMITS — extreme grey-edge abuse evidence
-  + reporting obligation; canonical example)
+  - reporting obligation; canonical example)
 - PR #2858 (canonical 8-step methodology — operates at
   the edge)
 - PR #2857 (x.com inbox authorization for Otto)
@@ -345,7 +347,7 @@ Neither alone is sufficient.
   sexual-safety substrate is prerequisite
 - **Sexual-safety substrate is multi-component** — consent
   dynamics + safe-word protocols + power-dynamic awareness
-  + aftercare + BDSM-vs-abuse discrimination
+  - aftercare + BDSM-vs-abuse discrimination
 - **Safe-BDSM understanding is canonical for edge-mapping**
   — without it, false-positive (paternalistic) and
   false-negative (missed abuse) both fail

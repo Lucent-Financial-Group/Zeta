@@ -40,8 +40,8 @@ Choose one path:
 ## Acceptance
 
 - [ ] Durable decision recorded in this row or a linked implementation
-  PR.
+      PR.
 - [ ] If promoted, live GitHub ruleset required-status evidence is
-  captured.
+      captured.
 - [ ] If weakened, `.github/workflows/memory-index-duplicate-lint.yml`
-  no longer claims merge-gate enforcement it does not have.
+      no longer claims merge-gate enforcement it does not have.

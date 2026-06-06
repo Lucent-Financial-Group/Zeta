@@ -18,11 +18,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Files Aaron's *"tests should be able to use kind/k3d to do ephemeral clusters on prs"* + *"we will do k8s in k8s later k8s in docker if fine for ci now"* as a P2 backlog row.
+Files Aaron's _"tests should be able to use kind/k3d to do ephemeral clusters on prs"_ + _"we will do k8s in k8s later k8s in docker if fine for ci now"_ as a P2 backlog row.
 
 Builds on PR #4953's dev-cluster substrate. Phase 1 = k3d-on-runner workflow (immediate ask); Phase 2 = vcluster-on-shared-host when persistent dev cluster exists.
 
 PR contents:
+
 - New: `docs/backlog/P2/B-0722-ci-ephemeral-cluster-smoke-via-k3d-on-runner-evolve-to-vcluster-2026-05-25.md` (the backlog row — substrate only, no implementation)
 - Updated: `docs/BACKLOG.md` (regenerated index after main-merge to clear MD012 + drift on the generated index)
 - New: `docs/hygiene-history/ticks/2026/05/25/2208Z.md` (Otto-CLI cold-boot tick shard documenting the CI-fix work)
@@ -40,24 +41,22 @@ PR contents:
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T16:48:22Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `fea52af477`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -70,6 +69,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog row (B-0722) capturing a plan to run an ephemeral Kubernetes cluster smoke test in CI for AI-cluster PRs (k3d-on-runner now, with a future evolution to vcluster-on-shared-host).
 
 **Changes:**
+
 - Introduces `docs/backlog/P2/B-0722-*.md` with frontmatter + detailed Phase 1/Phase 2 implementation plan.
 - Documents workflow triggering, artifact capture, teardown behavior, and acceptance criteria for the future CI smoke workflow.
 
@@ -81,24 +81,22 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T22:14:37Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `706b7f4517`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -112,24 +110,22 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 8 c
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T22:33:27Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `508efd9c87`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -141,7 +137,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T16:48:22Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Prefix workflow path filters with full-ai-cluster/**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Prefix workflow path filters with full-ai-cluster/**
 
 The proposed `pull_request` path filter omits the `full-ai-cluster/` prefix for `dev-cluster/**` and `tools/ci/**`, even though this same row defines those files under `full-ai-cluster/dev-cluster/...` and `full-ai-cluster/tools/ci/...`. In GitHub Actions, `paths` are repo-root-relative, so these two globs would not match the intended files and PRs that modify the smoke scripts/config could skip the workflow entirely.
 
@@ -205,7 +201,7 @@ P2: PR description says this is a “Single file” change, but this PR also upd
 
 **@chatgpt-codex-connector** (2026-05-25T22:14:37Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Prefix `up.sh` path with `full-ai-cluster/`**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Prefix `up.sh` path with `full-ai-cluster/`**
 
 The implementation step says `cluster-smoke.sh` should wrap `dev-cluster/up.sh`, but this repository only has `full-ai-cluster/dev-cluster/up.sh` (no repo-root `dev-cluster/`). If this instruction is followed literally in CI, the smoke script will fail pre-flight with a missing file before any sync-wave checks run, blocking the intended PR gate.
 
@@ -263,7 +259,7 @@ P2: PR description says “Single file — no implementation in this PR”, but 
 
 **@chatgpt-codex-connector** (2026-05-25T22:33:27Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include bootstrap root app in smoke workflow path filter**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Include bootstrap root app in smoke workflow path filter**
 
 Expand the proposed `pull_request` `paths` list to include the root App-of-Apps manifest (e.g. `full-ai-cluster/k8s/bootstrap/root-application.yaml`). As written, a PR that changes the root application graph entrypoint would not trigger this smoke workflow, which contradicts the row’s goal of validating graph-affecting changes before merge and leaves a real blind spot for bootstrap-level regressions.
 

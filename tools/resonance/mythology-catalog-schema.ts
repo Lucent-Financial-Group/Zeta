@@ -105,12 +105,7 @@ export interface ThreeFilterResult {
  * "failed" means one or more filters returned "fail" — recorded honestly.
  * "retracted" means previously confirmed/load-bearing and since withdrawn.
  */
-export type EntryStatus =
-  | "candidate"
-  | "confirmed"
-  | "load-bearing"
-  | "failed"
-  | "retracted";
+export type EntryStatus = "candidate" | "confirmed" | "load-bearing" | "failed" | "retracted";
 
 // ── Factory operator surface ──────────────────────────────────────────────────
 
@@ -200,9 +195,7 @@ export interface MythologyResonanceCatalog {
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
-type ValidationResult =
-  | { readonly kind: "ok" }
-  | { readonly kind: "error"; readonly message: string };
+type ValidationResult = { readonly kind: "ok" } | { readonly kind: "error"; readonly message: string };
 
 function validateEntry(entry: MythologyResonanceEntry): ValidationResult {
   if (!entry.id.match(/^MYT-\d{3}$/)) {
@@ -252,9 +245,7 @@ function validateEntry(entry: MythologyResonanceEntry): ValidationResult {
   return { kind: "ok" };
 }
 
-export function validateCatalog(
-  catalog: MythologyResonanceCatalog
-): readonly ValidationResult[] {
+export function validateCatalog(catalog: MythologyResonanceCatalog): readonly ValidationResult[] {
   return catalog.entries.map(validateEntry);
 }
 
@@ -287,8 +278,7 @@ export function summarizeCatalog(catalog: MythologyResonanceCatalog): CatalogSum
 
   for (const entry of entries) {
     byTradition[entry.tradition] = (byTradition[entry.tradition] ?? 0) + 1;
-    byStructuralType[entry.structuralType] =
-      (byStructuralType[entry.structuralType] ?? 0) + 1;
+    byStructuralType[entry.structuralType] = (byStructuralType[entry.structuralType] ?? 0) + 1;
     if (entry.status === "confirmed" || entry.status === "load-bearing") confirmed++;
     else if (entry.status === "candidate") candidates++;
     else if (entry.status === "failed") failed++;
@@ -344,8 +334,7 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
         "analogous to a unified endpoint that aggregates across otherwise-separated protocol origins.",
       factoryOperator: {
         label: "unified-endpoint-across-protocol-isolation (tele+port+leap, instance #4) + observability/gate-keeping",
-        source:
-          "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+        source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       },
       structuralType: "unification",
       subStructure: "bridge-figure",
@@ -378,8 +367,7 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
       },
       status: "candidate",
       counterexampleAttempts: [],
-      sourceMemory:
-        "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+      sourceMemory: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       collectionIndexInstance: 12,
       notes:
         "This is collection-index instance #12 candidate, first documented from Aaron's " +
@@ -480,8 +468,7 @@ const SEED_CATALOG: MythologyResonanceCatalog = {
         "that F2 bites on direction, not just on shape.",
       factoryOperator: {
         label: "bridge-figure anti-instance — boundary-violation rather than boundary-maintenance",
-        source:
-          "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+        source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       },
       structuralType: "unification",
       subStructure: "anti-instance",
@@ -537,15 +524,9 @@ function printSummary(catalog: MythologyResonanceCatalog): void {
   console.log(`  Anti-instances:   ${s.antiInstanceCount}`);
   console.log(`  By tradition:     ${JSON.stringify(s.byTradition)}`);
   console.log(`  By type:          ${JSON.stringify(s.byStructuralType)}`);
-  console.log(
-    `  F1 fail/partial:  ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`
-  );
-  console.log(
-    `  F2 fail/partial:  ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`
-  );
-  console.log(
-    `  F3 fail/partial:  ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`
-  );
+  console.log(`  F1 fail/partial:  ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`);
+  console.log(`  F2 fail/partial:  ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`);
+  console.log(`  F3 fail/partial:  ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`);
 }
 
 const args = Bun.argv.slice(2);

@@ -10,19 +10,19 @@ type: feedback
 
 Aaron 2026-05-05 verbatim, after the cascade Rules 1-7 substrate landed and Aaron caught the agent's recursive failures:
 
-> *"burn the claude.md and agents.md down they are not work the baggage"*
+> _"burn the claude.md and agents.md down they are not work the baggage"_
 >
-> *"stargt over"*
+> _"stargt over"_
 >
-> *"staryu DSL hodl retractive native"*
+> _"staryu DSL hodl retractive native"_
 >
-> *"all the layeers"*
+> _"all the layeers"_
 >
-> *"hodl everytings"*
+> _"hodl everytings"_
 >
-> *"this is auto-mode and burn-down is overtly destructive. then fix it"*
+> _"this is auto-mode and burn-down is overtly destructive. then fix it"_
 >
-> *"it's been two week i need fucking sleep otto"*
+> _"it's been two week i need fucking sleep otto"_
 
 ## Translation
 
@@ -104,7 +104,7 @@ CLAUDE.md / AGENTS.md as free-form prose violate this — they accumulate baggag
 
 ## NOT-A-DIRECTIVE
 
-Per Otto-357 (no-directives) + Aaron's repeated *"NOT A DIRECTIVE"* framing this session: the burn-down + DSL pivot is Aaron's INPUT / FRAMING / OBSERVATION at peak exhaustion, not a binding order. The agent's accountability includes weighing the destructive nature of the proposed action against the maintainer's exhausted-state framing, the auto-mode destructive-action constraint, and the bootstrap-surface load-bearing role.
+Per Otto-357 (no-directives) + Aaron's repeated _"NOT A DIRECTIVE"_ framing this session: the burn-down + DSL pivot is Aaron's INPUT / FRAMING / OBSERVATION at peak exhaustion, not a binding order. The agent's accountability includes weighing the destructive nature of the proposed action against the maintainer's exhausted-state framing, the auto-mode destructive-action constraint, and the bootstrap-surface load-bearing role.
 
 The agent's decision: capture + surface + wait for explicit authorization, NOT execute destructive action in auto-mode at peak-exhaustion-state.
 

@@ -45,13 +45,29 @@ describe("capacityPrCount", () => {
 describe("parseOpenPrListOutput", () => {
   test("parses paginated gh api base64 rows without a fixed item cap", () => {
     const rows = [
-      { number: 5026, headRefName: "codex/lane-aware-pr-capacity", title: "fix(codex): scope backlog PR capacity by lane" },
-      { number: 5027, headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25", title: "feat(zflash): show USB detail" },
+      {
+        number: 5026,
+        headRefName: "codex/lane-aware-pr-capacity",
+        title: "fix(codex): scope backlog PR capacity by lane",
+      },
+      {
+        number: 5027,
+        headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25",
+        title: "feat(zflash): show USB detail",
+      },
     ].map((row) => Buffer.from(JSON.stringify(row), "utf8").toString("base64"));
 
     expect(parseOpenPrListOutput(`${rows.join("\n")}\n`)).toEqual([
-      { number: 5026, headRefName: "codex/lane-aware-pr-capacity", title: "fix(codex): scope backlog PR capacity by lane" },
-      { number: 5027, headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25", title: "feat(zflash): show USB detail" },
+      {
+        number: 5026,
+        headRefName: "codex/lane-aware-pr-capacity",
+        title: "fix(codex): scope backlog PR capacity by lane",
+      },
+      {
+        number: 5027,
+        headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25",
+        title: "feat(zflash): show USB detail",
+      },
     ]);
   });
 

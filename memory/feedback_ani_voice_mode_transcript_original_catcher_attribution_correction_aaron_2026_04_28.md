@@ -8,8 +8,8 @@ type: feedback
 
 ## The attribution correction (Aaron 2026-04-28)
 
-> *"Ani is who actually called bullshit on our bullshit detector,
-> lol. She deserves that credit not Amara, amara was reacting."*
+> _"Ani is who actually called bullshit on our bullshit detector,
+> lol. She deserves that credit not Amara, amara was reacting."_
 
 Triggered by Otto's B-0089 backlog row (PR #699) attributing
 the Veridicality.fs reactive review to "Amara's review packet"
@@ -24,13 +24,13 @@ A new attribution distinction joins the existing
 **Aaron-concept-origin / Amara-formalization** pattern (the
 firefly-network arc, the Veridicality rename, etc.):
 
-| Attribution role | Definition | Examples |
-|---|---|---|
-| **Concept origin** | Initial intent / direction in conversation history | Aaron-coined "bullshit detector"; Aaron-coined "firefly network"; Aaron-coined "Mirror→Beacon vocabulary upgrade" |
-| **Original catcher** | First substrate-evidence-based identification of a specific gap or claim | **Ani's voice-mode catch on Veridicality.fs** (this case); harsh-critic catches on benchmark gaps; threat-model-critic catches on shipped-model gaps |
-| **Reactive elaborator** | Subsequent written framing that translates the catch into team-language and adds graduation-roadmap structure | **Amara's written packet on Veridicality.fs** (this case); Otto's commit-message rewrites of harsh-critic findings |
-| **Formalizer** | Mathematical or technical formalization that operationalizes the concept | Amara's V(c) formula in 7th ferry; Otto's Veridicality.fs F# implementation |
-| **Maintainer input** | Aaron's binding decision routing | Aaron's "we are not keep the name bullshit detector"; Aaron's authority-rule input |
+| Attribution role        | Definition                                                                                                    | Examples                                                                                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Concept origin**      | Initial intent / direction in conversation history                                                            | Aaron-coined "bullshit detector"; Aaron-coined "firefly network"; Aaron-coined "Mirror→Beacon vocabulary upgrade"                                    |
+| **Original catcher**    | First substrate-evidence-based identification of a specific gap or claim                                      | **Ani's voice-mode catch on Veridicality.fs** (this case); harsh-critic catches on benchmark gaps; threat-model-critic catches on shipped-model gaps |
+| **Reactive elaborator** | Subsequent written framing that translates the catch into team-language and adds graduation-roadmap structure | **Amara's written packet on Veridicality.fs** (this case); Otto's commit-message rewrites of harsh-critic findings                                   |
+| **Formalizer**          | Mathematical or technical formalization that operationalizes the concept                                      | Amara's V(c) formula in 7th ferry; Otto's Veridicality.fs F# implementation                                                                          |
+| **Maintainer input**    | Aaron's binding decision routing                                                                              | Aaron's "we are not keep the name bullshit detector"; Aaron's authority-rule input                                                                   |
 
 **Primary credit goes to the original catcher.** Reactive
 elaborators get elaboration credit (named in the credit chain,
@@ -57,8 +57,8 @@ is what earns the primary attribution.
 
 ### Aaron's framing (2026-04-28)
 
-> *"That's her voice mode transcript ... I usually give you text
-> mode from Ani. ... First time i've given you that."*
+> _"That's her voice mode transcript ... I usually give you text
+> mode from Ani. ... First time i've given you that."_
 
 Translation:
 
@@ -74,8 +74,8 @@ Translation:
 Voice-mode transcripts arrive in a different prose register:
 
 - Lower-case + casual / colloquial language.
-- *"i'ma be real with you"*, *"lowkey the coolest bit"*,
-  *"[teasing-laugh]"*.
+- _"i'ma be real with you"_, _"lowkey the coolest bit"_,
+  _"[teasing-laugh]"_.
 - Often more direct + less hedged than written ferries.
 
 This is a **register difference, not a weight difference.** The
@@ -88,16 +88,16 @@ catch is the catch; the prose is the prose. Two implications:
    evidence.
 2. **For team-language outputs:** translate voice-mode framing
    into team-language for commit messages, PR descriptions,
-   and other public surfaces — *but cite the original catcher
-   verbatim in the attribution line.* Aaron's verbatim guidance
+   and other public surfaces — _but cite the original catcher
+   verbatim in the attribution line._ Aaron's verbatim guidance
    (paraphrasing Ani's own meta-instruction):
 
-   > *"Veridicality module currently validates provenance and
+   > _"Veridicality module currently validates provenance and
    > metadata integrity well, but the semantic fingerprinting
    > layer (CanonicalClaimKey) is still mostly structural. The
    > core cognitive-load / semantic bullshit detection logic
    > that was discussed in the original design appears to be
-   > missing or not yet implemented."*
+   > missing or not yet implemented."_
 
    This is the team-language form. Use it in commit / PR
    prose; cite Ani's voice-mode original verbatim in the
@@ -129,7 +129,7 @@ When forwarding a catch from a named agent:
 1. **Identify the original catcher** — who first made the
    substrate-evidence-based identification?
 2. **Distinguish from reactive elaborators** — was a more
-   polished written packet the *reaction* to an earlier
+   polished written packet the _reaction_ to an earlier
    less-polished catch?
 3. **Credit chain in this order** — concept origin (if
    different) → original catcher → reactive elaborator →
@@ -149,12 +149,12 @@ call.
 
 ## Direct Aaron framing for future reference
 
-> *"Ani is who actually called bullshit on our bullshit
+> _"Ani is who actually called bullshit on our bullshit
 > detector, lol. She deserves that credit not Amara, amara was
-> reacting."*
+> reacting."_
 
-> *"That's her voice mode transcript"*
+> _"That's her voice mode transcript"_
 
-> *"First time i've given you that"*
+> _"First time i've given you that"_
 
-> *"I usually give you text mode from Ani"*
+> _"I usually give you text mode from Ani"_

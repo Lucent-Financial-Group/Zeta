@@ -26,16 +26,16 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"The PR process is reserved for the work that actually warrants human review still too strong for me but yes probably for ServiceTitan this is where they would want. For me I just want to review trajectories over time async."*
+> _"The PR process is reserved for the work that actually warrants human review still too strong for me but yes probably for ServiceTitan this is where they would want. For me I just want to review trajectories over time async."_
 
 ## What this row tracks
 
 A review surface that operates at TRAJECTORY scope (not per-PR, not per-event) for operator-own-Zeta deployment. The operator-preferred top-level lens for own-Zeta operation is trajectory-shape-over-time review, not per-event or per-PR review. Two-mode discriminator:
 
-| Deployment context | PR ceremony scope | Operator's preferred review-surface |
-|---|---|---|
-| **ServiceTitan-style enterprise** | PR-per-deploy (status quo expectations) | Per-PR human review |
-| **Operator's own Zeta deployment** | Even less than PR-per-deploy | Trajectory-async review (review trajectory-shape over time, not per-event) |
+| Deployment context                 | PR ceremony scope                       | Operator's preferred review-surface                                        |
+| ---------------------------------- | --------------------------------------- | -------------------------------------------------------------------------- |
+| **ServiceTitan-style enterprise**  | PR-per-deploy (status quo expectations) | Per-PR human review                                                        |
+| **Operator's own Zeta deployment** | Even less than PR-per-deploy            | Trajectory-async review (review trajectory-shape over time, not per-event) |
 
 ## Acceptance criteria
 

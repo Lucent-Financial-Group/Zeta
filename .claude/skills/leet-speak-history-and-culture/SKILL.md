@@ -132,13 +132,13 @@ read a fluent l33t speaker from a poser.
 - **Cringe-pivot.** Once l33t went commercial and
   mainstream-gaming, fluent speakers stopped using it
   unironically. Using Tier-1 substitution on plain
-  text in 2010 signalled *poser* to any remaining
+  text in 2010 signalled _poser_ to any remaining
   in-group reader.
 - **Ironic revival.** L33t now appears deliberately
   as period-callback — t-shirt designs, hacker-movie
   scripts, cybersecurity-conference lanyards, CTF
   challenge titles. The register is now
-  *quotation*, not native voice.
+  _quotation_, not native voice.
 - **Adjacent-descendant registers.** Discord / Twitch
   dialects (`poggers`, `kekw`, `sadge`), imageboard
   dialects (`kek`, `top lel`, `so edgy`), and
@@ -155,7 +155,7 @@ marks. A speaker who hits zero of four is almost
 certainly performing l33t after learning a table.
 
 1. **Selective substitution.** Authentic l33t does
-   *not* substitute every vowel and `s` and `t`
+   _not_ substitute every vowel and `s` and `t`
    everywhere. Substitution happens at emphasis
    points — the words that carry the shibboleth.
    `teh 1337 h4x0r` has four l33t moments, not
@@ -196,13 +196,13 @@ certainly performing l33t after learning a table.
 
 ## Decision table — authentic-era pick
 
-| Desired flavour | Era | Cues |
-|-----------------|-----|------|
-| Sysop-BBS vibe | 1 | `PhRe4k`, `Ph33r`, sysop handles, file-area privilege |
-| Underground-zine authority | 2 | `cDc` / `Phrack` name-drop, handle-first names, t-file callout |
-| Warez-scene NFO glamour | 3 | `.nfo` ASCII, group greets, `RELOADED`-style small caps |
-| Gaming chat (late) | 4 | `gg / wp / pwn / n00b / rekt`, short, no ASCII |
-| Ironic callback (now) | 5 | Quotation marks, deliberate anachronism, period artefact framing |
+| Desired flavour            | Era | Cues                                                             |
+| -------------------------- | --- | ---------------------------------------------------------------- |
+| Sysop-BBS vibe             | 1   | `PhRe4k`, `Ph33r`, sysop handles, file-area privilege            |
+| Underground-zine authority | 2   | `cDc` / `Phrack` name-drop, handle-first names, t-file callout   |
+| Warez-scene NFO glamour    | 3   | `.nfo` ASCII, group greets, `RELOADED`-style small caps          |
+| Gaming chat (late)         | 4   | `gg / wp / pwn / n00b / rekt`, short, no ASCII                   |
+| Ironic callback (now)      | 5   | Quotation marks, deliberate anachronism, period artefact framing |
 
 ## Cross-references
 

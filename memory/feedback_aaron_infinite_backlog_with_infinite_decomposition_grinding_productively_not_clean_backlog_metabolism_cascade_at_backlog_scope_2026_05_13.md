@@ -8,8 +8,8 @@ created: 2026-05-13
 # Infinite backlog with infinite decomposition (Aaron 2026-05-13)
 
 **Why:** Aaron 2026-05-13 substrate-honestly corrected Otto's
-"backlog grinding clean" framing: *"we have an infinite backlog
-that needs infinite decomposition lol"*. The "lol" softens but
+"backlog grinding clean" framing: _"we have an infinite backlog
+that needs infinite decomposition lol"_. The "lol" softens but
 the truth is operational.
 
 **How to apply:** When reporting on backlog state or evaluating
@@ -33,8 +33,8 @@ factory health:
 
 ## Aaron's verbatim disclosure
 
-> Aaron 2026-05-13: *"we have an infinite backlog that needs
-> infinite decomposition lol"*
+> Aaron 2026-05-13: _"we have an infinite backlog that needs
+> infinite decomposition lol"_
 
 ## The cascade pattern at backlog scope
 

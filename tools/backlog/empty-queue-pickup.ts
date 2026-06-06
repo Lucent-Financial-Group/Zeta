@@ -71,7 +71,9 @@ function findBin(candidates: readonly string[]): string {
     try {
       const result = spawnSync(candidate, ["--version"], { encoding: "utf8", timeout: 5000 });
       if (result.status === 0) return candidate;
-    } catch { /* try next */ }
+    } catch {
+      /* try next */
+    }
   }
   throw new Error(`none of ${candidates.join(", ")} found`);
 }
@@ -113,8 +115,10 @@ function parseArgs(argv: string[]): CliArgs {
     else if (arg === "--repo-root") args.repoRoot = requireValue(arg, argv[++i]);
     else if (arg === "--max-open-prs") args.maxOpenPrs = positiveInt(arg, requireValue(arg, argv[++i]));
     else if (arg === "--worktree-root") args.worktreeRoot = requireValue(arg, argv[++i]);
-    else if (arg === "--help" || arg === "-h") { process.stdout.write(`${usage()}\n`); process.exit(0); }
-    else throw new Error(`unknown arg: ${arg}`);
+    else if (arg === "--help" || arg === "-h") {
+      process.stdout.write(`${usage()}\n`);
+      process.exit(0);
+    } else throw new Error(`unknown arg: ${arg}`);
   }
   args.repoRoot = resolve(args.repoRoot);
   return args;
@@ -187,12 +191,18 @@ function runClaimBootstrap(
   const slug = claimSlugForBacklogId(backlogId);
   const args = [
     "tools/backlog/claim-worktree-bootstrap.ts",
-    "--slug", slug,
-    "--backlog-id", backlogId,
-    "--scope", `B-0281 empty-queue pickup: ${selected.title ?? "untitled"}`,
-    "--durable-target", selected.relativePath ?? `docs/backlog/${selected.priority ?? "P1"}/${backlogId}.md`,
-    "--path", selected.relativePath ?? `docs/backlog/${selected.priority ?? "P1"}`,
-    "--repo-root", repoRoot,
+    "--slug",
+    slug,
+    "--backlog-id",
+    backlogId,
+    "--scope",
+    `B-0281 empty-queue pickup: ${selected.title ?? "untitled"}`,
+    "--durable-target",
+    selected.relativePath ?? `docs/backlog/${selected.priority ?? "P1"}/${backlogId}.md`,
+    "--path",
+    selected.relativePath ?? `docs/backlog/${selected.priority ?? "P1"}`,
+    "--repo-root",
+    repoRoot,
     "--json",
   ];
   if (worktreeRoot !== null) args.push("--worktree-root", worktreeRoot);
@@ -200,7 +210,11 @@ function runClaimBootstrap(
 
   const result = runner.run(bunBin, args, repoRoot);
   let output: ClaimOutput = {};
-  try { output = JSON.parse(result.stdout) as ClaimOutput; } catch { /* leave empty */ }
+  try {
+    output = JSON.parse(result.stdout) as ClaimOutput;
+  } catch {
+    /* leave empty */
+  }
   return { exitCode: result.status, output, stderr: result.stderr };
 }
 
@@ -230,7 +244,9 @@ export function orchestrate(args: CliArgs, runner: CommandRunner = spawnRunner()
 
   // Step 2: pickup selection
   let bunBin: string;
-  try { bunBin = findBin([...BUN_BINS]); } catch (err) {
+  try {
+    bunBin = findBin([...BUN_BINS]);
+  } catch (err) {
     result.error = `bun not found: ${err instanceof Error ? err.message : String(err)}`;
     return result;
   }
@@ -266,7 +282,12 @@ export function orchestrate(args: CliArgs, runner: CommandRunner = spawnRunner()
 
   // Step 3: claim-worktree-bootstrap
   const { exitCode, output, stderr } = runClaimBootstrap(
-    runner, args.repoRoot, bunBin, pickup.selected, args.worktreeRoot, args.dryRun,
+    runner,
+    args.repoRoot,
+    bunBin,
+    pickup.selected,
+    args.worktreeRoot,
+    args.dryRun,
   );
   decisions.push({
     step: "claim-worktree",

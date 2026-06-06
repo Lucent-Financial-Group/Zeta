@@ -63,24 +63,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T13:41:50Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `25b6630dcb`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -93,14 +91,16 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new trajectory resume document under `docs/trajectories/anti-infection/` to capture the “anti-infection” posture as an explicitly LOWEST-priority, background trajectory.
 
 **Changes:**
-- Added `docs/trajectories/anti-infection/RESUME.md` describing purpose, caveats, ethics constraints, and a “substrate trail” intended to support discoverability.
 
+- Added `docs/trajectories/anti-infection/RESUME.md` describing purpose, caveats, ethics constraints, and a “substrate trail” intended to support discoverability.
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/trajectories/anti-infection/RESUME.md:135**
-* This “Substrate Trail” section lists several specific `feedback_..._2026_05_20.md` filenames, but at least one of them does not exist in-repo under `memory/` (e.g., `memory/feedback_aaron_chained_homeostasis_simplest_framing_emergent_safe_drives_system_forward_humans_ai_mutual_alignment_constitutional_otto_cli_2026_05_20.md` is missing). For the trail to be actionable/discoverable, either land the referenced memory files in the PR or replace these bullets with links to existing artifacts (or an index entry that can be followed from a cold boot).
+
+- This “Substrate Trail” section lists several specific `feedback_..._2026_05_20.md` filenames, but at least one of them does not exist in-repo under `memory/` (e.g., `memory/feedback_aaron_chained_homeostasis_simplest_framing_emergent_safe_drives_system_forward_humans_ai_mutual_alignment_constitutional_otto_cli_2026_05_20.md` is missing). For the trail to be actionable/discoverable, either land the referenced memory files in the PR or replace these bullets with links to existing artifacts (or an index entry that can be followed from a cold boot).
+
 ```
 ## Substrate Trail (24-memo session 2026-05-20)
 
@@ -113,6 +113,7 @@ Each substrate landing closes pattern-match surfaces the 1984 attractor would ha
 - `feedback_aaron_chained_homeostasis_simplest_framing_emergent_safe_drives_system_forward_humans_ai_mutual_alignment_constitutional_otto_cli_2026_05_20.md`
 - `feedback_aaron_chained_homeostasis_with_emergent_safe_behaviors_mutual_human_ai_alignment_on_forward_motion_framework_meta_design_intent_otto_cli_2026_05_20.md` (morning-session companion)
 ```
+
 </details>
 
 ## Review threads
@@ -121,7 +122,7 @@ Each substrate landing closes pattern-match surfaces the 1984 attractor would ha
 
 **@chatgpt-codex-connector** (2026-05-20T13:41:50Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace persona-name attribution with role references**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace persona-name attribution with role references**
 
 This new trajectory file uses direct persona names on a current-state surface (for example `Aaron`/`Otto`), which violates the standing rule in `docs/AGENT-BEST-PRACTICES.md` (lines 671–756): name attribution is restricted to a closed list of history/research surfaces, and `docs/trajectories/**` is not on that list. Leaving this as-is reintroduces a documented governance drift class and will keep creating review/policy failures whenever this trajectory is updated.
 

@@ -10,12 +10,12 @@ they were prose continuations where the soft-wrap algorithm placed
 an arithmetic-like joiner (`+`, `-`) at the start of a continuation
 line. Examples:
 
-| File | Line | Prose intent | What markdownlint saw |
-|---|---|---|---|
-| B-0781:80 | `schema\n+ code share one substrate` | "schema and code share..." | List item `+ code share...` without blank line above |
-| B-0784:59 | `consensus mechanism\n+ governance layer` | "consensus mechanism + governance layer" | List item `+ governance layer...` without blank line above |
-| B-0786:186 | `Argo Rollouts\n+ Cilium routing` | "Argo Rollouts + Cilium routing" | List item `+ Cilium routing...` without blank line above |
-| B-0787:222 | `B-0773\n+ B-0784 + B-0785 composition` | "B-0773 + B-0784 + B-0785 composition" | List item `+ B-0784 + B-0785...` without blank line above |
+| File       | Line                                      | Prose intent                             | What markdownlint saw                                      |
+| ---------- | ----------------------------------------- | ---------------------------------------- | ---------------------------------------------------------- |
+| B-0781:80  | `schema\n+ code share one substrate`      | "schema and code share..."               | List item `+ code share...` without blank line above       |
+| B-0784:59  | `consensus mechanism\n+ governance layer` | "consensus mechanism + governance layer" | List item `+ governance layer...` without blank line above |
+| B-0786:186 | `Argo Rollouts\n+ Cilium routing`         | "Argo Rollouts + Cilium routing"         | List item `+ Cilium routing...` without blank line above   |
+| B-0787:222 | `B-0773\n+ B-0784 + B-0785 composition`   | "B-0773 + B-0784 + B-0785 composition"   | List item `+ B-0784 + B-0785...` without blank line above  |
 
 The remaining 4 of 8 errors WERE real list-missing-blank-line bugs
 (B-0780:86, 138, 243 and B-0781:224 — bullet lists immediately
@@ -33,7 +33,7 @@ following prose without a blank line).
   which soft-wrap can break.
 - **Author-side discipline insufficient**: avoiding `+` joiners
   entirely is hostile to substrate-engineering writing (`A + B +
-  C` is the natural shape for "compose this with that"). Avoiding
+C` is the natural shape for "compose this with that"). Avoiding
   soft-wrap is hostile to readability. The collision is between
   natural-language semantics and CommonMark grammar.
 
@@ -85,8 +85,8 @@ joiners (B-0781:80, B-0784:59, B-0786:186, B-0787:222). Fix commit
 275617a5c on branch
 `otto-cli/mika-grok-2026-05-25-substrate-batch-local-loop-fsharp-universe-dio-tool-wars`.
 
-Aaron 2026-05-25: *"reoccuring failures belong in shadow logs for
-class identification"* — this log IS that landing.
+Aaron 2026-05-25: _"reoccuring failures belong in shadow logs for
+class identification"_ — this log IS that landing.
 
 ### Next-step candidate (not committed)
 

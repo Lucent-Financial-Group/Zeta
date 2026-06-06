@@ -12,12 +12,7 @@
  * entity-anchor scoring so the pipeline shape is fully testable without a model.
  */
 
-import {
-  DocLifecycleState,
-  isRetrievalEligible,
-  type DocEntity,
-  type DocUnit,
-} from "../../domain/src/index.ts";
+import { DocLifecycleState, isRetrievalEligible, type DocEntity, type DocUnit } from "../../domain/src/index.ts";
 import { canonicalizeByTopic, entityKey, extractEntities } from "./document-entity-resolution.ts";
 
 export type RetrievalScope = { kind: DocUnit["scopeKind"]; id: string };
@@ -78,13 +73,19 @@ function inScope(unit: DocUnit, context: RetrievalContext): boolean {
 }
 
 export function scopePreFilter(corpus: readonly DocUnit[], context: RetrievalContext): readonly DocUnit[] {
-  return corpus.filter((u) => u.organizationId === context.organizationId && isRetrievalEligible(u.status) && inScope(u, context));
+  return corpus.filter(
+    (u) => u.organizationId === context.organizationId && isRetrievalEligible(u.status) && inScope(u, context),
+  );
 }
 
 // ── Stage 3 — hybrid recall over the scoped slice (entity-anchored lexical) ──
 
 function lexicalScore(queryTokens: ReadonlySet<string>, unit: DocUnit): number {
-  const unitTokens = new Set(entityKey(`${unit.title} ${unit.summary}`).split(" ").filter((t) => t.length > 0));
+  const unitTokens = new Set(
+    entityKey(`${unit.title} ${unit.summary}`)
+      .split(" ")
+      .filter((t) => t.length > 0),
+  );
   if (unitTokens.size === 0 || queryTokens.size === 0) return 0;
   let overlap = 0;
   for (const t of queryTokens) if (unitTokens.has(t)) overlap += 1;
@@ -115,7 +116,11 @@ export function runRetrieval(
   const queryEntityIds = new Set(queryEntities.map((e) => e.docEntityId));
 
   // Stage 3 — hybrid recall over the scoped slice + entity-anchor boost
-  const queryTokens = new Set(entityKey(query).split(" ").filter((t) => t.length > 0));
+  const queryTokens = new Set(
+    entityKey(query)
+      .split(" ")
+      .filter((t) => t.length > 0),
+  );
   const preferredDocTypes = new Set(context.preferredDocTypes ?? []);
   let preferredTypeBoosts = 0;
   let scored: ScoredUnit[] = scoped
@@ -168,13 +173,12 @@ export function runRetrieval(
   const hits = scored.slice(0, topK);
 
   // Stage 8 — deterministic consultation: stage/hat-bound handbooks ALWAYS inject
-  const consulted = corpus.filter((u) =>
-    u.organizationId === context.organizationId &&
-    isRetrievalEligible(u.status) &&
-    (
-      (context.stageId !== undefined && u.boundStageIds.includes(context.stageId)) ||
-      (context.hatId !== undefined && u.boundHatIds.includes(context.hatId))
-    )
+  const consulted = corpus.filter(
+    (u) =>
+      u.organizationId === context.organizationId &&
+      isRetrievalEligible(u.status) &&
+      ((context.stageId !== undefined && u.boundStageIds.includes(context.stageId)) ||
+        (context.hatId !== undefined && u.boundHatIds.includes(context.hatId))),
   );
 
   return {

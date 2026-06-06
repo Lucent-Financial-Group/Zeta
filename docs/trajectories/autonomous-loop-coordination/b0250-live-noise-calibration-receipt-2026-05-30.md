@@ -22,27 +22,27 @@ At `2026-05-30T08:37:25.354Z`, the monitor reported:
 
 The underlying event sample had 212 bounded events in the 24-hour lookback:
 
-| Source | Count |
-| --- | ---: |
-| merged PR | 100 |
-| trajectory receipt | 18 |
-| Codex loop run | 94 |
+| Source             | Count |
+| ------------------ | ----: |
+| merged PR          |   100 |
+| trajectory receipt |    18 |
+| Codex loop run     |    94 |
 
 The 76 windows split by source set as:
 
-| Window source set | Count |
-| --- | ---: |
-| Codex loop run + merged PR | 46 |
-| Codex loop run + merged PR + trajectory receipt | 12 |
-| merged PR | 9 |
-| merged PR + trajectory receipt | 7 |
-| Codex loop run + trajectory receipt | 2 |
+| Window source set                               | Count |
+| ----------------------------------------------- | ----: |
+| Codex loop run + merged PR                      |    46 |
+| Codex loop run + merged PR + trajectory receipt |    12 |
+| merged PR                                       |     9 |
+| merged PR + trajectory receipt                  |     7 |
+| Codex loop run + trajectory receipt             |     2 |
 
 The largest trajectory cluster was `codex + otto` with 31 windows. The two
 latest B-0250 windows were deterministic lifecycle joins:
 
-| Window start | Events |
-| --- | --- |
+| Window start           | Events                                                                                             |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
 | `2026-05-30T08:15:46Z` | PR #6095 merge, the same trajectory receipt commit, and the Codex gate that published the PR state |
 | `2026-05-30T08:31:27Z` | PR #6096 merge, the same trajectory receipt commit, and the Codex gate that published the PR state |
 

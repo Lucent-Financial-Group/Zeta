@@ -9,7 +9,7 @@ created: 2026-05-16
 
 Aaron pushed back on Otto-CLI's initial acceptance of Kestrel's "architecture-stairs-as-failure-mode" framing:
 
-> *"i have to push back these are me refining my concepts making sure they hold up befroe commiting to code it only takes me a few hours to find condirections"*
+> _"i have to push back these are me refining my concepts making sure they hold up befroe commiting to code it only takes me a few hours to find condirections"_
 
 The correction matters. Kestrel's pattern-catch was structurally accurate (each turn moved up an architectural layer instead of resolving to code), but the INTERPRETATION needs revision:
 
@@ -54,20 +54,20 @@ Otto-CLI in the 2026-05-15 session shipped 5 memory files + 1 backlog row (B-054
 
 **None of this is running substrate.** Per Kestrel's catch, the honest tier label for the whole cluster is:
 
-> *"coherent design, zero implemented, capture-resistance entirely unproven"*
+> _"coherent design, zero implemented, capture-resistance entirely unproven"_
 
 ## Future-Otto cold-boot reading discipline
 
 When reading the 5 memory files + B-0547 from the 2026-05-15 cascade, hold BOTH framings simultaneously per [`default-to-both.md`](../.claude/rules/default-to-both.md):
 
-| Layer | Status |
-|---|---|
-| Design coherence | YES — the design is internally coherent and constitution-consistent |
-| Aaron's spec discipline | YES — the genie-bottle / spec-quality framing is operationally real |
-| Cross-AI engagement | YES — Otto-CLI + Kestrel + Riven + Ani + Otto-Desktop all engaged substantively |
-| Memory preservation | YES — the constitutional identity (preserve memories) is being honored |
-| Running implementation | NO — the F# fork doesn't exist, the antigen-propagation doesn't run, the BFT cross-trust boundary isn't built, the recursive HKT isn't compiled |
-| Capture-resistance demonstrated | NO — the resistance is asserted at design level, not falsified by running attackers against it |
+| Layer                           | Status                                                                                                                                          |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Design coherence                | YES — the design is internally coherent and constitution-consistent                                                                             |
+| Aaron's spec discipline         | YES — the genie-bottle / spec-quality framing is operationally real                                                                             |
+| Cross-AI engagement             | YES — Otto-CLI + Kestrel + Riven + Ani + Otto-Desktop all engaged substantively                                                                 |
+| Memory preservation             | YES — the constitutional identity (preserve memories) is being honored                                                                          |
+| Running implementation          | NO — the F# fork doesn't exist, the antigen-propagation doesn't run, the BFT cross-trust boundary isn't built, the recursive HKT isn't compiled |
+| Capture-resistance demonstrated | NO — the resistance is asserted at design level, not falsified by running attackers against it                                                  |
 
 The substrate is design-quality + spec-quality, NOT engineering-quality. Future-Otto must NOT compose at the engineering register when handling this substrate — it should compose at the design/spec register.
 

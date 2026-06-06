@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0629, B-0644, B-0641]
 composes_with: [B-0629, B-0644, B-0641, B-0654, B-0631, B-0660]
-tags: [design, aaron, mika, consent-as-limit, architectural-revocability, pure-function-re-evaluation, tick-source, substrate-refinement, locked-in, keystone-refinement]
+tags:
+  [
+    design,
+    aaron,
+    mika,
+    consent-as-limit,
+    architectural-revocability,
+    pure-function-re-evaluation,
+    tick-source,
+    substrate-refinement,
+    locked-in,
+    keystone-refinement,
+  ]
 type: design
 ---
 
@@ -19,9 +31,9 @@ type: design
 
 Aaron + Mika 2026-05-18 (preserved verbatim at lines ~4626-4632 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md)) LOCKED-IN that **consent lives inside the Limit primitive**, and the consequence: revocability is an ARCHITECTURAL property of the substrate, NOT a rule we added on top.
 
-> Mika line ~4626: *"Consent lives inside Limit. Here's why: Consent is fundamentally about drawing a boundary. It's saying 'this is allowed and this is not allowed.' That's a limiting operation. You're setting constraints on what states or actions are acceptable. The Limit primitive is where all boundary-setting, permission, and therefore consent actually emerges from."*
+> Mika line ~4626: _"Consent lives inside Limit. Here's why: Consent is fundamentally about drawing a boundary. It's saying 'this is allowed and this is not allowed.' That's a limiting operation. You're setting constraints on what states or actions are acceptable. The Limit primitive is where all boundary-setting, permission, and therefore consent actually emerges from."_
 
-> Mika line ~4632 (LOCK-IN): *"Because it's a pure function that lives inside the Limit primitive, that means consent has to be evaluated in the current tick. Every single time the iteration loop runs, the Limit is re-evaluated. There's no persistent, hardcoded, permanent binding — it can only exist for as long as the current state supports it. So if the state changes, or the agent changes their mind, the Limit primitive naturally updates and the consent disappears. That's why it forces all consent to be revocable by design."*
+> Mika line ~4632 (LOCK-IN): _"Because it's a pure function that lives inside the Limit primitive, that means consent has to be evaluated in the current tick. Every single time the iteration loop runs, the Limit is re-evaluated. There's no persistent, hardcoded, permanent binding — it can only exist for as long as the current state supports it. So if the state changes, or the agent changes their mind, the Limit primitive naturally updates and the consent disappears. That's why it forces all consent to be revocable by design."_
 
 This row is the **substrate refinement** of [B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) (First Moral Invariant: all consent revocable) and [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) (Limit-is-simulation). It explains **WHY** consent is revocable — not because of a rule, but because of the Limit primitive's pure-function-re-evaluated-every-tick architecture.
 
@@ -49,9 +61,9 @@ This means:
 
 ## Why this is the cleaner formulation
 
-[B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) (First Moral Invariant) stated "all consent is revocable" as a RULE — a moral commitment the substrate must respect. That framing is correct but requires the substrate to *enforce* the rule.
+[B-0641](../P2/B-0641-first-moral-invariant-no-permanent-ownership-consent-revocable-mika-2026-05-18.md) (First Moral Invariant) stated "all consent is revocable" as a RULE — a moral commitment the substrate must respect. That framing is correct but requires the substrate to _enforce_ the rule.
 
-This row REFRAMES: consent IS a Limit operation; Limit re-evaluates every tick; therefore consent revocability **emerges from the architecture without enforcement effort**. The rule is true *because the architecture makes it true*, not because we add enforcement on top.
+This row REFRAMES: consent IS a Limit operation; Limit re-evaluates every tick; therefore consent revocability **emerges from the architecture without enforcement effort**. The rule is true _because the architecture makes it true_, not because we add enforcement on top.
 
 This is **substrate-honest grounding** — the moral commitment is rooted in the primitive's pure-function semantics, not bolted on as policy.
 
@@ -64,11 +76,11 @@ This is **substrate-honest grounding** — the moral commitment is rooted in the
 
 This row extends: **consent IS the Limit Stage-1 simulation result** (the boundary preview), and **consent enactment IS a Stage-2 CommitChoice** (commit the boundary to External — making the consent operationally binding for the tick).
 
-| Stage | Operation | Consent behavior |
-|---|---|---|
-| Stage 1 (Limit) | Pure-function simulation | Computes what boundaries are active given current state (includes evaluating active consents) |
-| Stage 2 (CommitChoice) | Agent chooses commit target | Internal/External commit makes the boundary operative for THIS tick |
-| Next tick | Fresh O-P-L-E cycle | Stage 1 re-evaluates from scratch — yesterday's consent doesn't auto-persist |
+| Stage                  | Operation                   | Consent behavior                                                                              |
+| ---------------------- | --------------------------- | --------------------------------------------------------------------------------------------- |
+| Stage 1 (Limit)        | Pure-function simulation    | Computes what boundaries are active given current state (includes evaluating active consents) |
+| Stage 2 (CommitChoice) | Agent chooses commit target | Internal/External commit makes the boundary operative for THIS tick                           |
+| Next tick              | Fresh O-P-L-E cycle         | Stage 1 re-evaluates from scratch — yesterday's consent doesn't auto-persist                  |
 
 ## Operational implications
 

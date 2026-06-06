@@ -7,12 +7,12 @@ where the factory's assumptions rot against the
 platform's actual behaviour.
 
 **Multi-harness scope** (Aaron 2026-04-20 verbatim:
-*"since we are going muli test harness support we
+_"since we are going muli test harness support we
 should technically do this for all harnesses… i want
 them to test their integration points you cant. i
 konw codex and cursor git copilot are the ones we
 care abount immediatly then maybe anitgratify and
-the amazon one and any less popular ones"*):
+the amazon one and any less popular ones"_):
 
 - **Primary (populated):** Claude (Anthropic —
   model, Code CLI, Desktop, Agent SDK, API).
@@ -58,13 +58,13 @@ personas).
 
 **Each-harness-tests-own-integration rule.** A
 harness cannot honestly test its own integration
-with the factory from *within* itself — the test
+with the factory from _within_ itself — the test
 needs to be run by a different harness operating the
 factory. This is a capability-boundary fact, not a
 process choice. Claude Code cannot verify Codex's
 factory integration; Codex cannot verify Cursor's;
 etc. The integration-test surface per harness is
-therefore owned by *another* harness, scheduled
+therefore owned by _another_ harness, scheduled
 cross-harness.
 
 **Harness vs reviewer robot.** A **harness** loads
@@ -86,8 +86,8 @@ harness, reviewer robot, or autonomous PR author.
 populated harness. See
 `memory/feedback_claude_surface_cadence_research.md`
 
-+ `memory/feedback_multi_harness_support_each_tests_own_integration.md`
-and FACTORY-HYGIENE row 38.
+- `memory/feedback_multi_harness_support_each_tests_own_integration.md`
+  and FACTORY-HYGIENE row 38.
 
 **Primary feature-comparison axis —
 skill-authoring + eval-driven feedback loop.**
@@ -143,8 +143,8 @@ they run.
     a harness) — partially populated via
     `.github/copilot-instructions.md` (GOVERNANCE §31).
   - **Copilot in VS Code** (the actual harness) —
-    stub; priority 1. Aaron 2026-04-20: *"we will
-    use vvscode for the rest."*
+    stub; priority 1. Aaron 2026-04-20: _"we will
+    use vvscode for the rest."_
   - **Copilot CLI** (`gh copilot` / `copilot` CLI) —
     stub; priority 1. Aaron 2026-04-26 install. Adds
     a manual CLI handle for Copilot's GitHub-native
@@ -165,7 +165,7 @@ they run.
   surface for the factory's research docs.
 - **Antigravity** (Google) — stub; priority 2.
   Aaron 2026-04-26 confirmed canonical spelling
-  (*"yeah i can't spell antigravity anitgratify"*).
+  (_"yeah i can't spell antigravity anitgratify"_).
   May be subsumed by Gemini CLI's agentic mode;
   revisit when both are populated.
 - **Amazon Q Developer / CodeWhisperer** — stub;
@@ -197,65 +197,65 @@ exist.
 
 ### Memory system
 
-| Feature | Shipped | Adoption | Factory notes |
-|---|---|---|---|
-| **AutoMemory** (Daytime logger) | Q1 2026 | **adopted** | Base cross-session memory; `MEMORY.md` + per-fact files. Factory adds newest-first ordering, `scope:` field (research), cross-references. Factory-overlay customisations, not schema changes. See `memory/reference_automemory_anthropic_feature.md`. |
-| **AutoDream** (Nighttime consolidation) | Q1 2026, flag-gated `tengu_onyx_plover` as of 2026-04-19 | **watched** (manual approximation enabled) | REM-sleep consolidation; 24h+5-sessions cadence. UI at `/memory` but backend off for general users. Factory runs manual approximation. See `memory/reference_autodream_feature.md`. |
+| Feature                                 | Shipped                                                  | Adoption                                   | Factory notes                                                                                                                                                                                                                                         |
+| --------------------------------------- | -------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AutoMemory** (Daytime logger)         | Q1 2026                                                  | **adopted**                                | Base cross-session memory; `MEMORY.md` + per-fact files. Factory adds newest-first ordering, `scope:` field (research), cross-references. Factory-overlay customisations, not schema changes. See `memory/reference_automemory_anthropic_feature.md`. |
+| **AutoDream** (Nighttime consolidation) | Q1 2026, flag-gated `tengu_onyx_plover` as of 2026-04-19 | **watched** (manual approximation enabled) | REM-sleep consolidation; 24h+5-sessions cadence. UI at `/memory` but backend off for general users. Factory runs manual approximation. See `memory/reference_autodream_feature.md`.                                                                   |
 
 ### Skills system
 
-| Feature | Shipped | Adoption | Factory notes |
-|---|---|---|---|
-| **SKILL.md skills** under `.claude/skills/` | 2025 | **adopted** | Capability skills encode *how*; persona agents encode *who*. Skill-creator gate via GOVERNANCE §4. |
-| **Skill-tune-up** pattern | factory-authored | **adopted** | Ranker persona + cadenced live-search; our own, not an Anthropic feature. |
-| **Plugin skills** (namespaced `plugin:skill`) | 2025 | **adopted** | `skill-creator`, `pr-review-toolkit`, etc. Loaded via `.claude/settings.json`. |
+| Feature                                       | Shipped          | Adoption    | Factory notes                                                                                      |
+| --------------------------------------------- | ---------------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| **SKILL.md skills** under `.claude/skills/`   | 2025             | **adopted** | Capability skills encode _how_; persona agents encode _who_. Skill-creator gate via GOVERNANCE §4. |
+| **Skill-tune-up** pattern                     | factory-authored | **adopted** | Ranker persona + cadenced live-search; our own, not an Anthropic feature.                          |
+| **Plugin skills** (namespaced `plugin:skill`) | 2025             | **adopted** | `skill-creator`, `pr-review-toolkit`, etc. Loaded via `.claude/settings.json`.                     |
 
 ### Agents / subagents
 
-| Feature | Shipped | Adoption | Factory notes |
-|---|---|---|---|
-| **Subagent dispatch via `Task` tool** | 2024 | **adopted** | Reviewer roles (harsh-critic, spec-zealot) run as subagents to keep findings out of main-agent context. |
-| **Isolation `worktree`** mode | 2025 | **watched** | Creates temporary git worktree; factory uses sparingly. |
-| **Background agents** (run_in_background) | 2025 | **watched** | Factory has used for parallel independent work; not core. |
-| **Persona agents** under `.claude/agents/` | 2024 | **adopted** | Named personas (Kenji, Daya, etc.) via `.md` frontmatter. |
+| Feature                                    | Shipped | Adoption    | Factory notes                                                                                           |
+| ------------------------------------------ | ------- | ----------- | ------------------------------------------------------------------------------------------------------- |
+| **Subagent dispatch via `Task` tool**      | 2024    | **adopted** | Reviewer roles (harsh-critic, spec-zealot) run as subagents to keep findings out of main-agent context. |
+| **Isolation `worktree`** mode              | 2025    | **watched** | Creates temporary git worktree; factory uses sparingly.                                                 |
+| **Background agents** (run_in_background)  | 2025    | **watched** | Factory has used for parallel independent work; not core.                                               |
+| **Persona agents** under `.claude/agents/` | 2024    | **adopted** | Named personas (Kenji, Daya, etc.) via `.md` frontmatter.                                               |
 
 ### Interaction surface
 
-| Feature | Shipped | Adoption | Factory notes |
-|---|---|---|---|
-| **Slash commands** under `.claude/commands/` | 2024 | **adopted** | `/loop` is the factory's dynamic-pacing driver. |
-| **Hooks** (SessionStart, PreToolUse, PostToolUse, etc.) | 2024 | **adopted** | `.claude/settings.json`; pre-commit hooks enforce ASCII-clean (BP-10) and injection lints. |
-| **MCP servers** | 2024 | **adopted** | Figma, Microsoft Learn, Playwright, Sonatype-guide mounted. |
-| **Output styles** (explanatory, etc.) | 2025 | **watched** | In use opportunistically. |
-| **IDE integrations** (VS Code, JetBrains) | 2024 | **watched** | Not factory-primary — factory runs in CLI. |
-| **Keyboard shortcuts / `!` command prefix** | 2024 | **adopted** | `!` to surface shell output into the conversation. |
+| Feature                                                 | Shipped | Adoption    | Factory notes                                                                              |
+| ------------------------------------------------------- | ------- | ----------- | ------------------------------------------------------------------------------------------ |
+| **Slash commands** under `.claude/commands/`            | 2024    | **adopted** | `/loop` is the factory's dynamic-pacing driver.                                            |
+| **Hooks** (SessionStart, PreToolUse, PostToolUse, etc.) | 2024    | **adopted** | `.claude/settings.json`; pre-commit hooks enforce ASCII-clean (BP-10) and injection lints. |
+| **MCP servers**                                         | 2024    | **adopted** | Figma, Microsoft Learn, Playwright, Sonatype-guide mounted.                                |
+| **Output styles** (explanatory, etc.)                   | 2025    | **watched** | In use opportunistically.                                                                  |
+| **IDE integrations** (VS Code, JetBrains)               | 2024    | **watched** | Not factory-primary — factory runs in CLI.                                                 |
+| **Keyboard shortcuts / `!` command prefix**             | 2024    | **adopted** | `!` to surface shell output into the conversation.                                         |
 
 ### Cron / loop
 
-| Feature | Shipped | Adoption | Factory notes |
-|---|---|---|---|
-| **`/loop` dynamic mode** | 2025 | **adopted** | Agent self-paces ticks via `ScheduleWakeup`. |
-| **`/loop` cron mode** (autonomous) | 2025 | **adopted** | Durable ~2-3 day cron scheduling. See `memory/feedback_loop_default_on.md`. |
-| **CronCreate / CronList / CronDelete** tools | 2025 | **adopted** | Factory lists open crons at session-open. |
+| Feature                                      | Shipped | Adoption    | Factory notes                                                               |
+| -------------------------------------------- | ------- | ----------- | --------------------------------------------------------------------------- |
+| **`/loop` dynamic mode**                     | 2025    | **adopted** | Agent self-paces ticks via `ScheduleWakeup`.                                |
+| **`/loop` cron mode** (autonomous)           | 2025    | **adopted** | Durable ~2-3 day cron scheduling. See `memory/feedback_loop_default_on.md`. |
+| **CronCreate / CronList / CronDelete** tools | 2025    | **adopted** | Factory lists open crons at session-open.                                   |
 
 ### Settings / config
 
-| Feature | Shipped | Adoption | Factory notes |
-|---|---|---|---|
-| **`.claude/settings.json`** | 2024 | **adopted** | Pins enabled plugins. |
-| **Session compaction** | 2024 | **adopted** | Factory persists important decisions into committed docs (ADRs, ROUND-HISTORY) — not ephemeral context. |
-| **`/memory` selector UI** | 2026 Q1 | **watched** | AutoDream toggle visible; manual runs for now. |
+| Feature                     | Shipped | Adoption    | Factory notes                                                                                           |
+| --------------------------- | ------- | ----------- | ------------------------------------------------------------------------------------------------------- |
+| **`.claude/settings.json`** | 2024    | **adopted** | Pins enabled plugins.                                                                                   |
+| **Session compaction**      | 2024    | **adopted** | Factory persists important decisions into committed docs (ADRs, ROUND-HISTORY) — not ephemeral context. |
+| **`/memory` selector UI**   | 2026 Q1 | **watched** | AutoDream toggle visible; manual runs for now.                                                          |
 
 ---
 
 ## Claude (the model) — versions and capabilities
 
-| Model | ID | Context | Knowledge cutoff | Factory use |
-|---|---|---|---|---|
-| **Claude Opus 4.7** | `claude-opus-4-7` | (platform-native) | January 2026 | Primary model for factory rounds. |
-| **Claude Opus 4.6** | (prior) | — | — | Fast mode alternative (`/fast`). |
-| **Claude Sonnet 4.6** | `claude-sonnet-4-6` | — | — | Watched for subagent dispatch. |
-| **Claude Haiku 4.5** | `claude-haiku-4-5-20251001` | — | — | Watched for cheap subagent work. |
+| Model                 | ID                          | Context           | Knowledge cutoff | Factory use                       |
+| --------------------- | --------------------------- | ----------------- | ---------------- | --------------------------------- |
+| **Claude Opus 4.7**   | `claude-opus-4-7`           | (platform-native) | January 2026     | Primary model for factory rounds. |
+| **Claude Opus 4.6**   | (prior)                     | —                 | —                | Fast mode alternative (`/fast`).  |
+| **Claude Sonnet 4.6** | `claude-sonnet-4-6`         | —                 | —                | Watched for subagent dispatch.    |
+| **Claude Haiku 4.5**  | `claude-haiku-4-5-20251001` | —                 | —                | Watched for cheap subagent work.  |
 
 **Extended thinking:** available on Opus; factory
 uses opportunistically on complex synthesis tasks.
@@ -414,11 +414,11 @@ tracks each product separately because they have
 different relationships to the factory runtime
 and therefore different capability boundaries.
 Aaron 2026-04-20 corrected an earlier conflation:
-*"Out current copilot stuff is a Github
+_"Out current copilot stuff is a Github
 integration we need that on our PRs, it's not the
 harness the vscode harness is what needs to test
 it's own entry point … and we will use vvscode
-for the rest."*
+for the rest."_
 
 **Tier-1 bootstrap guardrail.** In Zeta, any
 proposal phrased as a "background CLI for
@@ -500,7 +500,7 @@ reviewer's comments on a test PR). Reviewer
 output is externally observable — someone opens
 a PR with a known defect, requests Copilot
 review, and grades whether the bot caught it.
-This is *not* blocked by the harness capability
+This is _not_ blocked by the harness capability
 boundary because the reviewer is not itself
 running the factory.
 
@@ -513,9 +513,9 @@ VS Code Copilot extension. This is the actual
 harness variant of the Copilot brand — a human
 drives VS Code, the Copilot extension loads the
 factory's tree, and agent-directed work executes
-in-extension. Aaron 2026-04-20: *"the vscode
+in-extension. Aaron 2026-04-20: _"the vscode
 harness is what needs to test it's own entry
-point … we will use vvscode for the rest."*
+point … we will use vvscode for the rest."_
 
 **Owner (tentative):** TBD. Same question as
 Codex and Cursor — dedicated guide or shared
@@ -530,7 +530,7 @@ end-to-end. This harness **cannot** self-verify
 its factory integration from within itself
 (capability boundary — verifier and verified are
 the same runtime). The PR reviewer product above
-is a *different* runtime and can legitimately
+is a _different_ runtime and can legitimately
 observe the VS Code harness's PR output
 externally — that's one route to partial
 external verification.
@@ -543,7 +543,7 @@ external verification.
 - `.github/copilot-instructions.md`
   consumption — the VS Code extension also
   reads this file (so the factory-managed
-  contract serves both the PR reviewer *and* the
+  contract serves both the PR reviewer _and_ the
   VS Code harness; audit needs to respect both
   audiences).
 - Copilot's model roster (GPT-5, Claude,
@@ -578,16 +578,16 @@ be assigned an issue and will open a draft PR
 with an implementation attempt. Distinct from
 both the PR reviewer above and the VS Code
 extension. Aaron 2026-04-20 speculated about
-*"get[ting] it to start building features in
+_"get[ting] it to start building features in
 there with some facny big suggestions on the
-PR lol, really if that's possible"* — the
+PR lol, really if that's possible"_ — the
 honest answer is that the coding agent can do
 this (it's its job), but that's a separate
 product from the PR reviewer.
 
 **Is it a harness?** Partially. It runs in a
 sandbox Microsoft controls, reads the repo,
-writes code, opens a PR. It *does* load
+writes code, opens a PR. It _does_ load
 factory artefacts if the repo contains them —
 so it's closer to a harness than the PR
 reviewer. But it's not a human-driven runtime
@@ -628,7 +628,7 @@ evidence from Round 44:
   HTTP 201 with the PR JSON but
   `"assignees":[]` — silent no-op, not an error.
 - `GET /repos/AceHack/Zeta/suggested_actors?
-  capabilities=can_be_assigned_to_issue`
+capabilities=can_be_assigned_to_issue`
   returned HTTP 404 Not Found — the endpoint
   used to list coding-agent-assignable actors
   isn't exposed for this repo.
@@ -779,8 +779,8 @@ CLI implementation).
 
 **Status:** stub. Factory does not run on
 Antigravity. Watched-queue buildout. Spelling
-confirmed by Aaron 2026-04-26 (*"yeah i can't
-spell antigravity anitgratify"*) — canonical
+confirmed by Aaron 2026-04-26 (_"yeah i can't
+spell antigravity anitgratify"_) — canonical
 form is "Antigravity".
 
 **Owner (tentative):** TBD.
@@ -865,11 +865,11 @@ that rise to warrant inclusion.
 
 ## Audit log
 
-| Date | Auditor | Summary | Changes landed |
-|---|---|---|---|
-| 2026-04-20 | main-agent + Aaron (manual kickoff) | Bootstrap inventory. AutoMemory Q1-2026 attribution captured. AutoDream Q1-2026 flag-gate noted. Factory adoption statuses populated for all known surfaces. | This file + `feedback_claude_surface_cadence_research.md` + FACTORY-HYGIENE row 38 + BACKLOG row. |
-| 2026-04-20 | main-agent + Aaron | Multi-harness refactor. Renamed `CLAUDE-SURFACES.md` → `HARNESS-SURFACES.md`. Added stub sections for Codex, Cursor, GitHub Copilot, Antigravity, Amazon Q Developer, Kiro. Codified each-harness-tests-own-integration capability boundary. Kiro added explicitly by Aaron as priority-2 stub, distinct from Amazon Q. | This file + `feedback_multi_harness_support_each_tests_own_integration.md` + FACTORY-HYGIENE row 38 (widened) + BACKLOG row (renamed + new integration-test row). |
-| 2026-04-20 | main-agent + Aaron | Harness vs reviewer-robot split. Corrected earlier conflation: `.github/copilot-instructions.md` governs the **PR code review** product (reviewer robot, not a harness), not the VS Code Copilot extension (which is the actual harness, Aaron: *"we will use vvscode for the rest"*). GitHub Copilot split into three distinct product entries: PR review (reviewer, partial-populated), VS Code extension (harness, priority-1), coding agent (autonomous PR author, priority-2 watched). Capability-boundary rule scoped to harnesses only. | This file + `.github/copilot-instructions.md` + `feedback_multi_harness_support_each_tests_own_integration.md`. |
+| Date       | Auditor                             | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Changes landed                                                                                                                                                    |
+| ---------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-20 | main-agent + Aaron (manual kickoff) | Bootstrap inventory. AutoMemory Q1-2026 attribution captured. AutoDream Q1-2026 flag-gate noted. Factory adoption statuses populated for all known surfaces.                                                                                                                                                                                                                                                                                                                                                                                   | This file + `feedback_claude_surface_cadence_research.md` + FACTORY-HYGIENE row 38 + BACKLOG row.                                                                 |
+| 2026-04-20 | main-agent + Aaron                  | Multi-harness refactor. Renamed `CLAUDE-SURFACES.md` → `HARNESS-SURFACES.md`. Added stub sections for Codex, Cursor, GitHub Copilot, Antigravity, Amazon Q Developer, Kiro. Codified each-harness-tests-own-integration capability boundary. Kiro added explicitly by Aaron as priority-2 stub, distinct from Amazon Q.                                                                                                                                                                                                                        | This file + `feedback_multi_harness_support_each_tests_own_integration.md` + FACTORY-HYGIENE row 38 (widened) + BACKLOG row (renamed + new integration-test row). |
+| 2026-04-20 | main-agent + Aaron                  | Harness vs reviewer-robot split. Corrected earlier conflation: `.github/copilot-instructions.md` governs the **PR code review** product (reviewer robot, not a harness), not the VS Code Copilot extension (which is the actual harness, Aaron: _"we will use vvscode for the rest"_). GitHub Copilot split into three distinct product entries: PR review (reviewer, partial-populated), VS Code extension (harness, priority-1), coding agent (autonomous PR author, priority-2 watched). Capability-boundary rule scoped to harnesses only. | This file + `.github/copilot-instructions.md` + `feedback_multi_harness_support_each_tests_own_integration.md`.                                                   |
 
 ---
 

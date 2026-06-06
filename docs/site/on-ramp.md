@@ -10,7 +10,7 @@ The Zeta project is a large and complex software factory, but there are many way
 
 ### The Drive-By Contributor
 
-*Found a typo? Noticed a broken link? Want to report a bug?*
+_Found a typo? Noticed a broken link? Want to report a bug?_
 
 This is the easiest way to get involved.
 
@@ -18,7 +18,7 @@ This is the easiest way to get involved.
 
 ### The Systems Engineer
 
-*Interested in the core machinery, the build system, CI/CD, and the tools that power the factory?*
+_Interested in the core machinery, the build system, CI/CD, and the tools that power the factory?_
 
 The factory's tooling and infrastructure are constantly evolving.
 
@@ -27,7 +27,7 @@ The factory's tooling and infrastructure are constantly evolving.
 
 ### The AI Researcher
 
-*Fascinated by the principles of agentic software development, alignment, and the long-term vision?*
+_Fascinated by the principles of agentic software development, alignment, and the long-term vision?_
 
 The core of Zeta is a research project into measurable AI alignment.
 
@@ -36,7 +36,7 @@ The core of Zeta is a research project into measurable AI alignment.
 
 ### The Formal Verification Expert
 
-*Do you speak TLA+ or Alloy? Interested in proving the correctness of distributed systems and protocols?*
+_Do you speak TLA+ or Alloy? Interested in proving the correctness of distributed systems and protocols?_
 
 Formal methods are a cornerstone of our approach to safety and reliability.
 

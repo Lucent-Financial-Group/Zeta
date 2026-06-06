@@ -21,11 +21,11 @@ At `2026-05-30T14:17:30.528Z`, the monitor reported:
 
 The top debug windows were:
 
-| Window start | Trajectories | Events |
-| --- | --- | --- |
-| `2026-05-29T18:04:13Z` | codex+otto | `otto:merged-pr-6023`, `codex:merged-pr-6025` |
-| `2026-05-29T18:08:42Z` | codex+otto | `codex:merged-pr-6025`, `otto:merged-pr-6026` |
-| `2026-05-29T19:06:34Z` | codex+otto | `codex:merged-pr-6032`, `otto:merged-pr-6031` |
+| Window start           | Trajectories | Events                                        |
+| ---------------------- | ------------ | --------------------------------------------- |
+| `2026-05-29T18:04:13Z` | codex+otto   | `otto:merged-pr-6023`, `codex:merged-pr-6025` |
+| `2026-05-29T18:08:42Z` | codex+otto   | `codex:merged-pr-6025`, `otto:merged-pr-6026` |
+| `2026-05-29T19:06:34Z` | codex+otto   | `codex:merged-pr-6032`, `otto:merged-pr-6031` |
 
 The recent 2026-05-30 Otto merge burst for #6113/#6115 did not become a top
 coincidence window after the author-label and merge-burst clustering patches.

@@ -28,9 +28,9 @@ N=6 brief-ack threshold in `.claude/rules/holding-without-named-dependency-is-st
 Kira 2026-05-27 caught Otto-CLI emitting 100+ consecutive "Quiet." brief-acks
 across autonomous-loop cron ticks; the rule's N=6 counter never fired because
 it lived only in the narrative self-model. Aaron's substrate-honest direction:
-*"you usally remember to heartbeat i commit therefore i am do you still
-remember to do this you could use this for counting"* + *"we have had
-heartbeats since day one alsmost look at our agencysignature class and such"*.
+_"you usally remember to heartbeat i commit therefore i am do you still
+remember to do this you could use this for counting"_ + _"we have had
+heartbeats since day one alsmost look at our agencysignature class and such"_.
 
 The agent cannot reliably count itself. Externalize the counter to git via the
 AgencySignature v1 trailer block that already lands on every commit.
@@ -40,8 +40,8 @@ AgencySignature v1 trailer block that already lands on every commit.
 - New CLAUDE.md Conventions bullet (16 lines added).
 - Names `tools/hygiene/audit-agencysignature-main-tip.ts --since --max` as the query.
 - Cites `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`
-  + `.claude/rules/substrate-or-it-didnt-happen.md` + AgencySignature spec §10
-  for the 10-field trailer block.
+  - `.claude/rules/substrate-or-it-didnt-happen.md` + AgencySignature spec §10
+    for the 10-field trailer block.
 
 ## Composes with
 

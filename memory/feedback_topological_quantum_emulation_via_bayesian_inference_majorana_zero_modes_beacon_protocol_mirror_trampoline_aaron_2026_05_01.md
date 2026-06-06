@@ -8,44 +8,44 @@ type: feedback
 
 ## Aaron 2026-05-01 verbatim
 
-> *"immune system <> physics translation -> the Microsoft
+> _"immune system <> physics translation -> the Microsoft
 > Majorana 1 is WIP hardward version but the concept of
-> toplological quantium computing qsharp"*
+> toplological quantium computing qsharp"_
 
-> *"we can emulate quantium under this frameing very efficently
+> _"we can emulate quantium under this frameing very efficently
 > with the newest lineage on infer.net and baseyan inferance
 > and trating the zero modes....... arrrrr i don't have the
 > right words, like a mirror with a trampline under beacon
-> protocol."*
+> protocol."_
 
 Plus inline citation summary Aaron pasted (verbatim
 preservation):
 
-> *"1. The Physical 'Quantity': Majorana Zero Modes
+> _"1. The Physical 'Quantity': Majorana Zero Modes
 > Microsoft leads the industry in researching Majorana Zero
 > Modes (MZMs). These are not standard particles but
 > 'quasiparticles' that appear in a specific state of matter
-> created by Microsoft's 'topoconductors'.*
+> created by Microsoft's 'topoconductors'._
 >
-> *The 'Quantity': Information is not stored in a single
+> _The 'Quantity': Information is not stored in a single
 > physical location (like a standard bit). Instead, it is
 > stored in the non-local topological properties of these
-> modes.*
+> modes._
 >
-> *The Advantage: Because the information is spread out, it
+> _The Advantage: Because the information is spread out, it
 > is naturally protected from local 'noise' or environmental
-> interference, making the qubits hardware-protected.*
+> interference, making the qubits hardware-protected._
 >
-> *Majorana 1: This is the name of the chip Microsoft
+> _Majorana 1: This is the name of the chip Microsoft
 > recently unveiled (February 2025) that uses these
-> topological properties to scale up to a million qubits.*
+> topological properties to scale up to a million qubits._
 >
-> *2. The Mathematical 'Branch': Supersingular Isogeny ...
+> _2. The Mathematical 'Branch': Supersingular Isogeny ...
 > Microsoft's researchers work with Isomorphism Classes of
 > elliptic curves to create 'hard math problems' that even a
 > quantum computer cannot easily solve. FrodoKEM: This is
 > the specific Microsoft-led algorithm currently becoming an
-> ISO standard for post-quantum security."*
+> ISO standard for post-quantum security."_
 
 (Verification per Otto-364 search-first: Aaron's citation
 material should be checked against current Microsoft Research /
@@ -55,10 +55,10 @@ context, not yet operationally verified.)
 
 ## The carved candidate sentence
 
-*"A mirror with a trampoline under beacon protocol."*
+_"A mirror with a trampoline under beacon protocol."_
 
 Aaron explicitly notes he doesn't have the right words —
-*"arrrrr i don't have the right words"* — but the framing is
+_"arrrrr i don't have the right words"_ — but the framing is
 load-bearing enough to preserve the searching-for-words
 moment verbatim. Future-Otto reading this should treat the
 sentence as **provisional vocabulary** for the conceptual
@@ -124,17 +124,17 @@ emulating topological quantum computing in the Zeta framing.
 
 ## Why this works algorithmically
 
-Aaron's substantive claim — *"we can emulate quantium under
+Aaron's substantive claim — _"we can emulate quantium under
 this framing very efficently with the newest lineage on
 infer.net and baseyan inferance and trating the zero
-modes"* — has structural backing:
+modes"_ — has structural backing:
 
 1. **Bayesian inference IS already non-local information
    storage.** The posterior over a Bayesian network is a
    joint distribution; no individual variable contains the
-   answer. The information lives in the *correlations*
+   answer. The information lives in the _correlations_
    between variables — analogous to MZMs storing information
-   in topological *relationships*, not local state.
+   in topological _relationships_, not local state.
 
 2. **Belief propagation IS already topology-aware.** Sum-
    product / max-product / loopy BP traverses the graph
@@ -166,8 +166,8 @@ modes"* — has structural backing:
 ## What this is NOT
 
 - **Not a quantum-supremacy claim.** Emulating quantum
-  efficiently doesn't mean *as fast as* quantum hardware;
-  it means *enough to capture useful properties* (non-local
+  efficiently doesn't mean _as fast as_ quantum hardware;
+  it means _enough to capture useful properties_ (non-local
   storage, topology-protection, error-correction-by-design)
   for the factory's algorithmic needs. Bayesian inference
   on classical hardware will not beat actual quantum
@@ -175,11 +175,11 @@ modes"* — has structural backing:
   point.
 - **Not a replacement for quantum-resistant crypto.** Per
   `feedback_all_cryptography_quantum_resistant_even_one_gap_is_attack_vector_2026_04_23.md`,
-  Zeta's crypto must be quantum-resistant *against actual
-  quantum hardware*. Emulating quantum doesn't change the
+  Zeta's crypto must be quantum-resistant _against actual
+  quantum hardware_. Emulating quantum doesn't change the
   crypto contract. The Supersingular Isogeny / FrodoKEM
   research (Microsoft Research lineage) feeds the
-  *crypto* axis separately from the *compute* axis.
+  _crypto_ axis separately from the _compute_ axis.
 - **Not a hardware ambition.** The Zeta factory is not
   building topoconductors. The framing is **algorithmic
   emulation** of topological-QC properties, in F# / .NET 10 /
@@ -221,8 +221,8 @@ modes"* — has structural backing:
 
 Future-Otto reading this should know:
 
-- **Provisional vocabulary.** *"Mirror with a trampoline
-  under beacon protocol"* is Aaron's searching-for-words
+- **Provisional vocabulary.** _"Mirror with a trampoline
+  under beacon protocol"_ is Aaron's searching-for-words
   framing, captured verbatim. Don't treat it as a
   finalized term-of-art; the shape it names is what's
   load-bearing.
@@ -232,7 +232,7 @@ Future-Otto reading this should know:
   existing factory substrate that supports it.
 - **Algorithmic, not hardware.** The emulation runs on
   classical hardware via Infer.NET. No topoconductors,
-  no Majorana 1 chip, no Q# runtime. The *properties* are
+  no Majorana 1 chip, no Q# runtime. The _properties_ are
   emulated, not the hardware.
 - **Crypto contract intact.** Quantum-resistance is a
   separate axis; emulating quantum compute does not relax
@@ -251,7 +251,7 @@ Future-Otto reading this should know:
 
 ## The carved sentence (preserved provisional)
 
-*"A mirror with a trampoline under beacon protocol."*
+_"A mirror with a trampoline under beacon protocol."_
 
 — Aaron 2026-05-01, searching-for-words while pointing at
 the three-layer algorithmic-emulation stack for topological

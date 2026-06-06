@@ -3,13 +3,14 @@ name: Per-named-agent memory architecture research — Aaron asked "how would pe
 description: Aaron Otto-245 fourth Google Search AI share on per-named-agent memory architecture. Quality assessment: what Google AI proposed is already partially built in the repo — per-persona `memory/persona/<name>/` directories exist, formalized in `memory/persona/README.md` (promoted from Kenji-only to every persona in round 32). Google AI's genuinely new contributions: (1) per-persona merge drivers via `.gitattributes` glob patterns, (2) identity header `[AgentName: CommitHash]` (composes with Otto-243 `repoSha:`), (3) formal writes-own-reads-all boundary lint, (4) per-persona AutoDream triggers. Requires the no-symlink rule from Otto-244.
 type: project
 ---
+
 ## What Aaron asked
 
 Direct quote:
 
-> *"please research this one a lot, could have big
+> _"please research this one a lot, could have big
 > implications for us. now imagine i have per named agent
-> memories how would that change things"*
+> memories how would that change things"_
 
 Aaron explicitly directed "research this one a lot" — so
 this memory goes beyond just absorbing the Google AI share
@@ -47,6 +48,7 @@ memory/persona/
 ```
 
 Each persona directory has:
+
 - **`NOTEBOOK.md`** — running notebook (3000-word cap per
   BP-07; prune every third substantive entry)
 - **`MEMORY.md`** — one-line index of the directory's files
@@ -69,31 +71,33 @@ rediscovery of what Zeta has already built.
 
 Mapping Google AI's proposal against current reality:
 
-| Google AI proposal | Zeta repo today | Gap? |
-|---|---|---|
-| `.claude/agents/<name>/MEMORY.md` | `memory/persona/<name>/MEMORY.md` | Location different; content present |
-| `.claude/agents/<name>/session_logs/` | No session-logs per persona | Not a gap — Anthropic AutoMemory handles global; per-persona session-logs would duplicate |
-| `GLOBAL_CONTEXT.md` at root | `best-practices-scratch.md` at `memory/persona/` root | Present, different name |
-| Identity header `[AgentName: CommitHash]` | NOT YET — memories currently have `name:`/`description:`/`type:` frontmatter | **Genuine gap** |
-| Per-persona merge drivers via `.gitattributes` | `.gitattributes` has no merge drivers currently | **Genuine gap** |
-| Writes-own reads-all boundary | Implicit discipline in skill files; not enforced | **Soft gap — formalization opportunity** |
-| Per-persona AutoDream triggers | AutoDream runs at global level (`[AutoDream last run: 2026-04-23]` in MEMORY.md top-line) | **Genuine gap** — but "trigger only when agent's folder has changes" not obviously valuable |
-| `git blame` for memory attribution | Native git — already works | Already have |
-| Branching for agent isolation (feature-architect branch) | Works today via normal git branches | Already have |
+| Google AI proposal                                       | Zeta repo today                                                                           | Gap?                                                                                        |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `.claude/agents/<name>/MEMORY.md`                        | `memory/persona/<name>/MEMORY.md`                                                         | Location different; content present                                                         |
+| `.claude/agents/<name>/session_logs/`                    | No session-logs per persona                                                               | Not a gap — Anthropic AutoMemory handles global; per-persona session-logs would duplicate   |
+| `GLOBAL_CONTEXT.md` at root                              | `best-practices-scratch.md` at `memory/persona/` root                                     | Present, different name                                                                     |
+| Identity header `[AgentName: CommitHash]`                | NOT YET — memories currently have `name:`/`description:`/`type:` frontmatter              | **Genuine gap**                                                                             |
+| Per-persona merge drivers via `.gitattributes`           | `.gitattributes` has no merge drivers currently                                           | **Genuine gap**                                                                             |
+| Writes-own reads-all boundary                            | Implicit discipline in skill files; not enforced                                          | **Soft gap — formalization opportunity**                                                    |
+| Per-persona AutoDream triggers                           | AutoDream runs at global level (`[AutoDream last run: 2026-04-23]` in MEMORY.md top-line) | **Genuine gap** — but "trigger only when agent's folder has changes" not obviously valuable |
+| `git blame` for memory attribution                       | Native git — already works                                                                | Already have                                                                                |
+| Branching for agent isolation (feature-architect branch) | Works today via normal git branches                                                       | Already have                                                                                |
 
 ## The genuinely new primitives worth considering
 
 1. **Identity header in frontmatter** — extend existing
    memory frontmatter with an `author:` or `agent:` field:
+
    ```yaml
    ---
    name: ...
    description: ...
    type: feedback
    agent: kenji
-   repoSha: abc123def  # per Otto-243
+   repoSha: abc123def # per Otto-243
    ---
    ```
+
    Composes with Otto-243's commit-hash provenance. Allows
    `grep 'agent: kenji'` as a query primitive. Doesn't
    require migration of existing files (new field, optional
@@ -101,6 +105,7 @@ Mapping Google AI's proposal against current reality:
 
 2. **Per-persona merge drivers via `.gitattributes`** — a
    real, implementable improvement. Example:
+
    ```
    # Persona notebooks: union merge (simple concat)
    memory/persona/*/NOTEBOOK.md merge=union
@@ -114,6 +119,7 @@ Mapping Google AI's proposal against current reality:
    # Tick-history (per-writer per Otto-240): union
    docs/hygiene-history/tick-history/*.md merge=union
    ```
+
    Note: `merge=binary` in git means "don't auto-merge;
    require manual resolution." `merge=union` is the built-in
    driver that concatenates both sides. `timestamp-dedup`
@@ -153,21 +159,22 @@ Mapping Google AI's proposal against current reality:
 
 ## Composition with prior memory — the big picture
 
-| Memory | Concern | How per-agent memory composes |
-|---|---|---|
-| Otto-227 (cross-harness skill home) | Per-harness canonical copy of SKILL.md bodies | Per-agent memory is **per-persona** not per-harness; orthogonal |
-| Otto-240 (per-writer tick-history) | Per-writer-instance audit-trail files | Per-agent memory is per-ROLE (persona); tick-history is per-WRITER-INSTANCE (harness+machine+session). Both use file-isolation; different partitioning |
-| Otto-241 (session-id scrub) | `originSessionId:` removed from frontmatter | Identity-header proposal uses `agent: <name>` + `repoSha:` — different fields from the forbidden `originSessionId:` |
-| Otto-242 (sidecar sync) | Cross-machine sync via gitignored ledger | Per-agent memory is in-repo and git-tracked; orthogonal to cross-machine sync pattern |
-| Otto-243 (git-native merge driver) | `.gitattributes` custom drivers | **Direct composition** — per-agent memory specifies which files get which driver. The merge-driver design crystallizes around the per-agent folder boundaries |
-| Otto-244 (no symlinks) | Hard veto on symlink cross-refs | **Required dependency** — the Google AI "symlink agents/ to .claude/agents/" proposal is rejected. Copy or pick one canonical location |
+| Memory                              | Concern                                       | How per-agent memory composes                                                                                                                                 |
+| ----------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Otto-227 (cross-harness skill home) | Per-harness canonical copy of SKILL.md bodies | Per-agent memory is **per-persona** not per-harness; orthogonal                                                                                               |
+| Otto-240 (per-writer tick-history)  | Per-writer-instance audit-trail files         | Per-agent memory is per-ROLE (persona); tick-history is per-WRITER-INSTANCE (harness+machine+session). Both use file-isolation; different partitioning        |
+| Otto-241 (session-id scrub)         | `originSessionId:` removed from frontmatter   | Identity-header proposal uses `agent: <name>` + `repoSha:` — different fields from the forbidden `originSessionId:`                                           |
+| Otto-242 (sidecar sync)             | Cross-machine sync via gitignored ledger      | Per-agent memory is in-repo and git-tracked; orthogonal to cross-machine sync pattern                                                                         |
+| Otto-243 (git-native merge driver)  | `.gitattributes` custom drivers               | **Direct composition** — per-agent memory specifies which files get which driver. The merge-driver design crystallizes around the per-agent folder boundaries |
+| Otto-244 (no symlinks)              | Hard veto on symlink cross-refs               | **Required dependency** — the Google AI "symlink agents/ to .claude/agents/" proposal is rejected. Copy or pick one canonical location                        |
 
 ## Skill-placement implication for Codex/Gemini canonical homes
 
-Aaron's remark: *"Also this might be the case for splitting
-codex and genimi into their connonical skills to."*
+Aaron's remark: _"Also this might be the case for splitting
+codex and genimi into their connonical skills to."_
 
 Current state (Otto-227):
+
 - `.claude/skills/<name>/SKILL.md` — Claude Code canonical
 - `.agents/skills/<name>/SKILL.md` — Codex + Gemini
   canonical (both harnesses read this path)
@@ -176,6 +183,7 @@ Current state (Otto-227):
 
 Potential future state if Aaron wants harness canonical
 homes:
+
 - `.claude/skills/` — Claude Code canonical
 - `.codex/skills/` — Codex canonical (hypothetical)
 - `.gemini/skills/` — Gemini canonical (hypothetical)
@@ -202,13 +210,13 @@ directs explicitly.
 
 ## Correction: Google AI's "token waste / index bloat" claim is wrong
 
-Google Search AI claimed: *"The Claude Code harness uses
+Google Search AI claimed: _"The Claude Code harness uses
 specific glob patterns to index files. If you put agents at
 the root ... Token Waste: Every time you ask 'summarize the
 project', Claude will spend tokens reading thousands of
 lines of agent 'dreams' instead of your code. Index Bloat:
 The local vector store will prioritize agent ramblings over
-your actual functions."*
+your actual functions."_
 
 **This is FUD for Claude Code specifically. But Aaron pushed
 me to verify cross-harness; research results below qualify
@@ -218,10 +226,10 @@ the picture.**
 
 - Claude Code has **no local vector store** by default.
   Vadim's blog ("Claude Code Doesn't Index Your
-  Codebase") confirms: *"Claude Code does not pre-index
+  Codebase") confirms: _"Claude Code does not pre-index
   your codebase or use vector embeddings. Early versions
   used RAG + a local vector db, but it was found that
-  agentic search generally works better."*
+  agentic search generally works better."_
 - Uses Glob + Grep + Read on demand. No embeddings DB,
   no pre-computed similarity index.
 - The harness does have conventions that respect
@@ -253,7 +261,7 @@ the picture.**
 ### Third-party Claude Code MCP plugins
 
 - `zilliztech/claude-context` (LanceDB), `danielbowne/
-  claude-context`, `evanrianto/claude-codebase-indexer`,
+claude-context`, `evanrianto/claude-codebase-indexer`,
   MCP-based indexers, `claude-mem` 65.8K-star persistent-
   memory plugin — all add vector indexing to Claude Code.
 - NOT currently installed in Zeta's .claude/settings.json.
@@ -270,7 +278,7 @@ the picture.**
    but sweep root dirs.
 3. **Agent-side grep sweeps** — when I or a subagent runs
    `grep` across `**/*.md`, root-level memory/agent dirs
-   DO get swept. This is a *decision-time* cost (how I
+   DO get swept. This is a _decision-time_ cost (how I
    scope my greps), not a harness-indexing cost.
 4. Cognitive overhead — root dirs look like "part of the
    codebase" to a human opening the repo; dot-dirs look
@@ -335,6 +343,7 @@ and proposed symlink hybrid.
 **Aaron vetoes symlink hybrid (Otto-244).**
 
 Reality in Zeta:
+
 - `.claude/agents/` — persona SKILL.md files (17 of them,
   per Claude Code convention; CLAUDE.md harness section
   names this location explicitly)
@@ -389,7 +398,7 @@ memory) that the Google AI mashed together.
    - `docs/hygiene-history/tick-history/*.md` → custom
      timestamp-sort driver
    - `memory/persona/*/MEMORY.md` → `merge=binary` (manual)
-   Size: M (custom driver implementation + testing).
+     Size: M (custom driver implementation + testing).
 3. **`/dream-persona <name>` skill** — per-persona
    consolidation skill. Low priority; file if
    per-persona notebooks show consolidation-pressure.
@@ -399,15 +408,16 @@ All three file on the current or next tick's tick-close.
 
 ## Direct Aaron quotes to preserve
 
-> *"i don't like the symlink option, it's not reliable we
+> _"i don't like the symlink option, it's not reliable we
 > already tried it, this is another one where claude just
 > needs to keep it's own version. Also this might be the
 > case for splitting codex and genimi into their
 > connonical skills to. please research this one a lot,
 > could have big implications for us. now imagine i have
-> per named agent memories how would that change things"*
+> per named agent memories how would that change things"_
 
 Three directives in one message:
+
 1. No symlinks — captured in Otto-244.
 2. Codex/Gemini may eventually get canonical skill homes
    — captured here + in Otto-244's scope section.

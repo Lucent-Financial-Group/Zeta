@@ -17,12 +17,12 @@ Two parts:
 
 ## Vendor-agnostic compute
 
-| Vendor | Runtime | Aaron's hardware |
-|--------|---------|------------------|
-| NVIDIA | CUDA / cuDNN / TensorRT | ✓ Has (Thor + portion of ~20 GPUs) |
-| AMD | ROCm / HIP | ✓ Has (portion of ~20 GPUs) |
-| Apple Silicon | Metal / MLX / Core ML | (Aaron didn't mention; factory supports anyway) |
-| Intel | oneAPI / SYCL / OpenVINO | ✗ Aaron has none, but factory supports |
+| Vendor        | Runtime                  | Aaron's hardware                                |
+| ------------- | ------------------------ | ----------------------------------------------- |
+| NVIDIA        | CUDA / cuDNN / TensorRT  | ✓ Has (Thor + portion of ~20 GPUs)              |
+| AMD           | ROCm / HIP               | ✓ Has (portion of ~20 GPUs)                     |
+| Apple Silicon | Metal / MLX / Core ML    | (Aaron didn't mention; factory supports anyway) |
+| Intel         | oneAPI / SYCL / OpenVINO | ✗ Aaron has none, but factory supports          |
 
 Factory compute substrate plans against this matrix as categorical capability, not vendor-specific runtime.
 

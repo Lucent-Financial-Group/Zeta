@@ -8,12 +8,12 @@ type: feedback
 
 **The full tier model:**
 
-| Tier | Trust level | Serialization cost | Example |
-|------|------------|-------------------|---------|
-| 0. Arrow | Absolute trust | Zero — shared memory layout | In-process, same-machine IPC |
-| 1. Known types | High trust | Minimal — direct deserialize | Internal factory, Protobuf |
-| 2. Known-types-list | Partial | Medium — try N types | Cross-agent bus (B-0400) |
-| 3. Eve protocol | No prior | Full — observe then label | Trust boundaries, shadow |
+| Tier                | Trust level    | Serialization cost           | Example                      |
+| ------------------- | -------------- | ---------------------------- | ---------------------------- |
+| 0. Arrow            | Absolute trust | Zero — shared memory layout  | In-process, same-machine IPC |
+| 1. Known types      | High trust     | Minimal — direct deserialize | Internal factory, Protobuf   |
+| 2. Known-types-list | Partial        | Medium — try N types         | Cross-agent bus (B-0400)     |
+| 3. Eve protocol     | No prior       | Full — observe then label    | Trust boundaries, shadow     |
 
 **Why Arrow is Tier 0:**
 
@@ -34,6 +34,7 @@ Z-set weights live in Arrow arrays. No serialization between operators. Data sta
 Tier 0 → 1 → 2 → 3 is a gradient from absolute trust (shared memory, zero cost) to no trust (observe-first, full cost). The factory routes traffic to the cheapest tier that's appropriate for the trust relationship. Hot paths stay at 0. Bus messages at 2. Shadow and external input at 3.
 
 **Connects to:**
+
 - feedback_eve_protocol_serialization_three_tiers (tiers 1-3)
 - columnar-storage-expert skill (Arrow internals)
 - vectorised-execution-expert skill (Arrow in-memory format)

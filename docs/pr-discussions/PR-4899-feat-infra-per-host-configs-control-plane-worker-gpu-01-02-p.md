@@ -24,13 +24,14 @@ PR 3 of Addison's NixOS-AI-cluster bootstrap plan. Adds the three per-host confi
 
 ## Files
 
-| Host | Imports | Role |
-|---|---|---|
-| `control-plane` | `common` + `k3s-server` | API server + embedded etcd; auto-bootstraps ArgoCD |
+| Host            | Imports                        | Role                                               |
+| --------------- | ------------------------------ | -------------------------------------------------- |
+| `control-plane` | `common` + `k3s-server`        | API server + embedded etcd; auto-bootstraps ArgoCD |
 | `worker-gpu-01` | `common` + `k3s-agent` + `gpu` | NVIDIA worker; joins control-plane.zeta.local:6443 |
-| `worker-gpu-02` | `common` + `k3s-agent` + `gpu` | NVIDIA worker; identical shape to -01 |
+| `worker-gpu-02` | `common` + `k3s-agent` + `gpu` | NVIDIA worker; identical shape to -01              |
 
 Each host directory has:
+
 - `configuration.nix` — host identity + module imports + per-host overrides
 - `hardware-configuration.nix` — **placeholder stub** (replaced during real install by `nixos-generate-config --root /mnt`)
 - `README.md` on control-plane — install runbook + post-install verification
@@ -40,6 +41,7 @@ Each host directory has:
 ## Hardware config placeholders
 
 Real `hardware-configuration.nix` is generator output specific to each target machine. Placeholders ship as minimal valid stubs (`not-detected.nix` import + DHCP + ext4 by-label fileSystems) so:
+
 - `nix flake check` passes in CI
 - `nix build .#nixosConfigurations.control-plane` succeeds at evaluation
 - Real install replaces them before first reboot
@@ -58,24 +60,22 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T02:36:22Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5ee011111c`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -87,7 +87,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T02:36:22Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add credential bootstrap before SSH verification**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Add credential bootstrap before SSH verification**
 
 Following this runbook verbatim on a fresh install will fail at the first verification step because `ssh zeta@control-plane` assumes remote auth is already configured, but this commit's host config leaves `users.users.zeta.openssh.authorizedKeys.keys` empty while the shared baseline uses key-only SSH and no initial password. In that state, operators cannot complete post-install verification remotely; add an explicit pre-SSH step to install a key (or set a password) before this command.
 

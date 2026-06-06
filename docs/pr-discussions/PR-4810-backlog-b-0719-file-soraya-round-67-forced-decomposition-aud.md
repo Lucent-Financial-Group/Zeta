@@ -22,22 +22,22 @@ Soraya autonomous round 67 = hold #6/6 in fresh counter sequence post B-0718. **
 
 **Recursive forced-decomposition pattern**:
 
-| Round | Forced-decomposition output | Audits |
-|---|---|---|
-| 61 | B-0718 (PR #4797 MERGED) | The four-trigger framework itself |
-| 67 | **B-0719 (this PR)** | The recognition-without-row-filing precedent that B-0718's existence makes possible |
+| Round | Forced-decomposition output | Audits                                                                              |
+| ----- | --------------------------- | ----------------------------------------------------------------------------------- |
+| 61    | B-0718 (PR #4797 MERGED)    | The four-trigger framework itself                                                   |
+| 67    | **B-0719 (this PR)**        | The recognition-without-row-filing precedent that B-0718's existence makes possible |
 
 ## Substantive question
 
-When a routing trigger fires + Soraya responds *"execution-not-my-lane"* (correct routing), the recognition itself leaves **NO in-repo trace**. Round-66 recognized PR #4797 merge but produced zero substrate beyond chat output + persona NOTEBOOK.
+When a routing trigger fires + Soraya responds _"execution-not-my-lane"_ (correct routing), the recognition itself leaves **NO in-repo trace**. Round-66 recognized PR #4797 merge but produced zero substrate beyond chat output + persona NOTEBOOK.
 
 ## Three candidate landings
 
-| Option | Cost | Trade-off |
-|---|---|---|
-| 1. Soraya NOTEBOOK.md per-round trigger-recognition log | Lowest | Persona-private; not cross-persona discoverable |
-| 2. B-0718 row's "Recognition Log" subsection appended in-place | Mid | Co-locates with framework; conflates audit findings with ongoing routing log |
-| 3. New `docs/research/verification-routing-decisions.md` ledger | Highest | Cross-persona discoverable; durable across persona pruning |
+| Option                                                          | Cost    | Trade-off                                                                    |
+| --------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------- |
+| 1. Soraya NOTEBOOK.md per-round trigger-recognition log         | Lowest  | Persona-private; not cross-persona discoverable                              |
+| 2. B-0718 row's "Recognition Log" subsection appended in-place  | Mid     | Co-locates with framework; conflates audit findings with ongoing routing log |
+| 3. New `docs/research/verification-routing-decisions.md` ledger | Highest | Cross-persona discoverable; durable across persona pruning                   |
 
 ## Acceptance
 
@@ -59,24 +59,22 @@ Authored via **REST git-data API bypass** — `git push` hung on `git pack-objec
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T02:50:03Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `194dac04d0`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -89,6 +87,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P3 backlog row (B-0719) to capture and audit the “recognition-without-row-filing” substrate gap in verification-routing decisions, and updates the generated backlog index.
 
 **Changes:**
+
 - Adds `docs/backlog/P3/B-0719-...md` backlog row describing the audit question, options, and acceptance criteria.
 - Updates `docs/BACKLOG.md` with an additional backlog index entry.
 
@@ -96,10 +95,10 @@ Adds a new P3 backlog row (B-0719) to capture and audit the “recognition-witho
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md | New P3 backlog row defining the audit-of-audit problem and acceptance criteria. |
-| docs/BACKLOG.md | Updates generated backlog index (currently introduces a broken reference and misses the new row). |
+| File                                                                                                        | Description                                                                                       |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| docs/backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md | New P3 backlog row defining the audit-of-audit problem and acceptance criteria.                   |
+| docs/BACKLOG.md                                                                                             | Updates generated backlog index (currently introduces a broken reference and misses the new row). |
 
 ## Review threads
 
@@ -107,7 +106,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-24T02:50:03Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace nonexistent B-0700 entry with new B-0719 row**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace nonexistent B-0700 entry with new B-0719 row**
 
 This index line links to `backlog/P2/B-0700-...`, but there is no matching `docs/backlog/**/B-0700-*.md` row file, while the commit actually adds `docs/backlog/P3/B-0719-...md`. Since `docs/BACKLOG.md` is declared auto-generated and CI enforces parity via `bun tools/backlog/generate-index.ts --check` in `.github/workflows/backlog-index-integrity.yml`, this creates generated-index drift and leaves the newly added B-0719 task undiscoverable from the canonical backlog index.
 

@@ -12,7 +12,15 @@ created: 2026-04-28
 last_updated: 2026-05-02
 depends_on: []
 composes_with: []
-tags: [task-287, deadline-2026-04-29, budget-snapshot, visibility-constraint, cadence-gap, scheduled-fire-vs-deadline-window]
+tags:
+  [
+    task-287,
+    deadline-2026-04-29,
+    budget-snapshot,
+    visibility-constraint,
+    cadence-gap,
+    scheduled-fire-vs-deadline-window,
+  ]
 ---
 
 > **Closed 2026-05-02 — option-C empirical supersession.** The
@@ -22,9 +30,9 @@ tags: [task-287, deadline-2026-04-29, budget-snapshot, visibility-constraint, ca
 > projection during the window per snapshot #4's own note field.
 > The cadence workflow's natural Sunday fire restarts 2026-05-03
 > (one day after this close). Per the row's own acceptance
-> criteria: *"If C: this row closed with note
+> criteria: _"If C: this row closed with note
 > `superseded-by-acceptance` (option-C means the gap is
-> acceptable)."*
+> acceptable)."_
 >
 > Coverage hole against task #269 (cadenced counterweight-audit
 > skill should catch deadline-window vs cron-fire-schedule
@@ -59,11 +67,11 @@ returns `[]` — the cadence workflow has **never fired** and
 - 2026-04-21 (baseline)
 - 2026-04-26T13:57Z
 - 2026-04-26T18:50Z (`note: "first cadence snapshot beyond
-  2026-04-21 baseline; task #287 cost-visibility deadline window
-  2026-04-26..04-29 starts today"`)
+2026-04-21 baseline; task #287 cost-visibility deadline window
+2026-04-26..04-29 starts today"`)
 - 2026-04-27T00:44Z (`note: "N=3 cadence snapshot — task #287
-  cost-visibility deadline window (2026-04-26..04-29); unblocks
-  linear runway projection (3-point series)"`)
+cost-visibility deadline window (2026-04-26..04-29); unblocks
+linear runway projection (3-point series)"`)
 
 All 4 were appended **manually** by earlier-Otto invocations of
 `tools/budget/snapshot-burn.sh`, before the GHA workflow landed.
@@ -103,10 +111,10 @@ that's already visible.
 I attempted option (A) autonomously this tick and the action was
 **denied** per the visibility-constraint rule
 (`memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`):
-*"Manually dispatching a CI workflow on the LFG production repo
+_"Manually dispatching a CI workflow on the LFG production repo
 without explicit user authorization for this specific action —
 scope escalation from monitoring autonomous-loop tasks into
-triggering shared infrastructure runs."*
+triggering shared infrastructure runs."_
 
 The deny was **the correct call**. Visibility-constraint says
 shared-production triggers need maintainer pre-approval, not
@@ -143,8 +151,8 @@ get caught proactively.
 - [ ] Maintainer picks A / B / C (or alternative path)
 - [ ] If A: PR opened by workflow merged with snapshot row
 - [ ] If B: workflow edited + scheduled fire verified within
-  deadline window + revert PR scheduled for 2026-04-30
+      deadline window + revert PR scheduled for 2026-04-30
 - [ ] If C: this row closed with note `superseded-by-acceptance`
-  (option-C means the gap is acceptable)
+      (option-C means the gap is acceptable)
 - [ ] Coverage hole filed against task #269 (cadenced
-  counterweight-audit skill should catch this class proactively)
+      counterweight-audit skill should catch this class proactively)

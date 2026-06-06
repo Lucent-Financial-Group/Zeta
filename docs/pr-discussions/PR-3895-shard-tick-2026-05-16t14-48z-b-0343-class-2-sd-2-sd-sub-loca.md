@@ -30,14 +30,14 @@ Forced-escalation tick (brief-ack #6 → pure-git substrate). Audit: B-0343 (tes
 
 This session has accumulated 6 distinct row-body locations carrying #2-SD self-doc signal:
 
-| Location | First example |
-|---|---|
-| Frontmatter `classification: blocked` | B-0037.2 |
-| Inline `Status` section | B-0118 |
-| Acceptance `[ ]` checkboxes | B-0534 |
-| Slice-progress table | B-0314 |
-| **Pre-start re-decomposition note** | **B-0343 (this PR)** |
-| Embedded falsifier (#2-Ready overlay) | B-0197 |
+| Location                              | First example        |
+| ------------------------------------- | -------------------- |
+| Frontmatter `classification: blocked` | B-0037.2             |
+| Inline `Status` section               | B-0118               |
+| Acceptance `[ ]` checkboxes           | B-0534               |
+| Slice-progress table                  | B-0314               |
+| **Pre-start re-decomposition note**   | **B-0343 (this PR)** |
+| Embedded falsifier (#2-Ready overlay) | B-0197               |
 
 Auto-classifier needs multi-pattern detection across all 6 locations.
 
@@ -56,16 +56,18 @@ Auto-classifier needs multi-pattern detection across all 6 locations.
 Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the forced-escalation audit of backlog row B-0343 and extending the observed #2-SD sub-location catalog to 6 patterns.
 
 **Changes:**
+
 - Adds a new tick log entry capturing the B-0343 audit evidence (script/manifest existence, bounded-slice note, dry-run presence).
 - Records updated drift-audit tally counts and a catalog of #2-SD signal locations.
 - Captures operational context (rate-limit tier, sentinel status, PR reference).
-
 
 <details>
 <summary>Comments suppressed due to low confidence (4)</summary>
 
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:40**
-* P1: This acceptance-criteria table uses `||` at the start of each row, which introduces an unintended empty column and renders incorrectly. Use standard Markdown table syntax with a single leading `|` like other tick files.
+
+- P1: This acceptance-criteria table uses `||` at the start of each row, which introduces an unintended empty column and renders incorrectly. Use standard Markdown table syntax with a single leading `|` like other tick files.
+
 ```
 | Acceptance criterion | State |
 |---|---|
@@ -73,8 +75,11 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 | 2. Reads seed manifest from `docs/bootstrap-razor/SEED-MANIFEST.md` | ✅ manifest exists + path referenced at line 20-21 |
 | 3. Idempotent — re-running against existing repo reports status, no duplicate | ❌ row's own line 4-5: "No gh, no create, no repo mutation" |
 ```
+
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:62**
-* P1: The drift-audit tally table is written with a `||` row prefix, which produces an empty first column and breaks GitHub Markdown rendering. Switch to the usual `| ... |` table format used in other tick shards.
+
+- P1: The drift-audit tally table is written with a `||` row prefix, which produces an empty first column and breaks GitHub Markdown rendering. Switch to the usual `| ... |` table format used in other tick shards.
+
 ```
 | Class | Count | Latest |
 |---|---|---|
@@ -82,8 +87,11 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 | 1-Ready | 1 (closed via #3882) | B-0049.2 |
 | 1-DepBlocked | 1 | B-0457 |
 ```
+
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:86**
-* P1: This table also uses `||` at the start of rows, which creates an extra empty column and renders incorrectly. Please convert to standard Markdown table formatting (`| Location | Examples |`, `|---|---|`, etc.).
+
+- P1: This table also uses `||` at the start of rows, which creates an extra empty column and renders incorrectly. Please convert to standard Markdown table formatting (`| Location | Examples |`, `|---|---|`, etc.).
+
 ```
 | Location | Examples |
 |---|---|
@@ -91,8 +99,11 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 | Inline `Status` section | B-0118, B-0129 |
 | Acceptance `[ ]` checkboxes | B-0534, B-0418, B-0458 |
 ```
+
 **docs/hygiene-history/ticks/2026/05/16/1448Z.md:102**
-* P1: The counter/disposition table is using `||` prefixes, which adds an unintended empty first column and breaks table rendering. Use the standard single-pipe Markdown table syntax here as well.
+
+- P1: The counter/disposition table is using `||` prefixes, which adds an unintended empty first column and breaks table rendering. Use the standard single-pipe Markdown table syntax here as well.
+
 ```
 | Tick | Disposition |
 |---|---|
@@ -100,6 +111,7 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 | #2 (14:44Z) | brief-ack #2 |
 | #3 (14:45Z) | brief-ack #3 |
 ```
+
 </details>
 
 ## Review threads
@@ -111,6 +123,7 @@ Adds a new hygiene-history tick shard for 2026-05-16T14:48Z, documenting the for
 P1: These tables start with `||` (empty first column), which breaks Markdown table rendering and is inconsistent with other tick shards (they use `| ... |`). Convert this to a normal pipe table (`| Surface | State |` etc.) so the content renders correctly on GitHub.
 
 This issue also appears in the following locations of the same file:
+
 - line 36
 - line 58
 - line 82

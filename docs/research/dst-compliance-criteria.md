@@ -69,8 +69,8 @@ A graduation is DST-held when all six items are true:
    hits.** Of the 12 known .NET entropy sources
    (DateTime, Stopwatch, TickCount, Guid.NewGuid,
    Random.Shared, RandomNumberGenerator, Task.Run,
-   Task.Delay / Thread.Sleep, File.*, Socket.*,
-   Parallel.*, [ThreadStatic] / AsyncLocal), any
+   Task.Delay / Thread.Sleep, File._, Socket._,
+   Parallel.\*, [ThreadStatic] / AsyncLocal), any
    occurrence in `src/Core/` or `src/Core.CSharp/`
    must be either: (a) routed through the simulation
    API (ChaosEnv / VirtualTimeScheduler / ISimulationFs
@@ -94,10 +94,10 @@ Beyond DST-held, the FoundationDB-grade target requires
 all eight surfaces exist and integrate:
 
 1. **Simulated filesystem.** `ISimulationFs` implemented
-   + wired into every file-I/O call site (notably
-   `DiskBackingStore`). Supports seed-driven fault
-   injection (read failures, write failures, corruption,
-   latency spikes).
+   - wired into every file-I/O call site (notably
+     `DiskBackingStore`). Supports seed-driven fault
+     injection (read failures, write failures, corruption,
+     latency spikes).
 2. **Simulated network.** `ISimulationNetwork`
    implemented + wired into every socket / HTTP call site
    (multi-node future scope). Supports partition, packet
@@ -114,7 +114,7 @@ all eight surfaces exist and integrate:
    inactive unless simulation driver enables it.
 5. **Swarm runner.** A harness that runs N parallel
    scenarios under M seeds each (e.g. `100 scenarios ×
-   1000 seeds = 100,000 runs per sweep`). Either local-
+1000 seeds = 100,000 runs per sweep`). Either local-
    invocation or GitHub Actions matrix. Emits per-seed
    results for failure-minimization analysis.
 6. **Replay artifact storage.** Seed + scenario +
@@ -146,17 +146,17 @@ not make that claim today.
 Amara's internal assessment of Zeta's current DST posture,
 preserved as context:
 
-| Area                          | Grade | Reason                                                                |
-|-------------------------------|-------|-----------------------------------------------------------------------|
-| DST philosophy / docs         | A-    | Rule is clear, aligned with FoundationDB / TigerBeetle style          |
-| Seeded core environment       | B     | `ChaosEnvironment` exists; not all surfaces route through it          |
-| Virtual time                  | B-    | Exists but still test-side, not unified core driver                   |
-| Filesystem simulation         | D     | Known blocker: real disk path not intercepted                         |
-| Network simulation            | D/NA  | Future multi-node work, not yet present                               |
-| Deterministic task scheduling | C-    | `RunAsync` abstraction is needed; ambient ThreadPool remains a risk   |
-| CI seed artifacts             | C     | Good plan, not fully landed                                           |
-| Cartel-Lab DST readiness      | C+    | Toy seed discipline exists; calibration artifacts missing             |
-| KSK/Aurora DST readiness      | C     | Advisory-only is correct; replayable policy inputs still need design  |
+| Area                          | Grade | Reason                                                               |
+| ----------------------------- | ----- | -------------------------------------------------------------------- |
+| DST philosophy / docs         | A-    | Rule is clear, aligned with FoundationDB / TigerBeetle style         |
+| Seeded core environment       | B     | `ChaosEnvironment` exists; not all surfaces route through it         |
+| Virtual time                  | B-    | Exists but still test-side, not unified core driver                  |
+| Filesystem simulation         | D     | Known blocker: real disk path not intercepted                        |
+| Network simulation            | D/NA  | Future multi-node work, not yet present                              |
+| Deterministic task scheduling | C-    | `RunAsync` abstraction is needed; ambient ThreadPool remains a risk  |
+| CI seed artifacts             | C     | Good plan, not fully landed                                          |
+| Cartel-Lab DST readiness      | C+    | Toy seed discipline exists; calibration artifacts missing            |
+| KSK/Aurora DST readiness      | C     | Advisory-only is correct; replayable policy inputs still need design |
 
 Overall grade: **B-**. Factory reports this as "Amara's
 assessment," not a self-certified claim.
@@ -166,7 +166,7 @@ assessment," not a self-certified claim.
 ### Shipped toward DST-held
 
 - **Test classification** (`docs/research/test-
-  classification.md`, PR #339) — 5-category taxonomy
+classification.md`, PR #339) — 5-category taxonomy
   directly supports items 1 + 2 + 4.
 - **PR #323 cartel toy** — seeds committed at fixed
   constants; supports items 1 + 3 (within its narrow
@@ -187,14 +187,14 @@ assessment," not a self-certified claim.
 
 All 6 items of the 19th-ferry revised roadmap map to gaps:
 
-| Revised-roadmap PR | Which criteria item |
-|--------------------|---------------------|
-| PR 1 entropy-scanner + accepted-boundary registry | DST-held #5 + #6 enforcement |
-| PR 2 seed protocol + CI artifacts | DST-held #1 + #2 |
-| PR 3 sharder reproduction | DST-held #3 + #4 |
-| PR 4 ISimulationDriver + VTS to core | FDB #3 + foundation for #1, #2, #4 |
-| PR 5 simulated filesystem | FDB #1 |
-| PR 6 Cartel-Lab DST calibration | DST-held #1 + #2 + FDB #5 partial |
+| Revised-roadmap PR                                | Which criteria item                |
+| ------------------------------------------------- | ---------------------------------- |
+| PR 1 entropy-scanner + accepted-boundary registry | DST-held #5 + #6 enforcement       |
+| PR 2 seed protocol + CI artifacts                 | DST-held #1 + #2                   |
+| PR 3 sharder reproduction                         | DST-held #3 + #4                   |
+| PR 4 ISimulationDriver + VTS to core              | FDB #3 + foundation for #1, #2, #4 |
+| PR 5 simulated filesystem                         | FDB #1                             |
+| PR 6 Cartel-Lab DST calibration                   | DST-held #1 + #2 + FDB #5 partial  |
 
 Plus:
 
@@ -243,7 +243,7 @@ as their acceptance target but do not self-certify.
 ## 8. Cross-references
 
 - Amara 19th ferry — `docs/aurora/2026-04-24-amara-dst-
-  audit-deep-research-plus-5-5-corrections-19th-ferry.md`
+audit-deep-research-plus-5-5-corrections-19th-ferry.md`
   (PR #344, source of this doc's criteria).
 - `docs/research/test-classification.md` (PR #339) — the
   5-category taxonomy that supports items 1 + 2 + 4.

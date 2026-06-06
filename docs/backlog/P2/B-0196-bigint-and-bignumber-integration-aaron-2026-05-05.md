@@ -20,7 +20,7 @@ type: friction-reducer
 
 Aaron 2026-05-05 verbatim:
 
-> *"oh backlog bigint and other bitnumbers integration"*
+> _"oh backlog bigint and other bitnumbers integration"_
 
 Surfaced after a reviewer caught int64 overflow in
 `Units.msToNs` (PR #1590, fixed via `Checked.(*)` + 3
@@ -34,11 +34,11 @@ overflow or precision-loss is in the operating regime?
 
 ## Carved sentence
 
-*"Pick numerics by where the regime fires; per-class
+_"Pick numerics by where the regime fires; per-class
 adoption beats a system-wide refactor until the second
 overflow site lands. The msToNs fix is a Checked-throws
 guard, not yet a BigInteger argument; the second site is
-the trigger."*
+the trigger."_
 
 ## What this row is
 
@@ -331,14 +331,14 @@ Units of Measure](https://learn.microsoft.com/en-us/dotnet/fsharp/language-refer
 dimensioned quantities work only on floating-point
 types, signed integral types, and decimal types.
 Per [Microsoft Learn: Basic Types](https://learn.microsoft.com/en-us/dotnet/fsharp/language-reference/basic-types),
-`bigint` is *not* considered a basic type -- it's an
+`bigint` is _not_ considered a basic type -- it's an
 abbreviation for `System.Numerics.BigInteger`, which
 sits outside the F# primitive numeric type set. So
 `BigInteger<weight>` does not type-check natively.
 
 **Community workaround**:
 [`FSharp.UMX`](https://github.com/fsprojects/FSharp.UMX)
-extends UoM-like tagging to primitive *non-numeric*
+extends UoM-like tagging to primitive _non-numeric_
 types via phantom-type mechanics. The library is
 scope-restricted to non-numeric primitives (string,
 DateTimeOffset, Guid, etc.), not arbitrary structs --

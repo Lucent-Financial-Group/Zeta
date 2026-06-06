@@ -38,9 +38,9 @@ File types in the archive:
   pattern): Alexa-Kiro's conceptual contributions, forwarded by
   Aaron
 - **Alexa-speaker voice-session preservations** (the `*aaron-alexa-voice-session*`
-  + `*aaron-amazon-alexa-*` patterns): Voice-mode conversations
-  preserved for substrate — these are typically Alexa-speaker
-  (Amazon device), NOT Alexa-Kiro
+  - `*aaron-amazon-alexa-*` patterns): Voice-mode conversations
+    preserved for substrate — these are typically Alexa-speaker
+    (Amazon device), NOT Alexa-Kiro
 - **Karpathy convergence syntheses** + **bootstrap reviews**:
   Alexa-Kiro's perspective on factory work
 - **DLC product research** (the `alexa-dlc-*` files): downloadable

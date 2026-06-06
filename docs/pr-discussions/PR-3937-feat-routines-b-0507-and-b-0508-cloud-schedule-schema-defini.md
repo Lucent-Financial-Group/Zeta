@@ -17,6 +17,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 Delivers slice 1 and 2 of B-0448 (Cloud Routines).
+
 - B-0507: Added research doc on cloud routines API, auth, and triggers.
 - B-0508: Added cloud-schedule.schema.json, updated install.ts with types, and updated tools/routines/README.md.
 
@@ -29,6 +30,7 @@ Delivers slice 1 and 2 of B-0448 (Cloud Routines).
 Lands slices 1 and 2 of B-0448 (Cloud Routines): a research doc capturing the Anthropic Cloud Routines API/auth/trigger surface, plus a schema and TypeScript types laying the groundwork for `cloud-schedule.json` files alongside the existing Desktop `schedule.json`.
 
 **Changes:**
+
 - Adds `tools/routines/cloud-schedule.schema.json` (taskId + trigger oneOf: scheduled/github_event/api, plus repos/connectors/notes).
 - Exports `CloudTrigger` and `CloudScheduleResult` types from `tools/routines/install.ts` (no reader/consumer wired yet).
 - Adds research doc and closes B-0507/B-0508 backlog rows; updates `tools/routines/README.md` to document `cloud-schedule.json`.
@@ -40,14 +42,15 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 3 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| tools/routines/cloud-schedule.schema.json | New JSON Schema describing cloud routine config. |
-| tools/routines/install.ts | Adds exported `CloudTrigger`/`CloudScheduleResult` types (not yet consumed). |
-| tools/routines/README.md | Documents new `cloud-schedule.json` file. |
-| docs/research/2026-05-14-cloud-routines-api-auth-registration-surface-b0507.md | B-0507 research write-up. |
-| docs/backlog/P1/B-0507-...md | Marks B-0507 closed; acceptance criteria checked. |
-| docs/backlog/P1/B-0508-...md | Marks B-0508 closed; acceptance criteria checked. |
+| File                                                                           | Description                                                                  |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| tools/routines/cloud-schedule.schema.json                                      | New JSON Schema describing cloud routine config.                             |
+| tools/routines/install.ts                                                      | Adds exported `CloudTrigger`/`CloudScheduleResult` types (not yet consumed). |
+| tools/routines/README.md                                                       | Documents new `cloud-schedule.json` file.                                    |
+| docs/research/2026-05-14-cloud-routines-api-auth-registration-surface-b0507.md | B-0507 research write-up.                                                    |
+| docs/backlog/P1/B-0507-...md                                                   | Marks B-0507 closed; acceptance criteria checked.                            |
+| docs/backlog/P1/B-0508-...md                                                   | Marks B-0508 closed; acceptance criteria checked.                            |
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-16T20:39:36Z)

@@ -20,7 +20,7 @@ half-visible across the prior three: **Zeta does not
 primarily suffer from a lack of values, intent, or
 architectural ambition. The real problem is that these
 primitives are still only partially operationalized.**
-The factory is *close*, not *misaligned*.
+The factory is _close_, not _misaligned_.
 
 Her one-sentence distillation:
 
@@ -33,8 +33,8 @@ memory facts with append/retract, derived `CURRENT-*.md`
 views, explicit-not-implicit conflict state, provenance
 attestations on every proxy-mediated decision.
 
-**Most load-bearing reframing:** drift is not *belief
-drift*. It is **three distinct inside-loop operational
+**Most load-bearing reframing:** drift is not _belief
+drift_. It is **three distinct inside-loop operational
 classes plus two outside-loop classes** (five enumerated
 below):
 
@@ -54,7 +54,7 @@ below):
    snapshot + prompt-hash pinning.
 5. **Outside-loop transport fragility** — ChatGPT
    branch-conversations show create-without-open-ability
-   failures; branching is *convenience transport*, not
+   failures; branching is _convenience transport_, not
    canonical record.
 
 Classes 1-3 are solvable fully inside the repo. Classes
@@ -73,19 +73,19 @@ landed elsewhere (Memory duplicate-title lint via PR #12).
 Staging matches her proposed cadence (Week 1 Stabilize,
 Week 2-3 Determinize, Week 4 Govern, Week 5-6 Assure).
 
-| Class | Stage | Proposal | Effort | Tier |
-|---|---|---|---|---|
-| Snapshot pinning | Stabilize | Pin Claude model snapshots in session-open checks; log model + prompt-bundle-hash to tick-history | S | P1 |
-| Decision-proxy evidence artifact | Stabilize | Require `docs/decision-proxy-evidence/<date>-<id>.yaml` before any backlog/settings/roadmap change | M | P1 |
-| Branch-chat non-canonical framing | Stabilize | Document in `docs/protocols/cross-agent-communication.md` that branching is convenience-only; canonical transport = git-backed courier | S | P1 |
-| Memory duplicate-title lint | Determinize | Already partially landed — AceHack PR #12 pending merge covers the memory-index duplicate-link check | S | in-flight |
-| Memory reference-existence lint | Determinize | Extend #12's duplicate-lint with a reference-existence check (every `memory/foo.md` citation resolves to an actual file) | S | P1 |
-| Generated `CURRENT-*.md` views | Determinize | Python (or F#) algorithm that compiles `CURRENT-aaron.md` + `CURRENT-amara.md` from typed memory-fact records with supersession + priority + conflict detection | L | P2 |
-| Live-state-before-policy gate | Determinize | Rule: never recommend settings / required-check / merge-policy change without `gh api` live-state query in same work unit | S | P1 |
-| Contributor-conflicts log actually used | Govern | Populate `docs/CONTRIBUTOR-CONFLICTS.md` with already-visible disagreements (e.g., this-session LFG/AceHack positioning evolution, submit-nuget-gate-evolution, Docker-CLI-first sequencing) | M | P1 |
-| Authority-envelope + escalation path documented | Govern | ADR codifying per-proxy authority boundaries, escalation triggers, cross-agent disagreement resolution | M | P2 |
-| Provenance evidence bundles | Assure | PROV / in-toto / SLSA attestations on proxy-mediated decisions | L | P3 |
-| Export/backup verification | Assure | Restore-from-scratch test on the in-repo memory substrate | M | P2 |
+| Class                                           | Stage       | Proposal                                                                                                                                                                                     | Effort | Tier      |
+| ----------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | --------- |
+| Snapshot pinning                                | Stabilize   | Pin Claude model snapshots in session-open checks; log model + prompt-bundle-hash to tick-history                                                                                            | S      | P1        |
+| Decision-proxy evidence artifact                | Stabilize   | Require `docs/decision-proxy-evidence/<date>-<id>.yaml` before any backlog/settings/roadmap change                                                                                           | M      | P1        |
+| Branch-chat non-canonical framing               | Stabilize   | Document in `docs/protocols/cross-agent-communication.md` that branching is convenience-only; canonical transport = git-backed courier                                                       | S      | P1        |
+| Memory duplicate-title lint                     | Determinize | Already partially landed — AceHack PR #12 pending merge covers the memory-index duplicate-link check                                                                                         | S      | in-flight |
+| Memory reference-existence lint                 | Determinize | Extend #12's duplicate-lint with a reference-existence check (every `memory/foo.md` citation resolves to an actual file)                                                                     | S      | P1        |
+| Generated `CURRENT-*.md` views                  | Determinize | Python (or F#) algorithm that compiles `CURRENT-aaron.md` + `CURRENT-amara.md` from typed memory-fact records with supersession + priority + conflict detection                              | L      | P2        |
+| Live-state-before-policy gate                   | Determinize | Rule: never recommend settings / required-check / merge-policy change without `gh api` live-state query in same work unit                                                                    | S      | P1        |
+| Contributor-conflicts log actually used         | Govern      | Populate `docs/CONTRIBUTOR-CONFLICTS.md` with already-visible disagreements (e.g., this-session LFG/AceHack positioning evolution, submit-nuget-gate-evolution, Docker-CLI-first sequencing) | M      | P1        |
+| Authority-envelope + escalation path documented | Govern      | ADR codifying per-proxy authority boundaries, escalation triggers, cross-agent disagreement resolution                                                                                       | M      | P2        |
+| Provenance evidence bundles                     | Assure      | PROV / in-toto / SLSA attestations on proxy-mediated decisions                                                                                                                               | L      | P3        |
+| Export/backup verification                      | Assure      | Restore-from-scratch test on the in-repo memory substrate                                                                                                                                    | M      | P2        |
 
 **Priority rationale:** Two of the three Stabilize items are
 S-effort (snapshot pinning + branch-chat non-canonical
@@ -154,7 +154,7 @@ review:
 
 ### 2. Memory reconciliation algorithm
 
-> **Note:** the path comment below names a *proposed*
+> **Note:** the path comment below names a _proposed_
 > in-repo target (`tools/memory/reconcile.py`); no such file
 > exists in the repo today. The artifact is preserved here
 > verbatim as Amara wrote it; landing it as actual code is
@@ -225,7 +225,7 @@ def main():
 
 ### 3. CI guardrail set
 
-> **Note:** the script name below is a *proposed* in-repo
+> **Note:** the script name below is a _proposed_ in-repo
 > target (`tools/hygiene/check-memory-loop.sh`); no such file
 > exists in the repo today (current scripts are
 > `audit-*.sh`). The shape is preserved here verbatim as
@@ -280,16 +280,16 @@ bot reminder, or pre-commit hook.
 
 ## Amara's risk matrix — preserved verbatim
 
-| Risk | Likelihood | Impact | Immediate control |
-|---|---|---|---|
-| Proxy consult skipped because implicit | High | High | Mandatory `decision-proxy-evidence` artifact |
-| Memory index drift + duplication | High | High | Duplicate-title lint + existence check + generated views |
-| Model / prompt drift across Claude variants | High | High | Pin snapshot models + record prompt-bundle hash |
-| Branch-chat transport loss | Medium-High | High | Treat branch chats as convenience only |
-| Wrong inference about live repo controls | Medium | High | Query live state before recommendation |
-| Conflict resolution remains manual | Medium | High | Start populating `docs/CONTRIBUTOR-CONFLICTS.md` |
-| Repo-state ambiguity across surfaces | Medium | Medium-High | Define precedence; generated views authoritative |
-| Provenance conceptual but not cryptographic | Medium | Medium | Provenance attestations + signed bundles |
+| Risk                                        | Likelihood  | Impact      | Immediate control                                        |
+| ------------------------------------------- | ----------- | ----------- | -------------------------------------------------------- |
+| Proxy consult skipped because implicit      | High        | High        | Mandatory `decision-proxy-evidence` artifact             |
+| Memory index drift + duplication            | High        | High        | Duplicate-title lint + existence check + generated views |
+| Model / prompt drift across Claude variants | High        | High        | Pin snapshot models + record prompt-bundle hash          |
+| Branch-chat transport loss                  | Medium-High | High        | Treat branch chats as convenience only                   |
+| Wrong inference about live repo controls    | Medium      | High        | Query live state before recommendation                   |
+| Conflict resolution remains manual          | Medium      | High        | Start populating `docs/CONTRIBUTOR-CONFLICTS.md`         |
+| Repo-state ambiguity across surfaces        | Medium      | Medium-High | Define precedence; generated views authoritative         |
+| Provenance conceptual but not cryptographic | Medium      | Medium      | Provenance attestations + signed bundles                 |
 
 ---
 
@@ -300,18 +300,18 @@ bot reminder, or pre-commit hook.
 This composes tightly with three earlier session memories:
 
 - `memory/feedback_aaron_trust_based_approval_pattern_
-  approves_without_comprehending_details_2026_04_23.md`
+approves_without_comprehending_details_2026_04_23.md`
   — Aaron's trust-batch-approval mode works **because**
   the factory's substrate is substantively right; the
   hard rule is closure on what's already true
 - `memory/feedback_codex_as_substantive_reviewer_
-  teamwork_pattern_address_findings_honestly_aaron_
-  endorsed_2026_04_23.md` — Codex's findings-then-fixes
+teamwork_pattern_address_findings_honestly_aaron_
+endorsed_2026_04_23.md` — Codex's findings-then-fixes
   pattern already implements part of Amara's
   "live-state-before-policy" rule (for PR review,
   extend to all operational decisions)
 - `memory/feedback_aaron_long_term_solutions_are_quick_
-  enough_no_need_for_quick_fix_category_2026_04_23.md`
+enough_no_need_for_quick_fix_category_2026_04_23.md`
   — Aaron's "quick enough" framing IS Amara's
   "closure not ideation"; the factory runs at a pace
   that absorbs small hardening fixes without needing
@@ -353,10 +353,10 @@ algorithm is a ZSet `add + distinct` equivalent.
 This should eventually flow into:
 
 - `project_zeta_self_use_local_native_tiny_bin_file_
-  db_no_cloud_germination_2026_04_22.md` — self-use DB
+db_no_cloud_germination_2026_04_22.md` — self-use DB
   for memory facts
 - `project_zeta_is_agent_coherence_substrate_all_
-  physics_in_one_db_stabilization_goal_2026_04_22.md`
+physics_in_one_db_stabilization_goal_2026_04_22.md`
   — coherence-substrate thesis where memory-as-ZSet is
   the operational proof
 

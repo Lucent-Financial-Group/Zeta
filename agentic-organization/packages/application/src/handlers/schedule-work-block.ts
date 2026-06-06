@@ -35,8 +35,7 @@ export const ScheduleWorkBlockIdPrefix = {
   WorkScheduleBlock: "work-schedule-block",
 } as const;
 
-export type ScheduleWorkBlockIdPrefix =
-  (typeof ScheduleWorkBlockIdPrefix)[keyof typeof ScheduleWorkBlockIdPrefix];
+export type ScheduleWorkBlockIdPrefix = (typeof ScheduleWorkBlockIdPrefix)[keyof typeof ScheduleWorkBlockIdPrefix];
 
 export const ScheduleWorkBlockValidationErrorMessage = {
   AssignedAgentRequired: "schedule block assigned agent is required",
@@ -495,9 +494,9 @@ function createOptionalTeamScope(command: Pick<ScheduleWorkBlockCommand, "teamId
   return command.teamId === undefined ? {} : { teamId: command.teamId };
 }
 
-function createOptionalDiscussionAnchorPayload(
-  command: Pick<ScheduleWorkBlockCommand, "discussionAnchorId">,
-): { discussionAnchorId?: string } {
+function createOptionalDiscussionAnchorPayload(command: Pick<ScheduleWorkBlockCommand, "discussionAnchorId">): {
+  discussionAnchorId?: string;
+} {
   return command.discussionAnchorId === undefined ? {} : { discussionAnchorId: command.discussionAnchorId };
 }
 

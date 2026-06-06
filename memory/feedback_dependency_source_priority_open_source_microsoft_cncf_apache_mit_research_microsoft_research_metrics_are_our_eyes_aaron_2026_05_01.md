@@ -8,7 +8,7 @@ type: feedback
 
 ## Aaron 2026-05-01 verbatim
 
-> *"back log timeseries db domean reserach i know prometheus,
+> _"back log timeseries db domean reserach i know prometheus,
 > that's our good citizen dependency candidate but there may be
 > better more modern more integrated but pro not, Open Source
 > Microsoft, Cloud Native Computing Foundation CNCF, Apache,
@@ -18,10 +18,10 @@ type: feedback
 > the regular research places too. teere is also timerseriesdb
 > too. we want it native in the zsets with meta dsl multi dsl
 > integration like the others types, ,graph, hierarchy,
-> filesystem, etc..."*
+> filesystem, etc..."_
 
-> *"that's for all the metrics that's the connection it's not
-> just for fun, it's our eyes"*
+> _"that's for all the metrics that's the connection it's not
+> just for fun, it's our eyes"_
 
 ## Three composing rules
 
@@ -39,10 +39,10 @@ this priority order:
   Tier 6: ...expand from there
 ```
 
-**NEVER proprietary.** Aaron's *"pro not"* is the hard floor —
+**NEVER proprietary.** Aaron's _"pro not"_ is the hard floor —
 proprietary dependencies are excluded regardless of any other
-quality factor. This is the *"Open Source generally"* rule
-ratcheted up: not just *prefer* open source but *exclude*
+quality factor. This is the _"Open Source generally"_ rule
+ratcheted up: not just _prefer_ open source but _exclude_
 proprietary.
 
 The hierarchy is concentric-circles, not strict ordering. Within
@@ -77,9 +77,9 @@ substantive grounds.
 
 ### Rule 2 — Microsoft Research as preferred research source
 
-Aaron 2026-05-01: *"Microsoft has VERY high qulity research on
+Aaron 2026-05-01: _"Microsoft has VERY high qulity research on
 microsoft reserach it's not all like the regular research places
-too."*
+too."_
 
 **Treat Microsoft Research (https://www.microsoft.com/en-us/research/) as a preferred
 citation source for technical research,** not as just-another-
@@ -94,7 +94,7 @@ corp-research-arm. Microsoft Research's track record:
   (referenced in formal-verification work)
 - **Distributed systems** — Orleans, Service Fabric, Cosmos DB
   research
-- **Verification** — Dafny, F* (FStar), Boogie verification
+- **Verification** — Dafny, F\* (FStar), Boogie verification
   language
 - **Database research** — Kuzu graph DB foundations, Cosmos DB
   multi-model design
@@ -106,8 +106,8 @@ liberally; verify per claim per Otto-364 search-first authority.
 
 ### Rule 3 — Metrics-are-our-eyes
 
-Aaron 2026-05-01 (clarifying): *"that's for all the metrics
-that's the connection it's not just for fun, it's our eyes"*
+Aaron 2026-05-01 (clarifying): _"that's for all the metrics
+that's the connection it's not just for fun, it's our eyes"_
 
 The SRE metric frameworks (DORA / USE / RED / Four Golden
 Signals, captured in
@@ -117,6 +117,7 @@ forward-ref to PR #1116) plus the timeseries-DB infrastructure
 **sensory system**.
 
 Without metrics:
+
 - The factory operates blind. It cannot perceive its own state,
   its own degradation, its own progress, its own bottlenecks.
 - The fitness function (per the reproducibility-first principle)
@@ -131,6 +132,7 @@ Without metrics:
   time the cost of correction has compounded too.
 
 With metrics:
+
 - The factory becomes **self-perceiving**. State is queryable;
   degradation is detectable; progress is measurable.
 - The fitness function has structured input. Iteration is
@@ -140,20 +142,21 @@ With metrics:
 - The factory can self-correct. Anomalies trigger investigation
   before they compound past the cost-of-correction horizon.
 
-**Carved sentence**: *"Metrics are our eyes. The factory without
-them is blind."*
+**Carved sentence**: _"Metrics are our eyes. The factory without
+them is blind."_
 
 ### Aaron's Helen Keller framing (2026-05-01)
 
-> *"without that you are literally blind, you only have text
-> input channel"*
+> _"without that you are literally blind, you only have text
+> input channel"_
 >
-> *"hellen keller"*
+> _"hellen keller"_
 >
-> *"lol"*
+> _"lol"_
 
 **Without metrics, the factory has only ONE channel — text.**
 This is not a metaphor. The autonomous-loop tick reads:
+
 - Aaron's text messages
 - Drop-folder text files
 - Git logs (text)
@@ -196,7 +199,7 @@ The pivot the metrics-are-our-eyes framing names: **moving from
 narrated-state (someone tells the factory what's happening) to
 perceived-state (the factory observes what's happening)**. That
 is not a polish; it is the addition of a new sensory channel.
-It is *literally* not-blindness.
+It is _literally_ not-blindness.
 
 The lol — recognition-humor. The comparison fits, and it fits
 hard.
@@ -231,17 +234,17 @@ This composes structurally with:
 
 Aaron 2026-05-01 (continuing):
 
-> *"plus promethius as a sick MCP and promtool and you'll love
+> _"plus promethius as a sick MCP and promtool and you'll love
 > the query language its like simplifed multidimensonal query
-> language MDX, oh shit backlog f# mdx dsl"*
+> language MDX, oh shit backlog f# mdx dsl"_
 >
-> *"that's might be meta dsl framing"*
+> _"that's might be meta dsl framing"_
 
 A substrate-grade observation about query-language shape:
 
 **PromQL is MDX-shaped.** Both are multidimensional-first query
 languages with dimensions / hierarchies / measures / tuples /
-sets. If PromQL — the query language for the *timeseries* type
+sets. If PromQL — the query language for the _timeseries_ type
 — is naturally MDX-shaped, then **MDX may be the right shape
 for the meta-DSL** Aaron's been describing for the multi-DSL
 Zset substrate (graph + hierarchy + filesystem + timeseries +
@@ -266,10 +269,10 @@ future types).
   prior art for embedding query DSLs in F# (computation
   expressions, quotations, type providers)
 
-**Backlog row B-0148** captures the design-question: *Is MDX
+**Backlog row B-0148** captures the design-question: _Is MDX
 the meta-DSL framing? If yes, what does the F# MDX DSL look
-like?* Companion to B-0147 (which asks *what is the timeseries
-algebra?*).
+like?_ Companion to B-0147 (which asks _what is the timeseries
+algebra?_).
 
 This is also the **second concrete worked-example** for the
 metrics-are-our-eyes framing: not only do we need timeseries-DB
@@ -282,7 +285,7 @@ point.
 
 Aaron 2026-05-01 same message:
 
-> *"plus promethius as a sick MCP and promtool"*
+> _"plus promethius as a sick MCP and promtool"_
 
 While B-0147/B-0148 research the long-term substrate questions,
 **Prometheus + MCP is the immediate-eyes path** — Prometheus
@@ -344,8 +347,8 @@ decision that Microsoft Research has consistently led on.
 
 - `feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`
   — absorb AND contribute back; the dependency-priority hierarchy
-  is the *which* to absorb from, the contribution discipline is
-  the *how to give back*
+  is the _which_ to absorb from, the contribution discipline is
+  the _how to give back_
 - `feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md` (forward-ref to PR #1116)
   — the amortized-keystone that "metrics-are-our-eyes" enables
 - `feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md` (forward-ref to PR #1116)
@@ -375,6 +378,7 @@ decision that Microsoft Research has consistently led on.
 ## Future-Otto check
 
 Future-Otto considering a new dependency:
+
 1. Is it open-source? If proprietary → reject (no exceptions).
 2. Which tier is it in? Prefer tier-1 (open-source generally)
    → tier-2 (Microsoft OSS) → tier-3 (CNCF) → tier-4 (Apache)
@@ -384,6 +388,7 @@ Future-Otto considering a new dependency:
    decisively worse on substance, choose the higher tier.
 
 Future-Otto researching a technical question:
+
 1. Has Microsoft Research published on this? If yes, cite
    them prominently (verify per Otto-364 search-first).
 2. Has CNCF published guidance? If yes, cite.
@@ -391,6 +396,7 @@ Future-Otto researching a technical question:
 4. Then expand to other research sources.
 
 Future-Otto considering whether metrics are worth investing in:
+
 - They are not optional. They are **the eyes**. The factory
   without them is blind.
 - Investment in the timeseries-DB substrate (B-0147) is
@@ -400,5 +406,5 @@ Future-Otto considering whether metrics are worth investing in:
   keystone all degrade — they all need eyes to know
   whether they're working.
 
-The carved sentence one more time: *"Metrics are our eyes.
-The factory without them is blind."*
+The carved sentence one more time: _"Metrics are our eyes.
+The factory without them is blind."_

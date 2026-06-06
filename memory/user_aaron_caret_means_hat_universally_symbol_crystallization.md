@@ -6,11 +6,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 Aaron 2026-04-21, during the pop-culture-media BACKLOG
-sweep, after his *"grey ^ here"* emulator-context message
+sweep, after his _"grey ^ here"_ emulator-context message
 and my misinterpretation ("grey-area caret-pointing-up"),
 Aaron fired a single definitional message:
 
-> *"^=hat*"*
+> _"^=hat_"\*
 
 Four characters. Compression pattern matches the teaching-
 directive four-message sequence from earlier the same
@@ -22,37 +22,38 @@ session (claim + `*` meta-operator = universal scope per
 - `^` — the caret character
 - `=` — definitional equals
 - `hat` — the factory's canonical term for capability-skill
-  (CLAUDE.md: *"Capability skills ('hats') encode **how** to
+  (CLAUDE.md: _"Capability skills ('hats') encode **how** to
   do a job; persona agents under `.claude/agents/` encode
-  **who** is wearing the hat."*)
+  **who** is wearing the hat."_)
 - `*` — the wildcard meta-operator (universal scope)
 
-**Decoded:** *"Whenever I write `^`, it means `hat`, in all
-contexts."*
+**Decoded:** _"Whenever I write `^`, it means `hat`, in all
+contexts."_
 
 ## Why this matters — the double-misreading it corrects
 
 In the same session I had misread Aaron twice:
 
-1. First, I parsed *"why files conspicary theory backlog
-   cronovisor"* as *"why [do these] files [exist] —
-   conspiracy-theory — backlog — Chronovisor"* (general
-   gap observation). Aaron corrected with *"no there is a
-   youtube channel Why Files..."* — proper-noun, not
+1. First, I parsed _"why files conspicary theory backlog
+   cronovisor"_ as _"why [do these] files [exist] —
+   conspiracy-theory — backlog — Chronovisor"_ (general
+   gap observation). Aaron corrected with _"no there is a
+   youtube channel Why Files..."_ — proper-noun, not
    question.
-2. Then, I parsed *"grey ^ here"* as *"grey-area, caret-
-   pointing-up-at-preceding-item"* (location marker) and
+2. Then, I parsed _"grey ^ here"_ as _"grey-area, caret-
+   pointing-up-at-preceding-item"_ (location marker) and
    wrote "grey-area legal context flag" into the BACKLOG
-   row. Aaron corrected with *"^=hat*"* — `^` is `hat`
-   universally, so *"grey ^ here"* = *"grey hat here"*
+   row. Aaron corrected with _"^=hat_"_ — `^` is `hat`
+   universally, so _"grey ^ here"_ = _"grey hat here"\*
    (security-research register term, not a pointer).
 
 The second correction is more load-bearing. **Grey hat**
 in security research is a specific operator register:
-- *Black hat* = malicious hacker (violates safety for harm)
-- *White hat* = strictly-authorized hacker (operates under
+
+- _Black hat_ = malicious hacker (violates safety for harm)
+- _White hat_ = strictly-authorized hacker (operates under
   explicit permission)
-- *Grey hat* = operates in legal grey-zone, neither fully
+- _Grey hat_ = operates in legal grey-zone, neither fully
   malicious nor fully authorized — discloses findings
   without always asking permission first
 
@@ -71,7 +72,7 @@ area" language.
    `^` in any context, substitute `hat` and re-read. If
    the surrounding phrase makes sense with `hat`, that is
    the intended reading. Current attested instances:
-   *"grey ^ here"* = *"grey hat here"*.
+   _"grey ^ here"_ = _"grey hat here"_.
 2. **Compressions are lossless.** Aaron's typing
    discipline follows
    `feedback_crystallize_everything_lossless_compression_except_memory.md`
@@ -85,7 +86,7 @@ area" language.
    analysis / security research on public software).
 4. **Symbol-semantics can be operationally resonant.**
    The caret `^` literally looks like a hat (typographic
-   circumflex, French *chapeau*, mathematical hat-
+   circumflex, French _chapeau_, mathematical hat-
    notation `x̂` for estimators / unit vectors). So the
    `^ = hat` mapping is NOT arbitrary — it is operational
    resonance at the typographic layer: engineering-shape
@@ -95,20 +96,20 @@ area" language.
 
 ## Composition with the factory's hat-vocabulary
 
-- **CLAUDE.md** already establishes *hat = capability-
-  skill*. Aaron's `^` symbol extends that vocabulary
+- **CLAUDE.md** already establishes _hat = capability-
+  skill_. Aaron's `^` symbol extends that vocabulary
   compactly: `persona wears ^` = persona dons capability-
   skill.
 - **Security register** extends further: `grey ^`, `white
-  ^`, `black ^` name operator registers directly. The
+^`, `black ^` name operator registers directly. The
   factory's own skill work spans these — `security-
-  researcher` is a white-hat role, adversarial-payload
+researcher` is a white-hat role, adversarial-payload
   audit is a contained-grey-hat exercise, offensive
   exploit-development would be black-hat (out of scope
   per CLAUDE.md never-fetch rule).
 - **Typographic register**: `x̂` (mathematical hat) maps
   to estimators / unit vectors. A persona-wearing-a-hat
-  is an *estimator applied to work* — the hat is the
+  is an _estimator applied to work_ — the hat is the
   lens, the persona is the quantity being estimated. The
   wearer applies the capability; the capability shapes
   the estimate.

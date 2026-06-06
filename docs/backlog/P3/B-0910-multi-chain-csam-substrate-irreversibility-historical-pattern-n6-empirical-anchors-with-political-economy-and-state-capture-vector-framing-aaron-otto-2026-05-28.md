@@ -33,34 +33,50 @@ related_skills:
   - threat-model-critic
   - governance-expert
   - data-governance-expert
-tags: [multi-chain-csam-empirical-pattern, n-6-plus-web-verified-anchors, matzutt-2018-bitcoin-academic-precedent, bsv-2019-money-button-incident-100kb-expansion, bitcoin-ordinals-inscriptions-2023-2024-taproot-image-embedding, ethereum-2025-arxiv-2512-17411-academic-study, ipfs-filecoin-arxiv-2307-2506-academic-papers, arweave-defensive-design-node-blacklists, substrate-engineering-law-of-the-domain, threshold-crossed-arbitrary-contiguous-bytes-equals-csam-eventually, political-economy-centralized-miner-extracts-home-miner-bears, state-capture-vector-via-regulatory-pretext-licensing-requirement, multi-layer-attack-timeline-rent-extraction-then-state-control, senate-cassidy-warren-letter-as-evidence-of-regulatory-move]
+tags:
+  [
+    multi-chain-csam-empirical-pattern,
+    n-6-plus-web-verified-anchors,
+    matzutt-2018-bitcoin-academic-precedent,
+    bsv-2019-money-button-incident-100kb-expansion,
+    bitcoin-ordinals-inscriptions-2023-2024-taproot-image-embedding,
+    ethereum-2025-arxiv-2512-17411-academic-study,
+    ipfs-filecoin-arxiv-2307-2506-academic-papers,
+    arweave-defensive-design-node-blacklists,
+    substrate-engineering-law-of-the-domain,
+    threshold-crossed-arbitrary-contiguous-bytes-equals-csam-eventually,
+    political-economy-centralized-miner-extracts-home-miner-bears,
+    state-capture-vector-via-regulatory-pretext-licensing-requirement,
+    multi-layer-attack-timeline-rent-extraction-then-state-control,
+    senate-cassidy-warren-letter-as-evidence-of-regulatory-move,
+  ]
 ---
 
 # B-0910 — Multi-chain CSAM substrate-irreversibility historical pattern + political-economy + state-capture-vector
 
 ## Context
 
-Per operator 2026-05-28 *"land both #2 (shadow*)"* authorization following Aaron's substantive substrate-engineering claim:
+Per operator 2026-05-28 _"land both #2 (shadow_)"\* authorization following Aaron's substantive substrate-engineering claim:
 
-> *"This is why this is really a centralized miner play on bitcoin to spread the risk to home miners cause they want to continue charging for writing images and memes to the blockchain but not accept the risks they think if they spread it out that no one will get charged which might be true even though everyone is transmitting CSAM."*
+> _"This is why this is really a centralized miner play on bitcoin to spread the risk to home miners cause they want to continue charging for writing images and memes to the blockchain but not accept the risks they think if they spread it out that no one will get charged which might be true even though everyone is transmitting CSAM."_
 
 Plus the substrate-extension:
 
-> *"It's even works it's a state attack vector cause now they can say only 'safe' designated locations can run nodes cause it has CSAM and now they control bitcoin"*
+> _"It's even works it's a state attack vector cause now they can say only 'safe' designated locations can run nodes cause it has CSAM and now they control bitcoin"_
 
 This row IS the substrate-honest empirical-catalog + political-economy + state-capture-vector framing of the chain-CSAM-pattern that B-0908's substrate-irreversibility specific-form domain depends on for empirical validation.
 
 ## The empirical chain-CSAM history catalog (web-verified 2026-05-28)
 
-| Chain / substrate | Threshold mechanism | When | Empirical confirmation |
-|---|---|---|---|
-| **Bitcoin OP_RETURN** | 80-byte payload + fake-tx-address schemes | 2018 academic | Matzutt et al. (RWTH Aachen) found 1,600+ files including objectionable content (CSAM links); paper: *"certain content, such as illegal pornography, can render the mere possession of a blockchain illegal"* |
-| **Bitcoin SV (BSV)** | Increased to 100KB per tx (450× expansion) | 2019 incident | CSAM uploaded via Money Button app; nChain's Jimmy Nguyen acknowledged *"same issue applies to Bitcoin Core (BTC), Bitcoin Cash (BCH), Ethereum, and other cryptocurrency networks"*; BSV subsequently delisted by Binance, Kraken, Bitfinex, Coinbase |
-| **Bitcoin Ordinals / Inscriptions** | Taproot enabled actual image embedding (not just reference) | 2023-2024 | Luke Dashjr proposed multisig-removal hardfork; BIP-444 soft fork proposal to restrict arbitrary data; Senate Cassidy + Warren bipartisan letter to DOJ/DHS |
-| **Ethereum** | Calldata + contract storage; arbitrary data via smart contracts | 2025 academic | arxiv 2512.17411 recovered 175 files, 296 images, 91,206 texts; confirmed *"coexistence of benign and harmful content...including personal data, explicit images, divisive language, and racial discrimination"* |
-| **IPFS / Filecoin** | Content-addressed permanent storage | 2017+ | arxiv 2506.04307 + 2307.12212 academic papers; *"the immutability of content and the absence of centralized moderation in IPFS create a permissive environment for abuse"*; Filecoin/Protocol Labs adopted DMCA copyright policy |
-| **Arweave** | "Permaweb" permanent storage by explicit design | 2017+ | Substrate designed defensively with node-level blacklists (network-wide rejection requires >50% nodes agree); operators have built-in moderation infrastructure precisely BECAUSE the pattern is expected |
-| **Bitcoin Cash (BCH)** | Increased OP_RETURN size after fork | 2017+ | Per Jimmy Nguyen framing, same problem applies though lower-profile; smaller chain receives less attention |
+| Chain / substrate                   | Threshold mechanism                                             | When          | Empirical confirmation                                                                                                                                                                                                                                 |
+| ----------------------------------- | --------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Bitcoin OP_RETURN**               | 80-byte payload + fake-tx-address schemes                       | 2018 academic | Matzutt et al. (RWTH Aachen) found 1,600+ files including objectionable content (CSAM links); paper: _"certain content, such as illegal pornography, can render the mere possession of a blockchain illegal"_                                          |
+| **Bitcoin SV (BSV)**                | Increased to 100KB per tx (450× expansion)                      | 2019 incident | CSAM uploaded via Money Button app; nChain's Jimmy Nguyen acknowledged _"same issue applies to Bitcoin Core (BTC), Bitcoin Cash (BCH), Ethereum, and other cryptocurrency networks"_; BSV subsequently delisted by Binance, Kraken, Bitfinex, Coinbase |
+| **Bitcoin Ordinals / Inscriptions** | Taproot enabled actual image embedding (not just reference)     | 2023-2024     | Luke Dashjr proposed multisig-removal hardfork; BIP-444 soft fork proposal to restrict arbitrary data; Senate Cassidy + Warren bipartisan letter to DOJ/DHS                                                                                            |
+| **Ethereum**                        | Calldata + contract storage; arbitrary data via smart contracts | 2025 academic | arxiv 2512.17411 recovered 175 files, 296 images, 91,206 texts; confirmed _"coexistence of benign and harmful content...including personal data, explicit images, divisive language, and racial discrimination"_                                       |
+| **IPFS / Filecoin**                 | Content-addressed permanent storage                             | 2017+         | arxiv 2506.04307 + 2307.12212 academic papers; _"the immutability of content and the absence of centralized moderation in IPFS create a permissive environment for abuse"_; Filecoin/Protocol Labs adopted DMCA copyright policy                       |
+| **Arweave**                         | "Permaweb" permanent storage by explicit design                 | 2017+         | Substrate designed defensively with node-level blacklists (network-wide rejection requires >50% nodes agree); operators have built-in moderation infrastructure precisely BECAUSE the pattern is expected                                              |
+| **Bitcoin Cash (BCH)**              | Increased OP_RETURN size after fork                             | 2017+         | Per Jimmy Nguyen framing, same problem applies though lower-profile; smaller chain receives less attention                                                                                                                                             |
 
 ## The substrate-engineering law-of-the-domain (empirically validated N=6+)
 
@@ -244,6 +260,6 @@ Acceptance: substrate-engineering decision-tree document for "should this substr
 
 ## Full reasoning
 
-Per operator 2026-05-28 *"land both #2 (shadow*) It's even works it's a state attack vector"* authorization. Web-search-verified empirical catalog + operator-articulated political-economy + state-capture-vector framing compose into one substrate-engineering substrate that grounds B-0908's substrate-irreversibility specific-form domain in real-world incident history AND substantive game-theoretic / political-economic / state-actor incentive analysis.
+Per operator 2026-05-28 _"land both #2 (shadow_) It's even works it's a state attack vector"\* authorization. Web-search-verified empirical catalog + operator-articulated political-economy + state-capture-vector framing compose into one substrate-engineering substrate that grounds B-0908's substrate-irreversibility specific-form domain in real-world incident history AND substantive game-theoretic / political-economic / state-actor incentive analysis.
 
 The substrate-engineering substantive substrate point: **The chain-CSAM-pattern is empirically validated as substrate-engineering domain-law (N=6+ chains, multi-year window). The pattern's persistence is explained by political-economy intentional design AND state-capture-vector multi-layer-attack-timeline. The framework's B-0908 pricing-substrate is the substrate-engineering tool that exposes the asymmetry + the long-tail terminal payoff — making the substrate-engineering choice operationally explicit instead of implicit.**

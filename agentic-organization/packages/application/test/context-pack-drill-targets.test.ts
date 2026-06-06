@@ -59,31 +59,34 @@ test("context pack drill targets map typed source pointers into deterministic UI
 
   const targets = contextPackDrillTargetsForItem(item);
 
-  deepEqual(targets.map(({ label, routeRef, targetId, targetKind }) => ({
-    label,
-    routeRef,
-    targetId,
-    targetKind,
-  })), [
-    {
-      label: "Document doc-billing-brd",
-      routeRef: "doc_unit:doc-billing-brd:v3",
-      targetId: "doc-billing-brd",
-      targetKind: ContextPackSourcePointerKind.DocUnit,
-    },
-    {
-      label: "Decision decision-owner",
-      routeRef: "decision:decision-owner",
-      targetId: "decision-owner",
-      targetKind: ContextPackSourcePointerKind.Decision,
-    },
-    {
-      label: "Memory mem-billing",
-      routeRef: "hindsight_memory:hindsight:mem-billing",
-      targetId: "mem-billing",
-      targetKind: ContextPackSourcePointerKind.HindsightMemory,
-    },
-  ]);
+  deepEqual(
+    targets.map(({ label, routeRef, targetId, targetKind }) => ({
+      label,
+      routeRef,
+      targetId,
+      targetKind,
+    })),
+    [
+      {
+        label: "Document doc-billing-brd",
+        routeRef: "doc_unit:doc-billing-brd:v3",
+        targetId: "doc-billing-brd",
+        targetKind: ContextPackSourcePointerKind.DocUnit,
+      },
+      {
+        label: "Decision decision-owner",
+        routeRef: "decision:decision-owner",
+        targetId: "decision-owner",
+        targetKind: ContextPackSourcePointerKind.Decision,
+      },
+      {
+        label: "Memory mem-billing",
+        routeRef: "hindsight_memory:hindsight:mem-billing",
+        targetId: "mem-billing",
+        targetKind: ContextPackSourcePointerKind.HindsightMemory,
+      },
+    ],
+  );
   deepEqual(targets[2]?.governance, governance);
   ok(targets[2]?.governance !== governance);
   ok(targets[2]?.governance?.outcome !== governance.outcome);
@@ -134,10 +137,10 @@ test("context pack drill target groups skip items without pointers and dedupe re
 
   equal(groups.length, 1);
   equal(groups[0]?.itemId, "trace");
-  deepEqual(groups[0]?.targets.map(({ routeRef }) => routeRef), [
-    "trace:trace-billing",
-    "log:lgtm:log-billing-timeout",
-  ]);
+  deepEqual(
+    groups[0]?.targets.map(({ routeRef }) => routeRef),
+    ["trace:trace-billing", "log:lgtm:log-billing-timeout"],
+  );
 });
 
 function contextItem(overrides: Partial<ContextPackItem> = {}): ContextPackItem {

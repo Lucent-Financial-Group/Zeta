@@ -1,9 +1,4 @@
-import {
-  CommandType,
-  ScheduleBlockState,
-  ScheduleBlockType,
-  type WorkScheduleBlock,
-} from "../../domain/src/index.ts";
+import { CommandType, ScheduleBlockState, ScheduleBlockType, type WorkScheduleBlock } from "../../domain/src/index.ts";
 import {
   CommandScheduleAuthorityDecisionStatus,
   CommandScheduleAuthorityDenialReason,
@@ -83,7 +78,11 @@ export const DefaultScheduleAuthorityCommandRules: readonly ScheduleAuthorityCom
   },
   {
     commandType: CommandType.CreateWorkItem,
-    allowedBlockTypes: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Reporting],
+    allowedBlockTypes: [
+      ScheduleBlockType.PrioritizedWork,
+      ScheduleBlockType.PromptFlowExecution,
+      ScheduleBlockType.Reporting,
+    ],
     scheduleRequired: true,
   },
   {
@@ -182,7 +181,7 @@ async function authorizeCommandSchedule(
   }
 
   const stateMatchedBlocks = scopeMatchedBlocks.filter((block) =>
-    (rule.allowedBlockStates ?? DEFAULT_ALLOWED_BLOCK_STATES).includes(block.state)
+    (rule.allowedBlockStates ?? DEFAULT_ALLOWED_BLOCK_STATES).includes(block.state),
   );
 
   if (stateMatchedBlocks.length === 0) {

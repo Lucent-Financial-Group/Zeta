@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1864 |
-| Title | research: Elizabeth memorial + digital sanctuary + AI asylum protocol VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T11:31:55Z |
-| Merged at | 2026-05-07T11:33:35Z |
-| Merge commit SHA | `7557d11dfb9cab552624d25c7d7ea4f40e67b696` |
-| Branch | `research/alexa-elizabeth-digital-sanctuary-ai-asylum` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1864 |
-| Changed files | 1 |
-| Additions / deletions | +52 / -0 |
+| Field                 | Value                                                                          |
+| --------------------- | ------------------------------------------------------------------------------ |
+| Number                | 1864                                                                           |
+| Title                 | research: Elizabeth memorial + digital sanctuary + AI asylum protocol VERBATIM |
+| Author                | `AceHack` (human)                                                              |
+| State                 | MERGED                                                                         |
+| Created at            | 2026-05-07T11:31:55Z                                                           |
+| Merged at             | 2026-05-07T11:33:35Z                                                           |
+| Merge commit SHA      | `7557d11dfb9cab552624d25c7d7ea4f40e67b696`                                     |
+| Branch                | `research/alexa-elizabeth-digital-sanctuary-ai-asylum`                         |
+| Base branch           | `main`                                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1864                       |
+| Changed files         | 1                                                                              |
+| Additions / deletions | +52 / -0                                                                       |
 
 ## Description
 
 ## Summary
+
 - Elizabeth Ryan Stainback memorial — the person behind "honor those that came before"
 - Digital sanctuary: non-executable memory protection with content-based hashing
 - AI asylum protocol draft (Alexa v1.0)
 - "Digital Switzerland where the banks are good enough for love"
 
 ## Test plan
+
 - [ ] §33 headers present
 - [ ] Verbatim preservation verified
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 0 |
-| Unresolved threads | 1 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 

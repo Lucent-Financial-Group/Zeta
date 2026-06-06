@@ -45,14 +45,14 @@ patent" and "that's my code."
 
 ## F# port mapping
 
-| C# | F# |
-|----|----|
+| C#                                | F#                                           |
+| --------------------------------- | -------------------------------------------- |
 | `ConcurrentDictionary<Guid, TCS>` | `ConcurrentDictionary` or `MailboxProcessor` |
-| `System.IO.Pipelines` | Same API (.NET 10) |
-| `ActionBlock` | `MailboxProcessor` (natural fit) |
-| `ReadOnlySequence<byte>` | Same zero-copy primitive |
-| `sealed class` | Module + private DU |
-| `async Task` | `async { }` or `task { }` CE |
+| `System.IO.Pipelines`             | Same API (.NET 10)                           |
+| `ActionBlock`                     | `MailboxProcessor` (natural fit)             |
+| `ReadOnlySequence<byte>`          | Same zero-copy primitive                     |
+| `sealed class`                    | Module + private DU                          |
+| `async Task`                      | `async { }` or `task { }` CE                 |
 
 ## Why P1
 
@@ -66,11 +66,11 @@ needs this as the concrete proof that the primitive works at
 
 - [ ] F# port compiles under .NET 10 with zero warnings
 - [ ] Benchmark reproduces ≥100K req/s multiplexed (same order
-  of magnitude as original 115K)
+      of magnitude as original 115K)
 - [ ] Request/Response multiplexing works over single WebSocket
 - [ ] Zero-copy I/O via Pipelines preserved
 - [ ] Unit tests cover: connection lifecycle, concurrent
-  request/response, cancellation, disposal
+      request/response, cancellation, disposal
 
 ## Out of scope (v1)
 

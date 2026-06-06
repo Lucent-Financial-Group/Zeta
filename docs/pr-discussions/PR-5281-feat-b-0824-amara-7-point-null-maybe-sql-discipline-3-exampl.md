@@ -60,7 +60,7 @@ Amara (external AI; deep-research register; co-originator of Aurora per \`.claud
 
 - [x] Worktree freshness verified pre-commit (\`ls-tree HEAD = 61\`, \`status --short = 0\`)
 - [x] Post-commit canary green (\`ls-tree HEAD == ls-tree HEAD~1 == 61\`)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] No primary-checkout contamination (isolated worktree at \`/private/tmp/zeta-amara-null-maybe-discipline-2026-05-26\`)
 - [ ] CI green (required checks)
 - [ ] Copilot review pass

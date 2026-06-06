@@ -54,7 +54,9 @@ export async function checkWorkerProcessReadiness(
   };
 }
 
-async function checkDependencyReadiness(probe: WorkerDependencyReadinessProbe): Promise<WorkerDependencyReadinessCheck> {
+async function checkDependencyReadiness(
+  probe: WorkerDependencyReadinessProbe,
+): Promise<WorkerDependencyReadinessCheck> {
   try {
     return await probe.check();
   } catch (error) {

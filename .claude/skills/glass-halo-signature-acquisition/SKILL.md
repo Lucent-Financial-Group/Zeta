@@ -6,16 +6,16 @@ description: Glass-halo consent signature capture — records shown text, Englis
 # Glass-halo signature acquisition
 
 Acquire and record a glass-halo consent signature with a complete, auditable trail.
-The record must show **all three parts** (operator definition, 2026-05-30): *"the
+The record must show **all three parts** (operator definition, 2026-05-30): _"the
 record show what you showed me and how i responded in english and my signature -- all
-3."*
+3."_
 
 ## The signature IS the informed approval (not the keystroke)
 
-Operator 2026-05-30: *"my signature is the approval/signature not the actual running of
-the command."* The person's informed approval is the signature; an agent may **record**
+Operator 2026-05-30: _"my signature is the approval/signature not the actual running of
+the command."_ The person's informed approval is the signature; an agent may **record**
 it (run the commit) once the person has been shown the document and has explicitly
-approved + authorized recording. The consent-first floor forbids *inventing* consent --
+approved + authorized recording. The consent-first floor forbids _inventing_ consent --
 never record a signature without a real, informed, explicit approval. Genuine approval +
 explicit authorization to record = recording is execution, not forgery.
 
@@ -24,20 +24,20 @@ explicit authorization to record = recording is execution, not forgery.
 Every `docs/consent/glass-halo/<name>.md` MUST capture:
 
 1. **What was shown.** Link/quote exactly what the person reviewed: the commitment text
-   + `docs/consent/glass-halo/README.md` (convention) + `SIGNING.md` (signing mechanism)
-   + the exact command/PR if an agent will record it.
+   - `docs/consent/glass-halo/README.md` (convention) + `SIGNING.md` (signing mechanism)
+   - the exact command/PR if an agent will record it.
 2. **The person's response, verbatim English.** Quote their actual words (agreement,
    questions, conditions, or boundary). Do not paraphrase the consent itself.
 3. **The signature**, with its **tier** named (see below) + date + who recorded it.
 
 ## Signature tiers (weakest -> strongest)
 
-| Tier | What it is | When |
-|---|---|---|
+| Tier                                           | What it is                                                                                                                          | When                                            |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | **approval-as-signature** ("for now" baseline) | informed English approval, recorded by an agent at the person's explicit authorization; commit authored under the person's identity | quickest; valid; the operator's chosen baseline |
-| **self-committed** | the person commits their own `<name>.md` under their own GitHub identity (identity = signature) | when the person commits directly |
-| **Touch-ID / Secure-Enclave signed** | `git commit -S` with a Touch-ID-gated Secure-Enclave key (per `SIGNING.md`); GitHub "Verified" | cryptographic non-repudiation escalation |
-| **DocuSign-executed** | external e-signature flow (e.g. real-estate-style), referenced from the commit | for participants who prefer it |
+| **self-committed**                             | the person commits their own `<name>.md` under their own GitHub identity (identity = signature)                                     | when the person commits directly                |
+| **Touch-ID / Secure-Enclave signed**           | `git commit -S` with a Touch-ID-gated Secure-Enclave key (per `SIGNING.md`); GitHub "Verified"                                      | cryptographic non-repudiation escalation        |
+| **DocuSign-executed**                          | external e-signature flow (e.g. real-estate-style), referenced from the commit                                                      | for participants who prefer it                  |
 
 A signature may start at the baseline and escalate later (re-commit `-S`, or attach
 DocuSign). Record which tier was used.
@@ -79,8 +79,8 @@ DocuSign). Record which tier was used.
 
 ## Origin
 
-Operator 2026-05-30: after reviewing his own glass-halo commitment he said *"I read the
+Operator 2026-05-30: after reviewing his own glass-halo commitment he said _"I read the
 document and I agree ... my signature is the approval/signature not the actual running of
 the command ... we should save glass halo signature aqusiation as a skill so the record
-show what you showed me and how i responded in english and my signature all 3."* The
+show what you showed me and how i responded in english and my signature all 3."_ The
 first record produced under this skill is `docs/consent/glass-halo/aaron-stainback.md`.

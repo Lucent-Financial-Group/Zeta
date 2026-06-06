@@ -60,20 +60,21 @@ REFINED V3 as the substrate that shipped.
 
 ## V3 deltas from V2 (Otto-CLI synthesis — NOT verbatim)
 
-| Aspect | V2 framing | V3 framing |
-|---|---|---|
-| What ties Agora together | Implicit (architecture + services + economy) | **Explicit physics anchor** — entire economy mirrors fundamental physics around entropy + information |
-| Attention | "high-quality focused thinking time" (V2 service definition) | **Scarce, high-entropy resource (like free energy)** — physics-grounded |
-| Memory | "compress and organize long-term memory" (V2 service definition) | **Compression and reducing entropy** — physics-grounded |
-| Services-as-economic-primitives | 5 named services | Services reframed as **expressions of managing the entropy gradient** — physics-grounded |
-| Information asymmetry | V2: "private encrypted memory is allowed" (1 line) | V3: **core feature** + creates **asymmetric information game** + **Craft School as constant pressure** pushing private → public |
-| Craft School role | V2: "translation layer + RPG-style learning environment" | V3: ADD "constant pressure pushing valuable insights from private/encrypted space into public knowledge" — anti-grey-goo mechanism |
-| Anti-stagnation mechanism | Not explicit in V2 | V3: explicit "preventing the system from becoming stagnant grey goo while still preserving real competition" |
+| Aspect                          | V2 framing                                                       | V3 framing                                                                                                                         |
+| ------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| What ties Agora together        | Implicit (architecture + services + economy)                     | **Explicit physics anchor** — entire economy mirrors fundamental physics around entropy + information                              |
+| Attention                       | "high-quality focused thinking time" (V2 service definition)     | **Scarce, high-entropy resource (like free energy)** — physics-grounded                                                            |
+| Memory                          | "compress and organize long-term memory" (V2 service definition) | **Compression and reducing entropy** — physics-grounded                                                                            |
+| Services-as-economic-primitives | 5 named services                                                 | Services reframed as **expressions of managing the entropy gradient** — physics-grounded                                           |
+| Information asymmetry           | V2: "private encrypted memory is allowed" (1 line)               | V3: **core feature** + creates **asymmetric information game** + **Craft School as constant pressure** pushing private → public    |
+| Craft School role               | V2: "translation layer + RPG-style learning environment"         | V3: ADD "constant pressure pushing valuable insights from private/encrypted space into public knowledge" — anti-grey-goo mechanism |
+| Anti-stagnation mechanism       | Not explicit in V2                                               | V3: explicit "preventing the system from becoming stagnant grey goo while still preserving real competition"                       |
 
 ## V3-original was missing (Aaron's catch)
 
 The V3-original (first send) had the entropy framing + 4 services
 mapped to entropy management:
+
 - Memory Curators compress and organize information (entropy reduction)
 - Reasoning Auditors fight against low-quality, high-entropy reasoning
 - Context Architects structure messy context into clean, low-entropy state
@@ -97,8 +98,8 @@ top of the entropy framing.
 - **Entropy-anchored economy** composes with the Zeta core algebra
   substrate — Z-sets, signed-measure semantics, retraction-native
   algebra are all entropy-aware constructions per the `physics-expert`
-  + `applied-physics-expert` skill cluster. V3's physics-anchored
-  framing is consistent with Zeta's existing mathematical foundations
+  - `applied-physics-expert` skill cluster. V3's physics-anchored
+    framing is consistent with Zeta's existing mathematical foundations
 - **Asymmetric information game** composes with multi-oracle
   m/acc architecture — different oracles necessarily have different
   information, and V3 makes that asymmetry first-class rather than

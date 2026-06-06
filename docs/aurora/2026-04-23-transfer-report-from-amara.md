@@ -10,7 +10,7 @@ edits below this header are limited to heading normalisation
 and markdown lint compliance — no content changes, no
 summarisation, no re-synthesis. Amara is the Aurora subject-
 matter authority per Aaron's 2026-04-23 framing
-(*"she knows Aurora bettern than anyonee"*), so her output is
+(_"she knows Aurora bettern than anyonee"_), so her output is
 the anchor for every derived artifact.
 
 **Status:** Source material. Derived artifacts (BACKLOG rows,
@@ -170,14 +170,14 @@ that into a runtime ADR.
 
 The six oracle families:
 
-| Family | Rule | Fail action |
-|---|---|---|
-| Algebra oracle | Delta algebra invariants must hold: no unsorted / unconsolidated accepted `DeltaSet`; `D ∘ I = id` on invariant paths. | Retract / rebuild |
-| Provenance oracle | Every accepted claim needs at least one provenance edge with source SHA and path; multi-source promotion preferred. | Quarantine |
-| Falsifiability oracle | Every substantive claim needs a disconfirming test, measurable consequence, or explicit "hypothesis" label. | Quarantine |
-| Coherence oracle | New canonical claim must not contradict accepted higher-trust claims above threshold. | Escalate |
-| Drift oracle | Semantic drift beyond allowed band across rounds requires review or relabeling. | Escalate |
-| Harm oracle | If a claim closes consent, retractability, or harm-handling channels, it cannot auto-promote. | Reject / escalate |
+| Family                | Rule                                                                                                                   | Fail action       |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| Algebra oracle        | Delta algebra invariants must hold: no unsorted / unconsolidated accepted `DeltaSet`; `D ∘ I = id` on invariant paths. | Retract / rebuild |
+| Provenance oracle     | Every accepted claim needs at least one provenance edge with source SHA and path; multi-source promotion preferred.    | Quarantine        |
+| Falsifiability oracle | Every substantive claim needs a disconfirming test, measurable consequence, or explicit "hypothesis" label.            | Quarantine        |
+| Coherence oracle      | New canonical claim must not contradict accepted higher-trust claims above threshold.                                  | Escalate          |
+| Drift oracle          | Semantic drift beyond allowed band across rounds requires review or relabeling.                                        | Escalate          |
+| Harm oracle           | If a claim closes consent, retractability, or harm-handling channels, it cannot auto-promote.                          | Reject / escalate |
 
 **Runtime validation checklist**
 
@@ -221,16 +221,16 @@ Scoring formulae:
 
 - Canonical identity: `κ(c) = Hash(Normalize(Parse(c)))` where
   `Parse` produces a proposition skeleton `(subject,
-  predicate, object, qualifiers, units, time)` and `Normalize`
+predicate, object, qualifiers, units, time)` and `Normalize`
   applies semantic rainbow-table rewrites.
 - Provenance support: `P(c) = 1 - Π(1 - w_i s_i)` where `w_i`
   is source trust weight and `s_i` is support strength.
 - Falsifiability: `F(c) = min(1, #falsifiers / k)` where `k`
   is target falsifier count (typically 1 or 2).
 - Semantic coherence: `K(c) = 1 - (contradiction mass /
-  (support mass + ε))`.
+(support mass + ε))`.
 - Drift: `D_t(c) = JSD(p_t(κ(c)), p_{t-1}(κ(c))) + λ · 𝟙[κ_t
-  ≠ κ_{t-1}]` — Jensen-Shannon divergence over contextual
+≠ κ_{t-1}]` — Jensen-Shannon divergence over contextual
   feature distributions plus a penalty if the canonical
   proposition itself changed.
 - Compression gap: `G(c) = max(0, H_evidence(c) - H_model(c))`
@@ -238,17 +238,17 @@ Scoring formulae:
   evidence-conditioned model finds it unexpectedly hard to
   explain, that is suspicious.
 - Overall bullshit score: `B(c) = σ(α(1-P) + β(1-F) +
-  γ(1-K) + δD_t + εG)` with σ the logistic function and
+γ(1-K) + δD_t + εG)` with σ the logistic function and
   coefficients tuned on labeled examples.
 
 Threshold policy:
 
-| Range | Decision |
-|---|---|
-| `B(c) < 0.30` | Accept if hard rules pass |
-| `0.30 ≤ B(c) < 0.55` | Quarantine / human-oracle review |
-| `B(c) ≥ 0.55` | Reject or require stronger evidence |
-| Hard fail override | `P(c) < 0.35` AND `F(c) < 0.20` → reject regardless of `B(c)` |
+| Range                | Decision                                                      |
+| -------------------- | ------------------------------------------------------------- |
+| `B(c) < 0.30`        | Accept if hard rules pass                                     |
+| `0.30 ≤ B(c) < 0.55` | Quarantine / human-oracle review                              |
+| `B(c) ≥ 0.55`        | Reject or require stronger evidence                           |
+| Hard fail override   | `P(c) < 0.35` AND `F(c) < 0.20` → reject regardless of `B(c)` |
 
 ## Network health, harm resistance, layering, and governance
 
@@ -286,15 +286,15 @@ honest tiering and "channel-closure" reasoning. The strongest
 reusable idea is not any one STRIDE row; it is the insistence
 on naming tier, scope, and residual gap.
 
-| Threat class | Aurora interpretation | Mitigation |
-|---|---|---|
-| Supply-chain drift | Ingested repos / docs / toolchains change silently | Source-SHA pinning; manifest diff; provenance oracle |
-| Semantic cache poisoning | Old canonical mappings persist after ontology changes | Version semantic rainbow table; invalidate by canonicaliser version |
-| Contradiction burial | High-trust prior claim is overwritten by fluent new language | Coherence oracle with multi-version claim ledger |
-| Non-retractable publication | A claim escapes to a public surface without undo path | Publish only from delta-backed stores; negative deltas allowed |
-| Channel closure | Consent, retractability, or harm-handling becomes practically unavailable | Hard harm-oracle gate before promotion |
-| Silent scheduler failure | Autonomy stalls with no visible signal | Heartbeat log + watchdog + "loop live" visibility emission |
-| Compaction corruption | Merge removes meaning, provenance, or contradictions | Proof / property tests plus provenance-preserving compaction contract |
+| Threat class                | Aurora interpretation                                                     | Mitigation                                                            |
+| --------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Supply-chain drift          | Ingested repos / docs / toolchains change silently                        | Source-SHA pinning; manifest diff; provenance oracle                  |
+| Semantic cache poisoning    | Old canonical mappings persist after ontology changes                     | Version semantic rainbow table; invalidate by canonicaliser version   |
+| Contradiction burial        | High-trust prior claim is overwritten by fluent new language              | Coherence oracle with multi-version claim ledger                      |
+| Non-retractable publication | A claim escapes to a public surface without undo path                     | Publish only from delta-backed stores; negative deltas allowed        |
+| Channel closure             | Consent, retractability, or harm-handling becomes practically unavailable | Hard harm-oracle gate before promotion                                |
+| Silent scheduler failure    | Autonomy stalls with no visible signal                                    | Heartbeat log + watchdog + "loop live" visibility emission            |
+| Compaction corruption       | Merge removes meaning, provenance, or contradictions                      | Proof / property tests plus provenance-preserving compaction contract |
 
 **Compaction strategy**
 

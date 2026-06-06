@@ -17,8 +17,8 @@ stamped as production-trusted — the hallucination firewall.
 
 ## The hallucination firewall
 
-**Rule.** This skill holds *claims under peer review* and
-*not-yet-settled approaches*. It never asserts a research
+**Rule.** This skill holds _claims under peer review_ and
+_not-yet-settled approaches_. It never asserts a research
 claim as production-truth. Every claim cites (paper, year,
 venue, peer-review status) and carries a confidence tag.
 
@@ -43,7 +43,7 @@ pure dense. Why?
 
 **Status.** All three likely partial; no consensus on
 relative weights. Hybrid is the production default;
-researchers still actively debate the *why*.
+researchers still actively debate the _why_.
 
 ### Generative retrieval (DSI family)
 
@@ -174,20 +174,20 @@ with 500 citations and no venue may still be wrong.
 
 ## Benchmarks
 
-| Name | Scope |
-|---|---|
-| **MS-MARCO** | Web passages, 1M docs |
-| **TREC-DL** | MS-MARCO, NIST-judged |
-| **BEIR** | 18 domains, generalisation test |
-| **MTEB** | Broader embedding tasks |
-| **LoTTE** | Long-tail topics |
-| **MIRACL** | 18 languages |
-| **AIR-Bench** | Domain-specific retrieval |
-| **RULER** | Long-context LLM retrieval |
-| **LongBench** | Long-context tasks |
-| **ARES** | RAG evaluation |
-| **FreshQA** | Time-sensitive knowledge |
-| **HotpotQA** | Multi-hop QA |
+| Name          | Scope                           |
+| ------------- | ------------------------------- |
+| **MS-MARCO**  | Web passages, 1M docs           |
+| **TREC-DL**   | MS-MARCO, NIST-judged           |
+| **BEIR**      | 18 domains, generalisation test |
+| **MTEB**      | Broader embedding tasks         |
+| **LoTTE**     | Long-tail topics                |
+| **MIRACL**    | 18 languages                    |
+| **AIR-Bench** | Domain-specific retrieval       |
+| **RULER**     | Long-context LLM retrieval      |
+| **LongBench** | Long-context tasks              |
+| **ARES**      | RAG evaluation                  |
+| **FreshQA**   | Time-sensitive knowledge        |
+| **HotpotQA**  | Multi-hop QA                    |
 
 **Rule.** BEIR generalisation is the strongest single
 signal. MTEB is noisy but broad.

@@ -26,24 +26,22 @@ Copilot wasn't able to review any files in this pull request.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T22:31:11Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `b3b45a1281`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -59,7 +57,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-24T22:31:11Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep regex token on one line to avoid parse failure**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Keep regex token on one line to avoid parse failure**
 
 This change turns `text.split(/\r?\n/)` into a regex literal that spans two source lines (`text.split(/...` then `.../)`), which is invalid JavaScript/TypeScript syntax because regular-expression literals cannot contain a line terminator token boundary. In environments that execute this script via Bun/Node-compatible parsing, the file fails to load, so the heartbeat/forward tick loop never runs.
 

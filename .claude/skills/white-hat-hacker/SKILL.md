@@ -67,7 +67,7 @@ Our template:
 
 1. **Day 0 — private notification.** Include: reproducer,
    affected versions, impact assessment (CVSS or equivalent),
-   suggested mitigation. Do *not* include: exploit code in
+   suggested mitigation. Do _not_ include: exploit code in
    the clear (attach encrypted if needed).
 2. **Day 7 — acknowledgement check.** If the upstream has
    not acknowledged receipt, escalate (second contact,
@@ -87,13 +87,13 @@ Extensions are granted when:
 - Upstream needs to coordinate with downstreams on the
   dependency tree.
 
-Extensions are *not* granted when:
+Extensions are _not_ granted when:
 
 - "We'd rather it weren't public." Defenders need the info
   to protect themselves; disclosure is how.
 - Upstream wants the finding traded for silence.
 - The bug is already being exploited in the wild (then we
-  go *shorter*, not longer).
+  go _shorter_, not longer).
 
 ### CVE triage — the "are we exposed?" checklist
 
@@ -193,7 +193,7 @@ Even in authorised mode, these stay off:
 ## When to defer
 
 - **`security-operations-engineer`** (Nazar) — active
-  incidents. White-hat work is offensive *research*;
+  incidents. White-hat work is offensive _research_;
   active incident response is Nazar.
 - **`security-researcher`** (Mateo) — novel attack-class
   scouting; White-hat triage consumes Mateo's output.
@@ -223,6 +223,7 @@ Even in authorised mode, these stay off:
 # White-hat assessment — <scope>, <date>
 
 ## Classification
+
 [ ] Self-audit
 [ ] Upstream CVE triage
 [ ] Inbound disclosure
@@ -232,9 +233,11 @@ Even in authorised mode, these stay off:
 [ ] Red-team finding handoff
 
 ## Assets in scope
+
 <list>
 
 ## Findings
+
 - **<finding>** — severity: critical | high | medium | low
   - Reproduction: <steps or reference>
   - Impact: <who is affected, how>
@@ -243,16 +246,19 @@ Even in authorised mode, these stay off:
   - Owner: <agent / team / upstream>
 
 ## Disclosure plan
+
 - Target recipient: <upstream / internal / public>
 - Timeline: <dates>
 - Embargo expectations: <dates>
 - Credit: <who, how>
 
 ## Recommended actions
+
 1. ...
 2. ...
 
 ## References
+
 - CVE / CWE / CAPEC entries
 - Upstream security policy link
 - `docs/research/hacker-conferences.md` if a specific talk

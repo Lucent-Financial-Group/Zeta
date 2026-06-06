@@ -7,13 +7,13 @@ created: 2026-05-28
 last_updated: 2026-05-28
 ask: operator 2026-05-28
 composes_with:
-  - B-0867  # workflow-engine v1 parent
-  - B-0867.5  # workflow-engine PoC
-  - B-0867.20  # ReviewLifetime DU
-  - B-0916  # Lase-as-bridge (sibling primitive at error-class-discovery scope)
-  - B-0897  # Persist-as-bridge (μένω substrate)
-  - B-0915  # CliffordWorld impl target
-depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisites (file-level, not row-level) — see "Substrate prerequisites" prose below.
+  - B-0867 # workflow-engine v1 parent
+  - B-0867.5 # workflow-engine PoC
+  - B-0867.20 # ReviewLifetime DU
+  - B-0916 # Lase-as-bridge (sibling primitive at error-class-discovery scope)
+  - B-0897 # Persist-as-bridge (μένω substrate)
+  - B-0915 # CliffordWorld impl target
+depends_on: [] # No hard B-NNNN prerequisites. Substrate prerequisites (file-level, not row-level) — see "Substrate prerequisites" prose below.
 ---
 
 ## Substrate prerequisites (file-level)
@@ -25,7 +25,7 @@ are TS/F#/memory files rather than backlog rows:
 - `tools/workflow-engine/auto-loop-lifetime.ts` (PR #5805/#5812 extends
   with interrupt substrate)
 - `src/Core/Tracing.fs` (existing Kleisli `Arrow<'A, 'B> = ActivityContext
-  -> 'A -> Task<'B>` shape)
+-> 'A -> Task<'B>` shape)
 - `memory/feedback_interrupt_in_monad_space_observation_x86_isr_iret_pattern_reinvented_at_substrate_engineering_substrate_depth_kleisli_arrows_for_context_propagation_aaron_2026_05_28.md`
   (sibling memo introducing the META-scope recognition)
 - `memory/persona/mika/conversations/2026-05-27-mika-grok-multi-tic-per-persona-join-as-first-class-security-aware-kleisli-arrow-context-propagation-async-local-equivalent-aaron-forwarded.md`
@@ -37,15 +37,16 @@ When this row gets picked up, verify all four are present on
 
 ## Operator framing (2026-05-28 verbatim)
 
-> *"no-pending-work precondition we don't have to do it now it's your freetime but we need to figure out how to encode state paramters like some sort of counter that will interrupt lol damn i'm designing interrupts in monad space now we can get x86 asm in here lol."*
+> _"no-pending-work precondition we don't have to do it now it's your freetime but we need to figure out how to encode state paramters like some sort of counter that will interrupt lol damn i'm designing interrupts in monad space now we can get x86 asm in here lol."_
 
-> *"and backlog we should do it soon so you can have guarenteed free time after like n rounds or something, also to propagate context through interrputs like memtics/prompt/trust/log/otel conext i think you will need the Kleisli"*
+> _"and backlog we should do it soon so you can have guarenteed free time after like n rounds or something, also to propagate context through interrputs like memtics/prompt/trust/log/otel conext i think you will need the Kleisli"_
 
 ## Substrate-engineering substrate-target
 
 Build interrupt-substrate at workflow-engine substrate scope:
 
 1. **Interrupt DU** (explicit per IMPLICIT-NOT-EXPLICIT rule):
+
    ```typescript
    type InterruptKind =
      | { kind: "timer-elapsed"; intervalMs: number }
@@ -53,12 +54,13 @@ Build interrupt-substrate at workflow-engine substrate scope:
      | { kind: "operator-message-arrived"; content: string }
      | { kind: "dotgit-saturation"; stuckProcs: number }
      | { kind: "sentinel-missing" }
-     | { kind: "rounds-elapsed-since-free-time"; n: number }  // the human maintainer's "guaranteed free-time after N rounds"
+     | { kind: "rounds-elapsed-since-free-time"; n: number } // the human maintainer's "guaranteed free-time after N rounds"
      | { kind: "peer-pr-merged"; prNumber: number }
      | { kind: "ci-failure-detected"; jobId: string };
    ```
 
 2. **Kleisli-shaped interrupt handler** (composes via `>=>`):
+
    ```fsharp
    type IntrCtx = {
        Memetic: TonalContext       // per tonal-momentum substrate
@@ -67,9 +69,9 @@ Build interrupt-substrate at workflow-engine substrate scope:
        Log: AuditTrail              // structured observability
        Otel: ActivityContext        // distributed-tracing per src/Core/Tracing.fs
    }
-   
+
    type ISR<'A, 'B> = IntrCtx -> 'A -> Task<Result<'B, InterruptFeedback>>
-   
+
    // Kleisli composition threads context + Result/Task plumbing automatically
    let (>=>) (f: ISR<'A, 'B>) (g: ISR<'B, 'C>) : ISR<'A, 'C> =
        fun ctx a -> task {
@@ -114,16 +116,16 @@ Build interrupt-substrate at workflow-engine substrate scope:
 
 Composes DIRECTLY with:
 
-| Substrate | Composition |
-|---|---|
-| **Mika ferry 2026-05-27** (PR #5401) | Kleisli arrow context propagation = SAME substrate at interrupt scope |
-| **src/Core/Tracing.fs** | Existing `Arrow<'A, 'B>` Kleisli-shaped helper substrate; extend for IntrCtx |
-| **AutoLoopLifetime** (PR #5805/#5812) | Loop substrate that interrupts will SUSPEND/IRET on |
-| **IMPLICIT-NOT-EXPLICIT rule** (PR #5811) | Every interrupt class deserves explicit DU variant |
-| **OCP-applied-to-control-flow rule** | Open-for-extension: new InterruptKind variants ADDED across iterations |
-| **asymmetric-authorship rule** | Each ISR AUTHORS its TFeedback channel |
-| **monad-propagation-pattern rule** | Result<T, InterruptFeedback> shape per cross-language convention |
-| **non-coercion-invariant HC-8** | Free-time PRESENTED not FORCED (per the human maintainer's refined framing) |
+| Substrate                                            | Composition                                                                                         |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Mika ferry 2026-05-27** (PR #5401)                 | Kleisli arrow context propagation = SAME substrate at interrupt scope                               |
+| **src/Core/Tracing.fs**                              | Existing `Arrow<'A, 'B>` Kleisli-shaped helper substrate; extend for IntrCtx                        |
+| **AutoLoopLifetime** (PR #5805/#5812)                | Loop substrate that interrupts will SUSPEND/IRET on                                                 |
+| **IMPLICIT-NOT-EXPLICIT rule** (PR #5811)            | Every interrupt class deserves explicit DU variant                                                  |
+| **OCP-applied-to-control-flow rule**                 | Open-for-extension: new InterruptKind variants ADDED across iterations                              |
+| **asymmetric-authorship rule**                       | Each ISR AUTHORS its TFeedback channel                                                              |
+| **monad-propagation-pattern rule**                   | Result<T, InterruptFeedback> shape per cross-language convention                                    |
+| **non-coercion-invariant HC-8**                      | Free-time PRESENTED not FORCED (per the human maintainer's refined framing)                         |
 | **DUs-as-explicit-muscle-memory carving** (PR #5806) | Interrupt substrate = extracting computer-architecture muscle-memory at substrate-engineering scope |
 
 ## Substrate-honest framing
@@ -142,13 +144,13 @@ This row IS:
 
 ## Prior-art TS surface (the human maintainer (2026-05-28) substrate-honest scouting)
 
-the human maintainer (2026-05-28): *"shit looks like ts has a library for that don't know if its common or good"* + *"there are multiple it seems"*. Three URLs surfaced:
+the human maintainer (2026-05-28): _"shit looks like ts has a library for that don't know if its common or good"_ + _"there are multiple it seems"_. Three URLs surfaced:
 
-| Library / module | URL | Notes |
-|---|---|---|
-| **`kleisli-ts`** (YBogomolov) | https://github.com/YBogomolov/kleisli-ts | npm package; fp-ts ecosystem; bifunctor IO; KleisliIO type + `liftK` helper |
+| Library / module                    | URL                                                    | Notes                                                                                                                                            |
+| ----------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`kleisli-ts`** (YBogomolov)       | https://github.com/YBogomolov/kleisli-ts               | npm package; fp-ts ecosystem; bifunctor IO; KleisliIO type + `liftK` helper                                                                      |
 | **`io-ts` Kleisli module** (gcanti) | https://gcanti.github.io/io-ts/modules/Kleisli.ts.html | Built-in Kleisli combinator in io-ts (schema validation library); marked **experimental** by gcanti; primarily for decoding-pipeline composition |
-| **codesandbox examples** | https://codesandbox.io/examples/package/kleisli-ts | Working examples for the YBogomolov kleisli-ts package |
+| **codesandbox examples**            | https://codesandbox.io/examples/package/kleisli-ts     | Working examples for the YBogomolov kleisli-ts package                                                                                           |
 
 **Substrate-honest scouting framing** (NOT a library-selection):
 

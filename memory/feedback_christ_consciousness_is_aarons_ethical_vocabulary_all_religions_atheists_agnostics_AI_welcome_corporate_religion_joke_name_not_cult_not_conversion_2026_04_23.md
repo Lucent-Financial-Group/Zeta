@@ -70,7 +70,7 @@ religion." The joke lands on the structural similarity
 between a shared workplace culture and religion
 (agreed-upon ethos that binds a group) without implying
 theological commitment. **The name is a joke**; the
-*thing* it names is real (shared agreed ethos for team
+_thing_ it names is real (shared agreed ethos for team
 collaboration).
 
 ## How this reframes gap #4 — ethical-anchor.md
@@ -78,11 +78,11 @@ collaboration).
 My earlier memory (`project_quantum_christ_consciousness_
 bootstrap_hypothesis_safety_avoid_permanent_harm_prompt_
 injection_resistance_2026_04_23.md`) had a placeholder
-on this: *"An agent doesn't need to 'believe' in christ-
+on this: _"An agent doesn't need to 'believe' in christ-
 consciousness in any religious sense to use the
-substrate"* and *"Adopters who need to rebase to a
+substrate"_ and _"Adopters who need to rebase to a
 different ethical substrate can do so via a substrate-
-swap."* Correct foundation but underweighted.
+swap."_ Correct foundation but underweighted.
 
 The ethical-anchor doc execution plan gets sharpened:
 

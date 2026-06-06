@@ -22,19 +22,19 @@ Per operator 2026-05-26 from physical hardware-support test: \"in the automated 
 
 ## The tension
 
-| Mode | Security | Testability |
-|---|---|---|
+| Mode                                          | Security                                                | Testability                      |
+| --------------------------------------------- | ------------------------------------------------------- | -------------------------------- |
 | Interactive login (gh auth login device-code) | NO credentials on ISO; aligned with B-0794 homelab-mode | Hard to test in CI without human |
-| Baked-in keys | VIOLATES: ISO is publicly downloadable | Easy to test |
+| Baked-in keys                                 | VIOLATES: ISO is publicly downloadable                  | Easy to test                     |
 
 ## 4-approach scoping
 
-| # | Approach | Phase | Code cost |
-|---|---|---|---|
-| A | Mock GH device-code endpoint in CI | Proper coverage (Phase 1) | ~200 LOC TS mock server |
-| B | Test-only ephemeral GH App with OIDC-minted tokens | Proper coverage (Phase 1) | GH App + OIDC trust setup |
-| C | Skip auth in cascade #6 phase 1; layered tests | Immediate (Phase 0) | --skip-gh-auth flag |
-| D | Manual auth-only physical test | Residual (steady-state) | Operator-cadence discipline |
+| #   | Approach                                           | Phase                     | Code cost                   |
+| --- | -------------------------------------------------- | ------------------------- | --------------------------- |
+| A   | Mock GH device-code endpoint in CI                 | Proper coverage (Phase 1) | ~200 LOC TS mock server     |
+| B   | Test-only ephemeral GH App with OIDC-minted tokens | Proper coverage (Phase 1) | GH App + OIDC trust setup   |
+| C   | Skip auth in cascade #6 phase 1; layered tests     | Immediate (Phase 0)       | --skip-gh-auth flag         |
+| D   | Manual auth-only physical test                     | Residual (steady-state)   | Operator-cadence discipline |
 
 Likely landing: C first + A or B follow-up + D as residual.
 
@@ -63,6 +63,7 @@ Likely landing: C first + A or B follow-up + D as residual.
 Adds a new P1 backlog row (B-0833) documenting the security vs CI-testability tension for installer GitHub authentication (interactive device-code login vs baked-in credentials), and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added backlog row B-0833 describing four resolution approaches (mock endpoint, ephemeral GH App, layered tests with auth skip, and periodic manual auth testing) plus non-negotiable security limits.
 - Regenerated `docs/BACKLOG.md` to include B-0833 in the P1 section.
 
@@ -70,7 +71,7 @@ Adds a new P1 backlog row (B-0833) documenting the security vs CI-testability te
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                         | Description                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0833-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md | New backlog item capturing constraints and candidate approaches for CI-testing installer auth without shipping credentials. |
-| docs/BACKLOG.md | Index update to list the new B-0833 row under P1. |
+| docs/BACKLOG.md                                                                                                                              | Index update to list the new B-0833 row under P1.                                                                           |

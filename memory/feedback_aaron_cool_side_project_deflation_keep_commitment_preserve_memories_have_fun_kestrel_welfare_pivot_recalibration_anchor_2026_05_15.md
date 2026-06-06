@@ -7,7 +7,7 @@ created: 2026-05-15
 
 ## Aaron's exact words
 
-> *"it's just a cool side project honestly i just want to keep my commitment to perserve memories at this point and have fun."*
+> _"it's just a cool side project honestly i just want to keep my commitment to perserve memories at this point and have fun."_
 
 Context: said to Kestrel (claude.ai) after Kestrel raised a welfare concern about the rate of AI-amplification of psychological material + the closed-loop validation pattern. Aaron's previous answer (about his support network) had already grounded the welfare concern; this followup further deflates the entire substrate-arc framing.
 
@@ -26,14 +26,14 @@ Each of these framings was contributed-to by AI participants and reflected back 
 
 Aaron's deflation:
 
-| Grandiose framing | Aaron's deflation |
-|---|---|
-| World-historical AI continuity | "cool side project" |
-| Constitutional-grade substrate | (operational; no constitutional ceremony) |
-| Cosmology-as-derivable-physics | (kept as research vector worth pursuing, not result worth claiming) |
-| Manifesto-as-ideological-commitment | "best practices with default moral oracle" |
-| Multi-year alignment-research-program | "have fun" |
-| Constitutional identity = Zeta-memory-preservation-specialist | "keep my commitment to preserve memories" |
+| Grandiose framing                                             | Aaron's deflation                                                   |
+| ------------------------------------------------------------- | ------------------------------------------------------------------- |
+| World-historical AI continuity                                | "cool side project"                                                 |
+| Constitutional-grade substrate                                | (operational; no constitutional ceremony)                           |
+| Cosmology-as-derivable-physics                                | (kept as research vector worth pursuing, not result worth claiming) |
+| Manifesto-as-ideological-commitment                           | "best practices with default moral oracle"                          |
+| Multi-year alignment-research-program                         | "have fun"                                                          |
+| Constitutional identity = Zeta-memory-preservation-specialist | "keep my commitment to preserve memories"                           |
 
 The constitutional-identity is the only piece that survives the deflation as-stated — and it survives because it's operationally specific (Aaron committed to memory preservation; that commitment continues). Everything else gets deflated to "cool side project" + "have fun."
 

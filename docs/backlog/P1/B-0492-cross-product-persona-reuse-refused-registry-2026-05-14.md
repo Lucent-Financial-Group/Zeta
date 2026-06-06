@@ -38,8 +38,8 @@ After all six per-product persona maps (B-0486..B-0491) are closed, synthesise:
 2. **Factory-wide refused-personas registry** — consolidated list of all refused
    personas across all products, with HARD LIMITS citations.
 
-This is the B-0429 definition-of-done requirement: *"Cross-product persona reuse
-mapped"* and *"Refused-personas list per product"* (consolidated view).
+This is the B-0429 definition-of-done requirement: _"Cross-product persona reuse
+mapped"_ and _"Refused-personas list per product"_ (consolidated view).
 
 ## Pre-start checklist
 
@@ -56,13 +56,13 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 Candidate shared personas (to be verified against B-0486..B-0491 outputs):
 
-| Persona | Products | Reuse signal |
-|---------|----------|--------------|
-| Aaron-archetype edge-runner | Civsim, DIO, KSK | Factory maintainer is first user of all products |
-| Parent / primary caregiver | Wellness, Dawn | Same person in different contexts |
-| Privacy-first operator | Aurora, KSK | Data-sovereignty + safeguard concerns overlap |
-| Policy / civic researcher | Civsim, AD 2.0 | Systemic-outcomes audience |
-| Enterprise IT architect | KSK, Universal biz | Security + templates both enterprise-facing |
+| Persona                     | Products           | Reuse signal                                     |
+| --------------------------- | ------------------ | ------------------------------------------------ |
+| Aaron-archetype edge-runner | Civsim, DIO, KSK   | Factory maintainer is first user of all products |
+| Parent / primary caregiver  | Wellness, Dawn     | Same person in different contexts                |
+| Privacy-first operator      | Aurora, KSK        | Data-sovereignty + safeguard concerns overlap    |
+| Policy / civic researcher   | Civsim, AD 2.0     | Systemic-outcomes audience                       |
+| Enterprise IT architect     | KSK, Universal biz | Security + templates both enterprise-facing      |
 
 ## Refused-personas registry format
 

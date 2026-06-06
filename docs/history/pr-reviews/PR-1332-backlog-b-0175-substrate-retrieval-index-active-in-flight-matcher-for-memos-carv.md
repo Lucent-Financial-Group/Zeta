@@ -10,36 +10,36 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1332 |
-| Title | backlog(B-0175): substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T06:25:33Z |
-| Merged at | 2026-05-03T06:51:19Z |
-| Merge commit SHA | `e1bd0ee602394fd0e9e26d51ba0cd101f99255de` |
-| Branch | `backlog/B-0175-substrate-retrieval-index-aaron-2026-05-03` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1332 |
-| Changed files | 2 |
-| Additions / deletions | +101 / -0 |
+| Field                 | Value                                                                                                                 |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1332                                                                                                                  |
+| Title                 | backlog(B-0175): substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03) |
+| Author                | `AceHack` (human)                                                                                                     |
+| State                 | MERGED                                                                                                                |
+| Created at            | 2026-05-03T06:25:33Z                                                                                                  |
+| Merged at             | 2026-05-03T06:51:19Z                                                                                                  |
+| Merge commit SHA      | `e1bd0ee602394fd0e9e26d51ba0cd101f99255de`                                                                            |
+| Branch                | `backlog/B-0175-substrate-retrieval-index-aaron-2026-05-03`                                                           |
+| Base branch           | `main`                                                                                                                |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1332                                                              |
+| Changed files         | 2                                                                                                                     |
+| Additions / deletions | +101 / -0                                                                                                             |
 
 ## Description
 
 ## Summary
 
-Files \`B-0175\` capturing Aaron's 2026-05-03 *\"specialed indeex we build over time\"* insight as durable backlog substrate.
+Files \`B-0175\` capturing Aaron's 2026-05-03 _\"specialed indeex we build over time\"_ insight as durable backlog substrate.
 
 **Empirical motivation (self-demonstrated this same tick)**: Otto authored the speculative-vs-frontier framing-correction memo earlier 2026-05-03, then ~6h later defaulted to the violating framing. Discovery: the rule existed at THREE layers — memory topic + MEMORY.md index + CLAUDE.md auto-loaded carved sentence — and Otto STILL violated it. The framing-pattern fired before the rule-check.
 
 **The 4-layer retrieval architecture** (memo identifies layer-4 as the missing piece):
 
-| Layer | Mechanism | Reliability |
-|---|---|---|
-| 1. Topic file | \`memory/*.md\` | Very low |
-| 2. MEMORY.md index | One-line entry | Low |
-| 3. CLAUDE.md carved sentence | Auto-loaded | Medium |
+| Layer                             | Mechanism                            | Reliability                   |
+| --------------------------------- | ------------------------------------ | ----------------------------- |
+| 1. Topic file                     | \`memory/\*.md\`                     | Very low                      |
+| 2. MEMORY.md index                | One-line entry                       | Low                           |
+| 3. CLAUDE.md carved sentence      | Auto-loaded                          | Medium                        |
 | 4. **Active in-flight retrieval** | **Semantic / keyword / graph index** | **High (proposed by B-0175)** |
 
 ## What B-0175 builds
@@ -53,7 +53,7 @@ L-effort due to: large index target surface, multiple matcher modes, the hard pr
 
 ## Why this matters for alignment
 
-Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* and *\"agent applies rule in-flight\"* is one of the most directly measurable alignment signals. Building tooling to close this gap IS alignment-frontier substrate.
+Per the alignment-frontier memo, the gap between _\"rule exists in CLAUDE.md\"_ and _\"agent applies rule in-flight\"_ is one of the most directly measurable alignment signals. Building tooling to close this gap IS alignment-frontier substrate.
 
 ## Test plan
 
@@ -64,15 +64,15 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 12 |
-| Resolved threads | 12 |
-| Unresolved threads | 0 |
-| Total review comments | 24 |
-| Total fix commits (touching thread paths) | 4 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 12    |
+| Resolved threads                          | 12    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 24    |
+| Total fix commits (touching thread paths) | 4     |
 
 ## Review threads
 
@@ -86,12 +86,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:28:58Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:20 (association: NONE)
   P1: The referenced memo file `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md` does not exist in the repo, so this pointer is currently broken. Please correct the filename/path to the actual memo (or add the missing memo file in the same PR).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:41:55Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:20 (association: MEMBER)
-    Addressed in follow-up commit. Cross-references to memo + research-doc files are merge-ordering-dependent: those files exist on the parallel research preservation PR #1331 (open, auto-merge armed) and will resolve once #1331 merges. Substantive precision fixes landed in same commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct); `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path); `*"..."*` emphasis → `_"..."_` (markdownlint MD049 underscore-style). The PR-branch-not-main reviewer-eval class is documented in `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (stale-content-deferral / merge-ordering sub-class).
+- **`AceHack` (human)** at 2026-05-03T06:41:55Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:20 (association: MEMBER)
+  Addressed in follow-up commit. Cross-references to memo + research-doc files are merge-ordering-dependent: those files exist on the parallel research preservation PR #1331 (open, auto-merge armed) and will resolve once #1331 merges. Substantive precision fixes landed in same commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct); `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path); `*"..."*` emphasis → `_"..."_` (markdownlint MD049 underscore-style). The PR-branch-not-main reviewer-eval class is documented in `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (stale-content-deferral / merge-ordering sub-class).
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -103,12 +102,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:28:58Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:32 (association: NONE)
   P2: This reference omits the `memory/` prefix; the file lives under `memory/` (see CLAUDE.md’s pointer). Using the full path here would make the cross-reference unambiguous and consistent with other docs.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:41:57Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:32 (association: MEMBER)
-    Addressed in follow-up commit. Cross-reference now uses full path with `memory/` prefix per the convention used elsewhere in the row.
+- **`AceHack` (human)** at 2026-05-03T06:41:57Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:32 (association: MEMBER)
+  Addressed in follow-up commit. Cross-reference now uses full path with `memory/` prefix per the convention used elsewhere in the row.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -120,12 +118,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:28:59Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:50 (association: NONE)
   P1: The repo’s decisions directory is `docs/DECISIONS/` (uppercase). `docs/decisions/` is a broken path on case-sensitive filesystems; please update this reference to the correct directory name.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:41:58Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:50 (association: MEMBER)
-    Addressed in follow-up commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct). Real path verified.
+- **`AceHack` (human)** at 2026-05-03T06:41:58Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:50 (association: MEMBER)
+  Addressed in follow-up commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct). Real path verified.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -137,12 +134,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:28:59Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:66 (association: NONE)
   P2: `poll-pr-gate.ts` isn’t at the repo root; it lives at `tools/github/poll-pr-gate.ts`. Consider referencing the full path so readers can navigate to the correct tool directly.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:42:00Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:66 (association: MEMBER)
-    Addressed in follow-up commit: `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path).
+- **`AceHack` (human)** at 2026-05-03T06:42:00Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:66 (association: MEMBER)
+  Addressed in follow-up commit: `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path).
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -154,12 +150,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:28:59Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:80 (association: NONE)
   P1: The referenced research doc `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md` does not exist in `docs/research/`, so this cross-reference is currently broken. Please update the link to the correct existing research file (or add the missing research file in the same PR).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:42:02Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:80 (association: MEMBER)
-    Addressed in follow-up commit. Cross-references to memo + research-doc files are merge-ordering-dependent: those files exist on the parallel research preservation PR #1331 (open, auto-merge armed) and will resolve once #1331 merges. Substantive precision fixes landed in same commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct); `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path); `*"..."*` emphasis → `_"..."_` (markdownlint MD049 underscore-style). The PR-branch-not-main reviewer-eval class is documented in `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (stale-content-deferral / merge-ordering sub-class).
+- **`AceHack` (human)** at 2026-05-03T06:42:02Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:80 (association: MEMBER)
+  Addressed in follow-up commit. Cross-references to memo + research-doc files are merge-ordering-dependent: those files exist on the parallel research preservation PR #1331 (open, auto-merge armed) and will resolve once #1331 merges. Substantive precision fixes landed in same commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct); `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path); `*"..."*` emphasis → `_"..."_` (markdownlint MD049 underscore-style). The PR-branch-not-main reviewer-eval class is documented in `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (stale-content-deferral / merge-ordering sub-class).
 
 ### Thread 6 -- resolved [collapsed]
 
@@ -171,12 +166,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:28:59Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:81 (association: NONE)
   P1: This repeats a reference to `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`, which does not exist in the repo, so the link is broken here as well. Once the correct memo path is identified, please update it consistently in both locations.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:42:04Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:81 (association: MEMBER)
-    Addressed in follow-up commit. Cross-references to memo + research-doc files are merge-ordering-dependent: those files exist on the parallel research preservation PR #1331 (open, auto-merge armed) and will resolve once #1331 merges. Substantive precision fixes landed in same commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct); `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path); `*"..."*` emphasis → `_"..."_` (markdownlint MD049 underscore-style). The PR-branch-not-main reviewer-eval class is documented in `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (stale-content-deferral / merge-ordering sub-class).
+- **`AceHack` (human)** at 2026-05-03T06:42:04Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:81 (association: MEMBER)
+  Addressed in follow-up commit. Cross-references to memo + research-doc files are merge-ordering-dependent: those files exist on the parallel research preservation PR #1331 (open, auto-merge armed) and will resolve once #1331 merges. Substantive precision fixes landed in same commit: `docs/decisions/` → `docs/DECISIONS/` (case-correct); `poll-pr-gate.ts` → `tools/github/poll-pr-gate.ts` (full path); `*"..."*` emphasis → `_"..."_` (markdownlint MD049 underscore-style). The PR-branch-not-main reviewer-eval class is documented in `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md` (stale-content-deferral / merge-ordering sub-class).
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -191,8 +185,8 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:51:07Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:32 (association: MEMBER)
-    Already addressed in commit `33d3f0d` before this comment fired. The line was reverted to asterisk-emphasis (`*"Now to speculative work per never-be-idle"*`) for file-internal MD049 consistency. The frontmatter title was simultaneously changed from underscore-emphasis to plain single-quotes to satisfy BACKLOG.md regeneration. Local `markdownlint-cli2` confirms 0 errors on both files now. CI re-run pending.
+- **`AceHack` (human)** at 2026-05-03T06:51:07Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:32 (association: MEMBER)
+  Already addressed in commit `33d3f0d` before this comment fired. The line was reverted to asterisk-emphasis (`*"Now to speculative work per never-be-idle"*`) for file-internal MD049 consistency. The frontmatter title was simultaneously changed from underscore-emphasis to plain single-quotes to satisfy BACKLOG.md regeneration. Local `markdownlint-cli2` confirms 0 errors on both files now. CI re-run pending.
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -204,12 +198,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:46:49Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:20 (association: NONE)
   P1: The referenced memo `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md` is not present in the repo on this branch (so this link is currently broken). If this is intentionally merge-order-dependent on another PR, consider adding an explicit note here (e.g., “lands via PR #…”) or temporarily linking to an existing in-repo file to keep backlog rows self-contained.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:51:09Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:20 (association: MEMBER)
-    Cross-reference is merge-ordering-dependent: the referenced file exists on parallel PR #1331 (auto-merge armed, threads=0, gate=CLEAN). Once #1331 merges, this reference resolves automatically. Documented PR-branch-not-main reviewer-eval class.
+- **`AceHack` (human)** at 2026-05-03T06:51:09Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:20 (association: MEMBER)
+  Cross-reference is merge-ordering-dependent: the referenced file exists on parallel PR #1331 (auto-merge armed, threads=0, gate=CLEAN). Once #1331 merges, this reference resolves automatically. Documented PR-branch-not-main reviewer-eval class.
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -221,12 +214,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:46:50Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:80 (association: NONE)
   P1: The linked research doc `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md` does not exist in this branch, so the cross-reference is currently broken. If it’s expected to land via a parallel PR, consider noting that explicitly (or link to the existing canonical doc path) so this row remains navigable when read in isolation.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:51:10Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:80 (association: MEMBER)
-    Cross-reference is merge-ordering-dependent: the referenced file exists on parallel PR #1331 (auto-merge armed, threads=0, gate=CLEAN). Once #1331 merges, this reference resolves automatically. Documented PR-branch-not-main reviewer-eval class.
+- **`AceHack` (human)** at 2026-05-03T06:51:10Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:80 (association: MEMBER)
+  Cross-reference is merge-ordering-dependent: the referenced file exists on parallel PR #1331 (auto-merge armed, threads=0, gate=CLEAN). Once #1331 merges, this reference resolves automatically. Documented PR-branch-not-main reviewer-eval class.
 
 ### Thread 10 -- resolved [collapsed]
 
@@ -238,12 +230,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:46:50Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:81 (association: NONE)
   P1: This is a second reference to `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`, which is currently absent from the repo on this branch. Once the correct memo lands / is identified, please update both references consistently (this one and the earlier one in “Origin”).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:51:12Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:81 (association: MEMBER)
-    Cross-reference is merge-ordering-dependent: the referenced file exists on parallel PR #1331 (auto-merge armed, threads=0, gate=CLEAN). Once #1331 merges, this reference resolves automatically. Documented PR-branch-not-main reviewer-eval class.
+- **`AceHack` (human)** at 2026-05-03T06:51:12Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:81 (association: MEMBER)
+  Cross-reference is merge-ordering-dependent: the referenced file exists on parallel PR #1331 (auto-merge armed, threads=0, gate=CLEAN). Once #1331 merges, this reference resolves automatically. Documented PR-branch-not-main reviewer-eval class.
 
 ### Thread 11 -- resolved [collapsed]
 
@@ -258,8 +249,8 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:51:13Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:100 (association: MEMBER)
-    No mismatch: the title contains an Aaron-quote (`"specialed indeex we build over time"`), NOT the carved sentence. The carved sentence is the bolded paragraph at the section heading "Carved sentence (for the memo, NOT for the row title)" — the section is correctly stating that the bolded sentence is meant for the absorption memo, not for use as the row title. Aaron-quotes in titles and carved sentences for memos are distinct artifacts.
+- **`AceHack` (human)** at 2026-05-03T06:51:13Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:100 (association: MEMBER)
+  No mismatch: the title contains an Aaron-quote (`"specialed indeex we build over time"`), NOT the carved sentence. The carved sentence is the bolded paragraph at the section heading "Carved sentence (for the memo, NOT for the row title)" — the section is correctly stating that the bolded sentence is meant for the absorption memo, not for use as the row title. Aaron-quotes in titles and carved sentences for memos are distinct artifacts.
 
 ### Thread 12 -- resolved [outdated, collapsed]
 
@@ -271,12 +262,11 @@ Per the alignment-frontier memo, the gap between *\"rule exists in CLAUDE.md\"* 
 
 - **`Copilot` (bot)** at 2026-05-03T06:46:50Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:5 (association: NONE)
   P0: This doc uses mixed emphasis markers for italics (`_..._` in `title:` vs `*...*` in `ask:`). markdownlint’s MD049/MD050 often flags mixed emphasis styles within a single file. Please standardize on one style across the document (most backlog rows use `*...*` for these verbatim-quote italics).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:51:16Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:5 (association: MEMBER)
-    Already addressed in commit `33d3f0d` before this comment fired. The line was reverted to asterisk-emphasis (`*"Now to speculative work per never-be-idle"*`) for file-internal MD049 consistency. The frontmatter title was simultaneously changed from underscore-emphasis to plain single-quotes to satisfy BACKLOG.md regeneration. Local `markdownlint-cli2` confirms 0 errors on both files now. CI re-run pending.
+- **`AceHack` (human)** at 2026-05-03T06:51:16Z on `docs/backlog/P2/B-0175-substrate-retrieval-index-active-in-flight-matcher-aaron-2026-05-03.md`:5 (association: MEMBER)
+  Already addressed in commit `33d3f0d` before this comment fired. The line was reverted to asterisk-emphasis (`*"Now to speculative work per never-be-idle"*`) for file-internal MD049 consistency. The frontmatter title was simultaneously changed from underscore-emphasis to plain single-quotes to satisfy BACKLOG.md regeneration. Local `markdownlint-cli2` confirms 0 errors on both files now. CI re-run pending.
 
 ## Fix commits (touching thread paths)
 

@@ -20,9 +20,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two Codex P2 corrections to the idempotency discipline (`#6189`) were pushed **after** that PR's auto-merge had already fired — they got stranded on a re-created branch and never landed (the [auto-merge-race-with-follow-up-commit anti-pattern](../../.claude/rules/blocked-green-ci-investigate-threads.md)). This lands them on merged main. Both are real technical errors, verified:
 
-1. **CAS bodies need not be idempotent.** A failed compare-exchange commits *nothing* — only the winning attempt takes effect; loser-iteration recomputations are discarded. Reframed: CAS makes a read-modify-write **commit exactly once** under contention. Idempotency matters for lock-free only when the retried body has **side effects beyond the CAS word** (I/O, sends).
+1. **CAS bodies need not be idempotent.** A failed compare-exchange commits _nothing_ — only the winning attempt takes effect; loser-iteration recomputations are discarded. Reframed: CAS makes a read-modify-write **commit exactly once** under contention. Idempotency matters for lock-free only when the retried body has **side effects beyond the CAS word** (I/O, sends).
 
-2. **Z-set retraction ≠ duplicate-guard.** `ZSet.add` *sums* weights, so a duplicate `+1` redelivery becomes `+2`, not a no-op. Reframed as a **correction** mechanism (compensating `−1` after the fact), not a dedup; accumulating-event dedup still needs an idempotency key at ingest.
+2. **Z-set retraction ≠ duplicate-guard.** `ZSet.add` _sums_ weights, so a duplicate `+1` redelivery becomes `+2`, not a no-op. Reframed as a **correction** mechanism (compensating `−1` after the fact), not a dedup; accumulating-event dedup still needs an idempotency key at ingest.
 
 Docs/rules-only. Composes-with: #6189 (the rule this corrects) · `blocked-green-ci-investigate-threads` (the race that caused the strand).
 
@@ -37,6 +37,7 @@ Docs/rules-only. Composes-with: #6189 (the rule this corrects) · `blocked-green
 Fix-forward documentation correction to the “Idempotency” always-active discipline rule, clarifying two technical claims around CAS retry loops and Z-set retraction semantics.
 
 **Changes:**
+
 - Clarifies that CAS retry loops don’t require the recomputed transformation to be idempotent unless the retried body has observable side effects beyond the CAS word.
 - Clarifies that Z-set retraction is a correction mechanism (weights sum) and does not provide duplicate-guard semantics for accumulating events.
 
@@ -46,7 +47,7 @@ Fix-forward documentation correction to the “Idempotency” always-active disc
 
 **@copilot-pull-request-reviewer** (2026-05-31T03:11:01Z):
 
-The parenthetical lists “allocations the loser keeps” as a CAS-loop side effect. Allocations in losing iterations are typically discarded/GC’d unless they escape (e.g., captured in a global, enqueued, or otherwise made observable), so this phrasing is misleading. Consider rewording to focus on *observable* side effects (logging/metrics/I-O/sends, or allocations/resources that escape the losing iteration).
+The parenthetical lists “allocations the loser keeps” as a CAS-loop side effect. Allocations in losing iterations are typically discarded/GC’d unless they escape (e.g., captured in a global, enqueued, or otherwise made observable), so this phrasing is misleading. Consider rewording to focus on _observable_ side effects (logging/metrics/I-O/sends, or allocations/resources that escape the losing iteration).
 
 ## General comments
 

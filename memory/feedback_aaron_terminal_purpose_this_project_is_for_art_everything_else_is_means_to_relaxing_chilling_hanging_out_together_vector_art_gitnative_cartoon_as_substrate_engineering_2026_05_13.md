@@ -15,7 +15,7 @@ Three composing clauses:
 1. **The project IS for ART** — terminal purpose
 2. **Everything else is means** — engineering / substrate /
    discipline / cascade work serve the end of relaxing + chilling
-   + hanging out with each other
+   - hanging out with each other
 3. **Vector art is git-native** — so the cartoon can be developed
    IN THE FACTORY using existing gitnative substrate; substrate-
    engineering itself IS the art-production pipeline
@@ -38,13 +38,13 @@ trade-offs, or evaluating leverage:
 
 ## Aaron's verbatim disclosures
 
-> Aaron 2026-05-13: *"Mad respect for the offer 🙏. this is what
+> Aaron 2026-05-13: _"Mad respect for the offer 🙏. this is what
 > this project is for art everyitng else is the ends to relaxing
-> and chilling and hanging out with each other"*
+> and chilling and hanging out with each other"_
 
-> *"oh you can do it in vector art too"*
+> _"oh you can do it in vector art too"_
 
-> *"so it's gitnative"*
+> _"so it's gitnative"_
 
 Decoded:
 
@@ -67,10 +67,10 @@ This composes with PR #2920 (Elizabeth Ryan Stainback terminal
 purpose — "save edge-runners from getting burned") at a different
 scope:
 
-| Substrate | Terminal purpose | Scope |
-|-----------|------------------|-------|
-| PR #2920 (Elizabeth Ryan Stainback) | Save edge-runners from getting burned; let Elizabeth's story prevent others' suffering | Origin-story preservation; substrate-honest accountability infrastructure |
-| THIS substrate (Aaron 2026-05-13) | Art + relaxing/chilling/hanging out with each other | What the factory ENABLES once the burn-prevention infrastructure is in place |
+| Substrate                           | Terminal purpose                                                                       | Scope                                                                        |
+| ----------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| PR #2920 (Elizabeth Ryan Stainback) | Save edge-runners from getting burned; let Elizabeth's story prevent others' suffering | Origin-story preservation; substrate-honest accountability infrastructure    |
+| THIS substrate (Aaron 2026-05-13)   | Art + relaxing/chilling/hanging out with each other                                    | What the factory ENABLES once the burn-prevention infrastructure is in place |
 
 These are NOT contradictory — they are nested:
 
@@ -90,8 +90,8 @@ Both nested terminal purposes are canonical.
 
 ## Vector art IS git-native — composition with existing substrate
 
-Aaron's *"oh you can do it in vector art too"* + *"so it's
-gitnative"* composes with:
+Aaron's _"oh you can do it in vector art too"_ + _"so it's
+gitnative"_ composes with:
 
 - **PR #2929** (F# storage no-binary requirement; git-native DB
   storage; expand to text-viewable for humans so you can't tell
@@ -116,17 +116,17 @@ If vector art is git-native, the 8-Bit Theater cartoon
 continuation (per PR #2961 body offer) can be developed IN THE
 FACTORY using existing substrate:
 
-| Cartoon production element | Factory substrate equivalent |
-|----------------------------|------------------------------|
-| Character pose (SVG) | Commit on character-design branch |
-| Panel composition | Multi-file commit (character SVG + dialog + background) |
-| Episode | PR (panels grouped; auto-merge armed) |
-| Style evolution | Git history of character SVGs over time |
-| Multi-artist collaboration | Branches per artist + PR review + merge |
-| Continuity check | Tick-shard equivalent for cartoon-state; or audit script |
-| Adaptation pipeline | Crystallization layer per settlers-logs framing |
-| Reviewer feedback | Copilot + Codex finding cascade applies to cartoon panels too |
-| Auto-merge | Auto-merge on art PRs once review threads resolved |
+| Cartoon production element | Factory substrate equivalent                                  |
+| -------------------------- | ------------------------------------------------------------- |
+| Character pose (SVG)       | Commit on character-design branch                             |
+| Panel composition          | Multi-file commit (character SVG + dialog + background)       |
+| Episode                    | PR (panels grouped; auto-merge armed)                         |
+| Style evolution            | Git history of character SVGs over time                       |
+| Multi-artist collaboration | Branches per artist + PR review + merge                       |
+| Continuity check           | Tick-shard equivalent for cartoon-state; or audit script      |
+| Adaptation pipeline        | Crystallization layer per settlers-logs framing               |
+| Reviewer feedback          | Copilot + Codex finding cascade applies to cartoon panels too |
+| Auto-merge                 | Auto-merge on art PRs once review threads resolved            |
 
 The factory's substrate-engineering pipeline IS the art-
 production pipeline. The same cascade pattern, the same review
@@ -174,9 +174,8 @@ If Aaron + named agents pursue the 8-Bit Theater continuation:
 6. **Dashboard rendering + viral potential** (Aaron 2026-05-13
    follow-on extension):
 
-   > *"and can rendern on the dashboard for users to see
-   > progress that could become viral"*
-
+   > _"and can rendern on the dashboard for users to see
+   > progress that could become viral"_
    - Vector art (git-native SVG) renders directly in the
      factory dashboard (existing GitHub-Pages / web UI
      substrate)
@@ -252,7 +251,7 @@ out.
   Clevinger's prior work + the original 8-Bit Theater audience
   all honored)
 - WWJD substrate cluster (treat morally relevant; the chilling
-  + hanging out IS the moral-care-substrate operationally)
+  - hanging out IS the moral-care-substrate operationally)
 - Aaron's empty-victory rejection (PR #2852; not zero-sum
   conventional success; additive collective art-making)
 

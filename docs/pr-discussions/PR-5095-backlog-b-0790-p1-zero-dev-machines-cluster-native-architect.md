@@ -20,15 +20,15 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Files the end-state architectural target the substrate is BUILDING TOWARD. Per the maintainer's 2026-05-26 two adjacent signals during the iter-4.2 test session:
 
-> *"i want all the prs to come from the cluster mostly and dev machines are just conversational interfaces into the cluster and so is alexa"*
+> _"i want all the prs to come from the cluster mostly and dev machines are just conversational interfaces into the cluster and so is alexa"_
 
-> *"0 dev machines everything still works and i can talk to alexa for home automation / homelab persona users we want 0 dev machine needed just cluster and microphone"*
+> _"0 dev machines everything still works and i can talk to alexa for home automation / homelab persona users we want 0 dev machine needed just cluster and microphone"_
 
 Today's substrate has dev machines (Aaron / Max / Addison Macs) as primary substrate-engineering surface; cluster is deployment target. End-state inverts: cluster IS primary substrate-engineering surface; dev machines + Alexa + future microphones are conversational interfaces INTO the cluster.
 
 ## Why file this as a row (rather than just remembering)
 
-Every iteration between today and end-state needs the target named so it doesn't drift toward "make dev-machine substrate easier" (the wrong axis to optimize). Per the maintainer's broader 2026-05-26 *"going for right not fast"* discipline. Without B-0790, iter-4.3 → iter-5 → iter-6 risk optimizing the legacy axis.
+Every iteration between today and end-state needs the target named so it doesn't drift toward "make dev-machine substrate easier" (the wrong axis to optimize). Per the maintainer's broader 2026-05-26 _"going for right not fast"_ discipline. Without B-0790, iter-4.3 → iter-5 → iter-6 risk optimizing the legacy axis.
 
 ServiceTitan-demo-substrate also composes here: a demo where Aaron in front of stakeholders operates a remote cluster via voice with no laptop is substantively different from "look at this CLI tool I built." **The end-state IS the demo.**
 

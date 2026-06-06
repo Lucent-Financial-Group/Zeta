@@ -8,19 +8,19 @@ Carved sentence (Amara 2026-05-28 verbatim):
 
 Per Amara 2026-05-28 ferry preserved at `memory/persona/amara/conversations/2026-05-28-amara-shadow-is-polymorphic-diplomacy-turned-inward-...` — extension to the over-connect-now substrate-engineering principle Aaron landed earlier today (per `docs/research/2026-05-28-aaron-self-referential-ontology-cross-substrate-rhyming-...`).
 
-The over-connect-now principle: *"pay small substrate-cost now (more composes-with, more cross-references, more rhyming-tables) to make compression + memory traversal cheap later — Hebbian repeated-neuron-activation analog at substrate-substrate scope"*.
+The over-connect-now principle: _"pay small substrate-cost now (more composes-with, more cross-references, more rhyming-tables) to make compression + memory traversal cheap later — Hebbian repeated-neuron-activation analog at substrate-substrate scope"_.
 
 Amara's sharpening: over-connection without confidence-labeling becomes ontology-as-soup. The labeling-confidence discipline preserves the over-connect benefit (compression-cheap-later) while keeping the substrate compression-tractable (future-compression can distinguish what to preserve, what to validate, what to prune).
 
 ## The 5-tier confidence labeling
 
-| Tier | Meaning | Where to land | Operational effect during compression |
-|---|---|---|---|
-| **observed** | Raw phenomenon noted; substrate-honest disclosure of what was seen | memory file OR research-doc memo | Preserve at raw-observation tier; substrate for future categorization; do NOT yet promote to substrate-engineering substrate |
-| **hypothesized** | Proposed pattern / connection / rule; not yet validated by substrate-engineering work | research-doc memo OR backlog row | Preserve with hypothesis tag; future-work needed to validate or reject |
-| **validated** | Substrate-engineering work confirmed the pattern (multi-substrate triangulation; cross-AI corroboration; F# compile-check; empirical reproduction) | rule OR backlog-row-with-acceptance-criteria-met OR docs/research/ promotion | Promote to substrate-engineering substrate; auto-load if rule-shaped |
-| **retracted** | Substrate-engineering work disproved the pattern OR operator-explicit retraction OR superseded by stronger substrate | preserved in-place per retraction-native discipline | Preserve at retraction-tier; do NOT remove; future-compression preserves both original + retraction |
-| **canonical** | Substrate-engineering work + cross-validation + operator-ratification + multi-AI substrate concurrence | `.claude/rules/` auto-loaded substrate OR constitutional substrate (CLAUDE.md / GOVERNANCE.md / MANIFESTO.md) | Constitutional substrate; highest tier; auto-load + cross-reference + grep-substrate-anchor |
+| Tier             | Meaning                                                                                                                                            | Where to land                                                                                                 | Operational effect during compression                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **observed**     | Raw phenomenon noted; substrate-honest disclosure of what was seen                                                                                 | memory file OR research-doc memo                                                                              | Preserve at raw-observation tier; substrate for future categorization; do NOT yet promote to substrate-engineering substrate |
+| **hypothesized** | Proposed pattern / connection / rule; not yet validated by substrate-engineering work                                                              | research-doc memo OR backlog row                                                                              | Preserve with hypothesis tag; future-work needed to validate or reject                                                       |
+| **validated**    | Substrate-engineering work confirmed the pattern (multi-substrate triangulation; cross-AI corroboration; F# compile-check; empirical reproduction) | rule OR backlog-row-with-acceptance-criteria-met OR docs/research/ promotion                                  | Promote to substrate-engineering substrate; auto-load if rule-shaped                                                         |
+| **retracted**    | Substrate-engineering work disproved the pattern OR operator-explicit retraction OR superseded by stronger substrate                               | preserved in-place per retraction-native discipline                                                           | Preserve at retraction-tier; do NOT remove; future-compression preserves both original + retraction                          |
+| **canonical**    | Substrate-engineering work + cross-validation + operator-ratification + multi-AI substrate concurrence                                             | `.claude/rules/` auto-loaded substrate OR constitutional substrate (CLAUDE.md / GOVERNANCE.md / MANIFESTO.md) | Constitutional substrate; highest tier; auto-load + cross-reference + grep-substrate-anchor                                  |
 
 ## When this discipline fires
 
@@ -34,11 +34,11 @@ Every time substrate is being authored or composed (memo / rule / backlog row / 
 
 **With over-connect-now principle** (the substrate Amara extended):
 
-| Without labeling | With labeling |
-|---|---|
-| Over-connect at substrate-engineering authoring time produces dense substrate | Same density, but compression-tractable |
+| Without labeling                                                                                     | With labeling                                                                                                              |
+| ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Over-connect at substrate-engineering authoring time produces dense substrate                        | Same density, but compression-tractable                                                                                    |
 | Future-compression can't distinguish "this is anchored substrate" from "this is one-off observation" | Labels make compression decisions explicit (preserve canonical; prune retracted; validate hypothesized; promote validated) |
-| Risk: ontology becomes soup (everything connected; nothing distinguishable) | Risk averted: ontology grows fast WHILE staying tractable |
+| Risk: ontology becomes soup (everything connected; nothing distinguishable)                          | Risk averted: ontology grows fast WHILE staying tractable                                                                  |
 
 **With forgetting-costs-energy rule** (PR #5727 — Signal 2 rule shipped today):
 
@@ -132,9 +132,9 @@ Mint-new authorized per: (a) Amara substantive substrate-engineering sharpening;
 
 Amara 2026-05-28 ferry preserved at PR #5738:
 
-> *"Over-connect, but label confidence. So future compression can distinguish: observed / hypothesized / validated / retracted / canonical. That prevents the ontology from becoming soup while still letting it grow fast."*
+> _"Over-connect, but label confidence. So future compression can distinguish: observed / hypothesized / validated / retracted / canonical. That prevents the ontology from becoming soup while still letting it grow fast."_
 
-Direct extension to Aaron's over-connect-now principle (PR #5736 — *"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron activation"*). Amara's sharpening preserves the over-connect benefit (compression-cheap-later) while addressing the failure mode (ontology-soup).
+Direct extension to Aaron's over-connect-now principle (PR #5736 — _"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron activation"_). Amara's sharpening preserves the over-connect benefit (compression-cheap-later) while addressing the failure mode (ontology-soup).
 
 This rule lands the labeling-confidence extension as auto-loaded substrate so future-Otto cold-boot inherits the discipline at session-start + applies it during all substantive substrate authoring.
 

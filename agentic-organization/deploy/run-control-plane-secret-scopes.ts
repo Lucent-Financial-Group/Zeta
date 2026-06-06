@@ -140,7 +140,11 @@ async function main(): Promise<void> {
         runId: asZetaIdDecimal("42"),
         scope: RunScope.WorkItem,
         phase: RunLifecyclePhase.AwaitingGate,
-        trace: { correlationId: `corr-${proofRunId}`, causationId: `cause-${proofRunId}`, traceId: `trace-${proofRunId}` },
+        trace: {
+          correlationId: `corr-${proofRunId}`,
+          causationId: `cause-${proofRunId}`,
+          traceId: `trace-${proofRunId}`,
+        },
         hasGateApproval: true,
         hasEvidence: false,
         hatAssignmentId: asZetaIdDecimal("99"),
@@ -224,31 +228,36 @@ async function main(): Promise<void> {
       !rateLimitDispatched &&
       promptFlowSurface.outcome === "readout" &&
       promptFlowSurface.promptFlows.tasks.length === 0 &&
-      promptFlowSurface.promptFlows.vetoedTasks.some((vetoed) =>
-        vetoed.ruleName === "prompt-flow-secret-scope" &&
-        vetoed.reason.includes("github:write")
+      promptFlowSurface.promptFlows.vetoedTasks.some(
+        (vetoed) => vetoed.ruleName === "prompt-flow-secret-scope" && vetoed.reason.includes("github:write"),
       ) &&
       cliExitCode === 1 &&
       !cliLoadedContext &&
       JSON.stringify(cliEvents).includes("observe-act:control_bypass_rejected:control_plane_denied:6");
 
-    console.log(JSON.stringify({
-      track: "Phase 2.8 control-plane secret scopes and rate limits",
-      organizationId,
-      activeFlagIds: activeFlags.map((flag) => flag.controlPlaneFlagId),
-      activeRateLimitIds: activeRateLimits.map((limit) => limit.rateLimitId),
-      providerFreezeDenied,
-      providerDispatched,
-      secretDenied,
-      rateLimitDenied,
-      rateLimitDispatched,
-      promptFlowVetoes: promptFlowSurface.outcome === "readout" ? promptFlowSurface.promptFlows.vetoedTasks : [],
-      cliExitCode,
-      cliLoadedContext,
-      cliEventCount: cliEvents.length,
-      secretDispatched,
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "Phase 2.8 control-plane secret scopes and rate limits",
+          organizationId,
+          activeFlagIds: activeFlags.map((flag) => flag.controlPlaneFlagId),
+          activeRateLimitIds: activeRateLimits.map((limit) => limit.rateLimitId),
+          providerFreezeDenied,
+          providerDispatched,
+          secretDenied,
+          rateLimitDenied,
+          rateLimitDispatched,
+          promptFlowVetoes: promptFlowSurface.outcome === "readout" ? promptFlowSurface.promptFlows.vetoedTasks : [],
+          cliExitCode,
+          cliLoadedContext,
+          cliEventCount: cliEvents.length,
+          secretDispatched,
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();
@@ -291,11 +300,13 @@ function promptFlowTask(): PromptFlowTask {
     priority: 90,
     allowedHatIds: ["release_operator"],
     directions: ["Publish the release note"],
-    toolInjections: [{
-      tool: "github.publish_release",
-      args: { releaseId: "rel-1" },
-      requiredSecretScopes: ["github:write"],
-    }],
+    toolInjections: [
+      {
+        tool: "github.publish_release",
+        args: { releaseId: "rel-1" },
+        requiredSecretScopes: ["github:write"],
+      },
+    ],
     metrics: [],
     contextArtifactRefs: [],
   };

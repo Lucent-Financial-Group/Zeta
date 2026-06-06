@@ -1,11 +1,6 @@
 import { createHash } from "node:crypto";
 
-import {
-  OrgEventKind,
-  ReactionPlanStatus,
-  ScheduleBlockState,
-  type OrgEvent,
-} from "../../domain/src/index.ts";
+import { OrgEventKind, ReactionPlanStatus, ScheduleBlockState, type OrgEvent } from "../../domain/src/index.ts";
 
 export const RecoveryScannerKind = {
   StaleReactionPlanScan: "stale-reaction-plan-scan",
@@ -32,8 +27,7 @@ export const DeadLetterClassification = {
   UnknownTerminalFailure: "unknown-terminal-failure",
 } as const;
 
-export type DeadLetterClassification =
-  (typeof DeadLetterClassification)[keyof typeof DeadLetterClassification];
+export type DeadLetterClassification = (typeof DeadLetterClassification)[keyof typeof DeadLetterClassification];
 
 export type ReactionPlanRecoveryCandidate = {
   reactionPlanId: string;
@@ -144,20 +138,22 @@ export function scanStrandedScheduleBlocks(input: {
   const incidents = input.scheduleBlocks
     .filter((block) => isCapacityHoldingScheduleBlockState(block.state))
     .filter((block) => Date.parse(block.endsAt) < input.nowMs - input.graceMs)
-    .map((block): RecoveryIncident => ({
-      scanner: RecoveryScannerKind.StrandedScheduleScan,
-      kind: RecoveryIncidentKind.StrandedScheduleBlock,
-      subjectId: block.workScheduleBlockId,
-      organizationId: block.organizationId,
-      ageMs: input.nowMs - Date.parse(block.endsAt),
-      decision: "schedule block still holds capacity after its window ended",
-      evidenceRefs: [
-        `schedule_block:${block.workScheduleBlockId}`,
-        `work_item:${block.workItemId}`,
-        `agent:${block.assignedAgentId}`,
-        `hat_assignment:${block.assignedHatAssignmentId}`,
-      ],
-    }));
+    .map(
+      (block): RecoveryIncident => ({
+        scanner: RecoveryScannerKind.StrandedScheduleScan,
+        kind: RecoveryIncidentKind.StrandedScheduleBlock,
+        subjectId: block.workScheduleBlockId,
+        organizationId: block.organizationId,
+        ageMs: input.nowMs - Date.parse(block.endsAt),
+        decision: "schedule block still holds capacity after its window ended",
+        evidenceRefs: [
+          `schedule_block:${block.workScheduleBlockId}`,
+          `work_item:${block.workItemId}`,
+          `agent:${block.assignedAgentId}`,
+          `hat_assignment:${block.assignedHatAssignmentId}`,
+        ],
+      }),
+    );
 
   return { scanner: RecoveryScannerKind.StrandedScheduleScan, scanned: input.scheduleBlocks.length, incidents };
 }
@@ -170,19 +166,21 @@ export function scanAbandonedRunBindings(input: {
   const incidents = input.runs
     .filter((run) => run.state === "running")
     .filter((run) => input.nowMs - run.lastHeartbeatMs > input.heartbeatDeadlineMs)
-    .map((run): RecoveryIncident => ({
-      scanner: RecoveryScannerKind.AbandonedRunBindingScan,
-      kind: RecoveryIncidentKind.AbandonedRunBinding,
-      subjectId: run.runId,
-      ageMs: input.nowMs - run.lastHeartbeatMs,
-      decision: "Hermes run binding is running without a fresh heartbeat",
-      evidenceRefs: [
-        `hermes_run:${run.runId}`,
-        `work_item:${run.workItemId}`,
-        `agent:${run.agentId}`,
-        `hat_assignment:${run.hatAssignmentId}`,
-      ],
-    }));
+    .map(
+      (run): RecoveryIncident => ({
+        scanner: RecoveryScannerKind.AbandonedRunBindingScan,
+        kind: RecoveryIncidentKind.AbandonedRunBinding,
+        subjectId: run.runId,
+        ageMs: input.nowMs - run.lastHeartbeatMs,
+        decision: "Hermes run binding is running without a fresh heartbeat",
+        evidenceRefs: [
+          `hermes_run:${run.runId}`,
+          `work_item:${run.workItemId}`,
+          `agent:${run.agentId}`,
+          `hat_assignment:${run.hatAssignmentId}`,
+        ],
+      }),
+    );
 
   return { scanner: RecoveryScannerKind.AbandonedRunBindingScan, scanned: input.runs.length, incidents };
 }
@@ -255,7 +253,11 @@ export function recoveryScanCompletedToOrgEvent(input: {
     subjectId: input.report.scanner,
     decision: `${input.report.scanner} scanned ${input.report.scanned} candidates and found ${input.report.incidents.length} incidents`,
     supervisorChain: ["executive_board", "runtime_governance"],
-    evidenceRefs: [`scanner:${input.report.scanner}`, `scanned:${input.report.scanned}`, `incidents:${input.report.incidents.length}`],
+    evidenceRefs: [
+      `scanner:${input.report.scanner}`,
+      `scanned:${input.report.scanned}`,
+      `incidents:${input.report.incidents.length}`,
+    ],
     correlationId: input.correlationId,
     causationId: input.id,
     traceId: input.traceId,

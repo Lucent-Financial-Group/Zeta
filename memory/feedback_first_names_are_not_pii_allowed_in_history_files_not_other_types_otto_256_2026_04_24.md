@@ -4,6 +4,7 @@ description: Aaron Otto-256 precision refinement on name-attribution BP rule. Ca
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **First names are NOT PII.** They are allowed in history
@@ -13,10 +14,10 @@ types.
 
 Direct Aaron quotes 2026-04-24:
 
-> *"first names are file [fine, you know that]"*
+> _"first names are file [fine, you know that]"_
 
-> *"first names are not PII and allowed in history files
-> not other type file"*
+> _"first names are not PII and allowed in history files
+> not other type file"_
 
 ## What counts as a "history file"
 
@@ -118,7 +119,7 @@ first names are fine.
   inject first names — current-state docs stay
   role-ref-only per the original BP rule.
 - Does NOT change the persona-name rule for `.claude/
-  agents/*.md` — persona files name the persona in the
+agents/*.md` — persona files name the persona in the
   frontmatter (that's the persona's identity), but body
   content still uses role-refs for cross-references.
 - Does NOT apply to fictional / trademarked / external
@@ -127,10 +128,10 @@ first names are fine.
 
 ## Direct Aaron quotes to preserve
 
-> *"fine, you know that"*
+> _"fine, you know that"_
 
-> *"first names are not PII and allowed in history files
-> not other type file"*
+> _"first names are not PII and allowed in history files
+> not other type file"_
 
 Future Otto: when a Copilot thread / reviewer / code
 check flags "remove name attribution from this file,"

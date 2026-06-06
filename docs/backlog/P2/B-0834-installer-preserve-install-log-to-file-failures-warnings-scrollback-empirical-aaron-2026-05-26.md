@@ -22,9 +22,9 @@ Empirical from operator's 2026-05-26 physical hardware-support test
 (third empirical-anchor in the same test session after B-0832 nmtui
 WiFi rescan + B-0833 interactive-vs-baked-keys auth tension):
 
-Operator framing: *"i got some failures and warings on install of
+Operator framing: _"i got some failures and warings on install of
 nixos not sure if it matters it scrolled by to faster have gh login
-this is exactly what i'm hoping you can log and test in ci"*
+this is exactly what i'm hoping you can log and test in ci"_
 
 Two observations packed into one report:
 
@@ -38,8 +38,8 @@ Two observations packed into one report:
    before reaching the `gh auth login` step in `zeta-install.sh`; the
    scroll-past-too-fast issue blocks operator's ability to diagnose
 
-The operator's correct framing: *"this is exactly what i'm hoping
-you can log and test in ci"* — B-0831 cascade #6 phase 1 already
+The operator's correct framing: _"this is exactly what i'm hoping
+you can log and test in ci"_ — B-0831 cascade #6 phase 1 already
 plans to capture full serial console as workflow-artifact. This row
 is the OPERATOR-SIDE analog: preserve the log on the install target
 so operator can review after the fact, BEFORE B-0831 cascade #6
@@ -70,10 +70,10 @@ After install completes (success OR failure), copy the log to:
 Operator can then:
 
 - During install: `Ctrl-Z` install → background → `tail -f
-  /tmp/zeta-install-*.log | less` (scrollable)
+/tmp/zeta-install-*.log | less` (scrollable)
 - After failure: `cat /tmp/zeta-install-*.log | less`
 - After successful install + boot: `journalctl -u zeta-first-boot
-  --boot=-1` OR `cat /var/log/zeta-install.log`
+--boot=-1` OR `cat /var/log/zeta-install.log`
 
 ### Approach B — `script` command wraps zeta-install entirely
 

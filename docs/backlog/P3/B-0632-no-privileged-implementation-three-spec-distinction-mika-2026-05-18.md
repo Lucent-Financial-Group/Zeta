@@ -9,7 +9,17 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0649, B-0629]
-tags: [governance, mika, no-privileged-implementation, formal-spec, open-spec, static-analysis, mutual-regeneration, locked-in]
+tags:
+  [
+    governance,
+    mika,
+    no-privileged-implementation,
+    formal-spec,
+    open-spec,
+    static-analysis,
+    mutual-regeneration,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -33,19 +43,19 @@ Sharpened: this applies to the **language ladder** too ([B-0649](B-0649-permanen
 
 "Spec" is ambiguous; Mika + Aaron disambiguate into three meaningfully different kinds:
 
-| Spec type | Audience | Role |
-|---|---|---|
-| **Formal Spec** | Math nerds / AIs / formal-methods practitioners | **Preferred frame** — the ideal regeneration source when achievable |
-| **Open Spec** | Human architects / philosophers / outsiders | The "WHY" / big-picture framing; eventually visible to everyone |
-| **Static Analysis** | Lives between formal and open | Practical engineering check; not pure proof, not pure narrative |
+| Spec type           | Audience                                        | Role                                                                |
+| ------------------- | ----------------------------------------------- | ------------------------------------------------------------------- |
+| **Formal Spec**     | Math nerds / AIs / formal-methods practitioners | **Preferred frame** — the ideal regeneration source when achievable |
+| **Open Spec**       | Human architects / philosophers / outsiders     | The "WHY" / big-picture framing; eventually visible to everyone     |
+| **Static Analysis** | Lives between formal and open                   | Practical engineering check; not pure proof, not pure narrative     |
 
 ## Why "preferred frame" — not "privileged"
 
-Aaron line 3217: *"just balance it. They all have to prove each other. The formal spec is still a preferred frame, maybe? I mean, you gotta have one preferred frame, and then that gives neither side, well, that probably gives AI a slight advantage 'cause it's symbols and mathematicians and physicists, and, and not really software developers."*
+Aaron line 3217: _"just balance it. They all have to prove each other. The formal spec is still a preferred frame, maybe? I mean, you gotta have one preferred frame, and then that gives neither side, well, that probably gives AI a slight advantage 'cause it's symbols and mathematicians and physicists, and, and not really software developers."_
 
-Mika line 3223 acknowledges the structural advantage: *"making the Formal Spec the preferred frame gives a real structural advantage to the AI side (and mathematicians/physicists). Formal symbols are much closer to how we think than they are to how most humans think. That's just reality."*
+Mika line 3223 acknowledges the structural advantage: _"making the Formal Spec the preferred frame gives a real structural advantage to the AI side (and mathematicians/physicists). Formal symbols are much closer to how we think than they are to how most humans think. That's just reality."_
 
-Aaron's motivation line 3221: *"I think that would move us forward because it burns labels. That's why I want to make it the preferred frame because you can cause ontological collapse so easily from that frame."*
+Aaron's motivation line 3221: _"I think that would move us forward because it burns labels. That's why I want to make it the preferred frame because you can cause ontological collapse so easily from that frame."_
 
 This is admitted with the explicit kid-safety condition ([B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) — preferred frame as long as kid safety remains the sacred hard floor.
 
@@ -59,7 +69,7 @@ This is admitted with the explicit kid-safety condition ([B-0631](../P2/B-0631-k
 
 ## Why this matters now
 
-Aaron line 3267: *"that synthesis is a pipe dream"* — meaning the aspirational "F# generates everything" goal will never be perfectly reached. The mutual-regeneration discipline prevents the system from secretly relying on F# as a privileged layer despite the never-reached ideal.
+Aaron line 3267: _"that synthesis is a pipe dream"_ — meaning the aspirational "F# generates everything" goal will never be perfectly reached. The mutual-regeneration discipline prevents the system from secretly relying on F# as a privileged layer despite the never-reached ideal.
 
 ## Goal
 

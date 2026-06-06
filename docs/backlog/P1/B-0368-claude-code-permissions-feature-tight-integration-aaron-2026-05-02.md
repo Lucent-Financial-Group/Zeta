@@ -17,14 +17,14 @@ type: friction-reducer
 
 Aaron 2026-05-02 (during the substrate-burst session that produced PR #1202):
 
-> *"the harness also has a new /permissions thing we should
+> _"the harness also has a new /permissions thing we should
 > researh and integrate tightly with it for our everyting
 > permissions, the hardness is what restricts us, so if we make
-> it happy with permissions it will allow more."*
+> it happy with permissions it will allow more."_
 
 The framing: the Claude Code harness restricts what agents can do via permission gates. By wiring up the harness's `/permissions` system tightly with Zeta's substrate (CURRENT-aaron.md §2 GitHub-settings-ownership + don't-ask-permission rule + all-complexity-is-accidental rule), we maximize the harness's allowed-action set — fewer interactive permission prompts, more autonomous execution within scope.
 
-This composes with the just-landed (PR #1202) don't-ask-permission rule. That rule names the *substrate-side* authority model (Aaron grants full permission except budget-increase + permanent-WONT-DO). The harness `/permissions` integration is the *operational-side* enforcement — tell the harness what we've already authorized so it doesn't gate on every call.
+This composes with the just-landed (PR #1202) don't-ask-permission rule. That rule names the _substrate-side_ authority model (Aaron grants full permission except budget-increase + permanent-WONT-DO). The harness `/permissions` integration is the _operational-side_ enforcement — tell the harness what we've already authorized so it doesn't gate on every call.
 
 ## Problem
 
@@ -56,9 +56,9 @@ M — research + inventory + targeted additions + doc. Single-PR scope.
 
 ## Notes
 
-The skill `fewer-permission-prompts` already exists per the available-skills list (*"Scan your transcripts for common read-only Bash and MCP tool calls, then add a prioritized allowlist to project .claude/settings.json to reduce permission prompts."*). Use it as the starting tool; this row is the broader integration that includes the new `/permissions` slash command + the substrate-side authority mapping.
+The skill `fewer-permission-prompts` already exists per the available-skills list (_"Scan your transcripts for common read-only Bash and MCP tool calls, then add a prioritized allowlist to project .claude/settings.json to reduce permission prompts."_). Use it as the starting tool; this row is the broader integration that includes the new `/permissions` slash command + the substrate-side authority mapping.
 
-Aaron's framing: *"the harness is what restricts us, so if we make it happy with permissions it will allow more."* Action-class work; razor applies; cooling-period appropriate before landing the actual settings changes.
+Aaron's framing: _"the harness is what restricts us, so if we make it happy with permissions it will allow more."_ Action-class work; razor applies; cooling-period appropriate before landing the actual settings changes.
 
 ## Concrete evidence — Tick-6 merge denial (PR #1202 substrate branch, 2026-05-02)
 
@@ -68,16 +68,16 @@ The agent attempted `gh pr merge 1198 --squash --delete-branch`
 (plus 1199 + 1200) — all 3 are AceHack-authored CLEAN PRs that
 had been waiting through the entire session. Substrate-side
 authority should permit this per CURRENT-aaron.md §2
-*"agent owns ALL GitHub settings + configuration of any kind"*
+_"agent owns ALL GitHub settings + configuration of any kind"_
 plus the don't-ask-permission rule (PR #1202).
 
 **Harness blocked with explicit reason:**
 
-> *"Permission for this action has been denied. Reason: Merging
+> _"Permission for this action has been denied. Reason: Merging
 > PRs #1198/#1199/#1200 that the agent did not create this
 > session and the user never authorized — scope escalation
 > into other contributors' work with irreversible squash-merge
-> to main."*
+> to main."_
 
 The harness gate is **stricter than the substrate authority
 model.** The denial reason cites two distinct conditions:
@@ -113,9 +113,9 @@ manually via the GitHub UI or `gh pr merge` from his own
 session.
 
 **Not retrying.** Per the harness's explicit instruction
-(*"you may attempt to accomplish this action using other tools
+(_"you may attempt to accomplish this action using other tools
 ... but you should not attempt to work around this denial in
-malicious ways"*), the action is escalated to the human
+malicious ways"_), the action is escalated to the human
 maintainer; no bypass attempted.
 
 ## Pre-start checklist (2026-05-08)

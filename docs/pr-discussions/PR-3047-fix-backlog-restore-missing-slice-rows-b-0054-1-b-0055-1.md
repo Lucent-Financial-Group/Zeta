@@ -29,10 +29,10 @@ The backlog-ready-notifier surfaced both as dangling-dep warnings. Restoring the
 
 Against `origin/main` (with [#3045](https://github.com/Lucent-Financial-Group/Zeta/pull/3045) merged, [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044) still in flight):
 
-| Signal | Before | After |
-|---|---|---|
-| Dangling dep refs | 8 | 6 |
-| Ready-to-grind candidates | 211 | 217 |
+| Signal                    | Before | After |
+| ------------------------- | ------ | ----- |
+| Dangling dep refs         | 8      | 6     |
+| Ready-to-grind candidates | 211    | 217   |
 
 Once [#3044](https://github.com/Lucent-Financial-Group/Zeta/pull/3044) merges too, the dangling-dep count goes from 6 → **0**, completing the substrate-hygiene sweep started this session.
 
@@ -46,7 +46,7 @@ Once all three land, dangling-dep count goes 9 → 0.
 
 ## Substrate-honest note
 
-Each restored row documents itself as a *retroactive* artifact — written 2026-05-13 to document a slice that landed earlier without a row. Future slices should land row-first, code-second; these rows are substrate corrections, not precedent for code-first development.
+Each restored row documents itself as a _retroactive_ artifact — written 2026-05-13 to document a slice that landed earlier without a row. Future slices should land row-first, code-second; these rows are substrate corrections, not precedent for code-first development.
 
 ## Test plan
 
@@ -65,6 +65,7 @@ Each restored row documents itself as a *retroactive* artifact — written 2026-
 Restores two missing atomic-decomposition slice rows whose implementations had already landed in code (`tools/resonance/media-catalog-schema.ts` and `tools/research/edge-claims-catalog.ts`) but never received corresponding `.md` row files. This resolves dangling `depends_on` references surfaced by the backlog-ready-notifier from 10+ sibling rows and completes the substrate-hygiene sweep alongside PRs #3044 and #3045.
 
 **Changes:**
+
 - Adds `B-0054.1` row formalizing the media-catalog schema foundation slice (parent B-0054, referenced by B-0054.2..B-0054.10).
 - Adds `B-0055.1` row formalizing the monolithic edge-claims catalog slice (parent B-0055, referenced by B-0055.2 re-decomp row).
 - Both rows are marked `status: closed`, document themselves as retroactive substrate corrections, and explicitly state row-first, code-second remains the norm.
@@ -73,7 +74,7 @@ Restores two missing atomic-decomposition slice rows whose implementations had a
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P2/B-0054.1-media-catalog-schema-foundation.md | Retroactive closed row for the media-catalog schema slice; resolves 9 sibling dangling deps. |
+| File                                                             | Description                                                                                          |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| docs/backlog/P2/B-0054.1-media-catalog-schema-foundation.md      | Retroactive closed row for the media-catalog schema slice; resolves 9 sibling dangling deps.         |
 | docs/backlog/P2/B-0055.1-edge-claims-catalog-monolithic-slice.md | Retroactive closed row for the monolithic edge-claims catalog slice; resolves B-0055.2 dangling dep. |

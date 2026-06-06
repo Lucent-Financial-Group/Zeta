@@ -36,6 +36,7 @@ Originally allocated as **B-0545**. Collided with [#3619](https://github.com/Luc
 ## Crash-recovery context
 
 This row + research file were authored by the pre-crash Otto session and were the **only** artifacts that hadn't already shipped via concurrent PRs:
+
 - Rule (`premise-flagged-unverified-...`) landed via [#3935](https://github.com/Lucent-Financial-Group/Zeta/pull/3935)
 - B-0507 follow-on landed via [#3937](https://github.com/Lucent-Financial-Group/Zeta/pull/3937)
 - Lior tick fix landed via [#3936](https://github.com/Lucent-Financial-Group/Zeta/pull/3936)
@@ -61,6 +62,7 @@ Per-artifact `git show origin/main:<path>` checks caught all four duplications B
 This PR adds two history-surface artifacts for Step 2 of the B-0543 QG isomorphism proof path: a P2 backlog row and a research seed describing a proposed mapping from a 4-axis cube + Adinkra layer + Cayley-Dickson tower onto a HaPPY-like quantum error-correcting code structure. It is documentation/research-only, with no code or tooling changes.
 
 **Changes:**
+
 - Adds backlog row `B-0562` (P2, in_progress, depends_on B-0543/B-0544) describing the Step 2 research scope, effort (XL), and open questions.
 - Adds a research seed sketching the cube-face → boundary, edges → entanglement, vertices → bulk operators, and Adinkra → SUSY-generators mapping toward HaPPY-style entanglement-wedge reconstruction.
 - Notes the B-0545 → B-0562 renumber to avoid collision with #3619 / #3878 in-flight allocations.
@@ -69,13 +71,12 @@ This PR adds two history-surface artifacts for Step 2 of the B-0543 QG isomorphi
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                       | Description                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `docs/backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md` | New P2 backlog row with frontmatter (id, depends_on, last_updated) and scope/effort/open-questions for Step 2. |
-| `docs/research/2026-05-15-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc.md` | New research seed laying out the cube/Adinkra/Cayley-Dickson → HaPPY mapping strategy and open technical gaps. |
+| `docs/research/2026-05-15-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc.md`          | New research seed laying out the cube/Adinkra/Cayley-Dickson → HaPPY mapping strategy and open technical gaps. |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T21:07:16Z)
-
 
 ### 💡 Codex Review
 
@@ -83,17 +84,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `21f646c2d2`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -119,7 +119,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-16T21:07:16Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Renumber the quoted ordered-list item to satisfy lint**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Renumber the quoted ordered-list item to satisfy lint**
 
 This line starts an ordered-list item at `2.` inside a blockquote, which violates the repo’s enabled markdown rule `MD029` (list prefixes must follow the configured numbering style). The required CI job `lint (markdownlint)` runs `markdownlint-cli2 "**/*.md"` in `.github/workflows/gate.yml`, and `docs/backlog/**` is not ignored in `.markdownlint-cli2.jsonc`, so this commit introduces a deterministic lint failure that blocks a green gate.
 
@@ -133,7 +133,7 @@ Fixed in 1aebb44 — reframed the quoted "step 2" as bold prose `> **Step 2.**` 
 
 **@chatgpt-codex-connector** (2026-05-16T21:07:16Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Add a trailing newline to keep markdownlint green**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Add a trailing newline to keep markdownlint green**
 
 The file ends without a final newline, triggering markdown rule `MD047` (`single-trailing-newline`). Because the workflow’s required markdownlint job checks this backlog file path, this missing newline causes a reproducible CI failure even though the document content is otherwise valid.
 

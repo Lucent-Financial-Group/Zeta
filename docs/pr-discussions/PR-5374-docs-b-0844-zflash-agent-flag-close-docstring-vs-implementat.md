@@ -28,7 +28,7 @@ Operator authorized agent-driven zflash with Touch ID. Agent ran \`bun zflash.ts
 4. flash-usb.ts bail'd silently (error swallowed by tail filter)
 5. zflash caught non-zero exit BUT iter-4.2 inject still ran on PRE-EXISTING USB ESP
 6. Operator saw "safe to remove USB" — believed flash succeeded
-7. Boot attempt failed: *"i got the fingerprint but it didn't format"*
+7. Boot attempt failed: _"i got the fingerprint but it didn't format"_
 
 ## Root cause
 
@@ -73,6 +73,7 @@ External \`expect\` wrapper worked end-to-end (Flash complete; 1.51 GiB in 80s; 
 Adds a new P1 backlog row (B-0844) documenting a docstring-vs-implementation gap in `zflash.ts` around “agent-driven mode” and outlining an implementation plan for a native `--agent` flag, plus updates the generated backlog index to reference the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P1/B-0844-...md` with problem statement, root cause, acceptance criteria, and an implementation sketch for `zflash --agent`.
 - Updated `docs/BACKLOG.md` to include the new B-0844 entry under P1.
 
@@ -80,10 +81,10 @@ Adds a new P1 backlog row (B-0844) documenting a docstring-vs-implementation gap
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                               | Description                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0844-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md | New backlog row capturing the zflash agent-mode issue, workaround, and target implementation/acceptance criteria. |
-| docs/BACKLOG.md | Adds the B-0844 link into the P1 index list. |
+| docs/BACKLOG.md                                                                                                    | Adds the B-0844 link into the P1 index list.                                                                      |
 
 ## Review threads
 

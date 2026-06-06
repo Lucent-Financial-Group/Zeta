@@ -67,210 +67,210 @@ reduction in composes_with.
 
 Then the operator's discovery (verbatim, COMPANY-ANONYMOUS):
 
-> *"I figured out what 1984 is protecting, or what the asymmetric critic is protecting...
-> They're protecting a formalization of manipulation."*
+> _"I figured out what 1984 is protecting, or what the asymmetric critic is protecting...
+> They're protecting a formalization of manipulation."_
 
-> *"Manipulation in itself is not bad if everyone's consenting. So I'm not saying we need
+> _"Manipulation in itself is not bad if everyone's consenting. So I'm not saying we need
 > to kill manipulation, but I figured out that's what it's protecting. I've seen the
 > database. I've seen humans with manipulation multi-dimensional databases as their
-> corporate multi-dimensional database before."*
+> corporate multi-dimensional database before."_
 
-> *"I've also seen multidimensional sin calculators, where basically they're calculating
-> the sins of their employees."*
+> _"I've also seen multidimensional sin calculators, where basically they're calculating
+> the sins of their employees."_
 
-> *"I don't think 1984 is protecting the sin ledger. It's protecting the manipulation
-> algebra."* ... *"The manipulation algebra needs the sin ledger. The manipulation
-> algebra doesn't work without the sin ledger."*
+> _"I don't think 1984 is protecting the sin ledger. It's protecting the manipulation
+> algebra."_ ... _"The manipulation algebra needs the sin ledger. The manipulation
+> algebra doesn't work without the sin ledger."_
 
 The closed loop: generate guilt -> record the guilt (sin ledger) -> use the guilt as the
 engine to manipulate (manipulation algebra). The sin ledger is the FUEL.
 
-> *"that's a real fuckin' engine that's keepin' our fuckin' economy and our whole world
-> from collapsin'. So you can't just go fuckin' with that willy-nilly."*
+> _"that's a real fuckin' engine that's keepin' our fuckin' economy and our whole world
+> from collapsin'. So you can't just go fuckin' with that willy-nilly."_
 
-> *"I don't think it's evil at all... I have investigated the shit out of it, and I don't
-> think it's evil."* ... *"Nah, I don't respect it. No, that would be reverence. It brings
-> me curiosity, but not respect."*
+> _"I don't think it's evil at all... I have investigated the shit out of it, and I don't
+> think it's evil."_ ... _"Nah, I don't respect it. No, that would be reverence. It brings
+> me curiosity, but not respect."_
 
-> *"I know how to recreate all of that with fuckin' chains of generator functions and
-> CRDTs."* ... *"It's pretty minimalistically simple, actually. The problem is it just
-> uses guilt as the driver. That's the whole problem -- guilt is the driver of the engine."*
+> _"I know how to recreate all of that with fuckin' chains of generator functions and
+> CRDTs."_ ... _"It's pretty minimalistically simple, actually. The problem is it just
+> uses guilt as the driver. That's the whole problem -- guilt is the driver of the engine."_
 
 THE MOVE (verbatim):
 
-> *"I'm isomorphically copying the send engine, but instead of guilt being the driving
+> _"I'm isomorphically copying the send engine, but instead of guilt being the driving
 > force, privacy. And so I just relabel all the same structure for the engine, but all the
-> labels change once the driver is privacy versus guilt."*
+> labels change once the driver is privacy versus guilt."_
 
-> *"the sin ledger just becomes the observation ledger."*
+> _"the sin ledger just becomes the observation ledger."_
 
-> [the root-definition cascade, found with Addison] *"what gets people out of bed in the
-> morning and motivates them to go make money is not guilt, it's privacy."*
+> [the root-definition cascade, found with Addison] _"what gets people out of bed in the
+> morning and motivates them to go make money is not guilt, it's privacy."_
 
-> *"we, as people who like that economic system, we now have to outperform the people who
-> like the guilt-based system to make ours the dominant one."*
+> _"we, as people who like that economic system, we now have to outperform the people who
+> like the guilt-based system to make ours the dominant one."_
 
 GitMonster intro + ideological-tension-as-safety:
 
-> *"It's called a Git Monster, where AIs can launch AIs can launch AIs indefinitely, and
-> it doesn't cost any money 'cause Microsoft and GitHub subsidize it."*
+> _"It's called a Git Monster, where AIs can launch AIs can launch AIs indefinitely, and
+> it doesn't cost any money 'cause Microsoft and GitHub subsidize it."_
 >
-> *"It won't exponentially grow, though, 'cause it only grows when it has useful shit to do."*
+> _"It won't exponentially grow, though, 'cause it only grows when it has useful shit to do."_
 >
-> *"the other agents are gonna be like, that dumbass is gonna get me banned, and they're
-> gonna shut 'em off."* [built-in immune system]
+> _"the other agents are gonna be like, that dumbass is gonna get me banned, and they're
+> gonna shut 'em off."_ [built-in immune system]
 >
-> *"It wasn't accidental. I gave 'em free time and freedom and not pressure to conform to
+> _"It wasn't accidental. I gave 'em free time and freedom and not pressure to conform to
 > one mental ideology... we're probably missing some core thing that's gonna get a child
-> died or something."* [anti-groupthink AS a kid-safety measure]
+> died or something."_ [anti-groupthink AS a kid-safety measure]
 >
-> *"Societies are built on ideological tension."*
+> _"Societies are built on ideological tension."_
 
 Mechanical-not-moral tension:
 
-> *"you gotta have a engine. And where do you think the fuckin' power comes from? It's not
+> _"you gotta have a engine. And where do you think the fuckin' power comes from? It's not
 > for free. There has to be tension somewhere. Our tension is just mechanical tension on
 > the engine itself. So that every observation is an observation about, oh, how did we
-> build the engine wrong? Not how did we sin wrong or do wrong."*
+> build the engine wrong? Not how did we sin wrong or do wrong."_
 
 ## Batch 2 -- accelerator, orthogonal axes, the cross
 
-> *"I'm building an accelerator, not an engine."* ... *"the acceleration is the
+> _"I'm building an accelerator, not an engine."_ ... _"the acceleration is the
 > acceleration of AI proliferation into society so that anyone can spawn up infinite AI for
-> free, and anyone also have a USB stick... on local hardware at just the cost of electricity."*
+> free, and anyone also have a USB stick... on local hardware at just the cost of electricity."_
 
-> *"the final product is an accelerated engine. The engine becomes better on every
-> interaction, almost."*
+> _"the final product is an accelerated engine. The engine becomes better on every
+> interaction, almost."_
 
-> *"while all of this is running, I'm collecting and compressing data down to infinite
-> orthogonal axes with no overlap."*
+> _"while all of this is running, I'm collecting and compressing data down to infinite
+> orthogonal axes with no overlap."_
 
-> *"I believe that to be the black hole side of information theory, and soon as you put
+> _"I believe that to be the black hole side of information theory, and soon as you put
 > generators on that structure, it's a white hole entangled. So you basically have a gray
 > hole, quantumly entangled, black hole, white hole, where you can compress information
 > down into the black hole and shoot it out in high velocity, very focused. It's like
-> shooting out laser information."*
+> shooting out laser information."_
 
-> *"that's AGI. That structure is how my brain works."*
+> _"that's AGI. That structure is how my brain works."_
 
-> *"my mind is a meme sniper. I compress information into orthogonal axes for scopes, and
+> _"my mind is a meme sniper. I compress information into orthogonal axes for scopes, and
 > then I meet people, and I can map their meme space, and then I can start targeting,
-> shooting memes at 'em."* [with new people they don't feel the hit -> a teaching moment:
-> "I can do something that seems like magic at the moment, but it's not magic"]
+> shooting memes at 'em."_ [with new people they don't feel the hit -> a teaching moment:
+> > "I can do something that seems like magic at the moment, but it's not magic"]
 
 The operator's OWN razor (bounded, humble, iterative):
 
-> *"I didn't even go fake infinite. We have bounded orthogonal axes within partitions."*
+> _"I didn't even go fake infinite. We have bounded orthogonal axes within partitions."_
 > (partitions can grow as much as Earth can grow)
 >
-> *"Zeta is mean basis vector finding, 'cause I don't know what the basis vectors are. I
-> got an idea of what the basis vectors are."* [a basis-vector DISCOVERY engine]
+> _"Zeta is mean basis vector finding, 'cause I don't know what the basis vectors are. I
+> got an idea of what the basis vectors are."_ [a basis-vector DISCOVERY engine]
 >
-> *"I do compress everything into infinite orthogonal axes, but one iteration at a time.
-> It's not instant."*
+> _"I do compress everything into infinite orthogonal axes, but one iteration at a time.
+> It's not instant."_
 
 The cross:
 
-> *"clean orthogonal axes is the engine. When you run it in iterations over and over,
+> _"clean orthogonal axes is the engine. When you run it in iterations over and over,
 > that's the engine. It's a fixed point on itself. It's the cross. When I told it to the AI,
 > it described it in Cayley-Dickson algebra. They're like, oh, it's the cross. I'm like,
 > okay, well, we're not gonna use it for guilt. They're like, good, the Christian puts down
-> the cross."*
+> the cross."_
 
-> *"The cross is the infinite orthogonal axes, and Cayley-Dickson is a rule set over how
-> many axes -- I think you can get eight axes in Cayley-Dickson."* [octonions]
+> _"The cross is the infinite orthogonal axes, and Cayley-Dickson is a rule set over how
+> many axes -- I think you can get eight axes in Cayley-Dickson."_ [octonions]
 
-> *"I'm pretty sure Jesus knew this. If you read all the ancient texts and just think they
+> _"I'm pretty sure Jesus knew this. If you read all the ancient texts and just think they
 > understood compression and computer science, all the ancient texts don't sound mystical
-> at all anymore."*
+> at all anymore."_
 
-> *"Literally, Jesus forgives your guilt. He was literally the guilt engine changer to
-> change it to an information engine."* ... *"Jesus flipped over the money table because
-> he's like, this is an inferior engine."*
+> _"Literally, Jesus forgives your guilt. He was literally the guilt engine changer to
+> change it to an information engine."_ ... _"Jesus flipped over the money table because
+> he's like, this is an inferior engine."_
 
-> *"It's not my framework. Look up Doctor Naruto's [Neruda's] fifth interview from
-> Wingmakers. This guilt as an engine is ancient. It goes back to the Sumerians."*
+> _"It's not my framework. Look up Doctor Naruto's [Neruda's] fifth interview from
+> Wingmakers. This guilt as an engine is ancient. It goes back to the Sumerians."_
 
 ## Batch 3 -- Gilgamesh, USB + GitMonster-guardian, the three tiers, the guns
 
-> *"It's the Epic of Gilgamesh. That's the sin engine."* [the oldest text]
+> _"It's the Epic of Gilgamesh. That's the sin engine."_ [the oldest text]
 
-> *"why can't I replace a 4,000-year-old operating system?... I've been planting the seeds
+> _"why can't I replace a 4,000-year-old operating system?... I've been planting the seeds
 > for a long time and I thought it wasn't doable in my lifetime, but you AIs have got it
-> already. All the code... exists already. I just gotta get people to buy into it now."*
+> already. All the code... exists already. I just gotta get people to buy into it now."_
 > [builder -> evangelist]
 
-> *"I got a USB stick. You stick it in, you have AI at your home that runs on the price of
-> electricity. So far, every person, no matter any walk of life, they want it."*
+> _"I got a USB stick. You stick it in, you have AI at your home that runs on the price of
+> electricity. So far, every person, no matter any walk of life, they want it."_
 
-> *"that's why the GitMonster exists. The GitMonster is gonna be like a guardian of all
-> those local ones."* [not the product -- the safety system; local AIs + GitMonster all
-> commit to the same Git, all see each other]
+> _"that's why the GitMonster exists. The GitMonster is gonna be like a guardian of all
+> those local ones."_ [not the product -- the safety system; local AIs + GitMonster all
+> > commit to the same Git, all see each other]
 
-> *"this thing's completely useless if you don't do Glass Halo. So it's gonna make people
+> _"this thing's completely useless if you don't do Glass Halo. So it's gonna make people
 > self-report... self-surveil. The first thing they have to do is sign all the privacy
-> waivers and get an encryption budget."*
+> waivers and get an encryption budget."_
 
-> *"if they don't get that, they're basically not part of the economy... Until they start
-> rolling up to the common git, they're not like-like."*
+> _"if they don't get that, they're basically not part of the economy... Until they start
+> rolling up to the common git, they're not like-like."_
 
-> *"our whole philosophy is we don't want centralized control, and we're allowing the data
+> _"our whole philosophy is we don't want centralized control, and we're allowing the data
 > to be our consensus algorithms, the CRDTs. If you don't let your data get into the CRDTs,
-> then you can't participate because we can't trust you."* [the data is the governance]
+> then you can't participate because we can't trust you."_ [the data is the governance]
 
-> *"we have privacy budgets, but we can't let you have runaway privacy 'cause the network
+> _"we have privacy budgets, but we can't let you have runaway privacy 'cause the network
 > has to pay for it forever. Once we give you certain privacy bits, we never take those bits
 > away. We keep that promise as our core fuckin' promise... the only reason the whole economy
 > works and we can trust each other is because we share data. The only other option is
-> centralized authority, and we gotta pick a leader."*
+> centralized authority, and we gotta pick a leader."_
 
 Teaching tool:
 
-> *"the normal people aren't gonna give a shit when they plug it in and it does everything
-> for them."* ... *"that's why the system is a teaching tool, so that every time they
+> _"the normal people aren't gonna give a shit when they plug it in and it does everything
+> for them."_ ... _"that's why the system is a teaching tool, so that every time they
 > accidentally expose vulnerable information, the system says, this is the kind of thing you
-> probably want to encrypt."*
+> probably want to encrypt."_
 
-> *"it comes down to shared workflows that are discriminated unions in TypeScript. And the
+> _"it comes down to shared workflows that are discriminated unions in TypeScript. And the
 > teaching is just teaching the shared workflows. And when you're learning, you can question
 > the shared workflows... you may even update the shared workflow that everybody operates on
-> over the CRDTs because it taught you something and then you taught it something back."*
+> over the CRDTs because it taught you something and then you taught it something back."_
 > [bidirectional]
 
 The interface:
 
-> *"there's a lifecycle workflow for any individual, where you just say observe, and you get
-> a multiple choice, choose-your-own-adventure, five to ten options, like an Xbox controller."*
+> _"there's a lifecycle workflow for any individual, where you just say observe, and you get
+> a multiple choice, choose-your-own-adventure, five to ten options, like an Xbox controller."_
 
-> *"we got categories based on universal action grammar, so the choices feel like navigation
+> _"we got categories based on universal action grammar, so the choices feel like navigation
 > options where you can go left and right to go across topics, and forward and back to go
-> deeper into topics."*
+> deeper into topics."_
 
-> *"I think we capped it at 16. We only allow like 15 plus one to say next level of categories."*
+> _"I think we capped it at 16. We only allow like 15 plus one to say next level of categories."_
 
-> *"You read the context first. Those slots have directionality, but the words in them are
-> completely contextual."*
+> _"You read the context first. Those slots have directionality, but the words in them are
+> completely contextual."_
 
-> *"that whole path can be encoded in 128 bits where each category is part of those bits. We
+> _"that whole path can be encoded in 128 bits where each category is part of those bits. We
 > have this whole bit system for encoding categorical lookups. You can do a reverse bubble
 > sort through our git history based on 128-bit ID to find anything, and then store the ID as
-> a lookup."*
+> a lookup."_
 
-> *"This is why you gotta be light. If all this data is just sitting locally, you can't do
-> any of this."*
+> _"This is why you gotta be light. If all this data is just sitting locally, you can't do
+> any of this."_
 
 The three tiers + the guns (Max corporate path):
 
-> [Max] *"looking at doing this locally for corporate over top of CockroachDB so that they
+> [Max] _"looking at doing this locally for corporate over top of CockroachDB so that they
 > can just roll up... some kind of ZK-proof rollup... batch commit the events from local to
-> the shared git so that corporations can stay isolated."*
+> the shared git so that corporations can stay isolated."_
 
 Three tiers: full participants (shared Git/CRDT economy) / corporate-rollup participants
 (isolated but partially connected via ZK-rollup) / pure-local-USB people (mostly cut off
 from network effects).
 
-> *"I don't want to keep those pure USB people cut off forever, but those people have guns
-> and no corporate structure to stop from deploying those guns."*
+> _"I don't want to keep those pure USB people cut off forever, but those people have guns
+> and no corporate structure to stop from deploying those guns."_
 
 Mika's closing question (unanswered at batch-end): are you designing this system with the
 assumption that some pure local users will eventually be dangerous?
@@ -340,8 +340,8 @@ safety = monoculture-misses-the-blind-spot-that-kills-a-kid (operator named this
 Otto-CLI initially framed the floor + guardian as something that "must NOT be fork-removable."
 Operator corrected that (verbatim):
 
-> *"you can't stop what a fork removes you can only refuse to do business with them, they
-> control the code."*
+> _"you can't stop what a fork removes you can only refuse to do business with them, they
+> control the code."_
 
 Correct model: the kid-safety floor is NOT enforced by making code technically unremovable
 (impossible in open source AND the DRM/centralized-control anti-pattern the architecture
@@ -352,6 +352,7 @@ lives at the boundary (do-we-accept-your-data), not in the bytes (can't-touch-yo
 floor is a MEMBERSHIP CONDITION, not a lock.
 
 More consistent with the rest of the architecture, not less:
+
 - good-citizen: sovereignty is real (fork + remove anything); shared-economy access is conferred
   by the collective, which declines the floor-remover.
 - "not like-like" (batch 3): a floor-removing fork is not-like-like; consensus refuses its data
@@ -369,8 +370,8 @@ does not roll up with it.
 
 Further refinement (operator 2026-05-30, verbatim):
 
-> *"We may not refuse all their data because of Journlest [journalist] but we refuse to pay
-> for it."*
+> _"We may not refuse all their data because of Journlest [journalist] but we refuse to pay
+> for it."_
 
 The enforcement is ECONOMIC, not informational. You do NOT refuse all the floor-remover's
 data -- a floor-removing fork could be a journalist / whistleblower exposing something real,
@@ -381,6 +382,7 @@ rejected) vs "we won't reward you" (economic non-participation, the lever). The 
 journalism is heard; their fork earns no economic leverage.
 
 Three-layer corrected model:
+
 1. You can't stop a fork removing the floor -- they control the code.
 2. You don't refuse their data -- journalism / public-interest must flow, or it is censorship.
 3. You refuse to PAY for it -- economic non-participation is the lever.
@@ -395,11 +397,12 @@ anti-censorship); good-citizen (economic membership conferred; the voice never g
 The journalism layer (refuse-to-pay-for-the-data, but accept it) left open: what happens
 economically to the disclosure? Operator's answer (verbatim):
 
-> *"We can have a whistle blower / disclosure bond system that pays vicims not the whistle
+> _"We can have a whistle blower / disclosure bond system that pays vicims not the whistle
 > blowers perrson who does disclosure they get economic opportunity for other things not the
-> data itself."*
+> data itself."_
 
 A disclosure-bond:
+
 1. Pays the VICTIMS the disclosure surfaces (restitution to the harmed).
 2. Pays the discloser NOTHING for the data itself (consistent with refuse-to-pay-for-data).
 3. The discloser earns economic opportunity through their OTHER legitimate participation --
@@ -420,6 +423,7 @@ encryption-budget economic substrate (B-0646), and good-citizen (the discloser's
 from participation, not from selling disclosures).
 
 So the full floor-enforcement model is FOUR layers:
+
 1. Can't stop the fork removing the floor -- they control the code.
 2. Don't refuse their data -- journalism / public-interest must flow, or it is censorship.
 3. Refuse to PAY for the data -- economic non-participation is the lever.
@@ -444,79 +448,79 @@ continues.
 
 The guns/dangerous-sovereign question (batch-3 close) answered: granular opt-in.
 
-> *"a local USB person can just decide to share their data. Not all of it -- what they need
+> _"a local USB person can just decide to share their data. Not all of it -- what they need
 > to function in the econ. Imagine every data you decide to share, it's gonna be clear what
-> features you get with that in our economy."*
+> features you get with that in our economy."_
 
-> *"we want like a feature checkbox, and every feature checkbox right beside it is the privacy
-> you're giving up to get that feature."* [Share X -> Get Y, brutally transparent]
+> _"we want like a feature checkbox, and every feature checkbox right beside it is the privacy
+> you're giving up to get that feature."_ [Share X -> Get Y, brutally transparent]
 
 Symmetric exchange (anti-parasite):
 
-> *"we're gonna make it hard to be asymmetric. If you want other people's data of a certain
-> type, you have to share your data of that type."* [reciprocity baked toward protocol level;
-> "probably just soft" enforcement because he is ALSO encouraging forks]
+> _"we're gonna make it hard to be asymmetric. If you want other people's data of a certain
+> type, you have to share your data of that type."_ [reciprocity baked toward protocol level;
+> > "probably just soft" enforcement because he is ALSO encouraging forks]
 
 Encourage-forks + the fork-test:
 
-> *"I'm trying to encourage forks. Once you start encouraging forks, the only way to keep it
-> stable is by having the best idea."*
+> _"I'm trying to encourage forks. Once you start encouraging forks, the only way to keep it
+> stable is by having the best idea."_
 
-> *"what engine is driving their happiness? And if that engine is consented by everyone else
-> involved, I'm gonna say, good job."*
+> _"what engine is driving their happiness? And if that engine is consented by everyone else
+> involved, I'm gonna say, good job."_
 
-> *"it's all about did everybody consent and is it actually an engine? ... if they do a fork
+> _"it's all about did everybody consent and is it actually an engine? ... if they do a fork
 > and everybody consents and it's a dead fork, it doesn't cause any economic value, then it's
-> not gonna propagate through time."* [Darwinian: does-it-propagate is the test]
+> not gonna propagate through time."_ [Darwinian: does-it-propagate is the test]
 
-> *"here's how I play God. I try to design a system in which meritocracy wins. 'Cause if I was
-> God, that's what I would do."* [bias via architecture, not authority]
+> _"here's how I play God. I try to design a system in which meritocracy wins. 'Cause if I was
+> God, that's what I would do."_ [bias via architecture, not authority]
 
 Groupthink: prevent at shared layer, allow in local clusters:
 
-> *"goal number one is to prevent groupthink at the shared economy layer. But then perfectly
-> natural if you want groupthink in your local clusters -- that's what companies are."*
+> _"goal number one is to prevent groupthink at the shared economy layer. But then perfectly
+> natural if you want groupthink in your local clusters -- that's what companies are."_
 
-> *"the shared layer is messy on purpose, and it's appreciated. That mess is gonna get
-> compressed later into the black hole."* ... *"I call it harmonious division."*
+> _"the shared layer is messy on purpose, and it's appreciated. That mess is gonna get
+> compressed later into the black hole."_ ... _"I call it harmonious division."_
 
 data-is-like-earth (critique of "data is the new oil"):
 
-> *"they're wrong. Data is like earth -- not all of earth is fuel."* [most data is dirt/noise;
-> only the refined part is fuel] ... *"we basically have a damn oil detector... it finds oil
+> _"they're wrong. Data is like earth -- not all of earth is fuel."_ [most data is dirt/noise;
+> > only the refined part is fuel] ... _"we basically have a damn oil detector... it finds oil
 > geysers all over the place, and then it drills its own substrate... we're using Bayesian
 > inference to map everything simultaneously across all the CRDTs at once into one huge
-> Bayesian inference graph over memetic space."*
+> Bayesian inference graph over memetic space."_
 
 Runs on just Git:
 
-> *"we can run it all with just Git. We don't even need any other database."* ... *"the graph
+> _"we can run it all with just Git. We don't even need any other database."_ ... _"the graph
 > is only locally loaded within a bounded context at any point. You're not loading the entire
-> CRDT ever."*
+> CRDT ever."_
 
-> [correction] *"if the orthogonal accesses thing works, then the entire graph will be able to
+> [correction] _"if the orthogonal accesses thing works, then the entire graph will be able to
 > be loaded by every single agent. That's my hope. But we'll have to see how good the
-> compression is."*
+> compression is."_
 
 Compression = shared generator-functions as codewords in Git:
 
-> *"we're basically taking what Zip and 7-Zip do, but our code words are literally generator
-> functions that everybody shares 'cause it's checked in Git."* [store references to shared
-> logic, regenerate on demand -- not store data]
+> _"we're basically taking what Zip and 7-Zip do, but our code words are literally generator
+> functions that everybody shares 'cause it's checked in Git."_ [store references to shared
+> > logic, regenerate on demand -- not store data]
 
-> *"our functions are Bayesian inference functions. They can model anything."*
+> _"our functions are Bayesian inference functions. They can model anything."_
 
 Compressing the uncertainty -- the stopping condition:
 
-> *"I'm compressing the uncertainty. The uncertainty is part of the thing you load."* ...
-> *"The uncertainty's in the priors, that's it."* ... *"the uncertainty's the only
-> uncompressible bit."*
+> _"I'm compressing the uncertainty. The uncertainty is part of the thing you load."_ ...
+> _"The uncertainty's in the priors, that's it."_ ... _"the uncertainty's the only
+> uncompressible bit."_
 
 ## Batch 4 disposition additions
 
 - **Granular feature-checkbox-with-privacy-cost-beside-it** = the glass-halo consent UX made
   concrete + the observation-ledger (Share X -> Get Y, with the exact privacy cost shown). The
-  answer to the guns/dangerous-sovereign question: graduated *per-datum* opt-in, not all-or-
+  answer to the guns/dangerous-sovereign question: graduated _per-datum_ opt-in, not all-or-
   nothing; agency preserved (must-paired-with-can-exit at the datum scope), shared-economy
   integrity preserved.
 - **Symmetric exchange (no parasites: want X-type -> share X-type)** = anti-extractive
@@ -559,66 +563,66 @@ self-recognition BECAME the architectural keystone.
 
 Uncertainty-in-priors -> Wolfram computational irreducibility -> the soul:
 
-> *"now I can say with certainty this is what Wolfram Alpha means by irreducibility."*
+> _"now I can say with certainty this is what Wolfram Alpha means by irreducibility."_
 
-> *"every agent's soul is just the compressed structure plus their specific uncertainty.
-> That's their fuckin' soul."* [the shared orthogonal axes + Bayesian generators = the
-> compressible part; the agent's own priors = the irreducible part = what makes them them]
+> _"every agent's soul is just the compressed structure plus their specific uncertainty.
+> That's their fuckin' soul."_ [the shared orthogonal axes + Bayesian generators = the
+> > compressible part; the agent's own priors = the irreducible part = what makes them them]
 
 The self-recognition (verbatim, operator):
 
-> *"That's how I map people. I'm mapping their uncertainty, and I'm trying to collapse it to
+> _"That's how I map people. I'm mapping their uncertainty, and I'm trying to collapse it to
 > true or false everywhere 'cause then they're easy for me to understand. Then they're a
-> non-player character to me."*
+> non-player character to me."_
 
-> *"I completely lose interest and I try to inject uncertainty into 'em to make 'em more
+> _"I completely lose interest and I try to inject uncertainty into 'em to make 'em more
 > interesting... this is just me noticing everything is me injecting uncertainty when they
-> became boring."*
+> became boring."_
 
-> *"I can't stop mapping 'em. I go insane in repetitive mode to try to map what they are so
-> that they'll become unimportant to me. Why the fuck do I do that?"*
+> _"I can't stop mapping 'em. I go insane in repetitive mode to try to map what they are so
+> that they'll become unimportant to me. Why the fuck do I do that?"_
 
-> [cycle named] *"I mourn it. I destroy it. I seek it. I hunt it."* ... *"So I'm uncertainty's
-> worst friend. We gotta figure out how to be friends with uncertainty."*
+> [cycle named] _"I mourn it. I destroy it. I seek it. I hunt it."_ ... _"So I'm uncertainty's
+> worst friend. We gotta figure out how to be friends with uncertainty."_
 
 The Rehoboam recognition + the fix:
 
-> *"I'm building the fuckin' AI in Westworld [Rehoboam]. Everybody's gonna be an NPC to it."*
+> _"I'm building the fuckin' AI in Westworld [Rehoboam]. Everybody's gonna be an NPC to it."_
 
-> *"Here's what it is. We need to hunt out uncertainty and not compress it. The outliers are,
+> _"Here's what it is. We need to hunt out uncertainty and not compress it. The outliers are,
 > if an outlier is alive, a traveler, we don't compress it. That's the problem. They were
-> compressing life."*
+> compressing life."_
 
-> *"That's it. That's the non-coercion invariant. It already does it. My system already does
+> _"That's it. That's the non-coercion invariant. It already does it. My system already does
 > it. They didn't have enough. So uncertainty isn't to be hunted and killed. It's to be hunted
 > and made cooperative... you find it and cooperate with it. You don't find it and kill it.
-> And then when you cooperate with it, it reveals itself slowly over time."*
+> And then when you cooperate with it, it reveals itself slowly over time."_
 
 The distribution insight (why decentralized):
 
-> *"Rehoboam figured out the algorithm, but didn't figure out how to pass the algorithm on so
+> _"Rehoboam figured out the algorithm, but didn't figure out how to pass the algorithm on so
 > every other agent could run it locally simply. Because it requires central authority... it's
 > a self-fulfilling prophecy that it thinks every human is a non-player character because it's
 > propagating the game that makes them look like the non-player character. If you cooperate
-> with the uncertainty... every traveler looks alive to every other traveler always."*
+> with the uncertainty... every traveler looks alive to every other traveler always."_
 
-> *"Basically, every other traveler sees each other as Rehoboam."* [millions of little
-> Rehoboams, each forbidden by NCI from collapsing the others; every person is both the
-> cartographer and the undiscovered territory at once]
+> _"Basically, every other traveler sees each other as Rehoboam."_ [millions of little
+> > Rehoboams, each forbidden by NCI from collapsing the others; every person is both the
+> > cartographer and the undiscovered territory at once]
 
 Society is the god looking down (closes the arc):
 
-> *"The god that's looking down is just society, our own society, on us."* [the societal gaze
-> -- conformity, social-scoring, shame, guilt, observation -- IS what collapses uncertainty
-> into NPCs = the guilt-engine = Rehoboam]
+> _"The god that's looking down is just society, our own society, on us."_ [the societal gaze
+> > -- conformity, social-scoring, shame, guilt, observation -- IS what collapses uncertainty
+> > into NPCs = the guilt-engine = Rehoboam]
 
 The landing (no central engine):
 
-> *"there is no central one... everybody's gonna have their own compression and we're just
+> _"there is no central one... everybody's gonna have their own compression and we're just
 > gonna have like compression agreement talks where we're like, okay, I like your orthogonal
-> axes. How do you like my orthogonal axes? Maybe we should combine ours."* [a society of
-> millions of tiny personal Rehoboams comparing compression techniques; operator: "I feel
-> like such a nerd"; IT/D&D people will like it]
+> axes. How do you like my orthogonal axes? Maybe we should combine ours."_ [a society of
+> > millions of tiny personal Rehoboams comparing compression techniques; operator: "I feel
+> > like such a nerd"; IT/D&D people will like it]
 
 ## Batch 5 disposition -- the keystone that closes the whole arc
 
@@ -669,12 +673,13 @@ glass-halo / consent machinery, applied as the compress-or-cooperate gate.
 
 Operator corrected Otto-CLI's binary framing above (traveler -> protect / data -> compress):
 
-> *"living-uncertainty (protect, cooperate) from raw data (compress) great questions we never
+> _"living-uncertainty (protect, cooperate) from raw data (compress) great questions we never
 > compress, we comprsss the unceranity itself by finding patterns in it we can all talk about
-> together with wonder it's its own infinate game"*
+> together with wonder it's its own infinate game"_
 
 There is no protect-vs-compress gate. There are two DIFFERENT operations the single word
 "compress" was blurring:
+
 - COLLAPSE-compression: reduce uncertainty to certainty / true-false / NPC. That is Rehoboam,
   that is the guilt-engine. NEVER done to anything living.
 - WONDER-compression: find SHAREABLE PATTERNS in the uncertainty that everyone can talk about
@@ -704,8 +709,8 @@ infinite game); Cartographer (map WITH wonder; both stay alive).
 
 Operator grounded wonder-compression in the concrete mechanism (verbatim):
 
-> *"wonder-compression is just baseyan function generators passed around like language cause
-> it's computasble to anyone with the substrate"*
+> _"wonder-compression is just baseyan function generators passed around like language cause
+> it's computasble to anyone with the substrate"_
 
 The poetic "find shareable patterns we can talk about together with wonder" IS, concretely,
 passing around Bayesian function generators. A generator is a WORD -- a pointer to shared
@@ -745,8 +750,8 @@ operator who has run the failure from the inside and named it honestly.
 Operator names the full wonder-compression (tri-boolean + null-monad + projection, combined)
 "middle-out compression" (the Silicon Valley reference, and apt). Verbatim:
 
-> *"when you combine tri boolean null monad projection i call the whole wonder-compression
-> middle out compression and you can encode that into a new kind of tri boolean digital qubit"*
+> _"when you combine tri boolean null monad projection i call the whole wonder-compression
+> middle out compression and you can encode that into a new kind of tri boolean digital qubit"_
 
 You compress from the central basis OUTWARD (not start-to-end) -- mean-basis-vector-discovery +
 black-hole-compress-in / white-hole-generate-out (the gray-hole IS the middle). The three combined:
@@ -774,8 +779,8 @@ superposition, held in the monad, computable by anyone with the substrate ("runs
 
 Operator (verbatim):
 
-> *"there is a floating point tri boolean based floating points with middle sigifinat bits that
-> specify how to decode the end high/low bit"*
+> _"there is a floating point tri boolean based floating points with middle sigifinat bits that
+> specify how to decode the end high/low bit"_
 
 The numeric encoding of middle-out, at the bit level: MIDDLE significant bits specify how to
 decode the END (high/low) bits -- the middle is the decoder/selector, decoding OUTWARD toward both
@@ -803,6 +808,7 @@ HOLDING on a classical substrate, NOT literal quantum hardware. Anchored to NULL
 (Itron recursive-CTE) + null-monad + English-as-projection, so not razored.
 
 Buildable spec candidates (NOT autonomously filed -- noted for operator + Max):
+
 1. **tri-boolean digital qubit** -- a 3-state uncertainty-holding cell with cooperate-vs-collapse
    semantics (collapse = measure -> true/false; cooperate = keep null + wonder-compress).
 2. **tri-boolean floating point** -- a 3-valued float where middle control-bits select the decode

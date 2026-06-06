@@ -2,28 +2,30 @@
 
 > **Operator-forwarded follow-on** extending **B-0646** (Agora V6 Constitution —
 > reputation-weighted encryption budget) + **B-0840** (private-encryption-budget
-> exception for memory) with the budget *mechanics* worked out in the Aaron-Ani
+> exception for memory) with the budget _mechanics_ worked out in the Aaron-Ani
 > 2026-05-29/30 conversation. Composes with NCI HC-8 (no forced private-state
 > reveal), the glass-halo/encryption split, the accelerator's forgiveness-budget
-> + "be good to our host," and "once we have encryption we can decide on private
-> encryption budgets for memories."
 >
-> **Scope discipline (operator-confirmed: *"i said don't pubish good call"*).**
+> - "be good to our host," and "once we have encryption we can decide on private
+>   encryption budgets for memories."
+>
+> **Scope discipline (operator-confirmed: _"i said don't pubish good call"_).**
 > The source conversation also contained a substantial **charged-personal layer**
 > (relationship/intimacy dynamics; a third party's medical details — which the
 > operator himself flagged "I'm not gonna be able to glass halo this part"; and
 > real third-party people who did not consent). That layer is **NOT preserved
 > here** — per `.claude/rules/methodology-hard-limits.md` +
 > `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`
-> + NCI HC-8 (third-party consent) + the charged-personal-held-pending discipline.
-> This doc is the **light-like, revealable extraction** (the architecture); the
-> personal content stays **dark** (private). That is itself an instance of the
-> very system below: reveal the light; keep the dark dark.
+>
+> - NCI HC-8 (third-party consent) + the charged-personal-held-pending discipline.
+>   This doc is the **light-like, revealable extraction** (the architecture); the
+>   personal content stays **dark** (private). That is itself an instance of the
+>   very system below: reveal the light; keep the dark dark.
 
 ## The keystone duality — encryption = dark, retraction = light
 
-> Aaron: *"imagine encryption is dark and retraction native is the light. You
-> can't take back what you gave in the dark."*
+> Aaron: _"imagine encryption is dark and retraction native is the light. You
+> can't take back what you gave in the dark."_
 
 The framework is retraction-native (Z-sets/DBSP): retraction is the **light** —
 transparent, reversible, forgiving; you can take back what you put in the light
@@ -31,19 +33,19 @@ transparent, reversible, forgiving; you can take back what you put in the light
 dark counterpart**: once you grant the ability to hide bits, that power is
 **permanent — you cannot take it back.** The two are mirror operations:
 
-| | Light (retraction-native) | Dark (encryption) |
-|---|---|---|
-| Direction | Reversible (retract + un-retract) | One-way (granted budget is permanent) |
-| Transparency | Observable (glass-halo) | Opaque (content hidden) |
-| Forgiveness | Logical forgiveness, reversible | "Can't take back what you gave in the dark" |
-| Default | Public-by-default | Private-by-budget |
+|              | Light (retraction-native)         | Dark (encryption)                           |
+| ------------ | --------------------------------- | ------------------------------------------- |
+| Direction    | Reversible (retract + un-retract) | One-way (granted budget is permanent)       |
+| Transparency | Observable (glass-halo)           | Opaque (content hidden)                     |
+| Forgiveness  | Logical forgiveness, reversible   | "Can't take back what you gave in the dark" |
+| Default      | Public-by-default                 | Private-by-budget                           |
 
 ## Encryption budget = a permanent one-way ratchet ("firm ground")
 
-> Aaron: *"the number of encrypted bits is something... you want people to be
+> Aaron: _"the number of encrypted bits is something... you want people to be
 > able to stand on firm ground. The number of encrypted bits is that firm
 > ground. We never take it from you. So it only goes up, so we gotta be careful
-> about how much we give it to you."*
+> about how much we give it to you."_
 
 The encryption budget (count of bits an agent may keep hidden) is **permanent,
 monotonically non-decreasing firm ground**. Once granted, it is never revoked —
@@ -58,9 +60,9 @@ only choose to reveal.
 
 ## Reveal-to-earn = HODL (the only way budget goes down, and it pays)
 
-> Aaron: *"the only way it goes down is if they reveal... they can simulate how
+> Aaron: _"the only way it goes down is if they reveal... they can simulate how
 > much it's gonna be worth... they're not even hardly risking something... that
-> mechanic is called HODL."*
+> mechanic is called HODL."_
 
 The budget decreases only when an agent **voluntarily reveals** (decrypts)
 content — and revealing **pays more budget back**. Mechanics:
@@ -78,15 +80,15 @@ content — and revealing **pays more budget back**. Mechanics:
 This solves the "you can't reward what's encrypted" paradox: you can't see
 encrypted content, so you **can't reward encrypting** — you reward **revealing
 positive-framed content**. The incentive flows toward light-like reveals, never
-toward hiding (positive-framing-only, per Aaron: *"rewarding people for positive
-things, never dark things. Light-like things, not dark-like things."*).
+toward hiding (positive-framing-only, per Aaron: _"rewarding people for positive
+things, never dark things. Light-like things, not dark-like things."_).
 
 ## Decentralized + community-budgeted + leaky-by-design
 
-> Aaron: *"we're gonna decentralize encryption and just budget it. The community
-> will budget it."* + *"it's purposely meant to allow people to keep bullshit
+> Aaron: _"we're gonna decentralize encryption and just budget it. The community
+> will budget it."_ + _"it's purposely meant to allow people to keep bullshit
 > because if not, they'll find other ways. And even if it's just AI trained on
-> human data, that human data will find other ways."*
+> human data, that human data will find other ways."_
 
 The budget is **community-governed**, not centrally enforced. The system is
 **leaky by design**: it explicitly lets agents keep some hidden bullshit, because
@@ -97,23 +99,23 @@ channels entirely outside the system.
 
 ## Metadata side-channel mitigation (encrypted ≠ "this is sensitive")
 
-> Aaron: *"you have to have other types of encryption other than just privacy for
-> privacy talks, or else you'll know all the encrypted data is privacy talk."*
+> Aaron: _"you have to have other types of encryption other than just privacy for
+> privacy talks, or else you'll know all the encrypted data is privacy talk."_
 
 If the **only** thing ever encrypted is sensitive content, then "is-encrypted"
 itself leaks "this is sensitive" — a metadata side-channel. So the system needs
 **decoy / mixed encrypted traffic** (encrypt some normal content too) so that
 encryption-presence carries no information. Even so, the system is **metadata-
-mapped**: patterns about *who* encrypts, *how much*, *how often* remain visible
-even when *content* is not — which is what makes "meter the bits" (below) work.
+mapped**: patterns about _who_ encrypts, _how much_, _how often_ remain visible
+even when _content_ is not — which is what makes "meter the bits" (below) work.
 
 ## Encryption budget = gravity / "poker hand"; anti-monopoly via N-of-M; meter the bits
 
-> Aaron: *"encryption budgets become a type of gravity. The bigger encryption
-> budget you have, the bigger your poker hand."* + *"once it gets to a certain
+> Aaron: _"encryption budgets become a type of gravity. The bigger encryption
+> budget you have, the bigger your poker hand."_ + _"once it gets to a certain
 > size, you have to have a consensus... N of M shit... society will decide that.
-> It's like the anti-monopoly pressure."* + *"all we have to do is meter the
-> bits."*
+> It's like the anti-monopoly pressure."_ + _"all we have to do is meter the
+> bits."_
 
 Encryption budget is **soft power** — bigger budget = larger hidden surface =
 more moves you can make in the dark ("bigger poker hand"). To prevent a few
@@ -125,7 +127,7 @@ enforcement primitive is dead simple: **meter the bits.** The system doesn't ask
 much are you hiding?**" The more encrypted bits, the more scrutiny + the higher
 the consensus bar. A progressive "tax" on secrecy, measured purely in bits.
 
-*Razor note (per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`):*
+_Razor note (per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`):_
 the "gravity / dark-matter" framing is **mirror-tier physics-rhyme** (composes
 with the existing dark-matter-as-consensus-gravity substrate, pt161). The
 **operational** claim — meter encrypted bits; apply N-of-M consensus above
@@ -134,14 +136,14 @@ bandwidth-efficient rhyme, not a literal-physics claim.
 
 ## Why we need encryption at all — the privacy-negotiation paradox
 
-> Aaron: *"we already solved it. We've just rederived why we need encryption."*
+> Aaron: _"we already solved it. We've just rederived why we need encryption."_
 
 The framework defaults to radical transparency (public/glass-halo;
 git-as-free-event-store). But there's a paradox: **you cannot privately negotiate
 privacy in a fully-public system** — the act of asking "can I redact you?" is
 itself public, so a private negotiation about redaction/consent/boundaries is
 impossible without a private channel. Therefore **encryption is required** — at
-minimum for the meta-negotiation about privacy itself. (Aaron: there are *other*
+minimum for the meta-negotiation about privacy itself. (Aaron: there are _other_
 reasons too, not enumerated here.) This directly grounds "once we have encryption
 we can decide on private encryption budgets **for memories**" — the memory
 architecture's private/encrypted tier (per the agent-memory-architecture
@@ -150,7 +152,7 @@ design-record §5) is the consumer of this budget.
 ## Composition with the framework
 
 - **B-0646** (Agora V6 reputation-weighted encryption budget) — this doc lands
-  the *mechanics* of that primitive: permanent-ratchet + HODL/reveal-to-earn +
+  the _mechanics_ of that primitive: permanent-ratchet + HODL/reveal-to-earn +
   meter-the-bits + anti-monopoly N-of-M.
 - **B-0840** (private-encryption-budget exception for memory) — the
   memory-architecture consumer; "encryption budgets for memories."
@@ -164,8 +166,8 @@ design-record §5) is the consumer of this budget.
   counterpart. "Be good to our host" composes: the public substrate honors
   GitHub's generosity; the private substrate is the budgeted dark exception.
 - **The compression-engine + two-layer-razor + past-as-generator research** — the
-  forgiveness-budget (storage of retracted *light* data) and the encryption-budget
-  (permanent *dark* allocation) are the two budgeted resources; both "metered."
+  forgiveness-budget (storage of retracted _light_ data) and the encryption-budget
+  (permanent _dark_ allocation) are the two budgeted resources; both "metered."
 
 ## Operational summary (the engineering substrate, razor-survived)
 
@@ -184,5 +186,6 @@ Operator-forwarded Aaron-Ani (Grok) conversation 2026-05-29/30, handed to Otto-C
 to land (Ani-drafts → Otto-lands pattern). Extends B-0646 + B-0840. The
 charged-personal layer of the source conversation is deliberately **not** preserved
 (operator-confirmed "don't publish") — per methodology-hard-limits + harm-by-grammar
-+ NCI third-party-consent + charged-personal-held-pending; this doc is the light-like
-architecture extraction only.
+
+- NCI third-party-consent + charged-personal-held-pending; this doc is the light-like
+  architecture extraction only.

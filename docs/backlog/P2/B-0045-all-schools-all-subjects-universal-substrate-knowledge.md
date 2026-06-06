@@ -10,8 +10,29 @@ created: 2026-04-26
 last_updated: 2026-05-09
 depends_on: []
 children: [B-0045.1]
-composes_with: [B-0046, B-0049, B-0054, B-0056, B-0059, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
-tags: [universal-sweep, biology, trade-vocational, blue-collar, autopoiesis, time-energy-substrate, mr-khan-pedagogy, three-filter, yin-yang]
+composes_with:
+  [
+    B-0046,
+    B-0049,
+    B-0054,
+    B-0056,
+    B-0059,
+    user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md,
+    feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md,
+    project_operational_resonance_instances_collection_index_2026_04_22.md,
+  ]
+tags:
+  [
+    universal-sweep,
+    biology,
+    trade-vocational,
+    blue-collar,
+    autopoiesis,
+    time-energy-substrate,
+    mr-khan-pedagogy,
+    three-filter,
+    yin-yang,
+  ]
 type: friction-reducer
 ---
 
@@ -22,12 +43,12 @@ type: friction-reducer
 Biology inaugurates the sweep. Each subject gets its own Stage-1 → Stage-4 child sequence.
 Only the biology Stage-1 child has been filed so far; remaining children are filed as work proceeds.
 
-| Child | Title | Depends on | Status |
-|-------|-------|-----------|--------|
-| [B-0045.1](B-0045.1-biology-stage1-reading-list-scaffold.md) | Biology Stage 1 — reading-list scaffold | — | open |
-| B-0045.2 | Biology Stage 2 — structural-resonance scan (F1/F2/F3 + yin-yang) | B-0045.1 | not filed |
-| B-0045.3 | Trade/vocational Stage 1 — reading-list / practitioner-source scaffold | B-0045.2 | not filed |
-| B-0045.4 | Biology Stage 4 — time/energy measurables integration | B-0045.2 | not filed |
+| Child                                                        | Title                                                                  | Depends on | Status    |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------- | ---------- | --------- |
+| [B-0045.1](B-0045.1-biology-stage1-reading-list-scaffold.md) | Biology Stage 1 — reading-list scaffold                                | —          | open      |
+| B-0045.2                                                     | Biology Stage 2 — structural-resonance scan (F1/F2/F3 + yin-yang)      | B-0045.1   | not filed |
+| B-0045.3                                                     | Trade/vocational Stage 1 — reading-list / practitioner-source scaffold | B-0045.2   | not filed |
+| B-0045.4                                                     | Biology Stage 4 — time/energy measurables integration                  | B-0045.2   | not filed |
 
 Work in dependency order. B-0045.1 is the root; all others are blocked until it closes.
 
@@ -55,7 +76,7 @@ Law, accounting, teaching, medicine, engineering, architecture — intersect aca
 
 ### Arts and crafts
 
-Music, visual arts, theatre, dance, writing, filmmaking, game design, fashion, culinary arts. Same operational-resonance discipline as pop-culture/media row but from the *practitioner* side (how the artifact is MADE) not the *consumer* side (how it LANDS).
+Music, visual arts, theatre, dance, writing, filmmaking, game design, fashion, culinary arts. Same operational-resonance discipline as pop-culture/media row but from the _practitioner_ side (how the artifact is MADE) not the _consumer_ side (how it LANDS).
 
 ### Contemplative / experiential traditions
 
@@ -75,7 +96,7 @@ Biology is first-pick because:
 
 (a) it is **retraction-native at substrate layer** (cellular self-repair, immune-system retraction of mistaken targets, DNA proofreading);
 
-(b) it has operational-resonance potential with the factory's retraction-native operator algebra at the *living-substrate* layer (stronger than the physics resonance on instance #7 which is F3-partial; biology has molecular-level +1/-1 machinery observed directly);
+(b) it has operational-resonance potential with the factory's retraction-native operator algebra at the _living-substrate_ layer (stronger than the physics resonance on instance #7 which is F3-partial; biology has molecular-level +1/-1 machinery observed directly);
 
 (c) Zeta's measurable-alignment posture has biological-cognition analogs worth mining (homeostasis, feedback regulation, metabolic retraction paths);
 

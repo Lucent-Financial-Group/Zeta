@@ -45,11 +45,10 @@ property: the commands LOOK right but silently fail to copy files.
 The reviewer caught this on PR #4048 and added an explanatory
 paragraph for the fix:
 
-> *"The literal filenames avoid the shell-glob trap — `*` inside
-> double quotes is NOT expanded by the shell. The original B-0611
-> session authored these 10 copy commands as-is; abbreviating with
-> `*.md` in this memo would have produced non-executable copy
-> paste, contradicting the 'explicit cp per file' claim."*
+> _"The literal filenames avoid the shell-glob trap — `_`inside
+double quotes is NOT expanded by the shell. The original B-0611
+session authored these 10 copy commands as-is; abbreviating with`_.md` in this memo would have produced non-executable copy
+> paste, contradicting the 'explicit cp per file' claim."_
 
 ## Operational discipline
 

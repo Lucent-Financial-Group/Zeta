@@ -36,6 +36,7 @@ Composes with B-0428 / B-0741 / B-0747 / B-0754 / B-0759 / B-0763 / B-0765 / B-0
 This PR adds a verbatim research transcript (Aaron ↔ Mika via Grok, 2026-05-25) and files four newly-extracted substrate items into the per-row backlog, then updates the generated backlog index to include the new rows.
 
 **Changes:**
+
 - Add preserved research transcript under `docs/research/` and extract “substrate-engineering items” for backlog filing.
 - Add new backlog rows B-0780..B-0783 (Local Loop, F# universe boundary, DIO, and “eliminate tool wars” framing).
 - Update `docs/BACKLOG.md` to index the new rows.
@@ -47,14 +48,15 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 5 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-25-aaron-mika-grok-nats-jetstream-deterministic-scheduler-local-loop-lexisnexis-fsharp-type-system-as-universe-dio-eliminate-tool-wars-aaron-forwarded.md | Adds verbatim preservation + extracted substrate items list for filing. |
-| docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md | New P1 backlog row defining “Local Loop” deterministic K8s simulation/testing substrate. |
-| docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md | New P1 backlog row for “F# type system as universe boundary” concept + Caché anchor. |
-| docs/backlog/P2/B-0782-distributed-intelligent-organization-dio-per-company-on-distributed-intelligence-database-ceo-of-30-companies-scales-by-speaking-ontology-aaron-mika-2026-05-25.md | New P2 backlog row defining DIO framing and CEO-scale operator pattern. |
-| docs/backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md | New P2 backlog row sharpening persona/framing from “humans do less” to “eliminate tool wars”. |
-| docs/BACKLOG.md | Updates generated index to include B-0780..B-0783. |
+| File                                                                                                                                                                                      | Description                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-25-aaron-mika-grok-nats-jetstream-deterministic-scheduler-local-loop-lexisnexis-fsharp-type-system-as-universe-dio-eliminate-tool-wars-aaron-forwarded.md           | Adds verbatim preservation + extracted substrate items list for filing.                       |
+| docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md       | New P1 backlog row defining “Local Loop” deterministic K8s simulation/testing substrate.      |
+| docs/backlog/P1/B-0781-f-sharp-type-system-as-universe-boundary-every-yaml-nix-kubernetes-argocd-nats-config-becomes-first-class-fsharp-cachet-analog-aaron-mika-2026-05-25.md            | New P1 backlog row for “F# type system as universe boundary” concept + Caché anchor.          |
+| docs/backlog/P2/B-0782-distributed-intelligent-organization-dio-per-company-on-distributed-intelligence-database-ceo-of-30-companies-scales-by-speaking-ontology-aaron-mika-2026-05-25.md | New P2 backlog row defining DIO framing and CEO-scale operator pattern.                       |
+| docs/backlog/P2/B-0783-eliminate-tool-wars-sharpening-of-b0759-first-time-cli-user-persona-not-humans-do-less-but-humans-refocus-intention-aaron-mika-2026-05-25.md                       | New P2 backlog row sharpening persona/framing from “humans do less” to “eliminate tool wars”. |
+| docs/BACKLOG.md                                                                                                                                                                           | Updates generated index to include B-0780..B-0783.                                            |
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T02:01:56Z)

@@ -383,7 +383,7 @@ during peer cascade) needs to ship a shard / substrate edit:
 2. Check peer cascade intensity via `gh pr list --state open` (cost-aware)
    OR `git log origin/main` (free) — if multi-instance saturation, defer
 3. Pre-check candidate branch names via `git show-ref --verify --quiet
-   refs/heads/<name>` — uniquify if taken (sub-case 1; do NOT use
+refs/heads/<name>` — uniquify if taken (sub-case 1; do NOT use
    `git rev-parse`, which resolves HEAD/tags/remote refs as false positives)
 4. Detect working-tree-clean window via `git status --short` — only switch
    off peer-occupied branches when WT is empty (sub-case 2)
@@ -545,7 +545,7 @@ PR #2959 (B-0400 slice 5 — bus-gate integration)
 PR #3017 (B-0440.4 — bus publish pattern)
 PR #3030 (Otto Claude Desktop tight bootstream — second Otto surface)
 
-Aaron 2026-05-13 verbatim: *"probalby want to figure out how not to
-split brain with yourself bot any idea?"* — substrate-honest naming
+Aaron 2026-05-13 verbatim: _"probalby want to figure out how not to
+split brain with yourself bot any idea?"_ — substrate-honest naming
 of the split-brain risk; this rule is the operationally-honest
 answer.

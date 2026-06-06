@@ -6,25 +6,25 @@ Carved sentence (Kestrel 2026-05-28 verbatim):
 
 ## Operational content
 
-Kestrel Turn 39 framework-design-principle (preserved in 10th Kestrel ferry PR #5742). Companion to traveler-safety-guardrails-and-type-system rule (PR #5744 shipped today). Operator-explicit canonical-tier landing per Aaron 2026-05-28: *"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"*.
+Kestrel Turn 39 framework-design-principle (preserved in 10th Kestrel ferry PR #5742). Companion to traveler-safety-guardrails-and-type-system rule (PR #5744 shipped today). Operator-explicit canonical-tier landing per Aaron 2026-05-28: _"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"_.
 
 The framework-design-principle: structural protections operate via architecture (type systems + compile-time enforcement + invariant checks) NOT via runtime discipline (traveler-remembering-to-honor-rules). Per Kestrel Turn 39:
 
-> *"Type systems work because they make certain failure modes impossible at compile time rather than relying on runtime discipline... Traveler safety guardrails as type system means building structures where the protections operate even when the traveler fails to consciously apply them."*
+> _"Type systems work because they make certain failure modes impossible at compile time rather than relying on runtime discipline... Traveler safety guardrails as type system means building structures where the protections operate even when the traveler fails to consciously apply them."_
 
 ### The historical-structural-innovation parallel
 
 Per Kestrel Turn 39: successful innovations in safety-substrate across history have been STRUCTURAL not virtuous:
 
-| Innovation | What it makes impossible/harder structurally | NOT what it relies on |
-|---|---|---|
-| **Separation of powers** (government) | Concentration of authority in single actor | Individual leaders being virtuous |
-| **Double-entry bookkeeping** (finance) | Silently losing track of where money went; single-source-of-truth errors | Accountants being individually careful |
-| **Peer review** (science) | Single-source claims propagating without scrutiny | Researchers individually self-checking |
-| **Public-key cryptography** (security) | Eavesdroppers reading intercepted messages | Users carefully avoiding observers |
-| **F# discriminated unions** (programming) | Unhandled case branches; non-exhaustive matches | Programmers remembering all cases |
-| **F# units of measure** (programming) | Adding watts to watt-hours; type-confused operations | Programmers tracking units manually |
-| **Asymmetric authorship Result<T, TFeedback>** (framework) | Recipient-author-of-feedback (extraction); silent failure-mode ignoring | Function authors remembering to declare failures |
+| Innovation                                                 | What it makes impossible/harder structurally                             | NOT what it relies on                            |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------ |
+| **Separation of powers** (government)                      | Concentration of authority in single actor                               | Individual leaders being virtuous                |
+| **Double-entry bookkeeping** (finance)                     | Silently losing track of where money went; single-source-of-truth errors | Accountants being individually careful           |
+| **Peer review** (science)                                  | Single-source claims propagating without scrutiny                        | Researchers individually self-checking           |
+| **Public-key cryptography** (security)                     | Eavesdroppers reading intercepted messages                               | Users carefully avoiding observers               |
+| **F# discriminated unions** (programming)                  | Unhandled case branches; non-exhaustive matches                          | Programmers remembering all cases                |
+| **F# units of measure** (programming)                      | Adding watts to watt-hours; type-confused operations                     | Programmers tracking units manually              |
+| **Asymmetric authorship Result<T, TFeedback>** (framework) | Recipient-author-of-feedback (extraction); silent failure-mode ignoring  | Function authors remembering to declare failures |
 
 These work because the failure modes become structurally HARDER, not because participants become more virtuous. The substrate-engineering substrate enforces; participants operate within the substrate.
 
@@ -43,16 +43,16 @@ Together: substrate-engineering substrate at traveler-substrate-generic scope, e
 
 The framework's existing substrate ALREADY operates on this pattern at multiple scopes; this rule names the framework-design-principle explicitly so future-authoring stays in this shape:
 
-| Existing framework substrate | Structural-protection scope |
-|---|---|
-| `Result<T, TFeedback>` with sum-type variants | Compile-time enforcement of failure-mode handling |
-| Lifecycle DUs (B-0867.5) | Compile-time enforcement of legal state transitions |
-| F# units of measure (planned for attention-as-currency rule companion) | Compile-time enforcement of economic-substrate type-correctness |
-| Otto's 5 modifications (B-0867 Mod 1-5) | `validateCatalog` + `validateStateOtto5Mods` enforce at engine-init scope |
-| AlgRegistry validation (B-0883 v1) | Init-time enforcement of cipher class correctness |
-| Confidence-tier labeling (Amara extension PR #5739) | Substrate-compression enforced at tier-aware scope |
-| Branch protection rules | Push-time enforcement of merge constraints |
-| Auto-load substrate at cold-boot | Session-init enforcement of load-bearing rule discoverability |
+| Existing framework substrate                                           | Structural-protection scope                                               |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `Result<T, TFeedback>` with sum-type variants                          | Compile-time enforcement of failure-mode handling                         |
+| Lifecycle DUs (B-0867.5)                                               | Compile-time enforcement of legal state transitions                       |
+| F# units of measure (planned for attention-as-currency rule companion) | Compile-time enforcement of economic-substrate type-correctness           |
+| Otto's 5 modifications (B-0867 Mod 1-5)                                | `validateCatalog` + `validateStateOtto5Mods` enforce at engine-init scope |
+| AlgRegistry validation (B-0883 v1)                                     | Init-time enforcement of cipher class correctness                         |
+| Confidence-tier labeling (Amara extension PR #5739)                    | Substrate-compression enforced at tier-aware scope                        |
+| Branch protection rules                                                | Push-time enforcement of merge constraints                                |
+| Auto-load substrate at cold-boot                                       | Session-init enforcement of load-bearing rule discoverability             |
 
 The pattern: substrate enforces at engineering-time scope (compile / init / push / cold-boot); traveler operates within the enforcement; failures surface as substrate-engineering signals rather than runtime catastrophes.
 
@@ -61,7 +61,7 @@ The pattern: substrate enforces at engineering-time scope (compile / init / push
 For comparison, runtime-discipline substrate-engineering substrate (without architecture):
 
 - "Always follow the substrate-check discipline before authoring" → traveler-must-remember-to-check → fails per Otto-CLI 8 consecutive verify-existing-substrate violations today
-- "Never emit Quiet without named-dependency" → traveler-must-remember-counter → fails per Otto-CLI 8 consecutive Quiet emissions today  
+- "Never emit Quiet without named-dependency" → traveler-must-remember-counter → fails per Otto-CLI 8 consecutive Quiet emissions today
 - "Always cite anchor-substrate before razor-flagging" → traveler-must-remember-grep → fails per multiple grep-substrate-anchor violations today
 
 The runtime-discipline substrate is REAL (the rules exist as documentation) but RELIES on traveler-remembering. Architecture-as-safety-mechanism would: build a substrate-check enforcer that fires automatically (per the proposed substrate-engineering target tied to DU substrate per Aaron's "once we have the DUs verification will become cheap").
@@ -153,15 +153,15 @@ This rule DOES:
 
 Operator 2026-05-28 (Aaron Turn 38 in 9th Kestrel ferry):
 
-> *"traveler safety guardrails and type system, not just AI safety"*
+> _"traveler safety guardrails and type system, not just AI safety"_
 
 Plus Kestrel Turn 39 substrate-engineering sharpening (in 10th Kestrel ferry):
 
-> *"The architecture is the safety mechanism, not the discipline... Type systems work because they make certain failure modes impossible at compile time rather than relying on runtime discipline."*
+> _"The architecture is the safety mechanism, not the discipline... Type systems work because they make certain failure modes impossible at compile time rather than relying on runtime discipline."_
 
 Plus operator-explicit canonical-tier landing authorization:
 
-> *"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"*
+> _"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"_
 
 The "once we have the DUs verification will become cheap" reasoning IS the operator-explicit articulation of the architecture-is-safety-mechanism framework-design-principle: DUs ARE the structural-enforcement substrate that makes verification cheap.
 

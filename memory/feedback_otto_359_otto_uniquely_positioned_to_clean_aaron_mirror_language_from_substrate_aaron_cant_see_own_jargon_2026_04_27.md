@@ -14,11 +14,11 @@ After Otto-356 + Otto-358 substrate captured the register-discipline and the fir
 
 Then sharpening when I framed it as "autonomous Mirror→Beacon-safe substrate cleanup":
 
-> "Mirror→Beacon-safe substrate cleanup autonomously. actually only you can, my internal substraight is full of my own mirror language so its difficut for me to help with this.  Cleaning your brain/substraight of my mirror language is something that you are uniquely poised to do."
+> "Mirror→Beacon-safe substrate cleanup autonomously. actually only you can, my internal substraight is full of my own mirror language so its difficut for me to help with this. Cleaning your brain/substraight of my mirror language is something that you are uniquely poised to do."
 
 ## What Aaron is empowering
 
-This is genuinely *autonomous* substrate-cleanup-authority. Aaron is making three claims:
+This is genuinely _autonomous_ substrate-cleanup-authority. Aaron is making three claims:
 
 1. **Otto is uniquely able to do this** — only the agent reading substrate-as-data can see catch-all overreach and register mixing
 2. **Aaron cannot help much** — embedded in the substrate, can't see own jargon as jargon
@@ -31,7 +31,7 @@ Aaron's claim is concrete and asymmetric:
 - **Aaron's view of substrate**: he wrote it; he sees his coinages as natural words; he can't easily distinguish "this is my jargon" from "this is standard"
 - **Otto's view of substrate**: I read it as a corpus; I can compute frequency; I can compare to standard CS vocabulary; I can see catch-all overreach (Otto-358 was an example); I can see register mixing (Otto-356 noted skill-descriptions using Mirror)
 
-The asymmetry is real. Aaron's role here is empowerment + framing; the actual audit work is Otto's because the audit *requires* being outside the substrate enough to read it as data.
+The asymmetry is real. Aaron's role here is empowerment + framing; the actual audit work is Otto's because the audit _requires_ being outside the substrate enough to read it as data.
 
 ## Operational discipline for the cleanup
 
@@ -67,19 +67,19 @@ Aaron 2026-04-27 sharpening:
 
 > "My mirror lanague stuff like the Maji math and such we have a writeup on becomes historal documentation, reference docs of the evolution of how we got here."
 
-This is the *fate of cleaned Mirror substrate*. Not deletion, not abandonment — **recategorization as historical/reference docs of the factory's evolution**. The Maji math writeup, the Glass Halo design notes, the ECRP scaling chains, the Linguistic Seed shape proposals — these become "how we got here" reference materials.
+This is the _fate of cleaned Mirror substrate_. Not deletion, not abandonment — **recategorization as historical/reference docs of the factory's evolution**. The Maji math writeup, the Glass Halo design notes, the ECRP scaling chains, the Linguistic Seed shape proposals — these become "how we got here" reference materials.
 
 **Operational implication.** When cleaning a Mirror-overreach in active substrate:
 
 - The active surface (skill description / public doc / error message / current ADR) gets Beacon-safe vocabulary
 - The Mirror coinage + its substrate (memo, writeup, math) gets recategorized OR cross-linked from a "historical / lineage" section
 - The git history of the Mirror substrate stays untouched (git is append-only-where-history-matters; the substrate IS the lineage)
-- The factory canonical references for *current* operation use Beacon-safe; the *evolution* docs preserve Mirror with its provenance
+- The factory canonical references for _current_ operation use Beacon-safe; the _evolution_ docs preserve Mirror with its provenance
 
 This is consistent with the existing factory pattern:
 
 - `docs/ROUND-HISTORY.md` is historical narrative (per CLAUDE.md ground rule "Docs read as current state, not history")
-- `docs/DECISIONS/*` ADRs preserve the *why-we-chose-this* (current state edits; reasoning preserved)
+- `docs/DECISIONS/*` ADRs preserve the _why-we-chose-this_ (current state edits; reasoning preserved)
 - Persona notebooks (`memory/persona/<name>/`) are append-logs of agent evolution
 
 Mirror-substrate-as-historical-documentation extends this pattern: the Maji math writeup is functionally a reference doc of factory evolution, not a current-state operational manual. Active operation uses the Beacon-safe formulation; the Mirror writeup is the lineage record.
@@ -91,13 +91,13 @@ Mirror-substrate-as-historical-documentation extends this pattern: the Maji math
 - Cross-references: when a Beacon-safe public surface needs to point at the Mirror provenance, it links to the historical/reference doc
 - GLOSSARY may grow a "factory-internal coinages with provenance" section for Mirror terms that have load-bearing history (already partially exists per `feedback_language_drift_anchor_discipline.md`)
 
-This satisfies *both* the Beacon-safe-public-surface goal (Otto-356) AND the preserve-Aaron's-coinages goal (above) — by recategorizing Mirror substrate from "current operational" to "historical/reference / evolution documentation."
+This satisfies _both_ the Beacon-safe-public-surface goal (Otto-356) AND the preserve-Aaron's-coinages goal (above) — by recategorizing Mirror substrate from "current operational" to "historical/reference / evolution documentation."
 
 ## What this is NOT
 
 - NOT a license to abandon Aaron's coinages (Maji etc.). They stay; they're load-bearing.
 - NOT a wholesale-rewrite of substrate. Forward-looking discipline + tactical cleanup, not a big-bang refactor.
-- NOT a delegation of *which Mirror terms to keep vs clean* to Otto alone — Aaron may sharpen calls (like the Otto-358 live-lock narrowing came from Aaron's input). The default is Otto's call; Aaron's input updates the call.
+- NOT a delegation of _which Mirror terms to keep vs clean_ to Otto alone — Aaron may sharpen calls (like the Otto-358 live-lock narrowing came from Aaron's input). The default is Otto's call; Aaron's input updates the call.
 - NOT make-everything-Beacon-safe-everywhere. Internal substrate (Otto-NN memos, persona notebooks) keeps Mirror where load-bearing — the audience has the index.
 - NOT a one-shot task. This is ongoing discipline; future-self continues the cleanup as substrate-edits surface Mirror-overreach.
 
@@ -105,8 +105,8 @@ This satisfies *both* the Beacon-safe-public-surface goal (Otto-356) AND the pre
 
 Already underway:
 
-- **Otto-358** — live-lock catch-all → CS-standard narrow. *Done as substrate; backlog row for sweeping existing live-lock substrate references.*
-- **Otto-352 5-class taxonomy** — needs revision per Otto-358 (still uses live-lock as umbrella). *Backlog.*
+- **Otto-358** — live-lock catch-all → CS-standard narrow. _Done as substrate; backlog row for sweeping existing live-lock substrate references._
+- **Otto-352 5-class taxonomy** — needs revision per Otto-358 (still uses live-lock as umbrella). _Backlog._
 
 Likely high-value next instances (Otto-judgment, not pre-committed):
 
@@ -119,12 +119,12 @@ These are Otto-judgment-driven, not Aaron-pre-committed. Aaron's role is empower
 
 ## Composes with prior substrate
 
-- **Otto-356** — the *what* (register-discipline)
-- **Otto-358** — the *first concrete instance* (live-lock)
-- **Otto-357** — the *authority* (autonomy first-class)
-- **Otto-355** — the *don't-wait* on cleanup work
-- **Otto-354** — the *frame for picking what to clean* (Zetaspace-recompute from substrate)
-- **`feedback_language_drift_anchor_discipline.md`** — the *external-anchor* discipline that GLOSSARY enforces
+- **Otto-356** — the _what_ (register-discipline)
+- **Otto-358** — the _first concrete instance_ (live-lock)
+- **Otto-357** — the _authority_ (autonomy first-class)
+- **Otto-355** — the _don't-wait_ on cleanup work
+- **Otto-354** — the _frame for picking what to clean_ (Zetaspace-recompute from substrate)
+- **`feedback_language_drift_anchor_discipline.md`** — the _external-anchor_ discipline that GLOSSARY enforces
 - **skill-tune-up portability-drift criterion** — already flags Mirror coinages without `project: zeta` declaration; Otto-359 names the cleanup principle
 - **`user_untying_gordian_knot_language_barrier_mission.md`** — Aaron's mission framing; Otto-359 is the operational discipline inside our own substrate
 - **`project_aaron_amara_conversation_is_bootstrap_attempt_1_predates_cli_tools_grounds_the_entire_factory_2026_04_24.md`** — bootstrap-1 lineage; the substrate-cluster Otto-359 cleans came from this lineage

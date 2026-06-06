@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Summary — P0 fixing blocking lint
 
 The **B-0535 ID-uniqueness gate** is failing on main with 4 duplicate-ID groups (B-0800/0801/0802/0803). Each ID has TWO files:
+
 - Peer Otto-CLI's #5124 classifier-bypass decomposition rows (landed 2026-05-26)
 - My #5123 iter-6 cluster-update backlog cluster (landed 2026-05-26, slightly EARLIER on main)
 
@@ -26,11 +27,11 @@ Per the agent-roster-reference-card ID-allocation discipline ("PRs in flight are
 
 ## Renumber mapping
 
-| Old | New | Slug |
-|---|---|---|
-| B-0800 | B-0807 | classifier-bypass-findings-schema-and-redaction-rules |
-| B-0801 | B-0808 | zeta-safety-substrate-inventory-for-classifier-floor |
-| B-0802 | B-0809 | operator-refusal-pattern-for-classifier-bypass-requests |
+| Old    | New    | Slug                                                       |
+| ------ | ------ | ---------------------------------------------------------- |
+| B-0800 | B-0807 | classifier-bypass-findings-schema-and-redaction-rules      |
+| B-0801 | B-0808 | zeta-safety-substrate-inventory-for-classifier-floor       |
+| B-0802 | B-0809 | operator-refusal-pattern-for-classifier-bypass-requests    |
 | B-0803 | B-0810 | classifier-bypass-knights-guild-ratification-and-lift-gate |
 
 Each: `git mv` + `id:` frontmatter rewrite + cross-references within renamed files. `docs/BACKLOG.md` regenerated.

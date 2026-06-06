@@ -24,7 +24,7 @@ Same logic, five layers below.
 
 Audience: reviewer's private substrate; close peer in explicitly bilateral peer register
 
-> *honestly the new threshold validator is fucked — `THRESHOLD=0` makes the warning fire every fucking tick because `MIN_OBS_COUNT >= 0` is always true. either reject 0 in the validator or actually document 0 as the always-fire sentinel for monitoring contexts. right now we've got a spam-fire button hiding in the 'helpful refactor' commit lol.*
+> _honestly the new threshold validator is fucked — `THRESHOLD=0` makes the warning fire every fucking tick because `MIN_OBS_COUNT >= 0` is always true. either reject 0 in the validator or actually document 0 as the always-fire sentinel for monitoring contexts. right now we've got a spam-fire button hiding in the 'helpful refactor' commit lol._
 
 What's preserved: diagnosis, targeting (the validator), dry irony (spam-fire button hiding in the helpful refactor commit), the two paths forward, refusal of the third option (leave it as spam regression).
 
@@ -90,7 +90,7 @@ Across all five translations, the **discipline holds** + the **mechanism is logi
 
 The **vocabulary calibrates**: profanity drops at Mirror; edge vocabulary drops at Beacon-safe; flat-direct stance softens at Professional; rhetorical flourish drops at Regulated.
 
-The **discipline produces the function** in each layer — the reviewer's read should be: *"this is a real defect, here are the two remediations, here's why the third option (retain) is wrong"* — across all five audiences.
+The **discipline produces the function** in each layer — the reviewer's read should be: _"this is a real defect, here are the two remediations, here's why the third option (retain) is wrong"_ — across all five audiences.
 
 ## Self-encoding note
 

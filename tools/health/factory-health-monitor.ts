@@ -503,15 +503,11 @@ function fetchOpenPRs(): ToolResult {
 }
 
 function fetchRequiredCheckNames(prNumber: number): string[] | undefined {
-  const result = spawnSync(
-    "gh",
-    ["pr", "checks", String(prNumber), "--repo", REPO, "--required", "--json", "name"],
-    {
-      cwd: ROOT,
-      encoding: "utf-8",
-      timeout: 30_000,
-    },
-  );
+  const result = spawnSync("gh", ["pr", "checks", String(prNumber), "--repo", REPO, "--required", "--json", "name"], {
+    cwd: ROOT,
+    encoding: "utf-8",
+    timeout: 30_000,
+  });
 
   if (result.status !== 0 && result.status !== 4 && result.status !== 8) {
     return undefined;
@@ -917,7 +913,9 @@ function mergedPullRequestEventsFromParsed(
 
       const mergeCommitOid = pr.mergeCommit?.oid?.trim();
       const mergeCommitMessage =
-        mergeCommitOid !== undefined && mergeCommitOid.length > 0 ? mergeCommitMessagesByOid?.get(mergeCommitOid) : undefined;
+        mergeCommitOid !== undefined && mergeCommitOid.length > 0
+          ? mergeCommitMessagesByOid?.get(mergeCommitOid)
+          : undefined;
 
       return {
         id: `merged-pr-${pr.number}`,
@@ -946,7 +944,9 @@ function mergedPullRequestEventsFromParsed(
     if (burst.length > 1) {
       const burstNumbers = burst.map((event) => event.id.replace(/^merged-pr-/, "")).join("+");
       const burstKey = `merge-burst:${burst[0]?.occurredAt ?? "unknown"}:${burstNumbers}`;
-      const burstPrimaryKeys = burst.map((event) => event.correlationKey).filter((key): key is string => key !== undefined);
+      const burstPrimaryKeys = burst
+        .map((event) => event.correlationKey)
+        .filter((key): key is string => key !== undefined);
       for (const event of burst) {
         const peerPrimaryKeys = burstPrimaryKeys.filter((key) => key !== event.correlationKey);
         event.correlationKeys = [...new Set([...(event.correlationKeys ?? []), burstKey, ...peerPrimaryKeys])];
@@ -1001,14 +1001,12 @@ export function trajectoryReceiptEventsFromGitLog(
   const nowMs = Date.parse(nowIso);
   const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
   const events: CoincidenceEvent[] = [];
-  let current:
-    | {
-        hash: string;
-        committedAt: string;
-        subject: string;
-        paths: string[];
-      }
-    | null = null;
+  let current: {
+    hash: string;
+    committedAt: string;
+    subject: string;
+    paths: string[];
+  } | null = null;
 
   const flush = (): void => {
     if (current === null) {
@@ -1535,7 +1533,10 @@ export function parseGitWorktreeListPorcelain(output: string): LocalWorktreeObse
     }
 
     if (line.startsWith("branch ")) {
-      current.branch = line.slice("branch ".length).trim().replace(/^refs\/heads\//, "");
+      current.branch = line
+        .slice("branch ".length)
+        .trim()
+        .replace(/^refs\/heads\//, "");
     }
   }
 

@@ -23,15 +23,19 @@ const releaseOperator = buildHatDefinitions().find((hat) => hat.id === "release_
 test("LGTM context-pack runtime evidence returns trace context for scoped lifecycle trace anchors", async () => {
   const telemetry = new RecordingTelemetryQueryPort({
     traces: [{ traceId: "trace-release-timeout", rootName: "release.worker", spanCount: 7 }],
-    logs: [{
-      timestamp: "2026-06-01T00:00:03.000Z",
-      line: "trace-release-timeout release worker timeout",
-      labels: { trace_id: "trace-release-timeout", level: "error" },
-    }],
-    metrics: [{
-      labels: { trace_id: "trace-release-timeout", __name__: "agentic_runtime_signal" },
-      points: [{ timestamp: "2026-06-01T00:00:00.000Z", value: 1 }],
-    }],
+    logs: [
+      {
+        timestamp: "2026-06-01T00:00:03.000Z",
+        line: "trace-release-timeout release worker timeout",
+        labels: { trace_id: "trace-release-timeout", level: "error" },
+      },
+    ],
+    metrics: [
+      {
+        labels: { trace_id: "trace-release-timeout", __name__: "agentic_runtime_signal" },
+        points: [{ timestamp: "2026-06-01T00:00:00.000Z", value: 1 }],
+      },
+    ],
   });
   const port = createLgtmContextPackRuntimeEvidencePort({
     telemetry,
@@ -43,21 +47,26 @@ test("LGTM context-pack runtime evidence returns trace context for scoped lifecy
   equal(result.items.length, 1);
   equal(result.items[0]?.kind, ContextPackItemKind.Trace);
   equal(result.items[0]?.freshness, ContextPackFreshness.Live);
-  ok(result.items[0]?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.Trace &&
-    pointer.traceId === "trace-release-timeout"
-  ));
-  ok(result.items[0]?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.Log &&
-    pointer.source === "loki"
-  ));
-  ok(result.items[0]?.sourcePointers?.some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.Metric &&
-    pointer.source === "mimir"
-  ));
-  ok(result.graphRootSeeds?.some((seed) =>
-    seed.nodeId === graphNodeId("org-1", GraphNodeKind.Trace, "trace-release-timeout")
-  ));
+  ok(
+    result.items[0]?.sourcePointers?.some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.Trace && pointer.traceId === "trace-release-timeout",
+    ),
+  );
+  ok(
+    result.items[0]?.sourcePointers?.some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.Log && pointer.source === "loki",
+    ),
+  );
+  ok(
+    result.items[0]?.sourcePointers?.some(
+      (pointer) => pointer.kind === ContextPackSourcePointerKind.Metric && pointer.source === "mimir",
+    ),
+  );
+  ok(
+    result.graphRootSeeds?.some(
+      (seed) => seed.nodeId === graphNodeId("org-1", GraphNodeKind.Trace, "trace-release-timeout"),
+    ),
+  );
   equal(telemetry.calls.map((call) => call.kind).join(","), "traces,logs,metrics");
 });
 
@@ -80,11 +89,14 @@ test("LGTM context-pack runtime evidence turns degraded telemetry into omissions
   const result = await port.load(runtimeEvidenceRequest([lifecycleTraceItem("trace-release-timeout", "work-release")]));
 
   equal(result.items.length, 0);
-  ok(result.omittedItemsWithReason?.some((item) =>
-    item.nodeId === "telemetry_evidence:trace" &&
-    item.reason === ContextPackOmissionReason.RetrievalFailed &&
-    item.message.includes("tempo unavailable")
-  ));
+  ok(
+    result.omittedItemsWithReason?.some(
+      (item) =>
+        item.nodeId === "telemetry_evidence:trace" &&
+        item.reason === ContextPackOmissionReason.RetrievalFailed &&
+        item.message.includes("tempo unavailable"),
+    ),
+  );
 });
 
 test("LGTM context-pack runtime evidence refuses trace evidence without active scoped work anchor", async () => {

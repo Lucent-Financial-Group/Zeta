@@ -18,10 +18,7 @@
  * gap is visible rather than hidden.
  */
 
-import {
-  SupervisorTriageActionType,
-  type WorkItemType,
-} from "../../domain/src/index.ts";
+import { SupervisorTriageActionType, type WorkItemType } from "../../domain/src/index.ts";
 
 /** A requested triage action + its action-specific inputs, as an explicit DU. */
 export type TriageActionRequest =
@@ -58,16 +55,14 @@ export const TriageActionResolution = {
   /** Declared but not yet implemented in this V0 slice. */
   Deferred: "deferred",
 } as const;
-export type TriageActionResolution =
-  (typeof TriageActionResolution)[keyof typeof TriageActionResolution];
+export type TriageActionResolution = (typeof TriageActionResolution)[keyof typeof TriageActionResolution];
 
 export const TriageActionFeedbackReason = {
   AnswerRequired: "answer_required",
   EscalationTargetRequired: "escalation_target_required",
   EscalationReasonRequired: "escalation_reason_required",
 } as const;
-export type TriageActionFeedbackReason =
-  (typeof TriageActionFeedbackReason)[keyof typeof TriageActionFeedbackReason];
+export type TriageActionFeedbackReason = (typeof TriageActionFeedbackReason)[keyof typeof TriageActionFeedbackReason];
 
 export type ResolvedTriageAction =
   | {
@@ -119,16 +114,34 @@ export function resolveTriageAction(request: TriageActionRequest): ResolvedTriag
 
     case SupervisorTriageActionType.AnswerDirectly:
       if (isBlank(request.answer)) {
-        return { outcome: "feedback", feedback: { reason: TriageActionFeedbackReason.AnswerRequired, message: "answer_directly requires a non-empty answer" } };
+        return {
+          outcome: "feedback",
+          feedback: {
+            reason: TriageActionFeedbackReason.AnswerRequired,
+            message: "answer_directly requires a non-empty answer",
+          },
+        };
       }
       return { outcome: "ok", resolution: TriageActionResolution.AnswersInPlace, answer: request.answer };
 
     case SupervisorTriageActionType.EscalateToNextSupervisor:
       if (isBlank(request.targetSupervisorHatAssignmentId)) {
-        return { outcome: "feedback", feedback: { reason: TriageActionFeedbackReason.EscalationTargetRequired, message: "escalate_to_next_supervisor requires a target supervisor hat assignment id" } };
+        return {
+          outcome: "feedback",
+          feedback: {
+            reason: TriageActionFeedbackReason.EscalationTargetRequired,
+            message: "escalate_to_next_supervisor requires a target supervisor hat assignment id",
+          },
+        };
       }
       if (isBlank(request.escalationReason)) {
-        return { outcome: "feedback", feedback: { reason: TriageActionFeedbackReason.EscalationReasonRequired, message: "escalate_to_next_supervisor requires an escalation reason" } };
+        return {
+          outcome: "feedback",
+          feedback: {
+            reason: TriageActionFeedbackReason.EscalationReasonRequired,
+            message: "escalate_to_next_supervisor requires an escalation reason",
+          },
+        };
       }
       return {
         outcome: "ok",

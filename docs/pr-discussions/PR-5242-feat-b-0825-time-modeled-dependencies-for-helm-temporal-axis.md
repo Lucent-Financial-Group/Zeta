@@ -18,11 +18,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Files [B-0825](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0825-time-modeled-dependencies-helm-2026-05-26/docs/backlog/P1/B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) per Aaron 2026-05-26: *"helm needs time modeled in the depedencies like no others"*.
+Files [B-0825](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0825-time-modeled-dependencies-helm-2026-05-26/docs/backlog/P1/B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) per Aaron 2026-05-26: _"helm needs time modeled in the depedencies like no others"_.
 
 **Helm's UNIQUE requirement** — Maven/npm/apt/Cargo don't need time-axis because build-time PMs separate install from continuous-running. Helm CAN'T separate them: install IS deploy IS continuous-running on long-running stateful clusters.
 
 **Missing primitives** at chart-graph layer:
+
 - Multi-version overlap window (postgres v15 + v17 side-by-side during migration)
 - Migration-phase modeling (preparing / cutting-over / dual-running / draining-old / cleanup)
 - Time-aware diamond resolution (per B-0822 + B-0821)

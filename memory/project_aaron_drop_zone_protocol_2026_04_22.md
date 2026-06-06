@@ -11,22 +11,22 @@ rules for a new `drop/` folder:
 
 **Initial directive:**
 
-> *"new research just dropped in the repo can you make me a
+> _"new research just dropped in the repo can you make me a
 > folder you check every now and then i can put files in for
-> you to absorb"*
+> you to absorb"_
 
 **Follow-up directive (same tick):**
 
-> *"if i put a binary in there we should have specific rules
+> _"if i put a binary in there we should have specific rules
 > for hadling the bindaries we know but they never get
 > checked in this folder could be untracket with a single
-> tracked file to make sure it get created"*
+> tracked file to make sure it get created"_
 
 **Why:** Aaron needs a low-friction deposit mechanism —
 drop a file, keep working, agent absorbs it when it next
 wakes. Without a designated folder the file sits at repo
 root (where `deep-research-report.md` sat for this tick,
-the *triggering* deposit) and the agent has to guess intent
+the _triggering_ deposit) and the agent has to guess intent
 from filename placement. With a designated folder the agent
 has a canonical audit target (`ls drop/`) and Aaron has a
 canonical deposit target (drag-and-drop, paste, `mv` into
@@ -44,7 +44,7 @@ would enter git history forever.
    (`.DS_Store`) are present, no-op and continue. If any
    other file is present, **absorb it this tick**.
    Absorption beats other speculative work because Aaron's
-   deposit is the closest signal to *directed* work the
+   deposit is the closest signal to _directed_ work the
    factory gets.
 
 2. **Absorption procedure (per `drop/README.md`):**

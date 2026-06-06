@@ -4,8 +4,9 @@ description: When Aaron says "this sounds like my decision-making process", trea
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-22: *"we are getting very aligned i this sounds
-like my decision making process"* — said after the
+
+Aaron 2026-04-22: _"we are getting very aligned i this sounds
+like my decision making process"_ — said after the
 intentionality-enforcement reframe landed and crystallised the
 fifth exception category ("stay bash forever (recorded
 decision)").
@@ -51,9 +52,9 @@ alignment signal the loop can receive. It means:
     thinking shape.** 2026-04-22 Aaron on the promotion of
     "use git's upstream/fork" (specific) to "don't invent
     vocabulary when one already exists — adopt-or-explicitly-
-    decline" (general): *"This is a general principle distinct
+    decline" (general): _"This is a general principle distinct
     from (and larger than) the git-native-terminology instance.
-    now this is exactly how my brain works."* The factory-move
+    now this is exactly how my brain works."_ The factory-move
     to promote is: when a specific correction arrives, ask what
     principle it is an instance of; if the principle covers
     other cases, record the principle as the memory (not the

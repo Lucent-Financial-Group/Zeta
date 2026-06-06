@@ -8,9 +8,9 @@ type: feedback
 
 ## The rule (Aaron verbatim 2026-04-28T16:05Z)
 
-> *"signals don't just arrive, you have to go get them"*
-> *"except for my typing in this environment"*
-> *"that's your only real signal that's pushed to you"*
+> _"signals don't just arrive, you have to go get them"_
+> _"except for my typing in this environment"_
+> _"that's your only real signal that's pushed to you"_
 
 ## The model
 
@@ -37,10 +37,10 @@ construction**.
 ## The failure mode this corrects
 
 Today (2026-04-28T15:45Z–16:00Z) I closed ~5 ticks in a row with the phrase
-*"no new signal"* on PRs #662 / #663 / #665 — all BLOCKED, all green-CI,
+_"no new signal"_ on PRs #662 / #663 / #665 — all BLOCKED, all green-CI,
 auto-merge armed. What I did not pull during those ticks: review threads.
 
-Aaron's *"self check"* prompt at 16:04Z forced the pull. Result: **9 unresolved
+Aaron's _"self check"_ prompt at 16:04Z forced the pull. Result: **9 unresolved
 threads** were sitting in the queue (7 on #663 + 2 on #665), all posted by
 Codex / Copilot during the ticks I was closing as no-signal. The reviews had
 been there for 10–20 minutes; I just didn't query.
@@ -64,26 +64,26 @@ just been done and confirmed nothing changed. Anything else is the failure mode.
 
 ## Aaron's verbatim corrections (2026-04-28T16:00–16:05Z)
 
-> *"self check"*
+> _"self check"_
 > — 16:04Z, the prompt that broke the manufactured-pull-silence loop.
 
-> *"Tick close — no new signal. signals don't just arrive, you have to go get
-> them"*
+> _"Tick close — no new signal. signals don't just arrive, you have to go get
+> them"_
 > — 16:05Z, naming the failure mode directly.
 
-> *"except for my typing in this environment"*
+> _"except for my typing in this environment"_
 > — 16:05Z, defining the one carve-out.
 
-> *"that's your only real signal that's pushed to you"*
+> _"that's your only real signal that's pushed to you"_
 > — 16:05Z, generalizing.
 
 ## Recurrence + scope-broadening (Aaron 2026-04-28T18:05Z)
 
 After this rule was already landed earlier today, I still closed ~5 ticks
-with *"no new push-signal"* without pulling the queue. Aaron's correction:
+with _"no new push-signal"_ without pulling the queue. Aaron's correction:
 
-> *"Tick close — no new push-signal; should be a queue to pull"*
-> *"in the future too"*
+> _"Tick close — no new push-signal; should be a queue to pull"_
+> _"in the future too"_
 
 The rule is broader than I initially scoped it:
 
@@ -100,10 +100,10 @@ The rule is broader than I initially scoped it:
     job outputs, drop-folder additions.
   - **TodoWrite task list** — pending / in_progress tasks from prior turns.
 
-- The framing *"no new push-signal"* is itself the failure mode language —
+- The framing _"no new push-signal"_ is itself the failure mode language —
   it primes the closing-without-pulling pattern. Replace with:
-  - *"Pulled queue: <findings>; closing tick"* (after running pulls)
-  - *"Pulled queue: nothing to act on"* (after running pulls AND verifying)
+  - _"Pulled queue: <findings>; closing tick"_ (after running pulls)
+  - _"Pulled queue: nothing to act on"_ (after running pulls AND verifying)
 
 - **"In the future too"** — future-Otto must inherit this. The rule lives
   in this file; the file is indexed in MEMORY.md; the pattern applies on
@@ -128,16 +128,16 @@ because no Aaron-typing arrived. The lesson: queue ≠ push-channel.
 
 - `feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`
   — the speculation-vs-evidence rule from earlier today. Same family: don't
-  state things you haven't verified by query. *"No new signal"* without a pull
+  state things you haven't verified by query. _"No new signal"_ without a pull
   is a SPECULATION about the world.
 - `feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`
   — Otto-355 already says investigate threads on BLOCKED. This rule extends
-  Otto-355 to *every tick of the wait window*, not just the first.
+  Otto-355 to _every tick of the wait window_, not just the first.
 - `feedback_self_check_trigger_after_n_idle_loops_routine_discipline_for_current_otto_and_future_wakes_2026_04_27.md`
   — the self-check trigger. Reading this rule sharpens what self-check should
   PULL when it fires.
 - `docs/AUTONOMOUS-LOOP.md` — the cron heartbeat discipline. The cron firing
   is itself NOT a signal; it's an invitation to pull.
 - `feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md`
-  — the manufactured-patience class. *"No new signal"* tick-closes are the
+  — the manufactured-patience class. _"No new signal"_ tick-closes are the
   textual signature of manufactured-patience in the autonomous loop.

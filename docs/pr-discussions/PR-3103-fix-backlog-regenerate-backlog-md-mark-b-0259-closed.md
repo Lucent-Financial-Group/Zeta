@@ -38,4 +38,5 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Regenerates `docs/BACKLOG.md` to reflect B-0259's `status: closed` set in PR #3100, fixing CI drift between per-row files and the generated index.
 
 **Changes:**
+
 - Flips B-0259 checkbox from `- [ ]` to `- [x]` in the generated index.

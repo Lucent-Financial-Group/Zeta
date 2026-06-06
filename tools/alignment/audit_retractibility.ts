@@ -81,13 +81,22 @@ export function parseArgs(argv: readonly string[]): ParseResult {
   while (i < argv.length) {
     const arg = argv[i] ?? "";
     if (arg === "-h" || arg === "--help") return { kind: "help" };
-    if (arg === "--json") { state.json = true; i += 1; continue; }
-    if (arg === "--md") { state.md = true; i += 1; continue; }
+    if (arg === "--json") {
+      state.json = true;
+      i += 1;
+      continue;
+    }
+    if (arg === "--md") {
+      state.md = true;
+      i += 1;
+      continue;
+    }
     if (arg === "--gate") {
       const next = argv[i + 1];
       if (next === undefined) return { kind: "error", message: "audit_retractibility: --gate requires a number" };
       const n = Number(next);
-      if (!Number.isFinite(n) || n < 0) return { kind: "error", message: `audit_retractibility: invalid gate value: ${next}` };
+      if (!Number.isFinite(n) || n < 0)
+        return { kind: "error", message: `audit_retractibility: invalid gate value: ${next}` };
       state.gate = n;
       i += 2;
       continue;
@@ -119,7 +128,10 @@ export function countInboundRefs(filePath: string, root: string): { count: numbe
     { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
   );
 
-  const lines = (result.stdout ?? "").trim().split("\n").filter((l) => l.length > 0);
+  const lines = (result.stdout ?? "")
+    .trim()
+    .split("\n")
+    .filter((l) => l.length > 0);
   const selfExcluded = lines.filter((l) => l !== relPath).sort();
 
   return { count: selfExcluded.length, from: selfExcluded };
@@ -137,9 +149,18 @@ function discoverSkills(): readonly string[] {
     return entries
       .filter((e) => e.isDirectory() && !e.name.startsWith("_"))
       .map((e) => `.claude/skills/${e.name}/SKILL.md`)
-      .filter((p) => { try { readFileSync(p); return true; } catch { return false; } })
+      .filter((p) => {
+        try {
+          readFileSync(p);
+          return true;
+        } catch {
+          return false;
+        }
+      })
       .sort();
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function discoverAgents(): readonly string[] {
@@ -149,7 +170,9 @@ function discoverAgents(): readonly string[] {
       .filter((e) => e.isFile() && e.name.endsWith(".md"))
       .map((e) => `.claude/agents/${e.name}`)
       .sort();
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function discoverBacklog(): readonly string[] {
@@ -163,7 +186,9 @@ function discoverBacklog(): readonly string[] {
           paths.push(`${dir}/${e.name}`);
         }
       }
-    } catch { /* skip missing dirs */ }
+    } catch {
+      /* skip missing dirs */
+    }
   }
   return paths.sort();
 }
@@ -252,7 +277,9 @@ function emitMd(r: RetractResult): string {
   lines.push("");
   lines.push(`Schema: \`${r.schema}\`. Entanglement threshold: ${String(r.entanglementThreshold)} inbound refs.`);
   lines.push("");
-  lines.push(`Surfaces: **${String(r.totalSurfaces)}** total — **${String(r.retractible)}** retractible, **${String(r.entangled)}** entangled, **${String(r.untracked)}** untracked.`);
+  lines.push(
+    `Surfaces: **${String(r.totalSurfaces)}** total — **${String(r.retractible)}** retractible, **${String(r.entangled)}** entangled, **${String(r.untracked)}** untracked.`,
+  );
   lines.push("");
   lines.push("| Status | Kind | Name | Inbound refs | Path |");
   lines.push("| --- | --- | --- | --- | --- |");
@@ -265,7 +292,9 @@ function emitMd(r: RetractResult): string {
 
 function emitHuman(r: RetractResult): string {
   const lines: string[] = [];
-  lines.push(`retractibility total=${String(r.totalSurfaces)} retractible=${String(r.retractible)} entangled=${String(r.entangled)} untracked=${String(r.untracked)} threshold=${String(r.entanglementThreshold)}`);
+  lines.push(
+    `retractibility total=${String(r.totalSurfaces)} retractible=${String(r.retractible)} entangled=${String(r.entangled)} untracked=${String(r.untracked)} threshold=${String(r.entanglementThreshold)}`,
+  );
   lines.push("");
 
   const entangled = r.surfaces.filter((s) => s.status === "entangled");
@@ -286,9 +315,7 @@ function emitHuman(r: RetractResult): string {
     lines.push("");
   }
 
-  const topRetractible = r.surfaces
-    .filter((s) => s.status === "retractible")
-    .slice(0, 10);
+  const topRetractible = r.surfaces.filter((s) => s.status === "retractible").slice(0, 10);
   if (topRetractible.length > 0) {
     lines.push("Top retractible surfaces by inbound refs:");
     for (const s of topRetractible) {
@@ -304,8 +331,8 @@ export function main(argv: readonly string[]): ExitCode {
   if (parsed.kind === "help") {
     process.stdout.write(
       "Usage: audit_retractibility.ts [--json | --md] [--gate N] [path ...]\n" +
-      "  No paths = scan all skills, agents, backlog P0/P1.\n" +
-      "  --gate N  Fail if any surface has >= N inbound refs.\n",
+        "  No paths = scan all skills, agents, backlog P0/P1.\n" +
+        "  --gate N  Fail if any surface has >= N inbound refs.\n",
     );
     return 0;
   }

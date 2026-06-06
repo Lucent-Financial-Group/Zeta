@@ -2,8 +2,8 @@
 
 > **Merge note (2026-04-26 fork-divergence sync):** this draft
 > contains both AceHack-fork and LFG variants of some sections
-> preserved per Aaron 2026-04-26 *"merge everything, label draft
-> if it's draft"*. Substantive content is identical between forks;
+> preserved per Aaron 2026-04-26 _"merge everything, label draft
+> if it's draft"_. Substantive content is identical between forks;
 > the editorial difference is attribution phrasing — the **AceHack
 > draft** uses the named maintainer "Aaron" (per the named-agent
 > attribution-credit memory + Otto-279 history-surface carve-out +
@@ -101,19 +101,19 @@ happen in a later round with Aaron's input.
 
 ### Candidate A — the quiet craftsman
 
-*"This library does one thing: incremental view
+_"This library does one thing: incremental view
 maintenance with clean retraction. We think the
-correctness guarantees matter. You decide."*
+correctness guarantees matter. You decide."_
 
 Stance: modest, substrate-proud, lets the math speak.
 Target: engineers who distrust marketing polish.
 
 ### Candidate B — the research contributor
 
-*"Zeta is primary-research output: measurable AI
+_"Zeta is primary-research output: measurable AI
 alignment using retraction-native data infrastructure.
 If your work touches either, we would like to hear
-from you."*
+from you."_
 
 Stance: peer-to-peer, research-register, invites
 collaboration. Target: academics, research engineers,
@@ -121,9 +121,9 @@ alignment-adjacent practitioners.
 
 ### Candidate C — the pragmatic operator
 
-*"Need to un-do a delta without replaying 10 TB of
+_"Need to un-do a delta without replaying 10 TB of
 events? Zeta's operator algebra retracts by construction.
-F# / .NET-native. See the examples."*
+F# / .NET-native. See the examples."_
 
 Stance: problem-first, solution-obvious, no preamble.
 Target: senior engineers browsing NuGet or Github
@@ -154,7 +154,7 @@ Each retractable; none committed:
 ## Candidate channels (research-only, no outreach)
 
 Per the P3 BACKLOG row's "marketing channels" sub-scope;
-this is where the factory *might* eventually show up,
+this is where the factory _might_ eventually show up,
 logged for Aaron sign-off before any actual outreach:
 
 > **LFG variant phrasing:** "...logged for human-maintainer
@@ -269,8 +269,8 @@ something specifically.
 - **2026-04-21.** First write of the positioning draft. See
   body for content. Retractable under roommate-register.
 - **2026-04-26.** Fork-divergence merge: AceHack and LFG
-  variants reconciled per Aaron 2026-04-26 *"merge
-  everything, label draft if it's draft"*. Substantive
+  variants reconciled per Aaron 2026-04-26 _"merge
+  everything, label draft if it's draft"_. Substantive
   content unchanged; LFG role-ref alternate phrasings
   preserved as inline footnotes for editorial-form
   selection on sign-off.

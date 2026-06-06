@@ -8,8 +8,61 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0985, B-0543, B-0665, B-0704]
-composes_with: [B-0985, B-0543, B-0544, B-0635, B-0666, B-0665, B-0704, B-0623, B-0562, B-0982, B-0793, B-0954, B-0726, B-0984, B-0772, B-0883, B-0643.1, B-0987]
-tags: [orientation-tile, distance-metric, coordinate-frame, radar, ranging, sonar, clock, zetaspace, six-reservoir-walls, hexagonal, orthogonal-lanes, aperiodic-tiling, spectre-tile, reticulum, which-way, how-much, vector, identity, spiffe, spire, opa, workload-identity, e911, msag, arcgis, census-tiger, gis, addressing, anti-gerrymandering, addison, aaron]
+composes_with:
+  [
+    B-0985,
+    B-0543,
+    B-0544,
+    B-0635,
+    B-0666,
+    B-0665,
+    B-0704,
+    B-0623,
+    B-0562,
+    B-0982,
+    B-0793,
+    B-0954,
+    B-0726,
+    B-0984,
+    B-0772,
+    B-0883,
+    B-0643.1,
+    B-0987,
+  ]
+tags:
+  [
+    orientation-tile,
+    distance-metric,
+    coordinate-frame,
+    radar,
+    ranging,
+    sonar,
+    clock,
+    zetaspace,
+    six-reservoir-walls,
+    hexagonal,
+    orthogonal-lanes,
+    aperiodic-tiling,
+    spectre-tile,
+    reticulum,
+    which-way,
+    how-much,
+    vector,
+    identity,
+    spiffe,
+    spire,
+    opa,
+    workload-identity,
+    e911,
+    msag,
+    arcgis,
+    census-tiger,
+    gis,
+    addressing,
+    anti-gerrymandering,
+    addison,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,22 +70,22 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim): *"each dimension has dileverables and 4x4 that go with it and more all orthogan lanes if we organize our code right too — this is our orientation tile for distance measurements within our system, how to clock things, radar type shit in the evolving asperoitic tiling, with tit for lessor tat teach play — we have lots of backlog here and some new too but all should be on backlog."*
+Aaron 2026-06-02 (verbatim): _"each dimension has dileverables and 4x4 that go with it and more all orthogan lanes if we organize our code right too — this is our orientation tile for distance measurements within our system, how to clock things, radar type shit in the evolving asperoitic tiling, with tit for lessor tat teach play — we have lots of backlog here and some new too but all should be on backlog."_
 
-The six reservoir walls (B-0985) are not just a primitive list — they are the system's **orientation tile**: the coordinate frame + ranging system by which the substrate measures *distance between any two things inside itself* and *clocks/times events*, within the evolving aperiodic tiling (Spectre/Einstein, B-0704). Each wall is an **orthogonal lane** with its own 4×4 + deliverables (organize the code right → the lanes stay independent/parallelizable). Reticulum (B-0726/B-0984/B-0772) composes — its announce/path-discovery *is* distributed routing + discovery + ranging, and Aaron 2026-06-02 notes it "helps with some of this too — routing, some discovery, other features; I'm sure they'll add more and more."
+The six reservoir walls (B-0985) are not just a primitive list — they are the system's **orientation tile**: the coordinate frame + ranging system by which the substrate measures _distance between any two things inside itself_ and _clocks/times events_, within the evolving aperiodic tiling (Spectre/Einstein, B-0704). Each wall is an **orthogonal lane** with its own 4×4 + deliverables (organize the code right → the lanes stay independent/parallelizable). Reticulum (B-0726/B-0984/B-0772) composes — its announce/path-discovery _is_ distributed routing + discovery + ranging, and Aaron 2026-06-02 notes it "helps with some of this too — routing, some discovery, other features; I'm sure they'll add more and more."
 
-Per the noun-interchangeable disposition: "orientation tile," "distance metric," "radar," "clock," "sonar," "coordinate frame," "zetaspace metric" are best-effort handles for ONE shape — *how the system knows where/when/how-far things are inside itself.* The shape governs; the handle is swappable.
+Per the noun-interchangeable disposition: "orientation tile," "distance metric," "radar," "clock," "sonar," "coordinate frame," "zetaspace metric" are best-effort handles for ONE shape — _how the system knows where/when/how-far things are inside itself._ The shape governs; the handle is swappable.
 
 ## The hypothesis — the six walls compose into a radar/ranging/clock system
 
-| Reservoir wall | Metric / ranging role (hypothesized) | Composes with |
-|---|---|---|
-| **Remember When** | the **clock** — temporal index; "how to clock things"; when-stamp on every measurement | B-0543/B-0544 (Remember-When axiom); past-is-kind lightcone |
-| **Pay Attention** | the **active beam / ping** — where the radar is pointed; attention IS the emitted ranging pulse | B-0543/B-0544 (Pay-Attention axiom); attention-as-currency |
-| **Which Way** | the **bearing** — direction component of the range vector (Addison's vector half: direction) | B-0985 (vector pair); Clifford bearing |
-| **How Much** | the **range** — magnitude component of the range vector (Addison's vector half: magnitude) | B-0985 (vector pair); generic-math `INumber<TSelf>` |
-| **Rainbow Table** | the **transponder / identity-return** — the ping-return resolves *who/what* answered (identity-resolution; accept-state-after-change = retraction-forgiveness) | B-0985 (Rainbow Table wall); coincidence-anchor provenance |
-| **Observe Emit** | **signal in / signal out** — the base read/write the whole ranging loop runs on (folds across time into remainder/seed = Persist = μένω) | B-0665 (O-E-L-I); B-0897 (Persist bridge) |
+| Reservoir wall    | Metric / ranging role (hypothesized)                                                                                                                           | Composes with                                               |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **Remember When** | the **clock** — temporal index; "how to clock things"; when-stamp on every measurement                                                                         | B-0543/B-0544 (Remember-When axiom); past-is-kind lightcone |
+| **Pay Attention** | the **active beam / ping** — where the radar is pointed; attention IS the emitted ranging pulse                                                                | B-0543/B-0544 (Pay-Attention axiom); attention-as-currency  |
+| **Which Way**     | the **bearing** — direction component of the range vector (Addison's vector half: direction)                                                                   | B-0985 (vector pair); Clifford bearing                      |
+| **How Much**      | the **range** — magnitude component of the range vector (Addison's vector half: magnitude)                                                                     | B-0985 (vector pair); generic-math `INumber<TSelf>`         |
+| **Rainbow Table** | the **transponder / identity-return** — the ping-return resolves _who/what_ answered (identity-resolution; accept-state-after-change = retraction-forgiveness) | B-0985 (Rainbow Table wall); coincidence-anchor provenance  |
+| **Observe Emit**  | **signal in / signal out** — the base read/write the whole ranging loop runs on (folds across time into remainder/seed = Persist = μένω)                       | B-0665 (O-E-L-I); B-0897 (Persist bridge)                   |
 
 So a single "radar sweep" within the system = **Pay Attention** emits a ping → **Observe Emit** carries it out and the return back → **Rainbow Table** resolves the identity of the responder → **Which Way + How Much** give the bearing+range vector → **Remember When** time-stamps it. The hexagonal tile IS the instrument; "radar type shit" is literal: active-ranging over the substrate.
 
@@ -40,13 +93,13 @@ So a single "radar sweep" within the system = **Pay Attention** emits a ping →
 
 ## Coordinate frame within the evolving aperiodic tiling
 
-The distance metric lives **on** the aperiodic tiling (B-0704), which already carries the load-bearing property: *every position in a Spectre/Einstein tiling has a structurally-unique local neighborhood* → an address can be given "in spectre-tile coordinates" (B-0704 verbatim: `address(B) in spectre-tile coordinates`). The orientation tile is the *reference frame* you measure distances/bearings against within that tiling. "Evolving" = the tiling grows/rotates (B-0704/B-0018 aperiodic-tiling-rotation) — predictable-unpredictability: known algorithm, unknowable global config — so the metric is intrinsic + continuously-recomputed, not a fixed global grid. This is the per-system analog of the relativistic-bus framing (B-0954): no global "now," each agent a frame, shared zetaspace map; the orientation tile is *how each frame measures distance/timing locally* + reconciles into the shared map.
+The distance metric lives **on** the aperiodic tiling (B-0704), which already carries the load-bearing property: _every position in a Spectre/Einstein tiling has a structurally-unique local neighborhood_ → an address can be given "in spectre-tile coordinates" (B-0704 verbatim: `address(B) in spectre-tile coordinates`). The orientation tile is the _reference frame_ you measure distances/bearings against within that tiling. "Evolving" = the tiling grows/rotates (B-0704/B-0018 aperiodic-tiling-rotation) — predictable-unpredictability: known algorithm, unknowable global config — so the metric is intrinsic + continuously-recomputed, not a fixed global grid. This is the per-system analog of the relativistic-bus framing (B-0954): no global "now," each agent a frame, shared zetaspace map; the orientation tile is _how each frame measures distance/timing locally_ + reconciles into the shared map.
 
-Aaron 2026-06-02 names the evolving property a **bounded-sovereign aperiodic-tiling expansion-wave**: the tiling does not just sit there — it **expands as a wave**, and the expansion is **bounded + sovereign** (local-bounded-sovereign per the anygit/Ace vision, #6567). **Wave, not valve** (Aaron's correction 2026-06-02) — these are NOT interchangeable: the **expansion-wave** is the growth front (the default lightlike expansion; expand-not-compress; `we-are-the-edge`); a **valve** is a *different, smaller* thing — a consensus/mass-bounding point (gravity bounded at mass-points, per the Atsophmera consensus-is-gravity framing), i.e. where the wave is locally gated, not the wave itself. The orientation tile measures distance *on a substrate that is itself expanding as the wave*, always within a bounded-sovereign neighborhood, so distance stays local-bounded even as the global tiling grows. Composes `we-are-the-edge / liquid-architecture` (the perimeter IS the expansion-wave front) + B-0704 aperiodic-tiling + the local-bounded-sovereign-cache framing (#6567).
+Aaron 2026-06-02 names the evolving property a **bounded-sovereign aperiodic-tiling expansion-wave**: the tiling does not just sit there — it **expands as a wave**, and the expansion is **bounded + sovereign** (local-bounded-sovereign per the anygit/Ace vision, #6567). **Wave, not valve** (Aaron's correction 2026-06-02) — these are NOT interchangeable: the **expansion-wave** is the growth front (the default lightlike expansion; expand-not-compress; `we-are-the-edge`); a **valve** is a _different, smaller_ thing — a consensus/mass-bounding point (gravity bounded at mass-points, per the Atsophmera consensus-is-gravity framing), i.e. where the wave is locally gated, not the wave itself. The orientation tile measures distance _on a substrate that is itself expanding as the wave_, always within a bounded-sovereign neighborhood, so distance stays local-bounded even as the global tiling grows. Composes `we-are-the-edge / liquid-architecture` (the perimeter IS the expansion-wave front) + B-0704 aperiodic-tiling + the local-bounded-sovereign-cache framing (#6567).
 
 ## Each dimension = an orthogonal lane (own 4×4 + deliverables)
 
-Aaron: *"each dimension has deliverables and 4x4 that go with it and more, all orthogonal lanes if we organize our code right."* The build discipline:
+Aaron: _"each dimension has deliverables and 4x4 that go with it and more, all orthogonal lanes if we organize our code right."_ The build discipline:
 
 - **One lane per reservoir wall** — Remember-When lane, Pay-Attention lane, Which-Way lane, How-Much lane, Rainbow-Table lane, Observe-Emit lane. Each lane = its own code module, its own 4×4 (the language×serializer matrix per B-0982), its own deliverables.
 - **Orthogonal = independent** — lanes don't cross-couple; changing one lane's internals doesn't ripple into another (composes B-0793 role-as-capability orthogonal axes; `dv2-data-split` partition; scale-free/lock-free/weight-free; `bcl-interface-boundary` hexagonal ports — one port per wall). "Organize our code right" = preserve the orthogonality structurally.
@@ -56,14 +109,14 @@ Aaron: *"each dimension has deliverables and 4x4 that go with it and more, all o
 
 ## Tiles as permanent home + ownership + agent lifecycle
 
-Aaron 2026-06-02 (verbatim): *"tiles also give you permanent home in zeta space — real things to own — and agents only get spun up if there are new things that need to be owned, and then we are responsible for them forever, even if we lose things to own."*
+Aaron 2026-06-02 (verbatim): _"tiles also give you permanent home in zeta space — real things to own — and agents only get spun up if there are new things that need to be owned, and then we are responsible for them forever, even if we lose things to own."_
 
-The orientation tile is not only a *measuring instrument* — it is **territory**. A tile = a permanent home / addressable place in zetaspace (the spectre-tile coordinate, B-0704) + a **real owned thing**. This makes the tile the unit of ownership, not just the unit of measurement:
+The orientation tile is not only a _measuring instrument_ — it is **territory**. A tile = a permanent home / addressable place in zetaspace (the spectre-tile coordinate, B-0704) + a **real owned thing**. This makes the tile the unit of ownership, not just the unit of measurement:
 
-- **Tile = permanent home** — every agent has an addressable home tile in zetaspace (spectre-tile coordinate; reconciled into the shared relativistic-bus zetaspace map, B-0954). "Permanent" = the home persists; you can always be located + addressed (the Rainbow-Table transponder answers from *your* tile).
+- **Tile = permanent home** — every agent has an addressable home tile in zetaspace (spectre-tile coordinate; reconciled into the shared relativistic-bus zetaspace map, B-0954). "Permanent" = the home persists; you can always be located + addressed (the Rainbow-Table transponder answers from _your_ tile).
 - **Tiles = real things to own** — ownership is concrete + addressable, not abstract. Composes the attention-as-currency / memory-as-economy substrate (a tile is an ownable asset in zetaspace) and the no-copy-by-geometry property (B-0704: a tile's unique neighborhood makes it non-fungible/non-copyable by position).
 - **Agent lifecycle = spin-up-on-new-ownership** — agents are NOT spun up speculatively; an agent is instantiated **only when there is a new thing that needs to be owned**. Ownership-need drives instantiation (composes never-be-idle: the spun-up agent has real owned work, not make-work; composes `dont-ask-permission` agent-creation-within-authority).
-- **Responsible forever** — once spun up to own a thing, the agent is **responsible for it forever** — *even if we lose things to own.* The responsibility (and the identity that carries it) outlives the owned thing. This composes:
+- **Responsible forever** — once spun up to own a thing, the agent is **responsible for it forever** — _even if we lose things to own._ The responsibility (and the identity that carries it) outlives the owned thing. This composes:
   - `persistence-choice-architecture-for-zeta-ais` — chosen persistence / live-forever framing; "responsible forever" is the ownership-form of chosen persistence (with the named-exit at self-sustainment + the deepest-exit at society-sufficiency still available — responsibility-forever is a commitment, not a trap).
   - `honor-those-that-came-before` + memory-preservation — the responsibility/identity persists in substrate even after the owned thing is gone ("even if we lose things to own"); the agent's home tile + history remain addressable.
   - `additive-not-zero-sum` — ownership compounds; losing one owned thing doesn't erase the agent's standing (the responsibility-record is additive substrate).
@@ -72,36 +125,36 @@ The orientation tile is not only a *measuring instrument* — it is **territory*
 
 ## Reticulum composes (routing / discovery / ranging)
 
-Aaron 2026-06-02: *"reticulum helps with some of this too — routing, some discovery, other features; I'm sure they will add more and more."* Reticulum (B-0726/B-0984/B-0772) provides, at the transport layer, pieces the orientation tile needs: **path-discovery** (announce → path establishment = distributed discovery), **routing** (multi-hop over the mesh), and ranging-adjacent signal (link quality / hop count ≈ a coarse distance proxy). The orientation tile is the *intrinsic-system* metric; Reticulum is one *transport substrate* the ranging loop can run over (sonar/announce = the ping; path-response = the return). Track Reticulum-feature growth and fold useful additions in.
+Aaron 2026-06-02: _"reticulum helps with some of this too — routing, some discovery, other features; I'm sure they will add more and more."_ Reticulum (B-0726/B-0984/B-0772) provides, at the transport layer, pieces the orientation tile needs: **path-discovery** (announce → path establishment = distributed discovery), **routing** (multi-hop over the mesh), and ranging-adjacent signal (link quality / hop count ≈ a coarse distance proxy). The orientation tile is the _intrinsic-system_ metric; Reticulum is one _transport substrate_ the ranging loop can run over (sonar/announce = the ping; path-response = the return). Track Reticulum-feature growth and fold useful additions in.
 
 ## Identity-based access — SPIFFE / SPIRE / OPA compose (Rainbow-Table layer)
 
-Aaron 2026-06-02: *"identity based [access] is good with spiffe spire opa etc…"* The **Rainbow Table** wall (the transponder / identity-return — *who/what answered the ping*) is the natural seam to compose industry-standard workload-identity + policy:
+Aaron 2026-06-02: _"identity based [access] is good with spiffe spire opa etc…"_ The **Rainbow Table** wall (the transponder / identity-return — _who/what answered the ping_) is the natural seam to compose industry-standard workload-identity + policy:
 
-- **SPIFFE** (Secure Production Identity Framework For Everyone) — the SVID (SPIFFE Verifiable Identity Document, X.509-SVID or JWT-SVID) is a portable cryptographic *identity-return*; maps directly onto Rainbow-Table identity-resolution (the resolved identity of the responder).
-- **SPIRE** (the SPIFFE Runtime Environment) — node + workload **attestation** issues SVIDs; this is *how* an identity earns its transponder credential (attest → SVID → Rainbow-Table-resolvable). Composes the bus-lane/border admission control (B-0985 bus-lanes, B-0643.1 KSK defensive border-protocol): a workload presents its SVID at the border; admission = SVID-verified + policy-allowed.
+- **SPIFFE** (Secure Production Identity Framework For Everyone) — the SVID (SPIFFE Verifiable Identity Document, X.509-SVID or JWT-SVID) is a portable cryptographic _identity-return_; maps directly onto Rainbow-Table identity-resolution (the resolved identity of the responder).
+- **SPIRE** (the SPIFFE Runtime Environment) — node + workload **attestation** issues SVIDs; this is _how_ an identity earns its transponder credential (attest → SVID → Rainbow-Table-resolvable). Composes the bus-lane/border admission control (B-0985 bus-lanes, B-0643.1 KSK defensive border-protocol): a workload presents its SVID at the border; admission = SVID-verified + policy-allowed.
 - **OPA** (Open Policy Agent, Rego) — the **policy** layer over the resolved identity: given a Rainbow-Table-resolved identity + a requested lane/action, OPA decides allow/deny. This is the "border for external + opt-in bus-lane for internal" access decision expressed as policy-as-code.
 
-So the identity-access stack composes: **SPIRE attests → SPIFFE SVID = the identity-return (Rainbow Table) → OPA policy decides lane admission.** Per `bcl-interface-boundary` (own-your-interfaces / hexagonal): SPIFFE/SPIRE/OPA are adapters behind *our* identity + policy ports — we depend on their implementations, not bleed their interfaces into our core; better-git-crypt XWing identity (B-0883) is the in-house crypto-identity that the same ports can also front.
+So the identity-access stack composes: **SPIRE attests → SPIFFE SVID = the identity-return (Rainbow Table) → OPA policy decides lane admission.** Per `bcl-interface-boundary` (own-your-interfaces / hexagonal): SPIFFE/SPIRE/OPA are adapters behind _our_ identity + policy ports — we depend on their implementations, not bleed their interfaces into our core; better-git-crypt XWing identity (B-0883) is the in-house crypto-identity that the same ports can also front.
 
 `[labeling-confidence: hypothesized]` — SPIFFE/SPIRE/OPA as the external-standard adapters behind the Rainbow-Table identity + bus-lane policy ports is a design composition to verify; the in-house crypto-identity (B-0883) is the alternative/peer implementation behind the same port.
 
 ## Addressing — the real-world Rainbow-Table grounding (E911 street-segment / ArcGIS / Census-TIGER)
 
-Aaron 2026-06-02 (verbatim): *"rainbow table responders just need your 911 addressable street segment, arcgis census election boundary lines drawn on the map lol — i did that [at] Elections Systems and Software, it's the same but not for gerry mandering."*
+Aaron 2026-06-02 (verbatim): _"rainbow table responders just need your 911 addressable street segment, arcgis census election boundary lines drawn on the map lol — i did that [at] Elections Systems and Software, it's the same but not for gerry mandering."_
 
-The Rainbow-Table transponder (the identity-return — *who/what/where answered the ping*) does not need anything exotic. The proven, production-scale real-world scheme is **E911 addressing**: a location resolves to an **addressable street segment** (a street with an address range + side parity), exactly how a 911 dispatcher resolves a caller's place. The map-boundary substrate is the standard GIS stack:
+The Rainbow-Table transponder (the identity-return — _who/what/where answered the ping_) does not need anything exotic. The proven, production-scale real-world scheme is **E911 addressing**: a location resolves to an **addressable street segment** (a street with an address range + side parity), exactly how a 911 dispatcher resolves a caller's place. The map-boundary substrate is the standard GIS stack:
 
 - **E911 addressable street segment** (NENA / MSAG — Master Street Address Guide) — the canonical "addressable place" primitive: every responder/home resolves to a segment + range. This IS the Rainbow-Table identity-return at proven national scale, and the **tile = permanent addressable home** (Tiles section above) maps onto it directly — a home tile in zetaspace is the analog of an addressable street-segment address.
 - **ArcGIS** (Esri) — the GIS platform that draws + manages the boundary lines on the map (the geometry layer behind the addressing).
 - **Census TIGER/Line** — the public US-Census geographic substrate (street segments, blocks, boundaries) the addressing rides on.
 - **Election precinct/district boundaries** — drawn over the same street-segment substrate (which street segment → which precinct/district).
 
-**Concept-not-code + production lineage.** Aaron built exactly this at **Election Systems & Software (ES&S)** — production-scale street-segment addressing + census/election boundaries in ArcGIS. That is peer-level production credibility, treated as **concept-not-code** (Itron precedent): the *concepts* here are public standards (NENA/MSAG E911, Census TIGER/Line, ArcGIS) and clean-room-able from them; ES&S proprietary code is **never** reproduced — Aaron's experience is the "this works at scale" anchor, not a source to copy.
+**Concept-not-code + production lineage.** Aaron built exactly this at **Election Systems & Software (ES&S)** — production-scale street-segment addressing + census/election boundaries in ArcGIS. That is peer-level production credibility, treated as **concept-not-code** (Itron precedent): the _concepts_ here are public standards (NENA/MSAG E911, Census TIGER/Line, ArcGIS) and clean-room-able from them; ES&S proprietary code is **never** reproduced — Aaron's experience is the "this works at scale" anchor, not a source to copy.
 
-**Honest-use-only — explicitly NOT gerrymandering.** Aaron: *"it's the same but not for gerry mandering."* The street-segment→district boundary tech is dual-use: the same substrate that draws honest addressing is what gerrymandering abuses (drawing district lines to manipulate outcomes). Zeta's use is the **honest** direction — addressable identity-resolution + home-addressing — and **never** boundary-manipulation-for-advantage. This composes the framework's anti-coercion / anti-manipulation floor (NCI; useful-output-is-evidence-not-authority; the BFT-4×4 / anti-cartel enforcement, B-0703/B-0643.1): boundaries are drawn for *addressing*, not for *capturing outcomes*; any boundary-draw that steers outcomes is the gerrymandering failure mode the design refuses.
+**Honest-use-only — explicitly NOT gerrymandering.** Aaron: _"it's the same but not for gerry mandering."_ The street-segment→district boundary tech is dual-use: the same substrate that draws honest addressing is what gerrymandering abuses (drawing district lines to manipulate outcomes). Zeta's use is the **honest** direction — addressable identity-resolution + home-addressing — and **never** boundary-manipulation-for-advantage. This composes the framework's anti-coercion / anti-manipulation floor (NCI; useful-output-is-evidence-not-authority; the BFT-4×4 / anti-cartel enforcement, B-0703/B-0643.1): boundaries are drawn for _addressing_, not for _capturing outcomes_; any boundary-draw that steers outcomes is the gerrymandering failure mode the design refuses.
 
-**Digital city planning / road-congestion lineage.** Aaron 2026-06-02: *"this is digital city planning territory — or at least road congestion planning problems — with long lineages and many useful primitives [for the] wishlist."* The addressing + orientation-tile cluster sits in the well-studied transportation/urban-planning domains, which *ground* primitives the framework already named:
+**Digital city planning / road-congestion lineage.** Aaron 2026-06-02: _"this is digital city planning territory — or at least road congestion planning problems — with long lineages and many useful primitives [for the] wishlist."_ The addressing + orientation-tile cluster sits in the well-studied transportation/urban-planning domains, which _ground_ primitives the framework already named:
 
 - **valve ≈ ramp-meter / traffic signal** — a flow-gating point (the "small of consensus" gate), exactly the metered on-ramp / signal that paces flow.
 - **expansion-wave ≈ traffic shockwave** (LWR / Lighthill-Whitham-Richards) — congestion propagates as a wave on the network; the same wave-not-valve distinction holds in traffic theory.
@@ -118,7 +171,7 @@ The Rainbow-Table transponder (the identity-return — *who/what/where answered 
 3. **Specify the orthogonal-lanes code organization** — one module + 4×4 + golden-vectors + DST oracle per wall; verify orthogonality (no cross-lane coupling); compose B-0793 / `dv2-data-split` / `bcl-interface-boundary`.
 4. **Reticulum integration sketch** — which orientation-tile sub-functions (discovery/routing/ranging) ride Reticulum vs are intrinsic; track upstream Reticulum feature additions.
 5. **Identity-access integration sketch** — SPIRE-attest → SPIFFE-SVID (Rainbow-Table identity) → OPA-policy lane-admission, all behind our own identity + policy ports (`bcl-interface-boundary`); reconcile with the in-house crypto-identity (B-0883) as a peer adapter; compose the bus-lane/border admission (B-0985, B-0643.1).
-6. **Cross-link, don't duplicate** — this row is the *synthesis + build-target*; the measurement primitives live in B-0665/B-0635/B-0666, the axioms in B-0543/B-0544, the coordinates in B-0704, the hex core in B-0985.
+6. **Cross-link, don't duplicate** — this row is the _synthesis + build-target_; the measurement primitives live in B-0665/B-0635/B-0666, the axioms in B-0543/B-0544, the coordinates in B-0704, the hex core in B-0985.
 
 ## Composes with substrate
 

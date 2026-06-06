@@ -50,7 +50,7 @@ CircuitRegistration `Safety` invariant fix (B-0180):
 - Local: `Model checking completed. No error has been found.`
   3538 states / depth 14
 - CI: `Error: The invariant Safety specified in the configuration
-  file is not defined in the specification.`
+file is not defined in the specification.`
 
 Diff: local ran the new spec; CI's `actions/cache@v5` step cached
 `tools/tla` (whole dir, including `specs/`) and restored old content
@@ -78,9 +78,9 @@ that DIDN'T have the `Safety` operator. CI tested the OLD spec.
 
 **Carved sentence (for retrieval):**
 
-> *"actions/cache paths are mutually exclusive with `git ls-files` —
+> _"actions/cache paths are mutually exclusive with `git ls-files` —
 > cache only DERIVED files (downloaded jars, built artefacts, user-
-> home tool state), never source-controlled content."*
+> home tool state), never source-controlled content."_
 
 **Composes with:**
 
@@ -123,8 +123,8 @@ violations; if you're seeing this on an existing workflow, the gate
 may have a parity bug or your PR introduced a new path that the
 audit's parser missed.
 
-**Reasoning lineage:** Aaron 2026-05-03 *"lucky catch how can you
-make it not lucky next time for same class or similar class"* —
+**Reasoning lineage:** Aaron 2026-05-03 _"lucky catch how can you
+make it not lucky next time for same class or similar class"_ —
 triggered after the CircuitRegistration B-0180 fix surfaced the
 silent-clobber bug. Substrate response: audit + lint gate + this
 memory file.

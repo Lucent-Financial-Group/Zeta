@@ -151,7 +151,7 @@ as the base spec.
 
 - **Vague SHALL.** "The system SHALL handle errors" is
   useless. "The system SHALL return `Error
-  (DbspError.OverflowException)` when the accumulator
+(DbspError.OverflowException)` when the accumulator
   reaches `Int64.MaxValue`" is useful.
 - **Cross-capability leakage.** A spec that depends on
   internal details of another capability is fragile;

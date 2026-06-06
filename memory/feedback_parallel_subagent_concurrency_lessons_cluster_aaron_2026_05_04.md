@@ -8,8 +8,8 @@ type: feedback
 
 Aaron 2026-05-04 ~20:30Z, after the day's parallel-cadence lessons settled:
 
-> *"best lessons are learned from experience"*
-> *"hope* you can learn from your mistakes"*
+> _"best lessons are learned from experience"_
+> _"hope_ you can learn from your mistakes"\*
 
 The typo-correction from "future" → "hope" is itself substrate-class. Hope-not-command preserves the no-directives architecture (Otto-357): maintainer hopes, agent's accountability for whether the learning actually lands. The agent doesn't get to say "Aaron told me to learn" — that would re-frame the maintainer as authority. The agent has to actually learn, on its own accountability.
 
@@ -26,11 +26,13 @@ This file IS the encoding that operationalizes the hope.
 More importantly: **even if the worktrees are clean isolated, the resulting PRs both touch the same file, so on merge they conflict at the GitHub level**. Auto-merge on the second PR fails after the first lands. We got lucky that tier-36 finished and tier-37 was still in-flight (so tier-37 rebased on tier-36's merged state) rather than both pushing simultaneously.
 
 **The rule**: serialize on shared-file edits, parallelize on different files.
+
 - MEMORY.md compression: ONE tier at a time. Wait for tier-N PR to merge before dispatching tier-(N+1).
 - Audit / research / scripts on different paths: dispatch in parallel freely.
 - When in doubt, ask: "do these two subagents touch the same file?" If yes, serialize.
 
 **Operational pattern**:
+
 ```
 Single-file track (MEMORY.md): tier-N dispatched → merged → tier-(N+1) dispatched
 Multi-file tracks (audits, scripts, docs): dispatch all in parallel
@@ -43,13 +45,15 @@ The team-vs-orchestrator-not-idle three-state distinction (Aaron 2026-05-04 PR #
 **The mistake (observed 2026-05-04 ~19:30Z + ~20:20Z)**: After dispatching `isolation: "worktree"` subagents, my orchestrator's CWD `git status` showed the parent repo's MEMORY.md as MODIFIED with content from the worktree's in-progress edit. I almost committed this dirty state in a different PR before catching it.
 
 The subagent worktrees live at `.claude/worktrees/agent-<id>/`. They have their own working trees, but somehow the orchestrator's working copy of certain files reflected the subagent's mid-edit state. The mechanism may be:
+
 - Filesystem caches at OS level
 - Worktree's HEAD pointer transient state
 - Some `git checkout` operation in the subagent that briefly touches parent state
 
-The B-0140 audit subagent flagged this same shape: *"the worktree's git checkout main initially landed on a different branch... with a dirty memory/MEMORY.md from upstream sync."* The old-PR triage subagent flagged the inverse: *"the persistent bash cwd was `.claude/worktrees/agent-...`, not `/Users/acehack/Documents/src/repos/Zeta`."*
+The B-0140 audit subagent flagged this same shape: _"the worktree's git checkout main initially landed on a different branch... with a dirty memory/MEMORY.md from upstream sync."_ The old-PR triage subagent flagged the inverse: _"the persistent bash cwd was `.claude/worktrees/agent-...`, not `/Users/acehack/Documents/src/repos/Zeta`."_
 
 **The rule**: defensive hygiene every time orchestrator does git operations after subagent dispatch:
+
 ```bash
 git checkout main
 git restore .  # discard any leaked working-copy state
@@ -62,7 +66,8 @@ Before any orchestrator commit on `main` or a fresh feature branch. Especially w
 
 ## Lesson 3 — compression subagents take ~10-20 min, not ~12 min watchdog
 
-**The mistake (observed across tier-36 + tier-37)**: I wrote dispatch prompts that said *"Watchdog ~12 minutes"* assuming the 600s watchdog was the binding constraint. Reality:
+**The mistake (observed across tier-36 + tier-37)**: I wrote dispatch prompts that said _"Watchdog ~12 minutes"_ assuming the 600s watchdog was the binding constraint. Reality:
+
 - B-0140 audit subagent: ~7 min (read .sh + .ts files, fast)
 - Old-PR triage subagent: ~7 min (8 `gh pr view` calls, fast)
 - Tier-36 MEMORY.md compression: ~21 min (25 underlying memory files to read + concurrency hazard)
@@ -75,6 +80,7 @@ The compression subagents are slow because they read 25 underlying memory files 
 **The deeper rule**: the watchdog is per-tool-call, not per-task. A subagent doing 30 sequential Read calls each under 30s is NOT being watchdog-killed — it's just slow. Patience is correct.
 
 **Operational pattern**: if checking on a long-running compression dispatch:
+
 - Output line growth = alive, just slow
 - Output line growth stopped for 5+ minutes = potentially stalled
 - Output line growth stopped + branch never pushed after ~25 minutes = consider redispatch
@@ -90,6 +96,7 @@ The compression subagents are slow because they read 25 underlying memory files 
 ## The carrier-IS-message check
 
 This file is being landed in a session where:
+
 - ~48 substrate PRs have shipped today
 - The parallelism-readiness lesson (PR #1546) caused me to deploy 3 parallel subagents
 - Two of those (B-0140 audit + old-PR triage) succeeded cleanly
@@ -103,7 +110,7 @@ Step 3 — when it inevitably arrives — will be substrate as well, because tha
 
 Aaron 2026-05-04 closing observation, after seeing this file's draft come together:
 
-> *"this is a action worth repeating in future you too."*
+> _"this is a action worth repeating in future you too."_
 
 The action — **clustering session-mistakes into a single substrate file at session-arc close** — is not a one-off response to today's specific cluster. It's a recurring discipline future-Otto should deploy whenever a session produces multiple distinct lessons:
 

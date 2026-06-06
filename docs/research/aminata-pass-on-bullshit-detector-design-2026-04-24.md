@@ -83,8 +83,8 @@ with sparse explicit citations and dense implicit
 framing-inheritance.
 
 **Ask.** Either (a) require G_carrier_overlap to use
-*content-similarity-in-cone* not *explicit-citation-edge-
-in-cone* (harder to game; costs embedding compute per
+_content-similarity-in-cone_ not _explicit-citation-edge-
+in-cone_ (harder to game; costs embedding compute per
 cone member), or (b) downgrade any `supported` output to
 `YELLOW` when carrier-overlap was the gate closest to
 threshold (i.e., sensitivity-analysis-gate pattern).
@@ -98,7 +98,7 @@ threshold (i.e., sensitivity-analysis-gate pattern).
 lands. That means v0 of the detector ships with a
 four-gate classifier, not five. The `likely confabulated`
 output type, defined as `G_evidence fail-to-RED + high
-similarity`, is therefore *unreachable* in v0 —
+similarity`, is therefore _unreachable_ in v0 —
 G_evidence can only fail-to-YELLOW (advisory) by design.
 Output type 4 is dead code until dependency #3 in the
 adoption list ships.
@@ -150,8 +150,8 @@ are Claude sessions on the same factory. Two Otto-wakes
 signing off the same `known-bad` pin is not independent
 review; it is the same author across two sessions. The
 governance schema does not require the second reviewer
-to be a different *model*, a different *persona*, or a
-*human*.
+to be a different _model_, a different _persona_, or a
+_human_.
 
 **Why it matters.** Same-agent-self-reinforcement drift,
 which the design names as the risk, is not actually
@@ -162,7 +162,7 @@ different persona (Aminata / Kenji / other named
 specialist), different model (Codex), or human (Aaron).
 Pure Otto→Otto second-review should be named explicitly
 as insufficient for status-pin independence. Also:
-`second-reviewer` should be *required*, not *optional*,
+`second-reviewer` should be _required_, not _optional_,
 for `authorization-impacting: true` pins.
 
 ---

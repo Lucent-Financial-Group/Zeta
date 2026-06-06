@@ -105,8 +105,8 @@ check NoDuplicateRuns for 5 Run, 3 Key, 3 Value
   scopes blow SAT4J up. Start at 3-5 and widen only if
   the property seems to hold and you need more coverage.
 
-The `small scope hypothesis` (Daniel Jackson, *Software
-Abstractions*): most bugs have small counter-examples.
+The `small scope hypothesis` (Daniel Jackson, _Software
+Abstractions_): most bugs have small counter-examples.
 Scopes of 5-7 catch a lot.
 
 ## `run` vs `check` semantics
@@ -137,7 +137,7 @@ Alloy's math is **relations**:
 
 - `r.field` — relational join.
 - `r1 + r2` — union; `r1 & r2` — intersection; `r1 -
-  r2` — difference.
+r2` — difference.
 - `^r` — transitive closure; `*r` — reflexive-transitive.
 - `~r` — transpose (inverse).
 - `#S` — cardinality.
@@ -204,5 +204,5 @@ dump is what we debug from.
 - `.claude/skills/tla-expert/SKILL.md` — sibling for
   temporal properties
 - `.claude/skills/java-expert/SKILL.md` — for the runner
-- Daniel Jackson, *Software Abstractions* (canonical
+- Daniel Jackson, _Software Abstractions_ (canonical
   textbook on Alloy)

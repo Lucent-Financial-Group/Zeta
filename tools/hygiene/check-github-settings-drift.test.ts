@@ -26,12 +26,7 @@ describe("parseArgs", () => {
   });
 
   test("--expected PATH overrides default", async () => {
-    const result = await parseArgs([
-      "--repo",
-      "AceHack/Zeta",
-      "--expected",
-      "/tmp/custom-snapshot.json",
-    ]);
+    const result = await parseArgs(["--repo", "AceHack/Zeta", "--expected", "/tmp/custom-snapshot.json"]);
 
     expect(result.kind).toBe("args");
     if (result.kind === "args") {

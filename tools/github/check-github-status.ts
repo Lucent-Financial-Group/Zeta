@@ -64,12 +64,7 @@ const FACTORY_RELEVANT_COMPONENTS = [
   "Issues",
 ] as const;
 
-type ComponentStatus =
-  | "operational"
-  | "degraded_performance"
-  | "partial_outage"
-  | "major_outage"
-  | "under_maintenance";
+type ComponentStatus = "operational" | "degraded_performance" | "partial_outage" | "major_outage" | "under_maintenance";
 
 type OverallStatus = "operational" | "degraded" | "outage" | "maintenance";
 
@@ -116,9 +111,7 @@ function classifyDecision(
   factoryRelevant: Record<string, ComponentStatus | "unknown">,
 ): Decision {
   if (overall === "outage") return "halt";
-  if (overall === "operational" && Object.values(factoryRelevant).every(
-    (s) => s === "operational",
-  )) {
+  if (overall === "operational" && Object.values(factoryRelevant).every((s) => s === "operational")) {
     return "proceed";
   }
   // Either overall is degraded/maintenance, OR a factory-relevant component
@@ -256,9 +249,7 @@ function decisionExitCode(decision: Decision): number {
 
 export async function main(argv: string[]): Promise<number> {
   const args = parseArgs(argv);
-  const summary = args.fixture
-    ? loadFixture(args.fixture)
-    : await fetchSummary();
+  const summary = args.fixture ? loadFixture(args.fixture) : await fetchSummary();
   const report = buildReport(summary);
   if (args.component) {
     const status = report.factoryRelevant[args.component] ?? "unknown";

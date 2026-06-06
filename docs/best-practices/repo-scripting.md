@@ -10,8 +10,8 @@ universal scripting standard — when a future stack joins (e.g.,
 .NET console tools, F# scripts), they get their own composition
 file (`repo-scripting-dotnet.md` etc.).
 
-**Trigger**: Required to exist and be current before the *first
-mutating action* on any TS/Bun port slice (TS/Bun migration
+**Trigger**: Required to exist and be current before the _first
+mutating action_ on any TS/Bun port slice (TS/Bun migration
 trajectory's Gate B prerequisite). Read-only scoping may happen
 first; mutation waits.
 
@@ -31,15 +31,15 @@ from upstream / sibling repos, which we rejected, and why.
 Sources: `../SQLSharp` at commit `7d3d9f6` (2026-04-18),
 `../scratch` at file mtime 2026-04-15. Refresh per slice.
 
-| Pattern | SQLSharp | scratch | Zeta adopted? |
-|---|---|---|---|
-| Entrypoint guard | `import.meta.main` | `import.meta.main` | yes |
-| CLI parse | typed `Args` interface, manual loop | minimal | yes (typed `Args`) |
-| Process spawn | structured failure classifier in `tools/automation/format/process-runner.ts` (launch / termination / non-zero exit branches) | n/a | yes (mirror in `tools/hygiene/audit-md032-plus-linestart.ts:classifyGitFailure`) |
-| Result/finding type | typed boundary objects (`{ file, line }`) | minimal | yes |
-| File IO | atomic `readFileSync` + try/catch | minimal | yes |
-| Type-only imports | `import { type SpawnSyncReturns }` | n/a | yes when boundary types involved |
-| `readonly` on result arrays | yes | yes | yes |
+| Pattern                     | SQLSharp                                                                                                                     | scratch            | Zeta adopted?                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------ | -------------------------------------------------------------------------------- |
+| Entrypoint guard            | `import.meta.main`                                                                                                           | `import.meta.main` | yes                                                                              |
+| CLI parse                   | typed `Args` interface, manual loop                                                                                          | minimal            | yes (typed `Args`)                                                               |
+| Process spawn               | structured failure classifier in `tools/automation/format/process-runner.ts` (launch / termination / non-zero exit branches) | n/a                | yes (mirror in `tools/hygiene/audit-md032-plus-linestart.ts:classifyGitFailure`) |
+| Result/finding type         | typed boundary objects (`{ file, line }`)                                                                                    | minimal            | yes                                                                              |
+| File IO                     | atomic `readFileSync` + try/catch                                                                                            | minimal            | yes                                                                              |
+| Type-only imports           | `import { type SpawnSyncReturns }`                                                                                           | n/a                | yes when boundary types involved                                                 |
+| `readonly` on result arrays | yes                                                                                                                          | yes                | yes                                                                              |
 
 ## Zeta-specific scripting conventions
 
@@ -138,7 +138,7 @@ must record:
       collapsed)
 - [ ] Bash-vs-TS output equivalence verified for each port
       (default args and any flag modes)
-- [ ] All slice files use the *same* canonical pattern (no
+- [ ] All slice files use the _same_ canonical pattern (no
       one-script-typed-properly-others-loose split)
 - [ ] DST-friendly: no real `Date.now()` / `Math.random()` /
       `setTimeout`-timing reliance in test paths; injected
@@ -198,7 +198,7 @@ shape this file is the composition of.)
   audit records.
 - `docs/research/2026-04-29-multi-ai-tsbun-port-quality-two-gate-model.md`
   — verbatim multi-AI packet that produced the two-gate framing
-  + the layered-naming correction.
+  - the layered-naming correction.
 - Otto-364 (search-first authority) — drives the currency rule.
 - Otto-363 (substrate-or-it-didn't-happen) — this file IS that
   landing for the composition layer.

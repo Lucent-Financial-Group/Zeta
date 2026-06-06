@@ -10,44 +10,45 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 851 |
-| Title | doctrine(agent-orchestra): Zeta Agent Orchestra — capability + role + claim + isolation (Aaron + Amara 2026-04-29) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T17:01:29Z |
-| Merged at | 2026-04-29T17:20:57Z |
-| Merge commit SHA | `b303ed5c5ee613d1056edb72780d64e76377f12b` |
-| Branch | `doctrine-agent-orchestra-multi-harness-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/851 |
-| Changed files | 2 |
-| Additions / deletions | +527 / -0 |
+| Field                 | Value                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Number                | 851                                                                                                                |
+| Title                 | doctrine(agent-orchestra): Zeta Agent Orchestra — capability + role + claim + isolation (Aaron + Amara 2026-04-29) |
+| Author                | `AceHack` (human)                                                                                                  |
+| State                 | MERGED                                                                                                             |
+| Created at            | 2026-04-29T17:01:29Z                                                                                               |
+| Merged at             | 2026-04-29T17:20:57Z                                                                                               |
+| Merge commit SHA      | `b303ed5c5ee613d1056edb72780d64e76377f12b`                                                                         |
+| Branch                | `doctrine-agent-orchestra-multi-harness-2026-04-29`                                                                |
+| Base branch           | `main`                                                                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/851                                                            |
+| Changed files         | 2                                                                                                                  |
+| Additions / deletions | +527 / -0                                                                                                          |
 
 ## Description
 
 ## Status
 
-**Doctrine captured. Protocol NOT operational.** This PR lands the Zeta Agent Orchestra **doctrine memory file** (cold-start survival substrate) — not the implementation. Per Amara 2026-04-29: *"#851 is not 'the protocol landed.' #851 is 'the doctrine memory landed.' That distinction matters."*
+**Doctrine captured. Protocol NOT operational.** This PR lands the Zeta Agent Orchestra **doctrine memory file** (cold-start survival substrate) — not the implementation. Per Amara 2026-04-29: _"#851 is not 'the protocol landed.' #851 is 'the doctrine memory landed.' That distinction matters."_
 
 The actual Layer 0 + Layer 1 spec files (`docs/ops/patterns/project-agent-topology.md`, `docs/ops/coordination/claims/README.md`, `docs/ops/runbooks/start-agent-claim.md`, optional `agents/project-agents.example.yaml`) land in a separate follow-up PR per task 324.
 
 ## Summary
 
-Captures the project-level multi-harness multi-maintainer multi-actor coordination model from Aaron + Amara 2026-04-29, with v2 corrections from a five-AI review (Ani / Claude.ai / Gemini / Alexa / Deepseek). Doctrine-only — no automation built (per Amara's *"Do not build full automation first. Land the protocol, then run one dry-run lane."*).
+Captures the project-level multi-harness multi-maintainer multi-actor coordination model from Aaron + Amara 2026-04-29, with v2 corrections from a five-AI review (Ani / Claude.ai / Gemini / Alexa / Deepseek). Doctrine-only — no automation built (per Amara's _"Do not build full automation first. Land the protocol, then run one dry-run lane."_).
 
 This is the **third doctrine packet** in a 2-hour cluster:
+
 - PR #850 (merged): parallel-agent worktree isolation + best-practices evidence/lineage
 - This PR: the broader umbrella — Zeta Agent Orchestra + v2 review constraints
 
 ## The carved sentences
 
-> *"Humans own intent. Harnesses run actors. Roles define authority. Claims bind work. GitHub coordinates now. Git preserves forever."*
+> _"Humans own intent. Harnesses run actors. Roles define authority. Claims bind work. GitHub coordinates now. Git preserves forever."_
 
-> *"Subagents and buddy harnesses are both worker actors; the difference is runtime boundary, not coordination model."*
+> _"Subagents and buddy harnesses are both worker actors; the difference is runtime boundary, not coordination model."_
 
-> *"Do not coordinate by personality name. Coordinate by role, capability, claim, and isolation."*
+> _"Do not coordinate by personality name. Coordinate by role, capability, claim, and isolation."_
 
 ## Allowed framing (what this PR delivers)
 
@@ -71,34 +72,35 @@ This is the **third doctrine packet** in a 2-hour cluster:
 
 Each v2 addition is explicitly status-tagged per Amara's precision framing:
 
-| Item | Status | Source |
-|---|---|---|
-| Actor identity (stable IDs vs session IDs) | **Required before multi-maintainer use** | Claude.ai catch |
-| Compromised-actor kill switch | **Required before write-capable autonomous peers** | Claude.ai catch |
-| Maintainer governance | **Open question** — Aaron provisional sole authority | Claude.ai catch |
-| Emergency-action fast path (no irreversible-loss exception) | **Future policy** | Claude.ai catch |
-| Buddy reframe ("not trusted; advice by default") | **Active doctrine now** | Ani catch |
-| No-silent-demotion of pinned roles | **Active doctrine now; enforcement future** | Claude.ai catch |
-| Visible-path preference (`agents/project-agents.yaml`) | **Future design constraint** | Claude.ai catch |
-| Boolean capability schema (CI-mechanical) | **Future design constraint** | Gemini catch |
-| 5-layer landing plan (replaces v1's 3-phase) | **Active doctrine now** | Amara synthesis |
-| Conflict resolution (first-claim-wins-by-timestamp) | **Required before claims operational** | Claude.ai catch |
-| CI enforcement (load-bearing; cannot defer) | **Required before claims trusted** | Claude.ai + Deepseek |
-| Coordinator role human-filled | **Active doctrine; flip requires successful dry-run** | Deepseek catch |
-| Branch-name slash GitHub-protection caveat | **Future design constraint** | Claude.ai catch |
-| Cross-platform case-sensitivity in Windows mode | **Dry-run prerequisite** | Ani + Claude.ai catches |
-| Regime-change concern (alignment-trajectory + bead + escrow changes) | **Known unsolved multi-maintainer transition issue** | Claude.ai catch |
+| Item                                                                 | Status                                                | Source                  |
+| -------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------- |
+| Actor identity (stable IDs vs session IDs)                           | **Required before multi-maintainer use**              | Claude.ai catch         |
+| Compromised-actor kill switch                                        | **Required before write-capable autonomous peers**    | Claude.ai catch         |
+| Maintainer governance                                                | **Open question** — Aaron provisional sole authority  | Claude.ai catch         |
+| Emergency-action fast path (no irreversible-loss exception)          | **Future policy**                                     | Claude.ai catch         |
+| Buddy reframe ("not trusted; advice by default")                     | **Active doctrine now**                               | Ani catch               |
+| No-silent-demotion of pinned roles                                   | **Active doctrine now; enforcement future**           | Claude.ai catch         |
+| Visible-path preference (`agents/project-agents.yaml`)               | **Future design constraint**                          | Claude.ai catch         |
+| Boolean capability schema (CI-mechanical)                            | **Future design constraint**                          | Gemini catch            |
+| 5-layer landing plan (replaces v1's 3-phase)                         | **Active doctrine now**                               | Amara synthesis         |
+| Conflict resolution (first-claim-wins-by-timestamp)                  | **Required before claims operational**                | Claude.ai catch         |
+| CI enforcement (load-bearing; cannot defer)                          | **Required before claims trusted**                    | Claude.ai + Deepseek    |
+| Coordinator role human-filled                                        | **Active doctrine; flip requires successful dry-run** | Deepseek catch          |
+| Branch-name slash GitHub-protection caveat                           | **Future design constraint**                          | Claude.ai catch         |
+| Cross-platform case-sensitivity in Windows mode                      | **Dry-run prerequisite**                              | Ani + Claude.ai catches |
+| Regime-change concern (alignment-trajectory + bead + escrow changes) | **Known unsolved multi-maintainer transition issue**  | Claude.ai catch         |
 
 ## Files
 
 - `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md` (~540 lines after v2)
 - `memory/MEMORY.md` — paired index entry per memory-index-integrity rule
 
-No code, no `.zeta/agents.yaml`, no automation. Per Amara's hard boundary: *"#851 may contain doctrine + v2 corrections. #851 must not contain active claim schema, agents.yaml, CI enforcement, or runbooks."*
+No code, no `.zeta/agents.yaml`, no automation. Per Amara's hard boundary: _"#851 may contain doctrine + v2 corrections. #851 must not contain active claim schema, agents.yaml, CI enforcement, or runbooks."_
 
 ## Next PR (per task 324, after #851 merges)
 
 Layer 0 + Layer 1 design files only:
+
 - `docs/ops/patterns/project-agent-topology.md`
 - `docs/ops/coordination/claims/README.md`
 - `docs/ops/runbooks/start-agent-claim.md`
@@ -108,7 +110,7 @@ Each subsequent layer is its own PR with its own validation gate. **Layer 4 (CI 
 
 ## Follow-up tracking tasks (per Amara v2 close-condition)
 
-> *"later without a tracking object is just amnesia with nicer shoes"*
+> _"later without a tracking object is just amnesia with nicer shoes"_
 
 Each implementation layer has an explicit follow-up task; #851 only lands the doctrine. The seven tasks below will graduate to GitHub issues when this PR merges:
 
@@ -133,19 +135,17 @@ These compose with task #324 (umbrella).
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
-
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 11 |
-| Resolved threads | 6 |
-| Unresolved threads | 5 |
-| Total review comments | 17 |
-| Total fix commits (touching thread paths) | 3 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 11    |
+| Resolved threads                          | 6     |
+| Unresolved threads                        | 5     |
+| Total review comments                     | 17    |
+| Total fix commits (touching thread paths) | 3     |
 
 ## Review threads
 
@@ -158,16 +158,16 @@ These compose with task #324 (umbrella).
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T17:03:24Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:128 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Unify capability enum across taxonomy and claim schema**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Unify capability enum across taxonomy and claim schema**
+
   The doctrine defines canonical capability classes as `review_only`, `patch_only`, `write_worktree`, etc., but the claim schema switches to a different vocabulary (`review-only`, `patch-producing`, `write-capable`, `push-capable`) and omits higher classes. Because this file is the spec for the upcoming `.zeta/agents.yaml` and claim automation, the mismatch makes capability checks ambiguous and can cause policy gates to misclassify or ignore claims depending on which enum a tool implements.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:19:27Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:128 (association: MEMBER)
-    Fixed in 819444d — claim YAML capability example unified on snake_case enum (review_only | patch_only | write_worktree | push_branch | open_pr | merge_pr | authority_mutation), matching the boolean-capability schema used in the role definitions. Comment marker added: 'canonical snake_case tokens, matching the capability taxonomy'.
+- **`AceHack` (human)** at 2026-04-29T17:19:27Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:128 (association: MEMBER)
+  Fixed in 819444d — claim YAML capability example unified on snake_case enum (review_only | patch_only | write_worktree | push_branch | open_pr | merge_pr | authority_mutation), matching the boolean-capability schema used in the role definitions. Comment marker added: 'canonical snake_case tokens, matching the capability taxonomy'.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -189,8 +189,8 @@ These compose with task #324 (umbrella).
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:19:30Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:35 (association: MEMBER)
-    Fixed in 819444d — marked `docs/best-practices/**` as `[planned]` in the canonical-substrate block, with explicit caveat that entries marked `[planned]` are not yet in the repo and should not be linked-to as live. Tracked under task 323 (per-tool/language expert skills).
+- **`AceHack` (human)** at 2026-04-29T17:19:30Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:35 (association: MEMBER)
+  Fixed in 819444d — marked `docs/best-practices/**` as `[planned]` in the canonical-substrate block, with explicit caveat that entries marked `[planned]` are not yet in the repo and should not be linked-to as live. Tracked under task 323 (per-tool/language expert skills).
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -202,11 +202,12 @@ These compose with task #324 (umbrella).
 
 - **`Copilot` (bot)** at 2026-04-29T17:05:35Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:128 (association: NONE)
   P1: The claim YAML example uses `review-only | patch-producing | write-capable | push-capable`, but earlier the capability classes are defined as `review_only`, `patch_only`, `write_worktree`, etc. To avoid ambiguity later (especially if this becomes a real schema), pick one canonical set of tokens and use it consistently here, or explicitly document the mapping between the “label” form and the “token” form.
-  ```suggestion
+
+  ````suggestion
   Canonical YAML tokens use `snake_case`. Human-readable labels map as follows:
   `review-only` → `review_only`, `patch-producing` → `patch_only`,
   `write-capable` → `write_worktree`, `push-capable` → `push_capable`.
-  
+
   ```yaml
   ---
   claim_id: CLAIM-123
@@ -214,12 +215,12 @@ These compose with task #324 (umbrella).
   owner_maintainer: "<name>"
   actor: "codex-cli | gemini-cli | claude-code | cursor-agent | human"
   capability: review_only | patch_only | write_worktree | push_capable
-  ```
+  ````
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:19:32Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:128 (association: MEMBER)
-    Fixed in 819444d — same fix as Codex P2 thread above. The claim YAML example now uses snake_case enum tokens consistent with the boolean-capability schema (`can_read`, `can_review`, `can_patch`, etc.) introduced in Layer 3.
+- **`AceHack` (human)** at 2026-04-29T17:19:32Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:128 (association: MEMBER)
+  Fixed in 819444d — same fix as Codex P2 thread above. The claim YAML example now uses snake_case enum tokens consistent with the boolean-capability schema (`can_read`, `can_review`, `can_patch`, etc.) introduced in Layer 3.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -238,8 +239,8 @@ These compose with task #324 (umbrella).
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:19:34Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:248 (association: MEMBER)
-    Fixed in 819444d — references reworded as 'Untracked follow-up — ... Tracked in TaskList session-local; will graduate to a GitHub issue on land.' Same task-ID-collision resolution pattern used elsewhere in the session — task IDs in TaskList are session-local, GitHub issue numbers are durable; the doctrine memory cites neither directly until the work graduates.
+- **`AceHack` (human)** at 2026-04-29T17:19:34Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:248 (association: MEMBER)
+  Fixed in 819444d — references reworded as 'Untracked follow-up — ... Tracked in TaskList session-local; will graduate to a GitHub issue on land.' Same task-ID-collision resolution pattern used elsewhere in the session — task IDs in TaskList are session-local, GitHub issue numbers are durable; the doctrine memory cites neither directly until the work graduates.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -257,8 +258,8 @@ These compose with task #324 (umbrella).
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:19:37Z on `memory/MEMORY.md`:5 (association: MEMBER)
-    Fixed in 819444d — MEMORY.md index entry now marks unimplemented adapter paths and `docs/best-practices/**` as `[planned]`. Same convention as the doctrine memory canonical-substrate block.
+- **`AceHack` (human)** at 2026-04-29T17:19:37Z on `memory/MEMORY.md`:5 (association: MEMBER)
+  Fixed in 819444d — MEMORY.md index entry now marks unimplemented adapter paths and `docs/best-practices/**` as `[planned]`. Same convention as the doctrine memory canonical-substrate block.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -269,16 +270,16 @@ These compose with task #324 (umbrella).
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T17:11:48Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:272 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reorder layers to satisfy capability-check dependency**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reorder layers to satisfy capability-check dependency**
+
   Layer 3 requires a mechanical check that an actor role has declared capability against `agents/project-agents.yaml`, but Layer 4 is where this file is introduced; that makes the stated sequence internally unimplementable. In practice, teams following the document cannot complete Layer 3 as written and are pushed toward ad-hoc capability sources, which undermines the “Layer 3 enforcement is the activation gate” rule and risks inconsistent protocol rollouts.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T17:19:39Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:272 (association: MEMBER)
-    Fixed in 819444d — swapped Layer 3 and Layer 4. Layer 3 now introduces the declarative topology schema (`agents/project-agents.yaml` with boolean capabilities). Layer 4 enforces against it via the six CI checks (which now explicitly cite 'against `agents/project-agents.yaml` from Layer 3'). Sequencing is now dependency-correct: schema introduced before enforcement that depends on it. PR body updated to reflect Layer 4 as the activation gate.
+- **`AceHack` (human)** at 2026-04-29T17:19:39Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:272 (association: MEMBER)
+  Fixed in 819444d — swapped Layer 3 and Layer 4. Layer 3 now introduces the declarative topology schema (`agents/project-agents.yaml` with boolean capabilities). Layer 4 enforces against it via the six CI checks (which now explicitly cite 'against `agents/project-agents.yaml` from Layer 3'). Sequencing is now dependency-correct: schema introduced before enforcement that depends on it. PR body updated to reflect Layer 4 as the activation gate.
 
 ### Thread 7 -- unresolved
 
@@ -289,10 +290,10 @@ These compose with task #324 (umbrella).
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T17:21:34Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:3 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update frontmatter to the canonical agent-topology path**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update frontmatter to the canonical agent-topology path**
+
   The file metadata still declares the topology as proposed at `.zeta/agents.yaml`, but the doctrine later explicitly prefers `agents/project-agents.yaml` because hidden paths are easy to miss. This mismatch can misdirect any tooling or cold-start process that reads only frontmatter/summary fields, causing contributors to create or look for the config in the wrong location.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- unresolved
@@ -304,10 +305,10 @@ These compose with task #324 (umbrella).
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T17:21:34Z on `memory/feedback_zeta_agent_orchestra_capability_role_claim_isolation_aaron_amara_2026_04_29.md`:431 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Correct activation-gate layer numbering**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Correct activation-gate layer numbering**
+
   This rule says Layer 3 is CI enforcement and Layer 4 is declarative topology, which contradicts the earlier section that defines Layer 3 as declarative topology and Layer 4 as mechanical enforcement. Even after the layering rewrite, this line still flips the layer mapping, so implementers can enforce the wrong prerequisite and mark the protocol operational at the wrong stage.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 9 -- unresolved

@@ -50,12 +50,12 @@ enough that time deserves its own skill.
 ## When to defer
 
 - **Ordering via consensus log** → `distributed-consensus-
-  expert` + `raft-expert` / `paxos-expert`.
+expert` + `raft-expert` / `paxos-expert`.
 - **Timestamps in consistency-spectrum framing** →
   `eventual-consistency-expert`.
 - **Version-vector as CRDT component** → `crdt-expert`.
 - **Planner cost-model timestamps** → `distributed-query-
-  execution-expert`.
+execution-expert`.
 - **Benchmark-timing hygiene** → `performance-engineer`.
 - **Virtual-clock harness / DST** →
   `deterministic-simulation-theory-expert`.
@@ -63,13 +63,13 @@ enough that time deserves its own skill.
 
 ## The five clocks you actually have
 
-| Clock | Monotone? | Step? | Source | Use |
-|---|---|---|---|---|
-| **Wall-clock (CLOCK_REALTIME)** | no | yes (NTP, DST) | OS + NTP | user-facing times, log timestamps |
-| **Monotonic (CLOCK_MONOTONIC)** | yes | no (in general) | boot-anchored counter | interval / duration measurement |
-| **Boot-time (CLOCK_BOOTTIME)** | yes | no | includes sleep | elapsed wall time across suspend |
-| **Process (CLOCK_PROCESS_CPUTIME_ID)** | yes | no | process-scoped | profiling |
-| **Performance counter (QPC / Stopwatch / TSC)** | yes (in practice) | no | HW counter | sub-μs duration |
+| Clock                                           | Monotone?         | Step?           | Source                | Use                               |
+| ----------------------------------------------- | ----------------- | --------------- | --------------------- | --------------------------------- |
+| **Wall-clock (CLOCK_REALTIME)**                 | no                | yes (NTP, DST)  | OS + NTP              | user-facing times, log timestamps |
+| **Monotonic (CLOCK_MONOTONIC)**                 | yes               | no (in general) | boot-anchored counter | interval / duration measurement   |
+| **Boot-time (CLOCK_BOOTTIME)**                  | yes               | no              | includes sleep        | elapsed wall time across suspend  |
+| **Process (CLOCK_PROCESS_CPUTIME_ID)**          | yes               | no              | process-scoped        | profiling                         |
+| **Performance counter (QPC / Stopwatch / TSC)** | yes (in practice) | no              | HW counter            | sub-μs duration                   |
 
 **Rule.** Use the right clock for the question:
 
@@ -275,18 +275,18 @@ Before adding a timestamp to a new Zeta type:
 
 - [ ] Which clock? (wall / monotonic / logical / HLC)
 - [ ] Monotone guarantee? (per-process / per-system /
-  per-cluster)
+      per-cluster)
 - [ ] Serialised as? (int64 μs / int64 ns / ISO 8601 /
-  HLC pair)
+      HLC pair)
 - [ ] Timezone? (UTC always; no "local time" fields in
-  stored data)
+      stored data)
 - [ ] Leap-second policy? (smear / step / pretend it
-  doesn't happen)
+      doesn't happen)
 - [ ] NTP step tolerance? (may the wall-clock jump
-  backward? Yes, it can)
+      backward? Yes, it can)
 - [ ] DST harness visibility? (tests use virtual clock)
 - [ ] Documented bound on skew if used for ordering?
-  (HLC requires)
+      (HLC requires)
 - [ ] Survives 2038? (use int64)
 
 ## Formal-verification routing (for Soraya)
@@ -303,7 +303,7 @@ Before adding a timestamp to a new Zeta type:
 ## What this skill does NOT do
 
 - Does NOT choose the consensus protocol (→ `distributed-
-  consensus-expert`).
+consensus-expert`).
 - Does NOT frame timestamps in the consistency spectrum
   (→ `eventual-consistency-expert`).
 - Does NOT design the DST harness
@@ -314,17 +314,17 @@ Before adding a timestamp to a new Zeta type:
 
 ## Reference patterns
 
-- Lamport 1978 — *Time, Clocks, and the Ordering of
-  Events in a Distributed System* (CACM).
+- Lamport 1978 — _Time, Clocks, and the Ordering of
+  Events in a Distributed System_ (CACM).
 - Fidge 1988 / Mattern 1989 — vector clocks.
 - Parker et al. 1983 — version vectors.
-- Almeida-Baquero-Fonte 2008 — *Interval Tree Clocks*.
-- Preguiça et al. 2010 — *Dotted Version Vectors*.
-- Kulkarni, Demirbas, Madappa, Avva, Leone 2014 — *HLC:
-  Hybrid Logical Clocks*.
-- Corbett et al. 2012 — *Spanner: Google's Globally
-  Distributed Database* (OSDI) — TrueTime.
-- Dean, Barroso 2013 — *The Tail at Scale* (clock-sync
+- Almeida-Baquero-Fonte 2008 — _Interval Tree Clocks_.
+- Preguiça et al. 2010 — _Dotted Version Vectors_.
+- Kulkarni, Demirbas, Madappa, Avva, Leone 2014 — _HLC:
+  Hybrid Logical Clocks_.
+- Corbett et al. 2012 — _Spanner: Google's Globally
+  Distributed Database_ (OSDI) — TrueTime.
+- Dean, Barroso 2013 — _The Tail at Scale_ (clock-sync
   effects on tail latency).
 - IERS Bulletins — leap-second announcements.
 - RFC 5905 — NTPv4.

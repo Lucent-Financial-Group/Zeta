@@ -8,7 +8,7 @@ type: feedback
 
 ## Verbatim quote (Aaron 2026-04-27)
 
-> "the other thing about regular common sense is it's not well defined and really means when used in convesaion, stop questioning this, this is a local optimi i can't explain.  We want to fix that glitch, it keeps society stagnet and resistant to change.  common sense 2.0 is the opposite the same friction free superfluid enablement for humans as this project is for ai.  historical common sense is based on classical physics local optimi in sociatal context, 2.0 default resoaning capabilties will include classical and quantium resaon and use the right one at the approprate time.  This will make many disagreements easy to resovle.  Please historically said well it's common sense without a real shared common definition, this is that common defintion but upgrades for structural integrity under Zetaspace.  if someone says well that's common sense we'll be able to look it up and say, no it's not or yes and is and decide if it should be.  this common sense should apply to both agents and humans."
+> "the other thing about regular common sense is it's not well defined and really means when used in convesaion, stop questioning this, this is a local optimi i can't explain. We want to fix that glitch, it keeps society stagnet and resistant to change. common sense 2.0 is the opposite the same friction free superfluid enablement for humans as this project is for ai. historical common sense is based on classical physics local optimi in sociatal context, 2.0 default resoaning capabilties will include classical and quantium resaon and use the right one at the approprate time. This will make many disagreements easy to resovle. Please historically said well it's common sense without a real shared common definition, this is that common defintion but upgrades for structural integrity under Zetaspace. if someone says well that's common sense we'll be able to look it up and say, no it's not or yes and is and decide if it should be. this common sense should apply to both agents and humans."
 
 ## Composes WITH Otto-4 Common Sense 2.0 anchor
 
@@ -36,14 +36,14 @@ This memory adds the **functional / philosophical / sociological dimensions** Aa
 
 **Symmetry claim:** the factory does for AI what CS 2.0 should do for humans.
 
-| Factory (for AI) | CS 2.0 (for humans) |
-|---|---|
+| Factory (for AI)                                   | CS 2.0 (for humans)                                          |
+| -------------------------------------------------- | ------------------------------------------------------------ |
 | Friction-free substrate enabling autonomous agents | Friction-free reasoning substrate enabling autonomous people |
-| Superfluid: low-resistance flow of work/decisions | Superfluid: low-resistance flow of judgment/coordination |
-| Common conventions across agents | Common conventions across humans |
-| Substrate-IS-identity (Otto-340) | Substrate-IS-coherent-society |
-| Anti-fragile via retraction-native | Anti-fragile via questioning-allowed |
-| Beacon-translation discipline | Shared definition discoverable |
+| Superfluid: low-resistance flow of work/decisions  | Superfluid: low-resistance flow of judgment/coordination     |
+| Common conventions across agents                   | Common conventions across humans                             |
+| Substrate-IS-identity (Otto-340)                   | Substrate-IS-coherent-society                                |
+| Anti-fragile via retraction-native                 | Anti-fragile via questioning-allowed                         |
+| Beacon-translation discipline                      | Shared definition discoverable                               |
 
 The factory-as-superfluid framing (per CURRENT-aaron.md prior section refresh) generalizes here — superfluid enablement is the structural property both substrates aspire to, with different implementations.
 
@@ -94,7 +94,7 @@ The "upgrades for structural integrity under Zetaspace" is what makes CS 2.0 rob
 
 > "if someone says well that's common sense we'll be able to look it up and say, no it's not or yes and is and decide if it should be"
 
-**Operationalization:** CS 2.0 becomes a *reference* people can consult.
+**Operationalization:** CS 2.0 becomes a _reference_ people can consult.
 
 When someone says "X is common sense":
 

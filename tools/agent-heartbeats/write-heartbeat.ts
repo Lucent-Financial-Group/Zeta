@@ -53,9 +53,9 @@ interface Args {
   readonly repoRoot: string;
   readonly dryRun: boolean;
   readonly push: boolean;
-  readonly writeLocal: boolean;  // when push=true, default false to keep dirty branches clean
-  readonly repo: string;     // "owner/name" for REST push (default Lucent-Financial-Group/Zeta)
-  readonly branch: string;   // target branch (HARDCODED default "agent-heartbeats")
+  readonly writeLocal: boolean; // when push=true, default false to keep dirty branches clean
+  readonly repo: string; // "owner/name" for REST push (default Lucent-Financial-Group/Zeta)
+  readonly branch: string; // target branch (HARDCODED default "agent-heartbeats")
 }
 
 /**
@@ -73,13 +73,19 @@ function parseIntStrict(s: string): number | null {
 }
 
 const KNOWN_AUTHORITIES: ReadonlyArray<Authority["type"]> = [
-  "HumanVerified", "TrustedAgent", "Standard", "BestEffort", "Simulated", "Raw",
+  "HumanVerified",
+  "TrustedAgent",
+  "Standard",
+  "BestEffort",
+  "Simulated",
+  "Raw",
 ];
-const KNOWN_MOMENTUM: ReadonlyArray<Momentum["type"]> = [
-  "Background", "Normal", "Elevated", "High", "Critical", "Raw",
-];
+const KNOWN_MOMENTUM: ReadonlyArray<Momentum["type"]> = ["Background", "Normal", "Elevated", "High", "Critical", "Raw"];
 
-export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = process.env): Args | { readonly error: string } {
+export function parseArgs(
+  argv: readonly string[],
+  env: NodeJS.ProcessEnv = process.env,
+): Args | { readonly error: string } {
   // Defaults derived from env vars (set once per agent session by harness).
   // parseIntStrict catches NaN from non-numeric env values; falls through to default.
   let personaSlot = env.ZETA_AGENT_PERSONA_SLOT ? (parseIntStrict(env.ZETA_AGENT_PERSONA_SLOT) ?? 2) : 2;
@@ -102,7 +108,7 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
   // worktree. REST push is the source of truth; --write-local opts in
   // when operator wants the local copy too (for in-worktree grep).
   // With --no-push, writeLocal flips to TRUE (else nothing happens).
-  let writeLocalExplicit: boolean | null = null;  // null=auto (push→false, no-push→true)
+  let writeLocalExplicit: boolean | null = null; // null=auto (push→false, no-push→true)
   let repo = env.ZETA_AGENT_REPO ?? "Lucent-Financial-Group/Zeta";
   // HARDCODED default branch is "agent-heartbeats" (operator 2026-05-27
   // "hard code the correct branch name for heartbeats into the script for
@@ -118,16 +124,28 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
       return argv[++i]!;
     };
     try {
-      if (arg === "--persona-slot") { const v = parseIntStrict(next()); if (v === null) return { error: "--persona-slot must be integer" }; personaSlot = v; }
-      else if (arg === "--persona-name") personaName = next();
+      if (arg === "--persona-slot") {
+        const v = parseIntStrict(next());
+        if (v === null) return { error: "--persona-slot must be integer" };
+        personaSlot = v;
+      } else if (arg === "--persona-name") personaName = next();
       else if (arg === "--authority") authority = next() as Authority["type"];
       else if (arg === "--momentum") momentum = next() as Momentum["type"];
-      else if (arg === "--chromosome") { const v = parseIntStrict(next()); if (v === null) return { error: "--chromosome must be integer" }; chromosome = v; }
-      else if (arg === "--location") { const v = parseIntStrict(next()); if (v === null) return { error: "--location must be integer" }; location = v; }
-      else if (arg === "--named-dep") namedDep = next();
+      else if (arg === "--chromosome") {
+        const v = parseIntStrict(next());
+        if (v === null) return { error: "--chromosome must be integer" };
+        chromosome = v;
+      } else if (arg === "--location") {
+        const v = parseIntStrict(next());
+        if (v === null) return { error: "--location must be integer" };
+        location = v;
+      } else if (arg === "--named-dep") namedDep = next();
       else if (arg === "--disposition") disposition = next();
-      else if (arg === "--parent-pr") { const v = parseIntStrict(next()); if (v === null) return { error: "--parent-pr must be integer" }; parentPr = v; }
-      else if (arg === "--repo-root") repoRoot = next();
+      else if (arg === "--parent-pr") {
+        const v = parseIntStrict(next());
+        if (v === null) return { error: "--parent-pr must be integer" };
+        parentPr = v;
+      } else if (arg === "--repo-root") repoRoot = next();
       else if (arg === "--dry-run") dryRun = true;
       else if (arg === "--push") push = true;
       else if (arg === "--no-push") push = false;
@@ -140,16 +158,35 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
       return { error: err instanceof Error ? err.message : String(err) };
     }
   }
-  if (personaSlot < 0 || personaSlot > 255) return { error: "persona-slot must be 0..255 (set ZETA_AGENT_PERSONA_SLOT or --persona-slot)" };
-  if (!/^[a-z][a-z0-9-]*$/.test(personaName)) return { error: "persona-name must match /^[a-z][a-z0-9-]*$/ (set ZETA_AGENT_PERSONA_NAME or --persona-name)" };
+  if (personaSlot < 0 || personaSlot > 255)
+    return { error: "persona-slot must be 0..255 (set ZETA_AGENT_PERSONA_SLOT or --persona-slot)" };
+  if (!/^[a-z][a-z0-9-]*$/.test(personaName))
+    return { error: "persona-name must match /^[a-z][a-z0-9-]*$/ (set ZETA_AGENT_PERSONA_NAME or --persona-name)" };
   if (chromosome < 0 || chromosome > 31) return { error: "--chromosome must be 0..31" };
   if (location < 0 || location > 255) return { error: "--location must be 0..255" };
   if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repo)) return { error: "--repo must match owner/name" };
-  if (!KNOWN_AUTHORITIES.includes(authority)) return { error: `--authority must be one of ${KNOWN_AUTHORITIES.join(",")}` };
+  if (!KNOWN_AUTHORITIES.includes(authority))
+    return { error: `--authority must be one of ${KNOWN_AUTHORITIES.join(",")}` };
   if (!KNOWN_MOMENTUM.includes(momentum)) return { error: `--momentum must be one of ${KNOWN_MOMENTUM.join(",")}` };
   // Default writeLocal: push=true → false (dirty-branch-safe); push=false → true (else nothing happens)
   const writeLocal = writeLocalExplicit ?? !push;
-  return { personaSlot, personaName, authority, momentum, chromosome, location, namedDep, disposition, parentPr, repoRoot, dryRun, push, writeLocal, repo, branch };
+  return {
+    personaSlot,
+    personaName,
+    authority,
+    momentum,
+    chromosome,
+    location,
+    namedDep,
+    disposition,
+    parentPr,
+    repoRoot,
+    dryRun,
+    push,
+    writeLocal,
+    repo,
+    branch,
+  };
 }
 
 /**
@@ -165,7 +202,7 @@ export function parseArgs(argv: readonly string[], env: NodeJS.ProcessEnv = proc
 export function pushHeartbeatViaRest(
   repo: string,
   branch: string,
-  filePath: string,  // repo-relative path (e.g., "docs/agent-heartbeats/otto/2026/05/27/abc.md")
+  filePath: string, // repo-relative path (e.g., "docs/agent-heartbeats/otto/2026/05/27/abc.md")
   fileContent: string,
   commitMessage: string,
   maxRetries = 5,
@@ -242,7 +279,8 @@ export function pushHeartbeatViaRest(
         parents: [parentCommitSha],
       }),
     );
-    if (newCommitReq.status !== 0) return { error: `commit create failed: ${newCommitReq.stderr || newCommitReq.stdout}` };
+    if (newCommitReq.status !== 0)
+      return { error: `commit create failed: ${newCommitReq.stderr || newCommitReq.stdout}` };
     let newCommitSha: string;
     let commitUrl: string;
     try {
@@ -275,8 +313,8 @@ export function buildHeartbeatObservation(args: Args, timestampMs: number): Zeta
     version: 1,
     timestamp: timestampMs as ZetaObservation["timestamp"],
     chromosome: args.chromosome,
-    category: 3,  // Heartbeat per registry/categories.yaml
-    firefly: 1,   // NoDirective per registry/firefly-cases.yaml V1 case-of-one
+    category: 3, // Heartbeat per registry/categories.yaml
+    firefly: 1, // NoDirective per registry/firefly-cases.yaml V1 case-of-one
     authority: { type: args.authority },
     persona: args.personaSlot,
     momentum: { type: args.momentum },

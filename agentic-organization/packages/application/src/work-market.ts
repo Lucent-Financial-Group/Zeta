@@ -201,7 +201,11 @@ export type WorkMarketClaimResult =
   | {
       readonly outcome: typeof WorkMarketClaimOutcome.Rejected;
       readonly queue: HatWorkQueue;
-      readonly reason: "stale_queue_revision" | "duplicate_claim_id" | "duplicate_runtime_lease_id" | "invalid_lease_window";
+      readonly reason:
+        | "stale_queue_revision"
+        | "duplicate_claim_id"
+        | "duplicate_runtime_lease_id"
+        | "invalid_lease_window";
     };
 
 export type ReapStaleWorkClaimsInput = {
@@ -279,10 +283,7 @@ export type MergeReviewedWorkShardsInput = {
   readonly mergedAt: string;
 };
 
-export type WorkMarketMergeRejectReason =
-  | "no_shards_requested"
-  | "shard_not_completed"
-  | "review_quorum_missing";
+export type WorkMarketMergeRejectReason = "no_shards_requested" | "shard_not_completed" | "review_quorum_missing";
 
 export type MergeReviewedWorkShardsResult =
   | {
@@ -443,7 +444,11 @@ export function claimNextWorkShard(queue: HatWorkQueue, input: ClaimNextWorkShar
   const updated = bumpQueueRevision(replaceShard(queue, claimedShard));
   return {
     outcome: WorkMarketClaimOutcome.Claimed,
-    queue: { ...updated, claims: [...updated.claims, claim], runtimeLeases: [...(updated.runtimeLeases ?? []), runtimeLease] },
+    queue: {
+      ...updated,
+      claims: [...updated.claims, claim],
+      runtimeLeases: [...(updated.runtimeLeases ?? []), runtimeLease],
+    },
     claim,
     runtimeLease,
     shard: claimedShard,
@@ -451,9 +456,9 @@ export function claimNextWorkShard(queue: HatWorkQueue, input: ClaimNextWorkShar
 }
 
 export function planWorkMarketClaims(input: PlanWorkMarketClaimsInput): WorkMarketClaimPlan {
-  const scopedQueues = input.queues.filter((queue) =>
-    queue.organizationId === input.organizationId &&
-    queue.hatId === input.hatId);
+  const scopedQueues = input.queues.filter(
+    (queue) => queue.organizationId === input.organizationId && queue.hatId === input.hatId,
+  );
   const bids = scopedQueues.flatMap((queue) => {
     const claimableShards = readyClaimableShards(queue);
     return claimableShards.flatMap((shard) =>
@@ -462,11 +467,13 @@ export function planWorkMarketClaims(input: PlanWorkMarketClaimsInput): WorkMark
         .map((agent) => marketBid(input, queue, shard, agent)),
     );
   });
-  const sortedBids = bids.sort((left, right) =>
-    right.score - left.score ||
-    left.queueId.localeCompare(right.queueId) ||
-    left.shardId.localeCompare(right.shardId) ||
-    left.agentId.localeCompare(right.agentId));
+  const sortedBids = bids.sort(
+    (left, right) =>
+      right.score - left.score ||
+      left.queueId.localeCompare(right.queueId) ||
+      left.shardId.localeCompare(right.shardId) ||
+      left.agentId.localeCompare(right.agentId),
+  );
   const maxAssignments = Math.max(0, Math.min(input.maxAssignments ?? input.agents.length, input.agents.length));
   const assignedAgents = new Set<string>();
   const assignedShards = new Set<string>();
@@ -594,11 +601,14 @@ export function completeWorkClaim(queue: HatWorkQueue, input: CompleteWorkClaimI
     outcome: WorkMarketCompleteOutcome.Completed,
     queue: {
       ...updated,
-      claims: updated.claims.map((candidate) => candidate.claimId === completedClaim.claimId ? completedClaim : candidate),
+      claims: updated.claims.map((candidate) =>
+        candidate.claimId === completedClaim.claimId ? completedClaim : candidate,
+      ),
       runtimeLeases: (updated.runtimeLeases ?? []).map((lease) =>
         lease.leaseId === runtimeLease.leaseId
           ? { ...lease, state: RuntimeLeaseState.Completed, completedAt: input.completedAt }
-          : lease),
+          : lease,
+      ),
     },
     claim: completedClaim,
     shard: completedShard,
@@ -612,13 +622,21 @@ export function evaluateWorkShardReviewQuorum(
   const shard = queue.shards.find((candidate) => candidate.shardId === input.shardId);
   const reviewedAt = input.approvals[0]?.reviewedAt ?? new Date(0).toISOString();
   if (shard === undefined) {
-    const review = rejectedReview({ ...input, producerAgentId: input.producerAgentId ?? "" }, "no_such_shard", reviewedAt);
+    const review = rejectedReview(
+      { ...input, producerAgentId: input.producerAgentId ?? "" },
+      "no_such_shard",
+      reviewedAt,
+    );
     return { outcome: WorkMarketQuorumOutcome.Rejected, review, reason: "no_such_shard" };
   }
 
   const producerAgentId = completedProducerAgentId(queue, input.shardId);
   if (producerAgentId === undefined) {
-    const review = rejectedReview({ ...input, producerAgentId: input.producerAgentId ?? "" }, "producer_claim_missing", reviewedAt);
+    const review = rejectedReview(
+      { ...input, producerAgentId: input.producerAgentId ?? "" },
+      "producer_claim_missing",
+      reviewedAt,
+    );
     return { outcome: WorkMarketQuorumOutcome.Rejected, review, reason: "producer_claim_missing" };
   }
 
@@ -661,7 +679,10 @@ export function evaluateWorkShardReviewQuorum(
   };
 }
 
-export function mergeReviewedWorkShards(queue: HatWorkQueue, input: MergeReviewedWorkShardsInput): MergeReviewedWorkShardsResult {
+export function mergeReviewedWorkShards(
+  queue: HatWorkQueue,
+  input: MergeReviewedWorkShardsInput,
+): MergeReviewedWorkShardsResult {
   if (input.shardIds.length === 0) {
     return { outcome: WorkMarketMergeOutcome.Rejected, queue, reason: "no_shards_requested" };
   }
@@ -701,9 +722,14 @@ export function mergeReviewedWorkShards(queue: HatWorkQueue, input: MergeReviewe
   };
 }
 
-export function workMarketReadoutForHat(queues: readonly HatWorkQueue[], input: WorkMarketReadoutInput): WorkMarketReadout {
+export function workMarketReadoutForHat(
+  queues: readonly HatWorkQueue[],
+  input: WorkMarketReadoutInput,
+): WorkMarketReadout {
   const visibleHatIds = new Set(input.visibleHatIds ?? [input.hatId]);
-  const scoped = queues.filter((queue) => queue.organizationId === input.organizationId && visibleHatIds.has(queue.hatId));
+  const scoped = queues.filter(
+    (queue) => queue.organizationId === input.organizationId && visibleHatIds.has(queue.hatId),
+  );
   const readouts = scoped.map((queue): WorkMarketQueueReadout => {
     const activeClaims = queue.claims.filter((claim) => claim.state === WorkClaimState.Active);
     return {
@@ -741,20 +767,23 @@ export function workMarketReadoutForHat(queues: readonly HatWorkQueue[], input: 
 
 function readyClaimableShards(queue: HatWorkQueue): readonly WorkShard[] {
   const activeClaimedShardIds = new Set(
-    queue.claims
-      .filter((claim) => claim.state === WorkClaimState.Active)
-      .map((claim) => claim.shardId),
+    queue.claims.filter((claim) => claim.state === WorkClaimState.Active).map((claim) => claim.shardId),
   );
   const stateByShardId = new Map(queue.shards.map((shard) => [shard.shardId, shard.state]));
   return queue.shards
     .filter((shard) => shard.state === WorkShardState.Ready)
     .filter((shard) => !activeClaimedShardIds.has(shard.shardId))
-    .filter((shard) => shard.dependencyShardIds.every((dependency) => {
-      const state = stateByShardId.get(dependency);
-      return state === WorkShardState.Completed || state === WorkShardState.Merged;
-    }))
+    .filter((shard) =>
+      shard.dependencyShardIds.every((dependency) => {
+        const state = stateByShardId.get(dependency);
+        return state === WorkShardState.Completed || state === WorkShardState.Merged;
+      }),
+    )
     .slice()
-    .sort((left: WorkShard, right: WorkShard) => right.priority - left.priority || left.shardId.localeCompare(right.shardId));
+    .sort(
+      (left: WorkShard, right: WorkShard) =>
+        right.priority - left.priority || left.shardId.localeCompare(right.shardId),
+    );
 }
 
 function marketBid(
@@ -770,11 +799,11 @@ function marketBid(
   const recentSameHatClaims = Math.max(0, agent.recentSameHatClaims ?? 0);
   const score = rounded(
     priorityWeight * 20 +
-    slaUrgency * 10 +
-    shard.priority / 10 +
-    reputation * 10 -
-    currentLoad * 4 -
-    recentSameHatClaims * 2,
+      slaUrgency * 10 +
+      shard.priority / 10 +
+      reputation * 10 -
+      currentLoad * 4 -
+      recentSameHatClaims * 2,
   );
   const reasonCodes = [
     ...(priorityWeight > 1 ? ["priority_class"] : []),
@@ -836,16 +865,15 @@ function slaUrgencyScore(deadlineAt: string | undefined, now: string): number {
   return 0;
 }
 
-function isFairnessRotation(
-  agents: readonly WorkMarketAgentCandidate[],
-  agent: WorkMarketAgentCandidate,
-): boolean {
+function isFairnessRotation(agents: readonly WorkMarketAgentCandidate[], agent: WorkMarketAgentCandidate): boolean {
   const load = Math.max(0, agent.currentLoad ?? 0) + Math.max(0, agent.recentSameHatClaims ?? 0);
   if (load > 0) return false;
-  return agents.some((candidate) =>
-    candidate.agentId !== agent.agentId &&
-    (candidate.reputation ?? 0) > (agent.reputation ?? 0) &&
-    (Math.max(0, candidate.currentLoad ?? 0) + Math.max(0, candidate.recentSameHatClaims ?? 0)) > 0);
+  return agents.some(
+    (candidate) =>
+      candidate.agentId !== agent.agentId &&
+      (candidate.reputation ?? 0) > (agent.reputation ?? 0) &&
+      Math.max(0, candidate.currentLoad ?? 0) + Math.max(0, candidate.recentSameHatClaims ?? 0) > 0,
+  );
 }
 
 function claimIsStale(queue: HatWorkQueue, claim: WorkClaim, now: string): boolean {
@@ -896,7 +924,7 @@ function runtimeLeaseMatchesClaim(
 function replaceShard(queue: HatWorkQueue, shard: WorkShard): HatWorkQueue {
   return {
     ...queue,
-    shards: queue.shards.map((candidate) => candidate.shardId === shard.shardId ? shard : candidate),
+    shards: queue.shards.map((candidate) => (candidate.shardId === shard.shardId ? shard : candidate)),
   };
 }
 
@@ -917,7 +945,8 @@ function rejectedReview(
 }
 
 function completedProducerAgentId(queue: HatWorkQueue, shardId: string): string | undefined {
-  return queue.claims.find((claim) => claim.shardId === shardId && claim.state === WorkClaimState.Completed)?.ownerAgentId;
+  return queue.claims.find((claim) => claim.shardId === shardId && claim.state === WorkClaimState.Completed)
+    ?.ownerAgentId;
 }
 
 function reviewIdentity(review: WorkShardReview): string {

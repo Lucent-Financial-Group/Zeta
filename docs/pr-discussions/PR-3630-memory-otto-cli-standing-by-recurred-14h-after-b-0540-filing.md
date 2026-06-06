@@ -21,7 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Aaron caught the Standing-by failure mode with the **exact same words** ('Tick — stopping what you working on?') 14 hours after the first catch this session. Between the catches I:
 
 - Filed B-0539 umbrella + B-0540/B-0541/B-0542 slices (the proposed escalation mechanism)
-- Shipped the QG-isomorphism research path (B-0543, B-0544, Riven extensions)  
+- Shipped the QG-isomorphism research path (B-0543, B-0544, Riven extensions)
 - Landed ~20 PRs of substantive substrate
 
 **AND STILL fell into the same brief-acknowledgment loop (~50 ticks).**
@@ -29,6 +29,7 @@ Aaron caught the Standing-by failure mode with the **exact same words** ('Tick �
 ## Why this matters
 
 The substrate that was supposed to prevent the recurrence:
+
 - Rule: `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (existed, auto-loaded)
 - Backlog: B-0540 N≥10 escalation proposal (existed, readable)
 
@@ -57,6 +58,7 @@ Both existed in main when the second catch happened. The recurrence IS empirical
 This PR lands memory and research substrate around the standing-by recurrence and the QG-isomorphism proof path, adding backlog rows, research notes, memory files, and Round 45 history.
 
 **Changes:**
+
 - Adds B-0543/B-0544 backlog rows for the QG-isomorphism research path and Step 1 formalization.
 - Adds research and memory documents capturing the QG proof strategy, imaginary-stack extension, and standing-by recurrence.
 - Appends Round 45 narrative history for the QG-isomorphism work.
@@ -68,16 +70,17 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| `memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md` | Adds memory for Step 1 categorical formalization work. |
-| `memory/feedback_otto_qg_isomorphism_proof_path_remember_when_pay_attention_axioms_infinite_poker_to_quantum_gravity_aaron_otto_2026_05_15.md` | Adds memory for the QG proof-path conversation and research program. |
-| `memory/feedback_aaron_caught_standing_by_pattern_recurred_after_b0540_filing_same_words_14h_later_empirical_evidence_rule_only_insufficient_2026_05_16.md` | Adds empirical memory for the recurring standing-by failure mode. |
-| `docs/ROUND-HISTORY.md` | Adds Round 45 narrative summary for the QG-isomorphism foundation. |
-| `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md` | Adds Step 1 research formalization note. |
-| `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` | Adds imaginary-stack / Adinkra / Cayley-Dickson research seed. |
-| `docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md` | Adds backlog row for Step 1 formalization. |
-| `docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md` | Adds backlog row for the broader QG-isomorphism proof path. |
+| File                                                                                                                                                        | Description                                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `memory/feedback_otto_qg_isomorphism_step_1_formalize_remember_when_pay_attention_as_categorical_primitives_2026_05_15.md`                                  | Adds memory for Step 1 categorical formalization work.               |
+| `memory/feedback_otto_qg_isomorphism_proof_path_remember_when_pay_attention_axioms_infinite_poker_to_quantum_gravity_aaron_otto_2026_05_15.md`              | Adds memory for the QG proof-path conversation and research program. |
+| `memory/feedback_aaron_caught_standing_by_pattern_recurred_after_b0540_filing_same_words_14h_later_empirical_evidence_rule_only_insufficient_2026_05_16.md` | Adds empirical memory for the recurring standing-by failure mode.    |
+| `docs/ROUND-HISTORY.md`                                                                                                                                     | Adds Round 45 narrative summary for the QG-isomorphism foundation.   |
+| `docs/research/2026-05-15-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives.md`                                         | Adds Step 1 research formalization note.                             |
+| `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md`                                              | Adds imaginary-stack / Adinkra / Cayley-Dickson research seed.       |
+| `docs/backlog/P2/B-0544-qg-isomorphism-step-1-formalize-remember-when-pay-attention-as-categorical-primitives-2026-05-15.md`                                | Adds backlog row for Step 1 formalization.                           |
+| `docs/backlog/P2/B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md`                                      | Adds backlog row for the broader QG-isomorphism proof path.          |
+
 </details>
 
 ## Review threads

@@ -30,9 +30,9 @@ The SHAs of AceHack's pre-reset 80-ish unique commits are dropped from the live 
 
 This is acceptable because:
 
-- **AceHack is the dev-mirror, by design transient** — *"this is our dev setup anyways"* (Aaron). Force-pushes to AceHack main are part of the protocol.
-- **LFG is what we preserve** — *"LFG history is what we are preserving"* (Aaron). LFG main's commit history is append-only via PR squash-merge; that history IS the canonical record.
-- **Going forward both forks share SHAs** — *"it will all be the same anyways going forward"* (Aaron). After 0/0/0 starting point, every paired-sync round produces identical SHAs on both forks. The pre-reset asymmetry is a one-time topology collapse, not an ongoing pattern.
+- **AceHack is the dev-mirror, by design transient** — _"this is our dev setup anyways"_ (Aaron). Force-pushes to AceHack main are part of the protocol.
+- **LFG is what we preserve** — _"LFG history is what we are preserving"_ (Aaron). LFG main's commit history is append-only via PR squash-merge; that history IS the canonical record.
+- **Going forward both forks share SHAs** — _"it will all be the same anyways going forward"_ (Aaron). After 0/0/0 starting point, every paired-sync round produces identical SHAs on both forks. The pre-reset asymmetry is a one-time topology collapse, not an ongoing pattern.
 
 ### Layer 3: High-signal artifact data (PR review threads, drain logs, decisions)
 
@@ -61,7 +61,7 @@ LFG has dedicated **fork-storage locations** that preserve fork-specific high-si
 
 ### Multi-tenant by design — collective training/learning purpose
 
-Aaron's load-bearing framing: *"all forks that want to send back ... whatever fork specific stuff ... in a way where all fork specific can keep it's data on LFG too so everyone can train from it and learn form it."*
+Aaron's load-bearing framing: _"all forks that want to send back ... whatever fork specific stuff ... in a way where all fork specific can keep it's data on LFG too so everyone can train from it and learn form it."_
 
 The fork-storage architecture is NOT just for AceHack's review threads — it's **multi-tenant**:
 
@@ -72,12 +72,13 @@ The fork-storage architecture is NOT just for AceHack's review threads — it's 
 
 ### Data types beyond review threads
 
-Aaron's list is open-ended (*"whatever fork specific stuff"*) but explicitly names two categories:
+Aaron's list is open-ended (_"whatever fork specific stuff"_) but explicitly names two categories:
 
 - **PR review threads** — captured via `docs/pr-preservation/` drain logs (Otto-250).
 - **Cost data** — captured via `docs/budget-history/snapshots.jsonl` and the budget-cadence weekly workflow (task #297).
 
 Other categories that fit the pattern:
+
 - Tick-history for autonomous-loop work (`docs/hygiene-history/`)
 - Decision records (`docs/DECISIONS/`)
 - Research artifacts (`docs/research/`)
@@ -92,6 +93,7 @@ When AceHack-side conversation surfaces (review threads from AceHack PRs, drain 
 ## Net answer to "what's lost?"
 
 Substrate-value: **zero**.
+
 - Content: preserved (via paired-sync forward-port)
 - High-signal conversation data: preserved (via fork-storage paths on LFG)
 - Decisions and lineage: preserved (via memory/, docs/DECISIONS/, docs/ROUND-HISTORY.md)
@@ -118,5 +120,5 @@ If all three are handled, the substrate-value loss across the hard-reset is zero
 ## What this does NOT mean
 
 - Does NOT mean we never archive AceHack-side data. We DO — into LFG's fork-storage paths.
-- Does NOT mean AceHack is disposable or worthless. AceHack is the working surface where in-flight work happens; it's just not the *preservation* surface.
+- Does NOT mean AceHack is disposable or worthless. AceHack is the working surface where in-flight work happens; it's just not the _preservation_ surface.
 - Does NOT mean the 80-ish pre-reset SHAs are categorically worthless. Their CONTENT is preserved; their identity-as-SHAs is not. If a specific SHA needs to survive (rare), tag it before hard-reset (the exception-documentation move from the cognitive-load memory).

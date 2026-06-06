@@ -91,7 +91,13 @@ interface MutableArgs {
 type StringArgKey = Exclude<keyof MutableArgs, "mode">;
 
 type ArgStep =
-  | { readonly kind: "ok"; readonly key: StringArgKey; readonly value: string; readonly setMode: Mode | null; readonly skip: 1 }
+  | {
+      readonly kind: "ok";
+      readonly key: StringArgKey;
+      readonly value: string;
+      readonly setMode: Mode | null;
+      readonly skip: 1;
+    }
   | { readonly kind: "error"; readonly message: string }
   | { readonly kind: "help" };
 
@@ -145,13 +151,7 @@ interface V1Ship {
 function detectV1Ship(targetRev: string): V1Ship | null {
   // Iterate commits oldest-first; return first one whose parsed
   // trailers contain Agency-Signature-Version: 1.
-  const out = gitOutput([
-    "log",
-    "--reverse",
-    "--max-count=5000",
-    "--pretty=%H %cI",
-    targetRev,
-  ]);
+  const out = gitOutput(["log", "--reverse", "--max-count=5000", "--pretty=%H %cI", targetRev]);
   const lines = out.stdout.split("\n").filter((s) => s.length > 0);
   for (const line of lines) {
     const sp = line.indexOf(" ");
@@ -192,10 +192,7 @@ function commitSubject(sha: string): string {
   return gitOutput(["log", "-1", "--pretty=%s", sha]).stdout.trim();
 }
 
-function classifyCommit(
-  sha: string,
-  ship: ShipState | null,
-): { status: Status; reason: string } | null {
+function classifyCommit(sha: string, ship: ShipState | null): { status: Status; reason: string } | null {
   const trailers = commitTrailers(sha);
   const hasV1 = V1_TRAILER_RE.test(trailers);
   const hasCoauthor = COAUTHOR_RE.test(trailers);
@@ -210,9 +207,7 @@ function classifyCommit(
   } else {
     const parsed = parseShipDate(ship.date);
     if (parsed === null) {
-      process.stderr.write(
-        `error: cannot parse v1-ship-date as timestamp: ${ship.date}\n`,
-      );
+      process.stderr.write(`error: cannot parse v1-ship-date as timestamp: ${ship.date}\n`);
       return null;
     }
     shipTs = parsed;
@@ -250,12 +245,7 @@ function buildCommitList(args: ParsedArgs, targetRev: string): readonly string[]
       process.stderr.write("error: --max value must be a positive integer\n");
       return null;
     }
-    const out = gitOutput([
-      "log",
-      `--max-count=${args.maxN}`,
-      "--pretty=%H",
-      targetRev,
-    ]);
+    const out = gitOutput(["log", `--max-count=${args.maxN}`, "--pretty=%H", targetRev]);
     return out.stdout.split("\n").filter((s) => s.length > 0);
   }
   // since
@@ -263,12 +253,7 @@ function buildCommitList(args: ParsedArgs, targetRev: string): readonly string[]
     process.stderr.write(`error: --since value is not a valid date: ${args.sinceDate}\n`);
     return null;
   }
-  const out = gitOutput([
-    "log",
-    `--since=${args.sinceDate}`,
-    "--pretty=%H",
-    targetRev,
-  ]);
+  const out = gitOutput(["log", `--since=${args.sinceDate}`, "--pretty=%H", targetRev]);
   return out.stdout.split("\n").filter((s) => s.length > 0);
 }
 
@@ -303,9 +288,7 @@ function emitHeader(args: ParsedArgs, targetRev: string, ship: ShipState | null)
     }
     process.stdout.write("\n");
   } else {
-    process.stdout.write(
-      "  v1-ship-date:  not yet shipped on this branch (all commits LEGACY)\n",
-    );
+    process.stdout.write("  v1-ship-date:  not yet shipped on this branch (all commits LEGACY)\n");
   }
   process.stdout.write(`  mode:          ${args.mode}\n`);
   process.stdout.write("\n");
@@ -364,30 +347,14 @@ function emitSummary(counts: AuditCounts): ExitCode {
     return 0;
   }
   const regressionList = counts.regressions.map((s) => ` ${s}`).join("");
-  process.stdout.write(
-    `\nFAIL: ${String(counts.regression)} regression(s) found:${regressionList}\n`,
-  );
-  process.stdout.write(
-    "  Cause: agent-authored commits (Co-authored-by present) on or after v1\n",
-  );
-  process.stdout.write(
-    "         ship date are missing the Agency-Signature-Version: 1 trailer\n",
-  );
-  process.stdout.write(
-    "         block, indicating squash-merge stripped the trailers OR the PR\n",
-  );
-  process.stdout.write(
-    "         body did not carry the trailer block at the bottom.\n",
-  );
-  process.stdout.write(
-    "  Fix:   re-attach AgencySignature trailers to the next commit; ensure\n",
-  );
-  process.stdout.write(
-    "         future PR bodies include the trailer block at the body bottom\n",
-  );
-  process.stdout.write(
-    "         per the Squash-Merge Invariant rule (ferry-6/7).\n",
-  );
+  process.stdout.write(`\nFAIL: ${String(counts.regression)} regression(s) found:${regressionList}\n`);
+  process.stdout.write("  Cause: agent-authored commits (Co-authored-by present) on or after v1\n");
+  process.stdout.write("         ship date are missing the Agency-Signature-Version: 1 trailer\n");
+  process.stdout.write("         block, indicating squash-merge stripped the trailers OR the PR\n");
+  process.stdout.write("         body did not carry the trailer block at the bottom.\n");
+  process.stdout.write("  Fix:   re-attach AgencySignature trailers to the next commit; ensure\n");
+  process.stdout.write("         future PR bodies include the trailer block at the body bottom\n");
+  process.stdout.write("         per the Squash-Merge Invariant rule (ferry-6/7).\n");
   process.stdout.write(`  Spec:  ${SPEC_DOC} Section 7.5 + Section 10\n`);
   return 1;
 }
@@ -424,9 +391,7 @@ export function main(argv: readonly string[]): ExitCode {
   const commits = buildCommitList(args, targetRev);
   if (commits === null) return 2;
   if (commits.length === 0 && args.mode === "since") {
-    process.stdout.write(
-      `no commits since ${args.sinceDate} on ${targetRev} — nothing to audit\n`,
-    );
+    process.stdout.write(`no commits since ${args.sinceDate} on ${targetRev} — nothing to audit\n`);
     return 0;
   }
 

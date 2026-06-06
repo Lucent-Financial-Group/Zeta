@@ -22,24 +22,22 @@ Lior antigravity check. Detected metadata churn in PRs #3284, #3285. Logged shad
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T22:47:07Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `43dcd2cffd`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -52,6 +50,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds documentation substrate around a “shadow” metadata-churn incident, preserves several recent PR discussions into the repo archive, records an off-duty checkpoint tick, and decomposes backlog item B-0202 into a new per-row task.
 
 **Changes:**
+
 - Adds a shadow lesson log documenting detected PR metadata churn and the resulting halt instruction.
 - Archives PR discussions for PRs #3279–#3283 into `docs/pr-discussions/`.
 - Adds an off-duty checkpoint tick shard and decomposes B-0202 into a new backlog row (but currently with an ID conflict and BACKLOG index drift).
@@ -63,37 +62,39 @@ Copilot reviewed 10 out of 10 changed files in this pull request and generated 4
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-14-shadow-lesson-log-lior-metadata-churn-off-duty.md | New research log entry documenting metadata churn during an antigravity check. |
-| docs/pr-discussions/PR-3283-shard-tick-2211z-off-duty-continuation.md | PR-discussion archive for PR #3283. |
-| docs/pr-discussions/PR-3282-shard-tick-2209z-off-duty-minimal-shard.md | PR-discussion archive for PR #3282. |
-| docs/pr-discussions/PR-3281-shard-tick-2204z-pr-3276-double-backtick-fix-aaron-off-duty.md | PR-discussion archive for PR #3281. |
-| docs/pr-discussions/PR-3280-docs-research-shadow-session-close-off-duty-signaled-by-aaro.md | PR-discussion archive for PR #3280. |
-| docs/pr-discussions/PR-3279-docs-archive-preserve-recently-merged-prs-2200z.md | PR-discussion archive for PR #3279. |
-| docs/hygiene-history/ticks/2026/05/14/2236Z.md | New tick shard documenting an off-duty checkpoint and cadence observations. |
-| docs/backlog/P3/B-0352-tinygrad-uop-rewrite-walk-retract-mapping.md | New decomposed backlog row (currently reuses an existing ID and has trailing whitespace). |
+| File                                                                                                 | Description                                                                                        |
+| ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-14-shadow-lesson-log-lior-metadata-churn-off-duty.md                           | New research log entry documenting metadata churn during an antigravity check.                     |
+| docs/pr-discussions/PR-3283-shard-tick-2211z-off-duty-continuation.md                                | PR-discussion archive for PR #3283.                                                                |
+| docs/pr-discussions/PR-3282-shard-tick-2209z-off-duty-minimal-shard.md                               | PR-discussion archive for PR #3282.                                                                |
+| docs/pr-discussions/PR-3281-shard-tick-2204z-pr-3276-double-backtick-fix-aaron-off-duty.md           | PR-discussion archive for PR #3281.                                                                |
+| docs/pr-discussions/PR-3280-docs-research-shadow-session-close-off-duty-signaled-by-aaro.md          | PR-discussion archive for PR #3280.                                                                |
+| docs/pr-discussions/PR-3279-docs-archive-preserve-recently-merged-prs-2200z.md                       | PR-discussion archive for PR #3279.                                                                |
+| docs/hygiene-history/ticks/2026/05/14/2236Z.md                                                       | New tick shard documenting an off-duty checkpoint and cadence observations.                        |
+| docs/backlog/P3/B-0352-tinygrad-uop-rewrite-walk-retract-mapping.md                                  | New decomposed backlog row (currently reuses an existing ID and has trailing whitespace).          |
 | docs/backlog/P3/B-0202-tinygrad-uop-ir-kernel-layer-model-zeta-emulator-dispatch-aaron-2026-05-05.md | Updates acceptance criteria to point to the decomposed row (currently points at a conflicting ID). |
-| docs/BACKLOG.md | Adds a new backlog entry, but outside the auto-generated region with a broken relative link. |
-</details>
+| docs/BACKLOG.md                                                                                      | Adds a new backlog entry, but outside the auto-generated region with a broken relative link.       |
 
+</details>
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/B-0352-tinygrad-uop-rewrite-walk-retract-mapping.md:26**
-* Lines in the acceptance criteria section have trailing spaces (e.g. the bold sentence and subsequent paragraphs). `docs/backlog/**` is markdownlinted, so this can trigger MD009 and break CI; please remove the trailing whitespace.
-```
-**Read the source + walk one rewrite manually + map to Zeta retract semantics.** 
 
-Verifier: a memo (committed under `docs/research/`) walking through one ALU rewrite from `tinygrad/uop/ops.py` plus `tinygrad/codegen/simplify.py` step-by-step, mapping the rewrite to the closest equivalent in Zeta's existing retract semantics. 
+- Lines in the acceptance criteria section have trailing spaces (e.g. the bold sentence and subsequent paragraphs). `docs/backlog/**` is markdownlinted, so this can trigger MD009 and break CI; please remove the trailing whitespace.
 
-Pass: the walk is concrete + cites specific line numbers in the tinygrad source. 
 ```
+**Read the source + walk one rewrite manually + map to Zeta retract semantics.**
+
+Verifier: a memo (committed under `docs/research/`) walking through one ALU rewrite from `tinygrad/uop/ops.py` plus `tinygrad/codegen/simplify.py` step-by-step, mapping the rewrite to the closest equivalent in Zeta's existing retract semantics.
+
+Pass: the walk is concrete + cites specific line numbers in the tinygrad source.
+```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T22:57:03Z)
-
 
 ### 💡 Codex Review
 
@@ -101,17 +102,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `312bf5a593`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -125,24 +125,22 @@ Copilot reviewed 9 out of 9 changed files in this pull request and generated 4 c
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T23:07:37Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `805252983c`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -154,7 +152,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-14T22:47:07Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix broken backlog link target for B-0352**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix broken backlog link target for B-0352**
 
 The new `B-0352` entry points to `docs/backlog/...` from within `docs/BACKLOG.md`, but links in this file are relative to `docs/` and should use `backlog/...`; as written, the rendered URL resolves to `docs/docs/backlog/...` and does not open the new row file. This makes the decomposed task effectively unreachable from the index until someone manually fixes/regenerates the file.
 
@@ -190,7 +188,7 @@ The shard count in this table row doesn’t match the enumerated list: it says �
 
 **@chatgpt-codex-connector** (2026-05-14T22:57:03Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Assign a unique backlog ID to decomposed B-0202 child**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Assign a unique backlog ID to decomposed B-0202 child**
 
 Change this row to a new unused ID: `B-0352` is already taken by `docs/backlog/P1/B-0352-extract-meta-governance-bullets-to-rules.md`, and backlog IDs are defined as factory-wide unique (`tools/backlog/README.md` field spec). Keeping both rows on the same ID causes ID-based tooling to misresolve dependencies (for example, `tools/backlog/autonomous-pickup.ts` builds a `Map` keyed only by `id`, so one `B-0352` entry overwrites the other and dependency checks can target the wrong row).
 
@@ -200,7 +198,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T22:57:04Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Regenerate BACKLOG.md instead of appending a manual row**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Regenerate BACKLOG.md instead of appending a manual row**
 
 Replace this hand-appended line with generated output from the backlog index tool: `docs/BACKLOG.md` is an auto-generated file, and this row sits after `<!-- END AUTO-GENERATED -->` with a non-canonical format/path, so it will drift from generator output and fail the parity check workflow (`.github/workflows/backlog-index-integrity.yml` runs `bun tools/backlog/generate-index.ts --check`).
 
@@ -234,7 +232,7 @@ This archive summary keys the off-duty provenance to commit `0a9a2e2`. If that c
 
 **@chatgpt-codex-connector** (2026-05-14T23:07:37Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove blocking dependency from decomposed child row**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove blocking dependency from decomposed child row**
 
 `B-0521` is marked `depends_on: [B-0202]`, but dependency gating treats any open dependency as blocked (`tools/backlog/autonomous-pickup.ts:359-367`), so this child cannot be picked while `B-0202` is still open. In this same commit, criterion (a) in `B-0202` is explicitly decomposed into `B-0521`, so keeping this dependency creates a circular ordering that can stall the decomposed work indefinitely.
 

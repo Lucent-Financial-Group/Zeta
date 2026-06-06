@@ -20,11 +20,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Files [B-0821](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0821-zeta-as-dependency-graph-on-top-of-helm-2026-05-26/docs/backlog/P1/B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md) per Aaron 2026-05-26 architectural observation:
 
-> *"really we could become the dependency graph on top of helm i'm supprised no one has claimed that space. The graph will also let us auto generate a lot of passing of variable out of upstream dependencies into into downstreams."*
+> _"really we could become the dependency graph on top of helm i'm supprised no one has claimed that space. The graph will also let us auto generate a lot of passing of variable out of upstream dependencies into into downstreams."_
 
 **Empty-architectural-slot claim** above Helm + below sync engines (ArgoCD / Flux). Adjacent tools (Helmfile / Terraform Helm / Pulumi K8s / Helm \`Chart.yaml dependencies:\` / ArgoCD sync-waves / Flux \`dependsOn\`) touch parts of the slot but don't fill it GitOps-natively.
 
 **Composes with already-in-flight substrates**:
+
 - B-0816 Helm-as-convergence-point (positions Zeta at Helm's level)
 - B-0820 Derivability asymmetry (named-dependency graph IS source-of-truth)
 - B-0819 Ontology-based-not-tool-based (graph IS an ontology primitive)
@@ -35,7 +36,7 @@ Filed **P1** — strategic-positioning slot + auto-variable-passing eliminates r
 
 ## Caveat (empirical verification pending)
 
-The "empty-slot" claim is operator-intuition; Aaron 2026-05-26 reasonably asked: *"can you do a quick search that seems like such an easy slot to fill i'm supprised it's not, maybe just vendors do this for their flavor like redhats version of k8s and it's blessed packages"*. Follow-up search-pass on this row's substrate refinement may surface vendor-locked-only equivalents (OpenShift / Rancher / Tanzu / etc.) that would refine the positioning claim. If a portable OSS player IS in the slot, the row's strategic-positioning section will be sharpened accordingly.
+The "empty-slot" claim is operator-intuition; Aaron 2026-05-26 reasonably asked: _"can you do a quick search that seems like such an easy slot to fill i'm supprised it's not, maybe just vendors do this for their flavor like redhats version of k8s and it's blessed packages"_. Follow-up search-pass on this row's substrate refinement may surface vendor-locked-only equivalents (OpenShift / Rancher / Tanzu / etc.) that would refine the positioning claim. If a portable OSS player IS in the slot, the row's strategic-positioning section will be sharpened accordingly.
 
 ## Test plan
 
@@ -55,6 +56,7 @@ The "empty-slot" claim is operator-intuition; Aaron 2026-05-26 reasonably asked:
 Adds a new P1 backlog row (B-0821) capturing a strategic positioning thesis: Zeta as an engine-agnostic dependency-graph and auto-variable-passing layer on top of Helm and above sync engines (ArgoCD/Flux), and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Introduces `docs/backlog/P1/B-0821-...md` with frontmatter, problem statement, sub-targets, and acceptance criteria for the dependency-graph + variable-flow substrate.
 - Updates `docs/BACKLOG.md` to include B-0821 in the P1 list.
 
@@ -62,10 +64,10 @@ Adds a new P1 backlog row (B-0821) capturing a strategic positioning thesis: Zet
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                         | Description                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md | New backlog row defining the “dependency graph over Helm” positioning + proposed sub-targets/acceptance. |
-| docs/BACKLOG.md | Adds B-0821 to the P1 index list. |
+| docs/BACKLOG.md                                                                                                                              | Adds B-0821 to the P1 index list.                                                                        |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T17:23:19Z)
 

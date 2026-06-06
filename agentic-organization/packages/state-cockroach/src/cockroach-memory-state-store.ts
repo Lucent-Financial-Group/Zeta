@@ -106,9 +106,7 @@ function rowToEnvelope(row: MemoryStateRow): MemoryEnvelope {
   };
 }
 
-export function createCockroachMemoryStateStore(
-  input: CreateCockroachMemoryStateStoreInput,
-): MemoryStateStore {
+export function createCockroachMemoryStateStore(input: CreateCockroachMemoryStateStoreInput): MemoryStateStore {
   return {
     async upsert(record: MemoryRecord, state: MemoryState): Promise<void> {
       await input.executor.execute({
@@ -132,10 +130,23 @@ export function createCockroachMemoryStateStore(
             cross_scope = excluded.cross_scope,
             archived_at = excluded.archived_at`,
         parameters: [
-          record.memoryId, record.organizationId, record.tier, record.scope, record.key, state.phase,
-          state.confidence, state.weight, state.freshnessAt, state.reinforcementCount, record.protected,
-          record.writtenBy, record.writtenAt, record.contextHint ?? null,
-          JSON.stringify(state.outcome), JSON.stringify(state.utility), JSON.stringify(state.crossScope),
+          record.memoryId,
+          record.organizationId,
+          record.tier,
+          record.scope,
+          record.key,
+          state.phase,
+          state.confidence,
+          state.weight,
+          state.freshnessAt,
+          state.reinforcementCount,
+          record.protected,
+          record.writtenBy,
+          record.writtenAt,
+          record.contextHint ?? null,
+          JSON.stringify(state.outcome),
+          JSON.stringify(state.utility),
+          JSON.stringify(state.crossScope),
           state.archivedAt ?? null,
         ],
       });
@@ -151,10 +162,7 @@ export function createCockroachMemoryStateStore(
       return rows.length > 0 ? rowToEnvelope(rows[0]!) : null;
     },
 
-    async listByScopes(
-      organizationId: string,
-      scopes: readonly string[],
-    ): Promise<readonly MemoryEnvelope[]> {
+    async listByScopes(organizationId: string, scopes: readonly string[]): Promise<readonly MemoryEnvelope[]> {
       if (scopes.length === 0) return [];
       const placeholders = scopes.map((_, i) => `$${i + 2}`).join(", ");
       const result = await input.executor.execute({
@@ -170,10 +178,7 @@ export function createCockroachMemoryStateStore(
       return (result.rows as MemoryStateRow[]).map(rowToEnvelope);
     },
 
-    async listByMemoryIds(
-      organizationId: string,
-      memoryIds: readonly string[],
-    ): Promise<readonly MemoryEnvelope[]> {
+    async listByMemoryIds(organizationId: string, memoryIds: readonly string[]): Promise<readonly MemoryEnvelope[]> {
       const uniqueMemoryIds = [...new Set(memoryIds)];
       if (uniqueMemoryIds.length === 0) return [];
       const placeholders = uniqueMemoryIds.map((_, i) => `$${i + 2}`).join(", ");

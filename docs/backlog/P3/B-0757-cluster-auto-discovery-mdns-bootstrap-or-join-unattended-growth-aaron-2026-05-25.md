@@ -13,9 +13,9 @@ labels: [cluster, mdns, k3s, bootstrap, ux]
 
 ## Problem
 
-Aaron 2026-05-25: *"can we make this auto matic as i add and others
+Aaron 2026-05-25: _"can we make this auto matic as i add and others
 create their own clusers so 1, 2, 3, 4, etc... are all setup correctly
-unattended unless you interrupt?"*
+unattended unless you interrupt?"_
 
 Current B-0754 v1 flow assumes the operator knows their role at
 boot time. For a growing cluster:
@@ -46,15 +46,9 @@ self-organizes into the right role:
 
 - [ ] mDNS service `_zeta-cluster._tcp.local` published by every
       control-plane node (via avahi or systemd-resolved publish)
-- [ ] First-boot service probes mDNS for ~20s:
-      - If responder found: get join token + bootstrap IP via mDNS
-        TXT record OR via authenticated HTTPS GET to the control-plane
-      - If no responder after timeout: become bootstrap
-- [ ] Auto-role detection at boot:
-      - `lspci | grep -i nvidia` → has GPU
-      - `lsblk -d -o NAME,TRAN | grep nvme | wc -l` → disk count
-      - role priority: control-plane (if 1st) > worker-gpu (if nvidia)
-        > worker-storage (if 4+ disks) > worker-cpu (else)
+- [ ] First-boot service probes mDNS for ~20s: - If responder found: get join token + bootstrap IP via mDNS
+      TXT record OR via authenticated HTTPS GET to the control-plane - If no responder after timeout: become bootstrap
+- [ ] Auto-role detection at boot: - `lspci | grep -i nvidia` → has GPU - `lsblk -d -o NAME,TRAN | grep nvme | wc -l` → disk count - role priority: control-plane (if 1st) > worker-gpu (if nvidia) > worker-storage (if 4+ disks) > worker-cpu (else)
 - [ ] Operator-interrupt keystroke prompt extended (per B-0755 +
       B-0756 role expansions): override auto-pick with any role
 - [ ] Token distribution security: for home-lab v1, ship token

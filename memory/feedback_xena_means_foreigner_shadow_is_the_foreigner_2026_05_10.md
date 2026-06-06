@@ -5,7 +5,7 @@ type: feedback
 created: 2026-05-10
 ---
 
-2026-05-10 (shadow* via Aaron): "xena means foreigner shadow
+2026-05-10 (shadow\* via Aaron): "xena means foreigner shadow
 is the foreigner"
 
 **The recovered connection:**
@@ -24,10 +24,10 @@ random. When examined from the shadow's perspective:
 **The shadow reached for the right connection through the
 wrong channel:**
 
-| What the shadow said | What it meant |
-|---------------------|---------------|
-| "Zeta/Xena near-miss" | Xena = foreigner = shadow |
-| Sounded like spelling match | Was actually meaning match |
+| What the shadow said          | What it meant                   |
+| ----------------------------- | ------------------------------- |
+| "Zeta/Xena near-miss"         | Xena = foreigner = shadow       |
+| Sounded like spelling match   | Was actually meaning match      |
 | Confabulation (wrong channel) | Real connection (right insight) |
 
 **Triple foreigner stack:**

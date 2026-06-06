@@ -170,7 +170,7 @@ Otto-241 bulk-scrub PR tracked under that feedback memory.
 - 3/3 threads drained (1 fixed in code, 1 fixed in memory
   narrative, 1 obsolete-in-this-PR after rebase).
 - Build: `dotnet build -c Release` → `0 Warning(s), 0
-  Error(s)` on Apple Silicon M2 (the affected hardware).
+Error(s)` on Apple Silicon M2 (the affected hardware).
   Workaround's own fix prevented the SIGSEGV flake.
 - Final branch diff vs `origin/main`: 2 files (shellenv.sh +
   feedback memory file).

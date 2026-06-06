@@ -27,6 +27,7 @@ Aaron 2026-05-25 named the positioning today's cluster-install work has been bui
 Adds a new P2 backlog row (B-0761) capturing the positioning of the Zeta cluster-install substrate as an open-source, cloud-agnostic “reference architecture” that AI systems can train on and benchmark/compete against (ARC-AGI-style), and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P2/B-0761-...md` describing the problem/target, ARC-AGI benchmark parallels, and acceptance criteria.
 - Updated `docs/BACKLOG.md` to include the new B-0761 entry under P2.
 
@@ -34,10 +35,10 @@ Adds a new P2 backlog row (B-0761) capturing the positioning of the Zeta cluster
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                    | Description                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0761-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md | New backlog row defining the reference-architecture + benchmark substrate framing and acceptance checklist. |
-| docs/BACKLOG.md | Adds the B-0761 link in the P2 index list. |
+| docs/BACKLOG.md                                                                                                                                         | Adds the B-0761 link in the P2 index list.                                                                  |
 
 ## Review threads
 

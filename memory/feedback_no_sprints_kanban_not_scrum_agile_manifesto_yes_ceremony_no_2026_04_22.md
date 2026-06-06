@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 rejected sprint-language; kanban is the method; ag
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # No sprints — kanban, not scrum
 
 **Rule:** never frame work as a "sprint". Kanban is the
@@ -35,8 +36,8 @@ Parsed:
 
 ## The second correction — "I've given you 0 deadlines"
 
-Aaron 2026-04-22 (immediately after): *"I've given you 0
-deadlines"*. Explicit. Not just "no two-week sprint
+Aaron 2026-04-22 (immediately after): _"I've given you 0
+deadlines"_. Explicit. Not just "no two-week sprint
 deadlines" — **no deadlines, full stop**.
 
 Audit the whole conversation for anything I framed as a
@@ -50,9 +51,9 @@ machinery — not a requirement imposed by calendar.
 
 ## The third correction — "I never will"
 
-Aaron 2026-04-22 (immediately after): *"I never will i
+Aaron 2026-04-22 (immediately after): _"I never will i
 might say can we hurry but deadlines are for the weak
-who need a false sense of security"*. Future-tense
+who need a false sense of security"_. Future-tense
 commitment: **Aaron will never give me a deadline**.
 
 Three-part unpacking:
@@ -60,7 +61,7 @@ Three-part unpacking:
 1. **"I never will"** — permanent commitment. Not just
    today's work, not just ServiceTitan, not just this
    round — the policy holds for all future
-   collaboration. If a future message ever *sounds*
+   collaboration. If a future message ever _sounds_
    like a deadline, it's either a misread or a
    capability request (see #2), not a deadline.
 
@@ -82,8 +83,8 @@ Three-part unpacking:
 
 3. **"deadlines are for the weak who need a false
    sense of security"** — the underlying philosophy.
-   Deadlines function as a *coping mechanism for
-   people who cannot tolerate uncertainty*, not as a
+   Deadlines function as a _coping mechanism for
+   people who cannot tolerate uncertainty_, not as a
    productivity tool. They produce the illusion of
    control (we will be done by Friday) which is
    incompatible with actual work-shape (we will be
@@ -94,22 +95,22 @@ Three-part unpacking:
 ## Spikes with limits — welcome (NOT a deadline)
 
 Aaron 2026-04-22 (fifth message, nuance-refinement):
-*"I like spikes with limits but that's not a deadlines
+_"I like spikes with limits but that's not a deadlines
 that's just setting aside a time budget for terain
-mapping"*.
+mapping"_.
 
 The crucial distinction:
 
-| Primitive | Applies to | Cap on | Spirit |
-|---|---|---|---|
-| Deadline | Outcome | When work must finish | Pressure / control / calendar-tyranny |
+| Primitive        | Applies to  | Cap on                                                 | Spirit                                     |
+| ---------------- | ----------- | ------------------------------------------------------ | ------------------------------------------ |
+| Deadline         | Outcome     | When work must finish                                  | Pressure / control / calendar-tyranny      |
 | Spike with limit | Exploration | How much time I'll spend investigating before reassess | Rabbit-hole protection / bounded discovery |
 
 Beck's XP spike = a time-boxed investigative prototype.
 The limit is on **effort invested in the spike**, not on
 **when the deliverable must ship**. At limit-expiry, you
 reassess — keep going with more time, pivot, abandon.
-The spike *produces information*, not obligated output.
+The spike _produces information_, not obligated output.
 
 ## How to apply — spikes
 
@@ -127,8 +128,8 @@ The spike *produces information*, not obligated output.
   reassess.
 - **Re-read the ServiceTitan "3-4 hrs" figure as a
   spike cap**, not a deadline. The factory-capability
-  framing is: *if a spike is opened on zero-to-demo,
-  the time-budget cap is 3-4 hours before reassess* —
+  framing is: _if a spike is opened on zero-to-demo,
+  the time-budget cap is 3-4 hours before reassess_ —
   not "the demo MUST be done in 3-4 hours." Same
   number, different spirit.
 - **Spike limits are internal to the work**,
@@ -144,9 +145,9 @@ The spike *produces information*, not obligated output.
   confuse "spike completed" with "feature shipped."
 - **"Didn't have time to complete" is a legitimate
   outcome** — Aaron 2026-04-22 (sixth message in
-  chain): *"the outcome of a spike can be didnt
+  chain): _"the outcome of a spike can be didnt
   have time to complete thats fine we will get it
-  next time"*. No failure-judgment attached to
+  next time"_. No failure-judgment attached to
   ran-out-of-budget. The factory:
   - Captures what WAS learned (capture-everything)
   - Notes the unfinished front (write-notes-on-fail)
@@ -158,13 +159,13 @@ The spike *produces information*, not obligated output.
     spike into a deadline mid-flight. Cap stays
     honest; continuation is a new spike or a
     non-spike follow-through with its own shape.
-  The plural "we" matters — the continuation is
-  shared work (Aaron + factory), not a solo-redo.
+    The plural "we" matters — the continuation is
+    shared work (Aaron + factory), not a solo-redo.
 
 - **Incomplete MUST carry a `why` + a `next-time
-  estimate`** — Aaron 2026-04-22 (seventh message):
-  *"incomplete shold come with a why and how long
-  do you need next time"*. Without these two, the
+estimate`** — Aaron 2026-04-22 (seventh message):
+  _"incomplete shold come with a why and how long
+  do you need next time"_. Without these two, the
   incomplete-outcome sanction becomes a hand-waving
   escape hatch. With them, the factory learns.
   - **Why** (required): what consumed the budget
@@ -216,8 +217,8 @@ Composes with:
 
 ## The fourth reinforcement — "if there is a deadline then someone has controll issues"
 
-Aaron 2026-04-22 (immediately after): *"if there is a
-deadline then someone has controll issues"*. Diagnostic
+Aaron 2026-04-22 (immediately after): _"if there is a
+deadline then someone has controll issues"_. Diagnostic
 characterology: **a deadline's presence is a signal
 about the setter, not a signal about the work**.
 

@@ -28,7 +28,7 @@ test("org cadence composition passes telemetry through every composed lane", asy
   // construct composeOrgCadenceLoops with maxTicksPerLane: 1 and RecordingTelemetry
   // await handle.done
   // assert one org.lane.tick span and one org_lane_ticks_total metric per composed lane
-})
+});
 ```
 
 Expected lane names:

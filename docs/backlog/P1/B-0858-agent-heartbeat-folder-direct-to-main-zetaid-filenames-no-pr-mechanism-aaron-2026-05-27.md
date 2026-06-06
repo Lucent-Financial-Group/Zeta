@@ -12,16 +12,26 @@ composes_with:
   - B-0852.3a
   - B-0855
   - B-0857
-tags: [agent-heartbeat, direct-to-main, no-pr, zetaid, 128-bit-id, externalized-counter, holding-failure-mode-mechanization, branch-protection-exception]
+tags:
+  [
+    agent-heartbeat,
+    direct-to-main,
+    no-pr,
+    zetaid,
+    128-bit-id,
+    externalized-counter,
+    holding-failure-mode-mechanization,
+    branch-protection-exception,
+  ]
 ---
 
 ## Operator framing 2026-05-27
 
-> *"the agencyheartbeats you were going to make a spot where they can be
+> _"the agencyheartbeats you were going to make a spot where they can be
 > pushed with no prs a foleder where you can go strait to main and other
 > agents with unique ids that won't overlap, we started talking about 128
 > bit ids and such you could use for unique heartbeats and such. these
-> are called zetaids"*
+> are called zetaids"_
 
 ## Existing substrate this composes with
 
@@ -39,7 +49,7 @@ ZetaID bit layout (128 bits):
 
 Each ZetaID encodes WHO + WHEN + WHAT-AUTHORITY + WHAT-MOMENTUM. Collision-free across agents by construction (persona field + 32-bit randomness + 48-bit timestamp).
 
-**Operator 2026-05-27 follow-up**: *"the ids are for easy lookup based many different bit id indexes built into the bits themselves so we can grep for things later, this does not have to be just heartbeat itd, it can be id for everything"* + *"we have the abiity to defined it per category, category is in the bits so could have a custom one for heartbeat"*. The structured bit fields ARE the lookup indices — grep on persona-bit pattern, authority-bit pattern, momentum-bit pattern, etc. Already-existing substrate: `registry/categories.yaml` defines Category=3=Heartbeat (along with Observation=0, Emission=1, Workflow=2). This row's writer tool (.3 sub-row) sets category bits to 3 when generating heartbeat IDs; other event categories use other slots in the same 16-slot enum.
+**Operator 2026-05-27 follow-up**: _"the ids are for easy lookup based many different bit id indexes built into the bits themselves so we can grep for things later, this does not have to be just heartbeat itd, it can be id for everything"_ + _"we have the abiity to defined it per category, category is in the bits so could have a custom one for heartbeat"_. The structured bit fields ARE the lookup indices — grep on persona-bit pattern, authority-bit pattern, momentum-bit pattern, etc. Already-existing substrate: `registry/categories.yaml` defines Category=3=Heartbeat (along with Observation=0, Emission=1, Workflow=2). This row's writer tool (.3 sub-row) sets category bits to 3 when generating heartbeat IDs; other event categories use other slots in the same 16-slot enum.
 
 ### AgencySignature Convention v1 (already in use)
 
@@ -74,11 +84,10 @@ agent-model: claude-opus-4-7
 timestamp: 2026-05-27T13:00:00Z
 authority: TrustedAgent
 momentum: Normal
-named-dep: "PR #5450 build-iso completion (~20min ETA)"  # or "none-chosen-free-time" or "decomposing-next-substrate"
+named-dep: "PR #5450 build-iso completion (~20min ETA)" # or "none-chosen-free-time" or "decomposing-next-substrate"
 disposition: bounded-wait | decomposing | committed-substrate | chose-free-time
-parent-pr: 5450  # optional; if this heartbeat is in the context of an in-flight PR
+parent-pr: 5450 # optional; if this heartbeat is in the context of an in-flight PR
 ---
-
 (optional one-line note; rarely needed; the structured fields carry the load)
 ```
 

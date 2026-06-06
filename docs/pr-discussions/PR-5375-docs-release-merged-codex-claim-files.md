@@ -17,13 +17,16 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## What changed
+
 - Adds a Codex release claim for merged-claim cleanup.
 - Removes stale Codex claim files for merged PRs #5358 and #5360.
 
 ## Why
+
 Those claim files remained on main after their owning PRs merged, so they no longer represent active work and should not be counted as current Codex ownership.
 
 ## Checks
+
 - git status --short --branch
 - git diff --cached --check before commit
 - scoped file existence/removal check
@@ -38,6 +41,7 @@ Those claim files remained on main after their owning PRs merged, so they no lon
 This PR cleans up merged Codex claim files so `docs/claims/` better reflects active work rather than completed ownership.
 
 **Changes:**
+
 - Deletes Codex claim files associated with merged PRs #5358 and #5360.
 - Adds a new Codex claim describing the cleanup scope and checks.
 
@@ -45,11 +49,11 @@ This PR cleans up merged Codex claim files so `docs/claims/` better reflects act
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| `docs/claims/codex-loop-release-merged-claims-20260527.md` | Adds the claim record for the merged-claim cleanup work. |
-| `docs/claims/codex-loop-bash-retirement-allowlist-integrity-20260526.md` | Removes the stale claim for PR #5358. |
-| `docs/claims/codex-loop-stale-worktree-prettier-20260526.md` | Removes the stale claim for PR #5360. |
+| File                                                                     | Description                                              |
+| ------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `docs/claims/codex-loop-release-merged-claims-20260527.md`               | Adds the claim record for the merged-claim cleanup work. |
+| `docs/claims/codex-loop-bash-retirement-allowlist-integrity-20260526.md` | Removes the stale claim for PR #5358.                    |
+| `docs/claims/codex-loop-stale-worktree-prettier-20260526.md`             | Removes the stale claim for PR #5360.                    |
 
 ## Review threads
 

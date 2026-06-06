@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1298 |
-| Title | feat(substrate-claim-checker): v0.5.0 — existence-drift sub-class (B-0170 v1+) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T03:43:41Z |
-| Merged at | 2026-05-03T04:25:27Z |
-| Merge commit SHA | `977da763f126603c88ff327e75f1aa90f220cd4a` |
-| Branch | `feat/substrate-claim-checker-existence-drift-v0-5-otto-2026-05-03` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1298 |
-| Changed files | 3 |
-| Additions / deletions | +646 / -5 |
+| Field                 | Value                                                                          |
+| --------------------- | ------------------------------------------------------------------------------ |
+| Number                | 1298                                                                           |
+| Title                 | feat(substrate-claim-checker): v0.5.0 — existence-drift sub-class (B-0170 v1+) |
+| Author                | `AceHack` (human)                                                              |
+| State                 | MERGED                                                                         |
+| Created at            | 2026-05-03T03:43:41Z                                                           |
+| Merged at             | 2026-05-03T04:25:27Z                                                           |
+| Merge commit SHA      | `977da763f126603c88ff327e75f1aa90f220cd4a`                                     |
+| Branch                | `feat/substrate-claim-checker-existence-drift-v0-5-otto-2026-05-03`            |
+| Base branch           | `main`                                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1298                       |
+| Changed files         | 3                                                                              |
+| Additions / deletions | +646 / -5                                                                      |
 
 ## Description
 
@@ -28,12 +28,14 @@
 Second sub-class implementation for B-0170 (substrate-claim-checker). Adds `check-existence.ts` covering the existence-drift sub-class — claims that a file or directory exists when it doesn't.
 
 **Multiple findings this session would have been caught automatically**:
+
 - PR #1280 (B-0173 ground-truth recovery) claimed `tools/git/hooks/` exists; reviewer caught it manually
 - PR #1289 + #1290 had similar existence-drift patterns
 
 ## Approach
 
 For each path claim, try 3 candidate roots in priority order:
+
 1. File's own directory (intra-dir cross-references)
 2. Parent directory (bare-filename refs for files in subdirs)
 3. Repository root (repo-relative paths)
@@ -45,6 +47,7 @@ Skipped: globs, URLs, anchors, absolute paths, placeholders, fenced code blocks.
 ## Tests
 
 17 new tests; 33 total in tools/substrate-claim-checker/ (all pass):
+
 - `looksLikePath`: 7 tests
 - `isFutureStateContext`: 5 tests
 - `findPathClaims`: 5 tests
@@ -58,6 +61,7 @@ Skipped: globs, URLs, anchors, absolute paths, placeholders, fenced code blocks.
 ## Known limitations (v0.5)
 
 Documented in README:
+
 - Calibration-delta tables citing path-forms as discussion topics (not exists-claims) may false-positive
 - Section-level future-state markers don't propagate to claims further down
 
@@ -71,15 +75,15 @@ Documented in README:
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 28 |
-| Resolved threads | 28 |
-| Unresolved threads | 0 |
-| Total review comments | 28 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 28    |
+| Resolved threads                          | 28    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 28    |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -92,10 +96,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T03:45:53Z on `tools/substrate-claim-checker/check-existence.ts`:268 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep existence checks inside the repository root**
-  
-  The resolver accepts any joined path that exists without verifying it is still under `repoRoot`, so a claim like ``../../etc/hosts`` (or a root-file claim resolved via the parent directory) can be treated as valid even though it points outside repo substrate. That creates false negatives for existence drift and contradicts the checker’s repo-scoped behavior (absolute/system paths are explicitly out of scope). Add a containment check after resolution (e.g., normalized path must stay within `repoRoot`) before accepting `stat.exists`.
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Keep existence checks inside the repository root**
+
+  The resolver accepts any joined path that exists without verifying it is still under `repoRoot`, so a claim like `../../etc/hosts` (or a root-file claim resolved via the parent directory) can be treated as valid even though it points outside repo substrate. That creates false negatives for existence drift and contradicts the checker’s repo-scoped behavior (absolute/system paths are explicitly out of scope). Add a containment check after resolution (e.g., normalized path must stay within `repoRoot`) before accepting `stat.exists`.
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -107,10 +111,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T03:45:53Z on `tools/substrate-claim-checker/check-existence.ts`:71 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Avoid broad future-state suppression on "deliverable"**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Avoid broad future-state suppression on "deliverable"**
+
   Marking any nearby occurrence of `deliverable` as future-state will suppress real current-state path claims whenever that common word appears in adjacent prose, which can hide true existence drift findings. This marker is much broader than the specific phrase (`row deliverable`) you appear to target; narrowing it avoids systematic false negatives.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -134,7 +138,6 @@ Documented in README:
 
 - **`Copilot` (bot)** at 2026-05-03T03:47:52Z on `tools/substrate-claim-checker/check-existence.ts`:171 (association: NONE)
   The candidate-root comment block is duplicated and internally inconsistent (it lists only fileDir + repoRoot, then immediately documents three roots including parentDir). Please collapse this to a single accurate comment matching the actual `candidateRoots = [fileDir, fileParentDir, repoRoot]` order to reduce future maintenance mistakes.
-  
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -179,7 +182,6 @@ Documented in README:
 
 - **`Copilot` (bot)** at 2026-05-03T03:47:53Z on `tools/substrate-claim-checker/check-existence.ts`:31 (association: NONE)
   `statExists` treats any `statSync` error as non-existence. This will produce false existence-drift findings for permission/path errors like EACCES/EPERM (the path exists but is unreadable). Consider checking `err.code` and only returning `exists:false` for ENOENT/ENOTDIR, and otherwise either treat it as `exists:true` or surface it as an input error so the checker doesn’t misclassify permission issues as drift.
-  
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -190,10 +192,11 @@ Documented in README:
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-05-03T03:55:47Z on `tools/substrate-claim-checker/check-existence.test.ts`:112 (association: NONE)
+
   ## CodeQL / Insecure temporary file
-  
+
   Insecure creation of file in [the os temp dir](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/43)
 
 ### Thread 10 -- resolved [outdated, collapsed]
@@ -205,10 +208,11 @@ Documented in README:
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-05-03T03:55:47Z on `tools/substrate-claim-checker/check-existence.test.ts`:137 (association: NONE)
+
   ## CodeQL / Insecure temporary file
-  
+
   Insecure creation of file in [the os temp dir](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/44)
 
 ### Thread 11 -- resolved [outdated, collapsed]
@@ -220,10 +224,11 @@ Documented in README:
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-05-03T03:55:47Z on `tools/substrate-claim-checker/check-existence.test.ts`:149 (association: NONE)
+
   ## CodeQL / Insecure temporary file
-  
+
   Insecure creation of file in [the os temp dir](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/45)
 
 ### Thread 12 -- resolved [outdated, collapsed]
@@ -235,10 +240,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T03:56:35Z on `tools/substrate-claim-checker/check-existence.ts`:223 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Use platform-safe containment checks for resolved paths**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Use platform-safe containment checks for resolved paths**
+
   The repo-boundary checks compare paths with `repoRoot + "/"`, which only matches POSIX separators; on Windows, `join()` produces `\` paths, so `absPath.startsWith(repoRoot + "/")` is false for valid in-repo files. In that environment every candidate path is skipped and real existing paths are reported as missing, making the checker unreliable across platforms.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 13 -- resolved [outdated, collapsed]
@@ -250,10 +255,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T03:56:35Z on `tools/substrate-claim-checker/check-existence.ts`:93 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Narrow future-state markers that suppress current-state checks**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Narrow future-state markers that suppress current-state checks**
+
   Including broad phrases like `"could be"` in `futureMarkers` suppresses existence checks for nearby path claims even when the path is asserted as current state (the matcher scans the claim line plus adjacent lines). This creates systematic false negatives because common speculative wording in prose can mask real missing-path drift findings.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 14 -- resolved [outdated, collapsed]
@@ -298,10 +303,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T03:59:01Z on `tools/substrate-claim-checker/check-existence.ts`:95 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove "**today**" from future-state suppression markers**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove "**today**" from future-state suppression markers**
+
   The future-state filter treats `"**today**:"` as a marker, so any path claim on that line or adjacent lines is skipped as if it were speculative. In status or progress notes, `today` usually denotes current state, so missing-file claims near that heading will be silently ignored and existence drift goes unreported. This creates false negatives in exactly the kind of “current snapshot” docs this checker is meant to validate.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 18 -- resolved [outdated, collapsed]
@@ -313,12 +318,13 @@ Documented in README:
 **Initial comment:**
 
 - **`github-code-quality[bot]` (bot)** at 2026-05-03T04:01:54Z on `tools/substrate-claim-checker/check-existence.test.ts`:2 (association: NONE)
+
   ## Unused variable, import, function or class
-  
+
   Unused import mkdirSync.
-  
-  ---
-  
+
+  ***
+
   To fix this kind of problem, remove only the unused binding from the import statement while preserving all used imports and behavior.</p>
   <p>Best fix for this file: in <code>tools/substrate-claim-checker/check-existence.test.ts</code>, edit line 2’s <code>node:fs</code> import to delete <code>mkdirSync</code> and keep the rest unchanged. No logic changes, no new methods, and no dependency changes are needed.
 
@@ -331,10 +337,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T04:03:47Z on `tools/substrate-claim-checker/check-existence.ts`:114 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Parse markdown links that contain parentheses**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Parse markdown links that contain parentheses**
+
   The link matcher in `findPathClaims` stops the target at the first `)`, so a valid path like `[spec](docs/api(v2).md)` is captured as `docs/api(v2` and then checked as missing. This creates false existence-drift findings for any markdown link whose relative path contains parentheses, which is legal and fairly common in docs.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 20 -- resolved [outdated, collapsed]
@@ -346,10 +352,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T04:03:47Z on `tools/substrate-claim-checker/check-existence.ts`:70 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Avoid suppressing legitimate TODO/TBD path claims**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Avoid suppressing legitimate TODO/TBD path claims**
+
   The placeholder filter rejects any candidate containing `TODO` or `TBD` anywhere in the string, so legitimate filenames such as `docs/TODO.md` or `notes/tbd-checklist.md` are never checked. That causes false negatives: missing-file claims with those common names will be silently skipped instead of reported.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 21 -- resolved [outdated, collapsed]
@@ -373,7 +379,6 @@ Documented in README:
 
 - **`Copilot` (bot)** at 2026-05-03T04:09:22Z on `tools/substrate-claim-checker/check-existence.ts`:80 (association: NONE)
   looksLikePath currently treats any backtick span ending in a dot + 1–5 alnum chars as a path (e.g. `v0.69.4`, `10.0.203`). This will produce false-positive “path does not exist” findings on many existing docs that use backticks for version numbers. Consider explicitly rejecting version-like tokens (e.g. `^v?\d+(\.\d+)+$`) and/or tightening the extension heuristic (e.g. require the extension to start with a letter), and add a unit test to lock this in.
-  
 
 ### Thread 23 -- resolved [outdated, collapsed]
 
@@ -384,10 +389,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T04:12:20Z on `tools/substrate-claim-checker/check-existence.ts`:157 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Strip link anchors before path-shape validation**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Strip link anchors before path-shape validation**
+
   The markdown-link path extraction validates `target` before removing `#...`/`?...`, so links like `[spec](foo.md#overview)` or `[spec](foo.md?v=1)` are skipped entirely when the path has no `/`. In those cases `looksLikePath(target)` returns false, `cleanTarget` is never computed, and a real missing-file claim is silently ignored. Validate `cleanTarget` first (or unconditionally normalize then validate) to avoid this false-negative class.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 24 -- resolved [outdated, collapsed]
@@ -399,10 +404,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T04:12:20Z on `tools/substrate-claim-checker/check-existence.ts`:89 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove bare "tbd" marker from future-context filter**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove bare "tbd" marker from future-context filter**
+
   Including bare `"tbd"` in the future-state marker list causes current-state claims to be suppressed whenever the path text contains that substring (for example `` `docs/TBD.md` `` or `` `notes/tbd-checklist.md` ``). This creates deterministic false negatives in existence checks, because the claim is skipped before filesystem resolution even though it is a present-time assertion.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 25 -- resolved [collapsed]
@@ -414,10 +419,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T04:19:49Z on `tools/substrate-claim-checker/check-existence.ts`:82 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Treat Windows-drive paths as absolute on POSIX**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Treat Windows-drive paths as absolute on POSIX**
+
   Using `path.isAbsolute()` here is platform-specific, so on Linux/macOS a Windows absolute claim like `` `C:/repo/file.md` `` is treated as relative and then checked under repo roots, producing false existence-drift findings for out-of-scope system paths. The checker explicitly treats absolute paths as out of scope, so this should also recognize Windows-drive absolute forms (`^[A-Za-z]:[\\/]`) regardless of host OS.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 26 -- resolved [collapsed]
@@ -429,10 +434,10 @@ Documented in README:
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T04:19:49Z on `tools/substrate-claim-checker/check-existence.ts`:182 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Normalize angle-bracket link targets before path checks**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Normalize angle-bracket link targets before path checks**
+
   CommonMark allows inline destinations like `[spec](<docs/api v2.md>)`, but `cleanTarget` is passed directly to `looksLikePath`, where `<...>` is treated as a placeholder and rejected. That means these valid file-link claims are silently skipped, causing false negatives in existence-drift detection whenever authors use angle-bracket link destinations.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 27 -- resolved [outdated, collapsed]
@@ -445,7 +450,6 @@ Documented in README:
 
 - **`Copilot` (bot)** at 2026-05-03T04:19:54Z on `tools/substrate-claim-checker/check-existence.ts`:173 (association: NONE)
   The `while ((m = linkRe.exec(line)) !== null)` block has an extra nested `{ ... }` around `claims.push(...)` that doesn’t affect behavior but adds noise. Consider removing the redundant braces to keep the control flow consistent with the backtick-claim loop above.
-  
 
 ### Thread 28 -- resolved [collapsed]
 

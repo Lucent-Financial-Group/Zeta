@@ -82,7 +82,8 @@ export const ContextPackCurationStageKind = {
   GapReview: "gap_review",
 } as const;
 
-export type ContextPackCurationStageKind = (typeof ContextPackCurationStageKind)[keyof typeof ContextPackCurationStageKind];
+export type ContextPackCurationStageKind =
+  (typeof ContextPackCurationStageKind)[keyof typeof ContextPackCurationStageKind];
 
 export const ContextPackSourcePointerKind = {
   DocUnit: "doc_unit",
@@ -104,7 +105,8 @@ export const ContextPackSourcePointerKind = {
   Policy: "policy",
 } as const;
 
-export type ContextPackSourcePointerKind = (typeof ContextPackSourcePointerKind)[keyof typeof ContextPackSourcePointerKind];
+export type ContextPackSourcePointerKind =
+  (typeof ContextPackSourcePointerKind)[keyof typeof ContextPackSourcePointerKind];
 
 export const ContextPackMemorySimilarityCategory = {
   SameHatSameWorkItem: "same_hat_same_work_item",

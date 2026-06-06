@@ -17,6 +17,7 @@ Aaron 2026-04-25 evening, after I resolved the Pliny P0 + MEMORY.md long-entries
 ### Old pattern (insufficient)
 
 When declining a Copilot/Codex review comment:
+
 - "Declining per Otto-300 stakes-reframing"
 - "Deferred to B-0006 atomic pass"
 
@@ -33,7 +34,8 @@ When declining a Copilot/Codex review comment:
 
 ### Aaron's framing of the rule
 
-*"We never decline for cheap reason only long term reasons"* — every decline must be backed by:
+_"We never decline for cheap reason only long term reasons"_ — every decline must be backed by:
+
 - A long-term architectural decision (Otto-NNN substrate)
 - OR a backlog row capturing the deferred work
 - (NOT just "I disagree" or "out of scope")

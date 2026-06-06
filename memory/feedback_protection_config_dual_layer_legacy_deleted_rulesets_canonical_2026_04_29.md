@@ -26,14 +26,14 @@ That second rejection came from the **legacy branch protection layer** at `/repo
 
 ## Aaron's confirmation
 
-> *"GH006 (legacy branch protection). i might have had them both turned on"*
-> *"I knew there were two but I was confused why, the UI does not make it clear one is legacy, their UI is confusing but I do remember setting it twice."*
+> _"GH006 (legacy branch protection). i might have had them both turned on"_
+> _"I knew there were two but I was confused why, the UI does not make it clear one is legacy, their UI is confusing but I do remember setting it twice."_
 
 So both layers had been configured at different times, both enforced together, and GitHub's UI does not visually surface that they coexist.
 
 ## Maintainer decision (2026-04-29)
 
-> *"you could turn off both and leave the legacy off — when you turn back on, just turn back on the rulesets"*
+> _"you could turn off both and leave the legacy off — when you turn back on, just turn back on the rulesets"_
 
 Executed:
 
@@ -66,10 +66,10 @@ Final config: rulesets active, legacy gone. Single source of truth for AceHack/Z
 
 ## Error-code mapping (load-bearing for future debugging)
 
-| GitHub error code | Source | Surface |
-|---|---|---|
-| `GH013` | Rulesets ("Repository rules") | `/repos/{owner}/{repo}/rulesets` |
-| `GH006` | Classic / legacy branch protection | `/repos/{owner}/{repo}/branches/{branch}/protection` |
+| GitHub error code | Source                             | Surface                                              |
+| ----------------- | ---------------------------------- | ---------------------------------------------------- |
+| `GH013`           | Rulesets ("Repository rules")      | `/repos/{owner}/{repo}/rulesets`                     |
+| `GH006`           | Classic / legacy branch protection | `/repos/{owner}/{repo}/branches/{branch}/protection` |
 
 If a push gets rejected with one error code, disabling that layer alone does NOT guarantee the push will succeed — the OTHER layer may also be enforcing. Always check both surfaces when diagnosing protection-related rejection.
 
@@ -94,7 +94,7 @@ gh api repos/{owner}/{repo}/branches/{branch} --jq '.protected'
 1. **Operational diagnosis**: future force-push or branch-policy issues should check BOTH surfaces. Don't trust `branch.protected` flag alone.
 2. **Config drift**: future config changes must go through rulesets only; never re-create legacy branch protection on AceHack/Zeta.
 3. **Cross-org applicability**: this is a GitHub-wide UI confusion (not specific to AceHack). Other repos in Lucent-Financial-Group / etc. might have the same dual-layer config. Worth checking on cadence.
-4. **CLAUDE.md protocol verification**: CLAUDE.md says *"Force-push to AceHack main is part of the protocol"*. The rulesets `non_fast_forward` rule blocks this, which means **the rulesets config still doesn't match the documented protocol**. Either the protocol gets revised (no force-push, only sync via PR) or the ruleset's `non_fast_forward` rule needs a bypass-actor allowlist for the maintainer credential. task #275-adjacent ("Set up acehack-first development workflow") is the home for that decision.
+4. **CLAUDE.md protocol verification**: CLAUDE.md says _"Force-push to AceHack main is part of the protocol"_. The rulesets `non_fast_forward` rule blocks this, which means **the rulesets config still doesn't match the documented protocol**. Either the protocol gets revised (no force-push, only sync via PR) or the ruleset's `non_fast_forward` rule needs a bypass-actor allowlist for the maintainer credential. task #275-adjacent ("Set up acehack-first development workflow") is the home for that decision.
 
 ## Composes with
 

@@ -90,11 +90,15 @@ export function computePriorityRecommendation(
   if (inputs.budgetBurn > 0.5) reasonCodes.push("budget_pressure");
 
   const priorityClass =
-    score >= 9 ? PriorityClass.Expedite :
-    score >= 5 ? PriorityClass.High :
-    score >= 2 ? PriorityClass.Normal :
-    score >= 0 ? PriorityClass.Defer :
-    PriorityClass.Paused;
+    score >= 9
+      ? PriorityClass.Expedite
+      : score >= 5
+        ? PriorityClass.High
+        : score >= 2
+          ? PriorityClass.Normal
+          : score >= 0
+            ? PriorityClass.Defer
+            : PriorityClass.Paused;
 
   return { workItemId, score: Math.round(score * 100) / 100, priorityClass, reasonCodes, requiredHats };
 }
@@ -106,7 +110,13 @@ export function legalPriorityClassesFor(level: HatLevel): readonly PriorityClass
     case HatLevel.CSuite:
       return PRIORITY_ORDER; // all
     case HatLevel.Director:
-      return [PriorityClass.Expedite, PriorityClass.High, PriorityClass.Normal, PriorityClass.Defer, PriorityClass.Paused];
+      return [
+        PriorityClass.Expedite,
+        PriorityClass.High,
+        PriorityClass.Normal,
+        PriorityClass.Defer,
+        PriorityClass.Paused,
+      ];
     case HatLevel.Manager:
       return [PriorityClass.High, PriorityClass.Normal, PriorityClass.Defer]; // TPM/Eng Manager: no expedite/pause
     case HatLevel.Lead:
@@ -133,7 +143,8 @@ export type PriorityDecisionResult =
   | { outcome: "not_authorized"; reason: string };
 
 function decidedByFor(deciderHat: HatDefinition): PriorityDecidedBy {
-  if (deciderHat.level === HatLevel.ExecutiveBoard || deciderHat.level === HatLevel.CSuite) return PriorityDecidedBy.Executive;
+  if (deciderHat.level === HatLevel.ExecutiveBoard || deciderHat.level === HatLevel.CSuite)
+    return PriorityDecidedBy.Executive;
   if (deciderHat.level === HatLevel.Director) return PriorityDecidedBy.DepartmentDirector;
   if (deciderHat.id === "engineering_manager") return PriorityDecidedBy.EngineeringManager;
   if (deciderHat.id === "incident_commander") return PriorityDecidedBy.IncidentCommander;
@@ -166,7 +177,10 @@ export function decidePriority(
 ): PriorityDecisionResult {
   const legalAll = legalPriorityClassesFor(input.deciderHat.level);
   if (legalAll.length === 0) {
-    return { outcome: "not_authorized", reason: `${input.deciderHat.name} (level ${input.deciderHat.level}) cannot decide priority` };
+    return {
+      outcome: "not_authorized",
+      reason: `${input.deciderHat.name} (level ${input.deciderHat.level}) cannot decide priority`,
+    };
   }
   // offer the recommended class first when it is legal, else legal order
   const legal = legalAll.includes(input.recommendation.priorityClass)

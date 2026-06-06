@@ -41,18 +41,18 @@ recovery, commit protocol.
 
 ## The isolation-level table
 
-| Level | P1 dirty read | P2 non-repeatable | P3 phantom | P4 lost update | Write skew |
-| --- | --- | --- | --- | --- | --- |
-| READ UNCOMMITTED | possible | possible | possible | possible | possible |
-| READ COMMITTED | prevented | possible | possible | possible | possible |
-| REPEATABLE READ | prevented | prevented | possible | prevented (some impls) | possible |
-| SNAPSHOT | prevented | prevented | prevented | prevented | possible |
-| SERIALIZABLE SNAPSHOT (SSI) | prevented | prevented | prevented | prevented | prevented |
-| SERIALIZABLE (2PL) | prevented | prevented | prevented | prevented | prevented |
+| Level                       | P1 dirty read | P2 non-repeatable | P3 phantom | P4 lost update         | Write skew |
+| --------------------------- | ------------- | ----------------- | ---------- | ---------------------- | ---------- |
+| READ UNCOMMITTED            | possible      | possible          | possible   | possible               | possible   |
+| READ COMMITTED              | prevented     | possible          | possible   | possible               | possible   |
+| REPEATABLE READ             | prevented     | prevented         | possible   | prevented (some impls) | possible   |
+| SNAPSHOT                    | prevented     | prevented         | prevented  | prevented              | possible   |
+| SERIALIZABLE SNAPSHOT (SSI) | prevented     | prevented         | prevented  | prevented              | prevented  |
+| SERIALIZABLE (2PL)          | prevented     | prevented         | prevented  | prevented              | prevented  |
 
 Zeta's target: **SNAPSHOT isolation by default, SSI
 opt-in**, aligning with Postgres's default. The pure-2PL
-SERIALIZABLE tier is *not* planned; SSI covers the
+SERIALIZABLE tier is _not_ planned; SSI covers the
 correctness case at better concurrency.
 
 ## MVCC vs 2PL vs OCC — the concurrency-control axis
@@ -72,7 +72,7 @@ correctness case at better concurrency.
 
 Zeta's call: **MVCC for snapshot reads, OCC (specifically
 SSI) for writes, with the streaming substrate providing the
-version stream naturally.** The DBSP delta stream is *already*
+version stream naturally.** The DBSP delta stream is _already_
 a version stream — every delta is a new version. The
 transaction manager's job is to define commit boundaries
 over that stream.
@@ -88,8 +88,8 @@ atomically. In a streaming engine:
   with multiple row changes.
 - **Rollback** is the emission of inverse deltas (the
   retraction-native reframing of abort).
-- **Isolation** becomes the question of *which deltas a
-  standing query sees together*.
+- **Isolation** becomes the question of _which deltas a
+  standing query sees together_.
 
 This is not a cosmetic change; it reshapes commit and
 rollback. The commit protocol emits a delta batch; the
@@ -194,14 +194,14 @@ Solutions:
 
 ## Reference patterns
 
-- Mohan et al. 1992, *ARIES: A Transaction Recovery
-  Method*.
-- Gray, Reuter 1993, *Transaction Processing*.
-- Fekete, Liarokapis, O'Neil et al. 2005, *Making Snapshot
-  Isolation Serializable* (SSI foundation).
+- Mohan et al. 1992, _ARIES: A Transaction Recovery
+  Method_.
+- Gray, Reuter 1993, _Transaction Processing_.
+- Fekete, Liarokapis, O'Neil et al. 2005, _Making Snapshot
+  Isolation Serializable_ (SSI foundation).
 - Postgres `src/backend/access/transam/`.
 - Google Spanner paper.
-- Lamport *Paxos Commit* paper.
+- Lamport _Paxos Commit_ paper.
 - `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.
 - `.claude/skills/concurrency-control-expert/SKILL.md` —
   conflict detection.

@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 815 |
-| Title | absorb: multi-AI feedback on threading + PR-liveness micro-class (Deepseek + Amara, 2026-04-29 packet 2) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T06:31:51Z |
-| Merged at | 2026-04-29T07:06:36Z |
-| Merge commit SHA | `a27708ae249a616675fcf1776e354639eb01c76d` |
-| Branch | `absorb/multi-ai-2026-04-29-deepseek-amara-threading-and-pr-liveness` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/815 |
-| Changed files | 5 |
-| Additions / deletions | +938 / -0 |
+| Field                 | Value                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| Number                | 815                                                                                                      |
+| Title                 | absorb: multi-AI feedback on threading + PR-liveness micro-class (Deepseek + Amara, 2026-04-29 packet 2) |
+| Author                | `AceHack` (human)                                                                                        |
+| State                 | MERGED                                                                                                   |
+| Created at            | 2026-04-29T06:31:51Z                                                                                     |
+| Merged at             | 2026-04-29T07:06:36Z                                                                                     |
+| Merge commit SHA      | `a27708ae249a616675fcf1776e354639eb01c76d`                                                               |
+| Branch                | `absorb/multi-ai-2026-04-29-deepseek-amara-threading-and-pr-liveness`                                    |
+| Base branch           | `main`                                                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/815                                                  |
+| Changed files         | 5                                                                                                        |
+| Additions / deletions | +938 / -0                                                                                                |
 
 ## Description
 
@@ -33,7 +33,7 @@ Depends-On: #811 (sibling absorb file referenced from research note must merge f
 
 ## Summary
 
-Second multi-AI synthesis packet absorb (research-grade). Aaron's framing: *"Okay no rush on either of these but we have a few different docs not just the one amara mentioned on threading and locks."*
+Second multi-AI synthesis packet absorb (research-grade). Aaron's framing: _"Okay no rush on either of these but we have a few different docs not just the one amara mentioned on threading and locks."_
 
 ## Bundle composes
 
@@ -85,15 +85,15 @@ Operator lanes mutate substrate.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 12 |
-| Resolved threads | 11 |
-| Unresolved threads | 1 |
-| Total review comments | 12 |
-| Total fix commits (touching thread paths) | 4 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 12    |
+| Resolved threads                          | 11    |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 12    |
+| Total fix commits (touching thread paths) | 4     |
 
 ## Review threads
 
@@ -106,10 +106,10 @@ Operator lanes mutate substrate.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T06:34:11Z on `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:220 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace broken sibling-absorb reference**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace broken sibling-absorb reference**
+
   This row links to `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-loop-state.md` as an existing sibling absorb, but that file is not present in this commit (and `rg --files docs/research | rg multi-ai-feedback-2026-04-29` returns only the current file), so readers cannot follow the stated composition trail. This creates a dead citation in the research archive and should be corrected to the real path or removed.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -140,13 +140,14 @@ Operator lanes mutate substrate.
 
 - **`Copilot` (bot)** at 2026-04-29T06:36:26Z on `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:70 (association: NONE)
   P1: The guard captures `baseRefName`/`baseRefOid` via `gh pr view`, but the uniqueness checks are hardcoded to `origin/main`. That can be wrong if the PR targets a non-`main` base branch, or if `origin/main` isn’t the intended base in this repo’s multi-remote setup. Consider driving `git log`/`git diff` off the captured `baseRefOid` (or an explicit `refs/remotes/<remote>/<baseRefName>`) so the “unique commits”/“diff” checks reflect the actual PR base.
+
   ```suggestion
   BASE_BEFORE="$(jq -r '.baseRefOid' "/tmp/pr-$PR-before.json")"
   git log --oneline "$BASE_BEFORE..HEAD" > "/tmp/pr-$PR-unique-commits-before.txt"
   git diff --stat "$BASE_BEFORE...HEAD" > "/tmp/pr-$PR-diff-before.txt"
-  
+
   # ... do the rebase / force-push ...
-  
+
   gh pr view "$PR" \
     --json number,state,headRefName,headRefOid,baseRefName,baseRefOid,mergeStateStatus,isDraft,title \
     > "/tmp/pr-$PR-after.json"
@@ -225,10 +226,10 @@ Operator lanes mutate substrate.
 
 - **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:118 (association: NONE)
   The closing fenced-code marker is followed by `"*` on the same line (`> ```"*`), which breaks CommonMark/GitHub fenced-code parsing (the closing fence must be backticks only). Move the quote/emphasis close outside the fence (e.g., end the fence on its own line, then close the surrounding `*"..."*` on the next quoted line), or avoid wrapping the whole multi-paragraph quote in `*...*`.
-  ```suggestion
+  ````suggestion
   > ```
   > "*
-  ```
+  ````
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -240,10 +241,10 @@ Operator lanes mutate substrate.
 
 - **`Copilot` (bot)** at 2026-04-29T06:57:31Z on `memory/persona/amara/conversations/multi-ai-feedback-2026-04-29-deepseek-amara-on-threading-pr-auto-close.md`:199 (association: NONE)
   Same issue as above: the fenced code block is closed with trailing characters (`> ```"*`), which will prevent the fence from closing correctly and can cause the rest of the section to render as code. Close the code fence with only backticks and place any surrounding quote/emphasis terminators on a separate line.
-  ```suggestion
+  ````suggestion
   > ```
   > "*
-  ```
+  ````
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -268,10 +269,10 @@ Operator lanes mutate substrate.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T06:57:34Z on `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:88 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Refresh base ref before classifying PR uniqueness**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Refresh base ref before classifying PR uniqueness**
+
   The guard computes `unique-commits` and `diff` against local `origin/main`, but in the exact merge-cascade scenario this row targets, `origin/main` can be stale unless it is refreshed first. That can produce false `unique commits`/`diff` evidence and drive the downstream enforcement branch to open or skip a successor PR incorrectly. Fetching the current base ref (or diffing against the captured `baseRefOid` from `gh pr view`) immediately before each snapshot avoids classification against outdated graph state.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 12 -- unresolved
@@ -283,10 +284,10 @@ Operator lanes mutate substrate.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T07:07:52Z on `docs/backlog/P3/B-0102-pr-liveness-race-merge-cascade-class-refinement-2026-04-29.md`:66 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add explicit limit to cascade-detection PR query**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Add explicit limit to cascade-detection PR query**
+
   The cascade detector relies on `gh pr list` but does not set `--limit`, so it only inspects the default first 30 open PRs. The GitHub CLI manual states `--limit <int> (default 30)`, which means an active auto-merge cascade can be missed whenever matching PRs fall outside that window; in that case the guard incorrectly treats the repo as safe to rebase/force-push and reintroduces the race this row is trying to prevent.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)
@@ -468,7 +469,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Message:**
 
-```
+````
 fix(round-5 reviewer feedback): bash-shebang declared + fenced-code c…
 
 …loses + grep -E + refresh base ref before classify
@@ -500,4 +501,4 @@ All five are corrections to existing rules — permitted under
 B-0105 consolidation directive.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
-```
+````

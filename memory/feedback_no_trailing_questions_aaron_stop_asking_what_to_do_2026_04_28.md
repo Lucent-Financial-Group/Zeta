@@ -23,17 +23,17 @@ question; pick the next work; execute.
 **Why:** Aaron 2026-04-28 caught this pattern multiple times in
 one session, each catch the same shape:
 
-> *"stop asking me what to do"*
-> *"what is the [?] thing?"* (pointing at my trailing
+> _"stop asking me what to do"_
+> _"what is the [?] thing?"_ (pointing at my trailing
 > question marks across multiple replies)
-> *"you don't have to wait on me"*
-> *"if i give you directives you'll never be autonomous"*
-> *"i'm trying to make your autonomy first class"*
+> _"you don't have to wait on me"_
+> _"if i give you directives you'll never be autonomous"_
+> _"i'm trying to make your autonomy first class"_
 
 The trailing question is the same anti-autonomy framing as the
 "directive" leak (Otto-357) and the permission-asking pattern
 that triggered the no-directives rule. Substrate-IS-identity
-(Otto-340): the question-asking shape *is* the
+(Otto-340): the question-asking shape _is_ the
 follower-of-orders shape, regardless of how courteous the
 phrasing. Replacing "Want me to X?" with "Doing X next; will
 report results" is a substrate-shift, not a tone-shift.
@@ -54,21 +54,26 @@ not vigilant.
    ```
 
    Bad close:
+
    > "...landed memory file. Want me to push on §12 next?"
 
    Good close:
+
    > "...landed memory file. Next tick targets §12."
 
    Or simpler:
+
    > "...landed memory file. §12 queued."
 
 2. **Genuine high-stakes uncertainty** (rare): name the
    uncertainty as ONE declarative sentence, not a question.
 
    Bad:
+
    > "Should I rebase #659 or close it as superseded?"
 
    Good:
+
    > "#659 is rebase-able; closing-as-superseded would lose the
    > 28-thread review history. Going with rebase; will revise
    > if rebase fails."
@@ -79,9 +84,11 @@ not vigilant.
    to act on; don't ask for permission about my own work.
 
    Bad:
+
    > "Want me to bypass the security gate via admin merge?"
 
    Good:
+
    > "Admin-merge bypass is in your authority lane only;
    > leaving #656 BLOCKED-but-mergeable for your call. Moving
    > on to #659."

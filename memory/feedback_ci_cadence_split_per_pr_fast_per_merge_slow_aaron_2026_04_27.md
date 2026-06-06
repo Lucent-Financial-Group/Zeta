@@ -18,7 +18,7 @@ Then on the macOS leg:
 
 Plus a clarifying follow-up (had said "per pr" the first time, meant the inverse):
 
-> "macos-26  i was trying to say per push to main / merge main, i didn't say it right the frist time i said per pr, hope you understood"
+> "macos-26 i was trying to say per push to main / merge main, i didn't say it right the frist time i said per pr, hope you understood"
 
 Plus the Windows seeding:
 
@@ -38,7 +38,7 @@ Plus the Windows seeding:
 - `Analyze (csharp)` — 10-25 min, was the per-PR bottleneck
 - `Analyze (python / javascript-typescript / actions)` — 2-5 min each
 - `build-and-test (macos-26)` — developer-experience verification, not prod (~5-8 min)
-- `build-and-test (windows-2025)` + `build-and-test (windows-11-arm)` — experimental, `continue-on-error: true` (no `tools/setup/install.ps1` yet; peer-agent will polish). Aaron 2026-04-27: *"failures on the windows mode for now are fine untill we pass have the agent running on windows in peer-mode then we will want that working all the time"* — flip `continue-on-error` to `false` once the Windows peer-mode agent is online and `tools/setup/install.ps1` is mature enough that the legs land green.
+- `build-and-test (windows-2025)` + `build-and-test (windows-11-arm)` — experimental, `continue-on-error: true` (no `tools/setup/install.ps1` yet; peer-agent will polish). Aaron 2026-04-27: _"failures on the windows mode for now are fine untill we pass have the agent running on windows in peer-mode then we will want that working all the time"_ — flip `continue-on-error` to `false` once the Windows peer-mode agent is online and `tools/setup/install.ps1` is mature enough that the legs land green.
 - `low-memory.yml` (`build-and-test ubuntu-slim`) — per the prior 2026-04-27 cadence move
 
 ## Trade-off (acknowledged)
@@ -51,6 +51,7 @@ Plus the Windows seeding:
 ## Implementation
 
 `.github/workflows/gate.yml`:
+
 - New `matrix-setup` job emits dynamic OS list per `github.event_name`:
   - `pull_request` → `["ubuntu-24.04","ubuntu-24.04-arm"]`
   - all other events → `["ubuntu-24.04","ubuntu-24.04-arm","macos-26","windows-2025","windows-11-arm"]`
@@ -58,6 +59,7 @@ Plus the Windows seeding:
 - `continue-on-error: ${{ startsWith(matrix.os, 'windows-') }}` makes Windows non-blocking.
 
 `.github/workflows/codeql.yml`:
+
 - `analyze` matrix gated with `if: github.event_name != 'pull_request' && needs.path-gate.outputs.code_changed == 'true'`.
 - `path-gate` keeps running on every event; its empty-SARIF baseline uploads satisfy the aggregate `CodeQL` check on PRs without running the slow matrix.
 

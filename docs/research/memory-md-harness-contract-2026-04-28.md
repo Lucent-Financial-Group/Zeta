@@ -3,7 +3,7 @@
 **Date:** 2026-04-28
 **Status:** Phase 0 verification report; informs the Option A vs B vs C decision in B-0066.
 **Source basis:** Empirical observation of the Claude Code harness's session-start behavior, plus the harness's own warning messages it emits when the contract is violated. Findings are restated in our own words; no third-party source is vendored.
-**Triggering ask:** Aaron 2026-04-28 — *"do the research [if needed] to see if [Option A bare-marker] works."*
+**Triggering ask:** Aaron 2026-04-28 — _"do the research [if needed] to see if [Option A bare-marker] works."_
 
 ---
 
@@ -26,14 +26,14 @@ Whichever is hit first triggers truncation; content past either cap is silently 
 
 **Comparison to current state:**
 
-| Metric | Cap | Current `memory/MEMORY.md` |
-|---|---:|---:|
-| Lines | ~200 | 600+ |
-| Bytes | ~25,000 | ~376,000 |
+| Metric |     Cap | Current `memory/MEMORY.md` |
+| ------ | ------: | -------------------------: |
+| Lines  |    ~200 |                       600+ |
+| Bytes  | ~25,000 |                   ~376,000 |
 
-The harness has been silently truncating us since the index passed line 200. The session-start system reminder confirms this directly — when MEMORY.md is over-cap, the harness emits its own warning along the lines of: *"WARNING: MEMORY.md is N lines and KB. Only part of it was loaded."* That self-reported warning is the load-bearing evidence here, not any source-level inspection.
+The harness has been silently truncating us since the index passed line 200. The session-start system reminder confirms this directly — when MEMORY.md is over-cap, the harness emits its own warning along the lines of: _"WARNING: MEMORY.md is N lines and KB. Only part of it was loaded."_ That self-reported warning is the load-bearing evidence here, not any source-level inspection.
 
-**Implication:** the at-wake quick-scan service we *think* MEMORY.md is providing is **partially imaginary** — old entries past line 200 are not actually loaded into context. Future-Otto reads only the top 200 lines.
+**Implication:** the at-wake quick-scan service we _think_ MEMORY.md is providing is **partially imaginary** — old entries past line 200 are not actually loaded into context. Future-Otto reads only the top 200 lines.
 
 ## The format the harness expects
 
@@ -54,7 +54,7 @@ A bare marker file like `# Memories live in memory/` violates constraint #1 (no 
 
 ## The memory-scan mechanism
 
-The harness has an explicit memory-scanner that walks the `memory/` directory, considers each `*.md` file *other than* `MEMORY.md` itself, and reads each file's frontmatter to learn what's there. Memory files are independently discoverable through this scan — but the scan is invoked only at certain points, not as the default at session-start.
+The harness has an explicit memory-scanner that walks the `memory/` directory, considers each `*.md` file _other than_ `MEMORY.md` itself, and reads each file's frontmatter to learn what's there. Memory files are independently discoverable through this scan — but the scan is invoked only at certain points, not as the default at session-start.
 
 This is a key finding: **memory files DO have a route to discovery that bypasses MEMORY.md**, via the scan + the per-file attachment surfacing described next.
 
@@ -72,7 +72,7 @@ Until then, `MEMORY.md` remains the at-wake quick-scan surface, capped at ~200 l
 
 ## The AutoDream / topic-file pattern
 
-The harness also implies an **AutoDream-style nightly distillation pipeline** — a separate process that reads append-only log files (date-named) and distills them into `MEMORY.md` + topic files. This implies a workflow where `MEMORY.md` *is* periodically regenerated, not just appended to.
+The harness also implies an **AutoDream-style nightly distillation pipeline** — a separate process that reads append-only log files (date-named) and distills them into `MEMORY.md` + topic files. This implies a workflow where `MEMORY.md` _is_ periodically regenerated, not just appended to.
 
 Project-level (in-repo) `MEMORY.md` is governed differently from per-user auto-memory `MEMORY.md` — but the principle ("regenerate, don't hand-edit") transfers cleanly to the in-repo case.
 
@@ -208,6 +208,7 @@ A bare-marker `MEMORY.md` such as:
 
 ```markdown
 # Memory index
+
 Memory files live under `memory/`. Read frontmatter `description:` of each.
 ```
 
@@ -215,20 +216,20 @@ produces zero `- [Title](file.md) — hook` lines. The harness's
 memory-extraction flow depends on those pointer lines to surface available
 memories at session-start. Running Step 3 (`--check`) after replacing
 `MEMORY.md` with a bare marker would show `STALE`, confirming that the
-harness format contract is violated. *Do not run this destructively on
-`main`; it is a thought-experiment confirmed by the format contract.*
+harness format contract is violated. _Do not run this destructively on
+`main`; it is a thought-experiment confirmed by the format contract._
 
 ### Findings summary (restated for reproducibility record)
 
-| Claim | Verification method | Status |
-|---|---|---|
-| Line cap ~200 | Step 1: `wc -l` | CONFIRMED — current file exceeds cap |
-| Byte cap ~25KB | Step 1: `wc -c` | CONFIRMED — current file exceeds cap |
-| One-line-per-file pointer format required | Step 2: grep + Step 3: reindexer | CONFIRMED |
-| Reindexer encodes the contract | Step 3: `--check` exits 0 on current file | CONFIRMED |
-| AutoDream write-back compatible | Step 4: head + source inspection | CONFIRMED — marker preserved |
-| Option A (bare marker) breaks contract | Step 5: format analysis | CONFIRMED — zero pointers violates format |
-| Option B (auto-generated index) is correct | Transitivity from above | CONFIRMED |
+| Claim                                      | Verification method                       | Status                                    |
+| ------------------------------------------ | ----------------------------------------- | ----------------------------------------- |
+| Line cap ~200                              | Step 1: `wc -l`                           | CONFIRMED — current file exceeds cap      |
+| Byte cap ~25KB                             | Step 1: `wc -c`                           | CONFIRMED — current file exceeds cap      |
+| One-line-per-file pointer format required  | Step 2: grep + Step 3: reindexer          | CONFIRMED                                 |
+| Reindexer encodes the contract             | Step 3: `--check` exits 0 on current file | CONFIRMED                                 |
+| AutoDream write-back compatible            | Step 4: head + source inspection          | CONFIRMED — marker preserved              |
+| Option A (bare marker) breaks contract     | Step 5: format analysis                   | CONFIRMED — zero pointers violates format |
+| Option B (auto-generated index) is correct | Transitivity from above                   | CONFIRMED                                 |
 
 ### Constraints for Q1 AutoDream/AutoMemory
 

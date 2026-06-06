@@ -51,13 +51,13 @@ API for .NET apps that want a built-in coordinator).
 
 ## The reference set — what to borrow from
 
-| System | Consensus | Notable primitives |
-| --- | --- | --- |
-| Google Chubby | Paxos | session leases, coarse locks, file-tree namespace |
-| Apache ZooKeeper | ZAB | znodes, watches, ephemeral + sequential nodes, recipes |
-| etcd | Raft | Lease, Watch, Txn (CAS), KV, gRPC API |
-| HashiCorp Consul | Raft + SWIM | KV, sessions, health checks, service mesh |
-| Microsoft Service Fabric | SF-Raft | reliable collections, actor placement |
+| System                   | Consensus   | Notable primitives                                     |
+| ------------------------ | ----------- | ------------------------------------------------------ |
+| Google Chubby            | Paxos       | session leases, coarse locks, file-tree namespace      |
+| Apache ZooKeeper         | ZAB         | znodes, watches, ephemeral + sequential nodes, recipes |
+| etcd                     | Raft        | Lease, Watch, Txn (CAS), KV, gRPC API                  |
+| HashiCorp Consul         | Raft + SWIM | KV, sessions, health checks, service mesh              |
+| Microsoft Service Fabric | SF-Raft     | reliable collections, actor placement                  |
 
 Zeta's call: **etcd as the strongest API reference**
 (simpler than ZooKeeper's recipe zoo, modern gRPC surface,
@@ -70,8 +70,8 @@ design writeup in the space).
 **Posture — Zeta IS the substrate, never a client.** A
 database that delegates persistence or distributed locks
 to ZK / etcd is outsourcing its own legion; Zeta does
-not do that. The reference systems inform the *API
-shape* Zeta exposes, not the backend Zeta runs on.
+not do that. The reference systems inform the _API
+shape_ Zeta exposes, not the backend Zeta runs on.
 Concretely, Zeta runs a pluggable-wire-protocol layer so
 clients already pointed at etcd or ZooKeeper can point
 at a Zeta cluster and not notice — the etcd v3 gRPC
@@ -263,13 +263,13 @@ adversarial scheduling.
 
 ## Reference patterns
 
-- Burrows 2006, *The Chubby Lock Service*.
-- Hunt et al. 2010, *ZooKeeper: Wait-free coordination
-  for Internet-scale systems*.
-- Junqueira & Reed — *ZooKeeper: Distributed Process
-  Coordination* (book).
+- Burrows 2006, _The Chubby Lock Service_.
+- Hunt et al. 2010, _ZooKeeper: Wait-free coordination
+  for Internet-scale systems_.
+- Junqueira & Reed — _ZooKeeper: Distributed Process
+  Coordination_ (book).
 - etcd docs — Lease, Watch, Txn, Election, Lock APIs.
-- Kleppmann 2016, *How to do distributed locking*
+- Kleppmann 2016, _How to do distributed locking_
   (fencing tokens).
 - HashiCorp Consul docs — sessions, KV, SWIM gossip.
 - Jepsen reports on ZK / etcd / Consul.

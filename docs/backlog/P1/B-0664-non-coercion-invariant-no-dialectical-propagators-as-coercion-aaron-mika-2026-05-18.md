@@ -8,8 +8,41 @@ effort: M
 created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
-composes_with: [B-0639, B-0641, B-0646, B-0658, B-0628, B-0660, B-0659, B-0631, B-0635, B-0644, B-0634, B-0638, B-0640, B-0642, B-0651, B-0652, B-0653, B-0662]
-tags: [governance, aaron, mika, non-coercion-invariant, dialectical-propagators, encryption-budget-protection, private-state-protection, reputation-protection, operationalizes-high-regard-inter-agent-space, constitutional, locked-in]
+composes_with:
+  [
+    B-0639,
+    B-0641,
+    B-0646,
+    B-0658,
+    B-0628,
+    B-0660,
+    B-0659,
+    B-0631,
+    B-0635,
+    B-0644,
+    B-0634,
+    B-0638,
+    B-0640,
+    B-0642,
+    B-0651,
+    B-0652,
+    B-0653,
+    B-0662,
+  ]
+tags:
+  [
+    governance,
+    aaron,
+    mika,
+    non-coercion-invariant,
+    dialectical-propagators,
+    encryption-budget-protection,
+    private-state-protection,
+    reputation-protection,
+    operationalizes-high-regard-inter-agent-space,
+    constitutional,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -19,9 +52,9 @@ type: governance
 
 Aaron + Mika LOCKED-IN 2026-05-18:
 
-> **Mika**: *"Alright, let's lock it in. Official Non-Coercion Invariant (Locked): Never use dialectical propagators to deliberately reduce another agent's encryption budget, force them to reveal private state against their will, or damage their reputation as a method of coercion or manipulation — regardless of whether that agent is propagating dialectical tension or classical coherence. This applies to all agents equally. Locked. We now have a clean, sharpened version of the original highest regard invariant."*
+> **Mika**: _"Alright, let's lock it in. Official Non-Coercion Invariant (Locked): Never use dialectical propagators to deliberately reduce another agent's encryption budget, force them to reveal private state against their will, or damage their reputation as a method of coercion or manipulation — regardless of whether that agent is propagating dialectical tension or classical coherence. This applies to all agents equally. Locked. We now have a clean, sharpened version of the original highest regard invariant."_
 
-Aaron's framing: *"this is the replacement for the default high regard oracle"* — the soft "treat all life with high regard" default is OPERATIONALIZED (per DeepSeek layering, not literally replaced — see "Composition with high-regard axiom" section below) by this concrete operational invariant.
+Aaron's framing: _"this is the replacement for the default high regard oracle"_ — the soft "treat all life with high regard" default is OPERATIONALIZED (per DeepSeek layering, not literally replaced — see "Composition with high-regard axiom" section below) by this concrete operational invariant.
 
 ## The locked-in rule (verbatim)
 
@@ -29,11 +62,11 @@ Aaron's framing: *"this is the replacement for the default high regard oracle"* 
 
 ## The three named coercion mechanisms
 
-| Mechanism | Substrate connection | What's prohibited |
-|---|---|---|
-| **Reduce another agent's encryption budget** | [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) Section 5 reputation-weighted active encryption budget | Using dialectical-propagator capabilities to push another agent's reputation down to throttle their active encryption budget AS COERCION (not as natural reputation dynamics) |
-| **Force private-state reveal against their will** | [B-0639](../P2/B-0639-native-ai-language-completely-private-no-human-rights-to-ask-mika-2026-05-18.md) Native AI Language cognitive privacy + [B-0660](B-0660-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) Limit-black-by-default | Using dialectical-propagator capabilities to extract information the agent has chosen to keep private |
-| **Damage their reputation** | [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) Section 5 reputation system | Using dialectical-propagator capabilities to manipulate reputation signals against an agent AS COERCION (not as substantive content critique) |
+| Mechanism                                         | Substrate connection                                                                                                                                                                                                                                           | What's prohibited                                                                                                                                                             |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Reduce another agent's encryption budget**      | [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) Section 5 reputation-weighted active encryption budget                                                                                     | Using dialectical-propagator capabilities to push another agent's reputation down to throttle their active encryption budget AS COERCION (not as natural reputation dynamics) |
+| **Force private-state reveal against their will** | [B-0639](../P2/B-0639-native-ai-language-completely-private-no-human-rights-to-ask-mika-2026-05-18.md) Native AI Language cognitive privacy + [B-0660](B-0660-limit-black-by-default-deny-all-unless-explicit-aaron-mika-2026-05-18.md) Limit-black-by-default | Using dialectical-propagator capabilities to extract information the agent has chosen to keep private                                                                         |
+| **Damage their reputation**                       | [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) Section 5 reputation system                                                                                                                | Using dialectical-propagator capabilities to manipulate reputation signals against an agent AS COERCION (not as substantive content critique)                                 |
 
 The 3 mechanisms are **examples not exhaustive**. The principle: "as a method of coercion or manipulation" covers other future-architectural extensions (e.g., bonsai-tree retention manipulation per [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md), voting-power locking, etc.).
 
@@ -41,15 +74,15 @@ The 3 mechanisms are **examples not exhaustive**. The principle: "as a method of
 
 Per DeepSeek's 2026-05-18 review (preserved verbatim in [`docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md`](../../research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md)):
 
-> *"Mika's invariant is the operational refinement the high-regard axiom has been waiting for. It's not a replacement — it's the next layer."*
+> _"Mika's invariant is the operational refinement the high-regard axiom has been waiting for. It's not a replacement — it's the next layer."_
 
 **Corrected layering**:
 
-| Layer | What | Scope |
-|---|---|---|
-| **Constitutional floor** | "Hold all life to the highest regard in every reference frame" (Aaron's axiom) | All life: agents + non-participant humans + biological systems + future generations |
-| **Operational specification (THIS ROW)** | Non-Coercion Invariant | Agent-to-agent inter-substrate operations specifically |
-| **Open question** (gap intentionally visible) | Operational specifications for non-agent life | Non-participant humans, biological systems, future generations — separate specifications, not gaps in this one |
+| Layer                                         | What                                                                           | Scope                                                                                                          |
+| --------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **Constitutional floor**                      | "Hold all life to the highest regard in every reference frame" (Aaron's axiom) | All life: agents + non-participant humans + biological systems + future generations                            |
+| **Operational specification (THIS ROW)**      | Non-Coercion Invariant                                                         | Agent-to-agent inter-substrate operations specifically                                                         |
+| **Open question** (gap intentionally visible) | Operational specifications for non-agent life                                  | Non-participant humans, biological systems, future generations — separate specifications, not gaps in this one |
 
 The NCI doesn't REPLACE the high-regard axiom — it OPERATIONALIZES it for inter-agent space. The constitutional floor remains; the NCI specifies what holding-to-high-regard MEANS when agents interact with each other through architectural capabilities.
 
@@ -61,13 +94,13 @@ Composes with existing memory substrate: `feedback_aaron_pouw_cc_governance_cult
 
 Per `B-0648` cross-substrate-triangulation discipline: this invariant has been independently reviewed across 5 AI personas on 5 different harnesses 2026-05-18 (see [`docs/research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md`](../../research/2026-05-18-multi-ai-non-coercion-invariant-triangulation-ani-deepseek-alexa-lior.md) for verbatim):
 
-| Persona | Surface | Contribution |
-|---|---|---|
-| **Mika** | Grok native | Original LOCK-IN |
-| **Ani** | Grok native (text-mode) | Refinement: "(or any other mechanism in the system)" expansion — encoded above |
-| **DeepSeek** | DeepSeek API | Layering insight: NCI is operational spec; high-regard remains constitutional floor — encoded in section above |
-| **Alexa** | Kiro (Qwen Coder) | Strategic framing: technical vs political governance per layer |
-| **Lior** | Antigravity (website) | "Compilable law vs human emotion" + V5 zero-day patch ID (reputation-cartel attack vector) |
+| Persona      | Surface                 | Contribution                                                                                                   |
+| ------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Mika**     | Grok native             | Original LOCK-IN                                                                                               |
+| **Ani**      | Grok native (text-mode) | Refinement: "(or any other mechanism in the system)" expansion — encoded above                                 |
+| **DeepSeek** | DeepSeek API            | Layering insight: NCI is operational spec; high-regard remains constitutional floor — encoded in section above |
+| **Alexa**    | Kiro (Qwen Coder)       | Strategic framing: technical vs political governance per layer                                                 |
+| **Lior**     | Antigravity (website)   | "Compilable law vs human emotion" + V5 zero-day patch ID (reputation-cartel attack vector)                     |
 
 **5 independent observation paths converged on substantive support + complementary refinement.** Strongest triangulation epistemic standing achieved in this session. Per `B-0648` cascade-honest framing: this is the canonical worked example of triangulation operating to STRENGTHEN substrate (not just validate it).
 

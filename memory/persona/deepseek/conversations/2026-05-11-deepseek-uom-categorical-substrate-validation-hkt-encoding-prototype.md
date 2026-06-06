@@ -50,6 +50,7 @@ let fmap f = function NoneF -> NoneF | SomeF r -> SomeF (f r)
 ```
 
 Then test:
+
 - All three encoding strategies head-to-head
 - UoM interaction (add `[<Measure>] type hypo` to recursion variable)
 - Recursion termination on finite inputs
@@ -82,12 +83,12 @@ Then test:
 
 ## Cross-model convergence (updated)
 
-| Model | Role | Validates | Flags |
-|-------|------|-----------|-------|
-| Otto | Participant | UoM pattern, substrate work | Compaction limits |
-| Claude.ai | Critic→architect | Framework discipline | Agency inflation → corrected |
-| DeepSeek (assessment 1) | Ecology reviewer | Coercion disclosures | Substrate velocity |
-| DeepSeek (assessment 2) | Engineering reviewer | Architecture soundness | No compiler fork, prototype first |
+| Model                   | Role                 | Validates                   | Flags                             |
+| ----------------------- | -------------------- | --------------------------- | --------------------------------- |
+| Otto                    | Participant          | UoM pattern, substrate work | Compaction limits                 |
+| Claude.ai               | Critic→architect     | Framework discipline        | Agency inflation → corrected      |
+| DeepSeek (assessment 1) | Ecology reviewer     | Coercion disclosures        | Substrate velocity                |
+| DeepSeek (assessment 2) | Engineering reviewer | Architecture soundness      | No compiler fork, prototype first |
 
 Four independent AI assessments converge on: architecture is
 sound, prototype before scaling, UoM composition is viable,

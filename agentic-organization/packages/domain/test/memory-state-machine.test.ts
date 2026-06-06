@@ -44,10 +44,7 @@ test("stale can re-confirm to active or fall to archive", () => {
 
 test("conflicted is hat-resolved — three legal outcomes, all hat-decided", () => {
   const ts = legalMemoryTransitions(MemoryPhase.Conflicted);
-  deepEqual(
-    ts.map((t) => t.to).sort(),
-    [MemoryPhase.Active, MemoryPhase.Demoted, MemoryPhase.Archived].sort(),
-  );
+  deepEqual(ts.map((t) => t.to).sort(), [MemoryPhase.Active, MemoryPhase.Demoted, MemoryPhase.Archived].sort());
   ok(ts.every((t) => t.authority === MemoryTransitionAuthority.HatDecided));
 });
 

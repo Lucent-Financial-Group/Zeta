@@ -23,12 +23,13 @@ Lands `.claude/rules/verify-existing-substrate-before-authoring.md` as the subst
 Empirically grounded in **3 same-root-cause failures from session 2026-05-26**:
 
 - **Anchor 1**: cascade #4 ISO audit asserted training-data-default `boot/grub/grub.cfg` path (NixOS actually uses isolinux + refind). Blocked 4 ISO builds. Fixed via PR #5125. Covered by `dep-pin-search-first-authority.md`.
-- **Anchor 2**: B-0806 Ace section authored without reading `docs/agendas/ace-package-manager/AGENDA.md` + project memory + 7+ related backlog rows. The maintainer 2026-05-26: *"that is what ace has been since we first talked about it you just keep forgetting we have substantial backlog around this"*. Fixed via PR #5130.
-- **Anchor 3**: B-0806 hat/fork-negotiation NOT integrated into architecture even after Anchor 2 correction. The maintainer 2026-05-26: *"i'm assuming you have the hat / fork negoation for ace too"*. Fixed via PR #5130 follow-on commit.
+- **Anchor 2**: B-0806 Ace section authored without reading `docs/agendas/ace-package-manager/AGENDA.md` + project memory + 7+ related backlog rows. The maintainer 2026-05-26: _"that is what ace has been since we first talked about it you just keep forgetting we have substantial backlog around this"_. Fixed via PR #5130.
+- **Anchor 3**: B-0806 hat/fork-negotiation NOT integrated into architecture even after Anchor 2 correction. The maintainer 2026-05-26: _"i'm assuming you have the hat / fork negoation for ace too"_. Fixed via PR #5130 follow-on commit.
 
 ## Same root cause class, different surface
 
 All 3 anchors are "Otto-defaults-to-plausible-but-unverified" — at different surfaces:
+
 - Version pins / path assertions → covered by `dep-pin-search-first-authority.md`
 - NEW substrate authoring (backlog rows, rules, skills, agenda entries, architectural framings) → covered by THIS rule
 - Existing-rule citation as alibi for action → covered by `fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`
@@ -38,6 +39,7 @@ Together the 3 rules cover the surfaces today's empirical evidence shows are vul
 ## Operational discipline (per the rule body)
 
 4-step pass before authoring new substrate:
+
 1. Grep across substrate surfaces (agendas + trajectories + backlog + rules + memory + research)
 2. READ THE TOP HITS (not just list them)
 3. Decide: existing-covers / partial / no-existing
@@ -62,6 +64,7 @@ Auto-loads at cold-boot per wake-time-substrate.
 Adds a new `.claude/rules/` wake-time substrate rule that formalizes a “search and read existing substrate before authoring new substrate” discipline, positioned as the substrate-authoring counterpart to `dep-pin-search-first-authority.md`.
 
 **Changes:**
+
 - Introduces `verify-existing-substrate-before-authoring.md` with a required pre-authoring inventory/search process and an inline checklist template.
 - Captures three empirical anchors from 2026-05-26 to justify the rule and keep the motivating evidence present at cold-boot.
 - Cross-references existing related rules to clarify composition across surfaces (dep pins, rule-citation failures, substrate authoring).
@@ -72,7 +75,7 @@ Adds a new `.claude/rules/` wake-time substrate rule that formalizes a “search
 
 **@copilot-pull-request-reviewer** (2026-05-26T08:32:14Z):
 
-The “Grep for the topic across substrate surfaces” snippet doesn’t actually grep agenda/trajectory *content* (it only filters directory names), and it also omits `.claude/skills/` even though skills are in-scope later in this rule. Consider switching to a content search over the authoritative files (e.g., `AGENDA.md`, trajectory `RESUME.md`, backlog markdown, rules, skills) so the inventory pass can’t miss substrate just because the directory/filename doesn’t contain the keyword.
+The “Grep for the topic across substrate surfaces” snippet doesn’t actually grep agenda/trajectory _content_ (it only filters directory names), and it also omits `.claude/skills/` even though skills are in-scope later in this rule. Consider switching to a content search over the authoritative files (e.g., `AGENDA.md`, trajectory `RESUME.md`, backlog markdown, rules, skills) so the inventory pass can’t miss substrate just because the directory/filename doesn’t contain the keyword.
 
 ### Thread 2: .claude/rules/verify-existing-substrate-before-authoring.md:38 (resolved)
 

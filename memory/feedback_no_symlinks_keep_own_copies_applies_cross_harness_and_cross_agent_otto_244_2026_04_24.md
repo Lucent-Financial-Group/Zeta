@@ -3,15 +3,16 @@ name: Hard veto — NO SYMLINKS. Aaron has tried symlinks before, they're unreli
 description: Aaron Otto-244 gave a hard durable veto on symlinks as a cross-reference mechanism — "i don't like the symlink option, it's not reliable we already tried it, this is another one where claude just needs to keep it's own version." Scope: any scenario where same content needs to appear in multiple places (cross-harness skill placement, per-agent memory cross-refs, cross-tree mirrors). Rule: copy, don't symlink. "Own version" per consumer. Composes with Otto-227 behaviour/data split.
 type: feedback
 ---
+
 ## The rule
 
 **No symlinks as a cross-reference / cross-placement mechanism in this repo.** Ever. Keep own copies.
 
 Direct Aaron quote:
 
-> *"i don't like the symlink option, it's not reliable we
+> _"i don't like the symlink option, it's not reliable we
 > already tried it, this is another one where claude just
-> needs to keep it's own version."*
+> needs to keep it's own version."_
 
 **Why:** symlinks break in practice across Aaron's environment:
 
@@ -40,9 +41,9 @@ copy, don't symlink. Each harness owns its canonical copy.
 Shared prose, rule tables, worked examples live in `docs/`
 and get text-referenced by each SKILL.md body.
 
-Aaron's exact phrasing: *"Also this might be the case for
+Aaron's exact phrasing: _"Also this might be the case for
 splitting codex and genimi into their connonical skills
-to."* — so Aaron is naming the implication explicitly.
+to."_ — so Aaron is naming the implication explicitly.
 
 ### 2. Per-named-agent memory folders
 
@@ -130,11 +131,11 @@ When tempted to add a symlink:
 
 ## Direct Aaron quote to preserve
 
-> *"i don't like the symlink option, it's not reliable we
+> _"i don't like the symlink option, it's not reliable we
 > already tried it, this is another one where claude just
 > needs to keep it's own version. Also this might be the
 > case for splitting codex and genimi into their
-> connonical skills to."*
+> connonical skills to."_
 
 Future Otto: when a research share or design proposal
 suggests a symlink for cross-placement, reject it by

@@ -93,7 +93,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [ ] Registration executed and confirmed (not just attempted)
 - [ ] At least one empirical fire observed (tick shard OR commit OR PR)
 - [ ] Tick shard for the empirical fire committed at
-  `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
+      `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
 - [ ] Any registration gotchas documented in `notes` field of `cloud-schedule.json`
 - [ ] B-0511 closed with PR link
 

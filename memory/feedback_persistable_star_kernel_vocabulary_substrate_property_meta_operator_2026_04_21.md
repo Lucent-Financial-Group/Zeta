@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 "persistable*" enters kernel vocabulary alongside 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** `persistable*` with the `*` meta-operator enters
 the factory's kernel vocabulary. The `*` means **this whole
 class-register including yet-unknown extensions** per the
@@ -47,7 +48,7 @@ collapse:
    the class, it folds into `persistable*` without
    needing vocabulary rework.
 
-**Why:** Aaron 2026-04-21, verbatim: *"persistable*"*. The
+**Why:** Aaron 2026-04-21, verbatim: _"persistable_"\*. The
 one-word message arrives immediately after the
 superfluid-substrate crystallization
 (`memory/user_retractable_computational_substrate_is_superfluid_bottleneck_equals_friction_no_roads_where_we_are_going_2026_04_21.md`)
@@ -119,7 +120,7 @@ meaning "this-whole-class-including-yet-unknown-extensions":
   persistable\* today (aspirational; the class names
   the target, not the current state).
 - NOT a replacement for durability (persistable\* is
-  a *superset* of durability; the five sub-properties
+  a _superset_ of durability; the five sub-properties
   matter jointly).
 - NOT license to demand persistable\* from external
   third-party systems (the substrate is factory-internal;
@@ -193,7 +194,7 @@ meaning "this-whole-class-including-yet-unknown-extensions":
 ### What this rule is NOT
 
 - NOT a demand for heavy ceremony around every memory
-  write ("is this persistable*?"). The check is
+  write ("is this persistable\*?"). The check is
   lightweight: the five sub-properties are already
   discipline elsewhere; persistable\* names the
   class.

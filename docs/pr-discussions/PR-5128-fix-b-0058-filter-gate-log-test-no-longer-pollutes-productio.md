@@ -46,6 +46,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Prevents `filter_gate_log` tests from writing `skill:test-entry` records into the real production ethics-decision log by adding a configurable log-path override and updating the polluting CLI test to write to a temp location.
 
 **Changes:**
+
 - Add `FILTER_GATE_LOG_PATH` env override to `logFilePath()` (default remains the repo log path).
 - Update the `--record` CLI test to write to a temp log file and assert the entry is actually written.
 
@@ -53,9 +54,9 @@ Prevents `filter_gate_log` tests from writing `skill:test-entry` records into th
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/alignment/filter_gate_log.ts | Adds env-var override for log path (keeps default repo log). |
+| File                                    | Description                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------------- |
+| tools/alignment/filter_gate_log.ts      | Adds env-var override for log path (keeps default repo log).                          |
 | tools/alignment/filter_gate_log.test.ts | Uses a temp directory + env override to keep tests from polluting the production log. |
 
 ## Review threads
@@ -64,7 +65,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 c
 
 **@copilot-pull-request-reviewer** (2026-05-26T08:16:35Z):
 
-P2: The comment says tests set FILTER_GATE_LOG_PATH to a tempdir, but logFilePath() treats it as the full log *file* path. If someone follows the comment and sets the env var to a directory, recordEntry() will attempt to append to a directory and fail (EISDIR). Suggest clarifying the comment to say it must be a file path (and optionally trimming whitespace so a value like "   " doesn’t get treated as a real path).
+P2: The comment says tests set FILTER_GATE_LOG_PATH to a tempdir, but logFilePath() treats it as the full log _file_ path. If someone follows the comment and sets the env var to a directory, recordEntry() will attempt to append to a directory and fail (EISDIR). Suggest clarifying the comment to say it must be a file path (and optionally trimming whitespace so a value like " " doesn’t get treated as a real path).
 
 ### Thread 2: tools/alignment/filter_gate_log.test.ts:328 (resolved)
 

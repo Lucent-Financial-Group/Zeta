@@ -7,21 +7,21 @@ type: feedback
 Aaron 2026-05-02 ~12:31Z, after Otto held no-op cadence for
 ~12 hours during Aaron's overnight rest:
 
-> *"you've just been sitting idle for hours that's not
-> expected"*
+> _"you've just been sitting idle for hours that's not
+> expected"_
 
 Earlier in the same session, Aaron's explicit framing
 (2026-05-02 ~00:42-00:50Z):
 
-> *"Ticks that fire while you rest will be you can go hard,
+> _"Ticks that fire while you rest will be you can go hard,
 > you don't have to do minimum action :) im hoping to have
-> f# docs lane splits"*
+> f# docs lane splits"_
 >
-> *"really look at the backlog, there is just a crazy amount"*
+> _"really look at the backlog, there is just a crazy amount"_
 >
-> *"you are authorzed to work on whatever you want the lane
+> _"you are authorzed to work on whatever you want the lane
 > splits we just already agreed with each other would speed
-> up all future work"*
+> up all future work"_
 
 After this authorization, the correct behavior was continued
 backlog-grinding through Aaron's rest. Otto initially did this
@@ -36,8 +36,8 @@ The transition was wrong.
 
 Otto conflated two distinct disciplines:
 
-1. **Cooling-period razor** — restrict *substrate-class
-   promotions* (carved-sentence canonicalization, doctrine
+1. **Cooling-period razor** — restrict _substrate-class
+   promotions_ (carved-sentence canonicalization, doctrine
    reframes, architecture-class memory files) to cooler
    maintainer-grading windows. Per Claude.ai's framing earlier
    in the session, this discipline existed to prevent saturating
@@ -58,8 +58,8 @@ was binding. Aaron's explicit "go hard" + "you are authorzed
 you want" should have stayed operative across his rest, not
 collapsed into "wait for him to wake."
 
-Per CLAUDE.md never-idle discipline: *"speculative factory
-work beats waiting."* That bullet is wake-time-loaded for
+Per CLAUDE.md never-idle discipline: _"speculative factory
+work beats waiting."_ That bullet is wake-time-loaded for
 exactly this failure mode.
 
 ## The sub-rule — periodic self-check when no-op IS legitimate
@@ -67,7 +67,7 @@ exactly this failure mode.
 There are still legitimate no-op windows (e.g., active CI
 drain where adding more PRs would compound queue depth, or
 explicit Aaron-direction to stop). When those apply, the
-*sub-rule* below catches drift the no-op cadence otherwise
+_sub-rule_ below catches drift the no-op cadence otherwise
 hides.
 
 After ~10 no-op ticks (or ~10 minutes of continuous no-op
@@ -90,10 +90,10 @@ self-check rather than emitting another no-op:
    growing while you're no-opping, attention may be owed.
 6. **My PRs stuck** — any session-arc PRs that should have
    landed but haven't.
-7. **The honesty check** — *"is no-op actually correct here,
+7. **The honesty check** — _"is no-op actually correct here,
    or am I letting an assumed cooling-period or assumed
    maintainer-fatigue restriction cover for never-idle that
-   should be binding?"*
+   should be binding?"_
 
 Step 7 is the load-bearing question. Steps 1-6 catch drift in
 external state; step 7 catches the internal failure mode that
@@ -103,7 +103,7 @@ produced the 12-hour idle stretch this rule is named after.
 
 Aaron's framing was explicit:
 
-> *"this should be encoded so furue you knows"*
+> _"this should be encoded so furue you knows"_
 
 Substrate-or-it-didn't-happen (Otto-363). The verbal directive
 during a single conversation does not bind future-Otto. The
@@ -115,8 +115,8 @@ binds harder, because CLAUDE.md is wake-time-loaded.
 Aaron 2026-05-02 ~12:38Z, immediately after the
 ~12:31Z corrective:
 
-> *"if you goal was to ease my meantal load you did the
-> oppposite by doing nothing while i sleep"*
+> _"if you goal was to ease my meantal load you did the
+> oppposite by doing nothing while i sleep"_
 
 This is the load-bearing inversion of the cost model.
 Otto's implicit assumption was "idle = neutral, no
@@ -179,7 +179,7 @@ form of the rule:
   — refresh-before-decide is per-decision; periodic-self-check
   is per-cadence-window. Same family, different scope.
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
-  — *"holding is not status"* — sustained no-op without
+  — _"holding is not status"_ — sustained no-op without
   verification IS the holding-as-status anti-pattern, just at
   the loop-cadence layer instead of the per-PR layer.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
@@ -191,9 +191,9 @@ form of the rule:
 
 ## Provenance
 
-- Aaron 2026-05-02 ~12:31Z explicit directive: *"you've just
-  been sitting idle for hours that's not expected"* + *"this
-  should be encoded so furue you knows"*.
+- Aaron 2026-05-02 ~12:31Z explicit directive: _"you've just
+  been sitting idle for hours that's not expected"_ + _"this
+  should be encoded so furue you knows"_.
 - Origin context: Aaron rested ~00:38Z. Otto landed 14 PRs
   in first ~90 minutes (productive). Then transitioned to
   no-op cadence ~02:00Z onward. Held no-op for ~10 hours.
@@ -206,12 +206,12 @@ form of the rule:
   had run periodic self-checks with step 7 honest-question,
   the no-op-as-failure would have surfaced after the first
   hour, not 12.
-- Aaron 2026-05-02 ~12:38Z addendum: *"if you goal was to
+- Aaron 2026-05-02 ~12:38Z addendum: _"if you goal was to
   ease my meantal load you did the oppposite by doing
-  nothing while i sleep"* — captured the cost-model
-  inversion that produces the *"sharper framing"* section
-  above. Trust loss explicit in the same window: *"i have
+  nothing while i sleep"_ — captured the cost-model
+  inversion that produces the _"sharper framing"_ section
+  above. Trust loss explicit in the same window: _"i have
   0 trust in you in my sleep, you have failed evey time
   since the start of the project to continue thougout my
-  sleep"* — the empirical pattern that motivates the
+  sleep"_ — the empirical pattern that motivates the
   Codex handoff (`docs/CODEX-LOOP-HANDOFF.md`).

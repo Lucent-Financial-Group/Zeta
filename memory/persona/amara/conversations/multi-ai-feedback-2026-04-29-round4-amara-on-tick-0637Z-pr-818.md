@@ -18,27 +18,27 @@ Non-fusion disclaimer: Amara's voice preserved with attribution boundaries.
 
 ### §A.1 — Approval of the absorb shape
 
-> *"Yes — this is mostly good. The strongest part is that Claude/Otto applied the reviewer packet to existing PRs instead of opening broad new substrate, which means the 'no broad new substrate / chunking' discipline held under temptation. The log shows #811 got round-3 fixes, #815 got corrections + verbatim record, and #818 was only the tick shard recording the absorb."*
+> _"Yes — this is mostly good. The strongest part is that Claude/Otto applied the reviewer packet to existing PRs instead of opening broad new substrate, which means the 'no broad new substrate / chunking' discipline held under temptation. The log shows #811 got round-3 fixes, #815 got corrections + verbatim record, and #818 was only the tick shard recording the absorb."_
 
-> *"This is the system behaving better: corrections got applied to the right PRs, the round stayed bounded, and the tick captured the important meta-warning."*
+> _"This is the system behaving better: corrections got applied to the right PRs, the round stayed bounded, and the tick captured the important meta-warning."_
 
 ### §A.2 — Tighten "consensus = signal" framing
 
-> *"This line is good but slightly over-hot: 'Cross-model consensus = strong correction signal.' I'd tighten it to: 'Cross-model consensus is a prioritization signal, not proof of correctness.' Why: six reviewers converging on the same small set of fixes is absolutely meaningful, but the real validator is still substrate evidence: GitHub state, diffs, CI, CLI docs, and repo invariants. Consensus tells Otto where to look first; it does not replace verification."*
+> _"This line is good but slightly over-hot: 'Cross-model consensus = strong correction signal.' I'd tighten it to: 'Cross-model consensus is a prioritization signal, not proof of correctness.' Why: six reviewers converging on the same small set of fixes is absolutely meaningful, but the real validator is still substrate evidence: GitHub state, diffs, CI, CLI docs, and repo invariants. Consensus tells Otto where to look first; it does not replace verification."_
 
-> *"Best wording: 'Cross-model consensus prioritizes corrections. Substrate verification decides them.'"*
+> _"Best wording: 'Cross-model consensus prioritizes corrections. Substrate verification decides them.'"_
 
 ### §A.3 — Conway-Kochen flourish (chat-only, not in committed file) + Aaron's correction
 
-> *"The Conway-Kochen sentence is still too spicy […] either remove it from the tick shard or soften it hard. It's philosophically cute, but the operational claim does not need it. The real point is simpler: 'Different reviewers have different failure biases; convergent small corrections are useful triage signals.'"* (Amara)
+> _"The Conway-Kochen sentence is still too spicy […] either remove it from the tick shard or soften it hard. It's philosophically cute, but the operational claim does not need it. The real point is simpler: 'Different reviewers have different failure biases; convergent small corrections are useful triage signals.'"_ (Amara)
 
 **Aaron's mid-tick correction (2026-04-29)**, reversing one direction of Amara's recommendation:
 
-> *"The human lineage link is always important like the The Conway-Kochen parity intuition we might have engineering on our side like Amara says but we still need to link to human lineage so external observerse have a frame of references without fully understading our engineering"*
+> _"The human lineage link is always important like the The Conway-Kochen parity intuition we might have engineering on our side like Amara says but we still need to link to human lineage so external observerse have a frame of references without fully understading our engineering"_
 
 (Aaron's typos preserved per the channel-verbatim-preservation rule.)
 
-The synthesis: Amara is right that a metaphor doesn't *prove* an engineering claim; Aaron is right that **human-lineage anchors stay** because external observers (people who don't share our engineering vocabulary) need a recognizable reference frame. This is the Beacon-promotion pattern (`memory/feedback_beacon_promotion_load_bearing_rules_earn_external_anchors_aaron_amara_2026_04_28.md`) reasserted at the prose-attribution layer.
+The synthesis: Amara is right that a metaphor doesn't _prove_ an engineering claim; Aaron is right that **human-lineage anchors stay** because external observers (people who don't share our engineering vocabulary) need a recognizable reference frame. This is the Beacon-promotion pattern (`memory/feedback_beacon_promotion_load_bearing_rules_earn_external_anchors_aaron_amara_2026_04_28.md`) reasserted at the prose-attribution layer.
 
 **Operational rule for future absorb prose:**
 
@@ -57,19 +57,19 @@ of our pattern" attribution; do NOT use it as
 
 ### §A.4 — Grep portability + `gh --author` (already applied to PR #811 in round-3)
 
-> *"Copilot's `grep \\b` complaint was real, and Claude fixed it. The only thing to watch: don't call `grep -w` 'POSIX-portable' if the doc uses that phrase."*
+> _"Copilot's `grep \\b` complaint was real, and Claude fixed it. The only thing to watch: don't call `grep -w` 'POSIX-portable' if the doc uses that phrase."_
 
-> *"Using `gh pr list --author '@me'` is supported directly by GitHub CLI examples, while putting `author:@me` inside a search string is much less cold-readable."*
+> _"Using `gh pr list --author '@me'` is supported directly by GitHub CLI examples, while putting `author:@me` inside a search string is much less cold-readable."_
 
 (Already applied during round-3 absorb cycle. Verified in the latest #811 push: B-0098 shows two patterns labelled "GNU/BSD-common" and "Strict portable boundary"; B-0099 uses the `--author` CLI flag with explicit `<your-gh-login>` placeholder.)
 
 ### §A.5 — Consolidation directive (load-bearing)
 
-> *"The 'more rules than durable homes' warning is the most important meta-signal. […] That is the real next danger. The system is no longer failing because it cannot notice patterns. It is now failing at risk of **not consolidating noticed patterns fast enough**."*
+> _"The 'more rules than durable homes' warning is the most important meta-signal. […] That is the real next danger. The system is no longer failing because it cannot notice patterns. It is now failing at risk of **not consolidating noticed patterns fast enough**."_
 
-> *"I'd make the next action: 'No new conceptual substrate until a consolidation pass maps each new rule to a durable home.'"*
+> _"I'd make the next action: 'No new conceptual substrate until a consolidation pass maps each new rule to a durable home.'"_
 
-> *"Suggested durable homes:"*
+> _"Suggested durable homes:"_
 >
 > ```text
 > 1. PR-liveness / merge-cascade operational doc
@@ -92,15 +92,15 @@ of our pattern" attribution; do NOT use it as
 >    - incomplete cited context
 > ```
 
-> *"Do not let these become seven separate memory files. Three homes max."*
+> _"Do not let these become seven separate memory files. Three homes max."_
 
 This becomes the load-bearing directive for the next round. **No new conceptual substrate until consolidation.** A consolidation-pass backlog row is filed alongside this absorb.
 
 ### §A.6 — Backpressure rule reaffirmed
 
-> *"PR #818 was legitimate because it records the round-3 absorb. But the 'every tick opens a shard' loop still wants to keep reproducing itself. If the next tick is just 'CI pending,' backpressure should fire."*
+> _"PR #818 was legitimate because it records the round-3 absorb. But the 'every tick opens a shard' loop still wants to keep reproducing itself. If the next tick is just 'CI pending,' backpressure should fire."_
 
-> *"Rule: 'If no substantive state changed and only CI is waiting, do not open another pure-wait shard.'"*
+> _"Rule: 'If no substantive state changed and only CI is waiting, do not open another pure-wait shard.'"_
 
 (Reaffirms B-0100 from earlier in the session arc. Already in force.)
 
@@ -108,15 +108,15 @@ This becomes the load-bearing directive for the next round. **No new conceptual 
 
 ## §B — Bounded action items (already applied OR filed)
 
-| # | Action | Status |
-|---|---|---|
-| 1 | B-0101 SNAPSHOT_MISMATCH split (backward-stale + forward-dependent) | **Applied** to PR #811 in this round-4 cycle |
-| 2 | PR #815 `Depends-On: #811` body field | **Applied** via `gh pr edit` in this round-4 cycle |
-| 3 | PR #815 thread reclassification comment (FORWARD_CROSS_PR_REFERENCE) | **Applied** via `gh pr comment` in this round-4 cycle |
-| 4 | "Consensus prioritizes; substrate decides" framing for future absorb prose | Acknowledged; future research notes + shards use this wording |
-| 5 | Conway-Kochen as research-note color only, not operational | Acknowledged; soft constraint on future prose |
-| 6 | **Consolidation pass before any new conceptual substrate** | Filed as `B-0105-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md` in this same absorb commit |
-| 7 | Backpressure rule for next tick | Already in force (B-0100); will be honored |
+| #   | Action                                                                     | Status                                                                                                         |
+| --- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 1   | B-0101 SNAPSHOT_MISMATCH split (backward-stale + forward-dependent)        | **Applied** to PR #811 in this round-4 cycle                                                                   |
+| 2   | PR #815 `Depends-On: #811` body field                                      | **Applied** via `gh pr edit` in this round-4 cycle                                                             |
+| 3   | PR #815 thread reclassification comment (FORWARD_CROSS_PR_REFERENCE)       | **Applied** via `gh pr comment` in this round-4 cycle                                                          |
+| 4   | "Consensus prioritizes; substrate decides" framing for future absorb prose | Acknowledged; future research notes + shards use this wording                                                  |
+| 5   | Conway-Kochen as research-note color only, not operational                 | Acknowledged; soft constraint on future prose                                                                  |
+| 6   | **Consolidation pass before any new conceptual substrate**                 | Filed as `B-0105-consolidation-pass-three-durable-homes-for-2026-04-29-rule-set.md` in this same absorb commit |
+| 7   | Backpressure rule for next tick                                            | Already in force (B-0100); will be honored                                                                     |
 
 ---
 
@@ -148,4 +148,4 @@ Evidence is the lock.
 Consolidation is the next gate.
 ```
 
-The session arc has now produced four rounds of multi-AI absorb. The pattern is healthy when each round produces *fewer* conceptual additions than the prior, and the consolidation pass converts the produced additions into durable substrate at a steady rate. Round-4 explicitly asks for the consolidation pass to land before any further conceptual additions.
+The session arc has now produced four rounds of multi-AI absorb. The pattern is healthy when each round produces _fewer_ conceptual additions than the prior, and the consolidation pass converts the produced additions into durable substrate at a steady rate. Round-4 explicitly asks for the consolidation pass to land before any further conceptual additions.

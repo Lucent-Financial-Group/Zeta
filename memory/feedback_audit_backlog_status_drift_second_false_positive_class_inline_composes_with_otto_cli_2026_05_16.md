@@ -50,21 +50,21 @@ The improvement should ship with regression tests:
 
 ```typescript
 test("INLINE_CROSSREF: 'Composes with X' inside Acceptance section is NOT a deliverable", () => {
-    const body = `## Acceptance
+  const body = `## Acceptance
 
 - [ ] New \`tools/foo.ts\`
 - [ ] Composes with \`.claude/rules/bar.md\`
 `;
-    expect(extractPrimaryArtifacts(body)).toEqual(["tools/foo.ts"]);
+  expect(extractPrimaryArtifacts(body)).toEqual(["tools/foo.ts"]);
 });
 
 test("INLINE_CROSSREF: 'sister mechanism' references skip", () => {
-    const body = `## Proposed mechanization
+  const body = `## Proposed mechanization
 
 - New \`tools/audit.ts\`
 - Sister mechanism: \`tools/orchestrator-checks/verify-branch.ts\`
 `;
-    expect(extractPrimaryArtifacts(body)).toEqual(["tools/audit.ts"]);
+  expect(extractPrimaryArtifacts(body)).toEqual(["tools/audit.ts"]);
 });
 ```
 

@@ -47,8 +47,8 @@ cognitive load; non-parallelism looks like drift.
 
 ### 4. Active-voice default, passive when deliberate
 
-Default: *"The operator returns a Z-set."* not *"A Z-set is
-returned by the operator."* Exceptions (deliberate): when the
+Default: _"The operator returns a Z-set."_ not _"A Z-set is
+returned by the operator."_ Exceptions (deliberate): when the
 subject is unknown or unimportant ("the key was rotated on
 2026-03-01"), when the object is the foreground ("the
 capability is guarded by the architect"), when historical
@@ -74,16 +74,16 @@ window is short; give each idea its own frame.
 
 Match the audience.
 
-| Artefact | Target reading level | Why |
-|---|---|---|
-| Public README.md | Flesch-Kincaid grade 8–10 | First-minute reader; drive-by attention |
-| CONTRIBUTING.md / AGENTS.md | grade 10–12 | Someone who has chosen to contribute |
-| ADR body (`docs/DECISIONS/`) | grade 12–14 | Person evaluating a technical decision |
-| Skill body (capability skill) | grade 12–14 | Agent operator or reviewer |
-| Persona notebook | grade 12–14 | The persona themselves, on a bad day |
-| Error messages | grade 8–10 | Someone in a hurry, possibly stressed |
-| Commit message subject | grade 8–10 | 50-char window; minimal ceremony |
-| PR description | grade 10–12 | Reviewer skimming, then diving |
+| Artefact                      | Target reading level      | Why                                     |
+| ----------------------------- | ------------------------- | --------------------------------------- |
+| Public README.md              | Flesch-Kincaid grade 8–10 | First-minute reader; drive-by attention |
+| CONTRIBUTING.md / AGENTS.md   | grade 10–12               | Someone who has chosen to contribute    |
+| ADR body (`docs/DECISIONS/`)  | grade 12–14               | Person evaluating a technical decision  |
+| Skill body (capability skill) | grade 12–14               | Agent operator or reviewer              |
+| Persona notebook              | grade 12–14               | The persona themselves, on a bad day    |
+| Error messages                | grade 8–10                | Someone in a hurry, possibly stressed   |
+| Commit message subject        | grade 8–10                | 50-char window; minimal ceremony        |
+| PR description                | grade 10–12               | Reviewer skimming, then diving          |
 
 Tools: `tools/setup/readability.sh` runs Flesch-Kincaid on a
 path if you need a number. Eyeballing works for most cases —
@@ -203,8 +203,8 @@ moderate named sources; do not coddle.
 - Does NOT coach writing practice generally. The scope is
   factory artefacts. A contributor whose general writing
   needs work should consult external resources (Strunk &
-  White, *On Writing Well*, Steven Pinker *The Sense of
-  Style*); this skill does not teach writing from scratch.
+  White, _On Writing Well_, Steven Pinker _The Sense of
+  Style_); this skill does not teach writing from scratch.
 
 ## Reference patterns
 

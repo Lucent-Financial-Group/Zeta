@@ -36,11 +36,15 @@ export function createCockroachTenantConfigStore(input: CreateCockroachTenantCon
       });
       const row = r.rows[0];
       if (row === undefined) return null;
-      const config = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) as Omit<TenantConfig, "organizationId" | "updatedAt" | "version">;
+      const config = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) as Omit<
+        TenantConfig,
+        "organizationId" | "updatedAt" | "version"
+      >;
       return {
         organizationId: row.organization_id,
         ...config,
-        updatedAt: row.updated_at instanceof Date ? row.updated_at.toISOString() : new Date(row.updated_at).toISOString(),
+        updatedAt:
+          row.updated_at instanceof Date ? row.updated_at.toISOString() : new Date(row.updated_at).toISOString(),
         version: typeof row.version === "number" ? row.version : Number(row.version),
       };
     },

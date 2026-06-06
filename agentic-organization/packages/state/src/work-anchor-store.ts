@@ -50,8 +50,7 @@ export const WorkAnchorConflictReason = {
   WorkItemMismatch: "work_item_mismatch",
 } as const;
 
-export type WorkAnchorConflictReason =
-  (typeof WorkAnchorConflictReason)[keyof typeof WorkAnchorConflictReason];
+export type WorkAnchorConflictReason = (typeof WorkAnchorConflictReason)[keyof typeof WorkAnchorConflictReason];
 
 export type WorkAnchorPersistenceResult =
   | {
@@ -320,10 +319,7 @@ function createConflictResult(reason: WorkAnchorConflictReason): WorkAnchorPersi
   };
 }
 
-function compareWorkStateTransitions(
-  left: PersistedWorkStateTransition,
-  right: PersistedWorkStateTransition,
-): number {
+function compareWorkStateTransitions(left: PersistedWorkStateTransition, right: PersistedWorkStateTransition): number {
   if (left.sequence === right.sequence) {
     return left.workStateTransitionId.localeCompare(right.workStateTransitionId);
   }

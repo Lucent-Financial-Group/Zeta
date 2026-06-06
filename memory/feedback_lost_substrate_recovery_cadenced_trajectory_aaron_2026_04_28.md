@@ -8,9 +8,9 @@ type: feedback
 
 ## The framing (Aaron 2026-04-28)
 
-> *"probably a trajectory this is recovery work we should do
+> _"probably a trajectory this is recovery work we should do
 > forever on a cadence these kind of lost things could always
-> build up."*
+> build up."_
 
 Lost substrate is not a one-time backlog item; it's a **steady-
 state side effect** of parallel work. The factory continuously
@@ -68,22 +68,22 @@ backlog/, frontier-readiness/, docs/, ci/, tools/) branches.
 
 **Audit results** (Step 3 content-equivalence classification):
 
-| Branch | Files | NEW (genuinely unrecovered) | Status |
-|---|---|---|---|
-| `feat/live-lock-audit-and-db-gaps` | 31 | 2 (`samples/ServiceTitanCrm/*`) | ALREADY-COVERED + 2 OBSOLETE (renamed per task #244) |
-| `tools/pr-preservation-phase-2-minimal` | 14 | 0 | ALREADY-COVERED |
-| `feat/servicetitan-factory-demo-api-csharp` | 17 | 0 | ALREADY-COVERED (renamed per task #244) |
-| `craft/production-dotnet-checked-vs-unchecked-v0` | 3 | 0 | ALREADY-COVERED |
-| `ci/final-matrix-macos-26-ubuntu-24-plus-arm-plus-slim` | 10 | 1 | NEEDS-FOLLOWUP — single new file, low scope |
-| `feat/graph-cohesion-exclusivity-conductance` | 3 | 1 | NEEDS-FOLLOWUP — single new file |
-| `docs/adr-per-maintainer-current-memory` | 1 | 0 | ALREADY-COVERED |
-| `feat/graph-cohesion-conductance-plus-windowed-stake-covariance` | 2 | 0 | ALREADY-COVERED |
-| `frontier-readiness/audit-planning-files-batch` | 2 | 0 | ALREADY-COVERED |
-| `frontier-readiness/audit-tech-radar-and-factory-hygiene` | 1 | 0 | ALREADY-COVERED |
-| `frontier-readiness/audit-alignment-md` | 1 | 0 | ALREADY-COVERED |
-| `backlog/pre-landing-sanitizer-for-ferry-lint` | 1 | 0 | ALREADY-COVERED |
-| `backlog/claude-cli-agent-flag-research-map` | 1 | 0 | ALREADY-COVERED |
-| **Total: 13 branches** | **87 files** | **4 NEW** | 11/13 fully ALREADY-COVERED |
+| Branch                                                           | Files        | NEW (genuinely unrecovered)     | Status                                               |
+| ---------------------------------------------------------------- | ------------ | ------------------------------- | ---------------------------------------------------- |
+| `feat/live-lock-audit-and-db-gaps`                               | 31           | 2 (`samples/ServiceTitanCrm/*`) | ALREADY-COVERED + 2 OBSOLETE (renamed per task #244) |
+| `tools/pr-preservation-phase-2-minimal`                          | 14           | 0                               | ALREADY-COVERED                                      |
+| `feat/servicetitan-factory-demo-api-csharp`                      | 17           | 0                               | ALREADY-COVERED (renamed per task #244)              |
+| `craft/production-dotnet-checked-vs-unchecked-v0`                | 3            | 0                               | ALREADY-COVERED                                      |
+| `ci/final-matrix-macos-26-ubuntu-24-plus-arm-plus-slim`          | 10           | 1                               | NEEDS-FOLLOWUP — single new file, low scope          |
+| `feat/graph-cohesion-exclusivity-conductance`                    | 3            | 1                               | NEEDS-FOLLOWUP — single new file                     |
+| `docs/adr-per-maintainer-current-memory`                         | 1            | 0                               | ALREADY-COVERED                                      |
+| `feat/graph-cohesion-conductance-plus-windowed-stake-covariance` | 2            | 0                               | ALREADY-COVERED                                      |
+| `frontier-readiness/audit-planning-files-batch`                  | 2            | 0                               | ALREADY-COVERED                                      |
+| `frontier-readiness/audit-tech-radar-and-factory-hygiene`        | 1            | 0                               | ALREADY-COVERED                                      |
+| `frontier-readiness/audit-alignment-md`                          | 1            | 0                               | ALREADY-COVERED                                      |
+| `backlog/pre-landing-sanitizer-for-ferry-lint`                   | 1            | 0                               | ALREADY-COVERED                                      |
+| `backlog/claude-cli-agent-flag-research-map`                     | 1            | 0                               | ALREADY-COVERED                                      |
+| **Total: 13 branches**                                           | **87 files** | **4 NEW**                       | 11/13 fully ALREADY-COVERED                          |
 
 **Content-loss-surface for these 13 branches: 4 files.**
 
@@ -131,12 +131,12 @@ Filed as **B-0090**: cadenced lost-substrate audit. Specifies:
 
 Per Class Validation Beads accounting:
 
-| Class | Beads | Mechanism |
-|---|---|---|
-| Reset-Readiness Metric Ladder | +1 | applied to worktree-recovery surface; Step 3 classification produced 13× content-loss reduction (12,000 lines → 4 files) |
-| Content-Loss Surface Supersedes Divergence Count | +1 | predicted result; observation matches |
-| Authority Rule (default to preservation) | +1 | preserved 12 fully-covered branches by classification rather than blind prune |
-| Class-Count Validity Drift | +1 | caught the "57 worktrees of lost work" count-as-evidence trap |
+| Class                                            | Beads | Mechanism                                                                                                                |
+| ------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------ |
+| Reset-Readiness Metric Ladder                    | +1    | applied to worktree-recovery surface; Step 3 classification produced 13× content-loss reduction (12,000 lines → 4 files) |
+| Content-Loss Surface Supersedes Divergence Count | +1    | predicted result; observation matches                                                                                    |
+| Authority Rule (default to preservation)         | +1    | preserved 12 fully-covered branches by classification rather than blind prune                                            |
+| Class-Count Validity Drift                       | +1    | caught the "57 worktrees of lost work" count-as-evidence trap                                                            |
 
 ## What this rule does NOT do
 
@@ -174,6 +174,6 @@ When asked "what happened to X?":
 
 ## Direct Aaron framing
 
-> *"probably a trajectory this is recovery work we should do
+> _"probably a trajectory this is recovery work we should do
 > forever on a cadence these kind of lost things could
-> always build up."*
+> always build up."_

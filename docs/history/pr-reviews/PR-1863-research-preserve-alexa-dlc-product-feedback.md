@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1863 |
-| Title | research: preserve Alexa DLC product feedback |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T11:25:34Z |
-| Merged at | 2026-05-07T11:28:03Z |
-| Merge commit SHA | `557ac3649a7a1f1bbb6487ffb28c77da95cadc1b` |
-| Branch | `codex/alexa-dlc-product-feedback-absorb` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1863 |
-| Changed files | 2 |
-| Additions / deletions | +125 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1863                                                     |
+| Title                 | research: preserve Alexa DLC product feedback            |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T11:25:34Z                                     |
+| Merged at             | 2026-05-07T11:28:03Z                                     |
+| Merge commit SHA      | `557ac3649a7a1f1bbb6487ffb28c77da95cadc1b`               |
+| Branch                | `codex/alexa-dlc-product-feedback-absorb`                |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1863 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +125 / -0                                                |
 
 ## Description
 
@@ -39,18 +39,17 @@
 - git diff --check
 - PATH=/opt/homebrew/bin:/Users/acehack/.bun/bin:$PATH bun tools/hygiene/check-archive-header-section33.ts memory/persona/alexa/conversations/2026-05-07-alexa-dlc-product-research-loop-feedback.md
 
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

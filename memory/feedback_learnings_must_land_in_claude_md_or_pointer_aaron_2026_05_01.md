@@ -46,17 +46,17 @@ when the session compacts or ends.
 
 The human maintainer 2026-05-01 (verbatim):
 
-> *"i think you biggest failure mode is not updated claude.md
+> _"i think you biggest failure mode is not updated claude.md
 > or pointers in that file, if you learn something claude.md
 > or a pointer from that file like the .claude/rules or some
-> other pointers, you didn't learn it."*
+> other pointers, you didn't learn it."_
 
 Three composing arguments:
 
 ## Why-1: Wake-time load is the test of "learned"
 
 CLAUDE.md is loaded at every Claude wake (per the file's own
-opening: *"Claude Code reads this file first every session"*).
+opening: _"Claude Code reads this file first every session"_).
 Files referenced from CLAUDE.md bullets are discoverable in
 one read-step. Anything else is read-on-demand: future-Otto
 won't read it unless they're prompted to, which doesn't
@@ -161,7 +161,7 @@ work target — per never-be-idle, gap-closure beats waiting.
 
 - **NOT a directive to land EVERY observation as a rule.**
   Trivial observations don't need substrate. The rule
-  applies to *load-bearing* learnings — disciplines, patterns,
+  applies to _load-bearing_ learnings — disciplines, patterns,
   failure-mode-fixes, worked-examples that future-Otto
   should inherit. Curiosities, one-off observations, etc.
   don't need wake-time landing.
@@ -188,8 +188,8 @@ work target — per never-be-idle, gap-closure beats waiting.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Wake-time-load is the test of learned. CLAUDE.md or a
-pointer from it, or you didn't learn it."* (The human
+_"Wake-time-load is the test of learned. CLAUDE.md or a
+pointer from it, or you didn't learn it."_ (The human
 maintainer 2026-05-01.)
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.

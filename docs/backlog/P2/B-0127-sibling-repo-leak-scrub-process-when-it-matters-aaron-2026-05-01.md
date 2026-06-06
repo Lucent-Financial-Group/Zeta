@@ -11,19 +11,19 @@ type: friction-reducer
 
 # B-0127 — Sibling-repo leak scrub-process: design + decision-criteria for when scrubbing matters
 
-**Priority:** P2 (future-defensive; not blocking critical-path; the parent rule already prevents most leaks at write-time, this row is for the *cleanup* path when prevention fails)
+**Priority:** P2 (future-defensive; not blocking critical-path; the parent rule already prevents most leaks at write-time, this row is for the _cleanup_ path when prevention fails)
 
 **Filed:** 2026-05-01
 
-**Filed by:** Otto under delegated backlog-prioritization authority. Filed in response to Aaron's framing 2026-05-01: *"that's fine, mistakes happen, thats why i did it here"* + *"you can leave your mistake"* + *"you should backlog a scrub process for future mistakes when it matters, we should leave this one even then"*.
+**Filed by:** Otto under delegated backlog-prioritization authority. Filed in response to Aaron's framing 2026-05-01: _"that's fine, mistakes happen, thats why i did it here"_ + _"you can leave your mistake"_ + _"you should backlog a scrub process for future mistakes when it matters, we should leave this one even then"_.
 
 **Effort:** S (4-8 hours — design the decision-criteria + the scrub mechanism + the audit-trail-preservation discipline; write fresh; no implementation needed in this row, just the design + criteria document)
 
 ## Why this exists
 
-The parent rule `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` prevents most sibling-repo internals from leaking into Zeta documents at write-time. When the rule is followed, no scrub is needed. This row covers the *cleanup* path: what to do when the rule fails and a leak lands on substrate.
+The parent rule `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` prevents most sibling-repo internals from leaking into Zeta documents at write-time. When the rule is followed, no scrub is needed. This row covers the _cleanup_ path: what to do when the rule fails and a leak lands on substrate.
 
-The triggering incident: a row authored 2026-05-01 violated the parent rule by importing internal names from a sibling repo's own self-references. Aaron caught it; the row was cleaned up locally on the authoring branch but not before the leaky version had already landed via squash-merge to main (commit message included). Aaron's framing: leave this one as-is (it's the learning evidence in his experimental sibling-repo space), and design a scrub-process for *future* mistakes where scrubbing actually matters.
+The triggering incident: a row authored 2026-05-01 violated the parent rule by importing internal names from a sibling repo's own self-references. Aaron caught it; the row was cleaned up locally on the authoring branch but not before the leaky version had already landed via squash-merge to main (commit message included). Aaron's framing: leave this one as-is (it's the learning evidence in his experimental sibling-repo space), and design a scrub-process for _future_ mistakes where scrubbing actually matters.
 
 ## What
 
@@ -42,7 +42,7 @@ Design + document a scrub-process covering three load-bearing pieces:
    - External-fetch implications (anyone who cloned at the leaky-commit window keeps the leak in their local history; scrubbing main doesn't reach them).
 
 3. **Audit-trail preservation: scrubbing without lying about what happened.**
-   - When a leak is scrubbed, the *fact* that it was scrubbed must remain as substrate. Memory file or ADR linking the original-incident → the scrub-PR → the class-level lesson encoded.
+   - When a leak is scrubbed, the _fact_ that it was scrubbed must remain as substrate. Memory file or ADR linking the original-incident → the scrub-PR → the class-level lesson encoded.
    - Aaron's framing: in his experimental space, the mistake-as-substrate IS the value. In production substrate, the mistake-as-substrate moves to the audit-record while the leak-content gets removed from operational visibility.
    - The audit record itself MUST NOT re-leak (a meta-rule — naming the original leak in the audit record would defeat the scrub).
 
@@ -72,7 +72,7 @@ When this row is implemented:
 - **Automated leak-detection.** That's prevention-layer work; the parent rule + write-time author discipline cover it. If a lint/auditor is needed, file a separate row.
 - **Rewriting any historical commit on main.** Forbidden per CLAUDE.md, host-enforced via the `non_fast_forward` ruleset (no bypass actors). NOT a sign-off-able escalation; out-of-scope entirely. The row documents the constraint, not the path.
 - **The triggering incident itself.** Per Aaron 2026-05-01: leave it.
-- **Sibling-repo *prevention* design.** The parent rule already covers prevention; that's not what this row is.
+- **Sibling-repo _prevention_ design.** The parent rule already covers prevention; that's not what this row is.
 
 ## Composes with
 

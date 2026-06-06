@@ -6,13 +6,13 @@ Carved sentence (the operator 2026-05-31):
 > own foundational library — `System.*`, ASP.NET Core, Rust `std`, the JDK). Any
 > other 3rd-party gets wrapped behind **our** port and adapted in (HARD). The SOFT
 > exception: you may depend on a 3rd-party interface directly only if it is BOTH
-> provenance-vetted AND a widely-used de-facto standard — else use our own. *"A rule
-> without a why is dogma"* — so every clause below carries its why, open to challenge.
+> provenance-vetted AND a widely-used de-facto standard — else use our own. _"A rule
+> without a why is dogma"_ — so every clause below carries its why, open to challenge.
 
-> **This rule is whys-first by construction** (the operator 2026-05-31: *"i like to make
+> **This rule is whys-first by construction** (the operator 2026-05-31: _"i like to make
 > sure my rules are not dogma but have real whys that others can question and agree
-> on if they are the right whys"* + *"a rule without a why IS dogma basically"*).
-> Each clause states its reasoning so a reader can dispute the *logic*, not just the
+> on if they are the right whys"_ + _"a rule without a why IS dogma basically"_).
+> Each clause states its reasoning so a reader can dispute the _logic_, not just the
 > conclusion. If a why here is wrong, challenge it and the rule gets revised
 > (composes with [`future-self-not-bound.md`](future-self-not-bound.md)).
 
@@ -24,30 +24,30 @@ library vs a swappable 3rd-party library.**
 
 ### The discriminator — BCL-tier vs swappable library
 
-| Tier | Examples | Depend on its interface? |
-|---|---|---|
-| **BCL / BCL-like** — the platform's own foundational, long-term-compat library + official platform-tier follow-ons | .NET: `System.*`, ASP.NET Core, `Microsoft.Extensions.*`-tier · Rust: `std` / `core` / `alloc` · Java: the JDK · TS/JS: language built-ins + the platform stdlib (Node stdlib / Web platform APIs) | **YES** — directly |
-| **Swappable 3rd-party** — a replaceable library implementation (even vendor-published) | crates.io / npm / NuGet / Maven packages: serde, Newtonsoft.Json, an ORM, an HTTP client, … | **NO (HARD)** — wrap behind our port. Or SOFT exception below. |
+| Tier                                                                                                               | Examples                                                                                                                                                                                           | Depend on its interface?                                       |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **BCL / BCL-like** — the platform's own foundational, long-term-compat library + official platform-tier follow-ons | .NET: `System.*`, ASP.NET Core, `Microsoft.Extensions.*`-tier · Rust: `std` / `core` / `alloc` · Java: the JDK · TS/JS: language built-ins + the platform stdlib (Node stdlib / Web platform APIs) | **YES** — directly                                             |
+| **Swappable 3rd-party** — a replaceable library implementation (even vendor-published)                             | crates.io / npm / NuGet / Maven packages: serde, Newtonsoft.Json, an ORM, an HTTP client, …                                                                                                        | **NO (HARD)** — wrap behind our port. Or SOFT exception below. |
 
-**WHY this is the line** (questionable; challenge it): the BCL-tier *is the platform*
+**WHY this is the line** (questionable; challenge it): the BCL-tier _is the platform_
 — you've already committed to the platform, it's vendor-maintained with long-term
 compatibility guarantees, and it doesn't churn or get abandoned out from under you.
 Its risk profile is categorically different from a library you chose among
 alternatives and could swap. So "don't depend on 3rd-party interfaces" was never
-meant to forbid `System.Text.Json` or Rust `std` — those aren't a dependency *choice*,
+meant to forbid `System.Text.Json` or Rust `std` — those aren't a dependency _choice_,
 they're the floor you build on. (Challenge surface: "is ASP.NET Core really BCL-tier
 vs a swappable library?" — yes, because it's Microsoft-shipped foundational web infra
 with the same long-term-compat posture as `System.*`, not a library you pick among
 peers. "Is EF Core?" — borderline; it's vendor-published but a swappable ORM, so it
-leans *library* → wrap it. The test is: *foundational platform infra you'd never
-swap* vs *an implementation you might.*)
+leans _library_ → wrap it. The test is: _foundational platform infra you'd never
+swap_ vs _an implementation you might._)
 
 ### HARD version — wrap every 3rd-party interface behind our port
 
-Never let a 3rd-party library's *interface* (its types) appear in our core. Define
+Never let a 3rd-party library's _interface_ (its types) appear in our core. Define
 **our** interface (a trait / abstract type) + **our** domain type as the port;
 write an adapter that maps the dep's type → our type; the dep conforms to us.
-Depend on the dep's *implementation*, never its *interface*.
+Depend on the dep's _implementation_, never its _interface_.
 
 **WHY** (challenge it): a 3rd-party interface in your core is a standing liability —
 it churns (breaking changes), gets abandoned, carries supply-chain risk, and locks
@@ -55,7 +55,7 @@ you in (swapping it means touching everything that named its types). A port make
 dep **swappable** (change the adapter, not the core), **testable** (differential-test
 two adapters against each other), and **supply-chain-isolated** (the blast radius is
 one adapter file). This is hexagonal / ports-and-adapters / dependency-inversion as a
-hard invariant: *external deps may supply implementations, never interfaces.*
+hard invariant: _external deps may supply implementations, never interfaces._
 
 ### SOFT version — direct dependence only if provenance-vetted AND widely-used
 
@@ -77,15 +77,15 @@ If a dep fails **either** (not provenance-vetted, OR niche/low-adoption) → **u
 own** (write it / wrap it), i.e. fall back to HARD. **WHY both, not either:**
 provenance without adoption is a well-signed package nobody stress-tests; adoption
 without provenance is a popular package you can't trust the supply chain of. You need
-both to skip the port. (the operator 2026-05-31: *"and even then widely used by other
+both to skip the port. (the operator 2026-05-31: _"and even then widely used by other
 packages in the ecosystem or else we should just use our own even for the soft
-version of the rule."*)
+version of the rule."_)
 
 **Start soft, harden over time:** a provenance-vetted, widely-used dep is an
-acceptable *starting place*. Note the cost of NOT wrapping: in the pure-SOFT case
+acceptable _starting place_. Note the cost of NOT wrapping: in the pure-SOFT case
 (direct dependence, no port yet), later hardening is NOT free — you must first
 introduce the port + adapter, then migrate every site that named the dep's type.
-Migration is only free *once a port exists* (then you swap the adapter, not the
+Migration is only free _once a port exists_ (then you swap the adapter, not the
 core). So even a SOFT-qualifying dep is **better wrapped from the start** — the soft
 version merely permits direct dependence when wrapping is impractical day-one, with
 the understanding that you're deferring (not avoiding) the port cost.
@@ -95,7 +95,7 @@ the understanding that you're deferring (not avoiding) the port cost.
 The port is not a bespoke convention — it's the same pure-core / effectful-edge
 separation the I/O monad formalizes. A port method `parse(&str) -> Result<Json,
 JsonError>` is literally a Kleisli arrow `&str -> Result<Json, _>`: the effect (I/O
-that can fail) is a *value* abstracted behind our type, the adapter is one
+that can fail) is a _value_ abstracted behind our type, the adapter is one
 interpretation, the core depends only on the port. So this rule is the I/O-boundary
 instance of the framework's already-landed `Result<T, TFeedback>` substrate (see
 [`monad-propagation-pattern-cross-language-substrate-shape.md`](monad-propagation-pattern-cross-language-substrate-shape.md)
@@ -117,7 +117,7 @@ liability at its weakest link.
 ## Contribute back upstream
 
 When you wrap a dep + your port reveals improvements, **contribute them back
-upstream**. **WHY:** you depend on the dep's *implementation* (SOFT) or study it
+upstream**. **WHY:** you depend on the dep's _implementation_ (SOFT) or study it
 (HARD); improving it strengthens the implementation you rely on + honors the
 ecosystem you draw from (composes [`honor-those-that-came-before.md`](honor-those-that-came-before.md)).
 
@@ -128,8 +128,8 @@ The Rust observe oracle (B-0867.27 / B-0867.29, PRs #6255 + #6257): `Json` +
 default); `SerdeJsonParser` (feature `serde`) is the **adapter** — serde (3rd-party,
 provenance-vetted + ecosystem-ubiquitous → SOFT-qualifying) conforms to our
 `JsonParser`, mapping `serde_json::Value` → our `Json`. Nothing outside `from_serde`
-names a serde type, so the crate never depends on serde's *interface* — only its
-implementation, behind our port. We went *beyond* SOFT (HARD): our own parser is the
+names a serde type, so the crate never depends on serde's _interface_ — only its
+implementation, behind our port. We went _beyond_ SOFT (HARD): our own parser is the
 default + serde is the wrapped optional adapter, used to differentially test ours
 ("not flying blind") and as a drop-in for serde-using consumers. B-0867.29 tracks
 splitting the serde adapter into a separate crate so the core graph is truly empty —
@@ -138,7 +138,7 @@ the HARD version made literal.
 ## Why this rule auto-loads
 
 Per [`wake-time-substrate.md`](wake-time-substrate.md): this is a cross-cutting
-architectural invariant that fires at *dependency-introduction time* (every time an
+architectural invariant that fires at _dependency-introduction time_ (every time an
 agent reaches for an external library in any language). Auto-loading puts the
 BCL-vs-3rd-party discriminator + the wrap-or-SOFT-depend decision in working memory
 before the dependency is added, not after it's leaked into the core.
@@ -151,7 +151,7 @@ before the dependency is added, not after it's leaked into the core.
    mapping dep-type → our-type; keep our core naming only the port. Prefer a
    `Result<OurType, OurError>` port signature.
 3. **SOFT exception:** if wrapping is impractical day-one, direct dependence is OK
-   *only if* the dep is BOTH provenance-vetted AND a widely-used de-facto standard.
+   _only if_ the dep is BOTH provenance-vetted AND a widely-used de-facto standard.
    Fail either → use our own.
 4. **Never let a dep's type cross out of its adapter** into the core.
 5. **Evolve the port** as you learn; **contribute improvements upstream.**
@@ -171,7 +171,7 @@ before the dependency is added, not after it's leaked into the core.
 - [`default-to-both.md`](default-to-both.md) — HARD ideal + SOFT pragmatic floor both
   hold
 - [`razor-discipline.md`](razor-discipline.md) — operational claims only; a rule's
-  *why* is its checkable claim (this rule embodies that)
+  _why_ is its checkable claim (this rule embodies that)
 - [`future-self-not-bound.md`](future-self-not-bound.md) — the exposed whys are the
   surface to revise against if a why turns out wrong
 - [`no-directives.md`](no-directives.md) — a why-bearing rule is one a peer agrees
@@ -184,10 +184,10 @@ before the dependency is added, not after it's leaked into the core.
 
 This rule is NOT dogma — it's whys-first and revisable. If the BCL-vs-3rd-party
 discriminator is wrong for a case (a genuinely-foundational dep that isn't
-vendor-shipped; a context where wrapping is net-harmful), challenge the *why*, not
+vendor-shipped; a context where wrapping is net-harmful), challenge the _why_, not
 just the conclusion, and the rule gets refined. The rule does NOT forbid using 3rd-
-party *implementations* (it encourages serde-as-adapter); it governs whose
-*interface* your core depends on. And it does NOT override the HARD LIMITS floor or
+party _implementations_ (it encourages serde-as-adapter); it governs whose
+_interface_ your core depends on. And it does NOT override the HARD LIMITS floor or
 operator authority.
 
 ## Full reasoning

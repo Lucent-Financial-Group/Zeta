@@ -1,11 +1,7 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  AgenticAggregateType,
-  AgenticEventType,
-  createAgenticEventEnvelope,
-} from "../../domain/src/index.ts";
+import { AgenticAggregateType, AgenticEventType, createAgenticEventEnvelope } from "../../domain/src/index.ts";
 import type { ClaimedOutboxEvent, OutboxEventSource } from "../../state/src/index.ts";
 import {
   AgenticMessagingDomain,
@@ -18,10 +14,7 @@ import {
 
 describe("outbox publisher", () => {
   test("resolves event domains through typed mappings", () => {
-    deepEqual(
-      resolveAgenticMessagingDomain(AgenticEventType.DecisionRecorded),
-      AgenticMessagingDomain.Decision,
-    );
+    deepEqual(resolveAgenticMessagingDomain(AgenticEventType.DecisionRecorded), AgenticMessagingDomain.Decision);
     deepEqual(
       resolveAgenticMessagingDomain(AgenticEventType.DiscussionAnchorCreated),
       AgenticMessagingDomain.DiscussionAnchor,
@@ -68,13 +61,7 @@ describe("outbox publisher", () => {
     deepEqual(result, {
       status: OutboxPublishOutcomeStatus.Published,
       attemptedCount: 5,
-      publishedOutboxEventIds: [
-        "outbox-000",
-        "outbox-decision-001",
-        "outbox-001",
-        "outbox-schedule-001",
-        "outbox-002",
-      ],
+      publishedOutboxEventIds: ["outbox-000", "outbox-decision-001", "outbox-001", "outbox-schedule-001", "outbox-002"],
     });
     deepEqual(outboxSource.claims, [
       {

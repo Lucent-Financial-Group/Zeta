@@ -43,7 +43,7 @@ describe("dispatch transitions (happy path)", () => {
   test("refresh-substrate with fresh lastRefreshAt → scan-inflight-prs", () => {
     const ctx: TickContext = {
       ...COLD_BOOT_CONTEXT,
-      lastRefreshAt: Date.now() / 1000,  // just refreshed
+      lastRefreshAt: Date.now() / 1000, // just refreshed
     };
     const r = dispatchAutoLoopTransition({ kind: "refresh-substrate" }, ctx);
     expect(r.ok).toBe(true);
@@ -55,7 +55,7 @@ describe("dispatch transitions (happy path)", () => {
   test("refresh-substrate with stale lastRefreshAt → RefreshStale feedback", () => {
     const ctx: TickContext = {
       ...COLD_BOOT_CONTEXT,
-      lastRefreshAt: (Date.now() / 1000) - 200,  // 200s ago; > REFRESH_STALENESS_THRESHOLD_S
+      lastRefreshAt: Date.now() / 1000 - 200, // 200s ago; > REFRESH_STALENESS_THRESHOLD_S
     };
     const r = dispatchAutoLoopTransition({ kind: "refresh-substrate" }, ctx);
     expect(r.ok).toBe(false);
@@ -247,7 +247,7 @@ describe("nextTickContext bookkeeping", () => {
       verdict: { kind: "no-op" },
       counterReset: false,
     });
-    expect(next.briefAckCount).toBe(2);  // unchanged
+    expect(next.briefAckCount).toBe(2); // unchanged
   });
 
   test("advance verdict does NOT increment briefAckCount", () => {
@@ -257,7 +257,7 @@ describe("nextTickContext bookkeeping", () => {
       verdict: { kind: "advance" },
       counterReset: false,
     });
-    expect(next.briefAckCount).toBe(2);  // unchanged
+    expect(next.briefAckCount).toBe(2); // unchanged
   });
 
   test("tickIndex increments ONLY when transitioning to tick-complete", () => {
@@ -267,7 +267,7 @@ describe("nextTickContext bookkeeping", () => {
       verdict: { kind: "advance" },
       counterReset: false,
     });
-    expect(next.tickIndex).toBe(0);  // unchanged
+    expect(next.tickIndex).toBe(0); // unchanged
   });
 });
 

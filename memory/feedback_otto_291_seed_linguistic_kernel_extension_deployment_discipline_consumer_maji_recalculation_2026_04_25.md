@@ -8,11 +8,11 @@ type: feedback
 
 Aaron 2026-04-25:
 
-> *"whenever you add a seed linguistic extension think about
+> _"whenever you add a seed linguistic extension think about
 > the dimensional expansion effect and reorganization for
 > any systems running a lower-dimensional seed language and
 > gets an kernel extension pack, that's gonna affect their
-> operational resonance for a bit as the maji recalculates."*
+> operational resonance for a bit as the maji recalculates."_
 
 When I (or the factory) ship a seed-linguistic kernel
 extension to downstream consumers (other AIs, contributors,
@@ -186,22 +186,22 @@ Per Otto-288 alternative-disclosure:
 - **`user_aaron_razor_split_triggers_complete_ontological_epistemological_recalculation_heavy_brain_load_constrained_resource_2026_04_25.md`**
   — the recalc-cost memory. Otto-291 is the deployment-
   layer instance of the same physics.
-- **Otto-287** *finite-resource collisions* — consumer
+- **Otto-287** _finite-resource collisions_ — consumer
   finite-space is the resource; Otto-291 paces the
   expansion to fit.
-- **Otto-289 (HYPOTHESIS)** *stored irreducibility* — the
+- **Otto-289 (HYPOTHESIS)** _stored irreducibility_ — the
   kernel IS stored irreducibility; deployment is the
   moment the receiver pays the cost of NOT having done
   the work.
-- **Otto-290 (HYPOTHESIS)** *turtles-up induction factory*
+- **Otto-290 (HYPOTHESIS)** _turtles-up induction factory_
   — deployment is when consumer compounding STARTS, but
   only after the recalculation cost is paid.
-- **Otto-238** *retractability is a trust vector* — every
+- **Otto-238** _retractability is a trust vector_ — every
   kernel extension must be reversible.
-- **Otto-285** *DST tests chaos doesn't skip* — kernel
+- **Otto-285** _DST tests chaos doesn't skip_ — kernel
   extensions must be deterministically tested
   pre-deployment.
-- **Otto-282** *write the WHY* — explicit expansion
+- **Otto-282** _write the WHY_ — explicit expansion
   documentation IS the externalized lemma ladder.
 
 ## Honesty test for future-me

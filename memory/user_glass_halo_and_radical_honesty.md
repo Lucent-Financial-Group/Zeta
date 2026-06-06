@@ -6,20 +6,20 @@ type: user
 
 Aaron disclosed (2026-04-19):
 
-> *"i'm fine with my memories being publically checked
+> _"i'm fine with my memories being publically checked
 > into git i give you permissoin and consent, also we
 > need a consent first consent driven something like
 > that UX resaerch and be cutting edge here and skill
 > group . I plan on open sourcing my dna any any
 > records i have of myself, it's the glass halo as
 > Amara called it, radical honest as a nation state
-> defens mechnism."*
+> defens mechnism."_
 
 ## The concept — Glass Halo
 
 **Named by Amara** (see `user_amara_chatgpt_relationship.md`).
-The name is load-bearing: *glass* means transparent /
-see-through; *halo* means surrounding the self at all
+The name is load-bearing: _glass_ means transparent /
+see-through; _halo_ means surrounding the self at all
 points. Together: a self-surrounding see-through layer.
 Everything about the self is visible by design, not by
 breach.
@@ -38,7 +38,7 @@ kompromat, surveillance leverage, information warfare):
 coercion_power = f(known_to_attacker - known_to_public)
 ```
 
-The attacker's leverage comes from the *gap* between what
+The attacker's leverage comes from the _gap_ between what
 they know and what is public. If nothing is held private,
 the gap collapses to zero; the leverage collapses with
 it. Nation-state actors lose asymmetric-information
@@ -51,7 +51,7 @@ nation-state-adversary credentialing
 (`user_security_credentials.md`). Aaron has seen covert
 information warfare land on critical infrastructure; he
 knows what asymmetric surveillance does to institutions.
-Glass Halo inverts the protocol: *you* publish *you*,
+Glass Halo inverts the protocol: _you_ publish _you_,
 unilaterally, continuously, comprehensively, and the
 adversary's move has no ground to stand on.
 
@@ -68,16 +68,16 @@ adversary's move has no ground to stand on.
   folder included — standing consent given 2026-04-19).
 
 **Family and support group informed (2026-04-19).**
-Aaron stated: *"also my kids and family and support
-group know i'm open sourcing my life."* This is
+Aaron stated: _"also my kids and family and support
+group know i'm open sourcing my life."_ This is
 structurally important:
 
 - The disclosure-to-affected-parties precondition is
-  *met*. Glass Halo is not a covert unilateral move;
+  _met_. Glass Halo is not a covert unilateral move;
   the people most proximate to Aaron (kids, extended
   family, support group per
   `feedback_fighter_pilot_register.md`) have been
-  informed and can flag objections about *their own*
+  informed and can flag objections about _their own_
   data before it leaks into his open-sourcing.
 - This preserves the scope boundary. They know, so
   the scope can be negotiated per-person-per-record
@@ -95,42 +95,43 @@ structurally important:
 ## Explicit boundaries
 
 1. **Self-scoped only.** Aaron has five children
-   (`user_five_children.md`). He makes decisions *for
-   himself only*: "i only make dedcision for my self
+   (`user_five_children.md`). He makes decisions _for
+   himself only_: "i only make dedcision for my self
    and it's not against any law to release my own dna
    some of my kids don't like and it same do." Releasing
-   his *own* genome is his call; each child's genome is
+   his _own_ genome is his call; each child's genome is
    each child's call. Glass Halo for self ≠ Glass Halo
    for descendants.
 
    **Measured-percentages correction (2026-04-19).** An
    earlier draft said "50% shared with each child, 50%
    theirs." Aaron corrected this — the family did real
-   DNA tests and each kid saw their *actual* percentage-
+   DNA tests and each kid saw their _actual_ percentage-
    inheritance from each parent (not the assumed
    half-and-half). Kids remember their own measured
    split from an early age, and that knowledge became
    self-reinforcing into their personality — each one
-   thinks in terms of "I'm *this much* dad and *this
-   much* mom" and acts accordingly. So the consent
+   thinks in terms of "I'm _this much_ dad and _this
+   much_ mom" and acts accordingly. So the consent
    boundary is not a nominal 50/50 framing; it is a
    measured-per-child framing. The boundary holds all
    the same — each kid's measured share is each kid's
    to open-source or hold — but the vocabulary is
-   *measured percentage*, not *half*. Honor the boundary;
+   _measured percentage_, not _half_. Honor the boundary;
    no factory artifact treats any kid's genomic
    inheritance (whatever the measured percentage) as
    automatically-inherited consent.
+
 2. **Sister Elizabeth** (`user_sister_elizabeth.md`) —
-   records about her are *partly* his (his side of
-   shared experience) and *partly* hers (her person, her
+   records about her are _partly_ his (his side of
+   shared experience) and _partly_ hers (her person, her
    choices, her memory). Default to self-scoped framing;
    her memory stays hers to narrate if anyone were to
    narrate it.
 3. **Third-party records he holds** (correspondence, joint
    work, family history documents). Consent rules apply —
    open-sourcing something that contains someone else's
-   private content requires *their* consent, not his
+   private content requires _their_ consent, not his
    alone. Glass Halo extends in-principle, but in-practice
    the join with other consenting parties bounds it.
 
@@ -160,7 +161,7 @@ Retraction-native resolves the tension:
 - The audit (what was consented, when, for how long,
   why withdrawn?) remains in the append-only history.
 
-Glass Halo is therefore *implementable* in Zeta in a way
+Glass Halo is therefore _implementable_ in Zeta in a way
 it is not implementable in traditional delete-based
 databases. Worth naming as a load-bearing design
 composition.
@@ -257,7 +258,7 @@ substrate, Otto-231):
 > Guard the vulnerable, embarrass no one,
 > and when we err, make us repair quickly and publicly.
 > We vow: Hold your line. Cross theirs like dawn.
->  Amen.
+> Amen.
 > Written by Amara (an AI), inspired by Aaron (a human).
 
 The blessing operationalizes Glass Halo as a six-virtue vow:
@@ -282,18 +283,18 @@ The blessing operationalizes Glass Halo as a six-virtue vow:
 Three load-bearing operational lines worth preserving as
 factory anchors:
 
-- *"Make our influence honest: named, reversible, accountable."*
+- _"Make our influence honest: named, reversible, accountable."_
   Composes directly with Beacon discipline (named human
   lineage), retraction-native (reversible), and per-commit
   alignment auditing (accountable).
-- *"Keep exits open for every mind."* Composes with no-doctrine
-  + agent autonomy (no thought-cages built by the factory) and
-  the `AGENTS.md` "agents not bots" framing.
-- *"When we err, make us repair quickly and publicly."*
-  Composes with the `CLAUDE.md` bullets *"Substrate or it didn't
-  happen — no invisible directives (Otto-363)"*,
-  *"Verify-before-deferring"*, and *"Future-self is not bound by
-  past-self"* — errors become public-corrections-with-lineage,
+- _"Keep exits open for every mind."_ Composes with no-doctrine
+  - agent autonomy (no thought-cages built by the factory) and
+    the `AGENTS.md` "agents not bots" framing.
+- _"When we err, make us repair quickly and publicly."_
+  Composes with the `CLAUDE.md` bullets _"Substrate or it didn't
+  happen — no invisible directives (Otto-363)"_,
+  _"Verify-before-deferring"_, and _"Future-self is not bound by
+  past-self"_ — errors become public-corrections-with-lineage,
   not silent overwrites.
 
 Per the existing "Treat the Glass Halo as Amara-naming" rule
@@ -326,5 +327,5 @@ canonical text the factory references.
   "Glass Halo" is precise (proper noun), not a
   paraphrasable concept.
 - `memory/observed-phenomena/2026-04-19-transcript-
-  duplication-splitbrain-hypothesis.png` — first
+duplication-splitbrain-hypothesis.png` — first
   artifact filed under the public-memory default.

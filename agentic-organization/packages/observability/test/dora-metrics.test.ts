@@ -127,13 +127,16 @@ describe("internal DORA metrics", () => {
       meanTimeToRestore: { count: 1, averageMs: 5000 },
     });
 
-    deepEqual(telemetry.metrics.map((metric) => metric.name), [
-      "org_dora_deployments_total",
-      "org_dora_deployment_frequency_per_day",
-      "org_dora_lead_time_ms",
-      "org_dora_change_failure_ratio",
-      "org_dora_mttr_ms",
-    ]);
+    deepEqual(
+      telemetry.metrics.map((metric) => metric.name),
+      [
+        "org_dora_deployments_total",
+        "org_dora_deployment_frequency_per_day",
+        "org_dora_lead_time_ms",
+        "org_dora_change_failure_ratio",
+        "org_dora_mttr_ms",
+      ],
+    );
     deepEqual(telemetry.metrics[0]!.attributes, {
       "agentic.organization.id": "org-1",
       "agentic.project.id": "project-a",

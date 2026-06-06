@@ -33,5 +33,5 @@ referencing the prior row, per retraction-native discipline.
 ## Failure Log
 
 | Date | Candidate | Reason for Failure | Reviewer |
-|---|---|---|---|
-| | | | |
+| ---- | --------- | ------------------ | -------- |
+|      |           |                    |          |

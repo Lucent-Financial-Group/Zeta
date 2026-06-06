@@ -43,7 +43,7 @@ on the `main` branch protection ruleset:
 
 **No human reviewer approval is required to merge any PR.** The
 `requiresApprovingReviews: true` flag is on (so the review system is
-*enabled*) but the *count* required is zero — meaning a PR can merge
+_enabled_) but the _count_ required is zero — meaning a PR can merge
 with zero approving reviews as long as the other gates clear.
 
 ## What `mergeStateStatus: BLOCKED` actually means on Zeta
@@ -207,16 +207,16 @@ Then check, in order:
    only; rulesets need a separate query (`repository.rulesets` or
    the REST `/repos/{owner}/{repo}/rulesets` endpoint). If all four
    classes above clear and BLOCKED persists, check rulesets next.
-4. Are 1-3 all clear and BLOCKED still shows? Then check the branch-
+6. Are 1-3 all clear and BLOCKED still shows? Then check the branch-
    protection rule directly via `baseRef.branchProtectionRule` — but
    on Zeta this should never happen because `requiredApprovingReviewCount: 0`.
 
 ## Why this rule needs a durable memory
 
-Aaron 2026-04-28 verbatim: *"requiredApprovingReviewCount you've made
+Aaron 2026-04-28 verbatim: _"requiredApprovingReviewCount you've made
 this mistake several time, can you just save soewhere that
 requiredApprovingReviewCount: 0 or something that reminds you of that
-on this project?"*
+on this project?"_
 
 I made this mistake **multiple times in a single session** despite:
 
@@ -250,20 +250,20 @@ explicitly. Each recurrence documented as evidence:
 
 ### 1st caught: 2026-04-28 (LFG #660 close-of-tick #1)
 
-I closed a tick with: *"LFG #660 is BLOCKED waiting on reviewer
-approval — that's not an agent action."* Aaron didn't catch it
+I closed a tick with: _"LFG #660 is BLOCKED waiting on reviewer
+approval — that's not an agent action."_ Aaron didn't catch it
 immediately because the queue was busy.
 
 ### 2nd caught: 2026-04-28 (LFG #660 close-of-tick #2)
 
-Repeated the framing in a status update: *"LFG #660 BLOCKED awaiting
-reviewer."*
+Repeated the framing in a status update: _"LFG #660 BLOCKED awaiting
+reviewer."_
 
 ### 3rd caught: 2026-04-28 (Aaron's catch)
 
-After the same framing landed a third time, Aaron prompted: *"you
+After the same framing landed a third time, Aaron prompted: _"you
 said one of the PRs was block on maintainer, are you sure, it's not
-something simple you can figure out?"*
+something simple you can figure out?"_
 
 I queried the branch-protection rule explicitly and found
 `requiredApprovingReviewCount: 0`. The "blocker" was 3 unresolved
@@ -275,8 +275,8 @@ hours.
 
 ## Always double-check threads AFTER CI completes (Aaron 2026-04-28)
 
-Aaron 2026-04-28 follow-up: *"you should always double check,
-unreviewed threads after CI completes"*
+Aaron 2026-04-28 follow-up: _"you should always double check,
+unreviewed threads after CI completes"_
 
 **Why this matters:** new review threads can land AFTER CI completes,
 not just before. The reviewers I see most often on Zeta:
@@ -414,7 +414,7 @@ scan + structural reason why the prior keeps reasserting.
   memory must be updated.
 - Does NOT mean reviews don't matter. Reviews still happen via codex/
   copilot/maintainer + show up as threads. The rule is just that
-  *count of approving reviews* is not the gate.
+  _count of approving reviews_ is not the gate.
 - Does NOT cover other repos. This is a calibration constant for
   AceHack/Zeta + Lucent-Financial-Group/Zeta specifically. Other
   projects under different ownership have different rules.
@@ -428,8 +428,8 @@ scan + structural reason why the prior keeps reasserting.
 - Any time considering a "waiting for reviewer" framing on a Zeta PR
 - `requiredApprovingReviewCount` / `requiresApprovingReviews` in any
   GraphQL response on Zeta
-- Aaron 2026-04-28 *"requiredApprovingReviewCount you've made this
-  mistake several time"*
+- Aaron 2026-04-28 _"requiredApprovingReviewCount you've made this
+  mistake several time"_
 - Recurrence catches in tick-history rows (the count itself is signal
   per Otto-275-FOREVER)
 

@@ -24,16 +24,16 @@ reference to a planned-but-not-landed module)
 
 ## The anchor — a recipe template
 
-A recipe template says: *"combine A and B to make
+A recipe template says: _"combine A and B to make
 something; combine something and something-else to make
-a final thing."* The shape is fixed (combine, combine,
+a final thing."_ The shape is fixed (combine, combine,
 combine). What you plug in — flour and water? paint and
 canvas? two votes? — is different each time, and the
-*meaning* of "combine" is different each time too.
+_meaning_ of "combine" is different each time too.
 
 In baking, "combine" means mix. In mixing paint, it means
 blend. In counting votes, it means add. In finding the
-shortest path between cities, it means *take the minimum*.
+shortest path between cities, it means _take the minimum_.
 Same recipe template, different arithmetics.
 
 **A semiring is a recipe template for "arithmetics."**
@@ -53,7 +53,7 @@ Swap the arithmetic, and your pipeline computes a
 different thing — but with the same structure.
 
 This is what lets Zeta be "one algebra to map the
-others": the pipeline shape stays; the *meaning* of
+others": the pipeline shape stays; the _meaning_ of
 combine + zero + one + multiply changes depending on the
 semiring you choose.
 
@@ -62,15 +62,15 @@ semiring you choose.
 You've been using Z-sets (the **signed-integer semiring**
 ℤ with ordinary + and ×). Common alternatives:
 
-| Semiring | "Combine" means | "Multiply" means | What it computes |
-|---|---|---|---|
-| **ℤ (signed integers)** — Zeta default | Add (with negatives for retraction) | Multiply | Retractable counts |
-| **ℕ (counting)** | Add (no negatives) | Multiply | Plain multisets; no retraction |
-| **𝔹 (Boolean)** | OR (either-or) | AND (both-and) | Plain sets; presence/absence only |
-| **Tropical (min-plus)** | Take minimum | Add | Shortest paths between nodes |
-| **Max-plus** | Take maximum | Add | Longest / critical-path times |
-| **Possibilistic / fuzzy ([0,1])** | Take maximum | Multiply | Possibility distributions (max-times; not probability accumulation) |
-| **Provenance** | Join witnesses | Combine witnesses | Which source contributed |
+| Semiring                               | "Combine" means                     | "Multiply" means  | What it computes                                                    |
+| -------------------------------------- | ----------------------------------- | ----------------- | ------------------------------------------------------------------- |
+| **ℤ (signed integers)** — Zeta default | Add (with negatives for retraction) | Multiply          | Retractable counts                                                  |
+| **ℕ (counting)**                       | Add (no negatives)                  | Multiply          | Plain multisets; no retraction                                      |
+| **𝔹 (Boolean)**                        | OR (either-or)                      | AND (both-and)    | Plain sets; presence/absence only                                   |
+| **Tropical (min-plus)**                | Take minimum                        | Add               | Shortest paths between nodes                                        |
+| **Max-plus**                           | Take maximum                        | Add               | Longest / critical-path times                                       |
+| **Possibilistic / fuzzy ([0,1])**      | Take maximum                        | Multiply          | Possibility distributions (max-times; not probability accumulation) |
+| **Provenance**                         | Join witnesses                      | Combine witnesses | Which source contributed                                            |
 
 ### Real-world examples — when each fits
 
@@ -120,14 +120,14 @@ about lifting the pin.
 
 ### Why semirings — compared to alternatives
 
-| Alternative | Problem |
-|---|---|
+| Alternative                                                                                                          | Problem                                                                                     |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | Separate library per arithmetic (e.g., graph library for shortest-path; OLAP engine for counts; vote tally for sets) | Can't share operator semantics; re-derive IVM properties per library; no composition across |
-| One library, case-matching on what-arithmetic internally | Operators grow with-every-new-arithmetic; no formal guarantee of correctness |
-| One library, pick-one-arithmetic forever | Misses the generalisation Zeta's algebra actually supports |
+| One library, case-matching on what-arithmetic internally                                                             | Operators grow with-every-new-arithmetic; no formal guarantee of correctness                |
+| One library, pick-one-arithmetic forever                                                                             | Misses the generalisation Zeta's algebra actually supports                                  |
 
 Semirings win when the underlying query shape is the same
-but the *meaning* of the numbers differs. That's common
+but the _meaning_ of the numbers differs. That's common
 in DB / streaming / planning / graph contexts.
 
 ### How to tell if semiring-parameterisation is right
@@ -168,8 +168,8 @@ Before the next module, you should be able to answer:
 
 ## Theoretical track — opt-in (for learners who really care)
 
-*If applied is enough, stop here. The below is for those
-going deep.*
+_If applied is enough, stop here. The below is for those
+going deep._
 
 ### Formal definition
 
@@ -204,16 +204,16 @@ additive-inverses" vs "ring".
 
 ### Canonical semirings in data systems
 
-| Semiring | R | + | × | 0 | 1 | Retraction? |
-|---|---|---|---|---|---|---|
-| Signed integers | ℤ | + | × | 0 | 1 | Yes (ring) |
-| Counting | ℕ | + | × | 0 | 1 | No (no negatives) |
-| Boolean | {T, F} | ∨ | ∧ | F | T | N/A (can't "retract") |
-| Tropical (Zeta) | ℤ ∪ {+∞} | min | + | +∞ | 0 | No (min has no additive inverse). Note: Zeta's `TropicalWeight` in `src/Core/NovelMath.fs` is backed by `int64` with `Int64.MaxValue` as +∞; the math definition extends to ℝ ∪ {+∞}, but Zeta's implementation uses ℤ. |
-| Max-plus | ℝ ∪ {-∞} | max | + | -∞ | 0 | No |
-| Possibilistic / fuzzy | [0, 1] | max | × | 0 | 1 | No |
-| Lineage (Boolean witness sets, GKT form) | 2^X (subsets of source tuples) | ∪ | ∪ | ∅ | X | N/A — both addition (union of relations) and multiplication (join: combine evidence from both input tuples) use set-union; the multiplicative identity X is the "all-source-tuples" universe so multiplying by 1 is a no-op. (An alternative formulation uses ∩ for multiplication; that's `Why(X)` provenance, distinct from Boolean lineage. The choice depends on whether you want "any source contributing" or "all sources contributing" tracked downstream.) |
-| Provenance | N[X] (polynomials over ℕ) | + | × | 0 | 1 | No (N[X] coefficients are ℕ — non-negative; no additive inverses available). For retractable provenance, use ℤ[X] (polynomials over ℤ) instead. |
+| Semiring                                 | R                              | +   | ×   | 0   | 1   | Retraction?                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------------------------------------- | ------------------------------ | --- | --- | --- | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Signed integers                          | ℤ                              | +   | ×   | 0   | 1   | Yes (ring)                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Counting                                 | ℕ                              | +   | ×   | 0   | 1   | No (no negatives)                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Boolean                                  | {T, F}                         | ∨   | ∧   | F   | T   | N/A (can't "retract")                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Tropical (Zeta)                          | ℤ ∪ {+∞}                       | min | +   | +∞  | 0   | No (min has no additive inverse). Note: Zeta's `TropicalWeight` in `src/Core/NovelMath.fs` is backed by `int64` with `Int64.MaxValue` as +∞; the math definition extends to ℝ ∪ {+∞}, but Zeta's implementation uses ℤ.                                                                                                                                                                                                                                            |
+| Max-plus                                 | ℝ ∪ {-∞}                       | max | +   | -∞  | 0   | No                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Possibilistic / fuzzy                    | [0, 1]                         | max | ×   | 0   | 1   | No                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Lineage (Boolean witness sets, GKT form) | 2^X (subsets of source tuples) | ∪   | ∪   | ∅   | X   | N/A — both addition (union of relations) and multiplication (join: combine evidence from both input tuples) use set-union; the multiplicative identity X is the "all-source-tuples" universe so multiplying by 1 is a no-op. (An alternative formulation uses ∩ for multiplication; that's `Why(X)` provenance, distinct from Boolean lineage. The choice depends on whether you want "any source contributing" or "all sources contributing" tracked downstream.) |
+| Provenance                               | N[X] (polynomials over ℕ)      | +   | ×   | 0   | 1   | No (N[X] coefficients are ℕ — non-negative; no additive inverses available). For retractable provenance, use ℤ[X] (polynomials over ℤ) instead.                                                                                                                                                                                                                                                                                                                    |
 
 ### The K-relations framework (Green-Karvounarakis-Tannen 2007)
 

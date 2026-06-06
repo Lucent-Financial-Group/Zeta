@@ -7,8 +7,8 @@ priority: P2
 created: 2026-05-16
 type: feature
 composes_with:
-  - B-0590  # fleet replication + hardware inventory substrate
-  - B-0571  # GitHub App factory automation (per-AI-identity pattern at production scope)
+  - B-0590 # fleet replication + hardware inventory substrate
+  - B-0571 # GitHub App factory automation (per-AI-identity pattern at production scope)
 depends_on: []
 ---
 
@@ -27,8 +27,8 @@ preserved in `aaron_family_distributed_mining_avalon_q_kin_trust_depin_electrici
 
 The maintainer 2026-05-16T~21:25Z named the operational extension:
 
-> *"also i want to give mom and dad an AI interface to their miners too with
-> AI accounted to them"*
+> _"also i want to give mom and dad an AI interface to their miners too with
+> AI accounted to them"_
 
 This is a new class of Zeta participant: **family-relative AI agents** — each
 parent gets their own AI instance with their own identity, accountability, and
@@ -57,11 +57,11 @@ Provide each family-relative who hosts mining hardware with:
 
 Three composing layers:
 
-| Layer | Substrate | Notes |
-|---|---|---|
-| Identity | New persona/agent definitions per relative — `.claude/agents/mom-ai.md`, `.claude/agents/dad-ai.md` (or external configs if substrate-honest separation is preferred) | Composes with `agent-roster-reference-card.md` |
-| Surface | Voice + text + web UI dispatcher; uses cheapest-AI-tier appropriate to use-case (Mom-AI on Claude Sonnet for general / on Alexa-speaker for voice-math) | Composes with multi-harness pattern + the m/acc end-user moral-invariant choice |
-| Knowledge | Mining-fleet status (hashrate + uptime + revenue + electricity-contribution) + relative-specific accountability ledger | Composes with PoUW-CC substrate + Aurora Protocol BFT (per-node accountability) |
+| Layer     | Substrate                                                                                                                                                             | Notes                                                                           |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Identity  | New persona/agent definitions per relative — `.claude/agents/mom-ai.md`, `.claude/agents/dad-ai.md` (or external configs if substrate-honest separation is preferred) | Composes with `agent-roster-reference-card.md`                                  |
+| Surface   | Voice + text + web UI dispatcher; uses cheapest-AI-tier appropriate to use-case (Mom-AI on Claude Sonnet for general / on Alexa-speaker for voice-math)               | Composes with multi-harness pattern + the m/acc end-user moral-invariant choice |
+| Knowledge | Mining-fleet status (hashrate + uptime + revenue + electricity-contribution) + relative-specific accountability ledger                                                | Composes with PoUW-CC substrate + Aurora Protocol BFT (per-node accountability) |
 
 ## Acceptance
 

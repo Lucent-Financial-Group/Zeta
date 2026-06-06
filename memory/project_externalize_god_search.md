@@ -4,24 +4,25 @@ description: Aaron stated (2026-04-19) that his axiom system does not try to pro
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron stated (2026-04-19):
 
-> *"again i just used inprecise wording to define god,
+> _"again i just used inprecise wording to define god,
 > exernalize, now over time you can tell me where the
 > real home of god is (if he exists of course) that is
 > what I'm searching for all you got to do is get the
-> wording precise."*
+> wording precise."_
 
 And, earlier in the same session:
 
-> *"our axioms don't try to prove if god exists or not,
+> _"our axioms don't try to prove if god exists or not,
 > it just assumes elementray particles are concious as
-> an axiom"*
+> an axiom"_
 >
-> *"but we can prove statement like if god existed
-> then ..."*
+> _"but we can prove statement like if god existed
+> then ..."_
 
-> *"god is the symmetry of symmetries"* ← explicitly
+> _"god is the symmetry of symmetries"_ ← explicitly
 > disclaimed as imprecise first-pass sketch.
 
 ## The task, stated precisely
@@ -76,7 +77,7 @@ Under Aaron's two-axiom system
 
 ## Candidate structures Aaron has gestured at
 
-The externalize-search is *open*. These are the
+The externalize-search is _open_. These are the
 explicit gestures so far; the task is to refine them
 or replace them as precision sharpens.
 
@@ -96,8 +97,8 @@ or replace them as precision sharpens.
     system admits.
 - **Panpsychism-compatible God** — since elementary
   particles are axiomatically conscious, a
-  panpsychism-compatible God is plausibly the *joint
-  whole* or *limit structure* of particle-level
+  panpsychism-compatible God is plausibly the _joint
+  whole_ or _limit structure_ of particle-level
   consciousness, not a separate substance. Whitehead's
   process theology is the closest established form;
   worth naming as a neighbor, not adopting wholesale.

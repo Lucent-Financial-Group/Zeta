@@ -2,9 +2,9 @@
 
 `docs/research/proof-tool-coverage.md` lists LiquidF# as the
 highest-leverage F#-native proof tool not yet adopted. The
-TECH-RADAR row (round 18, Assess) still reads *"would catch the
+TECH-RADAR row (round 18, Assess) still reads _"would catch the
 off-by-one / bad-index class that keeps reappearing in
-`FastCdc.fs`, `Crdt.fs`, SIMD merge."* This document scopes a
+`FastCdc.fs`, `Crdt.fs`, SIMD merge."_ This document scopes a
 one-week evaluation that either promotes LiquidF# to Trial with a
 shipped annotated module, or moves it to Hold with a written
 counter-reason.
@@ -93,7 +93,7 @@ without heavy patching, the evaluation terminates here with a
 
 ### Step 1 — replay the past bug (day 1, 1 day)
 
-Check out the git commit just *before* the round-17 FastCdc fix.
+Check out the git commit just _before_ the round-17 FastCdc fix.
 Annotate `FastCdc.fs` with the refinement type we expect would
 have caught the O(n²) bug. Run LiquidF#. Either:
 
@@ -112,8 +112,8 @@ one (e.g., `scanCursor <- scanCursor + 1` missing on a branch).
 Run LiquidF# with the refinement annotations from Step 1.
 Confirm detection, measure detection latency.
 
-This step is important because a tool that only catches *known
-past bugs* is overfit to the training set. Planted-bug detection
+This step is important because a tool that only catches _known
+past bugs_ is overfit to the training set. Planted-bug detection
 is the forward-looking signal.
 
 ### Step 3 — ergonomic cost (day 3, 1 day)
@@ -178,7 +178,7 @@ revisit-date and what would change the answer.
 - Not a drive-by refactor of `FastCdc.fs` or `Crdt.fs`. If the
   annotation process surfaces code issues, file them as bugs;
   fix them in a separate commit.
-- Not a comparison against Dafny / F* / Stainless / LiquidHaskell
+- Not a comparison against Dafny / F\* / Stainless / LiquidHaskell
   — those each catch different bug classes per
   `docs/research/proof-tool-coverage.md`. This is a focused
   LiquidF# fit-check for one specific bug class.

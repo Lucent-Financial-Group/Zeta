@@ -47,14 +47,14 @@ At `~/.claude/plugins/cache/claude-plugins-official/skill-creator/unknown/skills
 ## When to hand off — the gate
 
 | Recommended action | Effort | Eval loop? | Manual-edit + log? |
-|--------------------|--------|-----------|--------------------|
-| TUNE               | S      | Optional  | Default            |
-| TUNE               | M, L   | Yes       | No                 |
-| SPLIT              | any    | Yes       | No                 |
-| MERGE              | any    | Yes       | No                 |
-| RETIRE             | any    | No        | Yes (log the why)  |
-| HAND-OFF-CONTRACT  | any    | Optional  | Default            |
-| OBSERVE            | any    | No        | No                 |
+| ------------------ | ------ | ---------- | ------------------ |
+| TUNE               | S      | Optional   | Default            |
+| TUNE               | M, L   | Yes        | No                 |
+| SPLIT              | any    | Yes        | No                 |
+| MERGE              | any    | Yes        | No                 |
+| RETIRE             | any    | No         | Yes (log the why)  |
+| HAND-OFF-CONTRACT  | any    | Optional   | Default            |
+| OBSERVE            | any    | No         | No                 |
 
 Rule of thumb: if the change affects triggering behaviour,
 output shape, or instruction-following on an observable
@@ -79,7 +79,7 @@ On each invocation, after producing the top-5 ranking:
    step — the ranker is advisory; the Architect (Kenji) or
    a human decides to run the loop. The hand-off naming
    is: `skill-creator: run eval loop on <skill-name> —
-   action:<X>, effort:<Y>, signal:<Z>, BP:<NN,NN>`.
+action:<X>, effort:<Y>, signal:<Z>, BP:<NN,NN>`.
 4. **Workspace convention** (for `skill-creator`'s use,
    not the ranker's):
    `<repo-root>/.claude/skills/<skill-name>-workspace/iteration-N/eval-<id>/{with_skill,without_skill|old_skill}/outputs/`.
@@ -175,9 +175,11 @@ The notebook at `memory/persona/aarav/NOTEBOOK.md` follows:
 # Skill Tune-Up — Notebook
 
 ## Running observations
+
 - YYYY-MM-DD — observation
 
 ## Current top-5 (refresh each run)
+
 1. [skill] — priority: [P0/P1/P2]
    - Signal: [drift | contradiction | staleness | user-pain | bloat | portability-drift | router-coherence-drift]
    - Action: [TUNE | SPLIT | MERGE | RETIRE | HAND-OFF-CONTRACT | OBSERVE]
@@ -196,6 +198,7 @@ Every ranking round produces:
 # Skill Tune-Up Ranking — round N
 
 ## Live-search summary
+
 - Queries run: <list>
 - Findings logged to scratchpad: <count> (in
   memory/persona/best-practices-scratch.md)
@@ -207,7 +210,7 @@ Every ranking round produces:
    - Signal: [drift | contradiction | staleness | user-pain |
      bloat | best-practice-drift | portability-drift |
      router-coherence-drift]
-   - Violates: BP-<NN>[, BP-<NN>]   (only when signal is
+   - Violates: BP-<NN>[, BP-<NN>] (only when signal is
      best-practice-drift)
    - Recommended action: [TUNE | SPLIT | MERGE | RETIRE |
      HAND-OFF-CONTRACT | OBSERVE]
@@ -219,9 +222,11 @@ Every ranking round produces:
 ...
 
 ## Notable mentions
+
 - [skills close to flagging but not there yet]
 
 ## Self-recommendation
+
 - Does this skill itself need tune-up? [yes/no] — concrete
   signal (including any BP-NN violations found in his own
   file). Honest answers only; no modesty bias.

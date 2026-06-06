@@ -91,13 +91,13 @@ The Shannon limit: correction rate > error rate.
 
 ## 7. The Native Types
 
-| Type | Meaning |
-| ---- | ------- |
-| +1 | Assertion |
-| -1 | Retraction |
-| Z | Active uncertainty (first-class, not error) |
-| (Z₁,Z₂,...) | Resolution of uncertainty (maybe bits) |
-| ℍ | Three non-commutative uncertainty axes |
+| Type        | Meaning                                     |
+| ----------- | ------------------------------------------- |
+| +1          | Assertion                                   |
+| -1          | Retraction                                  |
+| Z           | Active uncertainty (first-class, not error) |
+| (Z₁,Z₂,...) | Resolution of uncertainty (maybe bits)      |
+| ℍ           | Three non-commutative uncertainty axes      |
 
 ## 8. The Architecture
 

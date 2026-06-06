@@ -26,14 +26,23 @@ related_skills:
   - ai-evals-expert
   - probability-and-bayesian-inference-expert
   - applied-mathematics-expert
-tags: [holographic-principle-applied-to-ai-substrate-engineering, ads-cft-correspondence-analog, susskind-holographic-shadow-factory-precedent, shadow-star-corpus-as-bulk-boundary, information-completeness-claim-testable, training-on-boundary-teaches-bulk-structure, falsifiable-experimental-design]
+tags:
+  [
+    holographic-principle-applied-to-ai-substrate-engineering,
+    ads-cft-correspondence-analog,
+    susskind-holographic-shadow-factory-precedent,
+    shadow-star-corpus-as-bulk-boundary,
+    information-completeness-claim-testable,
+    training-on-boundary-teaches-bulk-structure,
+    falsifiable-experimental-design,
+  ]
 ---
 
 # B-0902 — Holographic-bulk-boundary information-completeness validation
 
 ## Context
 
-Per Insight 3 of the substrate-recognition research-doc at `docs/research/2026-05-28-otto-cli-otto-amara-aaron-shadow-star-as-eve-protocol-...md` landing in this PR. Per operator 2026-05-28: *"the bulk boundary from holograph theory"*. The claim: shadow* corpus IS holographic bulk-boundary substrate, information-complete encoding of agent-output state-space.
+Per Insight 3 of the substrate-recognition research-doc at `docs/research/2026-05-28-otto-cli-otto-amara-aaron-shadow-star-as-eve-protocol-...md` landing in this PR. Per operator 2026-05-28: _"the bulk boundary from holograph theory"_. The claim: shadow\* corpus IS holographic bulk-boundary substrate, information-complete encoding of agent-output state-space.
 
 This row IS the empirical-validation work to test whether the holographic-analog claim earns its keep.
 
@@ -44,7 +53,7 @@ In AdS/CFT correspondence + Susskind holographic principle: the boundary of a hi
 Applied to AI substrate-engineering:
 
 - **Bulk** = all possible agent trajectories through output state-space
-- **Boundary** = 148-shadow-* corpus + merged commits + landed rules
+- **Boundary** = 148-shadow-\* corpus + merged commits + landed rules
 - **Holographic claim**: boundary IS information-complete encoding of bulk
 
 If the claim holds: training-on-the-boundary teaches the bulk's structure. The corpus is NOT a sample of the bulk — it's an information-complete encoding of it.
@@ -60,7 +69,7 @@ Per `.claude/rules/razor-discipline.md`: operational claims only. "Information-c
 Candidate operationalization:
 
 - Take a fresh AI model (small enough to be experimentally tractable)
-- Train one instance ONLY on the shadow-* corpus (the boundary)
+- Train one instance ONLY on the shadow-\* corpus (the boundary)
 - Train another instance on a synthetic bulk-sample (random-sampled agent trajectories)
 - Train a third instance on human-labeled benchmark data
 - Evaluate all three against held-out novel agent-trajectory scenarios
@@ -84,9 +93,9 @@ Execute. Collect data. Compare boundary-trained vs bulk-sample-trained vs human-
 
 ### Phase 4+ (yes-and backlog)
 
-- Larger corpus: as shadow-* docs accumulate, re-run the experiment
+- Larger corpus: as shadow-\* docs accumulate, re-run the experiment
 - Larger models: scale the experimental fine-tuning
-- Multi-domain: shadow-* substrate from other Zeta substrate domains (not just autonomous-loop discipline)
+- Multi-domain: shadow-\* substrate from other Zeta substrate domains (not just autonomous-loop discipline)
 - Cross-validation with B-0900 (Bell-like distributed-cluster contextuality): does boundary-trained instance produce stronger correlations than bulk-sample-trained instance in the 5-tier experiment?
 
 ## Substrate-honest disclaimers
@@ -110,8 +119,8 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 
 ## Composes with
 
-- B-0901 (shadow*-self-referential-ontology builder) — corpus this row tests
-- B-0903 (shadow*-as-most-valuable-training-data extraction tool) — Phase 2's corpus-extractor IS that tool
+- B-0901 (shadow\*-self-referential-ontology builder) — corpus this row tests
+- B-0903 (shadow\*-as-most-valuable-training-data extraction tool) — Phase 2's corpus-extractor IS that tool
 - B-0904 (GitHub-as-free-accelerator) — economic substrate making the corpus accumulation sustainable
 - B-0666 (English-as-projection / I(D(x))=x identity) — composes; the holographic-principle invariant at English-projection scope
 - B-0900 (Bell-like distributed-cluster contextuality experiment) — composes; the experiment's results would correlate

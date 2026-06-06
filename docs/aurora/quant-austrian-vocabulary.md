@@ -38,8 +38,8 @@ A formalization meets quant-grade mathematical rigor when ALL of:
 The "quant" qualifier specifies the mathematical culture: stochastic
 calculus, measure-theoretic probability, and functional analysis
 are the standard toolkit. A formalization that satisfies (1)–(3)
-but uses only high-school algebra qualifies as *mathematical* but
-not *quant-grade*.
+but uses only high-school algebra qualifies as _mathematical_ but
+not _quant-grade_.
 
 ### Includes (examples that pass)
 
@@ -100,9 +100,9 @@ that is treated as foundational (not derived from a more basic claim
 within the school) AND that:
 
 (a) appears in at least two of {Mises, Hayek, Böhm-Bawerk, Rothbard,
-    Kirzner} as a starting point rather than a conclusion, AND
+Kirzner} as a starting point rather than a conclusion, AND
 (b) is logically prior in the Austrian derivation order to the
-    claims that depend on it.
+claims that depend on it.
 
 ### Three-layer taxonomy
 
@@ -112,12 +112,12 @@ and 3 are derived theory and applied theory, respectively.
 
 **Layer 1 — Praxeological core (primitives proper)**
 
-| Primitive | Canonical source | Logical role |
-|-----------|-----------------|--------------|
-| Action axiom (purposeful human behavior) | Mises *Human Action* Ch. 1 | Starting point; not argued from prior premises within praxeology |
-| Time-preference (present goods preferred over future goods, ceteris paribus) | Böhm-Bawerk *Capital and Interest* | Derived from action axiom + scarcity; treated as primitive in downstream applications |
-| Subjective value (value is ordinal, not cardinal; derives from individual ranking) | Menger *Principles* | Primitive; sets aside utility-function approach |
-| Uncertainty and heterogeneous knowledge | Hayek "Use of Knowledge" (1945) | Primitive claim about the epistemic structure of markets |
+| Primitive                                                                          | Canonical source                   | Logical role                                                                          |
+| ---------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------- |
+| Action axiom (purposeful human behavior)                                           | Mises _Human Action_ Ch. 1         | Starting point; not argued from prior premises within praxeology                      |
+| Time-preference (present goods preferred over future goods, ceteris paribus)       | Böhm-Bawerk _Capital and Interest_ | Derived from action axiom + scarcity; treated as primitive in downstream applications |
+| Subjective value (value is ordinal, not cardinal; derives from individual ranking) | Menger _Principles_                | Primitive; sets aside utility-function approach                                       |
+| Uncertainty and heterogeneous knowledge                                            | Hayek "Use of Knowledge" (1945)    | Primitive claim about the epistemic structure of markets                              |
 
 **Layer 2 — Applied theory (derived from Layer 1)**
 
@@ -230,7 +230,7 @@ be tested with data.
 Under the B-0380 vocabulary, **quant-grade formalization** requires
 at minimum Sense B (rigorous derivation), ideally Sense C
 (empirical embedding). Sense A alone is categorized as
-*mathematical representation*, not formalization for the purposes
+_mathematical representation_, not formalization for the purposes
 of the B-0023 research agenda.
 
 ### Includes (examples by sense)
@@ -281,12 +281,12 @@ measure, no-arbitrage, efficient markets), rational expectations,
 and neutral money as background assumptions. Austrian primitives
 make claims that conflict with each of these background assumptions:
 
-| Quant background assumption | Austrian conflict |
-|-----------------------------|-------------------|
-| Markets clear via competitive equilibrium | ABCT: credit expansion prevents true clearing; yields predictable disequilibrium dynamics |
-| Money is neutral (long-run) | Sound-money thesis: monetary expansion distorts relative prices, is never neutral |
-| Rational expectations (homogeneous information) | Hayek dispersed knowledge: heterogeneous information is the *problem*, not an approximation to fix |
-| Preferences are stable and estimable from revealed choice | Subjective value: preferences are ordinal, non-interpersonally-comparable, and resist aggregation |
+| Quant background assumption                               | Austrian conflict                                                                                  |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Markets clear via competitive equilibrium                 | ABCT: credit expansion prevents true clearing; yields predictable disequilibrium dynamics          |
+| Money is neutral (long-run)                               | Sound-money thesis: monetary expansion distorts relative prices, is never neutral                  |
+| Rational expectations (homogeneous information)           | Hayek dispersed knowledge: heterogeneous information is the _problem_, not an approximation to fix |
+| Preferences are stable and estimable from revealed choice | Subjective value: preferences are ordinal, non-interpersonally-comparable, and resist aggregation  |
 
 This means a "quant-grade Austrian formalization" cannot simply
 borrow quant machinery wholesale: the machinery presupposes
@@ -298,12 +298,12 @@ sub-frameworks.
 
 ### Literature gap vs. synthesis gap
 
-| Dimension | Literature gap | Synthesis gap (this document) |
-|-----------|---------------|-------------------------------|
-| Cause | Historical accident, academic silo | Foundations incompatibility |
-| Fix | Literature search + assembly | New mathematical framework or compatibility proof |
-| Effort | S to M | L to XL |
-| Research program | Survey existing work | Develop new theory |
+| Dimension        | Literature gap                     | Synthesis gap (this document)                     |
+| ---------------- | ---------------------------------- | ------------------------------------------------- |
+| Cause            | Historical accident, academic silo | Foundations incompatibility                       |
+| Fix              | Literature search + assembly       | New mathematical framework or compatibility proof |
+| Effort           | S to M                             | L to XL                                           |
+| Research program | Survey existing work               | Develop new theory                                |
 
 The B-0023 research program investigates a **synthesis gap**, not
 merely a literature gap. Treating it as a literature gap
@@ -338,12 +338,12 @@ condition is met, the gap is open.
 
 ## Summary table
 
-| Term | Short definition | Passes if | Fails if |
-|------|-----------------|-----------|----------|
-| Quant-grade rigor | Stated axioms + formal derivation + typed terms + falsifiable embedding | Itô-calculus derivation from explicit premises | Regression without axioms; verbal restatement |
-| Austrian primitive | Layer-1 claim endorsed as starting point by ≥2 of {Mises, Hayek, Böhm-Bawerk, Rothbard, Kirzner} | Time-preference, action axiom, dispersed knowledge | Sound-money policy, ABCT conclusions |
-| Formalization | Sense B (rigorous derivation) or Sense C (empirical embedding) | Proved theorem from stated axioms | Notation without derivation (Sense A alone) |
-| Synthesis gap | Foundations-incompatibility gap, not merely literature gap | — | Closed only when Sense B/C formalization of Layer-1 primitive achieved without equilibrium presupposition |
+| Term               | Short definition                                                                                 | Passes if                                          | Fails if                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Quant-grade rigor  | Stated axioms + formal derivation + typed terms + falsifiable embedding                          | Itô-calculus derivation from explicit premises     | Regression without axioms; verbal restatement                                                             |
+| Austrian primitive | Layer-1 claim endorsed as starting point by ≥2 of {Mises, Hayek, Böhm-Bawerk, Rothbard, Kirzner} | Time-preference, action axiom, dispersed knowledge | Sound-money policy, ABCT conclusions                                                                      |
+| Formalization      | Sense B (rigorous derivation) or Sense C (empirical embedding)                                   | Proved theorem from stated axioms                  | Notation without derivation (Sense A alone)                                                               |
+| Synthesis gap      | Foundations-incompatibility gap, not merely literature gap                                       | —                                                  | Closed only when Sense B/C formalization of Layer-1 primitive achieved without equilibrium presupposition |
 
 ---
 

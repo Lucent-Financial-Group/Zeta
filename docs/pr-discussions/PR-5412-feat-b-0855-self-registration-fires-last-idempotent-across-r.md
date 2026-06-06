@@ -20,13 +20,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Architectural fix to B-0812 (iter-5.4.1 self-registration) per Aaron 2026-05-27 empirical anchor: PR #5408 auto-opened mid-install for `node-0fe6eb`; install then failed at nixos-install `--fallback` bug (PR #5410 fix-fwd); registration PR orphaned for a node-id that never came up.
 
-Operator: *"how did it register before it even rebooted? it should not register until the last step when everything comes up and if it reboots it should not register over and over... cluster should realize it's register or has a pr in flight for register and not duplicate."*
+Operator: _"how did it register before it even rebooted? it should not register until the last step when everything comes up and if it reboots it should not register over and over... cluster should realize it's register or has a pr in flight for register and not duplicate."_
 
 ## 4 architectural changes
 
 1. **Move self-registration LAST** — OUT of `zeta-install.sh` Step 6.9; INTO systemd oneshot service that fires on FIRST BOOT of installed OS, AFTER network-online + creds-restore + cluster reachable
 2. **Idempotency** — marker file (`~/.config/zeta/self-registered.marker`) + upstream check (`maintainers/<op>/cluster-nodes/<node>/node.yaml`) + in-flight PR check before composing new PR
-3. **Coordination via Path B (Otto-pushes-PR-across-finish-line)** — per Aaron's simpler-form preference (*"we can just worry about one you otto pushing the pr across the finish line on bootup"*); Path A (/tmp folder standard) deferred to future row
+3. **Coordination via Path B (Otto-pushes-PR-across-finish-line)** — per Aaron's simpler-form preference (_"we can just worry about one you otto pushing the pr across the finish line on bootup"_); Path A (/tmp folder standard) deferred to future row
 4. **De-dup** — idempotent branch naming + in-flight detection + comment-on-existing-PR instead of opening duplicates
 
 ## Composes with
@@ -64,6 +64,7 @@ Substrate-honestly with cross-link to this row.
 Adds a new P1 backlog row (B-0855) documenting an architectural fix for node self-registration so it fires on first boot (post-install), becomes idempotent across reboots, and avoids duplicate/in-flight registration PRs.
 
 **Changes:**
+
 - Added new per-row backlog doc for B-0855 describing the “registration fires last + idempotent + de-duped” architecture.
 - Updated the backlog index to include B-0855.
 
@@ -71,10 +72,10 @@ Adds a new P1 backlog row (B-0855) documenting an architectural fix for node sel
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                      | Description                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0855-self-registration-fires-LAST-post-install-post-first-boot-idempotent-across-reboots-deduped-against-in-flight-registration-prs-aaron-2026-05-27.md | New backlog row capturing the B-0855 architectural fix scope, rationale, and acceptance criteria. |
-| docs/BACKLOG.md | Adds the B-0855 entry to the generated backlog index. |
+| docs/BACKLOG.md                                                                                                                                                           | Adds the B-0855 entry to the generated backlog index.                                             |
 
 ## Review threads
 

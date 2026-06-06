@@ -24,13 +24,13 @@ Aaron authorization: \"you don't have to ask me direction every time you can jus
 
 ## The collapse Aaron's framing enables
 
-| Standard pattern | Aaron + Kestrel framing |
-|---|---|
-| Schemas are text artifacts in version control | Schemas are ROWS in distributed database substrate |
-| Schema fork = text-merge through git workflows | Cluster-fork-or-federation = operational boundary; runtime-distinct |
-| Types compiled from source code | Types preloaded from live cluster; fork-aware |
-| Schema migration breaks deployments | Deployment reflects schema state compiled against; federation translates |
-| Schema = code-layer concern | Schema = data-layer concern using same generate+join semantics |
+| Standard pattern                               | Aaron + Kestrel framing                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| Schemas are text artifacts in version control  | Schemas are ROWS in distributed database substrate                       |
+| Schema fork = text-merge through git workflows | Cluster-fork-or-federation = operational boundary; runtime-distinct      |
+| Types compiled from source code                | Types preloaded from live cluster; fork-aware                            |
+| Schema migration breaks deployments            | Deployment reflects schema state compiled against; federation translates |
+| Schema = code-layer concern                    | Schema = data-layer concern using same generate+join semantics           |
 
 ## 4 architectural pillars
 
@@ -56,7 +56,7 @@ Aaron authorization: \"you don't have to ask me direction every time you can jus
 
 - [x] Pre-commit lint clean (markdownlint-cli2 --fix applied)
 - [x] BACKLOG.md regenerated
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] Authored from fresh independent clone
 - [ ] CI green
 - [ ] Copilot review pass

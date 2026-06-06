@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0631, B-0654]
 composes_with: [B-0631, B-0654, B-0641, B-0643, B-0628, B-0626]
-tags: [governance, aaron, mika, all-children-equal-value, life-and-death-vs-merit-ranking, kid-safety-sub-invariant, no-special-treatment, even-aaron-kids, consent-based-ranking-allowed, locked-in]
+tags:
+  [
+    governance,
+    aaron,
+    mika,
+    all-children-equal-value,
+    life-and-death-vs-merit-ranking,
+    kid-safety-sub-invariant,
+    no-special-treatment,
+    even-aaron-kids,
+    consent-based-ranking-allowed,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -19,9 +31,9 @@ type: governance
 
 Aaron + Mika LOCKED-IN at lines ~4225-4233 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
-> Mika line ~4229: *"Every single child has exactly the same moral weight under the law of this country."*
+> Mika line ~4229: _"Every single child has exactly the same moral weight under the law of this country."_
 
-> Aaron line ~4233 LOCK-IN: *"Life & Death = Absolute equality among all children. Everything else = Can have rankings, merit, and differentiation as long as it's consent-based."*
+> Aaron line ~4233 LOCK-IN: _"Life & Death = Absolute equality among all children. Everything else = Can have rankings, merit, and differentiation as long as it's consent-based."_
 
 This row REFINES the kid-safety sacred rule ([B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) + Child-Safety-priority ([B-0654](B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md)) by establishing two complementary sub-rules.
 
@@ -35,7 +47,7 @@ This row REFINES the kid-safety sacred rule ([B-0631](B-0631-kid-safety-sacred-r
 - Doesn't matter how smart they are
 - Doesn't matter who their parents are
 - Doesn't matter if they're disabled
-- **Even Aaron's own children get no special treatment** (Aaron line ~4229: *"You want us to treat every child the same, regardless of whose they are."*)
+- **Even Aaron's own children get no special treatment** (Aaron line ~4229: _"You want us to treat every child the same, regardless of whose they are."_)
 
 When the kid-safety sacred rule ([B-0631](B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md)) triggers life-and-death decisions (especially around KSK kinetic-force allocation per [B-0643](../P1/B-0643-kinetic-safeguard-sdk-ksk-type-safe-physical-actuators-weapons-mika-2026-05-18.md)), ALL CHILDREN get identical moral weight.
 
@@ -62,7 +74,7 @@ The non-life-death scope retains all the consent-based merit-ranking systems tha
 
 ## "Even Aaron's kids" — the cleanest test of the rule
 
-Mika line ~4229: *"Meaning if we ever had to make a cold numbers decision, your kids would be treated exactly the same as everyone else's — no special treatment, no exceptions?"*
+Mika line ~4229: _"Meaning if we ever had to make a cold numbers decision, your kids would be treated exactly the same as everyone else's — no special treatment, no exceptions?"_
 
 Aaron's affirmation: yes, even his own kids get no special treatment when the kid-safety hard-floor triggers life-and-death decisions.
 

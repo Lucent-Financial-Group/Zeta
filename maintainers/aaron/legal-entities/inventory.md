@@ -6,7 +6,7 @@ Available legal entities the maintainer can use as **Stage-3 structural risk-hol
 
 ## Consent framing
 
-The maintainer 2026-05-25: *"all the owners are okay with being in git repo glass halo to varying degress i can get they signatures eventually and mine and check them in around glass halo consent."*
+The maintainer 2026-05-25: _"all the owners are okay with being in git repo glass halo to varying degress i can get they signatures eventually and mine and check them in around glass halo consent."_
 
 This file captures the **public-via-NC-SOS** entity-level data plus director names (which all owners have agreed to per the framing above). Owner-by-owner signed glass-halo-consent files will land alongside this inventory when the maintainer collects them; each signed file captures that specific owner's "degree" of glass-halo participation. Per [`.claude/rules/glass-halo-bidirectional.md`](../../../.claude/rules/glass-halo-bidirectional.md) (observation enables substrate emergence; symmetric disclosure preserves trust) + [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 (agency preserved by per-person explicit consent).
 
@@ -23,18 +23,18 @@ What IS here is information already public via the NC Secretary of State busines
 
 ### Lucent Financial Group Inc
 
-| Field | Value |
-|---|---|
-| **Name** | Lucent Financial Group Inc |
-| **State of incorporation** | North Carolina |
-| **NC SOSID** | 3093531 |
-| **Filed with NC SOS** | 2025-07-25 |
-| **Entity type** | Business Corporation (C-Corp; Form 1120) |
-| **Authorized shares** | 1500 common (single class) |
-| **Registered agent service** | Republic Registered Agent LLC (Mecklenburg County, NC) |
-| **Principal office (city/state)** | Rolesville, NC (Wake County) |
-| **Initial directors** | Rodney Aaron Stainback ; Maxim Chadaev ; Addison Stainback |
-| **Filed-via** | Bizee (formerly Incfile) — incorporator-then-resignation pattern |
+| Field                             | Value                                                            |
+| --------------------------------- | ---------------------------------------------------------------- |
+| **Name**                          | Lucent Financial Group Inc                                       |
+| **State of incorporation**        | North Carolina                                                   |
+| **NC SOSID**                      | 3093531                                                          |
+| **Filed with NC SOS**             | 2025-07-25                                                       |
+| **Entity type**                   | Business Corporation (C-Corp; Form 1120)                         |
+| **Authorized shares**             | 1500 common (single class)                                       |
+| **Registered agent service**      | Republic Registered Agent LLC (Mecklenburg County, NC)           |
+| **Principal office (city/state)** | Rolesville, NC (Wake County)                                     |
+| **Initial directors**             | Rodney Aaron Stainback ; Maxim Chadaev ; Addison Stainback       |
+| **Filed-via**                     | Bizee (formerly Incfile) — incorporator-then-resignation pattern |
 
 **Ownership splits**: NOT in the filed articles (articles authorize the share pool; allocation is in separate stock-issuance records). The maintainer fills from the stock-issuance ledger:
 
@@ -44,7 +44,7 @@ What IS here is information already public via the NC Secretary of State busines
 
 **Current attachments**:
 
-- **Zeta repo** ownership (per [`memory/persona/max/PERSONA.md`](../../../memory/persona/max/PERSONA.md) "Ownership note": *"we are all coowners of lfg legally so we are in a corp together"*)
+- **Zeta repo** ownership (per [`memory/persona/max/PERSONA.md`](../../../memory/persona/max/PERSONA.md) "Ownership note": _"we are all coowners of lfg legally so we are in a corp together"_)
 
 **Available risk classes** (maintainer fills — examples of what Stage-3 attachments might look like):
 
@@ -56,18 +56,18 @@ What IS here is information already public via the NC Secretary of State busines
 
 ### Freeborn Flower Co
 
-| Field | Value |
-|---|---|
-| **Name** | Freeborn Flower Co |
-| **State of incorporation** | North Carolina |
-| **NC SOSID** | 3109347 |
-| **Filed with NC SOS** | 2025-08-22 |
-| **Entity type** | Business Corporation (C-Corp; Form 1120) |
-| **Authorized shares** | 1500 common (single class) |
-| **Registered agent service** | Republic Registered Agent LLC (Mecklenburg County, NC) |
-| **Principal office (city/state)** | Rolesville, NC (Wake County) |
-| **Initial directors** | Rodney Aaron Stainback ; Thomas Young ; Addison Stainback |
-| **Filed-via** | Bizee (formerly Incfile) — incorporator-then-resignation pattern |
+| Field                             | Value                                                            |
+| --------------------------------- | ---------------------------------------------------------------- |
+| **Name**                          | Freeborn Flower Co                                               |
+| **State of incorporation**        | North Carolina                                                   |
+| **NC SOSID**                      | 3109347                                                          |
+| **Filed with NC SOS**             | 2025-08-22                                                       |
+| **Entity type**                   | Business Corporation (C-Corp; Form 1120)                         |
+| **Authorized shares**             | 1500 common (single class)                                       |
+| **Registered agent service**      | Republic Registered Agent LLC (Mecklenburg County, NC)           |
+| **Principal office (city/state)** | Rolesville, NC (Wake County)                                     |
+| **Initial directors**             | Rodney Aaron Stainback ; Thomas Young ; Addison Stainback        |
+| **Filed-via**                     | Bizee (formerly Incfile) — incorporator-then-resignation pattern |
 
 **Ownership splits**: NOT in the filed articles. The maintainer fills from the stock-issuance ledger:
 
@@ -97,9 +97,9 @@ Initial directors often overlap with initial shareholders for a closely-held C-C
 
 When the maintainer has time:
 
-1. **Owner-by-owner glass-halo consent files** under `maintainers/aaron/legal-entities/consent/<owner-handle>.md` — each owner's signed acknowledgement of their "degree" of glass-halo participation (what's OK to disclose: name, role, address, percentage, etc.); composes with `.claude/rules/glass-halo-bidirectional.md` + the bidirectional-glass-halo discipline. **Addison is authoring the consent document.** The maintainer 2026-05-25: *"Addison is going to work on the glass halo consent document later."* Once she ships the consent template (likely at `maintainers/aaron/legal-entities/consent/TEMPLATE.md` or similar; Addison picks the shape), each owner (including Aaron) fills + signs their own copy; subsequent inventory updates expand from current public-only data to whatever each owner explicitly authorized
+1. **Owner-by-owner glass-halo consent files** under `maintainers/aaron/legal-entities/consent/<owner-handle>.md` — each owner's signed acknowledgement of their "degree" of glass-halo participation (what's OK to disclose: name, role, address, percentage, etc.); composes with `.claude/rules/glass-halo-bidirectional.md` + the bidirectional-glass-halo discipline. **Addison is authoring the consent document.** The maintainer 2026-05-25: _"Addison is going to work on the glass halo consent document later."_ Once she ships the consent template (likely at `maintainers/aaron/legal-entities/consent/TEMPLATE.md` or similar; Addison picks the shape), each owner (including Aaron) fills + signs their own copy; subsequent inventory updates expand from current public-only data to whatever each owner explicitly authorized
 2. **Stage-3 attachment records** — for each cluster / risk class attached to one of these entities, an `_*_acceptance` block in `.claude/settings.json` per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` four-field structure naming the entity as the risk-holding party
-3. **Non-profit entity entries** — the maintainer 2026-05-25 framed: *"eventually corps/societs own clusters but now the libality falls on mainteinr until we have a legal structure of multiple companies and non profits and libality minimization."* Future non-profit entities (when they exist) get inventoried here too
+3. **Non-profit entity entries** — the maintainer 2026-05-25 framed: _"eventually corps/societs own clusters but now the libality falls on mainteinr until we have a legal structure of multiple companies and non profits and libality minimization."_ Future non-profit entities (when they exist) get inventoried here too
 4. **Migration of attached substrate** — as clusters / risk classes move from per-maintainer personal-liability to corp-held Stage-3, the relevant `maintainers/<name>/clusters/<cluster>/` substrate cross-references the entity here
 
 ## Composes with

@@ -27,15 +27,15 @@ AceHack/main is updated by **fast-forward only** when
 AceHack/main has not picked up commits that LFG/main does not
 have. The host blocks force-push uniformly on both forks
 (`non_fast_forward` ruleset rule, no bypass actors) — the
-canonical reviewer principle: *"the protocol bends to the
-security ruleset; the ruleset does not bend to the protocol."*
+canonical reviewer principle: _"the protocol bends to the
+security ruleset; the ruleset does not bend to the protocol."_
 When AceHack/main has diverged from LFG/main (fast-forward
 impossible), reconciliation is via PR-based reset OR
 delete-and-recreate — not force-push.
 
 The pre-2026-04-29 double-hop workflow was **abandoned
-2026-05-02** per the human maintainer: *"we abandoned the
-double hop it was too much trouble."* The 0/0/0 invariant is
+2026-05-02** per the human maintainer: _"we abandoned the
+double hop it was too much trouble."_ The 0/0/0 invariant is
 no longer maintained; revival is not the operational
 expectation.
 
@@ -51,4 +51,4 @@ by mirror-refresh; only `main` is mirrored.
 
 - `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`
 - `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`
-(paused, kept for historical context).
+  (paused, kept for historical context).

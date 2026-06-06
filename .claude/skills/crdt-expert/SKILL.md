@@ -16,11 +16,11 @@ refinement.
 
 Zeta's retraction-native Z-sets — `(key, value, multiplicity)`
 over the integer group (Z, +) — are **already** CRDTs. More
-than that: they form an Abelian *group* under pointwise
+than that: they form an Abelian _group_ under pointwise
 addition, whereas most CRDT types only form a commutative
-*monoid* (a join-semilattice). The inversion operation
+_monoid_ (a join-semilattice). The inversion operation
 `-` (retraction) is total; there is no "tombstone" in Zeta
-because `+1` followed by `-1` *is* the removal mechanism, and
+because `+1` followed by `-1` _is_ the removal mechanism, and
 it commutes with everything else.
 
 This means:
@@ -31,7 +31,7 @@ This means:
 2. Zeta's delta-propagation protocol is a δ-CRDT (Almeida-
    Shoker-Baquero 2018) — replicas ship deltas rather than
    full state.
-3. Zeta's algebra gives more than a CRDT: it gives an *exact*
+3. Zeta's algebra gives more than a CRDT: it gives an _exact_
    inverse, so rollback is free. Most CRDT literature spends
    chapters on "how do I delete?"; Zeta doesn't.
 
@@ -134,19 +134,19 @@ theoretically; less widely implemented.
 
 ## Canonical types — quick reference
 
-| Type | Shape | Key move |
-|---|---|---|
-| **G-Counter** | `Map[replicaId, N]`, merge is pointwise max | increment-only |
-| **PN-Counter** | pair of G-Counters (positive / negative) | increment + decrement |
-| **G-Set** | set, merge is union | add-only |
-| **2P-Set** | (adds, removes) pair, each G-Set | add + remove, no re-add |
-| **LWW-Register** | (value, timestamp), merge is max-timestamp | last-write-wins (timestamp hazard) |
-| **LWW-Set** | LWW-Register per element | LWW hazard on re-add |
-| **OR-Set** | tagged elements; remove removes only seen tags | add + remove + re-add, resolves concurrent |
-| **MV-Register** | set of concurrent values | reveal conflicts to the app |
-| **RGA** | tree of tagged insertions | ordered sequence (text) |
-| **Treedoc / Logoot** | position identifiers in a dense order | collaborative text |
-| **Map-CRDT** | CRDT-valued map with causal-context handling | nested CRDT composition |
+| Type                 | Shape                                          | Key move                                   |
+| -------------------- | ---------------------------------------------- | ------------------------------------------ |
+| **G-Counter**        | `Map[replicaId, N]`, merge is pointwise max    | increment-only                             |
+| **PN-Counter**       | pair of G-Counters (positive / negative)       | increment + decrement                      |
+| **G-Set**            | set, merge is union                            | add-only                                   |
+| **2P-Set**           | (adds, removes) pair, each G-Set               | add + remove, no re-add                    |
+| **LWW-Register**     | (value, timestamp), merge is max-timestamp     | last-write-wins (timestamp hazard)         |
+| **LWW-Set**          | LWW-Register per element                       | LWW hazard on re-add                       |
+| **OR-Set**           | tagged elements; remove removes only seen tags | add + remove + re-add, resolves concurrent |
+| **MV-Register**      | set of concurrent values                       | reveal conflicts to the app                |
+| **RGA**              | tree of tagged insertions                      | ordered sequence (text)                    |
+| **Treedoc / Logoot** | position identifiers in a dense order          | collaborative text                         |
+| **Map-CRDT**         | CRDT-valued map with causal-context handling   | nested CRDT composition                    |
 
 ## Zeta's Z-set as a CRDT
 
@@ -240,7 +240,7 @@ Zeta's delta-dataflow matches this shape.
 ## What this skill does NOT do
 
 - Does NOT own linearizability / consensus (→ `distributed-
-  consensus-expert`).
+consensus-expert`).
 - Does NOT own the consistency spectrum / session guarantees
   (→ `eventual-consistency-expert`).
 - Does NOT own CALM / coordination-avoidance theory
@@ -255,19 +255,19 @@ Zeta's delta-dataflow matches this shape.
 ## Reference patterns
 
 - Shapiro, Preguica, Baquero, Zawirski 2011 — INRIA-0555588
-  *A comprehensive study of convergent and commutative
-  replicated data types*.
-- Almeida, Shoker, Baquero 2018 — *Delta state replicated
-  data types* (JPDC).
-- Baquero, Almeida, Shoker 2017 — *Pure operation-based
-  replicated data types* (arXiv:1710.04469).
-- Preguica, Baquero, Shapiro 2018 — *Conflict-free
-  Replicated Data Types* (Encyclopedia of Big Data
+  _A comprehensive study of convergent and commutative
+  replicated data types_.
+- Almeida, Shoker, Baquero 2018 — _Delta state replicated
+  data types_ (JPDC).
+- Baquero, Almeida, Shoker 2017 — _Pure operation-based
+  replicated data types_ (arXiv:1710.04469).
+- Preguica, Baquero, Shapiro 2018 — _Conflict-free
+  Replicated Data Types_ (Encyclopedia of Big Data
   Technologies).
-- Kleppmann, Beresford 2017 — *A Conflict-Free Replicated
-  JSON Datatype* (TPDS) — Automerge's paper.
-- Bieniusa et al. 2012 — *An optimized conflict-free
-  replicated set* (OR-Set).
+- Kleppmann, Beresford 2017 — _A Conflict-Free Replicated
+  JSON Datatype_ (TPDS) — Automerge's paper.
+- Bieniusa et al. 2012 — _An optimized conflict-free
+  replicated set_ (OR-Set).
 - `.claude/skills/distributed-consensus-expert/SKILL.md` —
   linearizable counterpart.
 - `.claude/skills/eventual-consistency-expert/SKILL.md` —

@@ -47,6 +47,7 @@ Slow-steady audit-baseline cleanup, batch 2 (post #4525). 0329Z.md at `docs/hygi
 This PR continues the tick-shard relative-path audit cleanup by correcting broken `docs/backlog/**` links in a specific tick shard and trimming the corresponding grandfathered entries from the audit baseline.
 
 **Changes:**
+
 - Fixes three `docs/backlog/**` relative links in `docs/hygiene-history/ticks/2026/05/15/0329Z.md` by adding the missing `..` segment.
 - Removes the now-fixed findings for `0329Z.md` from `tools/hygiene/audit-tick-shard-relative-paths.baseline.json`.
 
@@ -54,9 +55,9 @@ This PR continues the tick-shard relative-path audit cleanup by correcting broke
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| docs/hygiene-history/ticks/2026/05/15/0329Z.md | Updates three `docs/backlog/**` relative links to the correct depth. |
+| File                                                        | Description                                                            |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------- |
+| docs/hygiene-history/ticks/2026/05/15/0329Z.md              | Updates three `docs/backlog/**` relative links to the correct depth.   |
 | tools/hygiene/audit-tick-shard-relative-paths.baseline.json | Trims baseline entries corresponding to the fixed links in `0329Z.md`. |
 
 ## Review threads

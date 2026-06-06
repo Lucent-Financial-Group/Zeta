@@ -22,10 +22,10 @@ The maintainer's actually-usable iter-4 path. Builds on PR #5080 (v1 scaffolding
 
 ## Design discipline (per Aaron 2026-05-26 four signals)
 
-1. *"if that's ssh lets do that first cause we want to get ai running the cluster asap"* → iter-4 authorized
-2. *"i can wait for 4.2 or whatever version before we try again"* → this PR is the workflow Aaron flashes
-3. *"--no-creds is basically useless right?"* → opt-out removed from recommended path (`--no-inject` kept as escape hatch only)
-4. *"whenever i have to ferry commands by reading and typing i'm going to avoid it like the plague and try to get like pictures and auto run and short commands pre built in"* → ALL diagnostics auto-fire in-place + are photo-friendly
+1. _"if that's ssh lets do that first cause we want to get ai running the cluster asap"_ → iter-4 authorized
+2. _"i can wait for 4.2 or whatever version before we try again"_ → this PR is the workflow Aaron flashes
+3. _"--no-creds is basically useless right?"_ → opt-out removed from recommended path (`--no-inject` kept as escape hatch only)
+4. _"whenever i have to ferry commands by reading and typing i'm going to avoid it like the plague and try to get like pictures and auto run and short commands pre built in"_ → ALL diagnostics auto-fire in-place + are photo-friendly
 
 ## Files
 
@@ -85,6 +85,7 @@ If anything in zflash's ESP-mount or zeta-install.sh's probe fails, photo-friend
 This PR extends the AI-cluster USB flashing + installer workflow to enable “zero-typing” SSH access on first boot by automatically copying the operator’s SSH public key onto the flashed USB (macOS-side) and injecting it into the installed NixOS config during `zeta-install.sh`.
 
 **Changes:**
+
 - Add `--no-eject` to `flash-usb.ts` so downstream tooling can mount/write the USB ESP before ejection.
 - Extend `zflash.ts` to (optionally) mount the flashed USB’s FAT/EFI partition and write `zeta-authorized-keys.pub`, with photo-friendly diagnostics on failures.
 - Extend `zeta-install.sh` to probe for `zeta-authorized-keys.pub` and generate `operator-ssh-keys.nix` prior to `nixos-install`, with branched post-install messaging.
@@ -93,12 +94,12 @@ This PR extends the AI-cluster USB flashing + installer workflow to enable “ze
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds step 6.5 USB pubkey probe + injection into `operator-ssh-keys.nix`, plus updated post-install messaging. |
-| full-ai-cluster/tools/zflash.ts | Adds iter-4.2 post-flash ESP mount/write of `zeta-authorized-keys.pub` and diagnostics; adds `--ssh-key` / `--no-inject`. |
-| full-ai-cluster/tools/flash-usb.ts | Adds `--no-eject` flag and skips eject when requested to support post-flash ESP writes. |
-| docs/backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md | Updates iter-4.2 acceptance checklist to reflect the shipped auto-inject/probe behavior. |
+| File                                                                                                | Description                                                                                                               |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh                                                 | Adds step 6.5 USB pubkey probe + injection into `operator-ssh-keys.nix`, plus updated post-install messaging.             |
+| full-ai-cluster/tools/zflash.ts                                                                     | Adds iter-4.2 post-flash ESP mount/write of `zeta-authorized-keys.pub` and diagnostics; adds `--ssh-key` / `--no-inject`. |
+| full-ai-cluster/tools/flash-usb.ts                                                                  | Adds `--no-eject` flag and skips eject when requested to support post-flash ESP writes.                                   |
+| docs/backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md | Updates iter-4.2 acceptance checklist to reflect the shipped auto-inject/probe behavior.                                  |
 
 ## Review threads
 

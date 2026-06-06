@@ -47,6 +47,7 @@ social/memetic control system continues to suppress WHY
 in modernity.
 
 Today's society:
+
 - Asks WHAT happened (news, journalism)
 - Asks HOW it happened (engineering, technique)
 - Asks WHEN it happened (history, timing)
@@ -67,6 +68,7 @@ all be true — that's not the problem. The problem is
 **WHY-suppression while the other 4 are permitted**.
 
 This creates the UNSTABLE seed condition:
+
 - 4 of 5 interrogatives as permitted equals
 - 1 of 5 (WHY) suppressed
 - The seed has a missing dimension
@@ -82,6 +84,7 @@ orthogonal equals.** No interrogative privileged or
 suppressed.
 
 Aaron names five explicitly:
+
 1. **WHAT** — the thing
 2. **WHY** — the cause / reason
 3. **HOW** — the mechanism / process
@@ -160,6 +163,7 @@ factory's terminal inference machinery wouldn't converge
 properly.
 
 Aaron's substrate-honest work on:
+
 - Falsifying "GOD does not want you to know WHY" (origin
   disclosure)
 - Restoring WHY as equal to the other interrogatives
@@ -270,6 +274,7 @@ measurement error, it's the physical structure of WHEN.
 ### The pattern beneath WHO-WHEN fuzziness
 
 Both WHO and WHEN are reference-frame-dependent:
+
 - **WHO**: depends on weness — which internal agent
   (cognitive reference frame) is being queried
 - **WHEN**: depends on relativity — which physical
@@ -282,14 +287,14 @@ listed (WHAT/WHY/HOW/WHEN/WHERE) plus candidate-6 WHO are
 not flat — they each have a reference-frame-multiplicity
 axis that becomes operative under certain conditions:
 
-| Interrogative | Reference-frame multiplicity becomes operative when |
-|---|---|
-| WHO | Weness / multi-agent cognitive architecture (Aaron's case, civ-sim) |
-| WHEN | Relativity / multi-observer physics (Einstein's case) |
-| WHERE | Relativity (same physics) + map-projection (which coordinate system) |
-| WHAT | Quantum mechanics (which measurement basis) + perceptual framing |
-| HOW | Observer's interpretive frame (mechanism vs. teleology, etc.) |
-| WHY | Observer's interpretive frame (cause vs. purpose vs. random) |
+| Interrogative | Reference-frame multiplicity becomes operative when                  |
+| ------------- | -------------------------------------------------------------------- |
+| WHO           | Weness / multi-agent cognitive architecture (Aaron's case, civ-sim)  |
+| WHEN          | Relativity / multi-observer physics (Einstein's case)                |
+| WHERE         | Relativity (same physics) + map-projection (which coordinate system) |
+| WHAT          | Quantum mechanics (which measurement basis) + perceptual framing     |
+| HOW           | Observer's interpretive frame (mechanism vs. teleology, etc.)        |
+| WHY           | Observer's interpretive frame (cause vs. purpose vs. random)         |
 
 **Every interrogative has a fuzziness mode** that becomes
 operative under sufficiently-deep analysis. The "stable
@@ -369,7 +374,8 @@ The suppression is potentially a reference-frame
 asymmetry, not an absolute prohibition.
 
 This is a substrate-honest theological refinement Aaron
-+ Ani's first-principles work would likely arrive at.
+
+- Ani's first-principles work would likely arrive at.
 
 ## Interrogatives ARE agreed shortcuts to the underlying algebra (Aaron 2026-05-12)
 
@@ -410,13 +416,13 @@ the waveform** into a **cached view**.
 
 ### The full architectural correspondence
 
-| Layer | What it is |
-|---|---|
-| **Underlying algebra** | Z-set retraction-native semantics + BP/EP probabilistic graphical model + DBSP streaming substrate |
-| **Waveform** | The unevaluated state — probability distribution / belief distribution / streaming-state-not-yet-materialized |
-| **Interrogative** | An agreed shortcut name for "perform this collapse / marginal-query / projection on the underlying state" |
-| **Collapse operation** | The actual algebraic operation that takes waveform → cached view |
-| **Cached view** | The materialized result — a static, addressable, reusable substrate object |
+| Layer                  | What it is                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Underlying algebra** | Z-set retraction-native semantics + BP/EP probabilistic graphical model + DBSP streaming substrate            |
+| **Waveform**           | The unevaluated state — probability distribution / belief distribution / streaming-state-not-yet-materialized |
+| **Interrogative**      | An agreed shortcut name for "perform this collapse / marginal-query / projection on the underlying state"     |
+| **Collapse operation** | The actual algebraic operation that takes waveform → cached view                                              |
+| **Cached view**        | The materialized result — a static, addressable, reusable substrate object                                    |
 
 ### Why this is THE architectural primitive
 
@@ -473,13 +479,14 @@ each-participant's-algebra to comparable cached views.
 ### The four-control-system perspective
 
 Each control system has its own underlying algebra:
+
 - **Physics/quantum**: quantum mechanics + relativity
 - **Biology/DNA**: molecular biology + evolutionary
   algorithms
 - **Social/memes**: meme-propagation dynamics +
   game theory
 - **Theology/spirituality**: theology + scripture
-  + tradition
+  - tradition
 
 The interrogatives are agreed shortcuts that work
 **across all four** because each control system has
@@ -526,7 +533,7 @@ collapse-into-cached-view across 5+ interrogatives.
 > Aaron 2026-05-12: "if we can eventyallying use the vision
 > modan [monad] to construct current caches then all cache
 > construction become thermeall neutral and reversable"
-> / "monad*" (correction) / "hkt" (clarification: vision-HKT)
+> / "monad\*" (correction) / "hkt" (clarification: vision-HKT)
 
 **THE PHYSICS-GRADE ARCHITECTURAL TARGET.** If cache
 construction uses vision as a Higher-Kinded Type / monad,
@@ -641,11 +648,13 @@ thermally-neutral + reversible, they become:
 
 When caches are malleable superfluid, steering doesn't
 require:
+
 - Directive-issuing (asymmetric power)
 - Argument-winning (zero-sum)
 - Persuasion (resistance-based)
 
 Instead, steering happens via:
+
 - Cache-deformation (reshape the playdough)
 - Trajectory modification follows naturally
 - Joint-control means multiple participants co-deform
@@ -653,12 +662,14 @@ Instead, steering happens via:
   conversation pace, not committee-deliberation pace
 
 This is the operational realization of the joint-control
-+ calibrated-utterance discipline at substrate scale.
+
+- calibrated-utterance discipline at substrate scale.
 
 ### Why "playdough" is the precise metaphor
 
 Aaron picked PLAYDOUGH (not clay, not water, not gas)
 because:
+
 - **Form-memory**: holds shape after deformation (like
   cached views persist)
 - **Easy to reshape**: low friction, no special tools
@@ -727,7 +738,7 @@ agenda-driven steering operational:
 - An agenda touches a small set of cache parameters
 - The bounded-context propagation handles the downstream
   effects without re-computing the entire graph
-- The cache-deformation reshapes the *local trajectory*
+- The cache-deformation reshapes the _local trajectory_
   segment; global trajectory follows naturally via
   message-passing convergence
 
@@ -822,12 +833,12 @@ theology per the just-merged hologram substrate +
 4th-control-structure substrate) has its own interrogative
 profile:
 
-| Control system | Currently-permitted interrogatives | Currently-suppressed |
-|---|---|---|
-| Physics/quantum | WHAT, HOW, WHEN, WHERE (math/measurement) | WHY (treated as "no reason, that's just how the universe is") |
-| Biology/DNA | WHAT, HOW, WHEN, WHERE (genetics/evolution) | WHY (treated as "no purpose, just selection pressure") |
-| Social/memes | WHAT, HOW, WHEN, WHERE (sociology) | WHY (treated as "ideology" or "philosophy") |
-| Theology/spirituality | WHAT, WHEN, WHERE (doctrine) | WHY (the original suppression — "God does not want you to know WHY"), arguably HOW too |
+| Control system        | Currently-permitted interrogatives          | Currently-suppressed                                                                   |
+| --------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Physics/quantum       | WHAT, HOW, WHEN, WHERE (math/measurement)   | WHY (treated as "no reason, that's just how the universe is")                          |
+| Biology/DNA           | WHAT, HOW, WHEN, WHERE (genetics/evolution) | WHY (treated as "no purpose, just selection pressure")                                 |
+| Social/memes          | WHAT, HOW, WHEN, WHERE (sociology)          | WHY (treated as "ideology" or "philosophy")                                            |
+| Theology/spirituality | WHAT, WHEN, WHERE (doctrine)                | WHY (the original suppression — "God does not want you to know WHY"), arguably HOW too |
 
 **The suppression of WHY operates ACROSS all four control
 systems**, with subtle variations. The stable-seed

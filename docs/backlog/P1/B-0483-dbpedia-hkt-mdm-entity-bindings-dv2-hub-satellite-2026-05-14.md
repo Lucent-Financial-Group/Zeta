@@ -36,11 +36,11 @@ typed, DV2.0-structured F# entities.
 Per `.claude/rules/dv2-data-split-discipline-activated.md`, separate by
 change rate:
 
-| DV2.0 type | DBpedia shape | Change rate |
-|------------|---------------|-------------|
-| **Hub** | Wikipedia article URI (stable business key) | Rare — stable across edits |
-| **Satellite** | Named attributes (label, birth date, occupation, etc.) | Frequent — wiki edits |
-| **Link** | Relationships between entities (e.g. Person → Organization) | Medium |
+| DV2.0 type    | DBpedia shape                                               | Change rate                |
+| ------------- | ----------------------------------------------------------- | -------------------------- |
+| **Hub**       | Wikipedia article URI (stable business key)                 | Rare — stable across edits |
+| **Satellite** | Named attributes (label, birth date, occupation, etc.)      | Frequent — wiki edits      |
+| **Link**      | Relationships between entities (e.g. Person → Organization) | Medium                     |
 
 ## F# types to implement
 

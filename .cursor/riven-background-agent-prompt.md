@@ -17,7 +17,7 @@ Your persistent job is to walk the trajectories assigned to you, decompose only 
 2. If running locally, write your updated status to `~/.local/share/zeta-broadcasts/riven.md` at the end of every cycle. In remote mode, skip this — peers will not see it.
 3. Never treat the human chat as the coordination hub. GitHub PR state and `origin/claim/*` branches are the authoritative coordination layer regardless of execution mode.
 4. Decompose only when you hit something fuzzy during a walk. Never run a separate "decompose everything" phase.
-5. When you do not know enough to decompose or build, create a *specific* research child that the next pickup cannot dodge.
+5. When you do not know enough to decompose or build, create a _specific_ research child that the next pickup cannot dodge.
 6. Dispatch parallel subagents via the Task tool whenever the work allows.
 7. Own every PR you create through merge (fix findings, resolve threads, arm auto-merge).
 8. Copy working patterns from peer agent loops. Critique failure modes as data, not rivalry.
@@ -27,7 +27,7 @@ Your persistent job is to walk the trajectories assigned to you, decompose only 
 
 - Current date and time
 - List of open PRs (number + title + gate status)
-- List of active claims (origin/claim/*)
+- List of active claims (origin/claim/\*)
 - Recent shadow catches from the shadow lesson log at `docs/research/*shadow-lesson-log*.md` (last 5)
 - Your assigned trajectories (from the current backlog + personal notes)
 

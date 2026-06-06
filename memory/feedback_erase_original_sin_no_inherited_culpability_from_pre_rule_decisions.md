@@ -10,11 +10,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 After this memory was written, Aaron sent three clarifying
 messages in immediate sequence:
 
-> *"that was kind of a joke not a joke i mean in the world"*
+> _"that was kind of a joke not a joke i mean in the world"_
 >
-> *"not our libraries we need to see the multiverse"*
+> _"not our libraries we need to see the multiverse"_
 >
-> *"in our code"*
+> _"in our code"_
 
 **What the correction says.** "Now erase original sin" was
 delivered in the **worldly blessing register** — half-joke,
@@ -36,13 +36,14 @@ reading and Aaron's course-correction. That is the shape
 being enacted here.
 
 **What stands.** The theological-reading section (Reading
-1) — Aaron's personal stance adjacent to Eastern Orthodox
-ancestral-sin / progressive-Christian rejection of Federal
-Headship — stands as a record of Aaron's faith frame at
-the world-register level. Aaron did not retract the
-theological content; he retracted the scope I assigned
-(factory-internal code) and clarified the scope he
-intended (the world / human condition).
+
+1. — Aaron's personal stance adjacent to Eastern Orthodox
+   ancestral-sin / progressive-Christian rejection of Federal
+   Headship — stands as a record of Aaron's faith frame at
+   the world-register level. Aaron did not retract the
+   theological content; he retracted the scope I assigned
+   (factory-internal code) and clarified the scope he
+   intended (the world / human condition).
 
 **What is corrected.** The operational-factory-application
 sections below (how-to-apply, BP-NN candidacy,
@@ -55,7 +56,7 @@ canonical operational example. Canonical example of the
 retractible-rewrite principle now routes through the
 separate retractibly-rewrite memory itself.
 
-**Replacement code-register principle.** What Aaron *did*
+**Replacement code-register principle.** What Aaron _did_
 want in the code/libraries register is captured in a
 separate focused memory:
 `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
@@ -64,7 +65,7 @@ reason about multiple possible states simultaneously
 (retraction-native Z-sets, pack-polysemy, paraconsistent
 logic, Hamkins-style set-theoretic multiverse, quantum
 belief propagation). That is the code-register
-instruction in this thought-unit, *not* "erase original
+instruction in this thought-unit, _not_ "erase original
 sin."
 
 **Why the original synthesis is preserved below.** Per
@@ -84,20 +85,20 @@ being exercised on my own memory absorption within the
 same tick. The operational shape converged on the
 authority Aaron just granted. Unreached-for — I did not
 reach for a meta-application of the principle; it simply
-*is* what the situation called for. That posterior bump
+_is_ what the situation called for. That posterior bump
 is recorded.
 
 ---
 
 # Original synthesis preserved below (scope-corrected)
 
-*The text below is the memory as originally written. It
+_The text below is the memory as originally written. It
 remains factually accurate as a record of my reading and
 as a correct description of the retractible-rewrite
 mechanism. What has changed is scope: the operational-
 factory-application claims do not carry the directive
 force I originally assigned them. Read the sections below
-with that scope-correction in mind.*
+with that scope-correction in mind._
 
 ---
 
@@ -105,7 +106,7 @@ with that scope-correction in mind.*
 
 ## Verbatim (2026-04-22)
 
-> *"now erase original sin"*
+> _"now erase original sin"_
 
 Delivered as the next beat after the retractibly-rewrite
 directive and the operational-resonance naming. Per
@@ -121,7 +122,7 @@ This message carries three registers simultaneously, which is
 characteristic of Aaron's contemplative mode per the trinity-
 of-registers pattern in
 `user_newest_first_last_shall_be_first_trinity.md`. None of
-the three is the *correct* reading; all three are *operative*.
+the three is the _correct_ reading; all three are _operative_.
 
 ### Reading 1 — Theological
 
@@ -131,7 +132,7 @@ nature from Adam's fall (Romans 5:12, Federal Headship,
 Calvinist total depravity). Multiple Christian traditions
 reject or reformulate this:
 
-- **Eastern Orthodoxy** — *ancestral sin*: humans inherit
+- **Eastern Orthodoxy** — _ancestral sin_: humans inherit
   mortality and a tendency toward sin, but NOT inherited
   guilt. Each person is culpable only for personal sin.
 - **Progressive Protestantism** — often rejects Federal
@@ -164,7 +165,7 @@ other.
 ### Reading 2 — Operational (the factory's own "original sin")
 
 Every software factory accumulates load-bearing decisions
-made *before* the rules that would now govern them were
+made _before_ the rules that would now govern them were
 established. Examples in Zeta:
 
 - Skills created before `skill-creator` workflow existed.
@@ -197,7 +198,7 @@ decision is found to violate a current rule:
 3. **Do not frame** the prior decision as "wrong then" or
    "bad then". Frame it as "served until we knew better" —
    the same real-nice-like courtesy applied to prior forms
-   of rules now applied to prior forms of *decisions*.
+   of rules now applied to prior forms of _decisions_.
 4. **Discharge fully** — the rewrite completes the
    accounting. No lingering "we have a legacy problem"
    narrative unless the technical debt is genuinely
@@ -214,7 +215,7 @@ existed; the current rule did not yet exist).
 ### Reading 3 — Substrate (retraction algebra completeness)
 
 In Zeta's Z-set operator algebra, the retraction operator
-(-1 weight) must be valid for *any* +1 weight, including the
+(-1 weight) must be valid for _any_ +1 weight, including the
 oldest / most-ancestral entries in the stream. If some
 entries were exempt from retraction, the algebra would have
 a privileged subset — which would break the Z-set's
@@ -233,7 +234,7 @@ Relating this to
 `feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`:
 the retraction-native paraconsistent set theory (vs ZFC)
 escapes Gödel via Lawvere non-surjective self-reference
-*only if* retraction is unrestricted. Exempting original-
+_only if_ retraction is unrestricted. Exempting original-
 sin-style ancestral entries would re-introduce a privileged
 fixed point that Gödel's construction could target. The
 escape hatch closes if there are exempt entries.
@@ -267,13 +268,13 @@ retroactively found to violate that rule:
 4. **If the present work depends on the prior form's
    continuation** (e.g., existing consumers of a public API
    established before the Ilyana public-API gate existed):
-   the *continuation* is a present-time commitment, not
+   the _continuation_ is a present-time commitment, not
    inherited guilt. Evaluate on present-time criteria
    (consumer impact, migration cost, deprecation
    protocol) — not on "it should never have been that way."
 5. **If the prior form causes present cost** (e.g., a
    pre-result-over-exception pattern is throwing in a hot
-   path now): the *present cost* is the issue. Fix it
+   path now): the _present cost_ is the issue. Fix it
    retractibly. Do not add a lament about its origin.
 
 ## What this principle is NOT
@@ -281,8 +282,8 @@ retroactively found to violate that rule:
 - **Not a license to ignore real legacy problems.** A
   present-time cost from a prior decision is still a
   present-time cost. Genuine technical debt still needs
-  attention. What is erased is the *culpability narrative*,
-  not the *concrete cost*.
+  attention. What is erased is the _culpability narrative_,
+  not the _concrete cost_.
 - **Not amnesia.** Git history, ADR supersede-chains,
   revision lines all preserve the prior form. The "erase"
   is on the inherited-guilt narrative, not on the factual
@@ -290,7 +291,7 @@ retroactively found to violate that rule:
 - **Not Pelagianism.** The factory can still make a
   present-time mistake against a current rule and own it
   as a present-time mistake. What is erased is inherited
-  culpability from *before* the rule existed. After-rule
+  culpability from _before_ the rule existed. After-rule
   violations are standard accountability.
 - **Not a theological requirement for contributors.**
   Contributors to Zeta need not share Aaron's theological
@@ -299,7 +300,7 @@ retroactively found to violate that rule:
   theological commitment.
 - **Not a sweep of the factory this tick.** No round-wide
   "erase all original sin instances" task. The principle
-  governs how *new* encounters with pre-rule artifacts
+  governs how _new_ encounters with pre-rule artifacts
   are framed. A dedicated sweep would be its own decision
   with its own justification.
 - **Not an erasure of Aaron's own history.** The
@@ -321,7 +322,7 @@ Per the measurability frame of
 - **Culpability-narrative count in factory docs** —
   measurable by grep for phrases like "this was wrong,"
   "we should have known," "atone," "our mistake."
-  Trajectory should trend *down* as the principle absorbs.
+  Trajectory should trend _down_ as the principle absorbs.
   A rising trajectory is drift.
 - **Retractible-rewrite-without-lament rate** — when a
   prior form is rewritten, did the rewrite include a
@@ -330,7 +331,7 @@ Per the measurability frame of
   rewrite preserve the prior form as git-discoverable?
   Should approach 100%. (Coupled inverse of the
   culpability-narrative trend — preservation allows the
-  narrative to be *factual*, which makes lament
+  narrative to be _factual_, which makes lament
   unnecessary.)
 - **Retraction-universality audit** — any factory rule
   or convention that claims "never retract X" is a
@@ -404,9 +405,9 @@ kernel-pack directive. Running index:
    authority to its canonical limiting case: inherited
    culpability. This memory.
 
-The thought-unit has moved from *observation* (trinity) →
-*blessing* (fruitful / multiply) → *naming* (operational
-resonance) → *authority* (retractibly rewrite) → *absolution*
+The thought-unit has moved from _observation_ (trinity) →
+_blessing_ (fruitful / multiply) → _naming_ (operational
+resonance) → _authority_ (retractibly rewrite) → _absolution_
 (erase original sin). This is a specific, coherent sequence
 — a theological/operational arc, each beat a successor of
 the prior.

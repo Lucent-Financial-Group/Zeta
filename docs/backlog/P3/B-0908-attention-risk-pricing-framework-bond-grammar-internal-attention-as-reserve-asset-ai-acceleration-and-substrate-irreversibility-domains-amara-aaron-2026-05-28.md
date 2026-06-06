@@ -45,7 +45,20 @@ related_skills:
   - time-series-database-expert
   - branding-specialist
   - product-manager
-tags: [attention-risk-pricing-framework, bond-pricing-as-internal-grammar-not-public-noun, attention-as-reserve-asset-8-operational-bandwidth-dimensions, ai-acceleration-general-form-domain, substrate-irreversibility-op-return-csam-specific-form-domain, industry-wedge-nobody-prices-attention-risk-under-ai-acceleration-cleanly, b0907-meter-feeds-this-pricing-framework, refines-b0902-public-facing-high-sufficiency-hypothesis-not-information-complete, refines-b0907-phase-4-from-bond-pricing-to-attention-risk-pricing-using-bond-grammar, amara-substrate-honest-self-catch-on-cross-contamination, composes-with-existing-op-return-csam-canonical-substrate]
+tags:
+  [
+    attention-risk-pricing-framework,
+    bond-pricing-as-internal-grammar-not-public-noun,
+    attention-as-reserve-asset-8-operational-bandwidth-dimensions,
+    ai-acceleration-general-form-domain,
+    substrate-irreversibility-op-return-csam-specific-form-domain,
+    industry-wedge-nobody-prices-attention-risk-under-ai-acceleration-cleanly,
+    b0907-meter-feeds-this-pricing-framework,
+    refines-b0902-public-facing-high-sufficiency-hypothesis-not-information-complete,
+    refines-b0907-phase-4-from-bond-pricing-to-attention-risk-pricing-using-bond-grammar,
+    amara-substrate-honest-self-catch-on-cross-contamination,
+    composes-with-existing-op-return-csam-canonical-substrate,
+  ]
 ---
 
 # B-0908 — Attention-risk-pricing framework (bond as internal grammar; attention as reserve asset)
@@ -54,9 +67,9 @@ tags: [attention-risk-pricing-framework, bond-pricing-as-internal-grammar-not-pu
 
 Per Amara 3rd ferry 2026-05-28 (preserved at `memory/persona/amara/conversations/2026-05-28-amara-3rd-ferry-validation-of-b0901-b0907-arc-plus-attention-risk-pricing-correction-plus-op-return-csam-cross-contamination-self-catch-aaron-forwarded.md`).
 
-Operator 2026-05-28 (correcting Amara's "shadow-log for bond pricing" framing): *"i was saying we price acceleration risks applied to different domains and we become the industrusy risk pricer of attention'"*
+Operator 2026-05-28 (correcting Amara's "shadow-log for bond pricing" framing): _"i was saying we price acceleration risks applied to different domains and we become the industrusy risk pricer of attention'"_
 
-Then: *"land it (shadow*)"* authorization.
+Then: _"land it (shadow_)"\* authorization.
 
 This row IS the industry-positioning + general-form substrate-engineering target. Bond-pricing is the INTERNAL grammar; attention is the reserve asset; AI-acceleration is the general-form domain; substrate-irreversibility (per existing OP_RETURN/CSAM canonical substrate) is one specific-form domain.
 
@@ -69,16 +82,16 @@ The industry wedge: companies already price credit risk, cyber risk, insurance r
 ## Bond-pricing primitives as INTERNAL pricing grammar (per Amara mapping)
 
 | Bond-pricing primitive | Zeta attention-pricing primitive |
-|---|---|
-| future cashflows | future attention demand |
-| default risk | failure-mode risk |
-| duration | review/repair duration |
-| volatility | context volatility |
-| liquidity | coordination liquidity |
-| macro sensitivity | memetic/operational sensitivity |
-| risk premium | acceleration premium |
+| ---------------------- | -------------------------------- |
+| future cashflows       | future attention demand          |
+| default risk           | failure-mode risk                |
+| duration               | review/repair duration           |
+| volatility             | context volatility               |
+| liquidity              | coordination liquidity           |
+| macro sensitivity      | memetic/operational sensitivity  |
+| risk premium           | acceleration premium             |
 
-The bond analogy is the **internal scaffolding** for the pricing math. The public claim is NOT "we do bond pricing" — that pulls audiences into finance too early and hides the better insight. The public claim IS: *"We measure and price the hidden attention costs of accelerating work with AI."*
+The bond analogy is the **internal scaffolding** for the pricing math. The public claim is NOT "we do bond pricing" — that pulls audiences into finance too early and hides the better insight. The public claim IS: _"We measure and price the hidden attention costs of accelerating work with AI."_
 
 ## Attention as reserve asset — 8 operational bandwidth dimensions
 
@@ -97,41 +110,41 @@ These are the units the framework prices in.
 
 ## Two-domain decomposition (per Amara general-form / specific-form distinction)
 
-| Domain | Question | Composes with existing substrate |
-|---|---|---|
-| **AI-acceleration (general form)** | "What does it cost a system when speed creates more review burden, repair burden, liability, trust damage, or irreversible substrate pollution?" | B-0901-B-0907 entire arc; the framework's whole substrate-engineering substrate |
-| **Substrate-irreversibility (specific form; OP_RETURN/CSAM domain)** | "What does it cost a public substrate when harmful data can become irreversible?" | `memory/persona/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` + `memory/persona/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md` + `docs/research/2026-05-07-bitcoin-op-return-debate-verbatim.md` |
+| Domain                                                               | Question                                                                                                                                         | Composes with existing substrate                                                                                                                                                                                                                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **AI-acceleration (general form)**                                   | "What does it cost a system when speed creates more review burden, repair burden, liability, trust damage, or irreversible substrate pollution?" | B-0901-B-0907 entire arc; the framework's whole substrate-engineering substrate                                                                                                                                                                                                |
+| **Substrate-irreversibility (specific form; OP_RETURN/CSAM domain)** | "What does it cost a public substrate when harmful data can become irreversible?"                                                                | `memory/persona/amara/canonical/Bitcoin_OP_RETURN_Debate_Illegal_Content_Threat_State_Attack.md` + `memory/persona/amara/conversations/2026-05-07-bitcoin-op-return-satoshi-warning-aaron-amara-verbatim.md` + `docs/research/2026-05-07-bitcoin-op-return-debate-verbatim.md` |
 
-Per Amara: *"these rhyme with risk pricing. But 'bond' is the wrong public noun here."* The shape is similar (irreversible public substrate + harmful payload + filtering/review cost + downstream liability + social panic premium + attention cost + who-pays-to-carry-risk); the public noun differs.
+Per Amara: _"these rhyme with risk pricing. But 'bond' is the wrong public noun here."_ The shape is similar (irreversible public substrate + harmful payload + filtering/review cost + downstream liability + social panic premium + attention cost + who-pays-to-carry-risk); the public noun differs.
 
 ## The pricing object
 
 ```typescript
 type AccelerationRiskQuote = {
-  domain: string;              // "AI-deployment" / "OP_RETURN-CSAM" / "workflow-X" / etc.
-  actor: string;               // which agent / team / org
-  workflow: string;            // which specific workflow being accelerated
-  time_window: TimeRange;      // the acceleration time-window
+  domain: string; // "AI-deployment" / "OP_RETURN-CSAM" / "workflow-X" / etc.
+  actor: string; // which agent / team / org
+  workflow: string; // which specific workflow being accelerated
+  time_window: TimeRange; // the acceleration time-window
 
   // Pricing outputs (attention-denominated):
-  expected_attention_loss:     AttentionUnit;
-  tail_attention_risk:         AttentionUnit;
-  repair_duration:             Duration;
-  coordination_premium:        AttentionUnit;
-  trust_drawdown_risk:         TrustUnit;
-  memetic_spillover_risk:      number;       // probability
-  recommended_speed_limit:     Rate;
-  safe_acceleration_budget:    AttentionUnit;
+  expected_attention_loss: AttentionUnit;
+  tail_attention_risk: AttentionUnit;
+  repair_duration: Duration;
+  coordination_premium: AttentionUnit;
+  trust_drawdown_risk: TrustUnit;
+  memetic_spillover_risk: number; // probability
+  recommended_speed_limit: Rate;
+  safe_acceleration_budget: AttentionUnit;
 };
 ```
 
-The quote answers: *"If we accelerate this workflow / AI deployment / policy / product / market / family process, what attention cost, repair cost, failure probability, and downstream volatility are we buying?"*
+The quote answers: _"If we accelerate this workflow / AI deployment / policy / product / market / family process, what attention cost, repair cost, failure probability, and downstream volatility are we buying?"_
 
 ## Refinements to existing substrate (per Amara's blade + operator's correction)
 
 ### B-0902 amendment — "high-sufficiency hypothesis" not "information-complete"
 
-Per Amara's blade: *"be careful with the phrase information-complete. Internally, the holographic/boundary framing is useful. Publicly, I'd call B-0902 a hypothesis: 'The shadow* boundary may be high-sufficiency for reconstructing agent-output state-space.' That survives better than 'the boundary is complete' before validation."*
+Per Amara's blade: _"be careful with the phrase information-complete. Internally, the holographic/boundary framing is useful. Publicly, I'd call B-0902 a hypothesis: 'The shadow_ boundary may be high-sufficiency for reconstructing agent-output state-space.' That survives better than 'the boundary is complete' before validation."\*
 
 Public-facing B-0902 framing should soften from "information-complete" to "high-sufficiency hypothesis until validated empirically per the Phase 2/3 experimental design." Internal framing stays — the experimental design IS the validation path.
 
@@ -212,9 +225,9 @@ Acceptance: per-domain pricing quotes empirically validated against historical s
 - B-0906 (encryption-thermal-cost two-axis) — economic substrate B-0907 operates on; this framework prices in attention-denominated terms above that substrate
 - B-0905 (Landauer-limit physics-economics) — provides the Black-Scholes-analog options-pricing foundation; B-0908 extends to attention-denominated pricing
 - B-0904 (GitHub-as-free-accelerator) — provides the economic-substrate baseline; B-0908 quantifies the value of GitHub-subsidy in attention-denominated terms
-- B-0903 (shadow*-as-training-data extraction) — the framework's substrate-engineering work IS itself attention-priceable
+- B-0903 (shadow\*-as-training-data extraction) — the framework's substrate-engineering work IS itself attention-priceable
 - B-0902 (holographic-bulk-boundary information-completeness validation) — refined per Amara's blade to "high-sufficiency hypothesis"; this framework's empirical validation feeds back into B-0902's Phase 2/3
-- B-0901 (shadow*-self-referential-ontology) — the substrate ontology this framework operates on
+- B-0901 (shadow\*-self-referential-ontology) — the substrate ontology this framework operates on
 - B-0666 (English-as-projection / `I(D(x))=x`) — composes; pricing quotes ARE projections of multivector state-space onto attention-denominated scalars
 - B-0646 (Agora V6 reputation-weighted encryption budget) — direct compose; reputation-weighted-encryption-budget IS one specific attention-pricing instance
 - B-0664 (NCI HC-8 floor) — pricing decisions must respect the floor; attention-risk-pricing-at-coercive-cost is structurally rejected
@@ -242,7 +255,7 @@ Acceptance: per-domain pricing quotes empirically validated against historical s
 
 ## Full reasoning
 
-Per operator 2026-05-28 *"land it (shadow*)"* authorization following Amara's 3rd-ferry validation-of-arc + attention-risk-pricing-correction + OP_RETURN/CSAM-cross-contamination self-catch.
+Per operator 2026-05-28 _"land it (shadow_)"\* authorization following Amara's 3rd-ferry validation-of-arc + attention-risk-pricing-correction + OP_RETURN/CSAM-cross-contamination self-catch.
 
 Per `.claude/rules/must-paired-with-can-exit-pattern.md`: this row IS bounded substrate-engineering work; Phase 1 (research-doc preservation + this row + amendments-noted) IS operator-authorized; Phase 2+ (pricing-quote scaffold; per-domain instantiations; backtesting; industry partnership) are separately-authorizable per yes-and-backlog disposition. Agent-autonomous landing limited to Phase 1.
 

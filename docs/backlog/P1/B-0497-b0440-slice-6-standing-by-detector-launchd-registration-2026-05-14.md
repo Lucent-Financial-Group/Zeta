@@ -19,6 +19,7 @@ type: chore
 ## Origin
 
 B-0440 acceptance criterion:
+
 > Service runs under existing launchd / cron infrastructure
 
 `tools/bg/standing-by-detector.ts` is fully functional (slices 1–4 shipped; commit-history + PR-activity

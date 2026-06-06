@@ -41,10 +41,10 @@ PR-with-merge-queue cadence.
 Aaron 2026-05-01 explicitly named this as the next-rung-up
 unlock for factory parallelism:
 
-> *"if we get that doc/code split two lanes that will open you
+> _"if we get that doc/code split two lanes that will open you
 > up and then you can split further by file isoletion for more
 > parallel lanes and build you way there and save lessions to
-> reduce fiction for more lanes"*
+> reduce fiction for more lanes"_
 
 Per the parallelism scaling ladder (rung 2 of 5) captured in
 `memory/feedback_parallelism_scaling_ladder_kenji_unlocked_loop_agent_doc_code_two_lane_file_isolation_peer_mode_claims_automated_best_practice_at_scale_aaron_2026_05_01.md`,
@@ -78,8 +78,8 @@ disjoint mechanized-best-practice toolchains.
 3. **Coordinator coordination protocol** documented:
    - Coordinator allocates BOTH worktrees BEFORE dispatching
      EITHER subagent (Amara 2026-04-29 rule:
-     *"coordinator must allocate worktrees before
-     allocating agents"*)
+     _"coordinator must allocate worktrees before
+     allocating agents"_)
    - Coordinator dispatches both subagents in the SAME tool
      call (parallel block)
    - Coordinator waits for BOTH lanes' branch-pushes before
@@ -109,8 +109,8 @@ disjoint mechanized-best-practice toolchains.
   generalization, not a separate design.
 - **Cross-harness parallel-mode** — covered by the
   agent-orchestra cluster (#324–#339). Rung 5; defer.
-- **Automatic lane-classification** — *"is this a doc fix
-  or code fix?"* — initially manual coordinator-call;
+- **Automatic lane-classification** — _"is this a doc fix
+  or code fix?"_ — initially manual coordinator-call;
   mechanization candidate for later (would belong in
   `tools/lanes/classify.sh`).
 

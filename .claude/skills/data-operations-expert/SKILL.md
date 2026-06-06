@@ -20,9 +20,9 @@ routes to the narrower ops specialists.
 ## The four load-bearing pillars
 
 1. **Data quality** — is the data correct? → `data-quality-
-   expert`. (Great Expectations, Soda, Monte Carlo, dbt
+expert`. (Great Expectations, Soda, Monte Carlo, dbt
    tests, DQ dimensions.)
-2. **Data observability** — can we *see* problems? →
+2. **Data observability** — can we _see_ problems? →
    `data-observability-expert`. (Freshness, volume, schema,
    distribution, lineage-aware incident detection.)
 3. **Data lineage** — where did this come from and what
@@ -48,7 +48,7 @@ Under the four pillars, specialised disciplines:
   `data-mesh-expert`.
 - **Architecture patterns** — medallion, lakehouse →
   `medallion-architecture-expert`, `lakehouse-architecture-
-  expert`.
+expert`.
 - **Temporal discipline** — `bitemporal-modeling-expert`,
   `event-sourcing-expert`.
 
@@ -69,17 +69,17 @@ The manifesto distils into testable practices:
 - **Disposable environments.** Dev/stage with production-
   like data (PII-scrubbed), rebuilt from code.
 - **Monitor for semantic drift.** Not just "pipeline green" —
-  is the business metric *still meaningful*?
+  is the business metric _still meaningful_?
 
 ## Incident shape — a data incident is not a systems incident
 
-| Axis | Systems incident | Data incident |
-| --- | --- | --- |
-| Signal | Process crashes, 500s | Numbers look wrong; stakeholder emails |
-| Detection | Uptime monitor | Data observability tool + user report |
-| Blast radius | Services depending on the process | Downstream dashboards, ML models, contracts |
-| Resolution | Restart, rollback, patch | Fix data + backfill + impact analysis |
-| Post-mortem | 5-whys on process | 5-whys on *producer*, *transform*, *consumer* |
+| Axis         | Systems incident                  | Data incident                                 |
+| ------------ | --------------------------------- | --------------------------------------------- |
+| Signal       | Process crashes, 500s             | Numbers look wrong; stakeholder emails        |
+| Detection    | Uptime monitor                    | Data observability tool + user report         |
+| Blast radius | Services depending on the process | Downstream dashboards, ML models, contracts   |
+| Resolution   | Restart, rollback, patch          | Fix data + backfill + impact analysis         |
+| Post-mortem  | 5-whys on process                 | 5-whys on _producer_, _transform_, _consumer_ |
 
 Runbooks for data incidents need:
 
@@ -107,8 +107,8 @@ tracked by the data-observability tool.
 
 ## Zeta connection
 
-Zeta's operator algebra makes most DataOps pillars *free by
-construction*:
+Zeta's operator algebra makes most DataOps pillars _free by
+construction_:
 
 - **Freshness** — the DBSP `now()` on the delta stream is
   the freshness oracle. No separate freshness monitor.
@@ -116,7 +116,7 @@ construction*:
   output; SPC runs on it directly.
 - **Schema drift** — statically typed F# operators reject
   upstream schema change at compile time.
-- **Lineage** — the plan graph *is* the lineage graph. No
+- **Lineage** — the plan graph _is_ the lineage graph. No
   OpenLineage emitter needed; the plan is the ground truth.
 - **Reprocessing / backfill** — every plan is replayable
   from its seed under DST.
@@ -139,7 +139,7 @@ layer) — the parts that live outside the engine.
 
 - Narrower operational specialists listed above.
 - **System observability (not data)** → `observability-
-  and-tracing-expert`.
+and-tracing-expert`.
 - **Classical CI/CD** → `devops-engineer`.
 - **Data Vault modelling** → `data-vault-expert`.
 - **Security operations** → `security-operations-engineer`.
@@ -171,13 +171,13 @@ layer) — the parts that live outside the engine.
 
 ## Reference patterns
 
-- *DataOps Manifesto* (dataopsmanifesto.org, 2018).
-- Christopher Bergh, Gil Benghiat, Eran Strod, *The DataOps
-  Cookbook*.
-- Andy Petrella, *Fundamentals of Data Observability* (2023,
+- _DataOps Manifesto_ (dataopsmanifesto.org, 2018).
+- Christopher Bergh, Gil Benghiat, Eran Strod, _The DataOps
+  Cookbook_.
+- Andy Petrella, _Fundamentals of Data Observability_ (2023,
   O'Reilly).
 - Chad Sanderson & Andrew Jones — data contracts.
-- Zhamak Dehghani, *Data Mesh* (2022, O'Reilly).
+- Zhamak Dehghani, _Data Mesh_ (2022, O'Reilly).
 - Ryan Blue (Iceberg) — open lakehouse discussion.
 - `.claude/skills/data-vault-expert/SKILL.md` — modelling
   counterpart.

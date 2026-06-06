@@ -12,16 +12,24 @@ composes_with:
   - experiments/meno-persist-as-bridge/Meno.fsx
   - docs/backlog/P2/B-0916-lase-as-bridge-coherent-emission-on-phase-shift-error-class-discovery-companion-to-persist-prism-aaron-2026-05-28.md
 related_prs:
-  - 5778  # μένω F# PoC (canonical alias-pattern PoC)
-  - 5780  # B-0916 Lase-as-bridge (composes; same pattern applies)
+  - 5778 # μένω F# PoC (canonical alias-pattern PoC)
+  - 5780 # B-0916 Lase-as-bridge (composes; same pattern applies)
 related_backlog:
-  - B-0916  # Lase-as-bridge primitive Lampo.fsx Slice A
-tags: [alias-pattern-greek-primary-english-secondary, fsharp-unicode-identifiers-utf8, zero-runtime-cost-binding-aliases, audience-adjusted-language-at-code-naming-scope, honor-those-that-came-before-via-greek-substrate-preservation, applies-to-meno-lampo-noeo-mnao-future-greek-substrate]
+  - B-0916 # Lase-as-bridge primitive Lampo.fsx Slice A
+tags:
+  [
+    alias-pattern-greek-primary-english-secondary,
+    fsharp-unicode-identifiers-utf8,
+    zero-runtime-cost-binding-aliases,
+    audience-adjusted-language-at-code-naming-scope,
+    honor-those-that-came-before-via-greek-substrate-preservation,
+    applies-to-meno-lampo-noeo-mnao-future-greek-substrate,
+  ]
 ---
 
 ## Aaron's substantive ratification (2026-05-28 verbatim)
 
-Aaron: *"alias is good"*
+Aaron: _"alias is good"_
 
 Response to question: "Should F# Greek-named substrate (μένω etc.) use side-by-side alias OR inherit?"
 
@@ -73,9 +81,10 @@ When authoring new Greek-named substrate primitive in F#:
 5. **Zero runtime cost** (alias, not inheritance)
 
 Future Greek-named primitives ready to use this pattern:
+
 - **λάμπω** (lampō, "I shine") = Lase-as-bridge (B-0916 Lampo.fsx Slice A) — companion to μένω
 - **νοέω** (noeō, "I perceive with mind") = potential Observe-as-bridge / Attention primitive
-- **μνάω** (mnaō, "I remember") = potential Memory primitive (PIE sibling of μένω; same root *men-)
+- **μνάω** (mnaō, "I remember") = potential Memory primitive (PIE sibling of μένω; same root \*men-)
 - Any future Greek-substrate primitive
 
 ## F# Unicode caveats (substrate-honest)

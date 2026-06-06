@@ -87,8 +87,8 @@ The Aurora work anticipates additional named collaborators:
   `docs/ALIGNMENT.md`) — federation-layer collaborators when
   the multi-node story lands.
 
-Additions to this file land when a collaborator has a *named
-contribution* in the repo substrate, not just a mention.
+Additions to this file land when a collaborator has a _named
+contribution_ in the repo substrate, not just a mention.
 
 ---
 

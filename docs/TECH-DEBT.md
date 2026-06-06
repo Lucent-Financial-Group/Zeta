@@ -1,16 +1,16 @@
 # Technical Debt — Factory Operator Manual
 
-*Shipped with the factory. Explains what technical debt is,
+_Shipped with the factory. Explains what technical debt is,
 why it matters, how to spot it, and — the part most operator
 manuals skip — **how the factory automates its discovery and
 fixes**. This document is written for two audiences at once:
 humans who want to know how the factory works, and AIs who
 want to know how to keep it working. The instructions are the
-same.*
+same._
 
-*Scope: `factory` (ships with every adopter project). The
+_Scope: `factory` (ships with every adopter project). The
 system-under-test variant is
-[`docs/SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md).*
+[`docs/SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md)._
 
 ---
 
@@ -42,13 +42,13 @@ silent failure modes that don't fire today but will.
 
 The factory distinguishes debt from bugs:
 
-| | Bugs | Tech debt |
-|---|---|---|
-| **Symptom** | Breaks / misleads / lies | Works but in the wrong shape |
-| **Correctness** | Fails | Passes |
-| **Compound** | Once, loudly | Silently, forever |
-| **Ledger** | `docs/BUGS.md` | `docs/DEBT.md` (accidental) + `docs/INTENTIONAL-DEBT.md` (declared) |
-| **Urgency** | P0/P1/P2 severity | S/M/L effort |
+|                 | Bugs                     | Tech debt                                                           |
+| --------------- | ------------------------ | ------------------------------------------------------------------- |
+| **Symptom**     | Breaks / misleads / lies | Works but in the wrong shape                                        |
+| **Correctness** | Fails                    | Passes                                                              |
+| **Compound**    | Once, loudly             | Silently, forever                                                   |
+| **Ledger**      | `docs/BUGS.md`           | `docs/DEBT.md` (accidental) + `docs/INTENTIONAL-DEBT.md` (declared) |
+| **Urgency**     | P0/P1/P2 severity        | S/M/L effort                                                        |
 
 A bug lies to users. Debt does not lie — it just makes
 everything harder. **Debt is honest friction.**
@@ -148,8 +148,8 @@ skill.
 
 ### 3. Pinned-but-not-referenced debt
 
-A dependency, skill, or capability is *installed / pinned /
-documented* but never *used*. Credibility-debt: the project
+A dependency, skill, or capability is _installed / pinned /
+documented_ but never _used_. Credibility-debt: the project
 looks like it has the capability, but has never exercised it.
 
 **Symptom:** audit finds the thing exists in
@@ -223,8 +223,7 @@ own context; contributors guess wrong about ownership.
 
 **Example from this repo:**
 
-- `docs/FACTORY-HYGIENE.md` lacked a Scope column until round
-  44. 29 rows landed without scope tags. Remediated in the
+- `docs/FACTORY-HYGIENE.md` lacked a Scope column until round 44. 29 rows landed without scope tags. Remediated in the
   same round; scope declaration is now a requirement for new
   rows.
 
@@ -267,7 +266,7 @@ for consumers the factory did not know existed.
 **Example from this repo:**
 
 - `Op<'T> implicitly publicised as a plugin subclass-
-  extension point` — `Circuit.RegisterStream<'T>` accepts
+extension point` — `Circuit.RegisterStream<'T>` accepts
   `Op<'T>`; every member of `Op` / `Op<'T>` became a plugin
   contract without intent.
 
@@ -308,7 +307,7 @@ the rule's signal/noise ratio collapses.
 **Example from this repo:**
 
 - `Semgrep rule 2 plain-tick-increment — four nosemgrep
-  suppressions` across `FSharpApi.fs`, `LawRunner.fs`,
+suppressions` across `FSharpApi.fs`, `LawRunner.fs`,
   `PluginHarness.fs`. Fix: sharpen the rule to match only
   module-scope mutable, not method-local counter.
 
@@ -410,13 +409,13 @@ round-close Architect sweep.
 
 Five smells that generalise across classes:
 
-| Smell | Question | Class often behind it |
-|---|---|---|
-| **Stale** | Does this pointer / section number / rule ID still resolve? | 1, 12, 13 |
-| **Friction** | Does this slow me down more than it helps? | 4, 9, 10, 11 |
-| **Drift** | Does reality match what this claims? | 2, 4, 7, 14 |
-| **Overdue** | Is this cadence-rule being honoured? | 5 |
-| **No-scope** | Can a reader tell the audience? | 6, 13 |
+| Smell        | Question                                                    | Class often behind it |
+| ------------ | ----------------------------------------------------------- | --------------------- |
+| **Stale**    | Does this pointer / section number / rule ID still resolve? | 1, 12, 13             |
+| **Friction** | Does this slow me down more than it helps?                  | 4, 9, 10, 11          |
+| **Drift**    | Does reality match what this claims?                        | 2, 4, 7, 14           |
+| **Overdue**  | Is this cadence-rule being honoured?                        | 5                     |
+| **No-scope** | Can a reader tell the audience?                             | 6, 13                 |
 
 A debt row is **one of those smells + a named class + a
 concrete `site:line` + an effort estimate**. Anything shorter
@@ -466,18 +465,18 @@ Personas under `.claude/agents/` with focused domains. They
 run as subagents (context-isolated) on explicit dispatch.
 Coverage map:
 
-| Agent | Debt classes covered |
-|---|---|
-| Kira (harsh-critic) | 2, 8, 9 — zero-empathy P0/P1/P2 triage |
-| Rune (maintainability-reviewer) | 4, 7, 11 — readability, naming, bloat |
-| Viktor (spec-zealot) | 2 — OpenSpec capability drift |
-| Ilyana (public-api-designer) | 8 — internal→public API gate |
-| Soraya (formal-verification-expert) | 2 — proof-tool alignment |
-| Daya (agent-experience-engineer) | 1, 12, 13 — wake-UX, pointer drift |
-| Bodhi (developer-experience-engineer) | 4 — contributor first-60-minutes |
-| Iris (user-experience-engineer) | 4, 8 — library-consumer first-10-minutes |
-| Aarav (skill-tune-up ranker) | 11, 14 — skill drift / BP drift |
-| Naledi (performance-engineer) | perf-budget regressions (SUT-side) |
+| Agent                                 | Debt classes covered                     |
+| ------------------------------------- | ---------------------------------------- |
+| Kira (harsh-critic)                   | 2, 8, 9 — zero-empathy P0/P1/P2 triage   |
+| Rune (maintainability-reviewer)       | 4, 7, 11 — readability, naming, bloat    |
+| Viktor (spec-zealot)                  | 2 — OpenSpec capability drift            |
+| Ilyana (public-api-designer)          | 8 — internal→public API gate             |
+| Soraya (formal-verification-expert)   | 2 — proof-tool alignment                 |
+| Daya (agent-experience-engineer)      | 1, 12, 13 — wake-UX, pointer drift       |
+| Bodhi (developer-experience-engineer) | 4 — contributor first-60-minutes         |
+| Iris (user-experience-engineer)       | 4, 8 — library-consumer first-10-minutes |
+| Aarav (skill-tune-up ranker)          | 11, 14 — skill drift / BP drift          |
+| Naledi (performance-engineer)         | perf-budget regressions (SUT-side)       |
 
 The Architect (Kenji) synthesises all findings; nobody
 reviews the Architect (accepted bottleneck per
@@ -517,7 +516,7 @@ Three ledger shapes with distinct semantics:
 
 Accidental debt discovered later becomes **retroactive
 INTENTIONAL-DEBT** with a ROUND-HISTORY process note. No
-blame; the rule is "no *accidental* debt," not "no mistakes."
+blame; the rule is "no _accidental_ debt," not "no mistakes."
 
 ### BP-NN rule registry
 
@@ -631,8 +630,8 @@ following are **instructions**, not narrative:
 ## Relationship to other docs
 
 - **`docs/DEBT.md`** — the live ledger. This doc tells you
-  *what debt is and how to spot it*; DEBT.md tells you
-  *what specific debts we currently owe*.
+  _what debt is and how to spot it_; DEBT.md tells you
+  _what specific debts we currently owe_.
 - **`docs/INTENTIONAL-DEBT.md`** — the declared-shortcut
   ledger. Rows live here newest-first, never deleted.
 - **`docs/BUGS.md`** — correctness failures, not debt.
@@ -663,7 +662,7 @@ following are **instructions**, not narrative:
 - Martin Fowler's **debt quadrant**: reckless vs prudent,
   deliberate vs inadvertent. This factory's INTENTIONAL-DEBT
   ledger is the prudent-deliberate quadrant explicitly.
-- Michael Feathers, *Working Effectively with Legacy Code*
+- Michael Feathers, _Working Effectively with Legacy Code_
   — the foundational debt-reducer text; characterisation
   tests as a discovery surface.
 - SEI Technical Debt Field Guide (2014+) — classes of debt
@@ -671,7 +670,7 @@ following are **instructions**, not narrative:
 
 ---
 
-*This document is audited on round cadence against every
+_This document is audited on round cadence against every
 class's cited example. If a class no longer has a real
 in-repo example, the class is either retired or re-cited
-against a current finding. No speculative classes.*
+against a current finding. No speculative classes._

@@ -40,6 +40,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a 2220Z hygiene tick shard documenting a null auto-merge arm sweep, prior PR carry-forward status, Lior activity, and cron heartbeat visibility.
 
 **Changes:**
+
 - Adds a new tick-history shard for 2026-05-15 2220Z.
 - Records PR queue status, prior-tick outcomes, and operational rationale.
 - Notes cron and Lior process state for continuity.
@@ -56,7 +57,7 @@ P1: This shard starts with YAML frontmatter instead of the canonical first-line 
 
 **@copilot-pull-request-reviewer** (2026-05-15T22:25:05Z):
 
-P1: The cited holding rule requires a specific named dependency *with a bounded ETA* (for CI, a check name and expected minutes), but this dependency list only names PRs and leaves both waits unbounded. As written the shard records the tick as rule-compliant while omitting the rule's key condition, which weakens the liveness evidence this history file is meant to preserve.
+P1: The cited holding rule requires a specific named dependency _with a bounded ETA_ (for CI, a check name and expected minutes), but this dependency list only names PRs and leaves both waits unbounded. As written the shard records the tick as rule-compliant while omitting the rule's key condition, which weakens the liveness evidence this history file is meant to preserve.
 
 ### Thread 3: docs/hygiene-history/ticks/2026/05/15/2220Z.md:21 (unresolved)
 

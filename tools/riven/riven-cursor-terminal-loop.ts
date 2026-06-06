@@ -80,12 +80,7 @@ async function runAgentGate(): Promise<void> {
     "Rodney's Razor + substrate-or-it-didn't-happen apply.",
   ].join(" ");
 
-  const result = spawnSync("cursor-agent", [
-    "chat",
-    "--mode", "ask",
-    "--model", "grok-4.3",
-    contract,
-  ], {
+  const result = spawnSync("cursor-agent", ["chat", "--mode", "ask", "--model", "grok-4.3", contract], {
     encoding: "utf8",
     timeout: AGENT_TIMEOUT_MS,
     stdio: ["ignore", "pipe", "pipe"],

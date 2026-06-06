@@ -7,7 +7,7 @@ created: 2026-05-16
 
 ## Aaron's exact words
 
-> *"yes i want to have the same coveration 100 differen ways with 100 differnt ais and humans to find the issues before commiting to years long project"*
+> _"yes i want to have the same coveration 100 differen ways with 100 differnt ais and humans to find the issues before commiting to years long project"_
 
 (2026-05-15 to Kestrel on claude.ai, after Kestrel's welfare-concern about Addison + multi-AI loop concerns.)
 

@@ -153,9 +153,7 @@ function isThematicBreak(line: string): boolean {
   // MD032 fires on the blockquoted list it terminates (pre-CI review
   // P1 on PR #3075 round 18).
   const stripped = line.replace(/^ {0,3}(?:(?:>[ \t]?)+ {0,3})?/, "");
-  return /^(\*[ \t]*){3,}$/.test(stripped)
-    || /^(-[ \t]*){3,}$/.test(stripped)
-    || /^(_[ \t]*){3,}$/.test(stripped);
+  return /^(\*[ \t]*){3,}$/.test(stripped) || /^(-[ \t]*){3,}$/.test(stripped) || /^(_[ \t]*){3,}$/.test(stripped);
 }
 
 /**
@@ -389,11 +387,7 @@ export function findMd032Violations(content: string): { line: number; context: s
       // Otherwise the fence-like line is still inside the code block
       // (an inner same-delim opener with info string, or different
       // delimiter / shorter run) and the outer block stays open.
-      if (
-        fence.char === openFence.char &&
-        fence.len >= openFence.len &&
-        fence.closer
-      ) {
+      if (fence.char === openFence.char && fence.len >= openFence.len && fence.closer) {
         openFence = null;
         // Keep `inList` across the close — the open already set the
         // correct list-context state.
@@ -517,10 +511,9 @@ export function checkFiles(files: string[], surfaceReadErrors = false): Md032Fin
       content = readFileSync(f, "utf-8");
     } catch (e) {
       if (surfaceReadErrors) {
-        throw Object.assign(
-          new Error(`Cannot read '${f}': ${(e as NodeJS.ErrnoException).message ?? String(e)}`),
-          { cause: e },
-        );
+        throw Object.assign(new Error(`Cannot read '${f}': ${(e as NodeJS.ErrnoException).message ?? String(e)}`), {
+          cause: e,
+        });
       }
       continue; // silent-skip path (no longer used by main() since round 13)
     }
@@ -620,21 +613,16 @@ export function loadMarkdownlintIgnores(repoRoot: string): string[] {
  */
 export function stagedMarkdownFiles(repoRoot: string): string[] {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
-  const r = spawnSync(
-    "git",
-    ["-C", repoRoot, "diff", "--name-only", "--cached", "--diff-filter=AMR"],
-    { encoding: "utf-8" },
-  );
+  const r = spawnSync("git", ["-C", repoRoot, "diff", "--name-only", "--cached", "--diff-filter=AMR"], {
+    encoding: "utf-8",
+  });
   if (r.status !== 0 || r.error) {
     // `spawnSync` returns `r.error` when the process couldn't be
     // launched at all (e.g., `git` not on PATH, EACCES) — in that case
     // `r.status` is null and `r.stderr` is typically empty. Surfacing
     // `r.error.message` makes the failure diagnosable instead of just
     // "unknown error" (pre-CI review P2 on PR #3075 round 8).
-    const reason =
-      r.error?.message ??
-      (r.stderr ? r.stderr.trim() : "") ??
-      "unknown error";
+    const reason = r.error?.message ?? (r.stderr ? r.stderr.trim() : "") ?? "unknown error";
     throw new Error(`git diff --cached failed: ${reason || "unknown error"}`);
   }
   const ignoreRes = loadMarkdownlintIgnores(repoRoot).map(globToRegex);
@@ -660,19 +648,10 @@ export function stagedMarkdownFiles(repoRoot: string): string[] {
  */
 export function readStagedBlob(repoRoot: string, repoRelPath: string): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
-  const r = spawnSync(
-    "git",
-    ["-C", repoRoot, "show", `:${repoRelPath}`],
-    { encoding: "utf-8" },
-  );
+  const r = spawnSync("git", ["-C", repoRoot, "show", `:${repoRelPath}`], { encoding: "utf-8" });
   if (r.status !== 0 || r.error) {
-    const reason =
-      r.error?.message ??
-      (r.stderr ? r.stderr.trim() : "") ??
-      "unknown error";
-    throw new Error(
-      `git show :${repoRelPath} failed: ${reason || "unknown error"}`,
-    );
+    const reason = r.error?.message ?? (r.stderr ? r.stderr.trim() : "") ?? "unknown error";
+    throw new Error(`git show :${repoRelPath} failed: ${reason || "unknown error"}`);
   }
   return r.stdout ?? "";
 }
@@ -688,10 +667,7 @@ export function readStagedBlob(repoRoot: string, repoRelPath: string): string {
  * the absolute path for diagnostic display; the content scanned IS
  * the staged blob (pre-CI review P1 on PR #3075 round 13).
  */
-export function checkStagedFiles(
-  repoRoot: string,
-  paths?: string[],
-): Md032Finding[] {
+export function checkStagedFiles(repoRoot: string, paths?: string[]): Md032Finding[] {
   // Allow the caller to pass in the discovered staged-path list to
   // avoid running `git diff --name-only --cached` twice in one
   // invocation. When omitted, `stagedMarkdownFiles` is called here
@@ -702,9 +678,7 @@ export function checkStagedFiles(
   const targets = paths ?? stagedMarkdownFiles(repoRoot);
   const all: Md032Finding[] = [];
   for (const absPath of targets) {
-    const repoRel = absPath.startsWith(`${repoRoot}/`)
-      ? absPath.slice(repoRoot.length + 1)
-      : absPath;
+    const repoRel = absPath.startsWith(`${repoRoot}/`) ? absPath.slice(repoRoot.length + 1) : absPath;
     // `git show :path` failing AFTER `git diff --cached` listed the
     // path is a genuine git/index anomaly — the path is staged for
     // commit but unreadable from the index. Silent-skip would let
@@ -750,9 +724,7 @@ export function main(): number {
       return 1;
     }
   } else if (argv.length === 0) {
-    console.error(
-      "Usage: check-md032-blanks-around-lists.ts <file1> <file2> ... | --staged",
-    );
+    console.error("Usage: check-md032-blanks-around-lists.ts <file1> <file2> ... | --staged");
     return 1;
   } else {
     const files = argv.map((f) => (f.startsWith("/") ? f : resolve(f)));

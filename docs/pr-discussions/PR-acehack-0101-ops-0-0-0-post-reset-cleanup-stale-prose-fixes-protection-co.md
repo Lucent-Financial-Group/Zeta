@@ -25,7 +25,7 @@ Canonical AceHack-first PR: post-reset cleanup after the 0/0/0 hard-reset achiev
 
 ## Lineage
 
-This PR was originally opened on LFG-side (Lucent-Financial-Group/Zeta#844) by mistake — Aaron correctly flagged that the canonical flow is AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA. *"Without the double-hop in a few hours we'll be right back to where we started — that's load-bearing to get right."* + the high-signal-data-multiplier framing: 2× review-agent passes per PR = 2× signal for the training corpus.
+This PR was originally opened on LFG-side (Lucent-Financial-Group/Zeta#844) by mistake — Aaron correctly flagged that the canonical flow is AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA. _"Without the double-hop in a few hours we'll be right back to where we started — that's load-bearing to get right."_ + the high-signal-data-multiplier framing: 2× review-agent passes per PR = 2× signal for the training corpus.
 
 LFG #844 closed; branch repushed to AceHack as the canonical first stop. Includes Codex P2 review feedback from the LFG side (gh api --input syntax fix at commit `f6d6a94`) preserved as part of the branch history.
 
@@ -41,8 +41,9 @@ Layers:      legacy DELETED (per Aaron); rulesets canonical
 ## Stale-prose fixes (Amara substrate-pass catch)
 
 Two paragraphs flipped from pre-reset state to in-force post-reset state:
-- *"Currently NOT signoff-eligible"* → *"0/0/0 ACHIEVED 2026-04-29T14:04:50Z..."*
-- *"Hard-reset is NOT YET signoff-eligible"* → *"Hard-reset complete (2026-04-29T14:04:50Z)..."*
+
+- _"Currently NOT signoff-eligible"_ → _"0/0/0 ACHIEVED 2026-04-29T14:04:50Z..."_
+- _"Hard-reset is NOT YET signoff-eligible"_ → _"Hard-reset complete (2026-04-29T14:04:50Z)..."_
 
 Derived-Rollup Drift class — primary state changed, downstream prose still claimed old state.
 
@@ -52,11 +53,11 @@ Derived-Rollup Drift class — primary state changed, downstream prose still cla
 
 - AceHack/Zeta had BOTH legacy branch protection AND repository rulesets on `main`
 - Both layers enforced independently; GitHub UI doesn't surface dual-layer state
-- Aaron: *"I knew there were two but I was confused why."*
+- Aaron: _"I knew there were two but I was confused why."_
 - Maintainer call: legacy DELETED, rulesets canonical going forward
 - Error-code mapping: `GH013` = rulesets surface, `GH006` = legacy surface
 - Diagnostic script (`gh api` commands, with correct heredoc-stdin syntax per Codex's feedback) for future audits
-- Future-protocol note: rulesets `non_fast_forward` rule still doesn't match CLAUDE.md *"force-push to AceHack main is part of protocol"* — task #305 home for that decision
+- Future-protocol note: rulesets `non_fast_forward` rule still doesn't match CLAUDE.md _"force-push to AceHack main is part of protocol"_ — task #305 home for that decision
 
 `MEMORY.md` index updated with one-line pointer.
 
@@ -102,6 +103,7 @@ Unclear → stop, report exact uncertainty, propose one safe action
 Post-0/0/0 hard-reset cleanup PR that updates current-state docs/memory to reflect the achieved 0/0/0 status and captures a durable debugging note about GitHub’s dual-layer protection enforcement (legacy branch protection + rulesets) on AceHack/Zeta.
 
 **Changes:**
+
 - Add a new protection-config memory documenting GH013 vs GH006 and a `gh api` audit/diagnostic sequence.
 - Update `docs/active-trajectory.md` prose to reflect that the 0/0/0 hard-reset has completed.
 - Append a tick shard row and add a new `MEMORY.md` index entry pointing to the new memory.
@@ -110,12 +112,12 @@ Post-0/0/0 hard-reset cleanup PR that updates current-state docs/memory to refle
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md | New memory documenting dual-layer protection enforcement + commands/error-code mapping. |
-| memory/MEMORY.md | Adds newest-first index entry pointing to the new protection-config memory. |
-| docs/hygiene-history/ticks/2026/04/29/1410Z.md | New tick shard entry recording the 0/0/0 reset arc + follow-up PR. |
-| docs/active-trajectory.md | Flips stale “not signoff-eligible” / “not yet” language to post-reset “complete/achieved” state. |
+| File                                                                                         | Description                                                                                      |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md | New memory documenting dual-layer protection enforcement + commands/error-code mapping.          |
+| memory/MEMORY.md                                                                             | Adds newest-first index entry pointing to the new protection-config memory.                      |
+| docs/hygiene-history/ticks/2026/04/29/1410Z.md                                               | New tick shard entry recording the 0/0/0 reset arc + follow-up PR.                               |
+| docs/active-trajectory.md                                                                    | Flips stale “not signoff-eligible” / “not yet” language to post-reset “complete/achieved” state. |
 
 ## Review threads
 

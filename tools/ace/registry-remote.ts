@@ -14,15 +14,21 @@ import { loadRegistry, readRegistriesConfig, registryCacheDir } from "./store.ts
 export type IndexDoc = IndexSignableContent & { signature: AceSignature };
 
 function isEntry(e: unknown): e is RegistryEntry {
-  return !!e && typeof e === "object"
-    && typeof (e as RegistryEntry).url === "string"
-    && typeof (e as RegistryEntry).package_hash === "string";
+  return (
+    !!e &&
+    typeof e === "object" &&
+    typeof (e as RegistryEntry).url === "string" &&
+    typeof (e as RegistryEntry).package_hash === "string"
+  );
 }
 function isSig(s: unknown): s is AceSignature {
-  return !!s && typeof s === "object"
-    && (s as AceSignature).algo === "ed25519"
-    && typeof (s as AceSignature).key_id === "string"
-    && typeof (s as AceSignature).sig === "string";
+  return (
+    !!s &&
+    typeof s === "object" &&
+    (s as AceSignature).algo === "ed25519" &&
+    typeof (s as AceSignature).key_id === "string" &&
+    typeof (s as AceSignature).sig === "string"
+  );
 }
 
 function validMarkMap(m: unknown): boolean {
@@ -43,12 +49,18 @@ function validMarkMap(m: unknown): boolean {
 
 export function parseIndex(json: string): IndexDoc | { error: string } {
   let raw: unknown;
-  try { raw = JSON.parse(json); } catch { return { error: "index is not valid JSON" }; }
+  try {
+    raw = JSON.parse(json);
+  } catch {
+    return { error: "index is not valid JSON" };
+  }
   if (!raw || typeof raw !== "object") return { error: "index is not an object" };
   const o = raw as Record<string, unknown>;
   if (o.format_version !== 1 && o.format_version !== 2) return { error: "unsupported index format_version" };
-  if (typeof o.sequence !== "number" || !Number.isInteger(o.sequence) || o.sequence < 0) return { error: "index sequence must be a non-negative integer" };
-  if (typeof o.issued_at !== "string" || Number.isNaN(Date.parse(o.issued_at))) return { error: "index issued_at must be RFC3339" };
+  if (typeof o.sequence !== "number" || !Number.isInteger(o.sequence) || o.sequence < 0)
+    return { error: "index sequence must be a non-negative integer" };
+  if (typeof o.issued_at !== "string" || Number.isNaN(Date.parse(o.issued_at)))
+    return { error: "index issued_at must be RFC3339" };
   if (!o.packages || typeof o.packages !== "object") return { error: "index packages must be an object" };
   const packages: Record<string, Record<string, RegistryEntry>> = {};
   for (const [name, versions] of Object.entries(o.packages as Record<string, unknown>)) {
@@ -69,7 +81,13 @@ export function parseIndex(json: string): IndexDoc | { error: string } {
     if (!validMarkMap(o.quarantined)) return { error: "index quarantined map is malformed" };
   }
   if (!isSig(o.signature)) return { error: "index signature is malformed" };
-  const doc: IndexDoc = { format_version: o.format_version as number, sequence: o.sequence, issued_at: o.issued_at, packages, signature: o.signature };
+  const doc: IndexDoc = {
+    format_version: o.format_version as number,
+    sequence: o.sequence,
+    issued_at: o.issued_at,
+    packages,
+    signature: o.signature,
+  };
   if (o.revoked !== undefined) doc.revoked = o.revoked as RevocationMap;
   if (o.quarantined !== undefined) doc.quarantined = o.quarantined as RevocationMap;
   return doc;
@@ -79,21 +97,33 @@ export const DEFAULT_MAX_STALENESS_DAYS = 30;
 export const MAX_FUTURE_SKEW_MS = 5 * 60 * 1000;
 
 export interface CacheMeta {
-  url: string; etag?: string; last_modified?: string;
-  sequence_high_water: number; index_content_hash: string; fetched_at: string;
+  url: string;
+  etag?: string;
+  last_modified?: string;
+  sequence_high_water: number;
+  index_content_hash: string;
+  fetched_at: string;
 }
-export interface VerifyOpts { offline?: boolean }
+export interface VerifyOpts {
+  offline?: boolean;
+}
 
 /** The three gates, in order: signature (mandatory pin) → anti-rollback → freshness (two-sided). */
 export function verifyIndex(
-  doc: IndexDoc, remote: RemoteRegistryConfig, trustStore: Map<string, TrustEntry>,
-  cacheMeta: CacheMeta, now: number, opts: VerifyOpts,
+  doc: IndexDoc,
+  remote: RemoteRegistryConfig,
+  trustStore: Map<string, TrustEntry>,
+  cacheMeta: CacheMeta,
+  now: number,
+  opts: VerifyOpts,
 ): { ok: true } | { ok: false; reason: string } {
   const { signature, ...content } = doc;
-  if (signature.key_id !== remote.key_id) return { ok: false, reason: `index not signed by the registry's pinned key ${remote.key_id}` };
+  if (signature.key_id !== remote.key_id)
+    return { ok: false, reason: `index not signed by the registry's pinned key ${remote.key_id}` };
   const sv = verifyIndexSignature(content, signature, trustStore);
   if (!sv.ok) return { ok: false, reason: `index signature ${sv.reason}` };
-  if (doc.sequence < cacheMeta.sequence_high_water) return { ok: false, reason: `index rollback: sequence ${doc.sequence} < seen ${cacheMeta.sequence_high_water}` };
+  if (doc.sequence < cacheMeta.sequence_high_water)
+    return { ok: false, reason: `index rollback: sequence ${doc.sequence} < seen ${cacheMeta.sequence_high_water}` };
   const issued = Date.parse(doc.issued_at);
   if (issued - now > MAX_FUTURE_SKEW_MS) return { ok: false, reason: `index issued_at is in the future beyond skew` };
   if (!opts.offline) {
@@ -120,18 +150,23 @@ export function readCache(url: string): { meta: CacheMeta; body: string } | null
     if (typeof meta.sequence_high_water !== "number" || !Number.isFinite(meta.sequence_high_water)) return null;
     const body = readFileSync(blobPath(meta.index_content_hash), "utf8");
     return { meta, body };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export function writeCache(
-  url: string, body: string,
+  url: string,
+  body: string,
   fields: { etag?: string; last_modified?: string; sequence_high_water: number },
 ): CacheMeta {
   const ch = indexContentHash(body);
   mkdirSync(join(registryCacheDir(), "blobs"), { recursive: true });
   writeFileSync(blobPath(ch), body);
   const meta: CacheMeta = {
-    url, sequence_high_water: fields.sequence_high_water, index_content_hash: ch,
+    url,
+    sequence_high_water: fields.sequence_high_water,
+    index_content_hash: ch,
     fetched_at: new Date().toISOString(),
     ...(fields.etag !== undefined ? { etag: fields.etag } : {}),
     ...(fields.last_modified !== undefined ? { last_modified: fields.last_modified } : {}),
@@ -140,7 +175,10 @@ export function writeCache(
   return meta;
 }
 
-export interface FetchOpts { offline?: boolean; now?: number }
+export interface FetchOpts {
+  offline?: boolean;
+  now?: number;
+}
 
 function toRegistryFragment(doc: IndexDoc): Registry {
   const m: Registry = new Map();
@@ -153,14 +191,27 @@ function toRegistryFragment(doc: IndexDoc): Registry {
 }
 
 export async function fetchRemoteIndex(
-  remote: RemoteRegistryConfig, trustStore: Map<string, TrustEntry>, opts: FetchOpts = {},
-): Promise<{ entries: Registry; marks: { revoked?: RevocationMap; quarantined?: RevocationMap } } | { error: string } | { skipped: string }> {
+  remote: RemoteRegistryConfig,
+  trustStore: Map<string, TrustEntry>,
+  opts: FetchOpts = {},
+): Promise<
+  | { entries: Registry; marks: { revoked?: RevocationMap; quarantined?: RevocationMap } }
+  | { error: string }
+  | { skipped: string }
+> {
   const now = opts.now ?? Date.now();
   const cached = readCache(remote.url);
-  const cacheMeta: CacheMeta = cached?.meta ?? { url: remote.url, sequence_high_water: 0, index_content_hash: "", fetched_at: "" };
+  const cacheMeta: CacheMeta = cached?.meta ?? {
+    url: remote.url,
+    sequence_high_water: 0,
+    index_content_hash: "",
+    fetched_at: "",
+  };
 
   // Validate a CACHED body through the three gates; never writes (the fresh-200 path writes its own cache).
-  const useCachedBody = (body: string): { entries: Registry; marks: { revoked?: RevocationMap; quarantined?: RevocationMap } } | { error: string } => {
+  const useCachedBody = (
+    body: string,
+  ): { entries: Registry; marks: { revoked?: RevocationMap; quarantined?: RevocationMap } } | { error: string } => {
     const parsed = parseIndex(body);
     if ("error" in parsed) return { error: `${remote.url}: ${parsed.error}` };
     const v = verifyIndex(parsed, remote, trustStore, cacheMeta, now, { offline: opts.offline === true });
@@ -213,7 +264,11 @@ export async function fetchRemoteIndex(
   return { entries: toRegistryFragment(parsed), marks: freshMarks };
 }
 
-export interface LoadRegistriesOpts { trustStore: Map<string, TrustEntry>; offline?: boolean; now?: number }
+export interface LoadRegistriesOpts {
+  trustStore: Map<string, TrustEntry>;
+  offline?: boolean;
+  now?: number;
+}
 
 export interface LoadedRegistries {
   registry: Registry;
@@ -224,18 +279,23 @@ export interface LoadedRegistries {
 }
 
 /** Merge: remotes (reverse listed order) ∪ bundled ∪ user → user > bundled > remote[0] > … */
-export async function loadRegistries(
-  opts: LoadRegistriesOpts,
-): Promise<LoadedRegistries> {
-  const warnings: string[] = []; const errors: string[] = [];
+export async function loadRegistries(opts: LoadRegistriesOpts): Promise<LoadedRegistries> {
+  const warnings: string[] = [];
+  const errors: string[] = [];
   const remotes = readRegistriesConfig().remotes;
   const fragments: Registry[] = [];
   const markFragments: { revoked?: RevocationMap; quarantined?: RevocationMap }[] = [];
   for (const remote of remotes) {
-    const r = await fetchRemoteIndex(remote, opts.trustStore, { offline: opts.offline === true, ...(opts.now !== undefined ? { now: opts.now } : {}) });
+    const r = await fetchRemoteIndex(remote, opts.trustStore, {
+      offline: opts.offline === true,
+      ...(opts.now !== undefined ? { now: opts.now } : {}),
+    });
     if ("error" in r) errors.push(r.error);
     else if ("skipped" in r) warnings.push(r.skipped);
-    else { fragments.push(r.entries); markFragments.push(r.marks); }
+    else {
+      fragments.push(r.entries);
+      markFragments.push(r.marks);
+    }
   }
   const registry: Registry = new Map();
   const merge = (frag: Registry): void => {
@@ -254,9 +314,14 @@ export async function loadRegistries(
     for (const name of Object.keys(src)) {
       const vs = src[name]!;
       if (!target[name]) target[name] = Object.create(null);
-      for (const v of Object.keys(vs)) { target[name]![v] = vs[v]!; }
+      for (const v of Object.keys(vs)) {
+        target[name]![v] = vs[v]!;
+      }
     }
   };
-  for (const mf of markFragments) { unionMerge(mergedRevoked, mf.revoked); unionMerge(mergedQuarantined, mf.quarantined); }
+  for (const mf of markFragments) {
+    unionMerge(mergedRevoked, mf.revoked);
+    unionMerge(mergedQuarantined, mf.quarantined);
+  }
   return { registry, revoked: mergedRevoked, quarantined: mergedQuarantined, warnings, errors };
 }

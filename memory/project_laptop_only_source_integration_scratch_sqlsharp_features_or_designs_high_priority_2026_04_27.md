@@ -137,11 +137,11 @@ This is critical historical context for Zeta itself:
   mathematical rigor (DBSP)".
 - Features `../SQLSharp` had → potentially redesigned /
   reimplemented in DBSP form within Zeta proper. The
-  integration tactic for `../SQLSharp` should ask: *"Does
+  integration tactic for `../SQLSharp` should ask: _"Does
   this feature have a DBSP-equivalent in Zeta? If yes, the
   reference is decorative; document the lineage and delete.
   If no, design what the DBSP-rigorous version would be
-  in-repo, since that's the Zeta-canonical form."*
+  in-repo, since that's the Zeta-canonical form."_
 - Features that DON'T have a DBSP-rigorous equivalent are
   the most interesting — they may be either (a) genuinely
   outside DBSP scope (good design-doc candidates) or
@@ -276,8 +276,8 @@ than going file-by-file blindly.
 
 2. **Per-reference triage.** For every `../scratch` or
    `../SQLSharp` reference, the binding question is:
-   *"Can a future maintainer act on this without reading the
-   referenced directory?"* If yes, the reference is decorative
+   _"Can a future maintainer act on this without reading the
+   referenced directory?"_ If yes, the reference is decorative
    (delete). If no, decide port-or-design.
 
 3. **Composition with Otto-275 (log-but-don't-implement).**
@@ -313,8 +313,8 @@ than going file-by-file blindly.
 
 The integration work completes when:
 
-- `git grep -- '../scratch'` returns zero matches *outside* the closed-list history surfaces (`memory/**`, `docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`, `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`, `docs/aurora/**`, `docs/pr-preservation/**`, `docs/hygiene-history/**`, `docs/WINS.md`, commit messages + PR bodies — see the "No name attribution in code, docs, or skills" rule in `docs/AGENT-BEST-PRACTICES.md` for the canonical list; rule lineage Otto-279 + follow-on maintainer clarification; this file lands on the list as `memory/**`)
-- `git grep -- '../SQLSharp'` returns zero matches *outside* the same closed-list history surfaces
+- `git grep -- '../scratch'` returns zero matches _outside_ the closed-list history surfaces (`memory/**`, `docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`, `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`, `docs/aurora/**`, `docs/pr-preservation/**`, `docs/hygiene-history/**`, `docs/WINS.md`, commit messages + PR bodies — see the "No name attribution in code, docs, or skills" rule in `docs/AGENT-BEST-PRACTICES.md` for the canonical list; rule lineage Otto-279 + follow-on maintainer clarification; this file lands on the list as `memory/**`)
+- `git grep -- '../SQLSharp'` returns zero matches _outside_ the same closed-list history surfaces
 - Every feature/idea/enhancement that WAS referenced is
   EITHER (a) shipped in the repo, OR (b) documented in the
   repo with enough detail to be rebuilt without reading
@@ -407,7 +407,7 @@ automation, (3) research/design hints.
 
 Effort: L (3+ days). Done = `git grep -- '../scratch'`
 and `git grep -- '../SQLSharp'` both return zero matches
-*outside the closed-list history surfaces* (`memory/**`,
+_outside the closed-list history surfaces_ (`memory/**`,
 `docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`,
 `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`,
 `docs/aurora/**`, `docs/pr-preservation/**`,

@@ -2,7 +2,7 @@
 
 Scope: pre-draft of an F# language proposal forwarded by Aaron 2026-05-05. NOT yet submitted upstream. Verification of prior discussion at `fsharp/fslang-suggestions` is a precondition before formalization.
 
-Attribution: original pre-draft text by Claude.ai (anonymous shard, 2026-05-05); forwarded by Aaron with verbatim *"you can make it a candidate"* — using Zeta's plugin adapter as the worked-example anchor (per the candidate-flag the shard suggested).
+Attribution: original pre-draft text by Claude.ai (anonymous shard, 2026-05-05); forwarded by Aaron with verbatim _"you can make it a candidate"_ — using Zeta's plugin adapter as the worked-example anchor (per the candidate-flag the shard suggested).
 
 Operational status: research-grade
 
@@ -18,7 +18,7 @@ Pre-draft. Verification of prior discussion at [fsharp/fslang-suggestions](https
 
 ### Summary
 
-Allow F#'s type-test syntax (`:?`) to use wildcard placeholders for generic type parameters, enabling tests for *"implements `IFoo<?, ?, T>`"* without resorting to non-generic marker interfaces or runtime reflection.
+Allow F#'s type-test syntax (`:?`) to use wildcard placeholders for generic type parameters, enabling tests for _"implements `IFoo<?, ?, T>`"_ without resorting to non-generic marker interfaces or runtime reflection.
 
 ### Motivation
 
@@ -65,7 +65,7 @@ This is a real plugin-architecture use case in production-shaped F# code, not a 
 
 ### Detailed Design (Sketch)
 
-Allow `_` as a placeholder in type-test patterns meaning *"any type parameter"*:
+Allow `_` as a placeholder in type-test patterns meaning _"any type parameter"_:
 
 ```fsharp
 let isBilinear = (box plugin) :? IBilinearOperator<_, _, 'TOut>

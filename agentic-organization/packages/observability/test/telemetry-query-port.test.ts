@@ -1,10 +1,7 @@
 import { deepEqual } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import {
-  RecordingTelemetryQueryPort,
-  createLgtmTelemetryQueryPort,
-} from "../src/index.ts";
+import { RecordingTelemetryQueryPort, createLgtmTelemetryQueryPort } from "../src/index.ts";
 
 describe("telemetry query port", () => {
   test("records PromQL, TraceQL, and LogQL calls for hermetic optimizer tests", async () => {
@@ -108,7 +105,10 @@ describe("telemetry query port", () => {
         },
       ],
     });
-    deepEqual(urls.map((url) => new URL(url).hostname), ["mimir", "tempo", "loki"]);
+    deepEqual(
+      urls.map((url) => new URL(url).hostname),
+      ["mimir", "tempo", "loki"],
+    );
     deepEqual(metricHeaders, [{ "X-Scope-OrgID": "agentic-org" }]);
   });
 
@@ -117,7 +117,8 @@ describe("telemetry query port", () => {
       mimirBaseUrl: "http://mimir:9009/prometheus",
       tempoBaseUrl: "http://tempo:3200",
       lokiBaseUrl: "http://loki:3100",
-      fetchImpl: (async () => new Response("not ready", { status: 503, statusText: "Service Unavailable" })) as typeof fetch,
+      fetchImpl: (async () =>
+        new Response("not ready", { status: 503, statusText: "Service Unavailable" })) as typeof fetch,
     });
     const range = { start: "2026-05-31T00:00:00.000Z", end: "2026-05-31T01:00:00.000Z" };
 
@@ -135,7 +136,8 @@ describe("telemetry query port", () => {
       mimirBaseUrl: "http://mimir:9009/prometheus",
       tempoBaseUrl: "http://tempo:3200",
       lokiBaseUrl: "http://loki:3100",
-      fetchImpl: (async () => jsonResponse({ status: "error", errorType: "internal", error: "ring unhealthy" })) as typeof fetch,
+      fetchImpl: (async () =>
+        jsonResponse({ status: "error", errorType: "internal", error: "ring unhealthy" })) as typeof fetch,
     });
     const range = { start: "2026-05-31T00:00:00.000Z", end: "2026-05-31T01:00:00.000Z" };
 
@@ -152,12 +154,13 @@ describe("telemetry query port", () => {
       mimirBaseUrl: "http://mimir:9009/prometheus",
       tempoBaseUrl: "http://tempo:3200",
       lokiBaseUrl: "http://loki:3100",
-      fetchImpl: (async () => jsonResponse({
-        status: "success",
-        data: {
-          result: [{ metric: { agentic_lane: "work-os" }, values: "not-an-array" }],
-        },
-      })) as typeof fetch,
+      fetchImpl: (async () =>
+        jsonResponse({
+          status: "success",
+          data: {
+            result: [{ metric: { agentic_lane: "work-os" }, values: "not-an-array" }],
+          },
+        })) as typeof fetch,
     });
     const range = { start: "2026-05-31T00:00:00.000Z", end: "2026-05-31T01:00:00.000Z" };
 
@@ -176,7 +179,9 @@ describe("telemetry query port", () => {
       mimirBaseUrl: "http://mimir:9009/prometheus",
       tempoBaseUrl: "http://tempo:3200",
       lokiBaseUrl: "http://loki:3100",
-      fetchImpl: (async () => { throw timeout; }) as typeof fetch,
+      fetchImpl: (async () => {
+        throw timeout;
+      }) as typeof fetch,
     });
     const range = { start: "2026-05-31T00:00:00.000Z", end: "2026-05-31T01:00:00.000Z" };
 

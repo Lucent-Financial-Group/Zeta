@@ -4,8 +4,7 @@ export const CompanyWorkPolicyVersion = {
   DefaultV0: "company-work-os-v0",
 } as const;
 
-export type CompanyWorkPolicyVersion =
-  (typeof CompanyWorkPolicyVersion)[keyof typeof CompanyWorkPolicyVersion];
+export type CompanyWorkPolicyVersion = (typeof CompanyWorkPolicyVersion)[keyof typeof CompanyWorkPolicyVersion];
 
 export const CompanyWorkPolicyDecisionStatus = {
   Allowed: "allowed",
@@ -117,8 +116,7 @@ function hasSatisfyingGateEvaluation(
   policy: QualityGateSequencePolicy,
 ): boolean {
   return evaluations.some(
-    (evaluation) =>
-      evaluation.gateKind === gateKind && policy.satisfyingOutcomes.includes(evaluation.outcome),
+    (evaluation) => evaluation.gateKind === gateKind && policy.satisfyingOutcomes.includes(evaluation.outcome),
   );
 }
 

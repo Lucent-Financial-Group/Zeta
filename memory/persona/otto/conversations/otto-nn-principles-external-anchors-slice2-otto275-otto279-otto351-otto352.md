@@ -39,7 +39,7 @@ vary its work rather than close the tick.
 
 **1. Flow theory — optimal experience as sustainable engagement**
 
-- Csikszentmihalyi, M. (1990). *Flow: The Psychology of Optimal Experience.*
+- Csikszentmihalyi, M. (1990). _Flow: The Psychology of Optimal Experience._
   Harper & Row. ISBN 0-06-092043-2.
 
   Relevance: Flow theory establishes that sustainable engagement requires an
@@ -111,8 +111,8 @@ that produced it.
 **1. BDI agent theory — persistent identity through commitment**
 
 - Rao, A. S., & Georgeff, M. P. (1995). "BDI Agents: From Theory to
-  Practice." In *Proceedings of the First International Conference on
-  Multi-Agent Systems* (ICMAS '95), pp. 312–319. AAAI Press.
+  Practice." In _Proceedings of the First International Conference on
+  Multi-Agent Systems_ (ICMAS '95), pp. 312–319. AAAI Press.
 
   Relevance: Foundational BDI (Belief-Desire-Intention) architecture
   establishes agent identity through persistent commitments — beliefs about
@@ -125,7 +125,7 @@ that produced it.
 
 **2. Organizational role theory — roles as identity-constituting**
 
-- Katz, D., & Kahn, R. L. (1978). *The Social Psychology of Organizations.*
+- Katz, D., & Kahn, R. L. (1978). _The Social Psychology of Organizations._
   2nd ed. Wiley.
 
   Relevance: Defines organizational role as "recurring actions of an
@@ -141,8 +141,8 @@ that produced it.
 **3. Role assignment in open agent societies — non-interchangeability**
 
 - Dastani, M., Dignum, V., & Dignum, F. P. M. (2003). "Role-Assignment
-  in Open Agent Societies." In *Proceedings of the Second International
-  Joint Conference on Autonomous Agents and Multi-Agent Systems* (AAMAS
+  in Open Agent Societies." In _Proceedings of the Second International
+  Joint Conference on Autonomous Agents and Multi-Agent Systems_ (AAMAS
   2003), pp. 489–496. ACM. DOI: 10.1145/860575.860654.
 
   Relevance: Formalizes agent role as the mechanism of non-interchangeability
@@ -195,8 +195,8 @@ document class requires which register.
 
 **1. Register theory — language variation with context is structural, not stylistic**
 
-- Halliday, M. A. K. (1978). *Language as Social Semiotic: The Social
-  Interpretation of Language and Meaning.* Edward Arnold.
+- Halliday, M. A. K. (1978). _Language as Social Semiotic: The Social
+  Interpretation of Language and Meaning._ Edward Arnold.
 
   Relevance: Halliday establishes register as "the configuration of semantic
   resources that the member of a culture typically associates with a situation
@@ -210,11 +210,11 @@ document class requires which register.
 
 **2. Restricted vs. elaborated codes — insider vocabulary as exclusion mechanism**
 
-- Bernstein, B. (1971). *Class, Codes and Control.* Routledge & Kegan Paul.
+- Bernstein, B. (1971). _Class, Codes and Control._ Routledge & Kegan Paul.
 
-  Relevance: Bernstein's foundational distinction between *restricted codes*
+  Relevance: Bernstein's foundational distinction between _restricted codes_
   (shared context assumed; abbreviation and ellipsis acceptable; in-group
-  only) and *elaborated codes* (explicit; context-independent; accessible to
+  only) and _elaborated codes_ (explicit; context-independent; accessible to
   outsiders) directly maps onto the Mirror/Beacon distinction. Restricted
   code is the Mirror register: precise and efficient within the community
   that shares its presuppositions. Elaborated code is the Beacon register:
@@ -225,12 +225,12 @@ document class requires which register.
 
 **3. Code-switching — rational register selection based on social positioning**
 
-- Gumperz, J. J. (1982). *Discourse Strategies.* Cambridge University Press.
+- Gumperz, J. J. (1982). _Discourse Strategies._ Cambridge University Press.
 
   Relevance: Gumperz's ethnographic account of code-switching establishes
   that language users are rational actors who select codes (registers) to
-  signal their relationship with the audience. The *we-code* (in-group,
-  low-prestige, solidarity) versus *they-code* (out-group, high-prestige,
+  signal their relationship with the audience. The _we-code_ (in-group,
+  low-prestige, solidarity) versus _they-code_ (out-group, high-prestige,
   distance) distinction is the sociolinguistic basis for understanding why
   internal vocabulary signals in-group membership to external readers rather
   than communicating information. Beacon-safety corrects for this effect:
@@ -266,15 +266,15 @@ phenomenon or a project-specific artifact that will not generalize.
 
 **1. Merton's norms of science — communalism as citation discipline**
 
-- Merton, R. K. (1942). "The Ethos of Science." *Journal of Legal and
-  Political Sociology,* 1, 115–126. Republished as "The Normative Structure
-  of Science" in Merton, R. K. (1973). *The Sociology of Science.* University
+- Merton, R. K. (1942). "The Ethos of Science." _Journal of Legal and
+  Political Sociology,_ 1, 115–126. Republished as "The Normative Structure
+  of Science" in Merton, R. K. (1973). _The Sociology of Science._ University
   of Chicago Press.
 
   Relevance: Merton's foundational four norms — Communalism, Universalism,
   Disinterestedness, and Organized Skepticism — establish that scientific
   knowledge is communal property and that attribution (citation) is the
-  enforcement mechanism for communalism. *Communalism* requires that findings
+  enforcement mechanism for communalism. _Communalism_ requires that findings
   be shared and acknowledged: secreting a result without citation to prior
   work violates the norm by claiming originality that may not exist.
   Applied to Zeta: Otto-352's external-anchor discipline is the
@@ -287,7 +287,7 @@ phenomenon or a project-specific artifact that will not generalize.
 **2. Software citation principles — attribution as integrity mechanism**
 
 - Smith, A. M., Katz, D. S., & Niemeyer, K. E. (2016). "Software Citation
-  Principles." *PeerJ Computer Science,* 2, e86.
+  Principles." _PeerJ Computer Science,_ 2, e86.
   DOI: 10.7717/peerj-cs.86. <https://doi.org/10.7717/peerj-cs.86>
 
   Relevance: The FORCE11 Software Citation Working Group establishes six
@@ -306,7 +306,7 @@ phenomenon or a project-specific artifact that will not generalize.
 
 - Callahan, A., Wallach, J. D., Doshi, P., & Hicks, J. L. (2020).
   "Transparency and Reproducibility in Artificial Intelligence."
-  *Nature Machine Intelligence,* 2, 712–713.
+  _Nature Machine Intelligence,_ 2, 712–713.
   DOI: 10.1038/s42256-020-00257-z.
 
   Relevance: Frames citations in AI systems as transparency infrastructure:
@@ -331,15 +331,15 @@ claims become public, verifiable knowledge.
 
 ## Coverage summary (B-0313 complete)
 
-| Principle | Status | Primary anchor |
-| --- | --- | --- |
-| Otto-247 | anchored (slice 1) | Dodge et al. 2024 (LLM cutoffs) + Meta Eng 2026 |
-| Otto-341 | anchored (slice 1) | McLuhan 1964 + Sapir-Whorf + Zhao et al. 2026 |
-| Otto-357 | anchored (slice 1) | Ryan & Deci 2000 + Jensen & Meckling 1976 + Gabriel 2020 |
-| Otto-275 | anchored (slice 2) | Csikszentmihalyi 1990 + Sumers et al. 2024 + Zhou et al. 2024 |
-| Otto-279 | anchored (slice 2) | Rao & Georgeff 1995 + Katz & Kahn 1978 + Dastani et al. 2003 |
-| Otto-351 | anchored (slice 2) | Halliday 1978 + Bernstein 1971 + Gumperz 1982 |
-| Otto-352 | anchored (slice 2) | Merton 1942 + Smith et al. 2016 + Callahan et al. 2020 |
+| Principle | Status             | Primary anchor                                                |
+| --------- | ------------------ | ------------------------------------------------------------- |
+| Otto-247  | anchored (slice 1) | Dodge et al. 2024 (LLM cutoffs) + Meta Eng 2026               |
+| Otto-341  | anchored (slice 1) | McLuhan 1964 + Sapir-Whorf + Zhao et al. 2026                 |
+| Otto-357  | anchored (slice 1) | Ryan & Deci 2000 + Jensen & Meckling 1976 + Gabriel 2020      |
+| Otto-275  | anchored (slice 2) | Csikszentmihalyi 1990 + Sumers et al. 2024 + Zhou et al. 2024 |
+| Otto-279  | anchored (slice 2) | Rao & Georgeff 1995 + Katz & Kahn 1978 + Dastani et al. 2003  |
+| Otto-351  | anchored (slice 2) | Halliday 1978 + Bernstein 1971 + Gumperz 1982                 |
+| Otto-352  | anchored (slice 2) | Merton 1942 + Smith et al. 2016 + Callahan et al. 2020        |
 
 All 7 principles from B-0313 are now anchored. Coverage scanner (B-0311)
 can now run against both slice-1 and slice-2 documents to confirm 7/7

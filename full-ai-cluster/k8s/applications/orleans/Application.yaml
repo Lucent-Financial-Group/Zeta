@@ -22,7 +22,7 @@ spec:
     targetRevision: main
     path: full-ai-cluster/k8s/applications/orleans
     directory:
-      include: '{namespace,rbac,configmap,service,statefulset}.yaml'
+      include: "{namespace,rbac,configmap,service,statefulset}.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: orleans

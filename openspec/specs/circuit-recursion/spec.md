@@ -2,7 +2,7 @@
 
 The circuit-recursion capability pins the observable semantics of the
 circuit-substrate machinery that the DBSP Section 5-6 recursive-query pattern
-is built on: *nested circuits* with a private inner clock, the scope-boundary
+is built on: _nested circuits_ with a private inner clock, the scope-boundary
 lifecycle that brackets each inner run, the iteration cap that bounds a
 non-converging inner scope, and the output-extraction contract that publishes
 the inner scope's fixpoint value to the enclosing parent circuit. Semantic
@@ -12,7 +12,7 @@ iteration-to-fixedpoint driver — are specified by the sibling
 `retraction-safe-recursion` capability; this capability covers the substrate
 those combinators run on. The `operator-algebra` capability's "clock scopes
 and tick monotonicity" requirement is the authority for the observable
-behaviour of *any* clock scope; this capability refines that contract for the
+behaviour of _any_ clock scope; this capability refines that contract for the
 parent-child nested-circuit shape.
 
 ## Requirements
@@ -32,7 +32,7 @@ nested-circuit context and returns the inner stream to expose upstream.
 - **WHEN** a parent circuit contains a nested-circuit driver operator that
   exposes an inner stream `s_inner` as its output
 - **THEN** at every parent tick `t`, the driver operator's published value
-  MUST equal the value `s_inner` carried at the inner scope's *final* inner
+  MUST equal the value `s_inner` carried at the inner scope's _final_ inner
   tick for parent tick `t` — i.e., the inner tick at which fixpoint was
   reached, or the cap-th inner tick if the cap was hit (see
   "iteration-cap-hit preserves fixpoint-failure observability")
@@ -56,8 +56,8 @@ nested-circuit context and returns the inner stream to expose upstream.
 
 ### Requirement: inner-clock resets at the start of every outer tick
 
-Every parent tick MUST present the nested circuit with a *freshly-zeroed
-inner clock* — i.e., strict operators inside the nested scope MUST observe
+Every parent tick MUST present the nested circuit with a _freshly-zeroed
+inner clock_ — i.e., strict operators inside the nested scope MUST observe
 the same tick-0 semantics they would observe on first construction, for every
 outer tick. This is the core of the DBSP paper's nested-stream semantics:
 recursion treats each outer tick as a clean LFP computation, not a
@@ -78,9 +78,9 @@ continuation of the previous outer tick's inner iteration.
 
 - **WHEN** a nested-circuit driver operator runs for parent tick `t`
 - **THEN** every operator in the inner scope MUST observe exactly one
-  *clock-start* invocation before the inner scope's first inner tick of
+  _clock-start_ invocation before the inner scope's first inner tick of
   outer tick `t`
-- **AND** every operator MUST observe exactly one *clock-end* invocation
+- **AND** every operator MUST observe exactly one _clock-end_ invocation
   after the inner scope's final inner tick of outer tick `t` and before
   the driver operator publishes its output
 - **AND** these invocations MUST hold even when the inner scope hits the
@@ -92,7 +92,7 @@ continuation of the previous outer tick's inner iteration.
 The inner scope MUST continue iterating until every operator in the scope
 reports fixpoint for the current scope-level — i.e., the scope's decision to
 terminate is the logical conjunction of every operator's per-operator
-fixpoint hint *combined with* the operator-algebra scope-level detector
+fixpoint hint _combined with_ the operator-algebra scope-level detector
 contract. No individual operator's "I've converged" hint alone MAY terminate
 the scope (per the operator-algebra capability's "per-operator fixpoint
 hints are advisory only" scenario). The nested-circuit driver realises that
@@ -117,7 +117,7 @@ aggregation for the specific case of a single-level inner scope.
 
 ### Requirement: per-outer-tick iteration is bounded by a configurable cap
 
-Every nested circuit MUST expose a configurable *iteration cap* that bounds
+Every nested circuit MUST expose a configurable _iteration cap_ that bounds
 how many inner ticks a single outer tick MAY drive, to guarantee that a
 non-converging inner scope does not block the parent circuit indefinitely.
 The cap MUST default to a documented value sufficient for common
@@ -142,13 +142,13 @@ reconstruction.
 
 ### Requirement: iteration-cap-hit preserves fixpoint-failure observability
 
-A nested-circuit driver MUST surface cap-exceeded non-convergence as an observable failure when the inner scope reaches its iteration cap without every operator reporting fixpoint — consistent with the `operator-algebra` capability's "iteration cap without fixpoint is an observable failure" requirement. The observable signal MUST distinguish "the inner scope converged in `k < cap` iterations" from "the inner scope hit the cap at `cap` iterations without converging", and consumers that treat non-convergence as silently-produced state MUST be able to detect the distinction *before* downstream observation.
+A nested-circuit driver MUST surface cap-exceeded non-convergence as an observable failure when the inner scope reaches its iteration cap without every operator reporting fixpoint — consistent with the `operator-algebra` capability's "iteration cap without fixpoint is an observable failure" requirement. The observable signal MUST distinguish "the inner scope converged in `k < cap` iterations" from "the inner scope hit the cap at `cap` iterations without converging", and consumers that treat non-convergence as silently-produced state MUST be able to detect the distinction _before_ downstream observation.
 
 #### Scenario: converged and cap-hit runs are distinguishable
 
 - **WHEN** two successive outer ticks produce (a) a converged inner run of
   `k_1 < cap` iterations and (b) a cap-hit inner run of `cap` iterations
-- **THEN** the nested-circuit handle MUST expose a *converged* observable
+- **THEN** the nested-circuit handle MUST expose a _converged_ observable
   that reads `true` for outer tick (a) and `false` for outer tick (b)
 - **AND** the iteration count MUST be exposed — `k_1` for outer tick (a)
   and `cap` for outer tick (b) — so callers can distinguish a cap set too
@@ -162,8 +162,8 @@ A nested-circuit driver MUST surface cap-exceeded non-convergence as an observab
 
 - **WHEN** an inner scope hits the iteration cap without converging
 - **THEN** every operator in the scope MUST still observe exactly one
-  *clock-end* invocation for that outer tick
-- **AND** per-scope state established in *clock-start* MUST be released or
+  _clock-end_ invocation for that outer tick
+- **AND** per-scope state established in _clock-start_ MUST be released or
   committed under the operator-algebra capability's partial-completion
   contract — no per-scope state is leaked just because the scope failed
   to converge
@@ -236,7 +236,7 @@ A nested-circuit driver operator MUST be classifiable against one of the four ch
 `Incrementalize(D)` specialises to `D` on the delta stream when the driver
 wraps a linear recursive body. A driver wrapping a non-linear inner body
 (e.g., `RecursiveCounting`'s inner non-distinct composition, which is
-Z-linear but whose *interpretation* is multiplicity rather than
+Z-linear but whose _interpretation_ is multiplicity rather than
 set-membership) MUST be classifiable against one of the four chain-rule
 helper categories (generic / linear / bilinear-join / distinct) from the
 `operator-algebra` capability's "exposed wrapper set covers the four

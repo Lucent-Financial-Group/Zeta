@@ -35,16 +35,16 @@ Simulated FS · Simulated network · Deterministic task scheduler · Fault injec
 
 ## Mapping to revised-roadmap
 
-| Revised-roadmap PR | Criteria item |
-|---|---|
-| PR 1 entropy-scanner + boundary registry | DST-held #5 + #6 enforcement |
-| PR 2 seed protocol + CI artifacts | DST-held #1 + #2 |
-| PR 3 sharder reproduction | DST-held #3 + #4 |
-| PR 4 ISimulationDriver + VTS → core | FDB #3 foundation |
-| PR 5 simulated filesystem | FDB #1 |
-| PR 6 Cartel-Lab DST calibration | DST-held #1 + #2 + FDB #5 partial |
+| Revised-roadmap PR                       | Criteria item                     |
+| ---------------------------------------- | --------------------------------- |
+| PR 1 entropy-scanner + boundary registry | DST-held #5 + #6 enforcement      |
+| PR 2 seed protocol + CI artifacts        | DST-held #1 + #2                  |
+| PR 3 sharder reproduction                | DST-held #3 + #4                  |
+| PR 4 ISimulationDriver + VTS → core      | FDB #3 foundation                 |
+| PR 5 simulated filesystem                | FDB #1                            |
+| PR 6 Cartel-Lab DST calibration          | DST-held #1 + #2 + FDB #5 partial |
 
-Also preserves Amara's per-area grade table (overall B-) as *Amara's assessment, not factory-certified.*
+Also preserves Amara's per-area grade table (overall B-) as _Amara's assessment, not factory-certified._
 
 ## Promotion path
 
@@ -67,6 +67,7 @@ Research-grade today. Promotes to `docs/DST-COMPLIANCE.md` top-level when PR 1 o
 Adds a new research doc that defines acceptance criteria for deterministic simulation testing (DST) in Zeta, split into a minimum “DST-held” bar and an aspirational “FoundationDB-grade” bar, and maps those criteria to the revised 19th-ferry roadmap.
 
 **Changes:**
+
 - Introduces a “DST-held” (minimum) checklist intended to gate future DST-compliance claims.
 - Defines an aspirational “FoundationDB-grade DST candidate” surface list (filesystem/network/scheduler/buggify/swarm/artifacts/shrinking/replay).
 - Adds a mapping section tying the criteria to shipped work and queued roadmap PRs, plus a promotion path to a future top-level compliance doc.
@@ -78,6 +79,7 @@ Adds a new research doc that defines acceptance criteria for deterministic simul
 **@copilot-pull-request-reviewer** (2026-04-24T09:34:36Z):
 
 The doc refers to `ISimulationFs` / `ISimulationNetwork`, but the established naming elsewhere in the repo is `ISimulatedFs` / `ISimulatedNetwork` (e.g. `docs/FOUNDATIONDB-DST.md`). Since these are acceptance-criteria names meant to guide future implementation, using the repo’s existing interface names avoids confusion.
+
 ```suggestion
 1. **Simulated filesystem.** `ISimulatedFs` implemented
    + wired into every file-I/O call site (notably
@@ -98,6 +100,7 @@ This reference is a bit ambiguous: “`.claude/skills` DST guide” points at a 
 **@copilot-pull-request-reviewer** (2026-04-24T09:34:36Z):
 
 `ISimulationFs` is referenced here as part of the simulation API surface, but that name doesn’t appear elsewhere in the repo; the existing docs use `ISimulatedFs`. Updating this reference keeps the acceptance criteria aligned with the current DST vocabulary.
+
 ```suggestion
    API (ChaosEnv / VirtualTimeScheduler / ISimulatedFs
 ```
@@ -107,6 +110,7 @@ This reference is a bit ambiguous: “`.claude/skills` DST guide” points at a 
 **@copilot-pull-request-reviewer** (2026-04-24T09:34:37Z):
 
 Inline code spans can’t include a newline. The path to the Amara 19th-ferry source doc is split across two lines inside backticks, which will render incorrectly and breaks copy/paste of the path. Keep the full path on one line (or switch to a normal markdown link).
+
 ```suggestion
 - Amara 19th ferry — `docs/aurora/2026-04-24-amara-dst-audit-deep-research-plus-5-5-corrections-19th-ferry.md`
 ```
@@ -116,6 +120,7 @@ Inline code spans can’t include a newline. The path to the Amara 19th-ferry so
 **@copilot-pull-request-reviewer** (2026-04-24T09:34:37Z):
 
 `tests/ConcurrencyHarness.fs` is referenced here, but that file doesn’t exist in the repo. The `VirtualTimeScheduler` currently lives in `tests/Tests.FSharp/_Support/ConcurrencyHarness.fs`, so this cross-reference should be updated to the correct path.
+
 ```suggestion
 - `tests/Tests.FSharp/_Support/ConcurrencyHarness.fs`
   — the test-side VirtualTimeScheduler queued for core

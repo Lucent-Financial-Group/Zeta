@@ -4,13 +4,14 @@ description: Aaron uses the repo-root `drop/` directory to ferry files from his 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # The `drop/` ferry pattern
 
 ## How I discovered this
 
-Aaron mentioned in 2026-04-23 messages: *"there is a operations
+Aaron mentioned in 2026-04-23 messages: _"there is a operations
 enahncemsn needed for auro i put in the human drop folder you
-can integrate/absobe"* and later *"I just bootstrapped."* I
+can integrate/absobe"_ and later _"I just bootstrapped."_ I
 absorbed the content (Amara's transfer report) into
 `docs/aurora/2026-04-23-transfer-report-from-amara.md` but left
 the raw `drop/aurora-initial-integration-points.md` file
@@ -40,7 +41,8 @@ absorb into the proper substrate.
 **Ingestion policy:** preserve verbatim when the source is
 another AI or human collaborator (signal-in-signal-out
 discipline). Add an editorial header naming provenance + date
-+ ferry mechanism, not content modifications.
+
+- ferry mechanism, not content modifications.
 
 **Disposal:** after absorption, the raw file in `drop/` can be
 left there or deleted — it's Aaron's folder, not mine.

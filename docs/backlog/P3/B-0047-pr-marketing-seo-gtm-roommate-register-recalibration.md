@@ -9,8 +9,26 @@ ask: Aaron 2026-04-21 — *"oh yeah i forgot public relations and marketing and 
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md, feedback_you_can_say_no_to_anything_peer_refusal_authority.md, B-0046, project_factory_as_externalisation.md]
-tags: [pr, marketing, seo, gtm, roommate-register, retractable-decisions, commercial-machinery, factory-reuse-prerequisite, money-framing-blind-spot]
+composes_with:
+  [
+    user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md,
+    feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md,
+    feedback_you_can_say_no_to_anything_peer_refusal_authority.md,
+    B-0046,
+    project_factory_as_externalisation.md,
+  ]
+tags:
+  [
+    pr,
+    marketing,
+    seo,
+    gtm,
+    roommate-register,
+    retractable-decisions,
+    commercial-machinery,
+    factory-reuse-prerequisite,
+    money-framing-blind-spot,
+  ]
 type: friction-reducer
 ---
 
@@ -29,7 +47,7 @@ AceHack commits `a3837d0` (initial filing) + `8535e6b` (gating recalibration). S
 
 ## Sibling-scope
 
-Sibling to the conversational-bootstrap UX row — that row is the *read-side* factory-reuse surface (consumer talks, factory listens); this row is the *broadcast-side* (factory talks, consumers listen).
+Sibling to the conversational-bootstrap UX row — that row is the _read-side_ factory-reuse surface (consumer talks, factory listens); this row is the _broadcast-side_ (factory talks, consumers listen).
 
 ## Gating — roommate-register recalibration (2026-04-21)
 

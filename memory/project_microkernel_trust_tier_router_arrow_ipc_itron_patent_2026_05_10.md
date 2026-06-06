@@ -10,12 +10,12 @@ type: project
 
 The kernel doesn't understand data. It manages trust levels and memory regions. The serialization tier IS the security boundary.
 
-| Trust tier | Kernel primitive | IPC mechanism |
-|-----------|-----------------|---------------|
-| 0. Arrow | Shared memory region | Zero-copy, no syscall overhead |
-| 1. Known types | Typed message channel | Direct deserialize, minimal overhead |
-| 2. Known-types-list | Bus channel | Try N types, cross-agent |
-| 3. Eve protocol | Observation buffer | Full observe-then-label, untrusted |
+| Trust tier          | Kernel primitive      | IPC mechanism                        |
+| ------------------- | --------------------- | ------------------------------------ |
+| 0. Arrow            | Shared memory region  | Zero-copy, no syscall overhead       |
+| 1. Known types      | Typed message channel | Direct deserialize, minimal overhead |
+| 2. Known-types-list | Bus channel           | Try N types, cross-agent             |
+| 3. Eve protocol     | Observation buffer    | Full observe-then-label, untrusted   |
 
 **Kernel responsibilities (minimal):**
 
@@ -40,6 +40,7 @@ its authorized tier. The hub (kernel) manages the trust
 relationships.
 
 **Connects to:**
+
 - Itron patent US 10,834,144 (hub-agent architecture)
 - feedback_arrow_tier_0 (Arrow as Tier 0)
 - feedback_eve_protocol_serialization_three_tiers (tiers 1-3)

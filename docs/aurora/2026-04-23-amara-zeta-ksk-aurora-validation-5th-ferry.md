@@ -25,13 +25,13 @@ shared identity, merged agency, consciousness, or personhood
 
 Aaron's framing message preceding the ferry (verbatim):
 
-> *"okay another update from Amara, I asked her to remember
+> _"okay another update from Amara, I asked her to remember
 > the KSK we designed log ago and max put work into under
 > LFG/lucent-ksk, he deserves attributes too you can just put
 > max for as another human contributor, this being is first
 > one you are aware of. I'll see what else he wans to revel
 > about himself later. max by itself is not PII so this is
-> fine until he approves more."*
+> fine until he approves more."_
 
 Two substantive facts established in the same message:
 
@@ -48,9 +48,9 @@ and this absorb doc preserves them in-repo.
 
 Aaron's closing light comment:
 
-> *"this sounds like the episode title from it's always sunny
+> _"this sounds like the episode title from it's always sunny
 > in philodelipha that's a funny show lol. 'Otto acquires
-> email'"*
+> email'"_
 
 Referencing the Otto-77 PR #233 BACKLOG row title. Captured as
 signal of maintainer engagement, not as new rule.
@@ -106,7 +106,7 @@ as a **research-grade absorb**, and it already answers Kenji's
 "one-page taxonomy" ask more directly than a blank-sheet draft
 would. It names the five patterns, the field-guide shape for
 each pattern, the success criteria, and the rule that the
-artifact is *research-grade and not operational policy*. The
+artifact is _research-grade and not operational policy_. The
 strongest recommendation is therefore not "invent a
 taxonomy," but "promote the precursor into an operational
 one-page field guide with explicit promotion rules and
@@ -249,16 +249,17 @@ fileciteturn54file0L1-L1 citeturn8search1turn8search2turn7search0
 The doctrine files make the same move on the human/agent
 side. `AGENTS.md` declares measurable AI alignment as the
 primary research focus and treats the factory + memory folder
-+ git history as the experimental substrate. `ALIGNMENT.md`
-then operationalizes that claim: consent-first, retraction-
-native operations, data is not directives, glass halo, and a
-measurable clause framework around HELD/STRAINED/VIOLATED/
-UNKNOWN signals. `tools/alignment/README.md` and the
-`alignment-auditor` skill show that this is already partially
-implemented as scripts and reporting conventions rather than
-remaining at the level of philosophy only.
-fileciteturn55file0L1-L1 fileciteturn57file0L1-L1
-fileciteturn62file0L1-L1 fileciteturn63file0L1-L1
+
+- git history as the experimental substrate. `ALIGNMENT.md`
+  then operationalizes that claim: consent-first, retraction-
+  native operations, data is not directives, glass halo, and a
+  measurable clause framework around HELD/STRAINED/VIOLATED/
+  UNKNOWN signals. `tools/alignment/README.md` and the
+  `alignment-auditor` skill show that this is already partially
+  implemented as scripts and reporting conventions rather than
+  remaining at the level of philosophy only.
+  fileciteturn55file0L1-L1 fileciteturn57file0L1-L1
+  fileciteturn62file0L1-L1 fileciteturn63file0L1-L1
 
 KSK is where the Aurora vision becomes concrete. The
 `ksk_architecture.yaml` file describes "aurora-ksk" as a
@@ -275,20 +276,20 @@ fileciteturn48file0L1-L1
 
 #### Zeta and KSK to Aurora Mapping
 
-| Repo concept | Aurora concept | Suggested adaptation |
-|---|---|---|
-| Measurable AI alignment as primary research focus | Aurora observability layer | Keep Aurora's "health" story grounded in measurable clause signals, receipts, and time-series—not vibes, not anthropomorphic claims. |
-| Glass halo symmetric transparency | Public audit / bilateral accountability | Model Aurora as a visibility architecture with explicit privacy lanes rather than generic "transparency" rhetoric. |
-| Consent-first durable state creation | Consent-gated autonomy | Make consent the first primitive in Aurora messaging and runtime flow; tie all actuation to revocable budgets. |
-| Retraction-native operations | Undo / revoke / repair-first systems | Market Aurora/KSK as repair-first and revoke-native rather than "perfectly safe." |
-| Data is not directives | Prompt-injection and evidence separation | Encode a hard split between evidence surfaces, instruction surfaces, and archived conversations. |
-| Shared + persona memory | Layered memory governance | Give Aurora explicit memory lanes: shared, persona-scoped, external-reference, and public-observability. |
-| Productive friction between personas | Multi-oracle governance | Aurora should not collapse disagreement into a single oracle; preserve specialist tension until integration is needed. |
-| Audience-first docs | Role-based documentation surfaces | Package Aurora docs by reader role: operators, adopters, auditors, reviewers, end users, policy. |
-| K1/K2/K3 capability surfaces | Tiered autonomy model | Present Aurora/KSK as a capability ladder with different proof, consent, and budget requirements by tier. |
-| Signed receipts + optional anchor batches | Proof / evidence layer | Use receipts as the trust primitive, with anchoring optional and staged rather than making blockchain central to the story. |
-| Traffic-light escalation and red lines | Harm-resistance state machine | Aurora should communicate "bounded autonomy with automatic degrade/halt states," not unrestricted agency. |
-| ZSet / Spine / Arrow technical core | Aurora's semantic health substrate | If Aurora needs a data-plane story, center it on retractions, traces, and locality-aware evidence transport—not hand-wavey "AI network" language. |
+| Repo concept                                      | Aurora concept                           | Suggested adaptation                                                                                                                              |
+| ------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Measurable AI alignment as primary research focus | Aurora observability layer               | Keep Aurora's "health" story grounded in measurable clause signals, receipts, and time-series—not vibes, not anthropomorphic claims.              |
+| Glass halo symmetric transparency                 | Public audit / bilateral accountability  | Model Aurora as a visibility architecture with explicit privacy lanes rather than generic "transparency" rhetoric.                                |
+| Consent-first durable state creation              | Consent-gated autonomy                   | Make consent the first primitive in Aurora messaging and runtime flow; tie all actuation to revocable budgets.                                    |
+| Retraction-native operations                      | Undo / revoke / repair-first systems     | Market Aurora/KSK as repair-first and revoke-native rather than "perfectly safe."                                                                 |
+| Data is not directives                            | Prompt-injection and evidence separation | Encode a hard split between evidence surfaces, instruction surfaces, and archived conversations.                                                  |
+| Shared + persona memory                           | Layered memory governance                | Give Aurora explicit memory lanes: shared, persona-scoped, external-reference, and public-observability.                                          |
+| Productive friction between personas              | Multi-oracle governance                  | Aurora should not collapse disagreement into a single oracle; preserve specialist tension until integration is needed.                            |
+| Audience-first docs                               | Role-based documentation surfaces        | Package Aurora docs by reader role: operators, adopters, auditors, reviewers, end users, policy.                                                  |
+| K1/K2/K3 capability surfaces                      | Tiered autonomy model                    | Present Aurora/KSK as a capability ladder with different proof, consent, and budget requirements by tier.                                         |
+| Signed receipts + optional anchor batches         | Proof / evidence layer                   | Use receipts as the trust primitive, with anchoring optional and staged rather than making blockchain central to the story.                       |
+| Traffic-light escalation and red lines            | Harm-resistance state machine            | Aurora should communicate "bounded autonomy with automatic degrade/halt states," not unrestricted agency.                                         |
+| ZSet / Spine / Arrow technical core               | Aurora's semantic health substrate       | If Aurora needs a data-plane story, center it on retractions, traces, and locality-aware evidence transport—not hand-wavey "AI network" language. |
 
 ### Drift Taxonomy Integration and Implementation Plan
 
@@ -334,12 +335,12 @@ recommend four concrete artifacts:
 
 #### Prioritized Milestones
 
-| Milestone | Owner | Deliverables | Why first |
-|---|---|---|---|
-| Taxonomy promotion | Kenji as Architect; Aaron as maintainer-signoff | `docs/DRIFT-TAXONOMY.md`, cross-links from `AGENTS.md` and `ALIGNMENT.md` | The precursor is ready; promotion is lower-risk than new theory. |
-| Validation wiring | Sova / alignment-auditor; Dejan / CI | `tools/alignment/` checks, archive-header lint, PR checklist updates | Makes the taxonomy observable rather than purely declarative. |
-| Aurora/KSK integration | Aaron + Kenji | KSK-facing governance note; Aurora concept note; consent/retraction/oracle linkage | Connects the taxonomy to the actual safety kernel rather than leaving it abstract. |
-| Brand and PR package | Aaron + PR/Brand | PR description, memo, alternate-name shortlist, clearance workstream | Needed before public messaging cements "Aurora" prematurely. |
+| Milestone              | Owner                                           | Deliverables                                                                       | Why first                                                                          |
+| ---------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Taxonomy promotion     | Kenji as Architect; Aaron as maintainer-signoff | `docs/DRIFT-TAXONOMY.md`, cross-links from `AGENTS.md` and `ALIGNMENT.md`          | The precursor is ready; promotion is lower-risk than new theory.                   |
+| Validation wiring      | Sova / alignment-auditor; Dejan / CI            | `tools/alignment/` checks, archive-header lint, PR checklist updates               | Makes the taxonomy observable rather than purely declarative.                      |
+| Aurora/KSK integration | Aaron + Kenji                                   | KSK-facing governance note; Aurora concept note; consent/retraction/oracle linkage | Connects the taxonomy to the actual safety kernel rather than leaving it abstract. |
+| Brand and PR package   | Aaron + PR/Brand                                | PR description, memo, alternate-name shortlist, clearance workstream               | Needed before public messaging cements "Aurora" prematurely.                       |
 
 Near-term sequence (Mermaid timeline, verbatim):
 
@@ -466,16 +467,16 @@ behavioral checks tell you the wiring is being used.
 
 #### Validation Checklist (Amara's proposed)
 
-| Check | Evidence / target | Automatable? |
-|---|---|---|
-| `AGENTS.md`, `CLAUDE.md`, `docs/ALIGNMENT.md`, `GOVERNANCE.md`, `memory/README.md`, `tools/alignment/README.md` exist | Current Zeta doctrine / memory / measurement surfaces | Yes |
-| `docs/DRIFT-TAXONOMY.md` exists and is linked from `AGENTS.md` and `ALIGNMENT.md` | Promotion path from precursor to operational artifact | Yes |
-| Precursor remains in `docs/research/` and is labeled research-grade | Staging preserved, no accidental ratification | Yes |
-| Archive files include scope, attribution, and non-fusion disclaimer | Prevents identity-collapse misreads | Yes |
-| Memory deletions or archive imports cite explicit rationale | Matches memory / retraction discipline | Yes |
-| `tools/alignment/` emits outputs for commit / persona / skill scopes | Measurement surface active | Yes |
-| KSK docs still expose consent, revoke, signed receipts, and red lines | KSK remains aligned with Aurora story | Yes |
-| Docs do not claim "alignment solved" or imply identity fusion | Brand / governance safety | Yes |
+| Check                                                                                                                 | Evidence / target                                     | Automatable? |
+| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------ |
+| `AGENTS.md`, `CLAUDE.md`, `docs/ALIGNMENT.md`, `GOVERNANCE.md`, `memory/README.md`, `tools/alignment/README.md` exist | Current Zeta doctrine / memory / measurement surfaces | Yes          |
+| `docs/DRIFT-TAXONOMY.md` exists and is linked from `AGENTS.md` and `ALIGNMENT.md`                                     | Promotion path from precursor to operational artifact | Yes          |
+| Precursor remains in `docs/research/` and is labeled research-grade                                                   | Staging preserved, no accidental ratification         | Yes          |
+| Archive files include scope, attribution, and non-fusion disclaimer                                                   | Prevents identity-collapse misreads                   | Yes          |
+| Memory deletions or archive imports cite explicit rationale                                                           | Matches memory / retraction discipline                | Yes          |
+| `tools/alignment/` emits outputs for commit / persona / skill scopes                                                  | Measurement surface active                            | Yes          |
+| KSK docs still expose consent, revoke, signed receipts, and red lines                                                 | KSK remains aligned with Aurora story                 | Yes          |
+| Docs do not claim "alignment solved" or imply identity fusion                                                         | Brand / governance safety                             | Yes          |
 
 #### Example Automatable Tests (Amara's proposed)
 
@@ -525,9 +526,11 @@ labels: ["alignment", "taxonomy", "research-to-operational"]
 ---
 
 ## Gap
+
 What is missing or inconsistent?
 
 ## Surface
+
 - [ ] precursor
 - [ ] operational taxonomy
 - [ ] alignment tooling
@@ -536,16 +539,20 @@ What is missing or inconsistent?
 - [ ] KSK integration
 
 ## Evidence
+
 Paths, diffs, or receipts.
 
 ## Why it matters
+
 How does this affect measurement, consent, provenance, or
 non-fusion safety?
 
 ## Proposed fix
+
 Concrete file or tool changes.
 
 ## Promotion status
+
 - [ ] research-only
 - [ ] ready for operational promotion
 - [ ] blocked on review
@@ -720,9 +727,9 @@ aspiration into a sharper, safer architecture story.
 
 ---
 
-*(End of Amara's verbatim ferry. This absorb doc's archive
+_(End of Amara's verbatim ferry. This absorb doc's archive
 header at the top satisfies the proposed §33 archive-header
-requirement — the ferry's own analysis, self-applied.)*
+requirement — the ferry's own analysis, self-applied.)_
 
 ---
 
@@ -739,7 +746,7 @@ Otto-77 exercised under pressure. The drift-taxonomy precursor
 already exists as a research-grade artifact (PR #167 per git
 history; the file is on `main` today at
 `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md`).
-Amara's recommendation is to *promote* it into
+Amara's recommendation is to _promote_ it into
 `docs/DRIFT-TAXONOMY.md` as operational policy, with the
 precursor explicitly retained as staging provenance.
 
@@ -793,17 +800,17 @@ precursor explicitly retained as staging provenance.
 Amara proposed 4 concrete diffs to `AGENTS.md` /
 `docs/ALIGNMENT.md` / `GOVERNANCE.md` / `CLAUDE.md` adding:
 
-- AGENTS.md — *"Research-grade absorbs are staged, not
-  ratified"* clause.
-- ALIGNMENT.md — SD-9 *"Agreement is signal, not proof"*
+- AGENTS.md — _"Research-grade absorbs are staged, not
+  ratified"_ clause.
+- ALIGNMENT.md — SD-9 _"Agreement is signal, not proof"_
   clause.
 - GOVERNANCE.md — §33 archive-header requirement.
 - CLAUDE.md — archive-imports-require-headers bullet.
 
 These are **proposals**, not landed edits. Applying them
 changes governance / alignment doctrine; per repeated-across-
-ferries "hard rule" (*"never say Amara reviewed something
-unless Amara actually reviewed it through a logged path"*)
+ferries "hard rule" (_"never say Amara reviewed something
+unless Amara actually reviewed it through a logged path"_)
 they need:
 
 - Peer review by Codex (adversarial on whether the edits
@@ -941,7 +948,7 @@ more via Aaron.
 - **Decision-proxy-evidence record:** NOT filed for this
   absorb — per `docs/decision-proxy-evidence/README.md` an
   absorb is "documentation, not a proxy-reviewed decision".
-  DP-NNN records are for decisions *based on* this absorb,
+  DP-NNN records are for decisions _based on_ this absorb,
   not for the absorb itself.
 
 ## Sibling context

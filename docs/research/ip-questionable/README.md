@@ -9,8 +9,8 @@ This folder is the canonical home for research substrate where:
 
 ## Convention
 
-**Origin** (Aaron 2026-05-24): *"since you don't need that most of the time
-lets add a IP questionable or something like that folder under research"*
+**Origin** (Aaron 2026-05-24): _"since you don't need that most of the time
+lets add a IP questionable or something like that folder under research"_
 
 The folder name itself is the IP-flag signal. Future agents and external
 readers see `ip-questionable/` in the path and know:

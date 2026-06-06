@@ -33,10 +33,10 @@ step-0 substrate-drift discriminator. The dependency B-0272 closed
 2026-05-16; this row's `classification` was never updated off the stale
 `blocked-on-B-0272`. All 3 acceptance items verifiably shipped:
 
-| Acceptance | Status |
-|---|---|
-| safe/ folder not gitignored, checked in | shipped — `roms-safe/README.md` + `roms-safe/atari/2600/README.md` tracked; the gitignore at `roms/.gitignore` governs only `roms/`, so `roms-safe/` is checked in by default |
-| unsafe/ folder gitignored | shipped — `roms/` stays gitignored via the existing depth-limited rule (`*` + `!*/` + sentinel re-includes); only README sentinels tracked |
+| Acceptance                                         | Status                                                                                                                                                                               |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| safe/ folder not gitignored, checked in            | shipped — `roms-safe/README.md` + `roms-safe/atari/2600/README.md` tracked; the gitignore at `roms/.gitignore` governs only `roms/`, so `roms-safe/` is checked in by default        |
+| unsafe/ folder gitignored                          | shipped — `roms/` stays gitignored via the existing depth-limited rule (`*` + `!*/` + sentinel re-includes); only README sentinels tracked                                           |
 | README documents which ROMs are safe to distribute | shipped — `roms-safe/README.md` explains the split; `roms-safe/atari/2600/README.md` carries a per-ROM table (canonical name, author, license class, citation) for 7 homebrew titles |
 
 Provenance:

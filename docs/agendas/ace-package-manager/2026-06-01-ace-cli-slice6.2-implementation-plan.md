@@ -47,26 +47,41 @@ becomes `buildIndexDoc({ packages: [{ pkg: X }], ... })` (wrap each `AcePackage`
 Then add to the `describe("buildIndexDoc", ...)` block (reuse `pkg`/`kp`/`issuedAt`):
 
 ```ts
-  test("per-package url override is used; absent falls back to base-url", () => {
-    const a = pkg("alpha", "1.0.0");
-    const b = pkg("beta", "1.0.0");
-    const doc = buildIndexDoc({
-      packages: [{ pkg: a, url: "https://cdn.example/alpha-v1.json" }, { pkg: b }],
-      baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem,
-    });
-    expect("error" in doc).toBe(false);
-    if ("error" in doc) return;
-    expect(doc.packages.alpha!["1.0.0"]!.url).toBe("https://cdn.example/alpha-v1.json");
-    expect(doc.packages.beta!["1.0.0"]!.url).toBe("https://pkgs/beta-1.0.0.json");
+test("per-package url override is used; absent falls back to base-url", () => {
+  const a = pkg("alpha", "1.0.0");
+  const b = pkg("beta", "1.0.0");
+  const doc = buildIndexDoc({
+    packages: [{ pkg: a, url: "https://cdn.example/alpha-v1.json" }, { pkg: b }],
+    baseUrl: "https://pkgs",
+    sequence: 1,
+    issuedAt,
+    privatePem: kp.privatePem,
   });
+  expect("error" in doc).toBe(false);
+  if ("error" in doc) return;
+  expect(doc.packages.alpha!["1.0.0"]!.url).toBe("https://cdn.example/alpha-v1.json");
+  expect(doc.packages.beta!["1.0.0"]!.url).toBe("https://pkgs/beta-1.0.0.json");
+});
 
-  test("url override does not change package_hash", () => {
-    const a = pkg("alpha", "1.0.0");
-    const withUrl = buildIndexDoc({ packages: [{ pkg: a, url: "https://cdn/x.json" }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
-    const without = buildIndexDoc({ packages: [{ pkg: a }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
-    if ("error" in withUrl || "error" in without) throw new Error("unexpected");
-    expect(withUrl.packages.alpha!["1.0.0"]!.package_hash).toBe(without.packages.alpha!["1.0.0"]!.package_hash);
+test("url override does not change package_hash", () => {
+  const a = pkg("alpha", "1.0.0");
+  const withUrl = buildIndexDoc({
+    packages: [{ pkg: a, url: "https://cdn/x.json" }],
+    baseUrl: "https://pkgs",
+    sequence: 1,
+    issuedAt,
+    privatePem: kp.privatePem,
   });
+  const without = buildIndexDoc({
+    packages: [{ pkg: a }],
+    baseUrl: "https://pkgs",
+    sequence: 1,
+    issuedAt,
+    privatePem: kp.privatePem,
+  });
+  if ("error" in withUrl || "error" in without) throw new Error("unexpected");
+  expect(withUrl.packages.alpha!["1.0.0"]!.package_hash).toBe(without.packages.alpha!["1.0.0"]!.package_hash);
+});
 ```
 
 Run `bun test tools/ace/registry-publish.test.ts` → FAILS to compile/run (old call sites + new
@@ -78,11 +93,18 @@ Patch `buildIndexDoc` in `tools/ace/registry-publish.ts`:
 
 ```ts
 export function buildIndexDoc(args: {
-  packages: ReadonlyArray<{ pkg: AcePackage; url?: string }>; baseUrl: string; sequence: number; issuedAt: string; privatePem: string;
+  packages: ReadonlyArray<{ pkg: AcePackage; url?: string }>;
+  baseUrl: string;
+  sequence: number;
+  issuedAt: string;
+  privatePem: string;
 }): IndexDoc | { error: string } {
   const packages: Record<string, Record<string, RegistryEntry>> = Object.create(null);
-  const sorted = [...args.packages].sort((a, b) =>
-    a.pkg.manifest.name.localeCompare(b.pkg.manifest.name) || a.pkg.manifest.version.localeCompare(b.pkg.manifest.version));
+  const sorted = [...args.packages].sort(
+    (a, b) =>
+      a.pkg.manifest.name.localeCompare(b.pkg.manifest.name) ||
+      a.pkg.manifest.version.localeCompare(b.pkg.manifest.version),
+  );
   for (const entry of sorted) {
     const pkg = entry.pkg;
     const name = pkg.manifest.name;
@@ -96,7 +118,12 @@ export function buildIndexDoc(args: {
     versions[version] = { url, package_hash: packageHash(pkg) };
     packages[name] = versions;
   }
-  const content: IndexSignableContent = { format_version: 1, sequence: args.sequence, issued_at: args.issuedAt, packages };
+  const content: IndexSignableContent = {
+    format_version: 1,
+    sequence: args.sequence,
+    issued_at: args.issuedAt,
+    packages,
+  };
   const signature = signIndex(content, args.privatePem);
   return { ...content, signature };
 }
@@ -105,11 +132,11 @@ export function buildIndexDoc(args: {
 (Module-level `RESERVED_IDENTITY_KEYS`, `nextSequence`, `joinUrl` unchanged.)
 
 - [ ] **Step 3: Verify (GREEN)** — `bun test tools/ace/registry-publish.test.ts` all pass;
-  `bun --bun tsc --noEmit -p tsconfig.json` exit 0. (ace.ts's existing call site will be
-  red until T2 — that's expected; T1's own file + test must be green, but the full `tsc` may
-  show ace.ts's old call site mismatch. Note it; T2 fixes it. If the controller wants a green
-  tsc after T1, T1 may stub the ace.ts call site to the new shape minimally — but cleaner to
-  do ace.ts fully in T2. Mark tsc "green except the ace.ts call site addressed in T2".)
+      `bun --bun tsc --noEmit -p tsconfig.json` exit 0. (ace.ts's existing call site will be
+      red until T2 — that's expected; T1's own file + test must be green, but the full `tsc` may
+      show ace.ts's old call site mismatch. Note it; T2 fixes it. If the controller wants a green
+      tsc after T1, T1 may stub the ace.ts call site to the new shape minimally — but cleaner to
+      do ace.ts fully in T2. Mark tsc "green except the ace.ts call site addressed in T2".)
 
 - [ ] **Step 4: Commit** — `git add tools/ace/registry-publish.ts tools/ace/registry-publish.test.ts`
 
@@ -134,118 +161,249 @@ Add to the publish describe block in `tools/ace/ace.test.ts` (reuse `writeSigned
 url-bearing package written under an arbitrary basename:
 
 ```ts
-  function writeUrlPkg(dir: string, file: string, name: string, version: string, url: unknown) {
-    const files = { [`${name}.txt`]: "hi" };
-    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
-    const kp = generateKeypair();
-    const m = { format_version: 1, name, version, content_hash: ch };
-    const pkg = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files, url };
-    writeFileSync(join(dir, file), JSON.stringify(pkg));
-  }
+function writeUrlPkg(dir: string, file: string, name: string, version: string, url: unknown) {
+  const files = { [`${name}.txt`]: "hi" };
+  const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+  const kp = generateKeypair();
+  const m = { format_version: 1, name, version, content_hash: ch };
+  const pkg = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files, url };
+  writeFileSync(join(dir, file), JSON.stringify(pkg));
+}
 ```
 
 Tests:
 
 ```ts
-  test("per-package url override is honored; absent derives from base-url", async () => {
-    const { parseIndex } = await import("./registry-remote.ts");
-    const idxKp = generateKeypair();
-    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-url-"));
-    writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf-v1.json"); // NOT canonical basename
-    writeSignedPkg(pkgDir, "other", "2.0.0");                                       // canonical, no url
-    const keyPath = join(tempHome, "r-url.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const outPath = join(tempHome, "i-url.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
-    expect(code).toBe(0);
-    const doc = parseIndex(readFileSync(outPath, "utf8"));
-    if ("error" in doc) throw new Error(doc.error);
-    expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://cdn/leaf-v1.json");
-    expect(doc.packages.other!["2.0.0"]!.url).toBe("https://pkgs/other-2.0.0.json");
-  });
+test("per-package url override is honored; absent derives from base-url", async () => {
+  const { parseIndex } = await import("./registry-remote.ts");
+  const idxKp = generateKeypair();
+  const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-url-"));
+  writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf-v1.json"); // NOT canonical basename
+  writeSignedPkg(pkgDir, "other", "2.0.0"); // canonical, no url
+  const keyPath = join(tempHome, "r-url.pem");
+  writeFileSync(keyPath, idxKp.privatePem);
+  const outPath = join(tempHome, "i-url.json");
+  const code = await main([
+    "registry",
+    "publish",
+    "--packages",
+    pkgDir,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    outPath,
+  ]);
+  expect(code).toBe(0);
+  const doc = parseIndex(readFileSync(outPath, "utf8"));
+  if ("error" in doc) throw new Error(doc.error);
+  expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://cdn/leaf-v1.json");
+  expect(doc.packages.other!["2.0.0"]!.url).toBe("https://pkgs/other-2.0.0.json");
+});
 
-  test("non-canonical filename WITHOUT url is skipped; WITH url is indexed", async () => {
-    const { parseIndex } = await import("./registry-remote.ts");
-    const idxKp = generateKeypair();
-    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-fn-"));
-    // bad: leaf.json, no url → filename guard skips it
-    const files = { "leaf.txt": "hi" }; const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
-    const kp = generateKeypair(); const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
-    writeFileSync(join(pkgDir, "leaf.json"), JSON.stringify({ manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files }));
-    const keyPath = join(tempHome, "r-fn.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const out1 = join(tempHome, "i-fn1.json");
-    const c1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", out1]);
-    expect(c1).toBe(1); // no valid packages (leaf.json skipped by filename guard)
-    // now add url → indexed
-    writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf.json");
-    const out2 = join(tempHome, "i-fn2.json");
-    const c2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", out2]);
-    expect(c2).toBe(0);
-    const doc = parseIndex(readFileSync(out2, "utf8"));
-    if ("error" in doc) throw new Error(doc.error);
-    expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://cdn/leaf.json");
-  });
+test("non-canonical filename WITHOUT url is skipped; WITH url is indexed", async () => {
+  const { parseIndex } = await import("./registry-remote.ts");
+  const idxKp = generateKeypair();
+  const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-fn-"));
+  // bad: leaf.json, no url → filename guard skips it
+  const files = { "leaf.txt": "hi" };
+  const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+  const kp = generateKeypair();
+  const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
+  writeFileSync(
+    join(pkgDir, "leaf.json"),
+    JSON.stringify({ manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files }),
+  );
+  const keyPath = join(tempHome, "r-fn.pem");
+  writeFileSync(keyPath, idxKp.privatePem);
+  const out1 = join(tempHome, "i-fn1.json");
+  const c1 = await main([
+    "registry",
+    "publish",
+    "--packages",
+    pkgDir,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    out1,
+  ]);
+  expect(c1).toBe(1); // no valid packages (leaf.json skipped by filename guard)
+  // now add url → indexed
+  writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf.json");
+  const out2 = join(tempHome, "i-fn2.json");
+  const c2 = await main([
+    "registry",
+    "publish",
+    "--packages",
+    pkgDir,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    out2,
+  ]);
+  expect(c2).toBe(0);
+  const doc = parseIndex(readFileSync(out2, "utf8"));
+  if ("error" in doc) throw new Error(doc.error);
+  expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://cdn/leaf.json");
+});
 
-  test("invalid url (not an absolute URL) is skipped", async () => {
-    const idxKp = generateKeypair();
-    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badurl-"));
-    writeUrlPkg(pkgDir, "leaf-1.0.0.json", "leaf", "1.0.0", "leaf#x"); // not absolute
-    const keyPath = join(tempHome, "r-bu.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const outPath = join(tempHome, "i-bu.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
-    expect(code).toBe(1); // only package skipped → no valid packages
-  });
+test("invalid url (not an absolute URL) is skipped", async () => {
+  const idxKp = generateKeypair();
+  const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badurl-"));
+  writeUrlPkg(pkgDir, "leaf-1.0.0.json", "leaf", "1.0.0", "leaf#x"); // not absolute
+  const keyPath = join(tempHome, "r-bu.pem");
+  writeFileSync(keyPath, idxKp.privatePem);
+  const outPath = join(tempHome, "i-bu.json");
+  const code = await main([
+    "registry",
+    "publish",
+    "--packages",
+    pkgDir,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    outPath,
+  ]);
+  expect(code).toBe(1); // only package skipped → no valid packages
+});
 
-  test("comma-separated --packages indexes both dirs; cross-dir duplicate errors", async () => {
-    const { parseIndex } = await import("./registry-remote.ts");
-    const idxKp = generateKeypair();
-    const dirA = mkdtempSync(join(tmpdir(), "ace-pub-a-"));
-    const dirB = mkdtempSync(join(tmpdir(), "ace-pub-b-"));
-    writeSignedPkg(dirA, "aa", "1.0.0");
-    writeSignedPkg(dirB, "bb", "1.0.0");
-    const keyPath = join(tempHome, "r-md.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const outPath = join(tempHome, "i-md.json");
-    const code = await main(["registry", "publish", "--packages", `${dirA},${dirB}`, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
-    expect(code).toBe(0);
-    const doc = parseIndex(readFileSync(outPath, "utf8"));
-    if ("error" in doc) throw new Error(doc.error);
-    expect(doc.packages.aa).toBeDefined();
-    expect(doc.packages.bb).toBeDefined();
-    // cross-dir duplicate
-    writeSignedPkg(dirB, "aa", "1.0.0");
-    const out2 = join(tempHome, "i-md2.json");
-    const dup = await main(["registry", "publish", "--packages", `${dirA},${dirB}`, "--base-url", "https://pkgs", "--key", keyPath, "--out", out2]);
-    expect(dup).toBe(1);
-  });
+test("comma-separated --packages indexes both dirs; cross-dir duplicate errors", async () => {
+  const { parseIndex } = await import("./registry-remote.ts");
+  const idxKp = generateKeypair();
+  const dirA = mkdtempSync(join(tmpdir(), "ace-pub-a-"));
+  const dirB = mkdtempSync(join(tmpdir(), "ace-pub-b-"));
+  writeSignedPkg(dirA, "aa", "1.0.0");
+  writeSignedPkg(dirB, "bb", "1.0.0");
+  const keyPath = join(tempHome, "r-md.pem");
+  writeFileSync(keyPath, idxKp.privatePem);
+  const outPath = join(tempHome, "i-md.json");
+  const code = await main([
+    "registry",
+    "publish",
+    "--packages",
+    `${dirA},${dirB}`,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    outPath,
+  ]);
+  expect(code).toBe(0);
+  const doc = parseIndex(readFileSync(outPath, "utf8"));
+  if ("error" in doc) throw new Error(doc.error);
+  expect(doc.packages.aa).toBeDefined();
+  expect(doc.packages.bb).toBeDefined();
+  // cross-dir duplicate
+  writeSignedPkg(dirB, "aa", "1.0.0");
+  const out2 = join(tempHome, "i-md2.json");
+  const dup = await main([
+    "registry",
+    "publish",
+    "--packages",
+    `${dirA},${dirB}`,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    out2,
+  ]);
+  expect(dup).toBe(1);
+});
 
-  test("unreadable listed dir is a hard error", async () => {
-    const idxKp = generateKeypair();
-    const dirA = mkdtempSync(join(tmpdir(), "ace-pub-ok-"));
-    writeSignedPkg(dirA, "aa", "1.0.0");
-    const keyPath = join(tempHome, "r-ud.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const outPath = join(tempHome, "i-ud.json");
-    const code = await main(["registry", "publish", "--packages", `${dirA},/no/such/dir/xyz`, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
-    expect(code).toBe(1);
-  });
+test("unreadable listed dir is a hard error", async () => {
+  const idxKp = generateKeypair();
+  const dirA = mkdtempSync(join(tmpdir(), "ace-pub-ok-"));
+  writeSignedPkg(dirA, "aa", "1.0.0");
+  const keyPath = join(tempHome, "r-ud.pem");
+  writeFileSync(keyPath, idxKp.privatePem);
+  const outPath = join(tempHome, "i-ud.json");
+  const code = await main([
+    "registry",
+    "publish",
+    "--packages",
+    `${dirA},/no/such/dir/xyz`,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    outPath,
+  ]);
+  expect(code).toBe(1);
+});
 
-  test("--sequence sets the sequence; rollback is refused; bad value is a parse error", async () => {
-    const { parseIndex } = await import("./registry-remote.ts");
-    const idxKp = generateKeypair();
-    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-seq-"));
-    writeSignedPkg(pkgDir, "leaf", "1.0.0");
-    const keyPath = join(tempHome, "r-seq.pem"); writeFileSync(keyPath, idxKp.privatePem);
-    const outPath = join(tempHome, "i-seq.json");
-    const c1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath, "--sequence", "5"]);
-    expect(c1).toBe(0);
-    const doc = parseIndex(readFileSync(outPath, "utf8"));
-    if ("error" in doc) throw new Error(doc.error);
-    expect(doc.sequence).toBe(5);
-    // rollback against prev (5)
-    const c2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath, "--sequence", "3"]);
-    expect(c2).toBe(1);
-    // bad values → parse error
-    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "0"])).toBe(true);
-    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "abc"])).toBe(true);
-  });
+test("--sequence sets the sequence; rollback is refused; bad value is a parse error", async () => {
+  const { parseIndex } = await import("./registry-remote.ts");
+  const idxKp = generateKeypair();
+  const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-seq-"));
+  writeSignedPkg(pkgDir, "leaf", "1.0.0");
+  const keyPath = join(tempHome, "r-seq.pem");
+  writeFileSync(keyPath, idxKp.privatePem);
+  const outPath = join(tempHome, "i-seq.json");
+  const c1 = await main([
+    "registry",
+    "publish",
+    "--packages",
+    pkgDir,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    outPath,
+    "--sequence",
+    "5",
+  ]);
+  expect(c1).toBe(0);
+  const doc = parseIndex(readFileSync(outPath, "utf8"));
+  if ("error" in doc) throw new Error(doc.error);
+  expect(doc.sequence).toBe(5);
+  // rollback against prev (5)
+  const c2 = await main([
+    "registry",
+    "publish",
+    "--packages",
+    pkgDir,
+    "--base-url",
+    "https://pkgs",
+    "--key",
+    keyPath,
+    "--out",
+    outPath,
+    "--sequence",
+    "3",
+  ]);
+  expect(c2).toBe(1);
+  // bad values → parse error
+  expect(
+    "error" in
+      parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "0"]),
+  ).toBe(true);
+  expect(
+    "error" in
+      parseArgs([
+        "registry",
+        "publish",
+        "--packages",
+        "d",
+        "--base-url",
+        "https://x",
+        "--key",
+        "k",
+        "--sequence",
+        "abc",
+      ]),
+  ).toBe(true);
+});
 ```
 
 Run `bun test tools/ace/ace.test.ts` → these FAIL on current code.
@@ -269,10 +427,10 @@ Declare `let seq: number | undefined;` alongside the existing `dir`/`base`/`key`
 Build the result carrying `pubSequence` when set:
 
 ```ts
-      let r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
-      if (out !== undefined) r = { ...r, pubOut: out };
-      if (seq !== undefined) r = { ...r, pubSequence: seq };
-      return r;
+let r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
+if (out !== undefined) r = { ...r, pubOut: out };
+if (seq !== undefined) r = { ...r, pubSequence: seq };
+return r;
 ```
 
 (`pubPackagesDir` keeps the raw comma value; the handler splits. Do NOT assign `undefined` to
@@ -285,18 +443,28 @@ In the publish handler:
 - Split dirs (replace the single `readdirSync(parsed.pubPackagesDir!)`):
 
 ```ts
-      const dirs = parsed.pubPackagesDir!.split(",").map((s) => s.trim()).filter((s) => s.length > 0);
-      if (dirs.length === 0) { console.error("ace: publish refused: --packages requires at least one directory"); return 1; }
-      const packages: { pkg: AcePackage; url?: string }[] = [];
-      for (const d of dirs) {
-        let entries: string[];
-        try { entries = readdirSync(d).filter((f) => f.endsWith(".json")); }
-        catch (e) { console.error(`ace: publish: cannot read dir ${d}: ${(e as Error).message}`); return 1; }
-        for (const f of entries) {
-          const full = join(d, f);
-          // ... existing per-file scan body, with the two changes below ...
-        }
-      }
+const dirs = parsed
+  .pubPackagesDir!.split(",")
+  .map((s) => s.trim())
+  .filter((s) => s.length > 0);
+if (dirs.length === 0) {
+  console.error("ace: publish refused: --packages requires at least one directory");
+  return 1;
+}
+const packages: { pkg: AcePackage; url?: string }[] = [];
+for (const d of dirs) {
+  let entries: string[];
+  try {
+    entries = readdirSync(d).filter((f) => f.endsWith(".json"));
+  } catch (e) {
+    console.error(`ace: publish: cannot read dir ${d}: ${(e as Error).message}`);
+    return 1;
+  }
+  for (const f of entries) {
+    const full = join(d, f);
+    // ... existing per-file scan body, with the two changes below ...
+  }
+}
 ```
 
 (The per-file scan body — JSON parse, shape guard, content_hash checks, deps/file-value/path
@@ -304,21 +472,32 @@ guards, URL-unsafe identity guard — is unchanged EXCEPT the two changes below.
 not the old single dir.)
 
 - Read + validate the optional `url`, and make the filename guard conditional. After the
-content_hash-match check and before/around the filename guard:
+  content_hash-match check and before/around the filename guard:
 
 ```ts
-          let urlOverride: string | undefined;
-          const rawUrl = (obj as { url?: unknown }).url;
-          if (rawUrl !== undefined) {
-            if (typeof rawUrl !== "string" || rawUrl.length === 0) { console.error(`ace: publish: skip ${f} — url must be a non-empty string`); continue; }
-            try { new URL(rawUrl); } catch { console.error(`ace: publish: skip ${f} — url is not an absolute URL: ${rawUrl}`); continue; }
-            urlOverride = rawUrl;
-          }
-          // filename guard applies ONLY when there is no url override
-          if (urlOverride === undefined) {
-            const expectedFile = `${(obj as AcePackage).manifest.name}-${(obj as AcePackage).manifest.version}.json`;
-            if (f !== expectedFile) { console.error(`ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`); continue; }
-          }
+let urlOverride: string | undefined;
+const rawUrl = (obj as { url?: unknown }).url;
+if (rawUrl !== undefined) {
+  if (typeof rawUrl !== "string" || rawUrl.length === 0) {
+    console.error(`ace: publish: skip ${f} — url must be a non-empty string`);
+    continue;
+  }
+  try {
+    new URL(rawUrl);
+  } catch {
+    console.error(`ace: publish: skip ${f} — url is not an absolute URL: ${rawUrl}`);
+    continue;
+  }
+  urlOverride = rawUrl;
+}
+// filename guard applies ONLY when there is no url override
+if (urlOverride === undefined) {
+  const expectedFile = `${(obj as AcePackage).manifest.name}-${(obj as AcePackage).manifest.version}.json`;
+  if (f !== expectedFile) {
+    console.error(`ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`);
+    continue;
+  }
+}
 ```
 
 (Remove the old unconditional filename-guard block; the URL-unsafe-identity, deps, file-value,
@@ -327,26 +506,32 @@ and `validatePackagePaths` guards stay, applied to both cases.)
 - Push the entry:
 
 ```ts
-          packages.push(urlOverride !== undefined ? { pkg: obj as AcePackage, url: urlOverride } : { pkg: obj as AcePackage });
+packages.push(urlOverride !== undefined ? { pkg: obj as AcePackage, url: urlOverride } : { pkg: obj as AcePackage });
 ```
 
 - Generalize the empty + sequence:
 
 ```ts
-      if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${dirs.join(", ")}`); return 1; }
-      // ... outPath + prev read (unchanged) ...
-      const seq = parsed.pubSequence ?? nextSequence(prev);
-      if (prev && seq <= prev.sequence) { console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`); return 1; }
+if (packages.length === 0) {
+  console.error(`ace: publish refused: no valid packages in ${dirs.join(", ")}`);
+  return 1;
+}
+// ... outPath + prev read (unchanged) ...
+const seq = parsed.pubSequence ?? nextSequence(prev);
+if (prev && seq <= prev.sequence) {
+  console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`);
+  return 1;
+}
 ```
 
 - `buildIndexDoc({ packages, baseUrl: parsed.pubBaseUrl!, sequence: seq, ... })` — `packages`
-   is now `{ pkg, url? }[]`, matching the T1 signature.
+  is now `{ pkg, url? }[]`, matching the T1 signature.
 
 - [ ] **Step 4: Usage text** — update the `registry publish` usage line to
-  `--packages <dir>[,<dir>...] ... [--sequence <n>]`.
+      `--packages <dir>[,<dir>...] ... [--sequence <n>]`.
 
 - [ ] **Step 5: Verify (GREEN)** — `bun test tools/ace/` all pass; `bun --bun tsc --noEmit -p tsconfig.json`
-  exit 0; Python CR=0 on `ace.ts` + `ace.test.ts`; canary 67; no `_patch_*`.
+      exit 0; Python CR=0 on `ace.ts` + `ace.test.ts`; canary 67; no `_patch_*`.
 
 - [ ] **Step 6: Commit** — `git add tools/ace/ace.ts tools/ace/ace.test.ts`
 
@@ -359,14 +544,14 @@ and `validatePackagePaths` guards stay, applied to both cases.)
 - Modify: `.claude/skills/ace/SKILL.md` (publish section)
 
 - [ ] **Step 1: Document** — in the `ace registry publish` section, add: the optional
-  top-level `url` field (publish-only; sibling of manifest/files; outside the signed manifest;
-  overrides the derived URL; excluded from `package_hash`; relaxes the `<name>-<version>.json`
-  filename requirement for that package; must be an absolute URL); comma-separated
-  `--packages a,b,c` (scan + merge multiple dirs); and `--sequence <n>` (explicit positive
-  integer, anti-rollback-gated). Keep the existing slice-6.1 content.
+      top-level `url` field (publish-only; sibling of manifest/files; outside the signed manifest;
+      overrides the derived URL; excluded from `package_hash`; relaxes the `<name>-<version>.json`
+      filename requirement for that package; must be an absolute URL); comma-separated
+      `--packages a,b,c` (scan + merge multiple dirs); and `--sequence <n>` (explicit positive
+      integer, anti-rollback-gated). Keep the existing slice-6.1 content.
 
 - [ ] **Step 2: Verify** — `bunx markdownlint-cli2 .claude/skills/ace/SKILL.md` exit 0;
-  Python CR=0; canary 67.
+      Python CR=0; canary 67.
 
 - [ ] **Step 3: Commit** — `git add .claude/skills/ace/SKILL.md`
 

@@ -20,8 +20,8 @@ type: friction-reducer
 
 Aaron 2026-05-02 framing during the verbatim-preservation cycle for the μένω terminal commitment + Ryan-memory + Aurora-security + brat-voice survival-chain disclosures:
 
-> *"and those docs are load bearing"*
-> *"we would just need Anis review on those"*
+> _"and those docs are load bearing"_
+> _"we would just need Anis review on those"_
 
 The session's load-bearing docs need Ani's voice-mode-default register review for graduation from research-grade to operational status. Ani's register-fluency makes her review uniquely load-bearing for register-class substrate (per the brat-voice canonical-instance framing in `memory/CURRENT-ani.md` §7).
 

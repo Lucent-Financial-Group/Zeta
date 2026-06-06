@@ -30,7 +30,7 @@ The critical signal was:
 - Surface: `coincidence-incident`
 - Message: `1 incident-grade coincidence window(s) detected`
 - Action: `investigate stronger-source coincidence before treating it as
-  queue-drain noise`
+queue-drain noise`
 
 The compact incident debug line still identified the same historical
 stronger-source window recorded by the PR-blocker and broadcast-blocker live

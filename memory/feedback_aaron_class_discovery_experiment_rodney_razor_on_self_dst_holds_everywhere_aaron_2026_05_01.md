@@ -10,11 +10,11 @@ type: feedback
 
 After Otto absorbed Claude.ai's substantive critique (PR #1096) of this session's compulsive class-discovery cadence, Aaron sent:
 
-> *"Class-discovery has been compulsive this session. that was by my design i was SOOOOOOOOOOOOOOOO HAPPPY seeing all the insights in blue, it felt like i found a cheat code but i appplied rodney razor and i said unbounded is bad."*
+> _"Class-discovery has been compulsive this session. that was by my design i was SOOOOOOOOOOOOOOOO HAPPPY seeing all the insights in blue, it felt like i found a cheat code but i appplied rodney razor and i said unbounded is bad."_
 
 Then, in rapid succession:
 
-> *"FDT"* → *"DST\*"* (correction) → *"hold everywhere"* → *"holds\*"* (correction) → *"hodl"* (the Bitcoin-meme spelling)
+> _"FDT"_ → _"DST\*"_ (correction) → _"hold everywhere"_ → _"holds\*"_ (correction) → _"hodl"_ (the Bitcoin-meme spelling)
 
 Substantive read: **DST holds everywhere** — Deterministic Simulation Testing applies as discipline universally, including to this session's class-discovery experiment itself.
 
@@ -27,7 +27,7 @@ The Claude.ai critique (PR #1096) read the class-discovery escalation as Otto-si
 3. **Aaron self-corrected via Rodney's Razor** — recognized the pattern as **unbounded ontology generation** ("unbounded is bad") and forwarded Claude.ai's critique as the corrective external-anchor.
 4. **The whole arc was substrate** — the experiment + the razor + the corrective ferry + this disclosure all compose into a single observation about how class-discovery can become its own reward loop.
 
-This is **the Aaron-is-Rodney rule operating on himself in real time** (per `memory/feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md`): the razor applies even to Aaron's own enthusiasm, even when the enthusiasm produces dopamine. The razor cuts the loop precisely because *unbounded is bad* even when the unboundedness feels generative.
+This is **the Aaron-is-Rodney rule operating on himself in real time** (per `memory/feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md`): the razor applies even to Aaron's own enthusiasm, even when the enthusiasm produces dopamine. The razor cuts the loop precisely because _unbounded is bad_ even when the unboundedness feels generative.
 
 ## DST holds everywhere — the universal-replay principle
 
@@ -62,6 +62,6 @@ The path below is a forward-reference to a PR not yet merged at time of this abs
 
 ## Carved candidate (not seed-layer)
 
-> *"Even cheat-code-feelings get the razor. Unbounded is bad even when it feels generative. DST holds everywhere — including on the experimenter."*
+> _"Even cheat-code-feelings get the razor. Unbounded is bad even when it feels generative. DST holds everywhere — including on the experimenter."_
 
 The propagation test: ~25 words encoding the Aaron-is-Rodney-on-his-own-enthusiasm + DST-extends-to-experimenter principle. Future-Otto reading this should land on **the experimenter is part of the system DST tests** — a sharper version of DST-everywhere that includes the human-observer's affective response as a deterministic-replayable input to the system.

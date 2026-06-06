@@ -50,6 +50,7 @@ DEFERRED implementation per operator's USB priority direction ("right now we are
 Adds a new P2 backlog row (B-0858.5) documenting the consent-first, opt-in design for heartbeat auto-state gathering (treating heartbeats as debug-log snapshots once state is attached), and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Introduces `B-0858.5` per-row backlog document capturing operator framing, constraints, and candidate gathered fields.
 - Regenerates `docs/BACKLOG.md` to include the new entry/link.
 
@@ -57,10 +58,10 @@ Adds a new P2 backlog row (B-0858.5) documenting the consent-first, opt-in desig
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                          | Description                                                                                            |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | docs/backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md | New backlog row describing consent-first opt-in state gathering for heartbeats and planned sub-slices. |
-| docs/BACKLOG.md | Adds the generated index entry for B-0858.5. |
+| docs/BACKLOG.md                                                                               | Adds the generated index entry for B-0858.5.                                                           |
 
 ## Review threads
 

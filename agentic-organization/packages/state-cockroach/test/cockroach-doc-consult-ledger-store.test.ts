@@ -144,10 +144,10 @@ test("Cockroach doc consult ledger store fails closed for malformed exact work-i
 });
 
 test("Cockroach doc consult ledger store appends scoped quality outcomes without overwriting history", async () => {
-  const executor = fakeExecutor([], [
-    { doc_consult_id: "context_pack_doc_consult:one" },
-    { doc_consult_id: "context_pack_doc_consult:two" },
-  ]);
+  const executor = fakeExecutor(
+    [],
+    [{ doc_consult_id: "context_pack_doc_consult:one" }, { doc_consult_id: "context_pack_doc_consult:two" }],
+  );
   const store = createCockroachDocConsultLedgerStore({ executor });
 
   const result = await store.stampOutcome(outcomeStamp());

@@ -92,7 +92,7 @@ In your new `Application.yaml`:
 ```yaml
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "0"   # pick wave per the table above
+    argocd.argoproj.io/sync-wave: "0" # pick wave per the table above
 ```
 
 Picking the wave:

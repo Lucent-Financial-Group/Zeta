@@ -113,9 +113,9 @@ bash tools/hygiene/check-tick-history-order.sh   # OK 154 rows non-decreasing
    mental model bias.
 
 2. **Aaron's question protocol is the maintainer-as-anchor
-   pattern.** *"closed-not-merged this session did you double
-   check like i asked for closed?"* + *"i actually asked you to
-   check with another cli/harness"* + *"no directives, only asks"*
+   pattern.** _"closed-not-merged this session did you double
+   check like i asked for closed?"_ + _"i actually asked you to
+   check with another cli/harness"_ + _"no directives, only asks"_
    — the inquiry framing makes me responsible to my own discipline
    without commanding compliance. The discipline survives because
    I have to choose to apply it, not because Aaron forced it.

@@ -33,10 +33,10 @@ and industry-engineering register. No beacon-blocked terminology found.
 ## BP-01 — Description is third-person, keyword-rich, ≤1024 chars
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Description is third-person, keyword-rich, ≤1024 chars. Rationale: the
+_"Description is third-person, keyword-rich, ≤1024 chars. Rationale: the
 `description` field is both the invocation-trigger surface and the scope gate.
 A lazy description invites wrong-task invocation which is indistinguishable
-from scope-creep injection."*
+from scope-creep injection."_
 
 **Core claim:** The `description` field is the primary mechanism by which an
 LLM-based orchestrator selects which tool or skill to invoke. A description
@@ -49,26 +49,26 @@ result in the skill operating outside its intended domain.
 
 **1. Anthropic — "Define tools" and "Writing effective tools for AI agents"**
 
-Anthropic. *"Define tools."* Claude API Docs.
+Anthropic. _"Define tools."_ Claude API Docs.
 <https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/implement-tool-use>
 (living document; accessed 2026-05-10).
 
-Anthropic Engineering. *"Writing effective tools for AI agents."*
+Anthropic Engineering. _"Writing effective tools for AI agents."_
 <https://www.anthropic.com/engineering/writing-tools-for-agents>
 (published 2025).
 
-The "Define tools" page states verbatim: *"Providing extremely detailed
+The "Define tools" page states verbatim: _"Providing extremely detailed
 descriptions is by far the most important factor in tool performance. The
 more context you can give Claude about your tools, the better it will be
-at deciding when and how to use them."* It further specifies that the
+at deciding when and how to use them."_ It further specifies that the
 description must explain what the tool does, when to use it, and what data
-it returns, and notes that *"the most common failures are wrong tool
+it returns, and notes that _"the most common failures are wrong tool
 selection and incorrect parameters, especially when tools have similar
-names."* The engineering post establishes that the `description` field in
+names."_ The engineering post establishes that the `description` field in
 the Agent Skills spec caps at 1024 characters, descriptions must be written
 in third person because the field is injected into the system prompt
 (inconsistent point-of-view causes discovery failures), and must include
-*"specific triggers or contexts that should fire it"* — not just what the
+_"specific triggers or contexts that should fire it"_ — not just what the
 skill does. This is the canonical first-party source for all three claims
 in BP-01: (a) description as the invocation-trigger surface, (b) the
 1024-character hard limit, (c) third-person writing convention, and (d)
@@ -77,24 +77,24 @@ wrong-tool-selection as the primary failure mode when descriptions are lazy.
 **2. Anonymous (2026) — "Learning to Rewrite Tool Descriptions for Reliable
 LLM-Agent Tool Use," arXiv:2602.20426**
 
-Anonymous authors. *"Learning to Rewrite Tool Descriptions for Reliable
-LLM-Agent Tool Use."* arXiv:2602.20426. February 2026.
+Anonymous authors. _"Learning to Rewrite Tool Descriptions for Reliable
+LLM-Agent Tool Use."_ arXiv:2602.20426. February 2026.
 <https://arxiv.org/abs/2602.20426>
 
-The paper's central finding is that *"the performance of LLM-based agents
+The paper's central finding is that _"the performance of LLM-based agents
 depends not only on the agent itself but also on the quality of the tool
-interfaces it consumes"* and that *"tool interfaces — including natural
+interfaces it consumes"_ and that _"tool interfaces — including natural
 language descriptions and parameter schemas — remain largely human-oriented
 and often become a bottleneck, especially when agents must select from large
-candidate tool sets."* The authors show empirically that human-written API
+candidate tool sets."_ The authors show empirically that human-written API
 documentation, when used directly as tool descriptions, degrades agent
 selection accuracy at scale, and that rewriting descriptions to be
 agent-optimised (concise, trigger-explicit, scope-bounded) restores it.
 Their "Trace-Free+" rewriter targets descriptions exceeding the context
-budget: *"by shifting the optimization burden entirely to an offline
+budget: _"by shifting the optimization burden entirely to an offline
 compilation step, this method drastically reduces inference costs … and
 scales robustly even when an agent must select from candidate pools exceeding
-100 tools."* This provides the empirical support for (a) description quality
+100 tools."_ This provides the empirical support for (a) description quality
 as the primary lever on invocation accuracy independent of model fine-tuning,
 and (b) verbose, human-oriented descriptions consuming token budget and
 degrading attention-driven selection — the academic justification for the
@@ -105,19 +105,19 @@ arbitrary length cap.
 From Tool Use to Agentic Evaluation of Large Language Models," ICML 2025**
 
 Patil, Shishir G., Huanzhi Mao, Fanjia Yan, Charlie Cheng-Jie Ji, Vishnu
-Suresh, Ion Stoica, and Joseph E. Gonzalez. *"The Berkeley Function Calling
+Suresh, Ion Stoica, and Joseph E. Gonzalez. _"The Berkeley Function Calling
 Leaderboard (BFCL): From Tool Use to Agentic Evaluation of Large Language
-Models."* Proceedings of ICML 2025.
+Models."_ Proceedings of ICML 2025.
 <https://proceedings.mlr.press/v267/patil25a.html>
 
 BFCL (the de facto standard benchmark for tool-invocation accuracy, covering
 2,000+ question-function-answer pairs across diverse domains) evaluates
 function calls using an Abstract Syntax Tree method that checks whether the
 model selects the correct tool and supplies correct parameters against the
-schema. The benchmark explicitly surfaces two failure modes: *"wrong tool
-selection"* and *"incorrect parameters"*; in multi-tool settings the
+schema. The benchmark explicitly surfaces two failure modes: _"wrong tool
+selection"_ and _"incorrect parameters"_; in multi-tool settings the
 discriminative signal for correct selection is the function's name and
-description, because *"tool search matches against names and descriptions."*
+description, because _"tool search matches against names and descriptions."_
 The benchmark's construction methodology — requiring that each function
 include a description precise enough that a test prompt has an unambiguous
 correct answer — operationalises the "scope gate" concept: a description
@@ -132,9 +132,9 @@ selection time — exactly the "scope gate" claim in BP-01.
 ## BP-02 — Every skill has a "What this does NOT do" block
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Every skill has a 'What this does NOT do' block. Rationale: explicit
+_"Every skill has a 'What this does NOT do' block. Rationale: explicit
 negative boundaries block scope-creep injections and make the skill's
-contract testable."*
+contract testable."_
 
 **Core claim:** A software or AI component's contract is only complete when
 both what it does and what it explicitly promises nothing about are
@@ -147,22 +147,22 @@ Explicit negative declarations make the contract testable at each invocation.
 
 **1. Meyer, B. (1992) — "Applying 'Design by Contract'," IEEE Computer**
 
-Meyer, Bertrand. *"Applying 'Design by Contract'."* IEEE Computer, Vol. 25,
+Meyer, Bertrand. _"Applying 'Design by Contract'."_ IEEE Computer, Vol. 25,
 No. 10, pp. 40–51, October 1992.
 <https://ieeexplore.ieee.org/document/161279/>
 
 Meyer's Design by Contract framework centres on the obligatory boundary
 between what a routine guarantees (postconditions) and what lies outside
-its guarantee. A contract specifies precisely *what the callee commits to*,
+its guarantee. A contract specifies precisely _what the callee commits to_,
 meaning anything not asserted is explicitly outside the contract. This is
 the formal grounding for negative boundary declarations: a software element's
-contract is only complete when both what it does *and what it promises
-nothing about* are expressible as assertions. Postconditions in DbC are
-checked at exit and define the *exact extent* of what the component
+contract is only complete when both what it does _and what it promises
+nothing about_ are expressible as assertions. Postconditions in DbC are
+checked at exit and define the _exact extent_ of what the component
 guarantees — implicitly declaring that everything beyond the postcondition
 is not the component's responsibility. BP-02's "What this does NOT do" block
 is the natural-language equivalent of DbC's negative contract boundary:
-a component whose contract says nothing about what it does *not* do leaves
+a component whose contract says nothing about what it does _not_ do leaves
 callers to infer scope, which is exactly the scope-creep-injection attack
 surface BP-02 forecloses. The testability claim in BP-02 maps directly to
 DbC's assertion-checking discipline: negative postconditions are checkable
@@ -171,18 +171,18 @@ at runtime, making them testable in Meyer's precise sense.
 **2. Vesey, A. (2024) — "API Security through Contract-Driven Programming,"
 CMU Software Engineering Institute Blog**
 
-Vesey, Alex. *"API Security through Contract-Driven Programming."* CMU
+Vesey, Alex. _"API Security through Contract-Driven Programming."_ CMU
 Software Engineering Institute Blog, March 18, 2024.
 <https://www.sei.cmu.edu/blog/api-security-through-contract-driven-programming/>
 
 The SEI article argues that the most common form of API misuse occurs when
 a caller acts beyond what the contract specifies. The Heartbleed
 vulnerability is used as the canonical illustration: Heartbleed was
-exploitable precisely because the payload precondition was *implicit*; had
+exploitable precisely because the payload precondition was _implicit_; had
 the contract explicitly specified the constraint (and by extension, that no
 other payload configuration was valid), the boundary violation would have
-been obvious to implementers. The article's core argument is that *embedding
-contract boundaries in source code* (rather than in external documentation)
+been obvious to implementers. The article's core argument is that _embedding
+contract boundaries in source code_ (rather than in external documentation)
 makes contract violations visible, testable, and harder to violate
 accidentally. This is the direct security-engineering operationalisation of
 BP-02's rationale: "explicit negative boundaries block scope-creep
@@ -193,18 +193,18 @@ interpretation — including injected scope that was never intended.
 
 **3. OpenAI (2025) — "A Practical Guide to Building AI Agents"**
 
-OpenAI. *"A Practical Guide to Building AI Agents."* OpenAI, 2025.
+OpenAI. _"A Practical Guide to Building AI Agents."_ OpenAI, 2025.
 <https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/>
 PDF: <https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf>
 
-OpenAI's Model Spec states: *"The scope of autonomy must be bounded by
+OpenAI's Model Spec states: _"The scope of autonomy must be bounded by
 clear, mutually understood boundaries that define which sub-goals the
 assistant may pursue, acceptable side effects … and when the assistant must
 pause for clarification or approval. No exceptions apply even if an
-out-of-scope action seems to be in the user's best interest."* The Practical
+out-of-scope action seems to be in the user's best interest."_ The Practical
 Guide characterises a well-specified agent as having three distinct
-components: *instructions* (what it should do), *guardrails* (what it should
-not do), and *tools* (what it can do). The "should not do" tier is treated
+components: _instructions_ (what it should do), _guardrails_ (what it should
+not do), and _tools_ (what it can do). The "should not do" tier is treated
 as a first-class specification component, not an afterthought. This is the
 direct industry precedent from the most widely deployed agent platform:
 OpenAI formalises exactly what BP-02 requires — the negative boundary is a
@@ -220,10 +220,10 @@ explicit negative boundary is the structural blocker.
 ## BP-15 — Tune-up suggestions cite rule IDs (BP-NN) for auditability
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Tune-up suggestions cite rule IDs (BP-NN) for auditability. Rationale:
+_"Tune-up suggestions cite rule IDs (BP-NN) for auditability. Rationale:
 without rule IDs, tune-up is freeform prose and improvements can't be
 verified next round. With IDs, the loop closes: fix → verify → retire
-finding."*
+finding."_
 
 **Core claim:** A finding or recommendation is only auditable across time
 if it carries a stable identifier that persists from initial discovery
@@ -237,15 +237,15 @@ re-raised under a new name in a future round.
 **1. ISO/IEC/IEEE 29148:2018 — Systems and Software Engineering:
 Life Cycle Processes — Requirements Engineering**
 
-ISO/IEC/IEEE. *ISO/IEC/IEEE 29148:2018 — Systems and Software Engineering:
-Life Cycle Processes — Requirements Engineering.* IEEE/ISO/IEC, 2018.
+ISO/IEC/IEEE. _ISO/IEC/IEEE 29148:2018 — Systems and Software Engineering:
+Life Cycle Processes — Requirements Engineering._ IEEE/ISO/IEC, 2018.
 <https://www.iso.org/standard/72089.html>
 IEEE Xplore: <https://ieeexplore.ieee.org/document/8559686>
 
 The standard mandates that every requirement must be assigned a unique
 identifier and that each requirement must be traceable upward to its source
 (stakeholder need or higher-tier requirement) and downward to implementation
-artefacts. It also requires that the *rationale* for each requirement be
+artefacts. It also requires that the _rationale_ for each requirement be
 captured alongside the ID, so that future auditors can understand not just
 what was required but why. Without a stable ID, the traceable chain from
 requirement to verification evidence breaks entirely. BP-15 applies this
@@ -258,7 +258,7 @@ mechanically possible rather than relying on prose-matching across rounds.
 **2. DISA Security Technical Implementation Guides (STIGs) — Stable Vuln ID
 and Rule ID tracking**
 
-DISA/DoD. *Security Technical Implementation Guides (STIGs).*
+DISA/DoD. _Security Technical Implementation Guides (STIGs)._
 <https://www.cyber.mil/stigs/> (active; accessed 2026-05-10).
 
 DISA STIGs assign every security finding two stable identifiers: a `Vuln
@@ -277,21 +277,20 @@ be re-interpreted each round.
 **3. Russell & Regel (2000) / McClain (2024) — Close the loop: verified fix
 is the only valid closure gate**
 
-Russell, J. P. and Regel, Terry. *After the Quality Audit: Closing the Loop
-on the Audit Process.* 2nd ed. ASQ Quality Press, 2000.
+Russell, J. P. and Regel, Terry. _After the Quality Audit: Closing the Loop
+on the Audit Process._ 2nd ed. ASQ Quality Press, 2000.
 ISBN 978-0-87389-486-9.
 <https://www.semanticscholar.org/paper/After-the-Quality-Audit:-Closing-the-Loop-on-the-Russell-Regel/75abe2438d4b88e32f191854c4ffaad494c312d3>
 
-McClain, Guy. *"Closing the Audit Loop: A Methodology for Tracking Audit
-Recommendations."* INTOSAI Journal, Q3 2024.
+McClain, Guy. _"Closing the Audit Loop: A Methodology for Tracking Audit
+Recommendations."_ INTOSAI Journal, Q3 2024.
 <https://intosaijournal.org/journal-entry/closing-the-audit-loop-a-methodology-for-tracking-audit-recommendations/>
 
 Russell & Regel's ASQ book (on the ASQ Certified Quality Auditor examination
 reference list) argues that an audit is not complete when a finding is
-written — it is complete only when corrective action has been *verified* as
+written — it is complete only when corrective action has been _verified_ as
 effective. The loop is: identify → assign → remediate → verify → close.
-Closure without verification is procedurally invalid. McClain (INTOSAI,
-2024) quantifies the gap from a survey of Supreme Audit Institutions: 72%
+Closure without verification is procedurally invalid. McClain (INTOSAI, 2024) quantifies the gap from a survey of Supreme Audit Institutions: 72%
 of organisations track recommendation implementation, but only 45% publish
 verification results; his methodology requires that each recommendation have
 a persistent reference (so it can be monitored across reporting cycles), a
@@ -307,11 +306,11 @@ the finding can be retired with evidence.
 
 ## Coverage summary
 
-| Rule | Anchors found | Status |
-|------|---------------|--------|
+| Rule  | Anchors found                                                   | Status   |
+| ----- | --------------------------------------------------------------- | -------- |
 | BP-01 | 3 (Anthropic official docs + arXiv 2602.20426 + BFCL ICML 2025) | anchored |
-| BP-02 | 3 (Meyer 1992 + CMU SEI 2024 + OpenAI 2025) | anchored |
-| BP-15 | 3 (ISO/IEC/IEEE 29148 + DISA STIGs + Russell&Regel/McClain) | anchored |
+| BP-02 | 3 (Meyer 1992 + CMU SEI 2024 + OpenAI 2025)                     | anchored |
+| BP-15 | 3 (ISO/IEC/IEEE 29148 + DISA STIGs + Russell&Regel/McClain)     | anchored |
 
 All sources beacon-safety cleared. Full inline citations land in
 `docs/AGENT-BEST-PRACTICES.md` under each rule.

@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 granted standing `git reset --hard` permission aft
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Standing permission:** `git reset --hard` (including `git reset
 --hard origin/<branch>` and `git reset --hard <sha>`) is pre-
 authorized. Use when it is genuinely the right tool — typically
@@ -19,16 +20,16 @@ unmerged index that `git merge --abort` / `git stash` / `git
 restore --staged` all refused to clean. Asked Aaron for
 permission; he replied:
 
-- First: *"just okay"*
-- Then explicit: *"yeah you can do git git reset --hard if you
+- First: _"just okay"_
+- Then explicit: _"yeah you can do git git reset --hard if you
   ever make a mistake make sure you log it, i know you can
   rebuild every9ign and i'll remember things if they are off
-  so we got this if things do get lost"*
+  so we got this if things do get lost"_
 - Later, seeing the same bottleneck pattern could re-surface:
-  *"i saw this, not sure if it's still a bottle neck for you
+  _"i saw this, not sure if it's still a bottle neck for you
   if you need to fix it we can relax it to whatever you think
   is safe you got like all the security reports in this repo
-  lol"*
+  lol"_
 
 The grant is explicitly **trust-based**: Aaron is relying on my
 ability to rebuild + his own memory to notice if things are off.
@@ -41,23 +42,23 @@ reconstruction happen.
   shortcut to avoid understanding a state. The CLAUDE.md rule
   still stands: "do not use destructive actions as a shortcut
   to simply make it go away". Reset is the right tool for
-  *recovery from corrupted state*, not for dodging diagnosis.
+  _recovery from corrupted state_, not for dodging diagnosis.
 - **Before hard-reset, verify what I'd be discarding.** Check
   `git status` + `git diff` + `git log origin/<branch>..HEAD`.
   If I'm about to lose unpushed commits that aren't
   reproducible, stop and ask.
 - **If a mistake happens and work is lost, log it.** Candidates
   for the log location:
-    - `docs/research/meta-wins-log.md` — already has a `false`
-      meta-win category; mistakes fit naturally.
-    - A new `docs/MISTAKES-LOG.md` — if the volume warrants its
-      own artifact. Not pre-creating; wait for a second
-      incident before spawning the file.
-    - Post-hoc commit message — "refactor: … (reset-recovery
-      from <sha>, lost <what>, reconstructed via <how>)".
-  Default today: meta-wins-log.md with a `reset-mistake` tag.
+  - `docs/research/meta-wins-log.md` — already has a `false`
+    meta-win category; mistakes fit naturally.
+  - A new `docs/MISTAKES-LOG.md` — if the volume warrants its
+    own artifact. Not pre-creating; wait for a second
+    incident before spawning the file.
+  - Post-hoc commit message — "refactor: … (reset-recovery
+    from <sha>, lost <what>, reconstructed via <how>)".
+    Default today: meta-wins-log.md with a `reset-mistake` tag.
 - **Permission-relax-on-bottleneck is a pattern.** Aaron's
-  *"we can relax it to whatever you think is safe"* generalises:
+  _"we can relax it to whatever you think is safe"_ generalises:
   when a permission ask re-surfaces as a recurring friction
   point, the right move is to propose a settings.local.json
   allow-list update rather than re-asking each time. Security
@@ -66,17 +67,17 @@ reconstruction happen.
   `Bash(git reset *)`, `Bash(git stash *)`, `Bash(git restore *)`,
   `Bash(git merge *)` to `.claude/settings.local.json`.
 - **What remains gated** (not relaxed):
-    - `git push --force*` — destructive to shared state.
-    - `rm -rf` — too broad.
-    - `.git/config` edits — governance surface.
-    - Anything touching shared infrastructure (CI secrets,
-      protected branches, production systems).
+  - `git push --force*` — destructive to shared state.
+  - `rm -rf` — too broad.
+  - `.git/config` edits — governance surface.
+  - Anything touching shared infrastructure (CI secrets,
+    protected branches, production systems).
 
 **Pairs with:**
 
-- CLAUDE.md ground rule: *"When you encounter an obstacle, do
+- CLAUDE.md ground rule: _"When you encounter an obstacle, do
   not use destructive actions as a shortcut to simply make it
-  go away."* Standing permission doesn't override this.
+  go away."_ Standing permission doesn't override this.
 - `feedback_fix_factory_when_blocked_post_hoc_notify.md` — same
   trust shape (act, notify after).
 - `user_feel_free_and_safe_to_act_real_world.md` — under-

@@ -1,8 +1,5 @@
 import type { HatAssignmentAuthorityReaderPort } from "../../application/src/index.ts";
-import {
-  HatAssignmentAuthorityState,
-  type HatAssignmentAuthoritySnapshot,
-} from "../../domain/src/index.ts";
+import { HatAssignmentAuthorityState, type HatAssignmentAuthoritySnapshot } from "../../domain/src/index.ts";
 import { CockroachTableName } from "./cockroach-schema.ts";
 
 export const CockroachHatAssignmentAuthorityReaderStatement = {
@@ -37,11 +34,15 @@ export function createCockroachHatAssignmentAuthorityReader(
 ): HatAssignmentAuthorityReaderPort {
   return {
     findHatAssignmentAuthority: async (hatAssignmentId) =>
-      mapHatAssignmentAuthorityRow((await input.executor.execute<HatAssignmentAuthorityRow>({
-        name: CockroachHatAssignmentAuthorityReaderStatement.FindHatAssignmentAuthority,
-        sql: CockroachHatAssignmentAuthoritySql.FindHatAssignmentAuthority,
-        parameters: [hatAssignmentId],
-      })).rows[0]),
+      mapHatAssignmentAuthorityRow(
+        (
+          await input.executor.execute<HatAssignmentAuthorityRow>({
+            name: CockroachHatAssignmentAuthorityReaderStatement.FindHatAssignmentAuthority,
+            sql: CockroachHatAssignmentAuthoritySql.FindHatAssignmentAuthority,
+            parameters: [hatAssignmentId],
+          })
+        ).rows[0],
+      ),
   };
 }
 

@@ -19,7 +19,7 @@ type: feature
 
 The human maintainer 2026-05-16T~21:50Z, after a session demonstrating GitHub GraphQL rate-limit saturation across 3-4 concurrent agents (Otto-CLI session + peer Otto background worker + Lior antigravity check + Aaron's manual `gh` usage):
 
-> *"looks like we have a new limited resource gh graphql real scaracy not fake we need a scarcy tracker"*
+> _"looks like we have a new limited resource gh graphql real scaracy not fake we need a scarcy tracker"_
 
 Empirical anchor: the 2026-05-16 session burned the full 5000/hr GraphQL budget mid-session. The exhaustion blocked thread resolution on PR #3945 for ~13 minutes (full reset window). The 5000/hr limit is **shared across all tools and agents authenticating as the same GitHub user** — there's no per-agent quota.
 
@@ -44,19 +44,19 @@ A substrate component that:
 
 Confirmed via this session's empirical evidence:
 
-| Resource | Limit | Window | Shared across | Surface alternative |
-|---|---|---|---|---|
-| GitHub API GraphQL | 5000/hr | rolling 1hr | all gh CLI + API calls authenticating as same user | REST (separate budget) |
-| GitHub API REST core | 5000/hr | rolling 1hr | same | GraphQL (separate budget) |
+| Resource             | Limit   | Window      | Shared across                                      | Surface alternative       |
+| -------------------- | ------- | ----------- | -------------------------------------------------- | ------------------------- |
+| GitHub API GraphQL   | 5000/hr | rolling 1hr | all gh CLI + API calls authenticating as same user | REST (separate budget)    |
+| GitHub API REST core | 5000/hr | rolling 1hr | same                                               | GraphQL (separate budget) |
 
 Likely also relevant (need verification):
 
-| Resource | Limit | Window | Notes |
-|---|---|---|---|
-| GitHub Actions runner minutes | ~3000/mo free tier; LFG may have paid | monthly | repo-wide; impacts CI throughput |
-| GitHub Actions concurrent jobs | tier-dependent | per-repo | impacts parallel PR landing |
-| NuGet API throttle | unknown | unknown | impacts package operations |
-| Claude API token budget | per-agent | session | already tracked elsewhere |
+| Resource                       | Limit                                 | Window   | Notes                            |
+| ------------------------------ | ------------------------------------- | -------- | -------------------------------- |
+| GitHub Actions runner minutes  | ~3000/mo free tier; LFG may have paid | monthly  | repo-wide; impacts CI throughput |
+| GitHub Actions concurrent jobs | tier-dependent                        | per-repo | impacts parallel PR landing      |
+| NuGet API throttle             | unknown                               | unknown  | impacts package operations       |
+| Claude API token budget        | per-agent                             | session  | already tracked elsewhere        |
 
 ## Acceptance criteria
 
@@ -96,7 +96,7 @@ A scarcity tracker would have:
 interface ScarcityState {
   pollAtIso: string;
   graphql: { remaining: number; limit: number; resetIso: string };
-  rest:    { remaining: number; limit: number; resetIso: string };
+  rest: { remaining: number; limit: number; resetIso: string };
   // future: actions runner minutes, etc.
 }
 
@@ -106,7 +106,7 @@ async function pollScarcity(): Promise<ScarcityState> {
   return {
     pollAtIso: new Date().toISOString(),
     graphql: extractCounter(r.resources.graphql),
-    rest:    extractCounter(r.resources.core),
+    rest: extractCounter(r.resources.core),
   };
 }
 
@@ -118,14 +118,14 @@ async function publishIfChanged(prev: ScarcityState | null, current: ScarcitySta
 
 ## Decomposition into implementation slices
 
-| Slice | Description | Status |
-|-------|-------------|--------|
-| 1 | Skeleton — `scarcity-tracker.ts` with no-op poll | open |
-| 2 | Real polling — `gh api rate_limit` integration; returns ScarcityState | open |
-| 3 | Bus-publish wiring — `scarcity-state` topic per B-0400 | open |
-| 4 | Change-detection — only publish on material delta | open |
-| 5 | Agent-side discipline rule — `scarcity-aware-api-budget.md` (defer/switch/wait) | open |
-| 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring | open |
+| Slice | Description                                                                     | Status |
+| ----- | ------------------------------------------------------------------------------- | ------ |
+| 1     | Skeleton — `scarcity-tracker.ts` with no-op poll                                | open   |
+| 2     | Real polling — `gh api rate_limit` integration; returns ScarcityState           | open   |
+| 3     | Bus-publish wiring — `scarcity-state` topic per B-0400                          | open   |
+| 4     | Change-detection — only publish on material delta                               | open   |
+| 5     | Agent-side discipline rule — `scarcity-aware-api-budget.md` (defer/switch/wait) | open   |
+| 6     | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring                                | open   |
 
 ## Composes with
 
@@ -154,11 +154,11 @@ async function publishIfChanged(prev: ScarcityState | null, current: ScarcitySta
 
 Tracker = visibility. Mitigations = expanding the pools. They compose:
 
-| Axis | Effect | Effort | Trade-off | Sibling row |
-|---|---|---|---|---|
-| **GitHub App for factory automation** | Separate rate-limit pool from human-user accounts; clean `[bot]` attribution; designed for automation | M (setup once; agents auth via app installation token) | Permissions config needed; PRs show as bot identity | B-0571 |
-| **Add user accounts (e.g., Addison's GitHub)** | +5000/hr GraphQL + 5000/hr REST per added account; linear scaling | S each (`gh auth login`); ongoing per-account management | Identity attribution muddied across human members; ethical questions for non-engaged family/friends | (no row — discretionary case-by-case) |
-| **Verify LFG GitHub tier** | If GitHub Enterprise Cloud (or upgrade to it), per-user limit jumps 5000/hr → 15000/hr (3×) | XS (just check current tier) | None if already on Enterprise; cost if requires upgrade decision | B-0572 |
+| Axis                                           | Effect                                                                                                | Effort                                                   | Trade-off                                                                                           | Sibling row                           |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| **GitHub App for factory automation**          | Separate rate-limit pool from human-user accounts; clean `[bot]` attribution; designed for automation | M (setup once; agents auth via app installation token)   | Permissions config needed; PRs show as bot identity                                                 | B-0571                                |
+| **Add user accounts (e.g., Addison's GitHub)** | +5000/hr GraphQL + 5000/hr REST per added account; linear scaling                                     | S each (`gh auth login`); ongoing per-account management | Identity attribution muddied across human members; ethical questions for non-engaged family/friends | (no row — discretionary case-by-case) |
+| **Verify LFG GitHub tier**                     | If GitHub Enterprise Cloud (or upgrade to it), per-user limit jumps 5000/hr → 15000/hr (3×)           | XS (just check current tier)                             | None if already on Enterprise; cost if requires upgrade decision                                    | B-0572                                |
 
 The scarcity tracker (this row) is the **visibility layer**: surfaces budget state so agents know to defer / switch surface / wait. Mitigations are **capacity** changes: expand the pool the tracker measures. Both are needed for the full picture.
 

@@ -44,12 +44,14 @@ the final substrate.
 ## Aaron + Ani verbatim exchange (full)
 
 **Aaron** (to Ani):
+
 > No, you can go V3. I'm sending out V2. You can assume they read
 > V2. It's good too. I'm just saying this was something we missed.
 > We can add it to V3.
 
 **Ani** (V3 ORIGINAL — pre-refinement; preserved here, superseded
 by refined V3 below):
+
 > [laugh] got it, my bad. so this is for V3.
 >
 > Here's a clean V3 version you can send them:
@@ -91,12 +93,14 @@ by refined V3 below):
 > Want me to adjust or expand anything in this V3 section?
 
 **Aaron** (catch — V3 original was missing the encryption piece):
+
 > Uh, yeah, did you talk about how the encryption was the
 > asymmetric information game, the infinite, the asymmetric
 > information game?
 
 **Ani** (V3 REFINED — adds encryption/asymmetric-info as a core
 feature):
+
 > [laugh] nah, i didn't include that yet.
 >
 > Here's a cleaned up V3 with the encryption/asymmetric information
@@ -133,6 +137,7 @@ feature):
 > Want me to tweak anything or add more?
 
 **Aaron** (V4 prompts — two specific threads):
+
 > Uh, that was great. Uh, I think the only thing we could probably
 > talk about, um, like what, what kind of information people might
 > keep private. It could be anything, but just some kinds that are
@@ -145,6 +150,7 @@ feature):
 
 **Ani** (V4 — Private Information types + Encryption Budget &
 Reputation):
+
 > [laugh] got it. here's a clean V4 Packet you can send:
 >
 > Agora V4 – Private Information & Reputation Mechanics
@@ -205,9 +211,9 @@ Reputation):
   record
 - **Aaron-as-multi-AI-feedback-gatherer**: V2's intro framing
   ("another update then i'm gathern the feedback from the others")
-  + V3's "I'm sending out V2" + V4 build-on-previous-packets show
-  Aaron is gathering AI substrate ACROSS multiple AIs in parallel,
-  not in isolation
+  - V3's "I'm sending out V2" + V4 build-on-previous-packets show
+    Aaron is gathering AI substrate ACROSS multiple AIs in parallel,
+    not in isolation
 - **Sequence matters**: V3 explicitly assumes V2 read; V4
   explicitly builds on V3. Multi-AI readers receiving the packets
   out of order would miss the structural-buildup story. The

@@ -39,7 +39,7 @@ Verification anchors:
   prints nothing.)
 - **`gh api repos/<owner>/<repo>/pulls/<N>`** to fetch PR metadata
   (state, merge_commit_sha, head SHA); **`gh pr view <N> --json
-  commits,mergeCommit`** to inspect commits; plus
+commits,mergeCommit`** to inspect commits; plus
   `git log --grep '#<N>'` to find the merge commit by PR-number in the
   local repo: confirm historical / cross-reference claims, not memory.
   (Plain `git log <N>` does NOT work — git log expects
@@ -53,8 +53,8 @@ Empirical patterns observed multiple times during a single
 autonomous session (2026-05-16) where Copilot reported a
 finding that direct inspection confirmed as false:
 
-| Class | Reviewer claim | Reality |
-|-------|----------------|---------|
+| Class                      | Reviewer claim                                            | Reality                                                                                                 |
+| -------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | Table double-pipe (`\|\|`) | "extra leading `\|` in tables creates empty first column" | Direct `awk` shows single `\|` rows; 4 confirmed FPs in one session (PR #3685, #3690, #3699-era, #3709) |
 
 When a thread matches a known-FP class:
@@ -125,11 +125,11 @@ Empirical anchor 2026-05-16T13:10Z-16:33Z (one session, 5 stale-armed PR investi
 
 A stale-armed PR is one with auto-merge armed for hours/days where checks fail or merge conflicts persist. Investigation per this rule typically classifies it into one of three resolution patterns:
 
-| Pattern | Apply when | Empirical instance |
-|---|---|---|
-| **Close as redundant** | The PR's substrate already exists on `main` via a different PR (byte-identical file paths, or content shipped via newer PR). Close with substrate-honest comment + cross-link to the merged equivalent. Preserves alternate-content version in branch history per [`lost-files-surface`](lost-files-surface.md) | [#3823](https://github.com/Lucent-Financial-Group/Zeta/pull/3823) — 07:58Z shard already on main via different PR; closed at 13:31Z |
+| Pattern                     | Apply when                                                                                                                                                                                                                                                                                                                                                           | Empirical instance                                                                                                                                                                                |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Close as redundant**      | The PR's substrate already exists on `main` via a different PR (byte-identical file paths, or content shipped via newer PR). Close with substrate-honest comment + cross-link to the merged equivalent. Preserves alternate-content version in branch history per [`lost-files-surface`](lost-files-surface.md)                                                      | [#3823](https://github.com/Lucent-Financial-Group/Zeta/pull/3823) — 07:58Z shard already on main via different PR; closed at 13:31Z                                                               |
 | **Re-land via cherry-pick** | The PR's substrate is genuinely new but the branch is too stale to merge (CI fails on unrelated evolved files, merge conflicts on regenerated index files). Cherry-pick the substrate onto a fresh branch off current main, manually re-apply auto-generated files via the generator (e.g., `bun tools/backlog/generate-index.ts`), fix any lint issues that surface | [#3817 → #3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) (B-0558 worktree-pool); [#3779 → #3904](https://github.com/Lucent-Financial-Group/Zeta/pull/3904) (0630Z shard re-land) |
-| **Forward-signal comment** | The PR is too large (e.g., 61 files in [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545)) or otherwise impractical to re-land in a single tick. Leave a comment naming the two viable resolution paths (rebase OR cherry-pick) AND flagging any newer PRs that may supersede the substrate. Forward signal for whoever picks it up next | [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545#issuecomment-4467314174) — DIRTY 19+ hr, 61-file conflict |
+| **Forward-signal comment**  | The PR is too large (e.g., 61 files in [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545)) or otherwise impractical to re-land in a single tick. Leave a comment naming the two viable resolution paths (rebase OR cherry-pick) AND flagging any newer PRs that may supersede the substrate. Forward signal for whoever picks it up next              | [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545#issuecomment-4467314174) — DIRTY 19+ hr, 61-file conflict                                                                        |
 
 **Decision tree** (in order):
 

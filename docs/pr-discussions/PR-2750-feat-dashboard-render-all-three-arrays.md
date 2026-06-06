@@ -27,6 +27,7 @@ Added tabs for Agent Array, Human Anchor Array, and External Reviewers, renderin
 Adds a tabbed navigation to the static WOW dashboard so it can render the Agent Array, Human Anchor Array, and External Reviewers as separate views, alongside documenting the Human Anchor Array and archiving several recent PR discussions.
 
 **Changes:**
+
 - Introduces nav tabs + two new tab panels (“Human Anchors”, “External Reviewers”) and renders static anchor/reviewer lists in `demo/index.html`.
 - Adds a new `docs/HUMAN-ANCHOR-ARRAY.md` document describing the Human Anchor Array and the “Three Arrays”.
 - Adds new PR discussion archive entries under `docs/pr-discussions/` and appends new catch logs in the shadow lesson log memory file.
@@ -38,23 +39,25 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 9 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md | Appends Catch 34/35 entries to the shadow lesson log. |
-| docs/pr-discussions/PR-2745-feat-b-0402-integrate-pr-preservation-script-into-lior-backg.md | Adds a new PR discussion archive entry for PR #2745. |
-| docs/pr-discussions/PR-2743-feat-b-0401-lior-s-wow-ui-glassmorphism-upgrade-for-dashboar.md | Adds a new PR discussion archive entry for PR #2743. |
-| docs/pr-discussions/PR-2742-feat-b-0414-metrics-json-generator-agent-readable-dashboard.md | Adds a new PR discussion archive entry for PR #2742. |
-| docs/pr-discussions/PR-2741-feat-backlog-b-0414-dashboard-v0-2-agent-json-dual-pm-perspe.md | Adds a new PR discussion archive entry for PR #2741. |
-| docs/HUMAN-ANCHOR-ARRAY.md | Introduces the Human Anchor Array doc + “Three Arrays” definitions. |
-| demo/index.html | Adds tabs and static rendering for Human Anchors + External Reviewers alongside existing dashboard content. |
-</details>
+| File                                                                                        | Description                                                                                                 |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md                                | Appends Catch 34/35 entries to the shadow lesson log.                                                       |
+| docs/pr-discussions/PR-2745-feat-b-0402-integrate-pr-preservation-script-into-lior-backg.md | Adds a new PR discussion archive entry for PR #2745.                                                        |
+| docs/pr-discussions/PR-2743-feat-b-0401-lior-s-wow-ui-glassmorphism-upgrade-for-dashboar.md | Adds a new PR discussion archive entry for PR #2743.                                                        |
+| docs/pr-discussions/PR-2742-feat-b-0414-metrics-json-generator-agent-readable-dashboard.md  | Adds a new PR discussion archive entry for PR #2742.                                                        |
+| docs/pr-discussions/PR-2741-feat-backlog-b-0414-dashboard-v0-2-agent-json-dual-pm-perspe.md | Adds a new PR discussion archive entry for PR #2741.                                                        |
+| docs/HUMAN-ANCHOR-ARRAY.md                                                                  | Introduces the Human Anchor Array doc + “Three Arrays” definitions.                                         |
+| demo/index.html                                                                             | Adds tabs and static rendering for Human Anchors + External Reviewers alongside existing dashboard content. |
 
+</details>
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **demo/index.html:842**
-* P0 (operational_implications): `loadDashboard()` makes 3 unauthenticated GitHub API requests per refresh (`commits`, `pulls?state=open`, `pulls?state=closed`). With the current auto-refresh behavior elsewhere in this file, this will exceed GitHub’s 60-requests/hour unauthenticated limit and cause frequent 403/rate-limit failures. Consider increasing the interval, adding an auth token, and/or implementing rate-limit-aware backoff/caching (ideally consuming a pre-generated `demo/metrics.json` instead of hitting the API directly).
+
+- P0 (operational_implications): `loadDashboard()` makes 3 unauthenticated GitHub API requests per refresh (`commits`, `pulls?state=open`, `pulls?state=closed`). With the current auto-refresh behavior elsewhere in this file, this will exceed GitHub’s 60-requests/hour unauthenticated limit and cause frequent 403/rate-limit failures. Consider increasing the interval, adding an auth token, and/or implementing rate-limit-aware backoff/caching (ideally consuming a pre-generated `demo/metrics.json` instead of hitting the API directly).
+
 ```
         async function loadDashboard() {
             try {
@@ -64,6 +67,7 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 9 c
                     apiFetch(`${API}/pulls?state=closed&sort=updated&direction=desc&per_page=50`)
                 ]);
 ```
+
 </details>
 
 ## Review threads

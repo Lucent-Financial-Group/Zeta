@@ -14,7 +14,8 @@ decomposed: true
 depends_on: []
 composes_with:
   - B-0087
-tags: [otto-2026-04-28, github-actions, branch-protection, advisory-vs-enforcement, factory-hygiene, memory-index-integrity]
+tags:
+  [otto-2026-04-28, github-actions, branch-protection, advisory-vs-enforcement, factory-hygiene, memory-index-integrity]
 type: friction-reducer
 ---
 
@@ -91,7 +92,7 @@ Two options:
 
 **B — weaken the lint's message + accept advisory mode.**
 If the lint is intentionally advisory (because some PRs
-legitimately need to skip the pairing — e.g. CURRENT-* file
+legitimately need to skip the pairing — e.g. CURRENT-\* file
 edits where MEMORY.md doesn't change semantically), then
 update the lint's error message to match: "advisory check;
 review whether MEMORY.md should be touched". Don't claim
@@ -153,13 +154,13 @@ follow-up rows for any that fail the same audit.
 ## Acceptance criteria
 
 - [ ] Maintainer picks A (promote to required) or B
-  (weaken claim).
+      (weaken claim).
 - [ ] If A: lint is added to `required_status_checks.contexts`
-  via branch protection (or ruleset).
+      via branch protection (or ruleset).
 - [ ] If B: lint's error message updated to acknowledge
-  advisory status.
+      advisory status.
 - [ ] Sibling lint audit completed (memory-reference,
-  memory-index-duplicate, backlog-index-integrity).
+      memory-index-duplicate, backlog-index-integrity).
 
 ## Composes with
 

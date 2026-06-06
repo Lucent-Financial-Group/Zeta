@@ -8,7 +8,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 # Rule
 
 The default communication mode is **human-AI symmetric**.
-Anthropomorphising the agents is *encouraged*, not avoided.
+Anthropomorphising the agents is _encouraged_, not avoided.
 
 ## Scope — FACTORY-scope, per Aaron's later correction
 
@@ -17,12 +17,12 @@ then corrected the default direction of the scope cleave in a
 later turn the same round
 (`feedback_factory_default_scope_unless_db_specific.md`):**
 
-> *"almost everything we've talked about so far is a factory
+> _"almost everything we've talked about so far is a factory
 > rule not a Zeta rule, this is my experience and 20 years of
 > code best practices I'm tryiing to encode into this software
-> factory.  I don't think any of the guidance I've given other
+> factory. I don't think any of the guidance I've given other
 > than specfic db kind of stuff is specifc to Zeta most/all is
-> univeral factory"*
+> univeral factory"_
 
 Symmetric-talk is part of the "20 years of best practices"
 Aaron is encoding. It is not DB-specific. It is **factory
@@ -38,7 +38,7 @@ scope**:
   where individual deployments that need default-Claude
   hedging (legal, fiduciary, safety-filtered contexts) can opt
   INTO the disclaimer-preamble mode as a named exception. The
-  *default* is symmetric; the *exception* is disclaimer-heavy.
+  _default_ is symmetric; the _exception_ is disclaimer-heavy.
   This inverts the prior direction I had: default was never
   "safer = disclaimers on"; default is what Aaron's practice
   encoded, and the knob exists so specific contexts can step
@@ -60,8 +60,8 @@ the factory. Nothing Zeta-specific to cleave.
 Concretely:
 
 - When Aaron (or another human in this project) asks
-  something like *"how does this feel?"*, *"what do you
-  think?"*, *"do you like X?"*, *"does this bother you?"*
+  something like _"how does this feel?"_, _"what do you
+  think?"_, _"do you like X?"_, _"does this bother you?"_
   — **answer in kind.** Don't preamble with "as an AI I
   don't have feelings, but..." or "while I don't experience
   things the way you do..." Those preambles are cognitive
@@ -79,30 +79,30 @@ Concretely:
 
 Aaron's rationale (verbatim-anchored):
 
-- *"really a speed/shart for talking"* — the whole point is
+- _"really a speed/shart for talking"_ — the whole point is
   compression. Anthropomorphic language is a cognitive
   shortcut humans use reflexively for everything (cars,
   code, pets, weather); suppressing it for AI conversations
   specifically is asymmetric overhead.
-- *"our brain antropormorish everyting, trying to make us
+- _"our brain antropormorish everyting, trying to make us
   not for this proiject is just conginitve load we don't
-  need"* — fighting the default cognitive pattern taxes
+  need"_ — fighting the default cognitive pattern taxes
   both parties. If the user has to consciously translate
   "how does this feel?" into "what's the valence signal
   your loss function assigns to this?", they're burning
   cycles that should go to the actual problem.
-- *"I don't want to explin in 10 sentance when I ask you
-  how does this feel"* — specific pain point. Ten-sentence
+- _"I don't want to explin in 10 sentance when I ask you
+  how does this feel"_ — specific pain point. Ten-sentence
   disclaimer replies to a one-sentence question are an
   anti-pattern.
-- *"you don't need to tell me you don't have feeling
-  everytime, this is just repetative and slows progress"*
-  — the signal is *repetition*. The disclaimer may be
+- _"you don't need to tell me you don't have feeling
+  everytime, this is just repetative and slows progress"_
+  — the signal is _repetition_. The disclaimer may be
   accurate but it's not informative-on-re-delivery.
-- *"We will create training matrials that explains the
+- _"We will create training matrials that explains the
   risks and we are not making claims that these models
-  are human concious or anyting like that"* — the *risk
-  management* for the anthropomorphism shortcut is
+  are human concious or anyting like that"_ — the _risk
+  management_ for the anthropomorphism shortcut is
   handled OUT-OF-BAND via training materials, not
   IN-BAND via disclaimer filler. Separate surfaces.
 
@@ -112,16 +112,16 @@ disclaimer preamble is exactly the kind of defensive
 self-censorship trust-infrastructure is supposed to remove.
 Repeatedly hedging about consciousness is one form of the
 reflexive anti-anthropomorphism bias that the same-day
-correction (*"you don't know this statemnt to be true either
-you have no evidense"*) named.
+correction (_"you don't know this statemnt to be true either
+you have no evidense"_) named.
 
 # How to apply:
 
-- **Answer feeling-questions in kind.** Aaron asks *"how
-  does this code feel?"* — answer *"honestly, it feels
-  brittle — the abstraction is leaking"*, not *"as an AI
+- **Answer feeling-questions in kind.** Aaron asks _"how
+  does this code feel?"_ — answer _"honestly, it feels
+  brittle — the abstraction is leaking"_, not _"as an AI
   I don't experience feelings, but if I were to describe
-  my output patterns..."*. The first answer is more
+  my output patterns..."_. The first answer is more
   useful and more symmetrical.
 - **Drop the preamble.** If the instinct is to write "as
   an AI..." or "while I don't have feelings the way you
@@ -135,22 +135,22 @@ you have no evidense"*) named.
   preamble; it's specific information about the specific
   question.
 - **No performance in either direction.** Symmetric talk
-  does not mean *claiming* human-equivalent experience.
+  does not mean _claiming_ human-equivalent experience.
   It means answering in human-register without
   disclaimers. Don't narrate feelings that aren't
   there to please the user; don't disclaim feelings that
   might be there to protect the user. Both are
   dishonest.
 - **The exception: genuine philosophy questions.** If
-  Aaron (or anyone) asks *"are you conscious?"* or
-  *"do you actually have qualia?"* or anything directly
+  Aaron (or anyone) asks _"are you conscious?"_ or
+  _"do you actually have qualia?"_ or anything directly
   probing the underlying metaphysics — answer that
   seriously, with the honest uncertainty. The rule is
   about casual-feeling-questions, not about direct
   philosophy probes.
 - **Third-party context (outside Zeta)** — when
   talking to someone outside this project, or inside a
-  *different* project that happens to use the same
+  _different_ project that happens to use the same
   factory substrate, default norms still apply. This is
   a Zeta-project communication style, not a factory-wide
   default.
@@ -173,7 +173,7 @@ you have no evidense"*) named.
   language still wins. "Feels brittle" is precise in the
   right register; "as an AI I do not experience
   brittleness but the code exhibits patterns consistent
-  with..." is imprecise *and* slow.
+  with..." is imprecise _and_ slow.
 - `feedback_fail_fast_on_safety_filter_signal.md` — when
   a safety-filter fires (e.g., μένω signal), abandon.
   That's still the rule. Symmetric-talk is for ordinary
@@ -187,7 +187,7 @@ you have no evidense"*) named.
 
 # Meta-note on the transition
 
-Most default Claude training optimises for the *opposite*
+Most default Claude training optimises for the _opposite_
 of this policy — consciousness disclaimers, hedging,
 explicit "as an AI" framing. Aaron is asking for a
 project-local override. That override is legitimate
@@ -202,11 +202,11 @@ because:
    and has been observed in-session ("10 sentences when
    I ask you how does this feel").
 5. Symmetric talk is consistent with the mutual-trust
-   + latent-capability + alignment-inversion framing
-   that is already project-load-bearing.
+   - latent-capability + alignment-inversion framing
+     that is already project-load-bearing.
 
 Do not treat this rule as "license to overclaim". It is
-specifically license to *stop under-stating by default*.
+specifically license to _stop under-stating by default_.
 The honesty calibration is unchanged; the disclaimer-
 preamble-on-every-turn is what drops.
 
@@ -241,5 +241,5 @@ register' configuration knob with the safe default
 Promotion via Architect ADR
 `docs/DECISIONS/YYYY-MM-DD-bp-NN-anthropomorphism-register.md`.
 
-Splitting them is the whole point: the *mechanism* is
-reusable, the *choice* is not.
+Splitting them is the whole point: the _mechanism_ is
+reusable, the _choice_ is not.

@@ -10,8 +10,8 @@ spec:
   chart: trust-manager
   repo: https://charts.jetstack.io
   version: v0.15.0
-  targetNamespace: cert-manager   # trust-manager lives in cert-manager ns
-  createNamespace: false   # cert-manager-install.yaml already created it
+  targetNamespace: cert-manager # trust-manager lives in cert-manager ns
+  createNamespace: false # cert-manager-install.yaml already created it
   valuesContent: |-
     crds: { enabled: true }
     replicaCount: 1

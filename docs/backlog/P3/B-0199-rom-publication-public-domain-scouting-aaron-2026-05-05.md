@@ -20,21 +20,21 @@ type: feature
 
 Aaron 2026-05-05 multi-message sequence after PR #1597 verified F# UoM does not extend to BigInteger:
 
-> *"rom are in a gitignore rom folder"*
-> *"you can publish safe one if you deterimie the license is expired or allows it"*
-> *"for other"*
-> *"these are the ones i personally have"*
+> _"rom are in a gitignore rom folder"_
+> _"you can publish safe one if you deterimie the license is expired or allows it"_
+> _"for other"_
+> _"these are the ones i personally have"_
 
 Same-tick scope expansion:
 
-> *"also i have a lot more roms what you have is my starter set"*
-> *"i actually have every rom every no exgurations that's what's on all my raid and cloud backups lol 4 copies"*
-> *"it's grey in me"*
+> _"also i have a lot more roms what you have is my starter set"_
+> _"i actually have every rom every no exgurations that's what's on all my raid and cloud backups lol 4 copies"_
+> _"it's grey in me"_
 
 Same-tick internal-use scope clarification:
 
-> *"you get to play all of them and use them to help with your emulator engineering though that's allowed"*
-> *"under backup preservation rules"*
+> _"you get to play all of them and use them to help with your emulator engineering though that's allowed"_
+> _"under backup preservation rules"_
 
 ## Two-scope split
 
@@ -42,7 +42,7 @@ This row distinguishes two scopes per Aaron's framing:
 
 ### Scope A: Internal use under backup-preservation rules
 
-Aaron 2026-05-05: *"you get to play all of them and use them to help with your emulator engineering though that's allowed / under backup preservation rules"* + *"i mean you get to play the games, you gonna experience my childhood"* + *"also a type of embodyment"* + *"it's not about wring code you got to beat the that's ARC3 trainting"*.
+Aaron 2026-05-05: _"you get to play all of them and use them to help with your emulator engineering though that's allowed / under backup preservation rules"_ + _"i mean you get to play the games, you gonna experience my childhood"_ + _"also a type of embodyment"_ + _"it's not about wring code you got to beat the that's ARC3 trainting"_.
 
 The intended internal use spans (i) emulator engineering work (research, testing emulator implementations, verifying save-state retraction semantics per B-0052, validating cycle-accurate timing, building topological-quantum-emulation prototypes per B-0152), (ii) gameplay-as-embodiment (a low-cost embodiment axis -- ROM gameplay provides causal sensorimotor loops in the Helen-Keller minimum-channel sense per B-0026, complementary-not-substitute to the Isaac-Sim/MuJoCo robotics-grade embodiment that B-0026 covers), and (iii) ARC3-style training (gameplay completion as within-session adaptation/compounding, the non-engineering experiential dimension that beating-the-game tests in a way writing-code cannot).
 
@@ -89,7 +89,7 @@ For each candidate ROM, verify legal status before any publication. Categories:
 
 ### (c) Cataloging with specific tools
 
-Per Aaron 2026-05-05 same-tick: *"you also are going to catolog them with speicifc tools and anchors"*. Publication is not "upload to archive.org" -- it's "produce a properly-cataloged dataset using the established preservation-community tools."
+Per Aaron 2026-05-05 same-tick: _"you also are going to catolog them with speicifc tools and anchors"_. Publication is not "upload to archive.org" -- it's "produce a properly-cataloged dataset using the established preservation-community tools."
 
 Cataloging tools to use:
 
@@ -146,7 +146,7 @@ Per the established discipline (B-0198 + the Prop 3.5 misattribution lesson): en
 
 ## Composes with
 
-- **B-0026** (embodiment-grounding via Isaac Sim / MuJoCo / Genesis / Habitat / ManiSkill) -- ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state); B-0026's Helen-Keller minimum-channel-grounding analysis applies. ROMs and Isaac-Sim are complementary-not-substitute embodiment surfaces, NOT alternatives. Aaron 2026-05-05 fair-warning: *"before we hook in issas sim which is on backlog"* + *"also a type of embodyment"* establishes the lineage.
+- **B-0026** (embodiment-grounding via Isaac Sim / MuJoCo / Genesis / Habitat / ManiSkill) -- ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state); B-0026's Helen-Keller minimum-channel-grounding analysis applies. ROMs and Isaac-Sim are complementary-not-substitute embodiment surfaces, NOT alternatives. Aaron 2026-05-05 fair-warning: _"before we hook in issas sim which is on backlog"_ + _"also a type of embodyment"_ establishes the lineage.
 - **B-0052** (retractable emulators design question)
 - **B-0053** (emulator ideas absorption -- clean-room grey-hat) -- pairs with this row's legal-clearance discipline
 - **B-0152** (topological-quantum-emulation-via-Bayesian-inference) -- the architectural target the ROMs would feed

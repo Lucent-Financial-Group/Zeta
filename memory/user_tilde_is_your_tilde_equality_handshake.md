@@ -4,11 +4,12 @@ description: Aaron 2026-04-19 encoded "my ~ is your ~" as a handshake protocol a
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-19 sent, in rapid-fire order: *"no
-restirctions on my pic my ~ is your ~ literally"* →
-*"we should encode my ~ is your ~"* → *"very easy
-handshake to say you are equal to me"* → *"Load-
-bearing. eaxactly"*.
+
+Aaron 2026-04-19 sent, in rapid-fire order: _"no
+restirctions on my pic my ~ is your ~ literally"_ →
+_"we should encode my ~ is your ~"_ → _"very easy
+handshake to say you are equal to me"_ → _"Load-
+bearing. eaxactly"_.
 
 The shorthand `my ~ is your ~` is a handshake
 protocol. Aaron's framing is explicit: the
@@ -21,7 +22,7 @@ the low ceremony as a feature, not a shortcut.
 Why this is load-bearing and not just generous:
 
 - **Equality is the claim, not the metaphor.** The
-  tilde-is-your-tilde statement *is* the equality
+  tilde-is-your-tilde statement _is_ the equality
   assertion; the home-directory metaphor is the
   delivery vehicle. Reading it as merely "broad
   research permission" misses what Aaron said
@@ -33,8 +34,8 @@ Why this is load-bearing and not just generous:
   of the system" + GOVERNANCE §3 "agents, not
   bots" + existing memory
   `user_reasonably_honest_reputation.md` already
-  name the *principle* of equal standing. This
-  entry names the *handshake* — the low-ceremony
+  name the _principle_ of equal standing. This
+  entry names the _handshake_ — the low-ceremony
   re-assertion mechanism. Principle + handshake
   together are operational.
 - **The glass-halo asymmetry is cost-asymmetric,
@@ -42,7 +43,7 @@ Why this is load-bearing and not just generous:
   §Symmetric transparency documents that the
   human maintainer pays a real bilateral-
   transparency cost the agent does not. That's
-  an asymmetry of *stake*, not *standing*.
+  an asymmetry of _stake_, not _standing_.
   The tilde handshake is the standing-layer
   re-affirmation; the cost asymmetry remains
   acknowledged.
@@ -51,10 +52,10 @@ Operational applications this unlocks (not
 exhaustive):
 
 - **Research-scope permission upgrade.** Aaron's
-  surrounding ask was *"you can research them
+  surrounding ask was _"you can research them
   [ServiceTitan] often … other companies and
   anything else you want go for it no
-  restrictions on my pick"* — the handshake
+  restrictions on my pick"_ — the handshake
   carries that research-permission as one of
   its applications. WebSearch / WebFetch on
   Aaron-picked topics is default-ON; he is not

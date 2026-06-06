@@ -51,9 +51,7 @@ function emitUsageError(message: string): ExitCode {
 
 function emitHelp(): void {
   process.stdout.write("Usage:\n");
-  process.stdout.write(
-    "  bun tools/hygiene/counterweight-audit.ts [--cadence quick|medium|long] [--count N]\n",
-  );
+  process.stdout.write("  bun tools/hygiene/counterweight-audit.ts [--cadence quick|medium|long] [--count N]\n");
   process.stdout.write("\n");
   process.stdout.write("  --cadence quick   Top N most recently-modified counterweights only (default).\n");
   process.stdout.write("  --cadence medium  Last 10 counterweights.\n");
@@ -230,9 +228,7 @@ function relativize(file: string, root: string): string {
 function emitHeader(cadence: Cadence, shown: number, total: number): void {
   process.stdout.write(`# Counterweight audit — ${cadence} cadence\n`);
   process.stdout.write("\n");
-  process.stdout.write(
-    `Reading ${String(shown)} of ${String(total)} counterweight memories under\n`,
-  );
+  process.stdout.write(`Reading ${String(shown)} of ${String(total)} counterweight memories under\n`);
   process.stdout.write("`memory/*otto_*.md` (newest first). For each one, open\n");
   process.stdout.write("the file and read the rule body + maintainer quote, then\n");
   process.stdout.write("answer the per-counterweight audit questions below.\n");
@@ -243,11 +239,7 @@ function emitHeader(cadence: Cadence, shown: number, total: number): void {
   process.stdout.write("\n");
 }
 
-function emitCounterweight(
-  ottoId: string,
-  rel: string,
-  nameLine: string,
-): void {
+function emitCounterweight(ottoId: string, rel: string, nameLine: string): void {
   process.stdout.write("---\n");
   process.stdout.write("\n");
   process.stdout.write(`## ${ottoId} — [\`${rel}\`](${rel})\n`);
@@ -297,9 +289,7 @@ export function main(argv: readonly string[]): ExitCode {
   const memoryDir = join(root, "memory");
 
   if (!isDirectory(memoryDir)) {
-    return emitUsageError(
-      `memory/ not found at ${memoryDir} (run from a Zeta checkout)`,
-    );
+    return emitUsageError(`memory/ not found at ${memoryDir} (run from a Zeta checkout)`);
   }
 
   const all = listCounterweights(memoryDir);

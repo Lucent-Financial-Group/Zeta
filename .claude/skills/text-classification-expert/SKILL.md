@@ -30,16 +30,16 @@ ranked subset (hierarchical).
 
 ## Model lineage
 
-| Era | Technique | Speed | Quality |
-|---|---|---|---|
-| **Classical** | TF-IDF + LR / SVM / NB | ms | 60-80 F1 on easy |
-| **fastText** | bag-of-ngrams + linear | ms | 70-85 F1 |
-| **CNN-text** | Kim 2014 | ms | 70-85 F1 |
-| **LSTM/BiLSTM** | RNN + attention | 10s of ms | 75-88 F1 |
-| **BERT-family** | Transformer encoder + classification head | 20-200 ms | 85-95 F1 |
-| **Domain BERT** | BioBERT / FinBERT / LegalBERT | same | +2-5 F1 in-domain |
-| **LLM-as-classifier** | GPT-4 / Claude / Llama prompted | 100ms-1s | 90-98 F1 few-shot |
-| **Embedding + classifier** | ada-002 / e5 / bge + LR | ms + embed cost | 85-92 F1 |
+| Era                        | Technique                                 | Speed           | Quality           |
+| -------------------------- | ----------------------------------------- | --------------- | ----------------- |
+| **Classical**              | TF-IDF + LR / SVM / NB                    | ms              | 60-80 F1 on easy  |
+| **fastText**               | bag-of-ngrams + linear                    | ms              | 70-85 F1          |
+| **CNN-text**               | Kim 2014                                  | ms              | 70-85 F1          |
+| **LSTM/BiLSTM**            | RNN + attention                           | 10s of ms       | 75-88 F1          |
+| **BERT-family**            | Transformer encoder + classification head | 20-200 ms       | 85-95 F1          |
+| **Domain BERT**            | BioBERT / FinBERT / LegalBERT             | same            | +2-5 F1 in-domain |
+| **LLM-as-classifier**      | GPT-4 / Claude / Llama prompted           | 100ms-1s        | 90-98 F1 few-shot |
+| **Embedding + classifier** | ada-002 / e5 / bge + LR                   | ms + embed cost | 85-92 F1          |
 
 **Rule.** Don't skip classical. A well-tuned TF-IDF + LR on a
 balanced dataset often matches BERT at 100x throughput. BERT
@@ -48,7 +48,7 @@ requires semantic nuance.
 
 ## The BERT-in-the-index pattern
 
-Running a custom BERT-family classifier *inside* a search
+Running a custom BERT-family classifier _inside_ a search
 index (Solr / ES / Lucene) to drive ranking, routing, or
 facet assignment is production-grade in 2026. Common shapes:
 
@@ -90,18 +90,18 @@ requires GPU or quantisation.
 **Accuracy lies on imbalance.** If 95% of labels are "A",
 predicting "A" always scores 95% accuracy.
 
-| Metric | Use |
-|---|---|
-| **Precision** | How many of predicted-positive are real? |
-| **Recall** | How many of real-positive did we catch? |
-| **F1** | Harmonic mean; single scalar |
-| **Macro-F1** | Average F1 across classes (equal weight) |
-| **Micro-F1** | Sum TP/FP/FN across classes, then F1 |
-| **Weighted F1** | Macro weighted by class support |
-| **MCC** | Matthews correlation; symmetric, robust to imbalance |
-| **AUC-ROC** | Threshold-independent; misleading on rare-positive |
-| **AUC-PR** | Precision-recall area; right for rare-positive |
-| **ECE** | Calibration error; lower = predicted probs trustworthy |
+| Metric          | Use                                                    |
+| --------------- | ------------------------------------------------------ |
+| **Precision**   | How many of predicted-positive are real?               |
+| **Recall**      | How many of real-positive did we catch?                |
+| **F1**          | Harmonic mean; single scalar                           |
+| **Macro-F1**    | Average F1 across classes (equal weight)               |
+| **Micro-F1**    | Sum TP/FP/FN across classes, then F1                   |
+| **Weighted F1** | Macro weighted by class support                        |
+| **MCC**         | Matthews correlation; symmetric, robust to imbalance   |
+| **AUC-ROC**     | Threshold-independent; misleading on rare-positive     |
+| **AUC-PR**      | Precision-recall area; right for rare-positive         |
+| **ECE**         | Calibration error; lower = predicted probs trustworthy |
 
 **Rule.** Report macro-F1 and per-class metrics, not just
 accuracy. On rare-positive problems, AUC-PR > AUC-ROC.
@@ -247,17 +247,17 @@ aggregates update incrementally.
 
 ## Reference patterns
 
-- Devlin et al. — BERT: *Pre-training of Deep Bidirectional
-  Transformers* (NAACL 2019).
+- Devlin et al. — BERT: _Pre-training of Deep Bidirectional
+  Transformers_ (NAACL 2019).
 - Liu et al. — RoBERTa.
 - He et al. — DeBERTa.
-- Gururangan et al. — *Don't Stop Pretraining: Adapt
-  Language Models to Domains and Tasks* (ACL 2020).
-- Kim — *Convolutional Neural Networks for Sentence
-  Classification* (EMNLP 2014).
+- Gururangan et al. — _Don't Stop Pretraining: Adapt
+  Language Models to Domains and Tasks_ (ACL 2020).
+- Kim — _Convolutional Neural Networks for Sentence
+  Classification_ (EMNLP 2014).
 - Joulin et al. — fastText.
-- Jain & Wallace — *Attention is not Explanation*.
-- Guo et al. — *On Calibration of Modern Neural Networks*.
+- Jain & Wallace — _Attention is not Explanation_.
+- Guo et al. — _On Calibration of Modern Neural Networks_.
 - HuggingFace Transformers documentation.
 - `.claude/skills/ml-engineering-expert/SKILL.md`.
 - `.claude/skills/neural-retrieval-expert/SKILL.md`.

@@ -121,6 +121,7 @@ main();
 ## Re-arm on IDE open
 
 Cursor workspace settings or `.cursor/settings.json` can run a startup command:
+
 ```json
 {
   "terminal.integrated.shellIntegration.enabled": true,

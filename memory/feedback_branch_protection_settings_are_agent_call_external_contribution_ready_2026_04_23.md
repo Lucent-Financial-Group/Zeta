@@ -185,6 +185,7 @@ Four concerns must compose:
    all ignore that most work is agent-originated.
 
 ## First concrete application — HB-004 revised twice then
+
 closed on empirical finding
 
 The sharpening above inverted my initial read (from
@@ -197,7 +198,7 @@ showed a **third correction**:
 - `submit-nuget` is **NOT in required checks** at all.
 - Required set: `build-and-test (ubuntu-22.04)`,
   `lint (semgrep)`, `lint (shellcheck)`, `lint
-  (actionlint)`, `lint (markdownlint)`.
+(actionlint)`, `lint (markdownlint)`.
 - PR #170 verification: all required checks pass;
   `mergeStateStatus: BLOCKED` with `req_failing: []`.
 - Real blocker: `required_status_checks.strict: true`
@@ -279,7 +280,7 @@ components:
    standard upstream-downstream flow; external PRs go to
    AceHack first (risk-absorbed), clean versions propagate
    to LFG. This is Aaron's prior posture per the multi-project
-   + LFG-soulfile framing.
+   - LFG-soulfile framing.
 5. **Auto-merge conditions** — PRs with all required checks
    passing + reviewer approval auto-squash-merge without
    Aaron intervention. Break-glass path for Aaron only on

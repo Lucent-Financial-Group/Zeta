@@ -24,8 +24,8 @@ domain.
 
 Aaron 2026-05-01:
 
-> *"but the they do need small cardinailty , we need domain
-> expers and teacher too"*
+> _"but the they do need small cardinailty , we need domain
+> expers and teacher too"_
 
 The B-0147 / B-0148 / B-0149 research lines (timeseries-DB
 candidate landscape, MDX-as-meta-DSL evaluation, Prometheus MCP
@@ -34,7 +34,7 @@ The factory's persona roster has experts for many areas
 (architect, security-researcher, performance-engineer, etc.)
 but no dedicated timeseries-DB / observability domain expert.
 
-Aaron's *"and teacher too"* — the persona must wear both hats:
+Aaron's _"and teacher too"_ — the persona must wear both hats:
 **expert** (does the work) AND **teacher** (explains the work
 to the rest of the factory + future-Otto + new contributors).
 This composes with the broader factory pattern of expert+teacher
@@ -60,7 +60,7 @@ skills (per task #323 + task #351).
 
 4. **Cardinality-vs-performance tradeoff expertise** — the
    structural reason Prometheus chose small-cardinality (per
-   Aaron's *"they do need small cardinailty"*); the alternative
+   Aaron's _"they do need small cardinailty"_); the alternative
    designs that pay differently; when each design point fits.
 
 5. **PromQL / MDX / query-language shape expertise** —
@@ -84,8 +84,8 @@ The teacher capability produces:
 - **Glossary contributions** — new domain terms get
   GLOSSARY entries with explanation, references, and
   composition notes
-- **Onboarding paths** — *"if you're new to observability,
-  start here"* sequences
+- **Onboarding paths** — _"if you're new to observability,
+  start here"_ sequences
 
 ## Acceptance criteria
 
@@ -96,8 +96,8 @@ The teacher capability produces:
    verification-expert).
 
 2. **Persona name** — picked via the standard naming-expert
-   review process. Until then, role-ref *"observability domain
-   expert"*.
+   review process. Until then, role-ref _"observability domain
+   expert"_.
 
 3. **Skill file** — `.claude/skills/observability-expert/SKILL.md`
    following the standard skill template. Covers domain
@@ -149,6 +149,6 @@ domain-expertise + teaching contributions are open-ended.
   operationalizes (B-0149 Prometheus + B-0147 long-term
   research + B-0148 meta-DSL), the absence of a dedicated
   domain expert + teacher creates compounding gaps in
-  *"who explains this to the next contributor?"* and
-  *"who tracks the domain's evolution?"*
+  _"who explains this to the next contributor?"_ and
+  _"who tracks the domain's evolution?"_
 - **P2** lands when persona-roster bandwidth permits.

@@ -36,6 +36,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new documentation surface describing hat-bound work schedules (“work rhythm”) and deterministic MCP-driven prompt flows, then threads those concepts through existing runtime, UI/observability, knowledge-graph, and implementation planning docs so the Organization layer treats time-blocks and flow execution as first-class governed artifacts.
 
 **Changes:**
+
 - Introduces `AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md` defining schedule blocks, review/reflection/free-time expectations, and prompt-flow lifecycle/registry concepts.
 - Extends multiple architecture/plan docs to include schedule blocks + prompt flows in signals, UI views, runtime context, services, schema, and readiness checks.
 - Updates tool inventory and orchestration runtime notes to account for schedule/prompt-flow operations.
@@ -47,20 +48,21 @@ Copilot reviewed 12 out of 12 changed files in this pull request and generated 3
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| agentic-organization/docs/WORK_AND_RELEASE_MANAGEMENT_OS.md | Adds Work Schedule + Prompt Flow as core objects and introduces related signal families and governance bullets. |
-| agentic-organization/docs/UI_AND_OBSERVABILITY_CONCEPTS.md | Adds UI views for work rhythm and prompt-flow registry; extends graph node list. |
-| agentic-organization/docs/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md | Extends actor-backed runtime context to include schedule block + prompt-flow run/phase identifiers. |
-| agentic-organization/docs/README.md | Links the new work-rhythm/prompt-flow doc from the docs index. |
-| agentic-organization/docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md | Adds a new section describing work rhythm + prompt-flow concepts in the runtime architecture narrative. |
-| agentic-organization/docs/ORGANIZATION_LAYER_BUILD_PLAN.md | Adds services, workspace elements, and schema entities for schedules and prompt flows. |
-| agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md | Extends readiness requirements and preflight validations for schedules + prompt flows. |
-| agentic-organization/docs/IMPLEMENTATION_CONCEPTS.md | Adds entities/services and state-machine sketches for schedule blocks and prompt-flow runs; expands capability request requirements. |
-| agentic-organization/docs/DEPARTMENT_HAT_TOOL_INVENTORY.md | Adds tool bundles for Work Rhythm + Prompt Flow; expands Memory tool bundle. |
-| agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md | Threads schedule block / prompt-flow linkage into scheduled job semantics. |
-| agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md | New document defining the schedule model, prompt-flow phases/gates, and registry + reflection/free-time guardrails. |
-| agentic-organization/docs/AGENT_NATIVE_KNOWLEDGE_GRAPH.md | Extends node/edge kinds and suggested tables for schedule blocks and prompt-flow artifacts/runs. |
+| File                                                            | Description                                                                                                                          |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| agentic-organization/docs/WORK_AND_RELEASE_MANAGEMENT_OS.md     | Adds Work Schedule + Prompt Flow as core objects and introduces related signal families and governance bullets.                      |
+| agentic-organization/docs/UI_AND_OBSERVABILITY_CONCEPTS.md      | Adds UI views for work rhythm and prompt-flow registry; extends graph node list.                                                     |
+| agentic-organization/docs/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md  | Extends actor-backed runtime context to include schedule block + prompt-flow run/phase identifiers.                                  |
+| agentic-organization/docs/README.md                             | Links the new work-rhythm/prompt-flow doc from the docs index.                                                                       |
+| agentic-organization/docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md  | Adds a new section describing work rhythm + prompt-flow concepts in the runtime architecture narrative.                              |
+| agentic-organization/docs/ORGANIZATION_LAYER_BUILD_PLAN.md      | Adds services, workspace elements, and schema entities for schedules and prompt flows.                                               |
+| agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md | Extends readiness requirements and preflight validations for schedules + prompt flows.                                               |
+| agentic-organization/docs/IMPLEMENTATION_CONCEPTS.md            | Adds entities/services and state-machine sketches for schedule blocks and prompt-flow runs; expands capability request requirements. |
+| agentic-organization/docs/DEPARTMENT_HAT_TOOL_INVENTORY.md      | Adds tool bundles for Work Rhythm + Prompt Flow; expands Memory tool bundle.                                                         |
+| agentic-organization/docs/ALWAYS_ON_ORCHESTRATION_RUNTIME.md    | Threads schedule block / prompt-flow linkage into scheduled job semantics.                                                           |
+| agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md | New document defining the schedule model, prompt-flow phases/gates, and registry + reflection/free-time guardrails.                  |
+| agentic-organization/docs/AGENT_NATIVE_KNOWLEDGE_GRAPH.md       | Extends node/edge kinds and suggested tables for schedule blocks and prompt-flow artifacts/runs.                                     |
+
 </details>
 
 ### COMMENTED — @maximdolphin (2026-05-25T19:05:08Z)

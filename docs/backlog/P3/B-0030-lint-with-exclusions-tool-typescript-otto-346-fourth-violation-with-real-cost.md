@@ -20,7 +20,7 @@ type: friction-reducer
 
 Aaron 2026-04-26 caught the pattern AND named the cost:
 
-> *"this is like the python smell but with python and this one had a real cost it forgot to ignore upstram so it took like a minute to run instead of a few seconds, if it was cononalized in code like in ../scratch it would never forget to exclude directoris like our references (not upstream that's proabalby a bad name i randomly chose, we should rectify to avoid wars/confusion becasue im using upstream incorrectly)"*
+> _"this is like the python smell but with python and this one had a real cost it forgot to ignore upstram so it took like a minute to run instead of a few seconds, if it was cononalized in code like in ../scratch it would never forget to exclude directoris like our references (not upstream that's proabalby a bad name i randomly chose, we should rectify to avoid wars/confusion becasue im using upstream incorrectly)"_
 
 This is **Otto-346 violation #4** this session:
 
@@ -60,13 +60,13 @@ The cumulative `tools/hygiene/` post-install batch awaiting TS migration:
 - B-0027 (markdown-table-cell-count fix tool — owed-build, TS target)
 - B-0028 (gh-pr-state-summary — owed-build, TS target)
 - B-0030 (this row — lint-with-exclusions — owed-build, TS target)
-- + eventual rewrites of #541, #542
+- - eventual rewrites of #541, #542
 
 ## Why TypeScript
 
 Per Aaron's prior priority bump on B-0015 (P3 → P2):
 
-> *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol"*
+> _"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol"_
 
 POST-install scripts target TypeScript via Bun. This is post-install (developer + CI machines have Bun).
 
@@ -90,14 +90,14 @@ POST-install scripts target TypeScript via Bun. This is post-install (developer 
 
 **Otto-346 violation #4 this session — the cumulative count IS the signal**:
 
-| # | Pattern | Outcome |
-|---|---|---|
-| 1 | Inline Python sort | PR #541 (Python interim) |
-| 2 | Inline Python markdown-fix | PR #542 (Python interim) |
-| 3 | Inline Python gh-JSON-parse | B-0028 (TS owed) |
-| 4 | **Bash markdownlint+grep** | **B-0030 (TS owed; this row)** |
+| #   | Pattern                     | Outcome                        |
+| --- | --------------------------- | ------------------------------ |
+| 1   | Inline Python sort          | PR #541 (Python interim)       |
+| 2   | Inline Python markdown-fix  | PR #542 (Python interim)       |
+| 3   | Inline Python gh-JSON-parse | B-0028 (TS owed)               |
+| 4   | **Bash markdownlint+grep**  | **B-0030 (TS owed; this row)** |
 
-Four instances in one session is enough signal to *actually start the first sibling-migration*, not just queue more. The discipline is collapsing under repeated catches; the structural answer is the TS-tool that ships first and unblocks the rest.
+Four instances in one session is enough signal to _actually start the first sibling-migration_, not just queue more. The discipline is collapsing under repeated catches; the structural answer is the TS-tool that ships first and unblocks the rest.
 
 ## What this DOES NOT do
 

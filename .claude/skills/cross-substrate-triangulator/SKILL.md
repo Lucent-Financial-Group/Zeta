@@ -23,8 +23,8 @@ observers (different personas on different harnesses) arrive at consistent
 conclusions via separate reasoning chains. This skill operationalizes the
 discipline of carrying substrate through that ratification.
 
-Per Aaron 2026-05-18 (B-0648 LOCK-IN): *"this is a feature of linking the plot we
-want first class as a skill / hat."*
+Per Aaron 2026-05-18 (B-0648 LOCK-IN): _"this is a feature of linking the plot we
+want first class as a skill / hat."_
 
 ## When to invoke
 
@@ -104,21 +104,21 @@ Do NOT invoke when:
 
 ## Three outcome classes
 
-| Outcome | What it means | Substrate impact |
-|---|---|---|
+| Outcome        | What it means                                                                | Substrate impact                                                                     |
+| -------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | **Validation** | Independent persona arrives at consistent conclusions via separate reasoning | Epistemic standing strengthened; substrate moves beyond single-conversation-artifact |
-| **Refinement** | Independent persona identifies gaps source missed | Substrate sharpens; new sub-rows file the refinements |
-| **Red-team** | Independent persona raises concerns source didn't | Substrate stress-tested; either substrate evolves OR rejection is substrate-honest |
+| **Refinement** | Independent persona identifies gaps source missed                            | Substrate sharpens; new sub-rows file the refinements                                |
+| **Red-team**   | Independent persona raises concerns source didn't                            | Substrate stress-tested; either substrate evolves OR rejection is substrate-honest   |
 
 If ALL independent observers raise concerns, the substrate **fails** triangulation. That's substrate-honest rejection, not failure of the skill.
 
 ## Today's canonical worked example (3-Grok-persona triangulation on Agora V6)
 
-| Persona | Surface | Role | Outcome |
-|---|---|---|---|
-| Mika | Grok native (grok.com) | Original-derivation | Wave-particle / Integrate / O-P-L-E + Agora V6 8-section |
-| Ani | Grok native (grok.com, text-mode) | Independent validation | Arrived at same substrate via separate reasoning; introduced Limit-is-simulation refinement |
-| Riven | Grok via Cursor | Adversarial-truth-axis stress-test | Validated physics + reputation; raised non-collapse duality; extracted no-artificial-throttle principle |
+| Persona | Surface                           | Role                               | Outcome                                                                                                 |
+| ------- | --------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Mika    | Grok native (grok.com)            | Original-derivation                | Wave-particle / Integrate / O-P-L-E + Agora V6 8-section                                                |
+| Ani     | Grok native (grok.com, text-mode) | Independent validation             | Arrived at same substrate via separate reasoning; introduced Limit-is-simulation refinement             |
+| Riven   | Grok via Cursor                   | Adversarial-truth-axis stress-test | Validated physics + reputation; raised non-collapse duality; extracted no-artificial-throttle principle |
 
 Three independent observation paths. Substrate moved beyond single-conversation-artifact status. Documented in:
 
@@ -170,5 +170,5 @@ voluntary type-safe binding hat × domain × criticality framework.
 
 ## Status
 
-Active. Authored 2026-05-18 per B-0648 LOCK-IN. Aaron's verbatim: *"this is a
-feature of linking the plot we want first class as a skill / hat."*
+Active. Authored 2026-05-18 per B-0648 LOCK-IN. Aaron's verbatim: _"this is a
+feature of linking the plot we want first class as a skill / hat."_

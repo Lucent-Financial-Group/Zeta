@@ -8,12 +8,12 @@ type: project
 
 Aaron 2026-04-22 auto-loop-43 four-message compressed directive:
 
-1. *"self directe play using arc3 type rules but in an advasarial
+1. _"self directe play using arc3 type rules but in an advasarial
    level/game creator level/game player, this will let us score our
-   absorption of emulators"*
-2. *"and a symmeritc quality loop"*
-3. *"they will naturally push the field forward through compitioon"*
-4. *"state of the art changes everyday"*
+   absorption of emulators"_
+2. _"and a symmeritc quality loop"_
+3. _"they will naturally push the field forward through compitioon"_
+4. _"state of the art changes everyday"_
 
 **Why:** BACKLOG #249 (emulator substrate research) had no
 measurable success signal. Aaron proposes a three-role co-
@@ -23,8 +23,8 @@ agents; they co-evolve; the loop's quality property is
 **symmetric** (all three roles advance each other, no
 asymmetric teacher-student). Competition between the roles
 naturally pushes the emulator-absorption frontier forward
-without top-down planning. The urgency note *"SOTA changes
-everyday"* signals this isn't a multi-round R&D indulgence —
+without top-down planning. The urgency note _"SOTA changes
+everyday"_ signals this isn't a multi-round R&D indulgence —
 the space is moving fast enough that the factory needs to
 move soon.
 
@@ -90,7 +90,7 @@ move soon.
 - Claiming ARC-3 expertise the factory doesn't have yet.
 - Building the three-role loop speculatively before Aaron
   confirms scope (six open questions block binding scope).
-- Claiming the loop is a *Zeta* invention — it's adjacent
+- Claiming the loop is a _Zeta_ invention — it's adjacent
   to POET / ARC-Prize / adversarial-robustness literature;
   attribution discipline holds.
 - Treating "SOTA changes everyday" as license to prioritise

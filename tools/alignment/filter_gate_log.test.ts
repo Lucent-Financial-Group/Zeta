@@ -9,13 +9,7 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  computeSummary,
-  type FilterGateEntry,
-  main,
-  parseArgs,
-  readLog,
-} from "./filter_gate_log.ts";
+import { computeSummary, type FilterGateEntry, main, parseArgs, readLog } from "./filter_gate_log.ts";
 
 describe("parseArgs", () => {
   test("returns help for -h", () => {
@@ -68,11 +62,16 @@ describe("parseArgs", () => {
   test("parses full --record with all fields", () => {
     const result = parseArgs([
       "--record",
-      "--candidate", "skill:foo",
-      "--source", "B-0056",
-      "--decision", "fail",
-      "--rationale", "Breaks retractibility",
-      "--clauses", "HC-1,SD-3",
+      "--candidate",
+      "skill:foo",
+      "--source",
+      "B-0056",
+      "--decision",
+      "fail",
+      "--rationale",
+      "Breaks retractibility",
+      "--clauses",
+      "HC-1,SD-3",
     ]);
     expect(result.kind).toBe("args");
     if (result.kind === "args" && result.args.mode === "record") {
@@ -87,10 +86,14 @@ describe("parseArgs", () => {
   test("parses --record without --clauses (defaults to empty)", () => {
     const result = parseArgs([
       "--record",
-      "--candidate", "glossary:bar",
-      "--source", "B-0059",
-      "--decision", "pass",
-      "--rationale", "Additive and retractible",
+      "--candidate",
+      "glossary:bar",
+      "--source",
+      "B-0059",
+      "--decision",
+      "pass",
+      "--rationale",
+      "Additive and retractible",
     ]);
     expect(result.kind).toBe("args");
     if (result.kind === "args" && result.args.mode === "record") {
@@ -101,9 +104,12 @@ describe("parseArgs", () => {
   test("errors when --record missing --candidate", () => {
     const result = parseArgs([
       "--record",
-      "--source", "B-0056",
-      "--decision", "fail",
-      "--rationale", "missing candidate",
+      "--source",
+      "B-0056",
+      "--decision",
+      "fail",
+      "--rationale",
+      "missing candidate",
     ]);
     expect(result.kind).toBe("error");
   });
@@ -111,9 +117,12 @@ describe("parseArgs", () => {
   test("errors when --record missing --source", () => {
     const result = parseArgs([
       "--record",
-      "--candidate", "skill:foo",
-      "--decision", "fail",
-      "--rationale", "missing source",
+      "--candidate",
+      "skill:foo",
+      "--decision",
+      "fail",
+      "--rationale",
+      "missing source",
     ]);
     expect(result.kind).toBe("error");
   });
@@ -121,30 +130,32 @@ describe("parseArgs", () => {
   test("errors when --record missing --decision", () => {
     const result = parseArgs([
       "--record",
-      "--candidate", "skill:foo",
-      "--source", "B-0056",
-      "--rationale", "missing decision",
+      "--candidate",
+      "skill:foo",
+      "--source",
+      "B-0056",
+      "--rationale",
+      "missing decision",
     ]);
     expect(result.kind).toBe("error");
   });
 
   test("errors when --record missing --rationale", () => {
-    const result = parseArgs([
-      "--record",
-      "--candidate", "skill:foo",
-      "--source", "B-0056",
-      "--decision", "pass",
-    ]);
+    const result = parseArgs(["--record", "--candidate", "skill:foo", "--source", "B-0056", "--decision", "pass"]);
     expect(result.kind).toBe("error");
   });
 
   test("errors on invalid decision value", () => {
     const result = parseArgs([
       "--record",
-      "--candidate", "skill:foo",
-      "--source", "B-0056",
-      "--decision", "maybe",
-      "--rationale", "invalid decision",
+      "--candidate",
+      "skill:foo",
+      "--source",
+      "B-0056",
+      "--decision",
+      "maybe",
+      "--rationale",
+      "invalid decision",
     ]);
     expect(result.kind).toBe("error");
   });
@@ -158,10 +169,14 @@ describe("parseArgs", () => {
     for (const d of ["pass", "fail", "defer"] as const) {
       const result = parseArgs([
         "--record",
-        "--candidate", "skill:test",
-        "--source", "B-0056",
-        "--decision", d,
-        "--rationale", `testing ${d}`,
+        "--candidate",
+        "skill:test",
+        "--source",
+        "B-0056",
+        "--decision",
+        d,
+        "--rationale",
+        `testing ${d}`,
       ]);
       expect(result.kind).toBe("args");
       if (result.kind === "args" && result.args.mode === "record") {
@@ -234,10 +249,46 @@ describe("computeSummary", () => {
 
   test("counts decisions correctly", () => {
     const entries: FilterGateEntry[] = [
-      { schema: "filter-gate-v1", timestamp: "", candidate: "a", source: "B-0056", decision: "pass", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "b", source: "B-0056", decision: "fail", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "c", source: "B-0057", decision: "defer", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "d", source: "B-0057", decision: "pass", rationale: "", clauses: [], author: "" },
+      {
+        schema: "filter-gate-v1",
+        timestamp: "",
+        candidate: "a",
+        source: "B-0056",
+        decision: "pass",
+        rationale: "",
+        clauses: [],
+        author: "",
+      },
+      {
+        schema: "filter-gate-v1",
+        timestamp: "",
+        candidate: "b",
+        source: "B-0056",
+        decision: "fail",
+        rationale: "",
+        clauses: [],
+        author: "",
+      },
+      {
+        schema: "filter-gate-v1",
+        timestamp: "",
+        candidate: "c",
+        source: "B-0057",
+        decision: "defer",
+        rationale: "",
+        clauses: [],
+        author: "",
+      },
+      {
+        schema: "filter-gate-v1",
+        timestamp: "",
+        candidate: "d",
+        source: "B-0057",
+        decision: "pass",
+        rationale: "",
+        clauses: [],
+        author: "",
+      },
     ];
     const summary = computeSummary(entries);
     expect(summary.total).toBe(4);
@@ -248,9 +299,36 @@ describe("computeSummary", () => {
 
   test("groups by source", () => {
     const entries: FilterGateEntry[] = [
-      { schema: "filter-gate-v1", timestamp: "", candidate: "a", source: "B-0056", decision: "pass", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "b", source: "B-0056", decision: "fail", rationale: "", clauses: [], author: "" },
-      { schema: "filter-gate-v1", timestamp: "", candidate: "c", source: "B-0059", decision: "pass", rationale: "", clauses: [], author: "" },
+      {
+        schema: "filter-gate-v1",
+        timestamp: "",
+        candidate: "a",
+        source: "B-0056",
+        decision: "pass",
+        rationale: "",
+        clauses: [],
+        author: "",
+      },
+      {
+        schema: "filter-gate-v1",
+        timestamp: "",
+        candidate: "b",
+        source: "B-0056",
+        decision: "fail",
+        rationale: "",
+        clauses: [],
+        author: "",
+      },
+      {
+        schema: "filter-gate-v1",
+        timestamp: "",
+        candidate: "c",
+        source: "B-0059",
+        decision: "pass",
+        rationale: "",
+        clauses: [],
+        author: "",
+      },
     ];
     const summary = computeSummary(entries);
     expect(summary.sources.get("B-0056")).toBe(2);
@@ -292,13 +370,19 @@ describe("main() CLI", () => {
   });
 
   test("returns 1 for --record with invalid decision", () => {
-    expect(main([
-      "--record",
-      "--candidate", "skill:foo",
-      "--source", "B-0056",
-      "--decision", "invalid",
-      "--rationale", "test",
-    ])).toBe(1);
+    expect(
+      main([
+        "--record",
+        "--candidate",
+        "skill:foo",
+        "--source",
+        "B-0056",
+        "--decision",
+        "invalid",
+        "--rationale",
+        "test",
+      ]),
+    ).toBe(1);
   });
 
   test("returns 0 for valid --record (writes to tempdir, not production log)", () => {
@@ -309,10 +393,14 @@ describe("main() CLI", () => {
     try {
       const code = main([
         "--record",
-        "--candidate", "skill:test-entry",
-        "--source", "B-0056",
-        "--decision", "pass",
-        "--rationale", "Integration test entry",
+        "--candidate",
+        "skill:test-entry",
+        "--source",
+        "B-0056",
+        "--decision",
+        "pass",
+        "--rationale",
+        "Integration test entry",
       ]);
       expect(code).toBe(0);
       expect(existsSync(tmpLog)).toBe(true);

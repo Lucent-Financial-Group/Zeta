@@ -13,14 +13,25 @@ composes_with:
   - B-0776
   - B-0789
   - B-0790
-tags: [architecture, role-as-capability, multi-role-node, refactor, nixos-modules, flake-config, composition, homelab, cluster-bringup]
+tags:
+  [
+    architecture,
+    role-as-capability,
+    multi-role-node,
+    refactor,
+    nixos-modules,
+    flake-config,
+    composition,
+    homelab,
+    cluster-bringup,
+  ]
 ---
 
 ## Problem
 
 The maintainer 2026-05-26 surfaced the architectural concern during iter-5 substrate-engineering for multi-node cluster bring-up:
 
-> *"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very eleglant [sic] and host names tied to them are not great either."*
+> _"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very eleglant [sic] and host names tied to them are not great either."_
 
 iter-5.2 (B-0792, PR #5103) partially addressed this by decoupling **hostname** from role-stack — operator can pass `--host pikachu` and get hostname `pikachu` regardless of which flake config the node was installed from. But the deeper architectural issue remains: **role-stack itself is baked into per-host flake configs**, making multi-role composition (one node = control-plane AND gpu-worker AND storage simultaneously) require an explosion of pre-baked configs.
 
@@ -48,12 +59,12 @@ Result: you can't EASILY have a node that's BOTH control-plane AND gpu-worker AN
 
 Refactor toward **role-as-capability composition**:
 
-| Today | Target |
-|---|---|
+| Today                                         | Target                                                                                                           |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | `nixos/hosts/control-plane/configuration.nix` | `nixos/modules/role-control-plane.nix` (just K3S server + Cilium + ArgoCD; NO hostname; NO hardware assumptions) |
-| `nixos/hosts/worker-gpu/configuration.nix` | `nixos/modules/role-worker-gpu.nix` (just GPU stack + K3S agent; NO hostname) |
-| `nixos/hosts/worker-template/default.nix` | `nixos/modules/role-worker-cpu.nix` (just K3S agent; NO hostname) |
-| `flake.nix` named per-host configs | `flake.nix` `node = mkSystem { modules = [common + role-* selected at install time] };` |
+| `nixos/hosts/worker-gpu/configuration.nix`    | `nixos/modules/role-worker-gpu.nix` (just GPU stack + K3S agent; NO hostname)                                    |
+| `nixos/hosts/worker-template/default.nix`     | `nixos/modules/role-worker-cpu.nix` (just K3S agent; NO hostname)                                                |
+| `flake.nix` named per-host configs            | `flake.nix` `node = mkSystem { modules = [common + role-* selected at install time] };`                          |
 
 The flake exposes ONE base `node` config; install-time `--role` flag(s) compose which `role-*.nix` modules apply. Examples:
 
@@ -145,7 +156,7 @@ So K8s workload scheduling can use the same role taxonomy as the install-time co
 
 The maintainer 2026-05-26 during iter-5.2 substrate-engineering response:
 
-> *"also since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very eleglant and host names tied to them are not great either."*
+> _"also since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very eleglant and host names tied to them are not great either."_
 
 iter-5.2 (B-0792, PR #5103) addressed the hostname-side concern (decoupled hostname from role-stack via injected-hostname.nix module + zflash --host flag). This row captures the deeper role-side concern: role-stack-as-baked-host-config is the remaining architectural blocker for true multi-role nodes.
 
@@ -156,4 +167,4 @@ Filing as P1 because:
 3. **Substrate Aaron explicitly named**: not speculative; named architectural correction during active substrate-engineering session
 4. **Blocks proper multi-node empirical test**: until this lands, second + third nodes have to be artificially pure-role (worker-only, no control-plane) to avoid the explosion-of-baked-configs problem
 
-Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline — this isn't optional; the role-as-capability architecture is the substrate-honest target.
+Per maintainer's broader 2026-05-26 _"going for right not fast"_ discipline — this isn't optional; the role-as-capability architecture is the substrate-honest target.

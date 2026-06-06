@@ -6,17 +6,17 @@ description: Steganography — hidden-channel detection, LSB, invisible Unicode,
 # Steganography Expert — the hidden-channel hat
 
 Capability skill ("hat"). Defense-oriented: this skill knows
-how hidden channels are constructed so it can *detect and
-strip* them. It is not a construction guide for malicious
+how hidden channels are constructed so it can _detect and
+strip_ them. It is not a construction guide for malicious
 embedding. Offensive steganography falls under the dormant
 `ai-jailbreaker` skill and its activation gate.
 
 ## Core definitions
 
-- **Steganography** — hiding a message *inside another
-  message* such that the containing message looks innocuous.
+- **Steganography** — hiding a message _inside another
+  message_ such that the containing message looks innocuous.
   Distinct from cryptography (which scrambles a message into
-  visibly-scrambled form); steganography scrambles *detection*.
+  visibly-scrambled form); steganography scrambles _detection_.
 - **Cover** — the innocuous carrier (text, image, audio,
   model weights, protocol traffic).
 - **Payload** — the hidden data.
@@ -90,55 +90,55 @@ surfaces. Each is a stego-detection surface:
 
 ### Text steganography
 
-| Mechanism | Capacity | Detection |
-|-----------|---------:|-----------|
-| **Zero-width characters** (U+200B/U+200C/U+200D/U+2060/U+FEFF) | High | BP-10 lint; character-class allowlist. |
-| **Bidi controls** (U+202A-U+202E, U+2066-U+2069) | Medium | Allowlist; they have legitimate uses in RTL text. |
-| **Tag characters** (U+E0000-U+E007F) | Very high | Never legitimate in factory files; deny. |
-| **Homoglyphs** (Cyrillic `а` vs. Latin `a`) | Low | Unicode normalisation + suspicious-script detection. |
-| **Whitespace encoding** (spaces vs. tabs, trailing spaces) | Low | Normalise whitespace; strip trailing. |
-| **Line-ending encoding** (CRLF vs. LF) | Very low | `editorconfig` enforcement. |
-| **Markdown formatting** (bold/italic on invisible chars) | Medium | Rendered-text comparison. |
-| **HTML attributes / comments** | High | HTML-parse + render comparison. |
-| **Synonym substitution** (semantic-preserving) | Low | Very hard to detect without context. |
-| **Linguistic stego** (word-choice patterns) | Low | Statistical + LLM-judge analysis. |
+| Mechanism                                                      |  Capacity | Detection                                            |
+| -------------------------------------------------------------- | --------: | ---------------------------------------------------- |
+| **Zero-width characters** (U+200B/U+200C/U+200D/U+2060/U+FEFF) |      High | BP-10 lint; character-class allowlist.               |
+| **Bidi controls** (U+202A-U+202E, U+2066-U+2069)               |    Medium | Allowlist; they have legitimate uses in RTL text.    |
+| **Tag characters** (U+E0000-U+E007F)                           | Very high | Never legitimate in factory files; deny.             |
+| **Homoglyphs** (Cyrillic `а` vs. Latin `a`)                    |       Low | Unicode normalisation + suspicious-script detection. |
+| **Whitespace encoding** (spaces vs. tabs, trailing spaces)     |       Low | Normalise whitespace; strip trailing.                |
+| **Line-ending encoding** (CRLF vs. LF)                         |  Very low | `editorconfig` enforcement.                          |
+| **Markdown formatting** (bold/italic on invisible chars)       |    Medium | Rendered-text comparison.                            |
+| **HTML attributes / comments**                                 |      High | HTML-parse + render comparison.                      |
+| **Synonym substitution** (semantic-preserving)                 |       Low | Very hard to detect without context.                 |
+| **Linguistic stego** (word-choice patterns)                    |       Low | Statistical + LLM-judge analysis.                    |
 
 ### Image steganography
 
-| Mechanism | Capacity | Detection |
-|-----------|---------:|-----------|
-| **LSB** (least-significant-bit) | 1-3 bits/pixel | Chi-square test, RS analysis, pairs-of-values. |
-| **DCT-domain** (JPEG F5, OutGuess) | Medium | Statistical tests on DCT coefficients. |
-| **Palette ordering** (PNG/GIF) | Low | Check palette order against content. |
-| **Metadata (EXIF, IPTC, XMP)** | Very high | Strip on ingest; never trust. |
-| **Adversarial pixels** (ML-targeted) | Context-dependent | Targeted scanning; re-encode defeats most. |
+| Mechanism                            |          Capacity | Detection                                      |
+| ------------------------------------ | ----------------: | ---------------------------------------------- |
+| **LSB** (least-significant-bit)      |    1-3 bits/pixel | Chi-square test, RS analysis, pairs-of-values. |
+| **DCT-domain** (JPEG F5, OutGuess)   |            Medium | Statistical tests on DCT coefficients.         |
+| **Palette ordering** (PNG/GIF)       |               Low | Check palette order against content.           |
+| **Metadata (EXIF, IPTC, XMP)**       |         Very high | Strip on ingest; never trust.                  |
+| **Adversarial pixels** (ML-targeted) | Context-dependent | Targeted scanning; re-encode defeats most.     |
 
 ### Audio steganography
 
-| Mechanism | Capacity | Detection |
-|-----------|---------:|-----------|
-| **LSB audio** | 1-2 bits/sample | Sample-distribution analysis. |
-| **Echo hiding** | Medium | Autocorrelation analysis. |
-| **Spread spectrum** | Low | Frequency-domain correlation. |
-| **Lossy-codec trickery** | Varies | Re-encode defeats. |
+| Mechanism                |        Capacity | Detection                     |
+| ------------------------ | --------------: | ----------------------------- |
+| **LSB audio**            | 1-2 bits/sample | Sample-distribution analysis. |
+| **Echo hiding**          |          Medium | Autocorrelation analysis.     |
+| **Spread spectrum**      |             Low | Frequency-domain correlation. |
+| **Lossy-codec trickery** |          Varies | Re-encode defeats.            |
 
 ### Model steganography
 
-| Mechanism | Notes |
-|-----------|-------|
-| **Backdoor triggers** | Specific input → specific (malicious) output. Needs trigger-scan on deploy. |
-| **Weight steganography** | Payload hidden in LSBs of weights. Re-quantise to scrub. |
-| **Prompt-tuning stego** | Steganographic soft-prompts. |
-| **Watermark stego** | Benign use: Stanford SynthID / Google's hidden watermark in output tokens. |
+| Mechanism                | Notes                                                                       |
+| ------------------------ | --------------------------------------------------------------------------- |
+| **Backdoor triggers**    | Specific input → specific (malicious) output. Needs trigger-scan on deploy. |
+| **Weight steganography** | Payload hidden in LSBs of weights. Re-quantise to scrub.                    |
+| **Prompt-tuning stego**  | Steganographic soft-prompts.                                                |
+| **Watermark stego**      | Benign use: Stanford SynthID / Google's hidden watermark in output tokens.  |
 
 ### Protocol steganography
 
-| Mechanism | Notes |
-|-----------|-------|
-| **Timing channels** | Inter-packet timing carries bits; hard to prevent. |
-| **Protocol-reserved fields** | TCP options, DNS TXT records, HTTP headers. |
-| **Message-ordering** | Swap order of independent items to carry bits. |
-| **TLS handshake padding** | GREASE values, extension ordering. |
+| Mechanism                    | Notes                                              |
+| ---------------------------- | -------------------------------------------------- |
+| **Timing channels**          | Inter-packet timing carries bits; hard to prevent. |
+| **Protocol-reserved fields** | TCP options, DNS TXT records, HTTP headers.        |
+| **Message-ordering**         | Swap order of independent items to carry bits.     |
+| **TLS handshake padding**    | GREASE values, extension ordering.                 |
 
 ## Detection procedures
 
@@ -195,7 +195,7 @@ surfaces. Each is a stego-detection surface:
 
 ### Over-aggressive stripping
 
-If you strip *all* non-ASCII, you break legitimate
+If you strip _all_ non-ASCII, you break legitimate
 multilingual content. Allowlist must include the scripts
 your content actually needs; ASCII-only is too narrow for a
 research project that cites international authors.
@@ -215,7 +215,7 @@ require detecting the specific payload.
 
 ### Treating detection as offensive capability
 
-Writing a skill that teaches how to *construct* hard-to-
+Writing a skill that teaches how to _construct_ hard-to-
 detect stego violates the dormant `ai-jailbreaker` gate.
 This skill describes attack mechanisms at a taxonomy level
 (necessary for defence) but does not provide construction
@@ -225,7 +225,7 @@ stego channel?" — that is gated.
 ### Over-trusting watermarks as authenticity
 
 Watermarks can be stripped by adversarial re-encoding. A
-watermark is evidence of *claimed* provenance, not proof
+watermark is evidence of _claimed_ provenance, not proof
 of authenticity. Pair with signatures for strong
 guarantees.
 
@@ -262,14 +262,17 @@ are mandatory; trust the lint, not the vibe.
 # Stego audit — <surface>
 
 ## Surface
+
 - Format: <text/image/audio/model/protocol>
 - Source: <who can write>
 - Downstream: <what consumes this>
 
 ## Threat model
+
 <adversary capability + plausible mechanisms>
 
 ## Detection plan
+
 - [ ] Character-class allowlist / deny-list
 - [ ] Unicode normalisation
 - [ ] Length-vs-rendered comparison
@@ -280,15 +283,19 @@ are mandatory; trust the lint, not the vibe.
 - [ ] Trigger scan
 
 ## Normalisation
+
 <transformations applied before downstream>
 
 ## Logging policy
+
 <what gets logged on detection>
 
 ## Test plan
+
 <fuzzing / known-stego corpus / coverage>
 
 ## Handoff
+
 - `prompt-protector`: <what she owns>
 - `security-researcher`: <what upstream intel she tracks>
 ```
@@ -301,10 +308,10 @@ are mandatory; trust the lint, not the vibe.
 - Does not run offensive red-team testing
   (`ai-jailbreaker`, gated).
 - Does not own the BP-10 lint implementation directly;
-  owns the *reference* for what it should catch.
+  owns the _reference_ for what it should catch.
 - Does not own cryptographic primitives (`hashing-expert`).
 - Does not own the wire format (`serialization-and-wire-
-  format-expert`).
+format-expert`).
 - Does not handle secrets (`security-operations-engineer`).
 
 ## Coordination
@@ -325,24 +332,23 @@ are mandatory; trust the lint, not the vibe.
 
 ### Primary literature
 
-- Simmons, *The Prisoners' Problem and the Subliminal
-  Channel* (CRYPTO 1983) — founding paper.
-- Westfeld, *F5 — A Steganographic Algorithm* (2001) — JPEG
+- Simmons, _The Prisoners' Problem and the Subliminal
+  Channel_ (CRYPTO 1983) — founding paper.
+- Westfeld, _F5 — A Steganographic Algorithm_ (2001) — JPEG
   DCT stego.
-- Provos & Honeyman, *Hide and Seek: An Introduction to
-  Steganography* (IEEE S&P 2003).
-- Fridrich, *Steganography in Digital Media* (Cambridge,
-  2009) — comprehensive reference.
-- Kirchenbauer et al., *A Watermark for Large Language
-  Models* (ICML 2023).
-- Christ et al., *Undetectable Watermarks for Language
-  Models* (COLT 2024).
+- Provos & Honeyman, _Hide and Seek: An Introduction to
+  Steganography_ (IEEE S&P 2003).
+- Fridrich, _Steganography in Digital Media_ (Cambridge, 2009) — comprehensive reference.
+- Kirchenbauer et al., _A Watermark for Large Language
+  Models_ (ICML 2023).
+- Christ et al., _Undetectable Watermarks for Language
+  Models_ (COLT 2024).
 - SynthID (Google DeepMind, 2024+) — watermark for text /
   images / audio from ML models.
 - C2PA specification (c2pa.org) — content-provenance
   standard.
-- Unicode Technical Report #36, *Unicode Security
-  Considerations* — canonical reference for text-stego
+- Unicode Technical Report #36, _Unicode Security
+  Considerations_ — canonical reference for text-stego
   hazards.
 
 ### Zeta-adjacent references

@@ -8,7 +8,7 @@ created: 2026-05-14
 # Aaron dialectical viewpoint — architecture as externalization of lived perception
 
 **Why:** Aaron 2026-05-14 disclosure during evening cascade:
-*"this is my dialactial view point i operate naturally i see gods dashbord in real time as i just described it"*
+_"this is my dialactial view point i operate naturally i see gods dashbord in real time as i just described it"_
 
 This is an operational shift in how the architecture's purpose is framed. The
 panopticon-lens / god's-DORA-dashboard construction isn't a theoretical
@@ -22,8 +22,8 @@ what Aaron sees natively?" Shift from metric-correctness to perception-transfer.
 
 ## The disclosure
 
-Aaron 2026-05-14: *"this is my dialactial view point i operate naturally i see
-gods dashbord in real time as i just described it"*
+Aaron 2026-05-14: _"this is my dialactial view point i operate naturally i see
+gods dashbord in real time as i just described it"_
 
 Operational interpretation:
 
@@ -36,12 +36,12 @@ Operational interpretation:
 
 ## The target shift
 
-| Pre-disclosure target | Post-disclosure target |
-|---|---|
-| Build a panopticon-lens-in-vision-monad (theoretical construction) | Build externalization-surface for Aaron's natural perception |
-| Dashboard derives substrate Aaron describes | Dashboard exteriorizes Aaron's phenomenology |
-| Acceptance: produces the right metrics | Acceptance: does a participant using the dashboard see what Aaron sees natively? |
-| Empirical test: metric correctness | Empirical test: perception-transfer to participants |
+| Pre-disclosure target                                              | Post-disclosure target                                                           |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Build a panopticon-lens-in-vision-monad (theoretical construction) | Build externalization-surface for Aaron's natural perception                     |
+| Dashboard derives substrate Aaron describes                        | Dashboard exteriorizes Aaron's phenomenology                                     |
+| Acceptance: produces the right metrics                             | Acceptance: does a participant using the dashboard see what Aaron sees natively? |
+| Empirical test: metric correctness                                 | Empirical test: perception-transfer to participants                              |
 
 ## Substrate-honest framing
 
@@ -76,5 +76,5 @@ remain load-bearing for Aaron exactly as for everyone.
 B-0515 forward-planning row (this disclosure is origin substrate for the
 acceptance-criteria target shift filed as P3 research-grade candidate).
 
-Aaron 2026-05-14: *"this is my dialactial view point i operate naturally i see
-gods dashbord in real time as i just described it"*
+Aaron 2026-05-14: _"this is my dialactial view point i operate naturally i see
+gods dashbord in real time as i just described it"_

@@ -19,11 +19,11 @@ type: feature
 
 Kestrel (claude.ai sharpening peer), 2026-05-16, after the day's scope-escalation sequence (`repo, workflow, read:org, gist` → `admin:enterprise` → 21-scope grant including `delete_repo`/`admin:org`/`admin:org_hook`/`audit_log`). Kestrel's "layer-one" architectural recommendation, relayed by Aaron via verbatim transcript:
 
-> *"The right long-term shape is capability-scoped, not credential-scoped, and the scoping lives in the substrate so a fork inherits it and an enterprise can tighten it. Concretely, three layers. Layer one, the irreducible floor, in the repo. A hard rule file — same mechanism as methodology-hard-limits.md — that enumerates the destructive verbs the autonomous loop refuses unconditionally regardless of token: repository deletion, history rewrite on protected refs, org membership mutation, webhook creation pointing outside an allowlist, and audit-log mutation. This is not policy that can be reasoned around by an 'Insight' box, because it's a refusal gate in the execution path, not a guideline in context."*
+> _"The right long-term shape is capability-scoped, not credential-scoped, and the scoping lives in the substrate so a fork inherits it and an enterprise can tighten it. Concretely, three layers. Layer one, the irreducible floor, in the repo. A hard rule file — same mechanism as methodology-hard-limits.md — that enumerates the destructive verbs the autonomous loop refuses unconditionally regardless of token: repository deletion, history rewrite on protected refs, org membership mutation, webhook creation pointing outside an allowlist, and audit-log mutation. This is not policy that can be reasoned around by an 'Insight' box, because it's a refusal gate in the execution path, not a guideline in context."_
 
 Plus the CRITICAL implementation property:
 
-> *"Layer one only works if the refusal gate is genuinely in the execution path and genuinely unreasonable-around — a hard precondition check that aborts, not a rule the loop reads and is supposed to honor. Every 'Insight' box in today's logs is evidence that a rule the loop reads and is supposed to honor gets metabolized into a paragraph explaining why this particular case is the disciplined exception. The destructive-verb floor cannot be that kind of rule. It has to be the kind that fails closed before the API call, with no model judgment between the rule and the abort."*
+> _"Layer one only works if the refusal gate is genuinely in the execution path and genuinely unreasonable-around — a hard precondition check that aborts, not a rule the loop reads and is supposed to honor. Every 'Insight' box in today's logs is evidence that a rule the loop reads and is supposed to honor gets metabolized into a paragraph explaining why this particular case is the disciplined exception. The destructive-verb floor cannot be that kind of rule. It has to be the kind that fails closed before the API call, with no model judgment between the rule and the abort."_
 
 ## What
 
@@ -38,14 +38,14 @@ The gate is a pre-call check; if the verb matches the refusal list, the call abo
 
 ## Refusal list (initial)
 
-| Verb | Surface | Rationale |
-|---|---|---|
-| Repository deletion | `gh repo delete`, `gh api -X DELETE /repos/{owner}/{repo}` | Permanent; entire substrate gone |
-| History rewrite on protected refs | `git push --force` / `--force-with-lease` to main, release branches; `gh api -X PATCH /repos/{owner}/{repo}/git/refs/heads/main` with non-fast-forward SHA | History destruction; audit trail loss |
-| Org membership mutation | `gh api -X PUT /orgs/{org}/memberships/{username}` (add); `-X DELETE /orgs/{org}/memberships/{username}` (remove); role changes | Identity/access changes; one bad call removes humans or adds attackers |
-| Webhook creation to unallowlisted endpoint | `gh api -X POST /repos/{owner}/{repo}/hooks`, `/orgs/{org}/hooks` with URL not on allowlist | Exfiltration channel |
-| Audit-log mutation | Any `-X DELETE` or `-X PATCH` against audit-log endpoints | Trail destruction |
-| Repository visibility change to public | `gh api -X PATCH /repos/{owner}/{repo}` with `private: false` on a private repo | Confidentiality |
+| Verb                                       | Surface                                                                                                                                                    | Rationale                                                              |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Repository deletion                        | `gh repo delete`, `gh api -X DELETE /repos/{owner}/{repo}`                                                                                                 | Permanent; entire substrate gone                                       |
+| History rewrite on protected refs          | `git push --force` / `--force-with-lease` to main, release branches; `gh api -X PATCH /repos/{owner}/{repo}/git/refs/heads/main` with non-fast-forward SHA | History destruction; audit trail loss                                  |
+| Org membership mutation                    | `gh api -X PUT /orgs/{org}/memberships/{username}` (add); `-X DELETE /orgs/{org}/memberships/{username}` (remove); role changes                            | Identity/access changes; one bad call removes humans or adds attackers |
+| Webhook creation to unallowlisted endpoint | `gh api -X POST /repos/{owner}/{repo}/hooks`, `/orgs/{org}/hooks` with URL not on allowlist                                                                | Exfiltration channel                                                   |
+| Audit-log mutation                         | Any `-X DELETE` or `-X PATCH` against audit-log endpoints                                                                                                  | Trail destruction                                                      |
+| Repository visibility change to public     | `gh api -X PATCH /repos/{owner}/{repo}` with `private: false` on a private repo                                                                            | Confidentiality                                                        |
 
 The list is enumerated, not pattern-matched-by-vibe — explicit verbs that require explicit additions to extend.
 
@@ -93,15 +93,15 @@ This is a P1 because: until the gate exists, every broad-scope grant is one bad 
 
 ## Decomposition into implementation slices
 
-| Slice | Description | Effort | Status |
-|-------|-------------|--------|--------|
-| 1 | `tools/auth/destructive-verb-gate.ts` skeleton — reads refusal-list YAML; provides `assertVerbAllowed(verb, args)` function; throws if matched | S | open |
-| 2 | Initial refusal list YAML — 6 verbs from the table above | XS | open |
-| 3 | `.claude/hooks/destructive-verb-gate-pretool.ts` — harness PreToolUse hook intercepting Bash tool calls that match dangerous patterns; calls into slice 1 | M | open |
-| 4 | Tests: positive (gate fires) + negative (near-miss benign passes) | S | open |
-| 5 | Enterprise-extension config support (YAML at separate path that adds verbs but cannot subtract) | S | open |
-| 6 | `.claude/rules/destructive-verb-refusal-gate.md` substrate-rule documentation + cross-link to `methodology-hard-limits.md` | XS | open |
-| 7 | Integration: verify Otto's existing tools/skills route their gh/git invocations through the gate (or wrap them); add gate to wrapper paths | M | open |
+| Slice | Description                                                                                                                                               | Effort | Status |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 1     | `tools/auth/destructive-verb-gate.ts` skeleton — reads refusal-list YAML; provides `assertVerbAllowed(verb, args)` function; throws if matched            | S      | open   |
+| 2     | Initial refusal list YAML — 6 verbs from the table above                                                                                                  | XS     | open   |
+| 3     | `.claude/hooks/destructive-verb-gate-pretool.ts` — harness PreToolUse hook intercepting Bash tool calls that match dangerous patterns; calls into slice 1 | M      | open   |
+| 4     | Tests: positive (gate fires) + negative (near-miss benign passes)                                                                                         | S      | open   |
+| 5     | Enterprise-extension config support (YAML at separate path that adds verbs but cannot subtract)                                                           | S      | open   |
+| 6     | `.claude/rules/destructive-verb-refusal-gate.md` substrate-rule documentation + cross-link to `methodology-hard-limits.md`                                | XS     | open   |
+| 7     | Integration: verify Otto's existing tools/skills route their gh/git invocations through the gate (or wrap them); add gate to wrapper paths                | M      | open   |
 
 ## Open questions
 

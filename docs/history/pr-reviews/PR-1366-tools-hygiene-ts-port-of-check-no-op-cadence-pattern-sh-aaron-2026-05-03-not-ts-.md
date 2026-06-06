@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1366 |
-| Title | tools(hygiene): TS port of check-no-op-cadence-pattern.sh (Aaron 2026-05-03 'not ts file?') |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T09:23:47Z |
-| Merged at | 2026-05-03T09:38:17Z |
-| Merge commit SHA | `698de09a41fc2c0308edcca3d0f51ae26c917041` |
-| Branch | `tools/hygiene-no-op-cadence-pattern-ts-port` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1366 |
-| Changed files | 1 |
-| Additions / deletions | +357 / -0 |
+| Field                 | Value                                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| Number                | 1366                                                                                        |
+| Title                 | tools(hygiene): TS port of check-no-op-cadence-pattern.sh (Aaron 2026-05-03 'not ts file?') |
+| Author                | `AceHack` (human)                                                                           |
+| State                 | MERGED                                                                                      |
+| Created at            | 2026-05-03T09:23:47Z                                                                        |
+| Merged at             | 2026-05-03T09:38:17Z                                                                        |
+| Merge commit SHA      | `698de09a41fc2c0308edcca3d0f51ae26c917041`                                                  |
+| Branch                | `tools/hygiene-no-op-cadence-pattern-ts-port`                                               |
+| Base branch           | `main`                                                                                      |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1366                                    |
+| Changed files         | 1                                                                                           |
+| Additions / deletions | +357 / -0                                                                                   |
 
 ## Description
 
@@ -31,15 +31,15 @@ Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-0
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 6 |
-| Resolved threads | 6 |
-| Unresolved threads | 0 |
-| Total review comments | 12 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 6     |
+| Resolved threads                          | 6     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 12    |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -52,16 +52,16 @@ Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-0
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T09:26:12Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:62 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate env vars with full-string numeric check**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Validate env vars with full-string numeric check**
+
   Using `parseInt` here accepts malformed values with a numeric prefix (for example `NO_OP_CHECK_WINDOW=7foo` parses as `7`), so typos no longer trigger the fallback warning promised by this port and by the bash script’s strict validation. In the malformed-prefix case the checker silently uses unintended thresholds/window sizes, which can suppress or spuriously trigger warnings and breaks stated parity with `check-no-op-cadence-pattern.sh`.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T09:35:10Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:62 (association: MEMBER)
-    Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
+- **`AceHack` (human)** at 2026-05-03T09:35:10Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:62 (association: MEMBER)
+  Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -73,12 +73,11 @@ Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-0
 
 - **`Copilot` (bot)** at 2026-05-03T09:28:08Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:47 (association: NONE)
   P0: `REPO_ROOT` discovery walks upward until `dir === "/"`, which can loop forever on Windows paths (drive roots never become "/"). Repo scripting convention elsewhere uses `git rev-parse --show-toplevel` + `process.chdir(repoRoot())` for consistent, cross-platform repo-rooting; please switch to that pattern here as well.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T09:35:12Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:47 (association: MEMBER)
-    Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
+- **`AceHack` (human)** at 2026-05-03T09:35:12Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:47 (association: MEMBER)
+  Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -93,8 +92,8 @@ Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-0
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T09:35:13Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:196 (association: MEMBER)
-    Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
+- **`AceHack` (human)** at 2026-05-03T09:35:13Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:196 (association: MEMBER)
+  Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -106,12 +105,11 @@ Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-0
 
 - **`Copilot` (bot)** at 2026-05-03T09:28:08Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:154 (association: NONE)
   P1: `observationClassRegex` includes `same\.\s*stopping`, which treats `\s` as whitespace in JS regexes, but the bash version uses `grep -E` where `\s` is not whitespace. This makes the TS detector potentially fire on different shards than the bash script. To keep behavior aligned, use a regex that matches the bash semantics (or fix both scripts in the same PR and re-verify parity).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T09:35:15Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:154 (association: MEMBER)
-    Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
+- **`AceHack` (human)** at 2026-05-03T09:35:15Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:154 (association: MEMBER)
+  Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -126,8 +124,8 @@ Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-0
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T09:35:16Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:5 (association: MEMBER)
-    Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
+- **`AceHack` (human)** at 2026-05-03T09:35:16Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:5 (association: MEMBER)
+  Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -139,12 +137,11 @@ Per DST-justifies-TS-quality-over-bash + B-0156 TS standardization. Aaron 2026-0
 
 - **`Copilot` (bot)** at 2026-05-03T09:28:09Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:108 (association: NONE)
   P1: `collectShards()` calls `readdirSync(dir)` without a try/catch and only guards with `existsSync(dir)`. If the path exists but isn't a readable directory, this will throw and the script will exit non-zero, contradicting the header contract that the check is informational-only (exit 0 always). Please catch `readdirSync` errors (or explicitly verify `dir` is a directory) and treat failures as an empty shard set + stderr diagnostic.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T09:35:18Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:108 (association: MEMBER)
-    Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
+- **`AceHack` (human)** at 2026-05-03T09:35:18Z on `tools/hygiene/check-no-op-cadence-pattern.ts`:108 (association: MEMBER)
+  Addressed in latest commit. All 6 findings absorbed (P0 Windows REPO_ROOT via git rev-parse, P1 main entrypoint + try-catch readdir + regex parity + warning text parity, P2 strict env validation). Verified: both scripts produce identical output on current main state.
 
 ## Fix commits (touching thread paths)
 

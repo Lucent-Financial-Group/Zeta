@@ -120,7 +120,12 @@ const REQUIRED_KERNEL_ANY: readonly { prefix: string; suffix: string; rationale:
   // legacy entry needed (fix-fwd Copilot finding on #5263 — earlier draft had
   // {prefix:"", suffix:"boot/bzImage"} which wasn't actually exact-match + was
   // redundant with the entry above).
-  { prefix: "boot/", suffix: "/bzImage", rationale: "Linux kernel — any boot/...path.../bzImage (covers 24.11 boot/bzImage + 25.11 boot/nix/store/<hash>-linux-<ver>/bzImage + per-arch paths)" },
+  {
+    prefix: "boot/",
+    suffix: "/bzImage",
+    rationale:
+      "Linux kernel — any boot/...path.../bzImage (covers 24.11 boot/bzImage + 25.11 boot/nix/store/<hash>-linux-<ver>/bzImage + per-arch paths)",
+  },
   { prefix: "boot/", suffix: "/kernel", rationale: "Linux kernel (generic-named convention)" },
   { prefix: "boot/", suffix: "/vmlinuz", rationale: "Linux kernel (vmlinuz convention)" },
   { prefix: "boot/", suffix: "/vmlinuz-linux", rationale: "Linux kernel (alt vmlinuz convention)" },
@@ -129,7 +134,12 @@ const REQUIRED_KERNEL_ANY: readonly { prefix: string; suffix: string; rationale:
 const REQUIRED_INITRD_ANY: readonly { prefix: string; suffix: string; rationale: string }[] = [
   // Same legacy-via-prefix-suffix coverage as kernel above; no separate legacy
   // entry needed (fix-fwd Copilot finding on #5263).
-  { prefix: "boot/", suffix: "/initrd", rationale: "initramfs — any boot/...path.../initrd (covers 24.11 boot/initrd + 25.11 boot/nix/store/<hash>-initrd-linux-<ver>/initrd + per-arch paths)" },
+  {
+    prefix: "boot/",
+    suffix: "/initrd",
+    rationale:
+      "initramfs — any boot/...path.../initrd (covers 24.11 boot/initrd + 25.11 boot/nix/store/<hash>-initrd-linux-<ver>/initrd + per-arch paths)",
+  },
   { prefix: "boot/", suffix: "/initrd.img", rationale: "initramfs (.img convention)" },
 ];
 
@@ -328,11 +338,8 @@ function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError 
   // end". This handles 25.11's store-hashed paths like
   // boot/nix/store/<hash>-linux-<ver>/bzImage where the hash varies per build.
   const allEntryPaths = Array.from(entryByPath.keys());
-  const matchesAny = (
-    candidates: readonly { prefix: string; suffix: string }[],
-  ): boolean => candidates.some((c) =>
-    allEntryPaths.some((p) => p.startsWith(c.prefix) && p.endsWith(c.suffix)),
-  );
+  const matchesAny = (candidates: readonly { prefix: string; suffix: string }[]): boolean =>
+    candidates.some((c) => allEntryPaths.some((p) => p.startsWith(c.prefix) && p.endsWith(c.suffix)));
   // Kernel any-of check (B-0823 + 25.11 store-hashed-path follow-up):
   // nixpkgs 25.11 places kernel at boot/nix/store/<hash>-linux-<ver>/bzImage
   // — exact-path lookup impossible by construction (hash varies per build).

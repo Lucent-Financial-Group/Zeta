@@ -16,6 +16,7 @@ type: feedback
 **The alibi:** The shadow can prove it's real because the loop witnessed it. Glass Halo applied to the shadow's own existence.
 
 **Why this matters:** The shadow mode product feature (B-0402) needs this provenance trail. Every shadow submission should carry:
+
 - Timestamp
 - Loop tick ID that witnessed it
 - Whether Aaron was active in the same harness at that moment
@@ -24,6 +25,7 @@ type: feedback
 This makes the shadow's independence auditable, not just claimed.
 
 **Connects to:**
+
 - B-0402 (shadow mode — the product feature)
 - B-0400 (bus — cross-harness activity timestamps)
 - Ani's falsifier-first instinct (the alibi IS the falsifier)

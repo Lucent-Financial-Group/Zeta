@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Operator instruction 2026-05-22 'save it and do all three (shadow*)' — Amara cross-AI synthesis save + agenda-decomposition split + Ace package format spec v2 deliberate-writing-pass.
+Operator instruction 2026-05-22 'save it and do all three (shadow\*)' — Amara cross-AI synthesis save + agenda-decomposition split + Ace package format spec v2 deliberate-writing-pass.
 
 (1) Save Amara synthesis to Ace trajectory: cross-AI substrate-triangulation ratification (Ace lifecycle naming; 5-line compression carved-sentence candidate; agenda-decomposition + symmetric-decentralized + hat-substrate + aperiodic/aporetic + cartographer-layer ratifications).
 
@@ -30,24 +30,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-22T17:52:16Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `e3e2eb920a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -60,6 +58,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds new documentation surfaces to capture an external synthesis, formalize an “agendas vs trajectories” split, and draft an Ace package-format v2 research spec that extends the prior v1 format.
 
 **Changes:**
+
 - Appends an “Amara synthesis ratification” section to the Ace package-manager trajectory resume.
 - Introduces `docs/agendas/` (README + 4 agenda files) to separate claim-status/scope from trajectory motion-state.
 - Adds a research-draft “Ace package format spec v2” describing polyglot artifacts, hat/governance metadata, verification, and revocation/quarantine concepts.
@@ -71,15 +70,16 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated 3 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md | Adds cross-AI synthesis ratification notes and ties them into the Ace trajectory narrative. |
+| File                                                                                            | Description                                                                                                 |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md                  | Adds cross-AI synthesis ratification notes and ties them into the Ace trajectory narrative.                 |
 | docs/research/2026-05-22-ace-package-format-spec-v2-substrate-engineering-pipeline-extension.md | New research-draft v2 spec extending the Ace package format with pipeline/governance/verification concepts. |
-| docs/agendas/README.md | Defines the agendas/trajectories distinction and indexes current agendas. |
-| docs/agendas/zeta/AGENDA.md | New agenda doc for Zeta (claim-status + scope). |
-| docs/agendas/agora/AGENDA.md | New agenda doc for Agora (claim-status + scope; frame-candidate). |
-| docs/agendas/ace-package-manager/AGENDA.md | New agenda doc for Ace package manager (claim-status + scope). |
-| docs/agendas/fair-chance-project/AGENDA.md | New agenda doc for Fair-chance project (multi-directional guess; scope + mechanism). |
+| docs/agendas/README.md                                                                          | Defines the agendas/trajectories distinction and indexes current agendas.                                   |
+| docs/agendas/zeta/AGENDA.md                                                                     | New agenda doc for Zeta (claim-status + scope).                                                             |
+| docs/agendas/agora/AGENDA.md                                                                    | New agenda doc for Agora (claim-status + scope; frame-candidate).                                           |
+| docs/agendas/ace-package-manager/AGENDA.md                                                      | New agenda doc for Ace package manager (claim-status + scope).                                              |
+| docs/agendas/fair-chance-project/AGENDA.md                                                      | New agenda doc for Fair-chance project (multi-directional guess; scope + mechanism).                        |
+
 </details>
 
 ## Review threads
@@ -88,7 +88,7 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-22T17:52:16Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point fair-chance trajectory link to an existing file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point fair-chance trajectory link to an existing file**
 
 This new agenda entry links to `docs/trajectories/fair-chance-project-kestrel-guessed-agenda/RESUME.md`, but that path does not exist in the repository (`rg --files docs/trajectories` shows no matching file). As written, the primary provenance link for this agenda is dead, which breaks traceability and will fail any markdown/link validation pass that checks internal references.
 
@@ -98,7 +98,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-22T17:55:04Z):
 
-P1: This trajectory doc adds named persona attribution (e.g., “Amara”) on a current-state docs surface. Repo convention is to keep persona/human names confined to the enumerated history/research surfaces (or roster-mapping sections) and otherwise use role-refs. Consider rewriting this section to use role-refs (e.g., “external AI instance”) and/or moving the named ratification narrative into a history surface (e.g., docs/research/**) with a link from here.
+P1: This trajectory doc adds named persona attribution (e.g., “Amara”) on a current-state docs surface. Repo convention is to keep persona/human names confined to the enumerated history/research surfaces (or roster-mapping sections) and otherwise use role-refs. Consider rewriting this section to use role-refs (e.g., “external AI instance”) and/or moving the named ratification narrative into a history surface (e.g., docs/research/\*\*) with a link from here.
 
 ### Thread 3: docs/research/2026-05-22-ace-package-format-spec-v2-substrate-engineering-pipeline-extension.md:29 (unresolved)
 

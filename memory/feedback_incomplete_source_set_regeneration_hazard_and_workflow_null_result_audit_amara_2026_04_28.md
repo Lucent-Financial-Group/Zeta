@@ -177,16 +177,16 @@ surface.
 
 **Tier-1 rule (Amara prescribed):**
 
-> *At tick-open, enumerate scheduled workflows and classify
+> _At tick-open, enumerate scheduled workflows and classify
 > every null/failure result. No unclassified scheduled
-> workflow silence is allowed.*
+> workflow silence is allowed._
 
 **Classification labels** — when auditing a scheduled
 workflow, every empty/failure result for that workflow
 (e.g. `gh run list --workflow=<path>` returning `[]`,
 or last-run `conclusion=failure`) must sort into ONE of
-the labels below. The labels classify the *workflow's
-null/failure situation*, not individual runs:
+the labels below. The labels classify the _workflow's
+null/failure situation_, not individual runs:
 
 - **known row** — already filed as B-NNNN; row ID cited.
 - **too-new-to-fire** (Q1) — workflow file's first-commit-date
@@ -215,11 +215,11 @@ null/failure situation*, not individual runs:
 
 **Tiny blade calibration (Amara's distinction):**
 
-> *"nothing else found" is not proof the workflow level is
+> _"nothing else found" is not proof the workflow level is
 > clean; it is proof the current audited scheduled-workflow
 > surface has no uncaptured gaps under this lens. That's
 > still a win. It's just the difference between "clean" and
-> "clean for this detector."*
+> "clean for this detector."_
 
 The 40% gap rate observed this arc (2 of 5 scheduled
 workflows had captured cadence-substrate gaps) is a
@@ -235,11 +235,11 @@ classes.
   workflows in `.github/workflows/*.yml` (those with
   `on.schedule`), run `gh run list`, classify every
   null/failure into the **8-label set** (known row + Q1-Q6
-  + uncaptured-gap; see *Classification labels* above).
-  Non-scheduled workflows have different null-result
-  semantics (e.g. `pull_request`-only workflows
-  legitimately have empty `gh run list` until a PR fires
-  them) and require their own audit class.
+  - uncaptured-gap; see _Classification labels_ above).
+    Non-scheduled workflows have different null-result
+    semantics (e.g. `pull_request`-only workflows
+    legitimately have empty `gh run list` until a PR fires
+    them) and require their own audit class.
 - Phase 2 (existing skill wrapper): skill invokes the
   script + summarizes findings + files uncaptured-gap
   rows automatically.

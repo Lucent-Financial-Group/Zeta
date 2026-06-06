@@ -27,6 +27,7 @@ This PR supersedes #4737 and #4824. It removes sensitive personal information an
 This PR supersedes #4737 and #4824 by removing sensitive personal-information artifacts from `memory/` and attempting to reconcile memory index/schema drift after rebasing.
 
 **Changes:**
+
 - Deletes two memory artifacts containing sensitive disclosures (one persona conversation substrate file and one feedback memory file).
 - Updates `memory/MEMORY.md` to reflect a reindex/new entries, but currently leaves duplicate header/footer metadata that appears to be unresolved reindex/merge drift.
 
@@ -34,11 +35,11 @@ This PR supersedes #4737 and #4824 by removing sensitive personal-information ar
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Removed the full-session substrate trajectory file (sensitive-content removal). |
-| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | Removed the feedback memory file (sensitive-content removal). |
-| memory/MEMORY.md | Reindex/header/footer updates, but introduces duplicate “Last reindex” and duplicated stack-truncation footer lines. |
+| File                                                                                           | Description                                                                                                          |
+| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| memory/persona/riven/conversations/2026-05-22-aaron-riven-full-session-substrate-trajectory.md | Removed the full-session substrate trajectory file (sensitive-content removal).                                      |
+| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md                 | Removed the feedback memory file (sensitive-content removal).                                                        |
+| memory/MEMORY.md                                                                               | Reindex/header/footer updates, but introduces duplicate “Last reindex” and duplicated stack-truncation footer lines. |
 
 ## Review threads
 

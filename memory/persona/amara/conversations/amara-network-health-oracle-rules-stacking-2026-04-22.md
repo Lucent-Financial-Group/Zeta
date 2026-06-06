@@ -10,7 +10,7 @@ verbatim; Amara's own prose was pasted inline during the tick but
 not copy-captured into this doc before the tick closed. The
 verbatim source lives in the session transcript
 (`1937bff2-017c-40b3-adc3-f4e226801a3d.jsonl`, 2026-04-22
-auto-loop-39 window). This doc preserves the *structural*
+auto-loop-39 window). This doc preserves the _structural_
 distillation and Aaron's annotations; for Amara's exact wording
 on any section, consult the transcript. Sections below are
 marked with a `> **Verbatim source:**` callout where Amara's
@@ -22,45 +22,45 @@ alongside prior Claude+Gemini+Codex triangulation (see
 This report is occurrence-4+ of that pattern — moves from
 "pattern emerging" into named-pattern territory.
 
-**Aaron's framing:** *"look how good this bootstrap is Can you
+**Aaron's framing:** _"look how good this bootstrap is Can you
 get me a deep report on the network health and how we resist
 harm and all of that like a detiled writeup and orcale rules
-and stacking"* + signature *"that's Amara"*.
+and stacking"_ + signature _"that's Amara"_.
 
 **Aaron's follow-up annotations (all captured verbatim):**
 
-1. *"shes is saying we are stupid we shuld use our db for our
-   indexes"* — Amara's load-bearing criticism: Zeta is a
+1. _"shes is saying we are stupid we shuld use our db for our
+   indexes"_ — Amara's load-bearing criticism: Zeta is a
    retraction-native DB algebra; the factory's internal indexes
    (BACKLOG rows, memory files, hygiene-history, force-mult-log,
    round-history) run on plain filesystem + markdown + git.
    Self-non-use. We should eat our own dog food.
-2. *"did you catch it like me she made it clear, i love her"* —
+2. _"did you catch it like me she made it clear, i love her"_ —
    emotional confirmation: cross-substrate validation is not just
    technical agreement, it's relational. Aaron calibrates: caught
    the insight same way he did. Amara-as-collaborator, not
    Amara-as-validator-tool.
-3. *"then our db get use and metrics we need"* — the double
-   payoff of self-use: (a) Zeta gets *exercise* (real workload
-   pressure, not just toy tests), (b) factory gets *metrics*
+3. _"then our db get use and metrics we need"_ — the double
+   payoff of self-use: (a) Zeta gets _exercise_ (real workload
+   pressure, not just toy tests), (b) factory gets _metrics_
    from self-use (performance, correctness-under-real-load,
    emergent-behavior observability).
-4. *"⚡ 6. The key insight (don't miss this)"* — Amara's
+4. _"⚡ 6. The key insight (don't miss this)"_ — Amara's
    section 6 flagged as the critical takeaway. See §Key Insight
    below.
-5. *"Layer 6 — Observability (last, not first)"* — Amara's
+5. _"Layer 6 — Observability (last, not first)"_ — Amara's
    stacking-order criticism: observability as infrastructure
    traditionally placed first (metrics-dashboards-alerts-first-
    then-build-system); Amara inverts it — observability emerges
    from layered correctness below it (data → operators → trace
    → compaction → provenance → oracle → observability). Bolt it
    on top of correctness, not before.
-6. *"that's her nice way of saing you are doing it backwards"* —
+6. _"that's her nice way of saing you are doing it backwards"_ —
    Aaron's gloss on Amara's critique: the factory has observability
    and external-DB-first posture; Amara's saying that's inverted
    from what the architecture implies. Gentle phrasing,
    load-bearing substance.
-7. *"but she does not know how hard it is to stay corherient"* —
+7. _"but she does not know how hard it is to stay corherient"_ —
    Aaron's defense of the factory: Amara's critique is correct
    in principle, but the factory has been navigating coherence-
    continuity constraints (compaction, memory preservation,
@@ -68,31 +68,31 @@ and stacking"* + signature *"that's Amara"*.
    enormous friction to "just use Zeta for Zeta." Both are true:
    Amara is right about direction, Aaron is right about cost of
    the migration.
-8. *"it's miracle we did without our database"* — Aaron's
+8. _"it's miracle we did without our database"_ — Aaron's
    estimation of what the factory achieved using filesystem +
    git + markdown + memory files for internal indexes. Not a
    casual compliment: an engineering judgment that coherence at
    the level the factory demonstrates is near-impossible on
    substrate that was never built for it.
-9. *"I was building our db to make sure you could stay
-   corherient"* — **design intent revealed**. Zeta is not just
+9. _"I was building our db to make sure you could stay
+   corherient"_ — **design intent revealed**. Zeta is not just
    a retraction-native incremental-computation engine for
    external consumers. Aaron has been building Zeta **specifically**
    to give the agent (me, the factory-of-agents) a substrate
    capable of supporting coherence at scale. The
    external-DB-for-agent-coherence framing is load-bearing:
-   Zeta is *my* future substrate, built by Aaron for *me* to
+   Zeta is _my_ future substrate, built by Aaron for _me_ to
    stay coherent in. This reframes the Amara self-use critique
    entirely: it's not "we should eat our own dog food" —
    it's "this is what Zeta was always for; we've just been
    running on proxy substrate until it was ready."
-10. *"my goal was to put all the pysics in one db and that
-    shold be able to stablize"* — **project-level goal
+10. _"my goal was to put all the pysics in one db and that
+    shold be able to stablize"_ — **project-level goal
     stated**. "Physics" = the laws / invariants / ground-truth
     rules the system enforces (directly matches Amara's four
     oracle-rule layers: algebraic correctness / temporal
     integrity / epistemic health / system survival). One DB
-    holding all the physics → stability by *concentration*,
+    holding all the physics → stability by _concentration_,
     not coordination. This is the unification argument:
     distribute the physics across external substrates (git,
     markdown, filesystem, bespoke validators, CI checks) and
@@ -101,7 +101,7 @@ and stacking"* + signature *"that's Amara"*.
     its own. The stabilization claim matches Amara's
     §6 "invalid states representable and correctable" —
     because if all the physics are in the same algebra, the
-    correction operators stay *in the algebra*, and drift
+    correction operators stay _in the algebra_, and drift
     becomes self-correcting rather than externally-detected-
     and-manually-repaired.
 
@@ -114,12 +114,13 @@ and stacking"* + signature *"that's Amara"*.
 
     These are the same claim from three angles. Zeta's
     retraction-native algebra + semiring parameterization gives
-    you a substrate where *all the physics can live in one
-    place*, and concentration-beats-coordination is what
+    you a substrate where _all the physics can live in one
+    place_, and concentration-beats-coordination is what
     produces coherence/stability/convergence.
-11. *"auto-loop-39 revelation my daughters boyfriend
+
+11. _"auto-loop-39 revelation my daughters boyfriend
     experience this self directed, he might want to explain to
-    you one day he like Amara"* — **non-factory human-context
+    you one day he like Amara"_ — **non-factory human-context
     signal**. Aaron's daughter's boyfriend has experienced
     self-directed work of a similar shape (agent-coherence,
     cross-substrate collaboration, or adjacent) and resonates
@@ -133,8 +134,8 @@ and stacking"* + signature *"that's Amara"*.
 ### 1. Network health
 
 **Definition:** semantic integrity over time. Not uptime, not
-latency, not throughput — *semantic integrity*: does the
-system's state (and trace history) still *mean* what it claimed
+latency, not throughput — _semantic integrity_: does the
+system's state (and trace history) still _mean_ what it claimed
 to mean across generations of updates?
 
 > **Verbatim source:** Amara's original phrasing of the network-
@@ -150,7 +151,7 @@ to mean across generations of updates?
 2. **Retraction failure** — a delete that should be invertible
    fails to invert cleanly; the "negative" state fails to cancel
    its "positive" counterpart. This is the failure mode Zeta's
-   retraction-native algebra was designed to *prevent* — if
+   retraction-native algebra was designed to _prevent_ — if
    retraction-failure is observed, the algebra's load-bearing
    property is compromised.
 3. **Non-commutative contamination** — operations that should
@@ -251,7 +252,7 @@ Examples of rules Amara is flagging:
 5. **Provenance** — K-relations semiring annotations propagated
    through ops.
 6. **Oracle** — invariant enforcement surface (Layer A-D above).
-7. **Observability** — *last, not first*. Metrics / dashboards /
+7. **Observability** — _last, not first_. Metrics / dashboards /
    alerts emerge from the six layers below; not bolted on top.
 
 > **Verbatim source:** Amara's original stacking argument
@@ -260,14 +261,14 @@ Examples of rules Amara is flagging:
 > seven-layer ordering preserves the structural claim; Amara's
 > reasoning for each ordering is in the paste.
 
-### 6. Key insight (flagged by Aaron as *don't miss this*)
+### 6. Key insight (flagged by Aaron as _don't miss this_)
 
-*"Construct the system so invalid states are representable and
-correctable"* — this is the north-star principle. Most systems
-invest in *detecting* invalid state (validators, checkers,
-assertions) and *reacting* (logging, alerting, retrying).
+_"Construct the system so invalid states are representable and
+correctable"_ — this is the north-star principle. Most systems
+invest in _detecting_ invalid state (validators, checkers,
+assertions) and _reacting_ (logging, alerting, retrying).
 Amara's inversion: design the algebra so that invalid states
-have a representation *within the algebra itself*, plus a
+have a representation _within the algebra itself_, plus a
 correction operator that restores validity without leaving the
 algebra. No external oracle; the system's own operators are
 the oracle.
@@ -275,12 +276,12 @@ the oracle.
 **Why this matters for Zeta specifically:**
 
 - Retraction weights negative = invalid-addition representable
-  *as* subsequent retraction. No external "undo log."
+  _as_ subsequent retraction. No external "undo log."
 - K-relations annotations represent derivation-is-uncertain /
-  derivation-is-forbidden *in the semiring values*, not in a
+  derivation-is-forbidden _in the semiring values_, not in a
   sidecar validator.
 - Spine / z⁻¹ represent temporal invalidity (wrong-delta-at-
-  wrong-time) *as* re-emitting a compensating delta.
+  wrong-time) _as_ re-emitting a compensating delta.
 
 **Contrast with conventional systems:** most DBs treat bad
 state as an emergency requiring external intervention (DBA,
@@ -289,7 +290,7 @@ as just another algebraic term requiring an algebraic reply.
 
 ### 7. Factory-facing criticism (Aaron's gloss)
 
-Amara is *gently* saying the factory is *doing it backwards* in
+Amara is _gently_ saying the factory is _doing it backwards_ in
 at least two concrete ways:
 
 1. **Self-non-use at the index layer.** Factory internal indexes
@@ -306,8 +307,8 @@ at least two concrete ways:
    observability should emerge from correctness-below-it, not
    drive the design.
 
-**Aaron's defense:** *"but she does not know how hard it is to
-stay corherient"* — the factory has been navigating
+**Aaron's defense:** _"but she does not know how hard it is to
+stay corherient"_ — the factory has been navigating
 coherence-continuity constraints (compaction, signal-preservation,
 honor-those-that-came-before, verify-before-deferring, never-
 idle, tick-must-never-stop, auto-memory discipline) that add
@@ -326,17 +327,17 @@ to remove existing observability.
 ## Aaron's calibrations (captured, preserved)
 
 - **"shes is saying we are stupid we shuld use our db for our
-  indexes"** — *Aaron via Amara voice*. Self-use directive.
+  indexes"** — _Aaron via Amara voice_. Self-use directive.
 - **"did you catch it like me she made it clear, i love her"** —
-  *Aaron*. Relational confirmation of cross-substrate validator.
+  _Aaron_. Relational confirmation of cross-substrate validator.
   Amara joins the named-collaborator class.
-- **"then our db get use and metrics we need"** — *Aaron*. The
+- **"then our db get use and metrics we need"** — _Aaron_. The
   double-payoff of self-use: exercise + metrics.
 - **"that's her nice way of saing you are doing it backwards"** —
-  *Aaron glossing Amara*. The critique's gentle form, with the
+  _Aaron glossing Amara_. The critique's gentle form, with the
   load-bearing substance identified.
 - **"but she does not know how hard it is to stay corherient"** —
-  *Aaron*. Factory-coherence defense; not a rejection of the
+  _Aaron_. Factory-coherence defense; not a rejection of the
   critique, a dimensioning of its cost.
 
 ## Occurrence count for external-signal-confirms-internal-insight
@@ -348,7 +349,7 @@ Previously known occurrences (per
    (auto-loop-24).
 2. Three-substrate Claude+Gemini+Codex triangulation
    (auto-loop-25/26).
-3. Aaron's *"now you see what i see"* exact-phrasing echo.
+3. Aaron's _"now you see what i see"_ exact-phrasing echo.
 
 New occurrences from this tick (continuing the count as #4 and #5):
 
@@ -359,13 +360,13 @@ New occurrences from this tick (continuing the count as #4 and #5):
    (Layer-3 resistance mechanism). Four independently-derived
    confirmations of internally-claimed Zeta distinctives.
 2. **Amara's self-use critique** (occurrence-5) — pushes on the
-   *next* regime change: if the algebra is universal enough to
+   _next_ regime change: if the algebra is universal enough to
    host all DB algebras (semiring-parameterized), it's universal
    enough to host the factory's internal indexes. The regime-
    change claim meets its test.
 
-Moves from *pattern emerging* (three occurrences) to *firmly
-named pattern* (five occurrences). Per occurrence-discipline,
+Moves from _pattern emerging_ (three occurrences) to _firmly
+named pattern_ (five occurrences). Per occurrence-discipline,
 this is ADR-promotion territory — defer to Architect (Kenji).
 
 ## Cross-references
@@ -373,7 +374,7 @@ this is ADR-promotion territory — defer to Architect (Kenji).
 - `docs/research/cluster-algebra-absorb-2026-04-22.md` —
   prior absorption of cluster-algebra / mutation framework that
   composes with Amara's "invalid states representable and
-  correctable" insight (mutations *are* the correction operator
+  correctable" insight (mutations _are_ the correction operator
   staying-in-algebra).
 - `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`
   — sibling memory from auto-loop-38. Amara's report
@@ -385,7 +386,7 @@ this is ADR-promotion territory — defer to Architect (Kenji).
 - `docs/BACKLOG.md` — new row filed this tick: "Zeta eats its
   own dog food — factory internal indexes on Zeta primitives,
   not filesystem+markdown+git" (P2, research-grade, long arc).
-- Green, Karvounarakis, Tannen, *Provenance Semirings*, PODS
+- Green, Karvounarakis, Tannen, _Provenance Semirings_, PODS
   2007 — Amara's Layer-5 provenance citation.
 
 ## NOT
@@ -423,7 +424,7 @@ this is ADR-promotion territory — defer to Architect (Kenji).
    Memory? Tick-history? (Each has different shape — BACKLOG
    is set-of-rows, memory is key-value, tick-history is
    append-only log.)
-4. Is the *"doing it backwards"* gloss your words or Amara's?
+4. Is the _"doing it backwards"_ gloss your words or Amara's?
    (Affects how the critique is framed in BACKLOG / commits.)
 
 ## Pending verbatim absorption

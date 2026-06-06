@@ -22,15 +22,30 @@ composes_with:
   - B-0773
   - B-0775
   - B-0776
-tags: [cluster, hardware, nas, ai-nas, shared-memory, storage, convergence, synology, qnap, ugreen, zimacube, terramaster, asustor]
+tags:
+  [
+    cluster,
+    hardware,
+    nas,
+    ai-nas,
+    shared-memory,
+    storage,
+    convergence,
+    synology,
+    qnap,
+    ugreen,
+    zimacube,
+    terramaster,
+    asustor,
+  ]
 ---
 
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening B-0778 hardware
-sourcing: *"also we are composing with many ai nas systems to
+sourcing: _"also we are composing with many ai nas systems to
 where nas and cpu are tightly integrated with shared memoory ai
-cpus over nas."*
+cpus over nas."_
 
 A distinct hardware category from the mini-PC class named in
 B-0778: **AI NAS** — devices where storage and AI compute fuse
@@ -39,36 +54,36 @@ inference workloads against locally-attached NVMe/HDD storage.
 
 The 2024-2025 product category is rapidly expanding:
 
-| Vendor / class | Example products | Storage capacity | AI CPU | Why fits Zeta substrate |
-|---|---|---|---|---|
-| **UGREEN DXP series** | DXP4800 Plus / DXP6800 Pro / DXP8800 Plus | 4-8 NVMe + 4-8 HDD bays | Intel Pentium / Core i5 / N100 | Consumer CPU; supports Zeta install; affordable NAS-as-cluster-node |
-| **QNAP TS-AI series** | TS-h2477AXU (Ryzen 5700X); TS-x73AU (Ryzen) | 12+ HDD; 2 NVMe | AMD Ryzen 7 / Ryzen AI | NPU-bearing variants emerging; storage + compute on one chassis |
-| **Synology DSx24+ series** | DS1825+, DS1525xs+ | 8-25 HDD | Intel/AMD; some NPU variants 2025+ | Enterprise-grade NAS; supports custom installs via DSM bypass |
-| **TerraMaster Flagship** | F8 SSD Plus; F6-424 Max | All-NVMe (8x); or 6 HDD | Intel Core i3-N305 / N355 (12-core efficiency) | Compact; energy-efficient; supports custom Linux |
-| **Asustor Flashstor** | Flashstor 6 / 12 / 12 Pro | All-NVMe (6-12 slots) | Intel N5105 / N6005 | All-NVMe = NPU+iGPU+CPU shared memory + fast storage |
-| **ZimaCube / ZimaBoard 2** | ZimaCube Pro; ZimaBoard 2 | 6 HDD + 4 NVMe / configurable | Intel Core i5 / N100 / N305 | Designed as NAS-PC convergence; SBC roots; hackable |
-| **Aoostar WTR Pro / GEM** | Aoostar WTR Pro (5 bay); GEM10/GEM12 | 4-5 HDD + 2 NVMe | AMD Ryzen AI | Mini-PC + NAS form factor; consumer pricing |
-| **CWWK / Aliexpress mini-NAS** | CWWK N100 / N305; various | 4-6 NVMe / SATA | Intel N100 / N305 / Ryzen | Very cheap (USD $300-600); standard Linux/NixOS compatible |
-| **DIY**: ITX motherboard + NAS case | Jonsbo N1/N2/N3; Sliger CL520; Fractal Node 304 | Operator chooses | Operator chooses | Custom build path; max flexibility |
+| Vendor / class                      | Example products                                | Storage capacity              | AI CPU                                         | Why fits Zeta substrate                                             |
+| ----------------------------------- | ----------------------------------------------- | ----------------------------- | ---------------------------------------------- | ------------------------------------------------------------------- |
+| **UGREEN DXP series**               | DXP4800 Plus / DXP6800 Pro / DXP8800 Plus       | 4-8 NVMe + 4-8 HDD bays       | Intel Pentium / Core i5 / N100                 | Consumer CPU; supports Zeta install; affordable NAS-as-cluster-node |
+| **QNAP TS-AI series**               | TS-h2477AXU (Ryzen 5700X); TS-x73AU (Ryzen)     | 12+ HDD; 2 NVMe               | AMD Ryzen 7 / Ryzen AI                         | NPU-bearing variants emerging; storage + compute on one chassis     |
+| **Synology DSx24+ series**          | DS1825+, DS1525xs+                              | 8-25 HDD                      | Intel/AMD; some NPU variants 2025+             | Enterprise-grade NAS; supports custom installs via DSM bypass       |
+| **TerraMaster Flagship**            | F8 SSD Plus; F6-424 Max                         | All-NVMe (8x); or 6 HDD       | Intel Core i3-N305 / N355 (12-core efficiency) | Compact; energy-efficient; supports custom Linux                    |
+| **Asustor Flashstor**               | Flashstor 6 / 12 / 12 Pro                       | All-NVMe (6-12 slots)         | Intel N5105 / N6005                            | All-NVMe = NPU+iGPU+CPU shared memory + fast storage                |
+| **ZimaCube / ZimaBoard 2**          | ZimaCube Pro; ZimaBoard 2                       | 6 HDD + 4 NVMe / configurable | Intel Core i5 / N100 / N305                    | Designed as NAS-PC convergence; SBC roots; hackable                 |
+| **Aoostar WTR Pro / GEM**           | Aoostar WTR Pro (5 bay); GEM10/GEM12            | 4-5 HDD + 2 NVMe              | AMD Ryzen AI                                   | Mini-PC + NAS form factor; consumer pricing                         |
+| **CWWK / Aliexpress mini-NAS**      | CWWK N100 / N305; various                       | 4-6 NVMe / SATA               | Intel N100 / N305 / Ryzen                      | Very cheap (USD $300-600); standard Linux/NixOS compatible          |
+| **DIY**: ITX motherboard + NAS case | Jonsbo N1/N2/N3; Sliger CL520; Fractal Node 304 | Operator chooses              | Operator chooses                               | Custom build path; max flexibility                                  |
 
 ## The load-bearing principle: push-down AI processing to NAS
 
-Aaron 2026-05-25 sharpening: *"it's push down AI processing
-directly to nas."*
+Aaron 2026-05-25 sharpening: _"it's push down AI processing
+directly to nas."_
 
 AI NAS convergence isn't just smaller-form-factor — it's the
 **data-gravity / compute-follows-data principle** at the
 storage layer. Same architectural pattern Aaron named earlier
 for NATS JetStream pushdown predicates, applied one layer down:
 
-| Layer | Pushdown principle | What Zeta substrate gets |
-|---|---|---|
-| **NATS JetStream pushdown predicates** | Subject filter evaluated at broker; client receives only matching events | B-0772 Rx fabric: `.Where(pred)` compiles to server-side filter; bandwidth + CPU + latency all saved |
-| **AI NAS pushdown processing** (this row) | Inference compute placed at storage; model executes against data without copying to remote compute | B-0779: inference latency drops; no PCIe / network copy of data to GPU; warm caches stay warm; better energy efficiency |
-| **Zeta-native scheduler data-gravity hints** (B-0767 sub-wave C) | Workloads placed where their data already lives; scheduler honors data-locality observable | B-0767: scheduling decisions minimize data movement cluster-wide |
-| **PostgreSQL pushdown** (well-known) | Predicates pushed to storage layer; FDW pushes filters to remote DB | Industry-sharp mature pattern |
-| **Hadoop / MapReduce** (well-known) | "Ship the code to the data, not the data to the code" | Industry-sharp mature pattern |
-| **Apache Spark locality** (well-known) | Task scheduler honors data-locality (NODE_LOCAL > RACK_LOCAL > ANY) | Industry-sharp mature pattern |
+| Layer                                                            | Pushdown principle                                                                                 | What Zeta substrate gets                                                                                                |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **NATS JetStream pushdown predicates**                           | Subject filter evaluated at broker; client receives only matching events                           | B-0772 Rx fabric: `.Where(pred)` compiles to server-side filter; bandwidth + CPU + latency all saved                    |
+| **AI NAS pushdown processing** (this row)                        | Inference compute placed at storage; model executes against data without copying to remote compute | B-0779: inference latency drops; no PCIe / network copy of data to GPU; warm caches stay warm; better energy efficiency |
+| **Zeta-native scheduler data-gravity hints** (B-0767 sub-wave C) | Workloads placed where their data already lives; scheduler honors data-locality observable         | B-0767: scheduling decisions minimize data movement cluster-wide                                                        |
+| **PostgreSQL pushdown** (well-known)                             | Predicates pushed to storage layer; FDW pushes filters to remote DB                                | Industry-sharp mature pattern                                                                                           |
+| **Hadoop / MapReduce** (well-known)                              | "Ship the code to the data, not the data to the code"                                              | Industry-sharp mature pattern                                                                                           |
+| **Apache Spark locality** (well-known)                           | Task scheduler honors data-locality (NODE_LOCAL > RACK_LOCAL > ANY)                                | Industry-sharp mature pattern                                                                                           |
 
 All instantiate the same load-bearing principle: **compute
 follows data → minimize data movement → bandwidth-engineering
@@ -92,24 +107,24 @@ substrate composes naturally.
 
 The convergence eliminates a tier in cluster architecture:
 
-| Traditional cluster (separate tiers) | AI NAS convergence (one tier) |
-|---|---|
+| Traditional cluster (separate tiers)                                    | AI NAS convergence (one tier)                               |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------- |
 | Compute nodes (mini-PC) + Storage nodes (NAS) + Network connecting them | Single AI NAS = compute + storage + Longhorn-replica-target |
-| PCIe/network copy between compute and storage tier | Local NVMe attached directly to AI-CPU shared-memory bus |
-| 2-3 device tiers × 3 nodes for HA = 6-9 devices | 1 device tier × 3 nodes for HA = 3 devices |
-| Wiring + switching complexity scales with device count | Simpler topology; fewer cables; fewer failure points |
-| Per-tier vendor diversity | Operator picks one AI NAS class; HA via 3+ identical units |
-| ~$3000-5000 home-lab BOM | ~$1500-3000 home-lab BOM (3 AI NAS units) |
+| PCIe/network copy between compute and storage tier                      | Local NVMe attached directly to AI-CPU shared-memory bus    |
+| 2-3 device tiers × 3 nodes for HA = 6-9 devices                         | 1 device tier × 3 nodes for HA = 3 devices                  |
+| Wiring + switching complexity scales with device count                  | Simpler topology; fewer cables; fewer failure points        |
+| Per-tier vendor diversity                                               | Operator picks one AI NAS class; HA via 3+ identical units  |
+| ~$3000-5000 home-lab BOM                                                | ~$1500-3000 home-lab BOM (3 AI NAS units)                   |
 
 For AI workloads specifically:
 
-| Workload class | Discrete tiers | AI NAS convergence |
-|---|---|---|
-| Small-model inference (sub-7B) | NPU on compute node ← network ← storage node | NPU on same chassis as model weights → zero network hop; warm cache stays warm |
-| Embedding generation + vector store | Compute node → network → vector DB on storage node | Embedding compute + vector storage co-located; no copy overhead |
-| RAG (retrieval-augmented generation) | Compute (inference) ← network ← retrieval (storage) ← network ← embedding (compute) | Inference + retrieval + embedding all on same chassis; storage local; perf wins compound |
-| Multi-tenant inference + per-tenant storage | Compute fleet + storage fleet + per-tenant routing | Per-tenant AI NAS unit; tenant isolation = device boundary; simpler operationally |
-| Training data + training compute | Separate compute + storage tiers (standard) | Less ideal for training (need many GPUs); fall back to discrete compute + storage when training; AI NAS for inference-dominated workloads |
+| Workload class                              | Discrete tiers                                                                      | AI NAS convergence                                                                                                                        |
+| ------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Small-model inference (sub-7B)              | NPU on compute node ← network ← storage node                                        | NPU on same chassis as model weights → zero network hop; warm cache stays warm                                                            |
+| Embedding generation + vector store         | Compute node → network → vector DB on storage node                                  | Embedding compute + vector storage co-located; no copy overhead                                                                           |
+| RAG (retrieval-augmented generation)        | Compute (inference) ← network ← retrieval (storage) ← network ← embedding (compute) | Inference + retrieval + embedding all on same chassis; storage local; perf wins compound                                                  |
+| Multi-tenant inference + per-tenant storage | Compute fleet + storage fleet + per-tenant routing                                  | Per-tenant AI NAS unit; tenant isolation = device boundary; simpler operationally                                                         |
+| Training data + training compute            | Separate compute + storage tiers (standard)                                         | Less ideal for training (need many GPUs); fall back to discrete compute + storage when training; AI NAS for inference-dominated workloads |
 
 The pattern: **AI NAS convergence wins for inference-heavy
 workloads** (most home-lab + small-business AI today).
@@ -162,16 +177,9 @@ Composes with:
 ## Acceptance
 
 - [ ] Per-AI-NAS-vendor compatibility matrix added to
-      `docs/hardware-shopping-list.md` (B-0778):
-      - Vendor + model
-      - Zeta substrate compatibility status (works / partial /
-        blocked-by-vendor-lockdown)
-      - Storage layout (NVMe count + HDD bay count)
-      - AI CPU class (Intel ML/LL/AL or AMD Ryzen AI or
-        N100-class)
-      - Network (1GbE / 2.5GbE / 10GbE built-in)
-      - Power draw (idle / typical AI load / max)
-      - Per-vendor BIOS quirks (per B-0770 BIOS handler library)
+      `docs/hardware-shopping-list.md` (B-0778): - Vendor + model - Zeta substrate compatibility status (works / partial /
+      blocked-by-vendor-lockdown) - Storage layout (NVMe count + HDD bay count) - AI CPU class (Intel ML/LL/AL or AMD Ryzen AI or
+      N100-class) - Network (1GbE / 2.5GbE / 10GbE built-in) - Power draw (idle / typical AI load / max) - Per-vendor BIOS quirks (per B-0770 BIOS handler library)
 - [ ] AI NAS reference deployment recipe: single-node home
       lab with AI NAS as both compute + storage + cluster
       member; documents the convergence pattern
@@ -263,7 +271,7 @@ substrate-honest competition.
 - B-0771 — audio+NPU+ONNX (same shared-memory substrate
   used by AI NAS class)
 - B-0772 — observable+controllable cluster fabric (storage
-  + inference observability co-located on AI NAS chassis)
+  - inference observability co-located on AI NAS chassis)
 - B-0773 — digital twin (twin events + storage co-located)
 - B-0775 — HA-that-scales (AI NAS class fits tier 50-500
   nodes; many small > few big)

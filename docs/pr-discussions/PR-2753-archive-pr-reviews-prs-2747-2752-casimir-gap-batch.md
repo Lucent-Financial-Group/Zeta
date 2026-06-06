@@ -33,6 +33,7 @@ Total preserved: 24 review threads + 9 reviews + 3 comments across 5 PRs.
 This PR adds five new git-native PR discussion archive files under `docs/pr-discussions/`, preserving PR metadata, descriptions, reviews, review threads, and general comments for PRs #2747, #2749, #2750, #2751, and #2752.
 
 **Changes:**
+
 - Added PR discussion archive markdown files (YAML frontmatter + captured review content) for five recently merged PRs.
 - Captured Copilot review threads and general comments into durable repo history under `docs/pr-discussions/`.
 
@@ -43,13 +44,14 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 5 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-2747-feat-loop-step-4b-pr-archive-discipline-for-every-agent.md | Adds the archived discussion record for PR #2747. |
+| File                                                                                     | Description                                       |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| docs/pr-discussions/PR-2747-feat-loop-step-4b-pr-archive-discipline-for-every-agent.md   | Adds the archived discussion record for PR #2747. |
 | docs/pr-discussions/PR-2749-docs-backlog-b-0415-craft-school-subject-dependency-graph.md | Adds the archived discussion record for PR #2749. |
-| docs/pr-discussions/PR-2750-feat-dashboard-render-all-three-arrays.md | Adds the archived discussion record for PR #2750. |
-| docs/pr-discussions/PR-2751-feat-seo-b-0234-dashboard-seo-meta-tags.md | Adds the archived discussion record for PR #2751. |
-| docs/pr-discussions/PR-2752-fix-dashboard-b-0417-rename-zeta-factory-to-zeta-plant.md | Adds the archived discussion record for PR #2752. |
+| docs/pr-discussions/PR-2750-feat-dashboard-render-all-three-arrays.md                    | Adds the archived discussion record for PR #2750. |
+| docs/pr-discussions/PR-2751-feat-seo-b-0234-dashboard-seo-meta-tags.md                   | Adds the archived discussion record for PR #2751. |
+| docs/pr-discussions/PR-2752-fix-dashboard-b-0417-rename-zeta-factory-to-zeta-plant.md    | Adds the archived discussion record for PR #2752. |
+
 </details>
 
 ## Review threads

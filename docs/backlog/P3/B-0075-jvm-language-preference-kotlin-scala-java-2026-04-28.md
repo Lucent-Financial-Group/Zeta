@@ -19,8 +19,8 @@ type: friction-reducer
 Aaron 2026-04-28T14:48Z, after PR #662 landed `tools/alloy/AlloyRunner.java`
 honestly back into the CodeQL surface:
 
-> *"also i'm a big fan of kotlin we should prefere jvm languages in this
-> order kotlin, scala, java  backlog this any any updates that fall out"*
+> _"also i'm a big fan of kotlin we should prefere jvm languages in this
+> order kotlin, scala, java backlog this any any updates that fall out"_
 
 ## The preference
 
@@ -57,7 +57,6 @@ Apply this preference when:
   non-trivial work. Current state: 1 file, single-purpose Alloy driver,
   CodeQL-scanned via PR #662. Migration not urgent; trigger when the
   file is touched for non-bug-fix reasons.
-
   - Kotlin migration adds: gradle / kotlinc / kotlin-stdlib runtime
     dependency
   - Kotlin migration buys: null-safety, less ceremony, modern syntax

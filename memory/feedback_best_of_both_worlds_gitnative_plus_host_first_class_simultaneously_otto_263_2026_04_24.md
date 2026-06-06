@@ -4,6 +4,7 @@ description: Aaron Otto-263 unifying root principle. Names the "why" behind ever
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The principle
 
 **When Zeta runs on a host, our goal is:**
@@ -22,13 +23,14 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Direct Aaron quote 2026-04-24:
 
-> *"out goal when we run on a host is to turn that
+> _"out goal when we run on a host is to turn that
 > signals gitnative and fully support the host first
-> class at the same time best of both worlds"*
+> class at the same time best of both worlds"_
 
 ## Why both, not either
 
 **Gitnative alone** (host as thin layer):
+
 - ✓ Durable; survives host migrations / outages / cost
   changes
 - ✓ Corpus is complete; training signal preserved
@@ -39,6 +41,7 @@ Direct Aaron quote 2026-04-24:
 - ✗ Re-invents what the host does well
 
 **Host first-class alone** (GitHub as canonical):
+
 - ✓ Best-in-class UX (PR review, @mentions, mobile,
   notifications)
 - ✓ Ecosystem (actions, bots, apps, integrations)
@@ -50,6 +53,7 @@ Direct Aaron quote 2026-04-24:
   feature deprecation
 
 **Both simultaneously** (Otto-263):
+
 - ✓ Durability AND UX
 - ✓ Complete corpus AND rich ecosystem
 - ✓ Host-native workflow AND host-portable future
@@ -150,13 +154,13 @@ Sync mechanism must be:
   those are PART of "first class host support."
 - Does NOT require gitnative to be machine-
   verifiable against host 100% of the time. Sampled
-  + cadenced verification is the default.
+  - cadenced verification is the default.
 
 ## Direct Aaron quote to preserve
 
-> *"out goal when we run on a host is to turn that
+> _"out goal when we run on a host is to turn that
 > signals gitnative and fully support the host first
-> class at the same time best of both worlds"*
+> class at the same time best of both worlds"_
 
 Future Otto: when a design choice forces a "gitnative
 vs host" framing, REJECT the framing — the answer is

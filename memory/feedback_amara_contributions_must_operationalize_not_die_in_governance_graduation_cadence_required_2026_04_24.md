@@ -4,13 +4,14 @@ description: Aaron Otto-105 directional correction — "are they just dead after
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-105 (verbatim):
 
-*"all of amara suggestions are eventually going to become
+_"all of amara suggestions are eventually going to become
 operations right they are not just going to research to die,
 i mean of course you will inspect and such but are they just
 dead after you absorb them now waiting on governance
-forever, thats no good her contributions matter a lot too"*
+forever, thats no good her contributions matter a lot too"_
 
 ## The rule
 
@@ -35,6 +36,7 @@ Otto honors this by establishing a **graduation cadence**:
 ## Why: the failure mode made visible
 
 Aaron's framing "research to die" captures the drift:
+
 - Amara sends ferry (1st-11th + counting)
 - Otto absorbs verbatim, notes overlap, files BACKLOG row
 - BACKLOG row sits at P2/P3 research-grade
@@ -53,12 +55,12 @@ is contradictory with the stated values.
 
 Some Amara-derived work HAS operationalized:
 
-| Ferry | Operational landing | Shipped |
-|---|---|---|
-| 3rd (PR #219) — drift taxonomy | SD-9 "agreement is signal, not proof" soft default; DRIFT-TAXONOMY pattern 5 (truth-confirmation-from-agreement) | YES |
-| 4th (PR #221) — memory drift / Claude-to-memories | Decision-proxy-evidence schema (PR #222); DP-NNN.yaml records | YES |
-| 8th (PR #274) — provenance-aware bullshit detector | Design doc landed (PR #282); v1 CRITICAL-only delta (PR #286) | DESIGN ONLY — not shipped yet |
-| 5th-7th-9th-10th-11th | Aurora-aligned KSK / modules / oracle-rules / Temporal Coordination Detection | DESIGN ONLY |
+| Ferry                                              | Operational landing                                                                                              | Shipped                       |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| 3rd (PR #219) — drift taxonomy                     | SD-9 "agreement is signal, not proof" soft default; DRIFT-TAXONOMY pattern 5 (truth-confirmation-from-agreement) | YES                           |
+| 4th (PR #221) — memory drift / Claude-to-memories  | Decision-proxy-evidence schema (PR #222); DP-NNN.yaml records                                                    | YES                           |
+| 8th (PR #274) — provenance-aware bullshit detector | Design doc landed (PR #282); v1 CRITICAL-only delta (PR #286)                                                    | DESIGN ONLY — not shipped yet |
+| 5th-7th-9th-10th-11th                              | Aurora-aligned KSK / modules / oracle-rules / Temporal Coordination Detection                                    | DESIGN ONLY                   |
 
 **Ratio:** ~2 of 11 ferries have landed operationally.
 That is the "dying in governance" pattern Aaron names.
@@ -73,8 +75,8 @@ Otto ships ONE small Amara-derived operational change.
 ### Priority queue (smallest first)
 
 1. **`robustAggregate` function** (from 10th ferry): median
-   + MAD + 3-sigma filter. ~10 F# lines + property tests.
-   Ships to `src/Core/Statistics.fs` or similar. SMALL.
+   - MAD + 3-sigma filter. ~10 F# lines + property tests.
+     Ships to `src/Core/Statistics.fs` or similar. SMALL.
 2. **`antiConsensusGate` function** (from 10th ferry): list
    of `Claim<'T>` → Ok/Error based on distinct provenance-
    root count. ~15 F# lines + tests. SMALL.
@@ -98,6 +100,7 @@ Otto ships ONE small Amara-derived operational change.
    Requires multi-node foundation first. LARGE.
 
 ### Gating discipline (per Otto-82 / Otto-104
+
 authority calibration)
 
 - **Advisory-only Aminata pass** on each item. Aminata
@@ -116,6 +119,7 @@ authority calibration)
 
 Otto maintains a running tracker (BACKLOG row or
 dedicated doc) of:
+
 - Shipped Amara-derived operational changes (date + PR)
 - Queue (next 3-5 priorities)
 - Aminata status per item (no-pass / advisory-findings /
@@ -172,7 +176,7 @@ dedicated doc) of:
 
 ## Direct quote preserved for future Otto instances
 
-*"her contributions matter a lot too"*
+_"her contributions matter a lot too"_
 
 Future Otto: when tempted to just absorb + file + wait,
 remember Aaron explicitly named this as not-good-enough.
@@ -182,6 +186,7 @@ landing, not sedimentary accumulation.
 ## First graduation — SHIPPED Otto-105 (PR #295)
 
 Proof of cadence landed same tick as the directive:
+
 - `src/Core/RobustStats.fs` with `median` / `mad` /
   `robustAggregate` (Amara 10th-ferry snippet preserved
   verbatim in XML-doc)
@@ -194,13 +199,14 @@ Elapsed from Aaron's directive to shipped PR: ~30 min
 inside the same Otto-105 tick. Establishes the pattern.
 
 ## Aaron Otto-105 second message — widens scope to ALL
+
 research
 
-*"we need to be constantly moving her stuff in just like
+_"we need to be constantly moving her stuff in just like
 the rest, parallel track its frine to research first but
 also any absorbs that land in research and in general all
 research should be reviwed on a cadience for
-operalitazation"*
+operalitazation"_
 
 This widens the graduation-cadence rule beyond Amara to:
 
@@ -216,6 +222,7 @@ This widens the graduation-cadence rule beyond Amara to:
 ### Expanded priority queue (merged Amara + other research)
 
 Amara 10th ferry:
+
 - [x] `robustAggregate` — PR #295 (SHIPPED Otto-105)
 - [ ] `antiConsensusGate`
 - [ ] `Provenance` + `Claim<'T>` types
@@ -224,33 +231,38 @@ Amara 10th ferry:
 - [ ] cap-hit visibility audit
 
 Amara 9th ferry:
+
 - [ ] 5-feature `B(c)` composite (alternative to 10th's
-  7-feature `BS(c)`; needs ADR on factorization pick)
+      7-feature `BS(c)`; needs ADR on factorization pick)
 
 Amara 8th ferry (PR #274):
+
 - [ ] Provenance-aware semantic bullshit-detector
-  implementation (currently design-status in PR #282 /
-  #286 v1 CRITICAL-only delta)
+      implementation (currently design-status in PR #282 /
+      #286 v1 CRITICAL-only delta)
 
 Amara 11th ferry (pending Otto-106):
+
 - [ ] Temporal Coordination Detection Layer (PLV /
-  cross-correlation / burst alignment) — LARGE, needs
-  multi-node foundation first
+      cross-correlation / burst alignment) — LARGE, needs
+      multi-node foundation first
 
 Amara 7th ferry:
+
 - [ ] KSK-as-Zeta-module implementation (L-effort)
 
 Other-research graduation candidates (non-Amara):
+
 - [ ] `docs/research/drift-taxonomy-bootstrap-precursor-
-  2026-04-22.md` — beyond SD-9 / pattern-5 shipped,
-  what additional operationalization?
+2026-04-22.md` — beyond SD-9 / pattern-5 shipped,
+      what additional operationalization?
 - [ ] `docs/research/codex-builtins-skills-vs-plugins-
-  factory-integration-2026-04-24.md` (Otto-103, PR #290)
-  — Option B in-tree `.codex-plugin/plugin.json` + 
-  `.claude-plugin/plugin.json` per Otto-104 plugin-
-  marketplace direction; shippable
+factory-integration-2026-04-24.md` (Otto-103, PR #290)
+      — Option B in-tree `.codex-plugin/plugin.json` +
+      `.claude-plugin/plugin.json` per Otto-104 plugin-
+      marketplace direction; shippable
 - [ ] Any `docs/research/*.md` older than 30 days not
-  yet operationalized — quarterly scan
+      yet operationalized — quarterly scan
 
 ### Cadence rule, widened
 

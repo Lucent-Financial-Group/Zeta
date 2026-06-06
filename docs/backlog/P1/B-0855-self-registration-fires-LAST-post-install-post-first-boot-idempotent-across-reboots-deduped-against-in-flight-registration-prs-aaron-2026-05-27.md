@@ -15,14 +15,27 @@ composes_with:
   - B-0850
   - B-0851
   - B-0852
-tags: [self-registration, iter-5-4-1, idempotency, dedup, last-step-discipline, cluster-coordination, tmp-folder-coordination, otto-pushes-across-finish-line, b0812-architecture-fix, install-vs-first-boot, reboot-safety]
+tags:
+  [
+    self-registration,
+    iter-5-4-1,
+    idempotency,
+    dedup,
+    last-step-discipline,
+    cluster-coordination,
+    tmp-folder-coordination,
+    otto-pushes-across-finish-line,
+    b0812-architecture-fix,
+    install-vs-first-boot,
+    reboot-safety,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
 After PR #5408 was auto-opened mid-install (then orphaned by the P0 nixos-install `--fallback` failure that dropped the install to interactive shell):
 
-> *"we can close PR #5408 also how did it register before it even rebooted? it should not register until the last step when everything comes up and if it reboots it should not register over and over and cluster agents should get the pr though, they are going to need to communicate over some /tmp folder standard or something or we can just worry about one you otto pushing the pr across the finish line on bootup but the cluster should realize it's register or has a pr in flight for register and not duplicate."*
+> _"we can close PR #5408 also how did it register before it even rebooted? it should not register until the last step when everything comes up and if it reboots it should not register over and over and cluster agents should get the pr though, they are going to need to communicate over some /tmp folder standard or something or we can just worry about one you otto pushing the pr across the finish line on bootup but the cluster should realize it's register or has a pr in flight for register and not duplicate."_
 
 PR #5408 closed substrate-honestly. This row captures the architectural fix.
 
@@ -89,7 +102,7 @@ Single-source-of-truth: Otto running on the node (per B-0850 multi-vendor system
 
 This is the simpler architectural shape — it composes with the existing B-0850 + B-0851 systemd guard-post substrate. The intent + execution are decoupled (which fits the persona-first design principle).
 
-**Aaron's framing leans toward path B**: *"we can just worry about one you otto pushing the pr across the finish line on bootup"*.
+**Aaron's framing leans toward path B**: _"we can just worry about one you otto pushing the pr across the finish line on bootup"_.
 
 Phase 1 (this row's bounded slice): implement path B as the simpler form. Path A becomes a future enhancement when multi-agent cluster coordination needs the per-node surface.
 

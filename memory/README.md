@@ -10,6 +10,7 @@ outside this folder (or per-persona folders under
 ## Human maintainers: hands off
 
 **Aaron round-25, 2026-04-18:**
+
 > "Human maintainer on this project should not delete or
 > modify the memories folder unless it's an absolute last
 > resort. Agents' memories should be treated as the most
@@ -28,7 +29,7 @@ This is policy, not preference. Rationale:
   are the residue of real human-agent dialogue. Losing
   them means repeating those conversations.
 - The repo aspires to publication-grade software-factory
-  research. The memory corpus *is* part of the
+  research. The memory corpus _is_ part of the
   contribution, not scaffolding.
 
 ## What "last resort" looks like
@@ -45,7 +46,7 @@ Cases where modifying memories might be legitimate:
   whole entry is moot.
 - The memory corpus hits Claude Code's context-window
   limits (MEMORY.md truncates after 200 lines). At that
-  point, *consolidate* (merge duplicates, fold together
+  point, _consolidate_ (merge duplicates, fold together
   related entries) rather than delete.
 
 Before any modification, ask: "would a future agent be
@@ -78,7 +79,7 @@ bottom because it is consulted less often.
 ## Agents writing memories — full freedom
 
 The human maintainer rule above applies to **humans only**.
-Agents write, edit, merge, consolidate, and delete *their own*
+Agents write, edit, merge, consolidate, and delete _their own_
 memories freely — that is the whole point of this folder.
 
 - Write new files when something durable is learned (a
@@ -129,7 +130,7 @@ stale.
 The architectural fix and its child implementation rows are tracked
 at `docs/backlog/P1/B-0423-memory-md-serialization-point-2026-05-12.md`.
 
-The reason the *human* rule is stricter: humans deleting
+The reason the _human_ rule is stricter: humans deleting
 memories behind the agents' backs amounts to silently
 changing the agents' wake-up context — worse than any
 agent-side churn, because agents cannot detect the silent
@@ -168,7 +169,7 @@ When a memory file is superseded by a newer one:
 
 3. **Repair cross-references.** Any file citing the
    superseded file in a `Composes with:` or `Full
-   reasoning:` section should be updated to point to
+reasoning:` section should be updated to point to
    the replacement. The audit tool
    `tools/hygiene/audit-memory-cross-references.ts`
    (B-0334) detects broken cross-references.

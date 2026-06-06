@@ -27,11 +27,11 @@ Install a "Zeta-Factory" GitHub App on the `Lucent-Financial-Group/Zeta` reposit
 
 ## Why GitHub App vs alternatives
 
-| Approach | Pool | Attribution | Trade-off |
-|---|---|---|---|
-| Shared user PAT (current) | 1 × 5000/hr (per user) | Human user identity | Saturates with multiple agents |
-| Per-agent user PATs | N × 5000/hr (per added user) | Multiple human identities | Identity confusion; ongoing account management |
-| **GitHub App** | Separate pool, scales with installation activity (typically 5000/hr+ for active installs) | `Zeta-Factory[bot]` clean attribution | Setup; permissions config; bot-author PRs |
+| Approach                  | Pool                                                                                      | Attribution                           | Trade-off                                      |
+| ------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------- | ---------------------------------------------- |
+| Shared user PAT (current) | 1 × 5000/hr (per user)                                                                    | Human user identity                   | Saturates with multiple agents                 |
+| Per-agent user PATs       | N × 5000/hr (per added user)                                                              | Multiple human identities             | Identity confusion; ongoing account management |
+| **GitHub App**            | Separate pool, scales with installation activity (typically 5000/hr+ for active installs) | `Zeta-Factory[bot]` clean attribution | Setup; permissions config; bot-author PRs      |
 
 GitHub App is the substrate-honest choice for **automated factory work**. Human contributors keep using PATs for their work; automated agents (Otto background worker, Lior, scheduled routines) auth via the App.
 
@@ -65,7 +65,7 @@ export async function getInstallationToken(): Promise<string> {
     installationId: parseInt(process.env.ZETA_APP_INSTALLATION_ID!),
   });
   const { token } = await auth({ type: "installation" });
-  return token;  // expires ~1hr; callers re-fetch as needed
+  return token; // expires ~1hr; callers re-fetch as needed
 }
 ```
 
@@ -79,15 +79,15 @@ Agent scripts:
 
 ## Decomposition into implementation slices
 
-| Slice | Description | Status |
-|-------|-------------|--------|
-| 1 | Create GitHub App in LFG org with required permissions | open |
-| 2 | Install on Zeta repo; capture App ID + installation ID + private key secrets | open |
-| 3 | `tools/auth/get-installation-token.ts` — JWT signing + installation token fetch | open |
-| 4 | Token-rotation logic (1hr expiry) + caching | open |
-| 5 | Update peer Otto background worker prompt to use App token | open |
-| 6 | Update Lior antigravity loop to use App token | open |
-| 7 | Document in `docs/AUTH.md`; update scarcity tracker (B-0570) to report App + user pools separately | open |
+| Slice | Description                                                                                        | Status |
+| ----- | -------------------------------------------------------------------------------------------------- | ------ |
+| 1     | Create GitHub App in LFG org with required permissions                                             | open   |
+| 2     | Install on Zeta repo; capture App ID + installation ID + private key secrets                       | open   |
+| 3     | `tools/auth/get-installation-token.ts` — JWT signing + installation token fetch                    | open   |
+| 4     | Token-rotation logic (1hr expiry) + caching                                                        | open   |
+| 5     | Update peer Otto background worker prompt to use App token                                         | open   |
+| 6     | Update Lior antigravity loop to use App token                                                      | open   |
+| 7     | Document in `docs/AUTH.md`; update scarcity tracker (B-0570) to report App + user pools separately | open   |
 
 ## Composes with
 

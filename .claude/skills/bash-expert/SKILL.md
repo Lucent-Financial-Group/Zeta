@@ -173,7 +173,7 @@ When we land the CI lint workflow, shellcheck is a gate.
 
 - **`while IFS= read -r line` swallows the last line if
   the file has no trailing newline.** Use `while IFS= read
-  -r line || [ -n "$line" ]`.
+-r line || [ -n "$line" ]`.
 - **`$(cmd)` strips trailing newlines** — rarely an issue
   but can corrupt binary data if you ever wrap a binary
   output in `$(…)`.

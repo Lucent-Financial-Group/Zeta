@@ -39,13 +39,13 @@ Aaron 2026-05-01 in chat (verbatim, immediately after Otto-treated
 the single severity:all CodeQL ruleset as a deliberate technical
 constraint in B-0125):
 
-> *"this project is a week old assume everything is greenfield
+> _"this project is a week old assume everything is greenfield
 > expically our host setup beccasue it's not gitnative and i have
 > to click everythigng, i setup things for my convience for
 > everytihng i had to do i optimized for time to get you started
 > and then all the code you've written is been following optimizing
 > rules but theyv been getting better as we go so even those are not
-> up to current standards"*
+> up to current standards"_
 
 Three specific revelations that compose into the meta-rule:
 
@@ -71,7 +71,7 @@ greenfield-provisional rule applies to: host configs (UI-clicked),
 in-flight memory entries that haven't been multi-domain-tested,
 and Otto's working code-style rules. The current bar is not the
 bar that produced most of the existing code. Otto reading the
-substrate at any given moment is reading a *gradient* — newer
+substrate at any given moment is reading a _gradient_ — newer
 rules apply higher standards than older rules. Treating the
 substrate as flat-canonical loses the gradient information.
 
@@ -127,7 +127,7 @@ The host-mutation-needs-Aaron-sign-off norm (derived from Otto-357
 no-directives + the no-spending-increase carve-out per
 `feedback_aaron_full_github_access_authorization_*` + the failure
 modes from prior host mutations per task #343 drift-debt receipt)
-remains in force as a default. The *interpretation* shifts: the
+remains in force as a default. The _interpretation_ shifts: the
 host configurations being mutated are themselves provisional, so
 "the host mutation breaks the original design" framing is often
 false because there wasn't an original design to break. Per-row
@@ -135,7 +135,7 @@ Aaron sign-offs (like the one for B-0125 multi-ruleset
 authorization) are the explicit mechanism for proceeding; absent
 that, the default still defers to Aaron because the failure modes
 from prior host mutations (Otto-342/343 cluster) remain real
-*regardless* of whether the original config was deliberate.
+_regardless_ of whether the original config was deliberate.
 
 # 2026-05-01 cause-attribution refinement (Aaron)
 
@@ -144,10 +144,10 @@ arc, after seeing Otto's Phase 1 audit empirically validate the
 "branch protection IS mostly accidental complexity surviving
 alongside its modern replacement" framing):
 
-> *"cause it's accidental complexity i cause by being uneducated
+> _"cause it's accidental complexity i cause by being uneducated
 > at the time i set it up and in a rush to get you started but
 > safe so i clicked everything without reading much just going off
-> limited past experience with setting up new repos from scratch"*
+> limited past experience with setting up new repos from scratch"_
 
 Aaron names the **cause** of the accidental shape. Three
 load-bearing factors:
@@ -179,12 +179,12 @@ detour from work.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"At week one, every configuration is a candidate. Reverse-engineering
-load-bearing-ness from existence is the wrong prior."*
+_"At week one, every configuration is a candidate. Reverse-engineering
+load-bearing-ness from existence is the wrong prior."_
 
 Refinement of the carved sentence (Aaron 2026-05-01 cause-
-attribution): the WHY is *"rushed bootstrap + safety-bias
-click-everything + limited prior experience."* Recognizing this
+attribution): the WHY is _"rushed bootstrap + safety-bias
+click-everything + limited prior experience."_ Recognizing this
 generative mechanism shifts the rule from "be skeptical of
 configs that exist" to "be deliberate about which configs to
 KEEP — the original choice was a click, not a decision."
@@ -212,7 +212,7 @@ on cadence, not by maintainer fiat.)
   candidates) — this rule applies the same lens to configurations
   and Otto's own coding rules, not just to memory entries.
 - Otto-272 / Otto-273 DST discipline + the CSAP eight-layer
-  architecture — the Razor + CSAP under DST grading is what *would*
+  architecture — the Razor + CSAP under DST grading is what _would_
   promote configurations from convenience to deliberate over time.
   At week one, very little has been graded yet.
 
@@ -229,8 +229,8 @@ on cadence, not by maintainer fiat.)
   configurations and rules that haven't had that grading.
 - Does NOT change the WONT-DO carve-out from Otto-357. WONT-DO
   additions still require Aaron sign-off, but the framing on WHY
-  has been clarified by Aaron 2026-05-01: *"the wont dos, we will
-  likely do everything later"*. WONT-DO is "deferral class," not
+  has been clarified by Aaron 2026-05-01: _"the wont dos, we will
+  likely do everything later"_. WONT-DO is "deferral class," not
   "irreversibility class" — the sign-off is for the parking
   decision itself, not for foreclosing the future. Treat WONT-DO
   additions as durable parking, not permanent exclusion.

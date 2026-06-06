@@ -1,7 +1,7 @@
 # Aaron (Rodney) Stainback
 
-*Combined resume · Compiled by Otto (Claude Code) · 2026-05-07*
-*Sources: 16 Dropbox resume files (2026-04-19), career substrate memory, patent records, 537 GitHub issues across 223 repositories (2011-2026), project memory files*
+_Combined resume · Compiled by Otto (Claude Code) · 2026-05-07_
+_Sources: 16 Dropbox resume files (2026-04-19), career substrate memory, patent records, 537 GitHub issues across 223 repositories (2011-2026), project memory files_
 
 ---
 
@@ -24,8 +24,9 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 ## Experience
 
 ### ServiceTitan, Inc. — Principal Engineer
-*May 2021 – Present · Rolesville, NC (Remote)*
-*NYSE: TTAN (IPO December 2024 — witnessed from inside)*
+
+_May 2021 – Present · Rolesville, NC (Remote)_
+_NYSE: TTAN (IPO December 2024 — witnessed from inside)_
 
 - C-level and founders-level technical strategy collaboration for field-service SaaS platform
 - Architect of microservice framework on Kubernetes
@@ -34,7 +35,8 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: field-service scheduling/dispatch/accounting are delta-heavy append-with-retract workloads — same IVM pattern, sixth substrate
 
 ### Lucent Financial Group / Zeta — Founder & Lead Architect
-*2024 – Present*
+
+_2024 – Present_
 
 - Designing retraction-native incremental view maintenance library (DBSP Z-set operator algebra) in F# on .NET 10
 - Built multi-agent AI software factory: 4 AI nodes (Claude, GPT, Grok, Gemini) in BFT consensus (3 active, 1 spare), rotating hats
@@ -45,7 +47,8 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Filed 11 trajectory-grounded backlog items in a single session covering Ace DLC content packs, ARC-AGI-3 structure recognition, green lantern IoT ring, digital sanctuary protocol, concordance AI, and standing Rx query infrastructure
 
 ### LexisNexis — Lead Senior Technical Architect
-*June 2019 – May 2021 · Raleigh, NC (via Collabera)*
+
+_June 2019 – May 2021 · Raleigh, NC (via Collabera)_
 
 - Re-architected flagship Legal Search engine on vendor-agnostic Kubernetes (EKS/AKS/GKE/bare-metal)
 - **Cut AWS infrastructure budget by millions annually** through architecture optimization
@@ -63,8 +66,9 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: stare decisis is formal retraction-propagation — legal search = incremental view maintenance over a precedent graph. Fifth substrate.
 
 ### Itron, Inc. — IoT Architect → Engineering Advisor (Director-level)
-*April 2012 – June 2019 · Raleigh, NC (via The Select Group)*
-*7-year tenure: R&D Principal SW Engineer → R&D IoT Architect → R&D Data Scientist → Director-level IoT Engineering Advisor*
+
+_April 2012 – June 2019 · Raleigh, NC (via The Select Group)_
+_7-year tenure: R&D Principal SW Engineer → R&D IoT Architect → R&D Data Scientist → Director-level IoT Engineering Advisor_
 
 - Architected systems for **100M+ connected electric/gas/water meters** across continental-scale deployments
 - **Co-inventor, US Patent 10,834,144** — hub-and-agent firewall traversal method for IoT device management with capability-controlled local execution
@@ -82,7 +86,8 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: 100M+ meters emitting delta-readings — OpenWay Collection Engine IS a delta pipeline at continental scale. Fourth substrate.
 
 ### Allscripts — Principal Infrastructure Architect
-*January 2011 – April 2012 · Raleigh, NC (via Robert Half)*
+
+_January 2011 – April 2012 · Raleigh, NC (via Robert Half)_
 
 - Built "Native Integration" WCF engine between merged healthcare company products
 - MEF plugin architecture with T4 code generation (**40% of codebase auto-generated**)
@@ -92,7 +97,8 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - AOP (Aspect Oriented Programming) via WCF Invokers
 
 ### MacVector, Inc. — Principal Software Architect
-*April 2010 – January 2011*
+
+_April 2010 – January 2011_
 
 - Cross-platform Windows/Mac redesign of molecular biology software suite
 - C++/CLI interop layer with **zero performance penalty**
@@ -102,14 +108,16 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: sequence alignment = incrementally maintained caches — sequences retracted, re-aligned, re-indexed. Third substrate.
 
 ### IAT Insurance Group — Senior Principal Consultant
-*August 2009 – April 2010 · Raleigh, NC (via Robert Half)*
+
+_August 2009 – April 2010 · Raleigh, NC (via Robert Half)_
 
 - Multidimensional risk-analysis cubes
 - WCF services with NetTcp workaround for IIS 6 limitations
 - Delivered LINQ-to-Objects/SQL/XML training to engineering teams
 
 ### Functional Tree, Inc. — CTO & Co-Founder
-*September 2008 – August 2009*
+
+_September 2008 – August 2009_
 
 - **Venture-funded startup** — raised capital, led technical architecture
 - **Early adopter of SQL Azure CTP** (pre-Azure GA) — among first production users globally
@@ -118,14 +126,16 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Exotic Microsoft R&D stack: F#, XNA (with Karvonite), Phoenix Compiler, Oslo CTP, Axum, IronPython, Pex, STM (Software Transactional Memory) CTP
 
 ### Moveable Cubicle + SmartOnline — Interim CTO
-*April 2008 – September 2008 · (via Robert Half)*
+
+_April 2008 – September 2008 · (via Robert Half)_
 
 - Replaced IT infrastructure, **saved $200K annually**
 - VoIP/PBX/BizTalk integration
 - Multi-level-marketing web application with n-layer advertising model
 
 ### RMSource — Lead Developer
-*September 2007 – March 2008*
+
+_September 2007 – March 2008_
 
 - Full workflow system for CRM: WCF/WPF/XAML/Workflow Foundation
 - SharePoint bridge integration
@@ -133,14 +143,16 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Dynamic business-rule designer for non-developer users
 
 ### NC Housing and Finance Agency — Consulting Solutions Developer
-*February 2007 – September 2007 · (via Keane)*
+
+_February 2007 – September 2007 · (via Keane)_
 
 - Converted 3 business systems from .NET 1.1→2.0 in **2 days** (vs 2-week schedule)
 - Financial-system integration for bond/housing programs
 - Built workflow automation tool generating essential business classes
 
 ### MicroMedic — Web App Developer
-*October 2005 – January 2007*
+
+_October 2005 – January 2007_
 
 - UNC Chapel Hill enterprise management system
 - **Battlefield Airmen Management System (BAMS)** for US military — inventory tracking with multi-level officer access using split/merge hierarchies "unseen in commercial business apps"
@@ -148,14 +160,16 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Military/defense clearance substrate
 
 ### 4County Health — Custom Software Designer
-*December 2004 – September 2005*
+
+_December 2004 – September 2005_
 
 - Hospital-to-**Duke Hospital** XML/HL7 near-real-time data feed — sole personal responsibility
 - Analytics for chronic-patient cost-avoidance programs
 - Delivered 1 week ahead of schedule
 
 ### Maria Parham Medical Center — DBA & HIPAA Security Officer
-*November 2003 – August 2005 · Henderson, NC (via 4Front Systems)*
+
+_November 2003 – August 2005 · Henderson, NC (via 4Front Systems)_
 
 - **HIPAA technical security officer at age 20-22 — at the hospital where he was born**
 - Managed 10+ core healthcare systems: Paragon, McKesson, Cloverleaf Interface Manager, 3M, Compliance Advisor, Claims Administrator, Laser Arc
@@ -164,14 +178,16 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: patient records = retraction-heavy (corrections, chart updates, lab redos); integration engines = view-maintenance over merged sources. Second substrate.
 
 ### PC Guru — Founder
-*January 2003 – February 2006 · Henderson, NC (concurrent)*
+
+_January 2003 – February 2006 · Henderson, NC (concurrent)_
 
 - First entrepreneurship — custom software for local NC doctor offices
 - Sprint among clients
 - Networking/TCP-IP/LAN/wireless built at local scale
 
 ### Election Systems & Software — Principal Software Engineer
-*January 2000 – January 2003 · Omaha, NE*
+
+_January 2000 – January 2003 · Omaha, NE_
 
 - Central Voter Registration Database Specialist for state election systems
 - Optimized voter data import pipeline: **7 days → 9 hours (18× speedup)** via Oracle + PL/SQL
@@ -182,14 +198,16 @@ Polyglot across 25+ programming languages, ~20 database systems, most cloud prov
 - Substrate: voter registration = append-with-retractions (births, deaths, moves, name changes, district-boundary shifts); redistricting = recomputing views over retraction-heavy source data. **First substrate. The pattern starts here.**
 
 ### Object Technology — Systems Administrator
-*January 1999 – July 1999*
+
+_January 1999 – July 1999_
 
 - VB6 + C++ automated installations
 - Norton Ghost image builds
 - Hardware/network troubleshooting
 
 ### Circuit Board Assemblers — Junior Systems Administrator
-*August 1998 – January 1999 · (age ~17)*
+
+_August 1998 – January 1999 · (age ~17)_
 
 - Windows 3.11→2000 automated builds
 - DOS memory configuration
@@ -209,20 +227,20 @@ Co-inventor. Method for IoT device management through firewall boundaries using 
 
 ### Top engagement by cluster
 
-| Area | Issues | Years | Highlights |
-|------|--------|-------|------------|
-| **Knative serverless** | 48 | 2020 | Security contexts across all components, Kafka channels, CloudEvents, operator lifecycle |
-| **Kubernetes/AKS** | 23 | 2017-2020 | IPv6 for IoT, GC-aware scheduling, local persistent volumes, internal LB |
-| **Spark on K8s** | 21 | 2019-2020 | .NET support, security contexts, multi-version operation |
-| **Virtual Kubelet** | 18 | 2017-2018 | Service Fabric/Docker Swarm/IoT Edge providers, ACI networking |
-| **Service Fabric** | 17 | 2017-2018 | CNI/CSI/CRI-O, CoreDNS, Istio, distributed sagas, stable VIPs |
-| **Media/IoT** | 12 | 2015 | AudioGraph on Raspberry Pi, low-latency, AllJoyn |
-| **Istio** | 10 | 2017-2020 | OPA integration, mesh expansion, ALB tracing |
-| **.NET runtime** | 10+ | 2015-2020 | Unikernel, System.IO.Pipelines, high-perf I/O |
-| **Orleans** | 6 | 2015-2018 | Productizing Orleans, durability guarantees |
-| **Rook storage** | 9 | 2017-2020 | Block storage, local PVs, Cassandra |
-| **Azure DevOps** | 9 | 2018 | YAML pipelines, templates, git tagging |
-| **Helm** | 5 | 2017 | SolrCloud, chart release cycles |
+| Area                   | Issues | Years     | Highlights                                                                               |
+| ---------------------- | ------ | --------- | ---------------------------------------------------------------------------------------- |
+| **Knative serverless** | 48     | 2020      | Security contexts across all components, Kafka channels, CloudEvents, operator lifecycle |
+| **Kubernetes/AKS**     | 23     | 2017-2020 | IPv6 for IoT, GC-aware scheduling, local persistent volumes, internal LB                 |
+| **Spark on K8s**       | 21     | 2019-2020 | .NET support, security contexts, multi-version operation                                 |
+| **Virtual Kubelet**    | 18     | 2017-2018 | Service Fabric/Docker Swarm/IoT Edge providers, ACI networking                           |
+| **Service Fabric**     | 17     | 2017-2018 | CNI/CSI/CRI-O, CoreDNS, Istio, distributed sagas, stable VIPs                            |
+| **Media/IoT**          | 12     | 2015      | AudioGraph on Raspberry Pi, low-latency, AllJoyn                                         |
+| **Istio**              | 10     | 2017-2020 | OPA integration, mesh expansion, ALB tracing                                             |
+| **.NET runtime**       | 10+    | 2015-2020 | Unikernel, System.IO.Pipelines, high-perf I/O                                            |
+| **Orleans**            | 6      | 2015-2018 | Productizing Orleans, durability guarantees                                              |
+| **Rook storage**       | 9      | 2017-2020 | Block storage, local PVs, Cassandra                                                      |
+| **Azure DevOps**       | 9      | 2018      | YAML pipelines, templates, git tagging                                                   |
+| **Helm**               | 5      | 2017      | SolrCloud, chart release cycles                                                          |
 
 ### Standout issues (the vision visible before the name)
 
@@ -266,7 +284,7 @@ The same engineering primitive — **incremental view maintenance on retraction-
 - McKesson Cloverleaf (2003)
 - Cigital "Think Like a Hacker" (2014) — pentesting, real-world exploit techniques
 
-*No 4-year university. Vocational + continuous self-directed study. Academically rigorous (honors at every stage), credentials matched to the industry entered. Self-taught across Stanford/MIT OpenCourseWare, Lisp, language design — intellectual lineage from Anders Hejlsberg to Rich Hickey.*
+_No 4-year university. Vocational + continuous self-directed study. Academically rigorous (honors at every stage), credentials matched to the industry entered. Self-taught across Stanford/MIT OpenCourseWare, Lisp, language design — intellectual lineage from Anders Hejlsberg to Rich Hickey._
 
 ---
 
@@ -298,4 +316,4 @@ Father of five. Neurodivergent (bipolar, medicated, managed). Henderson NC nativ
 
 ---
 
-*This document combines the factory's knowledge from 16 resume files fed 2026-04-19, the career substrate memory, 537 GitHub issues searched 2026-05-07, patent records, project memory, and session disclosures. The Otto-only draft is preserved at `docs/research/2026-05-07-aaron-stainback-resume-otto-draft.md`.*
+_This document combines the factory's knowledge from 16 resume files fed 2026-04-19, the career substrate memory, 537 GitHub issues searched 2026-05-07, patent records, project memory, and session disclosures. The Otto-only draft is preserved at `docs/research/2026-05-07-aaron-stainback-resume-otto-draft.md`._

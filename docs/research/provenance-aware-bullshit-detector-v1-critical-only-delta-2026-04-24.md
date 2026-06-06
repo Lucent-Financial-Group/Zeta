@@ -11,11 +11,11 @@
 
 ## What this delta addresses — 3 CRITICAL only
 
-| # | Aminata-persona finding | Main-agent delta response |
-|---|---|---|
-| C1 | Cross-detector collusion — reviewer-set lineage-coupling | New §"Reviewer-cone overlap" section naming the limitation + maintainer sign-off as cone-breaking authority |
-| C2 | Min-merging Goodhart-bait at G_carrier_overlap | Sensitivity-analysis-gate pattern: sensitivity-to-G_carrier_overlap downgrades `supported` → `YELLOW` when carrier-overlap was the gate closest to threshold |
-| C3 | G_evidence fig-leaf + dead-code `likely confabulated` in v0 | Explicit §"v0 scope" subsection naming reachable vs not-yet-reachable output types |
+| #   | Aminata-persona finding                                     | Main-agent delta response                                                                                                                                    |
+| --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| C1  | Cross-detector collusion — reviewer-set lineage-coupling    | New §"Reviewer-cone overlap" section naming the limitation + maintainer sign-off as cone-breaking authority                                                  |
+| C2  | Min-merging Goodhart-bait at G_carrier_overlap              | Sensitivity-analysis-gate pattern: sensitivity-to-G_carrier_overlap downgrades `supported` → `YELLOW` when carrier-overlap was the gate closest to threshold |
+| C3  | G_evidence fig-leaf + dead-code `likely confabulated` in v0 | Explicit §"v0 scope" subsection naming reachable vs not-yet-reachable output types                                                                           |
 
 What is NOT in scope this delta:
 
@@ -47,13 +47,13 @@ CRITICAL concerns at write-time" section):**
 > query and retrieved candidates. This discipline
 > **re-introduces one meta-layer up**: the detector itself
 >
-> + the adversarial-reviewer persona + the external-peer-
-> agent reviewer + any other factory-internal reviewer
-> share training-corpus / repo-access / PR-comment lineage.
-> A `supported` verdict from three factory-internal
-> reviewers whose cones overlap is NOT three independent
-> lines of evidence; it is lineage-coupled concordance
-> masquerading as independent arrival.
+> - the adversarial-reviewer persona + the external-peer-
+>   agent reviewer + any other factory-internal reviewer
+>   share training-corpus / repo-access / PR-comment lineage.
+>   A `supported` verdict from three factory-internal
+>   reviewers whose cones overlap is NOT three independent
+>   lines of evidence; it is lineage-coupled concordance
+>   masquerading as independent arrival.
 >
 > **Per the Aminata-persona 4th-pass CRITICAL #1 (PR
 > #284), this is a fundamental limitation, not a closable
@@ -170,18 +170,18 @@ after §5 output types:**
 > present but advisory-only; four gates are active-and-
 > blocking. Five of the six output types are reachable
 > via the four active gates; the sixth (`likely
-> confabulated`) is dead-code in v0 because it requires
+confabulated`) is dead-code in v0 because it requires
 > G_evidence to fail to RED.
 >
 > **v0 effective configuration:**
 >
-> | Gate | Status in v0 |
-> |---|---|
-> | G_similarity | Active |
+> | Gate                   | Status in v0                                                                                   |
+> | ---------------------- | ---------------------------------------------------------------------------------------------- |
+> | G_similarity           | Active                                                                                         |
 > | G_evidence_independent | **Advisory-only** — signal emitted to observability but does NOT block band elevation to GREEN |
-> | G_carrier_overlap | Active (sensitivity-analysis-gate per C2 response) |
-> | G_contradiction | Active |
-> | G_status | Active |
+> | G_carrier_overlap      | Active (sensitivity-analysis-gate per C2 response)                                             |
+> | G_contradiction        | Active                                                                                         |
+> | G_status               | Active                                                                                         |
 >
 > **v0 output types — reachable:**
 >
@@ -203,9 +203,9 @@ after §5 output types:**
 > This is explicit NOT buried. v0 users of the detector
 > must know that a RED band today will NEVER come from
 > `likely confabulated`; it will come from `known-bad
-> pattern` only. If a query looks like confabulation but
+pattern` only. If a query looks like confabulation but
 > matches no known-bad pattern, v0 returns `plausible but
-> unresolved` (YELLOW), not RED. That's a CONSERVATIVE
+unresolved` (YELLOW), not RED. That's a CONSERVATIVE
 > under-detection stance, not an over-detection one —
 > acceptable trade-off for the v0 substrate gap.
 >
@@ -215,7 +215,7 @@ after §5 output types:**
 > `G_evidence advisory signal` was present but didn't
 > affect classification get a `DetectorOutputRetracted` +
 > `DetectorOutputBatchRetracted(adr_id,
-> affected_range, count)` per the Aminata-persona 4th-
+affected_range, count)` per the Aminata-persona 4th-
 > pass IMPORTANT finding on flood-control (deferred to
 > v2 but named here as the v1→v2 transition mechanism).
 
@@ -253,7 +253,7 @@ findings still open**:
 
 ### 4 IMPORTANT (deferred to v2 delta)
 
-- I1 `no-signal` vs kNN-evasion — needs G_coverage_
+- I1 `no-signal` vs kNN-evasion — needs G*coverage*
   plausibility gate via nearest-cluster-centroid distance.
 - I2 main-agent-wake second-reviewer sufficiency — needs
   schema change to require different-persona OR

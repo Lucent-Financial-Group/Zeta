@@ -56,14 +56,14 @@ Operationally:
 
 The human maintainer's framing 2026-05-01:
 
-> *"refresh-before-decide is the most violated invariant in
+> _"refresh-before-decide is the most violated invariant in
 > agent loops generally, not just Otto. The temptation to
 > skip refresh is constant because refresh feels redundant
 > when 'I just refreshed earlier.' The cure is making
 > refresh cheap enough that re-running is friction-free,
 > which the TypeScript-via-Bun version achieves. If refresh
 > were slow or expensive, the temptation would win; if it's
-> fast, the discipline holds."*
+> fast, the discipline holds."_
 
 Empirical Otto-pattern this session: I have repeatedly acted
 on stale derived state. Examples:
@@ -86,10 +86,10 @@ wake-time framing.
 
 The Claude.ai packet's framing of two-layer print:
 
-> *"Two-layer print is the dev-experience interface. Raw
+> _"Two-layer print is the dev-experience interface. Raw
 > layer for ground truth, interpretation layer for agent's
 > derived state. Mismatch between them is the bug class
-> refresh is designed to surface."*
+> refresh is designed to surface."_
 
 The mismatch IS the bug class. When the agent says "PR
 #1153 has 3 unresolved threads" but the raw output shows
@@ -112,8 +112,8 @@ and sustains it across surfaces.
 
 ## Why-3: Cheap-to-run is what makes the discipline hold
 
-Aaron's framing: *"if refresh were slow or expensive, the
-temptation would win; if it's fast, the discipline holds."*
+Aaron's framing: _"if refresh were slow or expensive, the
+temptation would win; if it's fast, the discipline holds."_
 
 `poll-pr-gate-batch.ts` runs in ~5-10s for the full
 session-PR set, ~30-60s for `--all-open`. Fast enough that
@@ -238,11 +238,11 @@ toward the broader scope is its own future work.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Refresh-before-decide is the fundamental invariant; every
+_"Refresh-before-decide is the fundamental invariant; every
 other discipline assumes current worldview. Two-layer print
 (raw before interpretation, both visible) makes staleness
 catchable rather than silent. Cheap-to-run is what makes
-the discipline hold."* (Claude.ai 2026-05-01 + Zeta absorption.)
+the discipline hold."_ (Claude.ai 2026-05-01 + Zeta absorption.)
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence,

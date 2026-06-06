@@ -64,6 +64,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the 2026-05-14 22:04Z tick shard to the hygiene-history log, capturing (a) the Copilot-found inline-code rendering issue from PR #3276 and its resolution, and (b) an observed off-duty signal surfaced during branch-contamination recovery.
 
 **Changes:**
+
 - Introduces a new tick shard documenting the #3276 inline-code-span (backtick) rendering fix and verification steps.
 - Records an observed authorization-source “off-duty” signal and the resulting minimal-tick discipline guidance.
 
@@ -79,4 +80,4 @@ P1 (xref): This references `2158Z.md` directly, but there is no `docs/hygiene-hi
 
 **@copilot-pull-request-reviewer** (2026-05-14T22:12:22Z):
 
-P1 (rendering): The quoted “double-backticks” example appears to have ambiguous/unbalanced backtick delimiters (e.g., `` ``content with ... backticks`` ``), which risks reintroducing the same inline-code rendering breakage this shard is documenting. Consider copying the exact table row from tick 2154Z verbatim, or move the example into a fenced `text` block so the backticks are displayed literally.
+P1 (rendering): The quoted “double-backticks” example appears to have ambiguous/unbalanced backtick delimiters (e.g., ` `content with ... backticks` `), which risks reintroducing the same inline-code rendering breakage this shard is documenting. Consider copying the exact table row from tick 2154Z verbatim, or move the example into a fenced `text` block so the backticks are displayed literally.

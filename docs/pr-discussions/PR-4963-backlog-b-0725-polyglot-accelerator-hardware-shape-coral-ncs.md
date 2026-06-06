@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-25 disclosed the maintainer hardware inventory: *"i own all these just not in first wave an many gadgets and fpga and such"* — Coral TPU, Intel Neural Compute Stick, NVIDIA Jetson modules, Xilinx + Intel FPGAs, "many gadgets." First-wave cluster uses NVIDIA GPUs in the worker boxes; everything else activates over time.
+Aaron 2026-05-25 disclosed the maintainer hardware inventory: _"i own all these just not in first wave an many gadgets and fpga and such"_ — Coral TPU, Intel Neural Compute Stick, NVIDIA Jetson modules, Xilinx + Intel FPGAs, "many gadgets." First-wave cluster uses NVIDIA GPUs in the worker boxes; everything else activates over time.
 
 This row captures the per-vendor extension paths against the substrate already in place (`gpu-device-plugin.nix` vendors list, NFD per-device PCI labels, disko-shape template, cluster-inventory tooling) so when gadgets come out of the drawer, deployment is PR-by-PR additions to known modules — not fresh design.
 
@@ -33,7 +33,7 @@ This row captures the per-vendor extension paths against the substrate already i
 
 ## Plus: edge-vs-datacenter K8s-fit analysis (open question)
 
-Triggered by Aaron's *"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"*. Maps 7 edge form factors to K8s-fit (full-Linux edge → K8s native via Akri; microcontroller-class → Reticulum past a K8s gateway; hybrid is likely load-bearing for FPGAs-at-edge specifically). Names Akri / KubeEdge / OpenYurt for the K8s-native edge tier and Reticulum (already in framework substrate per B-0289) for the past-the-gateway tier. Architectural decision deferred until a concrete edge deployment surfaces.
+Triggered by Aaron's _"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"_. Maps 7 edge form factors to K8s-fit (full-Linux edge → K8s native via Akri; microcontroller-class → Reticulum past a K8s gateway; hybrid is likely load-bearing for FPGAs-at-edge specifically). Names Akri / KubeEdge / OpenYurt for the K8s-native edge tier and Reticulum (already in framework substrate per B-0289) for the past-the-gateway tier. Architectural decision deferred until a concrete edge deployment surfaces.
 
 ## Why P3
 
@@ -64,24 +64,22 @@ Single file (+ index regen) — no implementation in this PR.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T17:43:08Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `20551fd7c8`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -94,6 +92,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P3 backlog row (B-0725) documenting how the existing `full-ai-cluster/` substrate (NFD labels, device-plugin pattern, disko shapes, inventory capture) can be extended to support non-NVIDIA accelerators (Coral, Intel NCS, Jetson nodes, Xilinx/Intel FPGAs), plus an edge-vs-datacenter K8s-fit analysis.
 
 **Changes:**
+
 - Added `docs/backlog/P3/B-0725-…` backlog row capturing per-vendor extension paths and acceptance criteria.
 - Regenerated `docs/BACKLOG.md` to include the new B-0725 index entry.
 
@@ -101,10 +100,10 @@ Adds a new P3 backlog row (B-0725) documenting how the existing `full-ai-cluster
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                              | Description                                                                                 |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md | New backlog row describing heterogeneous accelerator extension paths and edge-fit analysis. |
-| docs/BACKLOG.md | Adds the auto-generated index link for B-0725. |
+| docs/BACKLOG.md                                                                                                   | Adds the auto-generated index link for B-0725.                                              |
 
 ### COMMENTED — @AceHack (2026-05-25T17:47:03Z)
 
@@ -128,24 +127,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T17:48:46Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `3171cb5920`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -157,24 +154,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T17:52:50Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `bbc177a71c`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -186,7 +181,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T17:43:09Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Route NCS scheduling guidance through USB labels**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Route NCS scheduling guidance through USB labels**
 
 The table maps Neural Compute Stick detection to PCI (`8086:ad03`), but NCS/Movidius sticks are USB-attached devices (and later in this same row you list NCS vendor `03e7`). If future implementation follows this PCI affinity guidance, workloads targeting NCS can fail to schedule because the expected `feature.node.kubernetes.io/pci-*` labels will never appear for USB sticks. Please update this guidance to use NFD USB discovery labels (or explicitly scope this to a different PCIe Intel AI accelerator).
 
@@ -240,7 +235,7 @@ Addressed in 3171cb592 — paths corrected to repo-root form (full-ai-cluster/ p
 
 **@chatgpt-codex-connector** (2026-05-25T17:48:46Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove PCI-only affinity claim for all accelerator vendors**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove PCI-only affinity claim for all accelerator vendors**
 
 The new note at line 45 still says the `pci-<vendor>.present` affinity pattern works "for every other vendor," which is incorrect for USB-attached devices like Coral USB and NCS and can lead to unschedulable workloads if copied into implementation. Fresh evidence vs. the earlier thread is this newly-added broad claim after the USB caveats: it directly contradicts the USB scheduling path documented later in this same file, so the guidance should explicitly scope this example to PCIe accelerators only.
 
@@ -254,7 +249,7 @@ Addressed in latest push — scoped the PCI affinity example explicitly to PCIe 
 
 **@chatgpt-codex-connector** (2026-05-25T17:52:50Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Split acceptance criteria by PCIe vs USB accelerators**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Split acceptance criteria by PCIe vs USB accelerators**
 
 This backlog row explicitly includes USB-attached devices (Coral USB and NCS USB), but the per-class acceptance checklist requires extending the **PCI** source-plugin for every accelerator class. USB accelerators do not have a PCI class to whitelist, so this criterion is misleading for part of the documented scope and can send implementation down the wrong path (PCI-only changes with no usable USB scheduling labels). Scope this item to PCIe classes and add a USB-specific acceptance step for USB-discovered devices.
 
@@ -264,7 +259,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T17:52:50Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct Coral PCIe class coverage in NFD guidance**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct Coral PCIe class coverage in NFD guidance**
 
 The composition note says existing NFD class `12` coverage already includes Coral PCIe, but Coral Edge TPU PCIe devices are typically exposed as class `0880` (system peripheral), so they are outside the currently listed whitelist classes. If this guidance is followed as-written, `feature.node.kubernetes.io/pci-1ac1.present` may never be emitted and Coral-targeted nodeAffinity will not match. Update the note to reflect the actual class requirement before treating Coral PCIe as “already covered.”
 

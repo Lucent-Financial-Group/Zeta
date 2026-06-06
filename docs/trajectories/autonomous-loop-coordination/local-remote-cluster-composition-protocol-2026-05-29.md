@@ -30,14 +30,14 @@ honor.
 
 ## Surfaces
 
-| Surface | Scope | Authority |
-|---|---|---|
-| Local broadcast bus | Fast local coordination inside one host or maintainer cluster | Advisory only |
-| Local loop health and locks | Whether the local Codex/Otto/Riven runner can safely mutate | Binding for that local runner |
-| Local worktree state | Collision guard for same-machine writers | Binding for that filesystem only |
-| `origin/claim/*` refs | Remote-visible active work, expected files, blockers, release state | Binding across clusters |
-| Pull requests | Review, CI, merge, host comments, and auto-merge state | Binding for merge readiness |
-| Main history | Accepted project substrate | Canonical after merge |
+| Surface                     | Scope                                                               | Authority                        |
+| --------------------------- | ------------------------------------------------------------------- | -------------------------------- |
+| Local broadcast bus         | Fast local coordination inside one host or maintainer cluster       | Advisory only                    |
+| Local loop health and locks | Whether the local Codex/Otto/Riven runner can safely mutate         | Binding for that local runner    |
+| Local worktree state        | Collision guard for same-machine writers                            | Binding for that filesystem only |
+| `origin/claim/*` refs       | Remote-visible active work, expected files, blockers, release state | Binding across clusters          |
+| Pull requests               | Review, CI, merge, host comments, and auto-merge state              | Binding for merge readiness      |
+| Main history                | Accepted project substrate                                          | Canonical after merge            |
 
 Local state may be fresher, but remote state is the cross-cluster truth. If a
 local bus says a path is free and `origin/claim/*` says it is owned, the remote
@@ -91,14 +91,14 @@ it.
 
 ## Failure Handling
 
-| Failure | Required behavior |
-|---|---|
-| Local bus says free; remote claim says owned | Stand down or inspect only. Remote claim owns cross-cluster truth. |
-| Remote claim appears stale | Do not overwrite. Publish a stale-claim audit or use the documented force-release path. |
-| Local loop health has a live lock | Do not mutate that lane. Wait or inspect non-overlapping remote state. |
-| Root checkout is dirty or contested | Use a dedicated worktree. Root stays read-only. |
-| GitHub PR API is degraded | Use `git fetch` plus `origin/claim/*` for ownership; defer merge decisions that need PR checks. |
-| Product branch is clean but claim release is missing | Treat as not fully released; add a release commit or receipt before merge. |
+| Failure                                              | Required behavior                                                                               |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Local bus says free; remote claim says owned         | Stand down or inspect only. Remote claim owns cross-cluster truth.                              |
+| Remote claim appears stale                           | Do not overwrite. Publish a stale-claim audit or use the documented force-release path.         |
+| Local loop health has a live lock                    | Do not mutate that lane. Wait or inspect non-overlapping remote state.                          |
+| Root checkout is dirty or contested                  | Use a dedicated worktree. Root stays read-only.                                                 |
+| GitHub PR API is degraded                            | Use `git fetch` plus `origin/claim/*` for ownership; defer merge decisions that need PR checks. |
+| Product branch is clean but claim release is missing | Treat as not fully released; add a release commit or receipt before merge.                      |
 
 ## Acceptance Checklist
 

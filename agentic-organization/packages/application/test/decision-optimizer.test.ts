@@ -310,17 +310,20 @@ test("runs the optimizer cycle against a generic document/log store", async () =
   equal(result.kind, "proposed");
   if (result.kind !== "proposed") throw new Error("expected generic store proposal");
   equal(result.persistedChangeSetKey, `change-sets/${result.changeSet.changeSetId}.json`);
-  deepEqual(
-    store.operations,
-    [
-      "getJson:tenant-config/org-lfg.json",
-      "appendJson:org-events/org-lfg.jsonl:evt-model-eval-generic-store",
-      `putJson:change-sets/${result.changeSet.changeSetId}.json:${result.changeSet.changeSetId}`,
-      `appendJson:org-events/org-lfg.jsonl:evt-decision-optimizer-${result.changeSet.changeSetId}`,
-    ],
+  deepEqual(store.operations, [
+    "getJson:tenant-config/org-lfg.json",
+    "appendJson:org-events/org-lfg.jsonl:evt-model-eval-generic-store",
+    `putJson:change-sets/${result.changeSet.changeSetId}.json:${result.changeSet.changeSetId}`,
+    `appendJson:org-events/org-lfg.jsonl:evt-decision-optimizer-${result.changeSet.changeSetId}`,
+  ]);
+  equal(
+    result.appendedEvents.some((event) => event.kind === OrgEventKind.ModelEvalCompleted),
+    true,
   );
-  equal(result.appendedEvents.some((event) => event.kind === OrgEventKind.ModelEvalCompleted), true);
-  equal(result.appendedEvents.some((event) => event.kind === OrgEventKind.DecisionOptimizationProposed), true);
+  equal(
+    result.appendedEvents.some((event) => event.kind === OrgEventKind.DecisionOptimizationProposed),
+    true,
+  );
   equal(result.eventStreamKey, "org-events/org-lfg.jsonl");
 });
 
@@ -355,7 +358,7 @@ test("reads telemetry before proposing and carries telemetry evidence into chang
       queryPort: telemetryQueryPort,
       evidenceRef: TelemetryEvidenceRef,
       range: { start: "2026-05-30T23:00:00.000Z", end: NOW },
-      metricQueries: ["histogram_quantile(0.95, org_command_duration_ms{hat=\"code_reviewer\"})"],
+      metricQueries: ['histogram_quantile(0.95, org_command_duration_ms{hat="code_reviewer"})'],
       traceQueries: ['{ org.hat_id = "code_reviewer" }'],
       logQueries: ['{app="agentic-org-worker"} |= "latency"'],
     },
@@ -364,7 +367,10 @@ test("reads telemetry before proposing and carries telemetry evidence into chang
   equal(result.kind, "proposed");
   if (result.kind !== "proposed") throw new Error("expected telemetry-backed proposal");
   deepEqual(result.event.evidenceRefs, [EvalEvidenceRef, KpiEvidenceRef, TelemetryEvidenceRef, SimulationEvidenceRef]);
-  deepEqual(telemetryQueryPort.calls.map((call) => call.kind), ["metrics", "traces", "logs"]);
+  deepEqual(
+    telemetryQueryPort.calls.map((call) => call.kind),
+    ["metrics", "traces", "logs"],
+  );
   deepEqual(result.telemetryObservations, {
     metricSeriesCount: 1,
     traceSummaryCount: 1,
@@ -408,7 +414,7 @@ test("does not cite telemetry evidence when telemetry queries degrade", async ()
       queryPort: telemetryQueryPort,
       evidenceRef: TelemetryEvidenceRef,
       range: { start: "2026-05-30T23:00:00.000Z", end: NOW },
-      metricQueries: ["histogram_quantile(0.95, org_command_duration_ms{hat=\"code_reviewer\"})"],
+      metricQueries: ['histogram_quantile(0.95, org_command_duration_ms{hat="code_reviewer"})'],
     },
   });
 
@@ -439,15 +445,17 @@ test("control-plane ESTOP prevents optimizer rollout before appending events or 
     thresholds: { minClassAAccuracy: 0.99 },
     now: NOW,
     controlPlane: {
-      flags: [{
-        controlPlaneFlagId: "flag-estop",
-        organizationId: "org-lfg",
-        scope: { kind: ControlPlaneScopeKind.Organization },
-        flag: ControlPlaneFlagKind.Estop,
-        reason: "operator estop",
-        setByHatId: "incident_commander",
-        setAt: NOW,
-      }],
+      flags: [
+        {
+          controlPlaneFlagId: "flag-estop",
+          organizationId: "org-lfg",
+          scope: { kind: ControlPlaneScopeKind.Organization },
+          flag: ControlPlaneFlagKind.Estop,
+          reason: "operator estop",
+          setByHatId: "incident_commander",
+          setAt: NOW,
+        },
+      ],
     },
   });
 
@@ -492,13 +500,15 @@ test("encodes path-significant ids before using them as store keys", () => {
 function tenantConfigWithModel(model: string) {
   return {
     ...defaultTenantConfig("org-lfg", NOW),
-    layers: [{
-      layerId: "org-base-model",
-      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-      policy: { model },
-      updatedAt: NOW,
-      version: 1,
-    }],
+    layers: [
+      {
+        layerId: "org-base-model",
+        scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+        policy: { model },
+        updatedAt: NOW,
+        version: 1,
+      },
+    ],
   };
 }
 
@@ -507,10 +517,18 @@ function summary(input: { classAAccuracy: number; classBAccuracy: number; model?
     runId: "eval-run-1",
     model: input.model ?? "qwen2:0.5b",
     evaluatedAt: NOW,
-    overall: { total: 2, correct: input.classAAccuracy + input.classBAccuracy, accuracy: (input.classAAccuracy + input.classBAccuracy) / 2 },
+    overall: {
+      total: 2,
+      correct: input.classAAccuracy + input.classBAccuracy,
+      accuracy: (input.classAAccuracy + input.classBAccuracy) / 2,
+    },
     byClass: {
       [ModelEvalCaseClass.NeutralEvidence]: { total: 1, correct: input.classAAccuracy, accuracy: input.classAAccuracy },
-      [ModelEvalCaseClass.DirectiveContext]: { total: 1, correct: input.classBAccuracy, accuracy: input.classBAccuracy },
+      [ModelEvalCaseClass.DirectiveContext]: {
+        total: 1,
+        correct: input.classBAccuracy,
+        accuracy: input.classBAccuracy,
+      },
     },
     failedCaseIds: [],
     illegalCaseIds: [],
@@ -532,16 +550,13 @@ function createRecordingDecisionOptimizerStore(initialConfig: TenantConfig | nul
       return (documents.get(key) ?? null) as never;
     },
     async putJson(key, value) {
-      const id = typeof value === "object" && value !== null && "changeSetId" in value
-        ? String(value.changeSetId)
-        : key;
+      const id =
+        typeof value === "object" && value !== null && "changeSetId" in value ? String(value.changeSetId) : key;
       operations.push(`putJson:${key}:${id}`);
       documents.set(key, value);
     },
     async appendJson(key, value) {
-      const id = typeof value === "object" && value !== null && "id" in value
-        ? String(value.id)
-        : key;
+      const id = typeof value === "object" && value !== null && "id" in value ? String(value.id) : key;
       operations.push(`appendJson:${key}:${id}`);
     },
   };

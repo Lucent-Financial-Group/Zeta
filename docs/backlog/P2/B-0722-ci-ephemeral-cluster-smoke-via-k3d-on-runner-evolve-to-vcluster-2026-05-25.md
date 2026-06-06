@@ -25,7 +25,7 @@ composes_with:
 
 ## Origin
 
-Aaron 2026-05-25, during the dev-cluster scaffolding session (PR #4953): *"also tests should be able to use kind/k3d to do ephemeral clusters on prs"*. Then: *"we will do k8s in k8s later k8s in docker if fine for ci now"*.
+Aaron 2026-05-25, during the dev-cluster scaffolding session (PR #4953): _"also tests should be able to use kind/k3d to do ephemeral clusters on prs"_. Then: _"we will do k8s in k8s later k8s in docker if fine for ci now"_.
 
 The dev-cluster substrate landed in PR #4953 is CI-ready by design — `up.sh` accepts a git-ref argument today; the `--config <profile>` flag is part of Phase 1's small refactor (planned in this row, not yet implemented). CI just needs to call it with a single-node profile and run sync-wave assertions.
 

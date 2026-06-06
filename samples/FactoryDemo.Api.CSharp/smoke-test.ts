@@ -33,9 +33,7 @@ const PORT = 5100 + Math.floor(Math.random() * 400);
 const BASE_URL = `http://localhost:${PORT}`;
 
 console.log("Building API...");
-const buildResult = spawnSync([
-  "dotnet", "build", PROJECT, "-c", "Release", "--nologo", "-v", "quiet",
-]);
+const buildResult = spawnSync(["dotnet", "build", PROJECT, "-c", "Release", "--nologo", "-v", "quiet"]);
 if (buildResult.exitCode !== 0) {
   console.error("Build failed:");
   console.error(buildResult.stderr.toString());
@@ -49,13 +47,10 @@ console.log(`Starting API on ${BASE_URL} (server log: ${LOG_FILE})...`);
 
 // Run API in background
 const logFileHandle = Bun.file(LOG_FILE);
-const apiProc = spawn(
-  ["dotnet", "run", "--project", PROJECT, "-c", "Release", "--no-build", "--urls", BASE_URL],
-  {
-    stdout: logFileHandle,
-    stderr: logFileHandle,
-  },
-);
+const apiProc = spawn(["dotnet", "run", "--project", PROJECT, "-c", "Release", "--no-build", "--urls", BASE_URL], {
+  stdout: logFileHandle,
+  stderr: logFileHandle,
+});
 
 // Cleanup on exit
 function cleanup() {
@@ -66,8 +61,14 @@ function cleanup() {
   }
 }
 process.on("exit", cleanup);
-process.on("SIGINT", () => { cleanup(); process.exit(130); });
-process.on("SIGTERM", () => { cleanup(); process.exit(143); });
+process.on("SIGINT", () => {
+  cleanup();
+  process.exit(130);
+});
+process.on("SIGTERM", () => {
+  cleanup();
+  process.exit(143);
+});
 
 // Wait for API to accept requests. Bounded — 20 attempts * 0.5s = 10s budget.
 async function waitForReady(): Promise<boolean> {
@@ -118,7 +119,9 @@ async function main() {
     console.error(`API did not come up within budget. Server log at ${LOG_FILE}:`);
     try {
       console.error(readFileSync(LOG_FILE, "utf-8"));
-    } catch { /* empty log */ }
+    } catch {
+      /* empty log */
+    }
     cleanup();
     process.exit(1);
   }
@@ -128,54 +131,76 @@ async function main() {
   console.log("==============================");
 
   // Root metadata
-  await check("root.name contains 'Factory-demo'", "/",
-    (j: any) => /Factory-demo/.test(j.name), "true");
-  await check("root.version", "/",
-    (j: any) => j.version, "0.0.1");
-  await check("root.endpoints length", "/",
-    (j: any) => j.endpoints.length, "9");
+  await check("root.name contains 'Factory-demo'", "/", (j: any) => /Factory-demo/.test(j.name), "true");
+  await check("root.version", "/", (j: any) => j.version, "0.0.1");
+  await check("root.endpoints length", "/", (j: any) => j.endpoints.length, "9");
 
   // Collection counts
-  await check("/api/customers length", "/api/customers",
-    (j: any) => (j as any[]).length, "20");
-  await check("/api/opportunities length", "/api/opportunities",
-    (j: any) => (j as any[]).length, "30");
-  await check("/api/activities length", "/api/activities",
-    (j: any) => (j as any[]).length, "33");
+  await check("/api/customers length", "/api/customers", (j: any) => (j as any[]).length, "20");
+  await check("/api/opportunities length", "/api/opportunities", (j: any) => (j as any[]).length, "30");
+  await check("/api/activities length", "/api/activities", (j: any) => (j as any[]).length, "33");
 
   // Single-item lookup
-  await check("customer #1 name", "/api/customers/1",
-    (j: any) => j.name, "Alice Plumbing LLC");
-  await check("opportunity #1 stage", "/api/opportunities/1",
-    (j: any) => j.stage, "Lead");
+  await check("customer #1 name", "/api/customers/1", (j: any) => j.name, "Alice Plumbing LLC");
+  await check("opportunity #1 stage", "/api/opportunities/1", (j: any) => j.stage, "Lead");
 
   // Per-customer activities
-  await check("customer #1 activities count", "/api/customers/1/activities",
-    (j: any) => (j as any[]).length, "4");
+  await check("customer #1 activities count", "/api/customers/1/activities", (j: any) => (j as any[]).length, "4");
 
   // Pipeline funnel — per-stage counts
-  await check("funnel Lead count", "/api/pipeline/funnel",
-    (j: any) => (j as any[]).find((x: any) => x.stage === "Lead")?.count, "10");
-  await check("funnel Qualified count", "/api/pipeline/funnel",
-    (j: any) => (j as any[]).find((x: any) => x.stage === "Qualified")?.count, "6");
-  await check("funnel Won count", "/api/pipeline/funnel",
-    (j: any) => (j as any[]).find((x: any) => x.stage === "Won")?.count, "6");
-  await check("funnel Lost count", "/api/pipeline/funnel",
-    (j: any) => (j as any[]).find((x: any) => x.stage === "Lost")?.count, "2");
+  await check(
+    "funnel Lead count",
+    "/api/pipeline/funnel",
+    (j: any) => (j as any[]).find((x: any) => x.stage === "Lead")?.count,
+    "10",
+  );
+  await check(
+    "funnel Qualified count",
+    "/api/pipeline/funnel",
+    (j: any) => (j as any[]).find((x: any) => x.stage === "Qualified")?.count,
+    "6",
+  );
+  await check(
+    "funnel Won count",
+    "/api/pipeline/funnel",
+    (j: any) => (j as any[]).find((x: any) => x.stage === "Won")?.count,
+    "6",
+  );
+  await check(
+    "funnel Lost count",
+    "/api/pipeline/funnel",
+    (j: any) => (j as any[]).find((x: any) => x.stage === "Lost")?.count,
+    "2",
+  );
 
   // Pipeline funnel — totals in cents
-  await check("funnel Lead totalCents", "/api/pipeline/funnel",
-    (j: any) => (j as any[]).find((x: any) => x.stage === "Lead")?.totalCents, "5400000");
-  await check("funnel Won totalCents", "/api/pipeline/funnel",
-    (j: any) => (j as any[]).find((x: any) => x.stage === "Won")?.totalCents, "2670000");
+  await check(
+    "funnel Lead totalCents",
+    "/api/pipeline/funnel",
+    (j: any) => (j as any[]).find((x: any) => x.stage === "Lead")?.totalCents,
+    "5400000",
+  );
+  await check(
+    "funnel Won totalCents",
+    "/api/pipeline/funnel",
+    (j: any) => (j as any[]).find((x: any) => x.stage === "Won")?.totalCents,
+    "2670000",
+  );
 
   // Duplicates
-  await check("duplicate pairs count", "/api/pipeline/duplicates",
-    (j: any) => (j as any[]).length, "2");
-  await check("alice@acme.example pair members", "/api/pipeline/duplicates",
-    (j: any) => (j as any[]).find((x: any) => x.email === "alice@acme.example")?.customerIds?.join(","), "1,13");
-  await check("bob@trades.example pair members", "/api/pipeline/duplicates",
-    (j: any) => (j as any[]).find((x: any) => x.email === "bob@trades.example")?.customerIds?.join(","), "5,19");
+  await check("duplicate pairs count", "/api/pipeline/duplicates", (j: any) => (j as any[]).length, "2");
+  await check(
+    "alice@acme.example pair members",
+    "/api/pipeline/duplicates",
+    (j: any) => (j as any[]).find((x: any) => x.email === "alice@acme.example")?.customerIds?.join(","),
+    "1,13",
+  );
+  await check(
+    "bob@trades.example pair members",
+    "/api/pipeline/duplicates",
+    (j: any) => (j as any[]).find((x: any) => x.email === "bob@trades.example")?.customerIds?.join(","),
+    "5,19",
+  );
 
   // 404 behavior
   try {

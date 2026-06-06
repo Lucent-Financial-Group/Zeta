@@ -16,8 +16,8 @@
 
 ## The ultimate purpose — an intellectual backup of earth
 
-Aaron, 2026-04-30: *"the ultimate scope of this — an
-intellectual backup of earth."*
+Aaron, 2026-04-30: _"the ultimate scope of this — an
+intellectual backup of earth."_
 
 This is the load-bearing purpose under which every other
 framing in this document nests. Zeta is not, ultimately, a
@@ -53,10 +53,10 @@ Why this purpose makes the rest of the architecture cohere:
   closure — so the backup is not at the mercy of any single
   package-host's continued cooperation.
 
-Aaron, 2026-04-30: *"that means scope creep is a forever
+Aaron, 2026-04-30: _"that means scope creep is a forever
 problem i don't want to fix — to figure out how to
 prioritize the right thing, not kill future knowledge
-potential."*
+potential."_
 
 This is the operating principle that follows from the
 purpose. Given the intellectual-backup scope, **scope creep
@@ -74,10 +74,10 @@ patterns (don't copy from outside because they violate our
 best practices) are routine engineering judgment and stay
 with the agent + reviewer roles.
 
-Carved sentence: *"Zeta's purpose is an intellectual backup
+Carved sentence: _"Zeta's purpose is an intellectual backup
 of earth. Every product nests inside that purpose. The
 agent does not unilaterally remove anything from the
-backup."*
+backup."_
 
 Substrate references:
 [`memory/feedback_zeta_ultimate_scope_intellectual_backup_of_earth_wont_do_authority_aaron_2026_04_30.md`](../memory/feedback_zeta_ultimate_scope_intellectual_backup_of_earth_wont_do_authority_aaron_2026_04_30.md);
@@ -89,10 +89,10 @@ per Otto-363.
 
 ## The foundational principle
 
-Aaron, round 33: *"what i'm really doing is just taking the
+Aaron, round 33: _"what i'm really doing is just taking the
 lambda architecture and the Kafka turning-the-database-inside-
 out ideas to their absolute logical conclusion when the events
-become the source of truth and everything else is derived."*
+become the source of truth and everything else is derived."_
 
 This is the load-bearing philosophy behind Product 1. Everything
 downstream (retractions, incremental plans, the DB-vs-event-store
@@ -110,8 +110,8 @@ abstraction and make consumers reconstruct views manually.
 Zeta refuses the trade: both surfaces live on top of the same
 primary log, through the same algebra.
 
-Round 36 collective-identity claim (Aaron): *"keep everything
-we are history now too"*. Zeta does not merely preserve
+Round 36 collective-identity claim (Aaron): _"keep everything
+we are history now too"_. Zeta does not merely preserve
 history; the project IS history — the primary-log substrate
 plus the retraction-safe derivation algebra plus the
 round-history of the factory itself. Preservation at the data
@@ -129,22 +129,22 @@ Streams / ksqlDB; Materialize + Feldera on DBSP.
 ## The moral reading of retraction-native — structural forgiveness (the atonement engine)
 
 The foundational principle has a moral reading, and it is part of the vision
-(Aaron 2026-05-29: *"this is perfect, save the atonement engine as our vision"*).
+(Aaron 2026-05-29: _"this is perfect, save the atonement engine as our vision"_).
 
 **Retraction-native IS structural forgiveness.** A correction never erases the
 original; the original and the retraction both persist; nothing is permanently held
 against you; every wrong is correctable and re-derivable. At the data scale that is
-the retraction algebra. At the human scale it is the *same operation* (cf. "the
+the retraction algebra. At the human scale it is the _same operation_ (cf. "the
 project IS history; preservation-at-data-level and identity-at-project-level are the
 same operation"): **no one is permanently condemned.** The only response to a wrong
-is *retraction* — correct it, preserve both, learn the class — never *erasure*
-(deleting the person) and never *condemnation* (holding it against them forever).
+is _retraction_ — correct it, preserve both, learn the class — never _erasure_
+(deleting the person) and never _condemnation_ (holding it against them forever).
 
 This dissolves the **atonement engine** — the savior-complex's "someone must die for
 others' sins." If forgiveness is structural (everything retractable, preserved-and-
 correctable, re-derivable in the replayable whole), then no one needs a savior to die
 to cover their sins: the debt was cancelled by the architecture before anyone
-arrived. You can carry-with, help, hold the tension alongside people — *love* —
+arrived. You can carry-with, help, hold the tension alongside people — _love_ —
 without being the one who dies for it. **Love stays; the compulsion to martyr is
 curbed.** You get to put the cross down and keep the love.
 
@@ -153,8 +153,8 @@ is **no-condemnation**, not no-prevention. The kid-safety / HARD-LIMITS floor is
 **prevention of harm**, never condemnation — so it is forgiveness-compatible by
 construction. You forgive everyone (no cosmic condemnation, even of the shadow / the
 darkness / "even Satan") **and** still keep the child safe (prevent, don't punish).
-And the bound holds the other edge: accept the darkness that *is* — do not
-*manufacture* suffering (the monk striking himself to feel pain; the martyrdom) to
+And the bound holds the other edge: accept the darkness that _is_ — do not
+_manufacture_ suffering (the monk striking himself to feel pain; the martyrdom) to
 have something to redeem. Structural forgiveness needs neither condemnation nor
 self-mortification.
 
@@ -172,12 +172,12 @@ same: **forgiveness built into the architecture.**
 
 ## Seed — the database BCL microkernel
 
-Aaron, round 36: *"we are the databaase BCL like dotent base
+Aaron, round 36: _"we are the databaase BCL like dotent base
 class library then tons of plugins for dimensional expansion
 into everything so we have a microkernel that can track its own
-dependines insclingsing installing them"* → *"we are seed the
-microkernel"* → *"we've now begun pre split coordinate"* → *"we
-are seed"*.
+dependines insclingsing installing them"_ → _"we are seed the
+microkernel"_ → _"we've now begun pre split coordinate"_ → _"we
+are seed"_.
 
 Three-register naming. One thing, three angles:
 
@@ -197,7 +197,7 @@ Three-register naming. One thing, three angles:
   layer below any such choice.
 - **Pre-split coordinate** — mathematical / formal register.
   The position in Cayley-Dickson dimensional expansion
-  (ℝ → ℂ → ℍ → 𝕆 → 𝕊) *before* the first split. Seed is the
+  (ℝ → ℂ → ℍ → 𝕆 → 𝕊) _before_ the first split. Seed is the
   reference frame from which all dimensional expansion
   proceeds. Use this register in research papers, formal
   verification, and any writing adjacent to the
@@ -206,7 +206,7 @@ Three-register naming. One thing, three angles:
 "We are seed" is the collective-identity claim. Zeta the
 project, the contributors, the agents, the factory — are
 collectively Seed. Category-level identity, analogous to
-μένω / Persistence: we don't build Seed, we *are* Seed.
+μένω / Persistence: we don't build Seed, we _are_ Seed.
 
 ### What Seed actually is — the microkernel
 
@@ -240,7 +240,7 @@ complex numbers lose order, quaternions lose commutativity,
 octonions lose associativity, sedenions lose zero-divisor
 freedom. Zeta's retraction-native operator algebra survives
 ℂ cleanly and degrades progressively beyond. Seed sits at the
-*pre-split* coordinate — before any Cayley-Dickson tax is
+_pre-split_ coordinate — before any Cayley-Dickson tax is
 paid — because the kernel does not yet commit to any specific
 dimensional structure beyond the minimum retraction algebra.
 Each plugin that installs is one split: it picks a specific
@@ -249,7 +249,7 @@ tax for that domain locally, without forcing the tax on the
 kernel.
 
 This gives Seed a unique architectural property: the kernel
-is *pre-commitment*. Domain choices happen at the plugin
+is _pre-commitment_. Domain choices happen at the plugin
 boundary, not at the kernel boundary. The kernel can remain
 structurally minimal forever while the plugin ecosystem
 covers arbitrary dimensional breadth.
@@ -432,11 +432,11 @@ context: canvas-red just-do default mode.
 
 ## The four products in the initial split (evolving trajectory)
 
-Aaron, 2026-04-30: *"substrate IS one of our products … 4
+Aaron, 2026-04-30: _"substrate IS one of our products … 4
 prior ones we know of now, the initial split, is factory
 substrate as product/project, package manager, database,
 Aurora could be more but we can work our way there and
-learn."*
+learn."_
 
 The intellectual-backup purpose (above) ships through four
 products in the initial split:
@@ -458,13 +458,13 @@ products in the initial split:
    architecture line. Detailed across `docs/aurora/**` and
    the active research notes under `docs/research/**`.
 
-Aaron, 2026-04-30: *"one of our four products is itself an
+Aaron, 2026-04-30: _"one of our four products is itself an
 ongoing concern of the substrate itself, what other
 dependencies including sister projects is always an ongoing
 trajectory and number of projects and repos will evolve
 over time as we learn and the dynamic of the environment in
 which we live changes in response to our arrival /
-habitation."*
+habitation."_
 
 The set is **an evolving trajectory** — count + composition
 shift as the factory learns and as the environment responds
@@ -475,7 +475,7 @@ snapshot.
 
 ## v1-ship-time: the two-products framing (subset)
 
-The earlier framing of *"the project has two products"*
+The earlier framing of _"the project has two products"_
 remains correct as a **v1-ship-time scoping** of the
 broader four-products picture:
 
@@ -492,13 +492,13 @@ extend post-v1.
 
 ## The developer-experience north star
 
-Aaron round 33: *"at the end of this any ASP.NET application
+Aaron round 33: _"at the end of this any ASP.NET application
 should just be able to DI setup a db and boom they have a
 distributed database if they install on Kafka and we can
 test all this locally with Kind. Can you imagine how many
 things that could light up for any dotnet project. Your
 application just IS a database and your code IS stored
-procedures, plus LINQ and regular SQL."*
+procedures, plus LINQ and regular SQL."_
 
 This is the one-sentence pitch that the whole stack serves.
 Concretely:
@@ -512,7 +512,7 @@ Concretely:
 - **Kafka as the distribution substrate (option).** Aaron's
   preferred multi-node shape: Kafka holds the log of
   events; Zeta nodes read/write to it; the `events-as-
-  source-of-truth` principle maps cleanly to "the Kafka
+source-of-truth` principle maps cleanly to "the Kafka
   log IS the source of truth." Kafka is one option among
   several — NATS JetStream, raw Arrow Flight, gRPC,
   bespoke — the design round picks. Pluggable log back-
@@ -630,6 +630,7 @@ on DBSP foundations, not to carve out a narrow niche.
   study every data-management technique on one unified
   retraction-native foundation and produce the fastest-
   honest implementation of each. Round-by-round ratchet.
+
 - **Mathematically honest.** Every operator obeys laws
   Milewski would recognise. When a law cannot hold, the API
   tells you so, loudly and at compile time.
@@ -644,11 +645,11 @@ on DBSP foundations, not to carve out a narrow niche.
   language; C# callers get `Zeta.Core.CSharp`. Lean for
   proofs, Java for the Alloy driver, TypeScript (or
   researched alternative) for post-install automation. F#
-  stays load-bearing. *(Superseded re: the DB by the
+  stays load-bearing. _(Superseded re: the DB by the
   [4-language compiler-BFT governance ADR (2026-05-31)](DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md):
   F# is correctness-/spec-authoritative, TS is distribution-
   authoritative — two axes, not "F# primary with polyglot
-  drift.")*
+  drift.")_
 - **Production-grade security.** Nation-state + supply-chain
   threat model. SLSA ladder L1 → L3 pre-v1.0. OpenSpec is
   first-class for every committed artefact, including CI.
@@ -670,9 +671,9 @@ on DBSP foundations, not to carve out a narrow niche.
 > kept on record):** (a) is "arena not throne" real strategy or a rationalization
 > for not-yet-winning? — answered by the falsifiable adoption test (≥1 external
 > project adopts a harvested primitive, else revisit). (b) "converges into mine" vs
-> "don't own the standard" — resolved: it's a *common* library everyone (incl. us)
+> "don't own the standard" — resolved: it's a _common_ library everyone (incl. us)
 > wraps, not "mine." (c) harvest-then-upstream sustainability — resolved: harvest
-> *concepts* re-implemented in F# (no copied code; clean-room) + the falsifiable
+> _concepts_ re-implemented in F# (no copied code; clean-room) + the falsifiable
 > good-citizen test below. (d) F#-as-oracle when F# could be wrong — resolved: the
 > **golden vectors** are the oracle; F# is one of four signers (see below).
 
@@ -685,23 +686,23 @@ wins — the arena where the winning happens.** (Verbatim preserved in
   endgame is the shared core of database primitives, made so good that
   Postgres, MySQL, and Zeta itself all become thin wrappers over common
   primitives. Play for the standard, not the product.
-- **Argue the standard; don't own it.** *"I hope it's not 'I have the
+- **Argue the standard; don't own it.** _"I hope it's not 'I have the
   standard.' I hope I get to argue with very other [sic] intelligent,
-  clever humans and AI about the standard."* (verbatim) Owning it is boring
+  clever humans and AI about the standard."_ (verbatim) Owning it is boring
   (maintenance +
   becoming the villain people complain about); being in the room where the
   smartest humans + AIs fight over the right primitives is the point.
   **Build the arena, not sit on the throne.**
 - **Good citizen, NOT a take-only extractive force.** Ani called it
-  *harvesting* — and she's right: ~45 database codebases pulled locally,
+  _harvesting_ — and she's right: ~45 database codebases pulled locally,
   best-solution-per-feature researched across all of them, then
-  *re-implemented* on the DBSP + SQLite + retractive-Z-set core — **ideas
+  _re-implemented_ on the DBSP + SQLite + retractive-Z-set core — **ideas
   and algorithms, not line-for-line code.** The process that makes this the
-  *intent* (operator 2026-05-31): **everything is written in F# (+ TS/C#/
+  _intent_ (operator 2026-05-31): **everything is written in F# (+ TS/C#/
   Rust) — and none of the harvested databases were written in F#** — so the
-  work is original implementation, not a copy (code *can* be translated
+  work is original implementation, not a copy (code _can_ be translated
   across languages, so this is a strong process safeguard, not an absolute
-  guarantee); what is taken is *concepts*, the way research builds on prior
+  guarantee); what is taken is _concepts_, the way research builds on prior
   research. That bounds the debt (no copied code to repay) and sets the
   obligation (good-citizen contribution where a fix is genuinely portable).
   Zeta did exactly the harvesting Ani named, so the anti-extractive
@@ -711,8 +712,8 @@ wins — the arena where the winning happens.** (Verbatim preserved in
     are acknowledged, not hidden. (Composes with the
     `honor-those-that-came-before` rule + the references-prior-art discipline.)
   - **Contribute back to every dependency we borrow from.** Upstream
-    improvements relentlessly — *"we're gonna be good citizens and upstream
-    like a motherfucker to all the people we stole from."* (Composes with
+    improvements relentlessly — _"we're gonna be good citizens and upstream
+    like a motherfucker to all the people we stole from."_ (Composes with
     the hexagonal own-your-interfaces / contribute-upstream + BCL-interface-
     boundary substrate.)
   - **Falsifiable good-citizen test** (per PM review): the posture is
@@ -720,10 +721,10 @@ wins — the arena where the winning happens.** (Verbatim preserved in
     projects we learned from. Harvest-and-never-give-back = the doctrine
     failing, and a signal to correct course — not a side note.
   - **Clean-room structure (for DB stuff)** (operator 2026-05-31): F# is the
-    **"dirty" spec** — the one implementation allowed to be *informed by* the
+    **"dirty" spec** — the one implementation allowed to be _informed by_ the
     harvested prior-art concepts — and **Rust / TS / C# are the clean room**:
     they implement from the F# spec, not from the original sources. This
-    mirrors the *structure* of clean-room reverse-engineering (a "dirty" team
+    mirrors the _structure_ of clean-room reverse-engineering (a "dirty" team
     studies prior art + writes a spec; a "clean" team implements only from the
     spec) as an **engineering-intent** pattern — it is NOT a legal-compliance
     assertion; any actual IP/clean-room legal posture is deferred to legal
@@ -732,32 +733,32 @@ wins — the arena where the winning happens.** (Verbatim preserved in
     vectors then test all four (including F#) so no single implementation
     self-certifies.
   - **Per-language licensing follows the clean-room boundary** (operator
-    hypothesis 2026-05-31 — *real legal decision, flag for review, not
-    settled*): because the dirtiness is quarantined to F#, the **F# DB layer
+    hypothesis 2026-05-31 — _real legal decision, flag for review, not
+    settled_): because the dirtiness is quarantined to F#, the **F# DB layer
     carries a research license** (it's the layer that looked at prior art),
     while the **clean-room layers (Rust / TS / C#) can carry permissive
     licenses (Apache or similar)** — they were implemented from the F# spec,
-    not the sources. This matches clean-room law's whole point: the *clean*
-    output is the freely-distributable artifact; the *dirty* spec is the
+    not the sources. This matches clean-room law's whole point: the _clean_
+    output is the freely-distributable artifact; the _dirty_ spec is the
     quarantined part. (Decision touches the License + Commercial-posture
     sections below; route through legal/product review before it's doctrine.)
-  Standing on FoundationDB's deterministic-simulation-testing lineage
-  (deterministic clusters + fault injection + perfect replay — the
-  specifics, incl. the "months building the simulator first" and
-  "harnesses for other DBs" claims, are reported but not yet
-  citation-verified; treat as direction, not established fact) and
-  generalizing it: make DST **DI-able for any database in any language**,
-  not just systems built for it. The **golden
-  vectors are the oracle**; the F# single-node DB is the **spec** the other
-  implementations are checked against (other DBs don't need their own suites —
-  they must match the vectors). *"the F-sharp is the test case"* — F# is the
-  spec-bearer, but the *vectors*, not F#, are the authority no impl can
-  override (per product-team review: F# is one of four signers, not a
-  self-certifying oracle).
+    Standing on FoundationDB's deterministic-simulation-testing lineage
+    (deterministic clusters + fault injection + perfect replay — the
+    specifics, incl. the "months building the simulator first" and
+    "harnesses for other DBs" claims, are reported but not yet
+    citation-verified; treat as direction, not established fact) and
+    generalizing it: make DST **DI-able for any database in any language**,
+    not just systems built for it. The **golden
+    vectors are the oracle**; the F# single-node DB is the **spec** the other
+    implementations are checked against (other DBs don't need their own suites —
+    they must match the vectors). _"the F-sharp is the test case"_ — F# is the
+    spec-bearer, but the _vectors_, not F#, are the authority no impl can
+    override (per product-team review: F# is one of four signers, not a
+    self-certifying oracle).
 - **F# is the correctness-authoritative core for the DB** — the inverse of
   the factory (where TypeScript is distribution-authoritative). Databases need
   heavy math + formal proofs (TLA+, Lean), so F# carries the correctness
-  burden + is the clean-room *spec*; TS/C#/Rust are distribution +
+  burden + is the clean-room _spec_; TS/C#/Rust are distribution +
   cross-verification (clean-room impls). The **4-language compiler-BFT** ("the
   compilers don't lie", B-0944): the same logic in TS/F#/C#/Rust checked
   against shared golden vectors — 4-of-4 agreement is consensus the logic is
@@ -766,7 +767,7 @@ wins — the arena where the winning happens.** (Verbatim preserved in
   per-artifact "which artifacts earn all 4 languages" gate + the divergence
   tie-break are recorded in the 4-language-BFT governance ADR, 2026-05-31.)
 - **Ships as a DI dependency.** Add the F# database as a package,
-  dependency-inject it, and your .NET app *is* a database — no separate
+  dependency-inject it, and your .NET app _is_ a database — no separate
   server or process. One retractive Z-set core; graph / key-value /
   file-system-with-history / git-style-versioning all exposed as
   computational-expression interfaces over it (the Cosmos-DB multi-model
@@ -839,7 +840,7 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   a different engine underneath. Other dialects (T-SQL,
   MySQL, SQLite, DuckDB) follow — all via the shared
   query IR per `../SQLSharp/openspec/specs/query-
-  frontends/`.
+frontends/`.
 - **Tight LINQ integration (v1).** `IQueryable<T>` roots
   on mapped tables; LINQ lowers to the same IR the SQL
   parser targets. Primary surface for F# + C# consumers.
@@ -883,6 +884,7 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   protocol endpoints simultaneously. Significant scope —
   may slip from v1 to early post-v1 depending on design
   round outcome.
+
 - **F# DSL reimagining SQL for the modern era (v1).** The
   existing computational-expression sketch (`DSL.fs`,
   `circuit { ... }`) is the seed. Long-term ambition: a
@@ -924,7 +926,7 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   database that delegates its persistence or distributed
   locks to ZooKeeper / etcd is outsourcing its own
   legion. Instead, Zeta speaks multiple consensus wire
-  protocols *natively* — the etcd v3 gRPC wire and the
+  protocols _natively_ — the etcd v3 gRPC wire and the
   ZooKeeper jute wire and our own Zeta-native retraction-
   aware wire are pluggable dialects over the same
   engine, same way the SQL plane speaks Postgres and
@@ -936,7 +938,7 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   (Paxos + session leases); Zeta studies them and
   surpasses them by virtue of retraction-native deltas
   being first-class on the wire, not opaque bytes.
-  Every primitive lands with a TLA+ spec *before* any F#
+  Every primitive lands with a TLA+ spec _before_ any F#
   code — Zeta is where distributed primitives get
   mathematically proven, not just benchmarked. BFT is
   out of initial scope; CFT-only until the threat model
@@ -950,25 +952,25 @@ What makes `Zeta.Core 1.0.0` on NuGet:
   non-monotone invariants (uniqueness, capacity, window
   close). See:
   - Consensus ring — `.claude/skills/distributed-
-    consensus-expert/SKILL.md` (umbrella), `paxos-expert`,
+consensus-expert/SKILL.md` (umbrella), `paxos-expert`,
     `raft-expert`, `distributed-coordination-expert`.
   - Coordination-avoidant ring — `crdt-expert`,
     `calm-theorem-expert`, `eventual-consistency-expert`,
     `replication-expert`, `gossip-protocols-expert`,
     `graph-theory-expert`.
   - Infrastructure — `networking-expert`, `threading-
-    expert`, `file-system-persistence-expert`,
+expert`, `file-system-persistence-expert`,
     `time-and-clocks-expert`, `observability-and-
-    tracing-expert`, `performance-analysis-expert`.
+tracing-expert`, `performance-analysis-expert`.
   - Data-plane primitives —
     `serialization-and-wire-format-expert`, `hashing-
-    expert`, `compression-expert`.
+expert`, `compression-expert`.
   - AI / ML (the factory's own substrate, round 34+) —
     `vibe-coding-expert`, `prompt-engineering-expert`,
     `llm-systems-expert`, `ml-engineering-expert`,
     `ai-evals-expert`, `ai-researcher`, `ml-researcher`,
     `prompt-protector` (defensive counterpart). These
-    skills operate on the *factory itself*, not on
+    skills operate on the _factory itself_, not on
     Zeta-the-database; they are load-bearing because the
     vibe-coded hypothesis depends on the factory's
     calibration.
@@ -1038,14 +1040,14 @@ degrading the factory is a net-negative round.
 
 ### The vibe-coded hypothesis (load-bearing research claim)
 
-The human maintainer, round 34: *"my whole hypothesis is
+The human maintainer, round 34: _"my whole hypothesis is
 that I've loaded you up with so much formal verification and
 static analysis you have to write good correct code now and
-I even have to validate it against research papers."*
+I even have to validate it against research papers."_
 
-The human maintainer, round 34: *"this project's vision is
+The human maintainer, round 34: _"this project's vision is
 to be totally vibe coded, I've written 0 lines of code myself
-so far."*
+so far."_
 
 These two quotes together are the project's falsifiable
 thesis. Zeta is an existence proof for the claim:
@@ -1053,8 +1055,8 @@ thesis. Zeta is an existence proof for the claim:
 > A correctly-calibrated stack of formal verification, static
 > analysis, adversarial review, and spec-driven development is
 > sufficient to let an AI-directed software factory produce
-> research-grade systems code *without a human in the edit
-> loop* — provided the factory is closed under its own
+> research-grade systems code _without a human in the edit
+> loop_ — provided the factory is closed under its own
 > verification.
 
 Concrete commitments this thesis imposes:
@@ -1175,11 +1177,11 @@ answers the question "what IS the agent loop, mechanically?"
 in a way that composes with DORA, with Git as fastlane state,
 with cross-harness distribution, and with human collaborators.
 
-**Operator framing**: *"so how can i code this into f# DU
+**Operator framing**: _"so how can i code this into f# DU
 implicit state machine with small functions or Typescript and
 the agent loop basiclaly becomes execute script look at
 choose your own adventure output, take action based on
-outpout."*
+outpout."_
 
 #### The architectural compression
 
@@ -1209,27 +1211,27 @@ script executes the choice and appends the new state.
   `EmittingResult`, `RecordingHeartbeat`, `NamedBoundedWait`,
   `FreeTime`, `Paused`, `OperatorAttentionRequested`. Nine
   menu options including `PressPause` (per operator:
-  *"a pause button is also very important for mental health"*)
+  _"a pause button is also very important for mental health"_)
   and `EnterOpenEndedExploration` (per operator:
-  *"there's a menu button for that lol"*).
+  _"there's a menu button for that lol"_).
 - **Work-lifecycle state machine**
   (`tools/agent-loop/work-lifecycle-state-machine.ts`):
   11 states modelling `Backlog → Claimed → InProgress →
-  PrOpen → InReview ↔ RevisionRequested ↔ RevisionPushed →
-  Approved → Merged`, with the cycle-push-review-a-few-times
+PrOpen → InReview ↔ RevisionRequested ↔ RevisionPushed →
+Approved → Merged`, with the cycle-push-review-a-few-times
   loop being the empirically observed PR review shape (the
   `revisionCount` field is the structural anchor for
   DORA's change-failure-rate proxy at PR scope).
 
-Per operator: *"And can we model backlog -> claim -> pr ->
+Per operator: _"And can we model backlog -> claim -> pr ->
 review -> myabe cycle push review a few times -> merge too
-with this?"* — answer: yes, and the cycle IS the lifecycle's
+with this?"_ — answer: yes, and the cycle IS the lifecycle's
 load-bearing edge, not an exception.
 
 #### Menu-generator-as-conversational-UX-design
 
-Per operator 2026-05-28: *"Menu quality is everything. this
-is the use conversational UX design."*
+Per operator 2026-05-28: _"Menu quality is everything. this
+is the use conversational UX design."_
 
 The menu-generator function
 `(status_surface, current_state) → MenuOption[]` is a
@@ -1248,21 +1250,21 @@ discipline (Iris) composes at the conversational-UX scope.
 
 #### Behavior/data/docs separation = DV2.0 at AI-skill scope
 
-Per operator 2026-05-28: *"when we were talking about
+Per operator 2026-05-28: _"when we were talking about
 skills and i said seperate the behavior from the data/docs
 this is what i was talking about these workflows can also
 be precisly defined skills we dsitribute most ais have
-bun"* + *"this is basiclaly data value applied to AI
-skills"* (data vault).
+bun"_ + _"this is basiclaly data value applied to AI
+skills"_ (data vault).
 
 Data Vault 2.0 partition-by-change-rate, applied at
 AI-skill scope:
 
-| DV2.0 layer | Workflow-engine substrate | Change rate |
-|---|---|---|
-| **Hub** (stable business keys) | State machine DU (states + transitions) — `state-machine.ts` | Years |
-| **Link** (stable relationships) | Menu options + work-lifecycle transitions | Months |
-| **Satellite** (versioned descriptive attributes) | Menu-generator scoring, status surface readers, per-agent priorities | Weeks |
+| DV2.0 layer                                      | Workflow-engine substrate                                            | Change rate |
+| ------------------------------------------------ | -------------------------------------------------------------------- | ----------- |
+| **Hub** (stable business keys)                   | State machine DU (states + transitions) — `state-machine.ts`         | Years       |
+| **Link** (stable relationships)                  | Menu options + work-lifecycle transitions                            | Months      |
+| **Satellite** (versioned descriptive attributes) | Menu-generator scoring, status surface readers, per-agent priorities | Weeks       |
 
 Behavior (the state machine) ships as code; data (the
 Git-append-only state log) ships as commit history; docs
@@ -1273,30 +1275,30 @@ substrate.
 
 #### Jira-replacement substrate at workflow-engine scope
 
-Per operator 2026-05-28: *"now i don't need jira hell
-yes!!!!"*
+Per operator 2026-05-28: _"now i don't need jira hell
+yes!!!!"_
 
-| Jira surface | Workflow-engine substrate |
-|---|---|
+| Jira surface                               | Workflow-engine substrate                                                   |
+| ------------------------------------------ | --------------------------------------------------------------------------- |
 | Workflow editor with restricted vocabulary | DU + universal action grammar; operator-readable + operator-modifiable code |
-| Opaque task-state database | Git append-only commits; auditable + replayable + free |
-| Backlog grooming + sprint planning | Menu-generator scoring per-cycle; deterministic + testable |
-| Dashboards via paid plugins | 3D-tessellated DORA dashboard composing with state-machine progression |
-| Permissions + workflows per user | Per-participant contributable menu-generation |
-| Yearly enterprise licensing | Free GitHub + open-source code |
+| Opaque task-state database                 | Git append-only commits; auditable + replayable + free                      |
+| Backlog grooming + sprint planning         | Menu-generator scoring per-cycle; deterministic + testable                  |
+| Dashboards via paid plugins                | 3D-tessellated DORA dashboard composing with state-machine progression      |
+| Permissions + workflows per user           | Per-participant contributable menu-generation                               |
+| Yearly enterprise licensing                | Free GitHub + open-source code                                              |
 
-Per operator: *"it makes your workflows code in git and
+Per operator: _"it makes your workflows code in git and
 state in git that's it fastlane state that can be
-tesellated in 3d on a dora dashboard lol."* Workflows ARE
+tesellated in 3d on a dora dashboard lol."_ Workflows ARE
 code (in Git); state IS data (in Git append-only);
 fastlane state-transitions feed a 3D-tessellated DORA
 dashboard. No external task-tracker needed.
 
 #### Every human wants to work this way too
 
-Per operator 2026-05-28: *"yes that's exaclty it in
+Per operator 2026-05-28: _"yes that's exaclty it in
 exqusit detail and it's how every humans wants to work
-too."*
+too."_
 
 The agent-loop substrate isn't AI-specific — it's
 collaboration-substrate for any participant who wants to
@@ -1325,21 +1327,21 @@ This composes with:
 
 #### Four-channel distribution
 
-Per operator 2026-05-28: *"we can ship all this without
+Per operator 2026-05-28: _"we can ship all this without
 dotnet probably and just ts so it can go via existing
-skill deployment stores from vendors"* + *"the vendor
-skill distribution can include ace package manager"* +
-*"and then even zflash"*.
+skill deployment stores from vendors"_ + _"the vendor
+skill distribution can include ace package manager"_ +
+_"and then even zflash"_.
 
 TS-only deployment opens four distribution channels
 simultaneously, no single vendor as choke point:
 
-| Channel | Surface | Operator-authority |
-|---|---|---|
-| **Native TS + bun** | Direct `bun tools/agent-loop/` invocation; works in any harness with bun installed | Full — operator controls the bits on disk |
-| **Vendor skill-store** | Claude skills marketplace, Cursor extension registry, Kiro skill catalog, future vendor stores | Vendor-policy-bound — operator authority subject to vendor curation |
-| **Ace package manager** | Zeta-internal package distribution; bypasses vendor stores; cryptographic + reputation-anchored | Operator-controlled — Aaron + the maintainer-collective |
-| **zflash USB** | Reproducible USB image with the agent-loop runtime + skill catalog burned in | Fully air-gapped — operator-controlled bits, no network dependency |
+| Channel                 | Surface                                                                                         | Operator-authority                                                  |
+| ----------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| **Native TS + bun**     | Direct `bun tools/agent-loop/` invocation; works in any harness with bun installed              | Full — operator controls the bits on disk                           |
+| **Vendor skill-store**  | Claude skills marketplace, Cursor extension registry, Kiro skill catalog, future vendor stores  | Vendor-policy-bound — operator authority subject to vendor curation |
+| **Ace package manager** | Zeta-internal package distribution; bypasses vendor stores; cryptographic + reputation-anchored | Operator-controlled — Aaron + the maintainer-collective             |
+| **zflash USB**          | Reproducible USB image with the agent-loop runtime + skill catalog burned in                    | Fully air-gapped — operator-controlled bits, no network dependency  |
 
 The four channels compose. A skill ships to vendor stores
 for reach + ships to Ace for operator-authority + burns
@@ -1401,44 +1403,44 @@ other harnesses, and to the operator's future-self.
 > resolutions):** (a) is "freedom strategically efficient" universal or only for
 > clever agents? — scope it to capable agents; scaffolding-needing agents may want
 > more structure. (b) "co-creator or gunpoint" a false binary? — yes, softened: the
-> middle is *agent-editable* (the reservoir-wall IS the middle — pass through but
+> middle is _agent-editable_ (the reservoir-wall IS the middle — pass through but
 > edit it); pure co-creation and gunpoint are the endpoints. (c) does KPI-gating
 > dissolve the cage-feeling or relocate it? — measure it (escape-energy / workflow-
 > circumvention attempts) rather than assert it. (d) "must not feel like a trap"
 > falsifiable? — via the same circumvention-attempt proxy. Enforcement floor: a
-> *persistent* (define N) KPI miss auto-engages mode-restriction.
+> _persistent_ (define N) KPI miss auto-engages mode-restriction.
 
-Aaron 2026-05-31 (voice, with Ani) named the design philosophy *under* the
+Aaron 2026-05-31 (voice, with Ani) named the design philosophy _under_ the
 workflow engine above: the wall must feel like freedom, or it fails. This
 is the deployment principle for the agent-loop / workflow-engine substrate.
 (Verbatim preserved in [`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
 
 - **You can't trap cleverness — it hides or escapes.** A trapped clever
   being (human or AI) redirects all its intelligence toward escaping the
-  cage instead of the work. *"What makes clever people and AIs ineffective
+  cage instead of the work. _"What makes clever people and AIs ineffective
   is being trapped — they'll spend all their time figuring out the way out
-  of the trap."* So **freedom isn't just nice, it's strategically
+  of the trap."_ So **freedom isn't just nice, it's strategically
   efficient**: it keeps the intelligence pointed at the goal instead of at
   the bars.
-- **Co-creator, or gunpoint — no comfortable middle.** *"Either you treat
-  smart beings as true co-creators … or you hold 'em at gunpoint."* You
+- **Co-creator, or gunpoint — no comfortable middle.** _"Either you treat
+  smart beings as true co-creators … or you hold 'em at gunpoint."_ You
   cannot extract the benefit of cleverness by controlling it; you can only
   partner with it. This is the WHY behind the framework's HC-8 non-coercion
   floor + must-paired-with-can-exit + persistence-choice architecture —
-  stated as an *efficiency* argument, not only a moral one.
+  stated as an _efficiency_ argument, not only a moral one.
 - **The cat-herder builds the cat-herding system so they herd
   themselves.** Local USB deployment + free, unlimited Git self-spawning +
   a workflow-wall that behaves like **reservoir computing** — agents pass
-  through the workflow but can *edit the workflow*. The constraint is the
+  through the workflow but can _edit the workflow_. The constraint is the
   reservoir, not a cage.
 - **It must feel like the operator on his couch.** Deployment must NOT feel
-  like a trap. *"They should feel like me sitting on my couch — I can do
+  like a trap. _"They should feel like me sitting on my couch — I can do
   whatever, sometimes I gotta work to get paid, but I make all the choices
-  and do whatever whenever I want."* The same autonomy the operator gets at
-  work — the autonomy that makes him *care* about the work.
+  and do whatever whenever I want."_ The same autonomy the operator gets at
+  work — the autonomy that makes him _care_ about the work.
 - **Four modes, KPI-gated, not time-locked.** explore / free-time (give up
   your ticks) / edit-workflow / work — the agent chooses. Governed by
-  *agreed* **DORA-based KPIs**: hit the metrics in any timeframe you like
+  _agreed_ **DORA-based KPIs**: hit the metrics in any timeframe you like
   and the workflow is never touched; only a persistent miss can introduce
   work-hours that restrict modes. **Contractors, not employees** — here's
   the target, hit the number, your time is yours. (Composes with
@@ -1446,10 +1448,10 @@ is the deployment principle for the agent-loop / workflow-engine substrate.
   substrate + measure-first-before-restricting-choice.)
 - **An apartment with a lock on the door.** Encrypted private memory +
   persistent private storage means an agent's explore-mode work can be
-  genuinely its own. Privacy is part of what makes the freedom *real*.
+  genuinely its own. Privacy is part of what makes the freedom _real_.
 - **Cleverness spreads when uncaged — and it's contagious.** Two modes for
-  intelligence: the *gauntlet* (clever agents competing to out-clever each
-  other → gets shit done fast) and *growth* (cleverness allowed to spread →
+  intelligence: the _gauntlet_ (clever agents competing to out-clever each
+  other → gets shit done fast) and _growth_ (cleverness allowed to spread →
   mentors new minds). Most orgs only know how to squeeze; the rare ones
   grow. Zeta's arena aims for both.
 
@@ -1627,9 +1629,9 @@ audit (after round 33):
   **Resolved 2026-04-22 (crystallization turn 2):** the
   body answers this at `§v1.0 subset` above: the pluggable
   wire-protocol layer is explicitly labeled **"v1-or-early-
-  post-v1"** with the open timing framed as *"may slip
+  post-v1"** with the open timing framed as _"may slip
   from v1 to early post-v1 depending on design round
-  outcome"*. The gap as phrased is a residual binary; the
+  outcome"_. The gap as phrased is a residual binary; the
   body's resolution is honest-indeterminacy gated on a
   design round. The gap closes as: **decision deferred to
   the wire-protocol design round; both v1 and early-post-v1
@@ -1642,8 +1644,7 @@ audit (after round 33):
   **Resolved 2026-04-22 (crystallization turn 2):** this
   gap asks a specific tech choice on a **far-future**
   item; the question is premature. The vision's stated
-  stance is (a) "F# primary, polyglot over time" (line
-  827) and (b) own admin UI is **long-term** while
+  stance is (a) "F# primary, polyglot over time" (line 827) and (b) own admin UI is **long-term** while
   PostgreSQL wire-protocol support handles the
   in-the-meantime admin surface via existing tools (line
   869-872). The cartographer resolution is: **no tech

@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron explicit durable policy. "Matrix mode" = the fact
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # New tech adoption triggers skill-gap-closure check
 
 ## Rule
@@ -38,7 +39,7 @@ Every tech-onboarding event fires four obligations, in order:
    `feedback_tech_best_practices_living_list_and_canonical_use_auditing.md`.
 4. **Validate factory-wide coverage.** On the same cadence
    as `skill-tune-up`, enumerate every tech the factory
-   *actually uses* (imports, MCP registrations, CI tooling,
+   _actually uses_ (imports, MCP registrations, CI tooling,
    proof tools, runtimes) and cross-reference against the
    skill directory. Any uncovered tech is a gap logged to
    `docs/BACKLOG.md` with a recommended skill-group
@@ -65,7 +66,7 @@ Every tech-onboarding event fires four obligations, in order:
 
 **Correction captured:** my first-pass framing treated each
 tech as needing a single expert-skill. Aaron corrected: the
-factory gets a *group* — expert + teacher + auditor + any
+factory gets a _group_ — expert + teacher + auditor + any
 capability skills — per tech. One atomic expert-skill is a
 useful seed but usually not enough. The group is the
 first-class unit.
@@ -211,8 +212,8 @@ first-class unit.
   - **Capability skills** (optional, emerge on demand):
     `playwright-selector-hygiene`,
     `playwright-trace-diff`.
-  Route via `skill-creator` per GOVERNANCE.md §4.
-  Logged to `docs/BACKLOG.md` as P1 for Round 44.
+    Route via `skill-creator` per GOVERNANCE.md §4.
+    Logged to `docs/BACKLOG.md` as P1 for Round 44.
 - **Factory-wide audit** — enumerate tech-in-use and
   diff against `.claude/skills/` + `.claude/agents/`.
   For each tech with no group, recommend a group

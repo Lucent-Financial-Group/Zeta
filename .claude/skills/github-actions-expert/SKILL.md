@@ -143,8 +143,7 @@ on:
         type: string
 
 jobs:
-  collect:
-    ...
+  collect: ...
 ```
 
 Callers:
@@ -240,7 +239,7 @@ on:
 
 - Parity: a workflow step that installs dotnet via
   `actions/setup-dotnet` drifts from `tools/setup/
-  install.sh`. Round-29 concession (ship day-one CI);
+install.sh`. Round-29 concession (ship day-one CI);
   parity swap is a backlog item.
 - No secret is referenced on round-29 without a dedicated
   design-doc moment.

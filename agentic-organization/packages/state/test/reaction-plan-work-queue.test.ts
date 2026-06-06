@@ -44,7 +44,10 @@ describe("in-memory reaction plan work queue", () => {
     });
 
     equal(completion.status, ReactionPlanCompletionStatus.Completed);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Completed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Completed],
+    );
   });
 
   test("preserves the originating traceparent across durable claim and retry transitions", async () => {
@@ -103,7 +106,10 @@ describe("in-memory reaction plan work queue", () => {
     });
 
     equal(completion.status, ReactionPlanCompletionStatus.ClaimLost);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Claimed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Claimed],
+    );
   });
 
   test("rejects completion attempts after the active lease expires", async () => {
@@ -129,7 +135,10 @@ describe("in-memory reaction plan work queue", () => {
     });
 
     equal(completion.status, ReactionPlanCompletionStatus.ClaimLost);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Claimed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Claimed],
+    );
   });
 
   test("rejects failure attempts after the active lease expires", async () => {
@@ -156,7 +165,10 @@ describe("in-memory reaction plan work queue", () => {
     });
 
     equal(failure.status, ReactionPlanCompletionStatus.ClaimLost);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Claimed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Claimed],
+    );
   });
 
   test("reclaims expired reaction plan leases", async () => {
@@ -229,7 +241,10 @@ describe("in-memory reaction plan work queue", () => {
     });
 
     equal(failure.status, ReactionPlanCompletionStatus.Completed);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Planned]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Planned],
+    );
     equal(queue.snapshot[0]?.attemptCount, 1);
     equal(queue.snapshot[0]?.nextAttemptAt, "2026-05-29T16:02:00.000Z");
   });
@@ -302,7 +317,10 @@ describe("in-memory reaction plan work queue", () => {
       retryDelayMs: 60_000,
     });
 
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Failed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Failed],
+    );
     equal(queue.snapshot[0]?.attemptCount, 3);
     equal(queue.snapshot[0]?.nextAttemptAt, undefined);
   });

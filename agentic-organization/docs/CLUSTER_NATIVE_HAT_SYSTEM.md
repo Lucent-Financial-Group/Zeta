@@ -89,14 +89,14 @@ The Organization DB remains the business source of truth.
 
 The cluster-native hat system is an enforcement and runtime projection layer.
 
-| Concern | Source of truth |
-|---|---|
-| Project, initiative, work item, gate, release, and business state | Organization DB |
-| Hat definition, authority, hierarchy, and lifecycle policy | Organization DB, projected to CRDs |
-| Active runtime hat binding for Kubernetes workloads | HatBinding CRD/status and Organization DB assignment |
-| Policy evaluation | OPA/RBAC plus Organization policy service |
-| Runtime events and observability | CRD status, Kubernetes Events, Loki, NATS, traces |
-| Reputation and performance rollup | Organization DB, with operator status projection |
+| Concern                                                           | Source of truth                                      |
+| ----------------------------------------------------------------- | ---------------------------------------------------- |
+| Project, initiative, work item, gate, release, and business state | Organization DB                                      |
+| Hat definition, authority, hierarchy, and lifecycle policy        | Organization DB, projected to CRDs                   |
+| Active runtime hat binding for Kubernetes workloads               | HatBinding CRD/status and Organization DB assignment |
+| Policy evaluation                                                 | OPA/RBAC plus Organization policy service            |
+| Runtime events and observability                                  | CRD status, Kubernetes Events, Loki, NATS, traces    |
+| Reputation and performance rollup                                 | Organization DB, with operator status projection     |
 
 The CRDs should not become a second business database. They should mirror and enforce the runtime-relevant parts of hats.
 
@@ -310,13 +310,13 @@ Graph rendering should support:
 
 Every binding has time semantics.
 
-| Concept | Purpose |
-|---|---|
-| TTL | Forces periodic authorization refresh |
-| Warmup | Prevents immediate high-risk authority before context is loaded |
-| Cooldown | Prevents rapid recapture or concentration of authority |
+| Concept            | Purpose                                                                     |
+| ------------------ | --------------------------------------------------------------------------- |
+| TTL                | Forces periodic authorization refresh                                       |
+| Warmup             | Prevents immediate high-risk authority before context is loaded             |
+| Cooldown           | Prevents rapid recapture or concentration of authority                      |
 | Sticky attribution | Links memory, reputation, and outputs to the hat binding even after release |
-| Succession | Defines how the next wearer is chosen |
+| Succession         | Defines how the next wearer is chosen                                       |
 
 This matches the Organization model where agents do not keep role authority forever. Hats can be chosen, returned, rotated, renewed, or reassigned.
 

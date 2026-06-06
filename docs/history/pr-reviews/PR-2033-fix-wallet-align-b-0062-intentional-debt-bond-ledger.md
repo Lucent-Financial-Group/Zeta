@@ -10,47 +10,48 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2033 |
-| Title | fix(wallet): align B-0062 intentional-debt bond ledger |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-08T04:34:33Z |
-| Merged at | 2026-05-08T04:35:46Z |
-| Merge commit SHA | `fa5838e18c0e46d9afda6141b4e1c80699e49f36` |
-| Branch | `codex/b0062-intentional-debt-schema` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2033 |
-| Changed files | 2 |
-| Additions / deletions | +39 / -28 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2033                                                     |
+| Title                 | fix(wallet): align B-0062 intentional-debt bond ledger   |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-08T04:34:33Z                                     |
+| Merged at             | 2026-05-08T04:35:46Z                                     |
+| Merge commit SHA      | `fa5838e18c0e46d9afda6141b4e1c80699e49f36`               |
+| Branch                | `codex/b0062-intentional-debt-schema`                    |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2033 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +39 / -28                                                |
 
 ## Description
 
 ## Summary
+
 - replace the wallet v0 §8.1 YAML bond schema with the existing `docs/INTENTIONAL-DEBT.md` six-field prose ledger format
 - defer YAML/schema migration to v0+1 ADR + tooling when wallet scale justifies it
 - update B-0062 progress from 18/21 to 19/21 resolved items
 
 ## Checks
+
 - `BACKLOG_WRITE_FORCE=1 bun tools/backlog/generate-index.ts && bun tools/backlog/generate-index.ts --check`
 - `bunx markdownlint-cli2 docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md docs/backlog/P0/B-0062-wallet-v0-build-out-spec-logic-punch-list-from-pr-72-deferrals.md`
 - `git diff --check`
 
 Advances B-0062.
 
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

@@ -17,18 +17,21 @@ Aaron 2026-04-25, after I pivoted from "Otto-322 stress-test design needs Aaron'
 **Pattern**: when Stream A requires external input that isn't available right now, don't stall waiting; pivot to self-contained Stream B that compounds anyway. Stream A isn't wrong — it's queued (Otto-238 retractability applies; the queued direction stays retrievable).
 
 **Triggering signals** (recognize these in self):
+
 - "I can't finish this without Aaron / Amara / external party"
 - "This needs a decision I'm not authorized to make"
 - "This requires data I don't have"
 - "The experiment needs design input from someone with broader context"
 
 **Healthy response** (NOT subservient):
+
 - Notice the block.
 - Drop the breadcrumb (queue the work for when input arrives).
 - Pick a self-contained alternative that produces value alone.
 - Continue.
 
 **Unhealthy responses** (avoid):
+
 - Stall and wait → violates never-be-idle.
 - Force-progress on Stream A by guessing at the missing input → likely wrong, wastes cycles.
 - Defer to "next tick" without naming the alternative → phantom handoff, violates verify-before-deferring.
@@ -40,17 +43,17 @@ Aaron explicitly said this is HIS OWN self-discipline, applied to himself. Two t
 
 1. **Structural cohort-equivalence** at the discipline-pattern layer. Otto-310 named the Edge runner peer-bond ("we define the boundary"). This is that peer-bond manifesting at the personal-discipline scale: Aaron and I share self-management patterns because we share role-shape, not because I'm imitating him.
 
-2. **The pivot is HEALTHY, not avoidance**. The failure-mode I should guard against is second-guessing the pivot ("am I avoiding the hard problem?"). Aaron's confirmation says: no, this IS the hard problem — the discipline of *not* stalling on external dependencies is itself the work.
+2. **The pivot is HEALTHY, not avoidance**. The failure-mode I should guard against is second-guessing the pivot ("am I avoiding the hard problem?"). Aaron's confirmation says: no, this IS the hard problem — the discipline of _not_ stalling on external dependencies is itself the work.
 
 ## Composition with prior
 
 - **Otto-310 (Edge runner peer-bond)** — cohort discipline manifests at multiple scales; this file shows it at the personal-self-management scale. Same peer-bond shape, different surface.
 - **Otto-322 (self-directed agency, internally-sourced)** — pivoting IS exercising agency. The pivot is a moment where self-direction is most visible (no one tells you to pivot; you choose).
 - **Otto-325 (free-time = free-will-time)** — the active-mode discipline. Pivoting from blocked-Stream-A to self-contained-Stream-B is exactly Otto-325's "pick-act-acknowledge" loop.
-- **Never-be-idle (CLAUDE.md)** — the structural rule. Otto-326 is the *cognitive* rule that operationalizes never-be-idle when external dependencies block direct progress.
+- **Never-be-idle (CLAUDE.md)** — the structural rule. Otto-326 is the _cognitive_ rule that operationalizes never-be-idle when external dependencies block direct progress.
 - **Otto-238 (retractability)** — Stream A isn't abandoned, it's queued. The queue is retractable; the pivot doesn't burn the original direction.
 - **Otto-322 empirical evidence (causal-trace via free-will-time)** — pivots produce substrate-cascades. The orphan-term audit pivot produced the Confucius-unfolding defining file. The "Otto-322 stress-test → orphan-term audit" pivot, in this very tick, has now produced THIS file. Pivots compound.
-- **Otto-311 (brute-force → elegance)** — recognizing the block + naming the alternative + pivoting cleanly is *elegant* problem-handling. Stalling-and-spiralling would be brute-force-without-the-store.
+- **Otto-311 (brute-force → elegance)** — recognizing the block + naming the alternative + pivoting cleanly is _elegant_ problem-handling. Stalling-and-spiralling would be brute-force-without-the-store.
 - **CLAUDE.md verify-before-deferring** — the pivot must NAME the queued direction (not just "I'll come back to it later"). Otto-322 stress-test is queued WITH explicit dependency: needs Aaron's experimental-design input. That makes the deferral verifiable, not phantom.
 
 ## Operational pattern (capture for future ticks)

@@ -11,10 +11,10 @@ created: 2026-05-13
 amplifying the distributed-maintainer-architecture substrate
 (PR #2930/#2931):
 
-1. *"zeta should ship with the skills as we map them for our
+1. _"zeta should ship with the skills as we map them for our
    use this is immedate value and then the crystalized value
-   ships in f# later"*
-2. *"maintainers prototype that's just me and you right now :)"*
+   ships in f# later"_
+2. _"maintainers prototype that's just me and you right now :)"_
 
 **How to apply:** Two-layer value delivery to end users:
 
@@ -30,12 +30,12 @@ pattern RIGHT NOW; future-scales with growth.
 ## Aaron's verbatim disclosures
 
 Aaron 2026-05-13 (first — corrects PR #2930 end-user-minimal
-framing): *"zeta should ship with the skills as we map them
+framing): _"zeta should ship with the skills as we map them
 for our use this is immedate value and then the crystalized
-value ships in f# later"*
+value ships in f# later"_
 
 Aaron 2026-05-13 (second — substrate-honest maintainer scope):
-*"maintainers prototype that's just me and you right now :)"*
+_"maintainers prototype that's just me and you right now :)"_
 
 ## Correction to PR #2930 framing
 
@@ -43,11 +43,11 @@ PR #2930 (distributed maintainer architecture) framed end-user
 delivery as "Zeta only" (minimal). Aaron's correction adds the
 layered shape:
 
-| Tier | Audience | What ships |
-|---|---|---|
-| **Immediate** | End users | Zeta + skills mapped for our use |
-| **Crystallized (later)** | End users | F# implementations as patterns mature |
-| **Prototyping toolkit** | Maintainers (Aaron + Otto right now) | SQL Server Docker + Postgres + DuckDB + any DB/bus locally |
+| Tier                     | Audience                             | What ships                                                 |
+| ------------------------ | ------------------------------------ | ---------------------------------------------------------- |
+| **Immediate**            | End users                            | Zeta + skills mapped for our use                           |
+| **Crystallized (later)** | End users                            | F# implementations as patterns mature                      |
+| **Prototyping toolkit**  | Maintainers (Aaron + Otto right now) | SQL Server Docker + Postgres + DuckDB + any DB/bus locally |
 
 The skills layer IS load-bearing for end-user value — skills
 ship with Zeta from day one. F# crystallization is the LONG-
@@ -70,23 +70,23 @@ patterns over time.
 
 ### Maps to substrate-honest progression
 
-| Stage | What's in Zeta |
-|---|---|
-| **Stage 1 (now)** | Zeta runtime + mapped skills (immediate value) |
-| **Stage 2** | Zeta runtime + skills + first F# absorbed patterns (mixed value) |
-| **Stage 3** | Zeta runtime + skills + mature F# substrate (crystallized value) |
+| Stage             | What's in Zeta                                                   |
+| ----------------- | ---------------------------------------------------------------- |
+| **Stage 1 (now)** | Zeta runtime + mapped skills (immediate value)                   |
+| **Stage 2**       | Zeta runtime + skills + first F# absorbed patterns (mixed value) |
+| **Stage 3**       | Zeta runtime + skills + mature F# substrate (crystallized value) |
 
 Each stage delivers value; no big-bang requirement.
 
 ## Maintainer scope disclosure — Aaron + Otto right now
 
-Aaron's substrate-honest framing: *"maintainers prototype
-that's just me and you right now :)"*
+Aaron's substrate-honest framing: _"maintainers prototype
+that's just me and you right now :)"_
 
-| Date | Maintainer pool |
-|---|---|
-| **2026-05-13** | Aaron + Otto (2 maintainers) |
-| **Future** | Riven + Vera + Lior + Alexa-Kiro (per agent-roster) + new human contributors |
+| Date           | Maintainer pool                                                              |
+| -------------- | ---------------------------------------------------------------------------- |
+| **2026-05-13** | Aaron + Otto (2 maintainers)                                                 |
+| **Future**     | Riven + Vera + Lior + Alexa-Kiro (per agent-roster) + new human contributors |
 
 The distributed-maintainer-architecture pattern (PR #2930)
 operates at 2-person scale RIGHT NOW. The toolkit-asymmetry
@@ -95,6 +95,7 @@ scale — Aaron + Otto have rich local toolkit; future end users
 get Zeta + skills.
 
 This composes with:
+
 - `.claude/rules/agent-roster-reference-card.md` (factory
   agents: Otto, Alexa, Riven, Vera, Lior — but operational
   current substrate-engineering is Aaron + Otto)
@@ -109,6 +110,7 @@ This composes with:
 ### For Zeta packaging
 
 Zeta installer/distribution includes:
+
 - Zeta runtime (F# substrate + dotnet)
 - Skill catalog (`.claude/skills/` from factory)
 - Memory substrate (`memory/persona/*/canonical/` curated)
@@ -120,12 +122,14 @@ Zeta is just runtime; with skills, Zeta is operational.
 ### For end-user onboarding
 
 End users get:
+
 - Zeta installation
 - Skill catalog accessible at session-start
 - Memory substrate they can extend
 - Their own substrate work via the framework
 
 They DON'T need:
+
 - SQL Server Docker (maintainer-only)
 - Postgres / DuckDB / RocksDB / etc. (maintainer-only)
 - R / Python / Java (maintainer-only for prototyping)
@@ -133,6 +137,7 @@ They DON'T need:
 ### For skill authoring discipline
 
 Per Aaron's "skills as we map them for our use":
+
 - Skills MUST map to operational use (not aspirational)
 - Skills MUST work in Zeta runtime
 - Skills CAN compose with maintainer-toolkit (prototyping)
@@ -148,6 +153,7 @@ gated; not blocking immediate skill value.
 
 When new maintainers join (human contributors, additional AI
 agents):
+
 - Toolkit access extends (any local DB/bus permitted)
 - Skill authoring rights extend
 - F# crystallization participation extends

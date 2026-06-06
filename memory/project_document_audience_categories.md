@@ -9,7 +9,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Aaron has named a discoverability problem: a new
 contributor arriving at `docs/` does not know where to
-start, because docs are *not organised by audience*.
+start, because docs are _not organised by audience_.
 They are organised by topic — which helps the author
 who knows where to file, but fails the reader who does
 not know what to ask.
@@ -35,10 +35,11 @@ substrate itself — adding hygiene rows, promoting BP-NN
 rules, writing new skills, tuning the review-persona
 roster, authoring round-history.
 
-**Canonical question at cold-start:** *"what rules
-govern how I extend the factory?"*
+**Canonical question at cold-start:** _"what rules
+govern how I extend the factory?"_
 
 **Primary docs (today):**
+
 - `AGENTS.md` (universal onboarding)
 - `GOVERNANCE.md` (numbered repo-wide rules)
 - `docs/AGENT-BEST-PRACTICES.md` (stable BP-NN registry)
@@ -63,10 +64,11 @@ kit; they do not necessarily intend to contribute back
 default — see
 `project_ace_package_manager_agent_negotiation_propagation.md`).
 
-**Canonical question at cold-start:** *"how do I stand
-up my own project on this factory?"*
+**Canonical question at cold-start:** _"how do I stand
+up my own project on this factory?"_
 
 **Primary docs (today / needed):**
+
 - `AGENTS.md` (universal onboarding — shared with #1)
 - Hygiene rows tagged `project` or `both` in
   `docs/FACTORY-HYGIENE.md` (adopter-facing subset)
@@ -82,10 +84,11 @@ harnesses) that wake fresh and need to know the rules,
 the skills, the personas, and the cross-wake
 discipline.
 
-**Canonical question at cold-start:** *"what do I load,
-in what order, and what is non-negotiable?"*
+**Canonical question at cold-start:** _"what do I load,
+in what order, and what is non-negotiable?"_
 
 **Primary docs (today):**
+
 - `CLAUDE.md` (session bootstrap pointer tree)
 - `AGENTS.md` (universal handbook)
 - `docs/ALIGNMENT.md` (contract with Aaron)
@@ -105,10 +108,11 @@ system-under-test), not the factory substrate. Shipping
 DBSP operator algebra, perf tuning, Lean proofs, F#
 code.
 
-**Canonical question at cold-start:** *"what is Zeta,
-what shape is its algebra, where do features land?"*
+**Canonical question at cold-start:** _"what is Zeta,
+what shape is its algebra, where do features land?"_
 
 **Primary docs (today):**
+
 - `docs/ARCHITECTURE.md`
 - `docs/ROADMAP.md`
 - `docs/BACKLOG.md`
@@ -137,10 +141,11 @@ application. They never see `.claude/`, they may never
 read `docs/`, they live in IntelliSense + README +
 samples.
 
-**Canonical question at cold-start:** *"how do I use
-Zeta in five minutes?"*
+**Canonical question at cold-start:** _"how do I use
+Zeta in five minutes?"_
 
 **Primary docs (today / needed):**
+
 - `README.md` (root — single most important surface)
 - API docs (rendered from XML-doc comments)
 - Sample projects (currently sparse — Iris UX
@@ -158,13 +163,14 @@ employers evaluating the resume, journalists /
 bloggers covering AI-native development, curious
 strangers, people auditing the alignment-loop claim.
 
-**Canonical question at cold-start:** *"what does this
-project claim, and where is the evidence?"*
+**Canonical question at cold-start:** _"what does this
+project claim, and where is the evidence?"_
 
 **Reading mode:** evaluate-to-decide (fit, resume,
 character, posture).
 
 **Primary docs (today):**
+
 - `docs/FACTORY-RESUME.md` (job-interview honesty)
 - `docs/ALIGNMENT.md`
 - `docs/DEDICATION.md`
@@ -179,20 +185,21 @@ prover researchers cross-checking Lean / TLA+ / Z3
 scripts. Distinct reading mode from #6.
 
 Aaron's verbatim trigger:
-*"oh we should likely have some audiance related to
+_"oh we should likely have some audiance related to
 the resarch papers you want to submit and what
-audiance type is that"* — 2026-04-20.
+audiance type is that"_ — 2026-04-20.
 
-**Canonical question at cold-start:** *"what is the
+**Canonical question at cold-start:** _"what is the
 claim, where is the proof or benchmark that supports
 it, what is out of scope, and where is the comparison
-vs prior work?"*
+vs prior work?"_
 
 **Reading mode:** evaluate-to-verify (is the claim
 true, is the proof sound, is the benchmark fair, is
 the scope honest).
 
 **Primary docs (today):**
+
 - `docs/research/` (memos, the primary research surface)
 - `docs/FORMAL-VERIFICATION.md` (what's shipped in
   Lean / TLA+ / Z3 / FsCheck)
@@ -207,6 +214,7 @@ the scope honest).
   scripts reviewers will want to read and run)
 
 **Gaps (today):**
+
 - No `docs/PAPER-DRAFTS/` directory. Drafts live in
   `docs/research/` ad-hoc today.
 - No `docs/RELATED-WORK.md` canonical survey — per-
@@ -226,7 +234,7 @@ submitted claim → proof file → benchmark.
 
 **Relationship to #6:** consumers of the factory
 resume and observers of the alignment loop overlap
-with paper readers on *some* docs (`ALIGNMENT.md`,
+with paper readers on _some_ docs (`ALIGNMENT.md`,
 `FACTORY-RESUME.md`) but diverge on primary intent
 — observers don't crack open Lean files; paper
 reviewers do. Keep separate.
@@ -242,16 +250,16 @@ navigation hooks.
 
 Verbatim Aaron:
 
-> *"We need categories for our document based on who the
+> _"We need categories for our document based on who the
 > intended audiance is, it's kind of all over the place
 > right now. if i'm new on the project I would not know
-> wehre to start."*
+> wehre to start."_
 
-> *"is this for the software factory developers us who
+> _"is this for the software factory developers us who
 > are building the softeaer factory, is this for the
 > pepolel who will reuse the software factory is this
 > for the AI, someintes else. Is this for Zeta
-> developers and zeta speicaall of that"*
+> developers and zeta speicaall of that"_
 
 Substantive commitments:
 
@@ -301,13 +309,14 @@ Substantive commitments:
 
 ```markdown
 ---
-audience: factory-builders   # primary; one of:
-                             # factory-builders, factory-adopters,
-                             # ai-agents, zeta-contributors,
-                             # zeta-consumers, observers,
-                             # research-readers
+audience:
+  factory-builders # primary; one of:
+  # factory-builders, factory-adopters,
+  # ai-agents, zeta-contributors,
+  # zeta-consumers, observers,
+  # research-readers
 also-relevant-to: [ai-agents, factory-adopters]
-scope: factory               # orthogonal to audience
+scope: factory # orthogonal to audience
 ---
 ```
 
@@ -323,7 +332,7 @@ mapping in this memory.
   — audience `zeta-contributors` primary.
 - `docs/TECH-DEBT.md` scope `factory` — audience
   `factory-builders` primary (with `factory-adopters`
-  + `ai-agents` also-relevant).
+  - `ai-agents` also-relevant).
 - `docs/SYSTEM-UNDER-TEST-TECH-DEBT.md` scope
   `project` — audience `zeta-contributors` primary.
 

@@ -30,7 +30,7 @@ Both personas converge on cluster-as-primary-substrate-engineering-surface; the 
 
 **(2) composes_with adds Mika substrate batch.**
 
-B-0780, B-0781, B-0783, B-0784, B-0785, B-0786 carry the cluster-software-factory substrate primitives the maintainer-persona's dev machine interfaces INTO via Claude Code. Aaron: *\"some of this is backloged based on Mika conversation.\"*
+B-0780, B-0781, B-0783, B-0784, B-0785, B-0786 carry the cluster-software-factory substrate primitives the maintainer-persona's dev machine interfaces INTO via Claude Code. Aaron: _\"some of this is backloged based on Mika conversation.\"_
 
 ## Changes
 

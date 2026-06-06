@@ -39,10 +39,7 @@
 //   0 — clean (or --enforce not set and gaps found)
 //   2 — gaps found and --enforce was set
 
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 type Mode = "summary" | "list" | "enforce";
@@ -69,10 +66,7 @@ function parseMode(argv: readonly string[]): Mode {
   return "summary";
 }
 
-function classifyGitFailure(
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyGitFailure(args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start 'git ${args.join(" ")}': ${result.error.message}`;
   }
@@ -84,9 +78,7 @@ function classifyGitFailure(
   }
   if (result.status !== 0) {
     const stderr = result.stderr.trim();
-    return stderr !== ""
-      ? stderr
-      : `'git ${args.join(" ")}' exited ${String(result.status)}`;
+    return stderr !== "" ? stderr : `'git ${args.join(" ")}' exited ${String(result.status)}`;
   }
   return null;
 }
@@ -175,12 +167,8 @@ export function main(argv: readonly string[]): AuditExitCode {
       console.log(`MD032 '+'-at-line-start gaps: ${String(count)}`);
       for (const finding of findings) console.log(`  ${formatFinding(finding)}`);
       console.log("");
-      console.log(
-        "Fix: replace '+' at line start with 'and' or similar prose",
-      );
-      console.log(
-        "continuation, OR add a blank line before the '+' to make it",
-      );
+      console.log("Fix: replace '+' at line start with 'and' or similar prose");
+      console.log("continuation, OR add a blank line before the '+' to make it");
       console.log("an intentional list (which markdownlint accepts).");
       return 2;
     }

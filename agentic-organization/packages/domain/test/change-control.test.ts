@@ -21,7 +21,13 @@ import {
 } from "../src/change-control.ts";
 
 function stage(over: Partial<ReviewStage> & { id: string }): ReviewStage {
-  return { ownerLabel: "code_reviewer", authority: { kind: "hat", hatId: "code_reviewer" }, gate: ReviewGateKind.NoBlockingFindings, blocking: true, ...over };
+  return {
+    ownerLabel: "code_reviewer",
+    authority: { kind: "hat", hatId: "code_reviewer" },
+    gate: ReviewGateKind.NoBlockingFindings,
+    blocking: true,
+    ...over,
+  };
 }
 
 function pipeline(stages: readonly ReviewStage[]): ReviewPipeline {
@@ -30,9 +36,21 @@ function pipeline(stages: readonly ReviewStage[]): ReviewPipeline {
 
 function changeSet(over: Partial<ChangeSet> = {}): ChangeSet {
   return {
-    changeSetId: "cs-1", organizationId: "org-lfg", workItemId: "work-1", proposerHatId: "code_author",
-    title: "t", targetRef: "feat/x", phase: ChangeSetPhase.InReview, pipelineId: "pl-1", currentStageIndex: 0,
-    artifacts: [], projections: [], revision: 1, openedAt: "2026-05-30T00:00:00Z", updatedAt: "2026-05-30T00:00:00Z", ...over,
+    changeSetId: "cs-1",
+    organizationId: "org-lfg",
+    workItemId: "work-1",
+    proposerHatId: "code_author",
+    title: "t",
+    targetRef: "feat/x",
+    phase: ChangeSetPhase.InReview,
+    pipelineId: "pl-1",
+    currentStageIndex: 0,
+    artifacts: [],
+    projections: [],
+    revision: 1,
+    openedAt: "2026-05-30T00:00:00Z",
+    updatedAt: "2026-05-30T00:00:00Z",
+    ...over,
   };
 }
 
@@ -67,22 +85,34 @@ test("in_review on the LAST stage can approve (not advance)", () => {
 });
 
 test("changes_requested returns to the proposer (in_review or withdraw)", () => {
-  const next = legalChangeSetTransitions(changeSet({ phase: ChangeSetPhase.ChangesRequested }), pipeline([stage({ id: "s" })]));
+  const next = legalChangeSetTransitions(
+    changeSet({ phase: ChangeSetPhase.ChangesRequested }),
+    pipeline([stage({ id: "s" })]),
+  );
   deepEqual([...next].sort(), [ChangeSetPhase.InReview, ChangeSetPhase.Withdrawn].sort());
 });
 
 test("approved can apply, return for release fixes, or withdraw", () => {
   const next = legalChangeSetTransitions(changeSet({ phase: ChangeSetPhase.Approved }), pipeline([stage({ id: "s" })]));
-  deepEqual([...next].sort(), [ChangeSetPhase.Applied, ChangeSetPhase.ChangesRequested, ChangeSetPhase.Withdrawn].sort());
+  deepEqual(
+    [...next].sort(),
+    [ChangeSetPhase.Applied, ChangeSetPhase.ChangesRequested, ChangeSetPhase.Withdrawn].sort(),
+  );
 });
 
 test("THE CLAMP: an unsatisfiable gate can never be approved — only bounced or rejected", () => {
   const s = stage({ id: "s", blocking: true });
   deepEqual([...legalStageOutcomes(s, false)].sort(), [StageOutcome.RequestChanges, StageOutcome.Reject].sort());
   // satisfiable blocking stage may approve/bounce/reject
-  deepEqual([...legalStageOutcomes(s, true)].sort(), [StageOutcome.Approve, StageOutcome.RequestChanges, StageOutcome.Reject].sort());
+  deepEqual(
+    [...legalStageOutcomes(s, true)].sort(),
+    [StageOutcome.Approve, StageOutcome.RequestChanges, StageOutcome.Reject].sort(),
+  );
   // advisory stage may not reject
-  deepEqual([...legalStageOutcomes(stage({ id: "s2", blocking: false }), true)].sort(), [StageOutcome.Approve, StageOutcome.RequestChanges].sort());
+  deepEqual(
+    [...legalStageOutcomes(stage({ id: "s2", blocking: false }), true)].sort(),
+    [StageOutcome.Approve, StageOutcome.RequestChanges].sort(),
+  );
 });
 
 test("change payload is Git-agnostic — schema/decision artifacts are NOT git-representable", () => {
@@ -95,7 +125,11 @@ test("change payload is Git-agnostic — schema/decision artifacts are NOT git-r
 });
 
 test("the external-system DU enumerates the projection targets including none", () => {
-  ok([ExternalSystem.GitHub, ExternalSystem.GitLab, ExternalSystem.Jira, ExternalSystem.None].every((s) => typeof s === "string"));
+  ok(
+    [ExternalSystem.GitHub, ExternalSystem.GitLab, ExternalSystem.Jira, ExternalSystem.None].every(
+      (s) => typeof s === "string",
+    ),
+  );
 });
 
 test("M4 clamp property: every change-set phase returns a closed legal target set", () => {

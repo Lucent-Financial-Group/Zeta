@@ -16,9 +16,9 @@ type: chore
 
 ## Origin (the operator 2026-06-01)
 
-> *"we can default to podman for linux stuff but we do have some windows containers
+> _"we can default to podman for linux stuff but we do have some windows containers
 > stuff we use for testing install.ps1 we can still default to docker for that. can we
-> setup tests that both work on windows in our shields?"*
+> setup tests that both work on windows in our shields?"_
 
 ## The capability reality (WebSearch 2026-06-01, dep-pin-search-first)
 
@@ -31,10 +31,10 @@ type: chore
 So "both work on Windows" cannot mean "both run Windows containers" (podman can't). It
 means **each runtime verified on Windows in its supported container mode**:
 
-| Container mode on Windows | Docker | Podman |
-|---|---|---|
+| Container mode on Windows                               | Docker           | Podman        |
+| ------------------------------------------------------- | ---------------- | ------------- |
 | **Windows containers** (install.ps1 Server-Core shield) | ✅ (only option) | ❌ impossible |
-| **Linux containers** (WSL2) | ✅ | ✅ |
+| **Linux containers** (WSL2)                             | ✅               | ✅            |
 
 ## Current shield state
 
@@ -62,7 +62,7 @@ means **each runtime verified on Windows in its supported container mode**:
 - [ ] The existing `docker-windows-install-ps1-test` (Windows-container path) stays as-is
       — Docker is the declared Windows default for Windows-container workloads (B-0964).
 - [ ] Optional follow-on (only once the executor's `ZETA_CONTAINER_RUNTIME → auto-detect
-      [podman, docker]` selection code exists — not built yet): a test that auto-detect
+    [podman, docker]` selection code exists — not built yet): a test that auto-detect
       picks the right runtime on Windows. Out of scope until that code lands.
 - [ ] Follows the install-shield security pattern: runner pinned (`windows-2025`, not
       `-latest`); third-party actions SHA-pinned; `permissions: contents: read`;

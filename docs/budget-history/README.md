@@ -10,14 +10,14 @@ vanishes when we stop looking.
 
 The human maintainer 2026-04-22:
 
-> *"i want evidence based budgiting so you might have to build some
+> _"i want evidence based budgiting so you might have to build some
 > observaiblity first or run some gh commands even if gh commands
 > work we want some amount of price history in git, maybe just
 > looking like before and after PRs on LFG and those measurements
-> might be enough"*
+> might be enough"_
 >
-> *"they have great graphs for the Humans with the live costs in
-> real time, you can do what you think is best"*
+> _"they have great graphs for the Humans with the live costs in
+> real time, you can do what you think is best"_
 
 The reframe: GitHub's billing UI gives humans live graphs, but the
 factory needs persisted, machine-readable history. If the factory
@@ -25,30 +25,30 @@ proposes Stage 1 ("create `LFG/Forge` + `LFG/ace` with full
 best-practice scaffolding") without evidence of current burn-rate,
 a $0-designed-cost-stop could fire mid-swap (per
 `memory/feedback_lfg_budgets_set_permits_free_experimentation.md`:
-*"budget-enforced cap ≠ cost-invisible"*) and leave the factory
+_"budget-enforced cap ≠ cost-invisible"_) and leave the factory
 with three repos stood up but CI paused on all of them. Mid-swap
 credit exhaustion is the specific failure mode the human maintainer named:
-*"we don't want to run out of credits mid swap"*.
+_"we don't want to run out of credits mid swap"_.
 
 ## What we capture
 
 `snapshots.jsonl` is append-only. One JSON object per line. Git
 commits are the time-axis. Each snapshot contains:
 
-| Field | Source | Scope | What it tells us |
-| --- | --- | --- | --- |
-| `ts` | local wall clock (UTC) | — | When the snapshot was taken |
-| `factory_git_sha` | `git rev-parse HEAD` | — | git SHA at snapshot time (whichever repo / fork the script runs in) |
-| `org` | literal | — | Which org this covers |
-| `note` | optional `--note` flag | — | Human annotation for unusual snapshots |
-| `copilot_billing.seat_breakdown.total` | `/orgs/<org>/copilot/billing` | `read:org` | Total paid Copilot seats |
-| `copilot_billing.plan_type` | same | `read:org` | `business` or `enterprise` |
-| `repos[].agg.total_duration_ms` | `/repos/<r>/actions/runs/<id>/timing` × last-20 | current token | Aggregate CI wall-time over 20 most recent runs |
-| `repos[].agg.billable_*_ms` | same | current token | Billable ms by OS; zero on public repos, non-zero when crossing included-minutes |
-| `repos[].pr.recent_merged` | `/repos/<r>/pulls?state=closed&per_page=10` | `repo` | PRs merged in the recent window (denominator for per-PR math) |
-| `repos[].pr.last_merged_at` | same | `repo` | Most recent merge timestamp — lets us delta-compare between snapshots |
-| `repos[].last_20_runs[]` | `/repos/<r>/actions/runs` | `repo` | Per-run conclusion + timing — full granularity if we ever re-analyze |
-| `scope_coverage.*` | literal | — | What this snapshot can and cannot see, by scope |
+| Field                                  | Source                                          | Scope         | What it tells us                                                                 |
+| -------------------------------------- | ----------------------------------------------- | ------------- | -------------------------------------------------------------------------------- |
+| `ts`                                   | local wall clock (UTC)                          | —             | When the snapshot was taken                                                      |
+| `factory_git_sha`                      | `git rev-parse HEAD`                            | —             | git SHA at snapshot time (whichever repo / fork the script runs in)              |
+| `org`                                  | literal                                         | —             | Which org this covers                                                            |
+| `note`                                 | optional `--note` flag                          | —             | Human annotation for unusual snapshots                                           |
+| `copilot_billing.seat_breakdown.total` | `/orgs/<org>/copilot/billing`                   | `read:org`    | Total paid Copilot seats                                                         |
+| `copilot_billing.plan_type`            | same                                            | `read:org`    | `business` or `enterprise`                                                       |
+| `repos[].agg.total_duration_ms`        | `/repos/<r>/actions/runs/<id>/timing` × last-20 | current token | Aggregate CI wall-time over 20 most recent runs                                  |
+| `repos[].agg.billable_*_ms`            | same                                            | current token | Billable ms by OS; zero on public repos, non-zero when crossing included-minutes |
+| `repos[].pr.recent_merged`             | `/repos/<r>/pulls?state=closed&per_page=10`     | `repo`        | PRs merged in the recent window (denominator for per-PR math)                    |
+| `repos[].pr.last_merged_at`            | same                                            | `repo`        | Most recent merge timestamp — lets us delta-compare between snapshots            |
+| `repos[].last_20_runs[]`               | `/repos/<r>/actions/runs`                       | `repo`        | Per-run conclusion + timing — full granularity if we ever re-analyze             |
+| `scope_coverage.*`                     | literal                                         | —             | What this snapshot can and cannot see, by scope                                  |
 
 What we cannot see with current `gist, read:org, repo, workflow`
 scopes: Actions-billing aggregate, Packages storage, shared-storage.
@@ -64,9 +64,9 @@ Each snapshot captures a point-in-time state. Burn rate comes from
 
 1. **Per-PR duration delta** — `(snapshots[i+1].agg.total_duration_ms
    - snapshots[i].agg.total_duration_ms) / max(1, PRs_merged_between)`.
-   For public-repo Ubuntu runners this is near-zero billable. For
-   paid-MacOS runners (`AceHack/Zeta` fork workflow has a macOS-14
-   leg) this is non-zero once included minutes exhaust.
+For public-repo Ubuntu runners this is near-zero billable. For
+paid-MacOS runners (`AceHack/Zeta` fork workflow has a macOS-14
+     leg) this is non-zero once included minutes exhaust.
 2. **Copilot seat months** — `seats × plan_rate × fraction_of_month`.
    Currently 1 Business seat = $19/month prorated; snapshot-to-
    snapshot seat count changes are the trigger for cost-model
@@ -84,8 +84,8 @@ Each snapshot captures a point-in-time state. Burn rate comes from
 reads `snapshots.jsonl`, computes per-PR burn from the first-vs-last
 snapshot delta, projects against a configurable Stages-1-4 PR count
 (default 20), and emits both human-readable text and JSON. It
-handles N=1 gracefully by reporting *"insufficient data — accumulate
-more snapshots"* rather than producing a misleading projection.
+handles N=1 gracefully by reporting _"insufficient data — accumulate
+more snapshots"_ rather than producing a misleading projection.
 Flags: `--stages N`, `--copilot-rate USD`, `--actions-free-ms MS`,
 `--json`, `--file PATH`. Default parameters are tuned for
 LFG/Zeta's current plan (Copilot Business $19/seat/mo, Team-plan

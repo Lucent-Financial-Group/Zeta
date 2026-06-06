@@ -18,9 +18,9 @@ tags: [dependency-status, outages, github-incidents, supply-chain, observability
 # Dependency status tracking surface — outages and issues affecting us
 
 > **First-class factory surface** (Aaron 2026-04-30):
-> *"looking at github status should be first class for us we
+> _"looking at github status should be first class for us we
 > live on git and github for now until we get a 2nd host in
-> the future."* This is not a "design something later" row —
+> the future."_ This is not a "design something later" row —
 > it's the visibility layer the factory's hot path runs
 > through. Until a second git host exists, GitHub status IS
 > factory status, and the surface should reflect that
@@ -32,11 +32,11 @@ status of the dependencies the factory relies on and any issues
 in those dependencies that could affect us. The framing came
 with 6 source URLs covering a GitHub-availability incident class
 (merge queue bug + general availability degradation), a
-follow-up urgency clarification (*"github can erase stuff from
-master when we use the merge queue sometimes"*), and a
-first-class-priority elevation (*"looking at github status
+follow-up urgency clarification (_"github can erase stuff from
+master when we use the merge queue sometimes"_), and a
+first-class-priority elevation (_"looking at github status
 should be first class for us we live on git and github for
-now until we get a 2nd host in the future"*). The first-class
+now until we get a 2nd host in the future"_). The first-class
 framing composes with the existing 3-tier multi-remote design
 work (Amara packet 3 2026-04-29, task #341): the
 status-tracking surface IS the tier-0 visibility layer that
@@ -47,7 +47,7 @@ clarification) because:
 
 1. **Live evidence found while filing this row.** The GitHub
    status API at write-time shows an ACTIVE incident:
-   *"Incomplete pull request results in repositories"* —
+   _"Incomplete pull request results in repositories"_ —
    started 2026-04-30T03:49:37Z, status `investigating`,
    component `Pull Requests` flagged `degraded_performance`,
    ongoing for 7+ hours. The factory has PR #911 in flight
@@ -88,8 +88,8 @@ Verified at write-time via `gh api`:
   actionlint, markdownlint) + build-and-test (macos-26,
   ubuntu-24.04, ubuntu-24.04-arm). 7 required contexts.
 
-So: the *specific* merge-queue bug Aaron worried about
-doesn't apply to our setup directly. The *broader* concern
+So: the _specific_ merge-queue bug Aaron worried about
+doesn't apply to our setup directly. The _broader_ concern
 (GitHub backend bugs producing wrong-state results, of
 which the live PR-degradation incident is a current
 example) absolutely does. The status-tracking surface is
@@ -110,7 +110,7 @@ merge-queue concern.
 
 The "this can affect us" closing is Aaron-as-second-person
 framing the relevance: not abstract dependency-management, but
-*specifically* the merge-queue / GitHub-availability class of
+_specifically_ the merge-queue / GitHub-availability class of
 issue that hits the factory's PR-driven workflow directly.
 
 ## Why this matters
@@ -136,8 +136,8 @@ issue that hits the factory's PR-driven workflow directly.
   discipline both presume the factory knows its dependency
   surface — but currently we only know what's in
   `Directory.Packages.props` / `package.json` /
-  `tools/setup/*.sh`, not what's *currently failing or
-  flagged* in those dependencies.
+  `tools/setup/*.sh`, not what's _currently failing or
+  flagged_ in those dependencies.
 - **The 6 source URLs Aaron sent are a worked example of the
   class.** Each describes either a current GitHub incident,
   the GitHub availability surface, an HN discussion of the
@@ -194,8 +194,8 @@ This row produces, in order:
 
 Aaron's named concern was the merge-queue-builds-on-wrong-commit
 class (which we don't trigger directly because we don't use
-merge-queue). The broader class — *GitHub backend producing
-wrong-state results that auto-merge can fire against* — IS in
+merge-queue). The broader class — _GitHub backend producing
+wrong-state results that auto-merge can fire against_ — IS in
 scope. Specific failure modes the surface should help future-Otto
 notice:
 
@@ -260,7 +260,7 @@ Three operational details to settle in the design pass:
 ## Out of scope for this row
 
 - Building a full incident-management system. The factory
-  needs *visibility*, not Pagerduty.
+  needs _visibility_, not Pagerduty.
 - Real-time alerting / paging / on-call rotation. If
   dependencies fail, the factory pauses, files an incident
   note, and waits for restoration. No auto-paging.
@@ -277,11 +277,11 @@ Three operational details to settle in the design pass:
 Done = a surface exists that any future-Otto (or human
 contributor) can query in under 30 seconds to answer:
 
-1. *What does the factory depend on?* (watched list)
-2. *Are any of those dependencies currently flagged or
-   degraded?* (current state)
-3. *Is there a known issue affecting our merge / CI /
-   review pipeline right now?* (active incidents)
+1. _What does the factory depend on?_ (watched list)
+2. _Are any of those dependencies currently flagged or
+   degraded?_ (current state)
+3. _Is there a known issue affecting our merge / CI /
+   review pipeline right now?_ (active incidents)
 
 The surface must be discoverable from CLAUDE.md and AGENTS.md
 (at minimum a pointer line) so cold-start sessions find it.

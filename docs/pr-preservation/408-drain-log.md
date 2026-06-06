@@ -44,8 +44,8 @@ agent-review-is-enough collapse), and the thread drain between
 **Outcome:** FIX — swept residual gate-language.
 
 **Reply:** Fixed in `e338c69` — "Peer review is the gate that
-promotes substrate..." is now "Peer review is the *disclosure
-transition* that moves substrate ... it is NOT a gate —
+promotes substrate..." is now "Peer review is the _disclosure
+transition_ that moves substrate ... it is NOT a gate —
 nothing is blocked; only the disclosure note changes."
 Compatible with the DISCLOSURE-not-gating refinement. Resolved.
 
@@ -61,7 +61,7 @@ Compatible with the DISCLOSURE-not-gating refinement. Resolved.
 > Use distinct tags for unreviewed vs agent-reviewed
 >
 > In the agent-reviewed state, the text allows using `(not peer
-> reviewed)` as the disclosure tag, which is indistinguishable
+reviewed)` as the disclosure tag, which is indistinguishable
 > from the stage-1 uncanonical tag. Give stage 2 its own tag
 > (e.g., `(agent-peer-reviewed; not human-reviewed)`) so
 > downstream readers can tell which review has happened.
@@ -97,7 +97,7 @@ default). Resolved.
 
 **Reply:** Fixed in `e338c69` — same fix as the Codex P2
 contradiction thread. "Peer review is the gate..." → "Peer
-review is the *disclosure transition*... it is NOT a gate —
+review is the _disclosure transition_... it is NOT a gate —
 nothing is blocked; only the disclosure note changes." All
 remaining "gate state" references renamed to "disclosure state"
 / "review state". Resolved.
@@ -170,13 +170,13 @@ cold). Resolved.
    bold claims become LESS hedged when the disclosure state
    is legible — honesty-via-disclosure unlocks bold claims.
    Driven by two Aaron autonomous-loop quotes:
-   - *"we can treat it authortive connoncial (pending) lol
+   - _"we can treat it authortive connoncial (pending) lol
      or whatever if we want to start building on top deeply
-     before peer review"*
-   - *"peer-review-gate i would not gate it really, the only
+     before peer review"_
+   - _"peer-review-gate i would not gate it really, the only
      thing that's gated is that little note not peer reviewed
-     (yet)"*
-   Landed 2026-04-25T02:36:35Z.
+     (yet)"_
+     Landed 2026-04-25T02:36:35Z.
 
 3. **#410 (final collapse)** — "agent peer review is enough
    to graduate it" (Aaron autonomous-loop). Three-state

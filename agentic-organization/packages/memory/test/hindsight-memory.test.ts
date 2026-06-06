@@ -29,8 +29,13 @@ function fakeClient(): {
   const recalls: { bankId: string; req: HindsightRecallRequest }[] = [];
   const reflects: { bankId: string; query: string }[] = [];
   const client: HindsightClient = {
-    async ensureBank(bankId) { if (!banks.includes(bankId)) banks.push(bankId); },
-    async retain(bankId, items) { retained.push({ bankId, items }); return { ids: items.map((_, i) => `hs-${i}`) }; },
+    async ensureBank(bankId) {
+      if (!banks.includes(bankId)) banks.push(bankId);
+    },
+    async retain(bankId, items) {
+      retained.push({ bankId, items });
+      return { ids: items.map((_, i) => `hs-${i}`) };
+    },
     async recall(bankId, req) {
       recalls.push({ bankId, req });
       return {
@@ -60,7 +65,10 @@ function fakeClient(): {
         ],
       };
     },
-    async reflect(bankId, query) { reflects.push({ bankId, query }); return { operationId: "op-9" }; },
+    async reflect(bankId, query) {
+      reflects.push({ bankId, query });
+      return { operationId: "op-9" };
+    },
   };
   return { client, banks, retained, recalls, reflects };
 }
@@ -105,7 +113,9 @@ test("recall drops Hindsight results without original attribution metadata", asy
     ...f.client,
     async recall(bankId, req) {
       f.recalls.push({ bankId, req });
-      return { results: [{ memoryId: "mem-unattributed", text: "Looks useful but has no author metadata.", metadata: {} }] };
+      return {
+        results: [{ memoryId: "mem-unattributed", text: "Looks useful but has no author metadata.", metadata: {} }],
+      };
     },
   };
   const mem = createHindsightMemory({ client, organizationId: "org-lfg" });

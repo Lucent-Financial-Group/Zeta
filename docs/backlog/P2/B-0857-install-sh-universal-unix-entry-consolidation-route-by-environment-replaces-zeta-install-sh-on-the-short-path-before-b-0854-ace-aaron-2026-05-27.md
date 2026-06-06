@@ -14,22 +14,31 @@ composes_with:
   - B-0855
   - B-0853
   - B-0833
-tags: [install-sh, universal-entry, environment-routing, zeta-install-sh-retirement-short-path, rule-0-carve-out, dev-env-vs-node-install-unification, b-0854-precursor]
+tags:
+  [
+    install-sh,
+    universal-entry,
+    environment-routing,
+    zeta-install-sh-retirement-short-path,
+    rule-0-carve-out,
+    dev-env-vs-node-install-unification,
+    b-0854-precursor,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27, three-turn)
 
 ### Turn 1
 
-> *"when are we moving to install.sh over zeta-install.sh? the universall install surface for unix like oses?"*
+> _"when are we moving to install.sh over zeta-install.sh? the universall install surface for unix like oses?"_
 
 ### Turn 2 (sharpening; correction of Otto's initial "dev env" framing)
 
-> *"tools/setup/install.sh has never been universal dev entry it's also unversal build machine and the zeta cluster IS a build machine cluster."*
+> _"tools/setup/install.sh has never been universal dev entry it's also unversal build machine and the zeta cluster IS a build machine cluster."_
 
 ### Turn 3 (further sharpening — collapses build-vs-prod distinction entirely)
 
-> *"there is no distinction between build machies and prod when prod can update itself"*
+> _"there is no distinction between build machies and prod when prod can update itself"_
 
 **The substrate-honest reading (Turn 3 supersedes prior framings)**: when production can self-update (via mise + flake-lock pull + nixos-rebuild / deploy-rs / etc.), the "build machine" vs "production" distinction COLLAPSES. Same machine. Same install.sh. The whole cluster + every dev laptop is one self-updating organism running the same install/update entry.
 
@@ -39,7 +48,7 @@ Composes with iter-6.x distro-upgrade substrate (B-0800-B-0805) — those auto-u
 
 ### Turn 4 (install.sh ≈ Ace — they're entangled)
 
-> *"yes install.sh is ace basically we've not really seperated it all out ace and zeta are pretty intertangled"*
+> _"yes install.sh is ace basically we've not really seperated it all out ace and zeta are pretty intertangled"_
 
 **The substrate-honest reading**: install.sh and Ace are NOT separate things in current substrate — install.sh IS the install-side of what Ace would be at the imperative-bash scope; Ace is the declarative evolution of the SAME substrate at package-manager scope. They've been operationally entangled since the project's earliest install-graph work; the framework hasn't separated them out explicitly.
 
@@ -49,15 +58,15 @@ Same substrate. Different operational windows. Same entanglement Zeta has with e
 
 ### Turn 5 (homelab-edge to enterprise-restrictive spectrum; start unified, scale back later)
 
-> *"basically we are going to push the build is prod conept all the way to the edge for homelab / open claw like setups and thing scale it back for enterprise like setup to be more restrictive but i don't want to start in the more restretive mode until we see what the new shape feels like where the difference between build and dev vanish"*
+> _"basically we are going to push the build is prod conept all the way to the edge for homelab / open claw like setups and thing scale it back for enterprise like setup to be more restrictive but i don't want to start in the more restretive mode until we see what the new shape feels like where the difference between build and dev vanish"_
 
 **The substrate-honest reading**: the build-is-prod unification (Turn 3) operates on a SPECTRUM, not as a single mode:
 
-| Operational scope | Build-is-prod posture | install.sh routing |
-|---|---|---|
-| **Homelab / open-claw / single-operator clusters** | MAXIMALLY UNIFIED — every machine is build + prod + dev simultaneously; same install.sh; same self-update; no separation | Single routing path; minimal flags; self-update on every boot |
-| **Small team / co-op / friendly multi-operator** | UNIFIED with minimal separation — most machines build + prod + dev; some specialization possible via flags but defaults to unified | Same routing path; opt-in specialization flags available |
-| **Enterprise / institutional / compliance-bound** | RESTRICTIVE — build machines separated from prod; staged rollout; signed-artifact-only deploy; restricted self-update windows; audit-gated upgrades | Multiple routing paths; explicit flags required; restrictions enforced by the routing layer |
+| Operational scope                                  | Build-is-prod posture                                                                                                                               | install.sh routing                                                                          |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Homelab / open-claw / single-operator clusters** | MAXIMALLY UNIFIED — every machine is build + prod + dev simultaneously; same install.sh; same self-update; no separation                            | Single routing path; minimal flags; self-update on every boot                               |
+| **Small team / co-op / friendly multi-operator**   | UNIFIED with minimal separation — most machines build + prod + dev; some specialization possible via flags but defaults to unified                  | Same routing path; opt-in specialization flags available                                    |
+| **Enterprise / institutional / compliance-bound**  | RESTRICTIVE — build machines separated from prod; staged rollout; signed-artifact-only deploy; restricted self-update windows; audit-gated upgrades | Multiple routing paths; explicit flags required; restrictions enforced by the routing layer |
 
 **Operator's explicit sequencing direction**: START in the MAXIMALLY UNIFIED mode (homelab/open-claw end of the spectrum) FIRST. Live in that shape. Discover what "build/dev/prod vanish" actually feels like in practice. Build operator-experience around the unified mode. THEN scale BACK toward more restrictive modes for enterprise scope.
 
@@ -67,20 +76,20 @@ This is substrate-honest sequencing per `.claude/rules/edge-defining-work-not-sp
 
 ### Turn 6 (attack-surface concern tempered by internal-access prerequisite)
 
-> *"the biggest issue i see is larger attack surface becasue more deps but this one is not as bad as it seems cause it requires internal access to network and box so you are already kind of fucked if they are this deep."*
+> _"the biggest issue i see is larger attack surface becasue more deps but this one is not as bad as it seems cause it requires internal access to network and box so you are already kind of fucked if they are this deep."_
 
 **The substrate-honest reading**: the operator's named primary concern with the unified mode is **larger attack surface** — every machine carries build-tooling + dev-tooling + prod-runtime + self-update capability, which means more dependencies present on every node = more CVE surface = more supply-chain risk.
 
 BUT the threat-model is bounded by precondition: exploiting this expanded attack surface **requires internal access to network + box**. An attacker has to already be inside the perimeter (network access to the cluster) AND have shell-level access to a node (box access). Once an attacker is that deep, they've already bypassed the perimeter defenses + node-level isolation; the additional surface from build-tooling-on-prod is a marginal escalation path, not a primary entry vector.
 
-The substrate-honest framing: *"you are already kind of fucked if they are this deep."* The unified-mode attack surface is real but operates in the post-perimeter-breach scope, not the perimeter-breach scope. Perimeter defenses (firewall + VPN + Reticulum/AllJoyn-style mesh + OIDC + cosign artifact-signing per B-0853 + signed-update enforcement) carry the primary security load; the expanded build-on-prod surface is downstream of those.
+The substrate-honest framing: _"you are already kind of fucked if they are this deep."_ The unified-mode attack surface is real but operates in the post-perimeter-breach scope, not the perimeter-breach scope. Perimeter defenses (firewall + VPN + Reticulum/AllJoyn-style mesh + OIDC + cosign artifact-signing per B-0853 + signed-update enforcement) carry the primary security load; the expanded build-on-prod surface is downstream of those.
 
 **Implications for B-0857 implementation**:
 
-| Threat scope | Mitigation owner | Status for unified mode |
-|---|---|---|
-| Perimeter breach (external attacker gets network access) | Network architecture (firewall + VPN + mesh + auth) | Primary defense; carries the security load |
-| Node-level intrusion (attacker on the box) | OS-level isolation + signed-binary enforcement + Touch-ID-gated privileged ops | Primary defense; carries the security load |
+| Threat scope                                                  | Mitigation owner                                                                   | Status for unified mode                                                                                 |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Perimeter breach (external attacker gets network access)      | Network architecture (firewall + VPN + mesh + auth)                                | Primary defense; carries the security load                                                              |
+| Node-level intrusion (attacker on the box)                    | OS-level isolation + signed-binary enforcement + Touch-ID-gated privileged ops     | Primary defense; carries the security load                                                              |
 | Post-intrusion privilege escalation via build-tooling surface | Reduced surface (B-0853 signed-artifacts; cosign keyless OIDC; signed self-update) | Secondary defense; accepted reduced posture for homelab/open-claw scope; tightened for enterprise scope |
 
 Composes with B-0853 (cosign keyless OIDC artifact signing) + B-0852 (declarative cred-persistence with operator authority over creds) + B-0857.5 (operator-facing CLI conventions) + the enterprise-restrictive spectrum end (Turn 5 above) — the enterprise mode IS where the additional surface gets tightened back down via attestation + signed-update enforcement + restricted self-update windows.
@@ -89,10 +98,10 @@ The operator's threat-model acknowledgement is itself substrate-engineering: nam
 
 ## Current state (verified 2026-05-27 origin/main `18e6a095b`)
 
-| Script | Location | Scope | Lines |
-|---|---|---|---|
-| `install.sh` | `tools/setup/install.sh` | Universal build-machine setup (laptop / CI / devcontainer / cluster node — all are build machines per GOVERNANCE §24 + operator sharpening); routes to `macos.sh` or `linux.sh` for OS-specific runtime install (mise / bun / etc.) | 42 |
-| `zeta-install.sh` | `full-ai-cluster/usb-nixos-installer/zeta-install.sh` | NixOS-USB-bootstrap (live-USB → disk-format → nixos-install onto target) — **prepares the build machine** so install.sh can take over post-boot | 1,352 |
+| Script            | Location                                              | Scope                                                                                                                                                                                                                               | Lines |
+| ----------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| `install.sh`      | `tools/setup/install.sh`                              | Universal build-machine setup (laptop / CI / devcontainer / cluster node — all are build machines per GOVERNANCE §24 + operator sharpening); routes to `macos.sh` or `linux.sh` for OS-specific runtime install (mise / bun / etc.) | 42    |
+| `zeta-install.sh` | `full-ai-cluster/usb-nixos-installer/zeta-install.sh` | NixOS-USB-bootstrap (live-USB → disk-format → nixos-install onto target) — **prepares the build machine** so install.sh can take over post-boot                                                                                     | 1,352 |
 
 **Both serve the unified machine surface — build/prod/dev collapse when prod self-updates — they're not solving different problems; they're solving DIFFERENT PHASES of the same build-machine lifecycle**:
 
@@ -105,24 +114,24 @@ PR #5389 commit message (a9fca1e52f, 2026-05-27) said zeta-install.sh Step 6.95a
 
 **`tools/setup/install.sh` becomes the universal Unix-like-OS entry that ROUTES by environment**:
 
-| Environment detection | Routes to | Outcome (unified machine surface — build/prod/dev collapse when prod self-updates) |
-|---|---|---|
-| macOS (`uname -s = Darwin`) | `setup/macos.sh` | Build machine (mise + bun + claude + etc.) on laptop |
-| Linux non-NixOS (`/etc/NIXOS` absent) | `setup/linux.sh` | Build machine on Linux-non-NixOS host |
-| Linux NixOS live-USB (`/etc/NIXOS` + live-mode detection) | NixOS-disk-install routine (the current zeta-install.sh logic, factored to a callable) | Bootstrap build machine FROM USB → install.sh takes over post-boot |
-| Linux NixOS installed (`/etc/NIXOS` + installed-mode) | runtime verify / mise-managed update | Build machine on cluster node |
+| Environment detection                                     | Routes to                                                                              | Outcome (unified machine surface — build/prod/dev collapse when prod self-updates) |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| macOS (`uname -s = Darwin`)                               | `setup/macos.sh`                                                                       | Build machine (mise + bun + claude + etc.) on laptop                               |
+| Linux non-NixOS (`/etc/NIXOS` absent)                     | `setup/linux.sh`                                                                       | Build machine on Linux-non-NixOS host                                              |
+| Linux NixOS live-USB (`/etc/NIXOS` + live-mode detection) | NixOS-disk-install routine (the current zeta-install.sh logic, factored to a callable) | Bootstrap build machine FROM USB → install.sh takes over post-boot                 |
+| Linux NixOS installed (`/etc/NIXOS` + installed-mode)     | runtime verify / mise-managed update                                                   | Build machine on cluster node                                                      |
 
 Environment-routing dispatch is in `install.sh` itself; OS-specific work lives in sibling files (already true for macos.sh / linux.sh; adds a `nixos-install-from-usb.sh` callable that subsumes the existing zeta-install.sh body).
 
 ## Why this is SHORTER than B-0854 (Ace migration)
 
-| Property | B-0857 (this row) | B-0854 (Ace migration) |
-|---|---|---|
-| Scope | Routing logic + factor existing zeta-install.sh body | Declarative manifest + Ace CLI + ace install zeta |
-| Dependencies | None (use existing scripts) | B-0288 (Ace CLI; in-progress) + manifest schema design |
-| Timeline | 1-2 ISO test cycles after substrate work | Multi-phase; long horizon (Phases 1-5) |
-| Risk | Bounded refactor of existing imperative code | New declarative substrate; new tooling integration |
-| Operator workflow change | Same install command surface; routing behind the scenes | New ace install zeta surface; teaching cost |
+| Property                 | B-0857 (this row)                                       | B-0854 (Ace migration)                                 |
+| ------------------------ | ------------------------------------------------------- | ------------------------------------------------------ |
+| Scope                    | Routing logic + factor existing zeta-install.sh body    | Declarative manifest + Ace CLI + ace install zeta      |
+| Dependencies             | None (use existing scripts)                             | B-0288 (Ace CLI; in-progress) + manifest schema design |
+| Timeline                 | 1-2 ISO test cycles after substrate work                | Multi-phase; long horizon (Phases 1-5)                 |
+| Risk                     | Bounded refactor of existing imperative code            | New declarative substrate; new tooling integration     |
+| Operator workflow change | Same install command surface; routing behind the scenes | New ace install zeta surface; teaching cost            |
 
 B-0857 ships the **operator-facing unification** ("install.sh is THE entry") at imperative-bash scope. B-0854 ships the **declarative substrate engineering** that Ace package management enables. Both compose; B-0857 doesn't block B-0854 + can ship faster.
 
@@ -173,7 +182,7 @@ The operator-explicit framing names install.sh as THE universal Unix-like-OS ins
 
 Aaron 2026-05-27 verbatim:
 
-> *"when are we moving to install.sh over zeta-install.sh? the universall install surface for unix like oses?"*
+> _"when are we moving to install.sh over zeta-install.sh? the universall install surface for unix like oses?"_
 
 Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`):
 

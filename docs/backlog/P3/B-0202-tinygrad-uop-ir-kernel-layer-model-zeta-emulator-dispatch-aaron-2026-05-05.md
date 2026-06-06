@@ -19,17 +19,17 @@ type: feature
 ## Source
 
 Aaron 2026-05-05 forwarded a Claude.ai conversation that progressively
-narrowed his half-remembered framing *"universal language not English
-that trains to real-time actions"* across six-plus candidate-elimination
+narrowed his half-remembered framing _"universal language not English
+that trains to real-time actions"_ across six-plus candidate-elimination
 passes. The verbatim clue:
 
-> *"the universal language was not english it way symbolsy maybe and it
+> _"the universal language was not english it way symbolsy maybe and it
 > complied to other things myabe cuda and the ati one and the inteall
-> one"*
+> one"_
 
 **Same-tick paper-id elimination (Aaron 2026-05-05):** Aaron disconfirmed
-tinygrad as the half-remembered paper -- *"it's still not tinygrad, i
-did see that but that's not my univeral language"*. **This row is NOT
+tinygrad as the half-remembered paper -- _"it's still not tinygrad, i
+did see that but that's not my univeral language"_. **This row is NOT
 about identifying the paper Aaron half-remembered.** It is about the
 **substrate-engineering composition claim** that surfaced in the same
 narrowing pass: one symbolic IR -> all hardware is exactly the move
@@ -43,19 +43,19 @@ composition claim. Clue components map cleanly to UOp IR's architecture
 (useful for evaluating the engineering shape, not as paper-id
 evidence):
 
-- *"symbolsy maybe"* -> UOp = mu-ops (Greek letter mu); symbolic op-graph
+- _"symbolsy maybe"_ -> UOp = mu-ops (Greek letter mu); symbolic op-graph
   with no English keywords; the language IS the symbolic UOp graph
   applied via PatternMatcher graph rewrites
-- *"complied to other things myabe cuda and the ati one and the inteall
-  one"* -> the renderer system targets CUDA, AMD/ROCm + HIP,
+- _"complied to other things myabe cuda and the ati one and the inteall
+  one"_ -> the renderer system targets CUDA, AMD/ROCm + HIP,
   Intel/oneAPI, plus Metal, OpenCL, NVIDIA PTX, NIR (Vulkan), CLANG,
   LLVM. **One IR -> many backends.** That is the "universal" part.
-- *"basic and not well-principled but correct"* (Aaron clarifying
+- _"basic and not well-principled but correct"_ (Aaron clarifying
   phrase) -> tinygrad's stated minimalism / hackability discipline; hard
   line-count limit (<= 1000-line target historically; codebase still
   measured in thousands not millions of lines, where PyTorch is
   millions); pragmatism over theoretical elegance
-- *"released last month"* -> heavy April 2026 commit activity with
+- _"released last month"_ -> heavy April 2026 commit activity with
   recent backend additions
 
 Full verbatim research-doc preservation will land at
@@ -69,7 +69,7 @@ backends, the engineering shape worth absorbing for Zeta's kernel
 layer) is **what this row evaluates**, NOT a paper-id claim that
 tinygrad is the half-remembered paper -- Aaron disconfirmed that
 identification same-tick. Per Aaron's 2026-05-05 no-kill-paths framing
-*"all of it's good we don't want to abandon any paths"*, the OTHER
+_"all of it's good we don't want to abandon any paths"_, the OTHER
 candidates surfaced in the same conversation lineage (Coconut at
 B-0201, CodeAct/F# bridge at B-0200, plus Symbolica, GibberLink, LAPA)
 stay alive as parallel research lanes; tinygrad remains a parallel
@@ -157,19 +157,19 @@ README and module tree, verified 2026-05-05):
 - CLANG (host CPU via C compiler)
 - LLVM
 
-This is the *"universal"* part of the universal-IR shape -- the IR
+This is the _"universal"_ part of the universal-IR shape -- the IR
 itself is hardware-agnostic, and backend portability is achieved by
 adding renderers, not by reshaping the IR.
 
 ### Design philosophy ("basic but correct")
 
 Tinygrad's stated philosophy aligns with Aaron's clarifying phrase
-*"basic and not well-principled but correct"*:
+_"basic and not well-principled but correct"_:
 
 - **Hard line-count limit** -- historically <= 1000 lines as a
-  forcing-function constraint; *"tinygrad will always be below 1000
+  forcing-function constraint; _"tinygrad will always be below 1000
   lines. If it isn't, we will revert commits until tinygrad becomes
-  smaller"* per the early Hacker News thread + project Issue #94. The
+  smaller"_ per the early Hacker News thread + project Issue #94. The
   modern codebase has grown beyond that historical cap but the
   minimalism-as-discipline framing persists; the codebase is still
   measured in thousands not millions of lines.
@@ -206,8 +206,8 @@ row:
   a per-backend retract implementation.
 - **Replay (DST discipline, deterministic-simulation-theory-expert
   surface)** -- the IR is data-flow not control-flow; bit-exact replay
-  reduces to *"same UOp graph, same input, same renderer, same
-  compiler -> same binary -> same output."* This is a far cleaner DST
+  reduces to _"same UOp graph, same input, same renderer, same
+  compiler -> same binary -> same output."_ This is a far cleaner DST
   story than per-backend replay.
 - **Topological-quantum-emulation (B-0152
   emulation-inside-the-algebra)** -- the substrate that needs to run
@@ -353,9 +353,9 @@ fix to the IR-Zeta-bridge or a falsification of the original
 ## The "basic but correct" lesson
 
 Tinygrad's stated philosophy aligns with Zeta's bootstrap-razor
-discipline (B-0193 lineage). *"Correct-and-fast over principled-and-
-clean"* is the same shape as Zeta's *"specs-over-implementation"* +
-*"razor-discipline"* combo (per
+discipline (B-0193 lineage). _"Correct-and-fast over principled-and-
+clean"_ is the same shape as Zeta's _"specs-over-implementation"_ +
+_"razor-discipline"_ combo (per
 [`memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md`](../../../memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md)).
 
 The architectural question:
@@ -367,16 +367,16 @@ The architectural question:
 Two ways the answer could go:
 
 - **"Yes, basic-but-correct is sufficient."** -- tinygrad's discipline
-  + Zeta's existing test framework + DST replay together cover the
-  rigor gap. The four-property hodl can be validated empirically per
-  rewrite-rule, not requiring a formal proof per rule. UOp IR + a
-  Zeta-side composition layer is the right kernel substrate. Cost-
-  effective: the pragmatic minimum buys the architectural simplicity
-  Zeta wants.
+  - Zeta's existing test framework + DST replay together cover the
+    rigor gap. The four-property hodl can be validated empirically per
+    rewrite-rule, not requiring a formal proof per rule. UOp IR + a
+    Zeta-side composition layer is the right kernel substrate. Cost-
+    effective: the pragmatic minimum buys the architectural simplicity
+    Zeta wants.
 - **"No, hodl requires more."** -- the substance-test (b) reveals
   cases where rewrite composition violates the hodl invariants in
   ways that empirical testing doesn't reliably catch. Zeta's kernel
-  layer needs proof-grade rigor (Lean / F* / TLA+) that tinygrad's
+  layer needs proof-grade rigor (Lean / F\* / TLA+) that tinygrad's
   philosophy explicitly disclaims. UOp IR is then a useful study
   artifact and an engineering reference, but not a direct kernel-
   substrate adoption.
@@ -420,23 +420,23 @@ This row is bounded; the following are **out of scope** for B-0202:
 
 Explicit composition map (mirrors frontmatter `composes_with`):
 
-- **B-0052** -- *retractable-emulators-design-question*. UOp IR is the
+- **B-0052** -- _retractable-emulators-design-question_. UOp IR is the
   candidate kernel substrate for retract operations; the substance-test
   (b) is specifically the retract-semantics-over-UOp question.
-- **B-0053** -- *emulator-ideas-absorption (clean-room grey-hat)*. UOp
+- **B-0053** -- _emulator-ideas-absorption (clean-room grey-hat)_. UOp
   PatternMatcher is the engineering-shape worth absorbing into the
   emulator surface; this row is the absorption-direction memo.
-- **B-0152** -- *topological-quantum-emulation via Bayesian inference,
-  Zeta seed executor*. The substrate that UOp could run on with hodl
+- **B-0152** -- _topological-quantum-emulation via Bayesian inference,
+  Zeta seed executor_. The substrate that UOp could run on with hodl
   preserved -- emulation-inside-the-algebra needs a hardware-agnostic
   IR layer, and one-IR-many-backends is the candidate shape.
-- **B-0196** -- *BigInt + bignumber integration / four-property hodl
-  gate*. The composability check (acceptance criterion (d)) runs against
+- **B-0196** -- _BigInt + bignumber integration / four-property hodl
+  gate_. The composability check (acceptance criterion (d)) runs against
   B-0196's test framework; the four-property hodl is the gate.
-- **B-0026** -- *embodiment grounding*. UOp's hardware-agnostic property
+- **B-0026** -- _embodiment grounding_. UOp's hardware-agnostic property
   composes with embodiment substrates that need to run on varied
   hardware (robotics-sim, edge devices, heterogeneous accelerators).
-- **B-0199** -- *ROM publication public-domain scouting*. ROM emulator
+- **B-0199** -- _ROM publication public-domain scouting_. ROM emulator
   engineering benefits from one-IR-many-backends shape; if Zeta lands
   ROM emulators, the UOp-substrate question composes directly with the
   ROM-emulator engineering lane.
@@ -473,11 +473,11 @@ this row's outcome.
 
 ## The carved sentence
 
-*Tinygrad UOp IR is the universal-IR shape Zeta wants for emulator
+_Tinygrad UOp IR is the universal-IR shape Zeta wants for emulator
 dispatch, retraction, replay, and topological-quantum-emulation -- one
 symbolic op-graph that targets whatever hardware happens to be
 present. The substance-test is whether four-property hodl survives the
 graph-rewrite layer; if it does, the kernel-layer collapse is large,
 and "basic but correct" carries the discipline. If it does not, the
 break-point is research substrate, and Zeta's kernel layer keeps
-proof-grade rigor as a binding constraint.*
+proof-grade rigor as a binding constraint._

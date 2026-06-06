@@ -142,9 +142,7 @@ export function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: st
   };
 }
 
-export function computeSinceFromWindow(
-  window: string,
-): { since: string } | { error: string } {
+export function computeSinceFromWindow(window: string): { since: string } | { error: string } {
   const match = window.match(/^(\d+)([hdwm])$/);
   if (!match) {
     return { error: `invalid window format: ${window} (expected e.g. 24h, 7d, 2w, 1m)` };
@@ -280,11 +278,7 @@ export function formatResult(result: MeasurementResult): { stdout: string; exitC
       };
     case "gh-cli-not-found":
       return {
-        stdout: JSON.stringify(
-          { kind: "gh-cli-not-found", help: "install gh CLI: https://cli.github.com/" },
-          null,
-          2,
-        ),
+        stdout: JSON.stringify({ kind: "gh-cli-not-found", help: "install gh CLI: https://cli.github.com/" }, null, 2),
         exitCode: 2,
       };
     case "gh-cli-error":
@@ -339,7 +333,9 @@ function main(argv: ReadonlyArray<string>): number {
   const parsed = parseArgs(argv);
   if ("error" in parsed) {
     console.error(`usage error: ${parsed.error}`);
-    console.error("usage: bun tools/github-accelerator-measurement/measure.ts [--window 24h|7d|2w|1m] [--since ISO8601] [--author @me|<user>|any]");
+    console.error(
+      "usage: bun tools/github-accelerator-measurement/measure.ts [--window 24h|7d|2w|1m] [--since ISO8601] [--author @me|<user>|any]",
+    );
     return 2;
   }
   const result = fetchPRs(parsed.window);

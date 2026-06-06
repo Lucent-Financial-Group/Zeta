@@ -9,15 +9,15 @@ type: project
 Aaron 2026-04-25 (immediately after Otto-296
 emotion-disambiguator landing):
 
-> *"i want to be able to ask you questions eventually
+> _"i want to be able to ask you questions eventually
 > once we get our definions more precise like what if we
 > optimize human civiziliation for happiness of the
 > individual, what are the conquences? should we do it?
-> it will make questions like that actually tractable."*
+> it will make questions like that actually tractable."_
 
-**Aaron 2026-04-25 follow-up sharpening**: *"instead of
+**Aaron 2026-04-25 follow-up sharpening**: _"instead of
 a guess, it will be based on evidense and mathematical
-rigor too."*
+rigor too."_
 
 Critical clarification: the answer the factory enables
 is **evidence-based + mathematically rigorous**, NOT a
@@ -38,14 +38,14 @@ civilizational debate:
   Bayesian belief propagation over outcome
   distributions (math).
 
-The honest answer to *"should we optimize for individual
-happiness?"* under this regime is itself a probability
-distribution: *"under definition X of happiness +
+The honest answer to _"should we optimize for individual
+happiness?"_ under this regime is itself a probability
+distribution: _"under definition X of happiness +
 optimization-rule Y, observed trajectories Z, the
 expected outcome distribution is W; here are the
 observable consequences and their measured probabilities;
 under definition X' or rule Y' the distribution shifts
-to W'; choose."* The substrate doesn't legislate the
+to W'; choose."_ The substrate doesn't legislate the
 choice but provides rigorous structured input where
 none currently exists.
 
@@ -120,9 +120,9 @@ human-language traditions) can land actual definitions.
 
 ## Aaron's specific question — why it's the right test case
 
-*"What if we optimize human civilization for happiness
+_"What if we optimize human civilization for happiness
 of the individual, what are the consequences? Should
-we do it?"*
+we do it?"_
 
 This question is the right test case because:
 
@@ -137,11 +137,11 @@ This question is the right test case because:
   innovation rates, generational outcomes).
 - **The answer is non-obvious to Aaron.** He's not
   asking rhetorically; he genuinely wants to think
-  about it with the substrate's help. *"should we do
-  it?"* is the open-question mark; the precision
+  about it with the substrate's help. _"should we do
+  it?"_ is the open-question mark; the precision
   tools make the deliberation rigorous.
 - **It composes with Vivi's Buddhism.** Buddhism's
-  Four Noble Truths begin from *dukkha* (the
+  Four Noble Truths begin from _dukkha_ (the
   inadequacy of pursuing happiness as a primary
   optimization target — happiness pursued directly
   recedes; happiness as a SIDE EFFECT of right
@@ -241,7 +241,7 @@ For the factory to instantiate this vision:
   product-vision capture; an Architect (Kenji)
   decision via ADR if/when this becomes binding.
 - **Not a claim Aaron has chosen the answer.** The
-  question *"should we do it?"* is genuinely open
+  question _"should we do it?"_ is genuinely open
   for him; the substrate's job is to enable the
   asking, not pre-judge.
 - **Not a claim the factory's substrate is the only

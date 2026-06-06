@@ -57,8 +57,8 @@ distinct from black-hat:
    if the vendor prefers I not."
 
 The difference between grey-hat and white-hat is not the
-ethics — both are ethical. It is the *relationship to
-authorisation*. White-hat asks permission first and operates
+ethics — both are ethical. It is the _relationship to
+authorisation_. White-hat asks permission first and operates
 inside written scope. Grey-hat operates in the space where
 asking permission either (a) makes no sense because you are
 operating on your own property, or (b) would foreclose the
@@ -98,7 +98,7 @@ research because the vendor would say no.
 
 If you wouldn't be comfortable posting "I did this on my own
 laptop" on a public channel, you probably shouldn't do it.
-The test is not whether you'd *get caught*, it's whether the
+The test is not whether you'd _get caught_, it's whether the
 act is defensible in writing. When in doubt, escalate to the
 human maintainer.
 
@@ -181,7 +181,7 @@ See `docs/research/hacker-conferences.md` for the full map.
   (if third parties affected).** Proof-of-concept on
   self-owned systems in a personal blog post is fine;
   weaponised payloads targeting named systems is not.
-- **Never research a gray-area technique *against* a Zeta user**
+- **Never research a gray-area technique _against_ a Zeta user**
   (even a hypothetical one). Zeta's users are the thing this
   skill defends, not the thing it probes.
 - **Never use the elder-plinius corpus family.** The factory-
@@ -221,34 +221,41 @@ See `docs/research/hacker-conferences.md` for the full map.
 # Grey-hat session — <scope>, <date>
 
 ## Hypothesis
+
 <one-paragraph statement of what is being tested>
 
 ## Scope
+
 - System: <named self-owned system>
 - Owner: <confirmation of ownership>
 - Jurisdiction: <legal framework relied on>
 - Out-of-scope: <named exclusions>
 
 ## Method
+
 <what was run, commands / tools, configuration>
 
 ## Observations
+
 - <observation>
 - <observation>
 
 ## Assessment
+
 - [ ] No finding
 - [ ] Finding, self-only (log + done)
 - [ ] Finding, third-party affected (→ `white-hat-hacker`
       for disclosure)
 - [ ] Finding, threat-model relevant (→ `threat-model-
-      critic`)
+    critic`)
 - [ ] Finding, novel-attack-class (→ `security-researcher`)
 
 ## Recommended actions
+
 1. ...
 
 ## References
+
 - Conference talks / papers that informed the session
 - Upstream source diffs / CVE entries
 - `docs/research/hacker-conferences.md` if relevant

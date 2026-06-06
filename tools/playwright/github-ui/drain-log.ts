@@ -199,11 +199,7 @@ export async function revert(
   }
 }
 
-async function revertUnlocked(
-  entryId: string,
-  options: MutationOptions,
-  logPath: string,
-): Promise<RevertResult> {
+async function revertUnlocked(entryId: string, options: MutationOptions, logPath: string): Promise<RevertResult> {
   const readResult = readAllLines(logPath);
   if (!readResult.success) {
     return { success: false, entryId, error: readResult.error };
@@ -279,7 +275,7 @@ async function revertUnlocked(
   // to match the original applied record so listPending() correctly reduces it.
   const revertMarker: DrainLogEntry = {
     ...result.drainLogEntry,
-    id: entryId,         // same id as original — this is the revert event
+    id: entryId, // same id as original — this is the revert event
     status: "reverted",
   };
   try {

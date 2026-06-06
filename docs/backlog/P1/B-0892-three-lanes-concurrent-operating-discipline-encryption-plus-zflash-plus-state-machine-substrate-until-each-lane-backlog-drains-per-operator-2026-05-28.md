@@ -35,16 +35,16 @@ tags:
 
 ## Operator framing 2026-05-28 (standing operating discipline)
 
-> *"also image we want all 3 lange moving forward until there is no more backlog for those lange that's why we are building the workflow DUs every time you do nothing is time we are no in infinate choose your own adventure"*
+> _"also image we want all 3 lange moving forward until there is no more backlog for those lange that's why we are building the workflow DUs every time you do nothing is time we are no in infinate choose your own adventure"_
 
 Translation + operationalization: keep ALL 3 LANES advancing concurrently until each lane's backlog drains. The workflow DUs (per B-0867 substrate cluster) exist precisely to enable this — every idle tick wastes substrate. The infinite-choose-your-own-adventure architecture is built so cycles never sit idle.
 
 ## The 3 active lanes (as of 2026-05-28)
 
-| Lane | Active substrate clusters | Critical-path next steps |
-|---|---|---|
-| **Encryption lane** | B-0883 (PQ git-crypt) + B-0883.1..0.5 (sub-rows) + B-0885 (agent private encrypted state Otto+Addison ASAP) + B-0623 (Adinkras-ECC future) | Implement Noble + XWing + ML-DSA-65 + CBOR envelope per B-0883.1 recommendation; ship B-0885 v1 |
-| **zflash lane** | B-0844 (zflash agent-mode) + B-0852 cluster (USB-bound creds) + B-0884 (PQ + zflash integration) + B-0891 (5-scenario test acceptance) + B-0737 (Touch ID + PAM) | Operator-driven CP-1..CP-6 empirical validation; Track B `--bake-cred`; Track C docs/skills |
+| Lane                             | Active substrate clusters                                                                                                                                                     | Critical-path next steps                                                                                       |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Encryption lane**              | B-0883 (PQ git-crypt) + B-0883.1..0.5 (sub-rows) + B-0885 (agent private encrypted state Otto+Addison ASAP) + B-0623 (Adinkras-ECC future)                                    | Implement Noble + XWing + ML-DSA-65 + CBOR envelope per B-0883.1 recommendation; ship B-0885 v1                |
+| **zflash lane**                  | B-0844 (zflash agent-mode) + B-0852 cluster (USB-bound creds) + B-0884 (PQ + zflash integration) + B-0891 (5-scenario test acceptance) + B-0737 (Touch ID + PAM)              | Operator-driven CP-1..CP-6 empirical validation; Track B `--bake-cred`; Track C docs/skills                    |
 | **State-machine-substrate lane** | B-0867 (workflow engine v1) + B-0867.2..0.21 (sub-rows) + B-0890 (fast-lane) + B-0890.1 (folders-not-branches) + B-0886 (ASAP cluster umbrella) + B-0887 (Zeta-native review) | Implement folder-based fast-lane on main; build cli.ts for foreground PoC; wire menu-generator + state-persist |
 
 Each lane has its own substantive backlog. The operating discipline: advance ALL THREE concurrently — never let a lane sit idle waiting for sibling lane to ship something.
@@ -92,7 +92,7 @@ If/when a 4th lane emerges (e.g., when the cluster of B-0866 marketing strategy 
 
 ## Full reasoning
 
-Operator 2026-05-28: *"also image we want all 3 lange moving forward until there is no more backlog for those lange that's why we are building the workflow DUs every time you do nothing is time we are no in infinate choose your own adventure"*
+Operator 2026-05-28: _"also image we want all 3 lange moving forward until there is no more backlog for those lange that's why we are building the workflow DUs every time you do nothing is time we are no in infinate choose your own adventure"_
 
 Three explicit substrate properties named:
 

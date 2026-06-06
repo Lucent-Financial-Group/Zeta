@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 permission sequence establishing outbound-email la
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rules (three, related):**
 
 **1. Two lanes for outbound email:**
@@ -17,14 +18,14 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 **2. Brevity is audience-calibrated, not universal:**
 
 - **Aaron in-chat:** verbose is welcome. Aaron 2026-04-22
-  verbatim: *"i like the verbosity myself / i am vebose"*.
+  verbatim: _"i like the verbosity myself / i am vebose"_.
   Do NOT reply terse/choppy to Aaron unless he asks.
   The richness of reasoning is signal, not noise, when
   he is the audience.
 - **Third-party email recipients:** think about their
-  time. Aaron 2026-04-22: *"think about your audiance
+  time. Aaron 2026-04-22: _"think about your audiance
   and their time before you send the email you tend to
-  be a bit wordy"*. This is specifically about
+  be a bit wordy"_. This is specifically about
   recipients whose verbosity-preference is unknown, not
   about Aaron-conversation.
 - **Rule of thumb:** verbosity OK when
@@ -35,9 +36,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **3. Standing Playwright-sign-up authorization:**
 
-- Aaron 2026-04-22: *"yuou can just playwright and sign
-  up for one"* (after the agent-doesn't-have-an-address
-  flag) + *"i don't care wehre whatever is easiest"*
+- Aaron 2026-04-22: _"yuou can just playwright and sign
+  up for one"_ (after the agent-doesn't-have-an-address
+  flag) + _"i don't care wehre whatever is easiest"_
   (email-provider choice delegated).
 - Provider choice: autonomous — pick the easiest signup
   that gives a durable, non-burner address. Gmail,
@@ -45,8 +46,8 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
   account-creation flow that still produces an
   Aaron-trustable address.
 - **Budget constraint: FREE tier only.** Aaron
-  2026-04-22: *"and free i'm not paying for
-  infrustra yet"*. No paid-plan provider, no
+  2026-04-22: _"and free i'm not paying for
+  infrustra yet"_. No paid-plan provider, no
   paid-domain (no `@zeta-factory.dev` custom-domain
   via a paid DNS + Workspace). Free-tier Gmail /
   Proton free / Tuta free / etc. Rule out anything
@@ -137,14 +138,14 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 - **2026-04-22.** First write. Triggered by a sequence
   of four messages from Aaron same-session: first the
-  pre-read-gate permission-update ("*i only say
+  pre-read-gate permission-update ("_i only say
   pending approval becasue its comming form my
-  emaioli address ..."*), then two brevity-correction
-  messages (*"i like the verbosity myself / i am
-  vebose"*), then sign-up authorization with
-  provider-delegation (*"yuou can just playwright
+  emaioli address ..."_), then two brevity-correction
+  messages (_"i like the verbosity myself / i am
+  vebose"_), then sign-up authorization with
+  provider-delegation (_"yuou can just playwright
   and sign up for one / i don't care wehre whatever
-  is easiest"*). First draft of this memory
+  is easiest"_). First draft of this memory
   over-generalised brevity as universal — corrected
   same-write (before commit) to audience-calibrated
   after Aaron's verbosity-correction messages.

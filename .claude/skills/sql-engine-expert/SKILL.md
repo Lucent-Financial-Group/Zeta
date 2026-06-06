@@ -31,7 +31,7 @@ keep that identity coherent across layers.
   (Postgres, DuckDB, Feldera, Materialize, Hyper, Umbra,
   Vectorwise, SingleStore, ClickHouse) — the positioning
   anchor lives here.
-- Deciding whether a new specialization *needs* its own skill
+- Deciding whether a new specialization _needs_ its own skill
   (e.g. catalog / DDL / transaction-manager / concurrency-
   control / replication / sharding) or belongs under an
   existing narrow.
@@ -110,16 +110,16 @@ expert`'s binding rule.
 
 ## Positioning — where Zeta sits in the engine design space
 
-| Engine | Execution model | Storage | Incremental | Notes |
-| --- | --- | --- | --- | --- |
-| Postgres | Volcano iterator | row | materialised views (weak) | wire protocol reference |
-| DuckDB | vectorised | columnar | — | closest execution-model analogue |
-| Feldera | DBSP incremental | — | native (Rust) | closest *research* analogue |
-| Materialize | Timely / differential | — | native | closest *product* analogue |
-| Hyper / Umbra | JIT-codegen morsel-driven | columnar | — | closest execution-model aspiration |
-| Vectorwise | vectorised iterator | columnar | — | vectorised-iterator canonical |
-| SingleStore | JIT-codegen | row + columnstore | — | JIT-codegen canonical |
-| ClickHouse | vectorised | columnar | — | analytics canonical |
+| Engine        | Execution model           | Storage           | Incremental               | Notes                              |
+| ------------- | ------------------------- | ----------------- | ------------------------- | ---------------------------------- |
+| Postgres      | Volcano iterator          | row               | materialised views (weak) | wire protocol reference            |
+| DuckDB        | vectorised                | columnar          | —                         | closest execution-model analogue   |
+| Feldera       | DBSP incremental          | —                 | native (Rust)             | closest _research_ analogue        |
+| Materialize   | Timely / differential     | —                 | native                    | closest _product_ analogue         |
+| Hyper / Umbra | JIT-codegen morsel-driven | columnar          | —                         | closest execution-model aspiration |
+| Vectorwise    | vectorised iterator       | columnar          | —                         | vectorised-iterator canonical      |
+| SingleStore   | JIT-codegen               | row + columnstore | —                         | JIT-codegen canonical              |
+| ClickHouse    | vectorised                | columnar          | —                         | analytics canonical                |
 
 Zeta's closest cluster is **{Feldera, Materialize} × {DuckDB,
 Hyper, Umbra}** — incremental from the former, execution-model
@@ -147,7 +147,7 @@ the engine as a whole must preserve:
 6. **No unsigned-multiplicity shortcuts in the optimiser.**
    A rewrite rule that holds on monotone inputs but breaks
    on Z-relations is not a valid rule — `relational-algebra-
-   expert` signs off.
+expert` signs off.
 7. **Formal-verification portfolio coverage.** Load-bearing
    engine properties have a Lean / TLA+ / Z3 / FsCheck
    attestation (routed by `formal-verification-expert`).
@@ -170,7 +170,7 @@ narrow is:
 - **Publication-worthy or production-load-bearing.** Not
   every micro-concern deserves its own skill.
 
-Current candidate narrows *not yet* written (backlog):
+Current candidate narrows _not yet_ written (backlog):
 
 - `catalog-expert` — system catalogs, DDL, schema evolution,
   type-system management.

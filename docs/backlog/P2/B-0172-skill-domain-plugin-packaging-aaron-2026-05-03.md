@@ -18,7 +18,7 @@ type: friction-reducer
 
 Aaron 2026-05-03 named plugin-packaging as Rule 3a of the skill-design memo (`feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`):
 
-> *"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"*
+> _"look at packaking skill domains a plugins or other packagin so we can take advantage of hooks in harnesses"_
 
 Claude Code installs plugins under `~/.claude/plugins/cache/<plugin-name>/` (per `docs/research/codex-builtins-skills-vs-plugins-factory-integration-2026-04-24.md`). When a skill domain matures (per the future-skill-domain memos' promotion-trigger criteria — 3+ worked examples per skill candidate + 1+ judgment-disagreement per expert candidate), packaging the whole domain as a plugin lets it ship as one unit including its hooks.
 
@@ -45,7 +45,7 @@ Per Claude Code plugin convention (installed at `~/.claude/plugins/cache/<plugin
    - Tools under `tools/` (TS files per Aaron skill-design rule 2)
    - References to OpenSpec capabilities the plugin contracts against (per B-0171)
 2. Codex equivalent uses `.codex-plugin/plugin.json` with richer fields (semver + interface block + URLs + category) per the cross-harness research at `docs/research/codex-builtins-skills-vs-plugins-factory-integration-2026-04-24.md`
-3. Cross-harness portability documentation: how Codex / Cursor / Gemini-CLI consume the equivalent substrate (per Aaron 2026-05-02 *"skills are for everyone and even other agent harnesses"*)
+3. Cross-harness portability documentation: how Codex / Cursor / Gemini-CLI consume the equivalent substrate (per Aaron 2026-05-02 _"skills are for everyone and even other agent harnesses"_)
 
 ## Cross-harness consideration
 

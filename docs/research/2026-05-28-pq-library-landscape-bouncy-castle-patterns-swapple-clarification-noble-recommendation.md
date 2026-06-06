@@ -3,7 +3,7 @@
 **Author:** Otto-CLI (audit pass via background research agent; not a decision)
 **Date:** 2026-05-28
 **Parent rows:** B-0883 (better-git-crypt parent), B-0885 (agent private encrypted state ASAP for Otto + Addison), B-0623 (Adinkras-ECC substrate)
-**Triggering ask:** Operator 2026-05-28 — *"post quantium lattice based with swapple lattice we can do in ts if it's easie enough or we can pull in libraries"* + *"look at bouncy castle or someting or some other libaries and copy patterns"*
+**Triggering ask:** Operator 2026-05-28 — _"post quantium lattice based with swapple lattice we can do in ts if it's easie enough or we can pull in libraries"_ + _"look at bouncy castle or someting or some other libaries and copy patterns"_
 **Prior decision context:** [git-crypt deep-dive 2026-04-21](./git-crypt-deep-dive-2026-04-21.md) — git-crypt REJECTED for 3 reasons (no revocation, binary diffs break review, metadata leak). The better-git-crypt must add those 3 properties + PQ posture.
 **Status:** Research-grade audit; recommendation included; no commits / no code.
 
@@ -65,19 +65,19 @@ BC inherits from CRYSTALS-Kyber + CRYSTALS-Dilithium reference. **Affected by Ky
 
 ### 1.6 What to adapt vs avoid (summary table)
 
-| BC pattern | Adapt? | Reason |
-|---|---|---|
-| `Provider → KeyPairGenerator → ParameterSpec` dispatch | Adapt **shape** | Named-variant TS factories |
-| `KEMGenerator` / `KEMExtractor` role separation | **Adapt** | Compile-time role-confusion catch |
-| `SecretKeyWithEncapsulation` envelope | **Adapt** as record | Standard noble shape |
-| RFC 9629 CMS+KEM wrap | **Adapt** with CBOR/JSON | Core "wrap symmetric CEK per recipient via KEM" pattern correct |
-| PKCS8 / SPKI encoded keys | **Optional interop layer** | Default raw bytes; encoder for non-JS interop |
-| Signature context strings (1.79+) | **Adapt** | Prevents cross-protocol signature reuse |
-| Implicit rejection in decaps | **Adapt** + enforce in tests | FIPS 203 mandatory; timing-safe |
-| Streaming `Signature.update()` API | Avoid | Not needed for file-sized content |
-| JCE Provider registration | Avoid | Java-specific |
-| ASN.1 wire formats throughout | Avoid by default | CBOR/JSON; ASN.1 only for explicit interop |
-| Exception-based errors | Avoid | Result-over-exception per Zeta convention |
+| BC pattern                                             | Adapt?                       | Reason                                                          |
+| ------------------------------------------------------ | ---------------------------- | --------------------------------------------------------------- |
+| `Provider → KeyPairGenerator → ParameterSpec` dispatch | Adapt **shape**              | Named-variant TS factories                                      |
+| `KEMGenerator` / `KEMExtractor` role separation        | **Adapt**                    | Compile-time role-confusion catch                               |
+| `SecretKeyWithEncapsulation` envelope                  | **Adapt** as record          | Standard noble shape                                            |
+| RFC 9629 CMS+KEM wrap                                  | **Adapt** with CBOR/JSON     | Core "wrap symmetric CEK per recipient via KEM" pattern correct |
+| PKCS8 / SPKI encoded keys                              | **Optional interop layer**   | Default raw bytes; encoder for non-JS interop                   |
+| Signature context strings (1.79+)                      | **Adapt**                    | Prevents cross-protocol signature reuse                         |
+| Implicit rejection in decaps                           | **Adapt** + enforce in tests | FIPS 203 mandatory; timing-safe                                 |
+| Streaming `Signature.update()` API                     | Avoid                        | Not needed for file-sized content                               |
+| JCE Provider registration                              | Avoid                        | Java-specific                                                   |
+| ASN.1 wire formats throughout                          | Avoid by default             | CBOR/JSON; ASN.1 only for explicit interop                      |
+| Exception-based errors                                 | Avoid                        | Result-over-exception per Zeta convention                       |
 
 ---
 
@@ -122,35 +122,35 @@ Operator's substrate-honest disclosure history includes coined terms ("Dinkris" 
 
 ### 3.1 `@noble/post-quantum` (primary recommendation)
 
-| Field | Value |
-|---|---|
-| Maintainer | Paul Miller (paulmillr); Noble crypto ecosystem |
-| License | MIT |
-| Latest version | 0.6.1 (2026-04-12) |
-| Algorithms | ML-KEM (512/768/1024), ML-DSA (44/65/87), SLH-DSA (12 variants), Falcon (512/1024), XWing hybrid |
-| Dependencies | `@noble/hashes` + `@noble/curves` (pinned) |
-| Bundle size | ~16KB gzipped (entire library) |
-| Node / Browser / Bun / Deno | All supported (pure JS) |
-| TypeScript | First-class |
-| Audit | Self-audited 2026-04; no independent third-party audit |
-| Side-channel | None (pure JS cannot guarantee constant-time) |
-| Production users | Protonmail, Tutanota, MetaMask, Phantom, Kraken, Polymarket, Keycloak |
-| KyberSlash | Fixed; current version unaffected |
+| Field                       | Value                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------ |
+| Maintainer                  | Paul Miller (paulmillr); Noble crypto ecosystem                                                  |
+| License                     | MIT                                                                                              |
+| Latest version              | 0.6.1 (2026-04-12)                                                                               |
+| Algorithms                  | ML-KEM (512/768/1024), ML-DSA (44/65/87), SLH-DSA (12 variants), Falcon (512/1024), XWing hybrid |
+| Dependencies                | `@noble/hashes` + `@noble/curves` (pinned)                                                       |
+| Bundle size                 | ~16KB gzipped (entire library)                                                                   |
+| Node / Browser / Bun / Deno | All supported (pure JS)                                                                          |
+| TypeScript                  | First-class                                                                                      |
+| Audit                       | Self-audited 2026-04; no independent third-party audit                                           |
+| Side-channel                | None (pure JS cannot guarantee constant-time)                                                    |
+| Production users            | Protonmail, Tutanota, MetaMask, Phantom, Kraken, Polymarket, Keycloak                            |
+| KyberSlash                  | Fixed; current version unaffected                                                                |
 
 **API:**
 
 ```ts
-import { ml_kem768 } from '@noble/post-quantum/ml-kem';
+import { ml_kem768 } from "@noble/post-quantum/ml-kem";
 const alice = ml_kem768.keygen();
 const { cipherText, sharedSecret: bobShared } = ml_kem768.encapsulate(alice.publicKey);
 const aliceShared = ml_kem768.decapsulate(cipherText, alice.secretKey);
 
-import { ml_dsa65 } from '@noble/post-quantum/ml-dsa';
+import { ml_dsa65 } from "@noble/post-quantum/ml-dsa";
 const signer = ml_dsa65.keygen();
 const signature = ml_dsa65.sign(message, signer.secretKey);
 const valid = ml_dsa65.verify(signature, message, signer.publicKey);
 
-import { xwing } from '@noble/post-quantum/hybrid';
+import { xwing } from "@noble/post-quantum/hybrid";
 // xwing = ml_kem768 + X25519
 ```
 
@@ -188,14 +188,14 @@ ML-KEM/ML-DSA not yet in any shipping browser/Node. **Eliminate for B-0883; futu
 
 ### 3.7 Comparison table
 
-| Library | License | Audit | Algorithms | Bundle | TS ergonomics | Side-channel | Production? | Recommendation |
-|---|---|---|---|---|---|---|---|---|
-| **`@noble/post-quantum`** | MIT | Self (2026-04) | ML-KEM+ML-DSA+SLH-DSA+Falcon+XWing | ~16KB gz | **Excellent** | None | **Yes for B-0885 threat model** | **Primary** |
-| `@oqs/liboqs-js` | MIT | None | 103 algorithms | 80-500KB/alg WASM | OK | Partial (WASM JIT erodes) | **Upstream says NO** | Algorithm hedge only |
-| `libsodium-PQ` | ISC | N/A | None shipping | — | — | — | No | Eliminate |
-| BoringSSL PQ | BSD-3 (disclaimer) | Internal Google | ML-KEM | N/A | Requires FFI | Strong | **Not for third parties** | Eliminate |
-| Web Crypto PQ | N/A | N/A | None shipping | — | — | — | No | Future-proof revisit 2027+ |
-| **age 1.3.0+ + git-agecrypt** | BSD-3 + MPL-2.0 | Cure53 2019 + ongoing | ML-KEM-768 + X25519 | N/A (external CLI) | Subprocess via Bun | Inherits age | **Yes, audited** | **Strong alternative — surface to operator** |
+| Library                       | License            | Audit                 | Algorithms                         | Bundle             | TS ergonomics      | Side-channel              | Production?                     | Recommendation                               |
+| ----------------------------- | ------------------ | --------------------- | ---------------------------------- | ------------------ | ------------------ | ------------------------- | ------------------------------- | -------------------------------------------- |
+| **`@noble/post-quantum`**     | MIT                | Self (2026-04)        | ML-KEM+ML-DSA+SLH-DSA+Falcon+XWing | ~16KB gz           | **Excellent**      | None                      | **Yes for B-0885 threat model** | **Primary**                                  |
+| `@oqs/liboqs-js`              | MIT                | None                  | 103 algorithms                     | 80-500KB/alg WASM  | OK                 | Partial (WASM JIT erodes) | **Upstream says NO**            | Algorithm hedge only                         |
+| `libsodium-PQ`                | ISC                | N/A                   | None shipping                      | —                  | —                  | —                         | No                              | Eliminate                                    |
+| BoringSSL PQ                  | BSD-3 (disclaimer) | Internal Google       | ML-KEM                             | N/A                | Requires FFI       | Strong                    | **Not for third parties**       | Eliminate                                    |
+| Web Crypto PQ                 | N/A                | N/A                   | None shipping                      | —                  | —                  | —                         | No                              | Future-proof revisit 2027+                   |
+| **age 1.3.0+ + git-agecrypt** | BSD-3 + MPL-2.0    | Cure53 2019 + ongoing | ML-KEM-768 + X25519                | N/A (external CLI) | Subprocess via Bun | Inherits age              | **Yes, audited**                | **Strong alternative — surface to operator** |
 
 ---
 
@@ -216,10 +216,10 @@ ML-KEM/ML-DSA not yet in any shipping browser/Node. **Eliminate for B-0883; futu
 
 ```ts
 // tools/crypto/better-git-crypt/kem.ts
-import { xwing } from '@noble/post-quantum/hybrid';
-import { ml_dsa65 } from '@noble/post-quantum/ml-dsa';
-import { sha256 } from '@noble/hashes/sha256';
-import { chacha20poly1305 } from '@noble/ciphers/chacha';
+import { xwing } from "@noble/post-quantum/hybrid";
+import { ml_dsa65 } from "@noble/post-quantum/ml-dsa";
+import { sha256 } from "@noble/hashes/sha256";
+import { chacha20poly1305 } from "@noble/ciphers/chacha";
 
 export type RecipientKey = {
   identity: string;
@@ -248,11 +248,11 @@ Envelope adapts RFC 9629 CMS+KEM with CBOR (not ASN.1) + signature-context-strin
 
 ### 4.2 Solves 3 git-crypt rejection properties
 
-| Rejection | Solution |
-|---|---|
-| No revocation | **Forward-revocation** via recipient-set rotation (drop entry, re-encrypt working tree). Retroactive revocation requires history rewrite (same fundamental limit as git-crypt; out of scope for B-0883). |
-| Binary diffs break review | Implement git `textconv` filter (per git-agecrypt's pattern); reviewers see plaintext diffs locally; CI sees ciphertext blobs |
-| Metadata leak | **Partial fix**: directory-level encryption obscures filenames within dirs; full commit-message encryption requires out-of-band layer (out of scope for B-0883 v1) |
+| Rejection                 | Solution                                                                                                                                                                                                 |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No revocation             | **Forward-revocation** via recipient-set rotation (drop entry, re-encrypt working tree). Retroactive revocation requires history rewrite (same fundamental limit as git-crypt; out of scope for B-0883). |
+| Binary diffs break review | Implement git `textconv` filter (per git-agecrypt's pattern); reviewers see plaintext diffs locally; CI sees ciphertext blobs                                                                            |
+| Metadata leak             | **Partial fix**: directory-level encryption obscures filenames within dirs; full commit-message encryption requires out-of-band layer (out of scope for B-0883 v1)                                       |
 
 ### 4.3 PQ posture
 

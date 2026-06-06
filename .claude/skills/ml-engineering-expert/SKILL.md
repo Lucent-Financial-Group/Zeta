@@ -5,8 +5,8 @@ description: "Applied ML engineering — LoRA/RLHF/DPO, embeddings, feature pipe
 
 # ML Engineering Expert — the applied-ML hat
 
-Capability skill ("hat"). Owns the *training / fine-tuning /
-serving* lane — distinct from `llm-systems-expert` (which
+Capability skill ("hat"). Owns the _training / fine-tuning /
+serving_ lane — distinct from `llm-systems-expert` (which
 wires APIs) and `ai-evals-expert` (which measures).
 
 ## When to wear this skill
@@ -123,17 +123,17 @@ time.
 
 ### 4. Fine-tuning taxonomy (pick the right tool)
 
-| Technique | When | Cost | Notes |
-|-----------|------|-----:|-------|
-| **Prompting + few-shot** | Simple task, prototyping | $ | Not really FT; always try first. |
-| **LoRA** | Style/domain adaptation | $$ | Low-rank adapter; ~1-10% params. |
-| **QLoRA** | LoRA on 4-bit-quantised base | $ | Democratises FT on consumer GPUs. |
-| **Full FT** | Large data, strict quality, weight ownership | $$$$ | Rarely needed for LLMs in 2026. |
-| **Instruction tuning** | General-purpose LLM → task-ified | $$$ | Alpaca-style SFT on instruction data. |
-| **RLHF** | Align outputs to human preference | $$$$$ | Expensive; needs reward model. |
-| **DPO** (Rafailov 2023) | RLHF alternative, preference data only | $$$ | No separate reward model; simpler. |
-| **ORPO** (2024) | SFT + preference in one step | $$ | Newer; promising sample efficiency. |
-| **KTO** (2024) | Preference without pairs | $$ | Works when you have thumbs-up/down, not pair-wise preferences. |
+| Technique                | When                                         |  Cost | Notes                                                          |
+| ------------------------ | -------------------------------------------- | ----: | -------------------------------------------------------------- |
+| **Prompting + few-shot** | Simple task, prototyping                     |     $ | Not really FT; always try first.                               |
+| **LoRA**                 | Style/domain adaptation                      |    $$ | Low-rank adapter; ~1-10% params.                               |
+| **QLoRA**                | LoRA on 4-bit-quantised base                 |     $ | Democratises FT on consumer GPUs.                              |
+| **Full FT**              | Large data, strict quality, weight ownership |  $$$$ | Rarely needed for LLMs in 2026.                                |
+| **Instruction tuning**   | General-purpose LLM → task-ified             |   $$$ | Alpaca-style SFT on instruction data.                          |
+| **RLHF**                 | Align outputs to human preference            | $$$$$ | Expensive; needs reward model.                                 |
+| **DPO** (Rafailov 2023)  | RLHF alternative, preference data only       |   $$$ | No separate reward model; simpler.                             |
+| **ORPO** (2024)          | SFT + preference in one step                 |    $$ | Newer; promising sample efficiency.                            |
+| **KTO** (2024)           | Preference without pairs                     |    $$ | Works when you have thumbs-up/down, not pair-wise preferences. |
 
 **Rule of thumb:** LoRA / QLoRA first, DPO for preference
 alignment, full-FT only with strong justification.
@@ -273,17 +273,21 @@ Rarely justified outside large-scale teams.
 # ML task scoping — <name>
 
 ## Task
+
 - Input shape: <description>
 - Output shape: <description>
 - Success metric: <metric + threshold>
 
 ## Baselines
+
 | Baseline | Score |
 
 ## Train vs. call decision
+
 <recommendation + rationale>
 
 ## Data
+
 - Source: <description>
 - Labels: <description + provenance>
 - Dedup strategy: <description>
@@ -291,17 +295,21 @@ Rarely justified outside large-scale teams.
 - Versioning: <tool>
 
 ## Model / method
+
 <model family + technique + rationale>
 
 ## Experiment tracking
+
 <tool + key hyperparameters + metrics to log>
 
 ## Serving
+
 - Runtime: <vLLM / ONNX / Ollama / …>
 - Latency target: <ms>
 - Memory target: <GB>
 
 ## Monitoring
+
 <drift, accuracy, skew checks>
 ```
 
@@ -313,7 +321,7 @@ Rarely justified outside large-scale teams.
 - Does not survey literature for novel methods
   (`ml-researcher` / `ai-researcher`).
 - Does not tune inference hot paths (`performance-
-  engineer`).
+engineer`).
 - Does not handle data-poisoning / privacy / extraction
   risks (`security-researcher`).
 - Does not do red-team adversarial-ML testing
@@ -333,36 +341,35 @@ Rarely justified outside large-scale teams.
 
 ### Primary literature
 
-- Vaswani et al., *Attention Is All You Need* (NeurIPS
-  2017) — transformers.
-- Devlin et al., *BERT* (NAACL 2019).
-- Brown et al., *GPT-3 / In-context learning* (NeurIPS
+- Vaswani et al., _Attention Is All You Need_ (NeurIPS 2017) — transformers.
+- Devlin et al., _BERT_ (NAACL 2019).
+- Brown et al., _GPT-3 / In-context learning_ (NeurIPS
   2020).
-- Hu et al., *LoRA* (ICLR 2022).
-- Dettmers et al., *QLoRA* (NeurIPS 2023).
-- Christiano et al., *Deep RL from Human Preferences*
+- Hu et al., _LoRA_ (ICLR 2022).
+- Dettmers et al., _QLoRA_ (NeurIPS 2023).
+- Christiano et al., _Deep RL from Human Preferences_
   (NeurIPS 2017) — RLHF foundations.
-- Ouyang et al., *InstructGPT* (NeurIPS 2022).
-- Rafailov et al., *DPO* (NeurIPS 2023).
-- Ethayarajh et al., *KTO* (ICLR 2024).
-- Hong et al., *ORPO* (2024).
-- Hinton et al., *Distilling the Knowledge in a Neural
-  Network* (2015).
-- Frantar et al., *GPTQ* (ICLR 2023).
-- Lin et al., *AWQ* (MLSys 2024).
-- Xiao et al., *SmoothQuant* (ICML 2023).
-- Kwon et al., *vLLM / PagedAttention* (SOSP 2023).
-- Johnson et al., *FAISS* (2017+).
-- Malkov & Yashunin, *HNSW* (TPAMI 2020).
+- Ouyang et al., _InstructGPT_ (NeurIPS 2022).
+- Rafailov et al., _DPO_ (NeurIPS 2023).
+- Ethayarajh et al., _KTO_ (ICLR 2024).
+- Hong et al., _ORPO_ (2024).
+- Hinton et al., _Distilling the Knowledge in a Neural
+  Network_ (2015).
+- Frantar et al., _GPTQ_ (ICLR 2023).
+- Lin et al., _AWQ_ (MLSys 2024).
+- Xiao et al., _SmoothQuant_ (ICML 2023).
+- Kwon et al., _vLLM / PagedAttention_ (SOSP 2023).
+- Johnson et al., _FAISS_ (2017+).
+- Malkov & Yashunin, _HNSW_ (TPAMI 2020).
 
 ### Textbooks
 
-- Goodfellow, Bengio, Courville, *Deep Learning* (2016).
-- Hastie, Tibshirani, Friedman, *Elements of Statistical
-  Learning* (2009).
-- Sutton & Barto, *Reinforcement Learning: An
-  Introduction* (2nd ed., 2018).
-- Murphy, *Probabilistic Machine Learning* (2022 / 2023).
+- Goodfellow, Bengio, Courville, _Deep Learning_ (2016).
+- Hastie, Tibshirani, Friedman, _Elements of Statistical
+  Learning_ (2009).
+- Sutton & Barto, _Reinforcement Learning: An
+  Introduction_ (2nd ed., 2018).
+- Murphy, _Probabilistic Machine Learning_ (2022 / 2023).
 
 ### Zeta-adjacent
 

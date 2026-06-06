@@ -45,14 +45,7 @@ function run(args: readonly string[]): {
   };
 }
 
-const DOCUMENTED_SUBCOMMANDS = [
-  "install",
-  "counters",
-  "trace",
-  "gcdump",
-  "bench",
-  "coverage",
-] as const;
+const DOCUMENTED_SUBCOMMANDS = ["install", "counters", "trace", "gcdump", "bench", "coverage"] as const;
 
 describe("tools/profile.ts (B-0156 AC #2)", () => {
   test("exists at the canonical path", () => {

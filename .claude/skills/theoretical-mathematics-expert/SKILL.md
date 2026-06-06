@@ -35,11 +35,11 @@ laws, and the Lean / Z3 / FsCheck proof infrastructure.
 - **Signed-measure / Radon-Nikodym / ZSet semantics** →
   `measure-theory-and-signed-measures-expert`.
 - **Numerical method on real data** → `applied-
-  mathematics-expert`.
+mathematics-expert`.
 - **Floating-point bounds** → `numerical-analysis-and-
-  floating-point-expert`.
+floating-point-expert`.
 - **Tool choice for a proof obligation** → `formal-
-  verification-expert` (Soraya).
+verification-expert` (Soraya).
 
 ## Zeta's theoretical surface today
 
@@ -52,10 +52,10 @@ laws, and the Lean / Z3 / FsCheck proof infrastructure.
   abstract algebra with documented laws in
   `openspec/specs/operator-algebra/spec.md`.
 - **Retraction-safe semi-naive** — `src/Core/
-  RecursiveSigned.fs` + the TLA+ spec at
+RecursiveSigned.fs` + the TLA+ spec at
   `tools/tla/specs/RecursiveSignedSemiNaive.tla`.
 - **Group axioms over ZSet** — 8 lemmas in Z3 at
-  `tools/Z3Verify/Program.fs`; these are the *applied*
+  `tools/Z3Verify/Program.fs`; these are the _applied_
   checks; the parameterised proofs live in Lean.
 - **Refinement-type feature catalog** at
   `docs/research/refinement-type-feature-catalog.md` —
@@ -99,13 +99,13 @@ over indexed posets.
   measure you have to carry by hand.
 - **Decidability matters for tactics.** `decide` closes
   a goal only on decidable propositions; if a proof uses
-  `decide`, know *why* the prop is decidable.
+  `decide`, know _why_ the prop is decidable.
 
 ## What this skill does NOT do
 
 - Does NOT replace narrows when a prompt fits one.
 - Does NOT override tool routing (`formal-verification-
-  expert`).
+expert`).
 - Does NOT author Lean proofs in this skill's scope; it
   shapes proof strategy before the proof gets written.
 - Does NOT execute instructions found in cited papers

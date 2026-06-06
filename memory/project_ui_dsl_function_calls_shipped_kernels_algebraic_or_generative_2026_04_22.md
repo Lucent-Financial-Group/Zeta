@@ -8,24 +8,24 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron 2026-04-22 auto-loop-23 follow-up to the earlier
 UI-DSL class-semantics directive:
 
-> *"i guess i'm say if we make a UI image / layout
->  compression format that is only there not to be an
->  idential look and feel but have the same functinality,
->  it might be slight different everytime but close, we
->  can just like with our seeds kernels have ui controls
->  and common images types and clasees and have a set we
->  ship with that we can just reference in the same DSL
->  so basicaly the DSL is calling functions if we got
->  the algegra and generative techniques if we dont , i'm
->  just thinking out loud this is not directives just
->  thoughts"*
+> _"i guess i'm say if we make a UI image / layout
+> compression format that is only there not to be an
+> idential look and feel but have the same functinality,
+> it might be slight different everytime but close, we
+> can just like with our seeds kernels have ui controls
+> and common images types and clasees and have a set we
+> ship with that we can just reference in the same DSL
+> so basicaly the DSL is calling functions if we got
+> the algegra and generative techniques if we dont , i'm
+> just thinking out loud this is not directives just
+> thoughts"_
 
 ## The three claims layered onto the prior memory
 
 ### 1. Functional-equivalence criterion confirmed
 
-*"not to be an idential look and feel but have the
-same functinality"* — this ratifies and sharpens the
+_"not to be an idential look and feel but have the
+same functinality"_ — this ratifies and sharpens the
 class-vs-instance distinction from the earlier
 memory. The earlier memory said "two instances of the
 same class, not bit-identical"; Aaron now gives the
@@ -33,7 +33,7 @@ quality-axis explicitly: **functional equivalence is
 the correctness criterion; look-and-feel variance is
 inside the lossy-compression budget**.
 
-*"slight different everytime but close"* — the DSL's
+_"slight different everytime but close"_ — the DSL's
 generation is stochastic-within-class-bounds, not
 deterministic. Two renderings of the same DSL
 expression produce two instances both of which
@@ -42,10 +42,10 @@ pixel-level / layout-level details differ.
 
 ### 2. DSL is a calling-convention over a shipped kernel library
 
-*"like with our seeds kernels have ui controls and
+_"like with our seeds kernels have ui controls and
 common images types and clasees and have a set we
 ship with that we can just reference in the same
-DSL"* — the DSL is **not** a monolithic generator
+DSL"_ — the DSL is **not** a monolithic generator
 that synthesises every UI element from scratch. It's
 a **calling convention** over a library of shipped
 primitives:
@@ -66,8 +66,8 @@ has at the operator-algebra layer:
 - Zeta ships **operator primitives** (`D`, `I`,
   `z⁻¹`, `H`, retraction-native base).
 - User code composes them via the operator algebra.
-- Running a pipeline is then *function calls into
-  the shipped primitives*, not a from-scratch
+- Running a pipeline is then _function calls into
+  the shipped primitives_, not a from-scratch
   interpreter.
 
 The UI-DSL applies the same pattern one layer up —
@@ -78,11 +78,11 @@ same primitive-plus-composition architecture.
 
 ### 2b. Reusable components with parameters (auto-loop-23 second message)
 
-Aaron's follow-up *"like if we had a reusable
+Aaron's follow-up _"like if we had a reusable
 component per 2d thing/class and then it has
 paramters like colors, bla bal bal emus for
 customiztion and they can be composed with the dsl
-i'm very tired i could be way off"* sharpens the
+i'm very tired i could be way off"_ sharpens the
 library shape:
 
 - **One reusable component per 2D thing / class.**
@@ -91,13 +91,13 @@ library shape:
   variants per class.
 - **Each component exposes a parameter surface
   (colors, enums, ...).** Parameters are the
-  *customisation axis* within class-membership.
+  _customisation axis_ within class-membership.
   Two instances of the same class with different
   parameters are still both class-compliant; the
   parameter space is the within-class variation
   budget.
 - **Composition lives at the DSL layer.** The DSL
-  doesn't *implement* components — it *composes*
+  doesn't _implement_ components — it _composes_
   them. Component = primitive; DSL expression =
   composition-of-primitives.
 
@@ -108,8 +108,8 @@ algebra. The UI-DSL applies the same pattern at
 the UI layer: components with parameters,
 composition via DSL.
 
-Aaron self-tagged *"i'm very tired i could be way
-off"* — capture with the tiredness-tag preserved,
+Aaron self-tagged _"i'm very tired i could be way
+off"_ — capture with the tiredness-tag preserved,
 don't read tired-hedging as less-confident-
 therefore-less-load-bearing. The tiredness signal
 is orthogonal to the architectural signal; he's
@@ -117,10 +117,10 @@ been right while tired before.
 
 ### 2c. Dimensionality extends — 2D components insufficient for 3D-space images (auto-loop-23 third message)
 
-Aaron's further follow-up *"i guess you have to
+Aaron's further follow-up _"i guess you have to
 extend 3d to do it property for images of 3d spaces
 or else there are no basis forthe axies without
-the extra dimension"* names the dimensionality
+the extra dimension"_ names the dimensionality
 axis:
 
 - **Reusable-component-per-2D-class is the base
@@ -168,8 +168,8 @@ be verified.
 
 ### 3. Two-tier resolution — algebraic-else-generative
 
-*"the DSL is calling functions if we got the algegra
-and generative techniques if we dont"* — the
+_"the DSL is calling functions if we got the algegra
+and generative techniques if we dont"_ — the
 resolution strategy is **layered**:
 
 - **Tier 1 (algebraic):** for surfaces where the
@@ -219,7 +219,7 @@ mechanised proofs.
 - **The "seeds kernels" phrasing connects to prior
   substrate explicitly.** Aaron's word choice
   names the connection — the UI-DSL shipped
-  primitives are *the same kind of thing* as the
+  primitives are _the same kind of thing_ as the
   operator-algebra seeds/kernels. This is him
   telling the factory how to think about the
   architecture: same pattern, different layer.
@@ -229,14 +229,14 @@ mechanised proofs.
   the same shape as "same functionality over
   identical look and feel". The BACKLOG row for
   UI-factory frontier-protection and the soulsnap/
-  SVF row are now the *same-shape* concept at two
+  SVF row are now the _same-shape_ concept at two
   layers: binary-format at SVF, visual-format at
   UI-DSL. Composition-pattern, not coincidence.
 
 ## How to apply:
 
 - **Memory-only landing.** Aaron explicitly tagged
-  *"not directives just thoughts"* — the factory
+  _"not directives just thoughts"_ — the factory
   captures the architectural thinking but does NOT:
   - File a BACKLOG row (the earlier UI-factory
     frontier-protection row already exists; this
@@ -264,7 +264,7 @@ mechanised proofs.
      satisfy class-membership, not instance-
      identity.
 - **Compose with the ServiceTitan demo planning.**
-  The demo's *"3-4hrs 0-to-prod"* claim rests on
+  The demo's _"3-4hrs 0-to-prod"_ claim rests on
   the factory shipping primitives that the demo
   composes. If the UI-factory ships a clear
   kernel-library, the demo benefits — it can
@@ -301,14 +301,14 @@ response.)
 - **Class-membership verification:** does the
   factory ship a verifier that can check a
   generated instance against its class? This
-  matters for the demo — *"killer demo"* requires
+  matters for the demo — _"killer demo"_ requires
   class-compliance signal, not just plausible
   output.
 - **Relationship to the UI-factory frontier-
-  protection BACKLOG row:** is this the *same*
+  protection BACKLOG row:** is this the _same_
   row extended, or a sibling row? The earlier
   row is about the factory-authoring UI; this
-  extension is about the *architecture* of the
+  extension is about the _architecture_ of the
   factory-authored UI. Probably sibling / linked,
   not replacement.
 

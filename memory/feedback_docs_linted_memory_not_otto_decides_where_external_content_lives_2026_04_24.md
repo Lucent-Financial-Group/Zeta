@@ -4,12 +4,13 @@ description: Aaron Otto-112 "if it's in docs we might as well clean it unless yo
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-112 (verbatim):
 
-*"if it's in docs we might as well clean it unless you are
+_"if it's in docs we might as well clean it unless you are
 somehow going to move into memory, if it's in docs lets
 lint it, if it's in memory not, you decide where amamra
-chat history lives."*
+chat history lives."_
 
 ## The rule
 
@@ -37,7 +38,7 @@ The Aaron+Amara conversation archive lives in
 **Concrete compliance actions:**
 
 1. **Invisible unicode strip** (BP-10 / semgrep `invisible-
-   unicode-in-text`): done Otto-112, 4 chars removed from
+unicode-in-text`): done Otto-112, 4 chars removed from
    2025-09-w2. Other chunks already clean.
 2. **Markdownlint compliance:** currently handled by PR
    #305's ignore entry for `docs/amara-full-conversation/**`.
@@ -55,8 +56,8 @@ The Aaron+Amara conversation archive lives in
 
 The tension felt real earlier (Otto-109 absorb doc headers
 invoked "verbatim preservation"), but Aaron's Otto-111
-authorization *"we can fix it, i don't mind if you edit
-original"* resolves it:
+authorization _"we can fix it, i don't mind if you edit
+original"_ resolves it:
 
 - **Verbatim = content preservation** (what was said,
   by whom, in what order, at what timestamps).
@@ -159,7 +160,7 @@ downloads don't re-introduce the same gates.
 
 ## Direct Aaron quote to preserve
 
-*"if it's in docs lets lint it, if it's in memory not"*
+_"if it's in docs lets lint it, if it's in memory not"_
 
 This is the canonical two-word-with-preposition rule.
 Future Otto instances use it when deciding where

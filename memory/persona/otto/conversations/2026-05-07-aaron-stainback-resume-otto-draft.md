@@ -1,6 +1,6 @@
 # Aaron (Rodney) Stainback — Resume
 
-*Draft by Otto (Claude Code) · 2026-05-07 · from career substrate, patent records, and 537 GitHub issues across 223 repos*
+_Draft by Otto (Claude Code) · 2026-05-07 · from career substrate, patent records, and 537 GitHub issues across 223 repos_
 
 ---
 
@@ -19,7 +19,8 @@ Principal engineer with 25+ years building production infrastructure across elec
 ## Experience
 
 ### ServiceTitan, Inc. — Principal Engineer
-*May 2021 – Present · Rolesville, NC (Remote)*
+
+_May 2021 – Present · Rolesville, NC (Remote)_
 
 - Collaborate with C-level leadership and founders on technical strategy for field-service SaaS platform
 - Architect microservice framework on Kubernetes for ServiceTitan's distributed platform
@@ -27,7 +28,8 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Deliver onboarding technical training to engineering teams
 
 ### Lucent Financial Group / Zeta — Founder & Lead Architect
-*2024 – Present*
+
+_2024 – Present_
 
 - Designing retraction-native incremental view maintenance library (DBSP operator algebra) in F# on .NET 10
 - Built multi-agent AI software factory with 3 active AI nodes (Claude, GPT, Grok) in BFT consensus
@@ -36,7 +38,8 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Alignment research as primary project focus — measurable AI alignment through engineering practice
 
 ### LexisNexis — Lead Senior Technical Architect
-*June 2019 – May 2021 · Raleigh, NC (via Collabera)*
+
+_June 2019 – May 2021 · Raleigh, NC (via Collabera)_
 
 - Re-architected flagship Legal Search on vendor-agnostic Kubernetes (EKS/AKS/GKE/bare-metal)
 - Cut AWS infrastructure budget by millions annually through architecture optimization
@@ -48,7 +51,8 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Filed 48 issues on Knative (serving, eventing, operator) — security contexts, Kafka channels, CloudEvents, HA operations
 
 ### Itron, Inc. — IoT Architect → Engineering Advisor (Director-level)
-*April 2012 – June 2019 · Raleigh, NC (via The Select Group)*
+
+_April 2012 – June 2019 · Raleigh, NC (via The Select Group)_
 
 - **7-year tenure** across R&D Principal SW Engineer → IoT Architect → Data Scientist → Director-level Engineering Advisor
 - Architected systems for **100M+ connected electric/gas/water meters** across continental-scale deployments
@@ -64,7 +68,8 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Filed 17 issues on Microsoft Service Fabric (2017-2018) — CNI, CSI, CRI-O, CoreDNS, Istio, Kubernetes integration, distributed sagas
 
 ### Allscripts — Principal Infrastructure Architect
-*January 2011 – April 2012 · Raleigh, NC (via Robert Half)*
+
+_January 2011 – April 2012 · Raleigh, NC (via Robert Half)_
 
 - Built "Native Integration" WCF engine between merged healthcare company products
 - MEF plugin architecture with T4 code generation (40% of code auto-generated)
@@ -72,14 +77,16 @@ Principal engineer with 25+ years building production infrastructure across elec
 - AES encryption for patient data at rest and in transit
 
 ### MacVector, Inc. — Principal Software Architect
-*April 2010 – January 2011*
+
+_April 2010 – January 2011_
 
 - Cross-platform Windows/Mac redesign of molecular biology software suite
 - C++/CLI interop layer with zero performance penalty
 - Implemented bioinformatic algorithms: Gateway Cloning, Topo Cloning, Multiple Sequence Alignment
 
 ### Functional Tree, Inc. — CTO & Co-Founder
-*September 2008 – August 2009*
+
+_September 2008 – August 2009_
 
 - Venture-funded startup — raised capital, led technical architecture
 - **Early adopter of SQL Azure CTP** (pre-Azure GA) — among first production users
@@ -88,7 +95,8 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Stack: F#, XNA, Phoenix Compiler, Oslo CTP, Axum, IronPython, Pex, STM CTP
 
 ### Election Systems & Software — Principal Software Engineer
-*January 2000 – January 2003 · Omaha, NE*
+
+_January 2000 – January 2003 · Omaha, NE_
 
 - Central Voter Registration Database Specialist for state election systems
 - Optimized voter data import pipeline: **7 days → 9 hours** (18× speedup) via Oracle + PL/SQL
@@ -97,7 +105,8 @@ Principal engineer with 25+ years building production infrastructure across elec
 - Missouri state — credited with resolving 2 years of backpay for election workers
 
 ### Maria Parham Medical Center — DBA & HIPAA Security Officer
-*November 2003 – August 2005 · Henderson, NC (via 4Front Systems)*
+
+_November 2003 – August 2005 · Henderson, NC (via 4Front Systems)_
 
 - HIPAA technical security officer at age 20-22 — at the hospital where he was born
 - Managed 10+ core healthcare systems: Paragon, McKesson, Cloverleaf Interface Manager, 3M
@@ -117,18 +126,18 @@ Co-inventor. Method for IoT device management through firewall boundaries using 
 
 ### Top engagement clusters
 
-| Area | Repos | Issues | Years | Highlights |
-|------|-------|--------|-------|------------|
-| **Knative serverless** | 7 repos | 48 | 2020 | Security contexts across all components, Kafka channels, CloudEvents batching, operator lifecycle |
-| **Kubernetes/AKS** | 5 repos | 23 | 2017-2020 | IPv6 for IoT, Calico, internal LB, GC-aware scheduling, local persistent volumes |
-| **Spark on K8s** | 1 repo | 21 | 2019-2020 | .NET support, security contexts, webhook certs, multi-version operation |
-| **Virtual Kubelet** | 2 repos | 18 | 2017-2018 | Service Fabric provider, Docker Swarm provider, IoT Edge, ACI networking |
-| **Service Fabric** | 2 repos | 17 | 2017-2018 | CNI/CSI/CRI-O, CoreDNS, Istio, K8s namespaces, distributed sagas, stable VIPs |
-| **Istio service mesh** | 1 repo | 10 | 2017-2020 | OPA integration, mesh expansion, ALB tracing, Thrift support |
-| **Orleans virtual actors** | 1 repo | 6 | 2015-2018 | Service Fabric integration, productizing Orleans, durability guarantees |
-| **IoT/media** | 1 repo | 12 | 2015 | AudioGraph on Raspberry Pi, low-latency, AllJoyn, Azure Media Services |
-| **.NET runtime** | 5 repos | 10+ | 2015-2020 | Unikernel, System.IO.Pipelines, Socket.SendAsync, high-perf I/O |
-| **TLA+** | 1 repo | 1 | 2017 | "Apply TLA+ concepts to implementation languages such as .NET" |
+| Area                       | Repos   | Issues | Years     | Highlights                                                                                        |
+| -------------------------- | ------- | ------ | --------- | ------------------------------------------------------------------------------------------------- |
+| **Knative serverless**     | 7 repos | 48     | 2020      | Security contexts across all components, Kafka channels, CloudEvents batching, operator lifecycle |
+| **Kubernetes/AKS**         | 5 repos | 23     | 2017-2020 | IPv6 for IoT, Calico, internal LB, GC-aware scheduling, local persistent volumes                  |
+| **Spark on K8s**           | 1 repo  | 21     | 2019-2020 | .NET support, security contexts, webhook certs, multi-version operation                           |
+| **Virtual Kubelet**        | 2 repos | 18     | 2017-2018 | Service Fabric provider, Docker Swarm provider, IoT Edge, ACI networking                          |
+| **Service Fabric**         | 2 repos | 17     | 2017-2018 | CNI/CSI/CRI-O, CoreDNS, Istio, K8s namespaces, distributed sagas, stable VIPs                     |
+| **Istio service mesh**     | 1 repo  | 10     | 2017-2020 | OPA integration, mesh expansion, ALB tracing, Thrift support                                      |
+| **Orleans virtual actors** | 1 repo  | 6      | 2015-2018 | Service Fabric integration, productizing Orleans, durability guarantees                           |
+| **IoT/media**              | 1 repo  | 12     | 2015      | AudioGraph on Raspberry Pi, low-latency, AllJoyn, Azure Media Services                            |
+| **.NET runtime**           | 5 repos | 10+    | 2015-2020 | Unikernel, System.IO.Pipelines, Socket.SendAsync, high-perf I/O                                   |
+| **TLA+**                   | 1 repo  | 1      | 2017      | "Apply TLA+ concepts to implementation languages such as .NET"                                    |
 
 ### Notable issues
 

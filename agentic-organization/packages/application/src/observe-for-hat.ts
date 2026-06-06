@@ -15,7 +15,16 @@
  * SCOPE of the objects being ordered.
  */
 
-import { HatLevel, type ChangeSet, type HatBinding, type HatDefinition, type OrgEvent, type WorkBatch, type WorkItem, type WorkScheduleBlock } from "../../domain/src/index.ts";
+import {
+  HatLevel,
+  type ChangeSet,
+  type HatBinding,
+  type HatDefinition,
+  type OrgEvent,
+  type WorkBatch,
+  type WorkItem,
+  type WorkScheduleBlock,
+} from "../../domain/src/index.ts";
 import { legalPriorityClassesFor, type PriorityClass } from "./prioritization.ts";
 import {
   aggregateMetrics,
@@ -79,7 +88,9 @@ export function batchesInAuthorityScope(
   if (scope === AuthorityScope.Organization) return batches;
   const subtree = authoritySubtree(hat.id, byId);
   if (scope === AuthorityScope.Department) {
-    return batches.filter((b) => subtree.has(b.ownerHatId) || byId.get(b.ownerHatId)?.departmentId === hat.departmentId);
+    return batches.filter(
+      (b) => subtree.has(b.ownerHatId) || byId.get(b.ownerHatId)?.departmentId === hat.departmentId,
+    );
   }
   if (scope === AuthorityScope.Team) {
     return batches.filter((b) => subtree.has(b.ownerHatId));
@@ -162,7 +173,9 @@ export function observeForHat(hat: HatDefinition, state: OrgWorkState): HatReado
       bindings: state.hatBindings ?? [],
       ...(state.reviewLagMsByHat !== undefined ? { reviewLagMsByHat: state.reviewLagMsByHat } : {}),
       ...(state.failureRateByHat !== undefined ? { failureRateByHat: state.failureRateByHat } : {}),
-      ...(state.heartbeatReliabilityByHat !== undefined ? { heartbeatReliabilityByHat: state.heartbeatReliabilityByHat } : {}),
+      ...(state.heartbeatReliabilityByHat !== undefined
+        ? { heartbeatReliabilityByHat: state.heartbeatReliabilityByHat }
+        : {}),
     }),
     legalPriorityClasses: legalPriorityClassesFor(hat.level),
   };

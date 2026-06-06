@@ -46,16 +46,16 @@ in the chat/console output.
 ## Pre-start checklist
 
 - [x] Prior-art search: searched `docs/AUTONOMOUS-LOOP.md` for
-  current tick-start sequence (step 2, Check 0a/0b); searched
-  `tools/authorization/` (found extractor + resolver landed);
-  searched `tools/loop/` (no existing loop TS tools);
-  grep for "check-authorization" across repo (no prior art)
+      current tick-start sequence (step 2, Check 0a/0b); searched
+      `tools/authorization/` (found extractor + resolver landed);
+      searched `tools/loop/` (no existing loop TS tools);
+      grep for "check-authorization" across repo (no prior art)
 - [x] Dependency walk: B-0306 extractor at
-  `tools/authorization/pace-extractor.ts` (landed PR #2085);
-  B-0307 resolver at `tools/authorization/resolve-authorization.ts`
-  (landed PR #2091); both verified on `origin/main` at 4c8590fe
+      `tools/authorization/pace-extractor.ts` (landed PR #2085);
+      B-0307 resolver at `tools/authorization/resolve-authorization.ts`
+      (landed PR #2091); both verified on `origin/main` at 4c8590fe
 - [x] Reciprocal pointers: B-0309 not yet created (future
-  tick-shard-template integration); B-0160 parent verified
+      tick-shard-template integration); B-0160 parent verified
 
 ## Composes with
 
@@ -65,4 +65,4 @@ in the chat/console output.
 - B-0307 (resolver)
 - `docs/AUTONOMOUS-LOOP.md` (tick-start sequence)
 - `memory/feedback_refresh_before_decide_invariant_two_layer_
-  print_dx_claudeai_2026_05_01.md`
+print_dx_claudeai_2026_05_01.md`

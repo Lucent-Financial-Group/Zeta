@@ -50,7 +50,7 @@ The author probably meant one of:
    (sum of all batch sizes <= bound)
 
 Option 1 is consistent with the comment "every batch at level i has
-size ≤ 2 * cap(i-1)". The current `sum` syntax is likely a typo /
+size ≤ 2 \* cap(i-1)". The current `sum` syntax is likely a typo /
 bit-rot from an older Alloy version.
 
 ## Latent-bug-surface lineage
@@ -100,7 +100,7 @@ chain.
 
 **Two-part fix landed** in same PR:
 
-1. **Parens around sum-comprehension** (line 35): `(sum b : l.batches | b.size) <= mul[2, cap[l.level, maxCap]]`. Matches the comment intent ("total size at level i ≤ 2 * cap(i)") — sum-then-compare, not sum-of-Booleans.
+1. **Parens around sum-comprehension** (line 35): `(sum b : l.batches | b.size) <= mul[2, cap[l.level, maxCap]]`. Matches the comment intent ("total size at level i ≤ 2 \* cap(i)") — sum-then-compare, not sum-of-Booleans.
 
 2. **Replaced `check` command with `fact` + `run`**: the original `check SizeDoublingHolds { SizeDoubling[1] }` asked "does SizeDoubling[1] hold for ALL bounded instances?" — Alloy trivially constructs counterexamples by allowing arbitrary Int batch sizes. Real intent: declare what valid spines look like, then verify constructibility.
 

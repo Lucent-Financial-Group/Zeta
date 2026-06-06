@@ -427,9 +427,7 @@ function createOptionalCommandPolicyContext(
   };
 }
 
-function createOptionalCommandResource(
-  command: PipelineCommand,
-): Pick<CommandAuthorizationRequest, "resource"> {
+function createOptionalCommandResource(command: PipelineCommand): Pick<CommandAuthorizationRequest, "resource"> {
   const resource = {
     ...createOptionalDirectCommandResourceValue(DirectCommandResourceProperty.AssignedAgentId, command),
     ...createOptionalDirectCommandResourceValue(DirectCommandResourceProperty.AssignedHatAssignmentId, command),
@@ -449,8 +447,7 @@ const DirectCommandResourceProperty = {
   StartsAt: "startsAt",
 } as const;
 
-type DirectCommandResourceProperty =
-  (typeof DirectCommandResourceProperty)[keyof typeof DirectCommandResourceProperty];
+type DirectCommandResourceProperty = (typeof DirectCommandResourceProperty)[keyof typeof DirectCommandResourceProperty];
 
 function createOptionalDirectCommandResourceValue(
   property: DirectCommandResourceProperty,

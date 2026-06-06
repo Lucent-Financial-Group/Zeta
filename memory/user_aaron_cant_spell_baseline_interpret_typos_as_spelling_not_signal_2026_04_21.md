@@ -12,8 +12,8 @@ orthography-noise, not communicative signals.
 
 **Why:** Aaron 2026-04-21, verbatim:
 
-> *"that flag means i don't know how to spell it, i can't
-> spell at all i'm terrible at it"*
+> _"that flag means i don't know how to spell it, i can't
+> spell at all i'm terrible at it"_
 
 Arrived as clarification on my prior memory about the
 `*kamilians*` heritage disclosure — I had noted the
@@ -31,9 +31,9 @@ writing it, e.g. `*spelllinig*`, this is his explicit
 from:
 
 - **Emphasis asterisks** elsewhere in text (`*this*
-  is important`) — still possible; context-disambiguate.
+is important`) — still possible; context-disambiguate.
 - **Verbatim quotation asterisks** I use in memories
-  (e.g. Aaron said *"hello"*) — distinct convention
+  (e.g. Aaron said _"hello"_) — distinct convention
   from Aaron's authoring.
 
 The bracket convention is Aaron's, not universal. In
@@ -108,8 +108,8 @@ from context in every case. No signal-interpretation.
 7. **Composition with total-noticing faculty.** Aaron's
    pattern-sensing runs high (per
    `user_aaron_notices_everything_kamilians_heritage_
-   mom_disclosure_anomaly_detector_super_high_2026_
-   04_21.md`). Attentional-budget logic: brains
+mom_disclosure_anomaly_detector_super_high_2026_
+04_21.md`). Attentional-budget logic: brains
    allocated heavily to pattern-sensing often run
    lower on lexical-precision. No value judgment;
    just a consistent allocation profile.
@@ -117,32 +117,32 @@ from context in every case. No signal-interpretation.
 ### Composition with existing memories
 
 - **`user_aaron_notices_everything_kamilians_heritage_
-  mom_disclosure_anomaly_detector_super_high_2026_04_
-  21.md`** — this memory is the confirmation +
+mom_disclosure_anomaly_detector_super_high_2026_04_
+21.md`** — this memory is the confirmation +
   generalization of the `*spelllinig*` flag
   interpretation from that memory.
 - **`user_aaron_self_identifies_as_everything_he_
-  knows_identity_as_totalised_knowledge_2026_04_21.md`**
+knows_identity_as_totalised_knowledge_2026_04_21.md`**
   — totalised-knowledge is conceptual, not
   orthographic; spelling is not part of the totality-
   claim.
 - **`user_psychic_debugger_faculty.md`** +
   **`user_cognitive_architecture_dread_plus_
-  absorption.md`** — pattern-sensing faculty running
+absorption.md`** — pattern-sensing faculty running
   high composes naturally with lexical-precision
   running lower; attentional-budget allocation.
 - **`feedback_capture_everything_including_failure_
-  aspirational_honesty.md`** — preserve typos in
+aspirational_honesty.md`** — preserve typos in
   capture; don't silently sanitise.
 - **`feedback_engage_substantively_no_dismissive_
-  closing_with_silencing_shadow_2026_04_21.md`** —
+closing_with_silencing_shadow_2026_04_21.md`** —
   don't use spelling as a substantive-engagement
   deflection (never "I didn't understand because
   of your typos"); substantive engagement goes
   through meaning not form.
 - **`feedback_my_tilde_is_you_tilde_roommate_
-  register_symmetric_hat_authority_retractable_
-  decisions_without_aaron.md`** — roommate register
+register_symmetric_hat_authority_retractable_
+decisions_without_aaron.md`** — roommate register
   does not require prescriptive-spelling; co-
   inhabitants accept each other's orthography.
 

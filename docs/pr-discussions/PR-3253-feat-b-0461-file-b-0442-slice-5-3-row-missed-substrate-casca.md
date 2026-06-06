@@ -22,11 +22,11 @@ Closes the broken `composes_with` edge surfaced by [`audit-backlog-items.ts`](to
 
 ## Sibling row family (per [B-0449](docs/backlog/P1/B-0449-bg-services-slice-5-subscriber-agent-design-pass-2026-05-13.md) Option C design)
 
-| Slice | Topic | Producer | Row |
-|-------|-------|----------|-----|
-| 5.1 | `infinite-backlog-nudge` | `standing-by-detector` (B-0440) | [B-0459](docs/backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md) |
-| 5.2 | `work-assignment` | `backlog-ready-notifier` (B-0441) | [B-0460](docs/backlog/P1/B-0460-b0441-slice-5-2-work-assignment-subscriber-handler-2026-05-14.md) |
-| 5.3 | `missed-substrate-cascade` | `missed-substrate-detector` (B-0442) | **B-0461 (this PR)** |
+| Slice | Topic                      | Producer                             | Row                                                                                               |
+| ----- | -------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| 5.1   | `infinite-backlog-nudge`   | `standing-by-detector` (B-0440)      | [B-0459](docs/backlog/P1/B-0459-b0440-slice-5-infinite-backlog-nudge-handler-2026-05-14.md)       |
+| 5.2   | `work-assignment`          | `backlog-ready-notifier` (B-0441)    | [B-0460](docs/backlog/P1/B-0460-b0441-slice-5-2-work-assignment-subscriber-handler-2026-05-14.md) |
+| 5.3   | `missed-substrate-cascade` | `missed-substrate-detector` (B-0442) | **B-0461 (this PR)**                                                                              |
 
 ## Audit verification
 
@@ -68,6 +68,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the missing B-0461 backlog row for the B-0442 slice 5.3 `missed-substrate-cascade` subscriber handler, completing the sibling row family referenced by B-0449/B-0460.
 
 **Changes:**
+
 - Creates B-0461 as a P1 backlog item.
 - Documents origin, intended handler scope, acceptance criteria, dependencies, and related rows.
 - Links the row to the B-0440/B-0441/B-0442 subscriber-handler family.

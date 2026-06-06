@@ -25,9 +25,7 @@ describe("B-0867.5 workflow-engine scaffold invariants", () => {
   });
 
   it("seed catalog satisfies Mod 2 (grammar-extension action present)", () => {
-    const hasGrammarExtension = SEED_ACTION_CATALOG.some(
-      (a) => a.class === "grammar-extension",
-    );
+    const hasGrammarExtension = SEED_ACTION_CATALOG.some((a) => a.class === "grammar-extension");
     expect(hasGrammarExtension).toBe(true);
   });
 
@@ -49,9 +47,7 @@ describe("B-0867.5 workflow-engine scaffold invariants", () => {
   });
 
   it("validateCatalog catches Mod 2 violation (missing grammar-extension)", () => {
-    const noGrammarExt = SEED_ACTION_CATALOG.filter(
-      (a) => a.class !== "grammar-extension",
-    );
+    const noGrammarExt = SEED_ACTION_CATALOG.filter((a) => a.class !== "grammar-extension");
     expect(() => validateCatalog(noGrammarExt, SEED_STATES)).toThrow(/Mod 2/);
   });
 
@@ -64,9 +60,7 @@ describe("B-0867.5 workflow-engine scaffold invariants", () => {
       availableActions: ["does-not-exist", "escape-hatch"],
       composesWith: [],
     };
-    expect(() =>
-      validateCatalog(SEED_ACTION_CATALOG, [...SEED_STATES, brokenState]),
-    ).toThrow(/unknown action/);
+    expect(() => validateCatalog(SEED_ACTION_CATALOG, [...SEED_STATES, brokenState])).toThrow(/unknown action/);
   });
 
   it("validateStateOtto5Mods catches Mod 1 violation (no escape-hatch)", () => {
@@ -78,9 +72,7 @@ describe("B-0867.5 workflow-engine scaffold invariants", () => {
       availableActions: ["advance"],
       composesWith: [],
     };
-    expect(() =>
-      validateStateOtto5Mods(noEscapeState, SEED_ACTION_CATALOG),
-    ).toThrow(/Mod 1/);
+    expect(() => validateStateOtto5Mods(noEscapeState, SEED_ACTION_CATALOG)).toThrow(/Mod 1/);
   });
 
   it("all actions declare non-empty feedbackVariants (asymmetric-authorship)", () => {

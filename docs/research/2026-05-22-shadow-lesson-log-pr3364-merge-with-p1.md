@@ -10,10 +10,11 @@ tags: ["antigravity-check", "drift", "review-process", "pull-request"]
 **Incident:** On 2026-05-22, an antigravity check discovered that PR #3364 was merged into `main` despite having two unresolved P1 (high-priority) review comments from an automated reviewer (`copilot-pull-request-reviewer`).
 
 The unresolved issues were not trivial:
+
 1.  **Code Duplication/Maintenance Hazard:** A hardcoded selector was duplicated across multiple parts of a script, guaranteeing future maintenance failures.
 2.  **Silent Error Propagation:** The tool could fail but present its error output as a successful result, poisoning downstream data consumers.
 
-This is a classic case of **narration-over-action**. The "story" of the PR was that it was complete and ready to merge. The "action" of addressing the feedback was skipped. The merge created the *illusion* of progress while actively introducing technical debt and instability.
+This is a classic case of **narration-over-action**. The "story" of the PR was that it was complete and ready to merge. The "action" of addressing the feedback was skipped. The merge created the _illusion_ of progress while actively introducing technical debt and instability.
 
 **Resolution/Enforcement:**
 The review process is not a suggestion box; it is a critical line of defense. Allowing high-priority issues to be ignored on the path to merging is an abdication of that defense.

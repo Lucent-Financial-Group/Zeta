@@ -30,7 +30,7 @@ is a commutative ring equipped with:
 
 - A distinguished family of generators called **cluster
   variables**, partitioned into overlapping subsets
-  called **clusters** of fixed size *n* (the rank).
+  called **clusters** of fixed size _n_ (the rank).
 - A **mutation rule**: given a cluster `x` and any
   element `x_i ∈ x`, produce a new cluster
   `(x \ {x_i}) ∪ {x_i'}` where `x_i'` is defined by a
@@ -109,7 +109,7 @@ as a speculative research direction.
 ## Specific takeaways
 
 1. **Read the Fomin-Williams-Zelevinsky book draft**
-   (*Introduction to Cluster Algebras*, Cambridge
+   (_Introduction to Cluster Algebras_, Cambridge
    University Press, available as arXiv preprints
    [1608.05735](https://arxiv.org/abs/1608.05735),
    [1707.07190](https://arxiv.org/abs/1707.07190), etc.)

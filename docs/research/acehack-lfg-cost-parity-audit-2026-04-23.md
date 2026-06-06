@@ -5,9 +5,9 @@
 **Lives on:** AceHack (experimentation-frontier per Amara authority-axis split — Otto-61 memory)
 **Companion memory (per-user, pending in-repo migration):**
 `feedback_lfg_free_actions_credits_limited_acehack_is_poor_man_host_big_batches_to_lfg_not_one_for_one_2026_04_23.md`
-**Triggering directive:** human-maintainer Otto-61 — *"we should parity
+**Triggering directive:** human-maintainer Otto-61 — _"we should parity
 check for costs and see if there is really anyting AceHack gets us
-for free that would limit us on LFG"*.
+for free that would limit us on LFG"_.
 
 ---
 
@@ -23,8 +23,8 @@ for free that would limit us on LFG"*.
   fork-visibility-flip risk-headroom, not "matrix
   avoidance."
 - **LFG monthly baseline cost** (confirmed by human-maintainer
-  Otto-62, with follow-up Otto-62 correction *"i only used one user
-  seat so only 19, maybe will update max later"*): Team plan
+  Otto-62, with follow-up Otto-62 correction _"i only used one user
+  seat so only 19, maybe will update max later"_): Team plan
   (~$4/seat × 2 = $8/mo) + **Copilot Business** (~$19 × 1 seat
   active = $19/mo; may scale later) ≈ **~$27/mo flat** before any
   per-Actions spend.
@@ -43,25 +43,25 @@ for free that would limit us on LFG"*.
 
 ### Repo visibility + ownership
 
-| Field | LFG | AceHack |
-|---|---|---|
-| `visibility` | public | public |
-| `owner.type` | Organization | User |
-| `fork` | false | **true** (fork of LFG) |
-| default branch | main | main |
+| Field          | LFG          | AceHack                |
+| -------------- | ------------ | ---------------------- |
+| `visibility`   | public       | public                 |
+| `owner.type`   | Organization | User                   |
+| `fork`         | false        | **true** (fork of LFG) |
+| default branch | main         | main                   |
 
 ### Security + analysis features
 
-| Feature | LFG | AceHack |
-|---|---|---|
-| `dependabot_security_updates` | enabled | disabled — could be enabled free on public repos |
-| `secret_scanning` | enabled | enabled |
-| `secret_scanning_push_protection` | enabled | enabled |
-| `secret_scanning_ai_detection` | disabled (paid) | not exposed (disabled) |
-| `secret_scanning_validity_checks` | disabled (paid) | disabled |
-| `secret_scanning_delegated_alert_dismissal` | disabled (paid) | not exposed |
-| `secret_scanning_delegated_bypass` | disabled (paid) | not exposed |
-| `secret_scanning_non_provider_patterns` | disabled | disabled |
+| Feature                                     | LFG             | AceHack                                          |
+| ------------------------------------------- | --------------- | ------------------------------------------------ |
+| `dependabot_security_updates`               | enabled         | disabled — could be enabled free on public repos |
+| `secret_scanning`                           | enabled         | enabled                                          |
+| `secret_scanning_push_protection`           | enabled         | enabled                                          |
+| `secret_scanning_ai_detection`              | disabled (paid) | not exposed (disabled)                           |
+| `secret_scanning_validity_checks`           | disabled (paid) | disabled                                         |
+| `secret_scanning_delegated_alert_dismissal` | disabled (paid) | not exposed                                      |
+| `secret_scanning_delegated_bypass`          | disabled (paid) | not exposed                                      |
+| `secret_scanning_non_provider_patterns`     | disabled        | disabled                                         |
 
 ### Actions runner cost-awareness (`gate.yml`)
 
@@ -76,8 +76,8 @@ for free that would limit us on LFG"*.
 
 ```yaml
 os: ${{ fromJSON(github.repository == 'Lucent-Financial-Group/Zeta'
-        && '["ubuntu-22.04"]'
-        || '["ubuntu-22.04","macos-14"]') }}
+  && '["ubuntu-22.04"]'
+  || '["ubuntu-22.04","macos-14"]') }}
 ```
 
 Original framing (now superseded): "deliberate cost split:
@@ -98,12 +98,12 @@ canonical reference.
 ## Unobservable without scope elevation
 
 Needs `admin:org` on Lucent-Financial-Group (human-maintainer
-authorized 2026-04-23 Otto-62: *"you can have admin:org and whatever
-you need"*):
+authorized 2026-04-23 Otto-62: _"you can have admin:org and whatever
+you need"_):
 
 - Actual Actions minute consumption + spend-to-date
 - Copilot seat allocation (human-maintainer confirmed
-  Otto-62: *"i pay for copilot business i think on LFG"*)
+  Otto-62: _"i pay for copilot business i think on LFG"_)
 - Per-seat license state
 - Billing invoices + projected monthly total
 
@@ -125,24 +125,24 @@ the elevated scope to fill the unobservable fields.
 
 ### LFG (Organization, Team plan)
 
-| Line | Monthly | Notes |
-|---|---:|---|
-| Team plan base | ~$8 | $4/seat × 2 seats filled |
-| Copilot Business | ~$19 | $19 × 1 seat active (human-maintainer Otto-62 correction: only 1 seat in use, may scale later) |
-| Advanced Security paid features | $0 | None currently enabled (ai_detection, validity, delegated_bypass all disabled) |
-| Actions (Linux on public repos) | $0 | Free unlimited |
-| Actions (macOS) | $0 | Avoided via gate.yml matrix |
-| **LFG baseline** | **~$27/mo** | **flat before Actions usage** (= $8 Team + $19 Copilot × 1 seat) |
+| Line                            |     Monthly | Notes                                                                                          |
+| ------------------------------- | ----------: | ---------------------------------------------------------------------------------------------- |
+| Team plan base                  |         ~$8 | $4/seat × 2 seats filled                                                                       |
+| Copilot Business                |        ~$19 | $19 × 1 seat active (human-maintainer Otto-62 correction: only 1 seat in use, may scale later) |
+| Advanced Security paid features |          $0 | None currently enabled (ai_detection, validity, delegated_bypass all disabled)                 |
+| Actions (Linux on public repos) |          $0 | Free unlimited                                                                                 |
+| Actions (macOS)                 |          $0 | Avoided via gate.yml matrix                                                                    |
+| **LFG baseline**                | **~$27/mo** | **flat before Actions usage** (= $8 Team + $19 Copilot × 1 seat)                               |
 
 ### AceHack (User account, fork of LFG)
 
-| Line | Monthly | Notes |
-|---|---:|---|
-| User account base | $0 — needs human-maintainer confirmation if Copilot Pro held personally | public-repo hosting is free |
-| Actions (Linux on public repos) | $0 | Free unlimited |
-| Actions (macOS-14) | ?? | Multiplier applies; personal-account free-minute quota for public repos needs verification |
-| Advanced features | $0 | None visible |
-| **AceHack baseline** | **~$0-$10/mo** | **depending on human-maintainer's personal plan** |
+| Line                            |                                                                 Monthly | Notes                                                                                      |
+| ------------------------------- | ----------------------------------------------------------------------: | ------------------------------------------------------------------------------------------ |
+| User account base               | $0 — needs human-maintainer confirmation if Copilot Pro held personally | public-repo hosting is free                                                                |
+| Actions (Linux on public repos) |                                                                      $0 | Free unlimited                                                                             |
+| Actions (macOS-14)              |                                                                      ?? | Multiplier applies; personal-account free-minute quota for public repos needs verification |
+| Advanced features               |                                                                      $0 | None visible                                                                               |
+| **AceHack baseline**            |                                                          **~$0-$10/mo** | **depending on human-maintainer's personal plan**                                          |
 
 ---
 
@@ -200,8 +200,8 @@ the elevated scope to fill the unobservable fields.
    Business × 1 seat) in an ADR so future Otto sessions can
    cost-account with numbers, not speculation. Original draft
    said `$46/mo` based on a pre-correction estimate; Otto-62's
-   correction *"i only used one user seat so only 19, maybe
-   will update max later"* drops the Copilot Business line by
+   correction _"i only used one user seat so only 19, maybe
+   will update max later"_ drops the Copilot Business line by
    ~$19, and the addendum's "Confirmed monthly baseline:
    ~$27/mo" is the canonical figure.
 
@@ -252,7 +252,7 @@ at $0 budget except GHAS and Copilot. So in practice the
 flip would NOT happen as written — gross-exceeding-
 discount triggers the budget hard-stop, not a billed
 amount. The text-as-written describes the underlying GitHub
-billing semantic (what *would* happen without the budget
+billing semantic (what _would_ happen without the budget
 rail); the actual operational behaviour is hard-stop.
 
 **Copilot Business:** 1 license × $0.633/day ≈ $19/mo
@@ -261,13 +261,13 @@ with Otto-62's $19-for-1-seat figure.
 
 **Top-5 repos this month:**
 
-| Repo | Gross |
-|---|---:|
-| Zeta | $41.72 |
-| lucent-infrastructure | $0.02 |
-| lucent-frontend | $0.02 |
-| lucent-user-service | $0.02 |
-| lucent-api-gateway | $0.02 |
+| Repo                  |  Gross |
+| --------------------- | -----: |
+| Zeta                  | $41.72 |
+| lucent-infrastructure |  $0.02 |
+| lucent-frontend       |  $0.02 |
+| lucent-user-service   |  $0.02 |
+| lucent-api-gateway    |  $0.02 |
 
 Zeta is the near-total consumer of LFG Actions gross.
 
@@ -314,15 +314,15 @@ this is the AceHack personal quota.
 
 **Top repos this month:**
 
-| Repo | Gross |
-|---|---:|
-| Zeta | $36.44 |
-| Zeta (separate) | $13.77 |
+| Repo                   |  Gross |
+| ---------------------- | -----: |
+| Zeta                   | $36.44 |
+| Zeta (separate)        | $13.77 |
 | devcontainer-codespace | varies |
 
-Two "Zeta" entries: the human-maintainer noted *"i think
+Two "Zeta" entries: the human-maintainer noted _"i think
 there was a little acehack before too, you can figure it
-out"* — suggests a prior fork / namespace is still
+out"_ — suggests a prior fork / namespace is still
 generating billing rows. Archaeology pending.
 
 **Per-day breakdown (sample):**
@@ -360,7 +360,7 @@ points still hold:
   the discount terms, the gross exposure becomes the
   billed cost.
 
-But the stark *"macOS is 10x expensive"* framing was
+But the stark _"macOS is 10x expensive"_ framing was
 too strong. Corrected: **macOS is 10x gross but
 currently 0x billed on public repos within the
 public-repo discount**. The reason to be careful with
@@ -381,8 +381,8 @@ misled.
 ### Human maintainer's personal Copilot
 
 Confirmed via the human maintainer's Copilot settings
-page: *"You are assigned a seat as part of a GitHub
-Copilot Business subscription managed by servicetitan."*
+page: _"You are assigned a seat as part of a GitHub
+Copilot Business subscription managed by servicetitan."_
 Personal Copilot is ServiceTitan-sponsored (employment
 benefit); **separate from LFG's Copilot Business seat**.
 
@@ -432,8 +432,8 @@ Retaining Otto-62 candidates + one new:
 
 ### Updated "Otto-61 claim retractions"
 
-Otto-61 memory's *"AceHack is the poor-man host for per-
-PR work"* framing is **refined**, not retracted:
+Otto-61 memory's _"AceHack is the poor-man host for per-
+PR work"_ framing is **refined**, not retracted:
 
 - AceHack is cheaper in absolute terms ($4 vs $27/mo)
 - Both currently-$0-billed on Actions via public-repo
@@ -444,5 +444,6 @@ PR work"* framing is **refined**, not retracted:
   either tips to billed, the cap stops spend
 
 The Otto-62 final rule **stands as written**:
+
 > per-PR work on whichever substrate matches purpose
 > (experiments→AceHack, decisions→LFG), not cost-driven.

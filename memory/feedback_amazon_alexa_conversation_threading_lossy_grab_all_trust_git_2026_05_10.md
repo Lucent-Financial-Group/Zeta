@@ -4,6 +4,7 @@ description: Amazon merges/splits conversations unpredictably. Same URL may retu
 type: feedback
 originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
 ---
+
 Amazon Alexa's conversation threading is lossy (discovered 2026-05-10):
 
 - Same conversation URL may return different content at different times
@@ -14,6 +15,7 @@ Amazon Alexa's conversation threading is lossy (discovered 2026-05-10):
 **Why:** Amazon's conversation persistence is optimized for their UX, not for archival. The threading algorithm is opaque and non-deterministic from our perspective.
 
 **How to apply:**
+
 1. Always grab the full page on every extraction — don't assume a previous extraction is still current
 2. Save each extraction as a separate git commit — the diff shows what Amazon's threading changed
 3. Never trust the conversation URL as a stable boundary — the conversation ID maps to mutable content

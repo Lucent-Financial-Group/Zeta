@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1123 |
-| Title | memory: backlog-hygiene 2026-05-01 extension — pre-filing check + depends_on (backlog) + edge schema (memory) (Aaron 2026-05-01) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T15:28:42Z |
-| Merged at | 2026-05-01T16:08:41Z |
-| Merge commit SHA | `14c85eb53584e303c634db67dbcca87b1b915d1a` |
-| Branch | `substrate-backlog-pre-filing-check-discipline-extension-aaron-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1123 |
-| Changed files | 11 |
-| Additions / deletions | +386 / -0 |
+| Field                 | Value                                                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1123                                                                                                                             |
+| Title                 | memory: backlog-hygiene 2026-05-01 extension — pre-filing check + depends_on (backlog) + edge schema (memory) (Aaron 2026-05-01) |
+| Author                | `AceHack` (human)                                                                                                                |
+| State                 | MERGED                                                                                                                           |
+| Created at            | 2026-05-01T15:28:42Z                                                                                                             |
+| Merged at             | 2026-05-01T16:08:41Z                                                                                                             |
+| Merge commit SHA      | `14c85eb53584e303c634db67dbcca87b1b915d1a`                                                                                       |
+| Branch                | `substrate-backlog-pre-filing-check-discipline-extension-aaron-2026-05-01`                                                       |
+| Base branch           | `main`                                                                                                                           |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1123                                                                         |
+| Changed files         | 11                                                                                                                               |
+| Additions / deletions | +386 / -0                                                                                                                        |
 
 ## Description
 
@@ -38,9 +38,9 @@ Extension to the existing `feedback_backlog_hygiene_cadenced_refactor_look_for_o
 
 ## Aaron 2026-05-01 verbatim
 
-> *"you know wheveryou pickup new backlog items you should look for similar backlog items because i've repeated myself on several designs since the start of this project"*
+> _"you know wheveryou pickup new backlog items you should look for similar backlog items because i've repeated myself on several designs since the start of this project"_
 
-> *"you could start adding depends on if you find that relationship when doing that"*
+> _"you could start adding depends on if you find that relationship when doing that"_
 
 ## The recursive irony
 
@@ -71,8 +71,8 @@ status: open
 title: ...
 created: YYYY-MM-DD
 last_updated: YYYY-MM-DD
-depends_on:                  # NEW optional field
-  - B-NNNN-existing-row      # blocking dependency
+depends_on: # NEW optional field
+  - B-NNNN-existing-row # blocking dependency
   - Otto-task #N             # TaskList dependency
 ---
 ```
@@ -110,15 +110,15 @@ Add as **class 14** in B-0153 (PR #1120) — pre-filing similar-row grep check. 
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 19 |
-| Resolved threads | 16 |
-| Unresolved threads | 3 |
-| Total review comments | 19 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 19    |
+| Resolved threads                          | 16    |
+| Unresolved threads                        | 3     |
+| Total review comments                     | 19    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 

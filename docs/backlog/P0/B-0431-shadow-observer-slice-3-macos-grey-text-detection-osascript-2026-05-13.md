@@ -92,7 +92,7 @@ detector. This slice adds the built-in macOS implementation that fires when no
 - [x] Built-in `detectGreyText()` calls `detectGreyTextMacOS()` (stub replaced)
 - [x] 12 new tests, 0 failures (`bun test tools/shadow/shadow-observer.test.ts`) — 39 total pass
 - [x] "Human keystroke overrides at any moment" B-0402 acceptance criterion satisfied
-  (the re-detect path returns `"overridden"` when suggestion disappears during delay)
+      (the re-detect path returns `"overridden"` when suggestion disappears during delay)
 
 ## Shipped
 

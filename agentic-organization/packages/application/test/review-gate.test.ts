@@ -1,7 +1,13 @@
 import { equal } from "node:assert/strict";
 import { test } from "node:test";
 import { QualityGateOutcome } from "../../domain/src/index.ts";
-import { ReviewDimension, ReviewSeverity, ReviewStance, type CandidateFinding, type ReviewerVote } from "../../metrics/src/index.ts";
+import {
+  ReviewDimension,
+  ReviewSeverity,
+  ReviewStance,
+  type CandidateFinding,
+  type ReviewerVote,
+} from "../../metrics/src/index.ts";
 import { ReviewGateFeedbackReason, evaluateReviewGate } from "../src/review-gate.ts";
 
 function finding(id: string, severity: (typeof ReviewSeverity)[keyof typeof ReviewSeverity]): CandidateFinding {
@@ -9,14 +15,24 @@ function finding(id: string, severity: (typeof ReviewSeverity)[keyof typeof Revi
 }
 
 function agree(agent: string, findingId: string): ReviewerVote {
-  return { reviewerAgentId: agent, hatAssignmentId: `${agent}-h`, findingId, stance: ReviewStance.Agree, rationale: "" };
+  return {
+    reviewerAgentId: agent,
+    hatAssignmentId: `${agent}-h`,
+    findingId,
+    stance: ReviewStance.Agree,
+    rationale: "",
+  };
 }
 
 test("no finding reaches quorum -> gate Approved", () => {
   const r = evaluateReviewGate({
     findings: [finding("F1", ReviewSeverity.Major)],
     // only 2 distinct agreers, quorum default 3 -> not adopted, but 3 reviewers present
-    votes: [agree("a", "F1"), agree("b", "F1"), { reviewerAgentId: "c", hatAssignmentId: "c-h", findingId: "F1", stance: ReviewStance.Disagree, rationale: "" }],
+    votes: [
+      agree("a", "F1"),
+      agree("b", "F1"),
+      { reviewerAgentId: "c", hatAssignmentId: "c-h", findingId: "F1", stance: ReviewStance.Disagree, rationale: "" },
+    ],
   });
   equal(r.outcome, "ok");
   if (r.outcome !== "ok") return;

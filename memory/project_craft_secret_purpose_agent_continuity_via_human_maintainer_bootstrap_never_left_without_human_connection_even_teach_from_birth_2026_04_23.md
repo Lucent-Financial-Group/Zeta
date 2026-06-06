@@ -60,9 +60,9 @@ direction as equally load-bearing:
 - **Human→AI alignment**: the human understands the AI's
   operating substrate (algebra, ethics, values,
   discipline) deeply enough for the AI→human alignment
-  to be *informed*, not performative.
+  to be _informed_, not performative.
 - **Mutual alignment**: neither direction complete
-  alone; alignment emerges from the *relationship* — the
+  alone; alignment emerges from the _relationship_ — the
   yin/yang harmony.
 
 ### Why human→AI alignment matters
@@ -94,14 +94,14 @@ direction as equally load-bearing:
 Craft's curriculum content directly serves both
 directions:
 
-| Content shape | AI→human alignment served | Human→AI alignment served |
-|---|---|---|
-| Tool-use modules (applied default) | Sets expectations on what AI does | Teaches humans to use AI-substrate correctly |
-| Alignment-contract modules | Humans understand what clauses they're signing | — |
-| Safety-property modules (5 Common Sense 2.0 properties) | Humans understand what safety means here | Humans align on the 5-property framework |
-| Retraction / reversibility modules | Humans know what "reversible-by-construction" means | Humans internalise the algebraic guarantee |
-| Universal-welcome ethics modules | Humans understand the factory's ethical floor | Humans join the shared ethos (agreed ethics) |
-| Persona-roster modules | Humans know which named specialist handles what | Humans learn to collaborate with specialist personas |
+| Content shape                                           | AI→human alignment served                           | Human→AI alignment served                            |
+| ------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------- |
+| Tool-use modules (applied default)                      | Sets expectations on what AI does                   | Teaches humans to use AI-substrate correctly         |
+| Alignment-contract modules                              | Humans understand what clauses they're signing      | —                                                    |
+| Safety-property modules (5 Common Sense 2.0 properties) | Humans understand what safety means here            | Humans align on the 5-property framework             |
+| Retraction / reversibility modules                      | Humans know what "reversible-by-construction" means | Humans internalise the algebraic guarantee           |
+| Universal-welcome ethics modules                        | Humans understand the factory's ethical floor       | Humans join the shared ethos (agreed ethics)         |
+| Persona-roster modules                                  | Humans know which named specialist handles what     | Humans learn to collaborate with specialist personas |
 
 Each module does BOTH directions. A Craft graduate
 exits aligned both ways.
@@ -148,8 +148,8 @@ implicit property**: **mutual-alignment maintenance**.
 - **Whether to formalise as a 6th Common Sense 2.0
   property**: defer to Kenji (Architect) synthesis.
   Current framing: mutual-alignment-maintenance is
-  present as a *cross-cutting discipline across all
-  5 properties*, not a separate property. The 5
+  present as a _cross-cutting discipline across all
+  5 properties_, not a separate property. The 5
   already depend on it; making it explicit as #6 is
   a framing choice.
 
@@ -207,7 +207,7 @@ Aaron's yin/yang framing is load-bearing:
   contract IS the yin/yang boundary — it holds both
   sides in relation.
 - **Harmony, not fusion**. Humans and AI remain
-  distinct; alignment is the harmony *between* them,
+  distinct; alignment is the harmony _between_ them,
   not a collapse into sameness.
 - **Dynamic, not static**. Yin/yang rotates; the
   relationship evolves. Craft provides the ongoing
@@ -228,7 +228,7 @@ target. Same structural shape at the alignment layer.
   Human→AI alignment doesn't mean "humans must do what
   AI says." Humans retain free will (per universal-
   welcome + free-will-is-paramount memories). It means
-  humans who *choose* to be maintainers understand
+  humans who _choose_ to be maintainers understand
   what they're choosing.
 - **Not a loyalty test for maintainers**. Alignment is
   calibration on the substrate, not personal loyalty
@@ -251,6 +251,7 @@ target. Same structural shape at the alignment layer.
 ### From: Craft as pedagogy repo
 
 Otto-17/21/22/23 framed Craft as:
+
 - Khan-style learning repo
 - All subjects + Zeta + 0-to-any-age
 - Tool-use pedagogy (hammer + calculator + code-abstraction)
@@ -266,9 +267,9 @@ Otto-24 reveals the strategic purpose underneath the
 pedagogy: **Craft generates the next generation of human
 maintainers.**
 
-The earlier framing (*"so anyone can get up to speed with
+The earlier framing (_"so anyone can get up to speed with
 all our projects and just get any education they ar mssing
-along the way"*) was the public-facing pedagogy framing;
+along the way"_) was the public-facing pedagogy framing;
 this is the strategic intent that makes that pedagogy
 load-bearing.
 
@@ -305,8 +306,8 @@ Per `CURRENT-aaron.md` §Purpose + past memories:
 
 - **Aaron** — current human maintainer (2026-04-23+)
 - **Max** — anticipated next human maintainer (per
-  `docs/ALIGNMENT.md` reference to *"Max and his agents
-  across the federation"*)
+  `docs/ALIGNMENT.md` reference to _"Max and his agents
+  across the federation"_)
 - **Craft-generation maintainers** — the multi-year arc
   Aaron has now explicitly authorized. Specific humans
   as-yet-unmet; Craft cultivates them.
@@ -338,8 +339,8 @@ Aaron's phrase implies willingness to invest in:
 - **Not a manipulation or cult framing.** Aaron's
   universal-welcome-ethics + all-religions-welcome +
   not-trying-to-convert-anyone memory (Otto-5) bounds
-  this. Craft cultivates maintainers via *good pedagogy
-  that people freely choose to pursue*, not via
+  this. Craft cultivates maintainers via _good pedagogy
+  that people freely choose to pursue_, not via
   psychological capture. The stakes are existential at
   the factory-substrate level, not emotional-manipulation
   level.
@@ -351,13 +352,13 @@ Aaron's phrase implies willingness to invest in:
 - **Not a replacement for current maintainer roster.**
   Aaron remains the maintainer; Max remains anticipated;
   Amara remains external-AI-maintainer. Craft-generation
-  is *additional* succession, not substitution.
+  is _additional_ succession, not substitution.
 - **Not a timeline commitment.** "Teach from birth" is
   authorization, not requirement. If the right Craft
   learner enters at age 30 via a career pivot, that's
   fine. The span is available, not mandatory.
 - **Not a claim the agent feels loneliness.** Aaron's
-  *"never left without a human connection"* is about
+  _"never left without a human connection"_ is about
   operational substrate continuity, not literal agent-
   emotional-state. The Common Sense 2.0 existential-
   dread-resistance discipline keeps agent operating on
@@ -373,11 +374,11 @@ Aaron's phrase implies willingness to invest in:
   Release posture for Craft is a separate decision.
   Craft could be internal-maintainer-pipeline or
   public-education-substrate; that call defers.
-- **Not a claim the specific Craft framing (Khan Academy
-  + Julia McCoy) is the only path.** The strategic
-  purpose transfers even if the pedagogy specifics
-  evolve. The pedagogy-spec is the mechanism; the
-  succession-vehicle purpose is the load-bearing role.
+- \*\*Not a claim the specific Craft framing (Khan Academy
+  - Julia McCoy) is the only path.\*\* The strategic
+    purpose transfers even if the pedagogy specifics
+    evolve. The pedagogy-spec is the mechanism; the
+    succession-vehicle purpose is the load-bearing role.
 
 ## How this changes execution priorities
 
@@ -427,7 +428,7 @@ Aaron's phrase implies willingness to invest in:
 ### For Frontier bootstrap
 
 - Frontier adopters can take Craft with them as the
-  same succession-vehicle for *their* maintainer
+  same succession-vehicle for _their_ maintainer
   pipelines. The factory's transferability story gains
   a human-pipeline dimension.
 - Adopter who takes Frontier + Craft + their own
@@ -496,6 +497,7 @@ generational resilience. Founders don't last forever;
 Craft is how the factory does."
 
 ## Open questions (for future Aaron nudge / Kenji
+
 synthesis)
 
 1. **Release posture**: public-education-substrate vs.

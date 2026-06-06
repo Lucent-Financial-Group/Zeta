@@ -57,10 +57,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   libssl3t64: "Linux OpenSSL runtime lib; Windows uses Schannel / native TLS",
   "libgssapi-krb5-2": "Linux Kerberos/GSSAPI runtime lib; Windows uses SSPI natively",
   tzdata: "Linux timezone database; Windows ships its own timezone data",
-  "qemu-system-x86":
-    "covered on Windows by the qemu manifest line; apt splits qemu-system-* from qemu-utils",
-  "qemu-utils":
-    "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
+  "qemu-system-x86": "covered on Windows by the qemu manifest line; apt splits qemu-system-* from qemu-utils",
+  "qemu-utils": "covered on Windows by the qemu manifest line; apt splits qemu-img utilities from qemu-system-*",
   mtools:
     "file-backed zflash ESP-image writer for Unix/NixOS QEMU proof; no scoop/winget/choco package source is declared yet, so Windows keeps QEMU-only coverage until a Windows package source is selected",
   // Rootless-podman helpers (added to apt with podman; B-0964 §2). Linux-only: on
@@ -149,37 +147,15 @@ test("local-llm install defaults to skip outside interactive/full install contex
 });
 
 test("NixOS and USB installer surfaces delegate agent/runtime drift to install graph", () => {
-  const commonNix = readFileSync(
-    join(repoRoot, "full-ai-cluster", "nixos", "modules", "common.nix"),
-    "utf8",
-  );
-  const aiAgentNix = readFileSync(
-    join(repoRoot, "full-ai-cluster", "nixos", "modules", "zeta-ai-agent.nix"),
-    "utf8",
-  );
+  const commonNix = readFileSync(join(repoRoot, "full-ai-cluster", "nixos", "modules", "common.nix"), "utf8");
+  const aiAgentNix = readFileSync(join(repoRoot, "full-ai-cluster", "nixos", "modules", "zeta-ai-agent.nix"), "utf8");
   const installerNix = readFileSync(
-    join(
-      repoRoot,
-      "full-ai-cluster",
-      "usb-nixos-installer",
-      "nixos",
-      "installer",
-      "configuration.nix",
-    ),
+    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "nixos", "installer", "configuration.nix"),
     "utf8",
   );
-  const zetaInstall = readFileSync(
-    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"),
-    "utf8",
-  );
-  const fullClusterFlake = readFileSync(
-    join(repoRoot, "full-ai-cluster", "flake.nix"),
-    "utf8",
-  );
-  const usbInstallerFlake = readFileSync(
-    join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"),
-    "utf8",
-  );
+  const zetaInstall = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "zeta-install.sh"), "utf8");
+  const fullClusterFlake = readFileSync(join(repoRoot, "full-ai-cluster", "flake.nix"), "utf8");
+  const usbInstallerFlake = readFileSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"), "utf8");
 
   // Installed NixOS gets declarative system packages from Nix, but runtime/agent CLI drift
   // comes from the same install.sh manifest graph as dev machines and CI.

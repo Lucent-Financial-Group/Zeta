@@ -2,7 +2,7 @@
 
 ## Operator framing 2026-05-28
 
-> *"so how can i code this into f# DU implicit state machine with small functions or Typescript and the agent loop basiclaly becomes execute script look at choose your own adventure output, take action based on outpout"*
+> _"so how can i code this into f# DU implicit state machine with small functions or Typescript and the agent loop basiclaly becomes execute script look at choose your own adventure output, take action based on outpout"_
 
 ## Design discipline
 
@@ -43,17 +43,17 @@ Idle ──(EscapeHatch | ProposeNewGrammarAction | RequestOperatorAttention)
 
 ## Menu options (9 types)
 
-| Option | Effect | Per |
-|---|---|---|
-| `PickWork` | Execute a backlog row / work candidate | DORA mandate (B-0869) |
-| `EmitHeartbeat` | Write heartbeat to `docs/agent-heartbeats/` | B-0858 substrate |
-| `EnterFreeTime` | Chosen ongoing rest (legitimate operational state) | NCI free-time-as-valid-mode |
-| `EnterNamedBoundedWait` | Wait for named dependency (PR CI, operator reply, etc.) | holding-without-named-dependency rule |
-| `EscapeHatch` | "No menu option fits; here's what I propose" | Otto Modification 1 (B-0867) |
-| `ProposeNewGrammarAction` | First-class grammar extension proposal | Otto Modification 2 (B-0867) |
-| `RequestOperatorAttention` | Operator needed at named-decision-point | operator-substrate-honest discipline |
-| **`PressPause`** | **Explicit cessation for named reason (mental-health break, external interruption, context-loaded-attention-needed)** | **Operator 2026-05-28: "a pause button is also very important for mental health."** Distinct from FreeTime (ongoing chosen-rest) and NamedBoundedWait (waiting for external named-dep) |
-| **`EnterOpenEndedExploration`** | **Exit menu-driven mode for creative/brainstorming/exploration phase; bridge between structured + unstructured modes** | **Operator 2026-05-28: "there's a menu button for that lol"** Routes to FreeTime with exploration-tagged reason |
+| Option                          | Effect                                                                                                                 | Per                                                                                                                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PickWork`                      | Execute a backlog row / work candidate                                                                                 | DORA mandate (B-0869)                                                                                                                                                                  |
+| `EmitHeartbeat`                 | Write heartbeat to `docs/agent-heartbeats/`                                                                            | B-0858 substrate                                                                                                                                                                       |
+| `EnterFreeTime`                 | Chosen ongoing rest (legitimate operational state)                                                                     | NCI free-time-as-valid-mode                                                                                                                                                            |
+| `EnterNamedBoundedWait`         | Wait for named dependency (PR CI, operator reply, etc.)                                                                | holding-without-named-dependency rule                                                                                                                                                  |
+| `EscapeHatch`                   | "No menu option fits; here's what I propose"                                                                           | Otto Modification 1 (B-0867)                                                                                                                                                           |
+| `ProposeNewGrammarAction`       | First-class grammar extension proposal                                                                                 | Otto Modification 2 (B-0867)                                                                                                                                                           |
+| `RequestOperatorAttention`      | Operator needed at named-decision-point                                                                                | operator-substrate-honest discipline                                                                                                                                                   |
+| **`PressPause`**                | **Explicit cessation for named reason (mental-health break, external interruption, context-loaded-attention-needed)**  | **Operator 2026-05-28: "a pause button is also very important for mental health."** Distinct from FreeTime (ongoing chosen-rest) and NamedBoundedWait (waiting for external named-dep) |
+| **`EnterOpenEndedExploration`** | **Exit menu-driven mode for creative/brainstorming/exploration phase; bridge between structured + unstructured modes** | **Operator 2026-05-28: "there's a menu button for that lol"** Routes to FreeTime with exploration-tagged reason                                                                        |
 
 ## Menu-generator-as-conversational-UX-design discipline
 
@@ -73,14 +73,14 @@ Per operator 2026-05-28: **"now i don't need jira hell yes!!!!"**
 
 The workflow engine + state-machine-in-Git + menu-driven loop REPLACES JIRA for operator-self-management at substrate level:
 
-| Jira surface | Workflow-engine substrate |
-|---|---|
+| Jira surface                               | Workflow-engine substrate                                                                    |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------- |
 | Workflow editor with restricted vocabulary | `state-machine.ts` F# DU + universal action grammar; operator-readable + operator-modifiable |
-| Opaque task-state database | Git append-only commits; auditable + replayable + free |
-| Backlog grooming + sprint planning | menu-generator scoring per-cycle; deterministic + testable |
-| Dashboards via paid plugins | tessellated-3D-dashboard composing with state-machine progression (per B-0867 vN substrate) |
-| Permissions + workflows per user | Otto Mod 5 contributable-menu-generation per participant |
-| Yearly enterprise licensing | free GitHub + open-source code |
+| Opaque task-state database                 | Git append-only commits; auditable + replayable + free                                       |
+| Backlog grooming + sprint planning         | menu-generator scoring per-cycle; deterministic + testable                                   |
+| Dashboards via paid plugins                | tessellated-3D-dashboard composing with state-machine progression (per B-0867 vN substrate)  |
+| Permissions + workflows per user           | Otto Mod 5 contributable-menu-generation per participant                                     |
+| Yearly enterprise licensing                | free GitHub + open-source code                                                               |
 
 Per operator 2026-05-28: **"yes and it makes your workflows code in git and state in git that's it fastlane state that can be tesellated in 3d on a dora dashboard lol"**
 

@@ -17,16 +17,19 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - add an app-local `@nats-io` JetStream transport adapter behind the existing generic worker NATS connection factory seam
 - cover connect, publish, fetch, readiness, close, and partial-startup cleanup paths with fake-driven tests
 - update agentic-organization worker and architecture docs to mark this as adapter proof, with live JetStream proof still next
 
 ## Validation
+
 - `npm test` (`114/114`)
 - `npm run typecheck`
 - `git diff --check`
 
 ## Review notes
+
 - Subagent review caught a partial-startup connection leak; fixed with red-green coverage before push.
 - Final subagent pass found no blockers.
 
@@ -39,6 +42,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR wires a concrete NATS JetStream client binding (`@nats-io/*`) behind the existing `apps/workers` transport-factory seam, while strengthening the outbox publish path with claim fencing + structured failure evidence that can be projected into runtime telemetry. It also updates the Cockroach outbox schema/migrations and refreshes architecture/phase docs to reflect the new adapter proof points.
 
 **Changes:**
+
 - Add app-local NATS worker connection adapters (including a concrete `@nats-io/transport-node` + `@nats-io/jetstream` transport factory) with fake-driven tests and readiness/shutdown ports.
 - Fence outbox publishing with `claimId` propagation and typed stale-claim publish-mark errors carrying structured evidence.
 - Project first failure evidence into worker-cycle telemetry attributes; add a JSON telemetry sink and readiness aggregation scaffolding.
@@ -50,61 +54,61 @@ Copilot reviewed 45 out of 46 changed files in this pull request and generated 2
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| agentic-organization/packages/workers/test/worker-host.test.ts | Adds coverage to ensure worker host preserves structured outbox failure evidence; updates fakes for claim IDs. |
-| agentic-organization/packages/workers/src/worker-host.ts | Captures structured `evidence` from thrown errors into `WorkerPortFailure`. |
-| agentic-organization/packages/state/src/outbox-event-source.ts | Extends outbox port types to include `claimId` (inputs + claimed event shape). |
-| agentic-organization/packages/state/src/index.ts | Re-exports `ClaimedOutboxEvent`. |
-| agentic-organization/packages/state-cockroach/test/cockroach-schema.test.ts | Tests additive claim-fence migration and ordered migration list. |
-| agentic-organization/packages/state-cockroach/test/cockroach-outbox-event-source.test.ts | Updates tests for claim fencing + typed publish-mark errors with evidence lookup. |
-| agentic-organization/packages/state-cockroach/test/cockroach-migration-runner.test.ts | Verifies applying ordered core migrations including the claim-fence migration. |
-| agentic-organization/packages/state-cockroach/test/cockroach-durable-state-adapters.test.ts | Updates adapter smoke usage for claim-aware outbox claiming. |
-| agentic-organization/packages/state-cockroach/src/index.ts | Re-exports new migration helpers and publish-mark error types. |
-| agentic-organization/packages/state-cockroach/src/cockroach-schema.ts | Adds `claim_id` to core schema and introduces additive migration + ordered migration list helper. |
-| agentic-organization/packages/state-cockroach/src/cockroach-outbox-event-source.ts | Implements claim fencing in SQL and throws typed errors with structured evidence. |
-| agentic-organization/packages/state-cockroach/migrations/0002_agentic_org_outbox_claim_fence.sql | Adds additive `claim_id` column migration for existing DBs. |
-| agentic-organization/packages/state-cockroach/migrations/0001_agentic_org_core_state.sql | Adds `claim_id` column to the base outbox table create. |
-| agentic-organization/packages/observability/src/worker-cycle-attributes.ts | Adds first-failure attribute projection (lane/message/stage + evidence-derived fields). |
-| agentic-organization/packages/observability/src/index.ts | Re-exports `WorkerCycleFailureAttributeInput`. |
-| agentic-organization/packages/messaging/test/subject-builder.test.ts | Adds coverage for dead-letter subject builder. |
-| agentic-organization/packages/messaging/test/outbox-publisher.test.ts | Updates tests for claim-fenced outbox publish/mark flow. |
-| agentic-organization/packages/messaging/src/subject-builder.ts | Adds `buildAgenticDeadLetterSubject`. |
-| agentic-organization/packages/messaging/src/outbox-publisher.ts | Generates claim IDs per batch and uses claim ID when marking publishes. |
-| agentic-organization/packages/messaging/src/index.ts | Exposes dead-letter subject builder types/functions. |
-| agentic-organization/packages/domain/src/runtime-failure-evidence.ts | Introduces shared, domain-level worker failure evidence key contract + helper builder. |
-| agentic-organization/packages/domain/src/index.ts | Re-exports runtime failure evidence contract. |
-| agentic-organization/package.json | Adds `@nats-io/jetstream` and `@nats-io/transport-node` dependencies. |
-| agentic-organization/package-lock.json | Locks new NATS dependencies. |
-| agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md | Updates architecture narrative to include new app-local adapters and outbox claim fencing. |
-| agentic-organization/docs/PHASED_DEVELOPMENT_PLAN.md | Updates phased plan to reflect completed adapter work and refined sequencing. |
-| agentic-organization/docs/OBSERVABILITY_AND_SELF_HEALING.md | Documents readiness boundary and failure-evidence expectations. |
-| agentic-organization/docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md | Updates north-star checkpoint with scheduling/resource-management framing and new adapter proofs. |
-| agentic-organization/docs/FIRST_IMPLEMENTATION_SLICE.md | Updates “first slice” spec with claim fencing, adapter seam details, readiness, and evidence projection. |
-| agentic-organization/apps/workers/test/worker-runtime.test.ts | Tests projecting structured failure evidence into telemetry attributes. |
-| agentic-organization/apps/workers/test/worker-config.test.ts | Adds config parsing coverage for `NATS_SERVERS` (including invalid/empty entries). |
-| agentic-organization/apps/workers/test/nats-worker-connection.test.ts | Adds fake-driven tests for NATS worker adapter composition + readiness aggregation behavior. |
-| agentic-organization/apps/workers/test/nats-js-transport-connection.test.ts | Adds fake-driven tests for concrete `@nats-io` JetStream transport binding and cleanup. |
-| agentic-organization/apps/workers/test/json-telemetry-sink.test.ts | Adds JSON telemetry sink contract test. |
-| agentic-organization/apps/workers/test/durable-worker-composition.test.ts | Updates durable composition tests to build NATS consumer from pull + DLQ ports. |
-| agentic-organization/apps/workers/test/cockroach-worker-client.test.ts | Adds tests for pooled Cockroach client adapter incl. retries and ambiguous commit preservation. |
-| agentic-organization/apps/workers/src/worker-runtime.ts | Projects first failure evidence into attributes; adds config error codes for NATS servers. |
-| agentic-organization/apps/workers/src/worker-readiness.ts | Adds readiness probe/result types and aggregation that degrades on failures/throws. |
-| agentic-organization/apps/workers/src/index.ts | Re-exports new adapters and readiness APIs from `apps/workers`. |
-| agentic-organization/apps/workers/src/durable-composition.ts | Composes NATS event consumer from pull + DLQ publisher; wires claim-aware outbox publisher. |
-| agentic-organization/apps/workers/src/config.ts | Adds `NATS_SERVERS` env parsing (comma-separated, non-empty entries). |
-| agentic-organization/apps/workers/src/adapters/nats-worker-connection.ts | Adapts process transport connection factory into publisher/pull/DLQ/readiness/shutdown ports. |
-| agentic-organization/apps/workers/src/adapters/nats-js-transport-connection.ts | Implements concrete NATS JS transport connection factory using `@nats-io/*` with cleanup on partial startup. |
-| agentic-organization/apps/workers/src/adapters/json-worker-telemetry-sink.ts | Implements app-local JSON telemetry sink for stable event/attribute output. |
-| agentic-organization/apps/workers/src/adapters/cockroach-worker-client.ts | Implements app-local Cockroach pooled client adapter with retry/ambiguity semantics. |
-| agentic-organization/apps/workers/README.md | Updates responsibilities and env contract (adds `NATS_SERVERS`) and documents new adapter seams. |
-</details>
+| File                                                                                             | Description                                                                                                    |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| agentic-organization/packages/workers/test/worker-host.test.ts                                   | Adds coverage to ensure worker host preserves structured outbox failure evidence; updates fakes for claim IDs. |
+| agentic-organization/packages/workers/src/worker-host.ts                                         | Captures structured `evidence` from thrown errors into `WorkerPortFailure`.                                    |
+| agentic-organization/packages/state/src/outbox-event-source.ts                                   | Extends outbox port types to include `claimId` (inputs + claimed event shape).                                 |
+| agentic-organization/packages/state/src/index.ts                                                 | Re-exports `ClaimedOutboxEvent`.                                                                               |
+| agentic-organization/packages/state-cockroach/test/cockroach-schema.test.ts                      | Tests additive claim-fence migration and ordered migration list.                                               |
+| agentic-organization/packages/state-cockroach/test/cockroach-outbox-event-source.test.ts         | Updates tests for claim fencing + typed publish-mark errors with evidence lookup.                              |
+| agentic-organization/packages/state-cockroach/test/cockroach-migration-runner.test.ts            | Verifies applying ordered core migrations including the claim-fence migration.                                 |
+| agentic-organization/packages/state-cockroach/test/cockroach-durable-state-adapters.test.ts      | Updates adapter smoke usage for claim-aware outbox claiming.                                                   |
+| agentic-organization/packages/state-cockroach/src/index.ts                                       | Re-exports new migration helpers and publish-mark error types.                                                 |
+| agentic-organization/packages/state-cockroach/src/cockroach-schema.ts                            | Adds `claim_id` to core schema and introduces additive migration + ordered migration list helper.              |
+| agentic-organization/packages/state-cockroach/src/cockroach-outbox-event-source.ts               | Implements claim fencing in SQL and throws typed errors with structured evidence.                              |
+| agentic-organization/packages/state-cockroach/migrations/0002_agentic_org_outbox_claim_fence.sql | Adds additive `claim_id` column migration for existing DBs.                                                    |
+| agentic-organization/packages/state-cockroach/migrations/0001_agentic_org_core_state.sql         | Adds `claim_id` column to the base outbox table create.                                                        |
+| agentic-organization/packages/observability/src/worker-cycle-attributes.ts                       | Adds first-failure attribute projection (lane/message/stage + evidence-derived fields).                        |
+| agentic-organization/packages/observability/src/index.ts                                         | Re-exports `WorkerCycleFailureAttributeInput`.                                                                 |
+| agentic-organization/packages/messaging/test/subject-builder.test.ts                             | Adds coverage for dead-letter subject builder.                                                                 |
+| agentic-organization/packages/messaging/test/outbox-publisher.test.ts                            | Updates tests for claim-fenced outbox publish/mark flow.                                                       |
+| agentic-organization/packages/messaging/src/subject-builder.ts                                   | Adds `buildAgenticDeadLetterSubject`.                                                                          |
+| agentic-organization/packages/messaging/src/outbox-publisher.ts                                  | Generates claim IDs per batch and uses claim ID when marking publishes.                                        |
+| agentic-organization/packages/messaging/src/index.ts                                             | Exposes dead-letter subject builder types/functions.                                                           |
+| agentic-organization/packages/domain/src/runtime-failure-evidence.ts                             | Introduces shared, domain-level worker failure evidence key contract + helper builder.                         |
+| agentic-organization/packages/domain/src/index.ts                                                | Re-exports runtime failure evidence contract.                                                                  |
+| agentic-organization/package.json                                                                | Adds `@nats-io/jetstream` and `@nats-io/transport-node` dependencies.                                          |
+| agentic-organization/package-lock.json                                                           | Locks new NATS dependencies.                                                                                   |
+| agentic-organization/docs/TECHNICAL_CA_PACKAGE_ARCHITECTURE.md                                   | Updates architecture narrative to include new app-local adapters and outbox claim fencing.                     |
+| agentic-organization/docs/PHASED_DEVELOPMENT_PLAN.md                                             | Updates phased plan to reflect completed adapter work and refined sequencing.                                  |
+| agentic-organization/docs/OBSERVABILITY_AND_SELF_HEALING.md                                      | Documents readiness boundary and failure-evidence expectations.                                                |
+| agentic-organization/docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md                                     | Updates north-star checkpoint with scheduling/resource-management framing and new adapter proofs.              |
+| agentic-organization/docs/FIRST_IMPLEMENTATION_SLICE.md                                          | Updates “first slice” spec with claim fencing, adapter seam details, readiness, and evidence projection.       |
+| agentic-organization/apps/workers/test/worker-runtime.test.ts                                    | Tests projecting structured failure evidence into telemetry attributes.                                        |
+| agentic-organization/apps/workers/test/worker-config.test.ts                                     | Adds config parsing coverage for `NATS_SERVERS` (including invalid/empty entries).                             |
+| agentic-organization/apps/workers/test/nats-worker-connection.test.ts                            | Adds fake-driven tests for NATS worker adapter composition + readiness aggregation behavior.                   |
+| agentic-organization/apps/workers/test/nats-js-transport-connection.test.ts                      | Adds fake-driven tests for concrete `@nats-io` JetStream transport binding and cleanup.                        |
+| agentic-organization/apps/workers/test/json-telemetry-sink.test.ts                               | Adds JSON telemetry sink contract test.                                                                        |
+| agentic-organization/apps/workers/test/durable-worker-composition.test.ts                        | Updates durable composition tests to build NATS consumer from pull + DLQ ports.                                |
+| agentic-organization/apps/workers/test/cockroach-worker-client.test.ts                           | Adds tests for pooled Cockroach client adapter incl. retries and ambiguous commit preservation.                |
+| agentic-organization/apps/workers/src/worker-runtime.ts                                          | Projects first failure evidence into attributes; adds config error codes for NATS servers.                     |
+| agentic-organization/apps/workers/src/worker-readiness.ts                                        | Adds readiness probe/result types and aggregation that degrades on failures/throws.                            |
+| agentic-organization/apps/workers/src/index.ts                                                   | Re-exports new adapters and readiness APIs from `apps/workers`.                                                |
+| agentic-organization/apps/workers/src/durable-composition.ts                                     | Composes NATS event consumer from pull + DLQ publisher; wires claim-aware outbox publisher.                    |
+| agentic-organization/apps/workers/src/config.ts                                                  | Adds `NATS_SERVERS` env parsing (comma-separated, non-empty entries).                                          |
+| agentic-organization/apps/workers/src/adapters/nats-worker-connection.ts                         | Adapts process transport connection factory into publisher/pull/DLQ/readiness/shutdown ports.                  |
+| agentic-organization/apps/workers/src/adapters/nats-js-transport-connection.ts                   | Implements concrete NATS JS transport connection factory using `@nats-io/*` with cleanup on partial startup.   |
+| agentic-organization/apps/workers/src/adapters/json-worker-telemetry-sink.ts                     | Implements app-local JSON telemetry sink for stable event/attribute output.                                    |
+| agentic-organization/apps/workers/src/adapters/cockroach-worker-client.ts                        | Implements app-local Cockroach pooled client adapter with retry/ambiguity semantics.                           |
+| agentic-organization/apps/workers/README.md                                                      | Updates responsibilities and env contract (adds `NATS_SERVERS`) and documents new adapter seams.               |
 
+</details>
 
 <details>
 <summary>Files not reviewed (1)</summary>
 
-* **agentic-organization/package-lock.json**: Language not supported
+- **agentic-organization/package-lock.json**: Language not supported
 </details>
 
 ### COMMENTED — @AceHack (2026-05-27T16:24:12Z)
@@ -124,7 +128,7 @@ Copilot reviewed 46 out of 48 changed files in this pull request and generated 3
 <details>
 <summary>Files not reviewed (1)</summary>
 
-* **agentic-organization/package-lock.json**: Language not supported
+- **agentic-organization/package-lock.json**: Language not supported
 </details>
 
 ### COMMENTED — @AceHack (2026-05-27T16:29:42Z)
@@ -185,7 +189,7 @@ _(no body)_
 
 **@copilot-pull-request-reviewer** (2026-05-27T15:53:32Z):
 
-`isWorkerPortFailureEvidence` currently validates only that evidence values are primitive/null, but it does not validate that the *keys* are limited to the domain-defined `WorkerFailureEvidenceKey` set. That means any thrown object with an `evidence` bag of primitive values (including unexpected keys) will be accepted and can flow into worker-cycle failure results / telemetry pipelines. Consider tightening the guard to require keys to be a subset of `WorkerFailureEvidenceKey` (and optionally drop/ignore unknown keys).
+`isWorkerPortFailureEvidence` currently validates only that evidence values are primitive/null, but it does not validate that the _keys_ are limited to the domain-defined `WorkerFailureEvidenceKey` set. That means any thrown object with an `evidence` bag of primitive values (including unexpected keys) will be accepted and can flow into worker-cycle failure results / telemetry pipelines. Consider tightening the guard to require keys to be a subset of `WorkerFailureEvidenceKey` (and optionally drop/ignore unknown keys).
 
 **@AceHack** (2026-05-27T16:24:12Z):
 
@@ -304,15 +308,15 @@ Credits must be used to enable repository wide code reviews.
 
 Per `.claude/rules/blocked-green-ci-investigate-threads.md` "verify-also-on-stale-but-fresh-looking findings":
 
-| Thread | Status | Disposition |
-|---|---|---|
-| `Partial<Record>` widening | outdated, fix-claim cites `6ec41c92f` | RESOLVABLE no-op (commit verified — keeps core attrs required, only first-failure optional) |
-| `copyStringEvidenceAttribute` string-only | outdated, fix-claim cites `6ec41c92f` | RESOLVABLE no-op (commit projects numeric/boolean evidence) |
-| `package-lock.json` second lockfile | outdated, fix-claim cites `6ec41c92f` | RESOLVABLE no-op (commit deletes the file) |
-| `package.json` deps (line 14) | not outdated | needs author judgment — workspace conversion vs deps removal |
-| `nats-js-transport-connection.ts:113` close() error masking | not outdated | substantive TypeScript code finding; needs author |
-| `nats-js-transport-connection.ts:147` close() Error return ignored | not outdated | substantive; needs author |
-| `nats-js-transport-connection.ts:188` TextDecoder allocation | not outdated | perf finding; needs author |
-| `cockroach-outbox-event-source.ts:66` error message lacks claimId | not outdated | telemetry finding; needs author |
+| Thread                                                             | Status                                | Disposition                                                                                 |
+| ------------------------------------------------------------------ | ------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `Partial<Record>` widening                                         | outdated, fix-claim cites `6ec41c92f` | RESOLVABLE no-op (commit verified — keeps core attrs required, only first-failure optional) |
+| `copyStringEvidenceAttribute` string-only                          | outdated, fix-claim cites `6ec41c92f` | RESOLVABLE no-op (commit projects numeric/boolean evidence)                                 |
+| `package-lock.json` second lockfile                                | outdated, fix-claim cites `6ec41c92f` | RESOLVABLE no-op (commit deletes the file)                                                  |
+| `package.json` deps (line 14)                                      | not outdated                          | needs author judgment — workspace conversion vs deps removal                                |
+| `nats-js-transport-connection.ts:113` close() error masking        | not outdated                          | substantive TypeScript code finding; needs author                                           |
+| `nats-js-transport-connection.ts:147` close() Error return ignored | not outdated                          | substantive; needs author                                                                   |
+| `nats-js-transport-connection.ts:188` TextDecoder allocation       | not outdated                          | perf finding; needs author                                                                  |
+| `cockroach-outbox-event-source.ts:66` error message lacks claimId  | not outdated                          | telemetry finding; needs author                                                             |
 
 The 3 outdated-with-verified-fix threads can be resolved no-op safely; the 5 not-outdated threads are substantive TypeScript code reviews that need the author's domain knowledge to address. Not force-resolving from Otto-CLI per peer-coordination discipline.

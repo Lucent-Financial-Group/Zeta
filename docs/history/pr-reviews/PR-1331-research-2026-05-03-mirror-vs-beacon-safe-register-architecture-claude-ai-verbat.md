@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1331 |
-| Title | research(2026-05-03): mirror-vs-beacon-safe register architecture (Claude.ai verbatim) + carved-sentence-plus-index retrieval insight (Aaron) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T06:15:03Z |
-| Merged at | 2026-05-03T06:22:11Z |
-| Merge commit SHA | `919447827fe6665b8a467830a8a4e8f8671c60eb` |
-| Branch | `research/2026-05-03-mirror-beacon-safe-plus-carved-sentence-index-aaron-claudeai` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1331 |
-| Changed files | 3 |
-| Additions / deletions | +239 / -0 |
+| Field                 | Value                                                                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1331                                                                                                                                          |
+| Title                 | research(2026-05-03): mirror-vs-beacon-safe register architecture (Claude.ai verbatim) + carved-sentence-plus-index retrieval insight (Aaron) |
+| Author                | `AceHack` (human)                                                                                                                             |
+| State                 | MERGED                                                                                                                                        |
+| Created at            | 2026-05-03T06:15:03Z                                                                                                                          |
+| Merged at             | 2026-05-03T06:22:11Z                                                                                                                          |
+| Merge commit SHA      | `919447827fe6665b8a467830a8a4e8f8671c60eb`                                                                                                    |
+| Branch                | `research/2026-05-03-mirror-beacon-safe-plus-carved-sentence-index-aaron-claudeai`                                                            |
+| Base branch           | `main`                                                                                                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1331                                                                                      |
+| Changed files         | 3                                                                                                                                             |
+| Additions / deletions | +239 / -0                                                                                                                                     |
 
 ## Description
 
@@ -39,15 +39,16 @@ Composes with same-day diamond / crystallization framing + named-agent vs end-us
 
 ### 2. \`memory/\` absorption (Aaron)
 
-Aaron's same-tick observation: *\"memeories are not very reliable until we get an index or something built like sematic index or somthing\"* + *\"carved sentancy and specialed indeex we build over time are goona be key\"*. Identifies the retrieval-layer gap.
+Aaron's same-tick observation: _\"memeories are not very reliable until we get an index or something built like sematic index or somthing\"_ + _\"carved sentancy and specialed indeex we build over time are goona be key\"_. Identifies the retrieval-layer gap.
 
 **Empirically self-demonstrated this same tick**: Otto authored \`feedback_edge_defining_work_not_speculation_framing_correction_aaron_2026_05_03.md\` earlier 2026-05-03, then ~6h later defaulted to the exact framing the memo corrects (\"Now to speculative work per never-be-idle\"). Memory existed; wasn't retrieved in-the-moment.
 
-**Carved sentence**: *\"Memory files alone are unreliable retrieval. CLAUDE.md / AGENTS.md / equivalent harness files are the only auto-loaded substrate; everything else needs explicit retrieval. Carved sentences in those auto-loaded surfaces ARE the retrieval index for the beacon-safe layer.\"*
+**Carved sentence**: _\"Memory files alone are unreliable retrieval. CLAUDE.md / AGENTS.md / equivalent harness files are the only auto-loaded substrate; everything else needs explicit retrieval. Carved sentences in those auto-loaded surfaces ARE the retrieval index for the beacon-safe layer.\"_
 
 ### Composition
 
 Two backpressures, one architecture:
+
 - **Publication boundary** = mirror → beacon-safe conversion (Claude.ai)
 - **Retrieval boundary** = beacon-safe → in-the-moment-active (Aaron)
 
@@ -62,15 +63,15 @@ Both gate substrate quality at different stages of the lifecycle.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 8 |
-| Resolved threads | 8 |
-| Unresolved threads | 0 |
-| Total review comments | 16 |
-| Total fix commits (touching thread paths) | 3 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 8     |
+| Resolved threads                          | 8     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 16    |
+| Total fix commits (touching thread paths) | 3     |
 
 ## Review threads
 
@@ -83,16 +84,16 @@ Both gate substrate quality at different stages of the lifecycle.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T06:16:11Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:32 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point Copilot guidance to the actual instructions file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point Copilot guidance to the actual instructions file**
+
   This memo names `.copilot/copilot-instructions.md` as the Copilot-equivalent auto-load surface, but this repository uses `.github/copilot-instructions.md` (as documented in `AGENTS.md` and present on disk). Following the current text will send contributors to a non-existent path and can cause cross-harness propagation updates to be missed, which undermines the retrieval/indexing workflow the memo is defining.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:20:34Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:32 (association: MEMBER)
-    Addressed in follow-up commit. Replaced `.copilot/copilot-instructions.md` with the real path `.github/copilot-instructions.md`; clarified `GEMINI.md` is documented as planned-not-present so the cross-harness propagation step reads as conditional (`if/when GEMINI.md is added`) rather than as a same-tick required target. Also updated the reliably-retrieved list to drop GEMINI.md and add the Gemini-equivalent caveat. Empirically validates the substrate-claim-checker discipline this PR is partially about — the Copilot review caught the existence-drift in the same memo describing existence-drift handling.
+- **`AceHack` (human)** at 2026-05-03T06:20:34Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:32 (association: MEMBER)
+  Addressed in follow-up commit. Replaced `.copilot/copilot-instructions.md` with the real path `.github/copilot-instructions.md`; clarified `GEMINI.md` is documented as planned-not-present so the cross-harness propagation step reads as conditional (`if/when GEMINI.md is added`) rather than as a same-tick required target. Also updated the reliably-retrieved list to drop GEMINI.md and add the Gemini-equivalent caveat. Empirically validates the substrate-claim-checker discipline this PR is partially about — the Copilot review caught the existence-drift in the same memo describing existence-drift handling.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -104,12 +105,11 @@ Both gate substrate quality at different stages of the lifecycle.
 
 - **`Copilot` (bot)** at 2026-05-03T06:18:15Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:77 (association: NONE)
   This step suggests verifying cross-harness propagation via `GEMINI.md`, but the repo currently documents `GEMINI.md` as absent (planned). Consider rewording this checklist item to reflect the current state (e.g., "if/when GEMINI.md exists") so it doesn't read like a required same-tick update target that contributors can't satisfy today.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:20:36Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:77 (association: MEMBER)
-    Addressed in follow-up commit. Replaced `.copilot/copilot-instructions.md` with the real path `.github/copilot-instructions.md`; clarified `GEMINI.md` is documented as planned-not-present so the cross-harness propagation step reads as conditional (`if/when GEMINI.md is added`) rather than as a same-tick required target. Also updated the reliably-retrieved list to drop GEMINI.md and add the Gemini-equivalent caveat. Empirically validates the substrate-claim-checker discipline this PR is partially about — the Copilot review caught the existence-drift in the same memo describing existence-drift handling.
+- **`AceHack` (human)** at 2026-05-03T06:20:36Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:77 (association: MEMBER)
+  Addressed in follow-up commit. Replaced `.copilot/copilot-instructions.md` with the real path `.github/copilot-instructions.md`; clarified `GEMINI.md` is documented as planned-not-present so the cross-harness propagation step reads as conditional (`if/when GEMINI.md is added`) rather than as a same-tick required target. Also updated the reliably-retrieved list to drop GEMINI.md and add the Gemini-equivalent caveat. Empirically validates the substrate-claim-checker discipline this PR is partially about — the Copilot review caught the existence-drift in the same memo describing existence-drift handling.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -121,12 +121,11 @@ Both gate substrate quality at different stages of the lifecycle.
 
 - **`Copilot` (bot)** at 2026-05-03T06:18:16Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:35 (association: NONE)
   The harness-surface list is currently using a few paths/names that don't exist in this repo, which makes the memo's retrieval taxonomy misleading. In particular, the Copilot instructions file lives at `.github/copilot-instructions.md` (not `.copilot/...`), `GEMINI.md` is explicitly documented as currently absent, and the decisions directory is `docs/DECISIONS/` (case-sensitive) rather than `docs/decisions/`. Please update these references to match the repo's actual surfaces (AGENTS.md "Harness-specific files" section).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:20:37Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:35 (association: MEMBER)
-    Addressed in follow-up commit. Replaced `.copilot/copilot-instructions.md` with the real path `.github/copilot-instructions.md`; clarified `GEMINI.md` is documented as planned-not-present so the cross-harness propagation step reads as conditional (`if/when GEMINI.md is added`) rather than as a same-tick required target. Also updated the reliably-retrieved list to drop GEMINI.md and add the Gemini-equivalent caveat. Empirically validates the substrate-claim-checker discipline this PR is partially about — the Copilot review caught the existence-drift in the same memo describing existence-drift handling.
+- **`AceHack` (human)** at 2026-05-03T06:20:37Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:35 (association: MEMBER)
+  Addressed in follow-up commit. Replaced `.copilot/copilot-instructions.md` with the real path `.github/copilot-instructions.md`; clarified `GEMINI.md` is documented as planned-not-present so the cross-harness propagation step reads as conditional (`if/when GEMINI.md is added`) rather than as a same-tick required target. Also updated the reliably-retrieved list to drop GEMINI.md and add the Gemini-equivalent caveat. Empirically validates the substrate-claim-checker discipline this PR is partially about — the Copilot review caught the existence-drift in the same memo describing existence-drift handling.
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -141,12 +140,11 @@ Both gate substrate quality at different stages of the lifecycle.
   - `docs/decisions/**` should be `docs/DECISIONS/**` (case-sensitive path; `docs/decisions/` doesn’t exist).
   - `AGENTS.md` isn’t the Codex addendum; per `AGENTS.md` “Harness-specific files”, Codex would use `CODEX.md` or `.codex/AGENTS.md` (currently absent).
   - “MEMORY.md + first 200 lines loaded at session start” is true for Claude Code’s per-project auto-memory (`~/.claude/projects/<...>/memory/MEMORY.md`), but this repo’s `memory/MEMORY.md` isn’t documented as an auto-loaded surface; please disambiguate the path so readers don’t infer the wrong file is auto-loaded.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:39:06Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:37 (association: MEMBER)
-    Addressed in follow-up commit: (1) `docs/decisions/**` → `docs/DECISIONS/**` (case-correct, real path); (2) `AGENTS.md (auto-loaded for Codex / OpenAI Agent SDK / etc.)` → universal onboarding handbook for any AI harness, with explicit citation of AGENTS.md self-description. The Codex-specific framing was the error.
+- **`AceHack` (human)** at 2026-05-03T06:39:06Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:37 (association: MEMBER)
+  Addressed in follow-up commit: (1) `docs/decisions/**` → `docs/DECISIONS/**` (case-correct, real path); (2) `AGENTS.md (auto-loaded for Codex / OpenAI Agent SDK / etc.)` → universal onboarding handbook for any AI harness, with explicit citation of AGENTS.md self-description. The Codex-specific framing was the error.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -161,8 +159,8 @@ Both gate substrate quality at different stages of the lifecycle.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:39:08Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:60 (association: MEMBER)
-    Verified the table syntax uses single-leading-`|` per row (not `||`). `grep -nE "^\|\|" <file>` returns no matches. Tables render correctly in standard GFM. If a specific renderer produces an empty leading column, that is a renderer-specific quirk; resolving as not-actionable. Please re-flag with specific source-line mismatch if reproducible.
+- **`AceHack` (human)** at 2026-05-03T06:39:08Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:60 (association: MEMBER)
+  Verified the table syntax uses single-leading-`|` per row (not `||`). `grep -nE "^\|\|" <file>` returns no matches. Tables render correctly in standard GFM. If a specific renderer produces an empty leading column, that is a renderer-specific quirk; resolving as not-actionable. Please re-flag with specific source-line mismatch if reproducible.
 
 ### Thread 6 -- resolved [collapsed]
 
@@ -177,8 +175,8 @@ Both gate substrate quality at different stages of the lifecycle.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:39:09Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:82 (association: MEMBER)
-    Verified the table syntax uses single-leading-`|` per row (not `||`). `grep -nE "^\|\|" <file>` returns no matches. Tables render correctly in standard GFM. If a specific renderer produces an empty leading column, that is a renderer-specific quirk; resolving as not-actionable. Please re-flag with specific source-line mismatch if reproducible.
+- **`AceHack` (human)** at 2026-05-03T06:39:09Z on `memory/feedback_carved_sentences_plus_specialized_index_required_memories_alone_unreliable_aaron_2026_05_03.md`:82 (association: MEMBER)
+  Verified the table syntax uses single-leading-`|` per row (not `||`). `grep -nE "^\|\|" <file>` returns no matches. Tables render correctly in standard GFM. If a specific renderer produces an empty leading column, that is a renderer-specific quirk; resolving as not-actionable. Please re-flag with specific source-line mismatch if reproducible.
 
 ### Thread 7 -- resolved [collapsed]
 
@@ -190,12 +188,11 @@ Both gate substrate quality at different stages of the lifecycle.
 
 - **`Copilot` (bot)** at 2026-05-03T06:23:39Z on `memory/MEMORY.md`:7 (association: NONE)
   P2: The new entry’s link text drops a word compared to the memo title (“memories alone unreliable retrieval” vs “memories alone are unreliable retrieval”). Keeping the index display text aligned with the memo’s `name:`/H1 makes grep-based retrieval and scanning MEMORY.md more reliable.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:39:11Z on `memory/MEMORY.md`:7 (association: MEMBER)
-    Addressed in follow-up commit: MEMORY.md link text now reads "memories alone *are* unreliable retrieval" matching the memo `name:` field exactly. Grep-based retrieval aligned across surfaces.
+- **`AceHack` (human)** at 2026-05-03T06:39:11Z on `memory/MEMORY.md`:7 (association: MEMBER)
+  Addressed in follow-up commit: MEMORY.md link text now reads "memories alone _are_ unreliable retrieval" matching the memo `name:` field exactly. Grep-based retrieval aligned across surfaces.
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -210,8 +207,8 @@ Both gate substrate quality at different stages of the lifecycle.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:39:13Z on `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`:83 (association: MEMBER)
-    Verified the table syntax uses single-leading-`|` per row (not `||`). `grep -nE "^\|\|" <file>` returns no matches. Tables render correctly in standard GFM. If a specific renderer produces an empty leading column, that is a renderer-specific quirk; resolving as not-actionable. Please re-flag with specific source-line mismatch if reproducible.
+- **`AceHack` (human)** at 2026-05-03T06:39:13Z on `docs/research/2026-05-03-claudeai-mirror-vs-beacon-safe-publication-boundary-as-backpressure.md`:83 (association: MEMBER)
+  Verified the table syntax uses single-leading-`|` per row (not `||`). `grep -nE "^\|\|" <file>` returns no matches. Tables render correctly in standard GFM. If a specific renderer produces an empty leading column, that is a renderer-specific quirk; resolving as not-actionable. Please re-flag with specific source-line mismatch if reproducible.
 
 ## Fix commits (touching thread paths)
 

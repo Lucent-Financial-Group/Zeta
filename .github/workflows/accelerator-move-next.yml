@@ -48,8 +48,8 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write   # append-only commit of new events/ to the accelerator branch
-  actions: write    # bounded self-re-dispatch
+  contents: write # append-only commit of new events/ to the accelerator branch
+  actions: write # bounded self-re-dispatch
 
 env:
   AGENT_INPUT: ${{ inputs.agent }}

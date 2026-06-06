@@ -1,15 +1,15 @@
 # Formal evaluation harness for our agents: what's possible, 2026-04
 
-Aaron's question, verbatim: *"how do we do this? formal evaluation
+Aaron's question, verbatim: _"how do we do this? formal evaluation
 harness for agents themselves yes please hahaha, i don't think we
-can right?"*
+can right?"_
 
 Short answer: **partial yes, full no**. We can build a useful
 regression harness — canned input + expected-shape + rubric-judge
 per skill — that catches the drift we actually care about (Kira
 stopped flagging P0s, Viktor stopped rejecting "optionally",
 Kenji stopped catching `[<VolatileField>]`). We cannot build
-anything resembling a *proof* that an agent does its job. Honest
+anything resembling a _proof_ that an agent does its job. Honest
 framing: **regression tests, not verification**.
 
 ## 1. What's known to work
@@ -28,8 +28,8 @@ framing: **regression tests, not verification**.
 - **Promptfoo-style fixture regression.** Canned input + multiple
   assertion types (exact, regex, JSON-schema, LLM-judged rubric)
   - CI gating is the dominant working pattern. YAML config,
-  multi-provider, cheap to extend
-  ([Promptfoo](https://github.com/promptfoo/promptfoo)).
+    multi-provider, cheap to extend
+    ([Promptfoo](https://github.com/promptfoo/promptfoo)).
 
 - **Inspect AI (UK AISI).** Dataset + Solver + Scorer primitives,
   sandboxed execution, multi-turn support, log viewer. Adopted by
@@ -54,7 +54,7 @@ framing: **regression tests, not verification**.
 
 - **No ground truth for open-ended critic output.** Kira finds
   bugs in free-form text. "Did she find the bug?" is decidable
-  only if we pre-specified it. We cannot evaluate her on *novel*
+  only if we pre-specified it. We cannot evaluate her on _novel_
   code — only on fixtures with planted defects. Useful, but it
   is not "Kira is still good at her job"; it is "Kira still
   catches the defects she caught last time."
@@ -72,7 +72,7 @@ framing: **regression tests, not verification**.
   "forget who they are"
   ([persona drift, arXiv 2402.10962](https://arxiv.org/abs/2402.10962),
   [arXiv 2510.07777](https://arxiv.org/abs/2510.07777)). Our
-  22-persona setup is at elevated risk. Evals *detect* drift
+  22-persona setup is at elevated risk. Evals _detect_ drift
   per-round; they do not prevent it.
 
 - **Cost.** A full 22-agent review sampled N=5 with judge is ~220
@@ -85,7 +85,7 @@ framing: **regression tests, not verification**.
 
 - **SWE-bench teaches humility.** Even flagship benchmarks have
   underspecified problems, over-specific unit tests, likely
-  contamination ([SWE-Bench Pro](https://static.scale.com/uploads/654197dc94d34f66c0f5184e/SWEAP_Eval_Scale%20(9).pdf)).
+  contamination ([SWE-Bench Pro](<https://static.scale.com/uploads/654197dc94d34f66c0f5184e/SWEAP_Eval_Scale%20(9).pdf>)).
   A homegrown harness will have the same problems.
 
 ## 3. Concrete proposed harness — MVP and stretch
@@ -157,7 +157,7 @@ MVP scope: **three skills** — harsh-critic (Kira), spec-zealot
 
 ### Out of scope
 
-- "Did Kira find *novel* bugs this round?" — unfalsifiable.
+- "Did Kira find _novel_ bugs this round?" — unfalsifiable.
 - "Is our factory as good as a human team?" — not measurable.
 - Pass-at-k absolute quality scores — see SWE-bench contamination.
 
@@ -174,7 +174,7 @@ MVP scope: **three skills** — harsh-critic (Kira), spec-zealot
 
 **Recommendation: (b) MVP, three skills only.** The skeptical
 laugh is right — we can't do "formal evaluation of agents" in
-any rigorous sense. We *can* do regression tests against planted
+any rigorous sense. We _can_ do regression tests against planted
 defects, which alone catches silent degradation across tune-ups.
 Build the smallest thing, don't sell it as more than it is.
 
@@ -193,6 +193,6 @@ Build the smallest thing, don't sell it as more than it is.
 - [arXiv 2510.07777 — Drift No More? Context Equilibria](https://arxiv.org/abs/2510.07777)
 - [ACL IJCNLP 2025 — Position Bias in LLM-as-a-Judge](https://aclanthology.org/2025.ijcnlp-long.18.pdf)
 - [Justice or Prejudice — LLM-as-a-Judge bias survey](https://llm-judge-bias.github.io/)
-- [SWE-Bench Pro — Scale AI](https://static.scale.com/uploads/654197dc94d34f66c0f5184e/SWEAP_Eval_Scale%20(9).pdf)
+- [SWE-Bench Pro — Scale AI](<https://static.scale.com/uploads/654197dc94d34f66c0f5184e/SWEAP_Eval_Scale%20(9).pdf>)
 - [Cutwell — Canary prompt-injection framework](https://cutwell.github.io/blog//canary-llm/)
 - [DFAH — Replayable Financial Agents (arXiv 2601.15322)](https://arxiv.org/html/2601.15322)

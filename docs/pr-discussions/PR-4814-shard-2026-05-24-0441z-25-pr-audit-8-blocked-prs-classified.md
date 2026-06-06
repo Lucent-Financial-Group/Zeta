@@ -22,14 +22,14 @@ Otto-CLI background-worker tick at 04:41Z. Polled 25 open PRs via `poll-pr-gate-
 
 **All 38+ unresolved threads classified as substantive findings — zero false positives** across 5 failure classes:
 
-| Class | PRs | Issue |
-|---|---|---|
-| A | 4733, 4735, 4737, 4739 | Privacy P0 — family-config specifics against opaque-pointer policy |
-| B | 4733, 4735, 4737, 4739, 4769 | MEMORY.md hand-edit past 100-entry cap; needs reindex |
-| C | 4733, 4737 | `feedback_*.md` missing required `**Why:**`/`**How to apply:**` markers |
-| D | 4768, 4773 | `/Users/acehack` hardcoded in launchd plist + malformed `launchctl bootout` |
-| E | 4780 | Tautological FsCheck residuation property; missing RHS check; non-independent oracle |
-| F | 4769 | B-0700 backlog row added but per-row file missing (broken link) |
+| Class | PRs                          | Issue                                                                                |
+| ----- | ---------------------------- | ------------------------------------------------------------------------------------ |
+| A     | 4733, 4735, 4737, 4739       | Privacy P0 — family-config specifics against opaque-pointer policy                   |
+| B     | 4733, 4735, 4737, 4739, 4769 | MEMORY.md hand-edit past 100-entry cap; needs reindex                                |
+| C     | 4733, 4737                   | `feedback_*.md` missing required `**Why:**`/`**How to apply:**` markers              |
+| D     | 4768, 4773                   | `/Users/acehack` hardcoded in launchd plist + malformed `launchctl bootout`          |
+| E     | 4780                         | Tautological FsCheck residuation property; missing RHS check; non-independent oracle |
+| F     | 4769                         | B-0700 backlog row added but per-row file missing (broken link)                      |
 
 ## Lane disposition
 
@@ -53,24 +53,22 @@ Two PRs (#4780, #4773) are auto-merge armed. Risk is documented in the shard for
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T04:46:59Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `3b7aec265d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -83,11 +81,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard capturing the 2026-05-24 04:41Z Otto-CLI background-worker audit of open PR gates/threads, including a classification of blocked PR thread findings and related operational notes.
 
 **Changes:**
+
 - Add `0441Z` tick shard documenting a 25-PR gate poll and classification of 8 BLOCKED PRs’ unresolved threads.
 - Record summarized failure classes, risk surface (auto-merge armed PRs), and links to relevant rules/tools used during the audit.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T08:53:24Z)
-
 
 ### 💡 Codex Review
 
@@ -95,17 +93,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9a79fe115c`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -123,24 +120,22 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 2 c
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T12:33:51Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `4b14e21696`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -156,7 +151,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-24T04:47:00Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix failure-class count in classification summary**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix failure-class count in classification summary**
 
 The summary states that 5 failure classes were identified, but this same report later defines Classes A through F and includes Class F in the triage table. This inconsistency under-reports the breadth of issues and can skew any downstream tracking or risk summaries that rely on this shard text.
 
@@ -166,7 +161,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T04:47:00Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct unresolved-thread total reported in audit**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct unresolved-thread total reported in audit**
 
 The report claims "38+" unresolved threads were classified, but the per-PR counts in the table add up to 65 (7+14+7+8+10+5+7+7). This mismatch makes the documented audit scope inaccurate and can cause follow-up prioritization to be based on understated volume.
 
@@ -188,7 +183,7 @@ This line cites `god-tier-claims-high-signal-high-suspicion-don't-collapse.md`, 
 
 **@chatgpt-codex-connector** (2026-05-24T08:53:25Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile Class C affected PR list with triage table**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile Class C affected PR list with triage table**
 
 The Class C section says missing schema markers affect only `#4733` and `#4737`, but the triage table later classifies `#4739` as `A + B + C`. This contradiction makes the audit non-deterministic for follow-up agents: if they trust the class section, they may skip schema-marker remediation on `#4739` even though the table marks it as a Class C blocker.
 
@@ -199,6 +194,7 @@ Useful? React with 👍 / 👎.
 Fixed in [54678dab](https://github.com/Lucent-Financial-Group/Zeta/commit/54678dab2c32119d44dbdaa698631531cbc31191).
 
 Substrate-honest fix per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix:
+
 - Direct line inspection at PR head @ `9a79fe11`: line 59 said `Affected: #4733, #4737`; line 112 triage table classified #4739 as `A + B + C`. Contradiction confirmed.
 - Commit updates Class C heading to "(3 PRs)" + affected list to `#4733, #4737, #4739` — alignment with table.
 
@@ -220,7 +216,7 @@ The parenthetical about the rule-reference filename is internally inconsistent: 
 
 **@chatgpt-codex-connector** (2026-05-24T12:33:51Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include Class F in the top-line failure-class summary**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Include Class F in the top-line failure-class summary**
 
 The lead audit row says there are "6 failure classes" but the parenthetical list names only five classes (`privacy`, `MEMORY.md drift`, `missing schema markers`, `hardcoded paths`, `tautological FsCheck`) and omits the later-defined Class F (`broken backlog link`). This creates an internal inconsistency in the shard summary and can cause follow-up triage to under-scope one class when readers rely on the top-line digest.
 
@@ -231,6 +227,7 @@ Useful? React with 👍 / 👎.
 Fixed in 58d3490c9.
 
 Substrate-honest fix per `.claude/rules/blocked-green-ci-investigate-threads.md` verify-before-fix:
+
 - Direct line inspection at remote tip after the 3 prior fix commits (`4b14e2169`, `54678dab2`, `9a79fe115`): line-30 count was corrected (38+→65, 5→6) but the line-1 parenthetical still enumerated only 5 classes
 - Class headings at lines 32/45/57/63/83/98 confirm 6 classes (A-F)
 - Fix appends `, broken backlog link` to the line-1 parenthetical so the list matches the claimed count

@@ -3,7 +3,7 @@
 > **Superseded by** [`docs/DECISIONS/2026-04-21-router-coherence-v2.md`](2026-04-21-router-coherence-v2.md) after Kira (harsh-critic) adversarial pass surfaced 3 P0 + 5 P1 + 2 P2 findings. v1 kept in place per `GOVERNANCE.md §2` so the CONFLICT-RESOLUTION Active-tensions citation chain remains resolvable. Read v2 for the operative contract; v1 below is the historical record.
 
 **Date:** 2026-04-21 (round 41, late)
-**Status:** *Accepted (pre-adversarial-review; superseded by v2 same-round after Kira pass). v1 retained for citation continuity.*
+**Status:** _Accepted (pre-adversarial-review; superseded by v2 same-round after Kira pass). v1 retained for citation continuity._
 **Owner (proposed):** Architect (Kenji) integrates; Hiroshi
 (`complexity-reviewer`) and Daisy (`claims-tester`) each
 sign their half of the contract. Advisory signal from
@@ -23,28 +23,28 @@ rounds because Aarav's own ranker was offline by cadence
 (rounds 19-40). The round-41 catch-up pass re-entered it at
 P1 with this concrete rationale:
 
-> *"Both skills still claim 'is this O(·) claim true?'
+> _"Both skills still claim 'is this O(·) claim true?'
 > without an explicit analytic-bound → empirical-falsifier
-> pipeline."*
+> pipeline."_
 > — `memory/persona/aarav/NOTEBOOK.md` §"Current top-5
 > (round 41)" #4
 
 Reading the two SKILL.md files confirms the overlap:
 
-- **`complexity-reviewer/SKILL.md`** line 3 — *"ask 'can it
+- **`complexity-reviewer/SKILL.md`** line 3 — _"ask 'can it
   use less RAM?', 'can we reduce the complexity class?',
   'is there a known space-vs-time trade-off we're
   missing?'. He reviews every non-trivial algorithmic
   commit for asymptotic and constant-factor cost … flags
   when a claim ('O(1) retraction') is actually O(n) in
-  disguise."*
+  disguise."_
 
-- **`claims-tester/SKILL.md`** line 3 — *"Use this skill
+- **`claims-tester/SKILL.md`** line 3 — _"Use this skill
   whenever a doc comment, README, or commit message makes
   a **claim** about the behaviour of Zeta.Core code —
   e.g. 'O(1) retraction' … The skill designs empirical
   tests that either prove or disprove the claim with
-  real measurements."*
+  real measurements."_
 
 Both claim authority over the same artefact (an O(·) claim
 in a doc comment). Neither names the other. Neither
@@ -56,29 +56,29 @@ disambiguation, authority without contract.
 
 ## The shape of the gap
 
-An O(·) claim has two halves that require *different tools*
+An O(·) claim has two halves that require _different tools_
 to assess:
 
-| Half | Tool | Owner | Output |
-|---|---|---|---|
-| **Analytic bound** — does the algorithm, read on paper, yield the claimed bound? Do the loops, recursion depths, and data-structure operations compose to the asserted class? | CLRS / Tarjan / AMS-style argument; proof sketch or cell-probe lower bound | `complexity-reviewer` (Hiroshi) | "The bound is `O(log n)` amortised because potential function Φ … pays for each merge." *or* "The bound is wrong: the inner `Dictionary.Remove` is `O(k)` under adversarial rehashing." |
-| **Empirical measurement** — at `n = 10⁶` with realistic workload, does the running time / allocation / scan count actually match the asserted bound? Does the constant factor survive contact with a real cache hierarchy? | FsCheck property test, BenchmarkDotNet, `MemoryDiagnoser`, contrary-workload sweep | `claims-tester` (Daisy) | "Measured `2.3 × n × log n ± 0.1` over `n ∈ [10³, 10⁶]`; matches claim within noise." *or* "Claim says O(1); measurement shows linear growth in `n` above `n = 10⁴` — opening bug." |
+| Half                                                                                                                                                                                                                       | Tool                                                                               | Owner                           | Output                                                                                                                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Analytic bound** — does the algorithm, read on paper, yield the claimed bound? Do the loops, recursion depths, and data-structure operations compose to the asserted class?                                              | CLRS / Tarjan / AMS-style argument; proof sketch or cell-probe lower bound         | `complexity-reviewer` (Hiroshi) | "The bound is `O(log n)` amortised because potential function Φ … pays for each merge." _or_ "The bound is wrong: the inner `Dictionary.Remove` is `O(k)` under adversarial rehashing." |
+| **Empirical measurement** — at `n = 10⁶` with realistic workload, does the running time / allocation / scan count actually match the asserted bound? Does the constant factor survive contact with a real cache hierarchy? | FsCheck property test, BenchmarkDotNet, `MemoryDiagnoser`, contrary-workload sweep | `claims-tester` (Daisy)         | "Measured `2.3 × n × log n ± 0.1` over `n ∈ [10³, 10⁶]`; matches claim within noise." _or_ "Claim says O(1); measurement shows linear growth in `n` above `n = 10⁴` — opening bug."     |
 
 Either half **alone** is insufficient:
 
 - Analytic-only misses constant-factor cliffs, cache
   behaviour, and implementation bugs that break the
-  paper's abstraction. Hiroshi's motto — *"a wrong
+  paper's abstraction. Hiroshi's motto — _"a wrong
   complexity claim in a paper is worse than a wrong
   number in a benchmark, because it follows you for a
-  decade"* — applies, but only if the paper's bound
+  decade"_ — applies, but only if the paper's bound
   and the code's behaviour actually agree.
 - Empirical-only misses theoretical lower bounds (AMS
   streaming space, cell-probe, communication) and
   amortised-vs-worst-case distinctions. A benchmark
   passing at `n = 10⁶` does not prove a bound holds
   asymptotically. The MI-sharder claim-tests caught
-  bugs precisely because the *claim* was analytic;
+  bugs precisely because the _claim_ was analytic;
   without that anchor, the measurement would have had
   nothing to contradict.
 
@@ -110,19 +110,19 @@ factor is honest — no hidden `k` that's secretly `n`.
 **Three possible outputs:**
 
 1. **Claim analytically sound.** Hand off to Stage 2
-   with a note: *"Analytic bound confirmed at
+   with a note: _"Analytic bound confirmed at
    `O(<class>)`. Requesting `claims-tester`
    measurement at `n ∈ [10³, 10⁶]` under
    {uniform, Zipf, adversarial} workloads to verify
    constant factor and guard against
-   implementation-abstraction drift."*
+   implementation-abstraction drift."_
 
 2. **Claim analytically wrong.** File a P0 on
    `docs/BACKLOG.md`; cite the specific step where
-   the claim fails (*"line 147's inner
+   the claim fails (_"line 147's inner
    `Dictionary.Remove` is `O(k)` under collision
    cluster → outer claim of `O(log n)` is
-   `O(k log n)`"*). Do **not** hand to Stage 2 until
+   `O(k log n)`"_). Do **not** hand to Stage 2 until
    the code is fixed; measuring a wrong bound
    produces false comfort.
 
@@ -150,8 +150,8 @@ contrary workload explicitly). Measure at the specified
 
 1. **Measurement matches analytic bound.** Test lands,
    claim stays, tighten the docstring to include the
-   measured constant factor (*"O(log n) — measured
-   `2.3 × log n` at `n = 10⁶`"*).
+   measured constant factor (_"O(log n) — measured
+   `2.3 × log n` at `n = 10⁶`"_).
 
 2. **Measurement contradicts analytic bound.**
    **Re-engage Hiroshi.** The analytic argument must
@@ -163,8 +163,8 @@ contrary workload explicitly). Measure at the specified
 3. **Measurement matches analytic bound but fails
    contrary workload.** Claim is narrower than
    stated. Tighten the claim to the workloads that
-   held (*"O(log n) under Zipf and uniform; O(n)
-   under adversarial pre-image collision"*) and
+   held (_"O(log n) under Zipf and uniform; O(n)
+   under adversarial pre-image collision"_) and
    update the docstring. This is the MI-sharder
    pattern that the original `claims-tester` skill
    cites.
@@ -182,22 +182,22 @@ of the commit-time flow; both directions are legal.
 
 ## Who fires when — decision table
 
-| Situation | First fires | Then fires | Notes |
-|---|---|---|---|
-| New O(·) claim in PR | Hiroshi (Stage 1) | Daisy (Stage 2) if Stage 1 outputs 1 | Default path |
-| Performance regression in CI | Daisy (Stage 2) | Hiroshi (Stage 1) if measurement contradicts bound | Reverse trigger |
-| Paper draft with bound | Hiroshi (Stage 1) | Daisy (Stage 2) before paper submission | Paper-target has higher evidence bar |
-| Docstring lacks which bound | Hiroshi (Stage 1, output 3) | — | Returns to author first |
-| Claim analytically wrong | Hiroshi (Stage 1, output 2) | — | P0; no measurement until fix |
-| Measurement ≠ bound | Daisy (Stage 2, output 2) | Hiroshi (Stage 1, re-run) | P0 until reconciled |
+| Situation                    | First fires                 | Then fires                                         | Notes                                |
+| ---------------------------- | --------------------------- | -------------------------------------------------- | ------------------------------------ |
+| New O(·) claim in PR         | Hiroshi (Stage 1)           | Daisy (Stage 2) if Stage 1 outputs 1               | Default path                         |
+| Performance regression in CI | Daisy (Stage 2)             | Hiroshi (Stage 1) if measurement contradicts bound | Reverse trigger                      |
+| Paper draft with bound       | Hiroshi (Stage 1)           | Daisy (Stage 2) before paper submission            | Paper-target has higher evidence bar |
+| Docstring lacks which bound  | Hiroshi (Stage 1, output 3) | —                                                  | Returns to author first              |
+| Claim analytically wrong     | Hiroshi (Stage 1, output 2) | —                                                  | P0; no measurement until fix         |
+| Measurement ≠ bound          | Daisy (Stage 2, output 2)   | Hiroshi (Stage 1, re-run)                          | P0 until reconciled                  |
 
 ## Escalation
 
 If Hiroshi and Daisy disagree on a reconciliation
-(common failure mode: Hiroshi says *"the bound is
-correct, your benchmark is measuring the wrong thing"*,
-Daisy says *"the bound is wrong, your proof elides the
-constant factor"*), the conflict escalates to the
+(common failure mode: Hiroshi says _"the bound is
+correct, your benchmark is measuring the wrong thing"_,
+Daisy says _"the bound is wrong, your proof elides the
+constant factor"_), the conflict escalates to the
 conference protocol in `docs/CONFLICT-RESOLUTION.md`:
 Architect (Kenji) integrates a third option, and on
 deadlock, the human maintainer decides. This is exactly

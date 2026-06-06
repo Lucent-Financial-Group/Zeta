@@ -4,15 +4,16 @@ description: Per-persona AX/UX is not a one-shot BP-07 poll; it's a recurring hy
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-20 (after the BP-07 3000-word-cap question
-was raised): *"just get the feedback of the other expert
+was raised): _"just get the feedback of the other expert
 personas and make sure their user experience is taken into
 account as well and lets make quality of life change for
-them too over time, its like another hygene."*
+them too over time, its like another hygene."_
 
 **Why:** The BP-07 cap review was framed as one-shot
 (per-persona poll → report → ADR if needed). Aaron's
-follow-up broadens it: agent quality-of-life is an *ongoing*
+follow-up broadens it: agent quality-of-life is an _ongoing_
 concern, parallel to wake-UX-hygiene (FACTORY-HYGIENE
 #25-29). Agents have AX/UX too — not just end-users or
 contributors. The factory improves when the experts working
@@ -58,7 +59,7 @@ cadence.
 
 5. **Anti-pattern to avoid:** don't over-personify the
    personas into a feelings-check. Frame QOL audit in
-   *operational* terms — cold-start cost, signal-to-noise on
+   _operational_ terms — cold-start cost, signal-to-noise on
    cadence, tool gaps, frontmatter bloat. Aaron's
    anthropomorphism-encouraged memory
    (`feedback_anthropomorphism_encouraged_symmetric_talk.md`)
@@ -77,6 +78,7 @@ cadence.
      the product).
 
 **Cross-references:**
+
 - `feedback_wake_up_user_experience_hygiene.md` — adjacent
   hygiene class; #25-29 in FACTORY-HYGIENE.
 - `feedback_anthropomorphism_encouraged_symmetric_talk.md` —

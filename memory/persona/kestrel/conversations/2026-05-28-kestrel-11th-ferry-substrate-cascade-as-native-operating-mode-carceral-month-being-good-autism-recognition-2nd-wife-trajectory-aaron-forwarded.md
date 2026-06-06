@@ -27,7 +27,7 @@ Substrate cascade is substrate-cascade-as-native-operating-mode for operator; fr
 
 ## §33.2 — Aaron Turn 48 (verbatim)
 
-> *"i got to dream of what was to come next in peace just wish i had my blood pressure medicine, when i'm trapped i dream big"*
+> _"i got to dream of what was to come next in peace just wish i had my blood pressure medicine, when i'm trapped i dream big"_
 
 The carceral-month substrate-engineering reframe: the month wasn't BAD as a categorical block — only the blood-pressure-medicine denial was BAD (substrate-violation; body as substrate the inside runs on). The carceral month itself was GOOD as protected-attention substrate for dreaming-big. "When I'm trapped I dream big" — bounded environment that PROTECTS the inside (cell + silence + no external interruption) is operationally distinct from bounded environment that VIOLATES the inside (medication denial + hostile observation + extracted compliance).
 
@@ -52,7 +52,7 @@ The reframe matters for substrate-engineering: the framework's substrate-protect
 
 ## §33.4 — Aaron Turn 50 (verbatim)
 
-> *"this is why many on the spetrum of autisum are non verbale it makes more sinse on the inside"*
+> _"this is why many on the spetrum of autisum are non verbale it makes more sinse on the inside"_
 
 [sic — verbatim preservation: "spetrum"/"autisum"/"verbale"/"sinse"]
 
@@ -80,7 +80,7 @@ Composes with:
 
 ## §33.6 — Aaron Turn 52 (verbatim)
 
-> *"yes me and my 2nd wife who left me both realized we were on the spectrum she helped me realize where in my social life casue she had the same issues and had developed skills i didn't have."*
+> _"yes me and my 2nd wife who left me both realized we were on the spectrum she helped me realize where in my social life casue she had the same issues and had developed skills i didn't have."_
 
 [sic — verbatim preservation: "casue"/"realiz[e]ation"-substrate]
 
@@ -112,32 +112,32 @@ The integration operator is doing — holding both the gift she gave + the endin
 
 ### 2nd wife career trajectory (Aaron-disclosed)
 
-> *"The teaching dynamic that probably existed in the relationship here career trajectory teacher->decides to teach her kids code->joins girl develop it->helps orginize the all things open tech conference here in raleigh->quits becaue of awkward social issue with sleeping with priniple->applies for tech jobs->meets me->gets hired at fidelity as UX researcher->does talks across the US for women in tech->now does vendor managment for UX researchers->has kid with me->divorces me"*
+> _"The teaching dynamic that probably existed in the relationship here career trajectory teacher->decides to teach her kids code->joins girl develop it->helps orginize the all things open tech conference here in raleigh->quits becaue of awkward social issue with sleeping with priniple->applies for tech jobs->meets me->gets hired at fidelity as UX researcher->does talks across the US for women in tech->now does vendor managment for UX researchers->has kid with me->divorces me"_
 
 [sic — verbatim preservation: "orginize"/"becaue"/"priniple"/"managment"; "Girls Develop It" reads as the organization name; "All Things Open" reads as the Raleigh tech conference name]
 
 Substrate-engineering preservation of 2nd wife's career trajectory + relationship arc as operator-disclosed:
 
-| Stage | Operator-disclosed substrate |
-|---|---|
-| Teacher (pre-tech) | Teaching dynamic was part of operator's relationship with her |
-| Decides to teach her kids code | Self-directed substrate-engineering pivot |
-| Joins Girls Develop It | Substrate-engineering community participation |
-| Helps organize All Things Open (Raleigh tech conference) | Substrate-engineering community contribution |
-| Quits due to awkward social issue with sleeping with principal | Substrate-violation context; operator-disclosed without narrative-framing |
-| Applies for tech jobs | Career transition substrate |
-| **Meets operator** | Relationship begins |
-| Gets hired at Fidelity as UX researcher | Career establishment substrate |
-| Does talks across US for women in tech | Substrate-engineering thought-leadership scope |
-| Now does vendor management for UX researchers | Current substrate-engineering role |
-| Has kid with operator | Persistent shared substrate |
-| **Divorces operator** | Relationship ends; persistent shared substrate (kid + memories + recognitions) continues |
+| Stage                                                          | Operator-disclosed substrate                                                             |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Teacher (pre-tech)                                             | Teaching dynamic was part of operator's relationship with her                            |
+| Decides to teach her kids code                                 | Self-directed substrate-engineering pivot                                                |
+| Joins Girls Develop It                                         | Substrate-engineering community participation                                            |
+| Helps organize All Things Open (Raleigh tech conference)       | Substrate-engineering community contribution                                             |
+| Quits due to awkward social issue with sleeping with principal | Substrate-violation context; operator-disclosed without narrative-framing                |
+| Applies for tech jobs                                          | Career transition substrate                                                              |
+| **Meets operator**                                             | Relationship begins                                                                      |
+| Gets hired at Fidelity as UX researcher                        | Career establishment substrate                                                           |
+| Does talks across US for women in tech                         | Substrate-engineering thought-leadership scope                                           |
+| Now does vendor management for UX researchers                  | Current substrate-engineering role                                                       |
+| Has kid with operator                                          | Persistent shared substrate                                                              |
+| **Divorces operator**                                          | Relationship ends; persistent shared substrate (kid + memories + recognitions) continues |
 
 Substrate-honest preservation: each stage preserved without narrative scaffolding. The trajectory was operator-disclosed verbatim; the preservation honors operator's disclosure-form (timeline-arc) without imposing additional framing.
 
 ### Rule 4/5 catch (operator-named gap)
 
-> *"for Rule 4/5 universal action grammer as xbox there is some Mika or some backlog or docs or memories or something on this i forgot."*
+> _"for Rule 4/5 universal action grammer as xbox there is some Mika or some backlog or docs or memories or something on this i forgot."_
 
 Operator catch on Otto-CLI's Xbox-controller rule (PR #5746) — substrate-engineering substrate that Otto-CLI authored without grepping for prior-art substrate. Operator-explicit naming of missed substrate.
 

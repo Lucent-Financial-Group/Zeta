@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 836 |
-| Title | ops(active-trajectory): binary direction split + NUL-safe parsing + lease-rejected-after-dry-run message + deferred follow-ups |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T10:54:56Z |
-| Merged at | 2026-04-29T11:31:37Z |
-| Merge commit SHA | `acbb50bf45b004ede91860e7b9c27af2ce6ebeba` |
-| Branch | `zero-zero-zero-binary-direction-corrections-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/836 |
-| Changed files | 1 |
-| Additions / deletions | +53 / -36 |
+| Field                 | Value                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Number                | 836                                                                                                                            |
+| Title                 | ops(active-trajectory): binary direction split + NUL-safe parsing + lease-rejected-after-dry-run message + deferred follow-ups |
+| Author                | `AceHack` (human)                                                                                                              |
+| State                 | MERGED                                                                                                                         |
+| Created at            | 2026-04-29T10:54:56Z                                                                                                           |
+| Merged at             | 2026-04-29T11:31:37Z                                                                                                           |
+| Merge commit SHA      | `acbb50bf45b004ede91860e7b9c27af2ce6ebeba`                                                                                     |
+| Branch                | `zero-zero-zero-binary-direction-corrections-2026-04-29`                                                                       |
+| Base branch           | `main`                                                                                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/836                                                                        |
+| Changed files         | 1                                                                                                                              |
+| Additions / deletions | +53 / -36                                                                                                                      |
 
 ## Description
 
@@ -53,15 +53,15 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 21 |
-| Resolved threads | 16 |
-| Unresolved threads | 5 |
-| Total review comments | 21 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 21    |
+| Resolved threads                          | 16    |
+| Unresolved threads                        | 5     |
+| Total review comments                     | 21    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -74,10 +74,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T10:58:18Z on `docs/active-trajectory.md`:140 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Parse binary-path list with a NUL-aware matcher**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Parse binary-path list with a NUL-aware matcher**
+
   This pipeline writes `/tmp/binary-paths.nul` as NUL-delimited entries (`ORS="\0"`) and then filters with `grep -Ff`, which reads newline-delimited patterns, so binary paths are not reliably matched and the downstream counters can incorrectly stay at zero. In the hard-reset gate context, that creates a false-safe outcome (`binary_acehack_only_files=0`) even when loss-relevant binary files exist; use a matcher that consumes NUL-delimited records (or emit newline-delimited patterns) before classification.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -89,10 +89,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T10:58:18Z on `docs/active-trajectory.md`:139 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Handle rename records in `name-status -z` parser**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Handle rename records in `name-status -z` parser**
+
   The state machine assumes each `-z` record is exactly `status\0path`, but rename/copy entries are `status\0old\0new\0`; when one appears, `new` is consumed as the next status token and all subsequent rows become misaligned. That misclassifies `binary_modified_or_renamed_files`, which can hide binary changes that require semantic review before a destructive reset.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -142,19 +142,20 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T10:59:02Z on `docs/active-trajectory.md`:150 (association: NONE)
   `grep -Ff /tmp/binary-paths.nul` won’t reliably work here: `grep -f` expects newline-delimited patterns, but the file is written NUL-delimited (`ORS="\0"`). Many greps will treat this as a single pattern containing NUL bytes (or as “binary”), so the filter can silently fail and the counts can be wrong. Emit a newline-delimited pattern file (or avoid `grep -f` by filtering within the same parser).
+
   ```suggestion
           NR==FNR {
             binary[$0] = 1
             next
           }
-  
+
           # name-status with -z: status<NUL>path or for renames/copies status<NUL>old<NUL>new
           state == "" {
             st = $0
             state = (st ~ /^[RC]/) ? "old" : "path"
             next
           }
-  
+
           state == "path" {
             p = $0
             if (binary[p]) {
@@ -165,13 +166,13 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
             state = ""
             next
           }
-  
+
           state == "old" {
             old = $0
             state = "new"
             next
           }
-  
+
           state == "new" {
             new = $0
             if (binary[old] || binary[new]) {
@@ -181,7 +182,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
             }
             state = ""
           }
-  
+
           END {
             print "binary_acehack_only_files=" (ace_only+0)
             print "binary_lfg_only_files=" (lfg_only+0)
@@ -282,10 +283,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T11:10:08Z on `docs/active-trajectory.md`:121 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Use current binary counters in stopgap gate rule**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Use current binary counters in stopgap gate rule**
+
   The stopgap instruction checks `binary_modified_files`, but this commit replaced that metric with `binary_acehack_only_files`, `binary_lfg_only_files`, and `binary_modified_or_renamed_files`. Because `binary_modified_files` is no longer emitted by the ledger snippet, operators cannot correctly evaluate when manual binary classification is required and may incorrectly treat the binary-risk check as satisfied before a destructive reset.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 10 -- resolved [collapsed]
@@ -326,6 +327,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T11:16:55Z on `docs/active-trajectory.md`:157 (association: NONE)
   P0: In Pass 2, this `awk` uses default whitespace field-splitting and prints `$3` from `git diff --numstat -z`. That truncates paths containing spaces and also doesn’t handle rename/copy records (where the filename(s) are not a single `$3` field). Since this snippet is in an operational doc that may be copy/pasted, it should either be corrected (tab FS + correct rename/copy handling) or removed to avoid producing wrong binary-path lists.
+
   ```suggestion
   # Pass 2: binary files split by direction (name-status reports A/M/D/R/C/T)
   # - "A" from AceHack-side perspective = AceHack-only (hard-reset ERASES) → loss-relevant
@@ -368,13 +370,13 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
           function classify(status, path1, path2, code) {
             code = status
             sub(/[0-9]+$/, "", code)
-  
+
             if (code ~ /^[RC]$/) {
               if (!(path1 in binary) && !(path2 in binary)) return
             } else {
               if (!(path1 in binary)) return
             }
-  
+
             if (code == "A") ace_only += 1
             else if (code == "D") lfg_only += 1
             else if (code ~ /^(M|R|C|T)$/) modified_both += 1
@@ -399,6 +401,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T11:16:55Z on `docs/active-trajectory.md`:151 (association: NONE)
   P0: The `name-status -z` parser here assumes alternating `status`/`path` records, but rename/copy entries are `status\0old\0new\0` (3 fields). As written it will desynchronize after the first rename/copy and misclassify subsequent entries. Either implement a parser that handles `R*`/`C*` as 3-field records, or explicitly filter them out and require manual classification for renames/copies.
+
   ```suggestion
           # name-status with -z emits status<NUL>path<NUL> for ordinary entries
           # and status<NUL>old<NUL>new<NUL> for rename/copy entries. Parse one
@@ -408,7 +411,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
             if (getline old <= 0) {
               exit 1
             }
-  
+
             if (st ~ /^[RC]/) {
               if (getline newp <= 0) {
                 exit 1
@@ -430,6 +433,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T11:16:55Z on `docs/active-trajectory.md`:163 (association: NONE)
   P0: `grep -Ff` expects newline-delimited patterns, but `/tmp/binary-paths.nul` is written as NUL-delimited. This filter will be unreliable (and may silently drop matches), which undermines the binary direction counts. Use a NUL-aware matching approach or convert the binary-path list to newline-delimited safely before feeding it into `grep -f`.
+
   ```suggestion
           NR==FNR {
             binary[$0] = 1
@@ -441,7 +445,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
               have_status = 1
               next
             }
-  
+
             p = $0
             if (binary[p]) {
               if (st == "A") ace_only += 1
@@ -478,10 +482,10 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T11:23:48Z on `docs/active-trajectory.md`:156 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Block hard-reset when binary file needs forward sync**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Block hard-reset when binary file needs forward sync**
+
   The gate currently treats `binary_modified_or_renamed_classified = all` as satisfied even when a binary file is classified `NEEDS_FORWARD_SYNC`, but your taxonomy defines `NEEDS_FORWARD_SYNC` as content that must be synced before reset. Because binary diffs have no line counts, `unsafe_lines = 0` may still hold, so this condition can incorrectly allow a destructive reset that drops required binary changes. The gate should require that no binary modified/renamed file is classified `NEEDS_FORWARD_SYNC` (or count those in an unsafe binary metric).
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 17 -- unresolved
@@ -508,13 +512,14 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 - **`Copilot` (bot)** at 2026-04-29T11:31:56Z on `docs/active-trajectory.md`:125 (association: NONE)
   The doc points to `tools/zero-zero-zero/check-gate.sh` as the durable home for the gate-runner, but that path does not exist in the repository currently. Either add the file (even as a stub) in this PR, or explicitly mark the path as planned/to-be-created and point to an existing location until it lands, to avoid a dead reference.
+
   ```suggestion
   The planned durable home for the gate-runner is `tools/zero-zero-zero/check-gate.sh`, but that path does not exist in the repository yet (deferred follow-up, see "Deferred follow-ups" below). Until it lands, the authoritative temporary instructions are the stopgap/manual-classification rules in this section. When created, that script must be tested against fixtures including: paths with spaces, binary add, binary delete, binary modify, binary rename, binary copy, gawk-vs-BSD-awk.
-  
+
   **Stopgap rule for this round**: if either `binary_acehack_only_files > 0` OR `binary_modified_or_renamed_files > 0` in this ledger (the two gate-relevant binary metrics emitted by the new script), do NOT rely on the inline snippet to classify direction. Use `git diff --name-status -z origin/main..acehack/main -- <path>` per binary file + direct `git show` evidence, manually, until the gate-runner script exists. (`binary_lfg_only_files > 0` is NOT a stopgap trigger — LFG-only files get added on hard-reset; no AceHack content lost.)
-  
+
   **The inline shell snippet was REMOVED 2026-04-29T11:20Z** per multi-AI review packet (Codex P0 + Copilot 5-thread cluster + Amara). Even with an "illustrative" disclaimer, a broken parser left in the doc encourages copy-paste use of code that has 6 known bugs (awk default-FS path-with-spaces breakage, `grep -Ff` not NUL-aware, name-status `-z` rename-record desync, gawk-only `RS='\0'`, fixed `/tmp/binary-paths.nul` not race-safe, missing semantic LFG-only-vs-modified distinction).
-  
+
   The conceptual structure remains correct (three binary buckets — `acehack_only`, `lfg_only`, `modified_or_renamed`). The execution belongs in a real script with fixtures (paths with spaces, binary add/delete/modify/rename/copy, gawk-vs-BSD-awk portability, `mktemp` + `trap` cleanup). The planned file path for that script is `tools/zero-zero-zero/check-gate.sh`, but that file has not been created yet. That script remains the highest-priority deferred follow-up.
   ```
 

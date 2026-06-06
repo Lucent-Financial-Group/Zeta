@@ -55,10 +55,9 @@ let fail = 0;
 let lastPsqlStderr = "";
 
 function runPsql(sql: string): string {
-  const result = spawnSync(
-    ["docker-compose", "exec", "-T", "db", "psql", "-U", "postgres", "-tAX", "-c", sql],
-    { cwd: SCRIPT_DIR },
-  );
+  const result = spawnSync(["docker-compose", "exec", "-T", "db", "psql", "-U", "postgres", "-tAX", "-c", sql], {
+    cwd: SCRIPT_DIR,
+  });
   lastPsqlStderr = result.stderr.toString();
   if (result.exitCode !== 0) {
     console.error(lastPsqlStderr);
@@ -88,20 +87,17 @@ function check(label: string, sql: string, expected: string): void {
 console.log("Factory-demo DB smoke test");
 console.log("==========================");
 
-check("customer row count",
-  "SELECT COUNT(*) FROM customers;", "20");
-check("opportunity row count",
-  "SELECT COUNT(*) FROM opportunities;", "30");
-check("activity row count",
-  "SELECT COUNT(*) FROM activities;", "33");
-check("duplicate-email groups",
-  "SELECT COUNT(*) FROM (SELECT email FROM customers GROUP BY email HAVING COUNT(*) > 1) s;", "2");
-check("Lead-stage opportunity count",
-  "SELECT COUNT(*) FROM opportunities WHERE stage = 'Lead';", "10");
-check("Won-stage opportunity count",
-  "SELECT COUNT(*) FROM opportunities WHERE stage = 'Won';", "6");
-check("Lost-stage opportunity count",
-  "SELECT COUNT(*) FROM opportunities WHERE stage = 'Lost';", "2");
+check("customer row count", "SELECT COUNT(*) FROM customers;", "20");
+check("opportunity row count", "SELECT COUNT(*) FROM opportunities;", "30");
+check("activity row count", "SELECT COUNT(*) FROM activities;", "33");
+check(
+  "duplicate-email groups",
+  "SELECT COUNT(*) FROM (SELECT email FROM customers GROUP BY email HAVING COUNT(*) > 1) s;",
+  "2",
+);
+check("Lead-stage opportunity count", "SELECT COUNT(*) FROM opportunities WHERE stage = 'Lead';", "10");
+check("Won-stage opportunity count", "SELECT COUNT(*) FROM opportunities WHERE stage = 'Won';", "6");
+check("Lost-stage opportunity count", "SELECT COUNT(*) FROM opportunities WHERE stage = 'Lost';", "2");
 
 if (fail === 0) {
   console.log("");

@@ -9,7 +9,13 @@ ask: Aaron 2026-04-21 — *"shape shifer backlog"*. The backlog IS shape-shifter
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0038, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md]
+composes_with:
+  [
+    B-0038,
+    feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md,
+    feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md,
+    feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md,
+  ]
 tags: [shape-shifter, backlog-protocol, retraction-native, chronology-preservation, witnessable-evolution]
 type: friction-reducer
 ---
@@ -18,7 +24,7 @@ type: friction-reducer
 
 ## Origin
 
-AceHack commit `8e66e44` (2026-04-21). Sibling to B-0038 superfluid + persistable* + shape-shifter row; this row carves out the shape-shifter pole as its own BACKLOG protocol because it has independent scope (the BACKLOG rows themselves).
+AceHack commit `8e66e44` (2026-04-21). Sibling to B-0038 superfluid + persistable\* + shape-shifter row; this row carves out the shape-shifter pole as its own BACKLOG protocol because it has independent scope (the BACKLOG rows themselves).
 
 ## Protocol
 
@@ -32,7 +38,7 @@ This composes with chronology-preservation (no destructive overwrite) and witnes
 
 ## LFG adaptation note
 
-In the LFG architecture (per-row-files under `docs/backlog/P{1,2,3}/B-NNNN-*.md`, with monolithic `docs/BACKLOG.md` auto-generated), the shape-shifter protocol applies *per-file*: a retracted row gets a `status: retracted` frontmatter field + a dated `## Retraction` section preserving original content; a reshaped row spawns a sibling B-ID with cross-reference; a superseded row links to its successor.
+In the LFG architecture (per-row-files under `docs/backlog/P{1,2,3}/B-NNNN-*.md`, with monolithic `docs/BACKLOG.md` auto-generated), the shape-shifter protocol applies _per-file_: a retracted row gets a `status: retracted` frontmatter field + a dated `## Retraction` section preserving original content; a reshaped row spawns a sibling B-ID with cross-reference; a superseded row links to its successor.
 
 ## Deliverables
 
@@ -48,5 +54,5 @@ In the LFG architecture (per-row-files under `docs/backlog/P{1,2,3}/B-NNNN-*.md`
 ## Cross-reference
 
 - AceHack commit: `8e66e44`
-- Sibling row: B-0038 (superfluid + persistable* + shape-shifter umbrella)
+- Sibling row: B-0038 (superfluid + persistable\* + shape-shifter umbrella)
 - Composes with: chronology-preservation memory; witnessable-evolution memory

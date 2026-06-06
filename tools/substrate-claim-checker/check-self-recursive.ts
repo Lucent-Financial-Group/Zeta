@@ -59,10 +59,7 @@ export interface Finding {
   reason: string;
 }
 
-const SUPPORTED_TOPICS: ReadonlySet<string> = new Set<SelfCheckTopic>([
-  "count",
-  "existence",
-]);
+const SUPPORTED_TOPICS: ReadonlySet<string> = new Set<SelfCheckTopic>(["count", "existence"]);
 
 /**
  * Strip a YAML inline comment from the directive, respecting flow-sequence
@@ -76,11 +73,7 @@ function stripInlineComment(s: string): string {
     const c = s[i];
     if (c === "[") depth++;
     else if (c === "]") depth--;
-    else if (
-      c === "#" &&
-      depth === 0 &&
-      (i === 0 || /\s/.test(s[i - 1]!))
-    ) {
+    else if (c === "#" && depth === 0 && (i === 0 || /\s/.test(s[i - 1]!))) {
       return s.slice(0, i).trimEnd();
     }
   }
@@ -115,17 +108,13 @@ export function parseDirective(raw: string): SelfCheckTopic[] {
     if (SUPPORTED_TOPICS.has(tok)) {
       out.push(tok as SelfCheckTopic);
     } else {
-      console.error(
-        `warning: self-check topic "${tok}" not supported (v0.9.1 supports: count, existence)`,
-      );
+      console.error(`warning: self-check topic "${tok}" not supported (v0.9.1 supports: count, existence)`);
     }
   }
   return out;
 }
 
-export function checkFile(
-  filePath: string,
-): { findings: Finding[]; ok: boolean } {
+export function checkFile(filePath: string): { findings: Finding[]; ok: boolean } {
   let content: string;
   try {
     content = readFileSync(filePath, "utf-8");
@@ -136,9 +125,7 @@ export function checkFile(
     } else if (code === "EISDIR") {
       console.error(`error: not a regular file (directory): ${filePath}`);
     } else {
-      console.error(
-        `error: read failed for ${filePath}: ${(err as Error).message}`,
-      );
+      console.error(`error: read failed for ${filePath}: ${(err as Error).message}`);
     }
     return { findings: [], ok: false };
   }
@@ -200,9 +187,7 @@ export function checkFile(
 export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error(
-      "usage: bun tools/substrate-claim-checker/check-self-recursive.ts <file> [<file> ...]",
-    );
+    console.error("usage: bun tools/substrate-claim-checker/check-self-recursive.ts <file> [<file> ...]");
     return 1;
   }
 
@@ -216,9 +201,7 @@ export function main(): number {
       continue;
     }
     for (const f of findings) {
-      console.log(
-        `${f.file}:${f.line}: self-recursive drift (${f.topic}) — ${f.reason}`,
-      );
+      console.log(`${f.file}:${f.line}: self-recursive drift (${f.topic}) — ${f.reason}`);
       totalFindings++;
     }
   }

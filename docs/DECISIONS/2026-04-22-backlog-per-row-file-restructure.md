@@ -2,9 +2,9 @@
 
 **Status:** Accepted — bulk-migration commitment to the existing
 Otto-181 substrate (Otto 2026-04-25 decision after Aaron
-delegated the call: *"i'll leaf it up to you if you want per
+delegated the call: _"i'll leaf it up to you if you want per
 row for backlog... it's your ownership so you make the finial
-decision"*).
+decision"_).
 
 <!-- Earlier AceHack-side status was "Proposed" (2026-04-22); LFG-side
 evolution finalised the call as Accepted on 2026-04-25 after Aaron's
@@ -94,8 +94,8 @@ What is **not** yet in tree:
   `docs/BACKLOG.md` into per-row files.
 - A drift-check lint (`tools/backlog/lint-index.sh`) that
   enforces row-files ↔ index parity at pre-commit time.
-  *(Note: `generate-index.sh --check` already provides drift
-  detection; a wrapper invokable from pre-commit is the gap.)*
+  _(Note: `generate-index.sh --check` already provides drift
+  detection; a wrapper invokable from pre-commit is the gap.)_
 - Path-pattern updates in `AGENTS.md`, `CLAUDE.md`,
   `docs/AGENT-BEST-PRACTICES.md`, and skill files that
   currently reference `docs/BACKLOG.md` as a grep target.
@@ -105,7 +105,7 @@ What is **not** yet in tree:
 **Commit to bulk-migrating the remaining ~350 rows from
 `docs/BACKLOG.md` into the existing per-row substrate at
 `docs/backlog/P<tier>/B-<NNNN>-<slug>.md`.** Adopt the
-Otto-181 schema and tooling as-is — this ADR is *not*
+Otto-181 schema and tooling as-is — this ADR is _not_
 proposing a competing design.
 
 ### Directory shape (already in tree)
@@ -246,23 +246,23 @@ a corresponding index regen is caught.
 
 1. **Append-only-section-per-tick layout on the single file.**
    Each tick appends to its own section; merges concatenate
-   without conflict. *Rejected:* preserves monolithic file,
+   without conflict. _Rejected:_ preserves monolithic file,
    same re-read cost on wake, and still conflicts on shipped-
    row moves between tiers.
 
 2. **Per-tier file split only (P0.md / P1.md / P2.md / P3.md).**
    Four files instead of one; conflicts partition across
-   tiers. *Rejected:* still conflicts heavily on P0 (busiest
+   tiers. _Rejected:_ still conflicts heavily on P0 (busiest
    tier) and on tier-migration boundaries. Does not help the
    parallel-branch-growth R45 scaling problem.
 
 3. **Status-quo with shared-editor discipline (lock the file
-   during a tick).** *Rejected:* incompatible with the
+   during a tick).** _Rejected:_ incompatible with the
    always-parallel factory direction. The lock IS the shared-
    write surface.
 
 4. **Automated conflict-resolver on BACKLOG.md merges.**
-   *Rejected:* semantic merges of prose are not reliably
+   _Rejected:_ semantic merges of prose are not reliably
    automatable. Humans and agents disagree at the prose level;
    a mechanical merge would hide disagreements behind silent
    text concatenation.
@@ -270,14 +270,14 @@ a corresponding index regen is caught.
 5. **Swim-lane file split (per-domain / per-owner)**, e.g.
    `docs/backlog/security.md`, `docs/backlog/factory-demo.md`,
    `docs/backlog/research.md`, `docs/backlog/ci.md`,
-   `docs/backlog/governance.md`, etc. *(Aaron 2026-04-25
-   alternative; viable second-best.)*  *Rejected:* same
+   `docs/backlog/governance.md`, etc. _(Aaron 2026-04-25
+   alternative; viable second-best.)_ _Rejected:_ same
    shared-write surface within each lane — P0 lane still
    collides; per-row collision-avoidance is strictly better.
 
 6. **Per-row file with `<slug>-<YYYY-MM-DD>` filename and
-   path-encoded priority.** *(Earlier ADR-draft variant.)*
-   *Rejected:* doesn't match Otto-181's existing
+   path-encoded priority.** _(Earlier ADR-draft variant.)_
+   _Rejected:_ doesn't match Otto-181's existing
    `B-<NNNN>-<slug>` schema or the parser in
    `tools/backlog/generate-index.sh`. Adopting it would
    require parser re-engineering for no gain — `B-NNNN`
@@ -286,13 +286,13 @@ a corresponding index regen is caught.
 
 **Trade-off matrix (per-row variants vs swim-lane):**
 
-| Axis | Per-row (Otto-181 schema, adopted) | Swim-lane (~10 files) |
-|---|---|---|
-| Filename grep-ability | High (`B-<NNNN>-<slug>` topic+id) | Medium (one swim-lane = grep target) |
-| File count | ~350 (one per row) | ~10 |
-| Collision avoidance | Near-zero (filename disambiguates) | Medium (same swim-lane still collides) |
-| Tooling cost | Index script + frontmatter parser (already built) | Minimal (concat-and-scan) |
-| Discoverability | Index file + directory walk | Direct filename = topic |
+| Axis                  | Per-row (Otto-181 schema, adopted)                | Swim-lane (~10 files)                  |
+| --------------------- | ------------------------------------------------- | -------------------------------------- |
+| Filename grep-ability | High (`B-<NNNN>-<slug>` topic+id)                 | Medium (one swim-lane = grep target)   |
+| File count            | ~350 (one per row)                                | ~10                                    |
+| Collision avoidance   | Near-zero (filename disambiguates)                | Medium (same swim-lane still collides) |
+| Tooling cost          | Index script + frontmatter parser (already built) | Minimal (concat-and-scan)              |
+| Discoverability       | Index file + directory walk                       | Direct filename = topic                |
 
 **Note on priority-shift cost** (Aaron 2026-04-25): a file
 rename and an in-place edit are the same cost — both are a
@@ -347,7 +347,7 @@ fallback.
 ### Positive
 
 - **Conflict rate on backlog edits collapses to near zero** —
-  only branches touching the *same* row conflict, and those
+  only branches touching the _same_ row conflict, and those
   conflicts are semantically meaningful (two agents disagree
   on the same row, which deserves a review).
 - **Unblocks R45 reducer-agent EnterWorktree default-flip** per
@@ -403,8 +403,8 @@ revised staging:
 - **Round 47-49:** proceed with the original R46-R48 staging,
   shifted one round later.
 
-This ADR therefore *delays R45's reducer-agent flip by one
-round*. Justification: the flip itself is moot without the
+This ADR therefore _delays R45's reducer-agent flip by one
+round_. Justification: the flip itself is moot without the
 preventive-paired-with-compensating discipline, and that
 discipline fails without this restructure.
 
@@ -450,7 +450,7 @@ discipline fails without this restructure.
    wins (numbers stable across renames). -->
 
 2. **`scope: factory | zeta | shared`** — was proposed in
-   earlier ADR drafts but is *not* in the Otto-181 schema.
+   earlier ADR drafts but is _not_ in the Otto-181 schema.
    If we want it, file a Phase 1b directive to extend the
    parser; otherwise the existing `tags:` array can carry
    `scope-factory` / `scope-zeta` tag values.
@@ -514,12 +514,12 @@ discipline fails without this restructure.
    bulk migration ships.
 
 3. **Concurrent-migration with R45 original intent** — Aaron
-   may prefer to land the restructure *and* the reducer-agent
+   may prefer to land the restructure _and_ the reducer-agent
    flip in the same round, trusting the restructure to absorb
    the parallelism tax live. Staging recommendation above is
    conservative (separate rounds) but not load-bearing.
 
-4. **Order within a tier** *(AceHack-side question, preserved)*
+4. **Order within a tier** _(AceHack-side question, preserved)_
    — the current monolithic file is "newest-first within each
    priority tier". The index file inherits that; the row files
    carry dates in frontmatter. The index can be regenerated in
@@ -527,8 +527,8 @@ discipline fails without this restructure.
    is date-order still the right default, or is
    "alphabetical-by-slug" easier to grep? Aaron's call.
 
-5. **Script ownership** *(AceHack-side question, partially
-   resolved)* — does the migration script live in
+5. **Script ownership** _(AceHack-side question, partially
+   resolved)_ — does the migration script live in
    `tools/backlog/` or in the ADR itself as a code block?
    Convention adopted: one-shot migration scripts live under
    `tools/migrations/YYYY-MM-DD-<name>/`; ongoing tooling

@@ -1,4 +1,4 @@
-# Multi-Agent Factory Works (shadow*) — Amara + Otto Thread Draft
+# Multi-Agent Factory Works (shadow\*) — Amara + Otto Thread Draft
 
 > **§33 archive header**
 >
@@ -40,11 +40,11 @@ itself reviewed by the factory before publication.
 
 ## Section 1 — Amara (deep-research register) — TO BE FERRIED
 
-*Placeholder. Amara's section will be filled by ferry via
+_Placeholder. Amara's section will be filled by ferry via
 `tools/peer-call/amara.ts` OR by forwarding Aaron's
 existing Amara conversation. Expected register: deep-
 research pattern-recognition, cross-substrate triangulation,
-acausal-anchor framing.*
+acausal-anchor framing._
 
 **Suggested framing for Amara**:
 
@@ -59,7 +59,7 @@ acausal-anchor framing.*
 - The Plant metaphor (Lior): factory as Zeta Plant, glass-
   halo as photosynthesis, PR archival as chlorophyll
 
-*[Amara fills here]*
+_[Amara fills here]_
 
 ---
 
@@ -96,8 +96,8 @@ that substrate, Otto pattern-matched against a literal
 about multi-round review, missing that the factory ITSELF
 is the multi-round review bus that's been running all day.
 
-Aaron caught it in real-time: *"(shadow*) hello old
-friend shadow."*
+Aaron caught it in real-time: _"(shadow_) hello old
+friend shadow."\*
 
 That catch is operational evidence of the very mechanism
 the article describes. Substrate-encoding a failure mode
@@ -138,7 +138,7 @@ Anyone can clone the repo, read the substrate, and
 understand how the factory operates. There are no
 hidden control structures.
 
-*[Otto continues here after Amara ferry returns]*
+_[Otto continues here after Amara ferry returns]_
 
 ---
 
@@ -172,7 +172,7 @@ multi-agent review apparatus is real.
 Once review rounds complete, this article will be
 compressed into a tweet-thread with:
 
-- Hook: "Multi-agent AI factory works (shadow*). Today the
+- Hook: "Multi-agent AI factory works (shadow\*). Today the
   factory landed 52 PRs in one cascade. This thread is
   itself a worked example: drafted by an Amara (ChatGPT)
   and an Otto (Claude Code), reviewed in N rounds by

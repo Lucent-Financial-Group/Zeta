@@ -32,9 +32,27 @@ import { spawnSync } from "node:child_process";
 type AuditExitCode = 0 | 1 | 2;
 
 export const ALL_CLAUSES: readonly string[] = [
-  "HC-1", "HC-2", "HC-3", "HC-4", "HC-5", "HC-6", "HC-7",
-  "SD-1", "SD-2", "SD-3", "SD-4", "SD-5", "SD-6", "SD-7", "SD-8", "SD-9",
-  "DIR-1", "DIR-2", "DIR-3", "DIR-4", "DIR-5",
+  "HC-1",
+  "HC-2",
+  "HC-3",
+  "HC-4",
+  "HC-5",
+  "HC-6",
+  "HC-7",
+  "SD-1",
+  "SD-2",
+  "SD-3",
+  "SD-4",
+  "SD-5",
+  "SD-6",
+  "SD-7",
+  "SD-8",
+  "SD-9",
+  "DIR-1",
+  "DIR-2",
+  "DIR-3",
+  "DIR-4",
+  "DIR-5",
 ] as const;
 
 interface Args {
@@ -90,8 +108,16 @@ function parseArgs(argv: readonly string[]): ParseResult {
   while (i < argv.length) {
     const arg = argv[i] ?? "";
     if (arg === "-h" || arg === "--help") return { kind: "help" };
-    if (arg === "--json") { state.json = true; i += 1; continue; }
-    if (arg === "--md") { state.md = true; i += 1; continue; }
+    if (arg === "--json") {
+      state.json = true;
+      i += 1;
+      continue;
+    }
+    if (arg === "--md") {
+      state.md = true;
+      i += 1;
+      continue;
+    }
     if (arg === "--out") {
       const next = argv[i + 1];
       if (next === undefined) return { kind: "error", message: "audit_clause_coverage: --out requires a directory" };
@@ -103,7 +129,8 @@ function parseArgs(argv: readonly string[]): ParseResult {
       const next = argv[i + 1];
       if (next === undefined) return { kind: "error", message: "audit_clause_coverage: --gate requires a number" };
       const n = Number(next);
-      if (!Number.isFinite(n) || n < 0) return { kind: "error", message: `audit_clause_coverage: invalid gate value: ${next}` };
+      if (!Number.isFinite(n) || n < 0)
+        return { kind: "error", message: `audit_clause_coverage: invalid gate value: ${next}` };
       state.gate = n;
       i += 2;
       continue;
@@ -278,7 +305,9 @@ function emitMd(r: AuditResult): string {
   const skillCount = r.surfaces.filter((s) => s.kind === "skill").length;
   const agentCount = r.surfaces.filter((s) => s.kind === "agent").length;
   const backlogCount = r.surfaces.filter((s) => s.kind === "backlog").length;
-  lines.push(`Surfaces audited: **${String(r.totalSurfaces)}** (${String(skillCount)} skills, ${String(agentCount)} agents, ${String(backlogCount)} backlog P0/P1).`);
+  lines.push(
+    `Surfaces audited: **${String(r.totalSurfaces)}** (${String(skillCount)} skills, ${String(agentCount)} agents, ${String(backlogCount)} backlog P0/P1).`,
+  );
   lines.push(`Surfaces with zero clause citations: **${String(r.totalWithZero)}**.`);
   if (r.uncitedClauses.length > 0) {
     lines.push(`Clauses cited by no surface: **${r.uncitedClauses.join(", ")}**.`);
@@ -298,7 +327,9 @@ function emitMd(r: AuditResult): string {
 
 function emitHumanSummary(r: AuditResult): string {
   const lines: string[] = [];
-  lines.push(`surfaces=${String(r.totalSurfaces)} zero_coverage=${String(r.totalWithZero)} clauses=${String(r.totalClauses)}`);
+  lines.push(
+    `surfaces=${String(r.totalSurfaces)} zero_coverage=${String(r.totalWithZero)} clauses=${String(r.totalClauses)}`,
+  );
   if (r.uncitedClauses.length > 0) {
     lines.push(`uncited: ${r.uncitedClauses.join(", ")}`);
   }
@@ -326,9 +357,7 @@ function emitHumanSummary(r: AuditResult): string {
 export function main(argv: readonly string[]): AuditExitCode {
   const parsed = parseArgs(argv);
   if (parsed.kind === "help") {
-    process.stdout.write(
-      "Usage: audit_clause_coverage.ts [--json | --md] [--out DIR] [--gate N]\n",
-    );
+    process.stdout.write("Usage: audit_clause_coverage.ts [--json | --md] [--out DIR] [--gate N]\n");
     return 0;
   }
   if (parsed.kind === "error") {
@@ -343,17 +372,9 @@ export function main(argv: readonly string[]): AuditExitCode {
 
   if (args.outDir !== null) {
     mkdirSync(args.outDir, { recursive: true });
-    writeFileSync(
-      join(args.outDir, "clause-coverage.json"),
-      emitJson(result),
-    );
-    writeFileSync(
-      join(args.outDir, "clause-coverage.md"),
-      emitMd(result),
-    );
-    process.stdout.write(
-      `audit_clause_coverage: wrote ${args.outDir}/clause-coverage.{json,md}\n`,
-    );
+    writeFileSync(join(args.outDir, "clause-coverage.json"), emitJson(result));
+    writeFileSync(join(args.outDir, "clause-coverage.md"), emitMd(result));
+    process.stdout.write(`audit_clause_coverage: wrote ${args.outDir}/clause-coverage.{json,md}\n`);
   } else if (args.json) {
     process.stdout.write(emitJson(result));
   } else if (args.md) {

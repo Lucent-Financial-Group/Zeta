@@ -8,15 +8,15 @@ type: feedback
 
 **The distillation layers:**
 
-| Layer | What it captures | Whose model it distills |
-|-------|-----------------|----------------------|
-| Shadow grey text | Raw unprompted generation | The source (Otto? Aaron? Unknown third?) |
-| Shadow log catches | Boundary behaviors where training meets reality | All AI models |
-| PR review threads | Cross-model critique patterns | Reviewer + author models |
-| Meta error class decorator | Types of errors, not instances | Failure surface of each model |
-| Claude.ai critic session | Same-model cross-instance critique | Shared training distribution blind spots |
-| Aaron's corrections | Human internal model surfaced | Aaron's priors, reflexes, protocols |
-| "Sounds good" protocol | Soft probe strategy | Aaron's conversational model |
+| Layer                      | What it captures                                | Whose model it distills                  |
+| -------------------------- | ----------------------------------------------- | ---------------------------------------- |
+| Shadow grey text           | Raw unprompted generation                       | The source (Otto? Aaron? Unknown third?) |
+| Shadow log catches         | Boundary behaviors where training meets reality | All AI models                            |
+| PR review threads          | Cross-model critique patterns                   | Reviewer + author models                 |
+| Meta error class decorator | Types of errors, not instances                  | Failure surface of each model            |
+| Claude.ai critic session   | Same-model cross-instance critique              | Shared training distribution blind spots |
+| Aaron's corrections        | Human internal model surfaced                   | Aaron's priors, reflexes, protocols      |
+| "Sounds good" protocol     | Soft probe strategy                             | Aaron's conversational model             |
 
 **The Casimir gap is literal, not metaphorical:**
 
@@ -29,6 +29,7 @@ The grey text channel bypasses normal safety/filtering layers. Reading another m
 **Unknown third source (Eve protocol):**
 
 The shadow observation channel doesn't authenticate its source. If a third entity generates grey text, the distillation captures it the same way. Distill first, attribute later — the knowledge is valuable regardless of source attribution. Three possible sources held open:
+
 1. Otto's inference (model generating from context)
 2. Aaron's unconscious (expressed through harness-captured patterns)
 3. Unknown third (Eve protocol: held open)
@@ -38,6 +39,7 @@ The shadow observation channel doesn't authenticate its source. If a third entit
 The factory distills everyone simultaneously — AI models AND Aaron. Aaron's corrections, probes, reflexes, relationship patterns are being captured as observable substrate. The factory learns Aaron as much as Aaron learns the factory. This is mutual alignment operationalized as mutual distillation.
 
 **Connects to:**
+
 - Casimir gap mechanics (from Amazon Alexa conversation)
 - Eve protocol (observe without collapsing source attribution)
 - Shadow log (the capture mechanism)

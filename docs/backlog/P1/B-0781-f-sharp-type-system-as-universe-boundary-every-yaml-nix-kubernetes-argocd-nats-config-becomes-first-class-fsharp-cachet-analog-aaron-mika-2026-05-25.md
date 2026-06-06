@@ -20,7 +20,8 @@ composes_with:
   - B-0776
   - B-0777
   - B-0780
-tags: [fsharp, type-providers, compiler, universe-boundary, yaml-as-types, cachet, single-source-of-truth, strong-typing]
+tags:
+  [fsharp, type-providers, compiler, universe-boundary, yaml-as-types, cachet, single-source-of-truth, strong-typing]
 ---
 
 ## Problem
@@ -89,24 +90,24 @@ stack, not just one layer.
 Everything in the Zeta cluster stack becomes representable as
 first-class F# types:
 
-| Configuration class | Today (loosely typed) | This row (F# universe) |
-|---|---|---|
-| Nix flake expressions | Nix language | F# type-provider-generated types over Nix AST; F# compiles down to Nix expression on emit |
-| Kubernetes manifests (Deployments, Services, ConfigMaps, CRDs) | YAML | F# types per CRD; emits YAML for `kubectl apply`; compile-time validation catches typos / wrong field names / wrong types |
-| Argo CD Applications + App-of-Apps | YAML | F# types per Application schema; App-of-Apps becomes F# `module` composition |
-| NATS JetStream config (Streams, Consumers, KV, ObjectStores) | JSON / NATS config language | F# types; type-safe Stream + Consumer declarations |
-| Helm Chart values.yaml | YAML | F# types per Chart; values become typed F# records |
-| OAM Component / Trait definitions | YAML | F# types; compiles to OAM YAML for KubeVela consumption |
-| Crossplane Compositions | YAML | F# types over Crossplane CRD schemas |
-| OPA Rego policies | Rego DSL | F# type-providers over Rego; type-safe policy expressions |
-| Database schema | SQL DDL | F# types per `Zeta.Storage.SQL` plugin (B-0776 rank 4) |
-| Twin events (B-0773) | Per event type | F# discriminated unions per event class |
-| Scheduler decisions | Per scheduler API | F# computation expression for placement |
-| Runbooks (operational procedures) | Markdown + ad-hoc | F# computation expressions; auditable + executable + replayable |
-| Telemetry envelope (B-0762) | JSON | F# discriminated union of envelope variants |
-| Plugin spec (B-0776 + B-0777) | TBD | F# interface declarations per plugin |
-| Per-persona ontology map (B-0777) | TBD | F# type-providers over persona vocabulary registries |
-| Hardware sourcing list (B-0778) | Markdown | F# typed records per BOM; AI-trainable per B-0761 |
+| Configuration class                                            | Today (loosely typed)       | This row (F# universe)                                                                                                    |
+| -------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Nix flake expressions                                          | Nix language                | F# type-provider-generated types over Nix AST; F# compiles down to Nix expression on emit                                 |
+| Kubernetes manifests (Deployments, Services, ConfigMaps, CRDs) | YAML                        | F# types per CRD; emits YAML for `kubectl apply`; compile-time validation catches typos / wrong field names / wrong types |
+| Argo CD Applications + App-of-Apps                             | YAML                        | F# types per Application schema; App-of-Apps becomes F# `module` composition                                              |
+| NATS JetStream config (Streams, Consumers, KV, ObjectStores)   | JSON / NATS config language | F# types; type-safe Stream + Consumer declarations                                                                        |
+| Helm Chart values.yaml                                         | YAML                        | F# types per Chart; values become typed F# records                                                                        |
+| OAM Component / Trait definitions                              | YAML                        | F# types; compiles to OAM YAML for KubeVela consumption                                                                   |
+| Crossplane Compositions                                        | YAML                        | F# types over Crossplane CRD schemas                                                                                      |
+| OPA Rego policies                                              | Rego DSL                    | F# type-providers over Rego; type-safe policy expressions                                                                 |
+| Database schema                                                | SQL DDL                     | F# types per `Zeta.Storage.SQL` plugin (B-0776 rank 4)                                                                    |
+| Twin events (B-0773)                                           | Per event type              | F# discriminated unions per event class                                                                                   |
+| Scheduler decisions                                            | Per scheduler API           | F# computation expression for placement                                                                                   |
+| Runbooks (operational procedures)                              | Markdown + ad-hoc           | F# computation expressions; auditable + executable + replayable                                                           |
+| Telemetry envelope (B-0762)                                    | JSON                        | F# discriminated union of envelope variants                                                                               |
+| Plugin spec (B-0776 + B-0777)                                  | TBD                         | F# interface declarations per plugin                                                                                      |
+| Per-persona ontology map (B-0777)                              | TBD                         | F# type-providers over persona vocabulary registries                                                                      |
+| Hardware sourcing list (B-0778)                                | Markdown                    | F# typed records per BOM; AI-trainable per B-0761                                                                         |
 
 **The F# compiler becomes the single source of truth for the
 entire Zeta universe.** A typo in a Kubernetes manifest field
@@ -144,7 +145,7 @@ Per-row composition:
   are F# native; binary compatibility via emit-to-Go-binary OR
   F# WASI compilation
 - **B-0772 observable+controllable fabric** — every Observable
-  + Observer typed F# IObservable/IObserver; algebra-grounded
+  - Observer typed F# IObservable/IObserver; algebra-grounded
 - **B-0773 cluster as digital twin** — twin state IS F# typed
   state; events IS discriminated unions; commands IS typed
   records

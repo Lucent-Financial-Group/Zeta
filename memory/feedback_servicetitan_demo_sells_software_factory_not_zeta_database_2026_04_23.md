@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 load-bearing directive on ServiceTitan demo posi
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # ServiceTitan demo: software factory, not Zeta
 
 ## Verbatim (2026-04-23)
@@ -11,13 +12,13 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > the doemo does not need to try to get ServiceTitan to buy into
 > Zeta for ther data store yet, we are really just trying to
 > demo them the software factory, that will likely use a postgres
-> backend or some other stanadard database technology.  The
+> backend or some other stanadard database technology. The
 > database still is a phase next kind of thing for service titan.
 > Get them internested in the software fasctor first whith this
 > demno, really don't need to even mention the database
 > technolgy and once they start using the sofware factory for a
 > while the database sell will be a much easier sell, please
-> make sure our demo to service titan reflects this.  If they
+> make sure our demo to service titan reflects this. If they
 > see a bunch of suggestions to change thier database technology
 > it's going to kill their adooption of the software factory
 
@@ -35,16 +36,16 @@ relationship and trust exist.
 
 **Never in the demo:** algebraic-delta-inspector widgets,
 retraction-native UI surfaces framed as differentiating
-features, *"every interaction is a Z-set delta"* narratives,
+features, _"every interaction is a Z-set delta"_ narratives,
 any pitch that the database layer is remarkable. These are
 correct internally but wrong-audience in a factory-adoption
 pitch.
 
 ## Why this matters
 
-Aaron's own diagnosis: *"If they see a bunch of suggestions to
+Aaron's own diagnosis: _"If they see a bunch of suggestions to
 change thier database technology it's going to kill their
-adooption of the software factory"*. The database-change pitch
+adooption of the software factory"_. The database-change pitch
 IS a threat signal to a company with existing data-tier
 commitments. The factory pitch is additive — it builds on top
 of whatever they already have.
@@ -55,8 +56,8 @@ Two separate sells, two separate phases. Do not compress them.
 
 - **CRM-UI demo scope** — standard DB backend. Postgres or SQL
   Server, whichever ServiceTitan would accept without question.
-  The UI pitches the *how it was built* (software factory +
-  agents) story, not the *what it runs on top of* story.
+  The UI pitches the _how it was built_ (software factory +
+  agents) story, not the _what it runs on top of_ story.
 - **Demo narrative** — the factory built this CRM app in N
   hours with M agents. Watch how changes compose. The database
   is mentioned only if asked, and then it's: "standard
@@ -69,11 +70,11 @@ Two separate sells, two separate phases. Do not compress them.
 - **Sample code** — if a ServiceTitan-facing sample shows ZSet
   operations, frame them as internal implementation detail. A
   reader landing on the sample should see CRM-app code that
-  *happens* to use a good library, not a demo-of-the-library.
+  _happens_ to use a good library, not a demo-of-the-library.
 - **Agent-internal reasoning** — agents (me, specialists) can
   and should still reason using Zeta's algebraic vocabulary
   (retraction, delta, consolidate, spine). The discipline is
-  about *what reaches ServiceTitan*, not what happens inside
+  about _what reaches ServiceTitan_, not what happens inside
   the factory.
 - **Phase-2 signal** — if ServiceTitan starts asking questions
   about performance, scale, or reliability that a standard
@@ -91,10 +92,10 @@ Two separate sells, two separate phases. Do not compress them.
 - Not a license to over-abstract the demo. The demo still
   needs to be a real working app ServiceTitan can evaluate.
   Standard DB + great factory-built UX is the bar.
-- Not a change to what Zeta *is* as a project. Zeta remains
+- Not a change to what Zeta _is_ as a project. Zeta remains
   the F# DBSP implementation + alignment substrate. What
-  changes is how we talk to *this specific audience at this
-  specific phase*.
+  changes is how we talk to _this specific audience at this
+  specific phase_.
 - Not a rule that extends to other audiences. Academic
   audiences get the DBSP / retraction-native pitch. Aurora
   partners get the algebraic-substrate pitch. ServiceTitan

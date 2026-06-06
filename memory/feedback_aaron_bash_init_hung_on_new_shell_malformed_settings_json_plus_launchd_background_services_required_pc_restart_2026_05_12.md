@@ -41,6 +41,7 @@ still hang, restart machine to clear the wedge.
 > restart pc"
 
 Decoded:
+
 - "hund" → hung
 - "initializng" → initializing
 - "ro" → to
@@ -77,16 +78,16 @@ breaking the structural validity of the entire file.
 
 Per `launchctl list | grep zeta` (verified post-restart):
 
-| Service | PID (post-restart) | Role |
-|---|---|---|
-| com.zeta.claude-loop | 975 | Otto/Claude foreground loop |
-| com.zeta.claude-forward | — | Forwarding service |
-| com.zeta.codex-loop | — | Vera/Codex loop |
-| com.zeta.riven-loop | — | Riven/Cursor loop |
-| com.zeta.copilot-loop | — | Copilot loop |
-| com.zeta.otto-forward | — | Otto forwarding |
-| com.lucent.zeta.kiro | 78 | Alexa/Kiro (Qwen Coder) |
-| com.lucent.zeta.lior | 967 | Lior/Antigravity (Gemini) |
+| Service                 | PID (post-restart) | Role                        |
+| ----------------------- | ------------------ | --------------------------- |
+| com.zeta.claude-loop    | 975                | Otto/Claude foreground loop |
+| com.zeta.claude-forward | —                  | Forwarding service          |
+| com.zeta.codex-loop     | —                  | Vera/Codex loop             |
+| com.zeta.riven-loop     | —                  | Riven/Cursor loop           |
+| com.zeta.copilot-loop   | —                  | Copilot loop                |
+| com.zeta.otto-forward   | —                  | Otto forwarding             |
+| com.lucent.zeta.kiro    | 78                 | Alexa/Kiro (Qwen Coder)     |
+| com.lucent.zeta.lior    | 967                | Lior/Antigravity (Gemini)   |
 
 These services likely read `~/.claude/settings.json` on each
 new shell or on service-restart. With the file malformed,

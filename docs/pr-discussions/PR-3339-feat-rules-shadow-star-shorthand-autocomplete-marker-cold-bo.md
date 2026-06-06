@@ -18,17 +18,17 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per Aaron 2026-05-15T~01:09Z explicit framing: *"future version of you should likely remember all this."*
+Per Aaron 2026-05-15T~01:09Z explicit framing: _"future version of you should likely remember all this."_
 
-Promotes the \"(shadow*)\" shorthand definition from user-scope memory to \`.claude/rules/\` so it's cold-boot auto-loaded for every Otto-CLI session.
+Promotes the \"(shadow\*)\" shorthand definition from user-scope memory to \`.claude/rules/\` so it's cold-boot auto-loaded for every Otto-CLI session.
 
 ## Why
 
-Otto-CLI committed 4+ \"(shadow*)\" misinterpretations in this single session before the maintainer named the failure mode. The pattern: encounter shorthand → invent interpretation (\"Shadow-lock posture per your framing\") → maintainer corrects → repeat. Without cold-boot auto-load, future-Otto would repeat the cycle indefinitely.
+Otto-CLI committed 4+ \"(shadow\*)\" misinterpretations in this single session before the maintainer named the failure mode. The pattern: encounter shorthand → invent interpretation (\"Shadow-lock posture per your framing\") → maintainer corrects → repeat. Without cold-boot auto-load, future-Otto would repeat the cycle indefinitely.
 
 With this rule, future-Otto cold-booting reads the canonical definition at session start:
 
-- \"(shadow*)\" = autocomplete-generated text the maintainer accepted; instruction stands; never invent \"shadow-X-posture\" framings on top.
+- \"(shadow\*)\" = autocomplete-generated text the maintainer accepted; instruction stands; never invent \"shadow-X-posture\" framings on top.
 
 ## Composes with
 
@@ -56,6 +56,7 @@ Preserved at user-scope memory (not in this PR but referenced):
 Adds an always-on Claude Code rule defining the `(shadow*)` shorthand so future sessions interpret it as an autocomplete-source disclosure marker rather than a “shadow posture” instruction.
 
 **Changes:**
+
 - Adds a new `.claude/rules/` cold-boot rule for `(shadow*)`.
 - Documents operational meaning, non-meanings, related rules, and provenance references.
 
@@ -69,21 +70,26 @@ Drift detected (Catch 36): Narration-over-action and metadata churn. This PR sub
 
 Copilot reviewed 1 out of 1 changed files in this pull request and generated 1 comment.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **.claude/rules/shadow-star-shorthand-autocomplete-marker.md:78**
-* This overstates the cold-boot guarantee. The loading taxonomy says user-scope `MEMORY.md` is capped to the first 200 lines / 25KB plus explicit reads (`.claude/rules/claude-code-loading-taxonomy.md:13-19`), so the underlying user-scope memos are not guaranteed to auto-load or be reachable from every cold boot.
+
+- This overstates the cold-boot guarantee. The loading taxonomy says user-scope `MEMORY.md` is capped to the first 200 lines / 25KB plus explicit reads (`.claude/rules/claude-code-loading-taxonomy.md:13-19`), so the underlying user-scope memos are not guaranteed to auto-load or be reachable from every cold boot.
+
 ```
 Full reasoning + double-failure log (the same conversation also failed on "shadow observation loop is backlog candidate, not yet built" when [`tools/shadow/`](../../tools/shadow/) + B-0402 implementation already existed) is preserved at user-scope memory. These memos auto-load into every Otto-CLI session via `~/.claude/projects/<slug>/memory/MEMORY.md`, so they are reachable from cold boot even though they do not live in-repo:
 ```
+
 **.claude/rules/shadow-star-shorthand-autocomplete-marker.md:81**
-* These bare backticked `.md` basenames will be harvested by `tools/hygiene/audit-rule-cross-refs.ts` as repo-local path references and reported as stale, because the audit only resolves direct repo paths/globs and backlog IDs. Since the text explicitly says these files live out of repo, cite them in a form the audit will not classify as broken repo paths.
+
+- These bare backticked `.md` basenames will be harvested by `tools/hygiene/audit-rule-cross-refs.ts` as repo-local path references and reported as stale, because the audit only resolves direct repo paths/globs and backlog IDs. Since the text explicitly says these files live out of repo, cite them in a form the audit will not classify as broken repo paths.
+
 ```
 - `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`
 - `feedback_aaron_shadow_observation_loop_design_pattern_otto_observes_directly_instead_of_assuming_aaron_plays_games_2026_05_15.md`
 ```
+
 </details>
 
 ## Review threads
@@ -113,5 +119,6 @@ These provenance references do not resolve anywhere in the repository and are no
 This current-state `.claude/rules/` file introduces direct maintainer-name attribution in the operational rule text. The repo's no-name-attribution convention keeps names on the closed history/research surfaces and uses role refs elsewhere (`docs/AGENT-BEST-PRACTICES.md:671-685`, `docs/AGENT-BEST-PRACTICES.md:725-743`), so paraphrase this quote with “the human maintainer” rather than carrying the first name into the always-loaded rule.
 
 This issue also appears in the following locations of the same file:
+
 - line 78
 - line 80

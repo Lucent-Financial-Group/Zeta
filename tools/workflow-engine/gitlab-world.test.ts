@@ -20,10 +20,10 @@ describe("GitLabWorld constructor + inheritance", () => {
   test("buildGitLabWorld extends GitWorld base", () => {
     const gitWorld = buildGitWorld();
     const gitLabWorld = buildGitLabWorld(gitWorld);
-    expect(gitLabWorld.forgeName).toBe("git");           // inherited
+    expect(gitLabWorld.forgeName).toBe("git"); // inherited
     expect(gitLabWorld.forgeSpecialization).toBe("gitlab");
-    expect(gitLabWorld.branchUniverse.length).toBe(4);   // inherited from GitWorld
-    expect(gitLabWorld.commitUniverse.length).toBe(5);   // inherited
+    expect(gitLabWorld.branchUniverse.length).toBe(4); // inherited from GitWorld
+    expect(gitLabWorld.commitUniverse.length).toBe(5); // inherited
   });
 
   test("buildGitLabWorld populates MR + Discussion + Pipeline universes", () => {
@@ -125,15 +125,12 @@ describe("reusable substrate exports", () => {
   });
   test("GITLAB_DISCUSSION_UNIVERSE has 2 variants", () => {
     expect(GITLAB_DISCUSSION_UNIVERSE.length).toBe(2);
-    expect(GITLAB_DISCUSSION_UNIVERSE.map((d) => d.kind)).toEqual([
-      "unresolved",
-      "resolved",
-    ]);
+    expect(GITLAB_DISCUSSION_UNIVERSE.map((d) => d.kind)).toEqual(["unresolved", "resolved"]);
   });
   test("GITLAB_PIPELINE_UNIVERSE has 8 variants (GitLab-native CI/CD)", () => {
     expect(GITLAB_PIPELINE_UNIVERSE.length).toBe(8);
     const kinds = GITLAB_PIPELINE_UNIVERSE.map((p) => p.kind);
-    expect(kinds).toContain("manual");  // GitLab-specific
+    expect(kinds).toContain("manual"); // GitLab-specific
     expect(kinds).toContain("skipped"); // GitLab-specific (CI rules)
   });
   test("GITLAB_REQUIRE_RESOLVED_VERDICT is block with GitLab vocabulary", () => {

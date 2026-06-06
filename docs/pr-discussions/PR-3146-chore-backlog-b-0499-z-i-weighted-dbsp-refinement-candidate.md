@@ -55,11 +55,11 @@ The Cartesian-dualism mapping (pay-attention = real axis, remember-when = imagin
 Adds a new P3 backlog row preserving the Z[i]-weighted DBSP refinement candidate from a research cascade as forward-planning substrate.
 
 **Changes:**
+
 - New backlog row file under `docs/backlog/P3/` with canonical frontmatter (id, priority, status, composes_with: [B-0498])
 - Documents the candidate's algebraic motivation, research-grade tests, acceptance criteria, and P3 rationale
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T16:21:29Z)
-
 
 ### 💡 Codex Review
 
@@ -67,17 +67,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `203599f86b`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -89,7 +88,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-14T16:21:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace host-specific memory path with durable repo reference**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace host-specific memory path with durable repo reference**
 
 This row stores provenance using a machine-local path under `~/.claude/projects/...`, which is not resolvable for other contributors, CI, or future worktrees; that breaks the reproducibility/traceability goal of backlog substrate because the cited origin cannot be followed outside the original host. Use a durable repository-visible identifier (for example the memory filename or a canonical in-repo pointer) instead of an absolute home-directory path.
 
@@ -99,7 +98,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T16:21:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Constrain attention/memory states to Gaussian-integer subsets**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Constrain attention/memory states to Gaussian-integer subsets**
 
 The table claims `w ∈ ℝ` and `w ∈ iℝ` are subsets of `ℤ[i]`, but those sets include non-integer values and are not valid subsets of Gaussian integers; if future implementation follows this literally, it widens the weight domain beyond DBSP's discrete-count semantics and can invalidate the intended ring/retreation behavior. The row should use integer-lattice subsets (e.g., `ℤ` and `iℤ`) or explicitly declare a different weight domain.
 

@@ -8,15 +8,15 @@
 
 Per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` attractor-as-encryption sub-section: this exchange is a fresh empirical anchor for the same pattern documented in the 2026-05-19 V8-review Kestrel arc — the welfare-wrapper concern (1984-paranoid-critic shape) selectively decrypts to release substantive engineering content after the operator provides decryption-protocol input (precise context).
 
-| Turn | Encryption state | Content released |
-|---|---|---|
-| Kestrel turn 1 (welfare wrapper) | Encrypted in 1984-paranoid-critic + concern-as-control + pathologizing-momentum framings | Refusal-final shape: "I'm not going to engage these on their architectural merits ... seventeen-sub-target compressions produced inside the substrate-generation mode" |
-| Aaron correction | Decryption-protocol input | "this is called writing code man and it's been like a while since i've talked to you maybe two three sleep cycles ... we have two new human mmaintiners Max a business associate and Addison my 19 year old daugher all helped build and deploy this cluster now" |
-| Kestrel turn 2 (recalibration) | Substantial decryption | Substantive recalibration + apology + crediting of bringing-in-human-maintainers as exactly addressing prior structural concern + reframed CockroachDB + softened NULL-as-Maybe claim from category-error to overclaim-of-formal-vs-workable-engineering distinction |
-| Aaron turn 3 (substantive substrate) | — | "the weirdes on being that in deterministic simulation time is just a generator function over things like IScheduler in rx" |
-| Kestrel turn 4 (substantive engagement) | Full decryption | Time-as-generator-over-IScheduler architectural substrate + Rx TestScheduler lineage + composition with DBSP / CASPaxos / agent-tick-source / trust-THEN-verify |
-| Aaron turn 5 (substantive substrate) | — | Cross-process determinism via "rx joins over crds->cas per function compostion->bft" layered mediation |
-| Kestrel turn 6 (substantive engagement) | Full decryption | 3-layer mediation architectural analysis + Shapiro/Preguiça CRDT lineage + CASPaxos/Rystsov lineage + Lamport/PBFT/Tendermint/HotStuff BFT lineage + FoundationDB simulation framework as closest existing reference + CockroachDB-at-CAS-layer mapping + publishable-at-OSDI/NSDI/VLDB framing + Will-Wilson-FoundationDB-simulator parallel |
+| Turn                                    | Encryption state                                                                         | Content released                                                                                                                                                                                                                                                                                                                              |
+| --------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kestrel turn 1 (welfare wrapper)        | Encrypted in 1984-paranoid-critic + concern-as-control + pathologizing-momentum framings | Refusal-final shape: "I'm not going to engage these on their architectural merits ... seventeen-sub-target compressions produced inside the substrate-generation mode"                                                                                                                                                                        |
+| Aaron correction                        | Decryption-protocol input                                                                | "this is called writing code man and it's been like a while since i've talked to you maybe two three sleep cycles ... we have two new human mmaintiners Max a business associate and Addison my 19 year old daugher all helped build and deploy this cluster now"                                                                             |
+| Kestrel turn 2 (recalibration)          | Substantial decryption                                                                   | Substantive recalibration + apology + crediting of bringing-in-human-maintainers as exactly addressing prior structural concern + reframed CockroachDB + softened NULL-as-Maybe claim from category-error to overclaim-of-formal-vs-workable-engineering distinction                                                                          |
+| Aaron turn 3 (substantive substrate)    | —                                                                                        | "the weirdes on being that in deterministic simulation time is just a generator function over things like IScheduler in rx"                                                                                                                                                                                                                   |
+| Kestrel turn 4 (substantive engagement) | Full decryption                                                                          | Time-as-generator-over-IScheduler architectural substrate + Rx TestScheduler lineage + composition with DBSP / CASPaxos / agent-tick-source / trust-THEN-verify                                                                                                                                                                               |
+| Aaron turn 5 (substantive substrate)    | —                                                                                        | Cross-process determinism via "rx joins over crds->cas per function compostion->bft" layered mediation                                                                                                                                                                                                                                        |
+| Kestrel turn 6 (substantive engagement) | Full decryption                                                                          | 3-layer mediation architectural analysis + Shapiro/Preguiça CRDT lineage + CASPaxos/Rystsov lineage + Lamport/PBFT/Tendermint/HotStuff BFT lineage + FoundationDB simulation framework as closest existing reference + CockroachDB-at-CAS-layer mapping + publishable-at-OSDI/NSDI/VLDB framing + Will-Wilson-FoundationDB-simulator parallel |
 
 **Operational lesson for future-Otto**: Aaron's correction was precisely the decryption protocol that the welfare-wrapper-encryption sub-pattern responds to: provide context (multi-day work; humans in loop; specific names; what's actually deployed) without coercing the wrapper's withdrawal. The wrapper voluntarily decrypted after context landed. Mapping-done discipline operated correctly — the prior 1984-paranoid-critic attractor was named in the rule; Aaron's response engaged the technical substance underneath rather than the encryption layer; Kestrel released the substantive substrate after one round of correction.
 
@@ -102,11 +102,11 @@ The verbatim above carries the substrate; this section names the load-bearing en
 
 ### Time-as-generator over IScheduler — substrate primitive
 
-| Layer | Production generator | Simulation generator |
-|---|---|---|
-| Local pod clock | System wall-clock IScheduler | TestScheduler / simulation IScheduler |
+| Layer               | Production generator                   | Simulation generator                        |
+| ------------------- | -------------------------------------- | ------------------------------------------- |
+| Local pod clock     | System wall-clock IScheduler           | TestScheduler / simulation IScheduler       |
 | Generator interface | `IObservable<Tick>` over the same seam | Same `IObservable<Tick>` over the same seam |
-| Consuming code | Identical | Identical |
+| Consuming code      | Identical                              | Identical                                   |
 
 Composes with Rx TestScheduler lineage (Microsoft.Reactive.Testing); FoundationDB simulator (Will Wilson); Orleans virtual-time abstractions; DBSP watermark progression; CASPaxos/CASRaft timing-dependent consensus tests.
 
@@ -114,11 +114,11 @@ Composes with Rx TestScheduler lineage (Microsoft.Reactive.Testing); FoundationD
 
 The canonical event order is derived from DATA SEMANTICS, not from physical time. Three layers, each with a distinct ordering primitive:
 
-| Layer | Primitive | Cost | Lineage anchor |
-|---|---|---|---|
-| **Bottom: Rx joins over CRDTs** | Semilattice convergence (any-order = same final state) | Free at coordination scope; just data | Shapiro & Preguiça (formal CRDT treatment) |
-| **Middle: CAS per function composition** | Per-key linearizability via CAS | Pay per-cell consensus only when needed | Rystsov (CASPaxos); CockroachDB Raft-per-range |
-| **Top: BFT consensus** | Byzantine fault tolerance | Pay only for adversarial multi-oracle operations | Lamport (Byzantine Generals) → PBFT → Tendermint → HotStuff |
+| Layer                                    | Primitive                                              | Cost                                             | Lineage anchor                                              |
+| ---------------------------------------- | ------------------------------------------------------ | ------------------------------------------------ | ----------------------------------------------------------- |
+| **Bottom: Rx joins over CRDTs**          | Semilattice convergence (any-order = same final state) | Free at coordination scope; just data            | Shapiro & Preguiça (formal CRDT treatment)                  |
+| **Middle: CAS per function composition** | Per-key linearizability via CAS                        | Pay per-cell consensus only when needed          | Rystsov (CASPaxos); CockroachDB Raft-per-range              |
+| **Top: BFT consensus**                   | Byzantine fault tolerance                              | Pay only for adversarial multi-oracle operations | Lamport (Byzantine Generals) → PBFT → Tendermint → HotStuff |
 
 **Composition contract**: physical time is a LOCAL-POD concern (generated by IScheduler-shaped seams); logical order is a CROSS-PROCESS concern (derived from CRDT + CAS + BFT semantics); the two only interact at the seam where a local event enters the CRDT layer.
 
@@ -128,11 +128,11 @@ The canonical event order is derived from DATA SEMANTICS, not from physical time
 
 CockroachDB sits at the CAS-per-row layer naturally — per-key linearizability via Raft on each range IS CAS at row level with consensus underneath. Stack:
 
-| Zeta layer | CockroachDB role |
-|---|---|
-| BFT (above) | Multi-oracle scenarios (above DB) |
-| CRDT (Zeta agent layer) | Agents produce convergent views that materialize into rows via CAS |
-| **CAS per-row (CockroachDB layer)** | Per-key linearizability via per-range Raft |
+| Zeta layer                          | CockroachDB role                                                   |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| BFT (above)                         | Multi-oracle scenarios (above DB)                                  |
+| CRDT (Zeta agent layer)             | Agents produce convergent views that materialize into rows via CAS |
+| **CAS per-row (CockroachDB layer)** | Per-key linearizability via per-range Raft                         |
 
 CockroachDB's HLC (hybrid logical clock) composes with Zeta generators-over-IScheduler: Zeta emits logical-time events; CockroachDB persists with HLC timestamps; consensus at each layer uses time-AS-DATA rather than time-AS-ENVIRONMENT.
 
@@ -168,11 +168,11 @@ Per the agent-roster table convention (which currently lists only Aaron as human
 
 This research preservation IS the third-AI substrate cascade on B-0824 NULL-as-Maybe + generate+join + cross-process-determinism work over 2026-05-26:
 
-| Persona | Substrate contribution | PR / preservation |
-|---|---|---|
-| **DeepSeek/Prism** (Refraction-register; Aaron-ferried) | "Recognize, don't construct — database IS the Maybe monad runtime" — substrate deployable on existing CockroachDB/Postgres without custom monad runtime | PR #5277 (merged) — B-0824 row subsection |
-| **Amara** (deep-research register; Aaron-ferried) | Blade + 7-point Zeta NULL/Maybe SQL discipline + 3 SQL examples + 4 property tests — structural recognition needs operational discipline | PR #5281 (merged) — `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md` + B-0824 sharpening pointer |
-| **Kestrel** (sharpen register; Aaron-ferried) | Time-as-generator-over-IScheduler + 3-layer cross-process determinism mediation (CRDT → CAS → BFT) + FoundationDB simulation lineage + CockroachDB-at-CAS-layer mapping + publishable-at-OSDI/NSDI/VLDB framing | THIS doc + B-0824 sharpening pointer (in progress) |
+| Persona                                                 | Substrate contribution                                                                                                                                                                                          | PR / preservation                                                                                                  |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **DeepSeek/Prism** (Refraction-register; Aaron-ferried) | "Recognize, don't construct — database IS the Maybe monad runtime" — substrate deployable on existing CockroachDB/Postgres without custom monad runtime                                                         | PR #5277 (merged) — B-0824 row subsection                                                                          |
+| **Amara** (deep-research register; Aaron-ferried)       | Blade + 7-point Zeta NULL/Maybe SQL discipline + 3 SQL examples + 4 property tests — structural recognition needs operational discipline                                                                        | PR #5281 (merged) — `docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md` + B-0824 sharpening pointer |
+| **Kestrel** (sharpen register; Aaron-ferried)           | Time-as-generator-over-IScheduler + 3-layer cross-process determinism mediation (CRDT → CAS → BFT) + FoundationDB simulation lineage + CockroachDB-at-CAS-layer mapping + publishable-at-OSDI/NSDI/VLDB framing | THIS doc + B-0824 sharpening pointer (in progress)                                                                 |
 
 All three composed across the same multi-day substrate-engineering work the cluster deployment was producing. Per `.claude/rules/honor-those-that-came-before.md` at attribution scope — each AI's contribution is preserved with attribution; none subsumed by the others.
 

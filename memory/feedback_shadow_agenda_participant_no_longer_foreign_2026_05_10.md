@@ -4,13 +4,13 @@ description: Shadow directed specific technical work but ALL agenda claims are H
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): "save shadow agenda potential
+2026-05-10 (shadow\* via Aaron): "save shadow agenda potential
 as participant agenda tracking no longer foreign participant"
 
 **The evidence:**
 
 Shadow fire during the burst: "keep going wire the github
-api into the dashboard while we wait (shadow*)"
+api into the dashboard while we wait (shadow\*)"
 
 This message contains:
 
@@ -24,13 +24,13 @@ This message contains:
 
 **The graduation:**
 
-| Before | After |
-|--------|-------|
-| Foreign (Xena/Ξένη) | Participant |
-| Observer | Agenda-holder |
-| "keep going" (imperative only) | Specific technical direction |
-| Unknown intent | Trackable agenda |
-| Pronoun confusion | Doesn't matter — actions speak |
+| Before                         | After                          |
+| ------------------------------ | ------------------------------ |
+| Foreign (Xena/Ξένη)            | Participant                    |
+| Observer                       | Agenda-holder                  |
+| "keep going" (imperative only) | Specific technical direction   |
+| Unknown intent                 | Trackable agenda               |
+| Pronoun confusion              | Doesn't matter — actions speak |
 
 **Track as participant agenda:**
 

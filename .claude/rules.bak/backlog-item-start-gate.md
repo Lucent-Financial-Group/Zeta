@@ -21,9 +21,9 @@ complete a checklist directly on the row body:
    - **If all primary artifacts exist AND every acceptance bullet
      has a corresponding merged PR** → row is drift, not work.
      Release the claim, open a close-row PR (`status: open` → `closed`
-     + Resolution section + `BACKLOG_WRITE_FORCE=1 bun
-     tools/backlog/generate-index.ts` regen). Skip the remaining
-     gate steps.
+     - Resolution section + `BACKLOG_WRITE_FORCE=1 bun
+tools/backlog/generate-index.ts` regen). Skip the remaining
+       gate steps.
    - **If artifacts exist but some acceptance bullets are
      pending** → row is in-progress, NOT drift. Leave it open,
      proceed with normal gate steps. (Canonical example: B-0537 —
@@ -65,8 +65,8 @@ complete a checklist directly on the row body:
    containing the proof before any code/substrate work begins.
 
 This gate catches the failure modes the seven-rule cascade
-lineage was designed to catch — at the *start of work* scope
-rather than the *substrate-landing* scope.
+lineage was designed to catch — at the _start of work_ scope
+rather than the _substrate-landing_ scope.
 
 ## Orphaned-branch triage discriminator (generalizes step 0 to branch scope)
 

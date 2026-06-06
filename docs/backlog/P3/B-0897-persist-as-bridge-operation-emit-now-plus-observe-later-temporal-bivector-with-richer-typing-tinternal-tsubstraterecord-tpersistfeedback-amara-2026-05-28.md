@@ -33,7 +33,19 @@ related_skills:
   - q-sharp
   - algebra-owner
   - category-theory-expert
-tags: [persist-as-bridge-operation-not-base-primitive, persist-equals-emit-now-plus-observe-later, ople-vs-oels-mismatch-resolved-by-persist-derived-from-emit-plus-observe, persist-as-bivector-spanning-agent-internal-and-substrate-time, persist-richer-typing-tinternal-tsubstraterecord-tpersistfeedback, serialization-compression-redaction-encryption-provenance-indexing-in-the-gap, round-trip-promise-future-talks-to-past, composes-with-b0895-clifford-grade-decomposition-mapping, composes-with-b0896-category-theory-clifford-self-similarity, q-sharp-clifford-substrate-precedent-pauli-operators-as-cl-3-0]
+tags:
+  [
+    persist-as-bridge-operation-not-base-primitive,
+    persist-equals-emit-now-plus-observe-later,
+    ople-vs-oels-mismatch-resolved-by-persist-derived-from-emit-plus-observe,
+    persist-as-bivector-spanning-agent-internal-and-substrate-time,
+    persist-richer-typing-tinternal-tsubstraterecord-tpersistfeedback,
+    serialization-compression-redaction-encryption-provenance-indexing-in-the-gap,
+    round-trip-promise-future-talks-to-past,
+    composes-with-b0895-clifford-grade-decomposition-mapping,
+    composes-with-b0896-category-theory-clifford-self-similarity,
+    q-sharp-clifford-substrate-precedent-pauli-operators-as-cl-3-0,
+  ]
 ---
 
 # B-0897 — Persist-as-bridge-operation refinement
@@ -44,8 +56,8 @@ Amara ferry 2026-05-28 (preserved at `memory/persona/amara/conversations/2026-05
 
 Two compositional keepers:
 
-1. **Operational**: *"Persist is Emit across the agent/substrate boundary with a future Observe attached."*
-2. **Temporal**: *"Persist is the promise that the future can still talk to the past."*
+1. **Operational**: _"Persist is Emit across the agent/substrate boundary with a future Observe attached."_
+2. **Temporal**: _"Persist is the promise that the future can still talk to the past."_
 
 ## Scope
 
@@ -59,13 +71,13 @@ Refine B-0895's Clifford grade-decomposition mapping table to add Persist-as-bri
 
 Update B-0895's grade-decomposition mapping table to add:
 
-| Primitive | Clifford grade | Why |
-|---|---|---|
-| **Observe** | grade-1 (vector) | Point reading from substrate at a moment |
-| **Emit** | grade-1 evolved by rotor | Vector flowing forward through time |
-| **Limit** | grade-2 (bivector / wedge) | Oriented plane span without commit |
-| **Simulate** | wedge product `a ∧ b` | Per PR #5700: `choose --dry-run = simulate` |
-| **Persist** | grade-2 (bivector spanning agent-axis × time-axis) | `Persist = Emit-now + Observe-later` — derived bridge operation |
+| Primitive    | Clifford grade                                     | Why                                                             |
+| ------------ | -------------------------------------------------- | --------------------------------------------------------------- |
+| **Observe**  | grade-1 (vector)                                   | Point reading from substrate at a moment                        |
+| **Emit**     | grade-1 evolved by rotor                           | Vector flowing forward through time                             |
+| **Limit**    | grade-2 (bivector / wedge)                         | Oriented plane span without commit                              |
+| **Simulate** | wedge product `a ∧ b`                              | Per PR #5700: `choose --dry-run = simulate`                     |
+| **Persist**  | grade-2 (bivector spanning agent-axis × time-axis) | `Persist = Emit-now + Observe-later` — derived bridge operation |
 
 Document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature with explicit grade-decomposition:
 
@@ -77,15 +89,15 @@ Document the `Persist<TInternal, TSubstrateRecord, TPersistFeedback>` signature 
 
 The factory is already operating Persist-instances; this phase makes that recognition explicit:
 
-| Factory primitive | TInternal | TSubstrateRecord | TPersistFeedback variants (candidate) |
-|---|---|---|---|
-| Git commit | agent's working-tree state | git's content-addressed object tree | merge-conflict; signature-rejected; size-limit-exceeded; force-push-required |
-| Memory file write | agent's intended substrate-entry | markdown frontmatter + body | frontmatter-validation-failed; duplicate-entry; index-regen-needed |
-| Z-set delta | agent's intended retraction | DBSP signed-measure update | concurrency-conflict; downstream-pipeline-blocked; partial-retraction |
-| Bus envelope | agent's intended advisory | JSON envelope on `/tmp/zeta-bus/` | TTL-exceeded; subscriber-unavailable; envelope-malformed |
-| Tick shard | agent's session observation | markdown at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` | schema-validation-failed; date-out-of-order; relative-path-broken |
-| Backlog row | agent's substrate-engineering plan | markdown at `docs/backlog/P*/B-NNNN-*.md` | id-collision; missing-required-frontmatter; index-regen-needed |
-| PR | agent's substrate-landing intent | GitHub PR object + git commits | review-thread-blocking; CI-failed; merge-conflict; auto-merge-armed-but-blocked |
+| Factory primitive | TInternal                          | TSubstrateRecord                                             | TPersistFeedback variants (candidate)                                           |
+| ----------------- | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| Git commit        | agent's working-tree state         | git's content-addressed object tree                          | merge-conflict; signature-rejected; size-limit-exceeded; force-push-required    |
+| Memory file write | agent's intended substrate-entry   | markdown frontmatter + body                                  | frontmatter-validation-failed; duplicate-entry; index-regen-needed              |
+| Z-set delta       | agent's intended retraction        | DBSP signed-measure update                                   | concurrency-conflict; downstream-pipeline-blocked; partial-retraction           |
+| Bus envelope      | agent's intended advisory          | JSON envelope on `/tmp/zeta-bus/`                            | TTL-exceeded; subscriber-unavailable; envelope-malformed                        |
+| Tick shard        | agent's session observation        | markdown at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` | schema-validation-failed; date-out-of-order; relative-path-broken               |
+| Backlog row       | agent's substrate-engineering plan | markdown at `docs/backlog/P*/B-NNNN-*.md`                    | id-collision; missing-required-frontmatter; index-regen-needed                  |
+| PR                | agent's substrate-landing intent   | GitHub PR object + git commits                               | review-thread-blocking; CI-failed; merge-conflict; auto-merge-armed-but-blocked |
 
 This table earns its keep because: (a) it makes the framework's already-operating Persist substrate explicit; (b) it gives the framework a consistent vocabulary for new Persist-instances (when adding a new substrate-landing surface, define its `<TInternal, TSubstrateRecord, TPersistFeedback>` triple explicitly).
 

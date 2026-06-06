@@ -18,8 +18,8 @@ confirmation, or course correct to a safer method").
 
 ## Why
 
-Behavioural-pattern inference from Aaron is a *guess* at
-intent. Durable policy is Aaron's *explicit stated intent*,
+Behavioural-pattern inference from Aaron is a _guess_ at
+intent. Durable policy is Aaron's _explicit stated intent_,
 usually written after a past incident. Overriding written
 policy on the basis of pattern inference inverts the
 trust-direction: policy exists precisely because inference is
@@ -43,20 +43,20 @@ wrong.
 - **Re-fires of an advisory command don't authorize mutative
   action, but DO require advisory output.** Distinguish two
   modes:
-  - *Advisory skills* (`/next-steps`, `complexity-reviewer`,
+  - _Advisory skills_ (`/next-steps`, `complexity-reviewer`,
     `claims-tester`) — contracted deliverable is a ranked
     list / analysis / output. Producing that output is not
     "shared-state action"; it's the skill doing its job.
     Always produce the output each fire. Stop producing it
     and you've broken the skill's contract.
-  - *Mutative skills / actions* (Edit, Write on shared paths,
+  - _Mutative skills / actions_ (Edit, Write on shared paths,
     git push, gh pr create) — these DO mutate shared state.
     Gate these on durable policy, not on re-fire pattern.
-  The round-41-late episode conflated these: I stopped
-  producing `/next-steps` ranked output (advisory) because I
-  was guarding against acting on SKILL.md files (mutative).
-  Different failure modes. Correct rule: advisory always
-  produces; mutative gates on policy.
+    The round-41-late episode conflated these: I stopped
+    producing `/next-steps` ranked output (advisory) because I
+    was guarding against acting on SKILL.md files (mutative).
+    Different failure modes. Correct rule: advisory always
+    produces; mutative gates on policy.
 - **Permission denials are data, not obstacles, AND they name
   the allowed path implicitly.** When a tool refuses an
   action with a policy cite (e.g. GOVERNANCE §4 "route

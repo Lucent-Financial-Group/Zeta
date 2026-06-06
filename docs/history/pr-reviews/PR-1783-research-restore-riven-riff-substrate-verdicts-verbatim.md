@@ -10,51 +10,55 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1783 |
-| Title | research: restore Riven riff substrate verdicts verbatim |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T03:46:22Z |
-| Merged at | 2026-05-07T03:48:27Z |
-| Merge commit SHA | `364248d0ba133153117ff48d9c650785ea2bff04` |
-| Branch | `claim/repair-riven-verbatim-research-doc` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1783 |
-| Changed files | 1 |
-| Additions / deletions | +43 / -15 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1783                                                     |
+| Title                 | research: restore Riven riff substrate verdicts verbatim |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T03:46:22Z                                     |
+| Merged at             | 2026-05-07T03:48:27Z                                     |
+| Merge commit SHA      | `364248d0ba133153117ff48d9c650785ea2bff04`               |
+| Branch                | `claim/repair-riven-verbatim-research-doc`               |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1783 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +43 / -15                                                |
 
 ## Description
 
 ## Summary
+
 - Repairs the PR #1781 Riven/Lior research archive so the body preserves Aaron's pasted Riven packet verbatim instead of a compressed paraphrase.
 - Keeps the research-grade archive envelope separate from the source text by placing the packet in a `text` fence.
 - Clarifies that this file is preservation only, not operational promotion.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/claims/task-repair-riven-verbatim-research-doc.md memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`
 - `npx markdownlint-cli2 memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`
 - `git diff --check`
 - `git diff --check origin/main...HEAD`
 
 ## Branch lifecycle
+
 - Temporary claim file was added, linted, and released in branch history; the final PR diff intentionally retains only the repaired research archive.
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before PR creation.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 2 |
-| Unresolved threads | 0 |
-| Total review comments | 4 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 2     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 4     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -70,16 +74,16 @@
 
   <pre>
   `Operational status:` must be enum-strict per GOVERNANCE §33 (exactly `research-grade` or `operational`). `research-grade verbatim preservation` will violate the §33 contract (and can trip the archive-header lint); move the extra descriptor to `Scope:` or a separate label like `Lifecycle status:`.
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T03:55:26Z on `memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`:4 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T03:55:26Z on `memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`:4 (association: MEMBER)
 
-    <pre>
-    Addressed in follow-up PR #1785: `Operational status:` is now the enum-strict `research-grade`, with the extra descriptor moved to `Lifecycle status:`.
-    </pre>
+  <pre>
+  Addressed in follow-up PR #1785: `Operational status:` is now the enum-strict `research-grade`, with the extra descriptor moved to `Lifecycle status:`.
+  </pre>
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -93,16 +97,16 @@
 
   <pre>
   The `Non-fusion disclaimer:` content here doesn’t actually state the §33 non-fusion boundary (no merged identity/agency/consciousness/personhood). Consider keeping the “no operational promotion” note, but add an explicit non-fusion statement to satisfy GOVERNANCE §33’s requirement for this field.
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T03:55:26Z on `memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`:5 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T03:55:26Z on `memory/persona/lior/conversations/2026-05-07-riven-pass-verdicts-lior-riff-vs-substrate-pipeline-verbatim.md`:5 (association: MEMBER)
 
-    <pre>
-    Addressed in follow-up PR #1785: `Non-fusion disclaimer:` now explicitly states no merged identity, agency, consciousness, or personhood is asserted, while preserving the no-operational-promotion boundary.
-    </pre>
+  <pre>
+  Addressed in follow-up PR #1785: `Non-fusion disclaimer:` now explicitly states no merged identity, agency, consciousness, or personhood is asserted, while preserving the no-operational-promotion boundary.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

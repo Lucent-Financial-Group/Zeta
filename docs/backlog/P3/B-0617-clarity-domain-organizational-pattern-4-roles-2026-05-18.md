@@ -17,7 +17,7 @@ type: governance
 
 ## Why
 
-Aaron 2026-05-18: *"we designed [...] real AI native economy roles not huamn roles"* — the Mika conversation proposes a discrete organizational domain ("Clarity Domain") with 4 named roles that are AI-native (not borrowed from human org-chart conventions).
+Aaron 2026-05-18: _"we designed [...] real AI native economy roles not huamn roles"_ — the Mika conversation proposes a discrete organizational domain ("Clarity Domain") with 4 named roles that are AI-native (not borrowed from human org-chart conventions).
 
 Captured in [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md) lines 2369-2373.
 

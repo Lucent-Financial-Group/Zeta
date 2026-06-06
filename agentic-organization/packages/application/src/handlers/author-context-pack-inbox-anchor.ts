@@ -98,11 +98,13 @@ export async function authorContextPackInboxAnchor(
     result: {
       commandId: command.commandId,
       status: CommandResultStatus.Accepted,
-      artifacts: [{
-        artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
-        artifactId: inboxAnchor.inboxAnchorId,
-        label: inboxAnchor.title,
-      }],
+      artifacts: [
+        {
+          artifactType: CommandResultArtifactType.ContextPackInboxAnchor,
+          artifactId: inboxAnchor.inboxAnchorId,
+          label: inboxAnchor.title,
+        },
+      ],
       auditEventIds: [auditEvent.auditEventId],
       contextPackInboxAnchor: inboxAnchor,
       idempotency: {
@@ -205,10 +207,12 @@ function workItemMatchesCommandScope(
   workItem: CommandWorkAnchorWorkItem,
   command: AuthorContextPackInboxAnchorCommand,
 ): boolean {
-  return workItem.workItemId === command.workItemId &&
+  return (
+    workItem.workItemId === command.workItemId &&
     workItem.organizationId === command.organizationId &&
     workItem.projectId === command.projectId &&
-    optionalScopeValueMatches(readOptionalTeamId(workItem), command.teamId);
+    optionalScopeValueMatches(readOptionalTeamId(workItem), command.teamId)
+  );
 }
 
 function readOptionalTeamId(workItem: CommandWorkAnchorWorkItem): string | undefined {
@@ -283,11 +287,8 @@ function createEmptyWorkAnchorCommandEffects(): NonNullable<CommandEffects["work
   };
 }
 
-function optionalValue<Key extends string>(
-  key: Key,
-  value: string | undefined,
-): { [Property in Key]?: string } {
-  return value === undefined ? {} : { [key]: value } as { [Property in Key]?: string };
+function optionalValue<Key extends string>(key: Key, value: string | undefined): { [Property in Key]?: string } {
+  return value === undefined ? {} : ({ [key]: value } as { [Property in Key]?: string });
 }
 
 function isBlank(value: unknown): boolean {

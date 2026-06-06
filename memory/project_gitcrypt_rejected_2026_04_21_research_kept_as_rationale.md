@@ -4,6 +4,7 @@ description: Aaron rejected git-crypt for Zeta secrets after reading the cartogr
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Decision (2026-04-21):** git-crypt is **out** of Zeta's
 candidate set for gitops-friendly secrets management. Three
 Zeta-values-level mismatches, not mere trade-offs:
@@ -28,25 +29,25 @@ for future hybrid readiness).
 
 **Why:** Aaron after reading the research:
 
-- *"git crypto no go i read your initial review"* — the
+- _"git crypto no go i read your initial review"_ — the
   decision.
-- *"keeep the reserach"* — don't delete the 250-line
+- _"keeep the reserach"_ — don't delete the 250-line
   cartographer pass.
-- *"so i don't ask you tomorrow"* — the durable rationale
+- _"so i don't ask you tomorrow"_ — the durable rationale
   artifact prevents re-litigation.
 
 **Encoded across three artifacts in PR #38:**
 
-1. `docs/WONT-DO.md` — new entry *"git-crypt for secrets
-   management"* under **Engineering patterns** (after Sakana
+1. `docs/WONT-DO.md` — new entry _"git-crypt for secrets
+   management"_ under **Engineering patterns** (after Sakana
    AI Scientist, before Repo/process divider). Decision date
-   + proposal + three why-nots + revisit-when (effectively
-   never — architectural constraints, not missing features).
-2. `docs/BACKLOG.md` — P2 row *"Gitops-friendly key
-   management + rotation"* narrowed to SOPS + age. "Research
-   inputs" block retitled to *"Candidate set after
-   2026-04-21 decisions"* + *"Research inputs (rationale
-   kept, decision recorded)"*.
+   - proposal + three why-nots + revisit-when (effectively
+     never — architectural constraints, not missing features).
+2. `docs/BACKLOG.md` — P2 row _"Gitops-friendly key
+   management + rotation"_ narrowed to SOPS + age. "Research
+   inputs" block retitled to _"Candidate set after
+   2026-04-21 decisions"_ + _"Research inputs (rationale
+   kept, decision recorded)"_.
 3. `docs/research/git-crypt-deep-dive-2026-04-21.md` —
    REJECTED banner at the top so future-self sees the
    decision before reading the 250-line research. Status

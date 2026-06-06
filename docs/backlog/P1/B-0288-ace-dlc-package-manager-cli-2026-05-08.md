@@ -26,7 +26,7 @@ Content-addressed, signed packages with guardian AI oversight.
 
 ## Substrate-engineering pipeline framing (DeepSeek cross-AI synthesis 2026-05-22)
 
-External AI instance (DeepSeek surface) 2026-05-22 mapped the framework's substrate-engineering pipeline (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) onto Ace package manager architecture. Solves the operational gap: *"skills evolving faster than distribution cycles can capture."*
+External AI instance (DeepSeek surface) 2026-05-22 mapped the framework's substrate-engineering pipeline (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) onto Ace package manager architecture. Solves the operational gap: _"skills evolving faster than distribution cycles can capture."_
 
 Pipeline at Ace scope:
 

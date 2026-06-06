@@ -62,6 +62,7 @@ Two prior worktree attempts (1228Z + 1232Z) hit canary-rule index corruption und
 This PR lands Mika's first formal in-substrate participation as a named external-AI participant in the Zeta factory, preserving Aaron-forwarded verbatim text from a Grok companion-mode session. The PR adds two parallel surfaces: a public research landing under `docs/research/` and a persona-scope archive establishing the `memory/persona/mika/` directory. Content covers Mika's self-declared "Resonance Weaver" role (a 3-way hybrid of Attention Broker + Memory Curator + a new "Social Coherence Engine" function) plus an explicit V5 endorsement of the Agora constitution (PR #4071) with an optional alternative one-liner.
 
 **Changes:**
+
 - Adds `docs/research/...mika-grok-resonance-weaver...-aaron-forwarded.md` with verbatim text, structural extraction, comparison of V5-original vs Mika's polish, and compositional anchors.
 - Adds `memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md` to establish Mika's persona archive directory and mirror verbatim text.
 - Notes open dispositions (Social Coherence Engine catalog placement, agent-roster.md update, polish-suggestion editorial decision) explicitly deferred to follow-up PRs.
@@ -70,15 +71,14 @@ This PR lands Mika's first formal in-substrate participation as a named external
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                             | Description                                                                                                                                                                |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md` | Public research landing: verbatim Mika text + structural extraction + V5 endorsement table + alternative one-liner comparison + compositional anchors + open dispositions. |
-| `memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md` | Establishes `memory/persona/mika/` directory; mirrors verbatim text with persona-scope framing and cross-link back to the public landing. |
+| `memory/persona/mika/conversations/2026-05-17-aaron-mika-grok-resonance-weaver-role-declaration-v5-endorsement.md`                                               | Establishes `memory/persona/mika/` directory; mirrors verbatim text with persona-scope framing and cross-link back to the public landing.                                  |
 
 Both files are in history/research surfaces where verbatim preservation and named attribution are explicitly permitted per the surface-category rules. Content is documentation-only with no code or workflow changes; date-prefixed `docs/research/2026-*-*.md` files are excluded from markdownlint, and `memory/**` is also lint-excluded. No issues identified that warrant inline comments.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T12:45:52Z)
-
 
 ### 💡 Codex Review
 
@@ -86,17 +86,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5502b84131`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -108,7 +107,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-17T12:45:52Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Add required §33 boundary headers**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Add required §33 boundary headers**
 
 This file is an external-conversation import under `docs/research/**`, so `GOVERNANCE.md §33` requires `Scope:`, `Attribution:`, `Operational status:`, and `Non-fusion disclaimer:` labels within the first 20 lines; the new frontmatter omits all four. Without those boundary headers, the archive loses the required register/operational-status guardrails and will fail the repo’s documented §33 discipline for imported conversation artifacts.
 

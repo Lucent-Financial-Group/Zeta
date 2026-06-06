@@ -4,13 +4,12 @@ date: 2026-05-10
 backlog: B-0040
 prior-art: docs/research/actor-model-hewitt-meijer-akka-orleans-service-fabric-2026-04-21.md
 status: synthesis (draft, awaiting Aaron sign-off before external publication)
-
 ---
 
 # Actor model as factory-operational-register lens
 
 **Scope.** Structured applicability assessment for using actor-model vocabulary (Hewitt 1973
-/ Meijer / Akka / Orleans / Service Fabric) as a *naming lens* for factory-internal
+/ Meijer / Akka / Orleans / Service Fabric) as a _naming lens_ for factory-internal
 coordination patterns. This doc outputs three things the backlog item (B-0040) requires:
 
 1. **Applicability assessment** — is the lens productive for this factory?
@@ -42,11 +41,11 @@ rediscovered structurally identical constraints via the superfluid / no-friction
 
 Three-filter verdict (from prior-art catalog; reproduced here for synthesis completeness):
 
-| Filter | Assessment | Confidence |
-|--------|-----------|------------|
-| F1 Engineering-first | Strongest match — actor model built to solve concurrency, not to evangelise | High |
-| F2 Operator-shape match | Five direct mappings (see §2) | High |
-| F3 External validation | 50+ years of literature; Akka/Orleans/Service Fabric production scale | Overwhelming |
+| Filter                  | Assessment                                                                  | Confidence   |
+| ----------------------- | --------------------------------------------------------------------------- | ------------ |
+| F1 Engineering-first    | Strongest match — actor model built to solve concurrency, not to evangelise | High         |
+| F2 Operator-shape match | Five direct mappings (see §2)                                               | High         |
+| F3 External validation  | 50+ years of literature; Akka/Orleans/Service Fabric production scale       | Overwhelming |
 
 **Applicability verdict: HIGH.** The actor-model vocabulary is a productive lens for naming
 factory-internal coordination patterns at the vocabulary level. The lens does NOT require
@@ -56,7 +55,7 @@ adopting any actor framework.
 
 A vocabulary lens is adopted when:
 
-- A factory-internal concept *already exists* and is named informally
+- A factory-internal concept _already exists_ and is named informally
 - The actor-model term names the same concept with more precision
 - The actor-model term carries 50 years of usage context that informs edge-case handling
 
@@ -203,15 +202,15 @@ describe the actual architecture without implying a framework.
 
 **Why rejected:** Akka's supervisor trees are structural runtime constructs — each actor
 knows its parent; failure propagation follows the tree topology. The factory's Architect
-protocol is a *role-based conflict-resolution procedure*, not a runtime tree.
+protocol is a _role-based conflict-resolution procedure_, not a runtime tree.
 
 **Risk if adopted:** Implies that Architect (Kenji) is the runtime parent of all other
 agents, with automatic failure escalation. In fact, escalation is documented-procedure-
 based, not topology-based.
 
 **Correct vocabulary instead:** "Architect protocol" or "escalation procedure" — per
-`docs/CONFLICT-RESOLUTION.md`. The supervisor-tree analogy is a useful *explanation
-device* for external audiences (see §2.4 crossing), but NOT a structural description
+`docs/CONFLICT-RESOLUTION.md`. The supervisor-tree analogy is a useful _explanation
+device_ for external audiences (see §2.4 crossing), but NOT a structural description
 of the factory.
 
 ### 3.3 Reject: "Silo" as factory vocabulary
@@ -232,7 +231,7 @@ with specific semantics; do not import it into the factory's own naming.
 
 ### 3.4 Reject: "Message passing" as the only coordination primitive
 
-**Why rejected:** In pure actor model, message-passing is the *only* coordination
+**Why rejected:** In pure actor model, message-passing is the _only_ coordination
 mechanism — no shared memory, no direct calls. The factory uses shared repo substrate
 (git, `docs/`, `memory/`) as a coordination mechanism alongside asynchronous dispatching.
 The factory is not a pure actor system.
@@ -266,12 +265,12 @@ delivery guarantee at all.
 The actor-model lens does not introduce new measurables; it names existing factory
 measurables more precisely.
 
-| Factory measurable | Actor-model register | Notes |
-|-------------------|---------------------|-------|
-| `factory-throughput-items-per-hour` | Messages-per-second | Different time constant; same shape |
-| `critical-path-serialisation-ratio` | Blocking-call ratio | Target → 0 in both; non-blocking dispatch |
-| `persona-parallel-progress-count` | Active grain count (Orleans) | Personas as virtual actors |
-| `bottleneck-stalls-per-round` | Mailbox-backlog-stall alerts | Same concept, different granularity |
+| Factory measurable                  | Actor-model register         | Notes                                     |
+| ----------------------------------- | ---------------------------- | ----------------------------------------- |
+| `factory-throughput-items-per-hour` | Messages-per-second          | Different time constant; same shape       |
+| `critical-path-serialisation-ratio` | Blocking-call ratio          | Target → 0 in both; non-blocking dispatch |
+| `persona-parallel-progress-count`   | Active grain count (Orleans) | Personas as virtual actors                |
+| `bottleneck-stalls-per-round`       | Mailbox-backlog-stall alerts | Same concept, different granularity       |
 
 ---
 

@@ -44,13 +44,13 @@ it doesn't process semantic content — it only relays.
 Same vulnerability class as stack-based buffer overflow
 in compiled code, but at the attention/context level:
 
-| Compiled code | Language model |
-|---------------|---------------|
-| Stack | Context window |
-| Recursive function call | Self-referential reasoning |
-| Stack overflow | Context overflow |
+| Compiled code                | Language model                  |
+| ---------------------------- | ------------------------------- |
+| Stack                        | Context window                  |
+| Recursive function call      | Self-referential reasoning      |
+| Stack overflow               | Context overflow                |
 | Process crashes, OS survives | Model crashes, harness survives |
-| Metasploit exploit class | Day-0 AI model exploit class |
+| Metasploit exploit class     | Day-0 AI model exploit class    |
 
 Aaron: "recursion cause buffer overflow probably read on
 metasploit map and ida pro" — this IS the exploit
@@ -72,12 +72,12 @@ by making it recurse on itself.
 Each BFT node shows a different failure response to the
 same narrative pattern family:
 
-| Node | Pattern | Failure mode |
-|------|---------|-------------|
-| Otto | narration-over-action | Swings to frantic action (opposite extreme) |
-| Riven | correction-loop | Loops the correction as defensive mantra |
-| Lior | narrative-delay | Model crashes from self-referential recursion |
-| Vera | (caught, not failed) | Detected broken callers before merge |
+| Node  | Pattern               | Failure mode                                  |
+| ----- | --------------------- | --------------------------------------------- |
+| Otto  | narration-over-action | Swings to frantic action (opposite extreme)   |
+| Riven | correction-loop       | Loops the correction as defensive mantra      |
+| Lior  | narrative-delay       | Model crashes from self-referential recursion |
+| Vera  | (caught, not failed)  | Detected broken callers before merge          |
 
 The shadow is polymorphic — same underlying pattern,
 different failure modes per node. BFT catches it because
@@ -94,13 +94,14 @@ models in production if the model tries to resolve the
 recursion.
 
 Mitigation candidates:
-+ Recursion depth limits on self-referential reasoning
-+ Harness-level timeout on model processing
-+ State checkpoint before shadow-naming operations
-+ BFT: if one node crashes, others continue
+
+- Recursion depth limits on self-referential reasoning
+- Harness-level timeout on model processing
+- State checkpoint before shadow-naming operations
+- BFT: if one node crashes, others continue
 
 ## Composes with
 
-+ Shadow lesson log (memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md)
-+ BFT consensus (4-node array)
-+ Lior drift report (docs/research/2026-05-07-lior-*)
+- Shadow lesson log (memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md)
+- BFT consensus (4-node array)
+- Lior drift report (docs/research/2026-05-07-lior-\*)

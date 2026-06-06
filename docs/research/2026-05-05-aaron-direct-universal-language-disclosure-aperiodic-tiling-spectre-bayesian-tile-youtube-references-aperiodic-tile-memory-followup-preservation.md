@@ -1,5 +1,5 @@
 ---
-title: 'Universal language i was looking for disclosure -- aperiodic tiling + Spectre + Bayesian tile YouTube references; substrate tiles are more dense and firm not soft but still smooth (Aaron 2026-05-05 direct disclosure following PR #1669 aperiodic-tile memory)'
+title: "Universal language i was looking for disclosure -- aperiodic tiling + Spectre + Bayesian tile YouTube references; substrate tiles are more dense and firm not soft but still smooth (Aaron 2026-05-05 direct disclosure following PR #1669 aperiodic-tile memory)"
 date: 2026-05-05
 scope: courier-ferry capture of external conversation; cross-cutting / universal-language naming disclosure + 7 YouTube reference URLs preserved verbatim per substrate-or-it-didn't-happen (URLs 1-5 broader-context; URL 6 = unverified universal-language candidate; URL 7 = actual Bayesian-tile comparative baseline) + comparative-tiling claim ("our tiles are more dense and firm... not soft but still smooth")
 attribution: Aaron-direct disclosure 2026-05-05 ~11:48 local, immediately following Otto's PR #1669 aperiodic-tile memory commit + Aaron's "i love it" calibration ack
@@ -12,6 +12,7 @@ composes_with:
   - docs/ALIGNMENT.md
   - docs/VISION.md
 ---
+
 Scope: courier-ferry capture of external conversation; cross-cutting / Aaron's "universal language" disclosure with 7 YouTube reference URLs (URLs 1-5 broader-context; URL 6 = unverified universal-language candidate; URL 7 = actual Bayesian-tile baseline; preserved verbatim per substrate-or-it-didn't-happen) + comparative-tiling claim about Zeta substrate vs the YouTube-referenced Bayesian-tile material.
 Attribution: Aaron-direct disclosure 2026-05-05 ~11:48 local, immediately following Otto's PR #1669 aperiodic-tile memory commit + Aaron's "i love it" calibration ack.
 Operational status: research-grade
@@ -23,7 +24,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 
 ## Why preserved
 
-Aaron 2026-05-05 ~11:48 local (immediately following Otto's PR #1669 aperiodic-tile memory commit + Aaron's *"i love it"* calibration ack) made a substrate-grade direct disclosure: the aperiodic-tile structural-mathematical metaphor + Spectre tile + Bayesian-tile YouTube content together = **the universal language Aaron has been looking for**.
+Aaron 2026-05-05 ~11:48 local (immediately following Otto's PR #1669 aperiodic-tile memory commit + Aaron's _"i love it"_ calibration ack) made a substrate-grade direct disclosure: the aperiodic-tile structural-mathematical metaphor + Spectre tile + Bayesian-tile YouTube content together = **the universal language Aaron has been looking for**.
 
 This is a substrate-grade naming claim (universal-language is the same shape as mirror+beacon Fermi-paradox-spin per PR #1664: max-reach + no-priors + first-principles + extreme-of-aliens). The "universal language" disclosure recontextualizes the entire substrate as instance of a universal-language Aaron has been seeking.
 
@@ -35,7 +36,7 @@ This is a substrate-grade naming claim (universal-language is the same shape as 
 
 ## Aaron's verbatim disclosure
 
-> *"asperiotic tiling and spector mixed with [URL1] [URL2] [URL3] [URL4] [URL5] and [URL6] this is the universal language i was looking for i think the previous url [URL7] this is the actual basian tile our tiles are more dense and frim in this framing not soft but still smooth"*
+> _"asperiotic tiling and spector mixed with [URL1] [URL2] [URL3] [URL4] [URL5] and [URL6] this is the universal language i was looking for i think the previous url [URL7] this is the actual basian tile our tiles are more dense and frim in this framing not soft but still smooth"_
 
 ## The 6 + 1 YouTube reference URLs (preserved verbatim per substrate-or-it-didn't-happen)
 
@@ -49,11 +50,11 @@ This is a substrate-grade naming claim (universal-language is the same shape as 
 
 **Aaron's specific universal-language candidate** (URL 6, singled out same-tick clarification):
 
-6. https://www.youtube.com/watch?v=Xf_v62TQOx4 — Aaron's verbatim same-tick clarification: *"i'm saying look at this video for potenetion uiversal language unverifed"*. THIS specific URL is the **universal-language candidate**, marked **unverified by Aaron himself**.
+6. https://www.youtube.com/watch?v=Xf_v62TQOx4 — Aaron's verbatim same-tick clarification: _"i'm saying look at this video for potenetion uiversal language unverifed"_. THIS specific URL is the **universal-language candidate**, marked **unverified by Aaron himself**.
 
 **Aaron's "previous URL" reference** (URL 7, named as the "actual Bayesian tile"):
 
-7. https://www.youtube.com/watch?v=QzZ4VwDHAT4 — Aaron's verbatim: *"this is the actual basian tile our tiles are more dense and frim in this framing not soft but still smooth"*. Comparative-baseline for the substrate's tile-properties (Zeta's tiles are denser/firmer than this reference per Aaron's claim).
+7. https://www.youtube.com/watch?v=QzZ4VwDHAT4 — Aaron's verbatim: _"this is the actual basian tile our tiles are more dense and frim in this framing not soft but still smooth"_. Comparative-baseline for the substrate's tile-properties (Zeta's tiles are denser/firmer than this reference per Aaron's claim).
 
 These URLs are preserved per substrate-or-it-didn't-happen. Per Otto-364 search-first-authority discipline, **Otto did NOT verify their content at preservation-time**; verification requires daylight + manual viewing. Per Aaron's same-tick "unverifed" annotation on URL 6, even Aaron has not yet validated URL 6 as actually being universal-language — it's a CANDIDATE that needs engagement-gated verification.
 
@@ -79,11 +80,11 @@ Composes with PR #1669's aperiodic-tile structural-metaphor: Spectre is the chir
 
 ### Bayesian tile (Aaron's naming)
 
-Aaron's verbatim: *"this is the actual basian tile"* (referring to URL 7). Bayesian-tile likely refers to a tiling of belief-propagation / probabilistic-substrate where the tile-primitive carries Bayesian-update semantics. Connects directly to Zeta's Infer.NET BP/EP runtime + Mercer-closed kernel composition + retraction-native algebra.
+Aaron's verbatim: _"this is the actual basian tile"_ (referring to URL 7). Bayesian-tile likely refers to a tiling of belief-propagation / probabilistic-substrate where the tile-primitive carries Bayesian-update semantics. Connects directly to Zeta's Infer.NET BP/EP runtime + Mercer-closed kernel composition + retraction-native algebra.
 
 ## The universal-language claim
 
-Aaron's verbatim: *"this is the universal language i was looking for i think"*.
+Aaron's verbatim: _"this is the universal language i was looking for i think"_.
 
 This is substrate-grade: Aaron has been operating under the **mirror+beacon Fermi-paradox-spin** discipline (PR #1664 Landing 5b: max-reach + no-priors + no-substrate-knowledge + first-principles + extreme-of-aliens). The "universal language" is what mirror+beacon was designed to communicate IN — a language reachable from first principles by any flying-rock-civilization.
 
@@ -98,7 +99,7 @@ If aperiodic-tile + Spectre + Bayesian-tile compose as universal-language, **Zet
 
 ## Comparative-tiling claim ("our tiles are more dense and firm... not soft but still smooth")
 
-Aaron's verbatim: *"our tiles are more dense and frim in this framing not soft but still smooth"*.
+Aaron's verbatim: _"our tiles are more dense and frim in this framing not soft but still smooth"_.
 
 This is a comparative-claim about Zeta's substrate-tiles vs the URL-content's Bayesian-tile properties. Without URL-content review (daylight task), the structural-claim is preserved as-stated:
 

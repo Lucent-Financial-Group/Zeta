@@ -8,11 +8,11 @@ type: project
 
 **The three layers of modern zero trust:**
 
-| Layer | Concept (steal) | Implementation (refuse) |
-|-------|----------------|----------------------|
-| Cisco | Network-level zero trust | Proprietary hardware/software lock-in |
-| Istio | Service mesh policy enforcement | 47 YAML files, sidecar proxies, control plane SPOF |
-| SPIFFE/SPIRE | Cryptographic workload identity + attestation | SPIRE server complexity, centralized trust root |
+| Layer        | Concept (steal)                               | Implementation (refuse)                            |
+| ------------ | --------------------------------------------- | -------------------------------------------------- |
+| Cisco        | Network-level zero trust                      | Proprietary hardware/software lock-in              |
+| Istio        | Service mesh policy enforcement               | 47 YAML files, sidecar proxies, control plane SPOF |
+| SPIFFE/SPIRE | Cryptographic workload identity + attestation | SPIRE server complexity, centralized trust root    |
 
 **SPIFFE/SPIRE = the real core:**
 
@@ -23,14 +23,14 @@ type: project
 
 **The hat mechanism IS SPIFFE at the governance layer:**
 
-| SPIFFE concept | Zeta equivalent |
-|---------------|----------------|
-| SVID (workload identity) | Hat credential |
-| Attestation | Consistency-against-declared-invariants |
-| SVID rotation | Hat switching / timeboxed expiry |
-| SPIRE server (trust root) | BFT consensus (no single trust root) |
-| mTLS between services | Arrow Tier 0 for same-trust, mTLS for cross-trust |
-| Policy config (YAML) | F# type system (compiler verifies) |
+| SPIFFE concept            | Zeta equivalent                                   |
+| ------------------------- | ------------------------------------------------- |
+| SVID (workload identity)  | Hat credential                                    |
+| Attestation               | Consistency-against-declared-invariants           |
+| SVID rotation             | Hat switching / timeboxed expiry                  |
+| SPIRE server (trust root) | BFT consensus (no single trust root)              |
+| mTLS between services     | Arrow Tier 0 for same-trust, mTLS for cross-trust |
+| Policy config (YAML)      | F# type system (compiler verifies)                |
 
 **Zeta's zero trust formula:**
 
@@ -46,6 +46,7 @@ SPIFFE concept + BFT issuance + Arrow IPC + F# types = zero trust without ops ni
 The types encode the trust policy. The compiler enforces it. The kernel routes on trust tier. No config files because the config IS the code. `erasableSyntaxOnly` at TS layer ensures same property.
 
 **Connects to:**
+
 - project_trust_migration_path_aaron_to_zero_trust (the migration phases)
 - project_microkernel_trust_tier_router (kernel routes on trust level)
 - feedback_arrow_tier_0 (Arrow replaces mTLS at Tier 0)
@@ -61,17 +62,18 @@ server in hot path.
 
 **The full zero trust stack (concept steal):**
 
-| Concept | Source | Zeta equivalent |
-|---------|--------|----------------|
-| Workload identity | SPIFFE SVIDs | Hat credentials |
-| Attestation runtime | SPIRE | BFT consensus issuance |
-| Cross-domain trust | SPIRE Federation | Trust bundle exchange via BFT |
-| Delegated authority | Nested SPIRE | Hat delegation chain |
-| Decentralized policy | OPA | F# types + local policy evaluation |
-| Transport security | mTLS | Arrow Tier 0 (same-trust), mTLS (cross-trust) |
-| Config | YAML/Rego | F# type system (compiler enforces) |
+| Concept              | Source           | Zeta equivalent                               |
+| -------------------- | ---------------- | --------------------------------------------- |
+| Workload identity    | SPIFFE SVIDs     | Hat credentials                               |
+| Attestation runtime  | SPIRE            | BFT consensus issuance                        |
+| Cross-domain trust   | SPIRE Federation | Trust bundle exchange via BFT                 |
+| Delegated authority  | Nested SPIRE     | Hat delegation chain                          |
+| Decentralized policy | OPA              | F# types + local policy evaluation            |
+| Transport security   | mTLS             | Arrow Tier 0 (same-trust), mTLS (cross-trust) |
+| Config               | YAML/Rego        | F# type system (compiler enforces)            |
 
 **Sources:**
+
 - [SPIFFE Federation](https://spiffe.io/docs/latest/spiffe-specs/spiffe_federation/)
 - [Nested SPIRE](https://spiffe.io/docs/latest/planning/scaling_spire/)
 - [OPA](https://www.openpolicyagent.org/)

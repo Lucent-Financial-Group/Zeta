@@ -40,13 +40,13 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## Persona hypotheses (to be validated)
 
-| Persona type | Candidate | Source hint |
-|---|---|---|
-| Primary | Edge-runner developer building civic simulations | PR #2906 governance charter |
-| Primary | Policy researcher / scenario modeler | civsim product charter |
-| Secondary | Civic technologist integrating Civsim outputs | PR #2909 language escalation |
-| Adjacent | Academic studying AI-assisted civic modeling | peer-review substrate |
-| Refused | State-level covert influence operator | methodology-hard-limits |
+| Persona type | Candidate                                        | Source hint                  |
+| ------------ | ------------------------------------------------ | ---------------------------- |
+| Primary      | Edge-runner developer building civic simulations | PR #2906 governance charter  |
+| Primary      | Policy researcher / scenario modeler             | civsim product charter       |
+| Secondary    | Civic technologist integrating Civsim outputs    | PR #2909 language escalation |
+| Adjacent     | Academic studying AI-assisted civic modeling     | peer-review substrate        |
+| Refused      | State-level covert influence operator            | methodology-hard-limits      |
 
 ## Output
 

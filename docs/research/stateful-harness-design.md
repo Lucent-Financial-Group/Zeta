@@ -29,7 +29,7 @@ constrains the design up front:
    tick index at which the law first broke. Copy-paste into
    the next test run to reproduce.
 
-DST is the lens for *all* the law runners, not just the
+DST is the lens for _all_ the law runners, not just the
 stateful one. But stateful-strict is where the lens earns
 its keep — non-determinism in a stateful op can mask a
 retraction bug for thousands of ticks before failing.
@@ -68,7 +68,7 @@ inspect state for invariants, drive FsCheck against `Step`
 and `Retract` directly without going through `StepAsync`.
 
 **Cons:** second authoring path — plugin authors now write
-`Step` and `Retract` *and* wire `StepAsync` to call them.
+`Step` and `Retract` _and_ wire `StepAsync` to call them.
 The two can drift. Unless `StepAsync` has a default
 implementation that calls `Step` — which forces `'TState`
 into a mutable field on the op, which is exactly the
@@ -78,7 +78,7 @@ shared-state pattern Ilyana pushed back on in round-27.
 
 Keep the marker-interface-only shape. The harness feeds
 inputs tick-by-tick through `PluginHarness.runSingleInput`.
-To check retraction completeness, the harness runs *two*
+To check retraction completeness, the harness runs _two_
 traces and compares:
 
 1. **Forward trace:** feed a sequence `A = [a₁; a₂; ...; aₙ]`

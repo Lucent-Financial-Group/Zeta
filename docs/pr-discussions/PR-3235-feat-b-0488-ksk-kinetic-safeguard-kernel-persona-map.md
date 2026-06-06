@@ -23,6 +23,7 @@ Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the B-0485 temp
 ## Personas defined
 
 **Primary (3)**:
+
 - `ksk-agent-developer` — engineers integrating "am I allowed to do this?" checks into AI agents
 - `ksk-robotics-designer` — consent-first robotics / actuator system designers (NVIDIA Thor Homeland-Security clearance lineage)
 - `ksk-security-engineer` — engineers building KSK itself in `Lucent-Financial-Group/lucent-ksk`
@@ -32,6 +33,7 @@ Per-product persona doc for KSK (Kinetic Safeguard Kernel) using the B-0485 temp
 **Adjacent (1)**: `ksk-compliance-auditor` — SOC 2 / HIPAA / ISO 27001 auditors consuming KSK signed receipts
 
 **Refused (2 — HARD LIMITS)**:
+
 - `ksk-refused-weapons-control` — autonomous-weapons / kill-chain designers using KSK as a "consent UI" wrapper. Per `methodology-hard-limits.md` HARD LIMITS #1 + #3: laundered consent + violates consent-first design intent (PR #2892).
 - `ksk-refused-apt-operator` — nation-state APT operators using KSK as a privilege oracle (receipt-replay, authorization enumeration, "stealth mode" feature requests). Per `mechanical-authorization-check.md`: not in the authorization-source list.
 
@@ -69,6 +71,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the KSK (Kinetic Safeguard Kernel) per-product persona map using the B-0485 template, and updates the associated backlog row to reflect active work on B-0488.
 
 **Changes:**
+
 - Add `docs/personas/ksk-personas.md` defining primary/secondary/adjacent/refused KSK personas (with HARD LIMITS rationale).
 - Update `docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md` status from `open` to `in-progress`.
 
@@ -76,23 +79,25 @@ Adds the KSK (Kinetic Safeguard Kernel) per-product persona map using the B-0485
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/personas/ksk-personas.md | New KSK persona-map document (template-structured), including refused personas + detection/response notes. |
-| docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md | Backlog row status update for B-0488. |
-
+| File                                                 | Description                                                                                                |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| docs/personas/ksk-personas.md                        | New KSK persona-map document (template-structured), including refused personas + detection/response notes. |
+| docs/backlog/P1/B-0488-ksk-persona-map-2026-05-14.md | Backlog row status update for B-0488.                                                                      |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/personas/ksk-personas.md:375**
-* P1 (name-attribution policy): This section repeats direct named attribution (e.g., “Aaron + Amara’s …”) inside a current-state `docs/personas/**` doc. Per `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills” (around lines 671–760), prefer role-refs here and keep named provenance on the allowlisted history surfaces (e.g., link to the relevant `memory/**`/`docs/research/**` artifact that preserves the attribution).
+
+- P1 (name-attribution policy): This section repeats direct named attribution (e.g., “Aaron + Amara’s …”) inside a current-state `docs/personas/**` doc. Per `docs/AGENT-BEST-PRACTICES.md` “No name attribution in code, docs, or skills” (around lines 671–760), prefer role-refs here and keep named provenance on the allowlisted history surfaces (e.g., link to the relevant `memory/**`/`docs/research/**` artifact that preserves the attribution).
+
 ```
 2. Compromise the protective lineage (KSK's reputation is its value;
    weapons-system integration destroys it)
 3. Violate the consent-first design intent (PR #2892 — Aaron + Amara's
    consent-first design origin)
 ```
+
 </details>
 
 ## Review threads

@@ -20,7 +20,7 @@ account -> GitHub attributes the "Verified" signature to that account, all on th
 email.
 
 Why the email-sameness is load-bearing (not mere convenience): **Apple and GitHub each
-enforce email uniqueness** -- one Apple ID per email, one account per *verified* email --
+enforce email uniqueness** -- one Apple ID per email, one account per _verified_ email --
 so `aaron_bond@yahoo.com` maps deterministically to exactly one Apple ID AND one GitHub
 account. The chain is **platform-enforced at each hop**, not coincidental alignment. The
 full anti-impersonation binding is therefore: my enrolled finger -> my Secure-Enclave key
@@ -28,7 +28,7 @@ full anti-impersonation binding is therefore: my enrolled finger -> my Secure-En
 attribution. **No other account can claim that email** (platform-enforced uniqueness) and
 **no other finger can produce the signature** (enclave-gating).
 
-How that uniqueness is *established*: both platforms verify email ownership by **emailing
+How that uniqueness is _established_: both platforms verify email ownership by **emailing
 a numeric code that I enter back** -- a proof that I control the `yahoo.com` mailbox. So
 the email-side of the chain roots in **proven control of the mailbox** at verification
 time. Honest dependency: this makes the mailbox itself a link in the trust chain -- its
@@ -46,10 +46,10 @@ Touch-ID re-commit upgrades this record to the un-impersonable tier (per
 On the work side ServiceTitan grants me authority in **two distinct domains**, and they
 do not run through the same credential:
 
-| Domain | Grant path | Gated by |
-|---|---|---|
-| **Code edit (GitHub)** | granted to my GitHub identity **`acehack`** | the GitHub identity itself (commit signature) |
-| **Azure / cloud** | Okta / **Entra ID** -> `astainback@servicetitan.com` | Windows Hello fingerprint + Okta FastPass (phishing-resistant FIDO2) |
+| Domain                 | Grant path                                           | Gated by                                                             |
+| ---------------------- | ---------------------------------------------------- | -------------------------------------------------------------------- |
+| **Code edit (GitHub)** | granted to my GitHub identity **`acehack`**          | the GitHub identity itself (commit signature)                        |
+| **Azure / cloud**      | Okta / **Entra ID** -> `astainback@servicetitan.com` | Windows Hello fingerprint + Okta FastPass (phishing-resistant FIDO2) |
 
 So `astainback@servicetitan.com` is primarily my **Entra/Azure** identity (Windows Hello +
 Okta FastPass authenticate it for cloud access); **code-edit authority is the `acehack`
@@ -58,22 +58,22 @@ GitHub identity**, not the email. The two are separate access domains, not one c
 **Convergence on one GitHub identity:** both verified emails (`aaron_bond@yahoo.com` +
 `astainback@servicetitan.com`) are verified on the **single GitHub identity -- `acehack`**
 (so a commit under either email attributes to `acehack`). The signing/anti-impersonation
-chain therefore runs: my biometric (Apple Touch-ID *or* Windows Hello+Okta) -> a
+chain therefore runs: my biometric (Apple Touch-ID _or_ Windows Hello+Okta) -> a
 Secure-Enclave/TPM-gated signing key -> the `acehack` GitHub identity. Impersonation still
-requires the corresponding biometric no one else holds. (Azure access is a *separate*
+requires the corresponding biometric no one else holds. (Azure access is a _separate_
 authority, via Entra on the servicetitan email, not via the GitHub code path.)
 
 **Device-side defense-in-depth.** The work Mac + Windows devices are under a managed-device
 stack:
 
 - **SentinelOne** (EDR / endpoint agent) -- confirmed on the operator's Windows machine,
-  likely the Mac too (*"i think my mac had that too"* -- Mac coverage the one residual
+  likely the Mac too (_"i think my mac had that too"_ -- Mac coverage the one residual
   tentative). It is SentinelOne (EDR), not Microsoft Sentinel (SIEM).
 - **Okta** -- the auth factor (Okta FastPass, phishing-resistant FIDO2).
 - **Microsoft Intune** -- the MDM/UEM (formerly Microsoft Endpoint Manager). Confirmed.
 
 A managed/monitored device adds device-compliance + compromise-detection on the device
-side, which *hardens* the device holding the signing key but is **not part of the core
+side, which _hardens_ the device holding the signing key but is **not part of the core
 signature-binding** (that is biometric + key + email-uniqueness). Stack names confirmed
 (SentinelOne EDR + Okta + Intune); only Mac SentinelOne coverage remains "i think" --
 flagged per `premise-flagged-unverified-stays-unverified-downstream` until confirmed.
@@ -81,19 +81,19 @@ flagged per `premise-flagged-unverified-stays-unverified-downstream` until confi
 ## Consent event record (all three parts)
 
 Per the operator's own definition (2026-05-30): the **signature is the informed
-approval, not the keystroke** -- *"my signature is the approval/signature not the
-actual running of the command."* The agent records the approval; the approval is the
+approval, not the keystroke** -- _"my signature is the approval/signature not the
+actual running of the command."_ The agent records the approval; the approval is the
 signature. The full event:
 
 1. **What was shown.** The commitment text above + the glass-halo convention
    (`docs/consent/glass-halo/README.md`) + the Touch-ID/Secure-Enclave signing
    mechanism (`docs/consent/glass-halo/SIGNING.md`) + the exact commit/PR command.
 2. **The operator's response (verbatim English).**
-   - *"after the fingerprint stuff lands on main i'm happy to sign my glass halo"*
-   - *"lets sign"*
-   - *"I read the document and I agree ... my signature is the approval/signature not
+   - _"after the fingerprint stuff lands on main i'm happy to sign my glass halo"_
+   - _"lets sign"_
+   - _"I read the document and I agree ... my signature is the approval/signature not
      the actual running of the command ... the record show what you showed me and how
-     i responded in english and my signature all 3"*
+     i responded in english and my signature all 3"_
 3. **Signature.** The informed approval above is the signature. Recorded by the agent
    (Otto) at the operator's explicit authorization to run the command, and authored
    under the operator's git identity. Tier: **approval-as-signature** (the README's

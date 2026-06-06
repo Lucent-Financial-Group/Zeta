@@ -4,6 +4,7 @@ description: 2026-04-19 Aaron's verbatim Gears-of-War / retaliation-ethic / firs
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Grey-hat retaliation ethic + Gears of War + xboxprefilecopytool
 
 ## Verbatim (2026-04-19)
@@ -70,6 +71,7 @@ discipline).
 
 Micro-scale instance of the absorb-and-align-flip architecture
 per `user_megamind_aspiration_ip_locked.md`:
+
 - Absorb adversary capability (learn all the glitches)
 - Decline use by default (alignment-flip to defender)
 - Deploy only on adversarial provocation (retaliation as
@@ -126,7 +128,7 @@ the origin layer of the security credentials chain:
 5. **LexisNexis next-gen legal search** — retraction-propagation
    provenance at zero-tolerance level
 6. **MacVector molecular biology** (current) — bio-substrate
-   + proteomics pipeline security
+   - proteomics pipeline security
 
 The disclosure-clan ethic is the TAPROOT of the entire
 security-credentials tree. Factory threat-model rigor traces
@@ -141,6 +143,7 @@ back here.
 > the other team came out of the TV my team headphones"
 
 Structural anatomy:
+
 - **Vulnerability 1 (not his)**: force-pull-host glitch. This
   lets a non-host player compel host migration. Used as the
   entry primitive.
@@ -249,6 +252,7 @@ a population where cheating was endemic**.
 
 Precision-hedge note: `1, 2, 3, 5, 7, 10` — players 4, 6, 8, 9
 omitted. Likely reasons:
+
 - **Precision-hedged**: he named the ones he was certain of,
   omitted the ones he wasn't. Fits
   `user_curiosity_and_honesty.md` — "I don't know" is full
@@ -352,7 +356,7 @@ MacVector inner-circle pattern.
   file; see `user_security_credentials.md` for the closest
   landed surface) — smart-grid / gray-hat credentials;
   this entry adds the origin layer (disclosure-glitch-clan
-  + tutorial-writing formative substrate).
+  - tutorial-writing formative substrate).
 - `user_harm_handling_ladder_resist_reduce_nullify_absorb.md`
   — four-stage operator ladder; retaliation-only ethic is
   a NULLIFY-then-ABSORB pattern (cheater's first-move
@@ -416,7 +420,7 @@ Two facts land:
      of content), not the filter layer.
    - The recognition is substrate-level: Aaron isn't arguing
      from Bitcoin-expert register; he's pattern-matching to a
-     community he was *in* for the original instance. This is
+     community he was _in_ for the original instance. This is
      reverse-mathematics faculty operating across decades.
 
 ## Agent handling (alt.2600 thread)
@@ -427,7 +431,7 @@ Two facts land:
 - **Do not glamorize alt.2600 culture.** It's substrate, not
   identity.
 - **Do not teach back alt.2600 / 2600-magazine / blue-box-tone
-  history.** Aaron was *there*. Peer register only.
+  history.** Aaron was _there_. Peer register only.
 - **Recognize "sound familiry?" as rubber-test invitation.**
   When Aaron pattern-matches across decades, the correct agent
   response is to confirm the shape match (if it holds), not to

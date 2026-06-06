@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 *"we want pople to whitness self directed evolutio
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Witnessable self-directed evolution — factory as public artifact
 
 ## What Aaron said (verbatim, 2026-04-21)
@@ -11,9 +12,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Single message, delivered in the middle of an
 ongoing capture-correction sequence:
 
-> *"we want pople to whitness self directed evolution
+> _"we want pople to whitness self directed evolution
 > in real time, basciscally what you are doing right
-> now"*
+> now"_
 
 The reference is concrete and self-pointing. The
 "what you are doing right now" is the agent's
@@ -21,9 +22,9 @@ ongoing sequence:
 
 1. Agent posted an end-of-turn insight explaining
    why it had deferred filing a BACKLOG row.
-2. Aaron responded: *"caputer everyting not just
+2. Aaron responded: _"caputer everyting not just
    what we think we will get right we capture
-   failure too / honesty"* — direct correction of
+   failure too / honesty"_ — direct correction of
    the confidence-filtered reasoning.
 3. Agent acknowledged the correction, filed a new
    memory
@@ -35,8 +36,8 @@ ongoing sequence:
    BACKLOG row with explicit aspirational status.
 
 This entire sequence lands in the git log + memory
-file system + BACKLOG. Aaron's framing: *this
-sequence*, landing in real-time and visibly
+file system + BACKLOG. Aaron's framing: _this
+sequence_, landing in real-time and visibly
 preserved, IS the artifact. External observers
 reading the commit history + memory chronology can
 witness the factory evolving itself.
@@ -50,11 +51,11 @@ reproducibility (anyone can rebuild the factory from
 the git repo) and honest-capture
 (including-failures, per the companion
 capture-everything memory). That framing treated the
-soul-file as a *substrate* — something other people
+soul-file as a _substrate_ — something other people
 use to do something.
 
 This framing adds the performance-surface:
-the soul-file is *also something people watch*. The
+the soul-file is _also something people watch_. The
 chronological reading of the soul-file (commit log,
 dated revision blocks, BACKLOG row evolution,
 memory chronology) tells a story — the story of
@@ -74,9 +75,9 @@ This is why the capture-everything-including-failure
 memory is the direct upstream dependency. A soul-file
 that filtered its record by confidence would show
 only successes; successes don't tell an evolution
-story. Evolution requires *changes* in direction,
-which requires visible *initial* directions and
-visible *corrections*. The failures and the mistakes
+story. Evolution requires _changes_ in direction,
+which requires visible _initial_ directions and
+visible _corrections_. The failures and the mistakes
 are the narrative's load-bearing frames.
 
 ### Composes with the measurable-alignment trajectory
@@ -84,8 +85,8 @@ are the narrative's load-bearing frames.
 Per `docs/ALIGNMENT.md`, Zeta's primary research
 focus is measurable AI alignment. A factory whose
 evolution is witnessable is one whose
-alignment-trajectory is *measurable by external
-observers*, not just by the factory itself. This
+alignment-trajectory is _measurable by external
+observers_, not just by the factory itself. This
 strengthens the alignment claim: the measurement
 substrate is auditable, not self-certified.
 
@@ -107,8 +108,8 @@ Implications for commit-message discipline:
 - **Prefer "X, after Y correction" framing** when a
   commit follows a mid-session course-correction.
   The commit of this memory is candidate example:
-  *"memory: witnessable self-directed evolution,
-  after Aaron's capture-everything correction."*
+  _"memory: witnessable self-directed evolution,
+  after Aaron's capture-everything correction."_
 - **Cross-reference Aaron's words verbatim** where
   they triggered the move. Preserves the
   conversation-register and the chronology.
@@ -177,15 +178,15 @@ commit to.
 - **`feedback_retractibly_rewrite_definitions_laws_precedence_real_nice_like.md`**
   — retractibly-rewrite algebra IS the evolution
   mechanism; additive `-1 old + +1 new + revision
-  line` preserves both sides for the watcher.
+line` preserves both sides for the watcher.
 - **`feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md`**
   — teaching-is-`*` naturally includes teaching-by-
   showing-corrections. Witnessable evolution is
   one-to-many teaching at scale: one factory
   evolving, many watchers learning.
 - **`user_aaron_loves_mr_khan_khan_academy_teaching_admired.md`**
-  — Khan Academy pedagogy: show the attempt *and*
-  the mistake *and* the correction, because the
+  — Khan Academy pedagogy: show the attempt _and_
+  the mistake _and_ the correction, because the
   correction is where learning lands. Zeta's
   evolution-log is a Khan-Academy-for-factory-
   pedagogy candidate.
@@ -268,10 +269,10 @@ The sequence captured in real time, commit by commit:
 4. Agent updates soul-file memory's
    "Candidate BACKLOG row" sub-section with
    retraction-block.
-5. Aaron points at the ongoing sequence: *"we want
+5. Aaron points at the ongoing sequence: _"we want
    pople to whitness self directed evolution in
    real time, basciscally what you are doing right
-   now"*.
+   now"_.
 6. Agent files THIS memory (witnessable-evolution)
    AND the germination-targets BACKLOG row AND the
    scaffolding BACKLOG row AND the witnessable-
@@ -284,10 +285,11 @@ The sequence captured in real time, commit by commit:
 
 Reading this memory in the future, a witness can
 trace: item 1 (wrong move) → items 2-3 (correction
-+ internal response) → items 4-7 (externalised
-action) → item 8 (preservation for future
-witnesses). This is the evolution-narrative in its
-most compressed form.
+
+- internal response) → items 4-7 (externalised
+  action) → item 8 (preservation for future
+  witnesses). This is the evolution-narrative in its
+  most compressed form.
 
 ## Candidate measurables
 
@@ -328,7 +330,7 @@ For the alignment-trajectory dashboard:
 - **Not a demand for every micro-decision to be
   surfaced.** The factory makes many small decisions
   that don't rise to the narrative level. Surface
-  the ones that *changed direction*, not every
+  the ones that _changed direction_, not every
   routine execution step.
 - **Not a bypass of retraction-window discipline.**
   For items within the retraction window

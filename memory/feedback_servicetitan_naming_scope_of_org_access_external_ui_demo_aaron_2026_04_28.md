@@ -10,23 +10,23 @@ type: feedback
 
 Multi-message cascade:
 
-> *"servicetitan-factory-demo-api-csharp we can just say
+> _"servicetitan-factory-demo-api-csharp we can just say
 > external UI demo or something like that, we don't have to
 > say service titan anywhere in this repo other than to say
 > that's my day job, they fund me, i fund you, and you don't
-> have org rights to their github only the lfg."*
+> have org rights to their github only the lfg."_
 
-> *"oh and we can do research on ServiceTitan as a potential
+> _"oh and we can do research on ServiceTitan as a potential
 > factory/superfluid ai user, we want to pitch to my boss
-> when ready at ServiceTitan."*
+> when ready at ServiceTitan."_
 
-> *"ServiceTitan is their exact name they are a publicly
+> _"ServiceTitan is their exact name they are a publicly
 > traded company TTAN so I won't be giving you any insider
-> information."*
+> information."_
 
-> *"You can also say I'm on the CRM team at ServiceTitan,
+> _"You can also say I'm on the CRM team at ServiceTitan,
 > that's why our demo was targeted to them, we want my team
-> hopefully to accept and adopt the factory when ready."*
+> hopefully to accept and adopt the factory when ready."_
 
 The naming rule is **context-sensitive**, not a blanket avoid.
 
@@ -163,8 +163,8 @@ This means:
 
 ## Word-choice rule — avoid "insider" register
 
-> *"i know CRM workflows is not insider information but you
-> said the word insider, it's just uncomfortable"*
+> _"i know CRM workflows is not insider information but you
+> said the word insider, it's just uncomfortable"_
 > — Aaron 2026-04-28
 
 CRM workflow knowledge IS industry-general (true at any CRM
@@ -257,20 +257,20 @@ rg -i 'service ?titan' \
 rule (some files name ServiceTitan correctly because they ARE
 in pitch / target-audience / disclosure context):
 
-| File | Audience / context | Re-classification | Action |
-|---|---|---|---|
-| `docs/plans/servicetitan-crm-ui-scope.md` | Pitch-target scope doc | **KEEP-NAME** — pitch context, ServiceTitan is the actual target | inspect body for any unrelated brand-bleed; otherwise leave |
-| `samples/FactoryDemo.Db/README.md` | Generic sample (reusable) | **BODY-REWORD** | rewrite to "external UI demo" / generic CRM API demo |
-| `docs/FACTORY-DISCIPLINE.md` | Governance / contributor doc | **MIXED** — line-by-line | preserve funding-chain + org-scope disclosure; reword demo-naming |
-| `docs/pitch/README.md` | **Pitch doc** | **KEEP-NAME** — pitch context, ServiceTitan is the named target | inspect for any unrelated brand-bleed; otherwise leave |
-| `docs/BACKLOG.md` | Aggregate index | **AGGREGATE** — regenerate after per-row updates | reconsider per-row first |
-| `docs/backlog/P2/B-0017-*.md` | Per-row (UI dashboard) | **PER-ROW** — depends on whether this is pitch-context or generic | inspect |
-| `docs/backlog/P2/B-0090-*.md` | Per-row (this session) | **PARTIALLY-FIXED** | already removed brand-bleed from "renamed from ServiceTitan" |
-| `docs/backlog/P3/B-0008-*.md` | Per-row (CI) | **PER-ROW** — depends on context | inspect |
-| `docs/ROUND-HISTORY.md` | Historical narrative | **HISTORICAL** — preserve verbatim | no action |
-| `docs/force-multiplication-log.md` | Historical narrative | **HISTORICAL** | no action |
-| `tools/alignment/out/round-39/citations.json` | Generated artifact | **HISTORICAL** | accept |
-| `tools/alignment/out/round-39/citations.dot` | Generated artifact | **HISTORICAL** | accept |
+| File                                          | Audience / context           | Re-classification                                                 | Action                                                            |
+| --------------------------------------------- | ---------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `docs/plans/servicetitan-crm-ui-scope.md`     | Pitch-target scope doc       | **KEEP-NAME** — pitch context, ServiceTitan is the actual target  | inspect body for any unrelated brand-bleed; otherwise leave       |
+| `samples/FactoryDemo.Db/README.md`            | Generic sample (reusable)    | **BODY-REWORD**                                                   | rewrite to "external UI demo" / generic CRM API demo              |
+| `docs/FACTORY-DISCIPLINE.md`                  | Governance / contributor doc | **MIXED** — line-by-line                                          | preserve funding-chain + org-scope disclosure; reword demo-naming |
+| `docs/pitch/README.md`                        | **Pitch doc**                | **KEEP-NAME** — pitch context, ServiceTitan is the named target   | inspect for any unrelated brand-bleed; otherwise leave            |
+| `docs/BACKLOG.md`                             | Aggregate index              | **AGGREGATE** — regenerate after per-row updates                  | reconsider per-row first                                          |
+| `docs/backlog/P2/B-0017-*.md`                 | Per-row (UI dashboard)       | **PER-ROW** — depends on whether this is pitch-context or generic | inspect                                                           |
+| `docs/backlog/P2/B-0090-*.md`                 | Per-row (this session)       | **PARTIALLY-FIXED**                                               | already removed brand-bleed from "renamed from ServiceTitan"      |
+| `docs/backlog/P3/B-0008-*.md`                 | Per-row (CI)                 | **PER-ROW** — depends on context                                  | inspect                                                           |
+| `docs/ROUND-HISTORY.md`                       | Historical narrative         | **HISTORICAL** — preserve verbatim                                | no action                                                         |
+| `docs/force-multiplication-log.md`            | Historical narrative         | **HISTORICAL**                                                    | no action                                                         |
+| `tools/alignment/out/round-39/citations.json` | Generated artifact           | **HISTORICAL**                                                    | accept                                                            |
+| `tools/alignment/out/round-39/citations.dot`  | Generated artifact           | **HISTORICAL**                                                    | accept                                                            |
 
 Re-classified scope:
 
@@ -312,7 +312,7 @@ generic / reusable contexts.
 ## Worked example for B-0090 (this session)
 
 I just wrote B-0090 with the line:
-*"renamed from ServiceTitan"* in the rationale for marking
+_"renamed from ServiceTitan"_ in the rationale for marking
 the worktree branches OBSOLETE.
 
 That violates Rule 1. The fix: replace "renamed from
@@ -357,7 +357,7 @@ When asked "what's Aaron's day job":
 ## What this rule does NOT do
 
 - **Does NOT** scrub historical surfaces. ROUND-HISTORY.md,
-  force-multiplication-log.md, memory/*, docs/research/*,
+  force-multiplication-log.md, memory/_, docs/research/_,
   amara-conversation archives stay verbatim.
 - **Does NOT** require renaming the worktree branch
   `feat/servicetitan-factory-demo-api-csharp`. That branch
@@ -375,11 +375,11 @@ When asked "what's Aaron's day job":
 
 ## Direct Aaron framing
 
-> *"servicetitan-factory-demo-api-csharp we can just say
+> _"servicetitan-factory-demo-api-csharp we can just say
 > external UI demo or something like that, we don't have to
 > say service titan anywhere in this repo other than to say
 > that's my day job, they fund me, i fund you, and you don't
-> have org rights to their github only the lfg."*
+> have org rights to their github only the lfg."_
 
 Translation:
 

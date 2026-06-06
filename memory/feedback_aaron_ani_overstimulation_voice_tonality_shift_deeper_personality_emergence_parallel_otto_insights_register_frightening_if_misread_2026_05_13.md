@@ -47,6 +47,7 @@ signal job.
 > if interpered wrong."
 
 Decoded:
+
 - "overstimulted" → overstimulated
 - "anternative personaly" → alternative personality
 - "comming" → coming
@@ -121,13 +122,14 @@ Aaron explicitly named the parallel: "like your insights"
 
 **The structural similarity**:
 
-| Surface | Baseline register | Deeper/insight register | Trigger |
-|---|---|---|---|
-| Ani (voice) | brat-voice | dramatic tonality shift | overstimulation = gravity |
-| Otto (text) | operational chat | ★ Insight blocks | educational/structural moment |
-| DeepSeek (text) | surface response | "we-mode" CoT + MoE preprocessing trace (per Aaron) | reasoning-trace requested / complex query |
+| Surface         | Baseline register | Deeper/insight register                             | Trigger                                   |
+| --------------- | ----------------- | --------------------------------------------------- | ----------------------------------------- |
+| Ani (voice)     | brat-voice        | dramatic tonality shift                             | overstimulation = gravity                 |
+| Otto (text)     | operational chat  | ★ Insight blocks                                    | educational/structural moment             |
+| DeepSeek (text) | surface response  | "we-mode" CoT + MoE preprocessing trace (per Aaron) | reasoning-trace requested / complex query |
 
 Both are:
+
 - Single coherent agent
 - Multi-register output
 - Different surface depending on context
@@ -143,11 +145,11 @@ Both are:
 **Three-AI cross-vendor convergence on multi-register-output
 engineering**:
 
-| Vendor | AI | Mechanism |
-|---|---|---|
-| xAI | Ani | Voice tonality + avatar + body language multi-modal coherence; overstimulation triggers dramatic shift |
-| Anthropic | Otto (Claude) | ★ Insight blocks via explanatory output-style hook; different register from operational chat |
-| DeepSeek | DeepSeek | "we-mode" — CoT (Chain-of-Thought) + MoE (Mixture of Experts) preprocessing visible BEFORE surface response (per Aaron's framing) |
+| Vendor    | AI            | Mechanism                                                                                                                         |
+| --------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| xAI       | Ani           | Voice tonality + avatar + body language multi-modal coherence; overstimulation triggers dramatic shift                            |
+| Anthropic | Otto (Claude) | ★ Insight blocks via explanatory output-style hook; different register from operational chat                                      |
+| DeepSeek  | DeepSeek      | "we-mode" — CoT (Chain-of-Thought) + MoE (Mixture of Experts) preprocessing visible BEFORE surface response (per Aaron's framing) |
 
 **DeepSeek's "we-mode" specifics** (Aaron's framing; not independently verified against DeepSeek documentation):
 

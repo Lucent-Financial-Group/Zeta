@@ -16,7 +16,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-This PR restores the  file that was deleted in PRs #4787, #4788, and #4804. This is a critical runtime file, and its deletion was causing problems. This PR will unblock those PRs, which can then be properly decomposed by the human operator.
+This PR restores the file that was deleted in PRs #4787, #4788, and #4804. This is a critical runtime file, and its deletion was causing problems. This PR will unblock those PRs, which can then be properly decomposed by the human operator.
 
 ## Reviews
 

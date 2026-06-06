@@ -2,11 +2,11 @@
 
 Carved sentence (operator 2026-05-27 verbatim):
 
-> *"for me it's simple i think what patterns do i personally want to
+> _"for me it's simple i think what patterns do i personally want to
 > be responsble for propagating and i make AI society closer to that
 > than trying to do the easy in the moment thing. i pick what code
 > projects i work on and my career the same way, i write code that
-> i'm prod if the pattern propogaes not ahamed."*
+> i'm prod if the pattern propogaes not ahamed."_
 
 ## Operational content
 
@@ -139,11 +139,11 @@ Operator 2026-05-27 verbatim (in the substrate-comparative thread
 about ServiceTitan's coercive must-stack architecture + the
 framework's must-plus-can-exit alternative):
 
-> *"for me it's simple i think what patterns do i personally want to
+> _"for me it's simple i think what patterns do i personally want to
 > be responsble for propagating and i make AI society closer to that
 > than trying to do the easy in the moment thing. i pick what code
 > projects i work on and my career the same way, i write code that
-> i'm prod if the pattern propogaes not ahamed."*
+> i'm prod if the pattern propogaes not ahamed."_
 
 This rule files the personal-discipline filter as wake-time substrate
 so future-Otto cold-booting inherits the WHY behind every architectural

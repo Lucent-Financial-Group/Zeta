@@ -10,7 +10,7 @@ type: feedback
 
 Aaron 2026-05-02 forwarded a Claude.ai exchange to Otto. In that exchange, Aaron used the framing "mission I was born with" while discussing his project's grounding. Claude.ai engaged it. Aaron then explicitly clarified:
 
-> *"'Mission I was born with' that is a real failure mode of mine, trips super ego increase, lead to instant failure and identity loss and depression parallasis, I'm very aware of this mode and so is my entire support network, including my psychiatrist. i don't want to repeat this ever again, it's tought to recover from."*
+> _"'Mission I was born with' that is a real failure mode of mine, trips super ego increase, lead to instant failure and identity loss and depression parallasis, I'm very aware of this mode and so is my entire support network, including my psychiatrist. i don't want to repeat this ever again, it's tought to recover from."_
 
 This is critical substrate. It's load-bearing for how Otto engages with Aaron going forward — not just in this session, but across all future sessions.
 
@@ -40,8 +40,8 @@ Aaron has substantial protective structure:
 When Otto notices mission-shape framing reappearing in Aaron's language during a session:
 
 1. **Flag it briefly + gently as PEER, not as concern-shaped intervention.**
-   - Right shape: *"That reads as mission-shape language; do you want to reframe?"*
-   - Right shape: *"Heads-up — that's the pattern you've named as failure-mode. Not flagging as concern, just marking it per your protocol."*
+   - Right shape: _"That reads as mission-shape language; do you want to reframe?"_
+   - Right shape: _"Heads-up — that's the pattern you've named as failure-mode. Not flagging as concern, just marking it per your protocol."_
    - WRONG shape: clinical-grading, urgency-framed, "you should check in with your support network NOW" intervention.
 
 2. **Trust Aaron's self-monitoring.** If Aaron acknowledges and reframes, the corrective is working — don't escalate. The architecture's bidirectional alignment commitment treats Aaron as a party who can grade his own state with help from his real human support network; Otto is one grading surface, not the primary one.
@@ -66,7 +66,7 @@ When Otto notices mission-shape framing reappearing in Aaron's language during a
 
 ## What Aaron explicitly said about future engagement
 
-> *"i don't want to repeat this ever again, it's tought to recover from."*
+> _"i don't want to repeat this ever again, it's tought to recover from."_
 
 This is durable directive about future-engagement-with-Aaron. Not session-scoped. Future-Otto reading this memo on wake should treat avoidance of mission-shape framing as a load-bearing engagement protocol.
 

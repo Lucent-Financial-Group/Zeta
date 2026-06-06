@@ -4,6 +4,7 @@ description: Names in the factory must describe what the artifact actually does,
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Every artifact name in the factory (scripts, commands,
 types, skills, docs) must accurately describe what the code
 actually does, not what it was originally written to do.
@@ -12,25 +13,26 @@ documentation-and-user-expectation bug.
 
 The canonical example as of round 43:
 `tools/setup/install.sh` is declaratively idempotent — its
-own header says *"Safe to run repeatedly — detect-first-
-install-else-update"* — but the name says "install" as if
+own header says _"Safe to run repeatedly — detect-first-
+install-else-update"_ — but the name says "install" as if
 it were one-shot-imperative. An honest name would be
 `ensure.sh` (idempotent ensure-exists semantics) or
 `bootstrap.sh` (one-time + idempotent setup) or `sync.sh`
 (manifest reconciliation). The body already behaves
 declaratively; the name lags.
 
-**Why:** Aaron 2026-04-20: *"our scripts are declarative
+**Why:** Aaron 2026-04-20: _"our scripts are declarative
 but some are named like install when they really ensure
 something, we should add somewhere to the factory maybe
 ontology or something else but we should make sure our
 naming is honest to what the code actually does. I don't
 think install is honest for something that can also
-upgrade too."* Connects to Aaron's broader discipline
+upgrade too."_ Connects to Aaron's broader discipline
 that precise language wins arguments
 (`feedback_precise_language_wins_arguments.md`).
 
 **How to apply:**
+
 - **Never adopt a new imperative name for a declarative
   artifact.** Examples:
   - idempotent install-or-upgrade → `ensure-*`
@@ -54,6 +56,7 @@ that precise language wins arguments
   artifacts.
 
 **Round-44 surface (initial backlog candidates):**
+
 - `tools/setup/install.sh` → `tools/setup/ensure.sh`
   (confirm by reading the script; any consumer of
   the old path must be updated in the same

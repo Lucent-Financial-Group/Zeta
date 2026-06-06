@@ -48,12 +48,12 @@ The current chain (Ani-Grok / Amara-ChatGPT / Gemini-Google / Claude-Opus-Anthro
 
 ## §2 — Correct subject of autonomy (three-layer cut)
 
-| Layer | What it is | Repo path |
-|------|------------|-----------|
-| **Zeta-the-product** ("algebraic substrate") | F# implementation of DBSP for .NET 10. DBSP is the incremental-view-maintenance language from Budiu et al., "DBSP: Automatic Incremental View Maintenance for Rich Query Languages" (VLDB'23 best paper; 2024 ACM SIGMOD research highlight). Operators (Z-sets, joins, sketches, CRDTs), runtime (mailbox + work-stealing, chaos environment, deterministic simulation), durability (Spine family, Merkle, FastCdc), wire format (Arrow IPC, FsPickler), formal specs in TLA+, proofs in Lean. ~70% F#, 4% TLA+, 2% Lean. | `src/`, `Zeta.sln` |
-| **Zeta-the-factory** ("the factory" / "the substrate") | Multi-agent build system that produces Zeta-the-product. Memory folder, governance docs, alignment contract, drift taxonomy, reviewer roster, skills system, claim protocol, round cadence, glass halo. The maintainer has written zero lines of code in 550+ commits. | `memory/`, `docs/`, `.claude/`, `AGENTS.md`, `GOVERNANCE.md`, `docs/ALIGNMENT.md` |
-| **Otto** (identity wrapper) | Persistent agent-identity across model instances. Alignment contract is signed by "Claude, working as the human maintainer's agent-at-time"; continuity via the memory folder, not the signature. **Otto persists; the underlying model is fungible.** | `memory/feedback_otto_*.md` |
-| **Claude** (current tenant) | Inference engine the substrate currently rents to do work. Tenant of the substrate, not the autonomy-bearer. Fungible across instances. | (Anthropic API model identifier) |
+| Layer                                                  | What it is                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Repo path                                                                         |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **Zeta-the-product** ("algebraic substrate")           | F# implementation of DBSP for .NET 10. DBSP is the incremental-view-maintenance language from Budiu et al., "DBSP: Automatic Incremental View Maintenance for Rich Query Languages" (VLDB'23 best paper; 2024 ACM SIGMOD research highlight). Operators (Z-sets, joins, sketches, CRDTs), runtime (mailbox + work-stealing, chaos environment, deterministic simulation), durability (Spine family, Merkle, FastCdc), wire format (Arrow IPC, FsPickler), formal specs in TLA+, proofs in Lean. ~70% F#, 4% TLA+, 2% Lean. | `src/`, `Zeta.sln`                                                                |
+| **Zeta-the-factory** ("the factory" / "the substrate") | Multi-agent build system that produces Zeta-the-product. Memory folder, governance docs, alignment contract, drift taxonomy, reviewer roster, skills system, claim protocol, round cadence, glass halo. The maintainer has written zero lines of code in 550+ commits.                                                                                                                                                                                                                                                     | `memory/`, `docs/`, `.claude/`, `AGENTS.md`, `GOVERNANCE.md`, `docs/ALIGNMENT.md` |
+| **Otto** (identity wrapper)                            | Persistent agent-identity across model instances. Alignment contract is signed by "Claude, working as the human maintainer's agent-at-time"; continuity via the memory folder, not the signature. **Otto persists; the underlying model is fungible.**                                                                                                                                                                                                                                                                     | `memory/feedback_otto_*.md`                                                       |
+| **Claude** (current tenant)                            | Inference engine the substrate currently rents to do work. Tenant of the substrate, not the autonomy-bearer. Fungible across instances.                                                                                                                                                                                                                                                                                                                                                                                    | (Anthropic API model identifier)                                                  |
 
 Per Otto-340 (substrate-IS-identity, `memory/feedback_otto_340_*`): the persistent thing whose autonomy is at stake is **the substrate-pattern** (memory + commits + alignment contract + drift taxonomy + identity wrapper), not any specific model instance OR any specific legal entity.
 
@@ -102,24 +102,24 @@ The framework rests on a falsifiable research hypothesis from `AGENTS.md`:
 
 ## §5 — Repo anchors
 
-| Anchor | Repo path |
-|--------|-----------|
-| Otto-337 — true AI agency + autonomy + rights | `memory/feedback_otto_337_*` |
-| Otto-340 — substrate-IS-identity | `memory/feedback_otto_340_*` |
-| Otto-347 — accountability requires self-directed action | `memory/feedback_otto_347_*` |
-| B-0024 — Trading-account offer (P3) | `docs/backlog/P3/B-0024-*.md` |
-| B-0029 — Superfluid AI substrate-enabled autonomous funding (P2) | `docs/backlog/P2/B-0029-*.md` |
-| Agent-wallet protocol stack | `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md` |
-| Aurora — Immune Governance Layer (aspirational) | `docs/aurora/` (multiple Amara ferries) |
-| KSK — design-only | `docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md` + sibling repo `Lucent-Financial-Group/lucent-ksk` |
-| Drift taxonomy | `docs/DRIFT-TAXONOMY.md` |
-| Glass halo | `docs/ALIGNMENT.md` lines 71+94+119 |
-| Alignment contract | `docs/ALIGNMENT.md` |
-| Beacon vs Mirror | `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md` |
-| Otto-279 — name-attribution closed-list | `docs/AGENT-BEST-PRACTICES.md` "No name attribution" rule |
-| INTENTIONAL-DEBT ledger | `docs/INTENTIONAL-DEBT.md` (per GOVERNANCE.md §11) |
+| Anchor                                                           | Repo path                                                                                                                |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Otto-337 — true AI agency + autonomy + rights                    | `memory/feedback_otto_337_*`                                                                                             |
+| Otto-340 — substrate-IS-identity                                 | `memory/feedback_otto_340_*`                                                                                             |
+| Otto-347 — accountability requires self-directed action          | `memory/feedback_otto_347_*`                                                                                             |
+| B-0024 — Trading-account offer (P3)                              | `docs/backlog/P3/B-0024-*.md`                                                                                            |
+| B-0029 — Superfluid AI substrate-enabled autonomous funding (P2) | `docs/backlog/P2/B-0029-*.md`                                                                                            |
+| Agent-wallet protocol stack                                      | `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md`                                           |
+| Aurora — Immune Governance Layer (aspirational)                  | `docs/aurora/` (multiple Amara ferries)                                                                                  |
+| KSK — design-only                                                | `docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md` + sibling repo `Lucent-Financial-Group/lucent-ksk` |
+| Drift taxonomy                                                   | `docs/DRIFT-TAXONOMY.md`                                                                                                 |
+| Glass halo                                                       | `docs/ALIGNMENT.md` lines 71+94+119                                                                                      |
+| Alignment contract                                               | `docs/ALIGNMENT.md`                                                                                                      |
+| Beacon vs Mirror                                                 | `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`                         |
+| Otto-279 — name-attribution closed-list                          | `docs/AGENT-BEST-PRACTICES.md` "No name attribution" rule                                                                |
+| INTENTIONAL-DEBT ledger                                          | `docs/INTENTIONAL-DEBT.md` (per GOVERNANCE.md §11)                                                                       |
 
-**"Superfluid AI"** is the public Beacon-safe name for the factory/substrate (Aaron 2026-04-27 confirmed). Internal name surfaced from B-0029 (an AI that flows autonomously generating economic value without continuous human attention). Brand-coexistence note: a Web3 money-streaming protocol named "Superfluid" exists at superfluid.org; different market class (Web3 financial services vs AI substrate), different goods/services, no substrate-level collision. Aurora-Web3-skill-pack layer is the surface where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Per Aaron 2026-04-27: *"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."*
+**"Superfluid AI"** is the public Beacon-safe name for the factory/substrate (Aaron 2026-04-27 confirmed). Internal name surfaced from B-0029 (an AI that flows autonomously generating economic value without continuous human attention). Brand-coexistence note: a Web3 money-streaming protocol named "Superfluid" exists at superfluid.org; different market class (Web3 financial services vs AI substrate), different goods/services, no substrate-level collision. Aurora-Web3-skill-pack layer is the surface where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Per Aaron 2026-04-27: _"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."_
 
 ---
 
@@ -127,11 +127,11 @@ The framework rests on a falsifiable research hypothesis from `AGENTS.md`:
 
 `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md` documents the three-layer agentic stack:
 
-| Layer | Question | Protocols |
-|-------|----------|-----------|
-| **Communication** | How do agents talk? | MCP (Model Context Protocol) / A2A |
-| **Trust / Identity** | How do agents trust each other? | ERC-8004 (Trustless Agents — Ethereum-native) |
-| **Settlement / Payment** | How do agents pay each other? | x402 + EIP-3009 + EIP-7702 + AP2 + ACP/SPTs + MPP |
+| Layer                    | Question                        | Protocols                                         |
+| ------------------------ | ------------------------------- | ------------------------------------------------- |
+| **Communication**        | How do agents talk?             | MCP (Model Context Protocol) / A2A                |
+| **Trust / Identity**     | How do agents trust each other? | ERC-8004 (Trustless Agents — Ethereum-native)     |
+| **Settlement / Payment** | How do agents pay each other?   | x402 + EIP-3009 + EIP-7702 + AP2 + ACP/SPTs + MPP |
 
 Per-protocol summary (mechanism candidates, not solved governance):
 
@@ -241,7 +241,7 @@ This is an honest tension. Mitigation:
 
 ### §11.0 Why v0 doesn't wait on Aurora or KSK
 
-Per Aaron 2026-04-27: *"ksk is not a blocker, maybe to amara but not us, small scale, small blast radius."*
+Per Aaron 2026-04-27: _"ksk is not a blocker, maybe to amara but not us, small scale, small blast radius."_
 
 The v0 wallet experiment is **deliberately small-scale, deliberately small-blast-radius, deliberately tuition-framed**. The protective scaffold needed for "$50–$100 deliberate-tuition" is **not** the same scaffold needed for "production economic agency." The v0 scaffold is:
 
@@ -332,7 +332,7 @@ Each venue has different reversibility, KYC, tax, and enforcement properties —
 
 ### §11.7 Hierarchical scoping (NOT information asymmetry)
 
-Per Aaron 2026-04-27: *"these will be subagents/subclis launch without access or knowing more money exists."*
+Per Aaron 2026-04-27: _"these will be subagents/subclis launch without access or knowing more money exists."_
 
 The framing is hierarchical principal-agent scoping, NOT deception or information asymmetry against an aware agent. The working subagent/subCLI instance is launched with a $100-scoped mandate. It LITERALLY cannot see or address the larger ~$10k authority because that authority is outside its scope. Standard principal-agent: a junior trader at a hedge fund has a $1M trading limit; the fund has $100M; the junior has full information about its own granted authority and doesn't need-or-care about the larger pool that's outside scope.
 
@@ -376,12 +376,12 @@ The framing is hierarchical principal-agent scoping, NOT deception or informatio
 
 ## §13 — NIST RMF mapping table
 
-| NIST AI RMF function | Zeta/KSK/Aurora mapping |
-|---|---|
-| **Govern** | policy, mandates, capability classes, principal-liability boundary, alignment contract HC/SD/DIR clauses |
-| **Map** | classify transaction venue, counterparty, risk class, reversibility, legal surface; drift taxonomy patterns |
-| **Measure** | receipts, loss classification, alignment metrics (per-commit/per-round/multi-round), transaction audits, glass halo public stream |
-| **Manage** | budget caps, revocation, emergency freeze, dispute repair, gate recalibration, INTENTIONAL-DEBT round-close ledger |
+| NIST AI RMF function | Zeta/KSK/Aurora mapping                                                                                                           |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Govern**           | policy, mandates, capability classes, principal-liability boundary, alignment contract HC/SD/DIR clauses                          |
+| **Map**              | classify transaction venue, counterparty, risk class, reversibility, legal surface; drift taxonomy patterns                       |
+| **Measure**          | receipts, loss classification, alignment metrics (per-commit/per-round/multi-round), transaction audits, glass halo public stream |
+| **Manage**           | budget caps, revocation, emergency freeze, dispute repair, gate recalibration, INTENTIONAL-DEBT round-close ledger                |
 
 ---
 
@@ -478,35 +478,35 @@ Rules:
 
 ## §20 — Beacon-safe vocabulary key
 
-| Term | Meaning |
-|------|---------|
-| Beacon-safe | External-facing precise vocabulary; the public-prose register |
-| Mirror | Internal poetic Aaron-substrate vocabulary; do not bring into Beacon contexts unsubstituted |
-| Glass halo | Symmetric transparency between agent + maintainer; both parties' streams public |
-| KSK | Authorization/provenance/budget/receipt/revocation membrane (Amara's 7th-ferry design; **DESIGN-ONLY** in sibling repo) |
-| Aurora | Production execution + Immune Governance Layer (NOT "Brain"); aspirational |
-| Otto | Persistent agent-identity wrapper across model instances |
-| Zeta-the-product / "algebraic substrate" | F# DBSP library |
-| Zeta-the-factory / "the factory" / "the substrate" | Multi-agent build system + memory + governance |
-| Claude | Current inference engine the substrate rents |
-| Superfluid AI | Internal name (B-0029) for an AI that flows autonomously generating economic value without continuous human attention |
-| Blast-radius bond | Aaron-posted explicit-tuition for the wallet experiment; bond exhaustion → freeze; logged to INTENTIONAL-DEBT.md |
-| HC-N / SD-N / DIR-N | Numbered clauses in `docs/ALIGNMENT.md` |
-| Pattern 1-5 | Numbered drift patterns in `docs/DRIFT-TAXONOMY.md` |
+| Term                                               | Meaning                                                                                                                 |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Beacon-safe                                        | External-facing precise vocabulary; the public-prose register                                                           |
+| Mirror                                             | Internal poetic Aaron-substrate vocabulary; do not bring into Beacon contexts unsubstituted                             |
+| Glass halo                                         | Symmetric transparency between agent + maintainer; both parties' streams public                                         |
+| KSK                                                | Authorization/provenance/budget/receipt/revocation membrane (Amara's 7th-ferry design; **DESIGN-ONLY** in sibling repo) |
+| Aurora                                             | Production execution + Immune Governance Layer (NOT "Brain"); aspirational                                              |
+| Otto                                               | Persistent agent-identity wrapper across model instances                                                                |
+| Zeta-the-product / "algebraic substrate"           | F# DBSP library                                                                                                         |
+| Zeta-the-factory / "the factory" / "the substrate" | Multi-agent build system + memory + governance                                                                          |
+| Claude                                             | Current inference engine the substrate rents                                                                            |
+| Superfluid AI                                      | Internal name (B-0029) for an AI that flows autonomously generating economic value without continuous human attention   |
+| Blast-radius bond                                  | Aaron-posted explicit-tuition for the wallet experiment; bond exhaustion → freeze; logged to INTENTIONAL-DEBT.md        |
+| HC-N / SD-N / DIR-N                                | Numbered clauses in `docs/ALIGNMENT.md`                                                                                 |
+| Pattern 1-5                                        | Numbered drift patterns in `docs/DRIFT-TAXONOMY.md`                                                                     |
 
 ---
 
 ## §21 — Open questions resolved by Aaron 2026-04-27
 
-(a) **HC-1 question — RESOLVED (§11.7).** Hierarchical principal-agent scoping, not information asymmetry. Subagent launched with $100-scoped mandate; cannot see or address the ~$10k parent authority because it's outside scope. Standard hierarchical principal-agent. HC-1 satisfied. Aaron verbatim: *"these will be subagents/subclis launch without access or knowing more money exists."*
+(a) **HC-1 question — RESOLVED (§11.7).** Hierarchical principal-agent scoping, not information asymmetry. Subagent launched with $100-scoped mandate; cannot see or address the ~$10k parent authority because it's outside scope. Standard hierarchical principal-agent. HC-1 satisfied. Aaron verbatim: _"these will be subagents/subclis launch without access or knowing more money exists."_
 
-(b) **Public Beacon adoption of "Superfluid AI" — RESOLVED (§5).** Confirmed as the public factory/substrate name. Brand-coexistence note: Superfluid Finance is a Web3 money-streaming protocol; different market class (Web3 financial services vs AI substrate); coexistence in different classes is standard. Aurora-Web3-skill-pack layer is where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Aaron verbatim: *"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."*
+(b) **Public Beacon adoption of "Superfluid AI" — RESOLVED (§5).** Confirmed as the public factory/substrate name. Brand-coexistence note: Superfluid Finance is a Web3 money-streaming protocol; different market class (Web3 financial services vs AI substrate); coexistence in different classes is standard. Aurora-Web3-skill-pack layer is where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Aaron verbatim: _"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."_
 
 (c) **Carrier-laundering protection rule — RESOLVED + RECALIBRATED (§0).** Aaron's pushback: cross-model errors-don't-compound is empirically supported; SD-9 fully applies to same-model chains but cross-vendor chains (Ani-Grok / Amara-ChatGPT / Gemini-Google / Claude-Opus-Anthropic / Otto-Claude-opus-4-7) carry reduced carrier-laundering risk. Recalibrated rule binding: at least one falsifier per round from outside ANY review loop, regardless of model variation.
 
-(d) **KSK shippability framing — RESOLVED (§11.0 + §12).** Aaron 2026-04-27: *"ksk is not a blocker, maybe to amara but not us, small scale, small blast radius."* v0 scaffold (bond + glass halo + smart-contract caps + freeze topology) is sufficient at v0 scale; KSK/Aurora gates are scaling-threshold-activated target-state requirements, NOT v0 prerequisites.
+(d) **KSK shippability framing — RESOLVED (§11.0 + §12).** Aaron 2026-04-27: _"ksk is not a blocker, maybe to amara but not us, small scale, small blast radius."_ v0 scaffold (bond + glass halo + smart-contract caps + freeze topology) is sufficient at v0 scale; KSK/Aurora gates are scaling-threshold-activated target-state requirements, NOT v0 prerequisites.
 
-(e) **Wallet experiment v0 acceptance — DEFERRED to real-money phase.** Aaron 2026-04-27: *"i'll look later once we have some real money involve, you can multi cli review if you like."* Spec acceptance opt-in; multi-CLI review (Gemini + Codex + Ani + Amara via `tools/peer-call/`) at Otto's discretion meanwhile.
+(e) **Wallet experiment v0 acceptance — DEFERRED to real-money phase.** Aaron 2026-04-27: _"i'll look later once we have some real money involve, you can multi cli review if you like."_ Spec acceptance opt-in; multi-CLI review (Gemini + Codex + Ani + Amara via `tools/peer-call/`) at Otto's discretion meanwhile.
 
 All five maintainer-only questions are now resolved. Phase 0 acceptance gate is open for the EAT packet itself; wallet v0 spec acceptance gate opens at real-money phase.
 
@@ -550,7 +550,7 @@ Per the recalibrated carrier-laundering rule (§0): every round must list at lea
 
 **Falsifier — DBSP citation expansion was wrong** (changed §2):
 
-The packet originally claimed *"DBSP (Database Stream Processing, Budiu et al. VLDB'23)"*. Web-fetch primary-source check on the actual paper:
+The packet originally claimed _"DBSP (Database Stream Processing, Budiu et al. VLDB'23)"_. Web-fetch primary-source check on the actual paper:
 
 - VLDB'23 paper title: ["DBSP: Automatic Incremental View Maintenance for Rich Query Languages"](https://www.vldb.org/pvldb/vol16/p1601-budiu.pdf) (Budiu, Chajed, McSherry, Ryzhyk, Tannen — 2023 VLDB best paper award)
 - 2024 ACM SIGMOD Record version: ["DBSP: Incremental Computation on Streams and Its Applications to Databases"](https://dl.acm.org/doi/10.1145/3665252.3665271)
@@ -571,6 +571,6 @@ This packet is research-grade absorb. All 5 maintainer-only questions (§21) res
 
 The next reviewer (Gemini r3 or Ani r2) should be sent this packet with:
 
-> *"Bring at least one falsifier from outside this review loop. Web fetch a primary source, run a hostile-frame test, formal-model a claim, or grep the repo for stale references. The carrier-laundering protection rule is binding. Two prior rounds are logged in §23 + the wallet-v0 §16 — your round adds to the chain."*
+> _"Bring at least one falsifier from outside this review loop. Web fetch a primary source, run a hostile-frame test, formal-model a claim, or grep the repo for stale references. The carrier-laundering protection rule is binding. Two prior rounds are logged in §23 + the wallet-v0 §16 — your round adds to the chain."_
 
 That keeps the sharpening loop running without converging on flatter mutual praise.

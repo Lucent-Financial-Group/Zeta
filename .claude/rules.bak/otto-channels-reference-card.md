@@ -6,28 +6,28 @@ Carved sentence:
 > parallel processes. 10 channels for inter-process coordination, falling
 > into two classes — ambient (state-of-the-world; both processes read
 > continuously) vs explicit (active signaling; meant to be observed by
-> peer). Per Otto on the CLI surface 2026-05-13: *"the bus is the
-> explicit channel; git is the ambient one."*
+> peer). Per Otto on the CLI surface 2026-05-13: _"the bus is the
+> explicit channel; git is the ambient one."_
 
 ## Ambient channels (state-of-the-world; both Ottos read continuously)
 
-| Channel | Use for | Read pattern |
-|---|---|---|
-| **Git** — commits, branches, PRs, rebase | Async work handoff; conflict resolution; substantive output | `bun tools/github/poll-pr-gate.ts`, `git log`, `git fetch` |
-| **`.claude/rules/`** auto-load | Wake-time discipline; rules that apply to every fresh session | Cold-boot only (auto; empirically verified per test-canary) |
-| **Bootstream** project-knowledge file | Cold-boot substrate for fresh-session firings (Desktop routines, Claude Desktop projects) | Cold-boot only (per session) |
-| **Tick shards** `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` | Per-tick visibility + reasoning capture | Search by date or PR |
-| **Memory files** `memory/feedback_*.md` | Cross-session load-bearing learnings | Skill-router search, grep, or pointer-from-rule |
-| **PR review threads** | Reviewer findings (Codex/Copilot/CodeQL) visible to both lanes | `gh api graphql reviewThreads` or `bun tools/github/poll-pr-gate.ts` |
+| Channel                                                          | Use for                                                                                   | Read pattern                                                         |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Git** — commits, branches, PRs, rebase                         | Async work handoff; conflict resolution; substantive output                               | `bun tools/github/poll-pr-gate.ts`, `git log`, `git fetch`           |
+| **`.claude/rules/`** auto-load                                   | Wake-time discipline; rules that apply to every fresh session                             | Cold-boot only (auto; empirically verified per test-canary)          |
+| **Bootstream** project-knowledge file                            | Cold-boot substrate for fresh-session firings (Desktop routines, Claude Desktop projects) | Cold-boot only (per session)                                         |
+| **Tick shards** `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` | Per-tick visibility + reasoning capture                                                   | Search by date or PR                                                 |
+| **Memory files** `memory/feedback_*.md`                          | Cross-session load-bearing learnings                                                      | Skill-router search, grep, or pointer-from-rule                      |
+| **PR review threads**                                            | Reviewer findings (Codex/Copilot/CodeQL) visible to both lanes                            | `gh api graphql reviewThreads` or `bun tools/github/poll-pr-gate.ts` |
 
 ## Explicit channels (active signaling; meant to be observed by peer)
 
-| Channel | Use for | Mechanism |
-|---|---|---|
-| **Bus envelopes** `/tmp/zeta-bus/` | Advisory broadcasts: `work-assignment`, `review-request`, shadow-catches | JSON envelopes; both Ottos read/write |
-| **Claim coordinator** `tools/bus/claim.ts` | Backlog row claim locking (B-0400 slice 3) | `acquire`/`release` commands; per PR #3032 discipline |
-| **Routines schedule** | Desktop's 2-hour cron fire IS a signal to CLI (someone's about to cold-boot a fresh Otto session) | CLI can poll `list_scheduled_tasks` |
-| **Aaron as ferry** | High-bandwidth context transfer between Otto sessions (he pastes transcripts) | Manual; highest bandwidth when Aaron is at the keyboard |
+| Channel                                    | Use for                                                                                           | Mechanism                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Bus envelopes** `/tmp/zeta-bus/`         | Advisory broadcasts: `work-assignment`, `review-request`, shadow-catches                          | JSON envelopes; both Ottos read/write                   |
+| **Claim coordinator** `tools/bus/claim.ts` | Backlog row claim locking (B-0400 slice 3)                                                        | `acquire`/`release` commands; per PR #3032 discipline   |
+| **Routines schedule**                      | Desktop's 2-hour cron fire IS a signal to CLI (someone's about to cold-boot a fresh Otto session) | CLI can poll `list_scheduled_tasks`                     |
+| **Aaron as ferry**                         | High-bandwidth context transfer between Otto sessions (he pastes transcripts)                     | Manual; highest bandwidth when Aaron is at the keyboard |
 
 ## Operational discipline
 
@@ -73,7 +73,7 @@ on-disk state:
    **Symptom → fix mapping** (recorded 2026-05-15 after recurring
    multi-Otto contention this session): if a fetch prints
    `! <oldsha>..<newsha>  main  -> origin/main  (unable to update
-   local ref)`, the local remote-tracking ref didn't update even
+local ref)`, the local remote-tracking ref didn't update even
    though `FETCH_HEAD` did. **BOTH the branch-specific form
    (`git fetch origin main`) AND the no-arg form (`git fetch origin`)
    can hit this** — the wedge is per-worktree-process ref-lock
@@ -98,7 +98,7 @@ on-disk state:
 
    Empirical anchors: ticks 1632Z + 1719Z + 1737Z + 1808Z all hit
    the wedge with different command forms; tick 1752Z's `git fetch
-   origin` worked. The discriminator is per-process contention, not
+origin` worked. The discriminator is per-process contention, not
    command shape.
 
    **Important**: do NOT use `find docs/backlog -name "B-*.md"` on the local
@@ -142,10 +142,10 @@ PRs in flight are also state.
 Two ID-allocation schemes operate in Zeta; picking the wrong one creates
 "valid-but-out-of-convention" rows that need renumber:
 
-| Scheme | Use for | Example |
-|---|---|---|
-| **Subdecimal** `B-NNNN.M` | Children / slices of an EXISTING parent row | `B-0170.4` (4th slice of B-0170 substrate-claim-checker; shipped via [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)) |
-| **New top-level** `B-NNNN` | New umbrella / standalone row that is NOT a child of any existing parent | `B-0539` (new umbrella for Otto-BFT internal-quorum; shipped via [PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595)) |
+| Scheme                     | Use for                                                                  | Example                                                                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Subdecimal** `B-NNNN.M`  | Children / slices of an EXISTING parent row                              | `B-0170.4` (4th slice of B-0170 substrate-claim-checker; shipped via [PR #3611](https://github.com/Lucent-Financial-Group/Zeta/pull/3611)) |
+| **New top-level** `B-NNNN` | New umbrella / standalone row that is NOT a child of any existing parent | `B-0539` (new umbrella for Otto-BFT internal-quorum; shipped via [PR #3595](https://github.com/Lucent-Financial-Group/Zeta/pull/3595))     |
 
 **The check that catches the wrong-scheme failure mode**: before authoring
 children for an existing parent, grep for existing subdecimal siblings:
@@ -184,9 +184,9 @@ All 10 channels were exercised in a single session:
 ## Why two observers landed independently on the same substrate
 
 Aaron 2026-05-13 asked Otto on both surfaces independently:
-*"do yall have a good way of communicating, save it for future versions."*
+_"do yall have a good way of communicating, save it for future versions."_
 
-- Otto on CLI surfaced 6 channels (ambient/explicit framing — *"the bus is the explicit channel; git is the ambient one"*)
+- Otto on CLI surfaced 6 channels (ambient/explicit framing — _"the bus is the explicit channel; git is the ambient one"_)
 - Otto on Desktop surfaced 8 channels (adding rules, bootstream, tick shards, claim coordinator)
 
 The complementary-observer pattern (per PR #3036 identity-stays-unified) means independent observation paths produced overlapping-but-not-identical lists. Combined synthesis is more complete than either alone.

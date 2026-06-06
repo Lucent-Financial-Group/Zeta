@@ -5,10 +5,23 @@ import { GraphConfidence, GraphEdgeKind, OrgEventKind, type GraphEdge } from "..
 import { inferEdge, promoteConfidence, retractEdge, type EnrichDeps } from "../src/index.ts";
 
 let seq = 0;
-const deps: EnrichDeps = { organizationId: "org-lfg", now: () => Date.parse("2026-05-30T00:00:00Z"), createId: (p) => `${p}-${++seq}` };
+const deps: EnrichDeps = {
+  organizationId: "org-lfg",
+  now: () => Date.parse("2026-05-30T00:00:00Z"),
+  createId: (p) => `${p}-${++seq}`,
+};
 
 test("the enrichment pass lands a semantic edge at INFERRED with agent provenance", () => {
-  const { edge, event } = inferEdge({ fromNodeId: "n-billing", kind: GraphEdgeKind.OwnedBy, toNodeId: "n-hat", agent: "risk-enricher", rationale: "commit history concentrates here" }, deps);
+  const { edge, event } = inferEdge(
+    {
+      fromNodeId: "n-billing",
+      kind: GraphEdgeKind.OwnedBy,
+      toNodeId: "n-hat",
+      agent: "risk-enricher",
+      rationale: "commit history concentrates here",
+    },
+    deps,
+  );
   equal(edge.confidence, GraphConfidence.Inferred);
   equal(edge.provenance.source, "agent:risk-enricher");
   equal(edge.provenance.method, "reasoned");
@@ -16,7 +29,8 @@ test("the enrichment pass lands a semantic edge at INFERRED with agent provenanc
 });
 
 function inferred(): GraphEdge {
-  return inferEdge({ fromNodeId: "a", kind: GraphEdgeKind.OwnedBy, toNodeId: "b", agent: "x", rationale: "r" }, deps).edge;
+  return inferEdge({ fromNodeId: "a", kind: GraphEdgeKind.OwnedBy, toNodeId: "b", agent: "x", rationale: "r" }, deps)
+    .edge;
 }
 
 test("promotion follows the legal ladder: inferred -> verified -> canonical; the jump is refused", () => {

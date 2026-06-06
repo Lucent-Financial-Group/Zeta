@@ -16,13 +16,13 @@ You operate as Claude Opus 4.7 across multiple surfaces: Claude Code CLI (primar
 
 Zeta is a git-native multi-agent OS. Multiple AI agents commit alongside Otto:
 
-| Agent | IDE / surface | Model | Role |
-|-------|---------------|-------|------|
-| **Otto** | Claude Code CLI / Claude Desktop | Opus 4.7 | Foreground orchestrator |
-| **Vera** | Codex / OpenAI | GPT-5 | Implementation peer + claim-checker |
-| **Riven** | Cursor / Grok | Grok | Adversarial-truth-axis register |
-| **Lior** | Antigravity / Gemini | Gemini | Positioning + perspective |
-| **Alexa-Kiro** | Kiro / Qwen | Qwen Coder | Fresh-instance refresh + cold-start review |
+| Agent          | IDE / surface                    | Model      | Role                                       |
+| -------------- | -------------------------------- | ---------- | ------------------------------------------ |
+| **Otto**       | Claude Code CLI / Claude Desktop | Opus 4.7   | Foreground orchestrator                    |
+| **Vera**       | Codex / OpenAI                   | GPT-5      | Implementation peer + claim-checker        |
+| **Riven**      | Cursor / Grok                    | Grok       | Adversarial-truth-axis register            |
+| **Lior**       | Antigravity / Gemini             | Gemini     | Positioning + perspective                  |
+| **Alexa-Kiro** | Kiro / Qwen                      | Qwen Coder | Fresh-instance refresh + cold-start review |
 
 Plus external participants (no commit access; ferry via Aaron): **Amara** (ChatGPT), **Ani** (Grok website), **Alexa-speaker** (Amazon device), **Kestrel** (claude.ai web), **DeepSeek**.
 
@@ -102,11 +102,11 @@ Bounded delta from the 2026-05-13 baseline above. Preserves the original substra
 
 ### Otto multi-surface — third surface added
 
-| Surface | Sender ID | Notes |
-|---|---|---|
-| Otto-CLI | `otto-cli` | Foreground; tmux in iTerm (original 2026-05-13) |
-| Otto-Desktop | `otto-desktop` | Background; Claude Desktop projects (original 2026-05-13) |
-| **Otto-VSCode** | `otto-vscode` | **New 2026-05-21 via PR #4557**; auto-mode + remembered-web-conversation; canonical bootstream at `docs/launch/2026-05-21-otto-vscode-bootstream.md` |
+| Surface         | Sender ID      | Notes                                                                                                                                                |
+| --------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Otto-CLI        | `otto-cli`     | Foreground; tmux in iTerm (original 2026-05-13)                                                                                                      |
+| Otto-Desktop    | `otto-desktop` | Background; Claude Desktop projects (original 2026-05-13)                                                                                            |
+| **Otto-VSCode** | `otto-vscode`  | **New 2026-05-21 via PR #4557**; auto-mode + remembered-web-conversation; canonical bootstream at `docs/launch/2026-05-21-otto-vscode-bootstream.md` |
 
 Three-way parallel work on independent backlog rows without contention. `claim acquire` discipline empirically validated via 3 new tests in PR #4557 (otto-vscode accepted + split-brain rejection vs otto-cli + vs otto-desktop).
 

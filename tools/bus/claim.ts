@@ -30,8 +30,12 @@ const LOCK_STALE_MS = 5_000;
 // ESRCH means the process does not exist — dead.
 function isProcessRunning(pid: number): boolean {
   if (isNaN(pid) || pid <= 0) return false;
-  try { process.kill(pid, 0); return true; }
-  catch (e) { return (e as NodeJS.ErrnoException).code === "EPERM"; }
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return (e as NodeJS.ErrnoException).code === "EPERM";
+  }
 }
 
 // Per-item advisory file lock — guards acquire's check+publish against concurrent processes.
@@ -64,7 +68,9 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
         if (Date.now() - st.mtimeMs > LOCK_STALE_MS && !isProcessRunning(holderPid)) {
           unlinkSync(lp); // reclaim stale lock left by a crashed process
         }
-      } catch { /* lock disappeared between reads — harmless */ }
+      } catch {
+        /* lock disappeared between reads — harmless */
+      }
     }
   }
   if (fd === undefined) throw new Error(`${itemId}: acquire lock busy — retry`);
@@ -72,7 +78,11 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
     return fn();
   } finally {
     closeSync(fd);
-    try { unlinkSync(lp); } catch { /* best-effort */ }
+    try {
+      unlinkSync(lp);
+    } catch {
+      /* best-effort */
+    }
   }
 }
 
@@ -90,8 +100,11 @@ export type ClaimRecord = {
 // Sub-ms tiebreaker: file mtime reflects actual write order more reliably than
 // UUID lexicographic order for messages with the same ISO timestamp string.
 function messageMtimeMs(id: string): number {
-  try { return statSync(join(BUS_DIR, `${id}.json`)).mtimeMs; }
-  catch { return 0; } // message may have expired and been cleaned
+  try {
+    return statSync(join(BUS_DIR, `${id}.json`)).mtimeMs;
+  } catch {
+    return 0;
+  } // message may have expired and been cleaned
 }
 
 /**
@@ -252,7 +265,10 @@ function main(): void {
   switch (command) {
     case "check": {
       const itemId = asString(flags.item);
-      if (!itemId) { console.error("Error: --item is required"); process.exit(1); }
+      if (!itemId) {
+        console.error("Error: --item is required");
+        process.exit(1);
+      }
 
       const claims = activeClaims(itemId);
       if (asJson) {
@@ -340,12 +356,14 @@ function main(): void {
       }
 
       if (asJson) {
-        console.log(JSON.stringify({
-          itemId,
-          acquired: true,
-          messageId,
-          ...(worktree !== undefined && { worktree }),
-        }));
+        console.log(
+          JSON.stringify({
+            itemId,
+            acquired: true,
+            messageId,
+            ...(worktree !== undefined && { worktree }),
+          }),
+        );
       } else {
         const branchStr = branch ? ` (${branch})` : "";
         const worktreeStr = worktree ? ` [worktree: ${worktree}]` : "";

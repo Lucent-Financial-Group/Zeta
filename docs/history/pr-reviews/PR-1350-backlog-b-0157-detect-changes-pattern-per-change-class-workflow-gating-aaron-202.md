@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1350 |
-| Title | backlog(B-0157): detect-changes pattern — per-change-class workflow gating (Aaron 2026-05-01; third B-0177 audit hit) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T07:51:32Z |
-| Merged at | 2026-05-03T07:53:04Z |
-| Merge commit SHA | `74bc07a46898d5f0a75a05f9bfee149976427f2d` |
-| Branch | `backlog/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1350 |
-| Changed files | 2 |
-| Additions / deletions | +89 / -0 |
+| Field                 | Value                                                                                                                 |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1350                                                                                                                  |
+| Title                 | backlog(B-0157): detect-changes pattern — per-change-class workflow gating (Aaron 2026-05-01; third B-0177 audit hit) |
+| Author                | `AceHack` (human)                                                                                                     |
+| State                 | MERGED                                                                                                                |
+| Created at            | 2026-05-03T07:51:32Z                                                                                                  |
+| Merged at             | 2026-05-03T07:53:04Z                                                                                                  |
+| Merge commit SHA      | `74bc07a46898d5f0a75a05f9bfee149976427f2d`                                                                            |
+| Branch                | `backlog/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01`                                         |
+| Base branch           | `main`                                                                                                                |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1350                                                              |
+| Changed files         | 2                                                                                                                     |
+| Additions / deletions | +89 / -0                                                                                                              |
 
 ## Description
 
@@ -33,13 +33,13 @@ Files \`B-0157\` — third concrete hit for B-0177's audit hypothesis. Aaron 202
 
 ## Audit pattern emerging
 
-| Reserved | Filed | Source memo |
-|---|---|---|
-| B-0141 (brittle-pointer) | 2026-05-03 | parallelism-scaling-ladder |
-| B-0142 (Code Contracts) | 2026-05-03 | parallelism-scaling-ladder |
-| B-0157 (detect-changes) | 2026-05-03 (this PR) | prefer-mechanical-external-anchors + detect-changes-pattern |
+| Reserved                 | Filed                | Source memo                                                 |
+| ------------------------ | -------------------- | ----------------------------------------------------------- |
+| B-0141 (brittle-pointer) | 2026-05-03           | parallelism-scaling-ladder                                  |
+| B-0142 (Code Contracts)  | 2026-05-03           | parallelism-scaling-ladder                                  |
+| B-0157 (detect-changes)  | 2026-05-03 (this PR) | prefer-mechanical-external-anchors + detect-changes-pattern |
 
-All three from 2026-05-01 memos; all three reserved-but-never-filed; all three surfaced by Otto 2026-05-03 audit pass post-Aaron's *\"a lot of backlog lost in our memories\"* observation. B-0177's hypothesis is empirically validated three-fold.
+All three from 2026-05-01 memos; all three reserved-but-never-filed; all three surfaced by Otto 2026-05-03 audit pass post-Aaron's _\"a lot of backlog lost in our memories\"_ observation. B-0177's hypothesis is empirically validated three-fold.
 
 ## Row scope
 
@@ -68,15 +68,15 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 7 |
-| Resolved threads | 7 |
-| Unresolved threads | 0 |
-| Total review comments | 14 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 7     |
+| Resolved threads                          | 7     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 14    |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -89,16 +89,16 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T07:53:57Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:67 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Scope detect-changes to jobs, not separate workflows**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Scope detect-changes to jobs, not separate workflows**
+
   This row defines `detect-changes.yaml` as a separate workflow and then says each existing workflow should add `needs: detect-changes` with `needs.detect-changes.outputs...`; that wiring is not valid in GitHub Actions because `needs` links jobs within the same workflow (`jobs.<job_id>.needs`), not across workflow files. If someone implements this verbatim, the gating plan cannot be expressed as written and the migration will stall until the design is rewritten (e.g., per-workflow detect job, reusable workflow outputs, or a single consolidated workflow).
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:14:13Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:67 (association: MEMBER)
-    Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
+- **`AceHack` (human)** at 2026-05-03T08:14:13Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:67 (association: MEMBER)
+  Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -113,8 +113,8 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:14:15Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:8 (association: MEMBER)
-    Merge-ordering false positive — B-0142 wasn't present at PR-eval time but merged later as #1349 (`9c4d247` on main). The cross-reference now resolves on main. Standardized PR-branch-not-main reviewer-eval class per `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`.
+- **`AceHack` (human)** at 2026-05-03T08:14:15Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:8 (association: MEMBER)
+  Merge-ordering false positive — B-0142 wasn't present at PR-eval time but merged later as #1349 (`9c4d247` on main). The cross-reference now resolves on main. Standardized PR-branch-not-main reviewer-eval class per `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`.
 
 ### Thread 3 -- resolved [collapsed]
 
@@ -126,12 +126,11 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 
 - **`Copilot` (bot)** at 2026-05-03T07:55:34Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:35 (association: NONE)
   This problem statement is stale against the current workflows: `gate.yml` already skips build/test on docs-only PRs, `codeql.yml` short-circuits pure docs changes via `path-gate`, and backlog-only changes have their own `backlog-index-integrity` check. As written, the row is describing a CI baseline the repository no longer has.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:14:16Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:35 (association: MEMBER)
-    Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
+- **`AceHack` (human)** at 2026-05-03T08:14:16Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:35 (association: MEMBER)
+  Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -143,12 +142,11 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 
 - **`Copilot` (bot)** at 2026-05-03T07:55:34Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:25 (association: NONE)
   `B-0142` still doesn't resolve to a row file or BACKLOG entry in this branch, so describing this as the third hit after the `B-0142` filing is premature. Per `docs/backlog/P2/B-0153-pre-commit-lint-suite-mechanizable-class-consolidation-aaron-otto-2026-05-01.md:73-79`, this should stay annotated as unresolved/forward-ref until that sibling row actually lands.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:14:18Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:25 (association: MEMBER)
-    Merge-ordering false positive — B-0142 wasn't present at PR-eval time but merged later as #1349 (`9c4d247` on main). The cross-reference now resolves on main. Standardized PR-branch-not-main reviewer-eval class per `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`.
+- **`AceHack` (human)** at 2026-05-03T08:14:18Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:25 (association: MEMBER)
+  Merge-ordering false positive — B-0142 wasn't present at PR-eval time but merged later as #1349 (`9c4d247` on main). The cross-reference now resolves on main. Standardized PR-branch-not-main reviewer-eval class per `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -160,12 +158,11 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 
 - **`Copilot` (bot)** at 2026-05-03T07:55:35Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:41 (association: NONE)
   All existing workflow files under `.github/workflows/` use the `.yml` extension, so introducing `detect-changes.yaml` here creates a one-off filename convention for the planned workflow. Keeping the proposal aligned with the current `.yml` naming avoids drift between the backlog row and the repository's actual workflow layout.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:14:20Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:41 (association: MEMBER)
-    Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
+- **`AceHack` (human)** at 2026-05-03T08:14:20Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:41 (association: MEMBER)
+  Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
 
 ### Thread 6 -- resolved [collapsed]
 
@@ -177,12 +174,11 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 
 - **`Copilot` (bot)** at 2026-05-03T07:55:35Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:62 (association: NONE)
   `B-0142` is still unresolved in this branch, so calling it a landed sibling row here creates the same broken backlog cross-reference again. This should be annotated as a forward-ref/not-yet-filed reference until `B-0142` actually exists in `docs/backlog/**`.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:14:22Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:62 (association: MEMBER)
-    Merge-ordering false positive — B-0142 wasn't present at PR-eval time but merged later as #1349 (`9c4d247` on main). The cross-reference now resolves on main. Standardized PR-branch-not-main reviewer-eval class per `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`.
+- **`AceHack` (human)** at 2026-05-03T08:14:22Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:62 (association: MEMBER)
+  Merge-ordering false positive — B-0142 wasn't present at PR-eval time but merged later as #1349 (`9c4d247` on main). The cross-reference now resolves on main. Standardized PR-branch-not-main reviewer-eval class per `memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md`.
 
 ### Thread 7 -- resolved [collapsed]
 
@@ -194,12 +190,11 @@ Effect: PRs only run workflows their changes need. CI throughput scales with rel
 
 - **`Copilot` (bot)** at 2026-05-03T07:55:35Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:66 (association: NONE)
   This repeats the planned workflow name with a `.yaml` suffix even though the repository's existing workflows consistently use `.yml`. Using the repo's established extension here will keep the backlog row aligned with the file that would actually be added later.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T08:14:23Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:66 (association: MEMBER)
-    Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
+- **`AceHack` (human)** at 2026-05-03T08:14:23Z on `docs/backlog/P2/B-0157-detect-changes-pattern-parallel-pr-friendly-aaron-2026-05-01.md`:66 (association: MEMBER)
+  Addressed in follow-up PR #1357. Architecture correction: cross-workflow `needs:` is invalid in GitHub Actions; row now specifies three valid options (reusable workflow via `workflow_call`, per-workflow detect-job, or single consolidated workflow). `.yaml` → `.yml` throughout. Partial-pre-existence acknowledged (gate.yml/codeql.yml/backlog-index-integrity already gate partially).
 
 ## Fix commits (touching thread paths)
 

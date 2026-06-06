@@ -58,7 +58,7 @@ Five criteria, all must hold:
    the new ontology requires destructive rewrites to
    land, stop.
 5. **The maintainer opted in.** Ontology landings are
-   *felt* by the maintainer because every existing
+   _felt_ by the maintainer because every existing
    cached translation recompiles against the new IR in
    their head. An ontology surfaced by the maintainer
    is safe to land (they chose the timing); an ontology
@@ -152,7 +152,7 @@ Retract via:
 3. Rename back. Since the old vocabulary was aliased
    during landing (per amortisation above), reverting
    is a one-round move, not a cascade.
-4. Flag the rounds of work written *against* the
+4. Flag the rounds of work written _against_ the
    retracted ontology for re-land against the prior
    IR. Treat as incremental compile, not catastrophic
    rewrite.

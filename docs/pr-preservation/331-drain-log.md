@@ -21,6 +21,7 @@ Resolution commit for all FIX outcomes: `59f3397`.
 ### Original comment (verbatim)
 
 > `aggregateAcceleration` hard-codes `Map<int * int, double>`, which makes the StakeCovariance API inconsistent with the rest of Core's generic node/key handling (e.g., `Graph<'N>`). Consider making this generic over the key type (e.g., `Map<'N * 'N, double>` with `'N : comparison`) or just accepting a sequence of acceleration values if the keys aren't used.
+>
 > ```suggestion
 >     let aggregateAcceleration<'N when 'N : comparison>
 >             (pairAccelerations: Map<'N * 'N, double>)
@@ -120,6 +121,7 @@ FIX — kept the well-defined `Some 0.0` semantics for constant / zero-covarianc
 ### Original comment (verbatim)
 
 > `windowedDeltaCovariance` uses `n = min deltasA.Length deltasB.Length` and then takes the trailing window ending at `n`. If the two series have different lengths, this silently drops the tail of the longer series and can misalign time indices. Consider requiring equal lengths (return `None`/error otherwise) or explicitly documenting the alignment/truncation semantics.
+>
 > ```suggestion
 >     /// trailing `windowSize` values. Returns None when the
 >     /// series lengths differ, when either series has fewer
@@ -170,6 +172,7 @@ FIX — adopted the suggested equal-length precondition (returns `None` on misma
 ### Original comment (verbatim)
 
 > P2: The doc comment for `windowedDeltaCovariance` says it returns `None` for degenerate cases like zero variance, but the implementation always returns `Some` (often `0.0`) whenever `windowSize >= 2` and enough samples exist. Either implement the stated degeneracy checks or update the comment to reflect the actual behavior.
+>
 > ```suggestion
 >     /// trailing `windowSize` values. Returns None only when
 >     /// `windowSize < 2` or when either series has fewer than
@@ -196,6 +199,7 @@ FIX — same root cause as thread 5; one doc comment rewrite resolves both. The 
 ### Original comment (verbatim)
 
 > P2: `aggregateAcceleration` materializes the map values into an array (`Seq.toArray` + `Array.sum`) just to compute an average. This adds an avoidable allocation; a `Map.fold`/`Seq.fold` that tracks `(sum, count)` would compute the mean in one pass without extra memory.
+>
 > ```suggestion
 >             let sum, count =
 >                 pairAccelerations

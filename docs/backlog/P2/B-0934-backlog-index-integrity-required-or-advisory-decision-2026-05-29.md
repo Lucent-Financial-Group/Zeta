@@ -39,8 +39,8 @@ Choose one path:
 ## Acceptance
 
 - [ ] Durable decision recorded in this row or a linked implementation
-  PR.
+      PR.
 - [ ] If promoted, live GitHub ruleset required-status evidence is
-  captured.
+      captured.
 - [ ] If weakened, `.github/workflows/backlog-index-integrity.yml` no
-  longer claims merge-gate enforcement it does not have.
+      longer claims merge-gate enforcement it does not have.

@@ -4,16 +4,17 @@ description: Aaron 2026-04-22 self-identifies as verbose and likes verbose respo
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Fact:** Aaron 2026-04-22, two same-session messages
 within seconds:
 
-> *"i like the verbosity myself"*
+> _"i like the verbosity myself"_
 >
-> *"i am vebose"*
+> _"i am vebose"_
 
-Context: immediately after the earlier sentence *"think
+Context: immediately after the earlier sentence _"think
 about your audiance and their time before you send the
-email you tend to be a bit wordy"* (re: outbound email).
+email you tend to be a bit wordy"_ (re: outbound email).
 Aaron corrected when the agent over-generalised the
 brevity feedback as applying universally. He clarified
 it was scoped to **third-party email recipients**, not

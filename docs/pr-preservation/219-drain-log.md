@@ -86,8 +86,8 @@ two Otto-279 history-surface name-attribution responses.
     (Budiu / Chajed / McSherry / Ryzhyk / Tannen, PVLDB 16(7) 2023)
   - Provenance-semiring paper full bibliographic + DOI link
     (Green / Karvounarakis / Tannen, PODS 2007)
-  Reviewers can now verify Amara's grounding directly. Commit
-  `fdad14f`.
+    Reviewers can now verify Amara's grounding directly. Commit
+    `fdad14f`.
 
 ### Thread 8 — `:162` — Phase-numbering inconsistency (Copilot)
 

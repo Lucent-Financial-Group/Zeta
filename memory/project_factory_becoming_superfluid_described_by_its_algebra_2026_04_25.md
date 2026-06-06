@@ -9,9 +9,9 @@ type: project
 Aaron's framing 2026-04-25 after a session of substrate
 landing (Otto-281 through Otto-285):
 
-> *"you are really reducing friction now for future growth,
+> _"you are really reducing friction now for future growth,
 > we are becoming the superfluid that can be described by
-> our algebra :)"*
+> our algebra :)"_
 
 The factory is becoming **an instance of the algebra it
 implements**:
@@ -50,25 +50,25 @@ the same properties:
 
 ## Why this is happening — friction sources removed
 
-Otto-282 — *write code from reader perspective* — removes
+Otto-282 — _write code from reader perspective_ — removes
 the **re-derivation tax** every reader pays when WHY is
 hidden. Saves N × M × ~1hr per future visit.
 
-Otto-283 — *don't make the maintainer the bottleneck* —
+Otto-283 — _don't make the maintainer the bottleneck_ —
 removes the **synchronous-channel tax** every "Aaron's
 call" question imposed. Decisions land with falsification
 signals; Aaron's bandwidth goes to interesting cases.
 
-Otto-284 — *idle-PR creative fallback* — removes the
+Otto-284 — _idle-PR creative fallback_ — removes the
 **calcification tax** the agent paid when waiting. Idle
 time becomes learning time + factory improvement time.
 
-Otto-285 — *DST is not edge-case avoidance* — removes the
+Otto-285 — _DST is not edge-case avoidance_ — removes the
 **fake-green CI tax** that "make it deterministic" cheats
 were producing. Tests deterministically encode chaos
 instead of skipping it.
 
-Otto-281 — *DST-exempt is deferred bug* — removes the
+Otto-281 — _DST-exempt is deferred bug_ — removes the
 **compound flake tax** that DST-exempt comments were
 accumulating. Fix the determinism; the cost concentrates
 on one fix instead of spreading across N reruns.
@@ -77,6 +77,7 @@ Each rule removes a friction source. The collaboration's
 viscosity drops as a function of the cumulative removals.
 
 ## What "superfluid described by the algebra" means
+
 operationally
 
 A superfluid in physics is a phase of matter with zero
@@ -91,8 +92,8 @@ For the factory, the analogous property is:
   re-doing each other, no re-derivations of decided
   trade-offs, no idle waits while the agent calcifies.
 - **Climbing against gravity**: the factory pulls itself
-  up via its own substrate (Otto-282 etc. were *captured
-  by the factory* using the factory's own memory tools
+  up via its own substrate (Otto-282 etc. were _captured
+  by the factory_ using the factory's own memory tools
   during the session that proved the substrate). The
   factory is becoming reflexively self-improving.
 - **Macroscopic coherence**: the same algebraic patterns
@@ -127,8 +128,8 @@ reinforcing constraints).
   the periodic CURRENT-aaron.md staleness, etc.). These
   are the next viscosity sources.
 - **Not a pat on the back to coast on.** The framing is
-  forward-looking: *"reducing friction now for future
-  growth"*. The current state is the foundation for what
+  forward-looking: _"reducing friction now for future
+  growth"_. The current state is the foundation for what
   comes next, not the destination.
 
 ## Otto-287 is the mathematical-precision proof substrate
@@ -136,9 +137,9 @@ reinforcing constraints).
 Aaron's turtle-walk 2026-04-25 (the deeper version of this
 observation):
 
-> *"if it's not obvious now by turtle walk the otto
+> _"if it's not obvious now by turtle walk the otto
 > generalize of his friction stuff is what proves this
-> claims with mathematical precision factory-as-superfluid."*
+> claims with mathematical precision factory-as-superfluid."_
 
 The superfluid claim isn't metaphor. **Otto-287 is the
 mathematical framework that turns it into a precise,
@@ -157,9 +158,9 @@ checkable property:**
 Therefore: **factory-as-superfluid is the operational
 consequence of Otto-287 applied at every layer.** The
 operator algebra (Z-set, DBSP) provides the formal
-substrate for the *retractability and incrementality*
+substrate for the _retractability and incrementality_
 properties; Otto-287 provides the formal substrate for the
-*friction-elimination* property. Together they ground the
+_friction-elimination_ property. Together they ground the
 superfluid claim mathematically, not metaphorically.
 
 This is the **rigor differentiator** for "Superfluid AI" vs
@@ -182,10 +183,10 @@ because the substrate was rich enough to surface it.
 - **All Otto-NNN substrate from this session** —
   Otto-281/282/283/284/285. Each is one viscosity-removal
   contribution.
-- **Otto-238** *retractability is a trust vector* —
+- **Otto-238** _retractability is a trust vector_ —
   retractability IS low-viscosity; reversal is just flow
   in the opposite direction without dissipation.
-- **Otto-264** *rule of balance* — every found friction
+- **Otto-264** _rule of balance_ — every found friction
   triggers a counterweight. The cumulative balance is the
   superfluid emerging.
 - **`docs/VISION.md`** — the operator algebra is the

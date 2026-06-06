@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 reminder on the repo-pair positioning. Two GitHu
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # LFG is demo-facing, AceHack is internal cost-cutting
 
 ## Verbatim (2026-04-23)

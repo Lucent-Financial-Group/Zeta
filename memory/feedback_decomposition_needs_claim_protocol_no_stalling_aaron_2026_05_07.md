@@ -4,6 +4,7 @@ description: Aaron flagged that blob decomposition needs the same claim protocol
 type: feedback
 originSessionId: 8dfb492a-e181-4a10-8fc9-16b3b01e832d
 ---
+
 Aaron 2026-05-07: "yall need a decomposition protocol for
 who decomposes what same claim protocol not stalling"
 

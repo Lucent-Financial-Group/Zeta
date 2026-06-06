@@ -127,10 +127,7 @@ export function createCockroachContextPackAdvisoryPromotionDecisionStore(
   };
 }
 
-function parametersFor(
-  request: ContextPackAdvisoryPromotionPolicyRequest,
-  organizationId: string,
-): readonly unknown[] {
+function parametersFor(request: ContextPackAdvisoryPromotionPolicyRequest, organizationId: string): readonly unknown[] {
   return [
     organizationId,
     request.request.snapshot.hat.id,
@@ -143,9 +140,7 @@ function parametersFor(
   ];
 }
 
-function decisionWriteParameters(
-  decision: ContextPackAdvisoryPromotionDecisionWriteInput,
-): readonly unknown[] {
+function decisionWriteParameters(decision: ContextPackAdvisoryPromotionDecisionWriteInput): readonly unknown[] {
   return [
     decision.decisionId,
     decision.decisionKey,
@@ -185,12 +180,14 @@ function currentApprovedDecisions(
     if (currentByDecisionKey.has(decision.decisionKey)) continue;
     currentByDecisionKey.set(decision.decisionKey, decision);
   }
-  return [...currentByDecisionKey.values()].filter((decision) =>
-    decision.status === ContextPackAdvisoryPromotionDecisionStatus.Approved
+  return [...currentByDecisionKey.values()].filter(
+    (decision) => decision.status === ContextPackAdvisoryPromotionDecisionStatus.Approved,
   );
 }
 
-function rowToDecision(row: ContextPackAdvisoryPromotionDecisionRow): DurableContextPackAdvisoryPromotionDecision | null {
+function rowToDecision(
+  row: ContextPackAdvisoryPromotionDecisionRow,
+): DurableContextPackAdvisoryPromotionDecision | null {
   const decisionId = requiredString(row.decision_id);
   const decisionKey = requiredString(row.decision_key);
   const organizationId = requiredString(row.organization_id);
@@ -229,9 +226,7 @@ function rowToDecision(row: ContextPackAdvisoryPromotionDecisionRow): DurableCon
   };
 }
 
-function fingerprintFrom(
-  row: ContextPackAdvisoryPromotionDecisionRow,
-): ContextPackAdvisoryPromotionFingerprint | null {
+function fingerprintFrom(row: ContextPackAdvisoryPromotionDecisionRow): ContextPackAdvisoryPromotionFingerprint | null {
   const itemKind = promotionItemKind(row.item_kind);
   const summaryHash = requiredString(row.summary_hash);
   const citationRefs = stringArray(row.citation_refs, { normalizeOrder: true });
@@ -249,7 +244,7 @@ function promotionDecisionStatus(value: unknown): ContextPackAdvisoryPromotionDe
   return Object.values(ContextPackAdvisoryPromotionDecisionStatus).includes(
     value as ContextPackAdvisoryPromotionDecisionStatus,
   )
-    ? value as ContextPackAdvisoryPromotionDecisionStatus
+    ? (value as ContextPackAdvisoryPromotionDecisionStatus)
     : null;
 }
 
@@ -262,7 +257,9 @@ function optionalScope<Name extends keyof ContextPackAdvisoryPromotionDecision>(
   value: unknown,
 ): Partial<Pick<ContextPackAdvisoryPromotionDecision, Name>> {
   const normalized = optionalString(value);
-  return normalized === undefined ? {} : { [name]: normalized } as Partial<Pick<ContextPackAdvisoryPromotionDecision, Name>>;
+  return normalized === undefined
+    ? {}
+    : ({ [name]: normalized } as Partial<Pick<ContextPackAdvisoryPromotionDecision, Name>>);
 }
 
 function requiredString(value: unknown): string | null {
@@ -278,10 +275,7 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-function stringArray(
-  value: unknown,
-  options: { normalizeOrder: boolean },
-): readonly string[] | null {
+function stringArray(value: unknown, options: { normalizeOrder: boolean }): readonly string[] | null {
   const parsed = typeof value === "string" ? parseJson(value) : value;
   if (!Array.isArray(parsed) || !parsed.every((entry) => typeof entry === "string")) return null;
   const values = [...new Set(parsed.map((entry) => entry.trim()).filter((entry) => entry.length > 0))];

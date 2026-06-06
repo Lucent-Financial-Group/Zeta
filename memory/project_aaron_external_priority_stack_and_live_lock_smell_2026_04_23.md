@@ -4,6 +4,7 @@ description: Aaron's directive naming the current external-priority order (Servi
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # External priority stack + ownership split + live-lock smell
 
 ## Verbatim (2026-04-23)
@@ -12,12 +13,12 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > the higher prorities but also making changes to integrat
 > auroa idea is up there too, and the multi algebra
 > enhancements to our database, and the cutting edge
-> persistance.  we should do a review of our database and come
+> persistance. we should do a review of our database and come
 > up with backlog items where we are lacking it's not cutting
-> edge, we need more research etc....  speculative work is fine
+> edge, we need more research etc.... speculative work is fine
 > still too that is commpletely directly by you and your
 > prooriteis, these are all external poriorites, you control
-> the internal proroites of the software factory.  we just want
+> the internal proroites of the software factory. we just want
 > to drive twards internal objects and exsternal objects and
 > not overload with speculation, speclative changes a good and
 > expected but they are just not the only know, if they are
@@ -35,7 +36,7 @@ The order in the message is the priority order:
    actual UI surface — web frontend, desktop, TUI, something
    interactable. Aaron works on the ServiceTitan CRM team, so
    CRM-shaped UI is the concrete target (contact list + detail
-   + pipeline kanban + duplicate-review UX).
+   - pipeline kanban + duplicate-review UX).
 2. **Aurora integration.** Aurora Network = firefly-sync DAO
    protocol for scale-free networks; x402 economic agency +
    ERC-8004 reputation + this sync substrate = self-healing
@@ -56,7 +57,7 @@ The order in the message is the priority order:
 
 Apply: survey Zeta's current database surface against
 cutting-edge database research (SIGMOD / VLDB / CIDR 2023-2026).
-For each surface where Zeta is *not* cutting edge, file a
+For each surface where Zeta is _not_ cutting edge, file a
 BACKLOG row with the gap, a candidate research anchor, and
 an effort estimate. Not a one-shot — this becomes a periodic
 cadence (suggested: once per minor round, or on request).
@@ -71,9 +72,9 @@ cadence (suggested: once per minor round, or on request).
   additions, memory landings, BACKLOG grooming, speculative
   research, persona-notebook work) are the agent's to
   prioritise and sequence.
-- **Speculative work is welcome, not default.** *"speculative
+- **Speculative work is welcome, not default.** _"speculative
   changes are good and expected but they are just not the
-  only [thing]."* Speculation is a healthy fraction, not the
+  only [thing]."_ Speculation is a healthy fraction, not the
   whole output.
 
 ## The live-lock smell (new, periodic)
@@ -87,7 +88,7 @@ Aaron's diagnostic:
 **Mechanism:** A factory producing only process / research /
 meta-factory / tick-history / BACKLOG-row work — without
 external-observable product progress (src/ changes, sample
-improvements, test landings, UI progress) — is *live-locked*:
+improvements, test landings, UI progress) — is _live-locked_:
 every worker is busy, every tick fires, nothing external
 moves.
 
@@ -100,13 +101,14 @@ Classify each of the last N commits on `origin/main` into:
   `docs/ROUND-HISTORY.md`, tick-history appends, CLAUDE.md /
   AGENTS.md / GOVERNANCE.md edits, hygiene scripts.
 - **Speculative / research** — `docs/research/`, `docs/DECISIONS/`,
-  BACKLOG rows, memory files *if* landed as explicit research
+  BACKLOG rows, memory files _if_ landed as explicit research
   or decision artifacts.
 
 If `speculative / (external + internal-factory + speculative)
+
 > ~0.6` over a rolling window (suggested: last 25 commits or
-last round, whichever is shorter), that is the live-lock
-smell firing.
+> last round, whichever is shorter), that is the live-lock
+> smell firing.
 
 **Response when the smell fires:** Pause speculative work.
 Pick one external-priority item (from the four-stack above),
@@ -117,7 +119,7 @@ actual product motion. Then re-measure.
 
 - `memory/feedback_never_idle_speculative_work_over_waiting.md`
   — never-idle still holds; speculative is a valid non-idle
-  mode. But live-lock smell now caps the *fraction*.
+  mode. But live-lock smell now caps the _fraction_.
 - `memory/feedback_outcomes_over_vanity_metrics_goodhart_resistance.md`
   — outcome measurement still binds; live-lock ratio is a
   process-health metric, not a product-outcome metric.
@@ -147,8 +149,8 @@ actual product motion. Then re-measure.
 
 - Not a directive to stop speculative work entirely.
 - Not a claim the factory has been mis-spending time across
-  its whole history — Aaron's framing is *when* the smell
-  fires, not *that* it is always firing.
+  its whole history — Aaron's framing is _when_ the smell
+  fires, not _that_ it is always firing.
 - Not a license to deprioritise the alignment-research arc
   (which is the project's research contribution; Aaron's
   "external" here means external-to-the-factory product

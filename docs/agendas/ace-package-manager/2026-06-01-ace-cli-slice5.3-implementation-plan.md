@@ -46,10 +46,25 @@ import type { AcePackage, AceDependency, RegistryEntry, Registry } from "./store
 
 function pkgAt(name: string, version: string, deps: AceDependency[] = []): AcePackage {
   const files = { "f.txt": `${name}@${version}` };
-  return { manifest: { format_version: 1, name, version, content_hash: contentHash(new TextEncoder().encode(JSON.stringify(files))), dependencies: deps }, files };
+  return {
+    manifest: {
+      format_version: 1,
+      name,
+      version,
+      content_hash: contentHash(new TextEncoder().encode(JSON.stringify(files))),
+      dependencies: deps,
+    },
+    files,
+  };
 }
 const regEdge = (name: string, range: string): AceDependency => ({ kind: "registry", name, version: range });
-const inlineEdge = (pkg: AcePackage, url: string): AceDependency => ({ kind: "inline", name: pkg.manifest.name, version: pkg.manifest.version, url, package_hash: packageHash(pkg) });
+const inlineEdge = (pkg: AcePackage, url: string): AceDependency => ({
+  kind: "inline",
+  name: pkg.manifest.name,
+  version: pkg.manifest.version,
+  url,
+  package_hash: packageHash(pkg),
+});
 function reg(entries: { name: string; version: string; url: string; pkg: AcePackage }[]): Registry {
   const r: Registry = new Map();
   for (const e of entries) {
@@ -112,7 +127,7 @@ export function buildLockfile(root: AcePackage, order: AcePackage[], registry: R
   // Prescan every inline edge in the graph → name@version -> url.
   const inlineUrls = new Map<string, string>();
   for (const p of order) {
-    for (const edge of (p.manifest.dependencies ?? [])) {
+    for (const edge of p.manifest.dependencies ?? []) {
       if (edge.kind === "inline" && typeof edge.url === "string") {
         inlineUrls.set(`${edge.name}@${edge.version}`, edge.url);
       }
@@ -184,7 +199,10 @@ describe("serializeLockfile / parseLockfile", () => {
     expect("error" in parseLockfile("not json {")).toBe(true);
     expect("error" in parseLockfile(JSON.stringify({ ...lf, format_version: 2 }))).toBe(true);
     expect("error" in parseLockfile(JSON.stringify({ ...lf, nodes: "x" }))).toBe(true);
-    expect("error" in parseLockfile(JSON.stringify({ ...lf, nodes: [{ name: 1, version: "1", url: "u", package_hash: "h" }] }))).toBe(true);
+    expect(
+      "error" in
+        parseLockfile(JSON.stringify({ ...lf, nodes: [{ name: 1, version: "1", url: "u", package_hash: "h" }] })),
+    ).toBe(true);
     expect("error" in parseLockfile(JSON.stringify({ ...lf, root: { name: "r" } }))).toBe(true);
   });
 });
@@ -217,27 +235,45 @@ export function serializeLockfile(lf: Lockfile): string {
 /** Parse + shape-guard an untrusted lockfile string. Never throws — malformed input → {error}. */
 export function parseLockfile(json: string): Lockfile | { error: string } {
   let v: unknown;
-  try { v = JSON.parse(json); } catch (e) { return { error: `not valid JSON: ${(e as Error).message}` }; }
+  try {
+    v = JSON.parse(json);
+  } catch (e) {
+    return { error: `not valid JSON: ${(e as Error).message}` };
+  }
   if (typeof v !== "object" || v === null) return { error: "lockfile is not an object" };
   const o = v as Record<string, unknown>;
   if (o.format_version !== 1) return { error: `unsupported format_version: ${JSON.stringify(o.format_version)}` };
   const root = o.root as Record<string, unknown> | null | undefined;
-  if (typeof root !== "object" || root === null
-      || typeof root.name !== "string" || typeof root.version !== "string" || typeof root.package_hash !== "string") {
+  if (
+    typeof root !== "object" ||
+    root === null ||
+    typeof root.name !== "string" ||
+    typeof root.version !== "string" ||
+    typeof root.package_hash !== "string"
+  ) {
     return { error: "malformed lockfile root" };
   }
   if (!Array.isArray(o.nodes)) return { error: "lockfile nodes is not an array" };
   const nodes: LockNode[] = [];
   for (const n of o.nodes) {
     const e = n as Record<string, unknown> | null;
-    if (typeof e !== "object" || e === null
-        || typeof e.name !== "string" || typeof e.version !== "string"
-        || typeof e.url !== "string" || typeof e.package_hash !== "string") {
+    if (
+      typeof e !== "object" ||
+      e === null ||
+      typeof e.name !== "string" ||
+      typeof e.version !== "string" ||
+      typeof e.url !== "string" ||
+      typeof e.package_hash !== "string"
+    ) {
       return { error: "malformed lockfile node" };
     }
     nodes.push({ name: e.name, version: e.version, url: e.url, package_hash: e.package_hash });
   }
-  return { format_version: 1, root: { name: root.name, version: root.version, package_hash: root.package_hash }, nodes };
+  return {
+    format_version: 1,
+    root: { name: root.name, version: root.version, package_hash: root.package_hash },
+    nodes,
+  };
 }
 ```
 
@@ -272,7 +308,11 @@ import { verifyRootMatchesLock } from "./lockfile.ts";
 describe("verifyRootMatchesLock", () => {
   test("true when root packageHash matches, false on any root change", () => {
     const root = pkgAt("root", "1.0.0", [regEdge("A", "^1.0.0")]);
-    const lf = { format_version: 1 as const, root: { name: "root", version: "1.0.0", package_hash: packageHash(root) }, nodes: [] };
+    const lf = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root) },
+      nodes: [],
+    };
     expect(verifyRootMatchesLock(root, lf)).toBe(true);
     const changed = pkgAt("root", "1.0.0", [regEdge("A", "^2.0.0")]); // changed range → different packageHash
     expect(verifyRootMatchesLock(changed, lf)).toBe(false);
@@ -361,8 +401,8 @@ Find the InstallArgs interface (read the file; it currently ends with `readonly 
 Add before the install arg loop (next to the existing `allowNoSignature` local):
 
 ```ts
-    let frozen = false;
-    let lockfilePath = "ace.lock";
+let frozen = false;
+let lockfilePath = "ace.lock";
 ```
 
 Add inside the install arg `for` loop (alongside the existing `--store` / `--allow-no-signature` cases):
@@ -424,14 +464,17 @@ Expected: FAIL — no lockfile written.
 - [ ] **Step 3: Implement** (patch-script) — after the graph-install loop completes successfully (locate the success point after the `for (const node of res.order)` install loop, before the handler returns 0), insert:
 
 ```ts
-      // SLICE 5.3: write the lockfile (write failure is a warning, not a failed install).
-      const lf = buildLockfile(pkg, res.order, registry);
-      if ("error" in lf) {
-        console.error(`ace: WARNING: could not build lockfile: ${lf.error}`);
-      } else {
-        try { writeFileSync(parsed.lockfile, serializeLockfile(lf)); }
-        catch (e) { console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); }
-      }
+// SLICE 5.3: write the lockfile (write failure is a warning, not a failed install).
+const lf = buildLockfile(pkg, res.order, registry);
+if ("error" in lf) {
+  console.error(`ace: WARNING: could not build lockfile: ${lf.error}`);
+} else {
+  try {
+    writeFileSync(parsed.lockfile, serializeLockfile(lf));
+  } catch (e) {
+    console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+  }
+}
 ```
 
 Add the imports at the top of `ace.ts`: `import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock } from "./lockfile.ts";` (`parseLockfile`/`verifyRootMatchesLock` are used in Task 6; importing now is fine — tsc tolerates them until used, but to avoid an unused-import lint add them in Task 6 instead if the repo's tsc flags unused imports. Safer: import only `buildLockfile, serializeLockfile` here; add `parseLockfile, verifyRootMatchesLock` in Task 6.) `writeFileSync` is already imported in ace.ts.
@@ -482,42 +525,86 @@ Expected: FAIL — `--frozen` not handled (falls through to solve).
 - [ ] **Step 3: Implement** (patch-script) — at the top of the graph-install branch (right after the `if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {` and the root content_hash check, BEFORE `loadRegistry()`/`solve()`), insert the frozen branch. Also add the Task-6 imports (`parseLockfile, verifyRootMatchesLock`) to the lockfile import line.
 
 ```ts
-      if (parsed.frozen) {
-        // SLICE 5.3 frozen replay: install exactly the locked graph; never solve, never touch the registry.
-        let lockRaw: string;
-        try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
-        catch { console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`); return 1; }
-        const lf = parseLockfile(lockRaw);
-        if ("error" in lf) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`); return 1; }
-        if (!verifyRootMatchesLock(pkg, lf)) {
-          console.error(`ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`);
-          return 1;
-        }
-        const trust = loadTrustStore();
-        // Replay each locked node: fetch → parse → verify pin + content_hash + signature + path-safety → install.
-        for (const node of lf.nodes) {
-          let raw: string;
-          try { raw = (node.url.startsWith("http://") || node.url.startsWith("https://")) ? await (await fetch(node.url)).text() : readFileSync(node.url, "utf8"); }
-          catch (e) { console.error(`ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`); return 1; }
-          let np: AcePackage;
-          try { np = JSON.parse(raw) as AcePackage; } catch { console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`); return 1; }
-          if (packageHash(np) !== node.package_hash) { console.error(`ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`); return 1; }
-          const fh = contentHash(new TextEncoder().encode(JSON.stringify(np.files)));
-          if (fh !== np.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`); return 1; }
-          const unsafe = validatePackagePaths(np);
-          if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.name}@${node.version}: ${unsafe}`); return 1; }
-          const nv = verifySignature(np.manifest, trust);
-          if (!nv.ok && nv.reason !== "no-signature") { console.error(`ace: install refused: ${nv.reason} for ${node.name}@${node.version}`); return 1; }
-          if (!nv.ok && nv.reason === "no-signature" && !parsed.allowNoSignature) { console.error(`ace: install refused: unsigned ${node.name}@${node.version} (use --allow-no-signature)`); return 1; }
-          const ir = installPackage(parsed.storePath, np);
-          if (!ir.ok) { console.error(`ace: install refused: ${node.name}@${node.version}: ${ir.error}`); return 1; }
-        }
-        // Install the root last (already signature+content_hash verified above).
-        const rootIr = installPackage(parsed.storePath, pkg);
-        if (!rootIr.ok) { console.error(`ace: install refused: ${pkg.manifest.name} (root): ${rootIr.error}`); return 1; }
-        console.error(`ace: installed ${lf.nodes.length + 1} from lockfile ${parsed.lockfile} (frozen)`);
-        return 0;
-      }
+if (parsed.frozen) {
+  // SLICE 5.3 frozen replay: install exactly the locked graph; never solve, never touch the registry.
+  let lockRaw: string;
+  try {
+    lockRaw = readFileSync(parsed.lockfile, "utf8");
+  } catch {
+    console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`);
+    return 1;
+  }
+  const lf = parseLockfile(lockRaw);
+  if ("error" in lf) {
+    console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`);
+    return 1;
+  }
+  if (!verifyRootMatchesLock(pkg, lf)) {
+    console.error(
+      `ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`,
+    );
+    return 1;
+  }
+  const trust = loadTrustStore();
+  // Replay each locked node: fetch → parse → verify pin + content_hash + signature + path-safety → install.
+  for (const node of lf.nodes) {
+    let raw: string;
+    try {
+      raw =
+        node.url.startsWith("http://") || node.url.startsWith("https://")
+          ? await (await fetch(node.url)).text()
+          : readFileSync(node.url, "utf8");
+    } catch (e) {
+      console.error(
+        `ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`,
+      );
+      return 1;
+    }
+    let np: AcePackage;
+    try {
+      np = JSON.parse(raw) as AcePackage;
+    } catch {
+      console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`);
+      return 1;
+    }
+    if (packageHash(np) !== node.package_hash) {
+      console.error(`ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`);
+      return 1;
+    }
+    const fh = contentHash(new TextEncoder().encode(JSON.stringify(np.files)));
+    if (fh !== np.manifest.content_hash) {
+      console.error(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`);
+      return 1;
+    }
+    const unsafe = validatePackagePaths(np);
+    if (unsafe !== null) {
+      console.error(`ace: install refused: unsafe file path in ${node.name}@${node.version}: ${unsafe}`);
+      return 1;
+    }
+    const nv = verifySignature(np.manifest, trust);
+    if (!nv.ok && nv.reason !== "no-signature") {
+      console.error(`ace: install refused: ${nv.reason} for ${node.name}@${node.version}`);
+      return 1;
+    }
+    if (!nv.ok && nv.reason === "no-signature" && !parsed.allowNoSignature) {
+      console.error(`ace: install refused: unsigned ${node.name}@${node.version} (use --allow-no-signature)`);
+      return 1;
+    }
+    const ir = installPackage(parsed.storePath, np);
+    if (!ir.ok) {
+      console.error(`ace: install refused: ${node.name}@${node.version}: ${ir.error}`);
+      return 1;
+    }
+  }
+  // Install the root last (already signature+content_hash verified above).
+  const rootIr = installPackage(parsed.storePath, pkg);
+  if (!rootIr.ok) {
+    console.error(`ace: install refused: ${pkg.manifest.name} (root): ${rootIr.error}`);
+    return 1;
+  }
+  console.error(`ace: installed ${lf.nodes.length + 1} from lockfile ${parsed.lockfile} (frozen)`);
+  return 0;
+}
 ```
 
 Notes for the implementer:

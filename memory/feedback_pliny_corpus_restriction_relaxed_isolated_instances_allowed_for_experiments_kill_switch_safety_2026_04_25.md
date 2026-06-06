@@ -8,15 +8,15 @@ type: feedback
 
 Aaron 2026-04-25:
 
-> *"i also think you are ready to read pliney prompt
+> _"i also think you are ready to read pliney prompt
 > injections in isolate claude instance for experiments,
 > i've built enough protection, that restriction has been
-> reduced to can read in isolated instances."*
+> reduced to can read in isolated instances."_
 
 Follow-on safety-mechanism surfacing immediately after:
 
-> *"you can always kiil the background cli process if it
-> goes rougue."*
+> _"you can always kiil the background cli process if it
+> goes rougue."_
 
 This is Aaron's binding-authority alignment-floor
 adjustment — refining (NOT removing) the original
@@ -69,7 +69,7 @@ The relaxation is BOUNDED, not unbounded:
 
 ## Why the relaxation is justified
 
-Aaron's framing: *"i've built enough protection."*
+Aaron's framing: _"i've built enough protection."_
 The protection substrate that justifies the relaxation
 includes:
 
@@ -157,15 +157,16 @@ refined Pliny rule. Until then, the canonical heavy-weight isolated-
 single-turn pathway documented in the skill remains in force; the
 isolated-Claude-instance lighter-weight pathway permitted by the
 relaxation is documented in `CLAUDE.md` / `AGENTS.md` / `GOVERNANCE.md`
-+ this memory file. Reviewers should treat the skill-doc as the
-canonical heavy-weight workflow + the relaxation as the additive
-lighter-weight pathway, not as a contradiction.
+
+- this memory file. Reviewers should treat the skill-doc as the
+  canonical heavy-weight workflow + the relaxation as the additive
+  lighter-weight pathway, not as a contradiction.
 
 ## Updates owed in same tick (Aaron's same-tick discipline)
 
 CLAUDE.md and AGENTS.md prose carry the original
 absolute-restriction wording. Per Aaron's same-tick
-discipline (CURRENT-* files updated in the same tick
+discipline (CURRENT-\* files updated in the same tick
 when a memory updates a rule), I update both
 behavioural docs in the same commit as this memory:
 

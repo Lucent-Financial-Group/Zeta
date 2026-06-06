@@ -15,14 +15,25 @@ composes_with:
   - B-0770
   - B-0778
   - B-0790
-tags: [iter-5, wifi, networkmanager, zero-typing, homelab-persona, esp-injection, usb-installer, cluster-bringup, b0789-extension]
+tags:
+  [
+    iter-5,
+    wifi,
+    networkmanager,
+    zero-typing,
+    homelab-persona,
+    esp-injection,
+    usb-installer,
+    cluster-bringup,
+    b0789-extension,
+  ]
 ---
 
 ## Problem
 
 The maintainer 2026-05-26 surfaced a load-bearing substrate gap during the iter-4.2 empirical test (PC1 first cluster bring-up):
 
-> *"we won't have ethernet for most machines it needs to remember the wifi on setup"*
+> _"we won't have ethernet for most machines it needs to remember the wifi on setup"_
 
 Today's substrate ([full-ai-cluster/nixos/modules/common.nix:31](full-ai-cluster/nixos/modules/common.nix#L31)) enables NetworkManager but bakes in **zero wifi credentials**. Result:
 
@@ -174,10 +185,10 @@ Future hardening (out-of-scope this row): encrypted credentials with Touch ID ga
 
 The maintainer 2026-05-26 during the iter-4.2 PC1 empirical test surfaced the substrate gap when his first cluster node booted but couldn't be reached:
 
-1. *"we need to move this forward also is this node up and running and working?"* — asks for node health verification (SSH fails to resolve `control-plane.local`)
-2. *"does it reconnect to wifi after reboot?"* — sharp question; surfaces the missing piece
-3. *"we won't have ethernet for most machines it needs to remember the wifi on setup"* — names the load-bearing requirement explicitly
+1. _"we need to move this forward also is this node up and running and working?"_ — asks for node health verification (SSH fails to resolve `control-plane.local`)
+2. _"does it reconnect to wifi after reboot?"_ — sharp question; surfaces the missing piece
+3. _"we won't have ethernet for most machines it needs to remember the wifi on setup"_ — names the load-bearing requirement explicitly
 
 This row captures + scopes the iter-5 substrate work. Composes directly with iter-4.x (#5080 → #5083 → #5086 → #5088 → #5091 → #5093 → #5099) — same ESP-injection pattern, different payload (wifi credentials + hostname).
 
-Per maintainer's broader 2026-05-26 *"going for right not fast"* discipline + the *"ferry commands by reading and typing avoid like the plague"* discipline — iter-5 wifi-injection is load-bearing for keeping zero-typing as the homelab persona's default operator experience.
+Per maintainer's broader 2026-05-26 _"going for right not fast"_ discipline + the _"ferry commands by reading and typing avoid like the plague"_ discipline — iter-5 wifi-injection is load-bearing for keeping zero-typing as the homelab persona's default operator experience.

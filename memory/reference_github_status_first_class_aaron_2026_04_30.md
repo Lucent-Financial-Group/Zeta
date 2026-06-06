@@ -102,8 +102,8 @@ three points:
    `BLOCKED` state, vanished review threads, force-push race
    conditions, "assumptions are not working out"), the
    freshness-check is the first candidate cause considered.
-   *"Is GitHub currently degraded?"* is asked before *"is
-   my logic wrong?"* — same shape as the
+   _"Is GitHub currently degraded?"_ is asked before _"is
+   my logic wrong?"_ — same shape as the
    speculation-vs-evidence discipline applied at the
    dependency layer
    (`feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`).
@@ -148,9 +148,9 @@ per Aaron's calibration.
 
 ## The assumption this rule makes testable
 
-Aaron's framing names what was previously implicit: *"all our
+Aaron's framing names what was previously implicit: _"all our
 assumptions are based on them being healthy today which is not
-always true as we can see todya."* Every gate-state poll, every
+always true as we can see todya."_ Every gate-state poll, every
 auto-merge decision, every CI summary, every thread query
 silently presumes GitHub is healthy. When the assumption is
 true, polling is redundant; when the assumption is false, the
@@ -203,12 +203,12 @@ the underlying state actually clears.
 Aaron 2026-04-30 sent two short, separated inputs that
 together established this rule:
 
-1. *"looking at github status should be first class for us we
+1. _"looking at github status should be first class for us we
    live on git and github for now until we get a 2nd host in
-   the future"* — first-class framing.
-2. *"that github status page should be first class remembered
+   the future"_ — first-class framing.
+2. _"that github status page should be first class remembered
    somwehre in our repo and loop since github is our only host
-   right now"* — explicit ask to land it as durable
+   right now"_ — explicit ask to land it as durable
    substrate (in-repo memory + loop integration).
 
 The catalyst was the live GitHub Pull Requests degradation

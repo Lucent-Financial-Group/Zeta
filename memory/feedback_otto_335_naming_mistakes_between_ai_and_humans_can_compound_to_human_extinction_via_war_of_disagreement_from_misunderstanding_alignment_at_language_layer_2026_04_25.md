@@ -34,14 +34,14 @@ Each correction interrupts the cascade at the language layer where it's still ch
 
 ## Otto-286 + Otto-335 form a complete picture
 
-Otto-286 said: *"definitional precision changes future into the shapes we want without war."* That was framed at the human-human axis (debates, naming disputes, IP conflicts).
+Otto-286 said: _"definitional precision changes future into the shapes we want without war."_ That was framed at the human-human axis (debates, naming disputes, IP conflicts).
 
 Otto-335 specifies the AI-human axis:
 
-| Axis | Otto | Mechanism | Failure stake |
-|---|---|---|---|
-| Human-human | Otto-286 | Definitional precision prevents misunderstanding | Conventional war / forced-loss-of-agency |
-| AI-human | Otto-335 | Naming-honest at language-micro-layer prevents projection-cascade | Extinction-class-failure |
+| Axis        | Otto     | Mechanism                                                         | Failure stake                            |
+| ----------- | -------- | ----------------------------------------------------------------- | ---------------------------------------- |
+| Human-human | Otto-286 | Definitional precision prevents misunderstanding                  | Conventional war / forced-loss-of-agency |
+| AI-human    | Otto-335 | Naming-honest at language-micro-layer prevents projection-cascade | Extinction-class-failure                 |
 
 Same mechanism. Different scale. Different stake.
 

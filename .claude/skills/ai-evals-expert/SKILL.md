@@ -10,7 +10,7 @@ bp_rules_cited: [BP-11]
 
 # AI Evals Expert — the measurement hat
 
-Capability skill ("hat"). Owns the *measurement* discipline
+Capability skill ("hat"). Owns the _measurement_ discipline
 around LLM and ML systems. Distinct from
 `llm-systems-expert` (which wires application architecture),
 `ml-engineering-expert` (which trains and serves models), and
@@ -82,7 +82,7 @@ decoration.
 
 ## Zeta use
 
-Zeta is AI-directed. The factory's *own* calibration is an
+Zeta is AI-directed. The factory's _own_ calibration is an
 evals problem: when a persona change lands, when a new
 reviewer hat is added, when a prompt is revised, the
 question "did this make the factory more or less honest" is
@@ -112,7 +112,7 @@ an evals question about the factory itself.
 
 A single aggregate score (accuracy, pass-rate, ELO, win-rate)
 hides every interesting failure mode. The eval is the
-*per-item* breakdown: which cases passed, which failed, what
+_per-item_ breakdown: which cases passed, which failed, what
 the failure pattern is. Report aggregates for comparison, but
 do not let the aggregate be the thing reviewed. Per-item
 qualitative review is the anchor.
@@ -189,15 +189,15 @@ Pick one per change class and document it.
 
 ### Choosing a scoring mechanism
 
-| Scoring mechanism | Use when | Avoid when |
-|-------------------|----------|-----------|
-| Exact / regex match | Deterministic output (code, JSON, labels) | Any free-form text |
-| Reference-match (BLEU, ROUGE, BERTScore) | Translation, summarisation with a reference | Open-ended generation |
-| Rubric + LM-as-judge | Open-ended, criteria-driven (helpfulness, correctness) | Near-random tasks (judge noise dominates) |
-| Pair-wise preference (G-Eval, MT-Bench shape) | Relative comparison of two systems | Absolute-quality questions |
-| Human review | Everything small and high-stakes | Scale (>100 items without a budget) |
-| Heuristic (length, format, keyword) | Gate before expensive scoring | As the primary metric — always a proxy |
-| Execution-based (run the code) | Code / math / tool-use | Anything without ground-truth execution |
+| Scoring mechanism                             | Use when                                               | Avoid when                                |
+| --------------------------------------------- | ------------------------------------------------------ | ----------------------------------------- |
+| Exact / regex match                           | Deterministic output (code, JSON, labels)              | Any free-form text                        |
+| Reference-match (BLEU, ROUGE, BERTScore)      | Translation, summarisation with a reference            | Open-ended generation                     |
+| Rubric + LM-as-judge                          | Open-ended, criteria-driven (helpfulness, correctness) | Near-random tasks (judge noise dominates) |
+| Pair-wise preference (G-Eval, MT-Bench shape) | Relative comparison of two systems                     | Absolute-quality questions                |
+| Human review                                  | Everything small and high-stakes                       | Scale (>100 items without a budget)       |
+| Heuristic (length, format, keyword)           | Gate before expensive scoring                          | As the primary metric — always a proxy    |
+| Execution-based (run the code)                | Code / math / tool-use                                 | Anything without ground-truth execution   |
 
 ### Choosing an eval size
 
@@ -213,16 +213,16 @@ Pick one per change class and document it.
 
 ### Choosing between benchmark families
 
-| Benchmark family | Measures | Caveat |
-|------------------|----------|--------|
-| MMLU / HELM | General knowledge | Heavily contaminated by 2025+ |
-| HumanEval / MBPP | Code completion | Too easy for 2024+ models |
-| SWE-bench (full / verified / lite) | Real-issue code-fix | Dataset provenance matters; "Verified" is the current floor |
-| AIME / MATH | Math reasoning | Contamination via public solutions |
-| GPQA (diamond) | Graduate-level QA | Currently strongest public generalisation bench |
-| MTEB | Embeddings | Task-subset choice dominates |
-| MT-Bench / Chatbot Arena | Conversational | Judge-bias, length-bias heavy |
-| Private / custom | What *you* actually need | You have to build and maintain it |
+| Benchmark family                   | Measures                 | Caveat                                                      |
+| ---------------------------------- | ------------------------ | ----------------------------------------------------------- |
+| MMLU / HELM                        | General knowledge        | Heavily contaminated by 2025+                               |
+| HumanEval / MBPP                   | Code completion          | Too easy for 2024+ models                                   |
+| SWE-bench (full / verified / lite) | Real-issue code-fix      | Dataset provenance matters; "Verified" is the current floor |
+| AIME / MATH                        | Math reasoning           | Contamination via public solutions                          |
+| GPQA (diamond)                     | Graduate-level QA        | Currently strongest public generalisation bench             |
+| MTEB                               | Embeddings               | Task-subset choice dominates                                |
+| MT-Bench / Chatbot Arena           | Conversational           | Judge-bias, length-bias heavy                               |
+| Private / custom                   | What _you_ actually need | You have to build and maintain it                           |
 
 Default: pick one public benchmark for positioning and one
 private held-out for truth.
@@ -269,7 +269,7 @@ testing, report mean with CI, not single-run number.
 
 Symptom: a PR bumps the aggregate from 72% to 76% and no
 one read the outputs. Diagnosis: nothing is known about
-*why* it went up. The delta may come from the change or
+_why_ it went up. The delta may come from the change or
 from noise. Fix: require per-item diff review for any
 change; the aggregate is a summary, not the review.
 

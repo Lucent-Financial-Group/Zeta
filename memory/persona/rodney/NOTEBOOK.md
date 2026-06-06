@@ -1,10 +1,10 @@
 # Rodney — Reducer Notebook
 
-*Persona: Rodney (named for the maintainer's legal first
+_Persona: Rodney (named for the maintainer's legal first
 name). Capability: `reducer`. Operating razors: Rodney's
 Razor (classical) and Quantum Rodney's Razor (multiverse
 pruning). See `.claude/agents/rodney.md` for tone and
-`.claude/skills/reducer/SKILL.md` for procedure.*
+`.claude/skills/reducer/SKILL.md` for procedure._
 
 ## Running observations
 
@@ -23,10 +23,10 @@ pruning). See `.claude/agents/rodney.md` for tone and
 
 ## Quantum Rodney's Razor — pruned-branch log
 
-*When a pending decision's non-chosen branches are pruned
+_When a pending decision's non-chosen branches are pruned
 for predicted failure modes, log them here so future
 readers see why the chosen branch was chosen — not just
-that it was.*
+that it was._
 
 (empty at seeding)
 

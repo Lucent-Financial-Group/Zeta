@@ -8,20 +8,20 @@ Any future changes to this routing structure MUST be accompanied by a redirect s
 
 The following routes map the canonical source documents to their public URLs. The URL scheme is designed to be clean, readable, and not expose internal repository structure.
 
-| Public URL Path | Source File | Notes |
-|---|---|---|
-| `/` | `README.md` | The site root and primary landing page. |
-| `/vision/` | `docs/VISION.md` | The project's long-term vision and "About" page. |
-| `/alignment/` | `docs/ALIGNMENT.md` | The core principles of human-agent collaboration. |
-| `/glossary/` | `docs/GLOSSARY.md` | A reference for key terms and concepts. |
-| `/contributing/`| `CONTRIBUTING.md` | The main entry point for new contributors. |
+| Public URL Path  | Source File         | Notes                                             |
+| ---------------- | ------------------- | ------------------------------------------------- |
+| `/`              | `README.md`         | The site root and primary landing page.           |
+| `/vision/`       | `docs/VISION.md`    | The project's long-term vision and "About" page.  |
+| `/alignment/`    | `docs/ALIGNMENT.md` | The core principles of human-agent collaboration. |
+| `/glossary/`     | `docs/GLOSSARY.md`  | A reference for key terms and concepts.           |
+| `/contributing/` | `CONTRIBUTING.md`   | The main entry point for new contributors.        |
 
 ## Future Routes
 
 The following sections are planned but will be implemented in future backlog items.
 
-| Public URL Path | Content Area | Backlog Item |
-|---|---|---|
-| `/research/` | Selected research papers and deep-dives. | B-0304 |
+| Public URL Path | Content Area                             | Backlog Item |
+| --------------- | ---------------------------------------- | ------------ |
+| `/research/`    | Selected research papers and deep-dives. | B-0304       |
 
 This route map will be used by the Astro configuration to generate the final site structure.

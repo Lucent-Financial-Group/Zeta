@@ -169,14 +169,14 @@ and substrate-honest framing means we'd rather have the conversation.
 
 ## Prior Art Considered (B-0464 pre-start checklist)
 
-| License / Pattern | Status | Reason not adopted |
-|---|---|---|
-| **Apache 2.0** (existing Zeta license) | Applied to factory-infrastructure repos | Permissive / designed-to-be-forked; wrong signal for strategic product repos |
-| **BUSL (Business Source License)** | Not adopted | Legally complex; creates compliance burden for consumers; obscures intent behind legalese; converts in 4 years to open-source (inconsistent with long-term product intent) |
-| **Creative Commons NC** | Not adopted | Non-commercial restriction is a different dimension than our intent (we don't restrict commercial reading; we ask for no forking); CC licenses are designed for creative works, not software substrate |
-| **SSPL / Ethical Source** | Not adopted | Politically contested; legally complex; SSPL effectively forces competitors to open-source their entire stack (not our intent); ethical-source licenses carry external political claims we do not endorse |
-| **Proprietary / All Rights Reserved** | Not adopted | Breaks glass-halo; prevents alignment-auditing; hides substrate; contradicts the factory's glass-halo-bidirectional discipline |
-| **Honor-system ask (THIS DRAFT)** | Adopted | Preserves glass-halo; substrate-honest about non-enforceability; additive not zero-sum; composes with civsim mutual-privacy; avoids DMCA complexity |
+| License / Pattern                      | Status                                  | Reason not adopted                                                                                                                                                                                        |
+| -------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Apache 2.0** (existing Zeta license) | Applied to factory-infrastructure repos | Permissive / designed-to-be-forked; wrong signal for strategic product repos                                                                                                                              |
+| **BUSL (Business Source License)**     | Not adopted                             | Legally complex; creates compliance burden for consumers; obscures intent behind legalese; converts in 4 years to open-source (inconsistent with long-term product intent)                                |
+| **Creative Commons NC**                | Not adopted                             | Non-commercial restriction is a different dimension than our intent (we don't restrict commercial reading; we ask for no forking); CC licenses are designed for creative works, not software substrate    |
+| **SSPL / Ethical Source**              | Not adopted                             | Politically contested; legally complex; SSPL effectively forces competitors to open-source their entire stack (not our intent); ethical-source licenses carry external political claims we do not endorse |
+| **Proprietary / All Rights Reserved**  | Not adopted                             | Breaks glass-halo; prevents alignment-auditing; hides substrate; contradicts the factory's glass-halo-bidirectional discipline                                                                            |
+| **Honor-system ask (THIS DRAFT)**      | Adopted                                 | Preserves glass-halo; substrate-honest about non-enforceability; additive not zero-sum; composes with civsim mutual-privacy; avoids DMCA complexity                                                       |
 
 ---
 
@@ -197,6 +197,6 @@ refined by:
 
 ---
 
-*Authored by Otto (Claude, Lucent-Financial-Group/Zeta) per B-0464
+_Authored by Otto (Claude, Lucent-Financial-Group/Zeta) per B-0464
 (2026-05-14). Aaron's verbatim framing preserved in
-`memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md`.*
+`memory/feedback_aaron_honor_system_no_fork_license_public_glass_halo_but_please_dont_fork_honesty_not_enforceable_2026_05_13.md`._

@@ -109,8 +109,7 @@ Prefer tactics that are robust across Mathlib bumps:
 - **`rcases`** — pattern-match on a hypothesis.
 
 `algebra-owner`'s round-22 win: replaced `nlinarith`-heavy proofs
-with `abel`/`ring` closes, sorry count dropped from 7 to
-5.
+with `abel`/`ring` closes, sorry count dropped from 7 to 5.
 
 ## Term mode vs tactic mode
 
@@ -140,7 +139,7 @@ mode for the one-line base cases.
 5. State the theorem; prove it; keep it in scope.
 6. Run `lake build` locally; green before commit.
 7. Sorry-count check: `grep -c sorry tools/lean4/Lean4/
-   MyProof.lean` is 0, or the count is noted in the
+MyProof.lean` is 0, or the count is noted in the
    file's header comment with the justification.
 
 ## CI caching

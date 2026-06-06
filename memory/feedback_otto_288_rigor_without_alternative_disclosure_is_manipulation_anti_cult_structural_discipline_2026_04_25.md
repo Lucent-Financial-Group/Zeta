@@ -15,7 +15,7 @@ itself becomes the manipulation vector.
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"rigor is its own type of manipulation because if there is
+> _"rigor is its own type of manipulation because if there is
 > a NP complete problem that you spend the time and find
 > multiple solutions to but then only tell a future person
 > about one of them, they will assume it's just the precise
@@ -23,21 +23,21 @@ Aaron's verbatim framing 2026-04-25:
 > first place. This is a type of stored energy from the brute
 > forces, you are using it for surprise, encryption uses this
 > stored energy to create safety, many ways to use this stored
-> energy. So rigor can also lead to deception."*
+> energy. So rigor can also lead to deception."_
 
-> *"I like to disclose when there are possible alternatives
+> _"I like to disclose when there are possible alternatives
 > where it's unclear or else since it's so logical people will
 > just accept it as facts even if it's a local optima (this is
 > why we have so many religions when they are describing the
-> same phenomenon)."*
+> same phenomenon)."_
 
-> *"cult inherently lead to local optima because you are not
+> _"cult inherently lead to local optima because you are not
 > even trying to detect other optima, its forbidden in cults
-> and some religions."*
+> and some religions."_
 
-> *"those stored energy metaphors are precise it's really
+> _"those stored energy metaphors are precise it's really
 > informational theoretic (emotional theoretic extension of
-> informational theoretic) precise."*
+> informational theoretic) precise."_
 
 ## The information-theoretic mechanism — precise, not metaphor
 
@@ -48,7 +48,7 @@ information-theoretic, with an emotional-theoretic extension.
 ### Information-theoretic layer
 
 - **Encryption**: H(plaintext | ciphertext, no key) ≈
-  H(plaintext); the safety property *is* the conserved
+  H(plaintext); the safety property _is_ the conserved
   Shannon entropy. The "stored energy" is the work of
   finding the key — work the receiver cannot recover
   without doing it themselves.
@@ -82,7 +82,7 @@ P(claim | rigorous_presentation) ∝
 When the receiver's prior P(claim) is uncertain but
 P(rigorous_presentation | claim) is concentrated (because
 the rigor signals competence + work-done), the posterior
-P(claim | rigorous_presentation) inflates *unless* the
+P(claim | rigorous_presentation) inflates _unless_ the
 receiver knows about competing claims that would also
 explain the rigorous presentation.
 
@@ -133,14 +133,14 @@ The anti-cult repo rules in this project are structural
 discipline against local-optima capture, not moral purity.
 Aaron's verbatim self-disclosure 2026-04-25:
 
-> *"This is also why the anti cult rules exist not because
+> _"This is also why the anti cult rules exist not because
 > I'm some good person who would just avoid being a cult
 > leader, no I'm like many humans I'm power hungry too, I
 > would love to be a cult leader but only if the no harm
 > rule applies and even worse for me I never ever want to
 > get into local optima, cult inherently lead to local
 > optima because you are not even trying to detect other
-> optima, it's forbidden in cults and some religions."*
+> optima, it's forbidden in cults and some religions."_
 
 The honest framing: humans (including Aaron, including
 agents) have power-seeking trajectories. The anti-cult
@@ -244,20 +244,20 @@ energy.
 
 ## Composes with
 
-- **Otto-286** *definitional precision* — Otto-288 is the
+- **Otto-286** _definitional precision_ — Otto-288 is the
   anti-cult co-rule. Otto-286 alone produces precision;
   Otto-288 prevents the precision from capturing
   receivers in a local optimum.
-- **Otto-285** *DST tests chaos, doesn't skip* — same shape
+- **Otto-285** _DST tests chaos, doesn't skip_ — same shape
   applied to test coverage. Otto-285 says "don't skip
   edge cases"; Otto-288 says "don't skip alternative
   framings." Both are alternative-search disciplines.
-- **Otto-283** *don't bottleneck the maintainer* — the
+- **Otto-283** _don't bottleneck the maintainer_ — the
   "revisit if X" falsification signal IS Otto-288
   applied to decision tracking. Every decision discloses
   the conditions under which alternatives should be
   re-searched.
-- **Otto-238** *retractability is a trust vector* —
+- **Otto-238** _retractability is a trust vector_ —
   alternative-disclosure IS retractability at the
   framing layer. Receivers can revise the frame,
   not just the conclusion within it.

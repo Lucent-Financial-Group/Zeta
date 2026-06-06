@@ -22,11 +22,11 @@ When parallel-work-while-CI runs or when "what should I do this tick?" surfaces,
 
 Three-way classification of audit findings:
 
-| Audit result | Action | Example |
-|---|---|---|
-| **Mechanical fix-class** (clear substitution, batch <30 lines) | Fix this tick as small atomic PR | Otto-279 "Per Aaron 2026-" → "Per the human maintainer 2026-" (17 hits, 4 batches, 1959Z-2020Z) |
-| **Content-judgment class** (per-occurrence, requires careful editing) | File as backlog row capturing the work | orphan-ferry-ref cleanup (B-0536); MEMORY.md long-entry cleanup (B-0537) |
-| **Null actionable** (audit clean, OR findings too big for single-tick) | Write quiet checkpoint shard | 1919Z, 1952Z, 2038Z |
+| Audit result                                                           | Action                                 | Example                                                                                         |
+| ---------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Mechanical fix-class** (clear substitution, batch <30 lines)         | Fix this tick as small atomic PR       | Otto-279 "Per Aaron 2026-" → "Per the human maintainer 2026-" (17 hits, 4 batches, 1959Z-2020Z) |
+| **Content-judgment class** (per-occurrence, requires careful editing)  | File as backlog row capturing the work | orphan-ferry-ref cleanup (B-0536); MEMORY.md long-entry cleanup (B-0537)                        |
+| **Null actionable** (audit clean, OR findings too big for single-tick) | Write quiet checkpoint shard           | 1919Z, 1952Z, 2038Z                                                                             |
 
 ## Why this rule exists
 
@@ -51,6 +51,7 @@ This is the substrate-honest alternative to "guess from the chair" what discipli
 Across 23 ticks (1718Z–2038Z, ~3 hours wall-clock), the pattern produced:
 
 **Substantive code PRs (mechanical fix-class)** (10+):
+
 - B-0533 §33 dead-xref scanner + cleanup + gate (PRs #3548, #3552, #3555)
 - B-0535 backlog ID-uniqueness gate (PR #3565)
 - B-0532 hard-error parent-child status mismatch (PR #3567)
@@ -58,12 +59,15 @@ Across 23 ticks (1718Z–2038Z, ~3 hours wall-clock), the pattern produced:
 - 2 narrow xref-fix PRs (#3526, #3529, #3535, #3558)
 
 **Backlog rows (content-judgment class)** (3):
+
 - B-0535, B-0536, B-0537 (each captures a class of cleanup work + future gate-wiring plan)
 
 **Quiet checkpoints (null actionable)** (3):
+
 - 1919Z, 1952Z, 2038Z
 
 **4 of 4 catch-once-then-lint cluster siblings now live on `main`**:
+
 - `lint-archive-header-section33`
 - `lint-section-33-migration-xrefs`
 - `lint-backlog-id-uniqueness`

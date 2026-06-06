@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron explicit policy; NOT identity-gated (my earlier "
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Upstream PR policy — verified, not speculative
 
 ## Rule
@@ -42,7 +43,7 @@ candidate fix through our own verification loop.
   demonstrate actually fixes something is asking them to do
   our homework. Zeta's posture toward other projects must not
   burn the contribution goodwill we will eventually need.
-- **The verification step is the *quality gate*.** A PR we
+- **The verification step is the _quality gate_.** A PR we
   can demonstrate solves a real problem in our CI is high-
   signal for the upstream; a PR with only a narrative claim
   ("we think this fixes X") is low-signal and can harm both
@@ -53,7 +54,7 @@ candidate fix through our own verification loop.
   (`feedback_agent_sent_email_identity_and_recipient_ux.md`).
   That was **wrong**: the email policy is about `From:`
   domain + recipient-UX disclosure; the upstream-PR policy
-  is about *verification discipline* + spam-avoidance.
+  is about _verification discipline_ + spam-avoidance.
   Different concerns; different gates. Keep them distinct.
 - **Fits the default-on-with-documented-exceptions posture**
   (`feedback_default_on_factory_wide_rules_with_documented_exceptions.md`).

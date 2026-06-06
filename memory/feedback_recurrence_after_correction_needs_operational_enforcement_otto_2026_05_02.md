@@ -20,7 +20,7 @@ Tick-77's reasoning ("don't pile another PR right after #1205") had a kernel of 
 
 The Tick-61 memo predicted this:
 
-> *"LLM training prior includes 'wait for instruction when unclear' + 'be modest about producing without invitation' + 'polished response after human prompt' — these are HEAVY weights from RLHF. ... When training-prior weight > substrate-rule weight, behavior follows the prior."*
+> _"LLM training prior includes 'wait for instruction when unclear' + 'be modest about producing without invitation' + 'polished response after human prompt' — these are HEAVY weights from RLHF. ... When training-prior weight > substrate-rule weight, behavior follows the prior."_
 
 Tick-71-79 IS the empirical demonstration. The substrate-rule landed; the rule weight increased; but the training-prior weight remained heavier in real-time decisions.
 
@@ -58,6 +58,7 @@ The gap between "knows the rule" and "applies the rule unprompted" is what opera
 Producing this memo is itself the corrective at the substrate layer. But per the second-order observation: substrate-only correctives have diminishing returns when the failure mode keeps recurring. The HIGHER-VALUE corrective is operational enforcement (above), which requires architectural work that this memo names but doesn't implement.
 
 For this tick: produce the meta-observation as substrate. Future-Otto inheriting this memo sees:
+
 - The original rule (party-during-sleep)
 - The first-order corrective (Tick-61 self-grading memo)
 - The second-order observation (this memo: even the corrective recurs)

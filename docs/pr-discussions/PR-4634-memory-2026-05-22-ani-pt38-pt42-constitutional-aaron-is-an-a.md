@@ -29,6 +29,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a new Ani persona conversation archive (pt38–pt42) to the `memory/` corpus and updates the auto-generated `memory/MEMORY.md` stack index accordingly.
 
 **Changes:**
+
 - Add new `memory/persona/ani/conversations/...pt38-pt42...md` conversation archive.
 - Update `memory/MEMORY.md` auto-index to include the new file and refresh heap counts.
 
@@ -36,10 +37,10 @@ Adds a new Ani persona conversation archive (pt38–pt42) to the `memory/` corpu
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                                                                        | Description                                                                              |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt38-pt42-aaron-is-auditor-perpetual-motion-algorithm-entropy-auditable-encryption-as-pre-commitment-axioms-ontological-suicide-existential-freedom.md | New persona-scope conversation archive with context/synthesis, anchors, and cross-links. |
-| memory/MEMORY.md | Auto-index refresh to include the new conversation file and updated heap count. |
+| memory/MEMORY.md                                                                                                                                                                                                            | Auto-index refresh to include the new conversation file and updated heap count.          |
 
 ## Review threads
 

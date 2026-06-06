@@ -21,7 +21,7 @@ type: friction-reducer
 
 Aaron 2026-05-02 articulated the structural answer to recurring overnight-failure pattern:
 
-> *"the untimate solution is two agent loops that work together while i sleep they won't both mess up at the same time."*
+> _"the untimate solution is two agent loops that work together while i sleep they won't both mess up at the same time."_
 
 This is BFT-many-masters at the loop layer (Otto on Claude Code + second loop on Codex). The architectural commitment is sound; the implementation work is owed.
 
@@ -132,11 +132,11 @@ Per the just-landed first-principles trust calculus discipline: the trace IS the
 
 ACs #1, #3, #4 are closed. Remaining open work extracted as atomic child rows:
 
-| Child | AC | Blocker | File |
-|-------|----|---------|------|
-| B-0164.1 | AC #2 — PR-review disagreement-preservation | Live PR-review caller wiring | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
-| B-0164.2 | AC #5 — Multi-loop tick-tooling attribution | B-0163 (tooling retirement) | `B-0164.2-multi-loop-tick-tooling-attribution.md` |
-| B-0164.3 | AC #6 — Cron-tick coordination | B-0164.1 live caller + topology observation | `B-0164.3-cron-tick-coordination-dual-loop.md` |
+| Child    | AC                                          | Blocker                                     | File                                                       |
+| -------- | ------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------- |
+| B-0164.1 | AC #2 — PR-review disagreement-preservation | Live PR-review caller wiring                | `B-0164.1-pr-review-disagreement-preservation-protocol.md` |
+| B-0164.2 | AC #5 — Multi-loop tick-tooling attribution | B-0163 (tooling retirement)                 | `B-0164.2-multi-loop-tick-tooling-attribution.md`          |
+| B-0164.3 | AC #6 — Cron-tick coordination              | B-0164.1 live caller + topology observation | `B-0164.3-cron-tick-coordination-dual-loop.md`             |
 
 **Dependency order:**
 

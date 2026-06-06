@@ -53,7 +53,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 - **Each break hits DORA metrics** visibly (change failure
   rate spike, MTTR spike, deployment frequency variance).
   These hits are observable to outside-world verification
-  audiences per Aaron's *"proof of update"* framing.
+  audiences per Aaron's _"proof of update"_ framing.
 - **Trade-off is explicit**: learn-fast costs DORA score;
   defer-learn preserves DORA score but may miss the
   discipline improvements.
@@ -79,7 +79,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Phase 1 → Phase 2: first real deployed infrastructure with
 zero-downtime requirement goes live. Aaron's framing:
-*"a deployment becomes our backward compability target."*
+_"a deployment becomes our backward compability target."_
 
 Phase 2 → Phase 3: learning mode ends. No explicit
 trigger named; likely "we stop feeling we're learning"
@@ -199,6 +199,7 @@ Breaking changes after deployment undo the lock-in unless
 coordinated.
 
 ### External-contribution-ready branch-protection
+
 (2026-04-23 delegation)
 
 External contributors need predictable contracts. A
@@ -224,12 +225,12 @@ isn't abstract; it's the rule he applies to his own work.
   may be the first deployment; may not. Await his call.
 - **Not a license to skip signal-preservation** —
   breaking changes still leave git-log + supersede markers
-  + ADR trails. Greenfield ≠ no-paper-trail.
+  - ADR trails. Greenfield ≠ no-paper-trail.
 - **Not a license to ignore existing consumer
   commitments** — if a third party is already using
   something (as with Aaron's existing ferry/drop pattern),
   that micro-consumer has some claim even in greenfield.
-  Scope: no *external* backcompat requirements means no
+  Scope: no _external_ backcompat requirements means no
   backward-compat APIs for clients who don't exist; it
   doesn't mean coordination-free action within the
   factory.

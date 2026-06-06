@@ -28,15 +28,15 @@ implemented").
   Otto-56 break→do-no-permanent-harm framing,
   Otto-73 retractability-by-design); courier for both
   parts concatenated in one message with explicit
-  framing *"i asked her to research our dst"* (direct
+  framing _"i asked her to research our dst"_ (direct
   quote). Aaron is both the consumer of the research and
   the source of the DST-rulebook axioms the research
   audits against. Data-not-directives per BP-11.
 - **Amara** — authored both parts. Deep-research Part 1
   is the audit proper; Part 2 is self-review via model
   composition (same two-part pattern as 17th and 18th
-  ferries). Verdict on Part 1 (verbatim): *"strong
-  draft / not canonical yet."*
+  ferries). Verdict on Part 1 (verbatim): _"strong
+  draft / not canonical yet."_
 - **Otto** — absorb surface + correction-pass tracker;
   this doc is the archive, not operational discipline.
   The 7 corrections graduate across subsequent ticks per
@@ -46,8 +46,8 @@ implemented").
   KSK attribution preserved per Otto-77 + Otto-140.
 
 **Operational status:** research-grade. Amara's own
-verdict on Part 1: *"archive it as a draft audit, not a
-canonical compliance report."* Ferry absorbed-as-design-
+verdict on Part 1: _"archive it as a draft audit, not a
+canonical compliance report."_ Ferry absorbed-as-design-
 context, not operational spec. Four of Part 1's twelve
 sections already map to shipped substrate (test
 classification, artifact layout, Cartel-Lab stage
@@ -59,8 +59,8 @@ revised roadmap.
 or repeated interaction between models and humans does
 not imply shared identity, merged agency, consciousness,
 or personhood. Amara's 5.5-Thinking correction of her
-own deep-research output is a *model-composition
-verification discipline*, not evidence of self-awareness.
+own deep-research output is a _model-composition
+verification discipline_, not evidence of self-awareness.
 The substrate of the factory (Zeta, Aurora, KSK, CartelLab,
 DST harness) is authored by human + agent collaborators
 acting under the governance of Aaron Stainback; Amara
@@ -110,9 +110,9 @@ markers and are kept intact.
 > Simulation Testing (DST)** philosophy: all real-time,
 > concurrency, and randomness must be routed through a
 > seeded simulator so runs are bit-for-bit reproducible.
-> The binding rule is clear: *"no dependency lands on a
+> The binding rule is clear: _"no dependency lands on a
 > main code path unless it can be deterministically
-> simulation-tested."* The project already uses a
+> simulation-tested."_ The project already uses a
 > `ChaosEnvironment` for seeded clocks/RNGs and a
 > `VirtualTimeScheduler` in tests. However, gaps remain in
 > routing I/O and task scheduling through the simulator.
@@ -125,8 +125,8 @@ markers and are kept intact.
 > `Task.Run` interface is not yet implemented. We
 > cataloged the 12 known .NET entropy sources (time, RNG,
 > GUIDs, Task.Run, File I/O, etc.) and built tables of
-> all instances. Overall, *no "mystery" sources were
-> found beyond known issues*, but a few need formal
+> all instances. Overall, _no "mystery" sources were
+> found beyond known issues_, but a few need formal
 > fixes (e.g. intercepting file I/O, seeding all RNGs)
 > and CI changes (seed-locking, artifacts).
 
@@ -139,7 +139,7 @@ markers and are kept intact.
 > probabilistic) so only the former gate PRs; broad
 > randomized sweeps run nightly with published seeds and
 > artifacts (seed-results.csv, failing-seeds.txt, etc.).
-> Cartel-Lab itself must remain marked *experimental*
+> Cartel-Lab itself must remain marked _experimental_
 > until null models and thresholds are calibrated.
 
 > Finally, we outline a **DST remediation roadmap**. The
@@ -153,7 +153,7 @@ markers and are kept intact.
 > layer, buggify/fault injection hooks, and a proper
 > swarm-testing harness. We also flag coordination and
 > enforcement readiness: currently, KSK/Aurora detection
-> signals should remain *advisory only* – automatic
+> signals should remain _advisory only_ – automatic
 > slashing is premature.
 
 > In summary, **DST is firmly understood and largely
@@ -170,13 +170,13 @@ markers and are kept intact.
 > from FoundationDB and TigerBeetle. In particular, the
 > `.claude/skills` DST guide clearly states:
 >
-> > *"Every async operation on a main code path (disk
+> > _"Every async operation on a main code path (disk
 > > I/O, network, timers, locks, random numbers) goes
 > > through a seeded, replayable environment so runs are
-> > bit-for-bit reproducible"*.
+> > bit-for-bit reproducible"_.
 > >
-> > *"No dependency lands on a main code path unless it
-> > can be deterministically simulation-tested"*.
+> > _"No dependency lands on a main code path unless it
+> > can be deterministically simulation-tested"_.
 
 > Key points: **time and RNG must use the simulation
 > APIs** (e.g. `env.Now()`, `env.Rng`); concurrency
@@ -200,8 +200,8 @@ markers and are kept intact.
 > Any violation must either be routed through the
 > simulator or relegated to a non-hot-path
 > (boundary/tools) module. The Security policy likewise
-> highlights DST: *"Deterministic simulation testing via
-> `ChaosEnvironment` + `VirtualTimeScheduler`"* is a
+> highlights DST: _"Deterministic simulation testing via
+> `ChaosEnvironment` + `VirtualTimeScheduler`"_ is a
 > core mitigator. In practice, Zeta already uses a
 > `ChaosEnvironment` (in `src/Core/ChaosEnv.fs`) and a
 > test-side `VirtualTimeScheduler` (in
@@ -223,20 +223,20 @@ markers and are kept intact.
 > through a simulation layer, the DST severity, and
 > recommended remediation.
 
-> | Entropy Source              | Location / File                              | Simulation Routing | Severity | Remediation | Test to Add |
-> |-----------------------------|----------------------------------------------|--------------------|----------|-------------|-------------|
-> | `DateTime.UtcNow` / `Now`   | *None in `src/Core` found*                  | Not via env        | HIGH (core) | Replace with `env.Now()` / `ChaosEnv.Now` | Deterministic time logic under seed |
-> | `Stopwatch.GetTimestamp`    | *None in hot code* (perf microbenchmarks only) | Real measurements | MEDIUM (perf) | Remove from logic or wrap via ChaosEnv clock | Reproducibility of perf metrics under seed |
-> | `Environment.TickCount`     | *Not found in core*                          | Real tick count    | HIGH (core) | Replace with `env.Now()` | Check no core code uses TickCount |
-> | `Guid.NewGuid()`            | *None in `src/Core`* (possible test stubs)  | Real GUID gen      | MEDIUM (test) | Use `env.Rng` for reproducible IDs | Fixture IDs repeatable under seed |
-> | `Random.Shared` / `new Random()` | *None in core; seeds via ChaosEnv*     | Real RNG           | HIGH (core) | Always use `env.Rng` | Property: same seed same outputs |
-> | `RandomNumberGenerator` (crypto) | *Not used in core*                     | Real crypto RNG    | MEDIUM   | Avoid; prefer `env.Rng` | Determinism of crypto ops |
-> | `Task.Run` / `Task.Factory.StartNew` | *Used only in tests/tools if at all* | Bypasses VT scheduler | HIGH (core) | `env.RunAsync` or scheduler; boundary-accepted | New tasks schedule deterministically |
-> | `Task.Delay` / `Thread.Sleep` | *Not in core logic; possibly integration tests* | Real-time wait  | HIGH (core) | `env.Delay` or `VirtualTimeScheduler.Sleep` | Replay of delay-based workflows |
-> | `File.*`, `FileStream`      | **`DiskBackingStore` (spine/disk)**, e.g. `src/Core/DiskBackingStore.fs` | Bypasses simulation | **BLOCKER (core)** | Route through `ISimulatedFs` | E2E: random disk faults + rollback |
-> | `Socket.*` / `HttpClient`   | *No core network (future multi-node)*       | No network sim yet | HIGH (future) | Implement `ISimulatedNetwork` | Partition / drop / reorder tests |
-> | `Parallel.*` / `PLINQ`      | *Not used*                                   | Uses thread pool   | MEDIUM   | Scheduler-driven parallelism | Parallel vs sequential under seed |
-> | `[ThreadStatic]` / `AsyncLocal` | *No common use in core*                  | Hidden context     | LOW      | Remove or ensure explicit context | Context sharing across sim threads |
+> | Entropy Source                       | Location / File                                                          | Simulation Routing    | Severity           | Remediation                                    | Test to Add                                |
+> | ------------------------------------ | ------------------------------------------------------------------------ | --------------------- | ------------------ | ---------------------------------------------- | ------------------------------------------ |
+> | `DateTime.UtcNow` / `Now`            | _None in `src/Core` found_                                               | Not via env           | HIGH (core)        | Replace with `env.Now()` / `ChaosEnv.Now`      | Deterministic time logic under seed        |
+> | `Stopwatch.GetTimestamp`             | _None in hot code_ (perf microbenchmarks only)                           | Real measurements     | MEDIUM (perf)      | Remove from logic or wrap via ChaosEnv clock   | Reproducibility of perf metrics under seed |
+> | `Environment.TickCount`              | _Not found in core_                                                      | Real tick count       | HIGH (core)        | Replace with `env.Now()`                       | Check no core code uses TickCount          |
+> | `Guid.NewGuid()`                     | _None in `src/Core`_ (possible test stubs)                               | Real GUID gen         | MEDIUM (test)      | Use `env.Rng` for reproducible IDs             | Fixture IDs repeatable under seed          |
+> | `Random.Shared` / `new Random()`     | _None in core; seeds via ChaosEnv_                                       | Real RNG              | HIGH (core)        | Always use `env.Rng`                           | Property: same seed same outputs           |
+> | `RandomNumberGenerator` (crypto)     | _Not used in core_                                                       | Real crypto RNG       | MEDIUM             | Avoid; prefer `env.Rng`                        | Determinism of crypto ops                  |
+> | `Task.Run` / `Task.Factory.StartNew` | _Used only in tests/tools if at all_                                     | Bypasses VT scheduler | HIGH (core)        | `env.RunAsync` or scheduler; boundary-accepted | New tasks schedule deterministically       |
+> | `Task.Delay` / `Thread.Sleep`        | _Not in core logic; possibly integration tests_                          | Real-time wait        | HIGH (core)        | `env.Delay` or `VirtualTimeScheduler.Sleep`    | Replay of delay-based workflows            |
+> | `File.*`, `FileStream`               | **`DiskBackingStore` (spine/disk)**, e.g. `src/Core/DiskBackingStore.fs` | Bypasses simulation   | **BLOCKER (core)** | Route through `ISimulatedFs`                   | E2E: random disk faults + rollback         |
+> | `Socket.*` / `HttpClient`            | _No core network (future multi-node)_                                    | No network sim yet    | HIGH (future)      | Implement `ISimulatedNetwork`                  | Partition / drop / reorder tests           |
+> | `Parallel.*` / `PLINQ`               | _Not used_                                                               | Uses thread pool      | MEDIUM             | Scheduler-driven parallelism                   | Parallel vs sequential under seed          |
+> | `[ThreadStatic]` / `AsyncLocal`      | _No common use in core_                                                  | Hidden context        | LOW                | Remove or ensure explicit context              | Context sharing across sim threads         |
 
 > Each violation is scored by its impact on DST. For
 > example, the **DiskBackingStore** directly writes to
@@ -286,15 +286,15 @@ markers and are kept intact.
 > and (to build) **simulated I/O**. Table below
 > summarizes current coverage and gaps:
 
-> | Simulation Surface          | Status Today                                         | Gap / Action                                   | Priority |
-> |-----------------------------|------------------------------------------------------|------------------------------------------------|----------|
-> | ChaosEnvironment            | Implemented (`src/Core/ChaosEnv.fs`); seed+policy    | None for single-node code                      | P0 — exists |
-> | VirtualTimeScheduler        | Exists, *test-only* in `tests/ConcurrencyHarness.fs` | Promote into core (`Core/Simulation.fs`); `ISimulationDriver` | P1 |
-> | Simulated Filesystem        | **Not implemented** — disk I/O bypasses ChaosEnv   | Build `ISimulatedFs`; route `DiskBackingStore`; disk-fault injection | P1 |
-> | Simulated Network           | **Not implemented** — multi-node currently stubbed | Design network interface; intercept send/recv | P2 |
-> | Deterministic Task Scheduler | **Partial** — no `RunAsync` replacement for `Task.Run` yet | Extend `ISimulationDriver.RunAsync`; async on sim scheduler | P1 |
-> | Fault injection / Buggify   | **Partial** — some jitter/delay/fault via ChaosPolicy | Expand ChaosPolicy; FDB-style BUGGIFY() macros | P2 |
-> | Swarm/Stress Testing        | **Not implemented** — no automated sweep harness   | GitHub Actions matrix with 100+ seeds + FsCheck shrinking | P2 |
+> | Simulation Surface           | Status Today                                               | Gap / Action                                                         | Priority    |
+> | ---------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- | ----------- |
+> | ChaosEnvironment             | Implemented (`src/Core/ChaosEnv.fs`); seed+policy          | None for single-node code                                            | P0 — exists |
+> | VirtualTimeScheduler         | Exists, _test-only_ in `tests/ConcurrencyHarness.fs`       | Promote into core (`Core/Simulation.fs`); `ISimulationDriver`        | P1          |
+> | Simulated Filesystem         | **Not implemented** — disk I/O bypasses ChaosEnv           | Build `ISimulatedFs`; route `DiskBackingStore`; disk-fault injection | P1          |
+> | Simulated Network            | **Not implemented** — multi-node currently stubbed         | Design network interface; intercept send/recv                        | P2          |
+> | Deterministic Task Scheduler | **Partial** — no `RunAsync` replacement for `Task.Run` yet | Extend `ISimulationDriver.RunAsync`; async on sim scheduler          | P1          |
+> | Fault injection / Buggify    | **Partial** — some jitter/delay/fault via ChaosPolicy      | Expand ChaosPolicy; FDB-style BUGGIFY() macros                       | P2          |
+> | Swarm/Stress Testing         | **Not implemented** — no automated sweep harness           | GitHub Actions matrix with 100+ seeds + FsCheck shrinking            | P2          |
 
 > ChaosEnvironment is already robust (handles jitter,
 > clock-skew, RNG sequencing). The critical missing
@@ -319,11 +319,11 @@ graph LR
     CI -.-> Artifacts[Build Artifacts]
 ```
 
-> *(Figure: Conceptual relationships. ChaosEnv and
+> _(Figure: Conceptual relationships. ChaosEnv and
 > VirtualTime feed into a unified simulation driver;
 > the core logic and tests then run deterministically
 > under that driver. CI pulls from the deterministic
-> tests and produces artifacts.)*
+> tests and produces artifacts.)_
 
 ### §5. Retry Audit
 
@@ -383,7 +383,7 @@ graph LR
 
 > All random tests should explicitly set and log their
 > seed. We adopt the convention (from the DST skill)
-> that *"Rashida's first question is 'what seed'"* when
+> that _"Rashida's first question is 'what seed'"_ when
 > a test fails.
 
 > - **Seed Generation:** stable source (FsCheck or
@@ -398,12 +398,12 @@ graph LR
 >   and `roc-pr.json` per graph size / attack scenario.
 
 > These artifacts live under `artifacts/coordination-
-> risk/` in CI.
+risk/` in CI.
 
 ### §8. Cartel-Lab / Coordination Risk DST Readiness
 
 > The Cartel-Lab detector (Coordination Risk Engine) is
-> currently at a *Stage 1 (toy prototype)*. Its PR #323
+> currently at a _Stage 1 (toy prototype)_. Its PR #323
 > demonstrates that a simple largest-eigenvalue signal
 > can detect an injected 5-node cartel with >90% success
 > over 100 seeds. However, from a DST perspective:
@@ -451,8 +451,8 @@ graph LR
 > - Modern systems (TigerBeetle, Antithesis) use DST
 >   as part of a "defense-in-depth" strategy.
 
-> *"DST enables us to perfectly reproduce complex
-> failures of a distributed system on a single laptop"*
+> _"DST enables us to perfectly reproduce complex
+> failures of a distributed system on a single laptop"_
 > — TigerBeetle engineers.
 
 > Compared to state-of-the-art DST:
@@ -558,7 +558,7 @@ gantt
 > screenshots, stress-test performance output, and
 > coverage results after a job completes. That strongly
 > supports emitting `seed-results.csv`, `failing-seeds
-> .txt`, `calibration-summary.json`, and related replay
+.txt`, `calibration-summary.json`, and related replay
 > data.
 
 ### Main corrections before archiving
@@ -694,17 +694,17 @@ gantt
 
 > Breakdown:
 >
-> | Area                          | Grade | Reason                                                                |
-> |-------------------------------|-------|-----------------------------------------------------------------------|
-> | DST philosophy / docs         | A-    | Rule is clear and aligned with FoundationDB/TigerBeetle style         |
-> | Seeded core environment       | B     | `ChaosEnvironment` exists, but not all surfaces route through it      |
-> | Virtual time                  | B-    | Exists, but still test-side rather than unified core driver           |
-> | Filesystem simulation         | D     | Known blocker: real disk path not intercepted                         |
-> | Network simulation            | D/NA  | Future multi-node work, not yet present                               |
-> | Deterministic task scheduling | C-    | `RunAsync` abstraction is needed; ambient ThreadPool remains a risk   |
-> | CI seed artifacts             | C     | Good plan, not fully landed                                           |
-> | Cartel-Lab DST readiness      | C+    | Toy seed discipline exists; calibration artifacts missing             |
-> | KSK/Aurora DST readiness      | C     | Advisory-only is correct; replayable policy inputs still need design  |
+> | Area                          | Grade | Reason                                                               |
+> | ----------------------------- | ----- | -------------------------------------------------------------------- |
+> | DST philosophy / docs         | A-    | Rule is clear and aligned with FoundationDB/TigerBeetle style        |
+> | Seeded core environment       | B     | `ChaosEnvironment` exists, but not all surfaces route through it     |
+> | Virtual time                  | B-    | Exists, but still test-side rather than unified core driver          |
+> | Filesystem simulation         | D     | Known blocker: real disk path not intercepted                        |
+> | Network simulation            | D/NA  | Future multi-node work, not yet present                              |
+> | Deterministic task scheduling | C-    | `RunAsync` abstraction is needed; ambient ThreadPool remains a risk  |
+> | CI seed artifacts             | C     | Good plan, not fully landed                                          |
+> | Cartel-Lab DST readiness      | C+    | Toy seed discipline exists; calibration artifacts missing            |
+> | KSK/Aurora DST readiness      | C     | Advisory-only is correct; replayable policy inputs still need design |
 
 ### Revised PR roadmap
 
@@ -895,7 +895,7 @@ substrate this session:
   design). Promotion ladder locks PR #323 at Stage 1.
 - **§9 (KSK/Aurora Governance DST Readiness)** —
   advisory-only flow committed as `docs/definitions/
-  KSK.md` (PR #336, Otto-157). Safety-kernel sense, not
+KSK.md` (PR #336, Otto-157). Safety-kernel sense, not
   OS-kernel; advisory-only; k1/k2/k3 + revocable
   budgets + multi-party consent + signed receipts.
 
@@ -908,7 +908,7 @@ cadence chooses when queue permits.
 1. **DST entropy-scanner + accepted-boundary registry**
    — PR 1 of revised roadmap.
    `tools/dst/entropy-scan.*` + `docs/DST-
-   COMPLIANCE.md` + `docs/DST-ACCEPTED-BOUNDARIES.md` +
+COMPLIANCE.md` + `docs/DST-ACCEPTED-BOUNDARIES.md` +
    `.github/workflows/dst-scan.yml`. Small-Medium.
    Highest value per Amara's bottom-line note ("make
    the audit itself reproducible").
@@ -921,15 +921,15 @@ cadence chooses when queue permits.
    18th-ferry correction #10.
 4. **`ISimulationDriver` + VTS promotion to core** —
    PR 4. Medium. Touches `src/Core/Simulation.fs` (new)
-   + existing `ChaosEnv.fs`. Backward-compat required
-   for existing `ConcurrencyHarness` tests.
+   - existing `ChaosEnv.fs`. Backward-compat required
+     for existing `ConcurrencyHarness` tests.
 5. **Simulated filesystem (`ISimulatedFs`)** — PR 5.
    Large. DiskBackingStore rewrite. Blocker for
    full DST compliance.
 6. **Cartel-Lab calibration under DST** — PR 6.
    Medium. Lands at `src/Experimental/CartelLab/`
    per 18th-ferry promotion ladder + `docs/research/
-   calibration-harness-stage2-design.md` (PR #342)
+calibration-harness-stage2-design.md` (PR #342)
    design.
 7. **`tools/git/push-with-retry.sh` audit** (Part 2
    correction #3) — document as boundary exception
@@ -991,21 +991,21 @@ same discipline applied to tools-side network retries.
 
 ### Invariant restated (Amara 16th-ferry carry-over)
 
-> *"Every abstraction must map to a repo surface, a test,
-> a metric, or a governance rule."*
+> _"Every abstraction must map to a repo surface, a test,
+> a metric, or a governance rule."_
 
 Cross-check for queued items:
 
-| Correction                      | Maps to                                             |
-|---------------------------------|-----------------------------------------------------|
-| Entropy-scanner + boundary registry | tool surface + policy doc + workflow           |
-| Seed protocol + artifacts       | test-support surface + workflow                     |
-| Sharder reproduction            | test surface + BACKLOG / docs                       |
-| `ISimulationDriver` + VTS promotion | core surface                                    |
-| Simulated filesystem            | core surface (rewrite of DiskBackingStore)          |
-| Cartel-Lab DST calibration      | experimental surface (src/Experimental/CartelLab/)  |
-| push-with-retry audit           | tool surface + policy doc                           |
-| DST-held + FDB-grade criteria   | policy doc                                          |
+| Correction                          | Maps to                                            |
+| ----------------------------------- | -------------------------------------------------- |
+| Entropy-scanner + boundary registry | tool surface + policy doc + workflow               |
+| Seed protocol + artifacts           | test-support surface + workflow                    |
+| Sharder reproduction                | test surface + BACKLOG / docs                      |
+| `ISimulationDriver` + VTS promotion | core surface                                       |
+| Simulated filesystem                | core surface (rewrite of DiskBackingStore)         |
+| Cartel-Lab DST calibration          | experimental surface (src/Experimental/CartelLab/) |
+| push-with-retry audit               | tool surface + policy doc                          |
+| DST-held + FDB-grade criteria       | policy doc                                         |
 
 All eight map. None invents a new abstraction without a
 repo-surface commitment.
@@ -1015,8 +1015,8 @@ repo-surface commitment.
 ## What this absorb doc does NOT authorize
 
 - **Does NOT** canonicalize Part 1 (deep research).
-  Amara's own 5.5 pass: *"strong draft / not canonical
-  yet."* This absorb doc is the ferry's archive surface;
+  Amara's own 5.5 pass: _"strong draft / not canonical
+  yet."_ This absorb doc is the ferry's archive surface;
   canonical factory discipline is defined by Part 2's
   corrections as they land one-by-one.
 - **Does NOT** authorize widening the sharder threshold.
@@ -1038,7 +1038,7 @@ repo-surface commitment.
   assessment; Otto reports it in this absorb doc as
   such.
 - **Does NOT** authorize rewriting `tools/git/push-
-  with-retry.sh` silently. Part 2 #3 gives two options
+with-retry.sh` silently. Part 2 #3 gives two options
   (document as boundary exception OR convert to
   investigation-wrapper); picking one requires a design
   note + Aaron's awareness.
@@ -1063,10 +1063,10 @@ repo-surface commitment.
   design + corrections; 19th covers DST audit.
   Chronological layering:
   17th (implementation closure) → 18th (calibration
-  + corrections) → 19th (DST audit + corrections).
-- **Amara 16th ferry** — invariant *"every abstraction
+  - corrections) → 19th (DST audit + corrections).
+- **Amara 16th ferry** — invariant _"every abstraction
   must map to a repo surface, test, metric, or
-  governance rule"* reaffirmed.
+  governance rule"_ reaffirmed.
 - **`docs/research/calibration-harness-stage2-design.md`**
   (PR #342, Otto-162) — the calibration-harness design
   this ferry's §8 presumes. This ferry's PR 6 revised
@@ -1079,8 +1079,8 @@ repo-surface commitment.
   KSK safety-kernel definition this ferry's §9
   composes on top of. Advisory-only flow locked.
 - **`memory/feedback_ksk_naming_unblocked_aaron_
-  directed_rewrite_authority_max_initial_starting
-  _point_2026_04_24.md`** (Otto-140..145) — KSK
+directed_rewrite_authority_max_initial_starting
+_point_2026_04_24.md`** (Otto-140..145) — KSK
   canonical expansion (Kinetic Safeguard Kernel).
 - **PR #323 toy cartel detector** — Stage 1 of the
   corrected promotion ladder; §8 base case.

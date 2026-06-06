@@ -96,8 +96,7 @@ const WorkerProcessBootstrapStatus = {
   Succeeded: "succeeded",
 } as const;
 
-type WorkerProcessBootstrapStatus =
-  (typeof WorkerProcessBootstrapStatus)[keyof typeof WorkerProcessBootstrapStatus];
+type WorkerProcessBootstrapStatus = (typeof WorkerProcessBootstrapStatus)[keyof typeof WorkerProcessBootstrapStatus];
 
 type WorkerProcessBootstrapState = {
   failures: readonly WorkerProcessFailure[];

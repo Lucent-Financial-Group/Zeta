@@ -14,16 +14,26 @@ composes_with:
   - B-0780
   - B-0782
   - B-0790
-tags: [vscode-extension, multi-harness, ontology-standardization, vscode-native-surface, agents-skills-hooks-mcp, external-pull, harness-convergence, surface-intel]
+tags:
+  [
+    vscode-extension,
+    multi-harness,
+    ontology-standardization,
+    vscode-native-surface,
+    agents-skills-hooks-mcp,
+    external-pull,
+    harness-convergence,
+    surface-intel,
+  ]
 ---
 
 ## Problem
 
 Aaron 2026-05-26 surfaced screenshot intel from a VSCode-native "Agents window" surface (session-launch surface in the IDE sidebar). **Critical correction per Aaron 2026-05-26**: this is **Microsoft VSCode-native cross-harness substrate**, NOT an Anthropic-specific extension surface. The window reveals a substantively-new fact about VSCode/Microsoft's strategy at the IDE-platform scope:
 
-> *"the new Agents window seems to be standardized ontology across multiple harnesses in one vscode window they are definting what are agents and skills and hooks and plugins and instruction etc... they are trying to standardize it seems."*
+> _"the new Agents window seems to be standardized ontology across multiple harnesses in one vscode window they are definting what are agents and skills and hooks and plugins and instruction etc... they are trying to standardize it seems."_
 
-> *"The Agents window is not anthropic is Microsoft i think vscode native cross harness not Anthropic"*
+> _"The Agents window is not anthropic is Microsoft i think vscode native cross harness not Anthropic"_
 
 Observable from the screenshot:
 
@@ -40,14 +50,14 @@ The platform-vs-vendor distinction is load-bearing: a VSCode-native cross-harnes
 
 The ontology Microsoft (via VSCode-native surface) is standardizing (Agents / Skills / Hooks / MCP Servers / Instructions / Plugins) maps cleanly onto Zeta's existing multi-harness substrate:
 
-| Microsoft / VSCode-native ontology primitive | Zeta substrate today (per `.claude/rules/agent-roster-reference-card.md`) |
-|---|---|
-| **Agents** | `.claude/agents/` (Otto persona definitions + named-AI agents); same shape in `.kiro/`, `.gemini/`, etc. |
-| **Skills** | `.claude/skills/` (Otto skill library); same shape in `.kiro/`, `.gemini/`, etc. |
-| **Hooks** | `.claude/hooks/` (PreToolUse, SessionStart, etc.); per `.claude/rules/encoding-rules-without-mechanizing.md` |
-| **MCP Servers** | `.claude/.mcp.json` + Claude Desktop config |
-| **Instructions** | `CLAUDE.md` + `AGENTS.md` + `GEMINI.md` + `.cursor/rules/` + `.kiro/` equivalents |
-| **Plugins** | per B-0776 simplest-first plugin sequence (Redis / NATS / CockroachDB / Temporal / Orleans / OPA) — but VSCode-native "plugins" is harness-level, not substrate-level |
+| Microsoft / VSCode-native ontology primitive | Zeta substrate today (per `.claude/rules/agent-roster-reference-card.md`)                                                                                             |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Agents**                                   | `.claude/agents/` (Otto persona definitions + named-AI agents); same shape in `.kiro/`, `.gemini/`, etc.                                                              |
+| **Skills**                                   | `.claude/skills/` (Otto skill library); same shape in `.kiro/`, `.gemini/`, etc.                                                                                      |
+| **Hooks**                                    | `.claude/hooks/` (PreToolUse, SessionStart, etc.); per `.claude/rules/encoding-rules-without-mechanizing.md`                                                          |
+| **MCP Servers**                              | `.claude/.mcp.json` + Claude Desktop config                                                                                                                           |
+| **Instructions**                             | `CLAUDE.md` + `AGENTS.md` + `GEMINI.md` + `.cursor/rules/` + `.kiro/` equivalents                                                                                     |
+| **Plugins**                                  | per B-0776 simplest-first plugin sequence (Redis / NATS / CockroachDB / Temporal / Orleans / OPA) — but VSCode-native "plugins" is harness-level, not substrate-level |
 
 This produces TWO load-bearing implications for Zeta:
 
@@ -57,7 +67,7 @@ Aaron's substrate-engineering work has been operating multi-harness for months; 
 
 That this comes from the IDE platform rather than a vendor is the load-bearing detail: vendor standardization can be ignored by other vendors; **IDE-platform standardization is what the developer's daily tool enforces** — every harness either fits the ontology or gets second-class IDE integration. Strong selection pressure toward convergence.
 
-This is the *good* shape of external pull: convergence on what Zeta already does, validates the architecture, removes work.
+This is the _good_ shape of external pull: convergence on what Zeta already does, validates the architecture, removes work.
 
 ### Implication 2 — Zeta-specific extensions need to compose WITH the ontology, not replace it
 

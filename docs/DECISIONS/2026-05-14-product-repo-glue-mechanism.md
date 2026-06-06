@@ -86,11 +86,11 @@ Once `ace` ships its version-management tooling, `ace pull zeta@<ver>` becomes t
 
 The options are not mutually exclusive. The recommended approach stages them:
 
-| Stage | Mechanism | Scope | Trigger |
-|-------|-----------|-------|---------|
-| **Stage 1 (now)** | Option A — `.zeta-version` pin file | All product repos at creation time | civsim repo scaffolded; other products when ready |
-| **Stage 2 (when NuGet cadence established)** | Option B — NuGet references for packaged consumers | Product repos targeting published API surface | Zeta NuGet release cadence formally defined |
-| **Stage 3 (when ace ships)** | Option C — `ace.toml` + lockfile | All product repos, unified | ace Stage 3 lands |
+| Stage                                        | Mechanism                                          | Scope                                         | Trigger                                           |
+| -------------------------------------------- | -------------------------------------------------- | --------------------------------------------- | ------------------------------------------------- |
+| **Stage 1 (now)**                            | Option A — `.zeta-version` pin file                | All product repos at creation time            | civsim repo scaffolded; other products when ready |
+| **Stage 2 (when NuGet cadence established)** | Option B — NuGet references for packaged consumers | Product repos targeting published API surface | Zeta NuGet release cadence formally defined       |
+| **Stage 3 (when ace ships)**                 | Option C — `ace.toml` + lockfile                   | All product repos, unified                    | ace Stage 3 lands                                 |
 
 Stage 1 and Stage 2 coexist per product type:
 
@@ -170,13 +170,13 @@ Product-specific skills: `.claude/skills/`
 
 Product repos follow the same branch protection pattern as Forge/ace:
 
-| Rule | Value | Rationale |
-|------|-------|-----------|
-| `required_conversation_resolution` | true | Prevents merging with open review threads |
-| `non_fast_forward` (force-push blocked) | true | Preserves history integrity |
-| Merge method | squash-only | Consistent with factory repo pattern |
-| Required status checks | product-specific CI + Zeta integration gate | At minimum: build + unit tests |
-| Branch name pattern | `main` | Consistent across all repos |
+| Rule                                    | Value                                       | Rationale                                 |
+| --------------------------------------- | ------------------------------------------- | ----------------------------------------- |
+| `required_conversation_resolution`      | true                                        | Prevents merging with open review threads |
+| `non_fast_forward` (force-push blocked) | true                                        | Preserves history integrity               |
+| Merge method                            | squash-only                                 | Consistent with factory repo pattern      |
+| Required status checks                  | product-specific CI + Zeta integration gate | At minimum: build + unit tests            |
+| Branch name pattern                     | `main`                                      | Consistent across all repos               |
 
 ---
 

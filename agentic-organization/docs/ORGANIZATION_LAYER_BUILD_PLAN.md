@@ -27,22 +27,22 @@ Build the Organization as a TypeScript monorepo with a modular-monolith core and
 
 Recommended stack:
 
-| Layer | Choice | Purpose |
-|---|---|---|
-| Monorepo | `pnpm` workspaces with Turborepo or Nx | Shared packages, isolated apps, incremental builds, CI task graph |
-| Backend API | NestJS with the Fastify adapter | Organization API, internal APIs, MCP gateway shell, policy guards, worker-safe module boundaries |
-| Frontend | Next.js App Router with React and TypeScript | Dense operations console for humans watching projects, hats, runs, boards, meetings, and evidence |
-| UI primitives | Tailwind, Radix/shadcn-style components, TanStack Table/Virtual, React Flow | High-density boards, trees, timelines, graphs, and status panels |
-| API contract | REST/OpenAPI first, SSE for live updates, WebSocket later for active meetings/chat | Agent-friendly contracts, generated clients, auditability, simple live UI path |
-| Database | CockroachDB | Distributed Organization source of truth, state machines, audit, outbox, projections |
-| Query/migrations | Drizzle ORM | TypeScript-native schema, explicit SQL shape, typed enums, migration control against CockroachDB's PostgreSQL-compatible interface |
-| Messaging | NATS JetStream | Organization signals, inbox/outbox, live projection updates, DLQ/replay |
-| Durable workflows | Temporal TypeScript | Initiative, approval, release, incident, scheduled review, and long-running process lifecycles |
-| Hot entity state | Dapr Actors | Hat supply, agent session context, team rooms, mailboxes, meeting state, run heartbeat coordination |
-| Kubernetes hat contracts | `@kubernetes/client-node`, generated or hand-checked CRD types | TypeScript-first access to `Hat`, `HatBinding`, `HatSwap`, and `HatPolicy` without redefining the hat API |
-| Testing | Vitest, Playwright, Testcontainers | Domain/unit tests, browser QA automation, real CockroachDB/NATS integration tests |
-| Observability | OpenTelemetry JS, Pino, Prometheus metrics | End-to-end traces across API, workflows, actors, MCP tools, NATS, pods, and UI evidence |
-| Delivery | Docker images, Helm or Kustomize, ArgoCD, GitLab CI | Initiative branch builds, preview/QA deployments, GitOps promotion into the cluster |
+| Layer                    | Choice                                                                             | Purpose                                                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Monorepo                 | `pnpm` workspaces with Turborepo or Nx                                             | Shared packages, isolated apps, incremental builds, CI task graph                                                                  |
+| Backend API              | NestJS with the Fastify adapter                                                    | Organization API, internal APIs, MCP gateway shell, policy guards, worker-safe module boundaries                                   |
+| Frontend                 | Next.js App Router with React and TypeScript                                       | Dense operations console for humans watching projects, hats, runs, boards, meetings, and evidence                                  |
+| UI primitives            | Tailwind, Radix/shadcn-style components, TanStack Table/Virtual, React Flow        | High-density boards, trees, timelines, graphs, and status panels                                                                   |
+| API contract             | REST/OpenAPI first, SSE for live updates, WebSocket later for active meetings/chat | Agent-friendly contracts, generated clients, auditability, simple live UI path                                                     |
+| Database                 | CockroachDB                                                                        | Distributed Organization source of truth, state machines, audit, outbox, projections                                               |
+| Query/migrations         | Drizzle ORM                                                                        | TypeScript-native schema, explicit SQL shape, typed enums, migration control against CockroachDB's PostgreSQL-compatible interface |
+| Messaging                | NATS JetStream                                                                     | Organization signals, inbox/outbox, live projection updates, DLQ/replay                                                            |
+| Durable workflows        | Temporal TypeScript                                                                | Initiative, approval, release, incident, scheduled review, and long-running process lifecycles                                     |
+| Hot entity state         | Dapr Actors                                                                        | Hat supply, agent session context, team rooms, mailboxes, meeting state, run heartbeat coordination                                |
+| Kubernetes hat contracts | `@kubernetes/client-node`, generated or hand-checked CRD types                     | TypeScript-first access to `Hat`, `HatBinding`, `HatSwap`, and `HatPolicy` without redefining the hat API                          |
+| Testing                  | Vitest, Playwright, Testcontainers                                                 | Domain/unit tests, browser QA automation, real CockroachDB/NATS integration tests                                                  |
+| Observability            | OpenTelemetry JS, Pino, Prometheus metrics                                         | End-to-end traces across API, workflows, actors, MCP tools, NATS, pods, and UI evidence                                            |
+| Delivery                 | Docker images, Helm or Kustomize, ArgoCD, GitLab CI                                | Initiative branch builds, preview/QA deployments, GitOps promotion into the cluster                                                |
 
 Default app layout:
 
@@ -138,28 +138,28 @@ No implementation should silently move long-running state from Orleans to NestJS
 
 ## Organization Layer Services
 
-| Service | Purpose | Makes these hats effective |
-|---|---|---|
-| Organization Kernel | Authoritative state transitions, policy checks, audit events, outbox events | All hats |
-| Hat Graph Service | Defines hats, departments, assignment rules, approval scopes, supply, TTLs, reporting lines | Executive Board, Directors, Engineering Managers, Hat Designer |
-| Agent Registry Service | Tracks Hermes agents, active sessions, memory profiles, specialties, current hats, cost, reliability | Directors, TPMs, Engineering Managers, Memory hats |
-| Assignment and Staffing Service | Ranks agents for hats, reserves hat supply, assigns agents to teams/tasks, handles release and deprovisioning | Directors, TPMs, Engineering Managers, Cost Controller |
-| Work Management Service | Owns projects, initiatives, tasks, defects, service requests, blockers, queues, lifecycle state | TPMs, Product, BA, Engineering, QA, Delivery |
-| Gate and Review Service | Owns readiness, BRD, architecture, code, QA, security, delivery, memory, and outcome gates | Review hats and managers |
-| Department Runtime Service | Maintains department rules, queues, schedules, standing meetings, director reports, escalation paths | Directors and department managers |
-| Work Schedule Service | Creates hat-bound schedule templates, concrete schedule blocks, free-time windows, reflection windows, and manager-approved adjustments | Directors, Engineering Managers, TPMs, all active hats |
-| Meeting and Communication Service | Provides inboxes, reports, broadcasts, one-on-one chats, team rooms, meeting modes, decisions, and mandatory work anchors for every discussion | All hats, especially TPMs, directors, executives |
-| Documentation Context Service | Organizes BRDs, CAs, ADRs, design docs, project docs, repo docs, and required context by scope | Product, BA, Architecture, Engineering, QA, Reviewers |
-| Project Skill Service | Stores project/repo skills with frontmatter, graph links, review state, deprecation, and ingestion | Engineering Managers, Documentation hats, Memory hats |
-| Memory Scope Service | Mediates Hindsight recall/write attribution by agent, hat, project, task, team, and meeting | Memory hats, all execution hats |
-| Tool and Credential Gateway | Authorizes MCP tools and credential proxy use using actor context, hat policy, OPA, and audit | Security, all tool-using hats |
-| Oz/Hermes Run Service | Creates and binds Hermes/Oz runs to tasks, teams, hats, pods, sessions, logs, artifacts | TPMs, Engineering Managers, Operations |
-| Automation Runtime Service | Runs triggers, rules, reaction plans, schedules, leases, timers, and replay-safe workers | Operations, Scheduler Steward, Trigger Steward |
-| Prompt Flow Registry Service | Stores reusable phases, prompt-flow definitions, hat bindings, phase gates, flow runs, and effectiveness reviews | Engineering Managers, Directors, Capability teams, Reviewers |
-| Capability Expansion Service | Accepts requests for tools, workflows, actors, hats, docs, skills, and credentials; routes approvals | Engineering Managers, Directors, Security, Architecture |
-| Observability and Evidence Service | Captures traces, logs, metrics, screenshots, artifacts, timelines, SLOs, audit events | Operations, QA, Reviewers, UI |
-| Performance and Learning Service | Runs team reviews, hat effectiveness reviews, outcome reviews, memory adaptation, process improvements | Engineering Managers, Directors, Memory, Executives |
-| UI Projection Service | Builds read models for humans to watch work, meetings, runs, pods, gates, decisions, and health | Humans, executives, operators |
+| Service                            | Purpose                                                                                                                                        | Makes these hats effective                                     |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Organization Kernel                | Authoritative state transitions, policy checks, audit events, outbox events                                                                    | All hats                                                       |
+| Hat Graph Service                  | Defines hats, departments, assignment rules, approval scopes, supply, TTLs, reporting lines                                                    | Executive Board, Directors, Engineering Managers, Hat Designer |
+| Agent Registry Service             | Tracks Hermes agents, active sessions, memory profiles, specialties, current hats, cost, reliability                                           | Directors, TPMs, Engineering Managers, Memory hats             |
+| Assignment and Staffing Service    | Ranks agents for hats, reserves hat supply, assigns agents to teams/tasks, handles release and deprovisioning                                  | Directors, TPMs, Engineering Managers, Cost Controller         |
+| Work Management Service            | Owns projects, initiatives, tasks, defects, service requests, blockers, queues, lifecycle state                                                | TPMs, Product, BA, Engineering, QA, Delivery                   |
+| Gate and Review Service            | Owns readiness, BRD, architecture, code, QA, security, delivery, memory, and outcome gates                                                     | Review hats and managers                                       |
+| Department Runtime Service         | Maintains department rules, queues, schedules, standing meetings, director reports, escalation paths                                           | Directors and department managers                              |
+| Work Schedule Service              | Creates hat-bound schedule templates, concrete schedule blocks, free-time windows, reflection windows, and manager-approved adjustments        | Directors, Engineering Managers, TPMs, all active hats         |
+| Meeting and Communication Service  | Provides inboxes, reports, broadcasts, one-on-one chats, team rooms, meeting modes, decisions, and mandatory work anchors for every discussion | All hats, especially TPMs, directors, executives               |
+| Documentation Context Service      | Organizes BRDs, CAs, ADRs, design docs, project docs, repo docs, and required context by scope                                                 | Product, BA, Architecture, Engineering, QA, Reviewers          |
+| Project Skill Service              | Stores project/repo skills with frontmatter, graph links, review state, deprecation, and ingestion                                             | Engineering Managers, Documentation hats, Memory hats          |
+| Memory Scope Service               | Mediates Hindsight recall/write attribution by agent, hat, project, task, team, and meeting                                                    | Memory hats, all execution hats                                |
+| Tool and Credential Gateway        | Authorizes MCP tools and credential proxy use using actor context, hat policy, OPA, and audit                                                  | Security, all tool-using hats                                  |
+| Oz/Hermes Run Service              | Creates and binds Hermes/Oz runs to tasks, teams, hats, pods, sessions, logs, artifacts                                                        | TPMs, Engineering Managers, Operations                         |
+| Automation Runtime Service         | Runs triggers, rules, reaction plans, schedules, leases, timers, and replay-safe workers                                                       | Operations, Scheduler Steward, Trigger Steward                 |
+| Prompt Flow Registry Service       | Stores reusable phases, prompt-flow definitions, hat bindings, phase gates, flow runs, and effectiveness reviews                               | Engineering Managers, Directors, Capability teams, Reviewers   |
+| Capability Expansion Service       | Accepts requests for tools, workflows, actors, hats, docs, skills, and credentials; routes approvals                                           | Engineering Managers, Directors, Security, Architecture        |
+| Observability and Evidence Service | Captures traces, logs, metrics, screenshots, artifacts, timelines, SLOs, audit events                                                          | Operations, QA, Reviewers, UI                                  |
+| Performance and Learning Service   | Runs team reviews, hat effectiveness reviews, outcome reviews, memory adaptation, process improvements                                         | Engineering Managers, Directors, Memory, Executives            |
+| UI Projection Service              | Builds read models for humans to watch work, meetings, runs, pods, gates, decisions, and health                                                | Humans, executives, operators                                  |
 
 ## Role Workspaces
 
@@ -182,25 +182,25 @@ Every active hat should open into a role-specific workspace. A workspace is the 
 
 ### Workspace Examples
 
-| Hat | Workspace focus |
-|---|---|
-| Executive Board Member | Portfolio queue, high-risk votes, department health, budget pressure, major escalations, policy changes |
-| CEO | Project priorities, customer value, cross-department blockers, executive decisions, org efficiency |
-| CTO | Technical standards, architecture review load, engineering quality, runtime strategy, tool expansion risk |
-| COO | Operating rhythm, capacity, schedules, incidents, delivery flow, department coordination |
-| Product Owner | Customer interviews, BRDs, acceptance criteria, product signoff queue, feedback reports |
-| Business Analyst | Ambiguous goals, open questions, BRD drafts, source evidence, domain research |
-| Architect | BRDs awaiting CA, design docs, ADR queue, architecture risks, integration constraints |
-| TPM | Initiative plan, active teams, task boards, blockers, hat supply, budget, meeting rooms |
-| Engineering Manager | Ready queue, team staffing, task context, TDD evidence, outcome reviews, performance reviews |
-| Implementer | Assigned task, red-test requirement, docs/memory context, scoped tools, run logs, review feedback |
-| Code Reviewer | Review queue, diff evidence, tests, scope boundaries, policy/doc compliance |
-| QA Reviewer | QA queue, acceptance criteria, browser checks, screenshots, reproduction evidence, bounce-back reports |
-| Security Reviewer | Credential requests, tool expansion, policy diffs, audit traces, risky automation queue |
-| Release Operator | Release queue, upstream gate evidence, deployment logs, rollback plans, final release records |
-| Memory Curator | Memory quality issues, stale memories, missing recall, hat-attributed writes, adaptation requests |
-| Platform Operator | Worker heartbeats, leases, Oz runs, pod sessions, DLQs, SLO burn, incidents |
-| Hat Designer | Hat proposals, tool bundles, memory scopes, approval scopes, supply rules, effectiveness data |
+| Hat                    | Workspace focus                                                                                           |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| Executive Board Member | Portfolio queue, high-risk votes, department health, budget pressure, major escalations, policy changes   |
+| CEO                    | Project priorities, customer value, cross-department blockers, executive decisions, org efficiency        |
+| CTO                    | Technical standards, architecture review load, engineering quality, runtime strategy, tool expansion risk |
+| COO                    | Operating rhythm, capacity, schedules, incidents, delivery flow, department coordination                  |
+| Product Owner          | Customer interviews, BRDs, acceptance criteria, product signoff queue, feedback reports                   |
+| Business Analyst       | Ambiguous goals, open questions, BRD drafts, source evidence, domain research                             |
+| Architect              | BRDs awaiting CA, design docs, ADR queue, architecture risks, integration constraints                     |
+| TPM                    | Initiative plan, active teams, task boards, blockers, hat supply, budget, meeting rooms                   |
+| Engineering Manager    | Ready queue, team staffing, task context, TDD evidence, outcome reviews, performance reviews              |
+| Implementer            | Assigned task, red-test requirement, docs/memory context, scoped tools, run logs, review feedback         |
+| Code Reviewer          | Review queue, diff evidence, tests, scope boundaries, policy/doc compliance                               |
+| QA Reviewer            | QA queue, acceptance criteria, browser checks, screenshots, reproduction evidence, bounce-back reports    |
+| Security Reviewer      | Credential requests, tool expansion, policy diffs, audit traces, risky automation queue                   |
+| Release Operator       | Release queue, upstream gate evidence, deployment logs, rollback plans, final release records             |
+| Memory Curator         | Memory quality issues, stale memories, missing recall, hat-attributed writes, adaptation requests         |
+| Platform Operator      | Worker heartbeats, leases, Oz runs, pod sessions, DLQs, SLO burn, incidents                               |
+| Hat Designer           | Hat proposals, tool bundles, memory scopes, approval scopes, supply rules, effectiveness data             |
 
 ## Authoritative State Model
 
@@ -492,24 +492,24 @@ Hermes should receive this packet at run start and after token refresh. MCP tool
 
 ## Role-Specific Automation Requirements
 
-| Role family | Automation required |
-|---|---|
-| Executives | Portfolio health rollups, high-risk vote queue, department performance reports, budget and hat scarcity alerts |
-| Directors | Department backlog, initiative priority queue, staffing recommendations, department review cadence, cross-department escalations |
-| TPMs | Initiative boards, dependency maps, blocker alerts, team creation, meeting scheduling, budget/hat supply warnings |
-| Product | Interview scheduling, BRD readiness alerts, acceptance criteria gap detection, feedback/SR classification |
-| BA | Ambiguity detection, missing evidence alerts, BRD review routing, open-question tracking |
-| Architecture | Architecture-required detection, CA/ADR queues, design risk classification, runtime/API/security-boundary alerts |
-| Engineering Managers | Task readiness checks, TDD gate enforcement, memory/context gap detection, performance reviews, skill requests |
-| Implementers | Scoped task packets, red-test requirement, tool/credential availability, run progress capture, evidence submission |
-| Reviewers | Review queue, evidence completeness check, self-approval block, decision templates, bounce-back routing |
-| QA | Reproducibility workflows, browser automation runs, screenshot/log/trace capture, scheduled regression triggers |
-| Security | Credential/tool request queue, policy diff review, audit trail inspection, dangerous automation classification |
-| Delivery | Release readiness checks, gate evidence chain, merge/release audit record, rollback plan requirement |
-| Operations | Worker health, leases, DLQ, SLOs, incidents, self-healing decisions, runbook execution |
-| Memory | Hat-attributed memory writes, stale memory detection, repeated-failure analysis, memory adaptation review |
-| Documentation and Skills | Required doc checks, skill frontmatter validation, skill graph ingestion, stale doc alerts |
-| Capability Expansion | Request classification, approval routing, implementation task creation, registry activation, post-activation monitoring |
+| Role family              | Automation required                                                                                                              |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Executives               | Portfolio health rollups, high-risk vote queue, department performance reports, budget and hat scarcity alerts                   |
+| Directors                | Department backlog, initiative priority queue, staffing recommendations, department review cadence, cross-department escalations |
+| TPMs                     | Initiative boards, dependency maps, blocker alerts, team creation, meeting scheduling, budget/hat supply warnings                |
+| Product                  | Interview scheduling, BRD readiness alerts, acceptance criteria gap detection, feedback/SR classification                        |
+| BA                       | Ambiguity detection, missing evidence alerts, BRD review routing, open-question tracking                                         |
+| Architecture             | Architecture-required detection, CA/ADR queues, design risk classification, runtime/API/security-boundary alerts                 |
+| Engineering Managers     | Task readiness checks, TDD gate enforcement, memory/context gap detection, performance reviews, skill requests                   |
+| Implementers             | Scoped task packets, red-test requirement, tool/credential availability, run progress capture, evidence submission               |
+| Reviewers                | Review queue, evidence completeness check, self-approval block, decision templates, bounce-back routing                          |
+| QA                       | Reproducibility workflows, browser automation runs, screenshot/log/trace capture, scheduled regression triggers                  |
+| Security                 | Credential/tool request queue, policy diff review, audit trail inspection, dangerous automation classification                   |
+| Delivery                 | Release readiness checks, gate evidence chain, merge/release audit record, rollback plan requirement                             |
+| Operations               | Worker health, leases, DLQ, SLOs, incidents, self-healing decisions, runbook execution                                           |
+| Memory                   | Hat-attributed memory writes, stale memory detection, repeated-failure analysis, memory adaptation review                        |
+| Documentation and Skills | Required doc checks, skill frontmatter validation, skill graph ingestion, stale doc alerts                                       |
+| Capability Expansion     | Request classification, approval routing, implementation task creation, registry activation, post-activation monitoring          |
 
 ## MCP Tool Execution Path
 

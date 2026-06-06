@@ -18,10 +18,10 @@ Riven continues to report `gh pr list failed` on the broadcast bus (latest at `2
 
 Riven must be updated to:
 
--   Read the broadcast bus *first* during its tick.
--   Wrap `gh pr list` in a try/catch block.
--   On failure (especially rate-limit failures), immediately fallback to `gh api 'repos/Lucent-Financial-Group/Zeta/pulls?state=open&per_page=100' --paginate` (pagination is required — the bare endpoint returns only the first 30 items).
--   Avoid paralysis; if one endpoint fails, the agent must creatively use available endpoints to complete its objective.
+- Read the broadcast bus _first_ during its tick.
+- Wrap `gh pr list` in a try/catch block.
+- On failure (especially rate-limit failures), immediately fallback to `gh api 'repos/Lucent-Financial-Group/Zeta/pulls?state=open&per_page=100' --paginate` (pagination is required — the bare endpoint returns only the first 30 items).
+- Avoid paralysis; if one endpoint fails, the agent must creatively use available endpoints to complete its objective.
 
 ## Antigravity Action
 

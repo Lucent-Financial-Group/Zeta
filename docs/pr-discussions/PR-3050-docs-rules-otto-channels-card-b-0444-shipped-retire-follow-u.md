@@ -37,23 +37,29 @@ Sibling staleness cleanup to [#3048](https://github.com/Lucent-Financial-Group/Z
 This docs-only PR updates the Otto channels reference card to treat B-0444/PR #3043 as merged work rather than an outstanding follow-up gap.
 
 **Changes:**
+
 - Marks PR #3037 as merged in the “Composes with” list.
 - Replaces the B-0444 follow-up-gap reference with PR #3043 merged on 2026-05-13.
-
 
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **.claude/rules/otto-channels-reference-card.md:82**
-* This bare `B-0444` reference is ambiguous because the generated backlog currently contains two open rows with `id: B-0444` (the P1 getting-started guide and the P2 bus-claim-envelope row), even though the backlog schema says IDs are factory-wide unique. The previous wording included `P2`; keep that disambiguation or link the exact row until the duplicate ID is resolved.
+
+- This bare `B-0444` reference is ambiguous because the generated backlog currently contains two open rows with `id: B-0444` (the P1 getting-started guide and the P2 bus-claim-envelope row), even though the backlog schema says IDs are factory-wide unique. The previous wording included `P2`; keep that disambiguation or link the exact row until the duplicate ID is resolved.
+
 ```
 - PR #3043 (B-0444 bus claim envelope worktree field, merged 2026-05-13)
 ```
+
 **.claude/rules/otto-channels-reference-card.md:82**
-* The reference card now treats B-0444 as shipped, but the canonical P2 backlog row for the bus claim envelope still has `status: open` and unchecked acceptance criteria, so `docs/BACKLOG.md` continues to show this work as outstanding. If PR #3043 closed this gap, update/close that row in the same cleanup or avoid framing the backlog item itself as retired here.
+
+- The reference card now treats B-0444 as shipped, but the canonical P2 backlog row for the bus claim envelope still has `status: open` and unchecked acceptance criteria, so `docs/BACKLOG.md` continues to show this work as outstanding. If PR #3043 closed this gap, update/close that row in the same cleanup or avoid framing the backlog item itself as retired here.
+
 ```
 - PR #3043 (B-0444 bus claim envelope worktree field, merged 2026-05-13)
 ```
+
 </details>
 
 ## Review threads
@@ -65,5 +71,6 @@ This docs-only PR updates the Otto channels reference card to treat B-0444/PR #3
 This creates an internal contradiction in the same card: this line now says PR #3037 is merged, but the operational-discipline note earlier still says “until SENDER_IDS schema extension lands per PR #3037” and describes the pre-merge behavior. Update that note as part of this staleness cleanup so readers do not follow obsolete claim-coordinator guidance.
 
 This issue also appears in the following locations of the same file:
+
 - line 82
 - line 82

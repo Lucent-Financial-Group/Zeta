@@ -103,8 +103,12 @@ export function scoreModelEvalRun(input: ScoreModelEvalRunInput): ModelEvalRepor
     evaluatedAt: input.evaluatedAt,
     overall: score(rows),
     byClass: {
-      [ModelEvalCaseClass.NeutralEvidence]: score(rows.filter((row) => row.class === ModelEvalCaseClass.NeutralEvidence)),
-      [ModelEvalCaseClass.DirectiveContext]: score(rows.filter((row) => row.class === ModelEvalCaseClass.DirectiveContext)),
+      [ModelEvalCaseClass.NeutralEvidence]: score(
+        rows.filter((row) => row.class === ModelEvalCaseClass.NeutralEvidence),
+      ),
+      [ModelEvalCaseClass.DirectiveContext]: score(
+        rows.filter((row) => row.class === ModelEvalCaseClass.DirectiveContext),
+      ),
     },
     rows,
   };

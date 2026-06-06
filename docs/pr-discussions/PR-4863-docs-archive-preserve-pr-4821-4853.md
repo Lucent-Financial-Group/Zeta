@@ -27,6 +27,7 @@ Preserves discussion threads from merged PRs #4821 (residuated-lattice-tests rev
 This PR adds git-tracked PR discussion archives under `docs/pr-discussions/` as part of the repository’s PR-preservation workflow.
 
 **Changes:**
+
 - Adds an archive file preserving PR #4821 discussion content.
 - Adds an additional archive file for PR #4853 (a tick shard PR discussion).
 
@@ -34,9 +35,9 @@ This PR adds git-tracked PR discussion archives under `docs/pr-discussions/` as 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | New PR discussion archive for PR #4853 (tick shard / lane discipline notes). |
+| File                                                                                        | Description                                                                      |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| docs/pr-discussions/PR-4853-shard-2026-05-24-1902z-otto-vscode-bg-worker-lior-lane-fleet.md | New PR discussion archive for PR #4853 (tick shard / lane discipline notes).     |
 | docs/pr-discussions/PR-4821-fix-4780-address-review-comments-on-residuated-lattice-tests.md | New PR discussion archive preserving PR #4821’s review conversation and threads. |
 
 ## Review threads

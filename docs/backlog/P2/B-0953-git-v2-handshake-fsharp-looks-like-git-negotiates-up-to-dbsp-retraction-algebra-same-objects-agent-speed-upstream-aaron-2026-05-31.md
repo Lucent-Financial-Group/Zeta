@@ -37,8 +37,8 @@ git-native indexes + Hindsight storage (B-0951), git-native event store (B-0773)
 inverted index (B-0363), per-host adapters (B-0867.15) — yet the **Git-V2-handshake
 protocol thesis itself is nowhere clearly laid out.** Operator 2026-05-31:
 
-> *"file the Git-V2 handshake backlog row … there might be something around this
-> already not so clearly laid out though."*
+> _"file the Git-V2 handshake backlog row … there might be something around this
+> already not so clearly laid out though."_
 
 So this row's job is to **lay it out clearly** + point at the scattered neighbors it
 composes with (the substrate-inventory below confirms no row already states the
@@ -50,24 +50,24 @@ where it was flagged as a backlog-candidate.
 
 The real problem (operator): **"how do you make Git work at agent speed? Agent
 coordination instead of human coordination speed."** Git was built for human-speed
-(humans type / review / merge). GitHub is a *specialized git client* whose model is
-**vendor lock-in** — *"we wouldn't want to be like a specialized Git client … we
-don't wanna become the thing we hate."* So: don't depend on GitHub (git is a better,
+(humans type / review / merge). GitHub is a _specialized git client_ whose model is
+**vendor lock-in** — _"we wouldn't want to be like a specialized Git client … we
+don't wanna become the thing we hate."_ So: don't depend on GitHub (git is a better,
 open-standard starting point); build the agent-speed primitives; **push them back
 upstream to git.**
 
 The vehicle is a **handshake**, not a fork:
 
 - **F# handshake that looks like git** at first, but can **negotiate up to a "Git V2"
-  algebra-based protocol** — *"a handshake in F# where basically it looks like Git,
+  algebra-based protocol** — _"a handshake in F# where basically it looks like Git,
   but you can handshake up to DBSP, retraction algebra … the maintainers can decide …
-  we'll have it."* (Build it regardless; offer the upgrade path; take-it-or-leave-it.)
-- **Same objects in BOTH views — not two copies.** *"all the changes you make in the
+  we'll have it."_ (Build it regardless; offer the upgrade path; take-it-or-leave-it.)
+- **Same objects in BOTH views — not two copies.** _"all the changes you make in the
   stream, in the DBSP side … are reflected in the Git side and vice versa. They're
-  pointing to the same objects. It's not two copies."* Two interfaces over one truth.
-- **Git as a schema you stream in.** *"if you want to support Git, it's just a stream
+  pointing to the same objects. It's not two copies."_ Two interfaces over one truth.
+- **Git as a schema you stream in.** _"if you want to support Git, it's just a stream
   protocol where you build up your Git schema as events on a stream, and then you can
-  speak Git on that stream"* — git compatibility = one schema loaded onto the
+  speak Git on that stream"_ — git compatibility = one schema loaded onto the
   retraction-native event stream (RX/observables; schema-on-the-stream).
 - **The substrate underneath:** the file-system-with-history + ZetaId append-only
   event store (B-0773) carried as **DBSP / Z-set retraction-native** state (the
@@ -81,11 +81,11 @@ The vehicle is a **handshake**, not a fork:
   a response rather than asking permission. A fork fragments; a handshake offers an
   upgrade path on the existing standard.
 - **Why DBSP / retraction-algebra for V2?** Agent-coordination speed needs
-  concurrent, mergeable, *retractable* state — CRDT-like (B-0942) + incremental
+  concurrent, mergeable, _retractable_ state — CRDT-like (B-0942) + incremental
   (DBSP/Z-sets). Human-git's merge model is built around human-paced review; the
   algebra makes concurrent agent writes + retractions first-class.
 - **Why same-objects-not-two-copies?** Two copies need syncing (drift, conflict); one
-  object store with two *views* (git-view + DBSP-stream-view) has no sync surface —
+  object store with two _views_ (git-view + DBSP-stream-view) has no sync surface —
   the integration is the point.
 - **Why upstream the primitives?** Anti-vendor-lock (don't become GitHub); the core
   improvements live in git itself, benefiting everyone — composes with the

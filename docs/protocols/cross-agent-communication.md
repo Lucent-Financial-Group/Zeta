@@ -19,8 +19,8 @@ discipline.
 
 Composes with the decision-proxy ADR
 (`docs/DECISIONS/2026-04-23-external-maintainer-decision-proxy-pattern.md`
-— lands via PR #154), which defines the *who/what* of external
-maintainer proxies. This protocol defines the *how*.
+— lands via PR #154), which defines the _who/what_ of external
+maintainer proxies. This protocol defines the _how_.
 
 ---
 
@@ -34,8 +34,8 @@ Observed behavior:
 
 - Branch creation appears to succeed (UI confirms creation)
 - Opening the branched conversation fails
-- UI returns error (toast notification: *"can't open
-  conversation"*)
+- UI returns error (toast notification: _"can't open
+  conversation"_)
 - Issue reproduced multiple times
 
 **Conclusion: Branching currently behaves as unreliable
@@ -205,7 +205,7 @@ For Kenji:
 
 ## Final position
 
-Branching is useful *when it works*, but currently:
+Branching is useful _when it works_, but currently:
 
 > **It is non-deterministic and should be treated as
 > unstable infrastructure.**

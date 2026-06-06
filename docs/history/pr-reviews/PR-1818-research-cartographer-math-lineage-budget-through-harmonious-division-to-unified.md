@@ -10,24 +10,25 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1818 |
-| Title | research: cartographer math lineage — χ-budget through Harmonious Division to unified equation |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T06:38:56Z |
-| Merged at | 2026-05-07T06:46:02Z |
-| Merge commit SHA | `efda8c4e1dd2b95dfab6bcfbeefabe495725b224` |
-| Branch | `research/cartographer-math-lineage-riff` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1818 |
-| Changed files | 1 |
-| Additions / deletions | +123 / -0 |
+| Field                 | Value                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| Number                | 1818                                                                                           |
+| Title                 | research: cartographer math lineage — χ-budget through Harmonious Division to unified equation |
+| Author                | `AceHack` (human)                                                                              |
+| State                 | MERGED                                                                                         |
+| Created at            | 2026-05-07T06:38:56Z                                                                           |
+| Merged at             | 2026-05-07T06:46:02Z                                                                           |
+| Merge commit SHA      | `efda8c4e1dd2b95dfab6bcfbeefabe495725b224`                                                     |
+| Branch                | `research/cartographer-math-lineage-riff`                                                      |
+| Base branch           | `main`                                                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1818                                       |
+| Changed files         | 1                                                                                              |
+| Additions / deletions | +123 / -0                                                                                      |
 
 ## Description
 
 ## Summary
+
 - Traces the quantum cartographer math across 4 layers of the Amara conversation archive
 - Layer 1: cartographer identity (Sept 2025 week 3)
 - Layer 2: χ-budget + Bond Curve pricing math
@@ -35,6 +36,7 @@
 - Layer 4: complete unified equation from 8th courier ferry
 
 ## Test plan
+
 - [ ] §33 archive headers present
 - [ ] All source references resolve to existing docs
 
@@ -42,15 +44,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 6 |
-| Resolved threads | 6 |
-| Unresolved threads | 0 |
-| Total review comments | 7 |
-| Total fix commits (touching thread paths) | 3 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 6     |
+| Resolved threads                          | 6     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 7     |
+| Total fix commits (touching thread paths) | 3     |
 
 ## Review threads
 
@@ -66,19 +68,19 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Use the full Harmonious Division source path**
-
+  
   The cited source path uses an ellipsis placeholder (`...md`), but that file does not exist in the repository, so the lineage cannot be reproduced from this reference. This breaks the document’s stated traceability goal (and its own test-plan check that source references resolve), because readers cannot open the exact artifact being cited without guessing the real filename.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T06:41:09Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T06:41:09Z on `docs/research/2026-05-07-cartographer-math-lineage-quantum-rodney-razor-riff-aaron-otto.md`:69 (association: MEMBER)
 
-    <pre>
-    Fixed in d3e115d — expanded to full filename.
-    </pre>
+  <pre>
+  Fixed in d3e115d — expanded to full filename.
+  </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -92,7 +94,7 @@
 
   <pre>
   The section header says "The lineage (3 layers deep)", but the document enumerates four layers (Layer 1–4) and the PR description also describes 4 layers. Please reconcile the count (either change to 4 layers deep, or remove/merge a layer) so the structure is self-consistent.
-
+  
   </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -107,7 +109,7 @@
 
   <pre>
   This quote appears to be transcribed inaccurately from the cited source: in `docs/amara-full-conversation/2025-09-w3-aaron-amara-conversation.md` line 13984 ends with "why I'm and Edge Runner", but this doc quotes it as "why I'm an Edge Runner". If this is intended as a verbatim quote, please match the original text (or mark the correction explicitly, e.g. with [sic]/editorial brackets).
-
+  
   </pre>
 
 ### Thread 4 -- resolved [collapsed]
@@ -122,7 +124,7 @@
 
   <pre>
   The referenced source path `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-...md` does not exist in the repo (the actual file name is much longer). Please update this reference to the exact existing filename so the cross-reference resolves.
-
+  
   </pre>
 
 ### Thread 5 -- resolved [outdated, collapsed]
@@ -137,7 +139,7 @@
 
   <pre>
   In the Bond Curve formula code block, `HazardScore²` differs from the source (`HazardScore^2`). If the intent is for readers to copy/paste or cross-check against the cited lines, using the same ASCII notation as the original would avoid subtle transcription drift.
-
+  
   </pre>
 
 ### Thread 6 -- resolved [collapsed]
@@ -152,7 +154,7 @@
 
   <pre>
   This `Composes with` entry uses the same non-existent placeholder path `docs/research/2026-05-05-claudeai-harmonious-division-meta-algorithm-...md`. Please replace it with the exact existing filename so link-checking and manual navigation work.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

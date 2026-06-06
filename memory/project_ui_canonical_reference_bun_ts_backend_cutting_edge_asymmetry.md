@@ -4,9 +4,10 @@ description: Aaron's architectural asymmetry — Zeta's backend is the cutting-e
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The strategic frame** (Aaron 2026-04-20, pasted intact):
 
-> *"also when we get to the UI i for sure want to try some
+> _"also when we get to the UI i for sure want to try some
 > cool stuff like blazor and rust but not yes i want to have
 > a connonical standard for today that any more cutting edge
 > ui frameworks can be validated against, typescript and bun
@@ -16,20 +17,20 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > build before going to more cutting edge stuff with the UI,
 > our backend is the super cutting edge part, our ui can
 > slowly become cutting edge over time, it can start on the
-> tried and true path today and eveolve over time."*
+> tried and true path today and eveolve over time."_
 
 **The asymmetry:**
 
 - **Backend (`src/`, verification tooling, operator algebra,
   retraction-native semantics, DBSP, TLA+, Lean, Z3):**
-  *cutting edge by design.* This is where Zeta's research
-  contribution lives. Novel patterns are *expected* here.
-- **UI (forthcoming):** *tried-and-true, canonical
-  reference first.* Start on bun+TypeScript — the
+  _cutting edge by design._ This is where Zeta's research
+  contribution lives. Novel patterns are _expected_ here.
+- **UI (forthcoming):** _tried-and-true, canonical
+  reference first._ Start on bun+TypeScript — the
   lowest-friction, most common 2026 choice. Add
   cutting-edge tech (Blazor WebAssembly, Rust frontends,
-  WebGPU rendering, whatever is emerging) *incrementally*,
-  *validated against the reference*, not as the starting
+  WebGPU rendering, whatever is emerging) _incrementally_,
+  _validated against the reference_, not as the starting
   point.
 
 The asymmetry is deliberate. A project can carry cutting-edge
@@ -84,7 +85,7 @@ needs C#-deep dashboards with a few SEO landing pages.
    size, accessibility, contributor ramp-up time,
    build-time. Write the comparison up as a research
    artifact (same shape as `docs/research/proof-tool-
-   coverage.md` but for UI frameworks).
+coverage.md` but for UI frameworks).
 4. **Decide:** If the cutting-edge framework wins
    decisively, migrate incrementally. If it loses or
    ties, the reference holds and the pilot is retired
@@ -102,7 +103,7 @@ needs C#-deep dashboards with a few SEO landing pages.
   sweep; decision owner is Aaron + UI research
   round). Deliberately pick tried-and-true.
 - **When Blazor / Rust-Wasm / exotic framework is
-  proposed:** treat it as a *pilot*, not a *default*.
+  proposed:** treat it as a _pilot_, not a _default_.
   Pilot goes in a dedicated subdirectory (e.g.
   `ui/pilots/blazor-dashboard/`). Reference UI
   stays in its canonical location (e.g. `ui/main/`
@@ -133,11 +134,11 @@ better candidate emerges, pain accumulates).
 **What this does NOT mean:**
 
 - Does not forbid Blazor / Rust / Wasm UIs forever.
-  The point is *order*: reference first, then
+  The point is _order_: reference first, then
   cutting-edge with validation.
-- Does not mean bun+TS is the *only* UI tech Zeta
-  will ever ship. It means it is the *starting
-  point* and the *reference*.
+- Does not mean bun+TS is the _only_ UI tech Zeta
+  will ever ship. It means it is the _starting
+  point_ and the _reference_.
 - Does not apply backward to the backend. Backend
   is cutting-edge. UI is tried-and-true starting
   point. Different rules for different surfaces.

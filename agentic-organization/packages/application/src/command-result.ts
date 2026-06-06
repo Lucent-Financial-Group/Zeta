@@ -47,8 +47,7 @@ export const CommandResultArtifactType = {
   WorkItem: "work_item",
 } as const;
 
-export type CommandResultArtifactType =
-  (typeof CommandResultArtifactType)[keyof typeof CommandResultArtifactType];
+export type CommandResultArtifactType = (typeof CommandResultArtifactType)[keyof typeof CommandResultArtifactType];
 
 export type CommandResultArtifact = {
   artifactType: CommandResultArtifactType | string;

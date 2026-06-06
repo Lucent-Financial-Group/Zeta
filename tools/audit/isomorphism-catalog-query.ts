@@ -17,7 +17,7 @@
 //
 // Co-Authored-By: Grok <noreply@x.ai>
 
-export type IfFilterId = 'IF1' | 'IF2' | 'IF3' | 'IF4';
+export type IfFilterId = "IF1" | "IF2" | "IF3" | "IF4";
 
 export interface IsomorphismClaim {
   id: string;
@@ -25,7 +25,7 @@ export interface IsomorphismClaim {
   targetDomain: string;
   morphismName: string;
   operatorPreservation: string; // e.g. "f(a ∘ b) = f(a) ∘' f(b)"
-  ifStatus: Partial<Record<IfFilterId, 'pass' | 'fail' | 'deferred'>>;
+  ifStatus: Partial<Record<IfFilterId, "pass" | "fail" | "deferred">>;
   counterexampleAttempts: number;
 }
 
@@ -33,13 +33,11 @@ export interface IsomorphismClaim {
  * Minimal validator stub for IF2 (operator-preserving).
  * In a later slice this becomes a symbolic checker against the algebra.
  */
-export function checkOperatorPreservation(
-  claim: IsomorphismClaim
-): 'pass' | 'fail' | 'deferred' {
+export function checkOperatorPreservation(claim: IsomorphismClaim): "pass" | "fail" | "deferred" {
   // Stub: real impl would parse the preservation string and verify
   // against operator signatures from src/Core or the Lean surface.
-  if (claim.operatorPreservation.includes('∘')) {
-    return 'pass';
+  if (claim.operatorPreservation.includes("∘")) {
+    return "pass";
   }
-  return 'deferred';
+  return "deferred";
 }

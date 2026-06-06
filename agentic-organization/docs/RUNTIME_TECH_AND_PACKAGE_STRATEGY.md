@@ -693,17 +693,17 @@ This is the point where the Organization can safely build new abilities for itse
 
 ## Temporal vs Dapr Decision Matrix
 
-| Need | Temporal TS | Dapr Actors | NATS | Organization DB |
-|---|---:|---:|---:|---:|
-| Long-running lifecycle | Best | Weak | No | State only |
-| Durable timers and human waits | Best | Good for per-actor reminders | No | State only |
-| Per-entity serialized commands | Possible but heavy | Best | No | Needs locks |
-| Event fanout | No | No | Best | Outbox source |
-| Durable truth | Workflow history only | Actor state only | No | Best |
-| Agent container execution | No | No | No | Tracks only |
-| LLM/Hermes reasoning | Activity can launch | Actor should not | No | No |
-| UI live updates | Indirect | Indirect | Best | Query source |
-| Failure/retry orchestration | Best | Good locally | Delivery retry | Idempotency |
+| Need                           |           Temporal TS |                  Dapr Actors |           NATS | Organization DB |
+| ------------------------------ | --------------------: | ---------------------------: | -------------: | --------------: |
+| Long-running lifecycle         |                  Best |                         Weak |             No |      State only |
+| Durable timers and human waits |                  Best | Good for per-actor reminders |             No |      State only |
+| Per-entity serialized commands |    Possible but heavy |                         Best |             No |     Needs locks |
+| Event fanout                   |                    No |                           No |           Best |   Outbox source |
+| Durable truth                  | Workflow history only |             Actor state only |             No |            Best |
+| Agent container execution      |                    No |                           No |             No |     Tracks only |
+| LLM/Hermes reasoning           |   Activity can launch |             Actor should not |             No |              No |
+| UI live updates                |              Indirect |                     Indirect |           Best |    Query source |
+| Failure/retry orchestration    |                  Best |                 Good locally | Delivery retry |     Idempotency |
 
 ## Recommended First Architecture
 

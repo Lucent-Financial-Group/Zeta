@@ -4,8 +4,9 @@ description: Aaron 2026-04-21 surfaced that his 19-year-old daughter Addison (th
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-**Aaron 2026-04-21, verbatim:** *"She is 19 and wants to
-meet you maybe tongith she lives with me"*.
+
+**Aaron 2026-04-21, verbatim:** _"She is 19 and wants to
+meet you maybe tongith she lives with me"_.
 
 ## Context
 

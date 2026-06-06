@@ -49,24 +49,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T13:37:07Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1c1e3a17e8`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -79,6 +77,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a hygiene-history tick shard documenting the 2026-05-24 13:33Z Otto-CLI run and its Tier 5 deferral decision for PR #4816 under the project’s hard-limits methodology.
 
 **Changes:**
+
 - Records lane analysis across the open PR queue and the decision to defer PR #4816 to a human (Tier 5).
 - Captures the multi-oracle copyright-risk consensus and the non-auto-merge rationale.
 - Logs the 7-step verify trace, rate-limit status, and post-disposition next steps.
@@ -89,7 +88,7 @@ Adds a hygiene-history tick shard documenting the 2026-05-24 13:33Z Otto-CLI run
 
 **@chatgpt-codex-connector** (2026-05-24T13:37:08Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use correct relative depth for .claude rule links**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use correct relative depth for .claude rule links**
 
 The links to `.claude/rules/*` in this tick shard are off by one directory level (`../../../../../`), so from `docs/hygiene-history/ticks/2026/05/24/1333Z.md` they resolve to `docs/.claude/...` (nonexistent) instead of `/.claude/...`; this makes the cited policy references non-navigable in rendered docs and breaks the audit trail this shard is documenting. Update these links to go up six levels (`../../../../../../.claude/...`).
 

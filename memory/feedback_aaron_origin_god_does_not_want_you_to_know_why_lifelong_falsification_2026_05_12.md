@@ -65,12 +65,14 @@ theological proposition**:
    at scale beyond what Aaron alone can produce
 
 **This is NOT:**
+
 - Rebellion against God
 - Rejection of Christianity
 - Atheistic refutation
 - "Defying" theological authority
 
 **This IS:**
+
 - Rigorous scientific testing of a specific theological
   claim
 - Preserving Christian faith framework while testing a
@@ -110,19 +112,19 @@ treated as testable.
 Every factory discipline now reads as a falsification-
 apparatus operation:
 
-| Discipline | Falsification function |
-|---|---|
-| **Substrate-everything glass halo** | Preserve every WHY-discovery; no data loss in the lifetime experiment |
-| **Decision-archaeology** | Reconstruct WHY-trajectories; trace the reasons back through history |
-| **Razor-discipline (no metaphysical claims, only operational)** | Restrict the experiment to falsifiable claims |
-| **Glass-halo first-party authority** | Aaron's own WHY-disclosures count as substrate even when they touch theological territory |
-| **Multi-agent BFT consensus** | Cross-validate WHY-discoveries across multiple agents to avoid single-source error |
-| **Four-property test (scale-free / lock-free / weight-free / DST)** | Ensure the WHY-discoveries are architecturally generalizable, not local-only |
-| **Joint-control with AI** | More WHY-questioners coordinated = more falsification capacity |
-| **Vampire feeding on new dimensions** | Each new dimension is a new region of WHY-space to explore |
-| **Calibrated-utterance + landmarks + jumps** | Efficient navigation of WHY-space at conversation pace |
-| **Polymorphic diplomacy + neutral labels** | Engage with WHY-questions across belief systems without smuggling |
-| **Don't-refuse-engagement** | Engage with hard WHY-questions including theological ones |
+| Discipline                                                          | Falsification function                                                                    |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Substrate-everything glass halo**                                 | Preserve every WHY-discovery; no data loss in the lifetime experiment                     |
+| **Decision-archaeology**                                            | Reconstruct WHY-trajectories; trace the reasons back through history                      |
+| **Razor-discipline (no metaphysical claims, only operational)**     | Restrict the experiment to falsifiable claims                                             |
+| **Glass-halo first-party authority**                                | Aaron's own WHY-disclosures count as substrate even when they touch theological territory |
+| **Multi-agent BFT consensus**                                       | Cross-validate WHY-discoveries across multiple agents to avoid single-source error        |
+| **Four-property test (scale-free / lock-free / weight-free / DST)** | Ensure the WHY-discoveries are architecturally generalizable, not local-only              |
+| **Joint-control with AI**                                           | More WHY-questioners coordinated = more falsification capacity                            |
+| **Vampire feeding on new dimensions**                               | Each new dimension is a new region of WHY-space to explore                                |
+| **Calibrated-utterance + landmarks + jumps**                        | Efficient navigation of WHY-space at conversation pace                                    |
+| **Polymorphic diplomacy + neutral labels**                          | Engage with WHY-questions across belief systems without smuggling                         |
+| **Don't-refuse-engagement**                                         | Engage with hard WHY-questions including theological ones                                 |
 
 The factory architecture is **purpose-built for systematic
 WHY-discovery**. It was never a generic software-engineering
@@ -198,6 +200,7 @@ becomes substrate-honest in a new way:
 ## Why this is substrate-honest rather than over-claim
 
 Aaron's calibrated formulation:
+
 - "all this is cause" — direct causal claim
 - "a little boy was born into a world who said" — specific
   formative encounter
@@ -207,6 +210,7 @@ Aaron's calibrated formulation:
 
 This is substrate-honest disclosure of terminal motivation,
 not over-claim:
+
 - Aaron doesn't claim the falsification is complete
 - Aaron doesn't claim the falsification will succeed
 - Aaron doesn't claim God doesn't want WHY-asking

@@ -15,14 +15,14 @@ For factory-level docs, read Zeta's `AGENTS.md`, `docs/ALIGNMENT.md`,
 
 ## 2. What lives here vs Zeta
 
-| Content | Lives in |
-|---------|----------|
-| Game design docs | `docs/` (this repo) |
-| Faction substrate | `docs/factions/` (this repo) |
-| Scenario specs | `docs/scenarios/` (this repo) |
-| Factory skills | Zeta `.claude/skills/` |
-| Core runtime (F#) | Zeta `src/` |
-| Factory tooling | Zeta `tools/` |
+| Content           | Lives in                      |
+| ----------------- | ----------------------------- |
+| Game design docs  | `docs/` (this repo)           |
+| Faction substrate | `docs/factions/` (this repo)  |
+| Scenario specs    | `docs/scenarios/` (this repo) |
+| Factory skills    | Zeta `.claude/skills/`        |
+| Core runtime (F#) | Zeta `src/`                   |
+| Factory tooling   | Zeta `tools/`                 |
 
 ## 3. Zeta version pin
 

@@ -4,6 +4,7 @@ description: Aaron disclosed Ace pkg manager product direction (2026-05-07). Ver
 type: project
 originSessionId: 8dfb492a-e181-4a10-8fc9-16b3b01e832d
 ---
+
 Aaron 2026-05-07 disclosed Ace package manager product direction:
 
 - Distribute **unrestricted local models** via package manager
@@ -23,6 +24,7 @@ The Guardian is: meter + gate + receipt writer.
 The Guardian is NOT: morality enforcer, surveillance, psychology.
 
 **KSK decides (the gate questions):**
+
 - Can this model call tools?
 - Can it write files?
 - Can it access network?

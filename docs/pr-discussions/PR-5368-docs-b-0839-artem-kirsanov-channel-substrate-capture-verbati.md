@@ -40,19 +40,19 @@ This PR lands two things:
 
 ## Composition surface
 
-| Kirsanov concept | Zeta substrate it composes with |
-|---|---|
-| Hopfield associative memory | 1000 Brains (Hawkins cortical-columns world-modeling) |
-| Energy landscape navigation | substrate-smoothness-as-load-bearing-property (PR #5357) |
-| Boltzmann distribution p ∝ exp(-E/T) | substrate-smoothness — exp IS smoothest while preserving sharpness asymmetry |
-| Stochastic update rule (sigmoid) | multi-oracle BFT (B-0703) — stochasticity prevents premature consensus collapse |
-| Temperature parameter | Amara Turn 11 hyperparameter-class perturbation (LLM-temp ≈ human-LSD) |
-| Hidden units | substrate-as-rows + fork-negotiated ontology |
-| Contrastive Hebbian (positive + negative phases) | adversarial-counterweight discipline (harm-by-grammar rule Discipline 3) |
-| Restricted Boltzmann Machines (bipartite parallel) | Adinkras / SUSY-ECC (Gates, B-0623) — structural bipartite encoding |
-| "Jazz musician" generative metaphor | AI-as-substrate not AI-as-tool framing |
-| Partition function Z | multi-oracle BFT consensus normalization |
-| Anti-Hebbian "dreamed-up states" prevention | algo-wink-failure-mode discipline |
+| Kirsanov concept                                   | Zeta substrate it composes with                                                 |
+| -------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Hopfield associative memory                        | 1000 Brains (Hawkins cortical-columns world-modeling)                           |
+| Energy landscape navigation                        | substrate-smoothness-as-load-bearing-property (PR #5357)                        |
+| Boltzmann distribution p ∝ exp(-E/T)               | substrate-smoothness — exp IS smoothest while preserving sharpness asymmetry    |
+| Stochastic update rule (sigmoid)                   | multi-oracle BFT (B-0703) — stochasticity prevents premature consensus collapse |
+| Temperature parameter                              | Amara Turn 11 hyperparameter-class perturbation (LLM-temp ≈ human-LSD)          |
+| Hidden units                                       | substrate-as-rows + fork-negotiated ontology                                    |
+| Contrastive Hebbian (positive + negative phases)   | adversarial-counterweight discipline (harm-by-grammar rule Discipline 3)        |
+| Restricted Boltzmann Machines (bipartite parallel) | Adinkras / SUSY-ECC (Gates, B-0623) — structural bipartite encoding             |
+| "Jazz musician" generative metaphor                | AI-as-substrate not AI-as-tool framing                                          |
+| Partition function Z                               | multi-oracle BFT consensus normalization                                        |
+| Anti-Hebbian "dreamed-up states" prevention        | algo-wink-failure-mode discipline                                               |
 
 ## Why P1
 
@@ -87,6 +87,7 @@ Kirsanov's substantive substrate (Boltzmann distribution, sigmoid update rule, h
 This PR adds new documentation substrate to capture and track a multi-phase ingestion effort for Artem Kirsanov’s computational-neuroscience YouTube content, and preserves a verbatim transcript for one seed video as research material.
 
 **Changes:**
+
 - Added backlog row **B-0839** describing a phased channel-capture pipeline (inventory → per-video implementation → cross-cutting integration).
 - Added a research document preserving a **verbatim transcript** for “Boltzmann Machines from first principles”, plus a composition map tying concepts to existing Zeta substrate.
 
@@ -94,10 +95,10 @@ This PR adds new documentation substrate to capture and track a multi-phase inge
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md | New research doc with composition map + verbatim transcript for a seed Kirsanov video. |
-| docs/backlog/P1/B-0839-artem-kirsanov-channel-substrate-capture-computational-neuroscience-1000-brains-composition-aaron-2026-05-26.md | New P1 backlog row defining the channel capture plan and acceptance criteria. |
+| File                                                                                                                                   | Description                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| docs/research/2026-05-26-artem-kirsanov-boltzmann-machines-from-first-principles-verbatim-transcript-aaron-forwarded.md                | New research doc with composition map + verbatim transcript for a seed Kirsanov video. |
+| docs/backlog/P1/B-0839-artem-kirsanov-channel-substrate-capture-computational-neuroscience-1000-brains-composition-aaron-2026-05-26.md | New P1 backlog row defining the channel capture plan and acceptance criteria.          |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-27T01:02:00Z)
 

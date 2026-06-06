@@ -20,13 +20,13 @@ All six reviewers converged on a small set of corrections to PR #815. Listed bel
 
 The micro-class rename to `pr-liveness-race-during-merge-cascade` is correct, but the **probabilistic** framing must be explicit. Otherwise Otto may force-push once, see the PR survive, and falsely retire the guard.
 
-> *"This is an observed probabilistic race condition, not a deterministic GitHub rule. The guard remains in force even if a future force-push happens not to close the PR."* (Deepseek + Claude.ai + Amara)
+> _"This is an observed probabilistic race condition, not a deterministic GitHub rule. The guard remains in force even if a future force-push happens not to close the PR."_ (Deepseek + Claude.ai + Amara)
 
 ### §A.2 — Cascade detection mechanism (3/6 — Claude.ai, Amara, Gemini)
 
 The rule says "don't rebase during cascade" but doesn't specify how to detect "cascade is active." Claude.ai's catch:
 
-> *"Without an explicit detection mechanism, the rule relies on Otto remembering the state, which is exactly the failure mode that produced this incident."*
+> _"Without an explicit detection mechanism, the rule relies on Otto remembering the state, which is exactly the failure mode that produced this incident."_
 
 Mechanical detection:
 
@@ -42,19 +42,19 @@ If any results, cascade is active.
 
 Gemini's vulnerability catch on the mechanical guard:
 
-> *"You are using `gh` (which queries GitHub's API) and `git` (which queries the local .git directory) simultaneously. Because GitHub's API is eventually consistent, a `gh pr view` executed immediately after a `git push --force` might return a stale `mergeStateStatus`."*
+> _"You are using `gh` (which queries GitHub's API) and `git` (which queries the local .git directory) simultaneously. Because GitHub's API is eventually consistent, a `gh pr view` executed immediately after a `git push --force` might return a stale `mergeStateStatus`."_
 
 Suggested fix: poll until GitHub's `headRefOid` matches local HEAD before classifying.
 
 ### §A.4 — Successor-PR dedup rule (Deepseek)
 
-> *"If PR #806 auto-closes and Otto opens #811 as successor, what happens when GitHub's eventual consistency catches up and marks #806 as merged? Now there are two PRs with overlapping content on different branches."*
+> _"If PR #806 auto-closes and Otto opens #811 as successor, what happens when GitHub's eventual consistency catches up and marks #806 as merged? Now there are two PRs with overlapping content on different branches."_
 
 Recovery procedure must include: re-check original after GitHub settles; if both became valid, close successor as duplicate; record old→new mapping.
 
 ### §A.5 — `seconds_between_force_push_and_pr_close` field (Claude.ai)
 
-> *"That one-second window is itself a piece of evidence about the failure mode, and capturing it routinely would let future incidents cluster against this one."*
+> _"That one-second window is itself a piece of evidence about the failure mode, and capturing it routinely would let future incidents cluster against this one."_
 
 Add to recovery-note schema. Sub-five-second = almost certainly platform race; spread across minutes = different mechanism.
 
@@ -62,19 +62,19 @@ Add to recovery-note schema. Sub-five-second = almost certainly platform race; s
 
 Parallel-agent future-proofing:
 
-> *"If two ticks are processing the same PR simultaneously, the second tick's 'before' overwrites the first tick's 'after' before recovery completes."*
+> _"If two ticks are processing the same PR simultaneously, the second tick's 'before' overwrites the first tick's 'after' before recovery completes."_
 
 Use `/tmp/pr-$PR-$RUN_ID-before.json` instead of `/tmp/pr-$PR-before.json`.
 
 ### §A.7 — B-0103 boundary clause (Claude.ai)
 
-> *"Some metadata is intentionally agent-authored even when derivable (a human-written summary of an automatically-derived fact, for example). Without a boundary, the rule becomes 'never let agents write metadata,' which is too strong. Suggest an exception clause."*
+> _"Some metadata is intentionally agent-authored even when derivable (a human-written summary of an automatically-derived fact, for example). Without a boundary, the rule becomes 'never let agents write metadata,' which is too strong. Suggest an exception clause."_
 
 Boundary: applies to **claims of equivalence with derivable substrate truth** (ordinals, counts, timestamps, SHAs); does NOT apply to summaries, interpretations, or labels.
 
 ### §A.8 — B-0098 grep portability wording (Amara explicit; others align)
 
-> *"Do not call `grep -w` POSIX-portable. Use either: GNU/BSD-common (`grep -woE '...'`) or strict portable boundary (`grep -E '(^|[^[:alpha:]])(...)([^[:alpha:]]|$)'`)."*
+> _"Do not call `grep -w` POSIX-portable. Use either: GNU/BSD-common (`grep -woE '...'`) or strict portable boundary (`grep -E '(^|[^[:alpha:]])(...)([^[:alpha:]]|$)'`)."_
 
 ### §A.9 — B-0099 `@me` should be CLI flag, not search string (Amara explicit; Copilot earlier)
 
@@ -92,19 +92,19 @@ gh pr list --state merged --author "<your-gh-login>" --json number,mergedAt,titl
 
 ### §B.1 — "Loop learns platforms" (Deepseek)
 
-> *"The loop is now detecting and classifying platform-level failure modes that the human didn't know about in advance. That's a genuine capability threshold. The recurring-fix-class catalog is no longer just a record of past mistakes — it's becoming a predictive taxonomy that generalizes to novel surface areas."*
+> _"The loop is now detecting and classifying platform-level failure modes that the human didn't know about in advance. That's a genuine capability threshold. The recurring-fix-class catalog is no longer just a record of past mistakes — it's becoming a predictive taxonomy that generalizes to novel surface areas."_
 
 This is the durable headline of the round.
 
 ### §B.2 — "More rules than durable homes" warning (Claude.ai)
 
-> *"The rate of substrate generation in this message is the highest in several rounds. […] Worth flagging at round-close that this round produced ~7 promotable items and a consolidation pass should follow before the next round opens new conceptual territory."*
+> _"The rate of substrate generation in this message is the highest in several rounds. […] Worth flagging at round-close that this round produced ~7 promotable items and a consolidation pass should follow before the next round opens new conceptual territory."_
 
 Composes with the `search before canonizing` discipline at the file level. Flagged for round-close consolidation.
 
 ### §B.3 — "Substrate is source of truth" (Deepseek's stronger version)
 
-> *"Take this one step further. If metadata can be computed, the agent shouldn't even be asked to write it in the first place."*
+> _"Take this one step further. If metadata can be computed, the agent shouldn't even be asked to write it in the first place."_
 
 Stronger framing: not just "lint claims" but "substrate is the source of truth; claims are verified, not authored." This is the longer-term direction for B-0103 once it lands.
 

@@ -15,7 +15,8 @@ composes_with:
   - B-0090.2
   - B-0090.3
   - B-0090.4
-tags: [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, content-loss-surface, metric-ladder, decomposed]
+tags:
+  [aaron-2026-04-28, factory-hygiene, lost-substrate, cadenced-audit, content-loss-surface, metric-ladder, decomposed]
 type: friction-reducer
 ---
 
@@ -26,9 +27,9 @@ type: friction-reducer
 Aaron 2026-04-28T23ish, after Otto's audit of 57 locked
 worktrees + the in-flight 19 LOST GitHub branches task (#264):
 
-> *"probably a trajectory this is recovery work we should do
+> _"probably a trajectory this is recovery work we should do
 > forever on a cadence these kind of lost things could always
-> build up."*
+> build up."_
 
 ## 2026-05-11 Re-decomposition (Riven, one bounded step)
 
@@ -112,8 +113,8 @@ For each NEEDS-RECOVERY item:
 
 1. Open backlog row OR PR with cherry-pick.
 2. If author authorization needed (per visibility-constraint
-   + authority rule), surface to Aaron with evidence-based
-   classification.
+   - authority rule), surface to Aaron with evidence-based
+     classification.
 3. If low-risk additive, open LFG PR automatically per the
    authority rule's NEEDS-FORWARD-SYNC default action.
 
@@ -163,8 +164,8 @@ Each becomes a sibling backlog row when scoping firms up.
   — the authority rule that authorizes audit-driven
   classification + selective recovery.
 - Task #264 (Recover 19 LOST branches: 14 CLOSED-NOT-MERGED
-  + 5 ORPHAN) — first concrete instance to process under
-  the new cadence.
+  - 5 ORPHAN) — first concrete instance to process under
+    the new cadence.
 
 ## Why M effort
 

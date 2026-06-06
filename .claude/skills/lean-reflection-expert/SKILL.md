@@ -114,57 +114,57 @@ into/from the syntax tree.
 
 ## Macro vs. elab
 
-| Feature | Input → Output | Monad | When to use |
-|---------|----------------|-------|-------------|
-| `macro` / `macro_rules` | Syntax → Syntax | `MacroM` | Pure structural rewriting; no types needed |
-| `elab` / `elab_rules` | Syntax → Expr | `TermElabM` | Need type information or proof search |
-| `@[macro xxx]` | Syntax → Syntax | `MacroM` | Low-level macro registration |
-| `@[command_elab xxx]` | Syntax → `CommandElabM Unit` | `CommandElabM` | Commands (not terms) |
+| Feature                 | Input → Output               | Monad          | When to use                                |
+| ----------------------- | ---------------------------- | -------------- | ------------------------------------------ |
+| `macro` / `macro_rules` | Syntax → Syntax              | `MacroM`       | Pure structural rewriting; no types needed |
+| `elab` / `elab_rules`   | Syntax → Expr                | `TermElabM`    | Need type information or proof search      |
+| `@[macro xxx]`          | Syntax → Syntax              | `MacroM`       | Low-level macro registration               |
+| `@[command_elab xxx]`   | Syntax → `CommandElabM Unit` | `CommandElabM` | Commands (not terms)                       |
 
 ## Attributes — reading guide
 
-| Attribute | What it does |
-|-----------|-------------|
-| `@[simp]` | Register as rewrite rule for the `simp` tactic (LHS → RHS direction) |
-| `@[reducible]` / `abbrev` | Always unfold in proof search (transparent type alias) |
-| `@[semireducible]` (default) | Unfold when needed (default for `def`) |
-| `@[irreducible]` | Never unfold (abstract type; prevents leaking internals) |
-| `@[deprecated name (since := "date")]` | Warning when used; tooling shows replacement |
-| `@[ext]` | Register as extensionality lemma for `ext` tactic |
-| `@[instance]` | Register as typeclass instance for synthesis |
-| `@[inline]` / `@[specialize]` | Compiler hints; not semantically meaningful in proofs |
+| Attribute                              | What it does                                                         |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| `@[simp]`                              | Register as rewrite rule for the `simp` tactic (LHS → RHS direction) |
+| `@[reducible]` / `abbrev`              | Always unfold in proof search (transparent type alias)               |
+| `@[semireducible]` (default)           | Unfold when needed (default for `def`)                               |
+| `@[irreducible]`                       | Never unfold (abstract type; prevents leaking internals)             |
+| `@[deprecated name (since := "date")]` | Warning when used; tooling shows replacement                         |
+| `@[ext]`                               | Register as extensionality lemma for `ext` tactic                    |
+| `@[instance]`                          | Register as typeclass instance for synthesis                         |
+| `@[inline]` / `@[specialize]`          | Compiler hints; not semantically meaningful in proofs                |
 
 ## What Zeta's code already uses
 
 From `tools/lean4/Lean4/DbspChainRule.lean`:
 
-| Feature | Usage | Reading |
-|---------|-------|---------|
-| `@[simp] theorem zInv_zero` | Auto-applied by `simp [zInv]` | Closes `zInv s 0 = 0` goals automatically |
-| `@[deprecated Dop_LTI_commute]` | Warning on old `chain_rule` name | Points users to `Dop_LTI_commute` |
-| `abbrev ZSet (K) := K →₀ ℤ` | Transparent alias | `ZSet K` and `K →₀ ℤ` are definitionally equal everywhere |
-| `abbrev Stream (G) := ℕ → G` | Transparent alias | Same — `ℕ → G` is always acceptable where `Stream G` is expected |
-| `structure IsLinear (f) : Prop where` | Proof predicate | A record type grouping multiple proof fields (`map_zero`, `map_add`) |
-| `simp [I, zInv]` | Unfold + rewrite | Unfolds `I` and `zInv` definitions, applies all `@[simp]` lemmas |
-| `simp only [lemma1]` | Restricted simp | Only use `lemma1`; no global simp set (more stable across Mathlib bumps) |
-| `funext n` | Function extensionality | Close `f = g` by proving `∀ n, f n = g n` |
-| `obtain ⟨phi, hphi⟩ := hf.pointwise` | Existential destructure | Unpack `∃ phi, ...` hypothesis |
-| `calc expr = ... := ... _ = ... := ...` | Equational chain | Chain of equalities with per-step justifications |
+| Feature                                 | Usage                            | Reading                                                                  |
+| --------------------------------------- | -------------------------------- | ------------------------------------------------------------------------ |
+| `@[simp] theorem zInv_zero`             | Auto-applied by `simp [zInv]`    | Closes `zInv s 0 = 0` goals automatically                                |
+| `@[deprecated Dop_LTI_commute]`         | Warning on old `chain_rule` name | Points users to `Dop_LTI_commute`                                        |
+| `abbrev ZSet (K) := K →₀ ℤ`             | Transparent alias                | `ZSet K` and `K →₀ ℤ` are definitionally equal everywhere                |
+| `abbrev Stream (G) := ℕ → G`            | Transparent alias                | Same — `ℕ → G` is always acceptable where `Stream G` is expected         |
+| `structure IsLinear (f) : Prop where`   | Proof predicate                  | A record type grouping multiple proof fields (`map_zero`, `map_add`)     |
+| `simp [I, zInv]`                        | Unfold + rewrite                 | Unfolds `I` and `zInv` definitions, applies all `@[simp]` lemmas         |
+| `simp only [lemma1]`                    | Restricted simp                  | Only use `lemma1`; no global simp set (more stable across Mathlib bumps) |
+| `funext n`                              | Function extensionality          | Close `f = g` by proving `∀ n, f n = g n`                                |
+| `obtain ⟨phi, hphi⟩ := hf.pointwise`    | Existential destructure          | Unpack `∃ phi, ...` hypothesis                                           |
+| `calc expr = ... := ... _ = ... := ...` | Equational chain                 | Chain of equalities with per-step justifications                         |
 
 **None of the current Zeta Lean code uses `MetaM`, `TermElabM`, `macro`,
 or `elab_rules` directly.** Those are the Stage 2+ targets.
 
 ## Elaboration error reading guide
 
-| Error text | Meaning |
-|-----------|---------|
-| `unknown identifier 'x'` | `x` is not in scope; check binder structure or missing `intro` |
-| `type mismatch, expected T, got U` | Elaborator inferred type U; expected T; check `abbrev` / unfolding |
-| `function expected at f, term has type T` | `f` is not a function — wrong arity or universe level |
-| `failed to synthesize TypeClass instance` | Missing `@[instance]` or ambiguous resolution |
-| `maximum recursion depth reached` | Macro loop or infinite typeclass chain |
-| `metavariable ?m has not been assigned` | A `?` hole was created but never closed |
-| `application type mismatch` | Argument type mismatch — check implicit arguments |
+| Error text                                | Meaning                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------ |
+| `unknown identifier 'x'`                  | `x` is not in scope; check binder structure or missing `intro`     |
+| `type mismatch, expected T, got U`        | Elaborator inferred type U; expected T; check `abbrev` / unfolding |
+| `function expected at f, term has type T` | `f` is not a function — wrong arity or universe level              |
+| `failed to synthesize TypeClass instance` | Missing `@[instance]` or ambiguous resolution                      |
+| `maximum recursion depth reached`         | Macro loop or infinite typeclass chain                             |
+| `metavariable ?m has not been assigned`   | A `?` hole was created but never closed                            |
+| `application type mismatch`               | Argument type mismatch — check implicit arguments                  |
 
 ## Mathlib tactic reading pattern
 

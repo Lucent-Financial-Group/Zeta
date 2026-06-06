@@ -1,7 +1,7 @@
 # Tri-boolean float -- decoder-semantics comparison: radix-point vs biased-exponent vs high-low-split (B-0944 slice 5)
 
-**Status:** design exploration per the operator 2026-05-31: *"ratify v0 layout: radix-point decoder,
-unsigned for now"* + *"lets try a few different designs unless it's obviously right."* It is NOT
+**Status:** design exploration per the operator 2026-05-31: _"ratify v0 layout: radix-point decoder,
+unsigned for now"_ + _"lets try a few different designs unless it's obviously right."_ It is NOT
 obviously right -- the three designs occupy genuinely different range/precision regimes. This doc
 compares them with **measured** profiles (computed by `characterize` in
 `src/Core.TypeScript/tri-boolean-float/decoders.ts`; the numbers below are asserted by
@@ -28,13 +28,14 @@ Given shape `{high: H, decoder: D, low: L}`, `valueBits = H + L`, `V = intOf(hig
 
 ## Measured comparison (default shape 4/3/4: valueBits=8, mode in [0,8); 2048 bit-patterns)
 
-| design | max | min positive | distinct values | redundancy | sub-unit precision (fractions) |
-|---|---|---|---|---|---|
-| radix-point | **255** | 1/128 (0.0078125) | 1152 / 2048 | yes (896 dup) | YES |
-| biased-exponent | **2040** | 1/16 (0.0625) | 1152 / 2048 | yes (896 dup) | YES |
-| high-low-split | **2^127 (~1.7e38)** | 1 | 577 / 2048 | high (1471 dup) | **NO (integer-only)** |
+| design          | max                 | min positive      | distinct values | redundancy      | sub-unit precision (fractions) |
+| --------------- | ------------------- | ----------------- | --------------- | --------------- | ------------------------------ |
+| radix-point     | **255**             | 1/128 (0.0078125) | 1152 / 2048     | yes (896 dup)   | YES                            |
+| biased-exponent | **2040**            | 1/16 (0.0625)     | 1152 / 2048     | yes (896 dup)   | YES                            |
+| high-low-split  | **2^127 (~1.7e38)** | 1                 | 577 / 2048      | high (1471 dup) | **NO (integer-only)**          |
 
 Readings:
+
 - **radix-point**: modest range, fractions down to 1/128, uniform-per-mode absolute precision. The
   simplest faithful design. Best when values live in a known bounded range with sub-unit precision
   (probabilities, fixed-point-ish quantities).

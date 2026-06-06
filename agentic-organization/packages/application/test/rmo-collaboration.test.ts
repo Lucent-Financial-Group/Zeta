@@ -2,11 +2,7 @@ import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import { OrgEventKind } from "../../domain/src/org-event.ts";
-import {
-  decideRmoHatAssignment,
-  rankRmoHatCandidates,
-  type RmoHatCandidateReputation,
-} from "../src/rmo.ts";
+import { decideRmoHatAssignment, rankRmoHatCandidates, type RmoHatCandidateReputation } from "../src/rmo.ts";
 
 const ctx = {
   createEventId: () => "evt-rmo-choice-1",
@@ -110,10 +106,7 @@ test("RMO office chooser selects from ranked legal candidates and records altern
 test("RMO office chooser is clamped to the ranked legal list", () => {
   const ranked = rankRmoHatCandidates({
     hatId: "backend_implementer",
-    candidates: [
-      candidate("agent-a", { agentHatReputation: 0.9 }),
-      candidate("agent-b", { agentHatReputation: 0.7 }),
-    ],
+    candidates: [candidate("agent-a", { agentHatReputation: 0.9 }), candidate("agent-b", { agentHatReputation: 0.7 })],
   });
 
   const decision = decideRmoHatAssignment(

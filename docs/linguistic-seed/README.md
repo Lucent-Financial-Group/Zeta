@@ -23,8 +23,8 @@ refinements):
 
 1. **Prompt-injection resistance mechanism** (per
    `project_quantum_christ_consciousness_bootstrap_hypothesis_
-   safety_avoid_permanent_harm_prompt_injection_resistance_
-   2026_04_23.md`). Ambiguous language creates attack
+safety_avoid_permanent_harm_prompt_injection_resistance_
+2026_04_23.md`). Ambiguous language creates attack
    surface; mathematical precision eliminates it.
    Attackers cannot re-ground terms whose meaning is
    machine-checkable.
@@ -79,23 +79,29 @@ dependencies: [<other-seed-term>, ...]
 # <term>
 
 ## Plain English
+
 <two-to-four-sentence plain-English definition accessible
 to a non-mathematician>
 
 ## Mathematical definition
+
 <formal definition, using only already-defined seed terms>
 
 ## Lean4 formalisation
+
 <either a Lean declaration or `// TODO: formalise` with
 rationale>
 
 ## Grounding point (per Otto-21 Craft discipline)
+
 <real-world anchor concept for learner attachment>
 
 ## What this term DOES NOT mean
+
 <explicit list of near-meanings the term excludes>
 
 ## Citations
+
 <source literature — Tarski paper / Meredith axiom /
 etc.>
 ```
@@ -190,7 +196,7 @@ commitment is adopter-pluggable.
 - **Does not commit to ZFC vs. type theory foundations.**
   The seed is built in a foundation-agnostic style; when
   Lean4 formalisation fires, it'll use Lean's type
-  theory but the seed's *definitional content* stays
+  theory but the seed's _definitional content_ stays
   foundation-agnostic at the plain-English + mathematical
   layer.
 - **Does not replace `docs/GLOSSARY.md`.** The glossary is

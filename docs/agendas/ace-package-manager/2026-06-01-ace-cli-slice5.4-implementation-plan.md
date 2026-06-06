@@ -64,7 +64,15 @@ describe("lockfilesEqual", () => {
 describe("buildLeafLockfile", () => {
   test("produces {format_version:1, root, nodes:[]} with the root package_hash", () => {
     const files = { "f.txt": "leaf@1.0.0" };
-    const root = { manifest: { format_version: 1, name: "leaf", version: "1.0.0", content_hash: contentHash(new TextEncoder().encode(JSON.stringify(files))) }, files };
+    const root = {
+      manifest: {
+        format_version: 1,
+        name: "leaf",
+        version: "1.0.0",
+        content_hash: contentHash(new TextEncoder().encode(JSON.stringify(files))),
+      },
+      files,
+    };
     const lf = buildLeafLockfile(root);
     expect(lf.format_version).toBe(1);
     expect(lf.nodes).toEqual([]);
@@ -135,7 +143,8 @@ function preflightGraph(order: AcePackage[]): string | null {
     if (unsafe !== null) return `unsafe file path in ${node.manifest.name}: ${unsafe}`;
     const ph = packageHash(node);
     const prior = byStoreKey.get(node.manifest.content_hash);
-    if (prior !== undefined && prior !== ph) return `store-collision — ${node.manifest.name} shares a content_hash store key with a different package`;
+    if (prior !== undefined && prior !== ph)
+      return `store-collision — ${node.manifest.name} shares a content_hash store key with a different package`;
     byStoreKey.set(node.manifest.content_hash, ph);
   }
   return null;
@@ -145,8 +154,11 @@ function preflightGraph(order: AcePackage[]): string | null {
 Confirm `packageHash` is imported in ace.ts (it is — used by the existing preflight). Then replace the inline preflight loop in the install graph path with:
 
 ```ts
-      const pf = preflightGraph(res.order);
-      if (pf !== null) { console.error(`ace: install refused: ${pf}`); return 1; }
+const pf = preflightGraph(res.order);
+if (pf !== null) {
+  console.error(`ace: install refused: ${pf}`);
+  return 1;
+}
 ```
 
 (Match the existing refusal message style; the extract loop immediately after is unchanged.)
@@ -243,19 +255,31 @@ Expected: FAIL — `--locked` not handled (installs regardless).
 - [ ] **Step 3: Implement** (patch-script) — in the install graph path, AFTER `resolve()` succeeds and BEFORE the `preflightGraph`/extract, insert the `--locked` gate:
 
 ```ts
-      if (parsed.locked) {
-        let lockRaw: string;
-        try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
-        catch { console.error(`ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`); return 1; }
-        const onDisk = parseLockfile(lockRaw);
-        if ("error" in onDisk) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`); return 1; }
-        const fresh = buildLockfile(pkg, res.order, registry);
-        if ("error" in fresh) { console.error(`ace: install refused: could not build lockfile: ${fresh.error}`); return 1; }
-        if (!lockfilesEqual(onDisk, fresh)) {
-          console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
-          return 1;
-        }
-      }
+if (parsed.locked) {
+  let lockRaw: string;
+  try {
+    lockRaw = readFileSync(parsed.lockfile, "utf8");
+  } catch {
+    console.error(
+      `ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`,
+    );
+    return 1;
+  }
+  const onDisk = parseLockfile(lockRaw);
+  if ("error" in onDisk) {
+    console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`);
+    return 1;
+  }
+  const fresh = buildLockfile(pkg, res.order, registry);
+  if ("error" in fresh) {
+    console.error(`ace: install refused: could not build lockfile: ${fresh.error}`);
+    return 1;
+  }
+  if (!lockfilesEqual(onDisk, fresh)) {
+    console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
+    return 1;
+  }
+}
 ```
 
 Add `lockfilesEqual` to the `./lockfile.ts` import line (alongside `buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock`). When `--locked` passes, control falls through to the existing `preflightGraph` + extract + (lock already matches; the existing buildLockfile+write rewrites an identical file — acceptable).
@@ -303,29 +327,58 @@ Expected: FAIL — leaf path writes no lock; `--frozen`/`--locked` are no-ops on
 - [ ] **Step 3: Implement** (patch-script) — find the leaf / single-package install path (the fall-through below the graph path, ~line 617 `const result = installPackage(parsed.storePath, pkg);`). Wrap it with frozen/locked handling + a default lock write. Replace the bare single-package install with:
 
 ```ts
-    // SLICE 5.4: leaf (no-dependency) install — uniform lockfile handling.
-    if (parsed.frozen) {
-      let lockRaw: string;
-      try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
-      catch { console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`); return 1; }
-      const lf = parseLockfile(lockRaw);
-      if ("error" in lf) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`); return 1; }
-      if (!verifyRootMatchesLock(pkg, lf)) { console.error(`ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`); return 1; }
-    } else if (parsed.locked) {
-      let lockRaw: string;
-      try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
-      catch { console.error(`ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`); return 1; }
-      const onDisk = parseLockfile(lockRaw);
-      if ("error" in onDisk) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`); return 1; }
-      if (!lockfilesEqual(onDisk, buildLeafLockfile(pkg))) { console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`); return 1; }
-    }
-    const result = installPackage(parsed.storePath, pkg);
-    if (!result.ok) { /* existing failure handling unchanged */ }
-    // existing success logging ... then, for the default (non-frozen) path, write the leaf lock:
-    if (!parsed.frozen) {
-      try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
-      catch (e) { console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); }
-    }
+// SLICE 5.4: leaf (no-dependency) install — uniform lockfile handling.
+if (parsed.frozen) {
+  let lockRaw: string;
+  try {
+    lockRaw = readFileSync(parsed.lockfile, "utf8");
+  } catch {
+    console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`);
+    return 1;
+  }
+  const lf = parseLockfile(lockRaw);
+  if ("error" in lf) {
+    console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`);
+    return 1;
+  }
+  if (!verifyRootMatchesLock(pkg, lf)) {
+    console.error(
+      `ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`,
+    );
+    return 1;
+  }
+} else if (parsed.locked) {
+  let lockRaw: string;
+  try {
+    lockRaw = readFileSync(parsed.lockfile, "utf8");
+  } catch {
+    console.error(
+      `ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`,
+    );
+    return 1;
+  }
+  const onDisk = parseLockfile(lockRaw);
+  if ("error" in onDisk) {
+    console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`);
+    return 1;
+  }
+  if (!lockfilesEqual(onDisk, buildLeafLockfile(pkg))) {
+    console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
+    return 1;
+  }
+}
+const result = installPackage(parsed.storePath, pkg);
+if (!result.ok) {
+  /* existing failure handling unchanged */
+}
+// existing success logging ... then, for the default (non-frozen) path, write the leaf lock:
+if (!parsed.frozen) {
+  try {
+    writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)));
+  } catch (e) {
+    console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+  }
+}
 ```
 
 Add `buildLeafLockfile` to the `./lockfile.ts` import line. IMPORTANT: read the exact existing leaf-path code first — preserve its existing success/failure handling + return values; only WRAP it with the frozen/locked guards above and ADD the post-install leaf-lock write. Do not duplicate or drop the existing single-package verification that already runs before this point (signature gate + content_hash happen earlier in the handler, shared with the graph path).
@@ -360,7 +413,10 @@ describe("parseArgs — update", () => {
   });
   test("update parses source + default lockfile", () => {
     const a = parseArgs(["update", "pkg.json"]);
-    if ("command" in a && a.command === "update") { expect(a.source).toBe("pkg.json"); expect(a.lockfile).toBe("ace.lock"); }
+    if ("command" in a && a.command === "update") {
+      expect(a.source).toBe("pkg.json");
+      expect(a.lockfile).toBe("ace.lock");
+    }
   });
   test("update --lockfile override", () => {
     const a = parseArgs(["update", "pkg.json", "--lockfile", "x.lock"]);
@@ -399,72 +455,123 @@ interface UpdateArgs {
 Add `| UpdateArgs` to the `ParsedArgs` union. Add a parseArgs branch (mirror the install arg loop, minus `--frozen`/`--locked`/`--print-resolution`/`--store`-if-not-needed; `update` needs `source`, `--lockfile` default `"ace.lock"`, `--allow-no-signature`):
 
 ```ts
-  if (command === "update") {
-    const source = argv[1];
-    if (!source || source.startsWith("-")) return { error: "update requires a <url-or-path> argument" };
-    let lockfilePath = "ace.lock";
-    let allowNoSignature = false;
-    for (let i = 2; i < argv.length; i++) {
-      if (argv[i] === "--lockfile") {
-        const next = argv[++i];
-        if (!next || next.startsWith("-")) return { error: "--lockfile requires a path argument" };
-        lockfilePath = next;
-      } else if (argv[i] === "--allow-no-signature") {
-        allowNoSignature = true;
-      } else {
-        return { error: `Unknown option for update: ${argv[i]}` };
-      }
+if (command === "update") {
+  const source = argv[1];
+  if (!source || source.startsWith("-")) return { error: "update requires a <url-or-path> argument" };
+  let lockfilePath = "ace.lock";
+  let allowNoSignature = false;
+  for (let i = 2; i < argv.length; i++) {
+    if (argv[i] === "--lockfile") {
+      const next = argv[++i];
+      if (!next || next.startsWith("-")) return { error: "--lockfile requires a path argument" };
+      lockfilePath = next;
+    } else if (argv[i] === "--allow-no-signature") {
+      allowNoSignature = true;
+    } else {
+      return { error: `Unknown option for update: ${argv[i]}` };
     }
-    return { command: "update", source, lockfile: lockfilePath, allowNoSignature };
   }
+  return { command: "update", source, lockfile: lockfilePath, allowNoSignature };
+}
 ```
 
 - [ ] **Step 3b: `update` handler** (patch-script) — add a handler block (near the install handler). It reuses the install front-half verification (read root → signature gate → root content_hash), then solves+resolves+preflights and writes the lock WITHOUT extracting:
 
 ```ts
-  if (parsed.command === "update") {
-    let raw: string;
-    try {
-      raw = parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
-        ? await (await fetch(parsed.source)).text() : readFileSync(parsed.source, "utf8");
-    } catch (e) { console.error(`ace: download/read failed: ${(e as Error).message}`); return 1; }
-    let pkg: AcePackage;
-    try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: package is not valid JSON"); return 65; }
-    if (typeof pkg !== "object" || pkg === null || typeof pkg.manifest !== "object" || pkg.manifest === null || typeof pkg.files !== "object" || pkg.files === null) {
-      console.error("ace: update refused: not a well-formed AcePackage"); return 1;
-    }
-    // Signature gate (same policy as install).
-    const v = verifySignature(pkg.manifest, loadTrustStore());
-    if (!v.ok && v.reason !== "no-signature") { console.error(`ace: update refused: ${v.reason}`); return 1; }
-    if (!v.ok && v.reason === "no-signature" && !parsed.allowNoSignature) { console.error("ace: update refused: unsigned package (use --allow-no-signature)"); return 1; }
-    // Root content_hash.
-    const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
-    if (rootFilesHash !== pkg.manifest.content_hash) { console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`); return 1; }
+if (parsed.command === "update") {
+  let raw: string;
+  try {
+    raw =
+      parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
+        ? await (await fetch(parsed.source)).text()
+        : readFileSync(parsed.source, "utf8");
+  } catch (e) {
+    console.error(`ace: download/read failed: ${(e as Error).message}`);
+    return 1;
+  }
+  let pkg: AcePackage;
+  try {
+    pkg = JSON.parse(raw) as AcePackage;
+  } catch {
+    console.error("ace: package is not valid JSON");
+    return 65;
+  }
+  if (
+    typeof pkg !== "object" ||
+    pkg === null ||
+    typeof pkg.manifest !== "object" ||
+    pkg.manifest === null ||
+    typeof pkg.files !== "object" ||
+    pkg.files === null
+  ) {
+    console.error("ace: update refused: not a well-formed AcePackage");
+    return 1;
+  }
+  // Signature gate (same policy as install).
+  const v = verifySignature(pkg.manifest, loadTrustStore());
+  if (!v.ok && v.reason !== "no-signature") {
+    console.error(`ace: update refused: ${v.reason}`);
+    return 1;
+  }
+  if (!v.ok && v.reason === "no-signature" && !parsed.allowNoSignature) {
+    console.error("ace: update refused: unsigned package (use --allow-no-signature)");
+    return 1;
+  }
+  // Root content_hash.
+  const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
+  if (rootFilesHash !== pkg.manifest.content_hash) {
+    console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`);
+    return 1;
+  }
 
-    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
-      const fetchPackage = async (u: string): Promise<string> =>
-        (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const registry = loadRegistry();
-      const solveResult = await solve(pkg, fetchPackage, registry);
-      if (!solveResult.ok) { console.error(`ace: update refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`); return 1; }
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
-      if (!res.ok) { console.error(`ace: update refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`); return 1; }
-      // Preflight BEFORE writing — never write a lock for a graph install would reject (Codex #6412).
-      const pf = preflightGraph(res.order);
-      if (pf !== null) { console.error(`ace: update refused: ${pf}`); return 1; }
-      const lf = buildLockfile(pkg, res.order, registry);
-      if ("error" in lf) { console.error(`ace: update refused: could not build lockfile: ${lf.error}`); return 1; }
-      try { writeFileSync(parsed.lockfile, serializeLockfile(lf)); }
-      catch (e) { console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); return 1; }
-      console.log(`ace: wrote lockfile ${parsed.lockfile} (${lf.nodes.length} deps)`);
-      return 0;
+  if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+    const fetchPackage = async (u: string): Promise<string> =>
+      u.startsWith("http://") || u.startsWith("https://") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+    const registry = loadRegistry();
+    const solveResult = await solve(pkg, fetchPackage, registry);
+    if (!solveResult.ok) {
+      console.error(
+        `ace: update refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`,
+      );
+      return 1;
     }
-    // Leaf: trivial lock.
-    try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
-    catch (e) { console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); return 1; }
-    console.log(`ace: wrote lockfile ${parsed.lockfile} (0 deps)`);
+    const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, {
+      allowNoSignature: parsed.allowNoSignature,
+    });
+    if (!res.ok) {
+      console.error(`ace: update refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
+      return 1;
+    }
+    // Preflight BEFORE writing — never write a lock for a graph install would reject (Codex #6412).
+    const pf = preflightGraph(res.order);
+    if (pf !== null) {
+      console.error(`ace: update refused: ${pf}`);
+      return 1;
+    }
+    const lf = buildLockfile(pkg, res.order, registry);
+    if ("error" in lf) {
+      console.error(`ace: update refused: could not build lockfile: ${lf.error}`);
+      return 1;
+    }
+    try {
+      writeFileSync(parsed.lockfile, serializeLockfile(lf));
+    } catch (e) {
+      console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+      return 1;
+    }
+    console.log(`ace: wrote lockfile ${parsed.lockfile} (${lf.nodes.length} deps)`);
     return 0;
   }
+  // Leaf: trivial lock.
+  try {
+    writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg)));
+  } catch (e) {
+    console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`);
+    return 1;
+  }
+  console.log(`ace: wrote lockfile ${parsed.lockfile} (0 deps)`);
+  return 0;
+}
 ```
 
 Confirm imports: `solve` (from `./solver.ts`), `resolve`, `packageHash` (from `./resolve.ts`), `buildLockfile`/`serializeLockfile`/`buildLeafLockfile` (from `./lockfile.ts`), `loadRegistry`/`loadTrustStore`/`contentHash` (from `./store.ts`), `verifySignature` (from `./signing.ts`) — all already imported for install; add any missing.

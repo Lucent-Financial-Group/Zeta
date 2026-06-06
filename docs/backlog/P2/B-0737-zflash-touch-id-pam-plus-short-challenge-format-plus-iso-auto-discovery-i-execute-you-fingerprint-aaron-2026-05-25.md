@@ -17,7 +17,18 @@ related_substrate:
   - full-ai-cluster/tools/zflash-setup.ts
   - .claude/rules/non-coercion-invariant.md
   - .claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md
-tags: [zflash, touch-id, pam, sudo, biometric-gate, short-challenge, iso-auto-discovery, ops-tooling, agent-driven-with-physical-consent-floor]
+tags:
+  [
+    zflash,
+    touch-id,
+    pam,
+    sudo,
+    biometric-gate,
+    short-challenge,
+    iso-auto-discovery,
+    ops-tooling,
+    agent-driven-with-physical-consent-floor,
+  ]
 ---
 
 # B-0737 — zflash: I execute, you fingerprint
@@ -30,11 +41,11 @@ tags: [zflash, touch-id, pam, sudo, biometric-gate, short-challenge, iso-auto-di
 
 Aaron 2026-05-25, after the first manual flash-usb run timed out at sudo password prompt:
 
-> *"what's the minimum i can type can we get it down to one line and a challange for me or someting?"*
+> _"what's the minimum i can type can we get it down to one line and a challange for me or someting?"_
 
 Then after the design proposal landed:
 
-> *"okay can we do both minimize for humain to easy to type one liners and add sudo via touch and then maybe even you can executie and i have to approve with my fingerprint"*
+> _"okay can we do both minimize for humain to easy to type one liners and add sudo via touch and then maybe even you can executie and i have to approve with my fingerprint"_
 
 The phrase "you execute and I approve with my fingerprint" IS the carved-sentence pattern. Touch ID is the consent floor; agent handles everything else.
 

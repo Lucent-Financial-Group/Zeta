@@ -144,13 +144,7 @@ describe("MemoryLifetime (B-0920)", () => {
   });
 
   test("exhaustive variant set", () => {
-    const variants: MemoryLifetime[] = [
-      "drafted",
-      "active",
-      "superseded",
-      "archived",
-      "retracted",
-    ];
+    const variants: MemoryLifetime[] = ["drafted", "active", "superseded", "archived", "retracted"];
     expect(variants).toHaveLength(5);
     const variantSet = new Set(variants);
     expect(variantSet.size).toBe(5);

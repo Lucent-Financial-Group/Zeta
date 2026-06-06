@@ -72,6 +72,7 @@ Per PR #3611 review-thread discipline, the fixture's HTML-comment provenance int
 Adds the fifth empirical eval-set fixture to `tools/substrate-claim-checker`, covering the **convention drift** checker (ADR supersession reciprocity) and wiring a regression test to ensure the checker continues to flag the missing reciprocal “Superseded by” marker pattern.
 
 **Changes:**
+
 - Added a self-contained convention-drift fixture pair (current ADR + predecessor support ADR) under `tools/substrate-claim-checker/fixtures/`.
 - Extended `fixtures.test.ts` with a regression test that pins exact finding shape (count, claim line, target path, reason substrings).
 - Updated the fixtures index README to include the new convention-drift fixture row.
@@ -80,9 +81,9 @@ Adds the fifth empirical eval-set fixture to `tools/substrate-claim-checker`, co
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/substrate-claim-checker/fixtures/README.md | Adds the convention-drift fixture row to the eval-set index. |
-| tools/substrate-claim-checker/fixtures/convention-drift-no-reciprocal-marker.md | New “current ADR” fixture containing a `Supersedes ADR \`...\`` body claim. |
-| tools/substrate-claim-checker/fixtures/_convention-drift-target-adr.md | New predecessor ADR support file intentionally missing the reciprocal “Superseded by” marker. |
-| tools/substrate-claim-checker/fixtures.test.ts | Adds a convention-drift regression test that asserts exact finding count/line/target/reason substrings. |
+| File                                                                            | Description                                                                                             |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| tools/substrate-claim-checker/fixtures/README.md                                | Adds the convention-drift fixture row to the eval-set index.                                            |
+| tools/substrate-claim-checker/fixtures/convention-drift-no-reciprocal-marker.md | New “current ADR” fixture containing a `Supersedes ADR \`...\`` body claim.                             |
+| tools/substrate-claim-checker/fixtures/\_convention-drift-target-adr.md         | New predecessor ADR support file intentionally missing the reciprocal “Superseded by” marker.           |
+| tools/substrate-claim-checker/fixtures.test.ts                                  | Adds a convention-drift regression test that asserts exact finding count/line/target/reason substrings. |

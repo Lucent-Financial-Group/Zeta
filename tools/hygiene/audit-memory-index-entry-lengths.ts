@@ -27,7 +27,9 @@ interface LongEntry {
 
 const HELP = "Usage: audit-memory-index-entry-lengths.ts [--file PATH] [--enforce] [--max N]\n";
 
-function parseArgs(argv: readonly string[]): { kind: "args"; args: Args } | { kind: "help" } | { kind: "error"; message: string } {
+function parseArgs(
+  argv: readonly string[],
+): { kind: "args"; args: Args } | { kind: "help" } | { kind: "error"; message: string } {
   let target = "memory/MEMORY.md";
   let enforce = false;
   let maxLen = 200;
@@ -89,7 +91,7 @@ function main() {
       process.exit(0);
     }
     console.error(`Found ${bad.length} long entries (> ${maxLen} chars):`);
-    bad.forEach(f => console.error(`  L${f.line} (${f.length}c): ${f.text}`));
+    bad.forEach((f) => console.error(`  L${f.line} (${f.length}c): ${f.text}`));
     process.exit(enforce ? 2 : 0);
   } catch (e) {
     console.error("IO error:", e);

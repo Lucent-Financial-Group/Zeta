@@ -156,10 +156,7 @@ export function checkRulesAutoLoad(ruleFileNames: string[]): CheckResult {
  * the resolution logic is unit-testable without a real repo (the runner
  * supplies `(rel) => existsSync(join(root, rel))`).
  */
-export function checkReferencedPointers(
-  refs: string[],
-  fileExists: (relPath: string) => boolean,
-): CheckResult {
+export function checkReferencedPointers(refs: string[], fileExists: (relPath: string) => boolean): CheckResult {
   const dangling = refs.filter((r) => !fileExists(r));
   return dangling.length === 0
     ? {

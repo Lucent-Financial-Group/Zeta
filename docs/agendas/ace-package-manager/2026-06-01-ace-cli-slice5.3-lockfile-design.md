@@ -48,8 +48,8 @@ deterministic because slice-5.2 solve + slice-5.1 resolve are deterministic
   "format_version": 1,
   "root": { "name": "myapp", "version": "1.0.0", "package_hash": "sha256:…" },
   "nodes": [
-    { "name": "leaf",  "version": "1.0.0", "url": "https://…/leaf-1.0.0.json",  "package_hash": "sha256:…" },
-    { "name": "mid",   "version": "2.3.0", "url": "https://…/mid-2.3.0.json",   "package_hash": "sha256:…" }
+    { "name": "leaf", "version": "1.0.0", "url": "https://…/leaf-1.0.0.json", "package_hash": "sha256:…" },
+    { "name": "mid", "version": "2.3.0", "url": "https://…/mid-2.3.0.json", "package_hash": "sha256:…" }
   ]
 }
 ```
@@ -103,16 +103,16 @@ deterministic because slice-5.2 solve + slice-5.1 resolve are deterministic
   `writeFileSync(lockfilePath, …)`. A lockfile **write failure is a warning**
   (`ace: WARNING: could not write lockfile: …`), not a failed install — the install
   already succeeded. `--print-resolution` is unchanged.
-- **Frozen path (`--frozen`)** — taken *instead of* solve+resolve when the root has
+- **Frozen path (`--frozen`)** — taken _instead of_ solve+resolve when the root has
   dependencies:
   1. Read `--lockfile` (missing file → hard error: `ace: install refused: no
-     lockfile at <path> — run install without --frozen first`).
+lockfile at <path> — run install without --frozen first`).
   2. `parseLockfile` (parse / shape / `format_version` failure → hard error).
   3. Verify the provided root normally (signature gate + `content_hash`) — unchanged
      from the default path.
   4. **Drift gate**: `verifyRootMatchesLock(pkg, lf)` false → hard error
      (`ace: install refused: lockfile out of date for <name> — re-run without
-     --frozen to regenerate`). Any change to the root manifest/files changes its
+--frozen to regenerate`). Any change to the root manifest/files changes its
      `packageHash`, so this catches added/removed/changed deps + changed root files.
   5. **Replay** (registry untouched): for each `LockNode` in install order →
      `fetch(url)` → `JSON.parse` → verify `packageHash(node) === lockNode.package_hash`
@@ -138,15 +138,15 @@ default:  read root → verify → solve → resolve → install → buildLockfi
 
 ## Error handling
 
-| Situation | Mode | Behavior |
-| --- | --- | --- |
-| Lock write fails (disk, perms) | default | **Warning**, exit 0 (install already succeeded) |
-| `--frozen`, lock file missing | frozen | Hard refusal, exit non-zero |
-| `--frozen`, lock parse / shape / `format_version` bad | frozen | Hard refusal |
-| `--frozen`, root drift (packageHash ≠ lock.root) | frozen | Hard refusal — "re-run without --frozen" |
-| `--frozen`, locked url unreachable | frozen | Hard refusal (registry-independent ⇒ the lock's urls are authoritative) |
-| `--frozen`, fetched bytes ≠ locked package_hash | frozen | Hard refusal (tamper) |
-| `--frozen`, bad / untrusted signature on a node | frozen | Hard refusal (same gate as default; `--allow-no-signature` only waives *no*-signature) |
+| Situation                                             | Mode    | Behavior                                                                               |
+| ----------------------------------------------------- | ------- | -------------------------------------------------------------------------------------- |
+| Lock write fails (disk, perms)                        | default | **Warning**, exit 0 (install already succeeded)                                        |
+| `--frozen`, lock file missing                         | frozen  | Hard refusal, exit non-zero                                                            |
+| `--frozen`, lock parse / shape / `format_version` bad | frozen  | Hard refusal                                                                           |
+| `--frozen`, root drift (packageHash ≠ lock.root)      | frozen  | Hard refusal — "re-run without --frozen"                                               |
+| `--frozen`, locked url unreachable                    | frozen  | Hard refusal (registry-independent ⇒ the lock's urls are authoritative)                |
+| `--frozen`, fetched bytes ≠ locked package_hash       | frozen  | Hard refusal (tamper)                                                                  |
+| `--frozen`, bad / untrusted signature on a node       | frozen  | Hard refusal (same gate as default; `--allow-no-signature` only waives _no_-signature) |
 
 ## Testing
 
@@ -172,7 +172,7 @@ default:  read root → verify → solve → resolve → install → buildLockfi
   - `--lockfile <path>` override is honored for both write and read.
 - All gated by the existing local `bun test tools/ace/` suite (new lockfile +
   frozen tests added) + strict whole-repo `tsc` (the `lint (tsc tools)` CI gate)
-  + markdownlint on this doc.
+  - markdownlint on this doc.
 
 ## Scope / YAGNI — deferred (future slices / backlog rows)
 
@@ -182,7 +182,7 @@ default:  read root → verify → solve → resolve → install → buildLockfi
   deterministic install order; an alpha-sorted file with a separately-derived order
   is a later readability nicety. → backlog.
 - **Lock for leaf (no-dep) installs** — skipped this slice (nothing to reproduce). → backlog.
-- **Separate `--locked` mode** (verify the lock matches a fresh solve *without*
+- **Separate `--locked` mode** (verify the lock matches a fresh solve _without_
   registry-independent replay, cargo's `--locked` vs `--frozen` distinction) — one
   flag (`--frozen`) this slice. → backlog.
 - **Single-fetch cache across solve+resolve** — already filed B-0972 in slice 5.2;

@@ -32,7 +32,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6edf4629b9d6b # v3.0.1
         with:
-          path: './dist' # Default Astro output directory
+          path: "./dist" # Default Astro output directory
 
   deploy:
     needs: build

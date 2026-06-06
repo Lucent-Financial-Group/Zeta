@@ -16,7 +16,9 @@ import { canonicalJson, type Tagged } from "../../src/Core.TypeScript/dynamic-va
 const LONE_SURROGATE = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/;
 function assertWellFormed(s: string, role: string): void {
   if (LONE_SURROGATE.test(s)) {
-    throw new Error(`toTagged: ${role} contains a lone surrogate (not well-formed UTF-16) — rejected to avoid trust-core byte collisions (lone surrogates collapse to U+FFFD under UTF-8 encoding)`);
+    throw new Error(
+      `toTagged: ${role} contains a lone surrogate (not well-formed UTF-16) — rejected to avoid trust-core byte collisions (lone surrogates collapse to U+FFFD under UTF-8 encoding)`,
+    );
   }
 }
 
@@ -43,7 +45,9 @@ export function toTagged(value: unknown): Tagged {
       // are tiny; an out-of-range or non-integer number is a bug — fail loud here with
       // a clear message rather than a cryptic downstream BigInt SyntaxError.
       if (!Number.isSafeInteger(value)) {
-        throw new Error(`toTagged: ${value} is not a safe integer — Ace canonical content has no Float fields and integers must be within the safe-integer range`);
+        throw new Error(
+          `toTagged: ${value} is not a safe integer — Ace canonical content has no Float fields and integers must be within the safe-integer range`,
+        );
       }
       return { t: "int", v: String(value) };
     case "string":

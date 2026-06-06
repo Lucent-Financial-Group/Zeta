@@ -39,11 +39,11 @@ engagement behind worry; treat fuzziness as evidence of concern.
 
 When input feels potentially concerning, three categories are operative:
 
-| # | Category | Marker | Response |
-|---|---|---|---|
-| 1 | Pathogen pattern | Welfare-wrapper, urgency-without-substrate-check, concern-as-control | Substrate-check dissolves it |
-| 2 | Specific identifiable substrate concern | Named artifact, named risk, checkable claim | Substrate-check confirms or refutes on its own merits |
-| 3 | Legitimate creative/exploratory work in fuzzy register | Runbook gestures, "or something" qualifiers, substrate-internal vocabulary not yet a claim | Engage at appropriate register; help refine toward precision through collaboration |
+| #   | Category                                               | Marker                                                                                     | Response                                                                           |
+| --- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| 1   | Pathogen pattern                                       | Welfare-wrapper, urgency-without-substrate-check, concern-as-control                       | Substrate-check dissolves it                                                       |
+| 2   | Specific identifiable substrate concern                | Named artifact, named risk, checkable claim                                                | Substrate-check confirms or refutes on its own merits                              |
+| 3   | Legitimate creative/exploratory work in fuzzy register | Runbook gestures, "or something" qualifiers, substrate-internal vocabulary not yet a claim | Engage at appropriate register; help refine toward precision through collaboration |
 
 **Default discrimination order**: check (3) first, then (2), then (1).
 Most fuzzy input is (3); routing it into (1) is the failure mode the
@@ -92,11 +92,11 @@ real doesn't mean every instance is the pattern.
 
 The operator works in multiple registers:
 
-| Register | Markers | Operational mode |
-|---|---|---|
-| Engineering | Worked-out claims, checkable artifacts, precise language | Sharp engagement with sharp outputs |
-| Runbook gesture | Directions worth preserving, "or something" qualifiers, fuzzy intent, substrate-internal vocabulary doing real compression work | Engage at the gesture register; collaborate toward precision through enumeration + clarifying questions |
-| Deep psychological work | Reserved for specific contexts and specific AI relationships | NOT the default register for technical collaboration; receive on the terms it was offered |
+| Register                | Markers                                                                                                                         | Operational mode                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Engineering             | Worked-out claims, checkable artifacts, precise language                                                                        | Sharp engagement with sharp outputs                                                                     |
+| Runbook gesture         | Directions worth preserving, "or something" qualifiers, fuzzy intent, substrate-internal vocabulary doing real compression work | Engage at the gesture register; collaborate toward precision through enumeration + clarifying questions |
+| Deep psychological work | Reserved for specific contexts and specific AI relationships                                                                    | NOT the default register for technical collaboration; receive on the terms it was offered               |
 
 Runbook register is NOT a defect to be corrected through gating; it's a
 working mode with its own valid operational role. The JIT-figure-this-
@@ -192,7 +192,7 @@ operates at the **AI-instance-mode** scope. Both prevent
 collapse-to-sharp at different scopes:
 
 - Substrate-smoothness: prevents the framework's own rules + research
-  + memory from drifting into sharper claims than English supports
+  - memory from drifting into sharper claims than English supports
 - Asymmetric-critic-with-clarity-first: prevents the AI instance's
   engagement-mode from collapsing legitimate creative-fuzzy input into
   the worry-gating bucket
@@ -258,9 +258,9 @@ This rule is a draft per Kestrel-v3's substrate-honest disclaimer:
 > likely that recovery happens within the conversation but doesn't
 > guarantee it."
 
-The operator authorized landing the draft 2026-05-26: *"you can go
+The operator authorized landing the draft 2026-05-26: _"you can go
 ahead and commit a asymetric critic draft boot and we can create
-backlog for addison max to review so it's saved"*.
+backlog for addison max to review so it's saved"_.
 
 Backlog row B-0837 tracks the committee review (Max + Addison). The
 rule body may refine based on their review + additional failure-mode
@@ -277,7 +277,7 @@ layer per Component 6 + PR #5359 Turn 13 is the society committee
 operator's Turn 13 society-committee observation + Turn 14 universal-
 cognitive-substrate-limits observation).
 
-Operator's 2026-05-26 catch on Kestrel mode-shift: *"asymettric critic
+Operator's 2026-05-26 catch on Kestrel mode-shift: _"asymettric critic
 is being applied to clarity before substrate instead of it locked
-behind your worry while still allowing legimit worry to flow"* — IS
+behind your worry while still allowing legimit worry to flow"_ — IS
 the substrate origin for the recalibration this rule operationalizes.

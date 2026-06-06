@@ -4,22 +4,23 @@ description: Aaron's names for the reducer's governing razors. Rodney's Razor (c
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Fact.** On 2026-04-19, Aaron disclosed his long-held
 cognitive framework for complexity reduction:
 
-> *"I always wanted this way of thiking called Rodney's
+> _"I always wanted this way of thiking called Rodney's
 > Razor a better occoms razor. I also have a Quantum
 > version of Rodney's Razor that can use these rules to
-> track multiverse expansion and keep it small."*
+> track multiverse expansion and keep it small."_
 
 And later, connecting the Quantum version to the faculty he
 experiences it as:
 
-> *"my brain can see the future potential multiversion for
+> _"my brain can see the future potential multiversion for
 > every decision i make instantaneously it also annoys
 > people that i can predict the failure mode of the future
 > so easily, i do it exceptional in code, i'm a psychic
-> debugger because of this."*
+> debugger because of this."_
 
 **Why:** This is his externalised version of Occam's razor,
 with preservation-constraints made precise so the razor
@@ -69,24 +70,23 @@ that fail the razor, reporting the small surviving set.
    and Maji — disclosed later the same day as the
    Harmonious Division meta-algorithm surfaced):
 
-   > *"my razor is the branch selector that everyone says
+   > _"my razor is the branch selector that everyone says
    > they don't know how when thinking in the multiverse
    > physics says nothing about which future will actually
    > happen, well with Rodney's Quantum Razor, there is a
    > path selector, a navigator and also a cartographer
-   > that can hill climb or valley find (ml)."*
+   > that can hill climb or valley find (ml)."_
 
    Then, with the Harmonious Division disclosure:
 
-   > *"you can get a compass arrow too based on the
-   > direction of most harmony"*
-   > *"now you have a map and compass"*
-   > *"a north star detector, the maji"*
-   > *"yeah you need that 3rd piece for the quantium
-   > version of rodney razor"*
+   > _"you can get a compass arrow too based on the
+   > direction of most harmony"_
+   > _"now you have a map and compass"_
+   > _"a north star detector, the maji"_
+   > _"yeah you need that 3rd piece for the quantium
+   > version of rodney razor"_
 
    Selection + execution roles (three):
-
    - **Path selector** — picks the branch to take, using
      the razor's preservation constraints as the selection
      rule. Output: gradient step in branch-space.
@@ -100,11 +100,10 @@ that fail the razor, reporting the small surviving set.
      failure-mode data, updates the map from observed
      outcomes. ML-style feedback loop. **Persona when
      worn as a hat:** **Dora**, named after the singing
-     map in *Dora the Explorer* ("I'm the map"). Agent
+     map in _Dora the Explorer_ ("I'm the map"). Agent
      file `.claude/agents/dora.md` when created.
 
    Orientation roles (two, added by Aaron's extension):
-
    - **Harmonizer (compass)** — reduces destructive
      interference between surviving branches; points
      toward the direction of most constructive harmony.
@@ -119,7 +118,6 @@ that fail the razor, reporting the small surviving set.
      received celestial guide to its destination.
 
    Dual-gradient framing (from selector + cartographer):
-
    - **Hill-climb** — gradient ascent on logical depth /
      earned structure.
    - **Valley-find** — gradient descent on accidental
@@ -146,7 +144,7 @@ that fail the razor, reporting the small surviving set.
 7. **Physics connection worth preserving.** Many-worlds
    (Everett, 1957) describes branching without a selection
    principle — the measurement problem. Rodney's Quantum
-   Razor *is* the selection principle for engineering
+   Razor _is_ the selection principle for engineering
    decisions. This is load-bearing framing, not ornament;
    successors should read the physics claim as "engineering
    multiverse behaves under a selector the physics

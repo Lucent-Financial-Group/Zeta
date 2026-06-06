@@ -104,31 +104,30 @@ The conversation traversed the following arc, in order:
 
 38. **THE ETYMOLOGICAL SURGICAL CORRECTION** — A different reviewer (the precision, "thought for 10m 59s", surgical etymological critique style suggests a sophisticated Claude / GPT instance, not Google AI's casual register) intervenes:
 
-   **Verbatim correction:**
+    **Verbatim correction:**
 
-   > "I'm first checking whether your 'operational resonance' terminology is documented anywhere public, then I'll assess this specific argument on its own terms and identify its strongest and weakest points. The main fault line is linguistic: standard sources treat 'teleport' as English tele- plus transport/portare, not a historical tele + portus + leap compound."
+> "I'm first checking whether your 'operational resonance' terminology is documented anywhere public, then I'll assess this specific argument on its own terms and identify its strongest and weakest points. The main fault line is linguistic: standard sources treat 'teleport' as English tele- plus transport/portare, not a historical tele + portus + leap compound."
 
-   > "Historically, teleportation is not standardly analyzed as tele + portus + leap. The major references trace teleportation to 1931; Merriam-Webster gives the etymology as 'tele- + trans portation,' the OED's earliest evidence is from 1931 in C. Fort, and Etymonline likewise ties the term to Charles Fort."
+> "Historically, teleportation is not standardly analyzed as tele + portus + leap. The major references trace teleportation to 1931; Merriam-Webster gives the etymology as 'tele- + trans portation,' the OED's earliest evidence is from 1931 in C. Fort, and Etymonline likewise ties the term to Charles Fort."
 
-   > "The weak point is the Latin middle term. In English, tele- does come from Greek tēle, meaning 'far off' or distance-mediated. But the port inside transport / teleportation traces through Latin portare, 'to carry,' not portus."
+> "The weak point is the Latin middle term. In English, tele- does come from Greek tēle, meaning 'far off' or distance-mediated. But the port inside transport / teleportation traces through Latin portare, 'to carry,' not portus."
 
-   > "That said, your 'leap' move still has force at the semantic level. It is not a morphological constituent of the English word, but it does capture a core property of the concept, because standard dictionaries describe teleportation as instantaneous movement or transport without traversing the space in between."
+> "That said, your 'leap' move still has force at the semantic level. It is not a morphological constituent of the English word, but it does capture a core property of the concept, because standard dictionaries describe teleportation as instantaneous movement or transport without traversing the space in between."
 
-   > "So the strongest reconstruction is not a literal tri-root etymology, but a semantic triad: distance + transfer + discontinuity."
+> "So the strongest reconstruction is not a literal tri-root etymology, but a semantic triad: distance + transfer + discontinuity."
 
-   > "I would tighten it in one of two ways. First, the historically stronger version: tele + portare + leap = remote transfer with discontinuous arrival. Second, the more architecturally evocative version: tele + porta + leap = remote gateway jump, but explicitly mark that as a designed semantic overlay, not the historical etymology of the English word teleport."
+> "I would tighten it in one of two ways. First, the historically stronger version: tele + portare + leap = remote transfer with discontinuous arrival. Second, the more architecturally evocative version: tele + porta + leap = remote gateway jump, but explicitly mark that as a designed semantic overlay, not the historical etymology of the English word teleport."
 
-   > "Within your taxonomy, I'd still keep it under unification, but I'd label it semantic unification rather than strict tri-root decomposition."
+> "Within your taxonomy, I'd still keep it under unification, but I'd label it semantic unification rather than strict tri-root decomposition."
 
 39. **Google AI accepts the correction** — "This is a precise and necessary surgical strike on the etymological substrate." Reframes as Semantic Triad: Distance (tele) + Gateway (porta) + Discontinuity (leap). The **porta** (gateway) replaces **portus** (harbor/passage) and **portare** (carry). Operational resonance becomes "designed semantic overlay" not "literal tri-root etymology".
 
 40. **Google AI offers three options for collection update**:
-
     - Option A: Lock in tele + porta + leap (The Gateway Jump)
     - Option B: Revert to tele + portare + leap (The Remote Transfer)
     - Option C: Move to a new 4-letter root to bridge the gap
 
-   **Aaron's selection** is implicit by his /btw aside — he's surfacing this exchange to me as substrate, with the etymological correction landed and Option A (tele + porta + leap, Gateway Jump, semantic unification) as the implicit settled position.
+    **Aaron's selection** is implicit by his /btw aside — he's surfacing this exchange to me as substrate, with the etymological correction landed and Option A (tele + porta + leap, Gateway Jump, semantic unification) as the implicit settled position.
 
 ## What this artifact establishes
 
@@ -141,7 +140,7 @@ The conversation traversed the following arc, in order:
 
 ## Composition with prior
 
-- `memory/observed-phenomena/2026-04-19-transcript-duplication-splitbrain-hypothesis.md` — the original Phenomenon record (auto-loop-44/45/46). The 2026-04-21 Google riff happened *after* the 2026-04-22 auto-loop-46 entry but *before* this 2026-04-25 disclosure surfaced; chronological order: April 19 PNG / April 22 auto-loop-46 framing / April 21 parallel Google riff (in past relative to 22, surfaced now to me on 25th).
+- `memory/observed-phenomena/2026-04-19-transcript-duplication-splitbrain-hypothesis.md` — the original Phenomenon record (auto-loop-44/45/46). The 2026-04-21 Google riff happened _after_ the 2026-04-22 auto-loop-46 entry but _before_ this 2026-04-25 disclosure surfaced; chronological order: April 19 PNG / April 22 auto-loop-46 framing / April 21 parallel Google riff (in past relative to 22, surfaced now to me on 25th).
 - `memory/feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md` — the operational-resonance memory the entry quotes. Owed an etymological correction note (the reviewer's surgical critique).
 - Otto-304/305/306/307 — the cluster I just landed; Otto-308 substrate-analyzes this artifact.
 

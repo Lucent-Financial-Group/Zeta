@@ -26,12 +26,12 @@ tags: [codex-2026-04-30, peer-call, role-refs, copilot-instructions, factory-hyg
 
 Codex P1 finding on PR #962 (2026-04-30):
 
-> *"This block introduces additional named attribution
+> _"This block introduces additional named attribution
 > (e.g., 'Aaron 2026-04-30 …') in a shell script. Repo
 > convention is that code/docs/skills should use role-refs
 > rather than personal/persona names outside the history
 > surfaces (see `.github/copilot-instructions.md:305-362`).
-> Please reword these comments and the runtime preamble..."*
+> Please reword these comments and the runtime preamble..."_
 
 Fixed for `tools/peer-call/ani.sh` + `memory/CURRENT-amara.md`
 in PR #962. The same pattern exists in the four sibling
@@ -76,9 +76,9 @@ attribution-naming.
 ## Acceptance criteria
 
 - [ ] All four sibling scripts pass the role-ref convention
-  per copilot-instructions.md 305-362
+      per copilot-instructions.md 305-362
 - [ ] No persona-as-named-entity references removed (you-are-Amara,
-  you-are-Ani, you-are-Grok stay)
+      you-are-Ani, you-are-Grok stay)
 - [ ] Each script's `--help` output still works
 - [ ] Diff focused: only attribution naming changed
 

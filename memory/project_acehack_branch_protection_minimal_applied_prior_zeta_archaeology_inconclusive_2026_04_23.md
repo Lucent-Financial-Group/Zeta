@@ -83,8 +83,8 @@ AceHack personal billing for April 2026:
 - Zeta: $36.44 gross
 - Zeta (separate): $13.77 gross
 
-Aaron noted *"i think there was a little acehack before too,
-you can figure it out"*.
+Aaron noted _"i think there was a little acehack before too,
+you can figure it out"_.
 
 **What read-only API shows:**
 
@@ -141,12 +141,12 @@ but doesn't affect current operational substrate.
 ## Composes with
 
 - `memory/feedback_agent_owns_all_github_settings_and_config_
-  all_projects_zeta_frontier_poor_mans_mode_default_budget_
-  asks_require_scheduled_backlog_and_cost_estimate_
-  2026_04_23.md` — standing authorization for settings changes
+all_projects_zeta_frontier_poor_mans_mode_default_budget_
+asks_require_scheduled_backlog_and_cost_estimate_
+2026_04_23.md` — standing authorization for settings changes
 - `memory/feedback_lfg_free_actions_credits_limited_acehack_
-  is_poor_man_host_big_batches_to_lfg_not_one_for_one_
-  2026_04_23.md` (Otto-61/62 amended chain) — authority-axis
+is_poor_man_host_big_batches_to_lfg_not_one_for_one_
+2026_04_23.md` (Otto-61/62 amended chain) — authority-axis
   split driving the minimal-vs-richer protection choice
 - `memory/feedback_honor_those_that_came_before.md` — prior
   AceHack Zeta gets acknowledgment even when unreachable
@@ -182,19 +182,20 @@ but doesn't affect current operational substrate.
 Human maintainer flagged the GitHub protection-gap notice +
 pre-authorized the settings ownership (Otto-23). Otto (loop-
 agent PM hat, Otto-66) applied the minimal-viable protection
-+ investigated billing archaeology within read-only API
-limits. Future-session Otto inherits: minimum-viable-first
-for flagged protection gaps; archaeology deferred to
-scope-elevated session when admin:org + billing API are
-granted.
+
+- investigated billing archaeology within read-only API
+  limits. Future-session Otto inherits: minimum-viable-first
+  for flagged protection gaps; archaeology deferred to
+  scope-elevated session when admin:org + billing API are
+  granted.
 
 ---
 
 ## Archaeology resolved — Otto-66 follow-up (same tick, 2026-04-23)
 
-Aaron same-tick: *"you AceHack Zeta that got deleted,
+Aaron same-tick: _"you AceHack Zeta that got deleted,
 renamed, or transferred , transfered it for me and i think
-absorbed the skill"*.
+absorbed the skill"_.
 
 **Resolution:** the prior AceHack Zeta's $13.77 April 2026
 billing entry is activity on a **repo Otto (this agent, an

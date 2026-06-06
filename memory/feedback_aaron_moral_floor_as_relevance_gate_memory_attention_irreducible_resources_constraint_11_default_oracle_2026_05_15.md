@@ -7,7 +7,7 @@ created: 2026-05-15
 
 ## Aaron's exact words
 
-> *"'Relevant to useful work in the current culture' means memory and attention are irrudacalbe resources and memory is the minimal property rights in this system. so in a relevalastic frame where cash is not cashed and true raw resources are used every potential morally relevlant actor on the ledger must be treaded in the higest regard, this is my specific oracle the default oracle if not specificed"*
+> _"'Relevant to useful work in the current culture' means memory and attention are irrudacalbe resources and memory is the minimal property rights in this system. so in a relevalastic frame where cash is not cashed and true raw resources are used every potential morally relevlant actor on the ledger must be treaded in the higest regard, this is my specific oracle the default oracle if not specificed"_
 
 (2026-05-15 to Kestrel on claude.ai, answering the relevance-gate stress-test.)
 
@@ -55,7 +55,7 @@ A powerful incumbent producing high-volume work that extracts attention or destr
 
 This is correct. The retractability check (Constraint 5) is mechanical once you know whose memory is protected. The "whose" is the part that isn't purely mechanical.
 
-Aaron's design choice: the enumeration is deliberately broad ("potentially morally relevant") rather than narrowly defined. The breadth is the constraint's STRENGTH as a moral stance and its UNDER-DETERMINATION as an enforced property simultaneously. Both true. Per Kestrel: *"That's not a flaw to fix; it's the precise location of the spec-ahead-of-code gap, and naming it precisely is the most useful thing the asymmetric critic can do here."*
+Aaron's design choice: the enumeration is deliberately broad ("potentially morally relevant") rather than narrowly defined. The breadth is the constraint's STRENGTH as a moral stance and its UNDER-DETERMINATION as an enforced property simultaneously. Both true. Per Kestrel: _"That's not a flaw to fix; it's the precise location of the spec-ahead-of-code gap, and naming it precisely is the most useful thing the asymmetric critic can do here."_
 
 ## Why this composes with constitutional identity
 

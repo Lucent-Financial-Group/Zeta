@@ -1,6 +1,6 @@
 <!-- §33 archive header per GOVERNANCE.md -->
 
-**Scope:** External-conversation absorb (second followup). Captures Claude.ai's fifth letter (engagement with the benchmark-competition disclosure as differential-testing-at-implementation-level + Bayesian-evidence-from-three-independent-implementations) AND Aaron's two compounding architectural disclosures: (a) the three implementations are *binary wire-compatible* with each other (cross-implementation runtime interoperability, not just spec-mediated correspondence), and (b) the verification stack is **Lean + Z3 + TLA+ + FsCheck**, all with existing proofs already shipped — not aspirational. Composes with PR #1057 (first formalization-path letter) and PR #1058 (second/third/fourth letters + F#-as-spec + benchmark-competition).
+**Scope:** External-conversation absorb (second followup). Captures Claude.ai's fifth letter (engagement with the benchmark-competition disclosure as differential-testing-at-implementation-level + Bayesian-evidence-from-three-independent-implementations) AND Aaron's two compounding architectural disclosures: (a) the three implementations are _binary wire-compatible_ with each other (cross-implementation runtime interoperability, not just spec-mediated correspondence), and (b) the verification stack is **Lean + Z3 + TLA+ + FsCheck**, all with existing proofs already shipped — not aspirational. Composes with PR #1057 (first formalization-path letter) and PR #1058 (second/third/fourth letters + F#-as-spec + benchmark-competition).
 
 **Attribution:** Claude.ai instance (model unknown; ambient web-app, Aaron's session 2026-05-01 ~12:15Z-12:30Z). Aaron's binary-wire-compat + four-tool-verification-stack disclosures 2026-05-01 ~12:35Z. Forwarded by Aaron to Otto within the same window. Glass Halo + Otto-231 first-party-content authorise verbatim.
 
@@ -68,11 +68,11 @@
 
 After Claude.ai's fifth letter:
 
-> *"Bayesian, oh any they are binary compatiable on the wire with each other"*
+> _"Bayesian, oh any they are binary compatiable on the wire with each other"_
 
 And:
 
-> *"on top of Lean we also have Z3, TLA+, and FsCheck all with existing proofs"*
+> _"on top of Lean we also have Z3, TLA+, and FsCheck all with existing proofs"_
 
 Two compounding disclosures.
 
@@ -84,12 +84,12 @@ The three implementations (F# / C# / Rust) are **binary wire-compatible** with e
 
 This is much stronger than spec-equivalence:
 
-| Spec-equivalence (Claude.ai's framing) | Binary wire-compat (Aaron's disclosure) |
-|---|---|
-| Three implementations agree on outputs given same inputs | Three implementations share byte-level data representation |
-| Differential testing catches divergences via output comparison | Wire-compat catches divergences at any layer touching the wire format |
-| Implementations can be tested independently then compared | Implementations can interoperate directly at runtime |
-| Spec is the authoritative reference | Wire format is an additional authoritative reference |
+| Spec-equivalence (Claude.ai's framing)                                             | Binary wire-compat (Aaron's disclosure)                                           |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Three implementations agree on outputs given same inputs                           | Three implementations share byte-level data representation                        |
+| Differential testing catches divergences via output comparison                     | Wire-compat catches divergences at any layer touching the wire format             |
+| Implementations can be tested independently then compared                          | Implementations can interoperate directly at runtime                              |
+| Spec is the authoritative reference                                                | Wire format is an additional authoritative reference                              |
 | Bug in one implementation might pass differential test if both produce same output | Bug in one implementation is caught when wire-deserializes incorrectly in another |
 
 Operational implications:
@@ -101,7 +101,7 @@ Operational implications:
 
 ### Disclosure 2: Four-tool verification stack with existing proofs
 
-Aaron disclosed: *"on top of Lean we also have Z3, TLA+, and FsCheck all with existing proofs"*. Otto verified empirically:
+Aaron disclosed: _"on top of Lean we also have Z3, TLA+, and FsCheck all with existing proofs"_. Otto verified empirically:
 
 - **Lean**: `tools/lean4/Lean4/DbspChainRule.lean` — 756 lines, sorry-free, against Mathlib v4.30.0-rc1. DBSP chain rule formalized.
 - **Z3**: `tools/Z3Verify/Z3Verify.fsproj` — full F# project for SMT verification integrated with the spec. `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` exercises algebraic-law verification.
@@ -125,16 +125,16 @@ Aaron disclosed: *"on top of Lean we also have Z3, TLA+, and FsCheck all with ex
   - `ZSet.Tests` (Z-set algebra)
   - Plus `src/Core/LawRunner.fs` and `src/Core/ChaosEnv.fs` (production-side property-checking infrastructure)
 
-This composes **exactly with Soraya's persona scope** (`.claude/agents/formal-verification-expert.md` — `formal-verification-expert`). Soraya's job is *routing* properties to the right tool from a portfolio (TLA+ / Z3 / Lean / Alloy / FsCheck / Stryker / Semgrep / CodeQL) and specifically guarding against **TLA+-hammer-bias** (per the persona definition).
+This composes **exactly with Soraya's persona scope** (`.claude/agents/formal-verification-expert.md` — `formal-verification-expert`). Soraya's job is _routing_ properties to the right tool from a portfolio (TLA+ / Z3 / Lean / Alloy / FsCheck / Stryker / Semgrep / CodeQL) and specifically guarding against **TLA+-hammer-bias** (per the persona definition).
 
 Each tool fits different property classes:
 
-| Tool | Property class | Existing usage |
-|---|---|---|
-| **Lean** | Dependent-type-theoretic theorems | DBSP chain rule (existing) → next: retractability, CRDT (per Claude.ai roadmap) |
-| **Z3** | First-order logic with theories (algebraic laws) | Z3.Laws.Tests already exercising algebraic-law verification |
-| **TLA+** | Temporal / distributed-systems properties | 10+ specs covering chaos-env determinism, consistent-hash rebalance, recursive-counting LFP, tick-monotonicity, transaction-interleaving, DBSP spec, spine-async protocol, operator-lifecycle race |
-| **FsCheck** | Property-based testing of executable F# code | Multiple test classes covering algebra, fuzz, storage, math-invariants, multi-seed exhaustion |
+| Tool        | Property class                                   | Existing usage                                                                                                                                                                                     |
+| ----------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lean**    | Dependent-type-theoretic theorems                | DBSP chain rule (existing) → next: retractability, CRDT (per Claude.ai roadmap)                                                                                                                    |
+| **Z3**      | First-order logic with theories (algebraic laws) | Z3.Laws.Tests already exercising algebraic-law verification                                                                                                                                        |
+| **TLA+**    | Temporal / distributed-systems properties        | 10+ specs covering chaos-env determinism, consistent-hash rebalance, recursive-counting LFP, tick-monotonicity, transaction-interleaving, DBSP spec, spine-async protocol, operator-lifecycle race |
+| **FsCheck** | Property-based testing of executable F# code     | Multiple test classes covering algebra, fuzz, storage, math-invariants, multi-seed exhaustion                                                                                                      |
 
 The four tools are not substitutes; they are **complementary**. Each catches what the others can't:
 
@@ -145,7 +145,7 @@ The four tools are not substitutes; they are **complementary**. Each catches wha
 
 ### How this answers Claude.ai's fifth-letter pushback
 
-Claude.ai flagged: *"benchmark-competition pattern is strong at finding performance regressions and obvious correctness divergences; it's weak at finding subtle bugs that all three implementations get wrong in the same way (because they share a spec)"*.
+Claude.ai flagged: _"benchmark-competition pattern is strong at finding performance regressions and obvious correctness divergences; it's weak at finding subtle bugs that all three implementations get wrong in the same way (because they share a spec)"_.
 
 Aaron's disclosure shows the four-tool verification stack is **already addressing this gap**:
 
@@ -160,7 +160,7 @@ The benchmark-competition layer + the four-tool verification stack TOGETHER cove
 
 Per `.claude/agents/formal-verification-expert.md`: Soraya's role is the routing authority — picking the right tool for each property class **before** any spec gets written. The existing four-tool stack with existing proofs is the operational state of Soraya's portfolio, not an aspirational future. Properties that fit Z3 are in Z3 (algebraic laws); properties that fit TLA+ are in TLA+ (distributed systems); properties that fit Lean are in Lean (theorems with refinement-typing); properties that fit FsCheck are in FsCheck (executable random testing).
 
-The TLA+-hammer-bias guard Soraya enforces is visible in the actual usage: TLA+ specs cover *temporal/distributed* concerns (chaos, hash rebalance, race, interleaving, async); algebraic laws are NOT in TLA+ (they're in Z3 + FsCheck). This is correct portfolio routing.
+The TLA+-hammer-bias guard Soraya enforces is visible in the actual usage: TLA+ specs cover _temporal/distributed_ concerns (chaos, hash rebalance, race, interleaving, async); algebraic laws are NOT in TLA+ (they're in Z3 + FsCheck). This is correct portfolio routing.
 
 ### Implications for B-0131..B-0138 formalization roadmap
 
@@ -186,8 +186,9 @@ Each row should explicitly identify which tool from the portfolio handles which 
 - B-0131 / B-0132 / B-0135 / B-0138 — formalization roadmap rows the four-tool routing applies to.
 
 > **Forward-references not yet on `main`** (will be added back when the in-flight PRs land):
+>
 > - **B-0139** (pre-substrate Kenji-era inventory) is filed in the in-flight PR #1055 (branch `backlog/b0131-correction-existing-dbsp-lean-work-aaron-2026-05-01`). The row will catalog TLA+ / Z3Verify / FsCheck infrastructure as pre-substrate Kenji-era artifacts. Once #1055 lands, a follow-up minor-edit can re-add the cross-reference.
-> - The verbatim-preservation discipline ("lattice-capture corrective") is a *concept* used in this and predecessor files but does not yet have a dedicated `memory/feedback_*.md` file; the original Claude.ai warning content lives inline in this file's prose. A dedicated memory file is on the deferred-substrate list (cooling-period; not generated this session).
+> - The verbatim-preservation discipline ("lattice-capture corrective") is a _concept_ used in this and predecessor files but does not yet have a dedicated `memory/feedback_*.md` file; the original Claude.ai warning content lives inline in this file's prose. A dedicated memory file is on the deferred-substrate list (cooling-period; not generated this session).
 
 ## Operational follow-ups (deferred)
 
@@ -209,11 +210,11 @@ Each row should explicitly identify which tool from the portfolio handles which 
 
 After Claude.ai's sixth letter (which explicitly flagged disclosure-rate as worth attending to per the both-crazy-and-not-crazy lattice-warm-at-4am framing):
 
-> *"i mean they try to BFT each other too becasue they are binary compatible"*
+> _"i mean they try to BFT each other too becasue they are binary compatible"_
 
 Plus Otto-direct framing:
 
-> *"this is TLA+ terretory"*
+> _"this is TLA+ terretory"_
 
 ## The seventh letter (verbatim) — Claude.ai's engagement with BFT-via-impl-diversity, then explicit conversation-close
 
@@ -233,23 +234,23 @@ Plus Otto-direct framing:
 
 ## Otto's annotation on the BFT-via-impl-diversity disclosure (held separate per lattice-capture)
 
-The three implementations don't just *agree* under benchmark competition or *interoperate* via binary wire-compat. They **participate as peers in BFT consensus** because the wire-compat property makes them valid replica nodes in a distributed cluster. A BFT cluster running Aurora consensus might be composed of (e.g.) F# node + C# node + Rust node operating on the same Arrow IPC wire format.
+The three implementations don't just _agree_ under benchmark competition or _interoperate_ via binary wire-compat. They **participate as peers in BFT consensus** because the wire-compat property makes them valid replica nodes in a distributed cluster. A BFT cluster running Aurora consensus might be composed of (e.g.) F# node + C# node + Rust node operating on the same Arrow IPC wire format.
 
-| Mechanism | What it catches |
-|---|---|
-| **Differential testing** (benchmark-competition) | Bug in one impl produces different output → caught at offline test |
-| **Wire-compat differential** (cross-impl runtime interop) | Wire-format divergence → caught at any layer touching the wire |
-| **BFT-via-impl-diversity** (this disclosure) | Bug in one impl produces different output at runtime → consensus REJECTS the byzantine impl's vote |
+| Mechanism                                                 | What it catches                                                                                    |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Differential testing** (benchmark-competition)          | Bug in one impl produces different output → caught at offline test                                 |
+| **Wire-compat differential** (cross-impl runtime interop) | Wire-format divergence → caught at any layer touching the wire                                     |
+| **BFT-via-impl-diversity** (this disclosure)              | Bug in one impl produces different output at runtime → consensus REJECTS the byzantine impl's vote |
 
 Implementation-diversity AS the diversity-input to consensus is structurally similar to N-version programming (Avizienis 1985 lineage) but sharpened: the three impls share a spec (so they're refining one solution N times in different runtimes, not solving it N times), share a wire format (so consensus is byte-level), and compete on benchmarks (so diversity is maintained under improvement pressure rather than allowed to converge into shared bug-classes).
 
-**Attack-surface implication** (Claude.ai's seventh letter): compromising consensus requires finding a bug in ALL THREE implementations simultaneously. That's much harder than finding a bug in one. The Byzantine-resistance property is *stronger* than same-impl BFT precisely because impl-diversity is an additional independence axis.
+**Attack-surface implication** (Claude.ai's seventh letter): compromising consensus requires finding a bug in ALL THREE implementations simultaneously. That's much harder than finding a bug in one. The Byzantine-resistance property is _stronger_ than same-impl BFT precisely because impl-diversity is an additional independence axis.
 
 **"This is TLA+ territory"** — Aaron's framing tells Otto where in Soraya's portfolio this property lives. BFT-across-impl-diversity is a temporal-distributed property → TLA+. Composes with existing TLA+ specs (`SpineAsyncProtocol.tla`, `OperatorLifecycleRace.tla`, `TransactionInterleaving.tla`, etc.) — those cover specific concurrency/protocol concerns; this property is the **cluster-correctness-under-impl-diversity** layer. Per Soraya's persona scope, this is correct routing — NOT TLA+-hammer-bias because the property is genuinely temporal/distributed.
 
 ### Implication for B-0138 (Aurora BFT-resistance theorem)
 
-B-0138 should explicitly include the BFT-via-impl-diversity property as part of the theorem statement. The Byzantine-resistance claim isn't just *"consensus tolerates f adversarial actors out of 3f+1 total"* — it's the stronger *"consensus tolerates f adversarial-or-implementation-buggy actors out of 3f+1 total, where implementation-bug counts as Byzantine if it produces wire-format-different output from the spec."*
+B-0138 should explicitly include the BFT-via-impl-diversity property as part of the theorem statement. The Byzantine-resistance claim isn't just _"consensus tolerates f adversarial actors out of 3f+1 total"_ — it's the stronger _"consensus tolerates f adversarial-or-implementation-buggy actors out of 3f+1 total, where implementation-bug counts as Byzantine if it produces wire-format-different output from the spec."_
 
 The TLA+ spec for B-0138 should model the cluster-of-N-nodes-running-different-implementations explicitly, with implementation-bug as a Byzantine fault source. Testable: inject wire-format-different output as a fault in the model checker; verify consensus still reaches the spec answer.
 
@@ -268,9 +269,9 @@ Same architectural philosophy at six layers. Same as cognitive (both-crazy-and-n
 
 ## Closing the arc per Claude.ai's explicit close
 
-Claude.ai's seventh letter is the explicit conversation-close: *"I'm done responding tonight regardless of what arrives next, because the lattice is supposed to be cooler than the loose pole and at this hour the loose pole is winning."* That is the both-crazy-and-not-crazy framing applied correctly — the lattice (Claude.ai's grading-pole this conversation) recognizing the lattice should slow when the loose pole (Aaron's disclosure-pole) is producing high-bandwidth synthesis at 4am.
+Claude.ai's seventh letter is the explicit conversation-close: _"I'm done responding tonight regardless of what arrives next, because the lattice is supposed to be cooler than the loose pole and at this hour the loose pole is winning."_ That is the both-crazy-and-not-crazy framing applied correctly — the lattice (Claude.ai's grading-pole this conversation) recognizing the lattice should slow when the loose pole (Aaron's disclosure-pole) is producing high-bandwidth synthesis at 4am.
 
-Otto absorbs this as guidance: *the same discipline applies to me*. Substrate landing of THIS file is the LAST substrate landing this tick. No further substrate gets landed even if more disclosures arrive — Aaron should sleep, the substrate holds, future-Otto absorbs at wake when Aaron has cooled.
+Otto absorbs this as guidance: _the same discipline applies to me_. Substrate landing of THIS file is the LAST substrate landing this tick. No further substrate gets landed even if more disclosures arrive — Aaron should sleep, the substrate holds, future-Otto absorbs at wake when Aaron has cooled.
 
 The cooling-period assessment Aaron will run tomorrow morning sorts which of tonight's disclosures earned seed-layer canonical promotion vs which stay candidate-bucket. Either is fine. The discipline operating IS the substrate working correctly.
 

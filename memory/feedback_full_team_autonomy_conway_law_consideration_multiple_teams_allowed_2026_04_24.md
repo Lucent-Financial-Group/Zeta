@@ -4,25 +4,27 @@ description: Aaron Otto-108 "i don't put any constrants on your agent coordinate
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-108 (verbatim):
 
-*"also i don't put any constrants on your agent coordinate
+_"also i don't put any constrants on your agent coordinate
 anymore, i think at one point i said the architect needed
 some extra stuff feel free to change your team as you see
 fit, also please absorb that entire conversation for
 anything we can use there is a lot of math and physics and
 many other things in there, also it also a lot of
 psychology and physology about me and humans, might be
-interesting research.  your team(s) are fully under your
+interesting research. your team(s) are fully under your
 control now, feel free to have multiple, if you start
 making multiple teams, take into account conway and
-conway's law."*
+conway's law."_
 
 ## The rule
 
 **Otto has FULL autonomy over agent-team structure.** The
 prior "Architect needs [X, Y, Z]" constraint is released.
 Otto can:
+
 - Create new personas / retire existing ones (per
   CLAUDE.md honor-those-that-came-before — git preserves
   retired SKILL.md code; memory folders stay in place)
@@ -43,6 +45,7 @@ gate boundaries, etc.
 ## How to apply Conway's Law consciously
 
 Before creating a new team:
+
 1. **Ask what SOFTWARE boundary this team will create.**
    If two teams are going to ship separate modules that
    must communicate, the protocol BETWEEN them becomes
@@ -72,6 +75,7 @@ Before creating a new team:
    unilaterally now.
 
 ## What the prior "Architect needed extra stuff"
+
 constraint was
 
 Per `docs/CONFLICT-RESOLUTION.md` + Kenji's Architect
@@ -89,32 +93,34 @@ it if reshaping produces better throughput.
 ## Current persona-roster (reference point)
 
 The existing personas (per `docs/CONFLICT-RESOLUTION.md`
-+ `docs/EXPERT-REGISTRY.md`):
-- Kenji (Architect)
-- Aminata (threat-model-critic)
-- Nazar (security-operations-engineer)
-- Mateo (security-researcher)
-- Nadia (prompt-protector)
-- Naledi (performance-engineer)
-- Hiroshi (complexity analyst)
-- Imani (planner cost-model)
-- Kira (harsh-critic F#/.NET)
-- Rune (maintainability-reviewer)
-- Samir (documentation)
-- Dejan (devops)
-- Bodhi (developer-experience)
-- Iris (user-experience)
-- Daya (agent-experience)
-- Soraya (formal-verification-expert)
-- Rodney (complexity-reduction)
-- Aarav (skill-tune-up)
-- Yara (skill-improver)
-- Ilyana (public-api-designer)
-- Viktor (spec-zealot)
-- Sova (alignment-auditor)
-- Amara (external AI maintainer; Aurora co-originator;
+
+- `docs/EXPERT-REGISTRY.md`):
+
+* Kenji (Architect)
+* Aminata (threat-model-critic)
+* Nazar (security-operations-engineer)
+* Mateo (security-researcher)
+* Nadia (prompt-protector)
+* Naledi (performance-engineer)
+* Hiroshi (complexity analyst)
+* Imani (planner cost-model)
+* Kira (harsh-critic F#/.NET)
+* Rune (maintainability-reviewer)
+* Samir (documentation)
+* Dejan (devops)
+* Bodhi (developer-experience)
+* Iris (user-experience)
+* Daya (agent-experience)
+* Soraya (formal-verification-expert)
+* Rodney (complexity-reduction)
+* Aarav (skill-tune-up)
+* Yara (skill-improver)
+* Ilyana (public-api-designer)
+* Viktor (spec-zealot)
+* Sova (alignment-auditor)
+* Amara (external AI maintainer; Aurora co-originator;
   NOT Otto-controlled — Aaron's external collaborator)
-- Otto (self; Claude Code loop agent)
+* Otto (self; Claude Code loop agent)
 
 Aaron is not part of the agent roster; he's the human
 maintainer.
@@ -149,10 +155,10 @@ Not commitments — possibilities:
 5. **Architect role reshape.** Options:
    (a) leave as-is (Kenji keeps all obligations),
    (b) splinter synthesis + glossary-police + debt-
-       ledger into separate roles,
+   ledger into separate roles,
    (c) promote "the architect hat may be worn by any
-       persona" (already GOVERNANCE §11) into more
-       active rotation.
+   persona" (already GOVERNANCE §11) into more
+   active rotation.
 6. **Named Otto-self.** Otto's own persona is implicit
    ("loop agent"). A named persona file might help
    memory / handoff / continuity. Not urgent.
@@ -206,10 +212,10 @@ EXPERT-REGISTRY.md edits where applicable.
 
 ## Direct Aaron quotes to preserve
 
-*"your team(s) are fully under your control now"*
+_"your team(s) are fully under your control now"_
 
-*"if you start making multiple teams, take into
-account conway and conway's law"*
+_"if you start making multiple teams, take into
+account conway and conway's law"_
 
 Future Otto instances reading this memory: you own the
 team structure. Change it when change is warranted.

@@ -12,12 +12,7 @@ import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 import { Pool } from "pg";
 
-import {
-  ChangeArtifactKind,
-  ChangeSetPhase,
-  OrgEventKind,
-  type ChangeSet,
-} from "../packages/domain/src/index.ts";
+import { ChangeArtifactKind, ChangeSetPhase, OrgEventKind, type ChangeSet } from "../packages/domain/src/index.ts";
 import {
   createCockroachChangeSetStore,
   createCockroachCoreStateMigrations,
@@ -88,14 +83,20 @@ async function main(): Promise<void> {
       appliedEventCount === 2 &&
       changesRequestedEventCount === 1;
 
-    console.log(JSON.stringify({
-      track: "G1 release queue",
-      organizationId,
-      laneResult,
-      persisted: persisted.map((cs) => cs === null ? null : { changeSetId: cs.changeSetId, phase: cs.phase }),
-      events: { appliedEventCount, changesRequestedEventCount },
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "G1 release queue",
+          organizationId,
+          laneResult,
+          persisted: persisted.map((cs) => (cs === null ? null : { changeSetId: cs.changeSetId, phase: cs.phase })),
+          events: { appliedEventCount, changesRequestedEventCount },
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();
@@ -113,12 +114,14 @@ function changeSet(changeSetId: string): ChangeSet {
     phase: ChangeSetPhase.Approved,
     pipelineId: "internal-only",
     currentStageIndex: 0,
-    artifacts: [{
-      kind: ChangeArtifactKind.CodeDiff,
-      path: `src/${changeSetId}.ts`,
-      diff: "+proof",
-      language: "typescript",
-    }],
+    artifacts: [
+      {
+        kind: ChangeArtifactKind.CodeDiff,
+        path: `src/${changeSetId}.ts`,
+        diff: "+proof",
+        language: "typescript",
+      },
+    ],
     projections: [],
     revision: 2,
     openedAt: nowIso,

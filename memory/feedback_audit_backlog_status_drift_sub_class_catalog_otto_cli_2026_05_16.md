@@ -14,51 +14,51 @@ space has stabilized as follows:
 
 ### Primary classes (close-row vs leave-open)
 
-| Class | What it is | Disposition |
-|---|---|---|
-| **#1 (pure drift)** | Deliverable fully shipped; row's `status: open` never updated | Close-row PR |
-| **#2 (partial, opaque)** | Deliverable partially shipped; row has no progress tracker | Leave open (NO edit) |
+| Class                                 | What it is                                                                                | Disposition                                    |
+| ------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **#1 (pure drift)**                   | Deliverable fully shipped; row's `status: open` never updated                             | Close-row PR                                   |
+| **#2 (partial, opaque)**              | Deliverable partially shipped; row has no progress tracker                                | Leave open (NO edit)                           |
 | **#2-SD (partial, self-documenting)** | Partial + row has explicit progress tracker (checkbox table, status section, slice table) | Leave open (tracker already documents partial) |
-| **#3 (multi-slice self-doc'd)** | Multiple slices in flight; row body has progress section | Leave open |
-| **#4 (multi-slice all-closed)** | All slices closed; umbrella row needs final close | Close-row PR |
-| **FP-2 / FP-3** | False-positive at #2/#3 scope (row was incorrectly surfaced) | Leave open (audit tool noise) |
+| **#3 (multi-slice self-doc'd)**       | Multiple slices in flight; row body has progress section                                  | Leave open                                     |
+| **#4 (multi-slice all-closed)**       | All slices closed; umbrella row needs final close                                         | Close-row PR                                   |
+| **FP-2 / FP-3**                       | False-positive at #2/#3 scope (row was incorrectly surfaced)                              | Leave open (audit tool noise)                  |
 
 ### Sub-class overlays (orthogonal to primary)
 
 These compose multiplicatively with the primary class:
 
-| Sub-class | What it is | When applied |
-|---|---|---|
-| **#1-Ready** | Class #1 disposition (close-row) but blocked on operational contention (peer-Otto churn, Lior cleanup, etc.) | When close-row attempt aborts mid-flight; defer to less-contended tick |
-| **#1-DepBlocked** | Class #1 own scope met, but `depends_on:` ancestor still partial | Walk one level of `depends_on:` chain; close gated on ancestor close |
-| **#2-Ready** | Class #2 disposition (leave open) but row body has embedded mechanical verifier OR dependency just resolved | Future-Otto can pick up for implementation; bounded + mechanical |
-| **#2-Execution-atom** | Class #2 row that is the FINAL execution atom of a multi-row trajectory (e.g., umbrella + N prerequisites + execution-atom shape) | Status correctly open because N prerequisites haven't all shipped |
+| Sub-class             | What it is                                                                                                                        | When applied                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **#1-Ready**          | Class #1 disposition (close-row) but blocked on operational contention (peer-Otto churn, Lior cleanup, etc.)                      | When close-row attempt aborts mid-flight; defer to less-contended tick |
+| **#1-DepBlocked**     | Class #1 own scope met, but `depends_on:` ancestor still partial                                                                  | Walk one level of `depends_on:` chain; close gated on ancestor close   |
+| **#2-Ready**          | Class #2 disposition (leave open) but row body has embedded mechanical verifier OR dependency just resolved                       | Future-Otto can pick up for implementation; bounded + mechanical       |
+| **#2-Execution-atom** | Class #2 row that is the FINAL execution atom of a multi-row trajectory (e.g., umbrella + N prerequisites + execution-atom shape) | Status correctly open because N prerequisites haven't all shipped      |
 
 ### Empirical instances (from 2026-05-16 session)
 
-| Row | Class | Notes |
-|---|---|---|
-| B-0314 | #2-SD | Slice-progress table (9/28 BPs anchored) self-documents partial |
-| B-0440 | #3 | Bg-service class-#3 |
-| B-0441 | #3 | 2nd class-#3 |
-| B-0411 | FP-2 | Peer-call grok.ts; row mis-surfaced |
-| B-0509 | FP-2 | B-0448 slice 3 |
-| B-0512 | FP-2 | B-0448 slice 6 |
-| B-0173 | FP-3 | Hook authoring |
-| B-0534 | #2-SD | 5/5 acceptance `[ ]` checkboxes — self-doc partial |
-| B-0418 | #2 | Amplification ratio dashboard; numbered criteria not auto-doc |
-| B-0129 | #2 | Status-annotated; row says "Filed. No active incident" |
-| B-0197 | **#2 + #2-Ready** | Lean Prop 3.5 misattribution; embedded grep falsifier shows mechanical fix |
-| B-0049.2 | **#1 + #1-Ready** | Mystery schools Mithraic; close-row aborted mid-flight (peer churn) |
-| B-0037.1 | #1 (CLOSED) | Meta-cognition survey doc; closed via PR #3859 |
-| B-0457 | **#1-DepBlocked** | Amara core; depends on B-0462 (vendor-bias gap) |
-| B-0462 | #2 | Amara preamble; 2/3 acceptance met (vendor-bias missing) |
-| B-0118 | #2 (Status-annotated, multi-row class-#4 candidate) | Amara umbrella; prior-triaged-in-row by parallel Otto session |
-| B-0458 | #2 | Amara README + closure; 3/5 acceptance visible-met |
-| B-0379 | **#2 + #2-Execution-atom** | Aurora split; depends on B-0375/B-0376/B-0377/B-0378 |
-| B-0037.2 | **#2 + #2-Ready** | Round-close meta-check checklist; dep B-0037.1 merged this session |
-| B-0037.3 | **#2 + #2-Ready** | Measurables wiring into ALIGNMENT.md; dep B-0037.1 merged this session |
-| B-0443 | #1 (CLOSED) | Launch-substrate carve-out; closed via PR pending in deferred queue this session |
+| Row      | Class                                               | Notes                                                                            |
+| -------- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| B-0314   | #2-SD                                               | Slice-progress table (9/28 BPs anchored) self-documents partial                  |
+| B-0440   | #3                                                  | Bg-service class-#3                                                              |
+| B-0441   | #3                                                  | 2nd class-#3                                                                     |
+| B-0411   | FP-2                                                | Peer-call grok.ts; row mis-surfaced                                              |
+| B-0509   | FP-2                                                | B-0448 slice 3                                                                   |
+| B-0512   | FP-2                                                | B-0448 slice 6                                                                   |
+| B-0173   | FP-3                                                | Hook authoring                                                                   |
+| B-0534   | #2-SD                                               | 5/5 acceptance `[ ]` checkboxes — self-doc partial                               |
+| B-0418   | #2                                                  | Amplification ratio dashboard; numbered criteria not auto-doc                    |
+| B-0129   | #2                                                  | Status-annotated; row says "Filed. No active incident"                           |
+| B-0197   | **#2 + #2-Ready**                                   | Lean Prop 3.5 misattribution; embedded grep falsifier shows mechanical fix       |
+| B-0049.2 | **#1 + #1-Ready**                                   | Mystery schools Mithraic; close-row aborted mid-flight (peer churn)              |
+| B-0037.1 | #1 (CLOSED)                                         | Meta-cognition survey doc; closed via PR #3859                                   |
+| B-0457   | **#1-DepBlocked**                                   | Amara core; depends on B-0462 (vendor-bias gap)                                  |
+| B-0462   | #2                                                  | Amara preamble; 2/3 acceptance met (vendor-bias missing)                         |
+| B-0118   | #2 (Status-annotated, multi-row class-#4 candidate) | Amara umbrella; prior-triaged-in-row by parallel Otto session                    |
+| B-0458   | #2                                                  | Amara README + closure; 3/5 acceptance visible-met                               |
+| B-0379   | **#2 + #2-Execution-atom**                          | Aurora split; depends on B-0375/B-0376/B-0377/B-0378                             |
+| B-0037.2 | **#2 + #2-Ready**                                   | Round-close meta-check checklist; dep B-0037.1 merged this session               |
+| B-0037.3 | **#2 + #2-Ready**                                   | Measurables wiring into ALIGNMENT.md; dep B-0037.1 merged this session           |
+| B-0443   | #1 (CLOSED)                                         | Launch-substrate carve-out; closed via PR pending in deferred queue this session |
 
 ## How to use this catalog
 

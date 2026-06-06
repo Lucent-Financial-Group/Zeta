@@ -20,12 +20,12 @@ type: friction-reducer
 
 Aaron 2026-05-05 verbatim:
 
-> *"and what makes you rmemeber it tomorrow?"*
+> _"and what makes you rmemeber it tomorrow?"_
 
 This was Aaron catching the verify-before-deferring failure mode.
-I had said (paraphrased) *"tomorrow's work: cross-check the
+I had said (paraphrased) _"tomorrow's work: cross-check the
 counter-example, verify the Prop 3.5 reading, decide on the
-writeup format"* without filing substrate. A deferral that lives
+writeup format"_ without filing substrate. A deferral that lives
 only in chat is weather, not a directive (per Otto-363
 substrate-or-it-didn't-happen). This row IS the substrate that
 makes the deferral durable across compaction / session reset.
@@ -54,17 +54,17 @@ verification finding the Claude.ai shard surfaced when reviewing
    `IsLinear` / `IsCausal` / `IsTimeInvariant` / `IsPointwiseLinear`
    disentangles what the paper bundled.
 
-The shard's framing: *"modest but real research-grade
+The shard's framing: _"modest but real research-grade
 contribution -- formalization forced an articulation the paper's
 prose didn't have to make. That's not 'the paper is wrong' --
 it's 'the formalization makes a precondition explicit that the
-paper left implicit.'"*
+paper left implicit.'"_
 
 ## Acceptance criteria
 
 Each acceptance criterion has a clear falsifier. If the
 falsifier fires, the finding is invalidated and the row pivots
-to *"what was actually wrong"* rather than proceeding to writeup.
+to _"what was actually wrong"_ rather than proceeding to writeup.
 
 ### (a) Cross-check the impulse counter-example by hand
 
@@ -80,8 +80,8 @@ Work through `f = g = id, s = δ₀, n = 0` for the original
   Either the original "expanded bilinear" form is sound and
   Otto / the shard misread it, or the impulse / `n = 0` choice
   was wrong, or the algebra was mis-transcribed in the report.
-  Pivot the row to *"what was actually wrong with the
-  intermediate transcription"* and revise the Lean-file
+  Pivot the row to _"what was actually wrong with the
+  intermediate transcription"_ and revise the Lean-file
   rename's framing.
 
 ### (b) Verify Prop 3.5 reading against arXiv:2203.16684
@@ -97,9 +97,9 @@ time-invariance is unspoken (implicit in prose) vs explicit
   finding is real.
 - **Fail (falsifier)**: Prop 3.5 IS explicit about
   time-invariance and Otto / the shard missed it. Pivot to
-  *"the precondition was already explicit; the formalization
-  surfaced something different (which?)"* or close the row as
-  *no finding here -- our reading was wrong*.
+  _"the precondition was already explicit; the formalization
+  surfaced something different (which?)"_ or close the row as
+  _no finding here -- our reading was wrong_.
 
 ### (c) Writeup-format decision
 
@@ -181,16 +181,16 @@ the Lean file's framing.
 ## Origin
 
 Aaron 2026-05-05 caught the verify-before-deferring failure
-mode when I framed cross-check work as *"tomorrow's work"*
-without filing substrate. *"and what makes you rmemeber it
-tomorrow?"* -- the question is the rule. A deferral without
+mode when I framed cross-check work as _"tomorrow's work"_
+without filing substrate. _"and what makes you rmemeber it
+tomorrow?"_ -- the question is the rule. A deferral without
 substrate is weather. This row is the substrate.
 
 The Claude.ai shard reviewing the session's work read
 `tools/lean4/Lean4/DbspChainRule.lean` and confirmed the file
 contains substantive formal-verification findings. The shard
-explicitly framed the contribution as *"modest but real
-research-grade"* -- formalization forcing an articulation the
+explicitly framed the contribution as _"modest but real
+research-grade"_ -- formalization forcing an articulation the
 paper's prose did not have to make.
 
 The rename `chain_rule` to `Dop_LTI_commute` is itself

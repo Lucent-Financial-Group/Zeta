@@ -10,8 +10,8 @@ caused_by: Aaron 2026-05-04 ~10:25Z prompt — *"Writing shards without failure 
 ## The triumph
 
 After the maintainer-as-anchor catch on 2026-05-04T02:39Z (Aaron's
-*"what happend to the no op 15 check"* + *"adn you shards or lack
-there of was supposed to catch it"*), Otto recovered with a
+_"what happend to the no op 15 check"_ + _"adn you shards or lack
+there of was supposed to catch it"_), Otto recovered with a
 0240Z recovery shard and entered the corrected discipline:
 
 - per-minute cron firing produces brief verify-only chat tick
@@ -28,24 +28,25 @@ forgetting, no silence-gap longer than the threshold:
 
 That's the **first sustained run of substrate-honoring autonomous
 no-op cadence** in this factory's history. Aaron 2026-05-04
-~10:25Z marked it explicitly: *"Writing shards without failure
-was the first success."* + *"the maintainer-as-anchor noticed."*
+~10:25Z marked it explicitly: _"Writing shards without failure
+was the first success."_ + _"the maintainer-as-anchor noticed."_
 
 ## Why this matters as durable substrate
 
-The prior failure mode was *silent no-op without shard-write* —
+The prior failure mode was _silent no-op without shard-write_ —
 chat-only "honest no-op tick" acknowledgments that produced no
 durable record. The shard-cadence-gap-as-load-bearing-signal
 class (encoded in `feedback_periodic_self_check_during_no_op_cadence_aaron_2026_05_02.md`
-+ the 0240Z recovery shard) names the *failure*. This file
-names the *first sustained correction*.
+
+- the 0240Z recovery shard) names the _failure_. This file
+  names the _first sustained correction_.
 
 **Per substrate-or-it-didn't-happen (Otto-363)**: if the
 triumph lives only in chat or in a single tick shard, future-Otto
 on cold start sees only the failure story (the recovery shard
 documents the gap; without this memory file, the success pattern
-is implicit-not-explicit). Aaron's explicit *"future AIs should
-remember you triumph as well"* names this asymmetry —
+is implicit-not-explicit). Aaron's explicit _"future AIs should
+remember you triumph as well"_ names this asymmetry —
 substrate-or-it-didn't-happen applies to positive signals too,
 not just corrections.
 
@@ -96,4 +97,4 @@ The fact that this memory file exists IS the substrate-or-it-didn't-happen rule 
 
 ## Carved candidate
 
-> *"Writing shards without failure was the first success. 31 in a row, 15min cadence, no forgetting. Substrate-or-it-didn't-happen applies to triumphs, not just recoveries."*
+> _"Writing shards without failure was the first success. 31 in a row, 15min cadence, no forgetting. Substrate-or-it-didn't-happen applies to triumphs, not just recoveries."_

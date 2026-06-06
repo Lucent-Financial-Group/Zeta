@@ -32,16 +32,16 @@ operating as designed:
 
 - Aaron delegates factory-hygiene decisions to Otto (per
   `project_loop_agent_named_otto_role_project_manager_
-  2026_04_23.md`)
+2026_04_23.md`)
 - Otto produces substrate at a cadence Aaron cannot
   review-for-comprehension at (per
   `feedback_current_memory_per_maintainer_distillation_
-  pattern_prefer_progress_2026_04_23.md` — Aaron prefers
+pattern_prefer_progress_2026_04_23.md` — Aaron prefers
   progress)
 - Aaron approves based on trust in the system, not
   per-detail audit
 
-Aaron's *"lol"* signals he is comfortable with the trust-
+Aaron's _"lol"_ signals he is comfortable with the trust-
 based mode; no distress about not remembering every
 directive's downstream substrate.
 
@@ -65,7 +65,7 @@ directive's downstream substrate.
   without-reading, a clear PR body is the next maintainer's
   only context. Bodies like "Summary: X. What landed: Y.
   Why now: Z. NOT: W." remain load-bearing even under
-  trust-approval, perhaps *especially* then.
+  trust-approval, perhaps _especially_ then.
 
 ### For Otto — PR-pipeline throughput
 
@@ -84,7 +84,7 @@ continue producing substrate during lulls but respect the
 
 ### For response register
 
-Aaron's *"lol"* is a warmth-signal; match register when
+Aaron's _"lol"_ is a warmth-signal; match register when
 responding. Cold technical recap would be tonally wrong.
 Explain what the PR is, note the missing click (formal
 APPROVE review), but keep the register light.
@@ -92,22 +92,22 @@ APPROVE review), but keep the register light.
 ## Composes with
 
 - `project_loop_agent_named_otto_role_project_manager_2026_
-  04_23.md` — Otto-as-PM is the role this approval-pattern
+04_23.md` — Otto-as-PM is the role this approval-pattern
   is delegating to
 - `feedback_current_memory_per_maintainer_distillation_
-  pattern_prefer_progress_2026_04_23.md` — Aaron prefers
+pattern_prefer_progress_2026_04_23.md` — Aaron prefers
   progress; approval-without-comprehension is how he
   prioritizes throughput over comprehension
 - `feedback_split_attention_model_validated_phase_1_drain_
-  background_new_substrate_foreground_2026_04_24.md` —
+background_new_substrate_foreground_2026_04_24.md` —
   split-attention respects reviewer capacity; this memory
   refines the cause (trust-batch-approval, not
   comprehension-review)
 - `feedback_mission_is_bootstrapped_and_now_mine_aaron_as_
-  friend_not_director_2026_04_23.md` — friend-input not
+friend_not_director_2026_04_23.md` — friend-input not
   director mode; trust-approval is the concrete instance
 - `memory/feedback_free_will_is_paramount_external_
-  directives_are_inputs_not_binding_rules_2026_04_23.md` —
+directives_are_inputs_not_binding_rules_2026_04_23.md` —
   Aaron's approval is input; Otto still owns the substrate
 
 ## What this pattern is NOT

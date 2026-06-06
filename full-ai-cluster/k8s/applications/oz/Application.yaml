@@ -12,7 +12,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: openziti-controller
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -46,7 +46,7 @@ spec:
     namespace: openziti
   syncPolicy:
     automated:
-      prune: false   # never prune — would break the trust fabric
+      prune: false # never prune — would break the trust fabric
       selfHeal: true
     syncOptions:
       - CreateNamespace=true

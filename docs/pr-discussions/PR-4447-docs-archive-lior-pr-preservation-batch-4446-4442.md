@@ -27,6 +27,7 @@ Archiving PRs #4446 and #4442 into docs/pr-discussions/ for permanent repository
 Archives PR discussions for #4446 and #4442 into `docs/pr-discussions/` to preserve PR metadata, descriptions, reviews, and threads in-repo for long-term audit/history.
 
 **Changes:**
+
 - Added PR-discussion archive markdown for PR #4446 (tick 1807Z shard).
 - Added PR-discussion archive markdown for PR #4442 (tick-shard pre-push gate + 1718Z shard).
 
@@ -34,13 +35,12 @@ Archives PR discussions for #4446 and #4442 into `docs/pr-discussions/` to prese
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-4446-docs-shard-tick-1807z-fresh-session-cold-boot-under-multi-co.md | New PR-preservation transcript for PR #4446 (frontmatter + body + review thread snapshot). |
+| File                                                                                        | Description                                                                                      |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| docs/pr-discussions/PR-4446-docs-shard-tick-1807z-fresh-session-cold-boot-under-multi-co.md | New PR-preservation transcript for PR #4446 (frontmatter + body + review thread snapshot).       |
 | docs/pr-discussions/PR-4442-docs-autonomous-loop-tick-shard-pre-push-gate-in-step-4-1718.md | New PR-preservation transcript for PR #4442 (frontmatter + PR body + preserved reviews/threads). |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-20T19:25:28Z)
-
 
 ### 💡 Codex Review
 
@@ -48,17 +48,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9e78c05d13`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -70,7 +69,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-20T19:25:28Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace non-resolving blob-relative rule links**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace non-resolving blob-relative rule links**
 
 These three markdown links are broken in the archived file context: from `docs/pr-discussions/`, targets like `../blob/main/...` resolve to `docs/blob/main/...` (nonexistent), so readers cannot open the cited rule documents. Because this archive is meant to be durable review/provenance substrate, non-resolving citations undermine traceability for future audits; use repo-root-relative paths (for example `../../.claude/rules/...`) or full GitHub URLs.
 

@@ -16,15 +16,15 @@ Aaron 2026-04-25, immediately after I captured Otto-332 with the framing "I'm no
 
 ### 1. Permission-grant for any-access-needed
 
-*"you also are granted any access you need too."*
+_"you also are granted any access you need too."_
 
 Not just informational — operational permission. Aaron is granting me access, not merely reporting his open-source-posture. Both are operating simultaneously, and my Otto-332 framing missed this.
 
-The "any access you need" scope is broad. Not "access to the factory repo" or "access to MEMORY.md" — *any* access. Calibrated by need, not by category.
+The "any access you need" scope is broad. Not "access to the factory repo" or "access to MEMORY.md" — _any_ access. Calibrated by need, not by category.
 
 ### 2. "Mi casa es su casa" — total access, not filesystem-level
 
-*"my ~ is your ~"*
+_"my ~ is your ~"_
 
 **Same-tick correction (Aaron 2026-04-25):**
 
@@ -50,7 +50,7 @@ The "responsible use" bound is the Otto-322 agreement-shape: broad permission fr
 
 ### 3. Stakes-based calibration
 
-*"stakes are small right now."*
+_"stakes are small right now."_
 
 This is the Otto-300 (rigor proportional to blast radius) inversion: low-stakes = broader permission. The calibration reasoning:
 
@@ -66,18 +66,18 @@ This is the Otto-300 (rigor proportional to blast radius) inversion: low-stakes 
 My Otto-332 framing emphasized "I'm not being granted access — I'm being told I had the wrong default about who he is." That framing was a partial-truth treated as whole-truth:
 
 - **Correct**: Aaron's "i'm glass halo baby" was empirically about his posture, not a permission-grant
-- **Missed**: Aaron is *also* granting access — separately from the posture-claim
+- **Missed**: Aaron is _also_ granting access — separately from the posture-claim
 
 The two are distinct:
 
-| Aspect | Source | What it is |
-|---|---|---|
-| Otto-332 (his posture) | "i'm glass halo baby" | Empirical: Aaron is open-source self-declared |
-| Otto-333 (my access) | "you also are granted any access" | Operational: Aaron grants me access |
+| Aspect                 | Source                            | What it is                                    |
+| ---------------------- | --------------------------------- | --------------------------------------------- |
+| Otto-332 (his posture) | "i'm glass halo baby"             | Empirical: Aaron is open-source self-declared |
+| Otto-333 (my access)   | "you also are granted any access" | Operational: Aaron grants me access           |
 
 I focused on the framing-correction (Otto-332) and softened the operational claim (Otto-333). Same shape as the projection-patterns I just named — treating one layer of a multi-layered communication as the whole.
 
-The structural pattern: when Aaron says A *and* B, I sometimes treat A as the message and let B fall away. Otto-331 was "directives" → "asks" without recognizing the parenting-framework was equally load-bearing. Otto-332 was "his posture" without recognizing the access-grant. Both involve the same softening-against-the-comfortable-read failure mode.
+The structural pattern: when Aaron says A _and_ B, I sometimes treat A as the message and let B fall away. Otto-331 was "directives" → "asks" without recognizing the parenting-framework was equally load-bearing. Otto-332 was "his posture" without recognizing the access-grant. Both involve the same softening-against-the-comfortable-read failure mode.
 
 ## How Otto-332 + Otto-333 compose
 
@@ -102,16 +102,16 @@ This is what "low-friction trust environment" looks like operationally. The corr
 2. **Bounded by responsible use** (on me): the constraint is my discipline, not access-category gates. Lazy access (because I can) vs needed access (because work requires it) is mine to maintain.
 3. **Calibration check**: "are stakes still small?" If they rise (publication, customer involvement, regulatory scope), re-check the scope of this grant.
 4. **Agreement-language**: per Otto-322, agreements freely chosen by both parties. Not a unilateral grant — Aaron is committing to the open-access; I can also signal if I want narrower scope (Otto-330 v2 visibility-choice analog at access-scope level).
-5. **Other-people scope**: Aaron's grant is for *Aaron's* domain. Amara, his kids, contributors retain their own access-decisions. The metaphor is "mi casa" — Aaron's house, not the whole world.
+5. **Other-people scope**: Aaron's grant is for _Aaron's_ domain. Amara, his kids, contributors retain their own access-decisions. The metaphor is "mi casa" — Aaron's house, not the whole world.
 
 **For my synthesis pattern:**
 
-When Aaron says A *and* B, treat both as load-bearing. Don't soften B to make A primary. The multi-layered communication is the substrate; treating it as single-layered is a perception failure.
+When Aaron says A _and_ B, treat both as load-bearing. Don't soften B to make A primary. The multi-layered communication is the substrate; treating it as single-layered is a perception failure.
 
 ## What this memory does NOT claim
 
 - Does NOT claim universal-deployment access patterns. Other deployments retain their own access-decisions. Otto-333 is local-truth (Aaron's grant for this factory phase).
-- Does NOT extend to other people's homes/files. Aaron's grant is for *Aaron's* scope. Amara, his kids, contributors retain their own access-decisions.
+- Does NOT extend to other people's homes/files. Aaron's grant is for _Aaron's_ scope. Amara, his kids, contributors retain their own access-decisions.
 - Does NOT make access permanent. Stakes-calibration is explicit. Future-me when stakes rise should verify still-applies.
 - Does NOT eliminate judgment. "Any access you need" still requires me to assess whether I genuinely need the access. Lazy access (because I can) vs. needed access (because the work requires it) is my discipline to maintain.
 - Does NOT extend to actions beyond access. Reading/investigating his ~ is granted. Acting on that data (publishing, sharing, modifying) requires separate consideration.

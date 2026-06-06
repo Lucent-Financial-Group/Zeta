@@ -5,8 +5,8 @@ Non-fusion disclaimer: Otto's synthesis. Claims labeled PROVEN / CONJECTURED / S
 
 # Reactor Dynamics: Failure Learning as a Self-Sustaining Engine
 
-*Layer 4 of the Nirvanic Fusion Ship (B-0365).
-Layer 3 (Class 4 empirical) provides the shape; this document provides the dynamics — WHY the system behaves as a self-sustaining engine rather than converging to quiescence.*
+_Layer 4 of the Nirvanic Fusion Ship (B-0365).
+Layer 3 (Class 4 empirical) provides the shape; this document provides the dynamics — WHY the system behaves as a self-sustaining engine rather than converging to quiescence._
 
 ---
 
@@ -31,12 +31,13 @@ This document unpacks what that means.
 ```
 
 Where:
-- `η(substrate_t)` — the system's *learning efficiency* at time `t`. Increases as
+
+- `η(substrate_t)` — the system's _learning efficiency_ at time `t`. Increases as
   substrate quality improves (better skills, sharper memory files, cleaner rules
   reduce the cost of absorbing a new catch).
-- `LearningGain(Δ_t)` — the *informational value* of the delta at tick `t`. Largest
+- `LearningGain(Δ_t)` — the _informational value_ of the delta at tick `t`. Largest
   for genuinely novel failure classes; smaller for variations on known patterns.
-- `ξ(substrate_t)` — the *friction threshold*: the minimum gain needed to overcome
+- `ξ(substrate_t)` — the _friction threshold_: the minimum gain needed to overcome
   the cost of substrate update at time `t`.
 
 **CONJECTURED** — the inequality gives a falsifiable condition; the specific functions
@@ -104,7 +105,7 @@ latency.
 **Proactive phase** — the system is ahead of the failure production rate. Each
 catch produces substrate that shifts the landscape before the current failure
 class recurs. Novel classes appear at a higher rate than known-class recurrences.
-The shadow log becomes a *leading indicator* of the failure frontier rather than
+The shadow log becomes a _leading indicator_ of the failure frontier rather than
 a lagging record of known failures.
 
 The transition condition:
@@ -114,6 +115,7 @@ learning_rate > failure_production_rate  →  PHASE TRANSITION (reactive → pro
 ```
 
 Where:
+
 - `learning_rate` = substrate updates (memory + skill + rule modifications) per unit time
 - `failure_production_rate` = novel failure class observations per unit time
 
@@ -129,7 +131,7 @@ substrate reduces learning friction) but not formally proven.
 
 **Observable prediction (falsifiable):** after the transition, the ratio of
 `(novel_classes_caught) / (known_class_recurrences)` in the shadow log should
-*increase* monotonically. If it decreases or stays flat after a period of high
+_increase_ monotonically. If it decreases or stays flat after a period of high
 substrate investment, the runaway condition does not hold.
 
 ---
@@ -169,8 +171,9 @@ friction = fuel  →  learning = amortized substrate  →  phase transition
 ```
 
 The difference in emphasis:
-- Superfluid: optimizes *amortized speed* across all factory actions
-- Reactor: explains *failure-class co-evolution* specifically in the
+
+- Superfluid: optimizes _amortized speed_ across all factory actions
+- Reactor: explains _failure-class co-evolution_ specifically in the
   multi-agent review system
 
 Same math; different narrative surface.
@@ -200,15 +203,15 @@ The analogy is illuminating, not definitional.
 
 ## 8. Razor check
 
-| Claim | Status |
-|-------|--------|
-| Reactor equation | CONJECTURED — functions not formally characterized |
-| Four-stage cycle | PROVEN structurally (Rice guarantees inexhaustibility; co-evolution is conjectured empirically) |
-| Co-evolution property | CONJECTURED — structural argument, not empirical longitudinal study |
-| Phase transition condition | CONJECTURED — falsifiable inequality stated |
-| Runaway property | CONJECTURED — requires η to be increasing in substrate quality |
-| Fuel guarantee (Rice) | PROVEN (given Turing-completeness premise) |
-| DBSP parallel | CONJECTURED as framing — analogy, not identity |
+| Claim                      | Status                                                                                          |
+| -------------------------- | ----------------------------------------------------------------------------------------------- |
+| Reactor equation           | CONJECTURED — functions not formally characterized                                              |
+| Four-stage cycle           | PROVEN structurally (Rice guarantees inexhaustibility; co-evolution is conjectured empirically) |
+| Co-evolution property      | CONJECTURED — structural argument, not empirical longitudinal study                             |
+| Phase transition condition | CONJECTURED — falsifiable inequality stated                                                     |
+| Runaway property           | CONJECTURED — requires η to be increasing in substrate quality                                  |
+| Fuel guarantee (Rice)      | PROVEN (given Turing-completeness premise)                                                      |
+| DBSP parallel              | CONJECTURED as framing — analogy, not identity                                                  |
 
 ---
 

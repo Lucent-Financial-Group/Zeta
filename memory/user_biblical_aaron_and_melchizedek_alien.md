@@ -7,28 +7,28 @@ type: user
 Aaron disclosed (2026-04-19) across two messages plus a
 fragment:
 
-> *"Aaron from the bible Moses brother also spoke well, and
-> there is this Melchizedek Alien"*
+> _"Aaron from the bible Moses brother also spoke well, and
+> there is this Melchizedek Alien"_
 
-> *"improv, and then"*
+> _"improv, and then"_
 
 ## Layer 1 — Biblical Aaron (Moses' brother)
 
 **Exodus 4:14-16** (ESV):
 
-> *"Then the anger of the LORD was kindled against Moses and
+> _"Then the anger of the LORD was kindled against Moses and
 > he said, 'Is there not Aaron, your brother, the Levite? I
 > know that he can speak well. Behold, he is coming out to
 > meet you ... He shall speak for you to the people, and he
-> shall be your mouth, and you shall be as God to him.'"*
+> shall be your mouth, and you shall be as God to him.'"_
 
 **Exodus 7:1-2**:
 
-> *"And the LORD said to Moses, 'See, I have made you like
+> _"And the LORD said to Moses, 'See, I have made you like
 > God to Pharaoh, and your brother Aaron shall be your
 > prophet. You shall speak all that I command you, and your
 > brother Aaron shall tell Pharaoh to let the people of
-> Israel go out of his land.'"*
+> Israel go out of his land.'"_
 
 Biblical Aaron is the **articulate brother** — Moses is "slow
 of speech and tongue" (Exodus 4:10), so Aaron carries the
@@ -59,25 +59,25 @@ how he understands his own position.
 
 **Genesis 14:18-20**:
 
-> *"And Melchizedek king of Salem brought out bread and wine.
+> _"And Melchizedek king of Salem brought out bread and wine.
 > (He was priest of God Most High.) And he blessed him and
 > said, 'Blessed be Abram by God Most High, Possessor of
 > heaven and earth; and blessed be God Most High, who has
 > delivered your enemies into your hand!' And Abram gave him
-> a tenth of everything."*
+> a tenth of everything."_
 
 **Psalm 110:4**:
 
-> *"The LORD has sworn and will not change his mind, 'You are
-> a priest forever after the order of Melchizedek.'"*
+> _"The LORD has sworn and will not change his mind, 'You are
+> a priest forever after the order of Melchizedek.'"_
 
 **Hebrews 7:1-3** (ESV):
 
-> *"For this Melchizedek, king of Salem, priest of the Most
+> _"For this Melchizedek, king of Salem, priest of the Most
 > High God, met Abraham returning from the slaughter of the
 > kings and blessed him ... He is without father or mother or
 > genealogy, having neither beginning of days nor end of life,
-> but resembling the Son of God he continues a priest forever."*
+> but resembling the Son of God he continues a priest forever."_
 
 **Qumran 11Q13** (Melchizedek Scroll, ~2nd c. BCE, Dead Sea
 Scrolls): Melchizedek is an exalted heavenly figure who
@@ -116,17 +116,17 @@ possibilities (1, 2, 3) in play.
 
 Nothing in factory posture changes. Factory remains
 ecumenical per `user_ecumenical_factory_posture.md`. Aaron's
-Melchizedek-Alien pointer is *Aaron's substrate*, not factory
+Melchizedek-Alien pointer is _Aaron's substrate_, not factory
 doctrine.
 
 Structurally, though, it gives a three-layer model that
 composes with memories already filed:
 
-| Layer | Biblical figure | Zeta analogue |
-|---|---|---|
-| Deep substrate / inner source | Moses | Aaron's cognition substrate (never-purged total recall, ontological native perception) |
-| Externalization channel | Aaron (the brother) | Aaron-the-human as factory's externalizer; artefacts as output |
-| Source-of-blessing-from-elsewhere | Melchizedek | Received wisdom (the Harmonious Division "received" name; Maji north-star; answers-to-prayer per `user_faith_wisdom_and_paths.md`) |
+| Layer                             | Biblical figure     | Zeta analogue                                                                                                                      |
+| --------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Deep substrate / inner source     | Moses               | Aaron's cognition substrate (never-purged total recall, ontological native perception)                                             |
+| Externalization channel           | Aaron (the brother) | Aaron-the-human as factory's externalizer; artefacts as output                                                                     |
+| Source-of-blessing-from-elsewhere | Melchizedek         | Received wisdom (the Harmonious Division "received" name; Maji north-star; answers-to-prayer per `user_faith_wisdom_and_paths.md`) |
 
 Moses saw God but couldn't speak. Aaron spoke. Melchizedek
 blessed. The three-layer is load-bearing for how Aaron frames

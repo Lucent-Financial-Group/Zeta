@@ -1,14 +1,5 @@
-import {
-  OrgEventKind,
-  type ChangeSet,
-  type OrgEvent,
-  type WorkItem,
-} from "../../domain/src/index.ts";
-import {
-  TelemetryMetricKind,
-  type TelemetryAttributes,
-  type TelemetryPort,
-} from "./telemetry-port.ts";
+import { OrgEventKind, type ChangeSet, type OrgEvent, type WorkItem } from "../../domain/src/index.ts";
+import { TelemetryMetricKind, type TelemetryAttributes, type TelemetryPort } from "./telemetry-port.ts";
 
 export type DoraScopeKind = "project" | "initiative" | "batch";
 

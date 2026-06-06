@@ -46,8 +46,8 @@ The finding→fix→response→resolution cycle is a
 
 This structure is rare in the wild (most PR datasets have
 finding + fix but not the reasoning + resolution +
-policy-pushback). Per Aaron: *"you have the data you need
-to tune copilot over time"*.
+policy-pushback). Per Aaron: _"you have the data you need
+to tune copilot over time"_.
 
 ## Why this matters
 
@@ -73,11 +73,11 @@ load-bearing for a BACKLOG'd research arc.
 
 Three candidate shapes named in the BACKLOG row:
 
-| Shape | Pros | Cons |
-|---|---|---|
+| Shape                                                                    | Pros                                                                              | Cons                                                 |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | **Periodic `gh api` → markdown under `docs/history/pr-reviews/PR-NNN/`** | Human-readable; grep-able; composes with existing `docs/hygiene-history/` pattern | Copy-out pattern; not atomic with merge; archive lag |
-| **Git-notes on merge commits** (`git notes add --ref=pr-review`) | Truly git-native; no new file tree | Less human-readable; git-notes tooling less common |
-| **Hybrid: markdown + git-notes index** | Best of both | More moving parts; schema design cost |
+| **Git-notes on merge commits** (`git notes add --ref=pr-review`)         | Truly git-native; no new file tree                                                | Less human-readable; git-notes tooling less common   |
+| **Hybrid: markdown + git-notes index**                                   | Best of both                                                                      | More moving parts; schema design cost                |
 
 Hybrid is likely the right answer — markdown as the
 durable human-readable surface; git-notes as the machine-
@@ -138,15 +138,15 @@ for this row.
 ## Composes with
 
 - `memory/project_factory_is_git_native_github_first_host_
-  hygiene_cadences_for_frictionless_operation_2026_04_23.md`
+hygiene_cadences_for_frictionless_operation_2026_04_23.md`
   — the positioning this row implements (git-native
   = host-neutral persistence of reviewer substrate)
 - `memory/feedback_codex_as_substantive_reviewer_teamwork_
-  pattern_address_findings_honestly_aaron_endorsed_
-  2026_04_23.md` — the reviewer-teamwork pattern whose
+pattern_address_findings_honestly_aaron_endorsed_
+2026_04_23.md` — the reviewer-teamwork pattern whose
   outputs the archive preserves
 - `memory/feedback_aaron_trust_based_approval_pattern_
-  approves_without_comprehending_details_2026_04_23.md`
+approves_without_comprehending_details_2026_04_23.md`
   — Aaron approves on meta-signals; Copilot/Codex do the
   substantive-review delta; their findings deserve to
   persist
@@ -155,7 +155,7 @@ for this row.
   archive IS the corpus the peer-review experiment
   would need
 - `memory/feedback_multi_agent_coordination_cli_tools_
-  first_docker_for_isolation_reproducibility_2026_04_23.md`
+first_docker_for_isolation_reproducibility_2026_04_23.md`
   — CLI-first multi-agent prototyping; the archive
   serves as the dataset those prototypes consume
 - `memory/feedback_honor_those_that_came_before.md` —
@@ -171,8 +171,8 @@ for this row.
   gated on training pipeline + access + licensing.
 - **Not an exfiltration of GitHub data.** The archive
   only captures PR content this agent + human maintainer
-  + Copilot + Codex already authored in this repo; no
-  cross-repo or organization scraping.
+  - Copilot + Codex already authored in this repo; no
+    cross-repo or organization scraping.
 - **Not a license to flood the archive with every
   triviality.** Future filtering may prune low-value
   threads; first-run baseline is everything, subsequent

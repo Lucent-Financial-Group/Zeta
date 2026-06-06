@@ -1,16 +1,16 @@
 # Technical Debt — Zeta (System-Under-Test)
 
-*Scope: `project` — this document is Zeta-specific.
+_Scope: `project` — this document is Zeta-specific.
 The factory-side primer
 [`docs/TECH-DEBT.md`](TECH-DEBT.md) owns the vocabulary, the
 general class taxonomy, the discovery-automation story, and
 the AI operator-manual contract. This doc names the debt
 classes that are **Zeta-specific** — the DBSP operator
 algebra, the formal-verification portfolio, the F#/.NET
-substrate, and the library-consumer contract.*
+substrate, and the library-consumer contract._
 
-*Read the factory primer first if you are new to the
-project. This doc assumes the primer's framing.*
+_Read the factory primer first if you are new to the
+project. This doc assumes the primer's framing._
 
 ---
 
@@ -33,9 +33,9 @@ project. This doc assumes the primer's framing.*
 ### S1. Operator-algebra correctness debt
 
 The DBSP operator algebra (`D`, `I`, `z⁻¹`, `H`, insert /
-retract duality) is a *mathematical* contract. Debt here is
-an operator implementation whose behaviour is *compatible
-with the tests we have* but does not witness the full law
+retract duality) is a _mathematical_ contract. Debt here is
+an operator implementation whose behaviour is _compatible
+with the tests we have_ but does not witness the full law
 the algebra demands.
 
 **Symptom:** the operator passes FsCheck properties and
@@ -46,7 +46,7 @@ completeness) has not been proved and may not hold.
 **Example from this repo:**
 
 - `LawRunner has no test covering operators that omit the
-  marker tag` (`docs/DEBT.md`) — the law runner claims to
+marker tag` (`docs/DEBT.md`) — the law runner claims to
   verify the `ILinearOperator` tag; no fixture implements
   `IOperator<_>` without the tag to confirm the runner
   does not silently rely on compile-time dispatch.
@@ -61,8 +61,8 @@ skill; Tariq (Lean review) on mathlib-backed proofs.
 ### S2. Formal-proof-alignment debt
 
 Lean proofs, TLA+ models, Alloy models, and Z3 queries are
-specs *about* the F# code. When the F# code evolves and the
-spec does not, the spec is still valid *on paper* but no
+specs _about_ the F# code. When the F# code evolves and the
+spec does not, the spec is still valid _on paper_ but no
 longer proves anything about the shipped library.
 
 **Symptom:** spec compiles, spec file looks current, but a
@@ -85,7 +85,7 @@ skill round-cadence; Soraya routing.
 Zeta ships three published libraries (`Zeta.Core`,
 `Zeta.Core.CSharp`, `Zeta.Bayesian`). Every public member
 is a forever-contract. Debt here is a type / method / field
-whose publication was *implicit* — made public by transitive
+whose publication was _implicit_ — made public by transitive
 exposure, not by a `public-api-designer` gate.
 
 **Symptom:** `public-api-designer` (Ilyana) review flags a
@@ -96,7 +96,7 @@ know existed.
 **Example from this repo:**
 
 - `Op<'T> implicitly publicised as a plugin subclass-
-  extension point` (`docs/DEBT.md`) —
+extension point` (`docs/DEBT.md`) —
   `Circuit.RegisterStream<'T>` accepts `Op<'T>`, which
   makes every abstract member on `Op` / `Op<'T>` a forever
   plugin contract without design intent. Fix path: narrow
@@ -110,9 +110,9 @@ surface.
 ### S4. Perf-budget debt
 
 Zeta has per-module perf budgets enforced in BenchmarkDotNet
-benchmarks. Debt here is a regression that is *within the
-budget tolerance today* but erodes the margin, or a
-benchmark that was *documented but never written*.
+benchmarks. Debt here is a regression that is _within the
+budget tolerance today_ but erodes the margin, or a
+benchmark that was _documented but never written_.
 
 **Symptom:** Naledi (`performance-engineer`) flags a
 measurement regression; or the tech radar has a Trial row
@@ -122,7 +122,7 @@ exist yet.
 **Example from this repo:**
 
 - `bench/Benchmarks/BloomBench.fs referenced but absent on
-  disk` (`docs/DEBT.md`) — referenced in `docs/BUGS.md`,
+disk` (`docs/DEBT.md`) — referenced in `docs/BUGS.md`,
   `docs/research/bloom-filter-frontier.md`, and
   `docs/TECH-RADAR.md`; the TECH-RADAR Bloom row is stuck
   at Trial until numbers exist.
@@ -136,8 +136,8 @@ promotion-blocking rule.
 `Directory.Build.props` ships with `TreatWarningsAsErrors`,
 `EnableNETAnalyzers=latest-recommended`, and per-rule-
 justified F# warning tuning. Debt here is a warning that
-is *suppressed without per-rule justification*, or an
-analyzer finding that is *triaged to WONT-FIX without ADR*.
+is _suppressed without per-rule justification_, or an
+analyzer finding that is _triaged to WONT-FIX without ADR_.
 
 **Symptom:** a suppression pragma or `<NoWarn>` entry
 appears in a project file without a cited reason; an
@@ -146,7 +146,7 @@ analyzer flags a pattern the team has no policy on.
 **Example from this repo:**
 
 - `SonarAnalyzer.CSharp pinned with 15+ findings waiting for
-  a cleanup pass` (`docs/FACTORY-RESUME.md` honest-scope-
+a cleanup pass` (`docs/FACTORY-RESUME.md` honest-scope-
   limits) — this is also a factory-class-3 debt (pinned-
   but-not-referenced), with Zeta-specific flavour.
 
@@ -159,7 +159,7 @@ discipline.
 
 Features behind `docs/FEATURE-FLAGS.md` gates are
 preview-quality: the implementation exists, the contract is
-*not* stable, and callers must acknowledge the preview
+_not_ stable, and callers must acknowledge the preview
 status explicitly.
 
 **Symptom:** a preview flag remains enabled long after the
@@ -169,11 +169,11 @@ acknowledging the gate.
 **Example from this repo:**
 
 - `Durability.createBackingStore invalidOp message spans 6
-  lines of prose` (`docs/DEBT.md`) — preview surface leaks
+lines of prose` (`docs/DEBT.md`) — preview surface leaks
   English-prose error; fix: `DbspError.WitnessDurablePreview`
   case so callers can pattern-match.
 - `.github/PULL_REQUEST_TEMPLATE.md missing a Feature-Flag
-  checkbox` (`docs/DEBT.md`) — PRs adding preview gates did
+checkbox` (`docs/DEBT.md`) — PRs adding preview gates did
   not trigger review of `docs/FEATURE-FLAGS.md`.
 
 **Cadence that catches it:** PR-template checkbox; ADR
@@ -184,7 +184,7 @@ reversion-trigger when the preview milestone is reached.
 Zeta's install script (`tools/setup/install.sh`) is
 consumed three ways: dev laptops, CI runners, devcontainer
 images (`GOVERNANCE.md §24`). Debt here is a CI path that
-*deliberately skips* the install script and uses a
+_deliberately skips_ the install script and uses a
 tool-specific action instead, creating parity risk.
 
 **Symptom:** a toolchain component installed only by
@@ -195,7 +195,7 @@ validate.
 **Example from this repo:**
 
 - `CI parity-swap — gate.yml runs actions/setup-dotnet not
-  tools/setup/install.sh` (`docs/DEBT.md`) — explicit
+tools/setup/install.sh` (`docs/DEBT.md`) — explicit
   intentional debt; the fix requires `mise trust`
   hardening first.
 - `Verifier-jar SHA-256 pinning` (`docs/DEBT.md`) — TOFU
@@ -208,7 +208,7 @@ owns the install script; round-cadence CI-parity audit.
 
 Non-deterministic tests in the FsCheck suite. Generic factory
 class #9 (test-flakiness) with a Zeta-specific flavour: the
-FsCheck property may be *inherently probabilistic* (FPR
+FsCheck property may be _inherently probabilistic_ (FPR
 assertion, shrink behaviour) and needs seed-pinning rather
 than root-cause fix.
 
@@ -282,7 +282,7 @@ Zeta-specific additions:
   parity. Debt class S7 primary coverage.
 - **Build gate (GOVERNANCE §1 / FACTORY-HYGIENE row #1)** —
   `TreatWarningsAsErrors` + `EnableNETAnalyzers=latest-
-  recommended`. Debt class S5 primary coverage.
+recommended`. Debt class S5 primary coverage.
 
 ---
 
@@ -300,7 +300,7 @@ patterns:
   yet (memory:
   `feedback_no_file_format_backcompat_or_db_upgrade_concern_yet.md`);
   no migration specs until Aaron declares maturity. This
-  bounds what *counts* as S6 preview-debt today.
+  bounds what _counts_ as S6 preview-debt today.
 - **OpenSpec minus archive / change-history.** The upstream
   workflow's archive / history directories are intentionally
   unused (`GOVERNANCE.md §25`). If `openspec init`
@@ -330,7 +330,7 @@ patterns:
 
 ---
 
-*This document is audited on round cadence. Debt rows here
+_This document is audited on round cadence. Debt rows here
 reference live ledger entries; when a ledger entry resolves,
 this doc's citation updates or the class stays with a
-different example. No citation, no class.*
+different example. No citation, no class._

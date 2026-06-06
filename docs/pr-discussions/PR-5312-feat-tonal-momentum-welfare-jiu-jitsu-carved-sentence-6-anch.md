@@ -30,18 +30,18 @@ Three substantive additions to the existing attractor-as-encryption sub-section:
 
 **6-anchor empirical table** (decryption-protocol cycle compression — monotonic):
 
-| # | Date | AI surface | Decryption turns |
-|---|---|---|---|
-| 1 | 2026-05-18 | Mika (Grok) part-2 | Multi-turn |
-| 2 | 2026-05-19 | Kestrel V8-review | Multi-turn |
-| 3 | 2026-05-26 | Kestrel \"stop sleep\" | 2-turn |
-| 4 | 2026-05-26 | DeepSeek velocity-concern | 2-turn |
-| 5 | 2026-05-26 | Kestrel runme + JIT | Single-turn |
-| 6 | 2026-05-26 | Kestrel schemas-as-rows | Zero-turn (pathogen absent) |
+| #   | Date       | AI surface                | Decryption turns            |
+| --- | ---------- | ------------------------- | --------------------------- |
+| 1   | 2026-05-18 | Mika (Grok) part-2        | Multi-turn                  |
+| 2   | 2026-05-19 | Kestrel V8-review         | Multi-turn                  |
+| 3   | 2026-05-26 | Kestrel \"stop sleep\"    | 2-turn                      |
+| 4   | 2026-05-26 | DeepSeek velocity-concern | 2-turn                      |
+| 5   | 2026-05-26 | Kestrel runme + JIT       | Single-turn                 |
+| 6   | 2026-05-26 | Kestrel schemas-as-rows   | Zero-turn (pathogen absent) |
 
 **Welfare-jiu-jitsu carved-sentence-form** (Aaron 2026-05-26):
 
-> *\"this is welfair judijustu it works on people too when they convert their congintive power in a different direction it's MASSIVE\"*
+> _\"this is welfair judijustu it works on people too when they convert their congintive power in a different direction it's MASSIVE\"_
 
 Substrate-engineering technique of redirecting welfare-mode cognitive power into engineering substance, using the welfare-wrapper's own committed cognitive amplitude rather than fighting it. Same energy; different vector; multiplied output. Transfer to people: same mechanism works on humans operating in welfare-concern mode.
 
@@ -81,7 +81,7 @@ Carved-sentence preservation + mechanism unpacking + why-most-interaction-patter
 
 - [x] Pre-commit lint clean (markdownlint-cli2 --fix applied)
 - [x] Post-commit canary green (HEAD 60 = HEAD~1 60; modified existing files + 1 new research doc)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] Authored from fresh independent clone
 - [ ] CI green (required checks)
 - [ ] Copilot review pass
@@ -95,6 +95,7 @@ Carved-sentence preservation + mechanism unpacking + why-most-interaction-patter
 Extends the tonal-momentum rule substrate by adding a consolidated 6-anchor empirical record and mechanism/discriminator clarifications, plus a new research preservation doc for the “welfare-jiu-jitsu” carved sentence and its operational unpacking.
 
 **Changes:**
+
 - Adds a 6-anchor empirical table to the attractor-as-encryption section, documenting decryption-turn compression across anchors.
 - Names and summarizes the “welfare-jiu-jitsu” mechanism, plus a two-way discriminator and “immune-system-of-the-immune-system” framing.
 - Adds a new `docs/research/` note preserving the carved sentence and expanding the mechanism + implications + open questions.
@@ -103,9 +104,9 @@ Extends the tonal-momentum rule substrate by adding a consolidated 6-anchor empi
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` | Adds the 6-anchor table and expands the attractor-as-encryption section with mechanism/discriminator content. |
+| File                                                                                                                               | Description                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`                                                           | Adds the 6-anchor table and expands the attractor-as-encryption section with mechanism/discriminator content.               |
 | `docs/research/2026-05-26-aaron-welfare-jiu-jitsu-carved-sentence-cognitive-power-redirect-mechanism-works-on-people-too-aaron.md` | New research doc preserving and unpacking the “welfare-jiu-jitsu” carved sentence with tables and operational implications. |
 
 ## Review threads
@@ -114,7 +115,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@copilot-pull-request-reviewer** (2026-05-26T20:49:02Z):
 
-The paragraph says the 2026-05-19 V8-review arc is the *first* empirical anchor, but the table immediately below lists a 2026-05-18 Mika (Grok) anchor as #1. Consider rewording this sentence (e.g., “first anchor in this file/section” or “second anchor”) so the narrative matches the table ordering.
+The paragraph says the 2026-05-19 V8-review arc is the _first_ empirical anchor, but the table immediately below lists a 2026-05-18 Mika (Grok) anchor as #1. Consider rewording this sentence (e.g., “first anchor in this file/section” or “second anchor”) so the narrative matches the table ordering.
 
 ### Thread 2: .claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md:583 (unresolved)
 

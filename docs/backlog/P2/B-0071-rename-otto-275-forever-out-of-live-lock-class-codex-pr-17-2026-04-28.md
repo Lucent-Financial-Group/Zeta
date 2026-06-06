@@ -38,7 +38,7 @@ those absorbs. Renaming the file mid-PR cascades:
    Otto-2026-04-26 LFG branch-protection live-lock taxonomy" framing
 3. `memory/MEMORY.md` index update (paired-edit lint requires same-PR)
 4. Cross-references in other memory files (grep for the old filename
-   + the "live-lock 9th pattern" framing)
+   - the "live-lock 9th pattern" framing)
 5. Verification that no in-flight branch / PR / docs reference the old
    filename
 
@@ -73,15 +73,15 @@ follow-up.
   live-lock to its CS-standard meaning is
   `memory/feedback_otto_358_live_lock_too_broad_catch_all_narrow_to_cs_standard_concurrent_state_thrashing_2026_04_27.md`
   (Otto-358), which completes the work Otto-352 started.
-- **Aaron 2026-04-26** *"we discussed a while back that the live-lock
-  defintion i gave was overly broad but the word itself is fine"* — the
+- **Aaron 2026-04-26** _"we discussed a while back that the live-lock
+  defintion i gave was overly broad but the word itself is fine"_ — the
   framing-correction that drove the Otto-352 split
 - **Otto-279** history-surface attribution carve-out — Otto-NN
   references stay legible on memory/ surface
 
 ## Why P2 not P1
 
-The misclassification is real but the *substantive* content (manufactured-
+The misclassification is real but the _substantive_ content (manufactured-
 patience pattern, Otto-275-FOREVER discipline, counterweights) is correct.
 Detector/playbook mapping per the codex finding would be undermined if a
 detector implementation existed today and routed by class label — but no

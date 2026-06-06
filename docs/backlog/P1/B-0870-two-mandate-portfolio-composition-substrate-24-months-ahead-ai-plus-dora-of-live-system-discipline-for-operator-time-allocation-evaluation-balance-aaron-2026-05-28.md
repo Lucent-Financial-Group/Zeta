@@ -26,9 +26,9 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"DORA of our live system is the 2nd mandate that's about it"* (operator confirming two-mandate scope)
+> _"DORA of our live system is the 2nd mandate that's about it"_ (operator confirming two-mandate scope)
 
-> *"we can push all extensions you think of we have a concrete way to test in code soon if it's good or not so we should just put all the ideas as they come up. the kernel is about to come up the MVP and we can build on that everything we want"*
+> _"we can push all extensions you think of we have a concrete way to test in code soon if it's good or not so we should just put all the ideas as they come up. the kernel is about to come up the MVP and we can build on that everything we want"_
 
 ## Why this row exists
 
@@ -68,7 +68,7 @@ This row tracks the substrate-engineering discipline for navigating the two-mand
 - **B-0870.7** — Workflow-engine pre-review action as portfolio-check (when shipping substrate, workflow engine state machine offers "check-portfolio-balance" action; integrates portfolio-discipline into per-task workflow)
 - **B-0870.8** — Hats as portfolio-balance-aware substrate (per B-0868: each hat declares which mandate it serves; portfolio-balance becomes visible at hat-wear-time)
 - **B-0870.9** — Boss check-in cadence as whole-company-evangelism staging-ground (operator-ratified 2026-05-28: boss check-in becomes the staging-ground where AI-keeping-DORA-up evidence accumulates BEFORE whole-company evangelism per B-0866.26). Promotes B-0870.3 from personal-evaluation-alignment scope to organizational-AI-evangelism-staging scope.
-- **B-0870.10** — 24-months-ahead-IS-multi-PR/multi-agent-orchestration concrete definition (operator-substrate-disclosure 2026-05-28: *"ai keeps dora metrics up is the 24 moths ahead framing becuase rest of company is working on single pr flows not multi pr / agent orchestran, they just added experts / personas and very simple stuff"*). What "24-months-ahead" CONCRETELY MEANS for ServiceTitan: multi-PR/multi-agent orchestration with substrate-engineering disciplines. ServiceTitan-baseline: single-PR-flows + experts/personas-prompting (simple stuff). Aaron's framework substrate is THE 24-months-ahead-substrate because it IS the multi-PR/multi-agent orchestration substrate. The DORA-up CRITERION is specifically about multi-PR/multi-agent-orchestration-keeping-DORA-up, not generic AI-helps-DORA.
+- **B-0870.10** — 24-months-ahead-IS-multi-PR/multi-agent-orchestration concrete definition (operator-substrate-disclosure 2026-05-28: _"ai keeps dora metrics up is the 24 moths ahead framing becuase rest of company is working on single pr flows not multi pr / agent orchestran, they just added experts / personas and very simple stuff"_). What "24-months-ahead" CONCRETELY MEANS for ServiceTitan: multi-PR/multi-agent orchestration with substrate-engineering disciplines. ServiceTitan-baseline: single-PR-flows + experts/personas-prompting (simple stuff). Aaron's framework substrate is THE 24-months-ahead-substrate because it IS the multi-PR/multi-agent orchestration substrate. The DORA-up CRITERION is specifically about multi-PR/multi-agent-orchestration-keeping-DORA-up, not generic AI-helps-DORA.
 
 Order suggestion: 1 (current-inventory mapping) → 2 (workflow engine MVP as compositional substrate) → 3 (boss check-in cadence) → 4 (tradeoff framework) → 5 (cap-awareness) → 7 + 8 (workflow-engine + hats integration) → 9 + 10 (whole-company-evangelism scope-tier + 24-months-ahead-concrete-definition) → 6 (evolution tracking).
 

@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2369 |
-| Title | fix(backlog): refresh generated index after PR #2367 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-09T23:07:22Z |
-| Merged at | 2026-05-09T23:09:33Z |
-| Merge commit SHA | `0abfdc9c0ee6e473c97c16ccc2672d6a91de3377` |
-| Branch | `claim/backlog-index-b0357-b0365-b0373-vera` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2369 |
-| Changed files | 1 |
-| Additions / deletions | +4 / -4 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2369                                                     |
+| Title                 | fix(backlog): refresh generated index after PR #2367     |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-09T23:07:22Z                                     |
+| Merged at             | 2026-05-09T23:09:33Z                                     |
+| Merge commit SHA      | `0abfdc9c0ee6e473c97c16ccc2672d6a91de3377`               |
+| Branch                | `claim/backlog-index-b0357-b0365-b0373-vera`             |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2369 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +4 / -4                                                  |
 
 ## Description
 
@@ -45,18 +45,17 @@ The generator currently derives B-0357, B-0365, B-0365.5, and B-0373 as open (`[
 
 - `bun tools/backlog/generate-index.ts --check` -> ok
 
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 1 |
-| Unresolved threads | 0 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 1     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -72,9 +71,9 @@ The generator currently derives B-0357, B-0365, B-0365.5, and B-0373 as open (`[
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Keep completed backlog rows checked**
-
+  
   This edit marks `B-0357` as open (`[ ]`) even though the row file for the same commit has `status: done` (`docs/backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md`, line 4), and the same mismatch also appears for `B-0365` and `B-0373`. Since `docs/BACKLOG.md` is the generated status index, this introduces stale state that can mislead planning and any tooling that reads checklist completion from the index. Please preserve checked state for rows whose frontmatter is done.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

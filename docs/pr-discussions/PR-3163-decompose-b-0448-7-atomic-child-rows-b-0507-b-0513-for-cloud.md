@@ -36,15 +36,15 @@ B-0507 (research, unblocked)
 
 ## Child rows
 
-| Slice | Row | Title |
-|-------|-----|-------|
-| 1 | B-0507 | Research Cloud Routines auth + registration API surface (gate row) |
-| 2 | B-0508 | Define `cloud-schedule.json` schema for `tools/routines/<id>/` |
-| 3 | B-0509 | Extend `tools/routines/install.ts` to detect + surface `cloud-schedule.json` |
-| 4 | B-0510 | Author `autonomous-loop/cloud-schedule.json` (first Cloud Routine declaration) |
-| 5 | B-0511 | Register Cloud Routine + empirical first-fire observation |
-| 6 | B-0512 | Update `tools/routines/README.md` with 4-layer catch-43 table |
-| 7 | B-0513 | Memory file capturing empirical Cloud Routine bootstrap learning |
+| Slice | Row    | Title                                                                          |
+| ----- | ------ | ------------------------------------------------------------------------------ |
+| 1     | B-0507 | Research Cloud Routines auth + registration API surface (gate row)             |
+| 2     | B-0508 | Define `cloud-schedule.json` schema for `tools/routines/<id>/`                 |
+| 3     | B-0509 | Extend `tools/routines/install.ts` to detect + surface `cloud-schedule.json`   |
+| 4     | B-0510 | Author `autonomous-loop/cloud-schedule.json` (first Cloud Routine declaration) |
+| 5     | B-0511 | Register Cloud Routine + empirical first-fire observation                      |
+| 6     | B-0512 | Update `tools/routines/README.md` with 4-layer catch-43 table                  |
+| 7     | B-0513 | Memory file capturing empirical Cloud Routine bootstrap learning               |
 
 ## Focused checks
 
@@ -66,24 +66,22 @@ operative-authorization: aaron 2026-05-13: "Cooling period: TBD. The memory file
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T18:30:50Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `03a2b51756`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -96,6 +94,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Documentation-only backlog decomposition of B-0448 into seven dependency-ordered child backlog rows for Cloud Routines integration.
 
 **Changes:**
+
 - Marks B-0448 as decomposed and adds child row references.
 - Adds B-0507..B-0513 child rows covering research, schema, installer support, first declaration, registration, README updates, and memory capture.
 - Defines dependency ordering and acceptance criteria for each slice.
@@ -107,16 +106,17 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 10 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                         | Description                                          |
+| -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | `docs/backlog/P1/B-0448-cloud-routines-integration-4th-catch-43-defence-layer-2026-05-13.md` | Updates parent row status and decomposition summary. |
-| `docs/backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md` | Adds research gate row for Cloud Routines unknowns. |
-| `docs/backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md` | Adds schema-definition slice. |
-| `docs/backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md` | Adds installer-extension slice. |
-| `docs/backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md` | Adds first Cloud Routine declaration slice. |
-| `docs/backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md` | Adds registration and empirical-fire slice. |
-| `docs/backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md` | Adds README update slice. |
-| `docs/backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md` | Adds memory-capture slice. |
+| `docs/backlog/P1/B-0507-b0448-slice1-cloud-routines-api-research-2026-05-14.md`              | Adds research gate row for Cloud Routines unknowns.  |
+| `docs/backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md`               | Adds schema-definition slice.                        |
+| `docs/backlog/P1/B-0509-b0448-slice3-install-ts-cloud-schedule-extension-2026-05-14.md`      | Adds installer-extension slice.                      |
+| `docs/backlog/P1/B-0510-b0448-slice4-autonomous-loop-cloud-schedule-json-2026-05-14.md`      | Adds first Cloud Routine declaration slice.          |
+| `docs/backlog/P1/B-0511-b0448-slice5-register-cloud-routine-empirical-fire-2026-05-14.md`    | Adds registration and empirical-fire slice.          |
+| `docs/backlog/P1/B-0512-b0448-slice6-readme-4-layer-table-2026-05-14.md`                     | Adds README update slice.                            |
+| `docs/backlog/P1/B-0513-b0448-slice7-memory-file-empirical-bootstrap-learning-2026-05-14.md` | Adds memory-capture slice.                           |
+
 </details>
 
 ## Review threads
@@ -125,7 +125,7 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 10 
 
 **@chatgpt-codex-connector** (2026-05-14T18:30:50Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep cloud schedule trigger shape consistent**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep cloud schedule trigger shape consistent**
 
 This template uses a `triggers` array, but slice 2 defines the canonical schema with a singular `trigger` object (`docs/backlog/P1/B-0508-b0448-slice2-cloud-schedule-json-schema-2026-05-14.md`, schema examples). If B-0508 lands as written, implementers following this row will produce `cloud-schedule.json` files that fail schema/type validation and installer expectations, blocking B-0510/B-0511 until one side is rewritten; align both slices to one field shape.
 
@@ -135,7 +135,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T18:30:50Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Avoid unsupported `blocked` status in fallback flow**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Avoid unsupported `blocked` status in fallback flow**
 
 The fallback instructs closing the row as `status: blocked`, but backlog pickup only treats `status === "open"` as actionable (`tools/backlog/autonomous-pickup.ts`), so a blocked row drops out of automatic selection and can be stranded indefinitely unless someone remembers to manually reopen it. In the exact “Cloud Routines unavailable” scenario this creates workflow deadlock risk; use a supported status/lifecycle or add explicit tooling support for `blocked`.
 

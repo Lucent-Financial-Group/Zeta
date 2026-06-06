@@ -9,7 +9,29 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
 composes_with: [B-1000, B-1006, B-1007, B-0982, B-0428]
-tags: [hexagonal, own-your-interfaces, test-interface-inversion, reflection, ports-and-adapters, dependency-inversion, fscheck, xunit, z3, sat-solver, rust-test, ts-runner, cross-language, bcl-interface-boundary, formal-proof-first, test-contract-port, property-engine, proof-engine, infer-net, aaron]
+tags:
+  [
+    hexagonal,
+    own-your-interfaces,
+    test-interface-inversion,
+    reflection,
+    ports-and-adapters,
+    dependency-inversion,
+    fscheck,
+    xunit,
+    z3,
+    sat-solver,
+    rust-test,
+    ts-runner,
+    cross-language,
+    bcl-interface-boundary,
+    formal-proof-first,
+    test-contract-port,
+    property-engine,
+    proof-engine,
+    infer-net,
+    aaron,
+  ]
 type: feature
 ---
 
@@ -17,40 +39,40 @@ type: feature
 
 ## Ask (Aaron 2026-06-02)
 
-> *"we want hexangonal interaces on our test too we have backlog but if things like
-> z3 or sat solvers are easy we should try it"* + *"yes test interface inverstion or
-> reflection would be great."*
+> _"we want hexangonal interaces on our test too we have backlog but if things like
+> z3 or sat solvers are easy we should try it"_ + _"yes test interface inverstion or
+> reflection would be great."_
 
 Apply the [`bcl-interface-boundary`](../../../.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md)
-rule (own-your-interfaces; depend on a 3rd-party *implementation*, never its
-*interface*) to the **test frameworks** themselves. Today every test depends on
+rule (own-your-interfaces; depend on a 3rd-party _implementation_, never its
+_interface_) to the **test frameworks** themselves. Today every test depends on
 **FsCheck / xUnit / Z3 directly** — the SOFT path (they're provenance-vetted,
-widely-used de-facto standards, so direct dependence is the acceptable *starting
-place*). This row is the **HARD path**: define **our** test-contract ports and make
+widely-used de-facto standards, so direct dependence is the acceptable _starting
+place_). This row is the **HARD path**: define **our** test-contract ports and make
 the frameworks **swappable adapters**.
 
 ## Why
 
 - **No vendor test-interface in the core.** A property/proof in the engine should
-  name *our* `IPropertyEngine` / `IProofEngine` / `ITestContract`, not
+  name _our_ `IPropertyEngine` / `IProofEngine` / `ITestContract`, not
   `FsCheck.Property` / `Microsoft.Z3` / `xUnit.Fact` directly — so swapping a
-  framework is an adapter change, not a test rewrite (the migration is free *once a
-  port exists*; not free if we keep depending on the vendor interface — per the rule).
+  framework is an adapter change, not a test rewrite (the migration is free _once a
+  port exists_; not free if we keep depending on the vendor interface — per the rule).
 - **Cross-language test parity.** The same test-contract expressed in F# / C# / Rust /
-  TS lets the four-oracle byte-lock (B-0982) cover *tests*, not just values — one
+  TS lets the four-oracle byte-lock (B-0982) cover _tests_, not just values — one
   contract, four adapters, same golden vectors.
 - **Formal-proof-first leverage.** B-1007's proofs (C1 landed; C2–C14 owed) currently
   bind to FsCheck/Z3 idioms. Behind a `IProofEngine` port, "prove this group law"
   becomes substrate-portable: Z3 today, a different SMT/SAT backend tomorrow, without
   touching the proof statements. (Aaron's "if z3/sat is easy, try it" — C1 already
-  proved it's easy; the port makes the *next* solver a drop-in.)
+  proved it's easy; the port makes the _next_ solver a drop-in.)
 
 ## Two candidate mechanisms (Aaron named both — design sub-question)
 
-| Mechanism | Shape | Trade |
-|---|---|---|
-| **Test-interface inversion** (explicit ports) | Define `ITestContract`/`IPropertyEngine`/`IProofEngine`; hand-write an adapter per framework (FsCheck→property, Z3→proof, xUnit→fact). | Explicit, type-checked, no magic; more boilerplate per adapter. |
-| **Reflection** | A reflection-based layer that discovers/binds test methods + maps our contract onto the framework's discovery at runtime. | Less boilerplate; the magic is the cost (harder to type-check; reflection is itself a vendor-coupling unless wrapped). |
+| Mechanism                                     | Shape                                                                                                                                  | Trade                                                                                                                  |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Test-interface inversion** (explicit ports) | Define `ITestContract`/`IPropertyEngine`/`IProofEngine`; hand-write an adapter per framework (FsCheck→property, Z3→proof, xUnit→fact). | Explicit, type-checked, no magic; more boilerplate per adapter.                                                        |
+| **Reflection**                                | A reflection-based layer that discovers/binds test methods + maps our contract onto the framework's discovery at runtime.              | Less boilerplate; the magic is the cost (harder to type-check; reflection is itself a vendor-coupling unless wrapped). |
 
 Default-to-both until prototyped: inversion is the conservative HARD-rule form;
 reflection may reduce per-adapter boilerplate but must not re-introduce vendor
@@ -91,7 +113,7 @@ coupling. The PoC compares them on the C1 proof.
 ## Substrate-honest framing
 
 NOT urgent (P2) — the SOFT path (direct dependence on de-facto-standard test
-frameworks) is the correct *starting place* and is what C1 + every current test uses.
+frameworks) is the correct _starting place_ and is what C1 + every current test uses.
 This row is the HARD-path migration, valuable when cross-language test parity or
 solver-swappability earns its keep. Do NOT block landing proofs on this; land proofs
 against the deps now, migrate behind ports when this lands.

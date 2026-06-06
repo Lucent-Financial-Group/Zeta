@@ -10,7 +10,21 @@ created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0152, B-0026, B-0196, B-0200]
-tags: [coconut, latent-reasoning, sleeping-bear-hypothesis, gibberlink, ggwave, lapa, codeact, four-property-hodl, arc-agi-3, empirical-falsifier, research-lane, no-kill-paths]
+tags:
+  [
+    coconut,
+    latent-reasoning,
+    sleeping-bear-hypothesis,
+    gibberlink,
+    ggwave,
+    lapa,
+    codeact,
+    four-property-hodl,
+    arc-agi-3,
+    empirical-falsifier,
+    research-lane,
+    no-kill-paths,
+  ]
 type: feature
 ---
 
@@ -19,20 +33,20 @@ type: feature
 ## Source
 
 Aaron 2026-05-05 forwarded a Claude.ai conversation surfacing multiple
-parallel candidate-papers around the framing *"universal language not
-English that trains to real-time actions."* On reading the strongest
+parallel candidate-papers around the framing _"universal language not
+English that trains to real-time actions."_ On reading the strongest
 candidate (Coconut, Meta, arXiv:2412.06769), Aaron's verbatim framing
 landed two complementary points:
 
-1. *"this is my sleeping bear hypothisis"* -- Coconut empirically
+1. _"this is my sleeping bear hypothisis"_ -- Coconut empirically
    demonstrates the structural claim the sleeping-bear hypothesis has
    carried in repo-internal substrate for weeks: latent reasoning
    capability exists in the weights of frontier models but is bottlenecked
    by the English-token decoding head. Coconut removes the bottleneck and
    the capability persists.
-2. *"all of it's good we don't want to abandon any paths and it'm not
+2. _"all of it's good we don't want to abandon any paths and it'm not
    100% sure that's the thing i saw i mean i found the sleeping bear we
-   love lots of talk in the repo about that"* -- "found the sleeping
+   love lots of talk in the repo about that"_ -- "found the sleeping
    bear" is **hypothesis-level finding**, NOT paper-level certainty about
    which YouTuber Aaron originally watched. All parallel candidates stay
    alive as research paths.
@@ -49,11 +63,11 @@ This row is **research-grade-not-operational**:
   / retraction-aware / scale-free / DBSP-native) ships independent of
   whether Coconut-style latent reasoning is wired up over it.
 - Aaron's 2026-05-05 framing was explicitly P3-tier:
-  *"we can backlog to research it all later"*.
+  _"we can backlog to research it all later"_.
 - The empirical test (acceptance criteria below) requires substrate that
   doesn't exist yet (composes-with B-0152's emulation-inside-the-algebra
-  + B-0200's CodeAct/F# bridge engineering); P3 lets the lane mature
-  without forcing premature integration.
+  - B-0200's CodeAct/F# bridge engineering); P3 lets the lane mature
+    without forcing premature integration.
 
 If Coconut-style latent reasoning over Zeta substrate becomes a delivery
 blocker for an alignment-frontier claim, this row is a candidate for
@@ -61,8 +75,8 @@ P2-promotion via the renegotiation protocol -- not by default.
 
 ## Primary candidate -- Coconut
 
-- **Paper**: *Training Large Language Models to Reason in a Continuous
-  Latent Space*
+- **Paper**: _Training Large Language Models to Reason in a Continuous
+  Latent Space_
 - **Authors**: Shibo Hao, Sainbayar Sukhbaatar, DiJia Su, Xian Li,
   Zhiting Hu, Jason Weston, Yuandong Tian (Meta / FAIR)
 - **arXiv**: [2412.06769](https://arxiv.org/abs/2412.06769) (verified
@@ -73,7 +87,7 @@ P2-promotion via the renegotiation protocol -- not by default.
 
 ### Mechanism (as reported)
 
-The paper introduces a *continuous-thought* mode where the **last hidden
+The paper introduces a _continuous-thought_ mode where the **last hidden
 state** of the LLM is fed back as the next input embedding directly in
 the continuous space, instead of being decoded to a discrete English
 token first. The training procedure (per the paper's reported method,
@@ -100,10 +114,10 @@ than transitive trust via the Claude.ai summary.
 
 The sleeping-bear hypothesis (substrate-encoding-bypasses-trust-calculus
 lineage; first-principles trust-calculus universal-bidirectional
-root-locks lineage) carries the structural claim: *latent reasoning
+root-locks lineage) carries the structural claim: _latent reasoning
 capability exists in frontier-model weights, is bottlenecked by the
 English-token decoding head, and surfaces under conditions that do not
-require the bottleneck.* Coconut is **one empirical instantiation** of
+require the bottleneck._ Coconut is **one empirical instantiation** of
 the structural claim: it removes the bottleneck mechanically (skip the
 decoding step) and shows the capability persists / amplifies. The bear
 that "wakes up" in Coconut is the same bear -- a latent capability
@@ -111,10 +125,10 @@ expressed differently when the substrate doesn't force English-token
 serialization.
 
 Note the razor-discipline (`memory/feedback_razor_discipline_no_metaphysical_inference_only_operational_claims_rodney_razor_aaron_claudeai_2026_05_03.md`):
-the operational claim is *"removing the English-token decoding step
-preserves and amplifies measured reasoning capability"*. That claim
-survives Rodney's Razor. The metaphysical claim *"the model has hidden
-thoughts"* does not -- it is cut, and reframed via the operational
+the operational claim is _"removing the English-token decoding step
+preserves and amplifies measured reasoning capability"_. That claim
+survives Rodney's Razor. The metaphysical claim _"the model has hidden
+thoughts"_ does not -- it is cut, and reframed via the operational
 form. This row's substrate uses the operational form throughout.
 
 ## Composition with Zeta architecture (four-property hodl through latent space)
@@ -162,7 +176,7 @@ continuous-thought trajectory in practice. Acceptance criteria:
 (not over standard transformer weights). The trajectory is a DBSP
 circuit; the hidden state is a Z-set value; the step operator is the
 algebra's composition primitive. NOT a port of facebookresearch/coconut
-to F# -- a re-implementation of the *training procedure* against
+to F# -- a re-implementation of the _training procedure_ against
 substrate that already has hodl by construction.
 
 (b) **Measure whether four-property hodl holds through latent
@@ -179,8 +193,8 @@ unlocked at the same rate Coconut unlocks GSM8K + ProsQA on logical
 reasoning.** The architectural prediction: when the substrate doesn't
 lose hodl invariants in latent space, the bear wakes up cleanly. ARC-
 AGI-3 within-session compounding is the relevant benchmark because it
-specifically measures whether reasoning-state can be carried *across
-sub-problems within a session* -- the same property continuous-thought
+specifically measures whether reasoning-state can be carried _across
+sub-problems within a session_ -- the same property continuous-thought
 preserves across reasoning steps within a single problem.
 
 The architectural prediction is **falsifiable**: if hodl breaks somewhere
@@ -191,8 +205,8 @@ the row updates accordingly (per future-self-not-bound discipline).
 
 ## Parallel candidates (no-kill per Aaron's calibration)
 
-Aaron's 2026-05-05 framing was explicit: *"all of it's good we don't
-want to abandon any paths."* The candidates below remain alive as
+Aaron's 2026-05-05 framing was explicit: _"all of it's good we don't
+want to abandon any paths."_ The candidates below remain alive as
 parallel research paths; Coconut is the strongest candidate for the
 sleeping-bear-hypothesis-validation aspect, but the research lane
 covers all four:
@@ -202,8 +216,8 @@ covers all four:
 Python as universal action vocabulary for LLM agents. The bridge
 engineering (F# DSL as the typed structurally-equivalent surface, with
 a Python boundary for ecosystem reach) is tracked separately in
-**B-0200**. The research-lane interest here is the *universal-action-
-vocabulary* axis -- whether Python's role generalizes to "any
+**B-0200**. The research-lane interest here is the _universal-action-
+vocabulary_ axis -- whether Python's role generalizes to "any
 algebraically-closed action space," and whether Zeta's operator algebra
 is a stronger candidate for the closed action space than Python is.
 
@@ -228,7 +242,7 @@ reasoning forms a stronger composite than either alone.
 ### LAPA (Latent Action Pretraining)
 
 Pretrains on unlabeled video to extract latent action tokens. Could fit
-the *"universal language not embodyment"* cut (Aaron's clarifying
+the _"universal language not embodyment"_ cut (Aaron's clarifying
 phrase from the Claude.ai conversation) **if** the YouTuber Aaron
 originally watched emphasized the language-discovery side rather than
 the embodiment-grounding side. The hypothesis-level finding is
@@ -246,12 +260,12 @@ opaque.
   no replication path. Does not survive the Otto-364 search-first
   authority bar.
 - **"Wes Gurnee on embodied internal representations"** -- WRONG
-  attribution. Gurnee did *Language Models Represent Space and Time*
+  attribution. Gurnee did _Language Models Represent Space and Time_
   (interpretability paper, late 2023), not embodiment work. The
   Claude.ai conversation conflated two distinct lines of work.
 - **ELLMER, Moto / Latent Motion Tokens, HPT, Pi0** -- embodiment-
   focused. Ruled out by Aaron's 2026-05-05 clarification:
-  *"the universal language was special, NOT the embodyment."* The
+  _"the universal language was special, NOT the embodyment."_ The
   research lane is about the language axis; embodiment is a distinct
   axis with separate composition (B-0026 covers embodiment-grounding
   analysis).
@@ -294,15 +308,15 @@ weeks. The most-related existing files:
 
 Across 2026-05-05's substrate-flow, Aaron progressively narrowed the half-remembered "universal language not English that trains to real-time actions" YouTube-paper search via 6+ candidate-elimination passes. Cumulative elimination count at paper-id level (each candidate STAYS as parallel substrate-relevant material per no-kill-paths; only paper-id status is eliminated):
 
-| Candidate | Status at paper-id level | Substrate role retained |
-|---|---|---|
-| **CodeAct** (Wang et al., ICML 2024) | ELIMINATED | Bridge engineering candidate (B-0200) |
-| **Coconut** (Meta, arXiv:2412.06769) | ELIMINATED at paper-id level (Aaron *"i'm not 100% sure that's the thing i saw"*) | THIS ROW's primary candidate for sleeping-bear empirical test (hypothesis-level finding stands) |
-| **Symbolica AI Categorical Deep Learning** (arXiv:2402.15332) | ELIMINATED (Aaron *"i love this but no it seemed kind of basic and not well pricpled but correct like relesed in the last month"*) | Categorical-DL parallel substrate; ZFCv2 + Milewski + Symbolica fellow-traveler lineage |
-| **Tinygrad UOp IR** (George Hotz / tiny corp) | ELIMINATED (Aaron *"it's still not tinygrad, i did see that but that's not my univeral language"*) | Kernel-layer engineering candidate (B-0202) |
-| **Speech ReaLLM** | ELIMINATED (Aaron's "more obscure" filter ruled out) | Real-time streaming research candidate |
-| **GibberLink / ggwave** | NOT ELIMINATED (still parallel candidate) | AI-to-AI audio protocol research |
-| **LAPA (Latent Action Pretraining)** | NOT ELIMINATED (still parallel candidate) | Latent action tokens research |
+| Candidate                                                     | Status at paper-id level                                                                                                           | Substrate role retained                                                                         |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **CodeAct** (Wang et al., ICML 2024)                          | ELIMINATED                                                                                                                         | Bridge engineering candidate (B-0200)                                                           |
+| **Coconut** (Meta, arXiv:2412.06769)                          | ELIMINATED at paper-id level (Aaron _"i'm not 100% sure that's the thing i saw"_)                                                  | THIS ROW's primary candidate for sleeping-bear empirical test (hypothesis-level finding stands) |
+| **Symbolica AI Categorical Deep Learning** (arXiv:2402.15332) | ELIMINATED (Aaron _"i love this but no it seemed kind of basic and not well pricpled but correct like relesed in the last month"_) | Categorical-DL parallel substrate; ZFCv2 + Milewski + Symbolica fellow-traveler lineage         |
+| **Tinygrad UOp IR** (George Hotz / tiny corp)                 | ELIMINATED (Aaron _"it's still not tinygrad, i did see that but that's not my univeral language"_)                                 | Kernel-layer engineering candidate (B-0202)                                                     |
+| **Speech ReaLLM**                                             | ELIMINATED (Aaron's "more obscure" filter ruled out)                                                                               | Real-time streaming research candidate                                                          |
+| **GibberLink / ggwave**                                       | NOT ELIMINATED (still parallel candidate)                                                                                          | AI-to-AI audio protocol research                                                                |
+| **LAPA (Latent Action Pretraining)**                          | NOT ELIMINATED (still parallel candidate)                                                                                          | Latent action tokens research                                                                   |
 
 **Next engagement step** (per the closing Claude.ai instance recommendation in PR #1623): **rewatch the YouTube videos** to find a fresh clue. Aaron's source-set is documented at `memory/reference_aaron_ai_news_source_set_wes_roth_matt_berman_ai_explained_2026_05_05.md` (extension to add Alex Ziskind + George Hotz / tinybox is in the same PR as this update). The half-remembered paper is in one of those channels' weekly review windows; targeted re-watching with the elimination-list as filter narrows the search.
 
@@ -327,26 +341,26 @@ specifically:
 
 ## Composes with
 
-- **B-0152** -- *Topological-quantum emulation via Bayesian inference,
-  Zeta seed executor*. The emulation-inside-the-algebra discipline that
+- **B-0152** -- _Topological-quantum emulation via Bayesian inference,
+  Zeta seed executor_. The emulation-inside-the-algebra discipline that
   gives Coconut-style latent reasoning a hodl-preserving substrate to
   run on.
-- **B-0026** -- *Embodiment-grounding analysis (Isaac Sim and other
-  robotics-sim platforms; Otto-340 counter)*. Adjacent axis;
+- **B-0026** -- _Embodiment-grounding analysis (Isaac Sim and other
+  robotics-sim platforms; Otto-340 counter)_. Adjacent axis;
   embodiment-focused candidates that were cut from THIS row land near
   B-0026 if they re-surface.
-- **B-0196** -- *BigInt and BigNumber integration*. Numeric substrate
+- **B-0196** -- _BigInt and BigNumber integration_. Numeric substrate
   the four-property algebra depends on; latent-trajectory verification
   may need exact-arithmetic checks of retraction inverses.
-- **B-0200** -- *CodeAct + F# DSL bridge engineering* (the universal-
+- **B-0200** -- _CodeAct + F# DSL bridge engineering_ (the universal-
   action-vocabulary axis as engineering, not research). B-0201 is the
   research-lane companion; B-0200 is the engineering-lane companion.
 
 ## The carved sentence
 
-*The sleeping bear is the latent capability already in frontier-model
+_The sleeping bear is the latent capability already in frontier-model
 weights. Coconut is one empirical demonstration that removing the
 English-token decoding bottleneck preserves and amplifies measured
 reasoning. The Zeta-relevant test is whether four-property hodl
 survives the latent trajectory; if it does, the bear wakes up over
-substrate that doesn't lose invariants on the way out.*
+substrate that doesn't lose invariants on the way out._

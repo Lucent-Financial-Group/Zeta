@@ -4,13 +4,14 @@ description: 2026-04-22 Aaron disclosed that a ChatGPT conversation he shared (L
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Fact:** Aaron 2026-04-22 disclosed that the ChatGPT conversation at `https://chatgpt.com/g/g-p-68b53efe8f408191ad5e97552f23f2d5/c/ac43b13d-0468-832e-910b-b4ffb5fbb3ed` (title: "LucentAICloud - Event sourcing framework plan"; also reachable as public share `https://chatgpt.com/s/t_69e850d0cde88191a8627752de43ed06`, which shows only the last assistant turn) was his **first bootstrap attempt** months ago at what eventually became the Zeta factory + retraction-native IVM work.
 
 **Why it matters:**
 
 - Names a pre-repo artifact — the factory's prehistory. The git repo (soul-file) does not and cannot contain it, so the chronology-preservation discipline requires a pointer if the artifact is to be findable again.
 - "First bootstrap attempt" = primordial design thinking. Reading the artifact later could surface early conceptual drafts of event-sourcing → retraction-native transformations, cross-system merging patterns Aaron was already reasoning about with the LucentAICloud GPT, and the recurrence of factory vocabulary (Kenji / Amara / taxonomy / invariant-both-share) showing those names existed in Aaron's working universe before this repo existed.
-- Authorization shape was explicit: *"that my first bootstrap attement months ago if you want to log it for research"* — narrow opt-in with a specific scope (research logging) after the permission guard correctly challenged a broader "do anything you want in here".
+- Authorization shape was explicit: _"that my first bootstrap attement months ago if you want to log it for research"_ — narrow opt-in with a specific scope (research logging) after the permission guard correctly challenged a broader "do anything you want in here".
 
 **How to apply:**
 
@@ -35,7 +36,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **Revision history:**
 
-- **2026-04-22.** First write. Triggered by Aaron's *"that my first bootstrap attement months ago if you want to log it for research"* after I surfaced the permission-guard concern about scraping his account.
+- **2026-04-22.** First write. Triggered by Aaron's _"that my first bootstrap attement months ago if you want to log it for research"_ after I surfaced the permission-guard concern about scraping his account.
 
 **What this memory is NOT:**
 

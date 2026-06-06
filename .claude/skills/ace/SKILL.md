@@ -25,19 +25,19 @@ without one.
 
 Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust add`, `trust list`, `registry add`, `registry list`, `list`.
 
-| Verb | Form | What |
-|---|---|---|
-| `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
-| `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
-| `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
-| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen\|--locked] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
-| `update` | `bun tools/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]` | Re-solve the graph and rewrite the lockfile; installs nothing (lock-only) |
-| `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
-| `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
-| `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
-| `registry add` | `bun tools/ace/ace.ts registry add <name> <version> <url> [--hash <package_hash>]` | Register a package version in the user registry (`~/.ace/registry.json`); fetches + computes package_hash unless `--hash` given |
-| `registry list` | `bun tools/ace/ace.ts registry list` | List registry entries (bundled + user) |
-| `help` | `bun tools/ace/ace.ts help` | Usage |
+| Verb            | Form                                                                                                                              | What                                                                                                                            |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `keygen`        | `bun tools/ace/ace.ts keygen [--out <prefix>]`                                                                                    | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`)                                                       |
+| `sign`          | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]`                                                                 | Sign a package manifest with an Ed25519 private key                                                                             |
+| `list`          | `bun tools/ace/ace.ts list [--store <path>] [--json]`                                                                             | List installed packages from `~/.ace/store`                                                                                     |
+| `install`       | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen\|--locked] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic)           |
+| `update`        | `bun tools/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]`                                            | Re-solve the graph and rewrite the lockfile; installs nothing (lock-only)                                                       |
+| `verify`        | `bun tools/ace/ace.ts verify <hash>`                                                                                              | Confirm an installed package is present                                                                                         |
+| `trust add`     | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]`                                                               | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`)                                                  |
+| `trust list`    | `bun tools/ace/ace.ts trust list`                                                                                                 | List all trusted keys (bundled + user)                                                                                          |
+| `registry add`  | `bun tools/ace/ace.ts registry add <name> <version> <url> [--hash <package_hash>]`                                                | Register a package version in the user registry (`~/.ace/registry.json`); fetches + computes package_hash unless `--hash` given |
+| `registry list` | `bun tools/ace/ace.ts registry list`                                                                                              | List registry entries (bundled + user)                                                                                          |
+| `help`          | `bun tools/ace/ace.ts help`                                                                                                       | Usage                                                                                                                           |
 
 `install` verifies **integrity** (content hash) AND **authenticity** (Ed25519 signature
 against the trust store). Unsigned packages need `--allow-no-signature`; a present-but-untrusted
@@ -119,7 +119,7 @@ lock. Typical loop: `ace update` (regenerate) → commit `ace.lock` → `ace ins
 **`--lockfile <path>`** overrides the default lockfile path (`ace.lock`) for `install`
 and `update`.
 
-Errors during a normal `install` lockfile *write* are warnings (install still succeeds).
+Errors during a normal `install` lockfile _write_ are warnings (install still succeeds).
 All `--frozen`/`--locked` refusals (missing lock, drift, stale, hash mismatch, bad
 signature) and an `ace update` write failure are hard exits (code `1`).
 
@@ -165,13 +165,12 @@ Every index fetched from a remote must pass three gates before any package
 resolution uses it:
 
 1. **Signature** — the index carries an Ed25519 signature that must match the
-   registry's pinned key *and* that key must be in the user trust store.
+   registry's pinned key _and_ that key must be in the user trust store.
 2. **Anti-rollback** — each registry maintains a monotonic per-registry
    `sequence` high-water mark. An incoming index whose `sequence` is lower than
    the stored high-water mark is refused outright.
 3. **Two-sided freshness** — the index's `issued_at` timestamp must satisfy both
    bounds:
-
    - **Past bound**: `issued_at` must not be older than the registry's
      `max-staleness-days` (default 30 days). This gate is skipped when running
      `--offline` (see below).
@@ -193,7 +192,7 @@ ace update  <pkg> --offline [--lockfile <path>]
   against the cached index.
 - `--offline` composes with `--frozen`: both flags may be supplied together; the
   registry-index fetch uses the cache (no registry network) while package artifacts
-  at `http(s)` URLs are still fetched. `--offline` skips the *registry* network,
+  at `http(s)` URLs are still fetched. `--offline` skips the _registry_ network,
   not all network. The signature, anti-rollback, and future-skew gates remain
   enforced against the cached index throughout.
 
@@ -361,11 +360,11 @@ under `--key`, applies the mark, bumps the sequence by one, refreshes
 already exist (these commands mutate an existing index; use `ace registry
 publish` to create one first).
 
-| Subcommand | Effect |
-|---|---|
-| `ace registry revoke <name>@<version> [--reason "..."] --key <pem> [--out <path>]` | Permanently revokes the version; also clears any quarantine on it |
-| `ace registry quarantine <name>@<version> [--reason "..."] --key <pem> [--out <path>]` | Soft-refuses the version; errors if already revoked |
-| `ace registry unquarantine <name>@<version> --key <pem> [--out <path>]` | Releases the quarantine after review; errors if not quarantined |
+| Subcommand                                                                             | Effect                                                            |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `ace registry revoke <name>@<version> [--reason "..."] --key <pem> [--out <path>]`     | Permanently revokes the version; also clears any quarantine on it |
+| `ace registry quarantine <name>@<version> [--reason "..."] --key <pem> [--out <path>]` | Soft-refuses the version; errors if already revoked               |
+| `ace registry unquarantine <name>@<version> --key <pem> [--out <path>]`                | Releases the quarantine after review; errors if not quarantined   |
 
 ### publish carries marks forward
 

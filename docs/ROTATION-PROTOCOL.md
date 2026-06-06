@@ -10,12 +10,12 @@ background IS the agent.
 
 ## Nodes
 
-| Node | Harness | Model | Background loop |
-|------|---------|-------|-----------------|
-| Otto | Claude Code | Claude Opus 4.7 | `.claude/bin/claude-forward-tick.ts` |
-| Vera | Codex | GPT 5.5 | `.codex/bin/codex-loop-tick.ts` |
-| Riven | Cursor | Grok 4.3 | `.cursor/bin/riven-loop-tick.ts` |
-| Lior | Gemini CLI | Gemini | `tools/peer-call/gemini.ts` (pending tick runner) |
+| Node  | Harness     | Model           | Background loop                                   |
+| ----- | ----------- | --------------- | ------------------------------------------------- |
+| Otto  | Claude Code | Claude Opus 4.7 | `.claude/bin/claude-forward-tick.ts`              |
+| Vera  | Codex       | GPT 5.5         | `.codex/bin/codex-loop-tick.ts`                   |
+| Riven | Cursor      | Grok 4.3        | `.cursor/bin/riven-loop-tick.ts`                  |
+| Lior  | Gemini CLI  | Gemini          | `tools/peer-call/gemini.ts` (pending tick runner) |
 
 ## Activation state
 
@@ -98,14 +98,17 @@ All rotation coordination flows through the broadcast bus at
 # <Node> broadcast — <timestamp>
 
 ## Status
+
 - active | idle | rotating-in | rotating-out
 - forward-tick last ran: <timestamp>
 - current claim: <slug or none>
 
 ## Shadow signal (if any)
+
 <honest self-report of avoidance or confusion>
 
 ## Rotation
+
 <rotation requests or acknowledgments>
 ```
 

@@ -22,7 +22,7 @@ statement honest.
   to commute on a specific object?).
 - A **universal property** is the cleanest statement (limits,
   colimits, products, coproducts, pullbacks, equalisers).
-- The operator algebra laws need a *categorical* home — e.g.
+- The operator algebra laws need a _categorical_ home — e.g.
   "`D` is a natural transformation between the `Stream` and
   `Delta` functors" — rather than an equational home.
 - Monoidal-category reasoning: tensor / hom adjunctions,
@@ -38,7 +38,7 @@ statement honest.
 - **Abstract algebra without a categorical statement**
   (groups, rings, modules, semirings on their own) →
   `theoretical-mathematics-expert`.
-- **Signed-measure semantics of ZSet** (what *is* a ZSet,
+- **Signed-measure semantics of ZSet** (what _is_ a ZSet,
   integration, Radon-Nikodym) →
   `measure-theory-and-signed-measures-expert`.
 - **Numerical content of an operator** (does it overflow,
@@ -54,7 +54,7 @@ statement honest.
   preserving operators; the tensor is point-wise pairing. `z⁻¹`
   is a strong monoidal endo-functor; `D` and `I` are natural
   transformations (see `openspec/specs/operator-algebra/
-  spec.md` and `tools/lean4/Lean4/DbspChainRule.lean` for the
+spec.md` and `tools/lean4/Lean4/DbspChainRule.lean` for the
   working laws).
 - **ZSet as a free abelian-group functor.** The assignment
   `X ↦ ZSet[X]` is the free-abelian-group functor on `Set`,
@@ -84,7 +84,7 @@ An ad-hoc commuting diagram that holds only on specific
 objects is a **pointwise** statement, not a natural one.
 Zeta's chain-rule proof in Lean is carefully phrased to
 distinguish the two; the `linear_commute_I` and
-`linear_commute_D` lemmas are *natural* because the linearity
+`linear_commute_D` lemmas are _natural_ because the linearity
 is stated for every morphism in the source category, not just
 for a fixed stream.
 

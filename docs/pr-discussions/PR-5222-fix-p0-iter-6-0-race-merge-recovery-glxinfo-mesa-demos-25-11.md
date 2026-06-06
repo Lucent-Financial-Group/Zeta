@@ -27,6 +27,7 @@ Auto-merge race on PR #5218: glxinfo→mesa-demos fix landed in branch AFTER mer
 This PR unblocks the iter-6.0 NixOS 25.11 (“Xantusia”) ISO build by replacing the removed `glxinfo` package reference with its supported replacement (`mesa-demos`) in the AI-cluster installer and GPU module.
 
 **Changes:**
+
 - Replace `glxinfo` → `mesa-demos` in the USB installer ISO package set.
 - Replace `glxinfo` → `mesa-demos` in the NVIDIA GPU module’s `environment.systemPackages`.
 
@@ -34,10 +35,10 @@ This PR unblocks the iter-6.0 NixOS 25.11 (“Xantusia”) ISO build by replacin
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                  | Description                                                                                  |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Updates installer ISO packages to use `mesa-demos` instead of `glxinfo` under nixpkgs 25.11. |
-| full-ai-cluster/nixos/modules/gpu.nix | Updates GPU tooling package list to use `mesa-demos` instead of `glxinfo`. |
+| full-ai-cluster/nixos/modules/gpu.nix                                 | Updates GPU tooling package list to use `mesa-demos` instead of `glxinfo`.                   |
 
 ## General comments
 

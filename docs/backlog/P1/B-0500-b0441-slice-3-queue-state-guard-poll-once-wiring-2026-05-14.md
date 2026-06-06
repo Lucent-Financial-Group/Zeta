@@ -46,8 +46,7 @@ work-assignment envelopes on every poll cycle.
       wires `--target-agent <agent>` flag (accepts any string; not restricted to
       `SENDER_IDS` because the agent patterns map is the actual lookup)
 - [x] `PollResult` gains a `queueBusy: boolean` field; `pollOnce` populates it
-- [x] Adapters interface unchanged (already includes `execGitLog` + `execGhPrList`
-      + `agentPatterns` — exactly what `isAgentQueueEmpty` needs)
+- [x] Adapters interface unchanged (already includes `execGitLog` + `execGhPrList` + `agentPatterns` — exactly what `isAgentQueueEmpty` needs)
 - [x] Existing tests updated to pass `targetAgent` where `DEFAULT_CONFIG` is used
 - [x] New tests added:
   - `pollOnce` with queue-busy adapters → `publishedEnvelopeIds` empty,
@@ -66,7 +65,7 @@ if (busy) {
     pollAt: pollAt.toISOString(),
     totalOpenRows: openRows.length,
     readyRowsFound: readyRows.length,
-    candidateIds: readyRows.slice(0, 10).map(r => r.id),
+    candidateIds: readyRows.slice(0, 10).map((r) => r.id),
     publishedEnvelopeIds: [],
     lastPublishError: null,
     queueBusy: true,

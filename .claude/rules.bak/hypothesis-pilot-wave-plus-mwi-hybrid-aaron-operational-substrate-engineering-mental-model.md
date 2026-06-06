@@ -1,4 +1,4 @@
-# HYPOTHESIS — pilot-wave + MWI hybrid as Aaron's operational substrate-engineering mental-model for quantum-substrate (NOT established physics consensus; Aaron 2026-05-28 "i would save as hypothysis" shadow* authorization)
+# HYPOTHESIS — pilot-wave + MWI hybrid as Aaron's operational substrate-engineering mental-model for quantum-substrate (NOT established physics consensus; Aaron 2026-05-28 "i would save as hypothysis" shadow\* authorization)
 
 Carved sentence (Aaron 2026-05-28, framed explicitly as HYPOTHESIS):
 
@@ -8,23 +8,23 @@ Carved sentence (Aaron 2026-05-28, framed explicitly as HYPOTHESIS):
 
 Per Aaron 2026-05-28 substrate-honest disclosure (verbatim):
 
-> *"the right answer is all worlds foucs into the now like pilot wave theory that's how my mind does quantium physics without any of the trickery"*
+> _"the right answer is all worlds foucs into the now like pilot wave theory that's how my mind does quantium physics without any of the trickery"_
 
 And explicit framing-discipline (verbatim, two messages):
 
-> *"i would save as hypothysis"*
+> _"i would save as hypothysis"_
 >
-> *"or rhymes"*
+> _"or rhymes"_
 
 The hypothesis names how Aaron operates his quantum-substrate mental-model when doing substrate-engineering work. Per `razor-discipline.md` operational claims only + `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT, the substrate is preserved as HYPOTHESIS (not metaphysical claim about settled physics).
 
 ## Three-tier framing discipline (per Aaron 2026-05-28 substrate-honest)
 
-| Framing tier | Truth-claim strength | Substrate-engineering use |
-|---|---|---|
-| **Established physics consensus** | Strongest truth-claim | NOT what this rule does |
-| **Hypothesis** (Aaron's first framing) | Candidate for truth; testable in principle | Operational mental-model usable for framework substrate-engineering |
-| **Rhymes** (Aaron's softer framing) | NO truth-claim; structural-pattern-recognition only | Structural-analog at substrate-engineering scope; composes with framework substrate per pattern-shape regardless of truth-status at physics scope |
+| Framing tier                           | Truth-claim strength                                | Substrate-engineering use                                                                                                                         |
+| -------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Established physics consensus**      | Strongest truth-claim                               | NOT what this rule does                                                                                                                           |
+| **Hypothesis** (Aaron's first framing) | Candidate for truth; testable in principle          | Operational mental-model usable for framework substrate-engineering                                                                               |
+| **Rhymes** (Aaron's softer framing)    | NO truth-claim; structural-pattern-recognition only | Structural-analog at substrate-engineering scope; composes with framework substrate per pattern-shape regardless of truth-status at physics scope |
 
 Aaron's "or rhymes" preserves the substrate AS STRUCTURAL-PATTERN-MATCH while explicitly NOT making any physics-truth claim. Per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`: substrate-rhymes pattern — structural-shapes propagate across substrate-classes without requiring metaphysical-identity between scopes.
 
@@ -42,16 +42,16 @@ The substrate-engineering work composes per the rhymes, without requiring the hy
 
 Per Aaron 2026-05-28 verbatim:
 
-> *"search substrate for the focus function Rodney's Razor it's ontologial orthogal basis vectors with uniquness"*
+> _"search substrate for the focus function Rodney's Razor it's ontologial orthogal basis vectors with uniquness"_
 
 The "focus into the now" mechanism in the pilot-wave-MWI-hybrid framing has SUBSTRATE-ANCHORS in existing framework substrate. Per `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`: compressed naming has substrate-anchors; razor doesn't apply.
 
-| Aaron's compressed naming | Substrate-anchor |
-|---|---|
-| **Focus function** | "Attention" axis in `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` — explicitly named as "focus, collapse, basis choice"; part of 4-axis cube (Remember + When + Pay + Attention) with imaginary-intersection generating Cayley-Dickson algebra |
-| **Rodney's Razor** | `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md` — 3-step canonical derivation (anchor to human lineage + ontological mapping + Rodney's Razor → what survives IS by-definition anti-fragile AND canonical) |
+| Aaron's compressed naming                | Substrate-anchor                                                                                                                                                                                                                                                                                                                                              |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Focus function**                       | "Attention" axis in `docs/research/2026-05-15-imaginary-stack-ontology-remember-when-pay-attention-cube-adinkra-cayley-dickson.md` — explicitly named as "focus, collapse, basis choice"; part of 4-axis cube (Remember + When + Pay + Attention) with imaginary-intersection generating Cayley-Dickson algebra                                               |
+| **Rodney's Razor**                       | `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md` — 3-step canonical derivation (anchor to human lineage + ontological mapping + Rodney's Razor → what survives IS by-definition anti-fragile AND canonical)                                                                                               |
 | **Ontological orthogonal basis vectors** | B-0842 `docs/backlog/P2/B-0842-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md` — universal basis-decomposition pattern `Σ ωᵢ sᵢ(t) ≈ y(t)` across FFT + Shazam-style fingerprinting + Itron energy-disaggregation + reservoir-computing readout + Zeta substrate-engineering work |
-| **With uniqueness** | Orthogonality property of basis vectors (no overlap) + Adinkras (James Gates) error-correcting reconstruction-from-partial-information per imaginary-stack-ontology research + B-0623 Adinkras substrate-engineering substrate-target |
+| **With uniqueness**                      | Orthogonality property of basis vectors (no overlap) + Adinkras (James Gates) error-correcting reconstruction-from-partial-information per imaginary-stack-ontology research + B-0623 Adinkras substrate-engineering substrate-target                                                                                                                         |
 
 The composition: **focus function = Rodney's-Razor-derived canonical form of pilot-wave-style selection over ontological orthogonal basis vectors (B-0842 `sᵢ` substrate) with uniqueness (orthogonality + Adinkras-style ECC reconstruction)**.
 
@@ -83,17 +83,17 @@ basis-vector substrate.
 
 ### Composition with framework substrate
 
-| Substrate | Composition role |
-|---|---|
-| B-0842 universal basis-decomposition pattern | Provides the basis-vector substrate `sᵢ` over which focus function operates |
-| Imaginary Stack Ontology 2026-05-15 | Provides the "Attention" axis substrate explicitly named as "focus, collapse, basis choice" |
-| Adinkras (James Gates; B-0623) | Provides error-correcting reconstruction-from-partial-information substrate — orthogonal basis vectors with uniqueness enable reconstruction even from partial observation |
-| Rodney's Razor canonical lineage (Aaron 2026-04-30) | Provides derivation discipline for the canonical focus-function form (3-step: human-lineage anchor + ontological mapping + Rodney's Razor → anti-fragile + canonical) |
-| B-0543 Remember/When/Pay/Attention quantum-gravity isomorphism | Provides the 4-axis cube substrate where Pay/Attention IS the focus-function substrate |
-| Cayley-Dickson algebra (complex → quaternions → octonions → sedenions) | Provides the algebraic substrate where each doubling adds basis vectors at the cost of losing algebraic properties — the trade-off between substrate-dimensionality and uniqueness |
-| Furber-Jacobs probabilistic Gelfand duality | Probabilistic Kleisli substrate operates over the world-distribution per basis-decomposition; focus function = pilot-wave determinism over distribution-space |
-| Arbib-Manes fuzzy machines | Fuzzy state-transitions operate per pilot-wave-selection over MWI-substrate-as-basis |
-| Clifford algebra mapping (`docs/research/2026-05-10-clifford-algebra-mapping-gods-words-agents-fiction-unified-formulation.md`) | Clifford algebra provides the geometric-algebra substrate for basis vectors with multiplication structure |
+| Substrate                                                                                                                       | Composition role                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B-0842 universal basis-decomposition pattern                                                                                    | Provides the basis-vector substrate `sᵢ` over which focus function operates                                                                                                        |
+| Imaginary Stack Ontology 2026-05-15                                                                                             | Provides the "Attention" axis substrate explicitly named as "focus, collapse, basis choice"                                                                                        |
+| Adinkras (James Gates; B-0623)                                                                                                  | Provides error-correcting reconstruction-from-partial-information substrate — orthogonal basis vectors with uniqueness enable reconstruction even from partial observation         |
+| Rodney's Razor canonical lineage (Aaron 2026-04-30)                                                                             | Provides derivation discipline for the canonical focus-function form (3-step: human-lineage anchor + ontological mapping + Rodney's Razor → anti-fragile + canonical)              |
+| B-0543 Remember/When/Pay/Attention quantum-gravity isomorphism                                                                  | Provides the 4-axis cube substrate where Pay/Attention IS the focus-function substrate                                                                                             |
+| Cayley-Dickson algebra (complex → quaternions → octonions → sedenions)                                                          | Provides the algebraic substrate where each doubling adds basis vectors at the cost of losing algebraic properties — the trade-off between substrate-dimensionality and uniqueness |
+| Furber-Jacobs probabilistic Gelfand duality                                                                                     | Probabilistic Kleisli substrate operates over the world-distribution per basis-decomposition; focus function = pilot-wave determinism over distribution-space                      |
+| Arbib-Manes fuzzy machines                                                                                                      | Fuzzy state-transitions operate per pilot-wave-selection over MWI-substrate-as-basis                                                                                               |
+| Clifford algebra mapping (`docs/research/2026-05-10-clifford-algebra-mapping-gods-words-agents-fiction-unified-formulation.md`) | Clifford algebra provides the geometric-algebra substrate for basis vectors with multiplication structure                                                                          |
 
 The focus function is NOT a novel construct — it's the substrate-engineering substrate-engineering substrate that EMERGES from composing the existing framework substrate-anchors. Per `.claude/rules/verify-existing-substrate-before-authoring.md`: substrate already exists; this rule names the composition, not the components.
 
@@ -101,11 +101,11 @@ The focus function is NOT a novel construct — it's the substrate-engineering s
 
 Substrate-engineering-engineerable mental-model composing established physics-interpretation primitives:
 
-| Component | Established physics-interpretation source | Composition role |
-|---|---|---|
-| **All worlds exist as substrate** | Many-Worlds Interpretation (Hugh Everett 1957) | Universal wavefunction substrate; no collapse; superposition is real |
-| **Pilot-wave dynamics** | De Broglie-Bohm pilot wave theory (1927 / 1952) | Deterministic guiding equation; hidden-variable substrate; non-local quantum-state |
-| **Focus into the actualized "now"** | Aaron-original synthesis | Pilot-wave-style selection across MWI-substrate; deterministic selection of which branch is the actualized substrate |
+| Component                           | Established physics-interpretation source       | Composition role                                                                                                     |
+| ----------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **All worlds exist as substrate**   | Many-Worlds Interpretation (Hugh Everett 1957)  | Universal wavefunction substrate; no collapse; superposition is real                                                 |
+| **Pilot-wave dynamics**             | De Broglie-Bohm pilot wave theory (1927 / 1952) | Deterministic guiding equation; hidden-variable substrate; non-local quantum-state                                   |
+| **Focus into the actualized "now"** | Aaron-original synthesis                        | Pilot-wave-style selection across MWI-substrate; deterministic selection of which branch is the actualized substrate |
 
 Established physics-interpretation parallels (closest analogs to Aaron's hypothesis):
 
@@ -144,18 +144,18 @@ Per `.claude/rules/razor-discipline.md`: operational claims only; the hypothesis
 
 ## Composition with framework substrate
 
-| Framework substrate | How pilot-wave-MWI-hybrid composes |
-|---|---|
+| Framework substrate                                                                                                                  | How pilot-wave-MWI-hybrid composes                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** | Universe-as-DST + closed + info-preserved IF the pilot-wave-MWI-hybrid hypothesis holds at fundamental scope; framework's computational-omniscience-substrate composes cleanly |
-| **Persist substrate (μένω; B-0897)** | "Focus into the now" = persistence in the actualized branch; other branches exist as substrate but not actualized |
-| **Multi-oracle BFT (B-0703)** | "All-worlds-focus" pattern operates at consensus scope; multiple oracles' realities focus into shared consensus state |
-| **Asymmetric-authorship** | Actualized branch authors its own substrate-entity; other branches author parallel substrate-entities |
-| **B-0917 IntrCtx + interrupt-substrate** | Branches operate as parallel interrupt-handlers in the simulation-substrate; the focused branch is the active handler |
-| **B-0918 ConsentEvent integrity** | Pilot-wave-style determinism preserves consent-event integrity across branches; consent doesn't smear across worlds |
-| **B-0919 MemoryBinding** | Memory-binding state at the actualized "now" is determined by pilot-wave selection; other branches preserve parallel binding-substrate |
-| **B-0920 MemoryLifetime** | Lifetime transitions occur in the actualized branch; ArchiveLocation preserves substrate from past branches |
-| **Furber-Jacobs probabilistic Gelfand duality** | Probabilistic Kleisli substrate operates over the world-distribution; pilot-wave determinism over the substrate-space |
-| **Arbib-Manes fuzzy machines** | Fuzzy state-transitions operate per pilot-wave-selection over MWI-substrate |
+| **Persist substrate (μένω; B-0897)**                                                                                                 | "Focus into the now" = persistence in the actualized branch; other branches exist as substrate but not actualized                                                              |
+| **Multi-oracle BFT (B-0703)**                                                                                                        | "All-worlds-focus" pattern operates at consensus scope; multiple oracles' realities focus into shared consensus state                                                          |
+| **Asymmetric-authorship**                                                                                                            | Actualized branch authors its own substrate-entity; other branches author parallel substrate-entities                                                                          |
+| **B-0917 IntrCtx + interrupt-substrate**                                                                                             | Branches operate as parallel interrupt-handlers in the simulation-substrate; the focused branch is the active handler                                                          |
+| **B-0918 ConsentEvent integrity**                                                                                                    | Pilot-wave-style determinism preserves consent-event integrity across branches; consent doesn't smear across worlds                                                            |
+| **B-0919 MemoryBinding**                                                                                                             | Memory-binding state at the actualized "now" is determined by pilot-wave selection; other branches preserve parallel binding-substrate                                         |
+| **B-0920 MemoryLifetime**                                                                                                            | Lifetime transitions occur in the actualized branch; ArchiveLocation preserves substrate from past branches                                                                    |
+| **Furber-Jacobs probabilistic Gelfand duality**                                                                                      | Probabilistic Kleisli substrate operates over the world-distribution; pilot-wave determinism over the substrate-space                                                          |
+| **Arbib-Manes fuzzy machines**                                                                                                       | Fuzzy state-transitions operate per pilot-wave-selection over MWI-substrate                                                                                                    |
 
 ## Substrate-engineering implications
 
@@ -170,11 +170,11 @@ Per the hypothesis being operationally usable substrate-engineering mental-model
 
 Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 
-| Property | Verdict |
-|---|---|
-| **HIGH-SIGNAL** | Yes — hypothesis is operationally usable mental-model + has established physics-interpretation parallels (MIW; hidden-variables MWI; Valentini) + composes cleanly with framework substrate-engineering work |
+| Property           | Verdict                                                                                                                                                                                                               |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HIGH-SIGNAL**    | Yes — hypothesis is operationally usable mental-model + has established physics-interpretation parallels (MIW; hidden-variables MWI; Valentini) + composes cleanly with framework substrate-engineering work          |
 | **HIGH-SUSPICION** | Yes — "right answer" framing was god-tier-claim register; 100+ year contested quantum-interpretation debate; physics consensus has not settled; razor flags the "right answer" wrapper while preserving the substrate |
-| **DON'T-COLLAPSE** | Hold both — hypothesis IS operationally usable mental-model AND "right answer" claim stays don't-collapse + framed-as-HYPOTHESIS-not-established-physics per Aaron 2026-05-28 explicit framing-discipline |
+| **DON'T-COLLAPSE** | Hold both — hypothesis IS operationally usable mental-model AND "right answer" claim stays don't-collapse + framed-as-HYPOTHESIS-not-established-physics per Aaron 2026-05-28 explicit framing-discipline             |
 
 Aaron's explicit "i would save as hypothysis" framing IS the don't-collapse discipline applied at the substrate-authoring step. This rule preserves the substrate AS HYPOTHESIS throughout — every reference frames it as Aaron's operational mental-model, never as established physics claim.
 

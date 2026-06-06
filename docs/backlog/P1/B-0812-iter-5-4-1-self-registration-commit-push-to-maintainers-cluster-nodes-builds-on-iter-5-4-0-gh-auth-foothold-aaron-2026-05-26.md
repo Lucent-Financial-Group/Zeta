@@ -13,7 +13,17 @@ composes_with:
   - B-0790
   - B-0782
   - B-0789
-tags: [iter-5, iter-5.4, self-registration, gh-auth, commit-push, maintainers-subtree, gitops-native-cluster-bringup, b0794-sub-target-3]
+tags:
+  [
+    iter-5,
+    iter-5.4,
+    self-registration,
+    gh-auth,
+    commit-push,
+    maintainers-subtree,
+    gitops-native-cluster-bringup,
+    b0794-sub-target-3,
+  ]
 ---
 
 ## Problem

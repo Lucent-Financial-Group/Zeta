@@ -148,15 +148,15 @@ function parseDependsOn(frontmatter: string): string[] {
   if (inlineMatch && inlineMatch[1] !== undefined) {
     return inlineMatch[1]
       .split(",")
-      .map(s => stripInlineComment(s.trim()))
-      .filter(s => s.length > 0);
+      .map((s) => stripInlineComment(s.trim()))
+      .filter((s) => s.length > 0);
   }
   const blockMatch = frontmatter.match(/^depends_on:\s*\n((?:[ \t]+-[ \t]*[^\r\n]+\r?\n?)+)/m);
   if (blockMatch && blockMatch[1] !== undefined) {
     return blockMatch[1]
       .split(/\r?\n/)
-      .map(line => stripInlineComment(line.match(/^[ \t]+-[ \t]*(.+?)\s*$/)?.[1] ?? ""))
-      .filter(s => s.length > 0);
+      .map((line) => stripInlineComment(line.match(/^[ \t]+-[ \t]*(.+?)\s*$/)?.[1] ?? ""))
+      .filter((s) => s.length > 0);
   }
   return [];
 }
@@ -187,7 +187,7 @@ const REAL_ADAPTERS: Adapters = {
       const dir = join(backlogDir, p);
       let files: string[];
       try {
-        files = readdirSync(dir).filter(f => f.startsWith("B-") && f.endsWith(".md"));
+        files = readdirSync(dir).filter((f) => f.startsWith("B-") && f.endsWith(".md"));
       } catch {
         continue;
       }
@@ -210,14 +210,13 @@ const REAL_ADAPTERS: Adapters = {
     }),
   agentPatterns: AGENT_MAP,
   execGitLog: (sinceMinutes: number) => {
-    const cutoff = Math.floor(Date.now() / 1000) - (sinceMinutes * 60);
+    const cutoff = Math.floor(Date.now() / 1000) - sinceMinutes * 60;
     const { spawnSync } = require("node:child_process");
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no injection risk.
-    const result = spawnSync(
-      "git",
-      ["log", "--all", `--since=${cutoff}`, "--format=%an %B"],
-      { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
-    );
+    const result = spawnSync("git", ["log", "--all", `--since=${cutoff}`, "--format=%an %B"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
     if (result.status !== 0 || result.error) return null;
     return result.stdout ?? "";
   },
@@ -241,9 +240,10 @@ const REAL_ADAPTERS: Adapters = {
       }
       const entries = (parsed as { entries: unknown[] }).entries.filter(
         (e): e is AssignmentHistoryEntry =>
-          typeof e === "object" && e !== null
-          && typeof (e as { rowId?: unknown }).rowId === "string"
-          && typeof (e as { publishedAt?: unknown }).publishedAt === "string",
+          typeof e === "object" &&
+          e !== null &&
+          typeof (e as { rowId?: unknown }).rowId === "string" &&
+          typeof (e as { publishedAt?: unknown }).publishedAt === "string",
       );
       return { entries };
     } catch {
@@ -301,23 +301,20 @@ const REAL_ADAPTERS: Adapters = {
  * no currently open PRs. Returns false (conservative) when any adapter
  * call fails — a sensor failure must not be mistaken for agent inactivity.
  */
-export function isAgentQueueEmpty(
-  agentName: string,
-  adapters: Adapters = REAL_ADAPTERS,
-): boolean {
+export function isAgentQueueEmpty(agentName: string, adapters: Adapters = REAL_ADAPTERS): boolean {
   const patterns = adapters.agentPatterns[agentName.toLowerCase()] ?? [];
   if (patterns.length === 0) return true; // unknown agent = queue empty
 
   const logOutput = adapters.execGitLog(30);
   if (logOutput === null) return false; // git unavailable — treat as busy
   const logStr = logOutput.toLowerCase();
-  const hasCommits = patterns.some(p => logStr.includes(p.toLowerCase()));
+  const hasCommits = patterns.some((p) => logStr.includes(p.toLowerCase()));
   if (hasCommits) return false;
 
   const prOutput = adapters.execGhPrList();
   if (prOutput === null) return false; // gh unavailable — treat as busy
   const prStr = prOutput.toLowerCase();
-  const hasPRs = patterns.some(p => prStr.includes(p.toLowerCase()));
+  const hasPRs = patterns.some((p) => prStr.includes(p.toLowerCase()));
   if (hasPRs) return false;
 
   return true;
@@ -343,16 +340,13 @@ function isValidPriority(s: string): s is "P0" | "P1" | "P2" | "P3" {
  * and publishes up to maxAssignments work-assignment envelopes (unless
  * noPublish).
  */
-export function pollOnce(
-  config: NotifierConfig,
-  adapters: Adapters = REAL_ADAPTERS,
-): PollResult {
+export function pollOnce(config: NotifierConfig, adapters: Adapters = REAL_ADAPTERS): PollResult {
   const pollAt = adapters.now();
   const busy = !isAgentQueueEmpty(config.targetAgent, adapters);
 
   const allRows = adapters.scanBacklog(config.backlogDir);
-  const openRows = allRows.filter(r => r.status === "open");
-  const idToStatus = new Map(allRows.map(r => [r.id, r.status]));
+  const openRows = allRows.filter((r) => r.status === "open");
+  const idToStatus = new Map(allRows.map((r) => [r.id, r.status]));
 
   const danglingDeps = new Set<string>();
   for (const row of openRows) {
@@ -361,16 +355,14 @@ export function pollOnce(
     }
   }
 
-  const readyRows = openRows.filter(r =>
-    r.dependsOn.every(dep => isDepSatisfied(idToStatus.get(dep))),
-  );
+  const readyRows = openRows.filter((r) => r.dependsOn.every((dep) => isDepSatisfied(idToStatus.get(dep))));
 
   if (busy) {
     return {
       pollAt: pollAt.toISOString(),
       totalOpenRows: openRows.length,
       readyRowsFound: readyRows.length,
-      candidateIds: readyRows.slice(0, 10).map(r => r.id),
+      candidateIds: readyRows.slice(0, 10).map((r) => r.id),
       publishedEnvelopeIds: [],
       lastPublishError: null,
       queueBusy: true,
@@ -394,8 +386,8 @@ export function pollOnce(
     const history: AssignmentHistory = adapters.readHistoryFile(config.historyFile) ?? { entries: [] };
     const activeEntries = new Set(
       history.entries
-        .filter(e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
-        .map(e => e.rowId),
+        .filter((e) => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs)
+        .map((e) => e.rowId),
     );
 
     for (const row of readyRows) {
@@ -407,13 +399,7 @@ export function pollOnce(
       }
       const rationale = `Ready-to-grind: ${row.id} is open with all deps satisfied. Decomposition discipline (PR #2999) says decompose ambiguous parents into concrete slices.`;
       try {
-        const envelope = adapters.publishAssignment(
-          config.fromAgent,
-          config.toAgent,
-          row.id,
-          row.priority,
-          rationale,
-        );
+        const envelope = adapters.publishAssignment(config.fromAgent, config.toAgent, row.id, row.priority, rationale);
         publishedEnvelopeIds.push(envelope.id);
         publishedRowIds.push(row.id);
       } catch (e) {
@@ -441,14 +427,15 @@ export function pollOnce(
         // Keep our snapshot's entries plus any extras a concurrent writer added.
         // Filter both by cooldown window AND skip dupes our own publishes will re-add.
         ...history.entries,
-        ...onDiskNow.entries.filter(e => !history.entries.some(h => h.rowId === e.rowId && h.publishedAt === e.publishedAt)),
+        ...onDiskNow.entries.filter(
+          (e) => !history.entries.some((h) => h.rowId === e.rowId && h.publishedAt === e.publishedAt),
+        ),
       ].filter(
-        e => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs
-             && !ourPublishedSet.has(e.rowId),
+        (e) => pollAt.getTime() - new Date(e.publishedAt).getTime() < cooldownMs && !ourPublishedSet.has(e.rowId),
       );
       const newEntries: AssignmentHistoryEntry[] = [
         ...mergedExisting,
-        ...publishedRowIds.map(id => ({ rowId: id, publishedAt: pollAt.toISOString() })),
+        ...publishedRowIds.map((id) => ({ rowId: id, publishedAt: pollAt.toISOString() })),
       ];
       try {
         adapters.writeHistoryFile(config.historyFile, { entries: newEntries });
@@ -461,51 +448,58 @@ export function pollOnce(
     }
   }
 
-  const danglingNote = danglingDeps.size > 0
-    ? ` (warning: ${danglingDeps.size} dangling dep ref(s) — first: ${[...danglingDeps].slice(0, 3).join(", ")})`
-    : "";
+  const danglingNote =
+    danglingDeps.size > 0
+      ? ` (warning: ${danglingDeps.size} dangling dep ref(s) — first: ${[...danglingDeps].slice(0, 3).join(", ")})`
+      : "";
 
-  const publishNote = lastPublishError !== null
-    ? ` (publish failed: ${lastPublishError})`
-    : config.noPublish
-    ? " (publish skipped per --no-publish)"
-    : publishedEnvelopeIds.length > 0
-    ? ` (published ${publishedEnvelopeIds.length} assignment envelope(s))`
-    : "";
+  const publishNote =
+    lastPublishError !== null
+      ? ` (publish failed: ${lastPublishError})`
+      : config.noPublish
+        ? " (publish skipped per --no-publish)"
+        : publishedEnvelopeIds.length > 0
+          ? ` (published ${publishedEnvelopeIds.length} assignment envelope(s))`
+          : "";
 
-  const cooldownNote = skippedDueToCooldown.length > 0
-    ? ` (skipped ${skippedDueToCooldown.length} due to cooldown: ${skippedDueToCooldown.slice(0, 3).join(", ")})`
-    : "";
+  const cooldownNote =
+    skippedDueToCooldown.length > 0
+      ? ` (skipped ${skippedDueToCooldown.length} due to cooldown: ${skippedDueToCooldown.slice(0, 3).join(", ")})`
+      : "";
 
   return {
     pollAt: pollAt.toISOString(),
     totalOpenRows: openRows.length,
     readyRowsFound: readyRows.length,
-    candidateIds: readyRows.slice(0, 10).map(r => r.id),
+    candidateIds: readyRows.slice(0, 10).map((r) => r.id),
     publishedEnvelopeIds,
     lastPublishError,
     queueBusy: false,
     skippedDueToCooldown,
-    note: readyRows.length > 0
-      ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows.slice(0, 5).map(r => r.id).join(", ")}${publishNote}${cooldownNote}${danglingNote}`
-      : `${openRows.length} open rows but none ready${danglingNote}`,
+    note:
+      readyRows.length > 0
+        ? `${readyRows.length} of ${openRows.length} open rows are ready-to-grind; top candidates: ${readyRows
+            .slice(0, 5)
+            .map((r) => r.id)
+            .join(", ")}${publishNote}${cooldownNote}${danglingNote}`
+        : `${openRows.length} open rows but none ready${danglingNote}`,
   };
 }
 
 /** Run a single poll iteration and return its result. */
-export function runOnce(
-  config: NotifierConfig = DEFAULT_CONFIG,
-  adapters: Adapters = REAL_ADAPTERS,
-): PollResult {
+export function runOnce(config: NotifierConfig = DEFAULT_CONFIG, adapters: Adapters = REAL_ADAPTERS): PollResult {
   const result = pollOnce(config, adapters);
   console.log(JSON.stringify(result));
   return result;
 }
 
-export async function runDaemon(config: NotifierConfig = DEFAULT_CONFIG, adapters: Adapters = REAL_ADAPTERS): Promise<never> {
+export async function runDaemon(
+  config: NotifierConfig = DEFAULT_CONFIG,
+  adapters: Adapters = REAL_ADAPTERS,
+): Promise<never> {
   while (true) {
     runOnce(config, adapters);
-    await new Promise(resolve => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
+    await new Promise((resolve) => setTimeout(resolve, config.pollIntervalMin * 60 * 1000));
   }
 }
 

@@ -26,8 +26,8 @@ CI (\`build-installer-iso\` workflow from PR #4905) caught this on \`nix flake c
 
 \`\`\`
 error:
-  nix-darwin and Nixpkgs branches in use must match, but you are
-  currently using nix-darwin master with Nixpkgs nixos-24.11
+nix-darwin and Nixpkgs branches in use must match, but you are
+currently using nix-darwin master with Nixpkgs nixos-24.11
 \`\`\`
 
 PR #4906 (which added the nix-darwin input) pinned it to \`master\` based on stale guidance. nix-darwin > 25.x added a hard assertion enforcing branch-match.
@@ -53,6 +53,7 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 Pins the `nix-darwin` flake input to the `nix-darwin-24.11` release branch so it matches the repo’s `nixpkgs` pin (`nixos-24.11`) and avoids nix-darwin’s branch-mismatch assertion during evaluation.
 
 **Changes:**
+
 - Switch `inputs.nix-darwin.url` from `.../master` to `.../nix-darwin-24.11`.
 - Update inline documentation in `flake.nix` to explain/justify the required branch match and the “bump in lockstep” rule.
 

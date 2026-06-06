@@ -10,7 +10,11 @@ last_updated: 2026-05-10
 depends_on: []
 tags: [pr-72, punch-list, spec-consistency, b-0062, deferral-tracking]
 type: friction-reducer
-decomposed_into: [B-0074.2-eat-spec-504-wallet-acceptance-prose-audit-2026-05-11, B-0074.3-wallet-spec-377-bond-ledger-intentional-debt-alignment-2026-05-11]
+decomposed_into:
+  [
+    B-0074.2-eat-spec-504-wallet-acceptance-prose-audit-2026-05-11,
+    B-0074.3-wallet-spec-377-bond-ledger-intentional-debt-alignment-2026-05-11,
+  ]
 ---
 
 # B-0074 — PR #72 punch-list / spec-consistency drift sweep
@@ -110,16 +114,16 @@ focused sweep PR that touches just these 4 files.
 ## Acceptance
 
 - [x] 4 stale entries removed from B-0062 with explicit audit
-  trail — **DONE:** B-0062 closed 2026-05-08 with all 21
-  items resolved; resolution notes added in-row above.
+      trail — **DONE:** B-0062 closed 2026-05-08 with all 21
+      items resolved; resolution notes added in-row above.
 - [ ] EAT §504 + wallet-v0 §377 cross-doc consistency verified
-  — **OPEN:** now tracked by children B-0074.2 (EAT prose) + B-0074.3 (wallet bond-ledger); this parent row defers to them.
+      — **OPEN:** now tracked by children B-0074.2 (EAT prose) + B-0074.3 (wallet bond-ledger); this parent row defers to them.
 - [x] kiro-cli memory rephrased OR PR #72 rebased (whichever
-  resolves the live xref first) — **DONE (B-0074.1):** memory
-  file updated to `.ts` paths; kiro.ts already ships.
+      resolves the live xref first) — **DONE (B-0074.1):** memory
+      file updated to `.ts` paths; kiro.ts already ships.
 - [x] git-hotspot log-line filter algorithm refined — **DONE:**
-  `audit-git-hotspots.ts:215` filters `s.length > 0`; B-0067
-  closed 2026-05-07.
+      `audit-git-hotspots.ts:215` filters `s.length > 0`; B-0067
+      closed 2026-05-07.
 
 ## Progress
 

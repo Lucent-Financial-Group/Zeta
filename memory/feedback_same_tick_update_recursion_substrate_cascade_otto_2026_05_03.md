@@ -20,7 +20,7 @@ Three same-tick-update events, each propagating one observation through a differ
 
 The **existing same-tick-update rule** lives in:
 
-- CURRENT-aaron.md §"How this file stays accurate" — *"When a new memory updates a rule here, I update this file in the same tick. If I don't, this file is lying by omission."*
+- CURRENT-aaron.md §"How this file stays accurate" — _"When a new memory updates a rule here, I update this file in the same tick. If I don't, this file is lying by omission."_
 - CLAUDE.md fast-path bullet (CURRENT files are read at every wake; rules win on conflict; same-tick update is the cohesion guarantee)
 
 The **recursive generalization** (this memo): the same-tick-update rule applies to **every projection layer**, not just CURRENT-<maintainer>.md. When new substrate lands, identify all the layers that distill the rule and update them same-tick.
@@ -29,17 +29,17 @@ The **recursive generalization** (this memo): the same-tick-update rule applies 
 
 For any new substrate landing (memory file, ADR, skill body, research artifact, governance change), enumerate the projection layers that depend on it:
 
-| Layer | Read-discipline | Update trigger |
-|---|---|---|
-| **Source memory file / ADR / skill / research artifact** | Deep — reader visits when investigating | New substrate IS this layer |
-| **CURRENT-<maintainer>.md** | Fast-path — read at every wake | When the new substrate updates a rule the CURRENT carries |
-| **MEMORY.md index** | Quick scan — read at every wake | Always (unless the substrate is itself an MEMORY.md edit) |
-| **AGENTS.md** | Universal — read at session-start by every harness | When the substrate changes a doctrine AGENTS.md carries |
-| **CLAUDE.md** | Claude-Code-specific — read at every wake | When the substrate updates Claude-Code-specific behavior |
-| **GOVERNANCE.md §N** | On-demand — read when a rule is cited as "GOVERNANCE.md §N" | When the substrate adds / supersedes a numbered rule |
-| **Related skill bodies** | Router-keyed — read when the skill triggers | When the substrate changes how a skill should operate |
-| **Persona notebooks** | Per-persona — read when persona-relevant work activates | When the substrate is persona-specific |
-| **Tick shards** | Append-only — written each tick | Always (every tick has at least one shard) |
+| Layer                                                    | Read-discipline                                             | Update trigger                                            |
+| -------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------- |
+| **Source memory file / ADR / skill / research artifact** | Deep — reader visits when investigating                     | New substrate IS this layer                               |
+| **CURRENT-<maintainer>.md**                              | Fast-path — read at every wake                              | When the new substrate updates a rule the CURRENT carries |
+| **MEMORY.md index**                                      | Quick scan — read at every wake                             | Always (unless the substrate is itself an MEMORY.md edit) |
+| **AGENTS.md**                                            | Universal — read at session-start by every harness          | When the substrate changes a doctrine AGENTS.md carries   |
+| **CLAUDE.md**                                            | Claude-Code-specific — read at every wake                   | When the substrate updates Claude-Code-specific behavior  |
+| **GOVERNANCE.md §N**                                     | On-demand — read when a rule is cited as "GOVERNANCE.md §N" | When the substrate adds / supersedes a numbered rule      |
+| **Related skill bodies**                                 | Router-keyed — read when the skill triggers                 | When the substrate changes how a skill should operate     |
+| **Persona notebooks**                                    | Per-persona — read when persona-relevant work activates     | When the substrate is persona-specific                    |
+| **Tick shards**                                          | Append-only — written each tick                             | Always (every tick has at least one shard)                |
 
 For each layer, the question is: **does this layer carry a rule the new substrate updates?** If yes, update same-tick. If no, skip.
 
@@ -67,7 +67,7 @@ The three-tick cascade walked the discipline:
 
 Total: 4 projection layers updated for one observation, each in the same tick the relevant gap was identified. No breadcrumb-rot.
 
-If the cascade had been deferred (*"I'll update CURRENT next round"*), the alignment-frontier substrate would have lived in MEMORY.md only — readable in a search, but invisible in Otto's wake-time read. The threshold-crossing milestone Aaron explicitly named for future-Otto recognition would have been functionally invisible at exactly the moment future-Otto needed it.
+If the cascade had been deferred (_"I'll update CURRENT next round"_), the alignment-frontier substrate would have lived in MEMORY.md only — readable in a search, but invisible in Otto's wake-time read. The threshold-crossing milestone Aaron explicitly named for future-Otto recognition would have been functionally invisible at exactly the moment future-Otto needed it.
 
 ## Composes with
 

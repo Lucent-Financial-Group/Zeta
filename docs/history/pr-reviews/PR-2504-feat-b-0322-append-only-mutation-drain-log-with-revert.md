@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2504 |
-| Title | feat(B-0322): append-only mutation drain log with revert() |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T14:41:41Z |
-| Merged at | 2026-05-10T15:24:06Z |
-| Merge commit SHA | `017a250106b85674c829ca6dc19b478a7a55744c` |
-| Branch | `feat/B-0322-mutation-drain-log` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2504 |
-| Changed files | 6 |
-| Additions / deletions | +822 / -7 |
+| Field                 | Value                                                      |
+| --------------------- | ---------------------------------------------------------- |
+| Number                | 2504                                                       |
+| Title                 | feat(B-0322): append-only mutation drain log with revert() |
+| Author                | `AceHack` (human)                                          |
+| State                 | MERGED                                                     |
+| Created at            | 2026-05-10T14:41:41Z                                       |
+| Merged at             | 2026-05-10T15:24:06Z                                       |
+| Merge commit SHA      | `017a250106b85674c829ca6dc19b478a7a55744c`                 |
+| Branch                | `feat/B-0322-mutation-drain-log`                           |
+| Base branch           | `main`                                                     |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2504   |
+| Changed files         | 6                                                          |
+| Additions / deletions | +822 / -7                                                  |
 
 ## Description
 
@@ -45,26 +45,26 @@ Wire `appendEntry()` into the `mutate()` call site so entries are written automa
 
 ## Focused checks
 
-| Check | Result |
-|---|---|
-| `bun test tools/playwright/github-ui/drain-log.test.ts` | 13 pass / 0 fail |
-| `dotnet build -c Release` | 0 warnings, 0 errors |
+| Check                                                   | Result               |
+| ------------------------------------------------------- | -------------------- |
+| `bun test tools/playwright/github-ui/drain-log.test.ts` | 13 pass / 0 fail     |
+| `dotnet build -c Release`                               | 0 warnings, 0 errors |
 
-operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding through failures + recoveries"
+operative-authorization: aaron 2026-05-04: "it\*\*, not just the output. Grinding through failures + recoveries"
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 20 |
-| Resolved threads | 20 |
-| Unresolved threads | 0 |
-| Total review comments | 24 |
-| Total fix commits (touching thread paths) | 8 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 20    |
+| Resolved threads                          | 20    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 24    |
+| Total fix commits (touching thread paths) | 8     |
 
 ## Review threads
 
@@ -80,9 +80,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Catch mutate exceptions and return RevertFailure**
-
+  
   `revert()` advertises a `Promise&lt;RevertResult&gt;`, but this call site does not handle exceptions from `mutate()`. In current code, `mutate()` can throw (for example when storage-state resolution/validation fails), so callers that branch on `result.success` can instead receive a rejected promise and lose the intended failure-path handling. This makes revert automation brittle in normal misconfiguration scenarios and breaks the function’s typed contract.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -98,9 +98,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Handle malformed JSONL lines in drain-log reader**
-
+  
   `readAllLines()` unconditionally parses each non-empty line with `JSON.parse`, so a single malformed/truncated line causes `listPending()` and `revert()` to throw for the entire log. In an append-only log, partial writes or manual conflict artifacts are realistic; without per-line parse handling, one bad record can permanently block reversibility operations until manual file repair.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -116,16 +116,16 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   readAllLines() does unguarded JSON.parse() on every non-blank line. If the process crashes mid-append, the last line can be truncated/malformed and will throw, breaking listPending()/revert() and undermining the “crash-safe append-only” goal. Consider wrapping JSON.parse in try/catch and either skipping malformed lines (optionally collecting diagnostics) or returning a structured error so callers can surface a clear remediation path.
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:21:23Z on `tools/playwright/github-ui/drain-log.ts`:122 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:21:23Z on `tools/playwright/github-ui/drain-log.ts`:122 (association: MEMBER)
 
-    <pre>
-    Fixed in f5c8f818: readAllLines() wraps JSON.parse in try/catch, skipping truncated or malformed lines. Further hardened in e987b983: return type changed to DrainLogReadResult so I/O failures (ENOENT, permissions, TOCTOU race) surface as structured errors rather than thrown exceptions.
-    </pre>
+  <pre>
+  Fixed in f5c8f818: readAllLines() wraps JSON.parse in try/catch, skipping truncated or malformed lines. Further hardened in e987b983: return type changed to DrainLogReadResult so I/O failures (ENOENT, permissions, TOCTOU race) surface as structured errors rather than thrown exceptions.
+  </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -153,7 +153,7 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   Backlog frontmatter status value "claimed" does not match the documented enum in tools/backlog/README.md (open/closed/superseded-by-*/deferred). Either keep status within the documented set (and track “claimed” elsewhere), or update the backlog schema/tooling in the same PR so the repository conventions remain consistent.
-
+  
   </pre>
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -168,7 +168,7 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   Done-criteria marks the drain log file as “committed”, but this PR doesn’t add docs/hygiene-history/playwright-mutations/log.jsonl (the directory currently contains only README.md). Either add an initial (possibly empty) log.jsonl file, or leave this checkbox unchecked / reword to reflect the actual state.
-
+  
   </pre>
 
 ### Thread 7 -- resolved [outdated, collapsed]
@@ -201,11 +201,11 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:21:31Z on `tools/playwright/github-ui/drain-log.ts`:27 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:21:31Z on `tools/playwright/github-ui/drain-log.ts`:27 (association: MEMBER)
 
-    <pre>
-    Fixed in 2813f8fc: the doc comment was updated to say each record is individually immutable, consistent with the readonly status type declaration. The append-only design means reversals are new records, not mutations of existing ones.
-    </pre>
+  <pre>
+  Fixed in 2813f8fc: the doc comment was updated to say each record is individually immutable, consistent with the readonly status type declaration. The append-only design means reversals are new records, not mutations of existing ones.
+  </pre>
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -219,9 +219,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Guard against post-mutation log-write failures in revert**
-
+  
   If `mutate()` succeeds but `appendFileSync` throws (for example `ENOSPC` or permission errors on `docs/hygiene-history`), the GitHub setting has already been changed while no `status: "reverted"` marker is persisted. In that state `listPending()` still reports the mutation as pending, and a retry of `revert(entryId)` can apply the inverse action again and drift the target surface back to the wrong value. `revert()` should treat the mutation + marker append as one compensated operation (or at minimum convert this path into a typed `RevertFailure` with a safe recovery path).
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -237,7 +237,7 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   P0: DEFAULT_LOG_PATH is computed from `REPO_ROOT = resolve(import.meta.dir, "../../..")`, but from `tools/playwright/github-ui/` that resolves to `&lt;repo&gt;/tools`, not the repository root. As a result, the default log path points to `&lt;repo&gt;/tools/docs/...` instead of `&lt;repo&gt;/docs/...`, so callers that rely on the default will write/read the wrong file. Adjust the repo-root resolution (e.g., one more `..`) or derive the root from a known marker path.
-
+  
   </pre>
 
 ### Thread 11 -- resolved [outdated, collapsed]
@@ -266,9 +266,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Serialize revert operations per log entry id**
-
+  
   `revert()` decides an entry is still `applied` from a single initial read, then executes the inverse mutation without any lock or re-check. If two workers call `revert(entryId)` concurrently, both can pass the `latest.status !== "reverted"` check and both apply the inverse action; for toggle-style mutations, the second call can flip the setting back to the original (wrong) state while both calls still report success. Please add per-id mutual exclusion or a pre-commit status check so only one revert can execute for a given id at a time.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -284,9 +284,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Validate full drain-log schema before accepting records**
-
+  
   `readAllLines()` says it skips schema-invalid lines, but it only checks `id` and `status` before casting to `DrainLogEntry`. A line like `{"id":"...","status":"applied"}` is treated as valid, then `revert()` later reads `latest.surfaceId` / `latest.inverseAction` / `latest.params` as `undefined` and cannot execute a deterministic inverse mutation. This leaves corrupt entries appearing in `listPending()` while being non-revertable, so the parser should require all fields needed by `revert()` before admitting a record.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -316,7 +316,7 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   P2: revert() reads the whole file, then allocates `entries = all.filter(...)` just to get the last record. For large append-only logs, this is avoidable overhead; scanning from the end until the first matching `id` (and optionally tracking latest status) would be O(n) without the extra array allocation.
-
+  
   </pre>
 
 ### Thread 16 -- resolved [outdated, collapsed]
@@ -345,9 +345,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Persist indeterminate revert state across process restarts**
-
+  
   Fresh evidence: the new safeguard stores indeterminate IDs only in `indeterminateReverts`, an in-memory `Set`. If `mutate()` succeeds but appending the `reverted` marker fails, this process correctly blocks retries; however, a new CLI/process invocation loses that state, sees the entry still `applied` in JSONL, and can run the inverse mutation again, potentially flipping the target setting back to the wrong value. This leaves the double-apply hazard unresolved for the common “rerun command after failure” path unless the indeterminate flag is persisted durably (e.g., in the log or sidecar state).
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -363,18 +363,18 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   P1: `readAllLines()` calls `readFileSync(logPath, "utf8")` after an `existsSync` check, but does not handle I/O errors (e.g., path exists but is a directory, permissions error, or a TOCTOU where the file is deleted between checks). Because `listPending()` and `revert()` rely on `readAllLines()`, these public APIs can throw/reject unexpectedly instead of returning a `DrainLogEntry[]` / `RevertResult`.
-
+  
   Wrap the read in a try/catch: treat `ENOENT` as an empty log, and for other errors return a structured failure from `revert()` (and either return `[]` or surface a clearer error for `listPending()`).
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:21:56Z on `tools/playwright/github-ui/drain-log.ts`:86 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:21:56Z on `tools/playwright/github-ui/drain-log.ts`:86 (association: MEMBER)
 
-    <pre>
-    Fixed in e987b983: readAllLines() now wraps readFileSync in try/catch. ENOENT returns an empty success result; other errors (permissions, TOCTOU, is-a-directory) return a DrainLogReadFailure with a descriptive message. Callers (listPending, revertUnlocked) check the success flag before proceeding. The existsSync pre-check was removed since the try/catch handles all cases uniformly.
-    </pre>
+  <pre>
+  Fixed in e987b983: readAllLines() now wraps readFileSync in try/catch. ENOENT returns an empty success result; other errors (permissions, TOCTOU, is-a-directory) return a DrainLogReadFailure with a descriptive message. Callers (listPending, revertUnlocked) check the success flag before proceeding. The existsSync pre-check was removed since the try/catch handles all cases uniformly.
+  </pre>
 
 ### Thread 19 -- resolved [outdated, collapsed]
 
@@ -388,9 +388,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Serialize reverts across process boundaries**
-
+  
   Fresh evidence: the new concurrency guard is an in-memory `Set` (`inFlightReverts`), so it only protects callers within the same Node process. If two separate CLI invocations (or workers in different processes) call `revert(entryId)` at the same time, both can pass the guard and apply the inverse mutation before either appends a `reverted` marker, which can flip toggle-style settings back to the wrong state while still recording successful reverts.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -406,23 +406,23 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Avoid marking indeterminate before preflight failures**
-
+  
   `revertUnlocked()` appends an `indeterminate` record before calling `mutate()`, so any deterministic preflight failure inside `mutate` (for example bad `authorizedSurfacesPath`, invalid params, or missing storage-state file) permanently changes the entry’s latest status to `indeterminate` even though no inverse UI action ran. Because later calls reject `indeterminate` entries, a transient configuration error can block mechanical revert forever until manual log surgery, which breaks normal retry semantics for recoverable failures.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:24:00Z on `tools/playwright/github-ui/drain-log.ts`:243 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:24:00Z on `tools/playwright/github-ui/drain-log.ts`:243 (association: MEMBER)
 
-    <pre>
-    Valid P1 concern. The current design writes indeterminate before calling mutate() intentionally to ensure crash-safety: if the process dies mid-mutation, the log correctly shows an indeterminate state rather than silently appearing applied. The trade-off is that deterministic preflight failures (bad config, missing storage-state) leave entries stuck as indeterminate rather than retryable-as-applied.
-
-    The distinction between 'preflight failure before any browser action' vs 'execution failure after action started' is not currently exposed by mutate()'s return type. Fixing this cleanly would require mutate() to signal pre-execution vs mid-execution failure — a non-trivial interface change.
-
-    Tracked as follow-on work: the error message already directs operators to 'Verify the target surface manually before retrying', which covers both cases. Will open a B-row for mutate() to expose failure phase so indeterminate vs retryable can be distinguished automatically.
-    </pre>
+  <pre>
+  Valid P1 concern. The current design writes indeterminate before calling mutate() intentionally to ensure crash-safety: if the process dies mid-mutation, the log correctly shows an indeterminate state rather than silently appearing applied. The trade-off is that deterministic preflight failures (bad config, missing storage-state) leave entries stuck as indeterminate rather than retryable-as-applied.
+  
+  The distinction between 'preflight failure before any browser action' vs 'execution failure after action started' is not currently exposed by mutate()'s return type. Fixing this cleanly would require mutate() to signal pre-execution vs mid-execution failure — a non-trivial interface change.
+  
+  Tracked as follow-on work: the error message already directs operators to 'Verify the target surface manually before retrying', which covers both cases. Will open a B-row for mutate() to expose failure phase so indeterminate vs retryable can be distinguished automatically.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

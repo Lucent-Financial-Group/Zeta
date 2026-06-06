@@ -78,9 +78,7 @@ class FakeMutablePage implements MutableGitHubSessionPage {
 
   content(): Promise<string> {
     if (this.currentUrl === "https://github.com/settings/profile") {
-      return Promise.resolve(
-        `<html><head><meta name="user-login" content="${this.username}"></head></html>`,
-      );
+      return Promise.resolve(`<html><head><meta name="user-login" content="${this.username}"></head></html>`);
     }
     if (this.currentUrl === this.targetUrl) {
       return Promise.resolve(this.clicked ? this.htmlAfter : this.htmlBefore);
@@ -188,9 +186,7 @@ describe("loadAuthorizedSurfaces", () => {
   });
 
   test("loads surfaces from custom path", () => {
-    const path = tempSurfacesFile([
-      { id: "test-surface", allowedActions: ["toggle-on"] },
-    ]);
+    const path = tempSurfacesFile([{ id: "test-surface", allowedActions: ["toggle-on"] }]);
     const surfaces = loadAuthorizedSurfaces(path);
     expect(surfaces).toHaveLength(1);
     expect(surfaces[0]?.id).toBe("test-surface");
@@ -217,9 +213,7 @@ describe("mutate — authorization", () => {
   });
 
   test("rejects action not in allowedActions for the surface", async () => {
-    const surfacesPath = tempSurfacesFile([
-      { id: "test-surface", allowedActions: ["toggle-on"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "test-surface", allowedActions: ["toggle-on"] }]);
     const req: MutationRequest = {
       surfaceId: "test-surface",
       action: "delete-all",
@@ -254,9 +248,7 @@ describe("mutate — authorization", () => {
 
 describe("mutate — param validation", () => {
   test("rejects toggleKey with special characters (selector injection guard)", async () => {
-    const surfacesPath = tempSurfacesFile([
-      { id: "test-surface", allowedActions: ["toggle-on"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "test-surface", allowedActions: ["toggle-on"] }]);
     const req: MutationRequest = {
       surfaceId: "test-surface",
       action: "toggle-on",
@@ -270,9 +262,7 @@ describe("mutate — param validation", () => {
   });
 
   test("rejects unknown action without opening session", async () => {
-    const surfacesPath = tempSurfacesFile([
-      { id: "test-surface", allowedActions: ["custom-action"] },
-    ]);
+    const surfacesPath = tempSurfacesFile([{ id: "test-surface", allowedActions: ["custom-action"] }]);
     const req: MutationRequest = {
       surfaceId: "test-surface",
       action: "custom-action",
@@ -318,9 +308,7 @@ describe("mutate — successful toggle-on", () => {
   test("diff reflects the toggle state change", async () => {
     const result = await mutate(req, makeOpts(makePage()));
     if (!result.success) throw new Error("Expected success");
-    const changed = result.diff.changedToggles.find(
-      (t) => t.key === "dependabot-security-updates",
-    );
+    const changed = result.diff.changedToggles.find((t) => t.key === "dependabot-security-updates");
     expect(changed).toBeDefined();
     expect(changed?.prior).toBe(false);
     expect(changed?.current).toBe(true);
@@ -378,9 +366,7 @@ describe("mutate — drain log entry", () => {
   test("drainLogEntry has a UUID id", async () => {
     const result = await mutate(req, makeOpts(makePage()));
     if (!result.success) throw new Error("Expected success");
-    expect(result.drainLogEntry.id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
-    );
+    expect(result.drainLogEntry.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
   });
 
   test("drainLogEntry.timestamp is ISO-8601", async () => {
@@ -463,7 +449,9 @@ describe("mutate — drain log auto-write", () => {
     const result = await mutate(req, { ...makeOpts(makePage()), logPath });
     expect(result.success).toBe(true);
     expect(existsSync(logPath)).toBe(true);
-    const lines = readFileSync(logPath, "utf8").split("\n").filter((l) => l.trim().length > 0);
+    const lines = readFileSync(logPath, "utf8")
+      .split("\n")
+      .filter((l) => l.trim().length > 0);
     expect(lines).toHaveLength(1);
   });
 
@@ -502,10 +490,7 @@ describe("mutate — drain log auto-write", () => {
 
   test("does not write when mutation fails (auth rejection)", async () => {
     const logPath = tempLogPath();
-    const result = await mutate(
-      { ...req, surfaceId: "non-existent" },
-      { ...makeOpts(makePage()), logPath },
-    );
+    const result = await mutate({ ...req, surfaceId: "non-existent" }, { ...makeOpts(makePage()), logPath });
     expect(result.success).toBe(false);
     expect(existsSync(logPath)).toBe(false);
   });

@@ -55,13 +55,13 @@ today. Prose bullets, no RFC-2119 keywords; those live in the base `spec.md`.
     state-machine box; async operators return `true` and `Circuit.Step`
     awaits their step task.
 - The `[<VolatileField>]` on the output slot pins the .NET memory-ordering
-  contract: the tick's output write is a *release*-ordered store, and any
+  contract: the tick's output write is a _release_-ordered store, and any
   consumer reading `OutputHandle<'T>.Current` after the step returns issues
-  an *acquire*-ordered load. This is the "documented memory-ordering fence"
+  an _acquire_-ordered load. This is the "documented memory-ordering fence"
   the base spec refers to in "output is observable after step returns" —
   the pairing guarantees a cross-thread happens-before from step-writer to
   post-step reader without an explicit `Thread.MemoryBarrier` call.
-- `Circuit` is the DAG owner. It holds a *register-lock* — a single
+- `Circuit` is the DAG owner. It holds a _register-lock_ — a single
   per-circuit `obj` guarded by `lock` — around every topology mutation
   (operator registration, edge wiring, scope nesting). The register-lock
   is held only during construction-phase work; once `Build` is called and

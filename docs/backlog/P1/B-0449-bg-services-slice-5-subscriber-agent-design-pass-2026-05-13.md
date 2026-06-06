@@ -60,8 +60,8 @@ Single `tools/bg/bus-subscriber.ts` polls all topics + dispatches
 to per-topic handlers.
 
 **Pro**: one process; reusable bus-polling logic; can implement
-  cross-topic awareness (e.g., suppress `infinite-backlog-nudge`
-  while reacting to a `work-assignment`).
+cross-topic awareness (e.g., suppress `infinite-backlog-nudge`
+while reacting to a `work-assignment`).
 **Con**: monolith; one-bug-kills-all-three failure mode.
 
 ### Option C — Bus-subscriber is a library; subscribers are short-lived
@@ -71,10 +71,10 @@ Each cron tick (per surface) calls subscribeOnce; the cron IS the
 subscriber-loop. No long-running subscriber daemon.
 
 **Pro**: composes with existing cron infrastructure; no new
-  long-running process; subscriber is just a regular agent action
-  shaped like a function call.
+long-running process; subscriber is just a regular agent action
+shaped like a function call.
 **Con**: subscriber latency = cron tick latency (1min); bursty
-  bus traffic gets batched per tick.
+bus traffic gets batched per tick.
 
 ### Recommended: Option C
 

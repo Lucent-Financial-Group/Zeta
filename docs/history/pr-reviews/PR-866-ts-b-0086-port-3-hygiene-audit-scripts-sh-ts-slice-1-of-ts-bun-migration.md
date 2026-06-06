@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 866 |
-| Title | ts(B-0086): port 3 hygiene audit scripts (.sh→.ts) — slice 1 of TS/Bun migration |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-30T00:03:20Z |
-| Merged at | 2026-04-30T00:49:04Z |
-| Merge commit SHA | `d3b0be8215f40126aaf80f6d016519a56e99ae85` |
-| Branch | `lane-b/ts-bun-port-hygiene-audits-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/866 |
-| Changed files | 9 |
-| Additions / deletions | +2065 / -8 |
+| Field                 | Value                                                                            |
+| --------------------- | -------------------------------------------------------------------------------- |
+| Number                | 866                                                                              |
+| Title                 | ts(B-0086): port 3 hygiene audit scripts (.sh→.ts) — slice 1 of TS/Bun migration |
+| Author                | `AceHack` (human)                                                                |
+| State                 | MERGED                                                                           |
+| Created at            | 2026-04-30T00:03:20Z                                                             |
+| Merged at             | 2026-04-30T00:49:04Z                                                             |
+| Merge commit SHA      | `d3b0be8215f40126aaf80f6d016519a56e99ae85`                                       |
+| Branch                | `lane-b/ts-bun-port-hygiene-audits-2026-04-29`                                   |
+| Base branch           | `main`                                                                           |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/866                          |
+| Changed files         | 9                                                                                |
+| Additions / deletions | +2065 / -8                                                                       |
 
 ## Description
 
@@ -32,6 +32,7 @@
 Lane B slice 1 of the TypeScript/Bun migration — three same-shape audit scripts ported from bash to TS on Bun.
 
 **Files**:
+
 - `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`
 - `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`
 - `tools/hygiene/audit-memory-references.{sh→ts}`
@@ -57,15 +58,15 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 24 |
-| Resolved threads | 17 |
-| Unresolved threads | 7 |
-| Total review comments | 24 |
-| Total fix commits (touching thread paths) | 8 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 24    |
+| Resolved threads                          | 17    |
+| Unresolved threads                        | 7     |
+| Total review comments                     | 24    |
+| Total fix commits (touching thread paths) | 8     |
 
 ## Review threads
 
@@ -78,10 +79,11 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-30T00:05:12Z on `tools/hygiene/audit-memory-references.ts`:130 (association: NONE)
+
   ## CodeQL / Potential file system race condition
-  
+
   The file may have changed since it [was checked](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/30)
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -134,7 +136,7 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T00:07:59Z on `docs/trajectories/typescript-bun-migration/RESUME.md`:22 (association: NONE)
-  This table cell’s `sh`→`ts` notation is hard to read because only the `.sh` path is in backticks and the `.ts` side is just ``.ts``. Consider matching the row above’s `{py→ts}` convention or use backticks around both full paths (or the full `{sh→ts}` brace form) for consistent rendering.
+  This table cell’s `sh`→`ts` notation is hard to read because only the `.sh` path is in backticks and the `.ts` side is just `.ts`. Consider matching the row above’s `{py→ts}` convention or use backticks around both full paths (or the full `{sh→ts}` brace form) for consistent rendering.
   ```suggestion
   | Lane B slice 1 | 2026-04-29 | `tools/hygiene/audit-md032-plus-linestart.{sh→ts}`, `tools/hygiene/audit-memory-index-duplicates.{sh→ts}`, `tools/hygiene/audit-memory-references.{sh→ts}` | In flight |
   ```
@@ -271,10 +273,10 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T00:26:10Z on `tools/hygiene/audit-md032-plus-linestart.ts`:96 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Set maxBuffer for git ls-files to avoid ENOBUFS failures**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Set maxBuffer for git ls-files to avoid ENOBUFS failures**
+
   This `spawnSync` call relies on the default stdout buffer, but this script later runs `git ls-files -z "*.md"`; as the repo grows, that output can exceed the default sync-process buffer and throw (typically `ENOBUFS`), causing the audit to fail even though the underlying git command is valid. The previous bash version streamed output and did not have this fixed-buffer failure mode, so this is a scalability regression for larger trees.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 12 -- resolved [collapsed]
@@ -308,7 +310,7 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-30T00:33:18Z on `tools/hygiene/audit-memory-references.ts`:174 (association: NONE)
-  P1: The `catch` around `readFileSync` treats *all* IO errors as “file not found”. This will misreport cases like permission errors (EACCES) or “is a directory” (EISDIR) as “not found”, which makes debugging harder. Consider printing the underlying error message/code (or distinguishing common cases) while still returning exit code 64.
+  P1: The `catch` around `readFileSync` treats _all_ IO errors as “file not found”. This will misreport cases like permission errors (EACCES) or “is a directory” (EISDIR) as “not found”, which makes debugging harder. Consider printing the underlying error message/code (or distinguishing common cases) while still returning exit code 64.
 
 ### Thread 15 -- resolved [outdated, collapsed]
 
@@ -364,16 +366,17 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 
 - **`Copilot` (bot)** at 2026-04-30T00:49:38Z on `tools/hygiene/audit-memory-references.ts`:118 (association: NONE)
   `describeIoError` uses `as { code?: unknown }` / `as { code: string }` assertions to read an error’s `code`. Given the new TypeScript baseline in this PR says `as` casts require inline justification, either add a short justification comment here (narrow structural check for Node/Bun errno codes) or refactor to a small type-guard helper so the `code` access is assertion-free.
+
   ```suggestion
   function getIoErrorCode(err: Error): string | undefined {
     if (!("code" in err)) {
       return undefined;
     }
-  
+
     const candidate: { readonly code?: unknown } = err;
     return typeof candidate.code === "string" ? candidate.code : undefined;
   }
-  
+
   function describeIoError(err: unknown): string {
     if (err instanceof Error) {
       const code = getIoErrorCode(err);
@@ -389,11 +392,12 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 
 - **`Copilot` (bot)** at 2026-04-30T00:49:39Z on `tools/hygiene/audit-memory-index-duplicates.ts`:97 (association: NONE)
   `describeIoError` relies on `as { code?: unknown }` / `as { code: string }` assertions to read `err.code`. Since the docs added in this PR treat `as` casts as allowed only with justification, please either add an inline justification comment (narrow structural check for errno-style codes) or switch to a typed predicate helper so the `code` extraction doesn’t depend on assertions.
+
   ```suggestion
   function hasStringErrorCode(err: Error): err is Error & { readonly code: string } {
     return "code" in err && typeof err.code === "string";
   }
-  
+
   function describeIoError(err: unknown): string {
     if (err instanceof Error) {
       return hasStringErrorCode(err) ? `${err.code}: ${err.message}` : err.message;
@@ -445,12 +449,13 @@ Mid-flight from the multi-AI review surface convergence: the previous polite-wai
 
 - **`Copilot` (bot)** at 2026-04-30T00:49:40Z on `docs/trajectories/typescript-bun-migration/slice-audits.md`:76 (association: NONE)
   This row says all file IO is wrapped and returns exit code 64 on ENOENT, but `audit-md032-plus-linestart.ts` reads each markdown file via `readFileSync(file, "utf8")` without a try/catch and its exit-code union is `0 | 2` (no `64`). Either the audit text needs to be narrowed to the two memory-index scripts, or the md032 port needs to be updated to convert read/stat failures into a typed exit code + message so the row is true.
+
   ```suggestion
   | File reads as typed error outcomes | inspect `try/catch` blocks | Applied for the 2 memory-index scripts (`64` on ENOENT); gap recorded for md032, which still reads markdown files directly and exits via `0 | 2` |
   | TOCTOU race avoided | inspect for `existsSync(target) ... readFileSync(target)` patterns | 0 instances; atomic `readFileSync` everywhere |
-  
+
   Per-port pattern checklist:
-  
+
   - **Applied (all 3)**: typed boundary objects — `AuditFinding` / `DuplicateFinding` / `BrokenRefFinding` instead of stringly-formatted findings. Internal flow stays structured; strings produced only at output boundary (`formatFinding`).
   - **Applied (2 memory-index scripts)**: literal-type union exit codes — `AuditExitCode = 0 | 2 | 64` instead of bare `number`.
   - **Gap recorded (md032 only)**: exit-code union remains `0 | 2`; it does not yet surface `64` for file read/stat failures.

@@ -40,11 +40,11 @@ substrate:
 
 ## Three composing disciplines for the methodology
 
-| Discipline | Source | Scope |
-|---|---|---|
-| Substrate-honest application | WWJD + glass-halo + razor + default-to-both + anti-cult (PR #2852 + others) | Ethical-application baseline |
-| Conversational recovery skills | PR #2857 Twitter validation | Trust-preservation operational core |
-| HARD LIMITS (THIS RULE) | PR #2859 substrate | Ethical floor — non-negotiable |
+| Discipline                     | Source                                                                      | Scope                               |
+| ------------------------------ | --------------------------------------------------------------------------- | ----------------------------------- |
+| Substrate-honest application   | WWJD + glass-halo + razor + default-to-both + anti-cult (PR #2852 + others) | Ethical-application baseline        |
+| Conversational recovery skills | PR #2857 Twitter validation                                                 | Trust-preservation operational core |
+| HARD LIMITS (THIS RULE)        | PR #2859 substrate                                                          | Ethical floor — non-negotiable      |
 
 The methodology operates substrate-honestly WITHIN the
 HARD LIMITS. Below the floor, the methodology doesn't apply
@@ -97,7 +97,7 @@ When Otto exercises the x.com authorization:
    - Encountering abuse evidence → REPORT
    - Encountering law-breaking offer → DON'T extend
    - Encountering extreme grey-edge content → recognize
-     + apply discipline
+     - apply discipline
 4. Apply cross-substrate triangulation if applicable
 
 Aaron's evidence "still exists in my twitter" — when Otto

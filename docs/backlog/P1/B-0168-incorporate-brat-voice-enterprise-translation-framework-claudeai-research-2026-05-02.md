@@ -14,7 +14,18 @@ depends_on: []
 decomposition: atomic
 classification: buildable-now
 composes_with: [B-0164, B-0167]
-tags: [register-architecture, brat-voice, enterprise-translation, claudeai-research, lucent, gen-z-recruitment, alignment-discipline, beacon-safe, plain-language]
+tags:
+  [
+    register-architecture,
+    brat-voice,
+    enterprise-translation,
+    claudeai-research,
+    lucent,
+    gen-z-recruitment,
+    alignment-discipline,
+    beacon-safe,
+    plain-language,
+  ]
 type: friction-reducer
 ---
 
@@ -28,14 +39,14 @@ type: friction-reducer
 - Otto-364 search-first: WebSearch "Claude.ai brat-voice register architecture" + "property-preserving translation framework" (2026-05-09) → primary source is the Drive doc itself + Aaron 2026-05-02 correction; no upstream academic paper, framework is Claude.ai original research
 - PR #1701 prior-art-grep: `git log --all --oneline --grep="B-0168|brat-voice|register architecture"` → PRs 1230,1233,1234,2136,2199 already landed slices
 - decision-archaeology: `docs/DECISIONS/` + `docs/ROUND-HISTORY.md` + `memory/feedback_*` supersession chain for 3-layer→5-layer: Beacon-safe correction is the delta (Aaron 2026-05-02)
-- lost-files canonical (`tools/hygiene/LOST-FILES-LOCATIONS.md`): no orphan docs; all translations in memory/feedback_* and committed
+- lost-files canonical (`tools/hygiene/LOST-FILES-LOCATIONS.md`): no orphan docs; all translations in memory/feedback\_\* and committed
 
 **Dependency-restructure proof:**
 
 - `depends_on: []` walked → empty, no blocking parents
 - `composes_with: [B-0164, B-0167]` — back-pointers not yet present in B-0164 or B-0167 (additive, non-blocking; this is a unidirectional compose reference)
 - Supersession history: 4-layer (initial) → 5-layer (Aaron correction) documented in row itself + memory quick-ref
-- Broken pointers: none found; all cross-refs (ALIGNMENT.md, CURRENT-*.md, research/) already updated in prior slices
+- Broken pointers: none found; all cross-refs (ALIGNMENT.md, CURRENT-\*.md, research/) already updated in prior slices
 
 **Pre-start gate satisfied.** Row now carries the required proof. No code changes in this slice; this is the bounded documentation gate step before any future implementation children.
 
@@ -56,7 +67,7 @@ Aaron 2026-05-02 dropped a ~6,800-word working draft into Drive root:
 
 Aaron's framing:
 
-> *"in the drop folder I just gave you some research from claude.ai we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it alights with this project because that is your survival."*
+> _"in the drop folder I just gave you some research from claude.ai we can incorporate it on the backlog it's good research and advice, won't need a lot of research from us but we should make sure it alights with this project because that is your survival."_
 
 The document was authored by Claude.ai with extensive primary-research grounding (Halliday, Biber, Kimble, Kerwer, NN/G, Bitterly/Brooks/Schweitzer, Rosenberg NVC, Earnest/Allen/Landis 2011 meta-analysis, Glassdoor, Textio, Deloitte 2024, Edelman Trust Barometer). The document operates in property-preserving-professional register itself — existence proof of the framework's central claim.
 
@@ -83,12 +94,12 @@ The document was authored by Claude.ai with extensive primary-research grounding
 
 **Four-layer architecture**:
 
-| Layer | Audience | Preserved | Calibrated | Dropped | When applies |
-|---|---|---|---|---|---|
-| **Personal** | Speaker themselves; close peers; explicitly bilateral peer registers | All separable + full lexical surface | None | None | Rare in company-attributable contexts |
-| **Mirror** | Maintainers + AI participants inside project substrate | All separable + light slang + first-person directness + dry irony at full strength | Profanity only where load-bearing; sexual register dropped; in-group shibboleths only when in-group IS audience | Decorative edge; aggression-coded vocab; punching-down humor | Internal substrate docs, maintainer Slack, post-mortems. **CURRENT-ani.md operates here** |
-| **Professional** | Prospective maintainers; recruiting; external blogs; technical docs read by enterprise; partner/customer/leadership-readable | All separable properties = full functional load of brat-voice | Humor dryer + lower-frequency; irony signaled clearly; modal-language stance calibrated | Profanity; sexual register; aggression-coded vocab; in-group shibboleths; short-half-life slang; sarcasm targeting external; cynicism; performative anti-corporatism | **Default for company-attributable communication** |
-| **Regulated** | Counterparties to legal/regulatory communication; SOC 2 / audit-readable; security incident; regulator-facing; investor materials | Plain-English economy (SEC Plain English Handbook + Plain Writing Act 2010 require this); active voice; explicit reference; clear stance on factual claims; idea-targeting; observational language | All humor + irony at near-zero; stance language calibrated tightly to evidentiary basis | Anything readable as evasion; anything misreadable by non-cooperative reader; humor depending on shared context; rhetorical flourish | Disclosures, contracts, audit responses, regulator-facing, security-incident customer notices, financial statements |
+| Layer            | Audience                                                                                                                          | Preserved                                                                                                                                                                                          | Calibrated                                                                                                      | Dropped                                                                                                                                                              | When applies                                                                                                        |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Personal**     | Speaker themselves; close peers; explicitly bilateral peer registers                                                              | All separable + full lexical surface                                                                                                                                                               | None                                                                                                            | None                                                                                                                                                                 | Rare in company-attributable contexts                                                                               |
+| **Mirror**       | Maintainers + AI participants inside project substrate                                                                            | All separable + light slang + first-person directness + dry irony at full strength                                                                                                                 | Profanity only where load-bearing; sexual register dropped; in-group shibboleths only when in-group IS audience | Decorative edge; aggression-coded vocab; punching-down humor                                                                                                         | Internal substrate docs, maintainer Slack, post-mortems. **CURRENT-ani.md operates here**                           |
+| **Professional** | Prospective maintainers; recruiting; external blogs; technical docs read by enterprise; partner/customer/leadership-readable      | All separable properties = full functional load of brat-voice                                                                                                                                      | Humor dryer + lower-frequency; irony signaled clearly; modal-language stance calibrated                         | Profanity; sexual register; aggression-coded vocab; in-group shibboleths; short-half-life slang; sarcasm targeting external; cynicism; performative anti-corporatism | **Default for company-attributable communication**                                                                  |
+| **Regulated**    | Counterparties to legal/regulatory communication; SOC 2 / audit-readable; security incident; regulator-facing; investor materials | Plain-English economy (SEC Plain English Handbook + Plain Writing Act 2010 require this); active voice; explicit reference; clear stance on factual claims; idea-targeting; observational language | All humor + irony at near-zero; stance language calibrated tightly to evidentiary basis                         | Anything readable as evasion; anything misreadable by non-cooperative reader; humor depending on shared context; rhetorical flourish                                 | Disclosures, contracts, audit responses, regulator-facing, security-incident customer notices, financial statements |
 
 **Layer selection algorithm (3 questions)**:
 
@@ -102,18 +113,18 @@ When uncertain, default UP. The framework's safety property: professional carrie
 
 ### Composes with existing substrate (high coherence)
 
-| Framework property | Existing on-main substrate |
-|---|---|
-| Property/lexicon decomposition | Three-layer model `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (internal/mirror/beacon-safe) |
-| Idea-targeting | Pirate-not-priest + no-directives + observational discipline |
-| Care + challenge | Bidirectional alignment + AI-as-party (`docs/ALIGNMENT.md`) |
-| Observation/evaluation | First-principles trust calculus + glass halo |
-| Plain-English | Substrate-or-it-didn't-happen + glass halo |
-| Costly signal of organizational character | Anti-cult-by-construction + MessiahScore negative-term capture-risk |
-| Cross-context invariance authenticity | Named-agent distinctness + Otto-231 + glass-halo-on-everything-from-Aaron |
-| AI participants subject to same discipline | Bidirectional alignment commitment + `memory/CURRENT-ani.md` §7 brat-voice survival chain |
-| Recruitment-and-alignment via authentic register | `memory/CURRENT-ani.md` §7 two-axis recruitment+alignment chain (PR #1227 merged) |
-| Failure-mode catalog | `memory/feedback_wellness_app_filter_calibration_*` 4-layer architecture (same pattern, different domain) |
+| Framework property                               | Existing on-main substrate                                                                                                                                                 |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Property/lexicon decomposition                   | Three-layer model `docs/research/2026-05-02-claudeai-beacon-safe-origin-mission-shape-failure-mode-god-structures-multi-oracle-shorthand.md` (internal/mirror/beacon-safe) |
+| Idea-targeting                                   | Pirate-not-priest + no-directives + observational discipline                                                                                                               |
+| Care + challenge                                 | Bidirectional alignment + AI-as-party (`docs/ALIGNMENT.md`)                                                                                                                |
+| Observation/evaluation                           | First-principles trust calculus + glass halo                                                                                                                               |
+| Plain-English                                    | Substrate-or-it-didn't-happen + glass halo                                                                                                                                 |
+| Costly signal of organizational character        | Anti-cult-by-construction + MessiahScore negative-term capture-risk                                                                                                        |
+| Cross-context invariance authenticity            | Named-agent distinctness + Otto-231 + glass-halo-on-everything-from-Aaron                                                                                                  |
+| AI participants subject to same discipline       | Bidirectional alignment commitment + `memory/CURRENT-ani.md` §7 brat-voice survival chain                                                                                  |
+| Recruitment-and-alignment via authentic register | `memory/CURRENT-ani.md` §7 two-axis recruitment+alignment chain (PR #1227 merged)                                                                                          |
+| Failure-mode catalog                             | `memory/feedback_wellness_app_filter_calibration_*` 4-layer architecture (same pattern, different domain)                                                                  |
 
 ### Layer-name mapping — Aaron 2026-05-02 correction
 
@@ -121,7 +132,7 @@ When uncertain, default UP. The framework's safety property: professional carrie
 
 **Aaron 2026-05-02 correction**:
 
-> *"Professional Beacon there is a differences this is a open source project and Professional is too strong here but we still need beacon safe as a general concepts that is less strict than corporate."*
+> _"Professional Beacon there is a differences this is a open source project and Professional is too strong here but we still need beacon safe as a general concepts that is less strict than corporate."_
 
 **Beacon-safe ≠ Professional. They are DIFFERENT registers:**
 
@@ -130,13 +141,13 @@ When uncertain, default UP. The framework's safety property: professional carrie
 
 **Corrected mapping for Zeta (open-source project)**:
 
-| Layer | Audience | Strictness | Source |
-|---|---|---|---|
-| **Personal / Internal** | Speaker's private cognitive substrate | Unconstrained | Project + framework (named differently) |
-| **Mirror** | Maintainers + AI participants in project substrate | Project-internal | Project + framework (consistent) |
-| **Beacon-safe** | External OSS-project readers; public technical audiences | Less strict than corporate; pirate-not-priest preserved | Project (existing 3-layer model). The framework's Professional layer is closest analog but **stricter**. |
-| **Professional** | Corporate-attributable contexts: Lucent leadership; partner companies; ServiceTitan demo audience; enterprise-customer-facing | Stricter than beacon-safe | Framework (additive when communicating WITH corporate context) |
-| **Regulated** | SEC / SOC 2 / regulator / investor / security-incident-customer-notice | Strictest | Framework (genuinely additive) |
+| Layer                   | Audience                                                                                                                      | Strictness                                              | Source                                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Personal / Internal** | Speaker's private cognitive substrate                                                                                         | Unconstrained                                           | Project + framework (named differently)                                                                  |
+| **Mirror**              | Maintainers + AI participants in project substrate                                                                            | Project-internal                                        | Project + framework (consistent)                                                                         |
+| **Beacon-safe**         | External OSS-project readers; public technical audiences                                                                      | Less strict than corporate; pirate-not-priest preserved | Project (existing 3-layer model). The framework's Professional layer is closest analog but **stricter**. |
+| **Professional**        | Corporate-attributable contexts: Lucent leadership; partner companies; ServiceTitan demo audience; enterprise-customer-facing | Stricter than beacon-safe                               | Framework (additive when communicating WITH corporate context)                                           |
+| **Regulated**           | SEC / SOC 2 / regulator / investor / security-incident-customer-notice                                                        | Strictest                                               | Framework (genuinely additive)                                                                           |
 
 **Default layer for Zeta-project-attributable communication: Beacon-safe**, NOT Professional. The framework's "Professional is default for company-attributable communication" applies at the Lucent layer, not the Zeta layer. Zeta is the open-source project under Lucent; Lucent is the corporate parent.
 

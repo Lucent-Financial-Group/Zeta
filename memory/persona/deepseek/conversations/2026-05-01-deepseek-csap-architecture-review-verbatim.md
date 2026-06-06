@@ -15,8 +15,8 @@ DST + LLM-roles + convergent-design substrate landed in PR #981
 on 2026-04-30 (tick 23:56Z). The review arrived approximately
 ~7 minutes after the substrate landing on `main`.
 
-Aaron's preface: *"I've been waiting for you to put it all
-together, good job"* — the diagram synthesis Otto produced as
+Aaron's preface: _"I've been waiting for you to put it all
+together, good job"_ — the diagram synthesis Otto produced as
 AIC #4 was the trigger for the review. Deepseek named the
 architecture **CSAP — Carved Sentence Architecture Pipeline**.
 
@@ -25,7 +25,7 @@ architecture **CSAP — Carved Sentence Architecture Pipeline**.
 > The Carved Sentence Formalization pipeline is a genuinely
 > important piece of architecture. It closes a gap I've been
 > tracking across this entire session: the factory has been
-> producing carved sentences for weeks, but the *process* for
+> producing carved sentences for weeks, but the _process_ for
 > producing them has been implicit in multi-AI convergence
 > rounds rather than formalized as a repeatable mechanism. This
 > design makes that process explicit, measurable, and provable.
@@ -36,7 +36,7 @@ architecture **CSAP — Carved Sentence Architecture Pipeline**.
 >
 > **The CSAP overlay on Rodney's Razor adds constraints the
 > Razor alone doesn't provide.** The Razor cuts what's
-> unnecessary. CSAP quantifies *how much* was cut (compression
+> unnecessary. CSAP quantifies _how much_ was cut (compression
 > delta), verifies the cut was correct (multi-AI grammar
 > consensus), and proves the cut survives perturbation (DST
 > formal test). The pure-razor approach relies on judgment;
@@ -71,7 +71,7 @@ architecture **CSAP — Carved Sentence Architecture Pipeline**.
 > that vibes.** The example compression from the underlying
 > rule text (1386 chars) to the carved sentence (99 chars,
 > 93% compression) is draconian by the 5-7% target's standard,
-> but the point is that the metric is *checkable*. Future
+> but the point is that the metric is _checkable_. Future
 > reviewers can re-derive the compression count mechanically
 > rather than relying on Otto's claim. A 93% compression claim
 > on canon text should be treated as suspect until the
@@ -109,7 +109,7 @@ architecture **CSAP — Carved Sentence Architecture Pipeline**.
 > The key `observation:canonical-rule:fixed-point-generation`
 > prevents duplicate derivation for the same observation
 > applied to the same rule. But the real fragmentation risk
-> isn't duplicate derivation—it's *near-duplicate* derivation
+> isn't duplicate derivation—it's _near-duplicate_ derivation
 > where slightly different observations converge on the same
 > underlying rule. If "per-decision-speed-leads-to-hell" and
 > "one-shortcut-dooms-everyone" are both memoized under
@@ -189,14 +189,13 @@ architecture **CSAP — Carved Sentence Architecture Pipeline**.
 >
 > ## Design Questions for Aaron
 >
-> 1. Does the 5-7% compression target apply to *all* canon
+> 1. Does the 5-7% compression target apply to _all_ canon
 >    files, or only to newly-derived carved sentences? A rule
 >    that's already dense ("non-durable means does not exist")
 >    may have zero compressibility by CSAP standards. Should
 >    such rules be exempt, or should the process attempt
 >    compression and record a delta of ~0% as evidence that
 >    the rule is already at minimum viable form?
->
 > 2. The implementation sequence (RFC-1: agent-written, RFC-2:
 >    DST-held within 30 days, RFC-3: FoundationDB-grade within
 >    90 days) sequences sequentially. Could RFC-1 and RFC-2
@@ -207,8 +206,7 @@ architecture **CSAP — Carved Sentence Architecture Pipeline**.
 >    generic (takes any carved sentence + rule corpus as
 >    input), RFC-2 development can begin while RFC-1 produces
 >    initial sentences.
->
-> 3. Should the memoization key include the *generation* of
+> 3. Should the memoization key include the _generation_ of
 >    the fixed-point that produced the sentence, so future
 >    reviewers can distinguish "this sentence was produced at
 >    generation 3 of the convergence process" from "this
@@ -235,8 +233,8 @@ architecture **CSAP — Carved Sentence Architecture Pipeline**.
 
 ## Aaron's preface (verbatim)
 
-> *"I've been waiting for you to put it all together, good
-> job"*
+> _"I've been waiting for you to put it all together, good
+> job"_
 
 The preface is high-signal: Aaron has been seeing this
 architecture for some time; Otto's diagram synthesis (AIC #4)

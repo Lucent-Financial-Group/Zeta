@@ -15,15 +15,27 @@ composes_with:
   - docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
   - tools/agent-loop/state-machine.ts
   - agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md
-tags: [workflow-du, bft, summonable-bft, compiler-summons, observe-keystone, oracle-class, ople, multi-oracle, research, core-architecture]
+tags:
+  [
+    workflow-du,
+    bft,
+    summonable-bft,
+    compiler-summons,
+    observe-keystone,
+    oracle-class,
+    ople,
+    multi-oracle,
+    research,
+    core-architecture,
+  ]
 ---
 
 # B-0948 -- Workflow DUs with first-class BFT oracle/compiler summons + observe.ts
 
 ## The directive (Aaron 2026-05-31)
 
-> *"workflow DUs should have BFT compiler summons and observe.ts first class somehow -- this prob
-> needs a bit of research to get clean and backlog."*
+> _"workflow DUs should have BFT compiler summons and observe.ts first class somehow -- this prob
+> needs a bit of research to get clean and backlog."_
 
 ## The thing
 
@@ -72,7 +84,7 @@ questions are in
   BFT / compilers-don't-lie / tri-boolean), B-0703/B-0652 (multi-oracle BFT), B-0862 (OPLE), B-0867.5
   (agent-loop DU canon), the agentic-organization observe.ts keystone + ≥3-agent constitution gate,
   the 2026-05-31 observe->act ADR (incl. the self-recursive observe addition). No existing row makes
-  observe + BFT-summons *first-class on the workflow DU itself* -- that is this row's gap. The
+  observe + BFT-summons _first-class on the workflow DU itself_ -- that is this row's gap. The
   research doc performed the design-space inventory.
 - **Dependency check:** the cleanest shape (OPLE-algebra) depends on B-0862 (OPLE, open); the
   compiler-summon depends on B-0944 (in progress); the constitution gate exists. Research can proceed

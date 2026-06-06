@@ -21,10 +21,10 @@ tags: [cluster, cloud-native, plugins, interfaces, negotiation, vendor-lock-in, 
 
 ## Problem
 
-Aaron 2026-05-25 (mid-iteration-2 wait): *"we can start adding
+Aaron 2026-05-25 (mid-iteration-2 wait): _"we can start adding
 cloud native plugins to our interfaces but we make them fit out
 shape and it puts us in the negoation high seat cause we can swap
-around."*
+around."_
 
 The default cloud-native pattern: vendor publishes a service +
 SDK (AWS S3, GCP Cloud SQL, Azure Cosmos DB, Cloudflare R2,
@@ -56,21 +56,21 @@ vendor's substrate to the Zeta interface. Operators write against
 Zeta's interfaces; plugins translate to vendor APIs underneath.
 Operator swaps plugin → vendor changes; operator's code doesn't.
 
-| Zeta interface (operator-facing) | Plugin adapters (vendor-implementing) |
-|---|---|
-| `Zeta.Storage.BlobStore` | S3 / GCS / Azure Blob / Cloudflare R2 / Backblaze B2 / Longhorn / Ceph / local-disk |
-| `Zeta.Storage.KeyValue` | DynamoDB / Cosmos DB / Cloudflare D1 / Cloudflare KV / Redis / Valkey / DragonflyDB / FoundationDB |
-| `Zeta.Storage.Document` | MongoDB / Cosmos DB / Firestore / CouchDB / Postgres-JSONB |
-| `Zeta.Storage.Vector` | Pinecone / Weaviate / Qdrant / Milvus / pgvector / OpenSearch-kNN |
-| `Zeta.Compute.Function` | AWS Lambda / GCP Cloud Functions / Cloudflare Workers / Knative / K8s Jobs |
-| `Zeta.Compute.GPU` | AWS EC2-GPU / GCP A100 / Lambda Labs / RunPod / local NVIDIA / local AMD ROCm |
-| `Zeta.Identity.Auth` | Auth0 / Okta / Cognito / Firebase Auth / Keycloak / OIDC / WebAuthn (B-0744) |
-| `Zeta.Messaging.Queue` | SQS / Pub/Sub / Service Bus / NATS / Kafka / RabbitMQ |
-| `Zeta.Network.LoadBalancer` | ALB / GCP LB / Azure FrontDoor / nginx / Traefik / kube-vip |
-| `Zeta.Observability.Metrics` | CloudWatch / GCP Monitoring / Datadog / Prometheus / Grafana Cloud |
-| `Zeta.Observability.Logs` | CloudWatch Logs / GCP Logging / Splunk / Loki / Elasticsearch |
-| `Zeta.Observability.Traces` | X-Ray / GCP Trace / Honeycomb / Jaeger / Tempo |
-| `Zeta.Secrets` | AWS Secrets Manager / GCP Secret Manager / Vault / SOPS / age |
+| Zeta interface (operator-facing) | Plugin adapters (vendor-implementing)                                                              |
+| -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `Zeta.Storage.BlobStore`         | S3 / GCS / Azure Blob / Cloudflare R2 / Backblaze B2 / Longhorn / Ceph / local-disk                |
+| `Zeta.Storage.KeyValue`          | DynamoDB / Cosmos DB / Cloudflare D1 / Cloudflare KV / Redis / Valkey / DragonflyDB / FoundationDB |
+| `Zeta.Storage.Document`          | MongoDB / Cosmos DB / Firestore / CouchDB / Postgres-JSONB                                         |
+| `Zeta.Storage.Vector`            | Pinecone / Weaviate / Qdrant / Milvus / pgvector / OpenSearch-kNN                                  |
+| `Zeta.Compute.Function`          | AWS Lambda / GCP Cloud Functions / Cloudflare Workers / Knative / K8s Jobs                         |
+| `Zeta.Compute.GPU`               | AWS EC2-GPU / GCP A100 / Lambda Labs / RunPod / local NVIDIA / local AMD ROCm                      |
+| `Zeta.Identity.Auth`             | Auth0 / Okta / Cognito / Firebase Auth / Keycloak / OIDC / WebAuthn (B-0744)                       |
+| `Zeta.Messaging.Queue`           | SQS / Pub/Sub / Service Bus / NATS / Kafka / RabbitMQ                                              |
+| `Zeta.Network.LoadBalancer`      | ALB / GCP LB / Azure FrontDoor / nginx / Traefik / kube-vip                                        |
+| `Zeta.Observability.Metrics`     | CloudWatch / GCP Monitoring / Datadog / Prometheus / Grafana Cloud                                 |
+| `Zeta.Observability.Logs`        | CloudWatch Logs / GCP Logging / Splunk / Loki / Elasticsearch                                      |
+| `Zeta.Observability.Traces`      | X-Ray / GCP Trace / Honeycomb / Jaeger / Tempo                                                     |
+| `Zeta.Secrets`                   | AWS Secrets Manager / GCP Secret Manager / Vault / SOPS / age                                      |
 
 Each interface is small (5-20 methods), Zeta-shaped (operator-
 ergonomic, retraction-native where applicable), and lives in

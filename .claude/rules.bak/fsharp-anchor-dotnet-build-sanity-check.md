@@ -18,11 +18,11 @@ composition) from drifting metaphysical.
 
 **Three epistemic states for substrate:**
 
-| State | Description | Evaluation |
-|---|---|---|
-| F# anchored | Substrate lands as compilable F# code | Operationally grounded; compiler validates |
-| F# referenced | Documentation references existing F# constructs | Grounded; can be cross-validated |
-| Language ahead of code | Documentation describes F# constructs not yet written | Valid but speculative; tracked separately |
+| State                  | Description                                           | Evaluation                                 |
+| ---------------------- | ----------------------------------------------------- | ------------------------------------------ |
+| F# anchored            | Substrate lands as compilable F# code                 | Operationally grounded; compiler validates |
+| F# referenced          | Documentation references existing F# constructs       | Grounded; can be cross-validated           |
+| Language ahead of code | Documentation describes F# constructs not yet written | Valid but speculative; tracked separately  |
 
 All three are valid; methodology cares about distinguishing
 them. When evaluating substrate, identify which state each

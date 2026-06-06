@@ -4,6 +4,7 @@ description: Aaron Otto-270 major extension. Corpus is not just files — it's a
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The thesis
 
 **The gitnative corpus (Otto-261) is naturally a
@@ -36,7 +37,7 @@ train on its own corpus via itself. Ouroboros.
 
 Direct Aaron quote 2026-04-24:
 
-> *"post install script or soul file bin file command
+> _"post install script or soul file bin file command
 > that will generation the entire history of the repo
 > in a good forat for training based on the
 > chronological order of events and the status as it
@@ -48,19 +49,19 @@ Direct Aaron quote 2026-04-24:
 > other things the agent should knwo to be operatating
 > relibly, rules, permission, order of operations, etc.
 > it's like a enriched streaming envelop that preserve
-> original data and annotates on top"*
+> original data and annotates on top"_
 
 ## Mathematical substrate — enriched category theory
 
 Aaron's Google AI research share (2026-04-24):
 
-> *"maybe this enriched category theory generalizes
+> _"maybe this enriched category theory generalizes
 > ordinary category theory by replacing "hom-sets"
 > (sets of morphisms between objects) with "hom-objects"
 > from a structured monoidal category. Instead of
 > merely knowing that a morphism exists, enrichment
 > allows us to describe the 'space' or 'strength' of
-> morphisms between objects."*
+> morphisms between objects."_
 
 **Core concepts**:
 
@@ -128,13 +129,13 @@ Otto-257 clean-default, check before proposing.
 
 Aaron 2026-04-24 addendum (critical):
 
-> *"the point is the grading the score is easy, i can
+> _"the point is the grading the score is easy, i can
 > see your enriched frame with suggested action(s) and
 > make dections on your performance in a simulate
 > git/github environment completley simulated in our
 > database with the git history exported as a
 > chronological frameed event stream, training new AIs
-> eval function becomes trivial"*
+> eval function becomes trivial"_
 
 **This solves the AI-alignment eval-function problem
 for gitops-class work.**
@@ -199,9 +200,9 @@ because:
 
 ## Agent scoring against the enriched stream
 
-Aaron's specific claim: *"we could score the agent
+Aaron's specific claim: _"we could score the agent
 based on enriched additive only frame around the
-event stream."*
+event stream."_
 
 - **Rules compliance** — does the agent respect the
   rules active at the event's timestamp?
@@ -262,7 +263,7 @@ quality compounds.
 2. **Annotation-envelope schema** — what fields does
    the enriched annotation carry? Designed via
    `docs/DECISIONS/YYYY-MM-DD-corpus-annotation-
-   envelope.md`. Must be additive-only + preserve
+envelope.md`. Must be additive-only + preserve
    original-data.
 3. **Soul-file format alignment** — check existing
    soul file; extend or compose with it.
@@ -333,31 +334,31 @@ training/scoring (XL).
 
 ## Direct Aaron quotes to preserve
 
-> *"post install script or soul file bin file command
+> _"post install script or soul file bin file command
 > that will generation the entire history of the repo
 > in a good forat for training based on the
 > chronological order of events and the status as it
-> changes in real time."*
+> changes in real time."_
 
-> *"basiclaly like an event stream lol just like our
+> _"basiclaly like an event stream lol just like our
 > database could injest so it can then run training
-> on."*
+> on."_
 
-> *"we also could score the agent based on enriched
+> _"we also could score the agent based on enriched
 > additive only frame around the event stream that
 > add assumed current state and other things the
 > agent should knwo to be operatating relibly, rules,
-> permission, order of operations, etc."*
+> permission, order of operations, etc."_
 
-> *"it's like a enriched streaming envelop that
-> preserve original data and annotates on top."*
+> _"it's like a enriched streaming envelop that
+> preserve original data and annotates on top."_
 
-> *"[enriched category theory] generalizes ordinary
+> _"[enriched category theory] generalizes ordinary
 > category theory by replacing 'hom-sets' with
 > 'hom-objects' from a structured monoidal category.
 > Instead of merely knowing that a morphism exists,
 > enrichment allows us to describe the 'space' or
-> 'strength' of morphisms between objects."*
+> 'strength' of morphisms between objects."_
 
 Future Otto: the corpus isn't just files. It's a
 stream + envelope. Zeta's DBSP algebra is built for

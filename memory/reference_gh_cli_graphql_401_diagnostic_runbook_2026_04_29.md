@@ -18,6 +18,7 @@ then recover on their own. Specifically observed:
 - GitHub Actions: CodeQL Default-Setup SARIF upload step
 
 While in the same window:
+
 - `gh api repos/<owner>/<repo>/...` (REST repo-scoped) keeps
   working — gh CLI falls back to anonymous access on public
   repos when auth fails, masking the auth issue
@@ -36,6 +37,7 @@ While in the same window:
 
 A transient hiccup in GitHub's auth-service routing. Likely
 classes:
+
 - Auth-service node restart / draining
 - Token-validation cache miss spilling to a slow path
 - SSO-policy check delay on org-bound tokens
@@ -90,12 +92,12 @@ attempts. Misattributed.
      elsewhere is upstream-transient.
    - If `gh api user` ALSO 401s → likely token-side (expired /
      revoked / SSO not authorized for the org).
-   **Do NOT use `gh api rate_limit` as the auth-health signal**:
-   `GET /rate_limit` succeeds anonymously when only public
-   resources are queried (per GitHub REST docs), so a missing
-   or revoked token can show as healthy on this check, causing
-   false "transient" classification and delaying real token
-   remediation. (Codex P1 catch on PR #847.)
+     **Do NOT use `gh api rate_limit` as the auth-health signal**:
+     `GET /rate_limit` succeeds anonymously when only public
+     resources are queried (per GitHub REST docs), so a missing
+     or revoked token can show as healthy on this check, causing
+     false "transient" classification and delaying real token
+     remediation. (Codex P1 catch on PR #847.)
 
 4. **For local commands**: bounded retry with back-off
    (60s/180s; max 2-3 retries). If still failing after 5
@@ -135,8 +137,8 @@ and retries with bound + back-off).
   cause this).
 - NOT solved by `-X POST` (corrected; that flag is a no-op for
   graphql calls with `-f` parameters).
-- NOT yet doctrine. Amara framing: *"diagnostic note, not
-  doctrine yet."*
+- NOT yet doctrine. Amara framing: _"diagnostic note, not
+  doctrine yet."_
 
 ## Trigger memory
 

@@ -8,14 +8,14 @@ type: feedback
 
 Maintainer 2026-04-24, first share (low-priority backlog):
 
-> *"we want to have first class git inteface into our
+> _"we want to have first class git inteface into our
 > database, so our database can handle all / most git
-> command, way backlog."*
+> command, way backlog."_
 
 Maintainer 2026-04-24, second share (way-back-backlog
 stretch goal):
 
-> *"a storage plugin for our db that saves to git
+> _"a storage plugin for our db that saves to git
 > commonds lol. this will let me compile as wasm our f#
 > and run our database enginge in the ui and it calls
 > out to git for the actual operations? Am i dreaming
@@ -23,28 +23,28 @@ stretch goal):
 > huge stretch way back backlog for the 2nd one. and
 > just low pritoriy backlog for first one. This complets
 > our bootstrap without requirments really i think? you
-> tell me."*
+> tell me."_
 
 Maintainer correction 2026-04-24 (after my draft
 assessment characterized Mode 1 as ".NET runtime
 required"):
 
-> *"Mode 1 you remember we are planning tiny seed with
+> _"Mode 1 you remember we are planning tiny seed with
 > AoT and also single file Jit based builds that don't
-> need dotnet"*
+> need dotnet"_
 
 Maintainer punchline 2026-04-24:
 
-> *"so both require 0"*
+> _"so both require 0"_
 
 Maintainer follow-up 2026-04-24 (expanding Mode 1):
 
-> *"for mode 1 we want a front end ui like ssms/pgadmin
+> _"for mode 1 we want a front end ui like ssms/pgadmin
 > but really designed for us. also we want to have a
 > full git implimentation in f# where we don't even
 > need the git client, we are also the git client and
 > it stores into our database for mode 1. just another
-> interface like SQL"*
+> interface like SQL"_
 
 Two pieces in the follow-up:
 
@@ -60,8 +60,8 @@ Two pieces in the follow-up:
    client AND server. No external git binary
    required. Git objects (commit/tree/blob) serialize
    as Z-set entries with retraction-native semantics.
-   Maintainer framing: *"just another interface like
-   SQL"* — git is one of several first-class protocols
+   Maintainer framing: _"just another interface like
+   SQL"_ — git is one of several first-class protocols
    on top of Zeta's substrate.
 
 **Symmetric architecture gain:** any Zeta Mode 1
@@ -71,12 +71,13 @@ Zeta's DB via Zeta's own git server. The factory
 becomes self-hosting of its own git ecosystem.
 
 Maintainer follow-up 2026-04-24 (after Mode 1 admin UI
-+ native F# git impl):
 
-> *"we could use mode 2 as our ui and have it auto
+- native F# git impl):
+
+> _"we could use mode 2 as our ui and have it auto
 > netogatie protocol upgrade to a better protocol that
 > git to whatever we want for hight speed communicaiton
-> with out backend i think thats cleans"*
+> with out backend i think thats cleans"_
 
 **Mode 2 → Mode 1 protocol-upgrade negotiation.** Mode
 2 (browser WASM UI) opens with git as the
@@ -89,6 +90,7 @@ stays as fallback / audit-trail / durable-substrate.
 ALPN-style / HTTP-Upgrade-style pattern.
 
 **Why this is clean:**
+
 - Cold-start: zero protocol negotiation cost paid
   until you have a connection.
 - Warm-state: upgraded comm is fast.
@@ -102,6 +104,7 @@ This combines Mode 2 (browser-only UX) with Mode 1
 architecture where the WASM frontend talks to a Mode 1
 backend over an upgraded fast protocol AFTER the
 git-bootstrap handshake. Three architectural slots:
+
 1. Browser UI (Mode 2 WASM-F#)
 2. Backend server (Mode 1 native F#)
 3. Wire protocol (git → upgraded fast binary)
@@ -136,6 +139,7 @@ plans first.
 
 The bootstrap thesis is the **adoption-friction
 collapse**:
+
 - Mode 1: download one file, run it (commodity-OS only)
 - Mode 2: open a tab (commodity-browser only)
 

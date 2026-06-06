@@ -7,7 +7,7 @@ description: "Interview complexity communication — big-O, amortized analysis, 
 
 ## big-O pedagogy hat
 
-Capability skill ("hat"). Owns the *communication* of
+Capability skill ("hat"). Owns the _communication_ of
 complexity in an interview setting: how to say it, what
 to say when the interviewer asks the follow-up, when to
 invoke amortized reasoning, when to distinguish worst-
@@ -52,15 +52,15 @@ what you understand."
 
 ## The seven classes an interviewer expects you to know
 
-| Class | Shape | Canonical operation |
-|-------|-------|---------------------|
-| O(1) | constant | hashmap lookup, heap peek |
-| O(log n) | logarithmic | binary search, balanced-BST lookup |
-| O(n) | linear | single-pass scan, hashmap iteration |
+| Class      | Shape        | Canonical operation                             |
+| ---------- | ------------ | ----------------------------------------------- |
+| O(1)       | constant     | hashmap lookup, heap peek                       |
+| O(log n)   | logarithmic  | binary search, balanced-BST lookup              |
+| O(n)       | linear       | single-pass scan, hashmap iteration             |
 | O(n log n) | linearithmic | sort, heapify + n pops, many divide-and-conquer |
-| O(n²) | quadratic | nested loop, naive all-pairs |
-| O(2^n) | exponential | subset-enumerate, brute-force SAT |
-| O(n!) | factorial | permutation-enumerate, naive TSP |
+| O(n²)      | quadratic    | nested loop, naive all-pairs                    |
+| O(2^n)     | exponential  | subset-enumerate, brute-force SAT               |
+| O(n!)      | factorial    | permutation-enumerate, naive TSP                |
 
 Mention of any class outside this seven should be
 accompanied by a brief explanation — `O(n log log n)`
@@ -93,7 +93,7 @@ Canonical example: **dynamic-array doubling** again —
 every push pays $3, the bank absorbs the future copy
 cost. Useful when the interviewer probes "but the
 one-time copy is expensive!" — aggregate answers the
-question; accounting explains *why*.
+question; accounting explains _why_.
 
 ### Potential method
 
@@ -161,9 +161,9 @@ coherent answer in the same vocabulary:
   not the search.
 - **"O(n²) because two nested loops"** without
   reading the loops. `for i in range(n): for j in
-  range(i+1, n)` is still O(n²) total but each
+range(i+1, n)` is still O(n²) total but each
   inner iteration is bounded; `for i in range(n):
-  for j in range(n): inner()` depends on what
+for j in range(n): inner()` depends on what
   `inner()` does.
 - **"O(n!) because backtracking."** Not every
   backtracking is factorial; depends on branching
@@ -175,7 +175,7 @@ coherent answer in the same vocabulary:
   function body looks local-only.
 - **"Big-O is an upper bound, so O(n²) for
   merge sort is technically correct."** An
-  interviewer asks for the *tight* bound; saying
+  interviewer asks for the _tight_ bound; saying
   O(n²) when O(n log n) is tight is a signal you
   do not know which is tight.
 - **"Average case" without defining the
@@ -204,13 +204,13 @@ to be extracted from.
 
 Common probes and the right response shape:
 
-| Probe | Response shape |
-|-------|---------------|
-| "Can you do better than O(n²)?" | Consider sort (n log n), or hashmap (n average). If no, argue lower bound. |
-| "What about space?" | Auxiliary + recursion stack. |
-| "Is this the tight bound?" | Big-Θ or big-Ω argument. If only upper known, say so. |
-| "Average vs worst?" | Name the distribution. |
-| "Amortized?" | Aggregate / accounting method, one sentence. |
+| Probe                            | Response shape                                                                                                  |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| "Can you do better than O(n²)?"  | Consider sort (n log n), or hashmap (n average). If no, argue lower bound.                                      |
+| "What about space?"              | Auxiliary + recursion stack.                                                                                    |
+| "Is this the tight bound?"       | Big-Θ or big-Ω argument. If only upper known, say so.                                                           |
+| "Average vs worst?"              | Name the distribution.                                                                                          |
+| "Amortized?"                     | Aggregate / accounting method, one sentence.                                                                    |
 | "Can you prove the lower bound?" | Information-theoretic (sort: n log n comparisons) or reduction. Hand-off territory to complexity-theory-expert. |
 
 ## Interview anti-patterns

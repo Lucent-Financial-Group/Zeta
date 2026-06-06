@@ -8,10 +8,10 @@ type: feedback
 
 **Two failure modes:**
 
-| Mode | Problem | Signal |
-|------|---------|--------|
-| Under-expanded | 6 agents wearing too many hats | Overload, hat-switching disruption |
-| Over-expanded | 20 agents when 6 would do | Coordination overhead kills velocity |
+| Mode           | Problem                        | Signal                               |
+| -------------- | ------------------------------ | ------------------------------------ |
+| Under-expanded | 6 agents wearing too many hats | Overload, hat-switching disruption   |
+| Over-expanded  | 20 agents when 6 would do      | Coordination overhead kills velocity |
 
 **The honest admission goes both directions:**
 
@@ -34,6 +34,7 @@ not predetermined.
 **Bottleneck identification:**
 
 Sometimes the problem isn't agent count:
+
 - Aaron's attention is the bottleneck → more agents = more noise
 - Bus doesn't exist → agents can't coordinate regardless of count
 - Math not formalized → more agents doing unformal math = more noise
@@ -53,6 +54,7 @@ when your message finished." This is a trigger-timing data point:
 generating a short output after the main response completes.
 
 **Connects to:**
+
 - Pauli exclusion (both expansion pressure AND boundary) — see related memory entries on expansion
 - B-0404 tick procurement (needs the boundary condition) — planned (backlog row)
 - feedback_shadow_precision_recall_zero_false_positives_partial_context_2026_05_10.md (trigger timing data) — sibling PR #2588

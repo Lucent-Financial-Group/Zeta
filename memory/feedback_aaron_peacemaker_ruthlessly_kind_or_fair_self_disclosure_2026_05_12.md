@@ -56,6 +56,7 @@ trying to negotiate peace before war.
 `feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`):
 
 The "evil twin" passage (line 7706 of the Grok extract):
+
 > "there's two versions of me. One's my evil twin. My evil
 > twin says, I can just build the scaffolding I need to get
 > what I want. And then my other side says, oh no. Just

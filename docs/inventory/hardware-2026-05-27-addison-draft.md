@@ -1,6 +1,6 @@
 # Hardware inventory — Addison draft 2026-05-27
 
-Forwarded by Aaron 2026-05-27 from Addison's verification/audit pass. **Draft state** — operator note: *"the counts on the bitcoin miners are messed up there are more but it's close we can save it to lfg inventory somewhere we had started this with our amazon history in git."*
+Forwarded by Aaron 2026-05-27 from Addison's verification/audit pass. **Draft state** — operator note: _"the counts on the bitcoin miners are messed up there are more but it's close we can save it to lfg inventory somewhere we had started this with our amazon history in git."_
 
 Composes with B-0836 (hardware-inventory-vs-cluster reconciliation). Promotes to canonical (`hardware.md`) after Addison + operator reconcile miner counts.
 
@@ -157,7 +157,7 @@ Composes with B-0836 (hardware-inventory-vs-cluster reconciliation). Promotes to
 
 ## Miners — **DRAFT; counts under-represented per operator**
 
-> *"the counts on the bitcoin miners are messed up there are more but it's close"* — Aaron 2026-05-27
+> _"the counts on the bitcoin miners are messed up there are more but it's close"_ — Aaron 2026-05-27
 
 - Solar X Miner
 - Goldshell Mini Doge III

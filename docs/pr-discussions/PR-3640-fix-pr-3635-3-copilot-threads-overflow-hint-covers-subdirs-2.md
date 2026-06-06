@@ -20,13 +20,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Addresses 3 Copilot threads on PR #3635 by superseding it with a fresh branch from main. PR #3635's reindex was missing the three fixes:
 
-1. **P1 overflow hint** (line 109 of MEMORY.md): the hint said browse \`memory/*.md\` but the reindex now includes recursive subdirs like \`persona/<ai>/conversations/\`. Fixed in \`tools/memory/reindex-memory-md.ts\` to say \`memory/**/*.md\` with explicit subdir note.
+1. **P1 overflow hint** (line 109 of MEMORY.md): the hint said browse \`memory/_.md\` but the reindex now includes recursive subdirs like \`persona/<ai>/conversations/\`. Fixed in \`tools/memory/reindex-memory-md.ts\` to say \`memory/\*\*/_.md\` with explicit subdir note.
 
 2. **P2 malformed timestamp**: source memory file description used \`2026-05-15T~22:5XZ\` (X in minute field as approximation marker); MEMORY.md preserved the non-parseable timestamp. Fixed by shortening the description.
 
 3. **P1 line-length violation**: documented MEMORY.md convention is one line per entry under 150 chars. Two of the new entries were 800-1500 chars. Shortened both:
-   - \`feedback_otto_qg_isomorphism_proof_path_*.md\` (~1500 → ~250 chars)
-   - \`feedback_aaron_caught_standing_by_pattern_*.md\` (~960 → ~240 chars)
+   - \`feedback*otto_qg_isomorphism_proof_path*\*.md\` (~1500 → ~250 chars)
+   - \`feedback*aaron_caught_standing_by_pattern*\*.md\` (~960 → ~240 chars)
 
 ## Why a new PR instead of pushing to PR #3635's branch
 
@@ -35,8 +35,8 @@ Cleaner supersession — PR #3635's title was just "reindex after #3630"; this P
 ## Files
 
 - M: \`tools/memory/reindex-memory-md.ts\` (overflow hint)
-- M: \`memory/feedback_otto_qg_isomorphism_*.md\` (description shortened, timestamp fixed)
-- M: \`memory/feedback_aaron_caught_standing_by_pattern_*.md\` (description shortened)
+- M: \`memory/feedback*otto_qg_isomorphism*\*.md\` (description shortened, timestamp fixed)
+- M: \`memory/feedback*aaron_caught_standing_by_pattern*\*.md\` (description shortened)
 - M: \`memory/MEMORY.md\` (regenerated with all 3 fixes)
 
 ## Test plan

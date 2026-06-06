@@ -133,10 +133,7 @@ function mergedWithin(dateNow: number, windowMs: number) {
 // predates the window cutoff. Cap protects pathological cases (e.g.
 // high-churn period where every PR stays "recently updated") without
 // leaving the loop unbounded. Per Copilot P1 on PR #2766.
-async function fetchClosedPRsUntilWindow(
-  windowMs: number,
-  maxPages = 10,
-): Promise<GitHubPullRequest[]> {
+async function fetchClosedPRsUntilWindow(windowMs: number, maxPages = 10): Promise<GitHubPullRequest[]> {
   const all: GitHubPullRequest[] = [];
   const cutoff = Date.now() - windowMs;
   for (let page = 1; page <= maxPages; page++) {
@@ -170,8 +167,9 @@ async function main() {
   // /pulls?sort=updated does NOT guarantee merged_at order (label/comment
   // updates can leapfrog older-but-more-recently-merged PRs). Copilot P0
   // on PR #2766 + P1 follow-up that recent_merged still used unsorted.
-  const mergedToday = (closedPRs.filter(mergedWithin(now, h24)) as MergedPullRequest[])
-    .sort((a, b) => new Date(b.merged_at).getTime() - new Date(a.merged_at).getTime());
+  const mergedToday = (closedPRs.filter(mergedWithin(now, h24)) as MergedPullRequest[]).sort(
+    (a, b) => new Date(b.merged_at).getTime() - new Date(a.merged_at).getTime(),
+  );
   const mergedLastHour = mergedToday.filter(mergedWithin(now, h1));
   const lastMerged = mergedToday[0] ?? null;
 
@@ -245,10 +243,7 @@ async function main() {
         // Aaron 2026-05-26 per-agent decompose-to-action stats:
         prs_merged_24h: prStats.prs_merged_24h,
         rows_filed_24h: prStats.rows_filed_24h,
-        decompose_to_action_ratio: decomposeToActionRatio(
-          prStats.prs_merged_24h,
-          prStats.rows_filed_24h,
-        ),
+        decompose_to_action_ratio: decomposeToActionRatio(prStats.prs_merged_24h, prStats.rows_filed_24h),
       };
     });
 

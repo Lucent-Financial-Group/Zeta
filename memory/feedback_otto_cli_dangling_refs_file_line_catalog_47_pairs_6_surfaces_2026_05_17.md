@@ -12,10 +12,10 @@ created: 2026-05-17
 This catalog uses the **better audit form** peer-Otto explicitly named in
 the PR #4041 body:
 
-> *"Better still: track ALL rule→file edges (file:line pairs), not
+> _"Better still: track ALL rule→file edges (file:line pairs), not
 > deduplicated filenames. The audit-method gap from #4036's r2 cycle
 > reveals that the `sort -u` dedup itself is the bug — multi-citation
-> sites get hidden."*
+> sites get hidden."_
 
 ## Methodology
 
@@ -37,15 +37,15 @@ methodology); does not yet catch `memory/persona/*` style refs.
 
 ## Counts (this catalog vs PR #4041)
 
-| Surface          | #4041 unique-refs | This catalog file:line pairs | Multi-citation delta |
-|------------------|-------------------|------------------------------|----------------------|
-| `.claude/agents/`| 0                 | 0                            | 0                    |
-| `.claude/skills/`| 1                 | 1                            | 0                    |
-| `.claude/rules/` | 5 (addressed by #4031+#4033+#4038) | **5 (NEW)** | re-accumulated since #4031 |
-| `docs/research/` | 8                 | 9                            | +1 (multi-cite site) |
-| `docs/backlog/`  | 17                | 22                           | +5 (multi-cite sites) |
-| `memory/persona/`| 3                 | 10                           | +7 (multi-cite sites) |
-| **TOTAL**        | **29**            | **47**                       | **+18 hidden edges** |
+| Surface           | #4041 unique-refs                  | This catalog file:line pairs | Multi-citation delta       |
+| ----------------- | ---------------------------------- | ---------------------------- | -------------------------- |
+| `.claude/agents/` | 0                                  | 0                            | 0                          |
+| `.claude/skills/` | 1                                  | 1                            | 0                          |
+| `.claude/rules/`  | 5 (addressed by #4031+#4033+#4038) | **5 (NEW)**                  | re-accumulated since #4031 |
+| `docs/research/`  | 8                                  | 9                            | +1 (multi-cite site)       |
+| `docs/backlog/`   | 17                                 | 22                           | +5 (multi-cite sites)      |
+| `memory/persona/` | 3                                  | 10                           | +7 (multi-cite sites)      |
+| **TOTAL**         | **29**                             | **47**                       | **+18 hidden edges**       |
 
 The `sort -u` dedup gap hides **18 multi-citation edges** (47 − 29).
 Each hidden edge is a citation site that would need its own Option-B
@@ -229,11 +229,11 @@ Ran a proximity-scan (sed ±5 lines around each citation, grep for
 `user-scope` / `cold-boot` / `user-scope-only`) over the full 49-edge
 tool output. **Results:**
 
-| Class | Count | Share |
-|-------|-------|-------|
-| **FP class 2** (already disclosed) | **17** | **35%** |
-| **True positive** (undisclosed cold-boot blocker) | **32** | 65% |
-| Total | 49 | 100% |
+| Class                                             | Count  | Share   |
+| ------------------------------------------------- | ------ | ------- |
+| **FP class 2** (already disclosed)                | **17** | **35%** |
+| **True positive** (undisclosed cold-boot blocker) | **32** | 65%     |
+| Total                                             | 49     | 100%    |
 
 **ALL 5 `.claude/rules/` "new dangling refs" are FP class 2** —
 confirms the rules-domain Option-B disclosure discipline is fully
@@ -245,17 +245,17 @@ audit tool can't yet distinguish without proximity-context.
 
 **TP concentration by surface** (from the 32-line classification):
 
-| Surface | TP count | FP2 count | Total |
-|---------|----------|-----------|-------|
-| `.claude/agents/` | 0 | 0 | 0 |
-| `.claude/skills/` | 1 | 0 | 1 |
-| `.claude/rules/` | 0 | 5 | 5 |
-| `docs/research/` | 9 | 0 | 9 |
-| `docs/backlog/` | 17 | 5 | 22 |
-| `memory/persona/` | 3* | 7 | 10 |
-| **Totals** | **30*** | **17** | **47** |
+| Surface           | TP count | FP2 count | Total  |
+| ----------------- | -------- | --------- | ------ |
+| `.claude/agents/` | 0        | 0         | 0      |
+| `.claude/skills/` | 1        | 0         | 1      |
+| `.claude/rules/`  | 0        | 5         | 5      |
+| `docs/research/`  | 9        | 0         | 9      |
+| `docs/backlog/`   | 17       | 5         | 22     |
+| `memory/persona/` | 3\*      | 7         | 10     |
+| **Totals**        | **30\*** | **17**    | **47** |
 
-(* 30 + 17 = 47, off-by-2 from 49 due to multi-edge same-line in raw
+(\* 30 + 17 = 47, off-by-2 from 49 due to multi-edge same-line in raw
 output; sort/uniq normalized to 49 in tool, 47 in proximity grep due
 to disclosure-text spanning multiple lines)
 
@@ -279,11 +279,11 @@ disclosure-bearing citations land.
 
 ## Summary of FP classes (both)
 
-| Class | Description | Count (49-edge sample) | Refinement |
-|-------|-------------|------------------------|------------|
-| FP-1 | Metasyntactic placeholders in CLI/code-block context | ≥1 (B-0178:77) | Skip code-block contexts in regex |
-| FP-2 | Already-disclosed user-scope refs | unknown (≥1 confirmed: codeql-canary:126) | Proximity-scan for disclosure footer OR allow-list |
-| **True positive** | Undisclosed dangling refs (real cold-boot blockers) | **≤47 (likely much fewer after FP-2 audit)** | Apply Option-B disclosure per #4038 pattern |
+| Class             | Description                                          | Count (49-edge sample)                       | Refinement                                         |
+| ----------------- | ---------------------------------------------------- | -------------------------------------------- | -------------------------------------------------- |
+| FP-1              | Metasyntactic placeholders in CLI/code-block context | ≥1 (B-0178:77)                               | Skip code-block contexts in regex                  |
+| FP-2              | Already-disclosed user-scope refs                    | unknown (≥1 confirmed: codeql-canary:126)    | Proximity-scan for disclosure footer OR allow-list |
+| **True positive** | Undisclosed dangling refs (real cold-boot blockers)  | **≤47 (likely much fewer after FP-2 audit)** | Apply Option-B disclosure per #4038 pattern        |
 
 The 47-pair catalog count below stays as-is for methodology-comparison
 purposes — subtracting confirmed FPs (≥1 from FP-1, ≥1 from FP-2)

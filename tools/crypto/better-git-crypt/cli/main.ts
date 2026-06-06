@@ -64,8 +64,22 @@ type ParsedArgs =
   | { mode: "validate" }
   | { mode: "dry-run-envelope" }
   | { mode: "gen-recipient"; identity: string; outDir: string; force: boolean }
-  | { mode: "encrypt-file"; inPath: string; selfKeyPath: string; recipientPaths: string[]; outPath: string; force: boolean }
-  | { mode: "decrypt-file"; inPath: string; selfKeyPath: string; senderSigPath: string | null; outPath: string | null; force: boolean };
+  | {
+      mode: "encrypt-file";
+      inPath: string;
+      selfKeyPath: string;
+      recipientPaths: string[];
+      outPath: string;
+      force: boolean;
+    }
+  | {
+      mode: "decrypt-file";
+      inPath: string;
+      selfKeyPath: string;
+      senderSigPath: string | null;
+      outPath: string | null;
+      force: boolean;
+    };
 
 /**
  * Resolve a value-taking flag into three states so a flag that is PRESENT but
@@ -107,10 +121,19 @@ function slug(identity: string): string {
 /** Every flag the CLI recognizes — a typo'd/unsupported `--flag` must error, not be
  *  silently ignored once a mode flag is present (e.g. `--recipent` dropping a recipient). */
 const KNOWN_FLAGS: ReadonlySet<string> = new Set([
-  "--list-algs", "--validate", "--dry-run-envelope",
-  "--gen-recipient", "--out-dir", "--force",
-  "--encrypt-file", "--self-key", "--recipient", "--out",
-  "--decrypt-file", "--key", "--sender-sig",
+  "--list-algs",
+  "--validate",
+  "--dry-run-envelope",
+  "--gen-recipient",
+  "--out-dir",
+  "--force",
+  "--encrypt-file",
+  "--self-key",
+  "--recipient",
+  "--out",
+  "--decrypt-file",
+  "--key",
+  "--sender-sig",
 ]);
 
 function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
@@ -135,7 +158,12 @@ function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
     if (gen.kind === "missing") return { error: "--gen-recipient requires an <identity> value" };
     const outDir = valueFlag(args, "--out-dir");
     if (outDir.kind === "missing") return { error: "--out-dir requires a <dir> value" };
-    return { mode: "gen-recipient", identity: gen.value, outDir: outDir.kind === "value" ? outDir.value : ".", force: args.includes("--force") };
+    return {
+      mode: "gen-recipient",
+      identity: gen.value,
+      outDir: outDir.kind === "value" ? outDir.value : ".",
+      force: args.includes("--force"),
+    };
   }
 
   const enc = valueFlag(args, "--encrypt-file");
@@ -225,7 +253,14 @@ function modeDryRunEnvelope(): number {
   try {
     validateAlgRegistry(ALG_REGISTRY);
   } catch (e) {
-    emitJson({ rowId: "B-0883", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "registry-validation", error: (e as Error).message });
+    emitJson({
+      rowId: "B-0883",
+      subRow: "v1",
+      mode: "dry-run-envelope",
+      result: "failed",
+      stage: "registry-validation",
+      error: (e as Error).message,
+    });
     return 1;
   }
   const synthetic: FileEnvelope = {
@@ -236,7 +271,14 @@ function modeDryRunEnvelope(): number {
     algWrap: "ChaCha20-Poly1305-AEAD",
     algContent: "ChaCha20-Poly1305",
     algSig: "ML-DSA-65",
-    recipients: [{ identity: "otto-cli@zeta", kemCt: new Uint8Array(0), wrappedCek: new Uint8Array(0), kdfInfo: new Uint8Array(0) }],
+    recipients: [
+      {
+        identity: "otto-cli@zeta",
+        kemCt: new Uint8Array(0),
+        wrappedCek: new Uint8Array(0),
+        kdfInfo: new Uint8Array(0),
+      },
+    ],
     ciphertext: new Uint8Array(0),
     contentNonce: new Uint8Array(12),
     signerIdentity: "otto-cli@zeta",
@@ -252,7 +294,13 @@ function modeDryRunEnvelope(): number {
       envelope: {
         version: synthetic.version,
         context: synthetic.context,
-        algorithms: { kem: synthetic.algKem, kdf: synthetic.algKdf, wrap: synthetic.algWrap, content: synthetic.algContent, signature: synthetic.algSig },
+        algorithms: {
+          kem: synthetic.algKem,
+          kdf: synthetic.algKdf,
+          wrap: synthetic.algWrap,
+          content: synthetic.algContent,
+          signature: synthetic.algSig,
+        },
         recipientCount: synthetic.recipients.length,
         signerIdentity: synthetic.signerIdentity,
       },
@@ -270,7 +318,14 @@ function modeDryRunEnvelope(): number {
     });
     return 0;
   } catch (e) {
-    emitJson({ rowId: "B-0883", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "envelope-structure-validation", error: (e as Error).message });
+    emitJson({
+      rowId: "B-0883",
+      subRow: "v1",
+      mode: "dry-run-envelope",
+      result: "failed",
+      stage: "envelope-structure-validation",
+      error: (e as Error).message,
+    });
     return 1;
   }
 }
@@ -306,7 +361,8 @@ function modeGenRecipient(identity: string, outDir: string, force: boolean): num
       identity,
       recipientPublic: recPath,
       secretBundle: secPath,
-      warning: "the SECRET bundle is the ONLY way to decrypt — store it safely, NEVER commit it (gitignore it or keep it outside the repo). The .recipient.json (public) is shareable/committable.",
+      warning:
+        "the SECRET bundle is the ONLY way to decrypt — store it safely, NEVER commit it (gitignore it or keep it outside the repo). The .recipient.json (public) is shareable/committable.",
     });
     return 0;
   } catch (e) {
@@ -330,7 +386,13 @@ function loadPublicRecipient(path: string) {
   return deserializeRecipient(obj as RecipientKeyJSON);
 }
 
-function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: string[], outPath: string, force: boolean): number {
+function modeEncryptFile(
+  inPath: string,
+  selfKeyPath: string,
+  recipientPaths: string[],
+  outPath: string,
+  force: boolean,
+): number {
   try {
     // Don't silently destroy an existing output (e.g. --out pointed at the plaintext
     // itself, or an existing .zc the user meant to keep).
@@ -419,7 +481,14 @@ function modeDecryptFile(
       return 1;
     }
     writeFileSync(out, res.plaintext); // Uint8Array writes directly (no copy)
-    emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "passed", in: inPath, out, plaintextBytes: res.plaintext.length });
+    emitJson({
+      rowId: "B-0883",
+      mode: "decrypt-file",
+      result: "passed",
+      in: inPath,
+      out,
+      plaintextBytes: res.plaintext.length,
+    });
     return 0;
   } catch (e) {
     emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, error: (e as Error).message });

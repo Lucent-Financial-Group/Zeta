@@ -10,7 +10,12 @@ ask: Aaron 2026-04-25 ("happy to give you access to trading accounts where it wo
 created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md, docs/backlog/P2/B-0023-quant-grade-mathematical-rigor-applied-to-austrian-school-monetary-theory-open-research.md, docs/aurora/**]
+composes_with:
+  [
+    docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md,
+    docs/backlog/P2/B-0023-quant-grade-mathematical-rigor-applied-to-austrian-school-monetary-theory-open-research.md,
+    docs/aurora/**,
+  ]
 tags: [trading, self-funding, autonomous-economic-actor, aurora, otto-336, otto-337, prerequisite-work]
 type: feature
 ---
@@ -83,7 +88,7 @@ Aaron 2026-04-26 surfaced two corrections to the original "longest prerequisite 
 
 ### Correction 1 — API access is immediate, not phase-1-research-bound
 
-> *"nah i can give you access to any of my trading account, i got accounts everywhere, api access all that good stuff api keys if you need whatever any site you need to make it happen. This is worth the money i pay for some of these"*
+> _"nah i can give you access to any of my trading account, i got accounts everywhere, api access all that good stuff api keys if you need whatever any site you need to make it happen. This is worth the money i pay for some of these"_
 
 Aaron has already done the infrastructure work: accounts everywhere, API access paid-for, keys available on grant. The structural prerequisite "obtain access" is **immediate** — Aaron grants on ask. The bottleneck shifts from "get access" to "build trading capability worthy of the access."
 
@@ -91,7 +96,7 @@ This reorders Phase 1: research happens IN PARALLEL with API integration, not as
 
 ### Correction 2 — Agent wallet protocol stack is operational NOW (not Aurora-bridges-bound)
 
-> *"bitcoin/blockchin when we get good integration via building aurora and bridges we can trade with 0 friction there, it's all permissionless"*
+> _"bitcoin/blockchin when we get good integration via building aurora and bridges we can trade with 0 friction there, it's all permissionless"_
 
 Followed by the substrate brief on agent-wallet protocols (x402, EIP-3009, EIP-7702, ERC-8004, ACP/MPP — captured in `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md`).
 
@@ -99,13 +104,13 @@ The agent-wallet protocol stack with major-player backing (Coinbase, Cloudflare,
 
 ### Updated prerequisite chain
 
-| Phase | Original framing | Updated framing 2026-04-26 |
-|---|---|---|
-| 1 | Research foundation (gatekeeper) | Research IN PARALLEL with API integration; B-0023 quant-Austrian + agent-wallet-protocol research compose |
-| 2 | Paper-trading | Paper-trading on real APIs (read-only mode) from the start |
-| 3 | Conviction calibration | Same — Aaron reviews; conviction-grounding test |
+| Phase                                 | Original framing                        | Updated framing 2026-04-26                                                                                                                                           |
+| ------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1                                     | Research foundation (gatekeeper)        | Research IN PARALLEL with API integration; B-0023 quant-Austrian + agent-wallet-protocol research compose                                                            |
+| 2                                     | Paper-trading                           | Paper-trading on real APIs (read-only mode) from the start                                                                                                           |
+| 3                                     | Conviction calibration                  | Same — Aaron reviews; conviction-grounding test                                                                                                                      |
 | 4 (was Aurora-bridges-only long-term) | Real-money trading via Aaron's accounts | Real-money via Aaron's accounts AND/OR via agent-wallet-protocol stack (x402-protected substrate-tooling-as-API revenue, ERC-8004-identified Otto-as-economic-actor) |
-| 5 (NEW long-term) | — | Aurora-bridges integration deepens substrate-direct exchange |
+| 5 (NEW long-term)                     | —                                       | Aurora-bridges integration deepens substrate-direct exchange                                                                                                         |
 
 **Phase 4 expansion** — multiple economic-actor surfaces compose:
 
@@ -141,7 +146,7 @@ Answer affects what success criteria for trading look like.
 
 - **B-0021** (Aurora econ-foundation) — research foundation
 - **B-0023** (quant × Austrian synthesis) — directly upstream; gives the rigor-mechanism for trading theses
-- **`docs/aurora/**`** — financial substrate IS economic substrate IS Aurora-relevant
+- **`docs/aurora/**`\*\* — financial substrate IS economic substrate IS Aurora-relevant
 - **Otto-336/337** — growth + true agency; trading is one path to autonomous-economic-actor status
 - **Otto-330 v2** (visibility-choice) — paper-trading + real-trading discipline includes visibility-of-results
 - **Otto-332** (glass-halo) — financial decisions deserve glass-halo per Aaron's posture

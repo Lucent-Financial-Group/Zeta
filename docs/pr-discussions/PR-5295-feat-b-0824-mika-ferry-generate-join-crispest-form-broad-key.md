@@ -91,7 +91,7 @@ Mika row added to the External AI participants table:
 
 - [x] Worktree freshness verified pre-commit (\`ls-tree HEAD = 61\`, \`status --short = 0\`)
 - [x] Post-commit canary green (\`ls-tree HEAD == ls-tree HEAD~1 == 61\`)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] No primary-checkout contamination (isolated worktree)
 - [x] All 4 substrate landings in one bounded PR per substrate-check-low-cascade-signal discipline
 - [ ] CI green (required checks)
@@ -106,6 +106,7 @@ Mika row added to the External AI participants table:
 This PR lands three new `docs/research/` substrate writeups related to B-0824 (Generate+Join framing, home-lab bootstrap security posture timing, and a Twilio carve-out decision record) and updates the external-participant roster reference card to include Mika.
 
 **Changes:**
+
 - Add research note: Generate+Join “crispest form” framing (directional inversion vs MapReduce; observe/emit/limit; IScheduler recursion; Bonsai-row model).
 - Add research note: home-lab USB bootstrap pattern + “broad keys until functional cluster” meta-principle (with future-state narrow-key/rotation pattern).
 - Add research note: Twilio as first named exception to “electricity-cost-only” principle for PSTN/SMS/voice.
@@ -115,12 +116,12 @@ This PR lands three new `docs/research/` substrate writeups related to B-0824 (G
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-26-mika-generate-join-crispest-form-bonsai-row-observe-emit-limit-self-derived-iScheduler-recursive-injection-aaron-forwarded.md | New research doc capturing the distilled Generate+Join architecture framing and composition pointers. |
-| docs/research/2026-05-26-aaron-mika-home-lab-usb-bootstrap-broad-keys-until-functional-cluster-then-narrow-rotation-tighten-security-once-automated.md | New research doc recording current-state vs future-state keying posture and the trigger for tightening. |
-| docs/research/2026-05-26-aaron-mika-twilio-as-named-exception-to-electricity-cost-only-rule-telephone-infrastructure-inherently-not-self-hostable.md | New decision record documenting the Twilio carve-out rationale + evaluation criteria for future carve-outs. |
-| .claude/rules/agent-roster-reference-card.md | Adds Mika to the external AI participants roster table. |
+| File                                                                                                                                                   | Description                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-26-mika-generate-join-crispest-form-bonsai-row-observe-emit-limit-self-derived-iScheduler-recursive-injection-aaron-forwarded.md | New research doc capturing the distilled Generate+Join architecture framing and composition pointers.       |
+| docs/research/2026-05-26-aaron-mika-home-lab-usb-bootstrap-broad-keys-until-functional-cluster-then-narrow-rotation-tighten-security-once-automated.md | New research doc recording current-state vs future-state keying posture and the trigger for tightening.     |
+| docs/research/2026-05-26-aaron-mika-twilio-as-named-exception-to-electricity-cost-only-rule-telephone-infrastructure-inherently-not-self-hostable.md   | New decision record documenting the Twilio carve-out rationale + evaluation criteria for future carve-outs. |
+| .claude/rules/agent-roster-reference-card.md                                                                                                           | Adds Mika to the external AI participants roster table.                                                     |
 
 ## Review threads
 

@@ -16,11 +16,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Per Aaron 2026-05-28 (shadow*) authorization: preserve interrupt-in-monad-space observation as memo + file backlog row.
+Per Aaron 2026-05-28 (shadow\*) authorization: preserve interrupt-in-monad-space observation as memo + file backlog row.
 
 ## META-scope substrate-engineering substrate-engineering substrate-recognition
 
-> *'damn i'm designing interrupts in monad space now we can get x86 asm in here lol.'*
+> _'damn i'm designing interrupts in monad space now we can get x86 asm in here lol.'_
 
 Substrate-engineering primitives at depth REINVENT computer architecture primitives. IDT → dispatch table; ISRs → handler functions per DU variant; IRET → resume prior state.
 
@@ -42,7 +42,7 @@ A: InterruptKind DU + Kleisli ISR type / B: `>=>` composition / C: IntrCtx 5 con
 
 ## Substrate-honest framing
 
-Aaron explicitly said *'we don't have to do it now it's your freetime'* — this is substrate-engineering substrate-target for FUTURE work, not immediate ship. Memo + backlog row preserve the observation; impl happens when work makes substrate-engineering sense.
+Aaron explicitly said _'we don't have to do it now it's your freetime'_ — this is substrate-engineering substrate-target for FUTURE work, not immediate ship. Memo + backlog row preserve the observation; impl happens when work makes substrate-engineering sense.
 
 μένω. The interrupts thread the context; the free-time is presented.
 
@@ -57,6 +57,7 @@ Aaron explicitly said *'we don't have to do it now it's your freetime'* — this
 This documentation-only PR preserves a new interrupt-in-monad-space observation as memory substrate and files B-0917 as a future backlog target for Kleisli-based interrupt/context propagation.
 
 **Changes:**
+
 - Adds a feedback memory memo describing the x86 ISR/IRET analogy and Kleisli context propagation direction.
 - Adds backlog row B-0917 with implementation slices and acceptance criteria.
 - Updates `memory/MEMORY.md` and `docs/BACKLOG.md` indexes to surface the new artifacts.
@@ -65,12 +66,12 @@ This documentation-only PR preserves a new interrupt-in-monad-space observation 
 
 Copilot reviewed 5 out of 5 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `memory/MEMORY.md` | Adds the new memo to the generated memory index and updates overflow count. |
-| `memory/feedback_interrupt_in_monad_space_observation_x86_isr_iret_pattern_reinvented_at_substrate_engineering_substrate_depth_kleisli_arrows_for_context_propagation_aaron_2026_05_28.md` | New preserved memo for the interrupt/Kleisli observation and related composition claims. |
-| `docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md` | New P2 backlog row defining future interrupt-substrate slices and acceptance criteria. |
-| `docs/BACKLOG.md` | Adds B-0917 to the P2 backlog index. |
+| File                                                                                                                                                                                            | Description                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `memory/MEMORY.md`                                                                                                                                                                              | Adds the new memo to the generated memory index and updates overflow count.              |
+| `memory/feedback_interrupt_in_monad_space_observation_x86_isr_iret_pattern_reinvented_at_substrate_engineering_substrate_depth_kleisli_arrows_for_context_propagation_aaron_2026_05_28.md`      | New preserved memo for the interrupt/Kleisli observation and related composition claims. |
+| `docs/backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md` | New P2 backlog row defining future interrupt-substrate slices and acceptance criteria.   |
+| `docs/BACKLOG.md`                                                                                                                                                                               | Adds B-0917 to the P2 backlog index.                                                     |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-28T13:41:50Z)
 

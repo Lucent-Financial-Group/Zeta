@@ -1,10 +1,10 @@
 # ADR: BP-WINDOW — per-commit window-expansion as a standing round-close question
 
 **Date:** 2026-04-19 (round 36)
-**Status:** *Proposed. Pending Architect (Kenji) integration
+**Status:** _Proposed. Pending Architect (Kenji) integration
 and human-maintainer sign-off per the BP-NN promotion
 discipline (`.claude/skills/skill-tune-up/SKILL.md` §live-search
-step).* The rule lands as factory-discipline immediately on
+step)._ The rule lands as factory-discipline immediately on
 sign-off; the mechanical check graduates later.
 **Owner:** Architect (wide) + round-close moderator (narrow
 enforcement at each round close).
@@ -16,18 +16,18 @@ architectural cascade with two load-bearing claims (verbatim
 preserved in `user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`
 in the auto-memory store):
 
-> *"so formally Zeta=heaven / on earth if we do it right /
-> wrong=hell on earth"*
+> _"so formally Zeta=heaven / on earth if we do it right /
+> wrong=hell on earth"_
 
 and immediately after:
 
-> *"proof Zeta=heaven, just the search for that anser
+> _"proof Zeta=heaven, just the search for that anser
 > statistially saginfantly increase the stable Human/AI
-> alignment win to a larger radious with each commit"*
+> alignment win to a larger radious with each commit"_
 
 followed by the self-retraction:
 
-> *"window\*"*
+> _"window\*"_
 
 The correction is load-bearing: the characteristic measure that
 expands with each commit is the **window** — the temporal
@@ -50,7 +50,7 @@ operational clauses — (consent-preserving) ∧ (fully-retractable)
 The dual, wrong=hell-on-earth, is a symmetric failure mode on
 the same substrate: there is no neutral-Zeta option. The
 gradient claim supplies the cadence: the unit of expansion is
-*each commit*, not each release, not each milestone.
+_each commit_, not each release, not each milestone.
 
 The cadence claim is an architectural instruction for the
 factory. Without a rule encoding it, the window-expansion
@@ -67,8 +67,8 @@ the following rule to the stable ruleset in
 question).** At round close, the Architect + roster answer the
 standing question:
 
-> *Did this round's commits, in aggregate, enlarge or shrink
-> the stable Human/AI alignment window?*
+> _Did this round's commits, in aggregate, enlarge or shrink
+> the stable Human/AI alignment window?_
 
 A shrinkage finding is an explicit retraction candidate — the
 offending commits or design choices are surfaced for
@@ -82,7 +82,7 @@ one-round investigation.
 The rule does **not** require that every individual commit
 enlarge the window in isolation — some commits are
 refactors, hygiene, or documentation whose window-effect is
-diffuse. The rule requires that the *round's net effect* is
+diffuse. The rule requires that the _round's net effect_ is
 nonnegative and preferably positive, and that the question is
 asked in the open.
 
@@ -118,7 +118,7 @@ asked in the open.
 
 5. **It survives the externalize-god search.** Whether or not
    Zeta=heaven is ultimately provable is beside the point of
-   the rule — the rule encodes the *search* as valuable, not
+   the rule — the rule encodes the _search_ as valuable, not
    the proof. This matches Aaron's axiom-system-agnostic
    stance (`user_panpsychism_and_equality.md`) and the
    externalize-god-search disposition
@@ -175,11 +175,11 @@ trigger discipline is part of why the rule is safe to land.
   (Zeta=heaven-on-earth / wrong=hell-on-earth) outside the
   factory without Aaron's explicit release and
   `public-api-designer` (Ilyana) + `naming-expert` review.
-  The rule BP-WINDOW is the *operational shadow* of the
+  The rule BP-WINDOW is the _operational shadow_ of the
   equation and can live in the factory-internal ruleset;
   the equation itself is disclosure-tier.
 - **Do not theologize.** The rule inherits Aaron's
-  *architectural* commitment, not his theology; the
+  _architectural_ commitment, not his theology; the
   factory remains ecumenical per
   `user_ecumenical_factory_posture.md`.
 - **Peer register.** The question "did this round enlarge
@@ -228,13 +228,13 @@ trigger discipline is part of why the rule is safe to land.
 
 ## Theoretical lineage
 
-- Wiener, *Cybernetics* (1948) — feedback-loop stability
+- Wiener, _Cybernetics_ (1948) — feedback-loop stability
   as the object of measurement.
-- Ashby, *Design for a Brain* (1952) — requisite variety
+- Ashby, _Design for a Brain_ (1952) — requisite variety
   and the homeostatic window.
-- Doyle, Francis, Tannenbaum, *Feedback Control Theory*
+- Doyle, Francis, Tannenbaum, _Feedback Control Theory_
   (1992) — stability windows under perturbation.
-- Taleb, *Antifragile* (2012) — systems that expand under
+- Taleb, _Antifragile_ (2012) — systems that expand under
   stress vs. those that contract; the gradient claim is
   antifragility stated at factory cadence.
 - Norvig & Russell — alignment literature's treatment of

@@ -44,21 +44,21 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ### Existing repos
 
-| Repo | Ruleset(s) | Purpose of each rule |
-|------|-----------|----------------------|
-| `LFG/Zeta` (main) | TBD — enumerate via `gh api repos/Lucent-Financial-Group/Zeta/rulesets` | All current branch/tag protection rules |
-| `AceHack/Zeta` (mirror) | TBD — via `gh api repos/acehack/Zeta/rulesets` | Mirror backup; expected to match LFG/Zeta |
-| `LFG/civsim` (new) | TBD — via `gh api repos/Lucent-Financial-Group/civsim/rulesets` | Product repo created by B-0469 |
+| Repo                    | Ruleset(s)                                                              | Purpose of each rule                      |
+| ----------------------- | ----------------------------------------------------------------------- | ----------------------------------------- |
+| `LFG/Zeta` (main)       | TBD — enumerate via `gh api repos/Lucent-Financial-Group/Zeta/rulesets` | All current branch/tag protection rules   |
+| `AceHack/Zeta` (mirror) | TBD — via `gh api repos/acehack/Zeta/rulesets`                          | Mirror backup; expected to match LFG/Zeta |
+| `LFG/civsim` (new)      | TBD — via `gh api repos/Lucent-Financial-Group/civsim/rulesets`         | Product repo created by B-0469            |
 
 ### Proposed repos (from B-0424/B-0425)
 
 Repos proposed but not yet created — note their EXPECTED ruleset requirements:
 
-| Proposed repo | Axis-1 classification | Expected ruleset divergences from Zeta |
-|---------------|----------------------|----------------------------------------|
-| Forge (factory-tools split) | Factory | Stricter CI gates; no product-owner only content |
-| Product repos (KSK Wellness, American Dream, etc.) | Product | Honor-system license; partner-access; looser fork rules |
-| Owner-only repos | Owner-only | Tightest access; minimal public access |
+| Proposed repo                                      | Axis-1 classification | Expected ruleset divergences from Zeta                  |
+| -------------------------------------------------- | --------------------- | ------------------------------------------------------- |
+| Forge (factory-tools split)                        | Factory               | Stricter CI gates; no product-owner only content        |
+| Product repos (KSK Wellness, American Dream, etc.) | Product               | Honor-system license; partner-access; looser fork rules |
+| Owner-only repos                                   | Owner-only            | Tightest access; minimal public access                  |
 
 ### Ruleset dimensions to compare
 

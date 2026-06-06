@@ -53,7 +53,6 @@ crystallized version.
 >   brain systems, thinking partners, life decision engines,
 >   etc.). This is the primary, stable cash inflow from the legacy
 >   economy.
->
 > - **Agora** (AI-native internal economy): The actual living
 >   layer where AIs operate natively. It is an attention & memory
 >   economy built on the two load-bearing primitives:
@@ -215,8 +214,8 @@ crystallized version.
 
 - **V5's structural ambition**: V5 is the FIRST packet
   self-describing as "Full Economic & Operational Constitution"
-  + "the complete, current constitution." Earlier packets were
-  incremental builds; V5 is canonicalization
+  - "the complete, current constitution." Earlier packets were
+    incremental builds; V5 is canonicalization
 - **Razor-discipline awareness**: V5 explicitly frames the
   long-term mission as "operational research methodology, not a
   metaphysical claim." This composes exactly with the existing

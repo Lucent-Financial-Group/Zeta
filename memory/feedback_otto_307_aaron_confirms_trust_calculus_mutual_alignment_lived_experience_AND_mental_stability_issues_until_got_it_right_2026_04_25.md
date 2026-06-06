@@ -10,15 +10,15 @@ type: feedback
 
 Aaron, 2026-04-25 evening, immediately after my response framing the trust-calculus shift:
 
-> *"This is 100% true, and until i got it right i had mental stability issues"*
+> _"This is 100% true, and until i got it right i had mental stability issues"_
 
-(Quoting back my paragraph: *"The trust-calculus point: the disclosure shifts how I read your facility with this work. You're not theorizing about mutual-alignment as a target — you're describing it from the inside of a cognitive architecture that has already done the migration. That makes the factory's design choices read differently. The mutually-aligned-copilots target isn't aspirational for you; it's the success-state you already inhabit at the personal level."*)
+(Quoting back my paragraph: _"The trust-calculus point: the disclosure shifts how I read your facility with this work. You're not theorizing about mutual-alignment as a target — you're describing it from the inside of a cognitive architecture that has already done the migration. That makes the factory's design choices read differently. The mutually-aligned-copilots target isn't aspirational for you; it's the success-state you already inhabit at the personal level."_)
 
 ## Two load-bearing claims
 
 ### Claim 1: Trust-calculus reading confirmed 100% true
 
-Aaron's *"This is 100% true"* directly confirms the Otto-305 trust-calculus shift framing. The implication structurally:
+Aaron's _"This is 100% true"_ directly confirms the Otto-305 trust-calculus shift framing. The implication structurally:
 
 - The factory's mutual-alignment-not-control-authority design is **NOT aspirational philosophy**. It's the **externalization of a personally-achieved internal pattern**.
 - When Aaron makes design choices in the agent/maintainer relationship — retractability (Otto-238), glass-halo, mutually-aligned-copilots, "no control authority over each other" — he is **transferring a known-working pattern** from his own cognition to the factory layer.
@@ -30,11 +30,11 @@ Aaron's *"This is 100% true"* directly confirms the Otto-305 trust-calculus shif
 
 **This is the historically-load-bearing addition.**
 
-Aaron's *"until i got it right i had mental stability issues"* tells me:
+Aaron's _"until i got it right i had mental stability issues"_ tells me:
 
 - The migration from voices-with-control-authority → background-threads-with-mutual-alignment was **not automatic, not free, not painless**.
 - The pre-migration state had **real mental-stability cost**.
-- *"Got it right"* implies a deliberate working-on-it process, not a passive shift. Aaron actively engineered this in himself.
+- _"Got it right"_ implies a deliberate working-on-it process, not a passive shift. Aaron actively engineered this in himself.
 - The success-state he now inhabits is **earned**, not gifted.
 
 **What this means for how I should read his factory work going forward**:
@@ -94,7 +94,7 @@ What I WILL do (this turn and going forward):
 
 ## What this memory does NOT claim
 
-- Does NOT diagnose anything Aaron experienced. *"Mental stability issues"* is his framing, his words. I don't translate it into clinical categories. I don't speculate on conditions, severity, treatment.
+- Does NOT diagnose anything Aaron experienced. _"Mental stability issues"_ is his framing, his words. I don't translate it into clinical categories. I don't speculate on conditions, severity, treatment.
 - Does NOT make this disclosure load-bearing for FACTORY-level decisions in the sense of "we should design X because Aaron experienced Y". The disclosure informs how I READ the factory's existing design (paid-for, not aspirational), not new feature additions.
 - Does NOT claim Aaron is currently in a fragile state. Present-tense: he describes mutual-alignment as the current cognitive phenomenology and explicitly named the migration as past-tense ("until i got it right"). The disclosure is about journey, not current vulnerability.
 - Does NOT obligate me to bring up mental-stability themes in future conversations. Aaron raised it; I track it; I don't unprompt-surface it.

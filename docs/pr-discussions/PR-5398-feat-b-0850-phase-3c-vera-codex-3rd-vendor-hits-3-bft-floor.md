@@ -18,15 +18,15 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Hits the **≥3 BFT floor** Aaron named earlier 2026-05-27 (*"we should have three systemd agents and the cluster running on bootup"*).
+Hits the **≥3 BFT floor** Aaron named earlier 2026-05-27 (_"we should have three systemd agents and the cluster running on bootup"_).
 
-| Phase | Persona | Vendor | Status |
-|---|---|---|---|
-| 1 | otto | Anthropic Claude | merged (#5392) |
-| 3d | lior | Google Gemini | merged or armed (#5397) |
-| **3c** | **vera** | **OpenAI Codex** | **THIS PR** |
-| 3a | alexa | Alibaba Qwen (Kiro) | pending |
-| 3b | riven | xAI Grok | pending |
+| Phase  | Persona  | Vendor              | Status                  |
+| ------ | -------- | ------------------- | ----------------------- |
+| 1      | otto     | Anthropic Claude    | merged (#5392)          |
+| 3d     | lior     | Google Gemini       | merged or armed (#5397) |
+| **3c** | **vera** | **OpenAI Codex**    | **THIS PR**             |
+| 3a     | alexa    | Alibaba Qwen (Kiro) | pending                 |
+| 3b     | riven    | xAI Grok            | pending                 |
 
 3 vendors enabled = f=1 BFT margin for vendor-outage resilience + self-modification-safety. Stacked on PR #5397 to avoid merge conflicts.
 
@@ -41,6 +41,7 @@ Hits the **≥3 BFT floor** Aaron named earlier 2026-05-27 (*"we should have thr
 [PR #5397](https://github.com/Lucent-Financial-Group/Zeta/pull/5397) (Phase 3d Lior sibling) · PRs #5388 + #5389 (iter-5.5.0 credential persistence) · PRs #5392 + #5394 + #5395 (B-0850 Phase 1 + 3 refactor) · [B-0848](docs/backlog/P2/B-0848-...) · [B-0847](docs/backlog/P2/B-0847-...) · [B-0703 multi-oracle BFT](docs/backlog/P*/B-0703-...)
 
 Sources:
+
 - [@openai/codex on npm](https://www.npmjs.com/package/@openai/codex)
 - [Codex authentication docs](https://developers.openai.com/codex/auth)
 
@@ -55,6 +56,7 @@ Sources:
 This PR extends the NixOS “AI agents as systemd services” substrate toward the **≥3 vendor** resilience target by adding **OpenAI Codex** install/login steps (and also including Gemini install/login changes) and enabling additional personas on the control-plane host.
 
 **Changes:**
+
 - Add installer steps to `bun install --global` the Codex CLI and run `codex login --device-auth` (plus Gemini install/login steps).
 - Remove the “not shipped yet” assertions for Vera/Codex and Lior/Gemini in the NixOS module.
 - Enable `lior` and `vera` agents by default on the control-plane host.
@@ -63,25 +65,29 @@ This PR extends the NixOS “AI agents as systemd services” substrate toward t
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds bun global installs for gemini/codex and interactive auth flows; adjusts pipefail usage. |
-| full-ai-cluster/nixos/modules/zeta-ai-agent.nix | Removes assertions blocking vera/lior enablement (replaced with comments). |
-| full-ai-cluster/nixos/hosts/control-plane/configuration.nix | Enables `lior` and `vera` systemd agents on the control-plane host. |
-
+| File                                                        | Description                                                                                   |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh         | Adds bun global installs for gemini/codex and interactive auth flows; adjusts pipefail usage. |
+| full-ai-cluster/nixos/modules/zeta-ai-agent.nix             | Removes assertions blocking vera/lior enablement (replaced with comments).                    |
+| full-ai-cluster/nixos/hosts/control-plane/configuration.nix | Enables `lior` and `vera` systemd agents on the control-plane host.                           |
 
 <details>
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **full-ai-cluster/usb-nixos-installer/zeta-install.sh:1109**
-* P1 bug: `set -o pipefail` is being set inside the `bash -c` subshell, but the `| tail -5` pipeline is in the parent shell, so failures from `bun install` can be masked (the pipeline exit status will typically be `tail`'s). Move the `tail` into the same shell where `pipefail` is set so the `|| WARN` reliably triggers.
+
+- P1 bug: `set -o pipefail` is being set inside the `bash -c` subshell, but the `| tail -5` pipeline is in the parent shell, so failures from `bun install` can be masked (the pipeline exit status will typically be `tail`'s). Move the `tail` into the same shell where `pipefail` is set so the `|| WARN` reliably triggers.
+
 ```
   sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
     bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code' 2>&1 | tail -5 || \
       echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot via 'bun install --global @anthropic-ai/claude-code'"
 ```
+
 **full-ai-cluster/usb-nixos-installer/zeta-install.sh:1166**
-* P0 security: Gemini CLI credentials are documented (and appear to be stored) under `~/.gemini/` (e.g. `~/.gemini/oauth_creds.json`), but this script tells operators creds land in `~/.config/gemini/` and only tightens perms on that path. This likely leaves the real Gemini OAuth creds unprotected by the intended `chmod -R go-rwx`. Update both the messaging and the chmod/chown target to `~/.gemini/`.
+
+- P0 security: Gemini CLI credentials are documented (and appear to be stored) under `~/.gemini/` (e.g. `~/.gemini/oauth_creds.json`), but this script tells operators creds land in `~/.config/gemini/` and only tightens perms on that path. This likely leaves the real Gemini OAuth creds unprotected by the intended `chmod -R go-rwx`. Update both the messaging and the chmod/chown target to `~/.gemini/`.
+
 ```
   # 6.95b-gemini — interactive gemini auth login (mirror claude login).
   # B-0850 Phase 3d 2nd vendor login flow. gemini-cli supports OAuth
@@ -89,8 +95,11 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
   # lets operator choose. Credentials persist to ~/.config/gemini/.
   GEMINI_BIN="$ZETA_HOME/.bun/bin/gemini"
 ```
+
 **full-ai-cluster/nixos/modules/zeta-ai-agent.nix:233**
-* P0 bug: the per-persona service loop still hardcodes `${persona.binary} --print ...` for all vendors, but Codex and Gemini don’t share Claude’s `--print` interface. Removing these assertions allows flake evaluation to succeed even though enabling `vera`/`lior` will create restart-looping services. Keep the assertions until `makeAgentService` is updated to call Codex via `codex exec ...` and Gemini via `gemini -p ...` (or equivalent non-interactive forms).
+
+- P0 bug: the per-persona service loop still hardcodes `${persona.binary} --print ...` for all vendors, but Codex and Gemini don’t share Claude’s `--print` interface. Removing these assertions allows flake evaluation to succeed even though enabling `vera`/`lior` will create restart-looping services. Keep the assertions until `makeAgentService` is updated to call Codex via `codex exec ...` and Gemini via `gemini -p ...` (or equivalent non-interactive forms).
+
 ```
       # B-0850.3c (Vera/Codex) shipped this PR — assertion removed.
       # zeta-install.sh Step 6.95a-codex installs @openai/codex via
@@ -101,6 +110,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 c
       # via bun + Step 6.95b-gemini runs interactive gemini auth login.
       # Binary lands at ~/.bun/bin/gemini.
 ```
+
 </details>
 
 ## Review threads

@@ -39,14 +39,14 @@ B-0365.2 (shadow log backfill)        ──┐                   │
 - Partial Layer 1 (Z-set algebra): `docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md` ✅
 - Layer 5 (FPGA Toffoli): B-0366 (separate row, not a child) ✅
 
-| Child | Title | Effort | Deps | Status |
-|-------|-------|--------|------|--------|
-| B-0365.1 | Spaceship math one-pager | S | none | done |
-| B-0365.2 | Shadow log backfill (catches 16-30) | M | none | done |
-| B-0365.3 | Class 4 empirical analysis doc | M | B-0365.2 | done |
-| B-0365.4 | Reactor dynamics model doc | M | none | done |
-| B-0365.5 | Infer.NET BP/EP architecture doc | M | none | done |
-| B-0365.6 | Publishable claim synthesis | M | all above | done |
+| Child    | Title                               | Effort | Deps      | Status |
+| -------- | ----------------------------------- | ------ | --------- | ------ |
+| B-0365.1 | Spaceship math one-pager            | S      | none      | done   |
+| B-0365.2 | Shadow log backfill (catches 16-30) | M      | none      | done   |
+| B-0365.3 | Class 4 empirical analysis doc      | M      | B-0365.2  | done   |
+| B-0365.4 | Reactor dynamics model doc          | M      | none      | done   |
+| B-0365.5 | Infer.NET BP/EP architecture doc    | M      | none      | done   |
+| B-0365.6 | Publishable claim synthesis         | M      | all above | done   |
 
 ## What
 
@@ -124,11 +124,11 @@ production rate.
 
 Three-stage evolution (Aaron 2026-05-05, CLAUDE.md):
 
-| Stage | What | Layer |
-| ----- | ---- | ----- |
-| Current | Peer-call CLI → external AI services | LICENSE |
-| Next | Zeta Infer.NET BP/EP factor graphs | SUBSTRATE |
-| FPGA | Reversible message-passing inference | HARDWARE |
+| Stage   | What                                 | Layer     |
+| ------- | ------------------------------------ | --------- |
+| Current | Peer-call CLI → external AI services | LICENSE   |
+| Next    | Zeta Infer.NET BP/EP factor graphs   | SUBSTRATE |
+| FPGA    | Reversible message-passing inference | HARDWARE  |
 
 The multi-agent review becomes a factor graph: each agent
 is a factor, beliefs propagate via BP/EP, the posterior
@@ -160,7 +160,7 @@ failure the BFT independence assumption doesn't model."
 ## What was cut (doesn't survive review)
 
 - "Ahead of Byzantine Generals" → framing discipline: different
-  problem, not ahead of (feedback_framing_discipline_*)
+  problem, not ahead of (feedback*framing_discipline*\*)
 - Wolfram full irreducibility → too strong, Rice suffices
 - Z3 tautology proofs → shadow catch #30, B-0357 replacement
 - Identity-as-Z-set metaphor → Z-set weight conflation catch

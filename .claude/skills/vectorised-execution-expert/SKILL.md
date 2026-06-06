@@ -115,13 +115,13 @@ it).
 Every nullable column carries a null-bitmap. Disciplines:
 
 - **Null-check is cheap.** `(bitmap[i >> 6] >> (i & 63)) &
-  1` — 2 shifts, 1 and.
+1` — 2 shifts, 1 and.
 - **All-not-null fast path.** When the bitmap is all-ones,
   skip null checks entirely. Detect at vector load.
 - **Branch-free null arithmetic.** `x + y` where either is
   null returns null; branch-free `mask * (x + y)`.
 - **Three-valued logic preservation.** A boolean column's
-  null-bitmap *is* part of the boolean value; collapsing
+  null-bitmap _is_ part of the boolean value; collapsing
   it loses information (`sql-expert` is the authority on
   the SQL side).
 
@@ -166,8 +166,8 @@ in simpler code.
 
 ## Reference patterns
 
-- Boncz, Zukowski, Nes 2005, *MonetDB/X100: Hyper-Pipelining
-  Query Execution*.
+- Boncz, Zukowski, Nes 2005, _MonetDB/X100: Hyper-Pipelining
+  Query Execution_.
 - DuckDB engineering blog — vectorised execution.
 - ClickHouse docs — vectorised execution notes.
 - `.claude/skills/execution-model-expert/SKILL.md` —

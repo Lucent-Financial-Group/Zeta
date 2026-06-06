@@ -63,23 +63,23 @@ The detector tests all three legs.
 
 Each surface belongs to **exactly one** class. The classifier (recovery process + lint) depends on this disjointness.
 
-| Class | Examples | Durability claim |
-|---|---|---|
-| **Ephemeral (weather)** | chat messages, TaskUpdate, `/tmp`, `/var/tmp`, loop todos, session memory, scratch buffer, Desktop loose files, Downloads, untracked working-tree files | NEVER call done. **No temp directory is a parking surface.** `/tmp` and `/var/tmp` are both site-cleaned; FHS does not promise persistence across reboots. |
-| **Local parked** | named `git stash push -u -m "<name>"` entry, local WIP branch commit (not pushed) | Last-resort local; machine-specific; weaker because not remote |
-| **Remote parked** | pushed `wip/<topic>-<date>` branch (no PR), pushed WIP branch with optional draft PR attached | Survives reboot AND compaction because the backing branch/ref survives. Pushed WIP branch is preferred when avoiding review machinery; a draft PR is for visibility/discussion, but the parking durability comes from the branch/ref, not the PR metadata |
-| **Host-durable-not-git-canonical** | GitHub Issues, task comments, PR comments, labels, assignees, Projects, review threads on closed PRs | Coordination only — durable on the host, but NOT canonical substrate and NOT a parking surface (no git ref backs them) |
-| **Git-native preserved substrate** | merged or long-lived-reachable + indexed repo files: `memory/*.md`, `docs/research/`, `docs/ops/`, `docs/backlog/`, claim mirrors, validators / lints / runbooks, CLAUDE.md / AGENTS.md / GOVERNANCE.md | Canonical substrate (committed + reachable + indexed) |
+| Class                              | Examples                                                                                                                                                                                                | Durability claim                                                                                                                                                                                                                                          |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ephemeral (weather)**            | chat messages, TaskUpdate, `/tmp`, `/var/tmp`, loop todos, session memory, scratch buffer, Desktop loose files, Downloads, untracked working-tree files                                                 | NEVER call done. **No temp directory is a parking surface.** `/tmp` and `/var/tmp` are both site-cleaned; FHS does not promise persistence across reboots.                                                                                                |
+| **Local parked**                   | named `git stash push -u -m "<name>"` entry, local WIP branch commit (not pushed)                                                                                                                       | Last-resort local; machine-specific; weaker because not remote                                                                                                                                                                                            |
+| **Remote parked**                  | pushed `wip/<topic>-<date>` branch (no PR), pushed WIP branch with optional draft PR attached                                                                                                           | Survives reboot AND compaction because the backing branch/ref survives. Pushed WIP branch is preferred when avoiding review machinery; a draft PR is for visibility/discussion, but the parking durability comes from the branch/ref, not the PR metadata |
+| **Host-durable-not-git-canonical** | GitHub Issues, task comments, PR comments, labels, assignees, Projects, review threads on closed PRs                                                                                                    | Coordination only — durable on the host, but NOT canonical substrate and NOT a parking surface (no git ref backs them)                                                                                                                                    |
+| **Git-native preserved substrate** | merged or long-lived-reachable + indexed repo files: `memory/*.md`, `docs/research/`, `docs/ops/`, `docs/backlog/`, claim mirrors, validators / lints / runbooks, CLAUDE.md / AGENTS.md / GOVERNANCE.md | Canonical substrate (committed + reachable + indexed)                                                                                                                                                                                                     |
 
 **Parking-surface rule** (Amara correction post-#855-review):
 
-> *"If it matters enough to come back to, it deserves a git ref."*
+> _"If it matters enough to come back to, it deserves a git ref."_
 
 When you need to set work aside without starting a review cycle: **pushed WIP branch (no PR)** is the cleanest mechanism. NOT `/tmp`. NOT `/var/tmp`. NOT loose Desktop files. NOT a GitHub Issue (host-durable but no git ref backs it). A draft PR can add visibility, but the branch/ref is the parking mechanism. The branch is a real Git object (lightweight movable pointer to a commit, per the Git docs); the temp dir is weather.
 
 When to use each parking surface:
 
-- **Pushed WIP branch, no PR** — best for *"save this, come back later, do not start review."* Branch like `wip/<topic>-<date>`. Push but no PR. Survives reboot + compaction without triggering CI/review machinery.
+- **Pushed WIP branch, no PR** — best for _"save this, come back later, do not start review."_ Branch like `wip/<topic>-<date>`. Push but no PR. Survives reboot + compaction without triggering CI/review machinery.
 - **Draft PR (atop a pushed WIP branch)** — when visibility / discussion / async-review desired. Acceptable when review noise is controlled. The branch is still the durability anchor.
 - **Local WIP branch (not pushed)** — only if immediate remote push is impossible; weaker because machine-local. Must be named in status before context loss.
 - **Named `git stash`** — last-resort local parking. Must be named at creation: `git stash push -u -m "<name>"`. Anonymous stashes (`git stash -u` without `-m`) are weather, not parked.
@@ -88,23 +88,23 @@ When to use each parking surface:
 
 ## The carved blades
 
-> *"A directive that lives only in a conversation is not a directive. It is weather. Substrate or it didn't happen."*
+> _"A directive that lives only in a conversation is not a directive. It is weather. Substrate or it didn't happen."_
 
 Sharper:
 
-> *"Substrate or it didn't happen. But also: indexed, reachable, and reconstructable — or it is not substrate yet."*
+> _"Substrate or it didn't happen. But also: indexed, reachable, and reconstructable — or it is not substrate yet."_
 
 Cruel truth for future-self:
 
-> *"If you cannot point to the substrate, you are not done. You are just currently convinced."*
+> _"If you cannot point to the substrate, you are not done. You are just currently convinced."_
 
 The compact bootstrap rule:
 
-> *"No invisible directives. No session-local truth. No 'done' without substrate."*
+> _"No invisible directives. No session-local truth. No 'done' without substrate."_
 
 ## What this rule codifies
 
-The deeper meaning of *"the only directive is NO DIRECTIVES"*:
+The deeper meaning of _"the only directive is NO DIRECTIVES"_:
 
 ```text
 No invisible conversational directive is allowed to become binding project state.
@@ -117,13 +117,13 @@ doctrine-changing decisions, mirror the substantive content into a
 git-native file.
 ```
 
-The rule is NOT *"never give instructions."* The rule is: *convert directives into substrate, or they are not directives.*
+The rule is NOT _"never give instructions."_ The rule is: _convert directives into substrate, or they are not directives._
 
 ## The 8 mechanisms — full text
 
 ### 1. Ephemeral-state detector (Durability Surface Checklist)
 
-Run before saying *"done"*:
+Run before saying _"done"_:
 
 - [ ] Is this only in chat / TaskUpdate / `/tmp` / loop todos? → If yes: **"Not durable yet."**
 - [ ] What is the canonical substrate location?
@@ -131,7 +131,7 @@ Run before saying *"done"*:
 - [ ] Is it committed + reachable + indexed (all three legs)?
 - [ ] Can a fresh future agent reconstruct the full meaning from that location alone?
 
-For doctrine-correction or superseding-architecture levels, *every "done" claim must cite a referenced commit hash, file path, PR, or issue.* Bare *"done"* without a reference is invalid syntax.
+For doctrine-correction or superseding-architecture levels, _every "done" claim must cite a referenced commit hash, file path, PR, or issue._ Bare _"done"_ without a reference is invalid syntax.
 
 ### 2. Verbatim-preservation trigger (paired with structured extraction)
 
@@ -149,7 +149,7 @@ When Aaron / Amara / external reviewers send a packet that is any of:
 
 Verbatim source = provenance (no rewording of substantive claims; structural reformatting OK).
 
-Structured extraction = retrieval (key decisions / `supersedes:` / `superseded_by:` / deferred questions / next implementation step / *must not do yet*).
+Structured extraction = retrieval (key decisions / `supersedes:` / `superseded_by:` / deferred questions / next implementation step / _must not do yet_).
 
 Preferred locations:
 
@@ -162,11 +162,11 @@ Preferred locations:
 
 ### 3. Magnitude classifier
 
-| Class | Examples | Action |
-|---|---|---|
-| **Small correction** | typo, wording fix, one task detail | update task / issue / comment |
-| **Implementation readiness** | "use this lint as precedent", "PR A should have schema + validator" | task / issue + implementation notes |
-| **Doctrine correction** | changes a rule future agents follow | **memory file or `docs/ops/`-pattern** |
+| Class                        | Examples                                                                                  | Action                                                        |
+| ---------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Small correction**         | typo, wording fix, one task detail                                                        | update task / issue / comment                                 |
+| **Implementation readiness** | "use this lint as precedent", "PR A should have schema + validator"                       | task / issue + implementation notes                           |
+| **Doctrine correction**      | changes a rule future agents follow                                                       | **memory file or `docs/ops/`-pattern**                        |
 | **Superseding architecture** | v5 replaces v4 public-intake; host-portable git-native core changes source-of-truth rules | **research preservation + memory absorb + supersession note** |
 
 **Do not minimize superseding architecture as "review corrections."** When in doubt about magnitude, classify upward.
@@ -204,36 +204,36 @@ After preserving important substrate, verify a fresh future agent can answer fro
 3. What older thing did it supersede?
 4. What is the next implementation step?
 5. What must not be done yet?
-6. **What ephemeral state from the originating conversation has been lost, and is any of it load-bearing?** *(Catches the exact failure mode where content was partly captured but the context that made it superseding rather than corrective was lost.)*
+6. **What ephemeral state from the originating conversation has been lost, and is any of it load-bearing?** _(Catches the exact failure mode where content was partly captured but the context that made it superseding rather than corrective was lost.)_
 
 If any answer is missing from substrate, **preservation is incomplete**.
 
 ### 7. "Done" vocabulary discipline + enforcement path
 
-| Word | Means |
-|---|---|
-| **Captured** | TaskUpdate / chat / `/tmp` only — NOT durable, NEVER call this "done" or "preserved" |
-| **Parked** | GitHub Issue / PR — host-durable, NOT git-canonical |
-| **Preserved** | Git-native repo file (committed) |
-| **Canonical** | Accepted spec / doctrine (committed + reachable + indexed) |
-| **Operational** | Enforced by tooling / checks / runbooks |
+| Word                       | Means                                                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Captured**               | TaskUpdate / chat / `/tmp` only — NOT durable, NEVER call this "done" or "preserved"                       |
+| **Parked**                 | GitHub Issue / PR — host-durable, NOT git-canonical                                                        |
+| **Preserved**              | Git-native repo file (committed)                                                                           |
+| **Canonical**              | Accepted spec / doctrine (committed + reachable + indexed)                                                 |
+| **Operational**            | Enforced by tooling / checks / runbooks                                                                    |
 | **Preserved-but-disputed** | Substrate exists but contradicts other substrate; awaiting reconciliation. NOT canonical until reconciled. |
 
 Forbidden:
 
-- ❌ Calling anything that only exists in TaskUpdate / chat / `/tmp` *"done"* or *"preserved"*
-- ❌ Calling doctrine *"operational"* without enforcement tooling
-- ❌ Calling research *"canonical"*
-- ❌ Calling parking *"preservation"*
-- ❌ Calling a future task *"implemented"*
-- ❌ Calling preserved-but-disputed material *"canonical"*
+- ❌ Calling anything that only exists in TaskUpdate / chat / `/tmp` _"done"_ or _"preserved"_
+- ❌ Calling doctrine _"operational"_ without enforcement tooling
+- ❌ Calling research _"canonical"_
+- ❌ Calling parking _"preservation"_
+- ❌ Calling a future task _"implemented"_
+- ❌ Calling preserved-but-disputed material _"canonical"_
 
 **Enforcement path** (target state — currently DEFERRED; not yet enforced by tooling):
 
 - PR body / commit message SHOULD include trailer:
   - `Durability: captured | parked | preserved | canonical | operational`
   - `Substrate: <path-or-issue-or-commit>` (recommended when Durability ≥ preserved)
-- Lint flags vocabulary misuse (PR description claims *"operational"* but no tooling/check added → fail).
+- Lint flags vocabulary misuse (PR description claims _"operational"_ but no tooling/check added → fail).
 - Pre-commit hook on `memory/` and `docs/ops/`.
 
 **Status today**: doctrine-only. No PR template, lint, or CI workflow enforces this yet. The trailer convention is documented here as the target state; mechanical enforcement lands after a follow-up implementation PR. Until then, the discipline is exercised at PR/commit-authoring time.
@@ -245,20 +245,20 @@ The rule is cross-harness, not Claude-only. Add bootstrap pointer at cold-start 
 - `CLAUDE.md` — landed in this PR alongside verify-before-deferring + future-self-not-bound + never-be-idle + version-currency (5th CLAUDE.md-tier rule)
 - `AGENTS.md` — equivalent cross-harness addition (same rule / doctrine, file-specific wording rather than identical text)
 
-**Committed wording note**: the bootstrap pointers in `CLAUDE.md` and `AGENTS.md` are *equivalent in doctrine, not verbatim-identical*. `AGENTS.md` carries the fuller wording (5-tier channel taxonomy, three-leg substrate definition, parking-surface preferences with `wip/<topic>-<date>` examples, cross-harness applicability). `CLAUDE.md` carries the shorter cold-start reminder (vocabulary discipline, never call TaskUpdate-only "done", verbatim-preservation trigger, magnitude classifier). This memory entry records the rule they share, not a single canonical quoted sentence for both files.
+**Committed wording note**: the bootstrap pointers in `CLAUDE.md` and `AGENTS.md` are _equivalent in doctrine, not verbatim-identical_. `AGENTS.md` carries the fuller wording (5-tier channel taxonomy, three-leg substrate definition, parking-surface preferences with `wip/<topic>-<date>` examples, cross-harness applicability). `CLAUDE.md` carries the shorter cold-start reminder (vocabulary discipline, never call TaskUpdate-only "done", verbatim-preservation trigger, magnitude classifier). This memory entry records the rule they share, not a single canonical quoted sentence for both files.
 
 Compact representative wording (read either file's bullet for the full version):
 
-> *"Before declaring work done, identify its durability surface. Chat, TaskUpdate, `/tmp`, and loop todos are not durable project substrate. If a directive matters after compaction, it must be converted into substrate (committed + reachable from a long-lived ref + indexed). Substrate or it didn't happen."*
+> _"Before declaring work done, identify its durability surface. Chat, TaskUpdate, `/tmp`, and loop todos are not durable project substrate. If a directive matters after compaction, it must be converted into substrate (committed + reachable from a long-lived ref + indexed). Substrate or it didn't happen."_
 
 ## Mid-session re-discoverability
 
-The bootstrap pointer is read at cold-start. The detector must also fire mid-session — at the moment an action that *creates* substrate is taken, not just at session start. Mechanisms (some deferred):
+The bootstrap pointer is read at cold-start. The detector must also fire mid-session — at the moment an action that _creates_ substrate is taken, not just at session start. Mechanisms (some deferred):
 
 - Pre-PR check: PR body must include `Durability:` trailer
 - Pre-commit hook on `memory/` files: must be paired with MEMORY.md row (already enforced via `.github/workflows/memory-index-integrity.yml`)
 - Tool description: `Bash`/`Edit`/`Write` invocations on doctrine files surface a reminder
-- A lint that scans recent commits for *"done"* / *"complete"* / *"operational"* without supporting `Substrate:` trailer
+- A lint that scans recent commits for _"done"_ / _"complete"_ / _"operational"_ without supporting `Substrate:` trailer
 
 The deferred items are tracked as follow-up; the rule is operational at the doctrine level today via the bootstrap pointer + verbatim-preservation discipline.
 
@@ -266,19 +266,20 @@ The deferred items are tracked as follow-up; the rule is operational at the doct
 
 Aaron 2026-04-29 (post-#852-merge):
 
-> *"you took the latest updates tho righ, how can you be done with all the stuff i just send you"*
+> _"you took the latest updates tho righ, how can you be done with all the stuff i just send you"_
 
-> *"there were HUGE changes around internal and external and gitnative"*
+> _"there were HUGE changes around internal and external and gitnative"_
 
 Amara 2026-04-29 first synthesis:
 
-> *"Claude's failure in the attached log is the canonical bug: he said 'done' after a TaskUpdate, then realized TaskUpdate was session-local and would vanish on compaction. He also initially minimized the new architecture as 'review corrections,' then recognized it was actually a v5 superseding architecture with huge internal/external/git-native changes. So the fix is not 'Claude, remember better.' The fix is mechanisms that make forgetting harder."*
+> _"Claude's failure in the attached log is the canonical bug: he said 'done' after a TaskUpdate, then realized TaskUpdate was session-local and would vanish on compaction. He also initially minimized the new architecture as 'review corrections,' then recognized it was actually a v5 superseding architecture with huge internal/external/git-native changes. So the fix is not 'Claude, remember better.' The fix is mechanisms that make forgetting harder."_
 
 Amara 2026-04-29 second synthesis (after 5-AI review of #855):
 
-> *"#855 is directionally correct. It self-applies the rule. But it should absorb a few sharp reviewer corrections before we call it complete. And he should NOT start PR 2 immediately while #855 is still in flight. ... The doctrine is right. The preservation PR is right. The immediate second PR is wrong. Land the rule cleanly. Then use the rule."*
+> _"#855 is directionally correct. It self-applies the rule. But it should absorb a few sharp reviewer corrections before we call it complete. And he should NOT start PR 2 immediately while #855 is still in flight. ... The doctrine is right. The preservation PR is right. The immediate second PR is wrong. Land the rule cleanly. Then use the rule."_
 
 Verbatim packets preserved at:
+
 - `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-mechanisms-against-substrate-loss.md` (original 8-mechanism packet)
 - `memory/persona/amara/conversations/2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md` (5-AI review wave + Amara synthesis with the 10 corrections that this file absorbs)
 
@@ -288,15 +289,15 @@ Verbatim packets preserved at:
 - **`memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`** — channel-verbatim rule that Otto-363 mechanises with paired structured extraction.
 - **`tools/lint/no-directives-otto-prose.sh`** — lexeme-guard lint born from the same family of failures (vigilance fails; mechanism is the durable answer).
 - **`memory/feedback_verify_target_exists_before_deferring.md`** (CLAUDE.md-tier) — same shape: deferred targets must exist before deferral; chat directives must become substrate before being treated as binding.
-- **`memory/feedback_future_self_not_bound_by_past_decisions.md`** (CLAUDE.md-tier) — companion: future-self can revise *substrate*; future-self cannot revise *chat that didn't land as substrate* because it never existed as project state.
-- **`memory/feedback_never_idle_speculative_work_over_waiting.md`** — never-idle does NOT mean *"ship undurable substrate fast"*; it means *"ship work that survives compaction."*
+- **`memory/feedback_future_self_not_bound_by_past_decisions.md`** (CLAUDE.md-tier) — companion: future-self can revise _substrate_; future-self cannot revise _chat that didn't land as substrate_ because it never existed as project state.
+- **`memory/feedback_never_idle_speculative_work_over_waiting.md`** — never-idle does NOT mean _"ship undurable substrate fast"_; it means _"ship work that survives compaction."_
 - **`docs/AGENT-BEST-PRACTICES.md`** BP-NN slot candidate — Otto-363 is a candidate for promotion to a stable BP rule via Architect ADR.
 
 ## What this rule does NOT say
 
-- Does NOT say *"never use TaskUpdate."* TaskUpdate is the right tool for in-session progress tracking — just not the durability surface.
-- Does NOT say *"every chat statement must become a memory file."* Most chat is ephemeral by design; the rule fires for the magnitude classes that matter.
-- Does NOT say *"never give chat instructions."* Aaron + Amara give instructions in chat constantly; what the rule forbids is *believing the chat instruction is the durable artifact.*
+- Does NOT say _"never use TaskUpdate."_ TaskUpdate is the right tool for in-session progress tracking — just not the durability surface.
+- Does NOT say _"every chat statement must become a memory file."_ Most chat is ephemeral by design; the rule fires for the magnitude classes that matter.
+- Does NOT say _"never give chat instructions."_ Aaron + Amara give instructions in chat constantly; what the rule forbids is _believing the chat instruction is the durable artifact._
 - Does NOT replace Otto-362 — Otto-362 is intra-file; Otto-363 is cross-surface + bidirectional supersession metadata.
 - Does NOT require pre-commit hook enforcement immediately — that's deferred to a separate task; the doctrine-level rule operates today via discipline + bootstrap pointer + verbatim discipline.
 
@@ -306,15 +307,15 @@ The factory already has a real (if messy) git recovery surface — task #321 inv
 
 The carved pair:
 
-> *"If it matters enough to come back to, it deserves a git ref."*
+> _"If it matters enough to come back to, it deserves a git ref."_
 >
-> *"Parking is only safe if recovery knows where to look."*
+> _"Parking is only safe if recovery knows where to look."_
 
-> *"A parked thing is only parked if recovery can find it. Otherwise it is just lost more slowly."*
+> _"A parked thing is only parked if recovery can find it. Otherwise it is just lost more slowly."_
 
 ### Preferred parking surfaces (in priority order)
 
-1. **Pushed WIP branch** — best for future doctrine seeds, *"save this, come back later, do not start review."* No PR opened.
+1. **Pushed WIP branch** — best for future doctrine seeds, _"save this, come back later, do not start review."_ No PR opened.
 2. **Draft PR** — when visibility / review discussion is wanted. Acceptable when review noise is controlled.
 3. **Local WIP branch (not pushed)** — local-parked only; weaker because machine-failure-vulnerable. Push when possible.
 4. **Named `git stash -u`** — short-term only, not for doctrine seeds. Last-resort local. `git stash push -m "<name>"` always (anonymous stashes are weather).
@@ -327,7 +328,7 @@ wip/<topic>-YYYY-MM-DD            — work in progress; same shape, broader use
 archive/<topic>-YYYY-MM-DD        — work intentionally retired but preserved
 ```
 
-The naming pattern IS the discoverability mechanism. A `wip/`-prefixed branch tells the recovery process *"intentional parking, not lost"*; an `archive/`-prefixed branch tells it *"retired on purpose, do not propose for deletion."*
+The naming pattern IS the discoverability mechanism. A `wip/`-prefixed branch tells the recovery process _"intentional parking, not lost"_; an `archive/`-prefixed branch tells it _"retired on purpose, do not propose for deletion."_
 
 ### Discovery commands (recovery process must scan these)
 
@@ -394,7 +395,7 @@ Recovery acts:   "wip/topic-seed-2026-04-29 is N days old.
 
 Otto-363 doctrine + task #321 recovery process = the parking + recovery substrate is **mechanical, not vigilance-based**. The parking author doesn't have to remember to come back; the recovery cadence surfaces the parked work on its own schedule.
 
-> *"Parking is only safe if recovery knows where to look."*
+> _"Parking is only safe if recovery knows where to look."_
 
 ## Future failure mode handled: preserved-but-disputed
 

@@ -31,7 +31,7 @@ describe("observability smoke proof runner", () => {
         }
         if (url === "http://grafana:3000/api/search?query=Agentic%20Organization%20Health") {
           grafanaAuthorizationHeaders.push(init?.headers?.Authorization);
-          return { ok: true, status: 200, json: async () => ([{ uid: "agentic-org-health" }]) };
+          return { ok: true, status: 200, json: async () => [{ uid: "agentic-org-health" }] };
         }
         return { ok: false, status: 404, json: async () => ({}) };
       },
@@ -73,10 +73,14 @@ describe("observability smoke proof runner", () => {
           return { ok: false, status: 500, json: async () => ({}) };
         }
         if (url.startsWith("http://tempo:3200/api/search")) {
-          return { ok: true, status: 200, json: async () => ({ traces: [{ traceID: "not-checked-because-metrics-fail" }] }) };
+          return {
+            ok: true,
+            status: 200,
+            json: async () => ({ traces: [{ traceID: "not-checked-because-metrics-fail" }] }),
+          };
         }
         if (url === "http://grafana:3000/api/search?query=Agentic%20Organization%20Health") {
-          return { ok: true, status: 200, json: async () => ([{ uid: "agentic-org-health" }]) };
+          return { ok: true, status: 200, json: async () => [{ uid: "agentic-org-health" }] };
         }
         return { ok: false, status: 404, json: async () => ({}) };
       },
@@ -101,10 +105,14 @@ describe("observability smoke proof runner", () => {
           return { ok: true, status: 200, json: async () => ({}) };
         }
         if (url.startsWith("http://tempo:3200/api/search")) {
-          return { ok: true, status: 200, json: async () => ({ traces: [{ traceID: "not-checked-because-export-failed" }] }) };
+          return {
+            ok: true,
+            status: 200,
+            json: async () => ({ traces: [{ traceID: "not-checked-because-export-failed" }] }),
+          };
         }
         if (url === "http://grafana:3000/api/search?query=Agentic%20Organization%20Health") {
-          return { ok: true, status: 200, json: async () => ([{ uid: "agentic-org-health" }]) };
+          return { ok: true, status: 200, json: async () => [{ uid: "agentic-org-health" }] };
         }
         return { ok: false, status: 404, json: async () => ({}) };
       },
@@ -132,7 +140,7 @@ describe("observability smoke proof runner", () => {
           return { ok: true, status: 200, json: async () => ({ traces: [] }) };
         }
         if (url === "http://grafana:3000/api/search?query=Agentic%20Organization%20Health") {
-          return { ok: true, status: 200, json: async () => ([{ uid: "agentic-org-health" }]) };
+          return { ok: true, status: 200, json: async () => [{ uid: "agentic-org-health" }] };
         }
         return { ok: false, status: 404, json: async () => ({}) };
       },
@@ -168,7 +176,7 @@ describe("observability smoke proof runner", () => {
             : { ok: true, status: 200, json: async () => ({ traces: [{ traceID: exportedTraceId }] }) };
         }
         if (url === "http://grafana:3000/api/search?query=Agentic%20Organization%20Health") {
-          return { ok: true, status: 200, json: async () => ([{ uid: "agentic-org-health" }]) };
+          return { ok: true, status: 200, json: async () => [{ uid: "agentic-org-health" }] };
         }
         return { ok: false, status: 404, json: async () => ({}) };
       },

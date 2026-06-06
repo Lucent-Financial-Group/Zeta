@@ -110,15 +110,15 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
  * (which would surface as suggested-write-target in dry-run output
  * + confuse operators reading the verify log).
  */
-export function buildVerifyArgs(
-  parsed: PickerArgs,
-  tmpTargetRoot: string,
-): readonly string[] {
+export function buildVerifyArgs(parsed: PickerArgs, tmpTargetRoot: string): readonly string[] {
   const args = [
     "tools/installer/zeta-creds-restore.ts",
-    "--usb-uuid", parsed.usbUuid,
-    "--input", parsed.output,
-    "--target-root", tmpTargetRoot,
+    "--usb-uuid",
+    parsed.usbUuid,
+    "--input",
+    parsed.output,
+    "--target-root",
+    tmpTargetRoot,
     "--dry-run",
   ];
   if (parsed.passphraseFile) args.push("--passphrase-file", parsed.passphraseFile);
@@ -131,10 +131,7 @@ export function buildVerifyArgs(
  * Prompt operator per-cred and return the --bake-cred args list.
  * Pure function over a readline interface (testable with mock).
  */
-export async function runPicker(
-  rl: ReturnType<typeof createInterface>,
-  persona: string | null,
-): Promise<string[]> {
+export async function runPicker(rl: ReturnType<typeof createInterface>, persona: string | null): Promise<string[]> {
   const bakeArgs: string[] = [];
   console.log("\n=== Credential picker (B-0852.3a setup-time integration) ===");
   console.log("For each declared credential: bake-in NOW, defer to device-flow at runtime, or skip.");
@@ -151,7 +148,9 @@ export async function runPicker(
       console.log(`-- ${cred.id}: persona-scoped + no --persona given; auto-skip`);
       continue;
     }
-    console.log(`\n-- ${cred.id} (${cred.personaScoped ? "persona-scoped" : "global"}; ${cred.required ? "required" : "optional"})`);
+    console.log(
+      `\n-- ${cred.id} (${cred.personaScoped ? "persona-scoped" : "global"}; ${cred.required ? "required" : "optional"})`,
+    );
     if (cred.notes) console.log(`   ${cred.notes}`);
     console.log(`   paths: ${cred.paths.join(", ")}`);
     if (handler.supportedSources.length === 0) {
@@ -237,8 +236,10 @@ async function main(): Promise<number> {
   }
   const persistArgs = [
     "tools/installer/zeta-creds-persist.ts",
-    "--usb-uuid", parsed.usbUuid,
-    "--output", parsed.output,
+    "--usb-uuid",
+    parsed.usbUuid,
+    "--output",
+    parsed.output,
   ];
   if (parsed.passphraseFile) persistArgs.push("--passphrase-file", parsed.passphraseFile);
   if (parsed.passphraseEnv) persistArgs.push("--passphrase-env", parsed.passphraseEnv);

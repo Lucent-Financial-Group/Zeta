@@ -25,12 +25,14 @@ PR #5222 (glxinfo P0 fix-fwd) merged successfully, but the post-merge build-iso 
 ## Two-layer fix
 
 **This PR (fix-fwd, immediate unblock)**:
-- \`.github/workflows/build-ai-cluster-iso.yml\` audit glob accepts EITHER \`zeta-installer-*.iso\` OR \`nixos-minimal-*.iso\`
+
+- \`.github/workflows/build-ai-cluster-iso.yml\` audit glob accepts EITHER \`zeta-installer-_.iso\` OR \`nixos-minimal-_.iso\`
 - \`.github/workflows/build-installer-iso.yml\` same fix
 - Updated error messages cite B-0818 for the substrate-layer fix
 - ISO content is correct; only filename pattern changed
 
 **B-0818 (substrate-layer follow-up)**:
+
 - Investigate which 25.11 option actually drives the ISO filename (\`image.baseName\` / \`system.nixosLabel\` / both)
 - Update \`configuration.nix\` with correct override
 - Optionally tighten the workflow glob back once landed
@@ -58,6 +60,7 @@ PR #5222 (glxinfo P0 fix-fwd) merged successfully, but the post-merge build-iso 
 This PR unblocks post-merge ISO build workflows after the nixpkgs 25.11 bump changed the default ISO filename (from the Zeta-branded `zeta-installer-*.iso` to nixpkgs’ `nixos-minimal-*.iso`), while tracking the substrate-layer root-cause investigation via a new backlog row.
 
 **Changes:**
+
 - Loosened the ISO “audit/locate” glob in the installer ISO workflows to accept either `zeta-installer-*.iso` or `nixos-minimal-*.iso`.
 - Updated workflow error messages to reference B-0818 for the follow-up substrate fix.
 - Added backlog row B-0818 documenting the investigation target and candidate fixes for restoring the intended ISO name override.
@@ -66,11 +69,11 @@ This PR unblocks post-merge ISO build workflows after the nixpkgs 25.11 bump cha
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `docs/backlog/P2/B-0818-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md` | New backlog row capturing the 25.11 ISO naming regression and follow-up substrate work. |
-| `.github/workflows/build-installer-iso.yml` | Update ISO discovery/audit glob (build + release-attach paths) to accept nixpkgs 25.11 default ISO name. |
-| `.github/workflows/build-ai-cluster-iso.yml` | Update ISO discovery/audit glob to accept nixpkgs 25.11 default ISO name and keep audit steps unblocked. |
+| File                                                                                                   | Description                                                                                              |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `docs/backlog/P2/B-0818-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md` | New backlog row capturing the 25.11 ISO naming regression and follow-up substrate work.                  |
+| `.github/workflows/build-installer-iso.yml`                                                            | Update ISO discovery/audit glob (build + release-attach paths) to accept nixpkgs 25.11 default ISO name. |
+| `.github/workflows/build-ai-cluster-iso.yml`                                                           | Update ISO discovery/audit glob to accept nixpkgs 25.11 default ISO name and keep audit steps unblocked. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T17:11:13Z)
 

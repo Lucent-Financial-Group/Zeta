@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.sh"
 
 ## Summary
 
-Aaron Otto-180: *"also backlog server mesh from star citizen, our db backend when we shard it should support this style of cross shard communication like server mesh, it's amazing actually, i think space time db is similar too or not it might be orthogonal but we want to support these use cases in our backend too. do deep reserach here, this could get us lots of customers in the game industruy if we can compete with server mess/space time db"*.
+Aaron Otto-180: _"also backlog server mesh from star citizen, our db backend when we shard it should support this style of cross shard communication like server mesh, it's amazing actually, i think space time db is similar too or not it might be orthogonal but we want to support these use cases in our backend too. do deep reserach here, this could get us lots of customers in the game industruy if we can compete with server mess/space time db"_.
 
 Explicit backlog directive overrides Otto-171 freeze-state queue discipline.
 
@@ -61,24 +61,22 @@ P2 research-grade at line ~921 (end of "## P2 — Post-v1 query-surface research
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T10:15:36Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `55ce0fac69`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -91,6 +89,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P2 backlog research item describing a planned deep-dive into Server Meshing (Star Citizen/CIG) and SpacetimeDB, framed as input to Zeta’s eventual multi-node/sharding design and game-industry competitive positioning.
 
 **Changes:**
+
 - Adds a detailed P2 backlog entry covering research scope, differentiators, deliverable doc target, and IP-discipline constraints.
 
 ### COMMENTED — @AceHack (2026-04-24T11:13:21Z)
@@ -115,24 +114,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-24T11:14:47Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `44825a88fc`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -154,7 +151,7 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-04-24T10:15:37Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep deliverable path contiguous in code span**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep deliverable path contiguous in code span**
 
 The inline code span for the research deliverable filename is split across two lines, so Markdown renderers normalize the newline to a space and show `docs/research/server- meshing-spacetimedb-comparison-zeta-sharding-fit.md` instead of the intended path. This makes copy/paste usage error-prone and can break any tooling or manual workflow that relies on the documented filename being exact.
 
@@ -169,6 +166,7 @@ Fixed in 44825a8: moved the multi-line `docs/research/server-meshing-*.md` path 
 **@copilot-pull-request-reviewer** (2026-04-24T10:18:04Z):
 
 This paragraph references “Otto-175c starship-franchise-mapping row” and “Amara 10th + 11th ferries”, but those identifiers don’t currently resolve to any existing row/doc in the repo. Please either (a) link to the concrete existing docs/rows you mean (file paths), or (b) rename the references to the actual existing identifiers (e.g., Otto-175) to avoid dangling xrefs.
+
 ```suggestion
   row (above) + Otto-175 (Star Citizen personal
   expertise compose). Waits on: Zeta multi-node
@@ -184,7 +182,8 @@ Fixed in 44825a8: clarified the Otto-175c starship-franchise-mapping reference t
 
 **@copilot-pull-request-reviewer** (2026-04-24T10:18:04Z):
 
-The IP-discipline bullet “No Star-Citizen trademarked content ingested.” is ambiguous in context (this entry already uses trademarked names for reference). If the intent is “no proprietary/non-public materials or trademarked *assets*”, consider tightening the wording to avoid readers interpreting it as “don’t even mention the trademarked terms.”
+The IP-discipline bullet “No Star-Citizen trademarked content ingested.” is ambiguous in context (this entry already uses trademarked names for reference). If the intent is “no proprietary/non-public materials or trademarked _assets_”, consider tightening the wording to avoid readers interpreting it as “don’t even mention the trademarked terms.”
+
 ```suggestion
   - No non-public Star Citizen/CIG materials or
     trademarked creative assets ingested; nominative
@@ -201,6 +200,7 @@ Fixed in 44825a8: rewrote the IP-discipline block to distinguish industry-landsc
 **@copilot-pull-request-reviewer** (2026-04-24T10:18:04Z):
 
 Inline code span for the deliverable path is split across two lines (backtick opens on line 1008 and closes on 1009). CommonMark parsers don’t allow multiline inline-code spans, so this will render incorrectly (and may trip markdown tooling). Keep the path on a single line or switch to a normal link/reference format.
+
 ```suggestion
   **Research deliverable:** `docs/research/server-meshing-spacetimedb-comparison-zeta-sharding-fit.md`.
 ```
@@ -214,6 +214,7 @@ Same fix as thread 59XP74 (commit 44825a8): path now on its own line; inline cod
 **@copilot-pull-request-reviewer** (2026-04-24T10:18:05Z):
 
 The cross-reference “Pluggable wire-protocol row (line ~754)” appears to point to the wrong location: the wire-protocol row is currently around line ~830, while line ~754 is a different item. Please update the line reference (or replace with a stable link/anchor) so the xref remains accurate as the file changes.
+
 ```suggestion
   protocol row (above) + Regular-database façade
 ```
@@ -226,7 +227,7 @@ Fixed in 44825a8: corrected `line ~754` to `around line 830` — the wire-protoc
 
 **@chatgpt-codex-connector** (2026-04-24T11:14:47Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reference the actual archived ferry docs**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reference the actual archived ferry docs**
 
 This note points readers to `docs/aurora/2026-04-24-amara-*.md` for the “11th-ferry” and “12th-ferry” priors, but those artifacts are not present under `docs/aurora` (only 17th/19th ferry files exist), and a repo-wide search does not find matching 11th/12th aurora docs. That makes the provenance trail in this backlog item non-actionable for anyone trying to follow the cited priors; please update the reference to existing files or adjust the claim.
 
@@ -241,6 +242,7 @@ Fixed in 255ac9a. Dropped the forward-looking `docs/aurora/2026-04-24-amara-*.md
 **@copilot-pull-request-reviewer** (2026-04-24T12:56:15Z):
 
 The cross-reference `Pluggable wire-protocol row (around line 830)` is out of date: that row currently starts at line 1056 in this file. Suggest either updating the line number to the current location or replacing the fragile line-number reference with a stable identifier (e.g., the row title) to avoid repeated drift as BACKLOG.md grows.
+
 ```suggestion
   protocol row (above) + Regular-database façade row
   (above) + Otto-175c starship-franchise-mapping row
@@ -253,6 +255,7 @@ The cross-reference `Pluggable wire-protocol row (around line 830)` is out of da
 **@copilot-pull-request-reviewer** (2026-04-24T12:56:15Z):
 
 The references to `11th-ferry-Temporal-Coordination-Detection` and `12th-ferry-Executive-Summary` don’t resolve to any existing docs under `docs/aurora/` in the repo. Please either link to the concrete existing Amara ferry docs you mean (file paths) or remove/rename these identifiers so the backlog entry doesn’t contain dangling xrefs.
+
 ```suggestion
   Amara ferry material referencing the multi-node
   future is the relevant prior, but that material is
@@ -265,6 +268,7 @@ The references to `11th-ferry-Temporal-Coordination-Detection` and `12th-ferry-E
 **@copilot-pull-request-reviewer** (2026-04-24T12:56:16Z):
 
 Wording in the SpacetimeDB IP-discipline bullet is internally inconsistent: it says "SpacetimeDB proprietary code" but the next clause frames the allowed scope as the public Apache-2 repo. Consider rephrasing to "non-public/private SpacetimeDB materials" (and explicitly allow Apache-2 repo + published docs) to avoid implying the Apache-2 code is proprietary.
+
 ```suggestion
   - No ingestion of non-public/private SpacetimeDB
     materials. Public Apache-2-licensed code at

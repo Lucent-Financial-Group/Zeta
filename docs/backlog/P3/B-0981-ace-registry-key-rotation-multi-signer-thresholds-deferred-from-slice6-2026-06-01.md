@@ -37,8 +37,8 @@ manual `ace registry remote rm` + re-`add` with the new key, with no continuity)
 
 Single-key pinning is the right first step (mandatory pin closes the conflated-authority
 gap per Codex #6424 P1). Rotation + thresholds are operational-maturity hardening for
-long-lived / high-value registries. Operator: *"everything we skipped lets slice off for
-further enhancements."*
+long-lived / high-value registries. Operator: _"everything we skipped lets slice off for
+further enhancements."_
 
 ## Composes with
 

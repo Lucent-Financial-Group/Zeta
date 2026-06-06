@@ -17,15 +17,18 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - remove five stale Codex claim files whose implementation PRs are already merged
 - verified each corresponding remote claim branch is gone before deletion
 
 ## Checks
+
 - file-absence check for all five claim files
 - git diff --check
 - codex-loop-health.ts severity ok after the background gate cleared
 
 ## Evidence
+
 - PR #2109 merged for factory-trajectory-autonomous-backlog-pickup
 - PR #2046 merged for fix-trajectory-none-child-candidate
 - PR #2113 merged for task-b0058-candidate-failure-log
@@ -41,6 +44,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Deletes five stale Codex claim files corresponding to PRs that have already been merged, in keeping with the protocol that claim files must be removed in the PR that lands the work (and cleaned up afterward if missed).
 
 **Changes:**
+
 - Remove five completed claim files under `docs/claims/` whose implementation PRs (#2109, #2046, #2113, #2049, #2106) are merged.
 
 ### Reviewed changes
@@ -50,13 +54,14 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated no 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
+| File                                                        | Description                           |
+| ----------------------------------------------------------- | ------------------------------------- |
 | docs/claims/factory-trajectory-autonomous-backlog-pickup.md | Delete stale claim (PR #2109 merged). |
-| docs/claims/fix-trajectory-none-child-candidate.md | Delete stale claim (PR #2046 merged). |
-| docs/claims/task-b0058-candidate-failure-log.md | Delete stale claim (PR #2113 merged). |
-| docs/claims/task-b0280-pr-body-file.md | Delete stale claim (PR #2049 merged). |
-| docs/claims/task-codex-backlog-runner-claim-filter.md | Delete stale claim (PR #2106 merged). |
+| docs/claims/fix-trajectory-none-child-candidate.md          | Delete stale claim (PR #2046 merged). |
+| docs/claims/task-b0058-candidate-failure-log.md             | Delete stale claim (PR #2113 merged). |
+| docs/claims/task-b0280-pr-body-file.md                      | Delete stale claim (PR #2049 merged). |
+| docs/claims/task-codex-backlog-runner-claim-filter.md       | Delete stale claim (PR #2106 merged). |
+
 </details>
 
 ## General comments

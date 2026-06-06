@@ -27,7 +27,7 @@ Codify the graduation ladder for memory content:
 
 1. **When to write a new memory file vs append to an existing
    one** — criteria for new-file vs extend-existing.
-2. **When a feedback_ file gets promoted to a CLAUDE.md bullet**
+2. **When a feedback\_ file gets promoted to a CLAUDE.md bullet**
    — the threshold: wake-time-load-bearing + recognition-failure
    component (per Claude Code loading taxonomy memo).
 3. **When a CLAUDE.md bullet gets promoted to GOVERNANCE.md** —

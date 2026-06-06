@@ -13,7 +13,20 @@ composes_with:
   - docs/research/escrowed/aurora-autonomous-flywheel-thesis-2026-04-28.md
   - B-0095
   - PR-707
-tags: [aaron-2026-04-29, amara-2026-04-29, escrow-eligible, antigen-library, forbidden-patterns, red-team, ctf, game-day, dual-use, immune-governance, deferred-thesis]
+tags:
+  [
+    aaron-2026-04-29,
+    amara-2026-04-29,
+    escrow-eligible,
+    antigen-library,
+    forbidden-patterns,
+    red-team,
+    ctf,
+    game-day,
+    dual-use,
+    immune-governance,
+    deferred-thesis,
+  ]
 type: friction-reducer
 ---
 
@@ -25,8 +38,8 @@ Aaron 2026-04-29 forwarding Amara's substantive proposal for
 preserving knowledge about forbidden patterns without making
 them executable substrate. Amara's distillation:
 
-> *Museum, not armory. Antigen library, not pathogen release.
-> Quarantine, not canon.*
+> _Museum, not armory. Antigen library, not pathogen release.
+> Quarantine, not canon._
 
 The proposal has three distinct-but-related concepts:
 
@@ -167,7 +180,7 @@ When this row is ready to graduate to a research/escrowed/
 file, the work shape is:
 
 - [ ] Single canonical home picked (`docs/research/escrowed/
-      forbidden-pattern-quarantine-2026-04-29.md` or
+    forbidden-pattern-quarantine-2026-04-29.md` or
       `docs/immune/antigen-library/`).
 - [ ] §33 archive header (Scope / Attribution / Operational
       status: research-grade / Lifecycle status: escrowed /
@@ -234,11 +247,11 @@ would be additional L-effort on top.
 
 ## The keeper distillation (preserved verbatim)
 
-> *Museum, not armory.*
-> *Vault, not runtime.*
-> *Envelope before execution.*
+> _Museum, not armory._
+> _Vault, not runtime._
+> _Envelope before execution._
 
-> *Knowledge can be retained.*
-> *Capability stays dormant.*
-> *Activation requires envelope.*
-> *Execution stays gated.*
+> _Knowledge can be retained._
+> _Capability stays dormant._
+> _Activation requires envelope._
+> _Execution stays gated._

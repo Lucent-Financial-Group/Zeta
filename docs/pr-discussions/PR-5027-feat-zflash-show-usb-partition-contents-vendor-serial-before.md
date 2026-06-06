@@ -44,7 +44,7 @@ Currently on /dev/disk6 (will be DESTROYED):      ← NEW SECTION
 *** ALL DATA ON /dev/disk6 WILL BE DESTROYED ***
 ```
 
-Operator's verbatim ask: *"show me the usb device somehow and some stats abuout it and details before i fingerprint"*
+Operator's verbatim ask: _"show me the usb device somehow and some stats abuout it and details before i fingerprint"_
 
 Per-partition fields come from `diskutil info -plist` on each partition: filesystem, volume name, mount point, used-space. Best-effort — any field that diskutil omits prints as `?` or `(none)`; the script does NOT fail on missing fields.
 
@@ -75,24 +75,22 @@ Empirical anchor for Path B: this session's successful agent-driven flash via th
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T23:13:30Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a5e4c5e9c6`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -105,6 +103,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Enhances the macOS USB flashing workflow by expanding the pre-consent device/partition visibility in `flash-usb.ts`, and adds a new `.claude` skill documenting the end-to-end cluster ISO flashing flow (including operator-only vs agent-driven execution patterns).
 
 **Changes:**
+
 - Extend `flash-usb.ts` to print vendor/serial/writability/partition-table details and enumerate current partitions (filesystem/volume/mount/used-space best-effort) before the destructive consent prompt.
 - Add a new `flash-cluster-iso` skill capturing the operational procedure (including Touch ID + short nonce challenge and an `expect`-driven path).
 
@@ -112,10 +111,10 @@ Enhances the macOS USB flashing workflow by expanding the pre-consent device/par
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 8 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/tools/flash-usb.ts | Adds richer device metadata and a “currently on this USB” partition listing before the confirmation gate. |
-| .claude/skills/flash-cluster-iso/SKILL.md | New skill documenting the operator + agent-driven zflash/flash-usb workflow and safety rails. |
+| File                                      | Description                                                                                               |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/tools/flash-usb.ts        | Adds richer device metadata and a “currently on this USB” partition listing before the confirmation gate. |
+| .claude/skills/flash-cluster-iso/SKILL.md | New skill documenting the operator + agent-driven zflash/flash-usb workflow and safety rails.             |
 
 ## Review threads
 
@@ -123,7 +122,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 8 c
 
 **@chatgpt-codex-connector** (2026-05-25T23:13:30Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix incorrect multi-USB fallback instruction**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix incorrect multi-USB fallback instruction**
 
 This instruction is inaccurate: `flash-usb.ts` does not support explicit device selection, and it hard-fails when more than one USB candidate is present. The script only accepts `[--short] <path-to-iso>` and then exits in the `usbCandidates.length > 1` branch with a refusal message, so following this guidance will still fail and can push operators toward unsafe manual workarounds. Update the skill text to match current behavior (or add explicit device-selection support in code first).
 

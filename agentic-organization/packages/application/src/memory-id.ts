@@ -25,11 +25,6 @@ function uuidv5(name: string, namespace: string): string {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`;
 }
 
-export function contentAddressedMemoryId(
-  organizationId: string,
-  tier: MemoryTier,
-  scope: string,
-  key: string,
-): string {
+export function contentAddressedMemoryId(organizationId: string, tier: MemoryTier, scope: string, key: string): string {
   return uuidv5(`${organizationId}:${tier}:${scope}:${key}`, MEMORY_NAMESPACE);
 }

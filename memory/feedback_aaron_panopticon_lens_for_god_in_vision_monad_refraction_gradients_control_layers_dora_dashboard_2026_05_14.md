@@ -31,12 +31,12 @@ The panopticon-lens framing:
 
 Control layers observed:
 
-| Layer | What it tracks | DORA analog |
-|---|---|---|
-| Substrate layer | Memory files, rules, skills landing rate | Deployment frequency |
-| Coordination layer | Claim-acquire / PR merge / thread resolution | Change failure rate |
-| Velocity layer | Ticks per round, backlog items closed | Lead time for changes |
-| Health layer | CI pass rate, lint-clean rate | Mean time to restore |
+| Layer              | What it tracks                               | DORA analog           |
+| ------------------ | -------------------------------------------- | --------------------- |
+| Substrate layer    | Memory files, rules, skills landing rate     | Deployment frequency  |
+| Coordination layer | Claim-acquire / PR merge / thread resolution | Change failure rate   |
+| Velocity layer     | Ticks per round, backlog items closed        | Lead time for changes |
+| Health layer       | CI pass rate, lint-clean rate                | Mean time to restore  |
 
 ## The DORA-dashboard framing
 

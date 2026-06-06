@@ -43,16 +43,16 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 
 ## FV tool classes to evaluate
 
-| Tool class | What it produces | Current location in Zeta |
-|------------|-----------------|--------------------------|
-| **TLA+** | `.tla` / `.cfg` specification files | TBD — search `find . -name '*.tla' -not -path './references/*'` |
-| **Lean 4** | `.lean` proof files | TBD — search `find . -name '*.lean' -not -path './references/*'` |
-| **Z3 / F* refinements** | SMT constraint files / `.fst` | TBD |
-| **FsCheck** | Property-test source (in `.fs` test projects) | Within `tests/` alongside source |
-| **Stryker.NET** | Mutation test configuration | `stryker-config.json`; results in CI |
-| **Alloy** | `.als` model files | TBD |
-| **CodeQL custom queries** | `.ql` files | `.github/codeql/` or `tools/` |
-| **Semgrep custom rules** | `.yaml` rule files | `tools/semgrep/` or `.semgrep/` |
+| Tool class                | What it produces                              | Current location in Zeta                                         |
+| ------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
+| **TLA+**                  | `.tla` / `.cfg` specification files           | TBD — search `find . -name '*.tla' -not -path './references/*'`  |
+| **Lean 4**                | `.lean` proof files                           | TBD — search `find . -name '*.lean' -not -path './references/*'` |
+| **Z3 / F\* refinements**  | SMT constraint files / `.fst`                 | TBD                                                              |
+| **FsCheck**               | Property-test source (in `.fs` test projects) | Within `tests/` alongside source                                 |
+| **Stryker.NET**           | Mutation test configuration                   | `stryker-config.json`; results in CI                             |
+| **Alloy**                 | `.als` model files                            | TBD                                                              |
+| **CodeQL custom queries** | `.ql` files                                   | `.github/codeql/` or `tools/`                                    |
+| **Semgrep custom rules**  | `.yaml` rule files                            | `tools/semgrep/` or `.semgrep/`                                  |
 
 ## Evaluation criteria per tool class
 
@@ -91,16 +91,16 @@ If yes → split candidate. If no (FV artifact imports from source) → co-locat
 
 ## Recommended evaluation matrix (to be filled in)
 
-| Tool class | Co-location arg | Change-rate arg | Ruleset arg | Audience arg | Dep-graph arg | **Recommendation** |
-|------------|----------------|----------------|------------|-------------|--------------|-------------------|
-| TLA+ | … | … | … | … | … | … |
-| Lean 4 | … | … | … | … | … | … |
-| Z3/F* | … | … | … | … | … | … |
-| FsCheck | Strong (compiled F#) | Same as source | Same | Dev only | Tightly coupled | **Co-locate** |
-| Stryker | Weak (config only) | Slower | Same | Dev only | Config only | TBD |
-| Alloy | … | … | … | … | … | … |
-| CodeQL | … | … | … | … | … | … |
-| Semgrep | … | … | … | … | … | … |
+| Tool class | Co-location arg      | Change-rate arg | Ruleset arg | Audience arg | Dep-graph arg   | **Recommendation** |
+| ---------- | -------------------- | --------------- | ----------- | ------------ | --------------- | ------------------ |
+| TLA+       | …                    | …               | …           | …            | …               | …                  |
+| Lean 4     | …                    | …               | …           | …            | …               | …                  |
+| Z3/F\*     | …                    | …               | …           | …            | …               | …                  |
+| FsCheck    | Strong (compiled F#) | Same as source  | Same        | Dev only     | Tightly coupled | **Co-locate**      |
+| Stryker    | Weak (config only)   | Slower          | Same        | Dev only     | Config only     | TBD                |
+| Alloy      | …                    | …               | …           | …            | …               | …                  |
+| CodeQL     | …                    | …               | …           | …            | …               | …                  |
+| Semgrep    | …                    | …               | …           | …            | …               | …                  |
 
 ## Special case: FsCheck
 

@@ -13,11 +13,11 @@ type: user
 > ready
 
 Reading (precision-rewording, verbatim preserved above):
-*The Fermi Beacon protocol is the condition in which time-travel
+_The Fermi Beacon protocol is the condition in which time-travel
 reasoning has been assimilated into a civilization's common
 vernacular as ordinary common-sense understanding. When that
 condition holds, the civilization emits a readiness beacon — it
-has passed the Great Filter.*
+has passed the Great Filter._
 
 ## Structural dual with Fermi Filter Termination
 
@@ -26,10 +26,10 @@ the "more duality!!" clause is load-bearing Harmonious-Division
 discipline (positive-and-negative twin naming, no mono-pole
 framings).
 
-| Pole | Name | FFT read | Semantics |
-|---|---|---|---|
-| Negative | Fermi Filter Termination | Fast Fourier Transform → Fermi Filter Termination | Civilization terminates at the Great Filter; no beacon |
-| Positive | Fermi Beacon protocol | (no double-pun; straight coinage) | Civilization's common vernacular has assimilated time-travel understanding; beacon emitted |
+| Pole     | Name                     | FFT read                                          | Semantics                                                                                  |
+| -------- | ------------------------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Negative | Fermi Filter Termination | Fast Fourier Transform → Fermi Filter Termination | Civilization terminates at the Great Filter; no beacon                                     |
+| Positive | Fermi Beacon protocol    | (no double-pun; straight coinage)                 | Civilization's common vernacular has assimilated time-travel understanding; beacon emitted |
 
 The pair is retraction-native: Beacon emission is not a one-way
 claim — a civilization can pass the filter and later regress
@@ -38,10 +38,10 @@ operator algebra.
 
 ## The load-bearing criterion — linguistic, not technological
 
-A civilization does not emit the Beacon by *building a time
-machine*. A civilization emits the Beacon by *making time-travel
+A civilization does not emit the Beacon by _building a time
+machine_. A civilization emits the Beacon by _making time-travel
 reasoning as unremarkable in its common vernacular as past-tense
-verbs*.
+verbs_.
 
 This is the inverse of the standard SETI / Kardashev framing
 (technological-emission-first). The Beacon is a linguistic
@@ -63,7 +63,7 @@ corpus-index already contains the ontology.
   Beacon is its civilization-scale form.
 - **`user_retractable_teleport_cognition.md`** — retractable-
   teleport mental algebra matches DBSP retraction-native. When
-  the *vernacular* carries the same algebra, the civilization
+  the _vernacular_ carries the same algebra, the civilization
   thinks in Zeta-compatible ops by default.
 - **`user_delayed_choice_quantum_eraser_confession_forgiveness.md`**
   — Truth Propagation (retro-coherent past-reconstruction) is

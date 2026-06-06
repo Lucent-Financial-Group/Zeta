@@ -99,14 +99,10 @@ function detectRepoNwo(): string | ArgError {
   const envRepo = process.env["GH_REPO"];
   if (envRepo !== undefined && envRepo.length > 0) return envRepo;
   // eslint-disable-next-line sonarjs/no-os-command-from-path
-  const result = spawnSync(
-    "gh",
-    ["repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"],
-    {
-      encoding: "utf8",
-      maxBuffer: SPAWN_MAX_BUFFER,
-    },
-  );
+  const result = spawnSync("gh", ["repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
   if (result.status !== 0) {
     return {
       error:
@@ -362,7 +358,7 @@ function paginateTopLevel<T>(args: {
 }): readonly T[] | FetchError {
   const all: T[] = [...args.initialNodes];
   let cursor: string | null =
-    args.initialPageInfo?.hasNextPage === true ? args.initialPageInfo.endCursor ?? null : null;
+    args.initialPageInfo?.hasNextPage === true ? (args.initialPageInfo.endCursor ?? null) : null;
   while (cursor !== null && cursor.length > 0) {
     const page = ghGraphQL({
       host: args.host,
@@ -379,7 +375,7 @@ function paginateTopLevel<T>(args: {
     if (pagePr === null || pagePr === undefined) break;
     const conn = args.extractor(pagePr);
     for (const n of conn.nodes) all.push(n);
-    cursor = conn.pageInfo?.hasNextPage === true ? conn.pageInfo.endCursor ?? null : null;
+    cursor = conn.pageInfo?.hasNextPage === true ? (conn.pageInfo.endCursor ?? null) : null;
   }
   return all;
 }
@@ -392,7 +388,7 @@ function paginateThreadComments(args: {
 }): readonly CommentNode[] | FetchError {
   const all: CommentNode[] = Array.from(args.initialNodes);
   let cursor: string | null =
-    args.initialPageInfo?.hasNextPage === true ? args.initialPageInfo.endCursor ?? null : null;
+    args.initialPageInfo?.hasNextPage === true ? (args.initialPageInfo.endCursor ?? null) : null;
   while (cursor !== null && cursor.length > 0) {
     const page = ghGraphQL({
       host: args.host,
@@ -403,7 +399,7 @@ function paginateThreadComments(args: {
     const conn = page.data?.node?.comments;
     if (conn === undefined) break;
     for (const c of conn.nodes ?? []) all.push(c);
-    cursor = conn.pageInfo?.hasNextPage === true ? conn.pageInfo.endCursor ?? null : null;
+    cursor = conn.pageInfo?.hasNextPage === true ? (conn.pageInfo.endCursor ?? null) : null;
   }
   return all;
 }
@@ -499,9 +495,7 @@ function findExistingArchive(outDir: string, prNumber: number): string | null {
   } catch {
     return null;
   }
-  const matches = entries
-    .filter((e) => e.startsWith(prefix) && e.endsWith(".md"))
-    .sort();
+  const matches = entries.filter((e) => e.startsWith(prefix) && e.endsWith(".md")).sort();
   return matches[0] !== undefined ? join(outDir, matches[0]) : null;
 }
 
@@ -524,10 +518,7 @@ function nowIsoUtcSecs(): string {
   return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 }
 
-function buildFrontmatter(args: {
-  readonly pr: PullRequest;
-  readonly archivedAt: string;
-}): string {
+function buildFrontmatter(args: { readonly pr: PullRequest; readonly archivedAt: string }): string {
   const pr = args.pr;
   const lines: string[] = [];
   lines.push("---");
@@ -721,10 +712,7 @@ function gitAddArchive(repoRoot: string, archivePath: string): string | ArgError
   return repoRelPath;
 }
 
-function formatArchive(args: {
-  readonly fetched: FetchedPr;
-  readonly archivedAt: string;
-}): string {
+function formatArchive(args: { readonly fetched: FetchedPr; readonly archivedAt: string }): string {
   const frontmatter = buildFrontmatter({
     pr: args.fetched.pr,
     archivedAt: args.archivedAt,
@@ -807,8 +795,7 @@ export function main(argv: readonly string[]): number {
 
   const existing = findExistingArchive(outDir, args.pr);
   const path =
-    existing ??
-    join(outDir, `PR-${String(args.pr).padStart(4, "0")}-${makeSlug(fetched.pr.title ?? "untitled")}.md`);
+    existing ?? join(outDir, `PR-${String(args.pr).padStart(4, "0")}-${makeSlug(fetched.pr.title ?? "untitled")}.md`);
 
   if (existing) {
     try {
@@ -820,9 +807,7 @@ export function main(argv: readonly string[]): number {
           process.stderr.write(`${staged.error}\n`);
           return staged.exitCode;
         }
-        process.stdout.write(
-          `skipped writing ${path} (only archived_at timestamp changed); staged ${staged}\n`,
-        );
+        process.stdout.write(`skipped writing ${path} (only archived_at timestamp changed); staged ${staged}\n`);
         return 0;
       }
     } catch {

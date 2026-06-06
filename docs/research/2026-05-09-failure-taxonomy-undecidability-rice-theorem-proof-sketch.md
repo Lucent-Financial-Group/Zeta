@@ -88,6 +88,7 @@ require solving the above undecidable problem.
 ## What this proves and what it doesn't
 
 **Proves:**
+
 - Over the full space of task specifications, failure-mode
   classification completeness is undecidable (Rice's theorem
   over agent programs + halting-problem reduction for inputs)
@@ -95,16 +96,18 @@ require solving the above undecidable problem.
   arbitrary Turing-complete agent
 
 **Supported separately (by diagonalization, not Rice's theorem):**
+
 - For any finite taxonomy T, we can construct a task
   specification S such that A(S) produces behavior that
   no Fᵢ ∈ T classifies — because A's Turing-completeness
   lets it simulate arbitrary computations. This means new
   failure instances are inexhaustible over arbitrary inputs.
   Note: this does not imply infinitely many distinct failure
-  *classes* — a finite set of class descriptions can remain
+  _classes_ — a finite set of class descriptions can remain
   fixed while membership remains undecidable.
 
 **Does not prove:**
+
 - That every tick produces a novel class (empirically,
   most ticks produce known classes — the distribution is
   long-tailed, not uniform)

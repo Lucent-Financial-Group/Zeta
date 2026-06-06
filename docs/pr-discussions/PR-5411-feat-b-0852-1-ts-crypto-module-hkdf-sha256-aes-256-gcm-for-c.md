@@ -29,10 +29,10 @@ Smallest concrete substrate slice of B-0852 cred-persistence. Pure crypto functi
 
 ## Files
 
-| File | Lines | Purpose |
-|---|---|---|
-| `tools/installer/zeta-creds-crypto.ts` | ~135 | `deriveKey` + `encrypt` + `decrypt` pure module |
-| `tools/installer/zeta-creds-crypto.test.ts` | ~190 | 18 acceptance tests |
+| File                                        | Lines | Purpose                                         |
+| ------------------------------------------- | ----- | ----------------------------------------------- |
+| `tools/installer/zeta-creds-crypto.ts`      | ~135  | `deriveKey` + `encrypt` + `decrypt` pure module |
+| `tools/installer/zeta-creds-crypto.test.ts` | ~190  | 18 acceptance tests                             |
 
 ## Test output
 
@@ -78,6 +78,7 @@ Tests cover: round-trip (small/empty/1MiB), wrong passphrase, wrong UUID (copy-t
 Adds a small, pure TypeScript crypto substrate for B-0852 credential persistence, implementing key derivation + authenticated encryption and validating the Phase-1 threat model via Bun unit tests.
 
 **Changes:**
+
 - Introduces `deriveKey` (HKDF-SHA256) and `encrypt`/`decrypt` (AES-256-GCM) as pure functions with a structured envelope shape.
 - Adds 18 Bun acceptance tests covering round-trips, wrong passphrase/UUID, and tamper rejection cases.
 
@@ -85,10 +86,10 @@ Adds a small, pure TypeScript crypto substrate for B-0852 credential persistence
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/installer/zeta-creds-crypto.ts | New pure crypto module: HKDF-based key derivation and AES-256-GCM encrypt/decrypt with envelope output. |
-| tools/installer/zeta-creds-crypto.test.ts | New Bun test suite validating round-trip behavior and tamper/wrong-key rejection properties. |
+| File                                      | Description                                                                                             |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| tools/installer/zeta-creds-crypto.ts      | New pure crypto module: HKDF-based key derivation and AES-256-GCM encrypt/decrypt with envelope output. |
+| tools/installer/zeta-creds-crypto.test.ts | New Bun test suite validating round-trip behavior and tamper/wrong-key rejection properties.            |
 
 ## Review threads
 
@@ -114,7 +115,7 @@ Typo in the doc comment quote: "wnated" → "wanted".
 
 **@copilot-pull-request-reviewer** (2026-05-27T06:56:32Z):
 
-Test fixture uses a token-like string starting with "ghp_". Even if fake, this can trip secret-scanning / regex-based detectors and create noisy alerts. Suggest using a clearly-non-token placeholder (avoid real token prefixes) for the sample JSON payload.
+Test fixture uses a token-like string starting with "ghp\_". Even if fake, this can trip secret-scanning / regex-based detectors and create noisy alerts. Suggest using a clearly-non-token placeholder (avoid real token prefixes) for the sample JSON payload.
 
 ### Thread 5: tools/installer/zeta-creds-crypto.test.ts:172 (resolved)
 

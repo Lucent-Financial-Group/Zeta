@@ -49,7 +49,7 @@ downstream step wrong.
 For each of A and B, list:
 
 - Canonical terms inside S.
-- Their definitions *inside their own domain* (one
+- Their definitions _inside their own domain_ (one
   sentence each, in the domain's native register).
 - Any terms that **overload** — same word, different
   meanings between A and B. Flag these in red; they
@@ -79,10 +79,10 @@ Output: IR table — one row per concept, columns
 Build the translation glossary:
 
 | IR term | As said in domain A | As said in domain B | One-sentence bridge |
-|---------|---------------------|---------------------|----------------------|
-| ...     | ...                 | ...                 | ...                  |
+| ------- | ------------------- | ------------------- | ------------------- |
+| ...     | ...                 | ...                 | ...                 |
 
-The bridge sentence must use *only* IR terms plus the
+The bridge sentence must use _only_ IR terms plus the
 reader's baseline C. No circular references (A says
 "it's the B-thing," B says "it's the A-thing").
 
@@ -152,7 +152,7 @@ both pass.
 ### Glossary (minimal-IR basis)
 
 | IR term | <domain A term> | <domain B term> | Bridge |
-|---------|-----------------|-----------------|--------|
+| ------- | --------------- | --------------- | ------ |
 | ...     | ...             | ...             | ...    |
 
 ### Narrative bridge

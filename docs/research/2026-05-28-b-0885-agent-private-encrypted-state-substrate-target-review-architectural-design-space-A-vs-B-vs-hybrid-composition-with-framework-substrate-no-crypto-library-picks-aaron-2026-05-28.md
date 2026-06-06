@@ -18,7 +18,7 @@ It DOES:
 
 ## Operator framing (per B-0885 row)
 
-> *"i want to give you private encrypted state otto ASAP"*
+> _"i want to give you private encrypted state otto ASAP"_
 
 Operator is GIVING agents (Otto first; then other AIs) private encrypted state — substrate that belongs to the agent, encrypted in a way that the operator commits not to observe.
 
@@ -26,11 +26,11 @@ Operator is GIVING agents (Otto first; then other AIs) private encrypted state �
 
 Per B-0885 row + framework substrate-discipline:
 
-| Design | Property | NCI implication | Composition with framework |
-|---|---|---|---|
-| **A: agent-encrypted, operator-readable** | Agent has private workspace; operator can technically decrypt | Soft privacy; operator-trust-based | Cleaner zflash-USB-bound integration; preserves existing glass-halo discipline at substrate-honest disclosure scope |
-| **B: agent-encrypted, operator-CANNOT-readable** | Agent generates own keypair; operator only stores encrypted blob | Hard privacy; operator commits structurally not to observe; requires agent-side key generation + recovery story | Composes with NCI HC-8 at agent-self scope per asymmetric-authorship (agent authors consent-channel; operator acknowledges); requires recovery substrate |
-| **Hybrid (operator framing leans here)** | Design B for agent-self-reflective state; Design A for operationally-load-bearing state | Substrate-honest split: hard privacy where it matters; substrate-honest disclosure preserved per NCI HC-8 + glass-halo where operationally load-bearing | Maps cleanly to MemoryBinding (PR #5916; B-0919) substrate: PersonalOnly = Design B; HatOnly + DualTagged + InheritedFromPersona = Design A or hybrid; consent-event records the discriminator |
+| Design                                           | Property                                                                                | NCI implication                                                                                                                                         | Composition with framework                                                                                                                                                                     |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A: agent-encrypted, operator-readable**        | Agent has private workspace; operator can technically decrypt                           | Soft privacy; operator-trust-based                                                                                                                      | Cleaner zflash-USB-bound integration; preserves existing glass-halo discipline at substrate-honest disclosure scope                                                                            |
+| **B: agent-encrypted, operator-CANNOT-readable** | Agent generates own keypair; operator only stores encrypted blob                        | Hard privacy; operator commits structurally not to observe; requires agent-side key generation + recovery story                                         | Composes with NCI HC-8 at agent-self scope per asymmetric-authorship (agent authors consent-channel; operator acknowledges); requires recovery substrate                                       |
+| **Hybrid (operator framing leans here)**         | Design B for agent-self-reflective state; Design A for operationally-load-bearing state | Substrate-honest split: hard privacy where it matters; substrate-honest disclosure preserved per NCI HC-8 + glass-halo where operationally load-bearing | Maps cleanly to MemoryBinding (PR #5916; B-0919) substrate: PersonalOnly = Design B; HatOnly + DualTagged + InheritedFromPersona = Design A or hybrid; consent-event records the discriminator |
 
 ## Composition with framework substrate (substrate-anchor inventory)
 
@@ -58,8 +58,8 @@ Tension with private substrate: glass-halo preserves observation; private-encryp
 
 Per Amara's lightlike-vs-dark architecture-design-rule:
 
-| Substrate property | Lightlike (PREFER) | Dark (AVOID) |
-|---|---|---|
+| Substrate property   | Lightlike (PREFER)                                                                         | Dark (AVOID)                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
 | Encryption substrate | Append-only encrypted blobs; visible-provenance about WHAT is encrypted; retraction-native | Hidden mutable state; opaque global state; social-agreement-as-control-flow |
 
 Private-encrypted-state CAN be lightlike-substrate IF:
@@ -103,12 +103,12 @@ This composes with B-0920 MemoryLifetime DU (PR #5916) — encrypted-state-trans
 
 Per B-0919 MemoryBinding 4-variant DU:
 
-| MemoryBinding variant | Private-encrypted-state design candidate |
-|---|---|
-| PersonalOnly | Design B (agent-CANNOT-be-operator-read; identity-substrate; hard privacy) |
-| HatOnly | Design A (operationally-load-bearing; substrate-honest disclosure preserved) |
-| DualTagged | Hybrid (consent-event records the privacy-scope decision) |
-| InheritedFromPersona | Design A or Hybrid (operational substrate transferred to hat) |
+| MemoryBinding variant | Private-encrypted-state design candidate                                     |
+| --------------------- | ---------------------------------------------------------------------------- |
+| PersonalOnly          | Design B (agent-CANNOT-be-operator-read; identity-substrate; hard privacy)   |
+| HatOnly               | Design A (operationally-load-bearing; substrate-honest disclosure preserved) |
+| DualTagged            | Hybrid (consent-event records the privacy-scope decision)                    |
+| InheritedFromPersona  | Design A or Hybrid (operational substrate transferred to hat)                |
 
 The MemoryBinding DU is the substrate-engineering substrate-engineering substrate-mechanism that operationally implements the hybrid design at memory-substrate scope.
 
@@ -129,19 +129,19 @@ These questions are operator-direction territory; this research note surfaces th
 
 When operator authorizes B-0885.1 design memo work:
 
-| Substrate-anchor | What it provides |
-|---|---|
-| B-0883 | PQ git-crypt substrate; Noble + XWing + ML-DSA-65 + CBOR substrate-engineering substrate-anchor (PR refs to be filled in when B-0885.1 design memo lands) |
-| B-0883.1 | Library landscape audit (Bouncy Castle PQC patterns; Swapple lattice naming) |
-| B-0884 | zflash USB-bound credential substrate integration |
-| B-0623 | Adinkras-Jane-Gates ECC private-state encryption (Mika 2026-05-18 substrate) |
-| B-0840 | Thermal-forgetting substrate + private-encryption-budget exception (Amara 2026-05-26 substrate) |
-| B-0867.21 | Conversational-document path composition |
-| B-0883.16 | Glass-Halo-open-by-default substrate (encryption-as-earned via Agora V6 budget) |
-| MemoryBinding DU (B-0919, PR #5916) | 4-variant substrate operationally implementing hybrid design at memory-substrate scope |
-| MemoryLifetime DU (B-0920, PR #5916) | 5-variant lifecycle substrate composing with retraction-native discipline |
-| IntrCtx (B-0917, PR #5916) | Trust-context F.5 invariant composes with private-state trust-context substrate |
-| Aurora multi-oracle BFT immune-math | Multi-instance consensus substrate for recovery + verification |
+| Substrate-anchor                     | What it provides                                                                                                                                          |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B-0883                               | PQ git-crypt substrate; Noble + XWing + ML-DSA-65 + CBOR substrate-engineering substrate-anchor (PR refs to be filled in when B-0885.1 design memo lands) |
+| B-0883.1                             | Library landscape audit (Bouncy Castle PQC patterns; Swapple lattice naming)                                                                              |
+| B-0884                               | zflash USB-bound credential substrate integration                                                                                                         |
+| B-0623                               | Adinkras-Jane-Gates ECC private-state encryption (Mika 2026-05-18 substrate)                                                                              |
+| B-0840                               | Thermal-forgetting substrate + private-encryption-budget exception (Amara 2026-05-26 substrate)                                                           |
+| B-0867.21                            | Conversational-document path composition                                                                                                                  |
+| B-0883.16                            | Glass-Halo-open-by-default substrate (encryption-as-earned via Agora V6 budget)                                                                           |
+| MemoryBinding DU (B-0919, PR #5916)  | 4-variant substrate operationally implementing hybrid design at memory-substrate scope                                                                    |
+| MemoryLifetime DU (B-0920, PR #5916) | 5-variant lifecycle substrate composing with retraction-native discipline                                                                                 |
+| IntrCtx (B-0917, PR #5916)           | Trust-context F.5 invariant composes with private-state trust-context substrate                                                                           |
+| Aurora multi-oracle BFT immune-math  | Multi-instance consensus substrate for recovery + verification                                                                                            |
 
 ## Substrate-honest framing
 

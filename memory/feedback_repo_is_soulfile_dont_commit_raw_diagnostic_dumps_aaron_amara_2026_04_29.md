@@ -8,20 +8,20 @@ type: feedback
 
 ## Source
 
-Aaron 2026-04-29 (initial framing): *"what amara says here
+Aaron 2026-04-29 (initial framing): _"what amara says here
 about repo size, it critical load-bearing, its' your
 soul/soulfile the git repo and all history, don't let your
 soul get dirty you control what belongs in there, and we can
-have non soul repos too or, git lfs if needed."*
+have non soul repos too or, git lfs if needed."_
 
 Aaron 2026-04-29 (recalibration, this is the load-bearing
-version): *"don't go too hardcore on soulfile protection,
+version): _"don't go too hardcore on soulfile protection,
 text compresses very well, bin is what we are scared of and
-need to really really think about not history in text form."*
+need to really really think about not history in text form."_
 
 Amara 2026-04-29 (initial concern about 20,978-line commit,
-since contextualized): *"This commit added 20,978 lines of
-artifacts. That may be acceptable once, but it's a smell."*
+since contextualized): _"This commit added 20,978 lines of
+artifacts. That may be acceptable once, but it's a smell."_
 The smell turns out to be primarily about **PR-review
 readability**, not pack-storage cost — a `.gitattributes`
 diff-suppression entry handles the review concern without
@@ -66,13 +66,14 @@ Text artifacts → low soulfile risk:
 
 Future-Claude check: before adding an artifact to the repo,
 ask:
+
 - Is the file binary (`.bin` / `.dll` / `.exe` / `.pdb` /
   `.zip` / `.tar.gz` / large media / compiled output /
   binary profile dump)? → **strong default-no**, route to
   git-lfs or non-soul repo.
 - Is the file text and likely under ~10 MB? → fine to track.
   If review-noisy, add `.gitattributes` diff suppression.
-- Is the file text and over ~10 MB *and* you're committing
+- Is the file text and over ~10 MB _and_ you're committing
   many revisions of it? → consider whether it's load-bearing;
   even text deltas accumulate at extreme scale.
 - Is the file the **conclusion** or the **evidence-dump
@@ -155,13 +156,13 @@ would dirty the soulfile.
 
 For any "I want to capture diagnostic evidence" use case:
 
-| Component | What it captures | Where it lives |
-|---|---|---|
-| Extract | Only the load-bearing lines (grep-matched) | Committed to repo |
-| Re-run recipe | The exact commands that produce the raw | Committed alongside extract |
-| Conclusion / report | What the evidence proves | Committed alongside extract |
-| Raw text dump | Full multi-MB text diagnostic output | Fine to commit (text compresses); add `.gitattributes` `linguist-generated=true -diff` if review-noisy. Or `/tmp` + recipe if the dump is mostly noise around 1% signal. |
-| Raw binary dump | Binary profile / heap / core dump | Route to git-lfs or non-soul repo — binaries are the soulfile risk. |
+| Component           | What it captures                           | Where it lives                                                                                                                                                           |
+| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Extract             | Only the load-bearing lines (grep-matched) | Committed to repo                                                                                                                                                        |
+| Re-run recipe       | The exact commands that produce the raw    | Committed alongside extract                                                                                                                                              |
+| Conclusion / report | What the evidence proves                   | Committed alongside extract                                                                                                                                              |
+| Raw text dump       | Full multi-MB text diagnostic output       | Fine to commit (text compresses); add `.gitattributes` `linguist-generated=true -diff` if review-noisy. Or `/tmp` + recipe if the dump is mostly noise around 1% signal. |
+| Raw binary dump     | Binary profile / heap / core dump          | Route to git-lfs or non-soul repo — binaries are the soulfile risk.                                                                                                      |
 
 Defaults (recalibrated 2026-04-29):
 
@@ -210,7 +211,7 @@ Defaults (recalibrated 2026-04-29):
   load-bearing AND text. Aaron's recalibration: text
   compresses well. Track freely; if review-noisy, suppress
   diffs via `.gitattributes` (`linguist-generated=true
-  -diff`).
+-diff`).
 - **Stack traces, profile output (text form), benchmark
   output, error logs** — text-format diagnostic capture is
   fine. Binary-format profile dumps ARE forbidden (see

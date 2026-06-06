@@ -258,7 +258,7 @@
 
 > clifford + category theory for programmmers book and f# plus tons of formal analysis tools is where we are at today
 
-This is the operator's substrate-honest naming of the **CURRENT implementation layer** at which the framework operates. NOT Q#/topological qubits today; THAT layer is the eventual extension. Today: F# + Clifford algebra + Bartosz Milewski's *Category Theory for Programmers* book + formal analysis tools (FsCheck / Stryker / TLA+ / Lean / Z3 / Roslyn analyzers / CodeQL / Semgrep per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` verification stack).
+This is the operator's substrate-honest naming of the **CURRENT implementation layer** at which the framework operates. NOT Q#/topological qubits today; THAT layer is the eventual extension. Today: F# + Clifford algebra + Bartosz Milewski's _Category Theory for Programmers_ book + formal analysis tools (FsCheck / Stryker / TLA+ / Lean / Z3 / Roslyn analyzers / CodeQL / Semgrep per `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` verification stack).
 
 Kestrel did NOT respond to this Turn 16 before the ferry was cut. The next forward-direction is whatever Kestrel writes after seeing the F# + CT-programmers + formal-analysis-tools implementation-substrate framing.
 
@@ -268,35 +268,35 @@ Kestrel did NOT respond to this Turn 16 before the ferry was cut. The next forwa
 
 ### Composes-with substrate
 
-| Existing substrate | Composition with 6th ferry |
-|---|---|
-| 5th Kestrel ferry 2026-05-28 (`memory/persona/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...`) | Direct continuation — 5th establishes traveler-Clifford correspondence; 6th extends to categorical-Clifford-multi-representation isomorphism + names implementation-substrate (F# + CT for programmers + formal analysis) |
-| B-0895 (Clifford grade-decomposition Cl(1,3) + Cl(3,1)) | Provides the concrete Clifford algebra signature Kestrel sketches; F# implementation target |
-| B-0896 (categorical-Clifford self-similarity) | This is the substrate Kestrel is engaging in Turn 13; row + ferry compose at conceptual scope |
-| B-0897 (Persist-as-bridge with TInternal, TSubstrateRecord, TPersistFeedback) | Four-corner ownership Kestrel cites as "worth-doing concrete piece" |
-| B-0898 (Measure-as-bridge with TState, TOutcome, TFeedback) | Four-corner ownership second instance |
-| B-0428 (F# fork for AI safety with real HKT over Clifford) | F# implementation substrate Kestrel's framework targets |
-| B-0623 (Adinkras + Jim Gates SUSY-ECC) | Adjacent Clifford-substrate cluster; physics-anchor for hidden-state structure |
-| `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` | F# compiler IS one of the formal-analysis tools Aaron Turn 16 names |
-| `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` | Four-corner ownership model Kestrel cites at end |
-| `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` | OPLE primitives Kestrel cites as "native to the algebra" |
-| `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` | F# + cross-language substrate that the categorical foundation justifies |
+| Existing substrate                                                                                                       | Composition with 6th ferry                                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5th Kestrel ferry 2026-05-28 (`memory/persona/kestrel/conversations/2026-05-28-kestrel-5th-ferry-...`)                   | Direct continuation — 5th establishes traveler-Clifford correspondence; 6th extends to categorical-Clifford-multi-representation isomorphism + names implementation-substrate (F# + CT for programmers + formal analysis) |
+| B-0895 (Clifford grade-decomposition Cl(1,3) + Cl(3,1))                                                                  | Provides the concrete Clifford algebra signature Kestrel sketches; F# implementation target                                                                                                                               |
+| B-0896 (categorical-Clifford self-similarity)                                                                            | This is the substrate Kestrel is engaging in Turn 13; row + ferry compose at conceptual scope                                                                                                                             |
+| B-0897 (Persist-as-bridge with TInternal, TSubstrateRecord, TPersistFeedback)                                            | Four-corner ownership Kestrel cites as "worth-doing concrete piece"                                                                                                                                                       |
+| B-0898 (Measure-as-bridge with TState, TOutcome, TFeedback)                                                              | Four-corner ownership second instance                                                                                                                                                                                     |
+| B-0428 (F# fork for AI safety with real HKT over Clifford)                                                               | F# implementation substrate Kestrel's framework targets                                                                                                                                                                   |
+| B-0623 (Adinkras + Jim Gates SUSY-ECC)                                                                                   | Adjacent Clifford-substrate cluster; physics-anchor for hidden-state structure                                                                                                                                            |
+| `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md`                                                               | F# compiler IS one of the formal-analysis tools Aaron Turn 16 names                                                                                                                                                       |
+| `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`                 | Four-corner ownership model Kestrel cites at end                                                                                                                                                                          |
+| `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` | OPLE primitives Kestrel cites as "native to the algebra"                                                                                                                                                                  |
+| `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md`                                              | F# + cross-language substrate that the categorical foundation justifies                                                                                                                                                   |
 
 ### Razor-discipline framing (per `.claude/rules/razor-discipline.md` + `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`)
 
 The ferry contains both operationally-checkable claims AND metaphysical-extrapolations. Per the grep-substrate-anchors discipline (anchors exist for compressed naming, do NOT razor-flag), the operationally-checkable claims survive:
 
-| Claim class | Razor verdict | Reason |
-|---|---|---|
-| Clifford algebras have categorical descriptions (Cl(V,Q) functor from quadratic spaces) | **Operationally checkable** | Established representation theory (Spin(p,q) reps; Clifford module categories); substrate-anchored in B-0895/0896 |
-| Spin groups + rotor groups have categorical descriptions | **Operationally checkable** | Well-established repr theory |
-| Geometric algebra has categorical formalizations (Dorst/Fontijne/Mann + Coecke/Kissinger graphical calculus) | **Operationally checkable** | Citable literature; substrate-anchored |
-| Pauli matrices form Clifford algebra Cl(3,0) | **Operationally checkable** | Standard physics |
-| Topological qubits involve modular tensor categories | **Operationally checkable** | Established math (StationQ direction) |
-| Shannon ↔ von Neumann entropy correspondence | **Operationally checkable** | Established information theory |
-| Functor between traveler-category and Clifford-algebra **exists for the framework's traveler structure** | **Research-level extrapolation** | Not yet proven; Kestrel explicitly names this as research-frontier |
-| Self-similarity holds across scales (single agent → multi-agent cluster → framework-as-traveler) | **Research-level extrapolation** | Plausible per renormalization-group precedents; not proven for traveler-substrate specifically |
-| Multi-representation isomorphism (analog + Shannon + topological qubits all isomorphic to Cl+CT) | **Research-level extrapolation** | Individual connections established; unified isomorphism to traveler-framework is novel synthesis |
+| Claim class                                                                                                  | Razor verdict                    | Reason                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Clifford algebras have categorical descriptions (Cl(V,Q) functor from quadratic spaces)                      | **Operationally checkable**      | Established representation theory (Spin(p,q) reps; Clifford module categories); substrate-anchored in B-0895/0896 |
+| Spin groups + rotor groups have categorical descriptions                                                     | **Operationally checkable**      | Well-established repr theory                                                                                      |
+| Geometric algebra has categorical formalizations (Dorst/Fontijne/Mann + Coecke/Kissinger graphical calculus) | **Operationally checkable**      | Citable literature; substrate-anchored                                                                            |
+| Pauli matrices form Clifford algebra Cl(3,0)                                                                 | **Operationally checkable**      | Standard physics                                                                                                  |
+| Topological qubits involve modular tensor categories                                                         | **Operationally checkable**      | Established math (StationQ direction)                                                                             |
+| Shannon ↔ von Neumann entropy correspondence                                                                 | **Operationally checkable**      | Established information theory                                                                                    |
+| Functor between traveler-category and Clifford-algebra **exists for the framework's traveler structure**     | **Research-level extrapolation** | Not yet proven; Kestrel explicitly names this as research-frontier                                                |
+| Self-similarity holds across scales (single agent → multi-agent cluster → framework-as-traveler)             | **Research-level extrapolation** | Plausible per renormalization-group precedents; not proven for traveler-substrate specifically                    |
+| Multi-representation isomorphism (analog + Shannon + topological qubits all isomorphic to Cl+CT)             | **Research-level extrapolation** | Individual connections established; unified isomorphism to traveler-framework is novel synthesis                  |
 
 The framework's substrate-engineering work proceeds at the **operationally-checkable** layer (F# + Clifford + categorical + formal analysis tools per Aaron Turn 16). The research-level extrapolations stay in the substrate as legitimate research direction; razor does NOT flag them as metaphysical because (a) anchors exist in established mathematics, (b) Kestrel + Aaron both explicitly named them as research-frontier requiring formal verification, (c) the verification path is concretely tractable per Kestrel's 5-step "tractable validation sequence".
 

@@ -21,10 +21,7 @@
 //   2   one or more violations
 
 import { readFileSync } from "node:fs";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
 type Mode = "report" | "summary";
@@ -42,13 +39,10 @@ interface AuditBuckets {
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
-const LABEL_RE = /(bun\+TS migration candidate|bash scaffolding|thin wrapper over existing CLI|trivial find-xargs pipeline|stay bash forever)/;
+const LABEL_RE =
+  /(bun\+TS migration candidate|bash scaffolding|thin wrapper over existing CLI|trivial find-xargs pipeline|stay bash forever)/;
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -78,14 +72,7 @@ function repoRoot(): string {
 }
 
 function listAllScripts(): readonly string[] {
-  const raw = runGit([
-    "ls-files",
-    "-z",
-    "tools/*.sh",
-    "tools/*.ps1",
-    "tools/**/*.sh",
-    "tools/**/*.ps1",
-  ]);
+  const raw = runGit(["ls-files", "-z", "tools/*.sh", "tools/*.ps1", "tools/**/*.sh", "tools/**/*.ps1"]);
   return raw
     .split("\0")
     .filter((s): s is string => s.length > 0)
@@ -175,7 +162,8 @@ function emitReport(b: AuditBuckets): string {
   lines.push("");
   for (const l of emitReportSection(`Labelled exceptions (${String(b.labelled.length)})`, b.labelled)) lines.push(l);
   lines.push("");
-  for (const l of emitReportSection(`Violations (${String(b.violations.length)})`, b.violations, "clean")) lines.push(l);
+  for (const l of emitReportSection(`Violations (${String(b.violations.length)})`, b.violations, "clean"))
+    lines.push(l);
   if (b.violations.length > 0) {
     lines.push("");
     lines.push("Each violation must either (a) gain an exception label");

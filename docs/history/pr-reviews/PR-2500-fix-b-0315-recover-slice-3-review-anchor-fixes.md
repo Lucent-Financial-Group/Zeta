@@ -10,47 +10,50 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2500 |
-| Title | fix(B-0315): recover slice 3 review anchor fixes |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T14:07:08Z |
-| Merged at | 2026-05-10T14:08:46Z |
-| Merge commit SHA | `54235f3807e6a45f5fc56c0c5c1b46518c063dde` |
-| Branch | `codex/pr2499-anchor-followup` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2500 |
-| Changed files | 3 |
-| Additions / deletions | +7 / -5 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2500                                                     |
+| Title                 | fix(B-0315): recover slice 3 review anchor fixes         |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-10T14:07:08Z                                     |
+| Merged at             | 2026-05-10T14:08:46Z                                     |
+| Merge commit SHA      | `54235f3807e6a45f5fc56c0c5c1b46518c063dde`               |
+| Branch                | `codex/pr2499-anchor-followup`                           |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2500 |
+| Changed files         | 3                                                        |
+| Additions / deletions | +7 / -5                                                  |
 
 ## Description
 
 ## Summary
+
 - Recover the #2499 review-anchor fixes onto current `main` after #2499 merged while Vera was patching its original branch.
 - Qualify the AGENTS.md prior-art URLs and add direct ALIGNMENT section fragments for the HC-2 and glass-halo references.
 - Clarify the closed B-0315 criteria while preserving the deferred coverage-scanner note.
 
 ## Verification
+
 - `/opt/homebrew/Cellar/markdownlint-cli2/0.22.1/libexec/bin/markdownlint-cli2 AGENTS.md README.md docs/backlog/P1/B-0315-glass-halo-doctrine-anchor-backfill.md docs/BACKLOG.md`
 - `bun tools/backlog/generate-index.ts --check`
 - `git diff --check --cached`
 
 ## Notes
+
 - This intentionally avoids reopening the stale post-merge #2499 branch because that branch is behind current `main` and would revert unrelated merged artifacts.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

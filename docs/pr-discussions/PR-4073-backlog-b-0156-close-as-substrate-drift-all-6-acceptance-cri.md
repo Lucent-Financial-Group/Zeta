@@ -57,6 +57,7 @@ Smallest safe slice on an implementation tick — the substrate-honest move on a
 Closes backlog item **B-0156** as **substrate-drift** by flipping the row to `status: closed`, updating `last_updated`, and adding a Resolution section that maps each acceptance criterion to already-landed evidence; updates the generated backlog index to reflect the closure.
 
 **Changes:**
+
 - Mark `docs/backlog/P1/B-0156-...` as `closed` and add a dated Resolution section documenting the substrate-drift basis and evidence.
 - Regenerate `docs/BACKLOG.md` to flip B-0156 from `[ ]` to `[x]`.
 
@@ -64,7 +65,7 @@ Closes backlog item **B-0156** as **substrate-drift** by flipping the row to `st
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                      | Description                                                                                                                       |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md | Flip `status` to `closed`, bump `last_updated`, and add a Resolution section documenting the substrate-drift close with evidence. |
-| docs/BACKLOG.md | Update the index entry for B-0156 to show it as closed. |
+| docs/BACKLOG.md                                                                           | Update the index entry for B-0156 to show it as closed.                                                                           |

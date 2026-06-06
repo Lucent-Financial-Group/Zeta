@@ -13,15 +13,16 @@ type: project
 
 **Adaptive granularity (the optimization):**
 
-| Pressure | Stealing granularity | Why |
-|----------|---------------------|-----|
-| Low | Fine-grained (single items) | No batching pressure, steal individual work |
-| Medium | Medium (partial batches) | Natural overflow absorbed during transit |
-| High | Coarse-grained (full batches) | Auto-batch upgrade, steal entire composed batches |
+| Pressure | Stealing granularity          | Why                                               |
+| -------- | ----------------------------- | ------------------------------------------------- |
+| Low      | Fine-grained (single items)   | No batching pressure, steal individual work       |
+| Medium   | Medium (partial batches)      | Natural overflow absorbed during transit          |
+| High     | Coarse-grained (full batches) | Auto-batch upgrade, steal entire composed batches |
 
 **Why this is optimal:**
 
 Most work-stealing implementations use FIXED granularity:
+
 - Always steal N items (too coarse at low load, too fine at high load)
 - Always steal half the queue (arbitrary split regardless of pressure)
 
@@ -35,6 +36,7 @@ steals a batch of related PRs that compose together. The batch
 size is whatever the pressure produced. The ferry was already full.
 
 **Connects to:**
+
 - project_flux_capacitor_antifragile (the mechanism)
 - project_ferry_protocol (the metaphor)
 - project_tcp_congestion_control_as_society_expansion (backpressure)

@@ -8,18 +8,18 @@ cluster state IS the graph.
 
 ## Node + edge types in the live cluster
 
-| Node | Source |
-|------|--------|
-| Hat | `kubectl get hats.society.zeta.io` |
+| Node               | Source                                   |
+| ------------------ | ---------------------------------------- |
+| Hat                | `kubectl get hats.society.zeta.io`       |
 | Wearer (SPIFFE ID) | `kubectl get hatbindings -A -o jsonpath` |
 
-| Edge | Source | Meaning |
-|------|--------|---------|
-| wears | HatBinding.spec.wearer → HatBinding.spec.hat | current binding |
-| conflicts-with | Hat.spec.throttles.conflictsWith | mutual exclusion |
-| cosigned-by | HatBinding.spec.cosignedBy | quorum dependency |
-| succeeded | HatSwap previousWearer → wearer | succession chain |
-| sticky-attribution | HatBinding.status.stickyAttributionEndsAt | late-tick attribution window |
+| Edge               | Source                                       | Meaning                      |
+| ------------------ | -------------------------------------------- | ---------------------------- |
+| wears              | HatBinding.spec.wearer → HatBinding.spec.hat | current binding              |
+| conflicts-with     | Hat.spec.throttles.conflictsWith             | mutual exclusion             |
+| cosigned-by        | HatBinding.spec.cosignedBy                   | quorum dependency            |
+| succeeded          | HatSwap previousWearer → wearer              | succession chain             |
+| sticky-attribution | HatBinding.status.stickyAttributionEndsAt    | late-tick attribution window |
 
 ## Render the current graph
 
@@ -35,14 +35,14 @@ dependency.
 
 ## Policy patterns that read as graph queries
 
-| Throttle | Graph statement |
-|----------|-----------------|
-| cooldown | no edge `wears(W, H, t)` if edge `succeeded(W, _, H)` exists with `t < cooldown` |
-| max-bindings-per-wearer | out-degree of W on `wears` edges ≤ N |
-| conflict-of-interest | no two `wears(W, *)` edges to hats with `conflicts-with` between them |
-| quorum-gated | `cosigned-by` in-degree ≥ Hat.quorumSize |
-| warmup | edge `wears(W, H)` carries a phase property; Active reachable only after WarmupEndsAt |
-| max-new-hats | Hat node creation rate ≤ K per day |
+| Throttle                | Graph statement                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| cooldown                | no edge `wears(W, H, t)` if edge `succeeded(W, _, H)` exists with `t < cooldown`      |
+| max-bindings-per-wearer | out-degree of W on `wears` edges ≤ N                                                  |
+| conflict-of-interest    | no two `wears(W, *)` edges to hats with `conflicts-with` between them                 |
+| quorum-gated            | `cosigned-by` in-degree ≥ Hat.quorumSize                                              |
+| warmup                  | edge `wears(W, H)` carries a phase property; Active reachable only after WarmupEndsAt |
+| max-new-hats            | Hat node creation rate ≤ K per day                                                    |
 
 Reading them as graph statements makes it obvious which constraints
 compose (max-bindings + conflict-of-interest both bound out-degree;

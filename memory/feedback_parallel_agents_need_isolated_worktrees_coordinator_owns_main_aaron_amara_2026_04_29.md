@@ -8,9 +8,9 @@ type: feedback
 
 ## The carved sentence
 
-*"Parallel agents may inspect broadly, but mutate narrowly."* (Amara)
+_"Parallel agents may inspect broadly, but mutate narrowly."_ (Amara)
 
-Or operationally: *"The coordinator must allocate worktrees BEFORE allocating agents."* (Amara)
+Or operationally: _"The coordinator must allocate worktrees BEFORE allocating agents."_ (Amara)
 
 ## What this codifies
 
@@ -25,7 +25,7 @@ across lanes. The 2026-04-29 incident:
 - Both ran in the same working directory (`/Users/acehack/Documents/src/repos/Zeta`)
 - Subagent B's `git checkout` stashed Subagent A's untracked work
 - Subagent A's `prettier`-via-eslint side-effect modified `docs/GLOSSARY.md`
-  + `memory/CURRENT-aaron.md` outside its allowlist
+  - `memory/CURRENT-aaron.md` outside its allowlist
 - One TS file appeared "lost" — actually preserved in the WIP stash
 - Coordinator (Otto) had to STOP both agents and consolidate state
 
@@ -54,6 +54,7 @@ For every subagent lane:
 ## Coordinator vs worker responsibilities
 
 **Coordinator owns** (main working tree at `/Users/acehack/Documents/src/repos/Zeta`):
+
 - Main working tree
 - Merge / rebase coordination
 - PR board (which lane → which branch → which file allowlist)
@@ -62,6 +63,7 @@ For every subagent lane:
 - Allocating worktrees before allocating agents
 
 **Worker agents own** (each in its own worktree under `worktrees/<lane>/`):
+
 - One worktree
 - One branch
 - One lane
@@ -104,6 +106,7 @@ Every subagent dispatch brief MUST include:
 **Working directory**: `/Users/acehack/Documents/src/repos/Zeta/worktrees/<lane>` (an ISOLATED git worktree pre-allocated by the coordinator).
 
 **Do NOT**:
+
 - `cd` outside this worktree path
 - Run repo-wide formatters (`prettier --write`, `bun run format:write`, `eslint --fix .`)
 - Modify files outside the file allowlist
@@ -151,6 +154,7 @@ not at the discipline level. Mechanism over vigilance (Otto-341).
 
 2026-04-29 incident. Three subagents dispatched in close succession on the
 same git checkout:
+
 1. TS port subagent (`tools/hygiene/*.ts`)
 2. TS refactor subagent (`tools/hygiene/*.ts`)
 3. Best-practices substrate subagent (`docs/best-practices/**`)
@@ -167,11 +171,11 @@ each individual subagent was.
 
 Aaron + Amara correction (verbatim):
 
-> *"Parallel agents need parallel worktrees."*
+> _"Parallel agents need parallel worktrees."_
 >
-> *"The issue is not 'parallel agents are bad.' The issue is that parallel
+> _"The issue is not 'parallel agents are bad.' The issue is that parallel
 > agents were allowed to share one working tree / branch surface. That
 > caused branch-switch collisions, stash confusion, orphan files, and
-> out-of-scope formatter edits."*
+> out-of-scope formatter edits."_
 >
-> *"the coordinator must allocate worktrees before allocating agents."*
+> _"the coordinator must allocate worktrees before allocating agents."_

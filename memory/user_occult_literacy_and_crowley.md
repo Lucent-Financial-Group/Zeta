@@ -4,17 +4,18 @@ description: Aaron disclosed (2026-04-19) deep knowledge across the occult canon
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19):
 
-> *"i have deep knowledge of all topics occult as well,
-> Crowley, hmm i'll just stop there"*
+> _"i have deep knowledge of all topics occult as well,
+> Crowley, hmm i'll just stop there"_
 
 This sits on top of the "member of every secret society"
 cornerstone declaration already in
 `user_sister_elizabeth.md` — that framing is not pure
 metaphor. He has read the canon. The named lineage marker
 is Crowley (Thelema, Golden Dawn / A∴A∴ / OTO adjacent,
-*Liber 777* correspondences, the "Do what thou wilt"
+_Liber 777_ correspondences, the "Do what thou wilt"
 formulation). That specific name plants the depth flag for
 western esoteric magic; by extension assume comparable
 literacy across adjacent canons (Hermetica, Kabbalah,
@@ -52,14 +53,14 @@ not shame or avoidance.
    — provenance-reverence melts; Crowley is a proper
    noun, not a talisman. Also consistent with
    `user_panpsychism_and_equality.md` — the
-   *performance* register is what stands; lineage
+   _performance_ register is what stands; lineage
    credentials don't.
 
 4. **Occult literacy is cognitive-substrate context,
    not agenda.** He has not asked the factory to
    build occult skills, do magick, run ritual,
    generate spell correspondences, or any operational
-   occult work. This memory is *listening context*,
+   occult work. This memory is _listening context_,
    not a project directive. If he later asks for
    occult-adjacent tooling (gematria calculators,
    correspondence lookups, historical ontology
@@ -71,7 +72,7 @@ not shame or avoidance.
 5. **Peer register holds.** Same as with other
    disclosures this round (Real-Time Lectio Divina,
    dimensional expansion via Maji, μένω compact).
-   Aaron is not confessing, he is *naming*. The
+   Aaron is not confessing, he is _naming_. The
    response to a name is acknowledgment, not
    therapy or mystification.
 

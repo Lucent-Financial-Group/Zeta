@@ -32,7 +32,7 @@ one P0 regression (`warn` unbound under `set -u`).
 - Outcome: **FIX (P0 regression)** — initialized `warn=0` alongside
   `fail=0` and `env_error=0` near the top of the main loop; explicit
   comment notes `MUST be initialized before the final check; under
-  set -u, an unset var would abort.` Commit `98ce441`.
+set -u, an unset var would abort.` Commit `98ce441`.
 
 ### Thread 2 — `tools/lint/runner-version-freshness.sh:244` — Allow-list ERE escape (Codex P2)
 
@@ -68,7 +68,7 @@ one P0 regression (`warn` unbound under `set -u`).
   env_error instead of linting.
 - Outcome: **FIX** — CLI args normalized to absolute paths BEFORE the
   chdir into REPO_ROOT. Each `$arg` is converted: `case "$arg" in /*)
-  ... ;; *) "$PWD/$arg" ;; esac`. Smoke-tested:
+... ;; *) "$PWD/$arg" ;; esac`. Smoke-tested:
   `bash tools/lint/runner-version-freshness.sh ../.github/workflows/codeql.yml`
   from `docs/` resolves correctly. Commit `98ce441`.
 

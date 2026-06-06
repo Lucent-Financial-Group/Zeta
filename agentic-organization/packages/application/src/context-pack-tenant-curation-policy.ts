@@ -19,9 +19,7 @@ import {
   type ContextPackCurationProfilePolicyPort,
   type ContextPackCurationProfileRequest,
 } from "./context-pack-builder.ts";
-import {
-  type ContextPackAttentionLaneKind as ContextPackAttentionLaneKindType,
-} from "./context-pack-contracts.ts";
+import { type ContextPackAttentionLaneKind as ContextPackAttentionLaneKindType } from "./context-pack-contracts.ts";
 
 export type TenantConfigContextPackCurationProfileConfigReader = {
   get: (organizationId: string) => Promise<TenantConfig | null> | TenantConfig | null;
@@ -184,16 +182,13 @@ function applyTenantContextPackCuration(
       ...(base.lanePriorityOverrides ?? {}),
       ...lanePriorityOverrides,
     },
-    requiredLanes: uniqueLaneKinds([
-      ...(base.requiredLanes ?? []),
-      ...requiredLanes,
-    ]),
+    requiredLanes: uniqueLaneKinds([...(base.requiredLanes ?? []), ...requiredLanes]),
     deterministicInstructions: deterministicInstructionsFor(base, curation, deterministicInstructions),
   };
 }
 
 function tenantContextPackCurationPolicy(value: unknown): TenantContextPackCurationPolicy | null {
-  return isRecord(value) ? value as TenantContextPackCurationPolicy : null;
+  return isRecord(value) ? (value as TenantContextPackCurationPolicy) : null;
 }
 
 function deterministicInstructionsFor(
@@ -201,9 +196,8 @@ function deterministicInstructionsFor(
   curation: TenantContextPackCurationPolicy,
   layerInstructions: readonly string[],
 ): readonly string[] {
-  const inherited = curation.blocksInheritedDeterministicInstructions === true
-    ? []
-    : [...(base.deterministicInstructions ?? [])];
+  const inherited =
+    curation.blocksInheritedDeterministicInstructions === true ? [] : [...(base.deterministicInstructions ?? [])];
   return uniqueStrings([...inherited, ...layerInstructions]);
 }
 
@@ -227,10 +221,7 @@ function tenantContextPackCurationPreviewPolicyVersion(basePolicyVersion: string
   ].join(TENANT_CONTEXT_PACK_CURATION_LAYER_SEPARATOR);
 }
 
-function tenantConfigLayerMatches(
-  layer: TenantConfigLayer,
-  request: ContextPackCurationProfileRequest,
-): boolean {
+function tenantConfigLayerMatches(layer: TenantConfigLayer, request: ContextPackCurationProfileRequest): boolean {
   const snapshot = request.request.snapshot;
   switch (layer.scope.kind) {
     case ConfigLayerScopeKind.Organization:
@@ -245,8 +236,8 @@ function tenantConfigLayerMatches(
 }
 
 function compareTenantConfigLayers(left: TenantConfigLayer, right: TenantConfigLayer): number {
-  const specificity = TenantContextPackLayerSpecificity[left.scope.kind] -
-    TenantContextPackLayerSpecificity[right.scope.kind];
+  const specificity =
+    TenantContextPackLayerSpecificity[left.scope.kind] - TenantContextPackLayerSpecificity[right.scope.kind];
   if (specificity !== 0) return specificity;
   const updatedAt = left.updatedAt.localeCompare(right.updatedAt);
   if (updatedAt !== 0) return updatedAt;
@@ -269,9 +260,11 @@ function lanePriorityOverridesFrom(
 
 function laneKindsFrom(input: readonly string[] | undefined): readonly ContextPackAttentionLaneKindType[] {
   if (!Array.isArray(input)) return [];
-  return uniqueLaneKinds(input.flatMap((kind) => {
-    return isTenantContextPackCurationLaneKind(kind) ? [kind as ContextPackAttentionLaneKindType] : [];
-  }));
+  return uniqueLaneKinds(
+    input.flatMap((kind) => {
+      return isTenantContextPackCurationLaneKind(kind) ? [kind as ContextPackAttentionLaneKindType] : [];
+    }),
+  );
 }
 
 function contextPackCurationProfileId(value: unknown): string | undefined {
@@ -280,16 +273,20 @@ function contextPackCurationProfileId(value: unknown): string | undefined {
 
 function deterministicInstructionsFrom(input: readonly string[] | undefined): readonly string[] {
   if (!Array.isArray(input)) return [];
-  return uniqueStrings(input.flatMap((value) => {
-    return isTenantContextPackCurationInstruction(value) ? [value] : [];
-  }));
+  return uniqueStrings(
+    input.flatMap((value) => {
+      return isTenantContextPackCurationInstruction(value) ? [value] : [];
+    }),
+  );
 }
 
 function cloneContextPackCurationProfile(profile: ContextPackCurationProfile): ContextPackCurationProfile {
   return {
     profileId: profile.profileId,
     policyVersion: profile.policyVersion,
-    ...(profile.lanePriorityOverrides === undefined ? {} : { lanePriorityOverrides: { ...profile.lanePriorityOverrides } }),
+    ...(profile.lanePriorityOverrides === undefined
+      ? {}
+      : { lanePriorityOverrides: { ...profile.lanePriorityOverrides } }),
     ...(profile.requiredLanes === undefined ? {} : { requiredLanes: [...profile.requiredLanes] }),
     ...(profile.deterministicInstructions === undefined
       ? {}

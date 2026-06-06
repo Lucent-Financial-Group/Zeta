@@ -41,7 +41,7 @@ inside `code spans`; don't start a wrapped line with `#` or `+`.
 - `registry-remote.ts`: `IndexDoc = IndexSignableContent & { signature: AceSignature }`
   (exported), `parseIndex(json): IndexDoc | { error }`.
 - `ace.ts`: `interface RegistryArgs { command: "registry"; sub: "list"|"add"|"remote-add"|
-  "remote-list"|"remote-rm"; ... }` + the `if (command === "registry")` parse block (handles
+"remote-list"|"remote-rm"; ... }` + the `if (command === "registry")` parse block (handles
   `remote` sub-verb) + the `if (parsed.command === "registry")` handler. `verifyIndexSignature`
   imported from `./signing.ts`; `parseIndex` from `./registry-remote.ts` (already imported
   for the install/update paths). `node:fs` `readFileSync`/`writeFileSync`/`readdirSync`/
@@ -54,15 +54,15 @@ inside `code spans`; don't start a wrapped line with `#` or `+`.
 
 ## File structure
 
-| File | Responsibility | Task |
-| --- | --- | --- |
-| `tools/ace/signing.ts` | + `publicKeyInfoFromPrivatePem` (pubkey + keyId from a private PEM) | 1 |
-| `tools/ace/signing.test.ts` | test for the above | 1 |
-| `tools/ace/registry-publish.ts` (**new**) | `joinUrl`, `nextSequence`, `buildIndexDoc` (pure) | 2 |
-| `tools/ace/registry-publish.test.ts` (**new**) | unit tests | 2 |
-| `tools/ace/ace.ts` | `registry publish` parse + handler + usage | 3 |
-| `tools/ace/ace.test.ts` | end-to-end producer→consumer test | 3 |
-| `.claude/skills/ace/SKILL.md` | document `ace registry publish` | 4 |
+| File                                           | Responsibility                                                      | Task |
+| ---------------------------------------------- | ------------------------------------------------------------------- | ---- |
+| `tools/ace/signing.ts`                         | + `publicKeyInfoFromPrivatePem` (pubkey + keyId from a private PEM) | 1    |
+| `tools/ace/signing.test.ts`                    | test for the above                                                  | 1    |
+| `tools/ace/registry-publish.ts` (**new**)      | `joinUrl`, `nextSequence`, `buildIndexDoc` (pure)                   | 2    |
+| `tools/ace/registry-publish.test.ts` (**new**) | unit tests                                                          | 2    |
+| `tools/ace/ace.ts`                             | `registry publish` parse + handler + usage                          | 3    |
+| `tools/ace/ace.test.ts`                        | end-to-end producer→consumer test                                   | 3    |
+| `.claude/skills/ace/SKILL.md`                  | document `ace registry publish`                                     | 4    |
 
 ---
 
@@ -84,8 +84,12 @@ describe("publicKeyInfoFromPrivatePem", () => {
   });
   test("the derived public_key verifies an index this key signed", () => {
     const kp = generateKeypair();
-    const content = { format_version: 1 as const, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
-      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+    const content = {
+      format_version: 1 as const,
+      sequence: 1,
+      issued_at: "2026-06-01T12:00:00Z",
+      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
+    };
     const sig = signIndex(content, kp.privatePem);
     const info = publicKeyInfoFromPrivatePem(kp.privatePem);
     const trust = new Map([[info.keyId, { public_key: info.public_key }]]);
@@ -93,11 +97,12 @@ describe("publicKeyInfoFromPrivatePem", () => {
   });
 });
 ```
+
 (`generateKeypair`, `signIndex`, `verifyIndexSignature` are already imported at the top of
 signing.test.ts from Task-1-of-slice-6; if not, add them to the `./signing.ts` import.)
 
 - [ ] **Step 2: Run → confirm RED** (`publicKeyInfoFromPrivatePem` not exported).
-  Run: `bun test tools/ace/signing.test.ts`
+      Run: `bun test tools/ace/signing.test.ts`
 
 - [ ] **Step 3: Implement** (patch-script append to `signing.ts`)
 
@@ -110,11 +115,12 @@ export function publicKeyInfoFromPrivatePem(privatePem: string): { keyId: string
   return { keyId: keyId(public_key), public_key };
 }
 ```
+
 (`createPrivateKey`, `createPublicKey`, `keyId` are already in scope in signing.ts.)
 
 - [ ] **Step 4: Run → GREEN; `bun --bun tsc --noEmit -p tsconfig.json` exit 0.** False-green
-  check: break the `public_key` derivation (e.g. wrong export type) → the verify test goes
-  red → restore.
+      check: break the `public_key` derivation (e.g. wrong export type) → the verify test goes
+      red → restore.
 
 - [ ] **Step 5: Commit** (canary 67 first)
 
@@ -156,9 +162,17 @@ describe("joinUrl", () => {
 });
 
 describe("nextSequence", () => {
-  test("null → 1", () => { expect(nextSequence(null)).toBe(1); });
+  test("null → 1", () => {
+    expect(nextSequence(null)).toBe(1);
+  });
   test("prev → prev+1", () => {
-    const prev = { format_version: 1 as const, sequence: 6, issued_at: "2026-06-01T12:00:00Z", packages: {}, signature: { algo: "ed25519" as const, key_id: "k", sig: "s" } };
+    const prev = {
+      format_version: 1 as const,
+      sequence: 6,
+      issued_at: "2026-06-01T12:00:00Z",
+      packages: {},
+      signature: { algo: "ed25519" as const, key_id: "k", sig: "s" },
+    };
     expect(nextSequence(prev)).toBe(7);
   });
 });
@@ -168,7 +182,13 @@ describe("buildIndexDoc", () => {
   const issuedAt = "2026-06-01T12:00:00Z";
   test("assembles url + package_hash per package, signs, self-verifies", () => {
     const p = pkg("leaf", "1.0.0");
-    const doc = buildIndexDoc({ packages: [p as never], baseUrl: "https://pkgs", sequence: 3, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({
+      packages: [p as never],
+      baseUrl: "https://pkgs",
+      sequence: 3,
+      issuedAt,
+      privatePem: kp.privatePem,
+    });
     expect("error" in doc).toBe(false);
     if ("error" in doc) return;
     expect(doc.sequence).toBe(3);
@@ -180,10 +200,18 @@ describe("buildIndexDoc", () => {
     expect("error" in reparsed).toBe(false);
     const info = publicKeyInfoFromPrivatePem(kp.privatePem);
     const { signature, ...content } = doc;
-    expect(verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]])).ok).toBe(true);
+    expect(verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]])).ok).toBe(
+      true,
+    );
   });
   test("duplicate name@version → error", () => {
-    const doc = buildIndexDoc({ packages: [pkg("leaf", "1.0.0") as never, pkg("leaf", "1.0.0") as never], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({
+      packages: [pkg("leaf", "1.0.0") as never, pkg("leaf", "1.0.0") as never],
+      baseUrl: "https://pkgs",
+      sequence: 1,
+      issuedAt,
+      privatePem: kp.privatePem,
+    });
     expect("error" in doc).toBe(true);
   });
 });
@@ -215,7 +243,11 @@ export function nextSequence(prev: IndexDoc | null): number {
 
 /** Assemble + sign an index doc from already-read packages. Duplicate name@version → error. */
 export function buildIndexDoc(args: {
-  packages: AcePackage[]; baseUrl: string; sequence: number; issuedAt: string; privatePem: string;
+  packages: AcePackage[];
+  baseUrl: string;
+  sequence: number;
+  issuedAt: string;
+  privatePem: string;
 }): IndexDoc | { error: string } {
   // Null-prototype map: a package name like "__proto__" cannot pollute via bracket-assign.
   const packages: Record<string, Record<string, RegistryEntry>> = Object.create(null);
@@ -227,14 +259,19 @@ export function buildIndexDoc(args: {
     versions[version] = { url: joinUrl(args.baseUrl, `${name}-${version}.json`), package_hash: packageHash(pkg) };
     packages[name] = versions;
   }
-  const content: IndexSignableContent = { format_version: 1, sequence: args.sequence, issued_at: args.issuedAt, packages };
+  const content: IndexSignableContent = {
+    format_version: 1,
+    sequence: args.sequence,
+    issued_at: args.issuedAt,
+    packages,
+  };
   const signature = signIndex(content, args.privatePem);
   return { ...content, signature };
 }
 ```
 
 - [ ] **Step 4: Run → GREEN; `tsc` exit 0.** False-green: break `joinUrl` (drop the
-  separator) → the url test goes red → restore.
+      separator) → the url test goes red → restore.
 
 - [ ] **Step 5: Commit** (canary 67)
 
@@ -268,12 +305,24 @@ describe("ace registry publish (slice 6.1)", () => {
   test("publish a dir → signed index; sequence auto-bumps; non-package skipped", async () => {
     const { parseIndex } = await import("./registry-remote.ts");
     const idxKp = generateKeypair();
-    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-"));   // mkdtempSync creates the dir
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-")); // mkdtempSync creates the dir
     writeSignedPkg(pkgDir, "leaf", "1.0.0");
     writeFileSync(join(pkgDir, "not-a-package.json"), JSON.stringify({ hello: "world" })); // skipped
-    const keyPath = join(tempHome, "registry.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const keyPath = join(tempHome, "registry.pem");
+    writeFileSync(keyPath, idxKp.privatePem);
     const outPath = join(tempHome, "index.json");
-    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code).toBe(0);
     const doc = parseIndex(readFileSync(outPath, "utf8"));
     expect("error" in doc).toBe(false);
@@ -282,7 +331,18 @@ describe("ace registry publish (slice 6.1)", () => {
       expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
     }
     // re-publish bumps sequence 1 → 2
-    const code2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    const code2 = await main([
+      "registry",
+      "publish",
+      "--packages",
+      pkgDir,
+      "--base-url",
+      "https://pkgs",
+      "--key",
+      keyPath,
+      "--out",
+      outPath,
+    ]);
     expect(code2).toBe(0);
     const doc2 = parseIndex(readFileSync(outPath, "utf8"));
     if (!("error" in doc2)) expect(doc2.sequence).toBe(2);
@@ -293,6 +353,7 @@ describe("ace registry publish (slice 6.1)", () => {
   });
 });
 ```
+
 > **Implementer note:** adapt to the real `ace.test.ts` imports — `mkdtempSync`, `join`,
 > `tmpdir`, `readFileSync`, `writeFileSync`, `contentHash`, `generateKeypair`, `signManifest`,
 > `parseArgs`, `main`, `tempHome` are already imported/available there; do not duplicate
@@ -328,21 +389,35 @@ interface RegistryArgs {
 `remote` branch, BEFORE the final `return { error: "registry requires ..." }`):
 
 ```ts
-    if (sub === "publish") {
-      let dir: string | undefined, base: string | undefined, key: string | undefined, out: string | undefined;
-      for (let i = 2; i < argv.length; i++) {
-        if (argv[i] === "--packages") { dir = argv[++i]; if (!dir || dir.startsWith("-")) return { error: "--packages requires a value" }; }
-        else if (argv[i] === "--base-url") { base = argv[++i]; if (!base || base.startsWith("-")) return { error: "--base-url requires a value" }; }
-        else if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
-        else if (argv[i] === "--out") { out = argv[++i]; if (!out || out.startsWith("-")) return { error: "--out requires a value" }; }
-        else return { error: `Unknown option for registry publish: ${argv[i]}` };
-      }
-      if (!dir) return { error: "registry publish requires --packages <dir>" };
-      if (!base) return { error: "registry publish requires --base-url <url>" };
-      if (!key) return { error: "registry publish requires --key <pem-path>" };
-      const r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
-      return out !== undefined ? { ...r, pubOut: out } : r;
-    }
+if (sub === "publish") {
+  let dir: string | undefined, base: string | undefined, key: string | undefined, out: string | undefined;
+  for (let i = 2; i < argv.length; i++) {
+    if (argv[i] === "--packages") {
+      dir = argv[++i];
+      if (!dir || dir.startsWith("-")) return { error: "--packages requires a value" };
+    } else if (argv[i] === "--base-url") {
+      base = argv[++i];
+      if (!base || base.startsWith("-")) return { error: "--base-url requires a value" };
+    } else if (argv[i] === "--key") {
+      key = argv[++i];
+      if (!key || key.startsWith("-")) return { error: "--key requires a value" };
+    } else if (argv[i] === "--out") {
+      out = argv[++i];
+      if (!out || out.startsWith("-")) return { error: "--out requires a value" };
+    } else return { error: `Unknown option for registry publish: ${argv[i]}` };
+  }
+  if (!dir) return { error: "registry publish requires --packages <dir>" };
+  if (!base) return { error: "registry publish requires --base-url <url>" };
+  if (!key) return { error: "registry publish requires --key <pem-path>" };
+  const r: RegistryArgs = {
+    command: "registry",
+    sub: "publish",
+    pubPackagesDir: dir,
+    pubBaseUrl: base,
+    pubKeyPath: key,
+  };
+  return out !== undefined ? { ...r, pubOut: out } : r;
+}
 ```
 
 (c) Add imports: `import { buildIndexDoc, nextSequence } from "./registry-publish.ts";` and
@@ -354,51 +429,108 @@ import.)
 local-`add` logic):
 
 ```ts
-    if (parsed.sub === "publish") {
-      let pem: string;
-      try { pem = readFileSync(parsed.pubKeyPath!, "utf8"); }
-      catch (e) { console.error(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`); return 1; }
-      let entries: string[];
-      try { entries = readdirSync(parsed.pubPackagesDir!).filter((f) => f.endsWith(".json")); }
-      catch (e) { console.error(`ace: publish: cannot read dir ${parsed.pubPackagesDir}: ${(e as Error).message}`); return 1; }
-      const packages: AcePackage[] = [];
-      for (const f of entries) {
-        const full = join(parsed.pubPackagesDir!, f);
-        let raw: string;
-        try { raw = readFileSync(full, "utf8"); } catch { console.error(`ace: publish: skip unreadable ${f}`); continue; }
-        let obj: unknown;
-        try { obj = JSON.parse(raw); } catch { console.error(`ace: publish: skip non-JSON ${f}`); continue; }
-        if (typeof obj !== "object" || obj === null || typeof (obj as AcePackage).manifest !== "object" || (obj as AcePackage).manifest === null
-          || typeof (obj as AcePackage).manifest.name !== "string" || typeof (obj as AcePackage).manifest.version !== "string"
-          || typeof (obj as AcePackage).files !== "object" || (obj as AcePackage).files === null) {
-          console.error(`ace: publish: skip non-package ${f}`); continue;
-        }
-        packages.push(obj as AcePackage);
-      }
-      if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }
-      const outPath = parsed.pubOut ?? "index.json";
-      let prev: import("./registry-remote.ts").IndexDoc | null = null;
-      if (existsSync(outPath)) {
-        try { const p = parseIndex(readFileSync(outPath, "utf8")); if (!("error" in p)) prev = p; } catch { /* no prev */ }
-      }
-      const seq = nextSequence(prev);
-      if (prev && seq <= prev.sequence) { console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`); return 1; }
-      const doc = buildIndexDoc({ packages, baseUrl: parsed.pubBaseUrl!, sequence: seq, issuedAt: new Date().toISOString(), privatePem: pem });
-      if ("error" in doc) { console.error(`ace: publish refused: ${doc.error}`); return 1; }
-      // Round-trip self-verify: never write an index the consumer would reject.
-      const serialized = JSON.stringify(doc, null, 2);
-      const reparsed = parseIndex(serialized);
-      if ("error" in reparsed) { console.error(`ace: publish refused: self-verify parse failed: ${reparsed.error}`); return 1; }
-      const info = publicKeyInfoFromPrivatePem(pem);
-      const { signature, ...content } = doc;
-      const sv = verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]]));
-      if (!sv.ok) { console.error(`ace: publish refused: self-verify signature failed: ${sv.reason}`); return 1; }
-      try { writeFileSync(outPath, serialized); }
-      catch (e) { console.error(`ace: publish failed: cannot write ${outPath}: ${(e as Error).message}`); return 1; }
-      console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
-      return 0;
+if (parsed.sub === "publish") {
+  let pem: string;
+  try {
+    pem = readFileSync(parsed.pubKeyPath!, "utf8");
+  } catch (e) {
+    console.error(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`);
+    return 1;
+  }
+  let entries: string[];
+  try {
+    entries = readdirSync(parsed.pubPackagesDir!).filter((f) => f.endsWith(".json"));
+  } catch (e) {
+    console.error(`ace: publish: cannot read dir ${parsed.pubPackagesDir}: ${(e as Error).message}`);
+    return 1;
+  }
+  const packages: AcePackage[] = [];
+  for (const f of entries) {
+    const full = join(parsed.pubPackagesDir!, f);
+    let raw: string;
+    try {
+      raw = readFileSync(full, "utf8");
+    } catch {
+      console.error(`ace: publish: skip unreadable ${f}`);
+      continue;
     }
+    let obj: unknown;
+    try {
+      obj = JSON.parse(raw);
+    } catch {
+      console.error(`ace: publish: skip non-JSON ${f}`);
+      continue;
+    }
+    if (
+      typeof obj !== "object" ||
+      obj === null ||
+      typeof (obj as AcePackage).manifest !== "object" ||
+      (obj as AcePackage).manifest === null ||
+      typeof (obj as AcePackage).manifest.name !== "string" ||
+      typeof (obj as AcePackage).manifest.version !== "string" ||
+      typeof (obj as AcePackage).files !== "object" ||
+      (obj as AcePackage).files === null
+    ) {
+      console.error(`ace: publish: skip non-package ${f}`);
+      continue;
+    }
+    packages.push(obj as AcePackage);
+  }
+  if (packages.length === 0) {
+    console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`);
+    return 1;
+  }
+  const outPath = parsed.pubOut ?? "index.json";
+  let prev: import("./registry-remote.ts").IndexDoc | null = null;
+  if (existsSync(outPath)) {
+    try {
+      const p = parseIndex(readFileSync(outPath, "utf8"));
+      if (!("error" in p)) prev = p;
+    } catch {
+      /* no prev */
+    }
+  }
+  const seq = nextSequence(prev);
+  if (prev && seq <= prev.sequence) {
+    console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`);
+    return 1;
+  }
+  const doc = buildIndexDoc({
+    packages,
+    baseUrl: parsed.pubBaseUrl!,
+    sequence: seq,
+    issuedAt: new Date().toISOString(),
+    privatePem: pem,
+  });
+  if ("error" in doc) {
+    console.error(`ace: publish refused: ${doc.error}`);
+    return 1;
+  }
+  // Round-trip self-verify: never write an index the consumer would reject.
+  const serialized = JSON.stringify(doc, null, 2);
+  const reparsed = parseIndex(serialized);
+  if ("error" in reparsed) {
+    console.error(`ace: publish refused: self-verify parse failed: ${reparsed.error}`);
+    return 1;
+  }
+  const info = publicKeyInfoFromPrivatePem(pem);
+  const { signature, ...content } = doc;
+  const sv = verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]]));
+  if (!sv.ok) {
+    console.error(`ace: publish refused: self-verify signature failed: ${sv.reason}`);
+    return 1;
+  }
+  try {
+    writeFileSync(outPath, serialized);
+  } catch (e) {
+    console.error(`ace: publish failed: cannot write ${outPath}: ${(e as Error).message}`);
+    return 1;
+  }
+  console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
+  return 0;
+}
 ```
+
 > **Implementer note:** match the file's actual import style. `AcePackage` is already
 > imported in ace.ts (used by install/update). If `readdirSync`/`existsSync` aren't imported,
 > add them to the `node:fs` import. The `import("./registry-remote.ts").IndexDoc` inline type
@@ -407,8 +539,8 @@ local-`add` logic):
 (e) Usage text: add `ace registry publish --packages <dir> --base-url <url> --key <pem> [--out <path>]`.
 
 - [ ] **Step 4: Run → `bun test tools/ace/` all green; `tsc` exit 0.** False-green: corrupt
-  the signing key passed to publish (write a non-PEM) → the publish test fails (key read /
-  self-verify) → restore.
+      the signing key passed to publish (write a non-PEM) → the publish test fails (key read /
+      self-verify) → restore.
 
 - [ ] **Step 5: Commit** (canary 67)
 
@@ -456,4 +588,4 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - [ ] Final holistic code-review subagent over `git diff origin/main..HEAD -- tools/ace/ .claude/skills/ace/SKILL.md`.
 - [ ] Open the impl PR; arm auto-merge; run the PR-gate loop.
 - [ ] Post-merge: annotate B-0980 (mark `ace registry publish` core shipped; per-package url
-  + ETag sidecar + multi-dir + incremental/multi-signer stay deferred).
+  - ETag sidecar + multi-dir + incremental/multi-signer stay deferred).

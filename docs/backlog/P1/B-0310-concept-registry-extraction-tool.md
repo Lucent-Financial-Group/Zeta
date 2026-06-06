@@ -24,12 +24,12 @@ anchoring work under B-0060.
 
 ## Concept classes to extract
 
-| Class | Source surface | Example IDs |
-| --- | --- | --- |
-| Alignment clauses | `docs/ALIGNMENT.md` | HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5 |
-| Best-practice rules | `docs/AGENT-BEST-PRACTICES.md` | BP-1..BP-25 |
-| Otto-NN principles | `CLAUDE.md`, `memory/feedback_*.md` | Otto-247, Otto-275, Otto-357 |
-| Glass-Halo doctrines | `AGENTS.md`, `docs/ALIGNMENT.md` | radical-honesty, total-observability |
+| Class                | Source surface                      | Example IDs                          |
+| -------------------- | ----------------------------------- | ------------------------------------ |
+| Alignment clauses    | `docs/ALIGNMENT.md`                 | HC-1..HC-7, SD-1..SD-9, DIR-1..DIR-5 |
+| Best-practice rules  | `docs/AGENT-BEST-PRACTICES.md`      | BP-1..BP-25                          |
+| Otto-NN principles   | `CLAUDE.md`, `memory/feedback_*.md` | Otto-247, Otto-275, Otto-357         |
+| Glass-Halo doctrines | `AGENTS.md`, `docs/ALIGNMENT.md`    | radical-honesty, total-observability |
 
 ## Existing infrastructure
 

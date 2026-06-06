@@ -24,22 +24,22 @@ Continues the per-tick razor-cadence composes-with audit pattern established in 
 
 ## Batch 2 audit (next 4 newest rules)
 
-| Rule (PR) | File refs | Backlog rows |
-|-----------|-----------|--------------|
-| `zeta-ships-with-skills-immediate-value.md` (#2938) | 8 | B-0043, B-0428, B-0429 |
-| `dv2-data-split-discipline-activated.md` (#2915) | 13 | B-0043, B-0424, B-0425, B-0426, B-0427 |
-| `methodology-hard-limits.md` (#2860) | 10 | — |
-| `shadow-check-name-acceptance.md` (#2855) | 10 | — |
+| Rule (PR)                                           | File refs | Backlog rows                           |
+| --------------------------------------------------- | --------- | -------------------------------------- |
+| `zeta-ships-with-skills-immediate-value.md` (#2938) | 8         | B-0043, B-0428, B-0429                 |
+| `dv2-data-split-discipline-activated.md` (#2915)    | 13        | B-0043, B-0424, B-0425, B-0426, B-0427 |
+| `methodology-hard-limits.md` (#2860)                | 10        | —                                      |
+| `shadow-check-name-acceptance.md` (#2855)           | 10        | —                                      |
 
 **37/37 cross-references LIVE** (17 rule refs + 13 memory refs + 7 backlog rows). No stale pointers.
 
 ## Cumulative progress on razor-cadence #3128 item 4
 
-| Batch | PR | Rules | Cross-refs |
-|-------|----|---|------------|
-| 1 | #3152 | 4 | 30/30 LIVE |
-| 2 | this PR | 4 | 37/37 LIVE |
-| **Total** | — | **8** | **67/67 LIVE** |
+| Batch     | PR      | Rules | Cross-refs     |
+| --------- | ------- | ----- | -------------- |
+| 1         | #3152   | 4     | 30/30 LIVE     |
+| 2         | this PR | 4     | 37/37 LIVE     |
+| **Total** | —       | **8** | **67/67 LIVE** |
 
 ~17% of 47 `.claude/rules/` files now have a clean composes-with audit. ~10 more per-tick batches would complete item 4.
 
@@ -69,6 +69,7 @@ The split is now stable and load-bearing.
 This PR adds a single tick-history shard documenting the 18:22Z razor-cadence composes-with audit batch for four `.claude/rules/` files.
 
 **Changes:**
+
 - Records the refresh/holding/speculative-work flow for the tick.
 - Summarizes the audited rule, memory, and backlog cross-reference counts.
 - Notes cumulative progress across batch 1 and batch 2.

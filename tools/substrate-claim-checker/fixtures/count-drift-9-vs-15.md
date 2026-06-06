@@ -23,20 +23,20 @@ chatgpt-codex-connector + copilot-pull-request-reviewer).
 
 The catalogue tracks 9 drift instances across the substrate.
 
-| # | Instance | Sub-class |
-|---|---|---|
-| 1 | row-1 | count |
-| 2 | row-2 | count |
-| 3 | row-3 | existence |
-| 4 | row-4 | path-form |
-| 5 | row-5 | cross-surface |
-| 6 | row-6 | count |
-| 7 | row-7 | convention |
-| 8 | row-8 | semantic-equivalence |
-| 9 | row-9 | empirical-output |
-| 10 | row-10 | self-recursive |
-| 11 | row-11 | count |
-| 12 | row-12 | existence |
-| 13 | row-13 | path-form |
-| 14 | row-14 | cross-surface |
-| 15 | row-15 | convention |
+| #   | Instance | Sub-class            |
+| --- | -------- | -------------------- |
+| 1   | row-1    | count                |
+| 2   | row-2    | count                |
+| 3   | row-3    | existence            |
+| 4   | row-4    | path-form            |
+| 5   | row-5    | cross-surface        |
+| 6   | row-6    | count                |
+| 7   | row-7    | convention           |
+| 8   | row-8    | semantic-equivalence |
+| 9   | row-9    | empirical-output     |
+| 10  | row-10   | self-recursive       |
+| 11  | row-11   | count                |
+| 12  | row-12   | existence            |
+| 13  | row-13   | path-form            |
+| 14  | row-14   | cross-surface        |
+| 15  | row-15   | convention           |

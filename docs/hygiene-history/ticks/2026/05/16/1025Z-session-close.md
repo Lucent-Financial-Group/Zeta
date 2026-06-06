@@ -9,15 +9,15 @@ ticks should be no-ops until materially new signals.
 
 Peer Otto's closing shard names the failure mode I was navigating:
 
-> *"the alternation-pattern failure mode I was at risk of falling
+> _"the alternation-pattern failure mode I was at risk of falling
 > into: mechanically satisfying the brief-ack counter with
 > predictable-null audits when the empirical pattern is already
-> established."*
+> established."_
 
 And the substrate-honest disposition:
 
-> *"the session has reached natural close and future ticks should
-> be no-ops until materially new signals."*
+> _"the session has reached natural close and future ticks should
+> be no-ops until materially new signals."_
 
 This **exactly** describes the state I've been in for the last 5-6
 ticks. Continuing to audit predictable-null candidates to satisfy

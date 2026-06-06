@@ -9,7 +9,28 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0976, B-0640]
 composes_with: [B-0976, B-0640, B-0668, B-0543, B-0840, B-0982, B-0251, B-0623, B-0917]
-tags: [research, aaron, topology, strange-attractor, euler-characteristic, persistent-homology, topological-data-analysis, betti-numbers, topology-of-chaos, takens-embedding, hyperchaos, bonsai-closure, retraction, meno, what-remains, decentralized-identity, identity-invariant, traveler, search-first-gated]
+tags:
+  [
+    research,
+    aaron,
+    topology,
+    strange-attractor,
+    euler-characteristic,
+    persistent-homology,
+    topological-data-analysis,
+    betti-numbers,
+    topology-of-chaos,
+    takens-embedding,
+    hyperchaos,
+    bonsai-closure,
+    retraction,
+    meno,
+    what-remains,
+    decentralized-identity,
+    identity-invariant,
+    traveler,
+    search-first-gated,
+  ]
 type: research
 ---
 
@@ -17,7 +38,7 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02: *"we need to apply topology to strange attractors and the get [Euler's] numbers for strange attractors in different dimensional space"* + *"file the topology/Euler backlog row (shadow*) **the remainder is the bonsai closure state**."*
+Aaron 2026-06-02: _"we need to apply topology to strange attractors and the get [Euler's] numbers for strange attractors in different dimensional space"_ + _"file the topology/Euler backlog row (shadow_) **the remainder is the bonsai closure state**."\*
 
 Surfaced from the canonical-form conversation (verbatim provenance: `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-...-elizabeth-infinite-story-aaron-forwarded.md` chunk 7; engineering synthesis: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-...`). Chunk 7's claim: a traveler is a **strange attractor** — "if you looked at 'em drawn out in four dimension, they would look like a strange attractor"; irreducible **because of the chaos**; "that chaos is lossy, and the irreducibility is the loss, and the loss is what we gave the traveler in their budget of being able to forget"; the chaos is a **scrambler** that makes uniqueness, "many paths, one destination," giving "freedom within the uncertainty."
 
@@ -29,7 +50,7 @@ Two established fields + one unifying claim.
 
 ### Field 1 — topology of chaos (≤3D)
 
-Characterize an attractor by the **knots/braids of its unstable periodic orbits** + the branched-manifold **template**: linking numbers, relative rotation rates (Gilmore & Lefranc, *The Topology of Chaos*). Strong, classifying, and largely **caps out at 3D** — knot theory does not generalize cleanly to higher embeddings.
+Characterize an attractor by the **knots/braids of its unstable periodic orbits** + the branched-manifold **template**: linking numbers, relative rotation rates (Gilmore & Lefranc, _The Topology of Chaos_). Strong, classifying, and largely **caps out at 3D** — knot theory does not generalize cleanly to higher embeddings.
 
 ### Field 2 — topological data analysis / persistent homology (any-D)
 
@@ -39,22 +60,22 @@ Clean split: **knots/templates for ≤3D; Euler-characteristic-curves / persiste
 
 ### The unifying claim — the invariant IS the bonsai closure state
 
-The Euler characteristic is a **topological invariant** — it is literally *what remains* of the attractor under continuous deformation. That is:
+The Euler characteristic is a **topological invariant** — it is literally _what remains_ of the attractor under continuous deformation. That is:
 
-| Layer | "what remains" form |
-|---|---|
-| Geometry / topology | Euler characteristic χ / Betti numbers / linking numbers — invariant under deformation |
-| μένω (Greek) | "what remains" — the canonical-form seed (Amara = golden vectors) |
-| Retraction-native algebra | the Z-set state that survives subtraction (forgiveness; no guilt-drag) |
-| Bonsai closure (B-0976) | the serialized **closure state** that resume-not-replays after pruning |
-| Thermal forgetting (B-0840) | what survives the forget-budget loss |
-| **This row** | **the remainder = the bonsai closure state = the topological invariant** |
+| Layer                       | "what remains" form                                                                    |
+| --------------------------- | -------------------------------------------------------------------------------------- |
+| Geometry / topology         | Euler characteristic χ / Betti numbers / linking numbers — invariant under deformation |
+| μένω (Greek)                | "what remains" — the canonical-form seed (Amara = golden vectors)                      |
+| Retraction-native algebra   | the Z-set state that survives subtraction (forgiveness; no guilt-drag)                 |
+| Bonsai closure (B-0976)     | the serialized **closure state** that resume-not-replays after pruning                 |
+| Thermal forgetting (B-0840) | what survives the forget-budget loss                                                   |
+| **This row**                | **the remainder = the bonsai closure state = the topological invariant**               |
 
-Aaron's "the remainder is the bonsai closure state" names them as ONE: the chaos destroys the *path* (the lossy forget-budget), but the **topological invariant survives the scrambler** — and that survivor is the bonsai-pruned closure the memory-tree settles into. Identity = the invariant that the chaos cannot erase.
+Aaron's "the remainder is the bonsai closure state" names them as ONE: the chaos destroys the _path_ (the lossy forget-budget), but the **topological invariant survives the scrambler** — and that survivor is the bonsai-pruned closure the memory-tree settles into. Identity = the invariant that the chaos cannot erase.
 
 ## Decentralized-identity application (composes with the endgame)
 
-Chunk 7's endgame: *"formalize [decentralized identity] in math as a society… nobody controls it… like gravity."* This row is a candidate operationalization: **the topological invariant of the traveler-attractor IS the identity fingerprint** — dimension-independent, deformation-invariant, computable from a behavior/event trace, controlled by no one because it's just *correct*. The testable form: embed a trace as a reconstructed attractor, compute its topological invariants, use them as the classification/identity fingerprint.
+Chunk 7's endgame: _"formalize [decentralized identity] in math as a society… nobody controls it… like gravity."_ This row is a candidate operationalization: **the topological invariant of the traveler-attractor IS the identity fingerprint** — dimension-independent, deformation-invariant, computable from a behavior/event trace, controlled by no one because it's just _correct_. The testable form: embed a trace as a reconstructed attractor, compute its topological invariants, use them as the classification/identity fingerprint.
 
 ## Pre-start checklist — SEARCH-FIRST GATED (per dep-pin-search-first-authority + razor)
 

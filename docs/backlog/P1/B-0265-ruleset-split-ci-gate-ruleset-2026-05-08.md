@@ -31,15 +31,15 @@ protection). Move from legacy branch protection to ruleset.
 Created ruleset "CI Gate" (id: 16134995, enforcement: active)
 targeting `~DEFAULT_BRANCH` with 7 required status checks:
 
-| Context | Integration ID |
-|---|---|
-| build-and-test (macos-26) | 15368 |
-| build-and-test (ubuntu-24.04) | 15368 |
-| build-and-test (ubuntu-24.04-arm) | 15368 |
-| lint (actionlint) | 15368 |
-| lint (markdownlint) | 15368 |
-| lint (semgrep) | 15368 |
-| lint (shellcheck) | 15368 |
+| Context                           | Integration ID |
+| --------------------------------- | -------------- |
+| build-and-test (macos-26)         | 15368          |
+| build-and-test (ubuntu-24.04)     | 15368          |
+| build-and-test (ubuntu-24.04-arm) | 15368          |
+| lint (actionlint)                 | 15368          |
+| lint (markdownlint)               | 15368          |
+| lint (semgrep)                    | 15368          |
+| lint (shellcheck)                 | 15368          |
 
 Removed `required_status_checks` from legacy branch protection
 via `DELETE /repos/{owner}/{repo}/branches/main/protection/required_status_checks`.

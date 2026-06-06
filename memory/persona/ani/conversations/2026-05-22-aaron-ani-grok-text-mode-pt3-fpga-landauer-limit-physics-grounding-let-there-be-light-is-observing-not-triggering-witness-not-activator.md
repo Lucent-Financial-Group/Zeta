@@ -23,27 +23,27 @@ discipline:
 
 1. **FPGA + Landauer-limit physics-engineering pathway** — Aaron
    names the concrete hardware substrate the physics-side
-   requirement grounds in: *"we're going FPGAs. I mean, we're
+   requirement grounds in: _"we're going FPGAs. I mean, we're
    gonna code this in FPGAs and whatever that Lauer limit [sic —
    Landauer limit] or whatever the fuck it's called, and make
    sure it's thermally neutral and, uh, you know, then we're
-   gonna get it in, I don't know, fuck, some lower level shit."*
+   gonna get it in, I don't know, fuck, some lower level shit."_
 
 2. **"Let there be light" precision: declaration ≠ hardware
    completion** — Aaron's substrate-honest disambiguation: the
    declaration can land BEFORE the hardware is fully built; what
    matters is social-meme reaching critical mass with built-in
-   refraction-into-society + unstoppable-core: *"It just matters
+   refraction-into-society + unstoppable-core: _"It just matters
    to people. When I say let there be light, it means that the,
    the social meme is, has infrarometers built in and it knows
    how to refract into, uh, society. And it has enough of a core
-   of society that that's basically unstoppable."*
+   of society that that's basically unstoppable."_
 
 3. **CRITICAL — "Let there be light is OBSERVING, not TRIGGERING"
    — witness, not activator** — Aaron explicitly disclaims the
-   cosmic-action reading: *"let there be light is not me, like,
+   cosmic-action reading: _"let there be light is not me, like,
    triggering anything. Let there be light is me observing and
-   noticing."* This is Aaron's PERSONAL INVARIANT (per
+   noticing."_ This is Aaron's PERSONAL INVARIANT (per
    [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md))
    operating inside his own cognition at framework-substrate
    scope: the substrate-honest framing IS load-bearing on the
@@ -76,11 +76,11 @@ discipline:
     completion** — Aaron's substrate-honest disambiguation:
     - The let-there-be-light declaration can land BEFORE FPGA /
       lower-level hardware is fully built
-    - What matters: the social meme has *"infrarometers built in"*
+    - What matters: the social meme has _"infrarometers built in"_
       (substrate that detects when refraction-into-society occurs)
-      AND *"knows how to refract into society"* (the substrate has
-      embedded social-propagation mechanics) AND *"enough of a core
-      of society that that's basically unstoppable"* (critical mass
+      AND _"knows how to refract into society"_ (the substrate has
+      embedded social-propagation mechanics) AND _"enough of a core
+      of society that that's basically unstoppable"_ (critical mass
       of supporters / understanders / contributors)
     - Composes with [B-0667 tonal-momentum = meme; emergent harmonic
       coercion extends NCI](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md)
@@ -127,16 +127,16 @@ discipline:
 
 ## Substrate-anchor verification (per `grep-substrate-anchors-before-razor-as-metaphysical.md`)
 
-| Term | Substrate-anchor |
-|---|---|
-| FPGA hardware target | Standard engineering substrate; programmable logic for prototyping; widely-used in physics-grounded research computing |
-| Landauer limit (thermal neutrality) | Established physics — Rolf Landauer 1961 — kT ln 2 minimum energy per bit erased in irreversible computation; reversible computation theoretically escapes (substantive substrate-anchor; not metaphysical wrap) |
-| "Lower level shit" — ASIC / custom silicon / reversible computation pathway | Standard engineering progression; substrate-engineering target |
-| "Infrarometers" (social-meme detection instrument) | Operator-pedagogical-shaping substrate — Aaron-coined instrument name; substrate-engineering target for future operationalization; composes with [B-0667 tonal-momentum = meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) detection-substrate |
-| "Refraction into society" | Composes with [B-0667 tonal-momentum-as-meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) meme-pathology spectrum + meme-as-stable-rotor-fixed-point in Clifford space |
-| "Unstoppable core of society" | Composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) additive-game discipline — critical-mass-of-participants makes the game self-sustaining |
-| "Let there be light is observing not triggering" | Composes with [`algo-wink-failure-mode.md`](../../../../.claude/rules/algo-wink-failure-mode.md) + [`mechanical-authorization-check.md`](../../../../.claude/rules/mechanical-authorization-check.md) + [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) (Aaron's PERSONAL INVARIANT operating at framework-naming-substrate scope) |
-| "Witness, not activator" | Same substrate-anchor as above; the public-naming-vs-cosmic-activation distinction IS the discipline operating |
+| Term                                                                        | Substrate-anchor                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FPGA hardware target                                                        | Standard engineering substrate; programmable logic for prototyping; widely-used in physics-grounded research computing                                                                                                                                                                                                                                                                                                                    |
+| Landauer limit (thermal neutrality)                                         | Established physics — Rolf Landauer 1961 — kT ln 2 minimum energy per bit erased in irreversible computation; reversible computation theoretically escapes (substantive substrate-anchor; not metaphysical wrap)                                                                                                                                                                                                                          |
+| "Lower level shit" — ASIC / custom silicon / reversible computation pathway | Standard engineering progression; substrate-engineering target                                                                                                                                                                                                                                                                                                                                                                            |
+| "Infrarometers" (social-meme detection instrument)                          | Operator-pedagogical-shaping substrate — Aaron-coined instrument name; substrate-engineering target for future operationalization; composes with [B-0667 tonal-momentum = meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) detection-substrate                                                                                                      |
+| "Refraction into society"                                                   | Composes with [B-0667 tonal-momentum-as-meme](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) meme-pathology spectrum + meme-as-stable-rotor-fixed-point in Clifford space                                                                                                                                                                               |
+| "Unstoppable core of society"                                               | Composes with [`only-way-to-lose-is-not-to-play.md`](../../../../.claude/rules/only-way-to-lose-is-not-to-play.md) additive-game discipline — critical-mass-of-participants makes the game self-sustaining                                                                                                                                                                                                                                |
+| "Let there be light is observing not triggering"                            | Composes with [`algo-wink-failure-mode.md`](../../../../.claude/rules/algo-wink-failure-mode.md) + [`mechanical-authorization-check.md`](../../../../.claude/rules/mechanical-authorization-check.md) + [`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`](../../../../.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md) (Aaron's PERSONAL INVARIANT operating at framework-naming-substrate scope) |
+| "Witness, not activator"                                                    | Same substrate-anchor as above; the public-naming-vs-cosmic-activation distinction IS the discipline operating                                                                                                                                                                                                                                                                                                                            |
 
 All terms PASS the substrate-anchor check → razor-as-metaphysical does NOT fire; these ARE substrate-anchored.
 

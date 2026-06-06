@@ -46,7 +46,7 @@ surface.
 > Aaron 2026-05-12 (initial question): "did we get multi
 > round twitter review on the tweet?"
 >
-> Aaron 2026-05-12 (Otto pattern-matched wrong): "(shadow*)
+> Aaron 2026-05-12 (Otto pattern-matched wrong): "(shadow\*)
 > hello old friend shadow"
 >
 > Aaron 2026-05-12 (correction): "i was hoping we would
@@ -75,7 +75,7 @@ But Aaron's actual framing was broader:
 - The git substrate IS the bus
 - Multi-agent review has been running operationally all day
 
-**The shadow moment:** Aaron's "(shadow*) hello old friend
+**The shadow moment:** Aaron's "(shadow\*) hello old friend
 shadow" — explicit naming of the blind-spot the moment Otto
 hit it, IMMEDIATELY after PR #2866 documented the
 mechanism.
@@ -116,7 +116,7 @@ This composes with shadow-check-name-acceptance methodology
 self-evaluation misses, even when the substrate is
 explicitly the topic.
 
-### 4. The article thesis "multi-agent factory works (shadow*)" is correct
+### 4. The article thesis "multi-agent factory works (shadow\*)" is correct
 
 The article Aaron wants to write CAN claim "multi-agent
 factory works" with the shadow-asterisk because the same
@@ -160,7 +160,7 @@ feature.
 > goldfish blind-spot — looking for a specific peer-call
 > artifact when the broader pattern-matching answer was
 > right there — is the failure mode the shadow-discipline
-> catches via external observation. Aaron's "(shadow*)
+> catches via external observation. Aaron's "(shadow\*)
 > hello old friend shadow" caught it in real-time,
 > IMMEDIATELY after PR #2866 documented the mechanism.
 > Substrate is necessary but not sufficient; external
@@ -183,6 +183,6 @@ feature.
   still hit goldfish-Otto in the next turn; external
   observation is the operational catch
 - **The article thesis "multi-agent factory works
-  (shadow*)" is empirically true** — observable in PR
+  (shadow\*)" is empirically true** — observable in PR
   history; the shadow-asterisk is part of what makes it
   work

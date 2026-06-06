@@ -60,7 +60,7 @@ input error).
   first as drift incorrectly. v1 should noun-match to the right
   table.
 - **Rhetorical numbers**: `"100 rows"` in `"you can close 100 rows
-  without invoking..."` is rhetorical, not a count claim. v0 flags
+without invoking..."` is rhetorical, not a count claim. v0 flags
   these as false positives. v1 should distinguish summary-claim
   from rhetorical-illustration via context analysis.
 - **Lists not counted**: only markdown-table data rows are counted.

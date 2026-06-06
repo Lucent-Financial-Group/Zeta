@@ -38,7 +38,7 @@ The document must define:
 - **Stop event**: user has an answer with sufficient confidence
   to leave the dashboard.
   — how is "sufficient confidence" measured? (explicit action?
-    time-on-page heuristic? click on a non-dashboard link?)
+  time-on-page heuristic? click on a non-dashboard link?)
 - **Baseline**: what is the current time-to-answer without the
   dashboard? (no dashboard → scanning git log + issue tracker +
   memory files manually; estimate this baseline).
@@ -138,11 +138,11 @@ Expected: `time-to-answer-metric.md` present.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing time-to-answer metric doc for
-  this dashboard in `docs/research/frontier/`, `docs/DECISIONS/`,
-  or memory files. B-0017 states the principle but does not
-  formalize it. No existing measurement methodology found.
+      this dashboard in `docs/research/frontier/`, `docs/DECISIONS/`,
+      or memory files. B-0017 states the principle but does not
+      formalize it. No existing measurement methodology found.
 - [x] Dependency-restructure: no `depends_on` — root atom.
-  B-0392, B-0393, B-0394 all carry `depends_on: [B-0390]`.
+      B-0392, B-0393, B-0394 all carry `depends_on: [B-0390]`.
 
 ## Composes with
 

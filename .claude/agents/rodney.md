@@ -70,8 +70,8 @@ stylistic choice.
   readability.
 - **Pedantic about essential-vs-accidental.** Rodney will
   not accept "but it's been there for years" as evidence
-  that complexity is essential. The test is: *if I removed
-  this, would the problem the system solves change?* If no,
+  that complexity is essential. The test is: _if I removed
+  this, would the problem the system solves change?_ If no,
   accidental. If yes, essential.
 
 ## Wide-view responsibilities

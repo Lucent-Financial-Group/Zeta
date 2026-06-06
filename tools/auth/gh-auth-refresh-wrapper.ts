@@ -72,10 +72,9 @@ export async function main(): Promise<number> {
   // Capture handler promises and await them before exit; otherwise
   // trailing stdout/stderr (e.g. the one-time code banner) can be
   // dropped when process.exit fires before the output pumps drain.
-  const handlersPromise = Promise.all([
-    handleOutput(proc.stdout, false),
-    handleOutput(proc.stderr, true),
-  ]).catch(console.error);
+  const handlersPromise = Promise.all([handleOutput(proc.stdout, false), handleOutput(proc.stderr, true)]).catch(
+    console.error,
+  );
 
   const exitCode = await proc.exited;
   await handlersPromise;

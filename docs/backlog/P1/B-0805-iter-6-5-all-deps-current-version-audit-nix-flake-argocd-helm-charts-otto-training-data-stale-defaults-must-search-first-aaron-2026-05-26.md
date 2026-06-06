@@ -14,14 +14,27 @@ composes_with:
   - B-0802
   - B-0803
   - B-0804
-tags: [iter-6, capstone, version-sweep, nix, argocd, helm, search-first-authority, training-data-stale, agent-discipline, full-ai-cluster, supply-chain-security]
+tags:
+  [
+    iter-6,
+    capstone,
+    version-sweep,
+    nix,
+    argocd,
+    helm,
+    search-first-authority,
+    training-data-stale,
+    agent-discipline,
+    full-ai-cluster,
+    supply-chain-security,
+  ]
 ---
 
 ## Problem
 
 The maintainer 2026-05-26 caught the systemic pattern after seeing the nixpkgs 24.11 (EOL'd Jun 2025) → 25.11 jump in [B-0800](B-0800-iter-6-0-bump-nixpkgs-24-11-to-25-11-warbler-xantusia-eol-recovery-aaron-2026-05-26.md):
 
-> *"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"*
+> _"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"_
 
 The substrate-honest acknowledgement: Otto-CLI's training-data cutoff (January 2026) means default-generated version pins for nix inputs, NixOS module package references, ArgoCD app targetRevisions, Helm chart versions, and container image tags will skew toward plausible-but-stale defaults. Without an explicit search-first-authority step (per `.claude/rules/search-first-authority.md`), every Otto-authored dep pin is a candidate for being silently out-of-date.
 
@@ -29,14 +42,14 @@ The B-0800 nixpkgs bump is ONE instance of this systemic gap. The capstone is en
 
 ## Empirical evidence of the pattern
 
-| Surface | Current Otto-default | Latest stable | Lag |
-|---|---|---|---|
-| `full-ai-cluster/flake.nix` nixpkgs | `nixos-24.11` (Nov 2024) | `nixos-25.11` (Nov 2025) | 1 year, past EOL |
-| `full-ai-cluster/flake.nix` nix-darwin | `nix-darwin-24.11` | `nix-darwin-25.11` | 1 year, past EOL |
-| ArgoCD apps under `full-ai-cluster/k8s/applications/` | TBD — audit needed | TBD | TBD |
-| Helm chart targetRevisions in ArgoCD apps | TBD — audit needed | TBD | TBD |
-| Container image tags in NixOS modules / K8s manifests | TBD — audit needed | TBD | TBD |
-| `.mise.toml` runtimes (dotnet, python, java, bun, uv, node) | Existing pins | Need audit cadence | TBD |
+| Surface                                                     | Current Otto-default     | Latest stable            | Lag              |
+| ----------------------------------------------------------- | ------------------------ | ------------------------ | ---------------- |
+| `full-ai-cluster/flake.nix` nixpkgs                         | `nixos-24.11` (Nov 2024) | `nixos-25.11` (Nov 2025) | 1 year, past EOL |
+| `full-ai-cluster/flake.nix` nix-darwin                      | `nix-darwin-24.11`       | `nix-darwin-25.11`       | 1 year, past EOL |
+| ArgoCD apps under `full-ai-cluster/k8s/applications/`       | TBD — audit needed       | TBD                      | TBD              |
+| Helm chart targetRevisions in ArgoCD apps                   | TBD — audit needed       | TBD                      | TBD              |
+| Container image tags in NixOS modules / K8s manifests       | TBD — audit needed       | TBD                      | TBD              |
+| `.mise.toml` runtimes (dotnet, python, java, bun, uv, node) | Existing pins            | Need audit cadence       | TBD              |
 
 The principle scope: anywhere we pin a version, the pin needs a periodic refresh + the agent authoring the pin needs search-first-authority discipline.
 

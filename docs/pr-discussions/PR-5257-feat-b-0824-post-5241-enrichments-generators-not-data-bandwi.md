@@ -20,12 +20,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Clean rebase of 6 Aaron 2026-05-26 substrate landings on top of #5241 (merged 363c7c12). Replaces stale #5256 which had base-conflict.
 
-1. **Generators-not-data** — *"we are inserting / passing the generator combinators not the data itself"*
-2. **Bandwidth payoff** — *"deferred execution at massive scale we are passing the function not the data"*
-3. **Base-dimension agnostic** — *"start even with 1d observables or even scalers and project up"*
-4. **NULL-as-monad** — *"null is the monad we wrap escape in"*
-5. **Tri-boolean logic FTW** — *"tri boolean logic FTW"* (TRIPLE CONVERGENCE on NULL across FP / SQL / operational)
-6. **Triangle/GPU** — *"we can tesselate everyting casue or base is a traingle just like GPUs"* + Aaron-confirmed *"that's what we look like to higher dimensional beings exactly"* (Phoenix-rise IS triangle-mesh-rasterization moment)
+1. **Generators-not-data** — _"we are inserting / passing the generator combinators not the data itself"_
+2. **Bandwidth payoff** — _"deferred execution at massive scale we are passing the function not the data"_
+3. **Base-dimension agnostic** — _"start even with 1d observables or even scalers and project up"_
+4. **NULL-as-monad** — _"null is the monad we wrap escape in"_
+5. **Tri-boolean logic FTW** — _"tri boolean logic FTW"_ (TRIPLE CONVERGENCE on NULL across FP / SQL / operational)
+6. **Triangle/GPU** — _"we can tesselate everyting casue or base is a traingle just like GPUs"_ + Aaron-confirmed _"that's what we look like to higher dimensional beings exactly"_ (Phoenix-rise IS triangle-mesh-rasterization moment)
 
 Sub-target 8 + 10 added (generator-combinator library design; GPU substrate primitives — HOW = compute substrate; complement to Sub-target 7 WHERE = CockroachDB storage).
 

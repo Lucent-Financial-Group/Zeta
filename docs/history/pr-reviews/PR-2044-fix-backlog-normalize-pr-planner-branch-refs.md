@@ -10,47 +10,48 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2044 |
-| Title | fix(backlog): normalize PR planner branch refs |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-08T05:53:04Z |
-| Merged at | 2026-05-08T06:16:19Z |
-| Merge commit SHA | `17e2e982ec32a8492aafebb42b98abf33d448aa1` |
-| Branch | `claim/task-b0280-branch-ref-normalization` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2044 |
-| Changed files | 2 |
-| Additions / deletions | +138 / -4 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2044                                                     |
+| Title                 | fix(backlog): normalize PR planner branch refs           |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-08T05:53:04Z                                     |
+| Merged at             | 2026-05-08T06:16:19Z                                     |
+| Merge commit SHA      | `17e2e982ec32a8492aafebb42b98abf33d448aa1`               |
+| Branch                | `claim/task-b0280-branch-ref-normalization`              |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2044 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +138 / -4                                                |
 
 ## Description
 
 ## Summary
+
 - fixes the B-0280 PR publication planner to normalize branch refs before default-branch safety checks
 - blocks `refs/heads/main` and `origin/main` the same way as `main`
 - emits push and PR-create command argv with normalized short branch refs
 - addresses the post-merge review finding on PR #2043
 
 ## Checks
+
 - `bun test tools/backlog/pr-publication-plan.test.ts`
 - `bun run typecheck`
 - `bunx prettier --check tools/backlog/pr-publication-plan.ts tools/backlog/pr-publication-plan.test.ts docs/claims/task-b0280-branch-ref-normalization.md`
 - `git diff --check`
 
-
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 6 |
-| Resolved threads | 6 |
-| Unresolved threads | 0 |
-| Total review comments | 6 |
-| Total fix commits (touching thread paths) | 6 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 6     |
+| Resolved threads                          | 6     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 6     |
+| Total fix commits (touching thread paths) | 6     |
 
 ## Review threads
 
@@ -66,9 +67,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Preserve literal branch names that begin with origin/**
-
+  
   The new `origin/` normalization rewrites any branch that starts with that prefix, but Git allows local branch names like `origin/feature` as ordinary refs, so this can silently retarget publication commands to `feature` instead of the actual branch the operator provided. In that case `git push -u origin ...` and `gh pr create --head ...` are generated for the wrong ref, which can fail or publish unintended commits. This regression is introduced by the unconditional `startsWith("origin/")` strip and should be limited to true remote-ref forms (for example `refs/remotes/origin/...`) rather than all literal branch names.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -140,9 +141,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Avoid collapsing non-default branch names ending in /main**
-
+  
   `normalizeBranchRef` currently rewrites any two-segment name like `release/main` to `main`, not just remote-tracking shorthands such as `origin/main`. That means valid refs like `refs/heads/release/main` are mis-normalized: publication from that branch is rejected as if it were the default branch, and `baseBranch` can be silently retargeted to `main` in `gh pr create`. This is a regression from the new normalization logic and can misdirect or block PR publication for legitimate branch names.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

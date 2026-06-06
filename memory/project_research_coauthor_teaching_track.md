@@ -9,14 +9,14 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Verbatim Aaron (2026-04-20 pm):
 
-> *"there is also research co authero like me who have
+> _"there is also research co authero like me who have
 > never submitted a peer revied paper, I want to help
 > but I'm going to need a teaching track on how to
 > even enter that space and edicute and expications
 > and requirments and any skills or patterns or
 > knowledge gaps i have i'm going to have to fill in
 > so I'll use that research teach track when its time
-> for me to coauthor."*
+> for me to coauthor."_
 
 Substantive commitments:
 

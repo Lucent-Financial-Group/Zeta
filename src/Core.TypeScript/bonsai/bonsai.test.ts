@@ -42,9 +42,7 @@ interface Golden {
   readonly cases: readonly GoldenCase[];
 }
 
-const golden: Golden = JSON.parse(
-  readFileSync(pathJoin(import.meta.dir, "golden-vectors.json"), "utf8"),
-) as Golden;
+const golden: Golden = JSON.parse(readFileSync(pathJoin(import.meta.dir, "golden-vectors.json"), "utf8")) as Golden;
 
 // Unwrap an Ok, or fail the test with the feedback.
 function expectOk<T>(r: Result<T, BonsaiFeedback>): T {
@@ -114,7 +112,11 @@ describe("Bonsai-subset — rejection contract (declines the specific variant)",
 
   it("parse declines an unknown binary operator with UnknownOp", () => {
     expect(
-      errKind(parse('{"v":1,"expr":{"kind":"binary","op":"div","left":{"kind":"param","name":"a"},"right":{"kind":"param","name":"b"}}}')),
+      errKind(
+        parse(
+          '{"v":1,"expr":{"kind":"binary","op":"div","left":{"kind":"param","name":"a"},"right":{"kind":"param","name":"b"}}}',
+        ),
+      ),
     ).toBe("UnknownOp");
   });
 
@@ -127,7 +129,9 @@ describe("Bonsai-subset — rejection contract (declines the specific variant)",
   });
 
   it("parse declines an int beyond the safe-integer range with NonSafeInt", () => {
-    expect(errKind(parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":99999999999999999}}}'))).toBe("NonSafeInt");
+    expect(errKind(parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":99999999999999999}}}'))).toBe(
+      "NonSafeInt",
+    );
   });
 
   it("parse declines a null const string value with ExpectedString", () => {
@@ -175,7 +179,9 @@ describe("Bonsai-subset — total contract (no exception escapes, even on null)"
   });
 
   it("serialize accepts the safe-integer boundary (2^53 - 1)", () => {
-    expect(expectOk(serialize(cint(2 ** 53 - 1)))).toBe('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":9007199254740991}}}');
+    expect(expectOk(serialize(cint(2 ** 53 - 1)))).toBe(
+      '{"v":1,"expr":{"kind":"const","value":{"t":"int","v":9007199254740991}}}',
+    );
   });
 
   it("serialize declines a null string field with ExpectedString (no NRE)", () => {

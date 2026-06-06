@@ -28,7 +28,10 @@ test("release queue applies a green approved batch in priority order", () => {
     evaluateBatch: () => ({ green: true, evidenceRefs: ["test-run:green"] }),
   });
 
-  deepEqual(result.actions.map((action) => action.changeSetId), ["old", "new"]);
+  deepEqual(
+    result.actions.map((action) => action.changeSetId),
+    ["old", "new"],
+  );
   ok(result.actions.every((action) => action.kind === ReleaseQueueActionKind.Apply));
 });
 ```
@@ -66,11 +69,14 @@ test("release queue bisects a red batch and requests changes only for the culpri
     }),
   });
 
-  deepEqual(result.actions.map((action) => [action.kind, action.changeSetId]), [
-    [ReleaseQueueActionKind.Apply, "a"],
-    [ReleaseQueueActionKind.RequestChanges, "b"],
-    [ReleaseQueueActionKind.Apply, "c"],
-  ]);
+  deepEqual(
+    result.actions.map((action) => [action.kind, action.changeSetId]),
+    [
+      [ReleaseQueueActionKind.Apply, "a"],
+      [ReleaseQueueActionKind.RequestChanges, "b"],
+      [ReleaseQueueActionKind.Apply, "c"],
+    ],
+  );
 });
 ```
 

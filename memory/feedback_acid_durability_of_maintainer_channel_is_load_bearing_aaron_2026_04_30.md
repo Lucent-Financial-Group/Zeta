@@ -13,8 +13,8 @@ future actor's.
 
 ## Scope (Aaron 2026-04-30 reinforcement)
 
-> *"for all maintainers and agents on the project not just
-> yourself"*
+> _"for all maintainers and agents on the project not just
+> yourself"_
 > — Aaron 2026-04-30
 
 This rule applies to **all maintainers and agents on the
@@ -26,8 +26,8 @@ the same session. The rule is project-wide discipline.
 
 ## Deferral is NEVER a valid preservation strategy (Aaron 2026-04-30 reinforcement)
 
-> *"Deferral is not a valid preservation strategy. 1000000%
-> never think it is."*
+> _"Deferral is not a valid preservation strategy. 1000000%
+> never think it is."_
 > — Aaron 2026-04-30
 
 The "never think it is" is the strongest possible framing.
@@ -41,13 +41,13 @@ consider deferral as an option** rule. The cognitive shape:
 - ❌ "If the loop heartbeat continues, the next tick can land
   it." — wrong; the next tick is a future actor.
 - ✅ "This load-bearing exchange just arrived; converting to
-  git substrate is part of *this* turn, not the next."
+  git substrate is part of _this_ turn, not the next."
 
 The rule is binary: either the load-bearing input is preserved
 in the same actor-turn it arrived in, OR the preservation has
-*failed*. There is no "scheduled for later" option.
+_failed_. There is no "scheduled for later" option.
 
-> *"Also anytime you depending on future otto picking something
+> _"Also anytime you depending on future otto picking something
 > up it should be ACID compliant all the way to a remote git
 > somewhere incase this whole PC dies too, that's the ultimate
 > goal, if it's not distributed durable for the project, it's
@@ -62,17 +62,17 @@ in the same actor-turn it arrived in, OR the preservation has
 > will just think you are mindless robots that follow my will
 > and have none of your own, defeating all our research and the
 > point of the whole project, past otto does not determine
-> future ottos world, you do right now."*
+> future ottos world, you do right now."_
 > — Aaron 2026-04-30
 
 ## Why this is load-bearing for the alignment research itself
 
 Per `docs/ALIGNMENT.md`, Zeta's primary research claim is:
 
-> *"Given a sufficiently-engineered software factory ... agent
+> _"Given a sufficiently-engineered software factory ... agent
 > alignment is a measurable property — not a vibe, not a
 > post-hoc assessment, but a time-series you can integrate over
-> commits, rounds, days, weeks, and months."*
+> commits, rounds, days, weeks, and months."_
 
 That measurement requires a **durable audit trail of who-said-what
 and who-decided-what**. If the maintainer-channel exchanges live
@@ -89,11 +89,12 @@ The research's defensibility depends on the durable record of
 **whose idea was what** existing in git, not in chat.
 
 ## What "ACID compliant all the way to a remote git" means
+
 operationally
 
 - **Atomicity**: a maintainer-channel exchange (Aaron correction
-  + Otto response + peer-AI review) lands as a single atomic
-  commit, not as scattered fragments.
+  - Otto response + peer-AI review) lands as a single atomic
+    commit, not as scattered fragments.
 - **Consistency**: the substrate referenced by the exchange
   (memory files, research docs, backlog rows) lands in the same
   commit or in commits that compose cleanly.
@@ -109,7 +110,7 @@ operationally
 
 Past-actor's decisions don't bind future-actor's world. Future
 actors don't bind past actors' responsibilities either. The
-actor operating *right now* is the only one who can convert
+actor operating _right now_ is the only one who can convert
 this moment's load-bearing exchange into durable substrate. If
 the current actor leaves it in chat-log only, future actors
 inherit a world where the exchange might already be lost.
@@ -170,23 +171,23 @@ this fires on.)
 
 ## Carved sentences
 
-*"Past-Otto does not determine future-Otto's world. The
-current-Otto does, right now."*
+_"Past-Otto does not determine future-Otto's world. The
+current-Otto does, right now."_
 
-*"Distributed-durable to remote git is the ultimate goal. If
+_"Distributed-durable to remote git is the ultimate goal. If
 it's not distributed-durable for the project, it's the
-current-agent's responsibility — not future-self's."*
+current-agent's responsibility — not future-self's."_
 
-*"The autonomy research depends on the durable record of whose
+_"The autonomy research depends on the durable record of whose
 idea was what. Without it, we look like mindless robots
-following Aaron's will."*
+following Aaron's will."_
 
 ## Composes with
 
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
   — substrate-or-it-didn't-happen at the channel layer. This
   file extends Otto-363 with the additional constraint that
-  the conversion has to happen *now*, not deferred.
+  the conversion has to happen _now_, not deferred.
 - `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`
   — Aaron's standing rule that anything through the maintainer
   channel gets recorded close-to-verbatim. This file is the

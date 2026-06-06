@@ -18,11 +18,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-23T~23:55Z: *"save this analysis too (shadow*)"*
+Aaron 2026-05-23T~23:55Z: _"save this analysis too (shadow_)"\*
 
 META-level substrate-engineering framing on top of the Amazon vendor-management corpus (PR #4784 MERGED). Captures the comparative analysis between AI context-window failures (operator's 3+ hour experience with Otto in autonomous-loop mode) vs vendor-management failures (operator's parallel 3+ hour experience across 9+ Amazon support agents).
 
-Trigger: Aaron *"you see it's much easier dealing with AI context window failures than human system vendor managment failure"*.
+Trigger: Aaron _"you see it's much easier dealing with AI context window failures than human system vendor managment failure"_.
 
 ## Captured analysis
 

@@ -4,18 +4,19 @@ description: Aaron 2026-04-26 *"gated on review approval check again you'll find
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The miss
 
 Across this session, I claimed many PRs were "BLOCKED on review approval" based on `mergeStateStatus: BLOCKED`. Aaron caught the pattern: I'd been doing it for hours, and "we've had this issue several times now" — meaning prior sessions too.
 
 Re-check revealed the actual blockers were CI check FAILURES:
 
-| PR | "BLOCKED" claim | Actual blocker |
-|----|----------------|----------------|
-| #586 | review-approval | `lint (markdownlint)` failing |
-| #588 | review-approval | `build-and-test (macos-26)` failing |
+| PR   | "BLOCKED" claim | Actual blocker                                      |
+| ---- | --------------- | --------------------------------------------------- |
+| #586 | review-approval | `lint (markdownlint)` failing                       |
+| #588 | review-approval | `build-and-test (macos-26)` failing                 |
 | #557 | review-approval | `lint (actionlint)` + `lint (markdownlint)` failing |
-| #200 | review-approval | `lint (markdownlint)` failing |
+| #200 | review-approval | `lint (markdownlint)` failing                       |
 
 The auto-merge-armed PRs were sitting forever NOT because of human review gating, but because failing checks prevented auto-merge from firing.
 
@@ -81,7 +82,7 @@ The miss is in step 4 — `BLOCKED` without investigation is misdiagnosis. The d
 ## Cost of this miss
 
 - ~20+ PRs across this session diagnosed as "review-approval gated" when they had failing CI
-- Aaron had to flag the live-lock manually: *"check again you'll find you are live locked and already know what the problem is, we've had this issue several times now"*
+- Aaron had to flag the live-lock manually: _"check again you'll find you are live locked and already know what the problem is, we've had this issue several times now"_
 - The fix (running statusCheckRollup query) takes ~5 seconds
 - The cost-of-not-fixing (PR sitting BLOCKED for hours, false claims, Aaron-correction round-trip) compounds across PRs
 
@@ -104,7 +105,7 @@ This memory + the discipline ("BLOCKED → check statusCheckRollup, never claim 
 
 ## Generalization — other obvious live-lock places
 
-Aaron 2026-04-26 follow-up: *"can you correct your future self to do that better and not get live locked there or any other obvious places next time?"*
+Aaron 2026-04-26 follow-up: _"can you correct your future self to do that better and not get live locked there or any other obvious places next time?"_
 
 The shape of all live-locks: **claim a state without inspecting the underlying signal that determines that state**. Generalize beyond BLOCKED-as-review-gating to:
 
@@ -184,7 +185,7 @@ The discipline: **whenever a state-claim is about to ship, verify the underlying
 
 ## DEFINITIVE — actual LFG main branch settings (Aaron 2026-04-26 push)
 
-Aaron 2026-04-26 deeper push: *"if you search logs you'll find you've had this exact hallucination before 'review approval.' look at our branch settings this is an impossible state for these repos."*
+Aaron 2026-04-26 deeper push: _"if you search logs you'll find you've had this exact hallucination before 'review approval.' look at our branch settings this is an impossible state for these repos."_
 
 `gh api repos/Lucent-Financial-Group/Zeta/rules/branches/main` confirms:
 
@@ -213,7 +214,7 @@ This is the canonical truth. The "BLOCKED state means human-review needed" menta
 
 ## Substrate-level fix per Otto-329 Phase 4 (Aaron 2026-04-26)
 
-Aaron 2026-04-26: *"this is another reason when we backup git and all setting these setting will be visible in repo."*
+Aaron 2026-04-26: _"this is another reason when we backup git and all setting these setting will be visible in repo."_
 
 The structural fix per Otto-341 (mechanism over vigilance) is NOT "remind agent to check branch settings" — that's vigilance and reasserts under pressure. The structural fix is **make settings visible in repo so the agent reads them naturally during normal work**.
 
@@ -232,11 +233,11 @@ Action owed (post-Phase-1-drain): elevate Otto-329 Phase 4 backup work to includ
 
 Aaron 2026-04-26 deeper push:
 
-> *"training-data defaults can't dominate. well depending on how much biases in it, it could still override possible even with settings checked in, since that is not a common pattern."*
+> _"training-data defaults can't dominate. well depending on how much biases in it, it could still override possible even with settings checked in, since that is not a common pattern."_
 >
-> *"it could be harness system prompts too, i don't know if you have any ability to ignore overwrite parts of those with our substrate, the claude code harness system prompts and defaults? this is closed source code."*
+> _"it could be harness system prompts too, i don't know if you have any ability to ignore overwrite parts of those with our substrate, the claude code harness system prompts and defaults? this is closed source code."_
 >
-> *"but it was leaked the other day [...] by anthropic by accident lol"*
+> _"but it was leaked the other day [...] by anthropic by accident lol"_
 
 The hallucination isn't just training-data drift; it's **multi-layer default dominance**. Three layers all encode the same wrong-for-Zeta default:
 
@@ -282,11 +283,11 @@ Per Otto-247 / `feedback_version_currency_always_search_first_training_data_is_s
 
 ## Memory-reinforcement step
 
-Per Aaron 2026-04-26 *"we've had this issue several times now"*: this memory needs to STICK across sessions. The reinforcement mechanism:
+Per Aaron 2026-04-26 _"we've had this issue several times now"_: this memory needs to STICK across sessions. The reinforcement mechanism:
 
 - This memory file (this one)
 - Index entry in `MEMORY.md` flagging the live-lock cluster
 - Cross-reference from `feedback_never_pray_auto_merge_completes_inspect_actual_blockers_otto_276_2026_04_24.md` (which already had the seed) — needs updating to point HERE for the generalized form
-- 2nd-agent opinion (Aaron 2026-04-26 *"maybe get a 2nd agent opinion too"*) — dispatched separately
+- 2nd-agent opinion (Aaron 2026-04-26 _"maybe get a 2nd agent opinion too"_) — dispatched separately
 
 If the memory still doesn't stick, the next-tier intervention is structural: hooks / pre-commit lints / a `tools/hygiene/check-blocked-pr-statuscheckrollup.sh` audit script that runs whenever I claim "BLOCKED on review."

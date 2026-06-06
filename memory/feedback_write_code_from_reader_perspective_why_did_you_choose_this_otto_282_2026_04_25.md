@@ -14,14 +14,14 @@ as a comment — at write time, not later.**
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"just in general when writing code, think from the
+> _"just in general when writing code, think from the
 > perspective of a human developer who's looking at it, they
-> will always ask why did you choose this?"*
+> will always ask why did you choose this?"_
 
 ## What "non-obvious" looks like
 
 The rule fires on any choice where a competent reader would
-*pause* and wonder why this specific thing was picked over the
+_pause_ and wonder why this specific thing was picked over the
 alternatives. Concrete examples that triggered the
 generalization this session:
 
@@ -32,16 +32,16 @@ generalization this session:
 
 2. **Empirically-tuned shift values.** `30 / 27 / 31` in the
    SplitMix64 finaliser look arbitrary; the comment that says
-   *"chosen by Vigna in arxiv 1410.0530 §3 to maximise
+   _"chosen by Vigna in arxiv 1410.0530 §3 to maximise
    avalanche when paired with the multiplier; not
-   independently re-tunable — they are a unit"* tells the
+   independently re-tunable — they are a unit"_ tells the
    reader they cannot just bump them.
 
 3. **Library / algorithm selection.** Why `XxHash3` and not
-   `MD5` or `SHA-256`? The comment *"deterministic across
+   `MD5` or `SHA-256`? The comment _"deterministic across
    processes (unlike HashCode.Combine), 5–10× faster than
    cryptographic hashes, and we don't need cryptographic
-   resistance for shard assignment"* tells the reader that
+   resistance for shard assignment"_ tells the reader that
    the picker considered alternatives and ruled them out.
 
 4. **Threshold / boundary values.** `min 8 width` in
@@ -51,34 +51,34 @@ generalization this session:
 
 5. **API signature shape.** `Add(value: 'T, weight: int64)`
    instead of `Add(value: 'T)` — why expose the weight? The
-   docstring saying *"negative weights retract; the sketch
-   lives in ℤ rather than ℕ"* is exactly the rationale the
+   docstring saying _"negative weights retract; the sketch
+   lives in ℤ rather than ℕ"_ is exactly the rationale the
    reader needs.
 
 6. **Performance trade-offs.** `let buf = Array.zeroCreate
-   ... ` in a hot path — is this Gen-0 alloc deliberate or
-   accidental? The comment *"reused per Push; reference impl
-   not hot-path; for hot-path use you'd incrementalise"* tells
-   the reader this is *known and accepted*, not an oversight.
+... ` in a hot path — is this Gen-0 alloc deliberate or
+   accidental? The comment _"reused per Push; reference impl
+   not hot-path; for hot-path use you'd incrementalise"_ tells
+   the reader this is _known and accepted_, not an oversight.
 
 7. **DST-exempt or DST-special markers** (Otto-281
    counterweight). If you write the words "DST-exempt", you
-   owe the next reader: *what determinism violation, why
-   the cost is acceptable, what the deadline-or-fix is*.
+   owe the next reader: _what determinism violation, why
+   the cost is acceptable, what the deadline-or-fix is_.
 
 8. **Defensive vs assertive style choices.** A null-check
-   that looks paranoid: *"protects the FFI boundary where
+   that looks paranoid: _"protects the FFI boundary where
    our caller may be in C; internal callers cannot reach
-   this branch."*
+   this branch."_
 
 9. **Off-by-one or bounds tricks.** `(uint64 hash32 * uint64 (uint32 w)) >>> 32`
    in the CountMin column-mapper looks weird; the
-   *"`fastrange` on 32-bit hash; takes the low 32 bits so
-   the product fits without truncation"* comment in
+   _"`fastrange` on 32-bit hash; takes the low 32 bits so
+   the product fits without truncation"_ comment in
    `CountMin.fs` is exactly right.
 
 10. **Concurrency annotations.** `// Thread safety: NOT
-    thread-safe. The buffer is mutated in-place on every Add`
+thread-safe. The buffer is mutated in-place on every Add`
     is an obvious why — reader sees a `ResizeArray` and
     immediately wonders if they can share the sketch. The
     comment closes the loop.
@@ -94,13 +94,13 @@ generalization this session:
 - Wrapping a `Dictionary` lookup in `TryGetValue`. Standard.
 - Using the project's standard logger / error type. Standard.
 
-The bar is *"does a competent reader pause and ask why?"* —
+The bar is _"does a competent reader pause and ask why?"_ —
 if yes, comment in-place. If no, don't.
 
 ## The economic argument
 
 The comment write-time cost is ~10 seconds. The re-derivation
-cost is *~1 hour per reader per visit* — looking up the paper,
+cost is _~1 hour per reader per visit_ — looking up the paper,
 re-tracing the rationale, talking to the original author (who
 may have left), running git-blame, reading the linked PR. With
 N readers visiting M times, the saving compounds: N × M × ~1hr
@@ -115,9 +115,9 @@ will not remember the rationale unless you wrote it down.
 Aaron's deeper framing 2026-04-25 (immediately after the
 in-place rule above):
 
-> *"basically if a human can't answer why they want to
+> _"basically if a human can't answer why they want to
 > refactor until they can, this is a mental load
-> optimization."*
+> optimization."_
 
 The why-comment rule is best understood as a **cognitive
 externalization**: the rationale moves from in-head working
@@ -128,18 +128,18 @@ optimization.
 
 But the framing also implies a **gate on action**:
 
-> *"if a human can't answer why they want to refactor
-> [...] until they can"*
+> _"if a human can't answer why they want to refactor
+> [...] until they can"_
 
 If you cannot articulate the reason for a change to
 yourself, you cannot articulate it for the reader either.
 The act of writing the why-comment is also a forcing
-function: if writing the comment surfaces *"I actually
-don't know why I'm doing this"*, the right move is to
+function: if writing the comment surfaces _"I actually
+don't know why I'm doing this"_, the right move is to
 stop and re-evaluate, not to ship the change with a
 hand-wavy comment.
 
-This refines Otto-282 from *"comment your why"* to
+This refines Otto-282 from _"comment your why"_ to
 **"if you cannot answer your own why, do not make the
 change"** — and the comment is the proof that the why
 exists. No comment + no good reason = the change is
@@ -158,25 +158,25 @@ Two failure modes the gate prevents:
 
 Aaron pushed the framing one step deeper 2026-04-25:
 
-> *"if a human can answer why then they can more easily
+> _"if a human can answer why then they can more easily
 > predict future outcomes and hold potential behavior
 > outcomes in their mind because 'it makes sense' they
 > understand why, something making sense and understanding
-> why are two closely related human concepts."*
+> why are two closely related human concepts."_
 
 Translation: **"makes sense" and "understand why" are the
 same cognitive primitive** — both describe the state of
-having a *predictive model* of the code. When a reader
+having a _predictive model_ of the code. When a reader
 understands why a choice was made, they can hold the
-*space of consequences* in working memory — they can
+_space of consequences_ in working memory — they can
 predict how the code will behave on inputs the test suite
 never covered, predict where it will break under future
 load, predict which surrounding changes are safe and
 which aren't.
 
-Without the why, the reader has only the *what* —
+Without the why, the reader has only the _what_ —
 syntax + behavior on the cases they ran. They can describe
-the code but they cannot *predict* it. Surrounding code
+the code but they cannot _predict_ it. Surrounding code
 changes feel unsafe because every modification is a leap.
 The cognitive load of working in the file is high because
 each line carries an unsourced "trust me" that the reader
@@ -188,38 +188,38 @@ neighborhood they can confidently change.** Lines without a
 clear why are blast-radius constraints — you can read them
 but you can't safely move around them. The why-comment
 isn't just a convenience; it's the substrate that lets a
-maintainer *act* in the code at all.
+maintainer _act_ in the code at all.
 
 Composes with intentional-debt and "do nothing if nothing
 is broken" feedback rules: the why-comment is the
 entry-point check that the change is intentional rather
-than reflexive. The author's pre-commit moment of *"can I
-write a sentence saying why this change exists?"* is the
+than reflexive. The author's pre-commit moment of _"can I
+write a sentence saying why this change exists?"_ is the
 optimization — once the rationale is articulated, the
 reader inherits a model of the code, not just a description
 of it.
 
 The cognitive economics summary:
 
-| Reader has  | Reader can do                       |
-| ----------- | ----------------------------------- |
-| WHAT only   | Read; describe behavior on tested cases |
-| WHY too     | Predict; safely change surrounding code |
-| Neither     | Avoid the file; cargo-cult around it |
+| Reader has | Reader can do                           |
+| ---------- | --------------------------------------- |
+| WHAT only  | Read; describe behavior on tested cases |
+| WHY too    | Predict; safely change surrounding code |
+| Neither    | Avoid the file; cargo-cult around it    |
 
 ## What this rule SUBSUMES (consolidation)
 
 This is a general principle that several earlier rules were
 already special-casing:
 
-- *"Comment magic numbers"* — special case of "non-obvious
+- _"Comment magic numbers"_ — special case of "non-obvious
   literal".
-- *"DST-exempt comments need full justification"*
+- _"DST-exempt comments need full justification"_
   (Otto-281) — special case of "non-obvious style choice
   with a determinism cost".
-- *"Document perf trade-offs"* — special case of
+- _"Document perf trade-offs"_ — special case of
   "non-obvious algorithmic choice".
-- *"Reference papers / RFCs in docstrings"* — special case
+- _"Reference papers / RFCs in docstrings"_ — special case
   of "answer the why".
 
 Future rules of this shape can hang off Otto-282 rather than
@@ -235,7 +235,7 @@ authoring-perspective.
   patterns) needs no comment. Adding "this loops over the
   list" above `for x in xs do ...` is noise.
 - **Does NOT mandate paragraph-length docstrings.** A
-  one-line *"why this constant: floor(2^64 / phi)"* is
+  one-line _"why this constant: floor(2^64 / phi)"_ is
   often enough; expand only when the reader genuinely
   needs more.
 - **Does NOT contradict CLAUDE.md "default to no
@@ -246,12 +246,13 @@ authoring-perspective.
   alone.
 
 The two compose:
+
 - WHAT — encoded in names + types. Don't comment.
 - WHY — encoded in rationale. Comment when non-obvious.
 
 ## Pre-commit-lint candidate
 
-A simple pre-commit lint could flag *new* numeric literals
+A simple pre-commit lint could flag _new_ numeric literals
 that don't have a `// ` comment within ±2 lines. False
 positives are easy (loop bounds, indices), so the lint should
 warn-not-block, and probably exempt small literals (0, 1, -1,
@@ -270,8 +271,8 @@ explain it is just as bad as no comment.
 When reviewing or auditing existing code and you find an
 unexplained non-obvious choice, the right move is **not**
 to leave it (charity) and **not** to delete it (suspicion);
-it is to *ask the author* (or git-blame the original PR) for
-the rationale, then *land the rationale as a comment* in a
+it is to _ask the author_ (or git-blame the original PR) for
+the rationale, then _land the rationale as a comment_ in a
 follow-up commit. The audit's job is half "find bugs" and
 half "convert tribal knowledge into documented rationale".
 
@@ -292,23 +293,23 @@ audit (Otto-281 follow-up), I:
 4. Then **forgot to comment WHY** the shift values 30/27/31
    were picked. Aaron caught it.
 
-5. Aaron then generalised: *"just in general when writing
+5. Aaron then generalised: _"just in general when writing
    code, think from the perspective of a human developer
    who's looking at it, they will always ask why did you
-   choose this?"*
+   choose this?"_
 
 The pattern: I was treating "well-known to me" as "obvious to
 the reader". That's the bias Otto-282 corrects. The reader
 does not have my Vigna-paper memory. They do not have my
 Knuth TAOCP memory. They have the file in front of them and
-nothing else. Write for *that* reader.
+nothing else. Write for _that_ reader.
 
 ## Composes with
 
-- **Otto-281** *DST-exempt is deferred bug* — special case of
+- **Otto-281** _DST-exempt is deferred bug_ — special case of
   "comment the why for any non-obvious choice", specifically
   for determinism exemptions.
-- **Otto-264** *rule of balance* — every found mistake
+- **Otto-264** _rule of balance_ — every found mistake
   triggers a counterweight. This memory IS the counterweight
   to the SplitMix64 magic-number-without-rationale mistake.
 - **CLAUDE.md "default to no comments"** — composes by

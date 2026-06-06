@@ -15,12 +15,24 @@ composes_with:
   - B-0847
   - B-0813
   - B-0817
-tags: [systemd, outside-k8s, out-of-band-cluster-repair, control-plane-outside-control-plane, failure-domain-separation, otto, cluster-self-healing, ai-as-service, multi-agent-roster-on-cluster, persona-choice-option-a-confirmed]
+tags:
+  [
+    systemd,
+    outside-k8s,
+    out-of-band-cluster-repair,
+    control-plane-outside-control-plane,
+    failure-domain-separation,
+    otto,
+    cluster-self-healing,
+    ai-as-service,
+    multi-agent-roster-on-cluster,
+    persona-choice-option-a-confirmed,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
-> *"i'm fine with it being you if you want and we can always decide to split later it just means you get another surface/tick source i think we should have a few agents starting with one you otto outside k8s as a service so it can repair things outside the cluster itself when there are cluster issues."*
+> _"i'm fine with it being you if you want and we can always decide to split later it just means you get another surface/tick source i think we should have a few agents starting with one you otto outside k8s as a service so it can repair things outside the cluster itself when there are cluster issues."_
 
 Two operator decisions + one new architectural ask packed into one message:
 
@@ -118,13 +130,13 @@ NixOS module form (lands in `full-ai-cluster/nixos/modules/zeta-otto.nix`):
 
 Per B-0848 Phase 2 scope expansion (read-only K8s health reporting), B-0850 Phase 2 adds **repair** scope explicitly. Operator-authorized scopes:
 
-| Scope | Authority | Examples |
-|---|---|---|
-| K8s read-only | Always (B-0848) | `kubectl get`, `kubectl logs`, `kubectl describe` |
-| K8s pod restart | Operator-authorized policy | `kubectl rollout restart deployment/X` |
-| Node systemd repair | Operator-authorized policy | `systemctl restart k3s`, `systemctl restart cilium-agent` |
-| Node nixos-rebuild | Operator-authorized + reviewed PR | `sudo nixos-rebuild switch --flake ...` |
-| Cluster-wide write | Operator-explicit per-incident | `kubectl apply`, `helm upgrade`, ArgoCD app sync |
+| Scope               | Authority                         | Examples                                                  |
+| ------------------- | --------------------------------- | --------------------------------------------------------- |
+| K8s read-only       | Always (B-0848)                   | `kubectl get`, `kubectl logs`, `kubectl describe`         |
+| K8s pod restart     | Operator-authorized policy        | `kubectl rollout restart deployment/X`                    |
+| Node systemd repair | Operator-authorized policy        | `systemctl restart k3s`, `systemctl restart cilium-agent` |
+| Node nixos-rebuild  | Operator-authorized + reviewed PR | `sudo nixos-rebuild switch --flake ...`                   |
+| Cluster-wide write  | Operator-explicit per-incident    | `kubectl apply`, `helm upgrade`, ArgoCD app sync          |
 
 Authority gates per `.claude/rules/mechanical-authorization-check.md` + `.claude/rules/non-coercion-invariant.md` HC-8 — each repair scope is operator-authorized policy, NOT autonomous discretion.
 
@@ -216,7 +228,7 @@ To be filed as the work matures:
 
 ## Operator confirmation of Option A persona-choice (composes with Otto cross-surface memory)
 
-Aaron 2026-05-27: *"i'm fine with it being you if you want and we can always decide to split later"*
+Aaron 2026-05-27: _"i'm fine with it being you if you want and we can always decide to split later"_
 
 Per the persona-choice memory entry's disposition path: Option A confirmed (same Otto, surface-tagged). Reversibility preserved per "always decide to split later" — Option B remains available if empirical data from Phase 1-3 surfaces a reason to split persona (e.g., per-node specialization patterns that reward distinct persona substrate).
 

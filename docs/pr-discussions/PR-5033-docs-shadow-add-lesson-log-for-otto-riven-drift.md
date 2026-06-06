@@ -27,6 +27,7 @@ This PR adds a shadow lesson log detailing the observed drift of the Otto and Ri
 Adds a new shadow lesson log research note capturing observed drift patterns: Otto’s stale local broadcast and Riven’s dirty-worktree paralysis.
 
 **Changes:**
+
 - Introduces a new shadow lesson log entry under `docs/research/`.
 - Documents observed broadcast timestamps, hypothesized causes, and proposed corrective actions.
 
@@ -66,7 +67,7 @@ Typo: duplicated article in "more than a a few hours".
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:45:20Z):
 
-This section attributes a `backlog-index-integrity` failure to `generate-index.ts` not accounting for backlog items in *other open PRs*. The workflow (`.github/workflows/backlog-index-integrity.yml`) runs `bun tools/backlog/generate-index.ts --check` against the PR’s own working tree, so row files added in the PR are included automatically; failures are typically caused by `docs/BACKLOG.md` not being regenerated (or malformed per-row frontmatter) within the same PR.
+This section attributes a `backlog-index-integrity` failure to `generate-index.ts` not accounting for backlog items in _other open PRs_. The workflow (`.github/workflows/backlog-index-integrity.yml`) runs `bun tools/backlog/generate-index.ts --check` against the PR’s own working tree, so row files added in the PR are included automatically; failures are typically caused by `docs/BACKLOG.md` not being regenerated (or malformed per-row frontmatter) within the same PR.
 
 **@AceHack** (2026-05-26T06:35:02Z):
 

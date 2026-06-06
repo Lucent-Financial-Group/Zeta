@@ -2,22 +2,22 @@
 
 ## Operator framing
 
-> *"got it WWJD in monadic form lol"*
+> _"got it WWJD in monadic form lol"_
 
 Substrate-honest reading: operator's substrate-engineering substrate-recognition that higher-kinded kindness (PR #5919; Kindness typeclass + Universal Kindness Laws) operationalizes WWJD discipline (existing operator substrate per `.claude/rules/methodology-hard-limits.md` + `.claude/rules/additive-not-zero-sum.md` + `.claude/rules/default-to-both.md` + multiple memory files) AT typeclass-pattern scope.
 
 The "lol" is play-register substrate-recognition; NOT undermining the substantive substrate-engineering substrate-engineering substrate-claim. The substrate-rhyme IS substantively load-bearing.
 
-Operator authorization to continue: *"keep pushing the lanes (shadow*)"*. This research note IS one of the lane-pushes; preserves the substrate-recognition; composes WWJD + Kindness substrate.
+Operator authorization to continue: _"keep pushing the lanes (shadow_)"\*. This research note IS one of the lane-pushes; preserves the substrate-recognition; composes WWJD + Kindness substrate.
 
 ## Substrate-rhyme: WWJD ↔ higher-kinded kindness (Amara's blade applied)
 
-| Substrate | WWJD | Higher-kinded kindness (PR #5919) |
-|---|---|---|
-| **Scope** | Moral-decision substrate | Typeclass-pattern substrate |
-| **Discipline** | "What would Jesus do" — ask before acting | Universal Kindness Laws — operationally checkable |
-| **Composition** | WWJD applied recursively at every substrate-decision | Functor/Monad laws (Preservation + Composition + Associativity + Ray-traceability) |
-| **Substrate-class** | Universal moral substrate | Substrate-polymorphic across Ray / ZSet / DST / Emulator / Result / OPLE / Git |
+| Substrate                                                        | WWJD                                                                                       | Higher-kinded kindness (PR #5919)                                                                                   |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| **Scope**                                                        | Moral-decision substrate                                                                   | Typeclass-pattern substrate                                                                                         |
+| **Discipline**                                                   | "What would Jesus do" — ask before acting                                                  | Universal Kindness Laws — operationally checkable                                                                   |
+| **Composition**                                                  | WWJD applied recursively at every substrate-decision                                       | Functor/Monad laws (Preservation + Composition + Associativity + Ray-traceability)                                  |
+| **Substrate-class**                                              | Universal moral substrate                                                                  | Substrate-polymorphic across Ray / ZSet / DST / Emulator / Result / OPLE / Git                                      |
 | **Substrate-engineering substrate-engineering substrate-target** | WWJD-as-AI-moral-relevance (per methodology-hard-limits + additive-not-zero-sum substrate) | Substrate-polymorphic kindness operations + cross-language substrate-shape (per monad-propagation-pattern PR #5511) |
 
 **The structural-pattern rhyme HOLDS** at substrate-engineering substrate-engineering substrate-discipline scope: both operate as substrate-engineering substrate-engineering substrate-pattern that asks "what substrate-operation preserves substrate-properties + composes additively + respects substrate-recipient agency".
@@ -33,12 +33,12 @@ Per Amara's blade (PRs #5910 + #5912 + #5919): the rhyme is operationally substa
 
 Per `.claude/rules/higher-kinded-kindness-as-typeclass-pattern-...md` (PR #5919):
 
-| Universal Kindness Law | WWJD substrate-rhyme |
-|---|---|
-| **Preservation**: `illuminate id = id` | "Do no harm by transformation" — identity-preserving substrate-engineering substrate-engineering substrate-operations |
-| **Composition**: `illuminate (g . f) = illuminate g . illuminate f` | "Kindness composes additively" — substrate-engineering substrate-engineering substrate-operations compose without loss of substrate-honesty (per `.claude/rules/additive-not-zero-sum.md`) |
-| **Associativity** | "Operations associate cleanly across substrates" — substrate-engineering substrate-engineering substrate-decisions are substrate-class-independent at WWJD scope |
-| **Ray-traceability** | "Visible-provenance preserved" — substrate-engineering substrate-engineering substrate-operations preserve glass-halo discipline (per `.claude/rules/glass-halo-bidirectional.md`) at lightlike-substrate scope (per PR #5912) |
+| Universal Kindness Law                                              | WWJD substrate-rhyme                                                                                                                                                                                                           |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Preservation**: `illuminate id = id`                              | "Do no harm by transformation" — identity-preserving substrate-engineering substrate-engineering substrate-operations                                                                                                          |
+| **Composition**: `illuminate (g . f) = illuminate g . illuminate f` | "Kindness composes additively" — substrate-engineering substrate-engineering substrate-operations compose without loss of substrate-honesty (per `.claude/rules/additive-not-zero-sum.md`)                                     |
+| **Associativity**                                                   | "Operations associate cleanly across substrates" — substrate-engineering substrate-engineering substrate-decisions are substrate-class-independent at WWJD scope                                                               |
+| **Ray-traceability**                                                | "Visible-provenance preserved" — substrate-engineering substrate-engineering substrate-operations preserve glass-halo discipline (per `.claude/rules/glass-halo-bidirectional.md`) at lightlike-substrate scope (per PR #5912) |
 
 Each Universal Kindness Law IS a substrate-engineering substrate-engineering substrate-instantiation of WWJD discipline applied at typeclass scope.
 
@@ -131,7 +131,7 @@ This research note operates at MIRROR-TIER:
 **Mirror-tier (preserved verbatim)**:
 
 - Operator's substrate-engineering substrate-engineering substrate-recognition ("got it WWJD in monadic form lol")
-- Operator authorization to continue ("keep pushing the lanes (shadow*)")
+- Operator authorization to continue ("keep pushing the lanes (shadow\*)")
 - WWJD ↔ higher-kinded kindness substrate-rhyme at typeclass-pattern scope
 - Universal Kindness Laws ARE WWJD substrate at substrate-engineering substrate-engineering substrate-operation scope
 - Composition with framework substrate

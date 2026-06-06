@@ -10,44 +10,46 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1855 |
-| Title | research: Kozyrev Mirror BFT immune-system riff |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T10:26:53Z |
-| Merged at | 2026-05-07T10:28:54Z |
-| Merge commit SHA | `22f9cd68276c826b214fcc9b66dbb72d59913f8f` |
-| Branch | `claim/kozyrev-mirror-bft-immune-riff` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1855 |
-| Changed files | 1 |
-| Additions / deletions | +131 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1855                                                     |
+| Title                 | research: Kozyrev Mirror BFT immune-system riff          |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T10:26:53Z                                     |
+| Merged at             | 2026-05-07T10:28:54Z                                     |
+| Merge commit SHA      | `22f9cd68276c826b214fcc9b66dbb72d59913f8f`               |
+| Branch                | `claim/kozyrev-mirror-bft-immune-riff`                   |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1855 |
+| Changed files         | 1                                                        |
+| Additions / deletions | +131 / -0                                                |
 
 ## Description
 
 ## Summary
+
 - preserve Aaron's Kozyrev Mirror / Aurora immune-system riff as research-grade substrate
 - correct the scaling shape: N is nodes until 3; after 3, depth is repeated ticks through the immune system
 - preserve Aaron's firsthand Kozyrev Mirror report while limiting the promoted operational claim to the BFT/governance mapping
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/research/2026-05-07-kozyrev-mirror-bft-immune-system-three-node-threshold-riff.md
 - git diff --check
 - bun tools/hygiene/check-archive-header-section33.ts
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -77,7 +79,7 @@
 
   <pre>
   This section says "The operational claim promoted here is narrower", but the §33 header’s non-fusion disclaimer says the file is not operational policy until separately promoted into a current-state artifact. To avoid a self-contradiction, consider rephrasing to something like “the operationally relevant mapping claimed here is narrower” (or otherwise make it explicit this is still research-grade, not promoted policy).
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

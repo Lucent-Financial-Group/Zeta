@@ -1,13 +1,13 @@
 # git-crypt deep-dive — 2026-04-21
 
 > **Decision (2026-04-21): REJECTED.** Aaron, after reading
-> this research: *"git crypto no go i read your initial
-> review"*. git-crypt is out of the candidate set for Zeta
+> this research: _"git crypto no go i read your initial
+> review"_. git-crypt is out of the candidate set for Zeta
 > secrets-at-rest. Rejection is encoded in
-> `docs/WONT-DO.md` (*Engineering patterns → git-crypt for
-> secrets management*). This document is **kept as the
-> rationale artifact** — *"keeep the reserach ... so i
-> don't ask you tomorrow"* — so future-self sees the
+> `docs/WONT-DO.md` (_Engineering patterns → git-crypt for
+> secrets management_). This document is **kept as the
+> rationale artifact** — _"keeep the reserach ... so i
+> don't ask you tomorrow"_ — so future-self sees the
 > reasoning without re-running it. The remaining candidate
 > set for the eventual ADR is SOPS + KMS (long-lived
 > secrets) and `age` (ephemeral / PQC-curious); `git-secret`
@@ -16,11 +16,11 @@
 
 **Date:** 2026-04-21
 **Author:** Architect (Kenji) — cartographer pass, not a
-decision. Feeds into the P2 BACKLOG row *"Gitops-friendly key
-management + rotation — ADR first, then pick one tool"*
+decision. Feeds into the P2 BACKLOG row _"Gitops-friendly key
+management + rotation — ADR first, then pick one tool"_
 (`docs/BACKLOG.md`).
-**Triggering ask:** Aaron, 2026-04-21 — *"while you are here
-reserch gitcrypt for secrets on backlog"*.
+**Triggering ask:** Aaron, 2026-04-21 — _"while you are here
+reserch gitcrypt for secrets on backlog"_.
 **Status:** REJECTED 2026-04-21 (see banner above). Rationale
 artifact retained. SOPS / age remain in the candidate set;
 ADR under `docs/DECISIONS/YYYY-MM-DD-gitops-key-management.md`
@@ -34,13 +34,13 @@ not yet drafted.
   the right to break compatibility.
 - **One thing it is great at:** mixed-public-private repos
   where a handful of files carry secrets and you want `git
-  add / commit / push` to keep working transparently via a
+add / commit / push` to keep working transparently via a
   `.gitattributes` filter.
 - **Three things it is fundamentally bad at — each one a
   Zeta-values mismatch:**
-  1. **No access revocation.** Authors explicit: *"git-crypt
+  1. **No access revocation.** Authors explicit: _"git-crypt
      does not support revoking access to an encrypted
-     repository which was previously granted."* Once a user
+     repository which was previously granted."_ Once a user
      has the key, they have every historical version of every
      encrypted file, forever. This is the exact opposite of
      retraction-native (value #4 in `CONFLICT-RESOLUTION.md`).
@@ -51,7 +51,7 @@ not yet drafted.
   3. **Metadata leak by design.** No encryption of filenames,
      commit messages, symlink targets, or repo metadata. A
      `.gitattributes` entry like `secrets/prod.yaml filter=
-     git-crypt diff=git-crypt` tells the world there is a
+git-crypt diff=git-crypt` tells the world there is a
      `prod.yaml` secret — only the contents are hidden.
 - **Recommendation scaffolding for the ADR:** git-crypt
   scores well on gitops-first (value-aligned), poorly on
@@ -64,20 +64,20 @@ not yet drafted.
 
 ## 1. Current maintenance snapshot
 
-| Metric | Value |
-|---|---|
-| Version | 0.8.0 |
-| Released | 2025-09-24 |
-| License | GPL-3.0 |
-| Repo | `github.com/AGWA/git-crypt` |
-| Open issues | 101 |
-| Total commits (master) | 205 |
-| Pre-v1.0 | yes; authors may break compat |
-| Last security audit | none located (2026-04-21) |
+| Metric                 | Value                         |
+| ---------------------- | ----------------------------- |
+| Version                | 0.8.0                         |
+| Released               | 2025-09-24                    |
+| License                | GPL-3.0                       |
+| Repo                   | `github.com/AGWA/git-crypt`   |
+| Open issues            | 101                           |
+| Total commits (master) | 205                           |
+| Pre-v1.0               | yes; authors may break compat |
+| Last security audit    | none located (2026-04-21)     |
 
-Authors' self-description: *"bug-free and reliable"* but
-*"not as documented, featureful, or easy-to-use as it
-should be"*. Interpret as: stable primitive, small surface,
+Authors' self-description: _"bug-free and reliable"_ but
+_"not as documented, featureful, or easy-to-use as it
+should be"_. Interpret as: stable primitive, small surface,
 maintained but not thriving.
 
 ## 2. Security model
@@ -85,8 +85,8 @@ maintained but not thriving.
 Encryption: AES-256 in CTR mode with a synthetic IV derived
 from the SHA-1 HMAC of the plaintext (convergent-encryption
 style). Provides provable semantic security under
-deterministic chosen-plaintext attack that *leaks no
-information beyond whether two files are identical*.
+deterministic chosen-plaintext attack that _leaks no
+information beyond whether two files are identical_.
 
 Two key modes:
 
@@ -102,15 +102,15 @@ Two key modes:
 
 1. **Revocation is impossible without history rewrite.**
    Removing a user requires generating a new symmetric key
-   AND *rewriting every historical commit* that contains
+   AND _rewriting every historical commit_ that contains
    encrypted content, then force-pushing. This is
    prohibitively expensive on an active repo and breaks
    every outstanding clone / fork / PR.
 2. **Third-party git GUIs can leak plaintext.** Upstream
-   README warns that *"git-crypt does not work reliably
+   README warns that _"git-crypt does not work reliably
    with some third-party git GUIs, such as Atlassian
    SourceTree and GitHub for Mac. Files might be left in an
-   unencrypted state."* Silent data-plane failure — CI
+   unencrypted state."_ Silent data-plane failure — CI
    workflows that blindly trust the local checkout could
    commit unencrypted secrets.
 3. **`.gitattributes` footguns.** Pattern-matching mistakes
@@ -132,21 +132,21 @@ Two key modes:
 
 ## 4. Zeta-specific scorecard (for the ADR)
 
-Axes per the BACKLOG row. Scoring: **good** / *mixed* /
+Axes per the BACKLOG row. Scoring: **good** / _mixed_ /
 **bad**. Scores are draft; the ADR finalises.
 
-| Axis | git-crypt | Why |
-|---|---|---|
-| Gitops-first | **good** | Pure-git primitive, no external runtime, every op visible in history. |
-| Retraction-friendly | **bad** | Authors explicit: no revocation. Core Zeta-values mismatch. |
-| Merge-conflict behaviour | *mixed* | Encrypted files can conflict; resolution requires unlock + manual edit. Fine at ≤5-10 contributors, friction grows. |
-| Code review visibility | **bad** | Binary diffs. Reviewer cannot tell a key rotation from a key theft. |
-| Metadata protection | **bad** | Filenames + commit messages + `.gitattributes` layout all leak. |
-| Team-scale ceiling | *mixed* | Works for small teams; "past 5-10 people and the limitations become problematic" per community consensus. |
-| PQC readiness | **bad** | AES + GPG (OpenPGP). Post-quantum migration requires OpenPGP PQC WG finalisation (years). |
-| Rotation of signing keys | N/A | Out of scope — signing keys ≠ secrets at rest. |
-| HSM integration | **bad** | No HSM story; keys live on disk. |
-| Implementation effort | **good** | Hours, not days. `brew install git-crypt` + `.gitattributes` + one-time init. |
+| Axis                     | git-crypt | Why                                                                                                                 |
+| ------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| Gitops-first             | **good**  | Pure-git primitive, no external runtime, every op visible in history.                                               |
+| Retraction-friendly      | **bad**   | Authors explicit: no revocation. Core Zeta-values mismatch.                                                         |
+| Merge-conflict behaviour | _mixed_   | Encrypted files can conflict; resolution requires unlock + manual edit. Fine at ≤5-10 contributors, friction grows. |
+| Code review visibility   | **bad**   | Binary diffs. Reviewer cannot tell a key rotation from a key theft.                                                 |
+| Metadata protection      | **bad**   | Filenames + commit messages + `.gitattributes` layout all leak.                                                     |
+| Team-scale ceiling       | _mixed_   | Works for small teams; "past 5-10 people and the limitations become problematic" per community consensus.           |
+| PQC readiness            | **bad**   | AES + GPG (OpenPGP). Post-quantum migration requires OpenPGP PQC WG finalisation (years).                           |
+| Rotation of signing keys | N/A       | Out of scope — signing keys ≠ secrets at rest.                                                                      |
+| HSM integration          | **bad**   | No HSM story; keys live on disk.                                                                                    |
+| Implementation effort    | **good**  | Hours, not days. `brew install git-crypt` + `.gitattributes` + one-time init.                                       |
 
 ## 5. What git-crypt is still good for
 
@@ -193,19 +193,19 @@ Scoring placeholder — expand in the ADR. All three
 alternatives score **good** on retraction-friendliness where
 git-crypt scores **bad**.
 
-| Candidate | Retraction | Code review | PQC path | Team-scale | GitOps |
-|---|---|---|---|---|---|
-| git-crypt | **bad** | **bad** (binary diff) | bad | mixed | good |
-| git-secret (GPG wrapper) | **bad** | bad | bad | mixed | good |
-| SOPS (KMS / Vault / age) | good | **good** (plaintext keys / encrypted values; YAML diffs readable) | good (KMS-dependent; age hybrid draft) | good | good |
-| age (modern file encryption) | good (by rotation of recipient identities) | mixed (binary-like, but format simpler, tooling improving) | **good** (draft X25519-PQ) | good (small-team) / mixed (cloud-KMS story thinner than SOPS) | good |
+| Candidate                    | Retraction                                 | Code review                                                       | PQC path                               | Team-scale                                                    | GitOps |
+| ---------------------------- | ------------------------------------------ | ----------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------- | ------ |
+| git-crypt                    | **bad**                                    | **bad** (binary diff)                                             | bad                                    | mixed                                                         | good   |
+| git-secret (GPG wrapper)     | **bad**                                    | bad                                                               | bad                                    | mixed                                                         | good   |
+| SOPS (KMS / Vault / age)     | good                                       | **good** (plaintext keys / encrypted values; YAML diffs readable) | good (KMS-dependent; age hybrid draft) | good                                                          | good   |
+| age (modern file encryption) | good (by rotation of recipient identities) | mixed (binary-like, but format simpler, tooling improving)        | **good** (draft X25519-PQ)             | good (small-team) / mixed (cloud-KMS story thinner than SOPS) | good   |
 
 ## 8. Cross-references
 
-- `docs/BACKLOG.md` — P2 *Gitops-friendly key management +
-  rotation* (lines ~4133-4171).
-- `docs/BACKLOG.md` — P2 *Adopt at least one
-  NIST-standardised post-quantum primitive* (sibling; affects
+- `docs/BACKLOG.md` — P2 _Gitops-friendly key management +
+  rotation_ (lines ~4133-4171).
+- `docs/BACKLOG.md` — P2 _Adopt at least one
+  NIST-standardised post-quantum primitive_ (sibling; affects
   which candidates remain viable long-term).
 - `docs/research/ci-retractability-inventory.md` — names
   SLSA signing keys as the one genuinely-non-retractable

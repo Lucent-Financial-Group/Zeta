@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 884 |
-| Title | ts(B-0086): port 2 scripts (.sh→.ts) — slice 11 of TS/Bun migration |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-30T04:10:45Z |
-| Merged at | 2026-04-30T04:42:42Z |
-| Merge commit SHA | `92377561849242d7c3a1c8ee540fd5b610fc7899` |
-| Branch | `lane-b/ts-bun-slice-11-dv2-frontmatter-backfill-2026-04-30` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/884 |
-| Changed files | 4 |
-| Additions / deletions | +532 / -3 |
+| Field                 | Value                                                               |
+| --------------------- | ------------------------------------------------------------------- |
+| Number                | 884                                                                 |
+| Title                 | ts(B-0086): port 2 scripts (.sh→.ts) — slice 11 of TS/Bun migration |
+| Author                | `AceHack` (human)                                                   |
+| State                 | MERGED                                                              |
+| Created at            | 2026-04-30T04:10:45Z                                                |
+| Merged at             | 2026-04-30T04:42:42Z                                                |
+| Merge commit SHA      | `92377561849242d7c3a1c8ee540fd5b610fc7899`                          |
+| Branch                | `lane-b/ts-bun-slice-11-dv2-frontmatter-backfill-2026-04-30`        |
+| Base branch           | `main`                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/884             |
+| Changed files         | 4                                                                   |
+| Additions / deletions | +532 / -3                                                           |
 
 ## Description
 
@@ -47,15 +47,15 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 17 |
-| Resolved threads | 17 |
-| Unresolved threads | 0 |
-| Total review comments | 22 |
-| Total fix commits (touching thread paths) | 10 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 17    |
+| Resolved threads                          | 17    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 22    |
+| Total fix commits (touching thread paths) | 10    |
 
 ## Review threads
 
@@ -68,10 +68,11 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-30T04:12:36Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:237 (association: NONE)
+
   ## CodeQL / Potential file system race condition
-  
+
   The file may have changed since it [was checked](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/31)
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -83,10 +84,11 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-30T04:12:36Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:262 (association: NONE)
+
   ## CodeQL / Potential file system race condition
-  
+
   The file may have changed since it [was checked](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/32)
 
 ### Thread 3 -- resolved [collapsed]
@@ -98,16 +100,16 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T04:15:48Z on `tools/audit-packages.ts`:63 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Treat dotnet invocation failures as audit failures**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Treat dotnet invocation failures as audit failures**
+
   In `queryLatest`, any non-zero/absent `dotnet` execution is collapsed to `""`, which later becomes `"?"` and is classified as non-failing. That means environments where `dotnet` is missing or cannot be executed can still return exit code 0 with "All queryable packages on latest," even though no package queries actually ran. This silently disables the audit gate for that run and should return a failing exit code when the CLI itself is unavailable.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-30T04:17:30Z on `tools/audit-packages.ts`:63 (association: MEMBER)
-    The bash original collapses the same way — `latest=$(dotnet package search ... | awk ...)` then `latest=${latest:-?}`. If `dotnet` itself fails, awk gets empty input, latest becomes empty, fallback gives `?`. Both env failure and 'package not found in feed' map to the same '?' classification + 'couldn't query' marker (non-failing). The TS port preserves this UX for byte-equivalence with bash. Distinguishing env-failure from no-match is a real UX improvement — but it's a behavior change beyond byte-equivalence scope. Filing as a future-fix follow-up rather than landing here. Resolving as 'intentional bash-equivalence; tracked for separate enhancement PR.'
+- **`AceHack` (human)** at 2026-04-30T04:17:30Z on `tools/audit-packages.ts`:63 (association: MEMBER)
+  The bash original collapses the same way — `latest=$(dotnet package search ... | awk ...)` then `latest=${latest:-?}`. If `dotnet` itself fails, awk gets empty input, latest becomes empty, fallback gives `?`. Both env failure and 'package not found in feed' map to the same '?' classification + 'couldn't query' marker (non-failing). The TS port preserves this UX for byte-equivalence with bash. Distinguishing env-failure from no-match is a real UX improvement — but it's a behavior change beyond byte-equivalence scope. Filing as a future-fix follow-up rather than landing here. Resolving as 'intentional bash-equivalence; tracked for separate enhancement PR.'
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -118,10 +120,10 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T04:15:48Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:262 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve atomic rewrite when updating SKILL frontmatter**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Preserve atomic rewrite when updating SKILL frontmatter**
+
   The port writes updated content directly to the target file with `writeFileSync`, which truncates in place; if the process is interrupted (crash, kill, disk-full) during a bulk `--all` run, the original `SKILL.md` can be left partially written or corrupted. The prior shell implementation used temp-file + rename semantics to avoid this class of data-loss failure, so this is a durability regression in the rewrite path.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 5 -- resolved [collapsed]
@@ -137,8 +139,8 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-30T04:20:15Z on `tools/audit-packages.ts`:122 (association: MEMBER)
-    The bash original (audit-packages.sh:8-10) writes the entire human-facing report to stdout via `echo` — including the table header and per-package rows. The TS port preserves this for byte-equivalence with bash. The repo-scripting.md convention is the right long-term direction; this is a pre-existing bash decision that the port-pattern preserves. Filing as future-fix.
+- **`AceHack` (human)** at 2026-04-30T04:20:15Z on `tools/audit-packages.ts`:122 (association: MEMBER)
+  The bash original (audit-packages.sh:8-10) writes the entire human-facing report to stdout via `echo` — including the table header and per-package rows. The TS port preserves this for byte-equivalence with bash. The repo-scripting.md convention is the right long-term direction; this is a pre-existing bash decision that the port-pattern preserves. Filing as future-fix.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -175,34 +177,35 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 
 - **`Copilot` (bot)** at 2026-04-30T04:17:02Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:75 (association: NONE)
   P0: gitOutput() collapses all git failures to an empty string. That can lead to injecting invalid DV-2.0 values (e.g., load_datetime: ""), or record_source: "git: unknown", if git isn't available or the command fails for other reasons. Consider classifying spawn failures (launch/termination/non-zero) and failing the run (usage/input error) instead of silently proceeding with empty outputs.
+
   ```suggestion
   function quoteShellArg(arg: string): string {
     return /^[A-Za-z0-9_./:-]+$/.test(arg) ? arg : JSON.stringify(arg);
   }
-  
+
   function failGitCommand(args: readonly string[], detail: string): never {
     const command = ["git", ...args].map(quoteShellArg).join(" ");
     process.stderr.write(`error: ${detail}\ncommand: ${command}\n`);
     process.exit(1 satisfies ExitCode);
   }
-  
+
   function gitOutput(args: readonly string[]): string {
     // eslint-disable-next-line sonarjs/no-os-command-from-path
     const result = spawnSync("git", args, {
       encoding: "utf8",
       maxBuffer: SPAWN_MAX_BUFFER,
     });
-  
+
     if (result.error) {
       failGitCommand(args, `failed to launch git: ${result.error.message}`);
     }
-  
+
     if (result.signal !== null) {
       const stderr = result.stderr.trim();
       const suffix = stderr.length > 0 ? ` (${stderr})` : "";
       failGitCommand(args, `git terminated by signal ${result.signal}${suffix}`);
     }
-  
+
     if (result.status !== 0) {
       const stderr = result.stderr.trim();
       const stdout = result.stdout.trim();
@@ -218,8 +221,8 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-30T04:20:17Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:75 (association: MEMBER)
-    The bash original (lines 99-107, 111-115, 117-121) does the same: `git log ... 2>/dev/null | head -1` returns empty if git fails, and the field becomes empty (`record_source: \"\"` etc). The TS port matches this. Distinguishing env-failure from no-history is a behavior change beyond byte-equivalence scope; filing as future enhancement.
+- **`AceHack` (human)** at 2026-04-30T04:20:17Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:75 (association: MEMBER)
+  The bash original (lines 99-107, 111-115, 117-121) does the same: `git log ... 2>/dev/null | head -1` returns empty if git fails, and the field becomes empty (`record_source: \"\"` etc). The TS port matches this. Distinguishing env-failure from no-history is a behavior change beyond byte-equivalence scope; filing as future enhancement.
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -260,8 +263,8 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-30T04:20:19Z on `tools/audit-packages.ts`:103 (association: MEMBER)
-    The bash original uses `exit 1` for both fatal read error and `bumps available` (audit-packages.sh:1, 51). The TS port preserves this. The 64-for-input-error convention from repo-scripting.md is a forward-looking standard; future enhancement to align all ports at once rather than retrofitting per-port.
+- **`AceHack` (human)** at 2026-04-30T04:20:19Z on `tools/audit-packages.ts`:103 (association: MEMBER)
+  The bash original uses `exit 1` for both fatal read error and `bumps available` (audit-packages.sh:1, 51). The TS port preserves this. The 64-for-input-error convention from repo-scripting.md is a forward-looking standard; future enhancement to align all ports at once rather than retrofitting per-port.
 
 ### Thread 12 -- resolved [outdated, collapsed]
 
@@ -272,10 +275,10 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T04:21:35Z on `tools/audit-packages.ts`:41 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Resolve repository root from script location**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Resolve repository root from script location**
+
   The new `repoRoot()` fallback to `process.cwd()` regresses invocation semantics from the Bash version (`tools/audit-packages.sh` used `dirname "$0"`), so running `bun /path/to/tools/audit-packages.ts` from outside the repo (or when `git rev-parse` is unavailable) makes the script look for `Directory.Packages.props` in the caller’s working directory instead of the script’s repository. In those environments the audit fails against the wrong path, which breaks a previously portable way of invoking the tool.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 13 -- resolved [collapsed]
@@ -298,10 +301,10 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T04:29:28Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:295 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep original file when fallback rename fails**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Keep original file when fallback rename fails**
+
   If `renameSync(tmpPath, file)` throws, the fallback unconditionally does `unlinkSync(file)` before retrying rename; when the retry also fails (e.g., transient FS/share lock or permission edge case), the catch path deletes the temp file and returns an error, leaving the target file missing. This introduces a destructive failure mode that the previous `mv`-based flow did not have, and it can lose SKILL.md contents during `--all` backfills.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 15 -- resolved [collapsed]
@@ -313,10 +316,10 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T04:29:28Z on `tools/audit-packages.ts`:104 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fail when package parsing yields zero entries**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fail when package parsing yields zero entries**
+
   The new port treats an empty `packages` list as success and prints `All queryable packages on latest`, so if `Directory.Packages.props` formatting drifts from the strict regex (for example attribute reordering or multiline attributes), the audit silently checks nothing and still exits 0. The previous shell pipeline (`set -euo pipefail` + `grep`) failed hard on no matches, which correctly prevented false-green audits.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 16 -- resolved [collapsed]
@@ -329,21 +332,22 @@ Both files pass \`bun x tsc --noEmit\` + \`bun x eslint\` clean.
 
 - **`Copilot` (bot)** at 2026-04-30T04:35:29Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:26 (association: NONE)
   Exit-code conventions here (type `ExitCode = 0 | 1 | 2` and the `return 1` paths for usage/unknown flags) don’t match the repo scripting baseline (`docs/best-practices/repo-scripting.md` specifies `0 | 2 | 64`, with `64` for argument/input errors). Consider switching usage/unknown-flag failures to `64` (and updating the exit-code docstring accordingly) so callers can compose scripts consistently.
+
   ```suggestion
   //   64   usage/input error
   //   2    a file was malformed (no closing frontmatter fence)
-  
+
   import { readdirSync, readFileSync, writeFileSync, renameSync } from "node:fs";
   import { join } from "node:path";
   import { spawnSync } from "node:child_process";
-  
+
   type ExitCode = 0 | 2 | 64;
   ```
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-30T04:37:39Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:26 (association: MEMBER)
-    Same response as the audit-packages exit-code thread (PRRT_kwDOSF9kNM5-oXvn): the bash original (backfill_dv2_frontmatter.sh:62-63) uses `exit 1` for unknown flags and the same exit code for usage error. The TS port preserves bash exit-code semantics for byte-equivalence. The 64-for-input-error convention from repo-scripting.md is a forward-looking standard; future enhancement to align all ports at once rather than retrofitting per-port (and divergence from bash). Filing as future-fix.
+- **`AceHack` (human)** at 2026-04-30T04:37:39Z on `tools/skill-catalog/backfill_dv2_frontmatter.ts`:26 (association: MEMBER)
+  Same response as the audit-packages exit-code thread (PRRT_kwDOSF9kNM5-oXvn): the bash original (backfill_dv2_frontmatter.sh:62-63) uses `exit 1` for unknown flags and the same exit code for usage error. The TS port preserves bash exit-code semantics for byte-equivalence. The 64-for-input-error convention from repo-scripting.md is a forward-looking standard; future enhancement to align all ports at once rather than retrofitting per-port (and divergence from bash). Filing as future-fix.
 
 ### Thread 17 -- resolved [outdated, collapsed]
 

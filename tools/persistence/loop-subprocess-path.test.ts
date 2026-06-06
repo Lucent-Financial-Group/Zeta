@@ -17,6 +17,7 @@ test("darwin prepends the POSIX tool dirs + ~/.local/bin", () => {
 });
 
 test("linux uses the same POSIX list as darwin", () => {
-  expect(resolveSubprocessPath("linux", "/home/x", "/existing"))
-    .toBe("/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/home/x/.local/bin");
+  expect(resolveSubprocessPath("linux", "/home/x", "/existing")).toBe(
+    "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/home/x/.local/bin",
+  );
 });

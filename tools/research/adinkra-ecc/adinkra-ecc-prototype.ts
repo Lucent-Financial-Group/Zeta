@@ -45,10 +45,7 @@ export function xor8(a: Bits8, b: Bits8): Bits8 {
   // Construct the 8-tuple explicitly: literal indices on a Bits8 tuple are
   // exact `number` (not `number | undefined`), so the return type is honest
   // without an `as unknown as Bits8` cast.
-  return [
-    a[0] ^ b[0], a[1] ^ b[1], a[2] ^ b[2], a[3] ^ b[3],
-    a[4] ^ b[4], a[5] ^ b[5], a[6] ^ b[6], a[7] ^ b[7],
-  ];
+  return [a[0] ^ b[0], a[1] ^ b[1], a[2] ^ b[2], a[3] ^ b[3], a[4] ^ b[4], a[5] ^ b[5], a[6] ^ b[6], a[7] ^ b[7]];
 }
 
 /** Hamming weight (number of 1-bits). */
@@ -61,8 +58,14 @@ export function dotMod2(a: Bits8, b: Bits8): number {
   // Literal indices keep each `&` operand exact `number` (honest under
   // noUncheckedIndexedAccess); the chained XOR is the GF(2) inner product.
   return (
-    (a[0] & b[0]) ^ (a[1] & b[1]) ^ (a[2] & b[2]) ^ (a[3] & b[3]) ^
-    (a[4] & b[4]) ^ (a[5] & b[5]) ^ (a[6] & b[6]) ^ (a[7] & b[7])
+    (a[0] & b[0]) ^
+    (a[1] & b[1]) ^
+    (a[2] & b[2]) ^
+    (a[3] & b[3]) ^
+    (a[4] & b[4]) ^
+    (a[5] & b[5]) ^
+    (a[6] & b[6]) ^
+    (a[7] & b[7])
   );
 }
 
@@ -84,7 +87,7 @@ export function enumerateCodewords(generators: readonly Bits8[]): Bits8[] {
     let cw: Bits8 = zero;
     for (let i = 0; i < k; i++) {
       const row = generators[i];
-      if (row !== undefined && (mask & (1 << i))) cw = xor8(cw, row);
+      if (row !== undefined && mask & (1 << i)) cw = xor8(cw, row);
     }
     const key = cw.join("");
     if (!seen.has(key)) {

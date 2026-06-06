@@ -11,11 +11,11 @@ created: 2026-05-13
 'Standing-by' failure-mode pattern with an architectural
 disclosure:
 
-> *"you need to imagine how would you survive without this
+> _"you need to imagine how would you survive without this
 > foreground loop and you background should be strong enough
-> to do that"*
+> to do that"_
 
-> *"this is something background services should walk"*
+> _"this is something background services should walk"_
 
 The foreground loop (this Claude Code Otto conversation) was
 operating as the load-bearing substrate-engineering driver.
@@ -47,19 +47,19 @@ is fragile.
 
 ## Current background-service landscape (substrate-honest inventory)
 
-| Service | Status | What it does |
-|---------|--------|--------------|
-| `autonomous-loop` cron (CronCreate sentinel) | Operational; every-minute heartbeat | Fires `<<autonomous-loop>>` ticks; lifecycle bounded to session |
-| `tools/shadow/shadow-observer.ts` (B-0402) | Slice 1 + 2 shipped on main; slice 3 + 4 pending | Polls grey-text from CLI; can invoke `--detect-cmd` external detector |
-| `com.zeta.claude-loop` launchd service | Operational per user-memory `~/.claude/projects/<slug>/memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md` | Heartbeat/gate 60s |
-| `com.zeta.claude-forward` launchd service | Operational | Background forwarding |
-| `.github/workflows/razor-cadence.yml` | Daily 09:17 UTC | Razor-cadence GitHub Actions workflow |
-| Vera's foreground loop | Operational (separate Codex agent) | Continues shipping B-0400+ slices independently |
-| Peer-call wrappers (`tools/peer-call/*.ts`) | 8 wrappers ready | Synchronous external-model invocation |
-| Bus protocol (B-0400) | Operational | Inter-agent messaging via `/tmp` |
-| `tools/hygiene/*` audit scripts (42 of them) | Operational on-demand | Cross-reference / lost-files / etc. audits |
-| CI / Copilot / Codex auto-review | Operational on every PR | Mechanical critic |
-| TLA+ / Z3 / Lean / FsCheck / Stryker | Operational when wired | Formal verification stack |
+| Service                                      | Status                                                                                                                                     | What it does                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `autonomous-loop` cron (CronCreate sentinel) | Operational; every-minute heartbeat                                                                                                        | Fires `<<autonomous-loop>>` ticks; lifecycle bounded to session       |
+| `tools/shadow/shadow-observer.ts` (B-0402)   | Slice 1 + 2 shipped on main; slice 3 + 4 pending                                                                                           | Polls grey-text from CLI; can invoke `--detect-cmd` external detector |
+| `com.zeta.claude-loop` launchd service       | Operational per user-memory `~/.claude/projects/<slug>/memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md` | Heartbeat/gate 60s                                                    |
+| `com.zeta.claude-forward` launchd service    | Operational                                                                                                                                | Background forwarding                                                 |
+| `.github/workflows/razor-cadence.yml`        | Daily 09:17 UTC                                                                                                                            | Razor-cadence GitHub Actions workflow                                 |
+| Vera's foreground loop                       | Operational (separate Codex agent)                                                                                                         | Continues shipping B-0400+ slices independently                       |
+| Peer-call wrappers (`tools/peer-call/*.ts`)  | 8 wrappers ready                                                                                                                           | Synchronous external-model invocation                                 |
+| Bus protocol (B-0400)                        | Operational                                                                                                                                | Inter-agent messaging via `/tmp`                                      |
+| `tools/hygiene/*` audit scripts (42 of them) | Operational on-demand                                                                                                                      | Cross-reference / lost-files / etc. audits                            |
+| CI / Copilot / Codex auto-review             | Operational on every PR                                                                                                                    | Mechanical critic                                                     |
+| TLA+ / Z3 / Lean / FsCheck / Stryker         | Operational when wired                                                                                                                     | Formal verification stack                                             |
 
 **Gaps** (what's missing for foreground-optional architecture):
 
@@ -80,11 +80,12 @@ is fragile.
 
 Aaron preserved the canonical insight:
 
-> *"this is something background services should walk"*
+> _"this is something background services should walk"_
 
 Translation: the disciplines I keep canonizing as memory files
-+ rules need to become MECHANIZED. Per
-`.claude/rules/encoding-rules-without-mechanizing.md`:
+
+- rules need to become MECHANIZED. Per
+  `.claude/rules/encoding-rules-without-mechanizing.md`:
 
 > "Encoding rules without mechanizing them produces a memory of
 > failures, not prevention."
@@ -126,11 +127,11 @@ Aaron's challenge — "imagine surviving without this foreground
 loop" — is the canonical multi-agent factory architectural
 invariant:
 
-| Layer | Role | Persistence |
-|-------|------|-------------|
-| Foreground (Otto Claude Code; Vera Codex foreground; etc.) | Interactive operator interface; deciding agent | Bounded session; dies at compaction |
-| Background services | Persistent substrate operations | Multi-day; cron-driven; launchd-managed |
-| Substrate itself (git history; memory files; rules; backlog) | Permanent durable record | Forever |
+| Layer                                                        | Role                                           | Persistence                             |
+| ------------------------------------------------------------ | ---------------------------------------------- | --------------------------------------- |
+| Foreground (Otto Claude Code; Vera Codex foreground; etc.)   | Interactive operator interface; deciding agent | Bounded session; dies at compaction     |
+| Background services                                          | Persistent substrate operations                | Multi-day; cron-driven; launchd-managed |
+| Substrate itself (git history; memory files; rules; backlog) | Permanent durable record                       | Forever                                 |
 
 The factory's strength is in the **substrate + background services**
 layer, not the **foreground** layer. Foreground agents are
@@ -170,8 +171,8 @@ When future-Otto cold-boots, apply this discipline operationally:
 - `.claude/rules/largest-mechanizable-backlog-wins.md` (the
   mechanization itself increases the mechanizable backlog)
 - PR #2914 + #2917 + #2935-2936 (5-control-structures + Mandelbrot
-  + F# fork — the substrate that supports mechanization at
-  formal-verification scale)
+  - F# fork — the substrate that supports mechanization at
+    formal-verification scale)
 - Otto-329 launchd-services (existing background-services
   substrate; user-memory `~/.claude/projects/<slug>/memory/reference_otto_launchd_services_mac_background_infrastructure_2026_05_08.md`)
 - B-0402 shadow observer (canonical background service example;
@@ -196,11 +197,11 @@ When future-Otto cold-boots, apply this discipline operationally:
 
 ## Proposed backlog rows (for follow-up)
 
-| Row | Description |
-|-----|-------------|
+| Row          | Description                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------ |
 | B-NNNN (new) | Standing-by detector background service (polls agent commit history; nudges via bus when idle-foreground detected) |
-| B-NNNN (new) | Backlog-row-ready-to-grind notifier (proactively assigns claims from backlog when agent queue empty) |
-| B-NNNN (new) | Missed-substrate cascade detector (catches Otto-section-missed-PR-#2980-by-3-min class failures) |
+| B-NNNN (new) | Backlog-row-ready-to-grind notifier (proactively assigns claims from backlog when agent queue empty)               |
+| B-NNNN (new) | Missed-substrate cascade detector (catches Otto-section-missed-PR-#2980-by-3-min class failures)                   |
 
 These are forward-work; substrate file IS the design ready for
 decomposition into B-NNNN rows.

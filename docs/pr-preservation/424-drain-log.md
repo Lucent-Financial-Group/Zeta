@@ -44,9 +44,9 @@ into four separate cascades.
 
 - Severity: P2 (docs)
 - Finding: parent #411 docs cited `Authorization: Bearer
-  $GITHUB_TOKEN` as the canonical header; current `gh` CLI +
+$GITHUB_TOKEN` as the canonical header; current `gh` CLI +
   GitHub Actions API examples use `Authorization: token
-  $GITHUB_TOKEN` (Bearer is also accepted but `token` is the
+$GITHUB_TOKEN` (Bearer is also accepted but `token` is the
   GitHub-canonical example shape).
 - Outcome: **FIX** — header doc updated to use `token` form
   matching GitHub-canonical examples; note that Bearer is also
@@ -98,7 +98,7 @@ into four separate cascades.
 
 3. **GitHub canonical-example divergence from accepted-also
    forms is its own class.** `Authorization: Bearer
-   $GITHUB_TOKEN` and `Authorization: token $GITHUB_TOKEN` both
+$GITHUB_TOKEN` and `Authorization: token $GITHUB_TOKEN` both
    work, but GitHub-canonical examples use `token`. Docs that
    match the canonical-example form reduce reader friction
    when cross-referencing GitHub docs. Pattern generalizes:

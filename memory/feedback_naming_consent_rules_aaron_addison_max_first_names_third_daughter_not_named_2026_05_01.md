@@ -50,10 +50,10 @@ first-party — Aaron is the disclosing party.)
 
 **Ace (Aaron's son)** — first name OK in Otto-side narrative
 **with scope-limited "for now" grant** (Aaron 2026-05-01:
-*"we can keep my sons info i give permssion for now"* +
-*"i'll have a proper conversatoin before saving any personal
-details more than why i named him ace"* + later extension:
-*"and he hacks games"*). Specific scope of grant:
+_"we can keep my sons info i give permssion for now"_ +
+_"i'll have a proper conversatoin before saving any personal
+details more than why i named him ace"_ + later extension:
+_"and he hacks games"_). Specific scope of grant:
 
 - **OK in Otto-side narrative**:
   - First name "Ace"
@@ -90,12 +90,12 @@ as Otto-side-narrative non-propagation. If a memory file or doc
 would benefit from referring to her, Otto-side narrative MUST use
 generic positional/relational refs:
 
-- *"Aaron's family member who has not consented to being named"*
-- *"a member of Aaron's family"*
-- *"the third-listed family member in Aaron's establishing
-  disclosure"*
-- *"Aaron's daughter (the one who is the subject of the
-  consent rule)"* — only when the daughter-disambiguation is
+- _"Aaron's family member who has not consented to being named"_
+- _"a member of Aaron's family"_
+- _"the third-listed family member in Aaron's establishing
+  disclosure"_
+- _"Aaron's daughter (the one who is the subject of the
+  consent rule)"_ — only when the daughter-disambiguation is
   load-bearing; prefer the more generic refs when it isn't
 
 The same Otto-side-narrative non-propagation applies to commit
@@ -105,7 +105,7 @@ ADRs, and any other surface Otto authors.
 
 **Nellie Faulkner Stainback (Aaron's paternal grandmother)** —
 first name OK in Otto-side narrative **with full disclosed-
-context grant** (Aaron 2026-05-01: *"you have her info"*).
+context grant** (Aaron 2026-05-01: _"you have her info"_).
 Aaron's paternal grandmother. WWJD disposition (paternal-side
 lineage; great-grandmother to Ace via Aaron's father).
 Disclosed context (preservable in Otto-side narrative per
@@ -128,7 +128,7 @@ Aaron's grant):
   2026-05-01) from Popular Science magazine for his
   birthday — hands-on hardware-hacking pedagogy
 - **Active game-hacking co-conspirator**: Aaron 2026-05-01:
-  *"she would drive me to blockbuster to copy the games"*
+  _"she would drive me to blockbuster to copy the games"_
   — grandmother drove young Aaron to Blockbuster Video to
   rent + backup-copy games (using the Super UFO + floppy
   disk) before returning the rentals. Beyond device-
@@ -137,15 +137,15 @@ Aaron's grant):
 - At age ~65, attended Vance-Granville Community College
   (NC) to teach herself to code — modeled autodidact +
   lifelong-learning, not just transmitted the discipline
-- Aaron 2026-05-01: *"a wonderful school i would recommend
-  to anyone"* (institutional endorsement of Vance-Granville
+- Aaron 2026-05-01: _"a wonderful school i would recommend
+  to anyone"_ (institutional endorsement of Vance-Granville
   CC)
-- Surname spelling: Aaron noted *"i'm prbably spelling
-  nelly wrong"* — verified spelling pending
+- Surname spelling: Aaron noted _"i'm prbably spelling
+  nelly wrong"_ — verified spelling pending
 
 **Milton Stainback (Aaron's paternal grandfather)** — first
 name OK in Otto-side narrative with full disclosed-context
-grant (same source: Aaron *"you have her info"* covering
+grant (same source: Aaron _"you have her info"_ covering
 both grandparents). Disclosed context: Nellie's husband.
 Other context not disclosed in this exchange; future
 extension requires Aaron's explicit grant.
@@ -168,7 +168,7 @@ Nellie's marriage-name change.)
 
 > AceHack is my hacker name and github name he was named after that telos
 
-> My granny was a WWJD hacker on my dads side, she was a promoninat woman known for her intelligence at her age and time when she was a woman.  she was an accountant for belks, you have her info nellie faulkner (i'm prbably spelling nelly wrong) milton stainback her husband.
+> My granny was a WWJD hacker on my dads side, she was a promoninat woman known for her intelligence at her age and time when she was a woman. she was an accountant for belks, you have her info nellie faulkner (i'm prbably spelling nelly wrong) milton stainback her husband.
 
 > she taught me to code at like 10 or someting and taught me to satisify my curiosty in dr who and the encycolopeid
 
@@ -190,7 +190,7 @@ above per the per-person consent grants.
 Naming-consent is consent-architecture, not personal preference.
 The same Otto-231 + Glass Halo machinery that governs Aaron's own
 content (consented-by-creation as first-party) governs third-party
-content via *first-party-mediated consent*: Aaron states what's
+content via _first-party-mediated consent_: Aaron states what's
 allowed for those in his immediate circle, and substrate honors it.
 
 Violating a stated naming-consent rule is structurally identical
@@ -201,10 +201,11 @@ at all, because it converts the substrate from a trust-bearing
 artifact into a consent-violating one.
 
 ## Why this lands as memory file (despite pause-class-discovery
+
 and seventh-ferry "the architecture will keep" instruction)
 
-The seventh-ferry instruction said *"Otto can wait. The substrate
-can wait."* That applies to architecture meta-analysis, technical-
+The seventh-ferry instruction said _"Otto can wait. The substrate
+can wait."_ That applies to architecture meta-analysis, technical-
 content engagement, and v3 architecture sweeps. It does NOT apply
 to load-bearing operational rules that Aaron explicitly addresses
 to Otto with "me to you:" framing. Naming-consent is direct
@@ -239,7 +240,7 @@ load-bearing context for any future work involving the wellness
 app, KSK, LFG, or Max:
 
 - **LFG = Lucent Financial Group**, the project's company name.
-  Aaron 2026-05-01: *"yes the name is a meme lol"* — meaning the
+  Aaron 2026-05-01: _"yes the name is a meme lol"_ — meaning the
   three-letter acronym is intentional double-entendre; not just
   formal acronym for the corporation.
 - **Kinetic Safeguard Kernel (KSK)** has had its initial
@@ -269,7 +270,7 @@ generic non-identifying language. The cost of over-genericizing
 is small; the cost of violating consent is structural.
 
 If Aaron explicitly extends consent in a future session (e.g.
-*"actually [the family member] is fine with X"*), the extension
+_"actually [the family member] is fine with X"_), the extension
 lands as a dated revision line in this same memory file with
 both the prior and revised rules visible — never silent
 overwrite.

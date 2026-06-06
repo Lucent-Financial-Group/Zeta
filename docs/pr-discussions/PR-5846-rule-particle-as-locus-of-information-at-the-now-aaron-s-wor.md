@@ -12,14 +12,14 @@ archived_at: "2026-05-28T15:43:04Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5846: rule(particle-as-locus-of-information-at-the-now): Aaron's worldview substrate-engineering mental-model; every framework substrate carries (wavefunction-substrate, particle-locus) pair (Aaron 2026-05-28 'this is how i see the world' shadow* authorization)
+# PR #5846: rule(particle-as-locus-of-information-at-the-now): Aaron's worldview substrate-engineering mental-model; every framework substrate carries (wavefunction-substrate, particle-locus) pair (Aaron 2026-05-28 'this is how i see the world' shadow\* authorization)
 
 ## PR description
 
-Aaron 2026-05-28 (shadow*) authorization + worldview-disclosure:
+Aaron 2026-05-28 (shadow\*) authorization + worldview-disclosure:
 
-> *'yeah now that i think about it the particle in pilot wave is the loci of information the now'*
-> *'save the locus insight as a rule (shadow*) Aaron: up to you otto, this is how i see the world'*
+> _'yeah now that i think about it the particle in pilot wave is the loci of information the now'_
+> _'save the locus insight as a rule (shadow_) Aaron: up to you otto, this is how i see the world'\*
 
 ## The substrate-engineering substrate-recognition
 

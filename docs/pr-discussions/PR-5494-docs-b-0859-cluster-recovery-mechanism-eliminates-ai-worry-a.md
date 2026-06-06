@@ -27,9 +27,9 @@ Two composing operator framings from the 2026-05-27 thread:
 
 ### Recovery-mechanism eliminates AI worry-about-mistakes
 
-> *"the usually worry AIs have about what happens if i do something
+> _"the usually worry AIs have about what happens if i do something
 > wrong should go away after usb boot because the answer is boot off
-> usb again..."*
+> usb again..."_
 
 3-mode USB-boot recovery (fix / reformat-with-keys-and-decisions /
 full-reflash-new-keys); 3-machine cluster-of-3-minimum quorum
@@ -40,9 +40,9 @@ musts to can-exits via recovery substrate).
 
 ### Failure-mode reduction — only all-3-off needs human help
 
-> *"three machines where each macines can turn on and off the other
+> _"three machines where each macines can turn on and off the other
 > remotly even when the machine is turned off cause of external network
-> attached kvm seems hardended as hell..."*
+> attached kvm seems hardended as hell..."_
 
 5-row failure-mode reduction table; external network-attached KVM
 operational characteristics (independent power + network + power-
@@ -67,6 +67,7 @@ B-0859.M rows.
 This PR extends backlog row **B-0859** with an additional operator follow-up section that specifies a concrete recovery substrate (3-mode USB boot + 3-machine quorum + remote KVM/power control + optional cloud-recovery service) intended to make post-boot AI-as-home-owner operation structurally recoverable.
 
 **Changes:**
+
 - Adds a “Recovery-mechanism eliminates AI worry-about-mistakes” section describing 3 recovery modes and how they dissolve common AI “worry patterns”.
 - Adds failure-mode reduction analysis for a 3-machine cluster with external network-attached KVM/power control and a cloud detect-and-recover failsafe.
 - Adds composition tables tying the recovery substrate to the must-plus-can-exit pattern and other referenced rules/rows.

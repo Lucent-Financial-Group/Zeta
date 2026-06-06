@@ -20,8 +20,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 The maintainer 2026-05-26 two-step authorization:
 
-1. *"we can do what's going to make cluster setup eaiser for me and not users if that's ssh lets do that first cause we want to get ai running the cluster asap"* — authorized iter-4 SSH+password work
-2. *"i can wait for 4.2 or whatever version before we try again"* — downgraded v1 from "test via re-flash" to "substrate scaffolding for iter-4.2 to build on"
+1. _"we can do what's going to make cluster setup eaiser for me and not users if that's ssh lets do that first cause we want to get ai running the cluster asap"_ — authorized iter-4 SSH+password work
+2. _"i can wait for 4.2 or whatever version before we try again"_ — downgraded v1 from "test via re-flash" to "substrate scaffolding for iter-4.2 to build on"
 
 iter-4 v1 ships the Nix-module + per-host-import scaffolding so iter-4.2 (zflash auto-inject + zeta-install.sh USB probe — the maintainer's actually-usable test target) is a tightly-scoped tooling PR rather than a substrate-shape PR.
 
@@ -64,7 +64,7 @@ Rotate immediately on first tty1 login via `passwd zeta`. Hash format: sha512cry
 - [x] BACKLOG.md regenerated to pick up B-0789
 - [ ] CI passes (gate workflow + CodeQL)
 
-The maintainer will NOT re-flash for v1 (per *"i can wait for 4.2"*); v1 is substrate-engineering housekeeping for the iter-4.2 PR to land cleanly on.
+The maintainer will NOT re-flash for v1 (per _"i can wait for 4.2"_); v1 is substrate-engineering housekeeping for the iter-4.2 PR to land cleanly on.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 

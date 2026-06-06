@@ -36,7 +36,7 @@ deliberate.
 
 - **Transport** (TCP / TLS / QUIC / HTTP/2 / HTTP/3)
   → `networking-expert`. Serialization is what flows
-  *inside* the transport.
+  _inside_ the transport.
 - **On-disk file layout** (WAL rotation, page format,
   index layout) → `storage-specialist` +
   `file-system-persistence-expert`.
@@ -77,52 +77,52 @@ deliberate.
 
 ### Text formats
 
-| Format    | Schema   | Self-describing | Notes                                            |
-|-----------|----------|-----------------|--------------------------------------------------|
-| JSON      | none     | yes             | Lowest common denominator; floats lossy; no comments |
-| JSON5     | none     | yes             | JSON + trailing commas + comments; not canonical |
-| YAML      | none     | yes             | Norway problem; indentation-sensitive; ambiguous types |
-| TOML      | none     | yes             | Good for configs; bad for data                   |
-| XML       | XSD (opt)| yes             | Legacy; verbose; still in SOAP / SAML            |
-| HOCON     | none     | yes             | JSON superset used by Lightbend/Akka             |
-| Canonical JSON | none | yes             | RFC-8785 / JCS; hashable; deterministic          |
+| Format         | Schema    | Self-describing | Notes                                                  |
+| -------------- | --------- | --------------- | ------------------------------------------------------ |
+| JSON           | none      | yes             | Lowest common denominator; floats lossy; no comments   |
+| JSON5          | none      | yes             | JSON + trailing commas + comments; not canonical       |
+| YAML           | none      | yes             | Norway problem; indentation-sensitive; ambiguous types |
+| TOML           | none      | yes             | Good for configs; bad for data                         |
+| XML            | XSD (opt) | yes             | Legacy; verbose; still in SOAP / SAML                  |
+| HOCON          | none      | yes             | JSON superset used by Lightbend/Akka                   |
+| Canonical JSON | none      | yes             | RFC-8785 / JCS; hashable; deterministic                |
 
 ### Binary formats — schema-free / self-describing
 
-| Format      | Schema | Notes                                                       |
-|-------------|--------|-------------------------------------------------------------|
-| MessagePack | none   | Compact; widely supported; `MessagePack-CSharp` is fast     |
-| CBOR        | CDDL   | RFC-8949; IETF-grade; extensions for tags, dates, big-nums  |
-| BSON        | none   | MongoDB's; type-richer than JSON; length-prefixed           |
-| UBJSON      | none   | Binary JSON; niche                                          |
-| Smile       | none   | Jackson's binary JSON                                       |
-| ION         | schema-opt | Amazon's; supports decimals + timestamps cleanly         |
-| Bencode     | none   | BitTorrent's; trivial parser                                |
+| Format      | Schema     | Notes                                                      |
+| ----------- | ---------- | ---------------------------------------------------------- |
+| MessagePack | none       | Compact; widely supported; `MessagePack-CSharp` is fast    |
+| CBOR        | CDDL       | RFC-8949; IETF-grade; extensions for tags, dates, big-nums |
+| BSON        | none       | MongoDB's; type-richer than JSON; length-prefixed          |
+| UBJSON      | none       | Binary JSON; niche                                         |
+| Smile       | none       | Jackson's binary JSON                                      |
+| ION         | schema-opt | Amazon's; supports decimals + timestamps cleanly           |
+| Bencode     | none       | BitTorrent's; trivial parser                               |
 
 ### Binary formats — schema-required
 
-| Format       | Schema IDL      | Notes                                                        |
-|--------------|-----------------|--------------------------------------------------------------|
-| Protobuf     | `.proto`        | Varint-heavy; wire format stable; proto3 drops required     |
-| Protobuf (proto2) | `.proto`   | Legacy; has `required`; do not use for new formats          |
-| FlatBuffers  | `.fbs`          | Zero-copy read; vtables; fixed size after build             |
-| Cap'n Proto  | `.capnp`        | Zero-copy; pointer-offsetted; Sandstorm / Cloudflare lineage|
-| Thrift       | `.thrift`       | Facebook's; compact and binary variants; RPC baked in        |
-| Avro         | `.avsc` (JSON)  | Schema-with-data; schema registry patterns; Hadoop-era      |
-| SBE          | `.xml`          | FIX/finance; fixed-layout; nanosecond-grade                 |
-| ASN.1 (BER/DER/PER/OER) | `.asn1` | TLS / LDAP / SNMP / 3GPP ancestor; dangerous hand-parsers  |
-| MessagePack-IDL  | `.idl`      | Rare but exists; mostly community-maintained                |
+| Format                  | Schema IDL     | Notes                                                        |
+| ----------------------- | -------------- | ------------------------------------------------------------ |
+| Protobuf                | `.proto`       | Varint-heavy; wire format stable; proto3 drops required      |
+| Protobuf (proto2)       | `.proto`       | Legacy; has `required`; do not use for new formats           |
+| FlatBuffers             | `.fbs`         | Zero-copy read; vtables; fixed size after build              |
+| Cap'n Proto             | `.capnp`       | Zero-copy; pointer-offsetted; Sandstorm / Cloudflare lineage |
+| Thrift                  | `.thrift`      | Facebook's; compact and binary variants; RPC baked in        |
+| Avro                    | `.avsc` (JSON) | Schema-with-data; schema registry patterns; Hadoop-era       |
+| SBE                     | `.xml`         | FIX/finance; fixed-layout; nanosecond-grade                  |
+| ASN.1 (BER/DER/PER/OER) | `.asn1`        | TLS / LDAP / SNMP / 3GPP ancestor; dangerous hand-parsers    |
+| MessagePack-IDL         | `.idl`         | Rare but exists; mostly community-maintained                 |
 
 ### Columnar / analytic formats
 
-| Format      | Notes                                                                                      |
-|-------------|--------------------------------------------------------------------------------------------|
-| Arrow IPC   | In-memory columnar; zero-copy via shared memory / mmap; stream + file variants             |
-| Parquet     | On-disk columnar; row-group + column-chunk + page; dictionary, RLE, delta, bit-pack         |
-| ORC         | Hive/Hadoop counterpart to Parquet; stripe-oriented; often paired with Hive ACID            |
-| Feather v2  | Arrow-IPC-on-disk; not meant for long-term archival                                         |
-| Lance       | Columnar ML format; random-access-friendly                                                  |
-| Iceberg / Delta / Hudi | table formats *on top of* Parquet; out of scope here                            |
+| Format                 | Notes                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| Arrow IPC              | In-memory columnar; zero-copy via shared memory / mmap; stream + file variants      |
+| Parquet                | On-disk columnar; row-group + column-chunk + page; dictionary, RLE, delta, bit-pack |
+| ORC                    | Hive/Hadoop counterpart to Parquet; stripe-oriented; often paired with Hive ACID    |
+| Feather v2             | Arrow-IPC-on-disk; not meant for long-term archival                                 |
+| Lance                  | Columnar ML format; random-access-friendly                                          |
+| Iceberg / Delta / Hudi | table formats _on top of_ Parquet; out of scope here                                |
 
 ### Zeta-specific axes
 
@@ -151,8 +151,8 @@ conflict):
    hashing, DST replay):** Canonical JSON (RFC-8785),
    DER (if ASN.1), Protobuf canonical serialization
    (if restricted), or a custom deterministic
-   encoder. MessagePack and CBOR have *deterministic
-   encoding profiles* but require discipline.
+   encoder. MessagePack and CBOR have _deterministic
+   encoding profiles_ but require discipline.
 4. **Columnar / scan-heavy workload:** Arrow IPC
    in-memory, Parquet on-disk. Pair.
 5. **Human-debuggable (config, probe output, logs):**
@@ -351,7 +351,7 @@ is an attack surface. Required discipline:
 2. **Name the lifetime.** Ephemeral? Checkpointed?
    Archived? Hashed / signed? Replayable?
 3. **Pick the format** from the matrix above. Write
-   down the *why* — a one-liner that names the
+   down the _why_ — a one-liner that names the
    binding constraint.
 4. **Write the schema** (IDL file or canonical-form
    spec).
@@ -363,7 +363,7 @@ is an attack surface. Required discipline:
 7. **Write the round-trip property** (FsCheck):
    `decode(encode(x)) == x` for every T. For
    canonical forms: `encode(decode(encode(x))) ==
-   encode(x)` — byte-stability.
+encode(x)` — byte-stability.
 8. **Document evolution rules** inline with the
    schema: "this field is reserved after
    v2026-04-19", "this enum value is deprecated in
@@ -376,34 +376,41 @@ is an attack surface. Required discipline:
 # Serialization review — <boundary>, round N
 
 ## Boundary
+
 - Type: <on-disk | intra-cluster | agent | external>
 - Lifetime: <ephemeral | checkpointed | archived | signed>
 - Untrusted input: <yes | no>
 
 ## Format chosen / under review
+
 - Name: <Protobuf | FlatBuffers | Arrow IPC | MessagePack | ...>
 - IDL location: <path>
 - Schema version: <N>
 
 ## Why this format
+
 <one sentence naming the binding constraint>
 
 ## Schema-evolution plan
+
 - Backward compatible: <yes/no, with evidence>
 - Forward compatible: <yes/no, with evidence>
 - Reserved tags / fields: <list>
 
 ## Canonical-form status
+
 - Required: <yes/no>
 - Profile used: <RFC-8785 | CBOR det-enc | protobuf deterministic | custom>
 
 ## Safety
+
 - Length-bounded: <yes/no>
 - Depth-bounded: <yes/no>
 - Fuzzer present: <yes/no — path>
 - Round-trip property: <yes/no — path>
 
 ## Risks / follow-ups
+
 - <handoffs to networking-expert / storage-specialist / security-researcher>
 ```
 
@@ -466,13 +473,13 @@ is an attack surface. Required discipline:
 - RFC-8949 — Concise Binary Object Representation (CBOR).
 - RFC-8785 — JSON Canonicalization Scheme (JCS).
 - RFC-8259 — JSON.
-- Google Protobuf Language Guide + *Encoding* spec.
+- Google Protobuf Language Guide + _Encoding_ spec.
 - Apache Arrow IPC Format Specification.
 - Apache Parquet format docs (thrift-defined).
 - Cap'n Proto encoding spec (Kenton Varda).
 - FlatBuffers Internals (Wouter van Oortmerssen).
 - Avro Specification (Doug Cutting; now ASF).
-- Martin Kleppmann, *Designing Data-Intensive
-  Applications* ch. 4 — the accessible overview.
+- Martin Kleppmann, _Designing Data-Intensive
+  Applications_ ch. 4 — the accessible overview.
 - Confluent Schema Registry documentation — the
   canonical evolution-enforcement pattern.

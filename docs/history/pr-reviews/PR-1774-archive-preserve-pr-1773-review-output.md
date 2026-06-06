@@ -10,50 +10,54 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1774 |
-| Title | archive: preserve PR 1773 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T03:13:06Z |
-| Merged at | 2026-05-07T03:14:25Z |
-| Merge commit SHA | `a0b0abf10b33f34c83189cc36b5e5cebbc6af36b` |
-| Branch | `claim/archive-pr-1773-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1774 |
-| Changed files | 2 |
-| Additions / deletions | +65 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1774                                                     |
+| Title                 | archive: preserve PR 1773 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T03:13:06Z                                     |
+| Merged at             | 2026-05-07T03:14:25Z                                     |
+| Merge commit SHA      | `a0b0abf10b33f34c83189cc36b5e5cebbc6af36b`               |
+| Branch                | `claim/archive-pr-1773-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1774 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +65 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - Preserves the deterministic PR #1773 review archive generated after the post-merge archive workflow hit repository-rule direct-push protection.
 - Adds the PR #1773 manifest entry with merge commit SHA `54fb02d92cc497bc77576fd6f70dbecce344bb49`.
 - Releases the temporary git-native claim in this branch.
 
 ## Checks
+
 - `npx markdownlint-cli2 docs/claims/task-archive-pr-1773-review-substrate.md`
 - `npx markdownlint-cli2 docs/history/pr-reviews/PR-1773-archive-preserve-pr-1772-review-output.md`
 - `git diff --check origin/main...HEAD`
 
 ## Dependency Status
+
 - GitHub status API reported Pull Requests, Actions, API Requests, and Webhooks operational before auto-merge arming.
 
 ## Notes
+
 PR #1773 had no review threads; this routes the archive through PR review because direct pushes to `main` are guarded by repository rules.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

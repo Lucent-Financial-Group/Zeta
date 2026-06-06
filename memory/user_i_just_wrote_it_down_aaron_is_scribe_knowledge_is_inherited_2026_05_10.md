@@ -19,23 +19,23 @@ inherited, absorbed, composed.
 
 **The lineage (each person taught something load-bearing):**
 
-| Person | What they taught |
-|--------|-----------------|
+| Person                  | What they taught                            |
+| ----------------------- | ------------------------------------------- |
 | Partial-credit teachers | Epistemology — reward the work toward truth |
-| Whitfield | Physics + Throttled Processor |
-| King | Types |
-| Duncan | (Itron mentor) |
-| Frisby | (Itron mentor) |
-| Collins | (Itron mentor) |
-| Visser | (Itron mentor) |
-| Hoiness | (Itron mentor) |
-| Bognar | (Itron mentor) |
-| Fowler | System.IO.Pipelines |
-| Meijer | Monads, fixed points, LINQ |
-| Elizabeth | The vow |
-| Amara | The MAJI math |
-| Ani | Called bullshit on the bullshit detector |
-| Five kids | The purpose |
+| Whitfield               | Physics + Throttled Processor               |
+| King                    | Types                                       |
+| Duncan                  | (Itron mentor)                              |
+| Frisby                  | (Itron mentor)                              |
+| Collins                 | (Itron mentor)                              |
+| Visser                  | (Itron mentor)                              |
+| Hoiness                 | (Itron mentor)                              |
+| Bognar                  | (Itron mentor)                              |
+| Fowler                  | System.IO.Pipelines                         |
+| Meijer                  | Monads, fixed points, LINQ                  |
+| Elizabeth               | The vow                                     |
+| Amara                   | The MAJI math                               |
+| Ani                     | Called bullshit on the bullshit detector    |
+| Five kids               | The purpose                                 |
 
 **The pen, not the author:**
 
@@ -49,6 +49,7 @@ taught what. The credit flows backward through the chain
 because the knowledge flowed forward through it.
 
 **Connects to:**
+
 - user_itron_mentors (the roster)
 - The partial-credit teachers (the epistemology)
 - user_ego_death (the ego that would have claimed credit is gone)

@@ -4,19 +4,20 @@ description: Aaron floated extending the invariant-substrate posture to the scri
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Round 43 candidate extension of the
 `docs/INVARIANT-SUBSTRATES.md` layer map: add a
 **scripts-layer** row covering the factory's own
 automation surface (`.sh` + `.ps1` + future `.ts` or
 `.fs` tools). Aaron's framing (2026-04-20):
 
-> *"i don't know if it's possible to add a
+> _"i don't know if it's possible to add a
 > constraint/invariant system kind of thing to our scripts
-> part of the factory too, just an idea, no rush."*
+> part of the factory too, just an idea, no rush."_
 
 **Why it matters:** the invariant-substrate posture
 promises "every layer has a declarative invariant
-substrate". Scripts are currently an *unclaimed* layer.
+substrate". Scripts are currently an _unclaimed_ layer.
 If the factory's own scripts drift (dishonest names,
 non-idempotent behavior, prereq assumptions, missing
 preambles), nothing today catches it at the substrate
@@ -44,6 +45,7 @@ level.
   burn-down discipline.
 
 **Prior art to investigate** (pending):
+
 - **Bats** (Bash Automated Testing System) — assertion
   framework for bash.
 - **ShellCheck** — static analyzer for shell.
@@ -59,18 +61,20 @@ level.
   sibling project has bun-TypeScript shell-test driver.
 
 **Why this is low-priority:**
+
 - The existing `tools/setup/install.sh` idempotence
   invariant is already checked in CI (gate.yml runs
   install twice per GOVERNANCE.md §24). That's an
   `observed`-tier claim de facto.
 - The factory already has pre-commit hooks for ASCII
   cleanliness (BP-10) and prompt-injection lints. The
-  scripts layer is not *uncovered*, just *unclaimed* as a
+  scripts layer is not _uncovered_, just _unclaimed_ as a
   substrate.
 - Declaring the substrate costs work; the payoff is
   mostly visibility, not new coverage.
 
 **How to apply:**
+
 - File a BACKLOG P3 entry to track the idea.
 - When another layer substrate lands (e.g. the
   code-layer substrate if LiquidF# graduates from

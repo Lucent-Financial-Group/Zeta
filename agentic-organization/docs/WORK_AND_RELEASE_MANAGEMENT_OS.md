@@ -48,29 +48,29 @@ This structure should be flexible enough for internal platform work and product/
 
 ## Core Domain Objects
 
-| Object | Meaning |
-|---|---|
-| Goal | Ambiguous or high-level objective submitted by a human, agent, system, or executive hat |
-| Report | Internal signal such as QA finding, pipeline failure, SLO burn, memory quality issue, or process issue |
-| Service Request | Request for help, credential access, environment change, investigation, or operational action |
-| Project | Long-lived product, platform, repo family, customer area, or internal system |
-| Initiative | Prioritized body of work with owner, scope, budget, required gates, and expected outcomes |
-| Initiative Branch | Feature branch or branch family where all development and QA for an initiative happens before promotion to the system build branch |
-| Work Item | Common superclass for task, defect, capability request, review task, incident task, release task |
-| Work Batch / Mission Run | A durable grouping of related work items for an initiative, release, incident, or department push, with its own status, capacity plan, schedule context, and completion/recovery rules |
-| Task | Concrete unit of execution with acceptance criteria, required hats, dependencies, and evidence |
-| Defect | Reproducible problem with severity, reproduction evidence, affected project/release, and fix flow |
-| Capability Request | Request for a new tool, credential, workflow, actor, skill, memory adaptation, or runtime feature |
-| Gate | Required approval such as BRD, CA, security, code review, QA, delivery, memory, release |
-| Assignment | Binding of a hat and agent to scoped work, with TTL, lease, token, and release policy |
-| Release | Merge/promotion/deployment unit with gate evidence, risk, rollback, notes, and verification |
-| Automation Package | CI, test, deployment, preview environment, rollback, observability, and operational automation created or updated with the feature |
-| Work Schedule | Hat-bound schedule of prioritized work, prompt-flow execution, review, reflection, memory maintenance, free time, and reporting blocks |
-| Schedule Context | Runtime dispatch metadata linked to work, such as target hat, run template, branch, budget, retry count, circuit-breaker state, and dispatch failure evidence. This is separate from the work item itself |
-| Prompt Flow | Reusable deterministic MCP-driven pipeline composed of phases, gates, reviewers, artifacts, and memory behavior |
-| Universal Action | Typed action atom inside a prompt-flow phase, with actor, target, preconditions, observation contract, reversibility, and evidence |
-| Signal | Durable event that informs boards, rules, agents, meetings, triggers, and UI read models |
-| Requirement Maturity | Discovery-specific state that tracks whether an ambiguous request has enough customer, business, workflow, and acceptance context to move toward implementation |
+| Object                   | Meaning                                                                                                                                                                                                   |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Goal                     | Ambiguous or high-level objective submitted by a human, agent, system, or executive hat                                                                                                                   |
+| Report                   | Internal signal such as QA finding, pipeline failure, SLO burn, memory quality issue, or process issue                                                                                                    |
+| Service Request          | Request for help, credential access, environment change, investigation, or operational action                                                                                                             |
+| Project                  | Long-lived product, platform, repo family, customer area, or internal system                                                                                                                              |
+| Initiative               | Prioritized body of work with owner, scope, budget, required gates, and expected outcomes                                                                                                                 |
+| Initiative Branch        | Feature branch or branch family where all development and QA for an initiative happens before promotion to the system build branch                                                                        |
+| Work Item                | Common superclass for task, defect, capability request, review task, incident task, release task                                                                                                          |
+| Work Batch / Mission Run | A durable grouping of related work items for an initiative, release, incident, or department push, with its own status, capacity plan, schedule context, and completion/recovery rules                    |
+| Task                     | Concrete unit of execution with acceptance criteria, required hats, dependencies, and evidence                                                                                                            |
+| Defect                   | Reproducible problem with severity, reproduction evidence, affected project/release, and fix flow                                                                                                         |
+| Capability Request       | Request for a new tool, credential, workflow, actor, skill, memory adaptation, or runtime feature                                                                                                         |
+| Gate                     | Required approval such as BRD, CA, security, code review, QA, delivery, memory, release                                                                                                                   |
+| Assignment               | Binding of a hat and agent to scoped work, with TTL, lease, token, and release policy                                                                                                                     |
+| Release                  | Merge/promotion/deployment unit with gate evidence, risk, rollback, notes, and verification                                                                                                               |
+| Automation Package       | CI, test, deployment, preview environment, rollback, observability, and operational automation created or updated with the feature                                                                        |
+| Work Schedule            | Hat-bound schedule of prioritized work, prompt-flow execution, review, reflection, memory maintenance, free time, and reporting blocks                                                                    |
+| Schedule Context         | Runtime dispatch metadata linked to work, such as target hat, run template, branch, budget, retry count, circuit-breaker state, and dispatch failure evidence. This is separate from the work item itself |
+| Prompt Flow              | Reusable deterministic MCP-driven pipeline composed of phases, gates, reviewers, artifacts, and memory behavior                                                                                           |
+| Universal Action         | Typed action atom inside a prompt-flow phase, with actor, target, preconditions, observation contract, reversibility, and evidence                                                                        |
+| Signal                   | Durable event that informs boards, rules, agents, meetings, triggers, and UI read models                                                                                                                  |
+| Requirement Maturity     | Discovery-specific state that tracks whether an ambiguous request has enough customer, business, workflow, and acceptance context to move toward implementation                                           |
 
 ## State Machines
 
@@ -249,25 +249,25 @@ Assignments are their own state machine because hat reliability is central. Work
 
 Signals are durable, typed events. They are not chat messages. They drive boards, rules, triggers, automation, UI projections, and agent inboxes.
 
-| Signal family | Examples | Primary consumers |
-|---|---|---|
-| Work state | `WorkItemCreated`, `WorkItemMarkedReady`, `TaskBlocked`, `TaskSubmittedForReview`, `TaskDone` | TPMs, Engineering Managers, Reviewers, UI |
-| Branch state | `InitiativeBranchRequested`, `InitiativeBranchCreated`, `BranchQaEnvironmentReady`, `BranchQaSignedOff`, `BranchMergeReady`, `BranchMergedToMain`, `SystemBuildVerified` | TPMs, Engineering Managers, QA, Delivery, UI |
-| Automation state | `AutomationPlanCreated`, `CiPipelineUpdated`, `PreviewEnvironmentReady`, `DeploymentAutomationReady`, `RollbackAutomationReady`, `ObservabilityAutomationReady` | Engineering Managers, DevOps, QA, Delivery, Operations |
-| Requirement maturity | `RequirementReceived`, `AmbiguityDetected`, `DiscoveryRequired`, `RequirementsDrafted`, `WorkflowModeled`, `ImplementationReady` | Product, BA, Architecture, TPMs, UI |
-| Interview | `InterviewRequested`, `InterviewStarted`, `CustomerAnswerRecorded`, `ClarificationQuestionOpened`, `InterviewCompleted` | Customer Interviewer, Product Owner, Business Analyst |
-| Gate state | `QualityGateEvaluated`, `BrdApproved`, `ArchitectureRejected`, `CodeReviewApproved`, `QaBounceBack`, `DeliveryApproved` | Reviewers, managers, Delivery |
-| Assignment | `HatRequested`, `HatSupplyReserved`, `HatTokenIssued`, `HatRefreshFailed`, `HatReleased`, `HatRevoked` | Assignment service, managers, agents |
-| Schedule | `ScheduleBlockPlanned`, `ScheduleBlockStarted`, `ScheduleBlockCompleted`, `ReflectionDue`, `FreeTimeStarted`, `MemoryMaintenanceDue` | Agents, managers, Memory, UI |
-| Prompt flow | `PromptFlowRequested`, `PromptFlowActivated`, `PromptFlowRunStarted`, `PromptFlowPhaseCompleted`, `PromptFlowGateRejected`, `PromptFlowRunCompleted` | Agents, reviewers, managers, Capability teams |
-| Universal action | `UniversalActionStarted`, `ActionObservationRecorded`, `ActionCorrectionRequested`, `ActionReverted`, `ActionCompleted` | Prompt-flow runners, reviewers, graph ingestion, audit |
-| Runtime | `OzRunStarted`, `OzRunSilent`, `PodHeartbeatMissing`, `RunCompleted`, `RunFailed` | Operations, TPMs, Engineering Managers |
-| Release | `ReleaseScopeSelected`, `ReleaseEvidenceMissing`, `ReleaseApproved`, `ReleaseCompleted`, `RollbackRequested` | Delivery, QA, Security, executives |
-| Capacity | `HatSupplyExhausted`, `BudgetThresholdExceeded`, `QueueLagHigh`, `ReviewQueueSaturated` | Directors, Cost Controller, executives |
-| Anti-stall | `QueueSloViolated`, `BlockedWorkStale`, `BlockerOwnerMissing`, `AssignmentSilent`, `AlternateWorkAssigned`, `DependencyCleared`, `WorkReactivated` | TPMs, Engineering Managers, Directors, Operations |
-| Quality | `RepeatedQaBounceBack`, `MemoryGapDetected`, `FlakyTestDetected`, `AcceptanceCriteriaMissing` | Engineering Managers, QA Engineering, Memory |
-| Capability | `CapabilityRequested`, `SecurityReviewRequired`, `WorkflowRegistered`, `ToolActivated` | Directors, Architecture, Security |
-| Meeting | `DiscussionAnchorCreated`, `MeetingRequested`, `DecisionRecorded`, `VoteOpened`, `VoteClosed` | Participants, governance hats |
+| Signal family        | Examples                                                                                                                                                                 | Primary consumers                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| Work state           | `WorkItemCreated`, `WorkItemMarkedReady`, `TaskBlocked`, `TaskSubmittedForReview`, `TaskDone`                                                                            | TPMs, Engineering Managers, Reviewers, UI              |
+| Branch state         | `InitiativeBranchRequested`, `InitiativeBranchCreated`, `BranchQaEnvironmentReady`, `BranchQaSignedOff`, `BranchMergeReady`, `BranchMergedToMain`, `SystemBuildVerified` | TPMs, Engineering Managers, QA, Delivery, UI           |
+| Automation state     | `AutomationPlanCreated`, `CiPipelineUpdated`, `PreviewEnvironmentReady`, `DeploymentAutomationReady`, `RollbackAutomationReady`, `ObservabilityAutomationReady`          | Engineering Managers, DevOps, QA, Delivery, Operations |
+| Requirement maturity | `RequirementReceived`, `AmbiguityDetected`, `DiscoveryRequired`, `RequirementsDrafted`, `WorkflowModeled`, `ImplementationReady`                                         | Product, BA, Architecture, TPMs, UI                    |
+| Interview            | `InterviewRequested`, `InterviewStarted`, `CustomerAnswerRecorded`, `ClarificationQuestionOpened`, `InterviewCompleted`                                                  | Customer Interviewer, Product Owner, Business Analyst  |
+| Gate state           | `QualityGateEvaluated`, `BrdApproved`, `ArchitectureRejected`, `CodeReviewApproved`, `QaBounceBack`, `DeliveryApproved`                                                  | Reviewers, managers, Delivery                          |
+| Assignment           | `HatRequested`, `HatSupplyReserved`, `HatTokenIssued`, `HatRefreshFailed`, `HatReleased`, `HatRevoked`                                                                   | Assignment service, managers, agents                   |
+| Schedule             | `ScheduleBlockPlanned`, `ScheduleBlockStarted`, `ScheduleBlockCompleted`, `ReflectionDue`, `FreeTimeStarted`, `MemoryMaintenanceDue`                                     | Agents, managers, Memory, UI                           |
+| Prompt flow          | `PromptFlowRequested`, `PromptFlowActivated`, `PromptFlowRunStarted`, `PromptFlowPhaseCompleted`, `PromptFlowGateRejected`, `PromptFlowRunCompleted`                     | Agents, reviewers, managers, Capability teams          |
+| Universal action     | `UniversalActionStarted`, `ActionObservationRecorded`, `ActionCorrectionRequested`, `ActionReverted`, `ActionCompleted`                                                  | Prompt-flow runners, reviewers, graph ingestion, audit |
+| Runtime              | `OzRunStarted`, `OzRunSilent`, `PodHeartbeatMissing`, `RunCompleted`, `RunFailed`                                                                                        | Operations, TPMs, Engineering Managers                 |
+| Release              | `ReleaseScopeSelected`, `ReleaseEvidenceMissing`, `ReleaseApproved`, `ReleaseCompleted`, `RollbackRequested`                                                             | Delivery, QA, Security, executives                     |
+| Capacity             | `HatSupplyExhausted`, `BudgetThresholdExceeded`, `QueueLagHigh`, `ReviewQueueSaturated`                                                                                  | Directors, Cost Controller, executives                 |
+| Anti-stall           | `QueueSloViolated`, `BlockedWorkStale`, `BlockerOwnerMissing`, `AssignmentSilent`, `AlternateWorkAssigned`, `DependencyCleared`, `WorkReactivated`                       | TPMs, Engineering Managers, Directors, Operations      |
+| Quality              | `RepeatedQaBounceBack`, `MemoryGapDetected`, `FlakyTestDetected`, `AcceptanceCriteriaMissing`                                                                            | Engineering Managers, QA Engineering, Memory           |
+| Capability           | `CapabilityRequested`, `SecurityReviewRequired`, `WorkflowRegistered`, `ToolActivated`                                                                                   | Directors, Architecture, Security                      |
+| Meeting              | `DiscussionAnchorCreated`, `MeetingRequested`, `DecisionRecorded`, `VoteOpened`, `VoteClosed`                                                                            | Participants, governance hats                          |
 
 Every signal should include:
 
@@ -304,22 +304,22 @@ type OrganizationSignal = {
 
 The UI and agents should not read raw tables. They should consume purpose-built boards and queues.
 
-| Board or queue | Shows | Used by |
-|---|---|---|
-| Executive Portfolio Board | Projects, initiatives, budget, hat scarcity, delivery risk, department health | Executive Board, CEO, CTO, COO, CFO |
-| Requirement Maturity Board | Ambiguous requirements, discovery state, interviews, open questions, BRD readiness, product signoff | Product, Business Analysis, TPMs, Architecture |
-| Director Initiative Board | Department initiatives, blocked work, staffing, review lag, capability gaps | Directors |
-| TPM Mission Board | Initiative tasks, dependencies, teams, blockers, meetings, evidence, release links | TPMs |
-| Anti-Stall Command Center | stale work, blockers, queue SLOs, alternate work, dependency reactivation, reassignment, movement score | TPMs, Engineering Managers, Directors, Operations |
-| Engineering Manager Board | Ready queue, assigned tasks, blocked tasks, TDD evidence, memory/doc gaps, team outcomes | Engineering Managers |
-| Implementer Task Queue | Assigned tasks, required docs, red tests, allowed tools, run status, review feedback | Implementer hats |
-| Review Center | Pending reviews by type, evidence completeness, self-approval blocks, decision history | Review hats |
-| QA Verification Board | QA-ready work, test cases, browser runs, reproducibility evidence, bounce-backs | QA and QA Engineering |
-| Delivery Board | Release candidates, upstream gates, release evidence, rollback plans, deployment state | Delivery hats |
-| Security Queue | Credential requests, tool expansions, policy diffs, dangerous automation reviews | Security hats |
-| Operations Board | Workers, leases, DLQs, Oz runs, pod health, SLO burn, incidents, self-healing | Operations hats |
-| Memory and Skills Board | Memory adaptation, stale docs, project skills, context quality, repeated misses | Memory and Documentation hats |
-| Capability Expansion Board | Requested tools, workflows, actors, skills, credentials, approvals, activation state | Hat Designer, directors, Architecture, Security |
+| Board or queue             | Shows                                                                                                   | Used by                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Executive Portfolio Board  | Projects, initiatives, budget, hat scarcity, delivery risk, department health                           | Executive Board, CEO, CTO, COO, CFO               |
+| Requirement Maturity Board | Ambiguous requirements, discovery state, interviews, open questions, BRD readiness, product signoff     | Product, Business Analysis, TPMs, Architecture    |
+| Director Initiative Board  | Department initiatives, blocked work, staffing, review lag, capability gaps                             | Directors                                         |
+| TPM Mission Board          | Initiative tasks, dependencies, teams, blockers, meetings, evidence, release links                      | TPMs                                              |
+| Anti-Stall Command Center  | stale work, blockers, queue SLOs, alternate work, dependency reactivation, reassignment, movement score | TPMs, Engineering Managers, Directors, Operations |
+| Engineering Manager Board  | Ready queue, assigned tasks, blocked tasks, TDD evidence, memory/doc gaps, team outcomes                | Engineering Managers                              |
+| Implementer Task Queue     | Assigned tasks, required docs, red tests, allowed tools, run status, review feedback                    | Implementer hats                                  |
+| Review Center              | Pending reviews by type, evidence completeness, self-approval blocks, decision history                  | Review hats                                       |
+| QA Verification Board      | QA-ready work, test cases, browser runs, reproducibility evidence, bounce-backs                         | QA and QA Engineering                             |
+| Delivery Board             | Release candidates, upstream gates, release evidence, rollback plans, deployment state                  | Delivery hats                                     |
+| Security Queue             | Credential requests, tool expansions, policy diffs, dangerous automation reviews                        | Security hats                                     |
+| Operations Board           | Workers, leases, DLQs, Oz runs, pod health, SLO burn, incidents, self-healing                           | Operations hats                                   |
+| Memory and Skills Board    | Memory adaptation, stale docs, project skills, context quality, repeated misses                         | Memory and Documentation hats                     |
+| Capability Expansion Board | Requested tools, workflows, actors, skills, credentials, approvals, activation state                    | Hat Designer, directors, Architecture, Security   |
 
 Each board should be backed by read models updated from signals. This keeps UI fast and avoids expensive live aggregation across every domain table.
 

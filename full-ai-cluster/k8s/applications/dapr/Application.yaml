@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: dapr
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -18,7 +18,7 @@ spec:
       releaseName: dapr
       valuesObject:
         global:
-          ha: { enabled: false }   # bump once multi-control-plane
+          ha: { enabled: false } # bump once multi-control-plane
         dapr_placement:
           replicaCount: 1
         # Actors persistence: configure a Redis/CockroachDB state
@@ -31,4 +31,4 @@ spec:
     namespace: dapr-system
   syncPolicy:
     automated: { prune: true, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

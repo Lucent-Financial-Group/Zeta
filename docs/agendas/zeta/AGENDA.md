@@ -16,7 +16,7 @@ Generative framework providing META-INFRASTRUCTURE so anyone can create rides + 
 
 ## Operator's self-claim framing
 
-The human maintainer 2026-05-22: *"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."*
+The human maintainer 2026-05-22: _"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."_
 
 ## Distinct from Agora
 
@@ -35,7 +35,7 @@ Multi-AI ratification of Zeta-as-generative-substrate across the day's substrate
 
 ## External reference anchor (operator 2026-05-22): InterSystems Caché
 
-For the Zeta-db substrate-engineering work (B-0688 + B-0687), the closest existing commercial substrate analog is **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: *"we basically said the closest human thing is cache a fresh medical database"* + naming Caché as the concrete commercial reference.
+For the Zeta-db substrate-engineering work (B-0688 + B-0687), the closest existing commercial substrate analog is **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: _"we basically said the closest human thing is cache a fresh medical database"_ + naming Caché as the concrete commercial reference.
 
 This anchor IS the mirror→beacon translation reference: "Zeta db = cached-fresh medical database analog applied to AI substrate; closest commercial reference is InterSystems Caché (historically powered Epic EHR for decades (Epic moving newer generations to IRIS); US hospital EHR market share is split across multiple vendors); extends with F# compiler integration + multi-oracle BFT + Rx/DBSP semantic-index substrate + DST hardening."
 

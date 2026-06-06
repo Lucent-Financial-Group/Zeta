@@ -41,7 +41,7 @@ so a cold-start agent can use it without re-deriving it.
 
 **Proof of prior-art search (Otto-364 + 7-axis inventory before starting B-0217):**
 
-- Wake-time-substrate: read CLAUDE.md bidirectional section + docs/ALIGNMENT.md §"Alignment is bidirectional" (lines 197+) + research/2026-05-02-*.md
+- Wake-time-substrate: read CLAUDE.md bidirectional section + docs/ALIGNMENT.md §"Alignment is bidirectional" (lines 197+) + research/2026-05-02-\*.md
 - Skill-router: alignment-auditor, alignment-observability, razor-discipline (Rodney's), spec-zealot
 - Orthogonal-axes: B-0192 razor-cadence, B-0160 mechanical-auth, B-0193 bootstrap-razor
 - Decision-archaeology: B-0169 (walked depends_on B-0215 + parent B-0003)

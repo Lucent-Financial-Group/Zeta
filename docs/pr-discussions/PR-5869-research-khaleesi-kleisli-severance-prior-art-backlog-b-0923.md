@@ -31,6 +31,7 @@ Generated with Claude Code
 Adds a preserved research note for the KHALEESI (USENIX Security ’22) prior-art and files a low-priority backlog item (B-0923) that frames it as a future “Kleisli-severance” substrate target within the broader framework vocabulary.
 
 **Changes:**
+
 - Added a `references/notes/` research note summarizing the paper and mapping it onto existing substrate concepts.
 - Added a new P3 backlog row `B-0923` capturing a very-low-priority future work target.
 - Updated the generated `docs/BACKLOG.md` index to include `B-0923`.
@@ -39,11 +40,11 @@ Adds a preserved research note for the KHALEESI (USENIX Security ’22) prior-ar
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| references/notes/khaleesi-breaker-of-tracking-request-chains-usenix-22-iqbal-wolfe-nguyen-englehardt-shafiq.md | New research note capturing the forwarded KHALEESI prior-art + framework composition mapping. |
-| docs/backlog/P3/B-0923-kleisli-severance-substrate-engineering-target-apply-framework-kleisli-substrate-to-privacy-defense-scope-composes-with-khaleesi-prior-art-aaron-2026-05-28.md | New P3 backlog row defining the future substrate target and its composition links. |
-| docs/BACKLOG.md | Adds the new B-0923 entry to the auto-generated backlog index. |
+| File                                                                                                                                                                                  | Description                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| references/notes/khaleesi-breaker-of-tracking-request-chains-usenix-22-iqbal-wolfe-nguyen-englehardt-shafiq.md                                                                        | New research note capturing the forwarded KHALEESI prior-art + framework composition mapping. |
+| docs/backlog/P3/B-0923-kleisli-severance-substrate-engineering-target-apply-framework-kleisli-substrate-to-privacy-defense-scope-composes-with-khaleesi-prior-art-aaron-2026-05-28.md | New P3 backlog row defining the future substrate target and its composition links.            |
+| docs/BACKLOG.md                                                                                                                                                                       | Adds the new B-0923 entry to the auto-generated backlog index.                                |
 
 ## Review threads
 

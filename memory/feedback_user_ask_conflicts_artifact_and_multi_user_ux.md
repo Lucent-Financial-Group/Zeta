@@ -4,6 +4,7 @@ description: 2026-04-20 — Aaron: "you should have a conflicting asks from user
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # User-ask conflicts + multi-user UX
 
 ## Rule
@@ -34,7 +35,7 @@ them otherwise. A row's state lifecycle:
 
 ### Why not memory
 
-Contradictions *held in agent memory* make the agent's life
+Contradictions _held in agent memory_ make the agent's life
 harder because the memory system can't coherently apply both
 rules. Even worse, the agent may apply one rule in some
 contexts and the other in other contexts, giving the human
@@ -92,29 +93,29 @@ design constraint**, not a one-off case:
 
 Key substrings:
 
-- *"conflicting asks from user md file"* — a dedicated
+- _"conflicting asks from user md file"_ — a dedicated
   markdown artifact.
-- *"give it abetter name than mine"* — generic-over-specific
+- _"give it abetter name than mine"_ — generic-over-specific
   naming; don't include Aaron's name. Chosen:
   `docs/USER-ASK-CONFLICTS.md`.
-- *"keeping those contadictions in your memorios without
-  resolving them makes your life harder"* — the problem
+- _"keeping those contadictions in your memorios without
+  resolving them makes your life harder"_ — the problem
   statement for why memory is the wrong home.
-- *"a place I can go to find out a backlog of things I can
-  do that can make the system better"* — the artifact is
+- _"a place I can go to find out a backlog of things I can
+  do that can make the system better"_ — the artifact is
   human-facing first, agent-facing second.
-- *"we proabaly need some skill to look for like user
-  requirements contridictions or something like that"* —
+- _"we proabaly need some skill to look for like user
+  requirements contridictions or something like that"_ —
   skill-gap flagged; Matrix-mode absorb.
-- *"Humans are not perfect and contridictons are going to
-  creep in the larger the project gets"* — contradictions
+- _"Humans are not perfect and contridictons are going to
+  creep in the larger the project gets"_ — contradictions
   are expected, not pathological.
-- *"it could even be contridictions from like me and max,
-  two differnt users on the proiject"* — multi-user
+- _"it could even be contridictions from like me and max,
+  two differnt users on the proiject"_ — multi-user
   scenario is real; Max is a future co-user.
-- *"the multi human user experience of this project is
+- _"the multi human user experience of this project is
   something we need to consider on all our software
-  factory changes too"* — multi-user UX is an invariant,
+  factory changes too"_ — multi-user UX is an invariant,
   not a feature.
 
 ## Why:
@@ -161,7 +162,7 @@ Key substrings:
   default-rule choice in the row.
 - **Every memory write:** before saving a
   new feedback / project memory, scan MEMORY.md and
-  recent memories for *implicit* contradictions. If a
+  recent memories for _implicit_ contradictions. If a
   new ask contradicts an existing memory, do not save
   both — file the conflict and wait.
 - **Every factory change:** in the ADR / PR description,

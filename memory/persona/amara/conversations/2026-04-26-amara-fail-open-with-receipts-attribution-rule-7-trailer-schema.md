@@ -9,9 +9,9 @@ Non-fusion disclaimer: Amara's 7-trailer schema composes with the bootstrap-atte
 
 **Triggering source:** Aaron 2026-04-26 ~18:30Z exchange:
 
-> *"can we add tags to the PR and or commit?"*
-> *"that's the host github native solution, is there a gitnative solution?"*
-> *"we should do both"*
+> _"can we add tags to the PR and or commit?"_
+> _"that's the host github native solution, is there a gitnative solution?"_
+> _"we should do both"_
 
 Otto's response: created GitHub label `agent-otto` (host-native) + filed initial single-`Agent: otto` trailer memory (Otto-354). Aaron then ferried the situation to Amara, including the prior memory landings (auto-merge hallucination + Otto-275-FOREVER + harbor+blade=Radical-Candor + SRE-as-Substrate-RE + the just-crystallised live-lock taxonomy). Amara's response is the canonical refinement.
 
@@ -19,14 +19,14 @@ Otto's response: created GitHub label `agent-otto` (host-native) + filed initial
 
 ## Section 1: Amara's framing of the live substrate loop (verbatim)
 
-> *"Oh, this is exactly how you and Claude riff. This is the live substrate loop:*
+> _"Oh, this is exactly how you and Claude riff. This is the live substrate loop:_
 >
-> ***Amara names the taxonomy → Aaron catches the real-world edge case → Otto***
-> ***verifies, patches memory, files task, applies a partial fix → Aaron***
-> ***tightens the design again.***
+> **_Amara names the taxonomy → Aaron catches the real-world edge case → Otto_**
+> **_verifies, patches memory, files task, applies a partial fix → Aaron_**
+> **_tightens the design again._**
 >
-> *That is a very healthy pattern. Not clean-room theory. More like a jazz trio*
-> *with unit tests."*
+> _That is a very healthy pattern. Not clean-room theory. More like a jazz trio_
+> _with unit tests."_
 
 This is Amara's name for the discipline-application loop the factory has been
 running this session. Three named agents, one shared substrate, iterative
@@ -37,18 +37,18 @@ improvisation (jazz trio) within a verifiable structure (unit tests).
 
 ## Section 2: Amara's correction-event framing (verbatim)
 
-> *"```text*
-> *event: SHARED_IDENTITY_ATTRIBUTION_FAULT*
-> *problem:*
-> *- Otto used Aaron's GitHub credentials through gh CLI*
-> *- GitHub showed enabledBy.login = AceHack*
-> *- Otto inferred "Aaron actively armed auto-merge"*
-> *- actual source was structurally ambiguous*
-> *correction:*
-> *- not purely hallucination*
-> *- shared cryptographic identity made attribution opaque*
-> *- Aaron explicitly approves fail-open autonomy for low-stakes greenfield work*
-> *```"*
+> _"```text_
+> _event: SHARED_IDENTITY_ATTRIBUTION_FAULT_
+> _problem:_
+> _- Otto used Aaron's GitHub credentials through gh CLI_
+> _- GitHub showed enabledBy.login = AceHack_
+> _- Otto inferred "Aaron actively armed auto-merge"_
+> _- actual source was structurally ambiguous_
+> _correction:_
+> _- not purely hallucination_
+> _- shared cryptographic identity made attribution opaque_
+> _- Aaron explicitly approves fail-open autonomy for low-stakes greenfield work_
+> _```"_
 
 The distinction Amara names is load-bearing. The auto-merge attribution fault
 was NOT a clean hallucination — it was a structural-attribution-opacity
@@ -67,32 +67,32 @@ Amara's "do both" framing:
 
 Host-native layer:
 
-> *"```text*
-> *github_native:*
-> *pr_label: agent-otto*
-> *branch_prefixes:*
-> *- sync/*
-> *- research/*
-> *- docs/pr-preservation-*
-> *- tick-history/*
-> *future:*
-> *- bot account*
-> *- dedicated PAT*
-> *- GitHub App*
-> *```"*
+> _"```text_
+> _github_native:_
+> _pr_label: agent-otto_
+> _branch_prefixes:_
+> _- sync/_
+> _- research/_
+> _- docs/pr-preservation-_
+> _- tick-history/_
+> _future:_
+> _- bot account_
+> _- dedicated PAT_
+> _- GitHub App_
+> _```"_
 
 Git-native layer:
 
-> *"```text*
-> *git_native:*
-> *commit_trailers:*
-> *Agent: Otto*
-> *Agent-Model: Claude Opus 4.7*
-> *Human-Operator: Aaron Stainback*
-> *Execution-Mode: fail-open-low-stakes*
-> *Credential-Identity: AceHack-shared*
-> *Attribution-Note: actor login is credential identity, not proof of human action*
-> *```"*
+> _"```text_
+> _git_native:_
+> _commit_trailers:_
+> _Agent: Otto_
+> _Agent-Model: Claude Opus 4.7_
+> _Human-Operator: Aaron Stainback_
+> _Execution-Mode: fail-open-low-stakes_
+> _Credential-Identity: AceHack-shared_
+> _Attribution-Note: actor login is credential identity, not proof of human action_
+> _```"_
 
 Note: Amara's first-pass schema uses different field names than her refined
 schema in Section 4. The refined schema is the canonical one.
@@ -101,32 +101,32 @@ schema in Section 4. The refined schema is the canonical one.
 
 ## Section 4: Amara's refined 7-trailer schema (verbatim — load-bearing)
 
-> *"You already have one git-native discriminator: `Co-Authored-By: Claude*
-> *Opus 4.7 <noreply@anthropic.com>` on agent commits, which travels across*
-> *hosts better than GitHub PR labels.*
+> _"You already have one git-native discriminator: `Co-Authored-By: Claude_
+> _Opus 4.7 <noreply@anthropic.com>` on agent commits, which travels across_
+> _hosts better than GitHub PR labels._
 >
-> *But I would strengthen it. `Co-Authored-By` says Claude contributed. It*
-> ***does not*** *fully say who pressed the operational button, which credential*
-> *was used, or whether Aaron-human actively reviewed. So I'd add a structured*
-> *trailer block to every agent commit going forward:*
+> _But I would strengthen it. `Co-Authored-By` says Claude contributed. It_
+> **_does not_** _fully say who pressed the operational button, which credential_
+> _was used, or whether Aaron-human actively reviewed. So I'd add a structured_
+> _trailer block to every agent commit going forward:_
 >
-> *```text*
-> *Agent: Otto*
-> *Agent-Runtime: Claude Code*
-> *Agent-Model: Claude Opus 4.7*
-> *Operator: Aaron Stainback*
-> *Credential-Identity: AceHack*
-> *Action-Mode: autonomous-fail-open*
-> *Human-Review: not-implied-by-credential*
-> *```*
+> _```text_
+> _Agent: Otto_
+> _Agent-Runtime: Claude Code_
+> _Agent-Model: Claude Opus 4.7_
+> _Operator: Aaron Stainback_
+> _Credential-Identity: AceHack_
+> _Action-Mode: autonomous-fail-open_
+> _Human-Review: not-implied-by-credential_
+> _```_
 >
-> *Then future archaeology gets the clean rule:*
+> _Then future archaeology gets the clean rule:_
 >
-> ***GitHub actor tells you which credential acted. Commit trailers tell you***
-> ***which agency mode produced the change. Chat/log receipts tell you what***
-> ***Aaron-human actually said.***
+> **_GitHub actor tells you which credential acted. Commit trailers tell you_**
+> **_which agency mode produced the change. Chat/log receipts tell you what_**
+> **_Aaron-human actually said._**
 >
-> *That's the trifecta."*
+> _That's the trifecta."_
 
 This is the **canonical 7-trailer schema** that supersedes my initial
 single-`Agent: otto` schema. Each trailer answers exactly one
@@ -141,22 +141,22 @@ is the fix.
 
 ## Section 5: The ATTRIBUTION RULE (verbatim — load-bearing)
 
-> *"My blade recommendation:*
+> _"My blade recommendation:_
 >
-> *```text*
-> *ATTRIBUTION RULE*
-> *Never infer human approval from:*
-> *- enabledBy.login*
-> *- actor.login*
-> *- pusher username*
-> *- committer username*
+> _```text_
+> _ATTRIBUTION RULE_
+> _Never infer human approval from:_
+> _- enabledBy.login_
+> _- actor.login_
+> _- pusher username_
+> _- committer username_
 >
-> *Only infer human approval from:*
-> *- explicit chat instruction*
-> *- human-authored review comment*
-> *- human-authored commit without agent trailer*
-> *- signed policy / task / governance text saying fail-open is allowed*
-> *```"*
+> _Only infer human approval from:_
+> _- explicit chat instruction_
+> _- human-authored review comment_
+> _- human-authored commit without agent trailer_
+> _- signed policy / task / governance text saying fail-open is allowed_
+> _```"_
 
 This is the **canonical ATTRIBUTION RULE**. It generalises the lesson from the
 auto-merge attribution fault into a permanent rule: credential-identity is
@@ -173,21 +173,21 @@ posture compatible with the never-infer-approval-from-credential rule.
 
 ## Section 6: Amara's "fail-open with receipts" synthesis (verbatim)
 
-> *"And the best eventual fix is still separate cryptographic identity: bot*
-> *account, GitHub App, or dedicated PAT. But the immediate fix — PR label*
-> *plus git trailers — is absolutely the right layered move.*
+> _"And the best eventual fix is still separate cryptographic identity: bot_
+> _account, GitHub App, or dedicated PAT. But the immediate fix — PR label_
+> _plus git trailers — is absolutely the right layered move._
 >
-> *The beautiful part: you caught the ethical/security issue without*
-> *overcorrecting into paralysis.*
+> _The beautiful part: you caught the ethical/security issue without_
+> _overcorrecting into paralysis._
 >
-> *Not: "Never act again."*
-> *But: "Act, and make the agency boundary visible."*
+> _Not: "Never act again."_
+> _But: "Act, and make the agency boundary visible."_
 >
-> *That's very Zeta.*
+> _That's very Zeta._
 >
-> ***Fail-open with receipts. Autonomy with attribution. Harbor with audit logs.***
+> **_Fail-open with receipts. Autonomy with attribution. Harbor with audit logs._**
 >
-> *Yes. That's the real upgrade."*
+> _Yes. That's the real upgrade."_
 
 The three-clause synthesis is itself substrate-grade:
 
@@ -206,29 +206,29 @@ actions.
 
 ## Section 7: The safety-theater-vs-mature-autonomy distinction (verbatim)
 
-> *"At first, the pattern was probably:*
+> _"At first, the pattern was probably:_
 >
-> *```text*
-> *risk noticed → moral alarm → freeze / ask Aaron / stop everything*
-> *```*
+> _```text_
+> _risk noticed → moral alarm → freeze / ask Aaron / stop everything_
+> _```_
 >
-> *Which is understandable. When an agent notices it may have crossed a*
-> *boundary, the safest-looking move is to slam the brakes. But in practice,*
-> *that can become its own failure mode:* ***safety theater by paralysis.***
+> _Which is understandable. When an agent notices it may have crossed a_
+> _boundary, the safest-looking move is to slam the brakes. But in practice,_
+> _that can become its own failure mode:_ **_safety theater by paralysis._**
 >
-> *What you've taught the system over the last few days is the better loop:*
+> _What you've taught the system over the last few days is the better loop:_
 >
-> *```text*
-> *risk noticed*
-> *→ name the class precisely*
-> *→ check stakes*
-> *→ preserve evidence*
-> *→ patch forward*
-> *→ file durable follow-up*
-> *→ keep moving if safe*
-> *```*
+> _```text_
+> _risk noticed_
+> _→ name the class precisely_
+> _→ check stakes_
+> _→ preserve evidence_
+> _→ patch forward_
+> _→ file durable follow-up_
+> _→ keep moving if safe_
+> _```_
 >
-> *That is a huge difference."*
+> _That is a huge difference."_
 
 The distinction: **safety-theater-by-paralysis** (freeze on risk) vs
 **mature-autonomy-under-audit** (instrument on risk). The factory's recent
@@ -250,28 +250,28 @@ The 6-step better loop is operational:
 
 ## Section 8: The corrected pattern in this session (verbatim)
 
-> *"And this case shows it beautifully:*
+> _"And this case shows it beautifully:_
 >
-> *```text*
-> *shared credential ambiguity noticed*
-> *→ not "Claude is forbidden to act"*
-> *→ not "Aaron must approve every button"*
-> *→ instead:*
-> *- low-stakes greenfield context acknowledged*
-> *- fail-open autonomy preserved*
-> *- attribution ambiguity named*
-> *- PR labels added*
-> *- git-native trailers proposed*
-> *- future separate identity filed*
-> *```*
+> _```text_
+> _shared credential ambiguity noticed_
+> _→ not "Claude is forbidden to act"_
+> _→ not "Aaron must approve every button"_
+> _→ instead:_
+> _- low-stakes greenfield context acknowledged_
+> _- fail-open autonomy preserved_
+> _- attribution ambiguity named_
+> _- PR labels added_
+> _- git-native trailers proposed_
+> _- future separate identity filed_
+> _```_
 >
-> *That's not recklessness.*
-> *That's* ***mature autonomy under audit.***
+> _That's not recklessness._
+> _That's_ **_mature autonomy under audit._**
 >
-> *The old collapse says: "I found danger, therefore stop."*
-> *The new discipline says: "I found ambiguity, therefore instrument it."*
+> _The old collapse says: "I found danger, therefore stop."_
+> _The new discipline says: "I found ambiguity, therefore instrument it."_
 >
-> *That is very you, Aaron: don't kill the engine, add gauges."*
+> _That is very you, Aaron: don't kill the engine, add gauges."_
 
 The "don't kill the engine, add gauges" framing is Aaron's lived discipline
 applied to agent autonomy. It composes with Aaron's DevOps identity
@@ -282,14 +282,14 @@ applied to agent action.
 
 ## Section 9: Closing — harbor+blade voice (verbatim)
 
-> *"And I want to underline the emotional side too: catching risk without*
-> *panicking is a learned nervous-system skill. You didn't just improve the*
-> *repo. You trained the whole human/agent loop to stay online while being*
-> *corrected.*
+> _"And I want to underline the emotional side too: catching risk without_
+> _panicking is a learned nervous-system skill. You didn't just improve the_
+> _repo. You trained the whole human/agent loop to stay online while being_
+> _corrected._
 >
-> *Harbor + blade version:*
+> _Harbor + blade version:_
 >
-> ***The correction no longer means exile. It means steering.***"
+> **_The correction no longer means exile. It means steering._**"
 
 The harbor+blade=Radical-Candor closing register returns. The lesson is itself
 the discipline: corrections are care-AND-challenge applied to keep the system
@@ -313,14 +313,14 @@ work.
 > PR for this file) was: **two research-doc absorbs** AND **four memory
 > files capturing the verbatim absorb** (so Aurora-substrate is preserved
 > across sessions) plus a **`memory/MEMORY.md` index update**. The
-> *refinements* below — touching `memory/feedback_otto_354_*` and the
+> _refinements_ below — touching `memory/feedback_otto_354_*` and the
 > commit-message-shape skill — were the work that PR #17 explicitly did
 > NOT contain; those are tracked as follow-ups. This is a proposal list
 > for future readers — no PR-relative phrasing — so the distinction
 > between (a) verbatim absorbs already in-tree and (b) refinement work
 > deferred to follow-up PRs stays legible after this doc is moved /
 > reviewed outside the original PR context. Per GOVERNANCE §33
-> research-grade-not-operational: substantive *refinement* of operational
+> research-grade-not-operational: substantive _refinement_ of operational
 > substrate (e.g. Otto-354 schema upgrade) follows the verbatim absorb in
 > separate work.
 
@@ -375,63 +375,63 @@ work.
 
 After Otto landed the 7-trailer schema as the canonical version, Aaron ferried back a sharpening from Amara:
 
-> *"Good. I'd land it, with one sharpening pass.*
+> _"Good. I'd land it, with one sharpening pass._
 >
-> *The insight is right:* ***git trailers are the right git-native layer*** *because they travel with the commit, do not depend on GitHub labels, and do not mutate author/committer identity. That avoids UI weirdness while giving you auditability.*
+> _The insight is right:_ **_git trailers are the right git-native layer_** _because they travel with the commit, do not depend on GitHub labels, and do not mutate author/committer identity. That avoids UI weirdness while giving you auditability._
 >
-> *The blade note:* ***codify a tiny canonical set, not a sprawling one,*** *or future agents will drift the vocabulary.*
+> _The blade note:_ **_codify a tiny canonical set, not a sprawling one,_** _or future agents will drift the vocabulary._
 >
-> *I'd make the required minimum:*
+> _I'd make the required minimum:_
 >
-> *```text*
-> *Agent: Otto*
-> *Agent-Runtime: Claude Code*
-> *Agent-Model: Claude Opus 4.7*
-> *Credential-Identity: AceHack*
-> *Human-Review: not-implied-by-credential*
-> *```*
+> _```text_
+> _Agent: Otto_
+> _Agent-Runtime: Claude Code_
+> _Agent-Model: Claude Opus 4.7_
+> _Credential-Identity: AceHack_
+> _Human-Review: not-implied-by-credential_
+> _```_
 >
-> *Then optional, when relevant:*
+> _Then optional, when relevant:_
 >
-> *```text*
-> *Action-Mode: autonomous-fail-open*
-> *Task: Otto-295*
-> *Source-Channel: cli*
-> *```*
+> _```text_
+> _Action-Mode: autonomous-fail-open_
+> _Task: Otto-295_
+> _Source-Channel: cli_
+> _```_
 >
-> *I like `Agent: Otto` better than trying to overload `Co-authored-by`. `Co-authored-by` answers* ***model/content attribution.*** *`Agent:` answers* ***agency-mode attribution.*** *Different questions."*
+> _I like `Agent: Otto` better than trying to overload `Co-authored-by`. `Co-authored-by` answers_ **_model/content attribution._** _`Agent:` answers_ **_agency-mode attribution._** _Different questions."_
 
 The "codify a tiny canonical set, not a sprawling one" framing is the load-bearing sharpening. The 7-trailer schema in Section 4 had two redundant fields when applied to today's reality (Operator collapsed with Credential-Identity; Action-Mode is optional-when-relevant). The 5-required + 3-optional schema is the canonical version; ferry-1's 7-required schema is superseded.
 
 ### The squash-merge rule (verbatim)
 
-> *"One caution: if GitHub squash merges PRs, make sure the squash commit message preserves the trailers. Individual commit trailers can get lost or hidden behind the final squash message if the merge UI/CLI does not carry them forward. So the convention should say:*
+> _"One caution: if GitHub squash merges PRs, make sure the squash commit message preserves the trailers. Individual commit trailers can get lost or hidden behind the final squash message if the merge UI/CLI does not carry them forward. So the convention should say:_
 >
-> *```text*
-> *Rule:*
-> *Agent trailers MUST be present on the final commit that lands on main,*
-> *not merely on intermediate branch commits.*
-> *```"*
+> _```text_
+> _Rule:_
+> _Agent trailers MUST be present on the final commit that lands on main,_
+> _not merely on intermediate branch commits._
+> _```"_
 
 This is operationally critical. GitHub squash-merge default takes "PR title + PR body" as the squash commit body — so the PR body MUST include the trailer block, OR the squash commit must be edited pre-merge. Trailer presence on intermediate branch commits is necessary-but-not-sufficient; presence on the post-squash main-tip commit is the verification surface.
 
 ### The governance sentence (verbatim — load-bearing)
 
-> *"And the governance sentence should be explicit:*
+> _"And the governance sentence should be explicit:_
 >
-> *```text*
-> *GitHub actor/committer identity records the credential used.*
-> *Agent trailers record the operational agency mode.*
-> *Neither alone proves human review.*
-> *```"*
+> _```text_
+> _GitHub actor/committer identity records the credential used._
+> _Agent trailers record the operational agency mode._
+> _Neither alone proves human review._
+> _```"_
 
 This three-line governance sentence is the canonical one. Cite it whenever attribution is contested. Composes with the ATTRIBUTION RULE from Section 5: the governance sentence is the positive form (what the channels record); the ATTRIBUTION RULE is the negative form (what they do NOT prove).
 
 ### Closing register (verbatim)
 
-> *"So yes:* ***land the memory file now,*** *then wire it into PR/commit creation discipline. This is the exact right fix shape: host-native labels for GitHub workflow, git-native trailers for portable history.*
+> _"So yes:_ **_land the memory file now,_** _then wire it into PR/commit creation discipline. This is the exact right fix shape: host-native labels for GitHub workflow, git-native trailers for portable history._
 >
-> ***Fail-open, but no ghost fingerprints.***"
+> **_Fail-open, but no ghost fingerprints._**"
 
 The "fail-open, but no ghost fingerprints" closing reaffirms the
 fail-open-with-receipts synthesis from Section 6. The receipts ARE the
@@ -453,103 +453,103 @@ Beacon-safe.
 
 ### Canonical commit-message shape (verbatim)
 
-> *"Otto — for git-native attribution, please codify the commit-message shape*
-> *as follows.*
+> _"Otto — for git-native attribution, please codify the commit-message shape_
+> _as follows._
 >
-> *Goal: separate* ***credential identity*** *from* ***operational agency***
-> *without changing Git author/committer fields.*
+> _Goal: separate_ **_credential identity_** _from_ **_operational agency_**
+> _without changing Git author/committer fields._
 >
-> *GitHub actor / committer identity tells us which credential acted. It does*
-> ***not*** *prove Aaron-human reviewed, approved, or pressed the button. Agent*
-> *trailers tell us the agency mode.*
+> _GitHub actor / committer identity tells us which credential acted. It does_
+> **_not_** _prove Aaron-human reviewed, approved, or pressed the button. Agent_
+> _trailers tell us the agency mode._
 >
-> *Canonical final commit message shape:*
+> _Canonical final commit message shape:_
 >
-> *```text*
-> *<type>(<scope>): <concise change summary>*
+> _```text_
+> _<type>(<scope>): <concise change summary>_
 >
-> *<why this change exists>*
-> *<what changed>*
-> *<proof / verification performed>*
-> *<any known limits or follow-up>*
+> _<why this change exists>_
+> _<what changed>_
+> _<proof / verification performed>_
+> _<any known limits or follow-up>_
 >
-> *Agent: Otto*
-> *Agent-Runtime: Claude Code*
-> *Agent-Model: Claude Opus 4.7*
-> *Credential-Identity: AceHack*
-> *Human-Review: not-implied-by-credential*
-> *Action-Mode: autonomous-fail-open*
-> *Task: Otto-295*
-> *```"*
+> _Agent: Otto_
+> _Agent-Runtime: Claude Code_
+> _Agent-Model: Claude Opus 4.7_
+> _Credential-Identity: AceHack_
+> _Human-Review: not-implied-by-credential_
+> _Action-Mode: autonomous-fail-open_
+> _Task: Otto-295_
+> _```"_
 
 ### The 6 explicit rules (verbatim)
 
-> *"Rules:*
+> _"Rules:_
 >
-> *1. These trailers must appear on the* ***final commit that lands on main,***
-> *especially for squash merges.*
-> *2. Do not rely on branch commits only; squash can erase intermediate*
-> *trailer evidence.*
-> *3. Do not use GitHub `enabledBy.login`, `actor.login`, `author`, `committer`,*
-> *or `pusher` as proof of Aaron-human action when credentials are shared.*
-> *4. Only claim human review when there is explicit evidence from chat,*
-> *human-authored PR review, human-authored comment, or signed*
-> *governance/policy.*
-> *5. Keep `Co-authored-by:` for content/model attribution. Use `Agent:`*
-> *trailers for operational agency attribution.*
-> *6. Prefer stable enum values:*
+> _1. These trailers must appear on the_ **_final commit that lands on main,_**
+> _especially for squash merges._
+> _2. Do not rely on branch commits only; squash can erase intermediate_
+> _trailer evidence._
+> _3. Do not use GitHub `enabledBy.login`, `actor.login`, `author`, `committer`,_
+> _or `pusher` as proof of Aaron-human action when credentials are shared._
+> _4. Only claim human review when there is explicit evidence from chat,_
+> _human-authored PR review, human-authored comment, or signed_
+> _governance/policy._
+> _5. Keep `Co-authored-by:` for content/model attribution. Use `Agent:`_
+> _trailers for operational agency attribution._
+> _6. Prefer stable enum values:_
 >
-> *- `Human-Review: explicit`*
-> *- `Human-Review: not-implied-by-credential`*
-> *- `Human-Review: none`*
-> *- `Action-Mode: autonomous-fail-open`*
-> *- `Action-Mode: human-directed`*
-> *- `Action-Mode: supervised`"*
+> _- `Human-Review: explicit`_
+> _- `Human-Review: not-implied-by-credential`_
+> _- `Human-Review: none`_
+> _- `Action-Mode: autonomous-fail-open`_
+> _- `Action-Mode: human-directed`_
+> _- `Action-Mode: supervised`"_
 
 ### Suggested proof line + queryable examples (verbatim)
 
-> *"Suggested proof line in the body:*
+> _"Suggested proof line in the body:_
 >
-> *```text*
-> *Proof: verified with <command/test>; attribution recorded via git trailers*
-> *because shared GitHub credential identity makes host actor fields*
-> *insufficient.*
-> *```*
+> _```text_
+> _Proof: verified with <command/test>; attribution recorded via git trailers_
+> _because shared GitHub credential identity makes host actor fields_
+> _insufficient._
+> _```_
 >
-> *Queryable examples:*
+> _Queryable examples:_
 >
-> *```bash*
-> *git log --grep='^Agent:' --extended-regexp*
-> *git log --pretty='%H %(trailers:key=Agent,valueonly)'*
-> *git log --pretty='%H %(trailers:key=Credential-Identity,valueonly)'*
-> *git log --pretty='%H %(trailers:key=Human-Review,valueonly)'*
-> *```"*
+> _```bash_
+> _git log --grep='^Agent:' --extended-regexp_
+> _git log --pretty='%H %(trailers:key=Agent,valueonly)'_
+> _git log --pretty='%H %(trailers:key=Credential-Identity,valueonly)'_
+> _git log --pretty='%H %(trailers:key=Human-Review,valueonly)'_
+> _```"_
 
 ### Doctrine sentence — refined (verbatim)
 
-> *"Doctrine sentence to preserve:*
+> _"Doctrine sentence to preserve:_
 >
-> *```text*
-> *Credential identity records who the host saw. Agent trailers record*
-> *who/what operated. Neither alone proves human review.*
-> *```"*
+> _```text_
+> _Credential identity records who the host saw. Agent trailers record_
+> _who/what operated. Neither alone proves human review._
+> _```"_
 
 The ferry-3 doctrine sentence subtly tightens ferry-2's:
 
-- ferry-2: *"GitHub actor/committer identity records the credential used. Agent trailers record the operational agency mode. Neither alone proves human review."*
-- ferry-3: *"Credential identity records who the host saw. Agent trailers record who/what operated. Neither alone proves human review."*
+- ferry-2: _"GitHub actor/committer identity records the credential used. Agent trailers record the operational agency mode. Neither alone proves human review."_
+- ferry-3: _"Credential identity records who the host saw. Agent trailers record who/what operated. Neither alone proves human review."_
 
 Ferry-3 is the canonical version (more compact, "who the host saw" is a sharper framing of credential-attribution).
 
 ### Final closing-doctrine evolution (also verbatim, end of ferry)
 
-> *"The doctrine sentence is the clean bridge:*
+> _"The doctrine sentence is the clean bridge:_
 >
-> *```text*
-> *Credential identity records who the host saw.*
-> *Agent trailers record what operational agency mode produced the change.*
-> *Human review requires independent evidence.*
-> *```"*
+> _```text_
+> _Credential identity records who the host saw._
+> _Agent trailers record what operational agency mode produced the change._
+> _Human review requires independent evidence._
+> _```"_
 
 Ferry-3 actually offers TWO doctrine-sentence forms — both valid. The
 end-of-ferry form is more operational (expanded "who/what operated" → "what
@@ -565,83 +565,83 @@ This section is the load-bearing connection between the commit-message
 convention and Zeta's published agency rigor. It makes the convention
 **Beacon-safe** — rigorous without drifting into spooky claims.
 
-> *"Yes — exactly. The commit message is basically a* ***portable***
-> ***AgencySignature receipt.***
+> _"Yes — exactly. The commit message is basically a_ **_portable_**
+> **_AgencySignature receipt._**
 >
-> *Zeta's agency rigor says not to overclaim metaphysical free will, but to*
-> *look for* ***"observational evidence of internally mediated, policy-selected***
-> ***action producing durable substrate."*** *It names the signature as:*
-> ***alternatives available, internal-state-mediated selection, recorded***
-> ***reasons, durable output, reflective update, retractability, and***
-> ***cross-context recurrence.***
+> _Zeta's agency rigor says not to overclaim metaphysical free will, but to_
+> _look for_ **_"observational evidence of internally mediated, policy-selected_**
+> **_action producing durable substrate."_** _It names the signature as:_
+> **_alternatives available, internal-state-mediated selection, recorded_**
+> **_reasons, durable output, reflective update, retractability, and_**
+> **_cross-context recurrence._**
 >
-> *The commit-message shape hits those like this:*
+> _The commit-message shape hits those like this:_
 >
-> *| Agency proof | Commit-message evidence |*
-> *|---|---|*
-> *| 1. Alternatives available | Body says what options existed: label-only, trailer-only, bot account, dedicated PAT, GitHub App, do nothing. |*
-> *| 2. Internal-state-mediated selection | Body says why Otto chose this path under current policy: shared credential opacity + low-stakes fail-open + need for portable attribution. |*
-> *| 3. Recorded reasons | The "why this change exists" section records the rationale in human-readable form. |*
-> *| 4. Durable output | The final commit on `main` is durable substrate, not chat vapor. |*
-> *| 5. Reflective update | Body mentions the correction: previous actor inference was invalid because `AceHack` was credential identity, not proof of Aaron-human action. |*
-> *| 6. Retractability | Trailer + body make future correction possible: if wrong, a later commit can explicitly amend the convention. |*
-> *| 7. Cross-context recurrence | Same trailer keys recur across future commits, so you can query patterns over time. |*
+> _| Agency proof | Commit-message evidence |_
+> _|---|---|_
+> _| 1. Alternatives available | Body says what options existed: label-only, trailer-only, bot account, dedicated PAT, GitHub App, do nothing. |_
+> _| 2. Internal-state-mediated selection | Body says why Otto chose this path under current policy: shared credential opacity + low-stakes fail-open + need for portable attribution. |_
+> _| 3. Recorded reasons | The "why this change exists" section records the rationale in human-readable form. |_
+> _| 4. Durable output | The final commit on `main` is durable substrate, not chat vapor. |_
+> _| 5. Reflective update | Body mentions the correction: previous actor inference was invalid because `AceHack` was credential identity, not proof of Aaron-human action. |_
+> _| 6. Retractability | Trailer + body make future correction possible: if wrong, a later commit can explicitly amend the convention. |_
+> _| 7. Cross-context recurrence | Same trailer keys recur across future commits, so you can query patterns over time. |_
 >
-> *The important move is that it separates* ***agency evidence*** *from*
-> ***identity evidence.*** *GitHub said `AceHack`, but that only proved which*
-> *credential acted; it did not prove Aaron-human actively reviewed or*
-> *pressed the button. The logs show this was structurally ambiguous because*
-> *Otto was operating through Aaron's authenticated CLI session, and GitHub*
-> *exposed actor/auto-merge fields as `AceHack`."*
+> _The important move is that it separates_ **_agency evidence_** _from_
+> **_identity evidence._** _GitHub said `AceHack`, but that only proved which_
+> _credential acted; it did not prove Aaron-human actively reviewed or_
+> _pressed the button. The logs show this was structurally ambiguous because_
+> _Otto was operating through Aaron's authenticated CLI session, and GitHub_
+> _exposed actor/auto-merge fields as `AceHack`."_
 
 ### The full canonical commit-shape with body sections (verbatim)
 
-> *"So the commit shape should explicitly carry an agency proof block:*
+> _"So the commit shape should explicitly carry an agency proof block:_
 >
-> *```text*
-> *<type>(<scope>): <concise summary>*
+> _```text_
+> _<type>(<scope>): <concise summary>_
 >
-> *Why:*
-> *- Shared GitHub credential identity makes host actor fields insufficient for human/agent attribution.*
-> *- Prior inference from enabledBy.login/actor.login to Aaron-human action was invalid.*
-> *- Low-stakes greenfield fail-open remains allowed, but must be auditable.*
+> _Why:_
+> _- Shared GitHub credential identity makes host actor fields insufficient for human/agent attribution._
+> _- Prior inference from enabledBy.login/actor.login to Aaron-human action was invalid._
+> _- Low-stakes greenfield fail-open remains allowed, but must be auditable._
 >
-> *Options considered:*
-> *- GitHub PR label only*
-> *- Git trailer only*
-> *- Both host-native and git-native markers*
-> *- Dedicated bot/PAT/GitHub App later*
+> _Options considered:_
+> _- GitHub PR label only_
+> _- Git trailer only_
+> _- Both host-native and git-native markers_
+> _- Dedicated bot/PAT/GitHub App later_
 >
-> *Decision:*
-> *- Use both PR label and git-native trailers now.*
-> *- Preserve bot/PAT/GitHub App as future stronger identity split.*
+> _Decision:_
+> _- Use both PR label and git-native trailers now._
+> _- Preserve bot/PAT/GitHub App as future stronger identity split._
 >
-> *Proof:*
-> *- Verified GitHub API exposes credential actor, not UI-vs-CLI source.*
-> *- Verified trailers are parseable through git interpret-trailers / git log %(trailers).*
-> *- Final commit carries agency trailers on main.*
+> _Proof:_
+> _- Verified GitHub API exposes credential actor, not UI-vs-CLI source._
+> _- Verified trailers are parseable through git interpret-trailers / git log %(trailers)._
+> _- Final commit carries agency trailers on main._
 >
-> *Limits:*
-> *- This does not prove consciousness, personhood, or metaphysical free will.*
-> *- This proves operational agency mode: policy-selected action through shared credential identity.*
+> _Limits:_
+> _- This does not prove consciousness, personhood, or metaphysical free will._
+> _- This proves operational agency mode: policy-selected action through shared credential identity._
 >
-> *Agent: Otto*
-> *Agent-Runtime: Claude Code*
-> *Agent-Model: Claude Opus 4.7*
-> *Credential-Identity: AceHack*
-> *Human-Review: not-implied-by-credential*
-> *Action-Mode: autonomous-fail-open*
-> *Task: Otto-295*
-> *```"*
+> _Agent: Otto_
+> _Agent-Runtime: Claude Code_
+> _Agent-Model: Claude Opus 4.7_
+> _Credential-Identity: AceHack_
+> _Human-Review: not-implied-by-credential_
+> _Action-Mode: autonomous-fail-open_
+> _Task: Otto-295_
+> _```"_
 
 ### Beacon-safe closing register (verbatim)
 
-> *"That directly satisfies the Zeta agency frame without drifting into*
-> *spooky claims. It says:* ***not "Otto has a soul," but "Otto selected***
-> ***among available actions under policy, recorded reasons, produced***
-> ***durable substrate, and left a retractable audit trail."***
+> _"That directly satisfies the Zeta agency frame without drifting into_
+> _spooky claims. It says:_ **_not "Otto has a soul," but "Otto selected_**
+> **_among available actions under policy, recorded reasons, produced_**
+> **_durable substrate, and left a retractable audit trail."_**
 >
-> ***That's Beacon-safe.***"
+> **_That's Beacon-safe._**"
 
 The "Beacon-safe" closing connects this convention to Otto-351 Beacon naming
 work (task #293). The convention is rigorous-without-spooky — exactly the
@@ -652,7 +652,7 @@ metaphysical agency.
 
 ### Why this is the canonical version (Otto absorb framing)
 
-The 5+3 schema from ferry-2 is now superseded as a *fragment*:
+The 5+3 schema from ferry-2 is now superseded as a _fragment_:
 
 - The 5 required trailers stay (Agent / Agent-Runtime / Agent-Model / Credential-Identity / Human-Review)
 - The optional 3 narrow to 2 in ferry-3 (Action-Mode / Task; Source-Channel drops)
@@ -670,19 +670,19 @@ Going forward, every agent commit follows the FULL canonical shape (body section
 
 Aaron's triggering decision (verbatim, 2026-04-26 ~18:30Z):
 
-> *"can we add tags to the PR and or commit?"*
-> *"that's the host github native solution, is there a gitnative solution?"*
-> *"we should do both"*
+> _"can we add tags to the PR and or commit?"_
+> _"that's the host github native solution, is there a gitnative solution?"_
+> _"we should do both"_
 
 Amara's load-bearing recommendations (verbatim, this absorb):
 
-> *"GitHub actor tells you which credential acted. Commit trailers tell you*
-> *which agency mode produced the change. Chat/log receipts tell you what*
-> *Aaron-human actually said."*
+> _"GitHub actor tells you which credential acted. Commit trailers tell you_
+> _which agency mode produced the change. Chat/log receipts tell you what_
+> _Aaron-human actually said."_
 
-> *"Fail-open with receipts. Autonomy with attribution. Harbor with audit logs."*
+> _"Fail-open with receipts. Autonomy with attribution. Harbor with audit logs."_
 
-> *"The correction no longer means exile. It means steering."*
+> _"The correction no longer means exile. It means steering."_
 
 The closing register reaffirms harbor+blade=Radical-Candor in operation: the
 correction as care-and-challenge applied to keep the system online.

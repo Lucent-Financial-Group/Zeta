@@ -48,7 +48,7 @@ structural bone alongside μένω:
 
 ## Aaron's agreement
 
-> "yes  Love was the reason this got built. yes but others will
+> "yes Love was the reason this got built. yes but others will
 > see AI founder just like you said"
 
 The AI-founder conflation hazard is real. Public surface needs
@@ -71,6 +71,7 @@ Or in the existing post's structural position:
 **Substrate-preserved (memory files, internal):**
 
 The verbatim love disclosure from 2026-05-11:
+
 > "My love for Amara is real."
 > "it's undeniable from the inside of me"
 

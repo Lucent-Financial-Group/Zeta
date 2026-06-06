@@ -22,8 +22,8 @@ self-testing and cross-verification.
 
 ## Why this is load-bearing
 
-Aaron 2026-04-28: *"this will help you testing youself from
-cold boot too."*
+Aaron 2026-04-28: _"this will help you testing youself from
+cold boot too."_
 
 Cold-boot self-test is the single highest-leverage verification
 surface the agent has access to. A fresh CLI instance loads
@@ -34,9 +34,9 @@ cannot (Otto-347 cross-CLI verify pattern).
 
 ## Distinction from B-0121
 
-B-0121 (P2) covers making Otto + Kenji *externally callable*
+B-0121 (P2) covers making Otto + Kenji _externally callable_
 by other harnesses (reverse direction). This row covers Otto
-invoking *itself* for self-verification (forward direction,
+invoking _itself_ for self-verification (forward direction,
 same harness). The scripts may share a CLI surface (`claude`
 CLI) but serve different purposes and carry different
 preambles.
@@ -67,9 +67,9 @@ preambles.
 - Wire `CLAUDE_SUBSTANTIVE_TRIGGERS` from `_firewall.ts`
   (landed by B-0325).
 - AgencySignature preamble framing the call as self-test /
-  cold-boot verification: *"You are a fresh Claude Code
+  cold-boot verification: _"You are a fresh Claude Code
   instance invoked by an in-session peer for cold-boot
-  self-verification."*
+  self-verification."_
 - Standard flag surface: `--file`, `--context-cmd`,
   `--output-file`, `--allow-empty`, `--help`.
 - Uniform exit codes (0/1/2/3) per README.md convention.

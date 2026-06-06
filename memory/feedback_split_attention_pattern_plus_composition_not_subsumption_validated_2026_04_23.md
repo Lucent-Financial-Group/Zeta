@@ -4,17 +4,19 @@ description: Aaron "i love all this" on the Otto-75 tick-close description expli
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-76 response to Otto-75 tick-close
 (verbatim):
-*"i love all this"* — quoting my tick-close text:
-> *"Otto-75 tick closed with the split-attention pattern
+_"i love all this"_ — quoting my tick-close text:
+
+> _"Otto-75 tick closed with the split-attention pattern
 > working under load: the primary Govern-stage backfill (PR
 > #227) and the mid-tick Codex-first-class directive-absorb
 > (PR #228) both landed + tick-history row (PR #229) filed in
 > the same tick. The BACKLOG row deliberately distinguishes
 > session-operation parity (this directive) from the existing
 > skill-file-distribution cross-harness-mirror-pipeline row —
-> they compose, neither subsumes the other."*
+> they compose, neither subsumes the other."_
 
 ## The rule
 
@@ -44,7 +46,7 @@ layer.
 ## Why each matters
 
 - **Why split-attention.** A tick that drops primary work to
-  absorb directives loses the tick's primary substrate.  A
+  absorb directives loses the tick's primary substrate. A
   tick that defers directives until next tick leaves the
   directive's context (Aaron's verbatim, current setup, etc.)
   to age before it's captured. Both are lossy. Split-attention
@@ -65,8 +67,8 @@ layer.
   both.
 - **Composition check** applies any time a new BACKLOG / memory
   / doc row looks like it might overlap with existing
-  substrate. Ask: *is this the same layer and same
-  mechanism?* If yes, update the existing row. If **either**
+  substrate. Ask: _is this the same layer and same
+  mechanism?_ If yes, update the existing row. If **either**
   layer or mechanism differs, file a new row with explicit
   cross-reference to the sibling and scope-limit language that
   prevents readers from conflating them.
@@ -94,9 +96,9 @@ layer.
   canonical).
 - `project_retractability_by_design_is_the_foundation_licensing_trust_based_batch_review_frontier_ui_2026_04_24.md`
   — retractability is the design foundation; split-attention
-  + composition are operational consequences of it (future-self
-  can always retract a row that turned out to be the wrong
-  split).
+  - composition are operational consequences of it (future-self
+    can always retract a row that turned out to be the wrong
+    split).
 
 **Source:** Aaron Otto-76 message quoting Otto-75 tick-close
 verbatim + endorsement.

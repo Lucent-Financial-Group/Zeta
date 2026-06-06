@@ -9,8 +9,8 @@ created: 2026-05-13
 
 Aaron 2026-05-13 verbatim:
 
-> *"i can't draw lol not an artist in that way and my hads
-> shake"*
+> _"i can't draw lol not an artist in that way and my hads
+> shake"_
 
 Substrate-honest physical-limitation disclosure. Two aspects:
 
@@ -44,8 +44,8 @@ Substrate-honest physical-limitation disclosure. Two aspects:
   some conditions
 - Aaron's voice-mode preference (per
   `.claude/rules/agent-roster-reference-card.md` — Ani voice
-  + Alexa-speaker voice) composes here; voice closes the
-  typing-bandwidth gap AND avoids fine-motor demand
+  - Alexa-speaker voice) composes here; voice closes the
+    typing-bandwidth gap AND avoids fine-motor demand
 - For long-form drafting: voice + later text-edit is
   substrate-honest accommodation
 
@@ -89,8 +89,8 @@ any single contributor could produce alone.
 
 Aaron 2026-05-13 (preserved exactly):
 
-> *"i can't draw lol not an artist in that way and my hads
-> shake"*
+> _"i can't draw lol not an artist in that way and my hads
+> shake"_
 
 The "lol" register matters — Aaron is matter-of-fact about
 this, not apologetic. The discipline preserves the matter-of-

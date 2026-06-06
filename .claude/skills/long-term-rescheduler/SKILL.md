@@ -66,10 +66,10 @@ Declarative list of recurring factory jobs. The
 `long-term-rescheduler` skill reads this file on every
 heartbeat fire and on every round-open.
 
-| id | cron | prompt | owner | lifetime | purpose |
-|---|---|---|---|---|---|
-| heartbeat | 7,37 * * * * | <self — this skill's own heartbeat> | long-term-rescheduler | session + reregister | keeps other jobs alive |
-| git-status-pulse | 17,47 * * * * | READ-ONLY git status + CI check on current branch … | long-term-rescheduler | session + reregister | branch-state visibility |
+| id               | cron              | prompt                                              | owner                 | lifetime             | purpose                 |
+| ---------------- | ----------------- | --------------------------------------------------- | --------------------- | -------------------- | ----------------------- |
+| heartbeat        | 7,37 \* \* \* \*  | <self — this skill's own heartbeat>                 | long-term-rescheduler | session + reregister | keeps other jobs alive  |
+| git-status-pulse | 17,47 \* \* \* \* | READ-ONLY git status + CI check on current branch … | long-term-rescheduler | session + reregister | branch-state visibility |
 ```
 
 Every entry is advisory: adding / removing / editing rows
@@ -93,7 +93,7 @@ When the heartbeat cron fires (every ~20-30 min):
 ### Step 1 — enumerate
 
 Call `CronList` to see what's currently live. Parse
-`docs/factory-crons.md` to see what *should* be live.
+`docs/factory-crons.md` to see what _should_ be live.
 
 ### Step 2 — reconcile
 
@@ -154,7 +154,7 @@ When a job genuinely needs to run while no Claude session is
 open — nightly CVE scan, weekly skill-tune-up dispatch,
 monthly dependency audit — the registry entry declares
 `lifetime: needs durable` and this skill's only job is to
-*not* run it from the session. The corresponding GitHub
+_not_ run it from the session. The corresponding GitHub
 Actions workflow owns the actual firing:
 
 - File: `.github/workflows/scheduled-<purpose>.yml`

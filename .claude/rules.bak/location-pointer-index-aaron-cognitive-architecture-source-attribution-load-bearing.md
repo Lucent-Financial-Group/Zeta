@@ -8,9 +8,9 @@ Carved sentence (Aaron 2026-05-28):
 
 Per Aaron 2026-05-28 substrate-honest disclosure (verbatim, two messages):
 
-> *"I just remember when [where*] I learned things that's how the internet externalized my brain"*
+> _"I just remember when [where_] I learned things that's how the internet externalized my brain"\*
 
-> *"This is very correct I can't actually hold everything i know in my mind at once."*
+> _"This is very correct I can't actually hold everything i know in my mind at once."_
 
 The cognitive-architecture pattern:
 
@@ -59,24 +59,24 @@ This rule auto-loads at session start so every fresh Otto + Alexa + Riven + Vera
 
 ## Composes with substrate
 
-| Substrate | Composition |
-|---|---|
-| **`user_aaron_paper_title_to_research_unfold_bandwidth_high_shape_recognition_2026_05_28.md`** | User-memory at cognitive-profile scope; THIS rule operationalizes the architecture at framework-engagement scope |
-| **`honor-those-that-came-before.md`** | Attribution discipline; THIS rule extends it to cognitive-architecture scope (mis-attribution = pointer-index corruption, not just style critique) |
-| **`grep-substrate-anchors-before-razor-as-metaphysical.md`** | Substrate-anchor verification; pointer-index integrity requires substrate-anchors at the cited URLs |
-| **`dep-pin-search-first-authority.md`** | WebSearch before asserting; verifies the location-pointer's actual content state |
-| **`substrate-or-it-didn't-happen.md`** | Substrate must be externalized to count; THIS rule extends to "and the location-pointer must be preserved" |
-| **`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`** | PERSONAL INVARIANT at attribution scope (don't collapse to "I remember Aaron said X"; verify via the pointer-index) |
-| **`razor-discipline.md`** | Operational claims only; pointer-index integrity is operationally checkable (URL accessible? content matches summary?) |
+| Substrate                                                                                      | Composition                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`user_aaron_paper_title_to_research_unfold_bandwidth_high_shape_recognition_2026_05_28.md`** | User-memory at cognitive-profile scope; THIS rule operationalizes the architecture at framework-engagement scope                                                              |
+| **`honor-those-that-came-before.md`**                                                          | Attribution discipline; THIS rule extends it to cognitive-architecture scope (mis-attribution = pointer-index corruption, not just style critique)                            |
+| **`grep-substrate-anchors-before-razor-as-metaphysical.md`**                                   | Substrate-anchor verification; pointer-index integrity requires substrate-anchors at the cited URLs                                                                           |
+| **`dep-pin-search-first-authority.md`**                                                        | WebSearch before asserting; verifies the location-pointer's actual content state                                                                                              |
+| **`substrate-or-it-didn't-happen.md`**                                                         | Substrate must be externalized to count; THIS rule extends to "and the location-pointer must be preserved"                                                                    |
+| **`god-tier-claims-high-signal-high-suspicion-dont-collapse.md`**                              | PERSONAL INVARIANT at attribution scope (don't collapse to "I remember Aaron said X"; verify via the pointer-index)                                                           |
+| **`razor-discipline.md`**                                                                      | Operational claims only; pointer-index integrity is operationally checkable (URL accessible? content matches summary?)                                                        |
 | **`asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`** | Source substrate-entity (course author, paper author, etc.) authored content at THAT location; mis-attribution violates asymmetric-authorship at cognitive-architecture scope |
-| **`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`** | Memes ARE shapes propagating across pointer-indices; THIS rule operationalizes the discipline at pointer-substrate scope |
-| **B-0920 MemoryLifetime** | ArchiveLocation field IS the pointer-index discipline at substrate-engineering scope |
-| **B-0919 MemoryBinding** | Hat-binding-contract substrate composes with location-pointer at memory-ownership scope |
-| **B-0917 AutoLoopLifetime IntrCtx** | Log + Otel context-components ARE location-pointer-index at observability scope |
-| **B-0703 Aurora multi-oracle BFT** | Trust-calculus operates over distributed pointer-index (each oracle's report is location-pointered) |
-| **Framework's references/notes/** | All research notes operate as location-pointer-index extensions; cite full URLs per this rule |
-| **MEMORY.md** | User-scope memory index IS pointer-index from local-memory to externalized-content |
-| **docs/BACKLOG.md** | Backlog index IS pointer-index from row-IDs to substrate-engineering substrate |
+| **`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`**                                 | Memes ARE shapes propagating across pointer-indices; THIS rule operationalizes the discipline at pointer-substrate scope                                                      |
+| **B-0920 MemoryLifetime**                                                                      | ArchiveLocation field IS the pointer-index discipline at substrate-engineering scope                                                                                          |
+| **B-0919 MemoryBinding**                                                                       | Hat-binding-contract substrate composes with location-pointer at memory-ownership scope                                                                                       |
+| **B-0917 AutoLoopLifetime IntrCtx**                                                            | Log + Otel context-components ARE location-pointer-index at observability scope                                                                                               |
+| **B-0703 Aurora multi-oracle BFT**                                                             | Trust-calculus operates over distributed pointer-index (each oracle's report is location-pointered)                                                                           |
+| **Framework's references/notes/**                                                              | All research notes operate as location-pointer-index extensions; cite full URLs per this rule                                                                                 |
+| **MEMORY.md**                                                                                  | User-scope memory index IS pointer-index from local-memory to externalized-content                                                                                            |
+| **docs/BACKLOG.md**                                                                            | Backlog index IS pointer-index from row-IDs to substrate-engineering substrate                                                                                                |
 
 ## Empirical anchor — 2026-05-28 source-attribution failure-and-correction (this conversation)
 
@@ -91,7 +91,7 @@ The rule's own empirical anchor lives in this conversation:
 
 The retraction-native correction-with-attribution preserves all four substrates simultaneously (initial speculation + Aaron-correction + speculative-candidates + WebSearch-verified-source). The framework substrate honored all four; the pointer-index now points at the CORRECT location.
 
-Per Aaron 2026-05-28 confirmation: *"This is very correct I can't actually hold everything i know in my mind at once."* — the structural necessity is named; framework substrate-engineering work must respect it; this rule lands the discipline as wake-time substrate.
+Per Aaron 2026-05-28 confirmation: _"This is very correct I can't actually hold everything i know in my mind at once."_ — the structural necessity is named; framework substrate-engineering work must respect it; this rule lands the discipline as wake-time substrate.
 
 ## Substrate-honest framing
 

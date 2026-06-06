@@ -20,13 +20,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two composing Aaron 2026-05-26 substrate landings:
 
-1. **Sub-target 16** — *"if our generators are not easily reversible like lattice then our visible form in higher dimensions look like noise/randomness"*
+1. **Sub-target 16** — _"if our generators are not easily reversible like lattice then our visible form in higher dimensions look like noise/randomness"_
    - Generator reversibility IS the security/visibility posture at substrate scope
    - 4-class visibility table (reversible / lattice-hard / one-way-hash / info-theoretic-random)
    - Lattice-based (NIST PQC LWE/Module-LWE) = post-quantum-grade primary candidate
    - Phoenix-rises framing extends: reversibility-grade determines whether Phoenix is legible-peer or opaque-peer
 
-2. **Sub-target 17** — *"also since we are not easily reversible it would give us a desire to protect the generator parameters we chose for the function"*
+2. **Sub-target 17** — _"also since we are not easily reversible it would give us a desire to protect the generator parameters we chose for the function"_
    - Operational corollary: opacity bootstraps desire to protect parameters
    - 8-pattern cryptographic key-management prior-art transfer (HSM / K8s Sealed Secrets / Vault / KMS / TPM/SGX/SEV-SNP / threshold-sharing / key-rotation / forward-secrecy)
    - Parameter-substrate becomes first-class equal to generator-library substrate
@@ -51,6 +51,7 @@ Two composing Aaron 2026-05-26 substrate landings:
 This PR extends backlog row **B-0824** with two additional substrate layers: **Sub-target 16** (generator reversibility as a visibility/security posture, including a lattice-hardness “appears as noise” framing) and **Sub-target 17** (a first-class parameter-protection substrate with key-management prior-art patterns). This fits the codebase’s documentation/backlog system by evolving the architectural substrate stack description for the Ace meta-PM roadmap.
 
 **Changes:**
+
 - Add Sub-target 16: generator reversibility/opacity taxonomy + implications for higher-dimensional observability and access boundaries.
 - Add Sub-target 17: parameter secrecy/rotation/forward-secrecy substrate patterns and operational implications.
 - Update the “complete substrate stack” narrative from 8 → 9 → 10 layers to incorporate the new sub-targets.

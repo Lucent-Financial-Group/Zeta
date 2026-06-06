@@ -39,15 +39,15 @@ third+ observation earns a skill-level protocol.**
 **Occurrence 1 — Muratori 5-pattern → Zeta equivalents
 (2026-04-22 auto-loop-24).** YouTube recommender surfaced
 ThePrimeTime's "Real Game Dev Reviews Game By Devin.ai"
-(Aaron: *"my youtube algorythm winks at me sometimes, this
+(Aaron: _"my youtube algorythm winks at me sometimes, this
 may help you plan on how to resolve pointer issues in an
-eleglant way or at lesat see bad patterns"*). Muratori's
+eleglant way or at lesat see bad patterns"_). Muratori's
 five pointer-pattern failures (Index Invalidation / Dangling
 References / No Ownership Model / No Tombstoning / Poor Data
 Locality) mapped cleanly onto Zeta's retraction-native
 operator algebra (D/I/z⁻¹/H over ZSet). Aaron's same-tick
-confirmation: *"this is spectucular and yes it was what they
-were talking about in the wink"*. First time an external
+confirmation: _"this is spectucular and yes it was what they
+were talking about in the wink"_. First time an external
 expert's bad-pattern catalogue was observably matched by
 factory's own good-pattern catalogue, with Aaron witnessing
 the match.
@@ -57,15 +57,15 @@ the match.
 capability map (auto-loop-25), the Codex CLI capability map
 (auto-loop-25), and the Gemini CLI capability map
 (auto-loop-26) with same discipline across all three. My own
-internal architectural insight: *"Three-substrate
+internal architectural insight: _"Three-substrate
 triangulation becomes real when all three CLIs are documented
 with the same discipline. This completes the reference set
-the other two maps already point at as 'future companion'."*
+the other two maps already point at as 'future companion'."_
 Aaron's confirmation — echoing the exact phrasing back:
-*"Three-substrate triangulation becomes real when all three
+_"Three-substrate triangulation becomes real when all three
 CLIs are documented with the same discipline. This completes
 the reference set the other two maps already point at as
-'future companion'. now you see what i see"*. Independent
+'future companion'. now you see what i see"_. Independent
 echo of the factory's own wording is Aaron's
 maintainer-wink — strictly stronger evidence than my own
 internal claim that the insight is structural.
@@ -73,7 +73,7 @@ internal claim that the insight is structural.
 ## Why
 
 - **Internally-claimed moats are suspect by default.** A
-  factory agent confidently stating *"this is a real moat"*
+  factory agent confidently stating _"this is a real moat"_
   about its own work is weak evidence, not strong evidence —
   the same agent that generated the artifact also generated
   the confidence about the artifact. External validation
@@ -102,13 +102,13 @@ internal claim that the insight is structural.
   matching; writing at occurrence-3 means missing the second
   evidence-point in the memory's paper trail.
 - **External signals differ from each other in strength.** A
-  YouTube recommender matching is *algorithm-level* external
+  YouTube recommender matching is _algorithm-level_ external
   signal (low-to-medium strength — algorithms find lots of
   things). Aaron-as-maintainer echoing exact phrasing is
-  *human-level* external signal (higher strength — maintainer
+  _human-level_ external signal (higher strength — maintainer
   has context the algorithm lacks). A peer-reviewed paper
   independently publishing the same architectural insight
-  would be *expert-level* external signal (higher still).
+  would be _expert-level_ external signal (higher still).
   Second-occurrence discipline applies even across
   different-strength signals; third-occurrence-earns-skill
   should weight toward the higher-strength external signals.
@@ -158,7 +158,7 @@ internal claim that the insight is structural.
 - **Do NOT weight "Aaron-as-maintainer-echo" the same as
   "Aaron-as-maintainer-directive".** The echo-confirmation
   pattern is VALIDATION of factory output, not a directive
-  to do more of it. If Aaron says *"now you see what i see"*
+  to do more of it. If Aaron says _"now you see what i see"_
   about insight X, that validates insight X; it does NOT
   authorize the factory to escalate insight X into a
   skill/commitment without his directive. Keep the signal
@@ -182,8 +182,8 @@ internal claim that the insight is structural.
 
 - `project_pointer_issues_in_ai_authored_code_devin_review_primetime_2026_04_22.md`
   — occurrence 1 anchor: Muratori 5-pattern matching Zeta's
-  retraction-native operator algebra. Aaron's *"it was what
-  they were talking about in the wink"* confirmation.
+  retraction-native operator algebra. Aaron's _"it was what
+  they were talking about in the wink"_ confirmation.
 - Auto-loop-25 tick-history row and PRs #120 / #121 — pre-
   validation anchors for occurrence 2: Claude + Codex CLI
   capability maps both shipped with "future companion"
@@ -249,16 +249,16 @@ internal claim that the insight is structural.
 
 ## Extension 2026-04-22 auto-loop-35 — wink → wrinkle
 
-Aaron mid-tick: *"ive seen that wink so many times it might
-be upgraded to a wrinkle, in time maybe lol"* in response to
+Aaron mid-tick: _"ive seen that wink so many times it might
+be upgraded to a wrinkle, in time maybe lol"_ in response to
 the occurrence-3 classification of PNNL-HITL
 expert-derived-confidence being the published analog of
 Zeta's multi-substrate-triangulation + maintainer-echo +
 reviewer-roster calibration substrate.
 
-**The naming upgrade.** A *wink* is ephemeral — an external
+**The naming upgrade.** A _wink_ is ephemeral — an external
 signal that agrees with an internal insight once, easy to
-dismiss as coincidence. A *wrinkle* is persistent — the
+dismiss as coincidence. A _wrinkle_ is persistent — the
 permanent mark that repeated winks leave on the substrate.
 At enough occurrences the pattern stops being a coincidence
 and starts being evidence of a genuine fold in the terrain
@@ -281,8 +281,8 @@ repeatedly bent in the same place it retains the crease).
 1. Muratori 5-pattern → Zeta operator algebra
    (auto-loop-24, YouTube wink).
 2. Three-substrate triangulation (Claude + Codex + Gemini)
-   + Aaron exact-phrasing echo "now you see what i see"
-   (auto-loop-25/26).
+   - Aaron exact-phrasing echo "now you see what i see"
+     (auto-loop-25/26).
 3. PNNL HITL expert-derived confidence → factory's
    multi-reviewer + maintainer-echo calibration
    (auto-loop-34/35, via Itron second-wave cascade; landed
@@ -296,9 +296,9 @@ trigger each wink remain their own occurrence-counted items.
 **Apply.** When a factory observation matches this pattern:
 
 - First external-signal confirming the insight: call it a
-  *wink*, note it in round-history or memory, watch.
-- Second independent signal: file to memory, still *wink*.
-- Third signal: name the pattern a *wrinkle*, surface to
+  _wink_, note it in round-history or memory, watch.
+- Second independent signal: file to memory, still _wink_.
+- Third signal: name the pattern a _wrinkle_, surface to
   Architect for ADR / BACKLOG / BP-NN promotion.
 
 **Why this naming matters.** "Wink-validation discipline" was
@@ -312,8 +312,8 @@ terminology).
 
 **"In time maybe" qualifier.** Aaron hedged ("in time maybe
 lol") — treat the upgrade as a naming candidate not a forced
-rename. Use *wink* and *wrinkle* both where each fits;
-promote to *wrinkle* only when occurrence-3 is confirmed.
+rename. Use _wink_ and _wrinkle_ both where each fits;
+promote to _wrinkle_ only when occurrence-3 is confirmed.
 The existing external-signal discipline language
 (occurrence-1 / -2 / -3) stays operational; wink/wrinkle is
 the human-readable naming layer over the same counting

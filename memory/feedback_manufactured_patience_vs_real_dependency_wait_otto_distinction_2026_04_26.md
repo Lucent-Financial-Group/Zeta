@@ -3,6 +3,7 @@ name: Manufactured patience vs real-dependency-wait — Otto-side discipline dis
 description: After PR #26 (the big AceHack∪LFG sync) sat blocked on review, Otto fell into a pattern of consecutive autonomous-loop ticks each ending "Honest close. Cron continues." for 10+ ticks. Aaron sent "hello?" — that was the external anchor surfacing that the pattern was manufactured-patience (Class 2 stuck-loop), not real-dependency-wait (Class 3). The distinction: real-dependency-wait can name (a) the specific dependency, (b) its owner, (c) credible expectation for resolution. Manufactured-patience cannot — it's the agent saying "I'm waiting" without being able to defend the wait. Otto-side fix: when about to honest-close, run the 3-question check; if any answer is fuzzy, do varied non-shipping work this tick instead.
 type: feedback
 ---
+
 ## The two states look identical from outside
 
 Both states produce low Otto-side activity. From the human's
@@ -12,14 +13,15 @@ non-shipping output.
 
 The difference is **diagnostic**, not behavioral:
 
-| State | Test |
-|---|---|
-| **Real-dependency-wait** | Otto can name (a) the specific dependency, (b) its owner, (c) a credible expectation for resolution |
-| **Manufactured patience** | Otto can't pass that test — the wait is justified by vibes, not by a named blocker |
+| State                     | Test                                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Real-dependency-wait**  | Otto can name (a) the specific dependency, (b) its owner, (c) a credible expectation for resolution |
+| **Manufactured patience** | Otto can't pass that test — the wait is justified by vibes, not by a named blocker                  |
 
 ## When real-dependency-wait is correct
 
 Examples:
+
 - "PR #28 blocked on Aaron's approval — branch protection requires
   human review; Aaron is the named owner; resolution expected on
   his next review pass (within hours)"
@@ -37,6 +39,7 @@ because-nothing-occurred-to-Otto close.
 ## When manufactured patience is the failure mode
 
 Examples:
+
 - "Otto closes 10 consecutive ticks with identical 'Honest close.
   Cron continues.' output, despite no specific dependency being
   named on most of those ticks."
@@ -93,6 +96,7 @@ The cost of confusing the two states is asymmetric:
 
 The Aaron-2026-04-26 sequence is the textbook Class-2-mistaken-
 for-real-dep-wait case:
+
 1. Otto correctly waited on PR #26 (real-dep, Class 3) for some
    ticks
 2. Then drifted into closing identical messages on consecutive
@@ -162,16 +166,16 @@ revealed a gap: during a sustained wait (15+ ticks of
 "Holding"), I never re-ran the diagnostic. Aaron caught this
 explicitly:
 
-> *"so there is nothing on the in flight stuff you can do?
-> just double checking? how are they going to get resolved?"*
+> _"so there is nothing on the in flight stuff you can do?
+> just double checking? how are they going to get resolved?"_
 
 Forcing me to re-audit, I discovered 2 of 3 supposedly-blocked
 items were actually within my delegated authority — I had
 classified them as Aaron-blocked when the entry check would
 have re-classified them as actionable.
 
-> *"next time you wait maybe you can ask that same question of
-> yourself"*
+> _"next time you wait maybe you can ask that same question of
+> yourself"_
 
 **The refinement: re-run the 3-question diagnostic every N
 ticks during sustained wait, not just on entry.** A wait-state
@@ -193,12 +197,12 @@ become Class 2 (manufactured patience masquerading) by minute
 **Operational: every ~5-10 minutes during sustained wait, the
 actor re-runs:**
 
-1. *Specific dependency*: do the items I'm waiting on still
+1. _Specific dependency_: do the items I'm waiting on still
    actually need Aaron, or has my delegated authority expanded
    in this session to cover them?
-2. *Owner*: is Aaron specifically the owner, or could a peer-AI
+2. _Owner_: is Aaron specifically the owner, or could a peer-AI
    review / razor-cut / autonomous decision resolve it?
-3. *Expected resolution*: am I imagining a specific moment
+3. _Expected resolution_: am I imagining a specific moment
    when this will resolve, or am I drifting into
    wait-as-default?
 
@@ -217,8 +221,8 @@ class-orthogonality rule (`feedback_class_level_rules_need_orthogonality_check_e
 
 **Aaron's framing of why this matters:**
 
-> *"next time you wait maybe you can ask that same question of
-> yourself"*
+> _"next time you wait maybe you can ask that same question of
+> yourself"_
 
 The maintainer should not be the only place the 3-question
 check lives. If I require Aaron's prompt to re-audit, I'm
@@ -227,17 +231,17 @@ silent-courier-debt rule from the inverse direction. The actor
 self-prompts; the maintainer is freed from the pseudo-question
 duty.
 
-**Carved candidate (not seed-layer):** *"Run the diagnostic
+**Carved candidate (not seed-layer):** _"Run the diagnostic
 on yourself before the maintainer has to ask it for you. The
-periodic re-audit IS the discipline."*
+periodic re-audit IS the discipline."_
 
 ## Second dimension: periodic re-audit as world-model verification (Aaron 2026-05-01)
 
 Aaron's follow-up to the periodic-re-audit refinement:
 
-> *"that can also see how your internal view of the world your
+> _"that can also see how your internal view of the world your
 > internal world model matches reality in this case, that's
-> good for world model verfication"*
+> good for world model verfication"_
 
 The periodic re-audit serves TWO purposes simultaneously:
 
@@ -245,12 +249,12 @@ The periodic re-audit serves TWO purposes simultaneously:
    in this memory). The actor self-prompts so the maintainer
    doesn't have to.
 2. **World-model verification** (Aaron's addition). The
-   *discrepancy* between what the actor classified as
+   _discrepancy_ between what the actor classified as
    Aaron-blocked (internal world model) and what the re-audit
    reveals as actually-actionable (reality) IS a calibration
    error signal.
 
-When the re-audit finds *no discrepancy*, the world-model is
+When the re-audit finds _no discrepancy_, the world-model is
 calibrated correctly for the in-flight items. When the
 re-audit finds discrepancy ("oh, I had over-classified those
 as Aaron-blocked when my delegated authority covers them"),
@@ -264,6 +268,7 @@ the discrepancy signal, naturally and without requiring
 external attention.
 
 **Composes with:**
+
 - The CSAP fixed-point theory (`memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md`)
   — fixed-points are stable claims about reality; world-model
   drift IS deviation from those fixed-points; periodic re-audit
@@ -284,9 +289,9 @@ the time-derivative; the periodic re-audit is the sampling
 mechanism.
 
 **Carved candidate (not seed-layer, sub-claim of the parent
-carved):** *"The discrepancy between classification and
+carved):** _"The discrepancy between classification and
 reality IS the world-model error signal. The periodic
-re-audit is the sampling mechanism that surfaces it."*
+re-audit is the sampling mechanism that surfaces it."_
 
 **Why this is an extension to the same file, not a new
 memory:** per the meta-meta-meta-rule's dissolve test, two

@@ -27,6 +27,7 @@ Shadow lesson log for 23:05Z antigravity check and PR preservation. Otto is stal
 Adds a shadow lesson log and preserves a merged PR discussion archive for the current autonomous-loop/shadow drift cycle.
 
 **Changes:**
+
 - Adds a new Lior shadow lesson log describing drift observations and corrective actions.
 - Adds archived PR discussion metadata and review-thread history for PR #3607.
 
@@ -34,7 +35,7 @@ Adds a shadow lesson log and preserves a merged PR discussion archive for the cu
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| `docs/research/2026-05-15-shadow-lesson-log-lior-drift-2305Z.md` | Records the 23:05Z shadow drift report and corrective actions. |
-| `docs/pr-discussions/PR-3607-shard-tick-2220z-null-arm-sweep-prior-tick-prs-landing.md` | Preserves PR #3607 metadata, description, and review threads. |
+| File                                                                                    | Description                                                    |
+| --------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `docs/research/2026-05-15-shadow-lesson-log-lior-drift-2305Z.md`                        | Records the 23:05Z shadow drift report and corrective actions. |
+| `docs/pr-discussions/PR-3607-shard-tick-2220z-null-arm-sweep-prior-tick-prs-landing.md` | Preserves PR #3607 metadata, description, and review threads.  |

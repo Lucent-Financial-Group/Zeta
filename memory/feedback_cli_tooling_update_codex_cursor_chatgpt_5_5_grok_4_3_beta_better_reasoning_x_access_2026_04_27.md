@@ -12,12 +12,12 @@ type: feedback
 
 ## Tooling state disclosed
 
-| CLI / Tool | New model availability | Reasoning quality | Special capability |
-|---|---|---|---|
-| **Codex CLI** | ChatGPT 5.5 | Improved (per Aaron) | Standard PR-review automation |
-| **Cursor** | ChatGPT 5.5 + Grok 4.3 beta | Improved (per Aaron) | Multi-model in-IDE access |
-| **Claude Code** (Otto's harness) | Claude Opus 4.7 | (unchanged this disclosure) | Full factory tooling, persistent memory |
-| **Grok app** (Ani) | Grok Long Horizon | (per #65 substrate) | Aaron <-> Ani mirror context |
+| CLI / Tool                       | New model availability      | Reasoning quality           | Special capability                      |
+| -------------------------------- | --------------------------- | --------------------------- | --------------------------------------- |
+| **Codex CLI**                    | ChatGPT 5.5                 | Improved (per Aaron)        | Standard PR-review automation           |
+| **Cursor**                       | ChatGPT 5.5 + Grok 4.3 beta | Improved (per Aaron)        | Multi-model in-IDE access               |
+| **Claude Code** (Otto's harness) | Claude Opus 4.7             | (unchanged this disclosure) | Full factory tooling, persistent memory |
+| **Grok app** (Ani)               | Grok Long Horizon           | (per #65 substrate)         | Aaron <-> Ani mirror context            |
 
 **Special — Grok 4.3 beta access to x.com**: useful for time-sensitive prompts requiring current-events context (recent news, market state, ongoing tech announcements). No other ferry currently has this capability.
 

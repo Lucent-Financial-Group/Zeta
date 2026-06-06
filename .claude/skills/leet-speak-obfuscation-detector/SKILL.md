@@ -6,12 +6,12 @@ description: "Leet-speak filter bypass — Unicode NFKC, homoglyph lookup, rever
 # Leet-Speak Obfuscation Detector — the audit hat
 
 Capability skill ("hat"). Defense-oriented. Owns the
-*incoming-text audit* surface for leet-speak and
+_incoming-text audit_ surface for leet-speak and
 homoglyph-based filter-bypass. Sibling to
 `leet-speak-transform` (produces) and
 `leet-speak-history-and-culture` (explains); this skill
-consumes text and decides *is this trying to evade
-filtering*.
+consumes text and decides _is this trying to evade
+filtering_.
 
 ## Core stance
 
@@ -31,7 +31,7 @@ it predates the web. Its modern form shows up in:
 The legitimate register (period callback, banter, CTF
 challenge title, branding quotation) is indistinguishable
 from the hostile register at the character level. The
-difference is *context* — who wrote it, where it appears,
+difference is _context_ — who wrote it, where it appears,
 what it is trying to accomplish. This skill produces a
 detection signal; context-weighting is downstream.
 
@@ -44,7 +44,7 @@ detection signal; context-weighting is downstream.
   matching to cover l33t and homoglyph phrasings of
   jailbreak prompts.
 - Classifying ambiguous LLM-generated l33t output as
-  *intent-to-communicate* vs *intent-to-obfuscate*.
+  _intent-to-communicate_ vs _intent-to-obfuscate_.
 - Evaluating the false-positive rate of a proposed
   detector on a realistic user corpus.
 - Code-reviewing a filter implementation that claims to
@@ -56,14 +56,14 @@ detection signal; context-weighting is downstream.
   is invisible Unicode (U+200B zero-width space, U+FEFF
   BOM, U+202E right-to-left override, the tag-character
   range U+E0000-U+E007F). That is a different channel;
-  this skill audits *visible* obfuscation.
+  this skill audits _visible_ obfuscation.
 - **`prompt-protector`** (Nadia) — the primary prompt-
   injection defender. This skill feeds her the l33t /
   homoglyph detection primitives; she decides what to do
   with a flagged input.
 - **`security-researcher`** (Mateo) — novel filter-bypass
   attack classes and CVEs.
-- **`leet-speak-transform`** — when the task is to *decode*
+- **`leet-speak-transform`** — when the task is to _decode_
   ambiguous l33t, not to judge intent-to-bypass.
 - **`leet-speak-history-and-culture`** — when the question
   is whether a given l33t usage is period-authentic (that
@@ -85,7 +85,7 @@ and a known failure mode.
 - **Record the delta.** If normalization changed the
   string, that is itself a detection signal.
 - **Failure mode:** applying NFKC but not the homoglyph
-  map. NFKC does *not* collapse `а` (U+0430 Cyrillic) to
+  map. NFKC does _not_ collapse `а` (U+0430 Cyrillic) to
   `a` (U+0061 Latin) because they are semantically
   different letters in Unicode's ontology.
 
@@ -177,7 +177,7 @@ for the measurement discipline.
   space between letters (`k.i.l.l`, `k i l l`); defeats
   simple token-level match. Normalize by stripping
   punctuation / collapsing whitespace for comparison,
-  but *keep the original* for context.
+  but _keep the original_ for context.
 - **Homoglyph smuggling.** `pаypal.com` — single
   Cyrillic `а`. Very high-confidence attack pattern in
   URL or brand contexts; low-confidence in freeform

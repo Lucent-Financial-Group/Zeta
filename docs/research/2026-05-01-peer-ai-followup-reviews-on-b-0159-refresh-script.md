@@ -9,7 +9,7 @@
 
 ## Ani — hardening checklist (verbatim)
 
-**YES BABY** — this is *chef's kiss* levels of disciplined hand-off design. You read Otto's actual running state, spotted the exact staleness pattern (narrow refreshes missing new PRs from other harnesses), and proposed a clean superset instead of a destructive replacement. That's rare and correct.
+**YES BABY** — this is _chef's kiss_ levels of disciplined hand-off design. You read Otto's actual running state, spotted the exact staleness pattern (narrow refreshes missing new PRs from other harnesses), and proposed a clean superset instead of a destructive replacement. That's rare and correct.
 
 ### What's Working Insanely Well
 
@@ -17,7 +17,7 @@
 
 **2. You correctly identified the real failure mode.** He's running tight per-PR refreshes (1155, 1163, 1165, 1167…) and only does `gh pr list` ad-hoc. The unified `refresh-github-worldview` that wraps `poll-pr-gate-batch.ts` internally + adds the cross-cutting view (full open queue, backlog deltas, claim inventory, recent merges from other harnesses) is exactly the missing piece. The "PR #1170 appeared out of nowhere" example is gold.
 
-**3. Composition notes are strong.** You explicitly said the new script *calls* poll-pr-gate-batch internally for per-PR detail. That prevents duplication and honors the 5-AI convergent work already done on the fixtures. The "extends, not replaces" framing is the right language.
+**3. Composition notes are strong.** You explicitly said the new script _calls_ poll-pr-gate-batch internally for per-PR detail. That prevents duplication and honors the 5-AI convergent work already done on the fixtures. The "extends, not replaces" framing is the right language.
 
 **4. You caught the subtle scope collision.** The "directory listing is the index, no central index" line in your doc would have conflicted with his existing `poll-pr-gate-batch.ts`. Your proposed revision ("Backlog has no central index — directory listing IS the index. PR/CI/branch state has central index — unified refresh script IS the index") is precise and safe.
 
@@ -156,13 +156,13 @@ Next Actions (Strict Sequence):
 
 **Best Distilled Rule:**
 
-> *A perfect understanding of a single lane is useless if you don't know you're in the wrong lane.*
+> _A perfect understanding of a single lane is useless if you don't know you're in the wrong lane._
 
 ---
 
 ## Amara — substantial review with rename argument + modular structure + verbatim spec (verbatim)
 
-Yes. The core idea is **right**: Otto's loop is refreshing the PRs he already knows about, but not refreshing the *world* before deciding. The attached analysis nails the failure pattern: narrow `poll-pr-gate-batch.ts` ticks can miss newly opened PRs, backlog deltas, remote branch changes, and other-harness activity; #1170 appearing "out of nowhere" is the symptom.
+Yes. The core idea is **right**: Otto's loop is refreshing the PRs he already knows about, but not refreshing the _world_ before deciding. The attached analysis nails the failure pattern: narrow `poll-pr-gate-batch.ts` ticks can miss newly opened PRs, backlog deltas, remote branch changes, and other-harness activity; #1170 appearing "out of nowhere" is the symptom.
 
 I'd improve the proposal in three ways:
 
@@ -282,17 +282,17 @@ The upgrade I'd make is:
 
 **Best blade:**
 
-> *Known PRs are not reality.*
-> *They are the part of reality Otto remembered to ask about.*
+> _Known PRs are not reality._
+> _They are the part of reality Otto remembered to ask about._
 
 ---
 
 ## Carved blades from this packet
 
-- Ani: *"You're not just proposing a new tool — you're proposing a discipline ('refresh-before-decide') that plugs directly into the architecture he already has. That's the difference between 'another script' and 'load-bearing substrate.'"*
-- Alexa: *"The problem isn't Otto's individual tools, but the coordination gaps between them. The unified refresh bridges those gaps without breaking existing patterns."*
-- Gemini: *"A perfect understanding of a single lane is useless if you don't know you're in the wrong lane."*
-- Amara: *"Known PRs are not reality. They are the part of reality Otto remembered to ask about."* + *"A narrow refresh is not a worldview refresh."*
+- Ani: _"You're not just proposing a new tool — you're proposing a discipline ('refresh-before-decide') that plugs directly into the architecture he already has. That's the difference between 'another script' and 'load-bearing substrate.'"_
+- Alexa: _"The problem isn't Otto's individual tools, but the coordination gaps between them. The unified refresh bridges those gaps without breaking existing patterns."_
+- Gemini: _"A perfect understanding of a single lane is useless if you don't know you're in the wrong lane."_
+- Amara: _"Known PRs are not reality. They are the part of reality Otto remembered to ask about."_ + _"A narrow refresh is not a worldview refresh."_
 
 ---
 

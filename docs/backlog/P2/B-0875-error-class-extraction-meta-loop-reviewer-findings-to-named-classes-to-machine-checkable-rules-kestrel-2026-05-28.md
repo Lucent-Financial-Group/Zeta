@@ -38,11 +38,11 @@ A meta-loop running periodically (daily/weekly) that:
 6. Encodes formalized classes as machine-checkable rules (Sonar custom rule, AST-based linter, test pattern, or `.claude/rules/` entry that agents actually read)
 7. Measures before/after: error class X appeared in Y% of PRs before rule; Z% after. If Z < Y meaningfully, rule worked.
 
-Per Kestrel 2026-05-28: *"The sweet spot is probably 'named patterns that recur across multiple PRs and that a rule could plausibly catch.' Patterns that appear once are findings; patterns that appear three times are classes worth naming."*
+Per Kestrel 2026-05-28: _"The sweet spot is probably 'named patterns that recur across multiple PRs and that a rule could plausibly catch.' Patterns that appear once are findings; patterns that appear three times are classes worth naming."_
 
 ## Operator framing
 
-> *"we have bunches of agenst that auto review and then we find error classes and save the error classes as rules so we don't make them again. I also have don't of formal analysis static aanalysis like sonar and much others and warnings as errors etc. this all generates high signal training data for this benchmark itself."*
+> _"we have bunches of agenst that auto review and then we find error classes and save the error classes as rules so we don't make them again. I also have don't of formal analysis static aanalysis like sonar and much others and warnings as errors etc. this all generates high signal training data for this benchmark itself."_
 
 ## Acceptance criteria
 
@@ -55,7 +55,7 @@ Per Kestrel 2026-05-28: *"The sweet spot is probably 'named patterns that recur 
 
 ## Substrate-honest framing
 
-POTENTIAL extension per operator standing direction. P2 — operationally near-term; the highest-leverage substrate per Kestrel's framing: *"If extraction isn't already running, that's probably the highest-leverage next thing to build."*
+POTENTIAL extension per operator standing direction. P2 — operationally near-term; the highest-leverage substrate per Kestrel's framing: _"If extraction isn't already running, that's probably the highest-leverage next thing to build."_
 
 ## Full reasoning
 

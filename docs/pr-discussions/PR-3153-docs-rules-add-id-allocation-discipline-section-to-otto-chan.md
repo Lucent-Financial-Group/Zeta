@@ -62,24 +62,22 @@ This PR is the re-authoring of work that was lost in 2026-05-13 session crash (t
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T18:12:21Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `0d4d0e1218`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -92,6 +90,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Updates the Otto inter-surface communication reference card to codify ID allocation discipline across local backlog state and GitHub PR state, addressing the B-0449 collision scenario described in the PR.
 
 **Changes:**
+
 - Adds ID allocation as an operational discipline item.
 - Adds a new multi-surface ID allocation section with on-disk and in-flight PR checks.
 - Adds composition links to the collision-resolution PRs and refresh-before-decide rule.
@@ -102,7 +101,7 @@ Updates the Otto inter-surface communication reference card to codify ID allocat
 
 **@chatgpt-codex-connector** (2026-05-14T18:12:21Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace GNU-only find flag in ID-allocation command**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace GNU-only find flag in ID-allocation command**
 
 The new on-disk check uses `find ... -printf`, which is a GNU `find` extension and fails on BSD/macOS `find` (the same Desktop environment implied by `/Users/...` paths in this file). In that environment this step errors before producing IDs, so operators are likely to skip or improvise the check and reintroduce the collision risk this section is meant to prevent; use a portable form (e.g., `-exec basename` or an explicit platform note) so the procedure is runnable on both surfaces.
 

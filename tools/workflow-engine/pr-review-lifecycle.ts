@@ -45,13 +45,13 @@ export interface LifetimeState {
  */
 export interface PrReviewLifecycle extends LifetimeState {
   readonly kind:
-    | "observe"               // read PR + diff + context; no engagement yet
-    | "identify-finding"      // substrate-engineering issue / question / praise surfaced
-    | "compose"               // write review comment with substantive content
-    | "verify-finding"        // grep substrate-anchor; check claim before posting (per substrate-honest discipline)
-    | "post"                  // ship the review via gh api / GraphQL mutation
-    | "follow-up"             // engage on author's response if any
-    | "conclude";             // no further engagement; mark as concluded
+    | "observe" // read PR + diff + context; no engagement yet
+    | "identify-finding" // substrate-engineering issue / question / praise surfaced
+    | "compose" // write review comment with substantive content
+    | "verify-finding" // grep substrate-anchor; check claim before posting (per substrate-honest discipline)
+    | "post" // ship the review via gh api / GraphQL mutation
+    | "follow-up" // engage on author's response if any
+    | "conclude"; // no further engagement; mark as concluded
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -78,11 +78,11 @@ export type ReviewFindingKind =
  */
 export interface ReviewFinding {
   readonly prNumber: number;
-  readonly filePath?: string;            // optional; some findings are PR-scoped
-  readonly lineNumber?: number;          // optional; some findings are file-scoped
+  readonly filePath?: string; // optional; some findings are PR-scoped
+  readonly lineNumber?: number; // optional; some findings are file-scoped
   readonly kind: ReviewFindingKind;
-  readonly content: string;              // substantive review-comment body
-  readonly substrateAnchors?: ReadonlyArray<string>;  // grep-substrate-anchors per rule
+  readonly content: string; // substantive review-comment body
+  readonly substrateAnchors?: ReadonlyArray<string>; // grep-substrate-anchors per rule
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -94,10 +94,31 @@ export interface ReviewFinding {
  */
 export interface ReviewContext {
   readonly prNumber: number;
-  readonly authorLane: "self" | "peer-otto" | "peer-codex" | "peer-lior" | "peer-alexa" | "peer-vera" | "peer-riven" | "peer-amara" | "peer-kestrel" | "peer-prism" | "peer-mika" | "human-operator" | "unknown";
-  readonly substrateScope: "workflow-engine" | "encryption" | "zflash" | "ferry-preservation" | "rule-update" | "memory-file" | "infrastructure" | "other";
+  readonly authorLane:
+    | "self"
+    | "peer-otto"
+    | "peer-codex"
+    | "peer-lior"
+    | "peer-alexa"
+    | "peer-vera"
+    | "peer-riven"
+    | "peer-amara"
+    | "peer-kestrel"
+    | "peer-prism"
+    | "peer-mika"
+    | "human-operator"
+    | "unknown";
+  readonly substrateScope:
+    | "workflow-engine"
+    | "encryption"
+    | "zflash"
+    | "ferry-preservation"
+    | "rule-update"
+    | "memory-file"
+    | "infrastructure"
+    | "other";
   readonly findings: ReadonlyArray<ReviewFinding>;
-  readonly observationsMade: number;     // count of observe → identify cycles
+  readonly observationsMade: number; // count of observe → identify cycles
 }
 
 /**
@@ -117,14 +138,12 @@ export interface ReviewOutcome {
 
 export type PrReviewFeedback =
   | { kind: "PrNotAccessible"; prNumber: number; reason: string }
-  | { kind: "PeerAgentTerritory"; prNumber: number; lane: ReviewContext["authorLane"] }  // don't-touch-commits but review-allowed
-  | { kind: "FindingUnsubstantiated"; finding: ReviewFinding }       // failed verify step
+  | { kind: "PeerAgentTerritory"; prNumber: number; lane: ReviewContext["authorLane"] } // don't-touch-commits but review-allowed
+  | { kind: "FindingUnsubstantiated"; finding: ReviewFinding } // failed verify step
   | { kind: "RateLimitExhausted"; budget: "rest" | "graphql"; resetAt: number }
   | { kind: "NoActionableFinding"; prNumber: number };
 
-export type PrReviewResult<T> =
-  | { ok: true; outcome: T }
-  | { ok: false; feedback: PrReviewFeedback };
+export type PrReviewResult<T> = { ok: true; outcome: T } | { ok: false; feedback: PrReviewFeedback };
 
 // ─────────────────────────────────────────────────────────────────────
 // State transition dispatch
@@ -191,8 +210,8 @@ export function dispatchPrReviewTransition(
           feedback: { kind: "NoActionableFinding", prNumber: context.prNumber },
         };
       }
-      const unsubstantiated = context.findings.find((f) =>
-        f.substrateAnchors === undefined || f.substrateAnchors.length === 0
+      const unsubstantiated = context.findings.find(
+        (f) => f.substrateAnchors === undefined || f.substrateAnchors.length === 0,
       );
       if (unsubstantiated !== undefined) {
         return {

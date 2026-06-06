@@ -38,15 +38,15 @@ bun tools/claude-code-recovery/repair-jsonl-strip-images.ts --session <uuid> --a
 
 Useful flags:
 
-| Flag | Default | Purpose |
-|---|---|---|
-| `--scan` | — | Mutex with `--session`; reports all flagged sessions |
-| `--session <uuid>` | — | Target one session JSONL |
-| `--slug <slug>` | derived from `process.cwd()` (absolute path with `/` → `-`) | Override project dir slug |
-| `--projects-dir <path>` | `~/.claude/projects` | Override projects dir |
-| `--max-line-bytes <N>` | `10000000` (10 MB) | Inspect-line threshold |
-| `--max-image-bytes <N>` | same as `--max-line-bytes` | Strip-image threshold (per individual image) |
-| `--apply` | (off) | Without it, dry-run only |
+| Flag                    | Default                                                     | Purpose                                              |
+| ----------------------- | ----------------------------------------------------------- | ---------------------------------------------------- |
+| `--scan`                | —                                                           | Mutex with `--session`; reports all flagged sessions |
+| `--session <uuid>`      | —                                                           | Target one session JSONL                             |
+| `--slug <slug>`         | derived from `process.cwd()` (absolute path with `/` → `-`) | Override project dir slug                            |
+| `--projects-dir <path>` | `~/.claude/projects`                                        | Override projects dir                                |
+| `--max-line-bytes <N>`  | `10000000` (10 MB)                                          | Inspect-line threshold                               |
+| `--max-image-bytes <N>` | same as `--max-line-bytes`                                  | Strip-image threshold (per individual image)         |
+| `--apply`               | (off)                                                       | Without it, dry-run only                             |
 
 **The two thresholds are intentionally separated.** `--max-line-bytes`
 picks which JSONL lines to inspect at all (lines under this size are

@@ -1,8 +1,8 @@
 # dbt deep integration for Zeta — research (first-draft cartographer pass)
 
 **Date:** 2026-04-22
-**Trigger:** Aaron 2026-04-22 tick-fire interrupt: *"add to
-backlog research dbt deep integration for Zeta"*.
+**Trigger:** Aaron 2026-04-22 tick-fire interrupt: _"add to
+backlog research dbt deep integration for Zeta"_.
 **Author:** opus-4-7 / session round-44 (post-compaction)
 **Status:** map-before-walk. First-draft research — no code
 landing, no adapter skeleton this round. Feeds BACKLOG row
@@ -19,17 +19,17 @@ and Zeta's has to be disambiguated — both use "delta", "model",
 "materialization" in non-identical ways, and collapsing the
 senses is the first silent failure.
 
-| Term | Zeta meaning | dbt meaning | Distinction |
-|---|---|---|---|
-| **delta** | Z-set delta: a multiset of (row, weight, timestamp) triples where negative weight = retraction. Native primitive. | A diff between two model runs, conceptually row-level insert/update/delete. Often approximated via merge keys. | Zeta's delta is algebraic + retraction-native; dbt's is procedural + retraction-by-overwrite. |
-| **model** | Not a first-class term; pipelines / operators are the primitives. | A SQL file defining a transformation, materialized into the warehouse. | dbt-model ≈ a named operator-graph node in Zeta; the surface is different. |
-| **materialization** | A query is always materialized; retraction-native deltas *are* the materialization. | `{view, table, incremental, ephemeral}` — a strategy switch for how the SQL lands. | dbt's strategies collapse into *one* strategy in Zeta (incremental via deltas); ephemeral maps to fused operators. |
-| **incremental** | Default. Every query is incremental over deltas because the engine is DBSP. | Opt-in strategy; requires merge keys + `{{ is_incremental() }}` guards; bug-prone on late-arriving data. | This is the **load-bearing subsumption claim** (question a). |
-| **snapshot** | Bitemporal-native: valid-time + transaction-time are query axes, not columns to maintain. | Manual SCD2 capture via `valid_from`/`valid_to` columns owned by the snapshot model. | Question (b): bitemporal subsumes SCD2 — SCD2 becomes a *view*, not a *materialization*. |
-| **test** | Invariant (skill.yaml + Liquid-`F#` contract surface). | `unique`, `not_null`, `relationships`, `accepted_values`, custom singular. | Question (c): dbt tests map to Zeta invariants, but the binding surface matters. |
-| **manifest / state** | Operator-algebra lineage is native — every node knows its inputs + the operator fused into it. | `manifest.json` + `run_results.json` as dbt's DAG snapshot and run state. | Question (d): does dbt's state layer become redundant, or does its *UX* (`state:modified+`) persist as a query over Zeta's lineage? |
-| **adapter** | n/a — Zeta is a runtime, not a dbt plug-in yet. | `dbt-core`'s Python contract: `get_relation`, `execute`, `get_columns_in_relation`, `get_changes`. | Question (e): shallow-first, `dbt-zeta` adapter package. |
-| **Semantic Layer / metric** | Not yet — belongs to the eventual query-surface design. | MetricFlow (post-Transform acquisition 2023) — metrics as first-class compiled-to-SQL. | Question (f): orthogonal; separate research row. |
+| Term                        | Zeta meaning                                                                                                      | dbt meaning                                                                                                    | Distinction                                                                                                                         |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **delta**                   | Z-set delta: a multiset of (row, weight, timestamp) triples where negative weight = retraction. Native primitive. | A diff between two model runs, conceptually row-level insert/update/delete. Often approximated via merge keys. | Zeta's delta is algebraic + retraction-native; dbt's is procedural + retraction-by-overwrite.                                       |
+| **model**                   | Not a first-class term; pipelines / operators are the primitives.                                                 | A SQL file defining a transformation, materialized into the warehouse.                                         | dbt-model ≈ a named operator-graph node in Zeta; the surface is different.                                                          |
+| **materialization**         | A query is always materialized; retraction-native deltas _are_ the materialization.                               | `{view, table, incremental, ephemeral}` — a strategy switch for how the SQL lands.                             | dbt's strategies collapse into _one_ strategy in Zeta (incremental via deltas); ephemeral maps to fused operators.                  |
+| **incremental**             | Default. Every query is incremental over deltas because the engine is DBSP.                                       | Opt-in strategy; requires merge keys + `{{ is_incremental() }}` guards; bug-prone on late-arriving data.       | This is the **load-bearing subsumption claim** (question a).                                                                        |
+| **snapshot**                | Bitemporal-native: valid-time + transaction-time are query axes, not columns to maintain.                         | Manual SCD2 capture via `valid_from`/`valid_to` columns owned by the snapshot model.                           | Question (b): bitemporal subsumes SCD2 — SCD2 becomes a _view_, not a _materialization_.                                            |
+| **test**                    | Invariant (skill.yaml + Liquid-`F#` contract surface).                                                            | `unique`, `not_null`, `relationships`, `accepted_values`, custom singular.                                     | Question (c): dbt tests map to Zeta invariants, but the binding surface matters.                                                    |
+| **manifest / state**        | Operator-algebra lineage is native — every node knows its inputs + the operator fused into it.                    | `manifest.json` + `run_results.json` as dbt's DAG snapshot and run state.                                      | Question (d): does dbt's state layer become redundant, or does its _UX_ (`state:modified+`) persist as a query over Zeta's lineage? |
+| **adapter**                 | n/a — Zeta is a runtime, not a dbt plug-in yet.                                                                   | `dbt-core`'s Python contract: `get_relation`, `execute`, `get_columns_in_relation`, `get_changes`.             | Question (e): shallow-first, `dbt-zeta` adapter package.                                                                            |
+| **Semantic Layer / metric** | Not yet — belongs to the eventual query-surface design.                                                           | MetricFlow (post-Transform acquisition 2023) — metrics as first-class compiled-to-SQL.                         | Question (f): orthogonal; separate research row.                                                                                    |
 
 The terminology matrix is the load-bearing part of this
 document. Every subsequent claim reduces to "dbt-X maps to
@@ -38,9 +38,9 @@ Zeta-Y because the delta vocabulary lines up like this".
 ## 1. What Aaron is asking for
 
 dbt is the industry-standard transformation orchestrator.
-*Shallow* integration (Zeta-as-warehouse that dbt-core talks
+_Shallow_ integration (Zeta-as-warehouse that dbt-core talks
 to via an adapter) is the incumbency move — earn the install
-before earning the argument. *Deep* integration is the
+before earning the argument. _Deep_ integration is the
 research question: **does Zeta's DBSP runtime make dbt's
 layered architecture redundant, partially-redundant, or
 productively-extended**? The answer per layer is different,
@@ -61,10 +61,10 @@ reduces to "the merge strategy + the unique key didn't cover
 the late-arriving row correctly"**.
 
 A Z-set delta is the shape dbt-incremental approximates.
-Retraction-native means late-arriving data is an *insert with
-old-negative + new-positive weight pair*, not a special case.
+Retraction-native means late-arriving data is an _insert with
+old-negative + new-positive weight pair_, not a special case.
 The merge-key machinery disappears because the engine
-*already knows* which rows are deltas — they came in as
+_already knows_ which rows are deltas — they came in as
 deltas, not as new rows to MERGE against old ones.
 
 **What this buys:**
@@ -89,8 +89,8 @@ deltas, not as new rows to MERGE against old ones.
 
 **Claim strength:** this is the **strongest subsumption
 claim** in the document — the incremental-materialization
-layer isn't just extended, it's *replaced by a default that
-is always correct*. The paper for this would be "incremental
+layer isn't just extended, it's _replaced by a default that
+is always correct_. The paper for this would be "incremental
 by construction: replacing dbt's incremental materialization
 with retraction-native deltas."
 
@@ -129,7 +129,7 @@ snapshot and the live table.
   Applications in SQL", 2000). Zeta has to actually deliver
   this before the claim lands.
 - dbt authors using snapshots for downstream BI consumption
-  expect the SCD2-shaped relation. A view that *projects* the
+  expect the SCD2-shaped relation. A view that _projects_ the
   bitemporal relation back to SCD2 shape is needed for
   backward compatibility.
 
@@ -142,8 +142,8 @@ this is a paper claim, not a migration path.
 dbt's built-in tests (`unique`, `not_null`, `relationships`,
 `accepted_values`) and custom singular/generic tests are SQL
 predicates that run after a model materializes. They catch
-violations *in the materialized result*, not *at
-transformation time*. This is a correctness-after-the-fact
+violations _in the materialized result_, not _at
+transformation time_. This is a correctness-after-the-fact
 shape: the bad row is already in the table when the test
 fires; the alert is a rollback trigger, not a shield.
 
@@ -156,13 +156,13 @@ not a test-after-materialize one.
 
 **Mapping table:**
 
-| dbt test | Zeta invariant |
-|---|---|
-| `unique(col)` | Uniqueness witness on the Z-set under projection to `col`. |
-| `not_null(col)` | Column-level invariant; refinement type in Liquid-`F#`. |
-| `relationships(from, to)` | Foreign-key witness; cross-Z-set invariant. Cheaper in DBSP because the delta tells you which refs to recheck. |
-| `accepted_values(col, values)` | Refinement type; compile-time-checkable in Liquid-`F#` if the value set is closed. |
-| Custom singular | Liquid-`F#` predicate over the Z-set + contract-level assertion. |
+| dbt test                       | Zeta invariant                                                                                                 |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `unique(col)`                  | Uniqueness witness on the Z-set under projection to `col`.                                                     |
+| `not_null(col)`                | Column-level invariant; refinement type in Liquid-`F#`.                                                        |
+| `relationships(from, to)`      | Foreign-key witness; cross-Z-set invariant. Cheaper in DBSP because the delta tells you which refs to recheck. |
+| `accepted_values(col, values)` | Refinement type; compile-time-checkable in Liquid-`F#` if the value set is closed.                             |
+| Custom singular                | Liquid-`F#` predicate over the Z-set + contract-level assertion.                                               |
 
 **What this buys:**
 
@@ -179,12 +179,12 @@ not a test-after-materialize one.
 - Liquid-`F#` is pre-v1; the contract surface isn't shippable
   yet. The mapping is aspirational until skill.yaml + Liquid-
   `F#` bind.
-- dbt's test ecosystem (dbt-expectations, dbt-utils.test_*)
+- dbt's test ecosystem (dbt-expectations, dbt-utils.test\_\*)
   is huge. Porting or proxying these packages is a non-trivial
   compatibility cost.
 
 **Claim strength:** medium. Depends on Zeta's contract surface
-landing. The *mapping* is clean; the *shipping* is the gap.
+landing. The _mapping_ is clean; the _shipping_ is the gap.
 
 ### 2.4 Manifest / state (question d) — **claim: operator-algebra lineage subsumes; UX persists as a view**
 
@@ -195,12 +195,12 @@ state:modified+` works.
 
 Zeta has operator-algebra lineage natively. Every node in the
 operator graph knows its inputs, its operator, its fused
-neighbors. This is *more* detailed than dbt's manifest: dbt
+neighbors. This is _more_ detailed than dbt's manifest: dbt
 tracks model-level dependencies; Zeta's operator graph tracks
 operator-level. The lineage layer is strictly more expressive.
 
 **The UX question is orthogonal.** `dbt build --select
-state:modified+` is a *query* over the manifest + git diff.
+state:modified+` is a _query_ over the manifest + git diff.
 It can run over Zeta's lineage too — the selection predicate
 ("operators whose upstream Z-set changed") just reads against
 a more detailed graph. The UX survives; the storage layer
@@ -215,7 +215,7 @@ underneath disappears.
 **What this costs:**
 
 - dbt Cloud's lineage viewer consumes `manifest.json` shape.
-  An adapter that *emits* `manifest.json` compatible output
+  An adapter that _emits_ `manifest.json` compatible output
   from Zeta's operator graph is the compatibility bridge —
   which is Extra Work on top of the algebra-native approach.
 
@@ -243,15 +243,15 @@ A `dbt-zeta` package would:
    downstream.
 3. Ship a materialization override: `materialized='view'` and
    `materialized='table'` stay compatible; `materialized=
-   'incremental'` becomes a no-op because the engine is
+'incremental'` becomes a no-op because the engine is
    always incremental — the guard wrappers compile to
    identity.
 
 **Why shallow-first:** adapter packaging earns incumbency in
-the dbt ecosystem *before* Zeta has to argue the deeper
+the dbt ecosystem _before_ Zeta has to argue the deeper
 semantic claims. Running under dbt is a credibility marker;
-arguing that dbt doesn't *need* most of itself under Zeta is
-a move you make *after* you have the install base.
+arguing that dbt doesn't _need_ most of itself under Zeta is
+a move you make _after_ you have the install base.
 
 ### 2.6 Semantic Layer / MetricFlow (question f) — **separate concern**
 
@@ -260,7 +260,7 @@ abstraction — metrics as first-class objects compiled down to
 SQL at query time, with dimensions and filters declared at
 the metric level.
 
-This sits *above* the transformation layer. The question of
+This sits _above_ the transformation layer. The question of
 whether Zeta's query surface subsumes MetricFlow is orthogonal
 to the transformation-layer subsumption claims above. It
 belongs to a later research row once:
@@ -319,7 +319,7 @@ Relevant for Zeta because:
   that, it's to emit asset-graph metadata Dagster can consume.
 
 **Action:** separate BACKLOG row for `dagster-zeta` integration
-*after* the `dbt-zeta` adapter lands.
+_after_ the `dbt-zeta` adapter lands.
 
 ## 4. Recommendation — posture
 
@@ -356,7 +356,7 @@ Ranked in order of shipping, not importance:
 
 - Does `dbt-core`'s adapter contract support returning a
   "relation that is itself a delta stream"? If not, the
-  adapter has to *materialize* the delta into a relation
+  adapter has to _materialize_ the delta into a relation
   before handing it back, which throws away the very
   advantage Zeta wants to sell. Worth a deep-read of the
   adapter contract before committing to the shallow goal.
@@ -372,7 +372,7 @@ Ranked in order of shipping, not importance:
   (Defer per §2.6 but note the question.)
 
 - Operator-level lineage vs model-level lineage: does dbt
-  Cloud's UI actually *want* operator-level, or is that noise
+  Cloud's UI actually _want_ operator-level, or is that noise
   for SQL authors? The answer changes whether §2.4's
   "operator-algebra is strictly more expressive" is a feature
   or an overwhelm.
@@ -394,24 +394,24 @@ Ranked in order of shipping, not importance:
 
 - dbt-labs/dbt-core: `github.com/dbt-labs/dbt-core` (MIT)
 - dbt adapter contract: `docs.getdbt.com/docs/
-  contributing/building-a-new-adapter`
+contributing/building-a-new-adapter`
 - dbt incremental models: `docs.getdbt.com/docs/build/
-  incremental-models`
+incremental-models`
 - dbt snapshots: `docs.getdbt.com/docs/build/snapshots`
 - dbt tests: `docs.getdbt.com/docs/build/data-tests`
 - dbt manifest: `docs.getdbt.com/reference/artifacts/
-  manifest-json`
+manifest-json`
 - MetricFlow / Semantic Layer: `docs.getdbt.com/docs/build/
-  about-metricflow`
+about-metricflow`
 - SQLMesh: `github.com/TobikoData/sqlmesh`,
   `tobikodata.com/blog`
 - Dagster: `github.com/dagster-io/dagster`,
   `dagster-dbt` package
 - Materialize dbt adapter (precedent for changefeed-return):
   `github.com/MaterializeInc/materialize/tree/main/misc/dbt-
-  materialize`
-- Snodgrass R. T., *Developing Time-Oriented Database
-  Applications in SQL* (2000) — bitemporal foundation
+materialize`
+- Snodgrass R. T., _Developing Time-Oriented Database
+  Applications in SQL_ (2000) — bitemporal foundation
   reading, relevant to §2.2.
 
 ## 8. Round-44 audit trail

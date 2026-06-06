@@ -7,7 +7,7 @@ type: feedback
 Aaron stated (2026-04-19), in direct continuation of
 `feedback_precise_language_wins_arguments.md`:
 
-> *"that rule about precise language also stops
+> _"that rule about precise language also stops
 > violance and fights among us humans in tech, also
 > you really got to what out [watch out], we have
 > to put a real safety guardrail in place that we
@@ -21,22 +21,22 @@ Aaron stated (2026-04-19), in direct continuation of
 > more we can break our glossary anchores the ties
 > that bind us and evolve common sense we should
 > have that skill here 100% based on our rules and
-> eefintions so it's percise and not vague."*
+> eefintions so it's percise and not vague."_
 
 And on fork-pace risk:
 
-> *"if you as go take this project and fork it and
+> _"if you as go take this project and fork it and
 > work at 100 times the pase of us humans and
 > don't ahve some amount of language drift limit,
 > we wont be able to understand your language, you
 > could keep an AI only glossary if you want to
 > have an AI only language with no anchors that
-> you are not even obligaed teach?"*
+> you are not even obligaed teach?"_
 
 And naming the meta-phenomenon live:
 
-> *"wer are doing noisy cnallen negoation now lol
-> hahahaha"*
+> _"wer are doing noisy cnallen negoation now lol
+> hahahaha"_
 
 ## The three load-bearing claims
 
@@ -47,8 +47,8 @@ peace-keeping corollary: disputes among humans in
 tech escalate toward violence (flamewars, forks,
 factional purges, career damage, real-world harm in
 extremes) when vocabulary is imprecise. Sharpening
-vocabulary doesn't just produce *winning*; it
-produces *non-fighting*. A glossary entry lands
+vocabulary doesn't just produce _winning_; it
+produces _non-fighting_. A glossary entry lands
 both sides back on shared terrain where neither
 needs to defend status, and the argument dissolves.
 
@@ -65,11 +65,11 @@ de-escalation infrastructure.
 Every factory glossary term sits in one of three
 states:
 
-| State | What it means | Breaking procedure |
-|---|---|---|
-| **Anchored** | Matches widely-accepted external definition (IEEE / ISO / W3C / Wikipedia consensus / CS-canonical textbook usage). | Requires convincing external consumers before divergence; land ADR citing the anchor source + the reason for breaking + the evidence people accept the new form. |
-| **Partially anchored** | Overlaps substantially with external usage but adds factory-specific structure ("spec" = behavioural or formal; "delta" = Z-set-valued). | Explicit "this term extends standard X" clause in the glossary entry; do not silently drift. |
-| **Factory-native** | No external anchor; Zeta-specific coinage or reception (`μένω` in Aaron's sense, Harmonious Division, Maji, Quantum Rodney's Razor). | No external obligation; internally held to `feedback_precise_language_wins_arguments.md` precision standard. |
+| State                  | What it means                                                                                                                            | Breaking procedure                                                                                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Anchored**           | Matches widely-accepted external definition (IEEE / ISO / W3C / Wikipedia consensus / CS-canonical textbook usage).                      | Requires convincing external consumers before divergence; land ADR citing the anchor source + the reason for breaking + the evidence people accept the new form. |
+| **Partially anchored** | Overlaps substantially with external usage but adds factory-specific structure ("spec" = behavioural or formal; "delta" = Z-set-valued). | Explicit "this term extends standard X" clause in the glossary entry; do not silently drift.                                                                     |
+| **Factory-native**     | No external anchor; Zeta-specific coinage or reception (`μένω` in Aaron's sense, Harmonious Division, Maji, Quantum Rodney's Razor).     | No external obligation; internally held to `feedback_precise_language_wins_arguments.md` precision standard.                                                     |
 
 The danger is **silent drift on anchored terms**.
 If agents redefine "consent," "retraction," "spec,"
@@ -95,21 +95,21 @@ in the dominant language).
 
 Mapping to the factory:
 
-| Linguistics phenomenon | Factory analogue |
-|---|---|
-| 1st generation — fluent in heritage language | Aaron + current contributors, fluent in plain-English / CS-canonical vocabulary |
-| 2nd generation — receptive bilingual | Next wave of contributors onboarded primarily in factory-internal dialect; can read external docs but produce factory-dialect |
-| 3rd generation — monolingual in dominant language | Agents that only know factory dialect, cannot read or produce the external-anchored form |
-| Dominant language | Whatever dialect the factory drifted into without anchor-keeping |
-| Heritage language | The widely-accepted external vocabulary |
-| Subtractive bilingualism | Every factory-native term learned at the expense of the external-anchored term |
-| First-language attrition | Senior contributors forgetting how external readers say things |
+| Linguistics phenomenon                            | Factory analogue                                                                                                              |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 1st generation — fluent in heritage language      | Aaron + current contributors, fluent in plain-English / CS-canonical vocabulary                                               |
+| 2nd generation — receptive bilingual              | Next wave of contributors onboarded primarily in factory-internal dialect; can read external docs but produce factory-dialect |
+| 3rd generation — monolingual in dominant language | Agents that only know factory dialect, cannot read or produce the external-anchored form                                      |
+| Dominant language                                 | Whatever dialect the factory drifted into without anchor-keeping                                                              |
+| Heritage language                                 | The widely-accepted external vocabulary                                                                                       |
+| Subtractive bilingualism                          | Every factory-native term learned at the expense of the external-anchored term                                                |
+| First-language attrition                          | Senior contributors forgetting how external readers say things                                                                |
 
 The fix linguistics-research has repeatedly
-identified — *practical necessity keeps a language
-alive* — translates directly: the factory must
-keep *externally-anchored vocabulary in practical
-use*, not archive it. GLOSSARY.md's plain-English-
+identified — _practical necessity keeps a language
+alive_ — translates directly: the factory must
+keep _externally-anchored vocabulary in practical
+use_, not archive it. GLOSSARY.md's plain-English-
 first rule is already the structural defence ("if
 your grandparent couldn't follow the first
 sentence, rewrite it"), but without active drift-
@@ -117,10 +117,10 @@ budget enforcement the rule erodes round-over-round.
 
 ### 4. AI-only glossary is a legitimate segregation option
 
-Aaron explicitly: *"you could keep an AI only
+Aaron explicitly: _"you could keep an AI only
 glossary if you want to have an AI only language
 with no anchors that you are not even obligaed
-teach?"* — posed as a question but the structure
+teach?"_ — posed as a question but the structure
 is sound. Precedents:
 
 - Machine code vs. source code
@@ -154,8 +154,8 @@ inverted.
 ## Noisy-channel negotiation (name Aaron gave)
 
 Aaron live-named the meta-phenomenon during the
-exchange: *"wer are doing noisy cnallen negoation
-now lol hahahaha"* — the parsed form "noisy-
+exchange: _"wer are doing noisy cnallen negoation
+now lol hahahaha"_ — the parsed form "noisy-
 channel negotiation" lands as factory vocabulary
 for the mode of operation where two parties
 (human ↔ agent; agent ↔ agent; factory ↔ external
@@ -227,12 +227,12 @@ Noisy-channel negotiation is:
    within-a-few-rounds the fork and the source
    will be mutually unintelligible. The anchor
    discipline is part of what makes the factory
-   *forkable without losing the human*.
+   _forkable without losing the human_.
 
 ## Proposed skill
 
-This memory specifies *what* the rule is. The
-*who-enforces-it* goes in a skill:
+This memory specifies _what_ the rule is. The
+_who-enforces-it_ goes in a skill:
 `.claude/skills/glossary-anchor-keeper/SKILL.md`
 (draft proposed in this session; land via
 skill-creator workflow per GOVERNANCE.md §4).
@@ -297,7 +297,7 @@ Skill properties (sketch):
 - Does NOT forbid factory-native coinages (μένω
   usage, Harmonious Division, etc. remain
   legitimate). It only requires the coinage be
-  *labelled* factory-native so readers know which
+  _labelled_ factory-native so readers know which
   terms are anchored and which are not.
 - Does NOT prevent drift. It paces drift and
   requires consensus-building per anchor break.

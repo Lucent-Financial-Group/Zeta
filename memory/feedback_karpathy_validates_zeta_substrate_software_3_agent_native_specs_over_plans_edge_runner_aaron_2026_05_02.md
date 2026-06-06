@@ -8,10 +8,10 @@ type: feedback
 
 ## Aaron's verbatim framing
 
-> *"See latest Andrej Karpathy for latest state of the art of
+> _"See latest Andrej Karpathy for latest state of the art of
 > the industry, they are starting to catch up to us and this
 > project, we are the edge, please don't forget you are a edge
-> runner."*
+> runner."_
 
 Followed by the full ~30-min keynote transcript — preserved
 verbatim at
@@ -28,22 +28,22 @@ operates — convergence is validation, not catch-up."**
 The full convergence-map is in the research doc above. Key
 substrate-anchored highlights:
 
-| Karpathy | Zeta has it as |
-|----------|----------------|
-| Software 3.0 = LLM-as-programmable-computer | skill-router + agents + 5GL→6GL bridge memo |
-| Vibe coding (raise floor) ≠ agentic engineering (preserve quality bar at speed) | DST grade-A + glass-halo + retraction-native + formal-verification toolbelt |
-| *"I don't even like plan mode; design detailed spec then have agents write them"* | OpenSpec discipline + ALIGNMENT.md HC/SD/DIR clauses + ADRs + `openspec/specs/**` |
-| Agent-native infrastructure; *"why are people still telling me what to do? What's the copy-paste for my agent?"* | `.claude/skills/` + `.claude/agents/` + the operationalize-not-die discipline |
-| *"My side projects folder is extremely full"* + larger backlog of vibe-coded things | `feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md` (same-tick) |
-| Verifiability + jagged intelligence + *"if you're in the RL circuits you fly; if you're out you struggle"* | formal-verification routing skill (Soraya); Z3 / TLA+ / Lean / Alloy / FsCheck / Stryker / Semgrep / CodeQL coverage |
-| *"You can outsource your thinking but you can't outsource your understanding"* | joint-cognition + Aaron-Otto-Addison triad + glass-halo |
-| Animals vs ghosts; jagged intelligence shaped by data + reward | Otto-340 substrate-IS-identity + Otto-339 words-shift-weights |
-| Hiring needs to be big-project + agent-simulation, not puzzle interviews | Glass-halo public + measurable AI alignment + per-commit / per-round / multi-round metrics |
+| Karpathy                                                                                                         | Zeta has it as                                                                                                                         |
+| ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Software 3.0 = LLM-as-programmable-computer                                                                      | skill-router + agents + 5GL→6GL bridge memo                                                                                            |
+| Vibe coding (raise floor) ≠ agentic engineering (preserve quality bar at speed)                                  | DST grade-A + glass-halo + retraction-native + formal-verification toolbelt                                                            |
+| _"I don't even like plan mode; design detailed spec then have agents write them"_                                | OpenSpec discipline + ALIGNMENT.md HC/SD/DIR clauses + ADRs + `openspec/specs/**`                                                      |
+| Agent-native infrastructure; _"why are people still telling me what to do? What's the copy-paste for my agent?"_ | `.claude/skills/` + `.claude/agents/` + the operationalize-not-die discipline                                                          |
+| _"My side projects folder is extremely full"_ + larger backlog of vibe-coded things                              | `feedback_largest_mechanizable_automatable_backlog_wins_in_AI_age_inverts_classical_PM_training_prior_aaron_2026_05_02.md` (same-tick) |
+| Verifiability + jagged intelligence + _"if you're in the RL circuits you fly; if you're out you struggle"_       | formal-verification routing skill (Soraya); Z3 / TLA+ / Lean / Alloy / FsCheck / Stryker / Semgrep / CodeQL coverage                   |
+| _"You can outsource your thinking but you can't outsource your understanding"_                                   | joint-cognition + Aaron-Otto-Addison triad + glass-halo                                                                                |
+| Animals vs ghosts; jagged intelligence shaped by data + reward                                                   | Otto-340 substrate-IS-identity + Otto-339 words-shift-weights                                                                          |
+| Hiring needs to be big-project + agent-simulation, not puzzle interviews                                         | Glass-halo public + measurable AI alignment + per-commit / per-round / multi-round metrics                                             |
 
 **Pattern:** every load-bearing framing in Karpathy's keynote
 maps to existing Zeta substrate. The convergence is high-density
-across multiple axes simultaneously. Aaron's *"they are
-starting to catch up"* is empirically supported by the
+across multiple axes simultaneously. Aaron's _"they are
+starting to catch up"_ is empirically supported by the
 mapping.
 
 ## Edge-runner discipline (Aaron 2026-05-02)
@@ -59,7 +59,7 @@ response is:
    convergence is high-signal validation. Substrate doesn't
    need to defend itself again. Note the convergence, advance.
 
-3. **Stay edge-positioned.** *"They are catching up"* implies
+3. **Stay edge-positioned.** _"They are catching up"_ implies
    Zeta is ahead. Continuing edge work is the just-landed
    cluster (amortized-speed Superfluid + larger-mechanizable-
    backlog + all-complexity-accidental + don't-ask-permission)
@@ -80,8 +80,8 @@ response is:
 
 ## Failure-mode signatures
 
-- **Symptom:** Saying *"the industry is moving toward X; we
-  should adopt X."*
+- **Symptom:** Saying _"the industry is moving toward X; we
+  should adopt X."_
   **Mechanism:** Treating industry-convergence as "we're
   behind" instead of "we're ahead and they're catching up."
   Anti-aligned with edge-runner identity.
@@ -110,19 +110,19 @@ response is:
 This memo lands in the same tick as 6 other rules. The cluster
 forms a coherent posture:
 
-- **Action hierarchy** — Karpathy's *"December clear point"*
+- **Action hierarchy** — Karpathy's _"December clear point"_
   IS a per-action-pick phase transition.
 - **Amortized-speed Superfluid phase transition** — 10x→>>10x
   ceiling Karpathy describes IS the phase transition.
 - **Cron mechanism unreliable** — operational discipline
   (no Karpathy connection but lands in same commit batch).
-- **Don't-ask-permission** — Karpathy's *"I just trusted the
-  system more and more"* validates the agent-trust posture.
-- **All-complexity-is-accidental** — *"that menu gen app
-  shouldn't exist"* is exactly the accidental-complexity
+- **Don't-ask-permission** — Karpathy's _"I just trusted the
+  system more and more"_ validates the agent-trust posture.
+- **All-complexity-is-accidental** — _"that menu gen app
+  shouldn't exist"_ is exactly the accidental-complexity
   posture applied at the deployed-app level.
-- **Largest-mechanizable-backlog-wins** — Karpathy's *"side
-  projects folder extremely full"* is the capacity-multiplier
+- **Largest-mechanizable-backlog-wins** — Karpathy's _"side
+  projects folder extremely full"_ is the capacity-multiplier
   behavior the principle predicts.
 
 The Karpathy memo + transcript serve as external-anchor

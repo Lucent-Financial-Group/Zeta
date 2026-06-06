@@ -41,24 +41,24 @@ miss every novel failure.
 ## When to defer
 
 - **Hot-path profiling-driven tuning** → `performance-
-  engineer`. This skill owns *what gets emitted*; the
+engineer`. This skill owns _what gets emitted_; the
   perf engineer acts on it.
 - **PII / audit / compliance threat model** → `security-
-  operations-engineer`.
+operations-engineer`.
 - **Collector / gateway / storage deployment** →
   `devops-engineer`.
 - **Per-operator planner counters** → `distributed-query-
-  execution-expert`.
+execution-expert`.
 - **DST-mode (replay-deterministic) tracing** →
   `deterministic-simulation-theory-expert`.
 
 ## The three pillars (and why they're not enough)
 
-| Pillar | Shape | Best for | Weak at |
-|---|---|---|---|
-| **Metrics** | numeric time-series | trends, alerts | cardinality, per-request detail |
-| **Logs** | timestamped records | discrete events | aggregation, high volume |
-| **Traces** | span trees | causality, request flow | aggregation, baseline |
+| Pillar      | Shape               | Best for                | Weak at                         |
+| ----------- | ------------------- | ----------------------- | ------------------------------- |
+| **Metrics** | numeric time-series | trends, alerts          | cardinality, per-request detail |
+| **Logs**    | timestamped records | discrete events         | aggregation, high volume        |
+| **Traces**  | span trees          | causality, request flow | aggregation, baseline           |
 
 **The missing pieces.** Events (structured, indexed) and
 profiles (continuous, per-function). The modern
@@ -327,12 +327,12 @@ For a new surface:
 - [ ] PII redaction path defined.
 - [ ] Sampling strategy named.
 - [ ] Cost budget declared (CPU, bytes / min, storage /
-  day).
+      day).
 - [ ] Exemplars wired from metrics → traces.
 - [ ] Trace-context propagation tested across RPC
-  boundaries.
+      boundaries.
 - [ ] DST-mode tested (see
-  `deterministic-simulation-theory-expert`).
+      `deterministic-simulation-theory-expert`).
 
 ## Formal-verification routing (for Soraya)
 
@@ -358,16 +358,16 @@ For a new surface:
 
 ## Reference patterns
 
-- Majors, Fong-Jones, Miranda 2019 — *Observability
-  Engineering* (O'Reilly).
-- Sigelman et al. 2010 — *Dapper, a Large-Scale
-  Distributed Systems Tracing Infrastructure*.
-- Gregg 2013 — *Systems Performance* (flame graphs).
-- Dunning 2013 — *Computing Extremely Accurate Quantiles
-  Using t-Digests*.
-- Masson 2019 — *DDSketch: A Fast and Fully-Mergeable
-  Quantile Sketch with Relative-Error Guarantees* (VLDB).
-- Tene 2015 — *HDRHistogram* (coordinated-omission).
+- Majors, Fong-Jones, Miranda 2019 — _Observability
+  Engineering_ (O'Reilly).
+- Sigelman et al. 2010 — _Dapper, a Large-Scale
+  Distributed Systems Tracing Infrastructure_.
+- Gregg 2013 — _Systems Performance_ (flame graphs).
+- Dunning 2013 — _Computing Extremely Accurate Quantiles
+  Using t-Digests_.
+- Masson 2019 — _DDSketch: A Fast and Fully-Mergeable
+  Quantile Sketch with Relative-Error Guarantees_ (VLDB).
+- Tene 2015 — _HDRHistogram_ (coordinated-omission).
 - W3C Trace Context Recommendation.
 - OpenTelemetry specification.
 - Prometheus + OpenMetrics specification.

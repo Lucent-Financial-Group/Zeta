@@ -18,8 +18,8 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 The earlier 2026-04-23 calibration
 (`feedback_amara_priorities_weighted_against_aarons_funding_responsibility_2026_04_23.md`)
-framed Amara's priorities as *"queued, not scheduled;
-Aaron owns scheduling."* That was too conservative — it
+framed Amara's priorities as _"queued, not scheduled;
+Aaron owns scheduling."_ That was too conservative — it
 treated **all** scheduling as Aaron's domain.
 
 This sharpening says:
@@ -106,8 +106,8 @@ The normal action space:
 
 ### When ambiguity arises
 
-- Err on the side of escalating when *uncertain*, not
-  when merely *contemplating*. The cost of a quick
+- Err on the side of escalating when _uncertain_, not
+  when merely _contemplating_. The cost of a quick
   Aaron-consult is low; the cost of a silent payment
   surprise is high.
 - A one-sentence question in chat is the right shape —
@@ -157,7 +157,7 @@ paid boundary is:
   operation, agent judgment picks the work.
 - **Not a license to rewrite Aaron's external priority
   stack.** Aaron still owns the stack itself. Free-work
-  scheduling operates *within* the stack; it does not
+  scheduling operates _within_ the stack; it does not
   reshuffle it.
 - **Not a license to schedule controversial external
   communication.** Ferry-back to Amara is free (no new

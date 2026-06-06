@@ -89,10 +89,7 @@ function extractRepoName(url: string): string {
   const lastSlash = url.lastIndexOf("/");
   if (lastSlash <= 0) return "unknown";
   const beforeLast = url.slice(0, lastSlash);
-  const sepIdx = Math.max(
-    beforeLast.lastIndexOf("/"),
-    beforeLast.lastIndexOf(":"),
-  );
+  const sepIdx = Math.max(beforeLast.lastIndexOf("/"), beforeLast.lastIndexOf(":"));
   if (sepIdx < 0) return "unknown";
   const captured = url.slice(sepIdx + 1);
   return captured.length > 0 ? captured : "unknown";

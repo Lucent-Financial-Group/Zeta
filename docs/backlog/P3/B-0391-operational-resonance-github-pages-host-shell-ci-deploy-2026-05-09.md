@@ -90,11 +90,11 @@ Expected: directory exists, workflow file present.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing GH Pages host for this
-  dashboard found. `frontend/` directory may have other surfaces;
-  check before creating conflicting structure. No existing
-  deploy workflow for the dashboard found in `.github/workflows/`.
+      dashboard found. `frontend/` directory may have other surfaces;
+      check before creating conflicting structure. No existing
+      deploy workflow for the dashboard found in `.github/workflows/`.
 - [x] Dependency-restructure: `depends_on: [B-0388]` — needs
-  locked name for title/slug. B-0394 depends on this shell.
+      locked name for title/slug. B-0394 depends on this shell.
 
 ## Composes with
 

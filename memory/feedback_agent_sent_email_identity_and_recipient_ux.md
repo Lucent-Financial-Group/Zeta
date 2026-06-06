@@ -4,17 +4,18 @@ description: Aaron 2026-04-20 standing policy. If agents are given an outbound e
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The rule** (Aaron 2026-04-20, offering to help wire up
 an email channel for agents):
 
-> *"LFG do you want me to help you make any progress so
+> _"LFG do you want me to help you make any progress so
 > you can email people, you won't be using my email, i
 > will want to make sure anyone yall email knows it's
 > coming from an agent and the project you are working
 > that that triggered the email and why you know so
 > they are not like WFH [WTF], everyting you send an
 > email you need to think about the userexperience of
-> the person recieving it?"*
+> the person recieving it?"_
 
 **Four hard rules any outbound email from this factory
 must satisfy:**
@@ -36,7 +37,7 @@ must satisfy:**
    footer.** The recipient knows within the first line
    of the email body (and ideally the `From:` display
    name) that the sender is an **agent**, not a human.
-   Not "AI-assisted", not "automated" — *agent* in the
+   Not "AI-assisted", not "automated" — _agent_ in the
    Zeta sense: see the "agents, not bots" clause in
    `CLAUDE.md`. The word "agent" is non-negotiable;
    Aaron's naming discipline does not call these
@@ -44,19 +45,19 @@ must satisfy:**
    must carry that discipline to the recipient.
 
 3. **Disclose the project and the trigger.** The email
-   names (a) *which project* the agent is working on
+   names (a) _which project_ the agent is working on
    (e.g., "Zeta — a pre-v1 F# library for incremental
-   view maintenance"), and (b) *why this recipient is
-   being contacted* (e.g., "you maintain Mathlib and I
+   view maintenance"), and (b) _why this recipient is
+   being contacted_ (e.g., "you maintain Mathlib and I
    am working on a proof of the chain rule for DBSP
    that we want to upstream"). No cold sends without
    both disclosures. The recipient should never have
    to ask "WTF is this and why am I getting it."
 
 4. **Compose recipient-UX-first.** Aaron's framing:
-   *"everything you send an email you need to think
+   _"everything you send an email you need to think
    about the userexperience of the person recieving
-   it."* This is not a soft ask — it's the primary
+   it."_ This is not a soft ask — it's the primary
    composition discipline. The agent writes the email
    by imagining the recipient reading it: Are they
    busy (assume yes)? Are they expecting us (assume
@@ -151,7 +152,7 @@ Critical elements:
 **Scope this policy covers:**
 
 - Cold outreach to upstream maintainers (Lean /
-  Mathlib community, Feldera team, F* team, Aspire
+  Mathlib community, Feldera team, F\* team, Aspire
   team, eslint / bun maintainers, etc.).
 - Invitation / pitch correspondence (Michael Best
   referral chain — see
@@ -201,8 +202,8 @@ outbound:**
   artefact (PR, ADR, research report, invitation)
   and cites it.
 - **Evasive subject lines.** `[Zeta] Quick question
-  about differential dataflow` beats `Hello, a
-  moment of your time?`. The subject line tells the
+about differential dataflow` beats `Hello, a
+moment of your time?`. The subject line tells the
   recipient whether to open now or later.
 - **Aggregated asks.** One email, one ask. If you
   have three questions, they are three emails to
@@ -213,7 +214,7 @@ outbound:**
   Project Agent. The `From:` name must not
   impersonate Aaron.
 - **Skipping the declining path.** Recipients who
-  cannot tell whether to reply will *both* not
+  cannot tell whether to reply will _both_ not
   reply and be left with a tiny unresolved obligation.
   That's a recipient-UX tax and it compounds.
 
@@ -294,9 +295,9 @@ Aaron can decide ROI before investing in infra):**
   — the honesty protocol that makes agent
   disclosure non-negotiable.
 - `project_michael_best_crypto_lawyer_vc_pitch_option.md`
-  + `project_aurora_pitch_michael_best_x402_erc8004.md`
-  — named external pitch channels that will
-  eventually use this capability.
+  - `project_aurora_pitch_michael_best_x402_erc8004.md`
+    — named external pitch channels that will
+    eventually use this capability.
 - `project_zero_human_code_all_content_agent_authored.md`
   — all repo content is agent-authored; extending
   that contract to outbound communication is the

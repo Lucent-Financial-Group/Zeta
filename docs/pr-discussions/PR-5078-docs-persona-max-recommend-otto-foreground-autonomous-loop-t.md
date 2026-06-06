@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-25: *"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."*
+Aaron 2026-05-25: _"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."_
 
 Recommends **Otto (Claude Code)** as Max's primary AI tool + documents the foreground autonomous-loop tick pattern so Max's AI sees the framing on cold-boot. The cron-loop substrate per `.claude/rules/tick-must-never-stop.md` is Claude-Code-native today; hooking Max into it lets him reuse the existing tick-by-tick bounded-wait substrate immediately.
 
@@ -48,6 +48,7 @@ Most tier-2 Docker Desktop substrate-engineering Max owns is bounded-wait work: 
 Updates Max’s persona onboarding docs to recommend using Otto (Claude Code) and to explain the factory’s foreground autonomous-loop tick pattern so Max can reuse the existing bounded-wait “install → wait → fix → push → wait” workflow substrate.
 
 **Changes:**
+
 - Added a new onboarding section describing Otto + the foreground autonomous-loop tick mechanics and how it helps with tier-2 work.
 - Updated Max’s persona guidance to recommend Otto as the primary AI tool and point to the new onboarding section.
 
@@ -55,10 +56,10 @@ Updates Max’s persona onboarding docs to recommend using Otto (Claude Code) an
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                 | Description                                                                                          |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------- |
 | memory/persona/max/STARTING-POINT.md | Adds an onboarding section explaining Otto + the autonomous-loop tick workflow and control surfaces. |
-| memory/persona/max/PERSONA.md | Adds a recommendation bullet for using Otto and links to the STARTING-POINT operational details. |
+| memory/persona/max/PERSONA.md        | Adds a recommendation bullet for using Otto and links to the STARTING-POINT operational details.     |
 
 ## Review threads
 

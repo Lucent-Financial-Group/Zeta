@@ -39,6 +39,6 @@ pr-triage-history.md.
 
 ## Log
 
-| date | agent | issue | shape | action | link | notes |
-|---|---|---|---|---|---|---|
-| 2026-04-22T (round-44 tick, bootstrap) | opus-4-7 / session round-44 | bootstrap | — | File bootstrapped alongside `docs/AGENT-PR-WORKFLOW.md`; first triage pass: `gh issue list --state open` returned empty (Zeta has zero open issues at time of bootstrap) | (this commit) | First entry in the log. Next expected entry: whenever the first issue is opened, or next round-close sweep — whichever comes first. |
+| date                                   | agent                       | issue     | shape | action                                                                                                                                                                   | link          | notes                                                                                                                               |
+| -------------------------------------- | --------------------------- | --------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-22T (round-44 tick, bootstrap) | opus-4-7 / session round-44 | bootstrap | —     | File bootstrapped alongside `docs/AGENT-PR-WORKFLOW.md`; first triage pass: `gh issue list --state open` returned empty (Zeta has zero open issues at time of bootstrap) | (this commit) | First entry in the log. Next expected entry: whenever the first issue is opened, or next round-close sweep — whichever comes first. |

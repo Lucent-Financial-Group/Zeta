@@ -7,12 +7,12 @@
 
 ## Summary
 
-| Category | Count |
-|---|---|
-| New feature candidates (toggles + headings) | 4 |
-| Removed elements | 0 |
-| Pages added to monitoring | 0 |
-| Pages removed from monitoring | 0 |
+| Category                                    | Count |
+| ------------------------------------------- | ----- |
+| New feature candidates (toggles + headings) | 4     |
+| Removed elements                            | 0     |
+| Pages added to monitoring                   | 0     |
+| Pages removed from monitoring               | 0     |
 
 ## Page-by-page diffs
 

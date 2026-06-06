@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2468 |
-| Title | fix(razor-cadence): index 2 new memory files + fix 3 truncated titles (2026-05-10 pass) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T11:01:42Z |
-| Merged at | 2026-05-10T11:07:48Z |
-| Merge commit SHA | `d55a37bc9fb1349603da0e2c2c4d36640afb8eeb` |
-| Branch | `fix/razor-cadence-2026-05-10` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2468 |
-| Changed files | 1 |
-| Additions / deletions | +6 / -4 |
+| Field                 | Value                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| Number                | 2468                                                                                    |
+| Title                 | fix(razor-cadence): index 2 new memory files + fix 3 truncated titles (2026-05-10 pass) |
+| Author                | `AceHack` (human)                                                                       |
+| State                 | MERGED                                                                                  |
+| Created at            | 2026-05-10T11:01:42Z                                                                    |
+| Merged at             | 2026-05-10T11:07:48Z                                                                    |
+| Merge commit SHA      | `d55a37bc9fb1349603da0e2c2c4d36640afb8eeb`                                              |
+| Branch                | `fix/razor-cadence-2026-05-10`                                                          |
+| Base branch           | `main`                                                                                  |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2468                                |
+| Changed files         | 1                                                                                       |
+| Additions / deletions | +6 / -4                                                                                 |
 
 ## Description
 
@@ -52,19 +52,19 @@ Rules added since last pass (2026-05-09): `dont-refuse-engagement.md`, `lost-fil
 
 Closes #2463
 
-operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding through failures + recoveries"
+operative-authorization: aaron 2026-05-04: "it\*\*, not just the output. Grinding through failures + recoveries"
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 3 |
-| Resolved threads | 3 |
-| Unresolved threads | 0 |
-| Total review comments | 3 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 3     |
+| Resolved threads                          | 3     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 3     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -80,9 +80,9 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Restore dropped link to hodl audit survey memory**
-
+  
   This edit removes the only `MEMORY.md` index entry for `feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md` while keeping only the separate `...hodl_invariants_13_properties...` document. These are distinct memory files (audit mechanization survey vs. architectural properties), so collapsing them makes the survey effectively undiscoverable from the canonical memory index and regresses traceability for the hodl mechanization work.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
@@ -98,7 +98,7 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   P1: The file `feedback_hodl_invariant_audit_mechanization_survey_13_properties_mapped_to_CI_and_upstream_contribution_candidates_aaron_2026_05_05.md` still exists under `memory/`, but its entry was removed from `memory/MEMORY.md` in this hunk. If it’s not intentionally deprecated, please re-add an index entry; if it’s truly superseded, delete/redirect the file so the index doesn’t silently orphan it.
-
+  
   </pre>
 
 ### Thread 3 -- resolved [collapsed]

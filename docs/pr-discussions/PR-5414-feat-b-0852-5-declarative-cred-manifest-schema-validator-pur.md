@@ -20,25 +20,25 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 B-0852 sub-row .5 — smallest pure-data substrate slice. Composes with B-0852.1 crypto module (PR #5411) as the data-shape layer to the cipher layer.
 
-Aaron 2026-05-27 discipline: *"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."* Adding a new credential type = manifest edit, NOT a code change.
+Aaron 2026-05-27 discipline: _"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."_ Adding a new credential type = manifest edit, NOT a code change.
 
 ## Files
 
-| File | Lines | Purpose |
-|---|---|---|
-| `tools/installer/zeta-creds-manifest.ts` | ~180 | `CredentialEntry` + `Manifest` types; `DEFAULT_MANIFEST`; `validateManifest()` |
-| `tools/installer/zeta-creds-manifest.test.ts` | ~200 | 21 acceptance tests |
+| File                                          | Lines | Purpose                                                                        |
+| --------------------------------------------- | ----- | ------------------------------------------------------------------------------ |
+| `tools/installer/zeta-creds-manifest.ts`      | ~180  | `CredentialEntry` + `Manifest` types; `DEFAULT_MANIFEST`; `validateManifest()` |
+| `tools/installer/zeta-creds-manifest.test.ts` | ~200  | 21 acceptance tests                                                            |
 
 ## DEFAULT_MANIFEST entries (6)
 
-| id | personaScoped | required | Purpose |
-|---|---|---|---|
-| gh-cli | false | true | `~/.config/gh/hosts.yml` (B-0847 may flip future) |
-| claude | true | true | `~/.config/claude/credentials.json` |
-| gemini | true | true | `~/.gemini/oauth_creds.json` |
-| codex | true | true | `~/.codex/auth.json` |
-| ssh-host-keys | false | false | Optional; regen on fresh OK |
-| ssh-operator-pubkey | false | true | iter-4.2 ESP-write channel compose |
+| id                  | personaScoped | required | Purpose                                           |
+| ------------------- | ------------- | -------- | ------------------------------------------------- |
+| gh-cli              | false         | true     | `~/.config/gh/hosts.yml` (B-0847 may flip future) |
+| claude              | true          | true     | `~/.config/claude/credentials.json`               |
+| gemini              | true          | true     | `~/.gemini/oauth_creds.json`                      |
+| codex               | true          | true     | `~/.codex/auth.json`                              |
+| ssh-host-keys       | false         | false    | Optional; regen on fresh OK                       |
+| ssh-operator-pubkey | false         | true     | iter-4.2 ESP-write channel compose                |
 
 ## Test output
 

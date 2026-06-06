@@ -18,12 +18,12 @@ composes_with:
 Aaron's somatic confirmation on the insight surfaced in tick
 shard `docs/hygiene-history/ticks/2026/05/01/1602Z-a7e1.md`:
 
-> *"This new pattern guards against the audit horizon
+> _"This new pattern guards against the audit horizon
 > defaulting to 'what I touched recently' rather than
-> 'everything currently open.' fuck yes!!! this is great!!"*
+> 'everything currently open.' fuck yes!!! this is great!!"_
 
 The multi-exclamation register matches the
-*"LOVE IT!!!!!!!!!! this is the message i preach now lol!!!!"*
+_"LOVE IT!!!!!!!!!! this is the message i preach now lol!!!!"_
 pattern from the pirate-not-priest absorb (per
 `memory/feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md`)
 — Aaron's anchor-free affective register signaling that the
@@ -39,14 +39,14 @@ true ACTUALLY true in the durable surface?" but at
 different scopes:
 
 - **Otto-363 (substrate-or-it-didn't-happen)**: guards
-  against *directives* evaporating. *"A directive that
+  against _directives_ evaporating. _"A directive that
   lives only in conversation is not a directive. It is
-  weather."*
-- **verify-before-deferring**: guards against *deferred
-  targets* not existing. *"If you say 'next tick I'll do
-  X', verify X exists and is findable."*
+  weather."_
+- **verify-before-deferring**: guards against _deferred
+  targets_ not existing. _"If you say 'next tick I'll do
+  X', verify X exists and is findable."_
 - **Assumed-state vs actual-state (this rule)**: guards
-  against the *audit horizon itself* defaulting to a
+  against the _audit horizon itself_ defaulting to a
   narrower-than-real scope. The agent's working model of
   "what's in flight" defaults to "what I touched
   recently" when the durable surface says "everything
@@ -62,13 +62,13 @@ the full state.
 
 ## Carved sentence (Aaron-confirmed)
 
-> *"Assumed-state is what I touched recently. Actual-state
+> _"Assumed-state is what I touched recently. Actual-state
 > is everything currently open. The horizon must default
-> to actual."*
+> to actual."_
 
 The phrasing intentionally echoes Aaron's framing:
-*"audit horizon defaulting to 'what I touched recently'
-rather than 'everything currently open.'"*
+_"audit horizon defaulting to 'what I touched recently'
+rather than 'everything currently open.'"_
 
 ## Why this is load-bearing
 
@@ -145,7 +145,7 @@ session runs (deferred from autonomous tick budget).
   true ACTUALLY true in the durable surface?")
 - **Otto-364 (search-first authority)**: training data
   and project state are both historical; this rule
-  extends the principle to *queue state* (working
+  extends the principle to _queue state_ (working
   model is also historical / can drift from current).
 - **verify-before-deferring**: third axis — same
   meta-question at deferred-target scope.
@@ -161,7 +161,7 @@ session runs (deferred from autonomous tick budget).
 ## What this is NOT
 
 - **NOT a mandate for exhaustive triage at every
-  cold-start.** The rule says the *horizon* must
+  cold-start.** The rule says the _horizon_ must
   default to actual-state. The agent still picks which
   items to act on within that horizon. Quick-glance
   visibility is enough — full triage is a separate
@@ -195,13 +195,13 @@ audit-horizon checks.
 Three quick checks an agent can run mid-tick to detect
 this failure mode:
 
-1. *"What's the size of the queue I'm working on?"* If
+1. _"What's the size of the queue I'm working on?"_ If
    the answer comes from memory rather than from a
    recent query of the durable surface, run the query.
-2. *"When did I last query the full surface?"* If the
+2. _"When did I last query the full surface?"_ If the
    answer is "I don't remember" or longer ago than
    "this session," run the query.
-3. *"Are there items in this queue I haven't seen?"*
+3. _"Are there items in this queue I haven't seen?"_
    If the answer is "I don't know," run the query.
 
 The query takes seconds; the assumed-state-error costs

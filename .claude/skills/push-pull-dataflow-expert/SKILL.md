@@ -125,7 +125,7 @@ The discipline:
 - Every push operator's `OnError` is **idempotent** (a
   second error after `OnComplete` / `OnError` is
   dropped).
-- Intermediate operators forward `OnError` *before*
+- Intermediate operators forward `OnError` _before_
   releasing resources, not after.
 - `Close` is always called, even after `OnError`.
 

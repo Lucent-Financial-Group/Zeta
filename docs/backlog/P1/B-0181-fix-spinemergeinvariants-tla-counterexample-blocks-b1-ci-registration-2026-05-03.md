@@ -9,8 +9,26 @@ ask: Otto 2026-05-03 verify-then-claim sweep (#1397) — running TLC on `SpineMe
 created: 2026-05-03
 last_updated: 2026-05-03
 depends_on: []
-composes_with: [docs/research/2026-05-03-math-proofs-honest-assessment.md, docs/research/proof-tool-coverage.md, B-0179, B-0180, B-0184]
-tags: [tla-plus, formal-verification, spine-merge, balanced-spine, counterexample, b1, math-proofs-assessment, verify-then-claim, closed]
+composes_with:
+  [
+    docs/research/2026-05-03-math-proofs-honest-assessment.md,
+    docs/research/proof-tool-coverage.md,
+    B-0179,
+    B-0180,
+    B-0184,
+  ]
+tags:
+  [
+    tla-plus,
+    formal-verification,
+    spine-merge,
+    balanced-spine,
+    counterexample,
+    b1,
+    math-proofs-assessment,
+    verify-then-claim,
+    closed,
+  ]
 ---
 
 # Fix SpineMergeInvariants.tla counterexample
@@ -31,15 +49,15 @@ TLC dumps a trace file when it finds an invariant violation. The depth-17 termin
 
 The TTrace dump at the depth-16 state showed `levels[1] = 10 > 2*Cap(1) = 8` after a Cascade(0)→Cascade(0)→Cascade(0)→Cascade(0)→Cascade(0) sequence with no Cascade(1) ever firing. Failure-class triage found:
 
-- **Not a spec-models-protocol-incorrectly bug**: the `Cascade(i)` action's *primary effect* (move levels[i] to levels[i+1]) is correct
-- **Not invariant over-specification**: `InvCap` (each level ≤ 2*Cap) is the right safety property — BalancedSpine.fs maintains it in production
+- **Not a spec-models-protocol-incorrectly bug**: the `Cascade(i)` action's _primary effect_ (move levels[i] to levels[i+1]) is correct
+- **Not invariant over-specification**: `InvCap` (each level ≤ 2\*Cap) is the right safety property — BalancedSpine.fs maintains it in production
 - **Not real-bug-found in BalancedSpine.fs**: production code performs synchronous cascades — if level i+1 is full, level i must wait for i+1 to drain before dumping; the spec's `Cascade(i)` action lacked this neighboring-state precondition
 
 The fix (below) adds the missing precondition so the spec correctly models BalancedSpine.fs's synchronous cascade chain.
 
 ## Why P1 (after investigation)
 
-Failure class: **spec under-specification**, not real BalancedSpine.fs bug. The original `Cascade(i)` action checked only `levels[i] >= Cap(i)` — it could fire with no constraint on level i+1, even when level i+1 was already at the cap-overshoot boundary. Real LSM cascades chain synchronously: if level i+1 is full, level i+1 must drain first before level i can dump. The spec failed to model this constraint, allowing TLC to find a 16-step trace where Cascade(0) fires 5 times in a row, accumulating level 1 to 10 > 2*Cap(1) = 8.
+Failure class: **spec under-specification**, not real BalancedSpine.fs bug. The original `Cascade(i)` action checked only `levels[i] >= Cap(i)` — it could fire with no constraint on level i+1, even when level i+1 was already at the cap-overshoot boundary. Real LSM cascades chain synchronously: if level i+1 is full, level i+1 must drain first before level i can dump. The spec failed to model this constraint, allowing TLC to find a 16-step trace where Cascade(0) fires 5 times in a row, accumulating level 1 to 10 > 2\*Cap(1) = 8.
 
 Promoted P2 → P1 because the same spec-pattern (under-specified action with insufficient preconditions) was found in B-0184 (Spine.als) — same author-time class, two-tool surface.
 

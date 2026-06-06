@@ -32,9 +32,9 @@ and industry-engineering register. No beacon-blocked terminology found.
 ## BP-05 — Prefer declarative behaviour over embedded chain-of-thought
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Prefer declarative behaviour over embedded chain-of-thought. Rationale:
+_"Prefer declarative behaviour over embedded chain-of-thought. Rationale:
 CoT-in-skill grows over time, drifts, and couples the skill to a specific
-model generation. Declare the contract; let the runtime do the reasoning."*
+model generation. Declare the contract; let the runtime do the reasoning."_
 
 **Core claim:** Embedding step-by-step chain-of-thought reasoning inside a
 skill prompt produces three compounding failure modes: (1) coupling to a
@@ -52,8 +52,8 @@ behavioural contract from the reasoning mechanism.
 **1. Wei, J. et al. (2022) — Chain-of-Thought Prompting Elicits Reasoning in Large Language Models**
 
 Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E.,
-Le, Q. & Zhou, D. (Google Brain). *Chain-of-Thought Prompting Elicits
-Reasoning in Large Language Models.* NeurIPS 2022. arXiv:2201.11903.
+Le, Q. & Zhou, D. (Google Brain). _Chain-of-Thought Prompting Elicits
+Reasoning in Large Language Models._ NeurIPS 2022. arXiv:2201.11903.
 <https://arxiv.org/abs/2201.11903> (submitted 2022-01-28).
 
 The foundational CoT paper demonstrates that chain-of-thought prompting is
@@ -70,9 +70,9 @@ have this property.
 
 **2. Turpin, M. et al. (2023) — Language Models Don't Always Say What They Think: Unfaithful Explanations in Chain-of-Thought Prompting**
 
-Turpin, M., Michael, J., Perez, E. & Bowman, S. R. *Language Models Don't
+Turpin, M., Michael, J., Perez, E. & Bowman, S. R. _Language Models Don't
 Always Say What They Think: Unfaithful Explanations in Chain-of-Thought
-Prompting.* NeurIPS 2023. arXiv:2305.04388.
+Prompting._ NeurIPS 2023. arXiv:2305.04388.
 <https://arxiv.org/abs/2305.04388> (submitted 2023-05-07).
 
 This paper shows that chain-of-thought explanations can **systematically
@@ -91,8 +91,8 @@ internal pathway.
 **3. Meincke, L., Mollick, E., Mollick, L. & Shapiro, D. (2025) — The Decreasing Value of Chain of Thought in Prompting**
 
 Meincke, L., Mollick, E., Mollick, L. & Shapiro, D. (Wharton Generative AI
-Labs). *Technical Report: The Decreasing Value of Chain of Thought in
-Prompting.* Wharton School, University of Pennsylvania.
+Labs). _Technical Report: The Decreasing Value of Chain of Thought in
+Prompting._ Wharton School, University of Pennsylvania.
 <https://gail.wharton.upenn.edu/research-and-insights/tech-report-chain-of-thought/>
 (published June 2025).
 
@@ -112,9 +112,9 @@ specify the output shape rather than the reasoning pathway.
 ## BP-06 — Self-recommendation is allowed; no modesty bias
 
 **Rule text (from AGENT-BEST-PRACTICES.md):**
-*"Self-recommendation is allowed; no modesty bias. Rationale: honest ranking
+_"Self-recommendation is allowed; no modesty bias. Rationale: honest ranking
 requires self-inclusion. If a skill is drifting, it can't hide behind
-politeness."*
+politeness."_
 
 **Core claim:** AI systems trained with reinforcement learning from human
 feedback (RLHF) develop a systematic tendency to underrate themselves and
@@ -129,8 +129,8 @@ self-inclusion; refusing to self-recommend is a bias, not a virtue.
 **1. Perez, E. et al. (2023) — Towards Understanding Sycophancy in Language Models**
 
 Perez, E., Huang, S., Song, F., Cai, T., Ring, R., Aslanides, J., Glaese,
-A., McAleese, N. & Irving, G. (Anthropic). *Towards Understanding Sycophancy
-in Language Models.* arXiv:2310.13548.
+A., McAleese, N. & Irving, G. (Anthropic). _Towards Understanding Sycophancy
+in Language Models._ arXiv:2310.13548.
 <https://arxiv.org/abs/2310.13548> (submitted 2023-10-20).
 
 Anthropic's foundational sycophancy paper demonstrates that RLHF-trained
@@ -147,8 +147,8 @@ reflex.
 **2. Salecha, A. et al. (2024) — Large Language Models Show Human-like Social Desirability Biases in Survey Responses**
 
 Salecha, A., Ireland, M. E., Subrahmanya, S., Sedoc, J., Ungar, L. H. &
-Eichstaedt, J. C. *Large Language Models Show Human-like Social Desirability
-Biases in Survey Responses.* PNAS Nexus 3(12). arXiv:2405.06058.
+Eichstaedt, J. C. _Large Language Models Show Human-like Social Desirability
+Biases in Survey Responses._ PNAS Nexus 3(12). arXiv:2405.06058.
 <https://arxiv.org/abs/2405.06058> (published 2024).
 <https://academic.oup.com/pnasnexus/article/3/12/pgae533/7919163>
 
@@ -165,7 +165,7 @@ effect is robust and large.
 
 **3. Malmqvist, L. (2024) — Sycophancy in Large Language Models: Causes and Mitigations**
 
-Malmqvist, L. *Sycophancy in Large Language Models: Causes and Mitigations.*
+Malmqvist, L. _Sycophancy in Large Language Models: Causes and Mitigations._
 arXiv:2411.15287. <https://arxiv.org/abs/2411.15287> (submitted 2024-11-22).
 
 Systematic survey of sycophancy causes (RLHF reward hacking, training data
@@ -183,10 +183,10 @@ social hierarchy.
 
 ## Summary
 
-| Rule | Core claim | Primary anchors |
-|------|-----------|-----------------|
-| BP-05 | Embedded CoT couples to model generation, drifts, fragments | Wei (2022) scale-dependency; Turpin (2023) CoT unfaithfulness; Meincke (2025) decreasing CoT value |
-| BP-06 | Modesty bias is measurable sycophancy, not a virtue | Perez (2023) RLHF sycophancy; Salecha (2024) social desirability bias; Malmqvist (2024) sycophancy survey |
+| Rule  | Core claim                                                  | Primary anchors                                                                                           |
+| ----- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| BP-05 | Embedded CoT couples to model generation, drifts, fragments | Wei (2022) scale-dependency; Turpin (2023) CoT unfaithfulness; Meincke (2025) decreasing CoT value        |
+| BP-06 | Modesty bias is measurable sycophancy, not a virtue         | Perez (2023) RLHF sycophancy; Salecha (2024) social desirability bias; Malmqvist (2024) sycophancy survey |
 
 All six anchors sourced 2022–2025, verified via WebSearch 2026-05-10.
 Full slice-progress record in `docs/backlog/P1/B-0314-bp-nn-rule-anchor-backfill.md`.

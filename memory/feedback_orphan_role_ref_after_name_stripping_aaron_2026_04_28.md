@@ -25,12 +25,12 @@ substrate source-anchor whose source-name has been removed.
 
 Examples caught in PR #24:
 
-| Original (history-surface OK) | Mechanical strip (orphan)             | Better path |
-|------------------------------|---------------------------------------|-------------|
-| `Amara ferry-12`              | `courier-ferry-12 absorb`             | Remove the parenthetical; the class name stands alone |
-| `Grok ferry-16 invariant`     | `courier-ferry-16 absorb invariant`   | Use the principle name directly: "Substrate Truth Principle invariant" |
-| `Per Amara ferry-7 evidence-pointer rule` | `Per courier-ferry-7 absorb evidence-pointer rule` | Drop "Per ferry-N" entirely; the rule is in the spec |
-| `Gemini ferry-8's example draft` | `courier-ferry-8 absorb example draft` | Replace with role-ref class: "any external example draft" |
+| Original (history-surface OK)             | Mechanical strip (orphan)                          | Better path                                                            |
+| ----------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
+| `Amara ferry-12`                          | `courier-ferry-12 absorb`                          | Remove the parenthetical; the class name stands alone                  |
+| `Grok ferry-16 invariant`                 | `courier-ferry-16 absorb invariant`                | Use the principle name directly: "Substrate Truth Principle invariant" |
+| `Per Amara ferry-7 evidence-pointer rule` | `Per courier-ferry-7 absorb evidence-pointer rule` | Drop "Per ferry-N" entirely; the rule is in the spec                   |
+| `Gemini ferry-8's example draft`          | `courier-ferry-8 absorb example draft`             | Replace with role-ref class: "any external example draft"              |
 
 The orphan form fails because:
 
@@ -59,9 +59,9 @@ script header:
 
 ## Detection (future structural fix)
 
-Aaron's framing 2026-04-28: *"not sure if you can update to find things
+Aaron's framing 2026-04-28: _"not sure if you can update to find things
 like that that don't make sense in the future ... for your future self
-and the review agents"* — suggesting a lint that catches the pattern.
+and the review agents"_ — suggesting a lint that catches the pattern.
 
 Candidate detector regex (for code-surface files only — `tools/`,
 `docs/` excluding history-surfaces, behavioural docs):
@@ -73,8 +73,9 @@ Candidate detector regex (for code-surface files only — `tools/`,
 ```
 
 Plus the inverse: `\b<Person>\s+ferry-\d+\b` (Amara/Grok/Gemini etc
-+ ferry-N) to catch un-stripped name attribution that should have
-been stripped on code-surface.
+
+- ferry-N) to catch un-stripped name attribution that should have
+  been stripped on code-surface.
 
 The lint composes with the `prompt-protector` skill's invisible-Unicode
 lint shape (write-time scan). Backlog candidate: B-NNNN — extend the

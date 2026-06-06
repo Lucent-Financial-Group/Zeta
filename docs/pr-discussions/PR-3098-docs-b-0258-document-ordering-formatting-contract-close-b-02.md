@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 - Closes B-0258 (MEMORY.md index generator implementation, P1)
 - The generator itself was already shipped under B-0423 (`tools/memory/reindex-memory-md.ts`, PR #3004, merged 2026-05-13)
-- The last open AC was *"Ordering and formatting are documented"*
+- The last open AC was _"Ordering and formatting are documented"_
 
 ## Changes
 
@@ -45,24 +45,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T05:09:02Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `d77e288067`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -78,7 +76,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-14T05:09:02Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix tie-break ordering claim in reindexer contract docs**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix tie-break ordering claim in reindexer contract docs**
 
 The new ordering contract says same-date ties are broken by lexicographic filename order, but `collectEntries` only sorts by `date` (`entries.sort((a, b) => b.date.localeCompare(a.date))`) and does not apply a filename comparator. In practice this leaves tie order dependent on `readdir` input order, so the documented guarantee is stronger than the implementation and can mislead anyone relying on reproducible ordering across environments.
 

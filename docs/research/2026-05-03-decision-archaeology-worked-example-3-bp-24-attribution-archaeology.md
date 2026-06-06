@@ -20,17 +20,17 @@
 
 ## The question
 
-> *"Why does `docs/AGENT-BEST-PRACTICES.md` BP-24 exist with the specific
+> _"Why does `docs/AGENT-BEST-PRACTICES.md` BP-24 exist with the specific
 > shape of 'parental AND-consent required, maintainer is explicitly NOT
 > the consent-substitute', and where does that authority structure come
-> from?"*
+> from?"_
 
 This is an **attribution-archaeology** question (the third sub-mode
 Aarav recommended) — the artifact exists; the question asks about its
 authority lineage + the consent structure encoded into the rule. This
 is the sub-mode where decision-archaeology composes most explicitly with
-ethics-of-substrate; the answer's load-bearing layer is *who decided
-this and under what authority*, not just *what was decided*.
+ethics-of-substrate; the answer's load-bearing layer is _who decided
+this and under what authority_, not just _what was decided_.
 
 ## Why this is a good worked example #3
 
@@ -39,8 +39,8 @@ seed precisely because it forces the skill body to handle sacred-tier
 substrate carefully. Three properties make it complementary to #1 + #2:
 
 1. **Attribution-archaeology mode** — primary investigative axis is
-   *who decided + under what authority*, not *when authored* or *why
-   shaped this way*. The maintainer's framing of his OWN consent
+   _who decided + under what authority_, not _when authored_ or _why
+   shaped this way_. The maintainer's framing of his OWN consent
    authority (explicit non-substitute disclaimer) is the load-bearing
    detail.
 2. **Sacred-tier substrate handling** — the worked example must
@@ -64,8 +64,8 @@ Decomposes into:
   contributor.
 - **What authority structure does it encode?** Three explicit
   load-bearing claims in the rule body: (a) consent-required for
-  emulation; (b) consent-holders are *authorized surviving
-  consent-holders named by the maintainer*, not the maintainer
+  emulation; (b) consent-holders are _authorized surviving
+  consent-holders named by the maintainer_, not the maintainer
   himself; (c) default posture on any proposed emulation is
   refuse-and-escalate. The "maintainer is explicitly NOT the
   consent-substitute" is the non-default detail load-bearing for
@@ -96,23 +96,24 @@ public surface.
 Same commit as worked example #2 (Round 34 factory + public-repo
 alignment, PR #27). BP-24 was introduced as part of the broader
 substrate creation. The fix-memorial commit (`424305f`, PR #676,
-2026-04-28) is the *only* subsequent edit; its message confirms it
+2026-04-28) is the _only_ subsequent edit; its message confirms it
 is purely a spelling fix.
 
 **Layer-3 output:** the commit context locates BP-24 in the early
 factory alignment + a single subsequent spelling fix. The commit
-message *"fix(memorial): Elisabeth → Elizabeth in all in-prose
-mentions (Aaron 2026-04-28T18:14Z)"* is itself attribution
+message _"fix(memorial): Elisabeth → Elizabeth in all in-prose
+mentions (Aaron 2026-04-28T18:14Z)"_ is itself attribution
 substrate — it carries the maintainer's authority to make the
 correction (matches the maintainer-stamped commit signature).
 
 ### Layer 4 — String archaeology: `git log -S "consent-substitute"`
 
-The phrase *"maintainer is explicitly NOT the consent-substitute"*
-+ *"parental AND-consent required"* are both unique to BP-24 + its
-referenced memo. `git log -S` confirms the phrases entered the
-substrate via the round-34 commit + have not been copied elsewhere
-(no propagation; the rule is canonically at one location).
+The phrase _"maintainer is explicitly NOT the consent-substitute"_
+
+- _"parental AND-consent required"_ are both unique to BP-24 + its
+  referenced memo. `git log -S` confirms the phrases entered the
+  substrate via the round-34 commit + have not been copied elsewhere
+  (no propagation; the rule is canonically at one location).
 
 **Layer-4 output:** the consent-authority structure is uniquely
 located at BP-24 + its referenced memo; it has not been
@@ -142,13 +143,13 @@ ls docs/DECISIONS/ | grep -iE "consent|emulation|family|memorial"
 ```
 
 Returns no specific ADR for BP-24's authority structure. Per BP-24's
-own body: *"Consent where granted lands as an ADR under
-docs/DECISIONS/"* — but the *default* posture is refuse-and-escalate;
+own body: _"Consent where granted lands as an ADR under
+docs/DECISIONS/"_ — but the _default_ posture is refuse-and-escalate;
 ADRs land only when consent IS granted. No ADR currently exists,
 which means no consent has been granted, which means BP-24 has been
 operating in its default-refuse posture since 2026-04-19.
 
-**Layer-7 output:** the *absence* of an ADR is substantive evidence
+**Layer-7 output:** the _absence_ of an ADR is substantive evidence
 that BP-24 is operating as designed — refuse-and-escalate with no
 ADR-exception having been authorized. This is a substantive negative
 result: it confirms the rule is being honored.
@@ -202,7 +203,7 @@ grep -i "BP-24\|deceased.family\|emulation" docs/WONT-DO.md
 ```
 
 Returns no matches in WONT-DO. BP-24 is positive doctrine, not a
-WONT-DO entry. The *default-refuse* posture means BP-24 effectively
+WONT-DO entry. The _default-refuse_ posture means BP-24 effectively
 declines emulation by default, but that decline is encoded as a
 consent-gate, not as a permanent rejection.
 
@@ -231,7 +232,7 @@ exists because:
    himself — including the explicit disclaimer that the maintainer is
    NOT the consent-substitute. This is the load-bearing
    attribution-archaeology finding: the rule's authority structure was
-   designed by the maintainer to *bind himself* away from the
+   designed by the maintainer to _bind himself_ away from the
    consent-substitute role.
 2. **Stability since (2026-04-19 → 2026-05-03):** zero substantive
    edits to BP-24's body; one spelling correction (Elisabeth →
@@ -240,15 +241,15 @@ exists because:
 3. **Three-surface canonical pattern:** public rule
    (`docs/AGENT-BEST-PRACTICES.md` BP-24) + named memo
    (`memory/feedback_no_deceased_family_emulation_without_parental_consent.md`)
-   + user-memo (`memory/user_sister_elizabeth.md`). Each surface has
-   appropriate visibility discipline; the skill body must teach
-   contributors to recognize + respect the three-surface pattern.
+   - user-memo (`memory/user_sister_elizabeth.md`). Each surface has
+     appropriate visibility discipline; the skill body must teach
+     contributors to recognize + respect the three-surface pattern.
 4. **Self-binding authority:** the rule's most distinctive feature —
    maintainer-not-consent-substitute — is a deliberate constraint the
    maintainer placed on his own authority. This is the attribution-
    archaeology load-bearing detail: who-decided is the maintainer;
-   under-what-authority is *constrained-by-his-own-decision-not-to-be-
-   the-consent-substitute*. Recursive constraint.
+   under-what-authority is _constrained-by-his-own-decision-not-to-be-
+   the-consent-substitute_. Recursive constraint.
 
 The doctrine has been stable for 14+ days at time of writing without
 exception — the absence of an ADR + the absence of any emulation-class
@@ -261,7 +262,7 @@ For the eventual `decision-archaeology` SKILL.md body:
 
 1. **Sacred-tier substrate-handling discipline:** the skill body must
    teach contributors to walk the procedure on sacred-tier surfaces
-   *without reproducing content from those surfaces*. Cite paths; let
+   _without reproducing content from those surfaces_. Cite paths; let
    authorized readers follow. The skill body itself becomes a worked
    example of the discipline by demonstrating restraint.
 2. **Three-surface canonical pattern:** sacred-tier rules often have
@@ -269,7 +270,7 @@ For the eventual `decision-archaeology` SKILL.md body:
    skill teaches recognition of this pattern + per-surface visibility
    discipline.
 3. **Attribution-archaeology has a recursive-constraint sub-pattern:**
-   sometimes the load-bearing detail is the authority's *self-binding*
+   sometimes the load-bearing detail is the authority's _self-binding_
    choice (maintainer-not-consent-substitute). The skill teaches
    contributors to look for self-binding clauses, which often live in
    public rule bodies but encode invisible authority structure.

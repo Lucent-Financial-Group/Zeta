@@ -10,7 +10,7 @@ loop-b:
   model: "gpt-5.5"
   harness: codex
 topic: "EXAMPLE — docs/hygiene-history/divergences/README.md schema demonstration"
-operative-authorization: "aaron 2026-05-04: \"it**, not just the output. Grinding through failures + recoveries\""
+operative-authorization: 'aaron 2026-05-04: "it**, not just the output. Grinding through failures + recoveries"'
 ---
 
 <!-- THIS IS AN EXAMPLE SHARD ONLY — illustrates the schema, not a real divergence -->

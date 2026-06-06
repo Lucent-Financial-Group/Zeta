@@ -24,14 +24,14 @@ exact counts are intentionally approximate because they drift as
 the migration proceeds. Aaron caught this 2026-04-28 when a new row landed
 in the monolith instead of as a per-row file:
 
-> *"docs/BACKLOG.md we had split this into multiple how did it
-> get back to one?"*
+> _"docs/BACKLOG.md we had split this into multiple how did it
+> get back to one?"_
 
 Follow-up:
 
-> *"don't miss anyting make sure it's all accounted for, and
+> _"don't miss anyting make sure it's all accounted for, and
 > make sure not BACKLOG.md residue is left over in the substrate
-> for next you."*
+> for next you."_
 
 ## Why
 

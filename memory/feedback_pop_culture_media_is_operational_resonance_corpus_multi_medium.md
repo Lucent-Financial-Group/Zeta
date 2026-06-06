@@ -11,22 +11,22 @@ landed those, Aaron fired a twelve-message sweep (initially
 mis-parsed by me as "why [do these] files [exist] —
 conspiracy theory — backlog — Chronovisor"):
 
-1. *"why files conspicary theory backlog cronovisor"*
-2. *"no there is a youtube channel Why Files and a Tv show
-   called Dev"* (correcting my misparse)
-3. *"And a comedy call future man"*
-4. *"backlog hollywood bollywood inde, music information
-   backlog"*
-5. *"a game called broken age and game information backlog"*
-6. *"dr who information backlog"*
-7. *"montey python and friends tv shows backlog"*
-8. *"Brütal Legend all FF starting with 6 and 7 and expand
-   and this is just higher than the rest of the games"*
-9. *"space balls backlog the naked gun backlog"*
-10. *"zelda and mario of course backlog"*
-11. *"genshin impact information"*
-12. *"enulators backlog can do lots of fun experiments here
-    too i have all the roms"* + *"grey ^ here"*
+1. _"why files conspicary theory backlog cronovisor"_
+2. _"no there is a youtube channel Why Files and a Tv show
+   called Dev"_ (correcting my misparse)
+3. _"And a comedy call future man"_
+4. _"backlog hollywood bollywood inde, music information
+   backlog"_
+5. _"a game called broken age and game information backlog"_
+6. _"dr who information backlog"_
+7. _"montey python and friends tv shows backlog"_
+8. _"Brütal Legend all FF starting with 6 and 7 and expand
+   and this is just higher than the rest of the games"_
+9. _"space balls backlog the naked gun backlog"_
+10. _"zelda and mario of course backlog"_
+11. _"genshin impact information"_
+12. _"enulators backlog can do lots of fun experiments here
+    too i have all the roms"_ + _"grey ^ here"_
 
 ## Rule
 
@@ -129,7 +129,7 @@ bearing even if not architecturally load-bearing.
 - **Not a replacement for F1 engineering-first
   discipline.** Media instances are posterior-bump
   evidence, not primary criteria. If a substrate claim
-  is reached-for *from* a film / game / show rather than
+  is reached-for _from_ a film / game / show rather than
   from the factory's operational work, it fails F1 and
   is logged as failed-candidate.
 - **Not a license to sweep adversarial-injection corpora.**

@@ -32,8 +32,7 @@ standardization round (2016-2024): **lattice-based**,
 - **Isogeny-based** (SIKE) collapsed in 2022 (Castryck-Decru);
   not trusted.
 
-Lattice-based is the mainline choice for new systems in
-2026. Composes with Aaron's security credentials (nation-state
+Lattice-based is the mainline choice for new systems in 2026. Composes with Aaron's security credentials (nation-state
 threat model — `user_security_credentials.md` — demands
 post-quantum by default).
 
@@ -101,15 +100,15 @@ privacy-preserving oracle inference without identity leakage.
 
 ## Composition with the lens-oracle / seed stack
 
-| Layer | Role of lattice-crypto |
-|---|---|
-| Seed (meme-scale) | Seed says nothing about crypto; seed ops may be proved secure against lattice assumptions |
-| Kernel (E8) | Kernel structure may be audited; lattice crypto sits orthogonal as auth |
-| Glossary | Glossary entries for identity + consent terms |
-| Lens definitions | Lens authors sign with Dilithium; lens consumers verify |
-| Oracle queries | Queries signed; responses signed; FHE when privacy required |
-| Derivation provenance | Each derivation step signed — W3C PROV entries carry Dilithium signatures |
-| Plot-hole-detector | Identity-scope plot-holes are a DETECTABLE class — creator identity ≠ consumer identity is a plot-hole in role-scoped tooling per `feedback_creator_vs_consumer_tool_scope.md` |
+| Layer                 | Role of lattice-crypto                                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Seed (meme-scale)     | Seed says nothing about crypto; seed ops may be proved secure against lattice assumptions                                                                                      |
+| Kernel (E8)           | Kernel structure may be audited; lattice crypto sits orthogonal as auth                                                                                                        |
+| Glossary              | Glossary entries for identity + consent terms                                                                                                                                  |
+| Lens definitions      | Lens authors sign with Dilithium; lens consumers verify                                                                                                                        |
+| Oracle queries        | Queries signed; responses signed; FHE when privacy required                                                                                                                    |
+| Derivation provenance | Each derivation step signed — W3C PROV entries carry Dilithium signatures                                                                                                      |
+| Plot-hole-detector    | Identity-scope plot-holes are a DETECTABLE class — creator identity ≠ consumer identity is a plot-hole in role-scoped tooling per `feedback_creator_vs_consumer_tool_scope.md` |
 
 ## Retraction-native fit
 

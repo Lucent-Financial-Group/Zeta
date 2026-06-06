@@ -143,7 +143,10 @@ export async function runWorkItemThroughHermes(
     evidenceRefs: request.evidenceRefs,
   });
   if (completed.outcome === "feedback") {
-    return { outcome: "feedback", feedback: { reason: completed.feedback.reason, message: completed.feedback.message } };
+    return {
+      outcome: "feedback",
+      feedback: { reason: completed.feedback.reason, message: completed.feedback.message },
+    };
   }
 
   return { outcome: "ok", run: completed.run, recalledCount, retained };

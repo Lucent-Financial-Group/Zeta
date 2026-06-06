@@ -8,7 +8,7 @@ Carved sentence:
 > is acceptable substitute (multi-oracle authorization at force-push
 > scope). Starter list of acceptable autonomous situations carried
 > below; extended empirically as evidence accumulates. `git push
-> --force` (without `--with-lease`) remains Rule-0-prohibited under
+--force` (without `--with-lease`) remains Rule-0-prohibited under
 > any authorization scope.
 
 ## Operational content
@@ -16,18 +16,18 @@ Carved sentence:
 Per operator 2026-05-27 substrate-honest calibration of the autonomous-
 loop discipline:
 
-> *"WAIT for explicit operator confirm; never act on this autonomously
+> _"WAIT for explicit operator confirm; never act on this autonomously
 > there are certain sistuaion where force push lease is acceptable
 > without operator but we should start making a list also if you run
-> it by a 2nd agent that's enough too"*
+> it by a 2nd agent that's enough too"_
 
 Force-push-with-lease has three authorization paths in the framework:
 
-| Authorization source | When valid | Mechanism |
-|---|---|---|
-| **Explicit operator confirm** | Default for any force-push-with-lease decision | Operator says "yes go ahead" or equivalent in conversation; agent acts |
-| **2nd-agent peer-call confirm** | Substitute for operator confirm; multi-oracle authorization at force-push scope | Agent invokes `bun tools/peer-call/<name>.ts` with the proposed force-push + reasoning; peer agent reads + confirms or refuses; if confirmed, original agent acts |
-| **Listed acceptable autonomous situation** | Bounded list of pre-authorized situations where neither operator nor peer-agent confirm is required | Agent verifies the situation matches a listed case below; agent acts; the action is preserved as substrate for the empirical extension of the list |
+| Authorization source                       | When valid                                                                                          | Mechanism                                                                                                                                                         |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Explicit operator confirm**              | Default for any force-push-with-lease decision                                                      | Operator says "yes go ahead" or equivalent in conversation; agent acts                                                                                            |
+| **2nd-agent peer-call confirm**            | Substitute for operator confirm; multi-oracle authorization at force-push scope                     | Agent invokes `bun tools/peer-call/<name>.ts` with the proposed force-push + reasoning; peer agent reads + confirms or refuses; if confirmed, original agent acts |
+| **Listed acceptable autonomous situation** | Bounded list of pre-authorized situations where neither operator nor peer-agent confirm is required | Agent verifies the situation matches a listed case below; agent acts; the action is preserved as substrate for the empirical extension of the list                |
 
 ## Why peer-agent confirmation is sufficient
 
@@ -131,7 +131,7 @@ authorized.
 
 - **Force-push to peer-agent branches** — even with lease; per
   `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-
-  your-own-coordinate-on-peers-dont-punt-by-default.md`, peer's substrate
+your-own-coordinate-on-peers-dont-punt-by-default.md`, peer's substrate
   requires coordination not unilateral action
 - **Force-push to `main`** — never autonomous; the host blocks it
   uniformly per `.claude/rules/lfg-acehack-topology.md` but the
@@ -158,18 +158,18 @@ lease) safe under multi-agent operation. Always use `--force-with-lease`.
 
 ## Why `--with-lease` is structurally better than naked `--force` — assumption-validation discipline (operator 2026-05-27 framing)
 
-> *"force push lease is nice casue it validate assumption rather than
-> blind acting"*
+> _"force push lease is nice casue it validate assumption rather than
+> blind acting"_
 
 The `--with-lease` flag operationalizes the framework's broader
 verify-before-deferring + refresh-before-decide + razor discipline at
 git-operation scope:
 
-| Operation | Assumption shape | Validation? |
-|---|---|---|
-| `git push --force` | "I know what's on the remote OR I don't care" | NONE — blind overwrite |
-| `git push --force-with-lease=<ref>:<expected-SHA>` | "I expect the remote to be at exactly `<expected-SHA>`; if not, refuse" | git validates the remote-SHA before write; refuses if drift detected |
-| `git push --force-with-lease` (no explicit SHA) | "I expect the remote to be at the SHA I most-recently-fetched" | git validates against the last-fetched remote-tracking ref; refuses if drift detected |
+| Operation                                          | Assumption shape                                                        | Validation?                                                                           |
+| -------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `git push --force`                                 | "I know what's on the remote OR I don't care"                           | NONE — blind overwrite                                                                |
+| `git push --force-with-lease=<ref>:<expected-SHA>` | "I expect the remote to be at exactly `<expected-SHA>`; if not, refuse" | git validates the remote-SHA before write; refuses if drift detected                  |
+| `git push --force-with-lease` (no explicit SHA)    | "I expect the remote to be at the SHA I most-recently-fetched"          | git validates against the last-fetched remote-tracking ref; refuses if drift detected |
 
 The substrate-engineering value: lease forces the agent to STATE THE
 ASSUMPTION in machine-checkable form. The operation then either:
@@ -208,25 +208,25 @@ before retry); never use naked force.
 
 ## Exceptions-as-signals operator discipline — error handlers are load-bearing not afterthoughts (operator 2026-05-27)
 
-> *"i always treat exceptions a signals instead of prechecking in code
+> _"i always treat exceptions a signals instead of prechecking in code
 > it's way more efficent as long as all your commands can notice drift
 > in the moment and notify you instead of trying to pre check everythign
 > you can just move forward and the exceptions tell you when you missed
-> a step or your assumptions are wrong"*
+> a step or your assumptions are wrong"_
 
-> *"when i write code my error handlers are not after thoughs they are
+> _"when i write code my error handlers are not after thoughs they are
 > load bearing to proper functioning of the system efficently so it's
-> not constantly checking assumptions only when errors occur."*
+> not constantly checking assumptions only when errors occur."_
 
 Operator's broader substrate-engineering discipline that the force-push-
 with-lease assumption-validation pattern IS one specific instance of:
 
-| Discipline | Defensive (rejected) | Signal-based (operator default) |
-|---|---|---|
-| Before action | Pre-check all assumptions in code (expensive; often wrong; doesn't catch in-flight drift) | State assumption; act; let operation surface drift via exception |
-| Error handlers | Afterthought (catch-and-log) | Load-bearing component of system efficiency |
-| System operation | Constant assumption-validation overhead on hot path | Only validate when error signals fire |
-| Failure mode | Silent acceptance of pre-check passing + later drift | Clean refusal at action time + exception carries the assumption-mismatch signal |
+| Discipline       | Defensive (rejected)                                                                      | Signal-based (operator default)                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Before action    | Pre-check all assumptions in code (expensive; often wrong; doesn't catch in-flight drift) | State assumption; act; let operation surface drift via exception                |
+| Error handlers   | Afterthought (catch-and-log)                                                              | Load-bearing component of system efficiency                                     |
+| System operation | Constant assumption-validation overhead on hot path                                       | Only validate when error signals fire                                           |
+| Failure mode     | Silent acceptance of pre-check passing + later drift                                      | Clean refusal at action time + exception carries the assumption-mismatch signal |
 
 The framework's broader pattern this composes with:
 
@@ -263,12 +263,12 @@ the operator has explicitly named the cost asymmetry.
 
 ### Canonical code example — file-IO without pre-check, wrapped in Result<T, TFeedback> (operator 2026-05-27)
 
-> *"like for instead of you are a app with a persistant file, don't
+> _"like for instead of you are a app with a persistant file, don't
 > check the file exists just open it and if it fails handle the error
 > and create it don't check if it exists first, there are many things
 > like this where the errors become the safety rails instead of
 > exceptions you can wrap the whole thing in a Results<T, TFeedback>
-> so you don't have to pay the costs of structured exceptions"*
+> so you don't have to pay the costs of structured exceptions"_
 
 The concrete pattern with anti-pattern contrast:
 
@@ -312,15 +312,15 @@ let openOrCreate path : Result<Stream, FileOpenFeedback> = result {
 
 Why this is operationally better:
 
-| Property | Pre-check defensive | Signal-based with Result<T, TFeedback> |
-|---|---|---|
-| Race-window | TOCTOU window between check + action | Atomic — single syscall, single failure surface |
-| Filesystem round-trips per call | 2 (check + action) | 1 (action only) |
-| Code surface | Branch logic + pre-check verbose | Linear flow, error as data |
-| Failure-information richness | Boolean from Exists check, less context | Full Exception + path captured in TFeedback variant |
-| Cost when file exists | Pays pre-check cost | Single syscall, no overhead |
-| Cost when file missing | Pays pre-check cost + create cost | Catch + fallback create |
-| Performance under exceptions | Structured-exception path expensive in .NET | Result-shape avoids throw cost (no stack unwind, no exception object allocation on the hot path when wrapped in Result) |
+| Property                        | Pre-check defensive                         | Signal-based with Result<T, TFeedback>                                                                                  |
+| ------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Race-window                     | TOCTOU window between check + action        | Atomic — single syscall, single failure surface                                                                         |
+| Filesystem round-trips per call | 2 (check + action)                          | 1 (action only)                                                                                                         |
+| Code surface                    | Branch logic + pre-check verbose            | Linear flow, error as data                                                                                              |
+| Failure-information richness    | Boolean from Exists check, less context     | Full Exception + path captured in TFeedback variant                                                                     |
+| Cost when file exists           | Pays pre-check cost                         | Single syscall, no overhead                                                                                             |
+| Cost when file missing          | Pays pre-check cost + create cost           | Catch + fallback create                                                                                                 |
+| Performance under exceptions    | Structured-exception path expensive in .NET | Result-shape avoids throw cost (no stack unwind, no exception object allocation on the hot path when wrapped in Result) |
 
 ### Why Result<T, TFeedback> instead of Result<T, TError>
 
@@ -337,17 +337,17 @@ Composes with the F# Result-over-exception convention (CLAUDE.md `Result<_, Dbsp
 
 Operator's "many things like this" framing maps to a class of substrate-engineering decisions:
 
-| Pre-check pattern | Signal-based equivalent |
-|---|---|
-| `if dirExists then ... else mkdir` | `mkdir -p` (idempotent at syscall scope) OR Result-wrapped open-or-create |
-| `if user exists then login else signup` | Try-login; on failure-signal, signup-flow |
-| `git fetch origin main; if remote-ahead then rebase else skip` | `git pull --ff-only`; on failure-signal, rebase-or-coordinate |
-| `if branch-exists then switch else create` | `git checkout -B <branch>` (idempotent) OR `git switch` with error-handler creating |
-| `if config-key exists then read else default` | `Map.tryFind` returning Option; pattern-match on None |
-| `if PR exists then update else create` | Try-create; on conflict-signal, update-existing |
-| `if network-reachable then call else queue` | Call; on network-failure-signal, queue-for-retry |
-| `if cache hit then return cached else compute` | Try-cache; on miss-signal, compute-and-cache |
-| **`git push --force-with-lease`** (this rule's core subject) | Lease-failure-signal is the canonical instance |
+| Pre-check pattern                                              | Signal-based equivalent                                                             |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `if dirExists then ... else mkdir`                             | `mkdir -p` (idempotent at syscall scope) OR Result-wrapped open-or-create           |
+| `if user exists then login else signup`                        | Try-login; on failure-signal, signup-flow                                           |
+| `git fetch origin main; if remote-ahead then rebase else skip` | `git pull --ff-only`; on failure-signal, rebase-or-coordinate                       |
+| `if branch-exists then switch else create`                     | `git checkout -B <branch>` (idempotent) OR `git switch` with error-handler creating |
+| `if config-key exists then read else default`                  | `Map.tryFind` returning Option; pattern-match on None                               |
+| `if PR exists then update else create`                         | Try-create; on conflict-signal, update-existing                                     |
+| `if network-reachable then call else queue`                    | Call; on network-failure-signal, queue-for-retry                                    |
+| `if cache hit then return cached else compute`                 | Try-cache; on miss-signal, compute-and-cache                                        |
+| **`git push --force-with-lease`** (this rule's core subject)   | Lease-failure-signal is the canonical instance                                      |
 
 In all these cases, the signal-based pattern eliminates a TOCTOU race window AND reduces overhead AND makes the failure-path load-bearing rather than vestigial.
 
@@ -366,21 +366,21 @@ This pattern IS the operator's default substrate-engineering discipline. Future-
 
 ### Type-signature-enforced exhaustive TFeedback handling — Java-checked-exceptions-as-sum-type (operator 2026-05-27)
 
-> *"it also give a nice kind of monad like if the function could declar every tfeedback type like java exceptions in the type signature then you can make sure consumer handle every case or pass it up"*
+> _"it also give a nice kind of monad like if the function could declar every tfeedback type like java exceptions in the type signature then you can make sure consumer handle every case or pass it up"_
 
 The deeper substrate-engineering insight: when TFeedback is a sum type (F# discriminated union / Rust enum / TypeScript union), the function signature `T -> Result<T, MyTFeedback>` IS the declared "throws" list, and F#'s exhaustive pattern-matching enforces the same discipline Java checked exceptions enforced — but as monadic data-flow rather than control-flow.
 
 Java's checked exceptions encoded the right discipline (declare every exception class your function can throw; consumer MUST catch each or declare to propagate) but was criticized for verbosity and coarse-grain exception classes. The Result<T, TFeedback>-with-sum-type pattern preserves the discipline AND addresses the criticism:
 
-| Java checked exceptions | Result<T, TFeedback> with sum-type |
-|---|---|
-| Exception class declared via `throws X, Y, Z` clause | TFeedback variants declared via discriminated-union: `type MyTFeedback = X \| Y \| Z` |
+| Java checked exceptions                                                         | Result<T, TFeedback> with sum-type                                                                 |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Exception class declared via `throws X, Y, Z` clause                            | TFeedback variants declared via discriminated-union: `type MyTFeedback = X \| Y \| Z`              |
 | Consumer must `catch (X e)` and `catch (Y e)` separately OR re-declare `throws` | Consumer must pattern-match exhaustively on each variant OR propagate via `Result.bind` / `match!` |
-| Compiler error if uncaught + undeclared | Compiler error (F#) on non-exhaustive match warning OR enforces `_ ->` catch-all |
-| Verbose try/catch ceremony | Concise pattern-match expression |
-| Exceptions cross stack boundaries via runtime mechanism | Result values flow through return values; no runtime overhead |
-| Coarse exception classes (often single `IOException` lumping many cases) | Fine-grained variants per substrate-engineering decision |
-| Hard to compose | Monadic composition via `bind` / `>>=` / computation expressions |
+| Compiler error if uncaught + undeclared                                         | Compiler error (F#) on non-exhaustive match warning OR enforces `_ ->` catch-all                   |
+| Verbose try/catch ceremony                                                      | Concise pattern-match expression                                                                   |
+| Exceptions cross stack boundaries via runtime mechanism                         | Result values flow through return values; no runtime overhead                                      |
+| Coarse exception classes (often single `IOException` lumping many cases)        | Fine-grained variants per substrate-engineering decision                                           |
+| Hard to compose                                                                 | Monadic composition via `bind` / `>>=` / computation expressions                                   |
 
 The composition: every function in the call-chain declares its TFeedback variants in the type signature; consumer must handle each or propagate. The TYPE SYSTEM enforces exhaustive substrate-engineering at every decision point.
 

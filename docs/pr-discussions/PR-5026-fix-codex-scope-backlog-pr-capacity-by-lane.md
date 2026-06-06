@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - scope Codex backlog runner PR capacity to Codex branch prefixes by default
 - preserve explicit global counting via `--capacity-head-prefixes all` / `CODEX_BACKLOG_RUNNER_CAPACITY_HEAD_PREFIXES=all`
 - report total open PR count separately so queue pressure remains visible
 
 ## Verification
+
 - `/opt/homebrew/bin/bun test tools/backlog/codex-backlog-runner.test.ts`
 - `/opt/homebrew/bin/bun .codex/bin/codex-backlog-runner.ts --max-open-prs 3 --capacity-head-prefixes all`
 
@@ -29,24 +31,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T23:11:40Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `5f9435e6be`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -59,6 +59,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR updates the Codex backlog runner’s PR-capacity gate so that, by default, “open PR capacity” is counted only for Codex-owned lanes (branch prefixes like `codex/`), while still allowing an explicit opt-out to global counting (`--capacity-head-prefixes all` / `CODEX_BACKLOG_RUNNER_CAPACITY_HEAD_PREFIXES=all`). It also surfaces the overall open-PR pressure separately from the lane-scoped capacity count.
 
 **Changes:**
+
 - Add `--capacity-head-prefixes` (and env var support) to scope capacity counting by head branch prefix, defaulting to `codex/`.
 - Introduce `capacityPrCount(...)` and return both capacity-scoped and total open PR counts in runner output.
 - Extend tests to cover the new capacity-scoping behavior.
@@ -67,10 +68,10 @@ This PR updates the Codex backlog runner’s PR-capacity gate so that, by defaul
 
 Copilot reviewed 1 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/backlog/codex-backlog-runner.test.ts | Adds unit tests for `capacityPrCount` to verify lane-scoped vs global counting. |
-| .codex/bin/codex-backlog-runner.ts | Implements capacity scoping via head-prefix filtering, adds CLI/env parsing, and reports both scoped + total open PR counts. |
+| File                                       | Description                                                                                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| tools/backlog/codex-backlog-runner.test.ts | Adds unit tests for `capacityPrCount` to verify lane-scoped vs global counting.                                              |
+| .codex/bin/codex-backlog-runner.ts         | Implements capacity scoping via head-prefix filtering, adds CLI/env parsing, and reports both scoped + total open PR counts. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T23:27:59Z)
 
@@ -84,7 +85,7 @@ Copilot reviewed 1 out of 2 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-25T23:11:40Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove 200-item cap from PR capacity counting**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove 200-item cap from PR capacity counting**
 
 `openPrList` now queries `gh pr list` with `--limit 200`, and `capacityPrCount` uses that truncated list for gate decisions. Per the `gh pr list` manual, `--limit` is the “Maximum number of items to fetch,” so repositories with more than 200 open PRs will be undercounted and the runner can incorrectly enter `ready` and open additional work even when capacity is already full. This regresses the previous `openPrCount` path (`tools/github/poll-pr-gate-batch.ts --all-open`), which was designed to enumerate all open PRs via pagination.
 

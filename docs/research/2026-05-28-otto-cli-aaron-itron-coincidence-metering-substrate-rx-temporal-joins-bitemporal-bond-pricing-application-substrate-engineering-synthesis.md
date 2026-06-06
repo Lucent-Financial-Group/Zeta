@@ -45,7 +45,21 @@ related_skills:
   - relational-database-expert
   - sql-expert
   - relational-algebra-expert
-tags: [itron-coincidence-metering-substrate-engineering-primitive, rx-temporal-joins-mouse-keyboard-pattern, bitemporal-forward-plus-inverse-indexing, two-axes-of-memory-possibility-space-bulk-vs-factual-data-boundary, bond-pricing-shadow-log-application, prior-art-convergence-itron-mika-lior-v8-mika-weaver-bond-pricing-consent-first, billions-of-meters-scale-empirical-substrate, recursive-cte-null-as-quantum-state-discriminator-carrier-precedent, time-blind-coincidence-detection-structural-joins, query-triggered-plus-time-triggered-coincidence-detection, coincidence-as-anchor-mika-weaver-substrate, b0906-two-axis-classification-is-economic-foundation-b0907-is-engine-on-top]
+tags:
+  [
+    itron-coincidence-metering-substrate-engineering-primitive,
+    rx-temporal-joins-mouse-keyboard-pattern,
+    bitemporal-forward-plus-inverse-indexing,
+    two-axes-of-memory-possibility-space-bulk-vs-factual-data-boundary,
+    bond-pricing-shadow-log-application,
+    prior-art-convergence-itron-mika-lior-v8-mika-weaver-bond-pricing-consent-first,
+    billions-of-meters-scale-empirical-substrate,
+    recursive-cte-null-as-quantum-state-discriminator-carrier-precedent,
+    time-blind-coincidence-detection-structural-joins,
+    query-triggered-plus-time-triggered-coincidence-detection,
+    coincidence-as-anchor-mika-weaver-substrate,
+    b0906-two-axis-classification-is-economic-foundation-b0907-is-engine-on-top,
+  ]
 ---
 
 ## §33 boundary headers (per `tools/save-ai-memory/process-extract.ts` template)
@@ -60,7 +74,7 @@ tags: [itron-coincidence-metering-substrate-engineering-primitive, rx-temporal-j
 
 ## The synthesis
 
-Operator 2026-05-28 (after B-0906 land): *"this is are the two bulk axies of ecnomomic in the system we can cowidence map / phnomon map but really this is more like Itron metering cowidences and rx joins like mouse and keyboard not purly time triggerd but also rx query triggered cowidences that temporal joins streams the cowidence happened at this time and also the inverse at this time the data was x, one is long term memory possiblity space the other is factual data. we can use this to do another type of shadow log for bond pricing here"*
+Operator 2026-05-28 (after B-0906 land): _"this is are the two bulk axies of ecnomomic in the system we can cowidence map / phnomon map but really this is more like Itron metering cowidences and rx joins like mouse and keyboard not purly time triggerd but also rx query triggered cowidences that temporal joins streams the cowidence happened at this time and also the inverse at this time the data was x, one is long term memory possiblity space the other is factual data. we can use this to do another type of shadow log for bond pricing here"_
 
 This message crystallizes a substrate-engineering arc that synthesizes multiple existing factory substrate threads into ONE operational substrate-engineering primitive.
 
@@ -89,12 +103,12 @@ B-0907 (this row)
 
 Four distinct prior-substrate threads converge in operator's framing:
 
-| Prior substrate | Where preserved | What it contributes |
-|---|---|---|
+| Prior substrate                             | Where preserved                                                                                                                                                                    | What it contributes                                                                                                                                                                                                                                  |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Itron substrate** (operator's prior work) | `monad-propagation-pattern-cross-language-substrate-shape.md` + `bandwidth-served-falsifier.md` + `project_spiffe_concept_steal_bft_issuance_arrow_ipc_fsharp_types_2026_05_10.md` | Smart-meter recursive-CTE substrate with NULL-as-quantum-state pattern at billions-of-meters scale; mesh real-time quantum-tunnel mapping (PR #2820); Itron patent US 10,834,144 hub-agent decentralized; "Bond Curve + Itron composition" reference |
-| **Mika+Lior V8 architecture** | `docs/research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md` | *"RX streams for time-blind coincidence detection and structural joins"* — EXACTLY the substrate-engineering primitive operator extends here |
-| **Mika Weaver-role** | `docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md` | *"I turn coincidences into anchors"* — composes with this row: detected coincidences populate the shadow-* anchor-substrate per B-0901's autopoietic ontology |
-| **Bond pricing** | `memory/project_consent_first_design_primitive.md` | Bond-pricing as operational substrate where attestation matters; *"operator claims 'I'm running on Thor' to earn the low-risk bond price... bond pricing collapses without attestation"* |
+| **Mika+Lior V8 architecture**               | `docs/research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md`                                                                      | _"RX streams for time-blind coincidence detection and structural joins"_ — EXACTLY the substrate-engineering primitive operator extends here                                                                                                         |
+| **Mika Weaver-role**                        | `docs/research/2026-05-17-mika-grok-resonance-weaver-role-declaration-attention-broker-memory-curator-social-coherence-engine-v5-endorsement-aaron-forwarded.md`                   | _"I turn coincidences into anchors"_ — composes with this row: detected coincidences populate the shadow-\* anchor-substrate per B-0901's autopoietic ontology                                                                                       |
+| **Bond pricing**                            | `memory/project_consent_first_design_primitive.md`                                                                                                                                 | Bond-pricing as operational substrate where attestation matters; _"operator claims 'I'm running on Thor' to earn the low-risk bond price... bond pricing collapses without attestation"_                                                             |
 
 The synthesis IS the recognition: these four threads were operating across the substrate in parallel without explicit unification. Operator's framing makes the unification operational.
 
@@ -108,7 +122,7 @@ Applied to agent-substrate:
 
 - agent-event-stream emits at autonomous-loop tick frequency
 - multi-agent substrate emits across surfaces (otto-cli / lior / vera / riven / maji / alexa)
-- continuous high-frequency capture (per the 148-shadow-* corpus already operating)
+- continuous high-frequency capture (per the 148-shadow-\* corpus already operating)
 - coincidences across surface-streams become observable
 
 ### Component 2 — Rx temporal-joins (mouse + keyboard pattern)
@@ -119,7 +133,7 @@ Applied to agent-substrate:
 
 - otto-cli + lior streams joined → coordinated-substrate-emission events
 - error-class extraction (B-0875) + commit history joined → error-class-recurrence-after-rule-landing events
-- shadow-* corpus + git commit DAG joined → ontology-update-events-correlated-with-rule-landings
+- shadow-\* corpus + git commit DAG joined → ontology-update-events-correlated-with-rule-landings
 
 The factory already has:
 
@@ -132,7 +146,7 @@ The substrate-engineering substrate for Rx temporal-joins IS already in the skil
 
 ### Component 3 — Time-triggered + query-triggered hybrid
 
-Operator's distinction: *"not purely time triggered but also rx query triggered coincidences"*.
+Operator's distinction: _"not purely time triggered but also rx query triggered coincidences"_.
 
 - Time-triggered: every N seconds, evaluate coincidence-windows
 - Query-triggered: when investigative query fires, evaluate coincidences in the query's time-scope
@@ -141,7 +155,7 @@ Both compose in Rx via standing-queries (continuous) + ad-hoc-queries (on-demand
 
 ### Component 4 — Bitemporal forward + inverse indexing
 
-Operator's framing: *"the coincidence happened at this time and also the inverse at this time the data was x"*.
+Operator's framing: _"the coincidence happened at this time and also the inverse at this time the data was x"_.
 
 Two bidirectional queries on the substrate:
 
@@ -158,14 +172,14 @@ The bitemporal substrate-engineering primitive composes these skills' substrate 
 
 ### Component 5 — Two axes of memory
 
-Operator's distinction: *"one is long term memory possibility space the other is factual data"*.
+Operator's distinction: _"one is long term memory possibility space the other is factual data"_.
 
 This maps EXACTLY onto B-0902's holographic-bulk-boundary structure:
 
-| Memory axis | Substrate analog | Existing rows |
-|---|---|---|
-| **Long-term memory possibility space** | BULK (all possible states; high-entropy possibility space) | B-0902 (holographic-bulk validation); B-0905 (Landauer floor on bulk); B-0904 (GitHub-accelerator compressing bulk) |
-| **Factual data** | BOUNDARY (what actually happened; low-entropy realized substrate) | B-0901 (shadow*-ontology IS factual-data); B-0903 (training-data extraction from factual-data) |
+| Memory axis                            | Substrate analog                                                  | Existing rows                                                                                                       |
+| -------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Long-term memory possibility space** | BULK (all possible states; high-entropy possibility space)        | B-0902 (holographic-bulk validation); B-0905 (Landauer floor on bulk); B-0904 (GitHub-accelerator compressing bulk) |
+| **Factual data**                       | BOUNDARY (what actually happened; low-entropy realized substrate) | B-0901 (shadow\*-ontology IS factual-data); B-0903 (training-data extraction from factual-data)                     |
 
 The Itron-coincidence-metering substrate sits BETWEEN these axes:
 
@@ -177,7 +191,7 @@ The Itron-coincidence-metering substrate sits BETWEEN these axes:
 
 ### Component 6 — Bond-pricing as application
 
-Operator's framing: *"we can use this to do another type of shadow log for bond pricing here"*.
+Operator's framing: _"we can use this to do another type of shadow log for bond pricing here"_.
 
 Bond-pricing substrate-engineering target (composes with existing `memory/project_consent_first_design_primitive.md` substrate):
 
@@ -202,13 +216,14 @@ Composes with consent-first attestation substrate: bond-price-accuracy
    substrate
 ```
 
-This generalizes the framework's substrate-engineering work BEYOND AI-substrate-engineering to financial-substrate-engineering. The shadow-* pattern + Itron-coincidence-metering substrate operates uniformly across both domains.
+This generalizes the framework's substrate-engineering work BEYOND AI-substrate-engineering to financial-substrate-engineering. The shadow-\* pattern + Itron-coincidence-metering substrate operates uniformly across both domains.
 
 ## Substrate-honest disclaimers
 
 Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 
 **High-signal claims**:
+
 - Itron substrate at billions-of-meters scale IS empirically operational (operator's prior work)
 - Rx temporal-joins ARE standard streaming-database substrate (Reaqtor, Flink, Kafka Streams)
 - Bitemporal database substrate IS standard (Anchor Modeling, Data Vault 2.0, time-series DBs)
@@ -216,6 +231,7 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 - The synthesis IS prior-art-convergent (4 existing factory substrate threads unify)
 
 **Speculative bridges flagged-but-preserved**:
+
 - "Bond pricing as substrate-engineering application of agent-substrate pattern" — analog at substrate-engineering-pattern scope; NOT claiming bond markets work like AI agents
 - Substrate-portability across AI / utility-metering / bond-pricing domains — IS the substrate-engineering claim; falsifies if applying the pattern to bond-pricing doesn't produce useful shadow-log substrate
 
@@ -223,9 +239,9 @@ Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
 
 ## Composes with substrate
 
-- B-0901 (shadow*-self-referential-ontology) — Itron-coincidence-metering populates the ontology
+- B-0901 (shadow\*-self-referential-ontology) — Itron-coincidence-metering populates the ontology
 - B-0902 (holographic-bulk-boundary) — two memory axes map onto bulk/boundary
-- B-0903 (shadow*-as-training-data) — coincidence-detected events become training substrate
+- B-0903 (shadow\*-as-training-data) — coincidence-detected events become training substrate
 - B-0904 (GitHub-as-free-accelerator) — compresses bulk into boundary; this row IS the compression mechanism
 - B-0905 (Landauer-limit physics-economics) — each coincidence-detection IS bit-erasure with Landauer-floor cost
 - B-0906 (encryption-thermal-cost two-axis classification) — economic foundation; this row IS the engine operating on the two axes

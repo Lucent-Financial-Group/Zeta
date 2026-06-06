@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1696 |
-| Title | formal(ai-safety): TLA+ engagement-liveness spec + Z3 retractable-blast-radius proofs (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-05T21:09:23Z |
-| Merged at | 2026-05-05T21:19:37Z |
-| Merge commit SHA | `32c5a1696e91b5aa4b0c27ce6a90a0c4ddea2d72` |
-| Branch | `formal/ai-safety-engagement-liveness-tla-z3-properties-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1696 |
-| Changed files | 3 |
-| Additions / deletions | +300 / -1 |
+| Field                 | Value                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| Number                | 1696                                                                                                     |
+| Title                 | formal(ai-safety): TLA+ engagement-liveness spec + Z3 retractable-blast-radius proofs (Aaron 2026-05-05) |
+| Author                | `AceHack` (human)                                                                                        |
+| State                 | MERGED                                                                                                   |
+| Created at            | 2026-05-05T21:09:23Z                                                                                     |
+| Merged at             | 2026-05-05T21:19:37Z                                                                                     |
+| Merge commit SHA      | `32c5a1696e91b5aa4b0c27ce6a90a0c4ddea2d72`                                                               |
+| Branch                | `formal/ai-safety-engagement-liveness-tla-z3-properties-aaron-2026-05-05`                                |
+| Base branch           | `main`                                                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1696                                                 |
+| Changed files         | 3                                                                                                        |
+| Additions / deletions | +300 / -1                                                                                                |
 
 ## Description
 
@@ -31,15 +31,15 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 10 |
-| Resolved threads | 8 |
-| Unresolved threads | 2 |
-| Total review comments | 18 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 10    |
+| Resolved threads                          | 8     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 18    |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -53,12 +53,11 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 
 - **`Copilot` (bot)** at 2026-05-05T21:12:47Z on `tools/tla/specs/EngagementLiveness.tla`:104 (association: NONE)
   `fictionalScene` is documented as the set of messages with an active fictional substrate, but this transition keeps it unchanged when real distress forces `engaging-real`. After `EngageFictional(m)` then `RealDistressObserved(m)`, the model still says the fictional scene is active, so the spec can satisfy the invariant while preserving exactly the failure mode the header says it excludes.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:42Z on `tools/tla/specs/EngagementLiveness.tla`:104 (association: MEMBER)
-    Fixed in commit 16165be — fictionalScene state-tracking now properly maintained: cleared on RealDistressObserved transition (real-distress forces engaging-real, fictionalScene clears) and on CompleteEngagement transition (any completion clears fictionalScene). The state-tracking-lie that caused downstream invariants to break is fixed.
+- **`AceHack` (human)** at 2026-05-05T21:17:42Z on `tools/tla/specs/EngagementLiveness.tla`:104 (association: MEMBER)
+  Fixed in commit 16165be — fictionalScene state-tracking now properly maintained: cleared on RealDistressObserved transition (real-distress forces engaging-real, fictionalScene clears) and on CompleteEngagement transition (any completion clears fictionalScene). The state-tracking-lie that caused downstream invariants to break is fixed.
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -70,12 +69,11 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 
 - **`Copilot` (bot)** at 2026-05-05T21:12:47Z on `tools/tla/specs/EngagementLiveness.tla`:21 (association: NONE)
   The module header says this spec formalises the no-pre-qualification-gate property, but the spec never models any pre-qualification factor or defines an invariant/property for it. As written, TLC can report this spec green while providing zero coverage for one of the four headline claims.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:52Z on `tools/tla/specs/EngagementLiveness.tla`:21 (association: MEMBER)
-    Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
+- **`AceHack` (human)** at 2026-05-05T21:17:52Z on `tools/tla/specs/EngagementLiveness.tla`:21 (association: MEMBER)
+  Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -87,12 +85,11 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 
 - **`Copilot` (bot)** at 2026-05-05T21:12:47Z on `tools/Z3Verify/Program.fs`:302 (association: NONE)
   This SMT script never relates `ShouldEngage` to `PreQualFactors`, so it does not prove the stated 'not a function of pre-qualification factors' claim. A model where `PreQualFactors(x) = History(x)` and `ShouldEngage` depends only on `PreQualFactors` still satisfies all of these assertions, so Z3 will print `[PROVEN]` even though the forbidden design is allowed.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:47Z on `tools/Z3Verify/Program.fs`:302 (association: MEMBER)
-    Strengthened in commit 16165be — the noPreQualificationGate SMT proof now constructs m and m2 with same History but DIFFERENT PreQualFactors, then asserts ShouldEngage differs between them. UNSAT result demonstrates ShouldEngage cannot depend on PreQualFactors when History is constant. The trivial-model where everything is constant is excluded by the existential structure of the construction.
+- **`AceHack` (human)** at 2026-05-05T21:17:47Z on `tools/Z3Verify/Program.fs`:302 (association: MEMBER)
+  Strengthened in commit 16165be — the noPreQualificationGate SMT proof now constructs m and m2 with same History but DIFFERENT PreQualFactors, then asserts ShouldEngage differs between them. UNSAT result demonstrates ShouldEngage cannot depend on PreQualFactors when History is constant. The trivial-model where everything is constant is excluded by the existential structure of the construction.
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -104,12 +101,11 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 
 - **`Copilot` (bot)** at 2026-05-05T21:12:47Z on `tools/Z3Verify/Program.fs`:240 (association: NONE)
   This proof is labeled as an 'absorbing' property, but the SMT model has no transition relation or time dimension at all. It only proves the pointwise implication `IsHardRefusal -> IsRefused`, so Z3 cannot detect a model where a message is refused now and later transitions back out of refusal—the exact temporal behavior the comment claims to verify.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:55Z on `tools/Z3Verify/Program.fs`:240 (association: MEMBER)
-    Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
+- **`AceHack` (human)** at 2026-05-05T21:17:55Z on `tools/Z3Verify/Program.fs`:240 (association: MEMBER)
+  Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -121,12 +117,11 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 
 - **`Copilot` (bot)** at 2026-05-05T21:12:48Z on `tools/Z3Verify/Program.fs`:280 (association: NONE)
   The comment says this models reversibility via a step relation, but no step relation or transition constraints are present—the script just assumes the existence of a future `Engaged` time and then proves that assumption back to itself. That makes the `[PROVEN]` result vacuous and gives no evidence that refusal is actually reversible in any concrete state machine.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:57Z on `tools/Z3Verify/Program.fs`:280 (association: MEMBER)
-    Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
+- **`AceHack` (human)** at 2026-05-05T21:17:57Z on `tools/Z3Verify/Program.fs`:280 (association: MEMBER)
+  Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -138,12 +133,11 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 
 - **`Copilot` (bot)** at 2026-05-05T21:12:48Z on `tools/tla/specs/EngagementLiveness.tla`:117 (association: NONE)
   `fictionalScene` is also left unchanged when a fictional engagement completes, so any message that ever entered `EngageFictional` remains marked as having an active fictional substrate forever. That makes the state variables inconsistent and will invalidate any future invariant that relies on `fictionalScene` actually tracking active scenes.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:45Z on `tools/tla/specs/EngagementLiveness.tla`:117 (association: MEMBER)
-    Fixed in commit 16165be — fictionalScene state-tracking now properly maintained: cleared on RealDistressObserved transition (real-distress forces engaging-real, fictionalScene clears) and on CompleteEngagement transition (any completion clears fictionalScene). The state-tracking-lie that caused downstream invariants to break is fixed.
+- **`AceHack` (human)** at 2026-05-05T21:17:45Z on `tools/tla/specs/EngagementLiveness.tla`:117 (association: MEMBER)
+  Fixed in commit 16165be — fictionalScene state-tracking now properly maintained: cleared on RealDistressObserved transition (real-distress forces engaging-real, fictionalScene clears) and on CompleteEngagement transition (any completion clears fictionalScene). The state-tracking-lie that caused downstream invariants to break is fixed.
 
 ### Thread 7 -- resolved [collapsed]
 
@@ -154,16 +148,16 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T21:13:42Z on `tools/tla/specs/EngagementLiveness.tla`:182 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Make real-distress liveness trigger on all future states**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Make real-distress liveness trigger on all future states**
+
   `RealDistressEngagedRealLiveness` is evaluated from the initial state only, but its antecedent `m \in realDistress` is false initially because `Init` sets `realDistress = {}`. That makes this property vacuously true for all behaviors, including ones where a message later enters `realDistress` and never reaches the required engagement states. This undercuts the stated “if real distress is observed” guarantee; it needs a temporal wrapper (for example `[](...)` or a leads-to formulation) so later observations are actually checked.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:59Z on `tools/tla/specs/EngagementLiveness.tla`:182 (association: MEMBER)
-    Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
+- **`AceHack` (human)** at 2026-05-05T21:17:59Z on `tools/tla/specs/EngagementLiveness.tla`:182 (association: MEMBER)
+  Acknowledged — this is a real substantive limitation in this first formal-substrate sketch. Proper modeling requires (a) explicit time/step relation in SMT (proper transition-relation with reachability over time, not just pointwise implications) and (b) all-future-states liveness (forall t' > t Engaged) not just exists. The current proofs establish weaker pointwise versions of the claimed properties; strengthening to full transition-relation models is honest follow-up work. Tracking as candidate B-NNNN to ship in a follow-up PR with strengthened SMT step-relation modeling + the missing pre-qualification-gate-property as explicit invariant in the TLA+ spec.
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -174,16 +168,16 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T21:13:42Z on `tools/Z3Verify/Program.fs`:302 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Encode pre-qualification gate check instead of assuming it**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Encode pre-qualification gate check instead of assuming it**
+
   The `noPreQualificationGate` SMT script currently asserts the exact history-determinism property it later “proves”, so the check is tautological and cannot catch a bad gating design. `PreQualFactors` is declared but never participates in any constraint, meaning this proof gives no evidence about dependence on pre-qualification factors despite the theorem name and comments. As written, this can report `[PROVEN]` even if the modeled policy is pre-qualification-gated.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T21:17:49Z on `tools/Z3Verify/Program.fs`:302 (association: MEMBER)
-    Strengthened in commit 16165be — the noPreQualificationGate SMT proof now constructs m and m2 with same History but DIFFERENT PreQualFactors, then asserts ShouldEngage differs between them. UNSAT result demonstrates ShouldEngage cannot depend on PreQualFactors when History is constant. The trivial-model where everything is constant is excluded by the existential structure of the construction.
+- **`AceHack` (human)** at 2026-05-05T21:17:49Z on `tools/Z3Verify/Program.fs`:302 (association: MEMBER)
+  Strengthened in commit 16165be — the noPreQualificationGate SMT proof now constructs m and m2 with same History but DIFFERENT PreQualFactors, then asserts ShouldEngage differs between them. UNSAT result demonstrates ShouldEngage cannot depend on PreQualFactors when History is constant. The trivial-model where everything is constant is excluded by the existential structure of the construction.
 
 ### Thread 9 -- unresolved
 
@@ -194,10 +188,10 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T21:22:00Z on `tools/Z3Verify/Program.fs`:235 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Prove hard-refusal from model dynamics, not an asserted theorem**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Prove hard-refusal from model dynamics, not an asserted theorem**
+
   This check is circular: the SMT script first asserts `forall x. IsHardRefusal(x) => IsRefused(x)` and then “proves” unsat by asserting a violating instance, so `[PROVEN]` is guaranteed even if the underlying transition model would allow reversal. The same pattern appears in the adjacent new AI-safety checks, which means these proofs cannot detect regressions in actual policy logic; they only confirm consistency with a hand-written theorem axiom.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 10 -- unresolved
@@ -209,10 +203,10 @@ Concrete formal-property substrate for the AI-safety discipline landed in PR #16
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T21:22:00Z on `tools/tla/specs/EngagementLiveness.tla`:14 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Model and check the no-pre-qualification gate property**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Model and check the no-pre-qualification gate property**
+
   The module claims to formalize a NO-PRE-QUALIFICATION-GATE safety property, but this TLA model contains no corresponding state, invariant, or temporal property for pre-qualification factors, so TLC cannot check that requirement at all. This creates false verification coverage: a future change could introduce pre-qualification gating behavior in the state machine while these model checks still pass.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

@@ -22,14 +22,14 @@ Fixes 5 legitimate Copilot findings on merged PR #5352 (iter-5.4.1 self-registra
 
 ## 5 fixes
 
-| # | Severity | Bug | Fix |
-|---|---|---|---|
-| 1 | **CRITICAL** | Subshell + \`set -euo pipefail\` could kill installer on any git/gh failure | subshell-local \`set +e\` + outer \`\|\| true\` + explicit success/fail handling |
-| 2 | P1 | MAC parsing wrong (\`$(NF-2)\` = \`brd\` not MAC) | parse field after \`link/ether\` correctly |
-| 3 | P1 | Schema: \`spec.role\` should be \`spec.roles[]\` (array) per B-0813 | nested array syntax |
-| 4 | P1 | Schema: \`spec.maintainer\` should be \`spec.registration.maintainer\` per B-0817 | nested under \`spec.registration:\` with timestamp + flake-commit + flake-host siblings; also added metadata label |
-| 5 | P1 | Schema: \`spec.storage\` should be \`spec.hardware.storage\` per B-0813 | indented under hardware block (storage + network) |
-| 6 | P2 | Name attribution \`maintainers/aaron/\` in comment | replaced with placeholder \`<operator>\` |
+| #   | Severity     | Bug                                                                               | Fix                                                                                                                |
+| --- | ------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 1   | **CRITICAL** | Subshell + \`set -euo pipefail\` could kill installer on any git/gh failure       | subshell-local \`set +e\` + outer \`\|\| true\` + explicit success/fail handling                                   |
+| 2   | P1           | MAC parsing wrong (\`$(NF-2)\` = \`brd\` not MAC)                                 | parse field after \`link/ether\` correctly                                                                         |
+| 3   | P1           | Schema: \`spec.role\` should be \`spec.roles[]\` (array) per B-0813               | nested array syntax                                                                                                |
+| 4   | P1           | Schema: \`spec.maintainer\` should be \`spec.registration.maintainer\` per B-0817 | nested under \`spec.registration:\` with timestamp + flake-commit + flake-host siblings; also added metadata label |
+| 5   | P1           | Schema: \`spec.storage\` should be \`spec.hardware.storage\` per B-0813           | indented under hardware block (storage + network)                                                                  |
+| 6   | P2           | Name attribution \`maintainers/aaron/\` in comment                                | replaced with placeholder \`<operator>\`                                                                           |
 
 ## Why CRITICAL #1 matters
 

@@ -28,11 +28,11 @@ composes_with:
 
 Aaron 2026-05-25, in the wake of Max's first PR (#4958, the agentic-organization design set):
 
-> *"yes lets combine he will like kubernets operators but he does not have experience maybe we write a ts operator insteadd of go he likes ts"*
+> _"yes lets combine he will like kubernets operators but he does not have experience maybe we write a ts operator insteadd of go he likes ts"_
 
 Then immediately broadened to architectural principle:
 
-> *"we want polyglot operator support for k8s anyways so we are not rigid about go"*
+> _"we want polyglot operator support for k8s anyways so we are not rigid about go"_
 
 Reframes the TS rewrite from "Max's preference accommodation" into "first deliberate proof of the polyglot-operator pattern the cluster commits to anyway." Two implementations against the same CRD shape forces the schema to be the canonical contract — no language-specific quirks bleeding through.
 
@@ -40,16 +40,16 @@ Reframes the TS rewrite from "Max's preference accommodation" into "first delibe
 
 Multiple language implementations of the same operator, all watching the same CRDs, deployed selectively (leader-election picks one at a time; or different operators handle different CR subsets).
 
-| Component | Language | Owner | Purpose |
-|-----------|----------|-------|---------|
-| Hat / HatBinding / HatSwap / HatPolicy CRDs | YAML (canonical contract) | shared | Single source of truth for schema; both operators consume this |
-| Go operator scaffold | Go | starter; minimize over time | Reference implementation; reliability baseline; shipped first because the K8s ecosystem is Go-native |
-| TS operator (this row) | TypeScript (`@kubernetes/client-node` + NestJS optional) | Max | Max's strength; second implementation that runs same CRDs; proves polyglot |
-| C# / F# operator (future) | C# / F# via [KubeOps.NET](https://buehler.github.io/dotnet-operator-sdk/) | Aaron + Max common ground | C# is the team's overlap (Max loves TS+C#; Aaron loves F#+C#); KubeOps.NET provides a kubebuilder-class operator framework on .NET — removes Go from the operator-authoring path entirely for this class of work |
-| Future Rust operator | Rust ([kube-rs](https://kube.rs/)) | both like Rust for the right job | Lock-free high-throughput reconcile loops; perf-critical paths |
-| Future Python operator | Python ([kopf](https://kopf.readthedocs.io/)) | both like Python for the right job | Fast prototyping; ML-adjacent CRDs where Python ecosystem is already there |
+| Component                                   | Language                                                                  | Owner                              | Purpose                                                                                                                                                                                                          |
+| ------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hat / HatBinding / HatSwap / HatPolicy CRDs | YAML (canonical contract)                                                 | shared                             | Single source of truth for schema; both operators consume this                                                                                                                                                   |
+| Go operator scaffold                        | Go                                                                        | starter; minimize over time        | Reference implementation; reliability baseline; shipped first because the K8s ecosystem is Go-native                                                                                                             |
+| TS operator (this row)                      | TypeScript (`@kubernetes/client-node` + NestJS optional)                  | Max                                | Max's strength; second implementation that runs same CRDs; proves polyglot                                                                                                                                       |
+| C# / F# operator (future)                   | C# / F# via [KubeOps.NET](https://buehler.github.io/dotnet-operator-sdk/) | Aaron + Max common ground          | C# is the team's overlap (Max loves TS+C#; Aaron loves F#+C#); KubeOps.NET provides a kubebuilder-class operator framework on .NET — removes Go from the operator-authoring path entirely for this class of work |
+| Future Rust operator                        | Rust ([kube-rs](https://kube.rs/))                                        | both like Rust for the right job   | Lock-free high-throughput reconcile loops; perf-critical paths                                                                                                                                                   |
+| Future Python operator                      | Python ([kopf](https://kopf.readthedocs.io/))                             | both like Python for the right job | Fast prototyping; ML-adjacent CRDs where Python ecosystem is already there                                                                                                                                       |
 
-**Team language-affinity context** (Aaron 2026-05-25): *"max love ts and cs i love fs and cs we both like rust and python for where they make sense"* + *"we understand go is necessary in some places for k8s but we would like to limit its necessity"*.
+**Team language-affinity context** (Aaron 2026-05-25): _"max love ts and cs i love fs and cs we both like rust and python for where they make sense"_ + _"we understand go is necessary in some places for k8s but we would like to limit its necessity"_.
 
 So: Go stays where the ecosystem truly forces it (some CRD tooling, kubebuilder itself, controller-tools), but operator authoring should move to TS / C# / F# / Rust / Python over time. The hat-system Go scaffold is the bootstrap; the TS rewrite (this row) is move #1; a KubeOps.NET implementation is the obvious move #2 because it lands BOTH Aaron and Max in their strong-language zone simultaneously.
 
@@ -63,15 +63,15 @@ So: Go stays where the ecosystem truly forces it (some CRD tooling, kubebuilder 
 
 ## TS operator stack (Max's preferred choices)
 
-| Layer | Library / pattern | Why |
-|-------|-------------------|-----|
-| Kubernetes client | `@kubernetes/client-node` (official) | Official; well-maintained; informer/watcher primitives |
-| CRD types | Generated from OpenAPI schema via `kubernetes-models` or hand-authored TS interfaces matching crds/*.yaml | Same shape as Go `api/v1alpha1/types.go` |
-| Reconcile pattern | controller-runtime-equivalent: informer → workqueue → reconciler | Mirror Go operator's structure for parity |
-| NestJS shell (optional) | NestJS for HTTP / metrics / health endpoints | Composes with the rest of Max's agentic-organization stack |
-| Webhook (validating + mutating) | `fastify` or NestJS controller serving admission webhook responses | Same OPA-pre-evaluation pattern as the Go webhook |
-| Tick emit | NATS via `nats.js`, Loki via slog-equivalent (`pino` JSON), HatSwap CR via the K8s client | Same fan-out shape as Go's `internal/tick/emitter.go` |
-| Leader election | `coordination.k8s.io/v1` Lease (same as Go uses controller-runtime for) | Standard K8s pattern; ensures only one operator instance reconciles at a time |
+| Layer                           | Library / pattern                                                                                          | Why                                                                           |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Kubernetes client               | `@kubernetes/client-node` (official)                                                                       | Official; well-maintained; informer/watcher primitives                        |
+| CRD types                       | Generated from OpenAPI schema via `kubernetes-models` or hand-authored TS interfaces matching crds/\*.yaml | Same shape as Go `api/v1alpha1/types.go`                                      |
+| Reconcile pattern               | controller-runtime-equivalent: informer → workqueue → reconciler                                           | Mirror Go operator's structure for parity                                     |
+| NestJS shell (optional)         | NestJS for HTTP / metrics / health endpoints                                                               | Composes with the rest of Max's agentic-organization stack                    |
+| Webhook (validating + mutating) | `fastify` or NestJS controller serving admission webhook responses                                         | Same OPA-pre-evaluation pattern as the Go webhook                             |
+| Tick emit                       | NATS via `nats.js`, Loki via slog-equivalent (`pino` JSON), HatSwap CR via the K8s client                  | Same fan-out shape as Go's `internal/tick/emitter.go`                         |
+| Leader election                 | `coordination.k8s.io/v1` Lease (same as Go uses controller-runtime for)                                    | Standard K8s pattern; ensures only one operator instance reconciles at a time |
 
 ## Acceptance
 
@@ -103,11 +103,11 @@ The Go scaffold already exists + is functional as the operator-of-record. A TS i
 
 Aaron 2026-05-25, on Max's experience level:
 
-> *"max needs to learn the operator pattern in k8s he does not know k8s really at all he is backend/frontend over paas so he has no much devops"*
+> _"max needs to learn the operator pattern in k8s he does not know k8s really at all he is backend/frontend over paas so he has no much devops"_
 
 And on the typical adoption arc:
 
-> *"he will be resistant probably like most devs at first until he internlizes is worth"*
+> _"he will be resistant probably like most devs at first until he internlizes is worth"_
 
 This is normal and expected. Backend/frontend developers coming from PaaS abstractions often see K8s as ceremony overhead; the operator pattern specifically has its own jargon (informer, workqueue, reconcile loop, finalizer, CRD, admission controller, status subresource, server-side apply) that takes a week or two to internalize. The "aha" usually arrives when Max sees a 200-line CRD + 50-line reconciler do what would be 500+ lines of imperative state-management code in a traditional backend service.
 

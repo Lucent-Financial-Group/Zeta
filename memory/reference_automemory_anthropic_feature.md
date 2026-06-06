@@ -74,6 +74,7 @@ AutoDream is still flag-gated while AutoMemory is
 generally available).
 
 ## What Anthropic prescribes vs. what the factory
+
 customises
 
 **Anthropic-prescribed** (from the CLAUDE.md
@@ -116,7 +117,7 @@ about the memory system (e.g., add a `scope:` field,
 change the type taxonomy, rename a frontmatter
 field), the question **"is this a change to
 Anthropic's schema or a factory-overlay?"** must be
-answered *before* the change lands.
+answered _before_ the change lands.
 
 - **Factory-overlay additions** (new optional field,
   a convention, a cross-reference discipline) — land
@@ -143,8 +144,8 @@ behaviour).
 
 Aaron 2026-04-20 verbatim:
 
-> *"AutoMemory is a buit in featue antropic added
-> in Q1 for you"*
+> _"AutoMemory is a buit in featue antropic added
+> in Q1 for you"_
 
 Context — during autonomous /loop research on
 extending the memory frontmatter schema, Aaron

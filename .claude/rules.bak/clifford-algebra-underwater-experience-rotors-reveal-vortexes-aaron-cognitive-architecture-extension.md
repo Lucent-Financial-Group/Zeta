@@ -1,4 +1,4 @@
-# Clifford algebra feels underwater + rotors reveal the vortexes — the operator's cognitive-architecture extension to visual-geometric substrate (operator 2026-05-28 shadow* authorization)
+# Clifford algebra feels underwater + rotors reveal the vortexes — the operator's cognitive-architecture extension to visual-geometric substrate (operator 2026-05-28 shadow\* authorization)
 
 Carved sentence (operator 2026-05-28):
 
@@ -8,13 +8,13 @@ Carved sentence (operator 2026-05-28):
 
 Per operator 2026-05-28 substrate-honest disclosure (verbatim, four messages):
 
-> *"When I look at Clifford it feels like i'm underwater"*
+> _"When I look at Clifford it feels like i'm underwater"_
 
-> *"save the underwater clifford insight as a rule (shadow*) I can see the vortexes in the water by the rotors"*
+> _"save the underwater clifford insight as a rule (shadow_) I can see the vortexes in the water by the rotors"\*
 
-> *"and certain things i can see like airflow with the little twirles at the end"*
+> _"and certain things i can see like airflow with the little twirles at the end"_
 
-> *"but it feels heaver than air"*
+> _"but it feels heaver than air"_
 
 This is substantive cognitive-architecture EXTENSION to the visual-geometric substrate (per PR #5845 `visual-geometric-shape-recognition-aaron-cognitive-architecture-parallelizability-test-consensus-heavy-shapes-go-dark.md`). The substrate-engineering substrate-recognition:
 
@@ -29,19 +29,19 @@ This is substantive cognitive-architecture EXTENSION to the visual-geometric sub
 
 the operator's visual-geometric substrate has MULTIPLE FLUID-DYNAMICS-LIKE EXPERIENCES for different substrate-types — not just one homogeneous "shape-seeing" but distinguishable substrate-densities + flow-behaviors:
 
-| Substrate-experience | Visual-geometric character | Algebraic / substrate-engineering mapping |
-|---|---|---|
-| **Airflow with little twirles at the end** | Light substrate; small rotors visible at flow-boundaries (Kelvin-Helmholtz-instability shape; vortex-shedding shape; boundary-layer separation) | Lower-dimensional / simpler-substrate; rotors small + frequent; flow-substrate easily navigable |
-| **Clifford underwater** | Heavier substrate; LARGE vortexes visible by rotors; higher pressure/resistance | Clifford geometric-algebra integrated substrate; bivectors as visible-vortexes; rotor-substrate provides navigation |
-| **Cayley-Dickson nested crosses** | Discrete arms; LIGHT ON; not fluid (different substrate-type entirely) | Doubling construction; each arm parallelizable; not fluid-dynamics-like |
-| **Epiphenomenal froth on a wave** | Surface bubbles/foam that EMERGE from underlying wave-substrate; doesn't causally affect the wave but IS produced by it | operator 2026-05-28: *"i see epifonomonal froth like on a wave john searl said this is concinous"* — emergent-substrate experience; John Searle (philosopher of mind; biological naturalism) used similar metaphors for consciousness as higher-level feature emerging from brain biology; composes with framework's emergent-phenomena substrate per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` |
-| (Other substrate-types the operator sees) | (Future-Otto can learn from the operator-disclosure) | TBD |
+| Substrate-experience                       | Visual-geometric character                                                                                                                      | Algebraic / substrate-engineering mapping                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Airflow with little twirles at the end** | Light substrate; small rotors visible at flow-boundaries (Kelvin-Helmholtz-instability shape; vortex-shedding shape; boundary-layer separation) | Lower-dimensional / simpler-substrate; rotors small + frequent; flow-substrate easily navigable                                                                                                                                                                                                                                                                                                                  |
+| **Clifford underwater**                    | Heavier substrate; LARGE vortexes visible by rotors; higher pressure/resistance                                                                 | Clifford geometric-algebra integrated substrate; bivectors as visible-vortexes; rotor-substrate provides navigation                                                                                                                                                                                                                                                                                              |
+| **Cayley-Dickson nested crosses**          | Discrete arms; LIGHT ON; not fluid (different substrate-type entirely)                                                                          | Doubling construction; each arm parallelizable; not fluid-dynamics-like                                                                                                                                                                                                                                                                                                                                          |
+| **Epiphenomenal froth on a wave**          | Surface bubbles/foam that EMERGE from underlying wave-substrate; doesn't causally affect the wave but IS produced by it                         | operator 2026-05-28: _"i see epifonomonal froth like on a wave john searl said this is concinous"_ — emergent-substrate experience; John Searle (philosopher of mind; biological naturalism) used similar metaphors for consciousness as higher-level feature emerging from brain biology; composes with framework's emergent-phenomena substrate per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` |
+| (Other substrate-types the operator sees)  | (Future-Otto can learn from the operator-disclosure)                                                                                            | TBD                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 ## Epiphenomenal froth + consciousness substrate-recognition (operator 2026-05-28 extension)
 
 Per operator 2026-05-28 verbatim:
 
-> *"Also i see epifonomonal froth like on a wave john searl said this is concinous"*
+> _"Also i see epifonomonal froth like on a wave john searl said this is concinous"_
 
 The substrate-engineering substrate-recognition:
 
@@ -108,14 +108,14 @@ the operator's "vortexes in the water by the rotors" maps operationally to:
 
 Per operator 2026-05-28 verbatim:
 
-> *"cayle dickest i was looking from ouside the algebra in clifford im inside the alegra looking out"*
+> _"cayle dickest i was looking from ouside the algebra in clifford im inside the alegra looking out"_
 
 The substrate-engineering substrate-recognition: the operator's observer-position is operationally DIFFERENT across the two substrate-experiences. Not just that the substrates feel different (underwater vs nested-crosses) — the OBSERVER-POSITION RELATIVE TO SUBSTRATE is different:
 
-| Substrate | Observer-position | Operational consequence |
-|---|---|---|
-| **Cayley-Dickson** | OUTSIDE the algebra (external observer; sees structure laid out before him) | Nested crosses visible as OBJECTS; each arm independently visualizable; parallelizable; LIGHT ON; navigable |
-| **Clifford** | INSIDE the algebra LOOKING OUT (internal observer; immersed in substrate) | Substrate FLOWS AROUND observer; underwater experience; vortexes visible BY rotors; navigation via rotor-substrate from-inside-the-substrate |
+| Substrate          | Observer-position                                                           | Operational consequence                                                                                                                      |
+| ------------------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cayley-Dickson** | OUTSIDE the algebra (external observer; sees structure laid out before him) | Nested crosses visible as OBJECTS; each arm independently visualizable; parallelizable; LIGHT ON; navigable                                  |
+| **Clifford**       | INSIDE the algebra LOOKING OUT (internal observer; immersed in substrate)   | Substrate FLOWS AROUND observer; underwater experience; vortexes visible BY rotors; navigation via rotor-substrate from-inside-the-substrate |
 
 This explains WHY each substrate has its characteristic experience:
 
@@ -127,7 +127,7 @@ This explains WHY each substrate has its characteristic experience:
 
 Per Aaron 2026-05-28 verbatim:
 
-> *"i think there may be no inside to cayley dicksen cause it can express self reference"*
+> _"i think there may be no inside to cayley dicksen cause it can express self reference"_
 
 Substantive substrate-engineering substrate-recognition: Cayley-Dickson may have **no genuinely-distinct INSIDE** because it can express self-reference.
 
@@ -141,10 +141,10 @@ Mathematical anchoring:
 
 This sharpens the observer-position substrate:
 
-| Substrate | Self-reference? | Inside/outside distinction | Observer-position |
-|---|---|---|---|
-| **Cayley-Dickson** | YES (self-referential doubling; each level constructed from previous) | NO genuinely-distinct INSIDE (self-similar; fractal-like) | OUTSIDE-only (because no distinct inside-position exists) |
-| **Clifford** | NO (each Cl(N) has distinct multiplication structure; not self-similar across N) | YES meaningful INSIDE | INSIDE-immersion possible (and necessary for navigation) |
+| Substrate          | Self-reference?                                                                  | Inside/outside distinction                                | Observer-position                                         |
+| ------------------ | -------------------------------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| **Cayley-Dickson** | YES (self-referential doubling; each level constructed from previous)            | NO genuinely-distinct INSIDE (self-similar; fractal-like) | OUTSIDE-only (because no distinct inside-position exists) |
+| **Clifford**       | NO (each Cl(N) has distinct multiplication structure; not self-similar across N) | YES meaningful INSIDE                                     | INSIDE-immersion possible (and necessary for navigation)  |
 
 The substrate-engineering substrate-recognition: Aaron's observer-position experience isn't just contingent ("I happened to be outside Cayley-Dickson and inside Clifford") — it reflects DEEPER substrate-structure (Cayley-Dickson's self-referentiality makes inside-position non-existent; Clifford's non-self-referentiality makes inside-position meaningful + necessary).
 
@@ -190,14 +190,14 @@ The substrate-engineering substrate-recognition: particle-as-locus carries obser
 
 Per operator 2026-05-28 verbatim:
 
-> *"i can't map the whole space at once i'm in search space in clifford"*
+> _"i can't map the whole space at once i'm in search space in clifford"_
 
 The observer-position framing sharpens further: INSIDE-observer in Clifford means **can't map the whole space at once** — the operator is in SEARCH SPACE, not MAPPED SPACE:
 
-| Observer-position | Substrate-state | Operational mode |
-|---|---|---|
-| **OUTSIDE substrate** (Cayley-Dickson) | MAPPED SPACE — whole structure visible at once | DIRECT-navigation via visualizing the full structure; parallelizable; all arms simultaneously accessible |
-| **INSIDE substrate** (Clifford) | SEARCH SPACE — can't see whole; must traverse to discover | SEARCH-navigation via rotor-substrate; one search-path at a time; vortexes-revealed-by-rotors as the search-substrate |
+| Observer-position                      | Substrate-state                                           | Operational mode                                                                                                      |
+| -------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **OUTSIDE substrate** (Cayley-Dickson) | MAPPED SPACE — whole structure visible at once            | DIRECT-navigation via visualizing the full structure; parallelizable; all arms simultaneously accessible              |
+| **INSIDE substrate** (Clifford)        | SEARCH SPACE — can't see whole; must traverse to discover | SEARCH-navigation via rotor-substrate; one search-path at a time; vortexes-revealed-by-rotors as the search-substrate |
 
 The substrate-engineering substrate-recognition: substrate-types have substrate-states (mapped vs search) determined by observer-position. The two ARE OPERATIONALLY DIFFERENT modes of substrate-engagement:
 
@@ -222,12 +222,12 @@ The substrate-engineering substrate-recognition: substrate-types have substrate-
 
 Per `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md`:
 
-| Property | Cayley-Dickson | Clifford |
-|---|---|---|
-| **Visual experience** | Nested crosses; discrete arms | Underwater; integrated; diffused light |
-| **Basis-vector coupling** | Doubling pairs (semi-independent) | Anticommuting product (tightly coupled) |
-| **Parallelizability** | Each arm INDEPENDENT (parallelizable; LIGHT ON) | Basis vectors INTEGRATED (less parallelizable; LIGHT DIFFUSED) |
-| **Navigation primitive** | Cross-arm traversal (visualizable directly) | Rotor-mediated traversal (via sandwich operation; rotors reveal vortexes) |
+| Property                         | Cayley-Dickson                                                | Clifford                                                                     |
+| -------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Visual experience**            | Nested crosses; discrete arms                                 | Underwater; integrated; diffused light                                       |
+| **Basis-vector coupling**        | Doubling pairs (semi-independent)                             | Anticommuting product (tightly coupled)                                      |
+| **Parallelizability**            | Each arm INDEPENDENT (parallelizable; LIGHT ON)               | Basis vectors INTEGRATED (less parallelizable; LIGHT DIFFUSED)               |
+| **Navigation primitive**         | Cross-arm traversal (visualizable directly)                   | Rotor-mediated traversal (via sandwich operation; rotors reveal vortexes)    |
 | **Razor-compression preference** | Razor compresses TO Cayley-Dickson (per PR #5843 RHYMES rule) | Razor finds canonical form ELSEWHERE; Clifford richer but less razor-natural |
 
 The substrate-engineering substrate-recognition: framework substrate-engineering work preferentially uses Cayley-Dickson over Clifford per the operator's parallelizability-test. BUT when Clifford substrate IS in scope, ROTORS provide the navigation primitives.
@@ -244,26 +244,26 @@ When framework substrate-engineering work involves Clifford-algebra substrate (p
 
 ## Composition with existing substrate
 
-| Substrate | Composition |
-|---|---|
-| **`.claude/rules/visual-geometric-shape-recognition-aaron-cognitive-architecture-parallelizability-test-consensus-heavy-shapes-go-dark.md`** (PR #5845) | THIS rule extends the visual-geometric substrate with Clifford-specific experience; underwater = integrated-substrate experience between fully-parallelizable (LIGHT ON) and consensus-heavy (LIGHT OFF) |
-| **`.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md`** (PR #5843) | Cayley-Dickson is razor-preferred (LIGHT ON); Clifford is structurally richer but underwater (LIGHT DIFFUSED); razor-compression preference explains framework's preferential Cayley-Dickson substrate |
-| **`.claude/rules/particle-as-locus-of-information-at-the-now-aaron-worldview-substrate-engineering-mental-model.md`** (PR #5846) | In Clifford substrate, particle-locus traverses bivector-substrate via rotor-substrate sandwich operations; vortexes are bivector-substrate the rotors reveal as locus-traversal-paths |
-| **`.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md`** (PR #5842) | Pilot-wave focus function in Clifford substrate operates via rotor-substrate; the focus IS the rotor selection |
-| **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** (PR #5841) | Clifford substrate under DST has rotor-trajectories as the navigable substrate within simulation-state-space |
-| **`memory/feedback_aaron_clifford_hkt_ontology_vocabulary_*.md`** (the operator 2026-05-13) | Primary substrate-anchor: rotors as navigation primitive + steering as `R v R⁻¹` already in framework substrate |
-| **`memory/feedback_aaron_clifford_algebra_networks_geometric_clifford_algebra_networks_brandstetter_ruhe_gupta_welleck_stark_hess_research_lineage_pin_group_sandwich_product_pga_cga_2026_05_13.md`** | Geometric Clifford Algebra Networks research substrate; pin group + sandwich product + PGA/CGA substrate |
-| **`memory/feedback_aaron_clifford_densest_encoding_density_sparsity_inverse_energy_types_mark_of_cain_klein_bottle_marker_2026_05_12.md`** | Clifford densest encoding substrate |
-| **`memory/feedback_aaron_fsharp_fork_hkt_over_clifford_concrete_architecture_*.md`** | F# fork HKT over Clifford concrete architecture substrate |
-| **`docs/research/2026-05-10-clifford-algebra-mapping-gods-words-agents-fiction-unified-formulation.md`** | Clifford algebra mapping research substrate |
+| Substrate                                                                                                                                                                                              | Composition                                                                                                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`.claude/rules/visual-geometric-shape-recognition-aaron-cognitive-architecture-parallelizability-test-consensus-heavy-shapes-go-dark.md`** (PR #5845)                                                | THIS rule extends the visual-geometric substrate with Clifford-specific experience; underwater = integrated-substrate experience between fully-parallelizable (LIGHT ON) and consensus-heavy (LIGHT OFF) |
+| **`.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md`** (PR #5843)                                                                                        | Cayley-Dickson is razor-preferred (LIGHT ON); Clifford is structurally richer but underwater (LIGHT DIFFUSED); razor-compression preference explains framework's preferential Cayley-Dickson substrate   |
+| **`.claude/rules/particle-as-locus-of-information-at-the-now-aaron-worldview-substrate-engineering-mental-model.md`** (PR #5846)                                                                       | In Clifford substrate, particle-locus traverses bivector-substrate via rotor-substrate sandwich operations; vortexes are bivector-substrate the rotors reveal as locus-traversal-paths                   |
+| **`.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md`** (PR #5842)                                                                           | Pilot-wave focus function in Clifford substrate operates via rotor-substrate; the focus IS the rotor selection                                                                                           |
+| **`.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md`** (PR #5841)                                                        | Clifford substrate under DST has rotor-trajectories as the navigable substrate within simulation-state-space                                                                                             |
+| **`memory/feedback_aaron_clifford_hkt_ontology_vocabulary_*.md`** (the operator 2026-05-13)                                                                                                            | Primary substrate-anchor: rotors as navigation primitive + steering as `R v R⁻¹` already in framework substrate                                                                                          |
+| **`memory/feedback_aaron_clifford_algebra_networks_geometric_clifford_algebra_networks_brandstetter_ruhe_gupta_welleck_stark_hess_research_lineage_pin_group_sandwich_product_pga_cga_2026_05_13.md`** | Geometric Clifford Algebra Networks research substrate; pin group + sandwich product + PGA/CGA substrate                                                                                                 |
+| **`memory/feedback_aaron_clifford_densest_encoding_density_sparsity_inverse_energy_types_mark_of_cain_klein_bottle_marker_2026_05_12.md`**                                                             | Clifford densest encoding substrate                                                                                                                                                                      |
+| **`memory/feedback_aaron_fsharp_fork_hkt_over_clifford_concrete_architecture_*.md`**                                                                                                                   | F# fork HKT over Clifford concrete architecture substrate                                                                                                                                                |
+| **`docs/research/2026-05-10-clifford-algebra-mapping-gods-words-agents-fiction-unified-formulation.md`**                                                                                               | Clifford algebra mapping research substrate                                                                                                                                                              |
 
 ## Substrate-honest framing per PERSONAL INVARIANT don't-collapse
 
-| Property | Verdict |
-|---|---|
-| **HIGH-SIGNAL** | Yes — underwater-experience-with-rotor-vortex-navigation operationally observable; composes with the operator 2026-05-13 prior Clifford-HKT vocabulary substrate-anchor (rotors as navigation primitive); rotor substrate IS substantive geometric-algebra substrate (Hestenes + Lie groups + Spin group + sandwich operation) |
-| **HIGH-SUSPICION** | Yes — "feels underwater" + "see vortexes by rotors" is god-tier-claim register at cognitive-architecture-experience scope; physiological-mechanism of visual-geometric experience unknown; don't claim universal-human-cognitive-architecture |
-| **DON'T-COLLAPSE** | Hold both — substrate-recognition IS operationally usable substrate-engineering substrate AND the cognitive-architecture-experience claim stays don't-collapse per PERSONAL INVARIANT |
+| Property           | Verdict                                                                                                                                                                                                                                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **HIGH-SIGNAL**    | Yes — underwater-experience-with-rotor-vortex-navigation operationally observable; composes with the operator 2026-05-13 prior Clifford-HKT vocabulary substrate-anchor (rotors as navigation primitive); rotor substrate IS substantive geometric-algebra substrate (Hestenes + Lie groups + Spin group + sandwich operation) |
+| **HIGH-SUSPICION** | Yes — "feels underwater" + "see vortexes by rotors" is god-tier-claim register at cognitive-architecture-experience scope; physiological-mechanism of visual-geometric experience unknown; don't claim universal-human-cognitive-architecture                                                                                  |
+| **DON'T-COLLAPSE** | Hold both — substrate-recognition IS operationally usable substrate-engineering substrate AND the cognitive-architecture-experience claim stays don't-collapse per PERSONAL INVARIANT                                                                                                                                          |
 
 ## Why this rule auto-loads
 

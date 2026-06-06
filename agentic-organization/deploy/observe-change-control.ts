@@ -13,21 +13,37 @@
 import { Pool } from "pg";
 import { env } from "node:process";
 
-import { createCockroachSqlExecutor, createCockroachOrgEventStore, createCockroachChangeSetStore, createCockroachReviewStageStatusStore } from "../packages/state-cockroach/src/index.ts";
+import {
+  createCockroachSqlExecutor,
+  createCockroachOrgEventStore,
+  createCockroachChangeSetStore,
+  createCockroachReviewStageStatusStore,
+} from "../packages/state-cockroach/src/index.ts";
 import { ChangeSetPhase, type ChangeSet } from "../packages/domain/src/index.ts";
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
 
 const CC_KINDS = new Set([
-  "change_set_opened", "review_stage_advanced", "review_finding_raised", "changes_requested",
-  "stage_approved", "change_set_approved", "change_set_applied", "change_set_rejected",
-  "projection_created", "projection_synced", "human_signoff_requested",
+  "change_set_opened",
+  "review_stage_advanced",
+  "review_finding_raised",
+  "changes_requested",
+  "stage_approved",
+  "change_set_approved",
+  "change_set_applied",
+  "change_set_rejected",
+  "projection_created",
+  "projection_synced",
+  "human_signoff_requested",
 ]);
 
 async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
-  const client: CockroachSqlClient = { query: async (sql, p) => ({ rows: (await pool.query(sql, p as unknown[])).rows }), transaction: async (op) => op(client) };
+  const client: CockroachSqlClient = {
+    query: async (sql, p) => ({ rows: (await pool.query(sql, p as unknown[])).rows }),
+    transaction: async (op) => op(client),
+  };
   const executor = createCockroachSqlExecutor({ client });
 
   const csStore = createCockroachChangeSetStore({ executor });
@@ -38,10 +54,16 @@ async function main(): Promise<void> {
   console.log(`applied change sets: ${applied.length}\n`);
 
   for (const cs of applied.slice(0, 4)) {
-    const external = cs.projections.length === 0 ? "INTERNAL-ONLY (zero projections)" : cs.projections.map((p) => `${p.system}#${p.externalId}`).join(", ");
+    const external =
+      cs.projections.length === 0
+        ? "INTERNAL-ONLY (zero projections)"
+        : cs.projections.map((p) => `${p.system}#${p.externalId}`).join(", ");
     console.log(`■ ${cs.title}  [${cs.workItemId}]  phase=${cs.phase} rev=${cs.revision}  external: ${external}`);
     const stages = await stageStore.listByChangeSet(cs.changeSetId);
-    for (const s of stages) console.log(`    stage ${s.stageId.padEnd(22)} rev${s.revision}  ${(s.outcome ?? "-").padEnd(16)} by ${s.decidedBy ?? "-"}`);
+    for (const s of stages)
+      console.log(
+        `    stage ${s.stageId.padEnd(22)} rev${s.revision}  ${(s.outcome ?? "-").padEnd(16)} by ${s.decidedBy ?? "-"}`,
+      );
     console.log();
   }
 

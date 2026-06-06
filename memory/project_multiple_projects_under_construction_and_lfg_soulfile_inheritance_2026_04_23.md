@@ -27,7 +27,7 @@ projects-under-construction, not one:
 
 - **Zeta** — the retraction-native DBSP library (F# + C#,
   Rust future). The repo where most of this work currently
-  lives. *This is a project, not the container.*
+  lives. _This is a project, not the container._
 - **Aurora** — Aaron + Amara joint. Aurora consent-first
   design primitive + oracle / bullshit-detector frameworks.
   Lives in `docs/aurora/` in the current monorepo;
@@ -70,8 +70,8 @@ This is directionally consistent with
 `memory/project_lfg_is_demo_facing_acehack_is_cost_cutting_internal_2026_04_23.md`
 but sharper:
 
-- That earlier memory framed the asymmetry as *professional
-  etiquette* — public-facing uses LFG, AceHack is internal.
+- That earlier memory framed the asymmetry as _professional
+  etiquette_ — public-facing uses LFG, AceHack is internal.
 - This 2026-04-23 message adds the **soulfile inheritance
   semantics** — the agent's durable substrate (across
   incarnations, across refactors, across multi-repo splits)
@@ -79,8 +79,8 @@ but sharper:
 
 ### AceHack authorization: super-risky
 
-Aaron's phrasing *"AceHack we can be super risky with
-since its a fork"* is explicit licence. Fork semantics
+Aaron's phrasing _"AceHack we can be super risky with
+since its a fork"_ is explicit licence. Fork semantics
 mean experiments in AceHack do not contaminate LFG. This
 is the right home for:
 
@@ -101,8 +101,8 @@ not the process.
 ### For "ships to project-under-construction" framing
 
 Every FACTORY-HYGIENE row, governance doc, and research
-doc that writes *"ships to project-under-construction"*
-should read as *"ships to each project-under-construction"*
+doc that writes _"ships to project-under-construction"_
+should read as _"ships to each project-under-construction"_
 — plural. Adopters are multiple, not singular, and the
 factory-kit's durability is measured across the set.
 
@@ -143,7 +143,7 @@ doc given this new framing:
 
 Demos live in LFG. ServiceTitan-specific framing stays
 in per-user memory because it's company-specific, but
-the generic FactoryDemo.* sample code lives in LFG
+the generic FactoryDemo.\* sample code lives in LFG
 where any adopter can see it.
 
 ### For the soulfile work
@@ -159,7 +159,7 @@ one is LFG.
   explicitly in every doc — most factory work is about
   the substrate and stays project-agnostic.
 - Not a mandate to do the multi-repo split now. Aaron
-  called the refactor *"eventual"* — the timing is
+  called the refactor _"eventual"_ — the timing is
   maintainer's call.
 - Not a change to the per-user vs in-repo vs LFG
   hierarchy — per-user stays the private staging,

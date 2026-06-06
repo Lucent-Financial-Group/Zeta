@@ -31,6 +31,7 @@ The root-level \`usb-nixos-installer/\` was the first installer substrate in the
 ## Why this path is retired
 
 The canonical AI-cluster substrate at \`full-ai-cluster/usb-nixos-installer/\` supersedes it. The canonical version has the SAME content PLUS:
+
 - \`zeta-install.sh\` (zero-typing install helper)
 - \`zeta-first-boot.sh\` (first-boot service substrate per B-0754)
 - \`flake.lock\` (reproducible build pin)
@@ -45,7 +46,7 @@ Per the substrate-check-before-worry-deployment discipline (PR #5291) + Kestrel'
    - \`.github/workflows/build-installer-iso.yml\` targets \`infra/nixos/hosts/installer/\` (different substrate)
    - \`.github/workflows/build-ai-cluster-iso.yml\` targets \`full-ai-cluster/usb-nixos-installer/\` (canonical, not root)
 
-2. **NOT referenced by tools/ci/audit-installer-substrate.ts** (audits only \`full-ai-cluster/usb-nixos-installer/*\` paths)
+2. **NOT referenced by tools/ci/audit-installer-substrate.ts** (audits only \`full-ai-cluster/usb-nixos-installer/\*\` paths)
 
 3. **4 doc references in backlog/PR-discussion files are HISTORICAL** (describe past substrate state; remain accurate after deletion):
    - \`docs/backlog/P3/B-0725\` (polyglot-accelerator-hardware-shape)
@@ -80,7 +81,7 @@ Per Aaron's destructive-git-on-isolated-copies authorization: \"you ahve destruc
 
 - [x] Pre-delete audit: 0 workflow references; 0 audit-script references; 4 historical doc references (safe)
 - [x] Post-commit canary expected: HEAD = 60 = HEAD~1 (61) - 1 deleted top-level directory ✓
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] Authored from fresh independent clone (bypasses shared-checkout pack corruption)
 - [ ] CI green (required checks)
 - [ ] Copilot review pass
@@ -94,6 +95,7 @@ Per Aaron's destructive-git-on-isolated-copies authorization: \"you ahve destruc
 Removes the legacy root-level `usb-nixos-installer/` substrate now that the canonical installer substrate lives under `full-ai-cluster/usb-nixos-installer/`.
 
 **Changes:**
+
 - Deletes `usb-nixos-installer/README.md` (legacy USB bootstrap docs).
 - Deletes `usb-nixos-installer/nixos/installer/configuration.nix` (legacy installer ISO config).
 - Deletes `usb-nixos-installer/flake.nix` (legacy flake entrypoint).
@@ -102,18 +104,18 @@ Removes the legacy root-level `usb-nixos-installer/` substrate now that the cano
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| usb-nixos-installer/README.md | Deleted legacy documentation for the root-level USB installer substrate. |
-| usb-nixos-installer/nixos/installer/configuration.nix | Deleted the legacy NixOS installer configuration. |
-| usb-nixos-installer/flake.nix | Deleted the legacy flake definition for building the installer ISO. |
-
+| File                                                  | Description                                                              |
+| ----------------------------------------------------- | ------------------------------------------------------------------------ |
+| usb-nixos-installer/README.md                         | Deleted legacy documentation for the root-level USB installer substrate. |
+| usb-nixos-installer/nixos/installer/configuration.nix | Deleted the legacy NixOS installer configuration.                        |
+| usb-nixos-installer/flake.nix                         | Deleted the legacy flake definition for building the installer ISO.      |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **usb-nixos-installer/README.md:1**
-* P1: Deleting this legacy directory makes several existing cross-references inaccurate (they describe `full-ai-cluster/usb-nixos-installer/` as a copy of `../usb-nixos-installer/`, or list `usb-nixos-installer/` as an active scaffold dir). Confirmed occurrences: `full-ai-cluster/README.md`, `full-ai-cluster/flake.nix` (comment), `agentic-organization/docs/AI_CLUSTER_SCAFFOLD_CONTEXT.md`, and `agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md`. Please update those references in the same PR so current-state docs/comments don’t point at a path that no longer exists.
+
+- P1: Deleting this legacy directory makes several existing cross-references inaccurate (they describe `full-ai-cluster/usb-nixos-installer/` as a copy of `../usb-nixos-installer/`, or list `usb-nixos-installer/` as an active scaffold dir). Confirmed occurrences: `full-ai-cluster/README.md`, `full-ai-cluster/flake.nix` (comment), `agentic-organization/docs/AI_CLUSTER_SCAFFOLD_CONTEXT.md`, and `agentic-organization/docs/IMPLEMENTATION_READINESS_CHECKLIST.md`. Please update those references in the same PR so current-state docs/comments don’t point at a path that no longer exists.
 </details>
 
 ## General comments

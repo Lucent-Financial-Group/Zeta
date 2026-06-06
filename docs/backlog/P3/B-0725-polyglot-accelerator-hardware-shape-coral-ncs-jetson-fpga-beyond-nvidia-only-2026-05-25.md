@@ -27,20 +27,20 @@ composes_with:
 
 Aaron 2026-05-25, on the maintainer hardware inventory:
 
-> *"i own all these just not in first wave an many gadgets and fpga and such"*
+> _"i own all these just not in first wave an many gadgets and fpga and such"_
 
-Plus the Alexa-Amazon-data-loop observation: Alexa-website (Amazon) knows the shopping history and surfaced the accelerator inventory back to Aaron in conversation. That's the actual hardware list — Coral TPU, Intel Neural Compute Stick (Movidius MyriadX), NVIDIA Jetson modules, Xilinx/AMD + Intel/Altera FPGAs, plus *"many gadgets."* First-wave cluster build uses NVIDIA GPUs in the worker boxes; everything else activates over time as physical-deployment decisions surface.
+Plus the Alexa-Amazon-data-loop observation: Alexa-website (Amazon) knows the shopping history and surfaced the accelerator inventory back to Aaron in conversation. That's the actual hardware list — Coral TPU, Intel Neural Compute Stick (Movidius MyriadX), NVIDIA Jetson modules, Xilinx/AMD + Intel/Altera FPGAs, plus _"many gadgets."_ First-wave cluster build uses NVIDIA GPUs in the worker boxes; everything else activates over time as physical-deployment decisions surface.
 
 ## What's already in place
 
 Today's shipped substrate (no work needed; just leveraged):
 
-| Substrate | Path | What it gives us for polyglot |
-|-----------|------|-------------------------------|
-| GPU device plugin module | `full-ai-cluster/nixos/modules/gpu-device-plugin.nix` | Takes `zeta.gpu-device-plugin.vendors = ["nvidia"]` today; extending to `["nvidia","amd","intel","google-coral","intel-myriad","xilinx-fpga","intel-fpga"]` is appending to the list + adding a per-vendor DaemonSet block |
+| Substrate                 | Path                                                                       | What it gives us for polyglot                                                                                                                                                                                                                                                                                                                             |
+| ------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GPU device plugin module  | `full-ai-cluster/nixos/modules/gpu-device-plugin.nix`                      | Takes `zeta.gpu-device-plugin.vendors = ["nvidia"]` today; extending to `["nvidia","amd","intel","google-coral","intel-myriad","xilinx-fpga","intel-fpga"]` is appending to the list + adding a per-vendor DaemonSet block                                                                                                                                |
 | NFD per-device PCI labels | `full-ai-cluster/k8s/applications/node-feature-discovery/Application.yaml` | Auto-labels `feature.node.kubernetes.io/pci-<vendor>.present=true` for every PCI device class enabled in the chart values — Coral PCIe (1ac1), Jetson PCIe-edge, Xilinx FPGAs (10ee), all caught automatically. USB-attached accelerators (Coral USB, NCS USB) need NFD's `usb` source-plugin labels instead (different scheduling path; see notes below) |
-| disko-shape template | `full-ai-cluster/nixos/modules/disko-shapes/2nvme.nix` | Per-hardware-class shapes follow the same options pattern; future siblings `2nvme-with-coral-usb.nix`, `fpga-accel-node.nix`, etc. just add module options + partitions for their devices |
-| cluster-inventory capture | `full-ai-cluster/tools/cluster-inventory/capture.sh` | Already pulls NFD labels + lstopo XML per node; will surface the per-accelerator devices in the inventory once present |
+| disko-shape template      | `full-ai-cluster/nixos/modules/disko-shapes/2nvme.nix`                     | Per-hardware-class shapes follow the same options pattern; future siblings `2nvme-with-coral-usb.nix`, `fpga-accel-node.nix`, etc. just add module options + partitions for their devices                                                                                                                                                                 |
+| cluster-inventory capture | `full-ai-cluster/tools/cluster-inventory/capture.sh`                       | Already pulls NFD labels + lstopo XML per node; will surface the per-accelerator devices in the inventory once present                                                                                                                                                                                                                                    |
 
 The scheduling story is also in place **for PCIe-attached accelerators** — `nodeAffinity: feature.node.kubernetes.io/pci-10ee.present=true` targets nodes with Xilinx FPGAs; `pci-1ac1.present=true` targets nodes with Coral PCIe cards; same pattern for every PCIe vendor. **USB-attached accelerators** (Coral USB, Intel NCS / Movidius USB) need the NFD `usb` source-plugin labels instead (`feature.node.kubernetes.io/usb-<vendor>.present=true`); copying the PCI pattern for USB devices produces unschedulable pods. See the per-class extension paths below for which devices use which bus.
 
@@ -137,19 +137,19 @@ Per accelerator-class added:
 
 ## Edge-vs-datacenter fit (open question — Aaron 2026-05-25)
 
-Aaron: *"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"*. Real question; K8s fits some edge shapes well + is wrong for others. Quick map:
+Aaron: _"i want to push fpgas at the edge but i'm not sure k8s is the right iot shape"_. Real question; K8s fits some edge shapes well + is wrong for others. Quick map:
 
-| Edge form factor | K8s fits? | What works |
-|------------------|-----------|------------|
-| Mini-PC / NUC / Jetson with full Linux | YES — K3S as edge node, K8s-native everything | K3S + Akri for leaf-device discovery |
-| Raspberry Pi 4/5 with FPGA HAT | YES — K3S as edge node | Same as above |
-| Bare FPGA on PCIe in a desktop host | YES — host is normal cluster node | Existing GPU device-plugin pattern |
-| Bare FPGA on USB attached to a Pi-class device | MOSTLY — needs host Linux | Akri's USB device discovery handles it |
-| Microcontroller + FPGA combo (MCU does boot, FPGA does inference, no Linux) | NO — K8s is overkill / wrong shape | Firmware + MQTT or Matter or Reticulum |
-| Battery-constrained intermittent-network device | NO — K8s assumes continuous control-plane reachability | Reticulum mesh OR KubeEdge (designed for intermittent) |
-| Solar/PoE-powered always-on sensor | DEPENDS — K8s if you can spare the watts for kubelet; firmware if not | Akri at the gateway if not running K8s on the device |
+| Edge form factor                                                            | K8s fits?                                                             | What works                                             |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------ |
+| Mini-PC / NUC / Jetson with full Linux                                      | YES — K3S as edge node, K8s-native everything                         | K3S + Akri for leaf-device discovery                   |
+| Raspberry Pi 4/5 with FPGA HAT                                              | YES — K3S as edge node                                                | Same as above                                          |
+| Bare FPGA on PCIe in a desktop host                                         | YES — host is normal cluster node                                     | Existing GPU device-plugin pattern                     |
+| Bare FPGA on USB attached to a Pi-class device                              | MOSTLY — needs host Linux                                             | Akri's USB device discovery handles it                 |
+| Microcontroller + FPGA combo (MCU does boot, FPGA does inference, no Linux) | NO — K8s is overkill / wrong shape                                    | Firmware + MQTT or Matter or Reticulum                 |
+| Battery-constrained intermittent-network device                             | NO — K8s assumes continuous control-plane reachability                | Reticulum mesh OR KubeEdge (designed for intermittent) |
+| Solar/PoE-powered always-on sensor                                          | DEPENDS — K8s if you can spare the watts for kubelet; firmware if not | Akri at the gateway if not running K8s on the device   |
 
-**Practical answer**: K8s + Akri + KubeEdge covers the *richer-end* of edge (Jetson, Pi, NUC, anything with full Linux + reliable enough network). For *true IoT* (microcontrollers, battery, intermittent, single-purpose), K8s is the wrong shape and a Reticulum-based mesh substrate is closer to right — the framework already has Reticulum / AllJoyn / Green Lantern Hardware Spec substrate (B-0289 + earlier rule references). The HYBRID — K8s at the gateway + Reticulum past the gateway — is likely the load-bearing answer for FPGAs-at-edge specifically.
+**Practical answer**: K8s + Akri + KubeEdge covers the _richer-end_ of edge (Jetson, Pi, NUC, anything with full Linux + reliable enough network). For _true IoT_ (microcontrollers, battery, intermittent, single-purpose), K8s is the wrong shape and a Reticulum-based mesh substrate is closer to right — the framework already has Reticulum / AllJoyn / Green Lantern Hardware Spec substrate (B-0289 + earlier rule references). The HYBRID — K8s at the gateway + Reticulum past the gateway — is likely the load-bearing answer for FPGAs-at-edge specifically.
 
 Relevant pieces:
 
@@ -158,7 +158,7 @@ Relevant pieces:
 - **OpenYurt** (https://openyurt.io/) — similar; Alibaba's edge-K8s
 - **Reticulum** (already in framework substrate; B-0289-class) — physical-mesh for the past-the-gateway tier
 
-**Aaron's sharpening 2026-05-25**: *"i'm thinking it will require reticiulum at the edge and in cluster"* — not the hybrid I sketched (K8s in cluster + Reticulum past gateway). The actual direction is **Reticulum throughout** — cluster nodes ALSO speak Reticulum natively, alongside K8s. K8s and Reticulum compose as layers rather than partitioning by network-tier:
+**Aaron's sharpening 2026-05-25**: _"i'm thinking it will require reticiulum at the edge and in cluster"_ — not the hybrid I sketched (K8s in cluster + Reticulum past gateway). The actual direction is **Reticulum throughout** — cluster nodes ALSO speak Reticulum natively, alongside K8s. K8s and Reticulum compose as layers rather than partitioning by network-tier:
 
 - **K8s + Cilium** owns intra-cluster networking, pod-to-pod, Service mesh, NetworkPolicy
 - **Reticulum** owns identity-routing + cross-substrate addressability — every cluster node has a Reticulum identity in addition to its SPIRE SVID; every edge device speaks the same mesh; routing is identity-based not address-based; physical layer is fungible (TCP / LoRa / packet-radio / serial)

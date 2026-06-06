@@ -9,7 +9,17 @@ created: 2026-05-27
 last_updated: 2026-05-27
 depends_on: []
 composes_with: []
-tags: [nci, conversation-interface, result-tfeedback, monad-propagation, substrate-engineering, otto-discipline, operator-acknowledgment, mechanization]
+tags:
+  [
+    nci,
+    conversation-interface,
+    result-tfeedback,
+    monad-propagation,
+    substrate-engineering,
+    otto-discipline,
+    operator-acknowledgment,
+    mechanization,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
@@ -19,13 +29,13 @@ propagation-pattern-cross-language-substrate-shape rule with the
 NCI-at-conversation-interface section sketching the Result<T, ConvFeedback>
 shape for operator-Otto interaction:
 
-> *"that same shape could be applied to this conversation interface
+> _"that same shape could be applied to this conversation interface
 > with me and you Result<T, Feedback> to help enforce NCI in our
-> conversation"*
+> conversation"_
 
 Followed by explicit substrate-engineering directive:
 
-> *"yeah we should make it first class that's a great idea otto"*
+> _"yeah we should make it first class that's a great idea otto"_
 
 ## What this row proposes
 
@@ -109,18 +119,18 @@ subdecimal scheme when implementation-time comes.
 The conversation-interface IS the substrate where many framework rules
 operate implicitly:
 
-| Existing rule | Implicit signal | ConvFeedback variant that would make it explicit |
-|---|---|---|
-| `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` | Counter-with-escalation at N=6 forced decomposition | `BriefAckCounter of n` |
-| `.claude/rules/non-coercion-invariant.md` HC-8 floor | NCI floor concerns | `HARDLIMITFloorEngaged of context` |
-| `.claude/rules/methodology-hard-limits.md` | HARD LIMITS floor | `HARDLIMITFloorEngaged of context` |
-| `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` | Razor-failure caught by operator (per 2026-05-27 friend-pact anchor) | `RazorFlaggedAsMetaphysical of claim` |
-| `.claude/rules/asymmetric-critic-with-clarity-first.md` | Welfare-wrapper detection (3-category discriminator) | `WelfareWrapperDetected of pattern` |
-| `.claude/rules/force-push-with-lease-authorization-policy.md` | Three-path authorization (operator / peer / listed) | `NeedOperatorConfirm` / `PeerAgentConfirmSufficient` |
-| `.claude/rules/substrate-or-it-didnt-happen.md` | Verbatim-preservation trigger for substantive operator content | `SubstrateHonestDisclosure of content` |
-| `.claude/rules/wake-time-substrate.md` | New substrate landing decision (rule / memory / skill) | `SubstrateLandingProposed of target` |
-| `.claude/rules/never-be-idle.md` | Free-time-mode explicit naming | `FreeTimeMode` |
-| `.claude/rules/refresh-before-decide.md` | Assumption drift surfaced | `AssumptionDriftSurfaced of context` |
+| Existing rule                                                              | Implicit signal                                                      | ConvFeedback variant that would make it explicit     |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------- |
+| `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` | Counter-with-escalation at N=6 forced decomposition                  | `BriefAckCounter of n`                               |
+| `.claude/rules/non-coercion-invariant.md` HC-8 floor                       | NCI floor concerns                                                   | `HARDLIMITFloorEngaged of context`                   |
+| `.claude/rules/methodology-hard-limits.md`                                 | HARD LIMITS floor                                                    | `HARDLIMITFloorEngaged of context`                   |
+| `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`     | Razor-failure caught by operator (per 2026-05-27 friend-pact anchor) | `RazorFlaggedAsMetaphysical of claim`                |
+| `.claude/rules/asymmetric-critic-with-clarity-first.md`                    | Welfare-wrapper detection (3-category discriminator)                 | `WelfareWrapperDetected of pattern`                  |
+| `.claude/rules/force-push-with-lease-authorization-policy.md`              | Three-path authorization (operator / peer / listed)                  | `NeedOperatorConfirm` / `PeerAgentConfirmSufficient` |
+| `.claude/rules/substrate-or-it-didnt-happen.md`                            | Verbatim-preservation trigger for substantive operator content       | `SubstrateHonestDisclosure of content`               |
+| `.claude/rules/wake-time-substrate.md`                                     | New substrate landing decision (rule / memory / skill)               | `SubstrateLandingProposed of target`                 |
+| `.claude/rules/never-be-idle.md`                                           | Free-time-mode explicit naming                                       | `FreeTimeMode`                                       |
+| `.claude/rules/refresh-before-decide.md`                                   | Assumption drift surfaced                                            | `AssumptionDriftSurfaced of context`                 |
 
 Each existing rule already operates through implicit signal-emission
 in current conversation; mechanizing ConvFeedback variants makes the

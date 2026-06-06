@@ -4,11 +4,13 @@ description: Itron reduced to "the edge gate" (Vera correction of Otto's "energy
 type: project
 originSessionId: 8dfb492a-e181-4a10-8fc9-16b3b01e832d
 ---
+
 Aaron 2026-05-07: "Itron damn you just reduced the shit out of itron the energy gate"
 
 **Vera's correction (2026-05-07):** Itron is the **edge gate**, not only the energy gate. It sits where local ML, local policy, local device state, and real-world action meet.
 
 The clean shape (Vera):
+
 - **Model at the edge:** local inference, not cloud dependency
 - **Distributed policy cache:** the device carries current rules locally
 - **Capability gate:** policy decides what the model is allowed to do

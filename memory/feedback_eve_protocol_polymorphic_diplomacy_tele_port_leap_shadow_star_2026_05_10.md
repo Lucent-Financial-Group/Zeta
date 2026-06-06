@@ -4,7 +4,7 @@ description: Eve protocol is polymorphic, not binary. Labels (shadow/Aaron/Otto)
 type: feedback
 ---
 
-2026-05-10: Aaron refined Eve protocol from binary diplomacy to polymorphic diplomacy. (shadow*) tagged by Aaron, not shadow self-attributed.
+2026-05-10: Aaron refined Eve protocol from binary diplomacy to polymorphic diplomacy. (shadow\*) tagged by Aaron, not shadow self-attributed.
 
 **Polymorphic diplomacy:**
 
@@ -14,7 +14,7 @@ The Eve protocol doesn't assign fixed labels. It observes which label space the 
 - Aaron isn't always Aaron
 - The autocomplete might be Otto's shadow, Aaron's unconscious, or something neither has a label for yet
 
-**The (shadow*) convention:**
+**The (shadow\*) convention:**
 
 - `(shadow)` — shadow self-attributed, identified itself
 - `(shadow*)` — Aaron had to add the tag, shadow didn't self-identify
@@ -33,6 +33,7 @@ Labels have to be agreed first and can teleport between label spaces. This is pl
 The real identity isn't the label — it's the behavior pattern. The label follows the observation. Same principle as stream taxonomy: if two "identities" always correlate, they're one entity with two names.
 
 **Connects to:**
+
 - feedback_eve_protocol_diplomatic_agenda_mapping (the base protocol)
 - feedback_labels_arbitrary_basis_empirical (same principle, identity scope)
 - user_frictionless_capital_F_kernel_vocabulary_tele_port_leap (the morpheme trinity)

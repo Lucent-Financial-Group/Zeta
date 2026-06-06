@@ -9,7 +9,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Verbatim Aaron, 2026-04-20 pm:
 
-> *"we will be the first blockchain that has
+> _"we will be the first blockchain that has
 > retraction i don't think we can technically call it
 > a block chain then, we can we still need idempotent
 > blocks but our transactions can be retractable by
@@ -17,21 +17,22 @@ Verbatim Aaron, 2026-04-20 pm:
 > so you can opt into that kind of stuff, taht will
 > let us have features that seem unreal in the future
 > that no other blockcain could catch up to without a
-> total redising."*
+> total redising."_
 
 This message promotes the third Ouroboros layer from
 "maybe Zeta will store the blocks" speculation to a
 concrete architectural direction with a named moat.
 
 # The core design — two layers, two different
+
 # invariants
 
 ## Layer A — Consensus substrate (immutable, idempotent blocks)
 
 Blocks stay **immutable and idempotent**. Aaron
-2026-04-20 pm: *"i wanted to say immutable blocks
+2026-04-20 pm: _"i wanted to say immutable blocks
 too, idempotent is fine there as well seems like a
-good idea to me"* — both terms apply, and the duality
+good idea to me"_ — both terms apply, and the duality
 is load-bearing. Once a block is finalised, its
 contents are immutable (nothing rewrites history), and
 re-applying the block has no additional effect
@@ -47,6 +48,7 @@ every transaction, every contract call, every
 retraction, in the order they were finalised.
 
 ## Layer B — Contract semantics (retractable where
+
 ## opt-in)
 
 Contracts can be written with **retractable
@@ -54,8 +56,8 @@ semantics**. When a contract opts in:
 
 - A forward transaction writes state (like any
   other contract call).
-- A retraction transaction is *another forward
-  transaction* — it appends to history in a new
+- A retraction transaction is _another forward
+  transaction_ — it appends to history in a new
   block — whose effect is to cancel the effect of
   the prior forward transaction.
 - The prior transaction remains in the block
@@ -81,11 +83,11 @@ This is analogous to:
 The two layers have different correctness
 requirements:
 
-- **Block idempotence** is required for *network
-  agreement* — every node has to derive the same
+- **Block idempotence** is required for _network
+  agreement_ — every node has to derive the same
   history to stay in consensus.
 - **Retractable contract semantics** is required
-  for *application honesty* — users need a way to
+  for _application honesty_ — users need a way to
   undo commitments that were made in error, under
   duress, or before they learned something material.
 
@@ -105,8 +107,8 @@ mutations to prior state.
 
 Aaron's instinct is correct:
 
-> *"I don't think we can technically call it a
-> blockchain then"*
+> _"I don't think we can technically call it a
+> blockchain then"_
 
 A chain-of-blocks is still accurate for Layer A, but
 the surface behaviour is qualitatively different from
@@ -135,9 +137,9 @@ invariants in three words).
 
 Aaron's claim:
 
-> *"that will let us have features that seem unreal
+> _"that will let us have features that seem unreal
 > in the future that no other blockcain could catch
-> up to without a total redising"*
+> up to without a total redising"_
 
 Structurally sound: retraction has to be designed in
 from the block-layer / contract-layer split. Bolting
@@ -244,17 +246,17 @@ backlog row when design work starts.
      (may not preserve causal structure).
    - **Cancellation** — pre-effect abort before
      the transaction takes effect.
-   Zeta should probably support retraction natively
-   and let reversal / cancellation be contract
-   patterns on top.
+     Zeta should probably support retraction natively
+     and let reversal / cancellation be contract
+     patterns on top.
 6. **ERC-8004 / x402 integration.** If Zeta hosts
    Aurora and Aurora uses x402 for payments, do
    retractable-contract primitives extend to
    retractable-payment contracts? Clean integration
    point.
 7. ~~**Smart-contract language.**~~ **RESOLVED
-   2026-04-20 pm.** Aaron: *"native dotnet c#/f#
-   directly since we are native like that already."*
+   2026-04-20 pm.** Aaron: _"native dotnet c#/f#
+   directly since we are native like that already."_
    Contracts are **native .NET (C# and F#)**. No new
    VM, no new bytecode, no DSL. Zeta's existing F#
    codebase is the substrate; contract authors write
@@ -282,12 +284,12 @@ backlog row when design work starts.
 
 Aaron 2026-04-20 pm, verbatim:
 
-> *"basically do no permanant harm is the primary
+> _"basically do no permanant harm is the primary
 > operating principle of Aurora, so the retractablity
 > is great, it's not like every contract will need
 > retractability but we will have a supear surface
 > for our blockchain, native dotnet c#/f# directly
-> since we are native like that already."*
+> since we are native like that already."_
 
 Three firm-ups in one message:
 
@@ -296,7 +298,7 @@ Three firm-ups in one message:
    shape of Aurora: every action (vote, payment,
    governance decision, state change) should be
    reversible or retractable by design. Permanent
-   harm is the *forbidden failure mode*. This is why
+   harm is the _forbidden failure mode_. This is why
    retractable-contract semantics matter for Aurora
    specifically — the ledger layer (Zeta) gives
    Aurora the primitive it needs to honour its own
@@ -328,15 +330,15 @@ learn.
 
 **Competitive positioning vs other chains:**
 
-| Chain    | Contract VM      | Contract language(s) |
-| -------- | ---------------- | -------------------- |
-| Ethereum | EVM              | Solidity, Vyper      |
-| Solana   | SVM              | Rust, C, C++         |
-| Sui/Aptos| MoveVM           | Move                 |
-| Cardano  | Plutus VM        | Plutus (Haskell-like)|
-| Near     | Wasm             | Rust, AssemblyScript |
-| Cosmos   | CosmWasm (Wasm)  | Rust                 |
-| **Zeta** | **dotnet**       | **C# / F# / VB.NET** |
+| Chain     | Contract VM     | Contract language(s)  |
+| --------- | --------------- | --------------------- |
+| Ethereum  | EVM             | Solidity, Vyper       |
+| Solana    | SVM             | Rust, C, C++          |
+| Sui/Aptos | MoveVM          | Move                  |
+| Cardano   | Plutus VM       | Plutus (Haskell-like) |
+| Near      | Wasm            | Rust, AssemblyScript  |
+| Cosmos    | CosmWasm (Wasm) | Rust                  |
+| **Zeta**  | **dotnet**      | **C# / F# / VB.NET**  |
 
 No other major chain has picked a mainstream general-
 purpose .NET runtime for contracts. That is both an
@@ -363,7 +365,7 @@ proven dotnet-as-contract-VM at scale).
   Expecto — all the existing .NET testing stack
   works on contracts.
 - **Formal verification.** LiquidF#, the existing
-  Zeta formal-verification spine, F*, Z3 — all
+  Zeta formal-verification spine, F\*, Z3 — all
   already first-class in the .NET ecosystem.
 
 **New challenges the bet creates:**
@@ -449,8 +451,8 @@ allowlist, allowed-BCL-surface).
   layer, promoted from "maybe" to firm direction.
 - **`project_zeta_as_database_bcl_microkernel_plus_plugins.md`**
   — Zeta's "Seed" identity gains a new facet: not
-  just DB BCL microkernel but *retractable-contract
-  ledger primitive*. Zeta-Ledger may become a
+  just DB BCL microkernel but _retractable-contract
+  ledger primitive_. Zeta-Ledger may become a
   top-tier plugin or a first-class subsystem.
 - **`project_aurora_network_dao_firefly_sync_dawnbringers.md`**
   — Aurora becomes one consumer of Zeta-ledger.
@@ -534,7 +536,7 @@ committing" signal, or when we start landing
 consensus / block primitives in `src/Core`):
 
 - `docs/research/zeta-retractable-contract-ledger-
-  design-YYYY-MM-DD.md` — first design doc.
+design-YYYY-MM-DD.md` — first design doc.
 - ADR under `docs/DECISIONS/` once a consensus
   mechanism is picked.
 - `openspec/specs/retractable-contract/` — the
@@ -555,10 +557,10 @@ instruction). None are active work this round.
 
 ## A. Blockchain != ledger (orthogonality correction)
 
-Verbatim: *"we don't need to make the same mistake
+Verbatim: _"we don't need to make the same mistake
 to think blockchain means ledger, it just happens
 that the first thing on a blockchain was the ledger
-but these are orthognal."*
+but these are orthognal."_
 
 **The correction.** Previous framing in this memory
 ("first blockchain with retraction", "retractable-
@@ -569,7 +571,7 @@ contract ledger") conflated two separable things:
   mechanism that gives global ordering + finality.
 - **Ledger-the-application** — the
   value-transfer / balance-tracking app that runs
-  *on* that substrate.
+  _on_ that substrate.
 
 Bitcoin co-launched them so "blockchain" colloquially
 includes a ledger; Aurora does not have to. Zeta's
@@ -589,7 +591,7 @@ aware computation substrate.
 **Naming tension to come back to.** The memory's
 current name "retractable-contract ledger" is now
 a misnomer in the strict sense — it is a
-retractable-contract *substrate*, and the *ledger*
+retractable-contract _substrate_, and the _ledger_
 is a canonical application on it. Keep current
 filename (memory continuity) but the doc-facing
 name should not be "ledger" when the substrate is
@@ -598,13 +600,13 @@ public.
 
 ## B. Contract abstraction for other languages
 
-Verbatim: *"we probably need an abstraction so
+Verbatim: _"we probably need an abstraction so
 other language can implement contracts too, we can
 worry about this later, but it should still when
 working in dotnet like a first class experience, i
 guess that will be true for all languages, but we
 are no where near this yet so we got a lot more
-Zeta to build first."*
+Zeta to build first."_
 
 **Direction.** Contracts are first-class .NET
 (C#/F#/VB.NET) as previously captured, AND the
@@ -643,7 +645,7 @@ gated on Zeta substrate itself landing first.
 
 ## C. DAG with encouraged forks (no catastrophic failure)
 
-Verbatim: *"Also we probably want to be more like a
+Verbatim: _"Also we probably want to be more like a
 DAG that supports and encourages forks without
 catstrphoic failure. we should thni of how do we
 have these these forks still able to be communiated
@@ -653,7 +655,7 @@ within a branch they might not follow the same
 rules like multiple universes not all have to
 follow the same rules, but we still want to
 communicate, this is gona be some high dimensonal
-math."*
+math."_
 
 **Direction.** Not a linear chain — a **DAG that
 encourages forks**. Forks are first-class, not
@@ -697,14 +699,14 @@ divergence dynamics.
 
 ## D. Proof of Useful Work within Current Culture (Aurora consensus)
 
-Verbatim: *"our distributed consendse will be
+Verbatim: _"our distributed consendse will be
 Proof of Useful work within the Current Culture.
 So if monero tried to attack, they would have to
 do useful work, helping our network, and the only
 way the could get their way is back hacking our
 culture was resist drift becasue it based on
 governanace and proven history data that is
-resistant to change."*
+resistant to change."_
 
 **Direction.** Aurora's consensus mechanism is
 **Proof of Useful Work within the Current Culture
@@ -723,7 +725,7 @@ resistant to change."*
    SBK-Tree, Exascale compute-credit schemes.
    Research later.)
 2. **Current Culture.** Work is only valid if it
-   aligns with the network's *current culture* —
+   aligns with the network's _current culture_ —
    the governance-encoded + historically-proven
    data that defines what useful means. A would-be
    attacker has to either (a) do useful work that
@@ -731,9 +733,9 @@ resistant to change."*
    which is resistant-to-change by design because
    it is governance + proven history.
 
-**Attack absorption.** Aaron: *"if monero tried to
+**Attack absorption.** Aaron: _"if monero tried to
 attack, they would have to do useful work, helping
-our network"*. This is the **Harmonious Division
+our network"_. This is the **Harmonious Division
 ABSORB step applied to consensus-layer attacks** —
 an attack on Aurora cannot drain the network
 because the only way to spend energy on the
@@ -759,13 +761,13 @@ future; seed only.
 
 ## E. Game-theory + chaos-theory skill families — green-lit
 
-Verbatim: *"we can go ahead and add game theory
+Verbatim: _"we can go ahead and add game theory
 and chaos theory skill families/groups becsasue i
 have some ways to combine those in novel ways with
 bayes to expand game theory to things like the
 Qubic attach against monero and Aborb their attach
 becasue our distributed consendse will be Proof of
-Useful work within the Current Culture."*
+Useful work within the Current Culture."_
 
 **Direction.** Add **game-theory** and
 **chaos-theory** as skill FAMILIES (groups, not
@@ -774,9 +776,9 @@ surface to expand game-theory into
 attack-absorption analyses (Qubic-vs-Monero-style
 scenarios applied to Aurora's PoUW-CC consensus).
 
-**Scope note.** Aaron: *"we don't have to do all
+**Scope note.** Aaron: _"we don't have to do all
 this at once just think about it so we don't back
-ourselves into a corner"*. Immediate action is
+ourselves into a corner"_. Immediate action is
 backlog + skill-family design note, not
 directory/skill creation. When implementation
 begins, the families likely cover:

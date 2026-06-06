@@ -3,21 +3,22 @@ name: DST-EXEMPT IS DEFERRED-BUG — never a safe state, no comment that says "D
 description: Otto-281 counterweight memory. DST exemptions are not containment; they are deferred bugs. The SharderInfoTheoreticTests "DST-exempt" comment masked a flake that fired 3 times on unrelated PRs before getting fixed. Pattern: when tempted to write "DST-exempt", instead either fix the determinism or delete the test. Never ship a long-lived DST-exempt tag.
 type: feedback
 ---
+
 ## The rule
 
 **"DST-exempt" is not a safe state. It is a deferred bug.**
 
 When a test or code path is marked "DST-exempt" with a comment
 that says "uses X which is process-randomized" or "depends on
-environment Y", that is NOT containment. It is *masking* the
+environment Y", that is NOT containment. It is _masking_ the
 determinism violation behind a label that sounds like an escape
 hatch.
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"see how that one DST exception caused the fake [flake],
+> _"see how that one DST exception caused the fake [flake],
 > this is why DST is so important, when we violate, we
-> introduce random failures."*
+> introduce random failures."_
 
 ## The case that triggered the rule
 
@@ -90,7 +91,7 @@ primitives:**
    inside a property check → fixed `DateTimeOffset` constant.
 
 2. **If the determinism cannot be fixed, delete the test.** A
-   test that is *probabilistic in CI* is not a test — it's a
+   test that is _probabilistic in CI_ is not a test — it's a
    coin flip that gets logged. Either commit to fixing the
    determinism or delete the test entirely. Don't ship a
    dual-state "sometimes-pass-sometimes-fail" thing under a
@@ -99,7 +100,7 @@ primitives:**
 3. **If the determinism cannot be fixed AND the test cannot be
    deleted (e.g., it tests an inherently-stochastic property
    like a Monte Carlo bound), wrap the entire test body in a
-   loop with a fixed seed and assert the *aggregate* property
+   loop with a fixed seed and assert the _aggregate_ property
    over N runs.** That converts the stochastic property into a
    deterministic-meta-property over fixed seeds.
 
@@ -126,13 +127,13 @@ identical output. Determinism restored. PR #478.
 
 ## Composes with
 
-- **Otto-272** *DST-ify the stabilization process* — counterweight
+- **Otto-272** _DST-ify the stabilization process_ — counterweight
   discipline must be deterministic. Same energy: don't carve
   out exceptions; fix the root.
-- **Otto-248** *never ignore flakes* — flakes ARE the determinism
+- **Otto-248** _never ignore flakes_ — flakes ARE the determinism
   violation, not "transient infra noise". Same shape applied
   to test-side code.
-- **Otto-264** *rule of balance* — every found mistake triggers
+- **Otto-264** _rule of balance_ — every found mistake triggers
   a counterweight. This memory IS the counterweight to the
   "DST-exempt" mistake.
 - **GOVERNANCE.md §section on DST** — DST-everywhere as the

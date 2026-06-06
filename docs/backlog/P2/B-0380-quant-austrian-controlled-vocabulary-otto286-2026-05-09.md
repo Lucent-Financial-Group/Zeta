@@ -15,7 +15,6 @@ composes_with: [B-0023, B-0381, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
 parent: B-0023
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, otto-286, controlled-vocabulary]
 type: research
-
 ---
 
 # B-0380 — Controlled-vocabulary pass for quant × Austrian synthesis
@@ -42,20 +41,20 @@ the four load-bearing terms in B-0023 with Otto-286 precision:
    all three layers.
 
 3. **"Formalization"** — distinguish:
-   - *Mathematical representation*: translating a verbal claim
+   - _Mathematical representation_: translating a verbal claim
      into notation without changing content
-   - *Rigorous proof*: deriving the claim from stated axioms
+   - _Rigorous proof_: deriving the claim from stated axioms
      under the chosen mathematical framework
-   - *Empirical embedding*: giving the claim observable
+   - _Empirical embedding_: giving the claim observable
      consequences testable under the math framework
-   Which of these three does "quant-grade formalization" require?
+     Which of these three does "quant-grade formalization" require?
 
 4. **"Synthesis gap"** — the gap is not just "no paper combines
-   them" but a structural claim: the quant tradition *presupposes*
+   them" but a structural claim: the quant tradition _presupposes_
    equilibrium / neutral-money / efficient-markets priors that
    contradict Austrian foundations. The synthesis gap is a
-   *foundations incompatibility* problem, not merely a
-   *literature gap* problem. Precise statement of this
+   _foundations incompatibility_ problem, not merely a
+   _literature gap_ problem. Precise statement of this
    distinction changes the research agenda.
 
 ## Why first
@@ -103,13 +102,13 @@ Expected: `quant-austrian-vocabulary.md` present.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing vocabulary doc found in
-  `docs/aurora/`, skills, or memory files for this specific
-  quant × Austrian domain intersection. B-0021 carries a
-  related methodology note (§methodology) but does not resolve
-  these four definitions.
+      `docs/aurora/`, skills, or memory files for this specific
+      quant × Austrian domain intersection. B-0021 carries a
+      related methodology note (§methodology) but does not resolve
+      these four definitions.
 - [x] Dependency-restructure: no `depends_on` — this is the root
-  atom for the B-0023 decomposition. Reciprocal `composes_with`
-  added to all child rows B-0381–B-0387.
+      atom for the B-0023 decomposition. Reciprocal `composes_with`
+      added to all child rows B-0381–B-0387.
 
 ## Composes with
 

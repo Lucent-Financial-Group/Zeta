@@ -23,15 +23,15 @@ at**, not CLAUDE.md alone. Triggers:
    read drops out of working memory even though it was loaded
    at bootstrap. **Detection is asymmetric**: the harness
    compacts silently, so "did I just get compacted?" is itself
-   a fuzzy signal (Aaron 2026-04-28: *"I don't know if you can
+   a fuzzy signal (Aaron 2026-04-28: _"I don't know if you can
    tell when you get compacted but thats another OR that would
-   be a good reason to reread."*). **Fire on suspicion, not
+   be a good reason to reread."_). **Fire on suspicion, not
    confirmation** — the cost of a precautionary re-read is
    ~2-3 ticks; the cost of operating with a decayed wake-time
    floor is compounding. Concrete cues that compaction likely
-   happened: a *"This session is being continued from a
-   previous conversation that ran out of context"* preface, a
-   *"Summary:"* recap block at the head of a turn, a sudden
+   happened: a _"This session is being continued from a
+   previous conversation that ran out of context"_ preface, a
+   _"Summary:"_ recap block at the head of a turn, a sudden
    loss of conversation-context that should have been recent,
    or the model surfacing a substantive in-progress task with
    no in-context memory of how it was started.
@@ -42,9 +42,9 @@ it before continuing.
 
 **Scope of the re-read (Aaron 2026-04-28 surfaced this when
 CLAUDE.md-alone re-read failed to prevent an Otto-279 violation
-on `docs/research/**`):**
+on `docs/research/**`):\*\*
 
-CLAUDE.md is a *pointer tree*, not the rule corpus. Re-reading
+CLAUDE.md is a _pointer tree_, not the rule corpus. Re-reading
 CLAUDE.md alone refreshes the bootstrap-pointer set, not the
 actual rules. The rules live in:
 
@@ -71,12 +71,12 @@ Still cheap relative to the cost of mis-applied carve-outs.
 **Why CLAUDE.md-alone is insufficient (concrete surfacing):**
 2026-04-28 I re-read CLAUDE.md after an Otto-357 violation
 (directive-language leak), then later edited research files
-and *over-scrubbed first names*, violating the Otto-279
+and _over-scrubbed first names_, violating the Otto-279
 history-surface carve-out. CLAUDE.md doesn't itself state
 "`docs/research/**` is a history surface where attribution is
 preserved" — that's in `docs/AGENT-BEST-PRACTICES.md` (and the
-EAT packet's own archive header line 4: *"first-name attribution
-permitted on `docs/research/**` per Otto-279"*). Re-reading
+EAT packet's own archive header line 4: _"first-name attribution
+permitted on `docs/research/**` per Otto-279"_). Re-reading
 CLAUDE.md alone left me with a half-remembered version of the
 role-refs rule (de-name everywhere) instead of the calibrated
 version (de-name on current-state surfaces; preserve on history
@@ -85,14 +85,14 @@ pointer.
 
 **Why:** this came directly from Aaron 2026-04-28:
 
-> *"that's an application failure, not a knowledge gap. is it
+> _"that's an application failure, not a knowledge gap. is it
 > avoiadble in the future? application failure one should always
 > ask that, maybe if you reread claude on a cadence since you are
-> long running."*
+> long running."_
 
 The trigger was a fresh Otto-357 violation: I had written
-*"Acknowledged Aaron's directive: 2nd-CLI verify before any 0/0/0
-convergence move"* — leaking the "directive" framing that
+_"Acknowledged Aaron's directive: 2nd-CLI verify before any 0/0/0
+convergence move"_ — leaking the "directive" framing that
 Otto-357 explicitly forbids ("Aaron's only directive is that
 there ARE no directives"). The rule was in CLAUDE.md, loaded at
 session start, and I still violated it.
@@ -115,8 +115,8 @@ agent-vigilance because vigilance decays).
 
 The "always ask" meta-routine Aaron named is itself the
 discipline: when an application failure surfaces, the next move
-isn't "noted, continuing" — it's *"is the failure mode
-structural? what mechanism prevents recurrence?"* Then build the
+isn't "noted, continuing" — it's _"is the failure mode
+structural? what mechanism prevents recurrence?"_ Then build the
 mechanism.
 
 **How to apply:**
@@ -145,8 +145,8 @@ mechanism.
 
 **Diagnostic tell:** if you write something that contradicts a
 known wake-time rule (e.g. "directive", "phantom deferral",
-"untouched stale claim"), and your reflexive thought is *"oh
-right, the rule says X"*, that's evidence the rule has decayed.
+"untouched stale claim"), and your reflexive thought is _"oh
+right, the rule says X"_, that's evidence the rule has decayed.
 Re-read before continuing is the corrective.
 
 **What this discipline does NOT do:**
@@ -164,8 +164,8 @@ Re-read before continuing is the corrective.
 (Otto-347).** A 2026-04-28 surfacing demonstrated the
 single-CLI-verify limit: the `pr-review-toolkit:silent-failure-
 hunter` plugin agent passed an over-scrubbed de-naming as
-*"consistent with Otto-279 history-surface attribution carve-
-out"* — i.e., the verifier got the rule inverted in the same
+_"consistent with Otto-279 history-surface attribution carve-
+out"_ — i.e., the verifier got the rule inverted in the same
 direction I did. When the actor and the verifier share the same
 rule-misreading, single-CLI verify is insufficient. Otto-347's
 "would be good to ask another cli/harness" is the actual

@@ -4,11 +4,11 @@ Substrate-honest scouting for B-0917 (interrupt-substrate in monad space) when T
 
 ## Three candidates the human maintainer surfaced 2026-05-28
 
-| Library | URL | Ecosystem | Status (as cited 2026-05-28) |
-|---|---|---|---|
-| `kleisli-ts` (YBogomolov) | https://github.com/YBogomolov/kleisli-ts | fp-ts | Last visible activity 2019-09 per cited search snippet; verify before adoption |
-| `io-ts` Kleisli module (gcanti) | https://gcanti.github.io/io-ts/modules/Kleisli.ts.html | io-ts | Marked **experimental** by gcanti; "published in order to get early feedback from the community" |
-| codesandbox examples | https://codesandbox.io/examples/package/kleisli-ts | n/a | Working examples for YBogomolov kleisli-ts |
+| Library                         | URL                                                    | Ecosystem | Status (as cited 2026-05-28)                                                                     |
+| ------------------------------- | ------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------ |
+| `kleisli-ts` (YBogomolov)       | https://github.com/YBogomolov/kleisli-ts               | fp-ts     | Last visible activity 2019-09 per cited search snippet; verify before adoption                   |
+| `io-ts` Kleisli module (gcanti) | https://gcanti.github.io/io-ts/modules/Kleisli.ts.html | io-ts     | Marked **experimental** by gcanti; "published in order to get early feedback from the community" |
+| codesandbox examples            | https://codesandbox.io/examples/package/kleisli-ts     | n/a       | Working examples for YBogomolov kleisli-ts                                                       |
 
 ## When to consult
 
@@ -30,7 +30,7 @@ Before authoring Kleisli substrate in TS scope (e.g., extending `tools/workflow-
 
 the human maintainer's snippet from the original message captures the math:
 
-> *"a Kleisli arrow is a function of the form A → M[B], where M represents a Monad (such as Promise, Either, or Task). This construct allows you to seamlessly chain or compose effectful functions together without dealing with nested monads or manually handling underlying context logic."*
+> _"a Kleisli arrow is a function of the form A → M[B], where M represents a Monad (such as Promise, Either, or Task). This construct allows you to seamlessly chain or compose effectful functions together without dealing with nested monads or manually handling underlying context logic."_
 
 Identity + composition obligations:
 
@@ -39,12 +39,12 @@ Identity + composition obligations:
 
 Composes with `monad-propagation-pattern-cross-language-substrate-shape.md` cross-language table:
 
-| Language | Composition primitive |
-|---|---|
-| F# | `Result.bind` / `computation expression` |
-| Rust | `?` operator |
+| Language   | Composition primitive                                         |
+| ---------- | ------------------------------------------------------------- |
+| F#         | `Result.bind` / `computation expression`                      |
+| Rust       | `?` operator                                                  |
 | TypeScript | `Result.map` / `.then` chains (or fp-ts `Kleisli` if adopted) |
-| Haskell | `>=>` (Kleisli composition) / `do` notation |
+| Haskell    | `>=>` (Kleisli composition) / `do` notation                   |
 
 ## Composes with
 

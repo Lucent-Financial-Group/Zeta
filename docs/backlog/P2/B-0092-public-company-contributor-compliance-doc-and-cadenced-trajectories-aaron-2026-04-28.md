@@ -11,7 +11,18 @@ last_updated: 2026-05-02
 depends_on: []
 composes_with:
   - B-0090
-tags: [aaron-2026-04-28, factory-hygiene, contributor-compliance, public-company, insider-information, cadenced-trajectories, sec-rule-10b-5, reg-fd, sarbanes-oxley]
+tags:
+  [
+    aaron-2026-04-28,
+    factory-hygiene,
+    contributor-compliance,
+    public-company,
+    insider-information,
+    cadenced-trajectories,
+    sec-rule-10b-5,
+    reg-fd,
+    sarbanes-oxley,
+  ]
 type: friction-reducer
 ---
 
@@ -22,13 +33,13 @@ type: friction-reducer
 Aaron 2026-04-28T23ish, generalizing the ServiceTitan-specific
 rule into reusable factory substrate:
 
-> *"we definitely need some contributor works for public
+> _"we definitely need some contributor works for public
 > company watch for insider information generalization in the
 > factory, that can be used by anyone at service titan to when
 > working on public repos or any one who works for any public
-> company, that's reusable substrate."*
+> company, that's reusable substrate."_
 
-> *"probably comes with trajectories I would think."*
+> _"probably comes with trajectories I would think."_
 
 Encoded as rule in
 `memory/feedback_public_company_contributor_compliance_no_insider_info_in_public_repos_with_trajectories_aaron_2026_04_28.md`.
@@ -71,7 +82,7 @@ Pointer in:
 
 ### 3. Trajectories — continuous practice surface
 
-Per Aaron's *"probably comes with trajectories"* framing,
+Per Aaron's _"probably comes with trajectories"_ framing,
 encode 5 cadenced trajectories:
 
 #### T1 — Continuous self-audit (every commit)
@@ -175,7 +186,7 @@ When picking this up:
    - Original depends_on: []
    - Composes_with: B-0090, B-0091, B-0090 cadence framework.
    - Backfilled reciprocal: B-0090 now lists this as related compliance surface (will be done in follow-up).
-   - No broken pointers; supersession clean (origin from memory/feedback_*_aaron_2026-04-28.md).
+   - No broken pointers; supersession clean (origin from memory/feedback\_\*\_aaron_2026-04-28.md).
 
 **Decomposition note**: B-0092 treated as broad (doc + 5 trajectories). Re-decomposed per "always re-decompose... assume mistakes" into 4 atomic children below. T3 deferred per original scope.
 

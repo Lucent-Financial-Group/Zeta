@@ -56,6 +56,7 @@ export function createCommandHandlerRegistry<Command extends TypedCommand, Resul
   }
 
   return {
-    resolveHandler: (commandType) => handlersByCommandType.get(commandType) as CommandHandler<Command, Result> | undefined,
+    resolveHandler: (commandType) =>
+      handlersByCommandType.get(commandType) as CommandHandler<Command, Result> | undefined,
   };
 }

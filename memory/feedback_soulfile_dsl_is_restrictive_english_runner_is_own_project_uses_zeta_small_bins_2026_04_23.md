@@ -27,7 +27,7 @@ Unpacks the restrictive-English constraint concretely:
 - **Feel like natural English** — reads as prose; the
   restriction is not visible in the surface syntax.
 - **Even if not exactly English** — minor divergences
-  allowed where the runner requires them; the *feel* is
+  allowed where the runner requires them; the _feel_ is
   the priority.
 - **Only allow words we have exact definitions for** —
   controlled vocabulary. Every word in a soulfile must
@@ -122,17 +122,17 @@ This message adds a concrete named peer:
 
 Updates the research doc (PR #156):
 
-| Stage | What the runner does |
-|---|---|
-| Compile-time | Takes restrictive-English DSL sources + absorbed git content + local-native DB, emits small-bin artifact(s). Runner-side packaging tool. |
-| Distribution-time | Envelope + manifest are small-bin; runner-side signing / attestation tool. |
-| Runtime | Runner interprets the restrictive-English DSL, delegates advanced features to Zeta, produces small-bin intermediate state. |
+| Stage             | What the runner does                                                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Compile-time      | Takes restrictive-English DSL sources + absorbed git content + local-native DB, emits small-bin artifact(s). Runner-side packaging tool. |
+| Distribution-time | Envelope + manifest are small-bin; runner-side signing / attestation tool.                                                               |
+| Runtime           | Runner interprets the restrictive-English DSL, delegates advanced features to Zeta, produces small-bin intermediate state.               |
 
 The earlier research doc said "representation candidate
 — Markdown + frontmatter". This message does not reject
 that — restrictive English **in** Markdown is fine. The
 structure of the soulfile can still be Markdown /
-frontmatter-bearing; the *execution* layer reads
+frontmatter-bearing; the _execution_ layer reads
 restrictive-English sentences.
 
 ## Why this composition is strong
@@ -176,7 +176,7 @@ restrictive-English sentences.
 - **Not a directive to implement the runner now.** Design
   clarification only.
 - **Not an F#-rejection.** F# remains Zeta's reference.
-  The runner is a *different* project; it picks its own
+  The runner is a _different_ project; it picks its own
   stack when the time comes.
 - **Not a commitment to Markdown as final DSL surface.**
   Restrictive-English-in-Markdown is one candidate; the

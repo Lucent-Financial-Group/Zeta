@@ -30,7 +30,7 @@ until a different seed passes. Pinning:
 2. Captures the specific counter-example for
    investigation.
 3. Lets fixes be verified against the known-bad case.
-4. Allows future property runs to explore *new* seed
+4. Allows future property runs to explore _new_ seed
    space without losing the counter-example.
 
 ## Concrete application — HLL property test (2026-04-23)

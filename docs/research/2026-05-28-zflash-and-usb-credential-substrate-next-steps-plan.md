@@ -12,13 +12,13 @@ Produced by background research agent dispatched 2026-05-28 per operator standin
 
 **Status: SHIPPED. Operationally exercised.**
 
-| Surface | State |
-|---|---|
-| `full-ai-cluster/tools/flash-usb.ts` — `--short` flag, `yes <4-hex>` challenge | Shipped, ~19KB |
-| `full-ai-cluster/tools/zflash.ts` — wrapper, ISO auto-discovery, iter-4.2/4.3 inject + freshness | Shipped, ~46KB / 1058 lines |
-| `full-ai-cluster/tools/zflash-setup.ts` — Touch ID PAM installer, `--install-alias` | Shipped, ~10KB |
-| `full-ai-cluster/tools/zflash-lib.ts` + `.test.ts` | Shipped, 113 + 244 lines |
-| PR #5010 — landed 2026-05-25 (carry-over from closed #4997); PR #4999 — settings.json permissions |
+| Surface                                                                                                | State                       |
+| ------------------------------------------------------------------------------------------------------ | --------------------------- |
+| `full-ai-cluster/tools/flash-usb.ts` — `--short` flag, `yes <4-hex>` challenge                         | Shipped, ~19KB              |
+| `full-ai-cluster/tools/zflash.ts` — wrapper, ISO auto-discovery, iter-4.2/4.3 inject + freshness       | Shipped, ~46KB / 1058 lines |
+| `full-ai-cluster/tools/zflash-setup.ts` — Touch ID PAM installer, `--install-alias`                    | Shipped, ~10KB              |
+| `full-ai-cluster/tools/zflash-lib.ts` + `.test.ts`                                                     | Shipped, 113 + 244 lines    |
+| PR #5010 — landed 2026-05-25 (carry-over from closed #4997); PR #4999 — settings.json permissions      |
 | **Empirical**: operator has run zflash + Touch ID 3+ times against real USBs in 2026-05-26/27 sessions |
 
 **Gaps (minor):** Touch ID timing-out under certain background-process conditions; Linux equivalent out of scope; `~/Downloads/` hard-coded.
@@ -61,14 +61,14 @@ The cluster has reached a state where the bottleneck is **empirical validation o
 
 ### Critical-path sequence (each step gates the next)
 
-| # | Step | Effort | Gates |
-|---|---|---|---|
-| **CP-1** | Build fresh ISO from current `origin/main` | S (CI workflow exists) | CP-2..CP-6 |
-| **CP-2** | Operator runs `bun zflash.ts --agent` end-to-end on fresh USB + fresh ISO | S (operator-runtime) | CP-3 |
-| **CP-3** | First boot on target PC: hit picker; select option 3 PAT; complete install | M (~15-30min) | CP-4 |
-| **CP-4** | Second boot same USB same PC: restore service fires; passphrase-prompted; per-cred files restored; ZERO `gh auth login` device-flow | M (~5min) | CP-5 |
-| **CP-5** | Reboot 3+ times same USB: validate ZERO gh-quota burn across N boots | S (~10min) | CP-6 |
-| **CP-6** | Demo walkthrough rehearsed on operator's actual Mac + actual USB | S | operator-personal-axis priority |
+| #        | Step                                                                                                                                | Effort                 | Gates                           |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------- |
+| **CP-1** | Build fresh ISO from current `origin/main`                                                                                          | S (CI workflow exists) | CP-2..CP-6                      |
+| **CP-2** | Operator runs `bun zflash.ts --agent` end-to-end on fresh USB + fresh ISO                                                           | S (operator-runtime)   | CP-3                            |
+| **CP-3** | First boot on target PC: hit picker; select option 3 PAT; complete install                                                          | M (~15-30min)          | CP-4                            |
+| **CP-4** | Second boot same USB same PC: restore service fires; passphrase-prompted; per-cred files restored; ZERO `gh auth login` device-flow | M (~5min)              | CP-5                            |
+| **CP-5** | Reboot 3+ times same USB: validate ZERO gh-quota burn across N boots                                                                | S (~10min)             | CP-6                            |
+| **CP-6** | Demo walkthrough rehearsed on operator's actual Mac + actual USB                                                                    | S                      | operator-personal-axis priority |
 
 **Effort estimate, CP-1 → CP-6 end-to-end: ~1 operator-day** (3-4 hours mostly-waiting punctuated by ~30 min active typing/fingerprinting). The substrate is built; what's left is exercise + bug-fix-on-empirical-failure loops.
 
@@ -148,12 +148,12 @@ Track F (cross-track heal): ─────────────── CP-6 �
 
 **Substrate-honest:** B-0883 + B-0884 should NOT block CP-1..CP-6. Operator's USB-iteration-speed priority needs current B-0852 substrate empirically demonstrable FIRST. Then B-0883/B-0884 lands as additive.
 
-| Phase | What ships | What's deferred |
-|---|---|---|
-| **Phase A (now → ~1 week)** | CP-1..CP-6 demo-ready | B-0883/B-0884; cluster substrate; PQ key material |
-| **Phase B (after A)** | Track B (`--bake-cred`), Track C (docs), Track D (boot robustness) | B-0884 still deferred until B-0883 prototype |
-| **Phase C (after B-0883 prototype)** | B-0884 integration: USB-bound credential substrate becomes KEY-STORE for PQ git-crypt; PQ key just becomes one more manifest entry | Hardware-bound key; per-AI distinct passphrases; cross-cluster federation |
-| **Phase D (after C + operator validation)** | B-0885 agent-private-encrypted-state Otto-first goes live | Other AI personas' private state |
+| Phase                                       | What ships                                                                                                                         | What's deferred                                                           |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Phase A (now → ~1 week)**                 | CP-1..CP-6 demo-ready                                                                                                              | B-0883/B-0884; cluster substrate; PQ key material                         |
+| **Phase B (after A)**                       | Track B (`--bake-cred`), Track C (docs), Track D (boot robustness)                                                                 | B-0884 still deferred until B-0883 prototype                              |
+| **Phase C (after B-0883 prototype)**        | B-0884 integration: USB-bound credential substrate becomes KEY-STORE for PQ git-crypt; PQ key just becomes one more manifest entry | Hardware-bound key; per-AI distinct passphrases; cross-cluster federation |
+| **Phase D (after C + operator validation)** | B-0885 agent-private-encrypted-state Otto-first goes live                                                                          | Other AI personas' private state                                          |
 
 **Architectural property preserved:** ONE credential substrate primitive (USB-bound encrypted blob with operator passphrase + USB-UUID derivation). B-0883 adds a CIPHER + USE-CASE; B-0884 wires that cipher into existing primitive WITHOUT inventing parallel primitive. Declarative manifest accommodates new cred types — that's the design's load-bearing property.
 
@@ -233,11 +233,11 @@ Operator punchline: "Second boot. I typed my passphrase ONCE. All credentials re
 
 ### Why this demo lands
 
-| Operator-personal-priority axis evidence (B-0886.2) | Demo moment |
-|---|---|
-| Iteration speed at DevOps | Reboot loop visibly shrinks from "device-flow tax × N" to "passphrase × N" |
-| In-front-of-your-eyes word-of-mouth | Colleague SEES USB + Touch ID + cred-restore log scroll past — visceral demonstrability |
-| Composes with B-0866 marketing strategy | Short story, small technical lift, immediately legible value |
+| Operator-personal-priority axis evidence (B-0886.2) | Demo moment                                                                             |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Iteration speed at DevOps                           | Reboot loop visibly shrinks from "device-flow tax × N" to "passphrase × N"              |
+| In-front-of-your-eyes word-of-mouth                 | Colleague SEES USB + Touch ID + cred-restore log scroll past — visceral demonstrability |
+| Composes with B-0866 marketing strategy             | Short story, small technical lift, immediately legible value                            |
 
 ---
 
@@ -245,15 +245,15 @@ Operator punchline: "Second boot. I typed my passphrase ONCE. All credentials re
 
 ### High-impact
 
-| # | Risk | Likelihood | Mitigation |
-|---|---|---|---|
-| **R1** | Step-ordering bug: picker fires AFTER `gh auth login` | Medium | Verify positioning BEFORE `gh auth login` on dry-run; regression test |
-| **R2** | USB-UUID mismatch install-time vs boot-time | Medium-High | Test CP-3 → CP-4 immediately; fallback "operator types USB-UUID at boot" |
-| **R3** | Touch ID PAM line clobbered by macOS update | Low | Re-run `zflash-setup`; idempotent |
-| **R4** | `mise activate` inside `bash -c` PATH propagation under sudo | Medium | Document explicit `bun` path fallback in zeta-install.sh |
-| **R5** | Fresh ISO build fails CI | Medium | Verify `build-ai-cluster-iso.yml` green BEFORE CP-1 |
-| **R6** | Target PC BIOS doesn't recognize USB as bootable | Low-Medium | Operator tests on actual target; document BIOS settings |
-| **R7** | Operator runs CP-2..CP-6 under dotgit-saturation | Medium | Have known-good ISO already in `~/Downloads/` |
+| #      | Risk                                                         | Likelihood  | Mitigation                                                               |
+| ------ | ------------------------------------------------------------ | ----------- | ------------------------------------------------------------------------ |
+| **R1** | Step-ordering bug: picker fires AFTER `gh auth login`        | Medium      | Verify positioning BEFORE `gh auth login` on dry-run; regression test    |
+| **R2** | USB-UUID mismatch install-time vs boot-time                  | Medium-High | Test CP-3 → CP-4 immediately; fallback "operator types USB-UUID at boot" |
+| **R3** | Touch ID PAM line clobbered by macOS update                  | Low         | Re-run `zflash-setup`; idempotent                                        |
+| **R4** | `mise activate` inside `bash -c` PATH propagation under sudo | Medium      | Document explicit `bun` path fallback in zeta-install.sh                 |
+| **R5** | Fresh ISO build fails CI                                     | Medium      | Verify `build-ai-cluster-iso.yml` green BEFORE CP-1                      |
+| **R6** | Target PC BIOS doesn't recognize USB as bootable             | Low-Medium  | Operator tests on actual target; document BIOS settings                  |
+| **R7** | Operator runs CP-2..CP-6 under dotgit-saturation             | Medium      | Have known-good ISO already in `~/Downloads/`                            |
 
 ### Medium-impact
 

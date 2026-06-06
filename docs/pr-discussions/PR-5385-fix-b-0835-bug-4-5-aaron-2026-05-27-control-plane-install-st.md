@@ -28,7 +28,7 @@ Fix: \`awk '\$3==\"disk\" && \$2!=\"0B\"{...}'\` filter excludes zero-size devic
 
 ### Bug 5 — \`gh: command not found\` on first login
 
-Operator: *\"when i log in gh command is not found\"*. Installer ISO had gh (iter-5.4.0 used it for \`gh auth login\` during install) but \`common.nix\` systemPackages didn't include it — auth tokens in \`~/.config/gh\` were stranded without the binary.
+Operator: _\"when i log in gh command is not found\"_. Installer ISO had gh (iter-5.4.0 used it for \`gh auth login\` during install) but \`common.nix\` systemPackages didn't include it — auth tokens in \`~/.config/gh\` were stranded without the binary.
 
 Fix: add \`gh\` to \`common.nix\` \`environment.systemPackages\` so the installed system has it for re-auth + ssh-key sync + future register/deregister tooling.
 

@@ -21,7 +21,12 @@ import type { AcePackage } from "./store.ts";
 export function packageHash(pkg: AcePackage): string {
   const { signature, ...rest } = pkg.manifest; // exclude signature from the identity
   void signature;
-  return "sha256:" + createHash("sha256").update(canonicalBytes({ manifest: rest, files: pkg.files })).digest("hex");
+  return (
+    "sha256:" +
+    createHash("sha256")
+      .update(canonicalBytes({ manifest: rest, files: pkg.files }))
+      .digest("hex")
+  );
 }
 
 /** Result of {@link safePackageHash}: the hash, or a reason the input was malformed. */

@@ -26,24 +26,22 @@ Copilot wasn't able to review any files in this pull request.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T19:50:14Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `2e99c63505`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -59,7 +57,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-25T19:50:14Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Keep default worktree on persistent storage**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Keep default worktree on persistent storage**
 
 Changing the fallback `worktree` to `/tmp/zeta-riven-loop-2` makes the loop depend on temporary storage that can be purged by reboot/OS cleanup, and this script has no bootstrap path to recreate or reclone the repo. When that directory disappears, every `git`/`gh` call fails because `run()` always executes with `cwd: worktree`, so the background loop can stall indefinitely until manual intervention. A persistent default (like the prior `$HOME/.local/share/...`) or explicit self-healing initialization is needed to avoid this outage mode.
 

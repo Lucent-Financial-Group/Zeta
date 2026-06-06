@@ -6,20 +6,20 @@
 
 Maintainer 2026-04-22 auto-loop-39 shared:
 
-> *"meata youtube is showing me pixel perfect image genration
+> _"meata youtube is showing me pixel perfect image genration
 > from test not fucking around,
-> https://www.youtube.com/watch?v=9AybxHgTjFk&t=1317s"*
+> https://www.youtube.com/watch?v=9AybxHgTjFk&t=1317s"_
 
 Meta (Facebook) video demonstrating pixel-perfect text-to-image
 generation, shared at timestamp `t=1317s` (21:57) — the
-timestamp is the maintainer's *"start here, this is the part
-not fucking around"* marker, not the video start.
+timestamp is the maintainer's _"start here, this is the part
+not fucking around"_ marker, not the video start.
 
 **Maintainer-honest caveat** (same-tick follow-up):
 
-> *"its not alwasy pixel perfect they siad but sometimes"*
+> _"its not alwasy pixel perfect they siad but sometimes"_
 
-So: *sometimes* pixel-perfect, not *always*. Claim is narrower
+So: _sometimes_ pixel-perfect, not _always_. Claim is narrower
 than the initial framing suggested — matches the class-2
 hypothesis below ("near-pixel-perfect in a narrow domain").
 The capability shift is real but bounded; not a frontier
@@ -33,7 +33,7 @@ Two frontier labs (Meta + OpenAI) shipping text-to-image
 capability of the "sometimes pixel-perfect" class in the
 same window. This is a signal-class shift, not a one-off
 demo. The convergence raises the strength-tier from
-*single-algorithm-wink* to *cross-frontier-convergent*,
+_single-algorithm-wink_ to _cross-frontier-convergent_,
 which is a stronger signal channel per
 `feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`.
 
@@ -43,7 +43,7 @@ recent ticks (pattern established in
 
 1. auto-loop-24 — Muratori 5-pattern + ThePrimeTime Devin.ai
    review (pointer-issues-in-AI-code)
-2. auto-loop-24 — signed *"Thanks Mr Page"* (tip-of-the-hat to
+2. auto-loop-24 — signed _"Thanks Mr Page"_ (tip-of-the-hat to
    PageRank lineage, the original upstream recommender)
 3. auto-loop-39 — this one; Meta pixel-perfect T2I
 
@@ -58,7 +58,7 @@ Three threads this intersects:
 - **ServiceTitan demo target (#244 P0)** — the 0-to-prod-in-
   hours claim is predicated on UI-DSL class-level compression
   producing dense-list + detail-panel + timeline + pipeline-
-  kanban *without* the UI-design labor. If Meta's T2I is
+  kanban _without_ the UI-design labor. If Meta's T2I is
   pixel-perfect from a text prompt, the UI-DSL pipeline gains
   a high-fidelity rendering target — design-intent → DSL →
   layout → pixel-perfect render, each layer machine-driven.
@@ -68,8 +68,8 @@ Three threads this intersects:
   winks on opposite ends of the same pipeline.
 - **UI-factory frontier-protection (#242)** — if rendering
   becomes commodified (Meta open-sources or productizes T2I),
-  the moat shifts *further* toward the DSL / algebra layer
-  and *away* from the rendering layer. Frontier-protection
+  the moat shifts _further_ toward the DSL / algebra layer
+  and _away_ from the rendering layer. Frontier-protection
   strategy updates: stop defending pixel-perfect rendering
   as a moat; double down on the algebra-to-DSL compression
   that is the actual moat.
@@ -102,7 +102,7 @@ surrounding 3-minute window.
 Per `feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`:
 
 - Occurrence 1 (auto-loop-24): file with both anchors ✓
-- Occurrence 2 (*this note*): name-the-pattern threshold met —
+- Occurrence 2 (_this note_): name-the-pattern threshold met —
   the YouTube-wink is a recurring channel, not a one-off.
 
 **Pattern name:** Aaron's YouTube-wink is a recurring
@@ -118,8 +118,8 @@ hierarchy).
 
 Maintainer same-tick color (2026-04-22 auto-loop-39):
 
-> *"that's just in the background across the room i hear it
-> and was like WTF the winks dont stop today"*
+> _"that's just in the background across the room i hear it
+> and was like WTF the winks dont stop today"_
 
 Two details worth preserving:
 
@@ -132,8 +132,8 @@ Two details worth preserving:
   Implication: wink-channel doesn't require maintainer
   focus-investment; the algorithm surfaces relevant
   items through ambient exposure.
-- **Wink-density elevated today** — *"winks dont stop
-  today"* is a meta-observation on the wink-channel
+- **Wink-density elevated today** — _"winks dont stop
+  today"_ is a meta-observation on the wink-channel
   itself. Multiple winks in one session (Muratori/
   PrimeTime historically, Meta T2I this tick, plus the
   OpenAI-Deep-Research capability-news which functions

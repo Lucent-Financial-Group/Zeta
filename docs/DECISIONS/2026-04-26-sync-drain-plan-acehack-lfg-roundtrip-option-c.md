@@ -2,7 +2,7 @@
 
 Scope: ADR canonicalizing the AceHack ↔ LFG fork-divergence drain plan executed 2026-04-26, codifying the option-c choice (cherry-pick-with-rewrites over alternatives) and the 7-step round-trip structure for future drain cycles.
 
-Attribution: Aaron (human maintainer) chose option-c via *"both all, figure out how to combine"* + *"don't lose ideas and backlog"* directional picks 2026-04-26. Otto (Claude opus-4-7) executed the drain across 7 steps using parallel-subagent dispatch for the LFG → AceHack reverse leg. The discipline composes with Otto-329 (Phase 1 LFG drain) + Otto-225 (cherry-pick rebase technique).
+Attribution: Aaron (human maintainer) chose option-c via _"both all, figure out how to combine"_ + _"don't lose ideas and backlog"_ directional picks 2026-04-26. Otto (Claude opus-4-7) executed the drain across 7 steps using parallel-subagent dispatch for the LFG → AceHack reverse leg. The discipline composes with Otto-329 (Phase 1 LFG drain) + Otto-225 (cherry-pick rebase technique).
 
 Operational status: research-grade ADR (decision recorded; future drain cycles can adopt or amend the plan)
 
@@ -23,14 +23,14 @@ Divergence on 2026-04-26: AceHack 62 commits ahead of LFG / LFG 482 commits ahea
 
 **Option-c chosen** over alternatives:
 
-| Option | Approach | Rejected because |
-|---|---|---|
-| **a — Copy whole thing** | `git push -f` one direction | Loses other side's work; violates "both all" + Otto-220 don't-lose-substrate |
-| **b — Just merge** | Single big merge commit on each side | Re-introduces divergence quickly; "merge" is not "drain"; doesn't rewrite shape for target context |
-| **c — Cherry-pick-with-rewrites** | Per-commit (or per-batch) cherry-pick + rewrite for target-context coherence | **CHOSEN.** Preserves both sides' contributions; allows shape rewrite per fork; bounded effort scaling to commit count |
-| **d — Reset divergent fork to match canonical** | `git reset --hard origin/main` | Equivalent to (a); same rejection |
+| Option                                          | Approach                                                                     | Rejected because                                                                                                       |
+| ----------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **a — Copy whole thing**                        | `git push -f` one direction                                                  | Loses other side's work; violates "both all" + Otto-220 don't-lose-substrate                                           |
+| **b — Just merge**                              | Single big merge commit on each side                                         | Re-introduces divergence quickly; "merge" is not "drain"; doesn't rewrite shape for target context                     |
+| **c — Cherry-pick-with-rewrites**               | Per-commit (or per-batch) cherry-pick + rewrite for target-context coherence | **CHOSEN.** Preserves both sides' contributions; allows shape rewrite per fork; bounded effort scaling to commit count |
+| **d — Reset divergent fork to match canonical** | `git reset --hard origin/main`                                               | Equivalent to (a); same rejection                                                                                      |
 
-Aaron's framing 2026-04-26: *"both all, figure out how to combine"* + *"don't lose ideas and backlog"* — picks option-c structurally even before it's named.
+Aaron's framing 2026-04-26: _"both all, figure out how to combine"_ + _"don't lose ideas and backlog"_ — picks option-c structurally even before it's named.
 
 ## The 7-step round-trip plan (executed 2026-04-26)
 
@@ -93,7 +93,7 @@ Tick-history row marking the forward-sync arc complete + transition to substrate
 Single large PR landing all LFG-only files on AceHack via 7-parallel-subagent content-preserving merge per `feedback_parallel_subagent_dispatch_for_content_preserving_merge_pattern_2026_04_26.md`. The reverse leg's scale (282K lines, 1046 files) makes per-commit cherry-pick infeasible; the parallel-subagent pattern preserves content while reconciling the larger divergence.
 
 - **PR:** #26 on AceHack/Zeta — `sync: AceHack ∪ LFG full reconciliation via per-file content-preserving merge (task #302)`
-- **Subagent dispatch:** 7 parallel subagents handled 26 conflicting files; each confirmed *"no substantive content silently dropped"*
+- **Subagent dispatch:** 7 parallel subagents handled 26 conflicting files; each confirmed _"no substantive content silently dropped"_
 - **Otto-side spot-checks:** Blockers section restored, jsonl rows preserved, hygiene rows 39/40/41 restored, marketing drafts both attribution variants preserved
 - **Publication-fitness gate:** Copilot inline-review surfaced PII flag; redactions applied per Aaron's sharpened bar (2 commits: `e3e4afd` redaction, `86747cd` rollback to wiki-style refs)
 
@@ -113,7 +113,7 @@ Going forward, fork-divergence drain happens via the UPSTREAM-RHYTHM batched cad
 - **Each side's shape is respected** — rewrite-per-target-context allows AceHack-shape commits to land in LFG-shape repo
 - **Bounded effort** — batch size scales linearly with commit count; parallel-subagent dispatch handles the larger reverse leg
 - **Steady state is predictable** — the 7-step plan is now a template for future drain cycles, not ad-hoc work each time
-- **Plan is documented** — this ADR fixes the gap that surfaced when Aaron asked *"do you have the 7 step plan?"* and Otto had to reconstruct it from git history
+- **Plan is documented** — this ADR fixes the gap that surfaced when Aaron asked _"do you have the 7 step plan?"_ and Otto had to reconstruct it from git history
 
 ### Negative
 

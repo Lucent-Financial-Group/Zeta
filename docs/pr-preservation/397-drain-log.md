@@ -22,7 +22,7 @@ parameterized substrate.
 
 ### Original comment (verbatim)
 
-> **P2 Badge**  Point to an existing backlog dependency
+> **P2 Badge** Point to an existing backlog dependency
 >
 > This dependency note says the work composes with a
 > "Closure-table hardening" row in the same `docs/BACKLOG.md`

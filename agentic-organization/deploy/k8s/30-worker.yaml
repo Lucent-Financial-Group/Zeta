@@ -34,10 +34,7 @@ spec:
           env:
             - { name: AGENTIC_ORG_ENV, value: "dev" }
             - { name: AGENTIC_ORG_ID, value: "org-lfg" }
-            - {
-                name: COCKROACH_DATABASE_URL,
-                value: "postgresql://root@cockroach:26257/defaultdb?sslmode=disable",
-              }
+            - { name: COCKROACH_DATABASE_URL, value: "postgresql://root@cockroach:26257/defaultdb?sslmode=disable" }
             - { name: NATS_SERVERS, value: "nats://nats:4222" }
             - { name: NATS_STREAM, value: "agentic-org-events" }
             - { name: NATS_DURABLE, value: "agentic-org-v0-automation-planner" }

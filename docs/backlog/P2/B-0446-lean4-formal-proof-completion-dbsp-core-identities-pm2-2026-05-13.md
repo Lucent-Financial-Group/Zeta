@@ -27,8 +27,8 @@ on "Assess" since Round 10 with no promotion.
 1. Complete `proofs/lean/ChainRule.lean`:
    - `D ∘ I = id` (differentiation cancels integration)
    - `I ∘ D = id` (integration cancels differentiation)
-   These are the bijection identities; they establish Z-sets form a
-   group under the stream calculus.
+     These are the bijection identities; they establish Z-sets form a
+     group under the stream calculus.
 2. Add `proofs/lean/LinearityRule.lean`:
    - For linear Q: `Q^Δ = Q` (trivial incrementalization).
 3. Wire `lake build` in `proofs/lean/` as a CI check (new GitHub
@@ -41,13 +41,13 @@ on "Assess" since Round 10 with no promotion.
 TECH-RADAR Lean 4 has been on "Assess" since Round 10 with no action.
 The stub proof `ChainRule.lean` is a lying stub — it exists but proves
 nothing. A complete proof of two identities is the minimum step to a
-verified claim, independent of the heavier F* extraction track.
+verified claim, independent of the heavier F\* extraction track.
 
 ## Non-goals
 
 - Does not prove every operator.
 - Does not require a full Mathlib port.
-- Does not block the F* extraction path (TECH-RADAR "Assess" — runs
+- Does not block the F\* extraction path (TECH-RADAR "Assess" — runs
   in parallel).
 
 ## Acceptance criteria
@@ -59,5 +59,5 @@ verified claim, independent of the heavier F* extraction track.
 
 ## Kill criteria
 
-If the F* extraction path (TECH-RADAR entry) ships first and covers the
+If the F\* extraction path (TECH-RADAR entry) ships first and covers the
 same identities, subsume this row under that PR and close here.

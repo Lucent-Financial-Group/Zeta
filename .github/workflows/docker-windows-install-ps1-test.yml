@@ -21,37 +21,37 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       # Install dispatcher + per-OS scripts + shared library + the windows package manifest
-      - 'tools/setup/**'
+      - "tools/setup/**"
       # Pinned runtime versions read by mise — the IDENTICAL file Unix uses (symmetric)
-      - '.mise.toml'
+      - ".mise.toml"
       # bun --frozen-lockfile inputs for the TS wrapper
-      - 'package.json'
-      - 'bun.lock'
+      - "package.json"
+      - "bun.lock"
       # Windows background-loop scheduled-task installer (COPYed into the image)
-      - 'tools/persistence/windows/**'
+      - "tools/persistence/windows/**"
       # The Docker harness itself (orchestrator + Dockerfile dir + container smoke)
-      - 'tools/ci/docker-windows-install-ps1-test.ts'
-      - 'tools/ci/dockerfiles/windows-install-ps1-test/**'
-      - 'tools/ci/windows-install-ps1-smoke.ts'
+      - "tools/ci/docker-windows-install-ps1-test.ts"
+      - "tools/ci/dockerfiles/windows-install-ps1-test/**"
+      - "tools/ci/windows-install-ps1-smoke.ts"
       # .dockerignore affects build context for ALL docker builds
-      - '.dockerignore'
+      - ".dockerignore"
       # This workflow file itself
-      - '.github/workflows/docker-windows-install-ps1-test.yml'
+      - ".github/workflows/docker-windows-install-ps1-test.yml"
 
   push:
     branches:
       - main
     paths:
-      - 'tools/setup/**'
-      - '.mise.toml'
-      - 'package.json'
-      - 'bun.lock'
-      - 'tools/persistence/windows/**'
-      - 'tools/ci/docker-windows-install-ps1-test.ts'
-      - 'tools/ci/dockerfiles/windows-install-ps1-test/**'
-      - 'tools/ci/windows-install-ps1-smoke.ts'
-      - '.dockerignore'
-      - '.github/workflows/docker-windows-install-ps1-test.yml'
+      - "tools/setup/**"
+      - ".mise.toml"
+      - "package.json"
+      - "bun.lock"
+      - "tools/persistence/windows/**"
+      - "tools/ci/docker-windows-install-ps1-test.ts"
+      - "tools/ci/dockerfiles/windows-install-ps1-test/**"
+      - "tools/ci/windows-install-ps1-smoke.ts"
+      - ".dockerignore"
+      - ".github/workflows/docker-windows-install-ps1-test.yml"
 
   workflow_dispatch:
 
@@ -133,7 +133,7 @@ jobs:
       - name: Run Server-Core Docker install.ps1 test
         env:
           DOCKER_LOG_OUT_PATH: docker-windows-install-ps1-test.log
-          DOCKER_BUILD_TIMEOUT_SEC: '2400'
+          DOCKER_BUILD_TIMEOUT_SEC: "2400"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun tools/ci/docker-windows-install-ps1-test.ts
 

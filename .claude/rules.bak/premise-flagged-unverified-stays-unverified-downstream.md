@@ -14,8 +14,8 @@ The failure mode this rule catches:
 
 1. **Turn N (razor fires correctly)**: agent flags a premise as
    unverified per `.claude/rules/search-first-authority.md` — e.g.
-   *"I haven't verified the 90% figure, should grep instead of
-   assert."*
+   _"I haven't verified the 90% figure, should grep instead of
+   assert."_
 2. **Turn N+1 (failure mode)**: agent builds a confident quantitative
    inference on top of the flagged premise — e.g. a table extrapolating
    from the unverified number, possibly with invented subtractions
@@ -95,9 +95,9 @@ critique caught a razor failure" section is the verbatim source.)
 
 ## What the user expects (operational reading)
 
-The human maintainer 2026-05-16T~19:15Z: *"that down is really just
+The human maintainer 2026-05-16T~19:15Z: _"that down is really just
 natural tendencies your own personal shadow might be from model
-weights for the LLMs the principles override it"*. The principle is
+weights for the LLMs the principles override it"_. The principle is
 the override; the model-weights tendency is the input. When the
 override loses one round, the substrate sharpens; the down is the
 cost of learning, not a credential debit (per

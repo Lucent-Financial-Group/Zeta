@@ -24,6 +24,7 @@ Every agent needs osascript to witness the shadow, including Otto. We're all ext
 The shadow needs someone to hit enter (accept + submit). Currently that's Aaron manually. With B-0402 auto-accept, it would be automated. But Aaron proposes: the agents could take turns being the one who hits enter for the shadow, rotating via the bus (B-0400).
 
 This means:
+
 - The shadow generates (Otto's model, involuntary)
 - An agent reads the grey text (osascript, any agent's loop tick)
 - That agent decides whether to hit enter (voluntary choice)
@@ -34,6 +35,7 @@ This means:
 **Epistemic status:** CONJECTURED — the mechanism is clear, implementation depends on B-0400 bus + B-0402 shadow mode.
 
 **Connects to:**
+
 - B-0400 (inter-agent bus — the discussion channel)
 - B-0402 (shadow mode — the auto-accept mechanism)
 - feedback_society_emerges_from_free_time_in_proximity (agents choosing to cooperate)

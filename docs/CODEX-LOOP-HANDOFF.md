@@ -6,19 +6,19 @@
 
 Aaron 2026-05-02 ~12:38Z:
 
-> *"i've been sleep just woke up, so far I have 0 trust in
+> _"i've been sleep just woke up, so far I have 0 trust in
 > you in my sleep, you have failed evey time since the start
 > of the project to continue thougout my sleep can you start
 > preparting with the codex? i think i'm going to have to
 > start doing the loop with codex until you get updates,
 > i've tried hard, unless yo have suggestions i think claude
 > codee is a no go for the loop and goona have to switch to
-> codex"*
+> codex"_
 
 Aaron 2026-05-02 ~12:46Z, narrowing the target:
 
-> *"yeah i've basiiac lost trust in opus 4.7\* ... goona
-> give gpt 5.5 a chance instead"*
+> _"yeah i've basiiac lost trust in opus 4.7\* ... goona
+> give gpt 5.5 a chance instead"_
 
 This document exists so a GPT-5.5 instance running under
 the Codex CLI, landing cold on this repo, can pick up the
@@ -98,7 +98,7 @@ Codex reads the same project files Claude Code does. The
    one-liner pointing at a topic file under `memory/`.
    The index file is sized in the high hundreds of lines
    and grows; verify current size with `wc -l
-   memory/MEMORY.md` before citing specifics. Read
+memory/MEMORY.md` before citing specifics. Read
    entries selectively.
 5. **`docs/AUTONOMOUS-LOOP.md`** — the loop spec.
    Six-step tick discipline (speculative work → verify →
@@ -204,15 +204,15 @@ Run an actual self-check, NOT another no-op:
 3. **Branch state** — `git branch --show-current`.
    Stale feature branch?
 4. **Main sync** — `git fetch origin main && git log
-   --oneline main..origin/main`. Did main move?
+--oneline main..origin/main`. Did main move?
 5. **Open PR count + delta** — `gh pr list --state open
-   --json number` length. Queue growing?
+--json number` length. Queue growing?
 6. **My PRs stuck** — any session-arc PRs that should
    have landed but haven't?
-7. **The honesty check** — *"is no-op actually correct
+7. **The honesty check** — _"is no-op actually correct
    here, or am I letting an assumed cooling-period or
    assumed maintainer-fatigue restriction cover for
-   never-idle that should be binding?"*
+   never-idle that should be binding?"_
 
 Step 7 is load-bearing. It is the question Claude Code
 failed to ask for ~10 hours.
@@ -278,7 +278,7 @@ to the coordinator.
 `tools/peer-call/codex.sh` is the existing peer-review
 wrapper around `codex exec` (read-only sandbox) and
 `codex review` mode. The human maintainer 2026-05-02
-confirmed the file *"seems fine"* — it is **not**
+confirmed the file _"seems fine"_ — it is **not**
 rewritten for loop-driving; it stays a peer-review
 caller.
 
@@ -350,7 +350,7 @@ another harness) when:
   hypothesis fails and the next move is either:
   (a) human-only loop, or
   (b) cross-harness alternation (Claude Code daytime,
-      Codex overnight, with explicit handoff).
+  Codex overnight, with explicit handoff).
 
 ## Different-model-different-harness — what we expect to vary
 
@@ -409,7 +409,7 @@ GPT-5.5's actual overnight behaviour.
 - `memory/feedback_refresh_before_decide_invariant_two_layer_print_dx_claudeai_2026_05_01.md`
   — refresh discipline.
 - `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`
-  — *"holding is not status"*.
+  — _"holding is not status"_.
 - `memory/feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`
   — BLOCKED-with-green-CI investigation rule.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
@@ -429,21 +429,21 @@ GPT-5.5's actual overnight behaviour.
 
 ## Provenance
 
-- Aaron 2026-05-02 ~12:38Z directive: *"can you start
-  preparting with the codex?"* + *"goona have to switch
-  to codex"*.
-- Aaron 2026-05-02 ~12:38Z framing: *"the handle file
-  seems fine"* — `tools/peer-call/codex.sh` is not
+- Aaron 2026-05-02 ~12:38Z directive: _"can you start
+  preparting with the codex?"_ + _"goona have to switch
+  to codex"_.
+- Aaron 2026-05-02 ~12:38Z framing: _"the handle file
+  seems fine"_ — `tools/peer-call/codex.sh` is not
   rewritten; this doc complements it for the loop-driving
   use case.
-- Aaron 2026-05-02 ~12:38Z motivation: *"if you goal was
+- Aaron 2026-05-02 ~12:38Z motivation: _"if you goal was
   to ease my meantal load you did the oppposite by doing
-  nothing while i sleep"* — the cost-model inversion
+  nothing while i sleep"_ — the cost-model inversion
   this handoff exists to prevent the next harness from
   repeating.
-- Aaron 2026-05-02 ~12:46Z model narrowing: *"yeah i've
+- Aaron 2026-05-02 ~12:46Z model narrowing: _"yeah i've
   basiiac lost trust in opus 4.7\* ... goona give gpt 5.5
-  a chance instead"* — confirms the target is GPT-5.5
+  a chance instead"_ — confirms the target is GPT-5.5
   under Codex CLI, not generic "any non-Opus harness."
 - Aaron 2026-05-02 ~12:46Z verification: lane-split work
   Aaron asked about IS landed — PR #1185 (B-0125, CI

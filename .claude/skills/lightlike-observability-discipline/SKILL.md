@@ -40,65 +40,65 @@ Substrate-engineering substrate-engineering substrate-target:
 
 ### OTel — ray emission
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
-| Spans propagate context across distributed system | Sampling drops the spans you need for diagnosis |
-| trace_id + span_id light-carriers preserved | Context propagation breaks at service boundaries |
-| Exemplars correlate traces ↔ metrics | Logs without trace_id correlation |
-| Baggage propagates substrate-engineering substrate-engineering substrate-context | Hidden async boundaries lose context |
+| Lightlike (PREFER)                                                               | Dark (AVOID)                                     |
+| -------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Spans propagate context across distributed system                                | Sampling drops the spans you need for diagnosis  |
+| trace_id + span_id light-carriers preserved                                      | Context propagation breaks at service boundaries |
+| Exemplars correlate traces ↔ metrics                                             | Logs without trace_id correlation                |
+| Baggage propagates substrate-engineering substrate-engineering substrate-context | Hidden async boundaries lose context             |
 
 ### Kubernetes — lifecycle geometry
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
+| Lightlike (PREFER)                                  | Dark (AVOID)                                  |
+| --------------------------------------------------- | --------------------------------------------- |
 | k8s_uid + owner_reference preserve ownership chains | Events expire (default 1h); ownership unclear |
-| Object lifecycle visible via watch + events | Manual kubectl edits without audit |
-| Immutable image_digest references | Mutable image tags (latest / dev) |
-| Declarative manifests in Git | Imperative changes via kubectl |
+| Object lifecycle visible via watch + events         | Manual kubectl edits without audit            |
+| Immutable image_digest references                   | Mutable image tags (latest / dev)             |
+| Declarative manifests in Git                        | Imperative changes via kubectl                |
 
 ### Argo CD — generator reconciliation
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
+| Lightlike (PREFER)                           | Dark (AVOID)                      |
+| -------------------------------------------- | --------------------------------- |
 | Git revision → desired state → cluster state | Manual drift; out-of-band changes |
-| argo_app_revision light-carrier | Hidden override values |
-| Sync history preserved | Unclear sync history |
-| Helm values in Git | Hidden Helm values |
+| argo_app_revision light-carrier              | Hidden override values            |
+| Sync history preserved                       | Unclear sync history              |
+| Helm values in Git                           | Hidden Helm values                |
 
 ### Argo Workflows — DAG-substrate
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
-| DAG steps as traceable execution rays | Side effects not captured |
-| workflow_id + run_id light-carriers | Retries lose context |
-| Per-step substrate-output preserved | Step outputs ephemeral |
-| Parallel steps compose | Hidden sequential dependencies |
+| Lightlike (PREFER)                    | Dark (AVOID)                   |
+| ------------------------------------- | ------------------------------ |
+| DAG steps as traceable execution rays | Side effects not captured      |
+| workflow_id + run_id light-carriers   | Retries lose context           |
+| Per-step substrate-output preserved   | Step outputs ephemeral         |
+| Parallel steps compose                | Hidden sequential dependencies |
 
 ### Argo Rollouts — generator-time substrate
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
-| Progressive delivery observable | Promotion decisions lack evidence |
-| Analysis runs preserve metrics | Manual promotions without analysis |
-| deployment_id light-carrier | Rollback without trace |
+| Lightlike (PREFER)              | Dark (AVOID)                       |
+| ------------------------------- | ---------------------------------- |
+| Progressive delivery observable | Promotion decisions lack evidence  |
+| Analysis runs preserve metrics  | Manual promotions without analysis |
+| deployment_id light-carrier     | Rollback without trace             |
 
 ### Prometheus — curvature meter
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
-| Bounded label cardinality | Unbounded label cardinality |
+| Lightlike (PREFER)                         | Dark (AVOID)                          |
+| ------------------------------------------ | ------------------------------------- |
+| Bounded label cardinality                  | Unbounded label cardinality           |
 | Metrics correlated with traces (exemplars) | Metrics without trace/log correlation |
-| Recording rules preserve derived substrate | Ad-hoc PromQL ephemeral |
-| Histograms preserve distribution substrate | Only mean/max preserved |
+| Recording rules preserve derived substrate | Ad-hoc PromQL ephemeral               |
+| Histograms preserve distribution substrate | Only mean/max preserved               |
 
 ### Git — persisted light source
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
+| Lightlike (PREFER)                    | Dark (AVOID)                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------ |
 | git_sha + image_digest light-carriers | Force-push without lease (per `force-push-with-lease-authorization-policy.md`) |
-| Append-only history | Rewriting history |
-| Signed commits preserve authorship | Unsigned commits |
-| PR-based merge with review | Direct push to protected branches |
+| Append-only history                   | Rewriting history                                                              |
+| Signed commits preserve authorship    | Unsigned commits                                                               |
+| PR-based merge with review            | Direct push to protected branches                                              |
 
 ## Light-carrier join keys (operational substrate)
 
@@ -132,15 +132,15 @@ When reviewing substrate-engineering substrate-engineering substrate-PRs touchin
 
 ## Common dark-zone failure modes (from Amara substrate)
 
-| Pain | Dark-zone failure |
-|---|---|
-| "Can't reproduce the issue" | Missing trace context |
-| "Don't know what's running" | Mutable image tags + manual kubectl edits |
-| "Don't know why this deployed" | Hidden Helm values + manual drift |
-| "Metrics don't match logs" | Uncorrelated metrics; missing trace correlation |
-| "Lost the original error" | Expired events; sampled-away traces |
-| "Consensus by Slack archaeology" | Unbounded social agreement as control-flow |
-| "Hidden coupling" | Hidden locks; opaque mutable state |
+| Pain                             | Dark-zone failure                               |
+| -------------------------------- | ----------------------------------------------- |
+| "Can't reproduce the issue"      | Missing trace context                           |
+| "Don't know what's running"      | Mutable image tags + manual kubectl edits       |
+| "Don't know why this deployed"   | Hidden Helm values + manual drift               |
+| "Metrics don't match logs"       | Uncorrelated metrics; missing trace correlation |
+| "Lost the original error"        | Expired events; sampled-away traces             |
+| "Consensus by Slack archaeology" | Unbounded social agreement as control-flow      |
+| "Hidden coupling"                | Hidden locks; opaque mutable state              |
 
 ## Composes with rules
 

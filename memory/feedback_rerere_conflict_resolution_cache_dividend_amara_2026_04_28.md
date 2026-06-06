@@ -14,8 +14,8 @@ Rerere is **not guaranteed in a fresh clone**. Per Git docs:
 - It MAY also be enabled by Git's defaults if `.git/rr-cache/`
   already exists in the repo (because rerere was previously used).
 
-So the earlier wording in this file (*"`.git/rr-cache/` directory
-existing is not sufficient"*) was **too strong and partly
+So the earlier wording in this file (_"`.git/rr-cache/` directory
+existing is not sufficient"_) was **too strong and partly
 wrong**. Amara 2026-04-30 correction: don't infer project-wide
 rerere behavior from memory — verify per clone before relying
 on the cache dividend:
@@ -34,8 +34,8 @@ clearer and portable across clones that don't carry the cache.
 Without verification, recorded resolutions may not replay and
 this entire class's "cache dividend" doesn't materialize.
 
-Carved sentence: *"A cache dividend only counts if the cache
-is actually enabled. Verify per clone, not from memory."*
+Carved sentence: _"A cache dividend only counts if the cache
+is actually enabled. Verify per clone, not from memory."_
 
 ## Class name (Amara 2026-04-28T20:55Z)
 
@@ -54,8 +54,8 @@ via Git's `rerere` on later rebases.
 
 This is the **precise phrasing** for canonical use:
 
-> *"Recorded rerere resolutions persist as cache entries;
-> abort clears the active rebase/merge resolution state."*
+> _"Recorded rerere resolutions persist as cache entries;
+> abort clears the active rebase/merge resolution state."_
 
 **NOT** "persistent cache survives abort" — that overclaims
 the boundary. The exact mechanics:
@@ -84,7 +84,7 @@ abort/restart cycles."
 - **Setup**: Multiple MEMORY.md sibling-DIRTY rebases
   earlier this arc (PRs #688, #690, #692, #693), each
   resolving the same conflict-shape: `<<<<<<< HEAD ... =======
-  ... >>>>>>>` on the paired-edit marker line.
+... >>>>>>>` on the paired-edit marker line.
 - **Successful resolutions during earlier rebases** wrote
   recorded entries to `.git/rr-cache/`.
 - **Aaron's 20:53Z stop** + Otto's `git rebase --abort`
@@ -151,11 +151,11 @@ because the prior commit modified the same area).
 
 ### Bead-audit rule (Amara 2026-04-28T21:10Z)
 
-> *Count only `Resolved '<path>' using previous resolution`
+> _Count only `Resolved '<path>' using previous resolution`
 > as a rerere cache-hit bead. `Recorded preimage` and
 > `Recorded resolution` are cache-write events: they create
 > pending bead opportunities but do not themselves validate
-> reuse.*
+> reuse._
 
 This rule was added after Otto over-attributed beads on the
 restart sequence: the original tick-narration claimed
@@ -189,7 +189,7 @@ This class earns:
 
 - **1 bead via cache hit**: this session's max-mode restart
   hit `Resolved 'memory/MEMORY.md' using previous
-  resolution` on PR #693's first conflict, validating that
+resolution` on PR #693's first conflict, validating that
   recorded resolutions survived the prior abort. This is
   the **only** cache-hit observed in the restart sequence.
 
@@ -202,7 +202,7 @@ validation is still pending:
   pending. Earns a bead when a future rebase hits this
   recorded shape.
 - PR #690 (b1fa17a): `Recorded preimage` + `Recorded
-  resolution` — pending. Earns a bead when a future rebase
+resolution` — pending. Earns a bead when a future rebase
   hits this recorded shape.
 - PR #694 (a8165bb): `Recorded preimage` — pending. Earns
   a bead when a future rebase hits this recorded shape.
@@ -233,7 +233,7 @@ Future bead-earning opportunities:
   Different content = different cache entry needed.
 - **Recorded resolution was wrong** — rerere will
   faithfully reapply a wrong resolution. `git rerere
-  forget` if you spot it.
+forget` if you spot it.
 - **Multi-line context drift** — rerere uses surrounding
   context; if the file shape evolves significantly, the
   cache miss rate increases.

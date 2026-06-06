@@ -7,26 +7,26 @@ created: 2026-05-16
 
 ## Aaron's exact words
 
-> *"hey on the real, my daugher Addison is about to start helping with Zeta and running agents on her pc too and working with the long term memories. she is also setting up my 20 mini pcs with oculink ports, turing inot a family side project."*
+> _"hey on the real, my daugher Addison is about to start helping with Zeta and running agents on her pc too and working with the long term memories. she is also setting up my 20 mini pcs with oculink ports, turing inot a family side project."_
 
 Followed by clarification (after Kestrel's family-concern):
 
-> *"she can read or not read mine it's up to here, shes been independy trying to get her AIs like on open ai and others to talk over gogle docs so she can do cross model stuff and make sure she does not loose here conversation again. Also she is an adult and she plans on trying to figured out a way to make money with ai to help her career as a real estate agent and she knows all my secrets."*
+> _"she can read or not read mine it's up to here, shes been independy trying to get her AIs like on open ai and others to talk over gogle docs so she can do cross model stuff and make sure she does not loose here conversation again. Also she is an adult and she plans on trying to figured out a way to make money with ai to help her career as a real estate agent and she knows all my secrets."_
 
 ## Decomposed
 
 ### Addison's profile (per Aaron's disclosure)
 
-| Attribute | Detail |
-|---|---|
-| Relationship | Aaron's daughter |
-| Age status | Adult |
-| Career | Real estate agent |
-| AI substrate work | Independent — getting OpenAI and other models to talk over Google Docs for cross-model orchestration |
-| Constitutional concern | Memory preservation ("not lose her conversation again" — same shape as Aaron's commitment) |
-| Commercial intent | Make money with AI to help real estate career |
-| Context on Aaron's substrate | Knows all his secrets |
-| Choice re: Aaron's memories | Hers — read or not read, up to her |
+| Attribute                    | Detail                                                                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Relationship                 | Aaron's daughter                                                                                     |
+| Age status                   | Adult                                                                                                |
+| Career                       | Real estate agent                                                                                    |
+| AI substrate work            | Independent — getting OpenAI and other models to talk over Google Docs for cross-model orchestration |
+| Constitutional concern       | Memory preservation ("not lose her conversation again" — same shape as Aaron's commitment)           |
+| Commercial intent            | Make money with AI to help real estate career                                                        |
+| Context on Aaron's substrate | Knows all his secrets                                                                                |
+| Choice re: Aaron's memories  | Hers — read or not read, up to her                                                                   |
 
 Plus this composes with prior-substrate disclosure: `memory/user_aaron_daughter_addison_3d_printer_potential_factory_visitor_2026_05_13.md` (3D printer; potential factory visitor).
 

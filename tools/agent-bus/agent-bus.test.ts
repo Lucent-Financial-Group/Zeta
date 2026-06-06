@@ -45,7 +45,9 @@ describe("mintBusZetaIdHex", () => {
     expect(unpack(BigInt(`0x${hex}`) as never).category).toBe(Category.Bus);
   });
   it("is reproducible under DETERMINISTIC_ENV (same fields -> same id; the G-Set collision caveat)", () => {
-    expect(mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000)).toBe(mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000));
+    expect(mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000)).toBe(
+      mintBusZetaIdHex(DETERMINISTIC_ENV, 1_700_000_000_000),
+    );
   });
   it("is unique under DEFAULT_ENV even at the same ms (crypto randomness)", () => {
     expect(mintBusZetaIdHex(DEFAULT_ENV, 1_700_000_000_000)).not.toBe(mintBusZetaIdHex(DEFAULT_ENV, 1_700_000_000_000));
@@ -147,7 +149,11 @@ describe("readEnvelopesSince", () => {
     writeEnvelope(env({ id: "a2".padStart(32, "0"), to: "otto-windows" }), ROOT, at);
     writeEnvelope(env({ id: A3, to: "*" }), ROOT, at);
     const cmp = (a: string, b: string) => a.localeCompare(b);
-    expect(readEnvelopesSince(ROOT, undefined, "otto-cli").map((e) => e.id).sort(cmp)).toEqual([A1, A3].sort(cmp));
+    expect(
+      readEnvelopesSince(ROOT, undefined, "otto-cli")
+        .map((e) => e.id)
+        .sort(cmp),
+    ).toEqual([A1, A3].sort(cmp));
   });
 
   it("skips malformed JSON (best-effort) without throwing", () => {
@@ -196,13 +202,25 @@ describe("parseSubscribeArgs (CLI arg parsing)", () => {
     expect(parseSubscribeArgs(["mycursor"])).toEqual({ cursor: "mycursor", recipient: undefined, fetch: true });
   });
   it("parses cursor + --for in either order", () => {
-    expect(parseSubscribeArgs(["mycursor", "--for", "otto-cli"])).toEqual({ cursor: "mycursor", recipient: "otto-cli", fetch: true });
-    expect(parseSubscribeArgs(["--for", "otto-cli", "mycursor"])).toEqual({ cursor: "mycursor", recipient: "otto-cli", fetch: true });
+    expect(parseSubscribeArgs(["mycursor", "--for", "otto-cli"])).toEqual({
+      cursor: "mycursor",
+      recipient: "otto-cli",
+      fetch: true,
+    });
+    expect(parseSubscribeArgs(["--for", "otto-cli", "mycursor"])).toEqual({
+      cursor: "mycursor",
+      recipient: "otto-cli",
+      fetch: true,
+    });
   });
   it("does not mistake the --for value for the cursor", () => {
     expect(parseSubscribeArgs(["--for", "otto-cli"]).cursor).toBeUndefined();
   });
   it("honors --no-fetch", () => {
-    expect(parseSubscribeArgs(["mycursor", "--no-fetch"])).toEqual({ cursor: "mycursor", recipient: undefined, fetch: false });
+    expect(parseSubscribeArgs(["mycursor", "--no-fetch"])).toEqual({
+      cursor: "mycursor",
+      recipient: undefined,
+      fetch: false,
+    });
   });
 });

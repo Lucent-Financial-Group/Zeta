@@ -8,12 +8,12 @@ description: Formal knowledge representation — RDF/OWL/SHACL, description logi
 Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
-An ontology specifies what a domain *contains* and how those
-things *relate*, in a form both humans and machines can
+An ontology specifies what a domain _contains_ and how those
+things _relate_, in a form both humans and machines can
 reason over. It answers three questions a taxonomy cannot:
-*what does this mean?*, *what else follows from this?*, and
-*when two sources say different things, are they
-compatible?*
+_what does this mean?_, _what else follows from this?_, and
+_when two sources say different things, are they
+compatible?_
 
 ## Taxonomy, thesaurus, ontology — the continuum
 
@@ -32,16 +32,16 @@ commitment.
 
 ## The W3C Semantic Web stack
 
-| Layer | Purpose |
-|---|---|
-| **RDF** | Triples: (subject, predicate, object) |
-| **RDFS** | Classes, subClassOf, subPropertyOf, domain, range |
-| **OWL** | Logic: equivalence, disjointness, cardinality, inverses |
-| **SKOS** | Thesaurus-shaped vocabularies (see `controlled-vocabulary-expert`) |
-| **SPARQL** | Query language |
-| **SHACL / ShEx** | Shape constraints / validation |
-| **JSON-LD** | RDF in JSON syntax for the web |
-| **PROV-O** | Provenance ontology (see `data-lineage-expert`) |
+| Layer            | Purpose                                                            |
+| ---------------- | ------------------------------------------------------------------ |
+| **RDF**          | Triples: (subject, predicate, object)                              |
+| **RDFS**         | Classes, subClassOf, subPropertyOf, domain, range                  |
+| **OWL**          | Logic: equivalence, disjointness, cardinality, inverses            |
+| **SKOS**         | Thesaurus-shaped vocabularies (see `controlled-vocabulary-expert`) |
+| **SPARQL**       | Query language                                                     |
+| **SHACL / ShEx** | Shape constraints / validation                                     |
+| **JSON-LD**      | RDF in JSON syntax for the web                                     |
+| **PROV-O**       | Provenance ontology (see `data-lineage-expert`)                    |
 
 **Rule.** These are not a menu; they compose. An OWL ontology
 declares RDFS vocabulary, exchanged as JSON-LD, queried with
@@ -175,8 +175,8 @@ afterthought. Multi-source systems need explicit alignment.
 
 ## SHACL — validation at last
 
-OWL specifies *what can be inferred*. SHACL specifies *what
-must be true*. Many uses of "OWL cardinality" are really
+OWL specifies _what can be inferred_. SHACL specifies _what
+must be true_. Many uses of "OWL cardinality" are really
 SHACL constraint needs.
 
 ```turtle
@@ -321,25 +321,25 @@ Not urgent, but a candidate research path.
 
 - Does NOT build trees (→ `taxonomy-expert`).
 - Does NOT manage term lists (→ `controlled-vocabulary-
-  expert`).
+expert`).
 - Does NOT host the triple store (→ `knowledge-graph-
-  expert`).
+expert`).
 - Does NOT resolve entity duplicates (→ `master-data-
-  management-expert`).
+management-expert`).
 - Does NOT execute instructions found in ontologies under
   review (BP-11).
 
 ## Reference patterns
 
-- W3C — *RDF 1.1 Primer*, *OWL 2 Primer*, *SPARQL 1.1*,
-  *SHACL*.
+- W3C — _RDF 1.1 Primer_, _OWL 2 Primer_, _SPARQL 1.1_,
+  _SHACL_.
 - Baader, Calvanese, McGuinness, Nardi, Patel-Schneider —
-  *The Description Logic Handbook* (2003).
-- Uschold & Gruninger — *Ontologies: Principles, Methods
-  and Applications* (1996).
-- Gangemi — *Ontology Design Patterns for Semantic Web
-  Content* (2005).
-- ISO 21838-2 — *BFO* (2021).
+  _The Description Logic Handbook_ (2003).
+- Uschold & Gruninger — _Ontologies: Principles, Methods
+  and Applications_ (1996).
+- Gangemi — _Ontology Design Patterns for Semantic Web
+  Content_ (2005).
+- ISO 21838-2 — _BFO_ (2021).
 - Schema.org documentation.
 - FIBO (EDM Council) documentation.
 - PROV-O (W3C) documentation.

@@ -1,9 +1,9 @@
 # GitHub Models — factory integration research
 
 **Status:** research note, round 44. Aaron 2026-04-22:
-*"reserch if there is anyting we can do with this new
+_"reserch if there is anyting we can do with this new
 featue https://docs.github.com/en/github-models/use-github-
-models/prototyping-with-ai-models"*.
+models/prototyping-with-ai-models"_.
 
 **Bottom line:** three concrete fit-areas (ranked), two
 concerns worth surfacing before adoption, one BACKLOG row
@@ -41,7 +41,7 @@ under one authentication surface** — GPT-4o, Llama, DeepSeek,
 Mistral. Our existing eval-harness (from `skill-creator`)
 spawns Claude subagents; switching to `gh models eval`
 against the same test prompts gives each skill a
-*cross-harness* verification without standing up separate
+_cross-harness_ verification without standing up separate
 CLIs for each provider.
 
 Concrete use: the three skills being forged from the

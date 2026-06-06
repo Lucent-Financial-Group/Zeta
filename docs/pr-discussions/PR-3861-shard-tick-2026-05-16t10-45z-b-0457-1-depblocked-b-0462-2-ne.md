@@ -38,12 +38,12 @@ Two related audits in one tick:
 
 First instance of this pattern in the cycle:
 
-| Sub-shape | Disposition |
-|---|---|
-| #1 (pure drift) | Close-row PR |
-| #1-Ready | Close-row PR pending contention |
-| **#1-DepBlocked** | Own scope met; `depends_on:` ancestor still partial; close gated on ancestor |
-| #2 / #2-SD / #2-Ready | NO edit |
+| Sub-shape             | Disposition                                                                  |
+| --------------------- | ---------------------------------------------------------------------------- |
+| #1 (pure drift)       | Close-row PR                                                                 |
+| #1-Ready              | Close-row PR pending contention                                              |
+| **#1-DepBlocked**     | Own scope met; `depends_on:` ancestor still partial; close gated on ancestor |
+| #2 / #2-SD / #2-Ready | NO edit                                                                      |
 
 **Future-pick discipline**: close B-0462 first (~5 LOC vendor-bias note integration), then B-0457. The work is bounded.
 
@@ -64,6 +64,7 @@ Budget-conservative tick: audit-only, no close-row (GraphQL 1600/5000 = 32% hour
 This PR adds a single tick-history file documenting an audit-only hygiene tick. It records the findings for backlog rows B-0457 and B-0462, introduces a new sub-class label (`#1-DepBlocked`) for the drift-audit catalog, and updates the running triage tally.
 
 **Changes:**
+
 - New tick log under `docs/hygiene-history/ticks/2026/05/16/1045Z.md` summarizing audits of B-0457 and B-0462.
 - Introduces the `#1-DepBlocked` sub-class for rows whose own scope is met but whose `depends_on:` ancestor is still partial.
 - Updates the cycle-wide triage tally to 32/38 triaged.

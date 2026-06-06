@@ -14,7 +14,7 @@ live-lock smell when the external ratio is too low.
 **Mechanism:** A factory producing only process / research /
 meta-factory / tick-history / BACKLOG-row work — without external-
 observable product progress (src/ changes, sample improvements,
-test landings, UI progress) — is *live-locked*: every worker is
+test landings, UI progress) — is _live-locked_: every worker is
 busy, every tick fires, nothing external moves.
 
 **Healthy threshold:** EXT ≥ 20% of a rolling 25-commit window.
@@ -34,9 +34,9 @@ The full memory context is
 
 ## Log
 
-| date (UTC) | window | EXT | INTL | SPEC | OTHR | smell? | notes |
-|---|---:|---:|---:|---:|---:|---|---|
-| 2026-04-23 | 25 | 0% | 72% | 16% | 12% | **FIRING** | Inaugural run. Last 25 merged commits on `origin/main` contain zero src/tests/samples/bench changes. Factory has been running purely on tick-history + BACKLOG + research output for weeks. Response arc: PR #141 (ServiceTitan CRM demo sample) is the pattern-breaker; once #141 merges, the next audit should show non-zero EXT. Audit script landed this run. |
+| date (UTC) | window | EXT | INTL | SPEC | OTHR | smell?     | notes                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | -----: | --: | ---: | ---: | ---: | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-23 |     25 |  0% |  72% |  16% |  12% | **FIRING** | Inaugural run. Last 25 merged commits on `origin/main` contain zero src/tests/samples/bench changes. Factory has been running purely on tick-history + BACKLOG + research output for weeks. Response arc: PR #141 (ServiceTitan CRM demo sample) is the pattern-breaker; once #141 merges, the next audit should show non-zero EXT. Audit script landed this run. |
 
 ## Lessons integrated
 
@@ -82,8 +82,8 @@ re-occurrence). Consult this section before opening a speculative arc
      Before opening a new speculative arc (research doc, large
      BACKLOG row, capability map), agent reads the current audit
      ratio. If smell is firing, no new speculative arcs open until
-     one external-priority increment lands. This is an *agent-
-     internal discipline*, not a blocking rule — but it gets cited
+     one external-priority increment lands. This is an _agent-
+     internal discipline_, not a blocking rule — but it gets cited
      in the commit message ("audit EXT=X%, smell=not-firing,
      speculative arc opens") so the discipline is visible.
   4. **Tick-history rows are NOT external work.** The tick-history

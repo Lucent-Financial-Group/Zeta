@@ -1,6 +1,6 @@
 # Technical Debt — live ledger
 
-*This file is the **live ledger** of accidental / unintentional
+_This file is the **live ledger** of accidental / unintentional
 technical-debt entries. For the factory-shipped operator
 manual — what debt IS, the full class taxonomy, how the
 factory automates discovery and fixes, and how this doubles
@@ -9,15 +9,15 @@ as AI instructions — see
 [`docs/SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md)
 (Zeta-specific variant). Both new docs cite entries from this
 ledger as examples; this ledger stays authoritative for
-current state.*
+current state._
 
 Counterpart to `docs/BUGS.md`. The distinction:
 
-- **`docs/BUGS.md`** — things that are *broken or misleading* in
+- **`docs/BUGS.md`** — things that are _broken or misleading_ in
   shipped code or docs. Fix or it stays wrong. A bug entry
   points at a correctness, security, or honesty failure.
-- **`docs/DEBT.md`** — things that are *working but in the wrong
-  shape*. Readability, maintainability, naming, docstring
+- **`docs/DEBT.md`** — things that are _working but in the wrong
+  shape_. Readability, maintainability, naming, docstring
   drift, stale references, dead-simple-but-not-done cleanup.
   A debt entry points at a friction cost, not a correctness
   failure. Left unfixed, debt compounds but doesn't lie to
@@ -32,6 +32,7 @@ effort, move it to `docs/BACKLOG.md` instead.
 
 ```markdown
 ### <short title>
+
 - **Site:** `file:line` or `<area>`
 - **Found:** <round> by <reviewer name>
 - **Effort:** S | M | L
@@ -39,7 +40,7 @@ effort, move it to `docs/BACKLOG.md` instead.
 - **Fix:** one sentence — what to do
 ```
 
-No severity column (that's bugs). Debt has *effort* instead —
+No severity column (that's bugs). Debt has _effort_ instead —
 how big a rewrite it is. Kenji picks debt items to knock down
 in "build rounds" (see GOVERNANCE.md §12: low bug count → high
 feature + debt budget).
@@ -93,7 +94,7 @@ feature + debt budget).
   profiles are okay on my mac too for all this to work"
 - **Effort:** M
 - **Friction:** Zeta's shellenv.sh writes `$HOME/.config/zeta/
-  shellenv.sh` + emits `BASH_ENV` for CI, but relies on the
+shellenv.sh` + emits `BASH_ENV` for CI, but relies on the
   user manually adding the source line to `.zshrc` / `.bash_profile`
   (one-line hint). Scratch auto-appends via `append_unique_line`
   to `.bashrc`/`.bash_profile`/`.profile`/`.zshrc`/`.zprofile`
@@ -355,7 +356,7 @@ feature + debt budget).
   persists or distributes Bloom state, this silently breaks
   compatibility.
 - **Fix:** either document "process-local only" explicitly on
-  `CountingBloomFilter` / `BlockedBloomFilter` *or* restore
+  `CountingBloomFilter` / `BlockedBloomFilter` _or_ restore
   UTF-8 byte hashing without allocation using
   `Encoding.UTF8.GetMaxByteCount` + `NativePtr.stackalloc` +
   `Encoding.UTF8.GetBytes(ReadOnlySpan<char>, Span<byte>)`.
@@ -418,7 +419,7 @@ Entries under the `wake-up-drift` tag defined in
 - **Fix:** Rune proposes: either stub `docs/STYLE.md` with a
   "to be populated" header, or change each pointer to
   "style rules proposed under `memory/persona/maintainability-
-  reviewer.md`; promoted to STYLE.md when stable."
+reviewer.md`; promoted to STYLE.md when stable."
 
 #### wake-up-drift: memory/persona/README.md notebook list stale
 

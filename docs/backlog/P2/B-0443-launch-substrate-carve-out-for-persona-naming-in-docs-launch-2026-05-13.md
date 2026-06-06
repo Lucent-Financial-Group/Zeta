@@ -50,9 +50,9 @@ The existing closed-list:
 substrate operationally requires persona naming because:
 
 1. **Brand register canonized 2026-05-13**: Office paper-factory
-   + 8-Bit Theater stick-figure + Tales-from-the-Loop — these
-   inherently use named characters (Otto = "Michael Scott of
-   the software plant"; multi-agent team named explicitly)
+   - 8-Bit Theater stick-figure + Tales-from-the-Loop — these
+     inherently use named characters (Otto = "Michael Scott of
+     the software plant"; multi-agent team named explicitly)
 2. **Multi-agent factory transparency**: the launch substrate's
    value proposition IS "we have 5 named AI agents committing
    alongside each other" — naming them is the canonical claim,
@@ -81,7 +81,7 @@ line):
 >   positioning artifacts; persona names + external creator
 >   attributions allowed because the substrate's job is to
 >   preserve the multi-agent factory's named-team positioning
->   + IP-respect attribution at a specific date)
+>   - IP-respect attribution at a specific date)
 
 ## Acceptance criteria
 
@@ -183,7 +183,7 @@ updated.
 - ✅ Policy line added to AGENT-BEST-PRACTICES.md closed-list (line 709)
 - ✅ Rationale preserves multi-agent transparency value ("multi-agent factory's named-team positioning")
 - ✅ Cross-references IP-respect commitment ("IP-respect attribution")
-- ✅ Future PRs creating docs/launch/** files no longer trigger persona-naming policy findings (forward-going; observable as absence of recurring Copilot/Codex findings on launch substrate PRs)
+- ✅ Future PRs creating docs/launch/\*\* files no longer trigger persona-naming policy findings (forward-going; observable as absence of recurring Copilot/Codex findings on launch substrate PRs)
 
 **Surfaced by**: `tools/hygiene/audit-backlog-status-drift.ts` candidate
 list + manual existence + content-coverage check (`grep -nE "docs/launch"

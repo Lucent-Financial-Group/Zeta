@@ -51,10 +51,10 @@ in `docs/DEBT.md`, not accepted as permanent.
 ## Zeta's adoption — decisions locked
 
 **Runtime pin strategy — mise long-term, pragmatic today.**
-Aaron (round 29): *"The long term plan is mise but it can
+Aaron (round 29): _"The long term plan is mise but it can
 be a backlog item if it adds a lot of time right now.
 Homebrew often lags behind on releases — mise is the long
-term plane."*
+term plane."_
 
 - Adopt `.mise.toml` for `dotnet` + `python` **this
   round**. Both are small moves and cover the two tools
@@ -66,57 +66,57 @@ term plane."*
   lands (or when we contribute one per GOVERNANCE.md
   §23), we migrate.
 
-**Verifier jar checksums — skip.** Aaron: *"We don't need
-verified."* Download by URL, trust-on-first-use, move on.
+**Verifier jar checksums — skip.** Aaron: _"We don't need
+verified."_ Download by URL, trust-on-first-use, move on.
 If a verifier ever gets hijacked upstream we'll feel it in
 the test suite; the SHA ceremony is a cost we chose not to
 pay.
 
 **macOS prerequisites — install, don't fail.** Aaron:
-*"The expectation is that on a new machine I can just run
+_"The expectation is that on a new machine I can just run
 setup and it will install everything that's needed
-including all dependencies."* We diverge from `../scratch`'s
+including all dependencies."_ We diverge from `../scratch`'s
 fail-fast-on-Xcode-CLT approach — the Zeta installer
 detects missing Xcode Command Line Tools and triggers the
 install itself (`xcode-select --install`). Non-interactive
 elements handled; the one prompt Apple still shows is
 documented.
 
-**Legacy cleanup — no alias.** Aaron: *"No alias, this
+**Legacy cleanup — no alias.** Aaron: _"No alias, this
 project is greenfield, super greenfield we don't need any
-legacy cruft."* `tools/install-verifiers.sh` is deleted in
+legacy cruft."_ `tools/install-verifiers.sh` is deleted in
 this round; its duties fold into
 `tools/setup/common/verifiers.sh`. No symlink, no
 deprecated-shim wrapper. Any doc still referencing
 the old path is swept.
 
 **OS coverage phase 1 — macOS + Linux; Windows soon-ish.**
-Aaron: *"We can do windows later, I'll likely push for it
+Aaron: _"We can do windows later, I'll likely push for it
 before a test breaks but backlog is fine. Let's just do it
 once we are in a stable spot with mac and linux no need to
-wait."* macOS + Linux scripts land this round; Windows
+wait."_ macOS + Linux scripts land this round; Windows
 backlogged with trigger "mac + linux stable + one week of
 green CI runs."
 
 ## What Zeta borrows from `../scratch`
 
-| Pattern | `../scratch` citation | Why it fits |
-|---|---|---|
-| Managed shellenv sourced from rc files **and** `$GITHUB_ENV` / `$GITHUB_PATH` | `scripts/setup/unix/profiles.sh` | Single source of truth for PATH across local dev + CI. |
-| Idempotent detect-first-install-else-update loop per tool | `scripts/setup/unix/dotnet.sh` | Daily-rerunnable install script per Aaron's ask. |
-| Two-run contract (CI runs the bootstrap twice) | `../scratch` CI jobs | Hygiene: protects against "works the first time only" drift. |
-| Per-category manifest files, not inline lists | `declarative/` | Aaron adds a tool by editing a text file, not a script. |
-| `.mise.toml` at repo root for runtime pins | `../scratch/.mise.toml` | CI-local parity for dotnet + python. |
+| Pattern                                                                       | `../scratch` citation            | Why it fits                                                  |
+| ----------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------ |
+| Managed shellenv sourced from rc files **and** `$GITHUB_ENV` / `$GITHUB_PATH` | `scripts/setup/unix/profiles.sh` | Single source of truth for PATH across local dev + CI.       |
+| Idempotent detect-first-install-else-update loop per tool                     | `scripts/setup/unix/dotnet.sh`   | Daily-rerunnable install script per Aaron's ask.             |
+| Two-run contract (CI runs the bootstrap twice)                                | `../scratch` CI jobs             | Hygiene: protects against "works the first time only" drift. |
+| Per-category manifest files, not inline lists                                 | `declarative/`                   | Aaron adds a tool by editing a text file, not a script.      |
+| `.mise.toml` at repo root for runtime pins                                    | `../scratch/.mise.toml`          | CI-local parity for dotnet + python.                         |
 
 ## What Zeta does **not** borrow
 
-| Pattern | `../scratch` citation | Why it doesn't fit |
-|---|---|---|
-| Homebrew on Linux for parity | `declarative/brew/` | Zeta is .NET-first, Linux uses apt for JDK + build tools; no Brew overhead. |
-| `min` / `all` + orthogonal category axes | `scripts/bootstrap.sh` | Zeta has one profile today. Flatten; split only if a second profile becomes genuinely needed. |
-| Cask (GUI apps), VS Build Tools, PowerShell modules | `declarative/{cask,windows}/` | CLI-only dev surface; Windows deferred. |
-| `BOOTSTRAP_COMPACT_MODE` cache sweep | top-level script | Ephemeral CI images; no cache-sweep optimisation needed. |
-| Ruby-evaluated Brewfiles for composition | `Brewfile` | Overhead vs a plain text list; our include story is simpler. |
+| Pattern                                             | `../scratch` citation         | Why it doesn't fit                                                                            |
+| --------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------- |
+| Homebrew on Linux for parity                        | `declarative/brew/`           | Zeta is .NET-first, Linux uses apt for JDK + build tools; no Brew overhead.                   |
+| `min` / `all` + orthogonal category axes            | `scripts/bootstrap.sh`        | Zeta has one profile today. Flatten; split only if a second profile becomes genuinely needed. |
+| Cask (GUI apps), VS Build Tools, PowerShell modules | `declarative/{cask,windows}/` | CLI-only dev surface; Windows deferred.                                                       |
+| `BOOTSTRAP_COMPACT_MODE` cache sweep                | top-level script              | Ephemeral CI images; no cache-sweep optimisation needed.                                      |
+| Ruby-evaluated Brewfiles for composition            | `Brewfile`                    | Overhead vs a plain text list; our include story is simpler.                                  |
 
 ## Target layout
 

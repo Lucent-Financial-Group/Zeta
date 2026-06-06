@@ -11,21 +11,19 @@ import { join, resolve } from "node:path";
 const REPO_ROOT = resolve(import.meta.dir, "../..");
 
 export async function main(): Promise<void> {
-    const outPath = join(REPO_ROOT, ".concept-index.json");
-    const start = performance.now();
-    const index = await buildIndex();
-    const elapsed = ((performance.now() - start) / 1000).toFixed(2);
+  const outPath = join(REPO_ROOT, ".concept-index.json");
+  const start = performance.now();
+  const index = await buildIndex();
+  const elapsed = ((performance.now() - start) / 1000).toFixed(2);
 
-    const payload = JSON.stringify(index, null, 2);
-    await writeFile(outPath, payload);
+  const payload = JSON.stringify(index, null, 2);
+  await writeFile(outPath, payload);
 
-    const sizeKB = (Buffer.byteLength(payload) / 1024).toFixed(0);
-    const totalHits = index.entries.reduce((s, e) => s + e.hits.length, 0);
-    console.log(
-        `Built: ${index.entryCount} entries, ${sizeKB}KB, ${totalHits} total hits — ${elapsed}s`,
-    );
+  const sizeKB = (Buffer.byteLength(payload) / 1024).toFixed(0);
+  const totalHits = index.entries.reduce((s, e) => s + e.hits.length, 0);
+  console.log(`Built: ${index.entryCount} entries, ${sizeKB}KB, ${totalHits} total hits — ${elapsed}s`);
 }
 
 if (import.meta.main) {
-    await main();
+  await main();
 }

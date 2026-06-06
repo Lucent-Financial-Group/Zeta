@@ -125,11 +125,7 @@ export function auditRowFiles(files: string[]): AuditResult {
 function main(): number {
   const repoRoot = resolve(import.meta.dir, "..", "..");
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- git invoked as explicit args array; no shell, no user input on the command line.
-  const lsFiles = spawnSync(
-    "git",
-    ["-C", repoRoot, "ls-files", "docs/backlog/"],
-    { encoding: "utf-8" },
-  );
+  const lsFiles = spawnSync("git", ["-C", repoRoot, "ls-files", "docs/backlog/"], { encoding: "utf-8" });
   if (lsFiles.status !== 0) {
     console.error(`git ls-files failed: ${lsFiles.stderr ?? ""}`);
     return 1;
@@ -156,7 +152,9 @@ function main(): number {
   }
 
   if (result.duplicates.length > 0) {
-    console.error(`audit-duplicate-row-ids: ${result.duplicates.length} duplicate-ID group(s) found across ${result.rowsWithId} rows with id field:`);
+    console.error(
+      `audit-duplicate-row-ids: ${result.duplicates.length} duplicate-ID group(s) found across ${result.rowsWithId} rows with id field:`,
+    );
     for (const dup of result.duplicates) {
       console.error(`  ${dup.id}:`);
       for (const f of dup.files) {

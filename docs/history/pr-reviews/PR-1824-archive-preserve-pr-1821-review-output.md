@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1824 |
-| Title | archive: preserve PR 1821 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T07:13:41Z |
-| Merged at | 2026-05-07T07:16:06Z |
-| Merge commit SHA | `8bb2ce639c0892ef9b85164f8622763a2e1d9f90` |
-| Branch | `claim/archive-pr-1821-review-substrate` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1824 |
-| Changed files | 2 |
-| Additions / deletions | +58 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1824                                                     |
+| Title                 | archive: preserve PR 1821 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-07T07:13:41Z                                     |
+| Merged at             | 2026-05-07T07:16:06Z                                     |
+| Merge commit SHA      | `8bb2ce639c0892ef9b85164f8622763a2e1d9f90`               |
+| Branch                | `claim/archive-pr-1821-review-substrate`                 |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1824 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +58 / -0                                                 |
 
 ## Description
 
 ## Summary
+
 - preserve generated review archive for merged PR #1821
 - update PR review archive manifest with the PR #1821 source ids
 - route the post-merge archive output through PR flow because protected main rejected the workflow direct push
 
 ## Checks
+
 - GITHUB_SHA=35f5b8068a7079595713399eff1e2be46d49de0d bun tools/archive/archive-pr-reviews.ts 1821
 - git diff --check
 - git diff --cached --check
@@ -40,15 +42,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

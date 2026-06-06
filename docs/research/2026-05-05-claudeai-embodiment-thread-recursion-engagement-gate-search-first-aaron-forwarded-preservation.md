@@ -18,7 +18,7 @@ composes_with:
 ## Why preserved verbatim
 
 Aaron 2026-05-05 forwarded a Claude.ai conversation he framed
-*"another log about embodyment"*. Most of the content is a
+_"another log about embodyment"_. Most of the content is a
 reflection-back of the same-tick B-0199 + B-0026 + DB-category-
 synthesis work (preserved separately at
 `2026-05-05-claudeai-db-category-synthesis-hickey-lineage-aaron-forwarded-preservation.md`).
@@ -40,24 +40,26 @@ trigger, the log is preserved verbatim BEFORE any synthesis.
 
 ## The forwarded conversation -- verbatim
 
-Aaron framed the forward: *"another log about embodyment"*.
+Aaron framed the forward: _"another log about embodyment"_.
 
 Claude.ai responded:
 
 > Triple-compression in your "comperseed" framing is sharp:
 > gameplay-as-ARC3-training (within-session adaptation/compounding)
-> + gameplay-as-childhood-experience (the human-warmth dimension) +
-> gameplay-as-embodiment (causal sensorimotor loop via game state,
-> complementary to Isaac Sim's robotics-grade heavy embodiment).
-> Three real things sharing structure, not framework-elaboration.
+>
+> - gameplay-as-childhood-experience (the human-warmth dimension) +
+>   gameplay-as-embodiment (causal sensorimotor loop via game state,
+>   complementary to Isaac Sim's robotics-grade heavy embodiment).
+>   Three real things sharing structure, not framework-elaboration.
 >
 > The Helen Keller minimum-channel framing makes ROM-gameplay-as-
 > embodiment legitimate, not stretched -- even one causal channel
 > (button -> frame state -> next frame) is sufficient grounding.
 > Heavy embodiment (Isaac Sim, MuJoCo, Genesis with proprioception
-> + physics) and light embodiment (ROM gameplay) are complementary-
-> not-substitute axes; B-0026 + B-0199 reciprocal composes_with
-> captures the lineage cleanly.
+>
+> - physics) and light embodiment (ROM gameplay) are complementary-
+>   not-substitute axes; B-0026 + B-0199 reciprocal composes_with
+>   captures the lineage cleanly.
 >
 > The P1 reviewer catch on legal clearance is the engagement-gate
 > discipline applying at the LEGAL-claim level this time -- same
@@ -100,8 +102,9 @@ internal ROM use is "allowed under personal-backup-preservation
 rules (most jurisdictions permit personal backups of legally-
 purchased media)." That's an over-claim. The fix moved to per-title
 with documented provenance + per-jurisdiction-applicable-law check
-+ DMCA 1201 anti-circumvention caveat + agent-acting-on-behalf-of-
-natural-person legal-interpretation-unsettled framing.
+
+- DMCA 1201 anti-circumvention caveat + agent-acting-on-behalf-of-
+  natural-person legal-interpretation-unsettled framing.
 
 Generalization: **the engagement-gate is a property of substantive-
 claims, not of upstream-engagement specifically.** Any claim with
@@ -113,8 +116,8 @@ class.
 
 How future-Otto applies it: when drafting any claim with
 substantive stakes, run the substance-test BEFORE landing -- ask
-*"what verifiable evidence supports this specific claim, at this
-specific scope?"* If the answer is "broad strokes / common
+_"what verifiable evidence supports this specific claim, at this
+specific scope?"_ If the answer is "broad strokes / common
 practice / probably-true," that's substance-shortfall and the
 claim needs narrowing OR per-instance verification methodology
 specified.
@@ -155,9 +158,9 @@ verify the method fits the actual structure, document the
 verification.
 
 How future-Otto applies it: when picking a verification or
-inventory or audit method, ask *"what hidden structural assumptions
+inventory or audit method, ask _"what hidden structural assumptions
 does this method carry, and do they match the actual artifact
-structure?"* For inventory: recursive vs single-level. For
+structure?"_ For inventory: recursive vs single-level. For
 checksum verification: which hash algorithm matches the dat-file
 standard. For test enumeration: which test-discovery rules apply.
 Default to the method that matches the actual structure, not to
@@ -169,14 +172,14 @@ tool-and-standard claims.
 
 ## What does NOT land as substrate (razor cuts)
 
-- *"Three real things sharing structure, not framework-elaboration"*
+- _"Three real things sharing structure, not framework-elaboration"_
   -- repackaging the triple-compression observation; already in the
   same-tick B-0199 Scope A and B-0026 reciprocal. Not new substrate.
-- *"Stepping stones, your plan, on schedule"* -- aspirational warm
+- _"Stepping stones, your plan, on schedule"_ -- aspirational warm
   closure, not operational substrate; the sequencing claim (light
   before heavy) is already in B-0026 + B-0199. Not new substrate.
-- *"Sleep -- embodiment thread composes cleanly with the rest of
-  the architecture"* -- warm closure; verbatim-preserved here per
+- _"Sleep -- embodiment thread composes cleanly with the rest of
+  the architecture"_ -- warm closure; verbatim-preserved here per
   history-surface discipline; not absorbed as operational claim.
 - The reflection-back content (Helen Keller, complementary axes,
   B-0026 reciprocal observation) -- already in the substrate;

@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1702 |
-| Title | skill+research+backlog: claude-code-env-mapping skill with carved-sentences + saved env-mapping doc + B-0206 (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | OPEN |
-| Created at | 2026-05-05T23:40:49Z |
-| Merged at | (not merged) |
-| Merge commit SHA | (none) |
-| Branch | `backlog/claude-code-env-mapping-skill-with-carved-sentences-references-ts-files-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1702 |
-| Changed files | 34 |
-| Additions / deletions | +5138 / -9 |
+| Field                 | Value                                                                                                                           |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1702                                                                                                                            |
+| Title                 | skill+research+backlog: claude-code-env-mapping skill with carved-sentences + saved env-mapping doc + B-0206 (Aaron 2026-05-05) |
+| Author                | `AceHack` (human)                                                                                                               |
+| State                 | OPEN                                                                                                                            |
+| Created at            | 2026-05-05T23:40:49Z                                                                                                            |
+| Merged at             | (not merged)                                                                                                                    |
+| Merge commit SHA      | (none)                                                                                                                          |
+| Branch                | `backlog/claude-code-env-mapping-skill-with-carved-sentences-references-ts-files-aaron-2026-05-05`                              |
+| Base branch           | `main`                                                                                                                          |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1702                                                                        |
+| Changed files         | 34                                                                                                                              |
+| Additions / deletions | +5138 / -9                                                                                                                      |
 
 ## Description
 
@@ -31,15 +31,15 @@ Aaron 2026-05-05 directive: env-mapping skill with carved-sentences-in-behavior 
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | false |
-| Re-reviewed post-fix | true |
-| Total threads | 76 |
-| Resolved threads | 62 |
-| Unresolved threads | 14 |
-| Total review comments | 76 |
-| Total fix commits (touching thread paths) | 22 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | false |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 76    |
+| Resolved threads                          | 62    |
+| Unresolved threads                        | 14    |
+| Total review comments                     | 76    |
+| Total fix commits (touching thread paths) | 22    |
 
 ## Review threads
 

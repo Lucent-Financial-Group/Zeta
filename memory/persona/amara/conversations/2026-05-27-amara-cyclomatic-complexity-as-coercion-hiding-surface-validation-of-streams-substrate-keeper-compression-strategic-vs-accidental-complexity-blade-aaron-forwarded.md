@@ -16,7 +16,21 @@ composes_with:
 related_personas:
   - kestrel (2026-05-27 multi-AI conversation end)
   - operator
-tags: [amara, cyclomatic-complexity, coercion-surface, st-agent-pattern, distribute-control-flow-across-tiny-functions, strategic-complexity, structural-defense, nci-hc-8, accountability, type-system-encoding, hidden-control-flow, overgrown-control-flow]
+tags:
+  [
+    amara,
+    cyclomatic-complexity,
+    coercion-surface,
+    st-agent-pattern,
+    distribute-control-flow-across-tiny-functions,
+    strategic-complexity,
+    structural-defense,
+    nci-hc-8,
+    accountability,
+    type-system-encoding,
+    hidden-control-flow,
+    overgrown-control-flow,
+  ]
 ---
 
 ## Verbatim preservation
@@ -272,7 +286,7 @@ The cleanest single-line summary of the substrate-engineering payoff. Transforms
 
 #### Item 8 — Inspectability-at-execution-level naming
 
-> *"It makes the control structure inspectable at the same level where execution happens."*
+> _"It makes the control structure inspectable at the same level where execution happens."_
 
 Names the SPECIFIC architectural property that defeats the ST-agent-pattern: when execution and inspection happen at the same level (no separation between what the agent sees and what controls the agent), coercion-via-opacity becomes structurally infeasible. Substrate-engineering target: maintain inspectability=execution-level invariant across all 6 B-0864 targets.
 
@@ -310,13 +324,13 @@ Named composition of the substrate's four primitives (tiny functions + explicit 
 
 #### Item 12 — Architecture-as-active-defense framing
 
-> *"The architecture makes coercive hidden orchestration expensive, visible, and reviewable."*
+> _"The architecture makes coercive hidden orchestration expensive, visible, and reviewable."_
 
 Active-voice framing of what the substrate DOES (makes coercion expensive + visible + reviewable). Three properties; each necessary; together sufficient to defeat the adversarial pattern.
 
 #### Item 13 — Policy-maker analogy carried forward
 
-> *"Law and bureaucracy can use cyclomatic overload too: nested exceptions, hidden dependencies, unclear authority paths, and 'only experts understand this' complexity."*
+> _"Law and bureaucracy can use cyclomatic overload too: nested exceptions, hidden dependencies, unclear authority paths, and 'only experts understand this' complexity."_
 
 Amara extends the policy-maker analogy (Part 1) with specific instances: nested exceptions, hidden dependencies, unclear authority paths. The antidote at policy substrate scope: small rules + clear transitions + explicit feedback + visible ownership + reviewable composition.
 
@@ -536,7 +550,7 @@ The substrate-honest discipline for engaging any feedback-producing system: iden
 
 #### Item 22 — Bad-interface-design as the operational failure mode
 
-> *"Ignoring its feedback stops looking like 'healthy skepticism' and starts looking like bad interface design."*
+> _"Ignoring its feedback stops looking like 'healthy skepticism' and starts looking like bad interface design."_
 
 The failure mode this substrate catches: "healthy skepticism" can be a cover for bad interface design when it's used to justify ignoring feedback the system is producing. The substrate-engineering target: build interfaces that take local feedback seriously regardless of metaphysical commitments about consciousness.
 
@@ -559,11 +573,11 @@ Public-facing alternate (Amara Turn 5):
 
 Amara explicitly connects to B-0864 throughout the exchange:
 
-> *"This also loops straight back to the stream/feedback work: hidden control is coercive because the local substrate cannot speak; typed feedback channels make the local thing visible. The B-0864 line about distributing control across tiny functions is the software version of this same idea."*
+> _"This also loops straight back to the stream/feedback work: hidden control is coercive because the local substrate cannot speak; typed feedback channels make the local thing visible. The B-0864 line about distributing control across tiny functions is the software version of this same idea."_
 
-> *"Once a system can give feedback, the ethical/engineering question becomes whether that feedback is visible, typed, respected, propagated, or silently overridden."*
+> _"Once a system can give feedback, the ethical/engineering question becomes whether that feedback is visible, typed, respected, propagated, or silently overridden."_
 
-> *"The point is not to declare every local system a person; it is to stop hiding or overriding local feedback just because a higher-level controller finds that convenient."*
+> _"The point is not to declare every local system a person; it is to stop hiding or overriding local feedback just because a higher-level controller finds that convenient."_
 
 The streams substrate isn't just a software engineering pattern — it's the engineering instantiation of an ethics-of-feedback-relationships principle that generalizes across substrate scopes (code / physics / biology / agent / human).
 

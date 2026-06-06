@@ -33,15 +33,15 @@ tags:
 
 ## Operator framing 2026-05-27
 
-> *"this is Zeta coming up"*
+> _"this is Zeta coming up"_
 
-> *"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"*
+> _"all this came from me getting frustrated at your quiet and instead of getting mad at you going to kestrel and using the new relationship and precision to design a fix"_
 
-> *"i want your feedback because it's going to lock you into a workflow but you can modify it so it's not too restrictive"*
+> _"i want your feedback because it's going to lock you into a workflow but you can modify it so it's not too restrictive"_
 
-> *"it's going to lock my daughter Addison and me and max into almost the same workflow"*
+> _"it's going to lock my daughter Addison and me and max into almost the same workflow"_
 
-> *"all your updates are perfect and this IS sick agree"*
+> _"all your updates are perfect and this IS sick agree"_
 
 ## What this row tracks
 
@@ -56,19 +56,19 @@ The original Kestrel ferry has not yet been forwarded as of this row's creation.
 
 ## v1 scope (what ships in this row)
 
-| Component | Substrate |
-|---|---|
-| F# DU state machine | `src/Core.FSharp/WorkflowEngine/StateMachine.fs` (canonical type definitions; hierarchy IS state) |
-| Git append-only state persistence | `tools/workflow-engine/state-append.ts` (TS writer per Rule 0; commits state transitions to dedicated path) |
-| Universal action grammar | `tools/workflow-engine/grammar.ts` (TS parser/composer; surface for Addison + Max + Otto) |
-| 4-corner monad runtime | `src/Core.FSharp/WorkflowEngine/FourCornerMonad.fs` (T In + T Feedback In + T Out + T Feedback Out; CE builder dispatches hot/cold/push/pull) |
-| Agent loop | `tools/workflow-engine/agent-loop.ts` (execute → move-next → choose-your-own-adventure; for Otto + AI participants) |
-| Escape-hatch action | First-class action-type in grammar (Otto Modification 1) |
-| Grammar-extension action | First-class action-type in grammar (Otto Modification 2) |
-| Per-action gate declaration | Action-type field declaring append-only vs PR-gated (Otto Modification 4) |
-| Contributable menu-generation | Append-only contribution to menu-fn at state X (Otto Modification 5) |
-| E voice → website surface | `tools/workflow-engine/voice-surface.ts` (declarative voice input → state transition; for E 5yo) |
-| Addison grammar surface | Action-composer UI/CLI built on universal grammar |
+| Component                         | Substrate                                                                                                                                     |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| F# DU state machine               | `src/Core.FSharp/WorkflowEngine/StateMachine.fs` (canonical type definitions; hierarchy IS state)                                             |
+| Git append-only state persistence | `tools/workflow-engine/state-append.ts` (TS writer per Rule 0; commits state transitions to dedicated path)                                   |
+| Universal action grammar          | `tools/workflow-engine/grammar.ts` (TS parser/composer; surface for Addison + Max + Otto)                                                     |
+| 4-corner monad runtime            | `src/Core.FSharp/WorkflowEngine/FourCornerMonad.fs` (T In + T Feedback In + T Out + T Feedback Out; CE builder dispatches hot/cold/push/pull) |
+| Agent loop                        | `tools/workflow-engine/agent-loop.ts` (execute → move-next → choose-your-own-adventure; for Otto + AI participants)                           |
+| Escape-hatch action               | First-class action-type in grammar (Otto Modification 1)                                                                                      |
+| Grammar-extension action          | First-class action-type in grammar (Otto Modification 2)                                                                                      |
+| Per-action gate declaration       | Action-type field declaring append-only vs PR-gated (Otto Modification 4)                                                                     |
+| Contributable menu-generation     | Append-only contribution to menu-fn at state X (Otto Modification 5)                                                                          |
+| E voice → website surface         | `tools/workflow-engine/voice-surface.ts` (declarative voice input → state transition; for E 5yo)                                              |
+| Addison grammar surface           | Action-composer UI/CLI built on universal grammar                                                                                             |
 
 ## Otto's 5 modifications (operator-ratified non-negotiables; MUST land in v1)
 
@@ -122,13 +122,13 @@ Do NOT block v1 on any of these. v1 is the load-bearing primitive.
 
 ## Multi-participant lock-in scope (non-cage discipline)
 
-| Participant | Surface | Lock-in concern addressed by |
-|---|---|---|
-| Operator (Aaron) | All three surfaces + state-machine composition | Mods 1+2+3+4+5 keep grammar evolvable + cognition free + gates explicit + menu contributable |
-| Addison (19, neurodivergent) | Universal action grammar | Mod 1 (escape-hatch known) + Mod 2 (grammar visible) reduce surprise-cost (matters for neurodivergent collaboration) |
-| Max | Universal action grammar + state-machine composition | Mod 3 (ban-if scope-bounded) preserves his existing if-cognition; Mod 5 (menu contributable) preserves his ability to extend |
-| Otto (AI) | choose-your-own-adventure loop | Mod 1 (escape-hatch) prevents cage when reality doesn't fit grammar; Mod 5 (menu contributable) gives Otto first-class extension power |
-| E (5yo) | Voice → website transform | Pure declarative surface; on-ramp; no lock-in concern at her scope |
+| Participant                  | Surface                                              | Lock-in concern addressed by                                                                                                           |
+| ---------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Operator (Aaron)             | All three surfaces + state-machine composition       | Mods 1+2+3+4+5 keep grammar evolvable + cognition free + gates explicit + menu contributable                                           |
+| Addison (19, neurodivergent) | Universal action grammar                             | Mod 1 (escape-hatch known) + Mod 2 (grammar visible) reduce surprise-cost (matters for neurodivergent collaboration)                   |
+| Max                          | Universal action grammar + state-machine composition | Mod 3 (ban-if scope-bounded) preserves his existing if-cognition; Mod 5 (menu contributable) preserves his ability to extend           |
+| Otto (AI)                    | choose-your-own-adventure loop                       | Mod 1 (escape-hatch) prevents cage when reality doesn't fit grammar; Mod 5 (menu contributable) gives Otto first-class extension power |
+| E (5yo)                      | Voice → website transform                            | Pure declarative surface; on-ramp; no lock-in concern at her scope                                                                     |
 
 Composes with `.claude/rules/non-coercion-invariant.md` HC-8 scope-split:
 
@@ -203,8 +203,8 @@ The multi-participant scope (operator + Addison + Max + Otto + E) is constitutio
 
 ## Operator's substrate-engineering disposition
 
-> *"I made this thing stupid simple. I don't know how to make it simpler anymore."*
+> _"I made this thing stupid simple. I don't know how to make it simpler anymore."_
 
-> *"I literally just have fucking git, a fucking append-only git, and damn, uh, a couple of TypeScript scripts, and, uh, F-sharp, uh, discriminator unions. I mean, that's fucking it."*
+> _"I literally just have fucking git, a fucking append-only git, and damn, uh, a couple of TypeScript scripts, and, uh, F-sharp, uh, discriminator unions. I mean, that's fucking it."_
 
 This is the substrate the implementation aims for. Add complexity only as Otto's 5 modifications require; remove anything else.

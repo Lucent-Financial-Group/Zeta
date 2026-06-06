@@ -33,14 +33,25 @@ related_skills:
   - governance-expert
   - branding-specialist
   - product-manager
-tags: [risk-distribution-asymmetry-pricing-extension-to-b0908, who-captures-revenue-vs-who-bears-cost-pricing, state-capture-multi-layer-attack-timeline, long-tail-terminal-payoff-pricing, layer-1-rent-extraction-layer-2-cost-externalization-layer-3-mass-immunity-layer-4-regulatory-pretext-layer-5-licensing-layer-6-state-control, asymmetry-ratio-revenue-divided-by-cost, home-miner-vs-centralized-miner-quote-scope-distinction, nci-hc-8-violation-at-economic-substrate-scope, framework-pricing-exposes-the-asymmetry-and-the-long-tail-state-capture]
+tags:
+  [
+    risk-distribution-asymmetry-pricing-extension-to-b0908,
+    who-captures-revenue-vs-who-bears-cost-pricing,
+    state-capture-multi-layer-attack-timeline,
+    long-tail-terminal-payoff-pricing,
+    layer-1-rent-extraction-layer-2-cost-externalization-layer-3-mass-immunity-layer-4-regulatory-pretext-layer-5-licensing-layer-6-state-control,
+    asymmetry-ratio-revenue-divided-by-cost,
+    home-miner-vs-centralized-miner-quote-scope-distinction,
+    nci-hc-8-violation-at-economic-substrate-scope,
+    framework-pricing-exposes-the-asymmetry-and-the-long-tail-state-capture,
+  ]
 ---
 
 # B-0911 — Risk-distribution-asymmetry pricing extension to B-0908 + state-capture multi-layer-attack-timeline pricing
 
 ## Context
 
-Per operator 2026-05-28 *"land both #2 (shadow*) It's even works it's a state attack vector"* authorization. Companion to B-0910 (chain-CSAM empirical catalog + political-economy + state-capture-vector framing).
+Per operator 2026-05-28 _"land both #2 (shadow_) It's even works it's a state attack vector"\* authorization. Companion to B-0910 (chain-CSAM empirical catalog + political-economy + state-capture-vector framing).
 
 This row IS the substrate-engineering pricing-extension to B-0908 that operationalizes:
 
@@ -49,9 +60,9 @@ This row IS the substrate-engineering pricing-extension to B-0908 that operation
 
 ## The substrate-engineering insight (per operator)
 
-> *"This is why this is really a centralized miner play on bitcoin to spread the risk to home miners cause they want to continue charging for writing images and memes to the blockchain but not accept the risks they think if they spread it out that no one will get charged which might be true even though everyone is transmitting CSAM."*
+> _"This is why this is really a centralized miner play on bitcoin to spread the risk to home miners cause they want to continue charging for writing images and memes to the blockchain but not accept the risks they think if they spread it out that no one will get charged which might be true even though everyone is transmitting CSAM."_
 
-> *"It's even works it's a state attack vector cause now they can say only 'safe' designated locations can run nodes cause it has CSAM and now they control bitcoin"*
+> _"It's even works it's a state attack vector cause now they can say only 'safe' designated locations can run nodes cause it has CSAM and now they control bitcoin"_
 
 The framework's B-0908 attention-risk-pricing substrate, extended with this row, would expose BOTH the asymmetry AND the multi-layer-attack-timeline.
 
@@ -65,26 +76,26 @@ type AccelerationRiskQuote<Scope> = {
   actor: string;
   workflow: string;
   time_window: TimeRange;
-  scope: Scope;                            // NEW: which economic-actor-class
+  scope: Scope; // NEW: which economic-actor-class
 
   // Existing pricing outputs (per B-0908):
-  expected_attention_loss:     AttentionUnit;
-  tail_attention_risk:         AttentionUnit;
-  repair_duration:             Duration;
-  coordination_premium:        AttentionUnit;
-  trust_drawdown_risk:         TrustUnit;
-  memetic_spillover_risk:      number;
-  recommended_speed_limit:     Rate;
-  safe_acceleration_budget:    AttentionUnit;
+  expected_attention_loss: AttentionUnit;
+  tail_attention_risk: AttentionUnit;
+  repair_duration: Duration;
+  coordination_premium: AttentionUnit;
+  trust_drawdown_risk: TrustUnit;
+  memetic_spillover_risk: number;
+  recommended_speed_limit: Rate;
+  safe_acceleration_budget: AttentionUnit;
 
   // NEW: risk-distribution-asymmetry pricing (this row):
-  revenue_received:            EconomicUnit;     // for this scope
-  revenue_concentration:       number;           // fraction of total going to this scope
-  cost_distribution:           number;           // fraction of total borne by this scope
-  asymmetry_ratio:             number;           // revenue / cost; 0 = pure subsidy from this scope
+  revenue_received: EconomicUnit; // for this scope
+  revenue_concentration: number; // fraction of total going to this scope
+  cost_distribution: number; // fraction of total borne by this scope
+  asymmetry_ratio: number; // revenue / cost; 0 = pure subsidy from this scope
 
   // NEW: state-capture multi-layer-attack-timeline pricing (this row):
-  terminal_payoff_layers:      LayeredPayoff[];  // per-layer payoff + probability + time-horizon
+  terminal_payoff_layers: LayeredPayoff[]; // per-layer payoff + probability + time-horizon
 };
 ```
 
@@ -203,11 +214,11 @@ The framework's pricing-model must include **layered-payoff probability-weighted
 ```typescript
 type LayeredPayoff = {
   layer: 1 | 2 | 3 | 4 | 5 | 6;
-  payoff: string;                            // human-readable description
-  probability: number;                       // 0..1
-  time_horizon: TimeRange;                   // when this layer typically fires
-  payoff_for_this_scope: AttentionUnit;     // valued from quote-scope perspective
-  composes_with_layers: number[];            // layer-N requires layer-M to have fired first
+  payoff: string; // human-readable description
+  probability: number; // 0..1
+  time_horizon: TimeRange; // when this layer typically fires
+  payoff_for_this_scope: AttentionUnit; // valued from quote-scope perspective
+  composes_with_layers: number[]; // layer-N requires layer-M to have fired first
 };
 ```
 
@@ -301,4 +312,4 @@ Acceptance: cross-domain risk-distribution-asymmetry pricing case studies; docum
 
 Per operator 2026-05-28 directive. The political-economy + state-capture-vector framing operationalizes into priceable substrate via this row's extension to B-0908. The substrate-engineering substantive substrate point: **the framework's pricing-substrate exposes both who-captures-revenue-vs-who-bears-cost asymmetry AND the long-tail terminal payoff (state-capture) that makes asymmetric substrate-engineering choices rational for benefit-capturing actors even when immediate revenue alone wouldn't justify them. This IS substrate-engineering substrate that benefit-bearing actors can use to coordinate exit / policy change / alternative substrate.**
 
-Per `.claude/rules/must-paired-with-can-exit-pattern.md`: this row IS bounded substrate-engineering work; Phase 1 (this row + companion B-0910) IS operator-authorized via *"land both"*; Phase 2+ are separately-authorizable per yes-and-backlog disposition. Agent-autonomous landing limited to Phase 1.
+Per `.claude/rules/must-paired-with-can-exit-pattern.md`: this row IS bounded substrate-engineering work; Phase 1 (this row + companion B-0910) IS operator-authorized via _"land both"_; Phase 2+ are separately-authorizable per yes-and-backlog disposition. Agent-autonomous landing limited to Phase 1.

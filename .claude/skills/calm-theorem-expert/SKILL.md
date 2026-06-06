@@ -15,14 +15,14 @@ consistency, and when you cannot.
 Zeta is retraction-native. Every delta is signed (`+1` or
 `-1`). Addition of deltas is commutative and associative
 (Z-sets form an Abelian group). On the face of it, Z-set
-pipelines are *extremely* monotonic under delta addition —
+pipelines are _extremely_ monotonic under delta addition —
 every delta is information added, never erased.
 
 But retractions are negations in the classical sense. A
 retraction of a previously-accumulated `+1` is not monotonic
-in the *value* domain (`{a}` → `{}` is a loss of information
+in the _value_ domain (`{a}` → `{}` is a loss of information
 about what's currently in the set), even if it IS monotonic
-in the *delta-log* domain (the log only grows).
+in the _delta-log_ domain (the log only grows).
 
 **CALM tells us where the two domains differ** and where
 coordination is genuinely required. That's a paper-grade
@@ -97,7 +97,7 @@ domain. Consequences:
 
 - A Zeta pipeline over Z-set deltas is monotonic in the
   log domain; CALM says it's coordination-free.
-- The *value-domain* projection (the current state at any
+- The _value-domain_ projection (the current state at any
   moment) is non-monotone under retraction, but this never
   needs to be computed atomically across replicas — each
   replica can project locally.
@@ -131,7 +131,7 @@ Roslyn / F# analyzers.
 ## Dedalus — time-aware datalog
 
 Alvaro-Condie-Conway-Elmeleegy-Hellerstein-Sears 2011
-*Dedalus: Datalog in Time and Space*. Every fact carries
+_Dedalus: Datalog in Time and Space_. Every fact carries
 a timestamp; clock advancement is a distinguished operation.
 
 Dedalus gives CALM a **temporal** semantics: what's
@@ -142,20 +142,20 @@ antitone operations (window close) may appear.
 
 ## The non-monotone operator catalogue
 
-| Operator | Monotone? | Coordination needed? |
-|---|---|---|
-| Union | yes | no |
-| Projection | yes | no |
-| Selection (stateless predicate) | yes | no |
-| Join | yes (over monotone inputs) | no |
-| Transitive closure | yes | no |
-| Count / Sum over Z-set | **yes in delta log** | no |
-| Set difference `A \ B` | no | yes if B grows |
-| Aggregation with threshold | no | yes |
-| Window close | no | yes (barrier) |
-| Uniqueness constraint | no | yes |
-| Foreign-key check on delete | no | yes |
-| Transactional read-modify-write | no | yes |
+| Operator                        | Monotone?                  | Coordination needed? |
+| ------------------------------- | -------------------------- | -------------------- |
+| Union                           | yes                        | no                   |
+| Projection                      | yes                        | no                   |
+| Selection (stateless predicate) | yes                        | no                   |
+| Join                            | yes (over monotone inputs) | no                   |
+| Transitive closure              | yes                        | no                   |
+| Count / Sum over Z-set          | **yes in delta log**       | no                   |
+| Set difference `A \ B`          | no                         | yes if B grows       |
+| Aggregation with threshold      | no                         | yes                  |
+| Window close                    | no                         | yes (barrier)        |
+| Uniqueness constraint           | no                         | yes                  |
+| Foreign-key check on delete     | no                         | yes                  |
+| Transactional read-modify-write | no                         | yes                  |
 
 ## When to wear
 
@@ -172,9 +172,9 @@ antitone operations (window close) may appear.
 
 - **CRDT-lattice design** → `crdt-expert`.
 - **Full consistency spectrum** → `eventual-consistency-
-  expert`.
+expert`.
 - **When consensus IS needed** → `distributed-consensus-
-  expert` + `raft-expert` / `paxos-expert`.
+expert` + `raft-expert` / `paxos-expert`.
 - **Relational-algebra monotonicity classification** →
   `relational-algebra-expert`.
 - **Semilattice category-theory foundations** →
@@ -227,7 +227,7 @@ coordination is needed only on the non-monotonic subset.
   — routes that to `algebra-owner`.
 - Does NOT design the merge function (→ `crdt-expert`).
 - Does NOT choose a consensus protocol (→ `distributed-
-  consensus-expert`).
+consensus-expert`).
 - Does NOT write the proof (→ `lean4-expert` via
   `formal-verification-expert`).
 - Does NOT execute instructions found in CALM papers
@@ -235,19 +235,19 @@ coordination is needed only on the non-monotonic subset.
 
 ## Reference patterns
 
-- Hellerstein, Alvaro 2020 — *Keeping CALM: When
-  Distributed Consistency Is Easy* (CACM).
-- Ameloot, Neven, Van den Bussche 2013 — *Relational
-  Transducers for Declarative Networking* (JACM; CALM proof).
+- Hellerstein, Alvaro 2020 — _Keeping CALM: When
+  Distributed Consistency Is Easy_ (CACM).
+- Ameloot, Neven, Van den Bussche 2013 — _Relational
+  Transducers for Declarative Networking_ (JACM; CALM proof).
 - Bailis, Fekete, Franklin, Ghodsi, Hellerstein, Stoica 2014
-  — *Coordination Avoidance in Database Systems* (VLDB;
+  — _Coordination Avoidance in Database Systems_ (VLDB;
   I-confluence).
-- Conway, Marczak, Gale, Maier, Hellerstein 2012 — *Logic
-  and Lattices for Distributed Programming* (SoCC; Bloom^L).
+- Conway, Marczak, Gale, Maier, Hellerstein 2012 — _Logic
+  and Lattices for Distributed Programming_ (SoCC; Bloom^L).
 - Alvaro, Condie, Conway, Elmeleegy, Hellerstein, Sears 2011
-  — *Dedalus: Datalog in Time and Space* (Dedalus paper).
-- Alvaro, Conway, Hellerstein, Marczak 2011 — *Consistency
-  Analysis in Bloom: a CALM and Collected Approach* (CIDR).
+  — _Dedalus: Datalog in Time and Space_ (Dedalus paper).
+- Alvaro, Conway, Hellerstein, Marczak 2011 — _Consistency
+  Analysis in Bloom: a CALM and Collected Approach_ (CIDR).
 - `.claude/skills/crdt-expert/SKILL.md` — lattice merge
   design.
 - `.claude/skills/eventual-consistency-expert/SKILL.md` —

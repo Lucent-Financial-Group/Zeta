@@ -13,7 +13,11 @@ import { env } from "node:process";
 import { Pool } from "pg";
 
 import { ChangeSetPhase, OrgEventKind } from "../packages/domain/src/index.ts";
-import { RecordingTelemetryQueryPort, createLgtmTelemetryQueryPort, type TelemetryTimeRange } from "../packages/observability/src/index.ts";
+import {
+  RecordingTelemetryQueryPort,
+  createLgtmTelemetryQueryPort,
+  type TelemetryTimeRange,
+} from "../packages/observability/src/index.ts";
 import {
   TelemetryImprovementMetricKind,
   createContentAddressedEvidenceArtifact,
@@ -34,7 +38,10 @@ const proofRunId = randomUUID().slice(0, 8);
 const organizationId = `org-telemetry-improvement-${proofRunId}`;
 const workItemId = `work-telemetry-improvement-${proofRunId}`;
 const now = new Date().toISOString();
-const telemetryEvidence = createContentAddressedEvidenceArtifact("telemetry-regression", { proofRunId, metric: "review_p95_ms" });
+const telemetryEvidence = createContentAddressedEvidenceArtifact("telemetry-regression", {
+  proofRunId,
+  metric: "review_p95_ms",
+});
 
 async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
@@ -52,15 +59,17 @@ async function main(): Promise<void> {
     }
 
     const telemetry = new RecordingTelemetryQueryPort({
-      metrics: [{
-        labels: { organizationId, hat: "code_reviewer", metric: "review_p95_ms" },
-        points: [
-          { timestamp: "2026-05-31T17:45:00.000Z", value: 90 },
-          { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
-          { timestamp: "2026-05-31T18:30:00.000Z", value: 310 },
-          { timestamp: "2026-05-31T18:45:00.000Z", value: 330 },
-        ],
-      }],
+      metrics: [
+        {
+          labels: { organizationId, hat: "code_reviewer", metric: "review_p95_ms" },
+          points: [
+            { timestamp: "2026-05-31T17:45:00.000Z", value: 90 },
+            { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
+            { timestamp: "2026-05-31T18:30:00.000Z", value: 310 },
+            { timestamp: "2026-05-31T18:45:00.000Z", value: 330 },
+          ],
+        },
+      ],
       logs: [{ timestamp: now, line: "review p95 rose 3x in telemetry proof", labels: { organizationId } }],
       traces: [{ traceId: `trace-${proofRunId}`, rootName: "org.review", spanCount: 8 }],
     });
@@ -69,7 +78,13 @@ async function main(): Promise<void> {
       seed: `telemetry-improvement-${proofRunId}`,
       stream: [
         { eventId: `sim-intake-${proofRunId}`, kind: "work_intake", occurredAt: now, workItemId, priority: 80 },
-        { eventId: `sim-complete-${proofRunId}`, kind: "work_completed", occurredAt: now, workItemId, leadTimeMs: 900_000 },
+        {
+          eventId: `sim-complete-${proofRunId}`,
+          kind: "work_completed",
+          occurredAt: now,
+          workItemId,
+          leadTimeMs: 900_000,
+        },
         { eventId: `sim-review-${proofRunId}`, kind: "review_lag", occurredAt: now, workItemId, lagMs: 400_000 },
       ],
       baseline: {
@@ -101,7 +116,13 @@ async function main(): Promise<void> {
       decision: simulationDecision,
     });
     if (simulationDecision.status !== "accepted") {
-      console.log(JSON.stringify({ track: "Phase 2.9 telemetry improvement optimizer", organizationId, simulationDecision, PROOF: "FAIL" }, null, 2));
+      console.log(
+        JSON.stringify(
+          { track: "Phase 2.9 telemetry improvement optimizer", organizationId, simulationDecision, PROOF: "FAIL" },
+          null,
+          2,
+        ),
+      );
       process.exitCode = 1;
       return;
     }
@@ -124,8 +145,8 @@ async function main(): Promise<void> {
       trigger: {
         metricKind: TelemetryImprovementMetricKind.ReviewP95Ms,
         metricQuery: "histogram_quantile(0.95, org_review_duration_ms)",
-        logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"",
-        traceQuery: "{ name = \"org.review\" }",
+        logQuery: '{app="agentic-org-worker"} |= "review p95"',
+        traceQuery: '{ name = "org.review" }',
         minimumRelativeChange: 1,
         direction: "increase_bad",
         suspectedCause: "review bottleneck",
@@ -162,9 +183,8 @@ async function main(): Promise<void> {
       }
     }
 
-    const persistedChangeSet = proposal.kind === "proposed"
-      ? await changeSets.get(proposal.changeSet.changeSetId)
-      : null;
+    const persistedChangeSet =
+      proposal.kind === "proposed" ? await changeSets.get(proposal.changeSet.changeSetId) : null;
     const events = await orgEvents.listByOrganization(organizationId, 100);
     const optimizationEvents = events.filter((event) => event.kind === OrgEventKind.DecisionOptimizationProposed);
     const ok =
@@ -176,30 +196,40 @@ async function main(): Promise<void> {
       optimizationEvents[0]?.evidenceRefs.includes(simulationEvidence.ref) === true &&
       liveTelemetryPreflight.status === "ok";
 
-    console.log(JSON.stringify({
-      track: "Phase 2.9 telemetry improvement optimizer",
-      organizationId,
-      proposal: proposal.kind === "proposed"
-        ? {
-          changeSetId: proposal.changeSet.changeSetId,
-          hypothesisId: proposal.hypothesis.hypothesisId,
-          relativeChange: proposal.hypothesis.symptom.relativeChange,
-          proposedChange: proposal.hypothesis.proposedChange.kind,
-        }
-        : proposal,
-      persisted: persistedChangeSet === null ? null : {
-        changeSetId: persistedChangeSet.changeSetId,
-        phase: persistedChangeSet.phase,
-        artifactCount: persistedChangeSet.artifacts.length,
-      },
-      events: {
-        decisionOptimizationProposed: optimizationEvents.length,
-      },
-      simulationDecision,
-      liveTelemetryPreflight,
-      telemetryCalls: telemetry.calls.map((call) => call.kind),
-      PROOF: ok ? "PASS" : "FAIL",
-    }, null, 2));
+    console.log(
+      JSON.stringify(
+        {
+          track: "Phase 2.9 telemetry improvement optimizer",
+          organizationId,
+          proposal:
+            proposal.kind === "proposed"
+              ? {
+                  changeSetId: proposal.changeSet.changeSetId,
+                  hypothesisId: proposal.hypothesis.hypothesisId,
+                  relativeChange: proposal.hypothesis.symptom.relativeChange,
+                  proposedChange: proposal.hypothesis.proposedChange.kind,
+                }
+              : proposal,
+          persisted:
+            persistedChangeSet === null
+              ? null
+              : {
+                  changeSetId: persistedChangeSet.changeSetId,
+                  phase: persistedChangeSet.phase,
+                  artifactCount: persistedChangeSet.artifacts.length,
+                },
+          events: {
+            decisionOptimizationProposed: optimizationEvents.length,
+          },
+          simulationDecision,
+          liveTelemetryPreflight,
+          telemetryCalls: telemetry.calls.map((call) => call.kind),
+          PROOF: ok ? "PASS" : "FAIL",
+        },
+        null,
+        2,
+      ),
+    );
     process.exitCode = ok ? 0 : 1;
   } finally {
     await pool.end();
@@ -219,11 +249,7 @@ async function runLiveTelemetryPreflight(range: TelemetryTimeRange): Promise<Liv
   if (mimirBaseUrl === undefined || tempoBaseUrl === undefined || lokiBaseUrl === undefined) {
     return {
       status: "missing_config",
-      requiredEnv: [
-        "AGENTIC_ORG_MIMIR_BASE_URL",
-        "AGENTIC_ORG_TEMPO_BASE_URL",
-        "AGENTIC_ORG_LOKI_BASE_URL",
-      ],
+      requiredEnv: ["AGENTIC_ORG_MIMIR_BASE_URL", "AGENTIC_ORG_TEMPO_BASE_URL", "AGENTIC_ORG_LOKI_BASE_URL"],
     };
   }
   const port = createLgtmTelemetryQueryPort({ mimirBaseUrl, mimirTenantId, tempoBaseUrl, lokiBaseUrl });

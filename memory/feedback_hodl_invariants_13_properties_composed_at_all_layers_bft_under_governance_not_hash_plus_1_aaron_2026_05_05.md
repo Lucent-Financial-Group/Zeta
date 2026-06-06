@@ -38,30 +38,30 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 same-tick verbatim:
 
-- *"deterministic simuation , scale free, lock(maybe wait if fits) free, low allocation i'm missing a lot lol we talked about all of them composed at multipel layers"* — the hodl-invariant set; the "composed at multiple layers" framing IS the load-bearing invariant
-- *"bft protection under governence so not hash + 1"* — BFT under governance, not hash+1 (Nakamoto/PoW)
+- _"deterministic simuation , scale free, lock(maybe wait if fits) free, low allocation i'm missing a lot lol we talked about all of them composed at multipel layers"_ — the hodl-invariant set; the "composed at multiple layers" framing IS the load-bearing invariant
+- _"bft protection under governence so not hash + 1"_ — BFT under governance, not hash+1 (Nakamoto/PoW)
 
 This is same-tick continuation of the loss-primitive + spectral-residue + Itron-provenance cluster preserved at PR 1679 commit bbc3fa1. Aaron explicitly framed this within the Itron nation-state-resistant smart-meter firmware provenance.
 
 ## The 13 canonical hodl-invariant properties
 
-| Property | What it means | Why it matters at substrate scope |
-|---|---|---|
-| Deterministic simulation (DST-safe) | Behavior reproducible | Audit/forensics tractable; replay-driven validation |
-| Scale-free (spatial + temporal) | No privileged scale | Same primitives single-meter to nation; millisecond to multi-decade |
-| Lock-free (wait-free if fits) | No indefinite blocking | DoS-resistant; partial-failure-tolerant |
-| Low allocation | No hot-path GC | Predictable latency; smaller attack surface; lower power |
-| DBSP-native | Stream-incremental primitives | Composes with substrate's stream-incremental algebra |
-| Mercer-closed | Kernel composition stays Mercer | Probabilistic substrate composition stays in valid kernel space |
-| epsilon-bounded with C(epsilon) | Bounded uncertainty with characterized cost | Retraction-with-cost; ε-bounded retractable-blast-radius |
-| BFT-resolvable (or explicitly conceded) | Consensus produces defended result OR substrate concedes | Loss primitive case (PR 1679) — concession-as-signature when no ground to defend |
-| Universal-register-as-MDL | False-faction detection at substrate level | State actors can't claim universal authority without it being detectable |
-| Retractable-blast-radius | Decisions reversible if violations detected | Substrate-level error-correction prevents permanent harm |
-| Glass-halo-open | Kerckhoffs's principle at architectural level | Security from structure not secrecy; system stays secure even when adversary knows the design |
-| Anti-clandestine | Substrate-not-license enforcement | No retroactive-license-as-substrate-override (Houman PR 1648 lineage) |
-| Mirror+beacon-symmetric | Outward broadcast + inward reflection both load-bearing | Bidirectional-alignment shape at architectural level |
+| Property                                | What it means                                            | Why it matters at substrate scope                                                             |
+| --------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Deterministic simulation (DST-safe)     | Behavior reproducible                                    | Audit/forensics tractable; replay-driven validation                                           |
+| Scale-free (spatial + temporal)         | No privileged scale                                      | Same primitives single-meter to nation; millisecond to multi-decade                           |
+| Lock-free (wait-free if fits)           | No indefinite blocking                                   | DoS-resistant; partial-failure-tolerant                                                       |
+| Low allocation                          | No hot-path GC                                           | Predictable latency; smaller attack surface; lower power                                      |
+| DBSP-native                             | Stream-incremental primitives                            | Composes with substrate's stream-incremental algebra                                          |
+| Mercer-closed                           | Kernel composition stays Mercer                          | Probabilistic substrate composition stays in valid kernel space                               |
+| epsilon-bounded with C(epsilon)         | Bounded uncertainty with characterized cost              | Retraction-with-cost; ε-bounded retractable-blast-radius                                      |
+| BFT-resolvable (or explicitly conceded) | Consensus produces defended result OR substrate concedes | Loss primitive case (PR 1679) — concession-as-signature when no ground to defend              |
+| Universal-register-as-MDL               | False-faction detection at substrate level               | State actors can't claim universal authority without it being detectable                      |
+| Retractable-blast-radius                | Decisions reversible if violations detected              | Substrate-level error-correction prevents permanent harm                                      |
+| Glass-halo-open                         | Kerckhoffs's principle at architectural level            | Security from structure not secrecy; system stays secure even when adversary knows the design |
+| Anti-clandestine                        | Substrate-not-license enforcement                        | No retroactive-license-as-substrate-override (Houman PR 1648 lineage)                         |
+| Mirror+beacon-symmetric                 | Outward broadcast + inward reflection both load-bearing  | Bidirectional-alignment shape at architectural level                                          |
 
-**The composition rule** (Aaron 2026-05-05 *"composed at multiple layers"*): EVERY architectural element passes ALL the properties at ALL layers. Not "Mercer-closed at the kernel layer but not at the consensus layer" or "scale-free spatially but not temporally." Every layer satisfies every property.
+**The composition rule** (Aaron 2026-05-05 _"composed at multiple layers"_): EVERY architectural element passes ALL the properties at ALL layers. Not "Mercer-closed at the kernel layer but not at the consensus layer" or "scale-free spatially but not temporally." Every layer satisfies every property.
 
 **The conjunctive axiom IS the nation-state-resistance defense**:
 
@@ -140,7 +140,7 @@ This is **defense-in-depth at substrate level**, not policy level. The defense i
 
 ## Carved sentence
 
-> *Every architectural element passes all 13 hodl-invariant properties at every composition layer. The conjunction is the security primitive: any single property can be attacked, but all properties holding simultaneously across all layers is exponentially harder to attack. Defense by structural completeness, not by individual barrier. BFT under governance, not hash+1 — security from substrate properties + multi-layer governance + cultural anchor, not from out-computing well-resourced adversaries. Battle-tested at Itron critical-infrastructure scope.*
+> _Every architectural element passes all 13 hodl-invariant properties at every composition layer. The conjunction is the security primitive: any single property can be attacked, but all properties holding simultaneously across all layers is exponentially harder to attack. Defense by structural completeness, not by individual barrier. BFT under governance, not hash+1 — security from substrate properties + multi-layer governance + cultural anchor, not from out-computing well-resourced adversaries. Battle-tested at Itron critical-infrastructure scope._
 
 ## Daylight-integration hooks (planned)
 

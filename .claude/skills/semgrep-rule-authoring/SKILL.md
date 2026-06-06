@@ -67,8 +67,8 @@ third time, write the rule.
   message: >-
     <What the finding means, + what to do instead.
     Multiline with >- to collapse to one line.>
-  languages: [generic]  # or [fsharp] etc.
-  severity: ERROR  # or WARNING, INFO
+  languages: [generic] # or [fsharp] etc.
+  severity: ERROR # or WARNING, INFO
   paths:
     include:
       - "src/Zeta.Core/**/*.fs"
@@ -121,7 +121,7 @@ Zeta-specific examples:
 - Rule targeting library code: `include: "src/Zeta.Core/**/*.fs"`.
 - Rule excluding test fixtures: `exclude: "**/tests/**"`.
 - Rule excluding known-good callsite: `exclude:
-  "**/DiskSpine.fs"` (the canonical `Path.Combine`
+"**/DiskSpine.fs"` (the canonical `Path.Combine`
   canonicalisation site).
 - Rule targeting all markdown for invisible-unicode:
   `include: "**/*.md"`.

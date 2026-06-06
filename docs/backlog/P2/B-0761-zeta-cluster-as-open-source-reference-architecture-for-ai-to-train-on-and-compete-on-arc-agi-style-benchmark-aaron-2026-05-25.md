@@ -22,10 +22,10 @@ tags: [cluster, reference-architecture, ai-training, benchmark, open-source, arc
 ## Problem
 
 Aaron 2026-05-25, immediately after the second successful zflash
-session: *"also by having a common reference stack we are defining
+session: _"also by having a common reference stack we are defining
 a common open source reference archceture that is modern and cloud
 agnostic for AI to train on and compete on like the ARC3 AGI
-competition."*
+competition."_
 
 The Zeta cluster substrate (NixOS declarative + k3s + Longhorn /
 future Ceph/Rook + zero-typing USB install + 3-node HA quorum +
@@ -93,14 +93,14 @@ $1M+ prize) drove serious AI research progress.
 A Zeta-cluster-reference-architecture benchmark could mirror that
 shape at the infrastructure / cluster / DevOps domain:
 
-| ARC-AGI parallel | Zeta cluster reference |
-|---|---|
-| Public benchmark tasks | Public cluster-install scenarios (1-node, 3-node HA, single-node-failure, hardware-swap, version-upgrade, network-partition) |
-| Open scoring rubric | Open scoring rubric (install time, downtime during failure, recovery time, declarative-state match, security floor) |
-| Reproducible test environment | Reproducible test environment (Nix-pinned, ISO byte-identical, hardware emulated via QEMU or real bare-metal racks) |
-| AI systems submit solutions | AI systems submit cluster-build runs (full transcripts + commits + final state) |
-| Public leaderboard | Public leaderboard (per-scenario, per-AI-system) |
-| Prize + recognition | Prize + recognition (sponsor + naming-rights) |
+| ARC-AGI parallel              | Zeta cluster reference                                                                                                       |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Public benchmark tasks        | Public cluster-install scenarios (1-node, 3-node HA, single-node-failure, hardware-swap, version-upgrade, network-partition) |
+| Open scoring rubric           | Open scoring rubric (install time, downtime during failure, recovery time, declarative-state match, security floor)          |
+| Reproducible test environment | Reproducible test environment (Nix-pinned, ISO byte-identical, hardware emulated via QEMU or real bare-metal racks)          |
+| AI systems submit solutions   | AI systems submit cluster-build runs (full transcripts + commits + final state)                                              |
+| Public leaderboard            | Public leaderboard (per-scenario, per-AI-system)                                                                             |
+| Prize + recognition           | Prize + recognition (sponsor + naming-rights)                                                                                |
 
 ## Acceptance
 

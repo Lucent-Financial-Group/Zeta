@@ -20,15 +20,15 @@ a git-native file.
 
 ## Vocabulary discipline (6 mutually-exclusive classes)
 
-- *captured* (TaskUpdate only — ephemeral)
-- *parked* (pushed WIP branch like `wip/<topic>-<date>`,
+- _captured_ (TaskUpdate only — ephemeral)
+- _parked_ (pushed WIP branch like `wip/<topic>-<date>`,
   optionally with draft PR — git-ref-backed)
-- *host-durable-not-git-canonical* (GitHub Issues, PR comments —
+- _host-durable-not-git-canonical_ (GitHub Issues, PR comments —
   durable on host but not in git-canonical form)
-- *preserved* (repo-native, committed +
+- _preserved_ (repo-native, committed +
   reachable-from-long-lived-ref + indexed)
-- *canonical* (accepted spec)
-- *operational* (enforced by tooling)
+- _canonical_ (accepted spec)
+- _operational_ (enforced by tooling)
 
 Never call TaskUpdate-only work "done."
 

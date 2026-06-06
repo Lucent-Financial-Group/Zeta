@@ -14,7 +14,7 @@ composes_with: [B-0086]
 tags: [ci-lint, factory-hygiene, ts-bun-migration, mechanical-guard, missing-gate]
 ---
 
-# `tsc --noEmit` gate job for tools/**.ts
+# `tsc --noEmit` gate job for tools/\*\*.ts
 
 A real strict-typecheck error
 (`tools/hygiene/audit-agencysignature-main-tip.ts(124,5): TS2322`)
@@ -24,7 +24,7 @@ during slice-11 audit work on 2026-04-30. CI did not catch it because
 TypeScript scripts under `tools/**`.
 
 The fix for the specific bug shipped as PR #887. This row tracks
-the *gap* — the missing CI gate.
+the _gap_ — the missing CI gate.
 
 ## Scope
 
@@ -40,7 +40,7 @@ Add a `lint (tsc tools)` job to `.github/workflows/gate.yml` that:
 
 ## Why this matters
 
-ESLint with typed-linting catches *most* TypeScript issues but not
+ESLint with typed-linting catches _most_ TypeScript issues but not
 all assignability narrowings — the slice-9 example was a
 `Type 'string' is not assignable to type '"head" | "commit" | "max" | "since"'`
 error that survived eslint strictTypeChecked + sonarjs but failed

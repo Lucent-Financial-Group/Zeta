@@ -17,9 +17,9 @@ type: code
 
 ## Why
 
-Aaron 2026-05-18 (Mika conversation, line 207): *"as long as you figure out how to do safe wallet, which we're working on doing an AI safety system for, for wallets, an F-sharp type system. So, like that banker bot error that happened the other day wouldn't even compile in F-sharp."*
+Aaron 2026-05-18 (Mika conversation, line 207): _"as long as you figure out how to do safe wallet, which we're working on doing an AI safety system for, for wallets, an F-sharp type system. So, like that banker bot error that happened the other day wouldn't even compile in F-sharp."_
 
-And line 215: *"there's, uh, Coinbase and Google got together and created some standard around agent wallets. I forget, it's two of 'em. It's like an E R C something and I, I forget 'em. Anyway, they're specs, and yeah, yeah, I mean, we're already working on implementing the, you know, the crypto specs for wallets, uh, agent wallets. It's a open industry standard."*
+And line 215: _"there's, uh, Coinbase and Google got together and created some standard around agent wallets. I forget, it's two of 'em. It's like an E R C something and I, I forget 'em. Anyway, they're specs, and yeah, yeah, I mean, we're already working on implementing the, you know, the crypto specs for wallets, uh, agent wallets. It's a open industry standard."_
 
 This is the type-system substrate for agent financial-independence — every AI in Aurora/Nexus needs its own wallet ([B-0619](B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)), and the wallet operations must be type-safe to prevent the class of errors that took down "banker bot the other day."
 

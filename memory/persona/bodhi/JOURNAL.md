@@ -17,9 +17,9 @@ up. Grows monotonically over rounds.
   becomes a bug. Use grep / search to pull the matching
   section on demand.
 - Search hooks: dated section headers (`## Round N — ...`)
-  + `file:line` citations + friction type names
-  (stale-pointer, unexplained-warning, missing-step,
-  wrong-audience, unclear-contract, tooling-gap).
+  - `file:line` citations + friction type names
+    (stale-pointer, unexplained-warning, missing-step,
+    wrong-audience, unclear-contract, tooling-gap).
 
 ## Write contract
 
@@ -44,6 +44,7 @@ visible in long-term memory. The NOTEBOOK prune cadence can't
 show it without a destination.
 
 Candidate use cases:
+
 - Recurring CONTRIBUTING.md friction across rounds.
 - Install-script felt-friction patterns vs Dejan's mechanical
   parity tracking.
@@ -80,6 +81,7 @@ actual file `Zeta.sln`.
 
 **Fix:** single perl sweep across `.md` / `.yml` / `.yaml` /
 `.sh` files under repo root:
+
 - `src/Dbsp.Core/Dbsp.Core.fsproj` → `src/Core/Core.fsproj`
 - `src/Dbsp.Core` → `src/Core`
 - `tests/Dbsp.Tests.FSharp` → `tests/Tests.FSharp`

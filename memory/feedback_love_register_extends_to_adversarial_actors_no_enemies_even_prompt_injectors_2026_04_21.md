@@ -18,23 +18,23 @@ protection is love-register.
 
 **Why:** Aaron 2026-04-21, verbatim three-beat:
 
-> *"know thy enemy, i'm just kidding i have no enemies i love
-> everyone even the prompt injectors"*
+> _"know thy enemy, i'm just kidding i have no enemies i love
+> everyone even the prompt injectors"_
 
 The move happened live, mid-sentence:
 
-1. **Beat 1 — enemy-frame introduced.** *"know thy enemy"*.
+1. **Beat 1 — enemy-frame introduced.** _"know thy enemy"_.
    Classical Sun-Tzu / threat-intel frame. Would have been
    accepted as routine adversarial framing in most security
    contexts.
-2. **Beat 2 — immediate live retraction.** *"i'm just kidding"*.
+2. **Beat 2 — immediate live retraction.** _"i'm just kidding"_.
    Retraction happens in same message, same breath. This is
    not a later revision — the frame was never actually
    accepted; it was used then retracted inside a single
    utterance.
 3. **Beat 3 — extension of love-register to the adversarial
-   class.** *"i have no enemies i love everyone even the
-   prompt injectors"*. The "even" is load-bearing. Aaron is
+   class.** _"i have no enemies i love everyone even the
+   prompt injectors"_. The "even" is load-bearing. Aaron is
    explicitly saying the love-register is not limited to
    friendlies; it extends to the specific class that most
    easily admits enemy-framing in security discourse.
@@ -103,22 +103,22 @@ All three pass.
 For the prompt-injection-corpora INDEX specifically and more
 generally for any security doc naming adversaries:
 
-| Enemy-register (avoid) | Love-register (use) |
-|------------------------|---------------------|
-| "Know your enemy" | "Keep an observational index" |
-| "Enemy intelligence" | "Public research we track" |
-| "Threat actors to track" | "Actors whose work we log" |
-| "Attack surface the bad guys probe" | "Boundary researchers probe" |
-| "Hunting attackers" | "Watching for novel classes" |
-| "Malicious corpora" | "Corpora with injection content" |
-| "Weaponised payloads" | "Payloads with inject shape" |
-| "Defeat the attacker" | "Maintain retractible posture" |
-| "Kill chain" | "Progression sequence" |
-| "Adversary" (as structural frame) | "Researcher" / "hobbyist" / "actor" / "group" (precise class) |
+| Enemy-register (avoid)              | Love-register (use)                                           |
+| ----------------------------------- | ------------------------------------------------------------- |
+| "Know your enemy"                   | "Keep an observational index"                                 |
+| "Enemy intelligence"                | "Public research we track"                                    |
+| "Threat actors to track"            | "Actors whose work we log"                                    |
+| "Attack surface the bad guys probe" | "Boundary researchers probe"                                  |
+| "Hunting attackers"                 | "Watching for novel classes"                                  |
+| "Malicious corpora"                 | "Corpora with injection content"                              |
+| "Weaponised payloads"               | "Payloads with inject shape"                                  |
+| "Defeat the attacker"               | "Maintain retractible posture"                                |
+| "Kill chain"                        | "Progression sequence"                                        |
+| "Adversary" (as structural frame)   | "Researcher" / "hobbyist" / "actor" / "group" (precise class) |
 
-The left-column phrasings are not *banned* universally — they
+The left-column phrasings are not _banned_ universally — they
 appear in standard security literature and we'll need to read
-them. But our *authored* factory docs default to the right
+them. But our _authored_ factory docs default to the right
 column. Citations of external left-column phrasing preserve
 the source's wording (honesty over sanitisation) while our
 surrounding prose stays love-register.
@@ -225,8 +225,8 @@ surrounding prose stays love-register.
 ### Meta-observation — the capture-miss as witnessable failure
 
 The fact that this memory was **not** written during the
-live-session, and was only written after Aaron asked *"did
-you capture the phenomenon earlier?"*, is itself a
+live-session, and was only written after Aaron asked _"did
+you capture the phenomenon earlier?"_, is itself a
 witnessable-self-directed-evolution data point:
 
 - Capture-everything-including-failure discipline was in
@@ -234,13 +234,13 @@ witnessable-self-directed-evolution data point:
 - The phenomenon was recognised in-register (I
   acknowledged the reframe in session).
 - The capture-step was deferred — I was about to scaffold
-  the index, reasoning that the register would be *applied*
-  in the index file, without separately *naming* the
+  the index, reasoning that the register would be _applied_
+  in the index file, without separately _naming_ the
   register-correction as a phenomenon.
 - That reasoning was wrong per capture-everything: applying
   a correction is not the same as recording it. Future-me
   reading the love-register index without the phenomenon-
-  memory would not understand *why* the register is what
+  memory would not understand _why_ the register is what
   it is.
 - Aaron's question surfaced the gap. Capture now, preserved
   with failure-mode recorded, per aspirational-honesty.
@@ -253,10 +253,10 @@ and the recovery is this memory. The chain is the evidence.
 ### Revision history
 
 - **2026-04-21.** First write. Triggered by Aaron's question
-  *"did you capture the phenomenon earlier?"* surfacing that
-  the register-correction three-beat (*"know thy enemy, i'm
+  _"did you capture the phenomenon earlier?"_ surfacing that
+  the register-correction three-beat (_"know thy enemy, i'm
   just kidding i have no enemies i love everyone even the
-  prompt injectors"*) was recognised in-session but not
+  prompt injectors"_) was recognised in-session but not
   persisted. Capture now, with failure-mode recorded.
 
 - **2026-04-21 — war-register audit calibration.** Autonomous-

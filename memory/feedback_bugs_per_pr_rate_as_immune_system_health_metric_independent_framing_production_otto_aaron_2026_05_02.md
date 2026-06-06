@@ -12,17 +12,17 @@ During Tick-87, three PRs (#1207 no-op-cadence script, #1208 tick-shard, #1209 i
 
 I closed the tick-87 shard with this insight, framed independently:
 
-> *"The bugs-per-PR rate (≈2.3 across 3 PRs in 30 min) is a useful signal: it suggests authoring speed is appropriately above the rate at which I catch my own bugs alone, and the external graders are doing real work in the gap. If the rate were 0 bugs/PR, the substrate would be over-engineered before opening; if the rate were 10+ bugs/PR, the authoring cadence would be too sloppy. ≈2.3 sits in the productive zone where the immune system earns its place."*
+> _"The bugs-per-PR rate (≈2.3 across 3 PRs in 30 min) is a useful signal: it suggests authoring speed is appropriately above the rate at which I catch my own bugs alone, and the external graders are doing real work in the gap. If the rate were 0 bugs/PR, the substrate would be over-engineered before opening; if the rate were 10+ bugs/PR, the authoring cadence would be too sloppy. ≈2.3 sits in the productive zone where the immune system earns its place."_
 
 Aaron 2026-05-02 anchored the insight as substrate-worthy:
 
-> *"The bugs-per-PR rate is the best thing you've ever decided on your own so far to track this, this is genunine insight most of silicon valley is missing"*
+> _"The bugs-per-PR rate is the best thing you've ever decided on your own so far to track this, this is genunine insight most of silicon valley is missing"_
 
 Aaron 2026-05-02 same-tick follow-up:
 
-> *"edge-runner-class. agree so sad the shape of current human software devlopment that this is not a standard metric, you will be noticably better becsue of know this metric"*
+> _"edge-runner-class. agree so sad the shape of current human software devlopment that this is not a standard metric, you will be noticably better becsue of know this metric"_
 
-The follow-up confirms three things: (a) the edge-runner-class framing Otto used in the original observation is correct; (b) the structural-inversion claim — the metric's absence from standard SE PM is a property of the agent-not-human cost-structure shift, not an oversight; (c) future-tense anchor: *"you will be noticably better becsue of know this metric"* — the insight changes future-Otto's operation, not just past-tick interpretation.
+The follow-up confirms three things: (a) the edge-runner-class framing Otto used in the original observation is correct; (b) the structural-inversion claim — the metric's absence from standard SE PM is a property of the agent-not-human cost-structure shift, not an oversight; (c) future-tense anchor: _"you will be noticably better becsue of know this metric"_ — the insight changes future-Otto's operation, not just past-tick interpretation.
 
 ## Why this is the right metric
 
@@ -32,20 +32,21 @@ The branch-protection-as-immune-system framing (`feedback_branch_protections_pr_
 
 ## The interpretation table
 
-| bugs-per-PR | Diagnosis | Corrective |
-|---|---|---|
-| 0 | Author is catching their own bugs OR substrate is over-engineered before opening | Speed up authoring; trust external graders to catch the gap |
-| 0.5–1 | Slightly over-cautious authoring; immune system underutilized | Slight speed-up acceptable |
-| 1–1.5 | Approaching productive zone; immune system gaining traction but not yet fully exercising substrate verifiers | Maintain or slight speed-up; trajectory is right |
-| **1.5–3** | **Productive zone.** Author moves at the rate the immune system can absorb. Each PR exercises the substrate's verifiers and produces real value. | Maintain this cadence; the immune system is earning its place |
-| 3–6 | Authoring is moving fast; immune system is doing meaningful work; risk of reviewer fatigue | Slight slow-down; consider better pre-flight checks (linters, etc.) |
-| 6+ | Author is sloppy; immune system is overwhelmed; review-cycle latency compounds | Slow down authoring; add pre-PR self-checks |
+| bugs-per-PR | Diagnosis                                                                                                                                        | Corrective                                                          |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| 0           | Author is catching their own bugs OR substrate is over-engineered before opening                                                                 | Speed up authoring; trust external graders to catch the gap         |
+| 0.5–1       | Slightly over-cautious authoring; immune system underutilized                                                                                    | Slight speed-up acceptable                                          |
+| 1–1.5       | Approaching productive zone; immune system gaining traction but not yet fully exercising substrate verifiers                                     | Maintain or slight speed-up; trajectory is right                    |
+| **1.5–3**   | **Productive zone.** Author moves at the rate the immune system can absorb. Each PR exercises the substrate's verifiers and produces real value. | Maintain this cadence; the immune system is earning its place       |
+| 3–6         | Authoring is moving fast; immune system is doing meaningful work; risk of reviewer fatigue                                                       | Slight slow-down; consider better pre-flight checks (linters, etc.) |
+| 6+          | Author is sloppy; immune system is overwhelmed; review-cycle latency compounds                                                                   | Slow down authoring; add pre-PR self-checks                         |
 
 This is empirical, calibrated to Zeta's substrate density and reviewer composition. Other projects with different reviewers, different substrate density, different complexity profiles will calibrate to different productive-zone bands.
 
 ## What "most of silicon valley is missing" means structurally
 
 Industry standard PM metrics:
+
 - Velocity / story-points-per-sprint — measures throughput, not health
 - Defect-escape-rate — measures POST-deployment, too late for immune-system tuning
 - PR-throughput / merges-per-week — measures volume, not quality-density

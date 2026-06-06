@@ -9,29 +9,29 @@ created: 2026-05-16
 
 ## The arc
 
-| Phase | Ticks | Key landings | Result |
-|---|---|---|---|
-| **Discovery** | 1-2 | Caught B-0506 + B-0530 + B-0528 (drift candidates closed manually) | Pattern empirically observable |
-| **Substrate** | 3-5 | Memory file (`feedback_substrate_drift_catch_pattern_*.md`) | Pattern landed as memory; not yet auto-loaded |
-| **Rule** | 6 | `.claude/rules/backlog-item-start-gate.md` step 0 (substrate-drift discriminator) | Cold-boot loading; future Otto reads the discipline at session start |
-| **Spec** | 6 | B-0553 backlog row | Spec for mechanization tool |
-| **Implementation** | 9 | `tools/hygiene/audit-backlog-status-drift.ts` + 16 tests | Tool surfaced 33+ live drift candidates from the backlog |
-| **Operationalization** | 16 | First live use of the tool from main → 3 substrate-shelf rows closed (B-0045.1/B-0046.1/B-0049.1) | Tool proven to work in production |
-| **Refinement** | 11-15 | 2nd FP class memory file + B-0557 follow-up row + 4 quality slices | Iteration cycle absorbed every reviewer finding |
-| **Closure** | 31-34 | B-0557 → flagged by its own tool → PR #3819 closed B-0557 + PR #3821 shipped import.meta.dir true-cwd-independence | Infrastructure-eats-itself moment realized |
+| Phase                  | Ticks | Key landings                                                                                                       | Result                                                               |
+| ---------------------- | ----- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| **Discovery**          | 1-2   | Caught B-0506 + B-0530 + B-0528 (drift candidates closed manually)                                                 | Pattern empirically observable                                       |
+| **Substrate**          | 3-5   | Memory file (`feedback_substrate_drift_catch_pattern_*.md`)                                                        | Pattern landed as memory; not yet auto-loaded                        |
+| **Rule**               | 6     | `.claude/rules/backlog-item-start-gate.md` step 0 (substrate-drift discriminator)                                  | Cold-boot loading; future Otto reads the discipline at session start |
+| **Spec**               | 6     | B-0553 backlog row                                                                                                 | Spec for mechanization tool                                          |
+| **Implementation**     | 9     | `tools/hygiene/audit-backlog-status-drift.ts` + 16 tests                                                           | Tool surfaced 33+ live drift candidates from the backlog             |
+| **Operationalization** | 16    | First live use of the tool from main → 3 substrate-shelf rows closed (B-0045.1/B-0046.1/B-0049.1)                  | Tool proven to work in production                                    |
+| **Refinement**         | 11-15 | 2nd FP class memory file + B-0557 follow-up row + 4 quality slices                                                 | Iteration cycle absorbed every reviewer finding                      |
+| **Closure**            | 31-34 | B-0557 → flagged by its own tool → PR #3819 closed B-0557 + PR #3821 shipped import.meta.dir true-cwd-independence | Infrastructure-eats-itself moment realized                           |
 
 ## The infrastructure-eats-itself moment
 
 B-0557 was filed as a follow-up to B-0553 after PR #3758 attracted 4 quality findings. Each finding became a slice:
 
-| Slice | PR | Merge commit | What it shipped |
-|---|---|---|---|
-| 1 | [#3783](https://github.com/Lucent-Financial-Group/Zeta/pull/3783) | `0a57a814` | `--check` flag for CI integration |
-| 2 | [#3788](https://github.com/Lucent-Financial-Group/Zeta/pull/3788) | `6809f6e3` | `try`/`catch` on `readFileSync`/`readdirSync` |
-| 3 | [#3790](https://github.com/Lucent-Financial-Group/Zeta/pull/3790) | `472024dc` | `chdir` to repo root via `git rev-parse` (+ 2 tests for `detectRepoRoot`) |
-| 4 | [#3809](https://github.com/Lucent-Financial-Group/Zeta/pull/3809) | `eb04e3d` | Mixed-bullet path extraction (+ tsc-strict guard for `match[1]`) |
-| close-row | [#3819](https://github.com/Lucent-Financial-Group/Zeta/pull/3819) | `90099a29` | B-0557 status: open → closed |
-| cwd-fix | [#3821](https://github.com/Lucent-Financial-Group/Zeta/pull/3821) | `58350d97` | `import.meta.dir` fallback when `git rev-parse` fails (true cwd-independence) |
+| Slice     | PR                                                                | Merge commit | What it shipped                                                               |
+| --------- | ----------------------------------------------------------------- | ------------ | ----------------------------------------------------------------------------- |
+| 1         | [#3783](https://github.com/Lucent-Financial-Group/Zeta/pull/3783) | `0a57a814`   | `--check` flag for CI integration                                             |
+| 2         | [#3788](https://github.com/Lucent-Financial-Group/Zeta/pull/3788) | `6809f6e3`   | `try`/`catch` on `readFileSync`/`readdirSync`                                 |
+| 3         | [#3790](https://github.com/Lucent-Financial-Group/Zeta/pull/3790) | `472024dc`   | `chdir` to repo root via `git rev-parse` (+ 2 tests for `detectRepoRoot`)     |
+| 4         | [#3809](https://github.com/Lucent-Financial-Group/Zeta/pull/3809) | `eb04e3d`    | Mixed-bullet path extraction (+ tsc-strict guard for `match[1]`)              |
+| close-row | [#3819](https://github.com/Lucent-Financial-Group/Zeta/pull/3819) | `90099a29`   | B-0557 status: open → closed                                                  |
+| cwd-fix   | [#3821](https://github.com/Lucent-Financial-Group/Zeta/pull/3821) | `58350d97`   | `import.meta.dir` fallback when `git rev-parse` fails (true cwd-independence) |
 
 When all 4 acceptance bullets had merged PRs, the audit tool flagged B-0557 itself as a genuine drift candidate. The infrastructure caught its own follow-up row and closed it. **The loop closed cleanly on main.**
 

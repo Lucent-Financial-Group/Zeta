@@ -86,7 +86,9 @@ function evaluateWorkItemStateChangeRule(envelope: AgenticEventEnvelope): Reacti
 
 function createWorkItemReactionPlan(input: {
   envelope: AgenticEventEnvelope;
-  actionType: typeof ReactionPlanActionType.RequestImplementationAssignment | typeof ReactionPlanActionType.RequestReviewGate;
+  actionType:
+    | typeof ReactionPlanActionType.RequestImplementationAssignment
+    | typeof ReactionPlanActionType.RequestReviewGate;
   requiredHat: typeof RequiredHat.EngineeringManager | typeof RequiredHat.Reviewer;
   reason: typeof ReactionPlanReason.WorkItemEnteredReadyState | typeof ReactionPlanReason.WorkItemEnteredReviewState;
 }): ReactionPlanAction {

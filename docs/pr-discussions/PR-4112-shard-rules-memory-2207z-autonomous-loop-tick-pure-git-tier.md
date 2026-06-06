@@ -65,6 +65,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Documents the 2026-05-17/2207Z autonomous-loop tick and uses that observation to sharpen the “tick must never stop” rule by distinguishing cross-session cron non-persistence from within-session auto-expire; also records a “shadow-catch” about an untracked `.sh` launcher that would violate Rule 0 if committed.
 
 **Changes:**
+
 - Adds a new tick shard documenting pure-git tier behavior and the cross-session cron sentinel disappearance.
 - Updates `.claude/rules/tick-must-never-stop.md` with a clear two-mechanism table (session-exit vs within-session auto-expire) anchored to the 2207Z shard.
 - Adds a memory “shadow-catch” entry about an untracked `tools/riven/*.sh` launcher and decision options if it ever needs to ship.
@@ -73,23 +74,25 @@ Documents the 2026-05-17/2207Z autonomous-loop tick and uses that observation to
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/feedback_otto_cli_shadow_catch_riven_cursor_terminal_loop_sh_untracked_rule_0_violation_candidate_2026_05_17.md | Records an early-warning “shadow-catch” about an untracked `.sh` launcher that would violate Rule 0 if committed. |
-| docs/hygiene-history/ticks/2026/05/17/2207Z.md | Adds the 2207Z tick shard documenting pure-git tier constraints and the cron sentinel non-persistence observation. |
-| .claude/rules/tick-must-never-stop.md | Clarifies cron expiration/non-persistence modes with an anchored table and updated diagnostic framing. |
-
+| File                                                                                                                   | Description                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| memory/feedback_otto_cli_shadow_catch_riven_cursor_terminal_loop_sh_untracked_rule_0_violation_candidate_2026_05_17.md | Records an early-warning “shadow-catch” about an untracked `.sh` launcher that would violate Rule 0 if committed.  |
+| docs/hygiene-history/ticks/2026/05/17/2207Z.md                                                                         | Adds the 2207Z tick shard documenting pure-git tier constraints and the cron sentinel non-persistence observation. |
+| .claude/rules/tick-must-never-stop.md                                                                                  | Clarifies cron expiration/non-persistence modes with an anchored table and updated diagnostic framing.             |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/feedback_otto_cli_shadow_catch_riven_cursor_terminal_loop_sh_untracked_rule_0_violation_candidate_2026_05_17.md:58**
-* P0: This note lists what appear to be personal/local data extract filenames (e.g., `amazon-orders-2025-full.json`). Even without contents, committing these identifiers can be sensitive and isn’t needed to make the “untracked substantive WIP exists” point. Remove the specific filenames or replace with a redacted/generic description (e.g., “private data extracts (do not commit)”).
+
+- P0: This note lists what appear to be personal/local data extract filenames (e.g., `amazon-orders-2025-full.json`). Even without contents, committing these identifiers can be sensitive and isn’t needed to make the “untracked substantive WIP exists” point. Remove the specific filenames or replace with a redacted/generic description (e.g., “private data extracts (do not commit)”).
+
 ```
 Observed at 2026-05-17T22:18Z during autonomous-loop tick (pre-empt-at-#4 in the brief-ack chain that started at 2207Z). Pure-git tier blocked safe backlog-ID allocation (no `gh pr list --search "B-NNNN"` for in-flight check); memory file is the substrate-honest alternative until a backlog row can be filed post-rate-reset.
 
 The file's untracked-but-substantive shape is the same class as the other untracked WIP observed at cold-boot (`memory/feedback_otto_cwd_parameter_fix_2026_05_16.md`, `memory/persona/kestrel/conversations/2026-05-17-kestrel-aaron-claudeai-financial-substrate-critique-*.md`, `amazon-hardware-titles-page1.txt`, `amazon-orders-2025-full.json`, `zeta-hardware-extract-page1.txt`). Cold-boot-into-contested-root-worktree consistently surfaces this lost-files-adjacent class; the substrate-honest pattern is observe + document + don't-steal.
 ```
+
 </details>
 
 ## Review threads

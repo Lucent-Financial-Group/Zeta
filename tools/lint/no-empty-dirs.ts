@@ -72,23 +72,14 @@ function isHardExcluded(rel: string): boolean {
     if (rel === prefix || rel.startsWith(`${prefix}/`)) return true;
   }
   for (const segment of HARD_EXCLUDE_SEGMENTS) {
-    if (
-      rel === segment ||
-      rel.endsWith(`/${segment}`) ||
-      rel.includes(`/${segment}/`)
-    ) {
+    if (rel === segment || rel.endsWith(`/${segment}`) || rel.includes(`/${segment}/`)) {
       return true;
     }
   }
   return false;
 }
 
-function pushChildDirs(
-  dir: string,
-  root: string,
-  entries: readonly import("node:fs").Dirent[],
-  stack: string[],
-): void {
+function pushChildDirs(dir: string, root: string, entries: readonly import("node:fs").Dirent[], stack: string[]): void {
   for (const e of entries) {
     if (!e.isDirectory()) continue;
     const full = join(dir, e.name);
@@ -97,9 +88,7 @@ function pushChildDirs(
   }
 }
 
-function readDirSafe(
-  dir: string,
-): readonly import("node:fs").Dirent[] | null {
+function readDirSafe(dir: string): readonly import("node:fs").Dirent[] | null {
   try {
     return readdirSync(dir, { withFileTypes: true });
   } catch {
@@ -190,10 +179,7 @@ function partitionEmpty(
   return { flagged, allowlisted };
 }
 
-function emitList(
-  allowlisted: readonly string[],
-  flagged: readonly string[],
-): void {
+function emitList(allowlisted: readonly string[], flagged: readonly string[]): void {
   process.stdout.write("=== Empty directories (allowlisted) ===\n");
   if (allowlisted.length === 0) {
     process.stdout.write("  (none)\n");
@@ -209,13 +195,8 @@ function emitList(
   }
 }
 
-function emitFailure(
-  flagged: readonly string[],
-  allowlistFile: string,
-): void {
-  process.stderr.write(
-    `no-empty-dirs: FAIL — ${String(flagged.length)} unexpected empty director(y/ies):\n`,
-  );
+function emitFailure(flagged: readonly string[], allowlistFile: string): void {
+  process.stderr.write(`no-empty-dirs: FAIL — ${String(flagged.length)} unexpected empty director(y/ies):\n`);
   for (const d of flagged) process.stderr.write(`  ${d}\n`);
   process.stderr.write("\n");
   process.stderr.write("Fix options:\n");
@@ -236,9 +217,7 @@ export function main(argv: readonly string[]): ExitCode {
   try {
     allowed = loadAllowlist(allowlistPath);
   } catch {
-    process.stderr.write(
-      `no-empty-dirs: allowlist missing at ${allowlistPath}\n`,
-    );
+    process.stderr.write(`no-empty-dirs: allowlist missing at ${allowlistPath}\n`);
     return 2;
   }
 
@@ -253,9 +232,7 @@ export function main(argv: readonly string[]): ExitCode {
   }
 
   if (flagged.length === 0) {
-    process.stdout.write(
-      `no-empty-dirs: OK (${String(allowlisted.length)} allowlisted, 0 flagged)\n`,
-    );
+    process.stdout.write(`no-empty-dirs: OK (${String(allowlisted.length)} allowlisted, 0 flagged)\n`);
     return 0;
   }
 

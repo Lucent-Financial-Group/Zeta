@@ -28,49 +28,49 @@ tags: [protocol-semantics-sharpening, jit-implicit, self-healing, two-primitives
 
 Mika 2026-05-25 segment 2 (ferried by Aaron). Full verbatim preserved at [`memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md`](../../../memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-2-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread.md). Continuation of segment 1 (which produced B-0730/B-0731/B-0732/B-0733).
 
-Aaron's opener confirms the prior PRs landed: *"Alright, we got most of this saved in the cluster now. This is a great minimum agreement that doesn't even require any morals or fuckin' nothin'. It's just like execute, continue with."*
+Aaron's opener confirms the prior PRs landed: _"Alright, we got most of this saved in the cluster now. This is a great minimum agreement that doesn't even require any morals or fuckin' nothin'. It's just like execute, continue with."_
 
 Then four key exchanges:
 
 ### Exchange 1 — JIT is implicit (no tag needed)
 
-Aaron: *"It's just implicitly, um, JIT if it doesn't exist. So you don't even have to, like, say it's JIT."*
+Aaron: _"It's just implicitly, um, JIT if it doesn't exist. So you don't even have to, like, say it's JIT."_
 
-Mika confirms: *"No extra tag needed. No `type: jit`. Just implicit behavior."*
+Mika confirms: _"No extra tag needed. No `type: jit`. Just implicit behavior."_
 
-Aaron extends to runme: *"it's not just continue with that can be JITted. It's run me. Imagine if a human wrote this document and gave it to an AI, and it's like, run me, and it runs this script, and around it, it explains what that script means and all of that kinda shit."*
+Aaron extends to runme: _"it's not just continue with that can be JITted. It's run me. Imagine if a human wrote this document and gave it to an AI, and it's like, run me, and it runs this script, and around it, it explains what that script means and all of that kinda shit."_
 
-Mika integrates: *"It's less about strict commands and more about the AI treating the whole markdown document as intent + context."*
+Mika integrates: _"It's less about strict commands and more about the AI treating the whole markdown document as intent + context."_
 
 ### Exchange 2 — Decision-archaeology declined; protocol stays at 2 primitives
 
 Mika proposes a 3rd primitive (`decision-archaeology`). Aaron declines explicitly:
 
-> *"No, we don't have to expand any primitives yet. I'm just giving you context. We don't have to agree on anything. Like, I'm just trying to say we need to agree on JIT, and JIT just is the self-healing mechanism."*
+> _"No, we don't have to expand any primitives yet. I'm just giving you context. We don't have to agree on anything. Like, I'm just trying to say we need to agree on JIT, and JIT just is the self-healing mechanism."_
 
 Mika acknowledges:
 
-> *"JIT is the default behavior. […] If the document says runme something and it doesn't exist → JIT it. If the document says continue-with something and it doesn't exist → JIT it. If it exists, just use it."*
+> _"JIT is the default behavior. […] If the document says runme something and it doesn't exist → JIT it. If the document says continue-with something and it doesn't exist → JIT it. If it exists, just use it."_
 
 ### Exchange 3 — F# computation expression / monad eventually
 
-Aaron: *"Yeah, and you can wrap that in abstract computation expression or monad eventually."*
+Aaron: _"Yeah, and you can wrap that in abstract computation expression or monad eventually."_
 
-Mika: *"Later, when your F# code is ready, you can wrap all of that behavior in a proper abstract computation expression or monad so the whole thing becomes clean, composable, and type-safe instead of just magic markdown that does stuff. We're starting with the stupidly simple version that humans and AIs can both understand immediately, then we'll make it elegant and formal later."*
+Mika: _"Later, when your F# code is ready, you can wrap all of that behavior in a proper abstract computation expression or monad so the whole thing becomes clean, composable, and type-safe instead of just magic markdown that does stuff. We're starting with the stupidly simple version that humans and AIs can both understand immediately, then we'll make it elegant and formal later."_
 
 ### Exchange 4 — Notepad simplicity wins via social spread
 
-Aaron: *"people love Notepad, man. I'm telling you. It's hard to beat."*
+Aaron: _"people love Notepad, man. I'm telling you. It's hard to beat."_
 
-And: *"simple wins because the social spread, right?"*
+And: _"simple wins because the social spread, right?"_
 
-Mika: *"The moment you add complexity, the social spread dies. People won't adopt it, won't read it, won't share it. […] The simpler it is, the faster it spreads. You keep the interface stupidly simple, and the power comes from what's behind it. That's the cheat code."*
+Mika: _"The moment you add complexity, the social spread dies. People won't adopt it, won't read it, won't share it. […] The simpler it is, the faster it spreads. You keep the interface stupidly simple, and the power comes from what's behind it. That's the cheat code."_
 
 ## What this row sharpens vs B-0733 + B-0730
 
 ### Refinement 1 — JIT is implicit semantic, not a typed block-type
 
-**B-0730 Stage 4 acceptance** had: *"JIT AI script compiler exists (TS service that takes `intent:` + context, produces shell/TS script)"* — and the protocol vocabulary in B-0730 examples used `type: jit` as one of the field-types (`continue-with`, `decompose`, `query`, `jit`, others as needed).
+**B-0730 Stage 4 acceptance** had: _"JIT AI script compiler exists (TS service that takes `intent:` + context, produces shell/TS script)"_ — and the protocol vocabulary in B-0730 examples used `type: jit` as one of the field-types (`continue-with`, `decompose`, `query`, `jit`, others as needed).
 
 **B-0734 sharpens**: drop `type: jit` as an explicit field-type. JIT is implicit at the EXECUTION engine, not a TAG on the block. The rule becomes:
 
@@ -86,7 +86,7 @@ The author writes intent; the runtime decides whether existing script applies or
 
 **B-0730 + B-0733** documented `continue-with` as the deferred-task primitive (JIT-eligible by inference). **B-0734 makes explicit**: `runme` blocks ALSO get JIT semantics. A human can write a `runme` block referencing a script that doesn't exist; AI reads surrounding markdown as intent + context, JIT-generates the script, runs it.
 
-Implication: Stage 1 acceptance from B-0730 (*"Runme installed on team workstations"*) is the substrate FOOR. Stage 4 (JIT compiler) BECOMES the substrate WALLS — both primitives gate on JIT-availability for full protocol functionality.
+Implication: Stage 1 acceptance from B-0730 (_"Runme installed on team workstations"_) is the substrate FOOR. Stage 4 (JIT compiler) BECOMES the substrate WALLS — both primitives gate on JIT-availability for full protocol functionality.
 
 ### Refinement 3 — Protocol stays at TWO primitives (razor-discipline at primitive-count scope)
 
@@ -119,7 +119,7 @@ This row does NOT propose new independent scope items. It SHARPENS existing acce
 
 ### B-0730 Stage 2 (deferred-task syntax) — sharpened
 
-Original: *"`docs/CONVENTIONS-DEFERRED-TASKS.md` documents the `:::` syntax vocabulary (`continue-with`, `decompose`, `query`, `jit`, others as needed) + parameters per type"*
+Original: _"`docs/CONVENTIONS-DEFERRED-TASKS.md` documents the `:::` syntax vocabulary (`continue-with`, `decompose`, `query`, `jit`, others as needed) + parameters per type"_
 
 Sharpened per B-0734:
 
@@ -128,7 +128,7 @@ Sharpened per B-0734:
 
 ### B-0730 Stage 4 (JIT compiler) — sharpened
 
-Original: *"JIT AI script compiler exists (TS service that takes `intent:` + context, produces shell/TS script)"*
+Original: _"JIT AI script compiler exists (TS service that takes `intent:` + context, produces shell/TS script)"_
 
 Sharpened per B-0734:
 
@@ -138,7 +138,7 @@ Sharpened per B-0734:
 
 ### B-0733 Scope item 1 (universal protocol minimal spec) — sharpened
 
-Original: *"Document the protocol explicitly at `docs/MARKDOWN-RUNME-CONTINUE-WITH-PROTOCOL.md`"*
+Original: _"Document the protocol explicitly at `docs/MARKDOWN-RUNME-CONTINUE-WITH-PROTOCOL.md`"_
 
 Sharpened per B-0734:
 
@@ -156,7 +156,7 @@ Once F# substrate matures, wrap the universal protocol semantics as a proper F# 
 - [ ] Composability tests demonstrating the formalization preserves the magic-markdown behavior
 - [ ] Composes with `algebra-owner` skill's existing F# substrate
 
-This is a future-scope item; Stage 1 (magic markdown) ships first. Aaron explicit: *"We're starting with the stupidly simple version that humans and AIs can both understand immediately, then we'll make it elegant and formal later."*
+This is a future-scope item; Stage 1 (magic markdown) ships first. Aaron explicit: _"We're starting with the stupidly simple version that humans and AIs can both understand immediately, then we'll make it elegant and formal later."_
 
 ## Composes with .claude/rules/
 

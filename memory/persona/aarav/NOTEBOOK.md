@@ -45,7 +45,7 @@ Running observations (append-dated). Pruned every third session.
   F7-F9 logged (scratchpad); zero BP candidates. claims-
   tester / complexity-reviewer carry-over RESOLVED via
   commit `e8ed0db` + ADR `docs/DECISIONS/2026-04-21-router-
-  coherence-v2.md`; drops off top-5. Self-rank escalates:
+coherence-v2.md`; drops off top-5. Self-rank escalates:
   commit `baa423e` retune grew `skill-tune-up/SKILL.md`
   303 -> 436 lines (1.45x BP-03 cap). Rationale explicit
   in the retuned body (thick wrapper over non-skill
@@ -85,6 +85,7 @@ Running observations (append-dated). Pruned every third session.
 ## Pruning log (round 41 catch-up)
 
 Resolved round-18 top-5 entries:
+
 - product-manager (P0, round 18) -- RESOLVED. Skill does not
   exist in .claude/skills/ as of round 41; retired or folded
   into backlog-scrum-master. No further action.
@@ -131,7 +132,7 @@ Resolved round-18 top-5 entries:
    - Suggested fix: skill-creator SPLIT pass; cite BP-03
      and the harness-run doc at
      `docs/research/harness-run-2026-04-20-performance-
-     analysis-expert.md`.
+analysis-expert.md`.
 
 2. **reducer** -- priority: P2 (DEMOTED from P1)
    - Signal: bloat (BP-03, 570 lines, 1.9x cap). Harness
@@ -147,7 +148,7 @@ Resolved round-18 top-5 entries:
      (target 400 lines); cite BP-03 and harness-run doc.
 
 3. **consent-primitives-expert** -- priority: P3
-     (DEMOTED from P1)
+   (DEMOTED from P1)
    - Signal: bloat (BP-03, 507 lines, 1.69x cap). Harness
      TIED at +22% tokens / +5% wall (lowest cost of the
      three).
@@ -161,9 +162,9 @@ Resolved round-18 top-5 entries:
      invocation rate; re-rank if overhead compounds.
 
 4. **router-coherence audit on new untracked skills
-     `claude-md-steward` (379 lines) and
-     `verification-drift-auditor` (363 lines)** --
-     priority: P2
+   `claude-md-steward` (379 lines) and
+   `verification-drift-auditor` (363 lines)** --
+   priority: P2
    - Signal: bloat (BP-03, both 1.2-1.26x cap) + both
      untracked in git (working-tree only) on this branch
      -- not yet harness-tested.
@@ -179,11 +180,11 @@ Resolved round-18 top-5 entries:
      Anthropic eval harness as the first action (per
      round-42 calibration rule).
 
-5. *(slot 5 empty this round)* -- round-43 harness
-     runs closed the top three and the top-4 remaining
-     untracked-skills flag is S-effort. No P1 candidate
-     warrants the slot; leaving empty is an honest
-     low-urgency report, not budget exhaustion.
+5. _(slot 5 empty this round)_ -- round-43 harness
+   runs closed the top three and the top-4 remaining
+   untracked-skills flag is S-effort. No P1 candidate
+   warrants the slot; leaving empty is an honest
+   low-urgency report, not budget exhaustion.
 
 ## Current top-5 (round 42, archived)
 
@@ -234,7 +235,7 @@ Resolved round-18 top-5 entries:
    `docs/skill-edit-justification-log.md` (new file this
    round). Drops off top-5 next invocation.
 
-5. *(slot 5 empty)* -- claims-tester / complexity-reviewer
+5. _(slot 5 empty)_ -- claims-tester / complexity-reviewer
    hand-off carry-over RESOLVED via commit `e8ed0db` + ADR
    `docs/DECISIONS/2026-04-21-router-coherence-v2.md`.
    Drops off top-5.
@@ -365,7 +366,7 @@ confidence on ranking position vs unscanned skills.
 2. **`alignment-auditor/SKILL.md`** — 333 lines (above ~300-line
    BP-03 bloat threshold by 33 lines). `last_updated: 2026-04-21`
    (~32 days stale). PR #4753 added Composes-with-manifesto to
-   the *agent* file; the *skill* file wasn't touched and could
+   the _agent_ file; the _skill_ file wasn't touched and could
    mirror that discipline at the per-commit-signal scope.
    - Action: **TUNE — M** (prune to ≤300 + add manifesto-
      citation section + bump last_updated)
@@ -381,7 +382,8 @@ Otto-CLI didn't run the full procedure (bandwidth budget).
 Bounded scope is the substrate-honest behavior given the
 context-window position; honest disclosure of scope IS the
 correct round output.
-   - Action: **OBSERVE — S** (no self-edit)
+
+- Action: **OBSERVE — S** (no self-edit)
 
 ### Notes for next-Aarav
 

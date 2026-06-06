@@ -193,12 +193,28 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
     return { kind: "skipped", reason: "event kind is not classified as replayable or non-transition", ambiguous: true };
   }
 
-  if (event.kind === OrgEventKind.HatBindingTransition && event.fromState === undefined && event.toState === HatBindingPhase.Warmup) {
-    return { kind: "skipped", reason: "hat binding initialization is a legal non-ambiguous transition", ambiguous: false };
+  if (
+    event.kind === OrgEventKind.HatBindingTransition &&
+    event.fromState === undefined &&
+    event.toState === HatBindingPhase.Warmup
+  ) {
+    return {
+      kind: "skipped",
+      reason: "hat binding initialization is a legal non-ambiguous transition",
+      ambiguous: false,
+    };
   }
 
-  if (event.kind === OrgEventKind.WorkScheduleBlockTransition && event.fromState === undefined && event.toState === ScheduleBlockState.Scheduled) {
-    return { kind: "skipped", reason: "schedule block initialization is a legal non-ambiguous transition", ambiguous: false };
+  if (
+    event.kind === OrgEventKind.WorkScheduleBlockTransition &&
+    event.fromState === undefined &&
+    event.toState === ScheduleBlockState.Scheduled
+  ) {
+    return {
+      kind: "skipped",
+      reason: "schedule block initialization is a legal non-ambiguous transition",
+      ambiguous: false,
+    };
   }
 
   if (event.fromState === undefined || event.toState === undefined) {
@@ -222,7 +238,11 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
 
   if (event.kind === OrgEventKind.HatBindingTransition) {
     if (!isHatBindingPhase(event.fromState) || !isHatBindingPhase(event.toState)) {
-      return { kind: "skipped", reason: "event states do not name a known hat binding phase transition", ambiguous: true };
+      return {
+        kind: "skipped",
+        reason: "event states do not name a known hat binding phase transition",
+        ambiguous: true,
+      };
     }
     return {
       kind: "checked",
@@ -255,7 +275,11 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
 
   if (event.kind === OrgEventKind.WorkScheduleBlockTransition) {
     if (!isScheduleBlockState(event.fromState) || !isScheduleBlockState(event.toState)) {
-      return { kind: "skipped", reason: "event states do not name a known schedule block state transition", ambiguous: true };
+      return {
+        kind: "skipped",
+        reason: "event states do not name a known schedule block state transition",
+        ambiguous: true,
+      };
     }
     return {
       kind: "checked",
@@ -277,14 +301,26 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
 
   if (ChangeTransitionKinds.has(event.kind)) {
     if (!isChangeSetPhase(event.fromState) || !isChangeSetPhase(event.toState)) {
-      return { kind: "skipped", reason: "event states do not name a known change-set phase transition", ambiguous: true };
+      return {
+        kind: "skipped",
+        reason: "event states do not name a known change-set phase transition",
+        ambiguous: true,
+      };
     }
     if (event.fromState === ChangeSetPhase.InReview && event.toState === ChangeSetPhase.Approved) {
       if (!isChangeSetReviewContext(event.transitionContext)) {
-        return { kind: "skipped", reason: "change-set approval requires pipeline cursor replay context", ambiguous: true };
+        return {
+          kind: "skipped",
+          reason: "change-set approval requires pipeline cursor replay context",
+          ambiguous: true,
+        };
       }
       if (!isValidReviewCursor(event.transitionContext)) {
-        return { kind: "skipped", reason: "change-set approval carries malformed pipeline cursor replay context", ambiguous: true };
+        return {
+          kind: "skipped",
+          reason: "change-set approval carries malformed pipeline cursor replay context",
+          ambiguous: true,
+        };
       }
     }
     return {
@@ -296,11 +332,19 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
 
   if (DocTransitionKinds.has(event.kind)) {
     if (!isDocLifecycleState(event.fromState) || !isDocLifecycleState(event.toState)) {
-      return { kind: "skipped", reason: "event states do not name a known document lifecycle transition", ambiguous: true };
+      return {
+        kind: "skipped",
+        reason: "event states do not name a known document lifecycle transition",
+        ambiguous: true,
+      };
     }
     if (event.fromState === DocLifecycleState.Draft && event.toState === DocLifecycleState.Active) {
       if (!isValidDocumentLifecycleContext(event.transitionContext)) {
-        return { kind: "skipped", reason: "document draft->active requires load-bearing replay context", ambiguous: true };
+        return {
+          kind: "skipped",
+          reason: "document draft->active requires load-bearing replay context",
+          ambiguous: true,
+        };
       }
     }
     return {
@@ -312,7 +356,11 @@ function classifyTransition(event: OrgEvent): TransitionCheck {
 
   if (GraphTransitionKinds.has(event.kind)) {
     if (!isGraphConfidence(event.fromState) || !isGraphConfidence(event.toState)) {
-      return { kind: "skipped", reason: "event states do not name a known graph confidence transition", ambiguous: true };
+      return {
+        kind: "skipped",
+        reason: "event states do not name a known graph confidence transition",
+        ambiguous: true,
+      };
     }
     return {
       kind: "checked",
@@ -410,13 +458,20 @@ function legalScheduleBlockTargets(from: ScheduleBlockState): readonly ScheduleB
   }
 }
 
-function legalChangeTargets(from: ChangeSetPhase, context: OrgEventTransitionContext | undefined): readonly ChangeSetPhase[] {
-  const currentStageIndex = isChangeSetReviewContext(context) && isValidReviewCursor(context) ? context.currentStageIndex : 0;
+function legalChangeTargets(
+  from: ChangeSetPhase,
+  context: OrgEventTransitionContext | undefined,
+): readonly ChangeSetPhase[] {
+  const currentStageIndex =
+    isChangeSetReviewContext(context) && isValidReviewCursor(context) ? context.currentStageIndex : 0;
   const stageCount = isChangeSetReviewContext(context) && isValidReviewCursor(context) ? context.stageCount : 2;
   return legalChangeSetTransitions(syntheticChangeSet(from, currentStageIndex), syntheticPipeline(stageCount));
 }
 
-function legalDocTargets(from: DocLifecycleState, context: OrgEventTransitionContext | undefined): readonly DocLifecycleState[] {
+function legalDocTargets(
+  from: DocLifecycleState,
+  context: OrgEventTransitionContext | undefined,
+): readonly DocLifecycleState[] {
   if (isValidDocumentLifecycleContext(context)) {
     return legalDocTransitions(from, context.loadBearing);
   }

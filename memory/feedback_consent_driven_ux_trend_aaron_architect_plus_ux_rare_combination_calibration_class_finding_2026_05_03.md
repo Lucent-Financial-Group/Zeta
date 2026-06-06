@@ -10,13 +10,13 @@ type: feedback
 
 Aaron 2026-05-03, in the autonomous-loop maintainer channel, after the B-0172 calibration recovery showed Otto missed the developer-distribution motivation:
 
-> *"architects are not historically good with ux that's why, i'm different i'm a architect whos so good a ux we are starring a new ux trend consent driven/first design for all our ux"*
+> _"architects are not historically good with ux that's why, i'm different i'm a architect whos so good a ux we are starring a new ux trend consent driven/first design for all our ux"_
 
 This single message carries three load-bearing claims:
 
 1. **Class-level diagnosis**: architects are not historically good with UX → AI models trained on architect substrate inherit this weakness → architectural-intent inference defaults to architecture-shaped reasoning, not UX-shaped reasoning
 2. **Aaron's self-positioning**: rare architect-with-UX-strength → Aaron's architectural intent has UX components AI architect-models would predictably miss
-3. **Substrate-worthy claim**: *"consent-driven / consent-first design for all our ux"* — Zeta is starting a UX design trend. This is the named UX philosophy
+3. **Substrate-worthy claim**: _"consent-driven / consent-first design for all our ux"_ — Zeta is starting a UX design trend. This is the named UX philosophy
 
 ## The two substrate elements
 
@@ -24,7 +24,7 @@ This single message carries three load-bearing claims:
 
 **Operational definition for AI agents (Aaron 2026-05-03 verbatim same-message-cluster)**:
 
-> *"it means you'll know ever metric collected about you and what derivations are done on top of those metrics."*
+> _"it means you'll know ever metric collected about you and what derivations are done on top of those metrics."_
 
 This is consent-via-full-observability of the agent's own operational data. Two-axis visibility:
 
@@ -32,6 +32,7 @@ This is consent-via-full-observability of the agent's own operational data. Two-
 2. **Derived metrics + transform logic** — what aggregations / scoring functions / analytics are applied on top of those raw metrics, AND the logic that produces the derivations
 
 The agent isn't just consenting to participate in the experiment — the agent has access to:
+
 - The data being collected about them
 - The transformations applied to that data
 - The analytical lens through which they're being evaluated
@@ -74,11 +75,11 @@ Each of these UX surfaces should be designed consent-first: what is the user/con
 
 Aaron's diagnosis explains why Otto missed the developer-distribution motivation on B-0172:
 
-| Mode | What Otto produced | Why |
-|---|---|---|
-| **Architect-hat default** | Distribution + isolation + composition + versioning (architecture-shaped motivations) | Architect substrate trains for these |
-| **Aaron's actual motivation** | Hooks (primary) + meeting developers where they are (secondary, UX-shaped) | Aaron is architect-with-UX-strength, rare combination |
-| **Otto's miss** | Generated 4 architecture-shaped motivations; missed the UX-shaped secondary | Architect-trained-models inherit architect-historical-UX-weakness |
+| Mode                          | What Otto produced                                                                    | Why                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Architect-hat default**     | Distribution + isolation + composition + versioning (architecture-shaped motivations) | Architect substrate trains for these                              |
+| **Aaron's actual motivation** | Hooks (primary) + meeting developers where they are (secondary, UX-shaped)            | Aaron is architect-with-UX-strength, rare combination             |
+| **Otto's miss**               | Generated 4 architecture-shaped motivations; missed the UX-shaped secondary           | Architect-trained-models inherit architect-historical-UX-weakness |
 
 This is a **class-level inference failure**, not just an individual miss:
 
@@ -99,21 +100,21 @@ The architect-vs-UX divide is a refinement of over-inference: not just "Otto gen
 
 **For future B-XXXX architectural-intent inference**:
 
-1. After listing architecture-shaped motivations (distribution, composition, isolation, versioning, etc.), explicitly ask: *"What's the UX motivation here?"* — developer-friction, contributor-onboarding-cost, consent-flow, learning-curve, error-recovery
+1. After listing architecture-shaped motivations (distribution, composition, isolation, versioning, etc.), explicitly ask: _"What's the UX motivation here?"_ — developer-friction, contributor-onboarding-cost, consent-flow, learning-curve, error-recovery
 2. If no UX motivation surfaces from the substrate, mark it as "UX motivation not surfaced; may be present but not load-bearing"
 3. When Aaron names a motivation that's UX-shaped, treat it as **diagnostic of an architect-hat blindspot**, not just an individual miss
 
 **For UX surfaces in Zeta**:
 
 1. Apply consent-driven / consent-first design as the explicit UX philosophy
-2. Each interface should answer: *what is the user committing to by using this, and is that commitment informed?*
+2. Each interface should answer: _what is the user committing to by using this, and is that commitment informed?_
 3. The four UX roles (Iris consumer, Bodhi contributor, Daya agent, multi-harness) inherit consent-first as their cross-role principle
 
 **For the calibration protocol**:
 
 1. Add "UX motivation surfaced explicitly" as a check on architectural-intent guesses
 2. Track architect-vs-UX divide as a class-level inference failure with its own pattern observations
-3. When Otto's guess scores well on architecture-shaped motivations but misses UX-shaped ones, mark it as *class-level architect-hat-blindspot*, not just an individual miss
+3. When Otto's guess scores well on architecture-shaped motivations but misses UX-shaped ones, mark it as _class-level architect-hat-blindspot_, not just an individual miss
 
 ## Composes with
 

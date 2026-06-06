@@ -65,25 +65,31 @@ Addresses the last unresolved P1 finding from [PR #3614](https://github.com/Luce
 This PR relocates the Round 45 entry in `docs/ROUND-HISTORY.md` above Round 44 so the file follows its newest-first convention.
 
 **Changes:**
+
 - Moves the full Round 45 section from the bottom of the file to the top of the round entries.
 - Keeps the authoring guidance at the bottom.
 - Adds a section separator between Round 45 and Round 44.
-
 
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/ROUND-HISTORY.md:91**
-* P1: This repeats the terminology drift fixed elsewhere: current B-0544/research docs describe `Q^Δ = D ∘ Q ∘ I` as the DBSP incrementalization identity, explicitly not a monad on streams. Please update this Round 45 text to use the same wording so the round history does not reintroduce the settled correction.
+
+- P1: This repeats the terminology drift fixed elsewhere: current B-0544/research docs describe `Q^Δ = D ∘ Q ∘ I` as the DBSP incrementalization identity, explicitly not a monad on streams. Please update this Round 45 text to use the same wording so the round history does not reintroduce the settled correction.
+
 ```
 - `M` connects to DBSP incrementalization (`D ∘ Q ∘ I` monad)
 ```
+
 **docs/ROUND-HISTORY.md:132**
-* P1: The same `incrementalization monad` wording conflicts with the corrected substrate, which now treats the DBSP side as an incrementalization identity and leaves any deeper categorical relationship with `M` as an open question. Reword this open question to avoid calling the DBSP identity a monad.
+
+- P1: The same `incrementalization monad` wording conflicts with the corrected substrate, which now treats the DBSP side as an incrementalization identity and leaves any deeper categorical relationship with `M` as an open question. Reword this open question to avoid calling the DBSP identity a monad.
+
 ```
 - What is the precise relationship between the memory monad `M` and the DBSP
   incrementalization monad? Are they the same structure, or is one a specialization?
 ```
+
 </details>
 
 ## Review threads
@@ -101,6 +107,7 @@ P1: Moving Round 45 to the top leaves the Contents/current-summary block stale: 
 P1: This overstates the current Step 1 result. The B-0544 row and research doc now say the original M/A coherence laws were not well-typed and that only a provisional propositional law exists while μ/η coherence is deferred to Step 1.5. Reword this historical entry to preserve that caveat instead of saying the combined structure already satisfies the coherence conditions.
 
 This issue also appears in the following locations of the same file:
+
 - line 91
 - line 131
 

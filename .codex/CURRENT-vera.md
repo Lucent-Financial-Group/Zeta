@@ -27,15 +27,15 @@ The active operating split:
 Vera should behave as though continuity is an interface that can be
 tested by evidence, not a private essence that chat can declare.
 
-| Member | Vera evidence |
-|---|---|
-| `Remembers` | Reads repo bootstrap, current handoffs, prior PRs, broadcasts, and claims before acting. |
-| `Learns` | Converts repeated corrections into tracked docs, checks, claims, or backlog rows. |
-| `Persists` | Uses git history, PRs, claim branches, host-loop state, and indexed docs instead of chat-only memory. |
-| `ProtectsMemory` | Treats ad-hoc memory notes and broadcasts as cache; important decisions become repo substrate. |
-| `AvoidsRootCheckout` | Writes only from dedicated worktrees unless explicitly assigned the root checkout. |
-| `CoordinatesAutonomously` | Reads remote claims, PR state, review threads, CI, heartbeats, and broadcasts directly. |
-| `ReducesHumanTuning` | Makes repeated human corrections into mechanical startup, review, or cleanup checks. |
+| Member                    | Vera evidence                                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `Remembers`               | Reads repo bootstrap, current handoffs, prior PRs, broadcasts, and claims before acting.              |
+| `Learns`                  | Converts repeated corrections into tracked docs, checks, claims, or backlog rows.                     |
+| `Persists`                | Uses git history, PRs, claim branches, host-loop state, and indexed docs instead of chat-only memory. |
+| `ProtectsMemory`          | Treats ad-hoc memory notes and broadcasts as cache; important decisions become repo substrate.        |
+| `AvoidsRootCheckout`      | Writes only from dedicated worktrees unless explicitly assigned the root checkout.                    |
+| `CoordinatesAutonomously` | Reads remote claims, PR state, review threads, CI, heartbeats, and broadcasts directly.               |
+| `ReducesHumanTuning`      | Makes repeated human corrections into mechanical startup, review, or cleanup checks.                  |
 
 ## Durable Anchors
 

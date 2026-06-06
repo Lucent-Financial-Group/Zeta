@@ -8,13 +8,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import {
-  computeMetrics,
-  computeSinceFromWindow,
-  formatResult,
-  interpretMetrics,
-  parseArgs,
-} from "./measure";
+import { computeMetrics, computeSinceFromWindow, formatResult, interpretMetrics, parseArgs } from "./measure";
 
 describe("parseArgs", () => {
   test("default window is 24h", () => {
@@ -81,7 +75,11 @@ describe("computeSinceFromWindow", () => {
 });
 
 describe("computeMetrics", () => {
-  const baseWindow = { humanReadable: "test", since: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), author: "any" as const };
+  const baseWindow = {
+    humanReadable: "test",
+    since: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    author: "any" as const,
+  };
 
   test("empty PRs produces zero metrics", () => {
     const metrics = computeMetrics([], baseWindow);
@@ -92,8 +90,20 @@ describe("computeMetrics", () => {
 
   test("all merged → compression ratio 1.0", () => {
     const prs = [
-      { number: 1, state: "MERGED" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: "2026-05-28T01:00:00Z", closedAt: null },
-      { number: 2, state: "MERGED" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: "2026-05-28T01:00:00Z", closedAt: null },
+      {
+        number: 1,
+        state: "MERGED" as const,
+        createdAt: "2026-05-28T00:00:00Z",
+        mergedAt: "2026-05-28T01:00:00Z",
+        closedAt: null,
+      },
+      {
+        number: 2,
+        state: "MERGED" as const,
+        createdAt: "2026-05-28T00:00:00Z",
+        mergedAt: "2026-05-28T01:00:00Z",
+        closedAt: null,
+      },
     ];
     const metrics = computeMetrics(prs, baseWindow);
     expect(metrics.merged).toBe(2);
@@ -104,8 +114,20 @@ describe("computeMetrics", () => {
 
   test("half merged half closed-no-merge → compression ratio 0.5", () => {
     const prs = [
-      { number: 1, state: "MERGED" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: "2026-05-28T01:00:00Z", closedAt: null },
-      { number: 2, state: "CLOSED" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: null, closedAt: "2026-05-28T01:00:00Z" },
+      {
+        number: 1,
+        state: "MERGED" as const,
+        createdAt: "2026-05-28T00:00:00Z",
+        mergedAt: "2026-05-28T01:00:00Z",
+        closedAt: null,
+      },
+      {
+        number: 2,
+        state: "CLOSED" as const,
+        createdAt: "2026-05-28T00:00:00Z",
+        mergedAt: null,
+        closedAt: "2026-05-28T01:00:00Z",
+      },
     ];
     const metrics = computeMetrics(prs, baseWindow);
     expect(metrics.merged).toBe(1);
@@ -116,7 +138,13 @@ describe("computeMetrics", () => {
 
   test("open PRs don't affect compression ratio", () => {
     const prs = [
-      { number: 1, state: "MERGED" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: "2026-05-28T01:00:00Z", closedAt: null },
+      {
+        number: 1,
+        state: "MERGED" as const,
+        createdAt: "2026-05-28T00:00:00Z",
+        mergedAt: "2026-05-28T01:00:00Z",
+        closedAt: null,
+      },
       { number: 2, state: "OPEN" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: null, closedAt: null },
     ];
     const metrics = computeMetrics(prs, baseWindow);
@@ -128,8 +156,20 @@ describe("computeMetrics", () => {
 
   test("throughputPerHour computed correctly", () => {
     const prs = [
-      { number: 1, state: "MERGED" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: "2026-05-28T01:00:00Z", closedAt: null },
-      { number: 2, state: "MERGED" as const, createdAt: "2026-05-28T00:00:00Z", mergedAt: "2026-05-28T02:00:00Z", closedAt: null },
+      {
+        number: 1,
+        state: "MERGED" as const,
+        createdAt: "2026-05-28T00:00:00Z",
+        mergedAt: "2026-05-28T01:00:00Z",
+        closedAt: null,
+      },
+      {
+        number: 2,
+        state: "MERGED" as const,
+        createdAt: "2026-05-28T00:00:00Z",
+        mergedAt: "2026-05-28T02:00:00Z",
+        closedAt: null,
+      },
     ];
     const metrics = computeMetrics(prs, baseWindow);
     expect(metrics.throughputPerHour).toBeGreaterThan(0);

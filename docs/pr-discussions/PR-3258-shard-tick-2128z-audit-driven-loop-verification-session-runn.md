@@ -43,16 +43,16 @@ All three ID-integrity classes report 0 issues. End-to-end loop closed:
 
 ## Session running tally: 22 merged + 1 wait-ci
 
-| Lane | Merged count |
-|---|---|
-| Multi-Otto contamination defenses | 5 |
-| Cold-boot rule promotion | 1 |
-| Tick shards | 10 |
-| KSK personas + close-out | 2 |
-| BACKLOG.md regen | 1 |
-| Audit hygiene | 2 |
-| Audit-driven row filing | 1 |
-| **TOTAL** | **22** |
+| Lane                              | Merged count |
+| --------------------------------- | ------------ |
+| Multi-Otto contamination defenses | 5            |
+| Cold-boot rule promotion          | 1            |
+| Tick shards                       | 10           |
+| KSK personas + close-out          | 2            |
+| BACKLOG.md regen                  | 1            |
+| Audit hygiene                     | 2            |
+| Audit-driven row filing           | 1            |
+| **TOTAL**                         | **22**       |
 
 Plus [#3256](https://github.com/Lucent-Financial-Group/Zeta/pull/3256) (shard 2123Z) wait-ci.
 
@@ -89,24 +89,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T21:31:29Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `291c24021d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -119,6 +117,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds a tick-history shard documenting audit-loop verification, session tally, and durable session patterns for future cold-boot context.
 
 **Changes:**
+
 - Records audit output showing zero broken `depends_on`, `composes_with`, and duplicate-ID issues.
 - Adds a session running tally and codifies ten operational patterns from the session.
 
@@ -128,7 +127,7 @@ This PR adds a tick-history shard documenting audit-loop verification, session t
 
 **@chatgpt-codex-connector** (2026-05-14T21:31:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile tick-shard merged count with listed PRs**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile tick-shard merged count with listed PRs**
 
 The `Tick shards` row reports `Merged | 9` but lists ten PR numbers and even ends with `(10)`, which creates an internal contradiction in the session tally. Because this document is used as durable audit substrate for loop accounting, inconsistent counts can propagate incorrect merged-volume metrics and make later verification or trend analysis unreliable.
 

@@ -26,11 +26,11 @@ This is the single bounded step: flip the row to `closed`, add a Resolution sect
 
 ## Per-acceptance-criterion verification
 
-| Acceptance | Status |
-|---|---|
-| safe/ folder not gitignored, checked in | shipped — `roms-safe/README.md` + `roms-safe/atari/2600/README.md` tracked; `roms/.gitignore` governs only `roms/`, so `roms-safe/` is checked in by default |
-| unsafe/ folder gitignored | shipped — `roms/` stays gitignored via existing depth-limited rule (`*` + `!*/` + sentinel re-includes) |
-| README documents which ROMs are safe to distribute | shipped — `roms-safe/atari/2600/README.md` carries a per-ROM table (canonical name, author, license class, citation) for 7 homebrew titles |
+| Acceptance                                         | Status                                                                                                                                                       |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| safe/ folder not gitignored, checked in            | shipped — `roms-safe/README.md` + `roms-safe/atari/2600/README.md` tracked; `roms/.gitignore` governs only `roms/`, so `roms-safe/` is checked in by default |
+| unsafe/ folder gitignored                          | shipped — `roms/` stays gitignored via existing depth-limited rule (`*` + `!*/` + sentinel re-includes)                                                      |
+| README documents which ROMs are safe to distribute | shipped — `roms-safe/atari/2600/README.md` carries a per-ROM table (canonical name, author, license class, citation) for 7 homebrew titles                   |
 
 ## Focused checks (outcomes)
 
@@ -54,6 +54,7 @@ operative-authorization: aaron 2026-05-14: "- **Devil-pole** (edge-runner drive)
 Closes backlog item **B-0273** as shipped/pure-drift by updating its row metadata (status/classification/dates) and regenerating the root backlog index so the item renders as closed.
 
 **Changes:**
+
 - Mark B-0273 as `status: closed`, update `last_updated`, and record `closed` date.
 - Add a “Resolution” section documenting acceptance-criterion verification and provenance to PR #5874.
 - Regenerate `docs/BACKLOG.md` so B-0273 renders as checked off.
@@ -62,10 +63,10 @@ Closes backlog item **B-0273** as shipped/pure-drift by updating its row metadat
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                    | Description                                                                               |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0273-atari-rom-safe-unsafe-folder-split-2026-05-08.md | Close the row and add resolution/provenance notes for the already-shipped implementation. |
-| docs/BACKLOG.md | Regenerated index reflecting B-0273 as closed. |
+| docs/BACKLOG.md                                                         | Regenerated index reflecting B-0273 as closed.                                            |
 
 ### COMMENTED — @AceHack (2026-05-29T12:30:41Z)
 

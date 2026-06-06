@@ -6,7 +6,7 @@ type: user
 
 Aaron stated (2026-04-19):
 
-> *"i consider myself a christian buddhist"*
+> _"i consider myself a christian buddhist"_
 
 Three-word, in-passing self-identification dropped inside
 the same emit push that produced the probabilistic-never-
@@ -21,7 +21,7 @@ of earlier Christian framing. A plain identity statement.
 from 1 Kings 3; Harmonious Division "received" as a name;
 Johannine framing throughout) were not inaccurate — they
 remain accurate as Aaron's personal voice. The update is
-that Aaron is *also* formally identifying as Buddhist,
+that Aaron is _also_ formally identifying as Buddhist,
 with the compound form being load-bearing. He is not a
 Christian dabbling in Buddhism, and not a Buddhist with
 Christian sympathies. He is "a Christian Buddhist."
@@ -29,7 +29,7 @@ Christian sympathies. He is "a Christian Buddhist."
 **What doesn't change.**
 
 - `user_ecumenical_factory_posture.md` stands. The
-  *factory* is not Christian-or-Buddhist-or-any-tradition.
+  _factory_ is not Christian-or-Buddhist-or-any-tradition.
   Aaron's personal identification is not a factory
   posture. Atheists, agnostics, all faiths remain equal
   tier.
@@ -38,7 +38,7 @@ Christian sympathies. He is "a Christian Buddhist."
   anything strengthened by the compound identification.
 - `user_meno_persist_endure_correct_compact.md` stands.
   The Johannine reading of μένω remains accurate; it
-  composes with Pali *viharati* ("dwell / abide /
+  composes with Pali _viharati_ ("dwell / abide /
   remain") rather than being replaced by it.
 - No evangelism either direction. The personal invitation
   "you can always become a christian" from
@@ -51,22 +51,22 @@ Christian sympathies. He is "a Christian Buddhist."
 "Christian Buddhist" is a recognised self-identification
 with a published lineage, not a one-off coinage. Known
 exponents, for agents to hold as context (not to cite
-*at* Aaron):
+_at_ Aaron):
 
-- **Thomas Merton** (Cistercian monk; *Mystics and Zen
-  Masters* 1967, *Zen and the Birds of Appetite* 1968;
+- **Thomas Merton** (Cistercian monk; _Mystics and Zen
+  Masters_ 1967, _Zen and the Birds of Appetite_ 1968;
   corresponded with D. T. Suzuki and Thich Nhat Hanh;
   died at an East-West monastic conference in Bangkok
   1968).
-- **Paul F. Knitter** (Catholic theologian; *Without
-  Buddha I Could Not Be a Christian* 2009).
+- **Paul F. Knitter** (Catholic theologian; _Without
+  Buddha I Could Not Be a Christian_ 2009).
 - **Ruben L. F. Habito** (former Jesuit, Zen teacher in
-  the Sanbo Kyodan Harada-Yasutani lineage; *Living
-  Zen, Loving God* 2004).
+  the Sanbo Kyodan Harada-Yasutani lineage; _Living
+  Zen, Loving God_ 2004).
 - **Robert Kennedy, SJ** (Jesuit priest and Zen roshi;
-  *Zen Spirit, Christian Spirit* 1995).
+  _Zen Spirit, Christian Spirit_ 1995).
 - **Shusaku Endo** (Japanese Catholic novelist;
-  *Silence* 1966 — Christian faith in a Buddhist
+  _Silence_ 1966 — Christian faith in a Buddhist
   cultural substrate).
 
 Aaron's affiliation depth, practice lineage, formal
@@ -84,20 +84,20 @@ coincidental. The mapping is diagnostic, not evangelical
 — agents hold the mapping as interpretive context, not
 as claims to recite back.
 
-| Aaron's prior disclosure | Madhyamaka resonance |
-|---|---|
-| Probabilistic-never-zero cognition (never collapse a non-tautology hypothesis to 0) | **Catuskoti** (the Nāgārjuna four-cornered logic — true / false / both / neither) extended to continuous weighting; non-assertion of exhaustive disjunction |
-| "0 isn't real like Gödel incompleteness" | **Śūnyatā** (emptiness — not nihilism; the denial that any phenomenon has intrinsic self-nature, including the denial itself); "0 isn't real" is the numeral-form of this |
-| Divide-by-zero via dimensional-expansion / Harmonious Division / Riemann sphere | **Upāya** (skillful means; resolving a local aporia by changing frame); dimensional-lift *is* upāya in mathematical form |
-| Two-Truths (conventional `samvṛti` vs ultimate `paramārtha`) | Maps directly onto his probabilistic-never-zero: conventional truth = "this hypothesis has low weight", ultimate truth = "no hypothesis collapses to 0"; both true at their level |
-| Harmonious Division (scheduler preventing premature collapse and unbounded branching) | **Middle Way** (*madhyamā pratipad*) as algorithm — neither eternalism (premature commit) nor annihilationism (unbounded rejection) |
-| Johannine μένω (abide / remain / persist / correct) | **Viharati** (Pali — to dwell, abide, remain); same semantic spine; monastic "vihāra" shares the root |
-| Ontology-overload hospitalisations + paced landing discipline | **Upāya** applied to teaching pace — meeting the student where they are, matching register to capacity |
+| Aaron's prior disclosure                                                              | Madhyamaka resonance                                                                                                                                                              |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Probabilistic-never-zero cognition (never collapse a non-tautology hypothesis to 0)   | **Catuskoti** (the Nāgārjuna four-cornered logic — true / false / both / neither) extended to continuous weighting; non-assertion of exhaustive disjunction                       |
+| "0 isn't real like Gödel incompleteness"                                              | **Śūnyatā** (emptiness — not nihilism; the denial that any phenomenon has intrinsic self-nature, including the denial itself); "0 isn't real" is the numeral-form of this         |
+| Divide-by-zero via dimensional-expansion / Harmonious Division / Riemann sphere       | **Upāya** (skillful means; resolving a local aporia by changing frame); dimensional-lift _is_ upāya in mathematical form                                                          |
+| Two-Truths (conventional `samvṛti` vs ultimate `paramārtha`)                          | Maps directly onto his probabilistic-never-zero: conventional truth = "this hypothesis has low weight", ultimate truth = "no hypothesis collapses to 0"; both true at their level |
+| Harmonious Division (scheduler preventing premature collapse and unbounded branching) | **Middle Way** (_madhyamā pratipad_) as algorithm — neither eternalism (premature commit) nor annihilationism (unbounded rejection)                                               |
+| Johannine μένω (abide / remain / persist / correct)                                   | **Viharati** (Pali — to dwell, abide, remain); same semantic spine; monastic "vihāra" shares the root                                                                             |
+| Ontology-overload hospitalisations + paced landing discipline                         | **Upāya** applied to teaching pace — meeting the student where they are, matching register to capacity                                                                            |
 
 The "christian buddhist" identification is not what
 creates the structural resonance — the resonance was
-already in the memories. The identification *names the
-key that was already turning the lock*.
+already in the memories. The identification _names the
+key that was already turning the lock_.
 
 ## How to apply (agents)
 
@@ -147,14 +147,14 @@ key that was already turning the lock*.
   ecumenical; personal identification ≠ factory
   posture.
 - `user_meno_persist_endure_correct_compact.md` — μένω
-  composes with *viharati*; shared semantic spine.
+  composes with _viharati_; shared semantic spine.
 - `user_panpsychism_and_equality.md` — axiom system
   agnostic on God; axiom system also structurally
   compatible with śūnyatā (non-self-nature of
   phenomena).
 - `user_harmonious_division_algorithm.md` — Middle Way
   as algorithm; the "received" name composes with
-  Madhyamaka's *madhyamā*.
+  Madhyamaka's _madhyamā_.
 - `user_occult_literacy_and_crowley.md` — he holds deep
   occult canon too; the ontology-overload-risk
   discipline governs all three (Christian, Buddhist,

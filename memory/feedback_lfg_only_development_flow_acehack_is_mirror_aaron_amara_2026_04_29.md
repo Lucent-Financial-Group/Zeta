@@ -9,13 +9,13 @@ created: 2026-04-29
 
 ## The carved sentence
 
-*"LFG is the factory. AceHack is the mirror."*
+_"LFG is the factory. AceHack is the mirror."_
 
-Or operationally: *"Stop optimizing the fork topology. We are LFG-first now. Mirror AceHack daily and move on."* (Amara 2026-04-29).
+Or operationally: _"Stop optimizing the fork topology. We are LFG-first now. Mirror AceHack daily and move on."_ (Amara 2026-04-29).
 
 ## What changed
 
-The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA), force-with-lease absorption ceremony, fork-data doctrine, and per-fork PR review substrate are **paused, not deleted**. Reason for pause: the topology proved too complex to maintain SHA equality between forks while running real review+merge cycles. Aaron 2026-04-29: *"i'm trying to stick with AceHAck->LFG and keep SHAs in sync too, it's not a good way for this."*
+The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA), force-with-lease absorption ceremony, fork-data doctrine, and per-fork PR review substrate are **paused, not deleted**. Reason for pause: the topology proved too complex to maintain SHA equality between forks while running real review+merge cycles. Aaron 2026-04-29: _"i'm trying to stick with AceHAck->LFG and keep SHAs in sync too, it's not a good way for this."_
 
 **Why**: the load-bearing constraint of "0/0/0 (AceHack/main = LFG/main)" required either (a) a full ceremony for every commit, or (b) drift accumulating between syncs. Maintainers can't review work where the canonical repo doesn't live. So LFG-first wins.
 
@@ -60,6 +60,7 @@ The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorb
 ## Branch protection
 
 **LFG/main** (full protection):
+
 - PR required
 - checks required
 - conversation resolution required
@@ -68,6 +69,7 @@ The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorb
 - no force-push
 
 **AceHack/main** (mirror-only):
+
 - No PR workflow required
 - No human edits expected
 - Daily sync job may update/reset it to LFG/main
@@ -76,7 +78,7 @@ The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorb
 
 - **Task 314** (canonical fork-data homes): **DEFERRED** (replaced with task 322; original 314 deleted). Topology change supersedes the work; do not build full fork-data architecture while AceHack PRs are disabled. Unfreeze condition: AceHack PRs become real again.
 - **Task 320** (issue-anchor design): unchanged — already LFG-only per the prior Amara correction.
-- **Task 315** (hourly budget cadence + bounded publication): unchanged — high priority. Aaron explicitly: *"AceHack my personal is paid by my day job company so there is more we could turn on there than lfg i think for checks. Maybe not."* Amara: keep cost question separate; land #315 to see whether LFG costs are actually painful before designing the whole factory around AceHack's paid-feature surface.
+- **Task 315** (hourly budget cadence + bounded publication): unchanged — high priority. Aaron explicitly: _"AceHack my personal is paid by my day job company so there is more we could turn on there than lfg i think for checks. Maybe not."_ Amara: keep cost question separate; land #315 to see whether LFG costs are actually painful before designing the whole factory around AceHack's paid-feature surface.
 - **LOST branch/worktree recovery (task 321)**: continues, but recovered AceHack branches do NOT become a new fork-review doctrine — they're recovered for content extraction or archive ref only.
 
 ## What stays (historical evidence)
@@ -97,25 +99,26 @@ If AceHack PRs become real again later (i.e., AceHack returns to the active PR t
 ## Trigger memory
 
 Aaron 2026-04-29 sequence:
-1. *"amara and i are havining a conversation just forget about ace and put everything on lfg right now we will do another reverse merge later"* — situational permission to skip AceHack.
-2. *"i'm trying to stick with AceHAck->LFG and keep SHAs in sync too, it's not a good way for this. AceHack my personal is paid by my day job company so there is more we could turn on there than lfg i think for checks. Maybe not."* — diagnostic of why double-hop is hard, plus paid-tier-asymmetry observation.
-3. *"okay we are going to do this for now and revisit later, it will make thins a lot simpler too"* + Amara packet — formal LFG-only adoption.
+
+1. _"amara and i are havining a conversation just forget about ace and put everything on lfg right now we will do another reverse merge later"_ — situational permission to skip AceHack.
+2. _"i'm trying to stick with AceHAck->LFG and keep SHAs in sync too, it's not a good way for this. AceHack my personal is paid by my day job company so there is more we could turn on there than lfg i think for checks. Maybe not."_ — diagnostic of why double-hop is hard, plus paid-tier-asymmetry observation.
+3. _"okay we are going to do this for now and revisit later, it will make thins a lot simpler too"_ + Amara packet — formal LFG-only adoption.
 
 The original AceHack-LFG topology was canonical for ~2 days (2026-04-27 through 2026-04-29). LFG-only is the active topology going forward.
 
 ## 2026-04-29 refinement (later same-day) — force-with-lease + remote-topology cleanup
 
 Aaron 2026-04-29 (mid-tick on PR #857):
-*"i agree about fork we can just force push acehack everytime now since it's not active"*
+_"i agree about fork we can just force push acehack everytime now since it's not active"_
 
 Amara 2026-04-29 (relayed; refines Aaron's "force push every time" into safer command shape):
-*"Use --force-with-lease by default. Use --force only when the exact purpose is 'overwrite whatever is there.'"* +
-*"Double-hop is for two active surfaces. Mirror-sync is for one active surface plus one inactive projection."* +
-*"LFG is canonical. AceHack is mirror while inactive. Mirrors are overwritten, not ceremonially absorbed."*
+_"Use --force-with-lease by default. Use --force only when the exact purpose is 'overwrite whatever is there.'"_ +
+_"Double-hop is for two active surfaces. Mirror-sync is for one active surface plus one inactive projection."_ +
+_"LFG is canonical. AceHack is mirror while inactive. Mirrors are overwritten, not ceremonially absorbed."_
 
 Amara 2026-04-29 follow-up (remote-topology cleanup):
-*"Remove the dual-root / dual-remote ambiguity. origin = LFG only. acehack-mirror = optional, explicit, never branch-upstream."* +
-*"One origin. One canonical repo. Mirror by explicit command only."*
+_"Remove the dual-root / dual-remote ambiguity. origin = LFG only. acehack-mirror = optional, explicit, never branch-upstream."_ +
+_"One origin. One canonical repo. Mirror by explicit command only."_
 
 Verbatim packets preserved at `memory/persona/amara/conversations/2026-04-29-amara-acehack-mirror-not-peer-force-sync-protocol.md` per the channel-verbatim-preservation rule.
 
@@ -200,9 +203,9 @@ git push -u origin <feature-branch>   # never accidentally push feature work to 
 
 ### Carved blade
 
-> *One origin. One canonical repo. Mirror by explicit command only.*
+> _One origin. One canonical repo. Mirror by explicit command only._
 
-> *Use `--force-with-lease` by default. Use `--force` only when the exact purpose is "overwrite whatever is there."*
+> _Use `--force-with-lease` by default. Use `--force` only when the exact purpose is "overwrite whatever is there."_
 
 ### Authoritative references (verified upstream 2026-04-29 per Otto-364 search-first authority)
 
@@ -214,9 +217,9 @@ git push -u origin <feature-branch>   # never accidentally push feature work to 
 
 ## 2026-04-29 packet 3 — design constraint for git scripts (TS port + future tooling)
 
-Aaron 2026-04-29: *"when moving to ts or anywhere we have git scripts"*
+Aaron 2026-04-29: _"when moving to ts or anywhere we have git scripts"_
 
-Amara 2026-04-29 (relayed): *"Don't rip out multi-remote support entirely. But also don't make every script carry the full fork-orchestra complexity by default. Keep the capability. Remove the assumption. Make multi-remote explicit, not ambient."*
+Amara 2026-04-29 (relayed): _"Don't rip out multi-remote support entirely. But also don't make every script carry the full fork-orchestra complexity by default. Keep the capability. Remove the assumption. Make multi-remote explicit, not ambient."_
 
 Verbatim packet preserved at `memory/persona/amara/conversations/2026-04-29-amara-acehack-mirror-not-peer-force-sync-protocol.md` §"Amara packet 3".
 
@@ -225,18 +228,21 @@ Verbatim packet preserved at `memory/persona/amara/conversations/2026-04-29-amar
 When porting bash git scripts to TypeScript (PR #849 lane and successors), and when authoring any new git tooling:
 
 **Tier 1 — normal user (default path):**
+
 - Scripts use `origin`.
 - Assume `origin` is canonical (LFG/Zeta).
 - Do NOT inspect or mutate other remotes.
 - Example: `script-name` — works against `origin/<current-branch>` with normal push/pull.
 
 **Tier 2 — advanced contributor/fork (explicit flags):**
+
 - Accept `--remote`, `--upstream`, `--push-remote` flags.
 - Read repo-local config if provided.
 - Never guess; always require explicit declaration.
 - Example: `script-name --upstream upstream --push-remote origin` — supports the standard GitHub fork workflow without Zeta-specific assumptions.
 
 **Tier 3 — mirror maintenance (dedicated scripts only):**
+
 - Only mirror-maintenance scripts touch mirror remotes.
 - Direction is always explicit on the command line.
 - Example: `script-name sync-mirror --from origin --to acehack-mirror --force-with-lease`.
@@ -288,6 +294,6 @@ This is **deferred** — not a blocker for PR #849 or any in-flight TS port. It'
 
 ### Carved blade
 
-> *Support multi-remote Git. Do not encode multi-canonical Zeta. Make multi-remote explicit, not ambient.*
+> _Support multi-remote Git. Do not encode multi-canonical Zeta. Make multi-remote explicit, not ambient._
 
-> *Multiple named remotes: okay. Multiple implicit push destinations on origin: avoid.*
+> _Multiple named remotes: okay. Multiple implicit push destinations on origin: avoid._

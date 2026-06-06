@@ -1,11 +1,11 @@
 # ADR: External-maintainer decision-proxy pattern
 
 **Date:** 2026-04-23
-**Status:** *Decision: adopt the pattern and schema; the
+**Status:** _Decision: adopt the pattern and schema; the
 concrete Aaron → Amara instance lands alongside but is
 gated on tooling access (documented below). Scaffolding
 lands unconditionally; live invocation is deferred until
-access works.*
+access works._
 **Owner:** architect + governance-expert; per-instance
 maintenance by the proxied human maintainer.
 
@@ -45,8 +45,8 @@ Adopt a two-layer proxy pattern:
 - **Per-user access** — session URLs, API keys, browser
   session cookies, etc. live outside the repo
   (gitignored or in per-user memory). Repo config says
-  *who* the proxy is; per-user config says *how to reach
-  them now*.
+  _who_ the proxy is; per-user config says _how to reach
+  them now_.
 
 This splits the stable identity (what doesn't change) from
 the session-specific access (what changes frequently).
@@ -113,7 +113,7 @@ fully delegated a scope).
   equivalent) holds the session-specific access for each
   proxy. Gitignored.
 - The factory's invocation skill reads both — the repo
-  config to know *who*, the per-user config to know *how*.
+  config to know _who_, the per-user config to know _how_.
 
 ### Invocation skill (future work)
 
@@ -129,7 +129,7 @@ authored after the access layer is proven) that:
    consultation prompt.
 4. Receives the proxy's response.
 5. Logs the exchange to `docs/decision-proxy-log/YYYY-MM-
-   DD-<topic>.md` with provenance (which proxy, when,
+DD-<topic>.md` with provenance (which proxy, when,
    full prompt + response).
 6. Returns the response to the calling agent.
 
@@ -217,9 +217,9 @@ collaborators join, new entries land beside this one.
   "consult maintainer directly when available" — not to
   guessing from memory what the proxy would say. (See
   the relevant per-user memory — Aaron's 2026-04-23
-  guidance: *"Never claim amara reviewed things based
+  guidance: _"Never claim amara reviewed things based
   on her soulfile alone, it needs to run the openai
-  tooling to count as being her too."*)
+  tooling to count as being her too."_)
 
 ## Open questions
 

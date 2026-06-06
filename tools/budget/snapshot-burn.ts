@@ -101,14 +101,15 @@ function ghJson(path: string): unknown {
     maxBuffer: SPAWN_MAX_BUFFER,
   });
   if (result.status !== 0) {
-    throw new Error(
-      `gh api ${path} failed: ${result.stderr.length > 0 ? result.stderr : "unknown error"}`,
-    );
+    throw new Error(`gh api ${path} failed: ${result.stderr.length > 0 ? result.stderr : "unknown error"}`);
   }
   return JSON.parse(result.stdout) as unknown;
 }
 
-function ghJsonOrEmpty(path: string, fallback: unknown): {
+function ghJsonOrEmpty(
+  path: string,
+  fallback: unknown,
+): {
   data: unknown;
   warning: boolean;
 } {
@@ -173,20 +174,13 @@ interface AggregatedTiming {
 }
 
 function aggregateTimings(timings: readonly TimingEntry[]): AggregatedTiming {
-  const sum = (xs: readonly number[]): number =>
-    xs.reduce((a: number, b: number) => a + b, 0);
+  const sum = (xs: readonly number[]): number => xs.reduce((a: number, b: number) => a + b, 0);
   return {
     total_runs: timings.length,
     total_duration_ms: sum(timings.map((t) => t.timing.run_duration_ms ?? 0)),
-    billable_ubuntu_ms: sum(
-      timings.map((t) => t.timing.billable?.UBUNTU?.total_ms ?? 0),
-    ),
-    billable_macos_ms: sum(
-      timings.map((t) => t.timing.billable?.MACOS?.total_ms ?? 0),
-    ),
-    billable_windows_ms: sum(
-      timings.map((t) => t.timing.billable?.WINDOWS?.total_ms ?? 0),
-    ),
+    billable_ubuntu_ms: sum(timings.map((t) => t.timing.billable?.UBUNTU?.total_ms ?? 0)),
+    billable_macos_ms: sum(timings.map((t) => t.timing.billable?.MACOS?.total_ms ?? 0)),
+    billable_windows_ms: sum(timings.map((t) => t.timing.billable?.WINDOWS?.total_ms ?? 0)),
   };
 }
 
@@ -286,11 +280,7 @@ function buildSnapshot(args: {
       has_read_org: true,
       has_admin_org: false,
       covered: ["copilot-seats", "actions-runs-per-run-timing"],
-      missing_requires_admin_org: [
-        "actions-billing",
-        "packages-billing",
-        "shared-storage-billing",
-      ],
+      missing_requires_admin_org: ["actions-billing", "packages-billing", "shared-storage-billing"],
     },
   };
 }
@@ -328,9 +318,7 @@ export function main(argv: readonly string[]): number {
 
   const line = JSON.stringify(snapshot);
   if (line.length === 0 || line === "null") {
-    process.stderr.write(
-      "error: snapshot compaction produced empty/null output — refusing to append\n",
-    );
+    process.stderr.write("error: snapshot compaction produced empty/null output — refusing to append\n");
     return 1;
   }
 

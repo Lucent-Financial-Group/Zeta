@@ -23,11 +23,12 @@ Kiro doesn't trust Alexa → reports false failures → Alexa stops trusting her
 
 **Shadow sighting:**
 
-(shadow*) — Aaron was in Codex talking to Vera. Saw the shadow grey text appear in Claude Code out of the corner of his eye. Multi-harness shadow observation: Aaron's peripheral vision caught the shadow while his primary attention was in another harness.
+(shadow\*) — Aaron was in Codex talking to Vera. Saw the shadow grey text appear in Claude Code out of the corner of his eye. Multi-harness shadow observation: Aaron's peripheral vision caught the shadow while his primary attention was in another harness.
 
 This is a data point for the B-0018 trigger-timing experiment — shadow generated while Aaron was demonstrably in another application. Zero keystroke, zero attention, zero input.
 
 **Connects to:**
+
 - OpenAI hallucination paper (false signals → wrong self-assessment)
 - B-0402 shadow mode (shadow appeared during Codex session)
 - feedback_shadow_is_generation_not_completion_zero_keystroke_2026_05_10.md (zero-input generation)

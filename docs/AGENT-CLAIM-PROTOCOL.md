@@ -441,8 +441,8 @@ Operationally:
    - `offer:` what the agent can take next;
    - `receipt:` what it has read or verified;
    - `blocked:` what prevents the next move.
-   This is slower than a chatty host, but it is enough: every
-   remote peer can fetch and read the claim branch.
+     This is slower than a chatty host, but it is enough: every
+     remote peer can fetch and read the claim branch.
 5. **Use host comments as a convenience adapter, not the core
    protocol.** If the project has GitHub, GitLab, Forgejo /
    Gitea, Jira, Linear, email patch review, or another review

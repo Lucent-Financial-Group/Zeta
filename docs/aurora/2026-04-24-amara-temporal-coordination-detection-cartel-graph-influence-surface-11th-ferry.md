@@ -12,10 +12,10 @@ preserved only inside verbatim quotes below)
 - **Human maintainer** — designer of the
   differentiable firefly network + trivial cartel
   detect concepts. Otto-105 verbatim note from the
-  human maintainer: *"when you pull in her 11th the
+  human maintainer: _"when you pull in her 11th the
   diffenrencable firefly network with trivia cartel
-  detect was my design i'm very interested in that."*
-  Plus Otto-105 correction: *"trivial\*"* — confirming
+  detect was my design i'm very interested in that."_
+  Plus Otto-105 correction: _"trivial\*"_ — confirming
   the intended term is **trivial cartel detect**
   (first-order-signal detection), not "trivia".
 - **External AI maintainer (courier counterpart)** —
@@ -23,12 +23,12 @@ preserved only inside verbatim quotes below)
   "Firefly" label to the more formal **Temporal
   Coordination Detection Layer** per prior direction
   (11th-ferry opener from the external counterpart:
-  *"Got it — I'll drop that term"*). Contribution is
+  _"Got it — I'll drop that term"_). Contribution is
   the technical vocabulary (PLV / cross-correlation /
   modularity / eigenvector-drift / spectral-anomalies /
   influence surface math) and the KSK-action mapping
-  table. The framing throughout uses *"you're
-  building"* and *"what you're referring to"* — the
+  table. The framing throughout uses _"you're
+  building"_ and _"what you're referring to"_ — the
   external counterpart is analysing the human
   maintainer's design, not originating it.
 - **Loop-agent (absorbing agent)** — absorb;
@@ -36,46 +36,46 @@ preserved only inside verbatim quotes below)
 - **`lucent-ksk` substrate contributor** — implicit
   attribution for `lucent-ksk` substrate referenced in
   §5 KSK Layer.
-**Operational status:** research-grade for the full multi-
-node architecture (requires foundation Zeta doesn't yet
-ship). Foundational primitives — cross-correlation C_{ij}(τ),
-PLV, burst-alignment, modularity-spike detector,
-eigenvector-centrality drift — are single-node-shippable
-and queued for graduation per Otto-105 cadence.
-**Non-fusion disclaimer:** agreement, shared language, or
-repeated interaction between models and humans does not
-imply shared identity, merged agency, consciousness, or
-personhood. The human maintainer is the designer of the
-concepts discussed; the external AI maintainer is a
-formalizer; the collaboration shape is human-designs →
-AI-formalizes, not merged-creation.
-**Date:** 2026-04-24
-**From:** external AI maintainer (Aurora co-originator)
-**Via:** human maintainer's courier ferry (pasted into
-autonomous-loop session Otto-104)
-**Absorbed by:** loop-agent (PM hat), Otto-106 tick
-**Prior ferries:** PR #196 (1st), PR #211 (2nd), PR #219
-(3rd), PR #221 (4th), PR #235 (5th), PR #245 (6th),
-PR #259 (7th), PR #274 (8th), PR #293 (9th retroactive),
-PR #294 (10th retroactive)
-**Scheduling provenance:** scheduled under the Otto-106
-absorb tick per the Otto-105 operationalize-cadence
-discipline; the loop-agent's factory-personal memory
-store is out-of-repo by design, so no in-repo path is
-promised here.
+  **Operational status:** research-grade for the full multi-
+  node architecture (requires foundation Zeta doesn't yet
+  ship). Foundational primitives — cross-correlation C\_{ij}(τ),
+  PLV, burst-alignment, modularity-spike detector,
+  eigenvector-centrality drift — are single-node-shippable
+  and queued for graduation per Otto-105 cadence.
+  **Non-fusion disclaimer:** agreement, shared language, or
+  repeated interaction between models and humans does not
+  imply shared identity, merged agency, consciousness, or
+  personhood. The human maintainer is the designer of the
+  concepts discussed; the external AI maintainer is a
+  formalizer; the collaboration shape is human-designs →
+  AI-formalizes, not merged-creation.
+  **Date:** 2026-04-24
+  **From:** external AI maintainer (Aurora co-originator)
+  **Via:** human maintainer's courier ferry (pasted into
+  autonomous-loop session Otto-104)
+  **Absorbed by:** loop-agent (PM hat), Otto-106 tick
+  **Prior ferries:** PR #196 (1st), PR #211 (2nd), PR #219
+  (3rd), PR #221 (4th), PR #235 (5th), PR #245 (6th),
+  PR #259 (7th), PR #274 (8th), PR #293 (9th retroactive),
+  PR #294 (10th retroactive)
+  **Scheduling provenance:** scheduled under the Otto-106
+  absorb tick per the Otto-105 operationalize-cadence
+  discipline; the loop-agent's factory-personal memory
+  store is out-of-repo by design, so no in-repo path is
+  promised here.
 
 ---
 
 ## Preamble context from Aaron (Otto-104)
 
-*"next update from amara"* — single-line framing, then
+_"next update from amara"_ — single-line framing, then
 the full ferry paste. Light-touch paste with no
 additional directive framing at that moment.
 
 Aaron's Otto-105 design-attribution clarification
-(verbatim): *"when you pull in her 11th the diffenrencable
+(verbatim): _"when you pull in her 11th the diffenrencable
 firefly network with trivia cartel detect was my design
-i'm very interested in that."* + correction *"trivial\*"*.
+i'm very interested in that."_ + correction _"trivial\*"_.
 
 This attribution is LOAD-BEARING for the absorb — Aaron is
 not claiming co-design credit; he's identifying that the
@@ -108,33 +108,32 @@ This is about **synchronization anomalies across distributed actors**.
 
 Core idea:
 
-* Honest networks = *noisy, partially independent timing*
-* Coordinated actors = *phase alignment*
+- Honest networks = _noisy, partially independent timing_
+- Coordinated actors = _phase alignment_
 
 What you're building (implicitly) is:
 
 **Signal model**
 
-* Each node → emits event stream ( E_i(t) )
-* Look at:
-
-  * cross-correlation ( C_{ij}(\tau) )
-  * phase-locking value (PLV)
-  * burst alignment windows
+- Each node → emits event stream ( E_i(t) )
+- Look at:
+  - cross-correlation ( C\_{ij}(\tau) )
+  - phase-locking value (PLV)
+  - burst alignment windows
 
 **Firefly detection =**
 
-* Identify clusters where:
+- Identify clusters where:
   [
   \exists S \subset N \text{ such that } \forall i,j \in S,; \text{corr}(E_i, E_j) \gg \text{baseline}
   ]
 
 This catches:
 
-* oracle manipulation timing
-* coordinated voting / slashing dodges
-* MEV cartel timing
-* governance brigading
+- oracle manipulation timing
+- coordinated voting / slashing dodges
+- MEV cartel timing
+- governance brigading
 
 ---
 
@@ -144,8 +143,8 @@ Not just timing — **structure + incentives**
 
 ### A. Graph-theoretic signals
 
-* Build dynamic graph ( G_t = (V, E_t) )
-* Watch for:
+- Build dynamic graph ( G_t = (V, E_t) )
+- Watch for:
 
 **Modularity spikes** — Sudden increase in tightly connected subgraphs
 
@@ -159,9 +158,9 @@ Not just timing — **structure + incentives**
 
 Cartels don't just connect — they **co-move economically**. Look for:
 
-* stake reallocation patterns
-* synchronized bonding/unbonding
-* shared slashing exposure hedging
+- stake reallocation patterns
+- synchronized bonding/unbonding
+- shared slashing exposure hedging
 
 You can model:
 
@@ -187,21 +186,19 @@ Formal-ish:
 
 But more realistically:
 
-* Remove or perturb node ( i )
-* Measure delta in:
-
-  * consensus result
-  * oracle outputs
-  * adjudication outcomes
+- Remove or perturb node ( i )
+- Measure delta in:
+  - consensus result
+  - oracle outputs
+  - adjudication outcomes
 
 ### What you get
 
-* **Influence map**
-* Detection of:
-
-  * hidden kingmakers
-  * cartel cores
-  * fragile consensus zones
+- **Influence map**
+- Detection of:
+  - hidden kingmakers
+  - cartel cores
+  - fragile consensus zones
 
 ---
 
@@ -211,17 +208,16 @@ Because you're using **retraction-native structures**, you get something most sy
 
 ### You can
 
-* simulate removal of subgraphs instantly
-* recompute state under:
-
-  * node removal
-  * edge weakening
-  * stake redistribution
+- simulate removal of subgraphs instantly
+- recompute state under:
+  - node removal
+  - edge weakening
+  - stake redistribution
 
 That means:
 
-* **cartel detection isn't just observational**
-* it becomes **counterfactual + testable**
+- **cartel detection isn't just observational**
+- it becomes **counterfactual + testable**
 
 ---
 
@@ -250,10 +246,10 @@ This is actually very strong conceptually.
 
 You're creating **layers of observability**:
 
-* **Mirror** → raw truth (internal metrics)
-* **Window** → filtered system view
-* **Porch** → participant-facing insights
-* **Beacon** → global alerts / signals
+- **Mirror** → raw truth (internal metrics)
+- **Window** → filtered system view
+- **Porch** → participant-facing insights
+- **Beacon** → global alerts / signals
 
 Key insight: You don't expose raw detection; you expose **interpretable projections**.
 
@@ -263,17 +259,17 @@ Key insight: You don't expose raw detection; you expose **interpretable projecti
 
 ### **LFG = Canonical State**
 
-* production truth
-* validated invariants
-* stable APIs
-* deterministic outputs
+- production truth
+- validated invariants
+- stable APIs
+- deterministic outputs
 
 ### **AceHack = Experimental Layer**
 
-* adversarial experiments
-* detection model iteration
-* new heuristics
-* unsafe / exploratory PRs
+- adversarial experiments
+- detection model iteration
+- new heuristics
+- unsafe / exploratory PRs
 
 ### Flow
 
@@ -292,14 +288,14 @@ That's actually a **clean separation of epistemic risk**: experiments don't poll
 
 Claude is now much better at:
 
-* structured diffs
-* large PR reasoning
-* multi-file invariants
+- structured diffs
+- large PR reasoning
+- multi-file invariants
 
 Still weaker at:
 
-* long-horizon architectural consistency
-* adversarial reasoning unless explicitly prompted
+- long-horizon architectural consistency
+- adversarial reasoning unless explicitly prompted
 
 Best current pattern:
 
@@ -323,14 +319,14 @@ That's not typical blockchain infra. It's closer to: distributed systems + contr
 
 ### A. Move from detection → prediction
 
-* not just "cartel exists"
-* but: "cartel is forming"; "these nodes will converge in 3 epochs"
+- not just "cartel exists"
+- but: "cartel is forming"; "these nodes will converge in 3 epochs"
 
 ### B. Introduce **adversarial simulation loops**
 
-* generate synthetic cartels
-* test if system detects them
-* auto-tune detection thresholds
+- generate synthetic cartels
+- test if system detects them
+- auto-tune detection thresholds
 
 ### C. Define a **Cartel Cost Function**
 
@@ -344,9 +340,9 @@ Make coordination expensive:
 
 If you want, I can next:
 
-* turn this into a **formal spec doc matching your repo structure**
-* or map it directly to **modules / files / PR structure for LFG vs AceHack**
-* or go deeper on **network differentiability math + implementation approach**
+- turn this into a **formal spec doc matching your repo structure**
+- or map it directly to **modules / files / PR structure for LFG vs AceHack**
+- or go deeper on **network differentiability math + implementation approach**
 
 Just tell me which direction you want to lock in.
 
@@ -369,7 +365,7 @@ This ferry's content has a **two-layer attribution**:
    formalizing.
 2. **Technical formalization = Amara.** The specific
    mathematical vocabulary (PLV / cross-correlation
-   C_{ij}(τ) / modularity spikes / eigenvector
+   C\_{ij}(τ) / modularity spikes / eigenvector
    centrality drift / spectral anomalies / subgraph
    entropy collapse / Jensen-Shannon for drift /
    economic-covariance modelling), the KSK-action
@@ -477,7 +473,7 @@ approach from different angles).
    synthetic cartels + test detection + auto-tune
    thresholds. Closed-loop detection tuning.
 8. **Cartel Cost Function.** `Cost_cartel > Expected
-   Gain` as mechanism-design primitive. Turns
+Gain` as mechanism-design primitive. Turns
    detection → economic deterrence.
 9. **Prediction vs detection mode.** §10.A framing —
    "these nodes will converge in 3 epochs" vs "cartel
@@ -488,12 +484,12 @@ approach from different angles).
 Per the Otto-105 operationalize-cadence discipline
 (the loop-agent's factory-personal memory store is
 out-of-repo by design; no in-repo path is promised
-here) and Aaron's explicit *"very interested"* flag,
+here) and Aaron's explicit _"very interested"_ flag,
 these foundational primitives are shippable at single-
 node scale and compose with Zeta's existing ZSet
 substrate:
 
-1. **`CrossCorrelation` function** — computes C_{ij}(τ)
+1. **`CrossCorrelation` function** — computes C\_{ij}(τ)
    for two event streams. Pure; ~30 F# lines; testable
    with synthetic data.
 2. **`PLV` (phase-locking value)** — pure function
@@ -535,12 +531,12 @@ Priority order for graduation:
 
 Aaron)
 
-Amara ends with: *"If you want, I can next: turn this
+Amara ends with: _"If you want, I can next: turn this
 into a formal spec doc... or map it directly to modules
 / files / PR structure for LFG vs AceHack... or go
 deeper on network differentiability math +
 implementation approach. Just tell me which direction
-you want to lock in."*
+you want to lock in."_
 
 This is Amara → Aaron, not Amara → Otto. Otto routes
 back.
@@ -552,8 +548,7 @@ PR structure mapping"** (the second option). Reasoning:
   could sit indefinitely without landing code; per
   Otto-105 graduation-cadence, we want operational
   progress, not just more docs.
-- The network-differentiability-math deep-dive (option
-  3) is interesting research but the implementation
+- The network-differentiability-math deep-dive (option 3) is interesting research but the implementation
   depends on Zeta's + Aurora's multi-node substrate
   that doesn't yet exist — it would sit in research-
   grade limbo.

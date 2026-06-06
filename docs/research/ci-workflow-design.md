@@ -18,7 +18,7 @@ sequenced follow-ups. Read-only reference:
   narrow; widen only with a stated reason.
 - **The workflow is the developer-experience gate.** Per
   GOVERNANCE.md §24, CI runs the same `tools/setup/
-  install.sh` as dev laptops and devcontainers. The
+install.sh` as dev laptops and devcontainers. The
   matrix exists to test the developer experience across
   platforms.
 
@@ -29,7 +29,7 @@ Seven workflows:
 - `ci.yml` — quality + automation gate across Unix
   (ubuntu + macos), Windows, WSL.
 - `reusable-coverage-collect.yml`, `reusable-benchmarks-
-  collect.yml` — DRY helpers called twice (head vs base).
+collect.yml` — DRY helpers called twice (head vs base).
 - `coverage.yml`, `benchmarks.yml` — head-vs-base diff
   and PR comments.
 - `format.yml` — same-repo auto-fix, fork hard-fail.
@@ -42,59 +42,59 @@ sub-workflows for matrix-heavy collection.
 
 ## Zeta's adoption — decisions locked
 
-**Runner pinning — digest-pinned.** Aaron: *"Pinning is
-fine, this is a research project I like reproducibility."*
+**Runner pinning — digest-pinned.** Aaron: _"Pinning is
+fine, this is a research project I like reproducibility."_
 Runners pinned: `ubuntu-22.04` and `macos-14` rather than
 the moving `-latest` label. Bumps to the digest are explicit
 PRs with the version history visible in `git log`.
 
-**Parity over simplicity — Option B.** Aaron: *"Parity is
+**Parity over simplicity — Option B.** Aaron: _"Parity is
 what we are going for, but I'm fine if that happens over
 time just backlog it so we don't forget. Dev setup, build
 machine setup, and dev container setup all share common
-setup."* We start with `actions/setup-dotnet@<sha>` in the
+setup."_ We start with `actions/setup-dotnet@<sha>` in the
 first workflow for speed (day-one CI beats a perfect
 day-three CI). Parity is the backlog commitment: swap in
 `tools/setup/install.sh` the moment it's stable. Backlog
 entry captures the trigger condition.
 
-**Branch protection — not yet.** Aaron: *"No, that
+**Branch protection — not yet.** Aaron: _"No, that
 build-and-test is a legacy thing, we can do whatever we
-want with whatever names we want."* Two things in that
+want with whatever names we want."_ Two things in that
 answer: (a) the workflow name `build-and-test` isn't
 load-bearing — **proposed rename: `gate.yml`** to fit
 Zeta's lexicon (every discipline rule in this repo talks
 about gates). (b) No required-check rule on `main` yet; we
 add it after one week of clean runs.
 
-**`fail-fast: false` on matrix.** Aaron: *"agree."*
+**`fail-fast: false` on matrix.** Aaron: _"agree."_
 
-**Concurrency key — research required.** Aaron: *"To be
+**Concurrency key — research required.** Aaron: _"To be
 honest I have no idea, do some research and try to do
-whatever is best practice."* Research summary below.
+whatever is best practice."_ Research summary below.
 
 **Windows timeline — once mac+linux stable.** Aaron:
-*"Let's just do it once we are in a stable spot with mac
-and linux no need to wait."* Trigger: one week of green
+_"Let's just do it once we are in a stable spot with mac
+and linux no need to wait."_ Trigger: one week of green
 runs on ubuntu-22.04 + macos-14. Then Windows joins the
 matrix. Backlog entry captures the trigger.
 
-**NuGet caching — adopt immediately.** Aaron: *"Agree,
-that does not hurt parity right?"* Correct — the CI cache
+**NuGet caching — adopt immediately.** Aaron: _"Agree,
+that does not hurt parity right?"_ Correct — the CI cache
 is a GitHub Actions layer optimisation; local dev caches
 the same packages in the same `~/.nuget/packages` via
 normal dotnet restore. No parity impact.
 
-Aaron bonus: *"If you want to get us to a point where we
+Aaron bonus: _"If you want to get us to a point where we
 can do incremental builds with a build cache too I would
 love that, then we could only run the tests who were
-affected, but that's a backlog item for sure."* Logged as
+affected, but that's a backlog item for sure."_ Logged as
 backlog: incremental build + affected-test selection.
 
 **Third-party actions — parity is the constraint.** Aaron:
-*"Anything you need to pull in for GitHub Actions is fine
+_"Anything you need to pull in for GitHub Actions is fine
 as long as it's not causing asymmetry here for build
-machine / dev machine setup."* GitHub-specific actions
+machine / dev machine setup."_ GitHub-specific actions
 (`actions/checkout`, `actions/cache`, `actions/upload-
 artifact`) don't affect dev parity — they don't install
 anything on a developer laptop. Pre-approved set:
@@ -108,14 +108,14 @@ anything on a developer laptop. Pre-approved set:
 
 All pinned by full 40-char commit SHA.
 
-**PR comment bot — defer.** Aaron: *"We don't need the
+**PR comment bot — defer.** Aaron: _"We don't need the
 comparison yet, we can do that later, just put it in the
-backlog."* `$GITHUB_STEP_SUMMARY` is the reporting surface
+backlog."_ `$GITHUB_STEP_SUMMARY` is the reporting surface
 until a comparison flow exists.
 
-**Failure triage — hard-fail everywhere.** Aaron: *"Yeah
+**Failure triage — hard-fail everywhere.** Aaron: _"Yeah
 lets error on the side of caution with hard failure we can
-also reevaluate if something feels off."* Build, test,
+also reevaluate if something feels off."_ Build, test,
 lint, verifiers, mutation all hard-fail on red.
 
 ## Concurrency key — research (Aaron asked)
@@ -207,11 +207,11 @@ Single workflow, two jobs (one per OS). Name change:
 Tracked in this doc, not in YAML comments, so a reviewer
 sees the version history in `git log`:
 
-| Action | Version | Commit SHA |
-|---|---|---|
-| `actions/checkout` | v4.2.x | *filled when we pin* |
-| `actions/setup-dotnet` | v4.x | *filled when we pin* |
-| `actions/cache` | v4.x | *filled when we pin* |
+| Action                 | Version | Commit SHA           |
+| ---------------------- | ------- | -------------------- |
+| `actions/checkout`     | v4.2.x  | _filled when we pin_ |
+| `actions/setup-dotnet` | v4.x    | _filled when we pin_ |
+| `actions/cache`        | v4.x    | _filled when we pin_ |
 
 SHAs added when YAML lands; each update is its own PR.
 
@@ -234,7 +234,7 @@ SHAs added when YAML lands; each update is its own PR.
 ## Deferred to backlog (captured in `docs/BACKLOG.md`)
 
 - Incremental build + affected-test selection (Aaron:
-  *"I would love that"*) — substantial dependency-graph
+  _"I would love that"_) — substantial dependency-graph
   work; out of scope for round 29.
 - Comparison PR-comment bot (coverage / benchmark diffs
   between head and base).

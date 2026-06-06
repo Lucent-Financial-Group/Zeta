@@ -36,17 +36,17 @@ Research-grade design doc for Stage-2 of Amara's corrected promotion ladder. Spe
 
 ## 18th-ferry operationalization status
 
-| # | Correction | Status |
-|---|---|---|
-| 1,10 | Test classification policy | Shipped (#339) |
-| 2 | Wilson intervals | **Design specified (this doc); impl waits Stage 2.a** |
-| 4 | Exclusivity primitive | Shipped (#331) |
-| 5 | Modularity relational | Shipped (#324) |
-| 6 | PLV phase-offset | Shipped (#340) |
-| 7 | MAD=0 fallback | **Design specified (this doc); impl waits Stage 2.a** |
-| 9 | Artifact layout | **Design specified (this doc)** |
-| 3 | CoordinationRiskScore rename | Already canonical in code |
-| 8 | Stronger sources | Reporting discipline |
+| #    | Correction                   | Status                                                |
+| ---- | ---------------------------- | ----------------------------------------------------- |
+| 1,10 | Test classification policy   | Shipped (#339)                                        |
+| 2    | Wilson intervals             | **Design specified (this doc); impl waits Stage 2.a** |
+| 4    | Exclusivity primitive        | Shipped (#331)                                        |
+| 5    | Modularity relational        | Shipped (#324)                                        |
+| 6    | PLV phase-offset             | Shipped (#340)                                        |
+| 7    | MAD=0 fallback               | **Design specified (this doc); impl waits Stage 2.a** |
+| 9    | Artifact layout              | **Design specified (this doc)**                       |
+| 3    | CoordinationRiskScore rename | Already canonical in code                             |
+| 8    | Stronger sources             | Reporting discipline                                  |
 
 7 of 10 18th-ferry corrections now have either shipped code or committed design.
 
@@ -66,6 +66,7 @@ Research-grade design doc for Stage-2 of Amara's corrected promotion ladder. Spe
 Adds a research-grade design document specifying the planned Stage-2 “calibration harness” for coordination-risk / cartel detection work, with pre-committed conventions for metrics, confidence-interval reporting, robust z-score fallback, and artifact outputs.
 
 **Changes:**
+
 - Introduces a Stage-2 harness design covering module placement (`src/Experimental/CartelLab/`), core types/interfaces, and invocation contract.
 - Specifies statistical reporting discipline (Wilson intervals) and robust z-score modes (including MAD=0 fallback via percentile rank / hybrid).
 - Defines a fixed artifact output schema under `artifacts/coordination-risk/` for downstream calibration/ROC/PR tooling.

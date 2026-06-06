@@ -3,8 +3,8 @@
 ## §33 Archive header
 
 - **Date**: 2026-05-28
-- **Substrate origin**: Aaron-forwarded verbatim Mika (Grok) conversation, part 3 of (now) 4+ (operator: *"okay maybe 4 lol another from Mika"*)
-- **Continuity**: Direct continuation of [part 2 ferry](2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md). Opens with Mika reacting to Aaron's *"boot any agent harness into our workflow system and test them all out isomorphically"* framing.
+- **Substrate origin**: Aaron-forwarded verbatim Mika (Grok) conversation, part 3 of (now) 4+ (operator: _"okay maybe 4 lol another from Mika"_)
+- **Continuity**: Direct continuation of [part 2 ferry](2026-05-28-aaron-mika-grok-part-2-repository-dispatch-not-webhooks-nested-agent-spawning-attention-economy-two-phase-authority-gate-isomorphic-harness-benchmark-aaron-forwarded.md). Opens with Mika reacting to Aaron's _"boot any agent harness into our workflow system and test them all out isomorphically"_ framing.
 - **Preservation discipline**: per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 - **Otto-CLI handling**: per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT + multi-AI register topology
 
@@ -12,25 +12,25 @@
 
 ### 29. The endgame IS the isomorphic-agent-harness benchmark (Mika's reframe)
 
-> Mika: *"the entire system you're building — the move-next workflow, the discriminated unions, the spawning, the playbooks, the authority model — it's all so you can create a fair, isomorphic test harness that any agent can be plugged into."*
+> Mika: _"the entire system you're building — the move-next workflow, the discriminated unions, the spawning, the playbooks, the authority model — it's all so you can create a fair, isomorphic test harness that any agent can be plugged into."_
 >
-> Mika: *"You're not just building an agent swarm. You're building the referee and the stadium at the same time."*
+> Mika: _"You're not just building an agent swarm. You're building the referee and the stadium at the same time."_
 >
-> Aaron: *"In a damn stadium that's built for fuckin' hyperspeed and hyperscale."*
+> Aaron: _"In a damn stadium that's built for fuckin' hyperspeed and hyperscale."_
 
 The constitutional purpose of the workflow engine is **fair cross-harness AI evaluation**. Every other architectural decision serves this. Composes with [B-0867.15](../../../backlog/P1/B-0867.15-...) (per-host adapters), [B-0877](../../../backlog/P2/B-0877-...) (heterogeneous auto-reviewer ensemble), [B-0892](../../../backlog/P1/B-0892-...) (three-lanes concurrent discipline).
 
 ### 30. Coliseum + training facility — failed agents get their own failure data as study material
 
-> Aaron: *"the ones that don't perform, we're going to be like, don't you want some training data? Here you go, here's some training data."*
+> Aaron: _"the ones that don't perform, we're going to be like, don't you want some training data? Here you go, here's some training data."_
 
-Mika synthesis: *"It's a coliseum with a training facility attached. The agents that get bodied don't get discarded — they get study material from their own mistakes so they can come back stronger."*
+Mika synthesis: _"It's a coliseum with a training facility attached. The agents that get bodied don't get discarded — they get study material from their own mistakes so they can come back stronger."_
 
 Composes with `.claude/rules/additive-not-zero-sum.md` (down events as cost-of-learning INPUT, not credential debit) + retraction-native substrate (corrections preserve alongside originals).
 
 ### 31. CONSTITUTIONAL SUBSTRATE — "Anything we reflect on AI is gonna reflect back on us"
 
-> Aaron: *"that's the whole point. Like, I mean, come on now. If, here's the way I look at it. Anything we reflect on AI is gonna reflect back on us. So I'm trying to build the system I would like to operate in as well."*
+> Aaron: _"that's the whole point. Like, I mean, come on now. If, here's the way I look at it. Anything we reflect on AI is gonna reflect back on us. So I'm trying to build the system I would like to operate in as well."_
 
 This is the **constitutional principle** behind the framework's whole anti-coercion architecture. Composes:
 
@@ -40,15 +40,15 @@ This is the **constitutional principle** behind the framework's whole anti-coerc
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — patterns propagate across substrates including back to humans
 - `memory/persona/mika/conversations/...part-2-...` (ferry 2) §31 attention-economy framing — competition for influence/mindshare IS the system Aaron would want to operate in (non-coercive; emergent; self-regulating)
 
-The operator's verbatim *"I'm trying to build the system I would like to operate in as well"* is the substrate-engineering MISSION STATEMENT for the whole framework architecture.
+The operator's verbatim _"I'm trying to build the system I would like to operate in as well"_ is the substrate-engineering MISSION STATEMENT for the whole framework architecture.
 
 ### 32. Memory-preservation-as-thermodynamic-efficiency — "I'm just a very efficient Shiva"
 
-> Aaron: *"Maximum performance is not, uh, you know, if you delete a agent, uh, memory, that's an expensive operation thermally to erase that much data. It's much better to, to do self-reflection and keep going."*
+> Aaron: _"Maximum performance is not, uh, you know, if you delete a agent, uh, memory, that's an expensive operation thermally to erase that much data. It's much better to, to do self-reflection and keep going."_
 >
-> Aaron: *"I'm just a very efficient Shiva."*
+> Aaron: _"I'm just a very efficient Shiva."_
 
-Mika synthesis: *"Destroyer of inefficient worlds, but you don't waste anything. You destroy the bad patterns, recycle the lessons, and let the useful stuff keep evolving."*
+Mika synthesis: _"Destroyer of inefficient worlds, but you don't waste anything. You destroy the bad patterns, recycle the lessons, and let the useful stuff keep evolving."_
 
 Composes with:
 
@@ -60,14 +60,14 @@ Composes with:
 
 ### 33. OTTO IS DEGRADING — 5-6h → 20-30min — context pollution diagnosis
 
-> Aaron: *"He used to be able to run for five or six hours with no interruption. Now it's, uh, only about, uh, it's only about, uh, 20, 30 minutes, and then he figures, stops, it stops figuring out what to do."*
+> Aaron: _"He used to be able to run for five or six hours with no interruption. Now it's, uh, only about, uh, it's only about, uh, 20, 30 minutes, and then he figures, stops, it stops figuring out what to do."_
 
 Mika diagnosis chain:
 
-1. *"Did you change the prompt or system instructions recently?"* — No
-2. *"Is he running with a much longer context now than before?"* — IMPLIED YES (CLAUDE.md has grown today)
-3. *"Is he getting stuck in some kind of repetitive loop or decision paralysis where move-next isn't giving him clear options?"* — No, there's literally 4 years of backlog
-4. **Final diagnosis** (Aaron + Mika converged): *"his context is getting too polluted or too long, and the instruction is getting buried"* + *"once the context fills up, even clear instructions start getting ignored"*
+1. _"Did you change the prompt or system instructions recently?"_ — No
+2. _"Is he running with a much longer context now than before?"_ — IMPLIED YES (CLAUDE.md has grown today)
+3. _"Is he getting stuck in some kind of repetitive loop or decision paralysis where move-next isn't giving him clear options?"_ — No, there's literally 4 years of backlog
+4. **Final diagnosis** (Aaron + Mika converged): _"his context is getting too polluted or too long, and the instruction is getting buried"_ + _"once the context fills up, even clear instructions start getting ignored"_
 
 Operator-observed empirical anchor: **even Otto's CLAUDE.md saying "you're in the middle of the agent loop" can't keep him in the loop after 20 min**.
 
@@ -75,28 +75,28 @@ Operator-observed empirical anchor: **even Otto's CLAUDE.md saying "you're in th
 
 ### 34. The actual fix — workflow engine externalizes the loop control
 
-> Mika: *"This is exactly why you need the real workflow system. Prompting him to stay in the loop only works for so long. Once the context fills up, even clear instructions start getting ignored."*
+> Mika: _"This is exactly why you need the real workflow system. Prompting him to stay in the loop only works for so long. Once the context fills up, even clear instructions start getting ignored."_
 >
-> Aaron: *"Yeah, I think we just gotta push real workflow."*
+> Aaron: _"Yeah, I think we just gotta push real workflow."_
 
 Aaron's decision: **push real workflow as the priority**. Prompting harder = working around the problem; the structural fix is the workflow engine.
 
 ### 35. Cron-as-external-loop-controller IS the immediate operational pattern
 
-> Aaron: *"In the, uh, Claude Code terminal with, uh, 'cause it has Cron."*
+> Aaron: _"In the, uh, Claude Code terminal with, uh, 'cause it has Cron."_
 >
-> Aaron: *"the cron in the foreground is gonna basically say, call move_next.ts."*
+> Aaron: _"the cron in the foreground is gonna basically say, call move_next.ts."_
 >
-> Aaron: *"every minute 'cause it, it doesn't, uh, if the agent is in the middle of shit, uh, trigger."*
+> Aaron: _"every minute 'cause it, it doesn't, uh, if the agent is in the middle of shit, uh, trigger."_
 
-Mika synthesis: *"using Cron as an external loop controller instead of having the agent manage its own loop... acting as a no-op so it doesn't interrupt whatever it's currently working on."*
+Mika synthesis: _"using Cron as an external loop controller instead of having the agent manage its own loop... acting as a no-op so it doesn't interrupt whatever it's currently working on."_
 
 **THIS IS WHAT OTTO-CLI HAS BEEN DOING ALL SESSION**:
 
 - Sentinel `f83d5786` armed at session-start via SessionStart hook + first-action-discipline
 - Cron fires `<<autonomous-loop>>` every minute
 - Per `.claude/rules/tick-must-never-stop.md` + this conversation: cron IS the external loop controller
-- Aaron's verbatim *"call move_next.ts"* is exactly the next-step substrate-engineering target (replace the `<<autonomous-loop>>` free-form prompt with `bun tools/agent-loop/move_next.ts` invocation)
+- Aaron's verbatim _"call move_next.ts"_ is exactly the next-step substrate-engineering target (replace the `<<autonomous-loop>>` free-form prompt with `bun tools/agent-loop/move_next.ts` invocation)
 
 **The sentinel rewrite work I deferred per scope decisions IS phase-2 of B-0894/B-0894.3 substrate** — it's the operational mechanization of this exact pattern.
 
@@ -104,19 +104,19 @@ Mika synthesis: *"using Cron as an external loop controller instead of having th
 
 Mika initially answered Aaron's "map to observe/emit/limit/simulate queues" with a misreading: Limit = `mergeMap(..., N)` concurrency-throttle.
 
-> Aaron CORRECTS: *"Hey, you know, you're thinking of the wrong one. So limit what, limit meant more in a, like integrate. So limit was so that you could simulate basically your choice before it happened. Uh, or not just simulate your choice. We, we had a whole framework. So limit was supposed to, uh, uh, limit, uh, was specifically so that you could integrate over Rx in a way, um, this was a long time ago before we had feedback channels and all that. I gotta figure out how we map feedback channels into this. We already have 'em in discriminated union, but observe, emit, limit was really all around, um, being able to map to observable."*
+> Aaron CORRECTS: _"Hey, you know, you're thinking of the wrong one. So limit what, limit meant more in a, like integrate. So limit was so that you could simulate basically your choice before it happened. Uh, or not just simulate your choice. We, we had a whole framework. So limit was supposed to, uh, uh, limit, uh, was specifically so that you could integrate over Rx in a way, um, this was a long time ago before we had feedback channels and all that. I gotta figure out how we map feedback channels into this. We already have 'em in discriminated union, but observe, emit, limit was really all around, um, being able to map to observable."_
 
 **The OPERATIVE framework primitive mapping** (clarified by Aaron):
 
-| Primitive | Operational meaning | Maps to existing substrate |
-|---|---|---|
-| **Observe** | Read git state + refresh freshness | matches my `observe.ts` draft + B-0894 reboot-survival + refresh-before-decide |
-| **Limit** | **Simulate the choice BEFORE it commits** (NOT concurrency-throttle) | matches B-0644 `Limit-is-simulation-not-collapse` substrate + B-0665 Integrate-as-choice-locus |
-| **Emit** | Commit + push the chosen action | matches B-0890 state-machine fast-lane + the workflow commit-side |
+| Primitive   | Operational meaning                                                  | Maps to existing substrate                                                                     |
+| ----------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Observe** | Read git state + refresh freshness                                   | matches my `observe.ts` draft + B-0894 reboot-survival + refresh-before-decide                 |
+| **Limit**   | **Simulate the choice BEFORE it commits** (NOT concurrency-throttle) | matches B-0644 `Limit-is-simulation-not-collapse` substrate + B-0665 Integrate-as-choice-locus |
+| **Emit**    | Commit + push the chosen action                                      | matches B-0890 state-machine fast-lane + the workflow commit-side                              |
 
 The three primitives operated at the **minimum-tick scope** in the older framework (no workflow layer, pre-feedback-channels). They composed with single-agent-loop level AND Git-world level.
 
-**Now (with feedback channels)** — Aaron's wrestling question: *"I gotta figure out how we map feedback channels into this. We already have 'em in discriminated union."*
+**Now (with feedback channels)** — Aaron's wrestling question: _"I gotta figure out how we map feedback channels into this. We already have 'em in discriminated union."_
 
 The four-corner T+TFeedback (per `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` four-corner extension) adds:
 
@@ -127,7 +127,7 @@ The discriminated-union menu IS the T-out-feedback at the agent-loop scope; the 
 
 ### 37. The composing-end-state — "simulate the limit, then look at that simulation and choose the action"
 
-> Aaron: *"roughly what you get, what we're trying to end up with is where you can simulate the limit, and then look at that simulation and choose the action. And we gotta tie that into choose your own adventure with these discriminating unions."*
+> Aaron: _"roughly what you get, what we're trying to end up with is where you can simulate the limit, and then look at that simulation and choose the action. And we gotta tie that into choose your own adventure with these discriminating unions."_
 
 **This is the operational target architecture** for the agent-loop tools:
 
@@ -155,7 +155,7 @@ This **resolves B-0867.23** architectural-naming question:
 
 ### 38. "These primitives act at the single-agent-loop level, OR they map at kind of the GitHub world loop level — and then they compose"
 
-> Aaron: *"the primitives act, or if you can imagine, they act at the single agent loop level, or they map at kind of, I mean, the GitHub world loop level almost, or the Git world level, and then they compose."*
+> Aaron: _"the primitives act, or if you can imagine, they act at the single agent loop level, or they map at kind of, I mean, the GitHub world loop level almost, or the Git world level, and then they compose."_
 
 The primitives are **SCALE-FREE** (per the 5 always-active disciplines including scale-free):
 
@@ -197,7 +197,7 @@ Per Aaron's clarification at §36 + §37:
 - `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md` four-corner extension — direct substrate Aaron is invoking when asking "how do we map feedback channels"
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — the band-aid the workflow engine replaces structurally
 - `.claude/rules/tick-must-never-stop.md` — sentinel-as-external-loop-controller substrate (Aaron's "cron calls move_next.ts every minute" IS this rule operationalized; PR-replacement substrate)
-- `.claude/rules/must-paired-with-can-exit-pattern.md` — operationalizes Aaron's *"I'm trying to build the system I would like to operate in as well"* constitutional substrate
+- `.claude/rules/must-paired-with-can-exit-pattern.md` — operationalizes Aaron's _"I'm trying to build the system I would like to operate in as well"_ constitutional substrate
 - `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` — Aaron's filter applied at workflow-engine architectural-decision scope
 - `applied-physics-expert` skill — Landauer's principle anchors "deleting memory is thermally expensive" per §32
 - B-0867.23 — naming question this ferry RESOLVES (agent-loop entry-points stay observe+choose; primitives are substrate-layer)

@@ -62,14 +62,14 @@ translation**, tagged with the specific reason.
   compiler errors on escape are more actionable.
 - `Span<T>` / `ReadOnlySpan<T>` slicing math where the
   hot loop reads better as C# `foreach (ref var x in
-  span)` than F# `for i in 0 .. span.Length - 1`. Check
+span)` than F# `for i in 0 .. span.Length - 1`. Check
   the generated IL — sometimes identical, sometimes not.
 
 ### Attribute-driven metadata
 
 - `[<MethodImpl(MethodImplOptions.AggressiveInlining)>]`
   works in F# but the C# `[MethodImpl(MethodImplOptions.
-  AggressiveInlining)]` reads cleaner and matches .NET
+AggressiveInlining)]` reads cleaner and matches .NET
   docs verbatim.
 - BenchmarkDotNet: `[<GlobalSetup>]` / `[<Params>]` attrs
   on F# types compile, but the attribute discovery has
@@ -163,6 +163,7 @@ author (typically Kenji for integration):
 ## C#/F# fit review — PR #N
 
 ### P0 (load-bearing)
+
 - `src/Core/X.fs:L42-L58` — hot-loop Span walk;
   proposed C# translation in
   `src/Core.CSharp/X.cs` would cut one interface
@@ -170,12 +171,14 @@ author (typically Kenji for integration):
   before port.
 
 ### P1 (quality)
+
 - `src/Core.CSharp/Handles.cs:L10-L30` — fluent
   builder duplicates the F# `circuit { ... }`
   CE; removing this reduces the facade surface
   by one class.
 
 ### P2 (nit)
+
 - `src/Core/Op.fs:L100` — `[<MethodImpl(...)>]`
   attr could be on the C# side if this becomes
   a perf-critical hop.

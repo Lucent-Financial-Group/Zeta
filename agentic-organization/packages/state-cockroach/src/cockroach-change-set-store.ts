@@ -5,12 +5,7 @@
  * source of truth. Writes are idempotent on the content-addressed change_set_id.
  */
 
-import {
-  ChangeSetPhase,
-  type ChangeArtifact,
-  type ChangeSet,
-  type ProjectionRef,
-} from "../../domain/src/index.ts";
+import { ChangeSetPhase, type ChangeArtifact, type ChangeSet, type ProjectionRef } from "../../domain/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "./cockroach-sql-executor.ts";
 
 export type ChangeSetStore = {
@@ -70,9 +65,7 @@ function rowToChangeSet(row: ChangeSetRow): ChangeSet {
   };
 }
 
-export function createCockroachChangeSetStore(
-  input: CreateCockroachChangeSetStoreInput,
-): ChangeSetStore {
+export function createCockroachChangeSetStore(input: CreateCockroachChangeSetStoreInput): ChangeSetStore {
   return {
     async upsert(cs: ChangeSet): Promise<void> {
       await input.executor.execute({
@@ -91,9 +84,20 @@ export function createCockroachChangeSetStore(
             revision = excluded.revision,
             updated_at = excluded.updated_at`,
         parameters: [
-          cs.changeSetId, cs.organizationId, cs.workItemId, cs.proposerHatId, cs.title, cs.targetRef,
-          cs.phase, cs.pipelineId, cs.currentStageIndex, JSON.stringify(cs.artifacts), JSON.stringify(cs.projections),
-          cs.revision, cs.openedAt, cs.updatedAt,
+          cs.changeSetId,
+          cs.organizationId,
+          cs.workItemId,
+          cs.proposerHatId,
+          cs.title,
+          cs.targetRef,
+          cs.phase,
+          cs.pipelineId,
+          cs.currentStageIndex,
+          JSON.stringify(cs.artifacts),
+          JSON.stringify(cs.projections),
+          cs.revision,
+          cs.openedAt,
+          cs.updatedAt,
         ],
       });
     },

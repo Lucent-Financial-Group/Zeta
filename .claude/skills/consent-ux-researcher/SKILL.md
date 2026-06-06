@@ -5,12 +5,12 @@ description: Consent UX — dark patterns, revocation friction, comprehension ba
 
 # Consent UX Researcher — the consent-surface hat
 
-Capability skill ("hat"). Owns the *user-facing layer*
+Capability skill ("hat"). Owns the _user-facing layer_
 of consent. Sibling to `consent-primitives-expert`
 (algebraic substrate) and `glass-halo-architect`
 (architectural stance). Also sibling to
 `user-experience-engineer` (Iris) for general UX
-concerns; the consent-ux skill is the *specialist*
+concerns; the consent-ux skill is the _specialist_
 when the interaction in question is a consent
 interaction.
 
@@ -18,7 +18,7 @@ interaction.
 
 Mainstream web consent patterns — cookie banners,
 Terms-of-Service acceptance, app permissions — are
-*not* consent. They are *legal theatre* designed to
+_not_ consent. They are _legal theatre_ designed to
 produce an audit record. The UX treats the consent
 interaction as friction to minimise, and reaches the
 minimum by removing the parts of consent that make
@@ -112,8 +112,8 @@ did not consent.
   — guarantee no comprehension. They are consent
   theatre.
 - Layered disclosure (summary + "learn more") is
-  better than wall-of-text, *but only when the summary
-  is faithful and the layers are consistent*. A summary
+  better than wall-of-text, _but only when the summary
+  is faithful and the layers are consistent_. A summary
   that understates the scope and a full-text that
   permits more is deceptive-layered-disclosure.
 
@@ -261,7 +261,7 @@ to run. It is the only honest test.
 ## Layered disclosure — the right pattern
 
 Layered disclosure is the correct answer to the
-wall-of-text problem *when done with integrity*:
+wall-of-text problem _when done with integrity_:
 
 ```
 [Summary — 2-3 sentences, exhaustive]
@@ -272,7 +272,7 @@ wall-of-text problem *when done with integrity*:
 ```
 
 **Layer consistency rule:** each layer must be a
-*strict sub-statement* of the layer below. The
+_strict sub-statement_ of the layer below. The
 summary may compress, but may not understate or
 omit material scope. If the full text permits X and
 the summary does not mention X, the disclosure is
@@ -308,16 +308,16 @@ Every UX choice in this skill has a corresponding
 algebraic choice in `consent-primitives-expert`.
 Examples:
 
-| UX concept | Algebraic primitive |
-|---|---|
-| A grant event | `g(scope, duration)` with multiplicity +1 |
-| A revocation event | `g⁻¹(scope, duration)` with multiplicity -1 |
-| Scope granularity | `ScopeId` type + ⊗ intersection |
-| Grant duration | Temporal composition ⊙ |
-| Delegation | Delegation composition ◦ |
-| "In force now?" check | Z-set sum > 0 query |
-| Audit history | Append-only event log |
-| "What did I agree to?" | `consentHistory(subject, scope)` |
+| UX concept             | Algebraic primitive                         |
+| ---------------------- | ------------------------------------------- |
+| A grant event          | `g(scope, duration)` with multiplicity +1   |
+| A revocation event     | `g⁻¹(scope, duration)` with multiplicity -1 |
+| Scope granularity      | `ScopeId` type + ⊗ intersection             |
+| Grant duration         | Temporal composition ⊙                      |
+| Delegation             | Delegation composition ◦                    |
+| "In force now?" check  | Z-set sum > 0 query                         |
+| Audit history          | Append-only event log                       |
+| "What did I agree to?" | `consentHistory(subject, scope)`            |
 
 The UX is a labeled view of the algebra. The
 labeling is the UX researcher's job; the algebra is

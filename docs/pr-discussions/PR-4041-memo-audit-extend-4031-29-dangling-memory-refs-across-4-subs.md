@@ -20,14 +20,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Extension of audit [#4031](https://github.com/Lucent-Financial-Group/Zeta/pull/4031) (which found 5 dangling rule→memory refs in `.claude/rules/`). Extending the scan to 4 other substrate surfaces revealed **29 dangling refs total** — 6× scaling, systemic across the substrate, not rule-local.
 
-| Surface | Dangling / Unique |
-|---------|-------------------|
-| `.claude/agents/` | 0 / 0 |
-| `.claude/skills/` | 1 / 14 |
-| `docs/research/` | 8 / 186 |
-| `docs/backlog/` | 17 / 200 |
-| `memory/persona/` | 3 / 58 |
-| **TOTAL** | **29 dangling** |
+| Surface           | Dangling / Unique |
+| ----------------- | ----------------- |
+| `.claude/agents/` | 0 / 0             |
+| `.claude/skills/` | 1 / 14            |
+| `docs/research/`  | 8 / 186           |
+| `docs/backlog/`   | 17 / 200          |
+| `memory/persona/` | 3 / 58            |
+| **TOTAL**         | **29 dangling**   |
 
 (The `.claude/rules/` original 5 are already addressed by #4031 + #4033 + #4038 chain.)
 
@@ -56,5 +56,6 @@ Original `sort -u` audit-form hides multi-citation edges (the bug that caused #4
 Documentation-only memo under `memory/` that extends the audit from PR #4031 to additional substrate surfaces, reporting 29 dangling memory-file references across 4 surfaces.
 
 **Changes:**
+
 - Adds a new project-type memory file documenting the systemic dangling-ref pattern.
 - Records the extended audit command and the `sort -u` methodology gap.

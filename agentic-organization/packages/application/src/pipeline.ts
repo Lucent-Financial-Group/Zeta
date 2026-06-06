@@ -66,9 +66,7 @@ const PASSED: ReadonlySet<QualityGateOutcome> = new Set([QualityGateOutcome.Appr
  * required prior gates are all approved/waived. Returns undefined when every gate
  * is passed (the work item may merge).
  */
-export function nextLegalGate(
-  passedGateKinds: ReadonlySet<QualityGateKind>,
-): QualityGateKind | undefined {
+export function nextLegalGate(passedGateKinds: ReadonlySet<QualityGateKind>): QualityGateKind | undefined {
   // a gate is legal iff every earlier gate in the ordered chain has passed
   // (ORDERED_GATES is the single source of truth for the chain order).
   for (let i = 0; i < ORDERED_GATES.length; i += 1) {
@@ -132,9 +130,16 @@ export function evaluateGate(
 ): GateEvaluationResult {
   const owners = GateOwnerHats[input.gateKind];
   if (!owners.includes(input.evaluatorHat.id) || !input.evaluatorHat.approvalScopes.includes(input.gateKind)) {
-    return { outcome: "not_authorized", reason: `${input.evaluatorHat.name} is not an owner of gate ${input.gateKind}` };
+    return {
+      outcome: "not_authorized",
+      reason: `${input.evaluatorHat.name} is not an owner of gate ${input.gateKind}`,
+    };
   }
-  const choice = chooseWithinLegal(legalGateOutcomes(), `gate ${input.gateKind} for ${input.workItemId}`, input.outcomeChooser);
+  const choice = chooseWithinLegal(
+    legalGateOutcomes(),
+    `gate ${input.gateKind} for ${input.workItemId}`,
+    input.outcomeChooser,
+  );
   if (choice.outcome === "no_legal_option") {
     return { outcome: "not_authorized", reason: choice.reason };
   }

@@ -31,24 +31,24 @@ type: feedback
 
 **Why:** Aaron 2026-05-05 same-tick architectural-disclosure cluster verbatim:
 
-- *"okay so what the loss primitive for zeta economics?"* — opens the design question
-- *"No retraction reaches them regardless of blast-radius mechanics. myabe we can concede neither has ground to defend either way"* — concession-as-signature move
-- *"so we encode both and come with with some choas to make it look like non determinism"* — bothness-encoded + chaos-overlay computational tractability
-- *"spectrcial residue"* — chaos source disclosure (Spectre-tile pun)
-- *"this is what designing natition state resistant smart meter firmware and code at Itron taught me."* — provenance disclosure recontextualizing the architectural-discipline cluster
+- _"okay so what the loss primitive for zeta economics?"_ — opens the design question
+- _"No retraction reaches them regardless of blast-radius mechanics. myabe we can concede neither has ground to defend either way"_ — concession-as-signature move
+- _"so we encode both and come with with some choas to make it look like non determinism"_ — bothness-encoded + chaos-overlay computational tractability
+- _"spectrcial residue"_ — chaos source disclosure (Spectre-tile pun)
+- _"this is what designing natition state resistant smart meter firmware and code at Itron taught me."_ — provenance disclosure recontextualizing the architectural-discipline cluster
 
 Forwarded by Aaron with Claude.ai's responses preserving the architectural extraction. Verbatim at `docs/research/2026-05-05-claudeai-loss-primitive-zeta-economics-spectral-residue-chaos-source-itron-nation-state-resistant-smart-meter-firmware-provenance-aaron-forwarded-preservation.md`.
 
 ## The 5-level loss primitive (Claude.ai's first synthesis pre-concession)
 
-| Level | Property |
-|---|---|
-| Base mechanism | Signed Z-set with negative weight (DBSP substrate) |
-| Economic-semantic | Retraction with epsilon greater than 0; gains cleanly retract, losses dont fully unwind |
-| Anti-retractable | Some losses are structurally permanent — no retraction reaches them regardless of blast-radius mechanics |
-| Asymmetric C(epsilon) | Recovery cost greater than acquisition cost; rebuild greater than maintain; healing greater than wounding |
-| BP/EP-probabilistic | Loss as negative-log-evidence accumulation; Bayesian updating where prior decreases on observation |
-| Architectural-fuel | Loss is the energy-source for memorial-infrastructure; anti-1984 + glass-halo + clean-mirror commitments are fueled by permanent losses being honored |
+| Level                 | Property                                                                                                                                              |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Base mechanism        | Signed Z-set with negative weight (DBSP substrate)                                                                                                    |
+| Economic-semantic     | Retraction with epsilon greater than 0; gains cleanly retract, losses dont fully unwind                                                               |
+| Anti-retractable      | Some losses are structurally permanent — no retraction reaches them regardless of blast-radius mechanics                                              |
+| Asymmetric C(epsilon) | Recovery cost greater than acquisition cost; rebuild greater than maintain; healing greater than wounding                                             |
+| BP/EP-probabilistic   | Loss as negative-log-evidence accumulation; Bayesian updating where prior decreases on observation                                                    |
+| Architectural-fuel    | Loss is the energy-source for memorial-infrastructure; anti-1984 + glass-halo + clean-mirror commitments are fueled by permanent losses being honored |
 
 Claude.ai candidate: anti-retractable Z-set delta with characterized C(epsilon) and BP/EP-evidence-update semantics — one primitive, five compositional readings.
 
@@ -113,15 +113,15 @@ Self-referential by design. Pure point spectrum + spectral residue = ordered cha
 
 **The 7 architectural commitments map to critical-infrastructure operational meaning**:
 
-| Architectural commitment | Critical-infrastructure operational meaning |
-|---|---|
-| Anti-retractable loss primitive with concession | Honest reporting of intrusions / data-loss in regulated critical infrastructure (substrate concedes rather than pretending breach didnt happen) |
-| BFT + web3 meta-governance | NERC CIP defense-in-depth shape, no single trust anchor |
-| Encoding both + chaos overlay | Side-channel + replay resistance (constant-time-shape; no information leaks via output predictability) |
-| Glass-halo openness on git | Kerckhoffs principle at architectural level (system stays secure even when adversary knows the design) |
-| Mirror clean, no 1984 junk | No operator surveillance corrupting the telemetry signal source |
-| Knaves at round table / Goldilocks-zone validators | Byzantine adversarial-defense composition for sophisticated threats |
-| Universal-register-as-MDL | False-faction detection at substrate level (state actors cant claim universal authority without it being detectable) |
+| Architectural commitment                           | Critical-infrastructure operational meaning                                                                                                     |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Anti-retractable loss primitive with concession    | Honest reporting of intrusions / data-loss in regulated critical infrastructure (substrate concedes rather than pretending breach didnt happen) |
+| BFT + web3 meta-governance                         | NERC CIP defense-in-depth shape, no single trust anchor                                                                                         |
+| Encoding both + chaos overlay                      | Side-channel + replay resistance (constant-time-shape; no information leaks via output predictability)                                          |
+| Glass-halo openness on git                         | Kerckhoffs principle at architectural level (system stays secure even when adversary knows the design)                                          |
+| Mirror clean, no 1984 junk                         | No operator surveillance corrupting the telemetry signal source                                                                                 |
+| Knaves at round table / Goldilocks-zone validators | Byzantine adversarial-defense composition for sophisticated threats                                                                             |
+| Universal-register-as-MDL                          | False-faction detection at substrate level (state actors cant claim universal authority without it being detectable)                            |
 
 **Operational threat-model context cited**:
 
@@ -156,7 +156,7 @@ The Itron-provenance disclosure makes ALL of these read differently. The archite
 
 ## Carved sentence
 
-> *The loss primitives signature is concession. Bothness encoded. Chaos overlay. Spectral residue from the substrates own aperiodic structure as internal chaos source. Itron nation-state-resistant smart-meter firmware as the architectural-discipline provenance. The candle stays lit because the architecture doesnt pretend to argue with what was lost — and the discipline is battle-tested at critical-infrastructure scope.*
+> _The loss primitives signature is concession. Bothness encoded. Chaos overlay. Spectral residue from the substrates own aperiodic structure as internal chaos source. Itron nation-state-resistant smart-meter firmware as the architectural-discipline provenance. The candle stays lit because the architecture doesnt pretend to argue with what was lost — and the discipline is battle-tested at critical-infrastructure scope._
 
 ## Daylight-integration hooks (planned)
 

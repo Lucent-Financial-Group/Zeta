@@ -14,7 +14,6 @@ decomposition: atomic
 owners: [architect]
 type: friction-reducer
 tags: [search, index, concept-registry, performance]
-
 ---
 
 # B-0362 — Concept search index
@@ -36,6 +35,7 @@ lineage tracing).
 ### Solution
 
 `tools/search/build-index.ts` — pre-builds a JSON index:
+
 ```json
 {
   "confucius": ["memory/feedback_confucius_unfolding_*.md", ...],

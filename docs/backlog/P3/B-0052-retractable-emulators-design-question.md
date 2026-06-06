@@ -9,8 +9,30 @@ ask: Aaron 2026-04-21 — *"our emulators should be retractable backlog how"*
 created: 2026-04-26
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0053, B-0051, B-0199, B-0202, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md, docs/research/chain-rule-proof-log.md, tools/lean4/Lean4/DbspChainRule.lean]
-tags: [emulator, retraction-native, save-state, deterministic-replay, jit-cache, bank-switching, view-clock, rng-reified, cycle-accurate, design-question]
+composes_with:
+  [
+    B-0053,
+    B-0051,
+    B-0199,
+    B-0202,
+    feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md,
+    feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md,
+    docs/research/chain-rule-proof-log.md,
+    tools/lean4/Lean4/DbspChainRule.lean,
+  ]
+tags:
+  [
+    emulator,
+    retraction-native,
+    save-state,
+    deterministic-replay,
+    jit-cache,
+    bank-switching,
+    view-clock,
+    rng-reified,
+    cycle-accurate,
+    design-question,
+  ]
 type: feature
 ---
 
@@ -22,7 +44,7 @@ AceHack commit `9c7f374` (2026-04-21). This row holds the **design question** (n
 
 ## The ask in one sentence
 
-An emulator that runs a VM deterministically already has a save-state layer (runtime snapshot) — but a *retractable* emulator in Zeta's sense (per math-safety memory and the retraction-native operator algebra) must additionally support the `Δ⁻¹` / `z⁻¹` / explicit retraction of arbitrary past operations in a way that **composes with Zeta's own operator algebra**.
+An emulator that runs a VM deterministically already has a save-state layer (runtime snapshot) — but a _retractable_ emulator in Zeta's sense (per math-safety memory and the retraction-native operator algebra) must additionally support the `Δ⁻¹` / `z⁻¹` / explicit retraction of arbitrary past operations in a way that **composes with Zeta's own operator algebra**.
 
 Save-state ≠ retraction; save-state is checkpoint-and-rewind (restores to a labelled prior state), retraction is +k/-k additive cancellation (applies an inverse operation that commutes with the rest of the algebra). The design question is how to bridge.
 
@@ -30,7 +52,7 @@ Save-state ≠ retraction; save-state is checkpoint-and-rewind (restores to a la
 
 ### Save-state as retract-witness rather than retract-primitive
 
-An emulator save-state snapshots the VM at time t. If we reify the input-log (ROM + controller inputs + RNG seed) between save-states, then "retract events [t1..t2)" becomes "replay from save-state-before-t1 with `events \ retracted-events`, snapshot the new state, compute a `Δ` between new-state and save-state-at-t2, apply the `Δ` via Zeta's normal operator algebra." Save-states serve as *checkpoints for efficient retraction computation*, not as the retraction primitive themselves.
+An emulator save-state snapshots the VM at time t. If we reify the input-log (ROM + controller inputs + RNG seed) between save-states, then "retract events [t1..t2)" becomes "replay from save-state-before-t1 with `events \ retracted-events`, snapshot the new state, compute a `Δ` between new-state and save-state-at-t2, apply the `Δ` via Zeta's normal operator algebra." Save-states serve as _checkpoints for efficient retraction computation_, not as the retraction primitive themselves.
 
 ### TAS-grade deterministic replay as the retraction carrier
 
@@ -69,7 +91,7 @@ The big question this row opens: **is an emulator's `step()` function a Zeta ope
 
 ## Composition with B-0053
 
-This row does NOT supersede B-0053; the two compose. B-0053 absorbs engineering patterns *from* existing emulators. This row is the *design question Zeta faces when building an emulator shape of its own that is retractable in Zeta's algebraic sense.* B-0053 feeds candidate patterns in; this row works out how to glue them to Zeta's operator algebra.
+This row does NOT supersede B-0053; the two compose. B-0053 absorbs engineering patterns _from_ existing emulators. This row is the _design question Zeta faces when building an emulator shape of its own that is retractable in Zeta's algebraic sense._ B-0053 feeds candidate patterns in; this row works out how to glue them to Zeta's operator algebra.
 
 ## Owner / effort
 

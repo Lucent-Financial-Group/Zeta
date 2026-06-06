@@ -9,12 +9,12 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Every time the agent writes a sentence of the form:
 
-- *"Next tick I'll …"*
-- *"I'll pick this up next round …"*
-- *"Deferred to a future session …"*
-- *"Continues in round N+1 …"*
-- *"Will resume the X audit later …"*
-- *"On the next autonomous tick …"*
+- _"Next tick I'll …"_
+- _"I'll pick this up next round …"_
+- _"Deferred to a future session …"_
+- _"Continues in round N+1 …"_
+- _"Will resume the X audit later …"_
+- _"On the next autonomous tick …"_
 
 — verify **before** the deferral ships that the deferred
 target exists and is findable. Specifically:
@@ -23,7 +23,7 @@ target exists and is findable. Specifically:
    to confirm the file or directory is actually there.
 2. **Backlog item reference**: grep `docs/BACKLOG.md` (or
    `docs/HUMAN-BACKLOG.md`) to confirm the row exists; if
-   not, land the row *in this turn* so the deferral has a
+   not, land the row _in this turn_ so the deferral has a
    real target on the next turn.
 3. **Named task reference**: if the deferral is of the form
    "the X audit" or "the Y sweep", the string "X audit" or
@@ -49,7 +49,7 @@ If verification fails, the agent has three options —
 pick one, don't ship the deferral as-is:
 
 - **Replace** with a real, verified target.
-- **Create** the target *this turn* (land the BACKLOG row /
+- **Create** the target _this turn_ (land the BACKLOG row /
   memory / skill / ADR) so the deferral is honest.
 - **Drop** the deferral. "I don't actually have a next-tick
   target for this, so I'm stopping here" is more honest
@@ -59,11 +59,11 @@ pick one, don't ship the deferral as-is:
 
 Verbatim (2026-04-20):
 
-> *"also make sure whever you decide to wait for next time,
+> _"also make sure whever you decide to wait for next time,
 > ever single time you do that you check to make sure it's
-> there first"*
+> there first"_
 
-Followed by: *"next tick"* and *"*"* as scope wildcards —
+Followed by: _"next tick"_ and _"_"\* as scope wildcards —
 this rule applies to every form of deferral, not just the
 phrase "next tick."
 
@@ -82,7 +82,7 @@ looks coherent.
 **Failure mode 2: hallucinated tooling.** The agent writes
 "I'll run the symmetry-audit skill next tick" when the
 symmetry-audit skill hasn't actually been created yet —
-it was only *proposed* in a memory. Next round's agent
+it was only _proposed_ in a memory. Next round's agent
 searches `.claude/skills/` and finds nothing; the deferral
 is unsupported and the work is either stalled or
 reinvented. This is a specific case of the more general
@@ -102,7 +102,7 @@ Related prior art:
 
 - `feedback_dont_stop_and_wait_for_cron_tick.md` — don't
   stop and wait; keep working. This rule complements it:
-  when you *do* defer (because you genuinely can't
+  when you _do_ defer (because you genuinely can't
   continue without input / external state / human
   decision), make sure the deferral target is real.
 - `feedback_meta_wins_tracked_separately.md` — meta-wins
@@ -147,7 +147,7 @@ Related prior art:
 
 - It does NOT forbid deferrals. Deferring to the next
   round is fine and often correct — what's forbidden is
-  deferring to a *phantom*.
+  deferring to a _phantom_.
 - It does NOT require massive audit overhead.
   Verification is usually one grep + one file-existence
   check. The rule adds small constant cost per
@@ -170,7 +170,7 @@ Related prior art:
 
 - `feedback_dont_stop_and_wait_for_cron_tick.md` — its
   complement; this rule is the quality-gate on
-  *whatever* deferral you emit, including tick-aligned
+  _whatever_ deferral you emit, including tick-aligned
   ones.
 - `feedback_never_idle_speculative_work_over_waiting.md`
   — never-idle still holds; this rule just ensures

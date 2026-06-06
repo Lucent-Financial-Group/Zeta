@@ -76,7 +76,7 @@ export interface CommitLifetime extends LifetimeState {
  * + ref-lifetime + working-tree-lifetime.
  */
 export interface GitWorld extends World {
-  readonly forgeName: "git";  // base substrate (no forge specialization)
+  readonly forgeName: "git"; // base substrate (no forge specialization)
   readonly branchUniverse: ReadonlyArray<BranchLifetime>;
   readonly commitUniverse: ReadonlyArray<CommitLifetime>;
 }
@@ -88,12 +88,7 @@ export function buildGitWorld(): GitWorld {
   return {
     ...EMPTY_WORLD,
     forgeName: "git",
-    branchUniverse: [
-      { kind: "fresh" },
-      { kind: "active" },
-      { kind: "merged" },
-      { kind: "deleted" },
-    ],
+    branchUniverse: [{ kind: "fresh" }, { kind: "active" }, { kind: "merged" }, { kind: "deleted" }],
     commitUniverse: [
       { kind: "pending" },
       { kind: "signed" },
@@ -132,10 +127,10 @@ export interface ReviewThreadLifetime extends LifetimeState {
  */
 export interface GitHubResourceBudget {
   readonly restCoreRemaining: number;
-  readonly restCoreLimit: number;     // typically 5000
-  readonly restCoreResetAt: number;   // unix timestamp
+  readonly restCoreLimit: number; // typically 5000
+  readonly restCoreResetAt: number; // unix timestamp
   readonly graphqlRemaining: number;
-  readonly graphqlLimit: number;      // typically 5000
+  readonly graphqlLimit: number; // typically 5000
   readonly graphqlResetAt: number;
 }
 
@@ -144,10 +139,10 @@ export interface GitHubResourceBudget {
  * .claude/rules/refresh-world-model-poll-pr-gate.md).
  */
 export type RateLimitTier =
-  | "normal"             // > 2000 remaining
-  | "cost-aware"         // 1000-2000
+  | "normal" // > 2000 remaining
+  | "cost-aware" // 1000-2000
   | "extreme-cost-aware" // 200-1000
-  | "pure-git";          // 0-200
+  | "pure-git"; // 0-200
 
 /**
  * Compute rate-limit tier from current GitHub resource budget.
@@ -172,11 +167,11 @@ export function rateLimitTier(remaining: number): RateLimitTier {
  * - GitHub-specific optimizations (auto-merge, merge-queue, etc.)
  */
 export interface GitHubWorld extends GitWorld {
-  readonly forgeName: "git";  // inherits GitWorld base
+  readonly forgeName: "git"; // inherits GitWorld base
   readonly forgeSpecialization: "github";
   readonly prUniverse: ReadonlyArray<PrLifetime>;
   readonly reviewThreadUniverse: ReadonlyArray<ReviewThreadLifetime>;
-  readonly resourceBudget?: GitHubResourceBudget;  // optional; populated by caller
+  readonly resourceBudget?: GitHubResourceBudget; // optional; populated by caller
 }
 
 /**
@@ -186,10 +181,7 @@ export interface GitHubWorld extends GitWorld {
  * registers any lifetime-pair matrices needed for the substrate-
  * engineering work.
  */
-export function buildGitHubWorld(
-  gitWorld: GitWorld,
-  resourceBudget?: GitHubResourceBudget,
-): GitHubWorld {
+export function buildGitHubWorld(gitWorld: GitWorld, resourceBudget?: GitHubResourceBudget): GitHubWorld {
   return {
     ...gitWorld,
     forgeSpecialization: "github",
@@ -201,11 +193,7 @@ export function buildGitHubWorld(
       { kind: "merged" },
       { kind: "closed" },
     ],
-    reviewThreadUniverse: [
-      { kind: "unresolved" },
-      { kind: "outdated" },
-      { kind: "resolved" },
-    ],
+    reviewThreadUniverse: [{ kind: "unresolved" }, { kind: "outdated" }, { kind: "resolved" }],
     ...(resourceBudget !== undefined && { resourceBudget }),
   };
 }
@@ -217,9 +205,7 @@ export type ForgeSpecializationFeedback =
   | { kind: "UnsupportedForge"; forge: string }
   | { kind: "ResourceBudgetExhausted"; budget: "rest-core" | "graphql"; resetAt: number };
 
-export type ForgeResult<T> =
-  | { ok: true; world: T }
-  | { ok: false; feedback: ForgeSpecializationFeedback };
+export type ForgeResult<T> = { ok: true; world: T } | { ok: false; feedback: ForgeSpecializationFeedback };
 
 /**
  * Check if a GitHub operation is within budget.
@@ -229,14 +215,11 @@ export type ForgeResult<T> =
  * substrate (commit/push/local) until reset.
  */
 export interface OperationCost {
-  readonly restCoreCost?: number;     // default 0
-  readonly graphqlCost?: number;       // default 0
+  readonly restCoreCost?: number; // default 0
+  readonly graphqlCost?: number; // default 0
 }
 
-export function canAfford(
-  world: GitHubWorld,
-  cost: OperationCost,
-): ForgeResult<GitHubWorld> {
+export function canAfford(world: GitHubWorld, cost: OperationCost): ForgeResult<GitHubWorld> {
   const budget = world.resourceBudget;
   if (!budget) {
     // No budget loaded; assume operation can proceed (caller loads budget
@@ -279,11 +262,7 @@ export function canAfford(
  * this helper simply delegates and lets the generic propagate
  * GitHubWorld through.
  */
-export function registerInGitHub<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function registerInGitHub<A extends LifetimeState, B extends LifetimeState, T>(
   world: GitHubWorld,
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,

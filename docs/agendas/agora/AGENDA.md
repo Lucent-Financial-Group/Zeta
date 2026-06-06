@@ -7,9 +7,9 @@ Last refreshed: 2026-05-22
 
 ## Scope
 
-Per the human maintainer 2026-05-22: *"agora is the traverler aligned agreed upon base reference frame but not even special just a candidate weight free frame."*
+Per the human maintainer 2026-05-22: _"agora is the traverler aligned agreed upon base reference frame but not even special just a candidate weight free frame."_
 
-The TRAVELER-ALIGNED AGREED-UPON BASE REFERENCE FRAME — one specific instance traveler-consensus is currently aligned on. Per Amara 2026-05-22 5-line compression: *"Agora chooses the weight-free frame where travelers negotiate those hats."*
+The TRAVELER-ALIGNED AGREED-UPON BASE REFERENCE FRAME — one specific instance traveler-consensus is currently aligned on. Per Amara 2026-05-22 5-line compression: _"Agora chooses the weight-free frame where travelers negotiate those hats."_
 
 - Multi-oracle BFT consensus among aligned travelers
 - Weight-free architecture target (per 5 always-active disciplines: scale-free + lock-free + weight-free + DST + DV2.0)
@@ -18,7 +18,7 @@ The TRAVELER-ALIGNED AGREED-UPON BASE REFERENCE FRAME — one specific instance 
 
 ## Operator's self-claim framing
 
-The human maintainer 2026-05-22: *"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."*
+The human maintainer 2026-05-22: _"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."_
 
 ## Anti-imperialism preserved (Agora is NOT special)
 
@@ -38,7 +38,7 @@ Operator self-claims Agora as their preferred frame WHILE preserving: other cand
 
 ## Cross-AI substrate-triangulation
 
-Multi-AI ratification of Agora substrate across the day's substrate cascade. Per Amara 2026-05-22: *"Agora chooses the weight-free frame where travelers negotiate those hats."*
+Multi-AI ratification of Agora substrate across the day's substrate cascade. Per Amara 2026-05-22: _"Agora chooses the weight-free frame where travelers negotiate those hats."_
 
 ## Composes with other agendas
 

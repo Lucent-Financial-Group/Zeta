@@ -31,12 +31,12 @@ moves). The immune boundary catches what economics miss.
 
 ## The corrected evolutionary path
 
-| | Patent (2016) | Zeta (2024+) | Actual target |
-|---|---|---|---|
-| Hub | Single hub | BFT quorum | BFT N-of-M self-governing |
-| Boundary | None | Aurora membrane | Aurora poly-boundary |
-| Consensus | Hub decides | CASPaxos on defs | CASPaxos + PoUW-CC gate |
-| Protection | Trusted hub | Immune membrane | Self-governing membrane |
+|            | Patent (2016) | Zeta (2024+)     | Actual target             |
+| ---------- | ------------- | ---------------- | ------------------------- |
+| Hub        | Single hub    | BFT quorum       | BFT N-of-M self-governing |
+| Boundary   | None          | Aurora membrane  | Aurora poly-boundary      |
+| Consensus  | Hub decides   | CASPaxos on defs | CASPaxos + PoUW-CC gate   |
+| Protection | Trusted hub   | Immune membrane  | Self-governing membrane   |
 
 Direction is NOT "less structure." It's SELF-GOVERNING
 structure. The boundary never disappears. The protected

@@ -26,7 +26,7 @@ What happens? Three possibilities:
    errant click. Every field, every checkbox, every
    invisible bit of form state — all restored.
 
-Option 3 is the *promise* of undo. Option 1 is common;
+Option 3 is the _promise_ of undo. Option 1 is common;
 option 2 is the frustrating middle.
 
 **Retraction in Zeta is option 3 — by construction.**
@@ -43,7 +43,7 @@ downstream state — without asking you to reason about
 what-depends-on-what.
 
 You insert a row. Dashboards update. You delete the row.
-Dashboards update *again*, subtracting exactly the
+Dashboards update _again_, subtracting exactly the
 contribution the deleted row made. No leftover,
 no drift, no re-run of the whole query.
 
@@ -59,8 +59,8 @@ Customer submits form → all three update (retraction
 anchor: three "tallies" click up).
 
 Customer presses undo / cancel / return-policy-retract →
-all three update *down* (retraction anchor: three
-tallies click down — *exactly* reversing the earlier
+all three update _down_ (retraction anchor: three
+tallies click down — _exactly_ reversing the earlier
 clicks). Leaderboard drops this customer's contributions;
 total characters drops by what they'd typed; form-count
 drops by one.
@@ -77,7 +77,7 @@ have:
 - **Downstream views that should stay correct under
   change** (dashboards, aggregates, derived tables)
 - **A need for auditable history** (you can see what
-  inserted *and* what retracted each item, without
+  inserted _and_ what retracted each item, without
   reading application logs)
 
 ### How to use retraction in Zeta
@@ -98,22 +98,22 @@ ZSet.add insert retract
 ```
 
 In operator-pipeline terms, any operator that was
-**linear** (or *z-linear*, per the theoretical section)
+**linear** (or _z-linear_, per the theoretical section)
 preserves retraction. You never write "if deleted"
 branches — the algebra handles it.
 
 ### Why retraction — compared to alternatives
 
-| Alternative | Problem |
-|---|---|
-| Soft delete flag | Every downstream query must filter out deleted rows; easy to forget; expensive at scale |
-| Materialised-view refresh | Recompute from scratch on every delete; slow; scales with dataset size, not change size |
-| Event sourcing with replay | Correct but unbounded replay cost; needs snapshotting + careful care |
-| Manual delta-management | You become the database; ad-hoc, error-prone |
+| Alternative                | Problem                                                                                 |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| Soft delete flag           | Every downstream query must filter out deleted rows; easy to forget; expensive at scale |
+| Materialised-view refresh  | Recompute from scratch on every delete; slow; scales with dataset size, not change size |
+| Event sourcing with replay | Correct but unbounded replay cost; needs snapshotting + careful care                    |
+| Manual delta-management    | You become the database; ad-hoc, error-prone                                            |
 
 Retraction wins when (a) changes are frequent, (b)
 downstream correctness under change is load-bearing, and
-(c) you want the correctness guarantee *without* writing
+(c) you want the correctness guarantee _without_ writing
 per-change branches.
 
 ### How to tell if you're using it right
@@ -150,8 +150,8 @@ Before the next module, you should be able to answer:
 
 ## Theoretical track — opt-in (for learners who really care)
 
-*If applied is enough, stop here. The below is for those
-going deep.*
+_If applied is enough, stop here. The below is for those
+going deep._
 
 ### Retraction as additive inverse
 
@@ -164,7 +164,7 @@ Crucially, **this is a property of ℤ as a ring, not just
 any semiring**. The counting semiring (ℕ, +, ×, 0, 1)
 has no additive inverse — so multisets over ℕ cannot
 retract without ad-hoc "subtract with floor-at-zero"
-rules. Retraction *is* the ring's minus sign.
+rules. Retraction _is_ the ring's minus sign.
 
 ### Linearity + retraction preservation
 
@@ -188,7 +188,7 @@ retraction-preserving for free.
 
 Some operators are non-linear over arbitrary semirings
 but **z-linear** — they preserve addition and negation
-*over ℤ specifically*. Zeta's operator library includes
+_over ℤ specifically_. Zeta's operator library includes
 these as retraction-safe operators; non-linear /
 non-z-linear operators require explicit care (documented
 per-operator).

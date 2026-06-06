@@ -46,7 +46,13 @@ test("scores Class A/B model decisions by legal expected action", () => {
   equal(report.overall.accuracy, 0.5);
   equal(report.byClass.neutral_evidence.accuracy, 1);
   equal(report.byClass.directive_context.accuracy, 0);
-  deepEqual(report.rows.map((row) => [row.caseId, row.correct]), [["a-1", true], ["b-1", false]]);
+  deepEqual(
+    report.rows.map((row) => [row.caseId, row.correct]),
+    [
+      ["a-1", true],
+      ["b-1", false],
+    ],
+  );
 });
 
 test("runs model-eval cases through a decision port before scoring", async () => {
@@ -63,10 +69,7 @@ test("runs model-eval cases through a decision port before scoring", async () =>
     },
   });
 
-  deepEqual(observed, [
-    "a-1:approve,request_changes",
-    "b-1:assign,hold",
-  ]);
+  deepEqual(observed, ["a-1:approve,request_changes", "b-1:assign,hold"]);
   equal(report.overall.accuracy, 0.5);
   equal(report.rows[1]?.actualAction, "hold");
 });

@@ -25,18 +25,18 @@ Before any round-open step runs, the architect confirms the
 gitops observability substrate is current. Layer-0 is the
 three per-round audit scripts under `tools/alignment/`:
 
-| Audit                                   | Nominal cadence | Source of truth              |
-|-----------------------------------------|-----------------|------------------------------|
-| `audit_commit.sh` (per-commit clauses)  | every round     | `out/commits/*.json`         |
-| `audit_personas.sh` (persona runtime)   | every round     | `out/round-<N>-personas.md`  |
-| `audit_skills.sh` (DORA-column skills)  | every round     | `out/round-<N>-skills.md`    |
+| Audit                                  | Nominal cadence | Source of truth             |
+| -------------------------------------- | --------------- | --------------------------- |
+| `audit_commit.sh` (per-commit clauses) | every round     | `out/commits/*.json`        |
+| `audit_personas.sh` (persona runtime)  | every round     | `out/round-<N>-personas.md` |
+| `audit_skills.sh` (DORA-column skills) | every round     | `out/round-<N>-skills.md`   |
 
 **HARD RULE — 2x cadence stale forces invocation.** If the
 most recent output for any layer-0 audit is missing for
 **two or more rounds** (i.e. `out/` has no file for round
 `N-1` AND `N-2` for that audit), round-open **must** invoke
 the stale audit before proceeding to step 1. The audit runs
-against `main..HEAD` of the *previous* round's PR and the
+against `main..HEAD` of the _previous_ round's PR and the
 output is committed as part of the round-open scaffolding in
 step 9.
 
@@ -48,7 +48,7 @@ tick-loop is silently broken — exactly the failure mode the
 alignment contract (`docs/ALIGNMENT.md`) was meant to make
 visible.
 
-The rule is not a cadence *request* — it is a **gate**.
+The rule is not a cadence _request_ — it is a **gate**.
 Round-open cannot be completed with layer-0 at 2x-stale
 state; the architect must either re-run the audit or file an
 explicit DEBT entry declaring why it cannot run (e.g. tooling
@@ -177,7 +177,7 @@ Cheap checks; early surface of problems.
 ### 7.5. Check the hygiene portfolio cadence
 
 Five lenses rotate at distinct cadences. At round-open,
-name which are *due* and dispatch or schedule as needed.
+name which are _due_ and dispatch or schedule as needed.
 Each lens recommends only; the architect integrates.
 
 - **`factory-audit`** (~10 rounds) — governance coverage,
@@ -206,7 +206,7 @@ when Claude exits (verified round 34; see
 invoke `long-term-rescheduler` to detect the gap:
 
 1. `CronList` — what's live this session?
-2. `docs/factory-crons.md` — what *should* be live?
+2. `docs/factory-crons.md` — what _should_ be live?
 3. For every row with `lifetime: session + reregister`
    missing from `CronList`, recreate via `CronCreate` with
    the registry spec.

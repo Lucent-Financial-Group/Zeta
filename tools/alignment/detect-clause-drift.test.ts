@@ -29,10 +29,7 @@ describe("findClauseReferences", () => {
   });
 
   it("ignores out-of-range clause IDs (word boundaries + bounded ranges)", () => {
-    writeFileSync(
-      join(testDir, "bad.md"),
-      "HC-0 and SD-99 and DIR-8 and XHC-1 are not valid clause refs.",
-    );
+    writeFileSync(join(testDir, "bad.md"), "HC-0 and SD-99 and DIR-8 and XHC-1 are not valid clause refs.");
     const references = findClauseReferences(testDir);
     expect(references.has("HC-0")).toBe(false);
     expect(references.has("SD-99")).toBe(false);

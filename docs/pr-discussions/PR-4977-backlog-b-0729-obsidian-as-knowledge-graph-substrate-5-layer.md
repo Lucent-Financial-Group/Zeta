@@ -22,13 +22,13 @@ Files Aaron's knowledge-graph substrate question + the team-decision to use Obsi
 
 5 layers, each shippable standalone:
 
-| Layer | Substance | Effort | Value |
-|-------|-----------|--------|-------|
-| L1 | Wikilink conversion (TS script + frontmatter aliases for GitHub-compat) | 1-2 days | Obsidian graph view becomes load-bearing |
-| L2 | Frontmatter tags convention across rules + personas + docs | 1 day | Tag-pane + Dataview queries |
-| L3 | Obsidian callouts for evolving documentation (`> [!todo]`, `> [!warning]`, etc.) | 1 day | Structured annotations |
-| L4 | Obsidian Tasks-plugin format for enriched TODOs (`📅` `🔼` `🔁` `✅`) | 1 day | Due-dates / priority / recurring semantics on inline tasks |
-| L5 | TS extractor emitting JSON-LD + property-graph JSON | 1-2 weeks | Agents can programmatically query the knowledge substrate |
+| Layer | Substance                                                                        | Effort    | Value                                                      |
+| ----- | -------------------------------------------------------------------------------- | --------- | ---------------------------------------------------------- |
+| L1    | Wikilink conversion (TS script + frontmatter aliases for GitHub-compat)          | 1-2 days  | Obsidian graph view becomes load-bearing                   |
+| L2    | Frontmatter tags convention across rules + personas + docs                       | 1 day     | Tag-pane + Dataview queries                                |
+| L3    | Obsidian callouts for evolving documentation (`> [!todo]`, `> [!warning]`, etc.) | 1 day     | Structured annotations                                     |
+| L4    | Obsidian Tasks-plugin format for enriched TODOs (`📅` `🔼` `🔁` `✅`)            | 1 day     | Due-dates / priority / recurring semantics on inline tasks |
+| L5    | TS extractor emitting JSON-LD + property-graph JSON                              | 1-2 weeks | Agents can programmatically query the knowledge substrate  |
 
 Plus standards survey documenting why semantic-web tier (RDF/OWL/SPARQL — what Aaron + team used at LexisNexis) is too heavy for git-native + AI-friendly, while the Obsidian/Foam/Logseq vault format is the right light-tier floor.
 
@@ -63,6 +63,7 @@ Single file (+ index regen) — docs only; no implementation in this PR.
 Adds a new P2 backlog row (B-0729) proposing a 5-layer adoption plan for using an Obsidian-compatible vault format as the project’s lightweight, git-native knowledge-graph substrate, and registers the row in the main backlog index.
 
 **Changes:**
+
 - Adds `B-0729` backlog row detailing layers L1–L5 (wikilinks, tags, callouts, Tasks-plugin semantics, JSON-LD/property-graph extractor) plus acceptance criteria and a standards survey.
 - Updates `docs/BACKLOG.md` to include B-0729 under P2.
 
@@ -70,13 +71,12 @@ Adds a new P2 backlog row (B-0729) proposing a 5-layer adoption plan for using a
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                       | Description                                                                   |
+| -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md | New P2 backlog row describing Obsidian-as-substrate and 5-layer rollout plan. |
-| docs/BACKLOG.md | Adds B-0729 entry to the P2 list. |
+| docs/BACKLOG.md                                                                                                            | Adds B-0729 entry to the P2 list.                                             |
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T19:46:12Z)
-
 
 ### 💡 Codex Review
 
@@ -84,17 +84,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `32c0007b87`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -118,24 +117,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T19:49:27Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `41c03a1c76`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -147,24 +144,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T19:52:52Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `e2b98afecb`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -206,7 +201,7 @@ Addressed in latest push. Most substantive: Codex caught a real L1 design flaw (
 
 **@chatgpt-codex-connector** (2026-05-25T19:46:12Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep GitHub-compatible links in L1 conversion plan**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep GitHub-compatible links in L1 conversion plan**
 
 Converting every internal Markdown link to Obsidian wikilinks here would break repository navigability for non-Obsidian readers: GitHub’s documented link syntax is `[text](path)`, and `frontmatter.aliases` does not make GitHub resolve `[[shortname|text]]` as clickable links. Because this row defines L1 as a mechanical global replacement, implementing it as written would degrade docs/backlog usability and any tooling that relies on standard Markdown links.
 
@@ -220,7 +215,7 @@ Addressed in latest push. Most substantive: Codex caught a real L1 design flaw (
 
 **@chatgpt-codex-connector** (2026-05-25T19:49:28Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align L1 acceptance with alias-only strategy**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align L1 acceptance with alias-only strategy**
 
 This acceptance checklist still requires a full markdown-link→wikilink conversion, which directly contradicts the updated L1 design above that explicitly says not to convert links because GitHub navigability would regress. Fresh evidence for re-raising: even after the thread said the flaw was addressed, this row still has `All [text](path.md) ... converted to [[shortname|text]]`, so implementers following acceptance criteria will ship the rejected behavior.
 
@@ -234,8 +229,8 @@ Fixed in latest push — L1 acceptance now mirrors the reframed alias-only strat
 
 **@chatgpt-codex-connector** (2026-05-25T19:52:52Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use uppercase alert marker in L3 acceptance criteria**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use uppercase alert marker in L3 acceptance criteria**
 
-The L3 acceptance checklist asks to migrate blocks to ``> [!note]`` even though this same row defines GitHub-compatible callouts as requiring uppercase alert types; if implementers follow this line literally, migrated callouts will render as plain blockquotes on GitHub and miss the stated cross-platform styling goal. Aligning the acceptance text with uppercase (for example ``[!NOTE]``) avoids shipping a self-contradictory convention.
+The L3 acceptance checklist asks to migrate blocks to `> [!note]` even though this same row defines GitHub-compatible callouts as requiring uppercase alert types; if implementers follow this line literally, migrated callouts will render as plain blockquotes on GitHub and miss the stated cross-platform styling goal. Aligning the acceptance text with uppercase (for example `[!NOTE]`) avoids shipping a self-contradictory convention.
 
 Useful? React with 👍 / 👎.

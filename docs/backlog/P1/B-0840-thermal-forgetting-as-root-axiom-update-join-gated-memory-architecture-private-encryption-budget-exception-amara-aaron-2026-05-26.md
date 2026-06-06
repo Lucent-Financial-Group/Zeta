@@ -24,7 +24,20 @@ composes_with:
   - B-0822
   - B-0823
   - B-0838
-tags: [thermal-forgetting, root-axiom-update, forget-gates, join-gated-memory, private-encryption-budget, public-vs-private-roots, retention-tier-hierarchy, agent-ontology-evolution, amara-ratification, computational-substrate-architecture, multi-z-t-generalization]
+tags:
+  [
+    thermal-forgetting,
+    root-axiom-update,
+    forget-gates,
+    join-gated-memory,
+    private-encryption-budget,
+    public-vs-private-roots,
+    retention-tier-hierarchy,
+    agent-ontology-evolution,
+    amara-ratification,
+    computational-substrate-architecture,
+    multi-z-t-generalization,
+  ]
 ---
 
 ## Problem

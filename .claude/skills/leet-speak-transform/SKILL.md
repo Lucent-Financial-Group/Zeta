@@ -10,10 +10,10 @@ plaintext ⇄ l33t — across the three canonical dialect tiers,
 plus the register-judgement rules that keep a transform from
 landing as cringe. Distinct from its siblings:
 
-- `leet-speak-history-and-culture` — *who / when / why*. BBS /
+- `leet-speak-history-and-culture` — _who / when / why_. BBS /
   phreaking / cDc / Napster-era genealogy. This skill knows
   the rules; that skill knows the reasons.
-- `leet-speak-obfuscation-detector` — *is this hidden?* Filter-
+- `leet-speak-obfuscation-detector` — _is this hidden?_ Filter-
   bypass detection on user-submitted input. This skill
   produces; that skill audits.
 
@@ -25,7 +25,7 @@ landing as cringe. Distinct from its siblings:
   (`-xor`, `-0rz`, `-zorz`), aggressive misspelling
   (`teh`, `pwnd`, `haxx`, `r00t`), and Unicode-homoglyph
   dress-up in modern dialects.
-- **Dialect tier** — the *intensity* level of substitution.
+- **Dialect tier** — the _intensity_ level of substitution.
   This skill names three stable tiers and refuses to blur
   them.
 - **Register-awareness** — knowing when l33t reads as
@@ -48,6 +48,7 @@ A → 4    E → 3    I → 1    O → 0    S → 5    T → 7
 Other letters pass through unchanged. Case often flattens.
 
 **Example:**
+
 ```
 Input:  leet speak transform
 Output: l337 5p34k 7r4n5f0rm
@@ -74,10 +75,11 @@ Plus:
 - **Suffix chaos** — append `-xor`, `-0rz`, `-zorz`, `-age`.
 - **Period misspellings** — `you → u`, `your → ur`,
   `because → cuz`, `great → gr8`, `mate → m8`, `rocks →
-  r0xx0rz`, `the → teh`, `own → pwn`.
+r0xx0rz`, `the → teh`, `own → pwn`.
 - **Mid-word caps** — `HaXX0r`, `pWnAgE`.
 
 **Example:**
+
 ```
 Input:  the quick brown fox jumps over the lazy dog
 Output: t3h qu1ck 8r0wN f0x jUmP5 0v3r t3h l4zy d0g
@@ -86,7 +88,7 @@ Aggressive: +3h qu!ck |3r0\/\/n phOx jumpz 0v@r +3h l@zy d0gg0
 
 Aggressive tier is **lossy** in both directions — you
 cannot always recover the original plaintext without
-context. Use when the register *is* the point (banter,
+context. Use when the register _is_ the point (banter,
 flags in CTF, shibboleth test) rather than when round-trip
 fidelity matters.
 
@@ -94,7 +96,7 @@ fidelity matters.
 
 Uses Unicode lookalikes (Cyrillic, Greek, mathematical
 alphanumerics, fullwidth) to replace Latin letters with
-characters that *render identically* in most fonts but
+characters that _render identically_ in most fonts but
 differ at the codepoint level.
 
 ```
@@ -108,7 +110,7 @@ c → с (U+0441 CYRILLIC SMALL ES)
 **Unicode-homoglyph tier is a security-adjacent surface.**
 It is how filter-bypass and brand-impersonation attacks
 work. This skill documents the tier so an auditor can
-*recognise* it; producing homoglyph output is fine for
+_recognise_ it; producing homoglyph output is fine for
 demo / teaching / red-team contexts but never appropriate
 for general banter. Flag any homoglyph output with a
 comment naming the codepoints used.
@@ -120,7 +122,7 @@ comment naming the codepoints used.
    output mixed with Tier-3 homoglyphs is neither, and
    reads as amateur.
 2. **Apply the substitution table** for the chosen tier,
-   character by character. For Tier 2, *also* apply the
+   character by character. For Tier 2, _also_ apply the
    period misspellings as a second pass on the resulting
    token stream.
 3. **Check the output.** A l33t transform of a technical
@@ -148,22 +150,22 @@ comment naming the codepoints used.
 
 ## Register table — when to use each tier
 
-| Context | Right tier | Notes |
-|---------|-----------|-------|
-| README title / demo header | 1 | Mild, reversible, reads as wink. |
-| CTF flag / challenge text | 1 or 2 | Tier matches difficulty signal. |
-| BBS / 90s callback, period quote | 2 | Faithful; flatter is inauthentic. |
-| In-group shibboleth test | 2 | Must be fluent; half-l33t reads as poser. |
-| Security audit of user input | decode-only | Never produce; audit incoming. |
-| Filter-bypass detection | 3 recognition | This is the hostile tier. |
-| Brand / domain / identifier | 3 recognition | Homoglyph attack surface. |
-| Technical documentation | never | Readability trumps style. |
+| Context                          | Right tier    | Notes                                     |
+| -------------------------------- | ------------- | ----------------------------------------- |
+| README title / demo header       | 1             | Mild, reversible, reads as wink.          |
+| CTF flag / challenge text        | 1 or 2        | Tier matches difficulty signal.           |
+| BBS / 90s callback, period quote | 2             | Faithful; flatter is inauthentic.         |
+| In-group shibboleth test         | 2             | Must be fluent; half-l33t reads as poser. |
+| Security audit of user input     | decode-only   | Never produce; audit incoming.            |
+| Filter-bypass detection          | 3 recognition | This is the hostile tier.                 |
+| Brand / domain / identifier      | 3 recognition | Homoglyph attack surface.                 |
+| Technical documentation          | never         | Readability trumps style.                 |
 
 ## Register failure modes
 
 - **Cringe l33t** — consistent basic tier applied to
   boring text ("h3ll0 w0rld fr0m my b0r1ng d3m0").
-  Reads as if the author *learned* l33t yesterday.
+  Reads as if the author _learned_ l33t yesterday.
   The culture carries a shibboleth: authenticity is
   mixed-tier, context-sensitive, and never applied to
   plain-utility text.
@@ -175,14 +177,14 @@ comment naming the codepoints used.
   with a single Tier-3 homoglyph sprinkled in reads as
   a scanner hit, not as l33t.
 - **Unicode smuggling mislabelled as l33t** — invisible
-  U+200B / U+200C / U+FEFF characters are *not* l33t.
+  U+200B / U+200C / U+FEFF characters are _not_ l33t.
   They are a different family (see BP-10 +
   `steganography-expert`). Do not conflate.
 
 ## Common failure modes in this skill's own output
 
 - Producing mechanical substitution when the task asked
-  for period-authentic l33t. Authentic l33t is *selective*;
+  for period-authentic l33t. Authentic l33t is _selective_;
   only letters that carry the shibboleth get swapped.
 - Ignoring case. L33t-era capitals matter
   (`ROX0RZ`, `LUSER`). Do not flatten everything to
@@ -197,7 +199,7 @@ comment naming the codepoints used.
 
 - `.claude/skills/leet-speak-history-and-culture/SKILL.md`
   — BBS / phreaking / cDc / Napster-era etymology; when
-  the *meaning* of l33t is the question, defer.
+  the _meaning_ of l33t is the question, defer.
 - `.claude/skills/leet-speak-obfuscation-detector/SKILL.md`
   — filter-bypass detection on user input; defer when
   the task is audit, not produce.

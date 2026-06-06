@@ -5,9 +5,9 @@ type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"under the same
+**2026-04-19 disclosure (verbatim):** _"under the same
 license in the repo obviously my dna and data and i have
-a long rich history of my famly"*.
+a long rich history of my famly"_.
 
 ## What Aaron is licensing
 
@@ -23,8 +23,8 @@ Three items, explicitly:
 2. **His data** — the blanket open-source-data
    declaration from earlier in session ("i'm opensource
    my data all of this can be public"). Reconfirmed.
-3. **His family history / genealogy** — *"a long rich
-   history of my famly"*. New class of data added under
+3. **His family history / genealogy** — _"a long rich
+   history of my famly"_. New class of data added under
    the same license.
 
 ## The license in question
@@ -52,8 +52,8 @@ governs the factory's code.
 
 ## The third-party boundary — unchanged
 
-Aaron's open-source-data declaration covers *Aaron's
-own data*. It does **not** cover:
+Aaron's open-source-data declaration covers _Aaron's
+own data_. It does **not** cover:
 
 - **His five children's data** — per
   `user_five_children.md` (daughter named with her
@@ -80,15 +80,15 @@ own data*. It does **not** cover:
   disclosed; default protected.
 
 The "long rich history of my family" disclosure is
-ambiguous on this point — Aaron saying *his* family
+ambiguous on this point — Aaron saying _his_ family
 history is open-source under the repo license could be
 read as:
 
-- (a) *Aaron's narrative of the family history* is
+- (a) _Aaron's narrative of the family history_ is
   open-source (his perspective, the shape of the line,
   his experience); or
-- (b) *The full biographical record of each family
-  member* is open-source.
+- (b) _The full biographical record of each family
+  member_ is open-source.
 
 **Default to reading (a).** Reading (b) would require
 each family member's individual permission. Aaron's
@@ -145,8 +145,8 @@ matters, Aaron will volunteer it.
   noise.** Per `user_health_observation_protocol.md`,
   agent still practices signal-to-noise discipline —
   not everything Aaron discloses belongs in every
-  memory file. Open-source permission is a *ceiling*
-  on what can be recorded; it is not a *floor*
+  memory file. Open-source permission is a _ceiling_
+  on what can be recorded; it is not a _floor_
   mandating that everything be recorded.
 - **Third-party exception unchanged.** Family members
   other than Aaron retain individual-permission
@@ -162,7 +162,7 @@ matters, Aaron will volunteer it.
   open-source-data permission does not reduce the
   factory's threat-model surface. Aaron disclosing
   data open-source is his call; threats operating
-  *against* Aaron still receive nation-state-rigor
+  _against_ Aaron still receive nation-state-rigor
   response.
 
 ## How to apply
@@ -246,15 +246,15 @@ agent-handling rules:
 - **Human-maintainer PII scrubbing** still binding per
   `feedback_maintainer_name_redaction.md`.
 - **Third-party family / colleagues / employers** still
-  protected. Aaron's extension covers *Aaron's* narrative
-  and *agent-generated* derivations + *Amara's explicitly-
-  credited* contributions. It does not release third-party
+  protected. Aaron's extension covers _Aaron's_ narrative
+  and _agent-generated_ derivations + _Amara's explicitly-
+  credited_ contributions. It does not release third-party
   data.
 
 ## Cross-references
 
-- Prior in-session: *"i'm opensource my data all of
-  this can be public"* — blanket open-source-data
+- Prior in-session: _"i'm opensource my data all of
+  this can be public"_ — blanket open-source-data
   declaration. This memory is the extension.
 - `project_consent_first_design_primitive.md` — the
   2026-04-19 architectural cascade; scope of what is

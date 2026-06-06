@@ -26,6 +26,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Context
 
 B-0145 had two children already closed:
+
 - B-0270 (closed): `.claude/skills/product-manager/SKILL.md` + `.claude/agents/pm2.md` (persona: Mira)
 - B-0271 (closed): first research pass doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` (6 gaps → B-0450, B-0445, B-0446, B-0447, B-0431-433, B-0428)
 
@@ -40,13 +41,13 @@ This PR closes the three remaining gaps: EXPERT-REGISTRY entry, forward-radar di
 
 ## AC coverage
 
-| AC | Status | Evidence |
-|---|---|---|
-| AC 1 — EXPERT-REGISTRY.md row for Mira (PM-2) | ✅ | `docs/EXPERT-REGISTRY.md` row added |
-| AC 2 — weekly Sunday UTC cadence documented | ✅ | TEMPLATE.md header: "default: weekly, Sundays UTC" |
-| AC 3 — `docs/forward-radar/TEMPLATE.md` | ✅ | File created this PR |
-| AC 4 — first forward-radar memo | ✅ | B-0271 closed; research doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` |
-| AC 5 — `docs/forward-radar/calibration.md` | ✅ | File created this PR |
+| AC                                            | Status | Evidence                                                                                                |
+| --------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
+| AC 1 — EXPERT-REGISTRY.md row for Mira (PM-2) | ✅     | `docs/EXPERT-REGISTRY.md` row added                                                                     |
+| AC 2 — weekly Sunday UTC cadence documented   | ✅     | TEMPLATE.md header: "default: weekly, Sundays UTC"                                                      |
+| AC 3 — `docs/forward-radar/TEMPLATE.md`       | ✅     | File created this PR                                                                                    |
+| AC 4 — first forward-radar memo               | ✅     | B-0271 closed; research doc at `docs/research/2026-05-13-pm2-zeta-feature-gap-prediction-first-pass.md` |
+| AC 5 — `docs/forward-radar/calibration.md`    | ✅     | File created this PR                                                                                    |
 
 ## Test plan
 
@@ -60,24 +61,22 @@ This PR closes the three remaining gaps: EXPERT-REGISTRY entry, forward-radar di
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T00:24:19Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `f9039a62ce`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -90,6 +89,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Docs-only slice that closes the three remaining open acceptance criteria of B-0145 (PM-2 role activation): registers the new PM-2 persona in the expert roster, and scaffolds the forward-radar output directory with a memo template and a calibration tracker. The pre-existing work (B-0270 skill+agent, B-0271 first research pass) is already merged; this PR is the connective tissue.
 
 **Changes:**
+
 - Add the **Mira** (PM-2) row to `docs/EXPERT-REGISTRY.md`.
 - Create `docs/forward-radar/TEMPLATE.md` (canonical memo template, weekly Sundays-UTC cadence).
 - Create `docs/forward-radar/calibration.md` (Lead-time% / Action-rate% tracker, quarterly review note).
@@ -99,26 +99,27 @@ Docs-only slice that closes the three remaining open acceptance criteria of B-01
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/EXPERT-REGISTRY.md | Adds PM-2 / Mira row to the current-roster table; consistent with adjacent rows. |
-| docs/forward-radar/TEMPLATE.md | New canonical memo template; uses persona-name attribution on a current-state surface (Otto-279 finding). |
-| docs/forward-radar/calibration.md | New metrics tracker; persona-name and human-maintainer attribution on a current-state surface (Otto-279 finding). |
-| docs/backlog/P1/B-0145-…-2026-05-01.md | Adds pre-start checklist; `last_updated` frontmatter not bumped. |
-
+| File                                   | Description                                                                                                       |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| docs/EXPERT-REGISTRY.md                | Adds PM-2 / Mira row to the current-roster table; consistent with adjacent rows.                                  |
+| docs/forward-radar/TEMPLATE.md         | New canonical memo template; uses persona-name attribution on a current-state surface (Otto-279 finding).         |
+| docs/forward-radar/calibration.md      | New metrics tracker; persona-name and human-maintainer attribution on a current-state surface (Otto-279 finding). |
+| docs/backlog/P1/B-0145-…-2026-05-01.md | Adds pre-start checklist; `last_updated` frontmatter not bumped.                                                  |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/forward-radar/calibration.md:49**
-* Direct name attribution ("Aaron corrections") on a current-state surface. Per the Otto-279 role-ref convention (and the surface-path-first check), `docs/forward-radar/` is not in the closed list of history surfaces and not in the roster-mapping carve-out (the carve-out only covers `.github/copilot-instructions.md`, `AGENTS.md`, `GOVERNANCE.md`, `docs/CONFLICT-RESOLUTION.md`). Replace with a role-ref such as "human-maintainer corrections" — the name belongs only on history/research surfaces.
+
+- Direct name attribution ("Aaron corrections") on a current-state surface. Per the Otto-279 role-ref convention (and the surface-path-first check), `docs/forward-radar/` is not in the closed list of history surfaces and not in the roster-mapping carve-out (the carve-out only covers `.github/copilot-instructions.md`, `AGENTS.md`, `GOVERNANCE.md`, `docs/CONFLICT-RESOLUTION.md`). Replace with a role-ref such as "human-maintainer corrections" — the name belongs only on history/research surfaces.
+
 ```
    review findings, Aaron corrections that revealed missing features.
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T00:54:05Z)
-
 
 ### 💡 Codex Review
 
@@ -126,17 +127,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `8f88b7f43f`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -158,7 +158,7 @@ Lior anti-gravity check: BLOB PR DETECTED. This PR mixes expert registry updates
 
 **@chatgpt-codex-connector** (2026-05-14T00:24:19Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Define zero-denominator behavior for calibration metrics**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Define zero-denominator behavior for calibration metrics**
 
 The calibration procedure requires division for both `Lead-time%` and `Action-rate%` but does not specify how to handle periods where the denominator is zero (for example, no friction encounters in a cycle or no PM-2 rows old enough for the 4-round window). In those early/quiet-cycle scenarios, teams will either compute an undefined value or record inconsistent ad-hoc percentages, which makes the tracker unreliable for the role-quality decisions this document is meant to drive.
 
@@ -188,7 +188,7 @@ This PR adds the "Pre-start checklist (2026-05-13)" section but the row's frontm
 
 **@chatgpt-codex-connector** (2026-05-14T00:54:05Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Enforce 4-round pickup window in Action-rate calculation**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Enforce 4-round pickup window in Action-rate calculation**
 
 The update procedure currently says to count all PM-2 rows older than 4 rounds and then count how many were picked up, but it does not require that pickup happened **within** 4 rounds. That contradicts the metric definition above (`picked up within 4 rounds`) and will overstate Action-rate% whenever rows are picked up late (e.g., after 5+ rounds), making the calibration threshold decisions unreliable.
 

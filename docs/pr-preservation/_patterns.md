@@ -387,7 +387,7 @@ into one-line stale-resolved-by-reality replies:
 - **Pre-commit lint for inline-code-span line-wrap** (most-recurring
   formatting bug in the corpus).
 - **Doc-lint for claim-vs-list cardinality** (catches phase-numbering
-  + audit-count drift).
+  - audit-count drift).
 - **Doc-lint for unresolvable external-source references** (research
   docs without URLs / arXiv IDs / DOIs).
 - **`_patterns.md` self-update** — when a new drain-log lands, add
@@ -501,7 +501,7 @@ surface classes coexist in the same directory by design:
   **current-state synthesis-index** that should reflect the
   corpus state, not the historical sequence in which patterns
   were discovered. This is a third surface class —
-  *synthesis-over-history* — distinct from both pure
+  _synthesis-over-history_ — distinct from both pure
   history-class and pure current-state surfaces.
 
 The directory-level surface-class declaration in the

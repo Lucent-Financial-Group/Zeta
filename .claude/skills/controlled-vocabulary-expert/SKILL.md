@@ -9,8 +9,8 @@ Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
 A controlled vocabulary is an authoritative, versioned list
-of terms used to label things. It answers the question *what
-do we call this?* consistently across a system, across teams,
+of terms used to label things. It answers the question _what
+do we call this?_ consistently across a system, across teams,
 across years.
 
 ## The continuum
@@ -61,7 +61,7 @@ Linked-Data rendition of ISO 25964 thesauri. Core vocabulary:
 - **`skos:ConceptScheme`** — the vocabulary itself.
 - **`skos:broader` / `skos:narrower`** — hierarchy (if
   desired).
-- **`skos:related`** — associative; *not* hierarchical.
+- **`skos:related`** — associative; _not_ hierarchical.
 - **`skos:scopeNote`, `skos:definition`** — disambiguation.
 - **`skos:notation`** — the short code (e.g. `I21` in ICD-10).
 
@@ -237,7 +237,7 @@ cross-org vocabularies, a chair and a small review committee.
 - **Semantics beyond SKOS** → `ontology-expert`.
 - **Query substrate** → `knowledge-graph-expert`.
 - **Golden records of entities** → `master-data-management-
-  expert`.
+expert`.
 - **Vocabulary ownership policy** → `data-governance-expert`.
 - **Docs of the vocabulary** → `documentation-agent`.
 
@@ -275,15 +275,15 @@ concept scheme would enable renaming without broken links.
 
 ## Reference patterns
 
-- W3C — *SKOS Reference* (2009).
-- ISO 25964-1:2011 — *Thesauri and interoperability*.
-- ISO 25964-2:2013 — *Interoperability with other
-  vocabularies*.
+- W3C — _SKOS Reference_ (2009).
+- ISO 25964-1:2011 — _Thesauri and interoperability_.
+- ISO 25964-2:2013 — _Interoperability with other
+  vocabularies_.
 - SNOMED CT / LOINC / ICD-10 / MeSH / LCSH documentation.
 - Getty AAT / Getty ULAN / Getty TGN.
-- Shirky — *Ontology is Overrated* (2005).
-- Aitchison, Gilchrist, Bawden — *Thesaurus Construction
-  and Use* (4th ed 2000).
+- Shirky — _Ontology is Overrated_ (2005).
+- Aitchison, Gilchrist, Bawden — _Thesaurus Construction
+  and Use_ (4th ed 2000).
 - `.claude/skills/taxonomy-expert/SKILL.md` — tree sibling.
 - `.claude/skills/ontology-expert/SKILL.md` — semantic
   sibling.

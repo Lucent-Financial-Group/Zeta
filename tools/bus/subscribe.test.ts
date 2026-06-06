@@ -10,7 +10,9 @@ describe("bus subscribeOnce (B-0459 slice 1)", () => {
 
   // Helper to clear state
   function clearState() {
-    try { rmSync(seenFile); } catch {}
+    try {
+      rmSync(seenFile);
+    } catch {}
   }
 
   test("calls handler for unseen envelopes and records seen state", async () => {
@@ -68,12 +70,12 @@ describe("bus subscribeOnce (B-0459 slice 1)", () => {
       const fakeList = mock(() => [env]);
       const handler = mock(async (_env: MessageEnvelope) => {});
 
-      await expect(
-        subscribeOnce("work-assignment", surface, handler, { list: fakeList as any }),
-      ).rejects.toThrow();
+      await expect(subscribeOnce("work-assignment", surface, handler, { list: fakeList as any })).rejects.toThrow();
     } finally {
       chmodSync(failSeenFile, 0o644);
-      try { rmSync(failSeenFile); } catch {}
+      try {
+        rmSync(failSeenFile);
+      } catch {}
     }
   });
 
@@ -91,7 +93,9 @@ describe("bus subscribeOnce (B-0459 slice 1)", () => {
     };
 
     const fakeList = mock(() => [env2]);
-    const handlerFailing = mock(async () => { throw new Error("fail"); });
+    const handlerFailing = mock(async () => {
+      throw new Error("fail");
+    });
 
     await subscribeOnce("work-assignment", "test-surface", handlerFailing, { list: fakeList as any });
 

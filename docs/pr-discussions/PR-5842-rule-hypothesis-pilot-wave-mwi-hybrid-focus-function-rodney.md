@@ -16,15 +16,15 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Aaron 2026-05-28 (shadow*) authorization to save pilot-wave + MWI hybrid insight as RULE, with explicit framing-discipline 'hypothysis' OR 'rhymes' + substrate-anchor search.
+Aaron 2026-05-28 (shadow\*) authorization to save pilot-wave + MWI hybrid insight as RULE, with explicit framing-discipline 'hypothysis' OR 'rhymes' + substrate-anchor search.
 
 ## Three-tier framing discipline (per Aaron 2026-05-28)
 
-| Tier | Strength | Use |
-|---|---|---|
-| Established physics consensus | Strongest | NOT this rule |
-| Hypothesis | Testable in principle | Operational mental-model |
-| **Rhymes** (Aaron's softer framing) | NO truth-claim | Structural-pattern-recognition |
+| Tier                                | Strength              | Use                            |
+| ----------------------------------- | --------------------- | ------------------------------ |
+| Established physics consensus       | Strongest             | NOT this rule                  |
+| Hypothesis                          | Testable in principle | Operational mental-model       |
+| **Rhymes** (Aaron's softer framing) | NO truth-claim        | Structural-pattern-recognition |
 
 ## Substrate-anchors found via grep
 

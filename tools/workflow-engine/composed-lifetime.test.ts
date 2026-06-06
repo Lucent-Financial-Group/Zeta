@@ -23,10 +23,7 @@ interface ReviewLifetime extends LifetimeState {
   readonly kind: "pending" | "in-review" | "merged";
 }
 
-type Verdict =
-  | { kind: "advance" }
-  | { kind: "block"; reason: string }
-  | { kind: "complete" };
+type Verdict = { kind: "advance" } | { kind: "block"; reason: string } | { kind: "complete" };
 
 describe("composed-lifetime double-dispatch substrate", () => {
   it("composeKey produces composed key from two lifetime states", () => {
@@ -108,16 +105,8 @@ describe("composed-lifetime double-dispatch substrate", () => {
   });
 
   it("composeFromDispatcher: builds dense matrix from sparse cross-product", () => {
-    const workflowUniverse: WorkflowLifetime[] = [
-      { kind: "draft" },
-      { kind: "submitted" },
-      { kind: "approved" },
-    ];
-    const reviewUniverse: ReviewLifetime[] = [
-      { kind: "pending" },
-      { kind: "in-review" },
-      { kind: "merged" },
-    ];
+    const workflowUniverse: WorkflowLifetime[] = [{ kind: "draft" }, { kind: "submitted" }, { kind: "approved" }];
+    const reviewUniverse: ReviewLifetime[] = [{ kind: "pending" }, { kind: "in-review" }, { kind: "merged" }];
     // Only define 3 of 9 transitions
     const { matrix, undefinedCount } = composeFromDispatcher(
       workflowUniverse,
@@ -130,7 +119,7 @@ describe("composed-lifetime double-dispatch substrate", () => {
       },
     );
     expect(matrix.size).toBe(3);
-    expect(undefinedCount).toBe(6);  // 9 cross - 3 defined = 6 undefined
+    expect(undefinedCount).toBe(6); // 9 cross - 3 defined = 6 undefined
   });
 
   it("editable-lifetime substrate: adding new variants to matrix works at runtime", () => {
@@ -154,33 +143,21 @@ describe("composed-lifetime double-dispatch substrate", () => {
   });
 
   it("workflow-review composition: full 9-transition matrix exercised", () => {
-    const workflowUniverse: WorkflowLifetime[] = [
-      { kind: "draft" },
-      { kind: "submitted" },
-      { kind: "approved" },
-    ];
-    const reviewUniverse: ReviewLifetime[] = [
-      { kind: "pending" },
-      { kind: "in-review" },
-      { kind: "merged" },
-    ];
-    const { matrix } = composeFromDispatcher(
-      workflowUniverse,
-      reviewUniverse,
-      (a, b): Verdict => {
-        // Realistic dispatcher: encode all 9 transitions
-        if (a.kind === "draft" && b.kind === "pending") return { kind: "advance" };
-        if (a.kind === "draft" && b.kind === "in-review") return { kind: "block", reason: "can't review draft" };
-        if (a.kind === "draft" && b.kind === "merged") return { kind: "block", reason: "can't merge draft" };
-        if (a.kind === "submitted" && b.kind === "pending") return { kind: "advance" };
-        if (a.kind === "submitted" && b.kind === "in-review") return { kind: "advance" };
-        if (a.kind === "submitted" && b.kind === "merged") return { kind: "block", reason: "not approved" };
-        if (a.kind === "approved" && b.kind === "pending") return { kind: "advance" };
-        if (a.kind === "approved" && b.kind === "in-review") return { kind: "advance" };
-        if (a.kind === "approved" && b.kind === "merged") return { kind: "complete" };
-        return { kind: "block", reason: "unknown" };
-      },
-    );
+    const workflowUniverse: WorkflowLifetime[] = [{ kind: "draft" }, { kind: "submitted" }, { kind: "approved" }];
+    const reviewUniverse: ReviewLifetime[] = [{ kind: "pending" }, { kind: "in-review" }, { kind: "merged" }];
+    const { matrix } = composeFromDispatcher(workflowUniverse, reviewUniverse, (a, b): Verdict => {
+      // Realistic dispatcher: encode all 9 transitions
+      if (a.kind === "draft" && b.kind === "pending") return { kind: "advance" };
+      if (a.kind === "draft" && b.kind === "in-review") return { kind: "block", reason: "can't review draft" };
+      if (a.kind === "draft" && b.kind === "merged") return { kind: "block", reason: "can't merge draft" };
+      if (a.kind === "submitted" && b.kind === "pending") return { kind: "advance" };
+      if (a.kind === "submitted" && b.kind === "in-review") return { kind: "advance" };
+      if (a.kind === "submitted" && b.kind === "merged") return { kind: "block", reason: "not approved" };
+      if (a.kind === "approved" && b.kind === "pending") return { kind: "advance" };
+      if (a.kind === "approved" && b.kind === "in-review") return { kind: "advance" };
+      if (a.kind === "approved" && b.kind === "merged") return { kind: "complete" };
+      return { kind: "block", reason: "unknown" };
+    });
     expect(matrix.size).toBe(9);
     // Exercise all 9 transitions
     let advanceCount = 0;
@@ -188,9 +165,15 @@ describe("composed-lifetime double-dispatch substrate", () => {
     let completeCount = 0;
     for (const [_, verdict] of matrix.entries()) {
       switch (verdict.kind) {
-        case "advance": advanceCount++; break;
-        case "block": blockCount++; break;
-        case "complete": completeCount++; break;
+        case "advance":
+          advanceCount++;
+          break;
+        case "block":
+          blockCount++;
+          break;
+        case "complete":
+          completeCount++;
+          break;
       }
     }
     expect(advanceCount).toBe(5);

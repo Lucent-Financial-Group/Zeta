@@ -32,7 +32,7 @@ session Otto-94)
 
 ## Preamble context from Aaron (Otto-94)
 
-*"Another update from Amara"* — single-line framing followed
+_"Another update from Amara"_ — single-line framing followed
 by full ferry paste. Light-touch paste with no additional
 directive framing.
 
@@ -591,8 +591,8 @@ This one should be engineering-facing. It should define:
 - independence penalty,
 - contradiction weighting,
 - and output types such as `supported`, `looks similar but
-  lineage-coupled`, `plausible but unresolved`, `likely
-  confabulated`, `known-bad pattern`.
+lineage-coupled`, `plausible but unresolved`, `likely
+confabulated`, `known-bad pattern`.
 
 A future operational promotion could then be much smaller,
 for example:
@@ -695,7 +695,7 @@ testable addition rather than just a beautiful note.
 
 ---
 
-*(End of Amara's verbatim ferry.)*
+_(End of Amara's verbatim ferry.)_
 
 ---
 
@@ -737,7 +737,7 @@ Amara named 3 research-grade absorbs + 1 operational
 promotion target + 5 TECH-RADAR row additions:
 
 1. **Quantum-sensing research doc** (S). `docs/research/
-   quantum-sensing-low-snr-detection-and-analogy-boundaries.md`
+quantum-sensing-low-snr-detection-and-analogy-boundaries.md`
    — separates real literature from software analogy; "do
    not operationalize" header; software-analogue mapping
    (retained-reference-path / correlation-beats-isolated /
@@ -746,7 +746,7 @@ promotion target + 5 TECH-RADAR row additions:
 
 2. **Semantic-canonicalization research doc** (M).
    `docs/research/semantic-canonicalization-and-provenance-
-   aware-retrieval.md` — canonicalization N(x) + embedding
+aware-retrieval.md` — canonicalization N(x) + embedding
    φ(c) + kNN retrieval + provenance scoring + retraction-
    native ledger. Cross-references SD-9 + citations-as-
    first-class + alignment-observability. File as candidate
@@ -767,7 +767,7 @@ promotion target + 5 TECH-RADAR row additions:
    discipline. Doc landed in main 2026-04-23.)
 
 4. **Future operational promotion — `docs/EVIDENCE-AND-
-   AGREEMENT.md`** (deferred; post-3-research-docs). Teaches
+AGREEMENT.md`** (deferred; post-3-research-docs). Teaches
    contributors how to interpret agreement, lineage, and
    semantic matches in review practice. Candidate BACKLOG
    row but gated on the 3 research docs landing first.

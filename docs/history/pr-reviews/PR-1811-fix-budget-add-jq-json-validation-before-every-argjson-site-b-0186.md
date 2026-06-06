@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1811 |
-| Title | fix(budget): add jq JSON validation before every --argjson site (B-0186) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T06:06:49Z |
-| Merged at | 2026-05-07T06:17:50Z |
-| Merge commit SHA | `d9909afa82a60ace5b04905113d5ede661db2d70` |
-| Branch | `fix/budget-snapshot-jq-argjson-validation` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1811 |
-| Changed files | 3 |
-| Additions / deletions | +16 / -6 |
+| Field                 | Value                                                                    |
+| --------------------- | ------------------------------------------------------------------------ |
+| Number                | 1811                                                                     |
+| Title                 | fix(budget): add jq JSON validation before every --argjson site (B-0186) |
+| Author                | `AceHack` (human)                                                        |
+| State                 | MERGED                                                                   |
+| Created at            | 2026-05-07T06:06:49Z                                                     |
+| Merged at             | 2026-05-07T06:17:50Z                                                     |
+| Merge commit SHA      | `d9909afa82a60ace5b04905113d5ede661db2d70`                               |
+| Branch                | `fix/budget-snapshot-jq-argjson-validation`                              |
+| Base branch           | `main`                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1811                 |
+| Changed files         | 3                                                                        |
+| Additions / deletions | +16 / -6                                                                 |
 
 ## Description
 
 ## Summary
+
 - Adds `ensure_json()` helper to `tools/budget/snapshot-burn.sh` that validates JSON with `jq empty` before each `--argjson` site
 - Catches the case where `gh api` returns partial stdout + non-zero exit, producing invalid JSON that the `|| echo "{}"` fallback appends to rather than replaces
 - Applied to all 4 API call sites: copilot billing, workflow runs, per-run timing, and PR stats
 - Verified with `--dry-run` — script produces valid JSON output
 
 ## Test plan
+
 - [x] `bash tools/budget/snapshot-burn.sh --dry-run` produces valid JSON
 - [ ] Next Sunday cron fire (2026-05-10) confirms CI fix
 - [ ] Closes B-0186
@@ -42,15 +44,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 3 |
-| Resolved threads | 3 |
-| Unresolved threads | 0 |
-| Total review comments | 6 |
-| Total fix commits (touching thread paths) | 4 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 3     |
+| Resolved threads                          | 3     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 6     |
+| Total fix commits (touching thread paths) | 4     |
 
 ## Review threads
 
@@ -66,19 +68,19 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Reject JSON streams in ensure_json**
-
+  
   `ensure_json` currently validates with `jq empty`, which succeeds for a stream of multiple JSON values (for example, a successful API payload followed by the `|| echo "{}"` fallback when `gh api` still exits non-zero). In that case this helper returns the multi-document text unchanged, and the later `jq --argjson ...` sites fail because `--argjson` requires exactly one JSON value. This means the new guard can still miss the failure mode it is meant to prevent, so the workflow can continue to hit the same `invalid JSON text passed to --argjson` break under partial-failure API responses.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T06:12:45Z on `tools/budget/snapshot-burn.sh`:68 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T06:12:45Z on `tools/budget/snapshot-burn.sh`:68 (association: MEMBER)
 
-    <pre>
-    Fixed in 360ae5a — changed jq empty to jq -se 'length == 1' which rejects multi-value JSON streams. Good catch.
-    </pre>
+  <pre>
+  Fixed in 360ae5a — changed jq empty to jq -se 'length == 1' which rejects multi-value JSON streams. Good catch.
+  </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -93,16 +95,16 @@
   <pre>
   ensure_json uses `echo` for both validation input and output. `echo` has unspecified escape/option handling in shell scripts (and can be affected by bash `xpg_echo`), which can mutate JSON strings before `jq` sees them. Prefer `printf '%s'` (and `printf '%s
   '` for output) to preserve the JSON bytes exactly across environments.
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T06:15:12Z on `tools/budget/snapshot-burn.sh`:68 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T06:15:12Z on `tools/budget/snapshot-burn.sh`:68 (association: MEMBER)
 
-    <pre>
-    Fixed in 22bef28 — replaced echo with printf '%s' for validation input and printf '%s\n' for output.
-    </pre>
+  <pre>
+  Fixed in 22bef28 — replaced echo with printf '%s' for validation input and printf '%s\n' for output.
+  </pre>
 
 ### Thread 3 -- resolved [collapsed]
 
@@ -120,11 +122,11 @@
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-07T06:15:16Z on `docs/backlog/P1/B-0186-budget-snapshot-cadence-jq-argjson-failure-2026-05-03.md`:6 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-07T06:15:16Z on `docs/backlog/P1/B-0186-budget-snapshot-cadence-jq-argjson-failure-2026-05-03.md`:6 (association: MEMBER)
 
-    <pre>
-    Already fixed in aa01039 — closed_by updated to PR #1811.
-    </pre>
+  <pre>
+  Already fixed in aa01039 — closed_by updated to PR #1811.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

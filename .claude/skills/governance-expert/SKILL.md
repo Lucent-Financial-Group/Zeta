@@ -27,13 +27,13 @@ ungoverned.
 
 ## RACI / DACI / ARCI
 
-| Letter | Meaning |
-|---|---|
-| **R** | Responsible — does the work |
-| **A** | Accountable — signs off; exactly one |
-| **C** | Consulted — input, two-way |
-| **I** | Informed — notified, one-way |
-| **D** (DACI) | Decider |
+| Letter       | Meaning                              |
+| ------------ | ------------------------------------ |
+| **R**        | Responsible — does the work          |
+| **A**        | Accountable — signs off; exactly one |
+| **C**        | Consulted — input, two-way           |
+| **I**        | Informed — notified, one-way         |
+| **D** (DACI) | Decider                              |
 
 **Rule.** Exactly one A per decision. Multiple A's = nobody
 accountable. Zero A's = nobody accountable.
@@ -42,35 +42,35 @@ accountable. Zero A's = nobody accountable.
 
 ## Decision-rights patterns
 
-| Pattern | Example | Hazard |
-|---|---|---|
-| **Autocratic** | One person decides | Capricious |
-| **Consultative** | One decides after input | Input-theatre |
-| **Consensus** | All agree | Slow, lowest-common-denom |
-| **Majority** | > 50% | Tyranny of majority |
-| **Supermajority** | > 66% / 75% | Minority veto |
-| **Unanimous** | All | One veto |
-| **BDFL** | Founder decides; advisory board | Founder-risk |
-| **Foundation** | Chartered body decides | Political |
-| **Lazy consensus** | Silence = yes | Low-engagement trap |
+| Pattern            | Example                         | Hazard                    |
+| ------------------ | ------------------------------- | ------------------------- |
+| **Autocratic**     | One person decides              | Capricious                |
+| **Consultative**   | One decides after input         | Input-theatre             |
+| **Consensus**      | All agree                       | Slow, lowest-common-denom |
+| **Majority**       | > 50%                           | Tyranny of majority       |
+| **Supermajority**  | > 66% / 75%                     | Minority veto             |
+| **Unanimous**      | All                             | One veto                  |
+| **BDFL**           | Founder decides; advisory board | Founder-risk              |
+| **Foundation**     | Chartered body decides          | Political                 |
+| **Lazy consensus** | Silence = yes                   | Low-engagement trap       |
 
 **Rule.** Pick the pattern per decision-class, not per
 organisation. A well-run org uses all of them situationally.
 
 ## OSS governance models
 
-| Project | Model |
-|---|---|
-| **Linux** | Linus as BDFL + maintainers + subsystem trees |
-| **Python** | Steering Council (post-Guido) |
-| **Rust** | Core team + subteams (reorganised 2023) |
-| **Apache** | Foundation + PMC per project + meritocracy |
-| **Node.js** | TSC + CTC (Node TSC absorbed it 2017) |
-| **Kubernetes** | Steering + SIGs + WGs (CNCF umbrella) |
-| **Ruby** | Matz-led, merit-based |
-| **PostgreSQL** | Core team + committers, voted |
-| **Debian** | Constitutional; elected DPL |
-| **Django** | TSC; moved from BDFL 2014 |
+| Project        | Model                                         |
+| -------------- | --------------------------------------------- |
+| **Linux**      | Linus as BDFL + maintainers + subsystem trees |
+| **Python**     | Steering Council (post-Guido)                 |
+| **Rust**       | Core team + subteams (reorganised 2023)       |
+| **Apache**     | Foundation + PMC per project + meritocracy    |
+| **Node.js**    | TSC + CTC (Node TSC absorbed it 2017)         |
+| **Kubernetes** | Steering + SIGs + WGs (CNCF umbrella)         |
+| **Ruby**       | Matz-led, merit-based                         |
+| **PostgreSQL** | Core team + committers, voted                 |
+| **Debian**     | Constitutional; elected DPL                   |
+| **Django**     | TSC; moved from BDFL 2014                     |
 
 **Rule.** The move from BDFL to council is a predictable
 maturity step — not a crisis. Python 2018 (Guido stepping
@@ -109,19 +109,19 @@ Audit without reversion trigger becomes performance.
 - **Public roadmaps.** Organisational.
 - **Transparent decision logs.** ADRs, minutes.
 
-**Rule.** "Blameless post-mortem" means blameless *for
-the incident*, not blameless *for the role*. Someone owned
+**Rule.** "Blameless post-mortem" means blameless _for
+the incident_, not blameless _for the role_. Someone owned
 that service; that fact is load-bearing.
 
 ## Governance vs management
 
-| Governance | Management |
-|---|---|
-| Sets rules | Operates under them |
-| What's allowed | How to do the allowed |
-| Board level | Executive level |
-| Slow, deliberate | Fast, reactive |
-| Decisions | Actions |
+| Governance       | Management            |
+| ---------------- | --------------------- |
+| Sets rules       | Operates under them   |
+| What's allowed   | How to do the allowed |
+| Board level      | Executive level       |
+| Slow, deliberate | Fast, reactive        |
+| Decisions        | Actions               |
 
 **Rule.** A governance meeting that decides tactical
 actions has collapsed into management. A management meeting
@@ -256,11 +256,11 @@ Architect-with-consent or human.
 - ISO 37000 (governance of organizations).
 - NIST AI RMF.
 - EU AI Act (2024).
-- *Producing Open Source Software* (Fogel).
-- *The Art of Community* (Bacon).
+- _Producing Open Source Software_ (Fogel).
+- _The Art of Community_ (Bacon).
 - Python PEP 13 (governance).
 - Apache Project Maturity Model.
-- Brooks — *The Mythical Man-Month* (Conway's Law).
+- Brooks — _The Mythical Man-Month_ (Conway's Law).
 - `.claude/skills/data-governance-expert/SKILL.md`.
 - `.claude/skills/conflict-resolution-expert/SKILL.md`.
 - `.claude/skills/negotiation-expert/SKILL.md`.

@@ -87,14 +87,14 @@ state, but it does not satisfy the second live participant requirement.
 
 ## Matrix Outcome
 
-| Requirement | Result | Evidence |
-|---|---:|---|
-| Participant A publishes an active remote claim | pass | Historical A claim commit `3f061c7d`; clean A acknowledgement claim `e7d7210d8` |
-| Participant B starts without local bus state | pass | B claim `ea0d85461` is present on `origin/claim/task-codex-loop-remote-only-participant-b-receipt-20260529` |
-| Participant B chooses a disjoint path set | pass | B targets only `docs/claims/task-codex-loop-remote-only-participant-b-receipt-20260529.md`; A acknowledgement targets this receipt doc |
-| Participant A records a progress receipt for B | pass | This receipt acknowledges B claim `ea0d85461` and records the disjoint path comparison |
-| Stale overlap can be retired from remote git history | pass | `031410d4a` deletes `docs/claims/task-remote-only-claim-dry-run.md` |
-| Full release state is recoverable from git history | partial | Both current claims remain active until release commits/PRs land |
+| Requirement                                          |  Result | Evidence                                                                                                                               |
+| ---------------------------------------------------- | ------: | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Participant A publishes an active remote claim       |    pass | Historical A claim commit `3f061c7d`; clean A acknowledgement claim `e7d7210d8`                                                        |
+| Participant B starts without local bus state         |    pass | B claim `ea0d85461` is present on `origin/claim/task-codex-loop-remote-only-participant-b-receipt-20260529`                            |
+| Participant B chooses a disjoint path set            |    pass | B targets only `docs/claims/task-codex-loop-remote-only-participant-b-receipt-20260529.md`; A acknowledgement targets this receipt doc |
+| Participant A records a progress receipt for B       |    pass | This receipt acknowledges B claim `ea0d85461` and records the disjoint path comparison                                                 |
+| Stale overlap can be retired from remote git history |    pass | `031410d4a` deletes `docs/claims/task-remote-only-claim-dry-run.md`                                                                    |
+| Full release state is recoverable from git history   | partial | Both current claims remain active until release commits/PRs land                                                                       |
 
 ## Finding
 

@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1260 |
-| Title | tools(substrate-claim-checker): v0 — count-drift detection + B-0170 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T00:55:04Z |
-| Merged at | 2026-05-03T01:39:54Z |
-| Merge commit SHA | `b8b975bce303208b3576875c88bf2e2f9b6acde2` |
-| Branch | `tools/substrate-claim-checker-v0-count-consistency-aaron-2026-05-03` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1260 |
-| Changed files | 15 |
-| Additions / deletions | +755 / -0 |
+| Field                 | Value                                                                 |
+| --------------------- | --------------------------------------------------------------------- |
+| Number                | 1260                                                                  |
+| Title                 | tools(substrate-claim-checker): v0 — count-drift detection + B-0170   |
+| Author                | `AceHack` (human)                                                     |
+| State                 | MERGED                                                                |
+| Created at            | 2026-05-03T00:55:04Z                                                  |
+| Merged at             | 2026-05-03T01:39:54Z                                                  |
+| Merge commit SHA      | `b8b975bce303208b3576875c88bf2e2f9b6acde2`                            |
+| Branch                | `tools/substrate-claim-checker-v0-count-consistency-aaron-2026-05-03` |
+| Base branch           | `main`                                                                |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1260              |
+| Changed files         | 15                                                                    |
+| Additions / deletions | +755 / -0                                                             |
 
 ## Description
 
@@ -53,15 +53,15 @@ V0 of `tools/substrate-claim-checker/` per the verify-then-claim discipline mech
 
 Per the verify-then-claim catalogue's 7 sub-classes:
 
-| Sub-class | v0? |
-|---|---|
-| Count drift | ✓ shipped |
-| Existence drift | v1 |
-| Semantic-equivalence drift | v1 |
-| Empirical-output drift | v1 |
-| Convention drift | v1 |
-| Path-form drift | v1 |
-| Self-recursive drift | v1 |
+| Sub-class                  | v0?       |
+| -------------------------- | --------- |
+| Count drift                | ✓ shipped |
+| Existence drift            | v1        |
+| Semantic-equivalence drift | v1        |
+| Empirical-output drift     | v1        |
+| Convention drift           | v1        |
+| Path-form drift            | v1        |
+| Self-recursive drift       | v1        |
 
 Plus pre-commit + commit-msg + CI hook integration in subsequent PRs.
 
@@ -89,15 +89,15 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 33 |
-| Resolved threads | 30 |
-| Unresolved threads | 3 |
-| Total review comments | 33 |
-| Total fix commits (touching thread paths) | 11 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 33    |
+| Resolved threads                          | 30    |
+| Unresolved threads                        | 3     |
+| Total review comments                     | 33    |
+| Total fix commits (touching thread paths) | 11    |
 
 ## Review threads
 
@@ -110,10 +110,10 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T00:57:58Z on `tools/substrate-claim-checker/check-counts.ts`:121 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Fail fast when an input file is missing**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Fail fast when an input file is missing**
+
   Returning an empty findings list for a missing file causes the command to succeed (`no count drift detected`) when all provided paths are wrong, which silently bypasses the gate this tool is meant to enforce. In hook/CI usage, a typo or stale path should be treated as an input error and produce exit code 1, but this branch currently suppresses that failure state.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [collapsed]
@@ -125,10 +125,10 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T00:57:58Z on `tools/substrate-claim-checker/check-counts.ts`:174 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve '+' semantics in count claims**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Preserve '+' semantics in count claims**
+
   The regex accepts claims like `19+ drift instances`, but only captures `19`; later logic compares for exact equality, so a true lower-bound claim (e.g., 21 rows) is incorrectly flagged as drift. Because `+` is explicitly supported in the pattern, this creates systematic false positives for the documented claim style.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -184,10 +184,10 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:05:14Z on `tools/substrate-claim-checker/check-counts.ts`:70 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Ignore fenced code blocks when discovering tables**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Ignore fenced code blocks when discovering tables**
+
   `findTables` treats any `|...|` + separator sequence as a real table, but unlike `findClaims` it never tracks fenced-code-block state. If a claim is followed by an example code block containing table-like lines (common in docs), the checker will bind that claim to the code sample instead of the intended markdown table and report a false drift/failure. This makes the hook noisy in legitimate docs and can block commits even when counts are correct.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -200,7 +200,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:07:58Z on `docs/backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md`:52 (association: NONE)
   The sub-class table marks “Frontmatter ↔ body ↔ index count drift” as “v0 covers”, but v0 (check-counts.ts) only checks narrative `N <noun>` claims against nearby markdown table row counts; it doesn’t parse YAML frontmatter or reconcile against `docs/BACKLOG.md`. Consider rewording this row (mark v1+) or clarify what v0 actually covers to avoid overstating current capability.
-  
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -223,7 +222,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:07:58Z on `tools/substrate-claim-checker/check-counts.ts`:70 (association: NONE)
   The separator-line regex `^\|[\s\-:|]+\|\s*$` will treat lines like `|   |` / `||||` as a valid table separator even though they contain no dashes. That can cause false table detection and incorrect row counts. Tighten the separator detection to require at least one `-` per column (or at least one `-` somewhere on the separator line).
-  
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -245,10 +243,10 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:10:50Z on `tools/substrate-claim-checker/check-counts.ts`:73 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Track fence delimiter length when skipping code blocks**
-  
-  The fence parser flips `inFence` on any line starting with ``` or ~~~, but Markdown only closes a fence with the same marker character and at least the opener length. In files that use 4-backtick fences to show nested ``` examples (common in docs about Markdown), this toggle exits early and starts scanning code content as prose/tables, producing false drift findings or missed real findings. Record the opener marker type/length and only close on a valid matching fence.
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Track fence delimiter length when skipping code blocks**
+
+  The fence parser flips `inFence` on any line starting with `or ~~~, but Markdown only closes a fence with the same marker character and at least the opener length. In files that use 4-backtick fences to show nested` examples (common in docs about Markdown), this toggle exits early and starts scanning code content as prose/tables, producing false drift findings or missed real findings. Record the opener marker type/length and only close on a valid matching fence.
+
   Useful? React with 👍 / 👎.
 
 ### Thread 13 -- resolved [outdated, collapsed]
@@ -260,10 +258,10 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:10:50Z on `tools/substrate-claim-checker/check-counts.ts`:174 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reject directories as input errors instead of crashing**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reject directories as input errors instead of crashing**
+
   The input check only uses `existsSync`, so a directory path passes validation and then `readFileSync` throws `EISDIR`. That uncaught exception aborts the whole run before remaining files are processed, which breaks the tool’s intended per-file error reporting behavior. Treat non-regular files as input errors (like missing files) and continue scanning other arguments.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 14 -- resolved [collapsed]
@@ -276,7 +274,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:13:12Z on `docs/hygiene-history/ticks/2026/05/03/0108Z.md`:1 (association: NONE)
   This tick entry claims “substrate-claim-checker v0.1 → v0.2”, but `tools/substrate-claim-checker/check-counts.ts` currently identifies itself as `v0.1` in its header. Please reconcile these version labels so the hygiene-history log stays consistent with the actual shipped version in this PR.
-  
 
 ### Thread 15 -- resolved [outdated, collapsed]
 
@@ -288,7 +285,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:13:12Z on `docs/BACKLOG.md`:51 (association: NONE)
   `docs/BACKLOG.md` is marked as auto-generated (“Do NOT edit this file directly”) and is expected to be regenerated from per-row files via `tools/backlog/generate-index.sh` (see `tools/backlog/README.md:15-16,99-103`). To avoid generator drift / CI failures, update the per-row file and regenerate the index rather than editing this file by hand.
-  
 
 ### Thread 16 -- resolved [collapsed]
 
@@ -311,7 +307,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:13:13Z on `tools/substrate-claim-checker/check-counts.ts`:177 (association: NONE)
   `existsSync()` only checks that the path exists; `readFileSync()` can still throw (permissions, directory path, transient IO). Right now that would crash the script with a stack trace instead of being counted as an input error. Wrap the read/split in a try/catch and return `{ ok: false }` with a clear error message (similar to how other tools handle unreadable files, e.g. `tools/audit-packages.ts:98-103`).
-  
 
 ### Thread 18 -- resolved [outdated, collapsed]
 
@@ -333,10 +328,11 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-05-03T01:16:53Z on `tools/substrate-claim-checker/check-counts.ts`:212 (association: NONE)
+
   ## CodeQL / Potential file system race condition
-  
+
   The file may have changed since it [was checked](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/41)
 
 ### Thread 20 -- resolved [outdated, collapsed]
@@ -349,7 +345,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:21:42Z on `tools/substrate-claim-checker/README.md`:27 (association: NONE)
   P1: The README says drift is reported when the claimed N “differs” from actual, but the tool implements special semantics for an N+ suffix (minimum-count claim: drift only when actual < N). Please document the N+ behavior explicitly so users interpret results correctly.
-  
 
 ### Thread 21 -- resolved [outdated, collapsed]
 
@@ -361,7 +356,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:21:42Z on `tools/substrate-claim-checker/README.md`:71 (association: NONE)
   P1: The "Eval set" section claims "19+" drift instances and references instance "#19" as count-drift, but the linked verify-then-claim memo currently enumerates 15 drift instances and does not have a row 19. Please reconcile these numbers (either update the memo/eval set, or soften the README text so it stays accurate as the catalogue evolves).
-  
 
 ### Thread 22 -- resolved [outdated, collapsed]
 
@@ -405,10 +399,10 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:23:57Z on `tools/substrate-claim-checker/check-counts.ts`:80 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Enforce CommonMark closing-fence rules**
-  
-  The fence detector treats any line starting with backticks/tilde as a close candidate, so lines like `````js`` inside a fenced block (or fences indented 4+ spaces) incorrectly toggle `inFence`. In CommonMark, a closing fence must have at most 3 leading spaces and only trailing spaces/tabs after the delimiter; violating this causes code-block content to be scanned as prose/tables, which can produce both false count-drift findings and missed real findings. The same regex shape is used in both `findTables` and `findClaims`.
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Enforce CommonMark closing-fence rules**
+
+  The fence detector treats any line starting with backticks/tilde as a close candidate, so lines like ````js` inside a fenced block (or fences indented 4+ spaces) incorrectly toggle `inFence`. In CommonMark, a closing fence must have at most 3 leading spaces and only trailing spaces/tabs after the delimiter; violating this causes code-block content to be scanned as prose/tables, which can produce both false count-drift findings and missed real findings. The same regex shape is used in both `findTables` and `findClaims`.
+
   Useful? React with 👍 / 👎.
 
 ### Thread 26 -- resolved [outdated, collapsed]
@@ -420,7 +414,7 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-03T01:33:29Z on `tools/substrate-claim-checker/check-counts.ts`:98 (association: NONE)
-  Fence tracking closes a code fence whenever a line starts with ```/~~~ of the same char and length, even if the line has non-whitespace trailing text (e.g. "```bash"). Per CommonMark, closing fences may only be followed by spaces/tabs; otherwise this can prematurely exit a fenced block and miscount tables/claims inside code examples. Tighten the close-fence check to require the delimiter to consume the whole line (aside from whitespace).
+  Fence tracking closes a code fence whenever a line starts with `/~~~ of the same char and length, even if the line has non-whitespace trailing text (e.g. "`bash"). Per CommonMark, closing fences may only be followed by spaces/tabs; otherwise this can prematurely exit a fenced block and miscount tables/claims inside code examples. Tighten the close-fence check to require the delimiter to consume the whole line (aside from whitespace).
 
 ### Thread 27 -- resolved [outdated, collapsed]
 
@@ -454,7 +448,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:33:30Z on `docs/BACKLOG.md`:51 (association: NONE)
   docs/BACKLOG.md is marked AUTO-GENERATED by tools/backlog/generate-index.sh, and CI enforces it matches the per-row files. This new B-0170 entry text does not match the `title:` in docs/backlog/P1/B-0170-...md (it includes a different parenthetical), so the generator drift check will fail. Regenerate docs/BACKLOG.md from the row file rather than editing this line manually.
-  
 
 ### Thread 30 -- resolved [collapsed]
 
@@ -466,7 +459,6 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 
 - **`Copilot` (bot)** at 2026-05-03T01:33:30Z on `docs/hygiene-history/ticks/2026/05/03/0128Z.md`:1 (association: NONE)
   This tick row claims changes that don’t match the code/docs added in this PR (e.g., it references v0.4.3, and says README + B-0170 removed specific "19+"/"20+" count claims, but those counts still appear in the README and B-0170 content in this diff). Please correct the tick entry to reflect what actually changed in this PR so the hygiene-history log stays accurate.
-  
 
 ### Thread 31 -- unresolved
 
@@ -499,10 +491,10 @@ This PR breaks the drift-fix-meta-cycle from the past several ticks by shipping 
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:40:33Z on `tools/substrate-claim-checker/check-counts.ts`:128 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate delimiter dashes in each table column**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Validate delimiter dashes in each table column**
+
   The separator regex accepts any line with at least one `-`, so malformed delimiter rows like `| --- | : |` or `| --- |   |` are treated as valid tables even though GFM/CommonMark table delimiters require a hyphen in each column. In those cases, `findTables` can bind a nearby numeric claim to a non-table construct and emit drift findings against row counts that don’t correspond to an actual rendered table, creating noisy CI failures.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)
@@ -583,7 +575,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Message:**
 
-```
+````
 review(pr-1260): substrate-claim-checker v0.1 — address 6 Copilot fin…
 
 …dings + 2 lint fails
@@ -638,7 +630,7 @@ is a count/semantic claim that needed empirical verification
 before publishing.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
-```
+````
 
 ### `b9faf5772c04759b1320dcf4a695323392c2b3c2` -- 2026-05-03T01:08:11Z -- `AceHack`
 
@@ -648,7 +640,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Message:**
 
-```
+````
 review(pr-1260): v0.2 — findTables skips fenced code blocks
 
 P2 finding on PR #1260: `findTables()` previously matched any
@@ -684,7 +676,7 @@ publishing claim would have caught this.
 tsc --noEmit passes against full repo tsconfig.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
-```
+````
 
 ### `d63f64af61e5eabdbba8137c7bb336eb9c3d897d` -- 2026-05-03T01:08:41Z -- `AceHack`
 
@@ -766,7 +758,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Message:**
 
-```
+````
 review(pr-1260): v0.4 — CommonMark fence delimiter tracking + directo…
 
 …ry rejection
@@ -800,7 +792,7 @@ robustness — the kind of edge case the eventual deployed-tool
 will hit on real corpus.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
-```
+````
 
 ### `8f1cda1d6a3c1575996f12033ef4d51deaa7e738` -- 2026-05-03T01:17:17Z -- `AceHack`
 
@@ -996,7 +988,7 @@ Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
 
 **Message:**
 
-```
+````
 review(pr-1260): v0.4.4 — fence-close requires whitespace-only after …
 
 …delimiter; remove remaining 19+/20+ count claims; bump header
@@ -1041,4 +1033,4 @@ this is itself a verify-then-claim drift instance: I claimed
 v0.4.4 catches the rest. tsc clean; 16/16 tests pass.
 
 Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
-```
+````

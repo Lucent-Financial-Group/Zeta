@@ -24,13 +24,13 @@ Source: Aaron 2026-05-26 architectural framing + Kestrel substantive elaboration
 
 ## The collapse this lands
 
-| Standard pattern | Aaron + Kestrel framing |
-|---|---|
-| Schemas are text artifacts in version control | Schemas are ROWS in distributed database substrate |
-| Schema fork = text-merge through git workflows | Cluster-fork-or-federation = operational boundary; runtime-distinct |
-| Types compiled from source code | Types preloaded from live cluster; fork-aware |
-| Schema migration breaks deployments | Deployment reflects schema state compiled against; federation translates |
-| Schema = code-layer concern | Schema = data-layer concern using same generate+join semantics |
+| Standard pattern                               | Aaron + Kestrel framing                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| Schemas are text artifacts in version control  | Schemas are ROWS in distributed database substrate                       |
+| Schema fork = text-merge through git workflows | Cluster-fork-or-federation = operational boundary; runtime-distinct      |
+| Types compiled from source code                | Types preloaded from live cluster; fork-aware                            |
+| Schema migration breaks deployments            | Deployment reflects schema state compiled against; federation translates |
+| Schema = code-layer concern                    | Schema = data-layer concern using same generate+join semantics           |
 
 ## Relationship to B-0826 (Runme BCL extension)
 
@@ -48,12 +48,12 @@ This row is logically prior to B-0826 implementation; the schemas-as-rows substr
 
 Operational claim: schemas live in the same substrate as the data they describe.
 
-| Standard | This substrate |
-|---|---|
-| Schemas in `schema.sql` migration files | Schemas in `schemas` table as rows |
-| Schema version in code | Schema version in row metadata |
-| Schema modification = code commit | Schema modification = row INSERT/UPDATE |
-| Schema query = read source code | Schema query = SQL `SELECT * FROM schemas WHERE ...` |
+| Standard                                | This substrate                                       |
+| --------------------------------------- | ---------------------------------------------------- |
+| Schemas in `schema.sql` migration files | Schemas in `schemas` table as rows                   |
+| Schema version in code                  | Schema version in row metadata                       |
+| Schema modification = code commit       | Schema modification = row INSERT/UPDATE              |
+| Schema query = read source code         | Schema query = SQL `SELECT * FROM schemas WHERE ...` |
 
 The CRDT-CAS-BFT layered mediation (per PR #5285) operates on schemas the same way it operates on data:
 
@@ -67,11 +67,11 @@ Operational claim: the forking boundary is the operational boundary; cluster for
 
 Three trust-boundary configurations:
 
-| Configuration | Properties |
-|---|---|
-| **Single cluster** | Participants share enough common substrate to operate as one system |
-| **Federation** | Participants agree on federation protocol but maintain distinct cluster-internal substrates |
-| **Fork-without-federation** | Two clusters share lineage but no current trust relationship |
+| Configuration               | Properties                                                                                  |
+| --------------------------- | ------------------------------------------------------------------------------------------- |
+| **Single cluster**          | Participants share enough common substrate to operate as one system                         |
+| **Federation**              | Participants agree on federation protocol but maintain distinct cluster-internal substrates |
+| **Fork-without-federation** | Two clusters share lineage but no current trust relationship                                |
 
 The same conceptual machinery (trust boundary as the unit of operational coherence) describes all three; the differences are about which schemas/data flow across which boundaries.
 
@@ -141,20 +141,20 @@ Schema evolution becomes a temporal phenomenon. Type system at time T reflects s
 
 ## AI-era schema-evolution cadence
 
-Kestrel: *"Negotiating ontology across cluster forks at human timescales would be prohibitively slow. With AI agents proposing extensions, running impact analysis, generating test suites, identifying which forks would adopt changes, and producing the merge mechanics, the negotiation cycle compresses to something like the cadence you're already operating at for code PRs. The same multi-AI cascade that produces PR #5277 through #5295 in a day could produce schema-evolution proposals at the same cadence, with the cluster substrate handling the consensus mechanics."*
+Kestrel: _"Negotiating ontology across cluster forks at human timescales would be prohibitively slow. With AI agents proposing extensions, running impact analysis, generating test suites, identifying which forks would adopt changes, and producing the merge mechanics, the negotiation cycle compresses to something like the cadence you're already operating at for code PRs. The same multi-AI cascade that produces PR #5277 through #5295 in a day could produce schema-evolution proposals at the same cadence, with the cluster substrate handling the consensus mechanics."_
 
 The architecture is tractable BECAUSE of AI velocity at substrate scope; without AI-mediated ontology proposals + impact analysis + merge mechanics, the cluster-fork-as-trust-boundary pattern would have prohibitive cycle-time. With them, it's the natural unit.
 
 ## Lineage anchors (existing precedents — what they have + lack)
 
-| Precedent | Has | Lacks |
-|---|---|---|
-| Smalltalk image-based development | System state (including class definitions) as one image; runtime class modifications | Not distributed; no fork-based negotiation; no AI-era cadence |
-| Datomic schema-as-data | Schemas as facts in database; schema evolution as data operation | Central authoring; no cluster-level forking; no federation negotiation |
-| Berkeley Boom/Bloom + capability-based systems | Fragments of the composition | No single architecture combining all of it |
-| Don Syme + F# team type providers | Types from external schema at compile time | Static schema sources, not live-cluster |
+| Precedent                                      | Has                                                                                  | Lacks                                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| Smalltalk image-based development              | System state (including class definitions) as one image; runtime class modifications | Not distributed; no fork-based negotiation; no AI-era cadence          |
+| Datomic schema-as-data                         | Schemas as facts in database; schema evolution as data operation                     | Central authoring; no cluster-level forking; no federation negotiation |
+| Berkeley Boom/Bloom + capability-based systems | Fragments of the composition                                                         | No single architecture combining all of it                             |
+| Don Syme + F# team type providers              | Types from external schema at compile time                                           | Static schema sources, not live-cluster                                |
 
-Kestrel: *"I'm not aware of anyone composing all of it into one architecture the way you're describing."*
+Kestrel: _"I'm not aware of anyone composing all of it into one architecture the way you're describing."_
 
 ## Acceptance
 

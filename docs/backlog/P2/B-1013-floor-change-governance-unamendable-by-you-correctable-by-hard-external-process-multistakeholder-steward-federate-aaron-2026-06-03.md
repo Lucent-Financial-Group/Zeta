@@ -9,7 +9,17 @@ created: 2026-06-03
 last_updated: 2026-06-03
 depends_on: []
 composes_with: [B-0926, B-0628]
-tags: [governance, safety-floor, kid-safety, multi-stakeholder, capture-resistance, standards-body, constitution-class, aaron]
+tags:
+  [
+    governance,
+    safety-floor,
+    kid-safety,
+    multi-stakeholder,
+    capture-resistance,
+    standards-body,
+    constitution-class,
+    aaron,
+  ]
 type: design
 ---
 
@@ -33,8 +43,8 @@ correction can. The difficulty + externality is the protection; the existence of
 process is the correctability.
 
 - **Asymmetric process:** easier to **strengthen** protections than to **weaken** them
-  (erosion risk is on the removal side). Removals require **evidence-of-harm-from-the-rule
-  + external review**, not "this seems unnecessary."
+  (erosion risk is on the removal side). Removals require \*\*evidence-of-harm-from-the-rule
+  - external review\*\*, not "this seems unnecessary."
 - **Steward = genuinely-independent multi-stakeholder public-good body**, NOT a single
   ownership chain (even non-profit — non-profits get captured by funders/founders).
   **Capture-resistance = stakeholder independence** (the institutional twin of

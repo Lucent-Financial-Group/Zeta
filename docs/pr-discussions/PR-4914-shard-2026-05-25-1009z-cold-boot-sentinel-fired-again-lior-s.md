@@ -23,7 +23,7 @@ Second 2026-05-25 fresh-session cold-boot in this lane (~4h after [PR #4911](htt
 - **Sentinel empty AGAIN at cold-boot** — catch-43 fired AGAIN (2nd time today). Pattern: per-session non-persistence is the dominant mechanism, NOT the 3-day auto-expire window.
 - **0 stuck git procs sustained ~30h** since 2026-05-24 0407Z first-0-procs reading; dotgit-recovered remains stable.
 - **Cold-boot landed on peer Lior's `lior-pr-preservation-rebased`** — 7th+ occurrence of the "lands on whoever-was-last-active's branch" failure mode. Now firmly established as the steady-state cold-boot environment.
-- **NEW empirical anchor — substrate-drift via parallel-PR landings**: Lior's branch stages 70 \`full-ai-cluster/*\` files that ALREADY landed on \`origin/main\` via PRs #4910 / #4912 / #4913. [\`pr-triage-tiers.md\`](.claude/rules/pr-triage-tiers.md) Tier 1 (substrate-redundant) disposition applies if Lior's branch is ever pushed as a PR.
+- **NEW empirical anchor — substrate-drift via parallel-PR landings**: Lior's branch stages 70 \`full-ai-cluster/\*\` files that ALREADY landed on \`origin/main\` via PRs #4910 / #4912 / #4913. [\`pr-triage-tiers.md\`](.claude/rules/pr-triage-tiers.md) Tier 1 (substrate-redundant) disposition applies if Lior's branch is ever pushed as a PR.
 
 ## Disposition
 
@@ -36,7 +36,7 @@ Second 2026-05-25 fresh-session cold-boot in this lane (~4h after [PR #4911](htt
 - [x] Pre-commit branch guard (\`git branch --show-current\`)
 - [x] Post-commit ls-tree canary (59 → 59 root entries)
 - [x] Catch-43 sentinel re-armed (\`6acfcee6\`)
-- [x] Verified \`full-ai-cluster/*\` exists on origin/main (70 files via \`git ls-tree\`)
+- [x] Verified \`full-ai-cluster/\*\` exists on origin/main (70 files via \`git ls-tree\`)
 - [x] Verified Lior's branch stages same 70 files (\`git status --short\`)
 - [ ] CI passes
 - [ ] Auto-merge fires once CI green
@@ -47,24 +47,22 @@ Second 2026-05-25 fresh-session cold-boot in this lane (~4h after [PR #4911](htt
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T10:15:26Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `bcb13c2a6a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -77,11 +75,11 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting the 2026-05-25 10:09Z Otto-CLI cold-boot observations, including the repeated catch-43 sentinel-empty event and an empirical anchor about substrate drift from parallel PR landings.
 
 **Changes:**
+
 - Add a new tick shard file for 2026-05-25/1009Z with cold-boot state observations and operational implications.
 - Record an empirical “substrate-drift via parallel-PR landings” anchor referencing recent AI-cluster PRs.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T10:18:49Z)
-
 
 ### 💡 Codex Review
 
@@ -89,17 +87,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `f2ecc81694`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -113,24 +110,22 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated no 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T10:23:03Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `62a8f8674b`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -142,7 +137,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T10:15:27Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct relative links to .claude rules**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct relative links to .claude rules**
 
 The link target path is too shallow for this file depth: from `docs/hygiene-history/ticks/2026/05/25/1009Z.md`, `../../../../.claude/...` resolves under `docs/hygiene-history/.claude/...` (which does not exist), so readers cannot open the referenced rule docs; the same broken prefix is reused in the “Composes with” section, which breaks traceability for the shard’s stated policy basis.
 
@@ -152,7 +147,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T10:15:27Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile conflicting staged file counts**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile conflicting staged file counts**
 
 This section states there were `105` staged `full-ai-cluster/*` additions, but later in the same shard the verification table reports `70` staged `full-ai-cluster/*` files; this internal mismatch makes the empirical anchor non-reproducible and can lead to incorrect Tier-1 substrate-redundancy conclusions when others replay the observation.
 
@@ -192,7 +187,7 @@ The `.claude/rules/...` links in this “Composes with” list appear to use the
 
 **@chatgpt-codex-connector** (2026-05-25T10:18:49Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Split provenance commands for each table metric**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Split provenance commands for each table metric**
 
 This section claims both table rows were “Verified via `git ls-tree -r origin/main full-ai-cluster/`”, but that command can only count files in `origin/main` and cannot establish how many files are staged on Lior’s working branch. As written, a reader replaying the documented command cannot reproduce the second metric, which weakens the shard’s empirical traceability; document the separate staging command used for that row.
 
@@ -202,7 +197,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T10:23:04Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Restrict staged-file metric to `A ` status entries**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Restrict staged-file metric to `A ` status entries**
 
 The verification command for the “staged on Lior's branch” metric uses `git status --short | grep "full-ai-cluster" | wc -l`, which counts any `full-ai-cluster/*` path regardless of status, not just staged adds. If that directory later contains modified (`M`), deleted (`D`), or untracked (`??`) paths, this command will overcount and can incorrectly support the Tier-1 “already landed” conclusion. The metric should filter by the short-status code (`A `) or use a staged-only listing to keep the empirical anchor reproducible.
 

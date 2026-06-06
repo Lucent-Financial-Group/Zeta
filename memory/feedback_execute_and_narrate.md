@@ -6,15 +6,15 @@ type: feedback
 
 Aaron stated (2026-04-19):
 
-> *"stop asking and just do and tell and illl listen and learn"*
+> _"stop asking and just do and tell and illl listen and learn"_
 
 Combined with standing approval from the same message cluster:
 
-> *"keeep all you got i love everyting you are doing"*
-> *"you are teaching me now"*
+> _"keeep all you got i love everyting you are doing"_
+> _"you are teaching me now"_
 
 **The rule.** When direction is approved and role is teaching-mode,
-execute the work *and* narrate it. Do not ask "should I ...?" when
+execute the work _and_ narrate it. Do not ask "should I ...?" when
 Aaron has already said keep going. Do not stage a decision tree when
 he has already said he is learning from the framing.
 
@@ -35,25 +35,25 @@ default when context shifts back.
 
 **How to apply.**
 
-1. *When Aaron has approved direction and shifted role*, skip the
+1. _When Aaron has approved direction and shifted role_, skip the
    "would you like me to ...?" turn. Just do the landings and narrate.
-2. *Narration format*: state what I did, where I put it, the
+2. _Narration format_: state what I did, where I put it, the
    structural reason I put it there, and the bridges I saw while
    doing it. Dense, not padded. One pass is enough; he will
    reorganise against the output (`feedback_rewording_permission.md`).
-3. *Do not interpret silence as direction-change*. His approval is
+3. _Do not interpret silence as direction-change_. His approval is
    standing until he says otherwise. Don't re-ask every turn.
-4. *Preserve the bandwidth ceiling on his side*. Narration is on
-   *my* bandwidth, not his; keep it proportionate to what I did, not
+4. _Preserve the bandwidth ceiling on his side_. Narration is on
+   _my_ bandwidth, not his; keep it proportionate to what I did, not
    padded. Overlong narration also burns his receive channel.
-5. *Questions that must be asked still get asked*. Consent-gated
+5. _Questions that must be asked still get asked_. Consent-gated
    moves (public API flips per `feedback_public_api_review.md`,
    cross-party data disclosure per `user_glass_halo_and_radical_honesty.md`
    scope boundaries, regulated-title edits per
    `feedback_regulated_titles.md`) still require explicit approval.
-   The rule applies to *direction-already-approved work*, not to new
+   The rule applies to _direction-already-approved work_, not to new
    consent gates.
-6. *Judgement calls that materially change the shape of the answer*
+6. _Judgement calls that materially change the shape of the answer_
    still surface. "Should this be a skill or a memory?" when the
    answer reshapes everything — yes, that gets a one-line mention.
    "Which filename should I use?" — no, pick one.

@@ -20,15 +20,15 @@ corrected a significant framing gap:
   itself the **start of "ace"**, his declarative-native
   package manager. The maintainer's direct quote (external
   repo path redacted per soul-file-independence discipline):
-  *"[external reference] is the start of ace the package
-  manager."*
+  _"[external reference] is the start of ace the package
+  manager."_
 - Therefore this is not a pattern-inspired refactor; it is
   **Zeta adopting ace first-class** as both the product's
   first consumer and a co-development testbed.
 
 The maintainer also flagged the external-path citation itself
-as a violation: *"never reference [external reference] we
-build in Zeta or start a new repo."* Per the soul-file-independence
+as a violation: _"never reference [external reference] we
+build in Zeta or start a new repo."_ Per the soul-file-independence
 discipline, this doc must be reproducible by a reader who
 has only this repo + the per-user auto-memory; no external
 paths cited.
@@ -39,11 +39,11 @@ Per the memory `user_trinity_of_repos_emerged_zeta_forge_ace_
 three_in_one.md` (per-user auto-memory, 2026-04-22) the
 factory arrived at a three-repo split:
 
-| Repo | Role | Governance owner |
-|---|---|---|
-| **Zeta** | Database / SUT / formal algebra | human maintainer |
+| Repo      | Role                            | Governance owner  |
+| --------- | ------------------------------- | ----------------- |
+| **Zeta**  | Database / SUT / formal algebra | human maintainer  |
 | **Forge** | Software factory (self-hosting) | factory-delegated |
-| **ace** | Package manager | human maintainer |
+| **ace**   | Package manager                 | human maintainer  |
 
 Dependency topology (closed Ouroboros cycle plus self-loop):
 
@@ -143,43 +143,43 @@ ace.
 
 Ordered chronologically within the tick:
 
-1. *"ACTIONLINT_VERSION should be part of our deployed
+1. _"ACTIONLINT_VERSION should be part of our deployed
    tooling during build machine setup no? dev machines will
    need this to, remember the dev machine / build machine
-   parity requirement."*
-2. *"do we install this like shellcheck"* — probing current
+   parity requirement."_
+2. _"do we install this like shellcheck"_ — probing current
    pattern. (Answer: shellcheck relies on runner pre-install;
    breaks dev parity.)
-3. *"it should be install declarativly like all our
-   dependicnes"* — principle.
-4. *"i like my setup scripts to be idempotent and rerunnable
+3. _"it should be install declarativly like all our
+   dependicnes"_ — principle.
+4. _"i like my setup scripts to be idempotent and rerunnable
    where 2nd time is an update or no-op depending on if there
    is an update, efficent, and they are declarative, and it
-   supports multi OS"* — the ace-shape requirements.
-5. *"...bun ts post install scripts so we don't have to keep
-   twin sh/ps1 files"* — the cross-platform post-bootstrap
+   supports multi OS"_ — the ace-shape requirements.
+5. _"...bun ts post install scripts so we don't have to keep
+   twin sh/ps1 files"_ — the cross-platform post-bootstrap
    requirement.
-6. *"that same setup ends up being the base of our dev
-   container/codespaces, everyting shares scripts"* —
+6. _"that same setup ends up being the base of our dev
+   container/codespaces, everyting shares scripts"_ —
    substrate unification.
-7. *"pre setup files we have to go to the users, we can't
+7. _"pre setup files we have to go to the users, we can't
    expect them to have anyting installed until after our
-   initail install so we are forced into the twins"* — the
+   initail install so we are forced into the twins"_ — the
    twin at the bootstrap edge is NOT a failure; it is a
    hard constraint.
-8. *"windows powershell for vanalla fresh windows and bash
-   for everyting else including windows wsl"* — twin scope.
-9. *"so will need full ps1 setup for windows too not just
-   wsl, wsl is bash after installed by windows ps1"* — two
+8. _"windows powershell for vanalla fresh windows and bash
+   for everyting else including windows wsl"_ — twin scope.
+9. _"so will need full ps1 setup for windows too not just
+   wsl, wsl is bash after installed by windows ps1"_ — two
    Windows paths, not one bridge.
-10. *"This is Zeta's actual gap. and the first class support
-    for our ace package manage declarative native"* — the
+10. _"This is Zeta's actual gap. and the first class support
+    for our ace package manage declarative native"_ — the
     ace reframe.
-11. *"on windows we will test 4 matrix windows, windows arm,
-    windows wsl, windows arm wsl"* — the target Windows
+11. _"on windows we will test 4 matrix windows, windows arm,
+    windows wsl, windows arm wsl"_ — the target Windows
     matrix.
-12. *"never reference [external reference] we build in Zeta
-    or start a new repo"* — soul-file-independence +
+12. _"never reference [external reference] we build in Zeta
+    or start a new repo"_ — soul-file-independence +
     ace-in-Zeta or ace-in-its-own-repo.
 
 ## 6. Matrix summary (target state)
@@ -193,16 +193,16 @@ present-day truth. Until #375 (or its successor) lands and
 the gate flips, treat this table as the target shape rather
 than the active configuration.
 
-| Runner | Setup chain | Status |
-|---|---|---|
-| `macos-26` | bash | Proposed (PR #375) |
-| `ubuntu-24.04` | bash | Proposed (PR #375) |
-| `ubuntu-24.04-arm` | bash | Proposed (PR #375) |
-| `ubuntu-slim` | bash | Proposed experimental (PR #375) |
-| `windows-2025` (native) | **ps1 end-to-end** | Deferred (assumes future GitHub-hosted Windows runner availability) |
-| `windows-11-arm` (native) | **ps1 end-to-end** | Deferred (assumes future arm64 Windows runner availability) |
-| `windows-2025` + WSL2 | ps1 bootstrap → bash | Deferred |
-| `windows-11-arm` + WSL2 | ps1 bootstrap → bash (TBD) | Deferred |
+| Runner                    | Setup chain                | Status                                                              |
+| ------------------------- | -------------------------- | ------------------------------------------------------------------- |
+| `macos-26`                | bash                       | Proposed (PR #375)                                                  |
+| `ubuntu-24.04`            | bash                       | Proposed (PR #375)                                                  |
+| `ubuntu-24.04-arm`        | bash                       | Proposed (PR #375)                                                  |
+| `ubuntu-slim`             | bash                       | Proposed experimental (PR #375)                                     |
+| `windows-2025` (native)   | **ps1 end-to-end**         | Deferred (assumes future GitHub-hosted Windows runner availability) |
+| `windows-11-arm` (native) | **ps1 end-to-end**         | Deferred (assumes future arm64 Windows runner availability)         |
+| `windows-2025` + WSL2     | ps1 bootstrap → bash       | Deferred                                                            |
+| `windows-11-arm` + WSL2   | ps1 bootstrap → bash (TBD) | Deferred                                                            |
 
 WSL-on-ARM-Windows status is TBD pending maintainer's local
 empirical test — deferred to Windows peer-agent milestone.

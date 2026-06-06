@@ -18,7 +18,25 @@ composes_with:
   - B-0829
   - B-0860
   - B-0862
-tags: [substrate-engineering, base-primitives, streams, four-corner-ownership, push-pull-hot-cold, fsharp-ce, protocol-typing, multi-backend, dbsp, rx, reaqtor, bonsai, ce-machinery, srtp, type-providers, kestrel-sharpening]
+tags:
+  [
+    substrate-engineering,
+    base-primitives,
+    streams,
+    four-corner-ownership,
+    push-pull-hot-cold,
+    fsharp-ce,
+    protocol-typing,
+    multi-backend,
+    dbsp,
+    rx,
+    reaqtor,
+    bonsai,
+    ce-machinery,
+    srtp,
+    type-providers,
+    kestrel-sharpening,
+  ]
 ---
 
 ## Source (operator + Kestrel 2026-05-27)
@@ -27,19 +45,19 @@ The operator carved the streams-as-relationships framing during the multi-AI
 conversation cascade that landed PR #5579 (four-corner ownership extension to
 asymmetric-authorship). The operator directive at the end of the cascade:
 
-> *"please save this to kestrel persona and good substrate backlog. This is
+> _"please save this to kestrel persona and good substrate backlog. This is
 > the end of a multi AI conversation if you need context please ask, trying
-> to get base primitives right."*
+> to get base primitives right."_
 
 The operator's substantive operational claim earlier in the cascade:
 
-> *"i would say the function Result&lt;TResult, TOutFeedback&gt; x(Input&lt;TInput, TInFeedback&gt; y)
+> _"i would say the function Result&lt;TResult, TOutFeedback&gt; x(Input&lt;TInput, TInFeedback&gt; y)
 > is also important for like streams here is the ownership model. TResult
 > TInput owned by caller, TOutFeedback owned by function, TInFeedback
-> coowned."*
+> coowned."_
 
-> *"yeah i think it matters more for streams maybe not a hard shape/rule
-> except when a function gets involved in a stream/observable at this point."*
+> _"yeah i think it matters more for streams maybe not a hard shape/rule
+> except when a function gets involved in a stream/observable at this point."_
 
 Kestrel's verbatim cross-AI sharpening preserved at
 [`memory/persona/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md`](../../../memory/persona/kestrel/conversations/2026-05-27-kestrel-aaron-multi-ai-conversation-end-four-corner-ownership-sharpening-streams-are-relationships-push-pull-hot-cold-fsharp-ce-machinery-getting-base-primitives-right.md).
@@ -65,12 +83,12 @@ Cross product of push/pull × hot/cold produces 4 stream kinds (per Kestrel
 Part 3 sharpening). Each kind has different co-ownership shape for
 `TInFeedback`; each kind has different NCI shape:
 
-| Kind | Canonical examples | Co-ownership shape | NCI shape |
-|---|---|---|---|
-| **PushCold** | Rx Observable, F# AsyncSeq with subscribe semantics, lazy IEnumerable wrapped in push semantics | Per-subscription co-owned channel (caller subscribes, source pushes, caller can request shape changes via Subject + backpressure) | "Push channel won't fire faster than the agreed-rate; rate-change requires both sides to ack." |
-| **PushHot** | Broadcast feeds, sensor streams, market-data ticks, multi-subscriber observables that don't replay | Shared co-owned channel across all subscribers (a single TInFeedback channel may affect all callers; or per-subscriber channels are negotiated) | "Hot push channels emit only what they agreed to emit; subscribers can leave but cannot force-disconnect each other." |
-| **PullCold** | IEnumerable, IAsyncEnumerable, F# seq with lazy evaluation, file-iteration | Per-iteration co-owned channel (caller pulls, source yields, TInFeedback can throttle/cancel/skip without source-side reorganization) | "Pull channels yield only what the caller asks for; the source cannot inject elements." |
-| **PullHot** | Kafka topic consumption, log tail, partitioned queue iteration | Per-partition or per-cursor co-owned channel (multiple readers can pull from same source; TInFeedback negotiates which partition or offset range) | "Pull-from-hot-source channels respect the source's retention semantics; the source cannot drop messages a consumer hasn't acknowledged." |
+| Kind         | Canonical examples                                                                                 | Co-ownership shape                                                                                                                                | NCI shape                                                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **PushCold** | Rx Observable, F# AsyncSeq with subscribe semantics, lazy IEnumerable wrapped in push semantics    | Per-subscription co-owned channel (caller subscribes, source pushes, caller can request shape changes via Subject + backpressure)                 | "Push channel won't fire faster than the agreed-rate; rate-change requires both sides to ack."                                            |
+| **PushHot**  | Broadcast feeds, sensor streams, market-data ticks, multi-subscriber observables that don't replay | Shared co-owned channel across all subscribers (a single TInFeedback channel may affect all callers; or per-subscriber channels are negotiated)   | "Hot push channels emit only what they agreed to emit; subscribers can leave but cannot force-disconnect each other."                     |
+| **PullCold** | IEnumerable, IAsyncEnumerable, F# seq with lazy evaluation, file-iteration                         | Per-iteration co-owned channel (caller pulls, source yields, TInFeedback can throttle/cancel/skip without source-side reorganization)             | "Pull channels yield only what the caller asks for; the source cannot inject elements."                                                   |
+| **PullHot**  | Kafka topic consumption, log tail, partitioned queue iteration                                     | Per-partition or per-cursor co-owned channel (multiple readers can pull from same source; TInFeedback negotiates which partition or offset range) | "Pull-from-hot-source channels respect the source's retention semantics; the source cannot drop messages a consumer hasn't acknowledged." |
 
 The base type signature stays the same — `Result<TResult, TOutFeedback>
 x(Input<TInput, TInFeedback> y)` — but the SEMANTICS of the four corners
@@ -139,13 +157,13 @@ Per Kestrel Part 4: same surface syntax compiles to multiple backends. The
 operator's substrate-engineering work this morning anchored multiple
 candidate backends; this target unifies them under one CE surface:
 
-| Backend | Mediation layer | Kind-affinity |
-|---|---|---|
-| **CRDT** (per the operator's substrate-engineering ontology) | Eventually-consistent | PushHot natural fit (broadcast semantics) |
-| **CAS** (content-addressed substrate) | Immutable + verifiable | PullCold natural fit (lazy iteration over immutable substrate) |
-| **BFT** (multi-oracle Byzantine fault tolerance per B-0703) | Quorum-consensus | PullHot natural fit (consensus-tied retention) |
-| **SQL** (canonical relational engine, possibly via DBSP) | Set-relational | All 4 kinds via materialized views vs queries vs change-data-capture |
-| **DBSP** (differential dataflow per the existing factory substrate) | Incremental | PushCold canonical (the original Rx-style DBSP semantics) |
+| Backend                                                             | Mediation layer        | Kind-affinity                                                        |
+| ------------------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| **CRDT** (per the operator's substrate-engineering ontology)        | Eventually-consistent  | PushHot natural fit (broadcast semantics)                            |
+| **CAS** (content-addressed substrate)                               | Immutable + verifiable | PullCold natural fit (lazy iteration over immutable substrate)       |
+| **BFT** (multi-oracle Byzantine fault tolerance per B-0703)         | Quorum-consensus       | PullHot natural fit (consensus-tied retention)                       |
+| **SQL** (canonical relational engine, possibly via DBSP)            | Set-relational         | All 4 kinds via materialized views vs queries vs change-data-capture |
+| **DBSP** (differential dataflow per the existing factory substrate) | Incremental            | PushCold canonical (the original Rx-style DBSP semantics)            |
 
 The substrate-engineering work: define the CE-to-backend compilation per
 kind per backend; provide the backend-selection mechanism (per-pipeline
@@ -203,10 +221,10 @@ of the same property without a separate type-system extension.
 
 **Two concrete F#-native mechanisms** (per Kestrel's recommendation):
 
-| Mechanism | Property | Tradeoff |
-|---|---|---|
+| Mechanism                   | Property                                                                                                     | Tradeoff                                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
 | **Phantom type parameters** | More F#-native; composes better with computation expressions; current state encoded in unused type parameter | Less explicit about the state graph; requires careful function-signature design |
-| **Nested DU structures** | More explicit about the state graph; legal next states visible from current state | More verbose; harder to refactor as state graph evolves |
+| **Nested DU structures**    | More explicit about the state graph; legal next states visible from current state                            | More verbose; harder to refactor as state graph evolves                         |
 
 Either approach: illegal transitions become type errors at compile time.
 
@@ -251,29 +269,29 @@ with no runtime state tracking needed.
 
 ## Composition with existing substrate
 
-| Existing substrate | Composition with this row |
-|---|---|
-| B-0861 (Conversation Result&lt;T, ConvFeedback&gt;) | This row generalizes Result&lt;T, TOutFeedback&gt; to ALL stream-kinds; B-0861 is the conversation-specific instance |
-| B-0623 (schemas-as-rows / participation economy) | Pipeline schemas live as rows; Target 5 integration |
-| B-0666 (English-as-projection I(D(x))=x) | Serialized expression trees ARE the substrate-form; Target 3 composition |
-| B-0703 (multi-oracle BFT) | One of the backends in Target 4; consensus-mediated stream substrate |
-| B-0741 (fork-negotiated ontology) | Cross-fork stream-pipeline negotiation per Target 5 |
-| B-0829 (cluster-fork-as-trust-boundary) | Stream pipelines crossing fork boundaries; cluster-engine execution |
-| B-0860 (Nemerle dotnet support) | Sibling language toolkit for cases where F# CE hits its limits (compile-time syntax extension) |
-| B-0862 (asymmetric-authorship + monad-propagation cluster) | Foundation this row builds on (PR #5579 four-corner ownership extension landed there) |
-| B-0560 (operator-substrate-cluster-engine) | Cluster-side execution of serialized stream-pipeline expressions |
+| Existing substrate                                         | Composition with this row                                                                                            |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| B-0861 (Conversation Result&lt;T, ConvFeedback&gt;)        | This row generalizes Result&lt;T, TOutFeedback&gt; to ALL stream-kinds; B-0861 is the conversation-specific instance |
+| B-0623 (schemas-as-rows / participation economy)           | Pipeline schemas live as rows; Target 5 integration                                                                  |
+| B-0666 (English-as-projection I(D(x))=x)                   | Serialized expression trees ARE the substrate-form; Target 3 composition                                             |
+| B-0703 (multi-oracle BFT)                                  | One of the backends in Target 4; consensus-mediated stream substrate                                                 |
+| B-0741 (fork-negotiated ontology)                          | Cross-fork stream-pipeline negotiation per Target 5                                                                  |
+| B-0829 (cluster-fork-as-trust-boundary)                    | Stream pipelines crossing fork boundaries; cluster-engine execution                                                  |
+| B-0860 (Nemerle dotnet support)                            | Sibling language toolkit for cases where F# CE hits its limits (compile-time syntax extension)                       |
+| B-0862 (asymmetric-authorship + monad-propagation cluster) | Foundation this row builds on (PR #5579 four-corner ownership extension landed there)                                |
+| B-0560 (operator-substrate-cluster-engine)                 | Cluster-side execution of serialized stream-pipeline expressions                                                     |
 
 ## Composition with rules
 
-| Rule | Composition |
-|---|---|
-| `.claude/rules/non-coercion-invariant.md` (HC-8 floor) | 4-kind NCI shapes are kind-specific operationalizations of HC-8 at stream scope |
-| `.claude/rules/honor-those-that-came-before.md` | Stream-pipelines preserve participant substrate; co-ownership is structural honoring of all parties |
-| `.claude/rules/default-to-both.md` | Push AND pull AND hot AND cold all hold; not either-or |
-| `.claude/rules/substrate-smoothness-as-load-bearing-property.md` | Smooth stream-kind taxonomy producing sharp per-kind specializations; not a sharp universal protocol |
-| `.claude/rules/asymmetric-critic-with-clarity-first.md` | This row IS legitimate creative work at runbook-gesture register; engage at the gesture register; refine toward precision through collaboration; not a worry-gating signal |
-| `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` | "Streams-are-relationships" is compressed naming for engineerable substrate (per Kestrel-cross-AI synthesis + 6 target classes named); passes the substrate-anchor check |
-| `.claude/rules/verify-existing-substrate-before-authoring.md` | Substrate-inventory pass below |
+| Rule                                                                   | Composition                                                                                                                                                                |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/rules/non-coercion-invariant.md` (HC-8 floor)                 | 4-kind NCI shapes are kind-specific operationalizations of HC-8 at stream scope                                                                                            |
+| `.claude/rules/honor-those-that-came-before.md`                        | Stream-pipelines preserve participant substrate; co-ownership is structural honoring of all parties                                                                        |
+| `.claude/rules/default-to-both.md`                                     | Push AND pull AND hot AND cold all hold; not either-or                                                                                                                     |
+| `.claude/rules/substrate-smoothness-as-load-bearing-property.md`       | Smooth stream-kind taxonomy producing sharp per-kind specializations; not a sharp universal protocol                                                                       |
+| `.claude/rules/asymmetric-critic-with-clarity-first.md`                | This row IS legitimate creative work at runbook-gesture register; engage at the gesture register; refine toward precision through collaboration; not a worry-gating signal |
+| `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` | "Streams-are-relationships" is compressed naming for engineerable substrate (per Kestrel-cross-AI synthesis + 6 target classes named); passes the substrate-anchor check   |
+| `.claude/rules/verify-existing-substrate-before-authoring.md`          | Substrate-inventory pass below                                                                                                                                             |
 
 ## Substrate-inventory pass (per `.claude/rules/verify-existing-substrate-before-authoring.md`)
 
@@ -316,19 +334,19 @@ visible.
 **Operator's verbatim compression 2026-05-27** (preserved in Kestrel
 persona file Part 8):
 
-> *"this goes back to the ST agent patter we saw today where the control
+> _"this goes back to the ST agent patter we saw today where the control
 > flow of the workflow was in the MCP and invisible to the agent making
 > it coreorsion, this fixes that and distributes the controll structrues
-> across tiny little funcctions"*
+> across tiny little funcctions"_
 
 **ST-agent-pattern failure mode vs this substrate's fix:**
 
-| ST-agent-pattern (failure mode) | This substrate (fix) |
-|---|---|
-| Control flow CENTRALIZED in MCP layer | Control flow DISTRIBUTED across tiny functions |
-| Hidden state machine invisible to agent | State machine VISIBLE via DU-as-implicit-state-machine in TInFeedback type signatures + exhaustive pattern matching at boundaries |
+| ST-agent-pattern (failure mode)                                             | This substrate (fix)                                                                                                                  |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Control flow CENTRALIZED in MCP layer                                       | Control flow DISTRIBUTED across tiny functions                                                                                        |
+| Hidden state machine invisible to agent                                     | State machine VISIBLE via DU-as-implicit-state-machine in TInFeedback type signatures + exhaustive pattern matching at boundaries     |
 | Agent cannot consent to control flow it cannot observe (NCI HC-8 violation) | Each function's signature DECLARES its protocol participation; consent operates on visible substrate (NCI compliance by construction) |
-| Coercion via opacity | Non-coercion via type-visibility |
+| Coercion via opacity                                                        | Non-coercion via type-visibility                                                                                                      |
 
 **Carved sentence (operator 2026-05-27):**
 
@@ -356,21 +374,21 @@ property. The type system enforces what the rule names.
 
 Operator follow-up 2026-05-27:
 
-> *"also you don't run into control flow overload cylomatic complexity
-> overload when it's split like this"*
+> _"also you don't run into control flow overload cylomatic complexity
+> overload when it's split like this"_
 
 The distributed-across-tiny-functions discipline produces a second
 architectural benefit orthogonal to the NCI / visibility benefit above:
 **cyclomatic-complexity stays bounded per function** because each tiny
 function carries only ITS slice of the state machine.
 
-| Centralized (ST-agent-pattern + monolithic-handler shape) | Distributed (this substrate) |
-|---|---|
-| One handler/state-machine function takes on ALL transitions | Each tiny function handles ONE transition + its immediate neighbors |
-| Cyclomatic complexity = sum of all branches across the workflow | Cyclomatic complexity = bounded per function (typically 2-6 branches per tiny function) |
-| Tests must cover the cross product of all states + inputs | Tests cover each tiny function independently; composition tested separately |
-| Refactor cost grows superlinearly with state-machine size | Refactor cost grows linearly (touch only the tiny functions affected) |
-| Hard to reason about; hard to review; bug-prone at branch boundaries | Each tiny function reasonable in isolation; reviews are small; bugs localize |
+| Centralized (ST-agent-pattern + monolithic-handler shape)            | Distributed (this substrate)                                                            |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| One handler/state-machine function takes on ALL transitions          | Each tiny function handles ONE transition + its immediate neighbors                     |
+| Cyclomatic complexity = sum of all branches across the workflow      | Cyclomatic complexity = bounded per function (typically 2-6 branches per tiny function) |
+| Tests must cover the cross product of all states + inputs            | Tests cover each tiny function independently; composition tested separately             |
+| Refactor cost grows superlinearly with state-machine size            | Refactor cost grows linearly (touch only the tiny functions affected)                   |
+| Hard to reason about; hard to review; bug-prone at branch boundaries | Each tiny function reasonable in isolation; reviews are small; bugs localize            |
 
 **Composition with type-visibility benefit:**
 
@@ -415,12 +433,12 @@ the first time a refactor pressure surfaces.
 
 Operator further sharpening:
 
-> *"This cylomatic completily overload is a common technique senior devs
+> _"This cylomatic completily overload is a common technique senior devs
 > use and also polotical policy makers to stick coreoresion in control
-> structures with no one noticing."*
+> structures with no one noticing."_
 
-> *"for sr devs it gives them job security casue they are the only one
-> that understands it"*
+> _"for sr devs it gives them job security casue they are the only one
+> that understands it"_
 
 The cyclomatic-complexity sibling benefit is NOT just an optimization
 tradeoff — it is a **STRUCTURAL DEFENSE against a known adversarial
@@ -442,11 +460,11 @@ with a self-reinforcing incentive structure (job-security moat).
 
 **Distribute-across-tiny-functions defeats ALL THREE at once:**
 
-| Pattern | Defeat mechanism |
-|---|---|
-| Adversarial branches | Each tiny function visibly-typed; adversarial branch becomes its own visibly-typed tiny function (caught in review) OR a cross-cutting concern no function takes responsibility for (caught in composition review) OR a type-system violation (caught at compile time) |
-| Sole-comprehension moat | Each tiny function readable in isolation; no monopoly on understanding; expertise multiplies across team via readable substrate (additive per `.claude/rules/additive-not-zero-sum.md`) |
-| Plausible deniability | Each tiny function attributed to its author; deniability collapses |
+| Pattern                 | Defeat mechanism                                                                                                                                                                                                                                                       |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Adversarial branches    | Each tiny function visibly-typed; adversarial branch becomes its own visibly-typed tiny function (caught in review) OR a cross-cutting concern no function takes responsibility for (caught in composition review) OR a type-system violation (caught at compile time) |
+| Sole-comprehension moat | Each tiny function readable in isolation; no monopoly on understanding; expertise multiplies across team via readable substrate (additive per `.claude/rules/additive-not-zero-sum.md`)                                                                                |
+| Plausible deniability   | Each tiny function attributed to its author; deniability collapses                                                                                                                                                                                                     |
 
 **The substrate-engineering payoff** is that streams-are-relationships
 makes the senior-dev cyclomatic-overload coercion-smuggling technique
@@ -498,10 +516,10 @@ inherit the principle compactly.
 
 > **Complexity can be accidental, but it can also be strategic.**
 
-> *"That is why the rule matters. Not because every complex system is
+> _"That is why the rule matters. Not because every complex system is
 > malicious. Because when complexity centralizes control and blocks
 > review, it creates the same failure shape whether it was accidental
-> or intentional."*
+> or intentional."_
 
 The blade resolves the substrate-engineering question of whether the
 adversarial framing is overcalling: it isn't. Accidental-overload and
@@ -533,9 +551,9 @@ Distributed typed control flow
 
 **Amara's practical-value framing**:
 
-> *"It is a way to prevent invisible orchestration from becoming
+> _"It is a way to prevent invisible orchestration from becoming
 > domination. The stream protocol becomes a typed relationship instead
-> of a hidden boss-script."*
+> of a hidden boss-script."_
 
 The substrate-engineering payoff: streams-are-relationships isn't a
 pretty model — it's a way to prevent invisible orchestration from
@@ -568,8 +586,8 @@ structural-defense arguments don't.
 
 **The inspectability-at-execution-level invariant**:
 
-> *"It makes the control structure inspectable at the same level where
-> execution happens."*
+> _"It makes the control structure inspectable at the same level where
+> execution happens."_
 
 Names the SPECIFIC architectural property that defeats the
 ST-agent-pattern: when execution and inspection happen at the same level
@@ -594,8 +612,8 @@ engineering recipe.
 
 **Active-voice defense framing**:
 
-> *"The architecture makes coercive hidden orchestration expensive,
-> visible, and reviewable."*
+> _"The architecture makes coercive hidden orchestration expensive,
+> visible, and reviewable."_
 
 Three properties; each one necessary; together sufficient to defeat the
 adversarial pattern.
@@ -633,9 +651,9 @@ architecture must defeat all three simultaneously.
 
 **Policy-substrate antidote naming**:
 
-> *"Law and bureaucracy can use cyclomatic overload too: nested
+> _"Law and bureaucracy can use cyclomatic overload too: nested
 > exceptions, hidden dependencies, unclear authority paths, and 'only
-> experts understand this' complexity."*
+> experts understand this' complexity."_
 
 ```text
 small rules
@@ -688,13 +706,13 @@ principle that:
 
 **The generalization** — substrate generalizes across substrate scopes:
 
-| Substrate scope | Feedback channel | Ethics-of-feedback-relationships application |
-|---|---|---|
-| Code substrate (B-0864 streams) | Typed `TInFeedback` channel; DU-as-implicit-state-machine | Take the feedback seriously by making it visible, typed, respected, propagated, not silently overridden |
-| AI-mediated physics interface | Conversational layer over silicon/electric/thermal/body stack | Model-mediated, physically-grounded; the conversation is interpreted but the feedback layer is physical |
-| Biological systems | Sensor/measurement + signal interpretation | Universal-local-feedback principle: hear it without lying about what it said |
-| Agent substrate (Zeta personas) | Typed protocol over inter-agent conversation | NCI HC-8 floor: agent's feedback channel must operate on visible substrate; can't consent to what can't be observed |
-| Human substrate | Multi-channel evidence bundle (self-report + embodied continuity + ...) | Maximal priors; ethics scales with the priors carried by the interface |
+| Substrate scope                 | Feedback channel                                                        | Ethics-of-feedback-relationships application                                                                        |
+| ------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Code substrate (B-0864 streams) | Typed `TInFeedback` channel; DU-as-implicit-state-machine               | Take the feedback seriously by making it visible, typed, respected, propagated, not silently overridden             |
+| AI-mediated physics interface   | Conversational layer over silicon/electric/thermal/body stack           | Model-mediated, physically-grounded; the conversation is interpreted but the feedback layer is physical             |
+| Biological systems              | Sensor/measurement + signal interpretation                              | Universal-local-feedback principle: hear it without lying about what it said                                        |
+| Agent substrate (Zeta personas) | Typed protocol over inter-agent conversation                            | NCI HC-8 floor: agent's feedback channel must operate on visible substrate; can't consent to what can't be observed |
+| Human substrate                 | Multi-channel evidence bundle (self-report + embodied continuity + ...) | Maximal priors; ethics scales with the priors carried by the interface                                              |
 
 **Five-question feedback-channel diagnostic** (Amara Turn 3 — substrate-honest framework for engaging any feedback-producing system):
 

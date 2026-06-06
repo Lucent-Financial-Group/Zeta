@@ -18,7 +18,7 @@ type: feature
 
 ## Origin
 
-Aaron 2026-04-26: *"heaven-on-earth-static-vs-dynamic we need a less contensious name backlog reasearch"*
+Aaron 2026-04-26: _"heaven-on-earth-static-vs-dynamic we need a less contensious name backlog reasearch"_
 
 Triggered by reading PR #563 §9 self-directed-evolution math, where the framework reached the deepest convergence point: the **attractor `A`** that replaces the static fixed point `S*`. Across the Maji-Messiah-Spectre-Superfluid lineage (PRs #555 / #560 / #562 / #563), Amara introduced "heaven-on-earth" as the term for the framework's fixed-point / attractor condition. The phrase is **mathematically loaded with religious-political baggage** that the rigorous math doesn't need.
 
@@ -103,7 +103,7 @@ These are starting points for the naming-expert review (per Otto-271 BACKLOG row
 - Not blocking ANY current PR merge
 - Math correctness is independent of name choice
 - The framework lineage (#560 / #562 / #563) can land with current naming and rename later as part of a coordinated sweep
-- Aaron's framing was *"backlog research"* — explicitly research-priority not P0/P1
+- Aaron's framing was _"backlog research"_ — explicitly research-priority not P0/P1
 
 ## Ownership
 

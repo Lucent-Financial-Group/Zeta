@@ -4,6 +4,7 @@ description: Aaron Otto-79 five-message directive burst refining the Codex-paral
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-23 Otto-79 five-message directive burst refining
 the Codex-parallel first-class-harness framing. Each message
 landed a substantive correction or extension.
@@ -11,7 +12,7 @@ landed a substantive correction or extension.
 ## Message 1 — Otto DOES dispatch Codex async work (correction)
 
 Verbatim:
-*"you do dispatch codex work, i will just switch whenver i
+_"you do dispatch codex work, i will just switch whenver i
 feel like it once it's ready, i'll just go back and fourth
 from time to time probably when new models come out, you guys
 need to know when one is primary based on the harness im in
@@ -20,10 +21,10 @@ launch in tandem/async with you. I won't launch both of you
 at the same unless i say, this is a future test to see if you
 can run indenpendenty without interference, but for now one
 of your will be the corrdinator at a time based on the
-harness i'm in."*
+harness i'm in."_
 
-**Corrects** the Otto-78 scope-limit line *"Otto doesn't
-dispatch Codex work unilaterally"* (filed in the original
+**Corrects** the Otto-78 scope-limit line _"Otto doesn't
+dispatch Codex work unilaterally"_ (filed in the original
 PR #236 body) which was incorrectly restrictive. The correct
 framing: the **currently-primary** agent dispatches the
 **other's** async work. Primary is determined by Aaron's
@@ -35,9 +36,9 @@ Explicit Aaron opt-in required for a future interference-test.
 ## Message 2 — cross-harness review + questions encouraged
 
 Verbatim:
-*"yall should review each other and ask questions to better
+_"yall should review each other and ask questions to better
 understand eachs others harness form the inside to improve
-our cross harness support."*
+our cross harness support."_
 
 **Extends** the cross-harness-no-edit rule: no direct edits
 to other harness's substrate stands, BUT **cross-harness
@@ -49,10 +50,10 @@ reads + comments + asks; author owns the edit).
 ## Message 3 — peer-harness is aspirational-future-state
 
 Verbatim:
-*"yeah i think we are building to this which is subtly
+_"yeah i think we are building to this which is subtly
 different from a peer-harness model. this mean i launch you
 both at the same time right? that's peer harness. we will
-get there slowly with experiments where one is in controll."*
+get there slowly with experiments where one is in controll."_
 
 **Names the progression** explicitly:
 
@@ -70,15 +71,15 @@ Progression via explicit Aaron opt-ins at each stage. Aim at
 ## Message 4 — each harness owns its own named loop agent
 
 Verbatim:
-*"yeah i guess in peer mode each harness will need it's own
+_"yeah i guess in peer mode each harness will need it's own
 'Otto' might as well start it out like that so code designs
 it's own named loop agent, you got the good name claude otto
-:)"*
+:)"_
 
 **Establishes convention**:
 
 - **Otto** = the Claude Code loop agent. Aaron-affirmed as
-  *"the good name"*.
+  _"the good name"_.
 - **The Codex CLI session picks its own loop-agent persona
   name** — not inherited from Otto, not pre-assigned by
   Otto.
@@ -98,10 +99,10 @@ it's own named loop agent, you got the good name claude otto
 ## Message 5 — BACKLOG-split status check (Aaron's curiosity, no rush)
 
 Verbatim:
-*"how close are we to Update(docs/BACKLOG.md) split? just
-curious no rush."*
+_"how close are we to Update(docs/BACKLOG.md) split? just
+curious no rush."_
 
-Answer: PR #216 *research: BACKLOG per-swim-lane split design*
+Answer: PR #216 _research: BACKLOG per-swim-lane split design_
 is still open as of Otto-79. Design research doc landed; split
 execution not yet started. `docs/BACKLOG.md` is ~7369 lines.
 Aaron explicitly said "no rush" — filed here as pending

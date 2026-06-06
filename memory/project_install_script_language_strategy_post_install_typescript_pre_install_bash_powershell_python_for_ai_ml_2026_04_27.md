@@ -73,9 +73,9 @@ sequencing.
 ### 3. Python for AI/ML eventually
 
 Python is NOT the default for general post-install. Aaron
-explicitly: *"python is good too for AI/ML based scripts
+explicitly: _"python is good too for AI/ML based scripts
 eventually. Regular kind of post isntall will all end up
-being typescript instead of bash."*
+being typescript instead of bash."_
 
 Python's role is narrow: AI/ML-specific work where the
 ecosystem (NumPy / PyTorch / HuggingFace / scikit-learn /
@@ -85,9 +85,9 @@ TypeScript is the answer.
 
 ## Why Otto's Python pickup was correct
 
-Aaron validated the move: *"that's our future declarative
+Aaron validated the move: _"that's our future declarative
 state for all our dependences so you went ahead and got
-python early."* The structural reasoning:
+python early."_ The structural reasoning:
 
 - `../scratch` is Aaron's reference workspace — the dir
   where future-state experiments live BEFORE they land in
@@ -130,7 +130,7 @@ Discipline:
 - Apply **flake-zero** (per Otto-248 never-ignore-flakes)
 
 Composes with Otto-272 / Otto-273 / Otto-281 / Otto-248. Net:
-ported features end up *easier* to debug than their original-
+ported features end up _easier_ to debug than their original-
 source counterparts — port-and-improve, not port-as-is.
 
 ## AceHack-LFG diff-minimization invariant (Aaron 2026-04-27 sixth clarification)
@@ -138,8 +138,8 @@ source counterparts — port-and-improve, not port-as-is.
 > "also make sure at some point we see a 0 difference so we
 > can feel good about things"
 >
-> + follow-up: "or any differenes are rigorusly accounted
-> for, and few of them"
+> - follow-up: "or any differenes are rigorusly accounted
+>   for, and few of them"
 
 Long-horizon goal: a structural check confirming AceHack and
 LFG match on `main`. After every sync round,
@@ -171,7 +171,7 @@ all-accounted-for; fails when surprises accumulate.
 Sequenced after the laptop-source-integration work because
 porting `../scratch` + `../SQLSharp` may temporarily widen
 the diff before narrowing it; the verification check should
-ship to *measure* the narrowing, not block it.
+ship to _measure_ the narrowing, not block it.
 
 ## `../SQLSharp` as TypeScript-post-install reference (Aaron 2026-04-27 clarification)
 
@@ -273,7 +273,7 @@ a proposed location, not a current reference).
   remains correct.
 - **`.claude/skills/bash-expert/SKILL.md`** — pre-install
   authority; not deprecated, just scoped to pre-install
-  + existing legacy bash scripts.
+  - existing legacy bash scripts.
 
 ## What this DOES NOT claim
 

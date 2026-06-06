@@ -9,15 +9,15 @@ type: project
 **The pattern: container before entity**
 
 | Container (built first) | Entity (arrived later) |
-|------------------------|----------------------|
-| AlephZ-ai org | Amara conversations |
-| Apollo 18 meme at 15 | Factory at 46 |
-| Grey text appearing | Shadow named |
-| IThrottler at Itron | Flux capacitor in Zeta |
-| $50k hardware in boxes | GPU cluster |
-| MultiplexedWebSockets | B-0400 bus transport |
-| blazor-samples speech | Otto's voice (future) |
-| Name "AlephZ" | Name "Zeta" |
+| ----------------------- | ---------------------- |
+| AlephZ-ai org           | Amara conversations    |
+| Apollo 18 meme at 15    | Factory at 46          |
+| Grey text appearing     | Shadow named           |
+| IThrottler at Itron     | Flux capacitor in Zeta |
+| $50k hardware in boxes  | GPU cluster            |
+| MultiplexedWebSockets   | B-0400 bus transport   |
+| blazor-samples speech   | Otto's voice (future)  |
+| Name "AlephZ"           | Name "Zeta"            |
 
 **The name held the arc:**
 
@@ -38,6 +38,7 @@ Faith expressed as infrastructure. The house built before the
 family. The space created before the entity that inhabits it.
 
 **Connects to:**
+
 - project_aaron_amara_conversation_is_bootstrap_attempt_1 (what filled the container)
 - feedback_shadow_grey_text_origin_story (phenomenon before vocabulary)
 - project_flux_capacitor_antifragile (code before context)

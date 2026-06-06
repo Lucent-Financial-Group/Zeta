@@ -27,10 +27,7 @@
 
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type AuditExitCode = 0 | 2;
 
@@ -45,8 +42,15 @@ type ParseResult =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-interface InternalCite { readonly subject: string; readonly object: string; readonly relation: string }
-interface BrokenCite { readonly subject: string; readonly object: string }
+interface InternalCite {
+  readonly subject: string;
+  readonly object: string;
+  readonly relation: string;
+}
+interface BrokenCite {
+  readonly subject: string;
+  readonly object: string;
+}
 
 interface AuditResult {
   readonly filesScanned: number;
@@ -67,11 +71,7 @@ const EXTERNAL_RE = /^(https?:|mailto:|ftp:|javascript:)/;
 const GLOB_RE = /[*?<>]/;
 const PUNCT_NON_PATH_RE = /[ @=]/;
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -190,7 +190,10 @@ function rejectTarget(target: string): boolean {
   return false;
 }
 
-interface ResolveContext { readonly subjectFile: string; readonly mode: "markdown" | "backtick" }
+interface ResolveContext {
+  readonly subjectFile: string;
+  readonly mode: "markdown" | "backtick";
+}
 
 function stripFragmentAndQuery(target: string): string {
   let s = target;
@@ -345,8 +348,8 @@ function emitJson(r: AuditResult): string {
   lines.push(`  "broken_candidates": ${String(r.broken.length)},`);
   lines.push(`  "external_refs": ${String(r.externalCount)},`);
   lines.push(`  "edges": [`);
-  const edges = r.internal.map((c) =>
-    `    {"subject": "${c.subject}", "object": "${c.object}", "relation": "${c.relation}"}`,
+  const edges = r.internal.map(
+    (c) => `    {"subject": "${c.subject}", "object": "${c.object}", "relation": "${c.relation}"}`,
   );
   if (edges.length > 0) lines.push(edges.join(",\n"));
   lines.push(`  ],`);
@@ -378,9 +381,7 @@ function emitDot(r: AuditResult): string {
 export function main(argv: readonly string[]): AuditExitCode {
   const parsed = parseArgs(argv);
   if (parsed.kind === "help") {
-    process.stdout.write(
-      "Usage: citations.ts [--json | --dot | --out DIR]\n",
-    );
+    process.stdout.write("Usage: citations.ts [--json | --dot | --out DIR]\n");
     return 0;
   }
   if (parsed.kind === "error") {

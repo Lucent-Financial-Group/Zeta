@@ -30,14 +30,10 @@ export interface FieldDef {
 export type TypedValue = string | number | boolean | null;
 
 /** Result of coercing raw form input to a typed value. */
-export type CoerceResult =
-  | { ok: true; value: TypedValue }
-  | { ok: false; error: string };
+export type CoerceResult = { ok: true; value: TypedValue } | { ok: false; error: string };
 
 /** Result of validating an already-typed value against its declared type. */
-export type ValidateResult =
-  | { ok: true }
-  | { ok: false; error: string };
+export type ValidateResult = { ok: true } | { ok: false; error: string };
 
 /** The object returned by the UMD factory (default export + window.CustomFields). */
 export interface CustomFieldsApi {

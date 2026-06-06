@@ -16,7 +16,7 @@ BEFORE asserting**.
   within weeks.
 - Project state (repo files) may be stale, copy-cargo-culted,
   or never-current-to-begin-with.
-- Project-state grep is a valid *cross-check input*, NOT a
+- Project-state grep is a valid _cross-check input_, NOT a
   substitute for current upstream truth.
 
 **Applies when** the claim is load-bearing (recommendation,

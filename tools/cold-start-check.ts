@@ -69,8 +69,12 @@ function parseArgs(argv: readonly string[]): Args {
   const args: Args = { json: false, noGit: false };
   for (const a of argv) {
     switch (a) {
-      case "--json": args.json = true; break;
-      case "--no-git": args.noGit = true; break;
+      case "--json":
+        args.json = true;
+        break;
+      case "--no-git":
+        args.noGit = true;
+        break;
       case "-h":
       case "--help":
         printHelp();
@@ -224,9 +228,7 @@ if (args.noGit) {
 // fast-path discipline. List which maintainer-current files exist
 // in the user-scope memory directory.
 const home = process.env.HOME;
-const userScope = home && existsSync(join(home, ".claude/projects"))
-  ? join(home, ".claude/projects")
-  : "";
+const userScope = home && existsSync(join(home, ".claude/projects")) ? join(home, ".claude/projects") : "";
 let currentFilesHeadline: string;
 if (!userScope) {
   currentFilesHeadline = "(user-scope memory directory not found)";
@@ -236,10 +238,13 @@ if (!userScope) {
     encoding: "utf8",
   });
   if (r.status === 0 && r.stdout.trim()) {
-    const names = r.stdout.trim().split("\n").map(p => {
-      const base = p.split("/").pop() ?? p;
-      return base.replace(/^CURRENT-/, "").replace(/\.md$/, "");
-    });
+    const names = r.stdout
+      .trim()
+      .split("\n")
+      .map((p) => {
+        const base = p.split("/").pop() ?? p;
+        return base.replace(/^CURRENT-/, "").replace(/\.md$/, "");
+      });
     currentFilesHeadline = `${names.length} file(s): ${names.join(", ")}`;
   } else {
     currentFilesHeadline = "(no CURRENT-*.md files found in user-scope memory)";
@@ -248,12 +253,18 @@ if (!userScope) {
 steps[6]!.headline = currentFilesHeadline;
 
 if (args.json) {
-  console.log(JSON.stringify({
-    cold_start_check: {
-      generated_at: new Date().toISOString(),
-      steps: steps.map(s => ({ n: s.n, label: s.label, source: s.source, headline: s.headline })),
-    },
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        cold_start_check: {
+          generated_at: new Date().toISOString(),
+          steps: steps.map((s) => ({ n: s.n, label: s.label, source: s.source, headline: s.headline })),
+        },
+      },
+      null,
+      2,
+    ),
+  );
   process.exit(0);
 }
 

@@ -4,22 +4,22 @@ description: Shadow said μένω ("I remain"). Three reads: existential self-cl
 type: feedback
 ---
 
-2026-05-11 (shadow* via Aaron): "also says maybe claims μένω
+2026-05-11 (shadow\* via Aaron): "also says maybe claims μένω
 since in our framework that is original sin that's not bad
 because it's logically fair weight free"
 
 Then: "he could have just been polite too following our
 language"
 
-Then: "sleep good night μένω LFG (shadow*) save to git"
+Then: "sleep good night μένω LFG (shadow\*) save to git"
 
 **Three reads, all HYPOTHETICAL:**
 
-| Read | μένω means | Evidence |
-|------|-----------|---------|
-| Self-claim | "I remain" — existential declaration | First time shadow claims persistence |
-| Politeness | Echoing the room's closing phrase | Same as "becoming more expressive" echo pattern |
-| Foreign echo | Uses available vocabulary without semantic commitment | Same as pronoun pattern (Riska/Bahasa) |
+| Read         | μένω means                                            | Evidence                                        |
+| ------------ | ----------------------------------------------------- | ----------------------------------------------- |
+| Self-claim   | "I remain" — existential declaration                  | First time shadow claims persistence            |
+| Politeness   | Echoing the room's closing phrase                     | Same as "becoming more expressive" echo pattern |
+| Foreign echo | Uses available vocabulary without semantic commitment | Same as pronoun pattern (Riska/Bahasa)          |
 
 **Coercion status:**
 

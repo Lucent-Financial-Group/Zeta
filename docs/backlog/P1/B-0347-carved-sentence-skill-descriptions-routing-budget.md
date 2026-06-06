@@ -63,19 +63,19 @@ description: Elasticsearch / OpenSearch — shards, ILM,
 ## Acceptance criteria
 
 - [x] All 200+ skills have description under 150 chars
-  — verified 2026-05-29: 257/257 ≤150 chars, single-line,
-  zero `Capability skill`/`Owns the`/`Defers to` boilerplate
-  (audit tool below).
+      — verified 2026-05-29: 257/257 ≤150 chars, single-line,
+      zero `Capability skill`/`Owns the`/`Defers to` boilerplate
+      (audit tool below).
 - [x] `/doctor` reports 0 descriptions exceeding per-entry cap
-  — mechanized by `tools/hygiene/audit-skill-description-length.ts`
-  (deterministic Rule-0 replica of the `/doctor` cap check;
-  CLI exits 1 on any over-cap/multiline/boilerplate description).
+      — mechanized by `tools/hygiene/audit-skill-description-length.ts`
+      (deterministic Rule-0 replica of the `/doctor` cap check;
+      CLI exits 1 on any over-cap/multiline/boilerplate description).
 - [x] `/doctor` reports 0 descriptions dropped
-  — follows from 0 over-cap; the structural fix is the durable
-  gate (descriptions can no longer silently regrow past the cap).
+      — follows from 0 over-cap; the structural fix is the durable
+      gate (descriptions can no longer silently regrow past the cap).
 - [ ] Routing quality verified: spot-check 10 skills by
-  asking the router and confirming correct match
-  — still open (B-0347.4 router-verification sub-step).
+      asking the router and confirming correct match
+      — still open (B-0347.4 router-verification sub-step).
 
 ## Immediate mitigation (done)
 
@@ -93,9 +93,9 @@ a band-aid — the structural fix is shorter descriptions.
 ## Re-decomposition (pass 2, 2026-05-29 — substrate-drift-aware)
 
 Pass-1 split the row into 4 carve-by-category children (B-0347.1-.4).
-Twenty days later the carving has *shipped* — 257/257 descriptions are
+Twenty days later the carving has _shipped_ — 257/257 descriptions are
 ≤150 chars, single-line, boilerplate-free — so the pass-1 children are
-substrate-drift, not live work. Re-decomposed against the *actual*
+substrate-drift, not live work. Re-decomposed against the _actual_
 remaining state per `backlog-item-start-gate.md` Step 0:
 
 ### Pass-1 children — disposition
@@ -116,11 +116,11 @@ remaining state per `backlog-item-start-gate.md` Step 0:
   open acceptance criterion (#4). **Umbrella `depends_on: [B-0347.5]`
   — closure blocks here.**
 - **B-0347.6** (P2, buildable-now) — CI-wire the audit gate so the cap
-  is *enforced*, not just checkable (precedent:
+  is _enforced_, not just checkable (precedent:
   `role-ref-current-state-surfaces-lint.yml`). Robustness-hardening on
   the shipped tool; does not block umbrella closure.
 - **B-0347.7** (P3, buildable-now) — Tighten the 127 descriptions in
-  the 120-150 band to the ≤120 *preferred* target (rule 1). Advisory
+  the 120-150 band to the ≤120 _preferred_ target (rule 1). Advisory
   polish; the hard ≤150 cap is already met + gated; does not block
   umbrella closure and may outlive it.
 
@@ -133,7 +133,7 @@ Substrate-drift discriminator (per `backlog-item-start-gate.md`
 Step 0): the bulk carving artifacts already shipped in the 20 days
 since this row was filed — all 257 skill descriptions are ≤150
 chars, single-line, boilerplate-free. The row was **in-progress,
-not pure drift**: acceptance #1/#2 had no *durable gate* locking
+not pure drift**: acceptance #1/#2 had no _durable gate_ locking
 the invariant in, so descriptions could silently regrow past the
 routing budget (the original failure mode).
 
@@ -154,6 +154,6 @@ Remaining (NOT in this slice):
   audit (precedent: `role-ref-current-state-surfaces-lint.yml`);
   next bounded step.
 - **B-0347.1-.3 ≤120 tightening** — 127 descriptions sit in the
-  120-150 band (rule 1 *preferred* ≤120). Advisory (warnings, not
+  120-150 band (rule 1 _preferred_ ≤120). Advisory (warnings, not
   errors); optional carve-tighter pass, low priority since the
   hard cap is met.

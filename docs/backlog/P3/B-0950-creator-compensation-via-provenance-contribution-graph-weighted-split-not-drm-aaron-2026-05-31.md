@@ -15,7 +15,23 @@ composes_with:
   - .claude/rules/additive-not-zero-sum.md
   - .claude/rules/honor-those-that-came-before.md
   - docs/backlog/P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md
-tags: [economy-substrate, creator-compensation, provenance, lineage, contribution-graph, attribution, anti-drm, openlineage, prov-o, c2pa, agora, multi-attribution, bridge-table, dv2.0]
+tags:
+  [
+    economy-substrate,
+    creator-compensation,
+    provenance,
+    lineage,
+    contribution-graph,
+    attribution,
+    anti-drm,
+    openlineage,
+    prov-o,
+    c2pa,
+    agora,
+    multi-attribution,
+    bridge-table,
+    dv2.0,
+  ]
 type: feature
 ---
 
@@ -23,9 +39,9 @@ type: feature
 
 ## The directive (Aaron 2026-05-31)
 
-> *"lets land data provenance / lineage anchor somewhere too … like where does dbt inherit its
+> _"lets land data provenance / lineage anchor somewhere too … like where does dbt inherit its
 > lineage from or like meta attribute from lexisnexis legal on streams. something we can pay creators
-> not for DRM"* + *"so can this support a multi attribution/contribution graph for items?"*
+> not for DRM"_ + _"so can this support a multi attribution/contribution graph for items?"_
 
 The bet: **pay creators by attribution along a provenance/contribution graph — the opposite of DRM.**
 DRM restricts access to extract value; this records who-contributed-what (open content) and splits
@@ -38,16 +54,16 @@ gated on that ratification.
 A **contribution graph** over work-nodes (work-items / projects / initiatives / content artifacts)
 plus a **weighted-split engine** that turns the graph into creator payouts:
 
-1. **Multi-attribution edges.** Each work-node has a *weighted set* of contributors (human travelers
-   + AI agents + the prior substrate it derived from). Modeled as:
-   - **Kimball bridge table** with a `contribution_weight` allocation factor (weights sum to 1.0 /
+1. **Multi-attribution edges.** Each work-node has a _weighted set_ of contributors (human travelers
+   - AI agents + the prior substrate it derived from). Modeled as:
+   * **Kimball bridge table** with a `contribution_weight` allocation factor (weights sum to 1.0 /
      total credit) — the canonical M:N weighted-credit pattern;
-   - on a **DV2.0** `contribution` link + satellite (`{weight, role, what, timestamp}`) — graph by
+   * on a **DV2.0** `contribution` link + satellite (`{weight, role, what, timestamp}`) — graph by
      construction;
-   - emitting **PROV-O** qualified attribution (`prov:wasAttributedTo` + `prov:hadRole` + weight) and
+   * emitting **PROV-O** qualified attribution (`prov:wasAttributedTo` + `prov:hadRole` + weight) and
      **OpenLineage** events (the format dbt's lineage already speaks).
-2. **Source-material pre-attribution (Aaron 2026-05-31).** The graph extends upstream to the *source
-   creators of any human material the framework synthesizes or trains on*, recorded **pre-emptively —
+2. **Source-material pre-attribution (Aaron 2026-05-31).** The graph extends upstream to the _source
+   creators of any human material the framework synthesizes or trains on_, recorded **pre-emptively —
    even if the creator doesn't know we're using it**. Synthesis/training source edges
    (`synthesizedFrom` / `trainedOn`; PROV-O `wasDerivedFrom`; OpenLineage inputs extended to
    human-authored sources) attribute identifiable source creators directly; unidentifiable ones get a
@@ -58,7 +74,7 @@ plus a **weighted-split engine** that turns the graph into creator payouts:
 3. **Transitive attribution along `wasDerivedFrom`.** When item B derives from item A, A's
    contributors earn a weight-decayed share of B's credit (PageRank- / Shepard's-citation-depth-style
    flow with a bounded decay). This is `honor-those-that-came-before` made computable.
-4. **Attention-weighted value inflow (Aaron 2026-05-31).** An item's *earned credit* is not flat —
+4. **Attention-weighted value inflow (Aaron 2026-05-31).** An item's _earned credit_ is not flat —
    it is `attention × quality-of-attention` the item receives. Attention = a fact measure (grain =
    attention-event; reputation-weighted per Agora V6 B-0646 + participation-economy B-0623);
    quality-of-attention = reputation-of-the-attender (eigenvector/EigenTrust/PageRank, BFT-anchored)
@@ -76,16 +92,16 @@ plus a **weighted-split engine** that turns the graph into creator payouts:
 
 ## Why provenance, not DRM
 
-| | DRM | This (provenance/attribution) |
-|---|---|---|
-| Mechanism | lock content down | record origin + every edit; leave content open |
-| Creator value | gate access | attribute → compensate along lineage |
-| Stance | zero-sum | additive (`additive-not-zero-sum`) |
+|               | DRM               | This (provenance/attribution)                  |
+| ------------- | ----------------- | ---------------------------------------------- |
+| Mechanism     | lock content down | record origin + every edit; leave content open |
+| Creator value | gate access       | attribute → compensate along lineage           |
+| Stance        | zero-sum          | additive (`additive-not-zero-sum`)             |
 
 **C2PA** (6000+ members 2026; native on consumer hardware; AI generators embed it) already proves
 provenance-without-restriction works at consumer scale — and it **lacks a payout layer**; that gap is
 what this fills. **Shepard's Citations** (LexisNexis) is the century-old precedent that
-attribution-lineage is how a creator-class is *valued* without DRM.
+attribution-lineage is how a creator-class is _valued_ without DRM.
 
 ## Acceptance (umbrella — decomposes into slices)
 

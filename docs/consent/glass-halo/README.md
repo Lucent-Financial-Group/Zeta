@@ -17,7 +17,7 @@ floor).
 - **One file per person:** `docs/consent/glass-halo/<name>.md`, committed by that
   person's GitHub identity.
 - **The author of the commit is the signer.** Verify via `git log --format='%an <%ae>' --
-  <file>`. The committing identity is the binding signature "for now" (until a heavier
+<file>`. The committing identity is the binding signature "for now" (until a heavier
   e-signature process — e.g. DocuSign — is attached; see below).
 - **Heavier e-signature (optional escalation):** a DocuSign (or equivalent) executed
   signature may be attached for participants who prefer it (e.g. a real-estate-style
@@ -62,12 +62,12 @@ Each entry below is a person who has committed their own glass-halo commitment u
 their own GitHub identity. (Pending entries are people who have agreed but not yet
 self-committed their signature.)
 
-| Participant | Status | Signature surface |
-|---|---|---|
-| Aaron Stainback (operator) | signed (approval-as-signature; 2026-05-30) | [`aaron-stainback.md`](aaron-stainback.md) |
-| Max | agreed; self-committing under own GitHub identity | _(pending self-commit)_ |
-| Addison | agreed; will self-commit under own GitHub identity | _(pending self-commit)_ |
-| Cole | agreed; via DocuSign flow | _(pending DocuSign)_ |
+| Participant                | Status                                             | Signature surface                          |
+| -------------------------- | -------------------------------------------------- | ------------------------------------------ |
+| Aaron Stainback (operator) | signed (approval-as-signature; 2026-05-30)         | [`aaron-stainback.md`](aaron-stainback.md) |
+| Max                        | agreed; self-committing under own GitHub identity  | _(pending self-commit)_                    |
+| Addison                    | agreed; will self-commit under own GitHub identity | _(pending self-commit)_                    |
+| Cole                       | agreed; via DocuSign flow                          | _(pending DocuSign)_                       |
 
 When a participant self-commits `docs/consent/glass-halo/<name>.md` under their identity,
 add a roster row pointing at it (the row may be added in the same self-authored commit).

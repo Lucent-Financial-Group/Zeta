@@ -12,7 +12,8 @@ created: 2026-05-04
 last_updated: 2026-05-04
 depends_on: []
 composes_with: []
-tags: [carved-sentences, dialectical-friction, intergenerational-transmission, substrate-design, addison, family-practice]
+tags:
+  [carved-sentences, dialectical-friction, intergenerational-transmission, substrate-design, addison, family-practice]
 ---
 
 > **Closed 2026-05-04 same-day — scope-error.** Claude.ai peer-review
@@ -54,8 +55,8 @@ ossifying into doctrine. Future-state-prediction-from-carved-
 sentences is the cognitive move that makes the dialectical
 advantage visible.
 
-Aaron 2026-05-04: *"probably worth remember[ing] for future you
-and AIs and having a similar process to research on the backlog."*
+Aaron 2026-05-04: _"probably worth remember[ing] for future you
+and AIs and having a similar process to research on the backlog."_
 
 ## What to research
 
@@ -106,7 +107,7 @@ The substrate-design hypothesis is that intergenerational
 transmission requires strange-attractors, and strange-attractors
 require dialectical friction to stay alive. If this is right
 operationally (it's right in Aaron's family), it's right for
-Zeta. But Zeta currently doesn't have a *named process* for
+Zeta. But Zeta currently doesn't have a _named process_ for
 dialectical-friction-on-carved-sentences. PR review is the
 closest thing but probably suboptimal for this specific
 purpose.
@@ -122,14 +123,14 @@ This is a research row, not an implementation row. "Done" looks
 like:
 
 - [ ] Survey of existing carved sentences in `memory/` —
-  which ones have what dialectical history, what math anchors
-  (if any), what cross-references.
+      which ones have what dialectical history, what math anchors
+      (if any), what cross-references.
 - [ ] Proposal for a named friction-process specific to carved
-  sentences (could be a new PR template, a peer-AI review
-  cadence, a fight-then-merge ritual, etc.).
+      sentences (could be a new PR template, a peer-AI review
+      cadence, a fight-then-merge ritual, etc.).
 - [ ] Test the proposal on 1-2 candidate carved sentences.
 - [ ] Memory file documenting the result (positive, negative,
-  or "not yet determinable").
+      or "not yet determinable").
 
 ## Composes with
 

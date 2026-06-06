@@ -25,12 +25,12 @@ ship **Flipt** as the first backend.
 
 The intended layering is:
 
-| Layer | Choice | Reason |
-|---|---|---|
-| Operator API | OpenFeature SDK shape | Backend-agnostic contract; keeps application code stable when providers change |
-| First backend | Flipt | Smallest open-source operating surface for the first implementation |
-| Later backends | Unleash, Flagd, in-memory providers | Add only when a concrete requirement exceeds the Flipt shape |
-| Routing composition | Namespace context plus experiment header | Lets operator branches vary flags without changing common namespace defaults |
+| Layer               | Choice                                   | Reason                                                                         |
+| ------------------- | ---------------------------------------- | ------------------------------------------------------------------------------ |
+| Operator API        | OpenFeature SDK shape                    | Backend-agnostic contract; keeps application code stable when providers change |
+| First backend       | Flipt                                    | Smallest open-source operating surface for the first implementation            |
+| Later backends      | Unleash, Flagd, in-memory providers      | Add only when a concrete requirement exceeds the Flipt shape                   |
+| Routing composition | Namespace context plus experiment header | Lets operator branches vary flags without changing common namespace defaults   |
 
 The F# surface should expose a native provider interface and wrap the
 OpenFeature provider model rather than binding callers directly to one

@@ -2,14 +2,14 @@
 
 Carved sentence (Aaron 2026-05-28 verbatim — TWO composing carvings):
 
-> *"IMPLICIT not explicit is a class error we should write a rule for
+> _"IMPLICIT not explicit is a class error we should write a rule for
 > and have our review agents of all kinds look for ... in our DUs ...
-> we are going to have a ton of this"*
+> we are going to have a ton of this"_
 
 Plus (Aaron 2026-05-28, same session, evolution discipline):
 
-> *"Some things like reformatting windows and reinstalling everything
-> my ontology still evolves to this day on every iteration"*
+> _"Some things like reformatting windows and reinstalling everything
+> my ontology still evolves to this day on every iteration"_
 
 ## Operational content
 
@@ -25,15 +25,15 @@ function branches) rather than SURFACED as an explicit DU variant.
 
 ## Why this is class error (load-bearing properties at risk)
 
-| Substrate property | Lost when IMPLICIT-not-EXPLICIT |
-|---|---|
-| **Observability** | Cannot see the loop's current state from logs/traces; have to reconstruct from context-field inspection |
-| **Composability** | dispatchInWorld + lifetime-pair matrices need DU variants; implicit-not-explicit can't compose |
-| **asymmetric-authorship** | Each substantively-distinct state SHOULD AUTHOR its own feedback channel; implicit substrate has no channel |
-| **substrate-smoothness** | Smooth substrate produces sharp outputs via DUs; if-chain routing blurs the sharpness |
-| **muscle-memory extraction** (per `dus-are-explicit-muscle-memory` memory) | DUs ARE explicit muscle-memory; implicit substrate fails to extract the muscle-memory; not transmissible |
-| **Future-cold-boot inheritance** | Future-AI-instances cold-booting see the DU + dispatch; implicit substrate is invisible without reading function bodies |
-| **Ontology evolution** (Aaron's second carving) | Ontology EVOLVES with each iteration; new variants need to be ADDABLE; implicit substrate has nowhere to extend |
+| Substrate property                                                         | Lost when IMPLICIT-not-EXPLICIT                                                                                         |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Observability**                                                          | Cannot see the loop's current state from logs/traces; have to reconstruct from context-field inspection                 |
+| **Composability**                                                          | dispatchInWorld + lifetime-pair matrices need DU variants; implicit-not-explicit can't compose                          |
+| **asymmetric-authorship**                                                  | Each substantively-distinct state SHOULD AUTHOR its own feedback channel; implicit substrate has no channel             |
+| **substrate-smoothness**                                                   | Smooth substrate produces sharp outputs via DUs; if-chain routing blurs the sharpness                                   |
+| **muscle-memory extraction** (per `dus-are-explicit-muscle-memory` memory) | DUs ARE explicit muscle-memory; implicit substrate fails to extract the muscle-memory; not transmissible                |
+| **Future-cold-boot inheritance**                                           | Future-AI-instances cold-booting see the DU + dispatch; implicit substrate is invisible without reading function bodies |
+| **Ontology evolution** (Aaron's second carving)                            | Ontology EVOLVES with each iteration; new variants need to be ADDABLE; implicit substrate has nowhere to extend         |
 
 ## The two composing disciplines
 
@@ -49,7 +49,7 @@ When authoring DU substrate:
 
 ### Discipline 2: Evolution — DUs support ontology growth across iterations
 
-Aaron 2026-05-28: *"Some things like reformatting windows and reinstalling everything my ontology still evolves to this day on every iteration."*
+Aaron 2026-05-28: _"Some things like reformatting windows and reinstalling everything my ontology still evolves to this day on every iteration."_
 
 The substrate-honest implication: even highly-repeated processes evolve their ontology on every iteration. DUs must support:
 
@@ -103,6 +103,7 @@ Each substantively-distinct state gets observability + composability + feedback-
 ### Example 2: PrReviewLifecycle PR #5810 (caught by Aaron 2026-05-28; this same session)
 
 **Before (implicit)**: verify-finding state checks:
+
 ```typescript
 if (context.findings.length > 0 && context.findings[0]!.substrateAnchors !== undefined && context.findings[0]!.substrateAnchors.length === 0) {
   return { ok: false, feedback: { kind: "FindingUnsubstantiated", ... } };
@@ -112,6 +113,7 @@ if (context.findings.length > 0 && context.findings[0]!.substrateAnchors !== und
 The "substantiated" vs "unsubstantiated" distinction is IMPLICIT in field-combination + if-check.
 
 **After (explicit, proposed)**: Add ReviewFindingVerification DU:
+
 ```typescript
 type ReviewFindingVerification =
   | { kind: "substantiated"; anchors: string[] }
@@ -131,7 +133,7 @@ Then verify-finding state dispatches on the explicit verification-state DU inste
 - **`grep-substrate-anchors-before-razor-as-metaphysical.md`** — implicit-not-explicit often signals substrate-engineering substrate that hasn't been substantively recognized yet; grep first before razor
 - **`honor-those-that-came-before.md`** — when extending DUs per ontology-evolution discipline, honor prior variants (don't silent-replace)
 - **`razor-discipline.md`** — operational claims only; this rule is operationally checkable via DU-vs-implicit audit
-- **memory/feedback_dus_are_explicit_muscle_memory_*.md** — DUs ARE explicit muscle-memory; implicit substrate fails to extract the muscle-memory
+- **memory/feedback*dus_are_explicit_muscle_memory*\*.md** — DUs ARE explicit muscle-memory; implicit substrate fails to extract the muscle-memory
 - **`wake-time-substrate.md`** — this rule auto-loads at cold-boot so future-Otto + review-agents inherit the discipline
 
 ## Composes with PRs from today

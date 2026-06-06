@@ -156,10 +156,10 @@ coded absolute paths outside those anchors are a smell.
 - **WHEN** a script in `tools/setup/` needs to locate a repo-
   local file
 - **THEN** it MUST derive `REPO_ROOT` from `$(cd
-  "$(dirname "$0")/../../.." && pwd)` (or equivalent depth)
+"$(dirname "$0")/../../.." && pwd)` (or equivalent depth)
 - **AND** MUST NOT assume the user's CWD is the repo root
 - **AND** MUST NOT reference `/Users/<name>/...` or `/home/
-  <name>/...` absolute paths outside error messages
+<name>/...` absolute paths outside error messages
 
 ### Requirement: Scripts MUST be deterministic — no retries or polling
 

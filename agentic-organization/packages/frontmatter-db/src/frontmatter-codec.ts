@@ -31,8 +31,7 @@ export const ParseFeedbackReason = {
   UnterminatedFrontmatter: "unterminated_frontmatter",
   MalformedLine: "malformed_line",
 } as const;
-export type ParseFeedbackReason =
-  (typeof ParseFeedbackReason)[keyof typeof ParseFeedbackReason];
+export type ParseFeedbackReason = (typeof ParseFeedbackReason)[keyof typeof ParseFeedbackReason];
 
 /** Explicit two-variant Result DU for the parser. */
 export type ParseResult =
@@ -66,10 +65,7 @@ export const parseFrontmatterDocument = (text: string): ParseResult => {
   const lines = text.split("\n");
 
   if (lines.length === 0 || lines[0] !== FRONTMATTER_FENCE) {
-    return feedback(
-      ParseFeedbackReason.MissingFrontmatter,
-      "document does not begin with a '---' frontmatter fence",
-    );
+    return feedback(ParseFeedbackReason.MissingFrontmatter, "document does not begin with a '---' frontmatter fence");
   }
 
   // Find the closing fence (first `---` line after index 0).
@@ -104,10 +100,7 @@ export const parseFrontmatterDocument = (text: string): ParseResult => {
     }
     const key = line.slice(0, colonIndex).trim();
     if (key === "") {
-      return feedback(
-        ParseFeedbackReason.MalformedLine,
-        `frontmatter line has an empty key: ${JSON.stringify(line)}`,
-      );
+      return feedback(ParseFeedbackReason.MalformedLine, `frontmatter line has an empty key: ${JSON.stringify(line)}`);
     }
     const rawValue = line.slice(colonIndex + 1).trim();
     frontmatter[key] = parseScalar(rawValue);
@@ -239,9 +232,7 @@ const looksLikeNumber = (raw: string): boolean => {
  * whitespace, are empty, or would otherwise parse back as a number, boolean,
  * or array.
  */
-export const serializeFrontmatterDocument = (
-  document: ParsedDocument,
-): string => {
+export const serializeFrontmatterDocument = (document: ParsedDocument): string => {
   const lines: string[] = [FRONTMATTER_FENCE];
   for (const key of Object.keys(document.frontmatter)) {
     const value = document.frontmatter[key]!;
@@ -326,19 +317,13 @@ const quote = (str: string): string => {
 };
 
 /** Build a ParsedDocument from a row's values + a markdown body. */
-export const rowToDocument = (
-  row: FrontmatterRow,
-  body: string,
-): ParsedDocument => ({
+export const rowToDocument = (row: FrontmatterRow, body: string): ParsedDocument => ({
   frontmatter: { ...row.values },
   body,
 });
 
 /** Build a FrontmatterRow for `table` from a parsed document's frontmatter. */
-export const documentToRow = (
-  document: ParsedDocument,
-  table: string,
-): FrontmatterRow => ({
+export const documentToRow = (document: ParsedDocument, table: string): FrontmatterRow => ({
   table,
   values: { ...document.frontmatter },
 });

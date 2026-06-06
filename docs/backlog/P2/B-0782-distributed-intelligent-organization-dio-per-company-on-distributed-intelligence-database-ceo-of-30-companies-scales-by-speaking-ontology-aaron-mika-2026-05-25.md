@@ -22,7 +22,16 @@ composes_with:
   - B-0780
   - B-0781
   - B-0783
-tags: [strategy, dio, distributed-intelligent-organization, ceo-scale, ontology, multi-company, distributed-intelligence-database]
+tags:
+  [
+    strategy,
+    dio,
+    distributed-intelligent-organization,
+    ceo-scale,
+    ontology,
+    multi-company,
+    distributed-intelligence-database,
+  ]
 ---
 
 ## Problem
@@ -93,15 +102,15 @@ Aaron's substrate-honest framing: at CEO-of-30-companies scale,
 the operator MUST scale by speaking ontology + intent, NOT
 implementation details. The substrate enables this via:
 
-| Substrate layer | What CEO can do (speak ontology) | What substrate handles (no CEO touch) |
-|---|---|---|
-| **Strategic intent** | "Roll out X across all 30 companies" | Per-DIO Argo CD App-of-Apps + Local Loop sim + DIO-specific impl pickup |
-| **Standardization** | "Every DIO uses the Zeta substrate" | Per-DIO Nix flake bootstrap; auto-cluster; auto-discovery |
-| **Cloud-agnostic delivery** | "Implement this on AWS / GCP / Azure / bare metal" | Per-DIO B-0763 vendor-swap interfaces |
-| **Compliance + governance** | "Every DIO must pass these OPA policies" | Per-DIO B-0776 rank-7 OPA plugin |
-| **Telemetry rollup** | "Show me how all 30 DIOs are doing" | Per-DIO B-0762 telemetry aggregated |
-| **Per-DIO customization** | "DIO #17 needs custom workflow X" | Per-DIO Argo CD override; substrate stays standardized |
-| **AI vs human staffing per DIO** | "DIO #17 is AI-run; DIO #21 is human-run" | Same touch points either way per B-0763 + B-0772 |
+| Substrate layer                  | What CEO can do (speak ontology)                   | What substrate handles (no CEO touch)                                   |
+| -------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Strategic intent**             | "Roll out X across all 30 companies"               | Per-DIO Argo CD App-of-Apps + Local Loop sim + DIO-specific impl pickup |
+| **Standardization**              | "Every DIO uses the Zeta substrate"                | Per-DIO Nix flake bootstrap; auto-cluster; auto-discovery               |
+| **Cloud-agnostic delivery**      | "Implement this on AWS / GCP / Azure / bare metal" | Per-DIO B-0763 vendor-swap interfaces                                   |
+| **Compliance + governance**      | "Every DIO must pass these OPA policies"           | Per-DIO B-0776 rank-7 OPA plugin                                        |
+| **Telemetry rollup**             | "Show me how all 30 DIOs are doing"                | Per-DIO B-0762 telemetry aggregated                                     |
+| **Per-DIO customization**        | "DIO #17 needs custom workflow X"                  | Per-DIO Argo CD override; substrate stays standardized                  |
+| **AI vs human staffing per DIO** | "DIO #17 is AI-run; DIO #21 is human-run"          | Same touch points either way per B-0763 + B-0772                        |
 
 The CEO's mental model is the ONTOLOGY. The substrate handles
 everything below the ontology layer. Operator interactions

@@ -14,14 +14,14 @@ for **AI consumption** but consumable by humans.
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"and we will have the data to make our precise
+> _"and we will have the data to make our precise
 > definitional corrections based on evidence not guessing
 > this is amazing, i don't see how anyone beats us at the
 > redefinition game to make a mathematically level
 > precision english dictionary that won't confuse AIs
 > because the precision is so clear. this is like a
 > context window compression tool as well this regular
-> agreed upon dictionary lol."*
+> agreed upon dictionary lol."_
 
 Three load-bearing claims:
 
@@ -123,24 +123,24 @@ valuable, which attracts more adoption.
 
 ## Composes with
 
-- **Otto-287** *all friction sources are finite-resource
-  collisions* — the dictionary IS the application of
+- **Otto-287** _all friction sources are finite-resource
+  collisions_ — the dictionary IS the application of
   Otto-287 to the inter-agent / inter-human communication
   layer. The constrained resource is the conversation's
   context window; the dictionary externalizes /
   compresses the term-meaning mapping so conversations
   fit.
-- **Otto-286** *definitional precision changes the future
-  without war* — the dictionary is the systematized
+- **Otto-286** _definitional precision changes the future
+  without war_ — the dictionary is the systematized
   output of Otto-286. Every term in the dictionary is the
   result of a precision-pass applied to a category of
   English usage.
-- **Otto-282** *write code from reader perspective* — the
+- **Otto-282** _write code from reader perspective_ — the
   dictionary IS the WHY-comment layer for English
   vocabulary. Each entry tells the reader why this
   precise definition was chosen, what falsifies it, what
   it composes with.
-- **Otto-285** *DST tests chaos doesn't skip it* — the
+- **Otto-285** _DST tests chaos doesn't skip it_ — the
   dictionary's empirical grounding requires deterministic
   reproduction of the conditions under which a term
   applies. Tests-of-vocabulary are a thing.
@@ -178,7 +178,7 @@ The vision crystallised after Otto-287 (finite-resource
 collisions taxonomy) was captured, when Aaron immediately
 recognized that:
 
-- Our substrate accumulates *evidence* (not just claims)
+- Our substrate accumulates _evidence_ (not just claims)
 - Definitional precision (Otto-286) is the strategy we
   apply
 - The output of applying that strategy systematically

@@ -35,9 +35,9 @@
  * aggregated into a single verdict.
  */
 export type ConsensusMechanism =
-  | { kind: "majority" }                // > 50% must agree
-  | { kind: "supermajority"; threshold: number }  // > threshold (e.g., 0.67 for 2/3)
-  | { kind: "unanimous" }               // 100% must agree
+  | { kind: "majority" } // > 50% must agree
+  | { kind: "supermajority"; threshold: number } // > threshold (e.g., 0.67 for 2/3)
+  | { kind: "unanimous" } // 100% must agree
   | { kind: "first-n-agree"; n: number }; // first N agreeing analyzers' verdict wins
 
 /**
@@ -67,10 +67,10 @@ export interface AgreementMetrics<T> {
   readonly totalAnalyzers: number;
   readonly successfulAnalyzers: number;
   readonly failedAnalyzers: number;
-  readonly verdictCounts: ReadonlyMap<string, number>;  // keyed by verdict-id
+  readonly verdictCounts: ReadonlyMap<string, number>; // keyed by verdict-id
   readonly winnerCount: number;
-  readonly winnerFraction: number;  // winnerCount / successfulAnalyzers
-  readonly _typeHint?: T;  // type-anchor; never set at runtime
+  readonly winnerFraction: number; // winnerCount / successfulAnalyzers
+  readonly _typeHint?: T; // type-anchor; never set at runtime
 }
 
 /**
@@ -80,9 +80,7 @@ export interface AgreementMetrics<T> {
  * authorship); consensus aggregates per substrate-entity-defined
  * channel.
  */
-export type AnalyzerOutput<T> =
-  | { ok: true; verdict: T }
-  | { ok: false; reason: string };
+export type AnalyzerOutput<T> = { ok: true; verdict: T } | { ok: false; reason: string };
 
 /**
  * Run N parallel analyzers + compute consensus.
@@ -105,9 +103,7 @@ export interface ConsensusContext<T> {
   readonly verdictKey?: (verdict: T) => string;
 }
 
-export async function runConsensus<T>(
-  context: ConsensusContext<T>,
-): Promise<ConsensusResult<T>> {
+export async function runConsensus<T>(context: ConsensusContext<T>): Promise<ConsensusResult<T>> {
   if (context.analyzers.length === 0) {
     return {
       ok: false,
@@ -130,10 +126,7 @@ export async function runConsensus<T>(
   }
 
   // first-n-agree requires at least N analyzers
-  if (
-    context.mechanism.kind === "first-n-agree" &&
-    context.analyzers.length < context.mechanism.n
-  ) {
+  if (context.mechanism.kind === "first-n-agree" && context.analyzers.length < context.mechanism.n) {
     return {
       ok: false,
       feedback: {

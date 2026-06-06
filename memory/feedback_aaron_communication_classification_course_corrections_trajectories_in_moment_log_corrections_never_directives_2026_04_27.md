@@ -74,7 +74,7 @@ Without the trajectory registry, course-corrections land in conversational conte
 
 ### Composes with Otto-356 (Mirror vs Beacon registers)
 
-When Aaron's course-correction uses Mirror-register vocabulary (internal-to-Aaron framing), Otto's job is to translate to Beacon-safe terms before landing it as substrate (per `feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`). The course-correction's *content* is the signal; the *vocabulary* is negotiable.
+When Aaron's course-correction uses Mirror-register vocabulary (internal-to-Aaron framing), Otto's job is to translate to Beacon-safe terms before landing it as substrate (per `feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`). The course-correction's _content_ is the signal; the _vocabulary_ is negotiable.
 
 ## Why: meta-substrate (knowing the type ≈ better integration)
 

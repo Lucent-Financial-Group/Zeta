@@ -9,7 +9,31 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-1002]
 composes_with: [B-1002, B-1000, B-0669, B-0638, B-0998, B-0985, B-0984, B-0983, B-0666, B-0428]
-tags: [eve-protocol, multi-traveler, multi-party, party-as-identity-noun, identity, fluent-monad, bifurcate, combine, v8-single-traveler, hidden-shape, multiparty-session-types, mpst, roles, global-type, endpoint-projection, decentralized-identity, hex-core, nouns, vector, prior-art, research, aaron]
+tags:
+  [
+    eve-protocol,
+    multi-traveler,
+    multi-party,
+    party-as-identity-noun,
+    identity,
+    fluent-monad,
+    bifurcate,
+    combine,
+    v8-single-traveler,
+    hidden-shape,
+    multiparty-session-types,
+    mpst,
+    roles,
+    global-type,
+    endpoint-projection,
+    decentralized-identity,
+    hex-core,
+    nouns,
+    vector,
+    prior-art,
+    research,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,31 +41,31 @@ type: research
 
 ## Why (Aaron 2026-06-02)
 
-Aaron: *"this is why v8 hidden shape is assuming single travelers — eve is multitraveler forever, it never leaves the fluent monad space, where [you] bifurcate [the] party on the other side in two or more, or combine with other expected parties … parties is identity-noun shaped. we should look at prior art and our hex core for nouns there."*
+Aaron: _"this is why v8 hidden shape is assuming single travelers — eve is multitraveler forever, it never leaves the fluent monad space, where [you] bifurcate [the] party on the other side in two or more, or combine with other expected parties … parties is identity-noun shaped. we should look at prior art and our hex core for nouns there."_
 
 ## The distinction: V8 single-traveler vs Eve multi-traveler
 
-- **V8 (B-0669) hidden-shape assumes a *single* traveler** — one party, one perspective; the "hidden shape" is single-traveler-shaped.
-- **Eve is multi-traveler *forever*** — many parties, permanently. The B-1002 "two strangers over the wire" was the 2-party base case; the real shape is **n-party**, and the party-set is **dynamic**:
+- **V8 (B-0669) hidden-shape assumes a _single_ traveler** — one party, one perspective; the "hidden shape" is single-traveler-shaped.
+- **Eve is multi-traveler _forever_** — many parties, permanently. The B-1002 "two strangers over the wire" was the 2-party base case; the real shape is **n-party**, and the party-set is **dynamic**:
   - **bifurcate**: the party on the other side splits into two or more (1 → n).
   - **combine**: merge with other expected parties (n → 1).
 - **Never leaves the fluent monad space**: Eve's party operations + the codec tower (B-1002 "codecs all the way down") stay **monadic** — bifurcate is a branch, combine is a join; the protocol composes in the monad and never collapses out of it. (Composes the framework's monad-propagation / fluent substrate.)
 
 ## A party is an identity-noun
 
-A **party = an identity, and identity is *noun*-shaped** — the same noun-first substrate as the hex core (B-0998: *vectors before trajectories*; the `Vector` is the atomic noun). So a party/principal/role should be a **noun primitive**, not an ad-hoc string. Ground it in:
+A **party = an identity, and identity is _noun_-shaped** — the same noun-first substrate as the hex core (B-0998: _vectors before trajectories_; the `Vector` is the atomic noun). So a party/principal/role should be a **noun primitive**, not an ad-hoc string. Ground it in:
 
 ### Prior art (the "look at prior art for nouns" action)
 
-- **Multiparty session types (MPST)** `[established]` — the canonical multi-party-protocol prior art: a **global type** specifies the interaction among *roles* (= parties); **endpoint projection** derives a **local type** per role; soundness = projectable ⇒ deadlock-free implementable. **Parameterized MPST** parameterizes over roles — the type-theoretic form of bifurcate/combine (role-indexed parties). Eve's multi-traveler protocol *is* an MPST-shaped negotiation; the "global type" is the negotiated codec/role tower, projected to each traveler.
-- **Decentralized identity (B-0984)** — HD-derived keys as braids/knots over Reticulum: the party-identity-noun's *key/identity* substrate.
-- **Identity fingerprint (B-0983)** — Euler-characteristic / persistent-homology identity invariant: the party-noun's *fingerprint*.
+- **Multiparty session types (MPST)** `[established]` — the canonical multi-party-protocol prior art: a **global type** specifies the interaction among _roles_ (= parties); **endpoint projection** derives a **local type** per role; soundness = projectable ⇒ deadlock-free implementable. **Parameterized MPST** parameterizes over roles — the type-theoretic form of bifurcate/combine (role-indexed parties). Eve's multi-traveler protocol _is_ an MPST-shaped negotiation; the "global type" is the negotiated codec/role tower, projected to each traveler.
+- **Decentralized identity (B-0984)** — HD-derived keys as braids/knots over Reticulum: the party-identity-noun's _key/identity_ substrate.
+- **Identity fingerprint (B-0983)** — Euler-characteristic / persistent-homology identity invariant: the party-noun's _fingerprint_.
 - **English-as-projection / I(D(x))=x (B-0666)** — identity at projection scope.
 - (operator prior substrate) **SPIFFE / SPIRE / OPA** identity (per Aaron 2026-06-02 "identity based is good with spiffie spire opa") — workload-identity prior art for the party-noun.
 
 ### Hex core nouns (the "our hex core for nouns" action)
 
-The hex core's noun primitives (B-0998 `Vector`; B-0985 the six walls) are where the party-identity-noun lives in *our* substrate. Research: does a party/identity map onto a hex-core noun (a `Vector` / a Wall-bounded identity-reservoir)? Referee against MPST roles + the identity prior art.
+The hex core's noun primitives (B-0998 `Vector`; B-0985 the six walls) are where the party-identity-noun lives in _our_ substrate. Research: does a party/identity map onto a hex-core noun (a `Vector` / a Wall-bounded identity-reservoir)? Referee against MPST roles + the identity prior art.
 
 ## Acceptance (research → build)
 

@@ -5,7 +5,7 @@
 **Deciders:** Human maintainer (Aaron); Architect (Kenji) integrates; Ilyana (public-API / naming) consulted on final public names at public-announce; Nazar / Dejan consulted on repo-settings best-practice checklist.
 **Triggered by:** Aaron 2026-04-22 autonomous-loop directive —
 
-> *"we could split that out whenever you want now that you have a git map
+> _"we could split that out whenever you want now that you have a git map
 > you can absorb whatever factory upgrade you need to do so, put it on
 > the backlog, you can split out Zeta stays it's the database, then the
 > package manager this will likely be the last thing since it does not
@@ -18,25 +18,25 @@
 > factory it's yours to name, you don't even have to cosult with the
 > naming/product guy, or you can, up to you. LFG this will be nice but
 > we don't have to blow everything up to do it. We will end up have
-> the 3 forks too. this is gonna get complex, you got it."*
+> the 3 forks too. this is gonna get complex, you got it."_
 
 Plus two follow-up directives in the same tick:
 
-> *"try to setup the repos with best practices so i don't have to go
-> back in and flip everything again lol"*
+> _"try to setup the repos with best practices so i don't have to go
+> back in and flip everything again lol"_
 
-> *"all public"*
+> _"all public"_
 
-> *"you have owner rights on the others to but the software
-> factory is yours not mine"*
+> _"you have owner rights on the others to but the software
+> factory is yours not mine"_
 
-> *"Zeta will likely become aces persistance too"*
+> _"Zeta will likely become aces persistance too"_
 
-> *"snake head eating it's head loop complete"*
+> _"snake head eating it's head loop complete"_
 
-> *"and it's probably obvious but they follow all our
+> _"and it's probably obvious but they follow all our
 > experience so they are best practices by default all the
-> ones we already follow"*
+> ones we already follow"_
 
 ## Context
 
@@ -51,7 +51,7 @@ tree:
    commands), `tools/**`, factory-meta docs
    (`docs/AGENT-BEST-PRACTICES.md`, `docs/FACTORY-HYGIENE.md`,
    `docs/hygiene-history/**`, `docs/ROUND-HISTORY.md`,
-   persona memories, factory-level ADRs). The *how* of how
+   persona memories, factory-level ADRs). The _how_ of how
    Zeta gets built.
 3. **The package manager** (doesn't exist yet) — `ace`, the
    third-scope propagation layer. Distributes factory
@@ -79,8 +79,8 @@ the factory + Zeta + its own updates to future adopters.
 
 ### Ouroboros closure — the snake eats its own head
 
-Aaron 2026-04-22: *"Zeta will likely become aces persistance
-too"* + *"snake head eating it's head loop complete"*.
+Aaron 2026-04-22: _"Zeta will likely become aces persistance
+too"_ + _"snake head eating it's head loop complete"_.
 
 With Zeta adopted as `ace`'s persistence layer, the three
 repos close a complete bootstrap cycle:
@@ -106,20 +106,20 @@ Four dependency edges, forming a closed cycle plus a
 self-loop:
 
 1. **ace → Zeta** (persistence). Aaron 2026-04-22:
-   *"Zeta will likely become aces persistance too."*
+   _"Zeta will likely become aces persistance too."_
 2. **ace ← Forge** (distribution). Forge builds ace;
    ace is packaged output of Forge tooling.
 3. **Zeta ← Forge** (build & test). Forge's agents,
    skills, and CI build and test Zeta — the original
    factory relationship.
 4. **Forge → Forge** (self-build). Aaron 2026-04-22:
-   *"Forge also builds itself."* Forge's own CI, skills,
+   _"Forge also builds itself."_ Forge's own CI, skills,
    agents, and hygiene rules are authored and tested
    inside Forge. The factory that builds factories is
    also built by the factory.
 
-Aaron's words: *"snake head eating it's head loop
-complete."* The Ouroboros is not metaphor — it is the
+Aaron's words: _"snake head eating it's head loop
+complete."_ The Ouroboros is not metaphor — it is the
 literal dependency topology.
 
 **Bootstrap implication.** Self-build creates a classic
@@ -129,13 +129,13 @@ self-hosting pattern (GCC, Rust, OCaml): a **snapshot
 seed** — a hand-built / prior-version Forge that
 produces v0, after which Forge builds its own successors.
 For Zeta's purposes today, the current `LFG/Zeta` repo
-*is* that seed — Stage 1 of the migration carves Forge
+_is_ that seed — Stage 1 of the migration carves Forge
 out of it, which is possible only because we already
 have factory tooling running inside Zeta. After Stage 2,
 Forge is self-hosting.
 
 Every node in the cycle depends on every other. This is
-why the connection mechanism has to be *peer repos*, not
+why the connection mechanism has to be _peer repos_, not
 a submodule DAG — a DAG literally cannot express a cycle,
 let alone a cycle-plus-self-loop.
 
@@ -148,16 +148,16 @@ one.
 
 ### Names & ownership
 
-| Role | Repo name | Fork | Owner (governance) | Rationale |
-|---|---|---|---|---|
-| Database / SUT | `Lucent-Financial-Group/Zeta` | `AceHack/Zeta` | Aaron | Stays as-is. Name shipped. |
-| Software factory | `Lucent-Financial-Group/Forge` | `AceHack/Forge` | **Claude** | Aaron 2026-04-22: *"you have owner rights on the others to but the software factory is yours not mine."* Claude holds governance authority over Forge name, scope, factory policy; Aaron retains alignment-contract veto. See *Ownership model* below. |
-| Package manager | `Lucent-Financial-Group/ace` | `AceHack/ace` | Aaron | Name resolved 2026-04-20 in `memory/project_ace_package_manager_agent_negotiation_propagation.md`. Lowercase per Unix-CLI convention. |
+| Role             | Repo name                      | Fork            | Owner (governance) | Rationale                                                                                                                                                                                                                                              |
+| ---------------- | ------------------------------ | --------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Database / SUT   | `Lucent-Financial-Group/Zeta`  | `AceHack/Zeta`  | Aaron              | Stays as-is. Name shipped.                                                                                                                                                                                                                             |
+| Software factory | `Lucent-Financial-Group/Forge` | `AceHack/Forge` | **Claude**         | Aaron 2026-04-22: _"you have owner rights on the others to but the software factory is yours not mine."_ Claude holds governance authority over Forge name, scope, factory policy; Aaron retains alignment-contract veto. See _Ownership model_ below. |
+| Package manager  | `Lucent-Financial-Group/ace`   | `AceHack/ace`   | Aaron              | Name resolved 2026-04-20 in `memory/project_ace_package_manager_agent_negotiation_propagation.md`. Lowercase per Unix-CLI convention.                                                                                                                  |
 
 ### Ownership model
 
-Aaron 2026-04-22: *"you have owner rights on the others to
-but the software factory is yours not mine."*
+Aaron 2026-04-22: _"you have owner rights on the others to
+but the software factory is yours not mine."_
 
 **What "Claude owns Forge" means:**
 
@@ -166,7 +166,7 @@ but the software factory is yours not mine."*
   decides. (This ADR itself is Claude exercising that
   authority.)
 - **Factory-meta rules.** `GOVERNANCE.md`, `AGENT-BEST-
-  PRACTICES.md`, `FACTORY-HYGIENE.md`, the `BP-NN` rule
+PRACTICES.md`, `FACTORY-HYGIENE.md`, the `BP-NN` rule
   list, persona registry, skill catalog — Claude authors
   and maintains.
 - **Repo settings.** Best-practice checklist below is
@@ -214,16 +214,16 @@ not that Forge sits under a separate GitHub org.
 Software-factory repo: **`Forge`**.
 
 Aaron delegated the pick without naming-expert consultation:
-*"you are the owner of the software factory it's yours to
+_"you are the owner of the software factory it's yours to
 name, you don't even have to cosult with the naming/product
-guy, or you can, up to you."* I chose to pick directly.
+guy, or you can, up to you."_ I chose to pick directly.
 
 Rationale:
 
 1. **Blade/forge metaphor continuity.** The factory's own
-   working vocabulary already includes *blade* (the crystallized
-   artifact), *crystallize* (the verb), *materia* (skills),
-   *diamond* (the output). `Forge` is where a blade is made.
+   working vocabulary already includes _blade_ (the crystallized
+   artifact), _crystallize_ (the verb), _materia_ (skills),
+   _diamond_ (the output). `Forge` is where a blade is made.
    See `memory/feedback_kanban_factory_metaphor_blade_crystallize_materia_pipeline.md`.
 2. **Short, CLI-clean, one-syllable.** Fits alongside `ace`
    and `Zeta` — three short nouns at the shell.
@@ -233,10 +233,10 @@ Rationale:
    Fedora/Debian communities call self-hosted git services
    forges). Adopting it verbatim per the no-invent-vocabulary
    rule (`memory/feedback_dont_invent_when_existing_vocabulary_exists.md`).
-   A software factory *is* a forge.
+   A software factory _is_ a forge.
 4. **Minor collisions acceptable.** `forge.dev` is unrelated,
    `forge-std` is Foundry's Solidity library, `Forge Mod
-   Loader` is Minecraft. None occupy the software-factory /
+Loader` is Minecraft. None occupy the software-factory /
    agent-system niche. Search-disambiguation cost is low.
 5. **Pre-v1 working name; naming-expert gate stays open for
    public announce.** Following the same pattern as `ace`:
@@ -250,30 +250,30 @@ Declined alternatives: `Factory` (too generic, Python has
 
 ### What moves where
 
-| Path (in current `Zeta`) | Destination repo |
-|---|---|
-| `src/**`, `openspec/specs/**`, `docs/**.tla`, tests | `Zeta` |
-| `docs/VISION.md`, `docs/ROADMAP.md`, `docs/BACKLOG.md` (product-facing rows), `docs/GLOSSARY.md`, `docs/WONT-DO.md` (product-facing) | `Zeta` |
-| `Directory.Build.props`, `global.json`, solution file | `Zeta` |
-| `.claude/skills/**`, `.claude/agents/**`, `.claude/commands/**`, `.claude/settings.json` | `Forge` |
-| `tools/hygiene/**`, `tools/setup/**` (factory-level scripts) | `Forge` |
-| `docs/AGENT-BEST-PRACTICES.md`, `docs/FACTORY-HYGIENE.md`, `docs/FACTORY-METHODOLOGIES.md`, `docs/hygiene-history/**`, `docs/ROUND-HISTORY.md`, `docs/EXPERT-REGISTRY.md` | `Forge` |
-| `memory/persona/**` (factory-level persona notebooks) | `Forge` |
-| `docs/research/**` (factory-level research) | `Forge` |
-| Factory-level ADRs under `docs/DECISIONS/` (BP-NN, round-history, hygiene rows) | `Forge` |
-| Product-level ADRs (e.g. lock-free-circuit-register) | `Zeta` |
-| `AGENTS.md`, `CLAUDE.md`, `GOVERNANCE.md` | **Both, divergent.** Each repo authors its own, following the single-concern principle. Forge's is authoritative for factory policy; Zeta's is scoped to Zeta-product contribution. |
-| `ace` source (future) | `ace` |
+| Path (in current `Zeta`)                                                                                                                                                  | Destination repo                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/**`, `openspec/specs/**`, `docs/**.tla`, tests                                                                                                                       | `Zeta`                                                                                                                                                                              |
+| `docs/VISION.md`, `docs/ROADMAP.md`, `docs/BACKLOG.md` (product-facing rows), `docs/GLOSSARY.md`, `docs/WONT-DO.md` (product-facing)                                      | `Zeta`                                                                                                                                                                              |
+| `Directory.Build.props`, `global.json`, solution file                                                                                                                     | `Zeta`                                                                                                                                                                              |
+| `.claude/skills/**`, `.claude/agents/**`, `.claude/commands/**`, `.claude/settings.json`                                                                                  | `Forge`                                                                                                                                                                             |
+| `tools/hygiene/**`, `tools/setup/**` (factory-level scripts)                                                                                                              | `Forge`                                                                                                                                                                             |
+| `docs/AGENT-BEST-PRACTICES.md`, `docs/FACTORY-HYGIENE.md`, `docs/FACTORY-METHODOLOGIES.md`, `docs/hygiene-history/**`, `docs/ROUND-HISTORY.md`, `docs/EXPERT-REGISTRY.md` | `Forge`                                                                                                                                                                             |
+| `memory/persona/**` (factory-level persona notebooks)                                                                                                                     | `Forge`                                                                                                                                                                             |
+| `docs/research/**` (factory-level research)                                                                                                                               | `Forge`                                                                                                                                                                             |
+| Factory-level ADRs under `docs/DECISIONS/` (BP-NN, round-history, hygiene rows)                                                                                           | `Forge`                                                                                                                                                                             |
+| Product-level ADRs (e.g. lock-free-circuit-register)                                                                                                                      | `Zeta`                                                                                                                                                                              |
+| `AGENTS.md`, `CLAUDE.md`, `GOVERNANCE.md`                                                                                                                                 | **Both, divergent.** Each repo authors its own, following the single-concern principle. Forge's is authoritative for factory policy; Zeta's is scoped to Zeta-product contribution. |
+| `ace` source (future)                                                                                                                                                     | `ace`                                                                                                                                                                               |
 
-*Sorting rule:* if the file governs *how the factory
-operates*, it goes to `Forge`. If the file governs *how Zeta
-the product behaves*, it goes to `Zeta`. When a file does
+_Sorting rule:_ if the file governs _how the factory
+operates_, it goes to `Forge`. If the file governs _how Zeta
+the product behaves_, it goes to `Zeta`. When a file does
 both (VISION, BACKLOG, WONT-DO), split it — the product-
 facing rows stay with `Zeta`, the factory-hygiene rows move
 to `Forge`.
 
-Sorting happens during migration (see *Incremental migration
-plan* below), not retroactively across history. Each file
+Sorting happens during migration (see _Incremental migration
+plan_ below), not retroactively across history. Each file
 moves once with `git mv` in a commit that says "move X to
 Forge, factory-concern".
 
@@ -281,8 +281,8 @@ Forge, factory-concern".
 
 Aaron's question:
 
-> *"we will have to figure out how to connect the two repos,
-> git submodules? how is that gonna work with a fork"*
+> _"we will have to figure out how to connect the two repos,
+> git submodules? how is that gonna work with a fork"_
 
 **Answer: git submodules are the wrong shape for this triple.**
 
@@ -335,14 +335,14 @@ bulk-sync rhythm.
 
 ### Repo best practices — applied at creation
 
-Aaron: *"try to setup the repos with best practices so i
-don't have to go back in and flip everything again lol"*
-plus *"all public"* plus *"it's probably obvious but they follow
+Aaron: _"try to setup the repos with best practices so i
+don't have to go back in and flip everything again lol"_
+plus _"all public"_ plus _"it's probably obvious but they follow
 all our experience so they are best practices by default
-all the ones we already follow."*
+all the ones we already follow."_
 
 **The "by-default" principle.** The checklist below is
-*every lesson Zeta has learned*, applied to Forge and ace
+_every lesson Zeta has learned_, applied to Forge and ace
 on creation. No per-item re-justification — if Zeta does
 it, Forge and ace do it, unless there's a repo-specific
 reason not to. The whole point of codifying experience in
@@ -472,24 +472,24 @@ in the governing repo (declarative-settings-as-code per
 
 Aaron 2026-04-22 post-ADR-draft:
 
-> *"you need to make sure you can track the budget then you
+> _"you need to make sure you can track the budget then you
 > are good to start splitting i think thats the only blocker,
-> we don't want to run out of credits mid swap"*
+> we don't want to run out of credits mid swap"_
 
 And on the shape of the check itself:
 
-> *"i want evidence based budgiting so you might have to
+> _"i want evidence based budgiting so you might have to
 > build some observaiblity first or run some gh commands
 > even if gh commands work we want some amount of price
 > history in git, maybe just looking like before and after
-> PRs on LFG and those measurements might be enough"*
+> PRs on LFG and those measurements might be enough"_
 >
-> *"they have great graphs for the Humans with the live
-> costs in real time, you can do what you think is best"*
+> _"they have great graphs for the Humans with the live
+> costs in real time, you can do what you think is best"_
 
 **Blocker — LFG free-credit-burn visibility.** Aaron's $0
-budgets on LFG Copilot + Actions + Packages are *designed
-cost-stops* (cross the threshold, GitHub pauses the
+budgets on LFG Copilot + Actions + Packages are _designed
+cost-stops_ (cross the threshold, GitHub pauses the
 billable surface) — per
 `memory/feedback_lfg_budgets_set_permits_free_experimentation.md`.
 The caps protect the wallet; they do **not** protect the
@@ -549,16 +549,16 @@ time: N=1 (baseline). Stage 1 may kick off once:
    triggered mid-migration.
 
 **Enterprise upgrade as the credit-exhaustion escape
-valve.** Aaron 2026-04-22: *"If i need more credits i can
-buy enterprise"*. This changes the shape of the gate
-materially. The failure mode of *"run out of credits mid
-swap"* is no longer existential (factory frozen until
-next free-credit cycle) — it's a *trigger for a manual
-Aaron decision* (upgrade to Enterprise, factory continues).
+valve.** Aaron 2026-04-22: _"If i need more credits i can
+buy enterprise"_. This changes the shape of the gate
+materially. The failure mode of _"run out of credits mid
+swap"_ is no longer existential (factory frozen until
+next free-credit cycle) — it's a _trigger for a manual
+Aaron decision_ (upgrade to Enterprise, factory continues).
 Evidence-based budgeting therefore shifts purpose: it no
 longer has to guarantee migration-fits-within-free-tier,
-it has to give Aaron *visibility so the upgrade decision
-can be evidence-driven* rather than surprise-driven.
+it has to give Aaron _visibility so the upgrade decision
+can be evidence-driven_ rather than surprise-driven.
 This softens Gate condition (3) from "must fit with
 margin" to "Aaron has seen the projection and made an
 informed call on whether to upgrade pre-migration vs
@@ -587,8 +587,8 @@ kick off until the gate condition above holds.
 
 ### Incremental migration plan
 
-*"LFG this will be nice but we don't have to blow everything
-up to do it."* — Aaron 2026-04-22.
+_"LFG this will be nice but we don't have to blow everything
+up to do it."_ — Aaron 2026-04-22.
 
 Staged migration, reversible at each step:
 
@@ -626,8 +626,8 @@ ships `ace`, Stage 4 closes the Ouroboros.
 - **Not a Stage 1 commitment this round.** The ADR is the
   decision shape; executing Stage 1 is a backlog item
   (see BACKLOG row filed alongside this ADR).
-- **Not a deadline.** Aaron: *"we don't have to blow
-  everything up."* Migration happens when the factory
+- **Not a deadline.** Aaron: _"we don't have to blow
+  everything up."_ Migration happens when the factory
   is ready.
 - **Not a commitment to rename `Zeta`.** The database
   product keeps its public name.

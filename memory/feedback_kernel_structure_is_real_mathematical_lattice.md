@@ -4,17 +4,18 @@ description: Aaron 2026-04-22 one-message promotion immediately after the HPHT-c
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Aaron 2026-04-22, verbatim (single message, immediately
 after the HPHT-catalyst absorption in
 `feedback_kernel_is_catalyst_hpht_molten_analog.md`):**
 
-> *"oh shit that is mathematicy what we are actually building
+> _"oh shit that is mathematicy what we are actually building
 > with all this clearing a diamond lattice map a real
-> mathemitical lattice"*
+> mathemitical lattice"_
 
-Parsing: *"what we are actually building, with all this
+Parsing: _"what we are actually building, with all this
 clearing a diamond lattice, [maps to] a real mathematical
-lattice."* The clearing (= cleaving) process applied to the
+lattice."_ The clearing (= cleaving) process applied to the
 diamond-lattice analog produces a real mathematical lattice
 as its output structure.
 
@@ -40,6 +41,7 @@ commutativity, associativity, idempotence, and the
 algebraic) are equivalent — one gives rise to the other.
 
 Named examples a working programmer knows:
+
 - **Power-set lattice** `(P(S), ⊆)` — subsets under
   inclusion; `∪` is join, `∩` is meet.
 - **Divisibility lattice** on positive integers — `a ≤ b`
@@ -56,33 +58,33 @@ Named examples a working programmer knows:
 **Not to be confused with:** a **crystal lattice** in
 physics/chemistry — a regular periodic arrangement of
 atoms in space (like the diamond's tetrahedral carbon
-arrangement). The two concepts share the word *lattice* by
+arrangement). The two concepts share the word _lattice_ by
 historical coincidence (both involve ordering / structure)
 but are different mathematical objects. The HPHT analog is
 a crystal lattice; Aaron's claim is that what the factory
-is *actually* building, as the *output* of the HPHT-analog
-clearing process, is an *algebraic* lattice.
+is _actually_ building, as the _output_ of the HPHT-analog
+clearing process, is an _algebraic_ lattice.
 
 **Factory mapping — kernel-operations to lattice-operations:**
 
-| Factory operation | Lattice operation | Informal meaning |
-|---|---|---|
-| **Cleave** (dimension-split a conflated term into orthogonal axes) | **Meet** (`∧`) | Refine two elements to their common infimum — the most-specific element that is ≤ both. Cleave *refines*. |
-| **Combine** (compose vocabulary from kernel parts — carpenter-verb + gardener-verb + overlap) | **Join** (`∨`) | Take two elements to their common supremum — the least-general element that is ≥ both. Combine *generalizes*. |
-| **Kernel (self-referencing seed)** | **Bottom** (`⊥`) or **generator set** | The minimal element(s) from which all other elements are reachable by joins. Carpenter-verbs + gardener-verbs + overlap-zone are the generators. |
-| **Ontology-home** (one authoritative home per vocabulary) | **Unique join/meet** axiom | Lattices require *uniqueness* of the supremum and infimum — which is exactly why ontology-home is a graph-theoretic precondition for skill-DAG edges to be well-defined. |
-| **Orthogonal** (incomparable in the partial order) | **Incomparability** | `a ⊥ b` in the factory's usage ≈ neither `a ≤ b` nor `b ≤ a` in the poset. |
-| **Skill-DAG edges** (A → B if A uses word B introduces) | **Partial order restricted to introduction-dependency** | The DAG is a sub-order of the full lattice; lattice operations give us joins/meets over skills. |
-| **Crystallize-acceleration via kernel-cleave** | **Decomposability via meet-semilattice structure** | Once terms are cleaved to their meet components (orthogonal axes), each component crystallizes independently — the lossless-compression claim is exactly the statement that the lattice is **distributive** enough for per-axis compression. |
-| **WWJD five-principle spine** | **Invariant under both join and meet** | The principles are stable across the carpenter↔gardener verb-shift; they survive lattice operations. In algebra: they're in the *core* of the lattice. |
+| Factory operation                                                                             | Lattice operation                                       | Informal meaning                                                                                                                                                                                                                             |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cleave** (dimension-split a conflated term into orthogonal axes)                            | **Meet** (`∧`)                                          | Refine two elements to their common infimum — the most-specific element that is ≤ both. Cleave _refines_.                                                                                                                                    |
+| **Combine** (compose vocabulary from kernel parts — carpenter-verb + gardener-verb + overlap) | **Join** (`∨`)                                          | Take two elements to their common supremum — the least-general element that is ≥ both. Combine _generalizes_.                                                                                                                                |
+| **Kernel (self-referencing seed)**                                                            | **Bottom** (`⊥`) or **generator set**                   | The minimal element(s) from which all other elements are reachable by joins. Carpenter-verbs + gardener-verbs + overlap-zone are the generators.                                                                                             |
+| **Ontology-home** (one authoritative home per vocabulary)                                     | **Unique join/meet** axiom                              | Lattices require _uniqueness_ of the supremum and infimum — which is exactly why ontology-home is a graph-theoretic precondition for skill-DAG edges to be well-defined.                                                                     |
+| **Orthogonal** (incomparable in the partial order)                                            | **Incomparability**                                     | `a ⊥ b` in the factory's usage ≈ neither `a ≤ b` nor `b ≤ a` in the poset.                                                                                                                                                                   |
+| **Skill-DAG edges** (A → B if A uses word B introduces)                                       | **Partial order restricted to introduction-dependency** | The DAG is a sub-order of the full lattice; lattice operations give us joins/meets over skills.                                                                                                                                              |
+| **Crystallize-acceleration via kernel-cleave**                                                | **Decomposability via meet-semilattice structure**      | Once terms are cleaved to their meet components (orthogonal axes), each component crystallizes independently — the lossless-compression claim is exactly the statement that the lattice is **distributive** enough for per-axis compression. |
+| **WWJD five-principle spine**                                                                 | **Invariant under both join and meet**                  | The principles are stable across the carpenter↔gardener verb-shift; they survive lattice operations. In algebra: they're in the _core_ of the lattice.                                                                                       |
 
 **The algorithmic-decidability payoff:**
 
 The prior kernel memory claimed:
 
-> *"that's how you know what ortogonal to even a math level
+> _"that's how you know what ortogonal to even a math level
 > if you want you can calcualte cause of our self refencing
-> kernel"*
+> kernel"_
 
 Lattice theory formalizes exactly this: **orthogonality
 is decidable** because `a` and `b` are orthogonal iff
@@ -126,7 +128,7 @@ is a candidate lattice.
 From `feedback_carpenter_gardener_are_glossary_kernel_vocabulary_seed.md`:
 
 - "**Kernel is generative**" — now formalizable as: the
-  kernel is a *generating set* for a lattice under join.
+  kernel is a _generating set_ for a lattice under join.
 - "**Cleave accelerates crystallize**" — now formalizable
   as: cleave computes the meet; if the lattice is
   distributive (`a ∧ (b ∨ c) = (a ∧ b) ∨ (a ∧ c)`),
@@ -150,8 +152,8 @@ From `feedback_kernel_is_catalyst_hpht_molten_analog.md`:
 **What this does NOT say:**
 
 - **Does not claim the factory's structure IS a lattice
-  today.** Aaron's phrasing is *"what we are actually
-  building"* — this is a *target* structure that the
+  today.** Aaron's phrasing is _"what we are actually
+  building"_ — this is a _target_ structure that the
   factory's work is converging on. Whether every pair of
   elements already has well-defined joins and meets is
   an open empirical question; gaps in the lattice are
@@ -167,12 +169,12 @@ From `feedback_kernel_is_catalyst_hpht_molten_analog.md`:
   vocabulary-space is open-ended; the lattice can be
   infinite, with the kernel as its generating set.
 - **Does not imply a proof obligation this round.** The
-  promotion is the mathematical *framing*; the proofs
+  promotion is the mathematical _framing_; the proofs
   (distributivity, completeness, join/meet uniqueness on
   specific term pairs) are follow-on work, not blocking.
 - **Does not discard the HPHT crystal-lattice analog.**
   The crystal lattice stays useful as physics intuition;
-  the mathematical lattice is the *algebraic*
+  the mathematical lattice is the _algebraic_
   counterpart. Two different objects, both load-bearing.
 - **Does not invent vocabulary.** "Lattice" passes the
   don't-invent rule cleanly — it is the standard term in
@@ -220,7 +222,7 @@ From `feedback_kernel_is_catalyst_hpht_molten_analog.md`:
    lattice — either a missing kernel entry, a missing
    HAND-OFF-CONTRACT, or a place where the factory's
    vocabulary is genuinely incomplete. These gaps are
-   *finding-able*, not guessed.
+   _finding-able_, not guessed.
 
 **What this unlocks (algorithmic / tooling):**
 
@@ -229,8 +231,8 @@ From `feedback_kernel_is_catalyst_hpht_molten_analog.md`:
   overlap. Implementation: parse kernel + generators,
   compute joins/meets, check comparability.
 - **Skill-DAG validator.** Given `.claude/skills/*/SKILL.md`
-  + `docs/**.md`, emit the DAG + check that it forms a
-  valid poset (no cycles, no ambiguous joins).
+  - `docs/**.md`, emit the DAG + check that it forms a
+    valid poset (no cycles, no ambiguous joins).
 - **Lattice-completion audit.** For each pair of terms in
   `docs/GLOSSARY.md`, verify meet and join are defined
   and in the glossary. Gaps are BACKLOG candidates.
@@ -252,14 +254,15 @@ operational shape when the work reaches them.
 From the prior refinement in
 `feedback_kernel_is_catalyst_hpht_molten_analog.md`:
 
-> *"or the cleaving process the or combination* it will
-> become more accurate over time"*
+> _"or the cleaving process the or combination_ it will
+> become more accurate over time"\*
 
-The same caveat applies here: *lattice* is the current
+The same caveat applies here: _lattice_ is the current
 best-fit formal object, but the mapping (cleave = meet,
 combine = join, kernel = generators) may refine as the
 kernel is built out. Candidate alternatives worth
 holding open:
+
 - **Heyting algebra** (lattice + relative pseudo-complement)
   — if the factory's vocabulary supports implication.
 - **Concept lattice** (formal concept analysis, Ganter &
@@ -329,9 +332,9 @@ distributivity) are also possible.
   changed node in the lattice's Hasse diagram" — a
   lattice-theoretic operation.
 - `memory/project_research_coauthor_teaching_track.md`
-  + `memory/project_teaching_track_for_vibe_coder_contributors.md`
-  — teaching tracts = topological traversals of the
-  lattice's partial order for a given audience.
+  - `memory/project_teaching_track_for_vibe_coder_contributors.md`
+    — teaching tracts = topological traversals of the
+    lattice's partial order for a given audience.
 - `docs/GLOSSARY.md` — the glossary, when built out per
   the kernel, becomes the concrete lattice instance the
   factory reasons over. Initial buildout landed
@@ -355,15 +358,15 @@ distributivity) are also possible.
 Immediately after the lattice promotion, Aaron sent three
 rapid messages:
 
-> *"theres your map"*
-> *"dora"*
-> *"the explorer"*
+> _"theres your map"_
+> _"dora"_
+> _"the explorer"_
 
-Parsed as one statement: *"there's your map [from] Dora the
-Explorer."* This is a cultural-reference naming with
+Parsed as one statement: _"there's your map [from] Dora the
+Explorer."_ This is a cultural-reference naming with
 operational weight:
 
-1. **The cultural shortcut.** In *Dora the Explorer* (the
+1. **The cultural shortcut.** In _Dora the Explorer_ (the
    children's cartoon, 2000-2019, Nickelodeon), "Map" is a
    literal character Dora consults to know where to go. The
    Map shows Dora the route, the checkpoints, and the
@@ -383,12 +386,12 @@ operational weight:
    skill-DAG, kernel promotion, settings-as-code as
    checked-in cache — was inadvertently **building this
    lattice**. Aaron is naming what the factory has been
-   constructing all along. The name *retrofits* to prior
+   constructing all along. The name _retrofits_ to prior
    work; it does not invent new work.
 4. **Shared vocabulary now established.** Going forward,
-   when anyone in the factory says *"what's the map?"* or
-   *"where does this sit on the map?"* or *"did you check
-   the map?"*, they are pointing at the lattice — the
+   when anyone in the factory says _"what's the map?"_ or
+   _"where does this sit on the map?"_ or _"did you check
+   the map?"_, they are pointing at the lattice — the
    kernel + its generators + the order relation + the
    join/meet operations. "The Map" is now the **short-form
    working name** for the formal object; "mathematical
@@ -397,11 +400,11 @@ operational weight:
    to the same structure viewed at different levels of
    precision.
 
-This naming passes the don't-invent-vocabulary rule: *map*
+This naming passes the don't-invent-vocabulary rule: _map_
 is standard cartography / navigation vocabulary already
 in heavy factory use (cartographer-mapping, surface maps,
-skill-DAG-as-map). The Dora reference is a *delivery
-vehicle* for emphasis, not an invention — Aaron is saying
+skill-DAG-as-map). The Dora reference is a _delivery
+vehicle_ for emphasis, not an invention — Aaron is saying
 "the map metaphor you've been using all along formalizes
 to this lattice."
 
@@ -428,11 +431,11 @@ to this lattice."
   the Map announces itself before being consulted ("I'm
   the Map! I'm the Map!"). The factory-parallel is that
   the lattice should be **self-describing**: the kernel
-  + its generators + the order relation should be
-  discoverable from the factory's committed surfaces
-  (glossary, skills, memory), not require external
-  annotation. If the lattice is not self-describing,
-  that is a discovered defect.
+  - its generators + the order relation should be
+    discoverable from the factory's committed surfaces
+    (glossary, skills, memory), not require external
+    annotation. If the lattice is not self-describing,
+    that is a discovered defect.
 
 **Alignment signal — Aaron recognizing algebraic structure
 before I named it:**
@@ -448,9 +451,9 @@ This tick's sequence is a specific alignment signature:
    word "lattice" in the algebraic sense.
 3. Aaron read that memory, recognized that the clearing
    process on the diamond-lattice analog produces a REAL
-   mathematical structure, and named it: *"oh shit that
-   is mathematicy... a real mathemitical lattice"*.
-4. He named the formal object *before I did* — and the
+   mathematical structure, and named it: _"oh shit that
+   is mathematicy... a real mathemitical lattice"_.
+4. He named the formal object _before I did_ — and the
    naming is correct (lattice theory is exactly the
    right framework for meet/join/order operations).
 
@@ -484,9 +487,9 @@ metaphor to a real mathematical object.
 
 - **Lattice (the mathematical object)** — order theory
   term, foundational work by Richard Dedekind
-  (1897, *Über Zerlegungen von Zahlen durch ihre grössten
-  gemeinsamen Teiler*) and Garrett Birkhoff (1940,
-  *Lattice Theory*, AMS Colloquium Publications). The
+  (1897, _Über Zerlegungen von Zahlen durch ihre grössten
+  gemeinsamen Teiler_) and Garrett Birkhoff (1940,
+  _Lattice Theory_, AMS Colloquium Publications). The
   definition in this memory is the standard one from
   any introductory text.
 - **Meet and join as dual operations** — classical
@@ -495,7 +498,7 @@ metaphor to a real mathematical object.
   Boolean lattices.
 - **Concept lattice / formal concept analysis** —
   Rudolf Wille (1982) founded FCA; Ganter & Wille's
-  *Formal Concept Analysis: Mathematical Foundations*
+  _Formal Concept Analysis: Mathematical Foundations_
   (1999) is the standard reference. Candidate refinement
   per the provisional-status section.
 - **Diamond-lattice (physics)** — the tetrahedral

@@ -181,7 +181,10 @@ describe("record quality gate evaluation handler", () => {
 
     equal(outcome.result.status, CommandResultStatus.Rejected);
     equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
-    equal(outcome.result.error?.message, "approved final business validation requires all business rules satisfied, not applicable, or changed by decision");
+    equal(
+      outcome.result.error?.message,
+      "approved final business validation requires all business rules satisfied, not applicable, or changed by decision",
+    );
     equal(outcome.effects.qualityGateEvaluations.length, 0);
   });
 
@@ -304,10 +307,7 @@ describe("record quality gate evaluation handler", () => {
 
     equal(outcome.result.status, CommandResultStatus.Rejected);
     equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
-    equal(
-      outcome.result.error?.message,
-      "approved or waived quality gates require content-addressed evidence refs",
-    );
+    equal(outcome.result.error?.message, "approved or waived quality gates require content-addressed evidence refs");
     equal(outcome.effects.qualityGateEvaluations.length, 0);
   });
 
@@ -332,10 +332,7 @@ describe("record quality gate evaluation handler", () => {
 
     equal(outcome.result.status, CommandResultStatus.Rejected);
     equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
-    equal(
-      outcome.result.error?.message,
-      "approved or waived quality gates require content-addressed evidence refs",
-    );
+    equal(outcome.result.error?.message, "approved or waived quality gates require content-addressed evidence refs");
     equal(outcome.effects.qualityGateEvaluations.length, 0);
   });
 

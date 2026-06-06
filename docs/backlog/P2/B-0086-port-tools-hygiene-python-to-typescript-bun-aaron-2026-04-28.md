@@ -25,10 +25,10 @@ Aaron 2026-04-28T19:56Z verbatim (during autonomous-loop tick
 right after `sort-tick-history-canonical.py` was used to fix a
 chronological-order lint failure on PR #684):
 
-> *"sort-tick-history-canonical.py eventually we are going to use
+> _"sort-tick-history-canonical.py eventually we are going to use
 > the typescript like ../scratch unless this is AL/ML AND is a
 > better fit for python? typescript/bun being our default, we
-> need to decide when to step out on typescript carefully."*
+> need to decide when to step out on typescript carefully."_
 
 Substrate captured durably in
 `memory/feedback_typescript_bun_default_step_out_carefully_aaron_2026_04_28.md`.
@@ -50,8 +50,8 @@ TypeScript on Bun, following the existing pattern at
 
 ## Deferred — port doesn't have to be immediate
 
-Per Aaron's framing *"we need to decide when to step out on
-typescript carefully"*, the discipline applies to:
+Per Aaron's framing _"we need to decide when to step out on
+typescript carefully"_, the discipline applies to:
 
 1. **All NEW tooling**: default to TypeScript/Bun.
 2. **Existing Python tooling**: port when changes are substantive;
@@ -81,15 +81,15 @@ Triggering events that make it "make sense":
 ## Acceptance criteria
 
 - [ ] `tools/hygiene/sort-tick-history-canonical.py` ported to
-  `tools/hygiene/sort-tick-history-canonical.ts` (or similar)
-  with `package.json` script entry.
+      `tools/hygiene/sort-tick-history-canonical.ts` (or similar)
+      with `package.json` script entry.
 - [ ] `tools/hygiene/fix-markdown-md032-md026.py` ported similarly.
 - [ ] All callers (CI workflows, pre-commit hooks, manual usage
-  in tick-history workflow) updated to invoke the TS version.
+      in tick-history workflow) updated to invoke the TS version.
 - [ ] Python originals deleted (the discipline is consistency,
-  not parallel-implementations).
+      not parallel-implementations).
 - [ ] One trial round of canonical-sort run via the TS port to
-  verify equivalent output on `loop-tick-history.md`.
+      verify equivalent output on `loop-tick-history.md`.
 
 ## Composes with
 
@@ -132,19 +132,19 @@ When picking this up:
 
 Prior-art-search on 2026-05-10 found:
 
-- Commit `40344c9b` (PR #849, merged 2026-04-29): *"ts(B-0086): port
+- Commit `40344c9b` (PR #849, merged 2026-04-29): _"ts(B-0086): port
   tools/hygiene Python → TypeScript on Bun (idiomatic, lint-clean,
-  equivalence-verified)"*
+  equivalence-verified)"_
 
 Evidence per acceptance criterion:
 
-| Criterion | Status | Evidence |
-|-----------|--------|----------|
-| `sort-tick-history-canonical.ts` exists | ✅ | `tools/hygiene/sort-tick-history-canonical.ts` present |
-| `fix-markdown-md032-md026.ts` exists | ✅ | `tools/hygiene/fix-markdown-md032-md026.ts` present |
-| `package.json` script entries | ✅ | `hygiene:sort-tick-history` + `hygiene:fix-markdown` in root `package.json` |
-| Python originals deleted | ✅ | No `.py` files anywhere under `tools/` |
-| CI callers updated | ✅ | No Python hygiene script invocations in `.github/workflows/`; only CodeQL file-change pattern match (not invocation) |
-| Trial round verified | ✅ | PR #849 message: "equivalence-verified" |
+| Criterion                               | Status | Evidence                                                                                                             |
+| --------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
+| `sort-tick-history-canonical.ts` exists | ✅     | `tools/hygiene/sort-tick-history-canonical.ts` present                                                               |
+| `fix-markdown-md032-md026.ts` exists    | ✅     | `tools/hygiene/fix-markdown-md032-md026.ts` present                                                                  |
+| `package.json` script entries           | ✅     | `hygiene:sort-tick-history` + `hygiene:fix-markdown` in root `package.json`                                          |
+| Python originals deleted                | ✅     | No `.py` files anywhere under `tools/`                                                                               |
+| CI callers updated                      | ✅     | No Python hygiene script invocations in `.github/workflows/`; only CodeQL file-change pattern match (not invocation) |
+| Trial round verified                    | ✅     | PR #849 message: "equivalence-verified"                                                                              |
 
 Decomposition finding: item is **complete as-shipped**. Closing.

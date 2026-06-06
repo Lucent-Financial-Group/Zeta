@@ -42,9 +42,9 @@ it.
   bootstrap — but a proposed row with no activation date
   after 3+ rounds is a hygiene failure.
 - **Distinguish from row #23.** Row #23 (missing-hygiene-
-  class gap-finder) asks *"what hygiene are we not running
-  at all?"* Row #43 asks *"what hygiene have we authored
-  but not activated?"* Both point at the same meta-gap
+  class gap-finder) asks _"what hygiene are we not running
+  at all?"_ Row #43 asks _"what hygiene have we authored
+  but not activated?"_ Both point at the same meta-gap
   (factory-less-self-regulating-than-paperwork-suggests)
   from opposite directions.
 - **Self-audit risk.** Row #43 itself is marked `(proposed)`
@@ -69,15 +69,15 @@ it.
 **Known proposed / inactive rows at memory-write time
 (2026-04-22):**
 
-| Row | Class | Why still proposed |
-|---|---|---|
-| 22 | Symmetry-opportunities audit | Awaiting Aaron confirmation on discriminator |
-| 23 | Missing-hygiene-class gap-finder | **ACTIVATED 2026-04-22** — first fire produced `docs/research/missing-hygiene-class-scan-2026-04-22.md`; interim owner Architect + Aarav; now "active with interim owner" |
-| 35 | Missing-scope gap-finder (retrospective) | Candidate skill `missing-scope-finder` queued in BACKLOG P1 |
-| 36 | Incorrectly-scoped gap-finder (retrospective) | Candidate skill queued alongside #35 |
-| 42 | Attribution hygiene | New this round; on-touch active, sweep skill TBD |
-| 43 | Missing-cadence activation audit | New this round; is its own canonical example |
-| 44 | Cadence-history tracking hygiene | New this round (2026-04-22 after row #23 activation); Aaron: "else how can we verify it's cadence?" — closes meta-hygiene triangle with #23 (existence) and #43 (activation). Is its own canonical example — `(proposed)` with no fire-log yet. |
+| Row | Class                                         | Why still proposed                                                                                                                                                                                                                              |
+| --- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 22  | Symmetry-opportunities audit                  | Awaiting Aaron confirmation on discriminator                                                                                                                                                                                                    |
+| 23  | Missing-hygiene-class gap-finder              | **ACTIVATED 2026-04-22** — first fire produced `docs/research/missing-hygiene-class-scan-2026-04-22.md`; interim owner Architect + Aarav; now "active with interim owner"                                                                       |
+| 35  | Missing-scope gap-finder (retrospective)      | Candidate skill `missing-scope-finder` queued in BACKLOG P1                                                                                                                                                                                     |
+| 36  | Incorrectly-scoped gap-finder (retrospective) | Candidate skill queued alongside #35                                                                                                                                                                                                            |
+| 42  | Attribution hygiene                           | New this round; on-touch active, sweep skill TBD                                                                                                                                                                                                |
+| 43  | Missing-cadence activation audit              | New this round; is its own canonical example                                                                                                                                                                                                    |
+| 44  | Cadence-history tracking hygiene              | New this round (2026-04-22 after row #23 activation); Aaron: "else how can we verify it's cadence?" — closes meta-hygiene triangle with #23 (existence) and #43 (activation). Is its own canonical example — `(proposed)` with no fire-log yet. |
 
 **Relationship to companion rules.**
 
@@ -110,14 +110,14 @@ Aaron 2026-04-22 during round 44 autonomous-loop work, after
 I added row #42 (attribution hygiene) without first noticing
 that row #23 already exists to catch exactly this class:
 
-1. *"we alreday have missing hygene class hygene right?"* —
+1. _"we alreday have missing hygene class hygene right?"_ —
    pointing at row #23.
-2. *"missing cadences for any items that should be
-   reoccuring hygene we should add"* — pointing at the
+2. _"missing cadences for any items that should be
+   reoccuring hygene we should add"_ — pointing at the
    meta-gap that row #23 (and several other rows) are
    `(proposed)` with no activation.
 
-The honest read: the factory has the right *concepts*
+The honest read: the factory has the right _concepts_
 documented, but the cadence-enforcement bar is underset. A
 proposed row that never activates is a structural false-
 positive — it makes the factory appear more capable than

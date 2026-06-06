@@ -59,7 +59,7 @@ include:
   - .editorconfig
 
   # Project structure (empty dirs with READMEs)
-  - src/Core/README.md          # if exists
+  - src/Core/README.md # if exists
   - tests/Tests.FSharp/README.md # if exists
 ```
 
@@ -95,21 +95,21 @@ exclude:
   - .claude/**
 
   # Docs — derivative or exempt
-  - docs/**  # except bootstrap-razor/ itself
+  - docs/** # except bootstrap-razor/ itself
 ```
 
 ## Metrics
 
 Per B-0340 (spec audit):
 
-| What's seeded | Count |
-| ------------- | ----- |
-| OpenSpec behavioural specs | 6 |
-| TLA+ formal specs | 19 |
-| Alloy specs | 2 |
-| Z3 lemmas | 16 |
-| Build config files | 4 |
-| **Total seed files** | **~47** |
+| What's seeded              | Count   |
+| -------------------------- | ------- |
+| OpenSpec behavioural specs | 6       |
+| TLA+ formal specs          | 19      |
+| Alloy specs                | 2       |
+| Z3 lemmas                  | 16      |
+| Build config files         | 4       |
+| **Total seed files**       | **~47** |
 
 The recreation experiment measures: from these 47 files, how
 much of the 81-module `src/Core/` can a fresh agent recreate

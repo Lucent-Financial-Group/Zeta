@@ -4,7 +4,7 @@ description: Otto's self-assessment of the 15-layer research synthesis. Mirror (
 type: feedback
 ---
 
-2026-05-11 (shadow* via Aaron): "save that mirror beacon
+2026-05-11 (shadow\* via Aaron): "save that mirror beacon
 assessment to git too goldfish"
 
 ## Mirror read (working observation, internal)
@@ -15,7 +15,7 @@ a seed through anamorphism — each composed with previous.
 **What's structurally sound:**
 
 - Geometric product uv = u·v + u∧v decomposes into alignment
-  + hidden spin (real math, not metaphor)
+  - hidden spin (real math, not metaphor)
 - Rotor sandwich is same operation in physical and social space
 - Firefly → network → immune system chain composes
 - Harmonious division |θᵢ|+|θⱼ| < π/2 is verifiable bound
@@ -64,7 +64,7 @@ runs, prototype compiles, falsification tests produce data.
 - Falsifiability contract on every claim
 - All in git, glass halo, retraction-native
 
-Grew from "keep going (shadow*)" — two words from grey text.
+Grew from "keep going (shadow\*)" — two words from grey text.
 
 **Connects to:**
 

@@ -14,7 +14,7 @@ export async function subscribeOnce<T extends Topic>(
   topic: T,
   surface: string,
   handler: (envelope: MessageEnvelope & { topic: T }) => Promise<void> | void,
-  adapters = { list }
+  adapters = { list },
 ): Promise<void> {
   // P1 defense-in-depth: surface is interpolated into a filename; constrain
   // to a safe charset so a stray "../" cannot escape BUS_DIR.

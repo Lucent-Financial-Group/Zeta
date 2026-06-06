@@ -36,19 +36,19 @@ declared layer has no instances above or below.
 
 The abstraction ladder was named explicitly by Aaron 2026-05-01:
 
-> *"that shoud be able to go from category theroy->SRE classes->
+> _"that shoud be able to go from category theroy->SRE classes->
 > DORE/USE/RED/FGS quailty measurements of doman->accuracy->
-> quality"*
+> quality"_
 >
-> *"i probably missed some steps"*
+> _"i probably missed some steps"_
 
 Captured in
 `memory/feedback_reproducible_accuracy_before_quality_fitness_function_harness_first_aaron_2026_05_01.md`
 (PR #1116) as the formal spine connecting category-theoretic
 work to operational quality. The factory has B-rows scattered
 across most layers but the **layer-membership is implicit** —
-there is no way to query *"which B-rows live at layer 3?"* or
-*"is layer 5 underbuilt relative to layer 4?"* without manual
+there is no way to query _"which B-rows live at layer 3?"_ or
+_"is layer 5 underbuilt relative to layer 4?"_ without manual
 audit.
 
 Making layer-membership explicit is the rung-2-of-rung-4 move
@@ -63,8 +63,8 @@ that compounds across all future B-rows.
    for integer-in-range.
 
 2. **Generated index by-layer view.** `docs/BACKLOG.md` gains a
-   new section *"By formal-architecture layer"* listing rows
-   grouped by their declared layer (and a *"Unlayered"* group
+   new section _"By formal-architecture layer"_ listing rows
+   grouped by their declared layer (and a _"Unlayered"_ group
    for rows without the field).
 
 3. **Existing-row layer backfill.** A one-time PR that adds
@@ -124,7 +124,7 @@ Gap-detection report is optional follow-up.
 
 - **Not P1** because the factory functions today without it
   (formal-foundations B-rows are findable via grep); it is a
-  *visibility* / *organizational* improvement, not a
+  _visibility_ / _organizational_ improvement, not a
   correctness fix.
 - **Not P3** because the substrate it mechanizes is freshly
   landed (PR #1116); operationalizing the discipline while the

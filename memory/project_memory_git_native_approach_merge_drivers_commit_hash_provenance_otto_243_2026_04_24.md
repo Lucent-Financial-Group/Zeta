@@ -3,12 +3,13 @@ name: Git-native memory approach — relocate memory into repo (already done at 
 description: Aaron Otto-243 asked *"how do i make all this git native instead"* after Otto-242 sidecar-pattern share. Google Search AI proposed four-part git-native architecture: (1) in-repo memory folder + CLAUDE.md rule, (2) pre-commit hook auto-stages memory, (3) custom git merge driver for AutoDream conflict handling via `.gitattributes`, (4) git commit hash replaces session-id for provenance. Architectural TENSION with Otto-242 sidecar: sidecar says memory is machine-local state (gitignored bookmark), git-native says memory IS source code (everything tracked). Not composable — two competing philosophies. Aaron's actual repo already committed to a hybrid: in-repo `memory/` mirror exists at repo root, Anthropic native AutoMemory continues writing to global `~/.claude/...`.
 type: project
 ---
+
 ## Aaron's question and the proposal
 
 Direct Aaron quote:
 
-> *"little more information from google search ai now how
-> do i make all this git native instead"*
+> _"little more information from google search ai now how
+> do i make all this git native instead"_
 
 Google Search AI proposed a four-part git-native architecture
 that **replaces** the sidecar approach from Otto-242:
@@ -24,13 +25,14 @@ that **replaces** the sidecar approach from Otto-242:
    `driver = cat %O %A %B | sort -u > %A`, assigned via
    `.gitattributes`: `.claude/memory/*.md merge=memory-merge`
 4. **Git commit hash replaces `originSessionId`** — CLAUDE.md
-   rule: *"When updating memories, include the current Git
+   rule: _"When updating memories, include the current Git
    commit hash (git rev-parse HEAD) as the version
-   reference"*
+   reference"_
 
 ## My quality assessment
 
 **HIGH** on:
+
 - Git merge drivers are real, documented Git feature
   (`gitattributes(5)` + `git-config` "merge.<driver>.driver").
   Exactly the right tool for programmatically resolving
@@ -46,6 +48,7 @@ that **replaces** the sidecar approach from Otto-242:
 - Pre-commit hook for auto-staging is standard mechanism.
 
 **MEDIUM** on:
+
 - The specific merge-driver formula
   `cat %O %A %B | sort -u > %A` is simplistic. It produces
   lexically-sorted + unique lines. That works for
@@ -58,6 +61,7 @@ that **replaces** the sidecar approach from Otto-242:
   vs tick-history append-logs).
 
 **LOW** / significant caveat:
+
 - The claim that adding a CLAUDE.md rule forces Claude
   Code's **native AutoMemory** to write to `.claude/memory/`
   in the repo is **likely wrong as stated**. Anthropic's
@@ -79,15 +83,15 @@ that **replaces** the sidecar approach from Otto-242:
 Otto-242 (prior share) and Otto-243 (this share) propose
 **competing** architectures, not composable layers:
 
-| Axis | Otto-242 Sidecar | Otto-243 Git-native |
-|------|------------------|---------------------|
-| Memory file location | Could be anywhere; sync script decides | **In-repo** (`.claude/memory/` or Aaron's `memory/`) |
-| Sync mechanism | Custom script + SHA-256 ledger | `git push/pull` + merge driver |
-| Conflict resolution | De-dup via hash-skip | Merge driver (per-file-type logic) |
-| Sync state storage | `.memory-sync-state.json` (GITIGNORED) | Nothing separate — git IS the state |
-| Provenance marker | Custom (strip session-id before hash) | `git rev-parse HEAD` in frontmatter |
-| Cross-machine race | Avoided by hash + lock check | Handled by git merge semantics |
-| Ignore-deletions safety | Explicit in sync script | **NOT handled** — `git rm` propagates |
+| Axis                    | Otto-242 Sidecar                       | Otto-243 Git-native                                  |
+| ----------------------- | -------------------------------------- | ---------------------------------------------------- |
+| Memory file location    | Could be anywhere; sync script decides | **In-repo** (`.claude/memory/` or Aaron's `memory/`) |
+| Sync mechanism          | Custom script + SHA-256 ledger         | `git push/pull` + merge driver                       |
+| Conflict resolution     | De-dup via hash-skip                   | Merge driver (per-file-type logic)                   |
+| Sync state storage      | `.memory-sync-state.json` (GITIGNORED) | Nothing separate — git IS the state                  |
+| Provenance marker       | Custom (strip session-id before hash)  | `git rev-parse HEAD` in frontmatter                  |
+| Cross-machine race      | Avoided by hash + lock check           | Handled by git merge semantics                       |
+| Ignore-deletions safety | Explicit in sync script                | **NOT handled** — `git rm` propagates                |
 
 Choosing one philosophy commits you to it: you don't need
 the sidecar's `processed_files` hash-ledger if git itself
@@ -108,8 +112,8 @@ Your actual repository already lives between the two:
   1 location to compose with AutoMemory.
 - **Layer 3 (in-repo mirror at `memory/` root)**: your
   Overlay-A manual mirror. ~487 files mirrored per earlier
-  MEMORY.md note *"memories are in repo now, feel free to
-  refresh if needed."*
+  MEMORY.md note _"memories are in repo now, feel free to
+  refresh if needed."_
 - **Layer 4 (proposed git-native)**: replace the manual
   mirror with git-first primitives (merge driver, commit
   hash provenance, pre-commit hook, maybe a pull hook to
@@ -206,8 +210,8 @@ apply to Layer-3-↔-Layer-3-on-other-machines sync via git.
 
 ## Direct Aaron message to preserve
 
-> *"little more information from google search ai now how
-> do i make all this git native instead"*
+> _"little more information from google search ai now how
+> do i make all this git native instead"_
 
 Aaron's framing "instead" signals preference for the
 git-native path over sidecar. My honest counter: the merge-

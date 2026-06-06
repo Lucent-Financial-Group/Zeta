@@ -2,9 +2,9 @@
 
 Phase 0 PoC validating the AOT-publish toolchain end-to-end
 across linux-x64, osx-arm64, win-x64 for the substrate-
-discovery direction the maintainer 2026-05-03 named (*"we
+discovery direction the maintainer 2026-05-03 named (_"we
 should use zeta in native assmly mode for our custom index
-i think"*).
+i think"_).
 
 Full scope + 4-phase plan + risk register at
 [`docs/research/2026-05-03-substrate-discovery-zeta-native-aot-scoping.md`](../../docs/research/2026-05-03-substrate-discovery-zeta-native-aot-scoping.md).

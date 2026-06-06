@@ -46,38 +46,38 @@ recorded evidence — re-verify instead. Doc changes happen only via an owner-ap
 ## Phases
 
 - [ ] Phase 0a — Docs & decisions (Claude, no app code): resolve open items (Pages deploy source;
-your environment's planning/effort capabilities; current Supabase free-tier limits; region=USA);
-draft CLAUDE.md + spec.md + PROGRESS.md; give plain Supabase setup steps.
-GATE: owner approves docs + resolved items.
+      your environment's planning/effort capabilities; current Supabase free-tier limits; region=USA);
+      draft CLAUDE.md + spec.md + PROGRESS.md; give plain Supabase setup steps.
+      GATE: owner approves docs + resolved items.
 - [x] Phase 0b — Supabase live (owner): create project; turn ON "Enable RLS on new tables"; provide
-project URL + anon key. GATE: Claude confirms it can reach Supabase with the anon key.
-service_role key NOT shared.
-  EVIDENCE (2026-05-31): Project URL + publishable (anon) key delivered; admin user created in the
-  dashboard; Claude reached the REST API with the anon key (anon reads return [] — see Phase 1
-  evidence appendix). service_role NOT shared; publishable key is the public low-privilege key.
+      project URL + anon key. GATE: Claude confirms it can reach Supabase with the anon key.
+      service_role key NOT shared.
+      EVIDENCE (2026-05-31): Project URL + publishable (anon) key delivered; admin user created in the
+      dashboard; Claude reached the REST API with the anon key (anon reads return [] — see Phase 1
+      evidence appendix). service_role NOT shared; publishable key is the public low-privilege key.
 - [x] Phase 1 — Schema + RLS + audit trigger.
-GATE: every table RLS-ON, default-deny, NO permissive/`USING(true)` policies, least-privilege;
-change_log immutable; trigger writes who/what/when.
-VERIFY (mix of Claude + OWNER): from a real client session attempt UPDATE/DELETE on change_log →
-refused. OWNER-RUN: unauthenticated anon `curl` on items, field_definitions, change_log, profiles
-→ each returns nothing. (Claude provides commands + expected output; owner runs; not self-certified.)
-  EVIDENCE (2026-05-31): proof #3 anon reads all [] (+ RPC 42501); proof A (SQL editor) all PASSED
-  incl. broken-vs-fixed guard toggle; proof B (client editor session via REST) UPDATE+DELETE on
-  change_log -> [] / [] / row unchanged (action=INSERT). Full output in "Phase 1 evidence" appendix.
+      GATE: every table RLS-ON, default-deny, NO permissive/`USING(true)` policies, least-privilege;
+      change_log immutable; trigger writes who/what/when.
+      VERIFY (mix of Claude + OWNER): from a real client session attempt UPDATE/DELETE on change_log →
+      refused. OWNER-RUN: unauthenticated anon `curl` on items, field_definitions, change_log, profiles
+      → each returns nothing. (Claude provides commands + expected output; owner runs; not self-certified.)
+      EVIDENCE (2026-05-31): proof #3 anon reads all [] (+ RPC 42501); proof A (SQL editor) all PASSED
+      incl. broken-vs-fixed guard toggle; proof B (client editor session via REST) UPDATE+DELETE on
+      change_log -> [] / [] / row unchanged (action=INSERT). Full output in "Phase 1 evidence" appendix.
 - [x] Phase 2 — Auth + roles.
-GATE: trust uses getUser()/verified claims; role single-source read by BOTH UI and RLS and they
-agree; sign-out ends access and clears rendered data.
-VERIFY: log in as Viewer in the browser, attempt an edit → refused BY THE DB (not just UI hidden);
-confirm RLS sees correct role per user; sign out → data gone, session ended.
-  GATE PASSED (2026-05-31): (a)/(b)/(c)+negative-control PROVEN in a real browser (Playwright vs
-  live Supabase) AND owner-run broken-vs-fixed (a) returned the expected results grid:
-  FIXED (least-privilege) viewer UPDATE = 0 rows (refused); BROKEN (added USING(true)) viewer
-  UPDATE = 1 row (the breach); ROLLBACK restored least-privilege (sanity: no _tmp_permissive_update
-  policy persisted). Full output in the "Phase 2 evidence" appendix.
+      GATE: trust uses getUser()/verified claims; role single-source read by BOTH UI and RLS and they
+      agree; sign-out ends access and clears rendered data.
+      VERIFY: log in as Viewer in the browser, attempt an edit → refused BY THE DB (not just UI hidden);
+      confirm RLS sees correct role per user; sign out → data gone, session ended.
+      GATE PASSED (2026-05-31): (a)/(b)/(c)+negative-control PROVEN in a real browser (Playwright vs
+      live Supabase) AND owner-run broken-vs-fixed (a) returned the expected results grid:
+      FIXED (least-privilege) viewer UPDATE = 0 rows (refused); BROKEN (added USING(true)) viewer
+      UPDATE = 1 row (the breach); ROLLBACK restored least-privilege (sanity: no \_tmp_permissive_update
+      policy persisted). Full output in the "Phase 2 evidence" appendix.
 - [~] Phase 3 — Read path. (IN PROGRESS — gate browser-proofs DEFERRED to Phase 7; deliberate scoping decision, NOT a skipped check)
-GATE: 210 items load; search/sort/filter correct; responsive; existing Zeta dashboard still works.
-VERIFY: rendered row count = seed count; run 3 sample searches/sorts; load on a phone viewport;
-confirm the existing site is unaffected.
+  GATE: 210 items load; search/sort/filter correct; responsive; existing Zeta dashboard still works.
+  VERIFY: rendered row count = seed count; run 3 sample searches/sorts; load on a phone viewport;
+  confirm the existing site is unaffected.
   STATUS (2026-05-31, owner-approved Option 2): data layer FULLY VERIFIED (seed 210 / ids
   {1..211}\{8} / atomic POST 201 / 6-record spot-check 0 mismatches / honesty re-audit re-confirmed
   all of it fresh) and read-path UI built + LIVE-TESTED END-TO-END BY THE OWNER on the real no-proxy
@@ -90,71 +90,71 @@ confirm the existing site is unaffected.
   than a proxied unmerged-branch harness). NOT marked [x]: the four enumerated browser proofs are
   Phase-7 Auditor scope, listed verbatim in the Phase 7 Auditor brief below.
 - [x] Phase 4 — Write path.
-GATE: changes logged before→after (UTC stored/local shown); no silent overwrite; archive recoverable.
-VERIFY: edit an item → log row with old+new; simulate stale-version save → rejected; archive then
-un-archive.
-  GATE PASSED (2026-06-01): owner installed `sql/phase4.sql` (server version trigger). Claude-run
-  REST proofs (editor key, NO service_role) — ALL FOUR PASS (exit 0): (a) change_log #227
-  notes "orig"->"edited-by-phase4-proof-a", actor+UTC stored/local shown; (b) stale guarded PATCH
-  affected 0 rows / `[]` (REJECTED; value unchanged) vs unguarded 1 row — broken(id=212)->fixed(id=213)
-  pair version `1→1` vs `1→2`; (c) archive false->true (#229) then true->false (#230), data + 5-row
-  append-only history intact; (d) anon reads items/field_definitions/change_log/profiles all `[]`.
-  RLS unchanged (no new policy / USING(true) / GRANT). Full raw output in "Phase 4 — FIXED run"
-  appendix. Phase-7 Auditor re-verifies on the live site (and may run the owner-side SQL companion
-  `sql/proofs/phase4_proofs.sql`, incl. its pg_policies no-permissive-items-policy check).
+      GATE: changes logged before→after (UTC stored/local shown); no silent overwrite; archive recoverable.
+      VERIFY: edit an item → log row with old+new; simulate stale-version save → rejected; archive then
+      un-archive.
+      GATE PASSED (2026-06-01): owner installed `sql/phase4.sql` (server version trigger). Claude-run
+      REST proofs (editor key, NO service_role) — ALL FOUR PASS (exit 0): (a) change_log #227
+      notes "orig"->"edited-by-phase4-proof-a", actor+UTC stored/local shown; (b) stale guarded PATCH
+      affected 0 rows / `[]` (REJECTED; value unchanged) vs unguarded 1 row — broken(id=212)->fixed(id=213)
+      pair version `1→1` vs `1→2`; (c) archive false->true (#229) then true->false (#230), data + 5-row
+      append-only history intact; (d) anon reads items/field_definitions/change_log/profiles all `[]`.
+      RLS unchanged (no new policy / USING(true) / GRANT). Full raw output in "Phase 4 — FIXED run"
+      appendix. Phase-7 Auditor re-verifies on the live site (and may run the owner-side SQL companion
+      `sql/proofs/phase4_proofs.sql`, incl. its pg_policies no-permissive-items-policy check).
 - [x] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
-GATE: dedicated test suite passes; add-field applies to ALL items; per-type validation;
-search/sort INCLUDE custom fields; XSS-safe.
-VERIFY: add one field of each type; enter a <script> payload as a value → rendered inert; search by
-a custom field returns correct items; "number" rejects text.
-  STATUS (2026-06-03, 5a checkpoint — NOT [x]; live DB proofs pending owner creds + SQL-editor run):
-  CODE COMPLETE — sql/phase5.sql (BEFORE INS/UPD validate_custom_fields() trigger: DB-side per-type
-  validation + unknown-key reject + GIN index; loosens no RLS); lib/custom-fields.js shared typed
-  comparator/coercion/validation (+ peer .d.ts so the test stays type-checked, not skipped);
-  index.html UI (custom columns in table+cards, typed search + typed multi-sort, typed form inputs,
-  admin Manage-fields add/deactivate; centralized ITEM_SELECT incl. custom_fields; cleaned a stray
-  0x01 byte in the search join); REST harness proofs/phase5-custom-fields-proofs.ts; SQL proof
-  sql/proofs/phase5_proofs.sql. PROVEN NOW, NO CREDS (raw output in the "Phase 5 evidence" appendix):
-  (a) 20/20 bun unit tests incl. broken-vs-fixed numeric sort (sabotaged comparator -> 2 fail);
-  (b) REAL-BROWSER (Playwright, real renderHead()/applyView()): numeric sort [9,10,100] asc &
+      GATE: dedicated test suite passes; add-field applies to ALL items; per-type validation;
+      search/sort INCLUDE custom fields; XSS-safe.
+      VERIFY: add one field of each type; enter a <script> payload as a value → rendered inert; search by
+      a custom field returns correct items; "number" rejects text.
+      STATUS (2026-06-03, 5a checkpoint — NOT [x]; live DB proofs pending owner creds + SQL-editor run):
+      CODE COMPLETE — sql/phase5.sql (BEFORE INS/UPD validate*custom_fields() trigger: DB-side per-type
+      validation + unknown-key reject + GIN index; loosens no RLS); lib/custom-fields.js shared typed
+      comparator/coercion/validation (+ peer .d.ts so the test stays type-checked, not skipped);
+      index.html UI (custom columns in table+cards, typed search + typed multi-sort, typed form inputs,
+      admin Manage-fields add/deactivate; centralized ITEM_SELECT incl. custom_fields; cleaned a stray
+      0x01 byte in the search join); REST harness proofs/phase5-custom-fields-proofs.ts; SQL proof
+      sql/proofs/phase5_proofs.sql. PROVEN NOW, NO CREDS (raw output in the "Phase 5 evidence" appendix):
+      (a) 20/20 bun unit tests incl. broken-vs-fixed numeric sort (sabotaged comparator -> 2 fail);
+      (b) REAL-BROWSER (Playwright, real renderHead()/applyView()): numeric sort [9,10,100] asc &
       [100,10,9] desc (NOT lexicographic 10,100,9); an `<img onerror>`+`<script>` payload rendered
-      INERT as BOTH a custom VALUE and a field LABEL (window.__xss stayed undefined; innerHTML
+      INERT as BOTH a custom VALUE and a field LABEL (window.\_\_xss stayed undefined; innerHTML
       escaped to `&lt;img...`); custom-field VALUE searchable (search "100" -> only the rating=100
       row). The lib
       loaded from CSP 'self'. (CDN-blocked-by-proxy note: the container proxy MITMs jsdelivr's cert,
-      so the proof ran against a gitignored _proof_tmp/boot.html = index.html with ONLY the CDN tag
+      so the proof ran against a gitignored \_proof_tmp/boot.html = index.html with ONLY the CDN tag
       swapped for a supabase stub — no source divergence; the real merged site has no such block.)
-  PENDING (needs OWNER): (1) run sql/phase5.sql then sql/proofs/phase5_proofs.sql in the SQL editor
-  (expect all rows PASSED incl. typed-vs-lexicographic sort); (2) create a BURNABLE admin test user +
-  provide ADMIN_*/EDITOR_* creds via ENV so Claude runs phase5-custom-fields-proofs.ts (live: per-type
-  DB-rejection via direct REST as editor, add-field-appears-on-all, deactivate-preserves-values+history,
-  anon default-deny). required-at-DB intentionally DEFERRED (would break edits of the 210 existing
-  items); required stays an app-side UX nudge. NOT marked [x] until (1)+(2) show observed output.
-  LIVE GATE PASSED (2026-06-03): owner ran sql/phase5.sql + sql/proofs/phase5_proofs.sql in the SQL editor — ALL 12 rows PASSED (per-type accept/reject + numeric-cast sort [10,100,9] vs [9,10,100] + no-permissive). Editor direct-REST unknown-key write REJECTED 400 post-install (was 204 before). CI run #11 (.github/workflows/inventory-phase5-proof.yml, admin secret, publishable key, NO service_role) = ALL PASS: (1) admin added 5 typed fields; (2) visible to editor + every item has custom_fields; (2b) 5 valid values stored; (3) all 6 malformed/unknown writes DB-rejected with correct per-type messages, valid value intact; (4) <script>/onerror stored verbatim as data; (5) deactivate -> value 42 PRESERVED + change_log history intact; (6) anon default-deny on all four tables = []. Two harness bugs the live run surfaced + fixed (PGRST102 heterogeneous bulk-insert keys; jsonb order-insensitive comparison) — feature itself unchanged. Phase-7 Auditor re-verifies on the live merged site. CLEANUP (owner, pre-launch SQL editor): archived throwaway items 216/225/226/227/228 + inactive defs 'p5_mpyh93ei_%' and 'p5_mpyhaucf_%'. Build-time test users (editor@/viewer@ + admin secret) are chat/secret-shared -> burn in Phase 7 (residual risk register).
+      PENDING (needs OWNER): (1) run sql/phase5.sql then sql/proofs/phase5_proofs.sql in the SQL editor
+      (expect all rows PASSED incl. typed-vs-lexicographic sort); (2) create a BURNABLE admin test user +
+      provide ADMIN*_/EDITOR\__ creds via ENV so Claude runs phase5-custom-fields-proofs.ts (live: per-type
+      DB-rejection via direct REST as editor, add-field-appears-on-all, deactivate-preserves-values+history,
+      anon default-deny). required-at-DB intentionally DEFERRED (would break edits of the 210 existing
+      items); required stays an app-side UX nudge. NOT marked [x] until (1)+(2) show observed output.
+      LIVE GATE PASSED (2026-06-03): owner ran sql/phase5.sql + sql/proofs/phase5*proofs.sql in the SQL editor — ALL 12 rows PASSED (per-type accept/reject + numeric-cast sort [10,100,9] vs [9,10,100] + no-permissive). Editor direct-REST unknown-key write REJECTED 400 post-install (was 204 before). CI run #11 (.github/workflows/inventory-phase5-proof.yml, admin secret, publishable key, NO service_role) = ALL PASS: (1) admin added 5 typed fields; (2) visible to editor + every item has custom_fields; (2b) 5 valid values stored; (3) all 6 malformed/unknown writes DB-rejected with correct per-type messages, valid value intact; (4) <script>/onerror stored verbatim as data; (5) deactivate -> value 42 PRESERVED + change_log history intact; (6) anon default-deny on all four tables = []. Two harness bugs the live run surfaced + fixed (PGRST102 heterogeneous bulk-insert keys; jsonb order-insensitive comparison) — feature itself unchanged. Phase-7 Auditor re-verifies on the live merged site. CLEANUP (owner, pre-launch SQL editor): archived throwaway items 216/225/226/227/228 + inactive defs 'p5_mpyh93ei*%' and 'p5*mpyhaucf*%'. Build-time test users (editor@/viewer@ + admin secret) are chat/secret-shared -> burn in Phase 7 (residual risk register).
 - [ ] Phase 6 — QR labels + export.
-GATE: scan resolves post-login; export round-trips incl. unicode/comma/quote.
-VERIFY: generate + scan a label → correct item after login; export then re-import → identical data.
+      GATE: scan resolves post-login; export round-trips incl. unicode/comma/quote.
+      VERIFY: generate + scan a label → correct item after login; export then re-import → identical data.
 - [ ] Phase 7 — Hardening + heartbeat + AUDITOR (fresh session).
-GATE: independent Auditor sign-off; CSP + sanitize verified; anon read-only heartbeat + scheduled
-export backup live (no secrets in the Action); CI/semgrep green; owner final review; deploy verified
-actually propagated (account for Pages CDN caching); **all build-time test users deleted or
-password-rotated (burned credentials — see Residual Risk Register); supabase-js SRI + exact-version
-pin landed; CSP 'unsafe-inline' removed.**
-Auditor brief: you did NOT build this. Using spec.md + PROGRESS.md as the contract, independently
-re-verify EVERY gate; probe — any secret in the repo? service_role referenced? RLS permissive or
-bypassable from the client (run the unauthenticated anon checks)? custom-field XSS? change_log
-editable? role mismatch UI-vs-DB? Then review the Residual Risk Register and confirm each item is
-handled or consciously deferred. Report findings; fix nothing without owner go-ahead.
+      GATE: independent Auditor sign-off; CSP + sanitize verified; anon read-only heartbeat + scheduled
+      export backup live (no secrets in the Action); CI/semgrep green; owner final review; deploy verified
+      actually propagated (account for Pages CDN caching); **all build-time test users deleted or
+      password-rotated (burned credentials — see Residual Risk Register); supabase-js SRI + exact-version
+      pin landed; CSP 'unsafe-inline' removed.**
+      Auditor brief: you did NOT build this. Using spec.md + PROGRESS.md as the contract, independently
+      re-verify EVERY gate; probe — any secret in the repo? service_role referenced? RLS permissive or
+      bypassable from the client (run the unauthenticated anon checks)? custom-field XSS? change_log
+      editable? role mismatch UI-vs-DB? Then review the Residual Risk Register and confirm each item is
+      handled or consciously deferred. Report findings; fix nothing without owner go-ahead.
 
 DEFERRED FROM PHASE 3 (owner-approved 2026-05-31, Option 2) — the Auditor MUST run these four
 Phase-3 read-path proofs END-TO-END on the merged, live, NO-PROXY site at
 https://lucent-financial-group.github.io/Zeta/inventory/ , signing in with a (then-current,
 non-burned) test user, and show RAW observed output:
-  (a) rendered row count === 210 (the seeded item count);
-  (b) 3 sample searches + 3 sample sorts produce correct results;
-  (c) responsive on a phone viewport;
-  (d) the existing demo dashboard still loads unchanged at
-      https://lucent-financial-group.github.io/Zeta/demo/index.html .
+(a) rendered row count === 210 (the seeded item count);
+(b) 3 sample searches + 3 sample sorts produce correct results;
+(c) responsive on a phone viewport;
+(d) the existing demo dashboard still loads unchanged at
+https://lucent-financial-group.github.io/Zeta/demo/index.html .
 These were deferred from Phase 3 because the Phase-3 harness (proxied, unmerged branch) could not
 capture them cleanly without a second attempt that would have violated the one-attempt rule. The
 data layer + Phase-1 audit capture + Phase-2 auth/role were already proven on the live no-proxy site
@@ -219,7 +219,7 @@ approval before Phase 0b.
   sole sign-off — the owner/Auditor re-run remains the authority. The spec's "EXTERNAL CHECK
   (owner/auditor-run)" stays owner/Auditor-owned.)
 
-### Item #6(a) — How GitHub Pages deploys for this repo  ⚠️ NEEDS OWNER CONFIRMATION
+### Item #6(a) — How GitHub Pages deploys for this repo ⚠️ NEEDS OWNER CONFIRMATION
 
 - The repo deploys Pages via a **GitHub Action**: `.github/workflows/pages-deploy.yml`
   (`actions/upload-pages-artifact@v3` → `actions/deploy-pages@v4`).
@@ -246,14 +246,14 @@ approval before Phase 0b.
 
 ### Item #6(b) — Supabase free-tier limits (re-confirmed 2026-05-31, direct from supabase.com/pricing)
 
-| Limit | Current (2026) | Bundle assumption | Change? |
-|---|---|---|---|
-| Database size | 500 MB | ~500 MB | unchanged |
-| Monthly active users | 50,000 | n/a | fine |
-| Egress | 5 GB (+5 GB cached) | small | unchanged |
-| File storage | 1 GB | n/a | fine |
-| Active projects | 2 max | 1 needed | fine |
-| Inactivity pause | **paused after 1 week (7 days)** | 7 days | **unchanged** |
+| Limit                | Current (2026)                   | Bundle assumption | Change?       |
+| -------------------- | -------------------------------- | ----------------- | ------------- |
+| Database size        | 500 MB                           | ~500 MB           | unchanged     |
+| Monthly active users | 50,000                           | n/a               | fine          |
+| Egress               | 5 GB (+5 GB cached)              | small             | unchanged     |
+| File storage         | 1 GB                             | n/a               | fine          |
+| Active projects      | 2 max                            | 1 needed          | fine          |
+| Inactivity pause     | **paused after 1 week (7 days)** | 7 days            | **unchanged** |
 
 - Verdict: **no material change** from the bundle's early-2026 assumptions. 210 items ≪ 500 MB. The
   spec's anon read-only heartbeat to prevent the 7-day pause is exactly the right mitigation
@@ -362,14 +362,14 @@ Observed output (no tokens/passwords logged):
   create-account/sign-up link or text (`signupFormPresent:false`, `createAccountText:false`).
 - **(b) role per user** (from the real `current_user_role()` RPC, same source RLS uses):
   - `test2@test.com` → UI role badge = **viewer**
-  - `test@test.com`  → UI role badge = **editor**
-  (Caught + fixed a data discrepancy first: test2 was mistakenly `editor` in `profiles`; owner
-  corrected the row to `viewer`; the app re-derived the new role with no stale cache.)
+  - `test@test.com` → UI role badge = **editor**
+    (Caught + fixed a data discrepancy first: test2 was mistakenly `editor` in `profiles`; owner
+    corrected the row to `viewer`; the app re-derived the new role with no stale cache.)
 - **(a) edit refused BY THE DB** — Viewer clicked the visible "Attempt edit (UPDATE items)" button:
   `"DB REFUSED the edit (role=viewer): 0 rows updated — RLS filtered it out."` (button NOT hidden;
   refusal is RLS, 0 rows).
   - **Negative control** — same button as Editor: `"DB ALLOWED the edit (role=editor): updated row
-    #2."` Proves the refusal is genuinely role-gated at the DB, not a broken control.
+#2."` Proves the refusal is genuinely role-gated at the DB, not a broken control.
   - Bonus: the editor UPDATE wrote a Phase-1 audit row (`change_log` id=3: action=UPDATE, field=notes,
     actor=editor uid, old→new) — audit trigger confirmed under real client edits.
 - **(c) sign-out ends session AND clears data** — before: email/role/sample-item rendered, auth
@@ -398,20 +398,20 @@ committed. The committed transform logic lives in `inventory/seed/seed-import.ts
 
 Column map (sheet → `items`):
 
-| Sheet column      | → items column | Notes |
-|-------------------|----------------|-------|
-| A Inventory ID    | id             | 210 ids, 1..211 skip 8 |
-| B Section         | category       | single column (Phase-1 decision #2); 17 distinct sections |
-| C Brand           | brand          | 209/210 (1 null) |
-| D Product Name    | name           | 210/210 |
-| E Model / PN      | model_pn       | 205/210 |
-| F Qty             | qty            | all integers |
-| G Device Type     | device_type    | 210/210 |
-| H Status          | status         | **OK → Active/In Use** (see Decision A) |
-| I Notes           | notes          | base of the notes field (see Decision B) |
-| J Source(s)       | notes (append) | **SOURCES block** (see Decision B) |
-| (none)            | location, assignment_purpose, value, serial | not in sheet → null |
-| (none)            | is_archived=false, custom_fields={} | DB defaults; custom_fields owned by Phase 5 |
+| Sheet column   | → items column                              | Notes                                                     |
+| -------------- | ------------------------------------------- | --------------------------------------------------------- |
+| A Inventory ID | id                                          | 210 ids, 1..211 skip 8                                    |
+| B Section      | category                                    | single column (Phase-1 decision #2); 17 distinct sections |
+| C Brand        | brand                                       | 209/210 (1 null)                                          |
+| D Product Name | name                                        | 210/210                                                   |
+| E Model / PN   | model_pn                                    | 205/210                                                   |
+| F Qty          | qty                                         | all integers                                              |
+| G Device Type  | device_type                                 | 210/210                                                   |
+| H Status       | status                                      | **OK → Active/In Use** (see Decision A)                   |
+| I Notes        | notes                                       | base of the notes field (see Decision B)                  |
+| J Source(s)    | notes (append)                              | **SOURCES block** (see Decision B)                        |
+| (none)         | location, assignment_purpose, value, serial | not in sheet → null                                       |
+| (none)         | is_archived=false, custom_fields={}         | DB defaults; custom_fields owned by Phase 5               |
 
 **Decision A — status mapping.** Source `Status` is a binary health flag: `OK` (156) /
 `Needs Attention` (54). Mapping: `Needs Attention` → `Needs Attention` (verbatim);
@@ -424,6 +424,7 @@ when the source said OK?")
 **Decision B — Source(s) → notes (no schema change in Phase 3).** Sources are appended to the
 notes field after a machine-parseable marker so a future phase can promote them to a dedicated
 column with a deterministic split. Format when sources exist:
+
 ```
 [existing notes text]
 
@@ -437,7 +438,7 @@ https://url2
 - notes only (50 rows) → notes unchanged
 - neither → null
 
-Source URLs in the sheet are ` ; `-separated; each becomes its own line under `SOURCES:`.
+Source URLs in the sheet are `;`-separated; each becomes its own line under `SOURCES:`.
 
 Status-quo at write time: 156 → Active/In Use, 54 → Needs Attention; sources present on 160/210
 (141 with notes, 19 without). These mappings are also echoed in the `seed-import.ts` header comment.
@@ -450,11 +451,11 @@ environment). Phase 3 stays `[ ]`.
 ### Verified for real (direct container TLS; re-runnable)
 
 - Pre-seed cleanup (owner-run `phase3_cleanup.sql`): grid `items 0 / change_log 1 /
-  admin_cleanup 1 / next_id 212`.
+admin_cleanup 1 / next_id 212`.
 - Seed import (Claude, REST as editor, NO service_role): `PRE-CHECK ok: 210; ids {1..211}\{8};
-  statuses+qty valid` → `auth ok current_user_role()="editor"` → `count BEFORE=0` →
+statuses+qty valid` → `auth ok current_user_role()="editor"` → `count BEFORE=0` →
   `bulk INSERT HTTP 201` → `count AFTER=210` → 6-record spot-check (ids 1,2,10,14,18,211) `0
-  mismatches`.
+mismatches`.
 - Converter `xlsx-to-json.ts`: 210 rows, ids 1..211 skip 8, 54 Needs Attention / 156 Active/In Use,
   160 SOURCES blocks; an independent 6-record re-derivation from the raw xlsx XML = 0 mismatches.
 - Importer key-test (fails-on-broken): `--dry-run` on real seed → PRE-CHECK ok; on a 209-row copy →
@@ -748,11 +749,11 @@ key, NO service_role) against the live backend. **All four proofs PASS (exit 0).
 
 Broken-vs-fixed isolation (only the trigger differs between the two runs):
 
-| Proof | Broken baseline (id=212, no trigger) | FIXED (id=213, trigger live) |
-|---|---|---|
-| (b) version on edit | `1 → 1` (never bumps) | `1 → 2` (server bumps) |
-| (b) stale guarded PATCH | **1 row (silent overwrite)** | **0 rows / `[]` (REJECTED)** |
-| (a)/(c)/(d) | PASS | PASS |
+| Proof                   | Broken baseline (id=212, no trigger) | FIXED (id=213, trigger live) |
+| ----------------------- | ------------------------------------ | ---------------------------- |
+| (b) version on edit     | `1 → 1` (never bumps)                | `1 → 2` (server bumps)       |
+| (b) stale guarded PATCH | **1 row (silent overwrite)**         | **0 rows / `[]` (REJECTED)** |
+| (a)/(c)/(d)             | PASS                                 | PASS                         |
 
 Raw observed output of the FIXED run (item id=213):
 
@@ -826,14 +827,17 @@ $ bun test inventory/proofs/custom-fields.unit.test.ts
 Injected state: number field `rating` {9,10,100}; XSS payload `<img src=x onerror="window.__xss=1"><script>window.__xss=1</script>` as BOTH a custom VALUE and a field LABEL; sort key `cf:rating`.
 
 ```json
-{ "headers_count": 13, "rating_header": "Rating \u25b2",
-  "rating_column_order_ascending": ["9","10","100"],
+{
+  "headers_count": 13,
+  "rating_header": "Rating \u25b2",
+  "rating_column_order_ascending": ["9", "10", "100"],
   "xss_value_cell_textContent_is_literal": true,
   "xss_value_cell_has_live_img_or_script": false,
   "xss_value_cell_innerHTML_escaped_head": "&lt;img src=x onerror=\"window.__xss=1\"&g",
   "malicious_header_textContent_is_literal": true,
   "malicious_header_has_live_img_or_script": false,
-  "custom_fields_lib_loaded": true }
+  "custom_fields_lib_loaded": true
+}
 // follow-up: { "xss_global_after_render": "undefined",   // payload NEVER executed
 //             "rating_desc": ["100","10","9"],
 //             "search_100_rows": ["3:100"] }            // custom VALUE searchable

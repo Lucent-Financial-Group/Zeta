@@ -15,10 +15,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, test } from "bun:test";
 
-const SCRIPT = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-  "create-repo.ts"
-);
+const SCRIPT = resolve(dirname(fileURLToPath(import.meta.url)), "create-repo.ts");
 
 interface Operation {
   step: string;
@@ -42,9 +39,7 @@ function runDryRun(repo: "forge" | "ace" | "civsim"): RunResult {
     maxBuffer: 4 * 1024 * 1024,
   });
   if (result.status !== 0) {
-    throw new Error(
-      `create-repo.ts exited ${result.status}: ${result.stderr}`
-    );
+    throw new Error(`create-repo.ts exited ${result.status}: ${result.stderr}`);
   }
   return JSON.parse(result.stdout) as RunResult;
 }
@@ -344,9 +339,9 @@ const SCAFFOLD_DIR = dirname(fileURLToPath(import.meta.url));
 
 // Required rule IDs and their purpose in the day-one security baseline.
 const REQUIRED_SEMGREP_RULES = [
-  "gha-untrusted-in-run-line",  // B-0424.6 — GHA workflow-injection (present from day one)
-  "invisible-unicode-in-text",   // B-0424.8 — BP-10 invisible Unicode / prompt injection
-  "gha-action-mutable-tag",      // B-0424.8 — supply-chain SHA-pin (CVE-2025-30066)
+  "gha-untrusted-in-run-line", // B-0424.6 — GHA workflow-injection (present from day one)
+  "invisible-unicode-in-text", // B-0424.8 — BP-10 invisible Unicode / prompt injection
+  "gha-action-mutable-tag", // B-0424.8 — supply-chain SHA-pin (CVE-2025-30066)
 ] as const;
 
 describe("forge .semgrep.yml content (B-0424.8)", () => {

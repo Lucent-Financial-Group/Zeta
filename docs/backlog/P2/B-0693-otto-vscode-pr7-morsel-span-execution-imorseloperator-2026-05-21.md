@@ -10,7 +10,16 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0692]
 composes_with: [B-0635, B-0688, B-0694]
-tags: [morsel-execution, span-based, cache-sized-chunks, imorseloperator, otto-vscode-pr-7, dbsp-architecture, columnar-execution]
+tags:
+  [
+    morsel-execution,
+    span-based,
+    cache-sized-chunks,
+    imorseloperator,
+    otto-vscode-pr-7,
+    dbsp-architecture,
+    columnar-execution,
+  ]
 type: research
 ---
 
@@ -128,4 +137,4 @@ Depends on B-0692 (push-based) landing first — morsel-pattern composes with pu
 
 ## Origin
 
-Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21. Filed via Otto-CLI per Aaron-approved shadow* "file the 3 rows for PRs 6-8" instruction. Otto-VSCode owns the implementation; this row tracks the scope.
+Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21. Filed via Otto-CLI per Aaron-approved shadow\* "file the 3 rows for PRs 6-8" instruction. Otto-VSCode owns the implementation; this row tracks the scope.

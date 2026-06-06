@@ -91,9 +91,7 @@ function stripMarkdownLinkTitle(target: string): string {
   }
 
   const titleMarkers = [' "', " '", " ("];
-  const cutPoints = titleMarkers
-    .map((marker) => result.indexOf(marker))
-    .filter((n) => n >= 0);
+  const cutPoints = titleMarkers.map((marker) => result.indexOf(marker)).filter((n) => n >= 0);
   if (cutPoints.length === 0) return result;
   return result.slice(0, Math.min(...cutPoints)).trimEnd();
 }
@@ -113,10 +111,7 @@ function isInsideRepo(candidate: string, repoRoot: string): boolean {
   return rel.length === 0 || (!rel.startsWith("..") && !isAbsolute(rel));
 }
 
-function updateFenceState(
-  line: string,
-  state: FenceState,
-): void {
+function updateFenceState(line: string, state: FenceState): void {
   const trimmed = line.trimStart();
   const first = trimmed.at(0);
   if (first !== "`" && first !== "~") return;
@@ -153,7 +148,10 @@ function stripMarkdownStructuralPrefix(text: string): string {
 }
 
 function stripBlockquotePrefix(text: string): string {
-  return text.trimStart().replace(/^(?:>\s*)+/, "").trimStart();
+  return text
+    .trimStart()
+    .replace(/^(?:>\s*)+/, "")
+    .trimStart();
 }
 
 function isBlockquoteLine(text: string): boolean {
@@ -164,11 +162,7 @@ function isSupersededByMarkerLine(text: string): boolean {
   return /^\*\*Superseded by\*\*(?:\s|$)/i.test(stripBlockquotePrefix(text));
 }
 
-function pushUnique(
-  claims: SupersessionClaim[],
-  seen: Set<string>,
-  claim: SupersessionClaim,
-): void {
+function pushUnique(claims: SupersessionClaim[], seen: Set<string>, claim: SupersessionClaim): void {
   const key = `${String(claim.line)}\0${claim.target}`;
   if (seen.has(key)) return;
   seen.add(key);
@@ -236,8 +230,7 @@ function findSupersessionClaims(lines: string[]): SupersessionClaim[] {
   const claims: SupersessionClaim[] = [];
   const seen = new Set<string>();
   const backtickRe = /\bSupersedes(?:\s+ADR)?\s+`([^`\n]+?\.md(?:[?#][^`\n]*)?)`/gi;
-  const linkRe =
-    /\bSupersedes(?:\s+ADR)?\s+\[[^\]\n]+?\]\(((?:[^()\n]|\([^()\n]*\))+)\)/gi;
+  const linkRe = /\bSupersedes(?:\s+ADR)?\s+\[[^\]\n]+?\]\(((?:[^()\n]|\([^()\n]*\))+)\)/gi;
 
   for (const searchLine of logicalSearchLines(lines)) {
     pushMatchesForLine(backtickRe, searchLine.text, searchLine.line, claims, seen);
@@ -247,12 +240,7 @@ function findSupersessionClaims(lines: string[]): SupersessionClaim[] {
   return claims;
 }
 
-function resolveTarget(
-  target: string,
-  fileDir: string,
-  fileParentDir: string,
-  repoRoot: string,
-): string | null {
+function resolveTarget(target: string, fileDir: string, fileParentDir: string, repoRoot: string): string | null {
   if (!isRepoRelativeTarget(target)) return null;
   const candidateRoots = [fileDir, fileParentDir, repoRoot];
   for (const root of candidateRoots) {
@@ -294,9 +282,7 @@ function supersededByMarkerLines(targetContent: string): string[] {
 
 function markerNamesSupersedingAdr(markerLines: string[], supersedingFile: string): boolean {
   const supersedingBase = basename(supersedingFile);
-  const tokenRe = new RegExp(
-    `(^|[^A-Za-z0-9._-])${escapeRegExp(supersedingBase)}($|[^A-Za-z0-9._-])`,
-  );
+  const tokenRe = new RegExp(`(^|[^A-Za-z0-9._-])${escapeRegExp(supersedingBase)}($|[^A-Za-z0-9._-])`);
   return markerLines.some((line) => tokenRe.test(line));
 }
 
@@ -324,9 +310,7 @@ function checkFile(filePath: string): CheckResult {
   const lines = input.content.split("\n");
   const claims = findSupersessionClaims(lines);
   const repoRoot = findRepoRoot(filePath);
-  const fileDir = isAbsolute(filePath)
-    ? dirname(filePath)
-    : resolve(dirname(filePath));
+  const fileDir = isAbsolute(filePath) ? dirname(filePath) : resolve(dirname(filePath));
   const fileParentDir = dirname(fileDir);
   const findings: Finding[] = [];
   let hadTargetErrors = false;
@@ -372,9 +356,7 @@ export type { Finding, SupersessionClaim };
 export function main(): number {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.error(
-      "usage: bun tools/substrate-claim-checker/check-convention.ts <file> [<file> ...]",
-    );
+    console.error("usage: bun tools/substrate-claim-checker/check-convention.ts <file> [<file> ...]");
     return 1;
   }
 
@@ -385,9 +367,7 @@ export function main(): number {
     const { findings, ok } = checkFile(arg);
     if (!ok) inputErrors++;
     for (const f of findings) {
-      console.log(
-        `${f.file}:${String(f.line)}: convention drift — ${f.reason}`,
-      );
+      console.log(`${f.file}:${String(f.line)}: convention drift — ${f.reason}`);
       totalFindings++;
     }
   }

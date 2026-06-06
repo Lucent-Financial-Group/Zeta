@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 847 |
-| Title | ops(0-0-0): forward-sync of AceHack #104 — post-double-hop close |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-29T15:22:53Z |
-| Merged at | 2026-04-29T15:51:32Z |
-| Merge commit SHA | `384f66216bf32021ac96e9e2b355ea099c2371e4` |
-| Branch | `post-0-0-0-reclose-followup-lfg-2026-04-29` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/847 |
-| Changed files | 5 |
-| Additions / deletions | +171 / -11 |
+| Field                 | Value                                                            |
+| --------------------- | ---------------------------------------------------------------- |
+| Number                | 847                                                              |
+| Title                 | ops(0-0-0): forward-sync of AceHack #104 — post-double-hop close |
+| Author                | `AceHack` (human)                                                |
+| State                 | MERGED                                                           |
+| Created at            | 2026-04-29T15:22:53Z                                             |
+| Merged at             | 2026-04-29T15:51:32Z                                             |
+| Merge commit SHA      | `384f66216bf32021ac96e9e2b355ea099c2371e4`                       |
+| Branch                | `post-0-0-0-reclose-followup-lfg-2026-04-29`                     |
+| Base branch           | `main`                                                           |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/847          |
+| Changed files         | 5                                                                |
+| Additions / deletions | +171 / -11                                                       |
 
 ## Description
 
@@ -49,15 +49,15 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 10 |
-| Resolved threads | 10 |
-| Unresolved threads | 0 |
-| Total review comments | 20 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 10    |
+| Resolved threads                          | 10    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 20    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -70,24 +70,24 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T15:25:00Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:14 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct gh api method semantics in the 401 triage steps**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct gh api method semantics in the 401 triage steps**
+
   The runbook’s diagnosis assumes `gh api graphql -f query=...` is a GET and that adding `-X POST` changes routing, but `gh api` already switches to POST whenever field parameters are present (`-f`/`-F`) per the `gh api` manual. That makes the documented comparison and workaround a no-op, so operators can draw the wrong conclusion about the cause of a 401 and spend time debugging a method switch that never occurred.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:27:48Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:14 (association: MEMBER)
-    Codex right; this was a misdiagnosis on my part. Empirical verification with GH_DEBUG=api confirms gh api graphql -f query='...' already sends POST (gh CLI manual: 'default HTTP request method is GET normally and POST if any parameters were added'). The earlier 'flag fixed it' observation was the upstream auth-service glitch resolving in seconds between attempts — misattributed to the flag.
-    
-    Runbook updated in commit 65b20ee:
-    - Removed the X POST workaround claim
-    - Added explicit 'Common misdiagnosis (corrected)' section with empirical verification snippet
-    - Reframed as transient upstream auth hiccup; bounded retry is the answer (cross-ref task #319)
-    - Captured the lesson in trigger-memory: claim-without-verify is exactly the failure mode the Drain-Log Claim Verification Discipline (task #316) catches — the rule applies to runbook-authoring in real time, not just retroactive drain-log audits.
-    
-    Thanks for catching this.
+- **`AceHack` (human)** at 2026-04-29T15:27:48Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:14 (association: MEMBER)
+  Codex right; this was a misdiagnosis on my part. Empirical verification with GH_DEBUG=api confirms gh api graphql -f query='...' already sends POST (gh CLI manual: 'default HTTP request method is GET normally and POST if any parameters were added'). The earlier 'flag fixed it' observation was the upstream auth-service glitch resolving in seconds between attempts — misattributed to the flag.
+
+  Runbook updated in commit 65b20ee:
+  - Removed the X POST workaround claim
+  - Added explicit 'Common misdiagnosis (corrected)' section with empirical verification snippet
+  - Reframed as transient upstream auth hiccup; bounded retry is the answer (cross-ref task #319)
+  - Captured the lesson in trigger-memory: claim-without-verify is exactly the failure mode the Drain-Log Claim Verification Discipline (task #316) catches — the rule applies to runbook-authoring in real time, not just retroactive drain-log audits.
+
+  Thanks for catching this.
 
 ### Thread 2 -- resolved [collapsed]
 
@@ -99,12 +99,11 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 
 - **`Copilot` (bot)** at 2026-04-29T15:27:51Z on `docs/hygiene-history/ticks/2026/04/29/1458Z.md`:1 (association: NONE)
   Tick shard filename (`1452Z.md`) doesn’t match the row timestamp (`2026-04-29T14:58:00Z`). The shard README implies filenames are used for chronological sorting/collation, so this mismatch can put the event in the wrong position. Either rename the file to match the timestamp (e.g. `1458Z.md`) or adjust the timestamp to match the filename minute if `1452` is intended.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:42:24Z on `docs/hygiene-history/ticks/2026/04/29/1458Z.md`:1 (association: MEMBER)
-    Right catch — the row timestamp was revised to 14:58:00Z when the round-close landed but I forgot to rename the file. Renamed to 1458Z.md in commit c1aa68c.
+- **`AceHack` (human)** at 2026-04-29T15:42:24Z on `docs/hygiene-history/ticks/2026/04/29/1458Z.md`:1 (association: MEMBER)
+  Right catch — the row timestamp was revised to 14:58:00Z when the round-close landed but I forgot to rename the file. Renamed to 1458Z.md in commit c1aa68c.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -115,16 +114,16 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T15:29:57Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:84 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Stop using `rate_limit` success as auth-health signal**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Stop using `rate_limit` success as auth-health signal**
+
   Step 3 treats `gh api rate_limit` success as evidence the token path is healthy and only flags token-side issues when that call also 401s, but GitHub’s REST docs explicitly say `GET /rate_limit` “can be used without authentication if only public resources are requested.” That means a missing/revoked token can still appear healthy on this check, causing false “transient” classification and delaying the real token remediation path.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:42:26Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:84 (association: MEMBER)
-    Codex right. Per GitHub REST docs, GET /rate_limit succeeds anonymously when only public resources are queried, so a missing/revoked token can appear healthy on this check. Runbook step 3 replaced with gh api user (requires auth, no anonymous fallback). Also corrected the 'still works' block to call out the same caveat with explicit credit. Commit c1aa68c.
+- **`AceHack` (human)** at 2026-04-29T15:42:26Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:84 (association: MEMBER)
+  Codex right. Per GitHub REST docs, GET /rate_limit succeeds anonymously when only public resources are queried, so a missing/revoked token can appear healthy on this check. Runbook step 3 replaced with gh api user (requires auth, no anonymous fallback). Also corrected the 'still works' block to call out the same caveat with explicit credit. Commit c1aa68c.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -135,16 +134,16 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T15:29:57Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:3 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove absolute non-token diagnosis from runbook metadata**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove absolute non-token diagnosis from runbook metadata**
+
   The frontmatter description states this failure mode is "not a token problem," but the same runbook later documents token-side cases and escalation (`expired / revoked`, retry timeout). Because descriptions are often surfaced in indexes and previews, this absolute wording can short-circuit triage and push operators toward retries even when credentials are actually bad.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:42:28Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:3 (association: MEMBER)
-    Right — softened frontmatter to 'FIRST hypothesis is transient upstream auth-service hiccup. Always rule out token-side issues before assuming transient.' Indexes/previews surfacing the description no longer short-circuit triage to 'must be transient, retry.' Commit c1aa68c.
+- **`AceHack` (human)** at 2026-04-29T15:42:28Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:3 (association: MEMBER)
+  Right — softened frontmatter to 'FIRST hypothesis is transient upstream auth-service hiccup. Always rule out token-side issues before assuming transient.' Indexes/previews surfacing the description no longer short-circuit triage to 'must be transient, retry.' Commit c1aa68c.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -155,24 +154,24 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-29T15:44:38Z on `memory/MEMORY.md`:6 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove stale `-X POST` fix claim from MEMORY index**
-  
-  Fresh evidence in this commit: the new `memory/MEMORY.md` index entry reintroduces the earlier misdiagnosis by stating the failure mode is when 401s occur while ``gh api -X POST graphql`` works, even though the linked runbook now documents that `-X POST` is a no-op with `-f` and that success was just retry timing. Because this index text is what readers see first, it can send triage back toward the already-invalidated method-switch theory instead of the intended transient-auth/token checks.
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove stale `-X POST` fix claim from MEMORY index**
+
+  Fresh evidence in this commit: the new `memory/MEMORY.md` index entry reintroduces the earlier misdiagnosis by stating the failure mode is when 401s occur while `gh api -X POST graphql` works, even though the linked runbook now documents that `-X POST` is a no-op with `-f` and that success was just retry timing. Because this index text is what readers see first, it can send triage back toward the already-invalidated method-switch theory instead of the intended transient-auth/token checks.
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:46:21Z on `memory/MEMORY.md`:6 (association: MEMBER)
-    Codex right — the MEMORY.md index entry still carried the old misdiagnosis after the runbook was corrected. Index-vs-body divergence is the kind of failure mode that propagates: readers seeing the index first would have been sent back to the invalidated method-switch theory.
-    
-    Fixed in commit 062fbbb:
-    - Removed the -X POST contrast claim
-    - Framed as transient upstream auth-service 401s first-hypothesis
-    - Added explicit token-side caveat (expired / revoked / SSO)
-    - Cross-referenced the Codex P2 correction with credit
-    
-    Future-self lesson reinforced: when correcting a substrate file, update ALL surfaces that reference its claims — body, frontmatter, index entries, cross-refs. Single-source-of-truth discipline applies to the runbook, but its index entry IS the truth for anyone who hasn't loaded the body yet.
+- **`AceHack` (human)** at 2026-04-29T15:46:21Z on `memory/MEMORY.md`:6 (association: MEMBER)
+  Codex right — the MEMORY.md index entry still carried the old misdiagnosis after the runbook was corrected. Index-vs-body divergence is the kind of failure mode that propagates: readers seeing the index first would have been sent back to the invalidated method-switch theory.
+
+  Fixed in commit 062fbbb:
+  - Removed the -X POST contrast claim
+  - Framed as transient upstream auth-service 401s first-hypothesis
+  - Added explicit token-side caveat (expired / revoked / SSO)
+  - Cross-referenced the Codex P2 correction with credit
+
+  Future-self lesson reinforced: when correcting a substrate file, update ALL surfaces that reference its claims — body, frontmatter, index entries, cross-refs. Single-source-of-truth discipline applies to the runbook, but its index entry IS the truth for anyone who hasn't loaded the body yet.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -184,12 +183,11 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 
 - **`Copilot` (bot)** at 2026-04-29T15:46:36Z on `memory/MEMORY.md`:6 (association: NONE)
   The MEMORY index entry says the failure mode is “returns 401 while `gh api -X POST graphql` works”, but the referenced runbook explicitly documents that `-X POST` is a no-op for `gh api graphql -f ...` and that the apparent success was just a retry after the upstream glitch recovered. Please reword this summary to avoid implying `-X POST` is a meaningful workaround/signal (e.g., describe it as “retry succeeds (sometimes coincident with adding -X POST), but not because of -X POST”).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:49:44Z on `memory/MEMORY.md`:6 (association: MEMBER)
-    MEMORY.md -X POST: the misdiagnosis-correction is now stronger in commit b89e7db. Index entry explicitly states '-X POST workaround claim was a misdiagnosis corrected per Codex P2 on PR #847 — gh api already sends POST when -f parameters are present, so the flag is a no-op; success on retry was just the upstream glitch resolving.' Readers seeing the index get the correction first, not the old theory.
+- **`AceHack` (human)** at 2026-04-29T15:49:44Z on `memory/MEMORY.md`:6 (association: MEMBER)
+  MEMORY.md -X POST: the misdiagnosis-correction is now stronger in commit b89e7db. Index entry explicitly states '-X POST workaround claim was a misdiagnosis corrected per Codex P2 on PR #847 — gh api already sends POST when -f parameters are present, so the flag is a no-op; success on retry was just the upstream glitch resolving.' Readers seeing the index get the correction first, not the old theory.
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -201,12 +199,11 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 
 - **`Copilot` (bot)** at 2026-04-29T15:46:36Z on `docs/active-trajectory.md`:39 (association: NONE)
   This references “#319 — Bounded-retry mechanism for CodeQL dynamic-default-setup”, but in the PR metadata for this forward-sync, #319 is a different PR (Graph operator-algebra composition). Please fix the cross-reference number (or remove the number and refer to the CodeQL bounded-retry item by name) to avoid sending readers to the wrong PR/issue.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:49:47Z on `docs/active-trajectory.md`:39 (association: MEMBER)
-    Right — committed substrate references like 'task #319' auto-link to GitHub PR #319 (a closed Graph operator-algebra PR), not the session-local TaskList task 319 (bounded-retry CodeQL flakes) I intended. ALL 9 session-task IDs from this session (313-321) collide with real LFG closed PRs/issues — verified each. Swept all session-task refs to 'task NNN' (no hash) in commit b89e7db; real GitHub refs (#846, #847, #101, etc.) keep their #. Generalizable lesson captured in commit message.
+- **`AceHack` (human)** at 2026-04-29T15:49:47Z on `docs/active-trajectory.md`:39 (association: MEMBER)
+  Right — committed substrate references like 'task #319' auto-link to GitHub PR #319 (a closed Graph operator-algebra PR), not the session-local TaskList task 319 (bounded-retry CodeQL flakes) I intended. ALL 9 session-task IDs from this session (313-321) collide with real LFG closed PRs/issues — verified each. Swept all session-task refs to 'task NNN' (no hash) in commit b89e7db; real GitHub refs (#846, #847, #101, etc.) keep their #. Generalizable lesson captured in commit message.
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -221,8 +218,8 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:49:50Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:109 (association: MEMBER)
-    Same root cause — task IDs collide with LFG PR/issue numbers. Fixed in commit b89e7db (now 'task 319' without #). 22 total replacements across active-trajectory + tick shard + runbook + MEMORY index.
+- **`AceHack` (human)** at 2026-04-29T15:49:50Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:109 (association: MEMBER)
+  Same root cause — task IDs collide with LFG PR/issue numbers. Fixed in commit b89e7db (now 'task 319' without #). 22 total replacements across active-trajectory + tick shard + runbook + MEMORY index.
 
 ### Thread 9 -- resolved [collapsed]
 
@@ -237,8 +234,8 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:49:52Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:127 (association: MEMBER)
-    Same fix — line 127 'task #319' → 'task 319' in commit b89e7db.
+- **`AceHack` (human)** at 2026-04-29T15:49:52Z on `memory/reference_gh_cli_graphql_401_diagnostic_runbook_2026_04_29.md`:127 (association: MEMBER)
+  Same fix — line 127 'task #319' → 'task 319' in commit b89e7db.
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -250,12 +247,11 @@ Round-close artifacts after 0/0/0 was re-closed at 2026-04-29T15:17:09Z (post-do
 
 - **`Copilot` (bot)** at 2026-04-29T15:46:37Z on `docs/hygiene-history/ticks/2026/04/29/1517Z.md`:1 (association: NONE)
   This tick shard’s “Next lane” sequence references “#319 bounded-retry CodeQL”, but in this forward-sync’s PR metadata, #319 is used for a different PR. Please correct the referenced number (or remove the number) so the tick history doesn’t misdirect readers.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-29T15:49:54Z on `docs/hygiene-history/ticks/2026/04/29/1517Z.md`:1 (association: MEMBER)
-    Same fix — tick shard 'Next lane' sequence uses 'task NNN' (no hash) for all session-task refs in commit b89e7db.
+- **`AceHack` (human)** at 2026-04-29T15:49:54Z on `docs/hygiene-history/ticks/2026/04/29/1517Z.md`:1 (association: MEMBER)
+  Same fix — tick shard 'Next lane' sequence uses 'task NNN' (no hash) for all session-task refs in commit b89e7db.
 
 ## Fix commits (touching thread paths)
 

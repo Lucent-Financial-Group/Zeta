@@ -11,12 +11,7 @@ import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
-import {
-  generateKeyPairJSON,
-  deserializeSecretBundle,
-  decryptBytes,
-  type SelfKeys,
-} from "./files";
+import { generateKeyPairJSON, deserializeSecretBundle, decryptBytes, type SelfKeys } from "./files";
 import { listInputs, outPathFor, encryptDir } from "./memory-encrypt-loop";
 
 let root: string;

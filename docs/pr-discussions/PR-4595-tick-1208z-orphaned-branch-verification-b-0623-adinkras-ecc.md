@@ -55,24 +55,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-22T12:15:03Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9a1e7989cf`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -85,6 +83,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard documenting an orphaned-branch verification for a fresh cold-boot session, recording that a large B-0623 “Adinkras + ECC” commit exists on a stale `otto/2012z-...` branch but should not be re-landed because B-0623 is already being decomposed into incremental PR slices on `origin/main`.
 
 **Changes:**
+
 - Adds tick shard `1208Z` capturing the verification outcome and “substrate-honest non-action” disposition.
 - Records operational context (multi-process saturation) and links to relevant rules, prior tick shard, and already-merged slice PRs.
 
@@ -94,7 +93,7 @@ Adds a new hygiene-history tick shard documenting an orphaned-branch verificatio
 
 **@chatgpt-codex-connector** (2026-05-22T12:15:04Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix broken links to the 0149Z predecessor shard**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix broken links to the 0149Z predecessor shard**
 
 The relative path used for `0149Z` references is incorrect from this directory: `../../../../2026/05/21/0149Z.md` resolves to `docs/hygiene-history/2026/05/21/0149Z.md`, which does not exist (the file is under `docs/hygiene-history/ticks/2026/05/21/0149Z.md`). As written, readers cannot open the prior triage evidence this note depends on, which breaks auditability of the non-action decision.
 

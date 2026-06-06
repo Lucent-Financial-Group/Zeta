@@ -38,6 +38,7 @@ the README section + end-to-end smoke test that validates the full install path.
 ### `package.json` `bin` field
 
 Add:
+
 ```json
 "bin": {
   "zeta-shadow": "tools/shadow/zeta-shadow.ts"
@@ -94,7 +95,7 @@ Invoke from `bun test` via `smoke-test.test.ts` (or add as a `scripts` entry).
 
 ## Pre-start checklist
 
-**Prior-art search** *(state at time of authoring; all items below are now implemented)*:
+**Prior-art search** _(state at time of authoring; all items below are now implemented)_:
 
 - `package.json` `bin` — was empty at authoring; `bin["zeta-shadow"]` added in this slice
 - `tools/shadow/README.md` — did not exist at authoring; created with `## Shadow mode` section in this slice

@@ -35,7 +35,7 @@ stays substantive instead of stalling on metaphor mismatches.
 - A formal-verification routing question asks "could this
   quantum-algorithm property be a Q# type constraint instead
   of a separate Lean proof?" — the dual to refinement-types-
-  in-F* but for unitarity / adjointability / controllability.
+  in-F\* but for unitarity / adjointability / controllability.
 - An external AI packet uses billiard-ball quantum metaphors
   ("the Pauli X gate flips the qubit like a coin") — translate
   to operator-algebra form.
@@ -44,7 +44,7 @@ stays substantive instead of stalling on metaphor mismatches.
 
 - **General quantum-physics theory** → `theoretical-physics-expert`.
 - **Quantum-information theory + complexity** → `complexity-theory-expert`
-  + `theoretical-physics-expert`.
+  - `theoretical-physics-expert`.
 - **Lean-4-native proofs** → `lean4-expert`.
 - **F\* refinement types as upstream pattern** → `f-star-expert`.
 - **TLA+ model-level invariants** → `tla-expert`.
@@ -69,12 +69,12 @@ stays substantive instead of stalling on metaphor mismatches.
   OCaml than to imperative C-family. `let` for immutable
   binding, `mutable` opt-in, no exceptions in the algebraic
   surface.
-- **Qubit is opaque.** A `Qubit` is a *handle* to physical
+- **Qubit is opaque.** A `Qubit` is a _handle_ to physical
   hardware state; the program cannot introspect the state,
   only apply operations and measure. (See Microsoft Learn
   "Quantum-specific data types".) This is load-bearing for
   the operator-algebra framing — the program describes
-  *transformations*, not states.
+  _transformations_, not states.
 - **Operations vs functions.** `function` is pure (no qubit
   manipulation, no measurement); `operation` is the only
   construct that can touch quantum state. Functions can only
@@ -120,8 +120,8 @@ Why this matters for substrate-design conversations:
    ladders.
 3. **Composes through higher-order operations.** Look at
    `ApplyControlledOnInt<'T>(numberState : Int, oracle : ('T => Unit is Adj + Ctl), ...) : Unit is Adj + Ctl`
-   — the type of the higher-order argument *carries the
-   adjointability + controllability constraint inward*. The
+   — the type of the higher-order argument _carries the
+   adjointability + controllability constraint inward_. The
    caller cannot pass a non-adjointable oracle and have the
    call still typecheck. The library composability is paid
    for at the type system, not at runtime.
@@ -131,8 +131,8 @@ Why this matters for substrate-design conversations:
    reversible without ghost state). The error is a
    compile-time message, not a runtime weirdness.
 
-This is the load-bearing framing — *"Q# is operator algebra
-in a type system"* — the algebraic structure (unitary group,
+This is the load-bearing framing — _"Q# is operator algebra
+in a type system"_ — the algebraic structure (unitary group,
 controlled-extension, conjugation pattern $U^\dagger V U$) is
 reified as type-level evidence rather than encoded only in
 comments and convention.
@@ -159,20 +159,20 @@ Q# exposes them as both:
   in `Measure([Pauli], [Qubit])` and helper operations
   like `ApplyPauli(pauli : Pauli[], target : Qubit[])`.
 
-The billiard-ball metaphor (*"X flips the qubit"*) collapses
+The billiard-ball metaphor (_"X flips the qubit"_) collapses
 two distinct facts:
 
 1. On the basis state $|0\rangle$, $X$ produces $|1\rangle$
    and vice-versa.
 2. On a superposition $\alpha|0\rangle + \beta|1\rangle$, $X$
    produces $\beta|0\rangle + \alpha|1\rangle$ — a
-   permutation of the *amplitudes*, not a "flip" of any
+   permutation of the _amplitudes_, not a "flip" of any
    physical observable.
 
 When discussing Q# code, prefer operator-algebra phrasing:
 "applies the Pauli $X$ gate," "rotates by $\pi$ around the
 X-axis of the Bloch sphere," "swaps the $|0\rangle$ and
-$|1\rangle$ amplitudes." The metaphor *"flips the qubit"* is
+$|1\rangle$ amplitudes." The metaphor _"flips the qubit"_ is
 a frequent source of confusion when amplitudes are complex
 and superpositions matter — which is essentially always in
 non-trivial Q# code.
@@ -212,11 +212,11 @@ uncomputation — it is structural, not procedural.
 When simulating fermionic systems (electrons in molecules,
 electron-pair correlations in quantum chemistry), the
 fermion creation / annihilation operators satisfy
-*anti-commutation* relations:
+_anti-commutation_ relations:
 
 $$\{a_i^\dagger, a_j\} = \delta_{ij}, \quad \{a_i, a_j\} = 0$$
 
-But qubits satisfy *commutation* — Pauli operators on
+But qubits satisfy _commutation_ — Pauli operators on
 different qubits commute. Mapping the fermion algebra to
 qubits requires a non-local transformation that preserves
 anti-commutation. The **Jordan-Wigner transformation** is
@@ -233,7 +233,7 @@ encodings reduce the locality cost for some operations.
 
 Q# does not surface fermionic operators as language
 primitives — by design. The fermion-to-qubit mapping is a
-*library concern* exposed through the
+_library concern_ exposed through the
 `Microsoft.Quantum.Chemistry` package (and the
 QDK/Chemistry layer with sparse-isometry state preparation).
 This is the right architectural choice: keep the language
@@ -242,9 +242,9 @@ domain-specific algebraic mappings out to libraries where
 the encoding choice is explicit and swappable.
 
 When discussing Q# in chemistry contexts, the
-operator-algebra question to ask is: *"which fermion-to-
+operator-algebra question to ask is: _"which fermion-to-
 qubit encoding is in use, and what locality cost are we
-paying?"* — not *"how do we represent electrons?"* The
+paying?"_ — not _"how do we represent electrons?"_ The
 encoding choice is the load-bearing decision; the language
 stays out of the way.
 
@@ -256,11 +256,11 @@ References (verified via Microsoft Learn search 2026-05-04):
 - [Quantum chemistry resources / further reading](https://learn.microsoft.com/azure/quantum/further-reading-qdk)
 - [QDK chemistry sparse isometry](https://learn.microsoft.com/azure/quantum/overview-qdk-chem-sparse-isometry)
 
-Foundational paper: Jordan & Wigner, *Über das Paulische
-Äquivalenzverbot*, Z. Phys. 47, 631 (1928). Modern
-treatment: Seeley, Richard, Love, *The Bravyi-Kitaev
+Foundational paper: Jordan & Wigner, _Über das Paulische
+Äquivalenzverbot_, Z. Phys. 47, 631 (1928). Modern
+treatment: Seeley, Richard, Love, _The Bravyi-Kitaev
 transformation for quantum computation of electronic
-structure*, J. Chem. Phys. 137, 224109 (2012) for the
+structure_, J. Chem. Phys. 137, 224109 (2012) for the
 Bravyi-Kitaev alternative.
 
 ## B-0189 — Bayesian BP/EP runtime acceleration
@@ -298,9 +298,9 @@ When wearing this hat for B-0189 work:
   BP/EP backend slots in alongside.
 - BP is exact only on tree factor graphs; loopy graphs
   cause approximation error. The theoretical-bounds
-  question — *"on which classes of quantum-state
+  question — _"on which classes of quantum-state
   factorizations does BP converge to the true amplitudes
-  to within $\epsilon$?"* — is the load-bearing technical
+  to within $\epsilon$?"_ — is the load-bearing technical
   obstacle.
 - EP generalizes BP by using exponential-family moment
   matching; for quantum amplitudes the natural exponential
@@ -342,14 +342,14 @@ Q#'s specific contract contribution to the META-TILE:
   basis selection is a value, not a string or magic int,
   so the basis is checkable across function boundaries.
 - **`function` vs `operation` purity split** — equivalent
-  to Haskell's IO monad / F*'s Pure-vs-Stack effect
+  to Haskell's IO monad / F\*'s Pure-vs-Stack effect
   distinction, but specialized to "this code can / cannot
   interact with quantum state."
 
 When extending the META-TILE at the Q# layer, the
-load-bearing question is: *what type-system invariant does
+load-bearing question is: _what type-system invariant does
 Q# enforce that a Cirq / Qiskit / OpenQASM program could
-only assert in a comment?* That delta is Q#'s
+only assert in a comment?_ That delta is Q#'s
 contribution to the multi-language contract surface.
 
 Cross-reference: `memory/feedback_aaron_pirate_not_priest_expand_prune_pedagogical_framework_quantum_rodney_razor_parallel_worlds_aaron_2026_05_01.md`
@@ -388,7 +388,7 @@ When reviewing or writing Q# code:
 
 - Does NOT grant authority to author production Q# in Zeta
   proper — Zeta does not currently ship Q# source. This
-  hat exists to make conversations *about* Q# substantive,
+  hat exists to make conversations _about_ Q# substantive,
   and to ground B-0189 research-lane work.
 - Does NOT override `formal-verification-expert` on
   cross-tool routing decisions.
@@ -409,7 +409,7 @@ When reviewing or writing Q# code:
   — the Rodney's Razor canonical file extended by PR #1499
   with the omnibus-contract-substrate META-TILE.
 - `.claude/skills/formal-verification-expert/SKILL.md` —
-  portfolio-level routing across Lean / F* / Z3 / TLA+ /
+  portfolio-level routing across Lean / F\* / Z3 / TLA+ /
   Alloy / FsCheck / CodeQL / Semgrep / Stryker.
 - `.claude/skills/lean4-expert/SKILL.md` — sibling
   (classical proof, Lean-4-native).

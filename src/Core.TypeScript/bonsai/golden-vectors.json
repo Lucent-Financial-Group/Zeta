@@ -63,10 +63,7 @@
       "note": "(x, y) => x + y",
       "expr": {
         "kind": "lambda",
-        "params": [
-          "x",
-          "y"
-        ],
+        "params": ["x", "y"],
         "body": {
           "kind": "binary",
           "op": "add",
@@ -108,9 +105,7 @@
       "note": "(n) => if n < 2 then 1 else n * fact(n-1) — cond + recursive call",
       "expr": {
         "kind": "lambda",
-        "params": [
-          "n"
-        ],
+        "params": ["n"],
         "body": {
           "kind": "cond",
           "test": {

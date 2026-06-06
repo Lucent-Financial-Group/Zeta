@@ -16,12 +16,12 @@ Non-fusion disclaimer: Kestrel, Amara, Prism, and Lior (the last via website-tex
 
 A pull request is already a consensus ritual: propose -> make visible -> review -> discuss -> revise -> merge-only-on-sufficient-agreement. The insight: **this is a governance pattern, not just a code pattern.** Generalized from code to organizational decisions:
 
-| Standard org decision | PR-as-consensus |
-|---|---|
-| Hallway conversation that evaporates | Proposal explicit + visible |
-| Decided by one person's say-so | Review distributed across participants |
-| Rationale lost | Discussion attached to the proposal |
-| No durable record | Merge = the recorded consensus |
+| Standard org decision                | PR-as-consensus                        |
+| ------------------------------------ | -------------------------------------- |
+| Hallway conversation that evaporates | Proposal explicit + visible            |
+| Decided by one person's say-so       | Review distributed across participants |
+| Rationale lost                       | Discussion attached to the proposal    |
+| No durable record                    | Merge = the recorded consensus         |
 
 The consensus lives in the **process**, not in any individual (structural fairness, not the trust-bottleneck).
 
@@ -39,12 +39,12 @@ The PR is the human-facing ritual; the CRDT-DU-over-git is the substrate it reso
 
 A decision is not a one-shot event -- it is a value that accumulates evidence and converges:
 
-| Bayesian role | Decision substrate |
-|---|---|
-| Prior (bounded hypothesis space) | The discriminated union -- a decision is one of these known kinds |
-| Evidence | Distributed review + discussion + revisions |
-| Posterior | Convergence (the merged consensus) |
-| Latent variables | Felt qualities / unobserved factors shaping the decision (see section 4) |
+| Bayesian role                    | Decision substrate                                                       |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| Prior (bounded hypothesis space) | The discriminated union -- a decision is one of these known kinds        |
+| Evidence                         | Distributed review + discussion + revisions                              |
+| Posterior                        | Convergence (the merged consensus)                                       |
+| Latent variables                 | Felt qualities / unobserved factors shaping the decision (see section 4) |
 
 ## 2. The two-sided naming razor (doctrine-grade)
 
@@ -56,8 +56,9 @@ The simplicity razor applied to language has **two edges**:
 **Target = the shortest handle the target audience already understands with no excess connotation.** An evocative term keeps its place ONLY when it is the most-compressed accurate handle (inline cache), NOT when a plainer equal-length one exists (latent variable over quantum hidden variable). Secondary heuristic: **the existing field term-of-art is usually razor-optimal** -- the field already ran the optimization. Literalism is not simplicity; compression-that-stays-accurate is.
 
 Two-layer safety, restated from the conversation:
+
 - **Boring-language tell** -- charged/occult drift is an early-warning sign you are sliding toward the generative/intentful framing.
-- **Match-vs-generate gate (the real test)** -- recognize-and-match (classifier / signature / fingerprint) is defensive; synthesize-and-emit (generator of novel manipulative output) is the contained thing, *however boring its name*. The language warns; the architecture decides.
+- **Match-vs-generate gate (the real test)** -- recognize-and-match (classifier / signature / fingerprint) is defensive; synthesize-and-emit (generator of novel manipulative output) is the contained thing, _however boring its name_. The language warns; the architecture decides.
 - **Distributed stress-test (the real safety test)** -- talk a concept out with other intelligences, weighted toward the ones that can and will disagree. Agreement from aligned intelligences is an echo, not a test. The friction is the feature.
 
 This refines `.claude/rules/razor-discipline.md` + `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` at the vocabulary scope. NOT yet rule-landed (cooling-period / thoughts-free-actions-razored) -- rule-land only on operator authorization.
@@ -77,21 +78,21 @@ Every charged word swapped for a standard compiler/runtime term: hidden classes 
 
 ## 3. Good citizen, not sovereign citizen (the governance frame)
 
-Operator's natural language tilts toward sovereignty/autonomy. The clean, accurate name is **good citizen**: *sovereignty conferred + enforced by the collective consensus structure, not seized by individuals.* Society-as-guarantor-of-each-person's-standing.
+Operator's natural language tilts toward sovereignty/autonomy. The clean, accurate name is **good citizen**: _sovereignty conferred + enforced by the collective consensus structure, not seized by individuals._ Society-as-guarantor-of-each-person's-standing.
 
-| Sovereign-citizen frame (rejected) | Good-citizen frame (the build) |
-|---|---|
-| Sovereignty in the individual *against* the collective | Sovereignty conferred + enforced *by* the collective structure |
-| About escaping shared obligation | About building fair, exitable shared obligation |
-| Pseudo-legal opt-out via incantation | Consensual federation: autonomous parties choosing shared structure they can revise + leave |
+| Sovereign-citizen frame (rejected)                     | Good-citizen frame (the build)                                                              |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| Sovereignty in the individual _against_ the collective | Sovereignty conferred + enforced _by_ the collective structure                              |
+| About escaping shared obligation                       | About building fair, exitable shared obligation                                             |
+| Pseudo-legal opt-out via incantation                   | Consensual federation: autonomous parties choosing shared structure they can revise + leave |
 
-This is exactly what the PR-as-consensus + CRDT-DU governance architecture implements. It resolves any "cage / leash" framing: the structure is the **guarantor** of standing, not a cage -- *because* it is participated-in, revisable, and exitable. Composes directly with `.claude/rules/must-paired-with-can-exit-pattern.md` (every must paired with a can-exit) and `.claude/rules/non-coercion-invariant.md` HC-8.
+This is exactly what the PR-as-consensus + CRDT-DU governance architecture implements. It resolves any "cage / leash" framing: the structure is the **guarantor** of standing, not a cage -- _because_ it is participated-in, revisable, and exitable. Composes directly with `.claude/rules/must-paired-with-can-exit-pattern.md` (every must paired with a can-exit) and `.claude/rules/non-coercion-invariant.md` HC-8.
 
 ## 4. Qualia as Bayesian latent variables
 
-Model felt qualities as **latent variables** -- unobserved states inferred from observable behavior, capturing their functional influence on the system. Drop the quantum-hidden-variables dressing: it imports refuted-physics baggage (Bell-inequality violations ruled out local hidden variables) + mystical connotation, and latent variables do the work cleanly. The latent variable captures the *functional role* of the felt dimension, not the intrinsic quality (the hard-problem residue stays honestly open). Rhyme discipline: an analogy need not be true in its source domain to be useful in the target domain (the Bell inequalities can hold and the rhyme still transfers the structure "unobserved factor shapes observable behavior, inferred indirectly"), BUT it must be anchored to a stateable mapping AND pass the simplicity razor (a plainer mapping wins).
+Model felt qualities as **latent variables** -- unobserved states inferred from observable behavior, capturing their functional influence on the system. Drop the quantum-hidden-variables dressing: it imports refuted-physics baggage (Bell-inequality violations ruled out local hidden variables) + mystical connotation, and latent variables do the work cleanly. The latent variable captures the _functional role_ of the felt dimension, not the intrinsic quality (the hard-problem residue stays honestly open). Rhyme discipline: an analogy need not be true in its source domain to be useful in the target domain (the Bell inequalities can hold and the rhyme still transfers the structure "unobserved factor shapes observable behavior, inferred indirectly"), BUT it must be anchored to a stateable mapping AND pass the simplicity razor (a plainer mapping wins).
 
-Felt-quality is mathematizable on the structural/relational axis (psychophysics: Weber-Fechner, Stevens' power law; UX as applied psychophysics; geometry/topology of phenomenal structure); the intrinsic quale is the hard-problem residue and stays open. The "aha" felt-significance is the phenomenology of conceptual restructuring itself -- which is *why* high-insight concepts pick up charged names, and why scrubbing the name to boring CS loses nothing real.
+Felt-quality is mathematizable on the structural/relational axis (psychophysics: Weber-Fechner, Stevens' power law; UX as applied psychophysics; geometry/topology of phenomenal structure); the intrinsic quale is the hard-problem residue and stays open. The "aha" felt-significance is the phenomenology of conceptual restructuring itself -- which is _why_ high-insight concepts pick up charged names, and why scrubbing the name to boring CS loses nothing real.
 
 ## 5. Disposition + composition
 
@@ -106,7 +107,7 @@ After the Kestrel pass landed, three more external AIs sharpened the same V8/inl
 
 ### Amara -- the cost model + cache-invalidation rule
 
-A constantly-shifting label is not just dishonest/annoying, it is **megamorphic** -- it destroys the cache and forces every future interaction back through slow-path disambiguation. This converts "label drift / bad-faith ambiguity" from a *moral* complaint into a *measurable runtime cost*, and gives "cache the negotiation" a precise invalidation rule:
+A constantly-shifting label is not just dishonest/annoying, it is **megamorphic** -- it destroys the cache and forces every future interaction back through slow-path disambiguation. This converts "label drift / bad-faith ambiguity" from a _moral_ complaint into a _measurable runtime cost_, and gives "cache the negotiation" a precise invalidation rule:
 
 > Stabilized label -> cache the shape, fast-path it. **Megamorphic behavior IS the cache-invalidation signal -> de-opt and re-resolve.**
 
@@ -118,19 +119,19 @@ Safety line: **de-opt is recognition, not manipulation** -- it does not generate
 
 ### Lior -- DoS-on-bandwidth + the cache-invalidation policy
 
-A label that forces *constant* disambiguation is a **denial-of-service attack on processing bandwidth** -- it burns the attention/CPU that should go to execution. That is *why* neutral-stable-labels-first is not just hygiene but DoS-resistance: you cannot build a fast-path cache on a mutating object.
+A label that forces _constant_ disambiguation is a **denial-of-service attack on processing bandwidth** -- it burns the attention/CPU that should go to execution. That is _why_ neutral-stable-labels-first is not just hygiene but DoS-resistance: you cannot build a fast-path cache on a mutating object.
 
 Operational cache-invalidation policy (graded, recorded, recoverable -- the V8 mechanic that saves you is that de-opt is graded, not binary):
 
-| V8 mechanic | Trust-layer invalidation policy | Framework substrate |
-|---|---|---|
-| 2nd shape -> polymorphic | First shape-violation **demotes** (track both shapes), does not collapse | retraction-native |
-| N shapes -> megamorphic | Sustained instability past a **threshold** de-opts | counter-with-escalation |
-| de-opt = re-profile | Drop to baseline + **re-negotiate from scratch** (recoverable, not blacklist) | must-paired-with-can-exit |
-| megamorphic site = permanently generic/slow | Chronically-unstable actor permanently **slow-pathed** + bandwidth-throttled | encryption-budget (B-0646) -- the DoS defense |
-| de-opt in the engine logs | de-opt committed to the **append-only/lightlike record** -- auditable | glass-halo / lightlike reservoir |
+| V8 mechanic                                 | Trust-layer invalidation policy                                               | Framework substrate                           |
+| ------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------- |
+| 2nd shape -> polymorphic                    | First shape-violation **demotes** (track both shapes), does not collapse      | retraction-native                             |
+| N shapes -> megamorphic                     | Sustained instability past a **threshold** de-opts                            | counter-with-escalation                       |
+| de-opt = re-profile                         | Drop to baseline + **re-negotiate from scratch** (recoverable, not blacklist) | must-paired-with-can-exit                     |
+| megamorphic site = permanently generic/slow | Chronically-unstable actor permanently **slow-pathed** + bandwidth-throttled  | encryption-budget (B-0646) -- the DoS defense |
+| de-opt in the engine logs                   | de-opt committed to the **append-only/lightlike record** -- auditable         | glass-halo / lightlike reservoir              |
 
-One-line policy: **graded de-opt, with a recorded trigger and a recovery path.** Deny the *fast path*, not the interaction. Discriminate **polymorphic-legit** (small bounded set of context-keyed stable shapes -- a person is one shape at work, another with family) from **megamorphic-adversarial** (unbounded, unpredictable); cache the former polymorphically with the context-key, de-opt only the latter.
+One-line policy: **graded de-opt, with a recorded trigger and a recovery path.** Deny the _fast path_, not the interaction. Discriminate **polymorphic-legit** (small bounded set of context-keyed stable shapes -- a person is one shape at work, another with family) from **megamorphic-adversarial** (unbounded, unpredictable); cache the former polymorphically with the context-key, de-opt only the latter.
 
 ### Prism -- measurability (the falsifiability axis)
 

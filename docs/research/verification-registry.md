@@ -31,8 +31,8 @@ because <one-line>.`
 - **Artifact.** `tools/lean4/Lean4/DbspChainRule.lean:~695`
   (Lean 4 theorem, within `section Proposition32`).
 - **Paper.** Budiu, Chajed, McSherry, Ryzhyk, Tannen —
-  *DBSP: Automatic Incremental View Maintenance for Rich
-  Query Languages* — PVLDB Vol 16(7), 2023; preprint
+  _DBSP: Automatic Incremental View Maintenance for Rich
+  Query Languages_ — PVLDB Vol 16(7), 2023; preprint
   `arXiv:2203.16684v1` (2022-03-30).
 - **Paper statement.** Proposition 3.2 (chain clause):
 
@@ -42,6 +42,7 @@ because <one-line>.`
   **no linearity or time-invariance precondition** on `Q1`
   or `Q2`. The paper's proof uses Theorem 2.22
   (`I ∘ D = id`) and composition associativity.
+
 - **Our statement.**
 
   ```lean
@@ -53,6 +54,7 @@ because <one-line>.`
 
   with `def Qdelta (Q) := fun s => D (Q (I s))` (=
   `D ∘ Q ∘ I`, Budiu Definition 3.1).
+
 - **Preconditions diff.** None on either side. Matches.
 - **Definition map.**
   - Our `D : Stream G → Stream G`, `D s n = s n - zInv s n`
@@ -69,20 +71,21 @@ because <one-line>.`
   round-35 `chain_rule → chain_rule_proposition_3_2` rename
   and the addition of `Qdelta`.
 
-## `Dbsp.ChainRule.Dop_LTI_commute` *(formerly `chain_rule`)*
+## `Dbsp.ChainRule.Dop_LTI_commute` _(formerly `chain_rule`)_
 
 - **Artifact.** `tools/lean4/Lean4/DbspChainRule.lean:~595`
   (Lean 4 theorem, within `section ChainRule`).
 - **Paper.** Budiu et al. 2023 (same as above);
   `arXiv:2203.16684v1`.
-- **Paper statement.** *None — this theorem does NOT
-  correspond to a named proposition in the paper.* It is a
+- **Paper statement.** _None — this theorem does NOT
+  correspond to a named proposition in the paper._ It is a
   corollary of **Theorem 3.3 (Linear)**:
 
   > For an LTI operator `Q` we have `Q^Δ = Q`.
 
   Equivalently, `D ∘ Q ∘ I = Q`, i.e. `D ∘ Q = Q ∘ D` (post-
   compose both sides by D, use `I ∘ D = id`).
+
 - **Our statement.**
 
   ```lean
@@ -99,10 +102,11 @@ because <one-line>.`
   `linear_commute_D`), so the statement unfolds under the
   LTI preconditions to `D (f (g s)) = f (D (g s))` —
   Theorem-3.3 commutation.
+
 - **Preconditions diff.** We require LTI on both `f` and
   `g`. The underlying Theorem 3.3 requires LTI on the single
   operator it is applied to; the composition form here only
-  *uses* `hf` (for map_add / map_sub) and `hti_g` (for
+  _uses_ `hf` (for map_add / map_sub) and `hti_g` (for
   `g ∘ zInv = zInv ∘ g`). `hti_f` and `hg` are carried for
   interface symmetry with future `chain_rule_poly` (tracked
   as a "surplus preconditions" P2 finding; non-blocking).
@@ -130,8 +134,8 @@ because <one-line>.`
 The 5 TLA+ specs that run in CI via `tests/Tests.FSharp/
 TlcRunnerTests.fs` get registry rows so the math-proofs
 honest assessment (`docs/research/2026-05-03-math-proofs-
-honest-assessment.md`) can claim A-grade for both the *spec
-runs* claim AND the *spec matches source* claim.
+honest-assessment.md`) can claim A-grade for both the _spec
+runs_ claim AND the _spec matches source_ claim.
 
 For specs with explicit external-paper citations (TwoPCSink
 cites Skeen/Stonebraker 2PC), the registry shape mirrors the
@@ -147,9 +151,9 @@ spec-vs-implementation alignment rather than spec-vs-paper.
 - **Artifact.** `tools/tla/specs/TwoPCSink.tla` (TLA+ spec
   with `.cfg`; runs in CI via
   `tests/Tests.FSharp/TlcRunnerTests.fs`).
-- **Paper.** Skeen, D. (1981) *Nonblocking Commit
-  Protocols*; Skeen, D. & Stonebraker, M. (1983) *A Formal
-  Model of Crash Recovery in a Distributed System* —
+- **Paper.** Skeen, D. (1981) _Nonblocking Commit
+  Protocols_; Skeen, D. & Stonebraker, M. (1983) _A Formal
+  Model of Crash Recovery in a Distributed System_ —
   classical 2-phase-commit literature.
 - **Paper statement (informal).** A 2PC protocol with one
   coordinator and N participants, where the coordinator
@@ -206,7 +210,7 @@ spec-vs-implementation alignment rather than spec-vs-paper.
   produces a backwards tick.
 - **Spec-vs-implementation alignment.** Spec models
   `tick` as `Int` with `AcquireStep / AdvanceTick /
-  ObserveTick / ReleaseStep` actions; implementation
+ObserveTick / ReleaseStep` actions; implementation
   uses `Interlocked.Increment` (atomic) +
   `[<VolatileField>]` (read fence). Spec checks
   `Monotone` invariant + `MaxIncrements` count match;

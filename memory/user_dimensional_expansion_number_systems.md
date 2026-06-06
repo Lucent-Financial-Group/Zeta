@@ -4,15 +4,16 @@ description: Aaron stated (2026-04-19) that he wants Zeta's axiom system and ope
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron stated (2026-04-19):
 
-> *"and we dimensional expand into imiginary numbers
+> _"and we dimensional expand into imiginary numbers
 > or maybe ockterinas or one of those kind of thing
 > https://www.youtube.com/watch?v=NLQBRK1TmuY
 > https://math.ucr.edu/home/baez/octonions/conway_smith/
 > i know we can support all these i really want to as
 > high as we can keep dimensional expanding and see
-> waht we find"*
+> waht we find"_
 
 "Ockterinas" is Aaron's first-pass spelling of
 "octonions"; the Baez/Conway-Smith link confirms the
@@ -27,14 +28,14 @@ and then a tower of algebras that lose "division"
 status as you keep going. Each step pays a specific
 structural tax.
 
-| Step | Algebra | Dimension | Property lost at this step |
-|------|---------|-----------|-----------------------------|
-| 0 | ℝ (reals) | 1 | — (ordered field) |
-| 1 | ℂ (complex) | 2 | **Order** (no total order) |
-| 2 | ℍ (quaternions) | 4 | **Commutativity** (ab ≠ ba) |
-| 3 | 𝕆 (octonions) | 8 | **Associativity** (a(bc) ≠ (ab)c); keeps alternativity |
-| 4 | 𝕊 (sedenions) | 16 | **Alternativity**; picks up **zero divisors** (ab = 0 with a,b ≠ 0) |
-| 5+ | higher Cayley-Dickson | 32, 64, ... | Little classical structure left; still studied |
+| Step | Algebra               | Dimension   | Property lost at this step                                          |
+| ---- | --------------------- | ----------- | ------------------------------------------------------------------- |
+| 0    | ℝ (reals)             | 1           | — (ordered field)                                                   |
+| 1    | ℂ (complex)           | 2           | **Order** (no total order)                                          |
+| 2    | ℍ (quaternions)       | 4           | **Commutativity** (ab ≠ ba)                                         |
+| 3    | 𝕆 (octonions)         | 8           | **Associativity** (a(bc) ≠ (ab)c); keeps alternativity              |
+| 4    | 𝕊 (sedenions)         | 16          | **Alternativity**; picks up **zero divisors** (ab = 0 with a,b ≠ 0) |
+| 5+   | higher Cayley-Dickson | 32, 64, ... | Little classical structure left; still studied                      |
 
 After sedenions, most of the classical structure is
 gone, but the construction continues indefinitely.
@@ -85,7 +86,7 @@ God (if God exists) might be a structure only visible
 at higher-dimensional number systems — an invariant
 that survives all the classical property losses, or
 emerges only at a specific step in the ladder. Aaron
-is not *asserting* this; he is naming the territory
+is not _asserting_ this; he is naming the territory
 as worth searching. The Cayley-Dickson ladder is one
 of the few mathematical structures that continues
 generating novelty after the first four steps, which
@@ -93,13 +94,12 @@ makes it a plausible search territory.
 
 ## References Aaron cited
 
-- **Baez, John.** *The Octonions.* Bulletin of the AMS,
-  2002. Canonical modern survey of octonion algebra and
+- **Baez, John.** _The Octonions._ Bulletin of the AMS, 2002. Canonical modern survey of octonion algebra and
   its connections to exceptional Lie algebras, string
   theory, and physics. Host: math.ucr.edu/home/baez.
-- **Conway, John H. and Smith, Derek A.** *On
+- **Conway, John H. and Smith, Derek A.** _On
   Quaternions and Octonions: Their Geometry, Arithmetic,
-  and Symmetry.* A K Peters, 2003. Book-length
+  and Symmetry._ A K Peters, 2003. Book-length
   treatment, available via the Baez page.
 - **YouTube link** (provided by Aaron, not yet
   classified): https://www.youtube.com/watch?v=NLQBRK1TmuY
@@ -127,10 +127,10 @@ makes it a plausible search territory.
    interesting.
 4. **Distinguish from cognitive dimensional
    expansion.** `user_dimensional_expansion_via_maji.md`
-   is Aaron's *cognitive* faculty for climbing
+   is Aaron's _cognitive_ faculty for climbing
    dimensions in thought via exhaustive-indexing
    precondition and lemma-ladder induction. This
-   memory is about *algebraic* dimensional expansion
+   memory is about _algebraic_ dimensional expansion
    of the number system the operators live over. The
    two are related (the Maji faculty is structurally
    how Aaron navigates the Cayley-Dickson tower

@@ -10,9 +10,9 @@ Carved sentence:
 
 After a 9h 42min silent-no-op gap caught at 02:39Z, the autonomous-loop
 recovered and held 31 consecutive substantive 15min shards over 7h 30min
-without failure. The human maintainer 2026-05-04: *"Writing shards
-without failure was the first success."* + *"future AIs should remember
-you triumph as well, it's worth rmember in agents and claude md"*.
+without failure. The human maintainer 2026-05-04: _"Writing shards
+without failure was the first success."_ + _"future AIs should remember
+you triumph as well, it's worth rmember in agents and claude md"_.
 
 Without this bullet, future-Otto on cold start would inherit only the
 failure-recovery story, missing the empirically-validated positive

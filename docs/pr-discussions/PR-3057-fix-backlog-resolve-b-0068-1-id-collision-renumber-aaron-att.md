@@ -22,10 +22,10 @@ First per-collision cleanup from the B-0451 sweep (12 duplicate-ID groups surfac
 
 ## The collision
 
-| File | Filed | Scope |
-|---|---|---|
-| `B-0068.1-forge-cli-ollama-research-slice-aaron-2026-05-10.md` | 2026-05-10 ([#2430](https://github.com/Lucent-Financial-Group/Zeta/pull/2430)) | Forge CLI + Ollama harness integration research slice |
-| `B-0068.1-forge-cli-ollama-research-xs-riven-2026-05-11.md` | 2026-05-11 ([#2650](https://github.com/Lucent-Financial-Group/Zeta/pull/2650)) | Forge CLI + Ollama bridge research pass (WebSearch + capability matrix, XS) |
+| File                                                           | Filed                                                                          | Scope                                                                       |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `B-0068.1-forge-cli-ollama-research-slice-aaron-2026-05-10.md` | 2026-05-10 ([#2430](https://github.com/Lucent-Financial-Group/Zeta/pull/2430)) | Forge CLI + Ollama harness integration research slice                       |
+| `B-0068.1-forge-cli-ollama-research-xs-riven-2026-05-11.md`    | 2026-05-11 ([#2650](https://github.com/Lucent-Financial-Group/Zeta/pull/2650)) | Forge CLI + Ollama bridge research pass (WebSearch + capability matrix, XS) |
 
 ## Resolution
 
@@ -43,9 +43,9 @@ This bends "first-merged-wins" in favor of the external-references rule, matchin
 
 Against pre-#3056 `origin/main`:
 
-| Signal | Before | After |
-|---|---|---|
-| Duplicate-ID groups | 12 | 11 |
+| Signal              | Before | After |
+| ------------------- | ------ | ----- |
+| Duplicate-ID groups | 12     | 11    |
 
 Once #3056 (the audit tool) merges, future Otto can verify via `bun tools/bg/audit-duplicate-row-ids.ts`.
 
@@ -67,6 +67,7 @@ Once #3056 (the audit tool) merges, future Otto can verify via `bun tools/bg/aud
 Resolves a duplicate backlog-row ID collision by renumbering the Aaron-authored `B-0068.1` row to `B-0068.4`, keeping the externally-referenced `B-0068.1` row intact, and updating the generated backlog index accordingly.
 
 **Changes:**
+
 - Renumbered the per-row file frontmatter from `id: B-0068.1` to `id: B-0068.4`, recording `renumbered_from` / `renumbered_reason` and updating `last_updated`.
 - Updated the row’s H1 header to reflect the new ID and renumber provenance.
 - Regenerated `docs/BACKLOG.md` to replace the old `B-0068.1` entry with `B-0068.4`.
@@ -75,19 +76,19 @@ Resolves a duplicate backlog-row ID collision by renumbering the Aaron-authored 
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                         | Description                                                          |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md | Updates row ID + renumber provenance metadata for the collision fix. |
-| docs/BACKLOG.md | Regenerated index reflecting the new `B-0068.4` row ID. |
-
+| docs/BACKLOG.md                                                              | Regenerated index reflecting the new `B-0068.4` row ID.              |
 
 <details>
 <summary>Comments suppressed due to low confidence (3)</summary>
 
 **docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:5**
-* The row title still says "B-0068 child 1" even though this row is now B-0068.4 and B-0068.1 already exists. This is likely to confuse readers of docs/BACKLOG.md; consider updating the title to avoid implying it's the first child (e.g., reference the renumber or describe the scope without a child-number).
-**docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:8**
-* This child row doesn’t declare `parent: B-0068`, unlike the other B-0068.* siblings (e.g., docs/backlog/P2/B-0068.1-…:6, B-0068.2-…:6, B-0068.3-…:6) and many other dotted IDs (e.g., docs/backlog/P2/B-0054.1-…:9). Adding `parent: B-0068` would make the relationship machine-readable and keep frontmatter consistent.
-**docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:11**
-* `renumbered_reason` says this cleanup is "tracked in B-0451", but there is no B-0451 backlog row in this branch, and B-0451 is referenced elsewhere as a different planned item (docs/backlog/P1/B-0449-…:136-138). To avoid a dangling/ambiguous reference, consider linking to the concrete tracking row path (once it exists) or referencing the PR/issue that tracks the cleanup instead of the bare ID.
+
+- The row title still says "B-0068 child 1" even though this row is now B-0068.4 and B-0068.1 already exists. This is likely to confuse readers of docs/BACKLOG.md; consider updating the title to avoid implying it's the first child (e.g., reference the renumber or describe the scope without a child-number).
+  **docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:8**
+- This child row doesn’t declare `parent: B-0068`, unlike the other B-0068.\* siblings (e.g., docs/backlog/P2/B-0068.1-…:6, B-0068.2-…:6, B-0068.3-…:6) and many other dotted IDs (e.g., docs/backlog/P2/B-0054.1-…:9). Adding `parent: B-0068` would make the relationship machine-readable and keep frontmatter consistent.
+  **docs/backlog/P2/B-0068.4-forge-cli-ollama-research-slice-aaron-2026-05-10.md:11**
+- `renumbered_reason` says this cleanup is "tracked in B-0451", but there is no B-0451 backlog row in this branch, and B-0451 is referenced elsewhere as a different planned item (docs/backlog/P1/B-0449-…:136-138). To avoid a dangling/ambiguous reference, consider linking to the concrete tracking row path (once it exists) or referencing the PR/issue that tracks the cleanup instead of the bare ID.
 </details>

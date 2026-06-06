@@ -1,8 +1,8 @@
 # Research: making BFT oracle/compiler summons + `observe.ts` first-class in workflow DUs (design space)
 
-**Status:** research / design-space exploration (input to B-0948). Operator 2026-05-31: *"workflow
+**Status:** research / design-space exploration (input to B-0948). Operator 2026-05-31: _"workflow
 DUs should have BFT compiler summons and observe.ts first class somehow — this prob needs a bit of
-research to get clean and backlog."* This doc maps the design space + open questions so the
+research to get clean and backlog."_ This doc maps the design space + open questions so the
 abstraction can be made clean before implementation; it is NOT a locked design.
 
 **Attribution:** the goal is the operator's; the design-space mapping is Otto-CLI's. For operator +
@@ -24,7 +24,7 @@ lifecycle, etc.) should carry, **by construction (first-class), not bolted on pe
 - **The `observe.ts` keystone** (`agentic-organization/.../OBSERVE_COMPOSER_AND_RUN_STATE.md`;
   `packages/application/src/observe.ts`): `observe(snapshot, deps)` (pure) -> readout of phase +
   legal options at `RunScope`, filtered by `DeterministicRule` vetoes; `ObserveResult = readout |
-  feedback` (`Result<T, TFeedback>`); the memoryless composer; `decide()` rejects illegal picks.
+feedback` (`Result<T, TFeedback>`); the memoryless composer; `decide()` rejects illegal picks.
 - **Summonable BFT** (B-0944): N independent oracles agree => consensus; **compilers are
   non-Byzantine** ("compilers don't lie"); the four-language tri-boolean ballot is the canonical
   instance; `Tri = T | F | N` is the per-cell consensus result (agree-true / agree-false / held).
@@ -46,10 +46,10 @@ BFT-summons uniform first-class properties of a workflow DU**, composing the abo
 A "summon" is not one thing. Two classes, with different fault models + cost, and the clean design
 must type them distinctly:
 
-| Oracle class | Example | Fault model | Validates | Cost / latency |
-|---|---|---|---|---|
-| **Compiler summon** (non-Byzantine) | the 4 language compilers (B-0944); a type-checker; a formal verifier (TLA+/Z3/Lean) | cannot lie — compiles or not | **structural / type-level / invariant** validity of a transition or the spec | slow-ish, deterministic, exact |
-| **LLM summon** (Byzantine-tolerant via quorum) | N summoned local small LLMs (the self-recursive observe) | individually fallible; consensus over quorum | **semantic / contextual** validity of an option/label/availability | fast, probabilistic, quorum-joined |
+| Oracle class                                   | Example                                                                             | Fault model                                  | Validates                                                                    | Cost / latency                     |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------- |
+| **Compiler summon** (non-Byzantine)            | the 4 language compilers (B-0944); a type-checker; a formal verifier (TLA+/Z3/Lean) | cannot lie — compiles or not                 | **structural / type-level / invariant** validity of a transition or the spec | slow-ish, deterministic, exact     |
+| **LLM summon** (Byzantine-tolerant via quorum) | N summoned local small LLMs (the self-recursive observe)                            | individually fallible; consensus over quorum | **semantic / contextual** validity of an option/label/availability           | fast, probabilistic, quorum-joined |
 
 A clean workflow-DU contract must let a transition/option declare **which oracle class** establishes
 its validity (some are structural -> compiler-summon; some are semantic -> LLM-summon; some are
@@ -57,11 +57,11 @@ governance -> the ≥3-agent gate). Conflating them is the mess the research mus
 
 ## Where do summons + observe attach? (three layers)
 
-| Layer | What it gates | First-class mechanism |
-|---|---|---|
-| **Transition** (state -> state) | is this transition legal/valid? | **compiler-summon** for structural validity (the transition's spec compiles in N langs) + `DeterministicRule` vetoes |
-| **Option availability** (per-option `Tri`) | is this option `T`/`F`/`N` right now? | **LLM-summon + BFT-join** (the self-recursive observe): agree -> `T`/`F`, disagree -> `N` |
-| **Constitution** (the rule-sets observe applies) | should this rule-set be adopted? | the **≥3-agent ratification gate** (already exists) |
+| Layer                                            | What it gates                         | First-class mechanism                                                                                                |
+| ------------------------------------------------ | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Transition** (state -> state)                  | is this transition legal/valid?       | **compiler-summon** for structural validity (the transition's spec compiles in N langs) + `DeterministicRule` vetoes |
+| **Option availability** (per-option `Tri`)       | is this option `T`/`F`/`N` right now? | **LLM-summon + BFT-join** (the self-recursive observe): agree -> `T`/`F`, disagree -> `N`                            |
+| **Constitution** (the rule-sets observe applies) | should this rule-set be adopted?      | the **≥3-agent ratification gate** (already exists)                                                                  |
 
 `observe(state, scope)` is the read that surfaces all three: the readout's options carry their
 `Tri` availability (option layer) under the legal transitions (transition layer) within the ratified
@@ -75,20 +75,20 @@ ratification):
 - **Option 1 — typeclass / interface (`IWorkflowDU`).** Every workflow DU implements a contract:
   `observe(state, scope) -> ObserveResult` + a declared `oracleClass` per transition. Uniform,
   enforced by the type system. F# (interface/SRTP) + TS (interface) + the cross-language ballot.
-  *Pro:* clean, compiler-enforced uniformity. *Con:* boilerplate per DU unless derived.
+  _Pro:_ clean, compiler-enforced uniformity. _Con:_ boilerplate per DU unless derived.
 - **Option 2 — DU-of-DUs / wrapper (`Observable<WorkflowDU>`).** A generic wrapper that adds observe
-  + summon machinery around any state DU (the state DU stays pure; the wrapper carries the
-  summon/observe). *Pro:* state DUs stay minimal; observe/summon is one reusable layer. *Con:* the
-  wrapper must know each DU's transition table.
+  - summon machinery around any state DU (the state DU stays pure; the wrapper carries the
+    summon/observe). _Pro:_ state DUs stay minimal; observe/summon is one reusable layer. _Con:_ the
+    wrapper must know each DU's transition table.
 - **Option 3 — effect/algebra (OPLE-native).** Make `observe` + `summon` + `join` OPLE primitives
   (Observe + a new Summon/Join), so a workflow is expressed in the OPLE algebra and observe/summons
-  are first-class *operations* not per-DU methods. Composes with B-0862 (OPLE-T-TFeedback) +
-  monad-propagation. *Pro:* most uniform + composable; recursion falls out naturally. *Con:* most
+  are first-class _operations_ not per-DU methods. Composes with B-0862 (OPLE-T-TFeedback) +
+  monad-propagation. _Pro:_ most uniform + composable; recursion falls out naturally. _Con:_ most
   design work; needs the OPLE substrate landed first (B-0862 open).
 - **Option 4 — spec-to-code generation.** Define a workflow DU + its oracle-class annotations once in
   a spec; generate the observe + summon harness in TS/F#/C#/Rust (the monad-propagation
-  cross-language-shape discipline). *Pro:* the four-compiler ballot is automatic; one spec, four
-  oracles. *Con:* needs the generator.
+  cross-language-shape discipline). _Pro:_ the four-compiler ballot is automatic; one spec, four
+  oracles. _Con:_ needs the generator.
 
 Likely clean answer: **Option 3 (OPLE algebra) as the substrate + Option 1 (typeclass) as the
 surface + Option 4 (gen) for the cross-language ballot** — but that is exactly the research call to
@@ -109,7 +109,7 @@ make with Max.
 6. **Cost on the local single-node deployment.** Many compiler-summons on one USB node is expensive;
    which summons are cached / precomputed / skipped on the sovereign deployment vs the cluster?
 7. **Mapping to existing keystone code.** How this lands against `packages/application/src/observe.ts`
-   + the agent-loop F# DU canon without forking them.
+   - the agent-loop F# DU canon without forking them.
 
 ## Composes with
 

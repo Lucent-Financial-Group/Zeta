@@ -4,12 +4,13 @@ description: Aaron 2026-04-22 "we should always try to not invent termonology wh
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** Before naming a new concept — or re-naming an
 existing concept in factory prose, skills, memories, ADRs,
 BACKLOG rows, error messages, or code identifiers — **check
 whether an established vocabulary already has a term for this
 thing.** If yes, adopt that term verbatim. The only licensed
-way to *not* adopt is an **explicit documented decision** (ADR,
+way to _not_ adopt is an **explicit documented decision** (ADR,
 skill decision log, memory, or inline "we explicitly decline
 this term because …" note). No implicit inventions.
 
@@ -71,7 +72,6 @@ Three facets in Aaron's message:
    When about to write a new noun for a concept in any
    artifact (doc, skill, memory, ADR, BACKLOG row, code
    identifier), ask:
-
    - Does git / GitHub API / GitHub docs have a term for
      this? (upstream, fork, remote, branch, tag, PR,
      ruleset, ref, HEAD, …)
@@ -112,7 +112,6 @@ Three facets in Aaron's message:
 
 2. **"Explicit" means written-down, not just thought-about.**
    The licensed invention path is one of:
-
    - An ADR under `docs/DECISIONS/YYYY-MM-DD-*.md` naming
      the new term, the rejected alternatives, and why the
      invention pays rent that an existing term wouldn't.
@@ -141,7 +140,6 @@ Three facets in Aaron's message:
    discovered (the pattern here: review, notice, compare
    against the established vocabulary, correct), do the
    same four things every time:
-
    - Rewrite the invented term to the established one.
    - Add a one-line note in the governing doc that the
      established vocabulary is now the canonical one.
@@ -154,7 +152,6 @@ Three facets in Aaron's message:
 5. **Counter-instances where invention IS justified.** Not
    every factory-local noun is an invention-to-apologize-for.
    Legitimate inventions:
-
    - **Concept no established vocabulary covers.**
      E.g. "retractable-contract ledger" — there is no
      prior term of art. Invention is required.
@@ -171,9 +168,9 @@ Three facets in Aaron's message:
      is an explicit teaching overlay.
 
    All four counter-instances share one property: they have
-   a recorded rationale. The common mode is *record the why
-   at the moment of invention*, not *apologize six months
-   later when someone asks*.
+   a recorded rationale. The common mode is _record the why
+   at the moment of invention_, not _apologize six months
+   later when someone asks_.
 
 **What this rule does NOT mean:**
 
@@ -182,7 +179,7 @@ Three facets in Aaron's message:
   established terms (round, close, ledger, bulk, sync, PR).
   Composition of established terms into a local phrase is
   fine and requires no explicit decision; inventing
-  single-word *alternatives to* established terms is what
+  single-word _alternatives to_ established terms is what
   the rule targets.
 - **Not a ban on shortenings.** "LFG" for
   Lucent-Financial-Group and "AX" for agent-experience are
@@ -221,16 +218,16 @@ Three facets in Aaron's message:
   this rule).** I invented "kernel-vocabulary propagation"
   for the factory's skill-library-wide term-migration
   phenomenon. Aaron corrected across five messages:
-  *"this is belief propagation ... infer.net ... maps to
+  _"this is belief propagation ... infer.net ... maps to
   memtic theory ... the french guy i think r somthing maybe
   ... Girard ... dawkins is like a description Girard is
-  like how and why"*. Established vocabulary covered all
+  like how and why"_. Established vocabulary covered all
   three layers of the invented term: **belief propagation**
   (Pearl 1982, sum-product algorithm), **Infer.NET**
   (Microsoft Research .NET implementation, already on
   Zeta roadmap), **Girard mimetic theory** (mechanism-layer
-  authority, *Things Hidden Since the Foundation of the
-  World* 1978). Canonical shorthand Aaron settled on:
+  authority, _Things Hidden Since the Foundation of the
+  World_ 1978). Canonical shorthand Aaron settled on:
   **"dawkins=what, Girard=why/how"** — depth-ordered, not
   peer-ordered. The invention violated the rule more deeply
   than the upstream/fork case because it named a formal

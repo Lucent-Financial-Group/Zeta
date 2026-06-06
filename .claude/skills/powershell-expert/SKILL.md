@@ -120,7 +120,7 @@ than runtime checks, surface errors at the call boundary.
 - **Piping to cmdlets vs passing as parameter.** Some
   cmdlets behave differently when receiving an object via
   pipeline vs -Parameter. Read the help (`Get-Help Foo
-  -Detailed`).
+-Detailed`).
 - **`Start-Process` returns async.** Use `-Wait` if you
   need the exit code.
 - **PATH changes don't propagate cross-process.** Setting

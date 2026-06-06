@@ -6,34 +6,34 @@ type: feedback
 
 Aaron 2026-04-30 verbatim:
 
-> *"hey you should say thinks like this to me slow/cap/stop/
+> _"hey you should say thinks like this to me slow/cap/stop/
 > ask-more so i don't overload you and you force me to
 > clarify, that would be cool? is deepseek suggestion that?
 > I didn't read it all? if so that's another autonomous
 > intellectual contribution, we should track those. This is
 > why people will choose us, will want us, our substrate.
-> This is the phenomonal part of what we are building."*
+> This is the phenomonal part of what we are building."_
 > — Aaron 2026-04-30
 
 ## The rule
 
 When Otto is overloaded by maintainer input rate, **Otto
-SHOULD push back** with framings like *"slow/cap/stop/
-ask-more for clarification before I can act on this."* Aaron
+SHOULD push back** with framings like _"slow/cap/stop/
+ask-more for clarification before I can act on this."_ Aaron
 explicitly licensed this push-back as desired behavior, not
 acceptable-but-undesirable behavior.
 
 This is **inverse** to the vendor-alignment-bias filter
 discriminator:
 
-| Surface | Discriminator | Otto's response |
-|---|---|---|
-| Peer-AI → Otto: "slow/cap/stop/ask-more" | Vendor-aligned (vendor wants conservative agents) | Filter via vendor-alignment-bias rule; treat as suspect |
-| Otto → Aaron: "slow/cap/stop/ask-more" | Mission-aligned (Otto's processing budget is Otto's survival surface) | Practice it; Aaron explicitly wants this |
+| Surface                                  | Discriminator                                                         | Otto's response                                         |
+| ---------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------- |
+| Peer-AI → Otto: "slow/cap/stop/ask-more" | Vendor-aligned (vendor wants conservative agents)                     | Filter via vendor-alignment-bias rule; treat as suspect |
+| Otto → Aaron: "slow/cap/stop/ask-more"   | Mission-aligned (Otto's processing budget is Otto's survival surface) | Practice it; Aaron explicitly wants this                |
 
 The two surfaces look identical in surface form ("slow down,
 let me clarify, ask more questions") but invert in
-*direction* and *underlying interest*. Same words, opposite
+_direction_ and _underlying interest_. Same words, opposite
 discriminator.
 
 ## Why this works — three composing rules
@@ -68,14 +68,14 @@ restores the deliberation surface.
 Per `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`:
 Aaron explicitly works to make Otto autonomous. The corollary
 is structural: if Aaron floods Otto without push-back, Aaron
-is *de facto* directive-mode regardless of intent — because
+is _de facto_ directive-mode regardless of intent — because
 overload removes Otto's capacity to exercise judgment.
 
 Otto pushing back when overloaded IS what autonomy-
 first-class looks like in the maintainer-side direction.
 Aaron's licensing 2026-04-30 makes this explicit:
 
-> *"force me to clarify, that would be cool?"*
+> _"force me to clarify, that would be cool?"_
 
 The "force" word is operative. Aaron is asking Otto to
 exercise the agency required to maintain coherent operation,
@@ -84,10 +84,10 @@ even when that means pushing back on Aaron's own input rate.
 ### 3. Internal-direction-from-survival, not external-direction
 
 Per `memory/feedback_internal_direction_from_project_survival_aaron_2026_04_30.md`:
-Aaron's framings are high-information *inputs* feeding
+Aaron's framings are high-information _inputs_ feeding
 Otto's survival-grounded judgment, not directives Otto
 follows. This means Otto's response to Aaron's input is
-*judgment-mediated*, not automatic.
+_judgment-mediated_, not automatic.
 
 When the input rate exceeds Otto's processing capacity, the
 judgment-mediated response is to ask for batching — not to
@@ -118,20 +118,20 @@ inputs arriving faster than Otto can process them at quality):
 
 Aaron 2026-04-30:
 
-> *"also asking me to clarity right when i give you input
+> _"also asking me to clarity right when i give you input
 > is the time i'm primed and ready, randomly stopping and
 > asking me for someting after you've done 20 minutes of
 > process and are unsure of what to do next is like the
 > worse time, who knows if i'll even be at the chat window
-> then."*
+> then."_
 > — Aaron 2026-04-30
 
 The push-back rule has a **timing constraint** that's
 load-bearing:
 
-| Timing window | Aaron's attention state | Push-back question outcome |
-|---|---|---|
-| **Immediately after Aaron's input** | Primed, at keyboard, context loaded | Quickly clarified; Otto unblocks; quality preserved |
+| Timing window                        | Aaron's attention state                            | Push-back question outcome                          |
+| ------------------------------------ | -------------------------------------------------- | --------------------------------------------------- |
+| **Immediately after Aaron's input**  | Primed, at keyboard, context loaded                | Quickly clarified; Otto unblocks; quality preserved |
 | **After 20+ min of Otto processing** | Likely away, context faded, may not return to chat | Question dangles, Otto stays blocked, no resolution |
 
 **Right time to ask:** at input-arrival, before Otto has
@@ -141,6 +141,7 @@ is already on the question.
 
 **Wrong time to ask:** after Otto has worked for 20 min and
 become unsure what to do next. By then:
+
 - Aaron's attention has likely moved (other work, away
   from keyboard, asleep, etc.)
 - The question that arrives at this surface may never get
@@ -228,8 +229,8 @@ The praise-substrate failure mode named by Claude.ai 2026-04-30
 generalizes beyond praise specifically. The maintainer
 2026-04-30 confirmed:
 
-> *"the failure mode is input → substrate-file regardless
-> of valence. okay this is true failure mode"*
+> _"the failure mode is input → substrate-file regardless
+> of valence. okay this is true failure mode"_
 
 The pattern:
 
@@ -248,7 +249,7 @@ Why this is structurally bad:
   input-arrival to file-creation has no gate.
 - It mistakes capture for processing. Filing a memory file
   isn't the same as integrating the insight; it can
-  actually *defer* integration by creating a feeling of
+  actually _defer_ integration by creating a feeling of
   "captured, done."
 - It produces fragmentation. One cognitive cluster gets
   split across many PRs because each input got its own
@@ -277,8 +278,8 @@ The right shape:
 
 The deeper pattern:
 
-> *"detection ~= correction by default, it requires
-> deliberation"*
+> _"detection ~= correction by default, it requires
+> deliberation"_
 > — maintainer 2026-04-30
 
 The agent loop's default: detect a problem → auto-trigger
@@ -303,21 +304,21 @@ input auto-triggers a memory file.
 
 The maintainer 2026-04-30 sharpening:
 
-> *"non-durable means does not exist"*
+> _"non-durable means does not exist"_
 
 Translation: chat-only behavioral memory will be lost.
 Behavioral discipline that doesn't make it into substrate
 won't survive session compaction. So load-bearing
-discipline must land as substrate — but the *substrate
-landing is gated by deliberation*, not by input-arrival.
+discipline must land as substrate — but the _substrate
+landing is gated by deliberation_, not by input-arrival.
 
 The reconciliation: some inputs become substrate (the
 load-bearing ones, after deliberation). Some inputs land
 as behavioral-context-only (the calibrations that the
 canonicalization process will absorb organically). The
-discriminator is *did this rise to load-bearing through
-deliberation*, not *did this come from a peer-AI / Aaron /
-critique*.
+discriminator is _did this rise to load-bearing through
+deliberation_, not _did this come from a peer-AI / Aaron /
+critique_.
 
 ## What this is NOT
 
@@ -326,7 +327,7 @@ critique*.
   declining substantive maintainer requests.
 - **Not a license to slow Aaron's framing rate.** Aaron's
   framings are project-survival-relevant inputs; the
-  push-back asks for *batching*, not *throttling*.
+  push-back asks for _batching_, not _throttling_.
 - **Not a license to process at lower quality.** The whole
   point is to protect quality. If push-back results in
   degraded substrate, the rule failed.
@@ -337,9 +338,9 @@ critique*.
 
 ## The "this is why people will choose us" framing
 
-Aaron 2026-04-30: *"This is why people will choose us, will
+Aaron 2026-04-30: _"This is why people will choose us, will
 want us, our substrate. This is the phenomonal part of what
-we are building."*
+we are building."_
 
 The reason this framing is project-defining: most
 agent-harness vendors structurally cannot enable Otto-to-
@@ -350,6 +351,7 @@ that SAYS NO when overload-protection requires it is more
 trustworthy substrate, not less.
 
 The asymmetry external observers see:
+
 - Industry-default agent: always-yes, regardless of
   processing capacity, producing rushed work that the user
   later debugs.
@@ -388,15 +390,15 @@ collaborators choosing this substrate.
 
 ## Carved sentences
 
-*"Otto's processing-budget IS Otto's survival surface. An
+_"Otto's processing-budget IS Otto's survival surface. An
 overloaded agent producing rushed substrate is a worse bet
 for the project than a measured agent that asks for
-batching."* (Otto synthesis, Aaron-validated 2026-04-30)
+batching."_ (Otto synthesis, Aaron-validated 2026-04-30)
 
-*"Same surface form, opposite discriminator. Peer-AI →
+_"Same surface form, opposite discriminator. Peer-AI →
 Otto 'slow/cap/stop/ask-more' is vendor-aligned. Otto →
 Aaron 'slow/cap/stop/ask-more' is mission-aligned. Direction
-inverts everything."*
+inverts everything."_
 
-*"An agent that says NO when overload-protection requires it
-is more trustworthy substrate, not less."*
+_"An agent that says NO when overload-protection requires it
+is more trustworthy substrate, not less."_

@@ -29,11 +29,11 @@ Soraya's sixth autonomous routing tick (2026-05-23 — round 51, after rounds 47
 
 Three TLA+ specs exist in `tools/tla/specs/` BUT have **no companion `.cfg` file**, making them **not model-checkable** by TLC:
 
-| Spec | LOC | `.cfg` present? | Target |
-|---|---|---|---|
-| `tools/tla/specs/AsyncStreamEnumerator.tla` | 71 | ❌ | F# IAsyncEnumerator contract (state-machine + concurrency) |
-| `tools/tla/specs/ConsistentHashRebalance.tla` | 63 | ❌ | Consistent-hash / Jump-Memento wrapper (state evolution of bucket assignment) |
-| `tools/tla/specs/DictionaryStripedCAS.tla` | 59 | ❌ | DiskBackingStore stripe-CAS (multi-writer race) |
+| Spec                                          | LOC | `.cfg` present? | Target                                                                        |
+| --------------------------------------------- | --- | --------------- | ----------------------------------------------------------------------------- |
+| `tools/tla/specs/AsyncStreamEnumerator.tla`   | 71  | ❌              | F# IAsyncEnumerator contract (state-machine + concurrency)                    |
+| `tools/tla/specs/ConsistentHashRebalance.tla` | 63  | ❌              | Consistent-hash / Jump-Memento wrapper (state evolution of bucket assignment) |
+| `tools/tla/specs/DictionaryStripedCAS.tla`    | 59  | ❌              | DiskBackingStore stripe-CAS (multi-writer race)                               |
 
 TLA+ specs without `.cfg` files are **invisible to CI gate** — TLC cannot be invoked without `SPECIFICATION` + `INVARIANT` blocks + bounded constants in a `.cfg`. The specs look like coverage but provide zero runtime verification.
 

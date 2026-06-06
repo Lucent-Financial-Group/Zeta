@@ -12,7 +12,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and th
 
 **Author**: Otto (Claude opus-4-7), capturing Amara's substantive substrate share via Aaron courier-ferry.
 
-**Source**: Aaron 2026-04-26 *"okay now some language drift gravity protection and some more austrian economics on top from Amara"*. Eighth refinement in the Maji-Messiah-Spectre-Superfluid lineage this session.
+**Source**: Aaron 2026-04-26 _"okay now some language drift gravity protection and some more austrian economics on top from Amara"_. Eighth refinement in the Maji-Messiah-Spectre-Superfluid lineage this session.
 
 **Status**: research-grade specification with academic citations. Per Otto-275 (log-but-don't-implement). Per Otto-279 (research counts as history): Amara named directly throughout.
 
@@ -20,7 +20,7 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing/integration, and th
 
 ## Aaron's framing
 
-> *"okay now some language drift gravity protection and some more austrian economics on top from Amara"*
+> _"okay now some language drift gravity protection and some more austrian economics on top from Amara"_
 
 The seventh refinement (PR #565) added GitHub-environment + funding-survival + Bayesian belief-propagation. This eighth refinement adds **two structural layers** that the prior seven left implicit:
 
@@ -57,8 +57,8 @@ The factory has been operating in `E_t^GitHub` (visible) without explicit modeli
 
 Austrian economics enters through **subjective value**, **price signals**, **profit/loss**, and **entrepreneurial discovery**. Sources (per Amara's citations):
 
-- **Hayek 1945**, *The Use of Knowledge in Society* — prices as compressed decentralized knowledge (a mechanism that no central planner can fully replicate)
-- **Mises 1920**, *Economic Calculation in the Socialist Commonwealth* — without market prices for scarce resources, a system cannot rationally compare alternative uses of capital
+- **Hayek 1945**, _The Use of Knowledge in Society_ — prices as compressed decentralized knowledge (a mechanism that no central planner can fully replicate)
+- **Mises 1920**, _Economic Calculation in the Socialist Commonwealth_ — without market prices for scarce resources, a system cannot rationally compare alternative uses of capital
 - **Menger / Carl Menger lineage** — value is subjective and rooted in individual preference rankings; not an objective property sitting inside the good
 
 ### Subjective value
@@ -156,7 +156,7 @@ Sources (per Amara's citations):
 - **Emergent Mind (multi-agent communication)** — multi-agent systems can develop communication protocols that are useful for the task but not easily interpretable by humans
 - **Lazaridou et al. / Lewis et al.** (countering language drift via visual grounding) — agents pretrained on natural language can radically diverge from natural language under non-linguistic reward pressure; syntactic + semantic grounding constraints help retain English-like communication
 - **Stalnaker / Lewis** common-ground theory (SEP) — common ground is the shared body of information presupposed in discourse; central to reference, speech acts, language conventions, understanding
-- **Clark & Brennan 1991**, *Grounding in communication* — communication is a collaborative process of establishing that what was said was understood
+- **Clark & Brennan 1991**, _Grounding in communication_ — communication is a collaborative process of establishing that what was said was understood
 
 ### Mutual intelligibility metric
 
@@ -286,7 +286,7 @@ Examples:
 - `ξ^security` = prompt injection / supply-chain attack / secret leak
 - `ξ^legal` = license / regulation / liability
 - `ξ^community` = maintainer burnout / contributor conflict / reputation
-- `ξ^language` = semantic drift / post-English compression  ← NEW
+- `ξ^language` = semantic drift / post-English compression ← NEW
 - `ξ^compute` = cloud cost / quota / latency
 - `ξ^governance` = bad merge / unclear authority / overclaim
 - `ξ^research` = new theorem / new benchmark / falsification

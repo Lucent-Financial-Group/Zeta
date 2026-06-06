@@ -52,7 +52,7 @@ to preserve at-wake quick-scan." This row tracks the work.
    could be replaced by `ls memory/*.md` at the harness
    layer.
 2. **Quick-scan descriptions** — one-line `[**Title**](file.md)
-   — description` rows let the agent decide WHICH memory to
+— description` rows let the agent decide WHICH memory to
    read deeply without reading them all. Each memory file
    has `description:` in YAML frontmatter, but scanning all
    ~1500 files at every wake is expensive vs. one
@@ -65,6 +65,7 @@ A pure marker keeps service (1) and loses service (2).
 ### Option A — Pure marker (Aaron's question)
 
 Replace MEMORY.md content with a short pointer:
+
 ```markdown
 # Memory index
 
@@ -114,9 +115,9 @@ reduces friction for the maintainer.
 
 ### Phase 0 — Harness contract verification (S effort, prerequisite)
 
-Aaron 2026-04-28: *"It needs to work with the built in Q1
+Aaron 2026-04-28: _"It needs to work with the built in Q1
 AutoDream/AutoMemory and your harness that we have the
-leaked source for."* This step is the verification.
+leaked source for."_ This step is the verification.
 
 - Clone the third-party Claude Code reference repo per
   the read-only-no-vendoring boundary in
@@ -151,7 +152,7 @@ leaked source for."* This step is the verification.
 - Pre-commit hook: on any `memory/*.md` add or modify,
   regenerate `memory/MEMORY.md`.
 - CI check: `tools/memory/generate-memory-index.sh
-  --check` (drift detector) runs on every PR touching
+--check` (drift detector) runs on every PR touching
   `memory/*.md`.
 
 ### Phase 2 — Cutover (M effort)
@@ -161,7 +162,7 @@ leaked source for."* This step is the verification.
   (no entries lost, descriptions match).
 - Land the cutover in a single commit.
 - Document in `docs/research/` how the new pattern works
-  + how to add new memories.
+  - how to add new memories.
 
 ### Phase 3 — AutoDream / AutoMemory integration (S effort, ongoing)
 

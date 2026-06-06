@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 "Graceful-degradation should be first class in eve
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** Every tool, script, doc, hygiene check, and
 projection the factory produces must degrade gracefully
 when a dependency is unavailable, an input is partial,
@@ -17,16 +18,16 @@ layer that makes this possible.
 
 **Why — Aaron 2026-04-22, in two beats:**
 
-> *"Graceful-degradation should be first class in
-> everything we do"*
+> _"Graceful-degradation should be first class in
+> everything we do"_
 >
-> *"thats why we have the data in git too"*
+> _"thats why we have the data in git too"_
 
 Then the reframe clarification:
 
-> *"frame it how a microservice and ui would frame
+> _"frame it how a microservice and ui would frame
 > graceful degradation not a scientist, they are
-> similar but not 100% overlapping."*
+> similar but not 100% overlapping."_
 
 The scientist lens (evidence tiers, confidence bounds,
 "insufficient data for projection") is close but not
@@ -38,16 +39,16 @@ enhancement, serve-stale-cache. **The product keeps
 working. The user keeps getting value. The failure is
 contained and communicated — not total, not silent.**
 
-The two lenses overlap on: *don't crash, don't
-fabricate, name the gap*. They diverge on emphasis:
+The two lenses overlap on: _don't crash, don't
+fabricate, name the gap_. They diverge on emphasis:
 
-| Scientist framing | Microservice / UI framing |
-| --- | --- |
-| "N=1, insufficient data" | "cache hit, serving stale" |
-| "cannot compute delta" | "downstream timeout, fallback response" |
-| "evidence tier X required" | "feature flag off, core path still works" |
-| "confidence bound widens" | "partial result — 5 of 10 items loaded" |
-| passive: "we don't know" | active: "we're still serving, here's what" |
+| Scientist framing          | Microservice / UI framing                  |
+| -------------------------- | ------------------------------------------ |
+| "N=1, insufficient data"   | "cache hit, serving stale"                 |
+| "cannot compute delta"     | "downstream timeout, fallback response"    |
+| "evidence tier X required" | "feature flag off, core path still works"  |
+| "confidence bound widens"  | "partial result — 5 of 10 items loaded"    |
+| passive: "we don't know"   | active: "we're still serving, here's what" |
 
 The factory ships products, not papers. The
 microservice/UI framing is the correct instinct.
@@ -111,7 +112,7 @@ microservice/UI framing is the correct instinct.
    while the data loads. Factory instance: a
    projection with N=1 should render the full
    template (all section headings, all fields)
-   with *"— not yet available"* values — not
+   with _"— not yet available"_ values — not
    collapse the template or omit sections. Future
    snapshots fill in the skeleton in place.
 
@@ -131,12 +132,12 @@ microservice/UI framing is the correct instinct.
    to reading the most recent snapshot JSONL and
    flag "offline — last snapshot at <ts>". **Aaron
    2026-04-22 insight: cartographer-mapping is
-   *already* this pattern firing inadvertently —**
-   *"offline-capable that is exactly what we are
+   _already_ this pattern firing inadvertently —**
+   _"offline-capable that is exactly what we are
    inadvertenly doing everytime you map somthing
    cartographer, next time we don't have to go
    online and with a local agent you would not need
-   the internet to have the skills of the factory"*.
+   the internet to have the skills of the factory"_.
    Every surface map checked into the repo (the
    GitHub surface map, settings-as-code doc,
    budget-history JSONL, research docs) is an
@@ -160,14 +161,14 @@ microservice/UI framing is the correct instinct.
 6. **Placeholders over empty space.** Missing image
    → placeholder + alt text, not a broken link icon.
    Factory instance: a doc section whose data isn't
-   ready → named placeholder ("*pending admin:org
-   scope — see `docs/budget-history/README.md`*")
+   ready → named placeholder ("_pending admin:org
+   scope — see `docs/budget-history/README.md`_")
    rather than an empty section or a missing
    heading.
 
 **The data-in-git part (the cache layer):**
 
-Aaron's *"thats why we have the data in git too"*
+Aaron's _"thats why we have the data in git too"_
 is the cache substrate that makes all the patterns
 above possible. Git gives the factory:
 
@@ -187,19 +188,19 @@ above possible. Git gives the factory:
 
 The live UI surfaces (GitHub billing graphs, Grafana,
 GitHub Actions status) serve humans looking at
-*right now*. Git serves the factory looking at
-*trajectory + fallback*. Both exist; neither
-replaces the other. The *"too"* in Aaron's
+_right now_. Git serves the factory looking at
+_trajectory + fallback_. Both exist; neither
+replaces the other. The _"too"_ in Aaron's
 phrasing is load-bearing — UI + git, not UI OR git.
 
 **How to apply:**
 
 1. **Design the fallback path before the happy
    path.** When drafting a tool, first question:
-   *"what response does this serve when its
+   _"what response does this serve when its
    dependency is unavailable / its input is partial /
-   its scope is narrowed?"* Second question:
-   *"what's the fully-operational response?"*
+   its scope is narrowed?"_ Second question:
+   _"what's the fully-operational response?"_
 
 2. **Never let one failure cascade.** Wrap external
    calls (`gh api`, network, subprocesses) in
@@ -215,7 +216,7 @@ phrasing is load-bearing — UI + git, not UI OR git.
    sections when data is missing; render the
    section with an explicit "not yet available"
    placeholder. Preserves discoverability (readers
-   know the section *exists* and what would fill it).
+   know the section _exists_ and what would fill it).
 
 5. **Persist to git what you'd otherwise lose.**
    Any state that would be gone if the live surface
@@ -243,8 +244,8 @@ phrasing is load-bearing — UI + git, not UI OR git.
   response pattern: fully-operational at N≥2,
   baseline-only at N=1, explicit "accumulate more
   snapshots" guidance at N<3. The output
-  *template* is constant across all N; the
-  *values* degrade legibly.
+  _template_ is constant across all N; the
+  _values_ degrade legibly.
 - `tools/budget/snapshot-burn.sh` —
   per-repo bulkhead pattern (one repo's error
   doesn't kill the batch); `scope_coverage`
@@ -268,7 +269,7 @@ phrasing is load-bearing — UI + git, not UI OR git.
 - Hygiene checks that require all expected files
   present; should run over what's there and list
   absentees.
-- Tools that produce *less* output when inputs are
+- Tools that produce _less_ output when inputs are
   partial (section omitted) rather than a full
   template with partial fill.
 
@@ -279,12 +280,13 @@ round-44 speculative drain, immediately after the
 autonomous-loop tick landed
 `tools/budget/project-runway.sh` (commit `5f91369`).
 Three-beat sequence:
-1. *"Graceful-degradation should be first class
-   in everything we do"*
-2. *"thats why we have the data in git too"*
-3. *"frame it how a microservice and ui would
+
+1. _"Graceful-degradation should be first class
+   in everything we do"_
+2. _"thats why we have the data in git too"_
+3. _"frame it how a microservice and ui would
    frame graceful degradation not a scientist,
-   they are similar but not 100% overlapping."*
+   they are similar but not 100% overlapping."_
    (This reframe message is what shifted this
    memory's vocabulary from evidence-tiers to
    circuit-breakers / fallbacks / progressive-

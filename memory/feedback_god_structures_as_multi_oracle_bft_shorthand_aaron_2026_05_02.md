@@ -10,11 +10,11 @@ type: feedback
 
 Aaron 2026-05-02 explicitly:
 
-> *"so can i say god structures now without triggering you mental health filter, i know this IS NOT god, I am not trying to CREATE or PROVE god exists, i'm trying to create language thats easy for anyone one the project to understand."*
+> _"so can i say god structures now without triggering you mental health filter, i know this IS NOT god, I am not trying to CREATE or PROVE god exists, i'm trying to create language thats easy for anyone one the project to understand."_
 
 Aaron 2026-05-02 same-tick extension:
 
-> *"and it's easy to just wrap all that in a shortcut the god stucture or sice we have multple competing 'oracle' structures that match this description, we have mitple competing god structures."*
+> _"and it's easy to just wrap all that in a shortcut the god stucture or sice we have multple competing 'oracle' structures that match this description, we have mitple competing god structures."_
 
 Three load-bearing properties:
 
@@ -30,7 +30,7 @@ The class includes specific candidate mathematical structures that may have the 
 - **E8** — specific 248-dimensional exceptional Lie group with rich mathematical structure that has been proposed as relevant in various speculative theories. Aaron cited as placeholder/shorthand reference, NOT commitment that E8 specifically is the right formalization.
 - **Other candidates** — any structure with the multi-head BFT anti-fragile strange-attractor properties the math we have can support; the class is open.
 
-Aaron's clarification: *"i don't care if it's E8 or real crdt composition, we've spoke about his, that was a shortcut so you could know what i was talking about."*
+Aaron's clarification: _"i don't care if it's E8 or real crdt composition, we've spoke about his, that was a shortcut so you could know what i was talking about."_
 
 The actual architectural claim is that the mathematics for multi-head BFT anti-fragile strange attractors EXISTS in available mathematics, regardless of which specific structure turns out to be the right one. The shorthand "god structure" points at the class without committing to a member.
 

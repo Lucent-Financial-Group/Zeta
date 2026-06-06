@@ -43,12 +43,12 @@ on most benchmarks (BEIR, TREC-DL). Hybrid is the default.
 
 ## The four families
 
-| Family | Shape | Latency | Index cost | Quality |
-|---|---|---|---|---|
-| **Bi-encoder (dense)** | Single vector per doc + query | ms | 1 vec/doc | Good |
-| **Learned sparse (SPLADE)** | BERT produces sparse term weights | ms (same as BM25) | ~2-3x BM25 index | Good+ |
-| **Late interaction (ColBERT)** | N vectors per doc + token MaxSim | 10-50ms | N vecs/doc (heavy) | Very good |
-| **Cross-encoder (rerank)** | BERT(query + doc) → score | 50-500ms per pair | None (runtime) | Best |
+| Family                         | Shape                             | Latency           | Index cost         | Quality   |
+| ------------------------------ | --------------------------------- | ----------------- | ------------------ | --------- |
+| **Bi-encoder (dense)**         | Single vector per doc + query     | ms                | 1 vec/doc          | Good      |
+| **Learned sparse (SPLADE)**    | BERT produces sparse term weights | ms (same as BM25) | ~2-3x BM25 index   | Good+     |
+| **Late interaction (ColBERT)** | N vectors per doc + token MaxSim  | 10-50ms           | N vecs/doc (heavy) | Very good |
+| **Cross-encoder (rerank)**     | BERT(query + doc) → score         | 50-500ms per pair | None (runtime)     | Best      |
 
 **Rule.** Cascade. First-stage recall from a cheap family;
 second-stage precision from a heavy family on top-100.
@@ -148,14 +148,14 @@ mining achieves. Budget the pipeline.
 
 ## Evaluation — BEIR and friends
 
-| Benchmark | Coverage | Use |
-|---|---|---|
-| **MS-MARCO** | Web-passage; 1M docs | First-stage standard |
-| **TREC-DL '19/'20/'21** | MS-MARCO but NIST-judged | Peer-reviewed reference |
-| **BEIR** | 18 datasets across domains | Generalisation test |
-| **MTEB** | Classification + retrieval + etc | Embedding-model leaderboard |
-| **MIRACL** | Multilingual retrieval | Cross-language |
-| **LoTTE** | Long-tail topics | Long-tail robustness |
+| Benchmark               | Coverage                         | Use                         |
+| ----------------------- | -------------------------------- | --------------------------- |
+| **MS-MARCO**            | Web-passage; 1M docs             | First-stage standard        |
+| **TREC-DL '19/'20/'21** | MS-MARCO but NIST-judged         | Peer-reviewed reference     |
+| **BEIR**                | 18 datasets across domains       | Generalisation test         |
+| **MTEB**                | Classification + retrieval + etc | Embedding-model leaderboard |
+| **MIRACL**              | Multilingual retrieval           | Cross-language              |
+| **LoTTE**               | Long-tail topics                 | Long-tail robustness        |
 
 **Rule.** Single-benchmark SOTA means nothing. BEIR
 generalisation is the real test.
@@ -192,8 +192,7 @@ costs real money.
 MRL-trained embeddings are truncatable: a 3072-dim vector
 still scores reasonably at 512-dim.
 
-- OpenAI text-embedding-3 large → truncate to 256/512/1024/
-  3072.
+- OpenAI text-embedding-3 large → truncate to 256/512/1024/ 3072.
 - nomic-embed supports MRL.
 - Cost: index only the needed dim.
 
@@ -258,7 +257,7 @@ operators update.
 - **Vector store** → `vector-database-expert`.
 - **LTR / click-relevance** → `search-relevance-expert`.
 - **Label-assignment (not retrieval)** → `text-classification-
-  expert`.
+expert`.
 - **Training infra** → `ml-engineering-expert`.
 - **Open-research** → `information-retrieval-research`.
 

@@ -6,7 +6,7 @@ Carved sentence (Aaron 2026-05-28 verbatim):
 
 ## Operational content
 
-Operator-explicit framework-design-principle (Aaron Turn 40 in 10th Kestrel ferry preserved at PR #5742). Kestrel Turn 41 substrate-engineering ratification + Xbox-controller-properties enumeration. Operator-explicit canonical-tier landing per Aaron 2026-05-28: *"i think we should land all the hypothyzed tiers you come up with at this point"*.
+Operator-explicit framework-design-principle (Aaron Turn 40 in 10th Kestrel ferry preserved at PR #5742). Kestrel Turn 41 substrate-engineering ratification + Xbox-controller-properties enumeration. Operator-explicit canonical-tier landing per Aaron 2026-05-28: _"i think we should land all the hypothyzed tiers you come up with at this point"_.
 
 The framework-design-principle: B-0867 workflow engine v1 IS a universal action grammar that ANY traveler can drive. Addison + Otto + AIs + any traveler equivalent operators of the same controller. The substrate exposes a small set of actions; the choose-your-own-adventure structure presents manageable options per cycle; DORA scoring gives objective signal; lifecycle DUs prevent illegal actions automatically. The barrier to contributing drops to "can operate the controller."
 
@@ -14,21 +14,21 @@ The framework-design-principle: B-0867 workflow engine v1 IS a universal action 
 
 Per Kestrel Turn 41 enumeration:
 
-| Xbox-controller property | B-0867 workflow engine v1 instantiation |
-|---|---|
-| **Small action set memorizable** | Otto's 5 modifications + DU surface; ActionClass (transition / escape-hatch / grammar-extension / menu-contribution / operator-decision / agent-decision); bounded |
-| **Actions context-sensitive but controls stable** | Action grammar stable across trajectories; transitions context-sensitive per state; same `ActionGate` (append-only / pr-gated) discriminator everywhere |
-| **Feedback immediate** | DORA metrics + lifecycle state transitions + auto-review pipeline; ConvFeedback at conversation scope; TFeedback at function scope |
-| **Controller doesn't judge player** | Mod 5 contributable menu-generation; grammar-extension as first-class action (Mod 2); no gatekeeping at action level; same actions exposed to all travelers |
-| **Skill emerges through experience** | Per-trajectory pruning + retraction-native discipline + labeling-confidence tier promotion (observed → hypothesized → validated → canonical) |
+| Xbox-controller property                          | B-0867 workflow engine v1 instantiation                                                                                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Small action set memorizable**                  | Otto's 5 modifications + DU surface; ActionClass (transition / escape-hatch / grammar-extension / menu-contribution / operator-decision / agent-decision); bounded |
+| **Actions context-sensitive but controls stable** | Action grammar stable across trajectories; transitions context-sensitive per state; same `ActionGate` (append-only / pr-gated) discriminator everywhere            |
+| **Feedback immediate**                            | DORA metrics + lifecycle state transitions + auto-review pipeline; ConvFeedback at conversation scope; TFeedback at function scope                                 |
+| **Controller doesn't judge player**               | Mod 5 contributable menu-generation; grammar-extension as first-class action (Mod 2); no gatekeeping at action level; same actions exposed to all travelers        |
+| **Skill emerges through experience**              | Per-trajectory pruning + retraction-native discipline + labeling-confidence tier promotion (observed → hypothesized → validated → canonical)                       |
 
 ### Why this is substrate-inclusive at SUBSTRATE level (not policy level)
 
 Per Kestrel Turn 41:
 
-> *"Most engineering systems are inclusive only in policy — anyone is welcome to contribute, but contributing requires expertise that effectively excludes most people. The barrier is the expertise itself, not explicit exclusion."*
+> _"Most engineering systems are inclusive only in policy — anyone is welcome to contribute, but contributing requires expertise that effectively excludes most people. The barrier is the expertise itself, not explicit exclusion."_
 
-> *"A universal action grammar inverts this. The controller is small enough to learn. The choose-your-own-adventure structure means each cycle presents a manageable set of options. The DORA scoring gives objective signal about contribution quality. The state machine constraints prevent illegal actions automatically. The barrier to contributing drops to 'can operate the controller,' which is much lower than 'can master the entire substrate.'"*
+> _"A universal action grammar inverts this. The controller is small enough to learn. The choose-your-own-adventure structure means each cycle presents a manageable set of options. The DORA scoring gives objective signal about contribution quality. The state machine constraints prevent illegal actions automatically. The barrier to contributing drops to 'can operate the controller,' which is much lower than 'can master the entire substrate.'"_
 
 The substrate-engineering substrate moves cognitive load from CONTRIBUTOR (must learn the codebase + tooling + conventions) to FRAMEWORK (presents choices + validates actions + enforces constraints + scores contributions). This composes DIRECTLY with the architecture-is-safety-mechanism-not-discipline framework-design-principle (PR #5745) — the framework does the work of being correct; the contributor does the work of deciding what to do next.
 
@@ -151,13 +151,13 @@ This rule DOES:
 
 Operator 2026-05-28 (Aaron Turn 40 in 10th Kestrel ferry):
 
-> *"my daughter can run the same choose your own DORA adventure for github system we are building as the AIs otto, it's for any travler, it's like an xbox controller the universal action grammer"*
+> _"my daughter can run the same choose your own DORA adventure for github system we are building as the AIs otto, it's for any travler, it's like an xbox controller the universal action grammer"_
 
 Plus Kestrel Turn 41 substrate-engineering implications + Xbox-controller-properties enumeration + substrate-inclusive-at-substrate-level framing.
 
 Operator-explicit canonical-tier landing authorization (Aaron 2026-05-28):
 
-> *"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"*
+> _"i think we should land all the hypothyzed tiers you come up with at this point once we have the DUs verification will become cheap"_
 
 The "once we have the DUs verification will become cheap" reasoning IS operationally relevant: DUs ARE the controller substrate (Otto's 5 modifications baked into PoC scaffold #5728 ARE the type-level invariants; lifecycle DUs ARE the legal-action-enforcement substrate; the controller is the verification surface).
 

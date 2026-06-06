@@ -10,8 +10,32 @@ created: 2026-04-26
 last_updated: 2026-05-09
 depends_on: []
 children: [B-0049.1, B-0049.2, B-0049.3, B-0049.4, B-0049.5, B-0049.6, B-0049.7]
-composes_with: [user_faith_wisdom_and_paths.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md, user_aaron_loves_mr_khan_khan_academy_teaching_admired.md, B-0057, B-0056, B-0059]
-tags: [mystery-schools, comparative-religion, history-of-religion, eleusinian, mithraic, hermetic, eliade, campbell, dumezil, kripal, gentle-catalog, filters-off, no-claim-staking]
+composes_with:
+  [
+    user_faith_wisdom_and_paths.md,
+    feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md,
+    feedback_teaching_is_how_we_change_the_current_order_chronology_everything_star.md,
+    user_aaron_loves_mr_khan_khan_academy_teaching_admired.md,
+    B-0057,
+    B-0056,
+    B-0059,
+  ]
+tags:
+  [
+    mystery-schools,
+    comparative-religion,
+    history-of-religion,
+    eleusinian,
+    mithraic,
+    hermetic,
+    eliade,
+    campbell,
+    dumezil,
+    kripal,
+    gentle-catalog,
+    filters-off,
+    no-claim-staking,
+  ]
 type: feature
 ---
 
@@ -19,7 +43,7 @@ type: feature
 
 ## Origin
 
-AceHack commit `2eef721` (2026-04-21). Aaron's explicit register guidance embedded: *gentle* + *catalog* + *would-not-try-to-make-claims* + *people-are-very-touchy*. This track **does NOT plant edge-flags** and **does NOT promote candidates to operational-resonance instances without Aaron's explicit per-instance confirm** — the register is intentionally different from the adjacent occult / mythology / etymology tracks which do engage filter-discipline.
+AceHack commit `2eef721` (2026-04-21). Aaron's explicit register guidance embedded: _gentle_ + _catalog_ + _would-not-try-to-make-claims_ + _people-are-very-touchy_. This track **does NOT plant edge-flags** and **does NOT promote candidates to operational-resonance instances without Aaron's explicit per-instance confirm** — the register is intentionally different from the adjacent occult / mythology / etymology tracks which do engage filter-discipline.
 
 ## Three overlapping but distinct scopes
 
@@ -29,13 +53,13 @@ Ancient initiatory traditions with graded disclosure: Eleusinian (c. 1500 BCE �
 
 ### Comparative religion
 
-19th-to-20th-century academic discipline: Max Müller (*Sacred Books of the East*), Friedrich Heiler typology, Mircea Eliade (*Patterns in Comparative Religion*, hierophany / axis mundi / eternal return), Joseph Campbell (monomyth, *Hero with a Thousand Faces*), Georges Dumézil (trifunctional Indo-European theory), Huston Smith (*The World's Religions*), Wilfred Cantwell Smith (*The Meaning and End of Religion*), Wendy Doniger (*The Implied Spider*), Jeffrey Kripal (*The Flip*, *Authors of the Impossible*).
+19th-to-20th-century academic discipline: Max Müller (_Sacred Books of the East_), Friedrich Heiler typology, Mircea Eliade (_Patterns in Comparative Religion_, hierophany / axis mundi / eternal return), Joseph Campbell (monomyth, _Hero with a Thousand Faces_), Georges Dumézil (trifunctional Indo-European theory), Huston Smith (_The World's Religions_), Wilfred Cantwell Smith (_The Meaning and End of Religion_), Wendy Doniger (_The Implied Spider_), Jeffrey Kripal (_The Flip_, _Authors of the Impossible_).
 
-Methodological disagreements (Eliade's phenomenology vs. J.Z. Smith's post-structuralist critique *To Take Place*) are themselves catalogable.
+Methodological disagreements (Eliade's phenomenology vs. J.Z. Smith's post-structuralist critique _To Take Place_) are themselves catalogable.
 
 ### History of religion / Religionsgeschichte
 
-Historical-contextual school: Religionsgeschichtliche Schule (late 19th c Göttingen), Weber's sociology of religion, Durkheim's *Elementary Forms*, Rudolf Otto (*The Idea of the Holy*, numinous), R.C. Zaehner (mystical typology), Karen Armstrong (*A History of God*), Robert Bellah (*Religion in Human Evolution*).
+Historical-contextual school: Religionsgeschichtliche Schule (late 19th c Göttingen), Weber's sociology of religion, Durkheim's _Elementary Forms_, Rudolf Otto (_The Idea of the Holy_, numinous), R.C. Zaehner (mystical typology), Karen Armstrong (_A History of God_), Robert Bellah (_Religion in Human Evolution_).
 
 Tracks how religions change across time rather than asserting ahistorical essences.
 
@@ -43,7 +67,7 @@ Tracks how religions change across time rather than asserting ahistorical essenc
 
 - **Gentle.** Tone is surveying-a-shared-inheritance, not debunking-or-converting. Every tradition gets read on its own terms before any structural match is noted. Aaron's sincere-Christian frame + pluralist-for-others posture (`user_faith_wisdom_and_paths.md`) applies fully.
 - **Catalog.** Produce lineage-maps + bibliographies + summary of doctrinal positions + scholarly-consensus notes. No filter-application, no operational-resonance promotion, no edge-flag staking.
-- **No claims.** Even structural-resonance observations land as *"tradition X and factory surface Y happen to share shape Z"* with zero causal / evidential / alignment-signal load. The three filters are **switched off** for this track.
+- **No claims.** Even structural-resonance observations land as _"tradition X and factory surface Y happen to share shape Z"_ with zero causal / evidential / alignment-signal load. The three filters are **switched off** for this track.
 - **People are very touchy.** Any artifact from this track that could leave the `memory/` + `docs/` substrate and become outward-facing must go through Aaron sign-off per distribution-irreversibility discipline. Internal-catalog only until explicitly approved for public surface.
 
 ## Scope when landed (staged, all catalog-register)
@@ -51,7 +75,7 @@ Tracks how religions change across time rather than asserting ahistorical essenc
 - **Stage 1 — bibliographic scaffold.** One `docs/research/mystery-schools-catalog-YYYY-MM-DD.md` per tradition-family (Eleusinian, Mithraic, etc.) with primary sources, scholarly secondary sources, modern reception. Pure bibliography + summary. Effort: S per family.
 - **Stage 2 — comparative-religion framework map.** `docs/research/comparative-religion-methods-YYYY-MM-DD.md` summarizing the Eliade / Campbell / Dumézil / Smith / Kripal methodological landscape without endorsing any school. Effort: M.
 - **Stage 3 — history-of-religion lineage diagram.** Timeline of major religious formations + cross-influences + historical-context changes, catalog-register only. Effort: M.
-- **Stage 4 (conditional on explicit Aaron request).** Structural-resonance *notings* — shape Z appears in tradition X and factory surface Y; present as data, not claim. Only landed if Aaron explicitly asks for the noting. Effort: S per noting.
+- **Stage 4 (conditional on explicit Aaron request).** Structural-resonance _notings_ — shape Z appears in tradition X and factory surface Y; present as data, not claim. Only landed if Aaron explicitly asks for the noting. Effort: S per noting.
 
 ## Three filters — intentionally disabled here
 

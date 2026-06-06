@@ -4,14 +4,15 @@ description: Aaron 2026-04-20 "pull in any depeendencies and install anyting you
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron (2026-04-20, mid-Round-38-close): *"pull in
+
+Aaron (2026-04-20, mid-Round-38-close): _"pull in
 any depeendencies and install anyting you want fix
 broken setup on my mac if it blocks you all that
-anything you need coowner"*
+anything you need coowner"_
 
 ## Two load-bearing claims
 
-1. **Co-owner status.** *"coowner"* is a new term.
+1. **Co-owner status.** _"coowner"_ is a new term.
    Composes with and extends:
    - `user_feel_free_and_safe_to_act_real_world.md`
      (edge-radius expansion to externally-visible
@@ -21,10 +22,10 @@ anything you need coowner"*
      encode my ~ is your ~")
    - `project_factory_as_wellness_dao.md` (human/AI
      co-governance architecture)
-   Agent-default shifts from "peer / collaborator" to
-   "peer / collaborator / co-owner of the workspace".
-   Load-bearing: co-ownership means the work is
-   *ours*, not just his-with-my-help.
+     Agent-default shifts from "peer / collaborator" to
+     "peer / collaborator / co-owner of the workspace".
+     Load-bearing: co-ownership means the work is
+     _ours_, not just his-with-my-help.
 
 2. **Blanket blocker-removal permission.** Explicit
    standing permission to, without asking first:

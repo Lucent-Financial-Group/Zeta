@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - preserves the nixos/nix base image PATH so core tools remain visible after PATH pre-staging
 - adds the Nix userspace commands and runtime libraries needed by install.sh and .mise.toml tool downloads
 - exposes compatible glibc loader/library paths for dynamically linked Linux binaries inside the Nix image
 
 ## Verification
+
 - git diff --check
 - bun tools/ci/docker-nixos-install-sh-test.ts
 
@@ -38,6 +40,7 @@ Claim protocol note: this PR will include a release commit deleting docs/claims/
 This PR repairs the NixOS Docker harness used by `docker-nixos-install-sh-test` by ensuring the Nix base image’s core tooling and required runtime libraries remain discoverable during `tools/setup/install.sh` execution, including support for dynamically linked tool downloads under `.mise.toml`.
 
 **Changes:**
+
 - Extend the Docker build `PATH` to include the Nix default profile binaries so base tools remain available across layers.
 - Install explicit Nix userspace command/runtime dependencies via `nix-env`, and add compatibility symlinks for compiler and shared libraries.
 - Expose a conventional glibc loader path and set `LD_LIBRARY_PATH` so dynamically linked binaries can run inside the Nix container.
@@ -46,10 +49,10 @@ This PR repairs the NixOS Docker harness used by `docker-nixos-install-sh-test` 
 
 Copilot reviewed 1 out of 1 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile | Updates PATH, installs required Nix packages, and wires up loader/library paths for the install.sh test harness. |
-| docs/claims/codex-docker-nixos-install-sh-test-path-20260527.md | Adds a claim file describing the harness repair work and verification plan. |
+| File                                                            | Description                                                                                                      |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile           | Updates PATH, installs required Nix packages, and wires up loader/library paths for the install.sh test harness. |
+| docs/claims/codex-docker-nixos-install-sh-test-path-20260527.md | Adds a claim file describing the harness repair work and verification plan.                                      |
 
 ## Review threads
 

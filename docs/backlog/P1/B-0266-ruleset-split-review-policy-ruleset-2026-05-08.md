@@ -20,10 +20,10 @@ policy (required conversation resolution, code review settings).
 ## Pre-start checklist
 
 - [x] Prior-art search: B-0265 (CI Gate, closed) followed same
-  pattern — API creation + snapshot update. Commit cd9e0483.
+      pattern — API creation + snapshot update. Commit cd9e0483.
 - [x] Dependency check: B-0265 (CI Gate) is closed. No blockers.
 - [x] Parent B-0155 reviewed — three-ruleset target documented in
-  `docs/GITHUB-SETTINGS.md` migration matrix.
+      `docs/GITHUB-SETTINGS.md` migration matrix.
 
 ## Acceptance criteria
 
@@ -54,6 +54,7 @@ bun tools/migrations/b0266-review-policy-ruleset.ts
 ```
 
 Dry run first:
+
 ```bash
 bun tools/migrations/b0266-review-policy-ruleset.ts --dry-run
 ```

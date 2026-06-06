@@ -14,20 +14,20 @@ high-recall starting-point for cross-search.
 
 ## The triumvirate
 
-- **Wes Roth** -- YouTube channel. Aaron explicit *"Wes Roth i watch a
-  lot"* (2026-05-05 forwarded Claude.ai conversation). Weekly reviews
-  + frontier-architecture coverage. Confirmed scope: CodeAct,
-  GibberLink, and Coconut have all been featured. This is the
-  highest-confidence channel in the set.
+- **Wes Roth** -- YouTube channel. Aaron explicit _"Wes Roth i watch a
+  lot"_ (2026-05-05 forwarded Claude.ai conversation). Weekly reviews
+  - frontier-architecture coverage. Confirmed scope: CodeAct,
+    GibberLink, and Coconut have all been featured. This is the
+    highest-confidence channel in the set.
 - **Matthew Berman** -- YouTube channel. Identified via the
-  lemon-tree clue: Aaron's hint *"matt something he likes lemons"*
-  combined with *"i'm a bady spller"* let the Claude.ai instance
+  lemon-tree clue: Aaron's hint _"matt something he likes lemons"_
+  combined with _"i'm a bady spller"_ let the Claude.ai instance
   resolve the name. There is a real story about Berman diagnosing
   his lemon tree's health using a voice-and-camera-powered AI
   assistant -- the assistant recognized the lemon tree and offered
   horticultural advice. One citation Aaron's instance saw was on
   Medium. Coverage scope skews toward consumer-AI-applications
-  + practical demos.
+  - practical demos.
 - **AI Explained** -- YouTube channel. Third in the triumvirate per
   the Claude.ai instance's framing. Aaron did not directly name this
   channel during the exchange but did not push back on its inclusion.
@@ -39,7 +39,7 @@ high-recall starting-point for cross-search.
 
 After the initial triumvirate disclosure, Aaron's same-day conversation forwards extended the source-set:
 
-- **Alex Ziskind (@AZisk)** -- YouTube channel. **Aaron-confirmed** *"that's him and i was almost all the other poeple you named wes a lot"* (PR #1610). Deep technical focus on Apple Silicon for AI; builds Mac Studio + DGX Spark clusters; runtime/quantizer benchmarks (Ollama, LM Studio, vLLM, TurboQuant, RotorQuant, modern K-quants, FP4, LoRA/QLoRA expert-swapping); multi-machine local-AI testing. Specific recall examples in the 2026-05-05 conversation: *"After This, 16GB Feels Different"* (modern quantization on consumer hardware), *"NVIDIA didn't want me to do this"* (DGX Spark tensor parallelism), *"I Plugged a DGX Spark and Mac Together..."* (cross-architecture LLM routing). High signal for local-AI-cluster + quantization + runtime-comparison content. Confidence tier matches Wes Roth + Matthew Berman.
+- **Alex Ziskind (@AZisk)** -- YouTube channel. **Aaron-confirmed** _"that's him and i was almost all the other poeple you named wes a lot"_ (PR #1610). Deep technical focus on Apple Silicon for AI; builds Mac Studio + DGX Spark clusters; runtime/quantizer benchmarks (Ollama, LM Studio, vLLM, TurboQuant, RotorQuant, modern K-quants, FP4, LoRA/QLoRA expert-swapping); multi-machine local-AI testing. Specific recall examples in the 2026-05-05 conversation: _"After This, 16GB Feels Different"_ (modern quantization on consumer hardware), _"NVIDIA didn't want me to do this"_ (DGX Spark tensor parallelism), _"I Plugged a DGX Spark and Mac Together..."_ (cross-architecture LLM routing). High signal for local-AI-cluster + quantization + runtime-comparison content. Confidence tier matches Wes Roth + Matthew Berman.
 - **George Hotz (geohot) / tiny corp / tinybox** -- implicit anchor via the tinygrad UOp IR identification thread (PR #1610). Tinybox is a $15K AI cluster tested on AMD + NVIDIA + Apple silicon; livestreamed. Tinygrad is the μ-ops symbolic IR Aaron's clues matched (though disconfirmed at paper-id level per B-0201 elimination list). Maverick home-lab energy. Lower-confidence source-set member (implicit not explicit).
 - **Sakana AI YouTube reference** -- specific video link Aaron forwarded for the C. elegans Digital Ecosystems / NCA paper (PR #1613): <https://www.youtube.com/watch?v=QzZ4VwDHAT4>. NOT a regular channel for Aaron's tracking; one-off paper-attention pointer. The Digital Ecosystems paper itself is at pub.sakana.ai/digital-ecosystem (Apache 2.0, browser-runnable).
 
@@ -73,7 +73,7 @@ When Aaron references a half-remembered AI-news item:
 
 ## Why this matters
 
-Aaron's recall-precision varies. He is explicit *"i'm a bady spller"*
+Aaron's recall-precision varies. He is explicit _"i'm a bady spller"_
 and may forward items with approximate dates, partial paper titles,
 fuzzy author attribution, or paraphrased claims. The source-set acts
 as a high-recall starting-point so the search converges on a real

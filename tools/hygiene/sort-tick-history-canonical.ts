@@ -197,10 +197,9 @@ function computeTrailingLines(
   dataRows: readonly DataRow[],
   unmatchedTableRows: readonly UnmatchedRow[],
 ): string[] {
-  const tableIndices = [
-    ...dataRows.map((row) => row[1]),
-    ...unmatchedTableRows.map((row) => row[0]),
-  ].sort((a, b) => a - b);
+  const tableIndices = [...dataRows.map((row) => row[1]), ...unmatchedTableRows.map((row) => row[0])].sort(
+    (a, b) => a - b,
+  );
   if (tableIndices.length === 0) return [];
   const lastTableIdx = tableIndices[tableIndices.length - 1] ?? 0;
   const trailingCandidate = data.slice(lastTableIdx + 1);
@@ -223,11 +222,7 @@ function computeTrailingLines(
 // schema regex has drifted. P1 fires whenever any unmatched rows
 // remain — silently dropping rows is the failure mode this script
 // must prevent. Throws on either violation.
-function enforceRowGuards(
-  rowsIn: number,
-  unmatchedTableRows: readonly UnmatchedRow[],
-  sepFileLine: number,
-): void {
+function enforceRowGuards(rowsIn: number, unmatchedTableRows: readonly UnmatchedRow[], sepFileLine: number): void {
   const first = unmatchedTableRows[0];
   if (first === undefined) return;
   const firstIdx = first[0];
@@ -292,11 +287,7 @@ function assembleOutput(
   return `${parts.join("\n")}\n`;
 }
 
-function detectReordering(
-  uniqueRows: readonly string[],
-  originalOrder: readonly string[],
-  rowsIn: number,
-): boolean {
+function detectReordering(uniqueRows: readonly string[], originalOrder: readonly string[], rowsIn: number): boolean {
   if (uniqueRows.length !== rowsIn) return true;
   for (let i = 0; i < uniqueRows.length; i += 1) {
     if (uniqueRows[i] !== originalOrder[i]) return true;
@@ -396,9 +387,7 @@ async function main(): Promise<number> {
   }
 
   await writeFile(p, newText);
-  console.log(
-    `WROTE ${p} (${String(original.length)} -> ${String(newText.length)} bytes)`,
-  );
+  console.log(`WROTE ${p} (${String(original.length)} -> ${String(newText.length)} bytes)`);
   return 0;
 }
 

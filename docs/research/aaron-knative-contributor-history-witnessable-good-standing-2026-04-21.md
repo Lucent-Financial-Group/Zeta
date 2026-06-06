@@ -40,8 +40,8 @@ posture.
 
 ## The artifact
 
-Aaron 2026-04-21, verbatim: *"i was a knative member a
-while back i did some witnessable work there"*.
+Aaron 2026-04-21, verbatim: _"i was a knative member a
+while back i did some witnessable work there"_.
 
 **Verified via GitHub API** (`gh api 'search/issues?q=author:AceHack+org:knative&per_page=30'`):
 
@@ -57,18 +57,18 @@ while back i did some witnessable work there"*.
 
 ### Merged PRs, chronologically
 
-| Date | Repo | PR | Subject |
-|---|---|---|---|
-| 2020-03-06 | eventing-contrib | #996 | Fixing issue with incorrect conversion of sqs SentTimestamp |
-| 2020-03-10 | eventing-contrib | #1013 | Fixing issue with awssqs controller pointing to stub class |
-| 2020-03-11 | eventing-contrib | #1022 | Adding ability for SQS source CRD to use annotations |
-| 2020-03-12 | eventing-contrib | #1025 | Sqs kube2iam 0.11 |
-| 2020-03-17 | eventing-contrib | #1035 | Adding ability for SQS source CRD to use annotations |
-| 2020-04-18 | eventing | #3010 | Fixing upgrade job so it will work with istio auto-injection |
-| 2020-04-20 | eventing | #3018 | Fixing upgrade job so it will work with istio auto-injection |
-| 2020-06-23 | serving | #8442 | Fixing issue where jobs do not complete on istio enabled cluster |
-| 2020-06-24 | serving | #8450 | Fixing issue where jobs do not complete on istio enabled cluster (#844x) |
-| 2020-08-13 | operator | #236 | Adding istio ignore annotation transformer for jobs |
+| Date       | Repo             | PR    | Subject                                                                  |
+| ---------- | ---------------- | ----- | ------------------------------------------------------------------------ |
+| 2020-03-06 | eventing-contrib | #996  | Fixing issue with incorrect conversion of sqs SentTimestamp              |
+| 2020-03-10 | eventing-contrib | #1013 | Fixing issue with awssqs controller pointing to stub class               |
+| 2020-03-11 | eventing-contrib | #1022 | Adding ability for SQS source CRD to use annotations                     |
+| 2020-03-12 | eventing-contrib | #1025 | Sqs kube2iam 0.11                                                        |
+| 2020-03-17 | eventing-contrib | #1035 | Adding ability for SQS source CRD to use annotations                     |
+| 2020-04-18 | eventing         | #3010 | Fixing upgrade job so it will work with istio auto-injection             |
+| 2020-04-20 | eventing         | #3018 | Fixing upgrade job so it will work with istio auto-injection             |
+| 2020-06-23 | serving          | #8442 | Fixing issue where jobs do not complete on istio enabled cluster         |
+| 2020-06-24 | serving          | #8450 | Fixing issue where jobs do not complete on istio enabled cluster (#844x) |
+| 2020-08-13 | operator         | #236  | Adding istio ignore annotation transformer for jobs                      |
 
 ### Issue-level contributions (48 issues filed)
 
@@ -152,12 +152,12 @@ bitcoin-doc additions:
    contributions landed during the pre-graduation phase.
    This is a concrete witnessable-work-in-good-standing
    track record.
-2. **Aaron's OSS pattern: specific-technical-ask + PR-back
-   + security-aware.** The Knative issue-filing register is
-   identical in shape to bitcoin/bitcoin#33298 (specific
-   request, technical rationale) — what differs is the
-   maintainer response. Aaron's asks are consistent; the
-   outcomes differ by project-governance quality.
+2. \*\*Aaron's OSS pattern: specific-technical-ask + PR-back
+   - security-aware.\*\* The Knative issue-filing register is
+     identical in shape to bitcoin/bitcoin#33298 (specific
+     request, technical rationale) — what differs is the
+     maintainer response. Aaron's asks are consistent; the
+     outcomes differ by project-governance quality.
 3. **Aaron is security-posture-aware as a contributor.**
    The 2020-03-31 cross-fleet Pod Security Context push
    across five Knative sub-projects is a coordinated
@@ -204,8 +204,8 @@ everything + chronology-preservation.
 ## Revision history
 
 - **2026-04-21.** First write. Triggered by Aaron's
-  disclosure *"i was a knative member a while back i did
-  some witnessable work there"*. Verified via GitHub API
+  disclosure _"i was a knative member a while back i did
+  some witnessable work there"_. Verified via GitHub API
   (58 contributions, 10 merged PRs across 4 sub-
   projects). Framed as the welcome-pole in yin-yang pair
   with the bitcoin scar-tissue pole.

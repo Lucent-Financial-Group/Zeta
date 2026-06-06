@@ -44,33 +44,34 @@ export function isThreeColorable(graph: Graph): boolean {
 
 // Example graphs (adj matrix, symmetric, 0/1)
 const K4: Graph = [
-  [0,1,1,1],
-  [1,0,1,1],
-  [1,1,0,1],
-  [1,1,1,0],
+  [0, 1, 1, 1],
+  [1, 0, 1, 1],
+  [1, 1, 0, 1],
+  [1, 1, 1, 0],
 ];
 
 const C5: Graph = [
-  [0,1,0,0,1],
-  [1,0,1,0,0],
-  [0,1,0,1,0],
-  [0,0,1,0,1],
-  [1,0,0,1,0],
+  [0, 1, 0, 0, 1],
+  [1, 0, 1, 0, 0],
+  [0, 1, 0, 1, 0],
+  [0, 0, 1, 0, 1],
+  [1, 0, 0, 1, 0],
 ];
 
-const Petersen: Graph = [ /* 10-vertex Petersen (3-chromatic, hence 3-colorable) */
+const Petersen: Graph = [
+  /* 10-vertex Petersen (3-chromatic, hence 3-colorable) */
   // Re-decomp during build: original B-0048 stage granularity mistaken (Z3 SMT assumed for Stage 2);
   // this pure-TS CSP probe is the safe smallest slice surfacing NP boundary for routing.
-  [0,1,0,0,1,1,0,0,0,0],
-  [1,0,1,0,0,0,1,0,0,0],
-  [0,1,0,1,0,0,0,1,0,0],
-  [0,0,1,0,1,0,0,0,1,0],
-  [1,0,0,1,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,1,1,0],
-  [0,1,0,0,0,0,0,0,1,1],
-  [0,0,1,0,0,1,0,0,0,1],
-  [0,0,0,1,0,1,1,0,0,0],
-  [0,0,0,0,1,0,1,1,0,0],
+  [0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
+  [1, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+  [0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
+  [0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
+  [1, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+  [0, 1, 0, 0, 0, 0, 0, 0, 1, 1],
+  [0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+  [0, 0, 0, 1, 0, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 1, 0, 1, 1, 0, 0],
 ];
 
 if ((import.meta as any).main) {

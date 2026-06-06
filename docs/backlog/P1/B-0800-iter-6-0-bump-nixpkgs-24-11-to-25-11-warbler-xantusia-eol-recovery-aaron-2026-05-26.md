@@ -13,12 +13,23 @@ composes_with:
   - B-0802
   - B-0803
   - B-0804
-tags: [iter-6, nixos, distro-upgrade, nixpkgs, eol-recovery, latest-deps-principle, urgent, full-ai-cluster, supply-chain-security]
+tags:
+  [
+    iter-6,
+    nixos,
+    distro-upgrade,
+    nixpkgs,
+    eol-recovery,
+    latest-deps-principle,
+    urgent,
+    full-ai-cluster,
+    supply-chain-security,
+  ]
 ---
 
 ## Problem
 
-The maintainer 2026-05-26: *"is there a 25 we should go ahead and distro upgrade we don't want to be behind search for latest we like to be on latest deps and don't start behind from the beginning."*
+The maintainer 2026-05-26: _"is there a 25 we should go ahead and distro upgrade we don't want to be behind search for latest we like to be on latest deps and don't start behind from the beginning."_
 
 Empirical state per WebSearch 2026-05-26:
 

@@ -1,6 +1,6 @@
 # Hacker Conferences — the map and why they matter to Zeta
 
-*Last updated: 2026-04-19, round 35.*
+_Last updated: 2026-04-19, round 35._
 
 This doc exists because the hacker-hat skill family
 (`ethical-hacker`, `white-hat-hacker`, `grey-hat-hacker`,
@@ -68,8 +68,8 @@ offensive teams can do.
 The industry-facing sibling. Same founder (Jeff Moss),
 different audience: corporate defenders, government,
 research labs. Where vendors unveil bugs in commercial
-products; the briefings are often the *first public
-disclosure* of CVEs that will dominate the next year's
+products; the briefings are often the _first public
+disclosure_ of CVEs that will dominate the next year's
 patching cycle.
 
 **Black Hat Asia** (Singapore, spring) and **Black Hat
@@ -134,7 +134,7 @@ plays together.
 ## Academic / industrial-research venues
 
 These aren't "hacker cons" in the DEF-CON sense but are
-the venues where the research that *becomes* tomorrow's
+the venues where the research that _becomes_ tomorrow's
 DEF CON talks lands first. Tracking both sides matters.
 
 ### USENIX Security Symposium — August

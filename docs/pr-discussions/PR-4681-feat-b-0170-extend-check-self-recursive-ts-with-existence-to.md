@@ -18,9 +18,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Smallest safe slice of [B-0170](../blob/main/docs/backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md): extend `check-self-recursive.ts` to dispatch a second topic (`existence`), cashing the README v0.9.0 promise that *"Adding additional topics (existence, path-forms, cross-surface, convention) is a 1-line dispatch each"*. No new file, no architecture change.
+Smallest safe slice of [B-0170](../blob/main/docs/backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md): extend `check-self-recursive.ts` to dispatch a second topic (`existence`), cashing the README v0.9.0 promise that _"Adding additional topics (existence, path-forms, cross-surface, convention) is a 1-line dispatch each"_. No new file, no architecture change.
 
-**Operative-authorization**: aaron 2026-05-14: *"- **Devil-pole** (edge-runner drive): keep pushing, discover, go hard, never-be-idle"*.
+**Operative-authorization**: aaron 2026-05-14: _"- **Devil-pole** (edge-runner drive): keep pushing, discover, go hard, never-be-idle"_.
 
 ## Changes
 
@@ -41,16 +41,17 @@ Smallest safe slice of [B-0170](../blob/main/docs/backlog/P1/B-0170-substrate-cl
 
 ## Focused checks
 
-| Check | Result |
-|---|---|
-| `bun test tools/substrate-claim-checker/check-self-recursive.test.ts` | **23 pass / 0 fail** (was 20; +3 new) |
-| `bun test tools/substrate-claim-checker/` | **140 pass / 0 fail** across 7 files; no regressions |
-| End-to-end sanity: `[count, existence]` directive on memo with both drift shapes | **2 findings** (one per topic), **exit 1** |
-| Commit canary: `git ls-tree HEAD \| wc -l` vs parent | **54 = 54** (no broken-commit corruption) |
+| Check                                                                            | Result                                               |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `bun test tools/substrate-claim-checker/check-self-recursive.test.ts`            | **23 pass / 0 fail** (was 20; +3 new)                |
+| `bun test tools/substrate-claim-checker/`                                        | **140 pass / 0 fail** across 7 files; no regressions |
+| End-to-end sanity: `[count, existence]` directive on memo with both drift shapes | **2 findings** (one per topic), **exit 1**           |
+| Commit canary: `git ls-tree HEAD \| wc -l` vs parent                             | **54 = 54** (no broken-commit corruption)            |
 
 ## Bounded slice discipline
 
 Stays well within "exactly one bounded step":
+
 - One new topic case + tests + doc-bump
 - No new file
 - No architecture change

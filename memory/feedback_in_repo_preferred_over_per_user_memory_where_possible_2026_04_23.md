@@ -79,7 +79,7 @@ in per-user memory and migrates them into in-repo
 2. Generalise any language that reads as
    maintainer-specific — e.g. "Aaron 2026-04-23
    directive" → "Human maintainer 2026-04-23 directive"
-   in the *rule*, but keep **verbatim quotes attributed
+   in the _rule_, but keep **verbatim quotes attributed
    to Aaron by name** in the body (signal-preservation;
    `feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md`).
 3. Verify the in-repo copy still makes sense without
@@ -105,8 +105,8 @@ in per-user memory and migrates them into in-repo
 
 ### Discretion, not ceremony
 
-Aaron explicitly said *"I'll leave it to your discretion,
-you own the factory."* This is **not** a directive to:
+Aaron explicitly said _"I'll leave it to your discretion,
+you own the factory."_ This is **not** a directive to:
 
 - Ask before every migration.
 - Open a PR for every per-user file migrated.
@@ -160,8 +160,8 @@ hundreds), with per-user holding the long tail.
 - **On every AutoDream cadenced pass**, audit per-user
   memory for generic-shaped content and migrate.
 - **When writing a new memory**, the first question
-  is *"is this about the factory or about the
-  maintainer?"* Factory → in-repo. Maintainer → per-user.
+  is _"is this about the factory or about the
+  maintainer?"_ Factory → in-repo. Maintainer → per-user.
   Mixed → write the generic rule in-repo and the
   maintainer-specific calibration in per-user,
   cross-referenced.
@@ -189,12 +189,12 @@ hundreds), with per-user holding the long tail.
 - **Not an invalidation of per-user memory as a
   category.** Per-user remains the home for
   maintainer-specific + company-specific content. The
-  rule only shifts the *default* for generic content.
+  rule only shifts the _default_ for generic content.
 - **Not a rewrite of in-repo memory's company-neutral
   posture.** In-repo stays open-source-appropriate;
   migrations must generalise language.
 - **Not a directive to ask before migrating.** Aaron's
-  phrasing *"I'll leave it to your discretion"* is
+  phrasing _"I'll leave it to your discretion"_ is
   explicit — this is factory-owned hygiene, not a
   maintainer-gated decision.
 

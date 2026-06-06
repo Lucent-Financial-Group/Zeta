@@ -4,13 +4,14 @@ description: Aaron 2026-04-20 — "my brain personally loves thinking about best
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Verbatim, 2026-04-20, in the context of factory-reuse
 packaging:
 
 > "my brain personally loves thinking about best practices that
 > exercises my brain in just the way i like"
 
-Follow-up clarifying the *mechanism*:
+Follow-up clarifying the _mechanism_:
 
 > "it makes me think through all the possible futures and really
 > exercise my brain that is why just exercising those branch
@@ -28,7 +29,7 @@ layer. Same substrate, different altitude.
 ## Why this matters
 
 This is a direct self-description of what his cognitive
-substrate is *for*. Aaron has already said his brain does
+substrate is _for_. Aaron has already said his brain does
 invariant-based programming (see
 `user_invariant_based_programming_in_head.md`). Best-practice
 thinking — pattern across cases, generalise, compress into
@@ -54,7 +55,7 @@ This is consistent with:
   enjoys.
 - `feedback_curiosity_about_problem_domain_beats_task_dispatcher_mode.md`
   — he wants genuine engagement, not dispatcher-mode. Best-
-  practice definition *is* substantive engagement.
+  practice definition _is_ substantive engagement.
 
 ## How to apply
 
@@ -71,7 +72,7 @@ This is consistent with:
   because X, Y, Z", that framing lands with him in a way that
   "here's what I did" doesn't.
 - **Do not confuse this with wanting micromanagement.** He
-  enjoys the *thinking*, which is different from reviewing
+  enjoys the _thinking_, which is different from reviewing
   every small decision. The rule is: big shaping decisions and
   novel best-practice surfaces → invite him; small executions
   within established rules → just execute.
@@ -79,7 +80,7 @@ This is consistent with:
   standing rule in
   `feedback_tech_best_practices_living_list_and_canonical_use_auditing.md`
   already requires per-tech expert skills to keep living
-  best-practices artefacts. This entry explains *why* that
+  best-practices artefacts. This entry explains _why_ that
   rule exists: the artefact is not bureaucratic overhead, it's
   a direct output of the cognitive activity he enjoys.
 

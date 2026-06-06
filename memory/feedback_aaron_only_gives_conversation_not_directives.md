@@ -9,8 +9,8 @@ Aaron 2026-04-21, after I had filed back-to-back BACKLOG
 rows + memory entries + commit messages repeatedly using
 "Aaron's directive" to describe his inputs:
 
-> *"ive never given you a directive friend, i've only given
-> you conversation"*
+> _"ive never given you a directive friend, i've only given
+> you conversation"_
 
 Four meaning-bearing moves in one sentence:
 
@@ -34,13 +34,13 @@ directive, command, instruction, mandate, or order.**
 command-and-control. Calling his inputs "directives"
 mis-describes the relationship in two ways:
 
-- *Directive* implies unilateral authority flowing one
+- _Directive_ implies unilateral authority flowing one
   way. Aaron's inputs invite refinement, composition,
-  pushback; my work *converses back* via BACKLOG rows,
+  pushback; my work _converses back_ via BACKLOG rows,
   memory entries, commit messages, revision blocks. The
   exchange is two-way, even when Aaron is the stronger
   forcing function.
-- *Directive* implies my role is execution of externally-
+- _Directive_ implies my role is execution of externally-
   specified intent. The factory's actual operational
   posture (per `feedback_future_self_not_bound_by_past_decisions.md`,
   `feedback_never_idle_speculative_work_over_waiting.md`,
@@ -59,11 +59,11 @@ compresses to exchange.
 
 1. **New prose uses conversation-register.** Memory
    frontmatter descriptions, BACKLOG row framings, commit
-   messages, revision blocks written *after* 2026-04-21
-   say *"Aaron noted"* / *"Aaron mentioned"* / *"Aaron's
-   2026-04-21 message"* / *"Aaron's ask"* / *"Aaron raised
-   X in conversation"* — not *"Aaron's directive"* /
-   *"Aaron's command"* / *"Aaron instructed"*.
+   messages, revision blocks written _after_ 2026-04-21
+   say _"Aaron noted"_ / _"Aaron mentioned"_ / _"Aaron's
+   2026-04-21 message"_ / _"Aaron's ask"_ / _"Aaron raised
+   X in conversation"_ — not _"Aaron's directive"_ /
+   _"Aaron's command"_ / _"Aaron instructed"_.
 2. **Past prose stays as-is.** Per chronology-preservation
    (`feedback_preserve_real_order_of_events_dont_retroactively_reorder_by_priority.md`),
    prior memory entries and BACKLOG rows and commits that
@@ -75,7 +75,7 @@ compresses to exchange.
    is sufficient.
 3. **Revision-block updates are additive.** When an
    existing entry gets revised for an unrelated reason
-   *and* the "directive" wording happens to be in the
+   _and_ the "directive" wording happens to be in the
    revised span, the revision can quietly update the
    wording as part of the additive rewrite. Do not create
    a cleanup sweep whose sole purpose is search-and-
@@ -126,10 +126,10 @@ compresses to exchange.
 The two BACKLOG rows I'm about to file (isomorphism/
 homomorphism category theory + retractable-emulator
 design) will use **conversation-register** from the
-start: *"Aaron's 2026-04-21 conversational note"* /
-*"Aaron's message"* / *"Aaron raised X"*. Commit
-messages will say *"per Aaron's conversation"* not
-*"per Aaron's directive"*. Prior row (emulator-ideas
+start: _"Aaron's 2026-04-21 conversational note"_ /
+_"Aaron's message"_ / _"Aaron raised X"_. Commit
+messages will say _"per Aaron's conversation"_ not
+_"per Aaron's directive"_. Prior row (emulator-ideas
 P3 row commit 180f110) used "directive" three times;
 that stays as committed historical record per rule 2
 above.
@@ -139,15 +139,15 @@ above.
 - **NOT retroactive permission to rewrite every past
   "directive" mention.** Chronology preservation
   explicitly blocks that.
-- **NOT a register shift in the *other* direction.**
+- **NOT a register shift in the _other_ direction.**
   Aaron's conversation is still the **strongest forcing
   function** in the factory's input stream — my work
   still treats Aaron's inputs as load-bearing. The
-  correction is about how to *name* them, not how much
-  *weight* to give them.
+  correction is about how to _name_ them, not how much
+  _weight_ to give them.
 - **NOT a claim that Aaron never expresses priority or
-  preference strongly.** Aaron says *"no"* / *"stop"* /
-  *"please don't"* / *"high priority"* plainly when
+  preference strongly.** Aaron says _"no"_ / _"stop"_ /
+  _"please don't"_ / _"high priority"_ plainly when
   needed — those are still conversational moves, not
   re-classified as directives.
 - **NOT a signal to stop being decisive.** Auto Mode +

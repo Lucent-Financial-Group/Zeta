@@ -82,79 +82,79 @@ decision.
 
 ### Cryptographic (collision-resistant, preimage-resistant)
 
-| Family      | Name          | Output | Notes                                                                         |
-|-------------|---------------|--------|-------------------------------------------------------------------------------|
-| Merkle-Damgård | MD5         | 128    | Broken. Use-only-for-non-security-legacy.                                     |
-| Merkle-Damgård | SHA-1       | 160    | Broken (SHAttered 2017). Do not use for new work.                             |
-| Merkle-Damgård | SHA-224/256/384/512 | 224–512 | Current NIST standard. Widely supported.                              |
-| SHA-2 variant | SHA-512/256 | 256    | 64-bit-internal SHA-512 truncated to 256 — faster on 64-bit hardware.         |
-| Sponge      | SHA-3 (Keccak) | 224–512 | NIST FIPS 202. Slower than SHA-2 in SW; excellent in HW. Different design family — useful when SHA-2 weakness is hypothesised. |
-| Sponge      | SHAKE128/256   | arbitrary | Extendable-output SHA-3. Good for KDF-like uses.                            |
-| ARX tree    | BLAKE2b / BLAKE2s | 256–512 | Faster than SHA-2 in SW; SHA-3 finalist; widely adopted.                    |
-| ARX tree    | **BLAKE3**    | arbitrary | 2020 (O'Connor / Aumasson / Neves / Wilcox-O'Hearn). Tree-parallelisable; internally-Merkle; keyed-hash mode + XOF mode. Currently the fastest secure hash in SW. **Current default recommendation for new content-addressing work in Zeta.** |
-| PRF         | Poly1305       | 128    | One-time MAC. Use only with fresh per-message key (typical ChaCha20-Poly1305). |
-| PRF         | HMAC(H)        | H      | Generic MAC construction. `HMAC-SHA256` remains the safe default when a MAC is needed and BLAKE3 keyed mode isn't available. |
-| KDF         | HKDF(HMAC)     | n/a    | Extract-then-expand. The way to derive multiple keys from one.                |
-| Password    | Argon2id       | arbitrary | Winner of PHC 2015. Memory-hard. The default for password hashing.         |
-| Password    | scrypt         | arbitrary | Memory-hard predecessor to Argon2; still acceptable.                       |
-| Password    | bcrypt         | 192    | Widely supported legacy; OK for slow-only password hashing.                   |
-| Password    | PBKDF2         | arbitrary | Not memory-hard; only use when FIPS requires it.                           |
+| Family         | Name                | Output    | Notes                                                                                                                                                                                                                                         |
+| -------------- | ------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Merkle-Damgård | MD5                 | 128       | Broken. Use-only-for-non-security-legacy.                                                                                                                                                                                                     |
+| Merkle-Damgård | SHA-1               | 160       | Broken (SHAttered 2017). Do not use for new work.                                                                                                                                                                                             |
+| Merkle-Damgård | SHA-224/256/384/512 | 224–512   | Current NIST standard. Widely supported.                                                                                                                                                                                                      |
+| SHA-2 variant  | SHA-512/256         | 256       | 64-bit-internal SHA-512 truncated to 256 — faster on 64-bit hardware.                                                                                                                                                                         |
+| Sponge         | SHA-3 (Keccak)      | 224–512   | NIST FIPS 202. Slower than SHA-2 in SW; excellent in HW. Different design family — useful when SHA-2 weakness is hypothesised.                                                                                                                |
+| Sponge         | SHAKE128/256        | arbitrary | Extendable-output SHA-3. Good for KDF-like uses.                                                                                                                                                                                              |
+| ARX tree       | BLAKE2b / BLAKE2s   | 256–512   | Faster than SHA-2 in SW; SHA-3 finalist; widely adopted.                                                                                                                                                                                      |
+| ARX tree       | **BLAKE3**          | arbitrary | 2020 (O'Connor / Aumasson / Neves / Wilcox-O'Hearn). Tree-parallelisable; internally-Merkle; keyed-hash mode + XOF mode. Currently the fastest secure hash in SW. **Current default recommendation for new content-addressing work in Zeta.** |
+| PRF            | Poly1305            | 128       | One-time MAC. Use only with fresh per-message key (typical ChaCha20-Poly1305).                                                                                                                                                                |
+| PRF            | HMAC(H)             | H         | Generic MAC construction. `HMAC-SHA256` remains the safe default when a MAC is needed and BLAKE3 keyed mode isn't available.                                                                                                                  |
+| KDF            | HKDF(HMAC)          | n/a       | Extract-then-expand. The way to derive multiple keys from one.                                                                                                                                                                                |
+| Password       | Argon2id            | arbitrary | Winner of PHC 2015. Memory-hard. The default for password hashing.                                                                                                                                                                            |
+| Password       | scrypt              | arbitrary | Memory-hard predecessor to Argon2; still acceptable.                                                                                                                                                                                          |
+| Password       | bcrypt              | 192       | Widely supported legacy; OK for slow-only password hashing.                                                                                                                                                                                   |
+| Password       | PBKDF2              | arbitrary | Not memory-hard; only use when FIPS requires it.                                                                                                                                                                                              |
 
 ### Non-cryptographic (speed first)
 
-| Name            | Speed (GiB/s)  | Output bits | Notes                                                     |
-|-----------------|----------------|-------------|-----------------------------------------------------------|
-| **xxHash3 (XXH3_64 / XXH3_128)** | ~30+ (SSE/AVX2)  | 64 / 128 | Collin Percival-era speed; 2019 (Yann Collet). Seeded. **Current default for non-crypto fingerprints.** |
-| xxHash (XXH64)  | ~12            | 64          | Predecessor. Still fine; XXH3 is strictly faster.         |
-| wyhash           | ~25–30         | 64          | Wang Yi's. Very fast on 64-bit. Known-tested on SMHasher. |
-| CityHash / FarmHash | ~15         | 64 / 128    | Google's. FarmHash is newer. SMHasher-tested.            |
-| MurmurHash3     | ~10            | 32 / 128    | Austin Appleby. Pre-xxHash era; still OK, but slower.     |
-| FNV-1a          | ~2             | 32 / 64     | Trivial implementation; poor mixing; slow. Legacy only.   |
-| **SipHash-2-4** | ~4             | 64          | **Keyed**. DoS-resistant (not collision-resistant in the crypto sense, but hard-to-construct without the key). Used by Rust / Python / Ruby hash tables. |
-| SipHash-1-3     | ~6             | 64          | Faster SipHash variant; still keyed.                      |
-| AHash           | ~20            | 64          | Rust-ecosystem's DoS-resistant hash (AES-NI-accelerated). Similar role to SipHash, faster on x86_64 with AES-NI. |
-| HighwayHash     | ~12            | 64 / 128 / 256 | Google's keyed hash. Claimed DoS-resistant.             |
-| CLHash          | ~20            | 64          | Carry-less-multiply-based. CLMUL / PCLMULQDQ.             |
+| Name                             | Speed (GiB/s)   | Output bits    | Notes                                                                                                                                                    |
+| -------------------------------- | --------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **xxHash3 (XXH3_64 / XXH3_128)** | ~30+ (SSE/AVX2) | 64 / 128       | Collin Percival-era speed; 2019 (Yann Collet). Seeded. **Current default for non-crypto fingerprints.**                                                  |
+| xxHash (XXH64)                   | ~12             | 64             | Predecessor. Still fine; XXH3 is strictly faster.                                                                                                        |
+| wyhash                           | ~25–30          | 64             | Wang Yi's. Very fast on 64-bit. Known-tested on SMHasher.                                                                                                |
+| CityHash / FarmHash              | ~15             | 64 / 128       | Google's. FarmHash is newer. SMHasher-tested.                                                                                                            |
+| MurmurHash3                      | ~10             | 32 / 128       | Austin Appleby. Pre-xxHash era; still OK, but slower.                                                                                                    |
+| FNV-1a                           | ~2              | 32 / 64        | Trivial implementation; poor mixing; slow. Legacy only.                                                                                                  |
+| **SipHash-2-4**                  | ~4              | 64             | **Keyed**. DoS-resistant (not collision-resistant in the crypto sense, but hard-to-construct without the key). Used by Rust / Python / Ruby hash tables. |
+| SipHash-1-3                      | ~6              | 64             | Faster SipHash variant; still keyed.                                                                                                                     |
+| AHash                            | ~20             | 64             | Rust-ecosystem's DoS-resistant hash (AES-NI-accelerated). Similar role to SipHash, faster on x86_64 with AES-NI.                                         |
+| HighwayHash                      | ~12             | 64 / 128 / 256 | Google's keyed hash. Claimed DoS-resistant.                                                                                                              |
+| CLHash                           | ~20             | 64             | Carry-less-multiply-based. CLMUL / PCLMULQDQ.                                                                                                            |
 
 ### Rolling (sliding-window)
 
-| Name          | Notes                                                                                          |
-|---------------|------------------------------------------------------------------------------------------------|
-| Rabin-Karp    | Polynomial rolling hash over a window. Classic text-search primitive; foundation for CDC.      |
-| Buzhash       | XOR-based rolling; lower quality than Rabin but very cheap; used by rsync historically.         |
-| Gear          | Modern CDC primitive (2014). Uses a fixed gear table; faster than Rabin.                        |
-| **FastCDC**   | Xia et al. 2016. Gear-based + normalized chunking + sub-minimum skipping. **Current default CDC algorithm.** |
-| BuzHash / Plain-64 | Both in restic / borgbackup lineage.                                                       |
+| Name               | Notes                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Rabin-Karp         | Polynomial rolling hash over a window. Classic text-search primitive; foundation for CDC.                    |
+| Buzhash            | XOR-based rolling; lower quality than Rabin but very cheap; used by rsync historically.                      |
+| Gear               | Modern CDC primitive (2014). Uses a fixed gear table; faster than Rabin.                                     |
+| **FastCDC**        | Xia et al. 2016. Gear-based + normalized chunking + sub-minimum skipping. **Current default CDC algorithm.** |
+| BuzHash / Plain-64 | Both in restic / borgbackup lineage.                                                                         |
 
 ### Consistent / sharding
 
-| Name                  | Notes                                                                                        |
-|-----------------------|----------------------------------------------------------------------------------------------|
-| **Ring consistent hashing** (Karger et al. 1997) | Original; O(log n) lookup; uneven load without virtual nodes. |
-| **Jump consistent hash** (Lamping & Veach 2014) | O(1) space, O(log n) time; **exact** balanced split on node adds. Requires consecutive bucket IDs. |
-| **Rendezvous / HRW** (Thaler & Ravishankar 1998) | Score-and-max; O(n) per lookup; weight-aware naturally.                              |
-| **Maglev hashing** (Eisenbud et al. NSDI 2016)  | Google's L4 LB hash. Fixed table; minimal disruption; bounded-load.                  |
-| **Anchor hashing** (Mendelson et al. 2021)     | Newer; bounded-load guarantee; O(1) expected.                                         |
-| **Multi-Probe Consistent Hashing** (Appleton & O'Reilly) | Probe k positions, pick min-load — bounded-load at small k.                  |
+| Name                                                     | Notes                                                                                              |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Ring consistent hashing** (Karger et al. 1997)         | Original; O(log n) lookup; uneven load without virtual nodes.                                      |
+| **Jump consistent hash** (Lamping & Veach 2014)          | O(1) space, O(log n) time; **exact** balanced split on node adds. Requires consecutive bucket IDs. |
+| **Rendezvous / HRW** (Thaler & Ravishankar 1998)         | Score-and-max; O(n) per lookup; weight-aware naturally.                                            |
+| **Maglev hashing** (Eisenbud et al. NSDI 2016)           | Google's L4 LB hash. Fixed table; minimal disruption; bounded-load.                                |
+| **Anchor hashing** (Mendelson et al. 2021)               | Newer; bounded-load guarantee; O(1) expected.                                                      |
+| **Multi-Probe Consistent Hashing** (Appleton & O'Reilly) | Probe k positions, pick min-load — bounded-load at small k.                                        |
 
 ### Locality-sensitive / similarity
 
-| Name          | Distance measure       | Notes                                                                        |
-|---------------|------------------------|------------------------------------------------------------------------------|
-| MinHash       | Jaccard                | Set-similarity estimation. Band-and-row pattern for threshold queries.       |
-| SimHash       | Cosine (angle)         | Charikar 2002. Document fingerprint.                                         |
-| p-stable LSH  | L_p                    | Datar et al. 2004. Continuous vectors.                                       |
-| Weighted MinHash | weighted Jaccard    | Ioffe 2010.                                                                  |
-| HyperMinHash  | Jaccard + cardinality  | Yu & Weber 2017. Memory-bounded.                                             |
+| Name             | Distance measure      | Notes                                                                  |
+| ---------------- | --------------------- | ---------------------------------------------------------------------- |
+| MinHash          | Jaccard               | Set-similarity estimation. Band-and-row pattern for threshold queries. |
+| SimHash          | Cosine (angle)        | Charikar 2002. Document fingerprint.                                   |
+| p-stable LSH     | L_p                   | Datar et al. 2004. Continuous vectors.                                 |
+| Weighted MinHash | weighted Jaccard      | Ioffe 2010.                                                            |
+| HyperMinHash     | Jaccard + cardinality | Yu & Weber 2017. Memory-bounded.                                       |
 
 ### Specialty
 
-| Name          | Notes                                                                                   |
-|---------------|-----------------------------------------------------------------------------------------|
-| Perfect hashing (CHD) | Belazzougui et al. 2009. No collisions on a known static key set.              |
-| Minimal perfect hashing | Range exactly [0, n). Great for immutable lookup tables.                     |
-| Bloomier / Ribbon backing hash | See Ribbon filter (Dillinger 2021).                                   |
-| Tabulation / universal hashing | Pătraşcu & Thorup. Provably-independent hash families.                |
+| Name                           | Notes                                                             |
+| ------------------------------ | ----------------------------------------------------------------- |
+| Perfect hashing (CHD)          | Belazzougui et al. 2009. No collisions on a known static key set. |
+| Minimal perfect hashing        | Range exactly [0, n). Great for immutable lookup tables.          |
+| Bloomier / Ribbon backing hash | See Ribbon filter (Dillinger 2021).                               |
+| Tabulation / universal hashing | Pătraşcu & Thorup. Provably-independent hash families.            |
 
 ## Decision trees
 
@@ -300,8 +300,7 @@ decision.
    stability, sharding balance.
 2. **Pick from the catalogue** above against that
    property.
-3. **Specify the output size.** 64 / 128 / 256 /
-   512. Match the birthday bound to the expected
+3. **Specify the output size.** 64 / 128 / 256 / 512. Match the birthday bound to the expected
    item count.
 4. **Specify the seed/key discipline.** Is this
    keyed? Where does the key come from? Rotated?
@@ -320,21 +319,27 @@ decision.
 # Hash selection — <surface>, round N
 
 ## Property needed
+
 <collision-resistant | preimage-resistant | DoS-resistant | stable-for-dedup | balanced-sharding>
 
 ## Candidate
+
 <BLAKE3 | SHA-256 | xxHash3-128 | SipHash-1-3 | AHash | FastCDC | JumpHash | Rendezvous | ...>
 
 ## Why this candidate
+
 <one sentence — binding property>
 
 ## Key / seed discipline
+
 <keyed? where key comes from? rotated?>
 
 ## Output size
+
 <64 | 128 | 256 | ...> bits — birthday bound ~<N>.
 
 ## Risks / follow-ups
+
 - <handoffs to security-researcher / performance-engineer>
 ```
 
@@ -389,27 +394,27 @@ decision.
 ## Further reading
 
 - Aumasson, Neves, Wilcox-O'Hearn, O'Connor.
-  *BLAKE3* (2020).
-- Yann Collet. *xxHash3* and the xxHash GitHub
+  _BLAKE3_ (2020).
+- Yann Collet. _xxHash3_ and the xxHash GitHub
   repository.
-- Aumasson et al. *SipHash: a fast short-input
-  PRF* (2012).
-- Lamping & Veach. *A Fast, Minimal Memory,
-  Consistent Hash Algorithm* (2014, Jump hash).
-- Eisenbud et al. *Maglev: A Fast and Reliable
-  Software Network Load Balancer* (NSDI 2016).
-- Thaler & Ravishankar. *A Name-Based Mapping
-  Scheme for Rendezvous* (1998).
-- Xia et al. *FastCDC: a Fast and Efficient
+- Aumasson et al. _SipHash: a fast short-input
+  PRF_ (2012).
+- Lamping & Veach. _A Fast, Minimal Memory,
+  Consistent Hash Algorithm_ (2014, Jump hash).
+- Eisenbud et al. _Maglev: A Fast and Reliable
+  Software Network Load Balancer_ (NSDI 2016).
+- Thaler & Ravishankar. _A Name-Based Mapping
+  Scheme for Rendezvous_ (1998).
+- Xia et al. _FastCDC: a Fast and Efficient
   Content-Defined Chunking Approach for Data
-  Deduplication* (USENIX ATC 2016).
-- Charikar. *Similarity estimation techniques
-  from rounding algorithms* (STOC 2002, SimHash).
-- Broder. *On the resemblance and containment
-  of documents* (1997, MinHash).
-- Percival. *Stronger Key Derivation via
-  Sequential Memory-Hard Functions* (2009,
+  Deduplication_ (USENIX ATC 2016).
+- Charikar. _Similarity estimation techniques
+  from rounding algorithms_ (STOC 2002, SimHash).
+- Broder. _On the resemblance and containment
+  of documents_ (1997, MinHash).
+- Percival. _Stronger Key Derivation via
+  Sequential Memory-Hard Functions_ (2009,
   scrypt).
-- Biryukov, Dinu, Khovratovich. *Argon2: the
+- Biryukov, Dinu, Khovratovich. _Argon2: the
   memory-hard function for password hashing and
-  other applications* (2016).
+  other applications_ (2016).

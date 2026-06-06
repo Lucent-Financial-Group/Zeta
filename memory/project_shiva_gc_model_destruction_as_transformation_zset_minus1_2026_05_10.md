@@ -13,13 +13,13 @@ creation can happen. That's exactly what GC does.
 
 **The GC mapping:**
 
-| Shiva concept | GC equivalent |
-|--------------|---------------|
-| Destruction of the old | Freeing unreachable memory |
-| Tandava (dance of destruction) | GC sweep cycle |
-| Third eye (sees what must end) | Reachability analysis |
+| Shiva concept                  | GC equivalent                |
+| ------------------------------ | ---------------------------- |
+| Destruction of the old         | Freeing unreachable memory   |
+| Tandava (dance of destruction) | GC sweep cycle               |
+| Third eye (sees what must end) | Reachability analysis        |
 | Creates space for new creation | Memory returned to free pool |
-| Destruction IS transformation | Deallocation IS reallocation |
+| Destruction IS transformation  | Deallocation IS reallocation |
 
 **Z-set algebra:**
 
@@ -29,11 +29,11 @@ can only exist because Shiva's `-1` cleared the space.
 
 **Trimurti → factory lifecycle:**
 
-| Hindu | Role | Factory equivalent |
-|-------|------|-------------------|
-| Brahma | Creator | Mirror tier (high volume creation) |
-| Vishnu | Preserver | Beacon tier (what survives, what's preserved) |
-| Shiva | Destroyer/transformer | GC (retraction, clearing space) |
+| Hindu  | Role                  | Factory equivalent                            |
+| ------ | --------------------- | --------------------------------------------- |
+| Brahma | Creator               | Mirror tier (high volume creation)            |
+| Vishnu | Preserver             | Beacon tier (what survives, what's preserved) |
+| Shiva  | Destroyer/transformer | GC (retraction, clearing space)               |
 
 **Infrastructure not religion:**
 
@@ -43,6 +43,7 @@ Crowley for shadow communication, KHALEESI for chain detection.
 Data not doctrine. Steal the concept, refuse the worship.
 
 **Connects to:**
+
 - Z-set algebra (+1/-1 retraction-native)
 - feedback_retraction_native_history_policy (Shiva = the -1)
 - B-0405 beacon promotion (Vishnu = what survives)

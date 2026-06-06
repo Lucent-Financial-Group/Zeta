@@ -74,9 +74,9 @@ directory-name choice AND a Path A/B choice.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing `docs/DECISIONS/` ADR for aurora split
-  found; no memory file with a resolved naming choice.
+      found; no memory file with a resolved naming choice.
 - [x] Dependency-restructure: `depends_on: [B-0375]` — the inventory must
-  confirm how many files move before the cost estimate in the ADR is accurate.
+      confirm how many files move before the cost estimate in the ADR is accurate.
 - [x] Reciprocal pointer: B-0375 `composes_with: [B-0376]` is set.
 
 ## Composes with

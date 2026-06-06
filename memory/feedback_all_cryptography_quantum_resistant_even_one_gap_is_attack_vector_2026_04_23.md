@@ -45,8 +45,8 @@ The rule applies to:
 
 ### 1. Even one classical gap is an attack vector
 
-Aaron's framing is load-bearing: *"even one place we don't
-use it could be a place for attack."* Adversaries compose
+Aaron's framing is load-bearing: _"even one place we don't
+use it could be a place for attack."_ Adversaries compose
 weaknesses across a system:
 
 - **Downgrade attacks** — adversary forces the weakest
@@ -78,6 +78,7 @@ crypto infrastructure. His 2026-04-23 directive is not
 hypothetical — it's the rule he'd apply to his own work.
 
 ### 3. Composes with the existing lattice-based-crypto
+
 research pointer
 
 Aaron 2026-04-19 already commissioned a lattice-based
@@ -106,9 +107,9 @@ Minimal crypto is in-tree today:
 - No key exchange, no signatures, no encrypted
   storage, no encrypted wire protocols.
 
-Aaron's framing acknowledges this: *"we really don't
+Aaron's framing acknowledges this: _"we really don't
 have much any encryption yet so this is just a note for
-the future when we do."* The rule is **forward-looking**;
+the future when we do."_ The rule is **forward-looking**;
 no current codebase is in violation.
 
 ## How to apply
@@ -159,7 +160,7 @@ rule.
 
 - **Not a demand to retrofit** — the factory currently
   has no crypto in violation. This rule applies to
-  *adoption*, not to pre-existing code (of which there
+  _adoption_, not to pre-existing code (of which there
   is essentially none).
 - **Not a ban on content-addressable hashes** — SHA-256
   for content addressing, BLAKE3 for fast hashing,
@@ -173,9 +174,9 @@ rule.
 - **Not a claim of expertise** — this rule captures
   Aaron's direction; detailed PQC implementation depth
   remains in the lattice-based-crypto research pointer
-  + future expert-skill work (`security-researcher` /
-  `threat-model-critic` roles are the right home for
-  detailed review).
+  - future expert-skill work (`security-researcher` /
+    `threat-model-critic` roles are the right home for
+    detailed review).
 - **Not a requirement to ship PQC now** — the mandate
   is forward-looking per Aaron's phrasing. First crypto
   adoption lands under this rule; subsequent adoptions

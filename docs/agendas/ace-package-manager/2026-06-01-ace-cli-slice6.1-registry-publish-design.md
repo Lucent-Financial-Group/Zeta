@@ -182,16 +182,16 @@ package dir → [scan + shape-guard + packageHash + joinUrl] → packages map
 
 ## Error handling
 
-| Situation | Behavior |
-| --- | --- |
-| Missing `--packages` / `--base-url` / `--key` | Parse error (exit non-zero) |
-| `--key` PEM unreadable / not a valid private key | Hard error |
-| `--packages` dir missing / no `*.json` / no valid packages | Hard error ("nothing to publish") |
-| A `*.json` that isn't a well-formed `AcePackage` | Skip + stderr warning (not fatal) |
-| Duplicate `name@version` across the dir | Hard error (ambiguous index entry) |
-| Computed `sequence <= prev` | Hard error (anti-rollback; unreachable with `+1`) |
-| Round-trip self-verify fails (parse or signature) | Hard error — **index NOT written** |
-| Write to `--out` fails | Hard error |
+| Situation                                                  | Behavior                                          |
+| ---------------------------------------------------------- | ------------------------------------------------- |
+| Missing `--packages` / `--base-url` / `--key`              | Parse error (exit non-zero)                       |
+| `--key` PEM unreadable / not a valid private key           | Hard error                                        |
+| `--packages` dir missing / no `*.json` / no valid packages | Hard error ("nothing to publish")                 |
+| A `*.json` that isn't a well-formed `AcePackage`           | Skip + stderr warning (not fatal)                 |
+| Duplicate `name@version` across the dir                    | Hard error (ambiguous index entry)                |
+| Computed `sequence <= prev`                                | Hard error (anti-rollback; unreachable with `+1`) |
+| Round-trip self-verify fails (parse or signature)          | Hard error — **index NOT written**                |
+| Write to `--out` fails                                     | Hard error                                        |
 
 ## Testing
 

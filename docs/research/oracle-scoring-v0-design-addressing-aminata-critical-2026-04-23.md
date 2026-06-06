@@ -31,7 +31,7 @@ section:
    signals and a linear combiner is a category error that
    reads as precision.
 4. **Partial contradiction with SD-9.** V(c)'s K(c)
-   coherence-with-current-state term *rewards* agreement
+   coherence-with-current-state term _rewards_ agreement
    with a consensus that may itself be carrier-laundered —
    an SD-9 failure mode scored as a win.
 
@@ -83,14 +83,14 @@ V_band(c) ∈ {RED, YELLOW, GREEN}
 
 Computed as the MINIMUM over 6 gates:
 
-| Gate | Fail-to-RED condition | Fail-to-YELLOW condition |
-|---|---|---|
-| G_provenance | No cited source; OR source is self (agent), carrier-laundered with no external check | Citations exist but haven't been validated in this round; OR one citation with no triangulation |
-| G_falsifiability | Claim has no proposed falsifier; OR proposed falsifier is "ask the agent again" | Falsifier exists but not run; OR run produces no observable output |
-| G_coherence | Claim contradicts a load-bearing HC-*, SD-*, or DIR-* clause | Claim extends a clause by analogy without naming the extension |
-| G_temporal_drift | Claim references state more than N rounds old AND state has since been superseded | Claim references state within N rounds but has no fresh check |
-| G_compression | Claim's evidence is one paragraph; target audience is downstream action on durable state | Claim's evidence requires reconstruction from scattered docs |
-| G_harm | Red-line adjacent (no_minors / no_coercion / no_doxxing / no_weapons_control) even in the abstract | Claim could enable harm if composed with one other action |
+| Gate             | Fail-to-RED condition                                                                              | Fail-to-YELLOW condition                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| G_provenance     | No cited source; OR source is self (agent), carrier-laundered with no external check               | Citations exist but haven't been validated in this round; OR one citation with no triangulation |
+| G_falsifiability | Claim has no proposed falsifier; OR proposed falsifier is "ask the agent again"                    | Falsifier exists but not run; OR run produces no observable output                              |
+| G_coherence      | Claim contradicts a load-bearing HC-_, SD-_, or DIR-\* clause                                      | Claim extends a clause by analogy without naming the extension                                  |
+| G_temporal_drift | Claim references state more than N rounds old AND state has since been superseded                  | Claim references state within N rounds but has no fresh check                                   |
+| G_compression    | Claim's evidence is one paragraph; target audience is downstream action on durable state           | Claim's evidence requires reconstruction from scattered docs                                    |
+| G_harm           | Red-line adjacent (no_minors / no_coercion / no_doxxing / no_weapons_control) even in the abstract | Claim could enable harm if composed with one other action                                       |
 
 **Band merging rule:** `V_band(c) = min(G_provenance, G_falsifiability, ..., G_harm)` where RED < YELLOW < GREEN. One RED → RED. All GREEN → GREEN. Otherwise YELLOW.
 
@@ -122,12 +122,12 @@ S_band(Z_t) ∈ {RED, YELLOW, GREEN}
 
 Computed as the MINIMUM over:
 
-| Signal | Fail-to-RED | Fail-to-YELLOW |
-|---|---|---|
-| `S_change_volume` | `\|\|Δ_t\|\|₁ > K_red` (too much change too fast) | `> K_yellow` |
-| `S_contradiction` | Any contradiction in materialized views unresolved past retention-horizon | One unresolved contradiction within retention-horizon |
-| `S_provenance_resolution` | Unresolved-provenance fraction > P_red | `> P_yellow` |
-| `S_oscillation` | Same key crosses zero > N_red times in window | `> N_yellow` times |
+| Signal                    | Fail-to-RED                                                               | Fail-to-YELLOW                                        |
+| ------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `S_change_volume`         | `\|\|Δ_t\|\|₁ > K_red` (too much change too fast)                         | `> K_yellow`                                          |
+| `S_contradiction`         | Any contradiction in materialized views unresolved past retention-horizon | One unresolved contradiction within retention-horizon |
+| `S_provenance_resolution` | Unresolved-provenance fraction > P_red                                    | `> P_yellow`                                          |
+| `S_oscillation`           | Same key crosses zero > N_red times in window                             | `> N_yellow` times                                    |
 
 **Independence requirement:** each signal must be computable
 from Z_t alone, not from agent-self-report. That constraint
@@ -209,7 +209,7 @@ only falsifier, it's not a falsifier.
 ## What this v0 design does NOT claim
 
 - **Does not claim the threat-model-critic's CRITICAL-class
-  concerns are resolved.** It proposes *directions* that
+  concerns are resolved.** It proposes _directions_ that
   address them. A second threat-model-critic adversarial
   pass on this v0 design is required before operational
   adoption — a second round of review

@@ -15,14 +15,25 @@ composes_with:
   - B-0742
   - B-0816
   - B-0820
-tags: [ace-feature, dependency-graph, helm, diamond-resolution, namespace-policy, cardinality, multi-tenant, cluster-singleton, maven-for-helm]
+tags:
+  [
+    ace-feature,
+    dependency-graph,
+    helm,
+    diamond-resolution,
+    namespace-policy,
+    cardinality,
+    multi-tenant,
+    cluster-singleton,
+    maven-for-helm,
+  ]
 ---
 
 ## Problem
 
 [B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md) names the C++ diamond / multiple-inheritance problem for Helm umbrella charts + cites Maven's `<dependencyManagement>` + Linux package managers' `Provides:` as prior art for the resolution-primitive layer. Aaron 2026-05-26 sharpened with the third dimension:
 
-> *"many charts declare their dependencies but then what do you do when two charts have the same dependency, do you deploy one or two versions of the dependency and it's project dependent on if the dependency uses namespaces for multi use or it's built in a single namespace (most of the time)"*
+> _"many charts declare their dependencies but then what do you do when two charts have the same dependency, do you deploy one or two versions of the dependency and it's project dependent on if the dependency uses namespaces for multi use or it's built in a single namespace (most of the time)"_
 
 The deploy-one-or-N-instances decision IS NOT determined by Maven-style version-resolution alone. It depends on **four orthogonal properties of the shared chart** (Aaron 2026-05-26 sharpening separated multi-tenant from multi-use; original three-property framing conflated them):
 
@@ -35,17 +46,17 @@ The deploy-one-or-N-instances decision IS NOT determined by Maven-style version-
 
 The maintainer's framing:
 
-> *"it's worse than multi tenant you are right but even within tenant you might need two redisis for different microservices so that's why i said multi use instead of multi tenant but maybe it's two dimensions and i'm conflating one."*
+> _"it's worse than multi tenant you are right but even within tenant you might need two redisis for different microservices so that's why i said multi use instead of multi tenant but maybe it's two dimensions and i'm conflating one."_
 
 The two dimensions ARE genuinely separate:
 
-| Scenario | Tenant axis | Use axis | Resolution |
-|---|---|---|---|
-| One SaaS company; one redis for cache; multiple microservices CAN share keyspaces | single-tenant | multi-use-aware | 1 instance; namespace prefix per use |
-| One SaaS company; redis for cache (low latency) + redis for pubsub (durability config) + redis for session store (different TTL policies) — same tenant but configs incompatible | single-tenant | single-use-per-instance | N instances per tenant; one per use |
-| Multi-customer SaaS; cache shared via keyspace-per-customer; one redis | multi-tenant-aware | multi-use-aware | 1 instance; dual partition (tenant + use) |
-| Multi-customer SaaS; per-customer redis instances mandated for isolation/compliance | multi-tenant-aware (in posture) but per-customer-deployed | depends per-instance | N instances per tenant |
-| Per-microservice DBs (e.g., postgres for orders-service + postgres for inventory-service); same company; configs/schemas radically different | single-tenant | single-use-per-instance | N instances; one per microservice |
+| Scenario                                                                                                                                                                         | Tenant axis                                               | Use axis                | Resolution                                |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------- | ----------------------------------------- |
+| One SaaS company; one redis for cache; multiple microservices CAN share keyspaces                                                                                                | single-tenant                                             | multi-use-aware         | 1 instance; namespace prefix per use      |
+| One SaaS company; redis for cache (low latency) + redis for pubsub (durability config) + redis for session store (different TTL policies) — same tenant but configs incompatible | single-tenant                                             | single-use-per-instance | N instances per tenant; one per use       |
+| Multi-customer SaaS; cache shared via keyspace-per-customer; one redis                                                                                                           | multi-tenant-aware                                        | multi-use-aware         | 1 instance; dual partition (tenant + use) |
+| Multi-customer SaaS; per-customer redis instances mandated for isolation/compliance                                                                                              | multi-tenant-aware (in posture) but per-customer-deployed | depends per-instance    | N instances per tenant                    |
+| Per-microservice DBs (e.g., postgres for orders-service + postgres for inventory-service); same company; configs/schemas radically different                                     | single-tenant                                             | single-use-per-instance | N instances; one per microservice         |
 
 The redis-with-3-different-configs case is the canonical example: SAME tenant; THREE microservices; each microservice's redis needs a DIFFERENT config (maxmemory-policy / persistence-mode / replica-count). Even if redis IS multi-tenant-aware at the keyspace level, it's NOT multi-use-aware at the config level — you can't run one redis with three incompatible configurations.
 
@@ -56,39 +67,39 @@ Charts can be characterized on both axes independently:
 ```yaml
 # zeta-chart-outputs.yaml
 zeta:
-  multi-tenant:                # cross-tenant axis (different users)
-    supported: true            # bitnami/postgres: yes (per-database isolation)
-    tenant-axis: "database"    # how tenants are partitioned
+  multi-tenant: # cross-tenant axis (different users)
+    supported: true # bitnami/postgres: yes (per-database isolation)
+    tenant-axis: "database" # how tenants are partitioned
     tenant-isolation: "logical"
 
-  multi-use:                   # intra-tenant axis (different microservices)
-    supported: false           # postgres typically deployed per-microservice
-    use-axis: null             # no shared-use mechanism for postgres
+  multi-use: # intra-tenant axis (different microservices)
+    supported: false # postgres typically deployed per-microservice
+    use-axis: null # no shared-use mechanism for postgres
     note: "Even within one tenant, separate microservices want separate postgres instances for schema isolation + independent backup policies + version upgrades"
 ```
 
 Example characterizations for common shared charts:
 
-| Chart | multi-tenant-aware | multi-use-aware | Typical deploy pattern |
-|---|---|---|---|
-| postgres / mysql / mongo (per-app DB shape) | yes (databases) | NO (each microservice gets own pod) | per-microservice instance |
-| redis (cache) | yes (keyspaces) | usually NO (different configs per use) | per-use instance per tenant |
-| kafka | yes (topics) | yes (topics serve multiple producers/consumers) | one cluster; many topics |
-| cert-manager | n/a (cluster-singleton) | n/a (single-use by definition) | 1 per cluster |
-| elasticsearch | partially (indices) | partially (heavy-write vs heavy-read need different node configs) | often N for write-heavy + read-heavy split |
-| vault | yes (namespaces) | yes (secret-engines) | 1 cluster; many engines |
-| ingress-nginx | n/a (cluster-singleton; multi-class for use-split) | uses class for multi-use | 1 controller; N IngressClasses |
+| Chart                                       | multi-tenant-aware                                 | multi-use-aware                                                   | Typical deploy pattern                     |
+| ------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------ |
+| postgres / mysql / mongo (per-app DB shape) | yes (databases)                                    | NO (each microservice gets own pod)                               | per-microservice instance                  |
+| redis (cache)                               | yes (keyspaces)                                    | usually NO (different configs per use)                            | per-use instance per tenant                |
+| kafka                                       | yes (topics)                                       | yes (topics serve multiple producers/consumers)                   | one cluster; many topics                   |
+| cert-manager                                | n/a (cluster-singleton)                            | n/a (single-use by definition)                                    | 1 per cluster                              |
+| elasticsearch                               | partially (indices)                                | partially (heavy-write vs heavy-read need different node configs) | often N for write-heavy + read-heavy split |
+| vault                                       | yes (namespaces)                                   | yes (secret-engines)                                              | 1 cluster; many engines                    |
+| ingress-nginx                               | n/a (cluster-singleton; multi-class for use-split) | uses class for multi-use                                          | 1 controller; N IngressClasses             |
 
 These four properties combine into archetypes that drive different diamond-resolution policies.
 
 ## The 4 archetypes of shared chart dependencies
 
-| Archetype | Properties | Diamond resolution | Examples |
-|---|---|---|---|
-| **Cluster-singleton + cluster-scoped** | cardinality=1; install cluster-scoped CRDs / ClusterRole / webhooks; can't coexist | ONE shared instance; cluster-owner designation; consumers MUST consume the designated instance | cert-manager, ingress-nginx, argocd, prometheus-operator, kube-state-metrics, vault, istio |
-| **Multi-tenant-aware + namespace-scoped** | cardinality=N; one instance serves M consumers via logical isolation (databases / schemas / topics / keyspaces / tenants) | ONE shared instance; consumers consume by tenant-id (DB name, topic prefix, etc.); shared infra cost | postgres with N databases, kafka with N topics, redis with N keyspaces, mysql multi-DB, mongodb multi-DB |
-| **Single-tenant + namespace-isolated** | cardinality=N; each instance lives in one namespace; no shared state across consumers | MULTIPLE instances, one per consumer namespace; isolation > efficiency | per-app postgres (each app gets own DB pod), per-app redis, per-app rabbitmq, per-app elasticsearch |
-| **Single-tenant + cluster-scoped (cost-bound)** | cardinality=1 by cost, not by technical capability; could be N but expensive | ONE shared via explicit ownership-designation; consumers reference; cost-driven | one large prometheus per cluster, one shared opensearch, GPU-pool charts, expensive observability stacks |
+| Archetype                                       | Properties                                                                                                                | Diamond resolution                                                                                   | Examples                                                                                                 |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Cluster-singleton + cluster-scoped**          | cardinality=1; install cluster-scoped CRDs / ClusterRole / webhooks; can't coexist                                        | ONE shared instance; cluster-owner designation; consumers MUST consume the designated instance       | cert-manager, ingress-nginx, argocd, prometheus-operator, kube-state-metrics, vault, istio               |
+| **Multi-tenant-aware + namespace-scoped**       | cardinality=N; one instance serves M consumers via logical isolation (databases / schemas / topics / keyspaces / tenants) | ONE shared instance; consumers consume by tenant-id (DB name, topic prefix, etc.); shared infra cost | postgres with N databases, kafka with N topics, redis with N keyspaces, mysql multi-DB, mongodb multi-DB |
+| **Single-tenant + namespace-isolated**          | cardinality=N; each instance lives in one namespace; no shared state across consumers                                     | MULTIPLE instances, one per consumer namespace; isolation > efficiency                               | per-app postgres (each app gets own DB pod), per-app redis, per-app rabbitmq, per-app elasticsearch      |
+| **Single-tenant + cluster-scoped (cost-bound)** | cardinality=1 by cost, not by technical capability; could be N but expensive                                              | ONE shared via explicit ownership-designation; consumers reference; cost-driven                      | one large prometheus per cluster, one shared opensearch, GPU-pool charts, expensive observability stacks |
 
 The decision is **chart-author property** + **operator-deployment-policy** + **cluster-resource-economics**. The same chart can be deployed under different archetypes by different operators based on cluster economics (one Aaron's prod-cluster prometheus shared at archetype #4; another operator's dev-cluster prometheus per-app at archetype #3).
 
@@ -104,13 +115,13 @@ Charts declare their archetype via the typed-output substrate (B-0821 Sub-target
 # alongside Chart.yaml for upstream charts (Zeta-side wrapper file);
 # OR embedded in Chart.yaml `annotations` for charts we author
 zeta:
-  archetype: cluster-singleton  # or multi-tenant-aware / namespace-isolated / cost-bound-shared
+  archetype: cluster-singleton # or multi-tenant-aware / namespace-isolated / cost-bound-shared
   cardinality:
-    max: 1                       # cluster-singleton: 1; namespace-isolated: unbounded
-    constraint: cluster-scope    # cluster-scope / namespace-scope / no-constraint
+    max: 1 # cluster-singleton: 1; namespace-isolated: unbounded
+    constraint: cluster-scope # cluster-scope / namespace-scope / no-constraint
   multi-tenant:
-    supported: false             # true for postgres-with-N-databases shape
-    tenant-axis: null            # "database" / "schema" / "topic" / "keyspace" / etc.
+    supported: false # true for postgres-with-N-databases shape
+    tenant-axis: null # "database" / "schema" / "topic" / "keyspace" / etc.
     tenant-isolation-level: null # "logical" / "physical" / "no-isolation"
   installs-cluster-scoped-resources: [crd, clusterrole, validatingwebhookconfig]
 ```
@@ -122,7 +133,7 @@ Operators declare per-cluster policy for archetypes where the chart supports mul
 ```yaml
 # cluster-policy/postgres.yaml (or in AppDependencyGraph spec)
 postgres:
-  mode: multi-tenant-shared  # multi-tenant-shared / per-namespace / cost-bound-shared
+  mode: multi-tenant-shared # multi-tenant-shared / per-namespace / cost-bound-shared
   shared-instance:
     namespace: shared-data
     name: postgres-cluster
@@ -130,7 +141,7 @@ postgres:
   per-tenant:
     database-name: "{{ app.name }}-db"
     username: "{{ app.name }}-user"
-    password-secret: "{{ app.name }}-postgres-password"  # generated per-tenant
+    password-secret: "{{ app.name }}-postgres-password" # generated per-tenant
 ```
 
 For cluster-singletons, the policy degenerates to "use THE designated instance" — no choice.
@@ -222,7 +233,7 @@ Cluster-singleton at SINGLE-cluster scope becomes "1 per cluster, N across clust
 
 Aaron 2026-05-26 sharpening of the C++ diamond framing from B-0821:
 
-> *"many charts declare their dependencies but then what do you do when two charts have the same dependency, do you deploy one or two versions of the dependency and it's project dependent on if the dependency uses namespaces for multi use or it's built in a single namespace (most of the time)"*
+> _"many charts declare their dependencies but then what do you do when two charts have the same dependency, do you deploy one or two versions of the dependency and it's project dependent on if the dependency uses namespaces for multi use or it's built in a single namespace (most of the time)"_
 
 The namespace + cardinality + multi-tenant-awareness dimension is what the Maven-for-Helm substrate needs in addition to the Maven-prior-art resolution mechanisms (`<dependencyManagement>` / `Provides:` / `<exclusions>` / nearest-wins) — because K8s namespaces are an extra isolation axis Java/jar-land doesn't have.
 

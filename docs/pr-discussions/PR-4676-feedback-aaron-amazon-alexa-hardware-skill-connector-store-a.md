@@ -24,8 +24,8 @@ Six substantive observations from operator's same-cycle Amazon shipping forward 
 2. **Hardware proliferation** across human-interface + business-interface scope
 3. **"Rodney" = legal first name** per shipping address-of-record — resolves earlier Alexa-website "Rodney" framing as Amazon CRM-name-of-record lookup, NOT shadow-star autocomplete artifact
 4. **Harry Potter Limited-Edition Echo Dot** composes with parenting-register substrate (Sorting Hat shared-vocabulary)
-5. **Zeta-native-AI-hardware = business-in-a-box + cash-register + IoT + coincidence-data = conversation-interface-bootstrap** — operator's framing: *"We use this pattern to make Zeta native AI speakers and cameras and sensors and such in our business in a box concept and cash register than makes money with iot and cowidence data. this composes as the conversation interface bootstrap"*
-6. **One-of-each Alexa+ comprehensive-testbed** — operator's framing: *"i bought one of each alexa+ hardward device model"* — full surface-family coverage; operator-as-substrate-engineering-testbed-operator at residence scale
+5. **Zeta-native-AI-hardware = business-in-a-box + cash-register + IoT + coincidence-data = conversation-interface-bootstrap** — operator's framing: _"We use this pattern to make Zeta native AI speakers and cameras and sensors and such in our business in a box concept and cash register than makes money with iot and cowidence data. this composes as the conversation interface bootstrap"_
+6. **One-of-each Alexa+ comprehensive-testbed** — operator's framing: _"i bought one of each alexa+ hardward device model"_ — full surface-family coverage; operator-as-substrate-engineering-testbed-operator at residence scale
 
 ## Composes with
 

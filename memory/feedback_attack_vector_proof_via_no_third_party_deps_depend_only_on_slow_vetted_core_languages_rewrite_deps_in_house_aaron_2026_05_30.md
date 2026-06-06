@@ -7,8 +7,8 @@ created: 2026-05-30
 
 ## Aaron's exact words (2026-05-30)
 
-> *"do you know how slow languages move if we don't pull in 3rd parties or rewrite the ones we
-> depending on over time, we will be attack vector proof"*
+> _"do you know how slow languages move if we don't pull in 3rd parties or rewrite the ones we
+> depending on over time, we will be attack vector proof"_
 
 ## The principle
 

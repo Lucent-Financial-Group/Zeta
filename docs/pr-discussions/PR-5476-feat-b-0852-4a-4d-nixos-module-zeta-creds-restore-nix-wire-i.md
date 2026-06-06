@@ -51,6 +51,7 @@ Two commits bundled — the NixOS module + the common.nix import — together co
 This PR completes the NixOS-side of the USB credential persistence chain by introducing a new `zeta-creds-restore` module (boot-time decrypt + restore from `/esp/zeta-creds.enc`) and wiring it into the cluster-wide `common.nix` module import set so every node has the same opt-in surface.
 
 **Changes:**
+
 - Adds `full-ai-cluster/nixos/modules/zeta-creds-restore.nix`, defining `zeta.credsRestore.*` options and a `zeta-creds-restore.service` oneshot unit.
 - Imports the new module from `full-ai-cluster/nixos/modules/common.nix` so it’s available across cluster node types.
 
@@ -58,10 +59,10 @@ This PR completes the NixOS-side of the USB credential persistence chain by intr
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                 | Description                                                              |
+| ---------------------------------------------------- | ------------------------------------------------------------------------ |
 | full-ai-cluster/nixos/modules/zeta-creds-restore.nix | New NixOS module + systemd unit to restore credentials from ESP at boot. |
-| full-ai-cluster/nixos/modules/common.nix | Adds the new module to the shared cluster module import list. |
+| full-ai-cluster/nixos/modules/common.nix             | Adds the new module to the shared cluster module import list.            |
 
 ## Review threads
 

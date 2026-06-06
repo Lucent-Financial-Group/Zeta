@@ -6,8 +6,8 @@ ace is the package manager. These rules govern ace operation.
 
 ## §1 Scope
 
-ace governs the *package manager* (how the Lucent stack is distributed
-and versioned), not the *factory* (Forge) or the *database* (Zeta).
+ace governs the _package manager_ (how the Lucent stack is distributed
+and versioned), not the _factory_ (Forge) or the _database_ (Zeta).
 
 ## §2 Ownership
 
@@ -32,13 +32,13 @@ All tooling is `.ts` run via `bun`. Shell (`.sh`) only in `tools/setup/`.
 
 Every AI-authored commit must include a `Co-Authored-By` trailer.
 
-| Harness | Trailer |
-|---------|---------|
-| Claude Code | `Co-Authored-By: Claude <noreply@anthropic.com>` |
-| OpenAI Codex | `Co-Authored-By: Codex <noreply@openai.com>` |
-| Cursor (Grok) | `Co-Authored-By: Grok <noreply@x.ai>` |
-| Kiro (Qwen) | `Co-Authored-By: Kiro <noreply@kiro.dev>` |
-| Human | git author sufficient |
+| Harness       | Trailer                                          |
+| ------------- | ------------------------------------------------ |
+| Claude Code   | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| OpenAI Codex  | `Co-Authored-By: Codex <noreply@openai.com>`     |
+| Cursor (Grok) | `Co-Authored-By: Grok <noreply@x.ai>`            |
+| Kiro (Qwen)   | `Co-Authored-By: Kiro <noreply@kiro.dev>`        |
+| Human         | git author sufficient                            |
 
 ## §7 PR discipline
 
@@ -50,4 +50,4 @@ Chat and TaskUpdate are weather. Committed git history is substrate.
 
 ---
 
-*Rationale lives in `.claude/rules/` and `memory/` in the Forge repo.*
+_Rationale lives in `.claude/rules/` and `memory/` in the Forge repo._

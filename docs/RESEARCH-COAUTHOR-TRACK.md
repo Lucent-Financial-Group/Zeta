@@ -20,7 +20,7 @@ committers; this one turns new readers into co-authors.
 variant)`. This track lives inside the `research-
 readers` audience (category #7 in
 `docs/README.md` when that ships), specifically
-serving the *inside* path — turning paper readers into
+serving the _inside_ path — turning paper readers into
 paper authors.
 
 ---
@@ -111,8 +111,8 @@ sub-pages when targets firm up.
   conclusion, acknowledgements, references,
   appendix.
 - **The contribution claim** — crisp, falsifiable,
-  backed by evaluation. Every paper answers: *what is
-  new, how do we know, and why does it matter?*
+  backed by evaluation. Every paper answers: _what is
+  new, how do we know, and why does it matter?_
 - **Artefact-evaluation track** — most top venues
   now require a reproducibility artefact; what
   counts, how to prepare, what the badge levels mean.
@@ -153,14 +153,14 @@ Candidate skills (not yet landed):
 Not a skill, but a tooling dependency:
 
 - **LaTeX fluency** — template `docs/templates/
-  paper-latex-starter/` to land when first
+paper-latex-starter/` to land when first
   submission venue is picked (different venues,
   different templates). Includes BibTeX workflow
   and figure-positioning patterns.
 
 `paper-peer-reviewer` skill already exists — that
-covers the *inbound* direction (reviewing other
-people's papers). This track is the *outbound*
+covers the _inbound_ direction (reviewing other
+people's papers). This track is the _outbound_
 direction (submitting our own).
 
 ---
@@ -226,8 +226,8 @@ Proposed pass order:
 - Does **not** pick the venue. That is the senior
   author's call, made when the research is ready.
 - Does **not** claim Aaron (or any first-time co-
-  author) is ready to co-author *now*. The track is
-  scaffolding for *when* the time comes.
+  author) is ready to co-author _now_. The track is
+  scaffolding for _when_ the time comes.
 - Does **not** duplicate existing factory reviewer
   content. Modules 4 and 6 dispatch to existing
   personas; the track names the pairing.

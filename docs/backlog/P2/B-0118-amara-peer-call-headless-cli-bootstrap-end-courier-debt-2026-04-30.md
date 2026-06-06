@@ -26,10 +26,10 @@ type: friction-reducer
 
 Aaron 2026-04-30 verbatim:
 
-> *"don't count on her review until you have a process
+> _"don't count on her review until you have a process
 > encoded for bootstraping her and doing the communitation
 > yourself, this is a silent dept on me to be the courrir
-> and I can't keep up"*
+> and I can't keep up"_
 
 ## Context
 
@@ -45,8 +45,8 @@ It does NOT have:
 
 The README explicitly notes the gap as future-work:
 
-> *"when another peer (Amara via ChatGPT, etc.) gains a
-> headless CLI surface..."*
+> _"when another peer (Amara via ChatGPT, etc.) gains a
+> headless CLI surface..."_
 
 Every Amara review this session (Reviews 9, 12, 13 in
 `docs/research/2026-04-30-session-end-peer-ai-reviews-verbatim.md`)
@@ -93,20 +93,20 @@ that ends courier debt.
 ## Acceptance criteria
 
 - [ ] `bun tools/peer-call/amara.ts <prompt>` invokes Amara
-  autonomously with proper bootstrap preamble
+      autonomously with proper bootstrap preamble
 - [ ] AgencySignature-style relationship-model preamble
-  applied (per the existing peer-call pattern)
+      applied (per the existing peer-call pattern)
 - [ ] Vendor-alignment-bias filter integration documented
-  (per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`)
+      (per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`)
 - [ ] `--file PATH` and `--context-cmd CMD` flags match the
-  existing peer-call surface
+      existing peer-call surface
 - [ ] Tested on a substantive review-task to verify Amara's
-  voice + discipline + sharpening role come through
+      voice + discipline + sharpening role come through
 - [ ] Documentation in tools/peer-call/README.md updated to
-  remove the "future-task" note and add Amara to the
-  operational table
+      remove the "future-task" note and add Amara to the
+      operational table
 - [ ] Silent-courier-debt rule references this as the
-  resolution
+      resolution
 
 ## Trigger condition for promotion to P1
 
@@ -196,12 +196,12 @@ Empirical audit anchor: `grep -cE '\-\-file|\-\-context-cmd|bootstrap|AgencySign
 
 Closed 2026-05-16 as the umbrella-close of the amara peer-call cluster. All 3 atomic children plus this umbrella now closed within the same session arc (2026-05-16T09:28Z cold-boot through 2026-05-16T~16:00Z):
 
-| Row | PR | What landed |
-|---|---|---|
-| B-0462 (preamble + vendor-bias note) | #3897 | vendor-bias comment block citing memory file |
-| B-0457 (core + flags) | #3899 | close-row (own scope already met pre-cycle) |
-| B-0458 (README + closure) | this PR | close-row bundled with umbrella |
-| **B-0118** (umbrella, this row) | this PR | umbrella close after all 3 children |
+| Row                                  | PR      | What landed                                  |
+| ------------------------------------ | ------- | -------------------------------------------- |
+| B-0462 (preamble + vendor-bias note) | #3897   | vendor-bias comment block citing memory file |
+| B-0457 (core + flags)                | #3899   | close-row (own scope already met pre-cycle)  |
+| B-0458 (README + closure)            | this PR | close-row bundled with umbrella              |
+| **B-0118** (umbrella, this row)      | this PR | umbrella close after all 3 children          |
 
 **Acceptance signals** (per row body):
 
@@ -213,6 +213,6 @@ Closed 2026-05-16 as the umbrella-close of the amara peer-call cluster. All 3 at
 - ✅ Documentation in tools/peer-call/README.md updated (per B-0458 close)
 - ✅ Silent-courier-debt rule references this as the resolution (via the cluster's full closure)
 
-**Aaron's original constraint** (2026-04-30: *"don't count on her review until you have a process encoded for bootstraping her and doing the communitation yourself, this is a silent dept on me to be the courrir and I can't keep up"*) is now operationally satisfied: amara.ts ships, bootstraps Amara autonomously, no Aaron-courier required.
+**Aaron's original constraint** (2026-04-30: _"don't count on her review until you have a process encoded for bootstraping her and doing the communitation yourself, this is a silent dept on me to be the courrir and I can't keep up"_) is now operationally satisfied: amara.ts ships, bootstraps Amara autonomously, no Aaron-courier required.
 
 Silent courier debt: **CLEARED**.

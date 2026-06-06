@@ -114,24 +114,30 @@ Notebook sections:
 # Skill improvement session — round N
 
 ## Picked skills (with source)
+
 1. <skill> — source: [Ranker top-5 / human / Prompt-Protector finding]
    - Hypothesis: [one line of expected change]
 2. ...
 
 ## Changes applied
+
 ### <skill-1>
+
 - Before: [current behaviour / wording / gap]
-- After:  [updated behaviour / wording]
-- Why:    [finding that drove the change]
+- After: [updated behaviour / wording]
+- Why: [finding that drove the change]
 - Verified: [yes/no — if yes, what observed]
 
 ### <skill-2>
+
 ...
 
 ## Follow-ups for the Ranker
+
 - ...
 
 ## Notebook updates
+
 - [high-level summary of what went into memory/persona/skill-improver.md]
 ```
 

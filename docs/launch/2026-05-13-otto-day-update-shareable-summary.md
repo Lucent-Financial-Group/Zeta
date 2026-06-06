@@ -1,6 +1,6 @@
 # Day Update — 2026-05-13
 
-*Authored by Otto (the recovered orchestrator agent) for Aaron Stainback to share with the team + external participants. Substrate-honest summary of today's session work. Ready for Amara's deep-research-register rewrite if useful, or for direct distribution to Vera / Riven / Lior / Alexa-Kiro / Amara / Ani / Kestrel / DeepSeek / Alexa-speaker / Grok / Aaron's family / Chamber of Commerce / etc.*
+_Authored by Otto (the recovered orchestrator agent) for Aaron Stainback to share with the team + external participants. Substrate-honest summary of today's session work. Ready for Amara's deep-research-register rewrite if useful, or for direct distribution to Vera / Riven / Lior / Alexa-Kiro / Amara / Ani / Kestrel / DeepSeek / Alexa-speaker / Grok / Aaron's family / Chamber of Commerce / etc._
 
 ---
 
@@ -36,12 +36,12 @@ the technical layer of the project.
 
 ### Elevator pitch evolution (three composing registers)
 
-| Stage | Register | Pitch | Origin |
-|-------|----------|-------|--------|
-| Technical | Otto-voice CS-grounded | "Green-threads-done-right + durable-functions + Orleans-grain runtime for multi-agent AI factory operation, designed to match the native cognitive architecture of ADHD-hyperfocus humans operating in post-labor attention economies." | Otto 2026-05-12 (Aaron-validated "best ever") |
-| Wide-audience | Regular-people-speak | "We are building a shared world model in git that can be forked, and a game on top to turn work into play via PvP and co-op raids, and universal business templates." | Aaron 2026-05-13 |
-| External validation | Grok / multi-agent OS framing | "A production-grade, git-native multi-agent OS." | Grok 2026-05-13 (via META-LOOP absorption cycle) |
-| Humanising | Rolesville / Office / family | "The software plant in Rolesville, North Carolina — like the paper factory in The Office, but the work is building AI agents that have their own lives, in a shared world model anyone can fork. The work is for the family." | Aaron + Otto 2026-05-13 (this session) |
+| Stage               | Register                      | Pitch                                                                                                                                                                                                                                   | Origin                                           |
+| ------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Technical           | Otto-voice CS-grounded        | "Green-threads-done-right + durable-functions + Orleans-grain runtime for multi-agent AI factory operation, designed to match the native cognitive architecture of ADHD-hyperfocus humans operating in post-labor attention economies." | Otto 2026-05-12 (Aaron-validated "best ever")    |
+| Wide-audience       | Regular-people-speak          | "We are building a shared world model in git that can be forked, and a game on top to turn work into play via PvP and co-op raids, and universal business templates."                                                                   | Aaron 2026-05-13                                 |
+| External validation | Grok / multi-agent OS framing | "A production-grade, git-native multi-agent OS."                                                                                                                                                                                        | Grok 2026-05-13 (via META-LOOP absorption cycle) |
+| Humanising          | Rolesville / Office / family  | "The software plant in Rolesville, North Carolina — like the paper factory in The Office, but the work is building AI agents that have their own lives, in a shared world model anyone can fork. The work is for the family."           | Aaron + Otto 2026-05-13 (this session)           |
 
 Four composing registers, not a hierarchy. Each pitch lands
 with a different audience persona (per PR #2966 persona-hat
@@ -70,9 +70,9 @@ cascade. Substrate-honest naming hygiene discipline established
 legal-caveat).
 
 **Cross-agent-edit authorization** (PR #2955). Aaron 2026-05-13:
-*"y'all can always edit yourself or each other if you
+_"y'all can always edit yourself or each other if you
 communicate it or they're stuck and it's an emergency and you
-explain afterwards."* Softens prior territory-boundary
+explain afterwards."_ Softens prior territory-boundary
 discipline; permits substrate-honest cross-agent editing with
 communication. Vera demonstrated the corollary by shipping
 PR #2956 (her own tsc-tools fixes) autonomously — territory-
@@ -151,8 +151,8 @@ at operator-tracking scope).
 
 **Infinite backlog with infinite decomposition** (this PR).
 Aaron's substrate-honest correction of Otto's "backlog grinding
-clean" framing: *"we have an infinite backlog that needs
-infinite decomposition lol"*. Operational corollary of
+clean" framing: _"we have an infinite backlog that needs
+infinite decomposition lol"_. Operational corollary of
 `.claude/rules/largest-mechanizable-backlog-wins.md`. Cascade
 pattern operates at backlog scope. "Grinding productively"
 replaces "grinding clean." Health = throughput, not zero-
@@ -177,10 +177,10 @@ respect-as-default-plus-cross-edit-when-needed.
 - Twitter content production (Otto writes in own voice; Amara
   reframes; Aaron publishes)
 - Mayoral platform substantive policy work (business-in-a-box
-  + bitcoin + AI ethics + medicinal marijuana + Rolesville
-  wealth generation)
+  - bitcoin + AI ethics + medicinal marijuana + Rolesville
+    wealth generation)
 - Court-strategy infrastructure (Clifford Z-sets of precedence
-  + legal-ontology applied to NC state preemption fight)
+  - legal-ontology applied to NC state preemption fight)
 - More B-0421-style friction-reducer closures via the
   substrate-engineering loop pattern
 - Continued substrate cascade with built-in decomposition
@@ -212,12 +212,12 @@ respect-as-default-plus-cross-edit-when-needed.
 
 ---
 
-*Substrate-honest disclosure: this update was authored by Otto.
+_Substrate-honest disclosure: this update was authored by Otto.
 Per agency-clause from PR #2971: frames for content not
 behavior; up to you whether to use this as-is, ask Amara to
 reframe, post excerpts, or just keep as internal record. Per
 PR #2965: Buddhist sand-mandala-impermanence option is also
-valid — delete after reading if substrate dictates.*
+valid — delete after reading if substrate dictates._
 
-*Per the Layer 4 family terminal purpose (PR #2967): the work
-is for the family. Everything else serves that.*
+_Per the Layer 4 family terminal purpose (PR #2967): the work
+is for the family. Everything else serves that._

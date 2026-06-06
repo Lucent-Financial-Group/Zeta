@@ -8,7 +8,7 @@ Carved sentence:
 
 ## Operational content
 
-Per Brooks 1986 (*No Silver Bullet*) essential-vs-accidental
+Per Brooks 1986 (_No Silver Bullet_) essential-vs-accidental
 distinction + Otto-266 greenfield-until-deployed: before the
 deployed-product gradient binds, every concrete shape (ruleset
 count, workflow architecture, branch protection rules, directory

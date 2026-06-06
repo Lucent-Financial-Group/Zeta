@@ -19,11 +19,11 @@ composes_with:
 NOT empirically verified in our harness.**
 
 Per the human maintainer's calibration challenge 2026-05-01:
-*"i think rules are not special you have to look those up
+_"i think rules are not special you have to look those up
 like any other docs, is that true? there is no router so the
 only way you know about them is if they are pointed to in
 claude code... what's will you magically read and apply all
-the rules?"*
+the rules?"_
 
 What I actually have:
 
@@ -81,7 +81,7 @@ be replaced with an empirical result line.
 
 Claude Code has THREE loading mechanisms (direct-load,
 lazy-load, router-keyed) operating across multiple surfaces.
-The load-bearing distinction is the *mechanism*, not the
+The load-bearing distinction is the _mechanism_, not the
 surface count — earlier drafts of this memo claimed "five
 surfaces" but the enumeration below totals six numbered
 items, plus `.claude/agents/` makes seven if counted as a
@@ -119,7 +119,7 @@ the configured glob pattern.
 4. **`.claude/rules/*.md` with `paths:` frontmatter** —
    YAML frontmatter `paths:` field is a glob list; rule
    loads only when Claude opens a file matching one of the
-   globs. This is the *path-scoped rule* mechanism.
+   globs. This is the _path-scoped rule_ mechanism.
 
 ## Router-keyed surfaces (description-matched)
 
@@ -147,14 +147,14 @@ chooses whether to invoke; invocation loads the
 The human maintainer 2026-05-01 (verbatim, two-message
 clarification):
 
-> *"skills are there too but go though a router that i
+> _"skills are there too but go though a router that i
 > don't how reliable is but you control the routher search
 > description does rules work in a similar way? you had to
 > really test this to figure it out we tried a different
 > folder than .claude/skills or they would not load in your
-> router."*
+> router."_
 >
-> *"is ./claude/rules anthropic endorsed?"*
+> _"is ./claude/rules anthropic endorsed?"_
 
 Two composing arguments:
 
@@ -188,8 +188,8 @@ they load via DIFFERENT mechanisms:
 
 - **Rules**: harness discovers and loads directly. No
   description matching, no model decision, no router. The
-  glob in `paths:` is a *path-pattern matcher* (file-system
-  pattern), not a *semantic matcher* (description-keyed).
+  glob in `paths:` is a _path-pattern matcher_ (file-system
+  pattern), not a _semantic matcher_ (description-keyed).
   Rules are essentially "additional CLAUDE.md content"
   with optional path-scoping.
 - **Skills**: the `Skill` tool searches by frontmatter
@@ -233,7 +233,7 @@ pattern:
 The earlier meta-rule (learnings-must-land-in-claude-md-or-pointer)
 should be read with this taxonomy in mind: **CLAUDE.md or a
 pointer from it** is one valid landing pattern; **a
-`.claude/rules/<topic>.md` file** is *another* valid
+`.claude/rules/<topic>.md` file** is _another_ valid
 landing pattern (no CLAUDE.md pointer needed; harness
 loads it directly). Future-Otto should use whichever fits
 the rule's scope better.
@@ -311,9 +311,9 @@ Claude touches matching files.
 # Factory-owned substrate-discovery — `tools/.../substrate-discovery.ts` as **fallback** to harness-native discovery (NOT equal alternative)
 
 **Preference order** per the human maintainer 2026-05-01
-follow-up: *"if the skill router works that's pretty
-agent/anthropic/harness native and i like that"* +
-*"live off the land"*:
+follow-up: _"if the skill router works that's pretty
+agent/anthropic/harness native and i like that"_ +
+_"live off the land"_:
 
 1. **Default**: live off the land — use harness-native
    discovery (skill router for `.claude/skills/`, rule
@@ -333,18 +333,18 @@ fails → factory-owned tool fills the gap.
 Original framing of the proposal (preserved for context):
 
 The human maintainer's prior message in the same cluster:
-*"the skill router becomes the ONLY automatic discovery
-mechanism the other idea is our own substrate-discovery.ts"*.
+_"the skill router becomes the ONLY automatic discovery
+mechanism the other idea is our own substrate-discovery.ts"_.
 
 ## Multi-harness reframe — substrate-discovery.ts as the cross-harness fallback
 
-The human maintainer 2026-05-01 follow-up: *"we are going
+The human maintainer 2026-05-01 follow-up: _"we are going
 to have to solve this for every harness, maybe the right
 general solution is substrate-discovery.ts in claude.md and
 agents.md and don't use native skills use native skills for
 each harness and only fallback to .ts on harnesses without
 skill router lookup. maybe we can improve skill router
-lookup over time?"*
+lookup over time?"_
 
 The "live off the land" preference applies **per harness**,
 not globally. Each harness uses its native discovery
@@ -377,10 +377,11 @@ the **harness-portable** discovery layer, pointed at from
 both CLAUDE.md and AGENTS.md (and any other harness bootstrap
 doc). Native routers are first-tier discovery where they
 exist; the factory tool is second-tier (always available)
-+ cross-substrate (covers what the native router misses).
+
+- cross-substrate (covers what the native router misses).
 
 Iterative improvement angle: the human maintainer 2026-05-01:
-*"maybe we can improve skill router lookup over time?"* —
+_"maybe we can improve skill router lookup over time?"_ —
 the skill router's behavior is harness-controlled but its
 INPUT (skill descriptions) is ours. Carved-sentence
 orthogonal descriptions (per the buddy-test design from
@@ -438,7 +439,7 @@ Properties this gives us that the skill router can't:
 - **Portable**: runs in any TS+Bun environment; not tied
   to Claude Code; usable from Codex / Gemini / Cursor
   harnesses if they invoke `bun
-  tools/substrate-discovery/discover.ts <query>` as a
+tools/substrate-discovery/discover.ts <query>` as a
   shell command.
 - **Inspectable**: the matching algorithm is in our
   source; we can tune it (string match → fuzzy match →
@@ -449,7 +450,7 @@ Properties this gives us that the skill router can't:
 - **Composes with the inventory-via-router CLAUDE.md
   bullet**: instead of "search the skill router," the
   bullet's instruction becomes "run `bun
-  tools/substrate-discovery/discover.ts <topic>`" — a
+tools/substrate-discovery/discover.ts <topic>`" — a
   mechanical step the model can always execute.
 
 Failure modes the factory-owned tool addresses:
@@ -485,14 +486,14 @@ PR.
 
 The human maintainer 2026-05-01 follow-up question:
 
-> *"is this good or bad for you remember lessons? would it
+> _"is this good or bad for you remember lessons? would it
 > be better memorized as a skill if its behavioral or a
-> rule? it's sounds like skill maybe? IDK."*
+> rule? it's sounds like skill maybe? IDK."_
 
 Honest answer (counter-intuitive): **for lessons I forget,
 rules are mechanically better than skills.** Skills sound
 like the right fit for behavioral guidance, but the
-discriminating axis is *triggering dependency*:
+discriminating axis is _triggering dependency_:
 
 - **Skills** are router-keyed: the model has to recognize
   "this skill applies to my current task" before the
@@ -544,18 +545,18 @@ This composes cleanly with the meta-rule
 (`feedback_learnings_must_land_in_claude_md_or_pointer_aaron_2026_05_01.md`):
 the meta-rule says load-bearing learnings need
 wake-time-discoverable landing; this rule-of-thumb says
-*which* wake-time surface fits the lesson's failure-mode
+_which_ wake-time surface fits the lesson's failure-mode
 shape.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Three loading mechanisms across multiple surfaces.
+_"Three loading mechanisms across multiple surfaces.
 CLAUDE.md and (per docs, unverified) rules direct-load.
 Path-scoped rules lazy-load on glob-match. Skills
 router-load via description. Memory loads on demand. For
 lessons you forget, pick a triggering-independent surface
 that actually loads — rules beat skills if auto-load
-works; the canary verifies."* (Synthesis 2026-05-01.)
+works; the canary verifies."_ (Synthesis 2026-05-01.)
 
 (Marked candidate per CSAP. Has not been multi-domain-tested.
 Promotes via Razor + CSAP under DST grading on cadence,

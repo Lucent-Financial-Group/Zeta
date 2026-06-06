@@ -11,20 +11,20 @@ created: 2026-05-16
 
 After the substrate-drift-catch infrastructure reached operational closure (~tick 34 of the 2026-05-16 session), continued operational use of `tools/hygiene/audit-backlog-status-drift.ts` reveals a clear skew in the remaining candidate population:
 
-| Cohort | Drift verdict | Action |
-|---|---|---|
-| Easy-mode rows (entire scope IS the file) | Genuine drift | Close-row PR (9 closed this session) |
-| Multi-slice rows where prior slices shipped the file | Partial-vs-drift | Leave open; specific in-progress work remains |
-| Rows where the file is referenced for an additive sub-task | Partial-vs-drift | Leave open |
+| Cohort                                                     | Drift verdict    | Action                                        |
+| ---------------------------------------------------------- | ---------------- | --------------------------------------------- |
+| Easy-mode rows (entire scope IS the file)                  | Genuine drift    | Close-row PR (9 closed this session)          |
+| Multi-slice rows where prior slices shipped the file       | Partial-vs-drift | Leave open; specific in-progress work remains |
+| Rows where the file is referenced for an additive sub-task | Partial-vs-drift | Leave open                                    |
 
 ## Empirical sample from this session (Otto-CLI):
 
-| Verification | Row | Result |
-|---|---|---|
-| Tick 38 | B-0440 (standing-by detector) | partial (2/7 bullets unchecked: launchd integration + proactive claim assignment) |
-| Tick 39 | B-0509 (b0448 slice 3 install.ts) | partial (file from prior slices; `readCloudSchedule` etc. unshipped) |
-| Tick 40 | B-0512 (b0448 slice 6 README 4-layer table) | partial (README from prior; 0 "4-layer" mentions; all 6 bullets unchecked) |
-| Tick 45 | B-0411 (grok.ts persona flag) | partial (file from prior peer-call work; `--persona` flag has zero grep hits) |
+| Verification | Row                                         | Result                                                                            |
+| ------------ | ------------------------------------------- | --------------------------------------------------------------------------------- |
+| Tick 38      | B-0440 (standing-by detector)               | partial (2/7 bullets unchecked: launchd integration + proactive claim assignment) |
+| Tick 39      | B-0509 (b0448 slice 3 install.ts)           | partial (file from prior slices; `readCloudSchedule` etc. unshipped)              |
+| Tick 40      | B-0512 (b0448 slice 6 README 4-layer table) | partial (README from prior; 0 "4-layer" mentions; all 6 bullets unchecked)        |
+| Tick 45      | B-0411 (grok.ts persona flag)               | partial (file from prior peer-call work; `--persona` flag has zero grep hits)     |
 
 **4/4 in Otto-CLI's late-session checks = partial (0% genuine drift).** Peer Otto-Desktop independently reports ~25% FP rate per PR #3826's tick shard (`B-0173 = FP-3 (2nd example); FP rate climbing to 25%`).
 

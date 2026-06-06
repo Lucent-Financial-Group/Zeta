@@ -13,13 +13,13 @@ The holding-discipline counter-with-escalation rule's "forced decomposition at #
 
 Fresh-cold-boot Otto-CLI scheduled-task autonomous-loop session shipped 5 substantive artifacts:
 
-| Artifact | Type | State |
-|---|---|---|
-| [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808) | tick shard (empirical evidence) | CLOSED — substrate captured in #3818 |
-| [PR #3812](https://github.com/Lucent-Financial-Group/Zeta/pull/3812) | rule edit (claim-acquire saturation-ceiling) | OPEN, BLOCKED on human-maintainer review approval |
-| [PR #3817](https://github.com/Lucent-Financial-Group/Zeta/pull/3817) | backlog row B-0558 (worktree-pool primitive) | OPEN, DIRTY (rebase blocked by contention; branch-on-origin is the artifact) |
-| [PR #3818](https://github.com/Lucent-Financial-Group/Zeta/pull/3818) | rule edit (holding-discipline + sub-case 5 + pure-git tier) | MERGED ✓ |
-| [PR #3832](https://github.com/Lucent-Financial-Group/Zeta/pull/3832) | memory file (session arc) + MEMORY.md reindex | MERGED ✓ |
+| Artifact                                                             | Type                                                        | State                                                                        |
+| -------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [PR #3808](https://github.com/Lucent-Financial-Group/Zeta/pull/3808) | tick shard (empirical evidence)                             | CLOSED — substrate captured in #3818                                         |
+| [PR #3812](https://github.com/Lucent-Financial-Group/Zeta/pull/3812) | rule edit (claim-acquire saturation-ceiling)                | OPEN, BLOCKED on human-maintainer review approval                            |
+| [PR #3817](https://github.com/Lucent-Financial-Group/Zeta/pull/3817) | backlog row B-0558 (worktree-pool primitive)                | OPEN, DIRTY (rebase blocked by contention; branch-on-origin is the artifact) |
+| [PR #3818](https://github.com/Lucent-Financial-Group/Zeta/pull/3818) | rule edit (holding-discipline + sub-case 5 + pure-git tier) | MERGED ✓                                                                     |
+| [PR #3832](https://github.com/Lucent-Financial-Group/Zeta/pull/3832) | memory file (session arc) + MEMORY.md reindex               | MERGED ✓                                                                     |
 
 Plus 2 fix-pushes within those PRs.
 
@@ -32,6 +32,7 @@ The holding-discipline rule's [counter-with-escalation clause](../.claude/rules/
 - Brief-ack 6+: ESCALATE — pick decomposition NOW
 
 Counter resets on:
+
 1. Human-maintainer speaking
 2. Named dependency surfacing (PR merge, CI failure, etc.)
 3. Actually picking real decomposition work (concrete artifact)

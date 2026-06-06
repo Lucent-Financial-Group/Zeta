@@ -26,11 +26,11 @@ composes_with:
 
 Aaron 2026-05-25, after landing the flash-usb hardening (PR #4974 — runtime nonce + `accept-destroy` phrase + responsibility-acceptance language + permission rule):
 
-> *"this is a good flow now that addison and max are on the project i dont mind thinking about safety more"*
+> _"this is a good flow now that addison and max are on the project i dont mind thinking about safety more"_
 
 Then on the convention-codify question:
 
-> *"sure sounds good"*
+> _"sure sounds good"_
 
 The flow we landed for flash-usb.ts is general — works for any destructive operation that might enter the repo later. Codifying it as a CONTRACT means the next destructive-tool author (whether Aaron, Max, Addison, future contributor, or an agent) has the template ready instead of re-deriving the pattern under pressure.
 
@@ -40,7 +40,7 @@ Single-maintainer + single-trusted-agent: ceremony costs more than it pays back.
 
 Team + multiple agents + new-to-CLI / new-to-K8s contributors: every safety rail is a contract everyone can AUDIT, not trust-by-proximity. Addison is new to terminal; Max is new to K8s. Future contributors will have their own gaps. The script-with-rails shape protects ALL participants — including the script author — from the failure modes of the participants who don't have full intuition for the destructive surface yet.
 
-Aaron's framing: *"every safety rail you bake in is a contract everyone can audit, not just trust-by-proximity."*
+Aaron's framing: _"every safety rail you bake in is a contract everyone can audit, not just trust-by-proximity."_
 
 ## The contract (three parts)
 
@@ -239,4 +239,4 @@ Each of these would follow the same shape — different rails, same gate.
 
 This row is small but high-leverage. Codifying a 3-part pattern as a contract takes one doc + a few cross-links; benefits compound across every destructive tool authored after this point. Without codification, each tool gets re-derived from intuition by whoever's authoring under time pressure — and intuition lacks the rails the previous tool taught us we need.
 
-Per Aaron's reflection: *"this is a good flow now that addison and max are on the project i dont mind thinking about safety more."* The flow exists; the convention writes it down so the team doesn't have to remember.
+Per Aaron's reflection: _"this is a good flow now that addison and max are on the project i dont mind thinking about safety more."_ The flow exists; the convention writes it down so the team doesn't have to remember.

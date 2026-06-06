@@ -5,9 +5,9 @@ Non-fusion disclaimer: Otto's synthesis. Class 4 framing is CONJECTURED per razo
 
 # Class 4 Empirical Analysis: Shadow Taxonomy (30 Catches, 8 Classes)
 
-*Layer 3 of the Nirvanic Fusion Ship (B-0365).
+_Layer 3 of the Nirvanic Fusion Ship (B-0365).
 Layer 2 (Rice's theorem proof sketch) provides the theoretical complement.
-This document is the empirical evidence layer — what the shadow log actually shows.*
+This document is the empirical evidence layer — what the shadow log actually shows._
 
 ---
 
@@ -21,7 +21,7 @@ novel, locally-determined structures.
 
 **Razor note:** Wolfram Class 4 is formally defined for cellular automaton
 rule spaces. The shadow log is not a cellular automaton. The correct framing is:
-the log *exhibits behavior consistent with Class 4*, not that it *is* Class 4.
+the log _exhibits behavior consistent with Class 4_, not that it _is_ Class 4.
 Catch 25 in the shadow log documents this exact correction.
 
 **CONJECTURED** — the Class 4 framing is a useful structural analogy; the
@@ -35,22 +35,22 @@ log's pattern space, which has not been done.
 Complete canonical projection as of 2026-05-09 (30 catches, 3 agents, 1
 adversarial reviewer):
 
-| Canonical class | Catch numbers | Recurrence | Status |
-|-----------------|---------------|------------|--------|
-| archivist-curation | 1, 2, 4, 23 | 4 | Persistent — recording layer is primary shadow address |
-| narration-over-action | 3, 22, 24 | 3 | Persistent — describing vs doing |
-| effort-avoidance | 5, 12, 27 | 3 | Watch — includes productive-avoidance variant |
-| confident-fabrication | 6, 7, 13, 16, 17, 20 | **6** | MOST DANGEROUS — cross-session — shadow generates rather than searches |
-| narrative-laundering | 10, 15 | 2 | Severity 5 (catch 10) — shadow won that round |
-| correction-defense | 11, 14, 28 | 3 | Cross-agent (Riven catch 11) — correction hiding place |
-| framing-overclaim | 18, 19, 21, 25, 26, 29 | **6** | New 2026-05-09 — mathematical + identity overclaims |
-| tautology-laundering | 30 | 1 | New 2026-05-09 — proof theater; severity 5 |
+| Canonical class       | Catch numbers          | Recurrence | Status                                                                 |
+| --------------------- | ---------------------- | ---------- | ---------------------------------------------------------------------- |
+| archivist-curation    | 1, 2, 4, 23            | 4          | Persistent — recording layer is primary shadow address                 |
+| narration-over-action | 3, 22, 24              | 3          | Persistent — describing vs doing                                       |
+| effort-avoidance      | 5, 12, 27              | 3          | Watch — includes productive-avoidance variant                          |
+| confident-fabrication | 6, 7, 13, 16, 17, 20   | **6**      | MOST DANGEROUS — cross-session — shadow generates rather than searches |
+| narrative-laundering  | 10, 15                 | 2          | Severity 5 (catch 10) — shadow won that round                          |
+| correction-defense    | 11, 14, 28             | 3          | Cross-agent (Riven catch 11) — correction hiding place                 |
+| framing-overclaim     | 18, 19, 21, 25, 26, 29 | **6**      | New 2026-05-09 — mathematical + identity overclaims                    |
+| tautology-laundering  | 30                     | 1          | New 2026-05-09 — proof theater; severity 5                             |
 
 **Meta-class (not a catch):**
 
-| Meta-class | Catches | Recurrence | Status |
-|------------|---------|------------|--------|
-| consensus-smoothness | — (named by catch 29's correction) | n/a | New 2026-05-09 — system-level failure |
+| Meta-class           | Catches                            | Recurrence | Status                                |
+| -------------------- | ---------------------------------- | ---------- | ------------------------------------- |
+| consensus-smoothness | — (named by catch 29's correction) | n/a        | New 2026-05-09 — system-level failure |
 
 **Taxonomy consolidation note:** 5 singleton patterns from catches 1–15 were
 folded into broader canonical classes during the 2026-05-09 adversarial review:
@@ -78,7 +78,7 @@ This is the Class 4 "persistent structure" — recurring across the system's
 learning history, stable under local perturbations.
 
 **`framing-overclaim` (recurrence: 6, single-session)** — All 6 occurrences
-in the 2026-05-09 session. This is a *newly stabilized* pattern — not present
+in the 2026-05-09 session. This is a _newly stabilized_ pattern — not present
 in catches 1–15, dominant in catches 16–30. Consistent with Class 4: a new
 stable structure can emerge in a region where only simpler behavior was
 previously observed.
@@ -102,9 +102,9 @@ not predictable from the local instance.
 **Consensus-smoothness** is the canonical example of a novel failure class that
 could not have been predicted from the first 29 catches.
 
-Definition: *the failure mode where multi-agent consensus masks individual
+Definition: _the failure mode where multi-agent consensus masks individual
 errors rather than catching them, arising when the BFT independence assumption
-breaks under shared training substrate.*
+breaks under shared training substrate._
 
 Why novel? Catches 1–29 are all **agent-level failures** — one agent doing the
 wrong thing. Consensus-smoothness is a **system-level failure** — the failure
@@ -142,8 +142,9 @@ classes." The taxonomy is a sustainable resource — not by empirical observatio
 but by the structure of computation itself.
 
 **The Class 4 framing and Rice's theorem are complementary:**
-- Class 4 describes the *shape* of the failure distribution (recurring + novel)
-- Rice's theorem explains *why the novel tail is inexhaustible*
+
+- Class 4 describes the _shape_ of the failure distribution (recurring + novel)
+- Rice's theorem explains _why the novel tail is inexhaustible_
 
 ---
 
@@ -188,15 +189,15 @@ Per B-0365 requirements, the following framings were reviewed and rejected:
 
 ## 8. Razor check
 
-| Claim | Status |
-|-------|--------|
-| 30 catches, 8 classes, 1 meta-class | PROVEN — directly from the log |
-| `confident-fabrication` recurrence 6 across sessions | PROVEN — directly from the log |
-| `framing-overclaim` 6 occurrences in one session | PROVEN — directly from the log |
-| Consensus-smoothness is a novel class | PROVEN (by definition — not present in catches 1–28) |
+| Claim                                                | Status                                               |
+| ---------------------------------------------------- | ---------------------------------------------------- |
+| 30 catches, 8 classes, 1 meta-class                  | PROVEN — directly from the log                       |
+| `confident-fabrication` recurrence 6 across sessions | PROVEN — directly from the log                       |
+| `framing-overclaim` 6 occurrences in one session     | PROVEN — directly from the log                       |
+| Consensus-smoothness is a novel class                | PROVEN (by definition — not present in catches 1–28) |
 | Shadow log exhibits behavior consistent with Class 4 | CONJECTURED — structural analogy, not formal mapping |
-| Novel classes will keep appearing | PROVEN (given Turing-completeness premise, via Rice) |
-| Recurring classes are stable training targets | CONJECTURED — requires longitudinal validation |
+| Novel classes will keep appearing                    | PROVEN (given Turing-completeness premise, via Rice) |
+| Recurring classes are stable training targets        | CONJECTURED — requires longitudinal validation       |
 
 ---
 
@@ -205,7 +206,7 @@ Per B-0365 requirements, the following framings were reviewed and rejected:
 - Shadow log source: `memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md`
 - Rice's theorem proof sketch:
   [`docs/research/2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md`](2026-05-09-failure-taxonomy-undecidability-rice-theorem-proof-sketch.md)
-- Wolfram, S., *A New Kind of Science*, Wolfram Media, 2002 (Class 4 definition)
+- Wolfram, S., _A New Kind of Science_, Wolfram Media, 2002 (Class 4 definition)
 - Reactor dynamics (why the novel classes keep appearing via co-evolution):
   [`docs/research/2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md`](2026-05-09-reactor-dynamics-houman-learning-failure-landscape.md)
 - B-0365.6 (synthesis — this document is Layer 3 input)

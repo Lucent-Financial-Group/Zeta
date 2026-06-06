@@ -7,9 +7,9 @@ description: Static analysis umbrella — cross-tool policy, severity baselines,
 
 Capability skill. No persona. The umbrella over every
 static-analysis tool Zeta uses. Where each narrow owns
-*how to write rules in its tool*, this hat owns *which
+_how to write rules in its tool_, this hat owns _which
 tool covers which concern, at what severity, with what
-suppression discipline*.
+suppression discipline_.
 
 ## When to wear
 
@@ -52,21 +52,21 @@ suppression discipline*.
 
 ## The tool-matrix — who owns what concern
 
-| Concern | Primary tool | Secondary / belt-and-braces |
-| --- | --- | --- |
-| C# / F# syntax + semantics | Roslyn analyzers (C#), F# compiler | — |
-| C# / F# style (naming, ordering) | Roslyn analyzers + `.editorconfig` | — |
-| API hygiene (public surface) | Roslyn analyzer (public-API-analyzer) | `public-api-designer` review |
-| Banned APIs | `Microsoft.CodeAnalysis.BannedApiAnalyzers` | Semgrep |
-| Security — code patterns | Semgrep + CodeQL | Roslyn analyzer (rare) |
-| Security — dataflow (taint) | CodeQL | — |
-| Perf — allocation hot path | BenchmarkDotNet + `performance-engineer` | Roslyn analyzer (rare) |
-| Concurrency / threading | Roslyn analyzer (VS threading) | CodeQL |
-| Test adequacy | Stryker (mutation) | coverage tooling |
-| Cross-repo / cross-file patterns | Semgrep | CodeQL |
-| Generated-code invariants | Roslyn generator self-tests | — |
-| Nullability | Roslyn nullable-reference-types | — |
-| Lint against docs / config files | Semgrep | — |
+| Concern                          | Primary tool                                | Secondary / belt-and-braces  |
+| -------------------------------- | ------------------------------------------- | ---------------------------- |
+| C# / F# syntax + semantics       | Roslyn analyzers (C#), F# compiler          | —                            |
+| C# / F# style (naming, ordering) | Roslyn analyzers + `.editorconfig`          | —                            |
+| API hygiene (public surface)     | Roslyn analyzer (public-API-analyzer)       | `public-api-designer` review |
+| Banned APIs                      | `Microsoft.CodeAnalysis.BannedApiAnalyzers` | Semgrep                      |
+| Security — code patterns         | Semgrep + CodeQL                            | Roslyn analyzer (rare)       |
+| Security — dataflow (taint)      | CodeQL                                      | —                            |
+| Perf — allocation hot path       | BenchmarkDotNet + `performance-engineer`    | Roslyn analyzer (rare)       |
+| Concurrency / threading          | Roslyn analyzer (VS threading)              | CodeQL                       |
+| Test adequacy                    | Stryker (mutation)                          | coverage tooling             |
+| Cross-repo / cross-file patterns | Semgrep                                     | CodeQL                       |
+| Generated-code invariants        | Roslyn generator self-tests                 | —                            |
+| Nullability                      | Roslyn nullable-reference-types             | —                            |
+| Lint against docs / config files | Semgrep                                     | —                            |
 
 **The rule:** one tool owns each concern primarily; overlaps
 are explicit and documented. Silent overlaps are drift.
@@ -105,7 +105,7 @@ the build. The implication:
 
 1. **No suppression.** Fix the code. Default for new code.
 2. **Line-level suppression.** `#pragma warning disable
-   CSxxxx // reason`. Must carry a reason comment.
+CSxxxx // reason`. Must carry a reason comment.
 3. **Baseline file.** `.editorconfig` or tool-specific
    baseline (Semgrep `.semgrepignore`, SonarQube baseline).
    Only for pre-existing violations we've accepted as

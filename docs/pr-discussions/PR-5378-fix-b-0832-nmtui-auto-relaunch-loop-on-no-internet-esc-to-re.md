@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## What
 
-Operator 2026-05-26 during 3rd USB physical test: *"i want to be able to refresh the network withing breaking the script"*.
+Operator 2026-05-26 during 3rd USB physical test: _"i want to be able to refresh the network withing breaking the script"_.
 
 Old behavior: nmtui launched ONCE; if no internet on exit → drop_to_shell (broke install flow). Esc was destructive.
 
@@ -49,6 +49,7 @@ New behavior: loop nmtui until \`has_internet\` OR operator explicit 's' for she
 This PR updates the first-boot USB NixOS installer flow to prevent an accidental “Esc out of nmtui → drop to shell” path when Wi‑Fi isn’t connected yet, by auto-relaunching `nmtui` until internet is detected (or the operator explicitly requests a shell).
 
 **Changes:**
+
 - Loop `nmtui` sessions until `has_internet` succeeds, tracking attempts via `NMTUI_ATTEMPTS`.
 - Add an explicit post-attempt prompt allowing operator-controlled escape to shell via `s` (otherwise relaunch `nmtui` to refresh scans).
 - Improve on-screen guidance explaining the Esc-to-refresh behavior.

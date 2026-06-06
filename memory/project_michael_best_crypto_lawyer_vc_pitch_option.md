@@ -4,10 +4,11 @@ description: Michael Best firm was lined up as Aaron's crypto lawyer for work no
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron (2026-04-20): *"Michael Best firm was going to be
+
+Aaron (2026-04-20): _"Michael Best firm was going to be
 my crypto laywer for some stuff i ended up not doing yet
 they wanted me to pitch to their VC side, i said no,
-maybe we will do that"*
+maybe we will do that"_
 
 ## What this is
 
@@ -23,20 +24,20 @@ but kept the door open with "maybe we will do that".
 ## Why it matters — three composable facts
 
 - **Crypto work still option-valued.** The unstarted
-  work connects directly to BACKLOG P2 *"prove
-  consent-first primitive + apply to Bitcoin flaws"*
+  work connects directly to BACKLOG P2 _"prove
+  consent-first primitive + apply to Bitcoin flaws"_
   (project_consent_first_design_primitive.md). Michael
-  Best is the legal-wrapper for *if* that work ever
+  Best is the legal-wrapper for _if_ that work ever
   moves from research doc to public artefact that
   needs counsel (e.g. patent filing, paper submission
   with IP concerns, a cryptocurrency-adjacent release).
 - **Second external-audience pitch channel.** Today
   the factory's external-audience pitch-readiness
   inventory (`docs/research/factory-pitch-readiness-
-  2026-04.md`) is scoped to the dual-architect
+2026-04.md`) is scoped to the dual-architect
   audience (current-employer architect + skip-level-
   ex-direct-manager, both technical). The Michael Best
-  VC side is a *different* audience with a different
+  VC side is a _different_ audience with a different
   readiness bar: VCs want thesis + market + team +
   capital ask; architects want coherence + discipline +
   honest-bounds. The existing pitch-readiness inventory
@@ -56,7 +57,7 @@ but kept the door open with "maybe we will do that".
   thesis unless Aaron explicitly greenlights. This
   is option-held, not option-exercised.
 - Do NOT name the firm in any public-repo artefact
-  (BACKLOG.md, docs/**, openspec/**, .claude/**).
+  (BACKLOG.md, docs/**, openspec/**, .claude/\*\*).
   The public repo uses only abstract framings like
   "second external-audience channel". Specifics
   live only in this memory entry.
@@ -79,8 +80,8 @@ but kept the door open with "maybe we will do that".
   for threat-model review of anything that implies
   security posture in the deck.
 - **If he says "let's engage them on the crypto
-  side"**: route through BACKLOG P2 *"prove
-  consent-first primitive + apply to Bitcoin flaws"*
+  side"**: route through BACKLOG P2 _"prove
+  consent-first primitive + apply to Bitcoin flaws"_
   as the research-artefact workstream first,
   counsel engagement second.
 - **If he says nothing about it**: do not

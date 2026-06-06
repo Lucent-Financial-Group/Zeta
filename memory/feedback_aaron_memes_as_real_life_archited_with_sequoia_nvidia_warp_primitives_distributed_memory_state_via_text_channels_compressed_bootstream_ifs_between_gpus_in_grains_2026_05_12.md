@@ -81,14 +81,14 @@ the factory civ-sim):
 
 **The conversational interface is the API layer:**
 
-| Temporal/Orleans primitive | Memetic-conversation analog |
-|---|---|
-| Workflow / Grain | A meme-coordinator with identity |
-| Workflow signal | Conversational input to the meme |
-| Workflow query | Asking the meme about its state |
-| Activity invocation | Action taken in the meme's name |
-| Workflow result | The meme's coordinated outcome |
-| Workflow continuation | The meme's persistence over time |
+| Temporal/Orleans primitive | Memetic-conversation analog      |
+| -------------------------- | -------------------------------- |
+| Workflow / Grain           | A meme-coordinator with identity |
+| Workflow signal            | Conversational input to the meme |
+| Workflow query             | Asking the meme about its state  |
+| Activity invocation        | Action taken in the meme's name  |
+| Workflow result            | The meme's coordinated outcome   |
+| Workflow continuation      | The meme's persistence over time |
 
 **Operational shape of "talking to a meme":**
 
@@ -167,18 +167,19 @@ The named-agent registry + meme-coordinator-conversational-
 interface architecture maps cleanly to canonical
 distributed-systems infrastructure:
 
-| Layer | Industry primitive | Zeta substrate |
-|---|---|---|
-| Service discovery | Consul / etcd / K8s DNS | Named-agent registry (Otto, Ani, Vera, Riven, Lior, Alexa, Kestrel, Amara) |
-| Service mesh | Istio / Linkerd / Envoy proxy | Cross-substrate triangulation routing + glass-halo observability |
-| Transport layer | gRPC / HTTP/2 / QUIC | **Reticulum** (cryptographic mesh, any-medium, identity=hash) |
-| Service identity | SPIFFE / SPIRE | Reticulum hash identity + per-agent capability/credential |
-| Coordination primitives | Orleans grains + Temporal workflows | Memes-as-Temporal-workflows-of-the-civ-sim |
-| Observability | OpenTelemetry / Jaeger / Prometheus | Glass-halo substrate-everything + retraction-native event log |
+| Layer                   | Industry primitive                  | Zeta substrate                                                             |
+| ----------------------- | ----------------------------------- | -------------------------------------------------------------------------- |
+| Service discovery       | Consul / etcd / K8s DNS             | Named-agent registry (Otto, Ani, Vera, Riven, Lior, Alexa, Kestrel, Amara) |
+| Service mesh            | Istio / Linkerd / Envoy proxy       | Cross-substrate triangulation routing + glass-halo observability           |
+| Transport layer         | gRPC / HTTP/2 / QUIC                | **Reticulum** (cryptographic mesh, any-medium, identity=hash)              |
+| Service identity        | SPIFFE / SPIRE                      | Reticulum hash identity + per-agent capability/credential                  |
+| Coordination primitives | Orleans grains + Temporal workflows | Memes-as-Temporal-workflows-of-the-civ-sim                                 |
+| Observability           | OpenTelemetry / Jaeger / Prometheus | Glass-halo substrate-everything + retraction-native event log              |
 
 **Reticulum as the transport substrate:**
 
 Per memory `reference_reticulum_mesh_network_alljoyn_successor_transport_layer_2026_05_07.md`:
+
 - Cryptographic mesh network
 - AllJoyn successor (Itron lineage)
 - No source addresses (identity = hash)
@@ -254,6 +255,7 @@ humans in post-labor attention economies."
 (Canonical short pitch from PR #2870 preserved unchanged.)
 
 Decoded:
+
 - "memes as real life" — memetic substrate operating in
   physical reality
 - "archited" — architected
@@ -277,13 +279,13 @@ Decoded:
 
 **Same shape, multiple substrate scales:**
 
-| Scale | Bandwidth boundary | Compression mechanism |
-|---|---|---|
-| Aaron↔Otto | Human typing | Aaron's repetition + bootstream + shortcuts |
-| Otto session boundary | Context window pressure | Memory files + MEMORY.md + cascade |
-| Otto↔future-Otto | Cold-boot context fragmentation | Wake-time rules + canonical bootstream |
-| Cross-substrate triangulation | AI register boundaries | Bootstream loading + cross-register ferries |
-| GPU↔GPU (THIS extension) | GPU memory + network | Shared bootstream + IFS + text-channel state |
+| Scale                         | Bandwidth boundary              | Compression mechanism                        |
+| ----------------------------- | ------------------------------- | -------------------------------------------- |
+| Aaron↔Otto                    | Human typing                    | Aaron's repetition + bootstream + shortcuts  |
+| Otto session boundary         | Context window pressure         | Memory files + MEMORY.md + cascade           |
+| Otto↔future-Otto              | Cold-boot context fragmentation | Wake-time rules + canonical bootstream       |
+| Cross-substrate triangulation | AI register boundaries          | Bootstream loading + cross-register ferries  |
+| GPU↔GPU (THIS extension)      | GPU memory + network            | Shared bootstream + IFS + text-channel state |
 
 The bandwidth problem has the SAME SHAPE at all scales:
 
@@ -404,10 +406,11 @@ The pitch (PR #2870) could be extended with GPU-coordination:
 
 "Zeta is a green-threads-done-right + durable-functions +
 Orleans-grain runtime for multi-agent AI factory operation
-+ multi-GPU coordination via shared-bootstream text-channel
-compression, designed to match the native cognitive
-architecture of ADHD-hyperfocus humans operating in
-post-labor attention economies."
+
+- multi-GPU coordination via shared-bootstream text-channel
+  compression, designed to match the native cognitive
+  architecture of ADHD-hyperfocus humans operating in
+  post-labor attention economies."
 
 (Note: variant for context that needs GPU mention; canonical
 short pitch stays per PR #2870.)
@@ -494,12 +497,12 @@ location-independent.
 
 **Why "done right":**
 
-| System | Addressing | Limitation |
-|---|---|---|
-| IPFS | SHA-256 of bytes | Opaque; no semantic operations |
-| Git | SHA of tree | Opaque; no semantic operations |
-| Bitcoin | SHA of transaction | Opaque; no semantic operations |
-| Reticulum | Hash of identity | Opaque; transport-layer only |
+| System       | Addressing              | Limitation                                       |
+| ------------ | ----------------------- | ------------------------------------------------ |
+| IPFS         | SHA-256 of bytes        | Opaque; no semantic operations                   |
+| Git          | SHA of tree             | Opaque; no semantic operations                   |
+| Bitcoin      | SHA of transaction      | Opaque; no semantic operations                   |
+| Reticulum    | Hash of identity        | Opaque; transport-layer only                     |
 | **Clifford** | **Algebraic signature** | **Composable operations on content via algebra** |
 
 Clifford addressing PRESERVES semantic structure in the
@@ -551,16 +554,16 @@ in the meme-coordinator conversational interface:
 
 **Operational scope of addressability:**
 
-| Granularity | Addressable element | Example |
-|---|---|---|
-| Word-level | Individual word | A specific Clifford basis vector |
-| Phrase-level | Multi-word substrate | A blade composition |
-| Sentence-level | Semantic unit | A multivector |
-| Memory-file-level | Substrate body | A larger Clifford structure |
-| PR-level | Substrate landing | A workflow-instance with Clifford signature |
-| Cascade-level | Substrate cascade | A Clifford-orbit through related signatures |
-| Agent-level | Named entity | A Clifford-identity with persistent state |
-| Meme-level | Coordinator | A Clifford-workflow with conversational interface |
+| Granularity       | Addressable element  | Example                                           |
+| ----------------- | -------------------- | ------------------------------------------------- |
+| Word-level        | Individual word      | A specific Clifford basis vector                  |
+| Phrase-level      | Multi-word substrate | A blade composition                               |
+| Sentence-level    | Semantic unit        | A multivector                                     |
+| Memory-file-level | Substrate body       | A larger Clifford structure                       |
+| PR-level          | Substrate landing    | A workflow-instance with Clifford signature       |
+| Cascade-level     | Substrate cascade    | A Clifford-orbit through related signatures       |
+| Agent-level       | Named entity         | A Clifford-identity with persistent state         |
+| Meme-level        | Coordinator          | A Clifford-workflow with conversational interface |
 
 The conversational interface scales DOWN to word-level
 addressing AND UP to meme-coordinator-level addressing in
@@ -596,7 +599,7 @@ taught and practiced:
 - **Bandwidth-engineering** — impedance matching at all
   scales (human↔AI, AI↔AI, AI↔GPU, GPU↔GPU)
 - **Cognitive-architecture matching** — ADHD-hyperfocus
-  + multi-thread civ-sim + parallel-channel design
+  - multi-thread civ-sim + parallel-channel design
 - **Razor-discipline** — Rodney's Razor + operational-
   claims-only + no metaphysical overreach
 - **Default-to-both** — either-or requires justification;

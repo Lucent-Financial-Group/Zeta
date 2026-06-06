@@ -256,7 +256,8 @@ function createNodeConnectionOptions(input: NatsJsConnectionInput): NodeConnecti
 function adaptJetStreamClient(client: JetStreamClient): NatsJsJetStreamClient {
   return {
     consumers: {
-      get: async (streamName, durableName) => adaptJetStreamConsumer(await client.consumers.get(streamName, durableName)),
+      get: async (streamName, durableName) =>
+        adaptJetStreamConsumer(await client.consumers.get(streamName, durableName)),
     },
     publish: async (subject, payload, options) => {
       await client.publish(subject, payload, {

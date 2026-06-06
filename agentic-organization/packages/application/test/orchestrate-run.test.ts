@@ -62,7 +62,9 @@ test("the completed run's heartbeat marks the agent ALIVE to the keep-alive engi
     nowMs: 5000,
     orgHeartbeatAgeMs: 0,
     orgHeartbeatDeadlineMs: 30_000,
-    agents: [{ agentId: "agent-1", hatAssignmentId: "hat-1", workItemId: "wi-1", heartbeatAgeMs: 0, deadlineMs: 60_000 }],
+    agents: [
+      { agentId: "agent-1", hatAssignmentId: "hat-1", workItemId: "wi-1", heartbeatAgeMs: 0, deadlineMs: 60_000 },
+    ],
     leases: [],
   });
   equal(ka.agentLiveness[0]?.liveness, AgentLiveness.Alive);
@@ -111,7 +113,10 @@ test("a heartbeating run persists agent liveness through the injected writer", a
 test("a run that vanishes before its heartbeat persists no agent liveness", async () => {
   const hermes = {
     ...createInProcessHermesRuntime(),
-    heartbeat: async () => ({ outcome: "feedback" as const, feedback: { reason: "unknown_run" as const, message: "run vanished" } }),
+    heartbeat: async () => ({
+      outcome: "feedback" as const,
+      feedback: { reason: "unknown_run" as const, message: "run vanished" },
+    }),
   };
   const memory = createInProcessMemory();
   const writer = createRecordingAgentHeartbeatWriter();
@@ -131,7 +136,10 @@ test("a launch failure surfaces as feedback, not a throw", async () => {
   // a hermes whose launch always fails
   const failingHermes = {
     ...createInProcessHermesRuntime(),
-    launchRun: async () => ({ outcome: "feedback" as const, feedback: { reason: "unknown_run" as const, message: "no capacity" } }),
+    launchRun: async () => ({
+      outcome: "feedback" as const,
+      feedback: { reason: "unknown_run" as const, message: "no capacity" },
+    }),
   };
   const memory = createInProcessMemory();
   const result = await runWorkItemThroughHermes(request(), { hermes: failingHermes, memory });

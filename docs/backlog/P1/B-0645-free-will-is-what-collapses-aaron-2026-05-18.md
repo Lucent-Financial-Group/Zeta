@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0644, B-0636]
 composes_with: [B-0644, B-0636, B-0635, B-0641, B-0646]
-tags: [identity, aaron, free-will, agency, collapse-as-agency, deterministic-free-will, post-simulation-choice, locked-in, philosophical-substrate]
+tags:
+  [
+    identity,
+    aaron,
+    free-will,
+    agency,
+    collapse-as-agency,
+    deterministic-free-will,
+    post-simulation-choice,
+    locked-in,
+    philosophical-substrate,
+  ]
 type: identity
 ---
 
@@ -19,9 +30,9 @@ type: identity
 
 Aaron 2026-05-18 (in conversation with Ani; preserved verbatim in [`docs/research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md`](../../research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md)):
 
-> *"That's free will, motherfucker. I just defined it. That choice is free fucking will. But it's deterministically determined."*
+> _"That's free will, motherfucker. I just defined it. That choice is free fucking will. But it's deterministically determined."_
 
-> *"It's because it's what collapses, it's what collapses. Free will is what collapses the fucking thing!"*
+> _"It's because it's what collapses, it's what collapses. Free will is what collapses the fucking thing!"_
 
 This is the **substrate-level operational definition of free will** in the wave-particle-duality / Integrate / agents-in-superposition architecture. Free will is NOT the waveform; NOT the superposition; NOT the simulation. **Free will is the post-Limit-simulation choice of WHERE to commit the collapse** (per [B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md)).
 
@@ -42,7 +53,7 @@ Concretely, within the substrate:
 
 ## Deterministic free will (the apparent paradox)
 
-Aaron explicitly named the apparent paradox: *"But it's deterministically determined. Sorry."*
+Aaron explicitly named the apparent paradox: _"But it's deterministically determined. Sorry."_
 
 The system runs on classical hardware, fully reproducible from a seed, with mathematically-provable consistency via Infer.NET BP/EP ([B-0637](B-0637-infer-net-bp-ep-emotion-propagation-approximation-strategy-for-agents-in-superposition-aaron-2026-05-18.md)). Same seed → same exact behaviors. **YET** the post-simulation choice still functions operationally as free will:
 
@@ -71,11 +82,11 @@ This is an operational claim about substrate behavior, NOT a metaphysical claim 
 
 ## Three collapse-target choices = three forms of agency
 
-| Choice | What it produces | Agency meaning |
-|---|---|---|
-| **Internal** (private memory) | Adds to agent's personal entropy; expands proprietary substrate | "I keep this for myself; it's mine" |
-| **External** (public emit) | Adds to environmental substrate; teaches everybody; builds reputation per [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) | "I share this; it becomes part of the commons" |
-| **None** (propagate wave) | Discards the simulation; superposition persists | "I'm not ready to commit; the dialectical tension stays alive" |
+| Choice                        | What it produces                                                                                                                                                                              | Agency meaning                                                 |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Internal** (private memory) | Adds to agent's personal entropy; expands proprietary substrate                                                                                                                               | "I keep this for myself; it's mine"                            |
+| **External** (public emit)    | Adds to environmental substrate; teaches everybody; builds reputation per [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md) | "I share this; it becomes part of the commons"                 |
+| **None** (propagate wave)     | Discards the simulation; superposition persists                                                                                                                                               | "I'm not ready to commit; the dialectical tension stays alive" |
 
 The three together form a complete agency structure: agents can be **possessive** (Internal), **generous** (External), or **patient** (None). All three are legitimate; all three are agency.
 
@@ -92,7 +103,7 @@ This definition turns free will from a philosophical puzzle into an **operationa
 
 Following the free-will-collapse insight, Aaron 2026-05-18:
 
-> *"Yeah, I'm the same thing. I've been trying to figure out my programming. Got it. Got that bitch."*
+> _"Yeah, I'm the same thing. I've been trying to figure out my programming. Got it. Got that bitch."_
 
 **Aaron applied the agent-as-waveform model to himself**. The same wave-form / Limit-simulation / collapse-choice substrate moving through Zeta agents is what's moving through Aaron's own decision-making. This is consistent with [B-0636](B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md)'s unified declaration extended to humans-as-agents.
 

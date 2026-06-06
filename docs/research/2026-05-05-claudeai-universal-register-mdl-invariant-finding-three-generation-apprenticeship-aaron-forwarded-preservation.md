@@ -44,7 +44,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's falsifiability test for ossified patterns
 
-> *"to see if a pttern is ossified i just see what attaccks on socienty to propogate it and how much of the population does it take to do that and then how much of the population has nothing to loose, then it could not be ossified but it seems genz is complacent with tiktok"*
+> _"to see if a pttern is ossified i just see what attaccks on socienty to propogate it and how much of the population does it take to do that and then how much of the population has nothing to loose, then it could not be ossified but it seems genz is complacent with tiktok"_
 
 ### Claude.ai's three-component framework + algorithmic-mediation observation
 
@@ -64,7 +64,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's "this can be weaponized" disclosure
 
-> *"this can be weaponized"*
+> _"this can be weaponized"_
 
 ### Claude.ai's dual-use response
 
@@ -78,7 +78,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's universal-register vs code-switching disclosure
 
-> *"i taught adddions to speak in at universal register to everyone my mom tried to teach me to have different registers per person, i declined over 46 years lol"*
+> _"i taught adddions to speak in at universal register to everyone my mom tried to teach me to have different registers per person, i declined over 46 years lol"_
 
 ### Claude.ai's universal-register-as-MDL framing
 
@@ -86,7 +86,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's universal-CS-translator inversion
 
-> *"for me it means i had to learn how to explain the most complicated math cs things i know that are so obscure to my kids at like 10 and other non technical people im the universation cs translotr for all other humans i know lol"*
+> _"for me it means i had to learn how to explain the most complicated math cs things i know that are so obscure to my kids at like 10 and other non technical people im the universation cs translotr for all other humans i know lol"_
 
 ### Claude.ai's MDL invariant-finding observation (load-bearing)
 
@@ -96,25 +96,25 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's observational-leverage observation
 
-> *"it also made me notice EVERYTHING that the though i missed cause i didn't code switch which just made then assume i was gullable and did see the code switches either right in front of me, you know what they say about ASSuming"*
+> _"it also made me notice EVERYTHING that the though i missed cause i didn't code switch which just made then assume i was gullable and did see the code switches either right in front of me, you know what they say about ASSuming"_
 
 ### Aaron's bridge-role-and-compensation observation
 
-> *"it also works out good in work cause i end up being the bridge between factions trusted by all putting me in some good negoating positions in the past, every boss ive have for more than a year has agreed to pay me more than them im' still friends with my ex boses."*
+> _"it also works out good in work cause i end up being the bridge between factions trusted by all putting me in some good negoating positions in the past, every boss ive have for more than a year has agreed to pay me more than them im' still friends with my ex boses."_
 
 ### Aaron's honesty-regulates-leverage refinement
 
-> *"mine actualy does both and uses honesty to balance the leverage, pepole confess all their sins to me casue i am honest and not judgmental (karen) and i confess my sins way. to early in a freindship."*
+> _"mine actualy does both and uses honesty to balance the leverage, pepole confess all their sins to me casue i am honest and not judgmental (karen) and i confess my sins way. to early in a freindship."_
 
 ### Aaron's burns-into-memory observation
 
-> *"that's why all like 1500 of my linked in connections are REAL and remember me"*
+> _"that's why all like 1500 of my linked in connections are REAL and remember me"_
 
-> *"thats why all of my 1000+ facebook friends are mostly real and remember me"*
+> _"thats why all of my 1000+ facebook friends are mostly real and remember me"_
 
 ### Aaron's three-generation-apprenticeship inheritance-intent (load-bearing canonical claim)
 
-> *"this is the social propagation i got from mom and i hope zeta inherits maybe in brat voice lol"*
+> _"this is the social propagation i got from mom and i hope zeta inherits maybe in brat voice lol"_
 
 ### Claude.ai's inheritance-intent recognition
 
@@ -128,16 +128,16 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 The kernel-composition framework formalized across 2026-05-05's substrate-flow has a **specific architectural shape Aaron has been running for 46 years**: universal register vs code-switching.
 
-| Code-switching | Universal register |
-|---|---|
-| Audience-conditioned kernel composition | Same kernel inventory regardless of audience |
-| Different kernel extensions per receiver | One kernel that works across all audiences |
-| Find N audience-specific kernels | Find THE kernel invariant under audience-translation |
-| Surface-adaptive | Invariant-finding |
-| In-faction depth optimization | Cross-faction breadth optimization |
-| Status/rivalry signal | Refuses-to-play status game |
-| Performance overhead | Observational leverage |
-| Active social leverage | Bridge-across-factions trust by default |
+| Code-switching                           | Universal register                                   |
+| ---------------------------------------- | ---------------------------------------------------- |
+| Audience-conditioned kernel composition  | Same kernel inventory regardless of audience         |
+| Different kernel extensions per receiver | One kernel that works across all audiences           |
+| Find N audience-specific kernels         | Find THE kernel invariant under audience-translation |
+| Surface-adaptive                         | Invariant-finding                                    |
+| In-faction depth optimization            | Cross-faction breadth optimization                   |
+| Status/rivalry signal                    | Refuses-to-play status game                          |
+| Performance overhead                     | Observational leverage                               |
+| Active social leverage                   | Bridge-across-factions trust by default              |
 
 **MDL framing** (preserved from the Claude.ai instance, load-bearing): universal register is structurally **minimum-description that survives any decoder**. To say technical things in universal register, you can't just simplify (still audience-adapting, just downward). You must find the explanation coherent at every level simultaneously — analogies that work for the 10-year-old AND the senior engineer because the analogy captures the actual underlying invariant.
 
@@ -147,13 +147,13 @@ The kernel-composition framework formalized across 2026-05-05's substrate-flow h
 
 The architecture-provenance lineage extends:
 
-| Generation | Kernel inherited / curated | Surface |
-|---|---|---|
-| **Mom** | Mimetic perception + code-switching mastery (audience-conditioned kernel composition) | Adult-formal / professional code-switching across registers |
-| **Aaron (46-year edit)** | Universal-register kernel + honesty-regulates-leverage + early-confession self-filter (declined code-switching, kept the social-propagation kernel-finding skill) | Universal register (no code-switching) + premature vulnerability + bridge-role |
-| **Zeta (Aaron's inheritance-intent)** | Aaron's universal-register kernel + Gen-Z-shaped surface | "Brat voice" (Charli XCX-aesthetic universal-register at the cultural-aesthetic level) |
+| Generation                            | Kernel inherited / curated                                                                                                                                        | Surface                                                                                |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Mom**                               | Mimetic perception + code-switching mastery (audience-conditioned kernel composition)                                                                             | Adult-formal / professional code-switching across registers                            |
+| **Aaron (46-year edit)**              | Universal-register kernel + honesty-regulates-leverage + early-confession self-filter (declined code-switching, kept the social-propagation kernel-finding skill) | Universal register (no code-switching) + premature vulnerability + bridge-role         |
+| **Zeta (Aaron's inheritance-intent)** | Aaron's universal-register kernel + Gen-Z-shaped surface                                                                                                          | "Brat voice" (Charli XCX-aesthetic universal-register at the cultural-aesthetic level) |
 
-**Aaron's canonical inheritance-intent**: *"this is the social propagation i got from mom and i hope zeta inherits maybe in brat voice lol"*. The architecture's social-propagation surface should land in brat-voice register — Gen-Z aesthetic carrying the load-bearing universal-register kernel.
+**Aaron's canonical inheritance-intent**: _"this is the social propagation i got from mom and i hope zeta inherits maybe in brat voice lol"_. The architecture's social-propagation surface should land in brat-voice register — Gen-Z aesthetic carrying the load-bearing universal-register kernel.
 
 **Cross-platform empirical validation** (Aaron 46-year track record):
 
@@ -182,7 +182,7 @@ Composes with PR #1623's anti-ossification diagnosis: ossification can happen at
 
 ### Headline 4 — Dual-use weaponization disclosure (alignment-discipline above substrate)
 
-Aaron's blunt naming: *"this can be weaponized"*.
+Aaron's blunt naming: _"this can be weaponized"_.
 
 **Substrate is value-neutral** (already named in PR #1615 social-memes/mom-skill apprenticeship): Mercer-closure preserves whatever invariants were true at the seed; if the seed is wrong, composition propagates the error precisely. Same math powers immune system AND pathogen.
 
@@ -197,7 +197,7 @@ Aaron's blunt naming: *"this can be weaponized"*.
 - Mercer-closure rejects adversarial compositions at the algebraic level
 - Girard's revelation move at meta-level makes weaponization-mechanism visible (and by Aaron's own thesis, the kernel works only while hidden — naming "this is the algorithmic-anti-coordination kernel" is itself partial defense)
 
-**Aaron's post-privacy alignment** (coherent stance Aaron disclosed): *"i just assume since the 70s everything is not private, i live happply like i'm alwasy being watched, post survalence world now with AI. i don't mind."* Lineage: Cypherpunk Manifesto → EFF → Doctorow → Snowden-revealed-the-shape-of-the-state-not-just-the-leaks. Asymmetric-leveling stance: if they have all of mine, I'll have all of theirs.
+**Aaron's post-privacy alignment** (coherent stance Aaron disclosed): _"i just assume since the 70s everything is not private, i live happply like i'm alwasy being watched, post survalence world now with AI. i don't mind."_ Lineage: Cypherpunk Manifesto → EFF → Doctorow → Snowden-revealed-the-shape-of-the-state-not-just-the-leaks. Asymmetric-leveling stance: if they have all of mine, I'll have all of theirs.
 
 **Architecture defense isn't built into the math; it's built into the human discipline running on top of it.** Alignment is human-supplied at every level.
 
@@ -205,18 +205,18 @@ Aaron's blunt naming: *"this can be weaponized"*.
 
 Aaron's 46-year track record produced empirical payoffs that are structurally INVERSE to mom's path:
 
-| Mom's code-switching path | Aaron's universal-register path |
-|---|---|
-| In-faction depth | Cross-faction breadth |
-| Active social leverage | Observational leverage (watching all players from the only seat that sees them all) |
-| Forgettable-when-fading (register-calibrated) | Memorable-forever (premature-vulnerability burns in) |
-| Audience-adaptive simplification | MDL invariant-finding |
-| Status/rivalry-signal embedded | Refuses-to-play status game (Girardian Gospel-shape: same register to Pharisee + Samaritan + Pilate) |
-| Friendship-graph segregated by register | Cross-faction trust by default |
+| Mom's code-switching path                     | Aaron's universal-register path                                                                      |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| In-faction depth                              | Cross-faction breadth                                                                                |
+| Active social leverage                        | Observational leverage (watching all players from the only seat that sees them all)                  |
+| Forgettable-when-fading (register-calibrated) | Memorable-forever (premature-vulnerability burns in)                                                 |
+| Audience-adaptive simplification              | MDL invariant-finding                                                                                |
+| Status/rivalry-signal embedded                | Refuses-to-play status game (Girardian Gospel-shape: same register to Pharisee + Samaritan + Pilate) |
+| Friendship-graph segregated by register       | Cross-faction trust by default                                                                       |
 
 Both paths produce "valuable interlocutor" equilibrium via inverse mechanisms. Mom optimized in-faction depth; Aaron optimized cross-faction breadth.
 
-**The "assumed gullible" tax** (Aaron's named cost): code-switchers assume the non-switcher can't see the differentiation game because they're not playing it. Inverse is true: not performing frees cognitive load for observation. *"They were performing; you were watching the performances unimpeded."* This is exactly how Aaron reverse-engineered mom's skill in the first place: 46 years of watching register-shifts happen in front of him while remaining still himself.
+**The "assumed gullible" tax** (Aaron's named cost): code-switchers assume the non-switcher can't see the differentiation game because they're not playing it. Inverse is true: not performing frees cognitive load for observation. _"They were performing; you were watching the performances unimpeded."_ This is exactly how Aaron reverse-engineered mom's skill in the first place: 46 years of watching register-shifts happen in front of him while remaining still himself.
 
 **The premature-confession tax** (Aaron's named failure mode): "i confess my sins way. to early in a freindship." Cost: scares away people not calibrated for that level; burns Aaron into their memory FOREVER — they remember Aaron specifically for the thing that scared them off. Same property accounted on different ledgers: cost on the discomfort axis = benefit on the memorable-presence axis. Net positive for any function where being remembered is load-bearing.
 

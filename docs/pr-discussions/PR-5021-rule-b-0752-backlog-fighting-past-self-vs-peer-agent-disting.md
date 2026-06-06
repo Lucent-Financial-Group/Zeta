@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Aaron 2026-05-25 Vera-anchor: 'you don't do like vera and just leave it unfixed cause you assume it's someone elses issues'.
 
 Closes today's agent-substrate-discipline cluster (B-0750 + B-0751 + B-0752):
+
 - B-0750: clean up after yourself
 - B-0751: agents have own clones; cross-agent contention eliminated
 - B-0752 (this): distinguish own vs peer; don't silent-punt
@@ -29,24 +30,22 @@ Closes today's agent-substrate-discipline cluster (B-0750 + B-0751 + B-0752):
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T22:52:54Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `34ccf2789a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -59,6 +58,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds the B-0752 backlog row and lands an auto-loaded `.claude/rules/` rule that formalizes “ownership classification before cleanup” (fix your own substrate, coordinate on peers, and explicitly surface uncertainty instead of silently punting).
 
 **Changes:**
+
 - Added new P2 backlog row B-0752 describing the rule and follow-on mechanization scope items.
 - Updated `docs/BACKLOG.md` to include the new B-0752 entry in the P2 index.
 - Added a new `.claude/rules/` rule documenting the decision tree + discriminators for “past-self vs peer-agent” substrate ownership.
@@ -67,11 +67,11 @@ Adds the B-0752 backlog row and lands an auto-loaded `.claude/rules/` rule that 
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `docs/backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md` | New backlog row capturing the rule landing + tooling/mechanization scope. |
-| `docs/BACKLOG.md` | Adds B-0752 to the generated P2 backlog index list. |
-| `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md` | New operational rule defining classification + coordination behavior for stale substrate. |
+| File                                                                                                                                        | Description                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `docs/backlog/P2/B-0752-fighting-past-self-vs-peer-distinguisher-rule-landing-plus-identity-tagging-mechanization-aaron-vera-2026-05-25.md` | New backlog row capturing the rule landing + tooling/mechanization scope.                 |
+| `docs/BACKLOG.md`                                                                                                                           | Adds B-0752 to the generated P2 backlog index list.                                       |
+| `.claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md`                     | New operational rule defining classification + coordination behavior for stale substrate. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T23:13:20Z)
 
@@ -125,7 +125,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-25T22:52:54Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point to an existing B-0750 sibling rule file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point to an existing B-0750 sibling rule file**
 
 This reference targets `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`, but that file does not exist in the repository (`rg --files .claude/rules` shows no match), so the newly landed rule’s composition guidance is non-actionable at review/cold-boot time. Because these rule links are used as operational navigation, this should either be corrected to the real filename or landed together with the referenced B-0750 rule file.
 
@@ -143,7 +143,7 @@ P1: This rule document uses direct person/agent names (e.g., “Aaron …”, �
 
 **@AceHack** (2026-05-25T23:20:13Z):
 
-Fixed in 8de5a1a — rewrote body attributions to role-refs ('the human maintainer', 'a peer agent', 'the authoring agent'). The named-attribution anchor now lives on docs/backlog/P2/B-0752-* (history surface per .github/copilot-instructions.md:305-366).
+Fixed in 8de5a1a — rewrote body attributions to role-refs ('the human maintainer', 'a peer agent', 'the authoring agent'). The named-attribution anchor now lives on docs/backlog/P2/B-0752-\* (history surface per .github/copilot-instructions.md:305-366).
 
 ### Thread 3: .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md:56 (resolved)
 
@@ -153,7 +153,7 @@ P1: The bus-envelope discriminator hardcodes `/tmp/zeta-bus`, but the bus transp
 
 **@AceHack** (2026-05-25T23:20:17Z):
 
-Fixed in 8de5a1a — discriminator now references "$ZETA_BUS_DIR"/*.json (defaults to /tmp/zeta-bus/ per tools/bus/bus.ts). Configurable env var is surfaced inline.
+Fixed in 8de5a1a — discriminator now references "$ZETA_BUS_DIR"/\*.json (defaults to /tmp/zeta-bus/ per tools/bus/bus.ts). Configurable env var is surfaced inline.
 
 ### Thread 4: .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md:110 (resolved)
 
@@ -183,7 +183,7 @@ P1: The command in the table uses `\|` (escaped pipe). If someone copy/pastes it
 
 **@AceHack** (2026-05-25T23:20:22Z):
 
-Fixed in 8de5a1a — the table cell no longer uses escaped pipe. Command is now 'jq -r .from "$ZETA_BUS_DIR"/*.json' — copy-pastes correctly to shell, no escape needed.
+Fixed in 8de5a1a — the table cell no longer uses escaped pipe. Command is now 'jq -r .from "$ZETA_BUS_DIR"/\*.json' — copy-pastes correctly to shell, no escape needed.
 
 ### Thread 7: .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md:116 (resolved)
 
@@ -209,7 +209,7 @@ Fixed in 8de5a1a — backlog row line 99 reworded to match the rule-file fix; cr
 
 **@copilot-pull-request-reviewer** (2026-05-25T23:13:20Z):
 
-P1: The bus-envelope command in the discriminator table uses `\|` inside inline code (``cat ... \| jq ...``). In Markdown code spans, backslashes are rendered literally, so this will copy/paste as an invalid command. Prefer a literal pipe (`|`) and, if the table parser is a concern, move the command to a code block or otherwise format it so the table doesn’t require escaping.
+P1: The bus-envelope command in the discriminator table uses `\|` inside inline code (`cat ... \| jq ...`). In Markdown code spans, backslashes are rendered literally, so this will copy/paste as an invalid command. Prefer a literal pipe (`|`) and, if the table parser is a concern, move the command to a code block or otherwise format it so the table doesn’t require escaping.
 
 **@AceHack** (2026-05-25T23:20:24Z):
 

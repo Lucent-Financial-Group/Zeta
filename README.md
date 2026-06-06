@@ -25,7 +25,7 @@ stability"](AGENTS.md#the-purpose-reproducible-stability).
 
 DBSP defines a tiny, complete calculus for incremental computation over
 changing relations. Three primitives — delay (`z^-1`), differentiation (`D`),
-and integration (`I`) — together with lifting (`↑`) let you transform *any*
+and integration (`I`) — together with lifting (`↑`) let you transform _any_
 query `Q` into its incremental form `Q^Δ = D ∘ Q^↑ ∘ I`. Plain-English
 definitions for every term here live in
 [docs/GLOSSARY.md](docs/GLOSSARY.md#core-ideas). Key identities:
@@ -146,20 +146,20 @@ foreach (var e in view.Current)
 
 ## Performance design
 
-| Pattern | Applied | Why |
-|---|---|---|
-| `ReadOnlySpan<T>` on hot loops | ✓ | JIT elides bounds checks, vectorizes |
-| `ArrayPool<T>.Shared.Rent` / `Return` | ✓ | Scratch buffers never hit GC |
-| `GC.AllocateUninitializedArray` | ✓ | Skip zero-init for blittable `T` |
-| `ImmutableCollectionsMarshal.AsImmutableArray` | ✓ | One alloc per output; no double-copy |
-| Struct `IComparer<T>` + `MemoryExtensions.Sort` | ✓ | Monomorphized sort, no delegate alloc |
-| `CollectionsMarshal.GetValueRefOrAddDefault` | ✓ | One hash lookup instead of two |
-| `IsReferenceOrContainsReferences<T>` | ✓ | JIT-constant-folded `clearArray` |
-| `[<InlineIfLambda>]` + `let inline` | ✓ | Monomorphize lambda body at callsite |
-| `[<Struct; IsReadOnly>]` everywhere | ✓ | Zero-copy cursors and handles |
-| `Channel` / `ConcurrentQueue` for I/O | ✓ | Lock-free many-producer inputs |
-| `backgroundTask` CE | ✓ | F#'s library-safe async (no SC capture) |
-| `ValueTask.CompletedTask` sync path | ✓ | No state-machine alloc on sync ticks |
+| Pattern                                         | Applied | Why                                     |
+| ----------------------------------------------- | ------- | --------------------------------------- |
+| `ReadOnlySpan<T>` on hot loops                  | ✓       | JIT elides bounds checks, vectorizes    |
+| `ArrayPool<T>.Shared.Rent` / `Return`           | ✓       | Scratch buffers never hit GC            |
+| `GC.AllocateUninitializedArray`                 | ✓       | Skip zero-init for blittable `T`        |
+| `ImmutableCollectionsMarshal.AsImmutableArray`  | ✓       | One alloc per output; no double-copy    |
+| Struct `IComparer<T>` + `MemoryExtensions.Sort` | ✓       | Monomorphized sort, no delegate alloc   |
+| `CollectionsMarshal.GetValueRefOrAddDefault`    | ✓       | One hash lookup instead of two          |
+| `IsReferenceOrContainsReferences<T>`            | ✓       | JIT-constant-folded `clearArray`        |
+| `[<InlineIfLambda>]` + `let inline`             | ✓       | Monomorphize lambda body at callsite    |
+| `[<Struct; IsReadOnly>]` everywhere             | ✓       | Zero-copy cursors and handles           |
+| `Channel` / `ConcurrentQueue` for I/O           | ✓       | Lock-free many-producer inputs          |
+| `backgroundTask` CE                             | ✓       | F#'s library-safe async (no SC capture) |
+| `ValueTask.CompletedTask` sync path             | ✓       | No state-machine alloc on sync ticks    |
 
 ## Layout
 

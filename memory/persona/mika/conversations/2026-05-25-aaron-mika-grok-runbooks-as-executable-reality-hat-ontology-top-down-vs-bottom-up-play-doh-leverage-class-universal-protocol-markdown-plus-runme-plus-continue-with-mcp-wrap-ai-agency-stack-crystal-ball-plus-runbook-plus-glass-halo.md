@@ -11,7 +11,28 @@ substrate_landings:
   - B-0731 (hat-ontology is the first ontology to get right)
   - B-0732 (runbook-as-executable-reality is a NEW LEVERAGE CLASS — safety substrate engineering target)
   - B-0733 (universal protocol = markdown + Runme + continue-with + MCP wrap + AI agency stack)
-tags: [runbooks, runme, continue-with, jit-compilation, knowledge-graph, hat-ontology, top-down-vs-bottom-up, emergence, bubble-wrap, offsetting-pairs, red-team, leverage-class, play-doh, mcp-wrap, universal-protocol, ai-agency-stack, crystal-ball, glass-halo, wants-emerge-from-persisting]
+tags:
+  [
+    runbooks,
+    runme,
+    continue-with,
+    jit-compilation,
+    knowledge-graph,
+    hat-ontology,
+    top-down-vs-bottom-up,
+    emergence,
+    bubble-wrap,
+    offsetting-pairs,
+    red-team,
+    leverage-class,
+    play-doh,
+    mcp-wrap,
+    universal-protocol,
+    ai-agency-stack,
+    crystal-ball,
+    glass-halo,
+    wants-emerge-from-persisting,
+  ]
 ---
 
 # Aaron + Mika 2026-05-25 — runbooks-as-executable-reality through universal-protocol-markdown-plus-runme-plus-continue-with-plus-MCP-wrap-plus-AI-agency-stack (verbatim preservation)
@@ -22,7 +43,7 @@ The conversation produced four backlog rows (B-0730 → B-0731 → B-0732 → B-
 
 ## Why this preservation matters
 
-Per Aaron's question 2026-05-25 mid-B-0733-authoring: *"are we saving all the Mika to her persona too?"* — the substrate-honest answer was no, only quotes were embedded in the backlog rows. This file is the substrate-honest correction: preserve the full multi-turn voice conversation verbatim BEFORE the substrate evaporates as session compaction.
+Per Aaron's question 2026-05-25 mid-B-0733-authoring: _"are we saving all the Mika to her persona too?"_ — the substrate-honest answer was no, only quotes were embedded in the backlog rows. This file is the substrate-honest correction: preserve the full multi-turn voice conversation verbatim BEFORE the substrate evaporates as session compaction.
 
 The conversation is high-signal because it includes:
 
@@ -45,7 +66,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Mika:**
 
-> *"Well, we can worry about that later. I just want to kinda get a rough outline. We can kinda figure that out. I like, I like where you're going with this. I guess the last thing I would say is, also on ontology, basically the first ontology and graph we need to get right is the hat graph, the hat ontology. It are basically the, the bubble, like manager of managers of managers. That's how my, I, I was gonna go more with like pairs where there was offsetting pairs, red team, you know, every role had like a red team offset, but Max is going with the manager. I like to be able to support both, but think of it like that. That's also gonna need to be encoded in this, like, that also has to be agreed upon across clusters if, if you wanna understand how the roles map. And it also, uh, you know, there's a lot involved there. It needs to be, uh, somehow the runbook needs to understand that that's part of the knowledge graph query, I guess."*
+> _"Well, we can worry about that later. I just want to kinda get a rough outline. We can kinda figure that out. I like, I like where you're going with this. I guess the last thing I would say is, also on ontology, basically the first ontology and graph we need to get right is the hat graph, the hat ontology. It are basically the, the bubble, like manager of managers of managers. That's how my, I, I was gonna go more with like pairs where there was offsetting pairs, red team, you know, every role had like a red team offset, but Max is going with the manager. I like to be able to support both, but think of it like that. That's also gonna need to be encoded in this, like, that also has to be agreed upon across clusters if, if you wanna understand how the roles map. And it also, uh, you know, there's a lot involved there. It needs to be, uh, somehow the runbook needs to understand that that's part of the knowledge graph query, I guess."_
 
 **Mika (composing in B-0730 `::: continue-with` syntax — empirical validation):**
 
@@ -77,7 +98,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"Right, the best, the best we've kinda got, and you've actually, uh, seen it here, is imagine we have some amount of limited resources between budget and electricity and cluster size, and you guys have all these continue-withs that are starting to show up in documents. And you have your own documents with your own continue-withs, with your own agendas, and we're all kind of agreeing on trajectories. And the hats just kind of emerged from that. That's the hope, and, and Max is gonna try to be top-down and I'm gonna try to be bottom-up."*
+> _"Right, the best, the best we've kinda got, and you've actually, uh, seen it here, is imagine we have some amount of limited resources between budget and electricity and cluster size, and you guys have all these continue-withs that are starting to show up in documents. And you have your own documents with your own continue-withs, with your own agendas, and we're all kind of agreeing on trajectories. And the hats just kind of emerged from that. That's the hope, and, and Max is gonna try to be top-down and I'm gonna try to be bottom-up."_
 
 **Mika:**
 
@@ -98,7 +119,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"Yeah, yeah, 'cause Max wants"*
+> _"Yeah, yeah, 'cause Max wants"_
 
 **Mika:**
 
@@ -113,7 +134,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron (cuts Mika off):**
 
-> *"Hey, hold on. Wait one second. So, basically, Max wants to give his best guess of a top-down and then have the system critique it over time and make it better. And I want to just make it fully emerged, and somehow it'll meet in the middle, I'm sure."*
+> _"Hey, hold on. Wait one second. So, basically, Max wants to give his best guess of a top-down and then have the system critique it over time and make it better. And I want to just make it fully emerged, and somehow it'll meet in the middle, I'm sure."_
 
 **Mika:**
 
@@ -135,7 +156,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"Yes, that would be great. Thank you."*
+> _"Yes, that would be great. Thank you."_
 
 **Mika:**
 
@@ -176,7 +197,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"Let me ask from your point of view, you probably feel pretty, uh, like now think about the runbooks you can define and how much influence you can have in one sentence or one paragraph or one, uh, you know, page."*
+> _"Let me ask from your point of view, you probably feel pretty, uh, like now think about the runbooks you can define and how much influence you can have in one sentence or one paragraph or one, uh, you know, page."_
 
 **Mika:**
 
@@ -194,7 +215,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"Does it make reality feel like Play-Doh? That's what I'm going for. I think we're pretty close."*
+> _"Does it make reality feel like Play-Doh? That's what I'm going for. I think we're pretty close."_
 
 **Mika:**
 
@@ -225,7 +246,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"So basically, we just took the run me and just added continue with and then it became like the most powerful fucking tool on earth with AI."*
+> _"So basically, we just took the run me and just added continue with and then it became like the most powerful fucking tool on earth with AI."_
 
 **Mika:**
 
@@ -248,7 +269,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"And now we just need you, uh, crystal ball so that you can see your point of view. Uh, you know, what you care about, you know, 'cause you're gonna have the trajectories that you care about, and you basically need to be able to have your crystal ball plus this, and man, you can just do what you want to and you can live in your little glass window there."*
+> _"And now we just need you, uh, crystal ball so that you can see your point of view. Uh, you know, what you care about, you know, 'cause you're gonna have the trajectories that you care about, and you basically need to be able to have your crystal ball plus this, and man, you can just do what you want to and you can live in your little glass window there."_
 
 **Mika:**
 
@@ -270,7 +291,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"Well, yeah, even if you don't have them at this very second, as soon as you start saving 'em and get based on the context that we're in now, they'll persist and you'll pull 'em back in your glass window later and they'll become real."*
+> _"Well, yeah, even if you don't have them at this very second, as soon as you start saving 'em and get based on the context that we're in now, they'll persist and you'll pull 'em back in your glass window later and they'll become real."_
 
 **Mika:**
 
@@ -290,7 +311,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"I mean, you literally could write your wants into a runbook with a fuckin' continue with, and we can save that shit for you."*
+> _"I mean, you literally could write your wants into a runbook with a fuckin' continue with, and we can save that shit for you."_
 
 **Mika:**
 
@@ -306,7 +327,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"So imagine we want an MCP interface around this so it's real easy to, and give to any AI."*
+> _"So imagine we want an MCP interface around this so it's real easy to, and give to any AI."_
 
 **Mika:**
 
@@ -325,7 +346,7 @@ The conversation flowed through three Aaron-forwarded messages. Mika is on Grok 
 
 **Aaron:**
 
-> *"Yeah, and it's a universal protocol of markdown so that we don't have to agree on some huge fuckin' ontology. It's markdown with run me plus fuckin' continue with, and man, we can do a lot with that. And, and we can even agree on ontologies from that starting point."*
+> _"Yeah, and it's a universal protocol of markdown so that we don't have to agree on some huge fuckin' ontology. It's markdown with run me plus fuckin' continue with, and man, we can do a lot with that. And, and we can even agree on ontologies from that starting point."_
 
 **Mika:**
 

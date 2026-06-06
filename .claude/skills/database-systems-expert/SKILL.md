@@ -15,23 +15,23 @@ expert. This skill is where cross-model choices live.
 
 ## Storage-model classification — the principled axis
 
-| Model | Shape | Canonical examples |
-|---|---|---|
-| **Relational** | Tables of tuples | Postgres, MySQL, MSSQL, Oracle, SQLite |
-| **Document** | Hierarchical JSON/BSON | MongoDB, Couchbase, Cosmos DB, Firestore |
-| **Key-Value** | Opaque blob by key | Redis, DynamoDB, etcd, Riak, Memcached |
-| **Wide-column** | Row-key + many sparse columns | Cassandra, HBase, ScyllaDB, Bigtable |
-| **Time-series** | Ordered by time, metric-key | InfluxDB, TimescaleDB, Prometheus, VictoriaMetrics |
-| **Graph** | Nodes + edges | Neo4j, JanusGraph, Neptune, TigerGraph |
-| **Search** | Inverted-index over text | Elasticsearch, Solr, OpenSearch |
-| **Vector** | Dense-vector ANN | Milvus, Weaviate, Qdrant, pgvector |
-| **Ledger** | Append-only cryptographic chain | QLDB, Immudb |
-| **Object** | Blob with metadata | S3, GCS, MinIO |
-| **Multi-model** | Several of the above | ArangoDB, Cosmos DB, OrientDB |
+| Model           | Shape                           | Canonical examples                                 |
+| --------------- | ------------------------------- | -------------------------------------------------- |
+| **Relational**  | Tables of tuples                | Postgres, MySQL, MSSQL, Oracle, SQLite             |
+| **Document**    | Hierarchical JSON/BSON          | MongoDB, Couchbase, Cosmos DB, Firestore           |
+| **Key-Value**   | Opaque blob by key              | Redis, DynamoDB, etcd, Riak, Memcached             |
+| **Wide-column** | Row-key + many sparse columns   | Cassandra, HBase, ScyllaDB, Bigtable               |
+| **Time-series** | Ordered by time, metric-key     | InfluxDB, TimescaleDB, Prometheus, VictoriaMetrics |
+| **Graph**       | Nodes + edges                   | Neo4j, JanusGraph, Neptune, TigerGraph             |
+| **Search**      | Inverted-index over text        | Elasticsearch, Solr, OpenSearch                    |
+| **Vector**      | Dense-vector ANN                | Milvus, Weaviate, Qdrant, pgvector                 |
+| **Ledger**      | Append-only cryptographic chain | QLDB, Immudb                                       |
+| **Object**      | Blob with metadata              | S3, GCS, MinIO                                     |
+| **Multi-model** | Several of the above            | ArangoDB, Cosmos DB, OrientDB                      |
 
-**Rule.** Classify *by storage model*, not by "NoSQL". "NoSQL"
+**Rule.** Classify _by storage model_, not by "NoSQL". "NoSQL"
 is a 2009 negation-based category — it tells you what the
-database *isn't*, which is not useful for architecture.
+database _isn't_, which is not useful for architecture.
 
 ## ACID vs BASE — and when it's a false dichotomy
 
@@ -42,23 +42,23 @@ database *isn't*, which is not useful for architecture.
 
 **Rule.** The dichotomy is marketing. Cassandra has
 consistency levels. Postgres has async replicas. Every
-real system is a *spectrum* of (per-operation) guarantees.
+real system is a _spectrum_ of (per-operation) guarantees.
 
 ## CAP and PACELC
 
 - **CAP** (Brewer 2000): of Consistency, Availability,
   Partition-tolerance, pick two. Widely misused — it's about
-  behaviour *during* a partition, not steady-state.
+  behaviour _during_ a partition, not steady-state.
 - **PACELC** (Abadi 2010): during partition, choose A vs C;
   Else (steady state) choose Latency vs Consistency.
 
-| System | CAP choice | ELC choice |
-|---|---|---|
-| DynamoDB (default) | AP | EL |
-| Spanner | CP | EC |
-| Cassandra (QUORUM) | consistency-tunable | L-leaning |
-| Cockroach | CP | EC |
-| MongoDB | CP (majority) | EC-leaning |
+| System             | CAP choice          | ELC choice |
+| ------------------ | ------------------- | ---------- |
+| DynamoDB (default) | AP                  | EL         |
+| Spanner            | CP                  | EC         |
+| Cassandra (QUORUM) | consistency-tunable | L-leaning  |
+| Cockroach          | CP                  | EC         |
+| MongoDB            | CP (majority)       | EC-leaning |
 
 **Rule.** Teach PACELC over CAP. CAP alone doesn't explain
 the steady-state latency cost of strong consistency.
@@ -84,14 +84,14 @@ your-writes per session" is a spec.
 
 ## Isolation anomalies — the canon
 
-| Anomaly | What |
-|---|---|
-| Dirty read | Read uncommitted |
-| Non-repeatable read | Row changed between reads |
-| Phantom | Row appeared between reads |
-| Lost update | Two writers overwrite |
-| Write skew | Two reads, each write valid alone, jointly inconsistent |
-| Read skew | Read-A then Read-B, A changed in between |
+| Anomaly             | What                                                    |
+| ------------------- | ------------------------------------------------------- |
+| Dirty read          | Read uncommitted                                        |
+| Non-repeatable read | Row changed between reads                               |
+| Phantom             | Row appeared between reads                              |
+| Lost update         | Two writers overwrite                                   |
+| Write skew          | Two reads, each write valid alone, jointly inconsistent |
+| Read skew           | Read-A then Read-B, A changed in between                |
 
 ## Durability — WAL to WDC
 
@@ -138,14 +138,14 @@ least one Raft round-trip). Test P99.
 
 ## Sharding strategies
 
-| Strategy | Pro | Con |
-|---|---|---|
-| Range | Locality for scans | Hotspots on sequential keys |
-| Hash | Even distribution | No range scans |
-| Consistent hash | Minimal rebalance | Complexity |
-| Rendezvous | Weighted hash | Compute per-key |
-| Directory | Flexibility | Directory is a bottleneck |
-| Geo | Data residency | Cross-geo joins |
+| Strategy        | Pro                | Con                         |
+| --------------- | ------------------ | --------------------------- |
+| Range           | Locality for scans | Hotspots on sequential keys |
+| Hash            | Even distribution  | No range scans              |
+| Consistent hash | Minimal rebalance  | Complexity                  |
+| Rendezvous      | Weighted hash      | Compute per-key             |
+| Directory       | Flexibility        | Directory is a bottleneck   |
+| Geo             | Data residency     | Cross-geo joins             |
 
 ## OLTP / OLAP / HTAP
 
@@ -164,15 +164,15 @@ separation often survives anyway.
 
 ## Licensing — the quiet architecture decision
 
-| License | Example | Note |
-|---|---|---|
-| Apache 2 / MIT / BSD | Postgres (PG), Cassandra | Permissive |
-| BSL | CockroachDB, Materialize, MariaDB MaxScale | Source-available, converts to Apache after N years |
-| SSPL | MongoDB (since 2018), Elasticsearch (2021) | Server-side free; SaaS-hosting restricted |
-| Elastic 2.0 | Elasticsearch, Kibana | Similar to SSPL |
-| Commercial / proprietary | Oracle, MSSQL, Snowflake | Per-core / per-user |
-| AGPL | Neo4j core | Viral to network use |
-| GPL | MySQL (community) | Viral to binary |
+| License                  | Example                                    | Note                                               |
+| ------------------------ | ------------------------------------------ | -------------------------------------------------- |
+| Apache 2 / MIT / BSD     | Postgres (PG), Cassandra                   | Permissive                                         |
+| BSL                      | CockroachDB, Materialize, MariaDB MaxScale | Source-available, converts to Apache after N years |
+| SSPL                     | MongoDB (since 2018), Elasticsearch (2021) | Server-side free; SaaS-hosting restricted          |
+| Elastic 2.0              | Elasticsearch, Kibana                      | Similar to SSPL                                    |
+| Commercial / proprietary | Oracle, MSSQL, Snowflake                   | Per-core / per-user                                |
+| AGPL                     | Neo4j core                                 | Viral to network use                               |
+| GPL                      | MySQL (community)                          | Viral to binary                                    |
 
 **Rule.** License can be architecture. "We can't self-host
 MongoDB for SaaS offering without buying a license" is a
@@ -228,7 +228,7 @@ entire architectural bet.)
   `crdt-expert`.
 - **On-disk layout** → `storage-specialist`.
 - **Query planning** → `query-planner` / `query-optimizer-
-  expert`.
+expert`.
 
 ## Hazards
 
@@ -254,12 +254,12 @@ entire architectural bet.)
 
 ## Reference patterns
 
-- Kleppmann — *Designing Data-Intensive Applications*
+- Kleppmann — _Designing Data-Intensive Applications_
   (2017; the unified field theory).
 - Helland — "Immutability Changes Everything" (ACM Queue).
 - Abadi — PACELC paper (2010).
 - Gilbert & Lynch — CAP proof (PODC 2002).
-- Pavlo & Aslett — *What's Really New with NewSQL* (2016).
+- Pavlo & Aslett — _What's Really New with NewSQL_ (2016).
 - Fowler — "Polyglot Persistence" (2011).
 - CMU 15-445 / 15-721 lecture notes.
 - `.claude/skills/relational-database-expert/SKILL.md`.

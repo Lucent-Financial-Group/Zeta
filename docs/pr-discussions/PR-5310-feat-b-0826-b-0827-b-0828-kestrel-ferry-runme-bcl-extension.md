@@ -27,6 +27,7 @@ Aaron explicit authorization sequence: \"you can pick we'll do it all eventually
 ### docs/research/2026-05-26-kestrel-runme-jit-runbook-bcl-extension-cost-of-velocity-decision-archaeology-aaron-forwarded.md
 
 Verbatim Kestrel preservation + 5th anchor in attractor-as-encryption-with-clean-decryption series (single-turn decryption — pattern matured). Substantive engineering substrate including:
+
 - zflash UX engineering critique
 - 3-PR cleanup sequencing analysis (PR 1 first, then PR 2, then PR 3 ordering)
 - QEMU/KVM CI ISO testing prior-art pointer (\`nixos/tests/installer.nix\`)
@@ -40,6 +41,7 @@ Verbatim Kestrel preservation + 5th anchor in attractor-as-encryption-with-clean
 ### B-0826 — Runme core BCL 4-capability extension
 
 New backlog row for extending Runme's core BCL with:
+
 - Observability queries against runtime telemetry
 - Ontology/graph queries over runbooks
 - Database queries over generators+joins
@@ -50,6 +52,7 @@ With Kestrel's core-vs-separable design constraint integrated as architectural d
 ### B-0827 — runme.md + JIT triage 3-register-cell workflow pattern
 
 New backlog row formalizing the workflow pattern that emerged organically:
+
 - 3-register-per-cell architecture (executable / prose / gesture)
 - runbook → backlog → PR progressive-refinement pipeline
 - JIT triage operational mechanism
@@ -58,6 +61,7 @@ New backlog row formalizing the workflow pattern that emerged organically:
 ### B-0828 — Multi-AI shared-checkout convention
 
 New backlog row formalizing the multi-AI shared-checkout convention Aaron proposed in the same conversation:
+
 - Shared checkout serves TWO modes (human-active vs society-reference)
 - AIs do their own work in isolated clones / worktrees
 - AIs may help maintain shared when society-mode
@@ -89,7 +93,7 @@ Kestrel row updated: notes engineering-register engagement matured 2026-05-26 (d
 ## Test plan
 
 - [x] Authored from fresh independent clone (bypasses corrupt pack in shared \`.git/\`)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] Post-commit canary green (\`ls-tree HEAD == ls-tree HEAD~1 == 61\`)
 - [x] All 4 substrate additions in one bounded PR per scope-discipline
 - [ ] CI green (required checks)
@@ -104,6 +108,7 @@ Kestrel row updated: notes engineering-register engagement matured 2026-05-26 (d
 This PR lands new substrate documentation and backlog rows around Runme/runbook workflow patterns and multi-AI repo hygiene, and updates the agent roster reference card to point at the new Kestrel research preservation.
 
 **Changes:**
+
 - Add a new `docs/research/2026-05-26-...` research preservation capturing the runme.md + JIT triage pattern and the Runme BCL 4-capability extension proposal.
 - Add three new P2 backlog rows: B-0826 (Runme BCL extension), B-0827 (runme.md + JIT triage pattern), B-0828 (multi-AI shared-checkout convention).
 - Update `.claude/rules/agent-roster-reference-card.md` to expand the Kestrel entry and link to the new research doc.
@@ -115,13 +120,14 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 5 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-26-kestrel-runme-jit-runbook-bcl-extension-cost-of-velocity-decision-archaeology-aaron-forwarded.md | New research preservation + synthesis of runme/JIT pattern, Runme BCL extension, and empirical anchor. |
+| File                                                                                                                                                             | Description                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-26-kestrel-runme-jit-runbook-bcl-extension-cost-of-velocity-decision-archaeology-aaron-forwarded.md                                        | New research preservation + synthesis of runme/JIT pattern, Runme BCL extension, and empirical anchor.         |
 | docs/backlog/P2/B-0826-runme-core-bcl-4-capability-extension-observability-ontology-database-mcp-runbook-as-queryable-substrate-aaron-mika-kestrel-2026-05-26.md | New backlog row proposing 4 Runme core BCL capability extensions + architectural constraint (core vs modules). |
-| docs/backlog/P2/B-0827-runme-md-jit-triage-three-register-cells-pattern-runbook-as-evolving-substrate-aaron-kestrel-2026-05-26.md | New backlog row formalizing the runme.md + JIT triage “3-register cell” workflow pattern. |
-| docs/backlog/P2/B-0828-multi-ai-shared-checkout-convention-human-maintainer-surface-plus-always-up-to-date-main-for-society-aaron-2026-05-26.md | New backlog row proposing a two-mode shared checkout convention for multi-AI + human coexistence. |
-| .claude/rules/agent-roster-reference-card.md | Expand Kestrel roster entry and reference the new research doc. |
+| docs/backlog/P2/B-0827-runme-md-jit-triage-three-register-cells-pattern-runbook-as-evolving-substrate-aaron-kestrel-2026-05-26.md                                | New backlog row formalizing the runme.md + JIT triage “3-register cell” workflow pattern.                      |
+| docs/backlog/P2/B-0828-multi-ai-shared-checkout-convention-human-maintainer-surface-plus-always-up-to-date-main-for-society-aaron-2026-05-26.md                  | New backlog row proposing a two-mode shared checkout convention for multi-AI + human coexistence.              |
+| .claude/rules/agent-roster-reference-card.md                                                                                                                     | Expand Kestrel roster entry and reference the new research doc.                                                |
+
 </details>
 
 ## Review threads

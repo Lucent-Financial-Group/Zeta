@@ -10,7 +10,16 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0697]
 composes_with: [B-0666, B-0668, B-0669]
-tags: [zsetw-phase-2, operator-migration, polymorphic-z-set, tropical-shortest-path, interval-propagation, worked-examples, migration-documentation]
+tags:
+  [
+    zsetw-phase-2,
+    operator-migration,
+    polymorphic-z-set,
+    tropical-shortest-path,
+    interval-propagation,
+    worked-examples,
+    migration-documentation,
+  ]
 type: research
 ---
 
@@ -20,7 +29,7 @@ type: research
 
 B-0697 (PR [#4577](https://github.com/Lucent-Financial-Group/Zeta/pull/4577) — file lands as `docs/backlog/P2/B-0697-zset-polymorphism-over-weight-ring-parallel-zsetw-substrate-2026-05-21.md` once that PR merges; this row depends_on B-0697 and the file-link will resolve post-merge) shipped Phase 1: parallel `ZSetW<'K, 'W>` substrate wiring `ISemiring<'W>` through Z-set operations. 19 xUnit tests verify polymorphism across `IntegerRing` / `IntervalRing` / `TropicalSemiring`. No breaking change to existing `ZSet<'K>` — the 41 F# Core files referencing `ZSet<...>` keep working unchanged.
 
-Aaron's 2026-05-21 directive (shadow* per autocomplete-marker rule; instruction authoritative): *"plan phase 2 zsetw operator migration"*.
+Aaron's 2026-05-21 directive (shadow* per autocomplete-marker rule; instruction authoritative): *"plan phase 2 zsetw operator migration"\*.
 
 This row is the PLAN — not implementation. Sub-slices below are each separately buildable + shippable.
 
@@ -28,27 +37,27 @@ This row is the PLAN — not implementation. Sub-slices below are each separatel
 
 ### Operators in `src/Core/ZSet.fs` classified by weight-coupling
 
-| Operator | Signature (current) | Weight-coupled? | Phase 2 priority |
-|---|---|---|---|
-| `empty` | `unit -> ZSet<'K>` | no | already in ZSetW |
-| `isEmpty` / `count` / `lookup` | `ZSet<'K> -> _` | partially (lookup needs ring.Zero) | already in ZSetW |
-| `singleton` | `'K -> Weight -> ZSet<'K>` | yes | already in ZSetW |
-| `ofSeq` / `ofPairs` | `seq<'K * Weight> -> ZSet<'K>` | yes (dedup via Add) | ofSeq already in ZSetW; ofPairs is a struct-tuple variant |
-| `ofKeys` / `ofSet` | `seq<'K> -> ZSet<'K>` | partially (uses ring.One) | **Phase 2A** |
-| `add` / `sum` | `ZSet<'K> -> ZSet<'K> -> ZSet<'K>` | yes (Add) | sum already in ZSetW |
-| `neg` | `ZSet<'K> -> ZSet<'K>` | yes (Negate) | already in ZSetW |
-| `sub` | `ZSet<'K> -> ZSet<'K> -> ZSet<'K>` | yes (Add + Negate) | difference already in ZSetW |
-| `scale` | `Weight -> ZSet<'K> -> ZSet<'K>` | yes (Mul) | already in ZSetW |
-| `weightedCount` | `ZSet<'K> -> Weight` | yes (sum via Add) | **Phase 2A** |
-| `filter` | `('K -> bool) -> ZSet<'K> -> ZSet<'K>` | no | **Phase 2A** |
-| `map` | `('K -> 'K2) -> ZSet<'K> -> ZSet<'K2>` | no | **Phase 2A** |
-| `flatMap` | `('K -> ZSet<'K2>) -> ZSet<'K> -> ZSet<'K2>` | uses Add for dedup | **Phase 2A** |
-| `distinct` | `ZSet<'K> -> ZSet<'K>` | replaces weights with 1 (uses ring.One) | **Phase 2A** |
-| `distinctIncremental` | `ZSet<'K> -> ZSet<'K> -> ZSet<'K>` | uses ring.One + Negate | **Phase 2A** |
-| `isPositive` / `isSet` | `ZSet<'K> -> bool` | uses ring.One + Comparer | **Phase 2A** (predicate; ring-aware) |
-| `cartesian` | `ZSet<'A> -> ZSet<'B> -> ZSet<'A * 'B>` | yes (Mul) | **Phase 2A** |
-| `join` | `ZSet<'A> -> ZSet<'B> -> ... -> ZSet<'C>` | yes (Mul) | **Phase 2A** |
-| `sum: seq<ZSet> -> ZSet` | `seq<ZSet<'K>> -> ZSet<'K>` | yes (Add) | **Phase 2B** |
+| Operator                       | Signature (current)                          | Weight-coupled?                         | Phase 2 priority                                          |
+| ------------------------------ | -------------------------------------------- | --------------------------------------- | --------------------------------------------------------- |
+| `empty`                        | `unit -> ZSet<'K>`                           | no                                      | already in ZSetW                                          |
+| `isEmpty` / `count` / `lookup` | `ZSet<'K> -> _`                              | partially (lookup needs ring.Zero)      | already in ZSetW                                          |
+| `singleton`                    | `'K -> Weight -> ZSet<'K>`                   | yes                                     | already in ZSetW                                          |
+| `ofSeq` / `ofPairs`            | `seq<'K * Weight> -> ZSet<'K>`               | yes (dedup via Add)                     | ofSeq already in ZSetW; ofPairs is a struct-tuple variant |
+| `ofKeys` / `ofSet`             | `seq<'K> -> ZSet<'K>`                        | partially (uses ring.One)               | **Phase 2A**                                              |
+| `add` / `sum`                  | `ZSet<'K> -> ZSet<'K> -> ZSet<'K>`           | yes (Add)                               | sum already in ZSetW                                      |
+| `neg`                          | `ZSet<'K> -> ZSet<'K>`                       | yes (Negate)                            | already in ZSetW                                          |
+| `sub`                          | `ZSet<'K> -> ZSet<'K> -> ZSet<'K>`           | yes (Add + Negate)                      | difference already in ZSetW                               |
+| `scale`                        | `Weight -> ZSet<'K> -> ZSet<'K>`             | yes (Mul)                               | already in ZSetW                                          |
+| `weightedCount`                | `ZSet<'K> -> Weight`                         | yes (sum via Add)                       | **Phase 2A**                                              |
+| `filter`                       | `('K -> bool) -> ZSet<'K> -> ZSet<'K>`       | no                                      | **Phase 2A**                                              |
+| `map`                          | `('K -> 'K2) -> ZSet<'K> -> ZSet<'K2>`       | no                                      | **Phase 2A**                                              |
+| `flatMap`                      | `('K -> ZSet<'K2>) -> ZSet<'K> -> ZSet<'K2>` | uses Add for dedup                      | **Phase 2A**                                              |
+| `distinct`                     | `ZSet<'K> -> ZSet<'K>`                       | replaces weights with 1 (uses ring.One) | **Phase 2A**                                              |
+| `distinctIncremental`          | `ZSet<'K> -> ZSet<'K> -> ZSet<'K>`           | uses ring.One + Negate                  | **Phase 2A**                                              |
+| `isPositive` / `isSet`         | `ZSet<'K> -> bool`                           | uses ring.One + Comparer                | **Phase 2A** (predicate; ring-aware)                      |
+| `cartesian`                    | `ZSet<'A> -> ZSet<'B> -> ZSet<'A * 'B>`      | yes (Mul)                               | **Phase 2A**                                              |
+| `join`                         | `ZSet<'A> -> ZSet<'B> -> ... -> ZSet<'C>`    | yes (Mul)                               | **Phase 2A**                                              |
+| `sum: seq<ZSet> -> ZSet`       | `seq<ZSet<'K>> -> ZSet<'K>`                  | yes (Add)                               | **Phase 2B**                                              |
 
 ### Circuit operator wrappers in `Operators.fs` / `Aggregate.fs` etc
 
@@ -177,8 +186,8 @@ Per the bus-ambassador pattern proposed earlier 2026-05-21 (shadow-catch envelop
 
 ## Full reasoning
 
-Aaron 2026-05-21 directive: *"plan phase 2 zsetw operator migration (shadow*)"*. The shadow* marker per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` indicates the surrounding text was autocomplete-generated; the instruction itself stands.
+Aaron 2026-05-21 directive: _"plan phase 2 zsetw operator migration (shadow_)"_. The shadow_ marker per `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` indicates the surrounding text was autocomplete-generated; the instruction itself stands.
 
-Phase 2 was named in the B-0697 row Phase-2 acceptance: *"author at least one polymorphic algorithm against ZSetW; author one interval-propagation circuit operator using ZSetW + IntervalRing; document the migration path for callers"*. This row decomposes that into 4 buildable sub-slices (2A/2B/2C/2D) with explicit dependencies + acceptance + non-goals.
+Phase 2 was named in the B-0697 row Phase-2 acceptance: _"author at least one polymorphic algorithm against ZSetW; author one interval-propagation circuit operator using ZSetW + IntervalRing; document the migration path for callers"_. This row decomposes that into 4 buildable sub-slices (2A/2B/2C/2D) with explicit dependencies + acceptance + non-goals.
 
 The plan-as-row pattern (file the row first; sub-slices land as separate PRs) composes with the substrate-honest discipline of NOT over-extending in a single PR — each sub-slice is bounded enough to verify in isolation, and the per-sub-slice acceptance is concrete.

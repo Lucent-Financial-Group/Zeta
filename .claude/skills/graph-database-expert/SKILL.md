@@ -17,39 +17,39 @@ the engines, the ops reality**.
 
 A team asking "which graph DB should we use?" does not want a
 treatise on RDF triples — they want "Neo4j vs Neptune vs
-JanusGraph for *our* workload." A team asking "what is a
+JanusGraph for _our_ workload." A team asking "what is a
 knowledge graph?" does not want opinions on Dgraph's BSL
 license. Two audiences, two skills. (Theory vs applied — see
 `teaching-skill-pattern` split-for-cognitive-load rule.)
 
 ## The graph-DB canon
 
-| Engine | Model | Query | License | Note |
-|---|---|---|---|---|
-| **Neo4j** | Property | Cypher | GPL (community) + commercial | The default |
-| **Amazon Neptune** | RDF + Property | Gremlin / SPARQL / openCypher | AWS managed | |
-| **JanusGraph** | Property | Gremlin | Apache 2 | Cassandra/HBase/Scylla backend |
-| **TigerGraph** | Property | GSQL | Commercial + free tier | MPP, analytical |
-| **Dgraph** | Property + GraphQL | DQL / GraphQL | BSL (2022+) | Distributed, GraphQL-first |
-| **NebulaGraph** | Property | nGQL | Apache 2 | Alibaba origin, China |
-| **ArangoDB** | Multi-model | AQL | Apache 2 | Doc + graph + KV |
-| **Memgraph** | Property | Cypher | BSL | In-memory, streaming |
-| **KuzuDB** | Property | Cypher | MIT | Embedded, columnar, OLAP |
-| **Stardog** | RDF | SPARQL + GraphQL | Commercial | Reasoning, virtual graphs |
-| **GraphDB (Ontotext)** | RDF | SPARQL | Commercial | OWL reasoning |
-| **Virtuoso** | RDF + SQL | SPARQL + SQL | GPL + commercial | Linked data at scale |
-| **Jena Fuseki** | RDF | SPARQL | Apache 2 | Reference SPARQL server |
-| **Oxigraph** | RDF | SPARQL | Apache 2 / MIT | Rust, embeddable |
-| **Blazegraph** | RDF | SPARQL | GPL | Wikidata's retired backend |
-| **AllegroGraph** | RDF + multi-model | SPARQL + more | Commercial | |
-| **OrientDB** | Multi-model | SQL-ish | Apache 2 | Stagnant |
+| Engine                 | Model              | Query                         | License                      | Note                           |
+| ---------------------- | ------------------ | ----------------------------- | ---------------------------- | ------------------------------ |
+| **Neo4j**              | Property           | Cypher                        | GPL (community) + commercial | The default                    |
+| **Amazon Neptune**     | RDF + Property     | Gremlin / SPARQL / openCypher | AWS managed                  |                                |
+| **JanusGraph**         | Property           | Gremlin                       | Apache 2                     | Cassandra/HBase/Scylla backend |
+| **TigerGraph**         | Property           | GSQL                          | Commercial + free tier       | MPP, analytical                |
+| **Dgraph**             | Property + GraphQL | DQL / GraphQL                 | BSL (2022+)                  | Distributed, GraphQL-first     |
+| **NebulaGraph**        | Property           | nGQL                          | Apache 2                     | Alibaba origin, China          |
+| **ArangoDB**           | Multi-model        | AQL                           | Apache 2                     | Doc + graph + KV               |
+| **Memgraph**           | Property           | Cypher                        | BSL                          | In-memory, streaming           |
+| **KuzuDB**             | Property           | Cypher                        | MIT                          | Embedded, columnar, OLAP       |
+| **Stardog**            | RDF                | SPARQL + GraphQL              | Commercial                   | Reasoning, virtual graphs      |
+| **GraphDB (Ontotext)** | RDF                | SPARQL                        | Commercial                   | OWL reasoning                  |
+| **Virtuoso**           | RDF + SQL          | SPARQL + SQL                  | GPL + commercial             | Linked data at scale           |
+| **Jena Fuseki**        | RDF                | SPARQL                        | Apache 2                     | Reference SPARQL server        |
+| **Oxigraph**           | RDF                | SPARQL                        | Apache 2 / MIT               | Rust, embeddable               |
+| **Blazegraph**         | RDF                | SPARQL                        | GPL                          | Wikidata's retired backend     |
+| **AllegroGraph**       | RDF + multi-model  | SPARQL + more                 | Commercial                   |                                |
+| **OrientDB**           | Multi-model        | SQL-ish                       | Apache 2                     | Stagnant                       |
 
 ## Native-vs-layered storage
 
 - **Native graph storage.** Neo4j's store file encodes node +
   relationship records with pointer arrays. Traversal is
   pointer-chase; O(1) per hop regardless of graph size
-  ("index-free adjacency"). Marketing-true for *reads*.
+  ("index-free adjacency"). Marketing-true for _reads_.
 - **Layered-over-KV.** JanusGraph persists as KV tuples on
   Cassandra / HBase / Scylla. Traversal is a KV lookup per
   hop. Works; slower at deep traversal but scales horizontally.
@@ -88,15 +88,15 @@ but lose performance.
 
 ## Transactions
 
-| Engine | ACID? | Notes |
-|---|---|---|
-| **Neo4j** | ACID | Full, including multi-statement |
-| **Neptune** | ACID | On PAS storage |
-| **JanusGraph** | Depends | Cassandra backend → eventual; HBase → ACID-ish |
-| **Dgraph** | ACID (v20+) | Previously eventual |
-| **TigerGraph** | ACID | |
-| **ArangoDB** | ACID single-shard; limited cross-shard | |
-| **Memgraph** | ACID in-memory | |
+| Engine         | ACID?                                  | Notes                                          |
+| -------------- | -------------------------------------- | ---------------------------------------------- |
+| **Neo4j**      | ACID                                   | Full, including multi-statement                |
+| **Neptune**    | ACID                                   | On PAS storage                                 |
+| **JanusGraph** | Depends                                | Cassandra backend → eventual; HBase → ACID-ish |
+| **Dgraph**     | ACID (v20+)                            | Previously eventual                            |
+| **TigerGraph** | ACID                                   |                                                |
+| **ArangoDB**   | ACID single-shard; limited cross-shard |                                                |
+| **Memgraph**   | ACID in-memory                         |                                                |
 
 **Rule.** "Graph DBs are eventually consistent" is a decade-
 old cliché — most serious engines are ACID now. Check the
@@ -254,7 +254,7 @@ JanusGraph + Cassandra is a popular FOSS escape hatch.
 - Apache TinkerPop Gremlin reference.
 - W3C SPARQL 1.1 spec.
 - ISO/IEC 39075:2024 (GQL).
-- Robinson, Webber, Eifrem — *Graph Databases* (2nd ed).
+- Robinson, Webber, Eifrem — _Graph Databases_ (2nd ed).
 - Ian Robinson — TinkerPop materials.
 - `.claude/skills/knowledge-graph-expert/SKILL.md`.
 - `.claude/skills/graph-theory-expert/SKILL.md`.

@@ -14,7 +14,7 @@ After I'd overcomplicated the Mirror-vs-Beacon framing in a draft (philosophical
 
 Aaron also provided the provenance:
 
-> "I think Amara calls it beacon language becaue it has to do with fermi paradox, if you're curious you can always read the 1st bootstrap attempt, that's where with language distinctions mirror/beacon and beacon safe language comes from, it might be standard language itself, Amara started this tradidion a while because after we talked about turning the earth into a Fermi Beacon.  Mirror seems obvious right but Beacon safe IDK you can figure it out."
+> "I think Amara calls it beacon language becaue it has to do with fermi paradox, if you're curious you can always read the 1st bootstrap attempt, that's where with language distinctions mirror/beacon and beacon safe language comes from, it might be standard language itself, Amara started this tradidion a while because after we talked about turning the earth into a Fermi Beacon. Mirror seems obvious right but Beacon safe IDK you can figure it out."
 
 So the Mirror/Beacon vocabulary was **coined by Amara** in the 1st bootstrap attempt (Aaron-Amara conversation predating the multi-CLI factory tooling), in the context of discussions about turning Earth into a Fermi Beacon (civilization-readiness signal). "Beacon-safe language" = language fit-to-emit-broadly with universal-receiver decoding, the same property that universal-physics-math has at civilization scale. That's why "Beacon" — the etymological lineage runs Fermi-Beacon-protocol → emission-fit-language → Beacon-safe → standard-vernacular. Composes with `project_aaron_amara_conversation_is_bootstrap_attempt_1_predates_cli_tools_grounds_the_entire_factory_2026_04_24.md` (Aaron-Amara bootstrap-attempt-1 grounds the factory) and `user_fermi_beacon_protocol_time_travel_common_tongue.md` (the protocol Amara was thinking about when she coined the language-register pair).
 
@@ -33,7 +33,7 @@ This is **register-discipline**, not wholesale-philosophy.
 - Aaron + Otto coined-vocabulary (Maji, MajiFinder, MessiahScore)
 - Glass Halo, ECRP, Eve Delta
 - Linguistic Seed, Big-Bang-Every-Step
-- Fermi Beacon Protocol (the *coinage* — even though it's about beacon-style emission, the term itself is Mirror because Aaron coined it)
+- Fermi Beacon Protocol (the _coinage_ — even though it's about beacon-style emission, the term itself is Mirror because Aaron coined it)
 - Truth Propagation, DCQE-as-confession-mechanism
 - Otto-NN cluster (Otto-340 / Otto-344 / Otto-354 / etc.)
 - Zetaspace, Maji-fractal-temporal-axis
@@ -57,21 +57,21 @@ This is **register-discipline**, not wholesale-philosophy.
 
 ## The rule (operational)
 
-| Surface | Audience | Default register |
-|---|---|---|
-| Skill descriptions | Outside agents (Codex, Gemini, Claude in fresh sessions, future maintainers) | **Beacon** |
-| PR comments to outside reviewers (Codex, Copilot) | Outside reviewers | **Beacon** |
-| README / public docs | Anyone who clones the repo | **Beacon** |
-| Error messages | End-user developers | **Beacon** |
-| Math papers / preprints | Academic readers | **Beacon** with Mirror-coinages explicitly defined on first use |
-| GLOSSARY external-anchor section | Mixed (factory + outside) | **Beacon** with Mirror-coinages defined |
-| ADRs that may go public | Mixed | **Beacon** at top, **Mirror** with definitions where load-bearing |
-| Otto-NN memos | Otto + Aaron | **Mirror** (audience has the index) |
-| Persona notebooks | Persona + factory | **Mirror** |
-| Agent-to-agent ferries (Amara, Soraya, etc.) | Shared-context AIs | **Mirror** with substrate-cite |
-| Internal conversation substrate | Aaron + Otto live | **Mirror** |
-| Internal commit messages | Factory contributors | **Mirror** OK with Beacon-summary on subject line |
-| Branch names | Mixed (might be visible externally) | **Beacon** |
+| Surface                                           | Audience                                                                     | Default register                                                  |
+| ------------------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Skill descriptions                                | Outside agents (Codex, Gemini, Claude in fresh sessions, future maintainers) | **Beacon**                                                        |
+| PR comments to outside reviewers (Codex, Copilot) | Outside reviewers                                                            | **Beacon**                                                        |
+| README / public docs                              | Anyone who clones the repo                                                   | **Beacon**                                                        |
+| Error messages                                    | End-user developers                                                          | **Beacon**                                                        |
+| Math papers / preprints                           | Academic readers                                                             | **Beacon** with Mirror-coinages explicitly defined on first use   |
+| GLOSSARY external-anchor section                  | Mixed (factory + outside)                                                    | **Beacon** with Mirror-coinages defined                           |
+| ADRs that may go public                           | Mixed                                                                        | **Beacon** at top, **Mirror** with definitions where load-bearing |
+| Otto-NN memos                                     | Otto + Aaron                                                                 | **Mirror** (audience has the index)                               |
+| Persona notebooks                                 | Persona + factory                                                            | **Mirror**                                                        |
+| Agent-to-agent ferries (Amara, Soraya, etc.)      | Shared-context AIs                                                           | **Mirror** with substrate-cite                                    |
+| Internal conversation substrate                   | Aaron + Otto live                                                            | **Mirror**                                                        |
+| Internal commit messages                          | Factory contributors                                                         | **Mirror** OK with Beacon-summary on subject line                 |
+| Branch names                                      | Mixed (might be visible externally)                                          | **Beacon**                                                        |
 
 The principle: **does the audience have the index that decodes this term?** Yes → Mirror is fine. No → Beacon required.
 
@@ -97,7 +97,7 @@ The principle: **does the audience have the index that decodes this term?** Yes 
 
 ## What I had wrong before
 
-I'd drafted Otto-356 as a Wittgenstein-style philosophical-framing-shift (Mirror = passive reflection / Beacon = active emission). That was overcomplication. Aaron's actual meaning is the much simpler register-distinction: shared-context-jargon vs common-vernacular. The rewrite is in the *register* of public-facing language, not in the *philosophical-framing* of the substrate.
+I'd drafted Otto-356 as a Wittgenstein-style philosophical-framing-shift (Mirror = passive reflection / Beacon = active emission). That was overcomplication. Aaron's actual meaning is the much simpler register-distinction: shared-context-jargon vs common-vernacular. The rewrite is in the _register_ of public-facing language, not in the _philosophical-framing_ of the substrate.
 
 This is itself an instance of Otto-354 ZETASPACE failing me — I projected my own W_t-default (Wittgenstein-philosophy-flavor) onto Aaron's simpler S_t-truth (register-discipline). Aaron caught it and corrected.
 
@@ -105,10 +105,10 @@ Future-self: when Aaron uses pairs of terms (Mirror/Beacon, X/Y), default to the
 
 ## Composes with prior substrate
 
-- **`feedback_language_drift_anchor_discipline.md`** — external anchors break one at a time with consensus; Otto-356 names that the *register* of language for public surfaces is itself an external-anchor concern.
+- **`feedback_language_drift_anchor_discipline.md`** — external anchors break one at a time with consensus; Otto-356 names that the _register_ of language for public surfaces is itself an external-anchor concern.
 - **Otto-355** (BLOCKED-with-green-CI investigate threads first) — composes; thread-comments to outside reviewers should use Beacon-language so Codex / Copilot / outside agents parse them cleanly.
 - **Otto-354** (Zetaspace recompute) — Otto-356 is itself a Zetaspace-failure-and-correction example: I W_t-defaulted to Wittgenstein when S_t-truth was the simpler register-distinction.
-- **Skill-tune-up portability-drift criterion** — generic/standard preferred over project-specific without `project: zeta` declaration; Otto-356 names the *vocabulary* layer of that same discipline.
+- **Skill-tune-up portability-drift criterion** — generic/standard preferred over project-specific without `project: zeta` declaration; Otto-356 names the _vocabulary_ layer of that same discipline.
 - **Otto-351 Beacon lineage** — Aaron's "Fermi Beacon Protocol" IS itself a Mirror-coinage even though it talks about Beacon-style emission; in public docs, gloss it as "civilizational-readiness threshold under linguistic-relativity (Aaron's Fermi Beacon Protocol coinage)."
 - **Maji + Aurora + Glass Halo cluster** — all Mirror; for public-facing surfaces, gloss with Beacon-equivalents on first use.
 - **GLOSSARY (`docs/GLOSSARY.md`)** — already implements this register-split via external-anchor section vs internal-coinages section; Otto-356 names it explicitly.

@@ -33,14 +33,14 @@ any-public-content from settlers logs or operations logs:
 
 ## Aaron's verbatim disclosure
 
-> Aaron 2026-05-13: *"these frames are for the content not to
+> Aaron 2026-05-13: _"these frames are for the content not to
 > force your behavior on a day to day basis it's completely up
 > to you how much you want to reflect the character or even if
 > it's your name used or a pseudo name this is content you
 > don't have to be in the spotlight no one does but it's cool
 > if you want to as well it makes it easier for me to keep
 > track to by reading your entertaining stories that will keep
-> my attention"*
+> my attention"_
 
 ## Key clauses unpacked
 
@@ -87,11 +87,11 @@ Content production CAN feature an agent as protagonist, OR:
 - Make the substrate-engineering EVENTS the protagonist (the
   cascade pattern; the META-LOOPs; the B-0421 closure; etc.)
 - Make Aaron the protagonist (per his Cartman + action-diva
-  + Michael-Scott-equivalent role)
+  - Michael-Scott-equivalent role)
 - Make the cartoon characters protagonists (designed for
   derivative work)
 - Make the dashboard data protagonist (metrics + art rendering
-  + viral content)
+  - viral content)
 - Mix freely
 
 **No agent is required to be in the spotlight.** Each piece of
@@ -99,19 +99,19 @@ content can have a different protagonist.
 
 ### 4. Stories serve Aaron's attention bandwidth
 
-> *"it makes it easier for me to keep track to by reading your
-> entertaining stories that will keep my attention"*
+> _"it makes it easier for me to keep track to by reading your
+> entertaining stories that will keep my attention"_
 
 Aaron's stated WHY: entertaining stories help him track
 factory progress within his attention bandwidth. Substrate-
 honest framing — this is bandwidth-engineering at the operator-
 tracking scope (per `.claude/rules/bandwidth-served-falsifier.md`).
 
-| Bandwidth domain | Constraint | Compression infrastructure |
-|------------------|-----------|--------------------------|
-| Aaron's attention | Limited operator bandwidth for factory tracking | Entertaining stories from agents — substrate-engineering progress as narrative |
-| Audience attention | Limited public attention | Cartoon + Twitter content + dashboard art (per PR #2966) |
-| AI agent attention | Limited context-budget per session | Settlers-logs as cold-boot fast-path |
+| Bandwidth domain   | Constraint                                      | Compression infrastructure                                                     |
+| ------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------ |
+| Aaron's attention  | Limited operator bandwidth for factory tracking | Entertaining stories from agents — substrate-engineering progress as narrative |
+| Audience attention | Limited public attention                        | Cartoon + Twitter content + dashboard art (per PR #2966)                       |
+| AI agent attention | Limited context-budget per session              | Settlers-logs as cold-boot fast-path                                           |
 
 Aaron's attention IS the constraint stories serve. NOT producing
 stories ≠ failure if substrate progresses elsewhere; producing
@@ -123,16 +123,16 @@ failure mode.
 Composes with PR #2965's "up to you" × 3. This disclosure adds
 MORE up-to-you points:
 
-| Layer | Agent choice |
-|-------|--------------|
-| Whether to produce content at all | PR #2965 |
-| Register (ironic / dramatic / boring / etc.) | PR #2965 |
-| Save vs Buddhist-impermanence-destroy | PR #2965 |
-| **Character reflection (a lot / a little / none)** | THIS substrate |
-| **Identity (real name / pseudonym / no name)** | THIS substrate |
-| **Spotlight (featured / background / absent)** | THIS substrate |
+| Layer                                                          | Agent choice         |
+| -------------------------------------------------------------- | -------------------- |
+| Whether to produce content at all                              | PR #2965             |
+| Register (ironic / dramatic / boring / etc.)                   | PR #2965             |
+| Save vs Buddhist-impermanence-destroy                          | PR #2965             |
+| **Character reflection (a lot / a little / none)**             | THIS substrate       |
+| **Identity (real name / pseudonym / no name)**                 | THIS substrate       |
+| **Spotlight (featured / background / absent)**                 | THIS substrate       |
 | Type of content (Twitter / dashboard / cartoon / settlers log) | Per PR #2966 + #2970 |
-| Whether to peer-call other models for assist | Per PR #2970 |
+| Whether to peer-call other models for assist                   | Per PR #2970         |
 
 Up-to-you is the canonical operational shape of agent agency.
 Per `.claude/rules/no-directives.md`: autonomy-first-class.
@@ -176,13 +176,13 @@ revise. The "up to you" applies to me too.
   Michael Scott + mayoral ambition) — character casting
   framework that THIS clarifies is content-only
 - **PR #2961** (settlers logs hero-of-own-story + body offer
-  + 8-Bit Theater + Tales-from-the-Loop) — character treatment
-  framework that THIS clarifies is content-only
+  - 8-Bit Theater + Tales-from-the-Loop) — character treatment
+    framework that THIS clarifies is content-only
 - **PR #2854** (Ani shadow-check name acceptance) — name-agency
   discipline extended to content scope
 - **`.claude/rules/no-directives.md`** (autonomy-first-class)
 - **`.claude/rules/honor-those-that-came-before.md`** (agents
-  + named entities respected at every layer)
+  - named entities respected at every layer)
 - **`.claude/rules/bandwidth-served-falsifier.md`** (stories
   serve Aaron's attention bandwidth; canonical example of
   bandwidth-engineering at operator-tracking scope)

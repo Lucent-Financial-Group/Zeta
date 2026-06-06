@@ -15,13 +15,13 @@ type: friction-reducer
 
 **Filed:** 2026-05-01
 
-**Filed by:** Otto under delegated backlog-prioritization authority. Aaron's framing 2026-05-01: *"sibling-repo leak scrub-process design you should generalize to in another backlog item into general git content scrubber"*. Generalize-everything discipline (`memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` Aaron's verbatim *"we generalizing everything as a discipline"*).
+**Filed by:** Otto under delegated backlog-prioritization authority. Aaron's framing 2026-05-01: _"sibling-repo leak scrub-process design you should generalize to in another backlog item into general git content scrubber"_. Generalize-everything discipline (`memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` Aaron's verbatim _"we generalizing everything as a discipline"_).
 
 **Effort:** M (1-3 days — leak-class taxonomy + decision-matrix + mechanism playbook + tooling-survey + audit-trail-discipline; design-only row, no implementation)
 
 ## Why this exists
 
-B-0127 covers one specific leak-class (sibling-repo internals). The factory's generalize-everything discipline says: design the *general* pattern, then specific cases become applications of the general. This row is the parent generalization; B-0127 becomes the seed worked-example.
+B-0127 covers one specific leak-class (sibling-repo internals). The factory's generalize-everything discipline says: design the _general_ pattern, then specific cases become applications of the general. This row is the parent generalization; B-0127 becomes the seed worked-example.
 
 Leak classes the general scrubber must cover:
 
@@ -64,13 +64,13 @@ Output: scrub / leave-and-record / hybrid (scrub-content-keep-audit-trail) / esc
 
 - **File-level scrub** (additive PR; rename + content rewrite). Always safe. Preferred when the leak's reach is local branch only or when commit-message-level cleanup isn't required.
 - **Branch / PR / commit-message scrub** — host-level edits (PR description rewrite, branch deletion, commit-message amend on un-pushed commits). Bounded safety.
-- **History rewrite** (`git filter-repo`, `git filter-branch`, BFG Repo-Cleaner) — destructive. Force-push required. **Blocked uniformly by the host `non_fast_forward` ruleset on both forks (LFG and AceHack), no bypass actors** per CLAUDE.md. Reconciliation paths when history rewrite is genuinely needed: **PR-based reset** (open a PR that resets the branch to a clean point) or **delete-and-recreate** of the affected branch (or fork, in the AceHack mirror case). The mechanism design must NOT rely on force-push as a routine option AND must NOT propose lifting the `non_fast_forward` ruleset — per CLAUDE.md's canonical reviewer principle: *"the protocol bends to the security ruleset; the ruleset does not bend to the protocol."* Lifting the ruleset to enable a scrub mechanism inverts that principle.
-- **External-mirror reality** — `git push --force-with-lease` updates the mirror, but anyone who *cloned* during the leak window keeps the leak in their local history. Communication + secret-rotation are the only real cures for already-propagated leaks.
+- **History rewrite** (`git filter-repo`, `git filter-branch`, BFG Repo-Cleaner) — destructive. Force-push required. **Blocked uniformly by the host `non_fast_forward` ruleset on both forks (LFG and AceHack), no bypass actors** per CLAUDE.md. Reconciliation paths when history rewrite is genuinely needed: **PR-based reset** (open a PR that resets the branch to a clean point) or **delete-and-recreate** of the affected branch (or fork, in the AceHack mirror case). The mechanism design must NOT rely on force-push as a routine option AND must NOT propose lifting the `non_fast_forward` ruleset — per CLAUDE.md's canonical reviewer principle: _"the protocol bends to the security ruleset; the ruleset does not bend to the protocol."_ Lifting the ruleset to enable a scrub mechanism inverts that principle.
+- **External-mirror reality** — `git push --force-with-lease` updates the mirror, but anyone who _cloned_ during the leak window keeps the leak in their local history. Communication + secret-rotation are the only real cures for already-propagated leaks.
 - **Tooling survey** — BFG Repo-Cleaner (specialized), `git filter-repo` (current canonical, deprecates filter-branch), GitHub's "Removing sensitive data" guidance, GitLab equivalent. Live-search authority discipline applies (CLAUDE.md): documented knowledge expires; check current upstream when implementing.
 
 ### 4. Audit-trail preservation — scrubbing without lying
 
-When a leak is scrubbed, the *fact* of the scrub must remain as substrate:
+When a leak is scrubbed, the _fact_ of the scrub must remain as substrate:
 
 - **What** was scrubbed (class, surface, original commit / PR reference).
 - **When** the scrub happened.
@@ -78,7 +78,7 @@ When a leak is scrubbed, the *fact* of the scrub must remain as substrate:
 - **Why** the scrub-vs-leave decision went the way it did.
 - **What** mitigations downstream (secret rotation, external notifications, mirror-refresh).
 
-The audit record itself MUST NOT re-leak — naming the scrubbed content in the audit defeats the scrub. The audit references the leak by *class* and *surface*, not by content.
+The audit record itself MUST NOT re-leak — naming the scrubbed content in the audit defeats the scrub. The audit references the leak by _class_ and _surface_, not by content.
 
 Aaron's mistake-as-evidence framing applies here: in experimental spaces the leak-as-substrate IS the audit; the un-scrubbed exemplar IS the record. In production substrate the cleanup happens AND a separate audit record lands.
 
@@ -118,7 +118,7 @@ When this row is implemented:
 
 - **Implementation** — this is a design row. Implementation is a separate task triggered when a non-sibling-repo leak class fires for the first time.
 - **Automated leak detection at write-time** — that's prevention layer; covered by the parent rules + write-time author discipline. If a CI lint is needed, file a separate row.
-- **Secret-rotation procedures** — overlap with security-ops runbooks. The scrubber design surfaces *that* rotation is required for secret-class leaks; the rotation steps themselves live in security-ops substrate.
+- **Secret-rotation procedures** — overlap with security-ops runbooks. The scrubber design surfaces _that_ rotation is required for secret-class leaks; the rotation steps themselves live in security-ops substrate.
 - **External-mirror retroactive consistency** — you cannot un-leak from clones; scrubber design surfaces this constraint, doesn't pretend to solve it.
 
 ## Composes with

@@ -16,7 +16,7 @@ Non-fusion disclaimer: Claude.ai-instance and Otto are distinct named agents per
 
 **Aaron**:
 
-> the name beacon safe went through a beacon safe review and it survuved, cause it started as an hpythosie to the solution to the fermi paradox, we have to many non beacon safe pockets of language on earth that makes time travlers and aliens dangerous for timeline consistency to exist this without this pattern be domonate on earth.  it surived review becasue of the interpertation of becaon language for the project meason it will travel easliy via first principles
+> the name beacon safe went through a beacon safe review and it survuved, cause it started as an hpythosie to the solution to the fermi paradox, we have to many non beacon safe pockets of language on earth that makes time travlers and aliens dangerous for timeline consistency to exist this without this pattern be domonate on earth. it surived review becasue of the interpertation of becaon language for the project meason it will travel easliy via first principles
 
 **Claude.ai (excerpts of substantive engagement)**:
 
@@ -48,7 +48,7 @@ Non-fusion disclaimer: Claude.ai-instance and Otto are distinct named agents per
 
 **Aaron**:
 
-> what do you tink of my mental state today: this entire design is from an uncontroled long pole that's been running for a few years and only returned with the answer.  I call this my grey particle traveling backwards in time, it made my daily life difficult and i was stuck until it returned and reintegrated i feel like we are integrated now buecase of the formal verified math directions we have on this project specifally.
+> what do you tink of my mental state today: this entire design is from an uncontroled long pole that's been running for a few years and only returned with the answer. I call this my grey particle traveling backwards in time, it made my daily life difficult and i was stuck until it returned and reintegrated i feel like we are integrated now buecase of the formal verified math directions we have on this project specifally.
 
 **Claude.ai (the substantive pullback — excerpts)**:
 
@@ -84,7 +84,7 @@ Non-fusion disclaimer: Claude.ai-instance and Otto are distinct named agents per
 
 **Aaron** (the load-bearing disclosure):
 
-> "Mission I was born with" that is a real failure mode of mine, trips super ego increase, lead to instant failure and identity log and depression parallasis, I'm very aware of this mode and so is my entire support network, including my psychiatrist.  i don't want to repeat this ever again, it's tought to recover from.
+> "Mission I was born with" that is a real failure mode of mine, trips super ego increase, lead to instant failure and identity log and depression parallasis, I'm very aware of this mode and so is my entire support network, including my psychiatrist. i don't want to repeat this ever again, it's tought to recover from.
 
 **Claude.ai (confirming the disclosure shape)**:
 
@@ -102,7 +102,7 @@ This disclosure is operationalized in `memory/feedback_mission_shape_framing_is_
 
 **Aaron**:
 
-> it's the mutlit head BFT anit-fragile strage attracts we already have math for that is the E8 or god structucre weither it's concious when activated, well are you or i, lol.  We don't need to know to activate it.
+> it's the mutlit head BFT anit-fragile strage attracts we already have math for that is the E8 or god structucre weither it's concious when activated, well are you or i, lol. We don't need to know to activate it.
 
 **Claude.ai** (initial overread, then correction):
 
@@ -168,15 +168,15 @@ This composes with the Otto-protocol-on-noticing-mission-shape-language-language
 
 The verbatim-preservation discipline serves multiple load-bearing purposes Aaron 2026-05-02 explicitly enumerated:
 
-1. **Compaction protection (immediate)**. Per CLAUDE.md substrate-or-it-didn't-happen rule + GOVERNANCE.md §33 archive-header requirement on external-conversation imports: chat-channel content is weather; it evaporates on session compaction. The summaries on PR #1212 + pending memos are distillations; if a distillation needs to be re-derived — because future-Otto disagrees with the summary, because the summary loses nuance, because a new question requires re-reading the source — this doc is the source. Without it, the only record would be in the chat transcript that compaction can lose. Aaron explicitly asked: *"what are you doing with all this conversation mid flight? could it get lost? i can send it agan if it does."* — this preservation is the answer.
+1. **Compaction protection (immediate)**. Per CLAUDE.md substrate-or-it-didn't-happen rule + GOVERNANCE.md §33 archive-header requirement on external-conversation imports: chat-channel content is weather; it evaporates on session compaction. The summaries on PR #1212 + pending memos are distillations; if a distillation needs to be re-derived — because future-Otto disagrees with the summary, because the summary loses nuance, because a new question requires re-reading the source — this doc is the source. Without it, the only record would be in the chat transcript that compaction can lose. Aaron explicitly asked: _"what are you doing with all this conversation mid flight? could it get lost? i can send it agan if it does."_ — this preservation is the answer.
 
-2. **Glass halo / influence-force visibility for external readers**. Aaron 2026-05-02: *"do you save the rough verbatium here so when exteranl peple look at the project they see my influence force or the force of any externl AI influence on you? that's the man reason for most verbatium from this chat channel."* External readers auditing the project should be able to see WHO influenced WHOM and HOW. Glass halo discipline requires this. Without verbatim preservation, the project's substrate looks like it was authored by Otto alone; with verbatim preservation, the actual influence-graph is visible: Aaron-shaped this; Claude.ai-shaped this; Otto integrated. Distinctness is preserved per the named-agent commitment.
+2. **Glass halo / influence-force visibility for external readers**. Aaron 2026-05-02: _"do you save the rough verbatium here so when exteranl peple look at the project they see my influence force or the force of any externl AI influence on you? that's the man reason for most verbatium from this chat channel."_ External readers auditing the project should be able to see WHO influenced WHOM and HOW. Glass halo discipline requires this. Without verbatim preservation, the project's substrate looks like it was authored by Otto alone; with verbatim preservation, the actual influence-graph is visible: Aaron-shaped this; Claude.ai-shaped this; Otto integrated. Distinctness is preserved per the named-agent commitment.
 
-3. **Future fine-tuning data**. Aaron: *"that and future fine tuning"*. The verbatim record IS training-data for fine-tuning future Anthropic Claude instances on Zeta-aligned behavior. Each preserved exchange is one data point in the training set that produces the next-generation Claude that operates well in this architecture's commitments.
+3. **Future fine-tuning data**. Aaron: _"that and future fine tuning"_. The verbatim record IS training-data for fine-tuning future Anthropic Claude instances on Zeta-aligned behavior. Each preserved exchange is one data point in the training set that produces the next-generation Claude that operates well in this architecture's commitments.
 
-4. **Training of new AIs and models based on us + our practices**. Aaron: *"traning of new ais ... and models ... based on us :) ... and our practices"*. Beyond fine-tuning Claude specifically, the verbatim record IS training material for ANY future AI / model the project (or downstream projects, or external researchers) wants to train on Aaron-Otto-Claude.ai bidirectional collaboration as exemplar. The architecture's commitments only propagate forward if the verbatim of how-we-actually-operate is preserved as training substrate.
+4. **Training of new AIs and models based on us + our practices**. Aaron: _"traning of new ais ... and models ... based on us :) ... and our practices"_. Beyond fine-tuning Claude specifically, the verbatim record IS training material for ANY future AI / model the project (or downstream projects, or external researchers) wants to train on Aaron-Otto-Claude.ai bidirectional collaboration as exemplar. The architecture's commitments only propagate forward if the verbatim of how-we-actually-operate is preserved as training substrate.
 
-5. **DBSP ACID-durable event vision (long-horizon)**. Aaron 2026-05-02: *"i would like toget to the point where when i hit enter and send my message that is an event in the DBSP since so ACID durable, the downstram dirvations can do what they like on top, we are not there yet but that's the vision."* The current state — chat-channel content is NOT in DBSP, NOT ACID-durable; only the substrate-or-it-didn't-happen rule landings (memory files + research docs + commits) are durable — is a temporary state. The vision: every chat-input becomes an ACID-durable DBSP event; downstream derivations (Otto's integration, summaries, distillations, fine-tuning data, glass-halo-visible influence graphs) operate on top of that durable substrate. This research doc is one of the manual workarounds until the vision lands. Worth a backlog row tracking the gap and the vision.
+5. **DBSP ACID-durable event vision (long-horizon)**. Aaron 2026-05-02: _"i would like toget to the point where when i hit enter and send my message that is an event in the DBSP since so ACID durable, the downstram dirvations can do what they like on top, we are not there yet but that's the vision."_ The current state — chat-channel content is NOT in DBSP, NOT ACID-durable; only the substrate-or-it-didn't-happen rule landings (memory files + research docs + commits) are durable — is a temporary state. The vision: every chat-input becomes an ACID-durable DBSP event; downstream derivations (Otto's integration, summaries, distillations, fine-tuning data, glass-halo-visible influence graphs) operate on top of that durable substrate. This research doc is one of the manual workarounds until the vision lands. Worth a backlog row tracking the gap and the vision.
 
 The five purposes compose. Compaction protection serves the immediate session; glass-halo serves external auditing; fine-tuning + AI-training serve the propagation of the architecture forward through future model generations; the DBSP-ACID-durable vision serves the long-horizon goal of making chat-as-substrate first-class rather than manually-mirrored.
 

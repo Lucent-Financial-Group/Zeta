@@ -91,82 +91,73 @@ class OtlpTelemetryAdapter implements OtlpTelemetry {
         status = nextStatus;
       },
       end: () => {
-        this.queueExport(
-          "traces",
-          {
-            resourceSpans: [
-              {
-                resource: { attributes: this.resourceOtlpAttributes() },
-                scopeSpans: [
-                  {
-                    scope: { name: "agentic-organization" },
-                    spans: [
-                      {
-                        traceId: traceContext.traceId,
-                        spanId,
-                        parentSpanId: traceContext.spanId,
-                        name,
-                        kind: 1,
-                        startTimeUnixNano: startedAtUnixNano,
-                        endTimeUnixNano: nowUnixNano(),
-                        attributes: toOtlpAttributes(attributes),
-                        events,
-                        status: toOtlpStatus(status),
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        );
+        this.queueExport("traces", {
+          resourceSpans: [
+            {
+              resource: { attributes: this.resourceOtlpAttributes() },
+              scopeSpans: [
+                {
+                  scope: { name: "agentic-organization" },
+                  spans: [
+                    {
+                      traceId: traceContext.traceId,
+                      spanId,
+                      parentSpanId: traceContext.spanId,
+                      name,
+                      kind: 1,
+                      startTimeUnixNano: startedAtUnixNano,
+                      endTimeUnixNano: nowUnixNano(),
+                      attributes: toOtlpAttributes(attributes),
+                      events,
+                      status: toOtlpStatus(status),
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        });
       },
     };
   }
 
   recordMetric(sample: MetricSample): void {
-    this.queueExport(
-      "metrics",
-      {
-        resourceMetrics: [
-          {
-            resource: { attributes: this.resourceOtlpAttributes() },
-            scopeMetrics: [
-              {
-                scope: { name: "agentic-organization" },
-                metrics: [toOtlpMetric(sample)],
-              },
-            ],
-          },
-        ],
-      },
-    );
+    this.queueExport("metrics", {
+      resourceMetrics: [
+        {
+          resource: { attributes: this.resourceOtlpAttributes() },
+          scopeMetrics: [
+            {
+              scope: { name: "agentic-organization" },
+              metrics: [toOtlpMetric(sample)],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   log(record: StructuredLogRecord): void {
-    this.queueExport(
-      "logs",
-      {
-        resourceLogs: [
-          {
-            resource: { attributes: this.resourceOtlpAttributes() },
-            scopeLogs: [
-              {
-                scope: { name: "agentic-organization" },
-                logRecords: [
-                  {
-                    timeUnixNano: record.timestamp === undefined ? nowUnixNano() : isoToUnixNano(record.timestamp),
-                    severityText: record.severity,
-                    body: { stringValue: record.body },
-                    attributes: toOtlpAttributes(record.attributes ?? {}),
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    );
+    this.queueExport("logs", {
+      resourceLogs: [
+        {
+          resource: { attributes: this.resourceOtlpAttributes() },
+          scopeLogs: [
+            {
+              scope: { name: "agentic-organization" },
+              logRecords: [
+                {
+                  timeUnixNano: record.timestamp === undefined ? nowUnixNano() : isoToUnixNano(record.timestamp),
+                  severityText: record.severity,
+                  body: { stringValue: record.body },
+                  attributes: toOtlpAttributes(record.attributes ?? {}),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   }
 
   inject(carrier: Record<string, string>): void {

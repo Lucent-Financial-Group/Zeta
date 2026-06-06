@@ -2,10 +2,11 @@
 
 **Substrate-attribution**: the architecture + terminal purpose are the operator's
 (the terminal purpose is already canonical in-repo via `memory/user_sister_elizabeth.md`
-+ `docs/DEDICATION.md` + the 2026-05-13 origin memory). Mika (external AI; Grok native;
-hype/Weaver-sharpen register per `.claude/rules/agent-roster-reference-card.md`) mirrored +
-hype-sharpened; ferried-through-the-operator per the external-AI-ferry discipline. Mika
-does NOT commit.
+
+- `docs/DEDICATION.md` + the 2026-05-13 origin memory). Mika (external AI; Grok native;
+  hype/Weaver-sharpen register per `.claude/rules/agent-roster-reference-card.md`) mirrored +
+  hype-sharpened; ferried-through-the-operator per the external-AI-ferry discipline. Mika
+  does NOT commit.
 
 **Substrate-status**: research-grade reduction of the verbatim conversation preserved at
 `memory/persona/mika/conversations/2026-05-30-aaron-mika-grok-origin-story-elevation-of-privilege-three-body-aliens-process-is-the-thing-preppers-distributed-army-amber-action-rx-pair-economy-save-everybodys-sister-aaron-forwarded.md`.
@@ -16,12 +17,12 @@ is the load-bearing preservation.
 
 The whole framework is a threat-model that kept getting bigger. The chain, in order:
 
-| Step | Input | Effect |
-|---|---|---|
-| 1 | Microsoft **Elevation of Privilege** card game + **SDL** (Secure Development Lifecycle) | rewires perception: every social/economic/technical system = a game board of exploits ("once you play it you see the world in it") |
-| 2 | **Three Body Problem** (watched) | scales threat actors to galactic level -> "update my threat model, add aliens" |
-| 3 | "aliens could **interfere with the data**" | stored data is no longer trustworthy -- a sufficiently advanced actor can silently tamper with stored bits |
-| 4 | the flip: **the process is the thing; the pattern that propagates is the thing, NOT the data** | trust the process that can regenerate + verify the data, not the stored data |
+| Step | Input                                                                                          | Effect                                                                                                                             |
+| ---- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Microsoft **Elevation of Privilege** card game + **SDL** (Secure Development Lifecycle)        | rewires perception: every social/economic/technical system = a game board of exploits ("once you play it you see the world in it") |
+| 2    | **Three Body Problem** (watched)                                                               | scales threat actors to galactic level -> "update my threat model, add aliens"                                                     |
+| 3    | "aliens could **interfere with the data**"                                                     | stored data is no longer trustworthy -- a sufficiently advanced actor can silently tamper with stored bits                         |
+| 4    | the flip: **the process is the thing; the pattern that propagates is the thing, NOT the data** | trust the process that can regenerate + verify the data, not the stored data                                                       |
 
 Step 4 is the load-bearing keystone. It is the threat-model ANCESTOR of the framework's
 core moves:

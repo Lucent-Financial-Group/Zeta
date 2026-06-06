@@ -21,7 +21,7 @@ tags: [cluster-install, ssh-key, password, iter-4, nixos, credentials, b-0754-fo
 
 ## Problem
 
-Iter-3 (the maintainer's PC 1 test, 2026-05-25) shipped end-to-end zero-typing NixOS install via the iter-3 USB. Result: PC 1 booted to `control-plane login:` tty1 prompt — but **inaccessible**. Root cause surfaced by the maintainer asking *"what's the password?"*:
+Iter-3 (the maintainer's PC 1 test, 2026-05-25) shipped end-to-end zero-typing NixOS install via the iter-3 USB. Result: PC 1 booted to `control-plane login:` tty1 prompt — but **inaccessible**. Root cause surfaced by the maintainer asking _"what's the password?"_:
 
 - `nixos-install --no-root-password` was used → root account locked
 - `users.users.zeta` defined in `common.nix` with no `initialPassword` / `hashedPassword` → zeta account also locked for tty1 login
@@ -37,7 +37,7 @@ Cluster nodes installed via iter-4 USB are reachable via BOTH paths after first 
 1. **Local tty1 console** with the initial password `zeta-change-me` (operator MUST rotate via `passwd zeta` on first login)
 2. **SSH from the operator's workstation** as the `zeta` user after the operator adds their public key to `operator-ssh-keys.nix` + `nixos-rebuild switch`
 
-Per the maintainer 2026-05-26 *"we can do what's going to make cluster setup eaiser for me and not users if that's ssh lets do that first cause we want to get ai running the cluster asap"* — ship the simplest substrate that unblocks cluster-side AI workloads NOW. Account-login + credential-survey skill substrate (for end-user onboarding) deferred per the same message.
+Per the maintainer 2026-05-26 _"we can do what's going to make cluster setup eaiser for me and not users if that's ssh lets do that first cause we want to get ai running the cluster asap"_ — ship the simplest substrate that unblocks cluster-side AI workloads NOW. Account-login + credential-survey skill substrate (for end-user onboarding) deferred per the same message.
 
 ## Substrate shape (iter-4 v1)
 
@@ -80,7 +80,7 @@ Per the maintainer 2026-05-26 *"we can do what's going to make cluster setup eai
 
 ## Acceptance — iter-4 v1 is SCAFFOLDING (not maintainer-usable); iter-4.2 is the actually-usable end-to-end target
 
-The maintainer 2026-05-26: *"i can wait for 4.2 or whatever version before we try again."* This downgrades iter-4 v1 from a "usable + tested via re-flash" goal to a "substrate lands so iter-4.2 has scaffolding to build on" goal. The maintainer will NOT re-flash PC 1 for v1; the actually-usable test target is iter-4.2 (or whichever iteration first ships zero-typing end-to-end SSH).
+The maintainer 2026-05-26: _"i can wait for 4.2 or whatever version before we try again."_ This downgrades iter-4 v1 from a "usable + tested via re-flash" goal to a "substrate lands so iter-4.2 has scaffolding to build on" goal. The maintainer will NOT re-flash PC 1 for v1; the actually-usable test target is iter-4.2 (or whichever iteration first ships zero-typing end-to-end SSH).
 
 ### iter-4 v1 acceptance (substrate-scaffolding-only)
 
@@ -92,7 +92,7 @@ The maintainer 2026-05-26: *"i can wait for 4.2 or whatever version before we tr
 
 ### iter-4.2 acceptance (target the maintainer will actually test against)
 
-Note: the maintainer 2026-05-26 *"--no-creds is basically useless right?"* signal removed the opt-out flag from the original design. The default behavior IS the new behavior; opt-out (renamed `--no-inject`) exists only as an escape hatch for the operator who explicitly wants the old flash-only flow without the pubkey-write step.
+Note: the maintainer 2026-05-26 _"--no-creds is basically useless right?"_ signal removed the opt-out flag from the original design. The default behavior IS the new behavior; opt-out (renamed `--no-inject`) exists only as an escape hatch for the operator who explicitly wants the old flash-only flow without the pubkey-write step.
 
 - [x] `full-ai-cluster/tools/flash-usb.ts` extended with `--no-eject` flag so zflash can do the ESP-mount-and-write before the USB ejects (4-line change; allowlist + skip-eject branch)
 - [x] `full-ai-cluster/tools/zflash.ts` extended with post-flash macOS-side ESP-mount-and-write step:
@@ -115,7 +115,7 @@ Note: the maintainer 2026-05-26 *"--no-creds is basically useless right?"* signa
   - Install runs zero-typing
   - PC X reboots; tty1 login as `zeta` / `zeta-change-me` works (initial-password substrate from v1)
   - `ssh zeta@<hostname>` from the maintainer's Mac works immediately — this is the iter-4.2 end-to-end success criterion
-- [ ] If failure: the auto-diagnostics output gets photographed + sent back; AI fixes-forward against the actual substrate the photo reveals (this is the photo-driven-diagnostics workflow the maintainer explicitly chose per 2026-05-26 *"i'm going to avoid it like the plague and try to get like pictures and auto run and short commands pre built in"*)
+- [ ] If failure: the auto-diagnostics output gets photographed + sent back; AI fixes-forward against the actual substrate the photo reveals (this is the photo-driven-diagnostics workflow the maintainer explicitly chose per 2026-05-26 _"i'm going to avoid it like the plague and try to get like pictures and auto run and short commands pre built in"_)
 
 ### Why ship v1 separately if 4.2 is the maintainer-usable target
 
@@ -192,9 +192,9 @@ The maintainer's "wait for 4.2" signal is exactly the right shape for this decom
 
 The maintainer 2026-05-26, after iter-3 USB install on PC 1 succeeded but left the node unreachable. Sequence:
 
-1. *"what's the password?"* — surfaced the iter-3 gap (no password, no SSH keys, locked accounts)
+1. _"what's the password?"_ — surfaced the iter-3 gap (no password, no SSH keys, locked accounts)
 2. Substrate-design conversation across multiple ticks reached the iter-4 shape (Shape A `hashedPassword` + SSH-key-from-USB + B-0789 row)
-3. *"okay i'll wait for that to get into main then send it just let me know"* — gated Max-side text-message rollout on iter-4 substrate landing (decoupled when Max's persona substrate landed first via PR #5078)
-4. *"we can do what's going to make cluster setup eaiser for me and not users if that's ssh lets do that first cause we want to get ai running the cluster asap"* — explicit authorization to ship iter-4 v1 with simplest-first design; credential-setup skill deferred to iter-5+
+3. _"okay i'll wait for that to get into main then send it just let me know"_ — gated Max-side text-message rollout on iter-4 substrate landing (decoupled when Max's persona substrate landed first via PR #5078)
+4. _"we can do what's going to make cluster setup eaiser for me and not users if that's ssh lets do that first cause we want to get ai running the cluster asap"_ — explicit authorization to ship iter-4 v1 with simplest-first design; credential-setup skill deferred to iter-5+
 
 iter-4 v1 ships the manual SSH-key edit workflow because (a) Nix modules + per-host imports are the smallest substrate that unblocks SSH access end-to-end; (b) zflash-auto-inject requires post-flash partition-mount logic that's bounded but adds iteration cycles; (c) the maintainer's stated priority is "get AI running the cluster ASAP" which the v1 path serves immediately. iter-4.2 USB auto-inject ships as a follow-on when the manual-edit friction becomes operational.

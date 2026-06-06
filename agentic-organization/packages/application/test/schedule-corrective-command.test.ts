@@ -184,7 +184,7 @@ function workAnchorReader(command: {
   return {
     findProject: async () => undefined,
     findInitiative: async () => undefined,
-    findWorkItem: async (workItemId: string) => workItemId === workItem.workItemId ? workItem : undefined,
+    findWorkItem: async (workItemId: string) => (workItemId === workItem.workItemId ? workItem : undefined),
   };
 }
 

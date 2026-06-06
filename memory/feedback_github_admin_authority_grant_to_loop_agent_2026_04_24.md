@@ -8,19 +8,19 @@ type: feedback
 
 Maintainer 2026-04-24:
 
-> *"i give you github admin"*
+> _"i give you github admin"_
 
 Then immediately after I asked whether to durabilize it:
 
-> *"save my permission as durable yes"*
+> _"save my permission as durable yes"_
 
 Plus directive on the broader design:
 
-> *"we shoud probbably have a list of named permissions
+> _"we shoud probbably have a list of named permissions
 > you might need and thier names and descriptions and
 > which ones are active for which contributro. this in
 > not super safe yet but we can nake it more safe over
-> time."*
+> time."_
 
 ## Scope of the grant
 
@@ -40,6 +40,7 @@ inaugural use):
 - Branch-protection-related ops via `gh api`.
 
 **NOT in scope** (separate grants required):
+
 - Org-level admin (org settings, org-level rulesets).
 - Repo deletion / transfer.
 - Member management.

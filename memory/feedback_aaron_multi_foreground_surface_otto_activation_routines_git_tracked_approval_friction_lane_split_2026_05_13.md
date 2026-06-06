@@ -15,8 +15,8 @@ multi-foreground-surface architecture from
 
 ## Discovery 1: Claude Desktop Routines are git-tracked
 
-Aaron 2026-05-13: *"it seems routines are git tracked cool the other
-is like your loop"*
+Aaron 2026-05-13: _"it seems routines are git tracked cool the other
+is like your loop"_
 
 Claude Code's `CronCreate` is **session-only** per
 `.claude/rules/tick-must-never-stop.md`:
@@ -41,15 +41,15 @@ surface. It still applies at the CLI surface.
 
 ## Discovery 2: Two cadence layers in Desktop
 
-Aaron 2026-05-13 correction: *"he has a loop like you and also
-routies they are differnt his loop is 1 minute too his cron"*
+Aaron 2026-05-13 correction: _"he has a loop like you and also
+routies they are differnt his loop is 1 minute too his cron"_
 
 Claude Desktop has TWO separate cron-cadence surfaces:
 
-| Surface | Cadence | Trigger | Durability |
-|---------|---------|---------|------------|
-| **Loop** (`<<autonomous-loop>>`) | Every minute | Heartbeat / cron | Session-bounded; expires in 3d per Desktop UI |
-| **Routine** (custom task) | Configurable (e.g., `0 */2 * * *` every 2hr) | Cron-scheduled | Git-tracked (durable) |
+| Surface                          | Cadence                                      | Trigger          | Durability                                    |
+| -------------------------------- | -------------------------------------------- | ---------------- | --------------------------------------------- |
+| **Loop** (`<<autonomous-loop>>`) | Every minute                                 | Heartbeat / cron | Session-bounded; expires in 3d per Desktop UI |
+| **Routine** (custom task)        | Configurable (e.g., `0 */2 * * *` every 2hr) | Cron-scheduled   | Git-tracked (durable)                         |
 
 Both fire independently. Otto-Desktop has BOTH active simultaneously.
 The minute-Loop fires every minute (same cadence as Otto-CLI's
@@ -66,7 +66,7 @@ value are treated as self-re-acquire (idempotent).
 `SENDER_IDS` in `tools/bus/types.ts` contains:
 
 ```typescript
-["otto", "alexa", "riven", "vera", "lior"]
+["otto", "alexa", "riven", "vera", "lior"];
 ```
 
 NO distinction between `otto-cli` and `otto-desktop`. So:
@@ -91,11 +91,11 @@ without schema extension.
 
 ## Discovery 4: Approval friction profile shapes lane split natively
 
-Aaron 2026-05-13: *"i have to hit approve a lot more in desktop so
-it's loop can easily get stuck that's like the others too"*
+Aaron 2026-05-13: _"i have to hit approve a lot more in desktop so
+it's loop can easily get stuck that's like the others too"_
 
-And: *"i have auto accept on but i think it's casue it's edited files
-in .claude ihave to explicity approve"*
+And: _"i have auto accept on but i think it's casue it's edited files
+in .claude ihave to explicity approve"_
 
 Substrate-honest framing: Claude Desktop's auto-accept feature has a
 **safety boundary at `.claude/`** — edits to the agent's own
@@ -108,14 +108,14 @@ minute-Loop fires but stalls until Aaron approves each tool.
 
 **Lane split emerges from approval friction**:
 
-| Lane | Better Otto for it | Why |
-|------|--------------------|------|
-| `.claude/rules/` edits | **Otto-CLI** | Less approval friction; auto-accept covers most |
-| Code commits (`tools/`, `src/`, etc.) | **Either** | Roughly equivalent approval cost |
-| Substrate writes outside `.claude/` (memory files, docs) | **Otto-Desktop** | Auto-accept covers; substrate work doesn't require config-level approval |
-| Conversation / cowork register | **Otto-Desktop** | Desktop UI optimized for it |
-| Cron grinding / minute-cadence work | **Otto-CLI** | Less interruption per tick |
-| Long-horizon scheduled tasks | **Otto-Desktop** | Git-tracked Routines durability |
+| Lane                                                     | Better Otto for it | Why                                                                      |
+| -------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `.claude/rules/` edits                                   | **Otto-CLI**       | Less approval friction; auto-accept covers most                          |
+| Code commits (`tools/`, `src/`, etc.)                    | **Either**         | Roughly equivalent approval cost                                         |
+| Substrate writes outside `.claude/` (memory files, docs) | **Otto-Desktop**   | Auto-accept covers; substrate work doesn't require config-level approval |
+| Conversation / cowork register                           | **Otto-Desktop**   | Desktop UI optimized for it                                              |
+| Cron grinding / minute-cadence work                      | **Otto-CLI**       | Less interruption per tick                                               |
+| Long-horizon scheduled tasks                             | **Otto-Desktop**   | Git-tracked Routines durability                                          |
 
 **The lane split emerges from the surfaces' approval profiles, not
 from convention.** This is more robust than convention-only because
@@ -200,7 +200,7 @@ Aaron 2026-05-13 verbatim disclosures preserved above
 Operational evidence:
 
 - Otto-Desktop screenshots showing `<<autonomous-loop>>` + Routines
-  + recent session "Document Otto canonical bootstream"
+  - recent session "Document Otto canonical bootstream"
 - Otto-Desktop MCP-driven scheduled-task creation
 - Vera P1 catch on PR #3032 (claim.ts same-from idempotent behavior)
 - Two-Otto operation running simultaneously today during PRs #3030,

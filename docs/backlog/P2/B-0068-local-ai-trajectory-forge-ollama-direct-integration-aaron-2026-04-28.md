@@ -49,7 +49,7 @@ trajectory** is additive substrate that:
   the network-dependency class from tick-execution
   failure modes
 
-Aaron explicit: *"this is just the start"* — this row is
+Aaron explicit: _"this is just the start"_ — this row is
 an umbrella, not a single deliverable. Sub-rows will spawn
 as the trajectory clarifies.
 
@@ -84,9 +84,9 @@ selection.
   GPU (if any) / OS-level inference frameworks already
   installed (Metal on macOS / CUDA on Linux / DirectML
   on WSL)
-- Aaron explicit: *"search for best latest for the
+- Aaron explicit: _"search for best latest for the
   hardware we are on. Also make sure you take into
-  account the resources on the machine."*
+  account the resources on the machine."_
   → Otto-247 version-currency applies HARD: model release
   cadence is weeks; defaulting to "training-data-known"
   models will pick stale releases. WebSearch every
@@ -111,9 +111,9 @@ selection.
 
 **Status:** research-grade; Aaron explicit alternative.
 
-> *"we should reasearch direct integration with local modeal
+> _"we should reasearch direct integration with local modeal
 > rather than going through forge or ollama as another
-> alternative"*
+> alternative"_
 
 Direct integration paths to research (via WebSearch +
 peer-call ferries; per Otto-247 these names date FAST):
@@ -145,7 +145,7 @@ peer-call ferries; per Otto-247 these names date FAST):
 - **NOT** an Ollama-only path. Ollama is path 1 + 2;
   path 3 explicitly explores no-broker alternatives.
 - **NOT** a model-quality benchmark project. The trajectory
-  is about *substrate availability*; model quality is
+  is about _substrate availability_; model quality is
   measured incidentally during smoke-tests, not as the
   primary deliverable.
 - **NOT** committing to a specific stack until path 1-3
@@ -182,7 +182,7 @@ clarify:
    (path 3)
 
 Per Otto-275 (log-but-don't-implement-yet) + Aaron's
-*"this will be a later tasks"* framing: do NOT start
+_"this will be a later tasks"_ framing: do NOT start
 implementation work this tick. The umbrella is the
 deliverable for now.
 

@@ -8,7 +8,7 @@ type: feedback
 
 Maintainer 2026-04-24:
 
-> *"boooooooooooooooom, the ultimate interface that pulls
+> _"boooooooooooooooom, the ultimate interface that pulls
 > them all together for the beginner, the os interface.
 > it just looks like full blown regural simle I/O
 > interfaces like noraml but just like dotnet it's not
@@ -47,7 +47,7 @@ Maintainer 2026-04-24:
 > like the f# composiable solves this best but maybe
 > other stuff? looks like we are going to have some
 > sort of distributed "event" loop, guarentees here are
-> good if we can mathematically provice them. backlog."*
+> good if we can mathematically provice them. backlog."_
 
 ## Untangle — distinct concepts identified
 
@@ -80,9 +80,9 @@ Durable Functions, Cadence (Uber), Restate, DBOS, Inngest,
 Trigger.dev. All implement "looks-sequential, actually
 durable".
 
-**Hard prerequisite (maintainer explicit):** *"the only
+**Hard prerequisite (maintainer explicit):** _"the only
 hard requirments is that you write deterministic code
-like DST lol we will fit in perfect"*. This is the
+like DST lol we will fit in perfect"_. This is the
 Temporal contract — workflow code must be deterministic
 so replay reaches the same state. Composes directly with
 Otto-272 DST-everywhere (factory default already).
@@ -107,8 +107,8 @@ the Ouroboros bootstrap thesis (#395).
 
 ### 4. AddZeta DX target
 
-**Maintainer framing:** *"the AddZeta simplicity we are
-going for, for our developer UX"*.
+**Maintainer framing:** _"the AddZeta simplicity we are
+going for, for our developer UX"_.
 
 Single-line DI registration:
 
@@ -132,7 +132,7 @@ public async Task ProcessOrders(IZetaStream<Order> orders, IZetaStream<Inventory
         .Join(inventory, ...)
         .Where(o => o.Inventory.Count < threshold)
         .Select(o => new Alert(o));
-    
+
     await foreach (var alert in lowStock) {
         await SendAlert(alert);  // every await is a durable checkpoint
     }
@@ -144,7 +144,7 @@ durable continuations.
 
 ### 6. Reaqtor tie-in
 
-**Maintainer:** *"somehow this all ties into reaqtor lol"*.
+**Maintainer:** _"somehow this all ties into reaqtor lol"_.
 
 [Reaqtor](https://reaqtive.net) is Microsoft's open-source
 **distributed reactive event processing engine** built on
@@ -155,39 +155,42 @@ via `tools/setup/common/sync-upstreams.sh`. The mirror path
 `references/upstreams/reaqtor/` is **gitignored** and only
 present after the sync script runs; it is NOT committed to
 the repo. Reaqtor's `IQbservable`
-+ expression-tree representation gives us:
 
-- **Serializable observable queries** (the durable state
+- expression-tree representation gives us:
+
+* **Serializable observable queries** (the durable state
   IS the query expression, not a thread).
-- **Stream operator composition** (LINQ/Rx in user code
+* **Stream operator composition** (LINQ/Rx in user code
   serializes to expression trees that distribute).
-- **Subscription-based execution** (server-side
+* **Subscription-based execution** (server-side
   observable machinery; client just declares).
-- **Already F#-idiomatic via Rx.NET interop**.
+* **Already F#-idiomatic via Rx.NET interop**.
 
 The OS-interface BUILDS ON Reaqtor's primitives.
 
 ### 7. Usermode-first microkernel preparation
 
-**Maintainer:** *"this can be the start to our
+**Maintainer:** _"this can be the start to our
 microkernal to but usermnode but we should usermode
 everything to get ready like everything a microkernal
 would need bit by bit slowely by slow testing in user
-mode"*.
+mode"_.
 
 Phased OS work: build all microkernel-class subsystems
 in usermode first, with tests, then promote to
 kernel-mode when (a) testing has matured, (b) hardware
-+ all-dotnet-F# direction lands. Composes with the FUSE
-user-mode filesystem driver row (#398 cluster).
+
+- all-dotnet-F# direction lands. Composes with the FUSE
+  user-mode filesystem driver row (#398 cluster).
 
 ### 8. Actor interface (secondary)
 
-**Maintainer:** *"we do want like a actor interface too
+**Maintainer:** _"we do want like a actor interface too
 but that is harder to think about for beginners unless
-your problem directly maps"*.
+your problem directly maps"_.
 
 Two-tier UX:
+
 - **Beginner / default**: durable-async sequential-
   looking code (the OS-interface above).
 - **Advanced / problem-fits**: actor interface for
@@ -199,10 +202,10 @@ model.
 
 ### 9. Cross-paradigm canonical examples (combinatorial)
 
-**Maintainer:** *"connonical example in sql there should
+**Maintainer:** _"connonical example in sql there should
 be a git table and/or may git built-in function or
 something to make git first class in SQL. and
-combinotorial that for all our different things"*.
+combinotorial that for all our different things"_.
 
 For every pair of DSLs in the supported set (SQL,
 operator-algebra, LINQ, Rx, git, blockchain ingest,
@@ -215,11 +218,12 @@ deliverable for that row's Phase 0.
 
 ### 10. Distributed event loop with mathematical guarantees
 
-**Maintainer:** *"looks like we are going to have some
+**Maintainer:** _"looks like we are going to have some
 sort of distributed 'event' loop, guarentees here are
-good if we can mathematically provice them"*.
+good if we can mathematically provice them"_.
 
 Targets for formal proof (Lean / TLA+):
+
 - **Liveness**: every fired event eventually completes
   or is durably-failed.
 - **Safety**: no event-loop loop processes the same
@@ -235,12 +239,14 @@ Composes with `tla-expert`, `lean4-expert`,
 ### 11. Auto runtime optimization + stats
 
 The runtime keeps stats on every awaited operation:
+
 - Latency distribution per node
 - Hot continuation points
 - Durability cost per yield
 - Cross-node hop frequency
 
 Optimizer uses these to:
+
 - Place continuations on the node owning the data they
   read next
 - Inline short-await chains into single round-trips
@@ -248,7 +254,8 @@ Optimizer uses these to:
 - Migrate hot streams to faster nodes
 
 Composes with `query-optimizer-expert` + `metrics-expert`
-+ `performance-engineer`.
+
+- `performance-engineer`.
 
 ## Composition with the 2026-04-24 cluster
 
@@ -323,8 +330,8 @@ landing.
 
 ## Maintainer framing notes
 
-- *"big and not very clear ask, please backlog and
-  untangle"* — the directive is intentionally
+- _"big and not very clear ask, please backlog and
+  untangle"_ — the directive is intentionally
   exploratory; the untangle work IS the deliverable
   for Phase 0.
 - Ergonomics target = **AddZeta one-line**. If the API
@@ -337,6 +344,7 @@ landing.
 ## Future Otto reference
 
 When implementation starts:
+
 1. Read this memory + the Phase 0 research doc first.
 2. Verify DST is still factory default (Otto-272).
 3. Survey Reaqtor's current state via the upstream sync

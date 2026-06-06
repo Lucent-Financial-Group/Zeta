@@ -1,7 +1,14 @@
 // tools/agent-heartbeats/write-heartbeat.test.ts — B-0858.3 heartbeat-writer tests.
 
 import { describe, expect, it } from "bun:test";
-import { parseArgs, buildHeartbeatObservation, zetaIdToHex, heartbeatPath, heartbeatRepoRelPath, renderHeartbeat } from "./write-heartbeat";
+import {
+  parseArgs,
+  buildHeartbeatObservation,
+  zetaIdToHex,
+  heartbeatPath,
+  heartbeatRepoRelPath,
+  renderHeartbeat,
+} from "./write-heartbeat";
 import { pack, DEFAULT_ENV } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 
 // Empty env for tests — exclude any harness-set ZETA_AGENT_* + disable
@@ -18,9 +25,9 @@ describe("parseArgs", () => {
     expect(r.authority).toBe("TrustedAgent");
     expect(r.momentum).toBe("Normal");
     expect(r.disposition).toBe("bounded-wait");
-    expect(r.push).toBe(false);  // disabled via TEST_ENV
+    expect(r.push).toBe(false); // disabled via TEST_ENV
     expect(r.repo).toBe("Lucent-Financial-Group/Zeta");
-    expect(r.branch).toBe("agent-heartbeats");  // default per operator 2026-05-27
+    expect(r.branch).toBe("agent-heartbeats"); // default per operator 2026-05-27
   });
 
   it("env vars override built-in defaults", () => {
@@ -46,18 +53,28 @@ describe("parseArgs", () => {
   });
 
   it("accepts all flags", () => {
-    const r = parseArgs([
-      ...baseArgs,
-      "--authority", "Standard",
-      "--momentum", "Elevated",
-      "--chromosome", "7",
-      "--location", "2",
-      "--named-dep", "PR #5450 build-iso",
-      "--disposition", "committed-substrate",
-      "--parent-pr", "5450",
-      "--dry-run",
-      "--no-push",
-    ], TEST_ENV);
+    const r = parseArgs(
+      [
+        ...baseArgs,
+        "--authority",
+        "Standard",
+        "--momentum",
+        "Elevated",
+        "--chromosome",
+        "7",
+        "--location",
+        "2",
+        "--named-dep",
+        "PR #5450 build-iso",
+        "--disposition",
+        "committed-substrate",
+        "--parent-pr",
+        "5450",
+        "--dry-run",
+        "--no-push",
+      ],
+      TEST_ENV,
+    );
     if ("error" in r) throw new Error(r.error);
     expect(r.authority).toBe("Standard");
     expect(r.momentum).toBe("Elevated");
@@ -118,12 +135,12 @@ describe("parseArgs", () => {
     const pushArgs = parseArgs(["--push"], TEST_ENV);
     if ("error" in pushArgs) throw new Error(pushArgs.error);
     expect(pushArgs.push).toBe(true);
-    expect(pushArgs.writeLocal).toBe(false);  // safe on dirty branches
+    expect(pushArgs.writeLocal).toBe(false); // safe on dirty branches
 
-    const noPushArgs = parseArgs([], TEST_ENV);  // TEST_ENV sets NO_PUSH=1
+    const noPushArgs = parseArgs([], TEST_ENV); // TEST_ENV sets NO_PUSH=1
     if ("error" in noPushArgs) throw new Error(noPushArgs.error);
     expect(noPushArgs.push).toBe(false);
-    expect(noPushArgs.writeLocal).toBe(true);  // else nothing happens
+    expect(noPushArgs.writeLocal).toBe(true); // else nothing happens
   });
 
   it("--write-local explicit override", () => {
@@ -166,7 +183,7 @@ describe("zetaIdToHex", () => {
   it("pads to 32 hex chars", () => {
     expect(zetaIdToHex(0n)).toHaveLength(32);
     expect(zetaIdToHex(0n)).toBe("0".repeat(32));
-    expect(zetaIdToHex(0xFFn)).toBe("0".repeat(30) + "ff");
+    expect(zetaIdToHex(0xffn)).toBe("0".repeat(30) + "ff");
   });
 
   it("renders large bigint correctly", () => {
@@ -180,13 +197,13 @@ describe("zetaIdToHex", () => {
 
 describe("heartbeatPath", () => {
   it("builds YYYY/MM/DD path with hex filename", () => {
-    const ts = Date.UTC(2026, 4, 27, 13, 30, 0);  // month 0-indexed (4=May)
+    const ts = Date.UTC(2026, 4, 27, 13, 30, 0); // month 0-indexed (4=May)
     const path = heartbeatPath("/repo", "otto", ts, "abc123");
     expect(path).toBe("/repo/docs/agent-heartbeats/otto/2026/05/27/abc123.md");
   });
 
   it("pads month and day", () => {
-    const ts = Date.UTC(2026, 0, 5, 0, 0, 0);  // 2026-01-05
+    const ts = Date.UTC(2026, 0, 5, 0, 0, 0); // 2026-01-05
     const path = heartbeatPath("/repo", "otto", ts, "x");
     expect(path).toBe("/repo/docs/agent-heartbeats/otto/2026/01/05/x.md");
   });
@@ -202,7 +219,7 @@ describe("renderHeartbeat", () => {
     expect(body).toContain("category: 3");
     expect(body).toContain("agent: otto");
     expect(body).toContain("persona-slot: 2");
-    expect(body).toContain("named-dep: \"PR #5450 CI\"");
+    expect(body).toContain('named-dep: "PR #5450 CI"');
     expect(body).toContain("parent-pr: 5450");
     expect(body).toContain("firefly: NoDirective");
   });
@@ -226,7 +243,7 @@ describe("end-to-end pack with DEFAULT_ENV", () => {
     const hex = zetaIdToHex(id);
     expect(hex).toHaveLength(32);
     // Category bits at offset 65 width 4 = bits 65..68 inclusive
-    const categoryBits = (id >> 65n) & 0xFn;
+    const categoryBits = (id >> 65n) & 0xfn;
     expect(Number(categoryBits)).toBe(3);
   });
 });

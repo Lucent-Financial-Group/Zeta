@@ -18,8 +18,8 @@ substrate layer** usable by pilots on any project.
 
 ### 1. Local-mode-compatible
 
-**Aaron's framing:** *"you said --help is cheap i call it
-local mode campatible"*.
+**Aaron's framing:** _"you said --help is cheap i call it
+local mode campatible"_.
 
 **What it names:** the discipline of mapping a CLI surface
 from its `--help` output and from locally-observable binaries
@@ -31,10 +31,10 @@ captures.
 
 **Why it's load-bearing:** it is the isomorphism of
 budget-as-research-discipline at the mapping-work layer. The
-budget memory (`feedback_*` series) says *"rare pokemon
-default, upgrade only when specific task justifies"*; local-
-mode-compatible says *"prefer zero-compute mapping over
-compute-spending mapping"*. The three capability maps shipped
+budget memory (`feedback_*` series) says _"rare pokemon
+default, upgrade only when specific task justifies"_; local-
+mode-compatible says _"prefer zero-compute mapping over
+compute-spending mapping"_. The three capability maps shipped
 in auto-loop-24 / 25 / 26 were all authored in local mode —
 that discipline was implicit; Aaron's naming makes it
 explicit.
@@ -46,7 +46,7 @@ down). Local mode is the floor of the degradation ladder
 
 ### 2. Declarative
 
-**Aaron's framing:** *"declartive"* — single-word architectural
+**Aaron's framing:** _"declartive"_ — single-word architectural
 preference, follow-on to the git-native question.
 
 **What it names:** the preference for declarative-manifest
@@ -79,7 +79,7 @@ Prose is necessary for humans but insufficient for routing.
 
 ### 3. Git-native
 
-**Aaron's framing:** *"whos format is git native lol"* —
+**Aaron's framing:** _"whos format is git native lol"_ —
 architectural needle, playful tone, rhetorical-sounding but
 with a real honest answer.
 
@@ -110,8 +110,8 @@ harder; opaque binary formats do not.
 
 ### 4. Distributable-via-Ace
 
-**Aaron's framing:** *"we can make all these things you map
-distrutable via ace"*. "Ace" = Aaron's GitHub presence (user:
+**Aaron's framing:** _"we can make all these things you map
+distrutable via ace"_. "Ace" = Aaron's GitHub presence (user:
 AceHack) / personal-factory distribution channel.
 
 **What it names:** the direction of making the capability
@@ -145,9 +145,9 @@ maps, meta-skills, generic best-practices).
 
 ### 5. Graceful-degradation
 
-**Aaron's framing:** *"graceful degradtion"* — named as a
+**Aaron's framing:** _"graceful degradtion"_ — named as a
 follow-on to the manifest + git-native cluster, confirmed
-next-turn with *"Hallelujah"* + exact-phrasing echo of the
+next-turn with _"Hallelujah"_ + exact-phrasing echo of the
 factory's availability-move framing (**third occurrence of
 wink-validation pattern; see related memory**).
 
@@ -175,11 +175,11 @@ capability-substrate + survival-discipline memories):**
    capability to save cost on work that doesn't need the
    rare-pokemon.
 4. **Poor-tier** — Aaron 2026-04-22 auto-loop-27 sixth-
-   concept extension: *"Poor-tier implies making best
+   concept extension: _"Poor-tier implies making best
    practices scracfices that go beyond cheap like doing
    most our work on a personal github instead of the
-   company"* + *"cheap is a budget concern, poor is a
-   survival concern"*. **Poor is a survival concern** —
+   company"_ + _"cheap is a budget concern, poor is a
+   survival concern"_. **Poor is a survival concern** —
    institutional-sacrifice tier below cheap; declines
    best-practice-compliance to keep operating when normal
    institutional affordances (company GitHub, paid
@@ -193,7 +193,7 @@ capability-substrate + survival-discipline memories):**
    distinction matters for routing logic** — cheap-tier
    declines are reversible in a tick (upgrade budget, pick
    more expensive model); poor-tier declines involve
-   switching *substrate class / institutional relation*
+   switching _substrate class / institutional relation_
    (account, provider, hosting), which has onboarding
    cost, credential-management cost, and cross-account
    data-movement cost. Poor-tier is NOT "embarrassing" —
@@ -222,8 +222,7 @@ graceful-degradation is the routing logic over it.**
   drop to speculative factory-improvement; when that's also
   absent, drop to gap-of-gap audits. Never-idle = the floor-
   finding protocol.
-- **Accounting-lag same-tick-mitigation** (auto-loop-24 →
-  26) is degradation at the hygiene layer: if substrate-
+- **Accounting-lag same-tick-mitigation** (auto-loop-24 → 26) is degradation at the hygiene layer: if substrate-
   accounting can't lane with substrate-improvement in one
   tick, name the class and schedule the mitigation — don't
   drop the accounting.
@@ -292,8 +291,8 @@ authored.
   observations.
 - **Capture-in-chat discipline applies.** Aaron was in
   riffing-mode across auto-loop-26/27, and the
-  tiredness-tag-register memory (*"i'm very tired i could
-  be way off"* lineage) says thoughts-not-directives should
+  tiredness-tag-register memory (_"i'm very tired i could
+  be way off"_ lineage) says thoughts-not-directives should
   be captured without being auto-promoted to BACKLOG rows.
   This memory is capture; filing a BACKLOG row without
   separate directive would violate the don't-file-from-
@@ -302,16 +301,16 @@ authored.
   concurrent with this cluster.** The wink-validation
   second-occurrence memory I filed auto-loop-26 says 3+
   occurrences earn Architect-level review. Aaron's "Hallelujah"
-  + exact-phrasing echo on graceful-degradation-as-availability-
-  move is the third. Those two memories compose: the wink-
-  validation memory tracks WHEN to escalate; this memory
-  captures WHAT the cluster is.
+  - exact-phrasing echo on graceful-degradation-as-availability-
+    move is the third. Those two memories compose: the wink-
+    validation memory tracks WHEN to escalate; this memory
+    captures WHAT the cluster is.
 - **Distribution-via-Ace implies coordination cost.**
   Becoming a public goods contributor means downstream
   consumers depend on the format. That creates versioning
   obligations, breaking-change review, and consumer-contract
   discipline the factory doesn't currently have. The concept
-  is load-bearing *direction*, not *next-tick-work*. Naming
+  is load-bearing _direction_, not _next-tick-work_. Naming
   it prevents future-me from pretending it's small.
 
 ## How to apply:
@@ -322,7 +321,7 @@ authored.
   yes/no" is a fast filter before burning tokens.
 - **Do NOT file BACKLOG rows unilaterally.** The cluster is
   capture-in-chat direction. File rows only when Aaron says
-  *"file that"* about one of the five specifically. The
+  _"file that"_ about one of the five specifically. The
   three-substrate-triangulation-gap (one CLI not mapped) is
   an example of what earned a row: concrete gap with clear
   scope. The five-concept cluster is architectural direction:

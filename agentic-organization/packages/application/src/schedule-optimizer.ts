@@ -26,8 +26,7 @@ export const SchedulePressureSignalKind = {
   ScheduleGap: "schedule_gap",
 } as const;
 
-export type SchedulePressureSignalKind =
-  (typeof SchedulePressureSignalKind)[keyof typeof SchedulePressureSignalKind];
+export type SchedulePressureSignalKind = (typeof SchedulePressureSignalKind)[keyof typeof SchedulePressureSignalKind];
 
 export const ScheduleCorrectiveActionKind = {
   RebalanceHatCapacity: "rebalance_hat_capacity",
@@ -113,8 +112,7 @@ export const MissionTrajectoryStatus = {
   OffTrack: "off_track",
 } as const;
 
-export type MissionTrajectoryStatus =
-  (typeof MissionTrajectoryStatus)[keyof typeof MissionTrajectoryStatus];
+export type MissionTrajectoryStatus = (typeof MissionTrajectoryStatus)[keyof typeof MissionTrajectoryStatus];
 
 export type MissionTrajectoryInput = {
   readonly organizationId: string;
@@ -184,15 +182,17 @@ export function computeSchedulePressure(input: SchedulePressureInput): ScheduleP
     hatId: input.hatId,
     now: input.now,
   });
-  const activeBlocks = input.scheduleBlocks.filter((block) =>
-    block.organizationId === input.organizationId &&
-    blockBelongsToHat(block, input.bindings, input.hatId) &&
-    activeAt(block, input.now),
+  const activeBlocks = input.scheduleBlocks.filter(
+    (block) =>
+      block.organizationId === input.organizationId &&
+      blockBelongsToHat(block, input.bindings, input.hatId) &&
+      activeAt(block, input.now),
   );
-  const expiredBindings = input.bindings.filter((binding) =>
-    binding.organizationId === input.organizationId &&
-    binding.hatId === input.hatId &&
-    binding.phase === HatBindingPhase.Expired,
+  const expiredBindings = input.bindings.filter(
+    (binding) =>
+      binding.organizationId === input.organizationId &&
+      binding.hatId === input.hatId &&
+      binding.phase === HatBindingPhase.Expired,
   );
 
   const signals = [
@@ -241,13 +241,17 @@ export function schedulePressureReadoutForHat(
       reviewLagMs: input.reviewLagMsByHat?.get(hatId) ?? 0,
       failureRate: input.failureRateByHat?.get(hatId) ?? 0,
       heartbeatReliability: input.heartbeatReliabilityByHat?.get(hatId) ?? 1,
-    }));
+    }),
+  );
   const score = pressures.length === 0 ? 0 : Math.max(...pressures.map((pressure) => pressure.score));
   return {
     organizationId: input.organizationId,
     hatId: hat.id,
     visibleHatIds,
-    level: levelForScore(score, pressures.flatMap((pressure) => pressure.signals)),
+    level: levelForScore(
+      score,
+      pressures.flatMap((pressure) => pressure.signals),
+    ),
     score: round3(score),
     pressures,
     signals: pressures.flatMap((pressure) => pressure.signals),
@@ -259,7 +263,12 @@ function queuePressureSignal(readyShardCount: number): SchedulePressureSignal | 
   if (readyShardCount <= 0) return undefined;
   return {
     kind: SchedulePressureSignalKind.QueuePressure,
-    severity: readyShardCount >= 6 ? SchedulePressureLevel.Critical : readyShardCount >= 2 ? SchedulePressureLevel.AtRisk : SchedulePressureLevel.Normal,
+    severity:
+      readyShardCount >= 6
+        ? SchedulePressureLevel.Critical
+        : readyShardCount >= 2
+          ? SchedulePressureLevel.AtRisk
+          : SchedulePressureLevel.Normal,
     scoreContribution: Math.min(readyShardCount / 6, 1) * 0.25,
     value: readyShardCount,
     unit: "shard",
@@ -340,24 +349,79 @@ function correctiveActionsForPressure(pressure: SchedulePressure): readonly Sche
   const actions: ScheduleCorrectiveAction[] = [];
   const hasExpired = pressure.signals.some((signal) => signal.kind === SchedulePressureSignalKind.ExpiredHatBinding);
   const hasQueue = pressure.queueDepth > 0 || pressure.staleClaimCount > 0;
-  const hasReliability = pressure.signals.some((signal) => signal.kind === SchedulePressureSignalKind.HeartbeatReliability || signal.kind === SchedulePressureSignalKind.FailureRate);
+  const hasReliability = pressure.signals.some(
+    (signal) =>
+      signal.kind === SchedulePressureSignalKind.HeartbeatReliability ||
+      signal.kind === SchedulePressureSignalKind.FailureRate,
+  );
 
-  if (hasExpired) actions.push(action(ScheduleCorrectiveActionKind.ReassignAfterExpiry, pressure.hatId, "Reassign expired hat", "expired hat capacity must return to supervisor/RMO assignment"));
+  if (hasExpired)
+    actions.push(
+      action(
+        ScheduleCorrectiveActionKind.ReassignAfterExpiry,
+        pressure.hatId,
+        "Reassign expired hat",
+        "expired hat capacity must return to supervisor/RMO assignment",
+      ),
+    );
   if (pressure.level === SchedulePressureLevel.Critical && hasQueue) {
-    actions.push(action(ScheduleCorrectiveActionKind.RebalanceHatCapacity, pressure.hatId, "Rebalance hat capacity", "queue and SLA pressure exceed scheduled capacity"));
+    actions.push(
+      action(
+        ScheduleCorrectiveActionKind.RebalanceHatCapacity,
+        pressure.hatId,
+        "Rebalance hat capacity",
+        "queue and SLA pressure exceed scheduled capacity",
+      ),
+    );
   }
   if ((pressure.level === SchedulePressureLevel.Critical || hasExpired) && hasQueue) {
-    actions.push(action(ScheduleCorrectiveActionKind.RequestRmoExpand, pressure.hatId, "Request RMO expansion", "additional legal candidates may be needed for this hat"));
+    actions.push(
+      action(
+        ScheduleCorrectiveActionKind.RequestRmoExpand,
+        pressure.hatId,
+        "Request RMO expansion",
+        "additional legal candidates may be needed for this hat",
+      ),
+    );
   }
-  if (hasReliability) actions.push(action(ScheduleCorrectiveActionKind.ShortenScheduleBlock, pressure.hatId, "Shorten unreliable block", "reliability pressure suggests rotating or shortening the current block"));
+  if (hasReliability)
+    actions.push(
+      action(
+        ScheduleCorrectiveActionKind.ShortenScheduleBlock,
+        pressure.hatId,
+        "Shorten unreliable block",
+        "reliability pressure suggests rotating or shortening the current block",
+      ),
+    );
   if (pressure.level === SchedulePressureLevel.AtRisk && hasQueue) {
-    actions.push(action(ScheduleCorrectiveActionKind.OpenOfficeHours, pressure.hatId, "Open office hours", "coordination may unblock queued work before expanding capacity"));
+    actions.push(
+      action(
+        ScheduleCorrectiveActionKind.OpenOfficeHours,
+        pressure.hatId,
+        "Open office hours",
+        "coordination may unblock queued work before expanding capacity",
+      ),
+    );
   }
   if (pressure.level === SchedulePressureLevel.Critical) {
-    actions.push(action(ScheduleCorrectiveActionKind.PauseLowPriorityWork, pressure.hatId, "Pause low-priority work", "critical pressure should protect the highest-priority trajectory"));
+    actions.push(
+      action(
+        ScheduleCorrectiveActionKind.PauseLowPriorityWork,
+        pressure.hatId,
+        "Pause low-priority work",
+        "critical pressure should protect the highest-priority trajectory",
+      ),
+    );
   }
   if (actions.length === 0 && pressure.queueDepth > 0) {
-    actions.push(action(ScheduleCorrectiveActionKind.ExtendFocusBlock, pressure.hatId, "Extend focus block", "low pressure with ready work should preserve context instead of reassigning"));
+    actions.push(
+      action(
+        ScheduleCorrectiveActionKind.ExtendFocusBlock,
+        pressure.hatId,
+        "Extend focus block",
+        "low pressure with ready work should preserve context instead of reassigning",
+      ),
+    );
   }
   return dedupeActions(actions);
 }
@@ -369,14 +433,39 @@ function correctiveActionsForTrajectory(
   if (status === MissionTrajectoryStatus.OnTrack) return [];
   if (status === MissionTrajectoryStatus.AtRisk) {
     return dedupeActions([
-      action(ScheduleCorrectiveActionKind.ExtendFocusBlock, hatId, "Extend focus block", "mission trajectory is behind expected progress but still recoverable inside tolerance bounds"),
-      action(ScheduleCorrectiveActionKind.OpenOfficeHours, hatId, "Open office hours", "mission trajectory needs coordination before adding capacity"),
+      action(
+        ScheduleCorrectiveActionKind.ExtendFocusBlock,
+        hatId,
+        "Extend focus block",
+        "mission trajectory is behind expected progress but still recoverable inside tolerance bounds",
+      ),
+      action(
+        ScheduleCorrectiveActionKind.OpenOfficeHours,
+        hatId,
+        "Open office hours",
+        "mission trajectory needs coordination before adding capacity",
+      ),
     ]);
   }
   return dedupeActions([
-    action(ScheduleCorrectiveActionKind.RebalanceHatCapacity, hatId, "Rebalance hat capacity", "mission trajectory is off track against target slope"),
-    action(ScheduleCorrectiveActionKind.RequestRmoExpand, hatId, "Request RMO expansion", "mission trajectory may require more legal hat capacity"),
-    action(ScheduleCorrectiveActionKind.PauseLowPriorityWork, hatId, "Pause low-priority work", "off-track mission should protect the highest-priority trajectory"),
+    action(
+      ScheduleCorrectiveActionKind.RebalanceHatCapacity,
+      hatId,
+      "Rebalance hat capacity",
+      "mission trajectory is off track against target slope",
+    ),
+    action(
+      ScheduleCorrectiveActionKind.RequestRmoExpand,
+      hatId,
+      "Request RMO expansion",
+      "mission trajectory may require more legal hat capacity",
+    ),
+    action(
+      ScheduleCorrectiveActionKind.PauseLowPriorityWork,
+      hatId,
+      "Pause low-priority work",
+      "off-track mission should protect the highest-priority trajectory",
+    ),
   ]);
 }
 
@@ -398,7 +487,9 @@ function visibleScheduleHatIds(hat: HatDefinition, input: SchedulePressureReadou
   const subtree = authoritySubtree(hat.id, input.hats);
   if (hat.level === HatLevel.Director) {
     return [...candidateHatIds]
-      .filter((hatId) => subtree.has(hatId) || input.hats.get(hatId)?.departmentId === hat.departmentId || hatId === hat.id)
+      .filter(
+        (hatId) => subtree.has(hatId) || input.hats.get(hatId)?.departmentId === hat.departmentId || hatId === hat.id,
+      )
       .sort();
   }
   if (hat.level === HatLevel.Manager || hat.level === HatLevel.Lead) {
@@ -435,22 +526,22 @@ function elapsedRatioForDates(startsAt: string, targetAt: string, now: string): 
   return clamp01((nowMs - startsAtMs) / (targetAtMs - startsAtMs));
 }
 
-function blockBelongsToHat(
-  block: WorkScheduleBlock,
-  bindings: readonly HatBinding[],
-  hatId: string,
-): boolean {
-  return bindings.some((binding) =>
-    binding.id === block.assignedHatAssignmentId &&
-    binding.hatId === hatId
-  );
+function blockBelongsToHat(block: WorkScheduleBlock, bindings: readonly HatBinding[], hatId: string): boolean {
+  return bindings.some((binding) => binding.id === block.assignedHatAssignmentId && binding.hatId === hatId);
 }
 
 function levelForScore(score: number, signals: readonly SchedulePressureSignal[]): SchedulePressureLevel {
-  if (score >= 0.75 || signals.some((signal) => signal.severity === SchedulePressureLevel.Critical && signal.kind === SchedulePressureSignalKind.StaleClaims)) {
+  if (
+    score >= 0.75 ||
+    signals.some(
+      (signal) =>
+        signal.severity === SchedulePressureLevel.Critical && signal.kind === SchedulePressureSignalKind.StaleClaims,
+    )
+  ) {
     return SchedulePressureLevel.Critical;
   }
-  if (score >= 0.3 || signals.some((signal) => signal.severity === SchedulePressureLevel.AtRisk)) return SchedulePressureLevel.AtRisk;
+  if (score >= 0.3 || signals.some((signal) => signal.severity === SchedulePressureLevel.AtRisk))
+    return SchedulePressureLevel.AtRisk;
   return SchedulePressureLevel.Normal;
 }
 

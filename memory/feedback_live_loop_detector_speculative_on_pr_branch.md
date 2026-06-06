@@ -4,19 +4,21 @@ description: Aaron 2026-04-22 — speculative tick work on the same branch as an
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22 (three-message burst):
-1. *"why are yo udoing speculative work?"*
-2. *"oh was it just running, you might be stuck in a live loop
+
+1. _"why are yo udoing speculative work?"_
+2. _"oh was it just running, you might be stuck in a live loop
    if you keep doing speculative work when the build is running
    you are going to kick off the build again when you push if
    you are going speculative work while the PR is building that
    should probably be done on anohter branch. You could use
    worktrees if that helps IDK, I know there is a command line
    switch for it so maybe yo ushould resrch you might not be
-   able to do it right with that switch. But whatever helps."*
-3. *"we need a live loop detector, it's aspirational not
+   able to do it right with that switch. But whatever helps."_
+3. _"we need a live loop detector, it's aspirational not
    guarneteed, if you can make it guarneteed you proved kurt
-   godel wrong, and solved the halting problem lol"*
+   godel wrong, and solved the halting problem lol"_
 
 **The live-loop I was in (or one push away from):**
 
@@ -37,8 +39,8 @@ Aaron 2026-04-22 (three-message burst):
 
 **Why this violates "never-idle":**
 
-The never-idle rule ranks work as *known-gap → generative
-factory → gap-of-gap*. **Open PRs with failing checks are
+The never-idle rule ranks work as _known-gap → generative
+factory → gap-of-gap_. **Open PRs with failing checks are
 known-gap** — they outrank all speculative factory hygiene. I
 missed that PR #32 existed and was failing when I defaulted to
 generative work. First fix is priority-order discipline at
@@ -46,13 +48,13 @@ tick-wake: `gh pr list` before any speculative branch goes hot.
 
 **Halting-problem acknowledgement:**
 
-Aaron's gag lands because a *total* live-loop detector — one
+Aaron's gag lands because a _total_ live-loop detector — one
 that decides for any agent process whether it is in a live loop
 — is equivalent to the halting problem, which Turing proved
 undecidable (1936) using Gödel's incompleteness result (1931).
 By Rice's theorem, no algorithm decides any non-trivial
 semantic property of programs. So we can't guarantee detection;
-we can only build heuristics that catch the *shapes* we
+we can only build heuristics that catch the _shapes_ we
 actually encounter.
 
 **Heuristics worth building (aspirational detectors):**
@@ -79,7 +81,7 @@ Ordered by specificity / easiness-to-build:
    being marked ready.
 5. **Worktree-default pattern**: structural prevention beats
    detection — do speculative work in `git worktree add
-   ../Zeta-speculative round-NN-speculative` so the main repo
+../Zeta-speculative round-NN-speculative` so the main repo
    stays on the PR branch and `git push` from the main repo
    can only target that branch.
 
@@ -93,11 +95,12 @@ The cleanest solution is to **never do speculative work on a
 branch that is already an open PR's head**. If that rule is
 followed, the live-loop precondition doesn't exist and no
 detector is needed for this class. Action:
+
 - Autonomous-loop speculative work goes on `round-NN-speculative`
-  where `NN` is the *current round*, not whatever PR happens
+  where `NN` is the _current round_, not whatever PR happens
   to be open.
-- Per-tick wake checklist adds: *current branch is an open PR's
-  head? → checkout a new branch before any commits.*
+- Per-tick wake checklist adds: _current branch is an open PR's
+  head? → checkout a new branch before any commits._
 
 **Worktree path (Aaron's suggestion):**
 
@@ -127,12 +130,14 @@ is the documented surface.
   Prefer it once the worktree command-line switch is researched.
 
 **BACKLOG queued:**
+
 - Live-loop heuristic detector (heuristics #1-#4 above,
   aspirational, halting-problem-acknowledged).
 - Worktree-default research + pilot (heuristic #5, structural).
 - Branch-ownership registry (ADR candidate).
 
 **Related memories:**
+
 - `memory/feedback_never_idle_speculative_work_over_waiting.md`
   — the rule I applied too eagerly. Needs amendment:
   "known-gap includes open PRs with failing checks; verify
@@ -140,7 +145,7 @@ is the documented surface.
 - `memory/feedback_tick_must_never_ever_stop_schedule_before_finishing.md`
   — the cron discipline that drove the tick-cadence that
   accumulated the 74 commits. Not in conflict; this memory
-  refines the *what-to-do-during-the-tick* side of that
+  refines the _what-to-do-during-the-tick_ side of that
   discipline.
 - `memory/feedback_fix_factory_when_blocked_post_hoc_notify.md`
   — "additive not destructive" still applies; the fix here

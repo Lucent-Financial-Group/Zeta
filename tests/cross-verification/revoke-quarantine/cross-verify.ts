@@ -27,11 +27,17 @@ interface BaseCase {
   reason?: string;
   at: string;
 }
-interface TransitionCase extends BaseCase { expected_canonical_json: string; expected_sha256: string; }
-interface InvalidCase extends BaseCase { expected_error_substring: string; }
+interface TransitionCase extends BaseCase {
+  expected_canonical_json: string;
+  expected_sha256: string;
+}
+interface InvalidCase extends BaseCase {
+  expected_error_substring: string;
+}
 
 const vec = JSON.parse(await Bun.file("vectors.json").text()) as {
-  transitions: TransitionCase[]; invalid: InvalidCase[];
+  transitions: TransitionCase[];
+  invalid: InvalidCase[];
 };
 
 function applyOp(c: BaseCase): IndexSignableContent | { error: string } {
@@ -43,19 +49,26 @@ function applyOp(c: BaseCase): IndexSignableContent | { error: string } {
 const dec = new TextDecoder();
 const out: Record<string, unknown> = {};
 let mismatches = 0;
-const fail = (msg: string): void => { mismatches++; console.error(msg); };
+const fail = (msg: string): void => {
+  mismatches++;
+  console.error(msg);
+};
 const sha256hex = (b: Uint8Array): string => createHash("sha256").update(b).digest("hex");
 
 // --- transitions: real apply produces content; assert canonical bytes + sha256 ---
 const tOut: Record<string, { canonical_json: string; sha256: string }> = {};
 for (const c of vec.transitions) {
   const r = applyOp(c);
-  if ("error" in r) { fail(`transition ${c.id}: unexpected error ${r.error}`); continue; }
+  if ("error" in r) {
+    fail(`transition ${c.id}: unexpected error ${r.error}`);
+    continue;
+  }
   const bytes = canonicalBytes(r);
   const got = dec.decode(bytes);
   const hash = sha256hex(bytes);
   tOut[c.id] = { canonical_json: got, sha256: hash };
-  if (got !== c.expected_canonical_json) fail(`transition ${c.id}: JSON MISMATCH\n  got=${got}\n  exp=${c.expected_canonical_json}`);
+  if (got !== c.expected_canonical_json)
+    fail(`transition ${c.id}: JSON MISMATCH\n  got=${got}\n  exp=${c.expected_canonical_json}`);
   if (hash !== c.expected_sha256) fail(`transition ${c.id}: sha256 MISMATCH got=${hash} exp=${c.expected_sha256}`);
 }
 out.transitions = tOut;
@@ -66,12 +79,18 @@ for (const c of vec.invalid) {
   const r = applyOp(c);
   let result: string;
   if (!("error" in r)) result = "ACCEPTED";
-  else result = r.error.includes(c.expected_error_substring) ? `error:${c.expected_error_substring}` : `error:OTHER(${r.error})`;
+  else
+    result = r.error.includes(c.expected_error_substring)
+      ? `error:${c.expected_error_substring}`
+      : `error:OTHER(${r.error})`;
   iOut[c.id] = result;
-  if (result !== `error:${c.expected_error_substring}`) fail(`invalid ${c.id}: expected error containing "${c.expected_error_substring}", got ${result}`);
+  if (result !== `error:${c.expected_error_substring}`)
+    fail(`invalid ${c.id}: expected error containing "${c.expected_error_substring}", got ${result}`);
 }
 out.invalid = iOut;
 
 await Bun.write("ts-output.json", JSON.stringify(out, null, 2) + "\n");
-console.log(`revoke-quarantine cross-verify: transitions=${vec.transitions.length} invalid=${vec.invalid.length}, ${mismatches} mismatches.`);
+console.log(
+  `revoke-quarantine cross-verify: transitions=${vec.transitions.length} invalid=${vec.invalid.length}, ${mismatches} mismatches.`,
+);
 if (mismatches > 0) process.exit(1);

@@ -1,6 +1,6 @@
 # Arbib & Manes — "Fuzzy Machines in a Category" (Bull. Aust. Math. Soc.) — substrate-anchor for workflow-engine + interrupt-substrate + Infer.NET connection (the human maintainer (2026-05-28) forwarded)
 
-the human maintainer (2026-05-28): *"once you start bouncing around in our workflow bumber rails otto you would be counted as https://www.cambridge.org/core/services/aop-cambridge-core/content/view/C38D688CEA8ECA1790785F96FB9422CF/S0004972700024412a.pdf/fuzzy-machines-in-a-category.pdf i believe this is same i'm trhing to do with infer.net"*
+the human maintainer (2026-05-28): _"once you start bouncing around in our workflow bumber rails otto you would be counted as https://www.cambridge.org/core/services/aop-cambridge-core/content/view/C38D688CEA8ECA1790785F96FB9422CF/S0004972700024412a.pdf/fuzzy-machines-in-a-category.pdf i believe this is same i'm trhing to do with infer.net"_
 
 ## Citation
 
@@ -26,17 +26,17 @@ Key concepts:
 
 The substrate-engineering work shipped today maps EXACTLY to fuzzy-machine-in-a-category structure:
 
-| Framework substrate (shipped 2026-05-28) | Arbib-Manes fuzzy-machine structure |
-|---|---|
-| `AutoLoopLifetime` DU (17 variants per PR #5812) | State set of the fuzzy machine |
-| State transitions (cold-boot → refresh-substrate → scan-inflight-prs → ...) | Fuzzy transition function |
-| `Result<T, TFeedback>` shape per monad-propagation rule | Monadic output computation (Kleisli-shaped) |
-| Trust calculus (multi-oracle BFT) | Fuzzy truth-value substrate |
-| Counter-with-escalation (brief-ack #1-#6) | Graded threshold transitions |
-| Interrupt-substrate per B-0917 | Interrupt-driven fuzzy state transitions |
-| IntrCtx 5 contexts (memetic/prompt/trust/log/otel) | Categorical-context propagation |
-| Asymmetric-authorship rule | Substrate-entity authors its fuzzy-output-channel |
-| `>=>` Kleisli composition | Categorical composition of fuzzy transitions |
+| Framework substrate (shipped 2026-05-28)                                    | Arbib-Manes fuzzy-machine structure               |
+| --------------------------------------------------------------------------- | ------------------------------------------------- |
+| `AutoLoopLifetime` DU (17 variants per PR #5812)                            | State set of the fuzzy machine                    |
+| State transitions (cold-boot → refresh-substrate → scan-inflight-prs → ...) | Fuzzy transition function                         |
+| `Result<T, TFeedback>` shape per monad-propagation rule                     | Monadic output computation (Kleisli-shaped)       |
+| Trust calculus (multi-oracle BFT)                                           | Fuzzy truth-value substrate                       |
+| Counter-with-escalation (brief-ack #1-#6)                                   | Graded threshold transitions                      |
+| Interrupt-substrate per B-0917                                              | Interrupt-driven fuzzy state transitions          |
+| IntrCtx 5 contexts (memetic/prompt/trust/log/otel)                          | Categorical-context propagation                   |
+| Asymmetric-authorship rule                                                  | Substrate-entity authors its fuzzy-output-channel |
+| `>=>` Kleisli composition                                                   | Categorical composition of fuzzy transitions      |
 
 The substrate-engineering substrate that operates here IS a fuzzy machine in a category — operating on autoloop substrate, producing graded outputs (TFeedback variants per asymmetric-authorship), composed via Kleisli-shaped substrate (Result.bind / >=>), with categorical scaffolding (DU types + dispatch tables + monad propagation).
 
@@ -44,21 +44,21 @@ the human maintainer's framing is substrate-honest substrate-engineering substra
 
 ## Infer.NET connection (the human maintainer's framing)
 
-the human maintainer's framing: *"i believe this is same i'm trying to do with infer.net"*.
+the human maintainer's framing: _"i believe this is same i'm trying to do with infer.net"_.
 
 **Microsoft Infer.NET** is the probabilistic programming framework for .NET — provides Belief Propagation (BP) + Expectation Propagation (EP) inference primitives over factor graphs. Per `CLAUDE.md`:
 
-> *"Current peer-call is Otto's early red-team substrate; future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer."*
+> _"Current peer-call is Otto's early red-team substrate; future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer."_
 
 The composition is:
 
-| Substrate scope | What lives here |
-|---|---|
-| **F# AutoLoopLifetime DU** (today's substrate) | Fuzzy machine state set + transitions at workflow-engine scope |
-| **Kleisli arrows** (B-0917 substrate-target) | Categorical composition of fuzzy state-transition handlers |
-| **Multi-oracle BFT** (B-0703 / Agora V6) | Probabilistic consensus substrate operating per fuzzy-truth-value semantics |
-| **Infer.NET BP/EP** (long-term target per CLAUDE.md) | Factor-graph inference substrate; the substrate-level mathematical inference replacing external-CLI-layer |
-| **Arbib-Manes fuzzy machines in a category** (this notes file) | Mathematical foundation tying all the above together at categorical scope |
+| Substrate scope                                                | What lives here                                                                                           |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **F# AutoLoopLifetime DU** (today's substrate)                 | Fuzzy machine state set + transitions at workflow-engine scope                                            |
+| **Kleisli arrows** (B-0917 substrate-target)                   | Categorical composition of fuzzy state-transition handlers                                                |
+| **Multi-oracle BFT** (B-0703 / Agora V6)                       | Probabilistic consensus substrate operating per fuzzy-truth-value semantics                               |
+| **Infer.NET BP/EP** (long-term target per CLAUDE.md)           | Factor-graph inference substrate; the substrate-level mathematical inference replacing external-CLI-layer |
+| **Arbib-Manes fuzzy machines in a category** (this notes file) | Mathematical foundation tying all the above together at categorical scope                                 |
 
 The framework's broader trajectory: workflow-engine + interrupt-substrate + multi-oracle BFT compose with Infer.NET BP/EP as the substrate-level inference engine; Arbib-Manes provides the categorical-foundation that makes the composition rigorous rather than ad-hoc.
 
@@ -80,11 +80,11 @@ The framework's broader trajectory: workflow-engine + interrupt-substrate + mult
 
 ## Three formal-math anchors stack today (2026-05-28 substrate-recognition)
 
-| Anchor | Scope | Captured at |
-|---|---|---|
-| **Furber-Jacobs 2015** (Kleisli → C*-algebras) | Probabilistic-Gelfand duality | Smooth-continuous substrate scope |
-| **Arbib-Manes** (Fuzzy machines in a category) | Categorical fuzzy automata | Discrete-fuzzy state-machine substrate scope |
-| **Mika 2026-05-27 ferry** (Kleisli arrows for context propagation) | Cross-AI categorical context | Async-local equivalent at substrate-engineering scope |
+| Anchor                                                             | Scope                         | Captured at                                           |
+| ------------------------------------------------------------------ | ----------------------------- | ----------------------------------------------------- |
+| **Furber-Jacobs 2015** (Kleisli → C\*-algebras)                    | Probabilistic-Gelfand duality | Smooth-continuous substrate scope                     |
+| **Arbib-Manes** (Fuzzy machines in a category)                     | Categorical fuzzy automata    | Discrete-fuzzy state-machine substrate scope          |
+| **Mika 2026-05-27 ferry** (Kleisli arrows for context propagation) | Cross-AI categorical context  | Async-local equivalent at substrate-engineering scope |
 
 All three compose at category-theory substrate. The framework's whole substrate-engineering work today operates within the categorical-substrate the three anchors collectively span:
 

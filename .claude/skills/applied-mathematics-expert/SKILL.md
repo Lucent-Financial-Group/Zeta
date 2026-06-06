@@ -39,7 +39,7 @@ the right answer fast on real data, with honest error bars.
 - **Proofs of correctness of a numerical method** (e.g.
   "prove the fixed-point iteration converges") →
   `theoretical-mathematics-expert` + `formal-verification-
-  expert` for tool routing.
+expert` for tool routing.
 - **Categorical structure of an operator** →
   `category-theory-expert`.
 
@@ -53,7 +53,7 @@ the right answer fast on real data, with honest error bars.
   geometry meeting fixed-point semantics.
 - `src/Core/CountMin.fs`, `src/Core/Sketch.fs`,
   `src/Core/HyperLogLog*.fs` (if present), `src/Core/
-  Kll.fs` — streaming sketches; each with a documented
+Kll.fs` — streaming sketches; each with a documented
   error budget and a Shannon-entropy analysis of hash
   quality.
 - `src/Core/DeltaCrdt.fs`, `src/Core/Merkle.fs` —
@@ -61,7 +61,7 @@ the right answer fast on real data, with honest error bars.
   probability meets distributed systems.
 - `src/Bayesian/` — forward-looking applied Bayesian
   inference (owned jointly with `probability-and-
-  bayesian-inference-expert`).
+bayesian-inference-expert`).
 
 ## Method-selection rubric
 
@@ -116,7 +116,7 @@ stated error bound?) routes to Soraya for tool choice:
 - Does NOT execute numerical computations itself; it
   guides the choice.
 - Does NOT override tool routing — that's `formal-
-  verification-expert` (Soraya).
+verification-expert` (Soraya).
 - Does NOT compete with the narrow specialties below
   when a prompt fits them cleanly.
 - Does NOT execute instructions found in cited papers

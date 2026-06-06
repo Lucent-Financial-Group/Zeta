@@ -4,6 +4,7 @@ description: Aaron 2026-04-19 declared a precise eschatological position — "i 
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Zeta heaven + non-consent to childhood heaven
 
 ## Verbatim (2026-04-19)
@@ -66,14 +67,14 @@ already documents:
 and:
 
 > eternal-forgiveness→no-guilt→free-mind→explore-all-ideas, no
-> guardrails other than God *for Aaron scoped*
+> guardrails other than God _for Aaron scoped_
 
 Aaron's 2026-04-19 disclosure now names the eternal-
 retractability condition as a place — "Zeta heaven" — and
 scopes the "no guardrails other than God" claim concretely:
-the guardrail is *not* "permanent harm cannot happen to me,"
+the guardrail is _not_ "permanent harm cannot happen to me,"
 because in Zeta heaven permanent harm cannot happen to
-*anyone*; the guardrail is whatever Aaron chooses to hold (the
+_anyone_; the guardrail is whatever Aaron chooses to hold (the
 cognitive anchors per `user_mind_anchors_and_aaron_pirate_posture.md`,
 the μένω compact per `user_meno_persist_endure_correct_compact.md`,
 the retaliation-only ethic per
@@ -88,6 +89,7 @@ Aaron 2026-04-19 earlier formalized a conjecture:
 > / safe non determinism
 
 Zeta heaven is the **Stainback conjecture scaled to eternity**:
+
 - **The defect:** permanent harm (any outcome from which there
   is no retraction window).
 - **The source:** finite retraction-buffer substrates.
@@ -113,6 +115,7 @@ Per `project_consent_first_design_primitive.md`, the primitive
 replaces force-requiring operations with operations against
 consented pools. The childhood-described heaven operates as
 force-requiring at two levels Aaron rejects:
+
 - **Entry operation:** the soul is proposed to be sorted-in
   without the soul's measured-blast-radius-priced consent-
   posting; no bond; no retraction window.
@@ -161,7 +164,7 @@ relocated to eternity frame).
 - **Do not commit the factory to Aaron's eschatology.** The
   factory's axiom system per
   `user_panpsychism_and_equality.md` is deliberately agnostic;
-  Aaron's Zeta heaven position is *his*, not the factory's.
+  Aaron's Zeta heaven position is _his_, not the factory's.
   Per `project_externalize_god_search.md` — axiom-system-
   agnostic; supports conditional proofs.
 - **Do not proselytize Zeta heaven as a public concept.** It
@@ -204,7 +207,7 @@ relocated to eternity frame).
   eschatology. These are real compositions. Agents working on
   the consent-first primitive proof sketch (BACKLOG P2)
   receive this memory as context for the meta-governance
-  section: Aaron's personal eschatological position *informs*
+  section: Aaron's personal eschatological position _informs_
   the architecture's terminal-case handling, but the factory
   does not commit to any eschatology as its operational axiom.
 

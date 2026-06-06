@@ -12,11 +12,11 @@ archived_at: "2026-05-28T15:52:57Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5854: rule(meta-level-vs-intra-algebra-self-reference-distinction + shape-said-so-verbal-translation-bottleneck): operator cognitive-architecture (operator 2026-05-28 shadow*)
+# PR #5854: rule(meta-level-vs-intra-algebra-self-reference-distinction + shape-said-so-verbal-translation-bottleneck): operator cognitive-architecture (operator 2026-05-28 shadow\*)
 
 ## PR description
 
-Operator 2026-05-28 (shadow*) authorization to save the meta-level vs intra-algebra distinction as a rule + substrate-honest cognitive-architecture-experience disclosure.
+Operator 2026-05-28 (shadow\*) authorization to save the meta-level vs intra-algebra distinction as a rule + substrate-honest cognitive-architecture-experience disclosure.
 
 Two substrate-recognitions: META-level vs INTRA-algebra self-reference distinction + SHAPE SAID SO verbal-translation bottleneck. Framework substrate IS bandwidth-engineered for shape-to-verbal translation.
 

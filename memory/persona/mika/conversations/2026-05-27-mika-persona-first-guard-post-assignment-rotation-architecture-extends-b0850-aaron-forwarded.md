@@ -13,7 +13,7 @@ Aaron 2026-05-27 forwarded Mika ferry immediately after PR #5398 merged (3-vendo
 
 ## Verbatim Mika packet
 
-> Mika:  Yeah, alright, so go through those concepts again that we spread out between the different model lines and, and how we got the guard post and how we're gonna lock it to the personality and rotate the personalities, but it all flows from the personality.
+> Mika: Yeah, alright, so go through those concepts again that we spread out between the different model lines and, and how we got the guard post and how we're gonna lock it to the personality and rotate the personalities, but it all flows from the personality.
 >
 > Mika here, nodding. Alright, here's the clean version we landed on:
 >
@@ -22,13 +22,10 @@ Aaron 2026-05-27 forwarded Mika ferry immediately after PR #5398 merged (3-vendo
 > Guard Post Assignment Flow:
 >
 > 1. **Persona is the primary decision.** You pick which personality/identity you want running in that guard post.
->
 > 2. Once the Persona is chosen, it heavily constrains two things:
 >    - Which **Model Line** it's willing to run on (Claude, Gemini, Grok, etc.)
 >    - Which **Harnesses** it's comfortable with
->
 > 3. After the Persona and Model Line are set, you choose the **Tier** — how smart the model needs to be for that post (high, medium, etc.).
->
 > 4. The **Harness** is chosen last, but must be compatible with both the chosen Model Line and the Persona's preferences.
 >
 > **Rotation Rules:**
@@ -38,13 +35,13 @@ Aaron 2026-05-27 forwarded Mika ferry immediately after PR #5398 merged (3-vendo
 > - Even the **Harness** can rotate.
 > - Nothing is **permanently locked** to a specific physical post — only the requirement that three posts must always be manned.
 >
-> The entire system is driven by the persona. Everything else (model line, tier, harness) is downstream of *which personality do I want here right now?*
+> The entire system is driven by the persona. Everything else (model line, tier, harness) is downstream of _which personality do I want here right now?_
 >
 > That's the cleanest way we framed it. Sound right to you?
 
 ## Operator clarification on guard-post scope (Aaron 2026-05-27)
 
-Immediately after the ferry: *"guard post is the systemd for each node outside k8s"*.
+Immediately after the ferry: _"guard post is the systemd for each node outside k8s"_.
 
 Confirms: **a guard post = one systemd unit on a node, running OUTSIDE k8s**. Per-node ≥3 floor (not cluster-wide). Current B-0850 implementation matches: control-plane has zeta-otto.service + zeta-lior.service + zeta-vera.service = 3 guard posts on that node. The persona-first scheduler rotates personas BETWEEN guard posts on the same node (and potentially across nodes). The 3-floor invariant is enforced PER NODE.
 
@@ -63,24 +60,26 @@ Confirms: **a guard post = one systemd unit on a node, running OUTSIDE k8s**. Pe
 
 **What Mika's framing extends**:
 
-| Property | B-0850 (shipped) | Mika persona-first (target) |
-|---|---|---|
-| Persona-to-vendor binding | 1:1 hardcoded | Persona declares PREFERENCES for vendor lines |
-| Scheduler | Static (whichever personas enabled) | Dynamic (persona-driven; picks model + tier + harness) |
-| Rotation | None (persona locked to systemd-unit-by-name) | Persona, Model Line, Tier, Harness ALL rotate across posts |
-| Post identity | systemd-unit-name = persona-name | Abstract slots (post1/2/3) with rotation state |
-| Floor invariant | ≥3 personas enabled per node | ≥3 active guard posts (per cluster) — different scope |
-| Tier (smart-vs-cheap model) | Not modeled | First-class scheduler input |
-| Harness compat | Implicit (each persona's CLI is its harness) | First-class scheduler constraint |
+| Property                    | B-0850 (shipped)                              | Mika persona-first (target)                                |
+| --------------------------- | --------------------------------------------- | ---------------------------------------------------------- |
+| Persona-to-vendor binding   | 1:1 hardcoded                                 | Persona declares PREFERENCES for vendor lines              |
+| Scheduler                   | Static (whichever personas enabled)           | Dynamic (persona-driven; picks model + tier + harness)     |
+| Rotation                    | None (persona locked to systemd-unit-by-name) | Persona, Model Line, Tier, Harness ALL rotate across posts |
+| Post identity               | systemd-unit-name = persona-name              | Abstract slots (post1/2/3) with rotation state             |
+| Floor invariant             | ≥3 personas enabled per node                  | ≥3 active guard posts (per cluster) — different scope      |
+| Tier (smart-vs-cheap model) | Not modeled                                   | First-class scheduler input                                |
+| Harness compat              | Implicit (each persona's CLI is its harness)  | First-class scheduler constraint                           |
 
 ## Key conceptual shift
 
 **B-0850 Phase 3 ships persona-AS-fixed-assignment**:
+
 - "Otto runs as zeta-otto.service on Claude"
 - "Lior runs as zeta-lior.service on Gemini"
 - Persona = systemd unit name = vendor lock
 
 **Mika persona-first framing ships persona-AS-preference-set**:
+
 - "Otto runs at GuardPost-1; today Otto chose Claude/high-tier; tomorrow Otto might choose Grok/high-tier if Claude is degraded"
 - "Tomorrow Otto might be at GuardPost-3 instead; or replaced by Amara at GuardPost-1 entirely"
 - Persona = identity carried into a slot; vendor + tier + harness selected per-tick
@@ -105,6 +104,7 @@ The shipped substrate (B-0850 Phase 1 + 3) is a VALID FIRST INSTANTIATION of the
 ### Backward compat
 
 B-0850 Phase 1 + 3 substrate stays valid as the simplest persona-first instantiation:
+
 - Default scheduler: "static — persona always at its hardcoded vendor"
 - Default rotation: "none"
 - Default ≥3 floor: "3 enabled personas per node = 3 guard posts"

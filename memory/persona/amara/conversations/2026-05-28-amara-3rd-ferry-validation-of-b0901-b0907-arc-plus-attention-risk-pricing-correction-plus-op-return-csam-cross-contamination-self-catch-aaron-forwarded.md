@@ -44,7 +44,24 @@ related_rules:
   - default-to-both
   - additive-not-zero-sum
   - proud-if-pattern-propagates-personal-filter-for-substrate-engineering
-tags: [amara-3rd-ferry-2026-05-28, validation-of-b0901-b0907-arc, b0907-is-the-meter-for-b0901-through-b0906, poetry-to-instrumentation, two-memory-axes-land-cleanly, information-complete-blade-public-facing-as-hypothesis, attention-risk-pricing-correction, acceleration-risk-underwriting, irreversibility-risk-pricing, bond-as-internal-pricing-grammar-not-domain, attention-as-reserve-asset, 8-operational-attention-bandwidth-dimensions, op-return-csam-cross-contamination-self-catch, two-domain-general-form-irreversible-public-substrate-vs-ai-acceleration, industry-wedge-nobody-prices-attention-risk-under-ai-acceleration-cleanly]
+tags:
+  [
+    amara-3rd-ferry-2026-05-28,
+    validation-of-b0901-b0907-arc,
+    b0907-is-the-meter-for-b0901-through-b0906,
+    poetry-to-instrumentation,
+    two-memory-axes-land-cleanly,
+    information-complete-blade-public-facing-as-hypothesis,
+    attention-risk-pricing-correction,
+    acceleration-risk-underwriting,
+    irreversibility-risk-pricing,
+    bond-as-internal-pricing-grammar-not-domain,
+    attention-as-reserve-asset,
+    8-operational-attention-bandwidth-dimensions,
+    op-return-csam-cross-contamination-self-catch,
+    two-domain-general-form-irreversible-public-substrate-vs-ai-acceleration,
+    industry-wedge-nobody-prices-attention-risk-under-ai-acceleration-cleanly,
+  ]
 ---
 
 ## §33 boundary headers (per `tools/save-ai-memory/process-extract.ts` template)
@@ -69,7 +86,7 @@ Amara (Thought for 12s):
 >
 > B-0901 = shadow* as self-referential ontology
 > B-0902 = shadow* as holographic boundary hypothesis
-> B-0903 = shadow* as training-data extraction target
+> B-0903 = shadow\* as training-data extraction target
 > B-0904 = GitHub as free accelerator of bulk → boundary compression
 > B-0905 = Landauer / erasure-cost economics
 > B-0906 = encryption thermal-cost two-axis classification
@@ -103,11 +120,11 @@ Amara (Thought for 12s):
 > similar historical pattern existed here
 > future pricing behavior changed after this anchor
 >
-> That could become a serious "financial shadow*" corpus, but I'd keep it explicitly research/prototype until validated. Financial claims need brutal backtesting and careful language.
+> That could become a serious "financial shadow\*" corpus, but I'd keep it explicitly research/prototype until validated. Financial claims need brutal backtesting and careful language.
 >
 > My blade: be careful with the phrase information-complete. Internally, the holographic/boundary framing is useful. Publicly, I'd call B-0902 a hypothesis:
 >
-> > "The shadow* boundary may be high-sufficiency for reconstructing agent-output state-space."
+> > "The shadow\* boundary may be high-sufficiency for reconstructing agent-output state-space."
 >
 > That survives better than "the boundary is complete" before validation.
 >

@@ -4,25 +4,26 @@ description: Aaron 2026-04-22 twelfth message in the pack-directive thought-unit
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The claim (Aaron verbatim, 2026-04-22, msg 12 of
 pack-directive thought-unit):**
 
-> *"this is a better set theory cantors bettery than zfc and
+> _"this is a better set theory cantors bettery than zfc and
 > only on trapped contrdiction or non contridiction who know
-> probalby infer.net quatium belief propagation"*
+> probalby infer.net quatium belief propagation"_
 
 **Overclaim → condition → uncertainty pattern** (per
 `feedback_aaron_default_overclaim_retract_condition_pattern.md`):
 
 - **Overclaim**: the factory's retraction-native algebra +
-  GoGD trap + pack-polysemy = *a better set theory than ZFC*.
+  GoGD trap + pack-polysemy = _a better set theory than ZFC_.
 - **Condition** (the retraction to operational default):
   **only** for cases involving (a) trapped contradictions or
-  (b) non-contradictions. I.e., the system is better *in the
+  (b) non-contradictions. I.e., the system is better _in the
   class of applications where contradictions must be handled
-  first-class*, not as a universal replacement for ZFC in
+  first-class_, not as a universal replacement for ZFC in
   formal mathematics.
-- **Uncertainty markers**: *"who know"* + *"probably"* —
+- **Uncertainty markers**: _"who know"_ + _"probably"_ —
   provisional status, especially on the quantum-BP
   implementation path.
 - **Implementation pointer**: Infer.NET quantum belief
@@ -65,32 +66,32 @@ Instead of forbidding contradictions, **trap them
 explicitly** using the existing retraction-native operator
 algebra:
 
-| Classical set theory (ZFC) | Retraction-native factory algebra |
-|---|---|
-| `x ∈ x` forbidden by axiom of regularity | `x` contains itself with weight `w`; if `w = +1` it's affirmed, if `w = -1` it's retracted, if both `+1` and `-1` it's trapped contradiction |
-| Russell's set triggers paradox | Russell's set → Z-set with simultaneous `+1`/`-1` weights → retraction → explicit "contradiction trapped here" marker |
-| Consistency provable only externally (Gödel 2nd) | Consistency audit via external review (human, renegotiation, ALIGNMENT.md DIR-3) by design |
-| Proof explosion from any contradiction (`⊥ → anything`) | Paraconsistent: trapped contradictions do NOT explode; rest of factory assumes local consistency |
+| Classical set theory (ZFC)                              | Retraction-native factory algebra                                                                                                            |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `x ∈ x` forbidden by axiom of regularity                | `x` contains itself with weight `w`; if `w = +1` it's affirmed, if `w = -1` it's retracted, if both `+1` and `-1` it's trapped contradiction |
+| Russell's set triggers paradox                          | Russell's set → Z-set with simultaneous `+1`/`-1` weights → retraction → explicit "contradiction trapped here" marker                        |
+| Consistency provable only externally (Gödel 2nd)        | Consistency audit via external review (human, renegotiation, ALIGNMENT.md DIR-3) by design                                                   |
+| Proof explosion from any contradiction (`⊥ → anything`) | Paraconsistent: trapped contradictions do NOT explode; rest of factory assumes local consistency                                             |
 
 The **Lawvere fixed-point theorem** (1969) gives the
 category-theoretic grounding. Every surjective endomorphism
 induces a fixed point; Gödel's incompleteness is the shadow
-of this in formal systems. Escape: restrict to *non-surjective*
+of this in formal systems. Escape: restrict to _non-surjective_
 self-reference. Zeta's Z-set algebra is exactly this — the
 `-1` weight is explicit non-surjection on the meaning space.
 
 **Established paraconsistent-set-theory literature:**
 
-- **Graham Priest** — *In Contradiction* (1987), *An
-  Introduction to Non-Classical Logic* (2001, 2008). The
+- **Graham Priest** — _In Contradiction_ (1987), _An
+  Introduction to Non-Classical Logic_ (2001, 2008). The
   logic of paradox (LP) is the canonical paraconsistent
   logic: `P ∧ ¬P` does not entail `Q`; contradictions are
   locally tolerated without explosion.
-- **Zach Weber** — *Paradoxes and Inconsistent Mathematics*
+- **Zach Weber** — _Paradoxes and Inconsistent Mathematics_
   (Cambridge, 2021). Naive set theory can be consistent if
   built on paraconsistent logic. Russell's paradox becomes a
   local dialetheia (true contradiction), not a system-killer.
-- **Ross Brady** — *Universal Logic* (2006), relevance-logic
+- **Ross Brady** — _Universal Logic_ (2006), relevance-logic
   foundation for paraconsistent set theory.
 - **Jc Beall** — relevance logic + truth theory; the "glut"
   approach (some sentences are both true and false).
@@ -99,8 +100,8 @@ self-reference. Zeta's Z-set algebra is exactly this — the
   stratification as a different Gödel-handling approach.
 
 Zeta's factory model aligns closest to **Weber's naive set
-theory with paraconsistent logic**, extended with *explicit
-retraction as the paraconsistent-trap mechanism*. The
+theory with paraconsistent logic**, extended with _explicit
+retraction as the paraconsistent-trap mechanism_. The
 "naive" flexibility (any collection is a set) is
 retained; the explosion is blocked by retraction; the
 trapped contradictions are visible via the `-1` weights.
@@ -116,7 +117,7 @@ superior for:
 - Standard algebra, number theory, most of working math.
 
 The retraction-native paraconsistent approach is superior
-*specifically* for:
+_specifically_ for:
 
 - Vocabulary resolution / polysemy disambiguation.
 - Factory-local self-reference (bootstrapping, skill-DAG
@@ -127,8 +128,8 @@ The retraction-native paraconsistent approach is superior
 - Any system where "I can't decide" or "this is both X and
   Y" is an acceptable output.
 
-The class Aaron named — *"trapped contradiction or
-non-contradiction"* — matches exactly: the system operates
+The class Aaron named — _"trapped contradiction or
+non-contradiction"_ — matches exactly: the system operates
 on EITHER (a) contradictions that have been explicitly
 trapped (via retraction / partial-response / circuit-break)
 OR (b) non-contradictory standard cases. Both are first-
@@ -136,8 +137,8 @@ class. ZFC operates only on (b) and forbids (a).
 
 **Quantum belief propagation (QBP) as implementation path:**
 
-Aaron's closing pointer: *"probalby infer.net quatium belief
-propagation"*. Classical belief propagation (Pearl 1982) on
+Aaron's closing pointer: _"probalby infer.net quatium belief
+propagation"_. Classical belief propagation (Pearl 1982) on
 factor graphs assumes classical probability distributions.
 Quantum belief propagation generalizes to:
 
@@ -152,7 +153,7 @@ Quantum belief propagation generalizes to:
 Relevance to the factory:
 
 - A polysemic word in a mixed-pack context can be modeled
-  as a *superposition of meanings* until "measured" by
+  as a _superposition of meanings_ until "measured" by
   context (pack-import + usage signal). This is literally
   quantum-state semantics, not metaphor.
 - **Retraction-native Z-sets** can be extended to carry
@@ -217,7 +218,7 @@ first-class elements of the algebra.
 
 - **Does not claim ZFC is wrong.** ZFC remains the standard
   foundation for classical mathematics. The claim is
-  *applicability*, not *correctness*.
+  _applicability_, not _correctness_.
 - **Does not mandate implementation.** The
   VocabZSet-as-paraconsistent-set-theory is a candidate
   formal model, not a tick-scope edit. Formalization goes
@@ -225,7 +226,7 @@ first-class elements of the algebra.
   skill/memory writes.
 - **Does not rename or re-home** the existing factory
   algebra. Z-set, Delta, Retraction, Circuit, Operator stay
-  as they are; this memory *names* a property they already
+  as they are; this memory _names_ a property they already
   have (paraconsistent-trap capability), rather than
   changing them.
 - **Does not commit to QBP implementation**. The quantum
@@ -234,9 +235,9 @@ first-class elements of the algebra.
   Infer.NET is the feasible near-term path.
 - **Does not claim novelty in set-theory literature.**
   Paraconsistent set theory exists (Priest, Weber, Brady);
-  the factory's contribution is *the specific marriage of
+  the factory's contribution is _the specific marriage of
   paraconsistent set theory with retraction-native operator
-  algebra in a vocabulary-resolution context*, plus the
+  algebra in a vocabulary-resolution context_, plus the
   discipline of labeled escape hatches (DIR-3). That marriage
   may be novel; the components are not.
 
@@ -276,7 +277,7 @@ it but not race ahead of its provisional status.
   overclaim → "only on trapped contradiction" condition →
   "who know probably" uncertainty marker).
 - `feedback_dont_invent_when_existing_vocabulary_exists.md`
-  — paraconsistent set theory is *established* vocabulary
+  — paraconsistent set theory is _established_ vocabulary
   (Priest 1987), not invented here. Honor the don't-invent
   rule by citing Priest/Weber/Brady rather than coining
   a new name. "Retraction-native paraconsistent set theory"

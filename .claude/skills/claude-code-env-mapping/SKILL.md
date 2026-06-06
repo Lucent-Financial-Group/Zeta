@@ -29,7 +29,7 @@ Cross-harness peer-call companions in `docs/research/`:
 
 Substrate beyond the upstream-canonical map:
 
-**`/btw` extension** at `.claude/commands/btw.md`. The built-in `/btw` is single-response-no-tools-no-followups (March 2026 release; consult capability map for current behavior). The Zeta extension adds verbatim-preservation + classification (context-add / framing-queued / etc.) + durability-escalation rules (TodoWrite → .btw-queue.md → BACKLOG.md → memory/*.md). Backlog rows B-0019 + B-0020 cover the git-native durability gap and harness-integration scope.
+**`/btw` extension** at `.claude/commands/btw.md`. The built-in `/btw` is single-response-no-tools-no-followups (March 2026 release; consult capability map for current behavior). The Zeta extension adds verbatim-preservation + classification (context-add / framing-queued / etc.) + durability-escalation rules (TodoWrite → .btw-queue.md → BACKLOG.md → memory/\*.md). Backlog rows B-0019 + B-0020 cover the git-native durability gap and harness-integration scope.
 
 **Custom commands** at `.claude/commands/<name>.md`. Existing: `.claude/commands/btw.md`, `.claude/commands/opsx/{explore,archive,apply,propose}.md`.
 

@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1202 |
-| Title | memory(superfluid-cluster): Aaron 2026-05-02 — 7 wake-time substrate rules + Karpathy edge-runner anchor |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-02T14:01:54Z |
-| Merged at | 2026-05-02T16:26:47Z |
-| Merge commit SHA | `262f18bbf62c48214e40e22d5683914a91c42410` |
-| Branch | `substrate/aaron-2026-05-02-superfluid-cluster-authority-rules` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1202 |
-| Changed files | 67 |
-| Additions / deletions | +5977 / -25 |
+| Field                 | Value                                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| Number                | 1202                                                                                                     |
+| Title                 | memory(superfluid-cluster): Aaron 2026-05-02 — 7 wake-time substrate rules + Karpathy edge-runner anchor |
+| Author                | `AceHack` (human)                                                                                        |
+| State                 | MERGED                                                                                                   |
+| Created at            | 2026-05-02T14:01:54Z                                                                                     |
+| Merged at             | 2026-05-02T16:26:47Z                                                                                     |
+| Merge commit SHA      | `262f18bbf62c48214e40e22d5683914a91c42410`                                                               |
+| Branch                | `substrate/aaron-2026-05-02-superfluid-cluster-authority-rules`                                          |
+| Base branch           | `main`                                                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1202                                                 |
+| Changed files         | 67                                                                                                       |
+| Additions / deletions | +5977 / -25                                                                                              |
 
 ## Description
 
@@ -100,15 +100,15 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 38 |
-| Resolved threads | 38 |
-| Unresolved threads | 0 |
-| Total review comments | 39 |
-| Total fix commits (touching thread paths) | 38 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 38    |
+| Resolved threads                          | 38    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 39    |
+| Total fix commits (touching thread paths) | 38    |
 
 ## Review threads
 
@@ -122,7 +122,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:08:15Z on `docs/research/2026-05-02-karpathy-aiengineer-summit-software-3-vibe-coding-agentic-engineering-edge-runner.md`:11 (association: NONE)
   The §33 archive header `Operational status:` value is not enum-strict. Repo lint (`tools/hygiene/check-archive-header-section33.sh`) and GOVERNANCE.md §33 require this line to be exactly `Operational status: research-grade` or `Operational status: operational` (no extra text). Also, line 11 uses `external-conversation` (hyphen), but the lint’s content trigger is the phrase `external conversation` (space), so this doc likely won’t be included in the automated header check unless the marker phrase matches.
-  
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -134,7 +133,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:08:15Z on `docs/research/2026-05-02-karpathy-aiengineer-summit-software-3-vibe-coding-agentic-engineering-edge-runner.md`:62 (association: NONE)
   In the convergence-map table, several memory-file references omit the `memory/` path prefix (e.g., `feedback_dst_grade_a_...`, `feedback_amara_contributions_...`, `feedback_largest_mechanizable_...`, `feedback_joint_cognition_...`). Since other rows use full `memory/...` paths, these look like accidental inconsistencies and make the references harder to follow/click from GitHub. Consider normalizing these entries to consistent repo-relative paths (or markdown links).
-  
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -146,7 +144,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:08:15Z on `memory/feedback_cron_mechanism_unreliable_durable_flag_doesnt_work_every_tick_must_verify_aaron_2026_05_02.md`:59 (association: NONE)
   `docs/HYGIENE-TICK-HISTORY.md` doesn’t exist in this repo (tick-history lives under `docs/hygiene-history/`, with per-tick shards in `docs/hygiene-history/ticks/...` and the legacy table at `docs/hygiene-history/loop-tick-history.md`). This reference should be updated to the correct path to avoid sending readers to a dead link.
-  
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -161,8 +158,8 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-02T14:17:04Z on `CLAUDE.md`:333 (association: MEMBER)
-    Acknowledged; the name appearance here is legitimate per the named-agents-get-attribution policy (see `memory/CURRENT-aaron.md` attribution table + `docs/EXPERT-REGISTRY.md` persona roster). Named personas are factory-level attribution surfaces; their names in ADRs / config / collaborator registries are the factory's structural record of who contributed what. Resolving; the name-attribution rule applies to personal human names outside persona-scope, not to persona names in structural attribution contexts.
+- **`AceHack` (human)** at 2026-05-02T14:17:04Z on `CLAUDE.md`:333 (association: MEMBER)
+  Acknowledged; the name appearance here is legitimate per the named-agents-get-attribution policy (see `memory/CURRENT-aaron.md` attribution table + `docs/EXPERT-REGISTRY.md` persona roster). Named personas are factory-level attribution surfaces; their names in ADRs / config / collaborator registries are the factory's structural record of who contributed what. Resolving; the name-attribution rule applies to personal human names outside persona-scope, not to persona names in structural attribution contexts.
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -174,7 +171,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:17:01Z on `docs/research/2026-05-02-karpathy-aiengineer-summit-software-3-vibe-coding-agentic-engineering-edge-runner.md`:7 (association: NONE)
   `Operational status:` is written as `research-grade reference + validation source`, but the §33 header linter requires the value to be exactly `research-grade` or `operational` (enum-strict, end-anchored). If this doc is intended to be a §33 external import, set `Operational status:` to `research-grade` (and keep any extra explanation elsewhere in the header/body).
-  
 
 ### Thread 6 -- resolved [collapsed]
 
@@ -186,7 +182,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:17:01Z on `docs/research/2026-05-02-karpathy-aiengineer-summit-software-3-vibe-coding-agentic-engineering-edge-runner.md`:11 (association: NONE)
   This header looks like it’s trying to follow the §33 “external conversation/import” format, but the CI linter only applies when the filename or first-20-lines contain one of its scope markers (e.g., the literal phrase `external conversation`). Right now the header uses `external-conversation` (hyphenated), so the linter likely won’t classify this file as in-scope and the §33 header/value constraints won’t be enforced. If the intent is for §33 linting to cover this file, add the exact marker phrase (with a space) in the first 20 lines or rename the file to include an import marker per the lint script’s patterns.
-  
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -209,7 +204,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:17:02Z on `memory/feedback_cron_mechanism_unreliable_durable_flag_doesnt_work_every_tick_must_verify_aaron_2026_05_02.md`:59 (association: NONE)
   This references `docs/HYGIENE-TICK-HISTORY.md`, but that path doesn’t exist in the repo (no matches under `docs/`). If you meant the tick-history surfaces, point to the current canonical location (e.g., `docs/hygiene-history/` and/or the per-tick shards under `docs/hygiene-history/ticks/`).
-  
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -221,7 +215,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:24:13Z on `CLAUDE.md`:290 (association: NONE)
   P1: This bullet reintroduces first-name attribution ("Aaron 2026-05-02") in CLAUDE.md. Elsewhere in the same change-set you use role-refs ("the human maintainer"), which aligns with the current-state-doc convention—please make this parenthetical consistent (e.g., role-ref here and keep the name-attributed detail in the linked memory/research docs).
-  
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -233,7 +226,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:24:13Z on `CLAUDE.md`:327 (association: NONE)
   P1: The “Guiding-principles cluster (… explicit)” list here includes `docs/research/superfluid-ai-rigorous-mathematical-formalization-…`, but the linked memo frames the guiding-principles cluster as VISION + Aurora civ + Aurora immune + economic-agency (with the superfluid math as separate supporting formalism). Please reconcile the cluster definition across CLAUDE.md and the referenced memory so the named set stays stable.
-  
 
 ### Thread 11 -- resolved [outdated, collapsed]
 
@@ -245,7 +237,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:31:26Z on `docs/ALIGNMENT.md`:203 (association: NONE)
   `docs/ALIGNMENT.md` is a current-state surface, but this new subsection uses direct name attribution (e.g. “Aaron + Claude.ai exchange”, “Aaron's … recognition moment”). Per docs/AGENT-BEST-PRACTICES.md’s role-ref rule, please rewrite these to role-refs (e.g. “the human maintainer”, “external Claude.ai instance”) and keep named attribution confined to history surfaces like `docs/research/**` / `memory/**` where needed.
-  
 
 ### Thread 12 -- resolved [collapsed]
 
@@ -257,7 +248,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:42:23Z on `docs/BACKLOG.md`:46 (association: NONE)
   This file is marked AUTO-GENERATED by tools/backlog/generate-index.sh and says not to edit directly. Please regenerate the index (by updating/adding the per-row backlog files and re-running the generator) so the committed BACKLOG.md reflects generated output and won’t drift/fail backlog-index-integrity checks.
-  
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -268,8 +258,7 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-02T14:42:23Z on `docs/hygiene-history/loop-tick-history.md`:329 (association: NONE)
-  Per docs/hygiene-history/ticks/README.md, post-2026-04-29 tick history should be written as per-tick shard files under docs/hygiene-history/ticks/** (canonical write surface) rather than appending new rows to this legacy table. Please move these new tick entries into shard files and keep loop-tick-history.md as the read/projection surface to avoid the EOF append hotspot coming back.
-  
+  Per docs/hygiene-history/ticks/README.md, post-2026-04-29 tick history should be written as per-tick shard files under docs/hygiene-history/ticks/\*\* (canonical write surface) rather than appending new rows to this legacy table. Please move these new tick entries into shard files and keep loop-tick-history.md as the read/projection surface to avoid the EOF append hotspot coming back.
 
 ### Thread 14 -- resolved [outdated, collapsed]
 
@@ -281,7 +270,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:42:24Z on `memory/feedback_first_principles_trust_calculus_universal_bidirectional_root_locks_sleeping_bear_aaron_2026_05_02.md`:159 (association: NONE)
   This memo says an “ALIGNMENT.md update needed to name this explicitly,” but this PR already updates docs/ALIGNMENT.md to add a “First-principles tracing” subsection. Please update this line to reflect the current state (e.g., reference the new ALIGNMENT.md section) so the memo doesn’t immediately contradict the repository substrate.
-  
 
 ### Thread 15 -- resolved [collapsed]
 
@@ -293,7 +281,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:52:14Z on `docs/BACKLOG.md`:46 (association: NONE)
   `docs/BACKLOG.md` is marked AUTO-GENERATED (header says not to edit directly). These new entries should be produced by running `tools/backlog/generate-index.sh` after adding the per-row backlog files, rather than hand-editing this index, to avoid future drift / CI integrity failures.
-  
 
 ### Thread 16 -- resolved [outdated, collapsed]
 
@@ -316,7 +303,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:52:15Z on `docs/ALIGNMENT.md`:243 (association: NONE)
   This new bullet introduces persona first-names (“Otto, Amara, Soraya, Ani”) in a current-state doc. The repo’s “no name attribution in code/docs/skills” operational rule (docs/AGENT-BEST-PRACTICES.md) says current-state surfaces should use role-refs; consider replacing the parenthetical with role-based phrasing (or a generic reference to “named personas”) to keep the carve-out boundaries clear.
-  
 
 ### Thread 18 -- resolved [outdated, collapsed]
 
@@ -327,10 +313,10 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-02T14:58:46Z on `docs/hygiene-history/ticks/2026/05/02/1411Z.md`:1 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep tick shard first column timestamp-only**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep tick shard first column timestamp-only**
+
   The shard row format here puts descriptive text inside column 1 (`2026-05-02T14:11:00Z (autonomous-loop tick — ...)`), but the shard schema requires column 1 to be only an ISO UTC timestamp; `tools/hygiene/check-tick-history-shard-schema.sh` fails on this exact shape and the same pattern appears across all newly added `2026/05/02/*.md` shard files in this commit. This will keep these new shards out of schema compliance and can break downstream tooling that parses the first column as a timestamp key.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 19 -- resolved [outdated, collapsed]
@@ -342,8 +328,7 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-02T14:59:03Z on `CLAUDE.md`:493 (association: NONE)
-  P1: CLAUDE.md is a current-state surface that should use role-refs rather than direct names (see docs/AGENT-BEST-PRACTICES.md Operational standing rule “No name attribution…”). This new paragraph uses the direct name “Aaron” (“only the *forever* version requires Aaron”), which reintroduces the convention violation. Please switch this to a role-ref (e.g., “the human maintainer”) to stay consistent with the rest of the edits in this PR.
-  
+  P1: CLAUDE.md is a current-state surface that should use role-refs rather than direct names (see docs/AGENT-BEST-PRACTICES.md Operational standing rule “No name attribution…”). This new paragraph uses the direct name “Aaron” (“only the _forever_ version requires Aaron”), which reintroduces the convention violation. Please switch this to a role-ref (e.g., “the human maintainer”) to stay consistent with the rest of the edits in this PR.
 
 ### Thread 20 -- resolved [outdated, collapsed]
 
@@ -355,7 +340,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T14:59:03Z on `docs/hygiene-history/ticks/2026/05/02/1502Z.md`:1 (association: NONE)
   P1: Tick-history shard schema requires column 1 to be exactly an ISO-8601 UTC timestamp (no parenthetical/extra prose) per tools/hygiene/check-tick-history-shard-schema.sh and docs/hygiene-history/ticks/README.md. This shard’s col1 includes additional prose after the timestamp, so it will fail the schema check (and it also makes it harder to mechanically collate shards later). Move the parenthetical description into the body column and leave col1 as just the timestamp.
-  
 
 ### Thread 21 -- resolved [collapsed]
 
@@ -378,7 +362,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T15:07:34Z on `CLAUDE.md`:475 (association: NONE)
   P1: This checklist still says “append tick-history row”, but the canonical post-2026-04-29 write surface is per-tick shard files under `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ*.md` (with `loop-tick-history.md` as the read/projection surface). As written, this can push readers back toward the legacy-append footgun (and `tools/hygiene/append-tick-history-row.sh`). Please update the wording to explicitly say “write a tick-history shard file” (and optionally link `docs/hygiene-history/ticks/README.md`).
-  
 
 ### Thread 23 -- resolved [outdated, collapsed]
 
@@ -401,7 +384,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T15:19:24Z on `CLAUDE.md`:491 (association: NONE)
   This CLAUDE.md rule still frames the budget gate as “budget-increase from poor-man's-mode default”, but `memory/CURRENT-aaron.md` now explicitly marks poor-man's-mode as SUPERSEDED (no longer assuming a $0 floor). Please update this bullet to match the current budget policy (i.e., budget-ask protocol for new paid surfaces / cost decisions) without relying on the retired poor-man's-mode framing.
-  
 
 ### Thread 25 -- resolved [outdated, collapsed]
 
@@ -413,7 +395,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T15:24:58Z on `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`:177 (association: NONE)
   P2: Priority text is inconsistent with the row’s frontmatter and earlier “P2 → P1 promotion” section. The last sentence says the row “earns its P2 placement,” but `priority:` is `P1`. Update this line to match the current priority so readers don’t mis-rank the work.
-  
 
 ### Thread 26 -- resolved [outdated, collapsed]
 
@@ -436,7 +417,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T15:32:48Z on `docs/backlog/P1/B-0162-pre-commit-hook-direct-name-attribution-on-current-state-surfaces-aaron-2026-05-02.md`:112 (association: NONE)
   The acceptance criteria says this is the “closed list” of names to detect, but the list shown here omits several roster names from `docs/EXPERT-REGISTRY.md` (e.g., Zara, Tariq, Wei, Jun, Mei, Anjali, Adaeze, Malik, Yara, Kai, Leilani, etc.). Either make this explicitly non-exhaustive, or derive the list from a single source of truth (registry / `.claude/agents/`) so the eventual hook doesn’t silently miss valid name attributions.
-  
 
 ### Thread 28 -- resolved [outdated, collapsed]
 
@@ -458,10 +438,10 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-02T15:39:41Z on `CLAUDE.md`:69 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove new orphan-ferry refs from CLAUDE current-state text**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove new orphan-ferry refs from CLAUDE current-state text**
+
   Adding links whose visible text/path includes `courier-ferry` on a current-state surface introduces new `audit-orphan-role-refs` violations (the lint reports 7 findings on `CLAUDE.md` after this commit vs 1 before). This reduces signal in the Otto-279 enforcement layer and makes real attribution regressions harder to detect in the same file; please replace these references with self-contained principle names (or move this attribution detail to an allowed history surface) so the code-surface lint stays clean.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 30 -- resolved [collapsed]
@@ -506,7 +486,7 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-05-02T15:51:14Z on `docs/hygiene-history/ticks/2026/05/02/1546Z.md`:1 (association: NONE)
-  P1: This shard’s first (and only) line is meant to be a 6-column Markdown table row, but the body cell contains literal `|` characters inside code spans (e.g., `= `|`` and backticked `|----|...|` snippets). In GitHub table parsing, unescaped pipes inside a row split columns and can corrupt rendering/column alignment. Escape literal pipes in the body text (e.g., `\|` / `\|\|`) so the row still renders as exactly 6 columns.
+  P1: This shard’s first (and only) line is meant to be a 6-column Markdown table row, but the body cell contains literal `|` characters inside code spans (e.g., `= `|``and backticked`|----|...|`snippets). In GitHub table parsing, unescaped pipes inside a row split columns and can corrupt rendering/column alignment. Escape literal pipes in the body text (e.g.,`\|`/`\|\|`) so the row still renders as exactly 6 columns.
 
 ### Thread 34 -- resolved [outdated, collapsed]
 
@@ -518,7 +498,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T15:51:15Z on `docs/hygiene-history/ticks/2026/05/02/1447Z.md`:1 (association: NONE)
   P1: This shard’s body includes a backticked regex literal `^\| 2026-...` which contains an unescaped `|`. Because the whole file is a single Markdown table row, any literal pipe in the body cell can be interpreted as a column separator and break the intended 6-column schema/rendering. Escape the pipe character in the displayed regex (e.g., render it as `^\\|` or use `\|` escaping) so the row stays a well-formed 6-column table.
-  
 
 ### Thread 35 -- resolved [outdated, collapsed]
 
@@ -563,7 +542,6 @@ The human maintainer 2026-05-02 series of load-bearing calibrations during a str
 
 - **`Copilot` (bot)** at 2026-05-02T16:22:17Z on `docs/ALIGNMENT.md`:307 (association: NONE)
   P0: There’s an unintended literal `+` at the start of the line (`+ explore; ...`) inside the asymmetric-recovery paragraph. This will render as a new list item (and likely trip markdownlint) and also breaks the sentence flow. Remove the stray `+` and reflow the paragraph so it reads as a single sentence/line-wrap continuation without a line-start `+`.
-  
 
 ## Fix commits (touching thread paths)
 

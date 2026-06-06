@@ -5,8 +5,8 @@ type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-Aaron 2026-04-20: *"mix it up, you figure out what works
-best over time by look at real observations and data"*
+Aaron 2026-04-20: _"mix it up, you figure out what works
+best over time by look at real observations and data"_
 
 ## The rule
 
@@ -37,7 +37,7 @@ from the same session.
 ## How to apply
 
 - **When tempted to pin a cadence prescriptively**,
-  don't. Pin it as a *starting hypothesis* with a
+  don't. Pin it as a _starting hypothesis_ with a
   review checkpoint at ~5 invocations.
 - **Prefer adding instrumentation over tightening
   prescription.** Task #112 (skills-runtime audit) is
@@ -57,7 +57,7 @@ from the same session.
   rhetoric.
 - `user_relational_memory_not_episodic_dates.md` —
   Aaron holds structure, agents hold instrumentation
-  + dates + counts.
+  - dates + counts.
 - `project_factory_as_externalisation.md` —
   empirical-cadence is one dimension of "agents act
   at his resolution without being told".

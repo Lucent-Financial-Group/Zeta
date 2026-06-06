@@ -11,10 +11,7 @@ interface Fixture {
   vectors: Vector[];
 }
 
-const fixturePath = new URL(
-  "../../../tests/cross-verification/yaml/vectors.json",
-  import.meta.url,
-);
+const fixturePath = new URL("../../../tests/cross-verification/yaml/vectors.json", import.meta.url);
 const fixture = (await Bun.file(fixturePath).json()) as Fixture;
 const byId = new Map(fixture.vectors.map((v) => [v.id, v.yaml]));
 

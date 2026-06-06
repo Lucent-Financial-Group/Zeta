@@ -4,6 +4,7 @@ description: 2026-04-20 — Aaron: "i think this a specifc instance of the kind 
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Human backlog as dedicated artifact
 
 ## Rule
@@ -16,7 +17,7 @@ context by re-surfacing every conversation.
 The file is **git-native**, **free** (no SaaS), and
 **pluggable** (future plugin to Jira / Linear / custom
 board, but the git-native surface stays the default). It
-is the *human-facing* companion to `docs/BACKLOG.md` (which
+is the _human-facing_ companion to `docs/BACKLOG.md` (which
 is agent-facing).
 
 ## Aaron's verbatim statement (2026-04-20)
@@ -29,17 +30,17 @@ is agent-facing).
 
 Key substrings:
 
-- *"specifc instance"* — user-ask conflicts are one
+- _"specifc instance"_ — user-ask conflicts are one
   category; the general pattern is broader. The
   `docs/HUMAN-BACKLOG.md` artifact is the generalisation.
-- *"human backlog"* — Aaron's chosen term. Adopt it as-is.
-- *"a list of items that this project needs a human to
-  do"* — the scope. Not a list of what the agent plans to
-  do; a list of what the agent needs *from* the human.
-- *"i don't ahve to come ask"* — the UX goal is
+- _"human backlog"_ — Aaron's chosen term. Adopt it as-is.
+- _"a list of items that this project needs a human to
+  do"_ — the scope. Not a list of what the agent plans to
+  do; a list of what the agent needs _from_ the human.
+- _"i don't ahve to come ask"_ — the UX goal is
   pull-not-push. The human browses the backlog when they
   choose to; agents don't interrupt with individual asks.
-- *"look at the human backlog"* — the artifact is
+- _"look at the human backlog"_ — the artifact is
   expected to be a **place you go**, same UX shape as a
   GitHub Issues list or a Jira board.
 
@@ -120,12 +121,12 @@ Key substrings:
 
 ## Vibe-coding guardrail
 
-Aaron (2026-04-20, refinement): *"we should be careful
+Aaron (2026-04-20, refinement): _"we should be careful
 what ends up in the human backlog given the vibe coding
 containt, being we don't want users of this software
 factory to ever have to commit or write code or even
 markdown or anything themselfs, the primay UX is
-conversational and our cusotm UI"*.
+conversational and our cusotm UI"_.
 
 This pins the scope: rows describe **what a human must
 personally do at the human level** — decisions,
@@ -161,7 +162,7 @@ Consequences for category use:
 - **observation** — legitimate. Judgement calls the
   agent is not licensed to make.
 
-Categories that *would* have required human file-work
+Categories that _would_ have required human file-work
 are explicitly excluded — there are none. If a new
 category tempts the agent toward "human writes X"
 semantics, that's the signal to redesign the category.

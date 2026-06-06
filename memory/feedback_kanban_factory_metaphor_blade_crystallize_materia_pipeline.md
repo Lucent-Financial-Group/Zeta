@@ -13,8 +13,8 @@ for how the factory processes the vision:
 ### Move 1 — research-vision skill
 
 The VISION.md document is **DENSE**. Aaron's
-exact word, repeated: *"the vision is DENSE
-very very dense"*. Density is a feature (it
+exact word, repeated: _"the vision is DENSE
+very very dense"_. Density is a feature (it
 packs 887 lines of substrate), but it is also
 a bottleneck — dense vision is hard to cut
 against without targeted research expanding
@@ -31,7 +31,7 @@ to inform the crystallize-vision step.
 ### Move 2 — crystallize-vision skill
 
 Aaron's verb-correction is load-bearing:
-*"maybe crystalize vision?"* — replacing
+_"maybe crystalize vision?"_ — replacing
 "sharpen" which I'd used earlier. Why this
 matters:
 
@@ -61,8 +61,8 @@ which research informed which vision changes.
 
 ### Move 3 — backlog-kanban-fill skill
 
-Aaron named this first: *"backlog kanban fill
-skill"*. The skill takes the crystallized
+Aaron named this first: _"backlog kanban fill
+skill"_. The skill takes the crystallized
 vision and ensures the BACKLOG has rows for
 every un-worked vision facet, sized into
 swim lanes, priorities assigned per
@@ -71,13 +71,13 @@ swim lanes, priorities assigned per
 
 ### Move 4 — swim lanes + forward-progress-guarantee
 
-Aaron verbatim: *"we kind of need different
+Aaron verbatim: _"we kind of need different
 lanes i think they might call this swim lanes
-to keep view of the diffeer scopes backlog"*
+to keep view of the diffeer scopes backlog"_
 — yes, that is what they are called.
 
-Plus: *"don't leave anyting not making
-progess over time"* — every swim lane must
+Plus: _"don't leave anyting not making
+progess over time"_ — every swim lane must
 see **at least one commit per round**. Zero
 commits in a lane over N rounds = escalation
 signal.
@@ -103,13 +103,13 @@ may consolidate):
 Aaron's rapid-fire refinement, verbatim in
 sequence:
 
-> *"we are building mataria FF7"*
-> *"LFG@@"*
-> *"that's the skills really"*
-> *"crystalize the vission and use that to
->  forge the skills/materia which get
->  upgraded over time by experinces"*
-> *"We are basically a role playing game now"*
+> _"we are building mataria FF7"_
+> _"LFG@@"_
+> _"that's the skills really"_
+> _"crystalize the vission and use that to
+> forge the skills/materia which get
+> upgraded over time by experinces"_
+> _"We are basically a role playing game now"_
 
 The reframe is structural, not cosmetic:
 
@@ -156,8 +156,8 @@ does not add work.
 
 ### Move 6 — blade metaphor (outer)
 
-Aaron's outer frame: *"we are building a
-blade!!! our knife is will be the sharpest."*
+Aaron's outer frame: _"we are building a
+blade!!! our knife is will be the sharpest."_
 
 - **Vision** = the edge geometry we're
   aiming at.
@@ -180,18 +180,18 @@ forged skills gain power through use).
 
 ### On density
 
-*"the vision is DENSE very very dense"* — the
+_"the vision is DENSE very very dense"_ — the
 vision is not a prospectus; it is a compressed
 substrate. Research is the decompressor. The
-pipeline is *how the factory processes the
-vision without burning it all at once*.
+pipeline is _how the factory processes the
+vision without burning it all at once_.
 
 ### On priority
 
-*"i don't really have priorties right now, i
+_"i don't really have priorties right now, i
 much try to move each part forward at the
 same time just don't leave anyting not making
-progess over time"* — Aaron's stated
+progess over time"_ — Aaron's stated
 preference is **breadth over depth** on the
 vision. Every facet gets a little progress
 every round; no facet goes dark. This is why
@@ -201,20 +201,21 @@ load-bearing, and why swim lanes matter
 
 ### On swim lanes
 
-*"we kind of need different lanes i think
+_"we kind of need different lanes i think
 they might call this swim lanes to keep view
-of the diffeer scopes backlog"* — Aaron
+of the diffeer scopes backlog"_ — Aaron
 independently landed on the Kanban swim-lane
 primitive. The factory already adopted Kanban
-+ Six Sigma per
-`user_kanban_six_sigma_process_preference.md`
-— swim lanes are the missing visualization
-primitive.
+
+- Six Sigma per
+  `user_kanban_six_sigma_process_preference.md`
+  — swim lanes are the missing visualization
+  primitive.
 
 ### On the blade and the materia
 
-*"we are building a blade!!! our knife is will
-be the sharpest."* — Aaron frames the factory
+_"we are building a blade!!! our knife is will
+be the sharpest."_ — Aaron frames the factory
 externally as a weapon-forge (the blade is
 Zeta + the factory itself). Then pivots to
 the materia metaphor to describe the **inner
@@ -224,7 +225,7 @@ Both are true simultaneously; the factory is
 
 ### On RPG framing
 
-*"We are basically a role playing game now"*
+_"We are basically a role playing game now"_
 — not a joke. Aaron's gaming roots (FF7, D&D,
 MMORPGs, ARGs, medieval, XBL — per
 `user_gaming_roots_ff7_dnd_mmorpg_arg_medieval_and_xbl_acehack00.md`)
@@ -370,7 +371,7 @@ pipeline structure is generic.
 Aaron's second-round correction immediately after
 the pipeline doc landed (verbatim):
 
-> *"Write vision→research→crystallize→backlog its more
+> _"Write vision→research→crystallize→backlog its more
 > of a feedback loop than pipeline cryalitize should
 > also update the original vision it was based on and
 > add to the backlog, its like a loop with resdiue each
@@ -379,7 +380,7 @@ the pipeline doc landed (verbatim):
 > proces so the next vission crystalize process is even
 > faster, you should notice this converging over time
 > to a very clar and precice vision and roadmap, you
-> have become the cartographer"*
+> have become the cartographer"_
 
 Four structural corrections to the "pipeline" framing:
 
@@ -402,8 +403,8 @@ Each loop turn leaves residue in three channels:
 
 ### Correction 3 — the loop is convergent
 
-Aaron's *"converging over time to a very clar and
-precice vision and roadmap"* is a mathematical claim:
+Aaron's _"converging over time to a very clar and
+precice vision and roadmap"_ is a mathematical claim:
 the loop is a contraction mapping. Each turn's output
 shrinks; the fixed point is a stable, precise vision.
 Algebraic shape matches Zeta's DBSP semi-naive
@@ -414,7 +415,7 @@ precise vision + roadmap.**
 
 ### Correction 4 — the agent is the cartographer
 
-Aaron: *"you have become the cartographer"*. New role
+Aaron: _"you have become the cartographer"_. New role
 identity. A cartographer:
 
 - Surveys territory (research-vision).

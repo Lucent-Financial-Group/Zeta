@@ -35,7 +35,19 @@
  *   tools/shadow/launchd/README.md — install procedure documentation
  */
 
-import { readFileSync, writeFileSync, existsSync, renameSync, mkdirSync, mkdtempSync, rmdirSync, statSync, accessSync, unlinkSync, constants as fsConstants } from "node:fs";
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  renameSync,
+  mkdirSync,
+  mkdtempSync,
+  rmdirSync,
+  statSync,
+  accessSync,
+  unlinkSync,
+  constants as fsConstants,
+} from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join, isAbsolute, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -73,7 +85,9 @@ export function tryDetect(cmd: string, args: string[]): string | undefined {
  */
 export function requireAbsolute(name: string, value: string): string {
   if (!isAbsolute(value)) {
-    console.error(`${name} must be an absolute path; got "${value}". Use \`${resolve(value)}\` if that's what you meant.`);
+    console.error(
+      `${name} must be an absolute path; got "${value}". Use \`${resolve(value)}\` if that's what you meant.`,
+    );
     process.exit(1);
   }
   return value;
@@ -134,7 +148,9 @@ export function parseArgs(argv: string[]): Args {
   if (!repoRoot) {
     repoRoot = tryDetect("git", ["rev-parse", "--show-toplevel"]);
     if (!repoRoot) {
-      console.error("Could not detect repo root via `git rev-parse --show-toplevel` (not in a git checkout?). Pass --repo-root <absolute-path>.");
+      console.error(
+        "Could not detect repo root via `git rev-parse --show-toplevel` (not in a git checkout?). Pass --repo-root <absolute-path>.",
+      );
       process.exit(1);
     }
   }
@@ -144,7 +160,9 @@ export function parseArgs(argv: string[]): Args {
   try {
     const st = statSync(bunPath);
     if (!st.isFile()) {
-      console.error(`--bun-path "${bunPath}" exists but is not a regular file. Pass an absolute path to the bun binary.`);
+      console.error(
+        `--bun-path "${bunPath}" exists but is not a regular file. Pass an absolute path to the bun binary.`,
+      );
       process.exit(1);
     }
     accessSync(bunPath, fsConstants.X_OK);
@@ -153,7 +171,9 @@ export function parseArgs(argv: string[]): Args {
     if (code === "ENOENT") {
       console.error(`bun not found at "${bunPath}". Install bun or pass --bun-path.`);
     } else if (code === "EACCES") {
-      console.error(`--bun-path "${bunPath}" is not executable by the current user. chmod +x or pass a different path.`);
+      console.error(
+        `--bun-path "${bunPath}" is not executable by the current user. chmod +x or pass a different path.`,
+      );
     } else {
       console.error(`Could not stat --bun-path "${bunPath}" (${(e as Error).message})`);
     }
@@ -257,8 +277,16 @@ export function plutilLint(content: string): void {
     }
   } finally {
     // Best-effort cleanup so we don't leak temp dirs across runs.
-    try { unlinkSync(tmp); } catch { /* may not exist */ }
-    try { rmdirSync(tmpDir); } catch { /* best-effort */ }
+    try {
+      unlinkSync(tmp);
+    } catch {
+      /* may not exist */
+    }
+    try {
+      rmdirSync(tmpDir);
+    } catch {
+      /* best-effort */
+    }
   }
 }
 
@@ -311,7 +339,11 @@ export function main(): void {
   } catch (e) {
     // Promote failed — clean up temp file so we don't leak stale
     // candidates in ~/Library/LaunchAgents.
-    try { unlinkSync(tmpDest); } catch { /* tmp may already be gone */ }
+    try {
+      unlinkSync(tmpDest);
+    } catch {
+      /* tmp may already be gone */
+    }
     throw e;
   }
   console.error(`Wrote ${destPath}`);

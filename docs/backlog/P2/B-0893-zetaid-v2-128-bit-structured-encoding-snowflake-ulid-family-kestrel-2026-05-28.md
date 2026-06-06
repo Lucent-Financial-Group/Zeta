@@ -31,7 +31,7 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"if you imagine we have good actors right now and even zetaids that are unique 128 bit where part of the bits can repersent anyting like trajectories are personas as long as there is enough for time and randomness to not collide"*
+> _"if you imagine we have good actors right now and even zetaids that are unique 128 bit where part of the bits can repersent anyting like trajectories are personas as long as there is enough for time and randomness to not collide"_
 
 ## What this row tracks
 
@@ -76,7 +76,7 @@ This row is the GENERATOR ONLY. The branch-protection rules, agent-state branch 
 
 ## Substrate-honest framing
 
-POTENTIAL extension per operator 2026-05-28: *"all extension should be backloged and looked at as potential."* Not committed; not yet picked up. Filed for prioritization.
+POTENTIAL extension per operator 2026-05-28: _"all extension should be backloged and looked at as potential."_ Not committed; not yet picked up. Filed for prioritization.
 
 ## Full reasoning
 

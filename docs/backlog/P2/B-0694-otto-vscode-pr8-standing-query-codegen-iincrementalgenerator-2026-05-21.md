@@ -10,7 +10,17 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0692, B-0693]
 composes_with: [B-0635, B-0687, B-0688]
-tags: [standing-query-codegen, iincrementalgenerator, rewrite-circuit-expressions, fused-il, otto-vscode-pr-8, reaqtor-applied-to-dbsp, capstone, query-rewrite-across-rx-streams]
+tags:
+  [
+    standing-query-codegen,
+    iincrementalgenerator,
+    rewrite-circuit-expressions,
+    fused-il,
+    otto-vscode-pr-8,
+    reaqtor-applied-to-dbsp,
+    capstone,
+    query-rewrite-across-rx-streams,
+  ]
 type: research
 ---
 
@@ -20,7 +30,7 @@ type: research
 
 Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21 PR #8 — the capstone. Depends on PRs 1-7 substrate (capability tags + sink-terminality + checkBilinear + IncrementalAuto + FusionEngine + push-based + morsel-based).
 
-Aaron's architectural insight 2026-05-21 (the unifying capstone framing): *"delayed rx queires here would be hot so you'd have to store the data somewhere but you could query reqwrite across mutiple rx streams that connect to do auto fustion with generation at construction time and pay the costs once per incrmental compile maybe"*.
+Aaron's architectural insight 2026-05-21 (the unifying capstone framing): _"delayed rx queires here would be hot so you'd have to store the data somewhere but you could query reqwrite across mutiple rx streams that connect to do auto fustion with generation at construction time and pay the costs once per incrmental compile maybe"_.
 
 This is the **Reaqtor architecture applied to DBSP**. Reaqtor / RxJS-codegen / Materialize / Feldera all do variants of this. The Zeta application: DBSP circuits as typed expression trees → rewrite + codegen at Circuit.Build() → emit hand-tuned IL → pay codegen cost once per incremental compile, zero per-tick scheduler overhead.
 
@@ -166,6 +176,6 @@ Total: ~600 lines + significant Roslyn / F# compiler ecosystem integration. Coul
 
 ## Origin
 
-Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21 + Aaron's Rx-codegen-at-construction architectural insight from the same session. Filed via Otto-CLI per Aaron-approved shadow* "file the 3 rows for PRs 6-8" instruction.
+Otto-VSCode 8-PR algebra-capability-system campaign 2026-05-21 + Aaron's Rx-codegen-at-construction architectural insight from the same session. Filed via Otto-CLI per Aaron-approved shadow\* "file the 3 rows for PRs 6-8" instruction.
 
 The capstone framing: this row closes the loop the 8-PR campaign opened. Without it, PRs 1-7 deliver bounded optimization (allocation floor escape within segments; throughput improvement on hot pipelines); WITH it, the entire DBSP substrate becomes a compiled-once-per-circuit-change system reaching near-rustc-level per-tick performance.

@@ -15,7 +15,7 @@ last_updated: 2026-05-16
 
 ## Why
 
-Per Aaron 2026-05-15T~22:5XZ: *"maybe we can try to prove attention i.e. remember when and pay attention as the root axioms that when expanded into the infinite poker game are isomorphic to quantum gravity then that's pretty close"*
+Per Aaron 2026-05-15T~22:5XZ: _"maybe we can try to prove attention i.e. remember when and pay attention as the root axioms that when expanded into the infinite poker game are isomorphic to quantum gravity then that's pretty close"_
 
 The Manifesto V2.1 cosmology (universal infinite poker game with encrypted-entropy hands + ECC-protected memories all the way down) is a totalizing frame. Per `.claude/rules/razor-discipline.md` + `.claude/rules/algo-wink-failure-mode.md`, totalizing frames have algo-wink risk — they can absorb any observation as confirmation, which makes them suspect.
 
@@ -78,7 +78,7 @@ Four-step research program:
 
 ## Substrate-honest framing
 
-The mapping is *suggestive* — many people have noticed pieces of it. Making it *rigorous* enough to claim isomorphism is a multi-year research program, not a single insight. But:
+The mapping is _suggestive_ — many people have noticed pieces of it. Making it _rigorous_ enough to claim isomorphism is a multi-year research program, not a single insight. But:
 
 - **The prior art is real** (HaPPY, ER=EPR, Van Raamsdonk, Jacobson, QBism, causal sets) — not hand-wavy connection
 - **The Zeta-specific contributions are genuine gaps** the existing work doesn't fill (infinite-game framing for no-asymptotic-state, multi-oracle as structural physical requirement)
@@ -150,7 +150,7 @@ The two axioms (Remember-When + Pay-Attention) sit INSIDE a game-theoretic struc
 - **Reward mechanism** = PoUW-CC (Proof of Useful Work — Current Culture) governance substrate
 - **No-winner condition** = Carse's infinite-games — the point is to keep the game playable, not to win
 
-**Why this matters for the proof path**: encrypted entropy revealed strategically IS structurally similar to information protected by ECC and decoded selectively. The cube → ECC connection might be CONSTRUCTIBLE from the game's information-theoretic structure rather than free-association. But constructibility-might-exist ≠ constructibility-demonstrated. The construction has to actually happen, not just be plausible. Per Kestrel: *"pattern-matching the framing-to-implication is itself algo-wink at a different layer."*
+**Why this matters for the proof path**: encrypted entropy revealed strategically IS structurally similar to information protected by ECC and decoded selectively. The cube → ECC connection might be CONSTRUCTIBLE from the game's information-theoretic structure rather than free-association. But constructibility-might-exist ≠ constructibility-demonstrated. The construction has to actually happen, not just be plausible. Per Kestrel: _"pattern-matching the framing-to-implication is itself algo-wink at a different layer."_
 
 ## Cross-reference
 

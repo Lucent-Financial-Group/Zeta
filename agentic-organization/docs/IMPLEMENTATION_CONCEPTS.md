@@ -1529,23 +1529,23 @@ The implementation should start with a table-driven permission model.
 
 Initial hats:
 
-| Hat | Assigns Hats | Approves Gates | Creates Tasks | Votes | Credential Scope | Memory Scope |
-|---|---:|---:|---:|---:|---|---|
-| Executive Board | yes, high-power | executive gates | yes | organization | policy-defined | organization |
-| CEO | directors/executives | priority gates | yes | organization | limited by policy | organization |
-| CTO | technical directors | CA/high-risk tech | yes | technical | technical scopes | technical/org |
-| COO | operations directors | operating standards | yes | operations | ops scopes | operations/org |
-| Department Director | TPMs/managers | department gates | yes | department | department scopes | department |
-| TPM | team hats by initiative scope | initiative readiness | yes | initiative | initiative scopes | initiative |
-| Engineering Manager | implementer/reviewer recommendations | TDD/readiness/outcome | yes | team/initiative | limited | team/project |
-| Product Owner | no | BRD/product signoff | yes | product | none/default | product/project |
-| Business Analyst | no | BRD draft readiness | yes | business | none/default | business/project |
-| Architect | no | CA draft/readiness | yes | architecture | read-only technical | architecture/project |
-| Implementer | no | no | limited/subtasks | task | task-limited | task/project |
-| Code Reviewer | no | code review | no | review scope | read-only | task/project |
-| QA Reviewer | no | QA signoff | no | QA scope | browser/test scopes | QA/project |
-| Security Reviewer | no | credential/tool gates | yes | security | security scopes | security/org |
-| Memory Curator | no | memory changes | yes | memory scope | none/default | memory/org |
+| Hat                 |                         Assigns Hats |        Approves Gates |    Creates Tasks |           Votes | Credential Scope    | Memory Scope         |
+| ------------------- | -----------------------------------: | --------------------: | ---------------: | --------------: | ------------------- | -------------------- |
+| Executive Board     |                      yes, high-power |       executive gates |              yes |    organization | policy-defined      | organization         |
+| CEO                 |                 directors/executives |        priority gates |              yes |    organization | limited by policy   | organization         |
+| CTO                 |                  technical directors |     CA/high-risk tech |              yes |       technical | technical scopes    | technical/org        |
+| COO                 |                 operations directors |   operating standards |              yes |      operations | ops scopes          | operations/org       |
+| Department Director |                        TPMs/managers |      department gates |              yes |      department | department scopes   | department           |
+| TPM                 |        team hats by initiative scope |  initiative readiness |              yes |      initiative | initiative scopes   | initiative           |
+| Engineering Manager | implementer/reviewer recommendations | TDD/readiness/outcome |              yes | team/initiative | limited             | team/project         |
+| Product Owner       |                                   no |   BRD/product signoff |              yes |         product | none/default        | product/project      |
+| Business Analyst    |                                   no |   BRD draft readiness |              yes |        business | none/default        | business/project     |
+| Architect           |                                   no |    CA draft/readiness |              yes |    architecture | read-only technical | architecture/project |
+| Implementer         |                                   no |                    no | limited/subtasks |            task | task-limited        | task/project         |
+| Code Reviewer       |                                   no |           code review |               no |    review scope | read-only           | task/project         |
+| QA Reviewer         |                                   no |            QA signoff |               no |        QA scope | browser/test scopes | QA/project           |
+| Security Reviewer   |                                   no | credential/tool gates |              yes |        security | security scopes     | security/org         |
+| Memory Curator      |                                   no |        memory changes |              yes |    memory scope | none/default        | memory/org           |
 
 The final implementation should store this as policies, not hard-coded `if` statements.
 
@@ -1565,18 +1565,18 @@ Each escalation policy should define:
 
 Initial escalation policies:
 
-| Trigger | Recipient | Mode | Fallback |
-|---|---|---|---|
-| unclear requirements | Product Owner / BA | one-on-one or meeting | Director |
-| missing BRD | Product Director | report | Executive Board |
-| missing CA | Architecture Director | report | CTO |
-| skipped TDD | Engineering Manager | report | TPM / Director |
-| failed code review | Engineering Manager | thread | TPM |
-| QA issue still reproducible | Engineering Manager + TPM | report + meeting | Director |
-| blocked hat supply | Director | report | C-suite |
-| credential request | Security Reviewer | report | Security Director / Executive Board |
-| delivery risk | TPM + Delivery Director | meeting | Executive Board |
-| executive priority conflict | Executive Board | executive-session | CEO vote/board vote |
+| Trigger                     | Recipient                 | Mode                  | Fallback                            |
+| --------------------------- | ------------------------- | --------------------- | ----------------------------------- |
+| unclear requirements        | Product Owner / BA        | one-on-one or meeting | Director                            |
+| missing BRD                 | Product Director          | report                | Executive Board                     |
+| missing CA                  | Architecture Director     | report                | CTO                                 |
+| skipped TDD                 | Engineering Manager       | report                | TPM / Director                      |
+| failed code review          | Engineering Manager       | thread                | TPM                                 |
+| QA issue still reproducible | Engineering Manager + TPM | report + meeting      | Director                            |
+| blocked hat supply          | Director                  | report                | C-suite                             |
+| credential request          | Security Reviewer         | report                | Security Director / Executive Board |
+| delivery risk               | TPM + Delivery Director   | meeting               | Executive Board                     |
+| executive priority conflict | Executive Board           | executive-session     | CEO vote/board vote                 |
 
 ## Runtime Topology
 
@@ -1703,20 +1703,20 @@ Must provide:
 
 ## Failure and Recovery Matrix
 
-| Failure | Required Behavior |
-|---|---|
-| Oz unavailable | Persist requested run as pending, report to Operations/TPM, retry or escalate. |
-| Oz run starts but no callback | Poll Oz status, mark run uncertain after timeout, escalate. |
-| Hermes pod crashes | Mark AgentSession interrupted, preserve Oz logs, allow retry if assignment active. |
-| NATS unavailable | Persist outbox event, retry publisher, do not lose Organization state. |
-| NATS message replayed | Use idempotency key and ignore duplicate transition. |
-| Hat token expired | Tool call returns refresh-required or roleless state. |
-| Hat assignment deprovisioned | Deny protected calls, notify agent and owning manager. |
-| Credential proxy denies request | Return structured denial, create security/report event if unexpected. |
-| Memory adapter unavailable | Continue with explicit degraded-memory warning; block only if task requires memory gate. |
-| Partial artifact write | Mark artifact incomplete, retry or require resubmission. |
-| Stale assignment in JWT | Re-check Organization state and deny. |
-| Policy version changed | Require token refresh and re-evaluate tool scope. |
+| Failure                         | Required Behavior                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------- |
+| Oz unavailable                  | Persist requested run as pending, report to Operations/TPM, retry or escalate.           |
+| Oz run starts but no callback   | Poll Oz status, mark run uncertain after timeout, escalate.                              |
+| Hermes pod crashes              | Mark AgentSession interrupted, preserve Oz logs, allow retry if assignment active.       |
+| NATS unavailable                | Persist outbox event, retry publisher, do not lose Organization state.                   |
+| NATS message replayed           | Use idempotency key and ignore duplicate transition.                                     |
+| Hat token expired               | Tool call returns refresh-required or roleless state.                                    |
+| Hat assignment deprovisioned    | Deny protected calls, notify agent and owning manager.                                   |
+| Credential proxy denies request | Return structured denial, create security/report event if unexpected.                    |
+| Memory adapter unavailable      | Continue with explicit degraded-memory warning; block only if task requires memory gate. |
+| Partial artifact write          | Mark artifact incomplete, retry or require resubmission.                                 |
+| Stale assignment in JWT         | Re-check Organization state and deny.                                                    |
+| Policy version changed          | Require token refresh and re-evaluate tool scope.                                        |
 
 ## Observability Contract
 

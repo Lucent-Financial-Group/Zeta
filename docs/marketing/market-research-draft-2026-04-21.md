@@ -2,8 +2,8 @@
 
 > **Merge note (2026-04-26 fork-divergence sync):** this draft
 > contains both AceHack-fork and LFG variants of some sections
-> preserved per Aaron 2026-04-26 *"merge everything, label draft
-> if it's draft"*. Substantive content is identical between forks;
+> preserved per Aaron 2026-04-26 _"merge everything, label draft
+> if it's draft"_. Substantive content is identical between forks;
 > the editorial difference is attribution phrasing — the **AceHack
 > draft** uses the named maintainer "Aaron" (per the named-agent
 > attribution-credit memory + Otto-279 history-surface carve-out +
@@ -23,8 +23,8 @@ revision block is sufficient to undo).
 > for any external use."
 
 **Companion to:** `docs/marketing/positioning-draft-2026-04-21.md`.
-Positioning says *who we are*. This draft sketches *who
-they are* — the landscape, adjacent markets, where
+Positioning says _who we are_. This draft sketches _who
+they are_ — the landscape, adjacent markets, where
 retraction-native sits in the existing stack, and who
 might be in the market for a factory that crystallises
 into a small binary seed.
@@ -161,8 +161,8 @@ when DBSP would be a better algebraic fit.
   NOTIFY.** Change-notification layers on top of
   existing databases. **Adjacent market, not
   competitive.** Shows demand for live-update
-  semantics; Zeta is about the *computation* of the
-  update, not the *notification* of it.
+  semantics; Zeta is about the _computation_ of the
+  update, not the _notification_ of it.
 
 ---
 
@@ -196,8 +196,8 @@ ocw_self_taught_stanford_mit_lisp_aspiration_2026_
 audience that venue reaches.
 
 > **LFG variant phrasing of the acquisition-angle paragraph:**
-> *"...the human maintainer's Strange-Loop expert-register (per
-> [same memory ref]) is a real asset here..."*
+> _"...the human maintainer's Strange-Loop expert-register (per
+> [same memory ref]) is a real asset here..."_
 
 ### 2.2 Adjacent fit — event-sourcing / CQRS practitioners building projections
 
@@ -256,11 +256,11 @@ conference (FSharpConf) submissions.
 ## Section 3 — Where "crystallise into small binary seed" changes the market frame
 
 This is the non-obvious part. Aaron 2026-04-21:
-*"the soul file can be duplicacted spread out and
+_"the soul file can be duplicacted spread out and
 regrow just like a metametameta seed ... it can be
 wasm and native executable and universal ... and a
 tiny little bin ... that makes self replication very
-easy"* (per `memory/user_git_repo_is_factory_soul_
+easy"_ (per `memory/user_git_repo_is_factory_soul_
 file_reproducibility_substrate_aaron_2026_04_21.md`).
 
 > **LFG variant phrasing:** "the human maintainer 2026-04-21:
@@ -287,7 +287,7 @@ trend). This audience values tiny-bin and universal
 provenance.
 
 **F1 honesty flag:** Zeta does not ship a WASM build
-today. This adjacency is *latent potential* contingent
+today. This adjacency is _latent potential_ contingent
 on the metametameta-seed program landing
 compilation-pipeline work. Filed as P3 in
 `docs/BACKLOG.md` per the soul-file memory revision.
@@ -296,10 +296,10 @@ compilation-pipeline work. Filed as P3 in
 
 A factory that fits in a small binary and reproduces
 itself from the seed is its own market category. The
-closest analogue is *container image* (Docker / OCI),
+closest analogue is _container image_ (Docker / OCI),
 but the Aaron-retracted "not-docker" framing
 (per the soul-file memory) insists this is
-declarative-reproducible-build at the *computation*
+declarative-reproducible-build at the _computation_
 layer, not container layer.
 
 > **LFG variant phrasing:** "...the human-maintainer-retracted
@@ -321,8 +321,8 @@ existing categories.
 
 ### 3.3 New adjacency — reproducible-research infrastructure
 
-Academic / research software where *exact
-reproducibility* is load-bearing (ML research
+Academic / research software where _exact
+reproducibility_ is load-bearing (ML research
 reproducibility crisis, computational-biology
 pipelines, econometric replication). A seed-factory
 with chronology-preserved git-substrate and
@@ -341,12 +341,12 @@ short-term sales target.
 Running the positioning-draft's tiers through the
 demand-side lens:
 
-| Positioning tier | Demand-side tier | Match? |
-|---|---|---|
-| 1. Engineers building streaming/incremental on .NET | §2.1 tightest fit | Direct match, small-but-real |
-| 2. F# practitioners who value correctness-by-construction | §2.4 tangential | Advocacy channel, not primary revenue |
-| 3. Researchers on IVM / DBSP / alignment-measurement | §2.3 alignment researchers | Direct match, niche-but-growing |
-| 4. Curious DBSP-in-managed-language users | §2.4 tangential | Reputation channel, minor direct adoption |
+| Positioning tier                                          | Demand-side tier           | Match?                                    |
+| --------------------------------------------------------- | -------------------------- | ----------------------------------------- |
+| 1. Engineers building streaming/incremental on .NET       | §2.1 tightest fit          | Direct match, small-but-real              |
+| 2. F# practitioners who value correctness-by-construction | §2.4 tangential            | Advocacy channel, not primary revenue     |
+| 3. Researchers on IVM / DBSP / alignment-measurement      | §2.3 alignment researchers | Direct match, niche-but-growing           |
+| 4. Curious DBSP-in-managed-language users                 | §2.4 tangential            | Reputation channel, minor direct adoption |
 
 **Gap identified:** positioning-draft does not mention
 §2.2 (event-sourcing / CQRS practitioners building
@@ -425,13 +425,13 @@ priority order:
   companion draft; this market-research draft is its
   demand-side counterpart.
 - **`memory/feedback_my_tilde_is_you_tilde_roommate_
-  register_symmetric_hat_authority_retractable_decisions_
-  without_aaron.md`** — authorization for retractable
+register_symmetric_hat_authority_retractable_decisions_
+without_aaron.md`** — authorization for retractable
   marketing work without Aaron sign-off per item.
   > **LFG variant phrasing:** "...without human-maintainer
   > sign-off per item."
 - **`memory/user_git_repo_is_factory_soul_file_
-  reproducibility_substrate_aaron_2026_04_21.md`** —
+reproducibility_substrate_aaron_2026_04_21.md`** —
   soul-file / metametameta-seed / crystallise-to-
   small-binary framing that §3 composes on.
 - **`docs/ALIGNMENT.md`** — measurable-alignment
@@ -447,20 +447,20 @@ priority order:
 ## Revision history
 
 - **2026-04-21.** First write. Triggered by Aaron
-  2026-04-21 *"someone wantedd to do market research"*
-  + *"learning and teaching and crystalsing into the
-  small binary seed"* directive after soul-file-
-  redundancy push. Retractable-draft under roommate-
-  register. F1 boundary explicitly scoped (landscape
-  sketch, not market-sizing report). Two gap-
-  recommendations for positioning-draft (CQRS tier;
-  WASM adjacency footnote). Four follow-on BACKLOG
-  candidates (§6.3, §6.4) named but not filed.
-  > **LFG variant phrasing:** "Triggered by the human maintainer
-  > 2026-04-21 [same quote]..."
+  2026-04-21 _"someone wantedd to do market research"_
+  - _"learning and teaching and crystalsing into the
+    small binary seed"_ directive after soul-file-
+    redundancy push. Retractable-draft under roommate-
+    register. F1 boundary explicitly scoped (landscape
+    sketch, not market-sizing report). Two gap-
+    recommendations for positioning-draft (CQRS tier;
+    WASM adjacency footnote). Four follow-on BACKLOG
+    candidates (§6.3, §6.4) named but not filed.
+    > **LFG variant phrasing:** "Triggered by the human maintainer
+    > 2026-04-21 [same quote]..."
 - **2026-04-26.** Fork-divergence merge: AceHack and LFG
-  variants reconciled per Aaron 2026-04-26 *"merge
-  everything, label draft if it's draft"*. Substantive
+  variants reconciled per Aaron 2026-04-26 _"merge
+  everything, label draft if it's draft"_. Substantive
   content unchanged; LFG role-ref alternate phrasings
   preserved as inline footnotes for editorial-form
   selection on sign-off.

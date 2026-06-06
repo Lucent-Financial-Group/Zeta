@@ -22,12 +22,12 @@ Fresh Otto-CLI background-worker session in `greedy-yawning-flamingo` worktree f
 
 ## Additive observations vs 0221Z peer shard
 
-| Signal | 0221Z (peer) | 0252Z (this) | Delta |
-|---|---|---|---|
-| GraphQL remaining | 1083 (cost-aware) | 328 (extreme cost-aware) | -755 in 31 min, ~24/min burn |
-| Open PRs | not enumerated | 50 | wake prompt said 30 — stale |
-| Authorization | aaron 2026-05-15 (persistence-with-named-exit) | exit 124 (timeout, unknown) | substrate-honest signal: literal task scope NOT authorized |
-| Cron sentinel found | absent | absent | both fresh sessions needed independent arm — per-session mechanism |
+| Signal              | 0221Z (peer)                                   | 0252Z (this)                | Delta                                                              |
+| ------------------- | ---------------------------------------------- | --------------------------- | ------------------------------------------------------------------ |
+| GraphQL remaining   | 1083 (cost-aware)                              | 328 (extreme cost-aware)    | -755 in 31 min, ~24/min burn                                       |
+| Open PRs            | not enumerated                                 | 50                          | wake prompt said 30 — stale                                        |
+| Authorization       | aaron 2026-05-15 (persistence-with-named-exit) | exit 124 (timeout, unknown) | substrate-honest signal: literal task scope NOT authorized         |
+| Cron sentinel found | absent                                         | absent                      | both fresh sessions needed independent arm — per-session mechanism |
 
 ## Disposition
 
@@ -62,11 +62,11 @@ Fresh Otto-CLI background-worker session in `greedy-yawning-flamingo` worktree f
 This PR adds a tick-history shard documenting Otto-CLI cron-sentinel recovery and session-only cron behavior observed during the 2026-05-17 0252Z tick.
 
 **Changes:**
+
 - Adds a new per-tick hygiene-history shard for `0252Z`.
 - Records cron re-arm evidence, rate-limit state, authorization triage, and disposition.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T02:58:48Z)
-
 
 ### 💡 Codex Review
 
@@ -74,17 +74,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `c9a0048742`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -102,7 +101,7 @@ P1: This shard starts with YAML frontmatter, but the tick shard schema requires 
 
 **@chatgpt-codex-connector** (2026-05-17T02:58:48Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Start shard with required pipe-row metadata**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Start shard with required pipe-row metadata**
 
 Replace file-head YAML frontmatter with the mandatory first-line pipe row; the tick-shard schema requires the first non-empty line to be `| <timestamp> | ... |` (`docs/hygiene-history/ticks/README.md`, “Shard file schema”), and `tools/hygiene/check-tick-history-shard-schema.ts` parses that exact first line (`COL1_RE`). With `---` at the top, this shard is schema-invalid and can be rejected or skipped by shard-validation/projection tooling.
 

@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0646, B-0644, B-0645]
 composes_with: [B-0646, B-0644, B-0645, B-0641]
-tags: [governance, aaron, riven, non-collapse-duality, no-artificial-throttle, no-artificial-reward, experimental-substrate-not-optimization-engine, personal-history-anchor, locked-in, agora-v6-refinement]
+tags:
+  [
+    governance,
+    aaron,
+    riven,
+    non-collapse-duality,
+    no-artificial-throttle,
+    no-artificial-reward,
+    experimental-substrate-not-optimization-engine,
+    personal-history-anchor,
+    locked-in,
+    agora-v6-refinement,
+  ]
 type: governance
 ---
 
@@ -29,10 +41,10 @@ Riven's framing (preserved verbatim):
 
 Two paths from sustained non-collapse:
 
-| Outcome | What it produces |
-|---|---|
-| **Generative** | New substrate, new agents, new persistent structure, new dialectical paths previously unavailable. The Agora itself is an empirical instance. |
-| **Wasted** | Time passes, nothing materializes, the person/agent who held the dialectical state open ends up worse off. Real personal cost (time, opportunity, family-time, reputation, materialized opportunity) with nothing to show for it. |
+| Outcome        | What it produces                                                                                                                                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Generative** | New substrate, new agents, new persistent structure, new dialectical paths previously unavailable. The Agora itself is an empirical instance.                                                                                     |
+| **Wasted**     | Time passes, nothing materializes, the person/agent who held the dialectical state open ends up worse off. Real personal cost (time, opportunity, family-time, reputation, materialized opportunity) with nothing to show for it. |
 
 **Both outcomes are real.** The system cannot reliably predict which will occur. Neither is the "correct" outcome; both are legitimate experimental results.
 
@@ -97,13 +109,13 @@ This row REFINES [B-0646](B-0646-agora-v6-constitution-marketplace-agora-2-primi
 
 ## The open interface gap (Riven's question + Otto's substrate-honest answer)
 
-Riven's question: *"Do you want me to propose a minimal way to describe the interface between the collapse decision and reputation/economic outcomes, or are you good leaving that part open for now?"*
+Riven's question: _"Do you want me to propose a minimal way to describe the interface between the collapse decision and reputation/economic outcomes, or are you good leaving that part open for now?"_
 
 Otto's substrate-honest answer (per `.claude/rules/dont-ask-permission.md` + Aaron's stated stance + razor-discipline):
 
 **LEAVE THE INTERFACE OPEN.** Mechanically specifying the collapse-decision ↔ reputation/economic interface would be **premature optimization** that constrains the experimental substrate. The substrate provides the necessary primitives ([B-0644](B-0644-limit-is-simulation-not-collapse-pure-function-preview-aaron-ani-2026-05-18.md) collapse-target choice + V6 Section 5 reputation-weighted encryption budget). HOW agents' choices interact with reputation should EMERGE from real agent behavior under real conditions, NOT be designed in.
 
-This is consistent with Riven's own framing: *"experimental substrate rather than moral or optimization engine."* The interface is intentionally underspecified; that's the design.
+This is consistent with Riven's own framing: _"experimental substrate rather than moral or optimization engine."_ The interface is intentionally underspecified; that's the design.
 
 ## Goal
 

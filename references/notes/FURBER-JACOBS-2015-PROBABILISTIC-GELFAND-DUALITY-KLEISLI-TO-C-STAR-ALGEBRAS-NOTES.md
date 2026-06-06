@@ -1,10 +1,10 @@
-# Furber & Jacobs 2015 — Probabilistic Gelfand Duality (Kleisli → C*-algebras) — substrate-anchor for "staying smooth" + B-0917 Kleisli substrate (the human maintainer (2026-05-28) forwarded)
+# Furber & Jacobs 2015 — Probabilistic Gelfand Duality (Kleisli → C\*-algebras) — substrate-anchor for "staying smooth" + B-0917 Kleisli substrate (the human maintainer (2026-05-28) forwarded)
 
-the human maintainer (2026-05-28): *"seems on point https://lmcs.episciences.org/1565/pdf to staying smooth"*
+the human maintainer (2026-05-28): _"seems on point https://lmcs.episciences.org/1565/pdf to staying smooth"_
 
 ## Citation
 
-- **Title**: From Kleisli Categories to Commutative C*-algebras: Probabilistic Gelfand Duality
+- **Title**: From Kleisli Categories to Commutative C\*-algebras: Probabilistic Gelfand Duality
 - **Authors**: Robert W. J. Furber, Bart P. F. Jacobs
 - **Journal**: Logical Methods in Computer Science (LMCS), Volume 11, Issue 2 (2015)
 - **URL**: https://lmcs.episciences.org/1565
@@ -12,23 +12,23 @@ the human maintainer (2026-05-28): *"seems on point https://lmcs.episciences.org
 
 ## What it establishes
 
-Functors from several **Kleisli categories of monads** (relevant to probabilistic computation) to **categories of C*-algebras**. Introduces a probabilistic variant of **Gelfand duality** via the Radon monad on compact Hausdorff spaces.
+Functors from several **Kleisli categories of monads** (relevant to probabilistic computation) to **categories of C\*-algebras**. Introduces a probabilistic variant of **Gelfand duality** via the Radon monad on compact Hausdorff spaces.
 
 ## Why "on point to staying smooth" (the human maintainer's framing)
 
 Per `.claude/rules/substrate-smoothness-as-load-bearing-property.md`:
 
-> *"smooth substrate producing sharp outputs through focused integration is what makes the architecture buildable. Sharpness is at the output, not in the underlying substrate. English-as-substrate doesn't collapse assertions to absolute truth; that smoothness is the load-bearing property the framework operates with implicitly + every layer depends on."*
+> _"smooth substrate producing sharp outputs through focused integration is what makes the architecture buildable. Sharpness is at the output, not in the underlying substrate. English-as-substrate doesn't collapse assertions to absolute truth; that smoothness is the load-bearing property the framework operates with implicitly + every layer depends on."_
 
 The Furber-Jacobs paper formalizes the EXACT shape at a different scope:
 
-| Framework substrate-smoothness | Furber-Jacobs categorical substrate |
-|---|---|
-| English doesn't collapse to absolute truth; only probabilities | Probabilistic computation modeled as monads on Kleisli categories |
-| Smooth substrate producing sharp outputs through focused integration | Continuous functions (C*-algebra side) ↔ probabilistic computation (Kleisli side) via Gelfand duality |
-| "not not sharp" double-negation preserves gradient | Compact Hausdorff topology + Radon monad preserves continuity through composition |
-| Substrate-check operates in smooth zone | C*-algebras preserve operator-norm continuity; computational paths preserve probability-measure continuity |
-| Multi-oracle BFT preserves more info than majority voting | Probabilistic Gelfand duality preserves more info than discrete approximation |
+| Framework substrate-smoothness                                       | Furber-Jacobs categorical substrate                                                                         |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| English doesn't collapse to absolute truth; only probabilities       | Probabilistic computation modeled as monads on Kleisli categories                                           |
+| Smooth substrate producing sharp outputs through focused integration | Continuous functions (C\*-algebra side) ↔ probabilistic computation (Kleisli side) via Gelfand duality      |
+| "not not sharp" double-negation preserves gradient                   | Compact Hausdorff topology + Radon monad preserves continuity through composition                           |
+| Substrate-check operates in smooth zone                              | C\*-algebras preserve operator-norm continuity; computational paths preserve probability-measure continuity |
+| Multi-oracle BFT preserves more info than majority voting            | Probabilistic Gelfand duality preserves more info than discrete approximation                               |
 
 The paper is **published category-theory formalization** of the structural pattern the human maintainer's substrate-smoothness rule names intuitively. NOT a claim that the framework "is" probabilistic Gelfand duality; rather, that the substrate-engineering pattern the human maintainer's reaching for has formal-math anchors in published academic literature.
 
@@ -37,7 +37,7 @@ The paper is **published category-theory formalization** of the structural patte
 This citation arrives within hours of B-0917 substrate-target filing. Kleisli categories are THE mathematical structure B-0917's substrate-target depends on. Furber-Jacobs provides:
 
 - **Formal grounding** for "Kleisli arrows for context-propagation" at the categorical-substrate scope
-- **C*-algebra connection** suggests an additional substrate-engineering target: if interrupt-context-propagation IS Kleisli-shaped, then the framework's broader observability + probability substrate gets a Gelfand-duality bridge for free
+- **C\*-algebra connection** suggests an additional substrate-engineering target: if interrupt-context-propagation IS Kleisli-shaped, then the framework's broader observability + probability substrate gets a Gelfand-duality bridge for free
 - **Radon monad** as concrete monad-of-interest for probabilistic operator-substrate (composes with the framework's multi-oracle BFT + reputation-weighted encryption budget substrate)
 
 ## Composes with substrate

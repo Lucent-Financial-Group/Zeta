@@ -22,13 +22,13 @@ PR #4959 merged before the consolidated `lint (tsc tools)` matrix ran, and the m
 
 ## What's wrong
 
-| Line | Code | Issue |
-|------|------|-------|
-| 112 | TS2322 | `m[1]` is `string \| undefined` under `noUncheckedIndexedAccess`; `m ? m[1] : ""` doesn't narrow it |
-| 143 | TS2345 | `argv[0]` is `string \| undefined`; passed to `existsSync` which wants `PathLike` |
-| 144 | TS18048 | Same — `isoPath` possibly undefined |
-| 145 | TS2769 | Same — `.endsWith` overload doesn't match |
-| 197 | TS2339 | `usbCandidates[0]` is `{...} \| undefined`; destructure fails |
+| Line | Code    | Issue                                                                                               |
+| ---- | ------- | --------------------------------------------------------------------------------------------------- |
+| 112  | TS2322  | `m[1]` is `string \| undefined` under `noUncheckedIndexedAccess`; `m ? m[1] : ""` doesn't narrow it |
+| 143  | TS2345  | `argv[0]` is `string \| undefined`; passed to `existsSync` which wants `PathLike`                   |
+| 144  | TS18048 | Same — `isoPath` possibly undefined                                                                 |
+| 145  | TS2769  | Same — `.endsWith` overload doesn't match                                                           |
+| 197  | TS2339  | `usbCandidates[0]` is `{...} \| undefined`; destructure fails                                       |
 
 ## What's fixed
 
@@ -55,6 +55,7 @@ Behavior identical; type-system happy.
 Fixes TypeScript strict-mode (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`) errors in the `full-ai-cluster/tools/flash-usb.ts` safety wrapper by adding explicit narrowing around regex capture access, argv parsing, and single-candidate selection.
 
 **Changes:**
+
 - Use optional chaining + nullish coalescing for regex capture access in `bootDiskIdentifier()`.
 - Refactor argv parsing to safely narrow the ISO path argument under `noUncheckedIndexedAccess`.
 - Add an explicit guard before destructuring `usbCandidates[0]` to satisfy strict indexing rules.

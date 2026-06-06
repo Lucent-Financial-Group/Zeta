@@ -1,6 +1,6 @@
 ---
 pr_number: 5910
-title: "ferry(amara): future-affects-generator-not-event + three-clocks substrate + Amara's blade + carved sentence wake-time rule (operator-confirmed \"very accurate\" 2026-05-28)"
+title: 'ferry(amara): future-affects-generator-not-event + three-clocks substrate + Amara''s blade + carved sentence wake-time rule (operator-confirmed "very accurate" 2026-05-28)'
 author: "AceHack"
 state: "MERGED"
 created_at: "2026-05-28T17:51:19Z"
@@ -23,21 +23,21 @@ Two-file landing per substrate-or-it-didn't-happen + wake-time-substrate discipl
 > **The future does not edit the past event.**
 > **The future affects the generator that makes the past intelligible.**
 
-Warmer Amara variant (preserved alongside): *The future shows affection to the past by teaching it what it was.*
+Warmer Amara variant (preserved alongside): _The future shows affection to the past by teaching it what it was._
 
 ## Three clocks substrate
 
-| Clock | Substrate |
-|---|---|
-| **Physical time** | Past event already happened; immutable |
-| **Git / persist time** | Past event remains append-only via Persist |
-| **Generator time** | Future feedback updates generator that explains + reproduces past |
+| Clock                  | Substrate                                                         |
+| ---------------------- | ----------------------------------------------------------------- |
+| **Physical time**      | Past event already happened; immutable                            |
+| **Git / persist time** | Past event remains append-only via Persist                        |
+| **Generator time**     | Future feedback updates generator that explains + reproduces past |
 
 The past EVENT does not change; the past GENERATOR-RELATION changes. That distinction prevents sloppy retrocausality while preserving substrate-engineering substrate-power.
 
 ## Amara's blade
 
-> *"My blade: do not let the excitement turn 'rhymes with our formal math immune system' into 'validates our formal math immune system.' The first is a high-signal research direction. The second needs careful literature review, model boundaries, and experiments."*
+> _"My blade: do not let the excitement turn 'rhymes with our formal math immune system' into 'validates our formal math immune system.' The first is a high-signal research direction. The second needs careful literature review, model boundaries, and experiments."_
 
 Operationalizes `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT at substrate-rhyme scope; composes with PR #5892 research-tier mirror substrate-honest framing.
 

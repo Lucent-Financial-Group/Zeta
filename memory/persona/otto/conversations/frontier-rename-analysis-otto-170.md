@@ -6,9 +6,9 @@ Otto-168 naming-conflict BACKLOG row action step #3
 Author: Otto-170, applying `.claude/skills/naming-expert/`
 rubric + WebSearch trademark / product-space
 verification. **Advisory only**. Aaron Otto-168 explicit
-non-action: *"Do NOT unilaterally pick a name from Otto's
+non-action: _"Do NOT unilaterally pick a name from Otto's
 candidate list. Aaron is the concept owner of the factory
-UI name."* This doc gives Aaron structured analysis, not
+UI name."_ This doc gives Aaron structured analysis, not
 a recommendation.
 
 ## 1. What this doc is
@@ -72,8 +72,8 @@ Severity: HIGH. Rename warranted.
 - **Connotation:** Star-Trek-computer design-language
   preserved (per
   `frontier-ux-zora-evolution-2026-04-24.md`). Directional
-  + operational vs OpenAI Frontier's frontier-exploration
-  metaphor.
+  - operational vs OpenAI Frontier's frontier-exploration
+    metaphor.
 - **Agentic-AI-platform conflict:** **NONE FOUND** in
   current search.
 - **Trademark status (non-AI):** partially taken — Starboard
@@ -105,8 +105,8 @@ Severity: HIGH. Rename warranted.
 - **Searchability:** **POOR.** "Bridge" in a codebase
   grep returns dozens of false positives (architectural
   bridges, protocol bridges, design patterns). Naming-
-  expert rule violated: *"A name that's too generic
-  vanishes into the haystack."*
+  expert rule violated: _"A name that's too generic
+  vanishes into the haystack."_
 - **Verdict:** **NOT RECOMMENDED.** Semantic collision
   with the generic vocabulary makes it hard to search,
   hard to brand, easy to lose in documentation.
@@ -162,14 +162,14 @@ Severity: HIGH. Rename warranted.
 
 ## 4. Summary table
 
-| Candidate | Agentic-AI conflict | Trademark risk | Distinctiveness | Verdict |
-|-----------|---------------------|----------------|-----------------|---------|
-| Zora      | Deloitte Zora AI    | ACTIVE LITIGATION | Medium | NOT VIABLE |
-| Starboard | None                | Low             | High            | VIABLE |
-| Bridge    | None                | Low             | Very low        | NOT RECOMMENDED |
-| Horizon   | Topia + Eagleview   | High (crowded)  | Low             | NOT VIABLE |
-| Vantage   | Palantir Vantage    | High            | Medium          | NOT RECOMMENDED |
-| Aurora    | Factory internal + AWS/NEAR | High | Low | NOT VIABLE |
+| Candidate | Agentic-AI conflict         | Trademark risk    | Distinctiveness | Verdict         |
+| --------- | --------------------------- | ----------------- | --------------- | --------------- |
+| Zora      | Deloitte Zora AI            | ACTIVE LITIGATION | Medium          | NOT VIABLE      |
+| Starboard | None                        | Low               | High            | VIABLE          |
+| Bridge    | None                        | Low               | Very low        | NOT RECOMMENDED |
+| Horizon   | Topia + Eagleview           | High (crowded)    | Low             | NOT VIABLE      |
+| Vantage   | Palantir Vantage            | High              | Medium          | NOT RECOMMENDED |
+| Aurora    | Factory internal + AWS/NEAR | High              | Low             | NOT VIABLE      |
 
 **Starboard is the only candidate with zero direct
 agentic-AI-platform conflict.** Aaron may still decline
@@ -242,7 +242,7 @@ landscape.
 - `docs/BACKLOG.md` Otto-168 row at ~line 4360 — the
   row this analysis feeds action step #3 of.
 - `docs/research/frontier-ux-zora-evolution-2026-04-24
-  .md` — primary rename target (currently uses Zora
+.md` — primary rename target (currently uses Zora
   in filename; this analysis flags Zora as NOT VIABLE).
 - `docs/definitions/KSK.md` — factory's Aurora / Zeta /
   KSK naming triangle. The rename should slot into this

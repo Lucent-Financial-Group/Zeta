@@ -41,7 +41,7 @@ Capability skill. No persona lives here; the persona
   three-valued logic** → `relational-algebra-expert`.
 - **Physical query plan, cardinality estimates, join
   algorithms** → `query-planner`, `query-optimizer-
-  expert`.
+expert`.
 - **Streaming-incremental view maintenance, DBSP
   lowering** → `streaming-incremental-expert`.
 - **Entity Framework / change-tracking, migrations** →
@@ -53,19 +53,19 @@ Capability skill. No persona lives here; the persona
 
 ## The LINQ model — one operator set, many worlds
 
-LINQ's core trick: *the same operator names (`Select`,
+LINQ's core trick: _the same operator names (`Select`,
 `Where`, `SelectMany`, `GroupBy`, `Join`, `Aggregate`,
 `OrderBy`, `Take`, `Skip`, …) have identical type
-signatures across different underlying worlds.* Those
+signatures across different underlying worlds._ Those
 worlds are:
 
-| World | Interface | Semantics |
-| --- | --- | --- |
-| In-memory | `IEnumerable<T>` | lazy iterator, pull |
-| Remote / DB | `IQueryable<T>` | expression-tree, translated |
-| Reactive | `IObservable<T>` | push, time-axis, hot/cold |
-| XML | `IEnumerable<XElement>` | in-memory tree |
-| Async enumerable | `IAsyncEnumerable<T>` | pull, async iterator |
+| World            | Interface               | Semantics                   |
+| ---------------- | ----------------------- | --------------------------- |
+| In-memory        | `IEnumerable<T>`        | lazy iterator, pull         |
+| Remote / DB      | `IQueryable<T>`         | expression-tree, translated |
+| Reactive         | `IObservable<T>`        | push, time-axis, hot/cold   |
+| XML              | `IEnumerable<XElement>` | in-memory tree              |
+| Async enumerable | `IAsyncEnumerable<T>`   | pull, async iterator        |
 
 The operator-set-ness is what makes LINQ feel like a
 language feature rather than a library. Erik's original
@@ -94,7 +94,7 @@ Understanding the desugar is the difference between
 ## IQueryable vs IEnumerable — the trap
 
 `IQueryable<T>` extends `IEnumerable<T>` but the
-equivalence is *interface-shaped only*, not semantic.
+equivalence is _interface-shaped only_, not semantic.
 A `.Where` on `IQueryable<T>` builds an expression tree
 that gets translated to whatever the provider speaks
 (SQL, a remote service, a cost-model-aware plan). A
@@ -102,8 +102,8 @@ that gets translated to whatever the provider speaks
 memory.
 
 The trap: because `IQueryable<T>` inherits
-`IEnumerable<T>`, a `foreach` *starts enumeration* and
-therefore *triggers translation and execution*. Many
+`IEnumerable<T>`, a `foreach` _starts enumeration_ and
+therefore _triggers translation and execution_. Many
 accidental materialisations come from this; and many
 accidental client-side filters come from sneaking in a
 non-translatable operator that forces fallback to
@@ -248,23 +248,28 @@ pipeline-of-`Seq.*` rather than `query { }`.
 # LINQ review — <subject>, <date>
 
 ## Scope
+
 - Surface: <IEnumerable | IQueryable | IObservable |
   custom>
 - Operators involved: <list>
 
 ## Observations
+
 - <observation>
 
 ## Design choices
+
 - Translate boundary: <what translates, what doesn't>
 - Materialisation boundary: <where / why>
 - Fallback policy: <client-side | throw>
 
 ## Issues / suggestions
+
 1. ...
 
 ## References
-- Erik Meijer, *The World According to LINQ* (Comm. ACM
+
+- Erik Meijer, _The World According to LINQ_ (Comm. ACM
   2011).
 - MSDN "101 LINQ Samples".
 - `docs/PRIOR-ART-LIST.md` §"Reactive .NET".
@@ -283,23 +288,23 @@ pipeline-of-`Seq.*` rather than `query { }`.
 - **`streaming-incremental-expert`** — DBSP lowering.
 - **`entity-framework-expert`** — EF-core LINQ idioms.
 - **`performance-engineer`** / **`vectorised-execution-
-  expert`** — allocation and throughput.
+expert`** — allocation and throughput.
 - **`public-api-designer`** — any `IQueryable<T>`
   facade going public.
 - **Architect** — round integration.
 
 ## References
 
-- Meijer, Beckman, Bierman, *LINQ: Reconciling Object,
-  Relations and XML in the .NET Framework* (SIGMOD
+- Meijer, Beckman, Bierman, _LINQ: Reconciling Object,
+  Relations and XML in the .NET Framework_ (SIGMOD
   2006).
-- Meijer, *The World According to LINQ* (Comm. ACM
+- Meijer, _The World According to LINQ_ (Comm. ACM
   2011).
-- Bart De Smet, *More LINQ with System.Interactive* and
+- Bart De Smet, _More LINQ with System.Interactive_ and
   the Nuqleon lecture series.
 - Channel 9 (archived) — Erik Meijer's lecture series,
-  especially *C9 Lectures: Dr. Erik Meijer — Functional
-  Programming Fundamentals* (13 lectures).
+  especially _C9 Lectures: Dr. Erik Meijer — Functional
+  Programming Fundamentals_ (13 lectures).
 - Torgersen et al., C# specification — query expression
   translation rules (§8.x of the modern spec).
 - `.claude/skills/rx-expert/SKILL.md` — Rx sibling.

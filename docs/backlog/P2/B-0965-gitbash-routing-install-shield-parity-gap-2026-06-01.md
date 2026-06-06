@@ -22,13 +22,13 @@ with the mac / ubuntu / nixos / regular-windows shields. Audit result:
 **5 install shields exist and are at parity, all exercising the real install
 end-to-end:**
 
-| Shield workflow | Surface |
-|---|---|
-| `docker-ubuntu-install-sh-test` | `install.sh`, bare Ubuntu (Docker) |
-| `docker-nixos-install-sh-test` | `install.sh`, NixOS userspace (Docker) |
-| `macos-install-sh-test` | `install.sh`, real macOS |
-| `docker-windows-install-ps1-test` | `install.ps1`, Windows Server Core (Docker) |
-| `wsl-install-sh-test` | `install.sh`, real WSL2 Ubuntu on a Windows host (B-0857) |
+| Shield workflow                   | Surface                                                   |
+| --------------------------------- | --------------------------------------------------------- |
+| `docker-ubuntu-install-sh-test`   | `install.sh`, bare Ubuntu (Docker)                        |
+| `docker-nixos-install-sh-test`    | `install.sh`, NixOS userspace (Docker)                    |
+| `macos-install-sh-test`           | `install.sh`, real macOS                                  |
+| `docker-windows-install-ps1-test` | `install.ps1`, Windows Server Core (Docker)               |
+| `wsl-install-sh-test`             | `install.sh`, real WSL2 Ubuntu on a Windows host (B-0857) |
 
 **git-bash is the one unshielded surface.** git-bash is not a separate installer
 — `tools/setup/install.sh` (lines ~161-172) detects `MINGW*|MSYS*|CYGWIN*`,
@@ -41,7 +41,7 @@ The **target** (`install.ps1`) is shielded; the **routing branch itself** — th
 `MINGW*|MSYS*|CYGWIN*` detect → `cygpath` conversion → `exec` PowerShell handoff
 — is **not**. No shield runs `install.sh` under git-bash. Per
 `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`, that is
-exactly a hole that *reads as covered*: a regression in the routing branch (or in
+exactly a hole that _reads as covered_: a regression in the routing branch (or in
 `cygpath` handling, or the relative `install.ps1` path it execs) would silently
 break the git-bash one-liner and no shield would catch it.
 
@@ -58,7 +58,7 @@ break the git-bash one-liner and no shield would catch it.
       `docker-windows-install-ps1-test` shield already exercises the full Windows
       install). E.g. a dry-run / a `ZETA_INSTALL_ROUTE_ONLY`-style guard that
       stops after the route decision + path conversion, or assert the exact
-      PowerShell command line that *would* run. Avoid duplicating the windows-ps1
+      PowerShell command line that _would_ run. Avoid duplicating the windows-ps1
       shield's cost.
 - [x] The test **asserts** the positive (routing happened with the converted
       path) — it must fail if the branch is skipped or `cygpath` is absent/wrong,
@@ -79,7 +79,7 @@ mechanism:
 
 - **`tools/setup/install.sh`** — a `ZETA_INSTALL_ROUTE_ONLY=1` guard inside the
   `MINGW*|MSYS*|CYGWIN*` arm: it resolves the PowerShell binary + native `-File`
-  path, prints the command line it *would* exec, then `exit 0` before running
+  path, prints the command line it _would_ exec, then `exit 0` before running
   `install.ps1`. Branch-scoped → a no-op on macOS/Linux/NixOS.
 - **`.github/workflows/gitbash-install-routing-test.yml`** — new shield on
   `windows-2025` running `install.sh` under git-bash with the route-only guard,
@@ -99,7 +99,7 @@ git-bash routing).
 ## Why P2 (not P1)
 
 The surface is narrow (one routing branch + a path conversion + an exec) and the
-*install work* it delegates to is already shielded. But it IS a real user-facing
+_install work_ it delegates to is already shielded. But it IS a real user-facing
 entry point (the documented Windows one-liner under git-bash) currently riding on
 trust-by-construction, and the shield rule treats false-coverage as worse than a
 known gap. Closing it brings install-shield coverage to 6/6 surfaces.

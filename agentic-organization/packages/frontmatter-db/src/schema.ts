@@ -61,7 +61,5 @@ export function primaryKeyColumn(schema: TableSchema): ColumnDef | undefined {
 
 /** Foreign-key columns are the graph edges of the git-as-db. */
 export function edgeColumns(schema: TableSchema): readonly ColumnDef[] {
-  return schema.columns.filter(
-    (column) => column.type === ColumnType.Fk || column.type === ColumnType.FkArray,
-  );
+  return schema.columns.filter((column) => column.type === ColumnType.Fk || column.type === ColumnType.FkArray);
 }

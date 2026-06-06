@@ -46,29 +46,11 @@ const PAPER_DOMAINS = [
   "aclanthology.org",
 ];
 
-const RFC_DOMAINS = [
-  "tools.ietf.org",
-  "rfc-editor.org",
-  "datatracker.ietf.org",
-  "w3.org",
-];
+const RFC_DOMAINS = ["tools.ietf.org", "rfc-editor.org", "datatracker.ietf.org", "w3.org"];
 
-const SOSE_DOMAINS = [
-  "stackoverflow.com",
-  "stackexchange.com",
-  "serverfault.com",
-  "superuser.com",
-  "askubuntu.com",
-];
+const SOSE_DOMAINS = ["stackoverflow.com", "stackexchange.com", "serverfault.com", "superuser.com", "askubuntu.com"];
 
-const TALK_DOMAINS = [
-  "youtube.com",
-  "youtu.be",
-  "vimeo.com",
-  "slideshare.net",
-  "speakerdeck.com",
-  "loom.com",
-];
+const TALK_DOMAINS = ["youtube.com", "youtu.be", "vimeo.com", "slideshare.net", "speakerdeck.com", "loom.com"];
 
 function domainOf(url: string): string {
   try {
@@ -81,14 +63,10 @@ function domainOf(url: string): string {
 export function classifyUrl(url: string): UrlKind {
   const host = domainOf(url);
   if (host === "") return "other";
-  if (PAPER_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`)))
-    return "paper";
-  if (RFC_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`)))
-    return "rfc";
-  if (SOSE_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`)))
-    return "so-se";
-  if (TALK_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`)))
-    return "talk";
+  if (PAPER_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`))) return "paper";
+  if (RFC_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`))) return "rfc";
+  if (SOSE_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`))) return "so-se";
+  if (TALK_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`))) return "talk";
   return "blog";
 }
 
@@ -105,11 +83,7 @@ const MARKDOWN_LINK_RE = /\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g;
 // Matches bare https?://... not already inside a markdown link.
 const BARE_URL_RE = /(?<!\()https?:\/\/[^\s),\]"'`>]+/g;
 
-export function extractUrlsFromWindow(
-  content: string,
-  conceptId: string,
-  windowLines = 20,
-): AnchorEntry[] {
+export function extractUrlsFromWindow(content: string, conceptId: string, windowLines = 20): AnchorEntry[] {
   const lines = content.split("\n");
   // Find the first line that contains the concept ID as a token.
   const idPattern = new RegExp(`\\b${escapeRegex(conceptId)}\\b`);
@@ -319,17 +293,14 @@ function repoRoot(): string {
     { encoding: "utf8" },
   );
   if (result.error) throw new Error(`git rev-parse failed: ${result.error.message}`);
-  if (result.status !== 0)
-    throw new Error(`git rev-parse exited with status ${String(result.status)}`);
+  if (result.status !== 0) throw new Error(`git rev-parse exited with status ${String(result.status)}`);
   return result.stdout.trim();
 }
 
 export function main(argv: readonly string[]): AuditExitCode {
   const parsed = parseArgs(argv);
   if (parsed.kind === "help") {
-    process.stdout.write(
-      "Usage: audit_external_anchors.ts [--json | --md] [--out DIR]\n",
-    );
+    process.stdout.write("Usage: audit_external_anchors.ts [--json | --md] [--out DIR]\n");
     return 0;
   }
   if (parsed.kind === "error") {
@@ -346,9 +317,7 @@ export function main(argv: readonly string[]): AuditExitCode {
     mkdirSync(args.outDir, { recursive: true });
     writeFileSync(join(args.outDir, "external-anchors.json"), emitJson(result));
     writeFileSync(join(args.outDir, "external-anchors.md"), emitMd(result));
-    process.stdout.write(
-      `audit_external_anchors: wrote ${args.outDir}/external-anchors.{json,md}\n`,
-    );
+    process.stdout.write(`audit_external_anchors: wrote ${args.outDir}/external-anchors.{json,md}\n`);
   } else if (args.json) {
     process.stdout.write(emitJson(result));
   } else if (args.md) {

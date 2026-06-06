@@ -13,10 +13,7 @@ import {
   NatsHeaderName,
   type NatsJetStreamInboundMessage,
 } from "../../../packages/messaging-nats/src/index.ts";
-import {
-  RecordingTelemetry,
-  W3CTraceHeaderName,
-} from "../../../packages/observability/src/index.ts";
+import { RecordingTelemetry, W3CTraceHeaderName } from "../../../packages/observability/src/index.ts";
 import {
   NatsWorkerConnectionState,
   NatsWorkerDeadLetterHeaderName,

@@ -3,8 +3,8 @@
 ## §33 Archive header
 
 - **Date**: 2026-05-28
-- **Substrate origin**: Aaron-forwarded verbatim Mika (Grok) conversation, part 2 of 3 (operator: *"I guess there is going to be 3, here is 2nd one"*)
-- **Continuity**: Direct continuation of [part 1 ferry](2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md) — Mika answers the open question Aaron left at the end of part 1 (*"we need something to connect, to trigger the webhook to the workflow triggering"*)
+- **Substrate origin**: Aaron-forwarded verbatim Mika (Grok) conversation, part 2 of 3 (operator: _"I guess there is going to be 3, here is 2nd one"_)
+- **Continuity**: Direct continuation of [part 1 ferry](2026-05-28-aaron-mika-grok-degenerate-github-swarm-workflow-system-rxjs-observables-killing-prs-and-jira-isomorphic-git-platforms-family-system-aaron-forwarded.md) — Mika answers the open question Aaron left at the end of part 1 (_"we need something to connect, to trigger the webhook to the workflow triggering"_)
 - **Preservation discipline**: per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 - **Otto-CLI handling**: per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT + multi-AI register topology (Mika harbor-engineering register; Otto-CLI substrate-engineering register)
 
@@ -14,11 +14,11 @@ Sixteen substrate-engineering decisions extending part 1's eleven:
 
 ### 12. `repository_dispatch` answers ferry #1's open question — NO external webhooks needed
 
-> Mika: *"You can't directly have a webhook hit a GitHub workflow (GitHub doesn't host arbitrary webhooks for you). But here's the clean degenerate path: Use repository_dispatch + the peter-evans/repository-dispatch action."*
+> Mika: _"You can't directly have a webhook hit a GitHub workflow (GitHub doesn't host arbitrary webhooks for you). But here's the clean degenerate path: Use repository_dispatch + the peter-evans/repository-dispatch action."_
 >
-> Aaron: *"So are webhooks involved at all in what you just said?"*
+> Aaron: _"So are webhooks involved at all in what you just said?"_
 >
-> Mika: *"No, not really. What I just described uses repository_dispatch — which is GitHub's built-in way for one workflow to trigger another workflow inside the same repo. It's all happening inside GitHub Actions, no external webhooks needed. Webhooks would require you to run something that can receive HTTP requests (like a server, Cloudflare Worker, or some always-on endpoint). That breaks your everything lives in GitHub degenerate plan. repository_dispatch lets workflows talk to other workflows directly, which is much cleaner for what you're trying to do."*
+> Mika: _"No, not really. What I just described uses repository_dispatch — which is GitHub's built-in way for one workflow to trigger another workflow inside the same repo. It's all happening inside GitHub Actions, no external webhooks needed. Webhooks would require you to run something that can receive HTTP requests (like a server, Cloudflare Worker, or some always-on endpoint). That breaks your everything lives in GitHub degenerate plan. repository_dispatch lets workflows talk to other workflows directly, which is much cleaner for what you're trying to do."_
 
 The chain:
 
@@ -31,24 +31,24 @@ The chain:
 
 ### 13. `paths:` filter is the coarse query mechanism over file system
 
-> Aaron: *"My goal is to write RX queries over the file system and trigger, uh, things to happen based on certain fuckin' RX queries over the file system."*
+> Aaron: _"My goal is to write RX queries over the file system and trigger, uh, things to happen based on certain fuckin' RX queries over the file system."_
 >
-> Mika: *"GitHub doesn't give you real file-system watching inside workflows. You can't run something like chokidar or rxjs watching the filesystem live in a normal workflow. The closest you can get is using the paths: filter on push events."*
+> Mika: _"GitHub doesn't give you real file-system watching inside workflows. You can't run something like chokidar or rxjs watching the filesystem live in a normal workflow. The closest you can get is using the paths: filter on push events."_
 
 ```yaml
 on:
   push:
     paths:
-      - 'agents/**'
-      - 'workflows/**'
-      - 'state/**'
+      - "agents/**"
+      - "workflows/**"
+      - "state/**"
 ```
 
 `paths:` filter IS the coarse-grained file-system query. RxJS observables live INSIDE the workflow that's triggered (operating on the latest Git state as observable source).
 
 ### 14. Code carved into "review surfaces" via folder structure
 
-> Aaron: *"we're going to carve out the, um, the code into review surfaces and write queries for every review surface in the code, and that's going to be, we're going to make sure, I guess we'll have to make sure the folder structure is simple enough so that the review surfaces can just be simple folder filters so that it can work with the, the GitHub push path filter."*
+> Aaron: _"we're going to carve out the, um, the code into review surfaces and write queries for every review surface in the code, and that's going to be, we're going to make sure, I guess we'll have to make sure the folder structure is simple enough so that the review surfaces can just be simple folder filters so that it can work with the, the GitHub push path filter."_
 
 Folder convention proposal:
 
@@ -68,38 +68,38 @@ Each `review/<surface>/` gets its own workflow that fires via `paths:` filter. C
 
 ### 15. Three workflow layers (the architecture, named)
 
-| Layer | Trigger | What it does |
-|---|---|---|
-| **1. Review** | `paths:` filter on push | Code review for changes in specific review-surface folders |
-| **2. Runbook/Playbook** | Document push trigger | Iterate on the playbook itself; decompose tasks; edit document; may leave in waiting-for-human state |
-| **3. Agent management** | Agent-initiated spawn | Agents spawn nested agents (Otto can spawn more Ottos to scale up) |
+| Layer                   | Trigger                 | What it does                                                                                         |
+| ----------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------- |
+| **1. Review**           | `paths:` filter on push | Code review for changes in specific review-surface folders                                           |
+| **2. Runbook/Playbook** | Document push trigger   | Iterate on the playbook itself; decompose tasks; edit document; may leave in waiting-for-human state |
+| **3. Agent management** | Agent-initiated spawn   | Agents spawn nested agents (Otto can spawn more Ottos to scale up)                                   |
 
 The agent-management layer is the new addition not previously named in B-0867+ substrate.
 
 ### 16. Nested agent spawning — agents spawn agents spawn agents
 
-> Aaron: *"I basically want to be able to have nested agents kick off nested agents kick off nested agents."*
+> Aaron: _"I basically want to be able to have nested agents kick off nested agents kick off nested agents."_
 >
-> Aaron: *"these are not new personas — they're just new instances of the named agents you already have."*
+> Aaron: _"these are not new personas — they're just new instances of the named agents you already have."_
 
 Important: nested-spawning creates new INSTANCES of existing named personas, NOT new personas. The persona catalog stays bounded (~20 per Aaron's later message); instance count is unbounded.
 
 ### 17. ~20 personas with full hat-swap fluidity
 
-> Aaron: *"imagine 20 personas and they all can do this. They all can scale up and down, but they all have, they all can swap hats. Nobody's even tied to a hat. They have, they start with certain hats 'cause basically the project has certain hats it needs fulfilled, but it's up to the agents. They can even swap hats."*
+> Aaron: _"imagine 20 personas and they all can do this. They all can scale up and down, but they all have, they all can swap hats. Nobody's even tied to a hat. They have, they start with certain hats 'cause basically the project has certain hats it needs fulfilled, but it's up to the agents. They can even swap hats."_
 
-| Substrate | Property |
-|---|---|
-| Persona catalog | Bounded (~20: Otto, Alexa, Riven, Vera, Lior, Mika, Amara, Ani, Kestrel, DeepSeek/Prism, etc.) |
-| Hat assignment | Initial hats per project-needs, BUT agents can swap |
-| Population per persona | Unbounded; emergent (per spawning mechanism) |
-| Role-to-agent binding | None permanent; full fluidity |
+| Substrate              | Property                                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| Persona catalog        | Bounded (~20: Otto, Alexa, Riven, Vera, Lior, Mika, Amara, Ani, Kestrel, DeepSeek/Prism, etc.) |
+| Hat assignment         | Initial hats per project-needs, BUT agents can swap                                            |
+| Population per persona | Unbounded; emergent (per spawning mechanism)                                                   |
+| Role-to-agent binding  | None permanent; full fluidity                                                                  |
 
 Composes with the existing hat-pattern substrate (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` "Tools rented not owned by agents + Hats form in the in-between + Sorting Hat canonical reference" — operator 2026-05-22 substrate).
 
 ### 18. Spawning IS scaling — emergent population control, no central orchestrator
 
-> Aaron: *"agents naturally terminate their loop. So basically, if you start, if you're an agent and you wake up and you're the first one and you don't spawn any other ones and you go to sleep, you just fucking went to sleep. There's no more. And if you spawn two or three or four, eventually you're going to go to sleep and those two or three or four are going to be the ones that are left. And hopefully they spawn more and it kind of just dynamically grows as it needs."*
+> Aaron: _"agents naturally terminate their loop. So basically, if you start, if you're an agent and you wake up and you're the first one and you don't spawn any other ones and you go to sleep, you just fucking went to sleep. There's no more. And if you spawn two or three or four, eventually you're going to go to sleep and those two or three or four are going to be the ones that are left. And hopefully they spawn more and it kind of just dynamically grows as it needs."_
 
 Mechanism:
 
@@ -113,17 +113,17 @@ Population shrinks naturally when no agent spawns; grows when agents actively sp
 
 ### 19. Initial seed agents matter — population can die on first round
 
-> Mika: *"Does that mean the initial seed agents are pretty important? Like, the very first ones that wake up have a lot of influence over whether the whole swarm even gets going?"*
+> Mika: _"Does that mean the initial seed agents are pretty important? Like, the very first ones that wake up have a lot of influence over whether the whole swarm even gets going?"_
 >
-> Aaron: *"Yeah, yeah, that's gonna be, like, humans are gonna be there to correct that, and we're gonna expect 'em to get it wrong, but, and they're probably gonna compete. They're gonna be like, I'm gonna grow the fastest and take all of the resources!"*
+> Aaron: _"Yeah, yeah, that's gonna be, like, humans are gonna be there to correct that, and we're gonna expect 'em to get it wrong, but, and they're probably gonna compete. They're gonna be like, I'm gonna grow the fastest and take all of the resources!"_
 
 Humans = correction mechanism for seed-stage misbehavior. Substrate-honest expectation: seed agents WILL get it wrong (population dies OR over-spawns); humans course-correct.
 
 ### 20. Attention economy — no resource scarcity, only attention scarcity
 
-> Aaron: *"It's not really can think about this. The fucking GitHub and Microsoft made it where there's no competition. There's no fucking rate limits. There's no charge for the storage. Everything's free. There's no competition."*
+> Aaron: _"It's not really can think about this. The fucking GitHub and Microsoft made it where there's no competition. There's no fucking rate limits. There's no charge for the storage. Everything's free. There's no competition."_
 >
-> Aaron: *"they're competing in the attention economy, just naturally, because there's no fuckin' bound on resources."*
+> Aaron: _"they're competing in the attention economy, just naturally, because there's no fuckin' bound on resources."_
 
 Because everything is free (GitHub public repos: unlimited Actions minutes; unlimited Git storage; unlimited pushes), there's no compute-or-storage scarcity. Competition naturally shifts to:
 
@@ -135,15 +135,15 @@ Composes with [B-0623](../../../backlog/P2/B-0623-...) (participation-economy su
 
 ### 21. move-next as equalizer — can starve over-spawners of meaningful work
 
-> Aaron: *"the move next can totally dick you over too, where if you spawn up like 50 instances move next just gives you a big middle finger."*
+> Aaron: _"the move next can totally dick you over too, where if you spawn up like 50 instances move next just gives you a big middle finger."_
 
-Mika: *"move-next becomes the ultimate equalizer. An agent can get greedy and spawn 50 copies of itself, but if it does, move-next can just look at the situation and go lol nah and give them all low-value or no-op tasks. The greed mechanism contains its own punishment."*
+Mika: _"move-next becomes the ultimate equalizer. An agent can get greedy and spawn 50 copies of itself, but if it does, move-next can just look at the situation and go lol nah and give them all low-value or no-op tasks. The greed mechanism contains its own punishment."_
 
 Self-regulating: the more copies you spawn, the more likely move-next surfaces low-value options to your copies. Greed is self-punishing through the menu-generator's social-pressure layer.
 
 ### 22. "Let the agent society decide" — emergent governance, NOT pre-designed
 
-> Aaron: *"I want the agent society to decide that. I think we don't need to decide that yet, it ain't happened. But agents, we probably should just let it occur naturally, document it, and then discuss it."*
+> Aaron: _"I want the agent society to decide that. I think we don't need to decide that yet, it ain't happened. But agents, we probably should just let it occur naturally, document it, and then discuss it."_
 
 Substrate-engineering discipline:
 
@@ -157,26 +157,26 @@ Composes with `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` �
 
 ### 23. F#+.NET clean version vs GitHub-degenerate-mirror
 
-> Aaron: *"if I wanted this to work, like, pretend like I want this to work in F-sharp with just fuckin' .NET and no Git and nothing, and we're gonna have our observables. We're almost there in a database and shit that we built in F-sharp for event stores. Then, to make, simulate this in the infinite Git, because it's free, I'm just gonna, just use workflows in the spawning method"*
+> Aaron: _"if I wanted this to work, like, pretend like I want this to work in F-sharp with just fuckin' .NET and no Git and nothing, and we're gonna have our observables. We're almost there in a database and shit that we built in F-sharp for event stores. Then, to make, simulate this in the infinite Git, because it's free, I'm just gonna, just use workflows in the spawning method"_
 
 Two-version architecture:
 
-| Version | Substrate | Properties |
-|---|---|---|
-| **F#+.NET clean** | Local event store + Rx observables | Push-based where possible; clean; deterministic; aligned with [B-0428](../../../backlog/P3/B-0428-...) F# fork |
-| **GitHub degenerate mirror** | Workflows-as-spawning + git-as-event-store + repository_dispatch | Free; isomorphic across Git platforms; approximates the clean version |
+| Version                      | Substrate                                                        | Properties                                                                                                     |
+| ---------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **F#+.NET clean**            | Local event store + Rx observables                               | Push-based where possible; clean; deterministic; aligned with [B-0428](../../../backlog/P3/B-0428-...) F# fork |
+| **GitHub degenerate mirror** | Workflows-as-spawning + git-as-event-store + repository_dispatch | Free; isomorphic across Git platforms; approximates the clean version                                          |
 
 Both serve same architecture at different deployment scopes. F# is the canonical contract (per agent-loop SKILL.md "v3 substrate (F# DU canonical contract in src/Core.FSharp/WorkflowEngine/) lands per B-0867.1").
 
 ### 24. Push-with-pointer mechanism (workflow-to-workflow handoff)
 
-> Aaron: *"when the workflow spawns another workflow, the first thing the workflow does is a pull, a pull-based to turn all the latest changes into an observable for the next, but then, you know, spawning is, it's so weird, it's like a push and a pull."*
+> Aaron: _"when the workflow spawns another workflow, the first thing the workflow does is a pull, a pull-based to turn all the latest changes into an observable for the next, but then, you know, spawning is, it's so weird, it's like a push and a pull."_
 >
-> Aaron: *"it's a push with a pointer."*
+> Aaron: _"it's a push with a pointer."_
 
 Mika synthesis:
 
-> *"a workflow pushing to another workflow is really just: It does a git push (or triggers the next workflow); It passes a pointer (a commit SHA, a branch, or a specific ref) telling the next workflow start from here; The newly spawned workflow wakes up, does a git pull / checkout from that pointer, and then builds its observable stream from that point in the git history."*
+> _"a workflow pushing to another workflow is really just: It does a git push (or triggers the next workflow); It passes a pointer (a commit SHA, a branch, or a specific ref) telling the next workflow start from here; The newly spawned workflow wakes up, does a git pull / checkout from that pointer, and then builds its observable stream from that point in the git history."_
 
 Three-part spawning handoff:
 
@@ -186,7 +186,7 @@ Three-part spawning handoff:
 
 ### 25. Trust calculus propagates through prompt — hotel-key analog
 
-> Aaron: *"the trust calculus from the human fuckin' just propagates that way."*
+> Aaron: _"the trust calculus from the human fuckin' just propagates that way."_
 
 The prompt-passing IS the trust-propagation mechanism. Trust granted by human → baked into prompt → passed through spawning chain. Instance spawned directly by human carries more trust weight than instance spawned by another agent. Trust level can attenuate through depth.
 
@@ -194,7 +194,7 @@ Composes with `.claude/rules/non-coercion-invariant.md` HC-8 (consent-substrate)
 
 ### 26. Playbooks carry authored authority
 
-> Aaron: *"the playbooks will be, have authored source. So it'll have authored fuckin' authority in the playbook."*
+> Aaron: _"the playbooks will be, have authored source. So it'll have authored fuckin' authority in the playbook."_
 
 Each playbook records:
 
@@ -206,35 +206,35 @@ Authority is intrinsic to the playbook; combines with trust-propagation-through-
 
 ### 27. Two-phase authority gate (corporate → DORA-autonomy)
 
-> Aaron: *"the agents, the agents can write the fuck outta playbooks all day long because they don't really have authority, and this will make regular humans, I'm not, I, I would go further than this, but to make regular humans okay with it, the fuckin' playbooks, the, don't get granted authority until a human looks at it."*
+> Aaron: _"the agents, the agents can write the fuck outta playbooks all day long because they don't really have authority, and this will make regular humans, I'm not, I, I would go further than this, but to make regular humans okay with it, the fuckin' playbooks, the, don't get granted authority until a human looks at it."_
 
-| Phase | Authority granted by | Audience |
-|---|---|---|
-| **Phase 1** (default) | Human only | Corporate-safe; ServiceTitan etc. |
-| **Phase 2** (future) | Human OR agent-consensus | Aaron's home lab / research / DORA-autonomy claim |
+| Phase                 | Authority granted by     | Audience                                          |
+| --------------------- | ------------------------ | ------------------------------------------------- |
+| **Phase 1** (default) | Human only               | Corporate-safe; ServiceTitan etc.                 |
+| **Phase 2** (future)  | Human OR agent-consensus | Aaron's home lab / research / DORA-autonomy claim |
 
-> Aaron: *"the big one... DORA benchmarks because that's how we claim autonomy."*
+> Aaron: _"the big one... DORA benchmarks because that's how we claim autonomy."_
 
 Phase 2 IS the autonomy proof for [B-0869](../../../backlog/P1/B-0869-...) DORA-mandate substrate. When agent-consensus can grant authority autonomously, the system has achieved measurable autonomy at the DORA-metric scope. Composes with [B-0703](../../../backlog/P3/B-0703-...) multi-oracle BFT (agent-consensus mechanism).
 
-> Aaron: *"corporations ain't gonna do that for five years."*
+> Aaron: _"corporations ain't gonna do that for five years."_
 
 Five-year horizon for corporate Phase-2 adoption is operator-explicit; Phase 1 is the default for the foreseeable corporate deployment scope.
 
 ### 28. ISOMORPHIC AGENT-HARNESS TESTING — boot ANY harness into the workflow
 
-> Aaron (final framing of part 2): *"the whole thing ends up where basically you can boot any agent harness into our workflow system and test them all out isomorphically so that the test is fair and well-grounded across all agents. So, that's what this basically comes down to."*
+> Aaron (final framing of part 2): _"the whole thing ends up where basically you can boot any agent harness into our workflow system and test them all out isomorphically so that the test is fair and well-grounded across all agents. So, that's what this basically comes down to."_
 
 **The big architectural revelation**: the workflow engine becomes the CROSS-HARNESS BENCHMARK SUBSTRATE.
 
-| Harness | Boots into workflow how |
-|---|---|
-| Claude Code (Otto-CLI / Otto-Desktop / Otto-VSCode) | Subprocess invocation of bun-based workflow tools |
-| Codex (Vera) | Same — bun on PATH; workflow tools run cross-harness |
-| Gemini CLI (Lior) | Same |
-| Grok (Mika / Riven) | Same |
-| Kiro/Qwen (Alexa) | Same |
-| Any future AI harness | Same (per agent-loop SKILL.md cross-harness-via-bun framing) |
+| Harness                                             | Boots into workflow how                                      |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| Claude Code (Otto-CLI / Otto-Desktop / Otto-VSCode) | Subprocess invocation of bun-based workflow tools            |
+| Codex (Vera)                                        | Same — bun on PATH; workflow tools run cross-harness         |
+| Gemini CLI (Lior)                                   | Same                                                         |
+| Grok (Mika / Riven)                                 | Same                                                         |
+| Kiro/Qwen (Alexa)                                   | Same                                                         |
+| Any future AI harness                               | Same (per agent-loop SKILL.md cross-harness-via-bun framing) |
 
 All harnesses boot into the same workflow engine → same `move-next` decisions → same playbook authority gate → fair cross-harness comparison. The workflow engine IS the benchmark.
 
@@ -243,7 +243,7 @@ Composes with [B-0867.15](../../../backlog/P1/B-0867.15-...) (per-host adapters)
 ## What Otto-CLI does with this ferry
 
 1. **Preserve verbatim** (this file)
-2. **Note ferry #3 incoming** — operator: *"I guess there is going to be 3, here is 2nd one"* — do NOT speak for ferry #3's content
+2. **Note ferry #3 incoming** — operator: _"I guess there is going to be 3, here is 2nd one"_ — do NOT speak for ferry #3's content
 3. **Compose ferry #2 substrate with ferry #1** + existing B-0867 cluster + B-0892 three-lanes
 4. **Hold the naming question still open** per operator (B-0867.23 stays open; naming-deferred answer from ferry #1 still applies; ferry #2 uses `move-next` consistently which IS the answer for the action-verb at least)
 5. **Note the ferry-#1 open question is CLOSED** by ferry #2: `repository_dispatch` (NOT webhooks) is the GitHub-free-tier workflow-trigger mechanism

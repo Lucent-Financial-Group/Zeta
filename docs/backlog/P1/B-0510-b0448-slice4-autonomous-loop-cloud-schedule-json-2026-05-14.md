@@ -90,16 +90,16 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [ ] B-0507 confirmed: trigger types, syntax, quota rules
 - [ ] B-0508 schema merged so this file validates against it
 - [ ] Confirm the bootstream pointer in `autonomous-loop/SKILL.md` is still
-  correct (Cloud Routine fires are fresh sessions; need bootstream loaded as
-  project knowledge in the Cloud Routine's project)
+      correct (Cloud Routine fires are fresh sessions; need bootstream loaded as
+      project knowledge in the Cloud Routine's project)
 - [ ] Verify project-knowledge requirement for Cloud Routines (does the bootstream
-  need to be uploaded to a Cloud Routine "project"?)
+      need to be uploaded to a Cloud Routine "project"?)
 
 ## Acceptance criteria
 
 - [x] `tools/routines/autonomous-loop/cloud-schedule.json` committed
 - [x] File validates against the JSON schema from B-0508 (or equivalent TS type)
 - [ ] `bun tools/routines/install.ts` output includes the Cloud Routine next-step block
-  for `autonomous-loop` (tracked in open row B-0509; not yet implemented)
+      for `autonomous-loop` (tracked in open row B-0509; not yet implemented)
 - [x] `notes` field documents the Desktop-vs-Cloud duality (schedule.json companion)
 - [x] B-0510 closed with PR link

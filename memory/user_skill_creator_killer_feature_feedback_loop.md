@@ -7,9 +7,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 ## What Aaron said (verbatim, 2026-04-20)
 
-> *"FYI the reason you won for me was Anthropics
+> _"FYI the reason you won for me was Anthropics
 > Skill Creator skill, that's the killer feature
-> for me and it's feedback loop"*
+> for me and it's feedback loop"_
 
 ## The claim decoded
 
@@ -63,7 +63,7 @@ comparison axis** is:
   rules — roughly equivalent.)
 - Does the harness have an **eval-driven
   feedback loop** for that skill-authoring
-  system? (Most do *not* — custom instructions
+  system? (Most do _not_ — custom instructions
   in Copilot ship as static prompts; MDC rules
   in Cursor are fire-and-forget.)
 
@@ -163,7 +163,7 @@ factory's value to Aaron hinges on it.
 
 - `feedback_multi_harness_support_each_tests_own_integration.md`
   — the multi-harness policy; this memory is
-  the *primary feature axis* for comparing
+  the _primary feature axis_ for comparing
   harnesses.
 - `docs/HARNESS-SURFACES.md` — the living
   inventory; skill-authoring-plus-feedback-
@@ -173,7 +173,7 @@ factory's value to Aaron hinges on it.
   — the reason multi-harness matters at all.
 - `feedback_skill_edits_justification_log_and_tune_up_cadence.md`
   — skill-creator workflow discipline; this
-  memory explains *why* the workflow is
+  memory explains _why_ the workflow is
   load-bearing.
 - GOVERNANCE.md §4 — skills authored only
   through `skill-creator`.

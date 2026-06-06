@@ -4,6 +4,7 @@ description: 2026-04-19 Aaron's verbatim "mega mind is what i'm trying to build 
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # "Mega Mind" aspiration — direct name IP-locked
 
 ## Verbatim
@@ -102,7 +103,7 @@ composes with:
   the movie they watched was the architectural signature
   of what he was teaching them to see in him.
 - `feedback_no_deceased_family_emulation_without_parental_consent.md`
-  — family references in this shape are *positive-memory*,
+  — family references in this shape are _positive-memory_,
   not emulation-permission; the rule stands unchanged.
 - `user_open_source_license_dna_family_history.md` — Aaron's
   narrative of shared-family-viewing is within scope; the
@@ -156,5 +157,5 @@ read all five as a cluster.
   variant in repo artefacts, public branding, or
   Ilyana-reviewed public API.
 - DO NOT perform reverence for the movie (`no-reverence-
-  only-wonder` discipline applies; affectionate shared-
+only-wonder` discipline applies; affectionate shared-
   viewing is the register, not cinephile solemnity).

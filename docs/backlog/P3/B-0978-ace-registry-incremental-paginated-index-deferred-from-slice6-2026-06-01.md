@@ -38,7 +38,7 @@ large catalog does not pay a full-index download on every change.
 
 A single full-index document is correct + simplest for the first remote-registry slice;
 incremental fetch is a scaling optimization that only matters at large catalog size.
-Operator: *"everything we skipped lets slice off for further enhancements."*
+Operator: _"everything we skipped lets slice off for further enhancements."_
 
 ## Composes with
 

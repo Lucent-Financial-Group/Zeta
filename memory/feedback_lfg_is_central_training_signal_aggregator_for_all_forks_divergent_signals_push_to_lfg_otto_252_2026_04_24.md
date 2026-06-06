@@ -4,6 +4,7 @@ description: Aaron Otto-252 expansion of Otto-250/251 training-signal framing �
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **LFG (`Lucent-Financial-Group/Zeta`) is the central
@@ -13,14 +14,14 @@ first-class home in LFG for its divergent signals.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"that why i want billing metrics snap shooted on a cadence
+> _"that why i want billing metrics snap shooted on a cadence
 > too, lfg should be setup to have a home for any fork to
 > push thier signal like thier PRs reviews and billing data,
 > and anything that's divergent between lfg and a fork, the
 > forks data can be allowed to be pushed to lfg so it has
 > more signals to train from, so acehack fork can have a
 > first class home for it's divergent signals in lfg, all
-> you base/data belog to us lol"*
+> you base/data belog to us lol"_
 
 ## Why this matters
 
@@ -70,6 +71,7 @@ forks/
 ```
 
 Discipline (per-fork):
+
 - Fork pushes divergent data on a cadence (align with
   drain-close + billing-snapshot schedule)
 - Canonical LFG data is NOT duplicated; only divergence
@@ -79,6 +81,7 @@ Discipline (per-fork):
 ### Billing-snapshots-on-cadence
 
 Part of the signal. Snapshot shape:
+
 - GitHub Actions minutes consumed (per-runner-class)
 - Copilot usage (per-account, per-feature if exposed)
 - Storage (repos, artifacts, packages)
@@ -95,6 +98,7 @@ Open question (for future tick): how does AceHack push to
 LFG forks/AceHack/?
 
 Options:
+
 1. **Per-fork PR batches** — AceHack collects signal batches
    and opens PRs to LFG `forks/AceHack/<channel>/`
 2. **Automated sync hook** — post-PR-close on AceHack,
@@ -146,14 +150,14 @@ implementation tick.
 
 ## Direct Aaron quote to preserve
 
-> *"that why i want billing metrics snap shooted on a cadence
+> _"that why i want billing metrics snap shooted on a cadence
 > too, lfg should be setup to have a home for any fork to
 > push thier signal like thier PRs reviews and billing data,
 > and anything that's divergent between lfg and a fork, the
 > forks data can be allowed to be pushed to lfg so it has
 > more signals to train from, so acehack fork can have a
 > first class home for it's divergent signals in lfg, all
-> you base/data belog to us lol"*
+> you base/data belog to us lol"_
 
 ("lol" signals the Command & Conquer meme reference + levity
 in the framing — not a retraction of the serious intent.)

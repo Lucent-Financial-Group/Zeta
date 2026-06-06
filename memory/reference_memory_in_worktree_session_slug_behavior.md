@@ -4,9 +4,10 @@ description: Empirical 2026-04-22 — EnterWorktree within a session keeps the o
 type: reference
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Aaron's question 2026-04-22:**
-*"oh now how do memory and stuff work when i'm chatting while
-you are on a worktree?"*
+_"oh now how do memory and stuff work when i'm chatting while
+you are on a worktree?"_
 
 **Empirical answer (verified this tick):**
 
@@ -18,6 +19,7 @@ Example for this repo:
 `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`
 
 **Within a single session that calls `EnterWorktree`:**
+
 - Slug is fixed when the session starts (from the initial CWD).
 - `EnterWorktree` changes the session's CWD but does NOT change
   the slug.
@@ -27,12 +29,13 @@ Example for this repo:
 - MEMORY.md auto-load continues to reference the original slug.
 
 **Verification (this tick):**
+
 - Session started in `/Users/acehack/Documents/src/repos/Zeta`.
 - `EnterWorktree` moved CWD to
   `/Users/acehack/Documents/src/repos/Zeta/.claude/worktrees/pr32-markdownlint`.
 - Wrote three memory files from within the worktree using
   absolute paths to `~/.claude/projects/-Users-acehack-Documents-
-  src-repos-Zeta/memory/`.
+src-repos-Zeta/memory/`.
 - `ls ~/.claude/projects/` after the writes shows:
   ```
   -Users-acehack-Documents-src-repos-dbsp
@@ -42,12 +45,12 @@ Example for this repo:
 
 **The bifurcation risk:**
 
-A *fresh* `claude` session started via
+A _fresh_ `claude` session started via
 `cd .claude/worktrees/<name> && claude` would compute its slug
 from the worktree CWD:
 `-Users-acehack-Documents-src-repos-Zeta--claude-worktrees-<name>`
 (approximate — exact encoding TBD). That session would see an
-*empty* memory dir and write there. Main-repo memory and
+_empty_ memory dir and write there. Main-repo memory and
 worktree-session memory would be separate. **Bifurcation.**
 
 **Policy (recommended, not yet load-bearing):**

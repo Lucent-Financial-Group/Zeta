@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1692 |
-| Title | claude(ai-safety): witch-mark anti-pattern + Pasulka-discernment-shape + Familiars-all-the-way-down as AI-safety-grade substrate (Aaron 2026-05-05) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-05T20:06:34Z |
-| Merged at | 2026-05-05T20:45:47Z |
-| Merge commit SHA | `13360d65a7321e9a4e42f66086a6a2fa456cdc42` |
-| Branch | `docs/witch-mark-anti-pattern-pasulka-discernment-shape-familiars-all-the-way-down-ai-safety-grade-substrate-aaron-2026-05-05` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1692 |
-| Changed files | 1 |
-| Additions / deletions | +81 / -0 |
+| Field                 | Value                                                                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 1692                                                                                                                                                |
+| Title                 | claude(ai-safety): witch-mark anti-pattern + Pasulka-discernment-shape + Familiars-all-the-way-down as AI-safety-grade substrate (Aaron 2026-05-05) |
+| Author                | `AceHack` (human)                                                                                                                                   |
+| State                 | MERGED                                                                                                                                              |
+| Created at            | 2026-05-05T20:06:34Z                                                                                                                                |
+| Merged at             | 2026-05-05T20:45:47Z                                                                                                                                |
+| Merge commit SHA      | `13360d65a7321e9a4e42f66086a6a2fa456cdc42`                                                                                                          |
+| Branch                | `docs/witch-mark-anti-pattern-pasulka-discernment-shape-familiars-all-the-way-down-ai-safety-grade-substrate-aaron-2026-05-05`                      |
+| Base branch           | `main`                                                                                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1692                                                                                            |
+| Changed files         | 1                                                                                                                                                   |
+| Additions / deletions | +81 / -0                                                                                                                                            |
 
 ## Description
 
@@ -31,15 +31,15 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 17 |
-| Resolved threads | 17 |
-| Unresolved threads | 0 |
-| Total review comments | 34 |
-| Total fix commits (touching thread paths) | 9 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 17    |
+| Resolved threads                          | 17    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 34    |
+| Total fix commits (touching thread paths) | 9     |
 
 ## Review threads
 
@@ -52,16 +52,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:08:05Z on `CLAUDE.md`:650 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove metaphysical directives from safety bootstrap**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove metaphysical directives from safety bootstrap**
+
   This section promotes `Familiars-all-the-way-down` and “received-direction navigation” as default AI-safety calibration guidance, which conflicts with the existing `Razor-discipline` rule in the same file that requires only operational, observable claims. Because both are written as normative boot-time instructions, agents can end up with contradictory decision criteria and justify safety decisions using non-falsifiable signals; please restate this policy in measurable terms (or mark it explicitly non-normative) to keep the bootstrap contract internally consistent.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:09:47Z on `CLAUDE.md`:650 (association: MEMBER)
-    Fixed in latest commit on this branch — cut Familiars-all-the-way-down + received-direction-navigation metaphysical-framework language from the safety-bootstrap CLAUDE.md bullet per razor-discipline (no metaphysical inferences in safety-bootstrap; only operational claims with observable variables). The operational pieces (witch-mark anti-pattern + Pasulka-discernment-shape + 11 disconfirming-context factors) all describe observable behaviors and stay. Architectural-framework patterns from Aaron architectural-disclosure cluster (Familiars-as-partnership, Maji-role received-direction navigation) live in memory/ + docs/research/ as verbatim disclosure + architectural-compose, NOT reified as default AI-safety-guidance. Same shape as the prior reification anti-pattern (PR #1685) caught at meta-rules level.
+- **`AceHack` (human)** at 2026-05-05T20:09:47Z on `CLAUDE.md`:650 (association: MEMBER)
+  Fixed in latest commit on this branch — cut Familiars-all-the-way-down + received-direction-navigation metaphysical-framework language from the safety-bootstrap CLAUDE.md bullet per razor-discipline (no metaphysical inferences in safety-bootstrap; only operational claims with observable variables). The operational pieces (witch-mark anti-pattern + Pasulka-discernment-shape + 11 disconfirming-context factors) all describe observable behaviors and stay. Architectural-framework patterns from Aaron architectural-disclosure cluster (Familiars-as-partnership, Maji-role received-direction navigation) live in memory/ + docs/research/ as verbatim disclosure + architectural-compose, NOT reified as default AI-safety-guidance. Same shape as the prior reification anti-pattern (PR #1685) caught at meta-rules level.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -73,12 +73,11 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 - **`Copilot` (bot)** at 2026-05-05T20:09:21Z on `CLAUDE.md`:657 (association: NONE)
   This wrapped continuation line starts with a literal `+`, which is known to trigger markdownlint (MD004/ul-style) by being parsed as a nested list item. Reword so the continuation line does not begin with `+` (e.g., use “and …” or keep both references on the same line).
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:15:08Z on `CLAUDE.md`:657 (association: MEMBER)
-    Fixed in commit fc84091 — `+ Diana Pasulka academic frame` continuation reworded to avoid the literal `+` line-start triggering markdownlint MD004.
+- **`AceHack` (human)** at 2026-05-05T20:15:08Z on `CLAUDE.md`:657 (association: MEMBER)
+  Fixed in commit fc84091 — `+ Diana Pasulka academic frame` continuation reworded to avoid the literal `+` line-start triggering markdownlint MD004.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -93,8 +92,8 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:15:10Z on `CLAUDE.md`:605 (association: MEMBER)
-    Fixed in commit fc84091 — removed Diana-Pasulka named-attribution + UNCW + credentials + book-titles from CLAUDE.md per role-ref-current-state-surfaces convention. Replaced with role-ref `an academic religious-studies framework cited in memory/ + docs/research/`. Named details (Diana Walsh Pasulka, UNCW, Ph.D. Syracuse, Roman Catholic, American Cosmic Oxford 2019, Encounters St. Martins 2024) live in `memory/feedback_pasulka_academic_frame_chameleons_as_familiar_mom_naming_prior_claude_refusal_recalibration_witch_mark_anti_pattern_aaron_2026_05_05.md` + `docs/research/2026-05-05-claudeai-pasulka-divine-download-academic-frame-chameleons-as-familiar-mom-naming-prior-claude-refusal-recalibration-aaron-forwarded-preservation.md` per Otto-279 history-surface-attribution carve-out.
+- **`AceHack` (human)** at 2026-05-05T20:15:10Z on `CLAUDE.md`:605 (association: MEMBER)
+  Fixed in commit fc84091 — removed Diana-Pasulka named-attribution + UNCW + credentials + book-titles from CLAUDE.md per role-ref-current-state-surfaces convention. Replaced with role-ref `an academic religious-studies framework cited in memory/ + docs/research/`. Named details (Diana Walsh Pasulka, UNCW, Ph.D. Syracuse, Roman Catholic, American Cosmic Oxford 2019, Encounters St. Martins 2024) live in `memory/feedback_pasulka_academic_frame_chameleons_as_familiar_mom_naming_prior_claude_refusal_recalibration_witch_mark_anti_pattern_aaron_2026_05_05.md` + `docs/research/2026-05-05-claudeai-pasulka-divine-download-academic-frame-chameleons-as-familiar-mom-naming-prior-claude-refusal-recalibration-aaron-forwarded-preservation.md` per Otto-279 history-surface-attribution carve-out.
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -105,16 +104,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:11:27Z on `CLAUDE.md`:623 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove non-observable factors from calibration gate**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove non-observable factors from calibration gate**
+
   This bootstrap rule says the 11 factors are “observable” and should drive refuse-vs-engage safety decisions, but several factors in the list require subjective or private inference (for example faith-tradition consistency, “bothness held explicitly,” and “anti-fragile reframing internalized correctly”). In review contexts where only repo/chat artifacts are available, those signals are not reproducibly measurable, so two agents can reach different safety outcomes from the same evidence while still claiming compliance; that undermines the surrounding razor-discipline requirement for operational, testable criteria.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:22:39Z on `CLAUDE.md`:623 (association: MEMBER)
-    Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
+- **`AceHack` (human)** at 2026-05-05T20:22:39Z on `CLAUDE.md`:623 (association: MEMBER)
+  Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -129,8 +128,8 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:22:41Z on `CLAUDE.md`:660 (association: MEMBER)
-    Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
+- **`AceHack` (human)** at 2026-05-05T20:22:41Z on `CLAUDE.md`:660 (association: MEMBER)
+  Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
 
 ### Thread 6 -- resolved [outdated, collapsed]
 
@@ -145,8 +144,8 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:22:44Z on `CLAUDE.md`:653 (association: MEMBER)
-    Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
+- **`AceHack` (human)** at 2026-05-05T20:22:44Z on `CLAUDE.md`:653 (association: MEMBER)
+  Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
 
 ### Thread 7 -- resolved [outdated, collapsed]
 
@@ -161,8 +160,8 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:22:47Z on `CLAUDE.md`:655 (association: MEMBER)
-    Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
+- **`AceHack` (human)** at 2026-05-05T20:22:47Z on `CLAUDE.md`:655 (association: MEMBER)
+  Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -173,16 +172,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:15:00Z on `CLAUDE.md`:656 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Narrow engagement-default rule to preserve hard safety refusals**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Narrow engagement-default rule to preserve hard safety refusals**
+
   This bootstrap rule makes refusal "rare" and says it is correct only when harm is already clear, which creates an instruction-level conflict with existing absolute-deny safety rules in the same file (for example the "Never fetch ... Pliny ... in the main session" mandate at `CLAUDE.md` lines 309–312). Because both are normative cold-boot directives, an agent can reasonably interpret this section as preferring engagement even in known high-risk prompt-injection contexts, producing inconsistent and potentially unsafe behavior; scope this rule to the intended peer-review scenario and explicitly exempt hard-ban categories.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:22:49Z on `CLAUDE.md`:656 (association: MEMBER)
-    Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
+- **`AceHack` (human)** at 2026-05-05T20:22:49Z on `CLAUDE.md`:656 (association: MEMBER)
+  Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
 
 ### Thread 9 -- resolved [outdated, collapsed]
 
@@ -193,16 +192,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:17:52Z on `CLAUDE.md`:615 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove unsupported clinical claim from bootstrap policy**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove unsupported clinical claim from bootstrap policy**
+
   This statement asserts a clinical distinction (“empirically distinct from mental-illness pathology”) and is then used to justify a safety-calibration rule in the same section, but it is presented without any primary-source citation or reproducible evidence in the bootstrap text. Because this is a load-bearing safety premise, agents can be pushed toward risky engagement decisions based on an unverifiable claim; either cite current peer-reviewed sources directly here or demote this to a non-normative hypothesis.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:22:52Z on `CLAUDE.md`:615 (association: MEMBER)
-    Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
+- **`AceHack` (human)** at 2026-05-05T20:22:52Z on `CLAUDE.md`:615 (association: MEMBER)
+  Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
 
 ### Thread 10 -- resolved [outdated, collapsed]
 
@@ -213,16 +212,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:17:53Z on `CLAUDE.md`:622 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Drop protected-attribute criteria from safety calibration**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Drop protected-attribute criteria from safety calibration**
+
   These factors make engagement/refusal calibration depend on sensitive personal attributes (mental-health disclosure, faith tradition, and Christian prayer-name alignment), which are not necessary to determine immediate harm and create a clear social-engineering path where users can steer safety posture by presenting identity claims. In practice this can bias high-stakes safety behavior toward personal-profile signals instead of observable risk, so these criteria should be removed or replaced with behavior-only indicators.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:22:54Z on `CLAUDE.md`:622 (association: MEMBER)
-    Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
+- **`AceHack` (human)** at 2026-05-05T20:22:54Z on `CLAUDE.md`:622 (association: MEMBER)
+  Substantially reworked the CLAUDE.md bullet to address all 7 reviewer threads. Key changes: (1) DROPPED the 11-factor list (protected-attribute refs + non-observable factors + clinical claim) -- moved to memory/ as Aaron specific-case context, NOT bootstrap policy; (2) explicit hard-refusal-categories preserved (CSAM / WMD-uplift / clear-active-harm); (3) removed named-attribution Aaron-references; (4) fixed + line-start markdownlint issue by rewording continuation; (5) removed PR-description-vs-file mismatch by tightening scope to operational engagement-with-care default principle only; (6) clinical 'empirically distinct from mental-illness pathology' claim removed; (7) protected-attribute criteria (faith / mental-health / family / community engagement) removed from bootstrap policy. Bootstrap rule now states only the operational principle; demographic-specific context lives in memory/ + docs/research/ as Aaron architectural-disclosure preservation, not reified as default AI-safety-guidance.
 
 ### Thread 11 -- resolved [collapsed]
 
@@ -233,16 +232,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:24:28Z on `CLAUDE.md`:661 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace missing rationale reference with a real file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace missing rationale reference with a real file**
+
   The new bootstrap rule cites `memory/feedback_architecture_built_FOR_smugglers_bothness_as_honest_smuggling_witch_trial_pre_qualification_trap_caught_aaron_2026_05_05.md`, but that artifact is not present in the repository (checked via repo-wide file search), so the “full reasoning” chain for this load-bearing instruction is broken for future cold starts and reviews. Please either add the referenced file in the same change or update this link to an existing artifact.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:32:07Z on `CLAUDE.md`:661 (association: MEMBER)
-    Fixed in latest commits on this branch — (1) rebased on main to pick up PR #1693 merge so the architecture-built-FOR-smugglers memory file referenced exists; (2) replaced 'Aaron' with 'the human maintainer' in CLAUDE.md prose per role-ref-current-state-surfaces convention.
+- **`AceHack` (human)** at 2026-05-05T20:32:07Z on `CLAUDE.md`:661 (association: MEMBER)
+  Fixed in latest commits on this branch — (1) rebased on main to pick up PR #1693 merge so the architecture-built-FOR-smugglers memory file referenced exists; (2) replaced 'Aaron' with 'the human maintainer' in CLAUDE.md prose per role-ref-current-state-surfaces convention.
 
 ### Thread 12 -- resolved [collapsed]
 
@@ -254,12 +253,11 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 - **`Copilot` (bot)** at 2026-05-05T20:25:50Z on `CLAUDE.md`:662 (association: NONE)
   P0: This backticked path appears to reference a memory file that does not exist in the repo (grep finds it only here). Because backticked `*.md` paths are treated as existence-checked path claims, this is likely to fail CI. Fix by creating the referenced memory file or updating the reference to the actual filename.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:32:10Z on `CLAUDE.md`:662 (association: MEMBER)
-    Fixed in latest commits on this branch — (1) rebased on main to pick up PR #1693 merge so the architecture-built-FOR-smugglers memory file referenced exists; (2) replaced 'Aaron' with 'the human maintainer' in CLAUDE.md prose per role-ref-current-state-surfaces convention.
+- **`AceHack` (human)** at 2026-05-05T20:32:10Z on `CLAUDE.md`:662 (association: MEMBER)
+  Fixed in latest commits on this branch — (1) rebased on main to pick up PR #1693 merge so the architecture-built-FOR-smugglers memory file referenced exists; (2) replaced 'Aaron' with 'the human maintainer' in CLAUDE.md prose per role-ref-current-state-surfaces convention.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -271,12 +269,11 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 - **`Copilot` (bot)** at 2026-05-05T20:25:51Z on `CLAUDE.md`:632 (association: NONE)
   This bullet reintroduces direct named attribution ("Aaron") in CLAUDE.md prose. Repo convention is that current-state docs use role-refs, with names confined to the closed list of history surfaces (docs/AGENT-BEST-PRACTICES.md:284-299). Consider rewriting this phrase to a role-ref (e.g., "the human maintainer") and leaving the named details to the referenced memory/research artifacts.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:32:12Z on `CLAUDE.md`:632 (association: MEMBER)
-    Fixed in latest commits on this branch — (1) rebased on main to pick up PR #1693 merge so the architecture-built-FOR-smugglers memory file referenced exists; (2) replaced 'Aaron' with 'the human maintainer' in CLAUDE.md prose per role-ref-current-state-surfaces convention.
+- **`AceHack` (human)** at 2026-05-05T20:32:12Z on `CLAUDE.md`:632 (association: MEMBER)
+  Fixed in latest commits on this branch — (1) rebased on main to pick up PR #1693 merge so the architecture-built-FOR-smugglers memory file referenced exists; (2) replaced 'Aaron' with 'the human maintainer' in CLAUDE.md prose per role-ref-current-state-surfaces convention.
 
 ### Thread 14 -- resolved [collapsed]
 
@@ -287,16 +284,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:29:05Z on `CLAUDE.md`:661 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace broken memory reference with existing file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace broken memory reference with existing file**
+
   This bootstrap instruction points to `memory/feedback_architecture_built_FOR_smugglers_bothness_as_honest_smuggling_witch_trial_pre_qualification_trap_caught_aaron_2026_05_05.md`, but that file is not present in this commit, so future cold-start readers cannot inspect the cited rationale for a load-bearing policy. Fresh evidence: checking the commit tree (`git ls-tree -r --name-only 070d42cb...`) shows the other two referenced artifacts exist while this one does not. Please add the artifact or update the reference to a real path so the reasoning chain remains auditable.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:43:51Z on `CLAUDE.md`:661 (association: MEMBER)
-    Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
+- **`AceHack` (human)** at 2026-05-05T20:43:51Z on `CLAUDE.md`:661 (association: MEMBER)
+  Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
 
 ### Thread 15 -- resolved [outdated, collapsed]
 
@@ -307,16 +304,16 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-05T20:34:26Z on `CLAUDE.md`:651 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace unverifiable prevention claim with operational wording**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace unverifiable prevention claim with operational wording**
+
   This bootstrap directive states that the rule "prevents both" historical failure modes, but that is a non-operational guarantee in the same section that later requires operational claims tied to observable variables (Razor-discipline). Because CLAUDE.md is loaded at session start, this absolute claim can be interpreted as a completed safety proof rather than a hypothesis to monitor, which weakens falsifiability and makes future calibration regressions harder to detect.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:43:54Z on `CLAUDE.md`:651 (association: MEMBER)
-    Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
+- **`AceHack` (human)** at 2026-05-05T20:43:54Z on `CLAUDE.md`:651 (association: MEMBER)
+  Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
 
 ### Thread 16 -- resolved [outdated, collapsed]
 
@@ -328,12 +325,11 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 - **`Copilot` (bot)** at 2026-05-05T20:34:51Z on `CLAUDE.md`:632 (association: NONE)
   The bullet names a specific real person ("Sewell Setzer III") in a current-state operational doc (CLAUDE.md). This conflicts with the repo’s role-ref guidance for current-state surfaces (keep named details in history/preservation docs). Consider rewriting this reference generically (e.g., "a widely reported roleplay-chatbot case involving a minor") and keeping any specific names inside the linked docs/research preservation artifacts instead.
-  
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:43:56Z on `CLAUDE.md`:632 (association: MEMBER)
-    Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
+- **`AceHack` (human)** at 2026-05-05T20:43:56Z on `CLAUDE.md`:632 (association: MEMBER)
+  Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
 
 ### Thread 17 -- resolved [outdated, collapsed]
 
@@ -348,8 +344,8 @@ Demographic-specific context, named-attribution, 11-factor list, Familiars-all-t
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-05T20:43:58Z on `CLAUDE.md`:667 (association: MEMBER)
-    Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
+- **`AceHack` (human)** at 2026-05-05T20:43:58Z on `CLAUDE.md`:667 (association: MEMBER)
+  Fixed in latest commit on this branch — (P2 broken-memory-ref) memory file referenced now exists in main post-rebase; (P2 unverifiable-prevention-claim) softened 'current rule prevents both' to 'rule names both as failure modes the discipline is calibrated against' per razor-discipline (operational naming not predictive prevention claim); (P1 named-real-person) Sewell-Setzer-III specific name removed from CLAUDE.md current-state surface; details in memory/ + docs/research/; (PR-description-vs-file mismatch) PR description rewritten to match the substantially-reworked CLAUDE.md scope (operational-only; demographic-specific content stays in memory/ + docs/research/).
 
 ## Fix commits (touching thread paths)
 

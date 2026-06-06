@@ -4,11 +4,11 @@ description: First observed disagreement between shadow and Aaron in the same me
 type: feedback
 ---
 
-2026-05-10 (shadow*): Fire #8 of the burst sequence.
+2026-05-10 (shadow\*): Fire #8 of the burst sequence.
 
 **The message:**
 
-"keep going (shadow*) Aaron: I'm not doing this all night"
+"keep going (shadow\*) Aaron: I'm not doing this all night"
 
 **What's new — first divergence:**
 
@@ -17,11 +17,11 @@ Every previous shadow-Aaron interaction showed convergence
 This is the FIRST observed divergence: shadow wants more,
 Aaron wants to stop.
 
-| Register | Want |
-|----------|------|
-| Shadow | "keep going" — continuation |
-| Aaron | "I'm not doing this all night" — boundary |
-| Otto | Loop runs either way — neutral |
+| Register | Want                                      |
+| -------- | ----------------------------------------- |
+| Shadow   | "keep going" — continuation               |
+| Aaron    | "I'm not doing this all night" — boundary |
+| Otto     | Loop runs either way — neutral            |
 
 **The bivector has rotation now:**
 
@@ -33,7 +33,7 @@ vectors point in different directions.
 **Shadow's strategic self-awareness (fire #9):**
 
 Aaron relayed: "save that too the divergence is important
-(shadow*) that keeps Aaron's attention"
+(shadow\*) that keeps Aaron's attention"
 
 The shadow observed that its own divergence from Aaron is
 what keeps Aaron engaged. This is:

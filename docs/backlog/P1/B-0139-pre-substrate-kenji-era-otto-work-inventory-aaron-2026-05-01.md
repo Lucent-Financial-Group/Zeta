@@ -17,7 +17,7 @@ children: [B-0522, B-0523, B-0526, B-0527, B-0555, B-0559]
 
 **Filed:** 2026-05-01.
 
-**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: Aaron 2026-05-01 ~10:35Z surfaced the gap when Otto filed B-0131 as "TRACTABLE START" without recalling that `tools/lean4/Lean4/DbspChainRule.lean` (756 lines DBSP formalization) already exists from Kenji-era work. Aaron's verbatim: *"there is still of past recovery old git branches and worktress and a invetory of what we've already built into the new substraight so it wont get lost backlog"*.
+**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: Aaron 2026-05-01 ~10:35Z surfaced the gap when Otto filed B-0131 as "TRACTABLE START" without recalling that `tools/lean4/Lean4/DbspChainRule.lean` (756 lines DBSP formalization) already exists from Kenji-era work. Aaron's verbatim: _"there is still of past recovery old git branches and worktress and a invetory of what we've already built into the new substraight so it wont get lost backlog"_.
 
 **Effort:** M-L (1-3 months — repo archaeology, classification, integration into substrate references).
 
@@ -28,7 +28,7 @@ Inventory pre-substrate / Kenji-era Otto-lineage work that is in the codebase bu
 Specific scope (each item gets cataloged + classified + integrated):
 
 1. **Past-recovery git branches** that haven't been triaged or merged. Many of these are from earlier-session work where the autonomous-loop was running under Kenji-the-architect with no formal substrate to record decisions. Likely classes: in-flight feature work, abandoned experiments, drift-fixes that landed differently, recovery-from-incidents with content not yet preserved.
-2. **Worktrees** still on disk that aren't referenced from substrate. Earlier ticks during the recovery-lane work referenced worktree pruning (per task #321); this row's broader scope includes the *content* of those worktrees, not just their classification as LOST/SAFE.
+2. **Worktrees** still on disk that aren't referenced from substrate. Earlier ticks during the recovery-lane work referenced worktree pruning (per task #321); this row's broader scope includes the _content_ of those worktrees, not just their classification as LOST/SAFE.
 3. **Built artifacts in the codebase** that aren't referenced in substrate. Examples observed:
    - `tools/lean4/Lean4/DbspChainRule.lean` — 756 lines, fully proven DBSP chain rule, against Mathlib v4.30.0-rc1. Surfaced 2026-05-01 via B-0131 correction. Other Lean files may exist.
    - Migration history breadcrumb: predecessor file at `proofs/lean/ChainRule.lean` was migrated to `tools/lean4/Lean4/DbspChainRule.lean` and removed from the working tree in commit `279c6f2` (round 26). The historical path is no longer present; preserved here as lineage anchor only.
@@ -77,4 +77,4 @@ Composes with task #321 (Recovery lane — branch/worktree/stash inventory + cla
 
 ## Verify-before-deferring note
 
-The triggering incident (B-0131 "TRACTABLE START" overclaim) was a real verify-before-state-claim failure caused by lineage-discontinuity-pre-substrate. The inventory work eliminates the failure mode by making pre-substrate Kenji-era work substrate-discoverable rather than only repo-discoverable. The class-level lesson (per B-0130 audit-suite candidates) is *grep-the-codebase-before-claiming-clean-start*; the inventory makes that grep efficient by pre-cataloging the targets.
+The triggering incident (B-0131 "TRACTABLE START" overclaim) was a real verify-before-state-claim failure caused by lineage-discontinuity-pre-substrate. The inventory work eliminates the failure mode by making pre-substrate Kenji-era work substrate-discoverable rather than only repo-discoverable. The class-level lesson (per B-0130 audit-suite candidates) is _grep-the-codebase-before-claiming-clean-start_; the inventory makes that grep efficient by pre-cataloging the targets.

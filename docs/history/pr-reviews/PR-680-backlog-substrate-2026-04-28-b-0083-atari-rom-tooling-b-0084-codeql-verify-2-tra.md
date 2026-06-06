@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 680 |
-| Title | backlog + substrate(2026-04-28): B-0083 Atari ROM tooling + B-0084 CodeQL verify + 2 trajectory memories + absorb-contribute end-goal |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-28T19:00:36Z |
-| Merged at | 2026-04-28T19:24:09Z |
-| Merge commit SHA | `47e9f84bc67da3e2dd6e74d6f07453653d8d0e90` |
-| Branch | `backlog/atari-rom-canonical-naming-tosec-goodtools-2026-04-28` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/680 |
-| Changed files | 6 |
-| Additions / deletions | +833 / -0 |
+| Field                 | Value                                                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Number                | 680                                                                                                                                   |
+| Title                 | backlog + substrate(2026-04-28): B-0083 Atari ROM tooling + B-0084 CodeQL verify + 2 trajectory memories + absorb-contribute end-goal |
+| Author                | `AceHack` (human)                                                                                                                     |
+| State                 | MERGED                                                                                                                                |
+| Created at            | 2026-04-28T19:00:36Z                                                                                                                  |
+| Merged at             | 2026-04-28T19:24:09Z                                                                                                                  |
+| Merge commit SHA      | `47e9f84bc67da3e2dd6e74d6f07453653d8d0e90`                                                                                            |
+| Branch                | `backlog/atari-rom-canonical-naming-tosec-goodtools-2026-04-28`                                                                       |
+| Base branch           | `main`                                                                                                                                |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/680                                                                               |
+| Changed files         | 6                                                                                                                                     |
+| Additions / deletions | +833 / -0                                                                                                                             |
 
 ## Description
 
@@ -47,6 +47,7 @@ replicates TOSEC/Good-Tools functionality. Explicit log-don't-implement:
 ## Why the work IS scheduled
 
 Aaron wants:
+
 1. Canonical naming (TOSEC TNC15 or Good-Tools convention)
 2. Tooling that replicates the hash-lookup-against-datfile algorithm
 3. Safe-vs-unsafe folder split (tracked `roms-safe/` for licensed
@@ -56,23 +57,24 @@ Aaron wants:
 
 ## Why deferred to post-0/0/0
 
-Aaron's verbatim: *'we can backlog this but hight priortiy right after
-the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
-+ pull-queue audit) is the blocking dependency.
+Aaron's verbatim: _'we can backlog this but hight priortiy right after
+the 0/0/0 starting point'_. The hard-reset chain (PR #677 5-disciplines
+
+- pull-queue audit) is the blocking dependency.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 20 |
-| Resolved threads | 16 |
-| Unresolved threads | 4 |
-| Total review comments | 21 |
-| Total fix commits (touching thread paths) | 10 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 20    |
+| Resolved threads                          | 16    |
+| Unresolved threads                        | 4     |
+| Total review comments                     | 21    |
+| Total fix commits (touching thread paths) | 10    |
 
 ## Review threads
 
@@ -86,14 +88,15 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 
 - **`Copilot` (bot)** at 2026-04-28T19:04:23Z on `docs/backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md`:15 (association: NONE)
   P1: `schedule_after` is not part of the documented per-row frontmatter schema in `tools/backlog/README.md` (and no other row uses it currently). Either add `schedule_after` to the schema docs/tooling, or move this scheduling note into the markdown body/tags to avoid future schema-lint/generator surprises.
+
   ```suggestion
   tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0]
   ---
-  
+
   # B-0083 — Atari 2600 ROM canonical-naming + tooling
-  
+
   ## Scheduling note
-  
+
   Schedule after: 0/0/0 AceHack-LFG hard-reset complete.
   ```
 
@@ -150,10 +153,10 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T19:06:42Z on `docs/backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md`:178 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace blank TOSEC tool placeholders with real names**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace blank TOSEC tool placeholders with real names**
+
   The `Cross-platform tool research` section drops the actual TOSEC tool names (`"TOSEC reference tools" (, )` and two bullets with blank subjects), so the backlog entry no longer records which tools were evaluated. That makes the decision path non-reproducible and blocks future implementers from validating the Mac-compatibility conclusion against the right upstream projects.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 7 -- resolved [collapsed]
@@ -165,10 +168,10 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T19:11:30Z on `docs/backlog/P3/B-0084-codeql-path-gate-empty-sarif-aggregate-baseline-verify-coverage-aaron-2026-04-28.md`:141 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove already-landed CodeQL empty-SARIF backlog item**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove already-landed CodeQL empty-SARIF backlog item**
+
   This backlog row records a missing fix that is already present, so it creates duplicate P1 work and can send a future pickup into unnecessary workflow edits. In the parent state of this commit, `.github/workflows/codeql.yml` already has the path-gate no-findings SARIF emit/upload flow (including per-language uploads), so marking “modify `codeql.yml` to emit empty SARIF on path-gate skip” as open acceptance criteria is stale and inaccurate.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -206,8 +209,9 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 
 - **`Copilot` (bot)** at 2026-04-28T19:11:32Z on `docs/backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md`:179 (association: NONE)
   In the “Cross-platform tool research” section, the TOSEC tool list is incomplete (empty parentheses and blank tool names). As written, it’s not actionable and reads like placeholders that were never filled in. Please either name the specific tools (and ideally link to their repos/releases) or remove this subsection until the tool candidates are known.
+
   ```suggestion
-  
+
   ```
 
 ### Thread 11 -- resolved [outdated, collapsed]
@@ -230,16 +234,16 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T19:15:47Z on `docs/backlog/P3/B-0084-codeql-path-gate-empty-sarif-aggregate-baseline-verify-coverage-aaron-2026-04-28.md`:141 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove completed CodeQL task from open checklist**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove completed CodeQL task from open checklist**
+
   This checklist item tracks work that is already implemented, so keeping it open creates duplicate P1 backlog and can send a future pickup into unnecessary workflow edits. Fresh evidence: `.github/workflows/codeql.yml` already synthesizes and uploads per-language no-findings SARIF in the path-gate job (`Emit no-findings SARIF` and upload steps around lines 270-365), which is exactly the behavior this criterion asks to add.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T19:18:17Z on `docs/backlog/P3/B-0084-codeql-path-gate-empty-sarif-aggregate-baseline-verify-coverage-aaron-2026-04-28.md`:141 (association: MEMBER)
-    Rescoped (not removed): row downgraded P1→P3, status changed to mostly-implemented-verify-coverage, moved P1/→P3/. Remaining scope is verify-the-aggregate-baseline-covers-all-matrix-languages on FUTURE language additions (current 5 — actions/csharp/python/java-kotlin/javascript-typescript — verified in this tick). Keeping the row open as a structural reminder for the next time we add a CodeQL matrix leg; closing it would lose the future-Otto pickup signal.
+- **`AceHack` (human)** at 2026-04-28T19:18:17Z on `docs/backlog/P3/B-0084-codeql-path-gate-empty-sarif-aggregate-baseline-verify-coverage-aaron-2026-04-28.md`:141 (association: MEMBER)
+  Rescoped (not removed): row downgraded P1→P3, status changed to mostly-implemented-verify-coverage, moved P1/→P3/. Remaining scope is verify-the-aggregate-baseline-covers-all-matrix-languages on FUTURE language additions (current 5 — actions/csharp/python/java-kotlin/javascript-typescript — verified in this tick). Keeping the row open as a structural reminder for the next time we add a CodeQL matrix leg; closing it would lose the future-Otto pickup signal.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -250,10 +254,10 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T19:15:47Z on `docs/backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md`:178 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Record the evaluated TOSEC tool names**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Record the evaluated TOSEC tool names**
+
   The "TOSEC reference tools" entry leaves both tool names blank, which removes the provenance of what was actually evaluated and why macOS compatibility was rejected. That makes this backlog item non-reproducible for future pickup and risks repeating the research with inconsistent conclusions.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 14 -- resolved [outdated, collapsed]
@@ -265,7 +269,7 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-28T19:16:19Z on `docs/backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md`:185 (association: NONE)
-  P1: The “TOSEC reference tools” bullet has placeholder/missing tool names (", ") and blank entries ("-  is Windows-only"). This makes the research section non-actionable for pickup; either name the concrete tools being referenced (with links) or drop the bullets until the tools are identified.
+  P1: The “TOSEC reference tools” bullet has placeholder/missing tool names (", ") and blank entries ("- is Windows-only"). This makes the research section non-actionable for pickup; either name the concrete tools being referenced (with links) or drop the bullets until the tools are identified.
   ```suggestion
   - **TOSEC reference tools**:
     - Concrete TOSEC reference-tool names and links are still missing
@@ -296,10 +300,10 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T19:20:03Z on `docs/backlog/P3/B-0084-codeql-path-gate-empty-sarif-aggregate-baseline-verify-coverage-aaron-2026-04-28.md`:121 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use per-language SARIF category in documented CodeQL change**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use per-language SARIF category in documented CodeQL change**
+
   The preserved "Concrete change" snippet documents uploading a single SARIF category (`path-gate-no-code-change`), but the live workflow requires per-language categories (`/language:actions`, `/language:csharp`, etc.) for the aggregate CodeQL check to remain satisfied. If a future pickup follows this backlog snippet literally, it can reintroduce NEUTRAL/pending code-scanning behavior on required checks even though analysis ran, so the example should match the current per-language upload shape.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 17 -- unresolved
@@ -311,10 +315,10 @@ the 0/0/0 starting point'*. The hard-reset chain (PR #677 5-disciplines
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T19:24:42Z on `docs/backlog/P3/B-0084-codeql-path-gate-empty-sarif-aggregate-baseline-verify-coverage-aaron-2026-04-28.md`:123 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Move matrix strategy out of step-level CodeQL snippet**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Move matrix strategy out of step-level CodeQL snippet**
+
   The `Concrete change` example places `strategy.matrix` inside a single step, but GitHub Actions only allows `strategy` at the job level; if someone reuses this snippet for a future workflow update, the workflow will fail schema validation before running any checks. Because this backlog row is intended as implementation guidance, keeping an invalid YAML shape here can reintroduce CI breakage during follow-up work.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 18 -- unresolved

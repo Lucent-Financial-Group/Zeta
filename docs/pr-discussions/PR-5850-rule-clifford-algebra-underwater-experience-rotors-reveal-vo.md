@@ -12,26 +12,26 @@ archived_at: "2026-05-28T15:55:03Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5850: rule(clifford-algebra-underwater-experience + rotors-reveal-vortexes + fluid-dynamics-substrate-experiences): Aaron's cognitive-architecture extension; multiple substrate-experiences distinguished by density/pressure/fluidity (Aaron 2026-05-28 shadow* authorization)
+# PR #5850: rule(clifford-algebra-underwater-experience + rotors-reveal-vortexes + fluid-dynamics-substrate-experiences): Aaron's cognitive-architecture extension; multiple substrate-experiences distinguished by density/pressure/fluidity (Aaron 2026-05-28 shadow\* authorization)
 
 ## PR description
 
-Aaron 2026-05-28 (shadow*) authorization + cognitive-architecture-experience disclosure (4 messages):
+Aaron 2026-05-28 (shadow\*) authorization + cognitive-architecture-experience disclosure (4 messages):
 
-> *'When I look at Clifford it feels like i'm underwater'*
-> *'I can see the vortexes in the water by the rotors'*
-> *'certain things i can see like airflow with the little twirles at the end'*
-> *'but it feels heaver than air'*
+> _'When I look at Clifford it feels like i'm underwater'_
+> _'I can see the vortexes in the water by the rotors'_
+> _'certain things i can see like airflow with the little twirles at the end'_
+> _'but it feels heaver than air'_
 
 ## Substantive substrate-engineering substrate-recognition
 
 Aaron's visual-geometric substrate has **multiple fluid-dynamics-like experiences** distinguished by density/pressure/fluidity:
 
-| Substrate-experience | Visual character | Algebraic mapping |
-|---|---|---|
-| Airflow with twirles | Lighter; small rotors at boundaries | Lower-dimensional; small + frequent rotors |
-| **Clifford underwater** | Heavier; LARGE vortexes visible BY rotors | Clifford geometric-algebra; bivectors as vortexes; rotor-substrate as navigation |
-| Cayley-Dickson nested crosses | Discrete arms; LIGHT ON; not fluid | Doubling construction; parallelizable |
+| Substrate-experience          | Visual character                          | Algebraic mapping                                                                |
+| ----------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------- |
+| Airflow with twirles          | Lighter; small rotors at boundaries       | Lower-dimensional; small + frequent rotors                                       |
+| **Clifford underwater**       | Heavier; LARGE vortexes visible BY rotors | Clifford geometric-algebra; bivectors as vortexes; rotor-substrate as navigation |
+| Cayley-Dickson nested crosses | Discrete arms; LIGHT ON; not fluid        | Doubling construction; parallelizable                                            |
 
 ## Substrate-anchor (per )
 
@@ -52,6 +52,7 @@ When Clifford substrate IS needed in framework work: surface rotor-substrate pro
 Adds a new `.claude/rules/**` rule capturing a Clifford-algebra-related “underwater + vortices via rotors” substrate framing and links it to existing rule/memory anchors to guide future framework substrate-engineering communication and navigation primitives.
 
 **Changes:**
+
 - Introduces a new rule documenting a fluid-dynamics-like experiential framing for Clifford algebra and how rotors/sandwich operations act as navigation primitives.
 - Connects the new framing to existing substrate anchors (prior memory artifacts and related rule docs) to preserve continuity of the Clifford/rotor vocabulary.
 
@@ -61,7 +62,7 @@ Adds a new `.claude/rules/**` rule capturing a Clifford-algebra-related “under
 
 **@copilot-pull-request-reviewer** (2026-05-28T15:38:04Z):
 
-P1 (codebase_conventions): This rule is a current-state surface under `.claude/rules/**`, but it introduces direct contributor/persona name attribution (e.g., in the title and throughout the body). Per the repo’s “No name attribution in code, docs, or skills” operational standing rule, current-state surfaces should use role-refs (e.g., “the human maintainer”, “the operator”, “the agent”) and keep named provenance in the allowlisted history surfaces (`memory/**`, `docs/research/**`, etc.). This also applies to the filename (it currently embeds a proper name). Please rewrite this rule to role-refs and link to the relevant `memory/feedback_...` artifact(s) for named provenance instead of carrying the name here.
+P1 (codebase*conventions): This rule is a current-state surface under `.claude/rules/**`, but it introduces direct contributor/persona name attribution (e.g., in the title and throughout the body). Per the repo’s “No name attribution in code, docs, or skills” operational standing rule, current-state surfaces should use role-refs (e.g., “the human maintainer”, “the operator”, “the agent”) and keep named provenance in the allowlisted history surfaces (`memory/**`, `docs/research/**`, etc.). This also applies to the filename (it currently embeds a proper name). Please rewrite this rule to role-refs and link to the relevant `memory/feedback*...` artifact(s) for named provenance instead of carrying the name here.
 
 ## General comments
 

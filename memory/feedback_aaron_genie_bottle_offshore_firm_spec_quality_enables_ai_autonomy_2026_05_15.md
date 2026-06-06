@@ -7,7 +7,7 @@ created: 2026-05-15
 
 ## Aaron's exact words
 
-> *"think of AI as a genie in a bottle or an indian offshore firm the quality of what they built is only as good as your spec, i write good specs. it lets AI have more autonomy and run longer without constant feedback from humans."*
+> _"think of AI as a genie in a bottle or an indian offshore firm the quality of what they built is only as good as your spec, i write good specs. it lets AI have more autonomy and run longer without constant feedback from humans."_
 
 (2026-05-15 to Kestrel on claude.ai, in response to Kestrel's flag about the lightness-of-frame vs weight-of-content gap.)
 

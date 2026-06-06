@@ -6,8 +6,8 @@ operational doctrine). Sibling document.
 
 Attribution: Amara (peer-AI; Aurora deep-research register,
 external co-originator), Aaron-forwarded 2026-05-01. Triggered by
-Aaron's preceding forward of the Karpathy *"From Vibe Coding to
-Agentic Engineering"* talk transcript.
+Aaron's preceding forward of the Karpathy _"From Vibe Coding to
+Agentic Engineering"_ talk transcript.
 
 Operational status: research-grade
 
@@ -391,6 +391,7 @@ this tick).
 **2. The sensors/actuators decomposition.** Amara explicitly maps
 Karpathy's "sensors and actuators" framing onto Zeta's existing
 infrastructure:
+
 - Sensors: `refresh-repo-state` (B-0159, queued), `poll-pr-gate`
   (operational), CI (operational), review threads, backlog deltas,
   branch state.
@@ -403,21 +404,22 @@ It validates the sensor-actuator separation that the script already
 embodies.
 
 **3. The four critical points (do NOT absorb without sharpening):**
-- *"Everything is automatable"* → too absolute; sharpen to
+
+- _"Everything is automatable"_ → too absolute; sharpen to
   "everything becomes more automatable as its feedback loops become
   more verifiable."
-- *"Copy this text to your agent"* → cultural transition only; for
+- _"Copy this text to your agent"_ → cultural transition only; for
   factory architecture, agent-actionable docs must be repo-native,
   executable, testable, versioned.
-- *Neural-computer extrapolation* → speculative; don't let
+- _Neural-computer extrapolation_ → speculative; don't let
   architecture depend on it.
-- *Vibe coding* → not a production discipline.
+- _Vibe coding_ → not a production discipline.
 
 **4. The "Karpathy names the paradigm; Zeta builds the operating
 system for it" carved sentence.** Cleanest single-sentence
 articulation across all five peer-AI takes of the Zeta-distinctive
-contribution. Composes with Aaron's *"formally specify and verify
-yourself tied to human intelectual lineage"* into a cleaner thesis
+contribution. Composes with Aaron's _"formally specify and verify
+yourself tied to human intelectual lineage"_ into a cleaner thesis
 than either alone.
 
 ## See also

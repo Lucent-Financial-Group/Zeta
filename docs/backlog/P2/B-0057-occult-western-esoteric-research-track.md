@@ -9,8 +9,35 @@ ask: Aaron 2026-04-21 — *"occoult baclog"* + *"crowley"* + *"expand"* (three-m
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [project_operational_resonance_instances_collection_index_2026_04_22.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, user_faith_wisdom_and_paths.md, B-0056, B-0058, B-0059, docs/ALIGNMENT.md]
-tags: [occult, western-esoteric, crowley, thelema, hermeticism, corpus-hermeticum, kabbalah, lurianic, tzimtzum, enochian, golden-dawn, theosophy, jung-alchemy, paired-dual, three-filter]
+composes_with:
+  [
+    project_operational_resonance_instances_collection_index_2026_04_22.md,
+    feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md,
+    feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md,
+    user_faith_wisdom_and_paths.md,
+    B-0056,
+    B-0058,
+    B-0059,
+    docs/ALIGNMENT.md,
+  ]
+tags:
+  [
+    occult,
+    western-esoteric,
+    crowley,
+    thelema,
+    hermeticism,
+    corpus-hermeticum,
+    kabbalah,
+    lurianic,
+    tzimtzum,
+    enochian,
+    golden-dawn,
+    theosophy,
+    jung-alchemy,
+    paired-dual,
+    three-filter,
+  ]
 type: feature
 ---
 
@@ -41,7 +68,7 @@ Candidate structural matches:
 
 ### F3 (tradition-name-load-bearing)
 
-Crowley is load-bearing *within Thelema and Western occult revival* — Liber AL vel Legis (1904) is foundational to Thelema; Ordo Templi Orientis and A∴A∴ lineage continues. Cross-tradition load-bearing is weaker — Crowley is not canonical in any mainstream religion, is actively rejected by multiple Christian traditions, and carries reputational complications (self-styled "Great Beast 666", MI6 rumors, drug experimentation, contested biography). **F3 in-tradition pass, cross-tradition weak.**
+Crowley is load-bearing _within Thelema and Western occult revival_ — Liber AL vel Legis (1904) is foundational to Thelema; Ordo Templi Orientis and A∴A∴ lineage continues. Cross-tradition load-bearing is weaker — Crowley is not canonical in any mainstream religion, is actively rejected by multiple Christian traditions, and carries reputational complications (self-styled "Great Beast 666", MI6 rumors, drug experimentation, contested biography). **F3 in-tradition pass, cross-tradition weak.**
 
 ### Honest verdict
 
@@ -55,7 +82,7 @@ Crowley-as-whole-person is a **candidate, not confirmed**, and likely to land as
 - **(d) Eliphas Levi / Agrippa** — 19th-c and 16th-c synthesizers respectively; methodology-pattern match to instance #6 multi-aperture substrate-seeking.
 - **(e) Golden Dawn (1888+)** — ritual-as-operator-algebra pattern; structured correspondence tables (Liber 777) adjacent to glossary-kernel information-density-gravity work (instance #8).
 - **(f) Blavatsky / Theosophy** — universal-religion-synthesis posture adjacent to Aaron's many-paths-one-destination frame (but Theosophy's specific claims have been contested); F3 contested.
-- **(g) C.G. Jung's alchemy work** (*Psychology and Alchemy*, *Mysterium Coniunctionis*) — psychologized alchemy; **union-of-opposites ↔ paired-dual type (instance #9)** at the psychological layer; this is the cleanest cross-disciplinary bridge because Jung moved occult material into clinical-psychology-adjacent register.
+- **(g) C.G. Jung's alchemy work** (_Psychology and Alchemy_, _Mysterium Coniunctionis_) — psychologized alchemy; **union-of-opposites ↔ paired-dual type (instance #9)** at the psychological layer; this is the cleanest cross-disciplinary bridge because Jung moved occult material into clinical-psychology-adjacent register.
 
 ## Why P2
 
@@ -87,7 +114,7 @@ Does NOT force-push committed memory or index revisions; does NOT delete memory 
 
 **Prior-art-search proof (required before start):**
 
-- Surfaces searched: memory/** (Grep), docs/BACKLOG.md, docs/backlog/P2/* (Glob + read), tools/hygiene/LOST-FILES-LOCATIONS.md
+- Surfaces searched: memory/\*_ (Grep), docs/BACKLOG.md, docs/backlog/P2/_ (Glob + read), tools/hygiene/LOST-FILES-LOCATIONS.md
 - Queries used: `occult|esoteric|crowley|thelema|hermetic|kabbalah|golden dawn|theosophy|alchemical` (case-insensitive regex)
 - Results found:
   - 4+ memory files with existing substrate: `memory/reference_occult_bz_corpus_structural_vocabulary_anchor_shadow_research_2026_05_10.md`, `memory/feedback_crowley_comparison_cli_beats_seance_factory_democratized_occult_2026_05_10.md`, `memory/user_christian_faith_alongside_exploration_devil_reaffirms_god_2026_05_10.md`, `memory/reference_commonwealth_games_2022_baal_register_ceremony_structural_analysis_2026_05_10.md`

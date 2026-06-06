@@ -4,15 +4,16 @@ description: Aaron Otto-104 *"also if you can figure out how to download my enti
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-104 (verbatim):
 
-*"also if you can figure out how to download my entire
+_"also if you can figure out how to download my entire
 conversation history from this chat it's my business account
 at openai that would be great it's the entire amara history
 and i can get it downloaded, feel free to use anyting
 including playwrite it's like 1000-2000 pages, I would like
 to keep Amara's entire conversation with me in repo.
-https://chatgpt.com/g/g-p-68b53efe8f408191ad5e97552f23f2d5/c/ac43b13d-0468-832e-910b-b4ffb5fbb3ed"*
+https://chatgpt.com/g/g-p-68b53efe8f408191ad5e97552f23f2d5/c/ac43b13d-0468-832e-910b-b4ffb5fbb3ed"_
 
 ## What this directive authorizes
 
@@ -30,12 +31,13 @@ https://chatgpt.com/g/g-p-68b53efe8f408191ad5e97552f23f2d5/c/ac43b13d-0468-832e-
 - **Any tool authorized, including Playwright.** This is
   `.claude/skills/playwright-*` + MCP Playwright + other
   browser-automation methods.
-- **Destination:** Zeta repo. Aaron: *"I would like to keep
-  Amara's entire conversation with me in repo"*.
+- **Destination:** Zeta repo. Aaron: _"I would like to keep
+  Amara's entire conversation with me in repo"_.
 
 ## Why NOT inline-absorbed Otto-104
 
 Otto-104 tick already held:
+
 - 9th ferry retroactive absorb (PR #293 landing)
 - Aaron's 3 review-scope + plugin-marketplace corrections
 - Memory save for corrections
@@ -43,6 +45,7 @@ Otto-104 tick already held:
 - This memory save
 
 Attempting a 1000-2000 page scrape inline would:
+
 1. Regress CC-002 close-on-existing discipline dramatically
 2. Likely exceed reasonable tick-budget (scraping 1000+ pages
    could take many minutes / hours depending on method)
@@ -50,12 +53,13 @@ Attempting a 1000-2000 page scrape inline would:
    made on format / chunking / privacy / §33 scope
 
 ## Execution paths — TWO options, Otto picks per Otto-104
+
 correction direction
 
 ### Option A: UNAVAILABLE on Aaron's business tier
 
-**Aaron Otto-105 correction (verbatim):** *"not avialabe
-on business"*. ChatGPT native export is disabled on
+**Aaron Otto-105 correction (verbatim):** _"not avialabe
+on business"_. ChatGPT native export is disabled on
 Aaron's ChatGPT Business subscription. This path is
 OFF THE TABLE.
 
@@ -66,6 +70,7 @@ ChatGPT offers a native export: **Settings → Data Controls
 as JSON + HTML. Emailed to the account owner (Aaron).
 
 **Pros:**
+
 - Clean, structured JSON (conversation ID, turn-by-turn,
   role, content, timestamps)
 - Complete (not missing lazy-loaded content)
@@ -73,6 +78,7 @@ as JSON + HTML. Emailed to the account owner (Aaron).
 - Much faster than scraping
 
 **Cons:**
+
 - User-initiated in browser (Aaron has to click Export in
   his account, then wait for email, then stage ZIP in
   `drop/` for Otto to absorb)
@@ -87,7 +93,7 @@ by ID + absorbs into repo.
 
 ### Option B (now ONLY path): Playwright scrape with virtualization-awareness
 
-**Aaron Otto-105 note (verbatim):** *"also it's a pain
+**Aaron Otto-105 note (verbatim):** _"also it's a pain
 becasue when you scroll down the text above disappears, i
 think they did it for performance but you can't even print
 the page only the visible secions of the conversation
@@ -96,7 +102,7 @@ like copy text, scroll, copy text, scroll, copy text,
 scroll etc... or find a url that will allow direct
 conversation download either on. but yes even if this
 takes hours i want it. we just have to get it once and
-never again."*
+never again."_
 
 **Technical challenge:** ChatGPT uses virtualized scrolling
 — DOM elements ABOVE current viewport are unmounted (React
@@ -114,11 +120,11 @@ at one time.
    - `https://chatgpt.com/backend-api/conversation/<UUID>`
    - `https://chatgpt.com/backend-api/gizmo/<gizmo-id>/conversation/<UUID>`
      (for the custom-GPT "project" context `g/g-p-...`)
-   Requires: session cookie + possibly CSRF token / Bearer
-   token from a call to `/api/auth/session`. With Playwright's
-   session context (logged-in business account), Otto can
-   call `page.request.get(url)` with inherited cookies and
-   get JSON in one shot.
+     Requires: session cookie + possibly CSRF token / Bearer
+     token from a call to `/api/auth/session`. With Playwright's
+     session context (logged-in business account), Otto can
+     call `page.request.get(url)` with inherited cookies and
+     get JSON in one shot.
 2. **JavaScript injection — disable virtualization OR read
    React store directly.** Execute JS in page context to
    either (a) monkey-patch the virtualization threshold to
@@ -140,6 +146,7 @@ at one time.
 **Execution plan:**
 
 Phase 1 (Otto-107): probe approach #1.
+
 - Use Playwright MCP to log into ChatGPT in Aaron's
   business account (or leverage an existing auth session
   if one is live in the playwright-mcp browser profile).
@@ -151,19 +158,21 @@ Phase 1 (Otto-107): probe approach #1.
   get JSON in one call.
 
 Phase 2 (if approach #1 fails): probe approach #2.
+
 - Inject JS to find the React store; log structure.
 - If the conversation is available in the store, extract
   full state in one eval call.
 
 Phase 3 (last resort): approach #3.
+
 - Implement virtualization-aware scroll loop.
 - Extract per scroll-window; dedupe by `data-message-id`
   or similar DOM attribute.
 - Save incrementally to `drop/amara-full-history-raw/`
   as it progresses.
 
-**Aaron's time-investment authorization:** *"even if
-this takes hours i want it."* — Otto is authorized to
+**Aaron's time-investment authorization:** _"even if
+this takes hours i want it."_ — Otto is authorized to
 spend multi-tick time on this task. Efficiency still
 matters (minimize total hours) but Otto-87-style
 "how-long-is-Amara-down" time-pressure does NOT apply
@@ -181,10 +190,12 @@ the OpenAI $25/mo ChatGPT Business subscription on personal
 login, NOT a separate work account).
 
 **Pros:**
+
 - Otto can initiate without Aaron click
 - Immediate execution
 
 **Cons:**
+
 - Fragile vs ChatGPT DOM changes
 - Lazy-loading / virtualized scrolling means Otto must
   scroll-to-load each chunk
@@ -203,6 +214,7 @@ Playwright scrape (Option B) in parallel. Whichever lands
 first becomes source-of-truth; the other validates.
 
 ## Landing destination & chunking strategy (Phase-1 design
+
 decisions)
 
 Open questions:
@@ -294,6 +306,7 @@ Open questions:
 Per Otto-86 / Otto-93 readiness-signal pattern confirmed by
 Aaron Otto-104: Aaron doesn't want to be design-review gate.
 For this download task:
+
 - Otto iterates on Phase-1 design solo
 - Otto decides Option A/B/C based on feasibility test
 - Otto kicks off download

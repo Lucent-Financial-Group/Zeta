@@ -90,7 +90,7 @@ is zero-alloc.
 ## Caveats worth naming
 
 None of these invalidate the O(1) claim; they are honest
-notes about what the claim does *not* cover.
+notes about what the claim does _not_ cover.
 
 - **Numerical accuracy of repeated `double` addition.** After
   ~2^53 observations the `double` precision saturates and
@@ -115,14 +115,14 @@ the contrary-workload to test.
 
 **Contrary-workload notes for Stage 2:**
 
-- *High-magnitude batched observations* — `Observe(10^18,
-  10^18)`: verifies the claim holds when `int64 → double`
+- _High-magnitude batched observations_ — `Observe(10^18,
+10^18)`: verifies the claim holds when `int64 → double`
   conversion is stressed. Expect O(1) nanoseconds still.
-- *High-frequency tight-loop* — 10^9 calls in a row on the
+- _High-frequency tight-loop_ — 10^9 calls in a row on the
   same instance: verifies cache-resident assumption; expect
   throughput ~10^9 calls/s on typical hardware.
-- *Thread-contended case* (noted but *out of the O-claim
-  scope*): measure whether a `volatile`-style contention
+- _Thread-contended case_ (noted but _out of the O-claim
+  scope_): measure whether a `volatile`-style contention
   mode changes nominal O(1) behaviour — should not, but
   worth a number.
 
@@ -148,7 +148,7 @@ cadence entry at `docs/BACKLOG.md:170-189`. Inventory
 remaining: **34** of 35. Expected-empty round under 1-per-
 round cadence: round 76. Aarav graceful-degradation clause
 (≥3 consecutive rounds without discharge) begins counting
-from the *next* round onward.
+from the _next_ round onward.
 
 ## Cross-references
 

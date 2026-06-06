@@ -28,16 +28,16 @@ signer reuses slice-2 `contentHash` so signer/installer always agree.
 
 ## File structure
 
-| File | Responsibility | Change |
-|---|---|---|
-| `tools/ace/signing.ts` | Pure Ed25519 crypto: keygen, key_id, canonical manifest bytes, sign, verify | **create** |
-| `tools/ace/signing.test.ts` | Unit tests for signing.ts (pure) | **create** |
-| `tools/ace/trusted-keys.json` | Bundled root trust anchor (ships `[]`) | **create** |
-| `tools/ace/store.ts` | + `signature?` on `AceManifest`; + trust-store I/O (`trustStorePath`, `bundledTrustPath`, `loadTrustStore`, `addTrustedKey`, `listTrustedKeys`). `contentHash`/`installPackage` unchanged | **modify** |
-| `tools/ace/store.test.ts` | + trust-store tests | **modify** |
-| `tools/ace/ace.ts` | + `keygen`/`sign`/`trust` verbs + install authenticity gate (`--allow-no-signature`) | **modify** |
-| `tools/ace/ace.test.ts` | + verb + gate tests | **modify** |
-| `.claude/skills/ace/SKILL.md` | + new verbs; integrity→authenticity note | **modify** |
+| File                          | Responsibility                                                                                                                                                                            | Change     |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `tools/ace/signing.ts`        | Pure Ed25519 crypto: keygen, key_id, canonical manifest bytes, sign, verify                                                                                                               | **create** |
+| `tools/ace/signing.test.ts`   | Unit tests for signing.ts (pure)                                                                                                                                                          | **create** |
+| `tools/ace/trusted-keys.json` | Bundled root trust anchor (ships `[]`)                                                                                                                                                    | **create** |
+| `tools/ace/store.ts`          | + `signature?` on `AceManifest`; + trust-store I/O (`trustStorePath`, `bundledTrustPath`, `loadTrustStore`, `addTrustedKey`, `listTrustedKeys`). `contentHash`/`installPackage` unchanged | **modify** |
+| `tools/ace/store.test.ts`     | + trust-store tests                                                                                                                                                                       | **modify** |
+| `tools/ace/ace.ts`            | + `keygen`/`sign`/`trust` verbs + install authenticity gate (`--allow-no-signature`)                                                                                                      | **modify** |
+| `tools/ace/ace.test.ts`       | + verb + gate tests                                                                                                                                                                       | **modify** |
+| `.claude/skills/ace/SKILL.md` | + new verbs; integrity→authenticity note                                                                                                                                                  | **modify** |
 
 ---
 
@@ -69,7 +69,11 @@ export interface AceManifest {
 ```ts
 import { describe, expect, test } from "bun:test";
 import {
-  generateKeypair, keyId, canonicalManifestBytes, signManifest, verifySignature,
+  generateKeypair,
+  keyId,
+  canonicalManifestBytes,
+  signManifest,
+  verifySignature,
   type TrustEntry,
 } from "./signing.ts";
 import type { AceManifest } from "./store.ts";
@@ -107,7 +111,10 @@ describe("sign + verify", () => {
     const trust: Map<string, TrustEntry> = new Map([[kp.keyId, { public_key: kp.publicSpkiB64, label: "me" }]]);
     const r = verifySignature(signed, trust);
     expect(r.ok).toBe(true);
-    if (r.ok) { expect(r.key_id).toBe(kp.keyId); expect(r.label).toBe("me"); }
+    if (r.ok) {
+      expect(r.key_id).toBe(kp.keyId);
+      expect(r.label).toBe("me");
+    }
   });
 
   test("tampered content_hash -> bad-signature", () => {
@@ -161,15 +168,30 @@ Expected: FAIL — `Cannot find module './signing.ts'`.
 // every present + future manifest field is bound. content_hash (over `files`) is a
 // SEPARATE slice-2 concern handled by store.ts/ace.ts, NOT here.
 import {
-  createHash, generateKeyPairSync, createPrivateKey, createPublicKey,
-  sign as nodeSign, verify as nodeVerify,
+  createHash,
+  generateKeyPairSync,
+  createPrivateKey,
+  createPublicKey,
+  sign as nodeSign,
+  verify as nodeVerify,
 } from "node:crypto";
 import type { AceManifest } from "./store.ts";
 
-export interface Keypair { privatePem: string; publicSpkiB64: string; keyId: string; }
-export interface AceSignature { algo: "ed25519"; key_id: string; sig: string; }
+export interface Keypair {
+  privatePem: string;
+  publicSpkiB64: string;
+  keyId: string;
+}
+export interface AceSignature {
+  algo: "ed25519";
+  key_id: string;
+  sig: string;
+}
 /** Minimal shape verifySignature needs from a trust-store entry (store.ts's LoadedTrustEntry satisfies it structurally). */
-export interface TrustEntry { public_key: string; label?: string; }
+export interface TrustEntry {
+  public_key: string;
+  label?: string;
+}
 export type VerifyResult =
   | { ok: true; key_id: string; label?: string }
   | { ok: false; reason: "no-signature" | "untrusted-key" | "bad-signature" };
@@ -213,9 +235,7 @@ export function signManifest(manifest: AceManifest, privatePem: string): AceSign
   return { algo: "ed25519", key_id: keyId(spkiB64), sig };
 }
 
-export function verifySignature(
-  manifest: AceManifest, trustStore: Map<string, TrustEntry>,
-): VerifyResult {
+export function verifySignature(manifest: AceManifest, trustStore: Map<string, TrustEntry>): VerifyResult {
   const signature = (manifest as AceManifest & { signature?: AceSignature }).signature;
   if (!signature) return { ok: false, reason: "no-signature" };
   const entry = trustStore.get(signature.key_id);
@@ -273,14 +293,20 @@ describe("trust store", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-trust-"));
     const bundled = join(dir, "bundled.json");
     const user = join(dir, "user.json");
-    require("node:fs").writeFileSync(bundled, JSON.stringify([{ key_id: "ed25519:aaaa", public_key: "B", label: "root" }]));
-    require("node:fs").writeFileSync(user, JSON.stringify([
-      { key_id: "ed25519:bbbb", public_key: "U", label: "mine" },
-      { key_id: "ed25519:aaaa", public_key: "B2", label: "root-override" },
-    ]));
+    require("node:fs").writeFileSync(
+      bundled,
+      JSON.stringify([{ key_id: "ed25519:aaaa", public_key: "B", label: "root" }]),
+    );
+    require("node:fs").writeFileSync(
+      user,
+      JSON.stringify([
+        { key_id: "ed25519:bbbb", public_key: "U", label: "mine" },
+        { key_id: "ed25519:aaaa", public_key: "B2", label: "root-override" },
+      ]),
+    );
     const m = loadTrustStore(bundled, user);
     expect(m.size).toBe(2);
-    expect(m.get("ed25519:aaaa")?.source).toBe("user");      // user overrides bundled
+    expect(m.get("ed25519:aaaa")?.source).toBe("user"); // user overrides bundled
     expect(m.get("ed25519:aaaa")?.public_key).toBe("B2");
     expect(m.get("ed25519:bbbb")?.source).toBe("user");
   });
@@ -319,8 +345,17 @@ Run: `bun test tools/ace/store.test.ts` → FAIL (`loadTrustStore` not exported)
 Add `dirname` to the `node:path` import (`import { join, dirname } from "node:path";`). Append:
 
 ```ts
-export interface TrustedKey { key_id: string; public_key: string; label?: string; added?: string; }
-export interface LoadedTrustEntry { public_key: string; label?: string; source: "bundled" | "user"; }
+export interface TrustedKey {
+  key_id: string;
+  public_key: string;
+  label?: string;
+  added?: string;
+}
+export interface LoadedTrustEntry {
+  public_key: string;
+  label?: string;
+  source: "bundled" | "user";
+}
 
 /** ~/.ace/trusted-keys.json — operator-managed keyring (sibling of the store). */
 export function trustStorePath(): string {
@@ -346,10 +381,12 @@ function readKeysFile(p: string): TrustedKey[] {
 
 /** bundled ∪ user; user entries override bundled on key_id collision. */
 export function loadTrustStore(
-  bundledPath: string = bundledTrustPath(), userPath: string = trustStorePath(),
+  bundledPath: string = bundledTrustPath(),
+  userPath: string = trustStorePath(),
 ): Map<string, LoadedTrustEntry> {
   const m = new Map<string, LoadedTrustEntry>();
-  for (const k of readKeysFile(bundledPath)) m.set(k.key_id, { public_key: k.public_key, label: k.label, source: "bundled" });
+  for (const k of readKeysFile(bundledPath))
+    m.set(k.key_id, { public_key: k.public_key, label: k.label, source: "bundled" });
   for (const k of readKeysFile(userPath)) m.set(k.key_id, { public_key: k.public_key, label: k.label, source: "user" });
   return m;
 }
@@ -365,9 +402,14 @@ export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePa
 }
 
 export function listTrustedKeys(
-  bundledPath: string = bundledTrustPath(), userPath: string = trustStorePath(),
+  bundledPath: string = bundledTrustPath(),
+  userPath: string = trustStorePath(),
 ): Array<{ key_id: string; label?: string; source: "bundled" | "user" }> {
-  return [...loadTrustStore(bundledPath, userPath).entries()].map(([key_id, v]) => ({ key_id, label: v.label, source: v.source }));
+  return [...loadTrustStore(bundledPath, userPath).entries()].map(([key_id, v]) => ({
+    key_id,
+    label: v.label,
+    source: v.source,
+  }));
 }
 ```
 
@@ -448,17 +490,39 @@ Imports at top:
 
 ```ts
 import { writeFileSync, readFileSync } from "node:fs";
-import { defaultStorePath, listInstalled, installPackage, contentHash,
-         loadTrustStore, addTrustedKey, listTrustedKeys, type AcePackage, type AceManifest } from "./store";
+import {
+  defaultStorePath,
+  listInstalled,
+  installPackage,
+  contentHash,
+  loadTrustStore,
+  addTrustedKey,
+  listTrustedKeys,
+  type AcePackage,
+  type AceManifest,
+} from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 ```
 
 Add `ParsedArgs` members + `parseArgs` branches:
 
 ```ts
-interface KeygenArgs { command: "keygen"; outPrefix: string; }
-interface SignArgs { command: "sign"; pkgPath: string; keyPath: string; outPath?: string; }
-interface TrustArgs { command: "trust"; sub: "add" | "list"; arg?: string; label?: string; }
+interface KeygenArgs {
+  command: "keygen";
+  outPrefix: string;
+}
+interface SignArgs {
+  command: "sign";
+  pkgPath: string;
+  keyPath: string;
+  outPath?: string;
+}
+interface TrustArgs {
+  command: "trust";
+  sub: "add" | "list";
+  arg?: string;
+  label?: string;
+}
 // install gains: allowNoSignature: boolean
 ```
 
@@ -476,7 +540,10 @@ if (parsed.command === "keygen") {
   const kp = generateKeypair();
   // mode on the OPEN so the file is never momentarily world-readable (POSIX; advisory on Windows)
   writeFileSync(`${parsed.outPrefix}.key`, kp.privatePem, { mode: 0o600 });
-  writeFileSync(`${parsed.outPrefix}.pub`, JSON.stringify({ algo: "ed25519", key_id: kp.keyId, public_key: kp.publicSpkiB64 }, null, 2));
+  writeFileSync(
+    `${parsed.outPrefix}.pub`,
+    JSON.stringify({ algo: "ed25519", key_id: kp.keyId, public_key: kp.publicSpkiB64 }, null, 2),
+  );
   console.log(`ace: wrote ${parsed.outPrefix}.key (0600) + ${parsed.outPrefix}.pub  key_id ${kp.keyId}`);
   return 0;
 }
@@ -484,21 +551,33 @@ if (parsed.command === "keygen") {
 // sign — recompute content_hash with the SLICE-2 contentHash (never sort files); refuse on mismatch
 if (parsed.command === "sign") {
   let pkg: AcePackage;
-  try { pkg = JSON.parse(readFileSync(parsed.pkgPath, "utf8")) as AcePackage; }
-  catch { console.error("ace: package is not valid JSON"); return 65; }
+  try {
+    pkg = JSON.parse(readFileSync(parsed.pkgPath, "utf8")) as AcePackage;
+  } catch {
+    console.error("ace: package is not valid JSON");
+    return 65;
+  }
   const recomputed = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
   if (recomputed !== pkg.manifest.content_hash) {
-    console.error(`ace: sign refused: content_hash mismatch (manifest ${pkg.manifest.content_hash}, computed ${recomputed})`);
+    console.error(
+      `ace: sign refused: content_hash mismatch (manifest ${pkg.manifest.content_hash}, computed ${recomputed})`,
+    );
     return 1;
   }
   let priv: string;
-  try { priv = readFileSync(parsed.keyPath, "utf8"); }
-  catch { console.error(`ace: cannot read key ${parsed.keyPath}`); return 1; }
+  try {
+    priv = readFileSync(parsed.keyPath, "utf8");
+  } catch {
+    console.error(`ace: cannot read key ${parsed.keyPath}`);
+    return 1;
+  }
   const signature = signManifest(pkg.manifest, priv);
   const signed = { ...pkg, manifest: { ...pkg.manifest, signature } };
   const out = JSON.stringify(signed, null, 2);
-  if (parsed.outPath) { writeFileSync(parsed.outPath, out); console.log(`ace: signed -> ${parsed.outPath} (key_id ${signature.key_id})`); }
-  else console.log(out);
+  if (parsed.outPath) {
+    writeFileSync(parsed.outPath, out);
+    console.log(`ace: signed -> ${parsed.outPath} (key_id ${signature.key_id})`);
+  } else console.log(out);
   return 0;
 }
 
@@ -506,12 +585,18 @@ if (parsed.command === "sign") {
 if (parsed.command === "trust") {
   if (parsed.sub === "list") {
     const rows = listTrustedKeys();
-    if (rows.length === 0) { console.log("No trusted keys."); return 0; }
+    if (rows.length === 0) {
+      console.log("No trusted keys.");
+      return 0;
+    }
     for (const r of rows) console.log(`  ${r.key_id}  [${r.source}]${r.label ? "  " + r.label : ""}`);
     return 0;
   }
   // add: arg is a .pub file path OR a raw base64 SPKI
-  if (!parsed.arg) { console.error("ace: trust add requires a <pubkey-file-or-b64>"); return 64; }
+  if (!parsed.arg) {
+    console.error("ace: trust add requires a <pubkey-file-or-b64>");
+    return 64;
+  }
   let publicB64: string;
   try {
     const raw = readFileSync(parsed.arg, "utf8").trim();
@@ -521,7 +606,9 @@ if (parsed.command === "trust") {
   }
   const kid = keyId(publicB64);
   const res = addTrustedKey({ key_id: kid, public_key: publicB64, label: parsed.label });
-  console.log(res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""}` : `ace: ${kid} already trusted`);
+  console.log(
+    res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""}` : `ace: ${kid} already trusted`,
+  );
   return 0;
 }
 ```
@@ -532,11 +619,20 @@ Change the `install` handler — insert the authenticity gate AFTER JSON parse a
 if (parsed.command === "install") {
   let raw: string;
   try {
-    raw = parsed.source.startsWith("http") ? await (await fetch(parsed.source)).text() : readFileSync(parsed.source, "utf8");
-  } catch (e) { console.error(`ace: download/read failed: ${(e as Error).message}`); return 1; }
+    raw = parsed.source.startsWith("http")
+      ? await (await fetch(parsed.source)).text()
+      : readFileSync(parsed.source, "utf8");
+  } catch (e) {
+    console.error(`ace: download/read failed: ${(e as Error).message}`);
+    return 1;
+  }
   let pkg: AcePackage;
-  try { pkg = JSON.parse(raw) as AcePackage; }
-  catch { console.error("ace: package is not valid JSON"); return 65; }
+  try {
+    pkg = JSON.parse(raw) as AcePackage;
+  } catch {
+    console.error("ace: package is not valid JSON");
+    return 65;
+  }
 
   // AUTHENTICITY GATE (design §6) — before extraction. Only `no-signature` is --allow-no-signature-overridable.
   const v = verifySignature(pkg.manifest, loadTrustStore());
@@ -544,19 +640,31 @@ if (parsed.command === "install") {
   if (v.ok) {
     signer = { key_id: v.key_id, label: v.label };
   } else if (v.reason === "bad-signature") {
-    console.error("ace: install refused: bad signature"); return 1;
+    console.error("ace: install refused: bad signature");
+    return 1;
   } else if (v.reason === "untrusted-key") {
     const kid = pkg.manifest.signature?.key_id ?? "?";
-    console.error(`ace: install refused: signature from untrusted key ${kid} (ace trust add to trust it)`); return 1;
-  } else { // no-signature
-    if (!parsed.allowNoSignature) { console.error("ace: install refused: unsigned package (use --allow-no-signature to override)"); return 1; }
+    console.error(`ace: install refused: signature from untrusted key ${kid} (ace trust add to trust it)`);
+    return 1;
+  } else {
+    // no-signature
+    if (!parsed.allowNoSignature) {
+      console.error("ace: install refused: unsigned package (use --allow-no-signature to override)");
+      return 1;
+    }
     console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
   }
 
   // INTEGRITY + extract (slice 2, unchanged)
   const result = installPackage(parsed.storePath, pkg);
-  if (!result.ok) { console.error(`ace: install refused: ${result.error}`); return 1; }
-  if (signer) console.log(`ace: integrity + authenticity verified (signed by ${signer.key_id}${signer.label ? " " + signer.label : ""}) -> ${result.dir}`);
+  if (!result.ok) {
+    console.error(`ace: install refused: ${result.error}`);
+    return 1;
+  }
+  if (signer)
+    console.log(
+      `ace: integrity + authenticity verified (signed by ${signer.key_id}${signer.label ? " " + signer.label : ""}) -> ${result.dir}`,
+    );
   else console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-no-signature).");
   return 0;
 }

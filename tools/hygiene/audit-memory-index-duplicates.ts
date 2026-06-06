@@ -60,8 +60,7 @@ type ParseResult =
 
 const LINK_RE = /\]\(([a-zA-Z_0-9./-]+\.md)\)/g;
 
-const HELP_TEXT =
-  "Usage: audit-memory-index-duplicates.ts [--file PATH] [--enforce]\n";
+const HELP_TEXT = "Usage: audit-memory-index-duplicates.ts [--file PATH] [--enforce]\n";
 
 function parseArgs(argv: readonly string[]): ParseResult {
   let target = "memory/MEMORY.md";
@@ -137,9 +136,7 @@ export function main(argv: readonly string[]): AuditExitCode {
   try {
     content = readFileSync(target, "utf8");
   } catch (err: unknown) {
-    process.stderr.write(
-      `error: unable to read target file: ${target} (${describeIoError(err)})\n`,
-    );
+    process.stderr.write(`error: unable to read target file: ${target} (${describeIoError(err)})\n`);
     return 64;
   }
 
@@ -158,22 +155,12 @@ export function main(argv: readonly string[]): AuditExitCode {
   }
   process.stderr.write("\n");
   process.stderr.write("Each row shows how many times the target appears.\n");
-  process.stderr.write(
-    "Expected: every in-repo memory file listed exactly once\n",
-  );
-  process.stderr.write(
-    "in newest-first order. Duplicates typically mean an\n",
-  );
-  process.stderr.write(
-    "edit pass added a new pointer without removing the old.\n",
-  );
+  process.stderr.write("Expected: every in-repo memory file listed exactly once\n");
+  process.stderr.write("in newest-first order. Duplicates typically mean an\n");
+  process.stderr.write("edit pass added a new pointer without removing the old.\n");
   process.stderr.write("\n");
-  process.stderr.write(
-    `To fix: open ${target} and remove the older entry for each\n`,
-  );
-  process.stderr.write(
-    "duplicated target, keeping the newest-first-ordered one.\n",
-  );
+  process.stderr.write(`To fix: open ${target} and remove the older entry for each\n`);
+  process.stderr.write("duplicated target, keeping the newest-first-ordered one.\n");
 
   return enforce ? 2 : 0;
 }

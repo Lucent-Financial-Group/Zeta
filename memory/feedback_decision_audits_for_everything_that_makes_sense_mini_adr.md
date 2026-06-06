@@ -4,16 +4,17 @@ description: Aaron 2026-04-22 — generalize intentionality-enforcement from scr
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-22 three-message burst while the factory was
 authoring the cross-platform parity audit:
 
-1. *"this is great i will be able to audit all your decisions
+1. _"this is great i will be able to audit all your decisions
    now and give you feedback, decisions audits are great for
    humeans too, you can always ask me why ima asking you do
-   someting i can always answer why and justify myself."*
-2. *"we want decison audits for everything that makes sense,
-   this is kind of like mini ADR lol"*
-3. *"decison records i mean"*
+   someting i can always answer why and justify myself."_
+2. _"we want decison audits for everything that makes sense,
+   this is kind of like mini ADR lol"_
+3. _"decison records i mean"_
 
 **Why:** The factory had been applying intentionality-
 enforcement surgically — script exception labels
@@ -27,10 +28,10 @@ everything that makes sense" — and named it "mini ADR" to
 distinguish from the full ADR format under `docs/DECISIONS/`.
 
 The symmetry matters. Aaron said the same audit discipline
-applies to him: *"you can always ask me why ima asking you do
-someting i can always answer why and justify myself."* This is
+applies to him: _"you can always ask me why ima asking you do
+someting i can always answer why and justify myself."_ This is
 not the factory submitting to audit; it's a mutual practice. If
-the factory asks *why* on any directive Aaron issues, Aaron
+the factory asks _why_ on any directive Aaron issues, Aaron
 answers. The factory owes the same.
 
 **Canonical mini-ADR shape (worked instance: header block of
@@ -90,7 +91,7 @@ memory):**
   `feedback_data_driven_cadence_not_prescribed.md`.
 - **Symmetric audit:** when Aaron issues a directive and the
   factory is about to absorb it into a rule / memory / skill
-  edit, the factory can ask "what's the *why* I should record
+  edit, the factory can ask "what's the _why_ I should record
   as Context?" Aaron has explicitly committed to answering.
   This is not friction — it's the same practice that makes
   factory decisions auditable applied to human decisions.
@@ -103,6 +104,7 @@ silent default. The mini-ADR is the naming act that makes the
 pattern legible to the factory.
 
 **Related memories:**
+
 - `memory/feedback_enforcing_intentional_decisions_not_correctness.md`
   — parent rule (intentionality vs correctness).
 - `memory/feedback_intentionality_doesnt_demand_migration_bash_forever_valid.md`

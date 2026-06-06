@@ -242,10 +242,7 @@ function parseCachePaths(workflow: string, content: string): readonly CachePath[
  * Returns the offending tracked file (first match), or null if no
  * overlap.
  */
-function overlapsTrackedFile(
-  cachePath: string,
-  trackedFiles: readonly string[],
-): string | null {
+function overlapsTrackedFile(cachePath: string, trackedFiles: readonly string[]): string | null {
   // Normalise: drop leading `./`, trim trailing `/`
   let cp = cachePath;
   if (cp.startsWith("./")) cp = cp.slice(2);
@@ -290,9 +287,7 @@ function main(): number {
   process.chdir(repoRoot());
   const workflows = listWorkflowFiles();
   if (workflows.length === 0) {
-    process.stderr.write(
-      "ERROR: no workflow files found under .github/workflows/\n",
-    );
+    process.stderr.write("ERROR: no workflow files found under .github/workflows/\n");
     return 2;
   }
   const tracked = gitTrackedFiles();
@@ -308,9 +303,7 @@ function main(): number {
       // violation. Document + count, return exit 2 at end. Don't
       // silently skip and report "OK" — that's the same false-pass
       // class the audit was designed to catch.
-      process.stderr.write(
-        `ERROR: cannot read ${wf}: ${(err as Error).message}\n`,
-      );
+      process.stderr.write(`ERROR: cannot read ${wf}: ${(err as Error).message}\n`);
       readFailures++;
       continue;
     }
@@ -330,9 +323,7 @@ function main(): number {
   }
 
   if (readFailures > 0) {
-    process.stderr.write(
-      `ERROR: ${String(readFailures)} workflow file(s) unreadable; cannot complete audit\n`,
-    );
+    process.stderr.write(`ERROR: ${String(readFailures)} workflow file(s) unreadable; cannot complete audit\n`);
     return 2;
   }
 
@@ -354,33 +345,17 @@ function main(): number {
   );
   process.stderr.write("\n");
   process.stderr.write("Why this is a bug:\n");
-  process.stderr.write(
-    "  On cache hit, actions/cache OVERWRITES the freshly-checked-out\n",
-  );
-  process.stderr.write(
-    "  source files with cached versions. PR edits to tracked files\n",
-  );
-  process.stderr.write(
-    "  silently revert; CI tests the OLD content but reports the\n",
-  );
-  process.stderr.write(
-    "  result as the PR's new state. Test fidelity broken.\n",
-  );
+  process.stderr.write("  On cache hit, actions/cache OVERWRITES the freshly-checked-out\n");
+  process.stderr.write("  source files with cached versions. PR edits to tracked files\n");
+  process.stderr.write("  silently revert; CI tests the OLD content but reports the\n");
+  process.stderr.write("  result as the PR's new state. Test fidelity broken.\n");
   process.stderr.write("\n");
   process.stderr.write("How to fix:\n");
-  process.stderr.write(
-    "  Narrow the cache path to specific DERIVED files only (downloaded\n",
-  );
-  process.stderr.write(
-    "  jars, built artefacts, user-home tool state). Cache only what\n",
-  );
-  process.stderr.write(
-    "  install.sh DOWNLOADS, never what git tracks.\n",
-  );
+  process.stderr.write("  Narrow the cache path to specific DERIVED files only (downloaded\n");
+  process.stderr.write("  jars, built artefacts, user-home tool state). Cache only what\n");
+  process.stderr.write("  install.sh DOWNLOADS, never what git tracks.\n");
   process.stderr.write("\n");
-  process.stderr.write(
-    "  Bump the cache key (add `-v2` suffix or hashFiles input change)\n",
-  );
+  process.stderr.write("  Bump the cache key (add `-v2` suffix or hashFiles input change)\n");
   process.stderr.write("  to bust any pre-existing stale cache.\n");
   return 1;
 }

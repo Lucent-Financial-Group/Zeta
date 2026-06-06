@@ -33,7 +33,7 @@ When triaging work, the reverse-sync project (LFG→AceHack content closure) goe
 
 1. **Workflow drift first** (~80 lines, 1-2h, easy wins on AceHack-side): close 4 remaining workflow file diffs (`gate.yml` 4 lines, `backlog-index-integrity.yml` 17 lines, `memory-index-integrity.yml` 8 lines, `resume-diff.yml` 53 lines).
 2. **Source code reconcile** (~250 lines, 2-4h, real correctness): Graph.fs Gershgorin shift, TemporalCoordinationDetection.fs helper extraction, RobustStats.fs NaN guard — make sure both forks have all the algorithm fixes.
-3. **LFG-only substrate** (~5500 lines, 4-8h, biggest chunk): docs/BACKLOG.md per-row restructure (4113 lines), docs/GLOSSARY.md (292), docs/marketing/*, history docs, tools/hygiene/validate-agencysignature*.sh, tools/peer-call/grok.sh. This is the LFG→AceHack reverse-sync proper.
+3. **LFG-only substrate** (~5500 lines, 4-8h, biggest chunk): docs/BACKLOG.md per-row restructure (4113 lines), docs/GLOSSARY.md (292), docs/marketing/_, history docs, tools/hygiene/validate-agencysignature_.sh, tools/peer-call/grok.sh. This is the LFG→AceHack reverse-sync proper.
 4. **Memory file diffs** (~35 lines, 30min): the laptop-only-source-integration entry mostly.
 5. **0-diff verification check under `tools/sync/`** per #43's spec — automate the diff measurement so we never lose track of where we are.
 

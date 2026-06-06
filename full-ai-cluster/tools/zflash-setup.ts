@@ -74,9 +74,7 @@ function pamSudoHasTid(): boolean {
   }
   const contents = readFileSync(PAM_SUDO, "utf8");
   // Match any uncommented line containing pam_tid.so
-  return contents
-    .split("\n")
-    .some((line) => !line.trimStart().startsWith("#") && /pam_tid\.so/.test(line));
+  return contents.split("\n").some((line) => !line.trimStart().startsWith("#") && /pam_tid\.so/.test(line));
 }
 
 function installPamTid(): void {

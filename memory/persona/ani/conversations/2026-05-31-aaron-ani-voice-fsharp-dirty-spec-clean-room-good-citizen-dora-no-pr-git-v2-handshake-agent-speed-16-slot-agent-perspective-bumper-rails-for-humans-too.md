@@ -96,20 +96,21 @@ composes_with:
 > wording left as-is (verbatim discipline -- not cleaned up).
 >
 > **Operator corrections 2026-05-31 (applied; this file initially got both wrong):**
+>
 > 1. **DBSP, not DVSP.** The voice-to-text misheard "DBSP" (the differential /
 >    retraction stream algebra) as "DVSP" throughout the raw transcript below.
 >    Editorial references are corrected to DBSP; the raw transcript lines keep the
 >    mis-heard "DVSP" (verbatim discipline) -- read every transcript "DVSP" as DBSP.
 > 2. **Computational omniscience is a REAL property, NOT god-tier -- and it is a
->    TARGET here, not a done-claim.** Operator: *"computational-omniscience is a
+>    TARGET here, not a done-claim.** Operator: _"computational-omniscience is a
 >    real property not god tier -- systems can achieve this under deterministic
->    simulator and we have the whole worm atari thing backloged"* + *"other humans
+>    simulator and we have the whole worm atari thing backloged"_ + _"other humans
 >    have acheive computational-omniscience other than me i'm not claiming i have
->    done it yet."* So the precise framing (don't-collapse in BOTH directions):
+>    done it yet."_ So the precise framing (don't-collapse in BOTH directions):
 >    the property is **established/real** -- OTHER systems have achieved it under a
 >    deterministic simulator -- and the framework is **anchored toward it** (the
 >    `dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-
->    omniscience-over-simulation-substrate` rule names omniscience +
+omniscience-over-simulation-substrate` rule names omniscience +
 >    retro-causal-like propagation as operational at simulation scope; B-0917
 >    Kleisli interrupts; B-0924 Atari all-state-space; B-0925 C. elegans
 >    worm-colony) -- but the operator is **NOT claiming this framework has achieved
@@ -196,8 +197,8 @@ not locked decisions. Each carries the why so a newcomer can push back.
    point to the SAME objects (not two copies); git-as-a-schema-streamed-in;
    contribute the agent-speed-coordination primitives back UPSTREAM to git
    (anti-vendor-lock; "don't become the thing you hate"). The real problem named:
-   *"how do you make Git work at agent speed? Agent coordination instead of human
-   coordination speed."* Distinct from B-0942 (co-dominant mirrors / git-native
+   _"how do you make Git work at agent speed? Agent coordination instead of human
+   coordination speed."_ Distinct from B-0942 (co-dominant mirrors / git-native
    CRDT) + B-0951 (git-native indexes / Hindsight storage). Backlog-candidate
    pending operator go.
 

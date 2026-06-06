@@ -9,12 +9,7 @@
 // Composes with PR #5775 (GitWorld base) + PR #5801 (GitLabWorld first
 // extension) + B-0867.15 (per-host adapters target).
 
-import {
-  registerLifetimePair,
-  type ComposedKey,
-  type LifetimeState,
-  type StandardVerdict,
-} from "./world.js";
+import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
 import { type GitWorld } from "./git-world.js";
 
 export interface BitbucketPrLifetime extends LifetimeState {
@@ -26,14 +21,7 @@ export interface BitbucketCommentLifetime extends LifetimeState {
 }
 
 export interface BitbucketPipelineLifetime extends LifetimeState {
-  readonly kind:
-    | "pending"
-    | "in-progress"
-    | "successful"
-    | "failed"
-    | "error"
-    | "stopped"
-    | "expired";
+  readonly kind: "pending" | "in-progress" | "successful" | "failed" | "error" | "stopped" | "expired";
 }
 
 export interface BitbucketBranchRestriction extends LifetimeState {
@@ -41,8 +29,8 @@ export interface BitbucketBranchRestriction extends LifetimeState {
 }
 
 export interface BitbucketResourceBudget {
-  readonly hourlyRemaining: number;     // Bitbucket uses hourly rate limits per OAuth client
-  readonly hourlyLimit: number;          // typically 1000/hour for OAuth
+  readonly hourlyRemaining: number; // Bitbucket uses hourly rate limits per OAuth client
+  readonly hourlyLimit: number; // typically 1000/hour for OAuth
   readonly hourlyResetAt: number;
 }
 
@@ -65,25 +53,12 @@ export interface BitbucketWorld extends GitWorld {
   readonly resourceBudget?: BitbucketResourceBudget;
 }
 
-export function buildBitbucketWorld(
-  gitWorld: GitWorld,
-  resourceBudget?: BitbucketResourceBudget,
-): BitbucketWorld {
+export function buildBitbucketWorld(gitWorld: GitWorld, resourceBudget?: BitbucketResourceBudget): BitbucketWorld {
   return {
     ...gitWorld,
     forgeSpecialization: "bitbucket",
-    prUniverse: [
-      { kind: "open" },
-      { kind: "declined" },
-      { kind: "merged" },
-      { kind: "superseded" },
-    ],
-    commentUniverse: [
-      { kind: "inline" },
-      { kind: "general" },
-      { kind: "task-open" },
-      { kind: "task-resolved" },
-    ],
+    prUniverse: [{ kind: "open" }, { kind: "declined" }, { kind: "merged" }, { kind: "superseded" }],
+    commentUniverse: [{ kind: "inline" }, { kind: "general" }, { kind: "task-open" }, { kind: "task-resolved" }],
     pipelineUniverse: [
       { kind: "pending" },
       { kind: "in-progress" },
@@ -108,14 +83,9 @@ export type BitbucketFeedback =
   | { kind: "ApprovalsMissing"; required: number; actual: number }
   | { kind: "MergeBlocked"; reason: string };
 
-export type BitbucketResult<T> =
-  | { ok: true; world: T }
-  | { ok: false; feedback: BitbucketFeedback };
+export type BitbucketResult<T> = { ok: true; world: T } | { ok: false; feedback: BitbucketFeedback };
 
-export function canAffordBitbucket(
-  world: BitbucketWorld,
-  hourlyCost: number,
-): BitbucketResult<BitbucketWorld> {
+export function canAffordBitbucket(world: BitbucketWorld, hourlyCost: number): BitbucketResult<BitbucketWorld> {
   const budget = world.resourceBudget;
   if (!budget) return { ok: true, world };
   if (hourlyCost > budget.hourlyRemaining) {
@@ -127,11 +97,7 @@ export function canAffordBitbucket(
   return { ok: true, world };
 }
 
-export function registerInBitbucket<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function registerInBitbucket<A extends LifetimeState, B extends LifetimeState, T>(
   world: BitbucketWorld,
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,

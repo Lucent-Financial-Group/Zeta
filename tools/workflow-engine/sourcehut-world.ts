@@ -14,12 +14,7 @@
 // Composes with PR #5775 (GitWorld base) + PR #5801 (GitLabWorld) +
 // B-0867.15 (per-host adapters target).
 
-import {
-  registerLifetimePair,
-  type ComposedKey,
-  type LifetimeState,
-  type StandardVerdict,
-} from "./world.js";
+import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
 import { type GitWorld } from "./git-world.js";
 
 /**
@@ -31,13 +26,13 @@ import { type GitWorld } from "./git-world.js";
  */
 export interface EmailPatchLifetime extends LifetimeState {
   readonly kind:
-    | "sent"             // patch sent to list
-    | "under-review"     // replies in thread
-    | "needs-revision"   // reviewer requested changes
-    | "applied"          // maintainer applied locally
-    | "merged"           // pushed to upstream
-    | "rejected"         // explicitly declined
-    | "abandoned";       // no activity; faded
+    | "sent" // patch sent to list
+    | "under-review" // replies in thread
+    | "needs-revision" // reviewer requested changes
+    | "applied" // maintainer applied locally
+    | "merged" // pushed to upstream
+    | "rejected" // explicitly declined
+    | "abandoned"; // no activity; faded
 }
 
 /**
@@ -48,25 +43,18 @@ export interface EmailPatchLifetime extends LifetimeState {
  */
 export interface MailingListThreadLifetime extends LifetimeState {
   readonly kind:
-    | "discussion"       // no patches; pure conversation
-    | "rfc"              // request-for-comments; no patches yet
-    | "patch-series"     // contains one or more patch emails
-    | "announcement"     // unilateral notice
-    | "closed";          // moderator-closed
+    | "discussion" // no patches; pure conversation
+    | "rfc" // request-for-comments; no patches yet
+    | "patch-series" // contains one or more patch emails
+    | "announcement" // unilateral notice
+    | "closed"; // moderator-closed
 }
 
 /**
  * builds.sr.ht job lifetime (Sourcehut-native CI/CD).
  */
 export interface SrhtBuildLifetime extends LifetimeState {
-  readonly kind:
-    | "pending"
-    | "queued"
-    | "running"
-    | "success"
-    | "failed"
-    | "timeout"
-    | "cancelled";
+  readonly kind: "pending" | "queued" | "running" | "success" | "failed" | "timeout" | "cancelled";
 }
 
 /**
@@ -82,9 +70,9 @@ export interface SrhtTicketLifetime extends LifetimeState {
  * has soft limits on builds.sr.ht (concurrent jobs per subscription tier).
  */
 export interface SrhtResourceBudget {
-  readonly buildJobsRemaining: number;     // concurrent builds.sr.ht slots
-  readonly buildJobsLimit: number;          // subscription tier
-  readonly listSendsPerHour: number;        // soft limit on mailing-list sends
+  readonly buildJobsRemaining: number; // concurrent builds.sr.ht slots
+  readonly buildJobsLimit: number; // subscription tier
+  readonly listSendsPerHour: number; // soft limit on mailing-list sends
 }
 
 export type SrhtRateLimitTier = "normal" | "constrained";
@@ -119,10 +107,7 @@ export interface SourcehutWorld extends GitWorld {
   readonly resourceBudget?: SrhtResourceBudget;
 }
 
-export function buildSourcehutWorld(
-  gitWorld: GitWorld,
-  resourceBudget?: SrhtResourceBudget,
-): SourcehutWorld {
+export function buildSourcehutWorld(gitWorld: GitWorld, resourceBudget?: SrhtResourceBudget): SourcehutWorld {
   return {
     ...gitWorld,
     forgeSpecialization: "sourcehut",
@@ -168,14 +153,9 @@ export type SourcehutFeedback =
   | { kind: "MailingListThrottled"; sendsPerHour: number }
   | { kind: "PatchApplyFailed"; reason: string };
 
-export type SourcehutResult<T> =
-  | { ok: true; world: T }
-  | { ok: false; feedback: SourcehutFeedback };
+export type SourcehutResult<T> = { ok: true; world: T } | { ok: false; feedback: SourcehutFeedback };
 
-export function canAffordSrhtBuild(
-  world: SourcehutWorld,
-  jobsNeeded: number,
-): SourcehutResult<SourcehutWorld> {
+export function canAffordSrhtBuild(world: SourcehutWorld, jobsNeeded: number): SourcehutResult<SourcehutWorld> {
   const budget = world.resourceBudget;
   if (!budget) return { ok: true, world };
   if (jobsNeeded > budget.buildJobsRemaining) {
@@ -191,11 +171,7 @@ export function canAffordSrhtBuild(
   return { ok: true, world };
 }
 
-export function registerInSourcehut<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function registerInSourcehut<A extends LifetimeState, B extends LifetimeState, T>(
   world: SourcehutWorld,
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,

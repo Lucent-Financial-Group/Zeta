@@ -10,7 +10,20 @@ created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0196, B-0198, B-0152, B-0026]
-tags: [fsharp, codeact, bridge-engineering, four-property-hodl, dst, retraction-native, dbsp, python-interop, type-providers, fsharp-compiler-service, absorb-and-contribute]
+tags:
+  [
+    fsharp,
+    codeact,
+    bridge-engineering,
+    four-property-hodl,
+    dst,
+    retraction-native,
+    dbsp,
+    python-interop,
+    type-providers,
+    fsharp-compiler-service,
+    absorb-and-contribute,
+  ]
 type: feature
 ---
 
@@ -23,16 +36,16 @@ F# <-> CodeAct bridging as a concrete engineering direction with
 four candidate architectures. Aaron's framing on the bridge
 shape:
 
-> *"we can do have a bridge between f# and codeact"*
+> _"we can do have a bridge between f# and codeact"_
 
 Aaron's framing on relative DSL strengths and source-channel
 calibration:
 
-> *"our f# DSL are better. Wes Roth i watch a lot"*
+> _"our f# DSL are better. Wes Roth i watch a lot"_
 
 Aaron's no-kill-paths calibration on the broader candidate set:
 
-> *"all of it's good we don't want to abandon any paths"*
+> _"all of it's good we don't want to abandon any paths"_
 
 The verbatim conversation is preserved at
 [`docs/research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md`](../../research/2026-05-05-claudeai-codeact-fsharp-bridge-gibberlink-berman-aaron-forwarded-preservation.md).
@@ -242,48 +255,48 @@ the boundary IS the firewall.
 
 1. **Each of the 4 architectures evaluated against four-property
    hodl preservation**.
-   *Verifier*: a written comparison table covering all four
+   _Verifier_: a written comparison table covering all four
    candidates against {DST-safe, lock-free, scale-free,
    DBSP-native}, marking each cell {full / partial / none}
    with one-sentence justification.
-   *Pass*: table covers 4 candidates x 4 properties = 16 cells
+   _Pass_: table covers 4 candidates x 4 properties = 16 cells
    with written justification per cell.
-   *Falsifier*: any cell missing or any justification reducing
+   _Falsifier_: any cell missing or any justification reducing
    to "by construction" without operational reasoning.
 
 2. **Working PoC of at least one architecture**.
-   *Verifier*: a runnable PoC demonstrating round-trip
+   _Verifier_: a runnable PoC demonstrating round-trip
    F# <-> Python interaction on a non-trivial example (likely
    candidate (3) Pythonnet for lowest friction). PoC includes
    a hodl-property test asserting at least one of the four
    properties holds across the boundary in the demonstrated
    shape.
-   *Pass*: `dotnet build -c Release` clean, PoC runs
+   _Pass_: `dotnet build -c Release` clean, PoC runs
    end-to-end, hodl-property test passes deterministically
    under DST harness.
-   *Falsifier*: build break, runtime error in the round-trip
+   _Falsifier_: build break, runtime error in the round-trip
    path, or hodl-property test fails or flakes.
 
 3. **Sister-shape cross-reference to B-0198**.
-   *Verifier*: this row's engineering-shape (research-grade
+   _Verifier_: this row's engineering-shape (research-grade
    discovery -> verification preconditions -> engagement-gate
    -> upstream-or-internal landing) matches the shape used in
    B-0198 (F# UoM upstream contribution); deviations are named
    and justified.
-   *Pass*: a "shape comparison" subsection naming each of the
+   _Pass_: a "shape comparison" subsection naming each of the
    B-0198 phases and how this row's instantiation matches or
    deviates.
-   *Falsifier*: ad-hoc shape that ignores the B-0198 sister
+   _Falsifier_: ad-hoc shape that ignores the B-0198 sister
    pattern without explicit justification.
 
 4. **Composability check with B-0196 four-property hodl test
    suite**.
-   *Verifier*: any PoC produced under criterion (2) lands a
+   _Verifier_: any PoC produced under criterion (2) lands a
    test row that runs inside the B-0196 four-property hodl
    gate (or the B-0196 follow-on test suite once that exists).
-   *Pass*: PoC test row appears in the same test runner as
+   _Pass_: PoC test row appears in the same test runner as
    B-0196's hodl tests; CI green.
-   *Falsifier*: PoC tests live in a separate runner that does
+   _Falsifier_: PoC tests live in a separate runner that does
    not enforce the four-property gate.
 
 ## Out of scope

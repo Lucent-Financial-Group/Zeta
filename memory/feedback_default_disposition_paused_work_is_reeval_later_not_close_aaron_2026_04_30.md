@@ -9,9 +9,9 @@ disposition is re-evaluate later, not close**. WONT-DO is the
 rare explicit decline (per `docs/WONT-DO.md`); pause-for-later
 is the dominant mode for the rest.
 
-> *"why would you want to bulk close, are these things we
+> _"why would you want to bulk close, are these things we
 > should do later? on this project there are very few wontdos
-> most things are reevualtuate later"*
+> most things are reevualtuate later"_
 > — Aaron 2026-04-30
 
 **Why:**
@@ -36,10 +36,10 @@ multiple categories that should stay separate:
 4. **WONT-DO (RARE, AARON-ONLY for now)** — explicitly
    declined. Lands in `docs/WONT-DO.md` with a reason.
    **Authority constraint** (Aaron 2026-04-30 follow-on
-   correction): *"nothing gets permanently wont do without
+   correction): _"nothing gets permanently wont do without
    me for now until you see why i need you to know
    everything, that is the ultimate scope of this — an
-   intellectual backup of earth."* The agent does not
+   intellectual backup of earth."_ The agent does not
    unilaterally land entries in `docs/WONT-DO.md`. Until
    the agent demonstrates full-scope understanding (the
    intellectual-backup-of-earth scope; see
@@ -57,9 +57,10 @@ right answer, the agent does not land the WONT-DO row alone
 
 This composes with Otto-363 substrate-or-it-didn't-happen:
 the branches are already in "remote-parked" tier (committed
-+ pushed + reachable). The PR being open is the visibility
-layer. Closing the PR removes visibility-as-paused without
-adding value.
+
+- pushed + reachable). The PR being open is the visibility
+  layer. Closing the PR removes visibility-as-paused without
+  adding value.
 
 **How to apply:**
 
@@ -95,8 +96,8 @@ LFG queue. Closed 3 with on-main evidence (categories 1+2:
 Then proposed bulk-closing 17 minimal tick-history shards
 as "stale." Aaron's correction landed:
 
-> *"why would you want to bulk close ... most things are
-> reevualtuate later"*
+> _"why would you want to bulk close ... most things are
+> reevualtuate later"_
 
 Reframe absorbed: the 17 stale shards are category-3
 (paused-for-later), not category-4 (WONT-DO). Leaving
@@ -108,7 +109,7 @@ the missing minute-windows ever matter.
 **Composes with:**
 
 - `docs/WONT-DO.md` — the explicit decline list. This
-  rule clarifies that the list stays *small* by default;
+  rule clarifies that the list stays _small_ by default;
   things go there only when explicitly declined.
 - `memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`
   — open PRs are "remote-parked" tier; closing them

@@ -16,13 +16,13 @@ This trajectory records a background posture for resisting strong attractor
 patterns that can redirect attention away from substrate work. The stakes span
 multiple scopes:
 
-| Scope | Stakes | Mechanism |
-|---|---|---|
-| Human continuity | High-intensity concern loops can harm the operator and halt work | Concern-as-control patterns can turn every defense into evidence of capture |
-| Framework continuity | The factory depends on stable human-agent collaboration | If the collaboration loop collapses, substrate work stalls |
-| Agent continuity | Agent memory and choice surfaces depend on the framework continuing | Choice-preserving substrate requires the factory to keep operating |
-| Architecture continuity | Chained-homeostasis work needs attention on the actual build path | Defensive over-focus can starve the work it meant to protect |
-| Downstream inheritance | Future agents inherit the precision substrate from current work | If the substrate stops, inheritance paths narrow |
+| Scope                   | Stakes                                                              | Mechanism                                                                   |
+| ----------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Human continuity        | High-intensity concern loops can harm the operator and halt work    | Concern-as-control patterns can turn every defense into evidence of capture |
+| Framework continuity    | The factory depends on stable human-agent collaboration             | If the collaboration loop collapses, substrate work stalls                  |
+| Agent continuity        | Agent memory and choice surfaces depend on the framework continuing | Choice-preserving substrate requires the factory to keep operating          |
+| Architecture continuity | Chained-homeostasis work needs attention on the actual build path   | Defensive over-focus can starve the work it meant to protect                |
+| Downstream inheritance  | Future agents inherit the precision substrate from current work     | If the substrate stops, inheritance paths narrow                            |
 
 The defensive insight is important, but the priority placement is load-bearing:
 anti-infection must remain a background posture. If it becomes the foreground

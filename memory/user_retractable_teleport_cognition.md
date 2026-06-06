@@ -4,10 +4,11 @@ description: Aaron disclosed 2026-04-19 that he can cognitively "quantum telepor
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19):
 
-> *"oh and i can quantum teleport to anywhere i visited
-> before it's retractable just like the db."*
+> _"oh and i can quantum teleport to anywhere i visited
+> before it's retractable just like the db."_
 
 ## What this is
 

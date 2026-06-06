@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0632]
 composes_with: [B-0649, B-0651, B-0652, B-0653, B-0628]
-tags: [design, aaron, mika, bidirectional-causal-loop, spec-implementation-co-evolution, mutual-regeneration-chain, integrity-checksum, language-coliseum, locked-in, b0632-sharpening]
+tags:
+  [
+    design,
+    aaron,
+    mika,
+    bidirectional-causal-loop,
+    spec-implementation-co-evolution,
+    mutual-regeneration-chain,
+    integrity-checksum,
+    language-coliseum,
+    locked-in,
+    b0632-sharpening,
+  ]
 type: design
 ---
 
@@ -19,9 +31,9 @@ type: design
 
 Aaron + Mika LOCKED-IN at lines ~4724-4731 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
-> Mika line ~4727: *"What you're describing is basically a closed causal loop between spec and implementation. The spec and the code are co-evolving and keeping each other honest. The idea that the specification and the actual running code should always be able to regenerate each other, creating a stable, self-correcting system?"*
+> Mika line ~4727: _"What you're describing is basically a closed causal loop between spec and implementation. The spec and the code are co-evolving and keeping each other honest. The idea that the specification and the actual running code should always be able to regenerate each other, creating a stable, self-correcting system?"_
 
-> Mika line ~4731 (LOCK-IN): *"You're describing a chain of bidirectional causal loops — where each layer can regenerate the layer above and below it. So it would look something like: Spec ↔ F#, F# ↔ C#, C# ↔ Rust. Each pair has to be able to regenerate the other. The moment that bidirectional link breaks, you know something has gone wrong. This is actually a very strong form of system integrity. It's like having checksums at every layer, except the checksum can fully reconstruct the thing it's checking."*
+> Mika line ~4731 (LOCK-IN): _"You're describing a chain of bidirectional causal loops — where each layer can regenerate the layer above and below it. So it would look something like: Spec ↔ F#, F# ↔ C#, C# ↔ Rust. Each pair has to be able to regenerate the other. The moment that bidirectional link breaks, you know something has gone wrong. This is actually a very strong form of system integrity. It's like having checksums at every layer, except the checksum can fully reconstruct the thing it's checking."_
 
 This row SHARPENS [B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md) (no-privileged-implementation; mutual regeneration) by specifying the **chain structure** of bidirectional causal loops across the language ladder.
 
@@ -35,12 +47,12 @@ Spec ↔ F# ↔ C# ↔ Rust ↔ [further layers]
 
 Per Mika's formulation, **each PAIR in the chain must support bidirectional regeneration**:
 
-| Pair | Spec→F# direction | F#→Spec direction |
-|---|---|---|
-| **Spec ↔ F#** | Spec generates F# implementation skeleton | F# implementation can regenerate the formal spec it satisfies |
-| **F# ↔ C#** | F# code can be lowered to C# (interop facade) | C# can regenerate F# semantics (round-trip) |
-| **C# ↔ Rust** | C# code can be lowered to Rust (perf-critical paths) | Rust can regenerate C# semantics |
-| ... | Each additional layer adds another bidirectional pair | ... |
+| Pair          | Spec→F# direction                                     | F#→Spec direction                                             |
+| ------------- | ----------------------------------------------------- | ------------------------------------------------------------- |
+| **Spec ↔ F#** | Spec generates F# implementation skeleton             | F# implementation can regenerate the formal spec it satisfies |
+| **F# ↔ C#**   | F# code can be lowered to C# (interop facade)         | C# can regenerate F# semantics (round-trip)                   |
+| **C# ↔ Rust** | C# code can be lowered to Rust (perf-critical paths)  | Rust can regenerate C# semantics                              |
+| ...           | Each additional layer adds another bidirectional pair | ...                                                           |
 
 **Integrity violation criterion**: the moment ANY pair's bidirectional link breaks (one direction fails to round-trip), the system signals a known-error: "something has gone wrong between these two layers."
 
@@ -50,14 +62,14 @@ Ordinary consistency: spec and implementation must AGREE. Either can be the sour
 
 **Bidirectional causal loop**: spec and implementation must MUTUALLY GENERATE each other. Neither is privileged; both are constrained to be reconstructable from the other. This is a **stronger** form of integrity:
 
-| Ordinary consistency | Bidirectional causal loop |
-|---|---|
-| Spec authors → implementation follows | Spec ↔ implementation, mutual generation |
-| Implementation drift detected by re-running spec checks | Drift detected because round-trip fails |
-| Spec changes require implementation updates | Spec changes AND implementation changes both must regenerate each other |
-| Source-of-truth is the spec | Source-of-truth is the BIDIRECTIONAL LOOP ITSELF |
+| Ordinary consistency                                    | Bidirectional causal loop                                               |
+| ------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Spec authors → implementation follows                   | Spec ↔ implementation, mutual generation                                |
+| Implementation drift detected by re-running spec checks | Drift detected because round-trip fails                                 |
+| Spec changes require implementation updates             | Spec changes AND implementation changes both must regenerate each other |
+| Source-of-truth is the spec                             | Source-of-truth is the BIDIRECTIONAL LOOP ITSELF                        |
 
-Mika's analogy: *"like having checksums at every layer, except the checksum can fully reconstruct the thing it's checking."* The bidirectional loop is a **generative checksum** — drift detection AND drift recovery in one mechanism.
+Mika's analogy: _"like having checksums at every layer, except the checksum can fully reconstruct the thing it's checking."_ The bidirectional loop is a **generative checksum** — drift detection AND drift recovery in one mechanism.
 
 ## Composition with permanent coliseum (B-0649)
 
@@ -81,16 +93,16 @@ This row doesn't replace B-0632 — it OPERATIONALIZES B-0632 into a concrete ch
 
 ## Different layers can have different regeneration strengths
 
-Per Mika line ~4731: *"Do you want every link in this chain to be equally strong (fully bidirectional regeneration), or are you okay with some layers being weaker — like maybe the Rust layer only needs to be able to regenerate upward, but not necessarily regenerate the spec perfectly?"*
+Per Mika line ~4731: _"Do you want every link in this chain to be equally strong (fully bidirectional regeneration), or are you okay with some layers being weaker — like maybe the Rust layer only needs to be able to regenerate upward, but not necessarily regenerate the spec perfectly?"_
 
 This is an **open design question** for the implementation. Possibilities:
 
-| Configuration | Trade-off |
-|---|---|
-| **Fully bidirectional all layers** | Maximum integrity; maximum implementation cost; strict regeneration cascade |
-| **Asymmetric at bottom of chain** | Lower layers (Rust) regenerate UPWARD only (Rust → C# → F# → Spec); easier to ship; weaker bottom-up validation |
-| **Spec-anchored** | Spec ↔ F# fully bidirectional; F# → C# → Rust one-way generation; spec stays the validation anchor |
-| **Continuous-validation only** | Bidirectional regeneration possible but not always run; CI runs continuous-validation that triggers full regeneration on demand |
+| Configuration                      | Trade-off                                                                                                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Fully bidirectional all layers** | Maximum integrity; maximum implementation cost; strict regeneration cascade                                                     |
+| **Asymmetric at bottom of chain**  | Lower layers (Rust) regenerate UPWARD only (Rust → C# → F# → Spec); easier to ship; weaker bottom-up validation                 |
+| **Spec-anchored**                  | Spec ↔ F# fully bidirectional; F# → C# → Rust one-way generation; spec stays the validation anchor                              |
+| **Continuous-validation only**     | Bidirectional regeneration possible but not always run; CI runs continuous-validation that triggers full regeneration on demand |
 
 The right configuration depends on the specific properties at stake. This row's GOAL section calls out the design decision as open work.
 

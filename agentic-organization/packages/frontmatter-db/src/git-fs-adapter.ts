@@ -30,8 +30,7 @@ export const GitFsAdapterFeedbackReason = {
   EventFileUnparseable: "event_file_unparseable",
 } as const;
 
-export type GitFsAdapterFeedbackReason =
-  (typeof GitFsAdapterFeedbackReason)[keyof typeof GitFsAdapterFeedbackReason];
+export type GitFsAdapterFeedbackReason = (typeof GitFsAdapterFeedbackReason)[keyof typeof GitFsAdapterFeedbackReason];
 
 export type GitFsLoadResult =
   | { outcome: "ok"; loaded: number }
@@ -73,7 +72,11 @@ export function createGitFsAdapter(fs: EventFileSystem): GitFsAdapter {
         if (parsed.outcome === "feedback") {
           return {
             outcome: "feedback",
-            feedback: { reason: GitFsAdapterFeedbackReason.EventFileUnparseable, message: parsed.feedback.message, path },
+            feedback: {
+              reason: GitFsAdapterFeedbackReason.EventFileUnparseable,
+              message: parsed.feedback.message,
+              path,
+            },
           };
         }
         map.set(parsed.event.id, parsed.event);

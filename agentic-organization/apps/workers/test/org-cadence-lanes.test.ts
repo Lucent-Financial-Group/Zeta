@@ -71,7 +71,16 @@ const someIntake = async () => ({ projectId: "proj-1", initiativeId: "init-1", i
 
 test("work-os lane drives one living-loop cycle and reports the final state", async () => {
   const events: OrgEvent[] = [];
-  const lane = createWorkOsCadenceLane({ organizationId: "org-lfg", hats: buildHatDefinitions(), now: () => NOW, createId, intake: someIntake, appendEvent: async (e) => { events.push(e); } });
+  const lane = createWorkOsCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    intake: someIntake,
+    appendEvent: async (e) => {
+      events.push(e);
+    },
+  });
   const result = await lane.runOnce();
   equal(result.failures.length, 0);
   ok(result.status.startsWith("work-os:"));
@@ -444,7 +453,8 @@ test("observe-act work-item lane routes meta.escalate through supervisor-signal 
     },
     targetHatAssignmentId: "hat-manager-1",
     title: "Observe-act escalation for work_item awaiting_gate",
-    message: "Agent requested supervisor triage for run 1 at work_item/awaiting_gate. Legal options: 1; vetoed options: 1.",
+    message:
+      "Agent requested supervisor triage for run 1 at work_item/awaiting_gate. Legal options: 1; vetoed options: 1.",
     policyContext: {
       scope: {
         teamId: "team-runtime",
@@ -499,7 +509,9 @@ test("observe-act work-item lane can load a prompt-flow task context instead of 
       throw new Error("prompt-flow context loading should not dispatch MCP directly");
     },
     loadPromptFlowContext: async (request) => {
-      loaded.push(`${request.taskId}:${request.directions[0]}:${request.toolInjections[0]?.tool}:${request.metrics[0]?.id}`);
+      loaded.push(
+        `${request.taskId}:${request.directions[0]}:${request.toolInjections[0]?.tool}:${request.metrics[0]?.id}`,
+      );
       return {
         taskId: request.taskId,
         promptFlowId: request.promptFlowId,
@@ -523,14 +535,16 @@ test("observe-act work-item lane carries prompt-flow overflow page navigation in
   const observeEvents: OrgEvent[] = [];
   const loaded: string[] = [];
   let tick = 0;
-  const tasks = Array.from({ length: 3 }, (_, index) => promptFlowTask({
-    taskId: `task-${index + 1}`,
-    promptFlowId: `flow-${index + 1}`,
-    label: `Task ${index + 1}`,
-    actionClass: ActionClass.WriteCode,
-    priority: 100 - index,
-    directions: [`Load task ${index + 1}`],
-  }));
+  const tasks = Array.from({ length: 3 }, (_, index) =>
+    promptFlowTask({
+      taskId: `task-${index + 1}`,
+      promptFlowId: `flow-${index + 1}`,
+      label: `Task ${index + 1}`,
+      actionClass: ActionClass.WriteCode,
+      priority: 100 - index,
+      directions: [`Load task ${index + 1}`],
+    }),
+  );
   const lane = createObserveActWorkItemCadenceLane({
     organizationId: "org-lfg",
     hats: buildHatDefinitions(),
@@ -674,14 +688,26 @@ test("observe-act work-item lane forwards schedule blocks and slot authorization
 
   equal(result.status, "observe-act:rejected:schedule_authority_denied");
   equal(result.failures.length, 1);
-  equal(result.failures[0]?.message, "observe-act lane: schedule_authority_denied: schedule block expired before dispatch");
+  equal(
+    result.failures[0]?.message,
+    "observe-act lane: schedule_authority_denied: schedule block expired before dispatch",
+  );
   equal(authorizedSlot, 4);
   equal(dispatched, false);
 });
 
 test("work-os lane stays IDLE (no cycle, no events) when intake returns null", async () => {
   const events: OrgEvent[] = [];
-  const lane = createWorkOsCadenceLane({ organizationId: "org-lfg", hats: buildHatDefinitions(), now: () => NOW, createId, intake: async () => null, appendEvent: async (e) => { events.push(e); } });
+  const lane = createWorkOsCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    intake: async () => null,
+    appendEvent: async (e) => {
+      events.push(e);
+    },
+  });
   const result = await lane.runOnce();
   equal(result.status, "work-os:idle");
   equal(result.failures.length, 0);
@@ -689,7 +715,16 @@ test("work-os lane stays IDLE (no cycle, no events) when intake returns null", a
 });
 
 test("work-os lane CATCHES errors into failures (never throws)", async () => {
-  const lane = createWorkOsCadenceLane({ organizationId: "org-lfg", hats: buildHatDefinitions(), now: () => NOW, createId, intake: someIntake, appendEvent: async () => { throw new Error("sink down"); } });
+  const lane = createWorkOsCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    intake: someIntake,
+    appendEvent: async () => {
+      throw new Error("sink down");
+    },
+  });
   const result = await lane.runOnce();
   equal(result.status, "degraded");
   ok(result.failures[0]!.message.includes("work-os lane"));
@@ -697,8 +732,30 @@ test("work-os lane CATCHES errors into failures (never throws)", async () => {
 
 function memEnvelope(memoryId: string, phase: MemoryPhase, freshnessAt: string, confidence: number): MemoryEnvelope {
   return {
-    memoryId, organizationId: "org-lfg", tier: MemoryTier.Work, scope: "work-1", key: "k", protected: false, writtenBy: "system", writtenAt: "2026-05-30T00:00:00Z",
-    state: { memoryId, organizationId: "org-lfg", phase, confidence, weight: 0.5, freshnessAt, reinforcementCount: 1, outcome: { successCount: 8, failureCount: 0, inconclusiveCount: 0, workItemsObserved: [] }, utility: { injectedCount: 6, citedCount: 5 }, crossScope: { distinctScopes: [], firstObservedAt: "2026-05-30T00:00:00Z", lastObservedAt: "2026-05-30T00:00:00Z" } },
+    memoryId,
+    organizationId: "org-lfg",
+    tier: MemoryTier.Work,
+    scope: "work-1",
+    key: "k",
+    protected: false,
+    writtenBy: "system",
+    writtenAt: "2026-05-30T00:00:00Z",
+    state: {
+      memoryId,
+      organizationId: "org-lfg",
+      phase,
+      confidence,
+      weight: 0.5,
+      freshnessAt,
+      reinforcementCount: 1,
+      outcome: { successCount: 8, failureCount: 0, inconclusiveCount: 0, workItemsObserved: [] },
+      utility: { injectedCount: 6, citedCount: 5 },
+      crossScope: {
+        distinctScopes: [],
+        firstObservedAt: "2026-05-30T00:00:00Z",
+        lastObservedAt: "2026-05-30T00:00:00Z",
+      },
+    },
   };
 }
 
@@ -718,7 +775,13 @@ function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkSchedule
     endsAt: "2026-05-30T00:30:00.000Z",
     scheduledAt: "2026-05-29T23:00:00.000Z",
     scheduledBy: { agentId: "agent-manager-1", hatAssignmentId: "hat-manager-1" },
-    metadata: { updatedAt: "2026-05-29T23:00:00.000Z", version: 1, correlationId: "corr", causationId: "cause", traceId: "trace" },
+    metadata: {
+      updatedAt: "2026-05-29T23:00:00.000Z",
+      version: 1,
+      correlationId: "corr",
+      causationId: "cause",
+      traceId: "trace",
+    },
     ...overrides,
   };
 }
@@ -738,10 +801,18 @@ test("memory-maintenance lane recomputes + persists updates + emits the cycle ev
   const upserts: string[] = [];
   const events: OrgEvent[] = [];
   const lane = createMemoryMaintenanceCadenceLane({
-    organizationId: "org-lfg", now: () => NOW, createId,
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
     reader: { listAll: async () => [aged] },
-    writer: { upsert: async (r) => { upserts.push(r.memoryId); } },
-    appendEvent: async (e) => { events.push(e); },
+    writer: {
+      upsert: async (r) => {
+        upserts.push(r.memoryId);
+      },
+    },
+    appendEvent: async (e) => {
+      events.push(e);
+    },
   });
   const result = await lane.runOnce();
   equal(result.failures.length, 0);
@@ -751,7 +822,22 @@ test("memory-maintenance lane recomputes + persists updates + emits the cycle ev
 });
 
 function changeSet(phase: ChangeSetPhase, currentStageIndex: number, revision = 2): ChangeSet {
-  return { changeSetId: "cs-1", organizationId: "org-lfg", workItemId: "work-1", proposerHatId: "code_author", title: "t", targetRef: "feat/x", phase, pipelineId: "internal-only", currentStageIndex, artifacts: [{ kind: "code_diff", path: "a.ts", diff: "+x", language: "ts" }], projections: [], revision, openedAt: "2026-05-30T00:00:00Z", updatedAt: "2026-05-30T00:00:00Z" };
+  return {
+    changeSetId: "cs-1",
+    organizationId: "org-lfg",
+    workItemId: "work-1",
+    proposerHatId: "code_author",
+    title: "t",
+    targetRef: "feat/x",
+    phase,
+    pipelineId: "internal-only",
+    currentStageIndex,
+    artifacts: [{ kind: "code_diff", path: "a.ts", diff: "+x", language: "ts" }],
+    projections: [],
+    revision,
+    openedAt: "2026-05-30T00:00:00Z",
+    updatedAt: "2026-05-30T00:00:00Z",
+  };
 }
 
 test("change-control lane advances an in_review ChangeSet one stage and persists it", async () => {
@@ -759,11 +845,19 @@ test("change-control lane advances an in_review ChangeSet one stage and persists
   const upserts: ChangeSet[] = [];
   const events: OrgEvent[] = [];
   const lane = createChangeControlCadenceLane({
-    organizationId: "org-lfg", now: () => NOW, createId,
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.InReview ? [cs] : []) },
-    writer: { upsert: async (c) => { upserts.push(c); } },
+    writer: {
+      upsert: async (c) => {
+        upserts.push(c);
+      },
+    },
     pipelineFor: () => buildInternalOnlyPipeline("org-lfg"),
-    appendEvent: async (e) => { events.push(e); },
+    appendEvent: async (e) => {
+      events.push(e);
+    },
   });
   const result = await lane.runOnce();
   equal(result.failures.length, 0);
@@ -779,20 +873,38 @@ test("change-control lane drives an EXTERNAL stage through the live port (projec
 
   let projects = 0;
   let pulls = 0;
-  const ref: ProjectionRef = { system: ExternalSystem.GitHub, externalId: "99", url: "https://github.com/o/r/pull/99", lastSyncedState: "open", syncedAt: "2026-05-30T00:00:00Z" };
+  const ref: ProjectionRef = {
+    system: ExternalSystem.GitHub,
+    externalId: "99",
+    url: "https://github.com/o/r/pull/99",
+    lastSyncedState: "open",
+    syncedAt: "2026-05-30T00:00:00Z",
+  };
   const externalPort: ChangeControlPort = {
     system: ExternalSystem.GitHub,
-    project: async () => { projects += 1; return ref; },
-    pull: async () => { pulls += 1; return { decision: ExternalDecision.Approved, merged: false, detail: "approved" }; },
+    project: async () => {
+      projects += 1;
+      return ref;
+    },
+    pull: async () => {
+      pulls += 1;
+      return { decision: ExternalDecision.Approved, merged: false, detail: "approved" };
+    },
     push: async () => {},
     merge: async () => {},
   };
 
   const upserts: ChangeSet[] = [];
   const lane = createChangeControlCadenceLane({
-    organizationId: "org-lfg", now: () => NOW, createId,
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.InReview ? [cs] : []) },
-    writer: { upsert: async (c) => { upserts.push(c); } },
+    writer: {
+      upsert: async (c) => {
+        upserts.push(c);
+      },
+    },
     pipelineFor: () => pipeline,
     appendEvent: async () => {},
     externalPort,
@@ -802,12 +914,17 @@ test("change-control lane drives an EXTERNAL stage through the live port (projec
   equal(result.failures.length, 0);
   equal(projects, 1, "the live port projected a real PR for the external stage");
   ok(pulls >= 1, "the external decision was PULLED from the port, not auto-approved");
-  ok(upserts.some((c) => c.projections.some((p) => p.externalId === "99")), "the projection ref was persisted onto the ChangeSet");
+  ok(
+    upserts.some((c) => c.projections.some((p) => p.externalId === "99")),
+    "the projection ref was persisted onto the ChangeSet",
+  );
 });
 
 test("change-control lane is a no-op (0 advanced) when nothing is in review", async () => {
   const lane = createChangeControlCadenceLane({
-    organizationId: "org-lfg", now: () => NOW, createId,
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
     reader: { listByOrgPhase: async () => [] },
     writer: { upsert: async () => {} },
     pipelineFor: () => buildInternalOnlyPipeline("org-lfg"),
@@ -831,12 +948,14 @@ function releaseConfigChangeSet(changeSetId: string, phase: ChangeSetPhase = Cha
   return {
     ...releaseChangeSet(changeSetId, phase),
     targetRef: `org-policy/${changeSetId}`,
-    artifacts: [{
-      kind: ChangeArtifactKind.ConfigChange,
-      key: "rmo.assignment.explorationRate",
-      before: "0.10",
-      after: "0.20",
-    }],
+    artifacts: [
+      {
+        kind: ChangeArtifactKind.ConfigChange,
+        key: "rmo.assignment.explorationRate",
+        before: "0.10",
+        after: "0.20",
+      },
+    ],
   };
 }
 
@@ -849,8 +968,14 @@ test("release-queue lane applies a green approved batch and emits apply events",
     now: () => NOW,
     createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
-    writer: { upsert: async (cs) => { upserts.push(cs); } },
-    appendEvent: async (event) => { events.push(event); },
+    writer: {
+      upsert: async (cs) => {
+        upserts.push(cs);
+      },
+    },
+    appendEvent: async (event) => {
+      events.push(event);
+    },
     evaluateBatch: () => ({ green: true, evidenceRefs: ["release-proof:green"] }),
   });
 
@@ -858,7 +983,10 @@ test("release-queue lane applies a green approved batch and emits apply events",
 
   equal(result.failures.length, 0);
   equal(result.status, "release-queue:2applied/0changes_requested/0requeued");
-  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Applied, ChangeSetPhase.Applied]);
+  deepEqual(
+    upserts.map((cs) => cs.phase),
+    [ChangeSetPhase.Applied, ChangeSetPhase.Applied],
+  );
   equal(events.filter((event) => event.kind === OrgEventKind.ChangeSetApplied).length, 2);
 });
 
@@ -872,18 +1000,40 @@ test("release-queue lane passes simulation evidence into config policy apply", a
     now: () => NOW,
     createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
-    writer: { upsert: async (cs) => { upserts.push(cs); } },
-    appendEvent: async (event) => { events.push(event); },
-    evaluateBatch: () => ({ green: true, evidenceRefs: [simulationEvidence.ref], evidenceArtifacts: [simulationEvidence] }),
+    writer: {
+      upsert: async (cs) => {
+        upserts.push(cs);
+      },
+    },
+    appendEvent: async (event) => {
+      events.push(event);
+    },
+    evaluateBatch: () => ({
+      green: true,
+      evidenceRefs: [simulationEvidence.ref],
+      evidenceArtifacts: [simulationEvidence],
+    }),
   });
 
   const result = await lane.runOnce();
 
   equal(result.failures.length, 0);
   equal(result.status, "release-queue:1applied/0changes_requested/0requeued");
-  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Applied]);
-  ok(events.some((event) => event.kind === OrgEventKind.ChangeSetApplied && event.evidenceRefs.includes(simulationEvidence.ref)));
-  equal(events.find((event) => event.kind === OrgEventKind.ChangeSetApplied)?.evidenceRefs.filter((ref) => ref === simulationEvidence.ref).length, 1);
+  deepEqual(
+    upserts.map((cs) => cs.phase),
+    [ChangeSetPhase.Applied],
+  );
+  ok(
+    events.some(
+      (event) => event.kind === OrgEventKind.ChangeSetApplied && event.evidenceRefs.includes(simulationEvidence.ref),
+    ),
+  );
+  equal(
+    events
+      .find((event) => event.kind === OrgEventKind.ChangeSetApplied)
+      ?.evidenceRefs.filter((ref) => ref === simulationEvidence.ref).length,
+    1,
+  );
 });
 
 test("release-queue lane holds config policy apply without simulation evidence", async () => {
@@ -895,8 +1045,14 @@ test("release-queue lane holds config policy apply without simulation evidence",
     now: () => NOW,
     createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
-    writer: { upsert: async (cs) => { upserts.push(cs); } },
-    appendEvent: async (event) => { events.push(event); },
+    writer: {
+      upsert: async (cs) => {
+        upserts.push(cs);
+      },
+    },
+    appendEvent: async (event) => {
+      events.push(event);
+    },
     evaluateBatch: () => ({ green: true, evidenceRefs: ["release-proof:green"] }),
   });
 
@@ -904,8 +1060,15 @@ test("release-queue lane holds config policy apply without simulation evidence",
 
   equal(result.failures.length, 0);
   equal(result.status, "release-queue:0applied/0changes_requested/1requeued");
-  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Approved]);
-  ok(events.some((event) => event.kind === OrgEventKind.ReviewFindingRaised && event.decision.includes("simulation evidence")));
+  deepEqual(
+    upserts.map((cs) => cs.phase),
+    [ChangeSetPhase.Approved],
+  );
+  ok(
+    events.some(
+      (event) => event.kind === OrgEventKind.ReviewFindingRaised && event.decision.includes("simulation evidence"),
+    ),
+  );
 });
 
 test("release-queue lane does not reuse simulation evidence across config policy changes", async () => {
@@ -918,19 +1081,32 @@ test("release-queue lane does not reuse simulation evidence across config policy
     now: () => NOW,
     createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
-    writer: { upsert: async (cs) => { upserts.push(cs); } },
-    appendEvent: async (event) => { events.push(event); },
-    evaluateBatch: () => ({ green: true, evidenceRefs: [simulationEvidence.ref], evidenceArtifacts: [simulationEvidence] }),
+    writer: {
+      upsert: async (cs) => {
+        upserts.push(cs);
+      },
+    },
+    appendEvent: async (event) => {
+      events.push(event);
+    },
+    evaluateBatch: () => ({
+      green: true,
+      evidenceRefs: [simulationEvidence.ref],
+      evidenceArtifacts: [simulationEvidence],
+    }),
   });
 
   const result = await lane.runOnce();
 
   equal(result.failures.length, 0);
   equal(result.status, "release-queue:1applied/0changes_requested/1requeued");
-  deepEqual(upserts.map((cs) => [cs.changeSetId, cs.phase]), [
-    ["cs-policy-a", ChangeSetPhase.Applied],
-    ["cs-policy-b", ChangeSetPhase.Approved],
-  ]);
+  deepEqual(
+    upserts.map((cs) => [cs.changeSetId, cs.phase]),
+    [
+      ["cs-policy-a", ChangeSetPhase.Applied],
+      ["cs-policy-b", ChangeSetPhase.Approved],
+    ],
+  );
   ok(events.some((event) => event.kind === OrgEventKind.ChangeSetApplied && event.subjectId === "cs-policy-a"));
   ok(events.some((event) => event.kind === OrgEventKind.ReviewFindingRaised && event.subjectId === "cs-policy-b"));
   ok(!events.some((event) => event.subjectId === "cs-policy-b" && event.evidenceRefs.includes(simulationEvidence.ref)));
@@ -945,8 +1121,14 @@ test("release-queue lane bisects a red batch and bounces only the culprit", asyn
     now: () => NOW,
     createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
-    writer: { upsert: async (cs) => { upserts.push(cs); } },
-    appendEvent: async (event) => { events.push(event); },
+    writer: {
+      upsert: async (cs) => {
+        upserts.push(cs);
+      },
+    },
+    appendEvent: async (event) => {
+      events.push(event);
+    },
     evaluateBatch: (batch) => ({
       green: !batch.some((cs) => cs.changeSetId === "cs-b"),
       evidenceRefs: [`release-proof:${batch.map((cs) => cs.changeSetId).join("+")}`],
@@ -957,11 +1139,14 @@ test("release-queue lane bisects a red batch and bounces only the culprit", asyn
 
   equal(result.failures.length, 0);
   equal(result.status, "release-queue:2applied/1changes_requested/0requeued");
-  deepEqual(upserts.map((cs) => [cs.changeSetId, cs.phase]), [
-    ["cs-a", ChangeSetPhase.Applied],
-    ["cs-b", ChangeSetPhase.ChangesRequested],
-    ["cs-c", ChangeSetPhase.Applied],
-  ]);
+  deepEqual(
+    upserts.map((cs) => [cs.changeSetId, cs.phase]),
+    [
+      ["cs-a", ChangeSetPhase.Applied],
+      ["cs-b", ChangeSetPhase.ChangesRequested],
+      ["cs-c", ChangeSetPhase.Applied],
+    ],
+  );
   ok(events.some((event) => event.kind === OrgEventKind.ChangesRequested && event.subjectId === "cs-b"));
 });
 
@@ -974,13 +1159,23 @@ test("release-queue lane persists batch actions through the provided atomic boun
     now: () => NOW,
     createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
-    writer: { upsert: async () => { throw new Error("non-atomic writer used"); } },
-    appendEvent: async () => { throw new Error("non-atomic event sink used"); },
+    writer: {
+      upsert: async () => {
+        throw new Error("non-atomic writer used");
+      },
+    },
+    appendEvent: async () => {
+      throw new Error("non-atomic event sink used");
+    },
     evaluateBatch: () => ({ green: true, evidenceRefs: ["release-proof:green"] }),
     runAtomically: async (operation) => {
       atomicCalls += 1;
       await operation({
-        writer: { upsert: async (cs) => { upserts.push(cs); } },
+        writer: {
+          upsert: async (cs) => {
+            upserts.push(cs);
+          },
+        },
         appendEvent: async () => {},
       });
     },
@@ -990,7 +1185,10 @@ test("release-queue lane persists batch actions through the provided atomic boun
 
   equal(result.failures.length, 0);
   equal(atomicCalls, 1);
-  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Applied, ChangeSetPhase.Applied]);
+  deepEqual(
+    upserts.map((cs) => cs.phase),
+    [ChangeSetPhase.Applied, ChangeSetPhase.Applied],
+  );
 });
 
 test("release-queue lane degrades instead of applying when no release evaluator is wired", async () => {
@@ -1002,8 +1200,14 @@ test("release-queue lane degrades instead of applying when no release evaluator 
     now: () => NOW,
     createId,
     reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
-    writer: { upsert: async (cs) => { upserts.push(cs); } },
-    appendEvent: async (event) => { events.push(event); },
+    writer: {
+      upsert: async (cs) => {
+        upserts.push(cs);
+      },
+    },
+    appendEvent: async (event) => {
+      events.push(event);
+    },
   });
 
   const result = await lane.runOnce();
@@ -1041,18 +1245,41 @@ test("doc-maintenance lane flags a stale unit + persists it + emits the cycle ev
   const { createDocMaintenanceCadenceLane } = await import("../src/org-cadence-lanes.ts");
   const { DocType, DocScopeKind, DocLifecycleState } = await import("../../../packages/domain/src/index.ts");
   const aged = {
-    docUnitId: "du-old", organizationId: "org-lfg", sourceId: "s", type: DocType.Runbook, scopeKind: DocScopeKind.Department,
-    scopeId: "eng", title: "Old runbook", summary: "", contentRef: "r", contentHash: "h", status: DocLifecycleState.Active,
-    freshnessAt: new Date(NOW - 200 * 86_400_000).toISOString(), boundHatIds: [], boundStageIds: [],
-    createdAt: new Date(NOW - 200 * 86_400_000).toISOString(), updatedAt: new Date(NOW - 200 * 86_400_000).toISOString(), version: 1,
+    docUnitId: "du-old",
+    organizationId: "org-lfg",
+    sourceId: "s",
+    type: DocType.Runbook,
+    scopeKind: DocScopeKind.Department,
+    scopeId: "eng",
+    title: "Old runbook",
+    summary: "",
+    contentRef: "r",
+    contentHash: "h",
+    status: DocLifecycleState.Active,
+    freshnessAt: new Date(NOW - 200 * 86_400_000).toISOString(),
+    boundHatIds: [],
+    boundStageIds: [],
+    createdAt: new Date(NOW - 200 * 86_400_000).toISOString(),
+    updatedAt: new Date(NOW - 200 * 86_400_000).toISOString(),
+    version: 1,
   };
   const upserts: string[] = [];
   const events: OrgEvent[] = [];
   const lane = createDocMaintenanceCadenceLane({
-    organizationId: "org-lfg", now: () => NOW, createId,
-    reader: { listByOrgStatus: async (_o: string, status: string) => (status === DocLifecycleState.Active ? [aged] : []) },
-    writer: { upsert: async (d: { docUnitId: string }) => { upserts.push(d.docUnitId); } },
-    appendEvent: async (e: OrgEvent) => { events.push(e); },
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: {
+      listByOrgStatus: async (_o: string, status: string) => (status === DocLifecycleState.Active ? [aged] : []),
+    },
+    writer: {
+      upsert: async (d: { docUnitId: string }) => {
+        upserts.push(d.docUnitId);
+      },
+    },
+    appendEvent: async (e: OrgEvent) => {
+      events.push(e);
+    },
   });
   const result = await lane.runOnce();
   equal(result.failures.length, 0);
@@ -1140,7 +1367,11 @@ test("conformance lane degrades when replay finds an illegal durable transition"
   const lane = createConformanceCadenceLane({
     organizationId: "org-lfg",
     limit: 100,
-    reader: { listByOrganization: async () => [orgEvent({ id: "evt-bypass", fromState: WorkItemState.Created, toState: WorkItemState.Done })] },
+    reader: {
+      listByOrganization: async () => [
+        orgEvent({ id: "evt-bypass", fromState: WorkItemState.Created, toState: WorkItemState.Done }),
+      ],
+    },
   });
 
   const result = await lane.runOnce();
@@ -1201,10 +1432,10 @@ test("stale-reaction-plan scan lane emits incident and completion events", async
 
   equal(result.failures.length, 0);
   equal(result.status, "stale-reaction-plan-scan:1incidents");
-  deepEqual(events.map((event) => event.kind), [
-    OrgEventKind.RecoveryIncidentDetected,
-    OrgEventKind.RecoveryScanCompleted,
-  ]);
+  deepEqual(
+    events.map((event) => event.kind),
+    [OrgEventKind.RecoveryIncidentDetected, OrgEventKind.RecoveryScanCompleted],
+  );
   equal(events[0]?.subjectId, "rp-expired");
 });
 

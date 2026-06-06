@@ -8,12 +8,12 @@ type: feedback
 
 ## The rule (Aaron verbatim 2026-04-28T19:08Z)
 
-> *"That's how mature CI security pipelines satisfy Scorecard without
+> _"That's how mature CI security pipelines satisfy Scorecard without
 > burning Actions minutes on prose-only changes. sound like we should
 > capture this as our trajectory? or is it just a small backlog item,
-> or are you fixing it now?"*
+> or are you fixing it now?"_
 
-> *"probably just need some CI maturity vector maybe we already have"*
+> _"probably just need some CI maturity vector maybe we already have"_
 
 The two messages together: yes, capture as trajectory. Yes, we already
 have most of it.
@@ -40,7 +40,7 @@ workflow MUST STILL **emit a minimal no-findings result** so:
 ## The cost-benefit
 
 - **Cost**: ~5 seconds per skipped PR (synthesize ~50-byte SARIF
-  + upload via `codeql-action/upload-sarif`).
+  - upload via `codeql-action/upload-sarif`).
 - **Benefit**: every coverage metric stays at 100%; no false
   alarms from process-metrics (Scorecard SASTID etc.); merge-gating
   rulesets pass on doc-only PRs without burning full-scan minutes.

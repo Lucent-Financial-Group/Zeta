@@ -43,9 +43,7 @@
 /**
  * Proximity feedback per asymmetric-authorship + monad-propagation rules.
  */
-export type ProximityFeedback =
-  | { kind: "EmptyCorpus" }
-  | { kind: "InvalidThreshold"; threshold: number };
+export type ProximityFeedback = { kind: "EmptyCorpus" } | { kind: "InvalidThreshold"; threshold: number };
 
 /**
  * Result-shape per monad-propagation rule.
@@ -81,7 +79,7 @@ export type ProximityResult<T> =
 export interface Cluster<T> {
   readonly representative: T;
   readonly members: ReadonlyArray<T>;
-  readonly canonicalForm: string;  // cluster-identity key; see interface docblock for content semantics per producer
+  readonly canonicalForm: string; // cluster-identity key; see interface docblock for content semantics per producer
 }
 
 /**
@@ -106,10 +104,7 @@ export type CanonicalFn<T> = (item: T) => string;
  *
  * Pure function; no side effects; composable via Result.bind.
  */
-export function clusterByCanonical<T>(
-  corpus: ReadonlyArray<T>,
-  canonicalFn: CanonicalFn<T>,
-): ProximityResult<T> {
+export function clusterByCanonical<T>(corpus: ReadonlyArray<T>, canonicalFn: CanonicalFn<T>): ProximityResult<T> {
   if (corpus.length === 0) {
     return { ok: false, feedback: { kind: "EmptyCorpus" } };
   }
@@ -124,7 +119,7 @@ export function clusterByCanonical<T>(
       existing.push(item);
     } else {
       byCanonical.set(canonical, [item]);
-      repByCanonical.set(canonical, item);  // first-seen is representative
+      repByCanonical.set(canonical, item); // first-seen is representative
     }
   }
 
@@ -154,10 +149,7 @@ export function clusterByCanonical<T>(
  * Useful for comparing two substrate items where canonical-form
  * normalization is too strict (need fuzzy matching).
  */
-export function jaccardSimilarity(
-  tokensA: ReadonlySet<string>,
-  tokensB: ReadonlySet<string>,
-): number {
+export function jaccardSimilarity(tokensA: ReadonlySet<string>, tokensB: ReadonlySet<string>): number {
   if (tokensA.size === 0 && tokensB.size === 0) return 1.0;
   if (tokensA.size === 0 || tokensB.size === 0) return 0.0;
   const intersection = new Set<string>();
@@ -176,9 +168,35 @@ export function jaccardSimilarity(
  */
 export function defaultTokenize(text: string): Set<string> {
   const stopWords = new Set([
-    "a", "an", "the", "is", "are", "of", "in", "on", "at", "to", "for",
-    "with", "by", "as", "and", "or", "but", "if", "then", "this", "that",
-    "these", "those", "it", "its", "be", "been", "was", "were",
+    "a",
+    "an",
+    "the",
+    "is",
+    "are",
+    "of",
+    "in",
+    "on",
+    "at",
+    "to",
+    "for",
+    "with",
+    "by",
+    "as",
+    "and",
+    "or",
+    "but",
+    "if",
+    "then",
+    "this",
+    "that",
+    "these",
+    "those",
+    "it",
+    "its",
+    "be",
+    "been",
+    "was",
+    "were",
   ]);
   const tokens = new Set<string>();
   const words = text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
@@ -203,12 +221,10 @@ export function defaultTokenize(text: string): Set<string> {
 export interface SimilarityClusterContext<T> {
   readonly corpus: ReadonlyArray<T>;
   readonly extractTokens: (item: T) => Set<string>;
-  readonly threshold: number;  // Jaccard threshold in (0, 1]
+  readonly threshold: number; // Jaccard threshold in (0, 1]
 }
 
-export function clusterBySimilarity<T>(
-  context: SimilarityClusterContext<T>,
-): ProximityResult<T> {
+export function clusterBySimilarity<T>(context: SimilarityClusterContext<T>): ProximityResult<T> {
   if (context.corpus.length === 0) {
     return { ok: false, feedback: { kind: "EmptyCorpus" } };
   }

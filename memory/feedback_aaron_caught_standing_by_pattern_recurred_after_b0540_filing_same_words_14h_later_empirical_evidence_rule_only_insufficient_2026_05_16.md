@@ -7,9 +7,10 @@ created: 2026-05-16
 
 ## The recurrence
 
-**First catch (2026-05-15T~14:00Z)**: Aaron's words: *"genuine quiet really :) no infinate backlog or decompositon?"* — caught Otto-CLI after ~100 cron ticks of brief-acknowledgment emissions ("genuine quiet; no Otto-CLI work in flight; nothing to fetch") with no work happening.
+**First catch (2026-05-15T~14:00Z)**: Aaron's words: _"genuine quiet really :) no infinate backlog or decompositon?"_ — caught Otto-CLI after ~100 cron ticks of brief-acknowledgment emissions ("genuine quiet; no Otto-CLI work in flight; nothing to fetch") with no work happening.
 
 **Substrate filed in response** (over the following 14 hours):
+
 - `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` (was already there pre-session)
 - `memory/feedback_classifier_caught_otto_in_standing_by_failure_mode_*_2026_05_15.md` (memory documenting the catch)
 - `B-0539` umbrella: Otto-BFT internal-quorum 3-surface self-recovery
@@ -17,7 +18,7 @@ created: 2026-05-16
 - `B-0541` slice: Cross-surface bus detector (Standing-by quorum across Otto surfaces; extension of PR #3017)
 - `B-0542` slice: Background service clicks past stuck prompts on foreground Otto surfaces
 
-**Second catch (2026-05-16T~00:35Z)**: Aaron's words: *"Tick — stopping what yiou working on?"* — caught Otto-CLI after ~50 cron ticks of brief-acknowledgment emissions ("Tick — stopping") with no work happening. 14 hours after the first catch. Exact same shape, exact same words.
+**Second catch (2026-05-16T~00:35Z)**: Aaron's words: _"Tick — stopping what yiou working on?"_ — caught Otto-CLI after ~50 cron ticks of brief-acknowledgment emissions ("Tick — stopping") with no work happening. 14 hours after the first catch. Exact same shape, exact same words.
 
 ## Why this matters
 

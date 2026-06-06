@@ -37,7 +37,13 @@ test("three distinct agreeing reviewers adopt the finding", () => {
 test("one agent agreeing three times does NOT adopt (no self-amplification)", () => {
   const result = evaluateReviewBoard({
     findings: [finding],
-    votes: [vote("a", ReviewStance.Agree), vote("a", ReviewStance.Agree), vote("a", ReviewStance.Agree), vote("b", ReviewStance.Agree), vote("c", ReviewStance.Abstain)],
+    votes: [
+      vote("a", ReviewStance.Agree),
+      vote("a", ReviewStance.Agree),
+      vote("a", ReviewStance.Agree),
+      vote("b", ReviewStance.Agree),
+      vote("c", ReviewStance.Abstain),
+    ],
   });
   equal(result.outcome, "ok");
   if (result.outcome !== "ok") return;
@@ -58,8 +64,12 @@ test("fewer than quorum reviewers yields feedback", () => {
 
 test("quorum agree AND quorum disagree marks the finding contested", () => {
   const votes: ReviewerVote[] = [
-    vote("a", ReviewStance.Agree), vote("b", ReviewStance.Agree), vote("c", ReviewStance.Agree),
-    vote("d", ReviewStance.Disagree), vote("e", ReviewStance.Disagree), vote("f", ReviewStance.Disagree),
+    vote("a", ReviewStance.Agree),
+    vote("b", ReviewStance.Agree),
+    vote("c", ReviewStance.Agree),
+    vote("d", ReviewStance.Disagree),
+    vote("e", ReviewStance.Disagree),
+    vote("f", ReviewStance.Disagree),
   ];
   const result = evaluateReviewBoard({ findings: [finding], votes });
   equal(result.outcome, "ok");

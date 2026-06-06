@@ -42,7 +42,7 @@
  */
 export type ActionGate =
   | "append-only" // state-machine-internal transitions; direct push
-  | "pr-gated";   // cross-cutting substrate (rules, public APIs); PR review required
+  | "pr-gated"; // cross-cutting substrate (rules, public APIs); PR review required
 
 /**
  * Action class — universal action grammar surface.
@@ -52,12 +52,12 @@ export type ActionGate =
  *   - Mod 5: contributable menu-generation (anyone can append-only append "at state X, also offer action W")
  */
 export type ActionClass =
-  | "transition"          // standard state-machine transition
-  | "escape-hatch"        // Mod 1: "I observed pattern not fitting any offered action; here's what I propose"
-  | "grammar-extension"   // Mod 2: propose new action; first-class
-  | "menu-contribution"   // Mod 5: append-only contribute "at state X also offer W"
-  | "operator-decision"   // operator-only authority (ban-if applies)
-  | "agent-decision";     // agent-side authority within bounds
+  | "transition" // standard state-machine transition
+  | "escape-hatch" // Mod 1: "I observed pattern not fitting any offered action; here's what I propose"
+  | "grammar-extension" // Mod 2: propose new action; first-class
+  | "menu-contribution" // Mod 5: append-only contribute "at state X also offer W"
+  | "operator-decision" // operator-only authority (ban-if applies)
+  | "agent-decision"; // agent-side authority within bounds
 
 /**
  * Action — the universal-action-grammar atom.
@@ -94,9 +94,9 @@ export interface Action {
  */
 export type TickCyclePattern =
   | "observe-simulate-choose-emit" // operator-named cycle pattern
-  | "move-next-named-function"     // older pattern; Mika says basically gone
-  | "discriminated-union-surface"  // Mika's latest direction (per 2026-05-28 question)
-  | "ople-primitives";             // composes with OPLE substrate
+  | "move-next-named-function" // older pattern; Mika says basically gone
+  | "discriminated-union-surface" // Mika's latest direction (per 2026-05-28 question)
+  | "ople-primitives"; // composes with OPLE substrate
 
 /**
  * State — node in the workflow engine state machine.
@@ -161,25 +161,16 @@ export interface Tick<TIn, TOut, TOutFeedback, TInFeedback> {
  *
  * Throws on violation — fail-fast at engine-init time.
  */
-export function validateStateOtto5Mods(
-  state: State,
-  actionCatalog: ReadonlyArray<Action>,
-): void {
+export function validateStateOtto5Mods(state: State, actionCatalog: ReadonlyArray<Action>): void {
   const stateActions = state.availableActions
     .map((id) => actionCatalog.find((a) => a.id === id))
     .filter((a): a is Action => a !== undefined);
   if (stateActions.length === 0) {
-    throw new Error(
-      `state ${state.id} references no actions found in catalog`,
-    );
+    throw new Error(`state ${state.id} references no actions found in catalog`);
   }
-  const hasEscapeHatch = stateActions.some(
-    (a) => a.class === "escape-hatch",
-  );
+  const hasEscapeHatch = stateActions.some((a) => a.class === "escape-hatch");
   if (!hasEscapeHatch) {
-    throw new Error(
-      `state ${state.id} violates Mod 1 — no escape-hatch action in availableActions`,
-    );
+    throw new Error(`state ${state.id} violates Mod 1 — no escape-hatch action in availableActions`);
   }
 }
 
@@ -190,10 +181,7 @@ export function validateStateOtto5Mods(
  *     (the surface for action-grammar evolution)
  *   - all states reference only defined action ids
  */
-export function validateCatalog(
-  actionCatalog: ReadonlyArray<Action>,
-  states: ReadonlyArray<State>,
-): void {
+export function validateCatalog(actionCatalog: ReadonlyArray<Action>, states: ReadonlyArray<State>): void {
   const ids = new Set<string>();
   for (const a of actionCatalog) {
     if (ids.has(a.id)) {
@@ -201,13 +189,9 @@ export function validateCatalog(
     }
     ids.add(a.id);
   }
-  const hasGrammarExtension = actionCatalog.some(
-    (a) => a.class === "grammar-extension",
-  );
+  const hasGrammarExtension = actionCatalog.some((a) => a.class === "grammar-extension");
   if (!hasGrammarExtension) {
-    throw new Error(
-      "catalog violates Mod 2 — no grammar-extension action present",
-    );
+    throw new Error("catalog violates Mod 2 — no grammar-extension action present");
   }
   const stateIds = new Set<string>();
   for (const s of states) {
@@ -217,9 +201,7 @@ export function validateCatalog(
     stateIds.add(s.id);
     for (const aId of s.availableActions) {
       if (!ids.has(aId)) {
-        throw new Error(
-          `state ${s.id} references unknown action: ${aId}`,
-        );
+        throw new Error(`state ${s.id} references unknown action: ${aId}`);
       }
     }
   }
@@ -268,10 +250,10 @@ export function validateCatalog(
  * lifecycle DU. Each action's required review treatment.
  */
 export type ReviewLevel =
-  | "trajectory-push"      // direct push to agent-events branch; no PR ceremony
-  | "pr-review-light"      // PR review; single-reviewer OR auto-review pipeline only
-  | "pr-review-full"       // PR review; multi-AI reviewer ensemble + auto-review pipeline + error class extraction
-  | "operator-required";   // requires explicit operator authorization (e.g., force-push-with-lease without listed-acceptable-situation)
+  | "trajectory-push" // direct push to agent-events branch; no PR ceremony
+  | "pr-review-light" // PR review; single-reviewer OR auto-review pipeline only
+  | "pr-review-full" // PR review; multi-AI reviewer ensemble + auto-review pipeline + error class extraction
+  | "operator-required"; // requires explicit operator authorization (e.g., force-push-with-lease without listed-acceptable-situation)
 
 /**
  * `determineReviewLevel` — discriminator that maps an Action to its
@@ -341,8 +323,7 @@ export const SEED_ACTION_CATALOG: ReadonlyArray<Action> = [
     class: "escape-hatch",
     gate: "append-only",
     label: "propose-out-of-grammar-action",
-    description:
-      "Mod 1 — observed pattern not fitting any offered action; propose what should fit",
+    description: "Mod 1 — observed pattern not fitting any offered action; propose what should fit",
     composesWith: ["B-0867 Mod 1"],
     feedbackVariants: ["ProposalLogged", "PromotedToCatalog"],
   },
@@ -351,22 +332,16 @@ export const SEED_ACTION_CATALOG: ReadonlyArray<Action> = [
     class: "grammar-extension",
     gate: "pr-gated",
     label: "extend-action-grammar",
-    description:
-      "Mod 2 — propose new action as first-class grammar member; requires PR review",
+    description: "Mod 2 — propose new action as first-class grammar member; requires PR review",
     composesWith: ["B-0867 Mod 2"],
-    feedbackVariants: [
-      "GrammarExtensionProposed",
-      "GrammarExtensionMerged",
-      "GrammarExtensionRejected",
-    ],
+    feedbackVariants: ["GrammarExtensionProposed", "GrammarExtensionMerged", "GrammarExtensionRejected"],
   },
   {
     id: "menu-contribute",
     class: "menu-contribution",
     gate: "append-only",
     label: "contribute-state-menu-entry",
-    description:
-      'Mod 5 — append-only "at state X also offer action W"',
+    description: 'Mod 5 — append-only "at state X also offer action W"',
     composesWith: ["B-0867 Mod 5"],
     feedbackVariants: ["MenuEntryAppended", "DuplicateEntry"],
   },
@@ -390,12 +365,7 @@ export const SEED_STATES: ReadonlyArray<State> = [
     label: "Advancing state",
     description: "agent in active execute → CYOA loop",
     tickCyclePattern: "discriminated-union-surface",
-    availableActions: [
-      "advance",
-      "escape-hatch",
-      "menu-contribute",
-      "grammar-extend",
-    ],
+    availableActions: ["advance", "escape-hatch", "menu-contribute", "grammar-extend"],
     composesWith: ["B-0867", "B-0867.5"],
   },
 ];

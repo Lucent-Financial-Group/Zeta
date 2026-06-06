@@ -33,11 +33,11 @@ a deep PR-thread archeology pass would surface it.
 
 **Why** (Aaron 2026-04-28):
 
-> *"bulk-resolve what is buld resolve does it actually
+> _"bulk-resolve what is buld resolve does it actually
 > answer the questions? or does it just close them? have
-> they been answered?"*
+> they been answered?"_
 
-> *"you've made this mistake before"*
+> _"you've made this mistake before"_
 
 Recurring pattern signature:
 
@@ -85,7 +85,7 @@ review threads bulk-resolved:
 - ~15 were form 4 (deferral with note, NO tracking) until
   Aaron's pushback prompted the structural fix:
   `docs/backlog/P0/B-0062-wallet-v0-build-out-spec-logic-
-  punch-list-from-pr-72-deferrals.md` aggregating all 15
+punch-list-from-pr-72-deferrals.md` aggregating all 15
   into a 21-item concrete punch list.
 
 **Composes with:**

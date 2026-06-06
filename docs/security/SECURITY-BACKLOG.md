@@ -12,6 +12,7 @@ cost) but is still worth shipping eventually.
 
 ```markdown
 ### <control>
+
 - **Why deferred:** which v1.0 gate it fails + reasoning
 - **Trigger to revisit:** the event / milestone that changes the
   calculus
@@ -130,7 +131,7 @@ cost) but is still worth shipping eventually.
 
 - **Why deferred:** round-30 TOFU gradient step. Manifest
   currently carries `<path> <url>`; v1.0 wants `<path> <url>
-  <sha256>` and `verifiers.sh` computing + verifying. Currently
+<sha256>` and `verifiers.sh` computing + verifying. Currently
   DEBT for round 33.
 - **Trigger to revisit:** round 33 Track B item 2 (already
   scheduled).

@@ -35,30 +35,36 @@ export type RmoHatCandidateReputation = {
   explorationBonus: number;
   consecutiveAssignmentCount: number;
   recentSameHatAssignments: number;
-  posterior?: {
-    quality: {
-      sampleCount: number;
-      mean: number;
-      lowerConfidenceBound: number;
-      uncertainty: number;
-      evidenceRefs: readonly string[];
-    };
-    latency?: {
-      sampleCount: number;
-      mean: number;
-      lowerConfidenceBound: number;
-      uncertainty: number;
-      evidenceRefs: readonly string[];
-    } | undefined;
-    cost?: {
-      sampleCount: number;
-      mean: number;
-      lowerConfidenceBound: number;
-      uncertainty: number;
-      evidenceRefs: readonly string[];
-    } | undefined;
-    evidenceRefs: readonly string[];
-  } | undefined;
+  posterior?:
+    | {
+        quality: {
+          sampleCount: number;
+          mean: number;
+          lowerConfidenceBound: number;
+          uncertainty: number;
+          evidenceRefs: readonly string[];
+        };
+        latency?:
+          | {
+              sampleCount: number;
+              mean: number;
+              lowerConfidenceBound: number;
+              uncertainty: number;
+              evidenceRefs: readonly string[];
+            }
+          | undefined;
+        cost?:
+          | {
+              sampleCount: number;
+              mean: number;
+              lowerConfidenceBound: number;
+              uncertainty: number;
+              evidenceRefs: readonly string[];
+            }
+          | undefined;
+        evidenceRefs: readonly string[];
+      }
+    | undefined;
 };
 
 export type RmoHatCandidateScoreComponents = {
@@ -173,8 +179,10 @@ function reasonCodesFor(candidate: RmoHatCandidateReputation): readonly string[]
   if (candidate.contextFit >= 0.8) reasons.push("strong_context_fit");
   if (candidate.explorationBonus >= 0.5 || candidate.freshness >= 0.8) reasons.push("exploration_candidate");
   if (candidate.currentLoad >= 0.7) reasons.push("load_penalty");
-  if (candidate.consecutiveAssignmentCount > 0 || candidate.recentSameHatAssignments > 0) reasons.push("lock_in_penalty");
-  if (candidate.posterior !== undefined && candidate.posterior.evidenceRefs.length > 0) reasons.push("posterior_reputation_evidence");
+  if (candidate.consecutiveAssignmentCount > 0 || candidate.recentSameHatAssignments > 0)
+    reasons.push("lock_in_penalty");
+  if (candidate.posterior !== undefined && candidate.posterior.evidenceRefs.length > 0)
+    reasons.push("posterior_reputation_evidence");
   if (reasons.length === 0) reasons.push("baseline_reputation_evidence");
   return reasons;
 }
@@ -235,11 +243,16 @@ export function decideRmoHatAssignment(
 /** Priority weight: expedite/high reserve extra headroom; paused contributes nothing. */
 function demandWeight(priorityClass: PriorityClass): number {
   switch (priorityClass) {
-    case PriorityClass.Expedite: return 2;
-    case PriorityClass.High: return 2;
-    case PriorityClass.Normal: return 1;
-    case PriorityClass.Defer: return 1;
-    case PriorityClass.Paused: return 0;
+    case PriorityClass.Expedite:
+      return 2;
+    case PriorityClass.High:
+      return 2;
+    case PriorityClass.Normal:
+      return 1;
+    case PriorityClass.Defer:
+      return 1;
+    case PriorityClass.Paused:
+      return 0;
   }
 }
 

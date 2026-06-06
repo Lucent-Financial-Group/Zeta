@@ -22,14 +22,14 @@ B-0852 sub-row .2 first slice — the on-disk wire format that B-0852.2b persist
 
 ## Wire format (binary; v1 magic \`ZCV1\`)
 
-| Field | Type | Notes |
-|---|---|---|
-| magic | 4 bytes | \"ZCV1\" |
-| reserved | 4 bytes | zero (future-version-bump) |
-| salt_len + salt | u16 + bytes | from B-0852.1 envelope |
-| iv_len + iv | u16 + bytes | |
-| tag_len + tag | u16 + bytes | |
-| ciphertext_len + ciphertext | u32 + bytes | |
+| Field                       | Type        | Notes                      |
+| --------------------------- | ----------- | -------------------------- |
+| magic                       | 4 bytes     | \"ZCV1\"                   |
+| reserved                    | 4 bytes     | zero (future-version-bump) |
+| salt_len + salt             | u16 + bytes | from B-0852.1 envelope     |
+| iv_len + iv                 | u16 + bytes |                            |
+| tag_len + tag               | u16 + bytes |                            |
+| ciphertext_len + ciphertext | u32 + bytes |                            |
 
 Trailing bytes rejected in v1 (v2 will explicit-version-bump).
 
@@ -37,9 +37,9 @@ Trailing bytes rejected in v1 (v2 will explicit-version-bump).
 
 \`\`\`json
 {
-  \"schemaVersion\": 1,
-  \"globalCreds\": { \"<id>\": \"<base64-bytes>\" },
-  \"personaCreds\": { \"<persona>\": { \"<id>\": \"<base64-bytes>\" } }
+\"schemaVersion\": 1,
+\"globalCreds\": { \"<id>\": \"<base64-bytes>\" },
+\"personaCreds\": { \"<persona>\": { \"<id>\": \"<base64-bytes>\" } }
 }
 \`\`\`
 
@@ -49,16 +49,16 @@ Trailing bytes rejected in v1 (v2 will explicit-version-bump).
 
 \`\`\`
 CredBundle → encodeBundle → encrypt (B-0852.1) → serializeEnvelope
-  → [disk write/read simulation] →
+→ [disk write/read simulation] →
 parseEnvelope → decrypt → decodeBundle → CredBundle (byte-identical)
 \`\`\`
 
 ## Test output
 
 \`\`\`
- 17 pass
- 0 fail
- 29 expect() calls
+17 pass
+0 fail
+29 expect() calls
 Ran 17 tests across 1 file. [1.67s]
 \`\`\`
 
@@ -88,6 +88,7 @@ scrypt N=2^17 dominates timing per B-0852.1 OWASP-recommended parameters.
 Adds the B-0852.2a “envelope framing” layer for credential persistence by defining (1) a binary on-disk wire format for the encrypted envelope produced by `zeta-creds-crypto.ts`, and (2) a JSON plaintext schema (`CredBundle`) for the decrypted inner payload. This fits into the installer toolchain as the serialization boundary that future persist/restore CLIs will consume.
 
 **Changes:**
+
 - Introduces `serializeEnvelope` / `parseEnvelope` for a length-prefixed binary envelope format with a `ZCV1` header.
 - Introduces `CredBundle` + `encodeBundle` / `decodeBundle` for base64-in-JSON plaintext encoding.
 - Adds 17 unit tests covering round-trips and several framing/JSON error paths.
@@ -96,10 +97,10 @@ Adds the B-0852.2a “envelope framing” layer for credential persistence by de
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/installer/zeta-creds-envelope.ts | Implements wire-format framing for crypto envelopes plus CredBundle JSON encoding/decoding. |
-| tools/installer/zeta-creds-envelope.test.ts | Adds unit tests for envelope framing, bundle encode/decode, and full pipeline round-trip. |
+| File                                        | Description                                                                                 |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| tools/installer/zeta-creds-envelope.ts      | Implements wire-format framing for crypto envelopes plus CredBundle JSON encoding/decoding. |
+| tools/installer/zeta-creds-envelope.test.ts | Adds unit tests for envelope framing, bundle encode/decode, and full pipeline round-trip.   |
 
 ## Review threads
 
@@ -125,7 +126,7 @@ The framing comment/spec says salt/iv/tag lengths are fixed (32/12/16), but pars
 
 **@copilot-pull-request-reviewer** (2026-05-27T07:47:32Z):
 
-decodeBundle builds plain objects ({}) and assigns keys from decrypted JSON directly. If a key is "__proto__"/"constructor"/"prototype", this can lead to prototype pollution. Consider using Object.create(null) (or Map) for these dictionaries and/or explicitly rejecting dangerous keys.
+decodeBundle builds plain objects ({}) and assigns keys from decrypted JSON directly. If a key is "**proto**"/"constructor"/"prototype", this can lead to prototype pollution. Consider using Object.create(null) (or Map) for these dictionaries and/or explicitly rejecting dangerous keys.
 
 ### Thread 5: tools/installer/zeta-creds-envelope.ts:220 (unresolved)
 

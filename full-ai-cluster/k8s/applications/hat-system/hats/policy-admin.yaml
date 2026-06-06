@@ -21,9 +21,9 @@ spec:
   throttles:
     quorumGated: true
     quorumSize: 5
-    cooldownSeconds: 7200       # 2h between policy edits per wearer
-    warmupSeconds: 3600         # 1h probation
+    cooldownSeconds: 7200 # 2h between policy edits per wearer
+    warmupSeconds: 3600 # 1h probation
     conflictsWith:
       - executor
-      - hat-designer            # policy edits should not coincide with
-                                # active catalog design or execution
+      - hat-designer # policy edits should not coincide with
+        # active catalog design or execution

@@ -11,7 +11,7 @@ created: 2026-05-13
 positive failure mode after watching it fire multiple times
 during the Debank launch + bg-services cascade:
 
-> *"that's a good failure mode, someone else already fixed"*
+> _"that's a good failure mode, someone else already fixed"_
 
 The factory is operating with multiple agents touching the same
 branches in parallel (Vera, Lior, auto-fixer bot, Otto). Without
@@ -106,8 +106,8 @@ dirty working tree.
    findings fix; Otto's local merge commit garbage; reset to
    remote
 3. **PR #3018 (Debank thread)**: Vera + Lior pushed lint fixes
-   + casing corrections; Otto's local edits redundant; reset
-   to remote
+   - casing corrections; Otto's local edits redundant; reset
+     to remote
 
 ## Substrate-honest framing
 

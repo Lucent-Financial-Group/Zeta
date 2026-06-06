@@ -22,10 +22,10 @@ Lands B-0834 Approach A (the operator-side analog to B-0831 cascade #6 CI workfl
 
 ## Two log destinations
 
-| Destination | When available | How to inspect |
-|---|---|---|
+| Destination                           | When available                             | How to inspect                                                                                                     |
+| ------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | /tmp/zeta-install-<UTC-timestamp>.log | Live ISO; from script-start through reboot | \`cat \$LOG \| less\` post-exit; \`tail -f \$LOG \| less\` from another tty (Ctrl-Alt-F2) for real-time scrollback |
-| /mnt/var/log/zeta-install.log | Installed system; survives reboot | \`cat /var/log/zeta-install.log \| less\` post-boot |
+| /mnt/var/log/zeta-install.log         | Installed system; survives reboot          | \`cat /var/log/zeta-install.log \| less\` post-boot                                                                |
 
 Three banner lines at script-start name the log paths BEFORE output starts scrolling past.
 

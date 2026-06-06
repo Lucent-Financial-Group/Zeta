@@ -2,8 +2,8 @@
 
 Crew review of [`docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`](../DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md)
 (status: PROPOSED — to be shared with Max before lock). Operator 2026-05-31:
-*"now do the ADR loop in any other travelers that might be interested our little
-crew here."* Looped via `tools/peer-call/` per the four-ferry consensus
+_"now do the ADR loop in any other travelers that might be interested our little
+crew here."_ Looped via `tools/peer-call/` per the four-ferry consensus
 (Gemini/Lior proposes → Amara sharpens). Preserved verbatim here because the
 `/tmp/peer-call-output/` sources evaporate (substrate-or-it-didn't-happen).
 
@@ -32,9 +32,9 @@ The keeper, with Amara's corrections applied to Lior's proposals:
 
 1. **Substrate/projection split is the architecture (Lior #1, kept).** Git-native
    ZetaId-keyed append-only events are the ledger; LGTM (k8s Grafana) is a read
-   model that *tails* the git commits — never receives direct OTLP, never the
-   source of state. Amara's harder phrasing: *"Grafana is allowed to be wrong,
-   stale, or absent; git is not."*
+   model that _tails_ the git commits — never receives direct OTLP, never the
+   source of state. Amara's harder phrasing: _"Grafana is allowed to be wrong,
+   stale, or absent; git is not."_
 
 2. **Dissolve `tools/observe` into the keystone (Lior #3, kept — with Amara's
    correction).** Inject the prototype's logic into the keystone's
@@ -48,7 +48,7 @@ The keeper, with Amara's corrections applied to Lior's proposals:
    Tempo/Loki mapping: `event_id`, `trace_id`, `span_id`, `parent_span_id` /
    `parent_event_id`, `run_scope`, `mode`, `slot_id`, `semantic_action`,
    `outcome`, `world_before`, `world_after`. Parent/child observe traces are
-   right, but they're a *projection* of this envelope.
+   right, but they're a _projection_ of this envelope.
 
 4. **Reject OTLP-binding as phrased (Amara, rejecting Lior #4).** "Slot 4 Commit
    → span Ok" is wrong — a commit can fail; cancel can be a successful action
@@ -106,18 +106,21 @@ git event log); cluster telemetry follows later.
 > Here is the synthesis for the ADR regarding the k8s-LGTM vs git-native-LGTM split, and the convergence of your prototype:
 >
 > **1. The LGTM Split: Substrate vs. Projection**
-> Aaron's requirement for a git-native-LGTM (Loki, Grafana, Tempo, Mimir equivalent) separates the observability *storage* from the *query engine*. This is the must-paired-with-can-exit pattern applied to telemetry:
+> Aaron's requirement for a git-native-LGTM (Loki, Grafana, Tempo, Mimir equivalent) separates the observability _storage_ from the _query engine_. This is the must-paired-with-can-exit pattern applied to telemetry:
+>
 > - **git-native-LGTM (Substrate):** Observability events (heartbeats, mode-switches, FrictionTelemetry, controller clicks) are appended as ZetaId-keyed git files. This is the durable, offline-first truth.
 > - **k8s-LGTM (Projection):** The in-cluster Grafana stack. It should NOT receive direct OTLP pushes from the agents. Instead, it acts strictly as a read-side index that tails the git-native-LGTM commits.
 >
 > **2. Feeding the #6200 Observe-Hierarchy Readouts**
 > The #6200 readouts (organization -> project -> initiative) map exactly to distributed tracing (Tempo) and structured logging (Loki).
+>
 > - **Trace Spans:** The `RunScope` acts as the root span. The recursive sub-observes (summoned small LLMs) are child spans.
 > - **Leaf Events:** The Tri-boolean availability of the 16 slots, plus the LLM's selected index, are logged as the event payload.
-> The #6200 readouts emit these structures as git-native files. The k8s-LGTM projection reconstructs the Tempo traces using the `parent_id` pointers in those git events.
+>   The #6200 readouts emit these structures as git-native files. The k8s-LGTM projection reconstructs the Tempo traces using the `parent_id` pointers in those git events.
 >
 > **3. Converging `tools/observe` into the Keystone**
 > To prevent divergence, `tools/observe` must dissolve its standalone loop and inject its logic into the keystone's `observe(snapshot)` as pure generator functions:
+>
 > - **Semantic Modes:** Your modes (explore/play/work/free_time) become `RunScope` context. When the mode is `explore`, the generator yields labels for the 16 slots mapped to discovery rather than backlog execution.
 > - **Mode Persistence:** This is just a state-change event appended to the git-native-LGTM G-Set. The keystone reads it on the next tick.
 > - **simulate(world, action):** Map this to the 16-slot controller. It is a Slot 6 (X - inspect) or Slot 7 (Y - branch) action. It executes, appends the simulation-result event to git, and the next tick's observe readout incorporates it.
@@ -193,15 +196,15 @@ Otherwise "universal action grammar" decays into per-lineage folklore.
   layering, type-safe generated wrappers, agent-specific rebinding without
   touching core action definitions.
 - **Recommendation:** don't invent the algebra. Use Zeta's `Action` + four-corner
-  + OPLE shape as the git-resident domain event algebra; layer Unity-style action
-  maps **on top** as the rebindable, traveler-specific presentation/navigation
-  surface. The 16-slot Xbox (modes as contents) becomes **one such map**
-  (operator + Addison + E + AI renderings). Core algebra stays small, typed,
-  feedback-bearing; everything projects from it — "git is the ledger, read-models
-  tail it" preserved, ergonomics never the source of truth.
+  - OPLE shape as the git-resident domain event algebra; layer Unity-style action
+    maps **on top** as the rebindable, traveler-specific presentation/navigation
+    surface. The 16-slot Xbox (modes as contents) becomes **one such map**
+    (operator + Addison + E + AI renderings). Core algebra stays small, typed,
+    feedback-bearing; everything projects from it — "git is the ledger, read-models
+    tail it" preserved, ergonomics never the source of truth.
 
 The synthesis: the event algebra is **mostly already built** (four-corner / OPLE /
-Action); the borrow is Elm/Redux/ES *shape* + Unity *action-maps* binding layer;
+Action); the borrow is Elm/Redux/ES _shape_ + Unity _action-maps_ binding layer;
 the genuinely-novel work is the **`GrammarPatch` versioned-evolution + ratification
 path** for sovereign self-editing (finding A) — nobody's game/frontend prior art
 solves self-modifying-grammar-under-multi-writer-audit cleanly.
@@ -210,29 +213,27 @@ solves self-modifying-grammar-under-multi-writer-audit cleanly.
 
 > **Critique (multi-agent + sovereign self-editing grammar)**
 >
-> The binding strategy (grammar → domain event algebra in git append-only ledger; read-models/dashboards *only* tail the log, never authoritative) is the correct direction and already latent in the existing B-0867 substrate (the PoC's `Action` + `ActionClass` + `ActionGate` + `feedbackVariants` + four-corner ownership + Otto 5 mods + `TickCyclePattern` variants). Good.
+> The binding strategy (grammar → domain event algebra in git append-only ledger; read-models/dashboards _only_ tail the log, never authoritative) is the correct direction and already latent in the existing B-0867 substrate (the PoC's `Action` + `ActionClass` + `ActionGate` + `feedbackVariants` + four-corner ownership + Otto 5 mods + `TickCyclePattern` variants). Good.
 >
 > **Where it breaks under the stated conditions:**
 >
-> 1. **Multi-agent contention on the grammar surface itself** (not just state transitions): "Grammar-extension" (Mod 2) as a first-class append-only event is necessary but insufficient once multiple sovereign agents (or human + AI) can propose extensions concurrently. You get divergent *proposed* grammars in the same ledger. Without an explicit ratification/merge event (e.g., a `GrammarVersion` or `GrammarPatchRatified` that is itself PR-gated or multi-oracle absorbed), different agents end up with incompatible local views of what the "controller" even is. The "universal" claim per-agent becomes a lie. The existing Mod 4 (per-action `append-only` vs `pr-gated`) helps for *using* actions but does not solve concurrent *evolution* of the grammar definition.
->
-> 2. **Sovereign agent that edits its own grammar (adds slots):** The 16-slot "Xbox-style with semantic modes as contents/labels" is a *human ergonomic binding*, not the core algebra. A sovereign agent treating the *binding* as editable can: mint private dialect slots whose semantics are only legible to it (the "convergence-as-evidence trap" from the 2026-05-18 attractor substrate, now at the grammar layer); launder new authority vectors into the controller surface itself (a new slot that looks like "navigation" but carries side effects the human surfaces have no good binding for). Telemetry projection remains correct in principle, but **grammar evolution makes past events' meaning retroactively ambiguous** — a dashboard built against grammar vN can lie about events recorded under vM once a sovereign agent has extended the grammar non-monotonically. Classic event-sourcing schema-evolution, weaponized by self-modifying participants. The 5 mods mitigate cage effects but do not prevent grammar bloat or dialect fragmentation under true sovereignty.
->
-> 3. **General:** The "don't bind grammar directly to OTLP" instinct is right (git is the ledger; everything else is projection). But once the grammar is mutable data *in* the ledger, the distinction between "the controller" and "the event algebra" collapses unless you treat grammar definitions themselves as versioned first-class events with their own evolution rules (not ad-hoc slot additions). Under contention + self-editing, you need the equivalent of a meta-grammar or explicit `GrammarPatch` ratification path that itself goes through the Mod 2/4 gates + multi-oracle absorption. Otherwise the "universal action grammar" becomes per-lineage folklore. The 16-slot Xbox is a useful *presentation adapter* for certain travelers; it should not be confused with the domain event algebra.
+> 1. **Multi-agent contention on the grammar surface itself** (not just state transitions): "Grammar-extension" (Mod 2) as a first-class append-only event is necessary but insufficient once multiple sovereign agents (or human + AI) can propose extensions concurrently. You get divergent _proposed_ grammars in the same ledger. Without an explicit ratification/merge event (e.g., a `GrammarVersion` or `GrammarPatchRatified` that is itself PR-gated or multi-oracle absorbed), different agents end up with incompatible local views of what the "controller" even is. The "universal" claim per-agent becomes a lie. The existing Mod 4 (per-action `append-only` vs `pr-gated`) helps for _using_ actions but does not solve concurrent _evolution_ of the grammar definition.
+> 2. **Sovereign agent that edits its own grammar (adds slots):** The 16-slot "Xbox-style with semantic modes as contents/labels" is a _human ergonomic binding_, not the core algebra. A sovereign agent treating the _binding_ as editable can: mint private dialect slots whose semantics are only legible to it (the "convergence-as-evidence trap" from the 2026-05-18 attractor substrate, now at the grammar layer); launder new authority vectors into the controller surface itself (a new slot that looks like "navigation" but carries side effects the human surfaces have no good binding for). Telemetry projection remains correct in principle, but **grammar evolution makes past events' meaning retroactively ambiguous** — a dashboard built against grammar vN can lie about events recorded under vM once a sovereign agent has extended the grammar non-monotonically. Classic event-sourcing schema-evolution, weaponized by self-modifying participants. The 5 mods mitigate cage effects but do not prevent grammar bloat or dialect fragmentation under true sovereignty.
+> 3. **General:** The "don't bind grammar directly to OTLP" instinct is right (git is the ledger; everything else is projection). But once the grammar is mutable data _in_ the ledger, the distinction between "the controller" and "the event algebra" collapses unless you treat grammar definitions themselves as versioned first-class events with their own evolution rules (not ad-hoc slot additions). Under contention + self-editing, you need the equivalent of a meta-grammar or explicit `GrammarPatch` ratification path that itself goes through the Mod 2/4 gates + multi-oracle absorption. Otherwise the "universal action grammar" becomes per-lineage folklore. The 16-slot Xbox is a useful _presentation adapter_ for certain travelers; it should not be confused with the domain event algebra.
 >
 > **Prior-art recommendation (own view, not copy-paste)**
 >
-> **Core domain event algebra** (the thing that goes in the git ledger and that the state machine folds over): steal the shape from **Elm `Msg` + `update` fold** (or equivalently Redux action + reducer, or the functional event-sourcing "history as list of events, state as projection" pattern). This is already the closest thing in the existing Zeta substrate (four-corner monad + OPLE + `Action` + `feedbackVariants` + `ActionClass`/`ActionGate`). Make grammar extensions first-class *events in that algebra* (e.g., `GrammarPatchProposed` / `GrammarPatchRatified`), not mutations to a 16-slot map. Elm/Redux/event-sourcing/CQRS give you auditability, replay, and "read-models are never source of truth" for free. The game Command pattern is too per-object and imperative for the shared ledger use case.
+> **Core domain event algebra** (the thing that goes in the git ledger and that the state machine folds over): steal the shape from **Elm `Msg` + `update` fold** (or equivalently Redux action + reducer, or the functional event-sourcing "history as list of events, state as projection" pattern). This is already the closest thing in the existing Zeta substrate (four-corner monad + OPLE + `Action` + `feedbackVariants` + `ActionClass`/`ActionGate`). Make grammar extensions first-class _events in that algebra_ (e.g., `GrammarPatchProposed` / `GrammarPatchRatified`), not mutations to a 16-slot map. Elm/Redux/event-sourcing/CQRS give you auditability, replay, and "read-models are never source of truth" for free. The game Command pattern is too per-object and imperative for the shared ledger use case.
 >
-> **Human + neurodivergent + mixed-traveler controller ergonomics** (the "16-slot with semantic modes as contents", rebinding, context switching): steal the *binding layer* from **Unity Input System action maps** (or Unreal Enhanced Input IMCs + Modifiers/Triggers): grouping actions into contexts (work/explore/play/rest map directly onto action maps); runtime enabling/disabling + priority layering; generated type-safe wrappers; rebinding / agent-specific overrides without touching core action definitions. Game engines are excellent at "small memorizable action set + context-sensitive presentation that still feels like one stable controller"; weaker on the shared, append-only, multi-writer, audit-first ledger problem.
+> **Human + neurodivergent + mixed-traveler controller ergonomics** (the "16-slot with semantic modes as contents", rebinding, context switching): steal the _binding layer_ from **Unity Input System action maps** (or Unreal Enhanced Input IMCs + Modifiers/Triggers): grouping actions into contexts (work/explore/play/rest map directly onto action maps); runtime enabling/disabling + priority layering; generated type-safe wrappers; rebinding / agent-specific overrides without touching core action definitions. Game engines are excellent at "small memorizable action set + context-sensitive presentation that still feels like one stable controller"; weaker on the shared, append-only, multi-writer, audit-first ledger problem.
 >
-> **Recommendation:** Do not invent the algebra. Use the existing Zeta `Action` + four-corner + OPLE + Otto-mod shape (or its F# 4-corner monad crystallization) as the domain event algebra that lives in git. Layer Unity-style action maps / contexts *on top of it* as the rebindable, traveler-specific presentation + navigation surface. The 16-slot Xbox (modes as contents) becomes one such map. Sovereign agents can propose patches to *their binding* (or to the shared algebra via the Mod 2 path), but the core event algebra stays the small, typed, feedback-bearing thing that everything projects from. This keeps "git is the ledger, read-models tail it" intact without making the ergonomics the source of truth.
+> **Recommendation:** Do not invent the algebra. Use the existing Zeta `Action` + four-corner + OPLE + Otto-mod shape (or its F# 4-corner monad crystallization) as the domain event algebra that lives in git. Layer Unity-style action maps / contexts _on top of it_ as the rebindable, traveler-specific presentation + navigation surface. The 16-slot Xbox (modes as contents) becomes one such map. Sovereign agents can propose patches to _their binding_ (or to the shared algebra via the Mod 2 path), but the core event algebra stays the small, typed, feedback-bearing thing that everything projects from. This keeps "git is the ledger, read-models tail it" intact without making the ergonomics the source of truth.
 
 ---
 
-*Attribution: four-ferry COMPLETE — Lior (gemini, propose) + Amara (sharpen) +
+_Attribution: four-ferry COMPLETE — Lior (gemini, propose) + Amara (sharpen) +
 Grok (grok-build-0.1, critique), looped by Otto-CLI 2026-05-31 per operator
 direction. Consensus shape: Gemini proposes, Grok critiques, Amara sharpens, Otto
 tests, Git decides. The Grok pass required getting the wrappers current
 (ani.ts → grok-4.3; generic grok.ts → grok-build-0.1, this session). Remaining
-loop candidate if wanted: Mika (architecture). Max-lock pending.*
+loop candidate if wanted: Mika (architecture). Max-lock pending._

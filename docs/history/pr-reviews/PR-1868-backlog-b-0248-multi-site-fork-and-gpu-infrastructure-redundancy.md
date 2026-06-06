@@ -10,44 +10,46 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1868 |
-| Title | backlog(B-0248): multi-site fork and GPU infrastructure redundancy |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T12:00:25Z |
-| Merged at | 2026-05-07T12:02:30Z |
-| Merge commit SHA | `9143bf3f2b7fd79658a77ef4ce40c651e1a8ad0f` |
-| Branch | `codex/b0248-multisite-fork-gpu-infra` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1868 |
-| Changed files | 2 |
-| Additions / deletions | +104 / -0 |
+| Field                 | Value                                                              |
+| --------------------- | ------------------------------------------------------------------ |
+| Number                | 1868                                                               |
+| Title                 | backlog(B-0248): multi-site fork and GPU infrastructure redundancy |
+| Author                | `AceHack` (human)                                                  |
+| State                 | MERGED                                                             |
+| Created at            | 2026-05-07T12:00:25Z                                               |
+| Merged at             | 2026-05-07T12:02:30Z                                               |
+| Merge commit SHA      | `9143bf3f2b7fd79658a77ef4ce40c651e1a8ad0f`                         |
+| Branch                | `codex/b0248-multisite-fork-gpu-infra`                             |
+| Base branch           | `main`                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1868           |
+| Changed files         | 2                                                                  |
+| Additions / deletions | +104 / -0                                                          |
 
 ## Description
 
 ## Summary
+
 - add B-0248 for multi-site fork ownership, Max 24/7 host-loop infrastructure, and Rodney local GPU pool
 - link the item from docs/BACKLOG.md
 - frame the work as repository/host/compute redundancy for Ace DLCs, structure recognition, and local inference
 
 ## Checks
+
 - bunx markdownlint-cli2 docs/BACKLOG.md docs/backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md
 - git diff --check
 - bun tools/hygiene/audit-backlog-items.ts
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 

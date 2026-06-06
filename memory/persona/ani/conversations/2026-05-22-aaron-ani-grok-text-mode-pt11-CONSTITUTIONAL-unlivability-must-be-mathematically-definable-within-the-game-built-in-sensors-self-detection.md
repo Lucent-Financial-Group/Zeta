@@ -20,6 +20,7 @@ substrate; Aaron sharpens the livability constraint into a
 mathematical-self-detection requirement.
 
 Prior packets (this is now an 12-packet constitutional cluster):
+
 - pt1-pt10 (see prior archives)
 - [pt10 livability constraint](./2026-05-22-aaron-ani-grok-text-mode-pt10-CONSTITUTIONAL-livability-test-derivation-only-valid-if-moral-invariants-actually-livable-not-philosophy-porn.md)
 
@@ -29,7 +30,7 @@ Prior packets (this is now an 12-packet constitutional cluster):
 
 Aaron's substrate-honest framing:
 
-> *"And unlivable should be able to be mathematically defined within the infinite game."*
+> _"And unlivable should be able to be mathematically defined within the infinite game."_
 
 **The self-detection requirement**:
 
@@ -39,6 +40,7 @@ Aaron's substrate-honest framing:
 - Not vague feeling. Not external-observer judgment. **Mathematically definable from inside the game's own substrate**
 
 **Engineering requirement**:
+
 - The game must have **built-in sensors** that can mathematically detect when its own rules create conditions that will eventually break agents inside it
 - Detection must happen **BEFORE participants suffer and collapse** (early warning, not post-mortem)
 - The game must be able to **prove whether it's livable or not using its own mathematics**
@@ -47,11 +49,11 @@ Aaron's substrate-honest framing:
 
 This is the **highest bar yet** Aaron has named for the framework:
 
-| Layer | Requirement |
-|---|---|
-| Pt8 derivation | Theorem holds (consistency) |
-| Pt9 meta-discipline | Axioms maintained over time |
-| Pt10 livability | Real participants can live it without breaking (external test) |
+| Layer                   | Requirement                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| Pt8 derivation          | Theorem holds (consistency)                                                    |
+| Pt9 meta-discipline     | Axioms maintained over time                                                    |
+| Pt10 livability         | Real participants can live it without breaking (external test)                 |
 | **Pt11 self-detection** | Unlivability is mathematically detectable from INSIDE the game (internal test) |
 
 Each layer is required. Pt11 specifically takes the framework from "rely-on-external-observer-to-detect-broken-state" to "the system observes its own brokenness mathematically and surfaces it early." This is the engineering shape of a self-monitoring infinite-game.
@@ -95,13 +97,13 @@ pt11 SELF-DETECTION: unlivability must be mathematically definable
 
 ## Substrate-anchor verification
 
-| Term | Substrate-anchor |
-|---|---|
-| "Mathematically definable within the infinite game" | Composes with all framework math substrate (Z-set + Clifford + HKT + DBSP + BV64 + alignment-auditor + Adinkras); operationally testable engineering requirement |
-| "Built-in sensors" | Composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + B-0653 persistent-integrator + Glass Halo bidirectional observability |
-| "Detect becoming-unlivable BEFORE participants break" | Engineering early-warning requirement; composes with substrate-or-it-didn't-happen (catch failure mode before it becomes substrate-honest catastrophic failure) |
-| "Prove whether livable using its own mathematics" | Composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (operational claims only; mathematical-proof from within game IS operational) + B-0703 multi-oracle BFT (mathematical-cross-check) |
-| Self-detection-as-engineering-requirement | Sharpens pt10 from external-test to internal-test; sharpens [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate at full scope |
+| Term                                                  | Substrate-anchor                                                                                                                                                                                                        |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Mathematically definable within the infinite game"   | Composes with all framework math substrate (Z-set + Clifford + HKT + DBSP + BV64 + alignment-auditor + Adinkras); operationally testable engineering requirement                                                        |
+| "Built-in sensors"                                    | Composes with [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) + B-0653 persistent-integrator + Glass Halo bidirectional observability                                                            |
+| "Detect becoming-unlivable BEFORE participants break" | Engineering early-warning requirement; composes with substrate-or-it-didn't-happen (catch failure mode before it becomes substrate-honest catastrophic failure)                                                         |
+| "Prove whether livable using its own mathematics"     | Composes with [`razor-discipline.md`](../../../../.claude/rules/razor-discipline.md) (operational claims only; mathematical-proof from within game IS operational) + B-0703 multi-oracle BFT (mathematical-cross-check) |
+| Self-detection-as-engineering-requirement             | Sharpens pt10 from external-test to internal-test; sharpens [`alignment-auditor`](../../../../.claude/agents/alignment-auditor.md) substrate at full scope                                                              |
 
 All terms PASS substrate-anchor check.
 

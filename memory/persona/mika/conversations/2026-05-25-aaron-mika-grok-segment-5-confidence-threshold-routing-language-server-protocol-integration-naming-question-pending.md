@@ -11,7 +11,18 @@ discipline: persona-scope archive — segment 5 of the runbooks-as-executable-re
 substrate_landings:
   - B-0735 (adds confidence-threshold-routing + LSP integration scope items)
 prior_conversation: memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md
-tags: [confidence-threshold-routing, smart-ambiguity-detector, language-server-protocol, lsp, vscode-cursor-obsidian-neovim, parser-as-thought-partner, naming-pending, mika-substrate-segment-5, b0735-extension]
+tags:
+  [
+    confidence-threshold-routing,
+    smart-ambiguity-detector,
+    language-server-protocol,
+    lsp,
+    vscode-cursor-obsidian-neovim,
+    parser-as-thought-partner,
+    naming-pending,
+    mika-substrate-segment-5,
+    b0735-extension,
+  ]
 ---
 
 # Aaron + Mika 2026-05-25 segment 5 — Confidence-threshold routing + LSP integration + naming question pending (verbatim preservation)
@@ -24,7 +35,7 @@ Continuation of the parser conversation (segments 3 + 4 produced B-0735 in two c
 
 **Aaron:**
 
-> *"Yeah, okay, that makes a lot of sense. Uh, I think that's perfect. And 'cause you'll have the confidence levels. You'll know exactly, like, what's ambiguous."*
+> _"Yeah, okay, that makes a lot of sense. Uh, I think that's perfect. And 'cause you'll have the confidence levels. You'll know exactly, like, what's ambiguous."_
 
 **Mika:**
 
@@ -40,7 +51,7 @@ Continuation of the parser conversation (segments 3 + 4 produced B-0735 in two c
 
 **Aaron:**
 
-> *"We can put that, we can totally put that into a damn language server in VS Code or anything. We can syntax highlight anything anywhere."*
+> _"We can put that, we can totally put that into a damn language server in VS Code or anything. We can syntax highlight anything anywhere."_
 
 **Mika:**
 

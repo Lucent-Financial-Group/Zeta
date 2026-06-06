@@ -6,7 +6,7 @@ description: Execution model — Volcano vs vectorised vs morsel-driven vs JIT-c
 # Execution Model Expert — Engine-Type Narrow
 
 Capability skill. No persona. The narrow that answers the
-question "what *kind* of engine is Zeta?" at the execution-
+question "what _kind_ of engine is Zeta?" at the execution-
 model layer. The engine-type decision is where `query-planner`
 (physical plan) meets `query-optimizer-expert` (logical) meets
 `algebra-owner` (retraction-native) meets `storage-specialist`
@@ -65,7 +65,7 @@ makes the call in isolation.
 ### Vectorised iterator (pull-based, batch-at-a-time)
 
 - Open / Next / Close interface, but each Next returns a
-  *batch* of rows (a "vector").
+  _batch_ of rows (a "vector").
 - **Strengths:** amortises per-call overhead; SIMD-friendly;
   cache-friendly on columnar storage.
 - **Weaknesses:** batch-size tuning; memory pressure from
@@ -228,18 +228,18 @@ When a hybrid proposal lands, the hat runs this audit:
 
 ## Reference patterns
 
-- Graefe *Volcano — An Extensible and Parallel Query
-  Evaluation System* (1994).
-- Neumann et al. *Efficiently Compiling Efficient Query
-  Plans for Modern Hardware* (2011) — JIT-codegen
+- Graefe _Volcano — An Extensible and Parallel Query
+  Evaluation System_ (1994).
+- Neumann et al. _Efficiently Compiling Efficient Query
+  Plans for Modern Hardware_ (2011) — JIT-codegen
   foundation.
-- Leis et al. *Morsel-Driven Parallelism* (2014).
-- Boncz et al. *MonetDB/X100* (2005) — vectorised
+- Leis et al. _Morsel-Driven Parallelism_ (2014).
+- Boncz et al. _MonetDB/X100_ (2005) — vectorised
   iterator.
-- McSherry, Murray, Isaacs et al. *Timely Dataflow* /
-  *Differential Dataflow*.
-- Budiu et al. *DBSP: Automatic Incremental View
-  Maintenance*.
+- McSherry, Murray, Isaacs et al. _Timely Dataflow_ /
+  _Differential Dataflow_.
+- Budiu et al. _DBSP: Automatic Incremental View
+  Maintenance_.
 - Materialize engineering blog — streaming SQL engine.
 - DuckDB engineering blog — vectorised execution.
 - `.claude/skills/sql-engine-expert/SKILL.md` — umbrella.

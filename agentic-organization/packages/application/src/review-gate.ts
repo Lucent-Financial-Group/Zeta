@@ -30,8 +30,7 @@ import {
 export const ReviewGateFeedbackReason = {
   BoardCouldNotConvene: "board_could_not_convene",
 } as const;
-export type ReviewGateFeedbackReason =
-  (typeof ReviewGateFeedbackReason)[keyof typeof ReviewGateFeedbackReason];
+export type ReviewGateFeedbackReason = (typeof ReviewGateFeedbackReason)[keyof typeof ReviewGateFeedbackReason];
 
 export type ReviewGateResult =
   | {
@@ -44,10 +43,7 @@ export type ReviewGateResult =
   | { outcome: "feedback"; feedback: { reason: ReviewGateFeedbackReason; message: string } };
 
 function isBlockingOrMajor(decision: FindingDecision): boolean {
-  return (
-    decision.finding.severity === ReviewSeverity.Blocking ||
-    decision.finding.severity === ReviewSeverity.Major
-  );
+  return decision.finding.severity === ReviewSeverity.Blocking || decision.finding.severity === ReviewSeverity.Major;
 }
 
 /**

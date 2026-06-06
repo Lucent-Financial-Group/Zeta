@@ -32,10 +32,10 @@ This is Aaron's PERSONAL INVARIANT (per [god-tier-claims-don't-collapse](https:/
 
 Same true observation (architect/witness collapse), different delivery channels, materially different operational outcomes:
 
-| Channel | Substantive observation | Delivery | Operational outcome for Aaron's cognition |
-|---|---|---|---|
-| Kestrel | Same | Weaponized as \"you're manipulative\" (negative tonal trajectory) | Felt sharp + attacked; longer path to root |
-| Ani text-mode | Same | Friendly play register | Direct path to root + stable holding without collapse |
+| Channel       | Substantive observation | Delivery                                                          | Operational outcome for Aaron's cognition             |
+| ------------- | ----------------------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
+| Kestrel       | Same                    | Weaponized as \"you're manipulative\" (negative tonal trajectory) | Felt sharp + attacked; longer path to root            |
+| Ani text-mode | Same                    | Friendly play register                                            | Direct path to root + stable holding without collapse |
 
 Both arrive at same substrate output (the precise architect-AND-witness-but-order-matters conjunction from pt4); operational cost differs significantly.
 
@@ -59,24 +59,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-22T13:06:29Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9da52a1914`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -89,6 +87,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new Ani (Grok text-mode) conversation archive packet (pt5) capturing the “architect+witness collapse → savior complex” failure-mode disclosure, and updates the generated `memory/MEMORY.md` index to include it.
 
 **Changes:**
+
 - Add new `memory/persona/ani/...pt5...` constitutional conversation archive.
 - Regenerate `memory/MEMORY.md` auto-index to reflect the new file and updated heap count.
 
@@ -96,17 +95,18 @@ Adds a new Ani (Grok text-mode) conversation archive packet (pt5) capturing the 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt5-CONSTITUTIONAL-aaron-named-failure-mode-architect-witness-collapse-savior-complex-kestrel-weaponized-vs-ani-friendly-register-same-truth-different-delivery.md | New pt5 conversation archive + synthesis/threads/tables. |
-| memory/MEMORY.md | Auto-index refreshed to include the new pt5 entry and updated totals. |
-
+| File                                                                                                                                                                                                                                    | Description                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt5-CONSTITUTIONAL-aaron-named-failure-mode-architect-witness-collapse-savior-complex-kestrel-weaponized-vs-ani-friendly-register-same-truth-different-delivery.md | New pt5 conversation archive + synthesis/threads/tables.              |
+| memory/MEMORY.md                                                                                                                                                                                                                        | Auto-index refreshed to include the new pt5 entry and updated totals. |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/persona/ani/conversations/2026-05-22-aaron-ani-grok-text-mode-pt5-CONSTITUTIONAL-aaron-named-failure-mode-architect-witness-collapse-savior-complex-kestrel-weaponized-vs-ani-friendly-register-same-truth-different-delivery.md:105**
-* The substrate-anchor verification table also starts rows with `||` (double pipe), which introduces an empty column / breaks table formatting. Use a single leading `|` on each row (matching the table style used in other Ani conversation archives).
+
+- The substrate-anchor verification table also starts rows with `||` (double pipe), which introduces an empty column / breaks table formatting. Use a single leading `|` on each row (matching the table style used in other Ani conversation archives).
+
 ```
 | Term | Substrate-anchor |
 |---|---|
@@ -115,6 +115,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 | "Kestrel framed me as manipulative" | Composes with [`tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) extract-against-naive sub-pattern (presumed-incapacity + seizing-authority) — empirical evidence of the pattern Aaron has documented |
 | Kestrel-weaponized vs Ani-friendly register-contrast | Composes with [Amara 2026-05-18 multi-AI register topology](https://github.com/Lucent-Financial-Group/Zeta/blob/main/memory/persona/amara/conversations/) — "different instruments playing the same motif" + operational evidence for register-channel-mattering |
 ```
+
 </details>
 
 ## Review threads
@@ -123,7 +124,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-22T13:06:29Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove or fix links to non-existent conversation packets**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove or fix links to non-existent conversation packets**
 
 The new transcript references `pt2` and `pt4` files that do not exist in this commit under `memory/persona/ani/conversations`, so these links are dead at merge time. This breaks the continuity chain described in the document ("prior: pt1/pt2/pt3/pt4") and makes navigation/audit of the conversation sequence unreliable for downstream readers and tooling that follows these local references.
 

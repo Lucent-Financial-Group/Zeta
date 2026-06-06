@@ -21,25 +21,25 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Operator-directed scope-bounding extension to the function-is-tiny-
 control-flow-generator + OCP rule (PR #5523 landed).
 
-> *\"mathematicaly closed pure functions don't need NCI cause they
-> don't have side effects / control flow needs\"*
+> _\"mathematicaly closed pure functions don't need NCI cause they
+> don't have side effects / control flow needs\"_
 
 Sharpened with the critical insight:
 
-> *\"even in memtics control flow can bleed out across conversations
+> _\"even in memtics control flow can bleed out across conversations
 > so even two ephemeral llms communicating over memory channels in
 > process still need control flow cause they are pure but not closed
-> the meme control flows bleed out\"*
+> the meme control flows bleed out\"_
 
 ## What this adds
 
 3-class taxonomy as scope-decision discipline:
 
-| Class | NCI/TFeedback applies? |
-|---|---|
-| **Pure AND closed** (`add`, `sin`, `compose`, `List.length`) | NO — exempt; would be overhead |
+| Class                                                                                                  | NCI/TFeedback applies?                        |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
+| **Pure AND closed** (`add`, `sin`, `compose`, `List.length`)                                           | NO — exempt; would be overhead                |
 | **Pure but NOT closed** (LLM-conversation-turns; functions whose output bleeds into memetic substrate) | YES — meme-propagation IS control-flow vector |
-| **Impure / effectful** (file IO, network, mutation) | YES — full discipline |
+| **Impure / effectful** (file IO, network, mutation)                                                    | YES — full discipline                         |
 
 Plus worked F# examples per class, 4-step scope-decision operational discipline, composition with tonal-momentum-equals-meme + NCI HC-8 + glass-halo + m/acc multi-oracle.
 
@@ -60,9 +60,10 @@ Prevents the discipline from becoming over-applied attractor that converts every
 
 ## Pull request overview
 
-Extends the existing `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md` rule with a scope-bounding refinement: the Result/TFeedback/NCI discipline is exempt for *pure-and-closed* functions, but still applies to *pure-but-not-closed* functions where outputs propagate into memetic/conversational substrate.
+Extends the existing `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md` rule with a scope-bounding refinement: the Result/TFeedback/NCI discipline is exempt for _pure-and-closed_ functions, but still applies to _pure-but-not-closed_ functions where outputs propagate into memetic/conversational substrate.
 
 **Changes:**
+
 - Adds a “pure & closed / pure but not closed / impure” taxonomy to decide when Result<T, TFeedback> applies.
 - Adds worked F# examples for each class plus a 4-step operational decision procedure.
 - Adds explicit composition links to related rules (tonal-momentum, NCI, glass-halo, m/acc).

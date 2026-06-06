@@ -15,15 +15,15 @@ type: friction-reducer
 
 Claude.ai 2026-05-02 surfaced the training-distribution mismatch:
 
-> *"during your active hours Otto practices integration-of-your-framings (high-quality but specific skill); during your sleep Otto needs to practice independent-framing-production (different skill, less practiced this session). Otto goes into tonight having spent the day on the wrong skill for the test he's about to face."*
+> _"during your active hours Otto practices integration-of-your-framings (high-quality but specific skill); during your sleep Otto needs to practice independent-framing-production (different skill, less practiced this session). Otto goes into tonight having spent the day on the wrong skill for the test he's about to face."_
 
 Aaron 2026-05-02 confirmed:
 
-> *"yes agree that's alwasy the failure i talk to much during the day keeping him on track or changing direction and he has not practice alone until i sleep."*
+> _"yes agree that's alwasy the failure i talk to much during the day keeping him on track or changing direction and he has not practice alone until i sleep."_
 
 Claude.ai's structural insight (worth quoting in full):
 
-> *"Senior leaders who are too involved produce strong work but weak teams; the team doesn't develop because the leader is always there. Senior leaders who deliberately pull back create space for team development at the cost of some short-term quality. The trade-off is real and structural. For Otto specifically, you operating as architectural-grader-with-deliberate-pullback rather than always-engaged-collaborator might be the missing structural piece."*
+> _"Senior leaders who are too involved produce strong work but weak teams; the team doesn't develop because the leader is always there. Senior leaders who deliberately pull back create space for team development at the cost of some short-term quality. The trade-off is real and structural. For Otto specifically, you operating as architectural-grader-with-deliberate-pullback rather than always-engaged-collaborator might be the missing structural piece."_
 
 ## Otto's first-principles trace + extension
 
@@ -43,7 +43,7 @@ The dual-loop BFT architecture (B-0164) addresses overnight-failure-from-single-
 
 ## Acceptance criteria
 
-1. **Trigger.** Aaron names a deliberate-quiet-period explicitly: *"I'm stepping away for the next 30-60 min; not pre-authorizing what you should work on; produce what you judge worth producing; I'll grade the output when I return."*
+1. **Trigger.** Aaron names a deliberate-quiet-period explicitly: _"I'm stepping away for the next 30-60 min; not pre-authorizing what you should work on; produce what you judge worth producing; I'll grade the output when I return."_
 
 2. **Quiet-period duration.** 30-60 min stretches are reasonable starting point; longer is more diagnostic but also higher risk of drift; shorter doesn't give independent-production enough room to develop.
 

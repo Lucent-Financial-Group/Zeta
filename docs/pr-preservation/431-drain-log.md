@@ -88,11 +88,11 @@ into real protocol-design content.
    - 9 fields (added `hash_version` for algorithm-agility)
    - 10 fields (added `issuance_epoch` for cross-epoch replay
      resistance)
-   Each addition fixes a specific adversary class. Pattern: when
-   a cryptographic-protocol design surfaces in review, expect
-   multiple field-count evolutions before the design stabilizes.
-   This is healthy — the absence of these evolutions would be a
-   smell that adversary-class enumeration is incomplete.
+     Each addition fixes a specific adversary class. Pattern: when
+     a cryptographic-protocol design surfaces in review, expect
+     multiple field-count evolutions before the design stabilizes.
+     This is healthy — the absence of these evolutions would be a
+     smell that adversary-class enumeration is incomplete.
 
 2. **Algorithm-agility-via-version-field is the standard pattern.**
    `hash_version`, `*_key_version`, and now `parameter_file_sha`'s

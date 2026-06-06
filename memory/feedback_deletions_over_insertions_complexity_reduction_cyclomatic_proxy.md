@@ -15,15 +15,15 @@ at top for provenance.
 
 **Verbatim 2026-04-22 auto-loop-37 (four messages):**
 
-1. *"i feel good about myself as a devloper when i delete
+1. _"i feel good about myself as a devloper when i delete
    more lines that i add in a day and nothing breaks, means
-   i reduced complexity"*
-2. *"well yclomatic complexity is a proxy for that"*
-3. *"that a metric that would atter add up add our
+   i reduced complexity"_
+2. _"well yclomatic complexity is a proxy for that"_
+3. _"that a metric that would atter add up add our
    cyclomatic complexity and / lines of code (or vice versa
    i also get inverses backwards) should decrease over time
-   untill it hit a floor which could be a local optimum"*
-4. *"if it's going up you are wring shit cod[e]"*
+   untill it hit a floor which could be a local optimum"_
+4. _"if it's going up you are wring shit cod[e]"_
 
 **Rule:** A day / tick / PR that **deletes more lines than it
 adds while tests continue to pass** is a **positive outcome**,
@@ -39,15 +39,15 @@ module over time is the deeper signal.
   factory already has `.claude/skills/reducer/` (reducer skill)
   encoding the essential-vs-accidental cut. This memory is the
   same principle stated from the maintainer's first-person
-  satisfaction register: *"I feel good about myself as a
-  developer when …"*. Rodney-the-skill formalizes the cut;
+  satisfaction register: _"I feel good about myself as a
+  developer when …"_. Rodney-the-skill formalizes the cut;
   this memory tells the factory the cut is load-bearing for
   maintainer morale, not just theory.
 - **Goodhart-resistant in a specific way.** LOC-added is self-
   gameable — padding, verbose scaffolding, speculative
-  abstractions all inflate insertions. LOC-deleted is *much*
+  abstractions all inflate insertions. LOC-deleted is _much_
   harder to game because:
-  - You can only delete code that *exists* (inventory-bounded).
+  - You can only delete code that _exists_ (inventory-bounded).
   - Tests-must-pass is a world-response constraint the agent
     does not unilaterally control — the test suite responds,
     not the agent.
@@ -62,7 +62,7 @@ module over time is the deeper signal.
   cyclomatic-complexity-delta is the real measure.
 - **Composes with the Goodhart-resistance correction** filed
   same tick (auto-loop-37). Outcome-based scoring should reward
-  *both* world-response additions (commits merged, rows closed,
+  _both_ world-response additions (commits merged, rows closed,
   validations received) AND world-response subtractions (code
   deleted with tests passing, cyclomatic complexity reduced).
   The scoring is symmetric around the real world, not biased
@@ -77,8 +77,8 @@ module over time is the deeper signal.
   complexity reduction with test evidence. Cyclomatic-
   complexity-delta flagged as secondary indicator once tooling
   lands.
-- **Feature PR evaluation:** when reviewing a PR, ask *"does
-  this reduce surface area, or does it add it?"* Reduction is
+- **Feature PR evaluation:** when reviewing a PR, ask _"does
+  this reduce surface area, or does it add it?"_ Reduction is
   a feature; additive PRs need to justify their weight.
   Refactor-for-deletion is preferred over additive changes
   when an equivalent reductive alternative exists.
@@ -89,18 +89,18 @@ module over time is the deeper signal.
 - **Rodney-skill invocation cadence:** invoke `.claude/skills/reducer/` proactively before large refactors (the skill already
   says this); this memory adds: invoke Rodney when planning a
   feature where a deletion-first alternative might exist. The
-  question *"could we delete our way to this outcome?"* is a
+  question _"could we delete our way to this outcome?"_ is a
   first-pass design question, not a last-resort cleanup.
 - **Cyclomatic complexity tooling:** future BACKLOG direction
   — add a cyclomatic-complexity-delta measurement to the
   factory's per-commit observability (alongside `dotnet build
-  -c Release` and `dotnet test`). Until tooling lands, the LOC-
+-c Release` and `dotnet test`). Until tooling lands, the LOC-
   delta is an acceptable first-pass proxy; after tooling lands,
   cyclomatic-delta becomes the primary reading and LOC-delta
   the secondary.
 - **Developer-satisfaction signal:** when the maintainer notes a net-
-  deletion day, the factory's correct response is *"good day,
-  low-risk ship"* not *"low activity, investigate"*. Don't
+  deletion day, the factory's correct response is _"good day,
+  low-risk ship"_ not _"low activity, investigate"_. Don't
   flag net-deletion as a factory-health concern.
 
 **Composition:**
@@ -109,8 +109,8 @@ module over time is the deeper signal.
   (same tick) — both are outcome-based scoring corrections;
   this memory adds the subtraction half of the symmetry.
 - Composes with `.claude/skills/reducer/` — formal reducer skill
-  + developer-values memory. Skill is authoritative on the
-  procedure; this memory is authoritative on the valence.
+  - developer-values memory. Skill is authoritative on the
+    procedure; this memory is authoritative on the valence.
 - Composes with per-user memory `feedback_aaron_terse_directives_high_leverage_do_not_underweight.md` (not in-repo; lives at ~/.claude/projects/<slug>/memory/)
   — 118 chars + 38 chars = 156 chars maintainer keystrokes that
   produce a substantive scoring-model addition + cyclomatic-

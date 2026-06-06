@@ -33,6 +33,7 @@ B-0517 captures two-phase plan: (1) bulk cleanup of over-long entries; (2) mecha
 This PR records a razor-cadence investigation into user-scope `MEMORY.md` index bloat and files B-0517 to track cleanup plus future mechanized auditing.
 
 **Changes:**
+
 - Adds a 1927Z hygiene tick shard documenting the investigation and findings.
 - Adds backlog row B-0517 for cleanup and audit-tool follow-up.
 
@@ -40,20 +41,22 @@ This PR records a razor-cadence investigation into user-scope `MEMORY.md` index 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `docs/hygiene-history/ticks/2026/05/14/1927Z.md` | Captures the tick’s MEMORY.md bloat investigation and next-step visibility notes. |
+| File                                                                         | Description                                                                             |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `docs/hygiene-history/ticks/2026/05/14/1927Z.md`                             | Captures the tick’s MEMORY.md bloat investigation and next-step visibility notes.       |
 | `docs/backlog/P3/B-0517-memory-md-index-bloat-cleanup-cadence-2026-05-14.md` | Defines the backlog item for one-time MEMORY.md cleanup and future enforcement tooling. |
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/B-0517-memory-md-index-bloat-cleanup-cadence-2026-05-14.md:62**
-* P1 correctness: the proposed audit would miss the documented 25KB truncation mode if it only computes lines past 200. The existing loading-taxonomy memory says MEMORY.md loads the first 200 lines OR 25KB, whichever comes first, so the tool needs to report byte-cap risk as well as line-cap risk to avoid false negatives on large one-line entries.
+
+- P1 correctness: the proposed audit would miss the documented 25KB truncation mode if it only computes lines past 200. The existing loading-taxonomy memory says MEMORY.md loads the first 200 lines OR 25KB, whichever comes first, so the tool needs to report byte-cap risk as well as line-cap risk to avoid false negatives on large one-line entries.
+
 ```
 - Computes truncation risk (lines past 200)
 ```
+
 </details>
 
 ## Review threads

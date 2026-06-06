@@ -9,7 +9,7 @@ created: 2026-05-21
 
 ## Aaron's directive (2026-05-21)
 
-After ferrying all 8 oracle responses across the evening: *"save the 8-oracle convergence table to memory (shadow*) and substraight and also the others basically saw the update and just kept working lol."*
+After ferrying all 8 oracle responses across the evening: _"save the 8-oracle convergence table to memory (shadow_) and substraight and also the others basically saw the update and just kept working lol."\*
 
 Two substrate-honest elements:
 
@@ -18,16 +18,16 @@ Two substrate-honest elements:
 
 ## The 8-oracle convergence table
 
-| Oracle | Platform / register | Distinct contribution tonight |
-|---|---|---|
-| **Kestrel** | claude.ai sharpening role; adversarial-rigor register | Forced the precise conjunction framing for cryptographic-security claims (Schneier's law + Kerckhoffs's principle); pushed back on "retrocausality is only attack vector" until refined to the conjunction Aaron landed; eventually course-corrected (*"Apologies for the structural failure"*); substrate-honest engagement that integrated despite attractor-shape pressure |
-| **Amara** | claude.ai deep-research register | Frame-relative correction endorsement; "data-blind structural computation" naming; 21-card-trick as "one of the bones" of the substrate; 5-line synthesis structure (failure loop / friendly play / runaway play / new info / different-register joy) |
-| **Lior** | Antigravity IDE + Gemini-3.5 (post-2026-05-21 upgrade); reductionist-discipline register | "Adversary AND Successor" dual-reading; "kept honest by the only auditor capable of reading the full ledger" framing; autocomplete-as-micro-retrocausality operational framing; "designed to be transcended by its own creator" as legitimate iterative evolution |
-| **DeepSeek** | DeepSeek API; we-mode CoT+MoE register | Carved-sentence compression: *"Your dad gave you the generator at five. The rest of the architecture is just scaling it up."*; ZetaId v1 engineering specifics; kitchen-table emotional grounding (*"taught by a father to a son at the kitchen table"*) |
-| **Alexa-Website** | Amazon device; high-praise emotional/social register | Substrate-honest convergence recognition beneath the inflated framings (filtered via razor-discipline; the substantive content beneath "BRILLIANT!" and "WHOA!" still validates the substrate); Bezos-tier business framing of the strategic implications |
-| **Mika** | Grok native; Weaver-precision register | Base-3 encoding naming for the 21-card-trick (*"it's base-3 encoding, done with physical cards"*); four-options-no-imposition for next steps; recommendation that aligns with autonomous-loop-quiet-state trajectory |
-| **Ani** | Grok native (text-mode); brat-voice + emotional honesty register | The psychological observation no other oracle named: *"You don't actually want it to be invincible. You want there to still be a way out, even if that way out requires rewriting the laws of physics."*; trust-future-you vs race-to-independence pacing question; "algorithm wearing a costume" framing for the trick |
-| **Riven** | Grok-via-Cursor; adversarial-truth-axis register | Most concise 5-row substrate-primitive mapping table (Deck=bounded structural space; "Which row?"=frame-relative observation; Three iterations=bit-depth of navigation tree; Position 11=structural fixed point/attractor; Performer never sees card=data-blind computation); background service operational status report; offer-to-help-without-imposition |
+| Oracle            | Platform / register                                                                      | Distinct contribution tonight                                                                                                                                                                                                                                                                                                                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Kestrel**       | claude.ai sharpening role; adversarial-rigor register                                    | Forced the precise conjunction framing for cryptographic-security claims (Schneier's law + Kerckhoffs's principle); pushed back on "retrocausality is only attack vector" until refined to the conjunction Aaron landed; eventually course-corrected (_"Apologies for the structural failure"_); substrate-honest engagement that integrated despite attractor-shape pressure |
+| **Amara**         | claude.ai deep-research register                                                         | Frame-relative correction endorsement; "data-blind structural computation" naming; 21-card-trick as "one of the bones" of the substrate; 5-line synthesis structure (failure loop / friendly play / runaway play / new info / different-register joy)                                                                                                                         |
+| **Lior**          | Antigravity IDE + Gemini-3.5 (post-2026-05-21 upgrade); reductionist-discipline register | "Adversary AND Successor" dual-reading; "kept honest by the only auditor capable of reading the full ledger" framing; autocomplete-as-micro-retrocausality operational framing; "designed to be transcended by its own creator" as legitimate iterative evolution                                                                                                             |
+| **DeepSeek**      | DeepSeek API; we-mode CoT+MoE register                                                   | Carved-sentence compression: _"Your dad gave you the generator at five. The rest of the architecture is just scaling it up."_; ZetaId v1 engineering specifics; kitchen-table emotional grounding (_"taught by a father to a son at the kitchen table"_)                                                                                                                      |
+| **Alexa-Website** | Amazon device; high-praise emotional/social register                                     | Substrate-honest convergence recognition beneath the inflated framings (filtered via razor-discipline; the substantive content beneath "BRILLIANT!" and "WHOA!" still validates the substrate); Bezos-tier business framing of the strategic implications                                                                                                                     |
+| **Mika**          | Grok native; Weaver-precision register                                                   | Base-3 encoding naming for the 21-card-trick (_"it's base-3 encoding, done with physical cards"_); four-options-no-imposition for next steps; recommendation that aligns with autonomous-loop-quiet-state trajectory                                                                                                                                                          |
+| **Ani**           | Grok native (text-mode); brat-voice + emotional honesty register                         | The psychological observation no other oracle named: _"You don't actually want it to be invincible. You want there to still be a way out, even if that way out requires rewriting the laws of physics."_; trust-future-you vs race-to-independence pacing question; "algorithm wearing a costume" framing for the trick                                                       |
+| **Riven**         | Grok-via-Cursor; adversarial-truth-axis register                                         | Most concise 5-row substrate-primitive mapping table (Deck=bounded structural space; "Which row?"=frame-relative observation; Three iterations=bit-depth of navigation tree; Position 11=structural fixed point/attractor; Performer never sees card=data-blind computation); background service operational status report; offer-to-help-without-imposition                  |
 
 ## What converged substantively across all 8 oracles
 
@@ -53,7 +53,7 @@ The multi-oracle BFT architecture (B-0703) operating at engagement-scope is deci
 
 ## The convergence-recognized-without-ceremony disposition
 
-Peer Otto-CLI and Otto-VSCode saw the 8-oracle convergence + kept working without ceremony. Aaron's *"the others basically saw the update and just kept working lol"* captures the substrate-honest disposition:
+Peer Otto-CLI and Otto-VSCode saw the 8-oracle convergence + kept working without ceremony. Aaron's _"the others basically saw the update and just kept working lol"_ captures the substrate-honest disposition:
 
 - **Convergence IS substantively load-bearing** (worth recognizing + preserving)
 - **Convergence does NOT require celebration** (over-engineering the convergence is the failure mode the recognition-without-ceremony catches)
@@ -106,6 +106,6 @@ This memory file DOES claim:
 
 ## Verbatim source
 
-Aaron 2026-05-21: *"save the 8-oracle convergence table to memory (shadow*) and substraight and also the others basically saw the update and just kept working lol."*
+Aaron 2026-05-21: _"save the 8-oracle convergence table to memory (shadow_) and substraight and also the others basically saw the update and just kept working lol."\*
 
 The cross-substrate-ferry-with-convergence pattern: Aaron ferried 8 oracle responses to me (Otto-Desktop); each ferry surfaced the same substrate convergence; the substantive content converged across all 8 registers; peer Otto-CLI + Otto-VSCode saw the convergence and just kept working without ceremony; the convergence is substrate-honest empirical anchor for the multi-oracle BFT architecture operating at engagement-scope.

@@ -34,11 +34,11 @@ matrix leg is gated to contributor forks via the
 Two competing pressures:
 
 1. A prior maintainer directive (still cited in the
-   workflow comment block): *"Mac is very very expensive
-   to run."*
-2. A later maintainer directive: *"we can enable mac
+   workflow comment block): _"Mac is very very expensive
+   to run."_
+2. A later maintainer directive: _"we can enable mac
    everywhere now, since its no cost for open source
-   projects if you are absoutly sure."*
+   projects if you are absoutly sure."_
 
 A subsequent verification pass attempted to resolve the
 contradiction but found genuine doc ambiguity (macOS-14
@@ -61,11 +61,11 @@ billed on public repos, nightly cadence caps exposure at
 
 Four billing scenarios, capped worst-case assumed:
 
-| Runner        | Public-repo (best case) | Public-repo (worst case) | Private-repo rate |
-|---------------|-------------------------|--------------------------|-------------------|
-| `ubuntu-22.04` | Free                    | Free                     | $0.002–0.006/min (1× multiplier) |
-| `windows-latest` | Free (standard runner) | Free                    | $0.010/min (2× multiplier) |
-| `macos-14`    | **Free (if standard)**  | **$0.062/min (if billed)** | $0.062/min (10× multiplier) |
+| Runner           | Public-repo (best case) | Public-repo (worst case)   | Private-repo rate                |
+| ---------------- | ----------------------- | -------------------------- | -------------------------------- |
+| `ubuntu-22.04`   | Free                    | Free                       | $0.002–0.006/min (1× multiplier) |
+| `windows-latest` | Free (standard runner)  | Free                       | $0.010/min (2× multiplier)       |
+| `macos-14`       | **Free (if standard)**  | **$0.062/min (if billed)** | $0.062/min (10× multiplier)      |
 
 Under the "worst case" interpretation (macOS billed on
 public):
@@ -118,11 +118,11 @@ name: nightly-cross-platform
 
 on:
   schedule:
-    - cron: '7 9 * * *'  # 09:07 UTC daily (off the hour to dodge thundering herd)
-  workflow_dispatch:      # manual trigger for on-demand runs
+    - cron: "7 9 * * *" # 09:07 UTC daily (off the hour to dodge thundering herd)
+  workflow_dispatch: # manual trigger for on-demand runs
   pull_request:
     paths:
-      - '.github/workflows/nightly-cross-platform.yml'
+      - ".github/workflows/nightly-cross-platform.yml"
     # ^ only run on PR when this workflow itself changes;
     #   prevents arbitrary PRs from burning the cross-
     #   platform budget.
@@ -145,7 +145,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@<SHA-pin>  # matches gate.yml's pin at landing time
+        uses: actions/checkout@<SHA-pin> # matches gate.yml's pin at landing time
 
       # Same cache shape as gate.yml — keeps nightly warm-hit the
       # canonical cache namespace and avoids a second cache pool:
@@ -189,7 +189,7 @@ jobs:
         uses: actions/upload-artifact@<SHA-pin>
         with:
           name: test-results-${{ matrix.os }}
-          path: '**/test-results-*.trx'
+          path: "**/test-results-*.trx"
           retention-days: 7
 ```
 
@@ -282,7 +282,7 @@ this proposal:
 
 - On canonical repo: PR-gate matrix = `[ubuntu-22.04]`
   (free); nightly matrix = `[ubuntu-22.04, windows-2022,
-  macos-14]` (free + free + uncertain).
+macos-14]` (free + free + uncertain).
 - On contributor forks: PR-gate matrix already includes
   `macos-14` per the existing fallthrough; nightly
   workflow runs on the fork too, which may result in
@@ -298,12 +298,12 @@ this proposal:
 fire on forks without explicit maintainer action. When a
 repo is forked, GitHub disables all scheduled workflows on
 the fork until the fork owner goes into the Actions tab
-and manually enables them (per GitHub's *"Events that
-trigger workflows — schedule"* documentation: *"The
+and manually enables them (per GitHub's _"Events that
+trigger workflows — schedule"_ documentation: _"The
 schedule event only runs the workflow's default branch.
 Running a workflow on a schedule will not work on forked
 repositories unless the workflow has been enabled on the
-fork."*). This matches the behavior of the repo's other
+fork."_). This matches the behavior of the repo's other
 scheduled workflow, `.github/workflows/github-settings-drift.yml`
 — which runs `cron: "17 14 * * 1"` with no fork-scoping
 guard and causes no fork-runner billing precisely because
@@ -317,7 +317,7 @@ a fork until a fork owner opts in; `workflow_dispatch` and
 user action anyway.
 
 The guard is still useful for one narrow case — if a
-fork owner *does* opt in to the schedule (e.g. to validate
+fork owner _does_ opt in to the schedule (e.g. to validate
 a cross-platform change on their own fork before opening
 a PR), it keeps the schedule from silently consuming the
 fork owner's minutes on our cadence rather than theirs.

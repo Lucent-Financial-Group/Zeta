@@ -18,7 +18,7 @@ type: friction-reducer
 
 **Filed:** 2026-05-01.
 
-**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: Aaron 2026-05-01 ~10:55Z: *"Bash → TS migration completion this is also usefull so we don't just keep building dept"*. Companion to B-0125 (build-track split); both are prerequisites to B-0132 (CRDT-composition) per Aaron's framing that CRDT work shouldn't compound debt onto a half-migrated tooling layer.
+**Filed by:** Otto under backlog-prioritization authority delegated 2026-05-01. Origin: Aaron 2026-05-01 ~10:55Z: _"Bash → TS migration completion this is also usefull so we don't just keep building dept"_. Companion to B-0125 (build-track split); both are prerequisites to B-0132 (CRDT-composition) per Aaron's framing that CRDT work shouldn't compound debt onto a half-migrated tooling layer.
 
 **Effort:** M (1-3 weeks — finish the in-progress migration; remove dead `.sh` files; update CI references).
 
@@ -90,45 +90,45 @@ files with .ts counterparts removed, 2 CI workflows updated.
 
 **KILL (done)** — .sh removed, .ts counterpart exists:
 
-| .sh path | .ts path |
-|----------|----------|
-| tools/alignment/audit_archive_headers.sh | .ts |
-| tools/alignment/audit_commit.sh | .ts |
-| tools/alignment/audit_personas.sh | .ts |
-| tools/alignment/audit_skills.sh | .ts |
-| tools/alignment/citations.sh | .ts |
-| tools/audit-packages.sh | .ts |
-| tools/audit/live-lock-audit.sh | .ts |
-| tools/backlog/generate-index.sh | .ts |
-| tools/budget/daily-cost-report.sh | .ts |
-| tools/budget/project-runway.sh | .ts |
-| tools/budget/snapshot-burn.sh | .ts |
-| tools/git/batch-resolve-pr-threads.sh | .ts |
-| tools/git/push-with-retry.sh | .ts |
-| tools/lint/doc-comment-history-audit.sh | .ts |
-| tools/lint/no-directives-otto-prose.sh | .ts |
-| tools/lint/runner-version-freshness.sh | .ts |
-| tools/lint/safety-clause-audit.sh | .ts |
-| tools/pr-preservation/archive-pr.sh | .ts |
-| tools/skill-catalog/backfill_dv2_frontmatter.sh | .ts |
+| .sh path                                        | .ts path |
+| ----------------------------------------------- | -------- |
+| tools/alignment/audit_archive_headers.sh        | .ts      |
+| tools/alignment/audit_commit.sh                 | .ts      |
+| tools/alignment/audit_personas.sh               | .ts      |
+| tools/alignment/audit_skills.sh                 | .ts      |
+| tools/alignment/citations.sh                    | .ts      |
+| tools/audit-packages.sh                         | .ts      |
+| tools/audit/live-lock-audit.sh                  | .ts      |
+| tools/backlog/generate-index.sh                 | .ts      |
+| tools/budget/daily-cost-report.sh               | .ts      |
+| tools/budget/project-runway.sh                  | .ts      |
+| tools/budget/snapshot-burn.sh                   | .ts      |
+| tools/git/batch-resolve-pr-threads.sh           | .ts      |
+| tools/git/push-with-retry.sh                    | .ts      |
+| tools/lint/doc-comment-history-audit.sh         | .ts      |
+| tools/lint/no-directives-otto-prose.sh          | .ts      |
+| tools/lint/runner-version-freshness.sh          | .ts      |
+| tools/lint/safety-clause-audit.sh               | .ts      |
+| tools/pr-preservation/archive-pr.sh             | .ts      |
+| tools/skill-catalog/backfill_dv2_frontmatter.sh | .ts      |
 
 **PORTED (Phase 2, 2026-05-07):**
 
-| .sh path | PR | Status |
-|----------|-----|--------|
-| tools/lanes/code-lane.sh | #1961 | merged |
-| tools/lanes/doc-lane.sh | #1961 | merged |
-| tools/lanes/lane-allocator.sh | #1961 | merged |
-| tools/profile.sh | #1962 | merged |
+| .sh path                                         | PR           | Status              |
+| ------------------------------------------------ | ------------ | ------------------- |
+| tools/lanes/code-lane.sh                         | #1961        | merged              |
+| tools/lanes/doc-lane.sh                          | #1961        | merged              |
+| tools/lanes/lane-allocator.sh                    | #1961        | merged              |
+| tools/profile.sh                                 | #1962        | merged              |
 | tools/hygiene/check-tick-history-shard-schema.sh | #1986 (Vera) | merged, .sh deleted |
 
 **REMAINING (0 files — all ported in B-0156 PR):**
 
-| .sh path | lines | CI-referenced | status |
-|----------|-------|--------------|--------|
-| tools/hygiene/check-github-settings-drift.sh | 83 | yes | ported to .ts, .sh deleted |
-| tools/hygiene/snapshot-github-settings.sh | 165 | yes | ported to .ts, .sh deleted |
-| tools/hygiene/audit-orphan-role-refs.sh | 322 | no | ported to .ts, .sh deleted |
+| .sh path                                     | lines | CI-referenced | status                     |
+| -------------------------------------------- | ----- | ------------- | -------------------------- |
+| tools/hygiene/check-github-settings-drift.sh | 83    | yes           | ported to .ts, .sh deleted |
+| tools/hygiene/snapshot-github-settings.sh    | 165   | yes           | ported to .ts, .sh deleted |
+| tools/hygiene/audit-orphan-role-refs.sh      | 322   | no            | ported to .ts, .sh deleted |
 
 **KEEP** — external dependencies (Lean4 .lake packages):
 All `tools/lean4/.lake/packages/*/scripts/*.sh` — not our code.
@@ -138,4 +138,4 @@ All `tools/setup/**/*.sh` — the only bash that stays.
 
 ## Verify-before-deferring note
 
-The audit step is itself the verify-before-state-claim discipline applied — don't claim "TS migration is done" or "bash is dead" without enumerating exactly which scripts are which. Aaron's framing names the *direction* (don't keep building debt); the *scope* needs the audit to be honest.
+The audit step is itself the verify-before-state-claim discipline applied — don't claim "TS migration is done" or "bash is dead" without enumerating exactly which scripts are which. Aaron's framing names the _direction_ (don't keep building debt); the _scope_ needs the audit to be honest.

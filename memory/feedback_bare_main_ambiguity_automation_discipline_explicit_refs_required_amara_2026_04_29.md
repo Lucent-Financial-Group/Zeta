@@ -11,22 +11,22 @@ type: feedback
 Amara 2026-04-29 forwarded by Aaron through the maintainer
 channel (the live Claude Code CLI conversation surface):
 
-> *"You don't need to be scared of 'multiple `main`' by
+> _"You don't need to be scared of 'multiple `main`' by
 > itself. You **should** be worried that the automation is
 > still using ambiguous Git commands like `git checkout
-> main` in a repo with multiple remotes (`origin/main` and
+main` in a repo with multiple remotes (`origin/main` and
 > `acehack/main`). The exact failure appears in the latest
 > log: `fatal: 'main' matched multiple (2) remote tracking
-> branches` and then the loop keeps going."*
+branches` and then the loop keeps going."_
 
-> *"The issue is not 'multiple remotes have main = bad'.
-> The issue is 'scripts assume main is unambiguous = bad'."*
+> _"The issue is not 'multiple remotes have main = bad'.
+> The issue is 'scripts assume main is unambiguous = bad'."_
 
-> *"Bare `main` is for humans. Automation uses explicit
-> refs."*
+> _"Bare `main` is for humans. Automation uses explicit
+> refs."_
 
-> *"Multiple mains are fine. Ambiguous main in automation
-> is not."*
+> _"Multiple mains are fine. Ambiguous main in automation
+> is not."_
 
 ## Why this repo has multiple `main` refs
 
@@ -267,10 +267,11 @@ alone in multi-step contexts.
 ## Concurrency caveat for the fetch/switch pattern (Claude.ai 2026-04-29)
 
 The `git fetch origin refs/heads/main:refs/remotes/origin/main`
-+ `git switch --detach refs/remotes/origin/main` pattern
-guarantees an **explicit base ref**, NOT a globally stable
-base across parallel ticks. If two agents fetch at different
-moments, they may branch from different `origin/main` SHAs.
+
+- `git switch --detach refs/remotes/origin/main` pattern
+  guarantees an **explicit base ref**, NOT a globally stable
+  base across parallel ticks. If two agents fetch at different
+  moments, they may branch from different `origin/main` SHAs.
 
 For tick-history shards: this is acceptable (shards don't
 depend on shared state — each row is independent).

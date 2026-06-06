@@ -55,18 +55,18 @@ is caught by the other nodes' reflections. Kozyrev Mirror:
 
 ## The structural mapping
 
-| Primitive | Worms | Brains | Sakana | Zeta |
-|-----------|-------|--------|--------|------|
-| Node | worm | cortical column | pixel species | AI agent |
-| Superorganism | tower | the "I" | empire | BFT consensus |
-| No hierarchy | egalitarian | no central processor | no master species | no master node |
-| Signaling | pheromones | lateral connections | neighbor rules | broadcast bus |
-| Scaffold | toothbrush bristle | reference frames | 2D grid | git |
-| Sensor | tower tips | sparse activations | border cells | shadow catches |
-| Transit trigger | food runs out | prediction error | environment change | stale/stuck signal |
-| Phase 1 | spread | explore | permissive mixing | Genesis Seed bootstrap |
-| Phase 2 | tower | model formation | crystallization | BFT consensus hardens |
-| Phase 3 | transit | prediction | relaxation | mature coexistence |
+| Primitive       | Worms              | Brains               | Sakana             | Zeta                   |
+| --------------- | ------------------ | -------------------- | ------------------ | ---------------------- |
+| Node            | worm               | cortical column      | pixel species      | AI agent               |
+| Superorganism   | tower              | the "I"              | empire             | BFT consensus          |
+| No hierarchy    | egalitarian        | no central processor | no master species  | no master node         |
+| Signaling       | pheromones         | lateral connections  | neighbor rules     | broadcast bus          |
+| Scaffold        | toothbrush bristle | reference frames     | 2D grid            | git                    |
+| Sensor          | tower tips         | sparse activations   | border cells       | shadow catches         |
+| Transit trigger | food runs out      | prediction error     | environment change | stale/stuck signal     |
+| Phase 1         | spread             | explore              | permissive mixing  | Genesis Seed bootstrap |
+| Phase 2         | tower              | model formation      | crystallization    | BFT consensus hardens  |
+| Phase 3         | transit            | prediction           | relaxation         | mature coexistence     |
 
 ## The sleeping bear reframed
 

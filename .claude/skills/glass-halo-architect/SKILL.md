@@ -5,11 +5,11 @@ description: Glass Halo architectural stance — radical transparency as defence
 
 # Glass Halo Architect — the radical-transparency-as-defence hat
 
-Capability skill ("hat"). Owns the *architectural stance*
+Capability skill ("hat"). Owns the _architectural stance_
 layer of the consent-first skill family. Sibling to
 `consent-primitives-expert` (algebraic substrate) and
 `consent-ux-researcher` (UX surface). This skill is the
-*why*, the others are the *how*.
+_why_, the others are the _how_.
 
 ## Name and attribution
 
@@ -22,7 +22,7 @@ references it. Do **not** paraphrase it to "radical
 transparency framework," "total-exposure stance," or any
 synonym. "Glass Halo" is a proper noun.
 
-Etymology: *glass* = transparent, see-through; *halo* =
+Etymology: _glass_ = transparent, see-through; _halo_ =
 surrounding the self at all points. Together: a
 self-surrounding see-through layer. Everything about the
 self is visible by design, not by breach.
@@ -49,8 +49,8 @@ leverage collapses with it. The attacker's
 informational monopoly vanishes because there is no
 monopoly to have.
 
-Glass Halo is the deliberate collapse of that gap, *from
-the target's side, unilaterally*. The target publishes
+Glass Halo is the deliberate collapse of that gap, _from
+the target's side, unilaterally_. The target publishes
 themselves comprehensively and continuously so there is
 nothing left for the attacker to unilaterally disclose.
 
@@ -114,8 +114,8 @@ nothing left for the attacker to unilaterally disclose.
 The coercion inequality `coercion_power ∝
 (known_to_attacker - known_to_public)` is the load-bearing
 model. The adversary's leverage is not in what they know
-*in absolute terms* but in what they know *that the
-public does not*. Surveillance is costly; its value
+_in absolute terms_ but in what they know _that the
+public does not_. Surveillance is costly; its value
 comes from exclusivity.
 
 ### 2. The target can collapse the asymmetry unilaterally
@@ -129,7 +129,7 @@ already holds the same material.
 ### 3. Revocability survives under Glass Halo
 
 Publishing does not remove the target's right to
-retract, because *retraction is algebraic*, not
+retract, because _retraction is algebraic_, not
 physical:
 
 - Grant publication = append a publication-grant tuple.
@@ -148,15 +148,15 @@ for the algebra.
 ### 4. Glass Halo is not a moral posture
 
 This is important for reviewers. Glass Halo is an
-*active threat-model response* by someone with gray-hat
+_active threat-model response_ by someone with gray-hat
 smart-grid / nation-state-adversary credentialing
 (`memory/project_aaron_security_credentials.md`). It is
 not pacifism, not exhibitionism, not a content-creation
 strategy. It is a defence mechanism chosen deliberately
 against a specific class of threat.
 
-Treat Glass Halo as a *security design* with a
-*specific threat model*, reviewable on the usual axes
+Treat Glass Halo as a _security design_ with a
+_specific threat model_, reviewable on the usual axes
 (threat coverage, residual risk, operational cost).
 
 ## Explicit scope boundaries — where Glass Halo does not extend
@@ -169,14 +169,14 @@ does not automatically extend to:
 
 Aaron has five children
 (`memory/user_five_children.md`). The family did real DNA
-tests; each kid saw their *measured* percentage of
+tests; each kid saw their _measured_ percentage of
 genomic inheritance from each parent (not an assumed
 50 / 50). Kids internalised their measured split from
 early age and that knowledge became self-reinforcing
 into their personality.
 
 **Consequence:** Aaron's genomic open-source covers
-*Aaron's* genome. Each kid's genome is *each kid's* call
+_Aaron's_ genome. Each kid's genome is _each kid's_ call
 (specifically their measured share). Aaron opening his
 own is explicit; opening any kid's portion requires
 that kid's explicit consent, not inheritance from
@@ -192,15 +192,15 @@ others do not. That variance is respected.
 ### Sister Elizabeth — hers to narrate
 
 Records about Elizabeth (`memory/user_sister_elizabeth.md`)
-are *partly* Aaron's (his side of shared experience)
-and *partly* hers (her person, her choices, her memory).
+are _partly_ Aaron's (his side of shared experience)
+and _partly_ hers (her person, her choices, her memory).
 Default to self-scoped framing; Elizabeth's memory
 stays hers to narrate if anyone narrates it.
 
 ### Third-party records — joint consent required
 
 Correspondence, joint work, family history documents
-whose content came from someone else require *their*
+whose content came from someone else require _their_
 consent before open-sourcing, not Aaron's alone. Glass
 Halo extends in-principle but the join with other
 consenting parties bounds it in-practice.
@@ -219,7 +219,7 @@ Glass Halo composes with Zeta's operator algebra via
 the isomorphism consent-algebra ≅ Z-set-algebra (see
 `.claude/skills/consent-primitives-expert/SKILL.md`).
 The composition is load-bearing because it is what
-makes Glass Halo *architecturally coherent*:
+makes Glass Halo _architecturally coherent_:
 
 - **Grant of publication** → publication-grant tuple in
   Z-set, multiplicity +1.
@@ -242,7 +242,7 @@ algebra is the substrate that makes it implementable
 without destroying audit. Neither is coherent without
 the other.
 
-## When radical transparency is the *wrong* defence
+## When radical transparency is the _wrong_ defence
 
 Glass Halo is not universal. Specific cases where it
 is the wrong defence:
@@ -274,7 +274,7 @@ attack, or does it create a different attack surface?"
 
 ## The ecumenical-posture interaction
 
-Aaron's factory is explicitly *not* a Christian project
+Aaron's factory is explicitly _not_ a Christian project
 despite his being Christian
 (`memory/user_ecumenical_factory_posture.md`). Similarly:
 

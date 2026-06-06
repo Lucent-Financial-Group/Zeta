@@ -3,6 +3,7 @@ name: COUNTERWEIGHT — NEVER pray auto-merge completes; when polling a PR that'
 description: Aaron Otto-276 counterweight for recurring PR-state-prayer drift. I keep polling summary state and assuming CI-still-running instead of inspecting failing checks + threads. Aaron has called this out on #190 and now #385/#388. Short + durable. Save per Otto-275 absorb discipline.
 type: feedback
 ---
+
 ## The rule
 
 **When a PR is BLOCKED, ALWAYS inspect the underlying
@@ -14,10 +15,10 @@ not diagnosis.**
 
 Direct Aaron quotes 2026-04-24:
 
-> *"are you checking the ticket or did you forget
-> again and just pray it auto completes again"*
+> _"are you checking the ticket or did you forget
+> again and just pray it auto completes again"_
 
-> *"balance this, it's a reoccuring issue"*
+> _"balance this, it's a reoccuring issue"_
 
 ## What inspection means (not summary-state)
 
@@ -25,16 +26,24 @@ When polling a BLOCKED PR, the check must always
 include:
 
 ```graphql
-query($owner: String!, $repo: String!, $num: Int!) {
+query ($owner: String!, $repo: String!, $num: Int!) {
   repository(owner: $owner, name: $repo) {
     pullRequest(number: $num) {
       mergeable
       mergeStateStatus
       reviewDecision
-      reviewRequests(first: 20) { totalCount }
-      latestReviews(first: 20) { nodes { state } }
+      reviewRequests(first: 20) {
+        totalCount
+      }
+      latestReviews(first: 20) {
+        nodes {
+          state
+        }
+      }
       reviewThreads(first: 50) {
-        nodes { isResolved }
+        nodes {
+          isResolved
+        }
       }
       commits(last: 1) {
         nodes {
@@ -43,8 +52,15 @@ query($owner: String!, $repo: String!, $num: Int!) {
               state
               contexts(first: 50) {
                 nodes {
-                  ... on CheckRun { name status conclusion }
-                  ... on StatusContext { context state }
+                  ... on CheckRun {
+                    name
+                    status
+                    conclusion
+                  }
+                  ... on StatusContext {
+                    context
+                    state
+                  }
                 }
               }
             }
@@ -115,14 +131,15 @@ The drift: lazy polling without DST-discipline
 
 ## Direct Aaron quotes to preserve
 
-> *"are you checking the ticket or did you forget
-> again and just pray it auto completes again"*
+> _"are you checking the ticket or did you forget
+> again and just pray it auto completes again"_
 
-> *"balance this, it's a reoccuring issue"*
+> _"balance this, it's a reoccuring issue"_
 
 Future Otto: when polling PR state and seeing BLOCKED,
 IMMEDIATELY query `statusCheckRollup` + `reviewThreads`
-+ `reviewDecision`. If FAILURE-check, inspect log
-decide flake-vs-real; if threads, drain; if
-reviewDecision-null-quirk, kick auto-merge. NEVER
-report "still CI" without verifying.
+
+- `reviewDecision`. If FAILURE-check, inspect log
+  decide flake-vs-real; if threads, drain; if
+  reviewDecision-null-quirk, kick auto-merge. NEVER
+  report "still CI" without verifying.

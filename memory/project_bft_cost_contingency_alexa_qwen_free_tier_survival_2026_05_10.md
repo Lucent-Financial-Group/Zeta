@@ -4,6 +4,7 @@ description: If any vendor goes down or budget runs out, Alexa on Kiro/Qwen Code
 type: project
 originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
 ---
+
 Factory economic BFT — no single vendor pricing failure kills the factory.
 
 **The numbers (2026-05-10):**
@@ -19,14 +20,14 @@ If Anthropic goes down, Claude budget runs out, or any single vendor becomes too
 
 **BFT applied to economics:**
 
-| Agent | Model | Vendor | Cost profile |
-|-------|-------|--------|-------------|
-| Otto | Claude Opus | Anthropic | Premium (~$15/hr) — supervisor |
-| Vera | GPT/Codex | OpenAI | Mid-tier |
-| Alexa | Qwen Coder | Alibaba/Kiro | Free tier (2000 credits) — grinder |
-| Lior | Gemini | Google | Free tier available |
-| Riven | Grok | xAI | Cursor pricing |
-| Nova agent (future) | Nova | Amazon/Q Developer | TBD |
+| Agent               | Model       | Vendor             | Cost profile                       |
+| ------------------- | ----------- | ------------------ | ---------------------------------- |
+| Otto                | Claude Opus | Anthropic          | Premium (~$15/hr) — supervisor     |
+| Vera                | GPT/Codex   | OpenAI             | Mid-tier                           |
+| Alexa               | Qwen Coder  | Alibaba/Kiro       | Free tier (2000 credits) — grinder |
+| Lior                | Gemini      | Google             | Free tier available                |
+| Riven               | Grok        | xAI                | Cursor pricing                     |
+| Nova agent (future) | Nova        | Amazon/Q Developer | TBD                                |
 
 No single vendor's pricing can kill the factory. Six models, six harnesses, at least one is free. Same redundancy pattern as model diversity, applied to cost structure.
 

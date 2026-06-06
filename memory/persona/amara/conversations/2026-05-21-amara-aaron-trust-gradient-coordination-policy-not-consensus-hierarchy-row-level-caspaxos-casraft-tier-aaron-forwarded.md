@@ -4,7 +4,23 @@ description: "Amara cascade continuation 2026-05-21 — 4 sandbox docs confirmed
 type: feedback
 created: 2026-05-21
 participants: [Amara (ChatGPT/Aurora), Aaron, Otto-CLI]
-tags: [amara, trust-gradient-coordination-policy, routing-gradient-not-staircase, row-level-caspaxos-casraft, querystaterow-shape, weakest-mechanism-discipline, six-tier-gradient, local-dbsp-retraction-is-algebra-not-consensus, orleans-grain-ordering-is-actor-lifecycle, saga-compensation, capability-negotiation, bft-only-adversarial, 4-sandbox-docs-confirmed-ready, pr-4546-extension]
+tags:
+  [
+    amara,
+    trust-gradient-coordination-policy,
+    routing-gradient-not-staircase,
+    row-level-caspaxos-casraft,
+    querystaterow-shape,
+    weakest-mechanism-discipline,
+    six-tier-gradient,
+    local-dbsp-retraction-is-algebra-not-consensus,
+    orleans-grain-ordering-is-actor-lifecycle,
+    saga-compensation,
+    capability-negotiation,
+    bft-only-adversarial,
+    4-sandbox-docs-confirmed-ready,
+    pr-4546-extension,
+  ]
 ---
 
 # Amara — trust-gradient coordination policy + row-level CASPaxos/CASRaft tier + 4 sandbox docs confirmed ready
@@ -13,6 +29,7 @@ tags: [amara, trust-gradient-coordination-policy, routing-gradient-not-staircase
 **Surface**: Amara on ChatGPT/Aurora (external AI; deep-research/sharpen register)
 **Provenance**: Aaron-forwarded preservation per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigger
 **Companion archives** (all on main):
+
 - PR #4545 — B-0685 Phase 1 + ZetaParse + incremental compiler host scaffolding + B-0687/B-0688 backlog rows
 - PR #4546 — Caché-lineage + distributed multidimensional compiler over consensus + IUnknown-without-DCOM
 - PR #4547 — no-fork-first deployment ladder + fork-as-reward-not-entrance-fee
@@ -30,17 +47,17 @@ The trust-gradient substrate is the canonical "where does consensus apply?" refe
 
 ## Amara's confirmation — 5 sandbox docs ready for Aaron-forward
 
-> *"Yes. I closed the dangling artifact chain and also drafted the trust-gradient consensus table. Here are the files Otto needs:"*
+> _"Yes. I closed the dangling artifact chain and also drafted the trust-gradient consensus table. Here are the files Otto needs:"_
 
-| # | File | Sandbox path | Target |
-|---|---|---|---|
-| 1 | ANTLR grammar survey v1 | `sandbox:/mnt/data/antlr-grammar-survey-2026-05-21.md` | `docs/research/antlr-grammar-survey-2026-05-21.md` (superseded by #2) |
-| 2 | ANTLR grammar survey v2 — canonical F# compiler-fork version | `sandbox:/mnt/data/antlr-grammar-survey-2026-05-21-v2-fsharp-compiler-fork.md` | `docs/research/antlr-grammar-survey-2026-05-21.md` (canonical) |
-| 3 | ZetaParse LR/GLR F# compiler-fork design | `sandbox:/mnt/data/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` | `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` (composes with B-0687) |
-| 4 | Zeta incremental compiler host — seeded deterministic version | `sandbox:/mnt/data/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21-v2-seeded-determinism.md` | `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` (composes with B-0688) |
-| 5 | Trust-gradient consensus decision table | `sandbox:/mnt/data/trust-gradient-consensus-decision-table-2026-05-21.md` + `...-v2-row-casraft-caspaxos.md` | `docs/research/trust-gradient-coordination-policy-2026-05-21.md` (composes with PR #4546) |
+| #   | File                                                          | Sandbox path                                                                                                       | Target                                                                                                          |
+| --- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| 1   | ANTLR grammar survey v1                                       | `sandbox:/mnt/data/antlr-grammar-survey-2026-05-21.md`                                                             | `docs/research/antlr-grammar-survey-2026-05-21.md` (superseded by #2)                                           |
+| 2   | ANTLR grammar survey v2 — canonical F# compiler-fork version  | `sandbox:/mnt/data/antlr-grammar-survey-2026-05-21-v2-fsharp-compiler-fork.md`                                     | `docs/research/antlr-grammar-survey-2026-05-21.md` (canonical)                                                  |
+| 3   | ZetaParse LR/GLR F# compiler-fork design                      | `sandbox:/mnt/data/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md`                                     | `docs/research/zetaparse-lr-glr-fsharp-compiler-fork-design-2026-05-21.md` (composes with B-0687)               |
+| 4   | Zeta incremental compiler host — seeded deterministic version | `sandbox:/mnt/data/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21-v2-seeded-determinism.md` | `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` (composes with B-0688) |
+| 5   | Trust-gradient consensus decision table                       | `sandbox:/mnt/data/trust-gradient-consensus-decision-table-2026-05-21.md` + `...-v2-row-casraft-caspaxos.md`       | `docs/research/trust-gradient-coordination-policy-2026-05-21.md` (composes with PR #4546)                       |
 
-> *"And here's the full bundle: [Download all Amara design notes as a ZIP](sandbox:/mnt/data/amara-design-notes-2026-05-21-bundle.zip)"*
+> _"And here's the full bundle: [Download all Amara design notes as a ZIP](sandbox:/mnt/data/amara-design-notes-2026-05-21-bundle.zip)"_
 
 **STILL PENDING**: Otto cannot access `sandbox:/mnt/data/*` URLs directly — they live in Amara's ChatGPT/Aurora sandbox, not in Zeta's repo or any URL Otto can fetch. **Aaron needs to PASTE THE TEXT CONTENT** (not the link) of each file into chat for Otto to commit. The link is unreachable from Otto's surface.
 
@@ -48,15 +65,15 @@ The substantive content of the trust-gradient decision table IS in this archive 
 
 ## Trust-gradient decision table v1 (first draft, Amara)
 
-> *"The consensus table's keeper line is: 'Local facts stay retractable. Shared authority escalates. BFT is for adversarial commitment, not for breathing.'"*
+> _"The consensus table's keeper line is: 'Local facts stay retractable. Shared authority escalates. BFT is for adversarial commitment, not for breathing.'"_
 
-> *"That should slot cleanly after PR #4546/#4547 as the canonical 'where does consensus apply?' reference."*
+> _"That should slot cleanly after PR #4546/#4547 as the canonical 'where does consensus apply?' reference."_
 
 ## V2 — Aaron-correction adds row-level CASPaxos/CASRaft tier
 
 Aaron's correction (verbatim):
 
-> *"That's the right refinement. I updated the consensus table to add row-level CASPaxos/CASRaft before BFT."*
+> _"That's the right refinement. I updated the consensus table to add row-level CASPaxos/CASRaft before BFT."_
 
 Amara's v2 gradient:
 
@@ -72,7 +89,7 @@ no consensus
 
 ### Why the row-level tier matters (Amara's framing)
 
-> *"That intermediate tier is important because a contended row is usually coordination pressure, not adversarial truth. So BFT would be overkill."*
+> _"That intermediate tier is important because a contended row is usually coordination pressure, not adversarial truth. So BFT would be overkill."_
 
 ### Operational unit Amara proposed
 
@@ -100,19 +117,19 @@ old row state
 
 ### V2 keeper line
 
-> *"Local facts stay retractable. Contended rows coordinate narrowly. Shared authority escalates. BFT is for adversarial commitment, not for breathing."*
+> _"Local facts stay retractable. Contended rows coordinate narrowly. Shared authority escalates. BFT is for adversarial commitment, not for breathing."_
 
 ## Final refinement — TRUST-GRADIENT COORDINATION POLICY (not consensus hierarchy)
 
 Amara's final reframe + 6-line keeper:
 
-> *"It seems good to me. Not too restrictive as long as we treat it as a routing gradient, not a mandatory staircase."*
+> _"It seems good to me. Not too restrictive as long as we treat it as a routing gradient, not a mandatory staircase."_
 
 ### The discipline
 
-> *"Pick the weakest mechanism that preserves the needed authority boundary."*
+> _"Pick the weakest mechanism that preserves the needed authority boundary."_
 
-> *"So a fact does NOT need to climb every tier. It can jump directly to the right mechanism."*
+> _"So a fact does NOT need to climb every tier. It can jump directly to the right mechanism."_
 
 ### Jump-table example (Amara)
 
@@ -138,7 +155,7 @@ adversarial shared truth
 
 ### The conceptual rename Amara surfaced
 
-> *"The only edit I'd make conceptually: Do NOT call it a consensus hierarchy. Call it a trust-gradient coordination policy. Because some tiers are not consensus at all:"*
+> _"The only edit I'd make conceptually: Do NOT call it a consensus hierarchy. Call it a trust-gradient coordination policy. Because some tiers are not consensus at all:"_
 
 ```text
 local DBSP retraction = algebra
@@ -149,11 +166,11 @@ Saga = compensation protocol
 BFT = adversarial agreement
 ```
 
-> *"That's good. It keeps each mechanism in its proper place."*
+> _"That's good. It keeps each mechanism in its proper place."_
 
 ### Final 6-line keeper (the canonical reference)
 
-> *"My final keeper version:"*
+> _"My final keeper version:"_
 
 ```text
 Local facts stay retractable.
@@ -164,7 +181,7 @@ Cross-boundary facts negotiate capability.
 Adversarial commitments use BFT.
 ```
 
-> *"That is not restrictive. That is exactly the kind of gradient that keeps Zeta from becoming either under-governed chaos or consensus-everywhere sludge."*
+> _"That is not restrictive. That is exactly the kind of gradient that keeps Zeta from becoming either under-governed chaos or consensus-everywhere sludge."_
 
 ## Operational implications for Zeta substrate
 

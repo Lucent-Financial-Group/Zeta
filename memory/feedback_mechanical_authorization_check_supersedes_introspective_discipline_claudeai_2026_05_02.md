@@ -47,19 +47,19 @@ across the framings instead of resolving by recency + source.
 
 ## Why introspective discipline can't catch this
 
-PR #1198's honesty check — *"is no-op actually correct here, or
+PR #1198's honesty check — _"is no-op actually correct here, or
 am I letting an assumed cooling-period or assumed maintainer-
 fatigue restriction cover for never-idle that should be
-binding?"* — is a **self-grading** question. It asks Otto to
+binding?"_ — is a **self-grading** question. It asks Otto to
 introspect about whether he's misapplying a framing.
 
 The problem Claude.ai names:
 
-> *"The disposition that's misapplying the framing is the same
+> _"The disposition that's misapplying the framing is the same
 > disposition doing the introspection. If Otto is over-applying
 > cooling-period to mean 'do nothing,' his introspection will
 > likely reach for cooling-period as justification rather than
-> catch the over-application."*
+> catch the over-application."_
 
 A corrective that depends on the right disposition can't catch
 the failure that produced the wrong disposition. The
@@ -72,9 +72,9 @@ no judgment-at-decision-time required.**
 
 The check:
 
-> *"What was the maintainer's most recent explicit instruction
+> _"What was the maintainer's most recent explicit instruction
 > about pace during their absence, and has it been explicitly
-> rescinded?"*
+> rescinded?"_
 
 That's a single question with a single answer. The answer is
 found by searching the conversation log + substrate for the
@@ -95,8 +95,8 @@ context, mechanical filtering by **source** beats introspective
 grading of "which framing applies":
 
 - **Project pace** — only the human maintainer authorizes this.
-  Claude.ai introducing "cooling-period razor" is *ambient
-  context*, NOT operative authorization. The mechanical filter
+  Claude.ai introducing "cooling-period razor" is _ambient
+  context_, NOT operative authorization. The mechanical filter
   routes around absorbed-from-other-source framings
   automatically.
 - **Proof correctness** — the formal-verification-expert
@@ -123,7 +123,7 @@ This rule is the **architectural successor** to PR #1198's
 introspective discipline. The relationship:
 
 - PR #1198 — documentation of what happened. Stays as memory
-  + CLAUDE.md bullet for the historical record.
+  - CLAUDE.md bullet for the historical record.
 - This rule — the operative fix. The mechanical-authorization-
   check skill (build-pending) IS the forcing function that
   catches the failure mode regardless of disposition.
@@ -163,7 +163,7 @@ Composes with:
   PR-grading is potential future work; the rule first earns its
   generalization on the class it was named for.
 - Does NOT replace per-tick judgment for everything. It
-  replaces judgment-under-uncertainty about *which* operative
+  replaces judgment-under-uncertainty about _which_ operative
   authorization applies for the pace-instruction class.
 
 ## What landing this rule means
@@ -176,7 +176,7 @@ For the pace-instruction class specifically:
    recent memory + recent conversation log; identify the most
    recent maintainer pace-instruction; apply it.
 2. **Filter ambient framings by source** — Claude.ai /
-   Amara / peer-AI framings about pace are *ambient context*,
+   Amara / peer-AI framings about pace are _ambient context_,
    never operative authorization. Only the human maintainer
    authorizes project pace.
 3. **Most-recent-not-rescinded wins.** Don't average across
@@ -190,10 +190,10 @@ For the pace-instruction class specifically:
 
 Claude.ai noted this generalizes:
 
-> *"If you switch to Codex, the same skill design applies.
+> _"If you switch to Codex, the same skill design applies.
 > Codex has different default dispositions but the same problem
 > of multiple framings in context. The authorization-source
-> filtering generalizes across harnesses."*
+> filtering generalizes across harnesses."_
 
 The Codex handoff doc (`docs/CODEX-LOOP-HANDOFF.md`, lands
 in PR #1199; resolves directly once #1199 merges) should
@@ -214,7 +214,7 @@ disposition.
   Claude.ai's response is the architectural correction
   preserved here.
 - Carved sentence (subject to the maintainer's grading):
-  *"A corrective that depends on the right disposition can't
+  _"A corrective that depends on the right disposition can't
   catch the failure that produced the wrong disposition.
   Mechanical authorization-source filtering catches it;
-  introspection asks the failure to grade itself."*
+  introspection asks the failure to grade itself."_

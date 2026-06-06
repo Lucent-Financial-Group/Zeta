@@ -23,9 +23,9 @@ readers can resolve.
 
 ## Why this proposal exists
 
-Human-maintainer Otto-54: *"it might be benefitial to have multiple
+Human-maintainer Otto-54: _"it might be benefitial to have multiple
 backlog files one per swim lane/stream, you can alway use git to find
-hotspots in files... will help reduce merge issues i think."*
+hotspots in files... will help reduce merge issues i think."_
 
 The first-run git-hotspots audit landed in
 [`docs/hygiene-history/git-hotspots-2026-04-23.md`](../hygiene-history/git-hotspots-2026-04-23.md)
@@ -34,11 +34,11 @@ audit cadence as of this writing; the audit ran once at
 Otto-54 directive landing and the file is the durable
 record). It measured the claim:
 
-| file | touches | PRs |
-|---|---:|---:|
-| `docs/BACKLOG.md` | 34 | 26 |
-| `docs/ROUND-HISTORY.md` | 18 | 12 |
-| `memory/MEMORY.md` | 10 | 10 |
+| file                    | touches | PRs |
+| ----------------------- | ------: | --: |
+| `docs/BACKLOG.md`       |      34 |  26 |
+| `docs/ROUND-HISTORY.md` |      18 |  12 |
+| `memory/MEMORY.md`      |      10 |  10 |
 
 **`docs/BACKLOG.md` takes 34 touches across 26 PRs in 30 days —
 effectively one BACKLOG touch per PR opened.** It is the
@@ -48,7 +48,7 @@ sibling (observed on #207, #208, #210). The conflict shape is
 repetitive: different rows added in different PRs, both landing at
 the same trailing section, requiring manual reorder.
 
-The Otto-54 claim *"split would help reduce merge issues"* is
+The Otto-54 claim _"split would help reduce merge issues"_ is
 quantified by the hotspots data. This research doc picks the split
 axis + migration plan.
 
@@ -67,13 +67,13 @@ headings.
 Rough content taxonomy at section-heading level (best-effort
 categorisation; not authoritative):
 
-| Category | Section count (approx) | Content share |
-|---|---:|---:|
-| Tier-prefixed (P0/P1/P2/P3) | 15 | ~75 % |
-| Research-tier specific | 2 | ~10 % |
-| Skill-family / role-driven | 2 | ~5 % |
-| FACTORY-HYGIENE adjacent | 1 | ~5 % |
-| Declined / WONT-DO overlap | 1 | ~5 % |
+| Category                    | Section count (approx) | Content share |
+| --------------------------- | ---------------------: | ------------: |
+| Tier-prefixed (P0/P1/P2/P3) |                     15 |         ~75 % |
+| Research-tier specific      |                      2 |         ~10 % |
+| Skill-family / role-driven  |                      2 |          ~5 % |
+| FACTORY-HYGIENE adjacent    |                      1 |          ~5 % |
+| Declined / WONT-DO overlap  |                      1 |          ~5 % |
 
 Observed patterns that drive friction:
 
@@ -273,14 +273,14 @@ stream files directly.
 
 ## Risks + mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Row mis-classified at migration (stream wrong) | Migration PR opens for review; human maintainer + Kenji review classifications before merge |
-| Cross-stream rows duplicate or drift | Primary-stream owns; secondary-stream cross-refs via 1-line pointer row linking to primary |
-| INDEX.md itself becomes a hotspot | Likely low-churn (only updated on stream-level changes); measure 30 days post-migration |
-| Existing PRs conflict massively at migration | Mitigation = wait for quiet window (phase 1) |
-| Stream set evolves (new stream needed) | Split one stream file; the cost is a second migration but smaller |
-| Search (`grep -r "P0"` etc.) now returns per-file hits instead of one-file | Feature, not bug — per-stream hits carry more context |
+| Risk                                                                       | Mitigation                                                                                  |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Row mis-classified at migration (stream wrong)                             | Migration PR opens for review; human maintainer + Kenji review classifications before merge |
+| Cross-stream rows duplicate or drift                                       | Primary-stream owns; secondary-stream cross-refs via 1-line pointer row linking to primary  |
+| INDEX.md itself becomes a hotspot                                          | Likely low-churn (only updated on stream-level changes); measure 30 days post-migration     |
+| Existing PRs conflict massively at migration                               | Mitigation = wait for quiet window (phase 1)                                                |
+| Stream set evolves (new stream needed)                                     | Split one stream file; the cost is a second migration but smaller                           |
+| Search (`grep -r "P0"` etc.) now returns per-file hits instead of one-file | Feature, not bug — per-stream hits carry more context                                       |
 
 ---
 

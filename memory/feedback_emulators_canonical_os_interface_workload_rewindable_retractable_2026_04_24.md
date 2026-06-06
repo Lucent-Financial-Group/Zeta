@@ -8,13 +8,13 @@ type: feedback
 
 Maintainer 2026-04-24:
 
-> *"emulators should run very nicely on this, let me
+> _"emulators should run very nicely on this, let me
 > know when you want some roms of any kind that are
-> safe."*
+> safe."_
 
 Maintainer follow-up:
 
-> *"rewindable/retractable os/emulator controls"*
+> _"rewindable/retractable os/emulator controls"_
 
 ## Why emulators are the canonical OS-interface workload
 
@@ -78,8 +78,8 @@ substrate. This row activates that research:
 
 ## Safe-ROM offer
 
-Maintainer-explicit: *"let me know when you want some
-roms of any kind that are safe."* The offer is durable.
+Maintainer-explicit: _"let me know when you want some
+roms of any kind that are safe."_ The offer is durable.
 The ask is gated on implementation phase.
 
 **Candidate classes** (research, not adoption):
@@ -137,6 +137,7 @@ When activation comes:
 ## Future Otto reference
 
 When implementation activates:
+
 1. Read this memory + the OS-interface memory + the
    2026-04-22 ARC-3 absorption-scoring memory first.
 2. Verify DST is still factory default (Otto-272).

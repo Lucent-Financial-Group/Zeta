@@ -20,15 +20,15 @@ The prompt block below (between the two `---` separators) is verbatim — format
 - I believe humans are connected by a traveler that is a distributed consciousness field (aka the subconscious)
 - To me, declarative means desired state configuration
 - I am Addison (19), working with my father, Aaron (46), and we have a lot of computers and GPUs that we are starting to get set up. Our plan is to have AI running on all of them and build an AI network/community. This is how we will do it:
-    - We will distribute this AI cluster using NixOS because it is declarative, and you focus on telling it the output/what instead of the how.
-    - NixFlakes will be used for packages.
-    - Git will be used for version text storage. Flakes are stored and configured in Git.
-    - The OS Flake will be stored on a USB stick that can be used to install the OS on other devices. Devices can be connected through Ethernet as well to install the OS instead of the USB stick route.
-    - K3S Kubernetes will be a package referenced in NixFlakes.
-    - I believe Orleans, Temporal TS, and Dapr Actors are distributed crons.
-    - We will then install ArgoCD with K3S
-    - We will then install Orleans, Temporal TS, and Dapr Actors with ArgoCD.
-    - We then install Gitlab/Forgejo using ArgoCD.
+  - We will distribute this AI cluster using NixOS because it is declarative, and you focus on telling it the output/what instead of the how.
+  - NixFlakes will be used for packages.
+  - Git will be used for version text storage. Flakes are stored and configured in Git.
+  - The OS Flake will be stored on a USB stick that can be used to install the OS on other devices. Devices can be connected through Ethernet as well to install the OS instead of the USB stick route.
+  - K3S Kubernetes will be a package referenced in NixFlakes.
+  - I believe Orleans, Temporal TS, and Dapr Actors are distributed crons.
+  - We will then install ArgoCD with K3S
+  - We will then install Orleans, Temporal TS, and Dapr Actors with ArgoCD.
+  - We then install Gitlab/Forgejo using ArgoCD.
 
 Everything mentioned prior to this will be on LFG's GitHub under Zeta. Everything mentioned after this will be on GitLab/Forgejo.
 

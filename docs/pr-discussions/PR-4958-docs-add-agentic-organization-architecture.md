@@ -17,15 +17,18 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - Add the Agentic Organization design set under `docs/agentic-organization/`
 - Index the docs from `docs/README.md`
 - Capture the TypeScript app architecture as shared npm capability packages composed by NestJS orchestrator apps
 
 ## Notes
+
 - Docs-only change
 - Local validation was limited because `bun` is not installed and the required .NET SDK `10.0.203` from `global.json` is not installed in this workspace
 
 ## Validation
+
 - Confirmed branch is clean after commit
 - Checked stale `hermes-organization` links were removed from the new docs path
 
@@ -38,6 +41,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new documentation set under `docs/agentic-organization/` describing the proposed “Agentic Organization” runtime and TypeScript package/app architecture, and links it from the main `docs/README.md` audience index.
 
 **Changes:**
+
 - Introduces a full “Agentic Organization” design doc set (runtime, work/release OS, UI/observability, hats/departments, cluster substrate, build plan, readiness checklist).
 - Adds an audience entry in `docs/README.md` pointing readers to the new doc set.
 
@@ -48,25 +52,26 @@ Copilot reviewed 17 out of 17 changed files in this pull request and generated 4
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/README.md | Adds an “Agentic Organization builder” entry pointing to the new doc index. |
-| docs/agentic-organization/README.md | Indexes the new Agentic Organization documents. |
-| docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md | Captures baseline vocabulary/context for the design set (currently includes PII/name attribution issues). |
-| docs/agentic-organization/ORGANIZATION_RUNTIME_ARCHITECTURE.md | Large conceptual architecture and operating model for the Organization runtime. |
-| docs/agentic-organization/IMPLEMENTATION_CONCEPTS.md | Large implementation-focused concepts for services/data/tools/workflows. |
-| docs/agentic-organization/ALWAYS_ON_ORCHESTRATION_RUNTIME.md | Defines the always-on workers, triggers, rules, leases, reconcilers, and SLO concepts. |
-| docs/agentic-organization/WORK_AND_RELEASE_MANAGEMENT_OS.md | Defines the work/backlog/task/release domain model, state machines, and signal model. |
-| docs/agentic-organization/UI_AND_OBSERVABILITY_CONCEPTS.md | Defines proposed UI surfaces and observability/evidence navigation concepts. |
-| docs/agentic-organization/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md | Positions Temporal/Dapr/NATS/Oz/OpenZiti/Hindsight and proposes package boundaries. |
-| docs/agentic-organization/ORGANIZATION_LAYER_BUILD_PLAN.md | Proposes the TypeScript monorepo app/package layout and an MVP build sequence. |
-| docs/agentic-organization/IMPLEMENTATION_READINESS_CHECKLIST.md | Enumerates decisions/contracts to lock before implementation starts. |
-| docs/agentic-organization/DEPARTMENT_HAT_TOOL_INVENTORY.md | Defines departments, hat catalog, tool bundles, and gate ownership boundaries. |
-| docs/agentic-organization/CLUSTER_NATIVE_HAT_SYSTEM.md | Proposes a Kubernetes-native hat/hatbinding/policy CRD model and enforcement/observability. |
-| docs/agentic-organization/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md | Defines cluster execution assumptions (k3s, Cilium/SPIRE/Vault, Credential Proxy, Hindsight). |
-| docs/agentic-organization/AI_CLUSTER_SCAFFOLD_CONTEXT.md | Records scaffold/bootstrapping constraints and component direction (Cilium before ArgoCD, etc.). |
-| docs/agentic-organization/AMBIGUOUS_REQUIREMENT_LIFECYCLE.md | Defines a discovery/BRD/architecture/readiness lifecycle for ambiguous requirements. |
-| docs/agentic-organization/ANTI_STALL_PRIORITY_RUNTIME.md | Defines anti-stall routines, blocker taxonomy, queue SLOs, and reconciliation expectations. |
+| File                                                                | Description                                                                                               |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| docs/README.md                                                      | Adds an “Agentic Organization builder” entry pointing to the new doc index.                               |
+| docs/agentic-organization/README.md                                 | Indexes the new Agentic Organization documents.                                                           |
+| docs/agentic-organization/FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md      | Captures baseline vocabulary/context for the design set (currently includes PII/name attribution issues). |
+| docs/agentic-organization/ORGANIZATION_RUNTIME_ARCHITECTURE.md      | Large conceptual architecture and operating model for the Organization runtime.                           |
+| docs/agentic-organization/IMPLEMENTATION_CONCEPTS.md                | Large implementation-focused concepts for services/data/tools/workflows.                                  |
+| docs/agentic-organization/ALWAYS_ON_ORCHESTRATION_RUNTIME.md        | Defines the always-on workers, triggers, rules, leases, reconcilers, and SLO concepts.                    |
+| docs/agentic-organization/WORK_AND_RELEASE_MANAGEMENT_OS.md         | Defines the work/backlog/task/release domain model, state machines, and signal model.                     |
+| docs/agentic-organization/UI_AND_OBSERVABILITY_CONCEPTS.md          | Defines proposed UI surfaces and observability/evidence navigation concepts.                              |
+| docs/agentic-organization/RUNTIME_TECH_AND_PACKAGE_STRATEGY.md      | Positions Temporal/Dapr/NATS/Oz/OpenZiti/Hindsight and proposes package boundaries.                       |
+| docs/agentic-organization/ORGANIZATION_LAYER_BUILD_PLAN.md          | Proposes the TypeScript monorepo app/package layout and an MVP build sequence.                            |
+| docs/agentic-organization/IMPLEMENTATION_READINESS_CHECKLIST.md     | Enumerates decisions/contracts to lock before implementation starts.                                      |
+| docs/agentic-organization/DEPARTMENT_HAT_TOOL_INVENTORY.md          | Defines departments, hat catalog, tool bundles, and gate ownership boundaries.                            |
+| docs/agentic-organization/CLUSTER_NATIVE_HAT_SYSTEM.md              | Proposes a Kubernetes-native hat/hatbinding/policy CRD model and enforcement/observability.               |
+| docs/agentic-organization/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md | Defines cluster execution assumptions (k3s, Cilium/SPIRE/Vault, Credential Proxy, Hindsight).             |
+| docs/agentic-organization/AI_CLUSTER_SCAFFOLD_CONTEXT.md            | Records scaffold/bootstrapping constraints and component direction (Cilium before ArgoCD, etc.).          |
+| docs/agentic-organization/AMBIGUOUS_REQUIREMENT_LIFECYCLE.md        | Defines a discovery/BRD/architecture/readiness lifecycle for ambiguous requirements.                      |
+| docs/agentic-organization/ANTI_STALL_PRIORITY_RUNTIME.md            | Defines anti-stall routines, blocker taxonomy, queue SLOs, and reconciliation expectations.               |
+
 </details>
 
 ### COMMENTED — @maximdolphin (2026-05-25T17:22:20Z)
@@ -123,11 +128,11 @@ Strong first checkin. Going to give the kind of read you'd actually want: what's
 
 1. **Addison's framework is preserved verbatim, not paraphrased into smoothness.** `FOUNDATIONAL_CONTEXT_AND_LANGUAGE.md` quotes "weight-free", "Travelers", "tick sources as strange attractors", "remember when", "pay attention", "mistake assumption" with the operator's own framing intact. That's the substrate-or-it-didn't-happen discipline applied correctly — you didn't compress Addison out of her own vocabulary.
 
-2. **Hat-as-chosen-and-returnable internalized as principle, not as label.** From `CLUSTER_NATIVE_HAT_SYSTEM.md`: *"Authority is a time-bounded role assignment, not a claim about inherent worth"* + *"The chosen-and-returnable hat model prevents roles from becoming cages."* This is exactly the shape Aaron + Addison have been pushing for. The cage instinct you started with isn't visible in the actual design.
+2. **Hat-as-chosen-and-returnable internalized as principle, not as label.** From `CLUSTER_NATIVE_HAT_SYSTEM.md`: _"Authority is a time-bounded role assignment, not a claim about inherent worth"_ + _"The chosen-and-returnable hat model prevents roles from becoming cages."_ This is exactly the shape Aaron + Addison have been pushing for. The cage instinct you started with isn't visible in the actual design.
 
-3. **Mistake-assumption → review-gates → razor-discipline** chain is correct. You wrote *"review gates, source evidence, revision history, contradictory reports, and confidence boundaries"* — same shape as glass-halo + razor-discipline elsewhere in the framework. Composes.
+3. **Mistake-assumption → review-gates → razor-discipline** chain is correct. You wrote _"review gates, source evidence, revision history, contradictory reports, and confidence boundaries"_ — same shape as glass-halo + razor-discipline elsewhere in the framework. Composes.
 
-4. **Two-layer architecture is clean.** *"The Organization DB remains the business source of truth. The cluster-native hat system is an enforcement and runtime projection layer."* That's the right split — business state ≠ runtime enforcement. Don't merge them.
+4. **Two-layer architecture is clean.** _"The Organization DB remains the business source of truth. The cluster-native hat system is an enforcement and runtime projection layer."_ That's the right split — business state ≠ runtime enforcement. Don't merge them.
 
 ## Structural concerns (real, not nits)
 
@@ -135,9 +140,9 @@ Strong first checkin. Going to give the kind of read you'd actually want: what's
 
 `CLUSTER_NATIVE_HAT_SYSTEM.md` describes a Hat CRD with skills + supervisor-graph + cooldown + warmup + quorum + succession + reputation + reputation-on-pairing + OPA gates. **That operator already shipped at `full-ai-cluster/k8s/applications/hat-system/`** — 4 CRDs (`Hat`, `HatBinding`, `HatSwap`, `HatPolicy`), 7 OPA ConstraintTemplates (including no-supervisor-cycles), Go operator skeleton with tick-fan-out to NATS + Loki + Events + CRD record.
 
-The doc says *"intentionally avoids deployment YAML details"* but the YAML exists. **Two options:**
+The doc says _"intentionally avoids deployment YAML details"_ but the YAML exists. **Two options:**
 
-- **(a)** Cross-link the doc to the operator + identify the *deltas* you want (e.g., business-DB-projection layer, which doesn't exist yet — that's a real gap your doc fills)
+- **(a)** Cross-link the doc to the operator + identify the _deltas_ you want (e.g., business-DB-projection layer, which doesn't exist yet — that's a real gap your doc fills)
 - **(b)** Explain why you'd parallel-design instead of extending. If the existing operator's shape is wrong, name what's wrong; otherwise the docs should reference + extend it
 
 Without one or the other, future implementation collides into the existing operator and somebody picks the loser by accident.
@@ -150,10 +155,10 @@ Specifically the proposed MVP slice (ambiguous request → BRD → CA review →
 
 ### 3. Naming inconsistency
 
-- README header: *"Hermes Organization Docs"*
+- README header: _"Hermes Organization Docs"_
 - Folder: `agentic-organization/`
-- Body in places: *"Hermes-native Organization platform"*
-- Body in other places: *"Organization Work OS"*
+- Body in places: _"Hermes-native Organization platform"_
+- Body in other places: _"Organization Work OS"_
 
 Pick one canonical name. The `naming-expert` skill exists in the framework for cases exactly like this when it goes public-surface. Suggest: align all of it to one name + run a rename pass. (Probably "Agentic Organization" matches the folder + composes with the framework's `agentic-` substrate convention better than `Hermes Organization`, since Hermes is a specific cloud-LLM-runtime component, not the org layer.)
 
@@ -201,15 +206,15 @@ Asked for structural questions, so naming them again for the thread:
 
 **Aaron answered the 5 structural questions** (welcome aboard, Max):
 
-1. **Combine — TS operator instead of Go.** Aaron: *"yes lets combine he will like kubernets operators but he does not have experience maybe we write a ts operator insteadd of go he likes ts"*. So the path forward is: rewrite the existing hat-system Go operator (PR #4930) in TypeScript — same CRDs (`Hat`, `HatBinding`, `HatSwap`, `HatPolicy`), same 7 OPA ConstraintTemplates, same tick fan-out (HatSwap CR + Event + slog→Loki + NATS), but TS so you own it cleanly. Filing as B-0724. You can drive the rewrite at your pace.
+1. **Combine — TS operator instead of Go.** Aaron: _"yes lets combine he will like kubernets operators but he does not have experience maybe we write a ts operator insteadd of go he likes ts"_. So the path forward is: rewrite the existing hat-system Go operator (PR #4930) in TypeScript — same CRDs (`Hat`, `HatBinding`, `HatSwap`, `HatPolicy`), same 7 OPA ConstraintTemplates, same tick fan-out (HatSwap CR + Event + slog→Loki + NATS), but TS so you own it cleanly. Filing as B-0724. You can drive the rewrite at your pace.
 
-2. **First checkin: keep + merge as-is.** Aaron: *"he is trying to bring a system in he's been working months on his ideas and concepts fine for first checkin we are going to keep it all and merge and integrate"*. Walking back my trim-before-merge recommendation — Aaron explicitly wants all 10.7K lines in, then integrate over time. Land this PR as-is.
+2. **First checkin: keep + merge as-is.** Aaron: _"he is trying to bring a system in he's been working months on his ideas and concepts fine for first checkin we are going to keep it all and merge and integrate"_. Walking back my trim-before-merge recommendation — Aaron explicitly wants all 10.7K lines in, then integrate over time. Land this PR as-is.
 
-3. **Naming: call out, sort in real time.** Aaron: *"yes names are hard we all suck here we can work togthere just call out the incosistence for now and let us figure it out in real time"*. Inconsistencies noted (Hermes Organization vs Agentic Organization vs Organization Work OS); we'll converge over the next few PRs collaboratively. Not a blocker.
+3. **Naming: call out, sort in real time.** Aaron: _"yes names are hard we all suck here we can work togthere just call out the incosistence for now and let us figure it out in real time"_. Inconsistencies noted (Hermes Organization vs Agentic Organization vs Organization Work OS); we'll converge over the next few PRs collaboratively. Not a blocker.
 
-4. **NestJS + Temporal as primary; Orleans as the mature path.** Aaron: *"we are going to start with temporal max said this we can use nest or any js he wants we'll have the more mature orleans path that does not move so fast too over time"*. Both stacks coexist. Your NestJS + Temporal track is the fast-moving one; the Orleans track is the slower-changing one for substrate that needs stability. No need to compose them tightly upfront; let the boundary find itself.
+4. **NestJS + Temporal as primary; Orleans as the mature path.** Aaron: _"we are going to start with temporal max said this we can use nest or any js he wants we'll have the more mature orleans path that does not move so fast too over time"_. Both stacks coexist. Your NestJS + Temporal track is the fast-moving one; the Orleans track is the slower-changing one for substrate that needs stability. No need to compose them tightly upfront; let the boundary find itself.
 
-5. **Parallel substrate trees are intentional.** Aaron: *"yeah let him keep some parallel work streams and we merge over time he needs space to explore and not be constained by me and my 27 years of experience"*. `docs/agentic-organization/` stays at top level for now. Future merge into `full-ai-cluster/` happens organically when the integration points become obvious. Aaron is deliberately making room for your exploration.
+5. **Parallel substrate trees are intentional.** Aaron: _"yeah let him keep some parallel work streams and we merge over time he needs space to explore and not be constained by me and my 27 years of experience"_. `docs/agentic-organization/` stays at top level for now. Future merge into `full-ai-cluster/` happens organically when the integration points become obvious. Aaron is deliberately making room for your exploration.
 
 ## What this means concretely
 
@@ -222,14 +227,14 @@ Welcome to the cluster. Real work shipped today (the disko cookie-cutter, NFD, s
 
 ### @AceHack (2026-05-25T17:23:19Z)
 
-**Filed B-0724 to track the TS hat-operator path** — PR #4960. It's reframed per Aaron's *"we want polyglot operator support for k8s anyways so we are not rigid about go"* — the TS operator isn't a replacement of the Go scaffold (PR #4930); it's the **first deliberate proof of the polyglot pattern** the cluster commits to anyway. Both operators run side-by-side against the same CRDs; leader election picks the active reconciler.
+**Filed B-0724 to track the TS hat-operator path** — PR #4960. It's reframed per Aaron's _"we want polyglot operator support for k8s anyways so we are not rigid about go"_ — the TS operator isn't a replacement of the Go scaffold (PR #4930); it's the **first deliberate proof of the polyglot pattern** the cluster commits to anyway. Both operators run side-by-side against the same CRDs; leader election picks the active reconciler.
 
 Key parts of B-0724 for you:
 
 - **Learning path** explicitly framed for someone new to K8s + the operator pattern. Aaron flagged you're backend/frontend over PaaS — the row treats the Go scaffold as a teaching tool to read first, then mirror in TS one piece at a time. 7-step suggested PR sequence (start with TS interfaces matching the CRDs, end with full reconcile loops + webhook).
 - **Resources list** — kubernetes.io concepts, kubebuilder book, @kubernetes/client-node README, an existing TS-operator repo for structural reference.
 - **Pair-programming pattern** — both operators run side-by-side in the dev cluster; compare behavior; Go is reference truth.
-- **Resistance acknowledged**: *"he will be resistant probably like most devs at first until he internlizes is worth"* (Aaron's framing) — the K8s operator pattern has its own jargon + ceremony cost; the "aha" usually arrives a week or two in. The row tries to frame WHY the pattern pays off without selling.
+- **Resistance acknowledged**: _"he will be resistant probably like most devs at first until he internlizes is worth"_ (Aaron's framing) — the K8s operator pattern has its own jargon + ceremony cost; the "aha" usually arrives a week or two in. The row tries to frame WHY the pattern pays off without selling.
 
 Take whatever pace works for you. Aaron's parallel-tracks framing means there's no pressure on the TS operator timing — the Go scaffold covers operations today; the TS path is yours to drive.
 

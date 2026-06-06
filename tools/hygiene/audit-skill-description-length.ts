@@ -67,7 +67,11 @@ export function parseFrontmatterDescription(text: string): DescriptionField | nu
     collected.push(l);
   }
   const multiline = collected.length > 1;
-  const value = collected.join(" ").replace(/\s+/g, " ").trim().replace(/^["']|["']$/g, "");
+  const value = collected
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^["']|["']$/g, "");
   return { value, multiline };
 }
 
@@ -140,9 +144,7 @@ if (import.meta.main) {
   for (const v of errors) process.stderr.write(`ERROR  ${v.skill}: ${v.message}\n`);
   for (const v of warns) process.stderr.write(`warn   ${v.skill}: ${v.message}\n`);
 
-  process.stderr.write(
-    `\nchecked ${checked} skill descriptions; ${errors.length} errors, ${warns.length} warnings\n`,
-  );
+  process.stderr.write(`\nchecked ${checked} skill descriptions; ${errors.length} errors, ${warns.length} warnings\n`);
 
   if (errors.length > 0) {
     process.stderr.write(

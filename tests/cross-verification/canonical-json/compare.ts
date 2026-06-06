@@ -13,10 +13,16 @@
 // (8.8); cross-language agreement here is the byte-lock, not a TS-vs-TS tautology.
 import { readFileSync } from "fs";
 
-interface CanonVec { id: string; expected_canonical_json: string; }
-interface InvalidVec { id: string; }
+interface CanonVec {
+  id: string;
+  expected_canonical_json: string;
+}
+interface InvalidVec {
+  id: string;
+}
 const vec = JSON.parse(readFileSync("vectors.json", "utf8")) as {
-  canonical: CanonVec[]; invalid: InvalidVec[];
+  canonical: CanonVec[];
+  invalid: InvalidVec[];
 };
 
 const expected = new Map<string, string>();
@@ -25,7 +31,11 @@ for (const c of vec.invalid) expected.set(`invalid:${c.id}`, "<rejected>");
 const expKeys = [...expected.keys()].sort();
 
 function load(file: string): Record<string, string> | null {
-  try { return JSON.parse(readFileSync(file, "utf8")) as Record<string, string>; } catch { return null; }
+  try {
+    return JSON.parse(readFileSync(file, "utf8")) as Record<string, string>;
+  } catch {
+    return null;
+  }
 }
 const impls: Array<[string, Record<string, string> | null]> = [
   ["TS", load("ts-output.json")],
@@ -39,9 +49,15 @@ console.log("canonical-json cross-verification:");
 for (const [name, impl] of impls) console.log(`  ${name}: ${impl ? `${Object.keys(impl).length} results` : "MISSING"}`);
 
 // TS is the committed reference oracle and must be present.
-if (!impls[0]![1]) { console.error("ts-output.json MISSING — the TS reference oracle is required"); process.exit(1); }
+if (!impls[0]![1]) {
+  console.error("ts-output.json MISSING — the TS reference oracle is required");
+  process.exit(1);
+}
 // At least one non-TS oracle must be present, else the "cross-language" lock is vacuous.
-if (!impls.slice(1).some(([, impl]) => impl)) { console.error("no non-TS oracle present — cross-language byte-lock is vacuous"); process.exit(1); }
+if (!impls.slice(1).some(([, impl]) => impl)) {
+  console.error("no non-TS oracle present — cross-language byte-lock is vacuous");
+  process.exit(1);
+}
 
 for (const [name, impl] of impls) {
   if (!impl) continue;
@@ -59,7 +75,10 @@ for (const [name, impl] of impls) {
 }
 
 if (mismatches === 0) {
-  const present = impls.filter(([, i]) => i).map(([n]) => n).join("+");
+  const present = impls
+    .filter(([, i]) => i)
+    .map(([n]) => n)
+    .join("+");
   console.log(`All present implementations (${present}) agree on ${expected.size} vectors.`);
   process.exit(0);
 } else {

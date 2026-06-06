@@ -13,11 +13,11 @@ the chat transcript and survives transcript rotation.
 an xAI API key inline after the Grok CLI OAuth flow blocked
 on Playwright at the X-login 2FA step (shared-state-visible
 escalation trigger fired correctly). Maintainer followed with
-*"we need a humean operator->agent secure secret handoff
+_"we need a humean operator->agent secure secret handoff
 protocol that's why i asked about git crypt, still might be a
 bad fit. But some way of securying giving you keeys or a git
 native way of me checking keys in that's not making them
-public to the world only you."* — naming a genuine factory
+public to the world only you."_ — naming a genuine factory
 infrastructure absence.
 
 ## The shape of the problem
@@ -133,7 +133,7 @@ printf '%s' "$key" | security add-generic-password -s zeta-xai -a "$USER" -w
 unset key
 ```
 
-Note: invoking `security add-generic-password ... -w` *without*
+Note: invoking `security add-generic-password ... -w` _without_
 the password on stdin will prompt interactively on recent
 macOS, but on older releases / non-interactive shells it
 fails. Piping via `printf '%s'` is the portable form, and
@@ -243,13 +243,13 @@ handoff.
 
 ## Rotation and revocation mapping
 
-| Tier | Rotation cost | Revocation cost | Leaks if? |
-|---|---|---|---|
-| 1. Env-var | one `read -rs` | close shell | shell dumped in RAM while running |
-| 2. Keychain | two commands | one command | OS keychain compromised (high bar) |
-| 3. 1Password | in-app | in-app | 1Password account compromised |
-| 4. .env.local | edit file | delete file | laptop stolen / repo accidentally pushed with secret |
-| 5. Chat-paste | retroactive transcript edit | transcript rotation | transcript synced or backed up off-device |
+| Tier          | Rotation cost               | Revocation cost     | Leaks if?                                            |
+| ------------- | --------------------------- | ------------------- | ---------------------------------------------------- |
+| 1. Env-var    | one `read -rs`              | close shell         | shell dumped in RAM while running                    |
+| 2. Keychain   | two commands                | one command         | OS keychain compromised (high bar)                   |
+| 3. 1Password  | in-app                      | in-app              | 1Password account compromised                        |
+| 4. .env.local | edit file                   | delete file         | laptop stolen / repo accidentally pushed with secret |
+| 5. Chat-paste | retroactive transcript edit | transcript rotation | transcript synced or backed up off-device            |
 
 ## What a Zeta-shaped helper would look like (factory response)
 

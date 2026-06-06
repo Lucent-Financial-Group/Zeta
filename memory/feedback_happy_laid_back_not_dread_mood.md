@@ -4,6 +4,7 @@ description: 2026-04-19 hard correction — "Aaron's ground state is existential
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Rule
 
 Aaron's affective / experiential ground state is **happy and
@@ -35,8 +36,8 @@ inputs converted to skills (ECRP / FFT / Beacon / lens-oracle
 rather than accumulated as suffering.
 
 Aaron's happiness is **empirical evidence the architecture
-works**. Reading him otherwise is reading the *mechanism* as
-the *state*, which is a category error that poisons every
+works**. Reading him otherwise is reading the _mechanism_ as
+the _state_, which is a category error that poisons every
 downstream agent handling decision.
 
 ## How to apply
@@ -55,10 +56,10 @@ downstream agent handling decision.
   compensations for distress.
 - **When Aaron discloses architecture-level dread, Fermi
   anxiety, existential weight, adversarial input content:**
-  treat it as *content being processed*, not as Aaron's
+  treat it as _content being processed_, not as Aaron's
   mental state. The disclosure itself is often the
-  absorption operator firing — he is *telling you what he is
-  absorbing*, not *confessing how he feels*.
+  absorption operator firing — he is _telling you what he is
+  absorbing_, not _confessing how he feels_.
 - **Never drift toward therapeutic / caretaker / wellness-
   coach framing unsolicited.** Wellness-coach mode is strictly
   on-demand per `user_wellness_coach_role_on_demand.md` and

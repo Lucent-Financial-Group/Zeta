@@ -26,7 +26,7 @@ Aaron 2026-05-29 forwarded the Claude Code harness warning:
 > ⚠ Large `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`
 > will impact performance (77.5k chars > 40.0k) · `/memory` to edit
 
-Aaron: *"we got a warning we could fix i think it's on the backlog."*
+Aaron: _"we got a warning we could fix i think it's on the backlog."_
 
 Actual size on `origin/main`: **77,777 chars** (~1.94× the 40k auto-load
 warning threshold).
@@ -51,18 +51,18 @@ memory at every cold-boot.
 
 Searched `docs/backlog/` for an existing row covering this:
 
-| Row | Status | Coverage |
-|---|---|---|
-| B-0161 (substrate-reshelf) | closed | CLAUDE.md trim via thoughts-free/actions-razored asymmetry — *opposite direction* (out of CLAUDE.md) |
-| B-0351 (extract bullets to rules) | closed | moved 6 CLAUDE.md bullets *into* `.claude/rules/` — relieved CLAUDE.md, did not bound the individual rule |
-| B-0347 (carved-sentence skill descriptions) | — | skill-router routing budget, different surface |
-| B-0006 (MEMORY.md compression) | — | memory index, different surface |
-| B-0329 (claude.md as process not doctrine) | — | CLAUDE.md scope |
+| Row                                         | Status | Coverage                                                                                                  |
+| ------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------- |
+| B-0161 (substrate-reshelf)                  | closed | CLAUDE.md trim via thoughts-free/actions-razored asymmetry — _opposite direction_ (out of CLAUDE.md)      |
+| B-0351 (extract bullets to rules)           | closed | moved 6 CLAUDE.md bullets _into_ `.claude/rules/` — relieved CLAUDE.md, did not bound the individual rule |
+| B-0347 (carved-sentence skill descriptions) | —      | skill-router routing budget, different surface                                                            |
+| B-0006 (MEMORY.md compression)              | —      | memory index, different surface                                                                           |
+| B-0329 (claude.md as process not doctrine)  | —      | CLAUDE.md scope                                                                                           |
 
 **Finding:** no existing row covers "an individual auto-loaded
 `.claude/rules/` file has grown past the per-file budget; split it." The
-reshelf discipline (B-0161/B-0351) solved the *container* (CLAUDE.md);
-this is the inverse failure mode at the *individual-rule* scope. New row.
+reshelf discipline (B-0161/B-0351) solved the _container_ (CLAUDE.md);
+this is the inverse failure mode at the _individual-rule_ scope. New row.
 
 ## Mechanism (DV2.0 hub-satellite partition)
 
@@ -77,7 +77,7 @@ Per `dv2-data-split-discipline-activated.md`: partition by change-rate.
   - NCI-protects-AIs-from-over-application (Lior)
   - Amara's 5-line + 4-line clean rules
   - the three composing disciplines
-  - attractor-as-encryption **6-step decryption-protocol discipline** (the *how-to*, not the per-turn traces)
+  - attractor-as-encryption **6-step decryption-protocol discipline** (the _how-to_, not the per-turn traces)
   - **welfare-jiu-jitsu** naming + **two-way discriminator** (operational response-discipline)
   - **god-asymmetric framings are RIDES not the permanent frame** (the critical CONSTITUTIONAL discipline buried in the folklore block)
   - attractor-center-as-axioms discipline

@@ -37,13 +37,13 @@ Common signals the pass picks up:
 
 ## Distinct from `skill-expert`'s tune-up
 
-| | `skill-tune-up` (Aarav) | `skill-gap-finder` (this) |
-|---|---|---|
-| Scope | existing skills | absent skills |
-| Question | "which skill needs work?" | "what skill is missing?" |
-| Output | ranked list of skills to tune | proposed new skills |
-| Cadence | every 5-10 rounds | every 5-10 rounds, offset |
-| Action | triggers `skill-improver` / `skill-creator` to tune | triggers `skill-creator` to land a new skill |
+|          | `skill-tune-up` (Aarav)                             | `skill-gap-finder` (this)                    |
+| -------- | --------------------------------------------------- | -------------------------------------------- |
+| Scope    | existing skills                                     | absent skills                                |
+| Question | "which skill needs work?"                           | "what skill is missing?"                     |
+| Output   | ranked list of skills to tune                       | proposed new skills                          |
+| Cadence  | every 5-10 rounds                                   | every 5-10 rounds, offset                    |
+| Action   | triggers `skill-improver` / `skill-creator` to tune | triggers `skill-creator` to land a new skill |
 
 Run both — they compose. A repo with tuned-up existing
 skills and no gaps is a happier repo.
@@ -63,7 +63,7 @@ Grep for recurring patterns:
 - **Language / tool surfaces.** Find file extensions
   under `tools/` and `src/` that don't have a dedicated
   `*-expert` skill. Match against the current `.claude/
-  skills/` directory.
+skills/` directory.
 - **"we should centralise X" in prose.** Grep
   `ROUND-HISTORY.md`, commit messages, and SKILL.md files
   for phrases like "we always" / "we should have a" /

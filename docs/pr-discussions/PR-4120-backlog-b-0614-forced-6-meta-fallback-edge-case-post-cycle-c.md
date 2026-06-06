@@ -20,7 +20,7 @@ Files a small P3 backlog row at [docs/backlog/P3/B-0614-...md](../backlog/P3/B-0
 
 ## Observation
 
-After the substantive sub-session that shipped 6 PRs (including [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110), the just-merged "pre-empt-substrate-pool-saturation" anchor), a *second* post-cycle-close brief-ack chain reached forced-#6 with NO non-fabricated substrate left to add.
+After the substantive sub-session that shipped 6 PRs (including [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110), the just-merged "pre-empt-substrate-pool-saturation" anchor), a _second_ post-cycle-close brief-ack chain reached forced-#6 with NO non-fabricated substrate left to add.
 
 The prescribed meta-fallback ("sharpen this rule with current session's evidence") would produce:
 
@@ -51,6 +51,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds backlog item B-0614 to track a forced-#6 meta-fallback edge case and updates the generated backlog index accordingly.
 
 **Changes:**
+
 - Adds a P3 backlog row documenting the empirical edge case and deferred acceptance criteria.
 - Adds B-0614 to the generated `docs/BACKLOG.md` P3 section.
 
@@ -58,10 +59,10 @@ Adds backlog item B-0614 to track a forced-#6 meta-fallback edge case and update
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                 | Description                                                                     |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | `docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md` | New backlog row capturing the forced-#6 meta-fallback saturation investigation. |
-| `docs/BACKLOG.md` | Generated backlog index entry for B-0614. |
+| `docs/BACKLOG.md`                                                                                    | Generated backlog index entry for B-0614.                                       |
 
 ## Review threads
 

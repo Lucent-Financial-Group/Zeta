@@ -325,7 +325,9 @@ function findCommandEffectConflict(
   }
 
   for (const statusTransition of effects.contextPackInboxAnchorStatusTransitions ?? []) {
-    if (!hasContextPackInboxAnchorForStatusTransition(snapshot, effects.contextPackInboxAnchors ?? [], statusTransition)) {
+    if (
+      !hasContextPackInboxAnchorForStatusTransition(snapshot, effects.contextPackInboxAnchors ?? [], statusTransition)
+    ) {
       return CommandOutcomeEffectConflictReason.ContextPackInboxAnchorMissing;
     }
   }
@@ -338,8 +340,8 @@ function applyContextPackInboxAnchorStatusTransitions(
   statusTransitions: readonly ContextPackInboxAnchorStatusTransition[],
 ): void {
   for (const statusTransition of statusTransitions) {
-    const inboxAnchorIndex = snapshot.contextPackInboxAnchors.findIndex(
-      (inboxAnchor) => contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
+    const inboxAnchorIndex = snapshot.contextPackInboxAnchors.findIndex((inboxAnchor) =>
+      contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
     );
     const inboxAnchor = snapshot.contextPackInboxAnchors[inboxAnchorIndex];
 
@@ -359,31 +361,32 @@ function hasContextPackInboxAnchorForStatusTransition(
   createdInboxAnchors: readonly ContextPackInboxAnchor[],
   statusTransition: ContextPackInboxAnchorStatusTransition,
 ): boolean {
-  return snapshot.contextPackInboxAnchors.some(
-    (inboxAnchor) => contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
-  ) ||
-    createdInboxAnchors.some(
-      (inboxAnchor) => contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
-    );
+  return (
+    snapshot.contextPackInboxAnchors.some((inboxAnchor) =>
+      contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
+    ) ||
+    createdInboxAnchors.some((inboxAnchor) =>
+      contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
+    )
+  );
 }
 
 function contextPackInboxAnchorMatchesStatusTransition(
   inboxAnchor: ContextPackInboxAnchor,
   statusTransition: ContextPackInboxAnchorStatusTransition,
 ): boolean {
-  return inboxAnchor.inboxAnchorId === statusTransition.inboxAnchorId &&
+  return (
+    inboxAnchor.inboxAnchorId === statusTransition.inboxAnchorId &&
     inboxAnchor.organizationId === statusTransition.organizationId &&
     inboxAnchor.projectId === statusTransition.projectId &&
     optionalScopeValueMatchesStrict(inboxAnchor.teamId, statusTransition.teamId) &&
     optionalScopeValueMatchesStrict(inboxAnchor.workItemId, statusTransition.workItemId) &&
     inboxAnchor.targetHatAssignmentId === statusTransition.targetHatAssignmentId &&
-    optionalScopeValueMatchesStrict(inboxAnchor.targetAgentId, statusTransition.targetAgentId);
+    optionalScopeValueMatchesStrict(inboxAnchor.targetAgentId, statusTransition.targetAgentId)
+  );
 }
 
-function optionalScopeValueMatchesStrict(
-  left: string | undefined,
-  right: string | undefined,
-): boolean {
+function optionalScopeValueMatchesStrict(left: string | undefined, right: string | undefined): boolean {
   return left === right;
 }
 
@@ -451,7 +454,9 @@ function assertUniqueRecord<Record>(records: readonly Record[], hasMatchingId: (
   }
 }
 
-function throwWorkAnchorPersistenceConflict(result: Extract<WorkAnchorPersistenceResult, { status: "conflict" }>): never {
+function throwWorkAnchorPersistenceConflict(
+  result: Extract<WorkAnchorPersistenceResult, { status: "conflict" }>,
+): never {
   throwWorkAnchorConflict(result.reason);
 }
 
@@ -471,7 +476,9 @@ class InMemoryWorkAnchorEffectConflictError extends Error {
 function cloneIdempotencyRecords<Result>(
   records: ReadonlyMap<string, IdempotencyRecord<Result>>,
 ): Map<string, IdempotencyRecord<Result>> {
-  return new Map(Array.from(records.entries()).map(([idempotencyKey, record]) => [idempotencyKey, cloneRecord(record)]));
+  return new Map(
+    Array.from(records.entries()).map(([idempotencyKey, record]) => [idempotencyKey, cloneRecord(record)]),
+  );
 }
 
 function cloneRecord<Record>(record: Record): Record {

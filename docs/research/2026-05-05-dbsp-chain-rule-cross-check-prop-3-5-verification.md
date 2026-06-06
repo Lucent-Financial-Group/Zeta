@@ -49,7 +49,7 @@ D (f (x) g) s = D f (x) g . I . z^-1 + f (x) D g - D f . z^-1 (x) D g . z^-1
 ```
 
 (ASCII transcription; the Lean source uses the (x), ., z^-1 glyphs.)
-Specialised to a *composition* of operators over a single Z-set-
+Specialised to a _composition_ of operators over a single Z-set-
 valued stream -- the form the round-35 commentary calls the
 "expanded bilinear" eight-term shape -- the round-34-and-earlier
 Lean text reduced this pointwise to:
@@ -107,6 +107,7 @@ Dop (id . id) s n
 ```
 
 At n=0:
+
 - `s 0 = delta_0 0 = 1`
 - `zInv s 0 = 0` (by `zInv_zero`)
 
@@ -148,7 +149,7 @@ Compute the inner stream `t := g (I (z^-1 s)) = I (z^-1 s)`:
 Now each summand at n = 0:
 
 1. `(D f (g (I (z^-1 s)))) 0 = D(t) 0 = t 0 - zInv t 0
-                              = 0 - 0 = 0`
+                          = 0 - 0 = 0`
 2. `(f (g (I (z^-1 s)))) 0 = id(id(t)) 0 = t 0 = 0`
 3. `(D g (I (z^-1 s))) 0 = D(t) 0 = 0` (same shape as term 1
    since g = id, so `g (I (z^-1 s)) = t`)
@@ -200,8 +201,8 @@ Lean file line 51 (under "Round-35 landmarks"):
 Proof-log lines 113-115 (under "B2 -- the algebra-contract
 wall"):
 
-> "B2 is the statement that linear stream operators *commute
-> with delay*. At the DBSP paper level this is smuggled in as a
+> "B2 is the statement that linear stream operators _commute
+> with delay_. At the DBSP paper level this is smuggled in as a
 > convention (Budiu et al. Proposition 3.5 uses it without
 > naming it); in Lean it must be an explicit part of the
 > contract."
@@ -240,16 +241,17 @@ as `Q^Delta := D . Q . I`."
 
 **Proposition 3.2.** "(Properties of the incremental version):
 For computations of appropriate types, the following hold:
+
 - **inversion:** `Q -> Q^Delta` is bijective; its inverse is
   `Q -> I . Q . D`.
 - **invariance:** `+^Delta = +, (z^-1)^Delta = z^-1, -^Delta = -, I^Delta = I,
-  D^Delta = D`
+D^Delta = D`
 - **push/pull:** `Q . I = I . Q^Delta; D . Q = Q^Delta . D`
 - **chain:** `(Q1 . Q2)^Delta = Q1^Delta . Q2^Delta` (This generalizes to
   operators with multiple inputs.)
 - **add:** `(Q1 + Q2)^Delta = Q1^Delta + Q2^Delta`
 - **cycle:** `(lambdas.fix alpha.T(s, z^-1(alpha)))^Delta = lambdas.fix alpha.T^Delta(s,
-  z^-1(alpha))`"
+z^-1(alpha))`"
 
 **Theorem 3.3 (Linear).** "For an LTI operator Q we have
 `Q^Delta = Q`."
@@ -286,8 +288,8 @@ prose meant to cite:
 1. **Theorem 3.3** ("For an LTI operator Q we have `Q^Delta = Q`")
    does carry an LTI precondition explicitly, in the theorem
    statement itself. "LTI" in the paper's vocabulary
-   (Definition 2.6 + Definition 2.12) means *linear* AND *time-
-   invariant*, where time-invariance is `S(z^-1(s)) = z^-1(S(s))`
+   (Definition 2.6 + Definition 2.12) means _linear_ AND _time-
+   invariant_, where time-invariance is `S(z^-1(s)) = z^-1(S(s))`
    per Definition 2.6 -- exactly the property the Lean file
    bundles into `IsTimeInvariant`. So Theorem 3.3's precondition
    is **explicit**, not implicit, contradicting the round-35
@@ -300,7 +302,7 @@ prose meant to cite:
    Time-invariance is again explicit, not implicit.
 
 The round-35 prose's specific claim -- "Budiu et al. Prop. 3.5"
-as the canonical citation for an *unspoken* time-invariance
+as the canonical citation for an _unspoken_ time-invariance
 premise -- is **not supported by either version of the paper**.
 Both candidate paper objects (Theorem 3.3 and Proposition 2.16)
 state their time-invariance precondition in the proposition's
@@ -315,7 +317,7 @@ predicate matches the paper's split of "linear" (Def 2.12) from
 "time-invariant" (Def 2.6) and bundling them together as "LTI"
 exactly when both are needed (Theorem 3.3, Theorem 3.4).
 
-The misattribution is in the *citation*, not the resolution.
+The misattribution is in the _citation_, not the resolution.
 Two layers of confusion compose:
 
 - The round-35 commentary cites "Prop 3.5" as if such a numbered
@@ -336,7 +338,7 @@ The structural insight -- that `IsLinear` alone does not force
 delay-commutation, so a separate `IsTimeInvariant` predicate
 is required to close B2 -- remains correct and is supported by
 the paper's own split of LTI into Linear (Def 2.12) and
-Time-invariant (Def 2.6), where the paper *always* uses the
+Time-invariant (Def 2.6), where the paper _always_ uses the
 combined "LTI" qualifier (Theorem 3.3, Proposition 2.14, Lemma
 2.10) precisely when both are needed.
 
@@ -381,7 +383,7 @@ needs both linearity and time-invariance.
 
 The Lean-side decision (split `IsLinear` from `IsTimeInvariant`,
 combine them at the call site) remains correct and well-
-motivated; it is *more careful* than the paper's casual "LTI"
+motivated; it is _more careful_ than the paper's casual "LTI"
 shorthand requires, which is appropriate for a formalisation.
 The misattribution affects only the prose justification, not
 the proof state.
@@ -433,8 +435,8 @@ is a story about **Zeta's own formalisation discipline**, not
 about a defect in the published DBSP paper.
 
 **Prop 3.5 misattribution (Finding 2)** is a different
-character of finding -- it is a *pure citation error in Zeta's
-internal substrate*, not a finding about the paper. The paper
+character of finding -- it is a _pure citation error in Zeta's
+internal substrate_, not a finding about the paper. The paper
 is not wrong; the Lean prose's citation of the paper is wrong.
 This belongs as a **factory-internal cleanup** (edit the Lean
 file's header and the proof log to drop or correct the
@@ -473,8 +475,8 @@ has a substrate to point at.
 - Lean source: `tools/lean4/Lean4/DbspChainRule.lean`
 - Round-35 proof log: `docs/research/chain-rule-proof-log.md`
 - Paper (VLDB 2023): Budiu, Chajed, McSherry, Ryzhyk, Tannen,
-  *DBSP: Automatic Incremental View Maintenance for Rich Query
-  Languages*. VLDB 16(7):1601-1614, 2023. DOI
+  _DBSP: Automatic Incremental View Maintenance for Rich Query
+  Languages_. VLDB 16(7):1601-1614, 2023. DOI
   10.14778/3587116.3587137.
 - Paper (arXiv preprint v1, 2022-03-30): Budiu, McSherry,
   Ryzhyk, Tannen, arXiv:2203.16684v1. (Note the v1 author list

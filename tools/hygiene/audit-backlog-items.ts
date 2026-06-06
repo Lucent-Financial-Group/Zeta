@@ -65,20 +65,14 @@ interface SpawnResult {
   readonly exitCode: number;
 }
 
-async function runCmd(
-  cmd: readonly string[],
-  cwd: string = REPO_ROOT,
-): Promise<SpawnResult> {
+async function runCmd(cmd: readonly string[], cwd: string = REPO_ROOT): Promise<SpawnResult> {
   const proc = Bun.spawn({
     cmd: [...cmd],
     cwd,
     stdout: "pipe",
     stderr: "pipe",
   });
-  const [stdout, stderr] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-  ]);
+  const [stdout, stderr] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
   const exitCode = await proc.exited;
   return { stdout, stderr, exitCode };
 }
@@ -242,13 +236,7 @@ function loadBacklog(): BacklogRow[] {
   return rows;
 }
 
-const CLOSED_STATUSES = new Set([
-  "closed",
-  "landed",
-  "superseded",
-  "merged",
-  "done",
-]);
+const CLOSED_STATUSES = new Set(["closed", "landed", "superseded", "merged", "done"]);
 
 function toEpoch(d: string): number | null {
   if (d.length === 0 || d === "unknown") return null;
@@ -314,19 +302,14 @@ function buildAgedRows(rows: readonly BacklogRow[], nowEpoch: number): AgedRow[]
 }
 
 function reportAging(aged: readonly AgedRow[]): void {
-  console.log(
-    "## 2. Aging open rows by tier (status open and not closed/landed/superseded)",
-  );
+  console.log("## 2. Aging open rows by tier (status open and not closed/landed/superseded)");
   console.log("");
   for (const bucket of [30, 60, 90]) {
     console.log(`### Open rows older than ${bucket} days`);
     const matches = aged.filter((a) => a.ageDays > bucket);
     console.log(`  Count: ${matches.length}`);
     const lines = matches
-      .map(
-        (a) =>
-          `  - [${a.tier}][${a.id}] ${a.created} (${a.ageDays}d, status=${a.status})`,
-      )
+      .map((a) => `  - [${a.tier}][${a.id}] ${a.created} (${a.ageDays}d, status=${a.status})`)
       .sort();
     for (const l of lines.slice(0, 20)) console.log(l);
     console.log("");
@@ -390,9 +373,7 @@ function reportBrokenEdges(rows: readonly BacklogRow[]): Edges {
 }
 
 function reportOrphans(rows: readonly BacklogRow[], edges: Edges): number {
-  console.log(
-    "## 5. Orphan rows (no incoming depends_on or composes_with from any other row)",
-  );
+  console.log("## 5. Orphan rows (no incoming depends_on or composes_with from any other row)");
   console.log("");
   const incoming = new Set<string>();
   for (const [, target] of edges.depends) incoming.add(target);
@@ -411,9 +392,7 @@ function reportOrphans(rows: readonly BacklogRow[], edges: Edges): number {
 }
 
 function reportTopBlocked(rows: readonly BacklogRow[], edges: Edges): void {
-  console.log(
-    "## 6. Top-10 most-blocked rows (direct downstream dependents via depends_on)",
-  );
+  console.log("## 6. Top-10 most-blocked rows (direct downstream dependents via depends_on)");
   console.log("");
   if (edges.depends.length === 0) {
     console.log("  (no depends_on edges in backlog)");
@@ -424,15 +403,11 @@ function reportTopBlocked(rows: readonly BacklogRow[], edges: Edges): void {
   for (const [, target] of edges.depends) {
     counts.set(target, (counts.get(target) ?? 0) + 1);
   }
-  const ranked = [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
+  const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
   for (const [target, cnt] of ranked) {
     const row = rows.find((r) => r.id === target);
     const detail =
-      row !== undefined
-        ? `${row.tier}\t${row.status}\t${row.title}`
-        : "(target id not found in current rows)";
+      row !== undefined ? `${row.tier}\t${row.status}\t${row.title}` : "(target id not found in current rows)";
     console.log(`  - ${target} blocks ${cnt} direct downstream: ${detail}`);
   }
   console.log("");
@@ -470,19 +445,12 @@ const STOPWORDS = new Set([
 function headKeywords(title: string): string[] {
   const lower = title.toLowerCase();
   const cleaned = lower.replace(/[^a-z0-9]+/g, " ");
-  const tokens = cleaned
-    .split(/\s+/)
-    .filter((t) => t.length >= 5 && !STOPWORDS.has(t));
+  const tokens = cleaned.split(/\s+/).filter((t) => t.length >= 5 && !STOPWORDS.has(t));
   return tokens.slice(0, 3);
 }
 
-async function reportMergedCandidates(
-  rows: readonly BacklogRow[],
-  ghAvailable: boolean,
-): Promise<void> {
-  console.log(
-    "## 7. Unclosed-but-merged rows (head-keyword matches recent merged-PR title; heuristic)",
-  );
+async function reportMergedCandidates(rows: readonly BacklogRow[], ghAvailable: boolean): Promise<void> {
+  console.log("## 7. Unclosed-but-merged rows (head-keyword matches recent merged-PR title; heuristic)");
   console.log("");
   if (!ghAvailable) {
     console.log("SKIP: gh CLI not available");
@@ -545,26 +513,20 @@ async function reportMergedCandidates(
       }
     }
     if (matched !== undefined) {
-      candidates.push(
-        `  - ${row.id} [${row.tier}] status=${row.status} -- candidate match: PR #${matched.number}`,
-      );
+      candidates.push(`  - ${row.id} [${row.tier}] status=${row.status} -- candidate match: PR #${matched.number}`);
       candidates.push(`      row title: ${row.title}`);
       candidates.push(`      pr  title: ${matched.title}`);
     }
   }
   for (const c of candidates.slice(0, 60)) console.log(c);
   console.log("");
-  console.log(
-    "(Heuristic: 3 head-keywords of >=5 chars must all appear in PR title.",
-  );
+  console.log("(Heuristic: 3 head-keywords of >=5 chars must all appear in PR title.");
   console.log(" False positives expected; manual review required before closing rows.)");
   console.log("");
 }
 
 function reportDuplicateIds(rows: readonly BacklogRow[]): number {
-  console.log(
-    "## 8. Duplicate IDs (factory-wide uniqueness violation)",
-  );
+  console.log("## 8. Duplicate IDs (factory-wide uniqueness violation)");
   console.log("");
   const byId = new Map<string, BacklogRow[]>();
   for (const r of rows) {
@@ -586,24 +548,14 @@ function reportDuplicateIds(rows: readonly BacklogRow[]): number {
     for (const [id, list] of duplicates) {
       console.log(`### ${id} (${list.length} files claim this ID)`);
       for (const r of list) {
-        console.log(
-          `  - ${r.path} (tier=${r.tier}, status=${r.status})`,
-        );
+        console.log(`  - ${r.path} (tier=${r.tier}, status=${r.status})`);
       }
       console.log("");
     }
-    console.log(
-      "Resolution: renumber all-but-one of the colliding files to the next",
-    );
-    console.log(
-      "available B-NNNN ID; update frontmatter `id:`, body heading, and add a",
-    );
-    console.log(
-      "`renumbered_from:` breadcrumb. Per tools/backlog/README.md, backlog",
-    );
-    console.log(
-      "IDs must be factory-wide unique so edge references resolve unambiguously.",
-    );
+    console.log("Resolution: renumber all-but-one of the colliding files to the next");
+    console.log("available B-NNNN ID; update frontmatter `id:`, body heading, and add a");
+    console.log("`renumbered_from:` breadcrumb. Per tools/backlog/README.md, backlog");
+    console.log("IDs must be factory-wide unique so edge references resolve unambiguously.");
   }
   console.log("");
   return duplicates.length;
@@ -726,19 +678,13 @@ async function main(): Promise<number> {
   console.log("");
   console.log(`  - Total backlog rows: ${totalRows}`);
   console.log(`  - Broken depends_on edges: ${brokenDepends}`);
-  console.log(
-    `  - Broken composes_with edges (B-NNNN refs only): ${brokenComposes}`,
-  );
+  console.log(`  - Broken composes_with edges (B-NNNN refs only): ${brokenComposes}`);
   console.log(`  - Orphan rows (no incoming graph edge): ${orphanCount}`);
   console.log(`  - Duplicate-ID groups: ${duplicateIdGroups}`);
   console.log(`  - Parent-child status-mismatch groups: ${parentChildMismatches}`);
   console.log("");
-  console.log(
-    "Composes with: tools/hygiene/audit-lost-files.ts (sibling pattern),",
-  );
-  console.log(
-    "  memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md",
-  );
+  console.log("Composes with: tools/hygiene/audit-lost-files.ts (sibling pattern),");
+  console.log("  memory/feedback_decision_graph_emergent_from_archaeologies_and_flywheel_aaron_2026_05_03.md");
   console.log("  (typed-edge backlog graph).");
 
   if (enforceDuplicateIds && duplicateIdGroups > 0) {
@@ -762,9 +708,7 @@ if (import.meta.main) {
   main().then(
     (code) => process.exit(code),
     (err) => {
-      process.stderr.write(
-        `fatal: ${err instanceof Error ? err.message : String(err)}\n`,
-      );
+      process.stderr.write(`fatal: ${err instanceof Error ? err.message : String(err)}\n`);
       process.exit(1);
     },
   );

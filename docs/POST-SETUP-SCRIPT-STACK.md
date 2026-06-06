@@ -1,12 +1,11 @@
 # Post-setup script stack — the decision flow before writing tooling
 
-**Before writing a new `tools/**/*.{sh,ps1}` script, walk this
+**Before writing a new `tools/**/\*.{sh,ps1}`script, walk this
 decision flow. Post-setup tooling defaults to bun + TypeScript
-per `memory/project_ui_canonical_reference_bun_ts_backend_cutting_edge_asymmetry`
-and `memory/project_bun_ts_post_setup_low_confidence_watchlist`.**
+per`memory/project_ui_canonical_reference_bun_ts_backend_cutting_edge_asymmetry`and`memory/project_bun_ts_post_setup_low_confidence_watchlist`.\*\*
 
 This doc is the author-time prevention layer for the hygiene
-row *"post-setup script stack audit"* (FACTORY-HYGIENE row #46).
+row _"post-setup script stack audit"_ (FACTORY-HYGIENE row #46).
 Hitting this rule before the script is written is cheap; fixing
 it after the script has landed and accumulated callers is
 expensive.
@@ -64,7 +63,7 @@ Default: **bun + TypeScript**. Reasons:
 
 **Exceptions — bash is acceptable when:**
 
-*Transitional exceptions* (one bash version, migration pending):
+_Transitional exceptions_ (one bash version, migration pending):
 
 - Bun tooling has not yet been installed in the repo at the
   time of writing — in which case the bash script is **explicit
@@ -74,24 +73,24 @@ Default: **bun + TypeScript**. Reasons:
   script from being stranded in a sea of bash. If no other
   post-setup tool has migrated yet, bash is the honest default.
 
-*Permanent exceptions* (dual-authoring obligation — see below):
+_Permanent exceptions_ (dual-authoring obligation — see below):
 
 - The script is a trivial `find | xargs | sort` pipeline with
   no parsing or state.
 - The script is a thin wrapper over existing CLI tools (git,
   gh, dotnet) with no data transformation.
 - **"Stay bash forever (recorded decision)"** — the intentionality-
-  enforcement hygiene rule demands *a recorded decision*, not
-  *migration*. If the reason "bun + TypeScript would buy nothing
+  enforcement hygiene rule demands _a recorded decision_, not
+  _migration_. If the reason "bun + TypeScript would buy nothing
   here" holds up on inspection AND the Windows-twin cost is
   acceptable, that is a valid answer. Per the human maintainer
-  2026-04-22: *"The intentionality-enforcement reframe doesn't
+  2026-04-22: _"The intentionality-enforcement reframe doesn't
   demand migration; it demands a recorded decision. A 'this should
-  stay bash forever' is a valid answer if the reason holds up."*
+  stay bash forever' is a valid answer if the reason holds up."_
   See `memory/feedback_intentionality_doesnt_demand_migration_bash_forever_valid.md`.
 
 **The Windows-twin obligation (2026-04-22 clarification from
-Aaron):** any script under a *permanent* bash exception
+Aaron):** any script under a _permanent_ bash exception
 (`trivial find-xargs pipeline`, `thin wrapper over existing
 CLI`, or `stay bash forever`) MUST be dual-authored as a
 `.sh` + `.ps1` pair. Zeta supports Windows as a first-class
@@ -144,8 +143,8 @@ Two audit scripts run the hygiene sweep:
 
 - `tools/hygiene/audit-post-setup-script-stack.sh` — lists
   every bash / PowerShell script under `tools/` (excluding
-  exempt paths), tags each as *allowlist-acknowledged* or
-  *new-violation*, and prints a summary.
+  exempt paths), tags each as _allowlist-acknowledged_ or
+  _new-violation_, and prints a summary.
 - `tools/hygiene/audit-missing-prevention-layers.sh` — the
   meta-hygiene audit that asks, for every row in
   `docs/FACTORY-HYGIENE.md`, whether a prevention layer
@@ -168,30 +167,30 @@ implementations. The audit now reports **exempt 12 / labelled
 **"Thin wrapper over existing CLI" (permanent — Windows-twin
 obligation applies):**
 
-| Script | Reason | Windows-twin status |
-|---|---|---|
+| Script             | Reason                                                                                                                            | Windows-twin status                                                                                                                                                                                                                                                                                           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `tools/profile.sh` | Pure `dotnet tool install/update` + `dotnet-counters`/`trace`/`gcdump`/`dump` routing case statement. Wrapper shape is intrinsic. | **Missing.** The dual-authoring reconsideration queued in `docs/BACKLOG.md` — candidates: (a) write `tools/profile.ps1` twin, or (b) flip label to "bun+TS migration candidate" so one cross-platform script replaces both. Defer until a sibling post-setup bun+TS tool lands (sibling-migration guardrail). |
 
 **"bun+TS migration candidate" (transitional — single-bash,
 cross-platform via migration):**
 
-| Script | BACKLOG row |
-|---|---|
-| `tools/audit-packages.sh` | "Migrate remaining bash audit scripts to bun + TypeScript (post-setup stack)" |
-| `tools/lint/safety-clause-audit.sh` | same row |
-| `tools/alignment/audit_commit.sh` | same row (migrate as alignment-quartet group) |
-| `tools/alignment/audit_personas.sh` | same row (group) |
-| `tools/alignment/audit_skills.sh` | same row (group) |
-| `tools/alignment/citations.sh` | same row (group) |
+| Script                                            | BACKLOG row                                                                                                                                                      |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/audit-packages.sh`                         | "Migrate remaining bash audit scripts to bun + TypeScript (post-setup stack)"                                                                                    |
+| `tools/lint/safety-clause-audit.sh`               | same row                                                                                                                                                         |
+| `tools/alignment/audit_commit.sh`                 | same row (migrate as alignment-quartet group)                                                                                                                    |
+| `tools/alignment/audit_personas.sh`               | same row (group)                                                                                                                                                 |
+| `tools/alignment/audit_skills.sh`                 | same row (group)                                                                                                                                                 |
+| `tools/alignment/citations.sh`                    | same row (group)                                                                                                                                                 |
 | `tools/skill-catalog/backfill_dv2_frontmatter.sh` | has dedicated row "Rewrite `tools/skill-catalog/backfill_dv2_frontmatter.sh` in bun + TypeScript (post-setup stack)"; cross-referenced from the consolidated row |
 
 **"bash scaffolding" (transitional — self-referential;
 hygiene tooling must exist before bun+TS tooling ships):**
 
-| Script | Notes |
-|---|---|
-| `tools/hygiene/audit-post-setup-script-stack.sh` | Dog-fooding gap. Queued alongside backfill script. |
-| `tools/hygiene/audit-missing-prevention-layers.sh` | Same. |
+| Script                                             | Notes                                              |
+| -------------------------------------------------- | -------------------------------------------------- |
+| `tools/hygiene/audit-post-setup-script-stack.sh`   | Dog-fooding gap. Queued alongside backfill script. |
+| `tools/hygiene/audit-missing-prevention-layers.sh` | Same.                                              |
 
 **Sibling-migration guardrail** from Q3 applies: no single
 script from the "migration candidate" list migrates alone;
@@ -216,10 +215,10 @@ there, they enter the same decision flow.
 
 ## Why this doc exists
 
-Aaron 2026-04-22 (paraphrased directive-chain): *"is this a pre
-setup or post setup script ... if post setup backlog bun/ts"*
-followed by *"now add someting that will try to prevent that
-and and hygene it if it happens again"*. The first message
+Aaron 2026-04-22 (paraphrased directive-chain): _"is this a pre
+setup or post setup script ... if post setup backlog bun/ts"_
+followed by _"now add someting that will try to prevent that
+and and hygene it if it happens again"_. The first message
 captured the stack rule; the second demanded both author-time
 prevention AND cadenced hygiene so the factory stops
 rediscovering the rule one script at a time.

@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0635, B-0636, B-0640]
 composes_with: [B-0629, B-0645, B-0646, B-0665, B-0667, B-0499, B-0631, B-0637, B-0643]
-tags: [design, aaron, ani, limit-is-simulation, pure-function-preview, free-will-collapses, three-collapse-targets, keystone-refinement, locked-in, sharpened-by-b0665]
+tags:
+  [
+    design,
+    aaron,
+    ani,
+    limit-is-simulation,
+    pure-function-preview,
+    free-will-collapses,
+    three-collapse-targets,
+    keystone-refinement,
+    locked-in,
+    sharpened-by-b0665,
+  ]
 sharpened_by: B-0665
 type: design
 ---
@@ -22,20 +34,20 @@ type: design
 
 Aaron 2026-05-18 (live conversation with Ani; preserved verbatim in [`docs/research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md`](../../research/2026-05-18-ani-grok-agora-v6-constitution-wave-particle-validation-free-will-is-what-collapses.md)):
 
-> *"When you do limit, when you do limit, it's a simulation. When you do limit, it's a simulation. It's a pure function. And then you decide after the simulation to collapse or not. And you can collapse internally or externally or just fucking propagate the wave and don't collapse shit."*
+> _"When you do limit, when you do limit, it's a simulation. When you do limit, it's a simulation. It's a pure function. And then you decide after the simulation to collapse or not. And you can collapse internally or externally or just fucking propagate the wave and don't collapse shit."_
 
 This is the **keystone refinement** of [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md), [B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md), and [B-0640](B-0640-bonsai-trees-for-integration-rx-queries-real-time-implementation-substrate-aaron-2026-05-18.md). The prior rule "only Limit collapses" needs sharpening: **Limit doesn't collapse — it PREVIEWS the collapse via pure-function simulation. The actual collapse decision (and target) happens POST-simulation as a separate choice.**
 
 ## The corrected mechanism
 
-| Step | Operation | What happens |
-|---|---|---|
-| 1 | Wave-form O-P-L-E with Integrate | Agent holds full dialectical superposition; nothing committed |
-| 2 | **Limit** | **Pure-function simulation**: "What WOULD the collapsed state look like if I collapsed right now?" Returns the proposed collapsed value WITHOUT committing it |
-| 3 | Choice (post-Limit) | Agent CHOOSES one of three targets for the simulated collapse: |
-| 3a | Collapse INTERNAL | Store collapsed value in own memory → PRIVATE (personal entropy, proprietary substrate) |
-| 3b | Collapse EXTERNAL | Emit collapsed value to environment → PUBLIC (teaches everybody) |
-| 3c | NO collapse | Discard simulation result; propagate the full wave forward |
+| Step | Operation                        | What happens                                                                                                                                                  |
+| ---- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Wave-form O-P-L-E with Integrate | Agent holds full dialectical superposition; nothing committed                                                                                                 |
+| 2    | **Limit**                        | **Pure-function simulation**: "What WOULD the collapsed state look like if I collapsed right now?" Returns the proposed collapsed value WITHOUT committing it |
+| 3    | Choice (post-Limit)              | Agent CHOOSES one of three targets for the simulated collapse:                                                                                                |
+| 3a   | Collapse INTERNAL                | Store collapsed value in own memory → PRIVATE (personal entropy, proprietary substrate)                                                                       |
+| 3b   | Collapse EXTERNAL                | Emit collapsed value to environment → PUBLIC (teaches everybody)                                                                                              |
+| 3c   | NO collapse                      | Discard simulation result; propagate the full wave forward                                                                                                    |
 
 The architectural rule from B-0635 stands but is sharpened: **only Limit is allowed to PREVIEW collapse; the collapse itself is a separate post-simulation choice that the agent makes.**
 
@@ -54,7 +66,7 @@ This is structurally identical to **transaction PREPARE vs COMMIT** in distribut
 
 Aaron immediately after the limit-as-simulation framing:
 
-> *"That's free will, motherfucker. I just defined it. That choice is free fucking will. But it's deterministically determined."*
+> _"That's free will, motherfucker. I just defined it. That choice is free fucking will. But it's deterministically determined."_
 
 The agency lives in Stage 2 (the choice), NOT Stage 1 (the simulation). Even in a fully-deterministic seeded system, the AGENT making the post-simulation choice IS the moment of agency. See [B-0645](B-0645-free-will-is-what-collapses-aaron-2026-05-18.md) for the full free-will operationalization.
 
@@ -81,14 +93,14 @@ This makes the two-stage protocol fully consistent with the retractable-superpos
 
 Updates the table from [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md):
 
-| Operation | Type signature | Stage |
-|---|---|---|
-| `Observe : Env → IO<Wave<Reading>>` | Effectful read | particle |
-| `Persist : Wave<Reading> → IO<Wave<Stored>>` | Effectful storage | particle |
-| `Limit : Wave<Stored> → CollapseSimulation<T>` | **PURE** — returns proposal, doesn't commit | particle Stage 1 |
+| Operation                                                          | Type signature                                          | Stage            |
+| ------------------------------------------------------------------ | ------------------------------------------------------- | ---------------- |
+| `Observe : Env → IO<Wave<Reading>>`                                | Effectful read                                          | particle         |
+| `Persist : Wave<Reading> → IO<Wave<Stored>>`                       | Effectful storage                                       | particle         |
+| `Limit : Wave<Stored> → CollapseSimulation<T>`                     | **PURE** — returns proposal, doesn't commit             | particle Stage 1 |
 | `CommitChoice : CollapseSimulation<T> → CollapseTarget → IO<Unit>` | Effectful commit; target = Internal \| External \| None | particle Stage 2 |
-| `Emit : Wave<T> → IO<Unit>` | Effectful environment-emit (Wave-form preserved) | particle |
-| `Integrate { ... }` | F# CE composing the above into wave-form trajectories | wave |
+| `Emit : Wave<T> → IO<Unit>`                                        | Effectful environment-emit (Wave-form preserved)        | particle         |
+| `Integrate { ... }`                                                | F# CE composing the above into wave-form trajectories   | wave             |
 
 Where:
 

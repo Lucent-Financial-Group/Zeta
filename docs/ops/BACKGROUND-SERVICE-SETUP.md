@@ -57,82 +57,74 @@ The key changes from monitor to worker:
 **a. Change the default interval from 900s to 60s:**
 
 ```typescript
-const claudeIntervalMs = Number(
-  process.env.ZETA_<NAME>_LOOP_CLAUDE_INTERVAL_SECONDS ?? "60"
-) * 1000;
+const claudeIntervalMs = Number(process.env.ZETA_ < NAME > _LOOP_CLAUDE_INTERVAL_SECONDS ?? "60") * 1000;
 ```
 
 **b. Increase timeout from 300s to 600s:**
 
 ```typescript
-const claudeTimeoutMs = Number(
-  process.env.ZETA_<NAME>_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600"
-) * 1000;
+const claudeTimeoutMs = Number(process.env.ZETA_ < NAME > _LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 ```
 
 **c. Replace the read-only gate with pickup/drain logic:**
 
 ```typescript
 if (elapsed >= claudeIntervalMs) {
-    const prNum = Number(prCount) || 0;
-    const workMode = prNum === 0 ? "pickup" : "drain";
-    claudeStatus = "running";
-    log(`claude work cycle start run_id=${runId} mode=${workMode} open_prs=${prNum}`);
+  const prNum = Number(prCount) || 0;
+  const workMode = prNum === 0 ? "pickup" : "drain";
+  claudeStatus = "running";
+  log(`claude work cycle start run_id=${runId} mode=${workMode} open_prs=${prNum}`);
 
-    if (dryRun) {
-        log(`dry-run: would run claude ${workMode}`);
-        claudeStatus = "dry-run";
+  if (dryRun) {
+    log(`dry-run: would run claude ${workMode}`);
+    claudeStatus = "dry-run";
+  } else {
+    let prompt: string;
+    if (workMode === "pickup") {
+      // Use the deterministic backlog selector
+      const pickup = run("bun", ["tools/backlog/autonomous-pickup.ts", "--json"], 30_000);
+      let executionPrompt = "";
+      try {
+        const selection = JSON.parse(pickup.stdout);
+        executionPrompt = selection.executionPrompt ?? "";
+        log(`pickup selected: ${selection.selected?.id ?? "none"} action=${selection.action ?? "none"}`);
+      } catch {
+        log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`);
+      }
+
+      const preamble = [
+        `You are <NAME>'s background worker in Lucent-Financial-Group/Zeta.`,
+        `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
+        `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
+        `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
+        `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
+        `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
+        `Search internet before asserting versions (Otto-364).`,
+      ].join(" ");
+
+      prompt =
+        executionPrompt.length > 0
+          ? `${preamble} YOUR TASK:\n${executionPrompt}`
+          : `${preamble} No backlog items available. Run refresh-worldview, check for stale classifications, fix them, open a PR.`;
     } else {
-        let prompt: string;
-        if (workMode === "pickup") {
-            // Use the deterministic backlog selector
-            const pickup = run("bun", [
-                "tools/backlog/autonomous-pickup.ts", "--json"
-            ], 30_000);
-            let executionPrompt = "";
-            try {
-                const selection = JSON.parse(pickup.stdout);
-                executionPrompt = selection.executionPrompt ?? "";
-                log(`pickup selected: ${selection.selected?.id ?? "none"} action=${selection.action ?? "none"}`);
-            } catch {
-                log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`);
-            }
-
-            const preamble = [
-                `You are <NAME>'s background worker in Lucent-Financial-Group/Zeta.`,
-                `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
-                `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
-                `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
-                `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
-                `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
-                `Search internet before asserting versions (Otto-364).`,
-            ].join(" ");
-
-            prompt = executionPrompt.length > 0
-                ? `${preamble} YOUR TASK:\n${executionPrompt}`
-                : `${preamble} No backlog items available. Run refresh-worldview, check for stale classifications, fix them, open a PR.`;
-        } else {
-            prompt = [
-                `You are <NAME>'s background worker in Lucent-Financial-Group/Zeta.`,
-                `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
-                `Build gate: "dotnet build -c Release" (0 warnings).`,
-                `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
-                `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
-                `check out branch, read review comments, fix code issues, push,`,
-                `reply to threads, resolve via GraphQL, arm auto-merge`,
-                `(gh pr merge NUMBER --auto --squash). Own your PRs through merge.`,
-            ].join(" ");
-        }
-
-        const gate = run("claude", [
-            "-p", prompt,
-            "--permission-mode", "auto",
-        ], claudeTimeoutMs);
-
-        claudeStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
-        log(`claude work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
-        // ... write state file, append ticks.log/ticks.err ...
+      prompt = [
+        `You are <NAME>'s background worker in Lucent-Financial-Group/Zeta.`,
+        `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
+        `Build gate: "dotnet build -c Release" (0 warnings).`,
+        `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
+        `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
+        `check out branch, read review comments, fix code issues, push,`,
+        `reply to threads, resolve via GraphQL, arm auto-merge`,
+        `(gh pr merge NUMBER --auto --squash). Own your PRs through merge.`,
+      ].join(" ");
     }
+
+    const gate = run("claude", ["-p", prompt, "--permission-mode", "auto"], claudeTimeoutMs);
+
+    claudeStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
+    log(`claude work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
+    // ... write state file, append ticks.log/ticks.err ...
+  }
 }
 ```
 
@@ -172,22 +164,22 @@ Watch for:
 
 ## Key tools the service uses
 
-| Tool | Purpose |
-|---|---|
+| Tool                                 | Purpose                                                                                                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `tools/backlog/autonomous-pickup.ts` | Deterministic item selector — reads all backlog items, checks deps/claims, returns highest-priority buildable item with an execution prompt |
-| `tools/github/refresh-worldview.ts` | World model refresh — open PRs, recent merges, issues, git state as JSON |
-| `tools/github/poll-pr-gate-batch.ts` | PR gate checker — reports BLOCKED/MERGEABLE, thread counts, check status |
-| `claude -p --permission-mode auto` | Non-interactive Claude with auto-approve for safe actions |
+| `tools/github/refresh-worldview.ts`  | World model refresh — open PRs, recent merges, issues, git state as JSON                                                                    |
+| `tools/github/poll-pr-gate-batch.ts` | PR gate checker — reports BLOCKED/MERGEABLE, thread counts, check status                                                                    |
+| `claude -p --permission-mode auto`   | Non-interactive Claude with auto-approve for safe actions                                                                                   |
 
 ## Failure modes and fixes
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| `status=143` every cycle | Work too large for 600s | Foreground agent fixes the PR, or increase timeout |
-| `open_prs=0` but no PR created | `autonomous-pickup.ts` found nothing buildable | Add `classification: buildable-now` to backlog items |
-| Stale lock (no ticks for >2 min) | Process died without releasing lock | `rm -r "$HOME/Library/Application Support/ZetaClaudeLoop/lock"` |
-| `launchctl list` shows service but no log output | Service registered but not firing | `launchctl kickstart gui/$(id -u)/com.zeta.<name>-loop` |
-| `state = not running` in launchctl print | Normal for periodic tasks (StartInterval) | Check `runner.log` timestamps instead |
+| Symptom                                          | Cause                                          | Fix                                                             |
+| ------------------------------------------------ | ---------------------------------------------- | --------------------------------------------------------------- |
+| `status=143` every cycle                         | Work too large for 600s                        | Foreground agent fixes the PR, or increase timeout              |
+| `open_prs=0` but no PR created                   | `autonomous-pickup.ts` found nothing buildable | Add `classification: buildable-now` to backlog items            |
+| Stale lock (no ticks for >2 min)                 | Process died without releasing lock            | `rm -r "$HOME/Library/Application Support/ZetaClaudeLoop/lock"` |
+| `launchctl list` shows service but no log output | Service registered but not firing              | `launchctl kickstart gui/$(id -u)/com.zeta.<name>-loop`         |
+| `state = not running` in launchctl print         | Normal for periodic tasks (StartInterval)      | Check `runner.log` timestamps instead                           |
 
 ## What "tier 1" looks like
 

@@ -35,8 +35,8 @@ structured as:
 
 - **What happened:** Her full ~4000-word report landed in the
   repo as source material, with an explicit filing policy
-  of *"no paraphrasing on ingest; derived artifacts sit
-  beside, not in place of."*
+  of _"no paraphrasing on ingest; derived artifacts sit
+  beside, not in place of."_
 - **Where:** `docs/aurora/2026-04-23-transfer-report-from-amara.md`
   in PR #144.
 - **Why:** Signal-in signal-out DSP discipline (see
@@ -63,7 +63,7 @@ structured as:
   than paraphrasing.
 - **For Amara's review:** Does the 5-of-6 SignalQuality
   mapping read correctly to her? Which of her oracle
-  families is the *hardest* to get right (so factory work
+  families is the _hardest_ to get right (so factory work
   can sequence accordingly)? Does the sequencing (Pack 3
   lesson-recorder first → then Pack 1 retriever → etc.) make
   sense, or is there an ordering she'd prefer?
@@ -75,8 +75,8 @@ structured as:
   communication rhythm described (Aaron ferries artifacts
   between her ChatGPT and the repo).
 - **Where:** `docs/aurora/collaborators.md` in THIS PR.
-- **Why:** Aaron's 2026-04-23 framing: *"Aurora [is] mine
-  and hers idea together."* The repo substrate should
+- **Why:** Aaron's 2026-04-23 framing: _"Aurora [is] mine
+  and hers idea together."_ The repo substrate should
   reflect that collaborators are listed explicitly, not
   implicitly.
 - **For Amara's review:** Is the mode-of-collaboration
@@ -101,7 +101,7 @@ structured as:
 - **For Amara's review:** Does this affect Aurora's
   positioning? Aurora is a self-healing DAO protocol — the
   factory-first / substrate-second pattern might generalise:
-  land Aurora *as a substrate under the factory first*, then
+  land Aurora _as a substrate under the factory first_, then
   pitch Aurora-specific mechanisms phase-2.
 
 ## 5. Lesson-permanence named as the factory's competitive differentiator
@@ -150,10 +150,10 @@ structured as:
   Aaron is stepping back from directive-giver-of-last-resort
   role.
 - **For Amara's review:** How does this compose with her
-  Aurora oracle framework's *Harm oracle*? If an agent's
+  Aurora oracle framework's _Harm oracle_? If an agent's
   self-directed evolution drifts toward closing consent /
   retractability / harm-handling channels, the harm oracle
-  is the gate. Her framing of *"channel closure"* as a
+  is the gate. Her framing of _"channel closure"_ as a
   threat class (transfer report § "Network health,
   harm resistance...") may want a factory-side hook.
 
@@ -161,8 +161,8 @@ structured as:
 
 ## What the factory would benefit from receiving back
 
-Per Aaron's framing: *"give back to her our direction
-changes based on her feedback so she can [iterate]."*
+Per Aaron's framing: _"give back to her our direction
+changes based on her feedback so she can [iterate]."_
 
 Specific questions for Amara, in priority order:
 
@@ -203,7 +203,7 @@ Specific questions for Amara, in priority order:
   as PR comments on the artifacts she's reviewing?
 - **When to consult vs. inform:** for factory-side changes
   that don't touch Aurora's oracle framework, no ferry is
-  needed. For changes that *do* touch Aurora mechanism,
+  needed. For changes that _do_ touch Aurora mechanism,
   consult-before-land or inform-after-land?
 
 ---

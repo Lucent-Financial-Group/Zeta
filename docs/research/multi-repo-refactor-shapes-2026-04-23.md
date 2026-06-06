@@ -5,10 +5,10 @@
 2026-04-20 framing requires before big packaging decisions
 land (per the per-user memory rule on factory-reuse packaging
 decisions requiring maintainer consultation).
-**Triggered by:** The human maintainer 2026-04-23: *"we can even wait on the
+**Triggered by:** The human maintainer 2026-04-23: _"we can even wait on the
 demo until we have refactored into our multi repo shape, you
 remember that right? That seems very structural and like we
-should do it sooner rather than later, but it's up to you."*
+should do it sooner rather than later, but it's up to you."_
 **Request:** The human maintainer's review of the options + trade-offs below,
 toward a decision on the split shape.
 
@@ -23,7 +23,7 @@ distinct concerns:
    by any project adopting the factory.
 2. **The Zeta library** — F# implementation of DBSP plus
    operators, sketches, CRDTs, runtime, storage, wire formats.
-   A specific project that happens to *host* the factory
+   A specific project that happens to _host_ the factory
    today.
 3. **Research + Aurora thread** — cross-disciplinary research
    docs, alignment contract, Aurora collaboration with Amara.
@@ -104,7 +104,7 @@ Patterns I surveyed before writing candidates:
 **Lesson from prior art:** split when you have a clear
 consumer boundary and enforce it with tooling; monorepo when
 everything co-evolves tightly. Zeta + factory is at the
-*transition point* — factory has its own consumers emerging
+_transition point_ — factory has its own consumers emerging
 (Aurora, potentially ServiceTitan's internal work, future
 adopters), which is the structural signal to split.
 
@@ -113,24 +113,24 @@ adopters), which is the structural signal to split.
 Classifying current top-level dirs by where they'd go after a
 split:
 
-| Current location | Generic factory? | Zeta-specific? | Aurora-specific? |
-|---|:---:|:---:|:---:|
-| `.claude/agents/` | ~80% | ~20% (Zeta-specific personas) | — |
-| `.claude/skills/` | ~70% | ~30% (algebra/openspec skills) | — |
-| `.claude/commands/` | 100% | — | — |
-| `AGENTS.md`, `CLAUDE.md`, `GOVERNANCE.md` | 100% | — | — |
-| `docs/ALIGNMENT.md`, `docs/AGENT-BEST-PRACTICES.md`, `docs/AUTONOMOUS-LOOP.md` | 100% | — | — |
-| `docs/ARCHITECTURE.md`, `docs/MATH-SPEC-TESTS.md`, `docs/VISION.md` | — | 100% | — |
-| `docs/aurora/` (lands via PR #144) | — | — | 100% |
-| `docs/research/` | ~50% | ~50% | — |
-| `memory/*.md` | ~40% | ~50% | ~10% |
-| `src/`, `tests/`, `bench/` | — | 100% | — |
-| `samples/` | ~10% (tools-only) | ~90% | — |
-| `openspec/` | — | 100% | — |
-| `tools/setup/` | 100% | — | — |
-| `tools/audit/` | ~80% | ~20% | — |
-| `tools/tla/`, `tools/alloy/`, `tools/Z3Verify/` | — | 100% | — |
-| `.github/workflows/` | ~60% | ~40% | — |
+| Current location                                                               | Generic factory?  |         Zeta-specific?         | Aurora-specific? |
+| ------------------------------------------------------------------------------ | :---------------: | :----------------------------: | :--------------: |
+| `.claude/agents/`                                                              |       ~80%        | ~20% (Zeta-specific personas)  |        —         |
+| `.claude/skills/`                                                              |       ~70%        | ~30% (algebra/openspec skills) |        —         |
+| `.claude/commands/`                                                            |       100%        |               —                |        —         |
+| `AGENTS.md`, `CLAUDE.md`, `GOVERNANCE.md`                                      |       100%        |               —                |        —         |
+| `docs/ALIGNMENT.md`, `docs/AGENT-BEST-PRACTICES.md`, `docs/AUTONOMOUS-LOOP.md` |       100%        |               —                |        —         |
+| `docs/ARCHITECTURE.md`, `docs/MATH-SPEC-TESTS.md`, `docs/VISION.md`            |         —         |              100%              |        —         |
+| `docs/aurora/` (lands via PR #144)                                             |         —         |               —                |       100%       |
+| `docs/research/`                                                               |       ~50%        |              ~50%              |        —         |
+| `memory/*.md`                                                                  |       ~40%        |              ~50%              |       ~10%       |
+| `src/`, `tests/`, `bench/`                                                     |         —         |              100%              |        —         |
+| `samples/`                                                                     | ~10% (tools-only) |              ~90%              |        —         |
+| `openspec/`                                                                    |         —         |              100%              |        —         |
+| `tools/setup/`                                                                 |       100%        |               —                |        —         |
+| `tools/audit/`                                                                 |       ~80%        |              ~20%              |        —         |
+| `tools/tla/`, `tools/alloy/`, `tools/Z3Verify/`                                |         —         |              100%              |        —         |
+| `.github/workflows/`                                                           |       ~60%        |              ~40%              |        —         |
 
 The split is real — there's clear separation but also
 genuine overlap at the boundaries.
@@ -268,7 +268,7 @@ process + versioning discipline + marketplace setup).
   packs, governance-rule sets published as packages).
 - `zeta` consumes the overlay via a lightweight tool
   (`factory-apply` or similar) that copies generic content
-  + layers Zeta-specific overlays on top.
+  - layers Zeta-specific overlays on top.
 - Adopters run `factory-apply --from=zeta-factory` to
   initialize; subsequent `factory-apply --update` brings
   down new substrate while preserving their overlay
@@ -297,15 +297,15 @@ process + versioning discipline + marketplace setup).
 
 ## Comparison matrix
 
-| Axis | A template | B submodule | C package | D monorepo | E overlay |
-|---|:---:|:---:|:---:|:---:|:---:|
-| Ease to land | S-M | M | L | S | L-XL |
-| Update flow to adopters | ✗ | ✓ | ✓ | — | ✓✓ |
-| Adopter learning curve | low | medium | low | low | medium |
-| Preserves customization | — | — | ✓ | ✓ | ✓✓ |
-| Mature tooling exists | ✓ | ✓ | ✓ | ✓ | ✗ |
-| Suits Aurora's collaborator model | — | — | ✓ | — | ✓ |
-| Current-maintainer-to-solo-adopter friction | low | medium | low | — | medium |
+| Axis                                        | A template | B submodule | C package | D monorepo | E overlay |
+| ------------------------------------------- | :--------: | :---------: | :-------: | :--------: | :-------: |
+| Ease to land                                |    S-M     |      M      |     L     |     S      |   L-XL    |
+| Update flow to adopters                     |     ✗      |      ✓      |     ✓     |     —      |    ✓✓     |
+| Adopter learning curve                      |    low     |   medium    |    low    |    low     |  medium   |
+| Preserves customization                     |     —      |      —      |     ✓     |     ✓      |    ✓✓     |
+| Mature tooling exists                       |     ✓      |      ✓      |     ✓     |     ✓      |     ✗     |
+| Suits Aurora's collaborator model           |     —      |      —      |     ✓     |     —      |     ✓     |
+| Current-maintainer-to-solo-adopter friction |    low     |   medium    |    low    |     —      |  medium   |
 
 ## My recommendation
 

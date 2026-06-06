@@ -1049,8 +1049,7 @@ policy port:
 
 ```ts
 type ContextPackCurationIntentPolicyPort = {
-  resolve(request: ContextPackCurationIntentRequest):
-    Promise<ContextPackCurationIntent> | ContextPackCurationIntent;
+  resolve(request: ContextPackCurationIntentRequest): Promise<ContextPackCurationIntent> | ContextPackCurationIntent;
 };
 ```
 
@@ -1088,8 +1087,7 @@ retroactively retrieve documents or add evidence. The profile refinement port is
 
 ```ts
 type ContextPackCurationProfilePolicyPort = {
-  resolve(request: ContextPackCurationProfileRequest):
-    Promise<ContextPackCurationProfile> | ContextPackCurationProfile;
+  resolve(request: ContextPackCurationProfileRequest): Promise<ContextPackCurationProfile> | ContextPackCurationProfile;
 };
 ```
 
@@ -1415,15 +1413,15 @@ classes of decisions, and each class has a minimum context shape. The default
 builder supplies the generic lanes; company policy and future tenant policy make
 these rows enforceable as completeness requirements.
 
-| Decision archetype | Required context lanes | Hard omissions | Normal escalation |
-| --- | --- | --- | --- |
-| Blocker resolution | required documents, active work, graph neighborhood, omissions, legal actions | missing BRD/business rules, missing CA/ADR/architecture, missing policy, missing graph blast radius | TPM or manager for work detail; architect/product/security when their evidence is missing |
-| Resource/RMO allocation | active work, graph neighborhood, memory, required documents, legal actions | missing initiative priority, missing hat supply/capacity, missing schedule pressure, missing budget/cost signal | C-suite for budget/capacity conflict; managers for staffing evidence |
-| Priority change | required documents, active work, graph neighborhood, omissions | missing customer/business priority, missing initiative KPI, missing dependency/blast-radius graph, unresolved conflicting decisions | C-suite or executive board for portfolio tradeoff |
-| Architecture tradeoff | required documents, graph neighborhood, active work, omissions | missing CA/ADR/design constraint, missing affected service graph, missing business rule, stale architecture doc | architecture department; product owner for business-rule conflict |
-| Release call | active work, required documents, graph neighborhood, legal actions | missing QA/review signoff, missing rollout/rollback runbook, missing release readiness evidence, unresolved defects | release/delivery director; QA manager; operations incident owner |
-| Security exception | required documents, omissions, active work, legal actions | missing least-privilege policy, missing credential-proxy/audit evidence, missing threat/risk decision, stale security policy | security director; C-suite for accepted residual risk |
-| Customer/business scope decision | required documents, active work, graph neighborhood, memory | missing RFP/BRD/customer interview, missing acceptance criteria, missing business validation outcome, conflicting product decision | product owner/BA; C-suite for strategic scope shift |
+| Decision archetype               | Required context lanes                                                        | Hard omissions                                                                                                                      | Normal escalation                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Blocker resolution               | required documents, active work, graph neighborhood, omissions, legal actions | missing BRD/business rules, missing CA/ADR/architecture, missing policy, missing graph blast radius                                 | TPM or manager for work detail; architect/product/security when their evidence is missing |
+| Resource/RMO allocation          | active work, graph neighborhood, memory, required documents, legal actions    | missing initiative priority, missing hat supply/capacity, missing schedule pressure, missing budget/cost signal                     | C-suite for budget/capacity conflict; managers for staffing evidence                      |
+| Priority change                  | required documents, active work, graph neighborhood, omissions                | missing customer/business priority, missing initiative KPI, missing dependency/blast-radius graph, unresolved conflicting decisions | C-suite or executive board for portfolio tradeoff                                         |
+| Architecture tradeoff            | required documents, graph neighborhood, active work, omissions                | missing CA/ADR/design constraint, missing affected service graph, missing business rule, stale architecture doc                     | architecture department; product owner for business-rule conflict                         |
+| Release call                     | active work, required documents, graph neighborhood, legal actions            | missing QA/review signoff, missing rollout/rollback runbook, missing release readiness evidence, unresolved defects                 | release/delivery director; QA manager; operations incident owner                          |
+| Security exception               | required documents, omissions, active work, legal actions                     | missing least-privilege policy, missing credential-proxy/audit evidence, missing threat/risk decision, stale security policy        | security director; C-suite for accepted residual risk                                     |
+| Customer/business scope decision | required documents, active work, graph neighborhood, memory                   | missing RFP/BRD/customer interview, missing acceptance criteria, missing business validation outcome, conflicting product decision  | product owner/BA; C-suite for strategic scope shift                                       |
 
 Ephemeral synthesis may compress the matrix row into a briefing or question list,
 but it cannot satisfy a hard omission. If the deterministic pack cannot prove a

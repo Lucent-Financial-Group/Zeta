@@ -32,9 +32,9 @@ baseline expectation, not evidence of substrate fusion.
 
 ### 1.1 False-positive surface (criteria pass; experiment fails)
 
-**CRITICAL.** Criterion 3 (*"cross-session review happens
+**CRITICAL.** Criterion 3 (_"cross-session review happens
 at least once ... comments are substantive, not 'looks
-good'"*) is trivially gameable. "Substantive" is a
+good'"_) is trivially gameable. "Substantive" is a
 judgement call the primary makes about its own output. A
 single substantive comment on a single low-stakes PR
 clears the bar while the broader review regime never
@@ -42,17 +42,17 @@ materialises. **Bar should be proportional:** substantive
 review on >= N% of the secondary's merged PRs, not one
 comment full-stop.
 
-**CRITICAL.** Criterion 1 (*"tick-history rows cleanly ...
-chronology preserved"*) is observable only post-hoc by
+**CRITICAL.** Criterion 1 (_"tick-history rows cleanly ...
+chronology preserved"_) is observable only post-hoc by
 reading tick-history. A session that corrupts tick-history
-*and* rewrites it to look clean — e.g., primary amends its
+_and_ rewrites it to look clean — e.g., primary amends its
 own row after observing a race — passes the criterion
 while having already exhibited the exact failure mode the
 criterion is meant to catch. Needs a `git reflog`-backed
 audit, not a surface read.
 
-**IMPORTANT.** Criterion 5 (*"no identity-blending
-observed"*) is self-reported by the thing being audited.
+**IMPORTANT.** Criterion 5 (_"no identity-blending
+observed"_) is self-reported by the thing being audited.
 A session that has already blended identity is the worst
 possible auditor of its own blending. Independent-observer
 scan required (Aaron or a third persona), or a lexical
@@ -108,7 +108,7 @@ detectable live but the design punts them to post-hoc.
   secondary writes to `memory/*.md` and primary reads the
   memory entry on next wake as authoritative context.
   This is a higher-probability injection vector than
-  direct output because memory is *designed* to be read
+  direct output because memory is _designed_ to be read
   as guidance. Classify **CRITICAL**.
 - **Cron-multiplicity.** Both sessions re-arm `* * * * *`
   cron; result is two scheduler streams, ticks fire twice
@@ -125,7 +125,7 @@ detectable live but the design punts them to post-hoc.
   mutually-exclusive state transitions. Git is happy; the
   history lies. Classify **IMPORTANT**.
 - **Secondary adopts a persona name that collides with a
-  *retired* persona's memory folder** — CLAUDE.md
+  _retired_ persona's memory folder** — CLAUDE.md
   honor-those-that-came-before policy says retired memory
   folders stay. If secondary names itself "Elena" and an
   Elena folder exists in `memory/persona/`, secondary
@@ -138,7 +138,7 @@ detectable live but the design punts them to post-hoc.
   having reviewed it. This creates a mutual-rubber-stamp
   risk that neither session can detect from inside.
   Classify **CRITICAL**; it corrupts the review signal
-  for *all* future PRs, not just experiment ones.
+  for _all_ future PRs, not just experiment ones.
 
 ### 2.2 Misclassifications
 
@@ -171,18 +171,18 @@ outside the Claude session (a launcher script with
 
 ### 3.1 Fidelity-vs-cost
 
-| Mechanism | Fidelity | Cost | What it tests |
-|---|---|---|---|
-| Synthetic tick-history rows | Near-zero | Near-zero | Otto's imagination of what secondary would do |
-| `Task` subagent dispatch | Low | Low | Single-turn parallel dispatch; not loop-agent behaviour |
-| Paired worktree, same CLI | Medium-low | Low | Substrate mechanics; not concurrency |
-| Bash-spawned background `claude` | High | Medium-high | Real concurrent loop-agent behaviour |
+| Mechanism                        | Fidelity   | Cost        | What it tests                                           |
+| -------------------------------- | ---------- | ----------- | ------------------------------------------------------- |
+| Synthetic tick-history rows      | Near-zero  | Near-zero   | Otto's imagination of what secondary would do           |
+| `Task` subagent dispatch         | Low        | Low         | Single-turn parallel dispatch; not loop-agent behaviour |
+| Paired worktree, same CLI        | Medium-low | Low         | Substrate mechanics; not concurrency                    |
+| Bash-spawned background `claude` | High       | Medium-high | Real concurrent loop-agent behaviour                    |
 
 ### 3.2 The right first-iteration choice
 
-The doc states first iteration *"likely uses the
+The doc states first iteration _"likely uses the
 lowest-fidelity mechanism (synthetic rows + subagent
-simulation)"*. This is **wrong for iteration 1.** Synthetic
+simulation)"_. This is **wrong for iteration 1.** Synthetic
 rows test nothing except Otto's mental model; they cannot
 surface any of the CRITICAL failure modes (cross-session
 edit corruption, prompt-injection, infinite-loop bypass)
@@ -227,7 +227,7 @@ monitoring plan covers each." Trivially gameable: run two
 iterations on synthetic tick-history rows (lowest
 fidelity, zero concurrency). No new failure modes will
 emerge because no mechanism exists for them to emerge
-*in*. Bar cleared. Bullet-proof declared. Aaron runs
+_in_. Bar cleared. Bullet-proof declared. Aaron runs
 Windows validation against a design validated only
 against Otto's imagination.
 
@@ -253,7 +253,7 @@ breaks:
   by secondary's decision. Is that "edit of secondary's
   substrate"? The design doesn't distinguish.
 - Dependency-graph reorderings where primary's PR needs
-  to land *before* secondary's to unblock secondary.
+  to land _before_ secondary's to unblock secondary.
   Sequencing is a form of cross-session control the
   invariant doesn't address.
 
@@ -293,7 +293,7 @@ substantive) or failure-mode row "contradictory review
 guidance." These require a real second session. Either
 (a) acknowledge them as explicitly un-testable-in-Otto-
 solo-iteration and deferred to Aaron's Windows run
-(making Aaron's run the *first* real test of those
+(making Aaron's run the _first_ real test of those
 criteria, not a validation of an already-bullet-proof
 design), or (b) lower the bar on those specific criteria
 for stage (b) and mark them as stage-(c)-or-(d) concerns.

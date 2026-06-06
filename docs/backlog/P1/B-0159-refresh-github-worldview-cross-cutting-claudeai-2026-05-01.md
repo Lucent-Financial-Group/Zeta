@@ -142,9 +142,9 @@ synthetic deps).
 The human maintainer 2026-05-01 calibrated Amara's
 `repo-state` rename further:
 
-> *"worldview invites scope creep; repo-state almost agree,
+> _"worldview invites scope creep; repo-state almost agree,
 > repo-state instead enough that's gitnative it will need to
-> be a wrapper github-state that composes over repo-state."*
+> be a wrapper github-state that composes over repo-state."_
 
 Two-layer architecture:
 
@@ -155,7 +155,7 @@ Two-layer architecture:
 - File-system surfaces: backlog row inventory, claim files,
   trajectory files, active session shards.
 - Backlog delta via `git diff --name-only HEAD~1 HEAD -- docs/backlog/`
-  + `git log --diff-filter=A` queries.
+  - `git log --diff-filter=A` queries.
 - **Portable across git hosts** (works on Forgejo, GitLab,
   plain git servers, etc.) per
   `memory/feedback_git_native_vs_github_native_plural_host_pluggable_adapters_2026_04_23.md`.
@@ -192,13 +192,13 @@ Two-layer architecture:
 
 ### Tool naming summary (post-rename)
 
-| Old name | New name | Layer | Composes |
-|---|---|---|---|
-| `refresh-github-worldview` | (deprecated — too broad) | — | — |
-| (n/a) | `tools/repo-state/repo-state.ts` | Layer 1 (git-native) | git ops + filesystem |
-| (n/a) | `tools/github/github-state.ts` | Layer 2 (GitHub) | wraps Layer 1 + poll-pr-gate-batch + gh API |
-| `tools/github/poll-pr-gate.ts` | (unchanged) | per-PR primitive | direct gh API |
-| `tools/github/poll-pr-gate-batch.ts` | (unchanged) | per-PR-list primitive | wraps poll-pr-gate.ts |
+| Old name                             | New name                         | Layer                 | Composes                                    |
+| ------------------------------------ | -------------------------------- | --------------------- | ------------------------------------------- |
+| `refresh-github-worldview`           | (deprecated — too broad)         | —                     | —                                           |
+| (n/a)                                | `tools/repo-state/repo-state.ts` | Layer 1 (git-native)  | git ops + filesystem                        |
+| (n/a)                                | `tools/github/github-state.ts`   | Layer 2 (GitHub)      | wraps Layer 1 + poll-pr-gate-batch + gh API |
+| `tools/github/poll-pr-gate.ts`       | (unchanged)                      | per-PR primitive      | direct gh API                               |
+| `tools/github/poll-pr-gate-batch.ts` | (unchanged)                      | per-PR-list primitive | wraps poll-pr-gate.ts                       |
 
 The "before tick decision" canonical call becomes:
 `bun tools/github/github-state.ts` (which internally calls
@@ -247,8 +247,8 @@ Consolidated requirements absorbed below.
 
 ### Gemini — macro/micro framing
 
-- **Best Distilled Rule**: *"A perfect understanding of a single
-  lane is useless if you don't know you're in the wrong lane."*
+- **Best Distilled Rule**: _"A perfect understanding of a single
+  lane is useless if you don't know you're in the wrong lane."_
 - Strict sequence: don't context switch; finish current PR cycle
   first; then file backlog row; then memory file; then
   implement on a quiet tick. (Already followed.)
@@ -274,8 +274,8 @@ Consolidated requirements absorbed below.
   `.state/github-state/last.json` (gitignored, session-local)
   for delta computation. Flags: `--write-state` /
   `--no-write-state` / `--since <timestamp-or-sha>`.
-- **Carved blade**: *"Known PRs are not reality. They are the
-  part of reality Otto remembered to ask about."*
+- **Carved blade**: _"Known PRs are not reality. They are the
+  part of reality Otto remembered to ask about."_
 
 ## Cross-peer convergence (4/4 agree)
 
@@ -431,16 +431,16 @@ own backlog row when prioritized.
 - [ ] `tools/refresh-github-worldview/refresh.ts` script exists and runs
 - [ ] Calls `poll-pr-gate-batch.ts` internally for per-PR detail
 - [ ] Adds 5+ cross-cutting queries (full open-PR list, recent merges,
-  backlog delta, claim files, branch state)
+      backlog delta, claim files, branch state)
 - [ ] Two-layer print: raw JSON first, interpretation labeled second
 - [ ] DST-grade-A test coverage (synthetic deps; no live `gh` calls)
 - [ ] At least 3 fixtures covering common scenarios
 - [ ] Existing memory files (rebase-decision, BLOCKED-with-green-CI,
-  Copilot false-positive) updated to reference the new script as
-  canonical refresh
+      Copilot false-positive) updated to reference the new script as
+      canonical refresh
 - [ ] CLAUDE.md refresh-before-decide bullet points at the new script
 - [ ] Tick-start in autonomous-loop replaced with single unified-refresh
-  call
+      call
 
 ## Caution per Claude.ai's Otto-aware framing
 

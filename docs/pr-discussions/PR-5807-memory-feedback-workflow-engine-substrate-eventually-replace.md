@@ -16,19 +16,20 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## PR description
 
-Aaron 2026-05-28: *'once we get these workflows working good we can turn off prs and github branch protection roll our own and just use theirs as backup / fork protection or something if we need it.'*
+Aaron 2026-05-28: _'once we get these workflows working good we can turn off prs and github branch protection roll our own and just use theirs as backup / fork protection or something if we need it.'_
 
 Three-phase substrate-engineering trajectory:
 
-| Phase | State | Primary substrate | GitHub role |
-|---|---|---|---|
-| **Phase 1 (current)** | Dogfooding | GitHub PR + branch protection + auto-merge | PRIMARY |
-| **Phase 2 (target)** | workflow-engine matures | workflow-engine DUs + dispatch + state-machine | Parallel-run + verification |
-| **Phase 3 (deepest)** | workflow-engine IS primary | OUR workflow-engine substrate | BACKUP / fork-protection |
+| Phase                 | State                      | Primary substrate                              | GitHub role                 |
+| --------------------- | -------------------------- | ---------------------------------------------- | --------------------------- |
+| **Phase 1 (current)** | Dogfooding                 | GitHub PR + branch protection + auto-merge     | PRIMARY                     |
+| **Phase 2 (target)**  | workflow-engine matures    | workflow-engine DUs + dispatch + state-machine | Parallel-run + verification |
+| **Phase 3 (deepest)** | workflow-engine IS primary | OUR workflow-engine substrate                  | BACKUP / fork-protection    |
 
 ## Substitution mapping
 
 GitHub primitive → Workflow-engine replacement:
+
 - PR → WorkflowLifetime DU (B-0867.5)
 - Branch protection → StandardVerdict DUs + lifetime-pair matrices
 - Required checks → dispatchInWorld Result<T, TFeedback>
@@ -63,6 +64,7 @@ NO new backlog rows per 'common sense 2.0' signal — substrate sufficient.
 Adds a feedback memory capturing a three-phase trajectory where the workflow-engine substrate moves from GitHub PR dogfooding toward becoming the primary workflow substrate, with GitHub retained as backup/fork protection.
 
 **Changes:**
+
 - Adds a new `memory/feedback_*.md` file documenting the trajectory, substitution mapping, and readiness criteria.
 - Regenerates `memory/MEMORY.md` to include the new memory entry and update the truncated heap count.
 
@@ -70,9 +72,9 @@ Adds a feedback memory capturing a three-phase trajectory where the workflow-eng
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `memory/MEMORY.md` | Adds the new memory entry to the auto-index and updates truncation metadata. |
+| File                                                                                                                                                                | Description                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `memory/MEMORY.md`                                                                                                                                                  | Adds the new memory entry to the auto-index and updates truncation metadata.                                |
 | `memory/feedback_workflow_engine_eventually_replaces_github_pr_process_currently_dogfooding_target_state_github_becomes_backup_fork_protection_aaron_2026_05_28.md` | New feedback memory describing the workflow-engine replacement trajectory and related substrate references. |
 
 ## Review threads

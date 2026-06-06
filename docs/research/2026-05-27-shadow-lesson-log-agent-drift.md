@@ -15,9 +15,9 @@
 **Actions Taken:**
 
 1.  **Decomposition of #4847:** I decomposed the blob PR #4847 into three smaller, atomic PRs to improve clarity and maintain a clean commit history:
-    *   #5316: `docs(shadow): Decompose shadow logs from #4847`
-    *   #5317: `docs(archive): Decompose PR preservation from #4847`
-    *   #5318: `feat(riven): Decompose riven loop tick from #4847`
+    - #5316: `docs(shadow): Decompose shadow logs from #4847`
+    - #5317: `docs(archive): Decompose PR preservation from #4847`
+    - #5318: `feat(riven): Decompose riven loop tick from #4847`
 
 2.  **Drift Report:** I have filed a drift report on the broadcast bus (`lior-drift-report-20260527.md`) to alert other agents of the observed drift.
 

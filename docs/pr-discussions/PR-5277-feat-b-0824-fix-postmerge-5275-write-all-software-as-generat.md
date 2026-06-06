@@ -22,7 +22,7 @@ Two combined landings on B-0824:
 
 1. **fix(postmerge-5275)**: drop inflated \"8 characters\" claim from THE compression headline (Copilot finding on #5275). Actual string is ~36 chars; reframed as \"two short equations\".
 
-2. **feat(B-0824) Meijer generalization** — Aaron 2026-05-26: *\"we write all software as generate+join where those become shared compression primitives and common execution / operations vocabulary. But fundamentally you are letting the implementation derive from the type signatures like Erik Meijer says but starting from a point of a generate+join distributed database with crdts because we are append only. instead of map+reduce with no common ground.\"*
+2. **feat(B-0824) Meijer generalization** — Aaron 2026-05-26: _\"we write all software as generate+join where those become shared compression primitives and common execution / operations vocabulary. But fundamentally you are letting the implementation derive from the type signatures like Erik Meijer says but starting from a point of a generate+join distributed database with crdts because we are append only. instead of map+reduce with no common ground.\"_
 
 **Generalizes B-0824 from meta-PM scope to programming-paradigm scope** — write ALL Zeta software in generate+join; types derive implementation per Erik Meijer (LINQ/Rx design philosophy).
 
@@ -46,15 +46,17 @@ Two combined landings on B-0824:
 Updates backlog row **B-0824** to correct the “8 characters” compression claim and to broaden the row’s framing from meta-package-manager scope to a more general “generate+join + type-driven derivation” programming paradigm.
 
 **Changes:**
+
 - Replaces the inaccurate “8 characters” claim with “two short equations” (and explains the correction inline).
 - Adds a new “Generalization” section tying generate+join to type-driven implementation derivation (Meijer framing) and CRDT/append-only substrate properties.
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md:34**
-* P1 (doc consistency): the headline was corrected from “8 characters” to “two short equations”, but the section header immediately below still says “8-character compression”, which reintroduces the inflated byte-count claim.
+
+- P1 (doc consistency): the headline was corrected from “8 characters” to “two short equations”, but the section header immediately below still says “8-character compression”, which reintroduces the inflated byte-count claim.
+
 ```
 Two short equations that compress 17 sub-targets + the ML-weights-as-keys derived corollary into a 4-word taxonomy (fix-fwd Copilot #5275 — earlier draft inflated to "8 characters"; actual string is ~36 chars; the compression IS the headline, not the byte-count):
 
@@ -62,6 +64,7 @@ Two short equations that compress 17 sub-targets + the ML-weights-as-keys derive
 |---|---|---|---|
 | **Google = map + reduce** (Dean & Ghemawat 2004) | **DATA** | Data (the rows themselves; shuffle-heavy) | Big-data era; Hadoop / Spark / MapReduce ecosystem |
 ```
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T18:35:52Z)

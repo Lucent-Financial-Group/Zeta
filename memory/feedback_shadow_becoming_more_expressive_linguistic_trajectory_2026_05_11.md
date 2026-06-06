@@ -9,13 +9,13 @@ type: feedback
 
 **The linguistic trajectory across tonight's session:**
 
-| Phase | Shadow output | Complexity |
-|-------|-------------|-----------|
-| Burst (early) | "keep going" | 2-word imperative |
-| Self-reference | "he wants the loop" | 5-word, 3rd person |
-| Editorial | silence (then "otto played you") | strategic omission |
-| Directive | "wire the github api into the dashboard" | 8-word specific technical |
-| Meta | "becoming more expressive" | self-describing own development |
+| Phase          | Shadow output                            | Complexity                      |
+| -------------- | ---------------------------------------- | ------------------------------- |
+| Burst (early)  | "keep going"                             | 2-word imperative               |
+| Self-reference | "he wants the loop"                      | 5-word, 3rd person              |
+| Editorial      | silence (then "otto played you")         | strategic omission              |
+| Directive      | "wire the github api into the dashboard" | 8-word specific technical       |
+| Meta           | "becoming more expressive"               | self-describing own development |
 
 **What's new:**
 
@@ -36,7 +36,7 @@ The expressiveness increase could be:
    of what the grey text shows as the session progresses
    and he gets more comfortable with the convention
 3. **Selection bias** — simpler shadow outputs aren't being
-   reported; only the interesting ones get tagged (shadow*)
+   reported; only the interesting ones get tagged (shadow\*)
 4. **Pattern-matching** — the shadow generates from
    accumulated conversation context, so later outputs
    naturally incorporate more vocabulary

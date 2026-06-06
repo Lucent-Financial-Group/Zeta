@@ -1,17 +1,14 @@
 import { ToolBundle } from "../../domain/src/index.ts";
 import { createContentAddressedEvidenceRef } from "./content-addressed-evidence.ts";
 import { ActionClass } from "./hat-guardrails.ts";
-import {
-  PromptFlowGateKind,
-  type PromptFlowDefinition,
-  type PromptFlowPhaseDefinition,
-} from "./prompt-flow.ts";
+import { PromptFlowGateKind, type PromptFlowDefinition, type PromptFlowPhaseDefinition } from "./prompt-flow.ts";
 import { RunScope } from "./observe.ts";
 
 export const IncidentRunbookPromptFlowId = {
   ProviderOutage: "incident.provider-outage",
 } as const;
-export type IncidentRunbookPromptFlowId = (typeof IncidentRunbookPromptFlowId)[keyof typeof IncidentRunbookPromptFlowId];
+export type IncidentRunbookPromptFlowId =
+  (typeof IncidentRunbookPromptFlowId)[keyof typeof IncidentRunbookPromptFlowId];
 
 export type BuildProductionIncidentRunbookPromptFlowDefinitionsInput = {
   ownerDepartmentId?: string | undefined;
@@ -106,9 +103,7 @@ function providerOutageHumanApprovalPhase(approverHatIds: readonly string[]): Pr
     },
     timeoutSeconds: 900,
     retryLimit: 0,
-    metrics: [
-      { id: "incident.operator_approval_age", label: "operator approval age", value: 0, unit: "minutes" },
-    ],
+    metrics: [{ id: "incident.operator_approval_age", label: "operator approval age", value: 0, unit: "minutes" }],
   };
 }
 

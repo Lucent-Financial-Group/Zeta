@@ -11,12 +11,12 @@ created: 2026-05-17T07:23Z
 
 17 unique dangling refs, ~22 edges across 21 backlog-row files:
 
-| Citing file (truncated) | # citations |
-|---|---:|
-| `B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-*.md` | 2 |
-| `B-0156-typescript-standardization-non-install-scripts-aaron-*.md` | 2 |
-| `B-0105.2-home3-reviewer-artifact-snapshot-mismatch-taxonomy-*.md` | 2 |
-| 18 other rows | 1 each |
+| Citing file (truncated)                                             | # citations |
+| ------------------------------------------------------------------- | ----------: |
+| `B-0085-budget-cadence-workflow-cron-misses-task-287-deadline-*.md` |           2 |
+| `B-0156-typescript-standardization-non-install-scripts-aaron-*.md`  |           2 |
+| `B-0105.2-home3-reviewer-artifact-snapshot-mismatch-taxonomy-*.md`  |           2 |
+| 18 other rows                                                       |      1 each |
 
 Total citing rows: 21. All under `docs/backlog/P*/B-*.md`. All are
 **Otto-authored backlog rows** — not verbatim conversation files,
@@ -24,11 +24,11 @@ not external-AI packet preservation, not research syntheses.
 
 ## File-type classification
 
-| File category | Files | Resolution pattern |
-|---|---:|---|
-| Otto-authored backlog rows | 21 | **4-option menu** (slice 1) |
-| Verbatim preservation | 0 | (none — Option E not needed) |
-| External-AI packets | 0 | (none) |
+| File category              | Files | Resolution pattern           |
+| -------------------------- | ----: | ---------------------------- |
+| Otto-authored backlog rows |    21 | **4-option menu** (slice 1)  |
+| Verbatim preservation      |     0 | (none — Option E not needed) |
+| External-AI packets        |     0 | (none)                       |
 
 Slice 4 is **homogeneous** — single file-type, single resolution
 pattern, even though it's the largest scope by edge count.
@@ -58,22 +58,22 @@ For each of the 17 unique dangling refs in slice 4, pick one of:
 
 ## Compositional snapshot after 4 slices (B-0611 complete audit)
 
-| Slice | Surface | uniqueRefs | edges | Pattern |
-|---|---|---:|---:|---|
-| 1 | `.claude/skills` + `.claude/rules` | 6 | 6 | 4/6 already footnote-fallback (no work); 2 need Option A-D |
-| 2 | `memory/persona` | 4 | 10 | Option E (editorial footnote on verbatim) |
-| 3 | `docs/research` | 8 | 9 | Hybrid: ~5 Option E (verbatim) + ~4 Option A-D (Otto-authored) |
-| 4 | `docs/backlog` | 17 | ~22 | All Option A-D (Otto-authored backlog rows) |
-| **Total** | 6 surfaces (`.claude/agents` has 0) | **35** | **~47** | 4 patterns: no-work / Option A-D / Option E / hybrid |
+| Slice     | Surface                             | uniqueRefs |   edges | Pattern                                                        |
+| --------- | ----------------------------------- | ---------: | ------: | -------------------------------------------------------------- |
+| 1         | `.claude/skills` + `.claude/rules`  |          6 |       6 | 4/6 already footnote-fallback (no work); 2 need Option A-D     |
+| 2         | `memory/persona`                    |          4 |      10 | Option E (editorial footnote on verbatim)                      |
+| 3         | `docs/research`                     |          8 |       9 | Hybrid: ~5 Option E (verbatim) + ~4 Option A-D (Otto-authored) |
+| 4         | `docs/backlog`                      |         17 |     ~22 | All Option A-D (Otto-authored backlog rows)                    |
+| **Total** | 6 surfaces (`.claude/agents` has 0) |     **35** | **~47** | 4 patterns: no-work / Option A-D / Option E / hybrid           |
 
 ## Work-decomposition summary
 
-| Resolution class | Edges | Work shape |
-|---|---:|---|
-| Already footnote-fallback (slice 1) | 4 | No edit needed (intentional dangling) |
-| Option A-D (Otto-authored rows + research) | ~26 | Per-citation choice; mechanical once mapping established |
-| Option E (verbatim files) | ~15 | Editorial footnote at top of file; mechanical pattern |
-| Audit-tool integration | — | Allowlist / suggest mode / annotation parser (one-time engineering) |
+| Resolution class                           | Edges | Work shape                                                          |
+| ------------------------------------------ | ----: | ------------------------------------------------------------------- |
+| Already footnote-fallback (slice 1)        |     4 | No edit needed (intentional dangling)                               |
+| Option A-D (Otto-authored rows + research) |   ~26 | Per-citation choice; mechanical once mapping established            |
+| Option E (verbatim files)                  |   ~15 | Editorial footnote at top of file; mechanical pattern               |
+| Audit-tool integration                     |     — | Allowlist / suggest mode / annotation parser (one-time engineering) |
 
 **Estimated work for full B-0611 cleanup**: ~3-4 small PRs
 (one per slice + optional audit-tool-integration PR). Per-slice
@@ -116,5 +116,6 @@ cleanup.
 
 This memo completes the B-0611 audit-prep substrate. Future
 safe-window Otto starting cleanup can read the 4 per-slice memos
-+ the parent backlog row to execute the work without re-running
-discovery.
+
+- the parent backlog row to execute the work without re-running
+  discovery.

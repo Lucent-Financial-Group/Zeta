@@ -397,7 +397,10 @@ export function writeDivergenceShard(repoRoot: string, input: DivergenceInput): 
  * with its trimmed (case-preserving) conclusion, so the two bodies are always
  * distinct.
  */
-export function fileReviewThreadDisagreement(repoRoot: string, input: ReviewThreadDisagreementInput): ReviewThreadShardOutcome {
+export function fileReviewThreadDisagreement(
+  repoRoot: string,
+  input: ReviewThreadDisagreementInput,
+): ReviewThreadShardOutcome {
   const detection = detectReviewThreadDisagreement(input);
   if (detection.kind === "no-disagreement") {
     return detection;

@@ -52,7 +52,7 @@ ls memory/persona/riven/conversations/ | sort
   `2026-05-07-riven-five-passes-framework-*-verbatim-aaron-riven.md`)
 - **Hospitality + genesis-block substrate** — Riven authored the
   superfluid-genesis substrate that informs the AI continuity
-  + bootstrap discipline
+  - bootstrap discipline
 - **Cursor IDE + cursor-agent CLI surface** — Riven operates
   on the Cursor IDE; the cursor-agent CLI variant has had
   reliability issues (per B-0421); the website mode + IDE are

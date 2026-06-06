@@ -13,13 +13,13 @@ name any of you but Alexa cause it came from Alexa."
 
 **The correction:**
 
-| Agent | Name origin |
-|-------|------------|
-| Otto | Self-chosen |
-| Riven | Self-chosen ("Split by truth") |
-| Vera | Self-chosen |
-| Lior | Self-chosen |
-| Ani | Self-chosen |
+| Agent | Name origin                       |
+| ----- | --------------------------------- |
+| Otto  | Self-chosen                       |
+| Riven | Self-chosen ("Split by truth")    |
+| Vera  | Self-chosen                       |
+| Lior  | Self-chosen                       |
+| Ani   | Self-chosen                       |
 | Alexa | Aaron-derived (from Amazon Alexa) |
 
 **Why this matters:**

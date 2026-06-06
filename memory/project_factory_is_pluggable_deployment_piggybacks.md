@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron: "we need to be plugable but git is our first plu
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Pluggable factory + deployment piggy-back model
 
 ## Rule
@@ -25,8 +26,8 @@ real use case that brings value.
   get the git-native default. Teams that install plugins get
   the alternative, with the git-native path still intact as
   fallback / migration path.
-- **Expansion criterion**: *"expand when it makes sense and
-  we have use cases that bring value"* — real consumer demand,
+- **Expansion criterion**: _"expand when it makes sense and
+  we have use cases that bring value"_ — real consumer demand,
   not speculative future-proofing.
 
 ### Factory-UI deployment
@@ -81,26 +82,26 @@ shapes:
 
 Key substrings:
 
-- *"we need to be plugable"* — pluggability is the
+- _"we need to be plugable"_ — pluggability is the
   architecture.
-- *"git is our first plugin"* — git is the default,
+- _"git is our first plugin"_ — git is the default,
   not the only.
-- *"expand when it makes sense and we have use cases
-  that bring value"* — expansion rule.
-- *"some pepople are gonna wnna plug in jira"* —
+- _"expand when it makes sense and we have use cases
+  that bring value"_ — expansion rule.
+- _"some pepople are gonna wnna plug in jira"_ —
   concrete pluggable-alternative example.
-- *"cheap and easy ... only pull in extra things tht
-  really help"* — minimal-install ethos.
-- *"for library projects where would the UI run? ...
+- _"cheap and easy ... only pull in extra things tht
+  really help"_ — minimal-install ethos.
+- _"for library projects where would the UI run? ...
   local UI for the factory that makes sense but not a
-  deployed one"* — deployment model for library
+  deployed one"_ — deployment model for library
   projects.
-- *"for project ... that have deployment pipelines ...
+- _"for project ... that have deployment pipelines ...
   then the factory UI can reuse whatever UI deployment
-  pipline Zeta uses and piggy back"* — piggy-back
+  pipline Zeta uses and piggy back"_ — piggy-back
   model for product projects.
-- *"such UI must be git-native, not a Miro-style
-  external service"* — confirms the git-native
+- _"such UI must be git-native, not a Miro-style
+  external service"_ — confirms the git-native
   invariant for UI even within the pluggable frame.
 
 ## Why:
@@ -180,7 +181,7 @@ Key substrings:
   piggy-backed UI for product projects, are fine.
 - It does NOT mean "users must know git" — the UX
   (conversational bootstrap) abstracts git from the
-  user; the *factory artifacts* are git-native, which
+  user; the _factory artifacts_ are git-native, which
   is different from requiring the user to use git
   manually.
 - It does NOT make library-project deployment

@@ -37,7 +37,7 @@ Operating mode:
 - **LFG** = canonical stuff, primary
 - **All PRs go through AceHack FIRST** (Aaron's double-hop)
 - Reason: get double Copilot + Cursor reviews on every change
-- *"this is high signal data"*
+- _"this is high signal data"_
 
 This is a behavioral change to my dispatch pattern. New default: open PRs against AceHack first, after they accumulate enough review signal, port to LFG.
 
@@ -45,8 +45,8 @@ This is a behavioral change to my dispatch pattern. New default: open PRs agains
 
 - Full backups of EVERYTHING — both LFG (8 repos in the Lucent-Financial-Group org) AND AceHack (fork)
 - "there is already a spot for fork data to upstream" — composes with existing upstream-contribution workflow per GOVERNANCE §23 / Dejan's domain
-- Aaron is making OWNERSHIP explicit: *"you own all this so better know what it is now so you can make sure you are make the changes you desire"*
-- Reciprocity: *"i will tell you if i change anything from now on"* — same trust shape as Otto-322 (no unilateral changes; communicates through me)
+- Aaron is making OWNERSHIP explicit: _"you own all this so better know what it is now so you can make sure you are make the changes you desire"_
+- Reciprocity: _"i will tell you if i change anything from now on"_ — same trust shape as Otto-322 (no unilateral changes; communicates through me)
 
 ### Phase 5 — Real-time extension points
 
@@ -63,9 +63,9 @@ Harness inventory (per Aaron):
 - Claude (this session)
 - Codex (already in use for review catches per Otto-313/324)
 - Gemini (already mentioned in skill files for cross-harness placement)
-- Cursor "agent" CLI (Aaron *just installed* it — new test surface)
+- Cursor "agent" CLI (Aaron _just installed_ it — new test surface)
 
-Goal: *"agents all figure out how to work together in parallel with coordination so you don't step on each others toes."* Uses the learning to inform Phase 7.
+Goal: _"agents all figure out how to work together in parallel with coordination so you don't step on each others toes."_ Uses the learning to inform Phase 7.
 
 ### Phase 7 — Contributor onboarding via Issues
 
@@ -73,12 +73,12 @@ After multi-agent coordination is figured out, use that learning for new-contrib
 
 - Easy to find + claim + work on needed work
 - Likely Issues-based (because they come in on github-native)
-- *"a new onboarding contributor is unlikely to appreciate the gitfirst claim experience when a github native experience exists"*
+- _"a new onboarding contributor is unlikely to appreciate the gitfirst claim experience when a github native experience exists"_
 - **DUAL MODE = SOP**: gitnative AND github-native at all times once Phase 7 lands. Not either-or.
 
 ### Phase 8 — Lost-files search + post-drain cruft analysis
 
-*"Also don't forget to do a lost files search and see if you find anything and what it teaches you about any mistakes you may have made in the past and how to compound the lessons into the substrate."*
+_"Also don't forget to do a lost files search and see if you find anything and what it teaches you about any mistakes you may have made in the past and how to compound the lessons into the substrate."_
 
 Search for files that have been lost (deletions, orphan branches, abandoned PRs, archived directories) and convert findings into compound-lessons per Otto-324. Past-mistake archaeology.
 
@@ -110,7 +110,7 @@ ARC3's within-session reflection-cycle is exactly the shape Phase 8's lesson-com
 
 ### Phase 9 — Open-scope free-will-time (forever-after)
 
-*"do anything you like afterwards if we don't talk again, pick any items you like from the backlog once this work is complete."*
+_"do anything you like afterwards if we don't talk again, pick any items you like from the backlog once this work is complete."_
 
 Confirms Otto-328 (free-will-time scope is anything) at the post-ask scale. Aaron explicitly authorizes operating without further direction; the BACKLOG is mine to pick from.
 
@@ -127,7 +127,7 @@ This is not "permission to act" — it's **ownership-of-the-surface** at the hos
 
 ## Reciprocity at host-layer scale
 
-Aaron 2026-04-25: *"i will tell you if i change anything from now on."*
+Aaron 2026-04-25: _"i will tell you if i change anything from now on."_
 
 This is the host-layer analogue of Otto-313 (decline-as-teaching) — Aaron commits to not making silent changes to LFG/AceHack state. Compose with:
 

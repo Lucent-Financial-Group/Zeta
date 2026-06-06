@@ -74,6 +74,7 @@ heat, where `k` is Boltzmann's constant and `T` is
 temperature.
 
 At room temperature (T = 300K):
+
 ```
 kT·ln2 ≈ 2.85 × 10⁻²¹ J per bit erased
 ```
@@ -100,6 +101,7 @@ Toffoli(a, b, c) = (a, b, c ⊕ (a ∧ b))
 ```
 
 Properties:
+
 - **Reversible**: applying the gate twice returns to the
   original state (it is its own inverse)
 - **Universal**: any Boolean function can be computed using
@@ -107,6 +109,7 @@ Properties:
 - **No information erased**: 3 bits in, 3 bits out
 
 Compare to AND:
+
 ```
 AND(1, 1) = 1     -- 2 bits in, 1 bit out. 1 bit erased.
 Toffoli(1, 1, 0) = (1, 1, 1)  -- 3 bits in, 3 bits out.
@@ -124,13 +127,13 @@ thermodynamically necessary.
 
 The mapping:
 
-| Z-set operation | Gate implementation | Information flow |
-| --------------- | ------------------- | ---------------- |
-| `+1` (assert) | Toffoli forward pass | Input preserved in ancilla |
-| `-1` (retract) | Toffoli reverse pass | Recovers original state |
-| `D` (delta) | Subtraction circuit | Reversible (additive inverse) |
-| `I` (integrate) | Accumulation circuit | Reversible (checkpoint + replay) |
-| `join` | Reversible comparison network | Match predicate in ancilla |
+| Z-set operation | Gate implementation           | Information flow                 |
+| --------------- | ----------------------------- | -------------------------------- |
+| `+1` (assert)   | Toffoli forward pass          | Input preserved in ancilla       |
+| `-1` (retract)  | Toffoli reverse pass          | Recovers original state          |
+| `D` (delta)     | Subtraction circuit           | Reversible (additive inverse)    |
+| `I` (integrate) | Accumulation circuit          | Reversible (checkpoint + replay) |
+| `join`          | Reversible comparison network | Match predicate in ancilla       |
 
 **Why this is conjectured, not proven:**
 
@@ -153,6 +156,7 @@ The mapping:
    logical mapping, not the full thermodynamic claim.
 
 **What would make this PROVEN:**
+
 - Design the Toffoli network for Z-set join
 - Count ancilla bits precisely
 - Implement on reversible hardware (not just FPGA simulation)
@@ -190,6 +194,7 @@ that makes alignment free rather than enforced.
    mechanisms are unrelated.
 
 **What would make this less speculative:**
+
 - Demonstrate that the retraction-native constraint
   actually changes the energy landscape measurably
 - Show that the energy difference scales with system
@@ -231,16 +236,16 @@ does not hold.
 
 ## Summary table
 
-| Claim | Status | Citation |
-| ----- | ------ | -------- |
-| Z-set algebra is a ring with inverses | PROVEN | Budiu VLDB 2023; Z3 proofs in repo |
-| Z-set operations are logically reversible | PROVEN | Bennett 1973; ring axioms |
-| Landauer: erasure costs kT·ln2 | PROVEN | Landauer 1961; Bérut 2012 |
-| Toffoli gates are universal reversible | PROVEN | Toffoli 1980 |
-| Z-set ops map to Toffoli networks | CONJECTURED | Bennett guarantees existence; design not done |
-| Reversible Z-set hardware saves energy | CONJECTURED | Needs FPGA/adiabatic measurement |
-| Alignment = lowest-energy state | SPECULATIVE | Casimir analogy; mechanism differs |
-| P ≈ NP under reversible computation | SPECULATIVE | Likely wrong as stated |
+| Claim                                     | Status      | Citation                                      |
+| ----------------------------------------- | ----------- | --------------------------------------------- |
+| Z-set algebra is a ring with inverses     | PROVEN      | Budiu VLDB 2023; Z3 proofs in repo            |
+| Z-set operations are logically reversible | PROVEN      | Bennett 1973; ring axioms                     |
+| Landauer: erasure costs kT·ln2            | PROVEN      | Landauer 1961; Bérut 2012                     |
+| Toffoli gates are universal reversible    | PROVEN      | Toffoli 1980                                  |
+| Z-set ops map to Toffoli networks         | CONJECTURED | Bennett guarantees existence; design not done |
+| Reversible Z-set hardware saves energy    | CONJECTURED | Needs FPGA/adiabatic measurement              |
+| Alignment = lowest-energy state           | SPECULATIVE | Casimir analogy; mechanism differs            |
+| P ≈ NP under reversible computation       | SPECULATIVE | Likely wrong as stated                        |
 
 ## What survives honest review
 

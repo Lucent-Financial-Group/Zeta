@@ -27,10 +27,10 @@ Automated preservation of PR 4122 discussion.
 Archives PR #4122 discussion into the `docs/pr-discussions/` history surface via the standard preservation tool.
 
 **Changes:**
+
 - Adds a new PR preservation file for PR #4122 containing frontmatter, description, reviews, and review threads.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T23:57:07Z)
-
 
 ### 💡 Codex Review
 
@@ -38,17 +38,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `173c571282`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -64,7 +63,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-17T23:57:07Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix relative backlog link in archived PR body**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix relative backlog link in archived PR body**
 
 The archived PR description keeps the original `docs/backlog/...` relative link, but inside `docs/pr-discussions/` this resolves to `docs/pr-discussions/docs/backlog/...` and 404s in GitHub file rendering. This makes the key reference in the archive non-navigable for readers using the preserved discussion; converting it to a repo-root-relative path (for example `/docs/backlog/...`) would keep the archive self-contained and usable.
 

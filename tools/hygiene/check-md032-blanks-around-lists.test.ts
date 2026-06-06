@@ -1006,9 +1006,7 @@ describe("checkFiles", () => {
     // `surfaceReadErrors` flag (used by `main()` for explicit CLI
     // file args), an unreadable file must throw so a typo doesn't
     // exit 0 with "no findings."
-    expect(() =>
-      checkFiles(["/nonexistent/path/that/does/not/exist.md"], true),
-    ).toThrow(/Cannot read/);
+    expect(() => checkFiles(["/nonexistent/path/that/does/not/exist.md"], true)).toThrow(/Cannot read/);
   });
 });
 
@@ -1136,10 +1134,7 @@ describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
         join(dir, ".markdownlint-cli2.jsonc"),
         `// header comment\n{\n  "ignores": [\n    // ignore agent logs\n    "memory/**",\n    "docs/pr-preservation/**"\n  ]\n}\n`,
       );
-      expect(loadMarkdownlintIgnores(dir)).toEqual([
-        "memory/**",
-        "docs/pr-preservation/**",
-      ]);
+      expect(loadMarkdownlintIgnores(dir)).toEqual(["memory/**", "docs/pr-preservation/**"]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
@@ -1150,9 +1145,7 @@ describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
     // status; the helper must throw rather than silently treat the
     // gate as "no staged .md files" (the failure mode the round-2
     // fix originally addressed; this test prevents regression).
-    expect(() =>
-      stagedMarkdownFiles("/nonexistent/dir/that/is/not/a/repo"),
-    ).toThrow(/git diff --cached failed/);
+    expect(() => stagedMarkdownFiles("/nonexistent/dir/that/is/not/a/repo")).toThrow(/git diff --cached failed/);
   });
 
   test("stagedMarkdownFiles applies ignore globs (pre-CI review P1 on PR #3075 round 6)", () => {
@@ -1169,10 +1162,7 @@ describe("loadMarkdownlintIgnores + stagedMarkdownFiles", () => {
       git(["config", "user.email", "test@example.com"], dir);
       git(["config", "user.name", "test"], dir);
 
-      writeFileSync(
-        join(dir, ".markdownlint-cli2.jsonc"),
-        `{ "ignores": ["memory/**"] }\n`,
-      );
+      writeFileSync(join(dir, ".markdownlint-cli2.jsonc"), `{ "ignores": ["memory/**"] }\n`);
 
       mkdirSync(join(dir, "memory"), { recursive: true });
       mkdirSync(join(dir, "docs"), { recursive: true });

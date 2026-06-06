@@ -8,15 +8,15 @@ drop-zone absorption of `deep-research-report.md`.
 
 Aaron, 2026-04-22 auto-loop-43, four messages in sequence:
 
-> *"self directe play using arc3 type rules but in an advasarial
+> _"self directe play using arc3 type rules but in an advasarial
 > level/game creator level/game player, this will let us score our
-> absorption of emulators"*
+> absorption of emulators"_
 
-> *"and a symmeritc quality loop"*
+> _"and a symmeritc quality loop"_
 
-> *"they will naturally push the field forward through compitioon"*
+> _"they will naturally push the field forward through compitioon"_
 
-> *"state of the art changes everyday"*
+> _"state of the art changes everyday"_
 
 Four-message compression decompressed:
 
@@ -26,7 +26,7 @@ Four-message compression decompressed:
 2. **Scoring mechanism for emulator absorption** — BACKLOG #249's
    emulator-substrate absorption (RetroArch / MAME / Dolphin) has
    had no concrete success signal until now. Aaron proposes this
-   loop *as* the measurement.
+   loop _as_ the measurement.
 3. **Symmetric quality loop** — all three roles advance each other;
    no one-sided advantage; the loop itself has a quality metric
    symmetric across the roles.
@@ -53,7 +53,7 @@ of the assistant cutoff is incomplete. The frame is right; the
 rule-details may differ from what's public at 2026-04-22. The
 "ARC-3 type rules" framing in this doc should be verified against
 the current ARC Prize publications before any implementation
-lands. Treat the absorption here as *directional*, not literal.
+lands. Treat the absorption here as _directional_, not literal.
 
 ## The three-role co-evolutionary loop
 
@@ -89,7 +89,7 @@ work harder to stump it → creator improves; adversary has more
 surface to probe → adversary improves. Conversely, if the
 creator gets better, player's coverage is tested harder →
 player adapts. No one role is the "teacher" — all three are
-co-evolutionary peers. This is the *symmetric* property Aaron
+co-evolutionary peers. This is the _symmetric_ property Aaron
 named: the loop's quality lifts symmetrically, not asymmetrically
 toward one role.
 
@@ -111,7 +111,7 @@ orientation):
 ## Why this scores emulator absorption
 
 BACKLOG #249 ("Start emulator substrate research") has the
-problem that *"we absorbed RetroArch"* is not a measurable
+problem that _"we absorbed RetroArch"_ is not a measurable
 claim. The three-role loop gives a concrete signal:
 
 - **Player role** = our absorbed emulator running novel ROMs
@@ -195,8 +195,8 @@ trajectory.
    existing security / threat-model personas (Aminata,
    Nazar, Nadia, Mateo) wearing an ARC-3 adversary hat.
 6. **What's the "field" being pushed forward?** Aaron's
-   phrasing "*they will naturally push the field forward
-   through competition*" — the field of emulator absorption
+   phrasing "_they will naturally push the field forward
+   through competition_" — the field of emulator absorption
    specifically, or emulation-and-self-play research
    broadly, or factory-quality generally? Scope decision.
 
@@ -210,7 +210,7 @@ trajectory.
   scoring-first.
 - Not a claim that the factory has ARC-3 expertise yet.
 
-What *is* authorised this tick: capture the directive
+What _is_ authorised this tick: capture the directive
 verbatim + derived structure, file the BACKLOG row linking
 it to #249 / #242 / #244, update the relevant memories,
 and stop. Verification-before-deferral: all cross-references

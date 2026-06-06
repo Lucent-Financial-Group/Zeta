@@ -176,13 +176,17 @@ function mapInboxAnchorRow(row: InboxAnchorRow): ContextPackInboxAnchor | undefi
 }
 
 function isContextPackInboxAnchorPriority(value: unknown): value is ContextPackInboxAnchorPriority {
-  return typeof value === "string" &&
-    Object.values(ContextPackInboxAnchorPriority).includes(value as ContextPackInboxAnchorPriority);
+  return (
+    typeof value === "string" &&
+    Object.values(ContextPackInboxAnchorPriority).includes(value as ContextPackInboxAnchorPriority)
+  );
 }
 
 function isContextPackInboxAnchorStatus(value: unknown): value is ContextPackInboxAnchorStatus {
-  return typeof value === "string" &&
-    Object.values(ContextPackInboxAnchorStatus).includes(value as ContextPackInboxAnchorStatus);
+  return (
+    typeof value === "string" &&
+    Object.values(ContextPackInboxAnchorStatus).includes(value as ContextPackInboxAnchorStatus)
+  );
 }
 
 function stringifyTimestamp(value: string | Date): string {

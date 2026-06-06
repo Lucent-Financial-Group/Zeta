@@ -23,11 +23,13 @@ Cascade #4 ISO audit failed on commit 75eff94d (post-#5226 merge) with 2 missing
 ## Two-layer fix
 
 **This PR (fix-fwd, immediate unblock)**:
+
 1. Kernel + initrd checks converted to \`REQUIRED_KERNEL_ANY\` + \`REQUIRED_INITRD_ANY\` any-of-family pattern (mirrors existing \`REQUIRED_BOOTLOADER_ANY\` discipline that survived the 24.11→25.11 channel bump cleanly)
 2. Candidate paths cover legacy (\`boot/bzImage\`) + per-arch (\`boot/x86_64-linux/bzImage\`) + generic-named (\`boot/kernel\`) + vmlinuz conventions
 3. Added \`dumpIsoEntriesForDiagnostic()\` helper — prints first 80 sorted ISO entries on audit failure so future regressions self-debug
 
 **B-0823 (substrate-layer follow-up)**:
+
 - Investigate which 25.11 path actually drives kernel + initrd locations from the diagnostic dump
 - Optionally tighten the any-of families OR keep lenient as defense-in-depth (per B-0818 precedent)
 
@@ -48,6 +50,7 @@ Cascade #4 ISO audit failed on commit 75eff94d (post-#5226 merge) with 2 missing
 Updates the installer ISO content audit to tolerate nixpkgs 25.11 kernel/initrd path layout changes and adds diagnostic output to make future audit failures easier to debug. Adds a new backlog row tracking the follow-up investigation and indexes it in `docs/BACKLOG.md`.
 
 **Changes:**
+
 - Replace strict `boot/bzImage` + `boot/initrd` requirements with kernel/initrd “any-of” path families.
 - Add an ISO entry diagnostic dump on audit failure (first 80 sorted entries).
 - Add backlog row B-0823 and index it in `docs/BACKLOG.md`.
@@ -56,11 +59,11 @@ Updates the installer ISO content audit to tolerate nixpkgs 25.11 kernel/initrd 
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/ci/audit-installer-iso-content.ts | Switch kernel/initrd checks to any-of families and emit a diagnostic ISO entry listing on failure. |
-| docs/backlog/P2/B-0823-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md | New P2 backlog row documenting the regression, fix-fwd, and follow-up investigation plan. |
-| docs/BACKLOG.md | Adds B-0823 to the P2 index. |
+| File                                                                                                                             | Description                                                                                        |
+| -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| tools/ci/audit-installer-iso-content.ts                                                                                          | Switch kernel/initrd checks to any-of families and emit a diagnostic ISO entry listing on failure. |
+| docs/backlog/P2/B-0823-investigate-nixpkgs-25-11-iso-kernel-initrd-path-layout-tighten-audit-after-discovery-aaron-2026-05-26.md | New P2 backlog row documenting the regression, fix-fwd, and follow-up investigation plan.          |
+| docs/BACKLOG.md                                                                                                                  | Adds B-0823 to the P2 index.                                                                       |
 
 ## Review threads
 

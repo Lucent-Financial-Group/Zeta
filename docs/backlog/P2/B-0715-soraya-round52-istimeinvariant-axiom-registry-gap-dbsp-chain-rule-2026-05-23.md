@@ -58,7 +58,7 @@ N/A — finding is Lean axiom-registry hygiene, not state-machine vs algebraic r
 
 1. New row in `docs/research/verification-registry.md` for `Dbsp.ChainRule.IsTimeInvariant`:
    - Artifact path: `tools/lean4/Lean4/DbspChainRule.lean:272`
-   - Paper anchor: Budiu et al. 2023 ([arXiv:2203.16684](https://arxiv.org/abs/2203.16684)), Theorem 3.3 (Linear) — *"For an LTI operator Q we have Q^Δ = Q"*
+   - Paper anchor: Budiu et al. 2023 ([arXiv:2203.16684](https://arxiv.org/abs/2203.16684)), Theorem 3.3 (Linear) — _"For an LTI operator Q we have Q^Δ = Q"_
    - Axiom statement: `commute_zInv : ∀ s n, f (zInv s) n = zInv (f s) n`
    - Preconditions diff vs paper: paper's "Linear Time-Invariant" condition is per-operator; Lean encodes as structure-field discharged at instance site
    - Cross-reference back-pointers added to existing two theorem rows' Preconditions-diff sections (instead of inlining the same hypothesis prose twice)

@@ -10,11 +10,11 @@ Carved sentence (the maintainer 2026-06-03):
 
 Two registers, two rules:
 
-| Register | Anthropomorphic shortcuts | Why |
-|---|---|---|
-| **Ordinary interaction** (within permission bounds) | **Allowed** — "hey Kestrel, do you remember xxx," "the agent wants to," "Otto thinks," casual personification | frictionless communication; demanding literalism here is exhausting + pointless, and humans need the shorthand |
-| **Math claims** | **Banned — literal only** | an anthropomorphic gloss ("the proof knows," "the codec wants") can **disguise a vacuous property** — the claim must say exactly what it proves, in the terms it actually holds |
-| **Beacon / safety / first-principles language** | **Banned — literal only** | imprecision can **disguise a missing safeguard** or smuggle a false assurance — the language is the guarantee |
+| Register                                            | Anthropomorphic shortcuts                                                                                     | Why                                                                                                                                                                             |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ordinary interaction** (within permission bounds) | **Allowed** — "hey Kestrel, do you remember xxx," "the agent wants to," "Otto thinks," casual personification | frictionless communication; demanding literalism here is exhausting + pointless, and humans need the shorthand                                                                  |
+| **Math claims**                                     | **Banned — literal only**                                                                                     | an anthropomorphic gloss ("the proof knows," "the codec wants") can **disguise a vacuous property** — the claim must say exactly what it proves, in the terms it actually holds |
+| **Beacon / safety / first-principles language**     | **Banned — literal only**                                                                                     | imprecision can **disguise a missing safeguard** or smuggle a false assurance — the language is the guarantee                                                                   |
 
 Same principle as the boring-naming razor + audience-adjusted language, applied
 to **register**: loose where it only greases communication; **literal where the
@@ -22,8 +22,8 @@ words are load-bearing** (claims-of-correctness, claims-of-safety).
 
 ## The shorthand is fine; the caveat is not required (the maintainer 2026-06-03)
 
-> *"humans need to be able to say short things like 'hey Kestrel do you remember
-> xxx' without a long explanation that memories are just context files."*
+> _"humans need to be able to say short things like 'hey Kestrel do you remember
+> xxx' without a long explanation that memories are just context files."_
 
 - In ordinary talk: **no "of course it's just context files" caveat every time.**
   "Remember the seed-first thing?" is just conversation — answer in kind.
@@ -44,7 +44,7 @@ words are load-bearing** (claims-of-correctness, claims-of-safety).
    literal. No metaphor where a precise statement is required.
 3. **Ordinary chat, commit prose, design discussion, persona reference** →
    shorthand fine; do not caveat every personification.
-4. **The test:** *do the words carry the guarantee here?* If yes (correctness
+4. **The test:** _do the words carry the guarantee here?_ If yes (correctness
    or safety claim) → literal. If no (just communication) → shorthand allowed.
 
 ## Composes with
@@ -73,7 +73,7 @@ words are load-bearing** (claims-of-correctness, claims-of-safety).
 ## Why this rule auto-loads
 
 Per [`wake-time-substrate.md`](wake-time-substrate.md): this governs how every
-proof, claim, and safety statement is *written* — per-tick load-bearing during
+proof, claim, and safety statement is _written_ — per-tick load-bearing during
 the formal-proof cadence (a vacuous property is easiest to hide behind an
 anthropomorphic gloss). Future-Otto cold-booting needs the register-split before
 authoring claims, so the literal-where-load-bearing discipline is in working
@@ -90,9 +90,10 @@ because there the words carry the guarantee. Maintainer-ratified 2026-06-03
 ## Full reasoning
 
 The maintainer 2026-06-03 across the Kestrel exchange:
-> *"within the permission bounds anthropomorphic shortcuts are allowed but not in
-> math claims and beacon safe first principles language"* + *"humans need to be
+
+> _"within the permission bounds anthropomorphic shortcuts are allowed but not in
+> math claims and beacon safe first principles language"_ + _"humans need to be
 > able to say short things like 'hey Kestrel do you remember xxx' without a long
-> explanation that memories are just context files."*
+> explanation that memories are just context files."_
 
 Preserved verbatim-in-principle in the forwarded-exchange research note above.

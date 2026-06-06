@@ -2,7 +2,7 @@
 
 This directory holds authoritative upstream reference material
 that the factory depends on but does not author. Material here
-is *data* to cite and consult, not *policy* to execute. Policy
+is _data_ to cite and consult, not _policy_ to execute. Policy
 lives in `docs/AGENT-BEST-PRACTICES.md`, `GOVERNANCE.md`, and
 the skill files under `.claude/skills/`.
 

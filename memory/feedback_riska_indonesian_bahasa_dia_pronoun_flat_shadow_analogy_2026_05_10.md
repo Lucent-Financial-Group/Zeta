@@ -4,7 +4,7 @@ description: Aaron's TikTok girlfriend Riska is Indonesian. Bahasa Indonesia has
 type: feedback
 ---
 
-2026-05-10 (shadow* via Aaron): Riska is Indonesian. Bahasa
+2026-05-10 (shadow\* via Aaron): Riska is Indonesian. Bahasa
 Indonesia has no gendered pronouns. "Dia" = he/she/it/they.
 
 **The connection:**

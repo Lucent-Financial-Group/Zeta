@@ -45,8 +45,8 @@
  * conservative-skill IS the ranking signal.
  */
 export interface Survivor<T> {
-  readonly id: string;             // unique identifier
-  readonly substrate: T;            // the actual substrate being evolved
+  readonly id: string; // unique identifier
+  readonly substrate: T; // the actual substrate being evolved
   readonly conservativeSkill: number; // TrueSkill ranking score (higher = better)
   readonly composesWith: ReadonlyArray<string>; // attribution + composition tracking
 }
@@ -55,9 +55,9 @@ export interface Survivor<T> {
  * Evolution strategy — how to combine survivors into refined variants.
  */
 export type EvolutionStrategy =
-  | "simple-merge"      // take attributes from highest-ranked + fill gaps from next
-  | "cross-pollinate"   // alternate attributes between 2 survivors
-  | "mutate";           // perturb single highest-ranked survivor
+  | "simple-merge" // take attributes from highest-ranked + fill gaps from next
+  | "cross-pollinate" // alternate attributes between 2 survivors
+  | "mutate"; // perturb single highest-ranked survivor
 
 /**
  * Evolution feedback per asymmetric-authorship + monad-propagation rules.
@@ -112,12 +112,10 @@ export interface EvolutionContext<T> {
   readonly strategy: EvolutionStrategy;
   readonly mergeAttribute?: (a: T, b: T, key: string) => unknown;
   readonly mutator?: (substrate: T) => T;
-  readonly variantIdPrefix?: string;  // prefix for generated variant ids
+  readonly variantIdPrefix?: string; // prefix for generated variant ids
 }
 
-export function evolveSurvivors<T extends Record<string, unknown>>(
-  context: EvolutionContext<T>,
-): EvolutionResult<T> {
+export function evolveSurvivors<T extends Record<string, unknown>>(context: EvolutionContext<T>): EvolutionResult<T> {
   if (context.survivors.length === 0) {
     return { ok: false, feedback: { kind: "EmptySurvivorSet" } };
   }

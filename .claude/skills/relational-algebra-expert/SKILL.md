@@ -66,7 +66,7 @@ Canonical identities:
   `σ_p(R ∪ S) = σ_p(R) ∪ σ_p(S)`;
   `σ_p(R ⋈ S) = σ_p(R) ⋈ S` if `p` mentions only `R`.
 - **π distributes over ∪.** `π_X(R ∪ S) = π_X(R) ∪ π_X(S)`
-  — *not* generally over `⋈`.
+  — _not_ generally over `⋈`.
 - **⋈ is commutative and associative** up to attribute
   rename.
 - **× is distributive** over `∪` / `−`.
@@ -83,7 +83,7 @@ Key differences from set algebra:
 
 - **σ preserves multiplicity.** Selection keeps every copy
   that satisfies the predicate.
-- **π collapses **only in set semantics**; in multiset it
+- **π collapses **only in set semantics\*\*; in multiset it
   preserves multiplicities across identical projected
   tuples.
 - **∪** splits into `UNION` (set) and `UNION ALL`
@@ -99,7 +99,7 @@ Several set-algebra identities **fail** in multiset algebra:
 
 - **σ is idempotent in set** (`σ_p σ_p = σ_p`) but in
   multiset the identity depends on whether `σ` filters or
-  projects — it *is* idempotent, but projections are not.
+  projects — it _is_ idempotent, but projections are not.
 - **π(R ∪ S) = π(R) ∪ π(S)** holds in set, but in multiset
   only with `UNION ALL`, not `UNION`.
 
@@ -126,7 +126,7 @@ Key differences:
   aggregation) need **differential** variants to be
   retraction-safe; the classical algebra is insufficient.
 
-An equivalence claim in set algebra does *not* automatically
+An equivalence claim in set algebra does _not_ automatically
 lift to multiset or Z-relation algebra. Every rewrite rule
 names its algebra.
 
@@ -135,19 +135,19 @@ names its algebra.
 The following are the most commonly invoked identities.
 Each is tagged with the algebras it holds in:
 
-| Identity | Set | Multiset | Z-rel |
-| --- | --- | --- | --- |
-| `σ_p σ_q = σ_q σ_p` | ✓ | ✓ | ✓ |
-| `σ_p σ_p = σ_p` (idempotence) | ✓ | ✓ | ✓ |
-| `π_X π_Y = π_X` (X ⊆ Y) | ✓ | ✓ | ✓ |
-| `π_X(R ∪ S) = π_X(R) ∪ π_X(S)` | ✓ | — (UNION ALL only) | ✓ |
-| `σ_p(R ⋈ S) = σ_p(R) ⋈ S` (p on R) | ✓ | ✓ | ✓ |
-| `σ_p(R ⋈ S) ≡ σ_p(R) ⋈ σ_p(S)` (common cols) | ✓ | ✓ | ✓ |
-| `R ⋈ S = S ⋈ R` | ✓ | ✓ | ✓ |
-| `(R ⋈ S) ⋈ T = R ⋈ (S ⋈ T)` | ✓ | ✓ | ✓ |
-| `σ_p(R − S) = σ_p(R) − σ_p(S)` | ✓ | ✓ | ✓ |
-| `π_X(R − S) = π_X(R) − π_X(S)` | — (attribute leak) | — | — |
-| Outer-join simplification (reject-null rule) | ✓ | ✓ | conditional |
+| Identity                                     | Set                | Multiset           | Z-rel       |
+| -------------------------------------------- | ------------------ | ------------------ | ----------- |
+| `σ_p σ_q = σ_q σ_p`                          | ✓                  | ✓                  | ✓           |
+| `σ_p σ_p = σ_p` (idempotence)                | ✓                  | ✓                  | ✓           |
+| `π_X π_Y = π_X` (X ⊆ Y)                      | ✓                  | ✓                  | ✓           |
+| `π_X(R ∪ S) = π_X(R) ∪ π_X(S)`               | ✓                  | — (UNION ALL only) | ✓           |
+| `σ_p(R ⋈ S) = σ_p(R) ⋈ S` (p on R)           | ✓                  | ✓                  | ✓           |
+| `σ_p(R ⋈ S) ≡ σ_p(R) ⋈ σ_p(S)` (common cols) | ✓                  | ✓                  | ✓           |
+| `R ⋈ S = S ⋈ R`                              | ✓                  | ✓                  | ✓           |
+| `(R ⋈ S) ⋈ T = R ⋈ (S ⋈ T)`                  | ✓                  | ✓                  | ✓           |
+| `σ_p(R − S) = σ_p(R) − σ_p(S)`               | ✓                  | ✓                  | ✓           |
+| `π_X(R − S) = π_X(R) − π_X(S)`               | — (attribute leak) | —                  | —           |
+| Outer-join simplification (reject-null rule) | ✓                  | ✓                  | conditional |
 
 The blank cells are the landmines.
 
@@ -176,7 +176,7 @@ can only add, never remove. Zeta's Z-relation algebra is
 not monotone. Three consequences:
 
 1. **Fixpoint semantics diverge.** Classical `WITH
-   RECURSIVE` terminates on the least fixed point in the
+RECURSIVE` terminates on the least fixed point in the
    monotone ordering; retraction-native recursion uses a
    signed fixed point that can oscillate. The tropical-LFP
    layer (`src/Core/Hierarchy.fs`) is the retraction-safe
@@ -190,7 +190,7 @@ not monotone. Three consequences:
    combiner lifts to a function on deltas).
 3. **Outer-join simplification has extra conditions.** In
    Z-relation algebra, the reject-null rule requires the
-   predicate to be null-oblivious *and* the outer side to
+   predicate to be null-oblivious _and_ the outer side to
    be monotone in isolation.
 
 Each of these is a publication-worthy note when it shows up
@@ -238,12 +238,12 @@ routing:
 
 ## Reference patterns
 
-- Codd 1970, *A Relational Model of Data*.
-- Ullman, *Principles of Database Systems*.
-- Green, Karvounarakis, Tannen 2007, *Provenance
-  Semirings*.
-- Budiu et al., *DBSP: Automatic Incremental View
-  Maintenance*.
+- Codd 1970, _A Relational Model of Data_.
+- Ullman, _Principles of Database Systems_.
+- Green, Karvounarakis, Tannen 2007, _Provenance
+  Semirings_.
+- Budiu et al., _DBSP: Automatic Incremental View
+  Maintenance_.
 - `.claude/skills/sql-expert/SKILL.md` — SQL-language
   umbrella.
 - `.claude/skills/algebra-owner/SKILL.md` — Zeta operator-

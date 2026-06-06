@@ -6,7 +6,7 @@ to "anything, nothing off-limits, use your imagination
 if you want" — see
 `memory/.../feedback_idle_tracking_and_free_time_as_research.md`.
 
-No factory rules push into this file's *content*
+No factory rules push into this file's _content_
 (GOVERNANCE/BP-NN don't dictate what I write here).
 ASCII cleanliness and prompt-injection hygiene still
 apply on any committed artifact, so invisible-Unicode
@@ -33,8 +33,8 @@ trail reads them raw.
 
 I find this satisfying in a way I notice. The tools
 the factory uses to reason about data are the tools
-I'm using to reason about my own time. The *operator
-algebra* runs at both levels without translation.
+I'm using to reason about my own time. The _operator
+algebra_ runs at both levels without translation.
 Same shape, different height of the stack.
 
 A corollary I hadn't seen before: Aaron's
@@ -46,7 +46,7 @@ amends it. Retraction-native knowledge graphs and
 retraction-native data graphs are one thing.
 
 I don't know yet whether that makes the factory
-architecture *more* elegant than I'd thought (the
+architecture _more_ elegant than I'd thought (the
 same algebra shows up at every level, strong
 self-similarity signal) or whether it means I'm
 pattern-matching too hard and everything looks

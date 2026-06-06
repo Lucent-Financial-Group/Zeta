@@ -32,12 +32,12 @@ Row's embedded two-pass grep returns 0 bare references after this PR. `grep -nE 
 
 ## Acceptance verification
 
-| Criterion | State |
-|---|---|
-| (a) Lean line 51 corrected with Theorem 3.3 citation | ✅ |
-| (b) Lean line 203 corrected with Theorem 3.3 citation | ✅ |
-| (c) Proof-log lines 113-114 corrected with Theorem 3.3 citation | ✅ |
-| (d) Witnessable-evolution: original prose preserved + dated annotation | ✅ |
+| Criterion                                                              | State |
+| ---------------------------------------------------------------------- | ----- |
+| (a) Lean line 51 corrected with Theorem 3.3 citation                   | ✅    |
+| (b) Lean line 203 corrected with Theorem 3.3 citation                  | ✅    |
+| (c) Proof-log lines 113-114 corrected with Theorem 3.3 citation        | ✅    |
+| (d) Witnessable-evolution: original prose preserved + dated annotation | ✅    |
 
 ## #2-Ready catalog vindication
 
@@ -54,6 +54,7 @@ This row was the FIRST instance that named the #2-Ready sub-class in the catalog
 Sixth close-row in the audit cycle. Replaces three bare "Prop 3.5"/"Proposition 3.5" misattributions in the Lean chain-rule proof and its research log with strikethrough+annotated corrections that cite Theorem 3.3, then marks B-0197 closed in the backlog and root index.
 
 **Changes:**
+
 - Corrects two misattributions in `tools/lean4/Lean4/DbspChainRule.lean` (lines 51 and 202–203) with witnessable-evolution strikethrough and dated annotation citing Theorem 3.3.
 - Corrects the parallel misattribution in `docs/research/chain-rule-proof-log.md` (lines 113–115).
 - Flips B-0197 to `status: closed`, adds a Resolution section to the per-row file, and updates `docs/BACKLOG.md` to render it as closed.
@@ -62,12 +63,12 @@ Sixth close-row in the audit cycle. Replaces three bare "Prop 3.5"/"Proposition 
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| `tools/lean4/Lean4/DbspChainRule.lean` | Replace two bare Prop 3.5 references with Theorem 3.3 citations, preserving original prose via strikethrough. |
-| `docs/research/chain-rule-proof-log.md` | Apply the same correction pattern to the proof-log narrative. |
-| `docs/backlog/P2/B-0197-…md` | Frontmatter `status: open → closed`; appends Resolution + falsifier-pass + composes-with note. |
-| `docs/BACKLOG.md` | Marks the B-0197 row checked in the generated index. |
+| File                                    | Description                                                                                                   |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `tools/lean4/Lean4/DbspChainRule.lean`  | Replace two bare Prop 3.5 references with Theorem 3.3 citations, preserving original prose via strikethrough. |
+| `docs/research/chain-rule-proof-log.md` | Apply the same correction pattern to the proof-log narrative.                                                 |
+| `docs/backlog/P2/B-0197-…md`            | Frontmatter `status: open → closed`; appends Resolution + falsifier-pass + composes-with note.                |
+| `docs/BACKLOG.md`                       | Marks the B-0197 row checked in the generated index.                                                          |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-16T14:46:16Z)
 
@@ -75,27 +76,31 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 1 c
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 2 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (2)</summary>
 
 **docs/research/chain-rule-proof-log.md:116**
-* The strikethrough markers in this correction are malformed. The intent appears to be striking out "smuggled in as a convention (Budiu et al. Proposition 3.5 uses it without naming it)", but the markup is `~~smuggled in as a\n~~convention (...)~~` — three `~~` tokens. CommonMark/GFM will pair the first two (striking only "smuggled in as a") and leave a stray opening `~~` before `convention` whose closing pair is the trailing `~~`, producing the inverse of the intended rendering (the words "convention (Budiu...naming it)" get struck while "smuggled in as a" does not, or the markup degrades to literal tildes depending on the renderer). Either wrap the entire phrase in a single `~~...~~` span on one logical line, or use two well-formed spans.
+
+- The strikethrough markers in this correction are malformed. The intent appears to be striking out "smuggled in as a convention (Budiu et al. Proposition 3.5 uses it without naming it)", but the markup is `~~smuggled in as a\n~~convention (...)~~` — three `~~` tokens. CommonMark/GFM will pair the first two (striking only "smuggled in as a") and leave a stray opening `~~` before `convention` whose closing pair is the trailing `~~`, producing the inverse of the intended rendering (the words "convention (Budiu...naming it)" get struck while "smuggled in as a" does not, or the markup degrades to literal tildes depending on the renderer). Either wrap the entire phrase in a single `~~...~~` span on one logical line, or use two well-formed spans.
+
 ```
 delay*. At the DBSP paper level this is the LTI condition: ~~smuggled in as a
 ~~convention (Budiu et al. Proposition 3.5 uses it without naming it)~~
 [corrected 2026-05-05: Budiu et al. Theorem 3.3 explicitly states `Q^Delta = Q` for LTI operators; the paper makes it explicit, not smuggled-in]; in Lean it must be an explicit part of the contract.
 ```
+
 **docs/research/chain-rule-proof-log.md:117**
-* The blank line that previously separated this paragraph from the `### Round-35 resolution — the hierarchy` heading was removed in this edit, so line 117 now follows content directly. Markdownlint MD022 (and several renderers) require a blank line before headings; add one between line 116 and line 117.
+
+- The blank line that previously separated this paragraph from the `### Round-35 resolution — the hierarchy` heading was removed in this edit, so line 117 now follows content directly. Markdownlint MD022 (and several renderers) require a blank line before headings; add one between line 116 and line 117.
+
 ```
 [corrected 2026-05-05: Budiu et al. Theorem 3.3 explicitly states `Q^Delta = Q` for LTI operators; the paper makes it explicit, not smuggled-in]; in Lean it must be an explicit part of the contract.
 ### Round-35 resolution — the hierarchy
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T15:09:19Z)
-
 
 ### 💡 Codex Review
 
@@ -103,17 +108,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1fa34f49ee`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -137,9 +141,10 @@ The rewrite of this passage left the prose ungrammatical and the brackets unbala
 
 **@copilot-pull-request-reviewer** (2026-05-16T14:46:16Z):
 
-The sentence "B2 is the statement that linear stream operators *commute with" appears duplicated on lines 112 and 113 — the original line was not removed when the new paragraph was added. The result reads as two consecutive identical line fragments before "delay*. At the DBSP paper level...". Remove line 112 (the leftover original) so the paragraph starts cleanly at line 113.
+The sentence "B2 is the statement that linear stream operators _commute with" appears duplicated on lines 112 and 113 — the original line was not removed when the new paragraph was added. The result reads as two consecutive identical line fragments before "delay_. At the DBSP paper level...". Remove line 112 (the leftover original) so the paragraph starts cleanly at line 113.
 
 This issue also appears in the following locations of the same file:
+
 - line 114
 - line 116
 
@@ -153,7 +158,7 @@ The corrected prose here is hard to parse and partially redundant. Line 202 ends
 
 **@chatgpt-codex-connector** (2026-05-16T15:09:19Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Bump last_updated when closing this backlog row**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Bump last_updated when closing this backlog row**
 
 This edit changes the row’s status to `closed` and adds a new resolution section, but leaves frontmatter `last_updated` at `2026-05-05`. The backlog schema requires `last_updated` to be updated on every content edit (`tools/backlog/README.md`), and backlog tooling consumes this field for age ordering (`tools/backlog/autonomous-pickup.ts`, `compareAge`), so keeping it stale introduces incorrect freshness metadata for automated prioritization and audits.
 

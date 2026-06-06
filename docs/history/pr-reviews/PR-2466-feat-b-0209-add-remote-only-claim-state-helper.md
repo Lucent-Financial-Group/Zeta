@@ -10,44 +10,46 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2466 |
-| Title | feat(B-0209): add remote-only claim-state helper |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T10:55:58Z |
-| Merged at | 2026-05-10T10:58:20Z |
-| Merge commit SHA | `cadc73253ac5cfcd7af434793b19db85f2f6c28e` |
-| Branch | `claim/task-b0209-remote-claim-state` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2466 |
-| Changed files | 2 |
-| Additions / deletions | +416 / -0 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 2466                                                     |
+| Title                 | feat(B-0209): add remote-only claim-state helper         |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-10T10:55:58Z                                     |
+| Merged at             | 2026-05-10T10:58:20Z                                     |
+| Merge commit SHA      | `cadc73253ac5cfcd7af434793b19db85f2f6c28e`               |
+| Branch                | `claim/task-b0209-remote-claim-state`                    |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2466 |
+| Changed files         | 2                                                        |
+| Additions / deletions | +416 / -0                                                |
 
 ## Description
 
 ## Summary
+
 - add a git-only remote claim state helper for B-0209
 - parse remote claim refs, claim-file durable targets, and intended path sets
 - cover parsing and command-runner behavior without reading local broadcast/heartbeat surfaces
 - release the task-b0209-remote-claim-state claim in the same branch
 
 ## Verification
+
 - bun test tools/claims/remote-only-state.test.ts
 - /Users/acehack/.local/share/zeta-codex-loop/Zeta/node_modules/.bin/tsc --ignoreConfig --noEmit --strict --target esnext --module Preserve --moduleResolution bundler --lib esnext --types bun --typeRoots /Users/acehack/.local/share/zeta-codex-loop/Zeta/node_modules/@types --verbatimModuleSyntax --rewriteRelativeImportExtensions --allowImportingTsExtensions --isolatedModules --erasableSyntaxOnly --noUncheckedIndexedAccess --exactOptionalPropertyTypes tools/claims/remote-only-state.ts tools/claims/remote-only-state.test.ts
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

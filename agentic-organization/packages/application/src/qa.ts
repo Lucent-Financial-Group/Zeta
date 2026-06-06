@@ -94,7 +94,11 @@ export type QaCycleDeps = {
   createId: (prefix: string) => string;
   nowIso: () => string;
   appendEvent: (event: OrgEvent) => Promise<void>;
-  openDefect: (input: { failingTestCaseId: string; workItemId?: string; evidence: readonly EvidenceRef[] }) => Promise<{ defectId: string }>;
+  openDefect: (input: {
+    failingTestCaseId: string;
+    workItemId?: string;
+    evidence: readonly EvidenceRef[];
+  }) => Promise<{ defectId: string }>;
 };
 
 export type QaCycleReport = {
@@ -105,7 +109,13 @@ export type QaCycleReport = {
   summary: TestSummary;
 };
 
-function event(deps: QaCycleDeps, kind: OrgEventKind, subjectId: string, decision: string, evidenceRefs: readonly string[]): OrgEvent {
+function event(
+  deps: QaCycleDeps,
+  kind: OrgEventKind,
+  subjectId: string,
+  decision: string,
+  evidenceRefs: readonly string[],
+): OrgEvent {
   return {
     id: deps.createId("evt"),
     kind,
@@ -151,13 +161,29 @@ export async function runQaCycle(deps: QaCycleDeps): Promise<QaCycleReport> {
       finishedAt: deps.nowIso(),
     };
     newRuns.push(run);
-    await deps.appendEvent(event(deps, OrgEventKind.TestRunRecorded, run.testRunId, `${testCase.title} → ${run.outcome}`, run.evidence.map((e) => e.ref)));
+    await deps.appendEvent(
+      event(
+        deps,
+        OrgEventKind.TestRunRecorded,
+        run.testRunId,
+        `${testCase.title} → ${run.outcome}`,
+        run.evidence.map((e) => e.ref),
+      ),
+    );
   }
 
   const allRuns = [...deps.priorRuns, ...newRuns];
   const regressions = detectRegressions(allRuns);
   for (const r of regressions) {
-    await deps.appendEvent(event(deps, OrgEventKind.RegressionDetected, r.testCaseId, `regression: ${r.testCaseId} passed (${r.lastPassedRunId}) then failed (${r.failingRunId})`, [r.failingRunId]));
+    await deps.appendEvent(
+      event(
+        deps,
+        OrgEventKind.RegressionDetected,
+        r.testCaseId,
+        `regression: ${r.testCaseId} passed (${r.lastPassedRunId}) then failed (${r.failingRunId})`,
+        [r.failingRunId],
+      ),
+    );
   }
 
   const failed = failedFeatures(deps.cases, allRuns);
@@ -166,9 +192,21 @@ export async function runQaCycle(deps: QaCycleDeps): Promise<QaCycleReport> {
   for (const run of newRuns) {
     if (!isFailure(run.outcome)) continue;
     const wi = deps.workItemIdByTestCase.get(run.testCaseId);
-    const { defectId } = await deps.openDefect({ failingTestCaseId: run.testCaseId, ...(wi !== undefined ? { workItemId: wi } : {}), evidence: run.evidence });
+    const { defectId } = await deps.openDefect({
+      failingTestCaseId: run.testCaseId,
+      ...(wi !== undefined ? { workItemId: wi } : {}),
+      evidence: run.evidence,
+    });
     defectsOpened += 1;
-    await deps.appendEvent(event(deps, OrgEventKind.DefectOpened, defectId, `defect ${defectId} opened from failed test ${run.testCaseId}`, run.evidence.map((e) => e.ref)));
+    await deps.appendEvent(
+      event(
+        deps,
+        OrgEventKind.DefectOpened,
+        defectId,
+        `defect ${defectId} opened from failed test ${run.testCaseId}`,
+        run.evidence.map((e) => e.ref),
+      ),
+    );
   }
 
   const failures = newRuns.filter((r) => isFailure(r.outcome)).length;

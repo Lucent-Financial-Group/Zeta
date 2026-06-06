@@ -27,6 +27,7 @@ Implements the presentation side of B-0234 (SEO). Adds meta description, OpenGra
 Adds SEO/social sharing metadata to the Zeta Factory Dashboard demo page to support B-0234’s presentation layer goals (search snippets + rich previews).
 
 **Changes:**
+
 - Added `<meta name="description">` for the dashboard page.
 - Added OpenGraph + Twitter Card meta tags for richer link previews.
 - Added `SoftwareApplication` JSON-LD structured data.

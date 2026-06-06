@@ -90,13 +90,13 @@ in the PR description as a manual follow-up.
 
 ## Key differences from factory repos (forge/ace)
 
-| Property | Factory repos (forge/ace) | civsim (product repo) |
-|----------|--------------------------|----------------------|
-| License | Apache 2.0 | Honor-system |
-| Forking | Welcome | "Please don't" honor-ask; EXCEPT civsim: forks welcome, mutual-privacy clause |
-| AceHack mirror | Yes (step 05) | No (product repo; skip fork-to-AceHack) |
-| `.zeta-version` | N/A | Required (glue mechanism Stage 1) |
-| CLAUDE.md scope | Factory bootstrap | Product-scoped |
+| Property        | Factory repos (forge/ace) | civsim (product repo)                                                         |
+| --------------- | ------------------------- | ----------------------------------------------------------------------------- |
+| License         | Apache 2.0                | Honor-system                                                                  |
+| Forking         | Welcome                   | "Please don't" honor-ask; EXCEPT civsim: forks welcome, mutual-privacy clause |
+| AceHack mirror  | Yes (step 05)             | No (product repo; skip fork-to-AceHack)                                       |
+| `.zeta-version` | N/A                       | Required (glue mechanism Stage 1)                                             |
+| CLAUDE.md scope | Factory bootstrap         | Product-scoped                                                                |
 
 ## Dependency graph position
 

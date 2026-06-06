@@ -20,7 +20,7 @@ resistance before it lands.
   autonomous-loop tick engine. Checked every tick (not just
   at round-open), re-armed only on miss per the discipline
   in `docs/AUTONOMOUS-LOOP.md`. The prompt (`<<autonomous-
-  loop>>`) is a native Claude Code harness sentinel (see
+loop>>`) is a native Claude Code harness sentinel (see
   [code.claude.com/docs/en/scheduled-tasks](https://code.claude.com/docs/en/scheduled-tasks));
   no plugin dependency. The cron IS the factory's
   self-direction cadence.
@@ -33,11 +33,11 @@ resistance before it lands.
 
 ## Live registry
 
-| id | cron | owner | lifetime | purpose |
-|---|---|---|---|---|
-| autonomous-loop | `* * * * *` | human + any Claude instance | every-tick reconcile | factory self-direction tick engine; fires `<<autonomous-loop>>` sentinel every minute; governed by `docs/AUTONOMOUS-LOOP.md`; each tick appends a row to `docs/hygiene-history/loop-tick-history.md` before CronList |
-| heartbeat | `7,37 * * * *` | long-term-rescheduler | session + reregister | self-renewing; keeps other jobs alive, reconciles this registry, logs to Kenji's notebook |
-| git-status-pulse | `7,37 * * * *` | long-term-rescheduler | session + reregister | READ-ONLY branch + CI snapshot every 30 min — landed round 34 |
+| id               | cron           | owner                       | lifetime             | purpose                                                                                                                                                                                                              |
+| ---------------- | -------------- | --------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| autonomous-loop  | `* * * * *`    | human + any Claude instance | every-tick reconcile | factory self-direction tick engine; fires `<<autonomous-loop>>` sentinel every minute; governed by `docs/AUTONOMOUS-LOOP.md`; each tick appends a row to `docs/hygiene-history/loop-tick-history.md` before CronList |
+| heartbeat        | `7,37 * * * *` | long-term-rescheduler       | session + reregister | self-renewing; keeps other jobs alive, reconciles this registry, logs to Kenji's notebook                                                                                                                            |
+| git-status-pulse | `7,37 * * * *` | long-term-rescheduler       | session + reregister | READ-ONLY branch + CI snapshot every 30 min — landed round 34                                                                                                                                                        |
 
 **Prompts** are kept in each row-referenced skill's procedure
 or, for simple one-offs, captured inline in the issue / PR

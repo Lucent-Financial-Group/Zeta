@@ -172,25 +172,19 @@ interface TlcResult {
 function runTlc(toolchain: Toolchain, specName: string): TlcResult {
   // Run from specsPath so TLC's file-resolution finds <SpecName>.tla
   // and <SpecName>.cfg without absolute-path arguments.
-  const result = spawnSync(
-    toolchain.javaPath,
-    ["-cp", toolchain.tlaJarPath, "tlc2.TLC", specName],
-    {
-      cwd: toolchain.specsPath,
-      encoding: "utf8",
-      maxBuffer: SPAWN_MAX_BUFFER,
-      timeout: 300_000, // 5 min hard cap per spec
-    },
-  );
+  const result = spawnSync(toolchain.javaPath, ["-cp", toolchain.tlaJarPath, "tlc2.TLC", specName], {
+    cwd: toolchain.specsPath,
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+    timeout: 300_000, // 5 min hard cap per spec
+  });
   cleanupTraceFiles(toolchain.specsPath, specName);
   const stdout = result.stdout ?? "";
   const stderr = result.stderr ?? "";
   // TLC exits 0 on success; non-zero on parse error / invariant
   // violation / deadlock-detection / etc. Cross-check against the
   // success marker in stdout for belt-and-suspenders.
-  const success =
-    result.status === 0 &&
-    stdout.includes("Model checking completed. No error has been found");
+  const success = result.status === 0 && stdout.includes("Model checking completed. No error has been found");
   return {
     exitCode: result.status ?? -1,
     stdout,
@@ -201,16 +195,13 @@ function runTlc(toolchain: Toolchain, specName: string): TlcResult {
 
 function specExists(toolchain: Toolchain, specName: string): boolean {
   return (
-    fileExists(join(toolchain.specsPath, `${specName}.tla`)) &&
-    fileExists(join(toolchain.specsPath, `${specName}.cfg`))
+    fileExists(join(toolchain.specsPath, `${specName}.tla`)) && fileExists(join(toolchain.specsPath, `${specName}.cfg`))
   );
 }
 
 function runOne(toolchain: Toolchain, specName: string): ExitCode {
   if (!specExists(toolchain, specName)) {
-    process.stderr.write(
-      `ERROR: ${specName}.tla or ${specName}.cfg not found in ${toolchain.specsPath}\n`,
-    );
+    process.stderr.write(`ERROR: ${specName}.tla or ${specName}.cfg not found in ${toolchain.specsPath}\n`);
     return 1;
   }
   process.stdout.write(`running TLC on ${specName}...\n`);
@@ -239,9 +230,7 @@ function runAll(toolchain: Toolchain): ExitCode {
       // Per #1412 P1 finding: a missing catalogued spec is
       // catalogue drift (renamed / deleted), NOT an acceptable
       // skip. Treat it as a failure so --all gates against drift.
-      process.stderr.write(
-        `MISSING: ${specName} (no .tla or .cfg in ${toolchain.specsPath})\n`,
-      );
+      process.stderr.write(`MISSING: ${specName} (no .tla or .cfg in ${toolchain.specsPath})\n`);
       missing.push(specName);
       continue;
     }
@@ -251,9 +240,7 @@ function runAll(toolchain: Toolchain): ExitCode {
       process.stdout.write(`  OK: ${specName}\n`);
       passed.push(specName);
     } else {
-      process.stderr.write(
-        `  FAIL: ${specName} (exit ${String(result.exitCode)})\n`,
-      );
+      process.stderr.write(`  FAIL: ${specName} (exit ${String(result.exitCode)})\n`);
       failed.push(specName);
       failureDetails.push({ spec: specName, result });
     }

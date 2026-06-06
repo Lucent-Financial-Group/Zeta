@@ -21,7 +21,7 @@ Inventory pre-substrate / Kenji-era Otto-lineage work that is in the codebase gi
 This is a specific slice extracted from the larger B-0139 blob.
 
 1. **Past-recovery git branches** that haven't been triaged or merged. Many of these are from earlier-session work where the autonomous-loop was running under Kenji-the-architect with no formal substrate to record decisions. Likely classes: in-flight feature work, abandoned experiments, drift-fixes that landed differently, recovery-from-incidents with content not yet preserved.
-2. **Worktrees** still on disk that aren't referenced from substrate. Earlier ticks during the recovery-lane work referenced worktree pruning (per task #321); this row's broader scope includes the *content* of those worktrees, not just their classification as LOST/SAFE.
+2. **Worktrees** still on disk that aren't referenced from substrate. Earlier ticks during the recovery-lane work referenced worktree pruning (per task #321); this row's broader scope includes the _content_ of those worktrees, not just their classification as LOST/SAFE.
 
 ## Acceptance Criteria
 

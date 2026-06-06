@@ -121,7 +121,10 @@ export function createInProcessHermesRuntime(deps: HermesRuntimeDeps = defaultDe
     if (run.state !== HermesRunState.Running) {
       return {
         ok: false,
-        result: feedback(HermesRuntimeFeedbackReason.RunNotRunning, `hermes run '${runId}' is ${run.state}, not running`),
+        result: feedback(
+          HermesRuntimeFeedbackReason.RunNotRunning,
+          `hermes run '${runId}' is ${run.state}, not running`,
+        ),
       };
     }
     return { ok: true, run };

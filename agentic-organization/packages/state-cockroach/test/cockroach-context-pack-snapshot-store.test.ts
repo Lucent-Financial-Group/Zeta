@@ -40,24 +40,30 @@ test("Cockroach context-pack snapshot store returns latest matching scope", asyn
   const executor = fakeExecutor();
   const store = createCockroachContextPackSnapshotStore({ executor });
 
-  await store.record(snapshotRecord({
-    contextPackId: "ctx-old",
-    recordedAt: "2026-05-31T10:00:00.000Z",
-    projectId: "project-billing",
-    workItemId: "work-123",
-  }));
-  await store.record(snapshotRecord({
-    contextPackId: "ctx-new",
-    recordedAt: "2026-05-31T11:00:00.000Z",
-    projectId: "project-billing",
-    workItemId: "work-123",
-  }));
-  await store.record(snapshotRecord({
-    contextPackId: "ctx-other-work",
-    recordedAt: "2026-05-31T12:00:00.000Z",
-    projectId: "project-billing",
-    workItemId: "work-999",
-  }));
+  await store.record(
+    snapshotRecord({
+      contextPackId: "ctx-old",
+      recordedAt: "2026-05-31T10:00:00.000Z",
+      projectId: "project-billing",
+      workItemId: "work-123",
+    }),
+  );
+  await store.record(
+    snapshotRecord({
+      contextPackId: "ctx-new",
+      recordedAt: "2026-05-31T11:00:00.000Z",
+      projectId: "project-billing",
+      workItemId: "work-123",
+    }),
+  );
+  await store.record(
+    snapshotRecord({
+      contextPackId: "ctx-other-work",
+      recordedAt: "2026-05-31T12:00:00.000Z",
+      projectId: "project-billing",
+      workItemId: "work-999",
+    }),
+  );
 
   const got = await store.latestForScope({
     organizationId: "org-lfg",
@@ -74,16 +80,20 @@ test("Cockroach context-pack snapshot store returns latest matching scope", asyn
 test("Cockroach context-pack snapshot store upserts by context pack id", async () => {
   const store = createCockroachContextPackSnapshotStore({ executor: fakeExecutor() });
 
-  await store.record(snapshotRecord({
-    contextPackId: "ctx-upsert",
-    status: ContextPackStatus.Current,
-    recordedAt: "2026-05-31T10:00:00.000Z",
-  }));
-  await store.record(snapshotRecord({
-    contextPackId: "ctx-upsert",
-    status: ContextPackStatus.Incomplete,
-    recordedAt: "2026-05-31T11:00:00.000Z",
-  }));
+  await store.record(
+    snapshotRecord({
+      contextPackId: "ctx-upsert",
+      status: ContextPackStatus.Current,
+      recordedAt: "2026-05-31T10:00:00.000Z",
+    }),
+  );
+  await store.record(
+    snapshotRecord({
+      contextPackId: "ctx-upsert",
+      status: ContextPackStatus.Incomplete,
+      recordedAt: "2026-05-31T11:00:00.000Z",
+    }),
+  );
 
   const got = await store.get({ contextPackId: "ctx-upsert" });
 
@@ -129,22 +139,13 @@ function latestRowsFor(
 ): readonly Record<string, unknown>[] {
   const filters = parseScopeFilters(statement);
   return rows
-    .filter((row) =>
-      filters.every((filter) => row[filter.column] === filter.value)
-    )
+    .filter((row) => filters.every((filter) => row[filter.column] === filter.value))
     .sort((left, right) => String(right["recorded_at"]).localeCompare(String(left["recorded_at"])))
     .slice(0, 1);
 }
 
 function parseScopeFilters(statement: CockroachAnySqlStatement): readonly { column: string; value: unknown }[] {
-  const columns = [
-    "organization_id",
-    "hat_assignment_id",
-    "agent_id",
-    "project_id",
-    "team_id",
-    "work_item_id",
-  ];
+  const columns = ["organization_id", "hat_assignment_id", "agent_id", "project_id", "team_id", "work_item_id"];
   return columns.flatMap((column) => {
     const match = new RegExp(`${column} = \\$(\\d+)`).exec(statement.sql);
     if (match === null) return [];
@@ -222,15 +223,18 @@ function contextReadout(input: {
       sourceGraphVersion: "graph:v1",
       policyVersion: "policy:v1",
       tokenBudget: 4096,
-      curationTrace: [{
-        stage: ContextPackCurationStageKind.DeterministicScope,
-        summary: "Scoped by hat, org, project, team, and work item.",
-        evidenceRefs: ["work:work-123"],
-      }, {
-        stage: ContextPackCurationStageKind.GapReview,
-        summary: "No gaps in fixture.",
-        evidenceRefs: ["context:test"],
-      }],
+      curationTrace: [
+        {
+          stage: ContextPackCurationStageKind.DeterministicScope,
+          summary: "Scoped by hat, org, project, team, and work item.",
+          evidenceRefs: ["work:work-123"],
+        },
+        {
+          stage: ContextPackCurationStageKind.GapReview,
+          summary: "No gaps in fixture.",
+          evidenceRefs: ["context:test"],
+        },
+      ],
       items: [],
       omittedItemsWithReason: [],
       contradictions: [],

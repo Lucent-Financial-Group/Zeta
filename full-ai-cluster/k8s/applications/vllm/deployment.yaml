@@ -39,7 +39,7 @@ spec:
             - { containerPort: 8000, name: http }
           resources:
             requests: { cpu: "4", memory: "16Gi", "nvidia.com/gpu": 1 }
-            limits:   { cpu: "8", memory: "64Gi", "nvidia.com/gpu": 1 }
+            limits: { cpu: "8", memory: "64Gi", "nvidia.com/gpu": 1 }
           volumeMounts:
             - { name: cache, mountPath: /root/.cache/huggingface }
       volumes:
@@ -52,7 +52,7 @@ metadata:
   name: vllm-cache
   namespace: vllm
 spec:
-  accessModes: [ ReadWriteOnce ]
+  accessModes: [ReadWriteOnce]
   storageClassName: longhorn
   resources:
     requests: { storage: 200Gi }

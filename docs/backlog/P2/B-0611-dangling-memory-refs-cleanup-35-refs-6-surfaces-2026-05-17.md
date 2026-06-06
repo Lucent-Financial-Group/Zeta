@@ -7,7 +7,7 @@ created: 2026-05-17
 last_updated: 2026-05-17
 type: chore
 composes_with:
-  - B-0510  # prior B-NNNN substrate work via Otto-CLI; uses the same audit tool surface
+  - B-0510 # prior B-NNNN substrate work via Otto-CLI; uses the same audit tool surface
 depends_on: []
 ---
 
@@ -30,15 +30,15 @@ the audit tool exist, but the dangling refs have not been resolved.
 Running the audit tool 2026-05-17T06:23Z (this row's filing tick)
 surfaces **35 dangling refs across 6 surfaces**:
 
-| Surface | scanned | uniqueRefs | uniqueDanglingRefs |
-|---|---:|---:|---:|
-| `.claude/agents` | 19 | 0 | 0 |
-| `.claude/skills` | 262 | 14 | 1 |
-| `.claude/rules` | 56 | 74 | 5 |
-| `docs/research` | 355 | 186 | 8 |
-| `docs/backlog` | 674 | 205 | 17 |
-| `memory/persona` | 288 | 60 | 4 |
-| **Total** | **1654** | **539** | **35** |
+| Surface          |  scanned | uniqueRefs | uniqueDanglingRefs |
+| ---------------- | -------: | ---------: | -----------------: |
+| `.claude/agents` |       19 |          0 |                  0 |
+| `.claude/skills` |      262 |         14 |                  1 |
+| `.claude/rules`  |       56 |         74 |                  5 |
+| `docs/research`  |      355 |        186 |                  8 |
+| `docs/backlog`   |      674 |        205 |                 17 |
+| `memory/persona` |      288 |         60 |                  4 |
+| **Total**        | **1654** |    **539** |             **35** |
 
 The drift has grown (29 → 35) between PR #4041 audit and today's
 run — new substrate authoring continues to add citations to
@@ -87,26 +87,26 @@ For each of the 35 dangling refs, pick one of three resolutions:
 
 - [ ] All 35 dangling refs resolved via one of the 3 patterns above
 - [ ] `bun tools/hygiene/audit-dangling-memory-refs.ts` exits 0
-  (no dangling refs on any of the 6 default surfaces)
+      (no dangling refs on any of the 6 default surfaces)
 - [ ] Audit tool wired into CI (separate row OR same; see
-  Workflow notes)
+      Workflow notes)
 - [ ] Composing rule update (if needed): clarify the
-  in-repo-projection pattern in
-  `.claude/rules/substrate-or-it-didnt-happen.md` or sibling
-  rule so future authors avoid the pattern proactively
+      in-repo-projection pattern in
+      `.claude/rules/substrate-or-it-didnt-happen.md` or sibling
+      rule so future authors avoid the pattern proactively
 - [ ] **Audit tool semi-automation** (verified 2026-05-17T06:44Z:
-  tool has only `--json` and `--surfaces` flags; no `--fix`,
-  `--allowlist`, or `--suggest` logic in source): consider adding
-  one of: (a) `--allowlist <path>` flag reading a `.audit-allowlist`
-  file with `<surface>:<line>:<ref>` entries marking known-
-  intentional dangling refs (composes with Option A from the
-  slice-1 recipe memo at
-  `memory/feedback_otto_cli_b0611_slice1_audit_recipe_*_2026_05_17.md`);
-  (b) `--suggest` mode that prints the 4-option resolution menu
-  per dangling ref; OR (c) inline annotation parser (e.g., HTML
-  comment `<!-- audit-allowlist: user-scope-intentional -->`
-  adjacent to the citation, opt-in per ref). Decision composes
-  with the design choice from the slice-1 recipe memo.
+      tool has only `--json` and `--surfaces` flags; no `--fix`,
+      `--allowlist`, or `--suggest` logic in source): consider adding
+      one of: (a) `--allowlist <path>` flag reading a `.audit-allowlist`
+      file with `<surface>:<line>:<ref>` entries marking known-
+      intentional dangling refs (composes with Option A from the
+      slice-1 recipe memo at
+      `memory/feedback_otto_cli_b0611_slice1_audit_recipe_*_2026_05_17.md`);
+      (b) `--suggest` mode that prints the 4-option resolution menu
+      per dangling ref; OR (c) inline annotation parser (e.g., HTML
+      comment `<!-- audit-allowlist: user-scope-intentional -->`
+      adjacent to the citation, opt-in per ref). Decision composes
+      with the design choice from the slice-1 recipe memo.
 
 ## Workflow notes
 

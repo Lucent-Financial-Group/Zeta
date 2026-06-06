@@ -12,7 +12,7 @@ Capability skill. Generic / portable. Theory-level.
 ## What chaos actually means
 
 "Chaos" in the colloquial sense means disorder. **Deterministic
-chaos** is the *precisely opposite* phenomenon: a system with
+chaos** is the _precisely opposite_ phenomenon: a system with
 fully-determined dynamics — no noise, no randomness, no hidden
 variables — that nonetheless exhibits long-term unpredictable
 behaviour because small differences in initial conditions
@@ -144,7 +144,7 @@ behaviour as a parameter varies. Key codimension-one types:
 
 **Feigenbaum's universality.** The period-doubling cascade
 has parameter-scaling constants (δ ≈ 4.669 and
-α ≈ 2.503) that are *universal* — independent of the
+α ≈ 2.503) that are _universal_ — independent of the
 specific system, as long as it has a single quadratic maximum.
 This universality is one of the deepest results in
 dynamical-systems theory (1978).
@@ -153,7 +153,7 @@ dynamical-systems theory (1978).
 
 Kolmogorov-Arnold-Moser theorem (1954-1963): for a
 Hamiltonian (conservative) system perturbed away from
-integrable, *most* of the phase-space tori survive the
+integrable, _most_ of the phase-space tori survive the
 perturbation for small-enough coupling. Chaos appears in
 the "resonance gaps" between preserved tori, not
 everywhere.
@@ -165,7 +165,7 @@ poster child.
 
 ## Edge of chaos / complex adaptive systems
 
-Wolfram (1984, *Cellular Automata as Models of Complexity*)
+Wolfram (1984, _Cellular Automata as Models of Complexity_)
 and Langton (1990) observed that computation-rich behaviour
 in cellular automata lives at the **transition between order
 and chaos** — the "edge of chaos".
@@ -223,7 +223,7 @@ or noisy series.
   adaptive-step RK for dissipative.
 - **Pseudorandom-number generators.** LCGs, Xorshift, and
   Mersenne-Twister-family are deterministic, finite-state,
-  and *look* chaotic. They are cryptographically insecure
+  and _look_ chaotic. They are cryptographically insecure
   precisely because the chaos is structured (low-
   dimensional — you can reconstruct the state).
 - **Feedback-loop instability.** Control-system oscillation
@@ -242,7 +242,7 @@ or noisy series.
 - **Not randomness.** Chaos is deterministic; noise is
   stochastic. The diagnostic section above tells them apart.
 - **Not high-dimensional complexity.** Strange attractors
-  are often *low-dimensional* (Lorenz is ≈ 2.05). "Complex
+  are often _low-dimensional_ (Lorenz is ≈ 2.05). "Complex
   because chaotic" and "complex because high-dimensional"
   are different diagnoses.
 - **Not chaos engineering.** Netflix Chaos Monkey et al. is
@@ -273,30 +273,30 @@ when the applied-side need is concrete.
 
 ## Reading list
 
-- Strogatz, *Nonlinear Dynamics and Chaos* (2nd ed., 2015).
+- Strogatz, _Nonlinear Dynamics and Chaos_ (2nd ed., 2015).
   The gentle-but-serious entry.
-- Guckenheimer & Holmes, *Nonlinear Oscillations, Dynamical
-  Systems, and Bifurcations of Vector Fields* (1983).
+- Guckenheimer & Holmes, _Nonlinear Oscillations, Dynamical
+  Systems, and Bifurcations of Vector Fields_ (1983).
   Classical bifurcation-theory reference.
-- Gleick, *Chaos: Making a New Science* (1987). The
+- Gleick, _Chaos: Making a New Science_ (1987). The
   popular-science history — Lorenz, Feigenbaum, Mandelbrot.
-- Lorenz, *Deterministic Nonperiodic Flow* (1963). The
+- Lorenz, _Deterministic Nonperiodic Flow_ (1963). The
   paper.
-- Feigenbaum, *Quantitative Universality for a Class of
-  Nonlinear Transformations* (1978).
-- May, *Simple Mathematical Models with Very Complicated
-  Dynamics* (1976). The logistic-map paper.
-- Wolf, Swift, Swinney, Vastano, *Determining Lyapunov
-  exponents from a time series* (1985).
-- Grassberger & Procaccia, *Characterization of Strange
-  Attractors* (1983).
-- Takens, *Detecting Strange Attractors in Turbulence*
+- Feigenbaum, _Quantitative Universality for a Class of
+  Nonlinear Transformations_ (1978).
+- May, _Simple Mathematical Models with Very Complicated
+  Dynamics_ (1976). The logistic-map paper.
+- Wolf, Swift, Swinney, Vastano, _Determining Lyapunov
+  exponents from a time series_ (1985).
+- Grassberger & Procaccia, _Characterization of Strange
+  Attractors_ (1983).
+- Takens, _Detecting Strange Attractors in Turbulence_
   (1981) — the embedding theorem.
-- Mandelbrot, *The Fractal Geometry of Nature* (1982).
-- Kauffman, *The Origins of Order* (1993) — edge of chaos
+- Mandelbrot, _The Fractal Geometry of Nature_ (1982).
+- Kauffman, _The Origins of Order_ (1993) — edge of chaos
   in biological networks.
-- Wolfram, *A New Kind of Science* (2002) — CA classes.
-- Devaney, *An Introduction to Chaotic Dynamical Systems*
+- Wolfram, _A New Kind of Science_ (2002) — CA classes.
+- Devaney, _An Introduction to Chaotic Dynamical Systems_
   (2nd ed., 1989).
 
 ## Reference patterns

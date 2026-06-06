@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1259 |
-| Title | review(pr-1257-postmerge): verify-then-claim count drift (9→18+) frontmatter + body + MEMORY.md |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T00:49:38Z |
-| Merged at | 2026-05-03T01:08:20Z |
-| Merge commit SHA | `96c7067edfbe5f66fec92441da6137ca2cdd8ef1` |
-| Branch | `free-memory/verify-then-claim-count-update-9-to-15-aaron-2026-05-03` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1259 |
-| Changed files | 5 |
-| Additions / deletions | +16 / -8 |
+| Field                 | Value                                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| Number                | 1259                                                                                            |
+| Title                 | review(pr-1257-postmerge): verify-then-claim count drift (9→18+) frontmatter + body + MEMORY.md |
+| Author                | `AceHack` (human)                                                                               |
+| State                 | MERGED                                                                                          |
+| Created at            | 2026-05-03T00:49:38Z                                                                            |
+| Merged at             | 2026-05-03T01:08:20Z                                                                            |
+| Merge commit SHA      | `96c7067edfbe5f66fec92441da6137ca2cdd8ef1`                                                      |
+| Branch                | `free-memory/verify-then-claim-count-update-9-to-15-aaron-2026-05-03`                           |
+| Base branch           | `main`                                                                                          |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1259                                        |
+| Changed files         | 5                                                                                               |
+| Additions / deletions | +16 / -8                                                                                        |
 
 ## Description
 
@@ -54,15 +54,15 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 16 |
-| Resolved threads | 15 |
-| Unresolved threads | 1 |
-| Total review comments | 16 |
-| Total fix commits (touching thread paths) | 6 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 16    |
+| Resolved threads                          | 15    |
+| Unresolved threads                        | 1     |
+| Total review comments                     | 16    |
+| Total fix commits (touching thread paths) | 6     |
 
 ## Review threads
 
@@ -75,10 +75,10 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T00:51:00Z on `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`:3 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align claimed drift count with memo evidence**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align claimed drift count with memo evidence**
+
   The updated frontmatter now states "18+" instances and says "#10-#18 landed," but the memo body still catalogs only 15 entries in the evidence table (#1-#15) and retains older totals elsewhere, so this change introduces a new internal contradiction in the same document. Any reader or tooling that trusts frontmatter/`MEMORY.md` metadata will consume a count that the linked memo does not substantiate, which is exactly the claim-vs-reality drift this memo is trying to prevent.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -91,7 +91,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T00:51:26Z on `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`:3 (association: NONE)
   The updated frontmatter now claims there are "18+" drift instances, but the memo body still only enumerates 15 instances (#1-#15) and repeats "15" in the summary below the table. That leaves this file internally inconsistent again, which undercuts the PR's stated goal of synchronizing the count across surfaces.
-  
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -114,7 +113,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T00:51:27Z on `memory/MEMORY.md`:7 (association: NONE)
   The MEMORY index entry was updated to "18+" instances and 7 sub-classes, but the linked memo body still enumerates only 15 instances. Because this index is supposed to be a terse summary of the file it links to, the index now drifts from the source memo instead of matching it.
-  
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -125,10 +123,10 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:00:30Z on `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`:34 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Synchronize evidence header with new 20-instance total**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Synchronize evidence header with new 20-instance total**
+
   This commit raises the memo’s total to 20 instances (table and summary), but the section header still reads `15+ distinct drift instances`, so the document now contains two different totals for the same evidence block. Any reader or tooling that keys off headings can ingest the stale count, reintroducing the same count-drift failure mode this change is trying to eliminate.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -140,10 +138,10 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:00:31Z on `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`:3 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Align carved sentence with shipped-tool claim**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Align carved sentence with shipped-tool claim**
+
   The frontmatter now states that v0 of `tools/substrate-claim-checker` shipped in PR #1260, but the carved sentence later in the same memo still says the process is manual "until `tools/substrate-claim-checker/` ships" and still cites 9 instances. This leaves conflicting policy/status depending on which section is consumed, which undermines this memo as a canonical reference.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 7 -- resolved [outdated, collapsed]
@@ -156,7 +154,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T01:01:37Z on `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`:3 (association: NONE)
   The frontmatter now says the 20 drift instances were caught across `#1245 #1247 #1248 #1250 #1252 #1253 #1254 #1255 #1256`, but the evidence table in this memo doesn't include any `#1247` row and does include later instances from `#1257` and `#1259`. As written, the summary PR coverage here no longer matches the evidence this document provides.
-  
 
 ### Thread 8 -- resolved [outdated, collapsed]
 
@@ -179,7 +176,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T01:01:37Z on `docs/hygiene-history/ticks/2026/05/03/0058Z.md`:1 (association: NONE)
   This shard says the body was brought into sync at 20 and that "all 3 surfaces" are consistent, but the memo body still contains older count claims (for example the evidence heading still says "15+ distinct drift instances" and the carved sentence still says "9 instances"). The tick log is therefore recording the verification as complete before the document is actually internally consistent.
-  
 
 ### Thread 10 -- resolved [collapsed]
 
@@ -191,7 +187,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T01:01:37Z on `docs/hygiene-history/ticks/2026/05/03/0049Z.md`:1 (association: NONE)
   This tick claims all three surfaces were updated to "18+ drift instances", but the memo body still had older counts in other body text even at that point (the evidence heading still said "15+" and the carved sentence still said "9"). Recording the sync as complete here makes the hygiene history itself inaccurate.
-  
 
 ### Thread 11 -- resolved [collapsed]
 
@@ -203,7 +198,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T01:08:46Z on `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`:3 (association: NONE)
   This now states that `tools/substrate-claim-checker/check-counts.ts` shipped in PR #1260, but that path is not present in the repository. Because the memo is framed as a current-state fact rather than a future plan, readers will be told a verifier exists when it still does not.
-  
 
 ### Thread 12 -- resolved [collapsed]
 
@@ -215,7 +209,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T01:08:46Z on `memory/MEMORY.md`:7 (association: NONE)
   The index entry repeats that `tools/substrate-claim-checker/check-counts.ts` already shipped in PR #1260, but there is no such path under `tools/` in this branch. That makes the MEMORY index advertise a tool consumers cannot actually inspect or run.
-  
 
 ### Thread 13 -- resolved [collapsed]
 
@@ -238,7 +231,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T01:08:46Z on `docs/hygiene-history/ticks/2026/05/03/0058Z.md`:1 (association: NONE)
   This sentence says the table was extended with `6 new rows (#16-#20)`, but `#16` through `#20` is only five rows. Because this shard is meant to be a factual audit trail, the count here is already off-by-one.
-  
 
 ### Thread 15 -- resolved [collapsed]
 
@@ -250,7 +242,6 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 
 - **`Copilot` (bot)** at 2026-05-03T01:08:47Z on `docs/hygiene-history/ticks/2026/05/03/0106Z.md`:1 (association: NONE)
   This status summary says `now 4 surfaces consistent at 20` and then immediately lists five surfaces (`frontmatter`, `body table`, `section heading`, `carved sentence`, and `MEMORY.md`). One of these counts is wrong, so the shard still records an inconsistent total.
-  
 
 ### Thread 16 -- unresolved
 
@@ -261,10 +252,10 @@ This is **drift instance #19** — count drift sub-class, where body content upd
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-03T01:09:32Z on `memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`:96 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile shipped-tool status with section state**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile shipped-tool status with section state**
+
   This line says `tools/substrate-claim-checker` v0 already shipped in PR #1260, but the surrounding section is still titled "Mechanization path (proposed, not yet built)," so the memo now presents conflicting implementation state for the same tool. Because this document is used as canonical process guidance, that contradiction can cause readers/automation to treat the checker as unavailable and skip the shipped v0 path; split shipped-vs-future scope or update the section state to match the new claim.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

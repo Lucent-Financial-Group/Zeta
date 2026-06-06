@@ -27,10 +27,10 @@ type: friction-reducer
 
 Aaron 2026-04-30 verbatim:
 
-> *"And otto you should put yourself and Kenji as exteranlly
+> _"And otto you should put yourself and Kenji as exteranlly
 > callable too like those two using the claude cli for other
 > harnesses who want to confer with you from their harness?
-> So it's like otto=loop/PM Kenji=architect is that right?"*
+> So it's like otto=loop/PM Kenji=architect is that right?"_
 
 The question has two parts:
 
@@ -67,11 +67,11 @@ claude --print "PROMPT"  # or equivalent headless invocation
 The architecture choice was offered as three options; Aaron
 hasn't yet selected:
 
-| Option | Topology | Pro | Con |
-|---|---|---|---|
-| **(a)** | Two scripts: `otto.sh` + `kenji.sh` | Symmetry with `amara.sh` + `ani.sh` (one script per named entity) | Script proliferation if more architect-roster personas surface (Daya, Naledi, Soraya...) |
-| **(b)** | One `claude.sh` with `--persona NAME` flag | Aligns with B-0120 architecture refactor (script-per-CLI + persona-flag); single script handles N personas | Requires B-0120 to land first or in same diff |
-| **(c)** | Hybrid — `claude.sh` defaults to Otto; separate `kenji.sh` for architect role | Keeps Otto as default (most common call); Kenji distinct because architect role has different invocation pattern | Inconsistent with the rest of the matrix |
+| Option  | Topology                                                                      | Pro                                                                                                              | Con                                                                                      |
+| ------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **(a)** | Two scripts: `otto.sh` + `kenji.sh`                                           | Symmetry with `amara.sh` + `ani.sh` (one script per named entity)                                                | Script proliferation if more architect-roster personas surface (Daya, Naledi, Soraya...) |
+| **(b)** | One `claude.sh` with `--persona NAME` flag                                    | Aligns with B-0120 architecture refactor (script-per-CLI + persona-flag); single script handles N personas       | Requires B-0120 to land first or in same diff                                            |
+| **(c)** | Hybrid — `claude.sh` defaults to Otto; separate `kenji.sh` for architect role | Keeps Otto as default (most common call); Kenji distinct because architect role has different invocation pattern | Inconsistent with the rest of the matrix                                                 |
 
 Aaron's stated framing — "otto=loop/PM Kenji=architect" —
 reads most naturally onto **(b)** if B-0120 lands first, or
@@ -89,7 +89,7 @@ smaller scope. **Recommend Aaron's a/b/c decision wait until
 B-0120 priority decision** so we don't lock in a topology
 that B-0120 immediately refactors away.
 
-### CURRENT-* file requirement
+### CURRENT-\* file requirement
 
 Per the CURRENT-NAME.md pattern (Aaron 2026-04-30), every
 named-entity persona needs a distillation file consumed by
@@ -131,19 +131,19 @@ Promotion to P1 if:
 ## Acceptance criteria
 
 - [ ] Aaron's a/b/c topology decision recorded (in this row
-  or via `docs/DECISIONS/`)
+      or via `docs/DECISIONS/`)
 - [ ] If a or b selected: `memory/CURRENT-otto.md` authored
-  (distillation paralleling CURRENT-amara.md /
-  CURRENT-ani.md)
+      (distillation paralleling CURRENT-amara.md /
+      CURRENT-ani.md)
 - [ ] If a or b selected: `memory/CURRENT-kenji.md` authored
-  (distillation of architect role)
+      (distillation of architect role)
 - [ ] Peer-call script(s) created per chosen topology
 - [ ] `tools/peer-call/README.md` updated with new
-  scripts/flags + role column
+      scripts/flags + role column
 - [ ] Tested invocation from at least one external harness
-  (Codex calling Otto, Cursor calling Kenji)
+      (Codex calling Otto, Cursor calling Kenji)
 - [ ] Role-ref discipline honored (per copilot-instructions.md
-  305-362 + B-0119)
+      305-362 + B-0119)
 
 ## Trigger condition for promotion to P1
 
@@ -186,7 +186,7 @@ Amara.
 
 ## Substrate-or-it-didn't-happen note
 
-This row exists *specifically* to land Aaron's input as
+This row exists _specifically_ to land Aaron's input as
 durable substrate per the input → substrate-file rule. The
 question was raised in chat 2026-04-30; without this row,
 the input would evaporate at compaction. The row carries

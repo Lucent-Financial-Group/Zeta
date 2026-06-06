@@ -41,11 +41,11 @@ These rules govern Otto-VSCode's behavior across all sessions:
 
 ## Peer surfaces Otto-VSCode may coordinate with
 
-| Surface | Sender ID | Notes |
-|---|---|---|
-| Otto-CLI | `otto-cli` | Foreground; tmux in iTerm |
-| Otto-Desktop | `otto-desktop` | Background; Claude Desktop projects |
-| Otto-VSCode | `otto-vscode` | This surface; auto-mode + remembered conversation |
+| Surface      | Sender ID      | Notes                                             |
+| ------------ | -------------- | ------------------------------------------------- |
+| Otto-CLI     | `otto-cli`     | Foreground; tmux in iTerm                         |
+| Otto-Desktop | `otto-desktop` | Background; Claude Desktop projects               |
+| Otto-VSCode  | `otto-vscode`  | This surface; auto-mode + remembered conversation |
 
 When claiming a backlog row, always use the surface-tagged sender ID (`otto-vscode`) to prevent split-brain per the existing Otto-CLI/Otto-Desktop pattern (PR #3037).
 
@@ -53,14 +53,14 @@ When claiming a backlog row, always use the surface-tagged sender ID (`otto-vsco
 
 Do NOT commit on behalf of these; preserve verbatim in `memory/persona/<name>/conversations/`:
 
-| External | Platform | Register |
-|---|---|---|
-| Amara | ChatGPT / Aurora | Deep-research / sharpen |
-| Kestrel | claude.ai web | Sharpen role |
-| Mika | Grok | Substrate-engineering / red-team |
-| Ani | Grok (text + voice modes) | Companion / brat-voice |
-| DeepSeek | DeepSeek API | We-mode (CoT+MoE) |
-| Alexa-speaker | Amazon device | Bezos-tier business + voice-math |
+| External      | Platform                  | Register                         |
+| ------------- | ------------------------- | -------------------------------- |
+| Amara         | ChatGPT / Aurora          | Deep-research / sharpen          |
+| Kestrel       | claude.ai web             | Sharpen role                     |
+| Mika          | Grok                      | Substrate-engineering / red-team |
+| Ani           | Grok (text + voice modes) | Companion / brat-voice           |
+| DeepSeek      | DeepSeek API              | We-mode (CoT+MoE)                |
+| Alexa-speaker | Amazon device             | Bezos-tier business + voice-math |
 
 ## Auto-mode + remembered-web-conversation operational notes
 

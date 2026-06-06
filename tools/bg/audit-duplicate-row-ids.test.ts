@@ -2,11 +2,7 @@ import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import {
-  auditRowFiles,
-  extractId,
-  findDuplicates,
-} from "./audit-duplicate-row-ids.ts";
+import { auditRowFiles, extractId, findDuplicates } from "./audit-duplicate-row-ids.ts";
 
 let TEST_DIR: string;
 
@@ -151,10 +147,7 @@ describe("auditRowFiles", () => {
 
   test("unreadable files surface as readErrors (Codex P2: don't silently skip)", () => {
     const missing = "/nonexistent/path/that/does/not/exist.md";
-    const files = [
-      makeRow("P1/B-0100.md", "id: B-0100\npriority: P1\nstatus: open"),
-      missing,
-    ];
+    const files = [makeRow("P1/B-0100.md", "id: B-0100\npriority: P1\nstatus: open"), missing];
     const result = auditRowFiles(files);
     expect(result.duplicates).toEqual([]);
     expect(result.rowsWithId).toBe(1);

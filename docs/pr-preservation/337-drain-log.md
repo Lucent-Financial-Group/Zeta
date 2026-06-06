@@ -28,6 +28,7 @@ captured at end of file.
 ### Original comment
 
 > P1: The claim that the cross-reference list is "verified against actual … file paths" is contradicted by the broken links in this section (missing ferry docs / memory entry / KSK doc). Please either fix the references or soften/remove the verification statement.
+>
 > ```suggestion
 >   reference list above is intended as a set of PR/file
 >   anchors and should be rechecked against the tree).
@@ -62,6 +63,7 @@ captured at end of file.
 ### Original comment
 
 > P1: `docs/definitions/KSK.md` is referenced as already shipped, but `docs/definitions/` does not exist in this repo snapshot (so these links are currently dead). Either add the missing KSK definition doc in this PR, or update the references/wording to point at the current canonical artifact that actually exists.
+>
 > ```suggestion
 > settled the KSK naming layer in prior ferry work (per
 > ```
@@ -80,6 +82,7 @@ captured at end of file.
 ### Original comment
 
 > P1: This doc cites "GOVERNANCE §33" as the source of the archive-header/verbatim-preservation policy, but `GOVERNANCE.md` currently has no §33 section. Please update the reference to the actual location of this policy (or avoid section-number references until §33 exists) to prevent truth-drift.
+>
 > ```suggestion
 > paraphrase; corrections are tracked in Part 2 below. Where
 > the text cites sources (e.g. "【10†L189-L198】"), those are
@@ -100,6 +103,7 @@ captured at end of file.
 ### Original comment
 
 > P1: The cross-reference points at a 15th-ferry doc path under `docs/aurora/`, but that file is not present in the repository. Please either add the missing doc or update this link to an existing artifact.
+>
 > ```suggestion
 > - **Amara 15th ferry** — where Amara first issued the
 >   theory-cathedral warning; this 18th ferry notes the
@@ -120,6 +124,7 @@ captured at end of file.
 ### Original comment
 
 > P1: This line includes a contributor's full name, which conflicts with the repo's "no name attribution in docs" operational standing rule. Please switch to the appropriate role reference (e.g., "human maintainer") or move identifying details to an allowed memory surface.
+>
 > ```suggestion
 > collaborators acting under the governance of the human
 > maintainer; Amara contributes research and critique as
@@ -139,6 +144,7 @@ captured at end of file.
 ### Original comment
 
 > P2: Typo: "falkey" → "flaky".
+>
 > ```suggestion
 >   #327: *"not seed locked, flaky, DST?"* Amara's
 > ```
@@ -172,6 +178,7 @@ captured at end of file.
 ### Original comment
 
 > P1: The cross-reference points at a 16th-ferry doc path under `docs/aurora/`, but that file is not present in the repository. Please either add the missing doc or update this link to an existing artifact.
+>
 > ```suggestion
 > - **Amara 16th-ferry follow-through** — the earlier KSK
 >   naming ambiguity is carried forward here via
@@ -196,6 +203,7 @@ captured at end of file.
 ### Original comment
 
 > P1: `tests/Tests.FSharp/Simulation/CartelToy.Tests.fs` is referenced here, but `tests/Tests.FSharp/Simulation/` doesn't exist in the repo; cartel-related tests currently appear under `tests/Tests.FSharp/Algebra/Graph.Tests.fs`. Please update the path so the reference is navigable.
+>
 > ```suggestion
 >    score intervals. `tests/Tests.FSharp/Algebra/
 >    Graph.Tests.fs` already computes detection / FP
@@ -230,6 +238,7 @@ captured at end of file.
 ### Original comment
 
 > P1: The referenced memory file `memory/feedback_ksk_naming_unblocked_aaron_directed_rewrite_authority_max_initial_starting_point_2026_04_24.md` is not present under `memory/`. Please fix the filename/path to the correct memory entry (or remove the reference).
+>
 > ```suggestion
 > - **Otto-140..145** — KSK canonical expansion locked to
 >   "Kinetic Safeguard Kernel" (safety-kernel sense, not
@@ -250,6 +259,7 @@ captured at end of file.
 ### Original comment
 
 > P1 xref integrity: this doc asserts `docs/definitions/KSK.md` was shipped, but `docs/definitions/` does not exist in this repo snapshot. Either add the referenced definition doc (and directory) in the same PR/series, or change the references to the actual in-repo location of the current KSK definition so links don't rot.
+>
 > ```suggestion
 > shipped the KSK naming doc, per Amara 16th-ferry §4 +
 > 17th-ferry correction #7 resolved by Aaron Otto-140..145,

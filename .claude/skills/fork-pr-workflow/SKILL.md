@@ -323,7 +323,7 @@ When an agent opens a fork PR to upstream, the PR
 body should:
 
 - Declare agent authorship (`🤖 Generated with Claude
-  Code` footer or equivalent).
+Code` footer or equivalent).
 - Not assume upstream maintainers will pull the fork
   locally — they shouldn't have to. If they do want
   to inspect, `gh pr checkout <n>` on upstream Just
@@ -341,7 +341,7 @@ body should:
 - Does NOT cover the `../` sibling-clone convention
   for upstream OSS contributions — that's
   `git-workflow-expert` §"sibling-clone convention".
-  Sibling clones are a *different* pattern (read-only
+  Sibling clones are a _different_ pattern (read-only
   reference material + direct PRs to OSS upstreams);
   this skill is for contributing **to your own
   canonical repo** via your personal fork.
@@ -360,7 +360,7 @@ body should:
 - **`origin` set to upstream, no personal fork at
   all.** You lose the cost/permission benefits. If
   you're the maintainer and you want direct push,
-  that's a valid choice but it's the *branch-based*
+  that's a valid choice but it's the _branch-based_
   workflow, not fork-based. Wear `git-workflow-expert`
   instead.
 - **Pushing feature branches to `upstream` accidentally.**

@@ -143,7 +143,8 @@ function asString(v: unknown, where: string): string {
 
 /** Validate a value is an array. */
 function asArray(v: unknown, where: string): unknown[] {
-  if (!Array.isArray(v)) throw new BonsaiFail({ kind: "MalformedJson", message: `${where} expects an array, got ${typeof v}` });
+  if (!Array.isArray(v))
+    throw new BonsaiFail({ kind: "MalformedJson", message: `${where} expects an array, got ${typeof v}` });
   return v;
 }
 
@@ -289,7 +290,11 @@ function parseNode(depth: number, n: unknown): Expr {
         right: parseNode(depth + 1, o.right),
       };
     case "call":
-      return { kind: "call", fn: asString(o.fn, "call.fn"), args: asArray(o.args, "call.args").map((a) => parseNode(depth + 1, a)) };
+      return {
+        kind: "call",
+        fn: asString(o.fn, "call.fn"),
+        args: asArray(o.args, "call.args").map((a) => parseNode(depth + 1, a)),
+      };
     case "cond":
       return {
         kind: "cond",
@@ -356,9 +361,7 @@ export function equals(a: Expr, b: Expr): boolean {
     case "lambda": {
       const bb = b as Extract<Expr, { kind: "lambda" }>;
       return (
-        a.params.length === bb.params.length &&
-        a.params.every((p, i) => p === bb.params[i]) &&
-        equals(a.body, bb.body)
+        a.params.length === bb.params.length && a.params.every((p, i) => p === bb.params[i]) && equals(a.body, bb.body)
       );
     }
     case "binary": {
@@ -448,7 +451,8 @@ function pushConst(path: string, n: unknown, out: PathedFeedback[]): void {
   const o = n as Record<string, unknown>;
   switch (o.t) {
     case "int":
-      if (typeof o.v !== "number" || !Number.isInteger(o.v)) out.push({ path, feedback: { kind: "ExpectedInt", where: path } });
+      if (typeof o.v !== "number" || !Number.isInteger(o.v))
+        out.push({ path, feedback: { kind: "ExpectedInt", where: path } });
       else if (!Number.isSafeInteger(o.v)) out.push({ path, feedback: { kind: "NonSafeInt", value: o.v } });
       return;
     case "str":
@@ -487,27 +491,41 @@ function pushNode(path: string, depth: number, n: unknown, out: PathedFeedback[]
       pushConst(`${path}.value`, o.value, out);
       return;
     case "param":
-      if (typeof o.name !== "string") out.push({ path: `${path}.name`, feedback: { kind: "ExpectedString", where: `${path}.name` } });
+      if (typeof o.name !== "string")
+        out.push({ path: `${path}.name`, feedback: { kind: "ExpectedString", where: `${path}.name` } });
       return;
     case "lambda":
       if (Array.isArray(o.params)) {
         o.params.forEach((p, i) => {
-          if (typeof p !== "string") out.push({ path: `${path}.params[${i}]`, feedback: { kind: "ExpectedString", where: `${path}.params[${i}]` } });
+          if (typeof p !== "string")
+            out.push({
+              path: `${path}.params[${i}]`,
+              feedback: { kind: "ExpectedString", where: `${path}.params[${i}]` },
+            });
         });
       } else {
-        out.push({ path: `${path}.params`, feedback: { kind: "MalformedJson", message: `${path}.params is not an array` } });
+        out.push({
+          path: `${path}.params`,
+          feedback: { kind: "MalformedJson", message: `${path}.params is not an array` },
+        });
       }
       pushNode(`${path}.body`, depth + 1, o.body, out);
       return;
     case "binary":
-      if (typeof o.op !== "string" || !BIN_OPS.has(o.op)) out.push({ path: `${path}.op`, feedback: { kind: "UnknownOp", op: String(o.op) } });
+      if (typeof o.op !== "string" || !BIN_OPS.has(o.op))
+        out.push({ path: `${path}.op`, feedback: { kind: "UnknownOp", op: String(o.op) } });
       pushNode(`${path}.left`, depth + 1, o.left, out);
       pushNode(`${path}.right`, depth + 1, o.right, out);
       return;
     case "call":
-      if (typeof o.fn !== "string") out.push({ path: `${path}.fn`, feedback: { kind: "ExpectedString", where: `${path}.fn` } });
+      if (typeof o.fn !== "string")
+        out.push({ path: `${path}.fn`, feedback: { kind: "ExpectedString", where: `${path}.fn` } });
       if (Array.isArray(o.args)) o.args.forEach((a, i) => pushNode(`${path}.args[${i}]`, depth + 1, a, out));
-      else out.push({ path: `${path}.args`, feedback: { kind: "MalformedJson", message: `${path}.args is not an array` } });
+      else
+        out.push({
+          path: `${path}.args`,
+          feedback: { kind: "MalformedJson", message: `${path}.args is not an array` },
+        });
       return;
     case "cond":
       pushNode(`${path}.test`, depth + 1, o.test, out);
@@ -527,19 +545,39 @@ function pushNode(path: string, depth: number, n: unknown, out: PathedFeedback[]
  * structurally-valid-but-non-canonical input declines `NonCanonical` at `$`).
  */
 export function parseAll(s: string): Result<Expr, PathedFeedback[]> {
-  if (typeof s !== "string") return { ok: false, error: [{ path: "$", feedback: { kind: "MalformedJson", message: "input was not a string" } }] };
+  if (typeof s !== "string")
+    return {
+      ok: false,
+      error: [{ path: "$", feedback: { kind: "MalformedJson", message: "input was not a string" } }],
+    };
   let doc: unknown;
   try {
     doc = JSON.parse(s);
   } catch (ex) {
-    return { ok: false, error: [{ path: "$", feedback: { kind: "MalformedJson", message: ex instanceof Error ? ex.message : String(ex) } }] };
+    return {
+      ok: false,
+      error: [
+        { path: "$", feedback: { kind: "MalformedJson", message: ex instanceof Error ? ex.message : String(ex) } },
+      ],
+    };
   }
   if (typeof doc !== "object" || doc === null || Array.isArray(doc)) {
-    return { ok: false, error: [{ path: "$", feedback: { kind: "MalformedJson", message: "document is not an object" } }] };
+    return {
+      ok: false,
+      error: [{ path: "$", feedback: { kind: "MalformedJson", message: "document is not an object" } }],
+    };
   }
   const d = doc as Record<string, unknown>;
-  if (typeof d.v !== "number") return { ok: false, error: [{ path: "$.v", feedback: { kind: "MalformedJson", message: "document v is not a number" } }] };
-  if (d.v !== BONSAI_VERSION) return { ok: false, error: [{ path: "$.v", feedback: { kind: "UnsupportedVersion", found: d.v, expected: BONSAI_VERSION } }] };
+  if (typeof d.v !== "number")
+    return {
+      ok: false,
+      error: [{ path: "$.v", feedback: { kind: "MalformedJson", message: "document v is not a number" } }],
+    };
+  if (d.v !== BONSAI_VERSION)
+    return {
+      ok: false,
+      error: [{ path: "$.v", feedback: { kind: "UnsupportedVersion", found: d.v, expected: BONSAI_VERSION } }],
+    };
 
   const errs: PathedFeedback[] = [];
   pushNode("$.expr", 1, d.expr, errs);

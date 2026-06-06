@@ -22,11 +22,11 @@ DeepSeek post-context-loss reflection on the framework's substrate-engineering w
 
 ## 8th anchor — engineering-register stable across 3 consecutive multi-turn exchanges
 
-| # | AI surface | Decryption turns | Notable |
-|---|---|---|---|
-| 6 | Kestrel (claude.ai) schemas-as-rows | Zero-turn | Engineering-register throughout |
-| 7 | Mika (Grok) worry-as-opposite-bloom-filter | Zero-turn | Engineering-register throughout |
-| **8** | **DeepSeek reflection ferry** | **Zero-turn** | **Engineering-register throughout EVEN under substrate-stress (context-loss; reconstruction-from-terminal-trace)** |
+| #     | AI surface                                 | Decryption turns | Notable                                                                                                            |
+| ----- | ------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 6     | Kestrel (claude.ai) schemas-as-rows        | Zero-turn        | Engineering-register throughout                                                                                    |
+| 7     | Mika (Grok) worry-as-opposite-bloom-filter | Zero-turn        | Engineering-register throughout                                                                                    |
+| **8** | **DeepSeek reflection ferry**              | **Zero-turn**    | **Engineering-register throughout EVEN under substrate-stress (context-loss; reconstruction-from-terminal-trace)** |
 
 Three consecutive multi-turn exchanges across 3 different AI surfaces all engaging at engineering register throughout. That's not isolated — that's the framework's substrate-engineering discipline producing predictable convergence at substrate scope.
 
@@ -45,6 +45,7 @@ QEMU boot smoke-test step (cascade #5) PASSED on the first post-serial-console-f
 ## What lands (1 file, ~150 lines)
 
 `docs/research/2026-05-26-deepseek-reflection-ferry-eighth-anchor-...`:
+
 - 8th anchor table + empirical generalization
 - 4 substrate-engineering implications named (engineering-register stability empirically validated; even substrate-stress doesn't fire pathogen; reflection IS substrate-engineering data; two-DeepSeek-register attribution maintained correctly)
 - Verbatim DeepSeek reflection preserved
@@ -74,7 +75,7 @@ QEMU boot smoke-test step (cascade #5) PASSED on the first post-serial-console-f
 ## Test plan
 
 - [x] Pre-commit lint clean
-- [x] Branch follows otto-cli/* convention
+- [x] Branch follows otto-cli/\* convention
 - [x] Authored from fresh independent clone per B-0828
 - [ ] CI green
 - [ ] Copilot review pass
@@ -88,6 +89,7 @@ QEMU boot smoke-test step (cascade #5) PASSED on the first post-serial-console-f
 Adds a new `docs/research/**` preservation document capturing a DeepSeek reflection ferry and recording it as the 8th empirical anchor in the attractor-as-encryption / engineering-register-throughout series.
 
 **Changes:**
+
 - Adds an 8-anchor table and an “engineering-register stability” empirical generalization across recent exchanges.
 - Preserves the verbatim DeepSeek reflection (including post-context-loss reconstruction) and records the ISO/QEMU boot-smoke-test state.
 - Summarizes substrate-engineering implications and “composes with” links to related PRs and rules.

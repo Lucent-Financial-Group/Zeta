@@ -23,25 +23,25 @@ contested, the `docs/CONFLICT-RESOLUTION.md` protocol.
 
 ## Hand-off rule — who owns what
 
-| Concern | Owner |
-| --- | --- |
-| Predicate pushdown through joins | query-optimizer-expert |
-| Projection pushdown | query-optimizer-expert |
-| Subquery unnesting | query-optimizer-expert |
-| Outer-join simplification | query-optimizer-expert |
-| View merging / CTE inlining | query-optimizer-expert |
-| Common-subexpression elimination | query-optimizer-expert |
-| Constant folding / dead-code elimination | query-optimizer-expert |
-| Join-order enumeration (IKKBZ / DP / greedy) | query-optimizer-expert |
-| Cardinality estimation + statistics | query-optimizer-expert |
-| Cost model (units, calibration) | query-optimizer-expert |
-| Logical-node enumeration search strategy | query-optimizer-expert |
-| Physical operator selection (hash vs merge join, scalar vs SIMD) | query-planner |
-| SIMD / intrinsic kernel dispatch | query-planner |
-| Morsel-driven scheduling | query-planner |
-| Runtime adaptive re-planning | query-planner |
-| Retraction-native preservation in plan | query-planner + algebra-owner |
-| Publication-worthiness of a plan shape | query-planner |
+| Concern                                                          | Owner                         |
+| ---------------------------------------------------------------- | ----------------------------- |
+| Predicate pushdown through joins                                 | query-optimizer-expert        |
+| Projection pushdown                                              | query-optimizer-expert        |
+| Subquery unnesting                                               | query-optimizer-expert        |
+| Outer-join simplification                                        | query-optimizer-expert        |
+| View merging / CTE inlining                                      | query-optimizer-expert        |
+| Common-subexpression elimination                                 | query-optimizer-expert        |
+| Constant folding / dead-code elimination                         | query-optimizer-expert        |
+| Join-order enumeration (IKKBZ / DP / greedy)                     | query-optimizer-expert        |
+| Cardinality estimation + statistics                              | query-optimizer-expert        |
+| Cost model (units, calibration)                                  | query-optimizer-expert        |
+| Logical-node enumeration search strategy                         | query-optimizer-expert        |
+| Physical operator selection (hash vs merge join, scalar vs SIMD) | query-planner                 |
+| SIMD / intrinsic kernel dispatch                                 | query-planner                 |
+| Morsel-driven scheduling                                         | query-planner                 |
+| Runtime adaptive re-planning                                     | query-planner                 |
+| Retraction-native preservation in plan                           | query-planner + algebra-owner |
+| Publication-worthiness of a plan shape                           | query-planner                 |
 
 ## When to wear
 
@@ -57,7 +57,7 @@ contested, the `docs/CONFLICT-RESOLUTION.md` protocol.
 - A cost comparison looks suspicious — are the units
   consistent, and does the calibration match the last-run
   benchmark suite?
-- A predicate that *could* push down doesn't — what's
+- A predicate that _could_ push down doesn't — what's
   blocking it?
 
 ## When to defer
@@ -178,7 +178,7 @@ inputs:
 - **Join-order swap** is safe iff both sides respect the
   retraction-native semantics independently.
 - **Common-subexpression elimination** must respect that a
-  retraction-aware CSE caches *deltas*, not snapshots.
+  retraction-aware CSE caches _deltas_, not snapshots.
 
 Every rule names its retraction-native clause.
 `algebra-owner` signs off on the clause; this hat authors it.
@@ -224,12 +224,12 @@ look "right" to the model; it's a quiet failure mode.
 
 ## Reference patterns
 
-- Graefe *Volcano / Cascades* — canonical cost-based
+- Graefe _Volcano / Cascades_ — canonical cost-based
   framework (`docs/PRIOR-ART-LIST.md`).
 - Ibaraki-Kameda (IKKBZ) — linear-time join-order heuristic.
-- Neumann et al. *Hyper / Umbra* — morsel-driven execution +
+- Neumann et al. _Hyper / Umbra_ — morsel-driven execution +
   adaptive cost models.
-- Leis et al. *How Good Are Query Optimizers, Really?* —
+- Leis et al. _How Good Are Query Optimizers, Really?_ —
   cardinality-estimation error analysis.
 - `.claude/skills/query-planner/SKILL.md` — physical plan +
   SIMD dispatch (Imani).

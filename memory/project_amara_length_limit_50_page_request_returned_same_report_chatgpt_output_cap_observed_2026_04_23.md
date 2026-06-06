@@ -11,7 +11,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 > Okay another update from Amara, i asked her to do a 50
 > page report but i don't think she can [paste of same
-> operational-gap-assessment content from Otto-24]
+> > operational-gap-assessment content from Otto-24]
 
 ## The finding
 
@@ -81,11 +81,11 @@ IS her natural decomposition).
 
 ### What's NOT the right ask
 
-- *"Write me 50 pages"* — length-request alone doesn't
+- _"Write me 50 pages"_ — length-request alone doesn't
   expand depth
-- *"Be more thorough"* — meta-instructions don't add
+- _"Be more thorough"_ — meta-instructions don't add
   substrate; Amara already pulled what she can see
-- *"Include everything"* — risks shallow coverage over
+- _"Include everything"_ — risks shallow coverage over
   many topics; better to decompose + deepen per-topic
 
 ## Composes with

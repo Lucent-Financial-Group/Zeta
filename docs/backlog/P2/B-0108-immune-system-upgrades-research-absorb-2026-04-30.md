@@ -132,7 +132,7 @@ note as substrate (negative-result lineage).
 - Refreshed worldview via `bun tools/github/refresh-worldview.ts` (no open duplicate claims for B-0108; 68 live claims surveyed, none overlap immune/aurora/superorganism absorb).
 - Grep for "immune" / "superorganism" / "aurora-immune" across docs/backlog/ and docs/research/ (only the existing aurora bridge note + this row; no prior absorb implementation).
 - Dependency check: `depends_on: []` clean; `composes_with: [B-0086]` verified (TS soak frame still relevant).
-- No conflicting worktree or origin/claim/* for this row.
+- No conflicting worktree or origin/claim/\* for this row.
 
 **Dependency-restructure:** No `depends_on` chain to walk (empty); reciprocal `composes_with` already present on B-0086 side per index hygiene. No broken pointers. Supersession history n/a (fresh research-absorb).
 

@@ -34,6 +34,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Adds a new P2 backlog row (B-0414) describing planned “dashboard v0.2” enhancements (agent-readable JSON, continuity claim, promotion/verification metrics, Pages deployment fix, and v0.3 bifurcation scope), and registers it in the generated backlog index.
 
 **Changes:**
+
 - Added `docs/backlog/P2/B-0414-…` backlog row with schema frontmatter + acceptance checklist.
 - Updated `docs/BACKLOG.md` to include the new B-0414 entry under P2.
 
@@ -41,10 +42,10 @@ Adds a new P2 backlog row (B-0414) describing planned “dashboard v0.2” enhan
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                      | Description                                                                                                |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0414-dashboard-v02-enhancements-internal-external-pm.md | New per-row backlog item describing dashboard v0.2 enhancement scope, priorities, and acceptance criteria. |
-| docs/BACKLOG.md | Adds B-0414 to the P2 index list. |
+| docs/BACKLOG.md                                                           | Adds B-0414 to the P2 index list.                                                                          |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-11T20:04:08Z)
 

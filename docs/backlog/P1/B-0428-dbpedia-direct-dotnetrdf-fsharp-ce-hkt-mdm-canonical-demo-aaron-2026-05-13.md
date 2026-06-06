@@ -24,13 +24,13 @@ composes_with:
 
 ## Aaron's directive (with correction)
 
-Aaron 2026-05-13 (first): *"dude is there still a free f# type
+Aaron 2026-05-13 (first): _"dude is there still a free f# type
 provider for this? https://www.dbpedia.org/ this is like free
-master data with human curtatino"*
+master data with human curtatino"_
 
-Aaron 2026-05-13 (correction): *"sorry i said it backwards the
-first one after f# fork"* + *"Build fresh F# type provider on
-dotNetRDF or RDFSharp the hard one we wait and do with fork"*.
+Aaron 2026-05-13 (correction): _"sorry i said it backwards the
+first one after f# fork"_ + _"Build fresh F# type provider on
+dotNetRDF or RDFSharp the hard one we wait and do with fork"_.
 
 **Corrected ordering**:
 
@@ -62,10 +62,10 @@ type-provider authoring becomes substantially cleaner.
 
 ### Foundation library choice
 
-| Library | Pros | Cons |
-|---|---|---|
-| **dotNetRDF 3.x** (active Feb 2026) | Most mature; RDF-Star + SPARQL-Star; broad RDF feature support | Larger API surface |
-| **RDFSharp 3.23.0** (active March 2026) | Lightweight; clean API; semantic-web focused | Less coverage of RDF-Star |
+| Library                                 | Pros                                                           | Cons                      |
+| --------------------------------------- | -------------------------------------------------------------- | ------------------------- |
+| **dotNetRDF 3.x** (active Feb 2026)     | Most mature; RDF-Star + SPARQL-Star; broad RDF feature support | Larger API surface        |
+| **RDFSharp 3.23.0** (active March 2026) | Lightweight; clean API; semantic-web focused                   | Less coverage of RDF-Star |
 
 ADR-grade choice owed during execution.
 
@@ -181,13 +181,13 @@ HKT over Clifford), open a separate backlog row for:
 This row was too broad to implement atomically. Decomposed into 5 dependency-ordered
 child rows:
 
-| Row | Title | Type | Depends on |
-|-----|-------|------|------------|
-| [B-0480](B-0480-dbpedia-library-choice-adr-prior-art-audit-2026-05-14.md) | Library-choice ADR + prior-art audit | research (gate) | — |
-| [B-0481](B-0481-dbpedia-fsharp-project-scaffold-nuget-connectivity-2026-05-14.md) | F# project scaffold + NuGet + connectivity smoke | feature | B-0480 |
-| [B-0482](B-0482-dbpedia-sparql-fsharp-ce-computation-expression-2026-05-14.md) | SPARQL F# computation expression | feature | B-0481 |
-| [B-0483](B-0483-dbpedia-hkt-mdm-entity-bindings-dv2-hub-satellite-2026-05-14.md) | HKT-MDM entity bindings + DV2.0 hub-satellite | feature | B-0482 |
-| [B-0484](B-0484-dbpedia-end-to-end-demo-project-2026-05-14.md) | End-to-end demo project (closes B-0428) | feature | B-0483 |
+| Row                                                                               | Title                                            | Type            | Depends on |
+| --------------------------------------------------------------------------------- | ------------------------------------------------ | --------------- | ---------- |
+| [B-0480](B-0480-dbpedia-library-choice-adr-prior-art-audit-2026-05-14.md)         | Library-choice ADR + prior-art audit             | research (gate) | —          |
+| [B-0481](B-0481-dbpedia-fsharp-project-scaffold-nuget-connectivity-2026-05-14.md) | F# project scaffold + NuGet + connectivity smoke | feature         | B-0480     |
+| [B-0482](B-0482-dbpedia-sparql-fsharp-ce-computation-expression-2026-05-14.md)    | SPARQL F# computation expression                 | feature         | B-0481     |
+| [B-0483](B-0483-dbpedia-hkt-mdm-entity-bindings-dv2-hub-satellite-2026-05-14.md)  | HKT-MDM entity bindings + DV2.0 hub-satellite    | feature         | B-0482     |
+| [B-0484](B-0484-dbpedia-end-to-end-demo-project-2026-05-14.md)                    | End-to-end demo project (closes B-0428)          | feature         | B-0483     |
 
 **Work on B-0480 first.** All subsequent rows depend on the library-choice ADR.
 

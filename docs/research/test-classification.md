@@ -73,7 +73,7 @@ promoted.
   50 validators + 5-node cartel, detection=true").
 - **CI policy.** Run on every PR. Failure blocks
   merge. The seed must be committed in source; failing
-  seeds are *not* retried — they are investigated and
+  seeds are _not_ retried — they are investigated and
   either fixed-with-a-seed-addition or the underlying
   property fixed.
 - **Discovery hint.** FsCheck tests with an explicit
@@ -83,7 +83,7 @@ promoted.
 ### 2.3 Statistical smoke tests (nightly / extended)
 
 - **Shape.** Randomized across many seeds (e.g. 100
-  or 1000). Asserts a *statistical* property, not a
+  or 1000). Asserts a _statistical_ property, not a
   per-seed equality. Example: "≥90% of seeds produce
   detection" or "median execution time < X ms".
 - **Examples.** `CartelToy.Tests.fs` 100-seed
@@ -111,7 +111,7 @@ promoted.
   CodeQL queries. Not imperative test code — declarative
   correctness statements checked by an external tool.
 - **Examples.** `docs/*.tla` specs; `proofs/**/*.lean`.
-- **CI policy.** Run on every PR *if* the tool is fast
+- **CI policy.** Run on every PR _if_ the tool is fast
   enough. Large TLA+ model-checks may move to scheduled
   runs if they exceed CI budget. Failure blocks merge
   when run on PR gate.
@@ -176,7 +176,7 @@ The 18th-ferry correction #10 remedy order:
    uniformity metric. Is 1.22288 a 2σ outlier or an
    expected 40th-percentile result?
 2. **Seed-lock if possible.** If the test's intent is
-   "on *this* input, consistent-hash achieves uniformity
+   "on _this_ input, consistent-hash achieves uniformity
    < 1.2", fix the input seed. This promotes it from
    category 3 → category 2 (deterministic per seed).
 3. **Widen threshold if justified by data.** If the
@@ -319,8 +319,8 @@ let ``Uniform traffic near-optimal`` () = ...
 
 - Amara 18th ferry — Part 1 §C + Part 2 #1 + #10.
   `docs/aurora/2026-04-24-amara-calibration-ci-
-  hardening-deep-research-plus-5-5-corrections-18th-
-  ferry.md`.
+hardening-deep-research-plus-5-5-corrections-18th-
+ferry.md`.
 - `docs/research/test-organization.md` — layout
   discipline (28-files-flat → folder grouping).
 - `docs/BACKLOG.md` — PR #327 sharder flake row.

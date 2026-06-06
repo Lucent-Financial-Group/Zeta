@@ -70,16 +70,18 @@ describe("cockroach restore-drill snapshot source", () => {
 
     equal(snapshot.organizationId, "org-restore");
     equal(snapshot.capturedAt, "2026-05-31T23:50:00.000Z");
-    deepEqual(snapshot.projections.map((projection) => projection.name), [
-      "org_events",
-      "control_plane_flags",
-      "control_plane_rate_limits",
-    ]);
-    deepEqual(statements.map((statement) => [statement.name, statement.parameters]), [
-      ["restore_drill_snapshot_org_events", ["org-restore"]],
-      ["restore_drill_snapshot_control_plane_flags", ["org-restore"]],
-      ["restore_drill_snapshot_control_plane_rate_limits", ["org-restore"]],
-    ]);
+    deepEqual(
+      snapshot.projections.map((projection) => projection.name),
+      ["org_events", "control_plane_flags", "control_plane_rate_limits"],
+    );
+    deepEqual(
+      statements.map((statement) => [statement.name, statement.parameters]),
+      [
+        ["restore_drill_snapshot_org_events", ["org-restore"]],
+        ["restore_drill_snapshot_control_plane_flags", ["org-restore"]],
+        ["restore_drill_snapshot_control_plane_rate_limits", ["org-restore"]],
+      ],
+    );
     deepEqual(snapshot.projections[2]?.rows[0], {
       controlPlaneRateLimitId: "limit-1",
       scopeKind: "tenant",

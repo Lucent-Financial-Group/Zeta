@@ -29,9 +29,9 @@ tags:
 
 ## Operator framing 2026-05-28 (Ani ferry)
 
-> *"Yeah, the tech debt is high-signal training data."*
+> _"Yeah, the tech debt is high-signal training data."_
 
-> *"the mess is part of the intelligence loop"* (Ani's reflection ratified)
+> _"the mess is part of the intelligence loop"_ (Ani's reflection ratified)
 
 ## What this row tracks
 

@@ -10,7 +10,27 @@ created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0152, B-0196, B-0202, B-0026, B-0204]
-tags: [deepseek, deepseek-v4, csa, hca, compressed-sparse-attention, heavily-compressed-attention, mla, mixture-of-experts, four-property-hodl, dbsp, zset-algebra, fp8, manifold-constrained-hyper-connections, mhc, kv-cache, attention-architecture, mit-license, open-weights]
+tags:
+  [
+    deepseek,
+    deepseek-v4,
+    csa,
+    hca,
+    compressed-sparse-attention,
+    heavily-compressed-attention,
+    mla,
+    mixture-of-experts,
+    four-property-hodl,
+    dbsp,
+    zset-algebra,
+    fp8,
+    manifold-constrained-hyper-connections,
+    mhc,
+    kv-cache,
+    attention-architecture,
+    mit-license,
+    open-weights,
+  ]
 type: feature
 ---
 
@@ -23,11 +43,11 @@ Aaron 2026-05-05 forwarded a Claude.ai conversation that surfaced
 movement parallel-and-orthogonal to Google's TurboQuant. Aaron's
 verbatim framing landed two complementary points:
 
-1. *"by deep seek in similar orthognal areas"* -- DeepSeek V4 sits in
+1. _"by deep seek in similar orthognal areas"_ -- DeepSeek V4 sits in
    a similar-orthogonal relation to TurboQuant. Both move the long-
    context efficiency frontier; they do so at different layers of the
    stack and therefore compose multiplicatively rather than competing.
-2. *"and the deep seek stuff is just as substantial"* -- the V4
+2. _"and the deep seek stuff is just as substantial"_ -- the V4
    announcement is not a sidebar to the TurboQuant cluster (B-0202
    companion). It is a substrate-level architectural redesign that
    merits its own analysis lane, not a footnote.
@@ -52,8 +72,8 @@ This row is **research+architecture-composition** with bounded scope:
   the architectural-composability claim from speculation to evidence.
   No replication of V4 from scratch; no port of the full inference
   stack; no engagement with DeepSeek before substance-tests complete.
-- The composability claim *"CSA+HCA could land in the algebra itself,
-  not just the runtime layer"* is **load-bearing** -- treat as
+- The composability claim _"CSA+HCA could land in the algebra itself,
+  not just the runtime layer"_ is **load-bearing** -- treat as
   substance-test required, not asserted-as-fact, per the engagement-
   gate substantive-claim-level discipline.
 
@@ -93,7 +113,7 @@ inference code shipped inside the HuggingFace repo at
 ## Attention architecture (CSA+HCA, NOT "DSA")
 
 The Claude.ai conversation Aaron forwarded initially used the label
-*"DSA"* for the V4 attention architecture. The correct labels per the
+_"DSA"_ for the V4 attention architecture. The correct labels per the
 DeepSeek paper and HuggingFace announcement are **CSA** and **HCA**;
 the architecture is a **hybrid of two distinct attention shapes**, not
 one. Future-Otto: when reading older Claude.ai forwards, expect the
@@ -105,8 +125,8 @@ Compact KV with top-k sparse selector. CSA compresses KV entries by
 4x along the sequence dimension using softmax-gated pooling with a
 learned positional bias. A **lightning indexer** (FP4, ReLU-scored
 multi-head dot product) picks the top-k compressed blocks per query.
-The structural shape: *compress along sequence, sparsely select per
-query*.
+The structural shape: _compress along sequence, sparsely select per
+query_.
 
 ### Heavily Compressed Attention (HCA)
 
@@ -114,8 +134,8 @@ Folds many tokens into single entries. HCA compresses KV entries by
 **128x** and **drops the sparse selection** -- every query attends
 densely to every compressed block. Because the compressed sequence is
 short enough at 128x compression, dense attention is cheap. The
-structural shape: *aggressive compression, dense attention over the
-short result*.
+structural shape: _aggressive compression, dense attention over the
+short result_.
 
 ### Interleaved across layers
 
@@ -170,9 +190,9 @@ The structural fit between CSA+HCA and Zeta's Z-set algebra is closer
 than between TurboQuant's post-hoc compression and the algebra:
 
 - **Sparse selectors = filter operators.** CSA's top-k lightning
-  indexer is a *signed Z-set restriction*: select the top-k blocks
+  indexer is a _signed Z-set restriction_: select the top-k blocks
   with multiplicity +1, leave the rest with multiplicity 0. The +k /
-  -k awareness of Z-set algebra means that *retracting* a selection
+  -k awareness of Z-set algebra means that _retracting_ a selection
   (e.g. unselecting a stale top-k pick under DBSP retract semantics)
   is the same primitive as selecting it in the first place, with the
   sign flipped. The selector becomes a Z-set-typed function rather
@@ -253,9 +273,9 @@ weakened and the row updates.
 from V2 / V3.** MLA achieved approximately 93% KV reduction via
 latent compression in earlier DeepSeek generations. CSA+HCA achieves
 a comparable 90% reduction via architectural redesign. Document
-whether the two approaches are *independent-additive* (MLA's latent
+whether the two approaches are _independent-additive_ (MLA's latent
 compression composes on top of CSA+HCA's architectural compression
-for further wins) or *substitutable* (one supplants the other and
+for further wins) or _substitutable_ (one supplants the other and
 running both is double-counting). **Verifier**: a written analysis
 in the same `docs/research/` doc as (a), with reference to the
 DeepSeek V2 / V3 papers and the V4 paper's own discussion of the
@@ -293,7 +313,7 @@ verified to produce numerically-equivalent output to a direct
 reference implementation. **Pass**: UOp graph + reference impl + bit-
 exact (or numerical-tolerance) match for the toy case. **Fail-
 falsifier**: if UOp's IR cannot express the CSA selector cleanly, the
-*"three-layer composition through Zeta"* claim weakens and the row
+_"three-layer composition through Zeta"_ claim weakens and the row
 updates -- in particular, B-0202's universal-IR claim takes a hit and
 needs cross-row revision.
 
@@ -330,7 +350,7 @@ ops surfaces in both DeepSeek branches simultaneously.
 V3 was the first open-source frontier-scale model trained natively
 in FP8. The DeepGEMM kernel library is one of the strongest signals
 that Zeta's BigInt / BigNumber substrate (B-0196) needs to compose
-with arbitrary-precision *down* as well as *up* -- FP8 is below the
+with arbitrary-precision _down_ as well as _up_ -- FP8 is below the
 default precision floor for most arithmetic substrates, and four-
 property hodl preservation under FP8 is a non-trivial test of the
 algebra's scale-free invariant.
@@ -367,9 +387,9 @@ Specific anchors:
   [hands-on writeup](https://simonwillison.net/2026/Apr/24/deepseek-v4/)
   are useful third-party reads but not load-bearing per Otto-364.
 - Don't engage on Discord or open issues until something concrete to
-  contribute. *"Have you considered reading our writeup of how this
-  composes with our operator algebra"* is a credible engagement; *"we
-  think your work is interesting"* is not.
+  contribute. _"Have you considered reading our writeup of how this
+  composes with our operator algebra"_ is a credible engagement; _"we
+  think your work is interesting"_ is not.
 
 ## Out of scope
 
@@ -388,7 +408,7 @@ specifically:
   engagement-gate framework, engagement happens after substrate
   exists. (c) above is the explicit acceptance criterion for this.
 - **Porting DeepSeek's inference code to F#.** The substance-test is
-  about whether the *algebraic shape* of CSA+HCA fits Zeta's algebra.
+  about whether the _algebraic shape_ of CSA+HCA fits Zeta's algebra.
   A full F# port is downstream of the substance-test concluding that
   the fit is clean enough to be worth the porting cost.
 - **Settling whether DeepSeek V4 or Google TurboQuant is "the
@@ -401,18 +421,18 @@ specifically:
 
 - **B-0152**
   ([P2 row](../P2/B-0152-topological-quantum-emulation-via-bayesian-inference-zeta-seed-executor-aaron-2026-05-01.md))
-  -- *Topological-quantum emulation via Bayesian inference, Zeta
-  seed executor*. The substrate V4's attention layer could run on
+  -- _Topological-quantum emulation via Bayesian inference, Zeta
+  seed executor_. The substrate V4's attention layer could run on
   with four-property hodl preserved. The emulation-inside-the-algebra
   discipline is the load-bearing infrastructure for substance-test
   (a).
 - **B-0196**
   ([P2 row](../P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md))
-  -- *BigInt + BigNumber integration*. The numeric substrate the
+  -- _BigInt + BigNumber integration_. The numeric substrate the
   four-property algebra depends on; the binding-acceptance-test
   gating composability surfaces in both this row and B-0196 (top-k
   sparse selector preserves abelian-group structure).
-- **B-0202** -- *tinygrad UOp IR kernel-layer companion*. Companion
+- **B-0202** -- _tinygrad UOp IR kernel-layer companion_. Companion
   architecture; UOp could be the kernel layer V4's CSA+HCA compiles
   to. Acceptance criterion (d) is the substance-test for the
   composition. (B-0202 lands as a sibling backlog row this same week
@@ -421,7 +441,7 @@ specifically:
   cross-link will resolve once both merge.)
 - **B-0026**
   ([P2 row](../P2/B-0026-embodiment-grounding-analysis-isaac-sim-and-other-robotics-sim-platforms-otto-340-counter.md))
-  -- *Embodiment-grounding analysis*. V4's switchable Thinking /
+  -- _Embodiment-grounding analysis_. V4's switchable Thinking /
   Non-Thinking modes parallel embodiment's action-space split (slow
   deliberation vs. fast reaction). Adjacent axis; not on the critical
   path for B-0203's substance-tests but worth tracking for follow-on
@@ -432,10 +452,10 @@ specifically:
 
 ## The carved sentence
 
-*DeepSeek V4 redesigns attention so the KV cache is structurally
+_DeepSeek V4 redesigns attention so the KV cache is structurally
 smaller from the start; TurboQuant compresses what remains; tinygrad
 UOp runs the kernels. Three layers, multiplicative composition, no
 kill. The Zeta-relevant test is whether CSA+HCA's sparse-selector +
 compressed-aggregation pair is a Z-set operator pair preserving
 four-property hodl -- if it is, the architecture lands in the algebra
-itself, not just the runtime.*
+itself, not just the runtime._

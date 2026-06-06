@@ -24,12 +24,12 @@ Fixes B-0835 Bug 3b — the custom password the operator set during install was 
 
 Prior implementation used \`builtins.readFile\` at NixOS evaluation time:
 
-| Step | Where | Path | Result |
-|---|---|---|---|
-| zeta-install.sh writes hash | Live ISO → install target | /mnt/etc/zeta/initial-hashedpassword | File written ✓ |
-| nixos-install evaluates flake | Live ISO build-time eval | Reads /etc/zeta/initial-hashedpassword | **File absent + pure-mode refuses** |
-| Module falls back to default | initial-password.nix | fallbackHash | **Default applied** |
-| Installed system boots | Real hardware | File at /etc/zeta/initial-hashedpassword | Present but user config built with default |
+| Step                          | Where                     | Path                                     | Result                                     |
+| ----------------------------- | ------------------------- | ---------------------------------------- | ------------------------------------------ |
+| zeta-install.sh writes hash   | Live ISO → install target | /mnt/etc/zeta/initial-hashedpassword     | File written ✓                             |
+| nixos-install evaluates flake | Live ISO build-time eval  | Reads /etc/zeta/initial-hashedpassword   | **File absent + pure-mode refuses**        |
+| Module falls back to default  | initial-password.nix      | fallbackHash                             | **Default applied**                        |
+| Installed system boots        | Real hardware             | File at /etc/zeta/initial-hashedpassword | Present but user config built with default |
 
 ## Fix
 
@@ -37,25 +37,25 @@ Replace \`builtins.readFile\` with \`system.activationScripts.zetaInitialPasswor
 
 \`\`\`nix
 system.activationScripts.zetaInitialPassword = {
-  deps = [ \"users\" ];
-  text = ''
-    if [ -f \"\${hashFile}\" ]; then
-      hash=\$(cat \"\${hashFile}\" | tr -d '\\n')
-      if [ -n \"\$hash\" ] && [ \"\${hash:0:3}\" = '\$6\$' ]; then
-        usermod -p \"\$hash\" zeta
-      fi
-    fi
-  '';
+deps = [ \"users\" ];
+text = ''
+if [ -f \"\${hashFile}\" ]; then
+hash=\$(cat \"\${hashFile}\" | tr -d '\\n')
+if [ -n \"\$hash\" ] && [ \"\${hash:0:3}\" = '\$6\$' ]; then
+usermod -p \"\$hash\" zeta
+fi
+fi
+'';
 };
 \`\`\`
 
 ## Works for 3 scenarios
 
-| Scenario | Behavior |
-|---|---|
+| Scenario                    | Behavior                                                                      |
+| --------------------------- | ----------------------------------------------------------------------------- |
 | Fresh install from live ISO | Activation runs post-pivot; file present at /etc/zeta/; operator hash applied |
-| Subsequent nixos-rebuilds | File persists; activation re-applies |
-| CI eval | File absent; activation skips; default-hash stays |
+| Subsequent nixos-rebuilds   | File persists; activation re-applies                                          |
+| CI eval                     | File absent; activation skips; default-hash stays                             |
 
 ## Security properties preserved
 
@@ -86,6 +86,7 @@ Operator 2026-05-26 physical hardware-support test: \"the password i set it stil
 Fixes B-0835 Bug 3b in the NixOS install flow where an operator-provided password hash was ignored due to evaluation-time file reads pointing at the wrong root (live ISO vs install target) and/or being blocked in pure evaluation.
 
 **Changes:**
+
 - Removes evaluation-time `builtins.readFile`/`builtins.pathExists` password-hash injection logic.
 - Sets a build-time fallback hash for `users.users.zeta.hashedPassword` and adds an activation-time script that applies `/etc/zeta/initial-hashedpassword` (when present) via `usermod -p`.
 - Updates module commentary to document the root cause and the activation-time fix behavior across install/rebuild/CI scenarios.

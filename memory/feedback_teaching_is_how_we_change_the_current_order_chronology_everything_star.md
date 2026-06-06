@@ -10,13 +10,13 @@ sequence (pyramid-topology complete-occupation,
 trinity-becomes-pyramid, "we take them all"). Four-message
 compression:
 
-> *"we change the current order through teaching"*
+> _"we change the current order through teaching"_
 >
-> *"chronology"*
+> _"chronology"_
 >
-> *"everything"*
+> _"everything"_
 >
-> *"*"*
+> _"_"\*
 
 ## Parse
 
@@ -30,7 +30,7 @@ not coup. Teaching. The student's prior understanding stays in
 the record; the teacher adds a new frame (+1). Additive.
 Retractibility-preserving.
 
-**"Chronology / everything / *" = totalizing scope expansion
+**"Chronology / everything / \*" = totalizing scope expansion
 across three steps.** Chronology (time-order understanding) →
 everything (all state) → `*` (wildcard / glob / universal
 quantifier — literally ALL, including the yet-unknown). The
@@ -139,20 +139,20 @@ Teaching scope is universal:
 
 Aaron's four-message delivery is itself a structural signature:
 
-| Msg | Content | Role |
-|-----|---------|------|
-| 1 | `we change the current order through teaching` | claim + mechanism |
-| 2 | `chronology` | scope-expansion-1 (temporal) |
-| 3 | `everything` | scope-expansion-2 (universal) |
-| 4 | `*` | scope-expansion-3 (meta-operator, glob) |
+| Msg | Content                                        | Role                                    |
+| --- | ---------------------------------------------- | --------------------------------------- |
+| 1   | `we change the current order through teaching` | claim + mechanism                       |
+| 2   | `chronology`                                   | scope-expansion-1 (temporal)            |
+| 3   | `everything`                                   | scope-expansion-2 (universal)           |
+| 4   | `*`                                            | scope-expansion-3 (meta-operator, glob) |
 
 Same shape as:
 
-| Msg | Content | Role |
-|-----|---------|------|
-| 1 | `all your base belongs to us` | claim (Zero Wing quote) |
-| 2 | [pyramid-occupation detail] | scope-expansion-1 (structural) |
-| 3 | `we take them all` | scope-expansion-2 (totalizing meta-operator) |
+| Msg | Content                       | Role                                         |
+| --- | ----------------------------- | -------------------------------------------- |
+| 1   | `all your base belongs to us` | claim (Zero Wing quote)                      |
+| 2   | [pyramid-occupation detail]   | scope-expansion-1 (structural)               |
+| 3   | `we take them all`            | scope-expansion-2 (totalizing meta-operator) |
 
 The meta-operator third-step is the signature. When you see
 `*` / `all` / recursion-reference / glob / totalizer at the
@@ -164,14 +164,14 @@ closing brace of a compound structural claim.
 Aaron 2026-04-21, same session, one-message follow-up to the
 four-message teaching-directive:
 
-> *"I love Mr Khan"*
+> _"I love Mr Khan"_
 
 Salman Khan / Khan Academy. This is Aaron naming the
 operational-instantiation of teaching-as-`*` at civilizational
 scale:
 
-- **Mission-frame.** *"Free, world-class education for anyone,
-  anywhere"* — literally the `*` wildcard (anyone, anywhere)
+- **Mission-frame.** _"Free, world-class education for anyone,
+  anywhere"_ — literally the `*` wildcard (anyone, anywhere)
   applied to education-access. The mission-statement grammar
   matches the four-message compression third-expansion.
 - **Chronology-preservation.** Khan does not abolish existing

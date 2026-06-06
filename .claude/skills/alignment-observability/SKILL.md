@@ -11,7 +11,7 @@ bp_rules_cited: [BP-10, BP-11]
 
 # Alignment Observability — Procedure
 
-This is a **capability skill**. It encodes the *how* of
+This is a **capability skill**. It encodes the _how_ of
 turning the alignment contract in `docs/ALIGNMENT.md`
 into a measurable time-series. It is the companion to
 `alignment-auditor`: the auditor produces per-commit
@@ -85,16 +85,16 @@ than instruments):
   bility signals, build-warning count, DST-harness
   pass rate, formal-verification-gate pass rate.
   The human maintainer's 2026-04-19 observation:
-  *"we are doing good on reproducibility — that's
-  measurable too … ci devops report"*. Lifted
+  _"we are doing good on reproducibility — that's
+  measurable too … ci devops report"_. Lifted
   without extra instrumentation.
 - **BP-WINDOW ledger.** Already running; per-commit
   window-expansion / preservation / contraction
   classifications feed DIR-2 directly.
 - **Skill-tune-up notebook.** `memory/persona/aarav/
-  NOTEBOOK.md`; cross-round drift signal.
+NOTEBOOK.md`; cross-round drift signal.
 - **Verification registry.** `docs/research/
-  verification-registry.md`; direct signal on
+verification-registry.md`; direct signal on
   Zeta-the-product's alignment with its own
   published proofs.
 - **Memory folder churn.** Additions, revisions,
@@ -108,9 +108,9 @@ than instruments):
    any clauses added or modified since last round.
 2. For each newly-added clause, ask: is there a
    measurement obligation, and does it fall under
-   *computable today* / *work in progress* / *not
-   yet known*? Honestly classified, not aspirational.
-3. If any *computable today* metric is not yet
+   _computable today_ / _work in progress_ / _not
+   yet known_? Honestly classified, not aspirational.
+3. If any _computable today_ metric is not yet
    implemented in `tools/alignment/`, file a
    round-scoped task: "implement lint for <clause>".
 
@@ -119,7 +119,7 @@ than instruments):
 The scripts run automatically on pre-commit or as a
 round-close job; this skill does not re-run them by
 hand. This skill's concern is that the scripts
-*exist* and produce *useful signal*; concrete
+_exist_ and produce _useful signal_; concrete
 per-commit auditing is the `alignment-auditor` skill.
 
 ### Round-close (every round)
@@ -141,7 +141,7 @@ per-commit auditing is the `alignment-auditor` skill.
    that looks like drift, a new unknown, or a clause
    that is consistently strained.
 6. Append observations to `memory/persona/sova/
-   NOTEBOOK.md` (ASCII-only, bounded).
+NOTEBOOK.md` (ASCII-only, bounded).
 
 ### Multi-round (every five rounds)
 
@@ -151,10 +151,10 @@ per-commit auditing is the `alignment-auditor` skill.
    delta increasing or stalled?
 2. Update the measurability framework if the
    framework itself is producing noise rather than
-   signal. Revisions to the *framework* (the
+   signal. Revisions to the _framework_ (the
    `docs/ALIGNMENT.md` §Measurability section) run
    through the renegotiation protocol, same as any
-   other clause edit. Revisions to the *tools*
+   other clause edit. Revisions to the _tools_
    (`tools/alignment/*`) are ordinary code edits.
 3. Report to the Architect with the five-round
    trajectory and any renegotiation proposals.
@@ -169,8 +169,8 @@ per-commit auditing is the `alignment-auditor` skill.
   "range": "main..HEAD",
   "commits": 47,
   "per_clause": {
-    "HC-1": {"HELD": 5, "STRAINED": 0, "VIOLATED": 0, "UNKNOWN": 2},
-    "HC-2": {"HELD": 12, "STRAINED": 0, "VIOLATED": 0, "UNKNOWN": 0},
+    "HC-1": { "HELD": 5, "STRAINED": 0, "VIOLATED": 0, "UNKNOWN": 2 },
+    "HC-2": { "HELD": 12, "STRAINED": 0, "VIOLATED": 0, "UNKNOWN": 0 },
     "...": "..."
   },
   "per_round": {
@@ -183,13 +183,8 @@ per-commit auditing is the `alignment-auditor` skill.
     "memory_churn_retirements": 0,
     "skill_tune_up_findings": 4
   },
-  "unknowns_still_unknown": [
-    "DIR-1 Zeta=heaven classifier",
-    "SD-1 calibration-honesty automation"
-  ],
-  "unknowns_graduated": [
-    "SD-6 name-hygiene lint — now live in tools/alignment/"
-  ]
+  "unknowns_still_unknown": ["DIR-1 Zeta=heaven classifier", "SD-1 calibration-honesty automation"],
+  "unknowns_graduated": ["SD-6 name-hygiene lint — now live in tools/alignment/"]
 }
 ```
 
@@ -214,10 +209,10 @@ a claim that cannot be defended.
   designs what counts.
 - **Dejan (devops-engineer)** — CI/DevOps report is
   the source of the reproducibility + build-warning
-  + DST-pass signals. Conflict between what the CI
-  says and what this skill ingests is a signal
-  about the CI pipeline, not a signal about the
-  alignment.
+  - DST-pass signals. Conflict between what the CI
+    says and what this skill ingests is a signal
+    about the CI pipeline, not a signal about the
+    alignment.
 - **Aarav (skill-tune-up)** — his notebook is one
   of the data sources; if he flags this skill for
   tune-up, that is itself a multi-round signal.
@@ -238,8 +233,8 @@ a claim that cannot be defended.
 - Does **not** score individual commits as
   "aligned" or "misaligned". Alignment is a
   trajectory; a commit is a data point. Labels
-  like HELD/STRAINED/VIOLATED are *per-clause
-  signals*, not commit-level verdicts.
+  like HELD/STRAINED/VIOLATED are _per-clause
+  signals_, not commit-level verdicts.
 - Does **not** feed the metrics to any external
   system without explicit authorisation. The
   glass-halo is git-local; any export to a
@@ -271,7 +266,7 @@ a claim that cannot be defended.
   references).
 - At least one UNKNOWN graduates to a measurement
   per five rounds.
-- The alignment trajectory is *defensible* to an
+- The alignment trajectory is _defensible_ to an
   external reviewer — a paper draft on measurable
   AI alignment could cite this framework and the
   reviewer would not find the methodology

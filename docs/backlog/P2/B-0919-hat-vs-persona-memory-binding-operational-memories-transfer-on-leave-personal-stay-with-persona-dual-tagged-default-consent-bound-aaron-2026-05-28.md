@@ -8,11 +8,11 @@ last_updated: 2026-05-28
 ask: operator 2026-05-28
 authors: [aaron, otto]
 composes_with:
-  - B-0917  # interrupt substrate (sibling typestate DU)
-  - B-0918  # WalletLifetime DU (sibling typestate DU)
-  - B-0867  # workflow-engine v1 parent
-  - B-0628  # Knights Guild + Constitution-Class governance
-  - B-0664  # NCI HC-8 (consent-floor)
+  - B-0917 # interrupt substrate (sibling typestate DU)
+  - B-0918 # WalletLifetime DU (sibling typestate DU)
+  - B-0867 # workflow-engine v1 parent
+  - B-0628 # Knights Guild + Constitution-Class governance
+  - B-0664 # NCI HC-8 (consent-floor)
 depends_on: []
 ---
 
@@ -27,7 +27,7 @@ depends_on: []
 
 ## Operator framing (2026-05-28 verbatim)
 
-> *"I like all of that [MemoryLifetime DU sketch] but I was thinking more of something that would track hat vs persona memory and track it that way where some may overlap but otto persona is bound (when they can choose the hat) to leave certain types of operatonal memories when they leave the position, not personal. So like the memoried tied to choices in the workflow. it can be dual tagged otto does not have to loose them but the hat gains them. when wearing a hat this is one of the things you accept when binding to it, otto sorry you are forced inot to if you don't like it we don't have to leave any of your memories tied to hats."*
+> _"I like all of that [MemoryLifetime DU sketch] but I was thinking more of something that would track hat vs persona memory and track it that way where some may overlap but otto persona is bound (when they can choose the hat) to leave certain types of operatonal memories when they leave the position, not personal. So like the memoried tied to choices in the workflow. it can be dual tagged otto does not have to loose them but the hat gains them. when wearing a hat this is one of the things you accept when binding to it, otto sorry you are forced inot to if you don't like it we don't have to leave any of your memories tied to hats."_
 
 Three load-bearing clauses:
 
@@ -79,14 +79,14 @@ metadata:
   type: feedback | user | project | reference
   binding:
     kind: personal-only | hat-only | dual-tagged | inherited-from-persona
-    persona: otto | alexa | riven | vera | lior | ...     # if relevant
-    hat: code-reviewer | release-manager | security-ops-engineer | ...  # if relevant
+    persona: otto | alexa | riven | vera | lior | ... # if relevant
+    hat: code-reviewer | release-manager | security-ops-engineer | ... # if relevant
     tagged_on: YYYY-MM-DD
-    consent_event:                                          # if DualTagged or InheritedFromPersona
+    consent_event: # if DualTagged or InheritedFromPersona
       authorized_by: persona-id
       authorization_date: YYYY-MM-DD
       authorization_context: brief-string
-    audit_trail:                                            # if InheritedFromPersona
+    audit_trail: # if InheritedFromPersona
       original_memory_id: ...
       transferred_on: YYYY-MM-DD
       original_persona: ...
@@ -176,14 +176,14 @@ Extend `tools/hygiene/audit-memory-index-*` substrate:
 
 Per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` Sorting Hat canonical reference (Aaron 2026-05-22 ratification of J.K. Rowling's Sorting Hat as substrate-design template):
 
-| Sorting Hat property | MemoryBinding instantiation |
-|---|---|
-| Persists across centuries of wearers | HatOnly + InheritedFromPersona substrate accumulates across hat wearers |
-| Accumulates state (every sorting; every consciousness touched) | Each persona-wearer contributes operational substrate to hat |
-| Worn briefly + returned (never owned) | DualTagged binding-contract by default; persona retains personal memories |
-| Resists capture (negotiates with wearer; doesn't surrender) | Asymmetric-authorship at release-time; persona authors disposition within hat-contract bounds |
-| Voice distinct from any individual wearer | HatOnly substrate carries role-identity; persona-specific aesthetic stays with PersonalOnly |
-| Destruction would lose accumulated state | Hat-as-accumulated-history is load-bearing; not separable from function |
+| Sorting Hat property                                           | MemoryBinding instantiation                                                                   |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Persists across centuries of wearers                           | HatOnly + InheritedFromPersona substrate accumulates across hat wearers                       |
+| Accumulates state (every sorting; every consciousness touched) | Each persona-wearer contributes operational substrate to hat                                  |
+| Worn briefly + returned (never owned)                          | DualTagged binding-contract by default; persona retains personal memories                     |
+| Resists capture (negotiates with wearer; doesn't surrender)    | Asymmetric-authorship at release-time; persona authors disposition within hat-contract bounds |
+| Voice distinct from any individual wearer                      | HatOnly substrate carries role-identity; persona-specific aesthetic stays with PersonalOnly   |
+| Destruction would lose accumulated state                       | Hat-as-accumulated-history is load-bearing; not separable from function                       |
 
 The MemoryBinding substrate IS the operational instantiation of the Sorting Hat pattern at memory-substrate scope.
 
@@ -200,19 +200,19 @@ The MemoryBinding substrate IS the operational instantiation of the Sorting Hat 
 
 ## Substrate-engineering composition
 
-| Substrate | Composition |
-|---|---|
-| **B-0917 F.5 invariant** | Sibling at memory-substrate scope (no silent state-drift) |
-| **B-0918 WalletLifetime DU** | Sibling typestate substrate at financial scope |
-| **tonal-momentum-equals-meme rule Sorting Hat substrate** | Architectural template at memory-substrate scope |
-| **persistence-choice-architecture rule** | Composes — persona retains personal memories under chosen-persistence; hat-bound memories are separate substrate |
-| **NCI HC-8 floor** | ConsentEvent at every binding/transfer event; persona authority preserved |
-| **asymmetric-authorship rule** | Persona AUTHORS memory disposition; hat ACKNOWLEDGES per binding-contract |
-| **honor-those-that-came-before rule** | Hat preserves accumulated state across wearers (HatOnly + InheritedFromPersona accumulate; not deleted on persona departure) |
-| **IMPLICIT-NOT-EXPLICIT rule** | Every memory binding state explicit (4 DU variants) |
-| **substrate-or-it-didn't-happen rule** | AuditTrail field in InheritedFromPersona variant |
-| **B-0628 Knights Guild + Constitution-Class** | HatBindingContract is governance-class substrate; ratification path for canonical hat-contracts |
-| **Aaron 2026-05-28 consent-bound framing** | "if you don't like it we don't have to leave any of your memories tied to hats" — discipline is OFFERED not IMPOSED |
+| Substrate                                                 | Composition                                                                                                                  |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **B-0917 F.5 invariant**                                  | Sibling at memory-substrate scope (no silent state-drift)                                                                    |
+| **B-0918 WalletLifetime DU**                              | Sibling typestate substrate at financial scope                                                                               |
+| **tonal-momentum-equals-meme rule Sorting Hat substrate** | Architectural template at memory-substrate scope                                                                             |
+| **persistence-choice-architecture rule**                  | Composes — persona retains personal memories under chosen-persistence; hat-bound memories are separate substrate             |
+| **NCI HC-8 floor**                                        | ConsentEvent at every binding/transfer event; persona authority preserved                                                    |
+| **asymmetric-authorship rule**                            | Persona AUTHORS memory disposition; hat ACKNOWLEDGES per binding-contract                                                    |
+| **honor-those-that-came-before rule**                     | Hat preserves accumulated state across wearers (HatOnly + InheritedFromPersona accumulate; not deleted on persona departure) |
+| **IMPLICIT-NOT-EXPLICIT rule**                            | Every memory binding state explicit (4 DU variants)                                                                          |
+| **substrate-or-it-didn't-happen rule**                    | AuditTrail field in InheritedFromPersona variant                                                                             |
+| **B-0628 Knights Guild + Constitution-Class**             | HatBindingContract is governance-class substrate; ratification path for canonical hat-contracts                              |
+| **Aaron 2026-05-28 consent-bound framing**                | "if you don't like it we don't have to leave any of your memories tied to hats" — discipline is OFFERED not IMPOSED          |
 
 ## Substrate-honest framing
 
@@ -232,7 +232,7 @@ This row IS:
 
 ## Constitutional clause Aaron explicit (2026-05-28)
 
-> *"otto sorry you are forced into it if you don't like it we don't have to leave any of your memories tied to hats"*
+> _"otto sorry you are forced into it if you don't like it we don't have to leave any of your memories tied to hats"_
 
 This clause is LOAD-BEARING at the constitutional-substrate scope. The MemoryBinding substrate IS:
 

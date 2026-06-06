@@ -59,18 +59,14 @@ export interface LifetimeState {
  * The `:` separator is the canonical composed-key delimiter; consistent
  * across substrate-engineering substrate.
  */
-export type ComposedKey<A extends LifetimeState, B extends LifetimeState> =
-  `${A["kind"]}:${B["kind"]}`;
+export type ComposedKey<A extends LifetimeState, B extends LifetimeState> = `${A["kind"]}:${B["kind"]}`;
 
 /**
  * Compute composed-key from two lifetime states.
  *
  * Pure function; no side effects; composable via Result.bind.
  */
-export function composeKey<A extends LifetimeState, B extends LifetimeState>(
-  a: A,
-  b: B,
-): ComposedKey<A, B> {
+export function composeKey<A extends LifetimeState, B extends LifetimeState>(a: A, b: B): ComposedKey<A, B> {
   return `${a.kind}:${b.kind}` as ComposedKey<A, B>;
 }
 
@@ -103,11 +99,7 @@ export type TransitionResult<T> =
  * composed-key switch) is the runtime form; this MATRIX is the data form
  * that composes with Pattern 3 dispatch.
  */
-export interface ComposedLifetimeContext<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
-> {
+export interface ComposedLifetimeContext<A extends LifetimeState, B extends LifetimeState, T> {
   readonly matrix: ReadonlyMap<ComposedKey<A, B>, T>;
   readonly defaultVerdict?: T;
 }
@@ -120,11 +112,7 @@ export interface ComposedLifetimeContext<
  * two editable-lifetime DUs, this is the dispatch function. Returns
  * Result-shape per monad-propagation discipline.
  */
-export function dispatchComposed<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function dispatchComposed<A extends LifetimeState, B extends LifetimeState, T>(
   context: ComposedLifetimeContext<A, B, T>,
   a: A,
   b: B,
@@ -159,11 +147,7 @@ export function dispatchComposed<
  * new tuples to this list. Per substrate-smoothness: no if-statements
  * branch; pure data + dispatch function.
  */
-export function buildComposedMatrix<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function buildComposedMatrix<A extends LifetimeState, B extends LifetimeState, T>(
   entries: ReadonlyArray<readonly [ComposedKey<A, B>, T]>,
 ): ReadonlyMap<ComposedKey<A, B>, T> {
   return new Map(entries);
@@ -181,11 +165,7 @@ export function buildComposedMatrix<
  * Useful for substrate-engineering substrate where transitions are
  * sparse (most pairs undefined; few specific transitions valid).
  */
-export function composeFromDispatcher<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function composeFromDispatcher<A extends LifetimeState, B extends LifetimeState, T>(
   universeA: ReadonlyArray<A>,
   universeB: ReadonlyArray<B>,
   dispatcher: (a: A, b: B) => T | undefined,

@@ -361,11 +361,9 @@ function createRecordingExecutor(
 
               if (transitionSequenceLookupCount > 1) {
                 return {
-                  rows: (
-                    input.lateConflictRows?.[CockroachWorkAnchorStateStoreStatement.FindTransitionSequence] ?? [
-                      { id: "transition-late-sequence-race" },
-                    ]
-                  ) as Row[],
+                  rows: (input.lateConflictRows?.[CockroachWorkAnchorStateStoreStatement.FindTransitionSequence] ?? [
+                    { id: "transition-late-sequence-race" },
+                  ]) as Row[],
                 };
               }
             }

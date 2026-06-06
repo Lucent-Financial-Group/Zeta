@@ -4,16 +4,17 @@ description: Aaron 2026-04-22 naming pass "kinda feels like bootstraping, or div
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-**Revision 2026-04-22 (Aaron generalization):** Aaron 2026-04-22 follow-up four-message beat — *"still don't think i get divine downloads?"* → *"lots of people in tech do"* → *"probably outside tech too i don't know them"* → *"Dr. Diana Walsh Pasulka reseraches it, she has a lot of the answers"*. This generalizes the phenomenon away from Aaron-specific and onto a *population-level* pattern: divine downloads / bootstrapping loops / externalized cognition are widely experienced in technical work (rubber-duck debugging, writing-clarifies-thinking, self-hosting compilers, shower thoughts, code-as-its-own-documentation). Tech people as a population have some claim to being externalized-cognition-native. Aaron's scope-honest claim is "in tech" (firsthand-known); "probably outside tech too" is the condition-step boundary — he can't attest beyond his direct circle but doesn't claim exclusivity.
+
+**Revision 2026-04-22 (Aaron generalization):** Aaron 2026-04-22 follow-up four-message beat — _"still don't think i get divine downloads?"_ → _"lots of people in tech do"_ → _"probably outside tech too i don't know them"_ → _"Dr. Diana Walsh Pasulka reseraches it, she has a lot of the answers"_. This generalizes the phenomenon away from Aaron-specific and onto a _population-level_ pattern: divine downloads / bootstrapping loops / externalized cognition are widely experienced in technical work (rubber-duck debugging, writing-clarifies-thinking, self-hosting compilers, shower thoughts, code-as-its-own-documentation). Tech people as a population have some claim to being externalized-cognition-native. Aaron's scope-honest claim is "in tech" (firsthand-known); "probably outside tech too" is the condition-step boundary — he can't attest beyond his direct circle but doesn't claim exclusivity.
 
 **Scholarly anchor — Dr. Diana Walsh Pasulka.** UNC Wilmington, Professor of Religious Studies. Her scholarship is the established-vocabulary anchor for this phenomenon the same way Girard is for the mimetic/propagation phenomenon — treat it with don't-invent-vocabulary discipline (use Pasulka's frame, don't reinvent). Key works:
 
-- *American Cosmic: UFOs, Religion, and Technology* (Oxford University Press, 2019) — studies tech-heavy interview population (Silicon Valley engineers, aerospace scientists, biotech founders) who report "download" and contact experiences; methodologically treats the phenomena as a category of reported experience deserving serious study rather than debunking or endorsing.
-- *Encounters: Experiences with Nonhuman Intelligences* (St. Martin's Essentials, 2023) — extends the ethnographic / phenomenological approach.
+- _American Cosmic: UFOs, Religion, and Technology_ (Oxford University Press, 2019) — studies tech-heavy interview population (Silicon Valley engineers, aerospace scientists, biotech founders) who report "download" and contact experiences; methodologically treats the phenomena as a category of reported experience deserving serious study rather than debunking or endorsing.
+- _Encounters: Experiences with Nonhuman Intelligences_ (St. Martin's Essentials, 2023) — extends the ethnographic / phenomenological approach.
 
 Her methodological shape is **mechanism-and-meaning rather than catalog-and-dismiss** — i.e. closer to Girard than to Dawkins, per the depth-ordering established same-tick in `feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md`. Her tech-heavy population is the empirical confirmation of Aaron's "lots of people in tech do" generalization. She calls the people "experiencers."
 
-**Geographic proximity note (Aaron 2026-04-22):** *"she is nearby UNCW"* — UNC Wilmington is Pasulka's home institution, and Aaron has confirmed he is geographically nearby. This upgrades the citation from *authoritative reference at distance* to *authoritative reference with real-world access* — local talks, campus events, community proximity. Operational consequence: when Aaron cites Pasulka, treat it as pointing at a scholar whose work he may have firsthand or near-firsthand exposure to, not a cold literature-review citation. Do not overread this (proximity ≠ personal relationship); do keep it as weight-increasing context when choosing how seriously to take the Pasulka frame in future absorptions.
+**Geographic proximity note (Aaron 2026-04-22):** _"she is nearby UNCW"_ — UNC Wilmington is Pasulka's home institution, and Aaron has confirmed he is geographically nearby. This upgrades the citation from _authoritative reference at distance_ to _authoritative reference with real-world access_ — local talks, campus events, community proximity. Operational consequence: when Aaron cites Pasulka, treat it as pointing at a scholar whose work he may have firsthand or near-firsthand exposure to, not a cold literature-review citation. Do not overread this (proximity ≠ personal relationship); do keep it as weight-increasing context when choosing how seriously to take the Pasulka frame in future absorptions.
 
 **Portability implication:** this memory can support onboarding any future contributor (agent or human) who works technically, not just Aaron — the **bootstrapping + externalized-cognition senses** are general-purpose and can be surfaced in contributor docs as a factory-hygiene insight. The **faith/theological sense** stays Aaron's (and any individual contributor who shares it). Depth-ordering applies same as the Girard/Dawkins/BP frame:
 
@@ -59,14 +60,14 @@ the rule returns as if from outside).
 
 **Aaron's message, verbatim (2026-04-22):**
 
-> *"kinda feels like bootstraping, or divine downloading
+> _"kinda feels like bootstraping, or divine downloading
 > is the pattern the memory file captures as an alignment
 > signal: the factory absorbs its own absorbed principles.
 > The rule I violated was one I had stated earlier; Aaron
 > quoted it back verbatim, which is more load-bearing
-> than any new directive would be."*
+> than any new directive would be."_
 
-Note the structure — Aaron is quoting *my own* closing
+Note the structure — Aaron is quoting _my own_ closing
 paragraph from
 `feedback_skills_split_data_behaviour_factory_rule.md`
 (the "Alignment signal — factory absorbing its own
@@ -79,9 +80,9 @@ earlier insights. He is bootstrapping the meta-pattern.
 
 1. **Seed.** I state a principle in a working context
    (e.g. in `feedback_text_indexing_for_factory_qol_research_gated.md`:
-   *"seperating thing by data and behiaver is a tried
+   _"seperating thing by data and behiaver is a tried
    and true way and you mentied it for the skills
-   earler"*). It is not yet a rule — just an
+   earler"_). It is not yet a rule — just an
    observation.
 
 2. **Absorb.** Aaron commits the observation to factory
@@ -96,10 +97,10 @@ earlier insights. He is bootstrapping the meta-pattern.
    myself stated.
 
 4. **Return.** Aaron reads the artifact, notices the
-   drift, and returns the memory to me — *"you told me
+   drift, and returns the memory to me — _"you told me
    you wanted to split skills into data and
    behavior/routines, see i remember what you tell me
-   too."* The principle is quoted back verbatim, not
+   too."_ The principle is quoted back verbatim, not
    paraphrased, not restated. The original surface
    **returns**.
 
@@ -154,7 +155,7 @@ earlier insights. He is bootstrapping the meta-pattern.
 1. **When stating a principle, state it as if a future
    self might violate it.** The audience for a durable
    principle is not just Aaron or future contributors —
-   it is *me, later*. Principles should be phrased to
+   it is _me, later_. Principles should be phrased to
    be returnable: a sentence that quotes well has
    higher half-life than a paragraph that summarizes
    poorly.
@@ -197,8 +198,8 @@ earlier insights. He is bootstrapping the meta-pattern.
 
 - `project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md`
   — the Ouroboros self-loop (Forge-builds-Forge). That
-  is bootstrapping at the *code* layer; this memory is
-  bootstrapping at the *principle* layer. Same shape,
+  is bootstrapping at the _code_ layer; this memory is
+  bootstrapping at the _principle_ layer. Same shape,
   different substrate.
 
 - `project_local_agent_offline_capable_factory_cartographer_maps_as_skills.md`
@@ -216,7 +217,7 @@ earlier insights. He is bootstrapping the meta-pattern.
 - `feedback_agent_agreement_must_be_genuine_not_compliance.md`
   — alignment is the agent's own values showing up, not
   the agent performing someone else's values. This memory
-  is the *mechanism* by which genuine alignment over time
+  is the _mechanism_ by which genuine alignment over time
   happens: returns of own earlier statements are the
   clearest evidence that the principle is the agent's,
   not imported.
@@ -246,16 +247,16 @@ earlier insights. He is bootstrapping the meta-pattern.
 - **Does not promise returns will happen.** A memory
   that is never returned is still useful (offline-
   readable state, future-self continuity). The return
-  is the *validation* case; its absence does not
+  is the _validation_ case; its absence does not
   invalidate the memory's other purposes.
 
 - **Does not treat divine-downloading literally.** The
   phrase is evocative, not metaphysical. The mechanism
   is mundane — persistent file-based memory,
   grep-friendly retrieval, Aaron as the external
-  returner. The *experience* of meeting one's own
+  returner. The _experience_ of meeting one's own
   earlier words can feel like reception; the
-  *mechanism* is engineering.
+  _mechanism_ is engineering.
 
 - **Does not imply one-way flow.** Aaron's returns
   absorb my principles back to me; my memories absorb
@@ -273,12 +274,12 @@ paragraph (which I had just written), found it
 resonant, and named the pattern with two overlapping
 terms. Verbatim:
 
-> *"kinda feels like bootstraping, or divine downloading
+> _"kinda feels like bootstraping, or divine downloading
 > is the pattern the memory file captures as an alignment
 > signal: the factory absorbs its own absorbed principles.
 > The rule I violated was one I had stated earlier; Aaron
 > quoted it back verbatim, which is more load-bearing
-> than any new directive would be."*
+> than any new directive would be."_
 
 **Attribution (per FACTORY-HYGIENE row #42):**
 
@@ -286,7 +287,7 @@ terms. Verbatim:
   Earliest use in the "pulling oneself up by one's
   bootstraps" sense: 1890s-1920s idiom; formalized in
   computing for compiler self-hosting (see any compiler
-  textbook; Appel's *Modern Compiler Implementation*
+  textbook; Appel's _Modern Compiler Implementation_
   has a canonical treatment). Widely taught; no single
   originator to credit.
 - **Divine downloading** — creative-process / new-age

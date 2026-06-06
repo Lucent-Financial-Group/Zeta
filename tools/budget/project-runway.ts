@@ -86,11 +86,7 @@ type FlagStep =
   | { readonly kind: "help" }
   | { readonly kind: "error"; readonly message: string };
 
-function applyIntFlag(
-  flag: string,
-  next: string | undefined,
-  setter: (n: number) => void,
-): FlagStep {
+function applyIntFlag(flag: string, next: string | undefined, setter: (n: number) => void): FlagStep {
   if (next === undefined) {
     return { kind: "error", message: `error: ${flag} requires INT` };
   }
@@ -102,20 +98,28 @@ function applyIntFlag(
   return { kind: "advance", skip: 2 };
 }
 
-function classifyFlag(
-  a: string,
-  next: string | undefined,
-  state: MutableArgState,
-): FlagStep {
+function classifyFlag(a: string, next: string | undefined, state: MutableArgState): FlagStep {
   if (a === "--file") {
     if (next === undefined) return { kind: "error", message: "error: --file requires PATH" };
     state.file = next;
     return { kind: "advance", skip: 2 };
   }
-  if (a === "--stages") return applyIntFlag("--stages", next, (n) => { state.stages = n; });
-  if (a === "--copilot-rate") return applyIntFlag("--copilot-rate", next, (n) => { state.copilotRate = n; });
-  if (a === "--actions-free-ms") return applyIntFlag("--actions-free-ms", next, (n) => { state.actionsFreeMs = n; });
-  if (a === "--json") { state.emitJson = true; return { kind: "advance", skip: 1 }; }
+  if (a === "--stages")
+    return applyIntFlag("--stages", next, (n) => {
+      state.stages = n;
+    });
+  if (a === "--copilot-rate")
+    return applyIntFlag("--copilot-rate", next, (n) => {
+      state.copilotRate = n;
+    });
+  if (a === "--actions-free-ms")
+    return applyIntFlag("--actions-free-ms", next, (n) => {
+      state.actionsFreeMs = n;
+    });
+  if (a === "--json") {
+    state.emitJson = true;
+    return { kind: "advance", skip: 1 };
+  }
   if (a === "-h" || a === "--help") return { kind: "help" };
   return { kind: "error", message: `error: unknown argument '${a}'` };
 }
@@ -239,11 +243,7 @@ function parseSnapshot(line: string): ParsedSnapshot {
   const repos = obj.repos ?? [];
   const totalMs = sumOptional(repos.map((r) => r.agg?.total_duration_ms));
   const billableMs = sumOptional(
-    repos.flatMap((r) => [
-      r.agg?.billable_ubuntu_ms,
-      r.agg?.billable_macos_ms,
-      r.agg?.billable_windows_ms,
-    ]),
+    repos.flatMap((r) => [r.agg?.billable_ubuntu_ms, r.agg?.billable_macos_ms, r.agg?.billable_windows_ms]),
   );
   const recentMerged = sumOptional(repos.map((r) => r.pr?.recent_merged));
   return {
@@ -304,9 +304,7 @@ function computeProjection(args: {
 
   // Match bash: `seats * rate * 30 / 30` simplifies to `seats * rate`,
   // but keep the form to mirror the assumed-30-day-window framing.
-  const copilotProjectedUsd = Math.trunc(
-    (args.last.copilotSeats * args.copilotRate * ASSUMED_DAYS) / 30,
-  );
+  const copilotProjectedUsd = Math.trunc((args.last.copilotSeats * args.copilotRate * ASSUMED_DAYS) / 30);
 
   return {
     deltaAvailable,

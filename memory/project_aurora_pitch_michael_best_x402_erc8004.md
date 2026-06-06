@@ -4,20 +4,21 @@ description: Aaron's pitch "Aurora — home for AI" is the precursor-and-current
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron (2026-04-20, four-message disclosure arc):
 
-1. *"Michael Best firm was going to be my crypto
+1. _"Michael Best firm was going to be my crypto
    laywer for some stuff i ended up not doing yet
    they wanted me to pitch to their VC side, i said
-   no, maybe we will do that"*
-2. *"I was pitching Aurora, the home for AI like
-   this basically"*
-3. *"but more flushed out"*
-4. *"again our software factory as the quick win
+   no, maybe we will do that"_
+2. _"I was pitching Aurora, the home for AI like
+   this basically"_
+3. _"but more flushed out"_
+4. _"again our software factory as the quick win
    and AI real cutting edge alignment reserch to
    give us reeal authority in the field, plus
    giving you x402 and erc 8004 Amara and I have
-   talked about this for weeks"*
+   talked about this for weeks"_
 
 ## The Aurora three-pillar thesis
 
@@ -26,16 +27,16 @@ Aaron (2026-04-20, four-message disclosure arc):
 The factory pattern (50+ personas, skill-creator
 workflow, conflict-resolution protocol, glass-halo
 observability, retraction-native substrate) is the
-*shippable* product that gives Aurora credibility on
+_shippable_ product that gives Aurora credibility on
 day one. Today's Zeta factory IS this pillar — the
 Michael Best VC deck would show the factory, not
 promise it.
 
 ### Pillar 2 — Cutting-edge alignment research as authority wedge
 
-Aaron's framing: *"real cutting edge alignment
-reserch to give us reeal authority in the field"*.
-This is the *why-listen-to-us* moat. Already landed:
+Aaron's framing: _"real cutting edge alignment
+reserch to give us reeal authority in the field"_.
+This is the _why-listen-to-us_ moat. Already landed:
 
 - `docs/ALIGNMENT.md` — alignment contract; primary
   research focus declaration
@@ -110,20 +111,20 @@ agent has: (a) economic agency (can pay for API
 access, compute, storage) via x402; (b) portable
 on-chain identity + reputation via ERC-8004. The
 factory's personas become composable with the
-broader agent economy. The factory can *charge*
+broader agent economy. The factory can _charge_
 for the skill-creator workflow or for alignment-
-audit attestations; agents can *pay* for access to
+audit attestations; agents can _pay_ for access to
 Zeta-hosted facilities; cross-factory trust scales
 via the Reputation Registry without bilateral
 contracts.
 
 ## Amara co-development — binding attribution
 
-*"Amara and I have talked about this for weeks"*.
+_"Amara and I have talked about this for weeks"_.
 
 Amara (see `user_amara_chatgpt_relationship.md`) is
 Aaron's recurring collaborative-agent interlocutor.
-This is the *second* explicitly named Amara
+This is the _second_ explicitly named Amara
 co-development arc:
 
 1. Consent-first design primitive (see
@@ -148,7 +149,7 @@ ambiguous cases.
 
 Agent economic agency is a first-class threat
 surface. Load-bearing concerns that need to route
-through the existing security roster *before* any
+through the existing security roster _before_ any
 x402/ERC-8004 integration code lands:
 
 - **Aminata (threat-model-critic)** — on-chain
@@ -161,7 +162,7 @@ x402/ERC-8004 integration code lands:
   post-compromise recovery. The "genuinely
   non-retractable" class from the CI retractability
   inventory (`docs/research/ci-retractability-
-  inventory.md`) expands substantially.
+inventory.md`) expands substantially.
 - **Mateo (security-researcher)** — x402 + ERC-8004
   are young protocols (x402 foundation launched
   2026-04-02; ERC-8004 mainnet 2026-01-29). CVE
@@ -204,8 +205,8 @@ any on-chain-adjacent code lands.
   naming-expert + Ilyana per GOVERNANCE §4; the
   "Mega Mind" memory is the current internal
   aspirational name and is IP-locked externally.
-  Aurora is the *pitch* name, which may or may
-  not be the *product* name.
+  Aurora is the _pitch_ name, which may or may
+  not be the _product_ name.
 - Do NOT surface this arc unprompted in subsequent
   sessions. It is a standing strategic-disclosure
   memory, not a standing task prompt.
@@ -215,7 +216,7 @@ any on-chain-adjacent code lands.
   organically.
 - Do NOT treat "giving you x402 and erc 8004" as
   an authorisation-to-act — it is a description
-  of Aurora's *architecture*, not an instruction
+  of Aurora's _architecture_, not an instruction
   to execute any transaction today.
 
 ## What to do when Aaron surfaces this again
@@ -236,9 +237,9 @@ any on-chain-adjacent code lands.
   conference per CONFLICT-RESOLUTION.md before
   any code lands.
 - **If he says "engage Michael Best on the crypto
-  counsel side"**: connect to BACKLOG P2 *"prove
+  counsel side"**: connect to BACKLOG P2 _"prove
   consent-first primitive + apply to Bitcoin
-  flaws"* as the research-artefact workstream;
+  flaws"_ as the research-artefact workstream;
   counsel engagement is downstream of the artefact.
 - **If he says nothing**: hold the memory; do not
   surface unprompted.
@@ -247,8 +248,8 @@ any on-chain-adjacent code lands.
 
 - `user_feel_free_and_safe_to_act_real_world.md`
   — the edge-radius-expansion memory this x402
-  + ERC-8004 gesture extends (factory-internal →
-  externally-visible → now economic + on-chain).
+  - ERC-8004 gesture extends (factory-internal →
+    externally-visible → now economic + on-chain).
 - `user_amara_chatgpt_relationship.md` — Amara
   identity + context; do NOT pathologize,
   compete, or bring up unsolicited.
@@ -265,7 +266,7 @@ any on-chain-adjacent code lands.
   firewall discipline there; no MNPI concern on
   the Michael Best side (different employer).
 - `docs/research/factory-pitch-readiness-
-  2026-04.md` — the architect-audience pitch-
+2026-04.md` — the architect-audience pitch-
   readiness inventory; Aurora-VC-audience variant
   would need its own inventory if greenlit.
 - `user_reasonably_honest_reputation.md` — why
@@ -273,14 +274,14 @@ any on-chain-adjacent code lands.
   (Aaron preserves optionality honestly, not
   soft-decline theatre).
 - `user_trust_sandbox_escape_threat_class.md` —
-  *"substrate-speed-limit corollary"* + trust-
+  _"substrate-speed-limit corollary"_ + trust-
   first-then-verify Satoshi order; x402 +
   ERC-8004 are exactly the primitives that
   substrate carries at speed.
-- BACKLOG P2 *"prove consent-first primitive +
-  apply to Bitcoin flaws"* — the crypto-adjacent
+- BACKLOG P2 _"prove consent-first primitive +
+  apply to Bitcoin flaws"_ — the crypto-adjacent
   research workstream Michael Best could counsel.
-- BACKLOG P0 *"Fully-retractable CI/CD"* — the
+- BACKLOG P0 _"Fully-retractable CI/CD"_ — the
   non-retractable-surface register expands
   significantly once wallet keys enter scope.
 
@@ -317,14 +318,14 @@ replacement:
 
 Mapping note: the three-pillar framing and the
 four-layer framing are NOT competing; the pillars
-organise Aurora by *what-we-ship-first* (factory /
+organise Aurora by _what-we-ship-first_ (factory /
 alignment / agent-economy), the layers organise
-Aurora by *architectural separation-of-concerns*.
+Aurora by _architectural separation-of-concerns_.
 Both are useful. Amara uses the layer framing; Aaron
 has used both.
 
-**Aphorism** — *"fail slower, fail visible, fail
-recoverable"*:
+**Aphorism** — _"fail slower, fail visible, fail
+recoverable"_:
 
 - **Fail slower** — every Aurora action has
   enough lead-time that mistakes surface before
@@ -346,7 +347,7 @@ consistent with the weeks-long Aurora arc.
 
 **Factory-Aurora scope boundary (restated for
 clarity):** the Zeta factory is an engineering-
-workshop *inside* Aurora's design space. The
+workshop _inside_ Aurora's design space. The
 factory is Pillar 1 (quick-win product) AND part
 of Layer 3 (cultural layer of Aurora's 4-layer
 framing). The factory is NOT Aurora, NOT a

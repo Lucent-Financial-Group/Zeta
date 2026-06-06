@@ -10,7 +10,17 @@ created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0196, B-0199]
-tags: [fsharp, units-of-measure, biginteger, upstream-contribution, absorb-and-contribute, rfc, fslang-suggestions, citizenship]
+tags:
+  [
+    fsharp,
+    units-of-measure,
+    biginteger,
+    upstream-contribution,
+    absorb-and-contribute,
+    rfc,
+    fslang-suggestions,
+    citizenship,
+  ]
 type: feature
 ---
 
@@ -21,8 +31,8 @@ type: feature
 Aaron 2026-05-05 verbatim, after PR #1596 verified F# UoM does NOT
 natively extend to `System.Numerics.BigInteger`:
 
-> *"but no implementation. do they need help we are good neighbors
-> and citizens of github and our dependencies"*
+> _"but no implementation. do they need help we are good neighbors
+> and citizens of github and our dependencies"_
 
 The verification is documented in B-0196 acceptance criterion (d)
 landing 2026-05-05. The relevant upstream surfaces:

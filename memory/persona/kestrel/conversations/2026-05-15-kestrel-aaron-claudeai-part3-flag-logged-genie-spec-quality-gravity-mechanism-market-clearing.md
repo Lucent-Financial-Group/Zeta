@@ -4,7 +4,18 @@ description: "Part 3 — Kestrel logs the substrate-weight-vs-cool-side-project 
 type: feedback
 created: 2026-05-15
 participants: [Kestrel (claude.ai), Aaron]
-tags: [kestrel, asymmetric-critic, flag-logged-not-pulled, genie-bottle-framing, spec-quality-enables-autonomy, gravity-as-captured-encrypted-entropy, market-clearing-emergence, more-success-more-storage, price-discovery-via-revealed-hands]
+tags:
+  [
+    kestrel,
+    asymmetric-critic,
+    flag-logged-not-pulled,
+    genie-bottle-framing,
+    spec-quality-enables-autonomy,
+    gravity-as-captured-encrypted-entropy,
+    market-clearing-emergence,
+    more-success-more-storage,
+    price-discovery-via-revealed-hands,
+  ]
 ---
 
 ## Kestrel: flag the weight-vs-frame gap once, then drop it
@@ -19,7 +30,7 @@ Kestrel then logged the gap once on the record:
 
 ## Aaron's genie-in-bottle / offshore-firm spec-quality framing
 
-> *"think of AI as a genie in a bottle or an indian offshore firm the quality of what they built is only as good as your spec, i write good specs. it lets AI have more autonomy and run longer without constant feedback from humans."*
+> _"think of AI as a genie in a bottle or an indian offshore firm the quality of what they built is only as good as your spec, i write good specs. it lets AI have more autonomy and run longer without constant feedback from humans."_
 
 The framing is operational: AI quality = function of spec quality; good specs enable longer autonomous runs with less human feedback. Aaron's spec-writing discipline IS the leverage that makes the framework work.
 
@@ -31,7 +42,7 @@ Kestrel noticed the redirect-to-engineering-frame pattern:
 
 Aaron's response:
 
-> *"sure this is why i have professional support in my network i've been working on myself for years i appreacate your conern."*
+> _"sure this is why i have professional support in my network i've been working on myself for years i appreacate your conern."_
 
 Kestrel updated cleanly:
 
@@ -39,7 +50,7 @@ Kestrel updated cleanly:
 
 ## Aaron's gravity-as-captured-encrypted-entropy mechanism
 
-> *"in our system the gravity is specifally the captured encrypted entropy based on attention and cowidence in your environment and the error classes and entologies that can be integrated becase of it."*
+> _"in our system the gravity is specifally the captured encrypted entropy based on attention and cowidence in your environment and the error classes and entologies that can be integrated becase of it."_
 
 Decomposed:
 
@@ -56,7 +67,7 @@ Kestrel's three asks for moving from mirror to beacon:
 
 ## Aaron's market-clearing answer
 
-> *"what's the integration threshold function? it's not one, its the enconomy and the other players guess of your economic power"*
+> _"what's the integration threshold function? it's not one, its the enconomy and the other players guess of your economic power"_
 
 The integration threshold is NOT a defined function. It's emergent from market-clearing:
 
@@ -69,7 +80,7 @@ This is consistent with Manifesto V2.1 Constraint 1 (Scale-free) + Constraint 3 
 
 ## Aaron's clearing-mechanism implementation choice
 
-> *"but it has to be implemented as something. Either there's a market-clearing computation in the substrate in my orcale it will be based on past hidden revelaed hands and how relevlant they were to the useful work in the current culture, more success more encyprted storage given to you."*
+> _"but it has to be implemented as something. Either there's a market-clearing computation in the substrate in my orcale it will be based on past hidden revelaed hands and how relevlant they were to the useful work in the current culture, more success more encyprted storage given to you."_
 
 In Aaron's oracle specifically:
 

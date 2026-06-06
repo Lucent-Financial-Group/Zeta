@@ -49,7 +49,10 @@ describe("reaction plan executor", () => {
       claimLostCount: 0,
     });
     deepEqual(executions, [`reaction-claim-001:${ReactionPlanActionType.CreateSupervisorTriage}`]);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Completed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Completed],
+    );
   });
 
   test("returns idle without invoking action executors when no reaction work is claimable", async () => {
@@ -94,7 +97,10 @@ describe("reaction plan executor", () => {
 
     equal(result.status, ReactionPlanExecutionStatus.Failed);
     equal(result.failedCount, 1);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Failed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Failed],
+    );
   });
 
   test("turns thrown action failures into durable retryable reaction failure evidence", async () => {
@@ -116,7 +122,10 @@ describe("reaction plan executor", () => {
 
     equal(result.status, ReactionPlanExecutionStatus.Failed);
     equal(result.failedCount, 1);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Planned]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Planned],
+    );
   });
 
   test("does not execute a claimed reaction plan when the lease expired before the action starts", async () => {
@@ -138,7 +147,10 @@ describe("reaction plan executor", () => {
 
     equal(result.status, ReactionPlanExecutionStatus.ClaimLost);
     equal(result.claimLostCount, 1);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Claimed]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Claimed],
+    );
   });
 
   test("passes a stable reaction-plan idempotency key to action executors", async () => {
@@ -207,7 +219,10 @@ describe("reaction plan executor", () => {
 
     equal(result.status, ReactionPlanExecutionStatus.Failed);
     equal(result.failedCount, 1);
-    deepEqual(queue.snapshot.map((reactionPlan) => reactionPlan.status), [ReactionPlanStatus.Planned]);
+    deepEqual(
+      queue.snapshot.map((reactionPlan) => reactionPlan.status),
+      [ReactionPlanStatus.Planned],
+    );
   });
 });
 

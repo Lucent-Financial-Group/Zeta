@@ -10,11 +10,11 @@ type: feedback
 
 Aaron 2026-04-29 (mid-tick correction during autonomous-loop):
 
-> *"we can retury on external dependency download failures,
+> _"we can retury on external dependency download failures,
 > this goes against DST but we have not choice they are
-> external dependencies we need.  Next time instead of kicking
+> external dependencies we need. Next time instead of kicking
 > a 2nd build we should fix it and reduce friction for future
-> builds."*
+> builds."_
 
 Typos preserved per
 `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`
@@ -111,9 +111,9 @@ When CI fails on a transient external-dependency download:
      upstream.)
    - Is the SHA256 mismatch deliberate (upstream
      republished)? (Investigate.)
-   In these cases, `gh run rerun --failed` is rarely the
-   right answer — the friction needs different shape (URL
-   bump, mirror swap, fallback source).
+     In these cases, `gh run rerun --failed` is rarely the
+     right answer — the friction needs different shape (URL
+     bump, mirror swap, fallback source).
 5. **If genuine one-shot blip** (status pages clear, helper
    in use, no upstream incident, retry-policy exhausted on
    this exact moment), THEN `gh run rerun --failed` is OK.
@@ -122,6 +122,7 @@ When CI fails on a transient external-dependency download:
 ## Worked example: 2026-04-29 elan-toolchain 502
 
 Sequence:
+
 1. Autonomous-loop tick CI hit a 502 from
    `raw.githubusercontent.com/leanprover/elan/...elan-init.sh`.
 2. I ran `gh run rerun --failed`. 2nd build passed (transient
@@ -183,10 +184,10 @@ subprocess shells.)
 - `tools/setup/common/curl-fetch.sh` — the existing
   retry-equipped helper, originally landed per Aaron's
   2026-04-28 framing
-  (*"curl 502 pattern i mean why should a PR ever fail for
-  this? our code does not handle the retries already?"* +
-  *"sounds like a common helper would help too rather than
-  copy/paste."*). This rule extends that direction by adding
+  (_"curl 502 pattern i mean why should a PR ever fail for
+  this? our code does not handle the retries already?"_ +
+  _"sounds like a common helper would help too rather than
+  copy/paste."_). This rule extends that direction by adding
   the rerun-vs-fix-location distinction.
 - `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`
   — Aaron's correction is preserved verbatim above per the

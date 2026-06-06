@@ -26,11 +26,11 @@ per the verbatim-preservation trigger in `substrate-or-it-didnt-happen.md`
 agreement (not any one runtime) is the substrate. There are **three distinct
 shapes** of thing we make bit-perfect, each its own serializer/oracle category:
 
-| # | Shape | Serializers / oracles | What it makes bit-perfect | Existing substrate |
-|---|---|---|---|---|
-| **1** | **Text & binary serializers** | cbor / json / xml / yaml (+ more binary over time) | **Persisted seeds** — the golden-vectors the oracles agree on (the byte-lock treaty) | DynamicValue codec; B-1011 (serializer round-trip-from-seed); ace canonical-JSON golden vectors |
-| **2** | **Code / data-flow serializers** | rx / bonsai (+ more ways of oracling over time — "fine for now" with bonsai) | **Code-flow data structures** — the control-/data-flow itself | B-0976 (bonsai saga / serialized deferred execution); the rx-fold DB design (`docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-...rx-fold-materialized-views`); B-0250 (rx-join) |
-| **3** | **Structured-data serializers / protocols** | Apache Arrow (+ others) | **Memory / graph / ontology** — internal memory layout | **B-1001** (columnar message-passing + security-surface-aware Eve-polymorphic serialization port); B-0930 (schema-registry over DBSP) |
+| #     | Shape                                       | Serializers / oracles                                                        | What it makes bit-perfect                                                            | Existing substrate                                                                                                                                                                           |
+| ----- | ------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | **Text & binary serializers**               | cbor / json / xml / yaml (+ more binary over time)                           | **Persisted seeds** — the golden-vectors the oracles agree on (the byte-lock treaty) | DynamicValue codec; B-1011 (serializer round-trip-from-seed); ace canonical-JSON golden vectors                                                                                              |
+| **2** | **Code / data-flow serializers**            | rx / bonsai (+ more ways of oracling over time — "fine for now" with bonsai) | **Code-flow data structures** — the control-/data-flow itself                        | B-0976 (bonsai saga / serialized deferred execution); the rx-fold DB design (`docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-...rx-fold-materialized-views`); B-0250 (rx-join) |
+| **3** | **Structured-data serializers / protocols** | Apache Arrow (+ others)                                                      | **Memory / graph / ontology** — internal memory layout                               | **B-1001** (columnar message-passing + security-surface-aware Eve-polymorphic serialization port); B-0930 (schema-registry over DBSP)                                                        |
 
 ### Arrow is shape-3, deliberately NOT folded into the base serializer
 
@@ -65,14 +65,14 @@ All three shapes' inflection points are protected by the same composed stack:
 5. **Math proof everywhere, on multiple intellectual math towers** — so there's **no single point of math failure** either (per the multi-tower / foundation-independence substrate: robustness = independence of axioms; canonical = homeostat-proven-from-seed).
 
 So: **DST + 4-lang + persisted-seed-verification + Rx-join-of-homeostates +
-multi-tower-math-proof** — bit-perfect *and* proven, at every inflection, with no
+multi-tower-math-proof** — bit-perfect _and_ proven, at every inflection, with no
 single point of failure (not runtime, not language, not axiom-tower).
 
 ## Shape-1 is the I/O-monad external edge — bit-perfect serialization reduces uncertainty in external observation over time (the maintainer 2026-06-03)
 
-> *"the bit-perfect oracles at the data/serializer layer really is us mapping the
+> _"the bit-perfect oracles at the data/serializer layer really is us mapping the
 > first stages of our I/O external side of the monad, so we can keep reducing
-> uncertainty in external observations over time."*
+> uncertainty in external observations over time."_
 
 Shape-1 (the text/binary serializers) is not just "how we persist seeds" — it is
 the **mapping of the first stages of the I/O external side of the monad**: the
@@ -85,7 +85,7 @@ never has to be re-resolved.
 This places shape-1 precisely in the framework's existing substrate:
 
 - **The hexagonal / I/O-monad port** (`.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md`:
-  *hexagonal IS the I/O-monad shape*). The serializer port — `parse : wire → Result<T, TFeedback>`
+  _hexagonal IS the I/O-monad shape_). The serializer port — `parse : wire → Result<T, TFeedback>`
   — IS the Kleisli arrow at the external edge; **shape-1 is that port's first
   stage**, made bit-perfect across the oracles.
 - **OPLE `Observe`** — the external-observation intake (the "O" of
@@ -99,7 +99,7 @@ This places shape-1 precisely in the framework's existing substrate:
 So the three shapes sit at different depths of the monad: **shape-1 is the I/O
 external edge** (where the outside is mapped in + made certain — the Observe-side
 uncertainty reduction); shapes 2 (rx/bonsai, code/data-flow) and 3 (Arrow,
-memory/graph) are progressively more *internal*. Reducing external-observation
+memory/graph) are progressively more _internal_. Reducing external-observation
 uncertainty is specifically shape-1's job, because shape-1 is where the external
 boundary of the monad lives.
 

@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Lands the in-repo persona substrate per Aaron 2026-05-22 directive: *"save my family configuration to your memoreis and your response to this in your persona folder and push it to main."* User-scope companion memory file already saved.
+Lands the in-repo persona substrate per Aaron 2026-05-22 directive: _"save my family configuration to your memoreis and your response to this in your persona folder and push it to main."_ User-scope companion memory file already saved.
 
 ## What this PR carries
 
@@ -65,6 +65,7 @@ Kestrel's substantive critique landed earlier: PR'ing constitutional-class discl
 Adds an Otto persona conversation-memory artifact capturing the 2026-05-22 Kestrel-ferried exchange (family configuration + grammar-discriminator + 4yo/Harry Potter thread) and refreshes `memory/MEMORY.md` to include it in the auto-generated stack index.
 
 **Changes:**
+
 - Added a new `memory/persona/otto/conversations/...` entry with YAML frontmatter and a structured write-up plus a “Composes with” trail.
 - Regenerated `memory/MEMORY.md` auto-index to include the new conversation entry (and other most-recent items).
 
@@ -72,7 +73,7 @@ Adds an Otto persona conversation-memory artifact capturing the 2026-05-22 Kestr
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                         | Description                                                                          |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | memory/persona/otto/conversations/2026-05-22-aaron-otto-desktop-kestrel-ferry-family-configuration-grammar-discriminator-harry-potter-4yo.md | New Otto persona conversation-memory write-up with frontmatter and cross-references. |
-| memory/MEMORY.md | Auto-index regenerated to surface the new conversation entry in the stack. |
+| memory/MEMORY.md                                                                                                                             | Auto-index regenerated to surface the new conversation entry in the stack.           |

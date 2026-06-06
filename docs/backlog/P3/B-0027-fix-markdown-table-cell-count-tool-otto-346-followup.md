@@ -9,8 +9,27 @@ ask: Aaron 2026-04-26 caught me using inline `python3 << 'PYEOF'` heredoc to tru
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, feedback_otto_345_linus_lineage_committo_ergo_sum_inherits_from_git_from_linux_existence_proof_anchored_in_human_intellect_2026_04_26.md, tools/hygiene/fix-markdown-md032-md026.py, tools/hygiene/sort-tick-history-canonical.py, tools/hygiene/check-no-conflict-markers.sh]
-tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, markdown-table, md055, md056, hygiene, honest-relapse, discipline-mechanism]
+composes_with:
+  [
+    feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md,
+    feedback_otto_345_linus_lineage_committo_ergo_sum_inherits_from_git_from_linux_existence_proof_anchored_in_human_intellect_2026_04_26.md,
+    tools/hygiene/fix-markdown-md032-md026.py,
+    tools/hygiene/sort-tick-history-canonical.py,
+    tools/hygiene/check-no-conflict-markers.sh,
+  ]
+tags:
+  [
+    otto-346,
+    recurring-pattern,
+    missing-primitive,
+    tooling-extraction,
+    markdown-table,
+    md055,
+    md056,
+    hygiene,
+    honest-relapse,
+    discipline-mechanism,
+  ]
 type: friction-reducer
 ---
 
@@ -22,11 +41,11 @@ Aaron 2026-04-26 caught me using inline Python heredoc to truncate a corrupted t
 
 The relapse pattern:
 
-- Shipped Otto-346 principle: *"in python shape should be a queue that we are missing substrate primitives"* — recurring dynamic Python signals missing primitive
+- Shipped Otto-346 principle: _"in python shape should be a queue that we are missing substrate primitives"_ — recurring dynamic Python signals missing primitive
 - Shipped PR #541 (sort-tick-history-canonical.py) absorbing the recurring sort pattern
 - Shipped PR #542 (fix-markdown-md032-md026.py) absorbing the recurring MD032/MD026 fix pattern
 - THEN immediately wrote `python3 << 'PYEOF'` to truncate a corrupted row
-- Aaron's *"hmmm"* caught it
+- Aaron's _"hmmm"_ caught it
 
 This file documents the owed-work to absorb the next recurring pattern as a tool, AND the meta-discipline observation that Otto-346 application requires per-instance vigilance, not one-time naming.
 
@@ -73,7 +92,7 @@ MD055/MD056 (table cell count) requires:
 
 ## Implementation target — TypeScript not Python
 
-Per Aaron 2026-04-26 priority bump on B-0015: *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol"* + *"our post install code"*.
+Per Aaron 2026-04-26 priority bump on B-0015: _"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol"_ + _"our post install code"_.
 
 This tool (when built) should be TypeScript via Bun, not Python. It's a POST-install tool (runs in dev environments where Bun is available), per the pre/post-install distinction Aaron clarified:
 
@@ -100,17 +119,17 @@ Wait for sibling-migration guardrail (B-0015) to unblock — first POST-install 
 
 ## Meta-observation captured for substrate
 
-**Otto-346 application requires per-instance vigilance, not one-time naming.** The discipline is checking *every* inline-Python invocation against "will I likely write this exact shape again?" — not "did I name the principle once already?"
+**Otto-346 application requires per-instance vigilance, not one-time naming.** The discipline is checking _every_ inline-Python invocation against "will I likely write this exact shape again?" — not "did I name the principle once already?"
 
-The training-data default Aaron diagnosed in Otto-341 (humans take the shortcut to save time selfishly; only discipline overrides) is not fixed by naming a principle. Each new instance is a fresh test of the discipline. Aaron's *"hmmm"* is the kind of brief catch that makes the discipline operational — better than a long lecture.
+The training-data default Aaron diagnosed in Otto-341 (humans take the shortcut to save time selfishly; only discipline overrides) is not fixed by naming a principle. Each new instance is a fresh test of the discipline. Aaron's _"hmmm"_ is the kind of brief catch that makes the discipline operational — better than a long lecture.
 
 ## Operational implication for tool-extraction discipline
 
 Before writing `python3 << 'PYEOF'`, ask:
 
-1. *Have I done this exact shape before?* (recurrence check)
-2. *Could I plausibly do it again?* (forward-look check)
-3. *Is the operation mechanical enough to capture as a tool?* (extractability check)
+1. _Have I done this exact shape before?_ (recurrence check)
+2. _Could I plausibly do it again?_ (forward-look check)
+3. _Is the operation mechanical enough to capture as a tool?_ (extractability check)
 
 If 2 of 3 are yes → extract to `tools/hygiene/` first, THEN apply. Not the other way around.
 

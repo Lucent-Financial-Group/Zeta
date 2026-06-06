@@ -82,10 +82,7 @@ interface Report {
   readonly marker: string;
 }
 
-function classify(
-  pinned: string,
-  latest: string,
-): { marker: string; failed: boolean } {
+function classify(pinned: string, latest: string): { marker: string; failed: boolean } {
   if (latest === pinned) return { marker: "✓ up-to-date", failed: false };
   if (latest === "?") return { marker: "? couldn't query", failed: false };
   return { marker: "⚠ bump available", failed: true };
@@ -114,12 +111,8 @@ export function main(): ExitCode {
   }
 
   process.stdout.write("=== Dbsp package audit ===\n");
-  process.stdout.write(
-    `${pad("Package", 35)} ${pad("Pinned", 15)} ${pad("Latest", 15)} Status\n`,
-  );
-  process.stdout.write(
-    `${pad("-------", 35)} ${pad("------", 15)} ${pad("------", 15)} ------\n`,
-  );
+  process.stdout.write(`${pad("Package", 35)} ${pad("Pinned", 15)} ${pad("Latest", 15)} Status\n`);
+  process.stdout.write(`${pad("-------", 35)} ${pad("------", 15)} ${pad("------", 15)} ------\n`);
 
   let failed = false;
   const reports: Report[] = [];
@@ -132,9 +125,7 @@ export function main(): ExitCode {
   }
 
   for (const r of reports) {
-    process.stdout.write(
-      `${pad(r.id, 35)} ${pad(r.pinned, 15)} ${pad(r.latest, 15)} ${r.marker}\n`,
-    );
+    process.stdout.write(`${pad(r.id, 35)} ${pad(r.pinned, 15)} ${pad(r.latest, 15)} ${r.marker}\n`);
   }
 
   process.stdout.write("\n");
@@ -142,9 +133,7 @@ export function main(): ExitCode {
     process.stdout.write("✓ All queryable packages on latest.\n");
     return 0;
   }
-  process.stdout.write(
-    "⚠ Bumps available — update Directory.Packages.props and re-run tests.\n",
-  );
+  process.stdout.write("⚠ Bumps available — update Directory.Packages.props and re-run tests.\n");
   return 1;
 }
 

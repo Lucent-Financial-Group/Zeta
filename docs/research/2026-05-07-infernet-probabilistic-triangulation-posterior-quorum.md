@@ -34,11 +34,11 @@ The clean read:
 Classical ASA says that two angles plus the included side determine a triangle.
 In Zeta's loop language:
 
-| Geometry term | Zeta term |
-| --- | --- |
-| Angle A | Otto's observation/perspective |
-| Angle B | Vera's observation/perspective |
-| Included side | Shared immutable git boundary |
+| Geometry term         | Zeta term                                    |
+| --------------------- | -------------------------------------------- |
+| Angle A               | Otto's observation/perspective               |
+| Angle B               | Vera's observation/perspective               |
+| Included side         | Shared immutable git boundary                |
 | Third point / closure | Expected Riven validation or shadow residual |
 
 That model is exact only when the measurements are exact. Real agent outputs

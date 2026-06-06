@@ -28,7 +28,7 @@ executor shape and is the right choice for specific paths.
 ## When to defer
 
 - **Hot-path analytical queries** → `vectorised-execution-
-  expert`.
+expert`.
 - **Large parallel scans** → `morsel-driven-expert`.
 - **Tight inner loops on fixed plan shapes** →
   `jit-codegen-expert`.
@@ -48,7 +48,7 @@ Every operator is an object with three methods:
 - **`Close()`** — release resources; recursively close
   children.
 
-Execution is a tree of operators; data flows *upward* through
+Execution is a tree of operators; data flows _upward_ through
 `Next()` calls. An operator is "blocking" if it must consume
 its entire input before producing output (Sort, GroupBy
 without hashing); otherwise it's "pipelined" (Filter, Project,
@@ -60,7 +60,7 @@ NLJoin).
   virtual dispatch; modern CPUs lose 10-100× on interpreted
   per-row loops vs vectorised batches.
 - **Branch-prediction works against you.** The `if (eof) ...
-  else produce` check repeats on every row.
+else produce` check repeats on every row.
 - **Register pressure from the stack.** Deep operator trees
   produce deep call stacks; modern JITs cannot always
   inline across them.
@@ -85,7 +85,7 @@ over Z-relations:
   `(k, v, -1)` through too, without special-casing.
 
 This is usually invisible to the operator author, but it
-*is* invisible to a Volcano implementation borrowed from
+_is_ invisible to a Volcano implementation borrowed from
 Postgres; the borrowed code will silently drop retractions.
 
 ## Zeta's Volcano surface today
@@ -108,8 +108,8 @@ Postgres; the borrowed code will silently drop retractions.
 
 ## Reference patterns
 
-- Graefe 1994, *Volcano — An Extensible and Parallel Query
-  Evaluation System*.
+- Graefe 1994, _Volcano — An Extensible and Parallel Query
+  Evaluation System_.
 - Postgres `src/backend/executor/` — canonical Volcano.
 - `.claude/skills/execution-model-expert/SKILL.md` —
   umbrella.

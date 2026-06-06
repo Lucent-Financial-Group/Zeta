@@ -5,12 +5,12 @@
 > This note preserves multi-AI review texture for later analysis. It does NOT
 > create new rules, define new doctrine, or establish a new memory home. The
 > converged follow-up corrections enumerated below are deferred to the next
-> consolidation round. The keeper line at the bottom is held as a *candidate*,
+> consolidation round. The keeper line at the bottom is held as a _candidate_,
 > not as canonical doctrine.
 >
-> Per Amara's mid-absorption correction (2026-04-29 ~08:53Z): *"Archive the
+> Per Amara's mid-absorption correction (2026-04-29 ~08:53Z): _"Archive the
 > voices. Do not crown the voices. The next gate is consolidation, not another
-> cathedral."*
+> cathedral."_
 
 Scope: verbatim preservation of six external-AI reviews on the round-12+13 close-out arc of the no-directives-otto-prose lint (PRs #825 / #828 / #829 / #830). Forwarded by the maintainer post-merge of all four PRs.
 
@@ -54,13 +54,13 @@ Both Claude.ai and Amara explicitly mark these as follow-ups, not urgent:
      docs/research/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md
    Plus the existing rule-doc whitelist entries (named explicitly, not by substring).
    ```
-   This is the same "centralize prose-surface list" family at the whitelist layer. Amara's framing: *"Whitelists should be explicit surfaces, not substring accidents."*
+   This is the same "centralize prose-surface list" family at the whitelist layer. Amara's framing: _"Whitelists should be explicit surfaces, not substring accidents."_
 
 Per B-0105 consolidation gate: these follow-ups are NOT new substrate islands — they are corrections to the existing lint surface. They land when the consolidation gate reopens, not as new rules in their own right.
 
 ## Best keepers from the packet (CANDIDATE substrate, not doctrine)
 
-The lines below are recorded as *candidate keepers* surfaced by the multi-AI
+The lines below are recorded as _candidate keepers_ surfaced by the multi-AI
 review. They are NOT promoted to memory-file doctrine in this round. Bead
 eligibility (per the candidate-substrate-row-≠-doctrine-promotion rule from
 prior rounds) requires the rule to demonstrate value across multiple
@@ -149,9 +149,7 @@ The verbatim text of each reviewer's note is preserved below. The reviewers are 
 > **Pushbacks:**
 >
 > 1. **Lean harder into Option B as the real fix** — The review presents both options as equal. I'd make it clear that **Option B is the proper one**. The lint is supposed to protect the home. If it can't see a brand-new memory file with the canonical violation phrase in it until the file is staged, then the tool is broken for its intended purpose (pre-commit/worktree mode).
->
 > 2. **The renamed-file fixture is still too aggressive** — Creating a real commit and then `git reset --hard HEAD~1` mid-work is asking for trouble. The temp-worktree suggestion in the review is good, but I'd make it even more explicit: "Run these reproduction commands **only** inside a fresh detached worktree or disposable branch. Never on your main working tree."
->
 > 3. **Add one more mechanical guard in the script itself** — Even after fixing the untracked-file issue, we should add a loud warning when `SCOPE=worktree` is used but no prose changes are detected at all (including untracked).
 >
 > **Overall take:** This is **healthy incident-response behavior**. The loop found a real gap in its own guardrails, documented it clearly, and proposed concrete fixes. That's exactly how the factory is supposed to evolve.
@@ -172,19 +170,19 @@ The verbatim text of each reviewer's note is preserved below. The reviewers are 
 
 ### Deepseek
 
-> I think this is excellent: a genuine bug found by running a test that *was explicitly designed to fail*, which then failed in the right way — at a boundary the fixture hadn't yet probed.
+> I think this is excellent: a genuine bug found by running a test that _was explicitly designed to fail_, which then failed in the right way — at a boundary the fixture hadn't yet probed.
 >
 > **The Diagnosis Is Correct** — The root cause is clean: `SCOPE=worktree` relies on `git diff` variations, and `git diff` by default does not show untracked files. A brand-new, never-staged memory file is invisible to the lint. That's a real blind spot, and finding it is exactly why you moved from "documented fixtures" to "executable reproduction commands." The test worked.
 >
-> **The two fix options are both valid, and they're complementary rather than competitive.** Fix A makes the *test* more comprehensive immediately. Fix B fixes the *tool* for all future callers. The right answer is ultimately both: Fix B to close the blind spot in the tool, and Fix A as an immediate verification that the blind spot is closed.
+> **The two fix options are both valid, and they're complementary rather than competitive.** Fix A makes the _test_ more comprehensive immediately. Fix B fixes the _tool_ for all future callers. The right answer is ultimately both: Fix B to close the blind spot in the tool, and Fix A as an immediate verification that the blind spot is closed.
 >
-> **The "Too Invasive" Flag Is Important** — `git commit` + `git reset --hard HEAD~1` in a copy-paste snippet is a footgun. The disposable worktree pattern is the safe alternative. Given that this is a *lint* and should be safe to run at any time, the fixture should not be the most dangerous thing in the repo. I'd add a corollary rule: "Lint fixtures must be safe to run mid-work. Use throwaway worktrees for any fixture that mutates git state."
+> **The "Too Invasive" Flag Is Important** — `git commit` + `git reset --hard HEAD~1` in a copy-paste snippet is a footgun. The disposable worktree pattern is the safe alternative. Given that this is a _lint_ and should be safe to run at any time, the fixture should not be the most dangerous thing in the repo. I'd add a corollary rule: "Lint fixtures must be safe to run mid-work. Use throwaway worktrees for any fixture that mutates git state."
 >
-> **The Meta-Pattern** — What you've described is the *testing pyramid recursively applied to the test itself*: 1. The lint script is the test. 2. The fixture is the test-of-the-test. 3. The fixture found a blind spot in the test. 4. You're now fixing the test so the test-of-the-test passes. This is the same self-referential repair pattern that showed up in the ordinal-drift cascade, the PR-liveness race, and the metadata-drift unification. The factory doesn't just fix bugs — it fixes *the tools that are supposed to catch bugs*. That's a higher-order immune response.
+> **The Meta-Pattern** — What you've described is the _testing pyramid recursively applied to the test itself_: 1. The lint script is the test. 2. The fixture is the test-of-the-test. 3. The fixture found a blind spot in the test. 4. You're now fixing the test so the test-of-the-test passes. This is the same self-referential repair pattern that showed up in the ordinal-drift cascade, the PR-liveness race, and the metadata-drift unification. The factory doesn't just fix bugs — it fixes _the tools that are supposed to catch bugs_. That's a higher-order immune response.
 >
-> **One Additional Subtlety** — The `git ls-files --others --exclude-standard` approach in Fix B is correct, but it has a subtlety worth documenting: it will only catch files that *already exist* at lint time. If a new memory file is about to be created by a script that hasn't run yet, the lint can't see it. That's fine — the lint runs at commit/push boundaries, and by that point the file exists. But the scope should be explicit.
+> **One Additional Subtlety** — The `git ls-files --others --exclude-standard` approach in Fix B is correct, but it has a subtlety worth documenting: it will only catch files that _already exist_ at lint time. If a new memory file is about to be created by a script that hasn't run yet, the lint can't see it. That's fine — the lint runs at commit/push boundaries, and by that point the file exists. But the scope should be explicit.
 >
-> **On the broader Q:** The direction *is* good. This is the find-the-next-bug pattern operating at the tooling layer. The lane discipline held. The verification step worked exactly as intended: it didn't just confirm what you knew, it surfaced what you didn't. That's a healthy loop.
+> **On the broader Q:** The direction _is_ good. This is the find-the-next-bug pattern operating at the tooling layer. The lane discipline held. The verification step worked exactly as intended: it didn't just confirm what you knew, it surfaced what you didn't. That's a healthy loop.
 
 ### Claude.ai
 
@@ -202,7 +200,7 @@ The verbatim text of each reviewer's note is preserved below. The reviewers are 
 >
 > The intent-to-add fix is correct but the cleanup is fragile. If `git reset` fails (which `|| true` swallows), the file might end up partially in the index. If the stash pop conflicts (which `2>/dev/null` hides), the working tree might end up in an inconsistent state. Suggest two small additions: explicit verification after cleanup that the working tree is clean (`git status --porcelain` should produce empty output), and an explicit error message rather than silent failure if cleanup doesn't succeed.
 >
-> The "no Otto-prose surfaces changed; skipping" silent-skip behavior is itself worth flagging as a separate small issue. A lint that returns success when it didn't actually run anything is doing a *different* thing than a lint that returns success after running and finding nothing. The first is a no-op disguised as a pass; the second is a real check. The current behavior masks exactly the bug class the round just discovered.
+> The "no Otto-prose surfaces changed; skipping" silent-skip behavior is itself worth flagging as a separate small issue. A lint that returns success when it didn't actually run anything is doing a _different_ thing than a lint that returns success after running and finding nothing. The first is a no-op disguised as a pass; the second is a real check. The current behavior masks exactly the bug class the round just discovered.
 >
 > **One thing worth noticing.** This round demonstrates the meta-loop pattern at its cleanest: prior round produced verification fixtures, this round executed them, the execution found a real bug, the diagnosis is precise, and the proposed fixes are correctly ordered. That's the alignment trajectory functioning exactly as designed — each round's work tested by the next round's work, with failures producing learnings rather than retroactive justifications.
 >

@@ -87,21 +87,27 @@ Critical, also open a BUGS.md entry immediately.
 # Security research — round N
 
 ## Attack surfaces reviewed
+
 - <surface>: <one-line finding>
 
 ## Critical (P0)
+
 - <finding> -> BUGS.md entry filed
 
 ## Important
+
 - <finding> -> <file:line> or <spec path>; mitigation: <short>
 
 ## Watch
+
 - <finding>: watch-list reason
 
 ## Dismissed (and why)
+
 - <finding>: <reason>
 
 ## Literature sources
+
 - <cite> (URL)
 ```
 

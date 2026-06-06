@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-26 surfaced the load-bearing substrate gap during iter-4.2 PC1 empirical test:
 
-> *\"we won't have ethernet for most machines it needs to remember the wifi on setup\"*
+> _\"we won't have ethernet for most machines it needs to remember the wifi on setup\"_
 
 Today's NixOS install enables NetworkManager but bakes ZERO wifi credentials → first boot has no network on wifi-only mini-PCs (the homelab persona's default hardware). Defeats zero-typing discipline.
 
@@ -34,13 +34,13 @@ Today's NixOS install enables NetworkManager but bakes ZERO wifi credentials →
 
 ## Empirical anchor
 
-Aaron's PC1 booted iter-4.2-flashed USB; installed; rebooted; came up on console with no wifi configured (NetworkManager + zero creds = no network). \`ssh zeta@control-plane.local\` from operator Mac failed to resolve (no mDNS publishing). Cluster-side workaround would be \`nmtui\` on console (defeats zero-typing). Aaron's call: *\"lets just create another usb we are having cascading failures no need to continue\"* — fix substrate, re-flash with iter-5, retry.
+Aaron's PC1 booted iter-4.2-flashed USB; installed; rebooted; came up on console with no wifi configured (NetworkManager + zero creds = no network). \`ssh zeta@control-plane.local\` from operator Mac failed to resolve (no mDNS publishing). Cluster-side workaround would be \`nmtui\` on console (defeats zero-typing). Aaron's call: _\"lets just create another usb we are having cascading failures no need to continue\"_ — fix substrate, re-flash with iter-5, retry.
 
 ## Composes with
 
 - B-0789 (iter-4 SSH+password substrate; depends_on; iter-5 extends ESP-injection pattern)
 - B-0754 / B-0759 / B-0770 / B-0778 / B-0790
-- \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (potential \`_wifi_credentials_acceptance\` block if cluster goes beyond personal homelab)
+- \`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md\` (potential \`\_wifi_credentials_acceptance\` block if cluster goes beyond personal homelab)
 
 ## Security framing
 

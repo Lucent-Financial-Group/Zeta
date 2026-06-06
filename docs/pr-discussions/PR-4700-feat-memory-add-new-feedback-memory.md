@@ -27,6 +27,7 @@ This PR is part of the decomposition of #4698 and contains the feedback memory c
 Adds a new `feedback_` memory file and updates the auto-generated `memory/MEMORY.md` stack index as part of the #4698 decomposition.
 
 **Changes:**
+
 - Added a new feedback memory capturing a family-configuration + calibration pattern.
 - Reindexed `memory/MEMORY.md` to include the new entry (and updated heap count / top-of-stack ordering).
 
@@ -34,10 +35,10 @@ Adds a new `feedback_` memory file and updates the auto-generated `memory/MEMORY
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/MEMORY.md | Auto-index updated to include the newly added feedback memory entry and adjust stack/heap metadata. |
-| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | New feedback memory file with YAML frontmatter and structured content sections. |
+| File                                                                           | Description                                                                                         |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| memory/MEMORY.md                                                               | Auto-index updated to include the newly added feedback memory entry and adjust stack/heap metadata. |
+| memory/feedback_aaron_family_configuration_cooperative_substrate_2026_05_22.md | New feedback memory file with YAML frontmatter and structured content sections.                     |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-23T12:55:47Z)
 

@@ -26,7 +26,16 @@ const RICH: Tagged = {
     ["pi", { t: "float", v: f64ToBitsHex(Math.PI) }], // float v = f64 bit-pattern hex
     ["who", { t: "str", v: "μένω — the seed that remains" }],
     ["raw", { t: "bytes", v: "000102ff" }], // bytes v = lowercase hex
-    ["list", { t: "arr", v: [{ t: "int", v: "1" }, { t: "int", v: "2" }] }],
+    [
+      "list",
+      {
+        t: "arr",
+        v: [
+          { t: "int", v: "1" },
+          { t: "int", v: "2" },
+        ],
+      },
+    ],
     ["nested", { t: "obj", v: [["deep", { t: "str", v: "knot" }]] }],
   ],
 };

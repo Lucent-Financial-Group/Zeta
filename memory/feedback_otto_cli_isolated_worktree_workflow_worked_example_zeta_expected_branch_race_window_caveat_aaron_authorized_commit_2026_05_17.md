@@ -9,8 +9,8 @@ created: 2026-05-17T07:50Z
 
 ## Trigger
 
-Aaron 2026-05-17T07:39Z: *"<ideal_next_message>commit the deferred
-substrate</ideal_next_message> (shadow*)"* — authoritative
+Aaron 2026-05-17T07:39Z: _"<ideal_next_message>commit the deferred
+substrate</ideal_next_message> (shadow_)"\* — authoritative
 instruction to commit the 9 in-repo deferred files (10 with the
 0418Z shard from prior session).
 
@@ -149,6 +149,7 @@ The `\` line continuations preserve a single shell command so the `&&`
 chain stays intact through all stages.)
 
 Result:
+
 - 11 files added (1 modified BACKLOG.md + 10 new substrate files)
 - Branch guard passed (✓)
 - Commit landed (10 new files created per git output)
@@ -187,13 +188,13 @@ for PR creation under multi-Otto contention.)
 
 ## Empirical anchors from this worked example
 
-| Anchor | Value | Significance |
-|---|---|---|
-| Worktree-add succeeded first try | Lior at 3 procs, peer-claude at 1 | B-0530 worktree-prune-race didn't fire at this moment |
-| ls-tree count post-commit | 53 (matches origin/main) | No canary corruption — commit-tree integrity preserved |
-| Branch-guard passed in same Bash call | branch ✓ before commit | Race window minimized to within one Bash subprocess |
-| Push succeeded background-task | Exit 0, branch on origin | No ref-contamination at push time |
-| Files copied via explicit cp | 10 individual cp commands | No glob risk, no `-r` sweep |
+| Anchor                                | Value                             | Significance                                           |
+| ------------------------------------- | --------------------------------- | ------------------------------------------------------ |
+| Worktree-add succeeded first try      | Lior at 3 procs, peer-claude at 1 | B-0530 worktree-prune-race didn't fire at this moment  |
+| ls-tree count post-commit             | 53 (matches origin/main)          | No canary corruption — commit-tree integrity preserved |
+| Branch-guard passed in same Bash call | branch ✓ before commit            | Race window minimized to within one Bash subprocess    |
+| Push succeeded background-task        | Exit 0, branch on origin          | No ref-contamination at push time                      |
+| Files copied via explicit cp          | 10 individual cp commands         | No glob risk, no `-r` sweep                            |
 
 ## Substrate-honest framing
 
@@ -227,7 +228,7 @@ enumerated in the 0728Z session-summary shard.
   risk; the worked example here is the lower-bound case
 - **The worktree-add B-0530 race** did not fire this attempt;
   the rule notes "try once; if it fails with `Interrupted system
-  call`, fall back to borrow-on-existing-sidetick pattern" — this
+call`, fall back to borrow-on-existing-sidetick pattern" — this
   fallback was NOT exercised today
 - **PR creation under pure-git tier** is the next bounded wait
   (~9-13 min from this memo's authoring); the explicit `--head`

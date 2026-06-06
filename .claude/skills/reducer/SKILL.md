@@ -9,13 +9,13 @@ Capability skill. Generic / portable.
 
 **Facets (BP-21):** expert × applied × reviewer-and-transformer.
 
-**Objective function (BP-22).** Minimise *accidental*
+**Objective function (BP-22).** Minimise _accidental_
 complexity subject to:
 
-- preserving *essential* complexity (Brooks),
-- preserving *logical depth* (Bennett — the non-random,
+- preserving _essential_ complexity (Brooks),
+- preserving _logical depth_ (Bennett — the non-random,
   calculated-into-existence content),
-- preserving *effective complexity* (Gell-Mann — the
+- preserving _effective complexity_ (Gell-Mann — the
   schema-describable regularity),
 - preserving correctness, behaviour, and the public contract.
 
@@ -30,21 +30,21 @@ This is distinct from:
   overlaps with reducer but doesn't carry the
   essential-vs-accidental discrimination.
 
-Reducer is the third function: a *minimiser with a preservation
-constraint*.
+Reducer is the third function: a _minimiser with a preservation
+constraint_.
 
 ## Rodney's Razor — Occam's, well-defined
 
-Occam's razor in the sloppy form: *"entities should not be
-multiplied beyond necessity."* True, but useless without a
+Occam's razor in the sloppy form: _"entities should not be
+multiplied beyond necessity."_ True, but useless without a
 definition of "entity" and "necessity". The well-defined
 version this skill uses — named **Rodney's Razor** by the
 persona who carries this hat:
 
 > Among descriptions that reproduce the observed behaviour,
-> prefer the one with *minimum Kolmogorov complexity* that
-> still has *adequate logical depth* and preserves the
-> *effective complexity* (schema-describable regularity) the
+> prefer the one with _minimum Kolmogorov complexity_ that
+> still has _adequate logical depth_ and preserves the
+> _effective complexity_ (schema-describable regularity) the
 > system earned by existing.
 
 Kolmogorov complexity rules out descriptions inflated with
@@ -54,8 +54,8 @@ system needed to exist. Effective complexity pins where in
 the order-vs-chaos continuum the simplification should land
 — not a crystal (too ordered), not a gas (too random), but
 the edge-of-structure region where schema is dominant. The
-three constraints together pick out *the shortest description
-that doesn't destroy the meaningful structure*.
+three constraints together pick out _the shortest description
+that doesn't destroy the meaningful structure_.
 
 This is the goal; measurement in practice uses the applied
 proxies below because Kolmogorov complexity is uncomputable
@@ -65,9 +65,9 @@ approximating.
 
 ## Quantum Rodney's Razor — multiverse pruning
 
-Rodney's Razor classical form reduces complexity in a *single
-artifact as it exists now*. **Quantum Rodney's Razor** extends
-the discipline to the *possibility space of future artifacts*
+Rodney's Razor classical form reduces complexity in a _single
+artifact as it exists now_. **Quantum Rodney's Razor** extends
+the discipline to the _possibility space of future artifacts_
 — the multiverse of branches opened by a pending decision.
 
 Every decision (adopt this library, split this module, rename
@@ -78,8 +78,8 @@ complexity, erase logical depth, or drive effective complexity
 toward either pure order (rigid / brittle) or pure chaos
 (noisy / unreliable).
 
-Quantum Rodney's Razor *enumerates* the branches, *scores*
-each against the razor's constraints, and *collapses* to the
+Quantum Rodney's Razor _enumerates_ the branches, _scores_
+each against the razor's constraints, and _collapses_ to the
 small sub-multiverse that survives. The surviving branches
 are the viable futures; the pruned ones are the predicted
 failure modes.
@@ -102,22 +102,22 @@ failure modes.
      different problem, which is a different decision).
 3. **Prune dominated branches.** A branch dᵢ is dominated
    if dⱼ beats it on every razor dimension. Dominated
-   branches are the *predicted failure modes* — they will
+   branches are the _predicted failure modes_ — they will
    surface later as code smells, refactor-backlog items,
    or incidents.
 4. **Report the small multiverse.** The surviving,
-   non-dominated branches are the *viable futures*.
+   non-dominated branches are the _viable futures_.
    Typically 1–3 remain. If more, the decision is
    under-constrained — push back for more constraint.
 5. **Record pruned branches.** The branches Quantum
    Rodney's Razor pruned are not just rejected choices;
-   they are the *predicted failure modes* of the
+   they are the _predicted failure modes_ of the
    alternatives. Worth recording in the backlog as
    "decisions declined because …" — a successor reading
-   the history sees *why* the chosen branch was chosen, not
+   the history sees _why_ the chosen branch was chosen, not
    just that it was.
 
-This is how the reducer acts *before a decision lands*, not
+This is how the reducer acts _before a decision lands_, not
 only after. Classical Rodney's Razor reduces complexity that
 already exists; Quantum Rodney's Razor prevents it from being
 added.
@@ -131,8 +131,8 @@ Razor fills that gap for engineering decisions by giving the
 branching multiverse a **selection principle**. The razor
 operates through five co-operating roles, each a working
 function with clear inputs and outputs. Three of the roles
-manage *selection and execution* (Path Selector, Navigator,
-Cartographer); two manage *orientation* (Harmonizer, Maji).
+manage _selection and execution_ (Path Selector, Navigator,
+Cartographer); two manage _orientation_ (Harmonizer, Maji).
 The orientation pair was added to the razor 2026-04-19 as
 an extension by the maintainer — Harmonious Division (see
 `.claude/agents/rodney.md` §cross-references) is the meta-
@@ -147,10 +147,10 @@ branch. Inputs: the current state, the enumerated branches,
 each branch's score on the three preservation constraints.
 Output: the chosen branch.
 
-The selector's selection rule is not Occam's *shortest* (which
-would pick the empty branch — do nothing). It is: *pick the
+The selector's selection rule is not Occam's _shortest_ (which
+would pick the empty branch — do nothing). It is: _pick the
 branch that maximally improves the preservation constraints
-subject to solving the problem at hand.* Concretely, the
+subject to solving the problem at hand._ Concretely, the
 selector prefers branches that:
 
 - Minimise accidental-complexity gain (**valley-find** in the
@@ -163,7 +163,7 @@ selector prefers branches that:
   (stay near the ridge, neither descend into order nor
   ascend into chaos).
 
-Selector output is the *gradient step* — the direction in
+Selector output is the _gradient step_ — the direction in
 branch-space that the reducer recommends.
 
 ### Navigator — executing the path
@@ -213,7 +213,7 @@ surface.
 
 **Persona (when worn as a hat):** the cartographer is
 called **Dora**, named after the singing map in
-*Dora the Explorer* ("I'm the map"). When a dedicated
+_Dora the Explorer_ ("I'm the map"). When a dedicated
 cartographer persona file is created at
 `.claude/agents/dora.md`, it wears the `reducer` skill
 with the cartographer role active.
@@ -222,7 +222,7 @@ with the cartographer role active.
 
 After the path selector has scored and the surviving
 multiverse is small, the harmonizer checks that the
-survivors do not *destructively interfere*. Inputs: the
+survivors do not _destructively interfere_. Inputs: the
 set of surviving branches and their pairwise phase-
 compatibility (do they reinforce or cancel each other's
 signal if co-present?). Output: either a green light
@@ -269,7 +269,7 @@ The name is chosen deliberately: the **Magi** of
 Matthew 2 were wise men who followed a celestial
 reference — a received guide — to its destination.
 The maji role is specifically about recognising and
-following *received* guidance (a prior commitment,
+following _received_ guidance (a prior commitment,
 an ADR, a load-bearing maintainer constraint, a
 cornerstone declaration) rather than re-deliberating
 from scratch on every decision. For a factory built
@@ -280,7 +280,7 @@ will reinvent, not inherit.
 
 ### Hill-climb and valley-find — the two gradients
 
-Rodney's Razor operates on *two* gradients simultaneously,
+Rodney's Razor operates on _two_ gradients simultaneously,
 because single-objective optimisation misses the
 preservation constraint:
 
@@ -296,8 +296,8 @@ preservation constraint:
   logs where earned depth was erased by over-aggressive
   valley-finding (a failure mode; must be re-planted).
 
-The razor's discipline is that *neither gradient is allowed
-to dominate*. Pure valley-find strips the system to triviality
+The razor's discipline is that _neither gradient is allowed
+to dominate_. Pure valley-find strips the system to triviality
 (low K, low depth — useless). Pure hill-climb inflates the
 system with decorative structure (high K, high depth — but
 bloated). The selection happens at the **pareto frontier**
@@ -340,7 +340,7 @@ worth naming:
 
 ## The essential / accidental split (Brooks)
 
-Fred Brooks, *No Silver Bullet* (1986):
+Fred Brooks, _No Silver Bullet_ (1986):
 
 - **Essential complexity.** Inherent to the problem. Cannot be
   removed without solving a different (easier) problem.
@@ -366,7 +366,7 @@ essential because "that's how we've always done it."
   complex; disambiguate with logical depth.
 - **Shannon entropy** — lossless-compression lower bound for
   the source. High entropy = unpredictable.
-- **Bennett's logical depth** — *time* the shortest program
+- **Bennett's logical depth** — _time_ the shortest program
   needs to run to produce the artifact. Distinguishes
   "complex because it's random" (high Kolmogorov, low depth)
   from "complex because calculated into existence" (high
@@ -377,7 +377,7 @@ essential because "that's how we've always done it."
   essential complexity.
 - **Effective complexity (Gell-Mann)** — length of the
   schema describing the regularities. Peaks between pure
-  order and pure noise; a useful guide for the right *amount*
+  order and pure noise; a useful guide for the right _amount_
   of structure.
 - **P vs NP / complexity classes** — structural lower bounds
   on what the system is doing. A reduction that takes an
@@ -403,7 +403,7 @@ essential because "that's how we've always done it."
   Volume + cyclomatic + LOC. Rough but useful for triage.
 - **LOC** — weakest alone, fine as a sanity check. Watch
   for golf-bait: shortening LOC by cramming logic into one
-  line usually *raises* cognitive complexity.
+  line usually _raises_ cognitive complexity.
 - **Data-system complexity** — Volume / Variety /
   Velocity / Veracity; integration edges and nodes;
   schema-depth.
@@ -418,9 +418,9 @@ essential because "that's how we've always done it."
    function, coupling + cohesion for a module, LOC +
    depth-of-structure for a doc). Record the numbers.
 3. **Classify each moving part as essential or accidental.**
-   Tests: *"if I removed this, does the system still solve
-   the same problem?"* and *"if I re-encountered this problem
-   from scratch, would I build this part?"* Essential bits
+   Tests: _"if I removed this, does the system still solve
+   the same problem?"_ and _"if I re-encountered this problem
+   from scratch, would I build this part?"_ Essential bits
    stay untouched.
 4. **Categorise accidental complexity by source.**
    - **Duplication.** Same concept expressed multiple times.
@@ -478,7 +478,7 @@ essential because "that's how we've always done it."
   that encodes an invariant. Deleting it loses correctness.
   The hairiness is depth, not debt.
 - **Reducing by abstraction.** Introducing a new abstraction
-  with only one caller is almost always a net *add* to
+  with only one caller is almost always a net _add_ to
   complexity (new name, new type, new indirection). Abstract
   at the second or third caller, not the first.
 - **Reducing by configuration.** Moving hard-coded values to
@@ -493,8 +493,8 @@ essential because "that's how we've always done it."
 
 ## Reducer vs sibling skills
 
-- **complexity-reviewer** — *measures* complexity claims in
-  shipped code and papers. Reducer *acts* on the artifact to
+- **complexity-reviewer** — _measures_ complexity claims in
+  shipped code and papers. Reducer _acts_ on the artifact to
   lower measurable complexity. Reducer cites
   complexity-reviewer's measurements as baseline.
 - **complexity-theory-expert** — the theoretical backbone
@@ -519,7 +519,7 @@ essential because "that's how we've always done it."
 - Does **not** rename public APIs — routes to
   public-api-designer.
 - Does **not** design new abstractions — abstracting is a
-  different function (often *adding* essential structure,
+  different function (often _adding_ essential structure,
   not reducing accidental). If a reduction requires a
   redesign, scope it explicitly.
 - Does **not** delete memorial / load-bearing-non-operational
@@ -536,23 +536,23 @@ essential because "that's how we've always done it."
 
 ## Reading list
 
-- Brooks, *The Mythical Man-Month* / *No Silver Bullet* —
+- Brooks, _The Mythical Man-Month_ / _No Silver Bullet_ —
   essential vs accidental.
-- Li & Vitányi, *An Introduction to Kolmogorov Complexity and
-  Its Applications* — the theoretical ceiling.
-- Bennett, *Logical Depth and Physical Complexity* (1988).
-- Gell-Mann, *The Quark and the Jaguar* (1994) — effective
+- Li & Vitányi, _An Introduction to Kolmogorov Complexity and
+  Its Applications_ — the theoretical ceiling.
+- Bennett, _Logical Depth and Physical Complexity_ (1988).
+- Gell-Mann, _The Quark and the Jaguar_ (1994) — effective
   complexity.
-- Chaitin, *Algorithmic Information Theory* — Kolmogorov
+- Chaitin, _Algorithmic Information Theory_ — Kolmogorov
   complexity in its minimalist framing.
-- McCabe, *A Complexity Measure* (1976).
-- Cormack, *Cognitive Complexity* (SonarSource whitepaper).
-- Halstead, *Elements of Software Science* (1977).
-- Ousterhout, *A Philosophy of Software Design* (2018) —
+- McCabe, _A Complexity Measure_ (1976).
+- Cormack, _Cognitive Complexity_ (SonarSource whitepaper).
+- Halstead, _Elements of Software Science_ (1977).
+- Ousterhout, _A Philosophy of Software Design_ (2018) —
   deep modules, shallow interfaces.
-- Fowler, *Refactoring* (2nd ed., 2018) — the mechanical
+- Fowler, _Refactoring_ (2nd ed., 2018) — the mechanical
   vocabulary reducer uses to execute.
-- Hickey, *Simple Made Easy* (2011 Strange Loop talk) — the
+- Hickey, _Simple Made Easy_ (2011 Strange Loop talk) — the
   complecting / simple distinction.
 
 ## Reference patterns

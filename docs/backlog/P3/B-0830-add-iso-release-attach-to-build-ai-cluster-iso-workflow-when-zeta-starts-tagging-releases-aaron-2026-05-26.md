@@ -30,13 +30,13 @@ on:
 
 jobs:
   build-iso:
-    if: github.event_name != 'release'  # release uses attach-to-release-job below
+    if: github.event_name != 'release' # release uses attach-to-release-job below
     # ... existing build steps
 
   attach-to-release:
     if: github.event_name == 'release'
     permissions:
-      contents: write  # elevated for release-asset upload
+      contents: write # elevated for release-asset upload
     # ... checkout at release tag, build ISO, upload as release asset
 ```
 

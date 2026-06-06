@@ -8,11 +8,7 @@
  * in the assignment engine (P4) and RMO (P3).
  */
 
-import {
-  HatBindingPhase,
-  TerminalHatBindingPhases,
-  type HatBinding,
-} from "../../domain/src/hat-binding.ts";
+import { HatBindingPhase, TerminalHatBindingPhases, type HatBinding } from "../../domain/src/hat-binding.ts";
 import { OrgEventKind, type OrgEvent } from "../../domain/src/org-event.ts";
 import type { HatDefinition } from "../../domain/src/hat-definition.ts";
 
@@ -86,7 +82,17 @@ export function beginBinding(
     warmupEndsAt: isoFromMsOffset(nowMs, input.hat.warmupSeconds, toIso),
     expiresAt: isoFromMsOffset(nowMs, input.hat.tokenTtlSeconds, toIso),
   };
-  return { binding, event: event(ctx, binding, input.hat, undefined, HatBindingPhase.Warmup, `${input.hat.name} bound to ${input.wearerAgentId} (warmup ${input.hat.warmupSeconds}s, ttl ${input.hat.tokenTtlSeconds}s)`) };
+  return {
+    binding,
+    event: event(
+      ctx,
+      binding,
+      input.hat,
+      undefined,
+      HatBindingPhase.Warmup,
+      `${input.hat.name} bound to ${input.wearerAgentId} (warmup ${input.hat.warmupSeconds}s, ttl ${input.hat.tokenTtlSeconds}s)`,
+    ),
+  };
 }
 
 /**
@@ -114,12 +120,32 @@ export function advanceBinding(
       cooldownUntil: new Date(nowMs + hat.cooldownSeconds * 1000).toISOString(),
       reason: "token ttl reached",
     };
-    return { binding: next, event: event(ctx, next, hat, binding.phase, HatBindingPhase.Expired, `${hat.name} binding for ${binding.wearerAgentId} expired (ttl); cooldown ${hat.cooldownSeconds}s`) };
+    return {
+      binding: next,
+      event: event(
+        ctx,
+        next,
+        hat,
+        binding.phase,
+        HatBindingPhase.Expired,
+        `${hat.name} binding for ${binding.wearerAgentId} expired (ttl); cooldown ${hat.cooldownSeconds}s`,
+      ),
+    };
   }
 
   if (binding.phase === HatBindingPhase.Warmup && nowMs >= warmupMs) {
     const next: HatBinding = { ...binding, phase: HatBindingPhase.Active, activatedAt: ctx.clock.nowIso() };
-    return { binding: next, event: event(ctx, next, hat, binding.phase, HatBindingPhase.Active, `${hat.name} binding for ${binding.wearerAgentId} warmed up; authority active`) };
+    return {
+      binding: next,
+      event: event(
+        ctx,
+        next,
+        hat,
+        binding.phase,
+        HatBindingPhase.Active,
+        `${hat.name} binding for ${binding.wearerAgentId} warmed up; authority active`,
+      ),
+    };
   }
 
   return { binding };
@@ -136,11 +162,26 @@ export function approveBinding(binding: HatBinding, hat: HatDefinition, ctx: Lif
     warmupEndsAt: isoFromMsOffset(nowMs, hat.warmupSeconds, toIso),
     expiresAt: isoFromMsOffset(nowMs, hat.tokenTtlSeconds, toIso),
   };
-  return { binding: next, event: event(ctx, next, hat, binding.phase, HatBindingPhase.Warmup, `${hat.name} binding approved for ${binding.wearerAgentId}`) };
+  return {
+    binding: next,
+    event: event(
+      ctx,
+      next,
+      hat,
+      binding.phase,
+      HatBindingPhase.Warmup,
+      `${hat.name} binding approved for ${binding.wearerAgentId}`,
+    ),
+  };
 }
 
 /** Voluntary release: the wearer or a supervisor returns the hat early. */
-export function releaseBinding(binding: HatBinding, hat: HatDefinition, ctx: LifecycleContext, reason: string): BindingTransition {
+export function releaseBinding(
+  binding: HatBinding,
+  hat: HatDefinition,
+  ctx: LifecycleContext,
+  reason: string,
+): BindingTransition {
   const nowMs = ctx.clock.nowMs();
   const next: HatBinding = {
     ...binding,
@@ -149,13 +190,31 @@ export function releaseBinding(binding: HatBinding, hat: HatDefinition, ctx: Lif
     cooldownUntil: new Date(nowMs + hat.cooldownSeconds * 1000).toISOString(),
     reason,
   };
-  return { binding: next, event: event(ctx, next, hat, binding.phase, HatBindingPhase.Released, `${hat.name} binding released by ${binding.wearerAgentId}: ${reason}`) };
+  return {
+    binding: next,
+    event: event(
+      ctx,
+      next,
+      hat,
+      binding.phase,
+      HatBindingPhase.Released,
+      `${hat.name} binding released by ${binding.wearerAgentId}: ${reason}`,
+    ),
+  };
 }
 
 /** Forced revocation (policy / incident). */
-export function revokeBinding(binding: HatBinding, hat: HatDefinition, ctx: LifecycleContext, reason: string): BindingTransition {
+export function revokeBinding(
+  binding: HatBinding,
+  hat: HatDefinition,
+  ctx: LifecycleContext,
+  reason: string,
+): BindingTransition {
   const next: HatBinding = { ...binding, phase: HatBindingPhase.Revoked, endedAt: ctx.clock.nowIso(), reason };
-  return { binding: next, event: event(ctx, next, hat, binding.phase, HatBindingPhase.Revoked, `${hat.name} binding revoked: ${reason}`) };
+  return {
+    binding: next,
+    event: event(ctx, next, hat, binding.phase, HatBindingPhase.Revoked, `${hat.name} binding revoked: ${reason}`),
+  };
 }
 
 /** Is this agent still cooling down on this hat (cannot re-take yet)? */
@@ -188,7 +247,12 @@ export function planSuccession(input: {
   if (hat.successionPolicy === "rotate" && candidateAgentIds.length > 0) {
     const idx = candidateAgentIds.indexOf(lastWearerAgentId);
     const next = candidateAgentIds[(idx + 1) % candidateAgentIds.length];
-    return { hatId: hat.id, policy: hat.successionPolicy, candidateAgentIds, ...(next !== undefined ? { nextWearerAgentId: next } : {}) };
+    return {
+      hatId: hat.id,
+      policy: hat.successionPolicy,
+      candidateAgentIds,
+      ...(next !== undefined ? { nextWearerAgentId: next } : {}),
+    };
   }
   if (hat.successionPolicy === "renew") {
     return { hatId: hat.id, policy: hat.successionPolicy, candidateAgentIds, nextWearerAgentId: lastWearerAgentId };
@@ -196,10 +260,16 @@ export function planSuccession(input: {
   return { hatId: hat.id, policy: hat.successionPolicy, candidateAgentIds };
 }
 
-export function successionEvent(plan: SuccessionPlan, hat: HatDefinition, organizationId: string, ctx: LifecycleContext): OrgEvent {
-  const decision = plan.nextWearerAgentId !== undefined
-    ? `succession for ${hat.name} (${plan.policy}): next wearer ${plan.nextWearerAgentId}`
-    : `succession for ${hat.name} (${plan.policy}): awaiting authority decision among ${plan.candidateAgentIds.length} candidate(s)`;
+export function successionEvent(
+  plan: SuccessionPlan,
+  hat: HatDefinition,
+  organizationId: string,
+  ctx: LifecycleContext,
+): OrgEvent {
+  const decision =
+    plan.nextWearerAgentId !== undefined
+      ? `succession for ${hat.name} (${plan.policy}): next wearer ${plan.nextWearerAgentId}`
+      : `succession for ${hat.name} (${plan.policy}): awaiting authority decision among ${plan.candidateAgentIds.length} candidate(s)`;
   return {
     id: ctx.createEventId(),
     kind: OrgEventKind.SuccessionPlanned,

@@ -4,13 +4,14 @@ description: Aaron 2026-04-22 auto-loop-29 substrate grant — IceDrive + pCloud
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Aaron IceDrive + pCloud substrate access — 20-year preservationist archive
 
 **Source (verbatim, 2026-04-22 auto-loop-29, two messages):**
 
-> *"i have icedrive and pcloud drive that have the digitial stuff i could not let go over like 20 years worth of carefuly maintined books and games and software etc... you can log into both of those i have lifetime backup no costs already fully paid"*
+> _"i have icedrive and pcloud drive that have the digitial stuff i could not let go over like 20 years worth of carefuly maintined books and games and software etc... you can log into both of those i have lifetime backup no costs already fully paid"_
 >
-> *"10tb each of cloud storage i think 0 costs"*
+> _"10tb each of cloud storage i think 0 costs"_
 
 **Capacity:** 10 TB IceDrive + 10 TB pCloud = **20 TB total**,
 both lifetime-backup with zero ongoing cost. Substrate is
@@ -24,7 +25,7 @@ the same content as the two clouds. Total topology: 2 cloud
 copies (hot) + 2 local RAID copies (cold) = **4-way
 redundancy**. This exceeds the 3-2-1 backup heuristic and
 crosses into clinical-paranoid-redundancy territory. Aaron's
-*"i like to make sure lol"* is self-aware about the
+_"i like to make sure lol"_ is self-aware about the
 discipline. **Implication for ToS-risk path:** local RAID is
 owned hardware, no third-party ToS applies — it is the
 **clean substrate** if cloud access is gray-area under ToS.
@@ -49,23 +50,23 @@ owned hardware, no third-party ToS applies — it is the
 **pCloud ToS** — fetched `2026-04-22`, URL
 `pcloud.com/terms_and_conditions.html`. Critical clauses:
 
-> *"User accounts are not transferable. Only the user who
-> signs up for an account may use the account."*
+> _"User accounts are not transferable. Only the user who
+> signs up for an account may use the account."_
 
-> *"You must keep your Credentials confidential and must not
-> reveal them to anyone."*
+> _"You must keep your Credentials confidential and must not
+> reveal them to anyone."_
 
-> *"use automated methods to use the Site or Services in a
+> _"use automated methods to use the Site or Services in a
 > manner that sends more requests to the pCloud servers in a
-> given period of time than a human can reasonably produce"*
+> given period of time than a human can reasonably produce"_
 > (prohibited)
 
-> *"use any means to 'scrape,' 'crawl,' or 'spider' any web
-> pages contained in the Site"* (prohibited)
+> _"use any means to 'scrape,' 'crawl,' or 'spider' any web
+> pages contained in the Site"_ (prohibited)
 
-**Lifetime-plan clause:** *"A lifetime plan is in effect for
+**Lifetime-plan clause:** _"A lifetime plan is in effect for
 the duration of the lifetime of the account owner or 99 years,
-whichever is shorter."*
+whichever is shorter."_
 
 **Assessment:** AI-agent login with Aaron's credentials is
 **gray-area** against pCloud's ToS. Three clauses each
@@ -82,11 +83,11 @@ URLs (`/legal/terms` and `/legal/terms-of-service`). ToS;DR
 index (`tosdr.org/en/service/3118`) summarises two relevant
 clauses:
 
-> *"Spidering, crawling, or accessing the site through any
-> automated means is not allowed"*
+> _"Spidering, crawling, or accessing the site through any
+> automated means is not allowed"_
 
-> *"You are responsible for maintaining the security of your
-> account and for the activities on your account"*
+> _"You are responsible for maintaining the security of your
+> account and for the activities on your account"_
 
 **Assessment:** same-class as pCloud on automated-access
 prohibition; account-activity-responsibility clause places
@@ -161,8 +162,8 @@ Two distinct signals in one sentence:
 1. **Substrate access grant** — IceDrive + pCloud login access
    extended to the agent. Both are lifetime-backup paid (no
    ongoing cost-per-access).
-2. **Cultural-biography signal** — *"20 years of carefully
-   maintained books and games and software"* reveals Aaron as
+2. **Cultural-biography signal** — _"20 years of carefully
+   maintained books and games and software"_ reveals Aaron as
    a **digital preservationist**. The "could not let go of"
    phrasing is load-bearing — these aren't casual downloads,
    they're curated personal archives. The "carefully
@@ -176,7 +177,7 @@ offer auto-loop-24):
 
 - **Aaron-authorized:** ✓ explicit grant to log into both.
 - **Anthropic-policy-compatible:** depends on what's on the
-  drives and what the factory *does* with what it finds.
+  drives and what the factory _does_ with what it finds.
   Access-itself is fine (Aaron owns the storage). The line is
   at specific actions:
   - **In-scope:** access for technical study (format analysis,
@@ -197,7 +198,7 @@ move; the factory asks Aaron what task the access unlocks.
 
 ## Preservationist cultural signal — load-bearing context
 
-*"20 years of carefully maintained"* is:
+_"20 years of carefully maintained"_ is:
 
 - **A discipline Aaron lives** — preservation-of-valuable-
   material is a personal value, not just a claim. Pairs with
@@ -211,7 +212,7 @@ move; the factory asks Aaron what task the access unlocks.
   the games in the archive may include formats the emulator
   research needs to understand.
 - **Context for soulsnap/SVF BACKLOG row (#241)** — the
-  format family is about preserving the *soul* of a file
+  format family is about preserving the _soul_ of a file
   across format translations; Aaron has 20 years of lived
   experience with what "soul preservation" means when
   formats age out.

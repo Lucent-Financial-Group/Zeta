@@ -22,8 +22,8 @@ tags: [cluster, audio, daw, npu, vpu, intel, openvino, ai-workload, pipewire, al
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-prep, extending the audio-firmware
-cleanup scope: *"i'd like the sound codecs workikng and npus for
-use like by daw and others."*
+cleanup scope: _"i'd like the sound codecs workikng and npus for
+use like by daw and others."_
 
 B-0754 iter-3 PR (#5057) bundles `hardware.enableRedistributableFirmware = true`
 into the installer ISO, which silences the Intel SoF `ASoC: failed
@@ -32,14 +32,14 @@ probe what it needs. But that's only the FIRMWARE LAYER. To
 actually use audio (DAW workloads) + NPU (AI inference workloads)
 on Zeta cluster nodes, more substrate is needed:
 
-| Layer | What iter-3 fixes | What this row adds |
-|---|---|---|
-| Kernel | Firmware blobs reachable; SoF + intel_vpu can probe cleanly | Confirm intel_vpu module loaded; expose `/dev/accel/accel0` for NPU |
-| Audio stack | (nothing) | ALSA configured; PipeWire (default modern stack) or PulseAudio; JACK for DAW-class real-time audio; per-role config |
-| NPU userspace | (nothing) | intel-npu-driver userspace package; OpenVINO 2024.0+ runtime; per-workload library access |
-| Container access | (nothing) | k8s device plugin for NPU (similar to nvidia-device-plugin); makes `intel.com/npu: 1` requestable in Pod specs |
-| Per-role substrate | (nothing) | New host config variants: `workstation` (audio + NPU + GPU + GUI); existing roles get NPU-only by default if NPU hardware present |
-| Operator UX | (nothing) | Documented: "use Zeta cluster node as a DAW workstation"; "schedule AI inference on NPU instead of GPU when latency-acceptable" |
+| Layer              | What iter-3 fixes                                           | What this row adds                                                                                                                |
+| ------------------ | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Kernel             | Firmware blobs reachable; SoF + intel_vpu can probe cleanly | Confirm intel_vpu module loaded; expose `/dev/accel/accel0` for NPU                                                               |
+| Audio stack        | (nothing)                                                   | ALSA configured; PipeWire (default modern stack) or PulseAudio; JACK for DAW-class real-time audio; per-role config               |
+| NPU userspace      | (nothing)                                                   | intel-npu-driver userspace package; OpenVINO 2024.0+ runtime; per-workload library access                                         |
+| Container access   | (nothing)                                                   | k8s device plugin for NPU (similar to nvidia-device-plugin); makes `intel.com/npu: 1` requestable in Pod specs                    |
+| Per-role substrate | (nothing)                                                   | New host config variants: `workstation` (audio + NPU + GPU + GUI); existing roles get NPU-only by default if NPU hardware present |
+| Operator UX        | (nothing)                                                   | Documented: "use Zeta cluster node as a DAW workstation"; "schedule AI inference on NPU instead of GPU when latency-acceptable"   |
 
 ## Target
 
@@ -96,13 +96,10 @@ hardware is present (lspci detection at install time).
 
 ### Capability 2: NPU
 
-- [ ] `modules/intel-npu.nix` ships:
-      - `boot.kernelModules = [ "intel_vpu" ];` (mainline
-        kernel 6.5+ has the driver)
-      - `hardware.firmware = with pkgs; [ intel-npu-driver-firmware ];`
-        (Intel NPU firmware blobs)
-      - User-namespace permission to `/dev/accel/accel0` via
-        udev rule + group membership
+- [ ] `modules/intel-npu.nix` ships: - `boot.kernelModules = [ "intel_vpu" ];` (mainline
+      kernel 6.5+ has the driver) - `hardware.firmware = with pkgs; [ intel-npu-driver-firmware ];`
+      (Intel NPU firmware blobs) - User-namespace permission to `/dev/accel/accel0` via
+      udev rule + group membership
 - [ ] `modules/openvino.nix` ships OpenVINO 2024.0+ runtime
       with NPU plugin enabled
 - [ ] k8s NPU device plugin: ships intel/intel-device-plugins-
@@ -125,7 +122,7 @@ hardware is present (lspci detection at install time).
       or KDE Plasma) + modules/k3s-agent.nix (so workstation
       is also a cluster member)
 - [ ] flake.nix `nixosConfigurations.workstation = mkSystem
-      { modules = [ ... ]; };` entry
+    { modules = [ ... ]; };` entry
 - [ ] B-0754 v1 role keystroke prompt extended: add 'k' for
       workstation (composes with B-0755 role taxonomy
       expansion); other role options unchanged
@@ -139,24 +136,20 @@ hardware is present (lspci detection at install time).
 ### Capability 4: Scheduler awareness (composes with B-0767)
 
 - [ ] `Zeta.K8s.Scheduler` NPU-aware plugin (per B-0767
-      sub-wave B GPU topology + sub-wave C model locality):
-      - NPU-class workloads prefer nodes with available NPU
-      - Workload-class fitness: small models (sub-1B params)
-        + low-latency requirements → NPU; large models → GPU
-      - Latency-vs-throughput trade-off awareness
+      sub-wave B GPU topology + sub-wave C model locality): - NPU-class workloads prefer nodes with available NPU - Workload-class fitness: small models (sub-1B params) + low-latency requirements → NPU; large models → GPU - Latency-vs-throughput trade-off awareness
 
 ## ServiceTitan-route composition (B-0765 / B-0763)
 
 Inference access goes through layered existing standards:
 
-| Layer | Standard | Role |
-|---|---|---|
-| **Model format** | **ONNX** (Open Neural Network Exchange) | Operator-facing portability format; cross-framework (PyTorch / TF / scikit-learn / XGBoost export to ONNX); one model definition runs everywhere Zeta supports |
-| **Inference runtime** | **ONNX Runtime** (Microsoft-led) | Cross-platform engine that abstracts hardware backends via Execution Providers |
-| **ONNX Runtime EPs** | OpenVINO EP (Intel CPU/GPU/NPU); CUDA EP + TensorRT EP (NVIDIA); ROCm EP + MIGraphX EP (AMD); CoreML EP (Apple); DirectML EP (Windows); default CPU EP (fallback) | One ONNX model → ONNX Runtime → best-fit EP per node hardware |
-| **Native vendor runtimes** | OpenVINO (Intel); TensorRT (NVIDIA); MIGraphX (AMD); Core ML (Apple) | Highest perf for vendor-specific workloads; Zeta exposes for operators who want max perf at cost of portability |
-| **k8s device plugin** | intel-device-plugins-for-kubernetes; nvidia-device-plugin; amd-device-plugin | Existing CNCF/vendor standards adopted per B-0764 |
-| **PipeWire / ALSA / JACK** | Linux audio standards | Operators using vanilla audio software unchanged |
+| Layer                      | Standard                                                                                                                                                          | Role                                                                                                                                                           |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Model format**           | **ONNX** (Open Neural Network Exchange)                                                                                                                           | Operator-facing portability format; cross-framework (PyTorch / TF / scikit-learn / XGBoost export to ONNX); one model definition runs everywhere Zeta supports |
+| **Inference runtime**      | **ONNX Runtime** (Microsoft-led)                                                                                                                                  | Cross-platform engine that abstracts hardware backends via Execution Providers                                                                                 |
+| **ONNX Runtime EPs**       | OpenVINO EP (Intel CPU/GPU/NPU); CUDA EP + TensorRT EP (NVIDIA); ROCm EP + MIGraphX EP (AMD); CoreML EP (Apple); DirectML EP (Windows); default CPU EP (fallback) | One ONNX model → ONNX Runtime → best-fit EP per node hardware                                                                                                  |
+| **Native vendor runtimes** | OpenVINO (Intel); TensorRT (NVIDIA); MIGraphX (AMD); Core ML (Apple)                                                                                              | Highest perf for vendor-specific workloads; Zeta exposes for operators who want max perf at cost of portability                                                |
+| **k8s device plugin**      | intel-device-plugins-for-kubernetes; nvidia-device-plugin; amd-device-plugin                                                                                      | Existing CNCF/vendor standards adopted per B-0764                                                                                                              |
+| **PipeWire / ALSA / JACK** | Linux audio standards                                                                                                                                             | Operators using vanilla audio software unchanged                                                                                                               |
 
 **Substrate-honest layering**: ONNX is the operator's contract;
 runtime selection is Zeta's substrate decision (scheduler-driven
@@ -168,13 +161,13 @@ MXR) for max perf when willing to lose portability.
 
 ### Why ONNX as operator contract (not OpenVINO or TensorRT directly)
 
-| Choice | Portability | Perf ceiling | Operator lock-in |
-|---|---|---|---|
-| **ONNX → ONNX Runtime → vendor EP** | High | High (within EP capabilities) | None — model moves anywhere |
-| OpenVINO IR (operator-side) | Low (Intel-only) | Highest on Intel | High (Intel-locked) |
-| TensorRT engine (operator-side) | None (NVIDIA-only + per-GPU-compiled) | Highest on NVIDIA | High (NVIDIA-locked) |
-| PyTorch model (operator-side) | High via torch.compile | Variable | Medium (torch ecosystem) |
-| TensorFlow SavedModel (operator-side) | High | Variable | Medium (TF ecosystem) |
+| Choice                                | Portability                           | Perf ceiling                  | Operator lock-in            |
+| ------------------------------------- | ------------------------------------- | ----------------------------- | --------------------------- |
+| **ONNX → ONNX Runtime → vendor EP**   | High                                  | High (within EP capabilities) | None — model moves anywhere |
+| OpenVINO IR (operator-side)           | Low (Intel-only)                      | Highest on Intel              | High (Intel-locked)         |
+| TensorRT engine (operator-side)       | None (NVIDIA-only + per-GPU-compiled) | Highest on NVIDIA             | High (NVIDIA-locked)        |
+| PyTorch model (operator-side)         | High via torch.compile                | Variable                      | Medium (torch ecosystem)    |
+| TensorFlow SavedModel (operator-side) | High                                  | Variable                      | Medium (TF ecosystem)       |
 
 ONNX wins the operator-contract slot because it preserves
 operator optionality (per B-0763 negotiation-high-seat) while
@@ -191,14 +184,14 @@ without rewriting application code.
 
 ## Hardware compatibility matrix
 
-| Hardware class | Audio | NPU | Workstation-role-suitable |
-|---|---|---|---|
-| Intel Meteor Lake (Core Ultra 1st gen) | SoF + SoundWire | Intel NPU (3 TOPS INT8) | Yes |
-| Intel Lunar Lake (Core Ultra 200V) | SoF + SoundWire | Intel NPU 4 (48 TOPS INT8) | Yes |
-| Intel Arrow Lake (Core Ultra 200S desktop) | HD Audio | Intel NPU 3 (13 TOPS) | Yes |
-| AMD Ryzen AI 300 series | HD Audio | XDNA NPU (50 TOPS) | Yes (different driver substrate; out of scope v1) |
-| Apple Silicon (M-series) | Apple Audio | Neural Engine | Asahi Linux scope; out of scope v1 |
-| NVIDIA + dedicated GPU only | HD Audio | (none — GPU does the inference) | Yes (no NPU; GPU schedules) |
+| Hardware class                             | Audio           | NPU                             | Workstation-role-suitable                         |
+| ------------------------------------------ | --------------- | ------------------------------- | ------------------------------------------------- |
+| Intel Meteor Lake (Core Ultra 1st gen)     | SoF + SoundWire | Intel NPU (3 TOPS INT8)         | Yes                                               |
+| Intel Lunar Lake (Core Ultra 200V)         | SoF + SoundWire | Intel NPU 4 (48 TOPS INT8)      | Yes                                               |
+| Intel Arrow Lake (Core Ultra 200S desktop) | HD Audio        | Intel NPU 3 (13 TOPS)           | Yes                                               |
+| AMD Ryzen AI 300 series                    | HD Audio        | XDNA NPU (50 TOPS)              | Yes (different driver substrate; out of scope v1) |
+| Apple Silicon (M-series)                   | Apple Audio     | Neural Engine                   | Asahi Linux scope; out of scope v1                |
+| NVIDIA + dedicated GPU only                | HD Audio        | (none — GPU does the inference) | Yes (no NPU; GPU schedules)                       |
 
 V1 scope: Intel Meteor Lake / Lunar Lake / Arrow Lake (Aaron's
 hardware family). AMD XDNA + Apple Neural Engine as separate

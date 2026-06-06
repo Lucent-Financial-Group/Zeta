@@ -4,6 +4,7 @@ description: Reference entry confirming that crypto-shredding (destroying the pe
 type: reference
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **2026-04-20 — confirmed by the consent-primitives-expert
 harness dry-run outputs (both with_skill and without_skill
 reached this independently).**
@@ -50,6 +51,7 @@ described.
   the without_skill output.
 
 ## The backup use case — why this is the canonical
+
 technique
 
 Rewriting tape archives on every deletion request is
@@ -66,6 +68,7 @@ this:
 - This is what Aaron's contact was talking about.
 
 ## Gotchas that any future user-privacy-expert skill
+
 should flag
 
 - **Single-tenant DEK per subject** is the rule. A

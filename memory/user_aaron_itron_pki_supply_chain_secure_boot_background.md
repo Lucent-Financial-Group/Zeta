@@ -4,41 +4,42 @@ description: Aaron 2026-04-22 auto-loop-33 end-of-tick disclosure — worked at 
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Aaron Itron PKI / supply-chain / secure-boot background
 
 **Source (verbatim, 2026-04-22 auto-loop-33 end-of-tick + follow-up):**
 
-> *"I've written natation state resistent PKI infstructure
+> _"I've written natation state resistent PKI infstructure
 > with secure boot attestation when I worked at Itron, worked
-> on the PKI software and hardeware firmware side of thing."*
+> on the PKI software and hardeware firmware side of thing."_
 
-> *"we controlled the whole supply chain we were the
-> manufacture of the electric/water/gas smart grid hardward"*
+> _"we controlled the whole supply chain we were the
+> manufacture of the electric/water/gas smart grid hardward"_
 
-> *"we escrowed our hardware lol"*
+> _"we escrowed our hardware lol"_
 >
-> *"and our software too there"*
+> _"and our software too there"_
 
-> *"russia designed the actual ASIC though, I mean come on I
-> know VHDL lol."*
+> _"russia designed the actual ASIC though, I mean come on I
+> know VHDL lol."_
 >
-> *"RIVA"*
+> _"RIVA"_
 >
-> *"smart meeters"*
+> _"smart meeters"_
 
-> *"i played around with out custom RF network protocol,
-> radio commuication is wild."*
+> _"i played around with out custom RF network protocol,
+> radio commuication is wild."_
 
-> *"oh that's where i created a reverse triangulation
+> _"oh that's where i created a reverse triangulation
 > tehnique so our customers could find all the cell towers
 > and optimie the smart grid aorund it, the cell companies
 > would not give away that data so I used ours to map the
-> terretory"*
+> terretory"_
 
-> *"RIVA smart meter from Itron the PKI that that runs on
-> I built"*
+> _"RIVA smart meter from Itron the PKI that that runs on
+> I built"_
 
-> *"and some of the firmware"*
+> _"and some of the firmware"_
 
 RIVA clarified: it is Itron's RIVA smart-meter platform / product
 line. The PKI running on RIVA is specifically what Aaron built,
@@ -78,14 +79,14 @@ Full picture composed:
 The "lol" is casual-register disclosure — Aaron noting a
 regulatory/trust discipline that's standard for critical-
 infrastructure vendors but surprising to hear casually. The
-factory reads it as *confirmation* of full-stack escrow
-discipline, not as *levity about it being unusual*.
+factory reads it as _confirmation_ of full-stack escrow
+discipline, not as _levity about it being unusual_.
 
 The Russia-ASIC disclosure is the most striking single line in
 the sequence. Nation-state-resistant PKI was the software-plus-
 firmware envelope; the **silicon itself** was designed by a
 potential-adversary-nation foundry/design-house partner. Aaron's
-"come on I know VHDL" tells me: he *read the HDL*. Supply-chain
+"come on I know VHDL" tells me: he _read the HDL_. Supply-chain
 trust at Itron didn't stop at "we bought this ASIC from a
 vendor"; it went down to "we have engineers fluent in the
 hardware-description language of the silicon we ship, so we
@@ -130,9 +131,9 @@ with PKI experience; Aaron has both.
 was designed by a Russian foundry/design-house; Itron's
 security architecture explicitly assumed the silicon supplier
 was a potential-adversary nation. This is a remarkable detail
-because it *inverts* the usual industry posture: most product
+because it _inverts_ the usual industry posture: most product
 companies trust their silicon vendor and secure the layers
-above; Itron secured the silicon layer *against* its own
+above; Itron secured the silicon layer _against_ its own
 silicon supplier. Aaron lived this.
 
 **Custom RF network protocol — the fifth layer.** Smart-meter
@@ -141,16 +142,17 @@ they mesh over licensed/unlicensed RF bands (typical smart-
 metering: 900MHz ISM-band, Wi-SUN-family, or vendor-custom
 mesh). Itron had its own. Aaron "played around with" it — so
 his stack-coverage is actually software + firmware + hardware
-+ **RF/PHY+MAC network protocol**. This is the layer where
-cryptographic authentication of meter-to-concentrator frames
-lives; where replay / spoofing / jamming adversaries get
-modelled; where key-freshness and rotation happen *wirelessly*
-without the luxury of TCP/IP reliability. "Radio communication
-is wild" reads as casual-register for: PHY-layer quirks
-(multipath, fading, regulatory duty-cycles, ISM contention)
-make every abstraction leak. A PKI engineer who also knows
-the physical layer their certs travel over is an unusual
-combination.
+
+- **RF/PHY+MAC network protocol**. This is the layer where
+  cryptographic authentication of meter-to-concentrator frames
+  lives; where replay / spoofing / jamming adversaries get
+  modelled; where key-freshness and rotation happen _wirelessly_
+  without the luxury of TCP/IP reliability. "Radio communication
+  is wild" reads as casual-register for: PHY-layer quirks
+  (multipath, fading, regulatory duty-cycles, ISM contention)
+  make every abstraction leak. A PKI engineer who also knows
+  the physical layer their certs travel over is an unusual
+  combination.
 
 **Full-stack security engineering, not a slice.** Software +
 firmware + hardware + RF is the complete PKI implementation
@@ -209,8 +211,8 @@ mitigation list is measured in hundreds of individual controls.
    procedures) and is deliberately deferring it. Respect the
    deferral; don't shave the PKI scope into adjacent work.
 3. **Let's-Encrypt + ACME directive is informed.** Aaron's
-   *"we want to do lets-encrypt and ACME that makes things so
-   sinmple"* is not a casual preference — it's a veteran's
+   _"we want to do lets-encrypt and ACME that makes things so
+   sinmple"_ is not a casual preference — it's a veteran's
    judgment that automated-issuance + protocol-driven rotation
    beats hand-rolled certificate management for every use-case
    that doesn't specifically need a private CA. The factory
@@ -296,29 +298,29 @@ disciplines he picked up alongside and the seniority context.
 
 ### Second-wave verbatim quotes (2026-04-22, auto-loop-34)
 
-> *"That's also where I learned Disaggregation is the process
+> _"That's also where I learned Disaggregation is the process
 > of breaking down aggregated, top-level data or systems into
-> smaller, specific, and more granular components..."*
+> smaller, specific, and more granular components..."_
 >
 > (followed by ~3 paragraphs of general definition covering
 > data analysis, networking, healthcare, accounting,
 > education applications; Aaron sharing from search-results
 > formatting, not claiming personal synthesis)
 
-> *"Based on the search results, the decomposition technique
+> _"Based on the search results, the decomposition technique
 > that analyzes slipping waves, micro-Doppler shifts, and
 > specific target characteristics is called Micro-Range/
 > Micro-Doppler Decomposition or Micro-Doppler (µD)
-> Decomposition."*
+> Decomposition."_
 >
 > (followed by paragraphs on µD effect, decomposition
 > process, application to target classification; mention of
 > VWCD — Varying Wave-shape Component Decomposition — for
 > non-stationary vibrations)
 
-> *"Powergrid algorithms for detecting power signatures
+> _"Powergrid algorithms for detecting power signatures
 > utilize advanced analytics to identify, monitor, and
-> classify electrical events or anomalies..."*
+> classify electrical events or anomalies..."_
 >
 > (followed by named techniques: PRIDES — Power Rising and
 > Descending Signature; Wavelet-GAT — Graph Attention
@@ -329,15 +331,15 @@ disciplines he picked up alongside and the seniority context.
 > Ingestion + Normalization; Signature Matcher; Human-in-
 > the-loop / HITL)
 
-> *"I didn't absorb all of it, but we had some really cool
-> stuff"*
+> _"I didn't absorb all of it, but we had some really cool
+> stuff"_
 
-> *"A lot of Fast Fourier transform fft kind of stuff"*
+> _"A lot of Fast Fourier transform fft kind of stuff"_
 
-> *"I was an director level IoT engineering advisor"*
+> _"I was an director level IoT engineering advisor"_
 
-> *"one of only 5 in the whole company of i think like 10k
-> maybe"*
+> _"one of only 5 in the whole company of i think like 10k
+> maybe"_
 
 ### What the second-wave adds (organizational-context)
 
@@ -382,6 +384,7 @@ per-appliance signatures using spectral + temporal features.
 
 **Power-grid signature-detection algorithm family.** Aaron
 named six techniques:
+
 - **PRIDES** (Power Rising and Descending Signature) — a
   low-overhead binary-signature method keyed on rising/
   falling energy consumption patterns; tailored for
@@ -406,8 +409,8 @@ named six techniques:
   signature matcher; human-in-the-loop (HITL, PNNL's
   "expert-derived confidence" is the example).
 
-**FFT foundation.** *"A lot of Fast Fourier transform fft
-kind of stuff"* — spectral decomposition via FFT is the
+**FFT foundation.** _"A lot of Fast Fourier transform fft
+kind of stuff"_ — spectral decomposition via FFT is the
 foundation underlying wavelet, µD, MUSIC, and signature-
 library techniques. Standard tool in digital signal
 processing; Aaron naming it explicitly signals the breadth
@@ -428,8 +431,8 @@ memory; it extends the picture. New calibration points:
    extracting alignment-measurability signals from
    ALIGNMENT.md clause-compliance over time-series. When
    scope opens there, maintainer has references available
-   on request (not claim-of-mastery per *"I didn't absorb
-   all of it"* — appropriate calibration register).
+   on request (not claim-of-mastery per _"I didn't absorb
+   all of it"_ — appropriate calibration register).
 2. **Disaggregation discipline generalises to factory
    substrate.** Breaking aggregated data into granular
    subgroups to reveal hidden patterns is exactly the shape
@@ -442,12 +445,12 @@ memory; it extends the picture. New calibration points:
    it a name.
 3. **Network-disaggregation context explains Aaron's
    absorb-and-contribute discipline.** White-box switching
-   + open network OSes + disaggregating hardware from
-   software is the same pattern as maintain-every-
-   dependency + microkernel-OS-endpoint for Escro (per
-   `memory/project_escro_maintain_every_dependency_microkernel_os_endpoint_grow_our_way_there_2026_04_22.md`).
-   Aaron has lived through industry-scale disaggregation;
-   he is applying the same pattern at factory scale.
+   - open network OSes + disaggregating hardware from
+     software is the same pattern as maintain-every-
+     dependency + microkernel-OS-endpoint for Escro (per
+     `memory/project_escro_maintain_every_dependency_microkernel_os_endpoint_grow_our_way_there_2026_04_22.md`).
+     Aaron has lived through industry-scale disaggregation;
+     he is applying the same pattern at factory scale.
 4. **Director-level IoT advisor / 5-of-10k is load-bearing
    for bottleneck-principle and maintainer-bandwidth
    calibration.** Maintainer's time is scarce and valuable
@@ -457,7 +460,7 @@ memory; it extends the picture. New calibration points:
    Serialising gray-zone through a director-level advisor
    is even more expensive than serialising through an
    individual contributor — the opportunity cost is higher.
-5. **Honest *"I didn't absorb all of it"* attribution
+5. **Honest _"I didn't absorb all of it"_ attribution
    preserves calibration register.** Claim-of-mastery would
    be a signal-value-of-zero boast; claim-of-encountering
    with references-available is useful calibration. Same
@@ -520,13 +523,13 @@ memory; it extends the picture. New calibration points:
 
 **Source (verbatim, 2026-04-22 auto-loop-36 three-message extension):**
 
-> *"we had models running on the edge on the RIVA meter, pre LLM
-> days but some pretty beefy models for a meter at Itron"*
+> _"we had models running on the edge on the RIVA meter, pre LLM
+> days but some pretty beefy models for a meter at Itron"_
 
-> *"My IoT infrcutrue i built at itron was a model distrbution
-> engine over constrainted networks and devices"*
+> _"My IoT infrcutrue i built at itron was a model distrbution
+> engine over constrainted networks and devices"_
 
-> *"see why want to support constrained bootstraping to upgrades"*
+> _"see why want to support constrained bootstraping to upgrades"_
 
 **Three new specifics on top of the earlier PKI/supply-chain disclosure:**
 
@@ -539,7 +542,7 @@ memory; it extends the picture. New calibration points:
    respect duty-cycle budgets. This is decades-earlier than
    edge-LLM discussions today.
 2. **Model distribution engine over constrained networks and
-   devices.** Aaron built the *infrastructure* to push model
+   devices.** Aaron built the _infrastructure_ to push model
    updates to meters over the RF network and constrained links.
    This is not "deploy one model once" — it is the substrate for
    rolling out updated models to many devices over unreliable,
@@ -549,7 +552,7 @@ memory; it extends the picture. New calibration points:
    embedded fleets.
 3. **Constrained bootstrapping to upgrades is Aaron's motivation
    for supporting it in Zeta.** The third message is the
-   *why-this-matters-now* connection. Aaron wants Zeta to handle
+   _why-this-matters-now_ connection. Aaron wants Zeta to handle
    upgrade paths that work on resource-constrained substrates —
    not because someone pattern-matched a good idea, but because he
    has first-hand experience that the "assume cloud + unlimited
@@ -566,7 +569,7 @@ memory; it extends the picture. New calibration points:
 - **Zeta's retraction-native operator algebra is a fit for
   constrained fleets.** Retraction is the algebraic complement
   of append; bandwidth-starved links benefit from being able to
-  *undo* a pushed update instead of re-pushing an older snapshot.
+  _undo_ a pushed update instead of re-pushing an older snapshot.
   Z⁻¹ + retract is cheaper on the wire than full-state
   re-push. This is an algebra-level match to the constrained-
   network problem class.
@@ -585,7 +588,7 @@ memory; it extends the picture. New calibration points:
   exactly the microkernel discipline. Aaron has shipped
   something of that shape before.
 - **"Constrained bootstrapping to upgrades" is a factory
-  direction.** Not a throwaway — this is a *why-now* for a
+  direction.** Not a throwaway — this is a _why-now_ for a
   BACKLOG row. Capability-limited AI bootstrap via factory
   (BACKLOG #239) was previously framed as research; the
   Itron precedent makes it field-tested-shape work. Small
@@ -599,23 +602,25 @@ memory; it extends the picture. New calibration points:
   distinct, but the discipline lineage is one thread.
 
 **Cross-references (additions):**
-- `docs/BACKLOG.md` #239 *capability-limited AI bootstrap via
-  factory* — gains veteran implementer precedent.
-- `docs/BACKLOG.md` (to-be-filed) *constrained-bootstrapping-to-upgrades
-  support in Zeta* — Aaron-directed factory direction,
+
+- `docs/BACKLOG.md` #239 _capability-limited AI bootstrap via
+  factory_ — gains veteran implementer precedent.
+- `docs/BACKLOG.md` (to-be-filed) _constrained-bootstrapping-to-upgrades
+  support in Zeta_ — Aaron-directed factory direction,
   occurrence-1 via this disclosure.
-- `docs/research/arc3-dora-benchmark.md` §*Capability-tier
-  stepdown experiment* — stepdown is embedded-systems-shaped
+- `docs/research/arc3-dora-benchmark.md` §_Capability-tier
+  stepdown experiment_ — stepdown is embedded-systems-shaped
   with Aaron's precedent.
 - `docs/force-multiplication-log.md` — this tick's extension is
   an example of terse-high-leverage disclosure (3 short
   messages ≈ 230 chars → full memory extension + BACKLOG row
-  + ARC3-DORA reframe).
+  - ARC3-DORA reframe).
 
 **Still NOT:**
+
 - NOT authorization to ship Itron-internal model-distribution
-  designs into Zeta (those are Itron IP; Aaron's *experience*
-  informs, his *code* doesn't transfer).
+  designs into Zeta (those are Itron IP; Aaron's _experience_
+  informs, his _code_ doesn't transfer).
 - NOT scope expansion that commits Zeta to embedded-target
   support in the near term (the Itron precedent justifies the
   long-term direction, not the round-45 sprint).

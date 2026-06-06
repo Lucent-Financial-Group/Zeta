@@ -1,10 +1,10 @@
 # Vulnerability + dependency scanner landscape — Zeta fit, 2026-04-22
 
 **Context:** Aaron 2026-04-22, following the GITHUB-ACTIONS-SAFE-
-PATTERNS + SUPPLY-CHAIN-SAFE-PATTERNS absorptions: *"backlog
+PATTERNS + SUPPLY-CHAIN-SAFE-PATTERNS absorptions: _"backlog
 [research] vulnerability and dependency scanners like OpenVAS and
 and other alternatives, we should likely adopt one or multiple if
-they are orthogonal."*
+they are orthogonal."_
 
 **Scope.** Map the 2026 scanner landscape against Zeta's actual
 third-party-code ingress surface (NuGet packages, GitHub Actions,
@@ -59,19 +59,19 @@ distinct categories:
 5. **Supply-chain anomaly / signal detection** — watches for
    typosquats, maintainer-account changes, sudden dependency
    growth, package-behaviour changes. Inputs: dependency graph
-   + ecosystem telemetry. Outputs: risk scores.
+   - ecosystem telemetry. Outputs: risk scores.
 
 Zeta's current shape (a pre-v1 F#/C# library factory shipped as
 NuGet packages; no hosted services; ephemeral GitHub-hosted CI
 runners) determines which categories matter:
 
-| Category | Relevant to Zeta? | Why |
-|---|---|---|
-| SCA | **Yes — primary** | NuGet + GitHub Actions are our biggest third-party ingress. |
-| SBOM | **Yes — publish-blocking over time** | Adopters and regulators increasingly demand SBOMs (NTIA minimum elements, EU CRA). |
-| VA (OpenVAS / Nessus) | **No** | No hosted infra; GH-hosted runners are ephemeral and managed by GitHub. |
-| DAST (ZAP / Burp) | **No** | No web app / service endpoint. Reconsider when an Aurora service lands. |
-| Anomaly detection | **Watch** | Complementary to SCA; currently a watchlist item. |
+| Category              | Relevant to Zeta?                    | Why                                                                                |
+| --------------------- | ------------------------------------ | ---------------------------------------------------------------------------------- |
+| SCA                   | **Yes — primary**                    | NuGet + GitHub Actions are our biggest third-party ingress.                        |
+| SBOM                  | **Yes — publish-blocking over time** | Adopters and regulators increasingly demand SBOMs (NTIA minimum elements, EU CRA). |
+| VA (OpenVAS / Nessus) | **No**                               | No hosted infra; GH-hosted runners are ephemeral and managed by GitHub.            |
+| DAST (ZAP / Burp)     | **No**                               | No web app / service endpoint. Reconsider when an Aurora service lands.            |
+| Anomaly detection     | **Watch**                            | Complementary to SCA; currently a watchlist item.                                  |
 
 So **OpenVAS and its peers do not fit Zeta today.** They are
 correct tools for their category; that category is not ours
@@ -81,42 +81,42 @@ until we stand up hosted infrastructure.
 
 ### SCA — the primary category
 
-| Tool | License | NuGet support | Zeta-fit | Notes |
-|---|---|---|---|---|
-| `dotnet list package --vulnerable` | MIT (.NET SDK) | Native | **HIGH — adopt now** | Free, no install, uses GitHub Advisory. Trivial CI integration (`--format json` + exit non-zero on any finding). No new dependency to trust. |
-| **OSV-Scanner** (Google) | Apache-2.0 | Partial today | **HIGH — adopt after `packages.lock.json`** | Uses OSV.dev (Google's de-duplicated vuln DB). Low false-positive rate. Known limitation (`google/osv-scalibr#618`): NuGet detection keys on `packages.lock.json`, not `Directory.Packages.props`. Blocked-by SDL #7 (lockfile adoption) today. |
-| **Trivy** (Aqua Security) | Apache-2.0 | Strong | **DEFER — compromised March 2026** | Most-starred OSS scanner (32k+). Compromised 2026-03-19 (TeamPCP). See `docs/security/INCIDENT-PLAYBOOK.md` canonical-incident list. Revisit after ecosystem rebuild-trust signals. |
-| **Grype** (Anchore) | Apache-2.0 | Via Syft SBOM | **LOW** | Container-first; redundant with OSV-Scanner for our surface. Pair with Syft only if we publish SBOMs that need scanning. |
-| **Snyk** | Proprietary (free tier for OSS) | Strong | **LOW** | Telemetry + account-coupling make it heavier-weight than the factory's trust model. Reconsider if a commercial sponsor pays. |
-| **Dependabot** (GitHub-native) | Free on GitHub | Strong | **ADOPT AS BASELINE** | Already available on the repo (Security → Dependabot). Zero install; enable via `.github/dependabot.yml`. Partial SBOM-style coverage via GitHub's native graph. |
+| Tool                               | License                         | NuGet support | Zeta-fit                                    | Notes                                                                                                                                                                                                                                           |
+| ---------------------------------- | ------------------------------- | ------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dotnet list package --vulnerable` | MIT (.NET SDK)                  | Native        | **HIGH — adopt now**                        | Free, no install, uses GitHub Advisory. Trivial CI integration (`--format json` + exit non-zero on any finding). No new dependency to trust.                                                                                                    |
+| **OSV-Scanner** (Google)           | Apache-2.0                      | Partial today | **HIGH — adopt after `packages.lock.json`** | Uses OSV.dev (Google's de-duplicated vuln DB). Low false-positive rate. Known limitation (`google/osv-scalibr#618`): NuGet detection keys on `packages.lock.json`, not `Directory.Packages.props`. Blocked-by SDL #7 (lockfile adoption) today. |
+| **Trivy** (Aqua Security)          | Apache-2.0                      | Strong        | **DEFER — compromised March 2026**          | Most-starred OSS scanner (32k+). Compromised 2026-03-19 (TeamPCP). See `docs/security/INCIDENT-PLAYBOOK.md` canonical-incident list. Revisit after ecosystem rebuild-trust signals.                                                             |
+| **Grype** (Anchore)                | Apache-2.0                      | Via Syft SBOM | **LOW**                                     | Container-first; redundant with OSV-Scanner for our surface. Pair with Syft only if we publish SBOMs that need scanning.                                                                                                                        |
+| **Snyk**                           | Proprietary (free tier for OSS) | Strong        | **LOW**                                     | Telemetry + account-coupling make it heavier-weight than the factory's trust model. Reconsider if a commercial sponsor pays.                                                                                                                    |
+| **Dependabot** (GitHub-native)     | Free on GitHub                  | Strong        | **ADOPT AS BASELINE**                       | Already available on the repo (Security → Dependabot). Zero install; enable via `.github/dependabot.yml`. Partial SBOM-style coverage via GitHub's native graph.                                                                                |
 
 ### SBOM generation
 
-| Tool | License | NuGet fidelity | Zeta-fit | Notes |
-|---|---|---|---|---|
-| **Syft** (Anchore) | Apache-2.0 | Multi-ecosystem | **MEDIUM — adopt when SBOM becomes publish-blocking** | Most versatile; outputs SPDX + CycloneDX. Some NuGet detection still via PE-header inspection, not .csproj; fidelity improving. |
-| **CycloneDX/cyclonedx-dotnet** | Apache-2.0 | Native | **HIGH — adopt when SBOM becomes publish-blocking** | OWASP-blessed, .NET-specific; understands `Directory.Packages.props` out of the box. Ships via NuGet + Docker Hub. |
-| **Microsoft SBOM Tool** (`sbom-tool`) | MIT | Native | **WATCH** | First-party .NET tool; simpler than CycloneDX project but less feature-complete. Candidate if we want a single-maintainer trust story (Microsoft). |
-| **cdxgen** (OWASP) | Apache-2.0 | Broad | **WATCH** | Multi-ecosystem CycloneDX generator; overlapping with Syft. |
+| Tool                                  | License    | NuGet fidelity  | Zeta-fit                                              | Notes                                                                                                                                              |
+| ------------------------------------- | ---------- | --------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Syft** (Anchore)                    | Apache-2.0 | Multi-ecosystem | **MEDIUM — adopt when SBOM becomes publish-blocking** | Most versatile; outputs SPDX + CycloneDX. Some NuGet detection still via PE-header inspection, not .csproj; fidelity improving.                    |
+| **CycloneDX/cyclonedx-dotnet**        | Apache-2.0 | Native          | **HIGH — adopt when SBOM becomes publish-blocking**   | OWASP-blessed, .NET-specific; understands `Directory.Packages.props` out of the box. Ships via NuGet + Docker Hub.                                 |
+| **Microsoft SBOM Tool** (`sbom-tool`) | MIT        | Native          | **WATCH**                                             | First-party .NET tool; simpler than CycloneDX project but less feature-complete. Candidate if we want a single-maintainer trust story (Microsoft). |
+| **cdxgen** (OWASP)                    | Apache-2.0 | Broad           | **WATCH**                                             | Multi-ecosystem CycloneDX generator; overlapping with Syft.                                                                                        |
 
 ### Anomaly / supply-chain signal
 
-| Tool | License | Zeta-fit | Notes |
-|---|---|---|---|
-| **OSSF Scorecard** | Apache-2.0 | **MEDIUM — adopt** | Scores the Zeta repo itself AND our dependencies against 18 supply-chain heuristics (branch protection, SAST coverage, maintainer diversity, pinned deps). Publishes a GitHub Action (would itself need SHA-pinning per our discipline). Complementary to SCA — tells you *about project health*, not CVEs. |
-| **Socket.dev** | Freemium | **LOW — watch** | Typosquat + behaviour-change detection. JS/Python-first; NuGet story weak. Reconsider when they improve NuGet coverage. |
+| Tool               | License    | Zeta-fit           | Notes                                                                                                                                                                                                                                                                                                       |
+| ------------------ | ---------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OSSF Scorecard** | Apache-2.0 | **MEDIUM — adopt** | Scores the Zeta repo itself AND our dependencies against 18 supply-chain heuristics (branch protection, SAST coverage, maintainer diversity, pinned deps). Publishes a GitHub Action (would itself need SHA-pinning per our discipline). Complementary to SCA — tells you _about project health_, not CVEs. |
+| **Socket.dev**     | Freemium   | **LOW — watch**    | Typosquat + behaviour-change detection. JS/Python-first; NuGet story weak. Reconsider when they improve NuGet coverage.                                                                                                                                                                                     |
 
 ## Orthogonality matrix
 
 What each **adopt-now** tool covers on Zeta's surface:
 
-|  | NuGet CVEs | GH Action CVEs | Repo-health signals | SBOM for consumers | Policy gating |
-|---|---|---|---|---|---|
-| Dependabot | ✓ | ✓ | partial | — | PR-based (no hard gate) |
-| `dotnet list --vulnerable` | ✓ | — | — | — | CI exit code |
-| OSSF Scorecard | — | — | ✓ | — | advisory |
-| (later) OSV-Scanner | ✓ | ✓ | — | — | CI exit code |
-| (later) cyclonedx-dotnet | — | — | — | ✓ | — |
+|                            | NuGet CVEs | GH Action CVEs | Repo-health signals | SBOM for consumers | Policy gating           |
+| -------------------------- | ---------- | -------------- | ------------------- | ------------------ | ----------------------- |
+| Dependabot                 | ✓          | ✓              | partial             | —                  | PR-based (no hard gate) |
+| `dotnet list --vulnerable` | ✓          | —              | —                   | —                  | CI exit code            |
+| OSSF Scorecard             | —          | —              | ✓                   | —                  | advisory                |
+| (later) OSV-Scanner        | ✓          | ✓              | —                   | —                  | CI exit code            |
+| (later) cyclonedx-dotnet   | —          | —              | —                   | ✓                  | —                       |
 
 Dependabot + `dotnet list --vulnerable` is a real double-check,
 not redundancy — Dependabot is PR-based (nudges on new vulns),
@@ -206,7 +206,7 @@ get absorbed on that cadence.
 - Did not run any scanner against Zeta yet — the tool fit
   assessments are based on documented capabilities, not
   empirical Zeta runs. Next sweep: actually run `dotnet list
-  --vulnerable` + a local OSSF Scorecard against this repo and
+--vulnerable` + a local OSSF Scorecard against this repo and
   record the finding count as baseline.
 - The Trivy incident write-ups are all from April 2026 post-
   mortems; no formal Aqua Security remediation timeline yet.

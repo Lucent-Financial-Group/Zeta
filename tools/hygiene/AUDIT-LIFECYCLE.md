@@ -8,15 +8,15 @@ When a recurring class of repo-hygiene defect is identified (dead xrefs after a 
 Discovery → Narrow fix → Scanner → Quality iterations → Baseline → CI enforce gate → (Maintenance)
 ```
 
-| Step | Output | Typical PR count |
-|------|--------|------------------|
-| 1. Discovery | The bug class is named; an instance is observed in a review comment, a reviewer finding, or production-impact evidence | 0 (review artifact) |
-| 2. Narrow fix | The observed instance is fixed; **no audit yet** | 1-N (per-instance fixes) |
-| 3. Scanner | A detect-only audit script walks the surface and reports all instances of the bug class | 1 |
-| 4. Quality iterations | Reviewer rounds catch real issues with the scanner: false positives, missing edge cases, cross-platform robustness, schema validation, API consistency | 1-3 (fixups on the scanner PR or follow-on PRs) |
-| 5. Baseline | A grandfather mechanism (`--baseline <file>`) freezes pre-existing residue that can't / shouldn't be fixed retroactively | 1 |
-| 6. CI enforce gate | A non-required `lint (xxx)` job invokes the scanner in `--enforce --baseline` mode; NEW violations fail; baseline residue stays grandfathered | 1 |
-| 7. Maintenance | Periodic baseline review: each merged finding-fixing PR shrinks the baseline; eventually the baseline can be deleted and `--enforce` flips to "no baseline needed" | ongoing |
+| Step                  | Output                                                                                                                                                             | Typical PR count                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| 1. Discovery          | The bug class is named; an instance is observed in a review comment, a reviewer finding, or production-impact evidence                                             | 0 (review artifact)                             |
+| 2. Narrow fix         | The observed instance is fixed; **no audit yet**                                                                                                                   | 1-N (per-instance fixes)                        |
+| 3. Scanner            | A detect-only audit script walks the surface and reports all instances of the bug class                                                                            | 1                                               |
+| 4. Quality iterations | Reviewer rounds catch real issues with the scanner: false positives, missing edge cases, cross-platform robustness, schema validation, API consistency             | 1-3 (fixups on the scanner PR or follow-on PRs) |
+| 5. Baseline           | A grandfather mechanism (`--baseline <file>`) freezes pre-existing residue that can't / shouldn't be fixed retroactively                                           | 1                                               |
+| 6. CI enforce gate    | A non-required `lint (xxx)` job invokes the scanner in `--enforce --baseline` mode; NEW violations fail; baseline residue stays grandfathered                      | 1                                               |
+| 7. Maintenance        | Periodic baseline review: each merged finding-fixing PR shrinks the baseline; eventually the baseline can be deleted and `--enforce` flips to "no baseline needed" | ongoing                                         |
 
 ## Why the steps in this order
 
@@ -32,14 +32,14 @@ Discovery → Narrow fix → Scanner → Quality iterations → Baseline → CI 
 
 Documented in `gate.yml` job comments + the `audit-section-33-migration-xrefs.ts` header.
 
-| Step | PR | Output |
-|------|-----|--------|
-| Discovery | review on PR #3513 | Reviewer P2 catch on the section-33 archive-migration PR |
-| Narrow fix | PR #3529 | Per-file backlink update |
-| Scanner | PR #3548 | `audit-section-33-migration-xrefs.ts` (detect-only) |
-| Quality | inline | (none recorded; first-pass quality was sufficient) |
-| Baseline (cleanup-to-zero) | PR #3552 | Cleanup-via-edit (mutable surfaces); baseline shrinks to 0 findings |
-| CI enforce | PR #3555 | `--enforce` flag + gate.yml `lint-section-33-migration-xrefs` job (Slice B.3 + B.4) |
+| Step                       | PR                 | Output                                                                              |
+| -------------------------- | ------------------ | ----------------------------------------------------------------------------------- |
+| Discovery                  | review on PR #3513 | Reviewer P2 catch on the section-33 archive-migration PR                            |
+| Narrow fix                 | PR #3529           | Per-file backlink update                                                            |
+| Scanner                    | PR #3548           | `audit-section-33-migration-xrefs.ts` (detect-only)                                 |
+| Quality                    | inline             | (none recorded; first-pass quality was sufficient)                                  |
+| Baseline (cleanup-to-zero) | PR #3552           | Cleanup-via-edit (mutable surfaces); baseline shrinks to 0 findings                 |
+| CI enforce                 | PR #3555           | `--enforce` flag + gate.yml `lint-section-33-migration-xrefs` job (Slice B.3 + B.4) |
 
 Calendar duration: ~4 weeks (PR #3513 → PR #3555).
 
@@ -47,17 +47,17 @@ Calendar duration: ~4 weeks (PR #3513 → PR #3555).
 
 Documented in `gate.yml` job comments + the `audit-tick-shard-relative-paths.ts` header. Session captured in `docs/hygiene-history/ticks/2026/05/16/` shards from 0210Z onward.
 
-| Step | PR | Output |
-|------|-----|--------|
-| Discovery | PR #3676 + #3679 | Copilot caught 5-`..` paths landing at `docs/` instead of repo root, twice in one session |
-| Narrow fix | PR #3676 fixup + PR #3680 | Per-file dot-count corrections |
-| Scanner | PR #3692 | `audit-tick-shard-relative-paths.ts` (detect-only) — 17 baseline findings on 833 shards |
-| Quality (filter) | PR #3692 fixup | `isPlaceholderTarget` filter dropped 7 false positives (17 → 10) |
-| Quality (round 1) | PR #3692 fixup | sonarjs disable, `main` export + `import.meta.main` guard, generic URI scheme, `--files` validation |
-| Quality (round 2) | PR #3692 fixup | Directory-input rejection + Windows `PATH_SEP` |
-| Quality (round 3) | PR #3699 fixup | Baseline schema type guard + JSON output API consistency |
-| Baseline | PR #3699 | `--baseline <path>` flag + `audit-tick-shard-relative-paths.baseline.json` (10 entries) |
-| CI enforce | PR #3708 | Non-required `lint (tick-shard relative-paths)` gate invoking `--enforce --baseline` |
+| Step              | PR                        | Output                                                                                              |
+| ----------------- | ------------------------- | --------------------------------------------------------------------------------------------------- |
+| Discovery         | PR #3676 + #3679          | Copilot caught 5-`..` paths landing at `docs/` instead of repo root, twice in one session           |
+| Narrow fix        | PR #3676 fixup + PR #3680 | Per-file dot-count corrections                                                                      |
+| Scanner           | PR #3692                  | `audit-tick-shard-relative-paths.ts` (detect-only) — 17 baseline findings on 833 shards             |
+| Quality (filter)  | PR #3692 fixup            | `isPlaceholderTarget` filter dropped 7 false positives (17 → 10)                                    |
+| Quality (round 1) | PR #3692 fixup            | sonarjs disable, `main` export + `import.meta.main` guard, generic URI scheme, `--files` validation |
+| Quality (round 2) | PR #3692 fixup            | Directory-input rejection + Windows `PATH_SEP`                                                      |
+| Quality (round 3) | PR #3699 fixup            | Baseline schema type guard + JSON output API consistency                                            |
+| Baseline          | PR #3699                  | `--baseline <path>` flag + `audit-tick-shard-relative-paths.baseline.json` (10 entries)             |
+| CI enforce        | PR #3708                  | Non-required `lint (tick-shard relative-paths)` gate invoking `--enforce --baseline`                |
 
 Calendar duration: ~80 min (single autonomous-loop session, 14 ticks).
 
@@ -91,11 +91,13 @@ The baseline-load function MUST validate each entry:
 function isBaselineEntry(v: unknown): v is BaselineEntry {
   if (v === null || typeof v !== "object") return false;
   const o = v as Record<string, unknown>;
-  return typeof o["file"] === "string"
-    && typeof o["line"] === "number"
-    && Number.isInteger(o["line"])
-    && (o["line"] as number) >= 1
-    && typeof o["target"] === "string";
+  return (
+    typeof o["file"] === "string" &&
+    typeof o["line"] === "number" &&
+    Number.isInteger(o["line"]) &&
+    (o["line"] as number) >= 1 &&
+    typeof o["target"] === "string"
+  );
 }
 ```
 

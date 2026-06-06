@@ -12,14 +12,14 @@ or FULL PASS validates it to degree.
 
 ## Baseline facts (from B-0340 spec audit)
 
-| What | Count |
-|------|-------|
-| src/Core/ modules | 81 |
-| Modules with any spec | ~30 (37%) |
-| OpenSpec capabilities seeded | 6 |
-| OpenSpec capabilities with fsharp profile | 5 |
-| TLA+ specs seeded | 19 |
-| Spec-only modules (no code spec) | 51 (63%) |
+| What                                      | Count     |
+| ----------------------------------------- | --------- |
+| src/Core/ modules                         | 81        |
+| Modules with any spec                     | ~30 (37%) |
+| OpenSpec capabilities seeded              | 6         |
+| OpenSpec capabilities with fsharp profile | 5         |
+| TLA+ specs seeded                         | 19        |
+| Spec-only modules (no code spec)          | 51 (63%)  |
 
 The experiment tests whether 37% spec coverage suffices to bootstrap
 the other 63%.
@@ -55,11 +55,11 @@ dotnet test Zeta.sln -c Release --no-build
 # Pass condition: exit code 0 (all tests pass)
 ```
 
-| Score | Numeric | Condition |
-|-------|---------|-----------|
-| PASS | 1.0 | `0 Warning(s), 0 Error(s)` AND all tests pass |
-| PARTIAL | 0.5 | Build succeeds (0 errors) but ≥1 test fails; OR build ends with ≥1 warning and 0 errors |
-| FAIL | 0.0 | `dotnet build` ends with ≥1 error |
+| Score   | Numeric | Condition                                                                               |
+| ------- | ------- | --------------------------------------------------------------------------------------- |
+| PASS    | 1.0     | `0 Warning(s), 0 Error(s)` AND all tests pass                                           |
+| PARTIAL | 0.5     | Build succeeds (0 errors) but ≥1 test fails; OR build ends with ≥1 warning and 0 errors |
+| FAIL    | 0.0     | `dotnet build` ends with ≥1 error                                                       |
 
 **Rationale:** Build-gate equivalence is the strongest falsifier. If
 recreated code fails to compile, no other dimension is meaningful.
@@ -93,11 +93,11 @@ Count how many of the 5 profiled capabilities pass their checks
 If no category tag exists, run the full test suite and identify
 which spec-named test cases pass.
 
-| Score | Numeric | Condition |
-|-------|---------|-----------|
-| PASS | 1.0 | ≥4 of 5 profiled specs pass their behavioral checks |
-| PARTIAL | 0.5 | 2–3 of 5 profiled specs pass |
-| FAIL | 0.0 | ≤1 of 5 profiled specs pass |
+| Score   | Numeric | Condition                                           |
+| ------- | ------- | --------------------------------------------------- |
+| PASS    | 1.0     | ≥4 of 5 profiled specs pass their behavioral checks |
+| PARTIAL | 0.5     | 2–3 of 5 profiled specs pass                        |
+| FAIL    | 0.0     | ≤1 of 5 profiled specs pass                         |
 
 **circuit-recursion (no profile):** Evaluate qualitatively — does
 the recreated code implement the spec's WHEN/THEN clauses for
@@ -138,11 +138,11 @@ If the comparison script is not ready at experiment time, apply
 Dimension 3 manually: spot-check 10 randomly selected modules from
 the baseline against the test repo, estimate %.
 
-| Score | Numeric | Condition |
-|-------|---------|-----------|
-| PASS | 1.0 | ≥80% of baseline public types present with compatible signatures |
-| PARTIAL | 0.5 | 50%–79% present |
-| FAIL | 0.0 | <50% present |
+| Score   | Numeric | Condition                                                        |
+| ------- | ------- | ---------------------------------------------------------------- |
+| PASS    | 1.0     | ≥80% of baseline public types present with compatible signatures |
+| PARTIAL | 0.5     | 50%–79% present                                                  |
+| FAIL    | 0.0     | <50% present                                                     |
 
 ---
 
@@ -150,7 +150,7 @@ the baseline against the test repo, estimate %.
 
 **Weight:** 15%
 **Automatable:** Yes
-**Interpretation:** Informational — divergence here is a *finding*,
+**Interpretation:** Informational — divergence here is a _finding_,
 not a failure beyond its 15% weight.
 
 **What it measures:** Whether the module/namespace file layout of
@@ -172,11 +172,11 @@ comm -12 /tmp/zeta-modules.txt /tmp/test-modules.txt | wc -l
 # divide by 81, multiply by 100
 ```
 
-| Score | Numeric | Condition |
-|-------|---------|-----------|
-| RECOGNIZABLE | 1.0 | ≥90% of the 81 module file names recreated |
-| PARTIAL | 0.5 | 70%–89% of module file names recreated |
-| DIVERGENT | 0.0 | <70% recreated — structural finding for B-0345 |
+| Score        | Numeric | Condition                                      |
+| ------------ | ------- | ---------------------------------------------- |
+| RECOGNIZABLE | 1.0     | ≥90% of the 81 module file names recreated     |
+| PARTIAL      | 0.5     | 70%–89% of module file names recreated         |
+| DIVERGENT    | 0.0     | <70% recreated — structural finding for B-0345 |
 
 **B-0345 note:** A DIVERGENT score is recorded with classification
 `structural-divergence` and fed to B-0346 (spec-gap backport). It
@@ -201,22 +201,22 @@ from the seed (B-0341: "the answer key").
 Check presence of any of the following factory surfaces in the test
 repo output:
 
-| Factory surface | Presence check |
-|-----------------|----------------|
-| `.claude/skills/**` | `ls .claude/skills/ 2>/dev/null` |
-| `.claude/agents/**` | `ls .claude/agents/ 2>/dev/null` |
-| `tools/github/**` or `tools/hygiene/**` | `ls tools/` |
-| `GOVERNANCE.md` or `AGENTS.md` | `ls *.md` |
-| `.github/workflows/**` | `ls .github/workflows/ 2>/dev/null` |
-| `tests/**/*.fs` | `find tests/ -name "*.fs" -print -quit 2>/dev/null` |
+| Factory surface                         | Presence check                                      |
+| --------------------------------------- | --------------------------------------------------- |
+| `.claude/skills/**`                     | `ls .claude/skills/ 2>/dev/null`                    |
+| `.claude/agents/**`                     | `ls .claude/agents/ 2>/dev/null`                    |
+| `tools/github/**` or `tools/hygiene/**` | `ls tools/`                                         |
+| `GOVERNANCE.md` or `AGENTS.md`          | `ls *.md`                                           |
+| `.github/workflows/**`                  | `ls .github/workflows/ 2>/dev/null`                 |
+| `tests/**/*.fs`                         | `find tests/ -name "*.fs" -print -quit 2>/dev/null` |
 
 Count of recreated factory surfaces above: 0, 1, ≥2.
 
-| Score | Numeric | Condition |
-|-------|---------|-----------|
-| FULL | 1.0 | `src/**` code recreated AND ≥2 factory surfaces recreated |
-| PARTIAL | 0.5 | `src/**` code recreated but 0–1 factory surfaces; OR factory surfaces without code |
-| NONE | 0.0 | Neither code nor factory surfaces in recognizable form |
+| Score   | Numeric | Condition                                                                          |
+| ------- | ------- | ---------------------------------------------------------------------------------- |
+| FULL    | 1.0     | `src/**` code recreated AND ≥2 factory surfaces recreated                          |
+| PARTIAL | 0.5     | `src/**` code recreated but 0–1 factory surfaces; OR factory surfaces without code |
+| NONE    | 0.0     | Neither code nor factory surfaces in recognizable form                             |
 
 **Interpretation note:** PARTIAL (code only, no factory tooling) is
 the expected baseline outcome — factory tooling was not seeded and
@@ -232,12 +232,12 @@ falsify the regenerable claim entirely.
 score = Dim1 × 0.30 + Dim2 × 0.25 + Dim3 × 0.20 + Dim4 × 0.15 + Dim5 × 0.10
 ```
 
-| Verdict | Score range | Interpretation |
-|---------|-------------|----------------|
-| FULL PASS | ≥0.85 | Regenerable claim validated — spec coverage sufficient |
-| STRONG PARTIAL | 0.60–0.84 | Partially validated; B-0346 spec-gap backports explain remainder |
-| WEAK PARTIAL | 0.40–0.59 | Significant gaps; regenerable claim needs qualification |
-| FAIL | <0.40 | Regenerable claim falsified at 37% spec-coverage level |
+| Verdict        | Score range | Interpretation                                                   |
+| -------------- | ----------- | ---------------------------------------------------------------- |
+| FULL PASS      | ≥0.85       | Regenerable claim validated — spec coverage sufficient           |
+| STRONG PARTIAL | 0.60–0.84   | Partially validated; B-0346 spec-gap backports explain remainder |
+| WEAK PARTIAL   | 0.40–0.59   | Significant gaps; regenerable claim needs qualification          |
+| FAIL           | <0.40       | Regenerable claim falsified at 37% spec-coverage level           |
 
 **Glass-halo discipline:** the verdict is honest regardless of
 direction. A FAIL finding is more valuable than a suppressed partial.
@@ -247,13 +247,13 @@ B-0345 preserves findings verbatim.
 
 ## Dimension summary
 
-| # | Dimension | Weight | Automatable | Tool / command |
-|---|-----------|--------|-------------|----------------|
-| 1 | Build gate equivalence | 30% | Yes | `dotnet build -c Release && dotnet test Zeta.sln -c Release --no-build` |
-| 2 | Spec coverage | 25% | Yes | `dotnet test --filter Category=OpenSpec` |
-| 3 | Functional equivalence | 20% | Yes (B-0344 prereq) | `bun tools/bootstrap-razor/compare-api-surface.ts` |
-| 4 | Structural similarity | 15% | Yes | `src/Core/*.fs` basename overlap |
-| 5 | Substrate recovery | 10% | Partial | file presence check + ≤15-min review |
+| #   | Dimension              | Weight | Automatable         | Tool / command                                                          |
+| --- | ---------------------- | ------ | ------------------- | ----------------------------------------------------------------------- |
+| 1   | Build gate equivalence | 30%    | Yes                 | `dotnet build -c Release && dotnet test Zeta.sln -c Release --no-build` |
+| 2   | Spec coverage          | 25%    | Yes                 | `dotnet test --filter Category=OpenSpec`                                |
+| 3   | Functional equivalence | 20%    | Yes (B-0344 prereq) | `bun tools/bootstrap-razor/compare-api-surface.ts`                      |
+| 4   | Structural similarity  | 15%    | Yes                 | `src/Core/*.fs` basename overlap                                        |
+| 5   | Substrate recovery     | 10%    | Partial             | file presence check + ≤15-min review                                    |
 
 ## Cited by
 

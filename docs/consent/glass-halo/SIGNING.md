@@ -17,7 +17,7 @@ security/privacy anti-pattern (biometrics must stay on-device). Instead:
   timestamp), so it is **bound to that specific commit** and could only have been
   produced by the Touch-ID-gated key.
 
-Net: the verified signature *is* the proof that the fingerprint was checked at commit
+Net: the verified signature _is_ the proof that the fingerprint was checked at commit
 time — and it's stronger than a fingerprint-hash because the biometric never leaves the
 device and the proof is bound to the exact commit.
 
@@ -63,7 +63,7 @@ the public key. (A signing key is separate from an auth key; this is what powers
 - Verify locally: `git log --show-signature`
 - GitHub shows **Verified** on the commit.
 - The signature is bound to the commit (tree + author + timestamp), proving the
-  Touch-ID-gated key signed *that* commit at *that* time.
+  Touch-ID-gated key signed _that_ commit at _that_ time.
 
 ## For glass-halo
 
@@ -77,21 +77,21 @@ real-estate-style flow) is an equivalent escalation; attach its reference in the
 
 The **approval-as-signature baseline does NOT prove device-holder identity.** A
 commit-author string is just text, and an agent recording an approval can only attest
-that *someone in the session* approved. On a shared keyboard/account that is impersonable
-— *"without that I could be Addison here pretending to be Aaron."* That is the real gap.
+that _someone in the session_ approved. On a shared keyboard/account that is impersonable
+— _"without that I could be Addison here pretending to be Aaron."_ That is the real gap.
 
 The fix is **not** capturing the biometric (a non-revocable liability we never want).
 It's the **Touch-ID-gated-key signature**: the Secure-Enclave key is unlocked only by an
-*enrolled* fingerprint and never leaves the chip, so a `-S` commit could only be produced
+_enrolled_ fingerprint and never leaves the chip, so a `-S` commit could only be produced
 by someone whose fingerprint is enrolled on that device. We capture the **signature**
 (the proof the auth happened), never the finger.
 
-| Tier | Proves identity? | Impersonable on a shared session? |
-|---|---|---|
-| approval-as-signature (baseline) | no — only "someone approved here" | **yes** |
-| self-committed under own GitHub identity | only as strongly as that account's auth | partly (account access) |
-| **Touch-ID / Secure-Enclave `-S`** | yes — enrolled-fingerprint-gated key on the device | **no** (assuming sole device control + sole enrollment) |
-| **FIDO2 `sk-` resident key, `verify-required`** | yes, **and the signature carries a user-verification (UV) flag** attesting biometric-UV happened | **no** |
+| Tier                                            | Proves identity?                                                                                 | Impersonable on a shared session?                       |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| approval-as-signature (baseline)                | no — only "someone approved here"                                                                | **yes**                                                 |
+| self-committed under own GitHub identity        | only as strongly as that account's auth                                                          | partly (account access)                                 |
+| **Touch-ID / Secure-Enclave `-S`**              | yes — enrolled-fingerprint-gated key on the device                                               | **no** (assuming sole device control + sole enrollment) |
+| **FIDO2 `sk-` resident key, `verify-required`** | yes, **and the signature carries a user-verification (UV) flag** attesting biometric-UV happened | **no**                                                  |
 
 Binding assumption (state it honestly): Touch-ID strength assumes **sole device control +
 only the person's own fingerprints enrolled**. Under those, the signature is

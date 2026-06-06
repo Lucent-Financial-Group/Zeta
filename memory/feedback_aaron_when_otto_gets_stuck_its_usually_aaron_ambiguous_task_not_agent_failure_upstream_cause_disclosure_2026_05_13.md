@@ -11,14 +11,14 @@ created: 2026-05-13
 following an in-flight task where Otto had been pausing /
 re-checking / asking for confirmation:
 
-> *"aslo when you get stuck it's ususaly casue of an
-> ambugious tasks of mine"*
+> _"aslo when you get stuck it's ususaly casue of an
+> ambugious tasks of mine"_
 
 This reframes agent-stuckness as a TWO-sided phenomenon:
 
-| Side | What it is |
-|------|-----------|
-| Upstream | Task-formulation clarity (Aaron's bandwidth-limited typing produces ambiguous phrasing) |
+| Side       | What it is                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| Upstream   | Task-formulation clarity (Aaron's bandwidth-limited typing produces ambiguous phrasing)          |
 | Downstream | Agent's disambiguation skill (recognize ambiguity; choose interpretation; name choice; continue) |
 
 Pre-disclosure framing put both failure modes on the agent
@@ -32,9 +32,9 @@ job is to disambiguate operationally, not to figure out the
 
 Aaron 2026-05-13 earlier in the same session:
 
-> *"work without stopping for clarifying questions. When you'd
+> _"work without stopping for clarifying questions. When you'd
 > normally pause to check, make the reasonable call and
-> continue; they'll redirect if needed."*
+> continue; they'll redirect if needed."_
 
 These two disclosures compose. The combined operational rule:
 

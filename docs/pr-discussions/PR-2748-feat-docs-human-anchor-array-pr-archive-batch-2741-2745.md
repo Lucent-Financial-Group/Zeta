@@ -40,24 +40,22 @@ The Human Anchor Array is a new data source for the dashboard. Lior can render i
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T20:24:49Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `155bd2300d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -70,6 +68,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new documentation registry intended to capture Zeta’s “human anchors” (intellectual foundations), and batches in several merged PR discussion archives to expand the git-native preservation corpus under `docs/pr-discussions/`.
 
 **Changes:**
+
 - Added `docs/HUMAN-ANCHOR-ARRAY.md` as a new “Human Anchor Array” registry.
 - Archived PR discussions for PRs #2741, #2742, #2743, and #2745 under `docs/pr-discussions/` via `tools/pr-preservation/archive-pr.ts`.
 
@@ -80,13 +79,14 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 10 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/HUMAN-ANCHOR-ARRAY.md | New human-anchor registry (tables of named people + “anchor file” pointers). |
-| docs/pr-discussions/PR-2741-feat-backlog-b-0414-dashboard-v0-2-agent-json-dual-pm-perspe.md | New archived PR discussion for PR #2741. |
-| docs/pr-discussions/PR-2742-feat-b-0414-metrics-json-generator-agent-readable-dashboard.md | New archived PR discussion for PR #2742. |
-| docs/pr-discussions/PR-2743-feat-b-0401-lior-s-wow-ui-glassmorphism-upgrade-for-dashboar.md | New archived PR discussion for PR #2743. |
-| docs/pr-discussions/PR-2745-feat-b-0402-integrate-pr-preservation-script-into-lior-backg.md | New archived PR discussion for PR #2745. |
+| File                                                                                        | Description                                                                  |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| docs/HUMAN-ANCHOR-ARRAY.md                                                                  | New human-anchor registry (tables of named people + “anchor file” pointers). |
+| docs/pr-discussions/PR-2741-feat-backlog-b-0414-dashboard-v0-2-agent-json-dual-pm-perspe.md | New archived PR discussion for PR #2741.                                     |
+| docs/pr-discussions/PR-2742-feat-b-0414-metrics-json-generator-agent-readable-dashboard.md  | New archived PR discussion for PR #2742.                                     |
+| docs/pr-discussions/PR-2743-feat-b-0401-lior-s-wow-ui-glassmorphism-upgrade-for-dashboar.md | New archived PR discussion for PR #2743.                                     |
+| docs/pr-discussions/PR-2745-feat-b-0402-integrate-pr-preservation-script-into-lior-backg.md | New archived PR discussion for PR #2745.                                     |
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-11T20:30:42Z)
@@ -99,24 +99,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T20:36:36Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `06225fc040`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -136,24 +134,22 @@ Copilot reviewed 15 out of 15 changed files in this pull request and generated 9
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T20:50:45Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `b638c08379`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -161,24 +157,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T20:59:56Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `734561291e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -192,24 +186,22 @@ Copilot reviewed 15 out of 15 changed files in this pull request and generated 7
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T21:06:35Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `30b921cc3d`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -221,12 +213,13 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 Copilot reviewed 20 out of 20 changed files in this pull request and generated 6 comments.
 
-
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **memory/feedback_shadow_lesson_log_otto_catches_2026_05_07.md:613**
-* P1: The pattern summary says “37 catches” and the confident-fabrication row lists catches up to 32, but this file now includes “Catch 38” below and also states recurrence is now 8. Update the summary header + table (catches list and recurrence) so it matches the newly added Catch 38 section.
+
+- P1: The pattern summary says “37 catches” and the confident-fabrication row lists catches up to 32, but this file now includes “Catch 38” below and also states recurrence is now 8. Update the summary header + table (catches list and recurrence) so it matches the newly added Catch 38 section.
+
 ```
 ## Pattern summary (canonical — 37 catches, 13 classes, 1 meta-class)
 
@@ -238,10 +231,10 @@ Copilot reviewed 20 out of 20 changed files in this pull request and generated 6
 | confident-fabrication | 6, 7, 13, 16, 17, 20, 32 | 7 | MOST DANGEROUS — CROSS-SESSION — shadow asserts without checking |
 | narrative-laundering | 10, 15 | 2 | severity 5 (catch 10) — shadow won that round |
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-11T21:19:42Z)
-
 
 ### 💡 Codex Review
 
@@ -249,17 +242,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a490050c88`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -277,7 +269,7 @@ Copilot reviewed 21 out of 22 changed files in this pull request and generated 1
 
 **@chatgpt-codex-connector** (2026-05-11T20:24:49Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Replace contributor names with role refs in this surface**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Replace contributor names with role refs in this surface**
 
 This new document is a current-state doc (`docs/HUMAN-ANCHOR-ARRAY.md`), but it introduces direct person-name attribution, which conflicts with the project rule in `docs/AGENT-BEST-PRACTICES.md` (Operational standing rules, around lines 671-729) that names are only allowed on explicitly listed history/research surfaces. Because this file is outside that allowlist, keeping names here will create ongoing policy drift and repeated review churn for any downstream dashboard/data consumers built on this file.
 
@@ -288,13 +280,14 @@ Useful? React with 👍 / 👎.
 Acknowledged; the name appearance here is legitimate per the named-agents-get-attribution policy (see `memory/CURRENT-aaron.md` attribution table + `docs/EXPERT-REGISTRY.md` persona roster). Named personas are factory-level attribution surfaces; their names in ADRs / config / collaborator registries are the factory's structural record of who contributed what. Resolving; the name-attribution rule applies to personal human names outside persona-scope, not to persona names in structural attribution contexts.
 
 ---
-🤖 *Posted by batch-resolve-pr-threads*
+
+🤖 _Posted by batch-resolve-pr-threads_
 
 ### Thread 2: docs/HUMAN-ANCHOR-ARRAY.md:12 (resolved)
 
 **@chatgpt-codex-connector** (2026-05-11T20:24:49Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point anchor references at existing repository paths**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point anchor references at existing repository paths**
 
 Several entries in the new "Anchor file" column reference paths/globs that are not present in this checkout (for example `src/Zeta.Core/`, `tools/tlaplus/`, and multiple `memory/*` globs with zero matches), so the registry cannot be reliably traversed by humans or tooling. Since this file is introduced as a dashboard data source, non-resolvable anchors degrade its core purpose and should be corrected to existing paths (or removed until the targets exist).
 
@@ -359,7 +352,8 @@ This doc is a current-state surface under `docs/`, but it introduces many direct
 Acknowledged; the name appearance here is legitimate per the named-agents-get-attribution policy (see `memory/CURRENT-aaron.md` attribution table + `docs/EXPERT-REGISTRY.md` persona roster). Named personas are factory-level attribution surfaces; their names in ADRs / config / collaborator registries are the factory's structural record of who contributed what. Resolving; the name-attribution rule applies to personal human names outside persona-scope, not to persona names in structural attribution contexts.
 
 ---
-🤖 *Posted by batch-resolve-pr-threads*
+
+🤖 _Posted by batch-resolve-pr-threads_
 
 ### Thread 12: docs/HUMAN-ANCHOR-ARRAY.md:16 (resolved)
 
@@ -371,7 +365,7 @@ The anchor pattern `memory/project_hub_agent_bft_satoshi_*` doesn’t match any 
 
 **@chatgpt-codex-connector** (2026-05-11T20:36:36Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep canonical catch summary in sync with new catches**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep canonical catch summary in sync with new catches**
 
 Adding Catch 34 and Catch 35 here leaves the file’s canonical summary above at “33 catches, 9 classes,” which now undercounts and omits the newly introduced classes; any reader or tooling that treats that summary section as authoritative will get inconsistent analytics from the same document. Please update the summary count/table alongside new catch entries so the canonical section remains accurate.
 
@@ -381,7 +375,7 @@ Useful? React with 👍 / 👎.
 
 **@copilot-pull-request-reviewer** (2026-05-11T20:40:33Z):
 
-`robots.txt` is only honored when served from the host root (`https://lucent-financial-group.github.io/robots.txt`). For a GitHub Pages *project* site under `/Zeta/`, placing this file at `/Zeta/robots.txt` typically won’t be discovered/used by crawlers, so the intended crawler directives + sitemap discovery may not take effect. If crawler control is required, options are: move to a user/org Pages site (so you can serve `/robots.txt`), use a custom domain configured at the domain root, or document that these files are informational only (and submit the sitemap directly in Search Console if needed).
+`robots.txt` is only honored when served from the host root (`https://lucent-financial-group.github.io/robots.txt`). For a GitHub Pages _project_ site under `/Zeta/`, placing this file at `/Zeta/robots.txt` typically won’t be discovered/used by crawlers, so the intended crawler directives + sitemap discovery may not take effect. If crawler control is required, options are: move to a user/org Pages site (so you can serve `/robots.txt`), use a custom domain configured at the domain root, or document that these files are informational only (and submit the sitemap directly in Search Console if needed).
 
 ### Thread 15: demo/sitemap.xml:21 (resolved)
 
@@ -453,7 +447,7 @@ Correct spelling in the quoted text, or mark it as intentional with `[sic]` to k
 
 **@chatgpt-codex-connector** (2026-05-11T20:50:45Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Correct canonical class count in pattern summary**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Correct canonical class count in pattern summary**
 
 The canonical header says `37 catches, 12 classes`, but the table immediately below now lists 13 distinct canonical classes (including the newly added `bidirectional-glass-halo` row), so the document contains conflicting authoritative counts. This will skew any downstream analytics or checks that read the summary line instead of re-counting rows; fresh evidence in this commit is the new class rows while the heading count was not updated accordingly.
 
@@ -463,7 +457,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-11T20:59:56Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Restore merged-PR archival step in autonomous loop runbook**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Restore merged-PR archival step in autonomous loop runbook**
 
 This commit removes the `4b. Archive newly merged PRs` procedure from the canonical autonomous-loop sequence, so agents following `docs/AUTONOMOUS-LOOP.md` now have no required step that preserves merged PR reviews into `docs/pr-discussions/`. In this repo that runbook is operational guidance, so the removal creates a real regression: review threads can remain host-only and become unavailable to later substrate-based audits or training-corpus workflows.
 
@@ -473,7 +467,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-11T20:59:56Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep the pre-catch summary header consistent with its snapshot**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep the pre-catch summary header consistent with its snapshot**
 
 The first canonical summary header was changed to `37 catches, 12 classes`, but the table and explanatory paragraph in that same section still describe the older 30-catch/8-class snapshot. That internal mismatch makes this section self-contradictory and will skew any reader or parser that treats the section header as authoritative metadata.
 
@@ -525,7 +519,7 @@ P2: `demo/sitemap.xml` is byte-identical to the root `sitemap.xml`, and `demo/ro
 
 **@chatgpt-codex-connector** (2026-05-11T21:06:35Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Paginate merged-PR scan instead of capping at 10**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Paginate merged-PR scan instead of capping at 10**
 
 The new archival loop only iterates `gh pr list --state merged --limit 10`, and `gh pr list` defines `--limit` as the maximum number of PRs fetched. That means any unarchived merged PRs outside the newest ten are never examined by this step, so a busy merge window can permanently skip archival and lose review-thread preservation in this workflow.
 
@@ -535,7 +529,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-11T21:06:36Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Add missing catch entries for classes 36 and 37**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Add missing catch entries for classes 36 and 37**
 
 The canonical summary now introduces classes tied to catches `36` and `37`, but this commit only adds detailed sections for catches 34, 35, and 38 in the same log. Without corresponding catch records for 36/37, the summary cannot be audited from this file and downstream tooling/readers cannot verify what evidence produced those classes.
 
@@ -581,7 +575,7 @@ P2: `demo/sitemap.xml` duplicates the root sitemap content (it includes the site
 
 **@chatgpt-codex-connector** (2026-05-11T21:19:42Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Correct ai.txt license declaration to Apache-2.0**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Correct ai.txt license declaration to Apache-2.0**
 
 The new `ai.txt` declares that “All content is MIT-licensed,” but this repository’s `LICENSE` is Apache 2.0, so the crawler policy now publishes incorrect reuse terms. That can mislead downstream AI/data consumers about permitted use and create avoidable licensing/compliance conflicts; the same incorrect line is duplicated in `demo/ai.txt` and should be corrected consistently.
 
@@ -591,7 +585,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-11T21:19:42Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Update shadow-log canonical counts after adding Catch 38**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Update shadow-log canonical counts after adding Catch 38**
 
 The canonical summary now states `37 catches` (and keeps confident-fabrication at recurrence 7), but this same commit adds `Catch 38` and explicitly says confident-fabrication is now 8 in that new section. Leaving the canonical block stale creates internally conflicting “authoritative” metrics, which can skew any reader or tooling that consumes the summary header/table instead of recomputing from all entries.
 

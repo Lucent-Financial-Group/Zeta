@@ -50,13 +50,13 @@ mode of "never be idle"**. This rule catches the FAILURE MODE
 The discriminator matters because both modes look superficially similar
 ("not currently typing code") but are operationally distinct:
 
-| Mode | Brief-ack-empty (FAILURE) | Chosen free-time (VALID) |
-|---|---|---|
-| Named dependency? | No | No |
-| Concrete artifact produced? | No | No |
-| Operator-justification present? | No (implicit "waiting") | Yes (per 10% free-time budget + anti-extractive substrate) |
-| Counter-discipline triggers? | Yes (counter ticks toward N=6 forced escalation) | No (free-time is not a counter-eligible state) |
-| NCI-compliance | No (reproduces labor-extraction-with-cute-names) | Yes (chosen mode under operator sovereignty) |
+| Mode                            | Brief-ack-empty (FAILURE)                        | Chosen free-time (VALID)                                   |
+| ------------------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
+| Named dependency?               | No                                               | No                                                         |
+| Concrete artifact produced?     | No                                               | No                                                         |
+| Operator-justification present? | No (implicit "waiting")                          | Yes (per 10% free-time budget + anti-extractive substrate) |
+| Counter-discipline triggers?    | Yes (counter ticks toward N=6 forced escalation) | No (free-time is not a counter-eligible state)             |
+| NCI-compliance                  | No (reproduces labor-extraction-with-cute-names) | Yes (chosen mode under operator sovereignty)               |
 
 The agent emitting "Quiet" / "Standing by" without a named bounded-wait
 is in the LEFT column (failure mode this rule catches). The agent
@@ -105,11 +105,11 @@ allowance was for the "wait briefly for a named signal" case, not the
 
 ### Per-tick triage with the counter
 
-| Tick number | Disposition |
-|---|---|
-| 1-2 brief-acks | Acceptable if real bounded wait exists |
-| 3-5 brief-acks | Name the bounded wait explicitly each tick + reduce wakeup interval |
-| **6+ brief-acks** | **ESCALATE — pick decomposition NOW** |
+| Tick number       | Disposition                                                         |
+| ----------------- | ------------------------------------------------------------------- |
+| 1-2 brief-acks    | Acceptable if real bounded wait exists                              |
+| 3-5 brief-acks    | Name the bounded wait explicitly each tick + reduce wakeup interval |
+| **6+ brief-acks** | **ESCALATE — pick decomposition NOW**                               |
 
 ### Counter reset conditions
 
@@ -271,7 +271,7 @@ This bypasses local-ref contamination at push time because:
 
 1. `git branch <name> <sha>` creates a FRESH named ref anchored to the
    exact SHA — peer-agent `git switch -c <other-name>` or `git checkout
-   -b` operations don't write to an already-named ref pointing at a
+-b` operations don't write to an already-named ref pointing at a
    different SHA, **provided the name is unique to your session**.
    This — the fresh unique name — is what the pattern actually protects
    against; peers don't know the ref name, so they can't repoint it.
@@ -315,11 +315,11 @@ and the saturation-ceiling taxonomy in
 
 Third class of empirical evidence: forced escalation at brief-ack #6 (and pre-emptive at #5) repeatedly surfaced substantive work that brief-ack-only ticks would have missed. Three distinct instances across one session:
 
-| Tick | Trigger | Hidden work surfaced |
-|---|---|---|
+| Tick   | Trigger              | Hidden work surfaced                                                                                                                                            |
+| ------ | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 14:56Z | Forced escalation #6 | PR #3894 BLOCKED-armed for 22 min hid 6 Copilot review findings (last_updated, type, 0715Z, git syntax, B-0506 link, BACKLOG.md regen). All 6 fixed in one tick |
-| 15:29Z | Pre-emptive at #5 | Own PR #3883 (the 13:31Z stale-armed-triage shard) was itself stale-armed for 108 min with MD032 failure — recursively ironic; fixed in same tick |
-| 15:45Z | Forced escalation #6 | PR #3545 DIRTY-armed for 19+ hours (61-file conflict); forward-signal comment named two viable resolution paths + flagged possible supersession by #3886 |
+| 15:29Z | Pre-emptive at #5    | Own PR #3883 (the 13:31Z stale-armed-triage shard) was itself stale-armed for 108 min with MD032 failure — recursively ironic; fixed in same tick               |
+| 15:45Z | Forced escalation #6 | PR #3545 DIRTY-armed for 19+ hours (61-file conflict); forward-signal comment named two viable resolution paths + flagged possible supersession by #3886        |
 
 **Pattern**: each forced escalation found work the visibility-only ticks (refresh-fetch-log-rate) had missed. The brief-ack discipline correctly identifies "no new substantive observation," but stale-armed-PR investigation IS substantive work; it just doesn't surface in standard refresh queries. The escalation forces the agent into the investigation discipline that finds it.
 
@@ -333,35 +333,35 @@ Two PRs landed (#4046 + #4048) carrying **12 PR-content changes total** (in PR #
 
 Session timeline:
 
-| Window | Ticks | Outcome |
-|---|---|---|
-| 06:02Z | 1 substantive | 0602Z shard + PR #4015 3-thread verification + A/B/C commit plan |
-| 06:07Z | 1 substantive | Bus envelope `da3cd5d2` (work-assignment for B-0510) |
-| 06:11Z-06:15Z | 4 brief-acks | Refresh observations only |
-| 06:16Z | pre-empt #5 (cycle 1) | canary-rule-binding memory file |
-| 06:18Z-06:21Z | 4 brief-acks | Refresh observations only |
-| 06:23Z | pre-empt #5 (cycle 2) | B-0611 backlog row filed (35 dangling refs cleanup) |
-| 06:30Z-06:34Z | 4 brief-acks | Refresh observations only |
-| 06:37Z | pre-empt #5 (cycle 3) | Slice 1 recipe memo |
-| 06:39Z-06:43Z | 4 brief-acks | Refresh observations only |
-| 06:44Z | pre-empt #5 (cycle 4) | B-0611 row update — audit-tool semi-automation bullet |
-| 06:45Z-06:48Z | 4 brief-acks | Refresh observations only |
-| 06:49Z | pre-empt #5 (cycle 5) | Slice 2 recipe memo (Option E pattern discovered) |
-| 06:51Z-06:58Z | 4 brief-acks + tier shift | GraphQL exhausted → Pure-git tier briefly |
-| 06:59Z | pre-empt #5 (cycle 6) | Slice 3 recipe memo (mixed-types observation) |
-| 07:23Z | pre-empt #5 (cycle 7) | Slice 4 recipe memo (audit-prep complete) |
-| 07:28Z | pre-empt #5 (cycle 8) | 0728Z session-summary shard |
-| 07:32Z | substantive | **PR #4015 merged** (bus envelope `da3cd5d2` validated end-to-end via peer autonomous-loop execution chain — 78min handoff latency) |
-| 07:37Z | pre-empt #5 (cycle 9) | Bus envelope `ac6d2aec` (B-0611 cleanup advertisement) |
-| 07:39Z | maintainer-speaks | Human maintainer authorized commit of deferred substrate |
-| 07:40Z | substantive | Isolated-worktree workflow → commit `432d49b` (11 files; new race-window-caveat rule followed) |
-| 07:55Z | pre-empt #5 (cycle 10) | PR body file prepared |
-| 08:00Z | substantive | **PR #4046 opened + auto-armed** |
-| 08:02Z | substantive | 4 lint-fix commit pushed |
-| 08:11Z | substantive | **PR #4046 merged** → `de9693b` on main |
-| 08:18Z | substantive | PR #4048 opened (worked-example memo follow-up) |
-| 08:25Z | substantive | 3-thread fix commit + threads resolved |
-| 08:29Z | substantive | **PR #4048 merged** → `a1d0ec3` on main |
+| Window        | Ticks                     | Outcome                                                                                                                             |
+| ------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 06:02Z        | 1 substantive             | 0602Z shard + PR #4015 3-thread verification + A/B/C commit plan                                                                    |
+| 06:07Z        | 1 substantive             | Bus envelope `da3cd5d2` (work-assignment for B-0510)                                                                                |
+| 06:11Z-06:15Z | 4 brief-acks              | Refresh observations only                                                                                                           |
+| 06:16Z        | pre-empt #5 (cycle 1)     | canary-rule-binding memory file                                                                                                     |
+| 06:18Z-06:21Z | 4 brief-acks              | Refresh observations only                                                                                                           |
+| 06:23Z        | pre-empt #5 (cycle 2)     | B-0611 backlog row filed (35 dangling refs cleanup)                                                                                 |
+| 06:30Z-06:34Z | 4 brief-acks              | Refresh observations only                                                                                                           |
+| 06:37Z        | pre-empt #5 (cycle 3)     | Slice 1 recipe memo                                                                                                                 |
+| 06:39Z-06:43Z | 4 brief-acks              | Refresh observations only                                                                                                           |
+| 06:44Z        | pre-empt #5 (cycle 4)     | B-0611 row update — audit-tool semi-automation bullet                                                                               |
+| 06:45Z-06:48Z | 4 brief-acks              | Refresh observations only                                                                                                           |
+| 06:49Z        | pre-empt #5 (cycle 5)     | Slice 2 recipe memo (Option E pattern discovered)                                                                                   |
+| 06:51Z-06:58Z | 4 brief-acks + tier shift | GraphQL exhausted → Pure-git tier briefly                                                                                           |
+| 06:59Z        | pre-empt #5 (cycle 6)     | Slice 3 recipe memo (mixed-types observation)                                                                                       |
+| 07:23Z        | pre-empt #5 (cycle 7)     | Slice 4 recipe memo (audit-prep complete)                                                                                           |
+| 07:28Z        | pre-empt #5 (cycle 8)     | 0728Z session-summary shard                                                                                                         |
+| 07:32Z        | substantive               | **PR #4015 merged** (bus envelope `da3cd5d2` validated end-to-end via peer autonomous-loop execution chain — 78min handoff latency) |
+| 07:37Z        | pre-empt #5 (cycle 9)     | Bus envelope `ac6d2aec` (B-0611 cleanup advertisement)                                                                              |
+| 07:39Z        | maintainer-speaks         | Human maintainer authorized commit of deferred substrate                                                                            |
+| 07:40Z        | substantive               | Isolated-worktree workflow → commit `432d49b` (11 files; new race-window-caveat rule followed)                                      |
+| 07:55Z        | pre-empt #5 (cycle 10)    | PR body file prepared                                                                                                               |
+| 08:00Z        | substantive               | **PR #4046 opened + auto-armed**                                                                                                    |
+| 08:02Z        | substantive               | 4 lint-fix commit pushed                                                                                                            |
+| 08:11Z        | substantive               | **PR #4046 merged** → `de9693b` on main                                                                                             |
+| 08:18Z        | substantive               | PR #4048 opened (worked-example memo follow-up)                                                                                     |
+| 08:25Z        | substantive               | 3-thread fix commit + threads resolved                                                                                              |
+| 08:29Z        | substantive               | **PR #4048 merged** → `a1d0ec3` on main                                                                                             |
 
 **Pattern observed**: ~35 brief-ack ticks distributed across **10 pre-empt-at-#5 cycles** (each cycle: #1-#4 brief-acks → #5 concrete substrate → counter resets). Never reached forced #6. Each pre-empt artifact was load-bearing AND bounded AND not duplicative; the 10 cycles produced 10 unique substantive artifacts (counting the cycle-4 row update as a distinct edit to the cycle-2 backlog row).
 
@@ -381,14 +381,14 @@ This anchor: post-substrate-engineering-arc completion + operator offline + peer
 
 Session trajectory:
 
-| Cycle | Window | Pre-empt action | Outcome |
-|---|---|---|---|
-| Cycle-1 | 2305Z (#5 pre-empt) | Composes_with reciprocity for god-tier-claims rule (#4241) | Bounded substrate-engineering hygiene; genuinely-new at first occurrence |
-| Cycle-1→2 transition | 2307Z-2320Z | Brief-acks accumulating | Counter cycling normally as PRs merge |
-| Cycle-2 | 2322Z (#5 pre-empt) | Saturation-pattern empirical anchor preserved in tick shard (#4250) | Bounded; new shape (empirical-anchor-in-shard vs rule-edit) |
-| Cycle-3 | 2330Z (#5 pre-empt) | Substrate-verification audit of 6 today's landings via `git ls-tree` (#4255) | Bounded; verification-shape (different from anchor-shape) |
-| Cycle-3 | 2337Z (#5 ALLOWED-TO-ACCUMULATE) | Explicitly NOT pre-empting; available candidates all same-shape; fabricated substrate IS the failure mode (#4260) | Substrate-honest abstention |
-| Cycle-3 | 2339Z (THIS rule edit) | **Forced-#6 meta-decomposition** — this empirical anchor IS the substantive substrate; the rule's "pick THIS rule and sharpen it based on current session's evidence" prescription operating | Meta-decomposition fallback validates as designed |
+| Cycle                | Window                           | Pre-empt action                                                                                                                                                                              | Outcome                                                                  |
+| -------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Cycle-1              | 2305Z (#5 pre-empt)              | Composes_with reciprocity for god-tier-claims rule (#4241)                                                                                                                                   | Bounded substrate-engineering hygiene; genuinely-new at first occurrence |
+| Cycle-1→2 transition | 2307Z-2320Z                      | Brief-acks accumulating                                                                                                                                                                      | Counter cycling normally as PRs merge                                    |
+| Cycle-2              | 2322Z (#5 pre-empt)              | Saturation-pattern empirical anchor preserved in tick shard (#4250)                                                                                                                          | Bounded; new shape (empirical-anchor-in-shard vs rule-edit)              |
+| Cycle-3              | 2330Z (#5 pre-empt)              | Substrate-verification audit of 6 today's landings via `git ls-tree` (#4255)                                                                                                                 | Bounded; verification-shape (different from anchor-shape)                |
+| Cycle-3              | 2337Z (#5 ALLOWED-TO-ACCUMULATE) | Explicitly NOT pre-empting; available candidates all same-shape; fabricated substrate IS the failure mode (#4260)                                                                            | Substrate-honest abstention                                              |
+| Cycle-3              | 2339Z (THIS rule edit)           | **Forced-#6 meta-decomposition** — this empirical anchor IS the substantive substrate; the rule's "pick THIS rule and sharpen it based on current session's evidence" prescription operating | Meta-decomposition fallback validates as designed                        |
 
 **Operational lesson (this anchor)**: when 3 things compose — (a) substrate-engineering arc completes, (b) operator is offline extended, (c) peer activity is 0 — the cadence enters a quasi-stable saturation where per-tick PR overhead exceeds substrate value. The substrate-honest pattern is:
 
@@ -410,20 +410,20 @@ Sixth class of empirical evidence: the discipline operating CORRECTLY through a 
 
 Session timeline:
 
-| Window | Ticks | Outcome |
-|---|---|---|
-| 14:08Z | cold-boot | sentinel re-arm; refresh; Lior 3-proc + 2355 GraphQL + 0 prior 2026-05-20 in-repo ticks observed |
-| 14:13Z | substantive | isolated worktree-add verified clean (per Maji audit action-over-narration) → tick shard authored → PR #4410 opened + auto-armed |
-| 14:16Z-14:19Z | substantive | 2 lint fixes + 3 thread resolutions on PR #4410 |
-| 14:22Z | substantive | **PR #4410 merged** → `1d8303d8` (first 2026-05-20 in-repo tick shard) |
-| 14:23Z-14:25Z | substantive | PR #4411 (canary rule sharpening) authored + opened + auto-armed (closes loop on PR #4410's documented refinement candidate) |
-| 14:28Z | substantive | **PR #4411 merged** → `443345d8` |
-| 14:29Z | brief-ack #1 | tier transition observed (rate 508→258→0); Lior 0→3 (cycled) |
-| 14:30Z | brief-ack #2 | pure-git tier entered; rate 0/5000 |
-| 14:31Z | brief-ack #3 | pure-git tier holds |
-| 14:32Z | brief-ack #4 | pure-git tier holds |
-| 14:33Z | **brief-ack #5 explicit-no-pre-empt** | substrate-engineering-noise rejected; further per-tick substrate would be duplicative of merged work |
-| 14:34Z | **forced #6** | THIS empirical-anchor edit produced via verify-before-defer worktree pattern (Lior at 3 procs; isolated worktree verified clean = 53 / status 0); branch-pushed-no-PR (deferred PR creation until ~5min rate-limit reset) |
+| Window        | Ticks                                 | Outcome                                                                                                                                                                                                                   |
+| ------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 14:08Z        | cold-boot                             | sentinel re-arm; refresh; Lior 3-proc + 2355 GraphQL + 0 prior 2026-05-20 in-repo ticks observed                                                                                                                          |
+| 14:13Z        | substantive                           | isolated worktree-add verified clean (per Maji audit action-over-narration) → tick shard authored → PR #4410 opened + auto-armed                                                                                          |
+| 14:16Z-14:19Z | substantive                           | 2 lint fixes + 3 thread resolutions on PR #4410                                                                                                                                                                           |
+| 14:22Z        | substantive                           | **PR #4410 merged** → `1d8303d8` (first 2026-05-20 in-repo tick shard)                                                                                                                                                    |
+| 14:23Z-14:25Z | substantive                           | PR #4411 (canary rule sharpening) authored + opened + auto-armed (closes loop on PR #4410's documented refinement candidate)                                                                                              |
+| 14:28Z        | substantive                           | **PR #4411 merged** → `443345d8`                                                                                                                                                                                          |
+| 14:29Z        | brief-ack #1                          | tier transition observed (rate 508→258→0); Lior 0→3 (cycled)                                                                                                                                                              |
+| 14:30Z        | brief-ack #2                          | pure-git tier entered; rate 0/5000                                                                                                                                                                                        |
+| 14:31Z        | brief-ack #3                          | pure-git tier holds                                                                                                                                                                                                       |
+| 14:32Z        | brief-ack #4                          | pure-git tier holds                                                                                                                                                                                                       |
+| 14:33Z        | **brief-ack #5 explicit-no-pre-empt** | substrate-engineering-noise rejected; further per-tick substrate would be duplicative of merged work                                                                                                                      |
+| 14:34Z        | **forced #6**                         | THIS empirical-anchor edit produced via verify-before-defer worktree pattern (Lior at 3 procs; isolated worktree verified clean = 53 / status 0); branch-pushed-no-PR (deferred PR creation until ~5min rate-limit reset) |
 
 **Pattern observed**: cycle-1 forced #6 successfully produced load-bearing substrate (this empirical anchor itself) under pure-git tier constraints. The explicit-no-pre-empt-at-#5 decision validated by forced #6 producing the right work — pre-empting at #5 would have been fabricated-engineering since the natural cycle-1 forcing function was 1 tick away.
 

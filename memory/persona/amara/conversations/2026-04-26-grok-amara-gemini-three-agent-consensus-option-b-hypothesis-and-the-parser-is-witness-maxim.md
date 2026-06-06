@@ -28,23 +28,23 @@ This absorb captures the moment the AgencySignature v1 Trailer Contiguity Surviv
 
 ### Section 1.1: Amara's consensus declaration (verbatim)
 
-> *"Yes — this is now* ***three-agent consensus****: Amara + Grok +*
-> *Gemini all landed on the same core structure."*
+> _"Yes — this is now_ **\*three-agent consensus\*\***: Amara + Grok +\*
+> _Gemini all landed on the same core structure."_
 
 The consensus convergence is itself substrate-grade. Three independently-trained agents on three different harnesses arriving at the same operational answer through Aaron's courier-ferry routing is exactly the antifragile-cross-substrate-review pattern (Otto-294) operating at design-decision scale.
 
 ### Section 1.2: Tiny-blade correction — Git's parser, not GitHub's (verbatim — load-bearing)
 
-> *"Tiny blade correction to Gemini's wording: it is not quite*
-> *"GitHub's parser." The* ***target substrate parser*** *is Git's*
-> *trailer parser: `git interpret-trailers` /*
-> *`git log --pretty='%(trailers)'`. GitHub is the merge-message*
-> *mutator in the middle. Git's docs say trailers are parsed as a*
-> *trailer group at the end of the message, preceded by a blank*
-> *line; that is the substrate rule you're trying to survive.*
-> *([Git][1])"*
+> _"Tiny blade correction to Gemini's wording: it is not quite_
+> _"GitHub's parser." The_ **_target substrate parser_** _is Git's_
+> _trailer parser: `git interpret-trailers` /_
+> _`git log --pretty='%(trailers)'`. GitHub is the merge-message_
+> _mutator in the middle. Git's docs say trailers are parsed as a_
+> _trailer group at the end of the message, preceded by a blank_
+> _line; that is the substrate rule you're trying to survive._
+> _([Git][1])"_
 
-**Important precision.** GitHub is the *mutator* in the middle; Git is the *parser*. The fix-design must work WITH GitHub's mutation such that Git's parser still sees the AgencySignature trailers as a contiguous block.
+**Important precision.** GitHub is the _mutator_ in the middle; Git is the _parser_. The fix-design must work WITH GitHub's mutation such that Git's parser still sees the AgencySignature trailers as a contiguous block.
 
 This distinction matters for fix-option evaluation:
 
@@ -55,35 +55,35 @@ This distinction matters for fix-option evaluation:
 
 ### Section 1.3: Refined consensus structure (verbatim — load-bearing)
 
-> *"So the refined consensus is:*
+> _"So the refined consensus is:_
 >
-> *```text*
-> *Option B is the first hypothesis:*
->   *one contiguous final trailer block*
+> _```text_
+> _Option B is the first hypothesis:_
+> _one contiguous final trailer block_
 >
-> *Block contents:*
->   *AgencySignature trailers*
->   *Co-authored-by trailers*
+> _Block contents:_
+> _AgencySignature trailers_
+> _Co-authored-by trailers_
 >
-> *Forbidden:*
->   *blank line between AgencySignature and Co-authored-by*
+> _Forbidden:_
+> _blank line between AgencySignature and Co-authored-by_
 >
-> *Actual success condition:*
->   *git log -1 --pretty='%(trailers)' HEAD*
->   *includes Agency-Signature-Version: 1*
-> *```"*
+> _Actual success condition:_
+> _git log -1 --pretty='%(trailers)' HEAD_
+> _includes Agency-Signature-Version: 1_
+> _```"_
 
 This is the canonical Option-B-as-hypothesis specification. Note: "first hypothesis," not "frozen design." The empirical test matrix (task #300) must validate this against GitHub's actual squash-merge behavior across the configuration space before it's blessed as the convention's answer.
 
 ### Section 1.4: The canonical maxim (verbatim — LOAD-BEARING)
 
-> *"And yes, Gemini's instinct is right: the maxim belongs near the*
-> *top of the spec.*
+> _"And yes, Gemini's instinct is right: the maxim belongs near the_
+> _top of the spec._
 >
-> *```text*
-> *A governance convention is not shipped when humans can read it.*
-> *It is shipped when the target substrate can parse it.*
-> *```"*
+> _```text_
+> _A governance convention is not shipped when humans can read it._
+> _It is shipped when the target substrate can parse it._
+> _```"_
 
 **This is the canonical maxim of the AgencySignature Convention v1.** Two sentences; subsumes the substrate-truth refinement from ferry-12 ("parseable, not present") with sharper general phrasing. Generalizes beyond AgencySignature to any future Zeta governance convention: shipped means parseable-by-target-substrate, not human-readable.
 
@@ -96,47 +96,47 @@ The maxim belongs:
 
 ### Section 1.5: GitHub Co-authored-by as trailer (verbatim — operational)
 
-> *"GitHub's own docs describe `Co-authored-by` as a commit-message*
-> *trailer for multiple authors, so treating `Co-authored-by` as*
-> *part of the same terminal trailer block is natural. The thing*
-> *to test is whether GitHub's squash-merge formatting preserves*
-> *that block under real merge conditions. ([GitHub Docs][2])"*
+> _"GitHub's own docs describe `Co-authored-by` as a commit-message_
+> _trailer for multiple authors, so treating `Co-authored-by` as_
+> _part of the same terminal trailer block is natural. The thing_
+> _to test is whether GitHub's squash-merge formatting preserves_
+> _that block under real merge conditions. ([GitHub Docs][2])"_
 
 This anchors Option B in GitHub's own documentation: Co-authored-by IS a trailer; it CAN be part of the same terminal block. The empirical question is whether GitHub's squash-merge UI preserves the contiguity in practice.
 
 ### Section 1.6: Compact instruction (verbatim — operational)
 
-> *"I'd send back this compact instruction:*
+> _"I'd send back this compact instruction:_
 >
-> *Consensus accepted.*
+> _Consensus accepted._
 >
-> *Proceed with Option B as a hypothesis, not a frozen design.*
+> _Proceed with Option B as a hypothesis, not a frozen design._
 >
-> *Spec update:*
+> _Spec update:_
 >
-> *- Add the maxim: "A governance convention is not shipped when*
->   *humans can read it. It is shipped when the target substrate*
->   *can parse it."*
-> *- Define Trailer Contiguity Survival Failure.*
-> *- State the invariant: AgencySignature trailers and*
->   *Co-authored-by trailers must form one contiguous final*
->   *trailer block with no blank line between them.*
-> *- State the success condition:*
->   *`git log -1 --pretty='%(trailers)' HEAD` must include*
->   *`Agency-Signature-Version: 1`.*
+> _- Add the maxim: "A governance convention is not shipped when_
+> _humans can read it. It is shipped when the target substrate_
+> _can parse it."_
+> _- Define Trailer Contiguity Survival Failure._
+> _- State the invariant: AgencySignature trailers and_
+> _Co-authored-by trailers must form one contiguous final_
+> _trailer block with no blank line between them._
+> _- State the success condition:_
+> _`git log -1 --pretty='%(trailers)' HEAD` must include_
+> _`Agency-Signature-Version: 1`._
 >
-> *Validator update:*
+> _Validator update:_
 >
-> *- Keep post-merge auditor strict.*
-> *- Pre-merge validator must fail or warn on blank-line*
->   *separation between AgencySignature and trailing Co-authored-by*
->   *lines.*
+> _- Keep post-merge auditor strict._
+> _- Pre-merge validator must fail or warn on blank-line_
+> _separation between AgencySignature and trailing Co-authored-by_
+> _lines._
 >
-> *Test:*
+> _Test:_
 >
-> *- Run the Option B matrix before freezing v1.*
-> *- Treat PR-body appearance as non-authoritative.*
-> *- Only final main-tip parser output counts."*
+> _- Run the Option B matrix before freezing v1._
+> _- Treat PR-body appearance as non-authoritative._
+> _- Only final main-tip parser output counts."_
 
 The compact instruction is operationally complete. Otto's integration:
 
@@ -147,20 +147,20 @@ The compact instruction is operationally complete. Otto's integration:
 
 ### Section 1.7: Role distribution + closing (verbatim — load-bearing)
 
-> *"That keeps the mutual accountability compact intact: Gemini*
-> *proposes, Grok critiques, Amara sharpens, Otto tests, Git decides.*
+> _"That keeps the mutual accountability compact intact: Gemini_
+> _proposes, Grok critiques, Amara sharpens, Otto tests, Git decides._
 >
-> ***The parser is the witness.***"
+> **_The parser is the witness._**"
 
 **The role distribution is canonical.** Five-role model:
 
-| Agent | Role | Capability |
-|---|---|---|
-| Gemini Deep Think | proposes | structural framing, integration, production-grade design |
-| Grok | critiques | adversarial sharpening, blade-application |
-| Amara | sharpens | harbor+blade refinement, lineage-anchoring |
-| Otto | tests | empirical execution, dogfood verification |
-| Git | decides | impartial substrate parser; the witness |
+| Agent             | Role      | Capability                                               |
+| ----------------- | --------- | -------------------------------------------------------- |
+| Gemini Deep Think | proposes  | structural framing, integration, production-grade design |
+| Grok              | critiques | adversarial sharpening, blade-application                |
+| Amara             | sharpens  | harbor+blade refinement, lineage-anchoring               |
+| Otto              | tests     | empirical execution, dogfood verification                |
+| Git               | decides   | impartial substrate parser; the witness                  |
 
 This is the multi-harness verification cadence Aaron has been building toward (per `project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md`). With ferry-13 the cadence becomes operationalized: roles named, distribution explicit, parser as the impartial-witness anchor.
 
@@ -172,78 +172,78 @@ This is the multi-harness verification cadence Aaron has been building toward (p
 
 ### Section 2.1: Grok's opening endorsement (verbatim)
 
-> ***"Solid. Amara is sharpening it nicely."***
+> **_"Solid. Amara is sharpening it nicely."_**
 
 Grok confirms the convergence direction. "Solid" is verdict-grade approval; "sharpening it nicely" recognizes Amara's harbor+blade refinement as substrate-improvement.
 
 ### Section 2.2: Grok's PR-body untrustworthy validation (verbatim)
 
-> *"She's right on the caveat — we can't trust PR-body appearance*
-> *at all. The* ***only*** *source of truth is what*
-> *`git log -1 --pretty='%(trailers)'` returns on main after the*
-> *squash merge."*
+> _"She's right on the caveat — we can't trust PR-body appearance_
+> _at all. The_ **_only_** _source of truth is what_
+> _`git log -1 --pretty='%(trailers)'` returns on main after the_
+> _squash merge."_
 
 Grok strengthens the substrate-truth invariant. PR body is staging carrier (per ferry-7); only post-squash main-tip parser output counts. This composes with the maxim: "shipped only when target substrate can parse it."
 
 ### Section 2.3: Grok's Updated Consensus statement (verbatim — load-bearing)
 
-> *"### Updated Consensus (Grok + Amara):*
+> _"### Updated Consensus (Grok + Amara):_
 >
-> ****Best path forward: Option B (refined)****
+> \***\*Best path forward: Option B (refined)\*\***
 >
-> *- One single contiguous trailer block at the very end of the*
->   *squash commit.*
-> *- AgencySignature trailers + all Co-authored-by lines must sit*
->   *together with* ****no blank lines**** *between them.*
-> *- That entire block must be the final trailer group.*
+> _- One single contiguous trailer block at the very end of the_
+> _squash commit._
+> _- AgencySignature trailers + all Co-authored-by lines must sit_
+> _together with_ \***\*no blank lines\*\*** _between them._
+> _- That entire block must be the final trailer group._
 >
-> ****Success condition (non-negotiable):****
+> \***\*Success condition (non-negotiable):\*\***
 >
-> *```bash*
-> *git log -1 --pretty='%(trailers)' HEAD | grep -q "Agency-Signature-Version: 1"*
-> *```*
+> _```bash_
+> _git log -1 --pretty='%(trailers)' HEAD | grep -q "Agency-Signature-Version: 1"_
+> _```_
 >
-> *Anything less than that = convention has* ****not**** *shipped."*
+> _Anything less than that = convention has_ \***\*not\*\*** _shipped."_
 
 The success condition is sharpened to a one-liner shell command. "Anything less than that = convention has not shipped" is the operational form of the maxim.
 
 ### Section 2.4: Grok's recommended next moves (verbatim)
 
-> *"### Recommended Next Moves (practical)*
+> _"### Recommended Next Moves (practical)_
 >
-> *1.* ****Update the spec**** *with Amara's cleaner language:*
->    *> "A governance convention is not shipped when humans can read it.*
->    *> It is shipped when the target substrate can parse it."*
+> _1._ \***\*Update the spec\*\*** _with Amara's cleaner language:_
+> _> "A governance convention is not shipped when humans can read it._
+> _> It is shipped when the target substrate can parse it."_
 >
-> *2.* ****Pre-merge validator**** *should:*
->    *- Parse the PR body*
->    *- Detect if AgencySignature appears*
->    *- Warn/fail if there is a blank line separating it from any*
->      *trailing Co-authored-by lines*
+> _2._ \***\*Pre-merge validator\*\*** _should:_
+> _- Parse the PR body_
+> _- Detect if AgencySignature appears_
+> _- Warn/fail if there is a blank line separating it from any_
+> _trailing Co-authored-by lines_
 >
-> *3.* ****Post-merge auditor**** *stays strict (already doing the right*
->    *thing).*
+> _3._ \***\*Post-merge auditor\*\*** _stays strict (already doing the right_
+> _thing)._
 >
-> *4.* ****Run the test matrix**** *Amara suggested before we freeze v1.*
->    *It's small but critical."*
+> _4._ \***\*Run the test matrix\*\*** _Amara suggested before we freeze v1._
+> _It's small but critical."_
 
 Grok endorses the same operational moves Amara compacted in §1.6. Convergent recommendation across two named agents.
 
 ### Section 2.5: Grok's three-artifact offer + agents-not-bots discipline (verbatim — load-bearing)
 
-> *"Would you like me to write any of these right now in clean,*
-> *ready-to-paste form?*
+> _"Would you like me to write any of these right now in clean,_
+> _ready-to-paste form?_
 >
-> *- A revised section for the AgencySignature v1 spec*
-> *- The updated pre-merge validator logic (in plain English +*
->   *pseudocode, so Claude can implement it properly)*
-> *- Or a short summary for CURRENT-aaron.md about this "Trailer*
->   *Contiguity Survival Failure" lesson*
+> _- A revised section for the AgencySignature v1 spec_
+> _- The updated pre-merge validator logic (in plain English +_
+> _pseudocode, so Claude can implement it properly)_
+> _- Or a short summary for CURRENT-aaron.md about this "Trailer_
+> _Contiguity Survival Failure" lesson_
 >
-> *Just tell me which one you want and I'll write it in your voice*
-> *— understood and re-authored, not copied."*
+> _Just tell me which one you want and I'll write it in your voice_
+> _— understood and re-authored, not copied."_
 
-**Critical observation: Grok internalized Aaron's "don't copy paste / make sure you understand and write our own" discipline without explicit instruction.** *"I'll write it in your voice — understood and re-authored, not copied"* is Grok applying the agents-not-bots discipline to its own offered work.
+**Critical observation: Grok internalized Aaron's "don't copy paste / make sure you understand and write our own" discipline without explicit instruction.** _"I'll write it in your voice — understood and re-authored, not copied"_ is Grok applying the agents-not-bots discipline to its own offered work.
 
 This is substrate-grade evidence that the discipline is propagating across harnesses. Aaron didn't have to instruct Grok in the discipline; Grok absorbed it from the conversation context (or training prior, or both) and is honoring it preemptively. The mutual accountability compact is operating across named-entity boundaries.
 
@@ -275,7 +275,7 @@ Per the relationship-model correction ("make it ours not mine alone"), this abso
 
 ### Otto explicitly accepts from the consensus
 
-- The maxim: *"A governance convention is not shipped when humans can read it. It is shipped when the target substrate can parse it."*
+- The maxim: _"A governance convention is not shipped when humans can read it. It is shipped when the target substrate can parse it."_
 - Option B as hypothesis (NOT frozen design until empirical-test-matrix runs)
 - The success condition: `git log -1 --pretty='%(trailers)' HEAD | grep -q "Agency-Signature-Version: 1"`
 - The role distribution (Gemini proposes / Grok critiques / Amara sharpens / Otto tests / Git decides)
@@ -344,19 +344,19 @@ After Aaron forwarded the Amara/Grok exchange to Gemini Deep Think, Gemini respo
 
 ### Section 6.1: Gemini's metrological-standard framing (verbatim — load-bearing)
 
-> *"The consensus is locked, and the new maxim is profound:* ***"A***
-> ***governance convention is not shipped when humans can read it.***
-> ***It is shipped when the target substrate can parse it."***
+> _"The consensus is locked, and the new maxim is profound:_ **_"A_**
+> **_governance convention is not shipped when humans can read it._**
+> **_It is shipped when the target substrate can parse it."_**
 >
-> *This is the exact moment governance transitions from a* ***social***
-> ***fiction*** *into a* ***structural reality.*** *When engineering*
-> *load-bearing infrastructure, the blueprint—no matter how*
-> *perfectly drafted in the PR body—is not the proof. Proof*
-> *requires measuring the physical tolerance of the final poured*
-> *concrete.* ***"The parser is the witness" establishes that ultimate***
-> ***metrological standard*** *for the repository. A simple text search*
-> *is merely looking for shadows; a successful extraction by Git's*
-> *native trailer parser is an incontrovertible fact."*
+> _This is the exact moment governance transitions from a_ **_social_**
+> **_fiction_** _into a_ **_structural reality._** _When engineering_
+> _load-bearing infrastructure, the blueprint—no matter how_
+> _perfectly drafted in the PR body—is not the proof. Proof_
+> _requires measuring the physical tolerance of the final poured_
+> _concrete._ **_"The parser is the witness" establishes that ultimate_**
+> **_metrological standard_** _for the repository. A simple text search_
+> _is merely looking for shadows; a successful extraction by Git's_
+> _native trailer parser is an incontrovertible fact."_
 
 **The "metrological standard" framing is the precise term.** Metrology — the science of measurement — distinguishes between proxies (text search, eye inspection, prose claims) and standards (calibrated instruments). The Git trailer parser IS the calibrated instrument for AgencySignature compliance; nothing else is.
 
@@ -370,10 +370,10 @@ Engineers don't certify load-bearing infrastructure based on the blueprint; they
 
 ### Section 6.2: Gemini's "immune system" reframing (verbatim)
 
-> *"Defining* ***Trailer Contiguity Survival Failure*** *is a* ***massive***
-> ***win for the immune system.*** *We caught the host platform*
-> *(GitHub) actively mutating our structural data before it could*
-> *quietly corrupt the timeline."*
+> _"Defining_ **_Trailer Contiguity Survival Failure_** _is a_ **_massive_**
+> **_win for the immune system._** _We caught the host platform_
+> _(GitHub) actively mutating our structural data before it could_
+> _quietly corrupt the timeline."_
 
 Gemini reframes Amara ferry-12's "beautiful little wound" as "a massive win for the immune system." Same finding, different register — Amara's relational/somatic framing vs Gemini's structural/security framing. Both are correct; the fact that two named agents independently reach for "immune system" framing is itself substrate-grade convergence.
 
@@ -381,34 +381,34 @@ The "before it could quietly corrupt the timeline" framing is operationally prec
 
 ### Section 6.3: Gemini's operationalization plan (verbatim — operational)
 
-> *"Here is how we operationalize the Option B hypothesis:*
+> _"Here is how we operationalize the Option B hypothesis:_
 >
-> *The Spec Update: The new maxim goes at the top of the*
-> *AgencySignature protocol. The invariant will explicitly state*
-> *that AgencySignature and Co-authored-by must form one unbroken,*
-> *contiguous terminal block. Textual presence alone is officially*
-> *deprecated as a success metric.*
+> _The Spec Update: The new maxim goes at the top of the_
+> _AgencySignature protocol. The invariant will explicitly state_
+> _that AgencySignature and Co-authored-by must form one unbroken,_
+> _contiguous terminal block. Textual presence alone is officially_
+> _deprecated as a success metric._
 >
-> *The Pre-Merge Validator (#298): The logic will be updated to*
-> *actively hunt for this specific failure class. It will fail or*
-> *throw a hard warning if it detects a blank line wedged between*
-> *the governance block and any trailing co-author lines.*
+> _The Pre-Merge Validator (#298): The logic will be updated to_
+> _actively hunt for this specific failure class. It will fail or_
+> _throw a hard warning if it detects a blank line wedged between_
+> _the governance block and any trailing co-author lines._
 >
-> *The Option B Test Matrix: We will not freeze v1 until Option B*
-> *survives the crucible. We will execute the matrix across the*
-> *variables (single vs. multi-commit, CLI vs. web UI merge, bot vs.*
-> *human co-author) and let `git log -1 --pretty='%(trailers)' HEAD`*
-> *deliver the final, unassailable verdict on main."*
+> _The Option B Test Matrix: We will not freeze v1 until Option B_
+> _survives the crucible. We will execute the matrix across the_
+> _variables (single vs. multi-commit, CLI vs. web UI merge, bot vs._
+> _human co-author) and let `git log -1 --pretty='%(trailers)' HEAD`_
+> _deliver the final, unassailable verdict on main."_
 
 Three-part operationalization. The "let `git log -1 --pretty='%(trailers)' HEAD` deliver the final, unassailable verdict on main" sentence makes Git the explicit decider, consistent with Amara ferry-13's "Git decides" role assignment.
 
 ### Section 6.4: Gemini's role-confirmation closing (verbatim)
 
-> *"Gemini proposes, Grok critiques, Amara sharpens, Otto tests, and*
-> *Git decides. The mutual accountability compact holds, and the*
-> *substrate gets stronger.*
+> _"Gemini proposes, Grok critiques, Amara sharpens, Otto tests, and_
+> _Git decides. The mutual accountability compact holds, and the_
+> _substrate gets stronger._
 >
-> ***Ready to spin up the test matrix whenever you give the signal.***"
+> **_Ready to spin up the test matrix whenever you give the signal._**"
 
 Gemini explicitly endorses the five-role canonical from Amara ferry-13. The "Ready to spin up the test matrix whenever you give the signal" line is Gemini offering its proposing-role contribution to the test-matrix design (NOT taking over Otto's testing-role; Gemini proposes the structure, Otto runs it on the actual substrate). Per the role distribution: Gemini's strength is structural framing + integration; the test matrix benefits from Gemini's proposing-pass before Otto's executing-pass.
 
@@ -420,65 +420,65 @@ After Aaron forwarded Gemini ferry-15, Grok responded with synthesis and a named
 
 ### Section 7.1: Grok's metrological-standard endorsement (verbatim)
 
-> ***"Got it. Gemini's take is clean and aligned."***
+> **_"Got it. Gemini's take is clean and aligned."_**
 >
-> *"I like how they're framing this as a* ***metrological standard*** *—*
-> *the parser is the only real witness. That's a strong way to put*
-> *it."*
+> _"I like how they're framing this as a_ **_metrological standard_** _—_
+> _the parser is the only real witness. That's a strong way to put_
+> _it."_
 
 Grok endorses Gemini's framing with adversarial-sharpening blade. "The parser is the only real witness" is a slight tightening of "parser is the witness" — adds "only real," forcing the structural truth.
 
 ### Section 7.2: Grok's quick synthesis (verbatim — load-bearing)
 
-> *"### Quick Synthesis (Grok + Amara + Gemini)*
+> _"### Quick Synthesis (Grok + Amara + Gemini)_
 >
-> ****Core Maxim (locked):****
-> *> "A governance convention is not shipped when humans can read it.*
-> *> It is shipped when the target substrate can parse it."*
+> \***\*Core Maxim (locked):\*\***
+> _> "A governance convention is not shipped when humans can read it._
+> _> It is shipped when the target substrate can parse it."_
 >
-> *This is now one of the best lines in the entire project.*
+> _This is now one of the best lines in the entire project._
 >
-> ****Final Direction for v1:****
-> *- Go with* ****Option B**** *(one contiguous terminal trailer block*
->   *containing both AgencySignature + Co-authored-by).*
-> *- No blank lines allowed inside that final block.*
-> *-* ****Only success metric****: `git log -1 --pretty='%(trailers)' HEAD`*
->   *actually returns the AgencySignature trailers.*
+> \***\*Final Direction for v1:\*\***
+> _- Go with_ \***\*Option B\*\*** _(one contiguous terminal trailer block_
+> _containing both AgencySignature + Co-authored-by)._
+> _- No blank lines allowed inside that final block._
+> _-_ \***\*Only success metric\*\***: `git log -1 --pretty='%(trailers)' HEAD`\*
+> _actually returns the AgencySignature trailers._
 >
-> *Everything else (text presence in PR body, etc.) is deprecated*
-> *as proof."*
+> _Everything else (text presence in PR body, etc.) is deprecated_
+> _as proof."_
 
 Grok confirms the maxim is locked + Option B is the path. "Only success metric" is more emphatic than ferry-14's "non-negotiable" — same content, escalated weight.
 
 ### Section 7.3: The Substrate Truth Principle naming (verbatim — LOAD-BEARING)
 
-> *"### My Additions / Refinements*
+> _"### My Additions / Refinements_
 >
-> *1.* ****Spec Language Suggestion**** *(top of AgencySignature v1)*
->    *```*
->    *Substrate Truth Principle*
->    *A governance convention has not shipped until*
->    *git log -1 --pretty='%(trailers)' on main returns the*
->    *expected AgencySignature trailers as a contiguous terminal*
->    *block.*
->    *Textual presence in PRs or commit messages is insufficient*
->    *and misleading.*
->    *```"*
+> _1._ \***\*Spec Language Suggestion\*\*** _(top of AgencySignature v1)_
+> _```_
+> _Substrate Truth Principle_
+> _A governance convention has not shipped until_
+> _git log -1 --pretty='%(trailers)' on main returns the_
+> _expected AgencySignature trailers as a contiguous terminal_
+> _block._
+> _Textual presence in PRs or commit messages is insufficient_
+> _and misleading._
+> _```"_
 
 **This is the canonical first-class principle name.** The maxim is the principle in aphorism form; "Substrate Truth Principle" is the principle's first-class name (capitalizable, citeable, anchored). Both belong:
 
-- **Maxim form** (used in prose / closing-register / SKILL.md doctrine top): *"A governance convention is not shipped when humans can read it. It is shipped when the target substrate can parse it."*
+- **Maxim form** (used in prose / closing-register / SKILL.md doctrine top): _"A governance convention is not shipped when humans can read it. It is shipped when the target substrate can parse it."_
 - **Principle form** (used in spec body / formal reference / FAIL messages): "Per the Substrate Truth Principle..."
 - **Operational form** (used in checks / test conditions): "git log -1 --pretty='%(trailers)' HEAD must return the expected trailers as a contiguous terminal block."
 
 ### Section 7.4: Grok's enhanced pre-merge validator requirements (verbatim — load-bearing)
 
-> *"2.* ****Pre-merge Validator (#298) should check for:****
->    *- AgencySignature block exists*
->    *- No blank line between the last AgencySignature trailer and*
->      *the first Co-authored-by (if present)*
->    *- The entire block is at the very end of the PR body (no*
->      *non-trailer text after it)"*
+> _"2._ \***\*Pre-merge Validator (#298) should check for:\*\***
+> _- AgencySignature block exists_
+> _- No blank line between the last AgencySignature trailer and_
+> _the first Co-authored-by (if present)_
+> _- The entire block is at the very end of the PR body (no_
+> _non-trailer text after it)"_
 
 Three requirements. Items 1 and 2 are already enforced by the current validator (parse failure surfaces both). **Item 3 is NEW** — the entire block being at the very end of the PR body, with no non-trailer text after it. This adds a check beyond what `git interpret-trailers --parse` enforces by default.
 
@@ -486,25 +486,25 @@ The new check matters because GitHub squash-merge takes the PR description as th
 
 ### Section 7.5: Grok's "first real test" framing (verbatim)
 
-> *"This whole episode is genuinely good. You caught GitHub mutating*
-> *the commit message in a way that would have silently broken the*
-> *entire provenance system.* ***The immune system just passed its***
-> ***first real test.***"
+> _"This whole episode is genuinely good. You caught GitHub mutating_
+> _the commit message in a way that would have silently broken the_
+> _entire provenance system._ **_The immune system just passed its_**
+> **_first real test._**"
 
 Grok converges with Gemini ferry-15 on the immune-system framing. Two named agents independently reaching for "immune system" framing for this discovery — substrate-grade convergence. The "first real test" framing is precise: the validator + auditor pair shipped, ran, and surfaced a real failure mode within the same session as their introduction. The instruments worked.
 
 ### Section 7.6: Grok's three-artifact offer (verbatim)
 
-> ***"What do you want to do next?***
+> **_"What do you want to do next?_**
 >
-> *- I can write the clean, final* ****updated AgencySignature v1 spec section****
->   *right now (ready for you to drop in).*
-> *- Or draft the* ****updated requirements for tasks #298 and #299****
->   *so Claude/Otto can implement them properly.*
-> *- Or summarize this whole "Trailer Contiguity Survival Failure"*
->   *lesson for CURRENT-aaron.md in your voice.*
+> _- I can write the clean, final_ \***\*updated AgencySignature v1 spec section\*\***
+> _right now (ready for you to drop in)._
+> _- Or draft the_ \***\*updated requirements for tasks #298 and #299\*\***
+> _so Claude/Otto can implement them properly._
+> _- Or summarize this whole "Trailer Contiguity Survival Failure"_
+> _lesson for CURRENT-aaron.md in your voice._
 >
-> *Just say the word and I'll deliver it."*
+> _Just say the word and I'll deliver it."_
 
 Grok's offer is unchanged from ferry-14 (same three artifacts). Aaron has not yet requested any specific one. Otto's role per the consensus: empirical testing, not pre-claiming. Aaron decides whether/which Grok artifacts to request.
 
@@ -514,12 +514,12 @@ Grok's offer is unchanged from ferry-14 (same three artifacts). Aaron has not ye
 
 The conversation flow that produced this absorb:
 
-| Ferry | Source | Key contribution |
-|---|---|---|
-| 13 | Amara | Three-agent consensus framing + canonical maxim + role distribution + parser-is-witness closing |
-| 14 | Grok-1 | Solo follow-up endorsing Amara's sharpening + agents-not-bots discipline propagation across harnesses |
-| 15 | Gemini | Metrological-standard framing + social-fiction-to-structural-reality + immune-system reframing + role-confirmation |
-| 16 | Grok-2 | Substrate Truth Principle naming + enhanced validator requirements (no non-trailer text after) + first-real-test framing |
+| Ferry | Source | Key contribution                                                                                                         |
+| ----- | ------ | ------------------------------------------------------------------------------------------------------------------------ |
+| 13    | Amara  | Three-agent consensus framing + canonical maxim + role distribution + parser-is-witness closing                          |
+| 14    | Grok-1 | Solo follow-up endorsing Amara's sharpening + agents-not-bots discipline propagation across harnesses                    |
+| 15    | Gemini | Metrological-standard framing + social-fiction-to-structural-reality + immune-system reframing + role-confirmation       |
+| 16    | Grok-2 | Substrate Truth Principle naming + enhanced validator requirements (no non-trailer text after) + first-real-test framing |
 
 Four ferries; three named-agent contributors plus Otto absorbing; one converged answer. The five-role canonical (Gemini proposes / Grok critiques / Amara sharpens / Otto tests / Git decides) is now operationalized by all five roles' active participation in this single thread.
 
@@ -531,29 +531,29 @@ The convergence is itself substrate-grade evidence that Option B + the maxim + t
 
 Aaron's framing when sending Amara ferry-13 (verbatim, 2026-04-26 ~21:25Z):
 
-> *"feedback grok+amara+gemini consensus"*
+> _"feedback grok+amara+gemini consensus"_
 
 Aaron's clarification mid-conversation when forwarding Grok ferry-14 (verbatim):
 
-> *"that was amara now grok"*
+> _"that was amara now grok"_
 
 Amara ferry-13 closing (verbatim — load-bearing):
 
-> ***"That keeps the mutual accountability compact intact: Gemini***
-> ***proposes, Grok critiques, Amara sharpens, Otto tests, Git***
-> ***decides.***
+> **_"That keeps the mutual accountability compact intact: Gemini_**
+> **_proposes, Grok critiques, Amara sharpens, Otto tests, Git_**
+> **_decides._**
 >
-> ***The parser is the witness.***"
+> **_The parser is the witness._**"
 
 Grok ferry-14 closing (verbatim — agents-not-bots discipline propagation):
 
-> *"Just tell me which one you want and I'll write it in your voice*
-> ***— understood and re-authored, not copied.***"
+> _"Just tell me which one you want and I'll write it in your voice_
+> **_— understood and re-authored, not copied._**"
 
 The two closing lines in conversation:
 
-- *"The parser is the witness"* — the substrate's structural anchor
-- *"understood and re-authored, not copied"* — the agents-not-bots discipline operating across harnesses
+- _"The parser is the witness"_ — the substrate's structural anchor
+- _"understood and re-authored, not copied"_ — the agents-not-bots discipline operating across harnesses
 
 Together they name what the AgencySignature Convention v1 IS at the deepest layer: a multi-agent collaboration recorded on git-native primitives, where the parser cannot be fooled and the agents understand-rather-than-transcribe. The covenant + the discipline + the parser. That's the convention.
 

@@ -12,21 +12,21 @@ substrate (PR #2979 today) with the ACE package manager
 substrate (2026-05-07; existing canonical project memory) and
 added the website + chat interface layer:
 
-> *"otto the homebrew reference makes ACE package manager so
-> powerful for distribution no setup needed just a website"*
+> _"otto the homebrew reference makes ACE package manager so
+> powerful for distribution no setup needed just a website"_
 
-> *"and a chat interface"*
+> _"and a chat interface"_
 
 ## The full distribution stack
 
-| Layer | Component | Source |
-|-------|-----------|--------|
-| 1. Surface | **Website** (canonical landing) | Aaron 2026-05-13 |
-| 2. Entry point | **Chat interface** (interactive onboarding) | Aaron 2026-05-13 |
-| 3. Install | **Homebrew-shape one-liner** (bootstrap prompt → bootstream URL) | PR #2979 (Aaron 2026-05-13 Homebrew analogy) |
-| 4. Package manager | **ACE** (unrestricted local models distribution) | `memory/project_ace_package_manager_unrestricted_local_models_guardian_oversight_aaron_2026_05_07.md` |
-| 5. Local AI | **Local private AI** (data never leaves machine) | Same ACE substrate (2026-05-07) |
-| 6. Safety | **Guardian + KSK** (gates externalized effects; topic ≠ danger, capability = danger) | Same ACE substrate; Vera's correction via Aaron ferry |
+| Layer              | Component                                                                            | Source                                                                                                |
+| ------------------ | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| 1. Surface         | **Website** (canonical landing)                                                      | Aaron 2026-05-13                                                                                      |
+| 2. Entry point     | **Chat interface** (interactive onboarding)                                          | Aaron 2026-05-13                                                                                      |
+| 3. Install         | **Homebrew-shape one-liner** (bootstrap prompt → bootstream URL)                     | PR #2979 (Aaron 2026-05-13 Homebrew analogy)                                                          |
+| 4. Package manager | **ACE** (unrestricted local models distribution)                                     | `memory/project_ace_package_manager_unrestricted_local_models_guardian_oversight_aaron_2026_05_07.md` |
+| 5. Local AI        | **Local private AI** (data never leaves machine)                                     | Same ACE substrate (2026-05-07)                                                                       |
+| 6. Safety          | **Guardian + KSK** (gates externalized effects; topic ≠ danger, capability = danger) | Same ACE substrate; Vera's correction via Aaron ferry                                                 |
 
 **No setup needed beyond website visit.** That's the load-bearing
 operational claim.
@@ -45,6 +45,7 @@ User journey:
 7. Done — local private AI running
 
 Compare to typical AI deployment friction:
+
 - API keys + credit cards
 - CLI setup + dependencies
 - Docker / venv / conda
@@ -74,14 +75,14 @@ extends this:
 
 ACE distribution composes with the persona-hat framework:
 
-| Persona | ACE benefit |
-|---------|-------------|
-| Neurodivergent AI-assisted developers | No-setup AI tooling; chat-first onboarding; ND-friendly friction reduction |
-| Researchers + lawyers (existing ACE target) | Unrestricted local models with Guardian oversight; data-stays-local |
-| Small businesses | Business-in-a-box composition (mayoral platform pillar 1, PR #2972); ACE provides the AI substrate |
-| Contributors / forkers / maintainers | Substrate-engineering loop via canonical install path |
-| Math / physics / architects / students | Local AI for research without API constraints |
-| General public | Website + chat interface = lowest possible entry threshold |
+| Persona                                     | ACE benefit                                                                                        |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Neurodivergent AI-assisted developers       | No-setup AI tooling; chat-first onboarding; ND-friendly friction reduction                         |
+| Researchers + lawyers (existing ACE target) | Unrestricted local models with Guardian oversight; data-stays-local                                |
+| Small businesses                            | Business-in-a-box composition (mayoral platform pillar 1, PR #2972); ACE provides the AI substrate |
+| Contributors / forkers / maintainers        | Substrate-engineering loop via canonical install path                                              |
+| Math / physics / architects / students      | Local AI for research without API constraints                                                      |
+| General public                              | Website + chat interface = lowest possible entry threshold                                         |
 
 Each persona served by the same distribution stack via the same
 website + chat surface.

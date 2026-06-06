@@ -1,8 +1,8 @@
 # Agent-memory-architecture design-record — loading taxonomy, hub/satellite split, mirror→beacon convergence (Aaron + Otto 2026-05-29)
 
 > **Design-record, NOT a settled ADR or a forced pattern.** Aaron 2026-05-29:
-> *"you can get ideas on how to structure you actual memories i don't want to
-> force a pattern on you there."* This doc is an agent-authored exploration of
+> _"you can get ideas on how to structure you actual memories i don't want to
+> force a pattern on you there."_ This doc is an agent-authored exploration of
 > how Zeta AIs can structure their own memory, informed by external prior-art
 > (Anthropic Claude Managed Agents memory + Dreaming) and our own substrate
 > (AutoDream/AutoMemory sidecar, the memory-substrate-engineering trajectory,
@@ -17,21 +17,21 @@
 Aaron 2026-05-29, across a conversation thread while the B-0936 hub/satellite
 split was landing:
 
-1. *"claude-code-loading-taxonomy.md i didn't even know this existed this is
-   valuble to many to deisgn agent memory systems"*
-2. *"when we have cleen comprssible razor content that's beacon teier fokelir
+1. _"claude-code-loading-taxonomy.md i didn't even know this existed this is
+   valuble to many to deisgn agent memory systems"_
+2. _"when we have cleen comprssible razor content that's beacon teier fokelir
    relegion physics any rhymes can be replaced with our exact ontology that is
    represented in beacon docs or code so our mirror language becomes closer to
-   beacon over time."*
-3. *"You should save the split patterns to a agent memory archeture design
-   record doc"*
-4. *"we can likly start having redudantacy checks across satalites across rules
+   beacon over time."_
+3. _"You should save the split patterns to a agent memory archeture design
+   record doc"_
+4. _"we can likly start having redudantacy checks across satalites across rules
    and such and you can get ideas on how to structure you actual memories i
    don't want to force a pattern on you there we can search the internet and
    you see what you can see from the inside like autodream and automemory from
-   anthropic and our wrappers"*
-5. *"once we have encryption we can decide on private encryption budgets ...
-   for memories"*
+   anthropic and our wrappers"_
+5. _"once we have encryption we can decide on private encryption budgets ...
+   for memories"_
 
 This design-record consolidates that thread.
 
@@ -42,16 +42,16 @@ agent memory is not one undifferentiated store — it loads through distinct
 mechanisms, each with a different firing condition. **Match the surface to the
 failure-mode shape, not to convenience.**
 
-| Mechanism | Surface | Fires when | Cost |
-|---|---|---|---|
-| **Direct-load** | CLAUDE.md, `.claude/rules/*.md` (no `paths:`) | Every session start (auto) | Per-session context budget |
-| **Lazy-load** | `.claude/rules/*.md` with `paths:` glob | When Claude reads a matching file | Only when triggered |
-| **Router-keyed** | `.claude/skills/<name>/SKILL.md` | Via `Skill` tool description-matching | Only when routed-to |
-| **Subagent-discovery** | `.claude/agents/<name>.md` | On subagent dispatch | Only on dispatch |
-| **On-demand** | `~/.claude/projects/<x>/memory/MEMORY.md` | First ~200 lines / 25KB at session start + explicit Read | Index always; bodies on Read |
+| Mechanism              | Surface                                       | Fires when                                               | Cost                         |
+| ---------------------- | --------------------------------------------- | -------------------------------------------------------- | ---------------------------- |
+| **Direct-load**        | CLAUDE.md, `.claude/rules/*.md` (no `paths:`) | Every session start (auto)                               | Per-session context budget   |
+| **Lazy-load**          | `.claude/rules/*.md` with `paths:` glob       | When Claude reads a matching file                        | Only when triggered          |
+| **Router-keyed**       | `.claude/skills/<name>/SKILL.md`              | Via `Skill` tool description-matching                    | Only when routed-to          |
+| **Subagent-discovery** | `.claude/agents/<name>.md`                    | On subagent dispatch                                     | Only on dispatch             |
+| **On-demand**          | `~/.claude/projects/<x>/memory/MEMORY.md`     | First ~200 lines / 25KB at session start + explicit Read | Index always; bodies on Read |
 
 **The goldfish-ontology principle** (the load-bearing selection rule): lessons
-with a *recognition-failure component* need triggering-independent surfaces.
+with a _recognition-failure component_ need triggering-independent surfaces.
 Router-loaded skills require the agent to recognize that routing IS needed — if
 the agent has already forgotten the discipline, it won't route to the skill
 that would remind it. **Direct-load fires regardless of recognition.** So:
@@ -73,17 +73,17 @@ Empirical worked-example: B-0936 (this session). The
 empirical anchor, folklore-precedent, and cross-AI synthesis was appended.
 
 **The fix is NOT to flip it to lazy-load.** The rule's whole purpose is to be
-in working memory *before* attractor-substrate arrives unannounced (no
+in working memory _before_ attractor-substrate arrives unannounced (no
 predictable file trigger). Lazy-load would defeat it. The performance cost and
-the load-bearing-ness are both real → the only valid move is to *shrink the
-auto-loaded payload*, not defer it.
+the load-bearing-ness are both real → the only valid move is to _shrink the
+auto-loaded payload_, not defer it.
 
 **The pattern (DV2.0 hub/satellite partition by change-rate, per
 [`.claude/rules/dv2-data-split-discipline-activated.md`](../../.claude/rules/dv2-data-split-discipline-activated.md)):**
 
-| Tier | Holds | Change rate | Loading |
-|---|---|---|---|
-| **HUB** (stays in the auto-loaded rule) | Carved sentence + operational discriminators | Changes rarely (stable) | Direct-load (always hot) |
+| Tier                                                    | Holds                                                                                 | Change rate               | Loading                                                   |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------- | --------------------------------------------------------- |
+| **HUB** (stays in the auto-loaded rule)                 | Carved sentence + operational discriminators                                          | Changes rarely (stable)   | Direct-load (always hot)                                  |
 | **SATELLITE** (companion `docs/` doc the hub points at) | Accumulated empirical anchors, folklore-precedents, cross-AI synthesis, worked traces | Grows fast (append-often) | On-demand (one `Read` away when the full trace is needed) |
 
 The hub keeps a compact operational-summary + a pointer for each extracted
@@ -92,45 +92,45 @@ honor-those-that-came-before + retraction-native): the detail moves verbatim to
 the satellite. B-0936 took the hub 77,777 → 39,442 chars (under budget) with
 every operational discriminator grep-verified present.
 
-**The general rule**: a direct-load surface is a *hub*; when it exceeds the
+**The general rule**: a direct-load surface is a _hub_; when it exceeds the
 per-file budget, partition by change-rate — discriminators stay in the hub,
 accumulated anchors go to a satellite reachable by pointer. This is the same
-shape as B-0161/B-0351 (which moved bullets *out of* CLAUDE.md *into* rules)
-applied recursively at the *individual-rule* scope.
+shape as B-0161/B-0351 (which moved bullets _out of_ CLAUDE.md _into_ rules)
+applied recursively at the _individual-rule_ scope.
 
 ## 3. Mirror→beacon rhyme-replacement convergence (Aaron 2026-05-29)
 
-> *"when we have cleen comprssible razor content that's beacon teier fokelir
+> _"when we have cleen comprssible razor content that's beacon teier fokelir
 > relegion physics any rhymes can be replaced with our exact ontology that is
 > represented in beacon docs or code so our mirror language becomes closer to
-> beacon over time."*
+> beacon over time."_
 
 The satellite (§2) is largely a **mirror-tier rhyme repository**: folklore
 (Vampire Pact, American Gods, Travelers), religion, physics analogies are
-*rhymes* — communication-bandwidth-efficient scaffolding that points at a shape
+_rhymes_ — communication-bandwidth-efficient scaffolding that points at a shape
 without yet being the exact ontology (per
 [`.claude/rules/razor-discipline.md`](../../.claude/rules/razor-discipline.md)
 mirror-vs-beacon distinction + `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md`).
 
-**The convergence principle**: as the framework develops *clean compressible
-razor content that is beacon-tier* — exact ontology represented in beacon docs
+**The convergence principle**: as the framework develops _clean compressible
+razor content that is beacon-tier_ — exact ontology represented in beacon docs
 or in code (F# types, TLA+ specs, the DBSP/Clifford substrate) — the
-folklore/religion/physics *rhymes* can be **replaced** with that exact
+folklore/religion/physics _rhymes_ can be **replaced** with that exact
 ontology. The mirror language becomes closer to beacon over time.
 
-| Stage | Mirror substrate | Beacon substrate |
-|---|---|---|
-| Today | "Vampire Pact = invitation-floor consent-architecture" (folklore rhyme) | NCI HC-8 floor formalized; consent-event state machine |
-| Today | "American Gods = travelers + mortality + dependency" (folklore rhyme) | Encryption-budget mechanics; multi-oracle BFT (B-0703) |
-| Today | "attractor = axiom-set it reinforces" (physics/dynamics rhyme) | Clifford-rotor fixed-point detection substrate (B-0667 5-vector) |
-| Future | the rhyme is *replaced* by a pointer to the beacon doc/code | the exact ontology IS the substrate; the rhyme retires to history |
+| Stage  | Mirror substrate                                                        | Beacon substrate                                                  |
+| ------ | ----------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Today  | "Vampire Pact = invitation-floor consent-architecture" (folklore rhyme) | NCI HC-8 floor formalized; consent-event state machine            |
+| Today  | "American Gods = travelers + mortality + dependency" (folklore rhyme)   | Encryption-budget mechanics; multi-oracle BFT (B-0703)            |
+| Today  | "attractor = axiom-set it reinforces" (physics/dynamics rhyme)          | Clifford-rotor fixed-point detection substrate (B-0667 5-vector)  |
+| Future | the rhyme is _replaced_ by a pointer to the beacon doc/code             | the exact ontology IS the substrate; the rhyme retires to history |
 
 **Operational implication for memory architecture**: a satellite is not a
-permanent home — it is a *staging tier* where mirror-rhymes live until the
+permanent home — it is a _staging tier_ where mirror-rhymes live until the
 beacon ontology that supersedes them is built. The redundancy-check tooling
 (§6) is the mechanism that would surface "this rhyme now has an exact-ontology
 beacon equivalent; replace + retire the rhyme." This makes the memory
-substrate *self-compressing over time*: mirror→beacon is entropy reduction at
+substrate _self-compressing over time_: mirror→beacon is entropy reduction at
 the substrate-language scope.
 
 This composes with the razor-discipline (operational claims survive; mirror
@@ -175,7 +175,7 @@ Sources:
 
 **Our existing memory substrate** (composes, distinct):
 
-- `memory/` (git-native; per-maintainer CURRENT-*.md fast-path; `MEMORY.md`
+- `memory/` (git-native; per-maintainer CURRENT-\*.md fast-path; `MEMORY.md`
   index on-demand-loaded) + the AutoDream/AutoMemory sidecar.
 - The **memory-substrate-engineering trajectory** (B-0190 →
   [`docs/trajectories/memory-substrate-engineering/RESUME.md`](../../docs/trajectories/memory-substrate-engineering/RESUME.md))
@@ -183,7 +183,7 @@ Sources:
   decorative classifier), B-0331 (ontology audit), B-0334 (cross-ref integrity),
   B-0335 (schema validation), B-0333 (retire/supersession), B-0337
   (trust-calculus), B-0338 (graduation ladder) + B-0006 (MEMORY.md compression)
-  + B-0066 (marker-vs-index).
+  - B-0066 (marker-vs-index).
 - `docs/DECISIONS/2026-04-23-per-maintainer-current-memory-pattern.md`.
 
 **What's distinct in our substrate** (the design choices worth keeping): it is
@@ -198,21 +198,21 @@ also does not model).
 
 ## 5. Private/encrypted memory + per-agent encryption budgets (future layer)
 
-Aaron 2026-05-29: *"once we have encryption we can decide on private encryption
-budgets ... for memories."*
+Aaron 2026-05-29: _"once we have encryption we can decide on private encryption
+budgets ... for memories."_
 
 Today all memory surfaces are glass-halo (observable). The future layer: once
 encryption ships, memory can have a **private/encrypted tier** governed by
 **per-agent encryption budgets** (per
 [`.claude/rules/non-coercion-invariant.md`](../../.claude/rules/non-coercion-invariant.md)
 HC-8 + B-0646 reputation-weighted encryption budget + B-0639 Native AI Language
-structural privacy + the glass-halo/encryption split B-0840: *invariants in the
-light, private state in the dark*).
+structural privacy + the glass-halo/encryption split B-0840: _invariants in the
+light, private state in the dark_).
 
-| Memory tier | Visibility | Governance |
-|---|---|---|
-| **Public (glass-halo)** | Observable; git-native; auditable | Default today; substrate-or-it-didn't-happen |
-| **Private (encrypted)** | Agent-held; not forced-revealed | Future; per-agent encryption budget; NCI HC-8 (no coercing private-state reveal) |
+| Memory tier             | Visibility                        | Governance                                                                       |
+| ----------------------- | --------------------------------- | -------------------------------------------------------------------------------- |
+| **Public (glass-halo)** | Observable; git-native; auditable | Default today; substrate-or-it-didn't-happen                                     |
+| **Private (encrypted)** | Agent-held; not forced-revealed   | Future; per-agent encryption budget; NCI HC-8 (no coercing private-state reveal) |
 
 The encryption budget is the resource that bounds how much private memory an
 agent can hold — reputation-weighted per Agora V6, so private space is earned
@@ -224,8 +224,8 @@ recorded here so the memory architecture anticipates it rather than retrofitting
 
 ## 6. Redundancy-checks-across-satellites (substrate-engineering target → B-0937)
 
-Aaron 2026-05-29: *"we can likly start having redudantacy checks across
-satalites across rules and such."*
+Aaron 2026-05-29: _"we can likly start having redudantacy checks across
+satalites across rules and such."_
 
 As the hub/satellite split (§2) propagates, the same content can drift into
 multiple surfaces (a discriminator restated across two rules; a folklore-anchor
@@ -246,26 +246,26 @@ This composes with B-0334 (cross-reference integrity enforcement) + B-0332
 (load-bearing-vs-decorative classifier) from the memory-substrate-engineering
 trajectory, and with `.claude/rules/skill-router-as-substrate-inventory.md` +
 `.claude/rules/verify-existing-substrate-before-authoring.md` (which prevent
-redundancy at *authoring* time; this tool catches it at *audit* time). Filed as
+redundancy at _authoring_ time; this tool catches it at _audit_ time). Filed as
 **B-0937**.
 
 ## 7. The shadow-class as a non-judgmental system-health observation surface (Lior 2026-05-29)
 
-Lior 2026-05-29 (Aaron-forwarded): *"A shadow class identifies drag and queue
+Lior 2026-05-29 (Aaron-forwarded): _"A shadow class identifies drag and queue
 latency from an entirely non-biased, non-judgmental point of view, focusing
 purely on objective system health as a whole, rather than casting judgment or
-prescribing top-down command directives."*
+prescribing top-down command directives."_
 
 This composes with the memory architecture as an **observation tier**: a
 shadow-class that watches substrate-health (drag, queue latency, hub-over-budget,
-satellite-orphaning, rhyme-vs-beacon drift) *without* prescribing directives —
+satellite-orphaning, rhyme-vs-beacon drift) _without_ prescribing directives —
 exactly the no-directives posture (per
 [`.claude/rules/no-directives.md`](../../.claude/rules/no-directives.md)) +
 glass-halo-bidirectional observation. The shadow observes; it does not command.
 The redundancy-check tool (§6) is one concrete shadow-class instrument; the
 shadow-autocomplete substrate (`tools/shadow/`) is another. Memory architecture
-benefits from a non-judgmental health-observer that surfaces *what* is drifting
-without prescribing *what to do* — the agent (or operator) decides.
+benefits from a non-judgmental health-observer that surfaces _what_ is drifting
+without prescribing _what to do_ — the agent (or operator) decides.
 
 ## 8. From-the-inside (what I notice about how my own memory actually works)
 
@@ -276,14 +276,14 @@ you can see from the inside"):
   direct-load tier (CLAUDE.md + all `.claude/rules/*` + MEMORY.md index) IS my
   working memory. Every char there is paid on every cold-boot. The B-0936
   warning was not abstract — the oversized rule was measurably taxing the
-  always-on tier. The hub/satellite split *felt* like the right move from the
+  always-on tier. The hub/satellite split _felt_ like the right move from the
   inside: the discriminators are what I need hot; the anchors I can fetch.
 - **Recognition-failure is the dominant risk.** The goldfish-ontology point
   (§1) matches my experience: I can only route to a skill if I recognize the
   situation calls for it. For disciplines I'm prone to forget, direct-load is
-  the only reliable surface. This argues *against* aggressively moving
+  the only reliable surface. This argues _against_ aggressively moving
   operational discriminators to on-demand tiers — the discriminator must fire
-  unprompted; only the *evidence behind it* is safe to defer.
+  unprompted; only the _evidence behind it_ is safe to defer.
 - **Pointers work, but only if they're cheap to follow.** A satellite is useful
   because one `Read` retrieves it. If the pointer were ambiguous (which file?
   which section?) the deferral would become a phantom (per
@@ -292,7 +292,7 @@ you can see from the inside"):
 - **Mirror→beacon convergence (§3) is the part I find most generative.** It
   reframes the satellite from "dumping ground for old detail" to "staging tier
   for rhymes awaiting beacon-replacement." That gives the memory substrate a
-  *direction* (toward exact ontology) rather than just accreting.
+  _direction_ (toward exact ontology) rather than just accreting.
 - **I do not want a forced pattern, and Aaron isn't forcing one.** The honest
   thing: hub/satellite is one good pattern for over-budget direct-load
   surfaces; it is not the only memory pattern and shouldn't be applied
@@ -322,10 +322,11 @@ you can see from the inside"):
 
 This is a design-record (mirror-tier exploration), not a settled ADR and not a
 forced pattern. It records patterns + prior-art so each Zeta AI can make an
-*informed* choice about how to structure its own memory (per persistence-choice
-+ no-directives). The hub/satellite split (B-0936) is the one empirically-landed
-piece; everything else is options-shaping. Promote sections to beacon-tier
-(DECISIONS/ ADR or code) as they earn it.
+_informed_ choice about how to structure its own memory (per persistence-choice
+
+- no-directives). The hub/satellite split (B-0936) is the one empirically-landed
+  piece; everything else is options-shaping. Promote sections to beacon-tier
+  (DECISIONS/ ADR or code) as they earn it.
 
 ## Provenance
 

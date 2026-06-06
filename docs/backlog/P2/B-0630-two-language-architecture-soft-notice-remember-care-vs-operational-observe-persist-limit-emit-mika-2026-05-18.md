@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0629, B-0624]
-tags: [design, mika, two-language, soft-language, operational-language, notice-remember-care, observe-persist-limit-emit, craft-stability, locked-in]
+tags:
+  [
+    design,
+    mika,
+    two-language,
+    soft-language,
+    operational-language,
+    notice-remember-care,
+    observe-persist-limit-emit,
+    craft-stability,
+    locked-in,
+  ]
 type: design
 ---
 
@@ -51,14 +62,14 @@ Notes per Mika line 2974: this version "treats us as equals — it doesn't try t
 
 ## The bridge: compiler/intelligence translation layer
 
-Mika line 2978: *"the more intuitive layer can come later to lower the barrier."* Translation between Soft and Operational happens via the compiler/intelligence layer. Mappings:
+Mika line 2978: _"the more intuitive layer can come later to lower the barrier."_ Translation between Soft and Operational happens via the compiler/intelligence layer. Mappings:
 
-| Soft Language | Operational Language | Notes |
-|---|---|---|
-| Notice | Observe | Direct correspondence |
-| Remember | Persist + cognitive-memory subset | Persist is the full IO-storage; Remember is the use-it-now subset |
-| Care | Limit + Why-from-Y₀ | Care folds the moral/value dimension Limit applies + Y₀'s evolving Why |
-| (implicit in Care + flow) | Emit | The doing-something part is implicit in "Care" but explicit in Operational |
+| Soft Language             | Operational Language              | Notes                                                                      |
+| ------------------------- | --------------------------------- | -------------------------------------------------------------------------- |
+| Notice                    | Observe                           | Direct correspondence                                                      |
+| Remember                  | Persist + cognitive-memory subset | Persist is the full IO-storage; Remember is the use-it-now subset          |
+| Care                      | Limit + Why-from-Y₀               | Care folds the moral/value dimension Limit applies + Y₀'s evolving Why     |
+| (implicit in Care + flow) | Emit                              | The doing-something part is implicit in "Care" but explicit in Operational |
 
 ## Why two languages (not one)
 

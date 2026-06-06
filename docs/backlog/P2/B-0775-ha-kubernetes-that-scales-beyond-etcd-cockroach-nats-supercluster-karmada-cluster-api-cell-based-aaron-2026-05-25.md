@@ -27,8 +27,8 @@ tags: [cluster, k8s, ha, scale, federation, karmada, cockroachdb, nats, cluster-
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening B-0774
-(etcd-less options): *"ha installs of kubernets that scales
-better"*. Scale dimension is broader than just etcd backend
+(etcd-less options): _"ha installs of kubernets that scales
+better"_. Scale dimension is broader than just etcd backend
 choice. Etcd has known scale ceilings (~5K nodes per cluster
 typical; ~8 GB state limit; write throughput limited by Raft
 consensus). Beyond that, the substrate pattern changes from
@@ -42,18 +42,18 @@ multi-cluster orchestration.
 
 ## Real options that scale beyond etcd's single-cluster ceiling
 
-| Approach | Pattern | Scale ceiling | Mature today |
-|---|---|---|---|
-| **kine + CockroachDB** (B-0774) | Single cluster; etcd replaced with horizontally-scalable distributed SQL | Hundreds of nodes per cluster; multi-region replication via CockroachDB Serverless / Aurora-Limitless | Yes |
-| **kine + NATS JetStream + super-cluster** (B-0774) | Single cluster's control-plane events; NATS leaf-nodes + super-cluster federates control plane geographically | Federated globally; control plane events flow over mesh | Yes; NATS super-cluster production |
-| **Karmada** (CNCF graduated) | Multi-cluster federation with policy-based scheduling | 1000s of nodes across N member clusters; tested at Huawei + Vipshop production | Yes; CNCF graduated 2024 |
-| **KubeStellar** | Multi-cluster + edge-aware federation; "workload transport" via OCM | Edge-scale (many small clusters; thousands) | Yes; production; CNCF sandbox |
-| **vCluster** (Loft Labs) | Virtual k8s clusters running INSIDE a host cluster | Per-tenant scale; host cluster scale x tenants | Yes; production; OSS + commercial |
-| **Cluster API** (CAPI; CNCF Cluster Lifecycle) | Declarative cluster lifecycle as k8s CRDs; orchestrates many clusters from one management cluster | Cell-based: many clusters of clusters | Yes; production; widely deployed |
-| **OpenStack Magnum + Cluster API** | Cluster API on OpenStack substrate | Cell-based + IaaS | Yes (enterprise) |
-| **Liqo** | Peer-to-peer cluster sharing; resource borrowing | Cooperative federation | Yes; less mature |
-| **Cell-based custom** (Borg / Tupperware shape) | Many smaller clusters with orchestration layer above; operator pattern | Hyperscale (Google / Meta scale) | Custom; well-documented patterns |
-| **Zeta-native** (B-0766 wave 4 + cell-based) | DBSP + Raft consensus per cell; Zeta scheduler federates cells | Designed for cell-based scale from day 1 | Future endgame |
+| Approach                                           | Pattern                                                                                                       | Scale ceiling                                                                                         | Mature today                       |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| **kine + CockroachDB** (B-0774)                    | Single cluster; etcd replaced with horizontally-scalable distributed SQL                                      | Hundreds of nodes per cluster; multi-region replication via CockroachDB Serverless / Aurora-Limitless | Yes                                |
+| **kine + NATS JetStream + super-cluster** (B-0774) | Single cluster's control-plane events; NATS leaf-nodes + super-cluster federates control plane geographically | Federated globally; control plane events flow over mesh                                               | Yes; NATS super-cluster production |
+| **Karmada** (CNCF graduated)                       | Multi-cluster federation with policy-based scheduling                                                         | 1000s of nodes across N member clusters; tested at Huawei + Vipshop production                        | Yes; CNCF graduated 2024           |
+| **KubeStellar**                                    | Multi-cluster + edge-aware federation; "workload transport" via OCM                                           | Edge-scale (many small clusters; thousands)                                                           | Yes; production; CNCF sandbox      |
+| **vCluster** (Loft Labs)                           | Virtual k8s clusters running INSIDE a host cluster                                                            | Per-tenant scale; host cluster scale x tenants                                                        | Yes; production; OSS + commercial  |
+| **Cluster API** (CAPI; CNCF Cluster Lifecycle)     | Declarative cluster lifecycle as k8s CRDs; orchestrates many clusters from one management cluster             | Cell-based: many clusters of clusters                                                                 | Yes; production; widely deployed   |
+| **OpenStack Magnum + Cluster API**                 | Cluster API on OpenStack substrate                                                                            | Cell-based + IaaS                                                                                     | Yes (enterprise)                   |
+| **Liqo**                                           | Peer-to-peer cluster sharing; resource borrowing                                                              | Cooperative federation                                                                                | Yes; less mature                   |
+| **Cell-based custom** (Borg / Tupperware shape)    | Many smaller clusters with orchestration layer above; operator pattern                                        | Hyperscale (Google / Meta scale)                                                                      | Custom; well-documented patterns   |
+| **Zeta-native** (B-0766 wave 4 + cell-based)       | DBSP + Raft consensus per cell; Zeta scheduler federates cells                                                | Designed for cell-based scale from day 1                                                              | Future endgame                     |
 
 ## Per-option fit for Zeta substrate
 
@@ -131,16 +131,16 @@ medium; etc.).
 
 Document + ship **per-scale-tier recommendation**:
 
-| Cluster scale | Recommended approach | Substrate rows |
-|---|---|---|
-| **1-5 nodes** (lab, home, small business) | Single cluster; k3s embedded etcd OR kine + SQLite | B-0754, B-0756 |
-| **5-50 nodes** (small production, edge site) | Single cluster; k3s + kine + NATS JetStream | B-0774 |
-| **50-500 nodes** (medium production) | Single cluster; k3s + kine + CockroachDB | B-0774 |
-| **500-5000 nodes** (large production) | NATS super-cluster (federate control plane geographically) OR Karmada multi-cluster | This row Tier 1 |
-| **5000+ nodes** (hyperscale) | Cell-based + Karmada; many smaller clusters + federation | This row Tier 1 + custom |
-| **Multi-region / multi-cloud** | Karmada + per-region clusters; OR NATS super-cluster with leaf-nodes per region | This row Tier 1 |
-| **Edge** (many tiny clusters) | KubeStellar OR Karmada + B-0758 unRAID-style edge nodes | This row Tier 2 + B-0758 |
-| **Multi-tenant SaaS** | vCluster on host cluster + tenant-per-vCluster | This row Tier 2 + B-0769 |
+| Cluster scale                                | Recommended approach                                                                | Substrate rows           |
+| -------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------ |
+| **1-5 nodes** (lab, home, small business)    | Single cluster; k3s embedded etcd OR kine + SQLite                                  | B-0754, B-0756           |
+| **5-50 nodes** (small production, edge site) | Single cluster; k3s + kine + NATS JetStream                                         | B-0774                   |
+| **50-500 nodes** (medium production)         | Single cluster; k3s + kine + CockroachDB                                            | B-0774                   |
+| **500-5000 nodes** (large production)        | NATS super-cluster (federate control plane geographically) OR Karmada multi-cluster | This row Tier 1          |
+| **5000+ nodes** (hyperscale)                 | Cell-based + Karmada; many smaller clusters + federation                            | This row Tier 1 + custom |
+| **Multi-region / multi-cloud**               | Karmada + per-region clusters; OR NATS super-cluster with leaf-nodes per region     | This row Tier 1          |
+| **Edge** (many tiny clusters)                | KubeStellar OR Karmada + B-0758 unRAID-style edge nodes                             | This row Tier 2 + B-0758 |
+| **Multi-tenant SaaS**                        | vCluster on host cluster + tenant-per-vCluster                                      | This row Tier 2 + B-0769 |
 
 ## Acceptance
 
@@ -251,8 +251,8 @@ to name the pattern + tier.
 ## Origin
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening B-0774
-etcd-less options with the scale dimension: *"ha installs of
-kubernets that scales better"*. Real substrate question;
+etcd-less options with the scale dimension: _"ha installs of
+kubernets that scales better"_. Real substrate question;
 scale-beyond-etcd is architecture choice not just backend
 choice; multiple options (Karmada / KubeStellar / vCluster /
 Cluster API / cell-based + NATS super-cluster / CockroachDB)

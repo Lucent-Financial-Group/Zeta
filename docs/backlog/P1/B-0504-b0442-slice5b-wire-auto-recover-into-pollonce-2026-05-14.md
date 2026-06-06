@@ -45,15 +45,17 @@ Depends on B-0503 (core `openRecoveryPR` function). This row:
     is stored but `pollOnce` only consults it when `autoRecover` is true).
 
 - [ ] `Adapters` interface gains:
+
   ```typescript
   openRecoveryPR?: (finding: CascadeFinding, dryRun: boolean) => RecoveryResult;
   ```
+
   Optional (`?`) so existing tests that do not exercise recovery path do not need
   to provide it; `pollOnce` treats missing adapter as `autoRecover = false`
   regardless of config flag.
 
 - [ ] `REAL_ADAPTERS.openRecoveryPR` implemented using real `spawnSync` wrappers
-  for each `RecoveryAdapters` operation:
+      for each `RecoveryAdapters` operation:
   - `checkRecoveryPRExists` — `gh pr list --head <branch> --state open --json number`
     → `[]` means no existing PR.
   - `gitCreateBranch` — `git checkout -b <branch> origin/main`.
@@ -65,12 +67,14 @@ Depends on B-0503 (core `openRecoveryPR` function). This row:
     before passing to `spawnSync`.
 
 - [ ] `pollOnce` updated: after the cascade-detection loop, if
-  `config.autoRecover && adapters.openRecoveryPR !== undefined`:
+      `config.autoRecover && adapters.openRecoveryPR !== undefined`:
+
   ```
   for each finding in findings:
     recoveryResult = adapters.openRecoveryPR(finding, config.recoveryDryRun)
     log result
   ```
+
   Recovery failures do NOT throw — they are logged to `PollResult.note`
   and the poll loop continues.
 
@@ -152,8 +156,7 @@ return {
 real `spawnSync` sub-adapters:
 
 ```typescript
-REAL_ADAPTERS.openRecoveryPR = (finding, dryRun) =>
-  openRecoveryPR(finding, dryRun, REAL_RECOVERY_ADAPTERS);
+REAL_ADAPTERS.openRecoveryPR = (finding, dryRun) => openRecoveryPR(finding, dryRun, REAL_RECOVERY_ADAPTERS);
 ```
 
 `REAL_RECOVERY_ADAPTERS` is defined in `missed-substrate-detector.ts` and

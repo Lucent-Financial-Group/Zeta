@@ -10,7 +10,7 @@ Capability skill. No persona lives here; the persona
 `.claude/agents/`.
 
 Co/contravariance is a programming term today; in 1900
-it was already the *entire* vocabulary of tensor calculus.
+it was already the _entire_ vocabulary of tensor calculus.
 Ricci-Curbastro and Levi-Civita named the distinction on
 manifolds; Einstein borrowed it wholesale for general
 relativity; type theorists borrowed it again in the 1970s.
@@ -101,7 +101,7 @@ These sound like opposites, and at the surface they are.
 They agree at the core: which direction does substitution
 flow relative to the canonical direction. Physicists
 name things from the basis-vector side (vectors with
-upper indices change the *opposite* way to the basis, so
+upper indices change the _opposite_ way to the basis, so
 they are *contra*variant under basis change). Programmers
 name things from the substitution side (if a type is in
 an output position and larger substitutes for smaller,
@@ -119,7 +119,7 @@ vector and a lower-index covector is a scalar. Indices
 on the same level (both up or both down) do not pair;
 the expression would not be a valid tensor equation.
 
-The pairing rule is *exactly* the profunctor-application
+The pairing rule is _exactly_ the profunctor-application
 rule from category theory: covariant in one argument,
 contravariant in another, contracted to a result.
 
@@ -165,7 +165,7 @@ A **fiber bundle** is a manifold that locally looks like
 (each fiber is a tangent space). A **principal bundle**
 is a fiber bundle whose fiber is a Lie group acting
 freely on itself. Connections on principal bundles are
-*exactly* the gauge fields of physics (electromagnetism
+_exactly_ the gauge fields of physics (electromagnetism
 is a U(1) principal bundle with connection; the Standard
 Model is SU(3)×SU(2)×U(1)).
 
@@ -179,8 +179,8 @@ honest import.
 
 The space of probability distributions over a sample
 space is a manifold. The **Fisher information metric**
-is its natural Riemannian metric. Amari's *Information
-Geometry* re-derives much of statistical inference as
+is its natural Riemannian metric. Amari's _Information
+Geometry_ re-derives much of statistical inference as
 differential-geometric statements on this manifold.
 
 Relevance to Zeta: Bayesian workloads
@@ -193,7 +193,7 @@ ship any of it yet.
 ## Relevance to Zeta — honest accounting
 
 Zeta is not a physics engine. Most of this skill's
-content is *vocabulary* rather than *engineering*. The
+content is _vocabulary_ rather than _engineering_. The
 legitimate touchpoints:
 
 - **Variance vocabulary reconciliation** — programmers
@@ -211,7 +211,7 @@ Wearing this hat outside those cases is over-claiming.
 ## Hazards — differential-geometry foot-guns
 
 - **Treating intuitions as proofs.** Curved-space
-  intuition is a *guide*; algebraic identities are the
+  intuition is a _guide_; algebraic identities are the
   proof. A programming argument by tensor-index analogy
   is rhetorical, not rigorous.
 - **Coordinate-dependent statements.** Real theorems are
@@ -235,12 +235,15 @@ When this skill is on a review (rare):
 ## Differential-Geometry Findings
 
 ### Vocabulary reconciliation needed
+
 - <programming term> ↔ <physics term>: <clarification>.
 
 ### Analogy flagged as analogy, not proof
+
 - <claim>: <why it isn't a proof; what is>.
 
 ### Correct physics import
+
 - <concept>: <how it maps to Zeta surface>.
 ```
 
@@ -269,21 +272,21 @@ When this skill is on a review (rare):
 
 ## Reference patterns
 
-- Riemann 1854, *On the Hypotheses Which Lie at the
-  Foundations of Geometry* (habilitation lecture).
-- Ricci-Curbastro + Levi-Civita 1900, *Méthodes de calcul
-  différentiel absolu et leurs applications*.
-- Misner, Thorne, Wheeler — *Gravitation*.
-- Wald — *General Relativity*.
-- Spivak — *A Comprehensive Introduction to Differential
-  Geometry* (5 volumes; "little Spivak" is the one-volume
-  *Calculus on Manifolds*).
-- Lee — *Introduction to Smooth Manifolds*.
-- Kobayashi + Nomizu — *Foundations of Differential
-  Geometry*.
-- Nakahara — *Geometry, Topology and Physics* (the
+- Riemann 1854, _On the Hypotheses Which Lie at the
+  Foundations of Geometry_ (habilitation lecture).
+- Ricci-Curbastro + Levi-Civita 1900, _Méthodes de calcul
+  différentiel absolu et leurs applications_.
+- Misner, Thorne, Wheeler — _Gravitation_.
+- Wald — _General Relativity_.
+- Spivak — _A Comprehensive Introduction to Differential
+  Geometry_ (5 volumes; "little Spivak" is the one-volume
+  _Calculus on Manifolds_).
+- Lee — _Introduction to Smooth Manifolds_.
+- Kobayashi + Nomizu — _Foundations of Differential
+  Geometry_.
+- Nakahara — _Geometry, Topology and Physics_ (the
   physics-oriented bridge).
-- Amari — *Information Geometry and Its Applications*.
+- Amari — _Information Geometry and Its Applications_.
 - `.claude/skills/variance-expert/SKILL.md` — Brian.
 - `.claude/skills/duality-expert/SKILL.md` — Meijer.
 - `.claude/skills/physics-expert/SKILL.md` — broad.

@@ -208,39 +208,31 @@ export type TenantContextPackCurationPolicy = {
   blocksInheritedDeterministicInstructions?: boolean | undefined;
 };
 
-export function isTenantContextPackCurationProfileId(
-  value: unknown,
-): value is TenantContextPackCurationProfileId {
+export function isTenantContextPackCurationProfileId(value: unknown): value is TenantContextPackCurationProfileId {
   return Object.values(TenantContextPackCurationProfileId).includes(value as TenantContextPackCurationProfileId);
 }
 
-export function isTenantContextPackCurationLaneKind(
-  value: unknown,
-): value is TenantContextPackCurationLaneKind {
+export function isTenantContextPackCurationLaneKind(value: unknown): value is TenantContextPackCurationLaneKind {
   return Object.values(TenantContextPackCurationLaneKind).includes(value as TenantContextPackCurationLaneKind);
 }
 
-export function isTenantContextPackCurationInstruction(
-  value: unknown,
-): value is TenantContextPackCurationInstruction {
+export function isTenantContextPackCurationInstruction(value: unknown): value is TenantContextPackCurationInstruction {
   return Object.values(TenantContextPackCurationInstruction).includes(value as TenantContextPackCurationInstruction);
 }
 
 export function isTenantContextPackUncertaintySignalKind(
   value: unknown,
 ): value is TenantContextPackUncertaintySignalKind {
-  return Object.values(TenantContextPackUncertaintySignalKind).includes(value as TenantContextPackUncertaintySignalKind);
+  return Object.values(TenantContextPackUncertaintySignalKind).includes(
+    value as TenantContextPackUncertaintySignalKind,
+  );
 }
 
-export function isTenantContextPackUncertaintySeverity(
-  value: unknown,
-): value is TenantContextPackUncertaintySeverity {
+export function isTenantContextPackUncertaintySeverity(value: unknown): value is TenantContextPackUncertaintySeverity {
   return Object.values(TenantContextPackUncertaintySeverity).includes(value as TenantContextPackUncertaintySeverity);
 }
 
-export function isTenantContextPackOmissionReason(
-  value: unknown,
-): value is TenantContextPackOmissionReason {
+export function isTenantContextPackOmissionReason(value: unknown): value is TenantContextPackOmissionReason {
   return Object.values(TenantContextPackOmissionReason).includes(value as TenantContextPackOmissionReason);
 }
 
@@ -427,9 +419,7 @@ export type ResolveLayeredTenantConfigInput = {
 };
 
 export function resolveLayeredTenantConfig(input: ResolveLayeredTenantConfigInput): ResolvedTenantDecisionConfig {
-  const matching = input.layers
-    .filter((layer) => layerMatches(layer.scope, input))
-    .sort(compareLayersForResolution);
+  const matching = input.layers.filter((layer) => layerMatches(layer.scope, input)).sort(compareLayersForResolution);
   let model: string | undefined;
   let budgetDeltaTokens = 0;
   let directives: string[] = [];

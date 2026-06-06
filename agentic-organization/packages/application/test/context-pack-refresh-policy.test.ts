@@ -91,35 +91,44 @@ test("context-pack refresh policy rejects prior context from a different work sc
 });
 
 test("context-pack refresh policy detects expired or not-current prior context", () => {
-  equal(decideContextPackRefresh({
-    current: snapshot({ hatAssignmentId: "77" }),
-    observedAt: "2026-06-02T12:00:00.000Z",
-    previous: snapshotRecord({
-      contextPackId: "ctx-expired",
-      freshnessDeadline: "2026-06-02T11:59:59.000Z",
-      hatAssignmentId: "77",
-    }),
-  }).reason, ContextPackRefreshReason.PreviousExpired);
+  equal(
+    decideContextPackRefresh({
+      current: snapshot({ hatAssignmentId: "77" }),
+      observedAt: "2026-06-02T12:00:00.000Z",
+      previous: snapshotRecord({
+        contextPackId: "ctx-expired",
+        freshnessDeadline: "2026-06-02T11:59:59.000Z",
+        hatAssignmentId: "77",
+      }),
+    }).reason,
+    ContextPackRefreshReason.PreviousExpired,
+  );
 
-  equal(decideContextPackRefresh({
-    current: snapshot({ hatAssignmentId: "77" }),
-    observedAt: "2026-06-02T12:00:00.000Z",
-    previous: snapshotRecord({
-      contextPackId: "ctx-invalid-deadline",
-      freshnessDeadline: "not-a-date",
-      hatAssignmentId: "77",
-    }),
-  }).reason, ContextPackRefreshReason.PreviousExpired);
+  equal(
+    decideContextPackRefresh({
+      current: snapshot({ hatAssignmentId: "77" }),
+      observedAt: "2026-06-02T12:00:00.000Z",
+      previous: snapshotRecord({
+        contextPackId: "ctx-invalid-deadline",
+        freshnessDeadline: "not-a-date",
+        hatAssignmentId: "77",
+      }),
+    }).reason,
+    ContextPackRefreshReason.PreviousExpired,
+  );
 
-  equal(decideContextPackRefresh({
-    current: snapshot({ hatAssignmentId: "77" }),
-    observedAt: "2026-06-02T12:00:00.000Z",
-    previous: snapshotRecord({
-      contextPackId: "ctx-incomplete",
-      status: ContextPackStatus.Incomplete,
-      hatAssignmentId: "77",
-    }),
-  }).reason, ContextPackRefreshReason.PreviousNotCurrent);
+  equal(
+    decideContextPackRefresh({
+      current: snapshot({ hatAssignmentId: "77" }),
+      observedAt: "2026-06-02T12:00:00.000Z",
+      previous: snapshotRecord({
+        contextPackId: "ctx-incomplete",
+        status: ContextPackStatus.Incomplete,
+        hatAssignmentId: "77",
+      }),
+    }).reason,
+    ContextPackRefreshReason.PreviousNotCurrent,
+  );
 });
 
 test("context-pack refresh policy treats current matching prior context as reusable", () => {

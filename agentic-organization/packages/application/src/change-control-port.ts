@@ -44,7 +44,13 @@ export function createNullChangeControlPort(): ChangeControlPort {
   return {
     system: ExternalSystem.None,
     async project(cs: ChangeSet): Promise<ProjectionRef> {
-      return { system: ExternalSystem.None, externalId: `internal:${cs.changeSetId}`, url: "", lastSyncedState: "internal", syncedAt: new Date(0).toISOString() };
+      return {
+        system: ExternalSystem.None,
+        externalId: `internal:${cs.changeSetId}`,
+        url: "",
+        lastSyncedState: "internal",
+        syncedAt: new Date(0).toISOString(),
+      };
     },
     async pull(): Promise<ExternalReviewState> {
       // no external system → an external stage can't block; degrade to approved
@@ -73,11 +79,27 @@ export function createFakeExternalPort(system: ExternalSystem, nowMs: () => numb
     system,
     async project(cs: ChangeSet): Promise<ProjectionRef> {
       const externalId = `${system}-${cs.workItemId}-${++counter}`;
-      states.set(externalId, { decision: ExternalDecision.Pending, merged: false, detail: "projected; awaiting external review" });
-      return { system, externalId, url: `https://example.test/${system}/${externalId}`, lastSyncedState: "pending", syncedAt: new Date(nowMs()).toISOString() };
+      states.set(externalId, {
+        decision: ExternalDecision.Pending,
+        merged: false,
+        detail: "projected; awaiting external review",
+      });
+      return {
+        system,
+        externalId,
+        url: `https://example.test/${system}/${externalId}`,
+        lastSyncedState: "pending",
+        syncedAt: new Date(nowMs()).toISOString(),
+      };
     },
     async pull(ref: ProjectionRef): Promise<ExternalReviewState> {
-      return states.get(ref.externalId) ?? { decision: ExternalDecision.Pending, merged: false, detail: "unknown projection" };
+      return (
+        states.get(ref.externalId) ?? {
+          decision: ExternalDecision.Pending,
+          merged: false,
+          detail: "unknown projection",
+        }
+      );
     },
     async push(ref: ProjectionRef): Promise<void> {
       const s = states.get(ref.externalId);
@@ -88,10 +110,18 @@ export function createFakeExternalPort(system: ExternalSystem, nowMs: () => numb
       if (s !== undefined) states.set(ref.externalId, { ...s, merged: true, detail: "merged" });
     },
     approve(externalId: string): void {
-      states.set(externalId, { decision: ExternalDecision.Approved, merged: false, detail: "approved by external human" });
+      states.set(externalId, {
+        decision: ExternalDecision.Approved,
+        merged: false,
+        detail: "approved by external human",
+      });
     },
     requestChanges(externalId: string): void {
-      states.set(externalId, { decision: ExternalDecision.ChangesRequested, merged: false, detail: "changes requested externally" });
+      states.set(externalId, {
+        decision: ExternalDecision.ChangesRequested,
+        merged: false,
+        detail: "changes requested externally",
+      });
     },
     isMerged(externalId: string): boolean {
       return states.get(externalId)?.merged ?? false;

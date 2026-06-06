@@ -7,14 +7,14 @@ cross-reference against `src/Core/` and `tools/tla/specs/`.
 
 6 behavioural specs under `openspec/specs/`:
 
-| Capability | Profiles | Covers |
-|-----------|----------|--------|
-| circuit-recursion | (none) | Circuit, NestedCircuit, Recursive |
-| durability-modes | fsharp | Durability, Checkpoint |
-| lsm-spine-family | fsharp | Spine, DiskSpine, BalancedSpine, SpineAsync |
-| operator-algebra | fsharp | ZSet, Operators, Aggregate, Algebra |
-| repo-automation | bash, github-actions | tools/setup/, .github/workflows/ |
-| retraction-safe-recursion | fsharp | RecursiveSigned |
+| Capability                | Profiles             | Covers                                      |
+| ------------------------- | -------------------- | ------------------------------------------- |
+| circuit-recursion         | (none)               | Circuit, NestedCircuit, Recursive           |
+| durability-modes          | fsharp               | Durability, Checkpoint                      |
+| lsm-spine-family          | fsharp               | Spine, DiskSpine, BalancedSpine, SpineAsync |
+| operator-algebra          | fsharp               | ZSet, Operators, Aggregate, Algebra         |
+| repo-automation           | bash, github-actions | tools/setup/, .github/workflows/            |
+| retraction-safe-recursion | fsharp               | RecursiveSigned                             |
 
 **5 of 6 have implementation profiles.** circuit-recursion lacks
 a profile (spec only, no overlay).
@@ -23,27 +23,27 @@ a profile (spec only, no overlay).
 
 19 TLA+ specs under `tools/tla/specs/`:
 
-| Spec | Maps to src/Core/ |
-|------|-------------------|
-| AsyncStreamEnumerator | Runtime |
-| BftConsensus | Consensus |
-| ChaosEnvDeterminism | ChaosEnv |
-| CircuitRegistration | Circuit |
-| ConsistentHashRebalance | ConsistentHash |
-| DbspSpec | ZSet, Operators |
-| DictionaryStripedCAS | (concurrent primitive) |
-| EngagementLiveness | (AI-safety property) |
-| FeatureFlagsResolution | FeatureFlags |
-| InfoTheoreticSharder | Shard |
-| OperatorLifecycleRace | Circuit, Runtime |
-| RecursiveCountingLFP | Recursive |
-| RecursiveSignedSemiNaive | RecursiveSigned |
-| SmokeCheck | (harness test) |
-| SpineAsyncProtocol | SpineAsync |
-| SpineMergeInvariants | Spine |
-| TickMonotonicity | Watermark |
-| TransactionInterleaving | Transaction |
-| TwoPCSink | Sink |
+| Spec                     | Maps to src/Core/      |
+| ------------------------ | ---------------------- |
+| AsyncStreamEnumerator    | Runtime                |
+| BftConsensus             | Consensus              |
+| ChaosEnvDeterminism      | ChaosEnv               |
+| CircuitRegistration      | Circuit                |
+| ConsistentHashRebalance  | ConsistentHash         |
+| DbspSpec                 | ZSet, Operators        |
+| DictionaryStripedCAS     | (concurrent primitive) |
+| EngagementLiveness       | (AI-safety property)   |
+| FeatureFlagsResolution   | FeatureFlags           |
+| InfoTheoreticSharder     | Shard                  |
+| OperatorLifecycleRace    | Circuit, Runtime       |
+| RecursiveCountingLFP     | Recursive              |
+| RecursiveSignedSemiNaive | RecursiveSigned        |
+| SmokeCheck               | (harness test)         |
+| SpineAsyncProtocol       | SpineAsync             |
+| SpineMergeInvariants     | Spine                  |
+| TickMonotonicity         | Watermark              |
+| TransactionInterleaving  | Transaction            |
+| TwoPCSink                | Sink                   |
 
 2 Alloy specs: InfoTheoreticSharder, Spine.
 
@@ -54,74 +54,74 @@ a profile (spec only, no overlay).
 
 ### Modules with NO spec (behavioural or formal) — 51/81
 
-| Module | Category |
-|--------|----------|
-| Advanced | operator |
-| Arena | memory |
-| ArrowSerializer | serialization |
-| BloomFilter | sketch |
-| Consensus | has TLA+ but no OpenSpec |
-| CountMin | sketch |
-| Crdt | data structure |
-| DeltaCrdt | data structure |
-| Dsl | query |
-| Environment | runtime |
-| FastCdc | chunking |
-| FSharpApi | facade |
-| Fusion | AI-safety |
-| Fusion.Equation | AI-safety |
-| Graph | data structure |
-| Handles | runtime |
-| HardwareCrc | SIMD |
-| Hierarchy | operator |
-| HigherOrder | operator |
-| Incremental | operator |
-| IndexedZSet | data structure |
-| Injection | testing |
-| InjectionExt | testing |
-| LawRunner | testing |
-| MailboxRuntime | runtime |
-| Maji | experimental |
-| Merkle | data structure |
-| Metrics | observability |
-| NovelMath | research |
-| NovelMathExt | research |
-| PhaseExtraction | operator |
-| Plan | query |
-| PluginApi | extension |
-| PluginHarness | extension |
-| Pool | memory |
-| Primitive | core |
-| Query | query |
-| RobustStats | statistics |
-| Rx | reactive |
-| Serializer | serialization |
-| SignalQuality | quality |
-| Simd | SIMD |
-| SimdMerge | SIMD |
-| Sketch | probabilistic |
-| SpeculativeWatermark | streaming |
-| SpineSelector | storage |
-| SplitMix64 | RNG |
-| StructureCatalog | metadata |
-| StructureFingerprint | metadata |
-| TemporalCoordinationDetection | detection |
-| TimeSeries | time-series |
-| Tracing | observability |
-| Units | units |
-| Upsert | operator |
-| Veridicality | quality |
-| Window | streaming |
-| WorkStealingRuntime | runtime |
+| Module                        | Category                 |
+| ----------------------------- | ------------------------ |
+| Advanced                      | operator                 |
+| Arena                         | memory                   |
+| ArrowSerializer               | serialization            |
+| BloomFilter                   | sketch                   |
+| Consensus                     | has TLA+ but no OpenSpec |
+| CountMin                      | sketch                   |
+| Crdt                          | data structure           |
+| DeltaCrdt                     | data structure           |
+| Dsl                           | query                    |
+| Environment                   | runtime                  |
+| FastCdc                       | chunking                 |
+| FSharpApi                     | facade                   |
+| Fusion                        | AI-safety                |
+| Fusion.Equation               | AI-safety                |
+| Graph                         | data structure           |
+| Handles                       | runtime                  |
+| HardwareCrc                   | SIMD                     |
+| Hierarchy                     | operator                 |
+| HigherOrder                   | operator                 |
+| Incremental                   | operator                 |
+| IndexedZSet                   | data structure           |
+| Injection                     | testing                  |
+| InjectionExt                  | testing                  |
+| LawRunner                     | testing                  |
+| MailboxRuntime                | runtime                  |
+| Maji                          | experimental             |
+| Merkle                        | data structure           |
+| Metrics                       | observability            |
+| NovelMath                     | research                 |
+| NovelMathExt                  | research                 |
+| PhaseExtraction               | operator                 |
+| Plan                          | query                    |
+| PluginApi                     | extension                |
+| PluginHarness                 | extension                |
+| Pool                          | memory                   |
+| Primitive                     | core                     |
+| Query                         | query                    |
+| RobustStats                   | statistics               |
+| Rx                            | reactive                 |
+| Serializer                    | serialization            |
+| SignalQuality                 | quality                  |
+| Simd                          | SIMD                     |
+| SimdMerge                     | SIMD                     |
+| Sketch                        | probabilistic            |
+| SpeculativeWatermark          | streaming                |
+| SpineSelector                 | storage                  |
+| SplitMix64                    | RNG                      |
+| StructureCatalog              | metadata                 |
+| StructureFingerprint          | metadata                 |
+| TemporalCoordinationDetection | detection                |
+| TimeSeries                    | time-series              |
+| Tracing                       | observability            |
+| Units                         | units                    |
+| Upsert                        | operator                 |
+| Veridicality                  | quality                  |
+| Window                        | streaming                |
+| WorkStealingRuntime           | runtime                  |
 
 ### Coverage metrics
 
-| Surface | Covered | Total | Coverage |
-|---------|---------|-------|----------|
-| OpenSpec behavioural | 6 capabilities | ~15 modules | 19% of src/Core |
-| TLA+ formal | 19 specs | ~25 modules | 31% of src/Core |
-| Z3 algebraic | 16 lemmas | 8 properties | (pointwise, not module-level) |
-| Alloy | 2 specs | 2 modules | 2% of src/Core |
-| **Combined unique** | **~30 modules** | **81 modules** | **37%** |
+| Surface              | Covered         | Total          | Coverage                      |
+| -------------------- | --------------- | -------------- | ----------------------------- |
+| OpenSpec behavioural | 6 capabilities  | ~15 modules    | 19% of src/Core               |
+| TLA+ formal          | 19 specs        | ~25 modules    | 31% of src/Core               |
+| Z3 algebraic         | 16 lemmas       | 8 properties   | (pointwise, not module-level) |
+| Alloy                | 2 specs         | 2 modules      | 2% of src/Core                |
+| **Combined unique**  | **~30 modules** | **81 modules** | **37%**                       |
 
 63% of src/Core modules have no spec of any kind.

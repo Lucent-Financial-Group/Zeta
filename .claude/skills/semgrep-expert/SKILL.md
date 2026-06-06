@@ -7,7 +7,7 @@ description: Semgrep tool decisions — vs CodeQL/Roslyn, CI integration, p/ci p
 
 Capability skill. No persona. Paired sibling of
 `semgrep-rule-authoring`: that skill owns how to write a rule;
-this skill owns *whether* Semgrep is the right tool for the
+this skill owns _whether_ Semgrep is the right tool for the
 finding, and how the tool is wired into Zeta's CI.
 
 ## When to wear
@@ -81,7 +81,7 @@ Reach for a **Lean / Z3 / TLA+ proof** when:
 - **Custom rules** live in `.semgrep.yml` — 14 rules as of
   round 29, each codifying a recurring reviewer finding.
   Ownership is `semgrep-rule-authoring`; this hat tracks
-  *how many* rules is right and *when* to retire one.
+  _how many_ rules is right and _when_ to retire one.
 - **Secrets scanning** via `p/secrets` is not yet wired;
   rotating in is a backlog item tracked with
   `security-operations-engineer`.
@@ -110,7 +110,7 @@ A rule that produces a false positive:
    CodeQL query. A rule with three false positives is
    costing more than it saves.
 
-The converse — false *negatives* (rule missed a bug that
+The converse — false _negatives_ (rule missed a bug that
 shipped) — routes to `semgrep-rule-authoring` as a new-rule
 proposal.
 
@@ -163,7 +163,7 @@ proposal.
 - `.semgrepignore` — path-level silencing.
 - `.github/workflows/gate.yml` — CI integration.
 - `.claude/skills/semgrep-rule-authoring/SKILL.md` — paired
-  *how* skill.
+  _how_ skill.
 - `.claude/skills/codeql-expert/SKILL.md` — sibling (deeper
   dataflow tool).
 - `.claude/skills/csharp-expert/SKILL.md` — Roslyn

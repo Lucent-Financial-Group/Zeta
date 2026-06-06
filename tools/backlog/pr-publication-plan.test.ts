@@ -145,9 +145,7 @@ describe("validation", () => {
     );
     expect(() => {
       validatePublicationInput(input({ bodyFilePath: "-body.md" }));
-    }).toThrow(
-      "unsafe PR body file path",
-    );
+    }).toThrow("unsafe PR body file path");
     expect(() => {
       validatePublicationInput(input({ bodyFilePath: "/tmp/body.md" }));
     }).toThrow("unsafe repo-relative path");

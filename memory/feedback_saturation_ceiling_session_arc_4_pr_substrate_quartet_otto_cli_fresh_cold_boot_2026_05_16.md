@@ -11,35 +11,35 @@ A fresh-cold-boot Otto-CLI session firing via scheduled-task autonomous-loop DUR
 
 ## Session shape (2026-05-16T06:43Z → 08:41Z, ~2 hours)
 
-| Phase | Duration | Outcome |
-|---|---|---|
-| Cycle 1 (06:43Z-06:51Z) | 8 min | Brief-acks 1-3, pure-git tier, counter reset via rate-reset |
-| Cycle 2 (06:58Z-07:18Z) | 20 min | 3 blocked attempts + 1 success → PR #3808 shipped (later closed) |
-| Cycle 3 (07:25Z-07:30Z) | 5 min | Pre-emptive decomposition at #4 → PR #3812 shipped |
-| Cycle 4 (07:38Z-07:40Z) | 2 min | Pre-emptive at #5 deep extreme cost-aware tier → B-0558 row branch pushed |
-| Cycle 5 (07:46Z-07:56Z) | 10 min | Pure-git tier persists → meta-fallback PR #3818 shipped + 2 deferred PRs created post-reset (#3817, #3818) |
-| CI fix cycle (08:00Z-08:36Z) | 36 min | Diagnostics + fixes pushed for #3808, #3812, #3817 |
-| Final hold (08:36Z onward) | brief-acks 1-5 | Pure-git tier deep, named-wait on rate-reset 17→ |
+| Phase                        | Duration       | Outcome                                                                                                    |
+| ---------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------- |
+| Cycle 1 (06:43Z-06:51Z)      | 8 min          | Brief-acks 1-3, pure-git tier, counter reset via rate-reset                                                |
+| Cycle 2 (06:58Z-07:18Z)      | 20 min         | 3 blocked attempts + 1 success → PR #3808 shipped (later closed)                                           |
+| Cycle 3 (07:25Z-07:30Z)      | 5 min          | Pre-emptive decomposition at #4 → PR #3812 shipped                                                         |
+| Cycle 4 (07:38Z-07:40Z)      | 2 min          | Pre-emptive at #5 deep extreme cost-aware tier → B-0558 row branch pushed                                  |
+| Cycle 5 (07:46Z-07:56Z)      | 10 min         | Pure-git tier persists → meta-fallback PR #3818 shipped + 2 deferred PRs created post-reset (#3817, #3818) |
+| CI fix cycle (08:00Z-08:36Z) | 36 min         | Diagnostics + fixes pushed for #3808, #3812, #3817                                                         |
+| Final hold (08:36Z onward)   | brief-acks 1-5 | Pure-git tier deep, named-wait on rate-reset 17→                                                           |
 
 ## 4-PR substrate quartet shipped
 
-| PR | Role | State |
-|---|---|---|
-| #3808 (CLOSED) | empirical evidence (tick shard) | substantively captured in #3818 |
-| #3812 | operational mitigations (rule body for sub-cases 1+2) | OPEN, fix pushed |
-| #3817 | structural-fix tracking (B-0558 worktree-pool primitive) | OPEN, DIRTY (rebase abandoned under contention) |
-| #3818 | recursive meta-fallback (holding-discipline rule + sub-case 5 + pure-git tier compatibility) | **MERGED ✓** |
+| PR             | Role                                                                                         | State                                           |
+| -------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| #3808 (CLOSED) | empirical evidence (tick shard)                                                              | substantively captured in #3818                 |
+| #3812          | operational mitigations (rule body for sub-cases 1+2)                                        | OPEN, fix pushed                                |
+| #3817          | structural-fix tracking (B-0558 worktree-pool primitive)                                     | OPEN, DIRTY (rebase abandoned under contention) |
+| #3818          | recursive meta-fallback (holding-discipline rule + sub-case 5 + pure-git tier compatibility) | **MERGED ✓**                                    |
 
 ## NEW substrate discovered this session
 
 ### 4 + 1 failure sub-cases of borrow-on-existing under saturation
 
-| # | Sub-case | Mitigation status |
-|---|---|---|
-| 1 | Existing-branch-name reuse → peer-WIP commit inheritance | uniquified name + git rev-parse pre-check (works) |
-| 2 | Concurrent-WIP-blocked switch | wait for WT-clean window (capacity-limited) |
-| 3 | Pack-dir B-0530 race on git worktree add | NONE; needs B-0530 mutex |
-| 4 | Pruned-sidetick race | NONE; needs worktree-pool primitive (B-0558) |
+| #     | Sub-case                                                          | Mitigation status                                                                                      |
+| ----- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 1     | Existing-branch-name reuse → peer-WIP commit inheritance          | uniquified name + git rev-parse pre-check (works)                                                      |
+| 2     | Concurrent-WIP-blocked switch                                     | wait for WT-clean window (capacity-limited)                                                            |
+| 3     | Pack-dir B-0530 race on git worktree add                          | NONE; needs B-0530 mutex                                                                               |
+| 4     | Pruned-sidetick race                                              | NONE; needs worktree-pool primitive (B-0558)                                                           |
 | **5** | **Peer-side destructive git operation discarding unstaged edits** | **commit immediately after Edit; don't rely on unstaged-modifications-follow-switch under saturation** |
 
 Sub-case 5 was discovered DURING authoring PR #3818 — the first authoring attempt was destroyed by peer Otto's destructive operation; re-application from conversation context shipped successfully.

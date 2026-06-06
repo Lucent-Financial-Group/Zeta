@@ -23,13 +23,13 @@ Map Zeta substrate's propagation events to formally-defined CRDT operators and p
 
 Substrate-event → CRDT mapping (initial sketch):
 
-| Substrate event | CRDT type | Notes |
-|---|---|---|
-| Claim creation | G-Set add | Add-only is monotone |
-| Claim revision | LWW-Register or Multi-Value-Register | LWW or branch-and-merge |
-| Claim retraction | OR-Set remove | Observed-Remove preserves causal history |
-| Candidate promotion | State machine on monotone semi-lattice | Rank/level transitions |
-| Consensus formation | PBFT / HotStuff / Tendermint family | Where BFT proper lives |
+| Substrate event     | CRDT type                              | Notes                                    |
+| ------------------- | -------------------------------------- | ---------------------------------------- |
+| Claim creation      | G-Set add                              | Add-only is monotone                     |
+| Claim revision      | LWW-Register or Multi-Value-Register   | LWW or branch-and-merge                  |
+| Claim retraction    | OR-Set remove                          | Observed-Remove preserves causal history |
+| Candidate promotion | State machine on monotone semi-lattice | Rank/level transitions                   |
+| Consensus formation | PBFT / HotStuff / Tendermint family    | Where BFT proper lives                   |
 
 Aaron's "competing lattices" intuition was reaching for **CRDT-composition theory** (multiple semilattices composing under merge operations) — this row captures the actual mathematical work.
 
@@ -48,8 +48,8 @@ Aaron's "competing lattices" intuition was reaching for **CRDT-composition theor
 
 ## Prerequisites (Aaron 2026-05-01 ~10:50Z framing — split build before CRDT work)
 
-- **B-0125** (Skip Analyze (csharp) on docs-only PRs) — **two-tracks-separable build prerequisite**. Aaron's verbatim: *"you probably should split out ts text from f# before the new crdt stuff it will speed everyting up"* + *"the split im taliing is build docs and code seperatly, docs need ts not f#, f# is the long pole for doc only changes"*. CRDT work touches both tracks (docs + code); without the split first, every CRDT-related PR pays the cross-track CI cost.
-- **B-0140** (Bash → TS migration completion) — **debt-prevention prerequisite**. Aaron's verbatim: *"Bash → TS migration completion this is also usefull so we don't just keep building dept"*. The bash and TS implementations of the same script (e.g., `generate-index.sh` + `generate-index.ts`) duplicate maintenance burden; cleaning up before adding CRDT-related substrate operations prevents debt compounding.
+- **B-0125** (Skip Analyze (csharp) on docs-only PRs) — **two-tracks-separable build prerequisite**. Aaron's verbatim: _"you probably should split out ts text from f# before the new crdt stuff it will speed everyting up"_ + _"the split im taliing is build docs and code seperatly, docs need ts not f#, f# is the long pole for doc only changes"_. CRDT work touches both tracks (docs + code); without the split first, every CRDT-related PR pays the cross-track CI cost.
+- **B-0140** (Bash → TS migration completion) — **debt-prevention prerequisite**. Aaron's verbatim: _"Bash → TS migration completion this is also usefull so we don't just keep building dept"_. The bash and TS implementations of the same script (e.g., `generate-index.sh` + `generate-index.ts`) duplicate maintenance burden; cleaning up before adding CRDT-related substrate operations prevents debt compounding.
 
 ## Composes with
 

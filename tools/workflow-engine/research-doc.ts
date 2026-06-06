@@ -47,14 +47,14 @@ export type ResearchDocSection =
   | { kind: "risks"; risks: ReadonlyArray<string>; mitigations?: ReadonlyArray<string> }
   | { kind: "composes-with"; substrates: ReadonlyArray<string>; rules?: ReadonlyArray<string> }
   | { kind: "test-plan"; items: ReadonlyArray<string> }
-  | { kind: "raw"; markdown: string };  // escape-hatch for ad-hoc content
+  | { kind: "raw"; markdown: string }; // escape-hatch for ad-hoc content
 
 /**
  * Research-doc structure — ordered sections.
  */
 export interface ResearchDoc {
-  readonly id: string;                  // canonical id (filename-safe)
-  readonly proposalId: string;          // upstream hypothesis/proposal id
+  readonly id: string; // canonical id (filename-safe)
+  readonly proposalId: string; // upstream hypothesis/proposal id
   readonly sections: ReadonlyArray<ResearchDocSection>;
   readonly composesWith: ReadonlyArray<string>;
 }
@@ -73,16 +73,12 @@ export interface ResearchDoc {
  * asymmetric-authorship discipline — every TFeedback variant should
  * correspond to a real code path that can produce it).
  */
-export type ResearchDocFeedback =
-  | { kind: "EmptyProposalId" }
-  | { kind: "NoSectionsRendered" };
+export type ResearchDocFeedback = { kind: "EmptyProposalId" } | { kind: "NoSectionsRendered" };
 
 /**
  * Result-shape per monad-propagation rule.
  */
-export type ResearchDocResult<T> =
-  | { ok: true; doc: T }
-  | { ok: false; feedback: ResearchDocFeedback };
+export type ResearchDocResult<T> = { ok: true; doc: T } | { ok: false; feedback: ResearchDocFeedback };
 
 /**
  * Render a single section to Markdown.
@@ -105,36 +101,41 @@ export function renderSection(section: ResearchDocSection): string {
       ].join("\n");
     }
     case "background": {
-      const refs = section.references && section.references.length > 0
-        ? `\n\n**References**:\n${section.references.map((r) => `- ${r}`).join("\n")}`
-        : "";
+      const refs =
+        section.references && section.references.length > 0
+          ? `\n\n**References**:\n${section.references.map((r) => `- ${r}`).join("\n")}`
+          : "";
       return `## Background\n\n${section.content}${refs}`;
     }
     case "mechanism": {
-      const paths = section.pathways && section.pathways.length > 0
-        ? `\n\n**Pathways**:\n${section.pathways.map((p) => `- ${p}`).join("\n")}`
-        : "";
+      const paths =
+        section.pathways && section.pathways.length > 0
+          ? `\n\n**Pathways**:\n${section.pathways.map((p) => `- ${p}`).join("\n")}`
+          : "";
       return `## Mechanism\n\n${section.content}${paths}`;
     }
     case "evidence": {
       const supporting = `### Supporting evidence\n\n${section.supporting.map((s) => `- ${s}`).join("\n")}`;
-      const against = section.against && section.against.length > 0
-        ? `\n\n### Evidence against\n\n${section.against.map((s) => `- ${s}`).join("\n")}`
-        : "";
+      const against =
+        section.against && section.against.length > 0
+          ? `\n\n### Evidence against\n\n${section.against.map((s) => `- ${s}`).join("\n")}`
+          : "";
       return `## Evidence\n\n${supporting}${against}`;
     }
     case "risks": {
       const risks = `### Risks\n\n${section.risks.map((r) => `- ${r}`).join("\n")}`;
-      const mitigations = section.mitigations && section.mitigations.length > 0
-        ? `\n\n### Mitigations\n\n${section.mitigations.map((m) => `- ${m}`).join("\n")}`
-        : "";
+      const mitigations =
+        section.mitigations && section.mitigations.length > 0
+          ? `\n\n### Mitigations\n\n${section.mitigations.map((m) => `- ${m}`).join("\n")}`
+          : "";
       return `## Risks + Mitigations\n\n${risks}${mitigations}`;
     }
     case "composes-with": {
       const substrates = `### Composes with substrate\n\n${section.substrates.map((s) => `- ${s}`).join("\n")}`;
-      const rules = section.rules && section.rules.length > 0
-        ? `\n\n### Composes with rules\n\n${section.rules.map((r) => `- ${r}`).join("\n")}`
-        : "";
+      const rules =
+        section.rules && section.rules.length > 0
+          ? `\n\n### Composes with rules\n\n${section.rules.map((r) => `- ${r}`).join("\n")}`
+          : "";
       return `## Composition\n\n${substrates}${rules}`;
     }
     case "test-plan": {
@@ -174,9 +175,7 @@ export interface ResearchDocSkeletonContext {
   readonly composesWith?: ReadonlyArray<string>;
 }
 
-export function buildSkeleton(
-  context: ResearchDocSkeletonContext,
-): ResearchDocResult<ResearchDoc> {
+export function buildSkeleton(context: ResearchDocSkeletonContext): ResearchDocResult<ResearchDoc> {
   if (!context.proposalId || context.proposalId.trim().length === 0) {
     return { ok: false, feedback: { kind: "EmptyProposalId" } };
   }
@@ -229,9 +228,7 @@ export function buildSkeleton(
 /**
  * Convenience: build skeleton + render to Markdown in one shot.
  */
-export function buildAndRender(
-  context: ResearchDocSkeletonContext,
-): ResearchDocResult<string> {
+export function buildAndRender(context: ResearchDocSkeletonContext): ResearchDocResult<string> {
   const skeleton = buildSkeleton(context);
   if (!skeleton.ok) return skeleton;
   return renderResearchDoc(skeleton.doc);

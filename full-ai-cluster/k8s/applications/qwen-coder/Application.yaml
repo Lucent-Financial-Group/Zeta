@@ -8,7 +8,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "50"
   name: qwen-coder
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -16,10 +16,10 @@ spec:
     targetRevision: main
     path: full-ai-cluster/k8s/applications/qwen-coder
     directory:
-      include: '{namespace,configmap}.yaml'
+      include: "{namespace,configmap}.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: models
   syncPolicy:
     automated: { prune: true, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

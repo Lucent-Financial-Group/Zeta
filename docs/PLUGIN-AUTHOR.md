@@ -25,21 +25,21 @@ only when your operator genuinely needs them.
 
 **Algebra capability** (mutually exclusive — pick one):
 
-| Capability | What it means | Algebra rule |
-|---|---|---|
-| `ILinearOperator<'TIn,'TOut>` | Linear map: `op(a+b) = op(a)+op(b)`; `op(0) = 0` | Retraction-native |
-| `IBilinearOperator<'TIn1,'TIn2,'TOut>` | Bilinear in both inputs (e.g. join) | Algebra generates the `^Δ` form |
-| `IStatefulStrictOperator<'TIn,'TState,'TOut>` | Explicit init/step/retract state triple | State must retract cleanly |
-| `ISinkOperator<'TIn,'TOut>` | Terminal, non-Z-set output, may be retraction-lossy | **Exempt from composition** — terminal edges only |
-| *(none)* — plain `IOperator<'TOut>` | Unconstrained; assert nothing | Terminal edges only |
+| Capability                                    | What it means                                       | Algebra rule                                      |
+| --------------------------------------------- | --------------------------------------------------- | ------------------------------------------------- |
+| `ILinearOperator<'TIn,'TOut>`                 | Linear map: `op(a+b) = op(a)+op(b)`; `op(0) = 0`    | Retraction-native                                 |
+| `IBilinearOperator<'TIn1,'TIn2,'TOut>`        | Bilinear in both inputs (e.g. join)                 | Algebra generates the `^Δ` form                   |
+| `IStatefulStrictOperator<'TIn,'TState,'TOut>` | Explicit init/step/retract state triple             | State must retract cleanly                        |
+| `ISinkOperator<'TIn,'TOut>`                   | Terminal, non-Z-set output, may be retraction-lossy | **Exempt from composition** — terminal edges only |
+| _(none)_ — plain `IOperator<'TOut>`           | Unconstrained; assert nothing                       | Terminal edges only                               |
 
 **Scheduler capability** (orthogonal — add as needed):
 
-| Capability | What it means |
-|---|---|
-| `IStrictOperator<'TOut>` | Feedback-cut (z⁻¹-style). Publish delayed state in `StepAsync`; capture current input in `AfterStepAsync` |
-| `IAsyncOperator` | Operator issues genuinely asynchronous work (disk I/O, network); opts into the scheduler's slow async state-machine path |
-| `INestedFixpointParticipant` | Operator participates in a nested fixed-point scope |
+| Capability                   | What it means                                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `IStrictOperator<'TOut>`     | Feedback-cut (z⁻¹-style). Publish delayed state in `StepAsync`; capture current input in `AfterStepAsync`                |
+| `IAsyncOperator`             | Operator issues genuinely asynchronous work (disk I/O, network); opts into the scheduler's slow async state-machine path |
+| `INestedFixpointParticipant` | Operator participates in a nested fixed-point scope                                                                      |
 
 Pick the **strongest** algebra tag that honestly describes
 your operator. Lying (claiming Linear when you are not) is

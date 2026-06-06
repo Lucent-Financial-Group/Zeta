@@ -19,6 +19,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Aaron 2026-05-26: 'any parts we can test in siolate are candidates for more unit like tests instead of full integration tests'.
 
 Ships **#2 of CI test cascade**. Two new files:
+
 - `full-ai-cluster/tools/zflash-lib.ts` (~90 LOC pure-logic library: VALID_HOSTNAME_REGEX + isValidHostname + parseFatPartitionFromDiskutilList + generateRandomNodeName + parseOutputFileMarker)
 - `full-ai-cluster/tools/zflash-lib.test.ts` (~180 LOC; 33 Bun-test cases; ALL PASS)
 
@@ -39,6 +40,7 @@ _(no body)_
 This PR introduces a small, pure-logic TypeScript library for `zflash`-adjacent parsing/validation so it can be covered by fast Bun unit tests (as part of the “CI test cascade” effort), plus a new Bun test suite that exercises the extracted logic and documents a discovered `diskutil`-parsing regex edge case.
 
 **Changes:**
+
 - Add `zflash-lib.ts` exporting pure helpers/constants (hostname validation, `diskutil` FAT/EFI partition detection, node-name generation, peer-call output marker parsing).
 - Add `zflash-lib.test.ts` with Bun unit tests covering these helpers and pinning the discovered `DOS_FAT`/word-boundary mismatch behavior.
 
@@ -46,9 +48,9 @@ This PR introduces a small, pure-logic TypeScript library for `zflash`-adjacent 
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 7 comments.
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/tools/zflash-lib.ts | New pure-logic helper library extracted from `zflash` logic for unit-testability. |
+| File                                     | Description                                                                                                                     |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/tools/zflash-lib.ts      | New pure-logic helper library extracted from `zflash` logic for unit-testability.                                               |
 | full-ai-cluster/tools/zflash-lib.test.ts | New Bun test suite validating hostname parsing/formatting, `diskutil` parsing, RNG-driven naming, and peer-call marker parsing. |
 
 ## Review threads
@@ -64,6 +66,7 @@ Unused import VALID_HOSTNAME_REGEX.
 ---
 
 To fix this without changing functionality, remove the unused named import <code>VALID_HOSTNAME_REGEX</code> from the <code>./zflash-lib</code> import block in <code>full-ai-cluster/tools/zflash-lib.test.ts</code>.</p>
+
 <p>Best single change:</p>
 <ul>
 <li>Edit the import block at lines 19–25.</li>
@@ -106,7 +109,7 @@ P1 (codebase convention): This comment attributes guidance to a specific person 
 
 **@copilot-pull-request-reviewer** (2026-05-26T06:58:37Z):
 
-P1: This test intentionally locks in a known regex bug (expects `DOS_FAT_32` to *not* match). Unit tests usually should assert intended behavior, not preserve a defect; otherwise a future fix will require deleting/updating tests before it can land. Consider changing the parser regex now (or adjusting docs) and flipping this test to assert the correct partition is found.
+P1: This test intentionally locks in a known regex bug (expects `DOS_FAT_32` to _not_ match). Unit tests usually should assert intended behavior, not preserve a defect; otherwise a future fix will require deleting/updating tests before it can land. Consider changing the parser regex now (or adjusting docs) and flipping this test to assert the correct partition is found.
 
 ### Thread 8: full-ai-cluster/tools/zflash-lib.test.ts:210 (resolved)
 

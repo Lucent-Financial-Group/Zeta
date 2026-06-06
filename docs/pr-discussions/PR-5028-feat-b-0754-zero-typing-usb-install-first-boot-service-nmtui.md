@@ -45,12 +45,12 @@ If anything fails: drop to interactive shell (no `exit 1`); the existing manual 
 
 ### Files
 
-| File | Change |
-|---|---|
-| `usb-nixos-installer/zeta-first-boot.sh` | **NEW** — wrapper script (role prompt + network + install + reboot) |
-| `usb-nixos-installer/zeta-install.sh` | `ZETA_AUTO_CONFIRM=WIPE` env-var bypass for typed confirmation |
-| `usb-nixos-installer/nixos/installer/configuration.nix` | systemd unit + `/etc/zeta-firstboot.conf` + `/etc/zeta-firstboot-enabled` + disable getty@tty1 |
-| `PROVISIONING.md` | Updates Step 4 + Step 5 to reflect zero-typing default |
+| File                                                           | Change                                                                                                        |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `usb-nixos-installer/zeta-first-boot.sh`                       | **NEW** — wrapper script (role prompt + network + install + reboot)                                           |
+| `usb-nixos-installer/zeta-install.sh`                          | `ZETA_AUTO_CONFIRM=WIPE` env-var bypass for typed confirmation                                                |
+| `usb-nixos-installer/nixos/installer/configuration.nix`        | systemd unit + `/etc/zeta-firstboot.conf` + `/etc/zeta-firstboot-enabled` + disable getty@tty1                |
+| `PROVISIONING.md`                                              | Updates Step 4 + Step 5 to reflect zero-typing default                                                        |
 | `docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-...md` | Follow-up backlog row for role taxonomy expansion (control-plane-gpu, worker-cpu, worker-storage, all-in-one) |
 
 ### Override path (recovery / non-standard shapes)
@@ -81,6 +81,7 @@ Switch to `Ctrl-Alt-F2` for a normal login shell. The first-boot service runs on
 Adds a first-boot, tty1-driven auto-installer flow for the USB NixOS installer to reduce operator typing during cluster node provisioning, plus supporting documentation/backlog updates.
 
 **Changes:**
+
 - Introduces a new `zeta-first-boot` script to select role, bring up networking (ethernet wait, `nmtui` fallback), run install, and reboot.
 - Adds `ZETA_AUTO_CONFIRM=WIPE` to allow `zeta-install` to bypass the typed destructive confirmation prompt.
 - Wires a new systemd service into the installer ISO configuration and updates provisioning docs; adds a follow-up backlog row for expanded role taxonomy.
@@ -92,13 +93,14 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 5 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| full-ai-cluster/usb-nixos-installer/zeta-install.sh | Adds env-var bypass for destructive WIPE confirmation. |
-| full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh | New first-boot orchestration script (role prompt + network + install + reboot). |
-| full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix | Installs first-boot script, adds first-boot marker/config, and systemd unit on tty1; updates on-USB instructions. |
-| full-ai-cluster/PROVISIONING.md | Updates provisioning steps to reflect the intended zero-typing/`nmtui` flow. |
-| docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md | Adds backlog row for expanding host-role taxonomy and extending the role-prompt surface. |
+| File                                                                                                                              | Description                                                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| full-ai-cluster/usb-nixos-installer/zeta-install.sh                                                                               | Adds env-var bypass for destructive WIPE confirmation.                                                            |
+| full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh                                                                            | New first-boot orchestration script (role prompt + network + install + reboot).                                   |
+| full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix                                                             | Installs first-boot script, adds first-boot marker/config, and systemd unit on tty1; updates on-USB instructions. |
+| full-ai-cluster/PROVISIONING.md                                                                                                   | Updates provisioning steps to reflect the intended zero-typing/`nmtui` flow.                                      |
+| docs/backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md | Adds backlog row for expanding host-role taxonomy and extending the role-prompt surface.                          |
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-25T23:35:34Z)

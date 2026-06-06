@@ -26,7 +26,7 @@ Same incident, five layers below.
 
 Audience: maintainer's private substrate; close peer in explicitly bilateral peer register
 
-> *holy shit — `FakeLib.Serialization` 3.2.1 has an RCE via `UnsafeDeserialize<T>`. we don't call it directly (we only hit the safe `Deserialize<T>` with the type allowlist) but the method is public in the assembly so any consumer pulling our transitive deps could reach it. no evidence anyone has. i pinned to 3.2.2 which rips the vulnerable path out entirely + force-bumped ProjectHelper.Core to 2.0.1. patch is live, 4 hours from discovery to ship. we got lucky — if we'd been calling that method directly this would've been a very different conversation.*
+> _holy shit — `FakeLib.Serialization` 3.2.1 has an RCE via `UnsafeDeserialize<T>`. we don't call it directly (we only hit the safe `Deserialize<T>` with the type allowlist) but the method is public in the assembly so any consumer pulling our transitive deps could reach it. no evidence anyone has. i pinned to 3.2.2 which rips the vulnerable path out entirely + force-bumped ProjectHelper.Core to 2.0.1. patch is live, 4 hours from discovery to ship. we got lucky — if we'd been calling that method directly this would've been a very different conversation._
 
 What's preserved: full technical diagnosis, explicit scope of exposure, explicit scope of non-exposure, timeline, honest assessment of luck, forward-looking risk awareness.
 

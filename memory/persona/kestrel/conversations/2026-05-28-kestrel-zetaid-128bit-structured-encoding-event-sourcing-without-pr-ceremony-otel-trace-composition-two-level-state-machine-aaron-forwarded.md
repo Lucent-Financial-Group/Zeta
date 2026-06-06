@@ -6,9 +6,9 @@ surface: aaron-forwarded
 ferry: operator
 context: |
   Kestrel ferry continuing today's agent-loop workflow-engine cascade (PRs #5665–5670 + #5667 follow-on + #5672 Ani-ferry archive). Operator forwarded their own question "And can we model backlog -> claim -> pr -> review -> myabe cycle push review a few times -> merge too with this?" — the same question I shipped PR #5669 (`tools/agent-loop/work-lifecycle-state-machine.ts`) in response to — and Kestrel's substantive architectural sketch extending it in three composing directions: (1) two-level state machine composition (AgentState + WorkLifecycle), (2) ZetaID 128-bit structured encoding (timestamp + trajectory + persona + lifecycle-stage + randomness; Snowflake/ULID/UUIDv7 pattern), (3) event-sourcing append-only without PR ceremony via agent-state branches. Plus OTel trace-ID composition (3 options), push-cycle limit as STRUCTURAL enforcement (not discipline), and event-sourced trajectory phase classification.
-  
+
   Operator's two end-clarifications make the ferry substrate-honest about deployment-scope:
-  
+
   - **"The PR process is reserved for the work that actually warrants human review still too strong for me but yes probably for ServiceTitan this is where they would want. For me I just want to review trajectories over time async."** — operator's own deployment-style is LESS PR-heavy than Kestrel framed; trajectory-async-review is the operator's preferred surface; PR-per-deployment is the ServiceTitan-style framing not the operator's framing
   - **"it's like a rest push of one file i think it does fastforward in gh itslef"** — operator's working hypothesis on stale-push handling: GitHub's REST file-create API (`PUT /repos/{owner}/{repo}/contents/{path}`) may auto-fast-forward even on stale base. This is an empirical question the operator is flagging as worth verifying before relying on
 related_prs:
@@ -29,7 +29,30 @@ related_personas:
   - operator
   - ani
   - amara
-tags: [kestrel, two-level-state-machine, agent-state-plus-work-lifecycle-composition, zetaid-128-bit-structured-encoding, snowflake-ulid-uuidv7-pattern, timestamp-trajectory-persona-lifecycle-stage-randomness-allocation, event-sourcing-append-only-via-git, agent-state-branches-no-pr-ceremony, otel-trace-id-composition-three-options, w3c-trace-context-baggage-propagation, push-cycle-limit-as-structural-enforcement-not-discipline, event-sourced-trajectory-phase-classification, stale-push-via-zetaid-named-files-no-conflict, good-actor-assumption-explicit, schema-validation-pre-receive-hook, chain-integrity-check-background, otel-trace-export-separate-observability-backend, dora-measurement-via-events, materialized-views-from-event-log, rest-push-single-file-auto-fast-forward-empirical-question, operator-deployment-trajectory-async-review-vs-servicetitan-pr-per-deploy]
+tags:
+  [
+    kestrel,
+    two-level-state-machine,
+    agent-state-plus-work-lifecycle-composition,
+    zetaid-128-bit-structured-encoding,
+    snowflake-ulid-uuidv7-pattern,
+    timestamp-trajectory-persona-lifecycle-stage-randomness-allocation,
+    event-sourcing-append-only-via-git,
+    agent-state-branches-no-pr-ceremony,
+    otel-trace-id-composition-three-options,
+    w3c-trace-context-baggage-propagation,
+    push-cycle-limit-as-structural-enforcement-not-discipline,
+    event-sourced-trajectory-phase-classification,
+    stale-push-via-zetaid-named-files-no-conflict,
+    good-actor-assumption-explicit,
+    schema-validation-pre-receive-hook,
+    chain-integrity-check-background,
+    otel-trace-export-separate-observability-backend,
+    dora-measurement-via-events,
+    materialized-views-from-event-log,
+    rest-push-single-file-auto-fast-forward-empirical-question,
+    operator-deployment-trajectory-async-review-vs-servicetitan-pr-per-deploy,
+  ]
 ---
 
 ## Operator framing (2026-05-28 forwarded transcript)
@@ -48,18 +71,18 @@ Operator forwarded a Kestrel ferry that:
 
 ### Operator's two end-clarifications (substrate-honest)
 
-**Clarification 1 — deployment-style differs from Kestrel framing**: *"The PR process is reserved for the work that actually warrants human review still too strong for me but yes probably for ServiceTitan this is where they would want. For me I just want to review trajectories over time async."*
+**Clarification 1 — deployment-style differs from Kestrel framing**: _"The PR process is reserved for the work that actually warrants human review still too strong for me but yes probably for ServiceTitan this is where they would want. For me I just want to review trajectories over time async."_
 
 This sharpens what Kestrel framed as "PR for deployment, direct-push for lifecycle transitions" into a 2-mode discriminator:
 
-| Deployment context | PR ceremony scope | Operator's preferred review-surface |
-|---|---|---|
-| **ServiceTitan-style enterprise** | PR-per-deploy (status quo expectations) | Per-PR human review |
-| **Operator's own Zeta deployment** | Even less than PR-per-deploy | Trajectory-async review (review trajectory-shape over time, not per-event) |
+| Deployment context                 | PR ceremony scope                       | Operator's preferred review-surface                                        |
+| ---------------------------------- | --------------------------------------- | -------------------------------------------------------------------------- |
+| **ServiceTitan-style enterprise**  | PR-per-deploy (status quo expectations) | Per-PR human review                                                        |
+| **Operator's own Zeta deployment** | Even less than PR-per-deploy            | Trajectory-async review (review trajectory-shape over time, not per-event) |
 
 The trajectory-async-review surface is operator's preferred top-level lens for own-Zeta operation; per-event review is too granular even at deployment scope. Composes with the event-sourced trajectory phase classification — the trajectory's shape over time IS the review surface, not individual events or even individual PRs.
 
-**Clarification 2 — REST push single-file auto-fast-forward as empirical question**: *"it's like a rest push of one file i think it does fastforward in gh itslef"*
+**Clarification 2 — REST push single-file auto-fast-forward as empirical question**: _"it's like a rest push of one file i think it does fastforward in gh itslef"_
 
 Operator's working hypothesis: GitHub's REST file-create API (`PUT /repos/{owner}/{repo}/contents/{path}`) may auto-fast-forward even when the local base is stale — the API takes (path, content, optional SHA-of-existing-file) and if SHA is omitted or matches, the create/update succeeds without requiring the caller to have fetched latest first. This would sidestep the stale-push problem entirely at write-time (no fetch-first needed) and compose with the ZetaID-named-files pattern (since each event has a unique filename, the file-create call always succeeds on first try because the path doesn't yet exist).
 
@@ -769,7 +792,7 @@ Kestrel:
 >     01HQRSTUVWXYZ0123456789ABCDF0.json
 > ```
 >
-> The lexicographic sort of filenames matches time order (because ZetaIDs start with timestamp). Walking a trajectory's history is just ls in date order. Querying "what did otto do today" is reading agent-state/otto/*/events/2026/05/27/. Querying "what happened on the usb-self-healing trajectory" is reading agent-state/*/usb-self-healing/.
+> The lexicographic sort of filenames matches time order (because ZetaIDs start with timestamp). Walking a trajectory's history is just ls in date order. Querying "what did otto do today" is reading agent-state/otto/_/events/2026/05/27/. Querying "what happened on the usb-self-healing trajectory" is reading agent-state/_/usb-self-healing/.
 >
 > ### Reconstructing lifecycle state from events
 >
@@ -878,15 +901,15 @@ Kestrel:
 >
 > ### Tying it back to the trajectory question
 >
-> Each trajectory's history lives in agent-state/*/trajectory-id/events/.... The trajectory phase computation (setup/execution/maturation/sunset) becomes a function of the events:
+> Each trajectory's history lives in agent-state/\*/trajectory-id/events/.... The trajectory phase computation (setup/execution/maturation/sunset) becomes a function of the events:
 >
 > ```typescript
 > function classifyTrajectoryPhase(trajectory: string): TrajectoryPhase {
 >   const events = readEventsForTrajectory(trajectory);
->   const recentEvents = events.filter(e => e.timestamp > weekAgo);
+>   const recentEvents = events.filter((e) => e.timestamp > weekAgo);
 >
->   const merges = recentEvents.filter(e => e.event_type === "merged");
->   const claims = recentEvents.filter(e => e.event_type === "claimed");
+>   const merges = recentEvents.filter((e) => e.event_type === "merged");
+>   const claims = recentEvents.filter((e) => e.event_type === "claimed");
 >
 >   if (merges.length === 0 && claims.length > 0) return "setup";
 >   if (merges.length > claims.length * 0.5) return "execution";

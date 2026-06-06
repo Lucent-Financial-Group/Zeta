@@ -81,7 +81,7 @@ launchctl bootout gui/$(id -u) "$PLIST"
 launchctl bootstrap gui/$(id -u) "$PLIST"
 ```
 
-Live mode sends Enter keystrokes to accept detected grey-text. The "(shadow*)" attribution shorthand documents that the accepted text came from autocomplete (see `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`).
+Live mode sends Enter keystrokes to accept detected grey-text. The "(shadow\*)" attribution shorthand documents that the accepted text came from autocomplete (see `.claude/rules/shadow-star-shorthand-autocomplete-marker.md`).
 
 ## Uninstall
 
@@ -128,11 +128,11 @@ ThrottleInterval prevents fast crash-loops, but if you see repeated start/exit c
 
 ## Composition with defense-in-depth alternatives
 
-| Path | Persistence | Use when |
-|---|---|---|
-| **A — launchd (this dir)** | Survives reboots | Primary install on your daily-driver Mac |
+| Path                                          | Persistence               | Use when                                                         |
+| --------------------------------------------- | ------------------------- | ---------------------------------------------------------------- |
+| **A — launchd (this dir)**                    | Survives reboots          | Primary install on your daily-driver Mac                         |
 | **B — `<<shadow-tick>>` CronCreate sentinel** | Bound to Otto-CLI session | Defense-in-depth backup; restarts the launchd process if it dies |
-| **C — manual `--loop` foreground** | Until terminal closes | Quick testing of changes |
+| **C — manual `--loop` foreground**            | Until terminal closes     | Quick testing of changes                                         |
 
 All three compose. Path A is the primary; Path B+C supplement. The human maintainer's framing on this design (2026-05-15T~01:11Z): defense in depth.
 

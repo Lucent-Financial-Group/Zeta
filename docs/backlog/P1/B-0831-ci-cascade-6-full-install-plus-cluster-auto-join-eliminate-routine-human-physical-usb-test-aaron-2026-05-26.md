@@ -31,9 +31,9 @@ console-output. But it does NOT validate:
 - ArgoCD sees the new node + reconciles (per B-0813 iter-5.4.2)
 
 The human maintainer currently physically tests by booting from USB on
-real hardware. Operator framing 2026-05-26: *"zflash is the thing plus
+real hardware. Operator framing 2026-05-26: _"zflash is the thing plus
 cluster auto joining after boot from iso use we want that in ci not
-needing human to test everytime."*
+needing human to test everytime."_
 
 Eliminating routine human physical-USB-test as the gate for substrate
 landings would unblock multiple downstream cascades and reduce
@@ -156,14 +156,14 @@ operator named 2026-05-26.
 
 ### Physical test BECOMES the hardware-support test (operator 2026-05-26 reframing)
 
-Operator's sharpening: *"yes physcal test become actually hardware
-support test"*. Physical USB-test is REFRAMED — not eliminated, not
+Operator's sharpening: _"yes physcal test become actually hardware
+support test"_. Physical USB-test is REFRAMED — not eliminated, not
 demoted, but assigned a different scope:
 
-| Test scope | Surface | Validates |
-|---|---|---|
-| Routine substrate validation | CI cascade #6 (this row) | Install flow + cluster-join shape (QEMU-emulatable) |
-| **Hardware-support test** | Physical USB on real hardware | BIOS/UEFI variant compatibility, motherboard NIC drivers, SAS controller support, GPU detection on actual silicon, real-hardware quirks QEMU cannot emulate |
+| Test scope                   | Surface                       | Validates                                                                                                                                                   |
+| ---------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Routine substrate validation | CI cascade #6 (this row)      | Install flow + cluster-join shape (QEMU-emulatable)                                                                                                         |
+| **Hardware-support test**    | Physical USB on real hardware | BIOS/UEFI variant compatibility, motherboard NIC drivers, SAS controller support, GPU detection on actual silicon, real-hardware quirks QEMU cannot emulate |
 
 The physical test is no longer the gate-of-last-resort for every
 substrate landing; it becomes the **first-class hardware-compatibility-

@@ -232,17 +232,17 @@ needs.
 Agentic Organization should keep the semantics while changing the
 substrate:
 
-| Gastown shape | Agentic Organization shape |
-|---|---|
-| beads work item | CockroachDB work item and graph edge |
-| git/file event log | durable outbox, NATS, inbox receipt, telemetry |
-| tmux session | Oz/Hermes run binding in k3s |
-| Mayor | elected/provisioned C-suite or executive hats |
-| Witness | manager/team health observer plus runtime watchdog |
-| Deacon/Dogs | always-on workers and reconcilers |
-| sling context bead | schedule block, run binding, prompt-flow run |
-| molecule checklist | executable prompt-flow phases and gates |
-| refinery | release/promotion workflow and review gates |
+| Gastown shape      | Agentic Organization shape                         |
+| ------------------ | -------------------------------------------------- |
+| beads work item    | CockroachDB work item and graph edge               |
+| git/file event log | durable outbox, NATS, inbox receipt, telemetry     |
+| tmux session       | Oz/Hermes run binding in k3s                       |
+| Mayor              | elected/provisioned C-suite or executive hats      |
+| Witness            | manager/team health observer plus runtime watchdog |
+| Deacon/Dogs        | always-on workers and reconcilers                  |
+| sling context bead | schedule block, run binding, prompt-flow run       |
+| molecule checklist | executable prompt-flow phases and gates            |
+| refinery           | release/promotion workflow and review gates        |
 
 ### Messaging Must Not Become Dispatchable Work
 
@@ -271,15 +271,15 @@ lesson:
 Gastown has named agent roles, but Agentic Organization needs each
 hierarchy layer to own a real orchestration job:
 
-| Layer | Orchestration duty |
-|---|---|
-| Executive Board | constitution, succession, final conflict policy, C-suite provisioning |
-| C-suite | standards, portfolio priorities, budget/capacity goals |
-| Directors | project and initiative priority, department health, tool/process improvement |
-| TPM hats | initiative decomposition, schedule/resource flow, blocker movement |
-| Engineering Managers | team schedules, work quality, memory/tool gaps, performance reviews |
-| Review hats | gate decisions with evidence and authority |
-| Implementer hats | scheduled execution, TDD, evidence, handoff |
+| Layer                | Orchestration duty                                                           |
+| -------------------- | ---------------------------------------------------------------------------- |
+| Executive Board      | constitution, succession, final conflict policy, C-suite provisioning        |
+| C-suite              | standards, portfolio priorities, budget/capacity goals                       |
+| Directors            | project and initiative priority, department health, tool/process improvement |
+| TPM hats             | initiative decomposition, schedule/resource flow, blocker movement           |
+| Engineering Managers | team schedules, work quality, memory/tool gaps, performance reviews          |
+| Review hats          | gate decisions with evidence and authority                                   |
+| Implementer hats     | scheduled execution, TDD, evidence, handoff                                  |
 
 Each layer should have event subscriptions, queues, dashboards,
 scheduled reviews, and authority-scoped tools. This is stronger than a

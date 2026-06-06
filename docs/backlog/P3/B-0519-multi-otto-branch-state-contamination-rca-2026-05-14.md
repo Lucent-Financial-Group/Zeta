@@ -188,7 +188,9 @@ if (existsSync(rebaseMerge)) {
   const ageMs = Date.now() - statSync(rebaseMerge).mtimeMs;
   if (ageMs > 60 * 60 * 1000) {
     const headName = readFileSync(`${rebaseMerge}/head-name`, "utf-8").trim();
-    console.warn(`Stale rebase state on ${headName} (${Math.round(ageMs / 1000 / 60)}min old). Peer agent should resume-or-abort.`);
+    console.warn(
+      `Stale rebase state on ${headName} (${Math.round(ageMs / 1000 / 60)}min old). Peer agent should resume-or-abort.`,
+    );
   }
 }
 ```
@@ -223,7 +225,7 @@ This row captures a pattern, not a specific fix. The full mechanization (substan
 ## Field-test ticks (Patterns 5 + 6)
 
 - `docs/hygiene-history/ticks/2026/05/14/2010Z.md` — first untangle field-test
-  + secondary failure (env-var-based hook didn't catch wrong-branch commit).
+  - secondary failure (env-var-based hook didn't catch wrong-branch commit).
 - `docs/hygiene-history/ticks/2026/05/14/2026Z.md` — Pattern 5 + Pattern 6
   surfaced; `git branch --show-current` + `gh pr create --head` defenses
   validated.

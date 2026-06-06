@@ -14,7 +14,7 @@ Co/contravariance is the poster child for the
 it upper-vs-lower indices. A category theorist calls it
 covariant-vs-contravariant functor. A C# programmer calls
 it `out` vs `in`. These are not analogies. They are the
-*same* distinction: which direction does substitution flow
+_same_ distinction: which direction does substitution flow
 relative to the direction of morphisms.
 
 ## When to wear
@@ -64,7 +64,7 @@ Given a type constructor `F<-> and types`A <: B`:
   direction breaks.
 
 The variance of `F` is not a property of the parameter
-alone; it is a property of *how the parameter is used*
+alone; it is a property of _how the parameter is used_
 inside `F`. Used only in output positions → covariant.
 Used only in input positions → contravariant. Used in
 both → invariant.
@@ -107,10 +107,10 @@ not let you declare them natively.
 
 - **Contravariant in `TArg`.** `Func<Animal, int>` can
   replace a `Func<Dog, int>` wherever the latter is
-  expected — accepting Animals is a *stronger* guarantee
+  expected — accepting Animals is a _stronger_ guarantee
   than accepting only Dogs.
 - **Covariant in `TResult`.** `Func<int, Dog>` can replace
-  `Func<int, Animal>` — returning a Dog is a *stronger*
+  `Func<int, Animal>` — returning a Dog is a _stronger_
   guarantee than promising only an Animal.
 
 This is the Liskov substitution principle as a variance
@@ -143,7 +143,7 @@ direction.
 The category-theoretic `C^op` (opposite category) is the
 mathematical machinery that makes contravariance precise:
 contravariant in `C` ≡ covariant in `C^op`. Reversing the
-arrows *is* the operation.
+arrows _is_ the operation.
 
 ## Physics — upper-vs-lower indices
 
@@ -152,11 +152,11 @@ under a change of basis:
 
 - **Upper index (contravariant components)** —
   `v^i`. Transform as `v'^i = (∂x'^i / ∂x^j) v^j`.
-  Behave like column vectors. Represent *vectors*
+  Behave like column vectors. Represent _vectors_
   (displacements, velocities).
 - **Lower index (covariant components)** — `ω_i`.
   Transform as `ω'_i = (∂x^j / ∂x'^i) ω_j`. Behave like
-  row vectors. Represent *covectors* (gradients,
+  row vectors. Represent _covectors_ (gradients,
   differentials).
 
 The naming is famously confusing: a "covariant" tensor in
@@ -173,18 +173,18 @@ for the deep treatment.
 Upper and lower indices appear in pairs: `a^i b_i` means
 `Σᵢ a^i b_i`. The pairing is the type system of physics —
 it only type-checks when one index is up and one is down.
-This is *exactly* the "covariant pairs with contravariant"
+This is _exactly_ the "covariant pairs with contravariant"
 rule that makes a profunctor apply a function: source
 (covariant) is cancelled against sink (contravariant) to
 produce a value.
 
 ## The pattern: same idea, three vocabularies
 
-| Field | "Direction same" | "Direction reversed" | Pairing rule |
-| --- | --- | --- | --- |
-| C# / .NET | `out T` | `in T` | consumer ∘ producer |
-| Category theory | covariant functor | contravariant functor | `Hom(A, -) × Hom(-, B)` |
-| Physics | contravariant tensor (`v^i`) | covariant tensor (`ω_i`) | `a^i b_i` |
+| Field           | "Direction same"             | "Direction reversed"     | Pairing rule            |
+| --------------- | ---------------------------- | ------------------------ | ----------------------- |
+| C# / .NET       | `out T`                      | `in T`                   | consumer ∘ producer     |
+| Category theory | covariant functor            | contravariant functor    | `Hom(A, -) × Hom(-, B)` |
+| Physics         | contravariant tensor (`v^i`) | covariant tensor (`ω_i`) | `a^i b_i`               |
 
 The unified view: a type constructor, a functor, and a
 tensor are the same shape — a mapping that either
@@ -239,12 +239,15 @@ When this skill is on a review:
 ## Variance Findings
 
 ### P0 (type-safety / substitution bugs)
+
 - <finding> — <location>.
 
 ### P1 (missed variance opportunity on public surface)
+
 - <finding> — <location>.
 
 ### P2 (naming / convention mismatch across disciplines)
+
 - <finding>.
 ```
 
@@ -279,15 +282,15 @@ When this skill is on a review:
   physics / programming bridges) — the template.
 - Beckman + Meijer joint Channel 9 episodes — LINQ /
   category theory / duality.
-- *Thinking Functionally with Haskell* (Bird) — the
+- _Thinking Functionally with Haskell_ (Bird) — the
   functor / contravariant functor / profunctor lineage.
-- Misner, Thorne, Wheeler — *Gravitation* — upper/lower
+- Misner, Thorne, Wheeler — _Gravitation_ — upper/lower
   index gospel.
-- Dirac — *General Theory of Relativity* — compact
+- Dirac — _General Theory of Relativity_ — compact
   treatment of covariant/contravariant tensors.
-- Wadler 1989, *Theorems for Free!* — parametricity is
+- Wadler 1989, _Theorems for Free!_ — parametricity is
   dual-glass to variance.
-- Pierce — *Types and Programming Languages* — chapters on
+- Pierce — _Types and Programming Languages_ — chapters on
   subtyping and variance.
 - `.claude/skills/linq-expert/SKILL.md` — Erik.
 - `.claude/skills/rx-expert/SKILL.md` — Bart.

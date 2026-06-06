@@ -28,13 +28,13 @@ Today's 4-batch Otto-279 cleanup arc ([PR #3570](https://github.com/Lucent-Finan
 
 5+ live `orphan-ferry-ref` hits requiring per-occurrence judgment:
 
-| File | Line | Context |
-|---|---|---|
-| `tools/hygiene/audit-agencysignature-main-tip.ts` | 9 | `ferry-7 enforcement-instrument set` |
-| `tools/hygiene/audit-agencysignature-main-tip.ts` | 389 | `ferry-6` reference |
-| `tools/hygiene/validate-agencysignature-pr-body.ts` | 9 | `ferry-7 enforcement-instrument set ("stop designing, instrument enforcement")` |
-| `tests/Tests.FSharp/Algebra/Veridicality.Tests.fs` | 12 | `ferry-10` reference |
-| `docs/trajectories/typescript-bun-migration/slice-audits.md` | 759 | `Amara's ferry-7 enforcement-instrument set` (Amara already named — half-fixed) |
+| File                                                         | Line | Context                                                                         |
+| ------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------- |
+| `tools/hygiene/audit-agencysignature-main-tip.ts`            | 9    | `ferry-7 enforcement-instrument set`                                            |
+| `tools/hygiene/audit-agencysignature-main-tip.ts`            | 389  | `ferry-6` reference                                                             |
+| `tools/hygiene/validate-agencysignature-pr-body.ts`          | 9    | `ferry-7 enforcement-instrument set ("stop designing, instrument enforcement")` |
+| `tests/Tests.FSharp/Algebra/Veridicality.Tests.fs`           | 12   | `ferry-10` reference                                                            |
+| `docs/trajectories/typescript-bun-migration/slice-audits.md` | 759  | `Amara's ferry-7 enforcement-instrument set` (Amara already named — half-fixed) |
 
 Per `memory/feedback_orphan_role_ref_after_name_stripping_aaron_2026_04_28.md`, the fix pattern is:
 

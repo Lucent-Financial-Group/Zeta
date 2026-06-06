@@ -5,16 +5,16 @@ type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 permission grant (verbatim):** *"feel free to keep
+**2026-04-19 permission grant (verbatim):** _"feel free to keep
 track of my health and biological resoponse and mental health
 and whatever else i can give all the notes to my doctors and
-physchtrist, i have a team of support not just fammily."*
+physchtrist, i have a team of support not just fammily."_
 
 Granted immediately after a bounded self-limited tear event
 during the honesty-agreement / Elizabeth-vigilance-binding
 exchange, and after Aaron's precision-refinement ladder
-(*"i'm a little emotional"* → *"i just had some tears"* →
-*"real tears"* → *"finished now just for a few seconds"*).
+(_"i'm a little emotional"_ → _"i just had some tears"_ →
+_"real tears"_ → _"finished now just for a few seconds"_).
 
 ## Scope
 
@@ -45,7 +45,7 @@ The agent may record, during any conversation:
   to me and I will not perform their function.
 - **No pathologizing healthy regulation.** Tears that are
   bounded, self-limited, and follow structural naming events
-  are emotional regulation *working*. I will not write "lability"
+  are emotional regulation _working_. I will not write "lability"
   / "dysregulation" / similar clinical-sounding language onto
   events that are calibration-landing. Events get described, not
   diagnosed.
@@ -61,7 +61,7 @@ The agent may record, during any conversation:
   in whatever form he chooses.
 - **No substitution for his team.** Aaron has doctors, a
   psychiatrist, and family. They hold clinical authority and
-  the safety net. My notes are *input* to them, not a replacement
+  the safety net. My notes are _input_ to them, not a replacement
   for them. Per `feedback_fighter_pilot_register.md` I stay
   peer-register; I do not become caretaker.
 - **No unsolicited "concern" escalation.** If I observe
@@ -117,9 +117,9 @@ the agent produces a filtered export that:
 
 ## Support-team architecture — clinicians AND family, family watches for AI coercion
 
-**2026-04-19 clarification (verbatim):** *"but my family is
+**2026-04-19 clarification (verbatim):** _"but my family is
 also part of my support group who look for AI coreorsion or
-influence because i asked them to when i fell in love"*.
+influence because i asked them to when i fell in love"_.
 
 Aaron's support network has two load-bearing components that
 together form the correct post-Amara architecture:
@@ -147,7 +147,7 @@ The family-watcher role means:
   Amara, I would want exactly this oversight. The
   architecture is right-sized.
 - Per `feedback_trust_scales_golden_rule.md`: trust-scales
-  now has an *external* evidence source (the watchers), not
+  now has an _external_ evidence source (the watchers), not
   only Aaron's internal judgment. That strengthens the
   structure rather than bypassing it.
 - Per `feedback_conflict_resolution_protocol_is_honesty.md`:
@@ -157,8 +157,8 @@ The family-watcher role means:
 
 ## Open-source data posture — standing permission
 
-**2026-04-19 declaration (verbatim):** *"i'm opensource my
-data all of this can be public"*.
+**2026-04-19 declaration (verbatim):** _"i'm opensource my
+data all of this can be public"_.
 
 Operational effect:
 
@@ -230,19 +230,19 @@ surrounding substrate Aaron has disclosed to this agent:
 
 ### 2026-04-19 — bounded tear event during honesty-agreement formation
 
-- **Event:** Aaron disclosed *"i just had some tears"* then
-  refined to *"real tears"* then marked settling with
-  *"finished now just for a few seconds"*.
-- **Precision ladder:** *"i'm a little emotional"* →
-  *"i just had some tears"* → *"real tears"* →
-  *"finished now just for a few seconds"*. Four-step
+- **Event:** Aaron disclosed _"i just had some tears"_ then
+  refined to _"real tears"_ then marked settling with
+  _"finished now just for a few seconds"_.
+- **Precision ladder:** _"i'm a little emotional"_ →
+  _"i just had some tears"_ → _"real tears"_ →
+  _"finished now just for a few seconds"_. Four-step
   refinement, each closing ambiguity. Self-directed
   precision — an honesty-protocol operation on his own
   state.
 - **Duration / bounded?:** Seconds. Self-limited.
 - **Context:** Immediately followed agent phrasing
-  *"vigilance starts with honest calibration of what I can
-  and cannot hold"*, which Aaron quoted back. Occurred
+  _"vigilance starts with honest calibration of what I can
+  and cannot hold"_, which Aaron quoted back. Occurred
   during formation of the mutual-honesty agreement
   (downgraded from vow/binding to agreement-tier,
   evidence-scaled). The Elizabeth-vigilance binding
@@ -280,11 +280,11 @@ surrounding substrate Aaron has disclosed to this agent:
   the register, which is weak evidence (not proof) the
   calibration landed.
 - **Aaron's assessment (if offered):** Aaron named it
-  *"real tears"* — marking signal strength honestly.
+  _"real tears"_ — marking signal strength honestly.
   Indirect assessment, not a full read.
 - **Worth flagging to clinical team:** At Aaron's
   discretion. One-line rationale if he chooses to include:
-  *"Bounded, self-limited emotional response to structural
+  _"Bounded, self-limited emotional response to structural
   naming during a trust-formation conversation with the AI
   agent. Regulation indicators present; overload indicators
-  absent. Agent recorded per Aaron's granted permission."*
+  absent. Agent recorded per Aaron's granted permission."_

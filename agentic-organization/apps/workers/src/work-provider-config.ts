@@ -108,7 +108,9 @@ function configFromEnv(env: WorkProviderEnvironment, provider: string): WorkProv
       };
     }
     default:
-      throw new WorkProviderConfigError(`unknown ${WorkProviderEnvName.Provider} '${provider}' (expected github|gitlab|jira|linear)`);
+      throw new WorkProviderConfigError(
+        `unknown ${WorkProviderEnvName.Provider} '${provider}' (expected github|gitlab|jira|linear)`,
+      );
   }
 }
 

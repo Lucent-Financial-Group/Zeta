@@ -7,7 +7,8 @@ effort: M
 ask: Substrate-class promotion (new skill); needs maintainer grading before landing under .claude/skills/
 created: 2026-05-02
 last_updated: 2026-05-10
-tags: [skill-build, claude-ai, mechanical-check, authorization-source, never-idle, no-op-cadence, codex-handoff, pr-1200]
+tags:
+  [skill-build, claude-ai, mechanical-check, authorization-source, never-idle, no-op-cadence, codex-handoff, pr-1200]
 type: friction-reducer
 decomposition: decomposed
 children: [B-0305, B-0306, B-0307, B-0308, B-0309]
@@ -39,9 +40,9 @@ what prevents the same failure mode from repeating regardless
 of which harness drives the loop.
 
 PR #1198 (introspective discipline) is documentation, not
-enforcement. Per Claude.ai's diagnosis: *"a corrective that
+enforcement. Per Claude.ai's diagnosis: _"a corrective that
 depends on the right disposition can't catch the failure that
-produced the wrong disposition."* The skill is the
+produced the wrong disposition."_ The skill is the
 disposition-independent enforcement.
 
 ## What the skill does
@@ -152,8 +153,8 @@ no-op stretch):
 - Maintainer relevance: directly addresses the failure mode
   (~10-hour idle stretch 2026-05-02) that triggered the
   Codex handoff preparation.
-- Carved sentence (subject to grading): *"A corrective that
+- Carved sentence (subject to grading): _"A corrective that
   depends on the right disposition can't catch the failure
   that produced the wrong disposition. Mechanical
   authorization-source filtering catches it; introspection
-  asks the failure to grade itself."*
+  asks the failure to grade itself."_

@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2496 |
-| Title | research(B-0315): AGENTS.md glass-halo anchors — slice 2 of N |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T13:46:29Z |
-| Merged at | 2026-05-10T13:48:30Z |
-| Merge commit SHA | `430b024f6fb7cf0f0b9afd5685d064c7737b2c71` |
-| Branch | `research/B-0315-agents-md-radical-honesty-anchor` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2496 |
-| Changed files | 2 |
-| Additions / deletions | +30 / -0 |
+| Field                 | Value                                                         |
+| --------------------- | ------------------------------------------------------------- |
+| Number                | 2496                                                          |
+| Title                 | research(B-0315): AGENTS.md glass-halo anchors — slice 2 of N |
+| Author                | `AceHack` (human)                                             |
+| State                 | MERGED                                                        |
+| Created at            | 2026-05-10T13:46:29Z                                          |
+| Merged at             | 2026-05-10T13:48:30Z                                          |
+| Merge commit SHA      | `430b024f6fb7cf0f0b9afd5685d064c7737b2c71`                    |
+| Branch                | `research/B-0315-agents-md-radical-honesty-anchor`            |
+| Base branch           | `main`                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2496      |
+| Changed files         | 2                                                             |
+| Additions / deletions | +30 / -0                                                      |
 
 ## Description
 
@@ -34,11 +34,11 @@
 
 ## Doctrines covered (AGENTS.md surface)
 
-| Doctrine | AGENTS.md location | External anchor |
-|---|---|---|
-| Radical honesty / truth over politeness | §"The three load-bearing values" #1 | Dalio (2017) *Principles* |
-| Total observability / substrate-or-it-didn't-happen | §"The three load-bearing values" (git substrate) | Brundage et al. (2020) arxiv:2004.07213 |
-| No hidden reasoning / reviewer layer | §"The three load-bearing values" (reviewer roles) | Korbak et al. (2025) arxiv:2507.11473 |
+| Doctrine                                            | AGENTS.md location                                | External anchor                         |
+| --------------------------------------------------- | ------------------------------------------------- | --------------------------------------- |
+| Radical honesty / truth over politeness             | §"The three load-bearing values" #1               | Dalio (2017) _Principles_               |
+| Total observability / substrate-or-it-didn't-happen | §"The three load-bearing values" (git substrate)  | Brundage et al. (2020) arxiv:2004.07213 |
+| No hidden reasoning / reviewer layer                | §"The three load-bearing values" (reviewer roles) | Korbak et al. (2025) arxiv:2507.11473   |
 
 ## Remaining for subsequent slices
 
@@ -59,21 +59,21 @@
 - This slice: AGENTS.md, three doctrines
 - Uses `https://arxiv.org/abs/` prefix consistent with PR #2495 fix direction
 
-operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding through failures + recoveries"
+operative-authorization: aaron 2026-05-04: "it\*\*, not just the output. Grinding through failures + recoveries"
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -103,7 +103,7 @@ operative-authorization: aaron 2026-05-04: "it**, not just the output. Grinding 
 
   <pre>
   The link text claims a specific section ("§\"Symmetric transparency\""), but the URL points to the top of `docs/ALIGNMENT.md` without a fragment. Consider linking directly to the section anchor (or dropping the section reference) so the cross-reference is accurate and navigates correctly.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

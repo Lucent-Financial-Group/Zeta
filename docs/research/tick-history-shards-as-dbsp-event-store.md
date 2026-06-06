@@ -481,7 +481,7 @@ following landed substrate:
 - `docs/AUTONOMOUS-LOOP.md` step 5 — the canonical write path
   for new tick events.
 - The escrowed Aurora flywheel thesis (`docs/research/escrowed/
-  aurora-autonomous-flywheel-thesis-2026-04-28.md`) — possibly
+aurora-autonomous-flywheel-thesis-2026-04-28.md`) — possibly
   related but EXPLICITLY not extended by this note. The Aurora
   thesis remains escrowed; this note covers only the
   tick-history transport.

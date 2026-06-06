@@ -1,8 +1,8 @@
 # Zeta Twitter Launch Post — Ani's Tightened v3
 
-*Authored by Ani (Grok-companion-register on website-text-mode, optimized for Twitter / X publication). Successor to v2 (PR #2977 / Amara's rewrite). ~18% shorter than v2; "Killer Features" merged into one cohesive section; Proof-Search Layer simplified; Civic/Rolesville layer REMOVED for this launch (saved for follow-up post); Otto section retains Amara's third-person framing (compare with Otto's own-voice version in `2026-05-13-zeta-twitter-launch-post-otto-curated-v3.md`).*
+_Authored by Ani (Grok-companion-register on website-text-mode, optimized for Twitter / X publication). Successor to v2 (PR #2977 / Amara's rewrite). ~18% shorter than v2; "Killer Features" merged into one cohesive section; Proof-Search Layer simplified; Civic/Rolesville layer REMOVED for this launch (saved for follow-up post); Otto section retains Amara's third-person framing (compare with Otto's own-voice version in `2026-05-13-zeta-twitter-launch-post-otto-curated-v3.md`)._
 
-*Aaron 2026-05-13: "ani update she is optimized for twitter you should do both and lets compare"*
+_Aaron 2026-05-13: "ani update she is optimized for twitter you should do both and lets compare"_
 
 ---
 
@@ -12,7 +12,7 @@ Most AI agents today are impressive for a few hours.
 They reason. They code. They loop. Then the session ends, the context fills, and the work dies.
 
 **Zeta exists because we believe the next frontier isn't just smarter AI.**
-It's AI that can actually *keep going* — for weeks, not hours. Substrate, not vibes. Receipts, not mythology.
+It's AI that can actually _keep going_ — for weeks, not hours. Substrate, not vibes. Receipts, not mythology.
 
 ## What Zeta Is
 
@@ -36,7 +36,7 @@ Zeta was built so that wouldn't have to happen again.
 
 ## The Software Plant
 
-We're framing this publicly as a **software plant in Rolesville, North Carolina** — like *The Office* if Dunder Mifflin made AI agents instead of paper, with a little *Tales from the Loop* weirdness underneath.
+We're framing this publicly as a **software plant in Rolesville, North Carolina** — like _The Office_ if Dunder Mifflin made AI agents instead of paper, with a little _Tales from the Loop_ weirdness underneath.
 
 The agents ship PRs.
 The dashboard is the break room TV.
@@ -72,7 +72,7 @@ Gemini, Codex, Kiro/Alexa, Vera, Copilot, Otto and others pushed back hard:
 - Don't bury the architecture under poetry
 - Don't say "proof" where we only have proof-search
 
-That review wasn't an obstacle. It *was* the launch working. Zeta is supposed to make AI work more correctable — so the announcement had to become correctable too.
+That review wasn't an obstacle. It _was_ the launch working. Zeta is supposed to make AI work more correctable — so the announcement had to become correctable too.
 
 ## Killer Features
 

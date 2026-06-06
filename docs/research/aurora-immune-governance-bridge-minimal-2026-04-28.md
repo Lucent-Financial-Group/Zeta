@@ -38,7 +38,7 @@ answered by what the round just produced:
   PR #699; bead-promotion routed to PR #705 not stacked
   onto PR #704)
 
-The factory passed a pressure test. That earns *one*
+The factory passed a pressure test. That earns _one_
 minimal next research artifact, not another giant
 synthesis. This note is that artifact.
 
@@ -77,7 +77,7 @@ We do **not** claim:
 **Immune-system translation:**
 
 A detector fires on raw matches (antigen-presentation
-event), but the *classification* layer determines whether
+event), but the _classification_ layer determines whether
 the match is self-tolerant (allow) or non-self
 (warn / block). The number of detector-firings is
 informational; the policy decision lives in the
@@ -96,7 +96,7 @@ raw hits surfaced by a scanner.
 
 **Why this translation matters:** the operational rule
 is already correct, but it has no formal language for
-*why* counting alone is insufficient. The immune-system
+_why_ counting alone is insufficient. The immune-system
 framing gives the rule a name (antigen-presentation vs.
 classification) that composes with future detectors.
 
@@ -114,7 +114,7 @@ classification) that composes with future detectors.
 
 A gate that admits some classes of input (allow-list)
 and rejects others (deny-by-default for new conceptual
-substrate). The gate fires *before* the merge event;
+substrate). The gate fires _before_ the merge event;
 new substrate that would have been blocked goes to a
 separate gate-firing (separate PR).
 
@@ -131,7 +131,7 @@ PR that has entered validation.
 
 **Why this translation matters:** the operational rule
 just earned bead-promotion under live falsifier-test.
-The immune-system framing names the *gate-shape* in a
+The immune-system framing names the _gate-shape_ in a
 way that composes with the next detector (e.g. a future
 "production-deploy restraint" gate would have the same
 shape).
@@ -149,7 +149,7 @@ shape).
 
 **Immune-system translation:**
 
-A *hard* execution constraint — the gate denies
+A _hard_ execution constraint — the gate denies
 unconditionally if the constraint fires, regardless of
 other risk-term values. Distinct from soft risk-terms
 in that there is no risk-tradeoff: any positive firing
@@ -174,7 +174,7 @@ membrane-class for compliance-relevant antigens, with:
 already carries explicit cadenced trajectories
 (continuous self-audit / weekly+monthly review / on-PR
 audit / on-onboarding briefing / drift retrospective).
-The immune-system framing names *why* this gate is hard
+The immune-system framing names _why_ this gate is hard
 rather than soft — there is no risk-tradeoff for
 securities law.
 
@@ -244,7 +244,7 @@ note does NOT modify it.
 **Falsifier 2: Performance.**
 
 > The bridge fails if the Aurora-routed prototype performs
-> *worse* than the standalone detector on the same test
+> _worse_ than the standalone detector on the same test
 > corpus. Worse means: more false positives, more false
 > negatives, or higher latency, with no offsetting
 > improvement on a measurable axis.
@@ -257,7 +257,7 @@ artifact recording the attempt and its failure mode.
 
 **Test corpus:**
 
-Compliance documentation that *itself* contains words
+Compliance documentation that _itself_ contains words
 like `insider`, `confidential`, `roadmap`, `material`,
 `non-public`. Specifically:
 
@@ -270,7 +270,7 @@ like `insider`, `confidential`, `roadmap`, `material`,
 1. Rule-definition hits classify as ALLOW.
 2. Sample-text hits inside compliance docs (used as
    illustration) classify as ALLOW.
-3. Hits inside *live* code or *live* prose outside
+3. Hits inside _live_ code or _live_ prose outside
    compliance docs classify as WARN/BLOCK.
 4. The scanner does **NOT** delete or rewrite its own
    rule-definitions (self-destruct prevention — exactly
@@ -341,7 +341,7 @@ and earns its own memory file.
 
 ## Trajectory after this note lands
 
-In rough order of when the next move *might* happen:
+In rough order of when the next move _might_ happen:
 
 1. **Wait for the round to close.** Do not write more
    substrate this round. Do not expand the bridge.
@@ -363,7 +363,7 @@ In rough order of when the next move *might* happen:
 5. **If `A_synthesis` ever earns its way into scope**
    (specifically: if a future round produces synthesis-
    treadmill drift that the existing PR-boundary
-   restraint did *not* catch, and an Aurora-style
+   restraint did _not_ catch, and an Aurora-style
    antigen class would have), add it then. Not before.
 
 ## Composition with existing operational rules

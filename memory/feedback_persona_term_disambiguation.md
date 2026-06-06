@@ -4,6 +4,7 @@ description: 2026-04-20 — Aaron raised the collision between agent-persona (Ki
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Persona disambiguation convention
 
 ## Rule
@@ -31,7 +32,7 @@ legitimate meanings collide:
   smell — a reviewer or an auditor should ask "which one?"
   and either qualify or reword.
 
-The convention is a *direction-of-travel* rule, not a
+The convention is a _direction-of-travel_ rule, not a
 merge-blocker — existing text stays until a deliberate
 migration round lands.
 
@@ -82,13 +83,13 @@ Authoritative names from an earlier BACKLOG P3 row
 ## How to apply:
 
 - **In new skill files, persona files, ADRs, BACKLOG rows,
-  memories, and research docs:** use *expert* or *user
-  persona* explicitly. Never write a bare "persona" when
+  memories, and research docs:** use _expert_ or _user
+  persona_ explicitly. Never write a bare "persona" when
   the context isn't self-evident.
 - **In existing files:** leave be until a deliberate
   migration round. The GLOSSARY entry
   (`docs/GLOSSARY.md` — `### Persona (overloaded — always
-  qualify)` and `### User persona`) is the authoritative
+qualify)` and `### User persona`) is the authoritative
   reference for anyone confused by historical text.
 - **For the `memory/persona/` directory:** stays as-is
   under option (a). Rename to `memory/experts/` is a P2
@@ -116,7 +117,7 @@ Authoritative names from an earlier BACKLOG P3 row
 ## Staging (three options Aaron was offered, option (a) chosen autonomously)
 
 - **(a)** Docs-only pass now — GLOSSARY + this memory +
-  BACKLOG row for eventual rename. *Chosen.*
+  BACKLOG row for eventual rename. _Chosen._
 - **(b)** Leave `memory/persona/` as a historical artifact;
   only enforce in new writing. Still available — if (a)
   proves sufficient over several rounds, the migration

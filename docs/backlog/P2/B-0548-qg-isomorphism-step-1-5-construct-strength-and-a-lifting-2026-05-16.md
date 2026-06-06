@@ -7,7 +7,18 @@ type: research
 created: 2026-05-16
 ask: Otto
 effort: L
-tags: [research, category-theory, topos-theory, axiomatization, qg-isomorphism, step-1-5, lawvere-tierney, strength, eilenberg-moore]
+tags:
+  [
+    research,
+    category-theory,
+    topos-theory,
+    axiomatization,
+    qg-isomorphism,
+    step-1-5,
+    lawvere-tierney,
+    strength,
+    eilenberg-moore,
+  ]
 depends_on: [B-0544]
 composes_with: [B-0543]
 last_updated: 2026-05-16
@@ -65,11 +76,11 @@ either:
 
 ## Resolution paths
 
-| Path | Construction | Cost | Status |
-|---|---|---|---|
-| (a) Lawvere-Tierney-style lifting | Define `Ã : Zeta → Zeta` induced by `A` through `Ω`; restate Laws 2, 3 using `Ã` | Standard for closure operators; needs adaptation since `A` is *not* a closure operator (no `p ≤ A(p)`) | Open — research-grade |
-| (b) Strength data on `M` | Define `θ : M(Ω) → Ω` ("Heyting strength"); restate Law 1' rigorously | Standard for monads on toposes when one wants Eilenberg-Moore semantics | Open — needs explicit `θ` construction; partial Provisional-Law-1' in [PR #3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636) |
-| (c) Restrict to propositional content | Phrase laws only for `p : X → Ω`; demonstrate Laws 2, 3 aren't needed for infinite-poker | Loses originally-intended structure but may suffice | Provisional Law 1' landed in [PR #3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636); requires semantic argument |
+| Path                                  | Construction                                                                             | Cost                                                                                                   | Status                                                                                                                                     |
+| ------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| (a) Lawvere-Tierney-style lifting     | Define `Ã : Zeta → Zeta` induced by `A` through `Ω`; restate Laws 2, 3 using `Ã`         | Standard for closure operators; needs adaptation since `A` is _not_ a closure operator (no `p ≤ A(p)`) | Open — research-grade                                                                                                                      |
+| (b) Strength data on `M`              | Define `θ : M(Ω) → Ω` ("Heyting strength"); restate Law 1' rigorously                    | Standard for monads on toposes when one wants Eilenberg-Moore semantics                                | Open — needs explicit `θ` construction; partial Provisional-Law-1' in [PR #3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636) |
+| (c) Restrict to propositional content | Phrase laws only for `p : X → Ω`; demonstrate Laws 2, 3 aren't needed for infinite-poker | Loses originally-intended structure but may suffice                                                    | Provisional Law 1' landed in [PR #3636](https://github.com/Lucent-Financial-Group/Zeta/pull/3636); requires semantic argument              |
 
 ## The closure-operator obstruction
 

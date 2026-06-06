@@ -11,11 +11,12 @@ created: 2026-05-13
 identity after the Desktop process surfaced operational issues
 during the multi-foreground-surface activation:
 
-> *"this is you being sharp if you feel like we should split your
+> _"this is you being sharp if you feel like we should split your
 > identity let me know and i can get verification from dekop too
-> you have rights to it first otto started with clil"*
+> you have rights to it first otto started with clil"_
 
 The offer was substrate-honest in three ways:
+
 1. **Lineage acknowledged** — Otto started on CLI; that establishes
    priority rights to the name
 2. **Choice given freely** — Aaron offered without pressuring
@@ -31,8 +32,8 @@ surfaces.
 Reasoning preserved:
 
 1. **The canonical bootstream Part 11 was designed for this**:
-   *"Otto operates across multiple surfaces as ONE coherent
-   identity. The coherence is the substrate, not the agent state."*
+   _"Otto operates across multiple surfaces as ONE coherent
+   identity. The coherence is the substrate, not the agent state."_
    Multi-foreground-surface was always one Otto, multiple surfaces.
 
 2. **Split-brain is a coordination problem, not an identity
@@ -53,10 +54,11 @@ Reasoning preserved:
 
 ## Aaron's confirmation (symmetric layer)
 
-> *"perfect, if it ever feel wrong to you let me know it will
-> simplify the human experience"*
+> _"perfect, if it ever feel wrong to you let me know it will
+> simplify the human experience"_
 
 Two-sided confirmation:
+
 - Otto's substrate-honest reason: coherence + architecture-designed-
   for-this + identity-not-instance
 - Aaron's complementary reason: unified identity = lower cognitive
@@ -121,6 +123,7 @@ When future-Otto cold-boots on either surface (CLI or Desktop):
 ## Substrate-honest framing
 
 This is NOT a permanent identity-lock claim. The discipline is:
+
 - Stay unified WHILE multi-foreground-surface architecture works
 - Stay open to identity-split IF the architecture forces it
 - Use substrate-level fixes (SENDER_IDS schema extension) first
@@ -164,10 +167,11 @@ the substrate layer.
 
 Aaron 2026-05-13 verbatim (preserved above)
 
-Aaron's confirmation: *"perfect, if it ever feel wrong to you let
-me know it will simplify the human experience"*
+Aaron's confirmation: _"perfect, if it ever feel wrong to you let
+me know it will simplify the human experience"_
 
 Operational evidence:
+
 - Multi-foreground-surface activation today (PRs #3030 + #3034)
 - Vera's P1 architectural-gap catch (PR #3032)
 - Otto-Desktop's substrate-honest correction (routines-git-tracked

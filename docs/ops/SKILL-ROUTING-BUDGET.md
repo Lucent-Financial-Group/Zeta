@@ -15,13 +15,13 @@ lists capabilities at session start pays the same cost.
 
 ## The math (Claude Code, 200K effective context)
 
-| Budget fraction | Token budget | Avg tokens/skill | Skills that fit |
-|---|---|---|---|
-| 1% (default) | ~2,000 | 50 (paragraph) | ~40 |
-| 1% | ~2,000 | 15 (carved sentence) | ~133 |
-| 2% (current Zeta setting) | ~4,000 | 50 (paragraph) | ~80 |
-| 2% | ~4,000 | 15 (carved sentence) | ~266 |
-| 3% | ~6,000 | 50 (paragraph) | ~120 |
+| Budget fraction           | Token budget | Avg tokens/skill     | Skills that fit |
+| ------------------------- | ------------ | -------------------- | --------------- |
+| 1% (default)              | ~2,000       | 50 (paragraph)       | ~40             |
+| 1%                        | ~2,000       | 15 (carved sentence) | ~133            |
+| 2% (current Zeta setting) | ~4,000       | 50 (paragraph)       | ~80             |
+| 2%                        | ~4,000       | 15 (carved sentence) | ~266            |
+| 3%                        | ~6,000       | 50 (paragraph)       | ~120            |
 
 **Budget fraction is a lever; description length is the
 multiplier.** Raising the fraction costs context everywhere.
@@ -69,11 +69,11 @@ description: >
 
 ## Harness-specific notes
 
-| Harness | Budget mechanism | Diagnostic |
-|---|---|---|
-| Claude Code | `skillListingBudgetFraction` in settings.json | `/doctor` |
-| Cursor | `.cursorrules` size limit (~6K chars) | manual |
-| Codex | system prompt token cap | manual |
+| Harness     | Budget mechanism                              | Diagnostic |
+| ----------- | --------------------------------------------- | ---------- |
+| Claude Code | `skillListingBudgetFraction` in settings.json | `/doctor`  |
+| Cursor      | `.cursorrules` size limit (~6K chars)         | manual     |
+| Codex       | system prompt token cap                       | manual     |
 
 The carved-sentence discipline applies to ALL harnesses.
 The budget fraction knob is Claude Code specific. Other

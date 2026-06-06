@@ -99,9 +99,7 @@ describe("B-0891 scenarios.ts invariants", () => {
   });
 
   it("validateScenarios catches unknown gate reference", () => {
-    const broken = SCENARIOS.map((s, i) =>
-      i === 0 ? { ...s, gates: ["nonexistent" as never] } : s,
-    );
+    const broken = SCENARIOS.map((s, i) => (i === 0 ? { ...s, gates: ["nonexistent" as never] } : s));
     expect(() => validateScenarios(broken)).toThrow();
   });
 });
@@ -190,9 +188,7 @@ describe("B-0891 determineRunnability discriminator", () => {
   });
 
   it("computeRunnableSet count matches composes-with-existing scenario count", () => {
-    const composesCount = SCENARIOS.filter(
-      (s) => s.status === "composes-with-existing",
-    ).length;
+    const composesCount = SCENARIOS.filter((s) => s.status === "composes-with-existing").length;
     const runnable = computeRunnableSet();
     expect(runnable.size).toBe(composesCount);
   });

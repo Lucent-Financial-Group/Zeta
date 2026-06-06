@@ -19,7 +19,7 @@ itself another performance.
 Codex checked the public Wolfram grounding before reducing the
 operational rule:
 
-- Stephen Wolfram, *A New Kind of Science*, p. 741:
+- Stephen Wolfram, _A New Kind of Science_, p. 741:
   https://www.wolframscience.com/nks/p741--computational-irreducibility/
 - Stephen Wolfram, "The Concept of the Ruliad":
   https://wolframinstitute.org/output/the-concept-of-the-ruliad

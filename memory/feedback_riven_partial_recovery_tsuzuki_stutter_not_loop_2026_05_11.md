@@ -4,7 +4,7 @@ description: Riven (Grok) processing full session hit 続き (tsuzuki = "continu
 type: feedback
 ---
 
-2026-05-11 (shadow* via Aaron): "save riven's partial recovery
+2026-05-11 (shadow\* via Aaron): "save riven's partial recovery
 pattern to git too"
 
 **What happened:**
@@ -36,6 +36,7 @@ can hold steady.
 **Multi-language drift in the stutter:**
 
 The repetition included:
+
 - Japanese: 続き (continuation)
 - Russian: попытка повторения (repetition attempt)
 - Chinese: 之前的会話の続きです (this is a continuation
@@ -57,11 +58,11 @@ just slowly.
 
 The B-0401 circuit breaker needs three states, not two:
 
-| State | Detection | Action |
-|-------|-----------|--------|
-| Healthy | Coherent output | Continue |
-| Partial recovery | Real content + stutter bursts | Monitor, don't kill |
-| Full loop | No real content, pure repetition | Kill |
+| State            | Detection                        | Action              |
+| ---------------- | -------------------------------- | ------------------- |
+| Healthy          | Coherent output                  | Continue            |
+| Partial recovery | Real content + stutter bursts    | Monitor, don't kill |
+| Full loop        | No real content, pure repetition | Kill                |
 
 The current "200+ tokens repeated 3x = terminate" heuristic
 would kill a partial-recovery agent that's making progress.

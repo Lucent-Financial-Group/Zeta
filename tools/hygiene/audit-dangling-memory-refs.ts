@@ -253,9 +253,7 @@ export function main(argv: string[]): number {
   }
 
   if (unknownFlags.length > 0) {
-    process.stderr.write(
-      `error: unrecognized flag(s): ${unknownFlags.join(", ")}; known flags: --json, --surfaces\n`,
-    );
+    process.stderr.write(`error: unrecognized flag(s): ${unknownFlags.join(", ")}; known flags: --json, --surfaces\n`);
     return 2;
   }
 
@@ -281,9 +279,7 @@ export function main(argv: string[]): number {
   // Per-surface existence check. `--surfaces docs/research docs/typo`
   // must fail rather than silently audit only docs/research and return
   // 0/1 — false-green in CI is the failure mode here.
-  const missingSurfaces = surfaces.filter(
-    (s) => !isDir(join(repoRoot(), s)),
-  );
+  const missingSurfaces = surfaces.filter((s) => !isDir(join(repoRoot(), s)));
   if (missingSurfaces.length > 0) {
     process.stderr.write(
       `error: requested surface(s) do not exist under ROOT=${repoRoot()}: ${missingSurfaces.join(", ")}\n`,

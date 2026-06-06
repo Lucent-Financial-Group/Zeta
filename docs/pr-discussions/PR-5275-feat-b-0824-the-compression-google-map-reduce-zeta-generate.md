@@ -20,14 +20,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-26 dropped THE compression of the entire substrate-engineering arc:
 
-> *\"google=map+reduce zeta=generate+join\"*
+> _\"google=map+reduce zeta=generate+join\"_
 
 **8 characters compress 17 sub-targets + the ML-weights-as-keys derived corollary into a 4-word taxonomy.**
 
-| Paradigm | Operates ON | What moves between nodes | Era |
-|---|---|---|---|
-| Google = map + reduce (Dean & Ghemawat 2004) | **DATA** | Data (shuffle-heavy) | Big-data era |
-| Zeta = generate + join | **FUNCTIONS** | Composition graphs (bytes) | AI-rate era |
+| Paradigm                                     | Operates ON   | What moves between nodes   | Era          |
+| -------------------------------------------- | ------------- | -------------------------- | ------------ |
+| Google = map + reduce (Dean & Ghemawat 2004) | **DATA**      | Data (shuffle-heavy)       | Big-data era |
+| Zeta = generate + join                       | **FUNCTIONS** | Composition graphs (bytes) | AI-rate era  |
 
 The shift: Google's paradigm = function-OVER-data; data moves; functions stay put. Zeta's paradigm = distributed-functions; functions move; data materializes locally on demand.
 
@@ -51,6 +51,7 @@ This compression IS bandwidth-engineering applied to substrate-vocabulary itself
 Adds a high-level “compression” headline to backlog row **B-0824** so readers get the core paradigm shift (“google=map+reduce; zeta=generate+join”) before the detailed Problem/Sub-targets substrate.
 
 **Changes:**
+
 - Adds a new top-of-row section summarizing the “generate + join” framing vs “map + reduce”.
 - Introduces a comparison table and short explanatory bullets to anchor the taxonomy before `## Problem`.
 

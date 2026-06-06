@@ -3,8 +3,13 @@ import type { AcePackage, AceDependency, Registry } from "./store.ts";
 import type { FetchPackage } from "./resolve.ts";
 
 export type SolveResult =
-  | { ok: true; versions: Map<string, string> }   // name -> concrete version (incl. inline-fixed names)
-  | { ok: false; reason: "unsatisfiable" | "bad-range" | "registry-miss" | "fetch-failed" | "invalid-package"; detail: string; path: string[] };
+  | { ok: true; versions: Map<string, string> } // name -> concrete version (incl. inline-fixed names)
+  | {
+      ok: false;
+      reason: "unsatisfiable" | "bad-range" | "registry-miss" | "fetch-failed" | "invalid-package";
+      detail: string;
+      path: string[];
+    };
 
 // ---- internal helpers ---------------------------------------------------
 
@@ -13,12 +18,21 @@ export type SolveResult =
  *  (an absent dependencies field is fine; depsOf treats it as []). */
 function parsePackage(json: string, url: string, path: string[]): AcePackage | { fail: SolveResult } {
   let dep: unknown;
-  try { dep = JSON.parse(json); }
-  catch (e) { return { fail: { ok: false, reason: "fetch-failed", detail: `${url}: ${(e as Error).message}`, path } }; }
-  const m = (dep as { manifest?: { dependencies?: unknown }; files?: unknown });
-  if (typeof dep !== "object" || dep === null || typeof m.manifest !== "object" || m.manifest === null
-      || typeof m.files !== "object" || m.files === null
-      || (m.manifest.dependencies !== undefined && !Array.isArray(m.manifest.dependencies))) {
+  try {
+    dep = JSON.parse(json);
+  } catch (e) {
+    return { fail: { ok: false, reason: "fetch-failed", detail: `${url}: ${(e as Error).message}`, path } };
+  }
+  const m = dep as { manifest?: { dependencies?: unknown }; files?: unknown };
+  if (
+    typeof dep !== "object" ||
+    dep === null ||
+    typeof m.manifest !== "object" ||
+    m.manifest === null ||
+    typeof m.files !== "object" ||
+    m.files === null ||
+    (m.manifest.dependencies !== undefined && !Array.isArray(m.manifest.dependencies))
+  ) {
     return { fail: { ok: false, reason: "invalid-package", detail: `${url}: not a well-formed AcePackage`, path } };
   }
   return dep as AcePackage;
@@ -39,7 +53,10 @@ type TaggedRange = { range: Range; source: string };
  *  below `belowExclusive` when given (the version a later constraint just ruled out — try lower).
  *  null = no candidate. */
 function pickCandidate(
-  name: string, registry: Registry, ranges: ReadonlyArray<Range>, belowExclusive: string | null,
+  name: string,
+  registry: Registry,
+  ranges: ReadonlyArray<Range>,
+  belowExclusive: string | null,
 ): string | null {
   const sorted = [...(registry.get(name)?.keys() ?? [])].sort((a, b) => compareVersions(b, a)); // desc: newest first
   for (const v of sorted) {
@@ -62,15 +79,17 @@ function pickCandidate(
  * is resolve()'s job (Task 5).
  */
 export async function solve(root: AcePackage, fetchPackage: FetchPackage, registry: Registry): Promise<SolveResult> {
-  const inlineFixed = new Map<string, string>();      // name -> inline version (authoritative; never registry-solved)
+  const inlineFixed = new Map<string, string>(); // name -> inline version (authoritative; never registry-solved)
   const constraints = new Map<string, TaggedRange[]>(); // name -> accumulated registry ranges, each tagged by source (retraction-aware: a source's constraints are dropped when its decision is abandoned/re-explored)
-  const assigned = new Map<string, string>();         // name -> chosen registry version
-  const cache = new Map<string, AcePackage>();         // "name@version" / "inline:<url>" -> pkg (fetch at most once)
-  const toExplore = new Set<string>();                // registry names queued for a decision
+  const assigned = new Map<string, string>(); // name -> chosen registry version
+  const cache = new Map<string, AcePackage>(); // "name@version" / "inline:<url>" -> pkg (fetch at most once)
+  const toExplore = new Set<string>(); // registry names queued for a decision
   const inlinePending = new Map<string, { pkg: AcePackage; source: string }>(); // inline pkgs whose deps still need exploring (source = inline:<url>)
 
   const addConstraint = (name: string, r: Range, source: string): void => {
-    const arr = constraints.get(name); if (arr) arr.push({ range: r, source }); else constraints.set(name, [{ range: r, source }]);
+    const arr = constraints.get(name);
+    if (arr) arr.push({ range: r, source });
+    else constraints.set(name, [{ range: r, source }]);
   };
 
   /** Drop every accumulated constraint (across ALL names) contributed by `source`. Makes re-ingesting
@@ -80,7 +99,8 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
     for (const [name, arr] of constraints) {
       const kept = arr.filter((c) => c.source !== source);
       if (kept.length !== arr.length) {
-        if (kept.length === 0) constraints.delete(name); else constraints.set(name, kept);
+        if (kept.length === 0) constraints.delete(name);
+        else constraints.set(name, kept);
       }
     }
   };
@@ -94,30 +114,50 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
    *  duplicate constraints. Inline edges fix the name (version + source) and fetch the inline package
    *  for dep recursion; registry edges add a source-tagged range constraint and queue the name.
    *  Returns a failure or null. */
-  const ingest = async (deps: ReadonlyArray<AceDependency>, ownerPath: string[], source: string): Promise<SolveResult | null> => {
+  const ingest = async (
+    deps: ReadonlyArray<AceDependency>,
+    ownerPath: string[],
+    source: string,
+  ): Promise<SolveResult | null> => {
     if (source !== "root") retractSource(source); // idempotency: clear this source's prior constraints before re-adding (root is seeded once; its constraints are permanent — honors retractSource's "never call with root" invariant)
     for (const edge of deps) {
       const here = [...ownerPath, String((edge as { name?: unknown }).name)];
       const ek = (edge as { readonly kind?: unknown }).kind;
       if (ek !== undefined && ek !== "inline" && ek !== "registry") {
-        return { ok: false, reason: "invalid-package", detail: `${edge.name}: unknown dependency kind ${JSON.stringify(ek)}`, path: here };
+        return {
+          ok: false,
+          reason: "invalid-package",
+          detail: `${edge.name}: unknown dependency kind ${JSON.stringify(ek)}`,
+          path: here,
+        };
       }
       // Edge name + version are untrusted JSON; both kinds read edge.version (registry → parseRange,
       // inline → satisfies/pin). A non-string crashes those — refuse with a precise invalid-package.
       const en = edge as { name?: unknown; version?: unknown };
       if (typeof en.name !== "string" || typeof en.version !== "string") {
-        return { ok: false, reason: "invalid-package", detail: `${String(en.name)}: edge name and version must be strings`, path: here };
+        return {
+          ok: false,
+          reason: "invalid-package",
+          detail: `${String(en.name)}: edge name and version must be strings`,
+          path: here,
+        };
       }
 
       if (edge.kind === "registry") {
         const parsed = parseRange(edge.version);
-        if ("error" in parsed) return { ok: false, reason: "bad-range", detail: `${edge.name}: ${parsed.error}`, path: here };
+        if ("error" in parsed)
+          return { ok: false, reason: "bad-range", detail: `${edge.name}: ${parsed.error}`, path: here };
         addConstraint(edge.name, parsed, source);
         // Inline-fixed names are authoritative: a registry range on them is a constraint the inline
         // pin must satisfy, not a name to solve.
         if (inlineFixed.has(edge.name)) {
           if (!satisfies(inlineFixed.get(edge.name)!, parsed)) {
-            return { ok: false, reason: "unsatisfiable", detail: `${edge.name}@${inlineFixed.get(edge.name)} (inline) violates ${edge.version} (via ${here.join(" → ")})`, path: here };
+            return {
+              ok: false,
+              reason: "unsatisfiable",
+              detail: `${edge.name}@${inlineFixed.get(edge.name)} (inline) violates ${edge.version} (via ${here.join(" → ")})`,
+              path: here,
+            };
           }
           continue;
         }
@@ -127,29 +167,43 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
 
       // inline edge: fix version + source; record + fetch its package for dep exploration.
       if (typeof edge.url !== "string" || typeof edge.package_hash !== "string") {
-        return { ok: false, reason: "invalid-package", detail: `${edge.name}: inline edge missing url/package_hash`, path: here };
+        return {
+          ok: false,
+          reason: "invalid-package",
+          detail: `${edge.name}: inline edge missing url/package_hash`,
+          path: here,
+        };
       }
       if (inlineFixed.has(edge.name)) continue; // already pinned inline (diamond dedup on inline source)
       inlineFixed.set(edge.name, edge.version);
       // Any registry ranges already accumulated for this name must be satisfied by the inline pin.
       for (const r of rangesOf(edge.name)) {
         if (!satisfies(edge.version, r)) {
-          return { ok: false, reason: "unsatisfiable", detail: `${edge.name}@${edge.version} (inline) violates an accumulated registry range`, path: here };
+          return {
+            ok: false,
+            reason: "unsatisfiable",
+            detail: `${edge.name}@${edge.version} (inline) violates an accumulated registry range`,
+            path: here,
+          };
         }
       }
-      toExplore.delete(edge.name);    // inline pin wins; never registry-solve this name
+      toExplore.delete(edge.name); // inline pin wins; never registry-solve this name
       const droppedReg = assigned.get(edge.name);
       if (droppedReg !== undefined) retractSource(`${edge.name}@${droppedReg}`); // drop the abandoned registry version's contributed constraints
-      assigned.delete(edge.name);     // drop any prior registry assignment (inline is authoritative)
+      assigned.delete(edge.name); // drop any prior registry assignment (inline is authoritative)
       const inlineSource = `inline:${edge.url}`;
       let dep = cache.get(inlineSource);
       if (dep === undefined) {
         let json: string;
-        try { json = await fetchPackage(edge.url); }
-        catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
+        try {
+          json = await fetchPackage(edge.url);
+        } catch (e) {
+          return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here };
+        }
         const p = parsePackage(json, edge.url, here);
         if ("fail" in p) return p.fail;
-        dep = p; cache.set(inlineSource, dep);
+        dep = p;
+        cache.set(inlineSource, dep);
       }
       inlinePending.set(edge.name, { pkg: dep, source: inlineSource });
     }
@@ -166,7 +220,8 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
   let guard = 0;
   const ceiling = 100000;
   for (;;) {
-    if (guard++ > ceiling) return { ok: false, reason: "unsatisfiable", detail: "solver did not converge (possible cycle)", path: ["root"] };
+    if (guard++ > ceiling)
+      return { ok: false, reason: "unsatisfiable", detail: "solver did not converge (possible cycle)", path: ["root"] };
 
     // 2a) Explore inline-pending packages first — their edges feed the constraint set.
     if (inlinePending.size > 0) {
@@ -186,8 +241,14 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
       if (inlineFixed.has(name)) continue; // inline-fixed names are never registry-solved
       const cur = assigned.get(name);
       const ranges = rangesOf(name);
-      if (cur === undefined) { target = name; break; }                          // unassigned → decide
-      if (!ranges.every((r) => satisfies(cur, r))) { target = name; break; }    // invalidated → repair
+      if (cur === undefined) {
+        target = name;
+        break;
+      } // unassigned → decide
+      if (!ranges.every((r) => satisfies(cur, r))) {
+        target = name;
+        break;
+      } // invalidated → repair
     }
     if (target === null) break; // stable
 
@@ -201,9 +262,17 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
     const belowExclusive = prev !== undefined && !ranges.every((r) => satisfies(prev, r)) ? prev : null;
     const pick = pickCandidate(target, registry, ranges, belowExclusive);
     if (pick === null) {
-      return { ok: false, reason: "unsatisfiable", detail: `${target}: no version satisfies all accumulated ranges`, path: ["root", target] };
+      return {
+        ok: false,
+        reason: "unsatisfiable",
+        detail: `${target}: no version satisfies all accumulated ranges`,
+        path: ["root", target],
+      };
     }
-    if (pick === prev) { toExplore.delete(target); continue; } // already at the valid pick; just clear the queue
+    if (pick === prev) {
+      toExplore.delete(target);
+      continue;
+    } // already at the valid pick; just clear the queue
 
     // Abandoning `target@prev` (repair to a different version): retract every constraint that the
     // dropped version contributed, so its transitive deps stop over-constraining unrelated packages
@@ -218,11 +287,20 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
     if (dep === undefined) {
       const entry = registry.get(target)!.get(pick)!;
       let json: string;
-      try { json = await fetchPackage(entry.url); }
-      catch (e) { return { ok: false, reason: "fetch-failed", detail: `${entry.url}: ${(e as Error).message}`, path: ["root", target] }; }
+      try {
+        json = await fetchPackage(entry.url);
+      } catch (e) {
+        return {
+          ok: false,
+          reason: "fetch-failed",
+          detail: `${entry.url}: ${(e as Error).message}`,
+          path: ["root", target],
+        };
+      }
       const p = parsePackage(json, entry.url, ["root", target]);
       if ("fail" in p) return p.fail;
-      dep = p; cache.set(cacheKey, dep);
+      dep = p;
+      cache.set(cacheKey, dep);
     }
     // Ingest under the chosen version's source tag (idempotent: clears `target@pick` first).
     const f = await ingest(depsOf(dep), ["root", target], cacheKey);

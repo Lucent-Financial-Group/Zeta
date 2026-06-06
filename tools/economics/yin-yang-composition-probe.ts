@@ -32,7 +32,7 @@ export function probeYinYang(candidate: string, description: string): YinYangRes
 // Smoke: Ammous probe (candidate status, not admitted)
 const ammosProbe = probeYinYang(
   "Ammous Bitcoin-Standard",
-  "21M hard cap, low time preference, μένω staying-operator; requires plural monetary primitives counterweight"
+  "21M hard cap, low time preference, μένω staying-operator; requires plural monetary primitives counterweight",
 );
 console.assert(ammosProbe.passes === false, "Ammous should fail without full division pole");
 console.assert(!ammosProbe.passes && ammosProbe.unificationPole, "Unification present");

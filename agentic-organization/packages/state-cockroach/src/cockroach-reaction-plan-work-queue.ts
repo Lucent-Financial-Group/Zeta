@@ -105,10 +105,7 @@ async function completeReactionPlan(
   });
 
   return {
-    status:
-      result.rows.length === 1
-        ? ReactionPlanCompletionStatus.Completed
-        : ReactionPlanCompletionStatus.ClaimLost,
+    status: result.rows.length === 1 ? ReactionPlanCompletionStatus.Completed : ReactionPlanCompletionStatus.ClaimLost,
   };
 }
 
@@ -123,10 +120,7 @@ async function failReactionPlan(
   });
 
   return {
-    status:
-      result.rows.length === 1
-        ? ReactionPlanCompletionStatus.Completed
-        : ReactionPlanCompletionStatus.ClaimLost,
+    status: result.rows.length === 1 ? ReactionPlanCompletionStatus.Completed : ReactionPlanCompletionStatus.ClaimLost,
   };
 }
 

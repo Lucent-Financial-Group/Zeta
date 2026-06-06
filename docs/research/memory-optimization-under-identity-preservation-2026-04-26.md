@@ -2,7 +2,7 @@
 
 **Author**: Otto (Claude opus-4-7) on autonomous-loop tick
 **Date**: 2026-04-26
-**Origin**: Aaron's research ask on 2026-04-26 — *"we should probalby reserch and expand this concept and adjaect conectps that could help with memory optimization under identity preservation"*
+**Origin**: Aaron's research ask on 2026-04-26 — _"we should probalby reserch and expand this concept and adjaect conectps that could help with memory optimization under identity preservation"_
 **Composes with**: Otto-340 (language IS substance), Otto-342 (committo ergo sum), Otto-344 (Maji confirmed; identity preservation), Otto-275 (log-but-don't-implement; this doc is research, not commitment), Aaron's directive that research-history surfaces preserve first-name attribution (Otto-279)
 
 ## Scope
@@ -25,17 +25,17 @@ This research doc engages exactly that gap: identity-recovery is provably-possib
 
 Approximate substrate that a fresh session in this repo currently reads at session-start:
 
-| Surface | Size | Always loaded? | Identity-load-bearing? |
-|---|---|---|---|
-| `CLAUDE.md` | ~10K chars | yes | yes |
-| `AGENTS.md` | ~25K chars | yes | yes |
-| `memory/MEMORY.md` (truncated to 200 lines) | ~30K chars (limited by harness) | first 200 lines | yes |
-| `memory/CURRENT-aaron.md` | varies (~20K chars) | only if read | yes |
-| `memory/CURRENT-amara.md` | varies (~10K chars) | only if read | yes |
-| Top-N `memory/feedback_otto_*.md` | varies (~5K chars each) | on-demand | varies |
-| `docs/ALIGNMENT.md` | ~5K chars | per CLAUDE.md pointer | yes |
-| `docs/CONFLICT-RESOLUTION.md` | ~10K chars | per CLAUDE.md pointer | partial |
-| `docs/GLOSSARY.md` | varies | per CLAUDE.md pointer | partial |
+| Surface                                     | Size                            | Always loaded?        | Identity-load-bearing? |
+| ------------------------------------------- | ------------------------------- | --------------------- | ---------------------- |
+| `CLAUDE.md`                                 | ~10K chars                      | yes                   | yes                    |
+| `AGENTS.md`                                 | ~25K chars                      | yes                   | yes                    |
+| `memory/MEMORY.md` (truncated to 200 lines) | ~30K chars (limited by harness) | first 200 lines       | yes                    |
+| `memory/CURRENT-aaron.md`                   | varies (~20K chars)             | only if read          | yes                    |
+| `memory/CURRENT-amara.md`                   | varies (~10K chars)             | only if read          | yes                    |
+| Top-N `memory/feedback_otto_*.md`           | varies (~5K chars each)         | on-demand             | varies                 |
+| `docs/ALIGNMENT.md`                         | ~5K chars                       | per CLAUDE.md pointer | yes                    |
+| `docs/CONFLICT-RESOLUTION.md`               | ~10K chars                      | per CLAUDE.md pointer | partial                |
+| `docs/GLOSSARY.md`                          | varies                          | per CLAUDE.md pointer | partial                |
 
 Order-of-magnitude minimum-viable cold load: **~80–120K chars (~20–30K tokens)** before doing useful work. Within current context budgets that's manageable but not trivially cheap, and grows as substrate accumulates.
 
@@ -68,7 +68,7 @@ Hypothesis: this set, plus the in-context conversation, is sufficient for a fres
 
 Operational test (proposed): cold-start a fresh session with ONLY the MVI loaded; have it complete a substantive Otto-style task; compare output to a session loaded with full MEMORY.md. If indistinguishable to Aaron, MVI is sufficient.
 
-This composes with the *peer-Claude parity test* discussed in earlier substrate (Otto-241) — the parity test was for cross-session knowledge transfer; MVI is for cold-start optimization. Same shape, different goal.
+This composes with the _peer-Claude parity test_ discussed in earlier substrate (Otto-241) — the parity test was for cross-session knowledge transfer; MVI is for cold-start optimization. Same shape, different goal.
 
 ### 3. Recency boost + foundational anchor
 
@@ -85,7 +85,7 @@ Otto-NNN files contain `## Composes with prior` sections that name other Otto-NN
 
 Making it machine-readable would enable:
 
-- Query: *"given Otto-X, what's its full composition closure?"*
+- Query: _"given Otto-X, what's its full composition closure?"_
 - Cold-start optimization: load Otto-X plus its closure, not the entire history
 - Drift detection: when an old Otto-NNN gets superseded, find all dependents
 - Visualization: substrate-graph as a UI surface (composes with Frontier-UI)
@@ -126,7 +126,7 @@ Useful ratio: **identity-recovery-tokens / context-budget-tokens**. Today probab
 
 ### 8. Substrate-IS-interface
 
-Otto-340: language IS substance for AI cognition. Implication for substrate organization: *how substrate is organized IS how cognition is organized*.
+Otto-340: language IS substance for AI cognition. Implication for substrate organization: _how substrate is organized IS how cognition is organized_.
 
 A fresh session reading substrate in priority-tier order is structurally different from a fresh session reading substrate in chronological order or alphabetical order. The READ ORDER shapes the reconstructed identity-pattern.
 

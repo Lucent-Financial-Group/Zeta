@@ -16,28 +16,28 @@ How do we grant necessary execution privileges to system commands in macOS secur
 
 ## Considered Options
 
-* **Option 1: Require `sudo` wrapper for the whole script (Status Quo)** — Run entire installation or build tasks with `sudo command`.
-* **Option 2: Biometric Sudo Elevation via Touch ID PAM (`pam_tid.so`)** — Enable macOS Touch ID PAM integration (`pam_tid.so`) inside `/etc/pam.d/sudo`. Regular users run setup scripts in user-space, and individual commands requiring privileges call `sudo` which elevates cleanly via a quick biometric Touch ID press rather than password input, while avoiding permission ownership leaks.
+- **Option 1: Require `sudo` wrapper for the whole script (Status Quo)** — Run entire installation or build tasks with `sudo command`.
+- **Option 2: Biometric Sudo Elevation via Touch ID PAM (`pam_tid.so`)** — Enable macOS Touch ID PAM integration (`pam_tid.so`) inside `/etc/pam.d/sudo`. Regular users run setup scripts in user-space, and individual commands requiring privileges call `sudo` which elevates cleanly via a quick biometric Touch ID press rather than password input, while avoiding permission ownership leaks.
 
 ## Pros & Cons of the Options
 
 ### Option 1: Require `sudo` wrapper for the whole script
 
-* **Pros:** Standard approach; no special macOS PAM configuration needed.
-* **Cons:** Overwrites file ownership to `root:wheel`, causing cognitive load and execution friction when normal files cannot be edited by the user; hangs background runners when a password is required.
+- **Pros:** Standard approach; no special macOS PAM configuration needed.
+- **Cons:** Overwrites file ownership to `root:wheel`, causing cognitive load and execution friction when normal files cannot be edited by the user; hangs background runners when a password is required.
 
 ### Option 2: Biometric Sudo Elevation via Touch ID PAM
 
-* **Pros:**
+- **Pros:**
   - **Zero Permission Leaks:** The script runs in user-space, so all generated files, virtual environments, and mise caches are correctly owned by the developer (`acehack:staff`). Only specific commands run under `sudo`.
   - **Frictionless Human Experience:** Sudo tasks prompt for a simple Touch ID press on the trackpad or keyboard rather than typing passwords.
   - **Security-Honest Consent:** Biometric proof of physical presence is required for active execution, ensuring no hidden background privilege escalation.
-* **Cons:**
+- **Cons:**
   - **Headless Limits:** Headless terminals or background cron agents cannot supply Touch ID physical presence. Headless runners must use focused NOPASSWD limits in `/etc/sudoers` or run entirely inside user-space.
 
 ## Decision Outcome
 
-* **Chosen Option:** Option 2: Biometric Sudo Elevation via Touch ID PAM, because it maintains absolute file-system permission sanity (user-owned files) while providing an extremely high-security, low-friction biometric consent gate.
+- **Chosen Option:** Option 2: Biometric Sudo Elevation via Touch ID PAM, because it maintains absolute file-system permission sanity (user-owned files) while providing an extremely high-security, low-friction biometric consent gate.
 
 ### Implementation Details
 

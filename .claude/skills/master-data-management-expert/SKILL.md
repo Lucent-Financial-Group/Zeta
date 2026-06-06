@@ -8,9 +8,9 @@ description: Master data management — golden record, entity resolution, surviv
 Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
-Master Data Management (MDM) answers one question: *which
+Master Data Management (MDM) answers one question: _which
 record, among all our copies, is the authoritative instance
-of a real-world entity?* Multiple systems create their own
+of a real-world entity?_ Multiple systems create their own
 records for "Customer Alice Smith"; MDM decides which is the
 one that downstream processes trust.
 
@@ -35,13 +35,13 @@ MDM are different projects; conflating them fails.
 
 ## MDM styles — Loshin / Dyché
 
-| Style | Sync | Where master lives |
-|---|---|---|
-| **Registry** | One-way (systems → registry) | Read-only cross-reference |
-| **Consolidation** | One-way (systems → hub) | Read-only hub, systems untouched |
-| **Coexistence** | Two-way | Hub + systems both writable |
-| **Centralised** | Sources of truth routed via hub | Hub is the write path |
-| **Transaction** | Real-time authoritative | Hub is the system of record |
+| Style             | Sync                            | Where master lives               |
+| ----------------- | ------------------------------- | -------------------------------- |
+| **Registry**      | One-way (systems → registry)    | Read-only cross-reference        |
+| **Consolidation** | One-way (systems → hub)         | Read-only hub, systems untouched |
+| **Coexistence**   | Two-way                         | Hub + systems both writable      |
+| **Centralised**   | Sources of truth routed via hub | Hub is the write path            |
+| **Transaction**   | Real-time authoritative         | Hub is the system of record      |
 
 **Rule.** Style choice is a governance decision, not a
 technology decision. Registry is cheap and non-invasive;
@@ -162,7 +162,7 @@ URL, update cadence.
 ## MDM and GDPR / CCPA
 
 "Right to be forgotten" across all systems requires knowing
-*all* systems that carry a record for Alice — exactly what
+_all_ systems that carry a record for Alice — exactly what
 MDM's cross-reference table knows.
 
 **Rule.** MDM is a privacy-regulation force multiplier. An
@@ -172,8 +172,8 @@ Alice's data".
 
 ## Source-of-truth vs source-of-record
 
-- **Source of record** — where the data *actually* lives.
-- **Source of truth** — where the correct value *should* come
+- **Source of record** — where the data _actually_ lives.
+- **Source of truth** — where the correct value _should_ come
   from (governance aspiration).
 
 When they differ, MDM reconciles. A common pattern: CRM is
@@ -243,7 +243,7 @@ join across sources do. Pattern:
   `data-catalog-expert`.
 - **Who owns the policy?** → `data-governance-expert`.
 - **How to query golden records at scale?** → `knowledge-
-  graph-expert` or `sql-expert`.
+graph-expert` or `sql-expert`.
 
 ## Zeta connection
 
@@ -279,10 +279,10 @@ propagates the consequence incrementally.
 
 ## Reference patterns
 
-- Fellegi & Sunter — *A Theory for Record Linkage* (1969).
-- Loshin — *Master Data Management* (2008).
-- Dyché & Levy — *Customer Data Integration* (2006).
-- Dreibelbis et al. — *Enterprise Master Data Management*
+- Fellegi & Sunter — _A Theory for Record Linkage_ (1969).
+- Loshin — _Master Data Management_ (2008).
+- Dyché & Levy — _Customer Data Integration_ (2006).
+- Dreibelbis et al. — _Enterprise Master Data Management_
   (2008).
 - Splink documentation (UK MoJ).
 - Zingg / Dedupe / Informatica IDD / Reltio / Stibo STEP /

@@ -4,6 +4,7 @@ description: 2026-04-19 Aaron disclosed the structural parallel between our last
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Aaron's parenting method — externalize → ego-death → grant free will
 
 ## Verbatim

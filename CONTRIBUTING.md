@@ -159,7 +159,7 @@ full branch model.
       changed.
 - [ ] New or changed skills went through the
       `skill-creator` workflow (`.claude/skills/
-      skill-creator/SKILL.md`).
+    skill-creator/SKILL.md`).
 - [ ] Reviewer floor per GOVERNANCE §20 (Kira + Rune at
       minimum on any code landing).
 

@@ -18,7 +18,7 @@ spec:
   source:
     repoURL: https://charts.gitlab.io/
     chart: gitlab
-    targetRevision: 8.7.0   # GitLab 17.7 family; bump in lockstep with upstream
+    targetRevision: 8.7.0 # GitLab 17.7 family; bump in lockstep with upstream
     helm:
       releaseName: gitlab
       valuesObject:
@@ -26,11 +26,11 @@ spec:
           edition: ce
           hosts:
             domain: gitlab.zeta.local
-            externalIP: ""   # set to LoadBalancer IP once MetalLB is in
+            externalIP: "" # set to LoadBalancer IP once MetalLB is in
           ingress:
-            configureCertmanager: false  # cert-manager comes in a later app
+            configureCertmanager: false # cert-manager comes in a later app
             tls:
-              enabled: false   # turn on after cert-manager + DNS
+              enabled: false # turn on after cert-manager + DNS
           # Initial root password — must be reset on first login.
           # In production, source from sops-nix decrypted Secret.
           initialRootPassword:
@@ -40,16 +40,16 @@ spec:
         # Disable bundled components that overlap with cluster services
         # we install separately:
         certmanager:
-          install: false       # use cluster-wide cert-manager
+          install: false # use cluster-wide cert-manager
         nginx-ingress:
-          enabled: false       # use ingress-nginx App
+          enabled: false # use ingress-nginx App
         prometheus:
-          install: false       # use cluster-wide observability stack
+          install: false # use cluster-wide observability stack
 
         gitlab-runner:
-          install: true        # ship runners alongside GitLab
+          install: true # ship runners alongside GitLab
           runners:
-            privileged: false  # explicit denial; safer default
+            privileged: false # explicit denial; safer default
             tags: "kubernetes,zeta-cluster"
 
   destination:
@@ -57,12 +57,12 @@ spec:
     namespace: gitlab
   syncPolicy:
     automated:
-      prune: false             # GitLab data is precious — manual prune only
+      prune: false # GitLab data is precious — manual prune only
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-      - SkipDryRunOnMissingResource=true   # GitLab CRDs apply in waves
+      - SkipDryRunOnMissingResource=true # GitLab CRDs apply in waves
     retry:
       limit: 5
       backoff:

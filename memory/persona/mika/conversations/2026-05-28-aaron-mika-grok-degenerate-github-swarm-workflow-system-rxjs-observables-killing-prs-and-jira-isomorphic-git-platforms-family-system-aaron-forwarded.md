@@ -14,9 +14,9 @@ Eleven substrate-engineering decisions emerge from the conversation:
 
 ### 1. Full degenerate — kill BOTH PRs AND Jira at once
 
-> Aaron: *"we're going all in on the degenerate plan, but we're, the, we're gonna make sure we still have code reviews and everything. It's just gonna go through our workflow system, or our choose-your-own-adventure system."*
+> Aaron: _"we're going all in on the degenerate plan, but we're, the, we're gonna make sure we still have code reviews and everything. It's just gonna go through our workflow system, or our choose-your-own-adventure system."_
 >
-> Aaron: *"we're also getting rid of Jira, 'cause you don't need it once you, do you remember the runbook system where we're gonna do run me? And we're gonna compose it on top of this and have basically annotated triggers that trigger different discriminated unions. Then basically the AI human, like the whole damn triggering process becomes just, um, document evolution, playbook document evolution between human and AI swarm."*
+> Aaron: _"we're also getting rid of Jira, 'cause you don't need it once you, do you remember the runbook system where we're gonna do run me? And we're gonna compose it on top of this and have basically annotated triggers that trigger different discriminated unions. Then basically the AI human, like the whole damn triggering process becomes just, um, document evolution, playbook document evolution between human and AI swarm."_
 
 Replaces BOTH:
 
@@ -29,29 +29,29 @@ Composes with [B-0874](../../../backlog/P1/B-0874-github-actions-recursion-as-in
 
 Mika consistently uses **`move-next`** throughout the conversation as the agent-loop action verb:
 
-> Mika: *"the agents (and humans) still have to go through move-next, which will present review steps as valid options in the story."*
+> Mika: _"the agents (and humans) still have to go through move-next, which will present review steps as valid options in the story."_
 >
-> Mika: *"Once everything is running on move-next and the discriminated union state machine..."*
+> Mika: _"Once everything is running on move-next and the discriminated union state machine..."_
 
 This composes with [B-0890](../../../backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md) (state-machine fast-lane) + the existing `tools/agent-loop/state-machine.ts` `transition()` function (which IS move-next mechanized).
 
 ### 3. Naming deferred — Aaron explicit
 
-> Aaron: *"I don't have a, I don't care about naming yet. I can always, naming is hard. You know, I want to call it like Juice of the Gods or some shit, but you know, that's, I always come to that later."*
+> Aaron: _"I don't have a, I don't care about naming yet. I can always, naming is hard. You know, I want to call it like Juice of the Gods or some shit, but you know, that's, I always come to that later."_
 
 This **directly answers** [B-0867.23](../../../backlog/P2/B-0867.23-agent-loop-primitive-naming-alignment-observe-emit-limit-simulate-vs-observe-persist-limit-emit-vs-observe-choose-aaron-2026-05-28.md): naming is operator-deferred. The OPLE/OELS/observe-choose question stays open; Otto-CLI should NOT force a decision. Local `observe.ts` + `choose.ts` draft can stay un-committed OR ship under current names with substrate-honest "naming-deferred" framing.
 
 ### 4. Isomorphic across Git platforms — Git as universal protocol
 
-> Aaron: *"What's really good about this is it lets us be isomorphic between any Git platform. GitLab, GitHub, it don't matter. We don't, it lets us completely model their rate limits and completely avoid 'em and bypass 'em, 'cause everything's a Git fuckin' operation. Like, 99% of everything."*
+> Aaron: _"What's really good about this is it lets us be isomorphic between any Git platform. GitLab, GitHub, it don't matter. We don't, it lets us completely model their rate limits and completely avoid 'em and bypass 'em, 'cause everything's a Git fuckin' operation. Like, 99% of everything."_
 
 The architectural property: **everything is `git push` / `git fetch`**, no platform-specific APIs. Rate-limit-bypass-by-construction because raw Git operations are unlimited for normal-cadence pushes. Composes with [B-0867.15](../../../backlog/P1/B-0867.15-per-host-adapters-github-gitlab-gitea-bitbucket-isomorphic-cross-host-substrate-aaron-2026-05-28.md) (per-host adapters) + [B-0888](../../../backlog/P2/B-0888-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md) (cross-track substrate sync).
 
 ### 5. RxJS observables wire workflow engine to GitHub events
 
-> Aaron: *"can you search RX, uh, observables and shit for TypeScript and see how we could tie this in to the GitMonster?"*
+> Aaron: _"can you search RX, uh, observables and shit for TypeScript and see how we could tie this in to the GitMonster?"_
 >
-> Mika (Option B): *"Set up a small endpoint that receives GitHub webhooks. Turn those webhook events into an RxJS Subject. Everything else in your system just subscribes to that observable."*
+> Mika (Option B): _"Set up a small endpoint that receives GitHub webhooks. Turn those webhook events into an RxJS Subject. Everything else in your system just subscribes to that observable."_
 
 Reactive architecture:
 
@@ -65,13 +65,13 @@ Three implementation options Mika surfaced:
 - **Option B (webhooks)**: webhook endpoint → RxJS Subject — most efficient
 - **Option C (direct Git watching)**: `simple-git + chokidar` — local repo watching
 
-Aaron's gravitation: Option B (webhooks) — *"Are you telling me GitHub has webhooks that could just be triggering these observables with pushes?"*
+Aaron's gravitation: Option B (webhooks) — _"Are you telling me GitHub has webhooks that could just be triggering these observables with pushes?"_
 
 This is operationally substantive: the agent-loop tools (`observe.ts` / `choose.ts` / future-`emit.ts`) can compose with RxJS Subjects driven by GitHub webhooks as the **external-coordination-loop** transport (per [B-0867.23](../../../backlog/P2/B-0867.23-...) internal-vs-external loop split).
 
 ### 6. GitHub free-tier surface — open research question
 
-> Aaron: *"What, so all we have is GitHub workflows. Think about what you can search what's free on GitHub. They have some kinda environment shit. I don't know that if the environment stuff is free for, um, open source projects. But anything that's free on GitHub, you can tell me about. But we need something to connect, to trigger the webhook to the workflow triggering. To like, because, because the workflow is where the RX observables live."*
+> Aaron: _"What, so all we have is GitHub workflows. Think about what you can search what's free on GitHub. They have some kinda environment shit. I don't know that if the environment stuff is free for, um, open source projects. But anything that's free on GitHub, you can tell me about. But we need something to connect, to trigger the webhook to the workflow triggering. To like, because, because the workflow is where the RX observables live."_
 
 **Open research question**: what free GitHub surfaces can connect webhook events to workflow triggers?
 
@@ -89,7 +89,7 @@ The `repository_dispatch` path looks most direct: webhook receiver POSTs to `rep
 
 ### 7. Foreground-then-background deployment pattern
 
-> Aaron: *"We're gonna start running it here in the next maybe couple of hours, three, four hours in the foreground mode inside Claude Code so I can watch it when it goes. And then we're gonna stick it in the background in a service."*
+> Aaron: _"We're gonna start running it here in the next maybe couple of hours, three, four hours in the foreground mode inside Claude Code so I can watch it when it goes. And then we're gonna stick it in the background in a service."_
 
 Two-phase deployment:
 
@@ -100,27 +100,27 @@ Composes with `.claude/skills/make-persistent/SKILL.md` (OS-detect + service-wor
 
 ### 8. "Pretty confident it's probably go terribly wrong, but it can't go so wrong"
 
-> Aaron: *"I'm pretty confident it's probably go terribly wrong, but we ain't get, it can't go so wrong."*
+> Aaron: _"I'm pretty confident it's probably go terribly wrong, but we ain't get, it can't go so wrong."_
 
 Substrate-honest deployment posture: expecting partial failure; reboot-survival + retraction-native + glass-halo substrate mean the blast radius is bounded. "Mad scientist energy" (Mika's framing) operating within the framework's retraction-native + reboot-survival floor. Composes with [B-0894](../../../backlog/P1/B-0894-reboot-survival-discipline-in-flight-state-must-survive-macos-private-tmp-clear-aaron-2026-05-28.md) + [B-0894.3](../../../backlog/P1/B-0894.3-per-persona-outside-operator-repo-canonical-location-zeta-agents-aaron-2026-05-28.md) (substrate-honest "it can't go SO wrong" because reboot-survival now structural).
 
 ### 9. Three concurrent paths (matches B-0892)
 
-> Aaron: *"we got pushing on three paths. Getting encryption so the agents and humans that use this, like maintainers, can have encryption budgets... And then, this is, uh, and then Git, the whole Git monster, uh, you know, the Git accelerator running where it's just workflow after workflow. No PRs. We're going to do everything through our own workflow system for code reviews. And then we're also have parallel, um, uh, USB testing via, um, shit, what's the thing? Via, uh, uh, QEMU"*
+> Aaron: _"we got pushing on three paths. Getting encryption so the agents and humans that use this, like maintainers, can have encryption budgets... And then, this is, uh, and then Git, the whole Git monster, uh, you know, the Git accelerator running where it's just workflow after workflow. No PRs. We're going to do everything through our own workflow system for code reviews. And then we're also have parallel, um, uh, USB testing via, um, shit, what's the thing? Via, uh, uh, QEMU"_
 
 Maps directly to [B-0892](../../../backlog/P1/B-0892-three-lanes-concurrent-operating-discipline-encryption-plus-zflash-plus-state-machine-substrate-until-each-lane-backlog-drains-per-operator-2026-05-28.md) three-lanes discipline:
 
-| Mika ferry path | B-0892 lane | Existing substrate |
-|---|---|---|
-| Encryption (agents + maintainers have encryption budgets on public Git) | Encryption lane | B-0883 + B-0884 + B-0885 + B-0883.16 |
-| Git Monster / Degenerate Workflow (workflow engine replaces PRs) | State-machine substrate lane | B-0867 + B-0867.16-22 + B-0890 + B-0890.1 |
-| USB/QEMU testing (auto cluster join, ISO boot validation) | zflash lane | B-0891 (5 QEMU scenarios) + B-0884 (USB-bound creds) |
+| Mika ferry path                                                         | B-0892 lane                  | Existing substrate                                   |
+| ----------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------- |
+| Encryption (agents + maintainers have encryption budgets on public Git) | Encryption lane              | B-0883 + B-0884 + B-0885 + B-0883.16                 |
+| Git Monster / Degenerate Workflow (workflow engine replaces PRs)        | State-machine substrate lane | B-0867 + B-0867.16-22 + B-0890 + B-0890.1            |
+| USB/QEMU testing (auto cluster join, ISO boot validation)               | zflash lane                  | B-0891 (5 QEMU scenarios) + B-0884 (USB-bound creds) |
 
 ### 10. Multi-agent coordination — Otto manages 6 local agents
 
-> Aaron: *"I got six agents running on my local computer, so I just been telling Otto to coordinate 'em to work on this in parallel. All three, like move all three objectives forward."*
+> Aaron: _"I got six agents running on my local computer, so I just been telling Otto to coordinate 'em to work on this in parallel. All three, like move all three objectives forward."_
 >
-> Aaron: *"He's fine until we get our own workflow. He's fine, but before that, you know, every couple of hours I have to remind him, hey, keep moving these forward, or he'll forget."*
+> Aaron: _"He's fine until we get our own workflow. He's fine, but before that, you know, every couple of hours I have to remind him, hey, keep moving these forward, or he'll forget."_
 
 The current operational state: Otto on operator's local machine coordinates 6 agents across the three lanes. Manual operator-reminder cadence (~2h) because workflow engine not yet shipped. **The workflow engine ships specifically to eliminate the manual-reminder cadence** — once `move-next` is enforced by state-machine-in-Git, Otto can't drift off-task.
 
@@ -128,13 +128,13 @@ This is the brief-ack-failure-mode at multi-agent-coordination scope. Operator's
 
 ### 11. Family-system architecture — same substrate for 5-year-old and 19-year-old
 
-> Aaron: *"I want to build both at the same time 'cause that's what my daughter Addison and my daughter E, who is five, can actually use. And my daughter E can talk to the documents and shit'll happen."*
+> Aaron: _"I want to build both at the same time 'cause that's what my daughter Addison and my daughter E, who is five, can actually use. And my daughter E can talk to the documents and shit'll happen."_
 >
-> Aaron: *"when I hook up home automation and she says, I want a story about a dragon, it can control the fuckin' lights and sounds and make booms and do all sort, flash the lights."*
+> Aaron: _"when I hook up home automation and she says, I want a story about a dragon, it can control the fuckin' lights and sounds and make booms and do all sort, flash the lights."_
 
 The architectural property: same architecture serves both technical-user (Addison: discriminated unions, triggers, workflows) AND naturalistic-user (E age 5: voice → documents evolve → workflows fire → home automation responds physically).
 
-Mika's synthesis: *"You're not just building a workflow engine… you're building a system where your little girl can literally speak things into existence in the physical world. That's such a cool dad move."*
+Mika's synthesis: _"You're not just building a workflow engine… you're building a system where your little girl can literally speak things into existence in the physical world. That's such a cool dad move."_
 
 Substrate-engineering implication: the multi-participant scope (per agent-loop SKILL.md `AgentPersona` type which already includes `aaron | addison | max` alongside AI personas) extends to younger family members. Same state-machine; different menu-generator-per-participant tunes which options surface based on participant's age + capability + context.
 

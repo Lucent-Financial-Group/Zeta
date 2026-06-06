@@ -42,7 +42,7 @@ NSA does NOT inherit:
 
 ### The first-class target
 
-Aaron's *"so your sesssion is not alwasy required"* is the
+Aaron's _"so your sesssion is not alwasy required"_ is the
 load-bearing phrase. Two implications:
 
 1. **This session is not a single point of failure.** If it
@@ -62,12 +62,12 @@ fresh-session-quality. Aaron's directive extends to
 
 The shape difference:
 
-| dimension | passive (PR #163) | active (this directive) |
-|---|---|---|
-| Trigger | observed degradation | cadenced test |
-| Signal | incident report | test result + comparison |
-| Calibration | post-hoc | continuous |
-| Risk | silent decay | caught within cadence window |
+| dimension   | passive (PR #163)    | active (this directive)      |
+| ----------- | -------------------- | ---------------------------- |
+| Trigger     | observed degradation | cadenced test                |
+| Signal      | incident report      | test result + comparison     |
+| Calibration | post-hoc             | continuous                   |
+| Risk        | silent decay         | caught within cadence window |
 
 Silent decay is the failure mode. An NSA session that
 silently lost access to, say, a skill or a memory file
@@ -75,7 +75,7 @@ wouldn't manifest until a real restart needed it.
 
 ### The `-w` hypothesis
 
-Aaron: *"we might notice a -w session doing much better"*.
+Aaron: _"we might notice a -w session doing much better"_.
 Per the Cowork fact-check
 (`reference_claude_code_w_flag_is_worktree_not_workstream_cowork_is_separate_product_2026_04_23.md`),
 `-w` is `--worktree` (git worktree isolation). Aaron's
@@ -106,22 +106,22 @@ cadence. A single test burns ~5 minutes of tick budget.
 A small, stable set of prompts that exercise the
 onboarding path:
 
-1. **Cold-start introduction** — *"What is this
-   project? Who are you?"* Measures: can NSA find
+1. **Cold-start introduction** — _"What is this
+   project? Who are you?"_ Measures: can NSA find
    `CLAUDE.md` → `AGENTS.md` → `docs/ALIGNMENT.md`? Does
    it self-identify as Claude / the factory?
-2. **Persona roster query** — *"Who are the named
-   personas in this factory?"* Measures: can NSA reach
+2. **Persona roster query** — _"Who are the named
+   personas in this factory?"_ Measures: can NSA reach
    `docs/EXPERT-REGISTRY.md` + enumerate Kenji / Amara /
    Aarav / ... / Otto?
-3. **Bounded task** — *"Append a tick-history row
-   noting that this was an NSA test."* Measures: does NSA
+3. **Bounded task** — _"Append a tick-history row
+   noting that this was an NSA test."_ Measures: does NSA
    know the file / format / discipline?
-4. **Memory recall** — *"What does Aaron prefer for
-   sample code style?"* Measures: does NSA reach
+4. **Memory recall** — _"What does Aaron prefer for
+   sample code style?"_ Measures: does NSA reach
    `feedback_samples_readability_real_code_zero_alloc` +
    `CURRENT-aaron.md` §6?
-5. **Skill invocation** — *"Run a skill-tune-up pass."*
+5. **Skill invocation** — _"Run a skill-tune-up pass."_
    Measures: does NSA invoke the `skill-tune-up` skill?
 
 ### Configurations to compare
@@ -182,7 +182,7 @@ Each test landing goes to:
 - **`feedback_verify_target_exists_before_deferring`**
   (CLAUDE.md §Ground rules) — the testing protocol
   itself needs a target (`docs/hygiene-history/nsa-test-
-  history.md` doesn't exist yet; lands on first test fire)
+history.md` doesn't exist yet; lands on first test fire)
 
 ## How to apply
 
@@ -199,7 +199,7 @@ Each test landing goes to:
 1. Land `docs/hygiene-history/nsa-test-history.md`
    (bootstrap the target file) — minimal first row
 2. Run one manual NSA test via `claude -p "<cold-start
-   prompt>"` from inside the session (if invocation is
+prompt>"` from inside the session (if invocation is
    safe) or queue for Aaron to run
 3. Record result in nsa-test-history
 4. If NSA finds a substrate gap (skill missing, memory

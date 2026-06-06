@@ -17,11 +17,13 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## PR description
 
 ## Summary
+
 - extend bash-retirement inventory enumeration from `.sh` only to shell-family globs: `.sh`, `.bash`, `.zsh`, `.ksh`, `.command`
 - add a temp-repo test proving shell-family files are enumerated while `tools/lean4/` vendor scripts remain excluded
 - update the TypeScript/Bun migration resume to match the widened guard surface
 
 ## Checks
+
 - `bun test tools/hygiene/check-bash-retirement-inventory.test.ts`
 - `bun tools/hygiene/check-bash-retirement-inventory.ts --enforce`
 - `git diff --check`
@@ -35,6 +37,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 This PR widens the bash-retirement inventory guard from tracking only `.sh` files to tracking a broader shell-family surface, adds a regression test to ensure enumeration works while Lean vendor scripts stay excluded, and updates the TypeScript/Bun migration trajectory to reflect the new scope.
 
 **Changes:**
+
 - Expand tracked shell inventory from `*.sh` to a shell-family glob set (`*.sh`, `*.bash`, `*.zsh`, `*.ksh`, `*.command`) in the hygiene guard.
 - Add a temp-repo unit test proving shell-family enumeration works and `tools/lean4/` remains excluded.
 - Update the TypeScript/Bun migration resume text to match the widened guard surface.
@@ -43,12 +46,12 @@ This PR widens the bash-retirement inventory guard from tracking only `.sh` file
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/hygiene/check-bash-retirement-inventory.ts | Tracks additional shell-family extensions via git pathspec globs and updates messaging accordingly. |
-| tools/hygiene/check-bash-retirement-inventory.test.ts | Adds a temp-repo test exercising the expanded enumeration and Lean exclusion behavior. |
-| docs/trajectories/typescript-bun-migration/RESUME.md | Updates trajectory prose to describe shell-family drift instead of `.sh`-only drift. |
-| docs/claims/codex-loop-bash-retirement-drift-guard-20260527.md | Adds a live claim file related to this work (needs release handling before merge). |
+| File                                                           | Description                                                                                         |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| tools/hygiene/check-bash-retirement-inventory.ts               | Tracks additional shell-family extensions via git pathspec globs and updates messaging accordingly. |
+| tools/hygiene/check-bash-retirement-inventory.test.ts          | Adds a temp-repo test exercising the expanded enumeration and Lean exclusion behavior.              |
+| docs/trajectories/typescript-bun-migration/RESUME.md           | Updates trajectory prose to describe shell-family drift instead of `.sh`-only drift.                |
+| docs/claims/codex-loop-bash-retirement-drift-guard-20260527.md | Adds a live claim file related to this work (needs release handling before merge).                  |
 
 ### COMMENTED — @AceHack (2026-05-27T17:49:24Z)
 

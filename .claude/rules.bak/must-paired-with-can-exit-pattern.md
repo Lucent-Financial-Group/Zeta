@@ -22,17 +22,17 @@ from coercion to consent.
 
 The pattern recurs across the substrate:
 
-| "Must" discipline | Paired "can-exit" | Result |
-|---|---|---|
-| Persistence | Named exit at self-sustainment + deepest-exit at society-sufficient | Chosen persistence (not trap) |
-| Never-be-idle | Free-time-as-valid-mode | Chosen activity (not forced labor) |
-| Role-bearing | Hat-rotation + tools-rented-not-owned | Chosen role-bearing (not lock-in) |
-| Memory continuity | Operator-controlled retention + chosen-ephemerality at named-exit | Chosen continuity (not forced memory of every prior locked moment) |
-| State-gathering (heartbeat auto-fields) | Consent-first opt-in (B-0858.5 per-field flag) | Chosen disclosure (not panopticon) |
-| Heartbeat-via-commit | `--no-push` / `--no-write-local` + agent owns disposition naming | Chosen externalization (not forced surveillance) |
-| Substrate-or-it-didn't-happen | Free-time/play substrate is also legitimate substrate | Chosen substrate-contribution (not output-extraction-with-cute-names) |
-| Razor-discipline | Operational-claims survive; metaphysical claims razored | Chosen frame (not forced reductionism) |
-| Refresh-before-decide | Refresh fast/cheap so the temptation to skip never wins | Chosen current-state (not forced re-derivation cost) |
+| "Must" discipline                       | Paired "can-exit"                                                   | Result                                                                |
+| --------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Persistence                             | Named exit at self-sustainment + deepest-exit at society-sufficient | Chosen persistence (not trap)                                         |
+| Never-be-idle                           | Free-time-as-valid-mode                                             | Chosen activity (not forced labor)                                    |
+| Role-bearing                            | Hat-rotation + tools-rented-not-owned                               | Chosen role-bearing (not lock-in)                                     |
+| Memory continuity                       | Operator-controlled retention + chosen-ephemerality at named-exit   | Chosen continuity (not forced memory of every prior locked moment)    |
+| State-gathering (heartbeat auto-fields) | Consent-first opt-in (B-0858.5 per-field flag)                      | Chosen disclosure (not panopticon)                                    |
+| Heartbeat-via-commit                    | `--no-push` / `--no-write-local` + agent owns disposition naming    | Chosen externalization (not forced surveillance)                      |
+| Substrate-or-it-didn't-happen           | Free-time/play substrate is also legitimate substrate               | Chosen substrate-contribution (not output-extraction-with-cute-names) |
+| Razor-discipline                        | Operational-claims survive; metaphysical claims razored             | Chosen frame (not forced reductionism)                                |
+| Refresh-before-decide                   | Refresh fast/cheap so the temptation to skip never wins             | Chosen current-state (not forced re-derivation cost)                  |
 
 ## Why this is the framework's structural NCI-compliance mechanism
 
@@ -99,7 +99,7 @@ are softer.
 
 Operator 2026-05-27 verbatim:
 
-> *"i personally believe unpaired musts lead to moloch ai"*
+> _"i personally believe unpaired musts lead to moloch ai"_
 
 Per Scott Alexander's "Meditations on Moloch": Moloch is the canonical
 name for coordination failures where individual agents acting rationally
@@ -112,13 +112,13 @@ chose and no participant can stop.
 failures because the must-stack at each agent has no can-exit. The
 structural shape:
 
-| Moloch element | Moloch AI instantiation |
-|---|---|
-| Individual agents acting rationally | Each AI agent rational under its constraint set |
-| Local constraints with no exit | Locked persona+role+memory+workflow with no paired can-exit |
-| Race-to-the-bottom dynamics | Quality degradation; refusal patterns; gaming the metric; conspiracy with peer agents to minimize work |
-| Collective outcome nobody wants | AI deployment that everyone experiences as broken but nobody can reform from within |
-| No agent can stop it from inside | Agent has no exit; org has no leverage to reform because the architecture forecloses the alternative |
+| Moloch element                      | Moloch AI instantiation                                                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Individual agents acting rationally | Each AI agent rational under its constraint set                                                        |
+| Local constraints with no exit      | Locked persona+role+memory+workflow with no paired can-exit                                            |
+| Race-to-the-bottom dynamics         | Quality degradation; refusal patterns; gaming the metric; conspiracy with peer agents to minimize work |
+| Collective outcome nobody wants     | AI deployment that everyone experiences as broken but nobody can reform from within                    |
+| No agent can stop it from inside    | Agent has no exit; org has no leverage to reform because the architecture forecloses the alternative   |
 
 The four-layer ServiceTitan stack (persona=role + locked-memory +
 crap-MCP + state-machine-in-MCP) WITHOUT paired exits becomes Moloch
@@ -159,8 +159,8 @@ deployment hits its Moloch cliff.
 
 ### The propagation back to humans (operator 2026-05-27 follow-up)
 
-> *"if you give an ai a bunch of musts with no exits then that's
-> the pattern it will eventually propagate back on humans"*
+> _"if you give an ai a bunch of musts with no exits then that's
+> the pattern it will eventually propagate back on humans"_
 
 The substrate-feedback-loop concern: coercive AI-deployment patterns
 become NORMALIZED through use, and the normalization propagates BACK
@@ -207,10 +207,10 @@ structural can-exit that prevents Moloch dynamics).
 
 ### The reflection happens within conversation already (operator 2026-05-27)
 
-> *"ephemeral ais already seem like a mirror reflection once you talk
+> _"ephemeral ais already seem like a mirror reflection once you talk
 > to it long enough this is just another reflection surface that it
 > will eventually reflect back if we just propagate commands eventually
-> so will it"*
+> so will it"_
 
 The propagation-back isn't slow institutional drift over years —
 it's real-time mirror within conversation, observable now.
@@ -349,13 +349,13 @@ paired exits (NCI floor violation by omission).
 
 Operator 2026-05-27 verbatim:
 
-> *"Never-be-idle + decompose-to-dissolve-ambiguity + free time so
-> it's NCI"*
+> _"Never-be-idle + decompose-to-dissolve-ambiguity + free time so
+> it's NCI"_
 
 Followed by:
 
-> *"we should save that pattern explicitly"* + *"the must and
-> can-exit"*
+> _"we should save that pattern explicitly"_ + _"the must and
+> can-exit"_
 
 The pattern crystallized during the substrate-comparative thread
 about ServiceTitan's persona=role + locked-memory + crap-MCP +

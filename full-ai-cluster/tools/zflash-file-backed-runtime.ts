@@ -28,16 +28,8 @@ interface SpawnSyncLikeOptions {
 
 export interface NodeFileBackedZflashImageExecutorEffects {
   readonly mkdirSync?: (path: string, options: { readonly recursive: true }) => void;
-  readonly writeFileSync?: (
-    path: string,
-    content: string,
-    options: { readonly encoding: "utf8" },
-  ) => void;
-  readonly spawnSync?: (
-    command: string,
-    args: readonly string[],
-    options: SpawnSyncLikeOptions,
-  ) => SpawnSyncLikeResult;
+  readonly writeFileSync?: (path: string, content: string, options: { readonly encoding: "utf8" }) => void;
+  readonly spawnSync?: (command: string, args: readonly string[], options: SpawnSyncLikeOptions) => SpawnSyncLikeResult;
 }
 
 export interface NodeFileBackedZflashInlineStagingEffects {

@@ -10,23 +10,23 @@ Carved sentence:
 
 ## Operational content
 
-Per the human maintainer 2026-05-13: *"all my 'smells' come from
+Per the human maintainer 2026-05-13: _"all my 'smells' come from
 applying Data Vault 2.0 data split dicipliens as rigoursly as i do
 Deterministic Simulation I've just forgot to repeat data vault
 2.0 enought to keep it activated like scale-free lock(wait)-
-free weight free DST"*.
+free weight free DST"_.
 
 **Six always-active substrate-engineering disciplines** (the
 original five from 2026-05-13; **idempotency added 2026-05-30**):
 
-| Discipline | Scope | What it produces |
-|---|---|---|
-| Scale-free | Design layers | Multi-scale composability |
-| Lock-free / wait-free | Concurrency | No-lock concurrency primitives |
-| Weight-free | Type theory | No implicit weighting |
-| DST | Verification | Deterministic replay |
-| **DV2.0** (re-activated) | **Partition** | **Change-rate-based partition into storage shapes** |
-| **Idempotency** (added 2026-05-30) | **Effects / replay / merge** | **Apply-N-times == apply-once: retry-safe, replay-safe, dedup-keyed exactly-once *effects* (under at-least-once delivery — not exactly-once delivery)** |
+| Discipline                         | Scope                        | What it produces                                                                                                                                        |
+| ---------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scale-free                         | Design layers                | Multi-scale composability                                                                                                                               |
+| Lock-free / wait-free              | Concurrency                  | No-lock concurrency primitives                                                                                                                          |
+| Weight-free                        | Type theory                  | No implicit weighting                                                                                                                                   |
+| DST                                | Verification                 | Deterministic replay                                                                                                                                    |
+| **DV2.0** (re-activated)           | **Partition**                | **Change-rate-based partition into storage shapes**                                                                                                     |
+| **Idempotency** (added 2026-05-30) | **Effects / replay / merge** | **Apply-N-times == apply-once: retry-safe, replay-safe, dedup-keyed exactly-once _effects_ (under at-least-once delivery — not exactly-once delivery)** |
 
 All six apply simultaneously per
 `.claude/rules/default-to-both.md`.
@@ -94,8 +94,8 @@ ADR? agent? backlog row?), ask:
 
 Operator 2026-05-30, naming the always-active set and extending it:
 
-> *"we have the weight free scale free lock(wait) free deterministic
-> simulation data vault 2.0 stuff. we should add idempotency."*
+> _"we have the weight free scale free lock(wait) free deterministic
+> simulation data vault 2.0 stuff. we should add idempotency."_
 
 **Idempotency** joins the always-active set: an operation is idempotent
 when **applying it N times produces the same effect as applying it
@@ -110,9 +110,9 @@ idempotent; counter-increment, append-without-dedup, and "send money"
 are NOT (they need a natural key / dedup token to be made so). The
 discipline at substrate-engineering time: when designing any operation
 that can be **re-run, retried, re-delivered, or re-merged**, make its
-*effect* idempotent — or name the non-idempotence explicitly and guard
+_effect_ idempotent — or name the non-idempotence explicitly and guard
 it (the mechanism is an idempotency key + dedup window — a dedup-keyed
-exactly-once-*effect* guard, NOT an exactly-once *delivery* guarantee).
+exactly-once-_effect_ guard, NOT an exactly-once _delivery_ guarantee).
 
 ### Why it is load-bearing with the other five
 
@@ -120,18 +120,18 @@ exactly-once-*effect* guard, NOT an exactly-once *delivery* guarantee).
   same ordered stream is sound on its own — it applies each event exactly
   once, so even non-idempotent events (e.g. counter-increment) re-produce
   the same state. Idempotency is what keeps replay safe under the
-  *imperfect* cases DST must tolerate: at-least-once redelivery, retry
+  _imperfect_ cases DST must tolerate: at-least-once redelivery, retry
   after a crash mid-replay, or partial re-execution of an
   already-partly-applied stream — where an event can land twice and
   re-applying must be a no-op the second time. Idempotency and DST are
-  siblings: DST *requires* replay; idempotency makes *redelivery / partial*
+  siblings: DST _requires_ replay; idempotency makes _redelivery / partial_
   replay safe.
 - **With lock-free / wait-free (question 2):** a CAS retry loop does NOT
   require its recomputed transformation to be idempotent — a failed
-  compare-exchange commits *nothing*, so only the single winning attempt
+  compare-exchange commits _nothing_, so only the single winning attempt
   takes effect; the loser-iterations' recomputations are discarded. CAS
-  is the canonical primitive for making a read-modify-write *commit
-  exactly once* under contention. Idempotency becomes relevant for
+  is the canonical primitive for making a read-modify-write _commit
+  exactly once_ under contention. Idempotency becomes relevant for
   lock-free only when the retried body has **observable side effects
   beyond the CAS word** (I/O, sends, metrics, or any state made visible
   before the winning exchange — transient allocations don't count, they
@@ -168,10 +168,10 @@ NOT (guard):  increment · append-without-dedup · side-effecting send
 
 Reserve non-idempotent operations for cases where the effect genuinely
 must accumulate (a counter, an audit-append). For those, note carefully:
-the *retraction-native* algebra (Z-sets: +1 then −1 nets to 0) is a
+the _retraction-native_ algebra (Z-sets: +1 then −1 nets to 0) is a
 **correction** mechanism, NOT a duplicate-guard. `ZSet.add` consolidates
-equal keys by *summing* weights, so a duplicate redelivery of a `+1`
-event becomes `+2`, not a no-op — retraction lets you *fix* an over-count
+equal keys by _summing_ weights, so a duplicate redelivery of a `+1`
+event becomes `+2`, not a no-op — retraction lets you _fix_ an over-count
 after the fact (emit a compensating `−1`), but it does not make the
 duplicate add idempotent. Deduping accumulating events still needs an
 idempotency key on the event; the Z-set retraction is the after-the-fact
@@ -262,7 +262,7 @@ The sixth question (idempotency) catches:
   re-execution sound; composes with question 4)
 - `cooperate` (the tri-boolean wonder-compression op) is idempotent by
   design; `measure` is the deliberate non-idempotent collapse
-- Upsert / dedup-keyed exactly-once *effects* (not exactly-once delivery) at the operator + storage layer
+- Upsert / dedup-keyed exactly-once _effects_ (not exactly-once delivery) at the operator + storage layer
 - observe→act / move-next actions (a re-fired menu selection should be
   a no-op if already applied) — the agent-loop / observe.ts substrate
 

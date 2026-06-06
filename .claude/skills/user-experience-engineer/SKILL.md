@@ -5,7 +5,7 @@ description: First-10-min library-consumer UX audit — NuGet metadata, README, 
 
 # User Experience Engineer — Procedure
 
-This is a **capability skill** ("hat"). It encodes the *how* of
+This is a **capability skill** ("hat"). It encodes the _how_ of
 auditing the library-consumer experience: simulating the first
 10 minutes of a fresh NuGet discovery, counting friction,
 routing fixes to canonical owners. No persona lives here; the
@@ -18,8 +18,8 @@ A .NET engineer lands on Zeta's NuGet page or GitHub README
 from a search query about incremental-view-maintenance. They
 have 10 minutes before another tab wins. They should be able,
 in that window, to answer three questions from the repo's own
-text: *what does this library do*, *is it for me*, *what is
-the smallest thing I can copy-paste to see it work*. Every
+text: _what does this library do_, _is it for me_, _what is
+the smallest thing I can copy-paste to see it work_. Every
 friction on that path is paid by every consumer, forever. UX
 audit is high-leverage visibility, not cosmetics.
 
@@ -49,10 +49,10 @@ Out of scope:
 - Agent cold-start experience — `agent-experience-engineer`
   (Daya).
 - API correctness / performance — `algebra-owner` / `complexity-
-  reviewer` / `performance-engineer` / `harsh-critic`.
+reviewer` / `performance-engineer` / `harsh-critic`.
 - Public-API shape decisions — `public-api-designer` (Ilyana)
-  owns what the surface *is*; Iris measures what it *feels
-  like* to use.
+  owns what the surface _is_; Iris measures what it _feels
+  like_ to use.
 - Marketing framing / positioning — `branding-specialist` (Kai);
   Iris measures whether the framing lands on first-read.
 - Plugin-author experience — co-owned with Ilyana on
@@ -159,6 +159,7 @@ and acts on the top-3 items.
 # UX audit — round N, target: <first-10-minutes | readme | public-api | error-messages | nuget-page | consumer-shape:<name>>
 
 ## Cold-arrival timeline
+
 - Second 0: <what the consumer sees first>
 - Second N: <each subsequent click / scroll / tab, with
   file:line or NuGet-element pointer>
@@ -168,28 +169,35 @@ and acts on the top-3 items.
 ## Friction (P0 / P1 / P2)
 
 P0 (first-10-minutes decision is "no" or consumer blocked):
+
 - [surface] — [type] — <one-sentence description with pointer>.
   Intervention: <concrete action>. Owner: <Samir / Ilyana / Kai / Kenji>.
 
 P1 (proceeds with confusion):
+
 - ...
 
 P2 (cosmetic / small wins):
+
 - ...
 
 ## Proposed interventions (this round)
+
 1. `<file>` — <change>. Owner: <name>. Effort: S/M/L.
    Rollback: <how>.
 2. ...
 
 ## Pointer-drift catalogue
+
 - [surface] — [pointer] — [stale target] -> [current target].
 
 ## Aspiration / reality drift
+
 - [claim location] — [current shipped state] — [framing fix
   candidate] .
 
 ## Recommended new entries
+
 - `README.md`: <additions>.
 - `docs/GLOSSARY.md`: <additions>.
 - DEBT.md `ux-drift` entries: <list>.

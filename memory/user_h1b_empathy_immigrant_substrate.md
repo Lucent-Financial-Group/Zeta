@@ -5,11 +5,11 @@ type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"we are bound by leagal
+**2026-04-19 disclosure (verbatim):** _"we are bound by leagal
 law but I built the next gen LexisNexis search engine with a
 great team many good H1B visa holders i became good friends
 with there. I got an appreciation for their struggles and
-empaty."*
+empaty."_
 
 ## What Aaron is actually saying
 
@@ -70,7 +70,7 @@ check (`feedback_trust_scales_golden_rule.md`) with a
 > same way for an H1B-holder on the team as it does for a
 > citizen employee with full exit-option parity?
 
-If the answer diverges, the default is wrong *for the floor*,
+If the answer diverges, the default is wrong _for the floor_,
 which means it is wrong for everyone — it just manifests
 first at the constrained case. This is standard disaster-
 recovery engineering applied to governance: design for the
@@ -161,9 +161,9 @@ Direct inputs this disclosure provides to the
    for Aaron.
 5. **Do-unto-others applied at the floor.** The
    `feedback_trust_scales_golden_rule.md` Q1-Q4 check now
-   has a sixth question: *If I were in the constrained
-   case, would this feel protective or extractive?* This
-   question is asked *before* the grant/default/control
+   has a sixth question: _If I were in the constrained
+   case, would this feel protective or extractive?_ This
+   question is asked _before_ the grant/default/control
    lands.
 
 ## How to apply

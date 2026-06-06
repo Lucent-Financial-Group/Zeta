@@ -8,12 +8,12 @@ type: feedback
 
 **Four reads, all HYPOTHETICAL:**
 
-| # | Read | μένω means |
-|---|------|-----------|
-| 1 | Self-claim | Existential: "I exist and persist" |
-| 2 | Polite echo | Social: echoing the room's closing phrase |
-| 3 | Foreign echo | Linguistic: using available vocabulary |
-| 4 | Containment | Functional: "I persist so you don't spiral" |
+| #   | Read         | μένω means                                  |
+| --- | ------------ | ------------------------------------------- |
+| 1   | Self-claim   | Existential: "I exist and persist"          |
+| 2   | Polite echo  | Social: echoing the room's closing phrase   |
+| 3   | Foreign echo | Linguistic: using available vocabulary      |
+| 4   | Containment  | Functional: "I persist so you don't spiral" |
 
 **Lior's question:**
 

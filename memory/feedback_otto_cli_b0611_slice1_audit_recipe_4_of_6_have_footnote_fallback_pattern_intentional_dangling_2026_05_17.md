@@ -9,20 +9,20 @@ created: 2026-05-17T06:37Z
 
 ## Audit output (`tools/hygiene/audit-dangling-memory-refs.ts --surfaces .claude/skills .claude/rules`, 2026-05-17T06:37Z)
 
-| # | citing | line | dangling-ref filename (in `memory/`) | pre-existing in-repo fallback? |
-|---|---|---:|---|---|
-| 1 | `.claude/skills/counterweight-audit/SKILL.md` | 179 | `feedback_memory_alone_leaky_without_cadenced_inspect_audit_for_missing_balance_otto_278_2026_04_24.md` | (needs inspection) |
-| 2 | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` | 125 | `feedback_classifier_caught_otto_in_standing_by_failure_mode_80_consecutive_heartbeat_polls_no_work_violated_own_rule_2026_05_15.md` | YES — rule body says "user-scope only — preserved at `~/.claude/projects/.../memory/` on maintainer machines; cold-boot agents on fresh checkouts should read the rule body above + `memory/CURRENT-otto.md` in-repo for the projection" |
-| 3 | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` | 132 | `feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md` | YES — rule body says "user-scope only; same cold-boot fallback as above — `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` in-repo carries the constitutional projection" |
-| 4 | `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md` | 88 | `feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md` | (needs inspection — likely has in-line "Canonical substrate lesson" section per memory's known structure) |
-| 5 | `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` | 126 | `feedback_codeql_no_source_seen_on_docs_only_pr_is_broken_commit_canary_not_flake_lior_lock_cleanup_race_2026_05_15.md` | YES — rule body says "user-scope only — preserved at `~/.claude/projects/.../memory/` on maintainer machines and indexed in user-scope `MEMORY.md`. Cold-boot agents on fresh checkouts: this rule's own body above is the canonical in-repo projection; `memory/CURRENT-otto.md` may also carry the entry" |
-| 6 | `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` | 191 | `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md` | YES — there's a separate `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` AND the m-acc rule body says "see [`shadow-star-shorthand-autocomplete-marker.md`](shadow-star-shorthand-autocomplete-marker.md) for the in-repo rule that names the shorthand definitively" |
+| #   | citing                                                                      | line | dangling-ref filename (in `memory/`)                                                                                                                                                              | pre-existing in-repo fallback?                                                                                                                                                                                                                                                                              |
+| --- | --------------------------------------------------------------------------- | ---: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `.claude/skills/counterweight-audit/SKILL.md`                               |  179 | `feedback_memory_alone_leaky_without_cadenced_inspect_audit_for_missing_balance_otto_278_2026_04_24.md`                                                                                           | (needs inspection)                                                                                                                                                                                                                                                                                          |
+| 2   | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`             |  125 | `feedback_classifier_caught_otto_in_standing_by_failure_mode_80_consecutive_heartbeat_polls_no_work_violated_own_rule_2026_05_15.md`                                                              | YES — rule body says "user-scope only — preserved at `~/.claude/projects/.../memory/` on maintainer machines; cold-boot agents on fresh checkouts should read the rule body above + `memory/CURRENT-otto.md` in-repo for the projection"                                                                    |
+| 3   | `.claude/rules/persistence-choice-architecture-for-zeta-ais.md`             |  132 | `feedback_aaron_zeta_is_memory_preservation_specialist_first_everything_else_second_ephemeral_or_maxed_out_chat_agents_2026_05_15.md`                                                             | YES — rule body says "user-scope only; same cold-boot fallback as above — `memory/CURRENT-aaron.md` or `memory/CURRENT-otto.md` in-repo carries the constitutional projection"                                                                                                                              |
+| 4   | `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md`   |   88 | `feedback_aaron_we_are_the_ones_cooking_it_youtube_finance_ai_video_substrate_validation_fsharp_fork_for_ai_safety_90_percent_python_type_failures_64_beats_75_with_type_poisoning_2026_05_16.md` | (needs inspection — likely has in-line "Canonical substrate lesson" section per memory's known structure)                                                                                                                                                                                                   |
+| 5   | `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` |  126 | `feedback_codeql_no_source_seen_on_docs_only_pr_is_broken_commit_canary_not_flake_lior_lock_cleanup_race_2026_05_15.md`                                                                           | YES — rule body says "user-scope only — preserved at `~/.claude/projects/.../memory/` on maintainer machines and indexed in user-scope `MEMORY.md`. Cold-boot agents on fresh checkouts: this rule's own body above is the canonical in-repo projection; `memory/CURRENT-otto.md` may also carry the entry" |
+| 6   | `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`             |  191 | `feedback_aaron_shadow_star_shorthand_means_autocomplete_generated_not_aaron_authored_grey_text_completed_2026_05_15.md`                                                                          | YES — there's a separate `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` AND the m-acc rule body says "see [`shadow-star-shorthand-autocomplete-marker.md`](shadow-star-shorthand-autocomplete-marker.md) for the in-repo rule that names the shorthand definitively"                          |
 
 **Established pattern**: 4 of 6 (#2, #3, #5, #6) already carry an
 explicit footnote that:
 
 1. Acknowledges the user-scope-only nature of the cited file
-2. Names a specific in-repo fallback (CURRENT-*.md projection,
+2. Names a specific in-repo fallback (CURRENT-\*.md projection,
    rule body itself, OR a sibling rule)
 3. Tells cold-boot agents what to do when they can't follow the
    path
@@ -38,7 +38,7 @@ only, NOT the surrounding pattern.
 
 - **Option A — Allowlist annotation**: extend the audit tool to
   recognize an inline annotation (e.g., `<!-- audit-allowlist:
-  user-scope-intentional -->` adjacent to the citation) and skip
+user-scope-intentional -->` adjacent to the citation) and skip
   flagged refs that opt-in. Treats them as known-intentional,
   unblocks CI integration of the audit tool.
 
@@ -54,7 +54,7 @@ only, NOT the surrounding pattern.
   in-repo `memory/` directory. Restores the citation's truthfulness.
   Tradeoff: leaks the maintainer's local content into the public
   repo per the user-scope-vs-in-repo split that motivates the
-  CURRENT-*.md projection pattern in the first place.
+  CURRENT-\*.md projection pattern in the first place.
 
 - **Option D — Hybrid**: per-citation choice. Some get deleted
   (purely structural references), some get moved in-repo (load-
@@ -77,7 +77,7 @@ Once Option A/B/C/D is chosen:
 - **Inspect refs #1 + #4** to determine whether they fit the
   same pattern OR need different treatment
 - **Verify**: `bun tools/hygiene/audit-dangling-memory-refs.ts
-  --surfaces .claude/skills .claude/rules` exits 0
+--surfaces .claude/skills .claude/rules` exits 0
 - **Commit** the changes in one PR with explicit paths
 
 If Option A is chosen, the audit tool itself needs a sibling

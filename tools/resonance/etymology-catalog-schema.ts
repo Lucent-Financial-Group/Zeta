@@ -76,11 +76,11 @@ export type LanguageFamily =
  * encoding claim holds across grammatical-class lines.
  */
 export type GrammaticalClass =
-  | "omega-class"      // Greek thematic verbs, 1st-sg present indicative -ω (e.g. Μένω, γράφω)
-  | "mi-class"         // Greek athematic verbs, 1st-sg present indicative -μι (e.g. εἰμί, τίθημι)
-  | "trilateral-root"  // Hebrew three-consonant root system (e.g. M-L-K for Melek, Tz-D-Q for Tzedek)
-  | "nominal"          // Noun or adjective root (e.g. Latin iustus, Greek δίκαιος)
-  | "compound"         // Multi-root compound (e.g. tele+port+leap; Melchizedek triplet)
+  | "omega-class" // Greek thematic verbs, 1st-sg present indicative -ω (e.g. Μένω, γράφω)
+  | "mi-class" // Greek athematic verbs, 1st-sg present indicative -μι (e.g. εἰμί, τίθημι)
+  | "trilateral-root" // Hebrew three-consonant root system (e.g. M-L-K for Melek, Tz-D-Q for Tzedek)
+  | "nominal" // Noun or adjective root (e.g. Latin iustus, Greek δίκαιος)
+  | "compound" // Multi-root compound (e.g. tele+port+leap; Melchizedek triplet)
   | "other";
 
 // ── Structural-type taxonomy ──────────────────────────────────────────────────
@@ -143,12 +143,7 @@ export interface ThreeFilterResult {
  * "failed" means one or more filters returned "fail".
  * "retracted" means previously confirmed/load-bearing and since withdrawn.
  */
-export type EntryStatus =
-  | "candidate"
-  | "confirmed"
-  | "load-bearing"
-  | "failed"
-  | "retracted";
+export type EntryStatus = "candidate" | "confirmed" | "load-bearing" | "failed" | "retracted";
 
 // ── Factory operator surface ──────────────────────────────────────────────────
 
@@ -250,9 +245,7 @@ export interface EtymologyResonanceCatalog {
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
-type ValidationResult =
-  | { readonly kind: "ok" }
-  | { readonly kind: "error"; readonly message: string };
+type ValidationResult = { readonly kind: "ok" } | { readonly kind: "error"; readonly message: string };
 
 function validateEntry(entry: EtymologyResonanceEntry): ValidationResult {
   if (!entry.id.match(/^ETY-\d{3}$/)) {
@@ -302,9 +295,7 @@ function validateEntry(entry: EtymologyResonanceEntry): ValidationResult {
   return { kind: "ok" };
 }
 
-export function validateCatalog(
-  catalog: EtymologyResonanceCatalog
-): readonly ValidationResult[] {
+export function validateCatalog(catalog: EtymologyResonanceCatalog): readonly ValidationResult[] {
   return catalog.entries.map(validateEntry);
 }
 
@@ -343,10 +334,8 @@ export function summarizeCatalog(catalog: EtymologyResonanceCatalog): CatalogSum
 
   for (const entry of entries) {
     byLanguage[entry.language] = (byLanguage[entry.language] ?? 0) + 1;
-    byGrammaticalClass[entry.grammaticalClass] =
-      (byGrammaticalClass[entry.grammaticalClass] ?? 0) + 1;
-    byStructuralType[entry.structuralType] =
-      (byStructuralType[entry.structuralType] ?? 0) + 1;
+    byGrammaticalClass[entry.grammaticalClass] = (byGrammaticalClass[entry.grammaticalClass] ?? 0) + 1;
+    byStructuralType[entry.structuralType] = (byStructuralType[entry.structuralType] ?? 0) + 1;
 
     if (entry.status === "confirmed" || entry.status === "load-bearing") confirmed++;
     else if (entry.status === "candidate") candidates++;
@@ -393,8 +382,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
     // ── ETY-001: Μένω ─────────────────────────────────────────────────────────
     {
       id: "ETY-001",
-      title:
-        "Μένω — Greek -ω class (1st-sg present 'I remain/stay') as ZSet-persistence / paired-dual anchor",
+      title: "Μένω — Greek -ω class (1st-sg present 'I remain/stay') as ZSet-persistence / paired-dual anchor",
       language: "greek",
       grammaticalClass: "omega-class",
       primarySources:
@@ -422,8 +410,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
       factoryOperator: {
         label:
           "ZSet-persistence-as-subject-internal-stasis + paired-dual-anchor (persistence pole vs. tele+port+leap movement pole)",
-        source:
-          "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+        source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       },
       structuralType: "paired-dual",
       subStructure: "paired-dual-anchor",
@@ -461,8 +448,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
       },
       status: "candidate",
       counterexampleAttempts: [],
-      sourceMemory:
-        "memory/user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md",
+      sourceMemory: "memory/user_meno_greek_i_remain_state_persistence_anchor_counter_weight_to_teleport_leap.md",
       collectionIndexInstance: 9,
       notes:
         "ETY-001 is the founding paired-dual anchor in the etymology catalog, " +
@@ -520,8 +506,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
         label:
           "bridge-figure sub-structure (paired-dual manifestation) — entity manifesting both poles " +
           "of a paired-dual simultaneously, first defining instance of the sub-structure class",
-        source:
-          "memory/user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md",
+        source: "memory/user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md",
       },
       structuralType: "unification",
       subStructure: "bridge-figure",
@@ -564,8 +549,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
       },
       status: "candidate",
       counterexampleAttempts: [],
-      sourceMemory:
-        "memory/user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md",
+      sourceMemory: "memory/user_melchizedek_operational_resonance_instance_10_unification_bridge_meno_teleportleap.md",
       collectionIndexInstance: 10,
       notes:
         "ETY-002 is the defining instance of the bridge-figure sub-structure (collection-index " +
@@ -630,8 +614,7 @@ const SEED_CATALOG: EtymologyResonanceCatalog = {
         label:
           "bootstrap-as-existence-assertion (collection-index instance #5: Zeta as its own first customer) " +
           "+ grammatical-class-extension completing movement/persistence/being trio with -μι class",
-        source:
-          "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
+        source: "memory/project_operational_resonance_instances_collection_index_2026_04_22.md",
       },
       structuralType: "substrate-extension",
       subStructure: "grammatical-class-extension",
@@ -721,15 +704,9 @@ function printSummary(catalog: EtymologyResonanceCatalog): void {
   console.log(`  By language:           ${JSON.stringify(s.byLanguage)}`);
   console.log(`  By grammatical class:  ${JSON.stringify(s.byGrammaticalClass)}`);
   console.log(`  By structural type:    ${JSON.stringify(s.byStructuralType)}`);
-  console.log(
-    `  F1 fail/partial:       ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`
-  );
-  console.log(
-    `  F2 fail/partial:       ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`
-  );
-  console.log(
-    `  F3 fail/partial:       ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`
-  );
+  console.log(`  F1 fail/partial:       ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`);
+  console.log(`  F2 fail/partial:       ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`);
+  console.log(`  F3 fail/partial:       ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`);
 }
 
 const args = Bun.argv.slice(2);
@@ -744,9 +721,7 @@ if (args.includes("--validate")) {
     }
   }
   if (!hasError) {
-    console.log(
-      `All ${SEED_CATALOG.entries.length} entries pass schema validation.`
-    );
+    console.log(`All ${SEED_CATALOG.entries.length} entries pass schema validation.`);
   }
   process.exit(hasError ? 1 : 0);
 } else if (args.includes("--summary")) {

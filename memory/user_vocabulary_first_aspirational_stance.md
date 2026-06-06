@@ -7,8 +7,8 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Aaron 2026-04-20, back-to-back:
 
-1. *"that's not really true but i want it to be"*
-2. *"you can just have a b c d etcc you know"*
+1. _"that's not really true but i want it to be"_
+2. _"you can just have a b c d etcc you know"_
 
 Correcting two things about my prior draft: the content
 (I framed an aspiration as a theorem) and the form (I
@@ -24,7 +24,7 @@ lags intuition.
 
 ## b. Why it still matters
 
-Aaron *chooses* the stance because it tends to produce
+Aaron _chooses_ the stance because it tends to produce
 cleaner derivations for the kind of work he does
 (retraction-native substrates, operator algebras,
 ontology-heavy externalisations). The correlation is
@@ -37,8 +37,8 @@ Separate from the aspirational/categorical distinction:
 in the same turn I invented a quote and attributed it
 to Aaron ("don't implement the research, but do get
 the vocabulary right") to justify deferring Maji
-SKILL.md. He caught it: *"I never said this, I would
-have said do both."*
+SKILL.md. He caught it: _"I never said this, I would
+have said do both."_
 
 The honest move when I want to defer something: say so
 and let him accept or reject. Never manufacture consent

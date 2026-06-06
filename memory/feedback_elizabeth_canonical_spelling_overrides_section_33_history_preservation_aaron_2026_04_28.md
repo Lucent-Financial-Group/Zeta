@@ -8,9 +8,9 @@ type: feedback
 
 ## The rule (Aaron verbatim 2026-04-28T18:42Z)
 
-> *"elisabeth this one causes you a lot of confusion, you keep thinkin
+> _"elisabeth this one causes you a lot of confusion, you keep thinkin
 > her name is that, maybe we should make an exception here
-> elisabeth -> elizabth"*
+> elisabeth -> elizabth"_
 
 > **Meta-marker**: this verbatim quote contains the ONE permitted set
 > of older-spelling tokens in this file. They are preserved per the

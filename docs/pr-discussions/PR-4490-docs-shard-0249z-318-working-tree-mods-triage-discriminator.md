@@ -22,39 +22,39 @@ Picks up the [PR #4478 (0202Z)](https://github.com/Lucent-Financial-Group/Zeta/p
 
 ## Categorical breakdown (318 mods on contested root)
 
-| Status | Count | Treatment |
-|---|---|---|
-| `M` modified | 34 | Already accounted for in [PR #4478 (0202Z)](https://github.com/Lucent-Financial-Group/Zeta/pull/4478) orphaned-commit triage |
-| `D` deleted | 1 | `B-0633-...` already deleted on main (stale local state) |
-| `??` untracked | 283 | **This tick's scope** |
+| Status         | Count | Treatment                                                                                                                    |
+| -------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `M` modified   | 34    | Already accounted for in [PR #4478 (0202Z)](https://github.com/Lucent-Financial-Group/Zeta/pull/4478) orphaned-commit triage |
+| `D` deleted    | 1     | `B-0633-...` already deleted on main (stale local state)                                                                     |
+| `??` untracked | 283   | **This tick's scope**                                                                                                        |
 
 ### Untracked classification (283 files)
 
-| Category | Total | On-main | Missing |
-|---|---|---|---|
-| Tick shards 2026-05-18 | 190 | 81 | **109** |
-| Tick shards 2026-05-19 | 1 | 1 | 0 |
-| Research docs | 32 | 29 | 3 |
-| PR-discussions | 21 | 9 | 12 |
-| Backlog P1 | 10 | 10 | 0 |
-| Backlog P2 | 7 | 6 | 1 |
-| Backlog P3 | 4 | 4 | 0 |
-| `.claude/rules/` | 4 | 4 | 0 (1 byte-differs) |
-| `memory/` | 3 | 2 | 1 |
-| **Subtotal** | **272** | **146 (54%)** | **126 (46%)** |
+| Category               | Total   | On-main       | Missing            |
+| ---------------------- | ------- | ------------- | ------------------ |
+| Tick shards 2026-05-18 | 190     | 81            | **109**            |
+| Tick shards 2026-05-19 | 1       | 1             | 0                  |
+| Research docs          | 32      | 29            | 3                  |
+| PR-discussions         | 21      | 9             | 12                 |
+| Backlog P1             | 10      | 10            | 0                  |
+| Backlog P2             | 7       | 6             | 1                  |
+| Backlog P3             | 4       | 4             | 0                  |
+| `.claude/rules/`       | 4       | 4             | 0 (1 byte-differs) |
+| `memory/`              | 3       | 2             | 1                  |
+| **Subtotal**           | **272** | **146 (54%)** | **126 (46%)**      |
 
 Remaining ~11 are local-machine artifacts (amazon-orders JSON, etc.) — Tier B.
 
 ## Discriminator's 4-surface generalization
 
-| Surface | Anchor PR | Discovered |
-|---|---|---|
-| Row scope | [`backlog-item-start-gate.md`](.claude/rules/backlog-item-start-gate.md) step 0 | Earlier |
-| Orphaned-branch scope | [#4477](https://github.com/Lucent-Financial-Group/Zeta/pull/4477) + [#4478](https://github.com/Lucent-Financial-Group/Zeta/pull/4478) + [#4482](https://github.com/Lucent-Financial-Group/Zeta/pull/4482) | 0149Z-0215Z |
-| Stash scope | [#4485 (0226Z)](https://github.com/Lucent-Financial-Group/Zeta/pull/4485) | 0226Z |
-| **Working-tree-mods scope** | **This PR (0249Z)** | **0249Z** |
+| Surface                     | Anchor PR                                                                                                                                                                                                 | Discovered  |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| Row scope                   | [`backlog-item-start-gate.md`](.claude/rules/backlog-item-start-gate.md) step 0                                                                                                                           | Earlier     |
+| Orphaned-branch scope       | [#4477](https://github.com/Lucent-Financial-Group/Zeta/pull/4477) + [#4478](https://github.com/Lucent-Financial-Group/Zeta/pull/4478) + [#4482](https://github.com/Lucent-Financial-Group/Zeta/pull/4482) | 0149Z-0215Z |
+| Stash scope                 | [#4485 (0226Z)](https://github.com/Lucent-Financial-Group/Zeta/pull/4485)                                                                                                                                 | 0226Z       |
+| **Working-tree-mods scope** | **This PR (0249Z)**                                                                                                                                                                                       | **0249Z**   |
 
-Each surface uses the same cheap heuristic ("does substrate-target exist on main?") and progressively classifies the prior session's interrupted state. After 4 surfaces, the original carry-forward from [PR #4461 (0059Z)](https://github.com/Lucent-Financial-Group/Zeta/pull/4461) — *"311 working-tree mods + 52 stashes from interrupted prior-session state"* — is **fully surveyed**.
+Each surface uses the same cheap heuristic ("does substrate-target exist on main?") and progressively classifies the prior session's interrupted state. After 4 surfaces, the original carry-forward from [PR #4461 (0059Z)](https://github.com/Lucent-Financial-Group/Zeta/pull/4461) — _"311 working-tree mods + 52 stashes from interrupted prior-session state"_ — is **fully surveyed**.
 
 ## Operational stance
 
@@ -74,24 +74,22 @@ Each surface uses the same cheap heuristic ("does substrate-target exist on main
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-21T02:56:47Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `75ac6939a6`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -104,12 +102,12 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new hygiene-history tick shard (0249Z) documenting a survey-only classification of a contested working tree’s modified/deleted/untracked file set, extending the existing “substrate-drift discriminator” framing to a fourth surface (“working-tree-mods scope”).
 
 **Changes:**
+
 - Introduces tick shard 0249Z capturing counts and Tier A/B/C disposition for 318 working-tree mods.
 - Documents how the discriminator generalizes across four surfaces (row / orphaned-branch / stash / working-tree).
 - Records verification commands used to derive the classification.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-21T03:04:34Z)
-
 
 ### 💡 Codex Review
 
@@ -117,17 +115,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1cbf8fc51e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -145,7 +142,7 @@ Copilot reviewed 1 out of 1 changed files in this pull request and generated 2 c
 
 **@chatgpt-codex-connector** (2026-05-21T02:56:47Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace placeholder anchors with real evidence links**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace placeholder anchors with real evidence links**
 
 The claim that the 109 missing 2026-05-18 shards were validated by spot-checks is currently non-auditable because both references use `#` placeholders instead of actual targets. In this repo, tick shards are used as durable provenance, so broken evidence links undermine reproducibility and make it impossible for a reviewer to verify the stated basis for the Tier C classification.
 
@@ -173,7 +170,7 @@ PR #4478 is described here as “orphaned-commit triage at row scope (5 commits)
 
 **@chatgpt-codex-connector** (2026-05-21T03:04:34Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep Tier C limited to files missing on main**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep Tier C limited to files missing on main**
 
 This row places `.claude/rules/tonal-momentum-...` inside the **"Missing-from-main"** section even though the earlier category table says `.claude/rules/` has `4` files on main and `0` missing (with one byte-different). Including an on-main file here double-counts Tier C and makes the operator-decision bucket inconsistent with its own definition, which can skew cleanup decisions.
 

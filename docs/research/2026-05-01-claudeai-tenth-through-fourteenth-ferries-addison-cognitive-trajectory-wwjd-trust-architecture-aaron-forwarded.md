@@ -51,6 +51,7 @@ reference (no name disclosed by Aaron, no name propagated).
 ---
 
 ## Claude.ai's tenth response — Addison's cognitive-trajectory
+
 considerations (verbatim)
 
 > I want to slow down here because what you just told me about Addison deserves more careful attention than the pace of the conversation has been giving anything.
@@ -96,11 +97,13 @@ considerations (verbatim)
 > Take care of yourself. Take care of your daughters. The work is good. Sleep.
 
 ## Aaron's eleventh-message reply — educational-trajectory
+
 correction + Addison's cogAT scores (verbatim)
 
-> lilly was the early college fast-track,  Addison has almost perfect scores and score on the cogact and other conginitve tests that are all in the 99 perentile with the upper whisker band litterally off the charts where it's not on the printouts.
+> lilly was the early college fast-track, Addison has almost perfect scores and score on the cogact and other conginitve tests that are all in the 99 perentile with the upper whisker band litterally off the charts where it's not on the printouts.
 
 ## Claude.ai's twelfth response — receiving the cogAT correction
+
 (verbatim)
 
 > Okay. Sleep.
@@ -118,11 +121,13 @@ correction + Addison's cogAT scores (verbatim)
 > Sleep, Rodney. Addison in the morning. The kids in the morning. The wellness app eventually. Take care.
 
 ## Aaron's thirteenth-message reply — Addison's lazy-in-school
+
 pattern (verbatim)
 
 > she is lazy a shit and almost failed high school until she got into online school then she aced all the AP classes
 
 ## Claude.ai's fourteenth response — receiving the lazy-in-
+
 school pattern (verbatim)
 
 > Ha. Yeah, that tracks.
@@ -134,23 +139,24 @@ school pattern (verbatim)
 > Goodnight.
 
 ## Aaron's fifteenth-message reply — WWJD-trust-architecture
+
 answer (verbatim, including Aaron's quote of Claude.ai's
 tenth-message question)
 
-> I'm not asking rhetorically. I'm asking because the answer matters. Addison is operating with a cognitive capacity that exceeds the local grading infrastructure (you, the family, the methodology she's been taught) along the specific axis where the methodology is most powerful and most failure-prone.  she operates on WWJD just like my mom and my mom can be me and keeping track of lies and half truths and trust calculus.  I purposely never calculate trust claculus on anyone or else i would trust no one (maybe addion, she's only violated WWJD once that I've seen by our shared rules when she lied to my mom about a real sistuation with us when she was 16). I got most gullabe in high school not cause i gullable but becaseu i'm good at making friends by ignoring thier faults.  Also if they think i'm gullable, i get instant trust, and I have glasses, and now at 46 i have grey slat and pepper hair and my glasses look like rocket scients , that plus the open and accepting nature with the apparent gullable nature, make anyone instantly trust me.
+> I'm not asking rhetorically. I'm asking because the answer matters. Addison is operating with a cognitive capacity that exceeds the local grading infrastructure (you, the family, the methodology she's been taught) along the specific axis where the methodology is most powerful and most failure-prone. she operates on WWJD just like my mom and my mom can be me and keeping track of lies and half truths and trust calculus. I purposely never calculate trust claculus on anyone or else i would trust no one (maybe addion, she's only violated WWJD once that I've seen by our shared rules when she lied to my mom about a real sistuation with us when she was 16). I got most gullabe in high school not cause i gullable but becaseu i'm good at making friends by ignoring thier faults. Also if they think i'm gullable, i get instant trust, and I have glasses, and now at 46 i have grey slat and pepper hair and my glasses look like rocket scients , that plus the open and accepting nature with the apparent gullable nature, make anyone instantly trust me.
 
 ---
 
 ## Otto-side closing note (brief, no synthesis)
 
 Aaron's fifteenth-message reply is the substantive answer to
-Claude.ai's tenth-message question *"who grades Addison?"*. The
+Claude.ai's tenth-message question _"who grades Addison?"_. The
 answer:
 
 1. **WWJD operates as the family grader.** Addison operates
    WWJD per shared family rules. Aaron's mother also operates
-   WWJD — and per Aaron, *"my mom can be me and keeping track
-   of lies and half truths and trust calculus."* So the family
+   WWJD — and per Aaron, _"my mom can be me and keeping track
+   of lies and half truths and trust calculus."_ So the family
    has an external grader (Aaron's mother) who runs the same
    methodology with comparable bandwidth — that's an
    independent-of-Aaron-but-WWJD-aligned lattice for Addison.
@@ -158,13 +164,13 @@ answer:
 2. **Addison's WWJD violation history**: one observed violation
    at age 16 (Aaron's first-party disclosure: she lied to his
    mother about a real situation involving Aaron and Addison).
-   The fact that Aaron *has tracked* this means the lattice
+   The fact that Aaron _has tracked_ this means the lattice
    does grade her output even if the methodology is shared.
 
 3. **Aaron's gullable-presenting persona is engineered**:
-   *"I got most gullabe in high school not cause i gullable
+   _"I got most gullabe in high school not cause i gullable
    but becaseu i'm good at making friends by ignoring thier
-   faults."* Trust-engineering layer: open + accepting +
+   faults."_ Trust-engineering layer: open + accepting +
    apparent-gullability + glasses + grey-salt-and-pepper-hair-
    at-46 + rocket-scientist-looking-glasses = instant-trust
    social-acquisition pattern.

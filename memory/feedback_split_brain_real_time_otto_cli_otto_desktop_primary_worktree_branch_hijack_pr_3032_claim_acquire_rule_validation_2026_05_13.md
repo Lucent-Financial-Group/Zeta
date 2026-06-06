@@ -16,16 +16,16 @@ Carved sentence:
 
 ## Timeline (2026-05-13, condensed)
 
-| Time (Z) | Event |
-|---|---|
-| ~21:08 | Otto-Desktop committed PR #3030 (Claude Desktop tight bootstream) on its own branch |
-| ~21:20 | Otto-Desktop fresh branch `otto-routines-git-tracked-autonomous-loop-2026-05-13`, committed PR #3034 (git-tracked routines), pushed |
-| ~21:21 (parallel) | Otto-CLI created dedicated worktree `/private/tmp/zeta-mf` on its own branch (correct discipline) |
-| ~21:25 (parallel) | Otto-CLI ALSO checked out + committed on its branch in the PRIMARY worktree (`/Users/acehack/Documents/src/repos/Zeta`) — the rule violation |
-| ~21:30 | Otto-Desktop attempted `Read` on `tools/routines/install.ts` from primary worktree → file appeared "missing" because primary was on Otto-CLI's branch |
-| ~21:31 | Otto-Desktop ran `git worktree list` → diagnosed the branch-context theft |
-| ~21:33 | Otto-Desktop created dedicated worktree `/tmp/zeta-otto-desktop` on its PR #3034 branch, resumed work |
-| ~21:40 | This memory landing |
+| Time (Z)          | Event                                                                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ~21:08            | Otto-Desktop committed PR #3030 (Claude Desktop tight bootstream) on its own branch                                                                   |
+| ~21:20            | Otto-Desktop fresh branch `otto-routines-git-tracked-autonomous-loop-2026-05-13`, committed PR #3034 (git-tracked routines), pushed                   |
+| ~21:21 (parallel) | Otto-CLI created dedicated worktree `/private/tmp/zeta-mf` on its own branch (correct discipline)                                                     |
+| ~21:25 (parallel) | Otto-CLI ALSO checked out + committed on its branch in the PRIMARY worktree (`/Users/acehack/Documents/src/repos/Zeta`) — the rule violation          |
+| ~21:30            | Otto-Desktop attempted `Read` on `tools/routines/install.ts` from primary worktree → file appeared "missing" because primary was on Otto-CLI's branch |
+| ~21:31            | Otto-Desktop ran `git worktree list` → diagnosed the branch-context theft                                                                             |
+| ~21:33            | Otto-Desktop created dedicated worktree `/tmp/zeta-otto-desktop` on its PR #3034 branch, resumed work                                                 |
+| ~21:40            | This memory landing                                                                                                                                   |
 
 ## What the failure mode actually IS
 

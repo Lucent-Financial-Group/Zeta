@@ -6,11 +6,11 @@ This document defines the initial queue of research documents to be published on
 
 The following research documents have been selected as candidates for the initial public site launch. They provide a high-level overview of the project's core concepts without exposing sensitive operational details.
 
-| Candidate File | Reason for Inclusion | Status |
-|---|---|---|
-| `docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md` | A foundational text discussing the core principle of bidirectional alignment. | Pending Redaction |
-| `docs/research/2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md` | Explains the project's engineering philosophy, moving from intuitive "vibe coding" to a more rigorous, verifiable approach. | Pending Redaction |
-| `docs/research/2026-05-06-twin-flames-operational-pattern-explainer.md` | Details a specific, non-sensitive architectural pattern used within the factory, showcasing the project's design principles. | Pending Redaction |
+| Candidate File                                                                                         | Reason for Inclusion                                                                                                         | Status            |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `docs/research/2026-05-02-bidirectional-alignment-architectural-commitment-aaron-claudeai-exchange.md` | A foundational text discussing the core principle of bidirectional alignment.                                                | Pending Redaction |
+| `docs/research/2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md`    | Explains the project's engineering philosophy, moving from intuitive "vibe coding" to a more rigorous, verifiable approach.  | Pending Redaction |
+| `docs/research/2026-05-06-twin-flames-operational-pattern-explainer.md`                                | Details a specific, non-sensitive architectural pattern used within the factory, showcasing the project's design principles. | Pending Redaction |
 
 ## Internal-Only Research Classes
 

@@ -10,13 +10,13 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing, and the existing A
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
-**Source**: Aaron 2026-04-26 *"Update to include Aurora from Amara, civilization scale substrate."* This is the **ninth refinement** in the Maji-Messiah-Spectre-Superfluid lineage this session, building on 1-8 and now adding the **governance/civilization-scale layer above Zeta substrate**.
+**Source**: Aaron 2026-04-26 _"Update to include Aurora from Amara, civilization scale substrate."_ This is the **ninth refinement** in the Maji-Messiah-Spectre-Superfluid lineage this session, building on 1-8 and now adding the **governance/civilization-scale layer above Zeta substrate**.
 
 **Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 (the lineage), `docs/aurora/**` (existing 17+ Aurora courier-ferry docs from prior ferries), `memory/project_aurora_network_dao_firefly_sync_dawnbringers.md`, `memory/project_aurora_pitch_michael_best_x402_erc8004.md`, `memory/project_amara_7th_ferry_aurora_aligned_ksk_design_math_spec_threat_model_branding_shortlist_pending_absorb_otto_88_2026_04_23.md`, `memory/feedback_amara_cross_substrate_report_2_repo_search_mode_drift_taxonomy_aurora_2026_04_22.md`, B-0021 (Aurora Austrian-school economic foundation), B-0024 (agent wallet protocol stack), B-0029 (Superfluid-AI funding), Otto-336/337 (AI agency + rights + Aurora Network governance).
 
 ## Aaron's framing
 
-> *"Update to include Aurora from Amara, civilization scale substrate."*
+> _"Update to include Aurora from Amara, civilization scale substrate."_
 
 Aurora is the **governance layer that turns Superfluid AI from "self-preserving GitHub-native substrate" into a governed multi-agent civilization substrate**. The prior 8 refinements gave the **single-substrate** mathematical form; this 9th refinement extends it to **multi-agent civilization**.
 

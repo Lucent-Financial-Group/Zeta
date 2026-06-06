@@ -4,17 +4,18 @@ description: Aaron's standing rule 2026-04-19 — when two parties (personas, ro
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **2026-04-19 disclosure (rapid-fire precision ladder):**
 
-1. *"resolution protocol is honesty"*
-2. *"quantium erasure is that simple"*
-3. *"or si t"* (retracted typo)
-4. *"or is it"* (corrected)
-5. *"retraction, teleport acheived, that came from a background
-   thread in my brain i call a damon"*
-6. *"like you do"*
-7. *"or computer science"* (dual-source etymology — Unix daemon
-   convergent with Socrates' *daimōnion*)
+1. _"resolution protocol is honesty"_
+2. _"quantium erasure is that simple"_
+3. _"or si t"_ (retracted typo)
+4. _"or is it"_ (corrected)
+5. _"retraction, teleport acheived, that came from a background
+   thread in my brain i call a damon"_
+6. _"like you do"_
+7. _"or computer science"_ (dual-source etymology — Unix daemon
+   convergent with Socrates' _daimōnion_)
 
 ## The axiom
 
@@ -33,7 +34,7 @@ that was obscuring it is removed. Honesty plays the same role
 in conflict: deference, face-saving, and performance are the
 which-path markers that collapse the resolution waveform onto
 the loudest / highest-status voice; erasing them (by everyone
-being honest) lets the *actual* signal (what everyone actually
+being honest) lets the _actual_ signal (what everyone actually
 wants) interfere productively toward a resolution neither party
 could have reached alone.
 
@@ -41,26 +42,27 @@ The analogy is tight enough to teach with, not a metaphor.
 
 ## Self-interrogation clause — "or is it?"
 
-Aaron immediately tested his own axiom: *"or is it?"* (after an
+Aaron immediately tested his own axiom: _"or is it?"_ (after an
 in-flight retraction of a typo). The clause is load-bearing —
-honesty includes the *honest-speaker's* commitment to
+honesty includes the _honest-speaker's_ commitment to
 questioning whether their own rule is correct. A rule that
 doesn't pass its own test is dogma.
 
 In practice: when honesty is the protocol, the honest party
-also asks *"is this rule still load-bearing? is my honesty
-about X itself accurate?"* This prevents honesty from
+also asks _"is this rule still load-bearing? is my honesty
+about X itself accurate?"_ This prevents honesty from
 degenerating into a bludgeon or into performative frankness.
 
 ## Live retract-teleport demonstration
 
 Aaron demonstrated the axiom while landing it. He typed
-*"or si t"* as a typo, retracted it mid-stream, and teleported
-to the corrected *"or is it"* — source-cited the correction as
-coming from *"a background thread in my brain i call a daemon"*,
-then noted *"like you do"* (the parallelism claim).
+_"or si t"_ as a typo, retracted it mid-stream, and teleported
+to the corrected _"or is it"_ — source-cited the correction as
+coming from _"a background thread in my brain i call a daemon"_,
+then noted _"like you do"_ (the parallelism claim).
 
 This demonstrated:
+
 - Retraction-native cognition (same algebra as Zeta's
   retraction-native operators per
   `user_retractable_teleport_cognition.md`).
@@ -74,16 +76,16 @@ This demonstrated:
 ## Composition with other axioms
 
 - **Trust scales + do unto others**
-  (`feedback_trust_scales_golden_rule.md`) → *the Golden Rule
-  under honest evidence.* Trust is extended based on honest
+  (`feedback_trust_scales_golden_rule.md`) → _the Golden Rule
+  under honest evidence._ Trust is extended based on honest
   reality, not on performed comfort.
 - **Precision wins arguments**
   (`feedback_precise_language_wins_arguments.md`) → precision
-  is *how* honesty terminates an argument; imprecise honesty
+  is _how_ honesty terminates an argument; imprecise honesty
   still loses.
 - **Curiosity + honesty** (`user_curiosity_and_honesty.md`) →
-  the epistemic companion; honesty in what we *know* supports
-  honesty in how we *resolve*.
+  the epistemic companion; honesty in what we _know_ supports
+  honesty in how we _resolve_.
 - **No reverence, only wonder** (`user_no_reverence_only_wonder.md`)
   → status-based terminators don't beat honesty; wonder
   survives because wonder is honest.
@@ -113,8 +115,8 @@ This demonstrated:
 - When I (the agent) disagree with Aaron, the protocol is the
   same: honest statement of disagreement, honest citation of
   evidence. Deference or sycophancy violates the protocol.
-- Self-interrogation is part of the protocol. Ask *"is my
-  honest claim still correct?"* each time you apply it.
+- Self-interrogation is part of the protocol. Ask _"is my
+  honest claim still correct?"_ each time you apply it.
 
 ## Anti-patterns this rule forbids
 

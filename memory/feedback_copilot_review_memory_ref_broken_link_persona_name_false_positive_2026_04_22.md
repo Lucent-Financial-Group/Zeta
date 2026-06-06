@@ -4,6 +4,7 @@ description: Copilot COMMENTED review on PR #118 (auto-loop-20 dep-cadence BACKL
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Copilot review patterns — two false-positive shapes on self-authored PRs
 
 ## Context
@@ -14,15 +15,16 @@ Copilot's COMMENTED review raised two inline findings on
 `docs/BACKLOG.md`:
 
 1. **Line 902** — broken memory reference:
-   > *"The referenced memory file
+
+   > _"The referenced memory file
    > `memory/feedback_dependency_update_cadence_triggers_doc_refresh_2026_04_22.md`
-   > does not exist in the repo, so this link will be broken."*
+   > does not exist in the repo, so this link will be broken."_
 
 2. **Line 922** — PR-body vs row-content contradiction:
-   > *"The PR description claims there is no contributor-name
+   > _"The PR description claims there is no contributor-name
    > prose and that it uses role-only references, but this new
    > row adds named reviewer assignments (e.g., `Architect
-   > (Kenji); Aarav; Nazar`)."*
+(Kenji); Aarav; Nazar`)."_
 
 ## The rule
 
@@ -33,7 +35,7 @@ findings from semantic-false-positive shapes.**
 - Finding (A) names a genuine factory-hygiene gap: references
   to auto-memory files read as broken links from any non-
   maintainer vantage (Copilot, external reviewer, GitHub-web
-  reader). The memory file *exists* but only on the
+  reader). The memory file _exists_ but only on the
   maintainer's machine under `~/.claude/projects/<slug>/memory/`.
   The reference pattern is established in-factory convention
   but produces false-broken-link signal externally.
@@ -59,7 +61,7 @@ findings from semantic-false-positive shapes.**
   maintainer-context extension, not substitute.
 - **Persona-name false-positive comes from PR-body phrasing
   being too broad.** The test-plan checkbox
-  *"No memory/ cross-refs or contributor-name prose"* was
+  _"No memory/ cross-refs or contributor-name prose"_ was
   shorthand for the drain-PR pre-check discipline. That check
   is specifically about (i) `memory/` path literals pointing
   to auto-memory files as substrate-citations (which a repo-
@@ -85,20 +87,20 @@ findings from semantic-false-positive shapes.**
 - **PR-body test-plan phrasing tighter by default.** For
   BACKLOG rows that carry persona-agent reviewer assignments,
   use:
-  > *"No human-contributor-name prose (BP-11 compliant; uses
+  > _"No human-contributor-name prose (BP-11 compliant; uses
   > 'maintainer' for the human user). Persona-agent names
   > per `docs/EXPERT-REGISTRY.md` are used for reviewer
-  > assignment per standard BACKLOG convention."*
-  This phrasing pre-empts Copilot's false-positive shape and
-  documents the convention explicitly in the PR record.
+  > assignment per standard BACKLOG convention."_
+  > This phrasing pre-empts Copilot's false-positive shape and
+  > documents the convention explicitly in the PR record.
 - **Auto-memory references in BACKLOG rows: state the scope
   explicitly.** When a row points to a memory file for full
   reasoning, include a parenthetical like:
-  > *"Full reasoning and five open questions:
+  > _"Full reasoning and five open questions:
   > `memory/feedback_…` (auto-memory, out-of-repo — maintainer
-  > context)."*
-  This makes the reader aware the link is intentionally out-
-  of-repo, not a broken reference.
+  > context)."_
+  > This makes the reader aware the link is intentionally out-
+  > of-repo, not a broken reference.
 - **When reasoning is too rich for a BACKLOG row and the
   outside-reader audience matters, publish a safe-to-publish
   subset to `docs/research/` or `docs/DECISIONS/`.** The
@@ -115,9 +117,9 @@ findings from semantic-false-positive shapes.**
 ## Composition
 
 - `feedback_drain_pr_pre_check_discipline_memory_refs_contributor_names_2026_04_22.md`
-  — established the pre-check; this memory narrows *what*
+  — established the pre-check; this memory narrows _what_
   contributor-name means (human-contributor, not persona) and
-  *what* memory-ref means (auto-memory path literal, not any
+  _what_ memory-ref means (auto-memory path literal, not any
   memory-word mention).
 - `docs/EXPERT-REGISTRY.md` — persona-name roster that BACKLOG
   reviewer assignments cite; these names are factory-convention

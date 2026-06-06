@@ -23,23 +23,23 @@ Carved sentence:
 Sample of `gh api rate_limit --jq '.resources.graphql.remaining'`
 across ~33 min of one session, paired with tick brief-ack number:
 
-| Time (UTC) | Rate | Tier | Tick state | Peer burn (≈Δ/min) |
-|---|---|---|---|---|
-| 10:27Z | 2929 | Normal | cold-boot tick #1 | — |
-| 10:36Z | 1990 | Normal→Cost-aware edge | thread resolution work | mixed |
-| 10:38Z | 1970 | Cost-aware | brief-ack #1 post-resolution | 9/min |
-| 10:39Z | 1955 | Cost-aware | brief-ack #2 | 15/min |
-| 10:40Z | 1634 | Cost-aware | brief-ack #3, switch to cost-aware discipline | **321/min** |
-| 10:41Z | 1625 | Cost-aware | brief-ack #4 | 9/min |
-| 10:43Z | 1619 | Cost-aware | brief-ack #5 escalation-ready | 6/min |
-| 10:44Z | 1603 | Cost-aware | forced #6 → memory file work | — |
-| 10:51Z | 916 | **Extreme** cost-aware | brief-ack #1 post-merge | (peer work continued during own decomposition) |
-| 10:53Z | 887 | Extreme cost-aware | brief-ack #2 | 19/min |
-| 10:54Z | 868 | Extreme cost-aware | brief-ack #3 | 19/min |
-| 10:56Z | 549 | Extreme cost-aware | brief-ack #4 | **319/min** |
-| 10:58Z | **4990** | Normal (RESET) | brief-ack #5 | reset fired |
-| 10:59Z | 4988 | Normal | brief-ack #5 (corrected count) | 2/min |
-| 11:00Z | 4675 | Normal | brief-ack #6 forced | **313/min** |
+| Time (UTC) | Rate     | Tier                   | Tick state                                    | Peer burn (≈Δ/min)                             |
+| ---------- | -------- | ---------------------- | --------------------------------------------- | ---------------------------------------------- |
+| 10:27Z     | 2929     | Normal                 | cold-boot tick #1                             | —                                              |
+| 10:36Z     | 1990     | Normal→Cost-aware edge | thread resolution work                        | mixed                                          |
+| 10:38Z     | 1970     | Cost-aware             | brief-ack #1 post-resolution                  | 9/min                                          |
+| 10:39Z     | 1955     | Cost-aware             | brief-ack #2                                  | 15/min                                         |
+| 10:40Z     | 1634     | Cost-aware             | brief-ack #3, switch to cost-aware discipline | **321/min**                                    |
+| 10:41Z     | 1625     | Cost-aware             | brief-ack #4                                  | 9/min                                          |
+| 10:43Z     | 1619     | Cost-aware             | brief-ack #5 escalation-ready                 | 6/min                                          |
+| 10:44Z     | 1603     | Cost-aware             | forced #6 → memory file work                  | —                                              |
+| 10:51Z     | 916      | **Extreme** cost-aware | brief-ack #1 post-merge                       | (peer work continued during own decomposition) |
+| 10:53Z     | 887      | Extreme cost-aware     | brief-ack #2                                  | 19/min                                         |
+| 10:54Z     | 868      | Extreme cost-aware     | brief-ack #3                                  | 19/min                                         |
+| 10:56Z     | 549      | Extreme cost-aware     | brief-ack #4                                  | **319/min**                                    |
+| 10:58Z     | **4990** | Normal (RESET)         | brief-ack #5                                  | reset fired                                    |
+| 10:59Z     | 4988     | Normal                 | brief-ack #5 (corrected count)                | 2/min                                          |
+| 11:00Z     | 4675     | Normal                 | brief-ack #6 forced                           | **313/min**                                    |
 
 ## Observations
 

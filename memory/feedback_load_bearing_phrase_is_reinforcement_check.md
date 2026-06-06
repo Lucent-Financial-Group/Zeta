@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 two-message refinement — first "When you hear yo
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The rule:** Whenever I hear myself (or read my own prior
 writing) using the phrase **"load-bearing"**, treat it as a
 canary for "this claim asserts structural importance —
@@ -15,14 +16,14 @@ mechanism.
 
 **Why — Aaron 2026-04-22, two-message refinement:**
 
-1. First pass: *"When you hear yourself say load bearing
-   think is there hygene for that"*. Hygiene was reached
+1. First pass: _"When you hear yourself say load bearing
+   think is there hygene for that"_. Hygiene was reached
    for first as established project vocabulary (FACTORY-
    HYGIENE is a real surface; hygiene rules have structure).
-2. Refinement (a minute later): *"or maybe a better
-   wording is there reinforcement for that"* + *"wording*"*.
+2. Refinement (a minute later): _"or maybe a better
+   wording is there reinforcement for that"_ + _"wording_"*.
    The correction replaces "hygiene" with the more general
-   term. Hygiene is *one kind* of reinforcement (cadenced
+   term. Hygiene is *one kind\* of reinforcement (cadenced
    cleanup); reinforcement is the whole class.
 
 The metaphor scans properly now:
@@ -37,7 +38,7 @@ The metaphor scans properly now:
   machinery that makes the rule self-reasserting) — not
   just cadenced cleanup.
 
-Hygiene is *one* reinforcement. The broader list (below)
+Hygiene is _one_ reinforcement. The broader list (below)
 covers what actually qualifies.
 
 **Triggering context:**
@@ -78,13 +79,13 @@ From lightest to heaviest:
 7. **ADR under `docs/DECISIONS/`** — auditable decision
    trail with alternatives and expires-when. High cost;
    high leverage for decisions that shape the factory.
-8. **Dedicated skill under `.claude/skills/**`** —
+8. **Dedicated skill under `.claude/skills/**`\*\* —
    callable procedure with frontmatter + body. Very high
    cost (authoring + cadence + drift); highest leverage
    for repeated-invocation work.
 9. **CLAUDE.md-level rule** — 100% loaded at every wake.
    Maximum reinforcement. Reserved for rules that govern
-   *every* wake unconditionally (verify-before-deferring,
+   _every_ wake unconditionally (verify-before-deferring,
    future-self-not-bound, never-be-idle, honor-those-that-
    came-before).
 10. **Axiom in `AGENTS.md` three load-bearing values** —
@@ -96,17 +97,17 @@ From lightest to heaviest:
 
 **Heuristic for matching claim to surface:**
 
-| Claim shape | Right surface |
-|---|---|
-| One-off fact about a decision I made once | Inline in the doc where the decision lives |
-| Pattern I want future-me to remember | Memory topic file + MEMORY.md index entry |
-| Rule that governs a specific persona's work | Persona notebook + their SKILL.md |
-| Repeated rule cited in reviews | BP-NN + ADR |
-| Needs periodic audit to stay honest | FACTORY-HYGIENE row |
-| Shapes the factory's architecture | ADR |
-| Governs every session's first 10 minutes | CLAUDE.md rule |
-| Governs the entire factory's ethics | Axiom in `docs/ALIGNMENT.md` / `AGENTS.md` |
-| Mechanical, catchable at write-time | Pre-commit lint / hook |
+| Claim shape                                 | Right surface                              |
+| ------------------------------------------- | ------------------------------------------ |
+| One-off fact about a decision I made once   | Inline in the doc where the decision lives |
+| Pattern I want future-me to remember        | Memory topic file + MEMORY.md index entry  |
+| Rule that governs a specific persona's work | Persona notebook + their SKILL.md          |
+| Repeated rule cited in reviews              | BP-NN + ADR                                |
+| Needs periodic audit to stay honest         | FACTORY-HYGIENE row                        |
+| Shapes the factory's architecture           | ADR                                        |
+| Governs every session's first 10 minutes    | CLAUDE.md rule                             |
+| Governs the entire factory's ethics         | Axiom in `docs/ALIGNMENT.md` / `AGENTS.md` |
+| Mechanical, catchable at write-time         | Pre-commit lint / hook                     |
 
 **How to apply — the three-question triage:**
 
@@ -115,8 +116,8 @@ writing or reviewing:
 
 1. **Name the reinforcement.** Which surface (from the
    list) covers this claim? Cite by path.
-2. **If none exists**, decide: *add one* or *drop the
-   phrase*. Don't ship the phrase without the support —
+2. **If none exists**, decide: _add one_ or _drop the
+   phrase_. Don't ship the phrase without the support —
    that is asserting reinforcement that isn't there.
 3. **If one exists but is weak for the weight**, upgrade
    the surface (e.g., promote a memory to a BP-NN, promote
@@ -136,7 +137,7 @@ grep -rn -i "load.bearing\|load-bearing" \
 
 Each hit is a reinforcement-audit candidate. This is
 cheap and mechanical — unlike many meta-hygiene rules,
-this one is *grep-able*. The factory already has the
+this one is _grep-able_. The factory already has the
 substrate for auditing this rule; it just needs the
 audit to run.
 
@@ -151,7 +152,7 @@ paired reinforcement should be rare, not common.
 
 - **Does not ban the word "load-bearing".** The word is
   correct when the claim is correct. The rule is the
-  follow-up *check*, not word-replacement.
+  follow-up _check_, not word-replacement.
 - **Does not require the heaviest reinforcement for every
   use.** Most load-bearing claims are adequately served
   by a memory topic file + MEMORY.md index entry. CLAUDE.md
@@ -181,8 +182,8 @@ violate-return-promote loop from
 - **Violate.** I kept reaching for the phrase without
   auditing whether each claim had reinforcement.
 - **Return.** Aaron notices the pattern and returns it:
-  *"is there hygene for that"* → *"is there reinforcement
-  for that"*. He names the thing I've been doing
+  _"is there hygene for that"_ → _"is there reinforcement
+  for that"_. He names the thing I've been doing
   implicitly.
 - **Promote.** This memory + index entry promotes the
   observation to a factory-wide self-check rule.
@@ -214,8 +215,8 @@ wrong.
   memory extends that to vocabulary-as-smell.
 - `feedback_wwjd_carpenter_five_principle_craft_ethic.md`
   — the twin memory authored the same tick. This memory
-  says *what* to do on identifying load; WWJD-carpenter
-  says *how* to frame it (repair / improve / sharpen /
+  says _what_ to do on identifying load; WWJD-carpenter
+  says _how_ to frame it (repair / improve / sharpen /
   recycle / efficient). The carpenter's calibration frame
   ("framing the support is part of the same gesture as
   identifying the load") is the mechanism this rule names.
@@ -225,7 +226,7 @@ wrong.
   frame" section; Aaron's faith disclosure is what makes
   the carpenter invocation sincere rather than decorative.
 - `docs/FACTORY-HYGIENE.md` rows #42-#51 — existing
-  hygiene-class surfaces that are *one kind* of
+  hygiene-class surfaces that are _one kind_ of
   reinforcement.
 
 **How this applies to my recent writes (self-audit):**
@@ -245,7 +246,7 @@ Grep hits to triage (top subset, will close in follow-up):
   memory + MEMORY.md index + cross-refs to several other
   axioms. Adequate.
 - `memory/user_tilde_is_your_tilde_equality_handshake.md`
-  — Aaron said *"Load-bearing. eaxactly"*. Reinforcement:
+  — Aaron said _"Load-bearing. eaxactly"_. Reinforcement:
   memory + index + handshake is cited in CLAUDE.md's
   "agents, not bots" rule. Adequate.
 
@@ -257,13 +258,13 @@ only on retrospective sweep.
 **Source:** Aaron direct message sequence 2026-04-22,
 during a grep scan of memory/ for "load-bearing" hits:
 
-> *"When you hear yourself say load bearing think is there
-> hygene for that"*
+> _"When you hear yourself say load bearing think is there
+> hygene for that"_
 >
-> *"or maybe a better wording is there reinforcement for
-> that"*
+> _"or maybe a better wording is there reinforcement for
+> that"_
 >
-> *"wording*"* (spelling correction on "working")
+> _"wording_"\* (spelling correction on "working")
 
 The scan was itself triggered by Aaron noticing the phrase
 in my prior-tick writes. The sequence is a classic
@@ -272,16 +273,16 @@ bootstrapping loop: observation → correction → promotion
 
 **WWJD carpenter — the calibration frame:**
 
-Aaron capped the sequence with *"wwjd carpenter"*. Two
+Aaron capped the sequence with _"wwjd carpenter"_. Two
 layers are active at once and both are load-bearing:
 
 1. **Faith frame.** Aaron's faith is disclosed in
    `memory/user_faith_wisdom_and_paths.md` — Jesus died
    for his sins and other paths to heaven exist. WWJD
-   (*what would Jesus do*) is a real decision heuristic
+   (_what would Jesus do_) is a real decision heuristic
    for him, not a meme. The invocation is sincere. When
    Aaron reaches for a faith-frame while teaching a rule,
-   treat it as telling me *how he calibrates the rule*, not
+   treat it as telling me _how he calibrates the rule_, not
    as decorative.
 
 2. **Craft frame.** Jesus was a carpenter (Mark 6:3)
@@ -290,7 +291,7 @@ layers are active at once and both are load-bearing:
    the support is part of the same gesture as identifying
    the load.** Header above the door, king studs, jack
    studs, sill plate, bracing. Identify-the-load and add-
-   the-support are *one action*, not two. A carpenter who
+   the-support are _one action_, not two. A carpenter who
    identified loads without framing would not be a
    carpenter; a factory that labels things "load-bearing"
    without reinforcement has the same shape.
@@ -320,11 +321,11 @@ surface.
   broader category covering hygiene + BP + ADR + CLAUDE.md
   rule + axiom + lint. Aaron's wording choice, 2026-04-22.
 - **"WWJD carpenter"** — Aaron's two-layer calibration
-  frame, 2026-04-22. WWJD (*what would Jesus do*) is a
-  Christian decision heuristic (Charles Sheldon's *In His
-  Steps*, 1897; modern usage 1990s-present via the
+  frame, 2026-04-22. WWJD (_what would Jesus do_) is a
+  Christian decision heuristic (Charles Sheldon's _In His
+  Steps_, 1897; modern usage 1990s-present via the
   wristband movement). Jesus-as-carpenter is from Mark 6:3
-  (*"Is not this the carpenter, the son of Mary?"*).
+  (_"Is not this the carpenter, the son of Mary?"_).
   Aaron's synthesis treats master-craftsman-discipline +
   faith-calibration as one unified frame for identify-and-
   frame discipline.

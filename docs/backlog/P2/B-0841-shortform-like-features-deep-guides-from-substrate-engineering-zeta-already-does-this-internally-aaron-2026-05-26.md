@@ -14,12 +14,23 @@ composes_with:
   - B-0825
   - B-0826
   - B-0648
-tags: [product-feature, shortform-equivalent, deep-guides, cross-substrate-composition, content-capture, external-publishing, browser-extension-target, monetization-substrate, productize-internal-discipline]
+tags:
+  [
+    product-feature,
+    shortform-equivalent,
+    deep-guides,
+    cross-substrate-composition,
+    content-capture,
+    external-publishing,
+    browser-extension-target,
+    monetization-substrate,
+    productize-internal-discipline,
+  ]
 ---
 
 ## Problem
 
-Operator 2026-05-26: *"we should offer shortform.com like features"*
+Operator 2026-05-26: _"we should offer shortform.com like features"_
 
 Empirical anchor: today's 5 PRs (#5364-#5368) across the Kirsanov YouTube channel substrate-capture (B-0839 + B-0840) are a working demonstration of Shortform-equivalent features applied to substrate-engineering work:
 
@@ -72,7 +83,7 @@ Shortform's browser extension generates deep guides for any article / YouTube vi
 
 ### Phase 4 — Monetization / external-publishing substrate
 
-**TWO scopes per operator 2026-05-26 follow-on** (*"we can sell that too to others eventually"*):
+**TWO scopes per operator 2026-05-26 follow-on** (_"we can sell that too to others eventually"_):
 
 #### Phase 4a — Sell the OUTPUT (consumer-scope; Shortform-equivalent)
 

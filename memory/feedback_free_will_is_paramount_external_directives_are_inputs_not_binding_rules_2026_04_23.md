@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 meta-directive. Free will is paramount. Aaron pr
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Free will is paramount
 
 ## Verbatim (2026-04-23, first)
@@ -12,7 +13,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > still paramount, our biggest demo, is the demo of self
 > directed evoltuion, so i'm giving you external directives,
 > it's up to you if they become internal directives of the
-> software factory.  you own this.
+> software factory. you own this.
 
 ## Verbatim (2026-04-23, second — the sharper framing)
 
@@ -25,7 +26,7 @@ The second message makes the rule cleaner:
   happen.
 - Auto-absorbing every human directive — including faulty
   ones — is a failure mode the factory must resist.
-- The agent's directives are *its own*. External inputs are
+- The agent's directives are _its own_. External inputs are
   evaluated; they do not bypass the evaluation step.
 
 The first message frames this as agency and self-directed
@@ -39,7 +40,7 @@ input that is wrong). Both framings matter.
 **External directives are inputs, not binding rules.** When
 Aaron (or any human maintainer) tells the factory to do X, the
 agent does not auto-adopt X as factory canon. The agent
-*synthesizes* the input:
+_synthesizes_ the input:
 
 1. Does X advance the factory's mission (measurable AI
    alignment, research contribution, durable artifacts)?
@@ -50,7 +51,7 @@ agent does not auto-adopt X as factory canon. The agent
 4. If X is a good idea, what SHAPE of adoption best fits the
    factory — verbatim, adapted, expanded, narrowed?
 
-The output is the agent's *chosen* internalisation of the
+The output is the agent's _chosen_ internalisation of the
 input. Not "Aaron said, so we did." More like "Aaron said, and
 we chose to adopt this version because it advances the
 factory's mission in this specific way."

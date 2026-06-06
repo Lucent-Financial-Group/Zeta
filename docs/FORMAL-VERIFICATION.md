@@ -2,11 +2,11 @@
 
 Three independent oracles, each using the right tool for its problem.
 
-| Tool | Covers | Runs in CI? | File(s) |
-|---|---|---|---|
-| **FsCheck** (property-based tests) | Algebraic laws over generated Z-sets + pipelines | ✓ (xUnit) | `tests/Tests.FSharp/FuzzTests.fs` |
-| **Z3 SMT solver** | Pointwise axioms over **unbounded integers** | ✓ (xUnit shells to `z3`) | `tests/Tests.FSharp/FormalVerificationTests.fs` |
-| **TLA+ / TLC** | Concurrent-protocol invariants (interleavings) | Manual (optional) | `tools/tla/specs/SpineAsyncProtocol.tla` |
+| Tool                               | Covers                                           | Runs in CI?              | File(s)                                         |
+| ---------------------------------- | ------------------------------------------------ | ------------------------ | ----------------------------------------------- |
+| **FsCheck** (property-based tests) | Algebraic laws over generated Z-sets + pipelines | ✓ (xUnit)                | `tests/Tests.FSharp/FuzzTests.fs`               |
+| **Z3 SMT solver**                  | Pointwise axioms over **unbounded integers**     | ✓ (xUnit shells to `z3`) | `tests/Tests.FSharp/FormalVerificationTests.fs` |
+| **TLA+ / TLC**                     | Concurrent-protocol invariants (interleavings)   | Manual (optional)        | `tools/tla/specs/SpineAsyncProtocol.tla`        |
 
 ## Why each tool where
 

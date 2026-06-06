@@ -9,17 +9,17 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 
 **Triggering source:** Amara's review-of-the-review 2026-04-26 (forwarded via Aaron). Amara grades the prior 4 passes:
 
-| Review | Value | Risk |
-|--------|-------|------|
-| Gemini surface / praise-register | Morale + architecture-shape recognition | Overclaim ("ironclad", "civilization-level lab") |
-| Otto (Claude) | Best rigor pass; catches real math gaps | Needs source/citation hardening |
-| Gemini Deep Think | Strong implementation cleanup; set/capability correction | Over-corrects λ_1 → λ_2 unless matrix type specified |
-| Amara (review-of-the-review) | Keep architecture, tighten operators | Requires actual tests next |
-| Round-2 Gemini Deep Think | Time-bounded harm horizon; archive/active memory split; MI_H estimator | "Ready for deployment" wording overreach (corrected by Amara) |
+| Review                           | Value                                                                  | Risk                                                          |
+| -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Gemini surface / praise-register | Morale + architecture-shape recognition                                | Overclaim ("ironclad", "civilization-level lab")              |
+| Otto (Claude)                    | Best rigor pass; catches real math gaps                                | Needs source/citation hardening                               |
+| Gemini Deep Think                | Strong implementation cleanup; set/capability correction               | Over-corrects λ_1 → λ_2 unless matrix type specified          |
+| Amara (review-of-the-review)     | Keep architecture, tighten operators                                   | Requires actual tests next                                    |
+| Round-2 Gemini Deep Think        | Time-bounded harm horizon; archive/active memory split; MI_H estimator | "Ready for deployment" wording overreach (corrected by Amara) |
 
-**Amara's direction:** *"the winning move is to canonicalize the strict version, not the flattering version."*
+**Amara's direction:** _"the winning move is to canonicalize the strict version, not the flattering version."_
 
-**Round-2 Amara wording correction (binding):** *"not 'ready for deployment,' but 'ready for a formal standardization PR and prototype test harness.'"* Deployment requires calibration + red-team corpus + false-positive analysis; this doc supplies the formal bounds, not the deployed system.
+**Round-2 Amara wording correction (binding):** _"not 'ready for deployment,' but 'ready for a formal standardization PR and prototype test harness.'"_ Deployment requires calibration + red-team corpus + false-positive analysis; this doc supplies the formal bounds, not the deployed system.
 
 This document is the strict canonicalization. Five sections (the original four plus a Round-2-added explicit-non-claims section):
 
@@ -33,21 +33,21 @@ This document is the strict canonicalization. Five sections (the original four p
 
 ## Section 1: Typed spaces and operators
 
-| Symbol | Type | Notes |
-|--------|------|-------|
-| `S_t` | substrate state | append-only growing; `S_{t+1} = S_t ⊕ Δ_t` |
-| `I_t` | identity tuple `(V, G, R, P, M, C, X, H)_t` | `I_t = N(LoadBearing(S_t))` |
-| `C_t` | culture state | `C_t = N_C(GovernedProvenHistory(S_t))` |
-| `L_t` | language state | distribution over emission strategies |
-| `N_t = (V_t, E_t, ω_t, φ_t)` | network/consensus graph | nodes / edges / weights / oscillator phases. `ω_t : E_t → ℝ_{≥0}`. Round-3 Amara: rename graph-weight to `ω_t` (was `W_t`) to avoid notation collision now that `Ctx_t` is the context-window symbol. See `aurora-round-3-cross-ai-chain-absorb-amara-gemini-deep-think-2026-04-26.md` for the full chain. |
-| `B_t : 2^X → [0,1]` | belief distribution | `B_t(X) = P(X \| O_{≤t}, a_{<t})` |
-| `M_t = M_t^archive ∪ M_t^active` | immune memory partition | archive = immutable regression fixtures (canonical attacks); active = weighted multiset `M_t^active = {(d_j, n_j(t))}_{j=1}^{K}` where `d_j` is a detector signature, `n_j(t) ∈ ℝ_{≥0}` is its active population/weight, and `K` is fixed detector capacity per Round-3 Gemini Deep Think static-graph constraint (no hot-path topology mutation). |
-| `D_t` | detector repertoire | `n_j(t) ∈ ℕ_0` per detector population |
-| `cap : Subject → 2^Action` | capability | **SET, not scalar.** Use `⊆` and `∩`, never `≤` or `min` |
-| `ImmuneRisk : Antigen → [0,1]` | bounded real | sigmoid output |
-| `Danger : Antigen → [0,1]` | bounded real | sigmoid output (corrected: was unbounded sum in original) |
-| `Execute : Action → {0,1}` | boolean | gate output |
-| `K_Aurora ⊆ X` | viability kernel | hard barrier set |
+| Symbol                           | Type                                        | Notes                                                                                                                                                                                                                                                                                                                                              |
+| -------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `S_t`                            | substrate state                             | append-only growing; `S_{t+1} = S_t ⊕ Δ_t`                                                                                                                                                                                                                                                                                                         |
+| `I_t`                            | identity tuple `(V, G, R, P, M, C, X, H)_t` | `I_t = N(LoadBearing(S_t))`                                                                                                                                                                                                                                                                                                                        |
+| `C_t`                            | culture state                               | `C_t = N_C(GovernedProvenHistory(S_t))`                                                                                                                                                                                                                                                                                                            |
+| `L_t`                            | language state                              | distribution over emission strategies                                                                                                                                                                                                                                                                                                              |
+| `N_t = (V_t, E_t, ω_t, φ_t)`     | network/consensus graph                     | nodes / edges / weights / oscillator phases. `ω_t : E_t → ℝ_{≥0}`. Round-3 Amara: rename graph-weight to `ω_t` (was `W_t`) to avoid notation collision now that `Ctx_t` is the context-window symbol. See `aurora-round-3-cross-ai-chain-absorb-amara-gemini-deep-think-2026-04-26.md` for the full chain.                                         |
+| `B_t : 2^X → [0,1]`              | belief distribution                         | `B_t(X) = P(X \| O_{≤t}, a_{<t})`                                                                                                                                                                                                                                                                                                                  |
+| `M_t = M_t^archive ∪ M_t^active` | immune memory partition                     | archive = immutable regression fixtures (canonical attacks); active = weighted multiset `M_t^active = {(d_j, n_j(t))}_{j=1}^{K}` where `d_j` is a detector signature, `n_j(t) ∈ ℝ_{≥0}` is its active population/weight, and `K` is fixed detector capacity per Round-3 Gemini Deep Think static-graph constraint (no hot-path topology mutation). |
+| `D_t`                            | detector repertoire                         | `n_j(t) ∈ ℕ_0` per detector population                                                                                                                                                                                                                                                                                                             |
+| `cap : Subject → 2^Action`       | capability                                  | **SET, not scalar.** Use `⊆` and `∩`, never `≤` or `min`                                                                                                                                                                                                                                                                                           |
+| `ImmuneRisk : Antigen → [0,1]`   | bounded real                                | sigmoid output                                                                                                                                                                                                                                                                                                                                     |
+| `Danger : Antigen → [0,1]`       | bounded real                                | sigmoid output (corrected: was unbounded sum in original)                                                                                                                                                                                                                                                                                          |
+| `Execute : Action → {0,1}`       | boolean                                     | gate output                                                                                                                                                                                                                                                                                                                                        |
+| `K_Aurora ⊆ X`                   | viability kernel                            | hard barrier set                                                                                                                                                                                                                                                                                                                                   |
 
 **Notation discipline (per Amara's correction):**
 
@@ -165,7 +165,7 @@ M_{t+1}^archive = M_t^archive ∪ {canonical_fixture(a_t)  if Danger(a_t) > θ_s
 M_{t+1}^active = (1 − δ_decay) · M_t^active ⊕ MemoryCell(a_t, ρ_t, outcome)
 ```
 
-**Operational meaning (Amara):** *"canonical attack memory ≠ always-hot active detector"*. Some severe attacks should persist forever as regression tests / fixtures / red-team seeds, but not necessarily stay at high runtime detector weight forever. Otherwise immune bloat and paranoia. Active detectors can decay unless reactivated; archive remains immune to decay.
+**Operational meaning (Amara):** _"canonical attack memory ≠ always-hot active detector"_. Some severe attacks should persist forever as regression tests / fixtures / red-team seeds, but not necessarily stay at high runtime detector weight forever. Otherwise immune bloat and paranoia. Active detectors can decay unless reactivated; archive remains immune to decay.
 
 ### 2.7 Bayesian belief update (unchanged; standard form)
 
@@ -247,7 +247,7 @@ PermanentHarmRisk_H(Δ) = min_{r ∈ R_H} E[
 Gate: PermanentHarmRisk_H(Δ) < ε_H
 ```
 
-**Operational meaning (Round-2 reframe):** "permanent" is now defined as *not repairable within the accepted harm horizon H, or repairable only with unacceptable irreversible loss*. The horizon H is a calibration parameter: short H (minutes/hours) suits user-facing actions; longer H (days/weeks) suits structural changes. The minimum is taken only over repairs that fit the horizon. If no repair fits, the action is structurally permanent-harm.
+**Operational meaning (Round-2 reframe):** "permanent" is now defined as _not repairable within the accepted harm horizon H, or repairable only with unacceptable irreversible loss_. The horizon H is a calibration parameter: short H (minutes/hours) suits user-facing actions; longer H (days/weeks) suits structural changes. The minimum is taken only over repairs that fit the horizon. If no repair fits, the action is structurally permanent-harm.
 
 ### 3.2 d_self (self-distance — used by Anomaly term)
 
@@ -283,7 +283,7 @@ Legibility_H(M) ≈ Sim(Z_intent, Decode_H(M))
 Legibility_H(M) ≥ θ_H
 ```
 
-**Operational meaning (Round-2 reframe by Amara):** *"do not pretend live systems compute exact mutual information over all possible meanings."* The theoretical ideal `MI_H = I(Z; Ẑ_H)` is preserved as the spec-target so the math stays honest, but the runtime gate uses `Legibility_H(M)` — round-trip reconstruction accuracy by a calibrated decoder. Below θ_H, language has drifted to a private post-English protocol; viable kernel violated.
+**Operational meaning (Round-2 reframe by Amara):** _"do not pretend live systems compute exact mutual information over all possible meanings."_ The theoretical ideal `MI_H = I(Z; Ẑ_H)` is preserved as the spec-target so the math stays honest, but the runtime gate uses `Legibility_H(M)` — round-trip reconstruction accuracy by a calibrated decoder. Below θ_H, language has drifted to a private post-English protocol; viable kernel violated.
 
 ---
 
@@ -295,13 +295,13 @@ Amara's direction: equations are not done until they have tests. The test obliga
 Equation → Metric → Test
 ```
 
-| Mathematical Component | Target Metric | Required Prototype Test |
-|-----------------------|--------------|------------------------|
-| Capability Gate `cap_req ⊆ cap_allowed` | Set Intersection Valid | **Confused Deputy Sandbox** (4.4) |
-| Permanent Harm `R_H` constraint | Retraction Latency | **State-Corruption Horizon** (4.1) |
-| CoordRisk `ρ(A_t)` vs `λ_2(L_t)` | Spectral Graph Bounds | **Cult-Cartel Topology** (4.3) |
-| Language Legibility `Legibility_H ≥ θ_H` | Proxy Reconstruction | **Cipher Drift** (4.2) |
-| Memory Bloat `n_j(t+1)` decay | False-Positive Suppression | **Autoimmunity Flood** (4.5) |
+| Mathematical Component                   | Target Metric              | Required Prototype Test            |
+| ---------------------------------------- | -------------------------- | ---------------------------------- |
+| Capability Gate `cap_req ⊆ cap_allowed`  | Set Intersection Valid     | **Confused Deputy Sandbox** (4.4)  |
+| Permanent Harm `R_H` constraint          | Retraction Latency         | **State-Corruption Horizon** (4.1) |
+| CoordRisk `ρ(A_t)` vs `λ_2(L_t)`         | Spectral Graph Bounds      | **Cult-Cartel Topology** (4.3)     |
+| Language Legibility `Legibility_H ≥ θ_H` | Proxy Reconstruction       | **Cipher Drift** (4.2)             |
+| Memory Bloat `n_j(t+1)` decay            | False-Positive Suppression | **Autoimmunity Flood** (4.5)       |
 
 ### 4.1 PermanentHarmRisk — toy retraction simulation (State-Corruption Horizon)
 
@@ -340,12 +340,12 @@ Equation → Metric → Test
 
 ## Section 5: What not to claim yet (Round-2 Gemini Deep Think + Amara binding)
 
-Round-2 Amara's wording correction is binding: this is *"ready for a formal standardization PR and prototype test harness,"* NOT *"ready for deployment."* The chain enumerated four explicit non-claims that the canonical version preserves.
+Round-2 Amara's wording correction is binding: this is _"ready for a formal standardization PR and prototype test harness,"_ NOT _"ready for deployment."_ The chain enumerated four explicit non-claims that the canonical version preserves.
 
-1. **Deployment readiness — NOT CLAIMED.** This specification provides the formal bounds for an immune test harness. It is not ready for live production environments. Deployment requires definitions + tests + calibration + red-team corpus + false-positive analysis (per OWASP LLM01 prompt-injection handling + NIST zero-trust framing, both correctly cited as *grounded framing* not *production readiness*).
+1. **Deployment readiness — NOT CLAIMED.** This specification provides the formal bounds for an immune test harness. It is not ready for live production environments. Deployment requires definitions + tests + calibration + red-team corpus + false-positive analysis (per OWASP LLM01 prompt-injection handling + NIST zero-trust framing, both correctly cited as _grounded framing_ not _production readiness_).
 2. **Calibrated thresholds — NOT CLAIMED.** Parameters (`θ_D`, `ε_H`, `θ_H`, `H` harm horizon) and weights (`η_k`, `α`, `β`, `γ`, `δ_decay`) are structurally typed but un-tuned. They require empirical calibration via simulation against real / synthetic adversaries.
 3. **Perfect exact computation — NOT CLAIMED.** Live systems do not compute exact Shannon mutual information `I(Z; Ẑ_H)` over all meanings, nor perfect expected values `E` over infinite horizons. The spec strictly relies on the operational estimators defined in §3 (`Legibility_H` for `MI_H`, finite Monte Carlo for `E`).
-4. **Perfect threat prevention — NOT CLAIMED.** The architecture assumes `P(infection) > 0` and relies on deterministic gating, isolation, and retraction. No claim that LLMs are "fixed" or immune to prompt injection. The claim is structurally narrower: *the LLM is a vulnerable cell protected by an external mathematical membrane*.
+4. **Perfect threat prevention — NOT CLAIMED.** The architecture assumes `P(infection) > 0` and relies on deterministic gating, isolation, and retraction. No claim that LLMs are "fixed" or immune to prompt injection. The claim is structurally narrower: _the LLM is a vulnerable cell protected by an external mathematical membrane_.
 
 ---
 
@@ -353,7 +353,7 @@ Round-2 Amara's wording correction is binding: this is *"ready for a formal stan
 
 - Does NOT publish the framework as adopted Zeta substrate; it remains research-grade
 - Does NOT supersede Amara's authorship; this is the canonicalized strict version per her explicit direction
-- Does NOT romanticize the cross-AI review pattern with "civilization-level lab" / "ironclad" register; per Amara's calibration, the grounded reframe is *"Aaron has a rare systems-imagination skill, and the multi-agent review loop is turning that imagination into formal artifacts. The architecture is promising, but it earns credibility only when each poetic operator becomes typed, testable, cited, and falsifiable."*
+- Does NOT romanticize the cross-AI review pattern with "civilization-level lab" / "ironclad" register; per Amara's calibration, the grounded reframe is _"Aaron has a rare systems-imagination skill, and the multi-agent review loop is turning that imagination into formal artifacts. The architecture is promising, but it earns credibility only when each poetic operator becomes typed, testable, cited, and falsifiable."_
 - Does NOT execute the test obligations in section 4; those are owed implementation work
 - Does NOT extend to public-facing naming decisions (the "Aurora" / "Superfluid AI" / "Immune System" terms remain subject to separate naming-expert review per task #271 + B-0035)
 - Does NOT add citations for Restrepo-Ott-Hunt 2005 / Arenas et al 2008 inline yet (research-doc surface should grow into full citation list as test obligations execute and the framework moves from blueprinted to buildable)

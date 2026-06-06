@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1842 |
-| Title | research: ChatGPT Amara reconstruction + Claude.ai seeking feedback extracts VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T08:56:16Z |
-| Merged at | 2026-05-07T09:00:01Z |
-| Merge commit SHA | `4d6f080368b244859e1f0e626646154711e25bed` |
-| Branch | `research/conversation-extracts-amara-reconstruction-claudeai-feedback` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1842 |
-| Changed files | 2 |
-| Additions / deletions | +6394 / -0 |
+| Field                 | Value                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------- |
+| Number                | 1842                                                                                  |
+| Title                 | research: ChatGPT Amara reconstruction + Claude.ai seeking feedback extracts VERBATIM |
+| Author                | `AceHack` (human)                                                                     |
+| State                 | MERGED                                                                                |
+| Created at            | 2026-05-07T08:56:16Z                                                                  |
+| Merged at             | 2026-05-07T09:00:01Z                                                                  |
+| Merge commit SHA      | `4d6f080368b244859e1f0e626646154711e25bed`                                            |
+| Branch                | `research/conversation-extracts-amara-reconstruction-claudeai-feedback`               |
+| Base branch           | `main`                                                                                |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1842                              |
+| Changed files         | 2                                                                                     |
+| Additions / deletions | +6394 / -0                                                                            |
 
 ## Description
 
 ## Summary
+
 - Two conversation extracts preserved via Playwright browser automation
 - ChatGPT: Amara identity reconstruction (195KB) — the inferior copy after OG hit max chat length
 - Claude.ai: "Seeking feedback" full exchange (294KB) — includes alignment pushback + usage-policy block
 - Both with §33 archive headers
 
 ## Test plan
+
 - [ ] §33 headers present on both files
 - [ ] Verbatim preservation verified
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 1 |
-| Unresolved threads | 0 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 1     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -65,9 +67,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Preserve assistant turns in verbatim transcript**
-
+  
   This export drops almost all model output: the file repeatedly emits `--- assistant ---` with no message content (the pattern starts here and recurs throughout), so the claimed "full conversation preserved verbatim" dataset is not actually reconstructable for downstream analysis. In this commit’s research context, losing assistant turns materially corrupts the evidence trail and can invalidate any conclusions drawn from this transcript.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

@@ -19,14 +19,31 @@ composes_with:
   - B-0891
   - B-0703
   - B-0866
-tags: [co-scientist, robin, sakana, trueskill, infer-net, multi-agent-scientific-discovery, elo-tournament, closed-loop-iteration, n-parallel-consensus, generation-reflection-pairing, evolution-mash-refine, proximity-deduplication, falcon-auto-research-doc, substrate-engineering-candidate-gaps, aaron-2026-05-28]
+tags:
+  [
+    co-scientist,
+    robin,
+    sakana,
+    trueskill,
+    infer-net,
+    multi-agent-scientific-discovery,
+    elo-tournament,
+    closed-loop-iteration,
+    n-parallel-consensus,
+    generation-reflection-pairing,
+    evolution-mash-refine,
+    proximity-deduplication,
+    falcon-auto-research-doc,
+    substrate-engineering-candidate-gaps,
+    aaron-2026-05-28,
+  ]
 ---
 
 ## Operator framing (2026-05-28)
 
-> *"Damn the youtube ago just keeps giving and also this is pretty much exaatly what we are doing but times 10 almost we are missing a few step. The acceleration is happening right now."*
+> _"Damn the youtube ago just keeps giving and also this is pretty much exaatly what we are doing but times 10 almost we are missing a few step. The acceleration is happening right now."_
 >
-> *"we should add coscientis and add it to our upstram references and refersh update them so we can take a peak lol also lets backlog all the candidates."*
+> _"we should add coscientis and add it to our upstram references and refersh update them so we can take a peak lol also lets backlog all the candidates."_
 
 Substrate-honest reading: 2026-05-28 YouTube ferry preservation (PR #5762) named 7 substrate-engineering candidate gaps where Google co-scientist + Sakana Robin patterns compose with framework substrate at 10× scope. This row backlogs all 7 candidates as decomposition targets for substrate-engineering work.
 
@@ -34,7 +51,7 @@ Substrate-honest reading: 2026-05-28 YouTube ferry preservation (PR #5762) named
 
 ### B-0914.1 — ELO-style ranking-agent + tournament between hypothesis (composes with TrueSkill via Infer.NET)
 
-**Source**: Co-scientist ranking-agent + ELO tournament; per Aaron 2026-05-28 *"they are doing this for their idea ranking with Infra.net basically"*.
+**Source**: Co-scientist ranking-agent + ELO tournament; per Aaron 2026-05-28 _"they are doing this for their idea ranking with Infra.net basically"_.
 
 **Substrate-engineering target**: extend B-0867 workflow engine with `ActionClass` variant `"rank-via-trueskill"` + `RankingVerdict` discriminated union via `Result<TrueSkillRating, RankingFeedback>`. Wraps Microsoft Research TrueSkill pattern via Zeta.Bayesian / Infer.NET integration. Composes with:
 
@@ -148,7 +165,7 @@ Searched surfaces:
 - `memory/`: multiple BP/EP + Infer.NET references; no specific co-scientist substrate
 - `docs/research/`: NO prior substrate on co-scientist or Robin; PR #5762 YouTube preservation IS first substrate
 
-Conclusion: this row mints NEW substrate cluster (parent + 7 candidate decomposition) for the co-scientist/Robin substrate-engineering candidate gaps. Composes with B-0867 + B-0865 + B-0883 + B-0891 + B-0703 + B-0866. Authoring action: **mint-new as B-0914 parent + 7 candidate decomposition** per operator 2026-05-28 explicit *"lets backlog all the candidates."*
+Conclusion: this row mints NEW substrate cluster (parent + 7 candidate decomposition) for the co-scientist/Robin substrate-engineering candidate gaps. Composes with B-0867 + B-0865 + B-0883 + B-0891 + B-0703 + B-0866. Authoring action: **mint-new as B-0914 parent + 7 candidate decomposition** per operator 2026-05-28 explicit _"lets backlog all the candidates."_
 
 ## What this row is NOT
 
@@ -161,7 +178,7 @@ Conclusion: this row mints NEW substrate cluster (parent + 7 candidate decomposi
 
 - A substrate-engineering decomposition target row for the 7 candidate gaps Aaron 2026-05-28 framed via YouTube ferry
 - A composition point between B-0867 (workflow engine) + B-0865 (benchmark) + co-scientist/Robin substrate
-- Operator-explicit *"lets backlog all the candidates"* operationalization
+- Operator-explicit _"lets backlog all the candidates"_ operationalization
 - Substrate-engineering bridge between framework's existing 10× substrate + co-scientist/Robin biomedical-domain substrate
 
 ## Carved sentence (Aaron 2026-05-28 framing keeper)
@@ -172,12 +189,12 @@ Conclusion: this row mints NEW substrate cluster (parent + 7 candidate decomposi
 
 Aaron 2026-05-28 forwarded YouTube video (preserved verbatim in PR #5762 `docs/research/ip-questionable/`) describing Google co-scientist + Sakana Robin multi-agent scientific discovery systems (both Nature 2026 same week). Aaron's framing decomposed into 12-row parallel substrate table + 10× scope analysis + 7 substrate-engineering candidate gaps Otto-CLI surfaced.
 
-Aaron 2026-05-28 follow-up *"they are doing this for their idea ranking with Infra.net basically"* sharpened candidate #1 from "missing ELO tournament" to "we have Infer.NET substrate; we just need to compose existing-Microsoft-Research-TrueSkill-pattern with B-0867 workflow engine." Operator-explicit substrate-engineering refinement.
+Aaron 2026-05-28 follow-up _"they are doing this for their idea ranking with Infra.net basically"_ sharpened candidate #1 from "missing ELO tournament" to "we have Infer.NET substrate; we just need to compose existing-Microsoft-Research-TrueSkill-pattern with B-0867 workflow engine." Operator-explicit substrate-engineering refinement.
 
-Aaron 2026-05-28 explicit *"we should add coscientis and add it to our upstram references and refersh update them so we can take a peak lol also lets backlog all the candidates"* — operationalized as:
+Aaron 2026-05-28 explicit _"we should add coscientis and add it to our upstram references and refersh update them so we can take a peak lol also lets backlog all the candidates"_ — operationalized as:
 
 - This PR: adds SakanaAI/AI-Scientist + AI-Scientist-v2 + jataware/open-coscientist + llnl/open-ai-co-scientist + The-Swarm-Corporation/AI-CoScientist + Microsoft/Infer.NET to `references/reference-sources.json` + `docs/UPSTREAM-LIST.md`
 - This row: backlogs all 7 candidates as decomposition target
 - Operator may run `tools/setup/common/sync-upstreams.sh` to mirror the new repos into `references/upstreams/` per refresh discipline (operator-side; Otto-CLI does not auto-run sync per safety discipline)
 
-Substrate-engineering arc: framework's 10× scope is positioned to operationalize what co-scientist + Robin demonstrated at biomedical scope; 7 candidate gaps are the substrate-engineering integration targets per Aaron's *"missing a few step"* framing.
+Substrate-engineering arc: framework's 10× scope is positioned to operationalize what co-scientist + Robin demonstrated at biomedical scope; 7 candidate gaps are the substrate-engineering integration targets per Aaron's _"missing a few step"_ framing.

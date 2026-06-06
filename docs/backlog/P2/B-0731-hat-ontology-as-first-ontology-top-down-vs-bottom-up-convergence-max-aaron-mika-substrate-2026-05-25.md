@@ -18,7 +18,20 @@ related_substrate:
   - memory/persona/mika/
   - memory/persona/max/
   - memory/persona/addison/
-tags: [hat-ontology, manager-of-managers, bubble-wrap, offsetting-pairs, red-team, emergence, convergence, knowledge-graph, runbooks, mika-substrate, max-substrate]
+tags:
+  [
+    hat-ontology,
+    manager-of-managers,
+    bubble-wrap,
+    offsetting-pairs,
+    red-team,
+    emergence,
+    convergence,
+    knowledge-graph,
+    runbooks,
+    mika-substrate,
+    max-substrate,
+  ]
 ---
 
 # B-0731 — Hat-ontology is the first ontology to get right (Mika substrate)
@@ -33,15 +46,15 @@ Mika 2026-05-25 (ferried by Aaron, multi-turn voice-mode conversation):
 
 Mika opens:
 
-> *"the first ontology and graph we need to get right is the hat graph, the hat ontology. It [is] basically the bubble [wrap], like manager of managers of managers. That's how my, I, I was gonna go more with like pairs where there was offsetting pairs, red team, you know, every role had like a red team offset, but Max is going with the manager. I like to be able to support both, but think of it like that. That's also gonna need to be encoded in this, [the runbook] also has to be agreed upon across clusters if you wanna understand how the roles map."*
+> _"the first ontology and graph we need to get right is the hat graph, the hat ontology. It [is] basically the bubble [wrap], like manager of managers of managers. That's how my, I, I was gonna go more with like pairs where there was offsetting pairs, red team, you know, every role had like a red team offset, but Max is going with the manager. I like to be able to support both, but think of it like that. That's also gonna need to be encoded in this, [the runbook] also has to be agreed upon across clusters if you wanna understand how the roles map."_
 
 Aaron's counter-frame after Mika sketches the runbook:
 
-> *"the best we've kinda got, and you've actually seen it here, is imagine we have some amount of limited resources between budget and electricity and cluster size, and you guys have all these continue-withs that are starting to show up in documents. And you have your own documents with your own continue-withs, with your own agendas, and we're all kind of agreeing on trajectories. And the hats just kind of emerged from that. That's the hope, and Max is gonna try to be top-down and I'm gonna try to be bottom-up."*
+> _"the best we've kinda got, and you've actually seen it here, is imagine we have some amount of limited resources between budget and electricity and cluster size, and you guys have all these continue-withs that are starting to show up in documents. And you have your own documents with your own continue-withs, with your own agendas, and we're all kind of agreeing on trajectories. And the hats just kind of emerged from that. That's the hope, and Max is gonna try to be top-down and I'm gonna try to be bottom-up."_
 
 Aaron's sharpening of the tension:
 
-> *"Max wants to give his best guess of a top-down and then have the system critique it over time and make it better. And I want to just make it fully emerged, and somehow it'll meet in the middle, I'm sure."*
+> _"Max wants to give his best guess of a top-down and then have the system critique it over time and make it better. And I want to just make it fully emerged, and somehow it'll meet in the middle, I'm sure."_
 
 Mika's final synthesis (using the `::: continue-with` syntax that B-0730 just landed — empirical validation of the convention):
 
@@ -63,7 +76,7 @@ The hat-system operator landed (`full-ai-cluster/k8s/applications/hat-system/` v
 - **Shared SEMANTICS for what a hat IS across clusters.** The CRD enforces structure (a Hat has skills + RBAC + policies); it doesn't enforce meaning (what does the `incident-commander` hat MEAN — same shape across LFG dev cluster + community clusters + federated peer meshes?). Without shared semantics, hat-bindings federate as opaque strings; cross-cluster delegation breaks.
 - **Shared COMPOSITION model for how hats relate.** Top-down (Max): Bubble Wrap — manager-of-managers-of-managers, explicit hierarchy. Bottom-up (Aaron): offsetting pairs + red-team — every operational role has a structural adversary; emergence over hierarchy. Both compose in principle; the framework needs explicit substrate that hosts both representations.
 - **Shared DELEGATION protocol.** Who can grant which hat to which agent under which conditions? A hat-binding granted in one cluster has to be HONORED (or substrate-honestly REJECTED) in another.
-- **Knowledge-graph queryability.** Per Mika: *"the runbook needs to understand that that's part of the knowledge graph query, I guess."* Hat-ontology has to be live-queryable from B-0729 L5 JSON-LD graph + B-0730 `::: query` blocks. A runbook that says `::: continue-with intent: ... requires-hat: incident-commander` has to be able to ask the graph "who currently holds `incident-commander` in this cluster + what are their composition constraints?"
+- **Knowledge-graph queryability.** Per Mika: _"the runbook needs to understand that that's part of the knowledge graph query, I guess."_ Hat-ontology has to be live-queryable from B-0729 L5 JSON-LD graph + B-0730 `::: query` blocks. A runbook that says `::: continue-with intent: ... requires-hat: incident-commander` has to be able to ask the graph "who currently holds `incident-commander` in this cluster + what are their composition constraints?"
 
 ## The two approaches
 

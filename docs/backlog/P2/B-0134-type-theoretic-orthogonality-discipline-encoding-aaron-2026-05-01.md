@@ -21,7 +21,7 @@ type: feature
 
 Encode the meta-meta-meta-rule (orthogonality check before creating a new substrate class) as a decidable type-theoretic judgment. Currently orthogonality is judged informally; mechanizing the check would catch class-creation failures at compose-time rather than at PR-review-time.
 
-**Reference:** *Theorem Proving in Lean 4* (Avigad et al.) for the type-theory side; HoTT book for refinement-types side.
+**Reference:** _Theorem Proving in Lean 4_ (Avigad et al.) for the type-theory side; HoTT book for refinement-types side.
 
 ## Acceptance criteria
 

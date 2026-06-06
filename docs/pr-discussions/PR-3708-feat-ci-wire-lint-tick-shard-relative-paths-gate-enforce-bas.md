@@ -30,14 +30,14 @@ Exit 1 only on NEW findings (not in baseline). 10 pre-existing findings stay gra
 
 ## Lifecycle now complete
 
-| Step | PR | State |
-|------|-----|-------|
-| Discovery | #3676 + #3679 | merged |
-| Narrow fix per-shard | #3680 | merged |
-| Scanner | #3692 | merged |
-| Filter + quality × 3 | #3692 (fixups) | merged |
-| Baseline mechanism | #3699 | merged |
-| **CI enforce gate** | **this** | **proposed** |
+| Step                 | PR             | State        |
+| -------------------- | -------------- | ------------ |
+| Discovery            | #3676 + #3679  | merged       |
+| Narrow fix per-shard | #3680          | merged       |
+| Scanner              | #3692          | merged       |
+| Filter + quality × 3 | #3692 (fixups) | merged       |
+| Baseline mechanism   | #3699          | merged       |
+| **CI enforce gate**  | **this**       | **proposed** |
 
 Same 4-step §33 audit lifecycle pattern (PR #3513 → #3552 → enforce), compressed across 14 ticks of this session.
 
@@ -63,6 +63,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a non-required CI lint job that enforces the tick-shard relative-path audit with the existing baseline, so new broken relative links fail while historical findings remain grandfathered.
 
 **Changes:**
+
 - Adds `lint-tick-shard-relative-paths` to `.github/workflows/gate.yml`.
 - Runs the audit with `--enforce --baseline`.
 - Documents the lifecycle and rationale inline with the new job.

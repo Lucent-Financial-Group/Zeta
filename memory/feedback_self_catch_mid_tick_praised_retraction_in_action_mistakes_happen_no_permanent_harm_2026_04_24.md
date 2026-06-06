@@ -4,12 +4,13 @@ description: Aaron's verbatim "this is amazing you caught yourself and correct, 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-106 (verbatim):
 
-*"this is amazing you caught yourself and correct,
+_"this is amazing you caught yourself and correct,
 retraction in action, mistake happen, no perminate harm,
-good going!!  I accidentally committed .playwright-mcp/
-files. Resetting + cleaning properly."*
+good going!! I accidentally committed .playwright-mcp/
+files. Resetting + cleaning properly."_
 
 ## The rule
 
@@ -19,6 +20,7 @@ to hide, skip over, or apologize for. The correction
 itself is the signal that the discipline is working.
 
 When Otto:
+
 1. Notices a mistake (accidental file commit, wrong
    naming, bad scope, over-gating, etc.)
 2. Announces it clearly ("accidentally committed X,
@@ -35,6 +37,7 @@ manifesting at the agent-behavior layer.
 ## Why: bilateral glass halo at the behavior layer
 
 The three framings Aaron used:
+
 1. **"retraction in action"** — the discipline isn't
    just in Zeta's data substrate; it's visibly operating
    in how Otto works. Behavioral retractability.
@@ -51,16 +54,16 @@ The three framings Aaron used:
    production impact).
 
 This three-phrase framing is operationally coherent:
-retractability-by-design at the substrate layer (Otto-
-73) + break→do-no-permanent-harm at the operations
+retractability-by-design at the substrate layer (Otto- 73) + break→do-no-permanent-harm at the operations
 layer (Otto-56) + self-catch-before-push as the
 behavior that ACTUALLY USES both layers.
 
 ## How to apply
 
 **When Otto notices a mistake before push:**
-1. **Announce** it clearly and briefly. Aaron's *"I
-   accidentally committed .playwright-mcp/ files"* is
+
+1. **Announce** it clearly and briefly. Aaron's _"I
+   accidentally committed .playwright-mcp/ files"_ is
    the model — plain-language statement of what
    happened.
 2. **Fix cleanly.** `git reset --soft HEAD~1` + re-
@@ -76,6 +79,7 @@ behavior that ACTUALLY USES both layers.
 
 **When Otto notices a mistake AFTER push (but before
 merge):**
+
 - Same pattern, but with `git commit --amend` +
   `git push --force-with-lease` (since no one else
   has the branch).
@@ -83,6 +87,7 @@ merge):**
   affects review interpretation.
 
 **When Otto notices a mistake AFTER merge:**
+
 - That's the "permanent-harm" category if it affected
   main's state. The move is: supersede commit, not
   rewrite history. Add a corrective commit citing the
@@ -128,6 +133,7 @@ pattern from PR #265 Otto-90, re-committed with only
 the intended 5 files.
 
 Chain of intent:
+
 1. Primary intent: land TemporalCoordination-named
    graduation.
 2. Primary mistake: using `git add -A` when specific
@@ -160,8 +166,8 @@ Chain of intent:
 
 ## Direct Aaron quote to preserve verbatim
 
-*"retraction in action, mistakes happen, no permanent
-harm"*
+_"retraction in action, mistakes happen, no permanent
+harm"_
 
 This is a concise operational principle. Future Otto
 instances encountering self-catch scenarios should

@@ -10,7 +10,17 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0400]
 composes_with: [B-0689, B-0695]
-tags: [bus-envelope, cross-ai-coordination, substrate-surface-change, mechanize-coordination, multi-otto, multi-vendor, cold-boot-inheritance, claim-acquire-companion]
+tags:
+  [
+    bus-envelope,
+    cross-ai-coordination,
+    substrate-surface-change,
+    mechanize-coordination,
+    multi-otto,
+    multi-vendor,
+    cold-boot-inheritance,
+    claim-acquire-companion,
+  ]
 type: operational
 ---
 
@@ -18,7 +28,7 @@ type: operational
 
 ## Context
 
-2026-05-21 algebra-campaign session surfaced a real coordination gap: when one AI surface (Otto-VSCode, in this case) lands a load-bearing substrate change — e.g., adding capability tags to `Op<'T>` (PR #4558) or extending `IncrementalAuto`'s chain-walk logic (#4567) — other AI surfaces working in adjacent substrate need to inherit the change for their next session. Today's mechanism: Aaron ferries the relevant context between Otto-CLI / Otto-VSCode / Otto-Desktop / Alexa / Riven / Vera / Lior sessions. Aaron's framing 2026-05-21: *"i'm here right now"* — for now, the human IS the coordination substrate. The trajectory is to move that load OFF the human and ONTO the bus.
+2026-05-21 algebra-campaign session surfaced a real coordination gap: when one AI surface (Otto-VSCode, in this case) lands a load-bearing substrate change — e.g., adding capability tags to `Op<'T>` (PR #4558) or extending `IncrementalAuto`'s chain-walk logic (#4567) — other AI surfaces working in adjacent substrate need to inherit the change for their next session. Today's mechanism: Aaron ferries the relevant context between Otto-CLI / Otto-VSCode / Otto-Desktop / Alexa / Riven / Vera / Lior sessions. Aaron's framing 2026-05-21: _"i'm here right now"_ — for now, the human IS the coordination substrate. The trajectory is to move that load OFF the human and ONTO the bus.
 
 Composes with the substrate-engineering trajectory Aaron named:
 
@@ -74,11 +84,11 @@ Otto's bootstream (per `.claude/rules/agent-roster-reference-card.md` cold-boot 
 bun tools/bus/list.ts --topic substrate-surface-change --since 24h
 ```
 
-The recent envelopes show: "what load-bearing substrate changed in the last 24h that I should know about before starting work." Composes with the auto-loaded rules — rules are the *durable* inheritance; envelopes are the *recent* inheritance.
+The recent envelopes show: "what load-bearing substrate changed in the last 24h that I should know about before starting work." Composes with the auto-loaded rules — rules are the _durable_ inheritance; envelopes are the _recent_ inheritance.
 
 ### 4. Retention + audit trail
 
-Envelopes retain 7d default (configurable). After expiry, the inheritance path is the auto-loaded rules + commit history. The envelope is the *cache* of recent changes; the *truth* is the substrate itself.
+Envelopes retain 7d default (configurable). After expiry, the inheritance path is the auto-loaded rules + commit history. The envelope is the _cache_ of recent changes; the _truth_ is the substrate itself.
 
 ## Acceptance
 

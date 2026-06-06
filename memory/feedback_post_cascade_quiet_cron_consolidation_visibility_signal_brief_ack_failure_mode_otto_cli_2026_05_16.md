@@ -18,9 +18,9 @@ content IS a brief-ack under
 **Why:** The rule's counter-with-escalation clause explicitly catches
 synonyms:
 
-> *"genuine quiet" / "appropriate bounded wait" / "idle-but-available" /
+> _"genuine quiet" / "appropriate bounded wait" / "idle-but-available" /
 > "real bounded named-dependency wait" are ALL brief-acks with synonyms;
-> they count toward the N-consecutive threshold.*
+> they count toward the N-consecutive threshold._
 
 "Visibility signal — Tick HHMMZ; no novel substrate" is the same shape:
 fancier surface phrasing for the same operational disposition (the

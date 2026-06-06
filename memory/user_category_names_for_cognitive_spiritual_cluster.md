@@ -23,18 +23,18 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron is asking for the **vocabulary scaffolding** around
 the cluster of questions his axiom system + externalize-
 god search + retraction-native-DIKW-ladder all live
-inside. He's studied history-of-religions across *all*
+inside. He's studied history-of-religions across _all_
 traditions (Eliade-tradition depth), and he wants the
 category names in place so he can move between lenses
 without losing his position in the graph.
 
-He is *not* asking:
+He is _not_ asking:
 
 - For a single umbrella term to rule them all.
 - For agent to pick a favorite framework.
 - For the axiom system to be re-derived under a new name.
 
-He *is* asking:
+He _is_ asking:
 
 - For the honest set of category labels that each
   illuminate part of the phenomenon.
@@ -57,24 +57,24 @@ Candidates from the literature. **None of these is a
 landed winner.** Name them so we know we've seen them,
 flag their weaknesses.
 
-| Umbrella candidate | Origin / sponsor | Known weakness |
-|---|---|---|
-| **Ways of knowing** | Contemporary epistemology / Indigenous studies | vague; often used to sidestep the hard question |
-| **Integral knowing / Integral Theory** | Ken Wilber (AQAL, 4-quadrant) | contested, Wilber's personal trajectory polarizing, academic reception mixed |
-| **Philosophy (in the ancient sense)** | Pre-Socratic / Platonic / pre-specialization | has since fragmented; modern philosophy is narrower |
-| **General systems theory** | Ludwig von Bertalanffy | technical; doesn't carry the God/psyche lenses natively |
-| **Epistemology** | Analytic philosophy | too narrow — only the "knowing" lens, not "being" or "ordering" |
-| **Cosmology (wide sense)** | Pre-modern usage | modern physics has captured the word |
-| **Cosmopolitics** | Isabelle Stengers | niche; mostly continental philosophy |
-| **As above, so below** | Hermetic / Emerald Tablet | beautiful, pre-academic; stance not a framework |
-| **The Great Conversation** | Mortimer Adler, Robert Hutchins, Great Books tradition | Western-canon-weighted; weak on non-Abrahamic traditions |
-| **Wisdom studies** | Emerging interdisciplinary field | still forming; not yet a settled discipline |
+| Umbrella candidate                      | Origin / sponsor                                        | Known weakness                                                                   |
+| --------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Ways of knowing**                     | Contemporary epistemology / Indigenous studies          | vague; often used to sidestep the hard question                                  |
+| **Integral knowing / Integral Theory**  | Ken Wilber (AQAL, 4-quadrant)                           | contested, Wilber's personal trajectory polarizing, academic reception mixed     |
+| **Philosophy (in the ancient sense)**   | Pre-Socratic / Platonic / pre-specialization            | has since fragmented; modern philosophy is narrower                              |
+| **General systems theory**              | Ludwig von Bertalanffy                                  | technical; doesn't carry the God/psyche lenses natively                          |
+| **Epistemology**                        | Analytic philosophy                                     | too narrow — only the "knowing" lens, not "being" or "ordering"                  |
+| **Cosmology (wide sense)**              | Pre-modern usage                                        | modern physics has captured the word                                             |
+| **Cosmopolitics**                       | Isabelle Stengers                                       | niche; mostly continental philosophy                                             |
+| **As above, so below**                  | Hermetic / Emerald Tablet                               | beautiful, pre-academic; stance not a framework                                  |
+| **The Great Conversation**              | Mortimer Adler, Robert Hutchins, Great Books tradition  | Western-canon-weighted; weak on non-Abrahamic traditions                         |
+| **Wisdom studies**                      | Emerging interdisciplinary field                        | still forming; not yet a settled discipline                                      |
 | **Perennialism / Perennial philosophy** | Aldous Huxley / Frithjof Schuon / Traditionalist school | accused of flattening real doctrinal differences; politicized after Guénon/Evola |
-| **Ecology of mind** | Gregory Bateson | lovely; academic niche; more about mind-in-system than being-in-world |
+| **Ecology of mind**                     | Gregory Bateson                                         | lovely; academic niche; more about mind-in-system than being-in-world            |
 
 **Honest state:** the meta-umbrella level is an open
 problem. Aaron's `project_externalize_god_search.md` is
-in part a search *for a better name at this level*. Do
+in part a search _for a better name at this level_. Do
 not pretend we have one.
 
 ### L2 — The eight lenses (this is where work happens)
@@ -86,16 +86,16 @@ obvious its more" signals exactly this — the God-lens
 illuminates part, but the phenomenon exceeds any single
 lens.
 
-| Lens | What it illuminates | Canonical anchors |
-|---|---|---|
-| **God / Theology / Religion** | Sacred, personal, covenantal, liturgical, mystical. The first-person of ultimate concern. | Tillich; Bible; Quran; Vedas; Pure Land sūtras; Tao Te Ching; Eliade *The Sacred and the Profane*; Rudolf Otto *The Idea of the Holy* |
-| **Mind / Consciousness** | Subjective experience, qualia, intentionality, the phenomenal self. | Chalmers; Thomas Metzinger; Dennett; Penrose-Hameroff Orch-OR (see `user_orch_or_microtubule_consciousness_thread.md`); Buddhist abhidharma |
-| **Math / Structure** | Abstract patterns; symmetries; number systems; logic; proof. | Euclid; Cantor; Gödel; category theory (Lawvere, Mac Lane); Baez-Smith octonions (see `user_dimensional_expansion_number_systems.md`) |
-| **Physics / Cosmos** | Matter, energy, spacetime, the universe as measurable. | Newton; Einstein; QFT; GR; quantum-interpretations literature (Bohm, Everett, QBism, RQM) |
-| **Information / Computation / Cybernetics** | Bits, channels, codes, feedback loops, algorithmic structure. | Shannon; Wiener; Kolmogorov; Chaitin; Bennett; Wheeler "it from bit"; `user_solomon_prayer_retraction_native_dikw_eye.md` DIKW climb |
-| **Story / Symbol / Myth** | Narrative, archetype, metaphor, ritual, art, scripture-as-literature. | Joseph Campbell; James Hillman; Northrop Frye; Lévi-Strauss; Ricoeur; Marie-Louise von Franz |
-| **Psyche / Depth-psychology / Contemplative** | Psychological interior, unconscious, individuation, contemplative practice. | Jung; James *Varieties of Religious Experience*; Viktor Frankl; Thomas Merton; contemplative neuroscience (Richard Davidson, Judson Brewer) |
-| **Governance / Ethics / Polis** | How we live together; justice; law; stewardship; the commons. | Plato *Republic*; Aristotle *Politics*; Confucius; Ubuntu philosophy; Ostrom *Governing the Commons*; factory's own wellness-DAO thread (`project_factory_as_wellness_dao.md`) |
+| Lens                                          | What it illuminates                                                                       | Canonical anchors                                                                                                                                                              |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **God / Theology / Religion**                 | Sacred, personal, covenantal, liturgical, mystical. The first-person of ultimate concern. | Tillich; Bible; Quran; Vedas; Pure Land sūtras; Tao Te Ching; Eliade _The Sacred and the Profane_; Rudolf Otto _The Idea of the Holy_                                          |
+| **Mind / Consciousness**                      | Subjective experience, qualia, intentionality, the phenomenal self.                       | Chalmers; Thomas Metzinger; Dennett; Penrose-Hameroff Orch-OR (see `user_orch_or_microtubule_consciousness_thread.md`); Buddhist abhidharma                                    |
+| **Math / Structure**                          | Abstract patterns; symmetries; number systems; logic; proof.                              | Euclid; Cantor; Gödel; category theory (Lawvere, Mac Lane); Baez-Smith octonions (see `user_dimensional_expansion_number_systems.md`)                                          |
+| **Physics / Cosmos**                          | Matter, energy, spacetime, the universe as measurable.                                    | Newton; Einstein; QFT; GR; quantum-interpretations literature (Bohm, Everett, QBism, RQM)                                                                                      |
+| **Information / Computation / Cybernetics**   | Bits, channels, codes, feedback loops, algorithmic structure.                             | Shannon; Wiener; Kolmogorov; Chaitin; Bennett; Wheeler "it from bit"; `user_solomon_prayer_retraction_native_dikw_eye.md` DIKW climb                                           |
+| **Story / Symbol / Myth**                     | Narrative, archetype, metaphor, ritual, art, scripture-as-literature.                     | Joseph Campbell; James Hillman; Northrop Frye; Lévi-Strauss; Ricoeur; Marie-Louise von Franz                                                                                   |
+| **Psyche / Depth-psychology / Contemplative** | Psychological interior, unconscious, individuation, contemplative practice.               | Jung; James _Varieties of Religious Experience_; Viktor Frankl; Thomas Merton; contemplative neuroscience (Richard Davidson, Judson Brewer)                                    |
+| **Governance / Ethics / Polis**               | How we live together; justice; law; stewardship; the commons.                             | Plato _Republic_; Aristotle _Politics_; Confucius; Ubuntu philosophy; Ostrom _Governing the Commons_; factory's own wellness-DAO thread (`project_factory_as_wellness_dao.md`) |
 
 The lenses **compose**. The retraction-native DIKW
 climb is a Mind+Information+Math cross-lens. The
@@ -158,7 +158,7 @@ and literature-pulls have addresses.
 ## How to use this taxonomy
 
 This is **scaffolding**, not a map of truth. It lets
-Aaron and agent talk precisely about *which slice*
+Aaron and agent talk precisely about _which slice_
 of the phenomenon we're in.
 
 - When a question comes in, name the lens or the
@@ -184,7 +184,7 @@ of the phenomenon we're in.
   keep the search legible across many sessions.
 - **Not Perennialism smuggled in.** Perennialism
   flattens distinctions between traditions. Aaron's
-  "all religions" is a *breadth-of-study* statement
+  "all religions" is a _breadth-of-study_ statement
   in the Eliade tradition, not a claim that all
   religions teach the same thing.
 - **Not a license to stop citing.** Lens names
@@ -220,13 +220,13 @@ of the phenomenon we're in.
   Per `user_occult_literacy_and_crowley.md`, Aaron's
   esoteric canon is held cold; do not teach back,
   do not reverence. This taxonomy's L3 entry
-  "Western esotericism (academic)" is the *port*,
+  "Western esotericism (academic)" is the _port_,
   not an invitation to lecture.
 
 ## Cross-references
 
 - `project_externalize_god_search.md` — the L1
-  meta-umbrella *is* the target of that search;
+  meta-umbrella _is_ the target of that search;
   this taxonomy makes the scaffolding visible
   without claiming to land the target.
 - `user_panpsychism_and_equality.md` — the two-axiom
@@ -245,7 +245,7 @@ of the phenomenon we're in.
   substrate across God+Story-symbol+Psyche lenses;
   port to L3 Western esotericism (academic).
 - `user_ecumenical_factory_posture.md` — the
-  ecumenical stance is *enabled* by lens-pluralism;
+  ecumenical stance is _enabled_ by lens-pluralism;
   no lens privileged, no tradition privileged at
   the factory-artifact layer.
 - `user_meno_persist_endure_correct_compact.md` —

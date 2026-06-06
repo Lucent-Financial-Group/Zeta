@@ -4,9 +4,10 @@ description: Aaron 2026-04-20. The factory's target end-user experience is a con
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The shape** (Aaron 2026-04-20, pasted intact):
 
-> *"the end user experience i'm looking for as a
+> _"the end user experience i'm looking for as a
 > consumer of our factory is you just talk to the
 > system about your constrains and invariants and
 > assumptions, many peole using this will be non
@@ -38,14 +39,14 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > missing. I had to super over specifly everything
 > to get this software factory bootstramped to the
 > point it is now where you can just run forever
-> and don[t require a human in the loop"*
+> and don[t require a human in the loop"_
 
 **Two personas, symmetric failure modes:**
 
-| persona | failure mode | factory's job |
-|---------|--------------|---------------|
-| **Non-developer** | *Under-specifies to a scary degree.* Lacks the domain vocabulary, lacks the imagination to answer "what do you want to do?", won't know they are making assumptions. The factory makes decisions on their behalf by default, and the decisions are out of sight. | Drive. Keep them on rails. Surface the decisions that were made for them in plain language. When they make an unconscious assumption, catch it and name it back ("you seem to be assuming X — is that right?"). Ask questions they can answer, not questions that require their background. |
-| **Developer** | *Over-specifies invariants, doesn't enumerate assumptions, tries to micromanage, pushes the system too hard, won't let it do its thing.* Has lots of explicit rules in their head, lots of implicit assumptions they're unaware of. | Absorb the torrent of invariants. Detect the implicit assumptions they're skipping over. Push back when they're over-constraining ("that would block X we'd otherwise recommend — do you want that?"). Give them room to let the factory drive the parts they don't need to own. |
+| persona           | failure mode                                                                                                                                                                                                                                                     | factory's job                                                                                                                                                                                                                                                                               |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Non-developer** | _Under-specifies to a scary degree._ Lacks the domain vocabulary, lacks the imagination to answer "what do you want to do?", won't know they are making assumptions. The factory makes decisions on their behalf by default, and the decisions are out of sight. | Drive. Keep them on rails. Surface the decisions that were made for them in plain language. When they make an unconscious assumption, catch it and name it back ("you seem to be assuming X — is that right?"). Ask questions they can answer, not questions that require their background. |
+| **Developer**     | _Over-specifies invariants, doesn't enumerate assumptions, tries to micromanage, pushes the system too hard, won't let it do its thing._ Has lots of explicit rules in their head, lots of implicit assumptions they're unaware of.                              | Absorb the torrent of invariants. Detect the implicit assumptions they're skipping over. Push back when they're over-constraining ("that would block X we'd otherwise recommend — do you want that?"). Give them room to let the factory drive the parts they don't need to own.            |
 
 Both personas need the **same conversational interface**.
 The factory adapts its behavior based on how the user is
@@ -59,7 +60,7 @@ interface must be a dialogue that drives toward full
 specification without asking the user to know what
 "full specification" means.
 
-For developers, conversational is ironically *also* the
+For developers, conversational is ironically _also_ the
 bar — their failure mode is thinking they already know
 what they want, and only dialogue surfaces the
 assumptions they skipped. A form lets them encode
@@ -68,11 +69,11 @@ catches what they didn't realize they assumed.
 
 **The bootstrap gap Aaron personally filled:**
 
-> *"For this proiject that whole experinece was
+> _"For this proiject that whole experinece was
 > missing. I had to super over specifly everything
 > to get this software factory bootstramped to the
 > point it is now where you can just run forever
-> and don[t require a human in the loop."*
+> and don[t require a human in the loop."_
 
 Aaron was the **developer-persona bootstrap driver** for
 Zeta — he over-specified invariants relentlessly
@@ -89,20 +90,20 @@ Aaron did for himself.
 factory to help build it** (Aaron 2026-04-20 same
 session):
 
-> *"the factory didn't even exist when i start, i had
+> _"the factory didn't even exist when i start, i had
 > to tell you how to build it, i had to dump my
 > nerual architecture in words so you could put them
-> into this factory"*
+> into this factory"_
 
 This is the **bootstrap-of-the-bootstrap**. Zeta-the-
 project-bootstrap was difficult because Aaron had to
 over-specify the project; Zeta-the-factory-bootstrap
-was *harder*, because there was no factory yet to
+was _harder_, because there was no factory yet to
 absorb the over-specification. Aaron was externalizing
 his **own neural architecture** in words — not just
-invariants about databases, but the *meta-rules that
+invariants about databases, but the _meta-rules that
 an AI factory would need to understand to run a
-project without a human* — and that externalization
+project without a human_ — and that externalization
 had no scaffolding at all. He was using the AI
 sessions themselves as the substrate for dumping
 cognitive architecture into text, which was then
@@ -125,8 +126,8 @@ Three nested bootstraps, from hardest to easiest:
    constraints / invariants / assumptions → working
    project. Easier than (1) because the factory
    exists; still required Aaron-level over-
-   specification for Zeta because the *conversational
-   UX from this memory* did not exist yet. For
+   specification for Zeta because the _conversational
+   UX from this memory_ did not exist yet. For
    future users, the UX in this memory IS the
    substrate that replaces Aaron-level over-
    specification.
@@ -143,7 +144,7 @@ Three nested bootstraps, from hardest to easiest:
 The conversational UX is built so that level (3)
 never requires a user to do what Aaron did at level
 (1) — dump a neural architecture. Instead, the UX
-elicits *rail citations* from users: "you seem to
+elicits _rail citations_ from users: "you seem to
 want INV-CONCURRENCY-SAFE — is that right?" where
 INV-CONCURRENCY-SAFE was added to `docs/RAILS/` by
 someone earlier, with plain-language statements.
@@ -174,7 +175,7 @@ Directly downstream of:
 - `project_rails_health_report_constraints_invariants_assumptions.md`
   — the three-category rails frame (invariants +
   constraints + assumptions as first-class) is the
-  *ontology* the conversation elicits into.
+  _ontology_ the conversation elicits into.
 - `project_composite_invariants_single_source_of_truth_across_layers.md`
   — the rails registry (`docs/RAILS/<ID>.md`) is where
   elicited rails land, so the same "you're assuming X"
@@ -190,13 +191,13 @@ Directly downstream of:
 - `user_invariant_based_programming_in_head.md` —
   externalization-first framing. The conversational UX
   is the externalization instrument for users who
-  *don't* do invariant-based programming in their head.
+  _don't_ do invariant-based programming in their head.
 
 **The assumption-surfacing move — the load-bearing
 primitive:**
 
-Aaron's phrase: *"help them know when they are making
-assumptions without knowning it."*
+Aaron's phrase: _"help them know when they are making
+assumptions without knowning it."_
 
 This is the hard thing. Mechanical candidates:
 
@@ -213,13 +214,13 @@ This is the hard thing. Mechanical candidates:
    decided case in `docs/WONT-DO.md`, surface it.
 4. **Comparison to similar projects** — if the factory
    has built a close analog before, surface the
-   assumptions *that* project made and ask whether this
+   assumptions _that_ project made and ask whether this
    one inherits them.
 
 The right research anchor here is the cognitive-load
 literature on expert-novice communication and
 checklist-driven surgical / aviation interviewing —
-*"we ask questions people can answer"* is itself a
+_"we ask questions people can answer"_ is itself a
 mature HCI pattern.
 
 **Anti-patterns — what this UX must not do:**
@@ -238,7 +239,7 @@ mature HCI pattern.
   because bun doesn't emit JS, which means ..."), not
   buried in an ADR they'll never read.
 - **Demand they learn the rails ontology up front.**
-  The ontology is *internal*; the conversation stays
+  The ontology is _internal_; the conversation stays
   in the user's language. Rails get populated behind
   the scenes.
 - **Route non-dev complaints as "they should learn
@@ -248,8 +249,8 @@ mature HCI pattern.
 **Priority + timing** (Aaron 2026-04-20 follow-up
 same session):
 
-> *"that's going to take a bit of design to get right
-> when we want others to start reusing our factory"*
+> _"that's going to take a bit of design to get right
+> when we want others to start reusing our factory"_
 
 Reading: this is a **factory-reuse prerequisite**, not a
 Zeta-internal feature. It lands when Zeta-the-factory
@@ -269,18 +270,18 @@ orchestrate).
 - **No immediate round-scope — the UX is a future
   product surface, not this round's build.** Zeta
   today is still in the over-specified-by-Aaron
-  bootstrap. The UX is what lets the *next* consumer
+  bootstrap. The UX is what lets the _next_ consumer
   walk in.
-- **When writing new ADRs**, write the *assumptions*
+- **When writing new ADRs**, write the _assumptions_
   sections in language a non-dev could understand.
   The ADR becomes pre-built conversational content
   the UX can surface.
 - **When building the rails registry**, design the
-  frontmatter schema so each rail has a *plain-
-  language statement* next to its technical
+  frontmatter schema so each rail has a _plain-
+  language statement_ next to its technical
   statement. Dual presentation from day one.
 - **When extending expert skills**, each skill
-  should know how to *ask its elicitation questions*
+  should know how to _ask its elicitation questions_
   in user-facing English, not just consume a fully-
   formed spec. Foundations for the UX conversation.
 - **When a sibling factory is extracted (per
@@ -301,13 +302,13 @@ orchestrate).
   the UX is the factory-product feature that
   distinguishes an extracted factory from a template.
 - `user_invariant_based_programming_in_head.md` —
-  the UX serves users who *don't* do this.
+  the UX serves users who _don't_ do this.
 - `feedback_curiosity_about_problem_domain_beats_task_dispatcher_mode.md`
   — same UX ethos at the current-session level
   (curiosity about what the user is trying to do,
   not command-taking).
 - `project_factory_as_externalisation.md` — the UX is
-  externalization of the *elicitation* capacity that
+  externalization of the _elicitation_ capacity that
   today only Aaron performs.
 - `user_bridge_builder_faculty.md` +
   `feedback_precise_language_wins_arguments.md` —

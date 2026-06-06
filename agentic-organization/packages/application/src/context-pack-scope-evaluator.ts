@@ -1,12 +1,5 @@
-import {
-  DocScopeKind,
-  GraphNodeKind,
-  graphNodeId,
-} from "../../domain/src/index.ts";
-import {
-  type AgentObserveSnapshot,
-  type HierarchyReadout,
-} from "./observe.ts";
+import { DocScopeKind, GraphNodeKind, graphNodeId } from "../../domain/src/index.ts";
+import { type AgentObserveSnapshot, type HierarchyReadout } from "./observe.ts";
 import { RunScope } from "./run-scope.ts";
 import {
   ContextPackOmissionReason,
@@ -17,8 +10,7 @@ import {
   type ContextPackSourcePointer,
 } from "./context-pack-contracts.ts";
 
-export const CONTEXT_PACK_ITEM_PROVENANCE_OUT_OF_SCOPE_MESSAGE =
-  "context pack item provenance is outside active scope";
+export const CONTEXT_PACK_ITEM_PROVENANCE_OUT_OF_SCOPE_MESSAGE = "context pack item provenance is outside active scope";
 
 export function contextPackWithItemProvenanceOmissions(
   pack: ContextPack,
@@ -27,9 +19,9 @@ export function contextPackWithItemProvenanceOmissions(
 ): ContextPack {
   const provenanceOmissions = contextPackItemProvenanceOmissions(pack, snapshot, hierarchy);
   if (provenanceOmissions.length === 0) return pack;
-  const omittedItemIds = new Set(provenanceOmissions.flatMap((omission) =>
-    omission.nodeId === undefined ? [] : [omission.nodeId]
-  ));
+  const omittedItemIds = new Set(
+    provenanceOmissions.flatMap((omission) => (omission.nodeId === undefined ? [] : [omission.nodeId])),
+  );
   const omissionMessages = provenanceOmissions.map((omission) => omission.message);
   return {
     ...pack,
@@ -46,12 +38,14 @@ export function contextPackItemProvenanceOmissions(
 ): readonly ContextPackOmittedItem[] {
   return pack.items.flatMap((item) =>
     contextPackItemHasOutsideActiveScopePointer(item, snapshot, hierarchy)
-      ? [{
-          nodeId: item.id,
-          reason: ContextPackOmissionReason.OutOfScope,
-          message: `${CONTEXT_PACK_ITEM_PROVENANCE_OUT_OF_SCOPE_MESSAGE}: ${item.id}`,
-        }]
-      : []
+      ? [
+          {
+            nodeId: item.id,
+            reason: ContextPackOmissionReason.OutOfScope,
+            message: `${CONTEXT_PACK_ITEM_PROVENANCE_OUT_OF_SCOPE_MESSAGE}: ${item.id}`,
+          },
+        ]
+      : [],
   );
 }
 
@@ -61,7 +55,7 @@ export function contextPackItemHasOutsideActiveScopePointer(
   hierarchy: HierarchyReadout,
 ): boolean {
   return (item.sourcePointers ?? []).some((pointer) =>
-    contextPackSourcePointerIsOutsideActiveScope(pointer, item, snapshot, hierarchy)
+    contextPackSourcePointerIsOutsideActiveScope(pointer, item, snapshot, hierarchy),
   );
 }
 
@@ -108,7 +102,10 @@ export function docUnitSourcePointerMatchesActiveScope(
   snapshot: AgentObserveSnapshot,
   hierarchy: HierarchyReadout,
 ): boolean {
-  if (pointer.organizationId !== undefined && !optionalContextPackValueMatches(pointer.organizationId, snapshot.organizationId)) {
+  if (
+    pointer.organizationId !== undefined &&
+    !optionalContextPackValueMatches(pointer.organizationId, snapshot.organizationId)
+  ) {
     return false;
   }
   if (pointer.scopeKind === undefined || pointer.scopeId === undefined) return false;
@@ -130,15 +127,13 @@ export function activeDepartmentIdsForSnapshot(
   snapshot: AgentObserveSnapshot,
   hierarchy: HierarchyReadout,
 ): readonly string[] {
-  return uniqueStrings(
-    [
-      snapshot.hat.departmentId,
-      ...snapshot.hat.documentationScopes,
-      ...hierarchy.projects
-        .filter((project) => project.projectId === snapshot.projectId)
-        .map((project) => project.departmentId),
-    ],
-  );
+  return uniqueStrings([
+    snapshot.hat.departmentId,
+    ...snapshot.hat.documentationScopes,
+    ...hierarchy.projects
+      .filter((project) => project.projectId === snapshot.projectId)
+      .map((project) => project.departmentId),
+  ]);
 }
 
 export function graphNodeSourcePointerMatchesActiveScope(
@@ -149,7 +144,8 @@ export function graphNodeSourcePointerMatchesActiveScope(
 ): boolean {
   return (
     activeGraphNodeIdsForSnapshot(snapshot, hierarchy).has(pointer.nodeId) ||
-    activeRawGraphNodeIdsForSnapshot(snapshot, hierarchy).has(pointer.nodeId) && contextPackItemHasActiveRawGraphCitation(item, snapshot, hierarchy) ||
+    (activeRawGraphNodeIdsForSnapshot(snapshot, hierarchy).has(pointer.nodeId) &&
+      contextPackItemHasActiveRawGraphCitation(item, snapshot, hierarchy)) ||
     contextPackItemHasActiveDocCitation(item, snapshot, hierarchy) ||
     contextPackItemHasActiveWorkItemPointer(item, snapshot, hierarchy)
   );
@@ -165,8 +161,10 @@ export function graphEdgeSourcePointerMatchesActiveScope(
   const activeRawNodeIds = activeRawGraphNodeIdsForSnapshot(snapshot, hierarchy);
   const canonicalFromActive = activeCanonicalNodeIds.has(pointer.fromNodeId);
   const canonicalToActive = activeCanonicalNodeIds.has(pointer.toNodeId);
-  const rawFromActive = activeRawNodeIds.has(pointer.fromNodeId) && contextPackItemHasActiveRawGraphCitation(item, snapshot, hierarchy);
-  const rawToActive = activeRawNodeIds.has(pointer.toNodeId) && contextPackItemHasActiveRawGraphCitation(item, snapshot, hierarchy);
+  const rawFromActive =
+    activeRawNodeIds.has(pointer.fromNodeId) && contextPackItemHasActiveRawGraphCitation(item, snapshot, hierarchy);
+  const rawToActive =
+    activeRawNodeIds.has(pointer.toNodeId) && contextPackItemHasActiveRawGraphCitation(item, snapshot, hierarchy);
   return (
     (canonicalFromActive && canonicalToActive) ||
     (rawFromActive && rawToActive) ||
@@ -180,10 +178,11 @@ export function contextPackItemHasActiveGraphTraversalRoot(
   snapshot: AgentObserveSnapshot,
   hierarchy: HierarchyReadout,
 ): boolean {
-  return (item.sourcePointers ?? []).some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.GraphNode &&
-    (pointer.nodeId === edge.fromNodeId || pointer.nodeId === edge.toNodeId) &&
-    graphNodeSourcePointerMatchesActiveScope(pointer, item, snapshot, hierarchy)
+  return (item.sourcePointers ?? []).some(
+    (pointer) =>
+      pointer.kind === ContextPackSourcePointerKind.GraphNode &&
+      (pointer.nodeId === edge.fromNodeId || pointer.nodeId === edge.toNodeId) &&
+      graphNodeSourcePointerMatchesActiveScope(pointer, item, snapshot, hierarchy),
   );
 }
 
@@ -192,9 +191,10 @@ export function contextPackItemHasActiveDocCitation(
   snapshot: AgentObserveSnapshot,
   hierarchy: HierarchyReadout,
 ): boolean {
-  return (item.sourcePointers ?? []).some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.DocUnit &&
-    docUnitSourcePointerMatchesActiveScope(pointer, snapshot, hierarchy)
+  return (item.sourcePointers ?? []).some(
+    (pointer) =>
+      pointer.kind === ContextPackSourcePointerKind.DocUnit &&
+      docUnitSourcePointerMatchesActiveScope(pointer, snapshot, hierarchy),
   );
 }
 
@@ -203,9 +203,10 @@ export function contextPackItemHasActiveWorkItemPointer(
   snapshot: AgentObserveSnapshot,
   hierarchy: HierarchyReadout,
 ): boolean {
-  return (item.sourcePointers ?? []).some((pointer) =>
-    pointer.kind === ContextPackSourcePointerKind.WorkItem &&
-    workItemSourcePointerMatchesActiveScope(pointer, snapshot, hierarchy)
+  return (item.sourcePointers ?? []).some(
+    (pointer) =>
+      pointer.kind === ContextPackSourcePointerKind.WorkItem &&
+      workItemSourcePointerMatchesActiveScope(pointer, snapshot, hierarchy),
   );
 }
 
@@ -254,10 +255,16 @@ export function activeGraphNodeIdsForSnapshot(
   const nodeIds = [
     graphNodeId(organizationId, GraphNodeKind.Organization, organizationId),
     graphNodeId(organizationId, GraphNodeKind.Hat, snapshot.hat.id),
-    ...(snapshot.projectId === undefined ? [] : [graphNodeId(organizationId, GraphNodeKind.Project, snapshot.projectId)]),
+    ...(snapshot.projectId === undefined
+      ? []
+      : [graphNodeId(organizationId, GraphNodeKind.Project, snapshot.projectId)]),
     ...(snapshot.teamId === undefined ? [] : [graphNodeId(organizationId, GraphNodeKind.Team, snapshot.teamId)]),
-    ...(snapshot.workItemId === undefined ? [] : [graphNodeId(organizationId, GraphNodeKind.WorkItem, snapshot.workItemId)]),
-    ...hierarchy.initiatives.map((initiative) => graphNodeId(organizationId, GraphNodeKind.Initiative, initiative.initiativeId)),
+    ...(snapshot.workItemId === undefined
+      ? []
+      : [graphNodeId(organizationId, GraphNodeKind.WorkItem, snapshot.workItemId)]),
+    ...hierarchy.initiatives.map((initiative) =>
+      graphNodeId(organizationId, GraphNodeKind.Initiative, initiative.initiativeId),
+    ),
     ...hierarchy.priorityItems
       .filter((item) => item.scope === RunScope.WorkItem)
       .map((item) => graphNodeId(organizationId, GraphNodeKind.WorkItem, item.itemId)),
@@ -269,17 +276,17 @@ export function activeRawGraphNodeIdsForSnapshot(
   snapshot: AgentObserveSnapshot,
   hierarchy: HierarchyReadout,
 ): ReadonlySet<string> {
-  return new Set([
-    snapshot.organizationId,
-    snapshot.hat.id,
-    snapshot.projectId,
-    snapshot.teamId,
-    snapshot.workItemId,
-    ...hierarchy.initiatives.map((initiative) => initiative.initiativeId),
-    ...hierarchy.priorityItems
-      .filter((item) => item.scope === RunScope.WorkItem)
-      .map((item) => item.itemId),
-  ].filter((value): value is string => value !== undefined && value.length > 0));
+  return new Set(
+    [
+      snapshot.organizationId,
+      snapshot.hat.id,
+      snapshot.projectId,
+      snapshot.teamId,
+      snapshot.workItemId,
+      ...hierarchy.initiatives.map((initiative) => initiative.initiativeId),
+      ...hierarchy.priorityItems.filter((item) => item.scope === RunScope.WorkItem).map((item) => item.itemId),
+    ].filter((value): value is string => value !== undefined && value.length > 0),
+  );
 }
 
 export function activeGraphRootNodeIdsForSnapshot(
@@ -303,9 +310,7 @@ export function activeGraphCitationRefsForSnapshot(
     ...(snapshot.teamId === undefined ? [] : [`team:${snapshot.teamId}`]),
     ...(snapshot.workItemId === undefined ? [] : [`work:${snapshot.workItemId}`]),
     ...hierarchy.initiatives.map((initiative) => `initiative:${initiative.initiativeId}`),
-    ...hierarchy.priorityItems
-      .filter((item) => item.scope === RunScope.WorkItem)
-      .map((item) => `work:${item.itemId}`),
+    ...hierarchy.priorityItems.filter((item) => item.scope === RunScope.WorkItem).map((item) => `work:${item.itemId}`),
   ]);
 }
 
@@ -313,7 +318,12 @@ export function hindsightMemorySourcePointerMatchesActiveScope(
   pointer: Extract<ContextPackSourcePointer, { kind: typeof ContextPackSourcePointerKind.HindsightMemory }>,
   snapshot: AgentObserveSnapshot,
 ): boolean {
-  if (pointer.recallAgentId !== undefined || pointer.recallHatAssignmentId !== undefined || pointer.recallProjectId !== undefined || pointer.recallWorkItemId !== undefined) {
+  if (
+    pointer.recallAgentId !== undefined ||
+    pointer.recallHatAssignmentId !== undefined ||
+    pointer.recallProjectId !== undefined ||
+    pointer.recallWorkItemId !== undefined
+  ) {
     return (
       optionalContextPackValueMatches(pointer.recallAgentId, snapshot.agentId) &&
       optionalContextPackValueMatches(pointer.recallHatAssignmentId, snapshot.hatAssignmentId) &&
@@ -334,9 +344,7 @@ export function workItemSourcePointerMatchesActiveScope(
   hierarchy: HierarchyReadout,
 ): boolean {
   if (snapshot.workItemId !== undefined) return pointer.workItemId === snapshot.workItemId;
-  return hierarchy.priorityItems.some((item) =>
-    item.scope === RunScope.WorkItem && item.itemId === pointer.workItemId
-  );
+  return hierarchy.priorityItems.some((item) => item.scope === RunScope.WorkItem && item.itemId === pointer.workItemId);
 }
 
 export function scheduleBlockSourcePointerMatchesActiveScope(
@@ -380,7 +388,10 @@ export function contextPackMatchesSnapshot(pack: ContextPack, snapshot: AgentObs
   );
 }
 
-export function optionalContextPackValueMatches(packValue: string | undefined, snapshotValue: string | undefined): boolean {
+export function optionalContextPackValueMatches(
+  packValue: string | undefined,
+  snapshotValue: string | undefined,
+): boolean {
   return snapshotValue === undefined ? packValue === undefined : packValue === snapshotValue;
 }
 

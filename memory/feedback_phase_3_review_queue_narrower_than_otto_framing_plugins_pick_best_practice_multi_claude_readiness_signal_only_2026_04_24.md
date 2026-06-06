@@ -4,22 +4,23 @@ description: Aaron Otto-104 three-message burst correcting Otto's review-invento
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-104 three-message burst (verbatim,
 in order):
 
 **Message 1 (review-scope correction):**
-*"these are the only two i asked to approve explicitly
-  │ 3   │ PR #239 password-storage design         │ (open research doc, Phase-3 gate)                                                │ Signoff on password-storage approach before implementation                                                                          │
-  ├─────┼─────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-  │ 4   │ PR #230 multi-account design Phase-2    │ (Phase-1 design authorised, Phase-2 gated on Aaron security review)              │ Account-switching / mixed-tier design authorisation                                                                                 │
-       the rest you are overcautious, i just want to know
+_"these are the only two i asked to approve explicitly
+│ 3 │ PR #239 password-storage design │ (open research doc, Phase-3 gate) │ Signoff on password-storage approach before implementation │
+├─────┼─────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 4 │ PR #230 multi-account design Phase-2 │ (Phase-1 design authorised, Phase-2 gated on Aaron security review) │ Account-switching / mixed-tier design authorisation │
+the rest you are overcautious, i just want to know
 when the muti agent is resdy for me to run a test on my
-windows pc"*
+windows pc"_
 
 **Message 2 (plugin packaging direction):**
-*"figure out what's best practice and fits in with our
+_"figure out what's best practice and fits in with our
 stuff and we will pubish via anthropic and openai
-marketplaces eventually so whatever makes sense for that"*
+marketplaces eventually so whatever makes sense for that"_
 
 **Message 3 (PR #290 row):**
 verbatim-quoted PR #290 A/B/C row; implied refile of
@@ -46,8 +47,8 @@ is OVER-GATED:**
   best-practice-fit per message 2.
 - **PR #233 multi-Claude peer-harness experiment** — NOT
   a Phase-3 Aaron-review. Otto-86 readiness-signal pattern
-  applies: *"i just want to know when the muti agent is
-  resdy for me to run a test on my windows pc"*. Aaron
+  applies: _"i just want to know when the muti agent is
+  resdy for me to run a test on my windows pc"_. Aaron
   waits for Otto's signal; Otto iterates-to-bullet-proof
   solo per Otto-93. No Phase-3 review cycle.
 - **PR #292 frontier plugin inventory** — Phase-3 Aaron-
@@ -75,6 +76,7 @@ gates-are-exceptions, and Otto should PRE-CORRECT toward
 narrower rather than wait for Aaron to catch it.
 
 **Composes with:**
+
 - **Otto-82** (governance edits within standing authority)
   — same pattern, different scope surface.
 - **Otto-93** (Otto iterates-to-bullet-proof solo; Aaron
@@ -82,7 +84,7 @@ narrower rather than wait for Aaron to catch it.
   to multi-Claude experiment and anything in its shape.
 - **Otto-86** (peer-harness progression; Otto signals
   readiness, Aaron waits) — ratified again by message 1's
-  *"i just want to know when the muti agent is resdy"*.
+  _"i just want to know when the muti agent is resdy"_.
 - **Otto-90** (Aaron + Max not coordination gates) —
   parallel reduction of a different false gate.
 
@@ -104,16 +106,18 @@ narrower rather than wait for Aaron to catch it.
    / tick-history / memory edits = within standing
    authority per Otto-82. Not on review queue.
 5. **If uncertain, default to NOT putting on Aaron's
-   queue.** Aaron's message 1 explicitly says *"the rest
-   you are overcautious"* — Otto's error-side is always
+   queue.** Aaron's message 1 explicitly says _"the rest
+   you are overcautious"_ — Otto's error-side is always
    toward OVER-gating.
 
 **Current active items on Phase-3 Aaron-review queue:**
+
 - PR #239 — password-storage design
 - PR #230 — multi-account design Phase-2
 
 **Active items on Aaron-readiness-signal queue (Otto-86
 pattern; Aaron waits for Otto):**
+
 - Multi-Claude peer-harness experiment (for
   Windows-PC-test launch)
 - Future peer-harness with Codex (end-of-telephone-line
@@ -122,15 +126,17 @@ pattern; Aaron waits for Otto):**
 
 **Active items on Otto-decides-and-files-at-Frontier-UI
 queue (Otto-72 pattern; Aaron reviews in batch):**
+
 - Everything else.
 
 ## The plugin-marketplace direction constraint
 
 Message 2 introduces a NEW design constraint:
-*"we will pubish via anthropic and openai marketplaces
-eventually so whatever makes sense for that"*.
+_"we will pubish via anthropic and openai marketplaces
+eventually so whatever makes sense for that"_.
 
 This:
+
 1. **Confirms plugin-packaging direction** — factory
    plugins will eventually be marketplace-distributed,
    not repo-only.
@@ -161,9 +167,9 @@ This:
 Message 1 ratifies Otto-86 + Otto-93 for the multi-
 Claude arc:
 
-- **Aaron's only ask:** *"i just want to know when the
+- **Aaron's only ask:** _"i just want to know when the
   muti agent is resdy for me to run a test on my windows
-  pc"*.
+  pc"_.
 - **Otto's role:** iterate on the multi-Claude experiment
   design (via Aminata passes / v2 delta / any further
   drafts) until bullet-proof; THEN signal ready to Aaron.
@@ -173,16 +179,16 @@ Claude arc:
   reviewing the design; Aaron is VALIDATING the final
   implementation on his Windows PC.
 
-This confirms the Otto-93 pattern: *"Otto writes design,
+This confirms the Otto-93 pattern: _"Otto writes design,
 Aaron reads it nope just keep pushing forward until you
 think your testing with it is bullet proof then i'll test
-by running on my windows pc"*.
+by running on my windows pc"_.
 
 ## What this memory does NOT authorize
 
 - **Does NOT** authorize Otto to launch the multi-Claude
   experiment on Aaron's Windows PC unilaterally. Aaron's
-  *"i'll test by running on my windows pc"* = Aaron's
+  _"i'll test by running on my windows pc"_ = Aaron's
   hand-on-keyboard validation; Otto signals readiness but
   does not execute on Aaron's hardware.
 - **Does NOT** authorize Otto to bypass Aminata /
@@ -209,13 +215,13 @@ Otto's Otto-104 reply listed 5 items on Aaron's review
 queue; only 2 (#239 + #230) are correct. The revised
 table is:
 
-| # | Item | Queue | Why |
-|---|---|---|---|
-| 1 | PR #239 password-storage | Phase-3 BLOCKING | Aaron explicitly asked |
-| 2 | PR #230 multi-account Phase-2 | Phase-3 BLOCKING | Aaron explicitly asked |
-| ~~3~~ | ~~PR #290 A/B/C~~ | **Otto picks** | Per msg 2 |
-| ~~4~~ | ~~PR #233 multi-Claude~~ | **Readiness-signal (Otto → Aaron)** | Per msg 1 + Otto-86/93 |
-| ~~5~~ | ~~PR #292 frontier plugins~~ | Otto decides / Frontier-UI-batch | Per Otto-72 + msg 2 |
+| #     | Item                          | Queue                               | Why                    |
+| ----- | ----------------------------- | ----------------------------------- | ---------------------- |
+| 1     | PR #239 password-storage      | Phase-3 BLOCKING                    | Aaron explicitly asked |
+| 2     | PR #230 multi-account Phase-2 | Phase-3 BLOCKING                    | Aaron explicitly asked |
+| ~~3~~ | ~~PR #290 A/B/C~~             | **Otto picks**                      | Per msg 2              |
+| ~~4~~ | ~~PR #233 multi-Claude~~      | **Readiness-signal (Otto → Aaron)** | Per msg 1 + Otto-86/93 |
+| ~~5~~ | ~~PR #292 frontier plugins~~  | Otto decides / Frontier-UI-batch    | Per Otto-72 + msg 2    |
 
 ## The meta-pattern for future Otto instances
 

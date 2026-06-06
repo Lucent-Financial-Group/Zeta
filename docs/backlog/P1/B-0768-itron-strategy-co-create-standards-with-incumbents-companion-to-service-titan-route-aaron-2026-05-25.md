@@ -29,9 +29,9 @@ tags: [strategy, standards, incumbent, partnership, itron, cisco, dual-mode, ado
 
 Aaron 2026-05-25 mid-iteration-2-wait, naming the second
 empirical anchor for the standards-layer-as-negotiation-high-seat
-strategy: *"This was also Itron strategy negotation standards and
+strategy: _"This was also Itron strategy negotation standards and
 even create them with cisco cause they were incumbent and ST is
-up and commer."*
+up and commer."_
 
 B-0765 captured the ServiceTitan strategy (up-and-comer plugs
 into existing standards built by incumbents; delivers new value
@@ -54,9 +54,9 @@ it together.
 Document + operationalize the **dual-mode adoption playbook** for
 Zeta cluster substrate:
 
-| Mode | When applies to Zeta | Tactical execution |
-|---|---|---|
-| **Up-and-comer (ServiceTitan)** | Today — Zeta is new entrant in cluster-infra | Plug into existing standards (k8s CRDs, OAM, Crossplane, Helm, CNCF projects per B-0764). Deliver new value within them. Per B-0765 — the existing strategic filter. |
+| Mode                                 | When applies to Zeta                                                                                                                | Tactical execution                                                                                                                                                                                                  |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Up-and-comer (ServiceTitan)**      | Today — Zeta is new entrant in cluster-infra                                                                                        | Plug into existing standards (k8s CRDs, OAM, Crossplane, Helm, CNCF projects per B-0764). Deliver new value within them. Per B-0765 — the existing strategic filter.                                                |
 | **Incumbent-with-incumbent (Itron)** | Future — when Zeta has meaningful adoption + a layer where Zeta is the established player + needs another incumbent's collaboration | Co-create new standards with another incumbent. Joint moat. Examples: NVIDIA on GPU scheduling primitives, hyperscalers on AI-workload portability formats, CNCF projects on Zeta-grounded extensions to their CRDs |
 
 The substrate-honest argument: **the strategic position determines
@@ -69,15 +69,15 @@ the new entrant or the established player on a specific axis.
 The full cluster substrate spans multiple axes; Zeta's position
 varies per axis:
 
-| Axis | Zeta's positioning today | Playbook applies |
-|---|---|---|
-| K8s control plane | Up-and-comer | ServiceTitan (B-0765) — plug into existing CRD / Helm / GitOps standards |
-| CNCF ecosystem composition | Up-and-comer | ServiceTitan + B-0764 force-multipliers |
-| AI-cluster substrate (workload-class scheduling, GPU topology, model locality) | **Pioneer** — there is no incumbent at this specific intersection | **Itron** — co-create standards with NVIDIA + hyperscalers + AI-framework vendors who all have incumbent positions adjacent to this gap |
-| Determinism for distributed systems (DST) | Pioneer (TigerBeetle + FoundationDB + Zeta are the only serious DST shipping substrates) | **Itron** — co-create DST standards with TigerBeetle / FoundationDB / Antithesis as incumbents in their respective DST contexts |
-| Algebra-grounded stream processing (DBSP) | Pioneer (Materialize, Feldera/dbsp, Zeta) | **Itron** — co-create DBSP standards with Materialize + Feldera |
-| Retraction-native consent algebra | Pioneer (Zeta is the only serious shipping substrate) | **Itron** — gather other consent-algebra-curious incumbents (Sandstorm, MaidSafe alumni, etc.) and co-author |
-| Reference architecture for AI clusters (B-0761) | Pioneer | **Itron** — co-create with anchor early-adopter labs / companies running real AI clusters who haven't yet codified their reference |
+| Axis                                                                           | Zeta's positioning today                                                                 | Playbook applies                                                                                                                        |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| K8s control plane                                                              | Up-and-comer                                                                             | ServiceTitan (B-0765) — plug into existing CRD / Helm / GitOps standards                                                                |
+| CNCF ecosystem composition                                                     | Up-and-comer                                                                             | ServiceTitan + B-0764 force-multipliers                                                                                                 |
+| AI-cluster substrate (workload-class scheduling, GPU topology, model locality) | **Pioneer** — there is no incumbent at this specific intersection                        | **Itron** — co-create standards with NVIDIA + hyperscalers + AI-framework vendors who all have incumbent positions adjacent to this gap |
+| Determinism for distributed systems (DST)                                      | Pioneer (TigerBeetle + FoundationDB + Zeta are the only serious DST shipping substrates) | **Itron** — co-create DST standards with TigerBeetle / FoundationDB / Antithesis as incumbents in their respective DST contexts         |
+| Algebra-grounded stream processing (DBSP)                                      | Pioneer (Materialize, Feldera/dbsp, Zeta)                                                | **Itron** — co-create DBSP standards with Materialize + Feldera                                                                         |
+| Retraction-native consent algebra                                              | Pioneer (Zeta is the only serious shipping substrate)                                    | **Itron** — gather other consent-algebra-curious incumbents (Sandstorm, MaidSafe alumni, etc.) and co-author                            |
+| Reference architecture for AI clusters (B-0761)                                | Pioneer                                                                                  | **Itron** — co-create with anchor early-adopter labs / companies running real AI clusters who haven't yet codified their reference      |
 
 The pattern: **wherever Zeta is up-and-comer, ServiceTitan-plug-in;
 wherever Zeta is pioneer in a gap with adjacent incumbents,
@@ -94,21 +94,16 @@ Itron-co-create**.
       algebra, reference architecture); name which playbook
       applies per axis
 - [ ] Identify Itron-mode opportunities + candidate co-creation
-      partners:
-      - GPU scheduling primitives → NVIDIA (CUDA + NVLink),
-        AMD (ROCm), Intel (oneAPI), Apple (Metal Performance
-        Shaders for Mac-cluster scope)
-      - AI-workload portability formats → Hugging Face, AWS
-        SageMaker, GCP Vertex AI, modal.com, RunPod
-      - DST cross-substrate → TigerBeetle (financial DB DST),
-        Antithesis (Antithesis-as-a-service DST testing),
-        FoundationDB (Apple, distributed-DB DST)
-      - DBSP standardization → Materialize (Frank McSherry +
-        team), Feldera/dbsp.org
-      - AI-cluster reference architecture → labs running real
-        AI clusters who haven't codified their reference
-        (Modal, RunPod, Crusoe, CoreWeave, Lambda Labs,
-        Together AI, etc.)
+      partners: - GPU scheduling primitives → NVIDIA (CUDA + NVLink),
+      AMD (ROCm), Intel (oneAPI), Apple (Metal Performance
+      Shaders for Mac-cluster scope) - AI-workload portability formats → Hugging Face, AWS
+      SageMaker, GCP Vertex AI, modal.com, RunPod - DST cross-substrate → TigerBeetle (financial DB DST),
+      Antithesis (Antithesis-as-a-service DST testing),
+      FoundationDB (Apple, distributed-DB DST) - DBSP standardization → Materialize (Frank McSherry +
+      team), Feldera/dbsp.org - AI-cluster reference architecture → labs running real
+      AI clusters who haven't codified their reference
+      (Modal, RunPod, Crusoe, CoreWeave, Lambda Labs,
+      Together AI, etc.)
 - [ ] Per-opportunity engagement substrate: which incumbent +
       what's the joint moat + what does Zeta contribute + what
       do they contribute + what does the co-authored standard
@@ -116,8 +111,7 @@ Itron-co-create**.
 - [ ] Sequencing: Itron-mode engagements require having
       something to bring to the table — must follow meaningful
       Zeta substrate adoption + working reference; not pursued
-      until after B-0754 v1 ships + 3-node reference works
-      + first wave of B-0766 binary-compatible impls land
+      until after B-0754 v1 ships + 3-node reference works + first wave of B-0766 binary-compatible impls land
 - [ ] Documentation: README updates to make the dual-mode
       strategy legible to operators + potential co-creation
       partners
@@ -178,8 +172,8 @@ rather than just consuming it.
 - B-0749 — KubeVela/OAM (Itron candidate: contribute to OAM v2
   via OAM working group)
 - B-0754 — zero-typing first-boot (Itron candidate later: NixOS
-  + community on installer-flow standards once Zeta substrate
-  proves itself)
+  - community on installer-flow standards once Zeta substrate
+    proves itself)
 - B-0761 — open reference architecture (Itron candidate: co-
   author "AI cluster reference architecture" with NVIDIA +
   CoreWeave + Modal + RunPod once Zeta reference is established)
@@ -266,8 +260,8 @@ empirical anchor (Itron + Cisco co-creating utility-grid
 standards) for the standards-layer-as-negotiation-high-seat
 strategy. Companion to B-0765 (ServiceTitan up-and-comer mode).
 
-**Empirical provenance** (Aaron 2026-05-25 sharpening): *"ST was
-two guys in a garage i saw both"* — Aaron watched both companies
+**Empirical provenance** (Aaron 2026-05-25 sharpening): _"ST was
+two guys in a garage i saw both"_ — Aaron watched both companies
 from formative stages. ServiceTitan from two-guys-in-a-garage
 inception; Itron from inside its incumbent-stage execution. The
 dual-mode playbook is direct pattern-recognition from lived

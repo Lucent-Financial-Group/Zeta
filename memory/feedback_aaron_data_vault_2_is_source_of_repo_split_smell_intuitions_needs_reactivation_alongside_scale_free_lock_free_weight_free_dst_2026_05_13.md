@@ -7,11 +7,11 @@ created: 2026-05-13
 
 # Data Vault 2.0 IS the source of repo-split smell intuitions — needs re-activation (Aaron 2026-05-13)
 
-**Why:** Aaron 2026-05-13: *"all my 'smells' come from applying
+**Why:** Aaron 2026-05-13: _"all my 'smells' come from applying
 Data Vault 2.0 data split dicipliens as rigoursly as i do
 Deterministic Simulation I've just forgot to repeat data vault
 2.0 enought to keep it activated like scale-free lock(wait)-
-free weight free DST"*. META-substrate disclosure naming the
+free weight free DST"_. META-substrate disclosure naming the
 provenance of his repo-split smell intuitions + flagging dormant
 discipline needing re-activation.
 
@@ -25,11 +25,11 @@ to repo topology.
 
 ## Aaron's verbatim disclosure
 
-Aaron 2026-05-13: *"all my 'smells' come from applying Data
+Aaron 2026-05-13: _"all my 'smells' come from applying Data
 Vault 2.0 data split dicipliens as rigoursly as i do
 Deterministic Simulation I've just forgot to repeat data vault
 2.0 enought to keep it activated like scale-free lock(wait)-
-free weight free DST"*
+free weight free DST"_
 
 ## Decomposition
 
@@ -105,12 +105,12 @@ Re-activation IS the requested action.
 
 DV2.0 maps directly to the orthogonal repo-split axes:
 
-| DV2.0 concept | Repo-split application |
-|---|---|
-| Hubs (stable business keys) | Code repos (stable infrastructure: Zeta DB, Forge factory, ace package manager) |
-| Links (stable relationships) | Cross-repo dependency manifests (ace pull / version pins) |
-| Satellites (versioned descriptive attrs) | Memory files / research docs / philosophy substrate (fast-changing English) |
-| Different change rates | The ruleset-divergence smell (B-0427 Axis 3) — different change rates need different rulesets |
+| DV2.0 concept                            | Repo-split application                                                                        |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Hubs (stable business keys)              | Code repos (stable infrastructure: Zeta DB, Forge factory, ace package manager)               |
+| Links (stable relationships)             | Cross-repo dependency manifests (ace pull / version pins)                                     |
+| Satellites (versioned descriptive attrs) | Memory files / research docs / philosophy substrate (fast-changing English)                   |
+| Different change rates                   | The ruleset-divergence smell (B-0427 Axis 3) — different change rates need different rulesets |
 
 The repo-split smell IS DV2.0 applied to git repository
 topology.
@@ -132,13 +132,13 @@ into Aaron's substrate-engineering style.
 
 The five activated disciplines compose:
 
-| Discipline | Scope | What it produces |
-|---|---|---|
-| **Scale-free** | Design layers | Multi-scale composability without breaking |
-| **Lock-free / wait-free** | Concurrency | Concurrency without locks (or stronger) |
-| **Weight-free** | Type theory | No weight-multipliers / no priority-implicit semantics |
-| **DST** | Verification | Deterministic replay under simulation |
-| **DV2.0 (NEW activation)** | Partition | Change-rate-based partition into storage shapes |
+| Discipline                 | Scope         | What it produces                                       |
+| -------------------------- | ------------- | ------------------------------------------------------ |
+| **Scale-free**             | Design layers | Multi-scale composability without breaking             |
+| **Lock-free / wait-free**  | Concurrency   | Concurrency without locks (or stronger)                |
+| **Weight-free**            | Type theory   | No weight-multipliers / no priority-implicit semantics |
+| **DST**                    | Verification  | Deterministic replay under simulation                  |
+| **DV2.0 (NEW activation)** | Partition     | Change-rate-based partition into storage shapes        |
 
 All five apply simultaneously per `.claude/rules/default-to-both.md`.
 

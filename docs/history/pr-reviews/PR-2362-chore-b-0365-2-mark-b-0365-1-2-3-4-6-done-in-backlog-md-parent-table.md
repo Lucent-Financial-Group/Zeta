@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2362 |
-| Title | chore(B-0365.2): mark B-0365.1/2/3/4/6 done in BACKLOG.md + parent table |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-09T22:44:20Z |
-| Merged at | 2026-05-09T22:46:31Z |
-| Merge commit SHA | `256f82572dbc4b484174274c5e1d0b6806f99de2` |
-| Branch | `worktree-cosmic-weaving-parrot` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2362 |
-| Changed files | 2 |
-| Additions / deletions | +10 / -10 |
+| Field                 | Value                                                                    |
+| --------------------- | ------------------------------------------------------------------------ |
+| Number                | 2362                                                                     |
+| Title                 | chore(B-0365.2): mark B-0365.1/2/3/4/6 done in BACKLOG.md + parent table |
+| Author                | `AceHack` (human)                                                        |
+| State                 | MERGED                                                                   |
+| Created at            | 2026-05-09T22:44:20Z                                                     |
+| Merged at             | 2026-05-09T22:46:31Z                                                     |
+| Merge commit SHA      | `256f82572dbc4b484174274c5e1d0b6806f99de2`                               |
+| Branch                | `worktree-cosmic-weaving-parrot`                                         |
+| Base branch           | `main`                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2362                 |
+| Changed files         | 2                                                                        |
+| Additions / deletions | +10 / -10                                                                |
 
 ## Description
 
@@ -36,6 +36,7 @@
 ## What was stale
 
 All 6 B-0365 children were showing `- [ ]` in BACKLOG.md despite completions in PRs:
+
 - B-0365.2: done via PR #2339
 - B-0365.1/3/4/6: done via PR #2351
 
@@ -49,15 +50,15 @@ The parent `B-0365` status table also showed all children as `open` or `blocked`
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

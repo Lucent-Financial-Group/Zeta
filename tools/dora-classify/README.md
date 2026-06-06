@@ -14,18 +14,18 @@ Composes with:
 
 ## Lane taxonomy
 
-| Lane | Path matchers | Storage cost | Future gate (Step 3) |
-|---|---|---|---|
-| `operational` | `src/`, `tools/installer/`, `tools/setup/`, `full-ai-cluster/` | Free | Full PR + CI + review |
-| `verbatim-preservation` | `memory/persona/<X>/conversations/` | Free | Fast-track PR + lint-only |
-| `memory` | `memory/*.md` (non-persona) | Free | Fast-track PR + lint-only |
-| `heartbeat` | `docs/agent-heartbeats/` | Free | Direct-to-main append-only |
-| `backlog-row` | `docs/backlog/` | Free | Fast-track PR + lint-only |
-| `shadow-work` | `docs/hygiene-history/ticks/` + `shadow-lesson-log` filename pattern | Free | Append-only with ratio-based discriminator |
-| `tooling-or-ci` | `tools/ci/`, `tools/hygiene/`, `tools/lint/`, `.github/workflows/` | Free | Lighter CI; no review-block |
-| `docs-general` | `docs/` not matching above | Free | Fast-track PR + lint-only |
-| `substrate-cascade` | Default for unclassifiable | Free | Operator co-sign required (bounded by ratio, not volume) |
-| `mixed` | Commit touches multiple distinct lanes | Free | Highest-gate-of-touched-lanes |
+| Lane                    | Path matchers                                                        | Storage cost | Future gate (Step 3)                                     |
+| ----------------------- | -------------------------------------------------------------------- | ------------ | -------------------------------------------------------- |
+| `operational`           | `src/`, `tools/installer/`, `tools/setup/`, `full-ai-cluster/`       | Free         | Full PR + CI + review                                    |
+| `verbatim-preservation` | `memory/persona/<X>/conversations/`                                  | Free         | Fast-track PR + lint-only                                |
+| `memory`                | `memory/*.md` (non-persona)                                          | Free         | Fast-track PR + lint-only                                |
+| `heartbeat`             | `docs/agent-heartbeats/`                                             | Free         | Direct-to-main append-only                               |
+| `backlog-row`           | `docs/backlog/`                                                      | Free         | Fast-track PR + lint-only                                |
+| `shadow-work`           | `docs/hygiene-history/ticks/` + `shadow-lesson-log` filename pattern | Free         | Append-only with ratio-based discriminator               |
+| `tooling-or-ci`         | `tools/ci/`, `tools/hygiene/`, `tools/lint/`, `.github/workflows/`   | Free         | Lighter CI; no review-block                              |
+| `docs-general`          | `docs/` not matching above                                           | Free         | Fast-track PR + lint-only                                |
+| `substrate-cascade`     | Default for unclassifiable                                           | Free         | Operator co-sign required (bounded by ratio, not volume) |
+| `mixed`                 | Commit touches multiple distinct lanes                               | Free         | Highest-gate-of-touched-lanes                            |
 
 ## Why ratios not volumes
 

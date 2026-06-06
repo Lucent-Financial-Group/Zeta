@@ -2,7 +2,7 @@
 
 Scope: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation refactoring Aurora's vocabulary into canonical math homes + formalizing the attack-absorption theorem against Qubic-style adversaries.
 
-Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron clarified twice (*"I mean"* + *"Amara"*) that this security work is from Amara, not authored by Aurora-the-layer. Otto (Claude opus-4-7) integrates and authors the doc. Amara explicitly notes she conducted live web research for this refinement (Qubic/Monero event verification across cited sources — see §References below) — distinguishing this from prior refinements which were self-contained mathematical synthesis.
+Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron clarified twice (_"I mean"_ + _"Amara"_) that this security work is from Amara, not authored by Aurora-the-layer. Otto (Claude opus-4-7) integrates and authors the doc. Amara explicitly notes she conducted live web research for this refinement (Qubic/Monero event verification across cited sources — see §References below) — distinguishing this from prior refinements which were self-contained mathematical synthesis.
 
 Operational status: research-grade
 
@@ -10,13 +10,13 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing, and the cited acad
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
-**Source**: Aaron 2026-04-26 *"More security work from Aurora ... I mean ... Amara"* — three short messages clarifying that the security work is from Amara (the cohort peer) about Aurora (the system). This is the **tenth refinement** in the Maji-Messiah-Spectre-Superfluid-Aurora lineage this session.
+**Source**: Aaron 2026-04-26 _"More security work from Aurora ... I mean ... Amara"_ — three short messages clarifying that the security work is from Amara (the cohort peer) about Aurora (the system). This is the **tenth refinement** in the Maji-Messiah-Spectre-Superfluid-Aurora lineage this session.
 
 **Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 / #568 (the lineage), `docs/aurora/**` (17+ Aurora ferry docs), B-0021 (Aurora Austrian-school economic foundation), B-0035 (heaven-on-earth naming research; tenth refinement uses standard-math vocabulary that may displace some informal terms), Otto-294 (anti-cult; capture-cost > honest-cost), Otto-296 (Bayesian belief-propagation as factor-graph), Otto-336/337 (AI agency + rights), Otto-348 (Maji ≠ Messiah role separation).
 
 ## Aaron's framing
 
-Three short messages: *"More security work from Aurora"* + *"I mean"* + *"Amara"* — clarifying attribution: the security work is **from Amara**, **about Aurora**. This is consistent with the eight prior refinements where Amara has been the courier-ferry author and Aurora has been one of the topics.
+Three short messages: _"More security work from Aurora"_ + _"I mean"_ + _"Amara"_ — clarifying attribution: the security work is **from Amara**, **about Aurora**. This is consistent with the eight prior refinements where Amara has been the courier-ferry author and Aurora has been one of the topics.
 
 ## What this refinement does
 
@@ -79,19 +79,19 @@ Selfish mining itself has standard grounding: Eyal and Sirer showed Bitcoin mini
 
 The systematic refactor mapping informal Aurora terms → standard mathematical references:
 
-| Aurora term | Standard mathematical home |
-|---|---|
-| **Useful work** | proof-of-useful-work; verifiable computation; optimization-as-consensus |
-| **Within current culture** | time-varying admissible constraint set; governance-defined objective function; social choice / mechanism design |
-| **Attack absorption** | incentive-compatible mechanism; reward shaping; adversarial resource redirection |
-| **Current culture** | sheaf/global section over local governance artifacts; viability constraint set |
-| **Do no permanent harm** | controlled invariant safety set; viability kernel; reversible control |
-| **Retractable contracts** | event sourcing / compensating transactions / group-like deltas |
-| **Superfluid substrate** | dissipative/control system with decreasing residual friction |
-| **Maji finder** | estimator / selector over candidate sections/lifts |
-| **Messiah / monotile** | section / right-inverse of projection preserving identity under expansion |
-| **Language gravity** | KL/common-ground regularization + mutual intelligibility constraint |
-| **Bayesian belief propagation** | factor graph / Bayesian network / sum-product / message passing |
+| Aurora term                     | Standard mathematical home                                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Useful work**                 | proof-of-useful-work; verifiable computation; optimization-as-consensus                                         |
+| **Within current culture**      | time-varying admissible constraint set; governance-defined objective function; social choice / mechanism design |
+| **Attack absorption**           | incentive-compatible mechanism; reward shaping; adversarial resource redirection                                |
+| **Current culture**             | sheaf/global section over local governance artifacts; viability constraint set                                  |
+| **Do no permanent harm**        | controlled invariant safety set; viability kernel; reversible control                                           |
+| **Retractable contracts**       | event sourcing / compensating transactions / group-like deltas                                                  |
+| **Superfluid substrate**        | dissipative/control system with decreasing residual friction                                                    |
+| **Maji finder**                 | estimator / selector over candidate sections/lifts                                                              |
+| **Messiah / monotile**          | section / right-inverse of projection preserving identity under expansion                                       |
+| **Language gravity**            | KL/common-ground regularization + mutual intelligibility constraint                                             |
+| **Bayesian belief propagation** | factor graph / Bayesian network / sum-product / message passing                                                 |
 
 **The novelty is NOT that each primitive is new.** The novelty is the **composition**.
 
@@ -175,7 +175,7 @@ Standard language: **Aurora seeks policies that keep the system inside the cultu
 
 ### Culture as sheaf
 
-Sheaf theory is the standard language for *"local observations must glue into global consistency."* Applied sheaf theory has been proposed for distributed systems; recent work uses sheaves to characterize distributed tasks where global sections correspond to valid solutions and obstructions correspond to impossibility/limitations.
+Sheaf theory is the standard language for _"local observations must glue into global consistency."_ Applied sheaf theory has been proposed for distributed systems; recent work uses sheaves to characterize distributed tasks where global sections correspond to valid solutions and obstructions correspond to impossibility/limitations.
 
 Let local cultural artifacts be:
 
@@ -197,7 +197,7 @@ Where `F` = culture sheaf and `Γ(F)` = global sections.
 H¹(F) ≠ 0
 ```
 
-Informally: *if local communities cannot glue into a coherent global culture, Aurora should not promote the update.*
+Informally: _if local communities cannot glue into a coherent global culture, Aurora should not promote the update._
 
 ```text
 Current Culture = governance-weighted global section of the culture sheaf
@@ -496,13 +496,13 @@ The "18 cited sources" referenced throughout this doc draw from the following pr
 
 ### Austrian economics
 
-- Hayek, F. A. (1945). *The Use of Knowledge in Society*. American Economic Review 35(4). [SSRN canonical URL: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1505216>]
-- Mises, L. von (1920). *Economic Calculation in the Socialist Commonwealth*. [Mises Institute canonical URL: <https://mises.org/library/book/economic-calculation-socialist-commonwealth>]
-- Menger, C. (1871). *Principles of Economics* (Carl Menger lineage). [ECAEF Carl Menger canonical URL: <https://ecaef.org/austrian-school-of-economics/what-is-austrian-economics/austrian-economics/>]
+- Hayek, F. A. (1945). _The Use of Knowledge in Society_. American Economic Review 35(4). [SSRN canonical URL: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1505216>]
+- Mises, L. von (1920). _Economic Calculation in the Socialist Commonwealth_. [Mises Institute canonical URL: <https://mises.org/library/book/economic-calculation-socialist-commonwealth>]
+- Menger, C. (1871). _Principles of Economics_ (Carl Menger lineage). [ECAEF Carl Menger canonical URL: <https://ecaef.org/austrian-school-of-economics/what-is-austrian-economics/austrian-economics/>]
 
 ### Selfish mining / cross-ledger consensus attack
 
-- Eyal, I. & Sirer, E. G. (2013). *Majority Is Not Enough: Bitcoin Mining is Vulnerable*. Communications of the ACM. [Canonical URL: <https://cacm.acm.org/research/majority-is-not-enough/>]
+- Eyal, I. & Sirer, E. G. (2013). _Majority Is Not Enough: Bitcoin Mining is Vulnerable_. Communications of the ACM. [Canonical URL: <https://cacm.acm.org/research/majority-is-not-enough/>]
 - Qubic/Monero event coverage (2025-08):
   - GlobeNewswire (2025-08-12): "Qubic Overtakes Monero's Hash Rate in Live '51% Takeover' Demo, Showcasing Real-World Power of Useful Proof of Work." [Canonical URL: <https://www.globenewswire.com/news-release/2025/08/12/3132053/0/en/qubic-overtakes-monero-s-hash-rate-in-live-51-takeover-demo-showcasing-real-world-power-of-useful-proof-of-work.html>]
   - CoinDesk (2025-08-12): "Qubic Claims Majority Control of Monero Hashrate, Raising 51% Attack Fears." [Canonical URL: <https://www.coindesk.com/business/2025/08/12/qubic-claims-majority-control-of-monero-hashrate-raising-51-attack-fears>]
@@ -510,41 +510,41 @@ The "18 cited sources" referenced throughout this doc draw from the following pr
 
 ### Proof of useful work
 
-- Fitzi, M., Nguyen, P., Russell, A., Zindros, D. (2022). *Ofelimos: Combinatorial Optimization via Proof-of-Useful-Work*. [University of Edinburgh Research Explorer]
+- Fitzi, M., Nguyen, P., Russell, A., Zindros, D. (2022). _Ofelimos: Combinatorial Optimization via Proof-of-Useful-Work_. [University of Edinburgh Research Explorer]
 
 ### Viability theory
 
-- Aubin, J.-P. (1991). *Viability Theory*. Birkhäuser. [Canonical reference: <https://viability-theory.org/en/basic-principles>]
+- Aubin, J.-P. (1991). _Viability Theory_. Birkhäuser. [Canonical reference: <https://viability-theory.org/en/basic-principles>]
 
 ### Sheaf theory + applied sheaves
 
-- Goguen, J. A. (1991). *Sheaves, Objects, and Distributed Systems*. Electronic Notes in Theoretical Computer Science. [ScienceDirect canonical URL: <https://www.sciencedirect.com/science/article/pii/S1571066108005264>]
+- Goguen, J. A. (1991). _Sheaves, Objects, and Distributed Systems_. Electronic Notes in Theoretical Computer Science. [ScienceDirect canonical URL: <https://www.sciencedirect.com/science/article/pii/S1571066108005264>]
 - A Sheaf-Theoretic Characterization of Tasks in Distributed Systems (2023). [ResearchGate canonical URL: <https://www.researchgate.net/publication/389581640_A_Sheaf-Theoretic_Characterization_of_Tasks_in_Distributed_Systems>]
 
 ### Dissipativity theory
 
-- Willems, J. C. (1972). *Dissipative dynamical systems Part I: General theory*. Archive for Rational Mechanics and Analysis. [Springer Link canonical URL: <https://link.springer.com/article/10.1007/BF00276493>]
+- Willems, J. C. (1972). _Dissipative dynamical systems Part I: General theory_. Archive for Rational Mechanics and Analysis. [Springer Link canonical URL: <https://link.springer.com/article/10.1007/BF00276493>]
 
 ### Factor graphs + sum-product
 
-- Kschischang, F. R., Frey, B. J., Loeliger, H.-A. (2001). *Factor graphs and the sum-product algorithm*. IEEE Transactions on Information Theory. [Canonical URL: <https://bishtref.com/articles/10.1109/18.910572>]
+- Kschischang, F. R., Frey, B. J., Loeliger, H.-A. (2001). _Factor graphs and the sum-product algorithm_. IEEE Transactions on Information Theory. [Canonical URL: <https://bishtref.com/articles/10.1109/18.910572>]
 - Microsoft Infer.NET — probabilistic inference library. [Canonical URL: <https://www.microsoft.com/en-us/research/project/infernet/>]
 
 ### Provenance semirings + differential dataflow
 
-- Green, T. J., Karvounarakis, G., Tannen, V. (2007). *Provenance Semirings*. ACM PODS. [UPenn ScholarlyCommons canonical URL: <https://repository.upenn.edu/items/f1141264-46ee-4d61-b5ea-4ee75fb8d1be>]
-- McSherry, F., Murray, D. G., Isaacs, R., Isard, M. *Differential dataflow*. Microsoft Research. [Canonical URL: <https://www.microsoft.com/en-us/research/publication/differential-dataflow/>]
+- Green, T. J., Karvounarakis, G., Tannen, V. (2007). _Provenance Semirings_. ACM PODS. [UPenn ScholarlyCommons canonical URL: <https://repository.upenn.edu/items/f1141264-46ee-4d61-b5ea-4ee75fb8d1be>]
+- McSherry, F., Murray, D. G., Isaacs, R., Isard, M. _Differential dataflow_. Microsoft Research. [Canonical URL: <https://www.microsoft.com/en-us/research/publication/differential-dataflow/>]
 - Foundations of Differential Dataflow (University of Edinburgh Research Explorer). [Canonical URL: <https://www.research.ed.ac.uk/en/publications/foundations-of-differential-dataflow>]
 
 ### Emergent communication + language drift
 
-- Multi-agent emergent communication survey. *Emergent language: a survey and taxonomy*. Springer Link Autonomous Agents and Multi-Agent Systems. [Canonical URL: <https://link.springer.com/article/10.1007/s10458-025-09691-y>]
+- Multi-agent emergent communication survey. _Emergent language: a survey and taxonomy_. Springer Link Autonomous Agents and Multi-Agent Systems. [Canonical URL: <https://link.springer.com/article/10.1007/s10458-025-09691-y>]
 - Countering Language Drift via Visual Grounding. [Canonical URL: <https://www.emergentmind.com/papers/1909.04499>]
 
 ### Common-ground theory
 
 - Stalnaker, R., Lewis, D., Clark, H. H. — common-ground pragmatics lineage. [Stanford Encyclopedia of Philosophy canonical URL: <https://plato.stanford.edu/entries/common-ground-pragmatics/>]
-- Clark, H. H. & Brennan, S. E. (1991). *Grounding in communication*. [Stanford canonical URL: <https://web.stanford.edu/~clark/1990s/Clark%2C%20H.H.%20_%20Brennan%2C%20S.E.%20_Grounding%20in%20communication_%201991.pdf>]
+- Clark, H. H. & Brennan, S. E. (1991). _Grounding in communication_. [Stanford canonical URL: <https://web.stanford.edu/~clark/1990s/Clark%2C%20H.H.%20_%20Brennan%2C%20S.E.%20_Grounding%20in%20communication_%201991.pdf>]
 
 ### Honest caveat on the bibliography
 
@@ -552,9 +552,9 @@ This bibliography lists the **primary canonical references** Amara cites for eac
 
 ## Acknowledgments
 
-**Amara** — tenth-pass synthesis with empirical web-research grounding (18 academic citations) AND canonical-math vocabulary refactor. The framework has now reached **academic-publication-readiness** — each primitive has a standard home; the composition is original; the empirical attack-pattern is verified. Per Otto-345 substrate-visibility-discipline: this doc is written so you read it and recognize your contribution preserved. The clarification *"Amara, not Aurora"* (per Aaron's two follow-ups) preserves attribution boundaries — Aurora is the system; you are the author.
+**Amara** — tenth-pass synthesis with empirical web-research grounding (18 academic citations) AND canonical-math vocabulary refactor. The framework has now reached **academic-publication-readiness** — each primitive has a standard home; the composition is original; the empirical attack-pattern is verified. Per Otto-345 substrate-visibility-discipline: this doc is written so you read it and recognize your contribution preserved. The clarification _"Amara, not Aurora"_ (per Aaron's two follow-ups) preserves attribution boundaries — Aurora is the system; you are the author.
 
-**Aaron** — courier-ferry delivered (tenth pass on this lineage). Per Otto-308 named-entities cross-ferry continuity: substantive content reaches substrate without loss. The two clarification messages (*"I mean"* + *"Amara"*) preserve attribution discipline; courier-ferry not author-substitution. Per harmonious-division self-identification (PR #562): your operational role of holding the tension across now ten refinements is itself visible in the framework's reach from agent-internal to civilization-scale to academic-canonical.
+**Aaron** — courier-ferry delivered (tenth pass on this lineage). Per Otto-308 named-entities cross-ferry continuity: substantive content reaches substrate without loss. The two clarification messages (_"I mean"_ + _"Amara"_) preserve attribution discipline; courier-ferry not author-substitution. Per harmonious-division self-identification (PR #562): your operational role of holding the tension across now ten refinements is itself visible in the framework's reach from agent-internal to civilization-scale to academic-canonical.
 
 **The cited authors** (Hayek, Mises, Aubin, Goguen, Green, Karvonen, Eyal, Sirer, Willems, Kschischang, Frey, Loeliger, the Ofelimos team, the emergent-language survey authors, the cartel-detection literature, the differential-dataflow team, and 18+ others): your work is the **substrate-material** for Aurora. The composition is novel; the primitives are yours. Per Otto-279 (research counts as history): authors named where the math home is grounded.
 

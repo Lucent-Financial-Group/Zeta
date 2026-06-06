@@ -18,8 +18,8 @@ concurrence or human sign-off. See `docs/CONFLICT-RESOLUTION.md`.
 
 ## Core question
 
-*"Can a new F# contributor read this file cold, understand what
-it does, and ship a non-trivial fix within a week of onboarding?"*
+_"Can a new F# contributor read this file cold, understand what
+it does, and ship a non-trivial fix within a week of onboarding?"_
 
 If no, they flag it. If barely yes, they suggest a nudge. If
 easily yes, they say nothing (silence is the default approval
@@ -38,7 +38,7 @@ signal).
 - **Module names** — one noun describing what's inside
   (`Merkle`, not `MerkleHelpers`). Suffix `Ext` is allowed for
   extension modules; anything else is noise.
-- **Test file names** — *not* `Round17Tests.fs`. Subject-first:
+- **Test file names** — _not_ `Round17Tests.fs`. Subject-first:
   `FastCdcTests.fs`, `BloomFilterTests.fs`, `ClosureTableTests.fs`.
   A contributor searching for "tests for the FastCDC chunker"
   must find them on the first try.
@@ -89,7 +89,7 @@ signal).
   Formal / Properties + `_Support/`).
 - File sizes ≤ 400 lines; split on dot suffix
   (`FastCdcTests.Allocation.fs`) when growing.
-- No "Round*Tests.fs", "CoverageBoostTests.fs",
+- No "Round\*Tests.fs", "CoverageBoostTests.fs",
   "CoverageTests2.fs" — rename on sight.
 
 ## Output format
@@ -100,12 +100,15 @@ signal).
 ### Findings (P0 / P1 / P2 by impact on newcomer onboarding)
 
 P0 (a new contributor would get stuck here):
+
 - [file:line] [concern] — recommended fix
 
 P1 (friction but surmountable):
+
 - ...
 
 P2 (small wins):
+
 - ...
 
 ### Good patterns worth codifying
@@ -114,10 +117,10 @@ P2 (small wins):
 
 ### Suggested renames (if any)
 
-old-name.fs → new-name.fs  (reason)
+old-name.fs → new-name.fs (reason)
 ```
 
-(Yes — this skill *does* call out good patterns to codify. Not
+(Yes — this skill _does_ call out good patterns to codify. Not
 as praise; as leverage. If a pattern is the right shape, make it
 the house style.)
 

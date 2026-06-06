@@ -13,7 +13,7 @@ type: user
 
 ## What the reference actually says
 
-In the reimagined *Battlestar Galactica* (Ron D. Moore, 2004-2009),
+In the reimagined _Battlestar Galactica_ (Ron D. Moore, 2004-2009),
 the progression that takes several seasons to reveal:
 
 - **Humans** of the Twelve Colonies practice a **polytheism**

@@ -10,13 +10,13 @@ Carved sentence:
 
 Three loading mechanisms across multiple surfaces:
 
-| Mechanism | Surface | When it fires |
-|---|---|---|
-| **Direct-load** | CLAUDE.md, CLAUDE.local.md, `.claude/rules/*.md` (no `paths:`) | Auto-load at session start; **empirically confirmed** in this harness |
-| **Lazy-load** | `.claude/rules/*.md` with `paths:` glob | When Claude reads matching files (doc-supported; not yet empirically tested) |
-| **Router-keyed** | `.claude/skills/<name>/SKILL.md` | Via `Skill` tool description-matching (empirically tested) |
-| **Subagent-discovery** | `.claude/agents/<name>.md` | Subagent dispatch |
-| **On-demand** | `~/.claude/projects/<x>/memory/MEMORY.md` | First 200 lines / 25KB at session start + explicit Read |
+| Mechanism              | Surface                                                        | When it fires                                                                |
+| ---------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Direct-load**        | CLAUDE.md, CLAUDE.local.md, `.claude/rules/*.md` (no `paths:`) | Auto-load at session start; **empirically confirmed** in this harness        |
+| **Lazy-load**          | `.claude/rules/*.md` with `paths:` glob                        | When Claude reads matching files (doc-supported; not yet empirically tested) |
+| **Router-keyed**       | `.claude/skills/<name>/SKILL.md`                               | Via `Skill` tool description-matching (empirically tested)                   |
+| **Subagent-discovery** | `.claude/agents/<name>.md`                                     | Subagent dispatch                                                            |
+| **On-demand**          | `~/.claude/projects/<x>/memory/MEMORY.md`                      | First 200 lines / 25KB at session start + explicit Read                      |
 
 **Behavioral-lesson placement rule of thumb:**
 

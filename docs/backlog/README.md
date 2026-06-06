@@ -61,6 +61,6 @@ pointer index via `tools/backlog/generate-index.ts`.
 **Tracking the migration itself:**
 [`P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md`](./P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)
 owns the audit + batched-migration + cutover. Aaron 2026-04-28 explicit framing:
-*"don't miss anyting make sure it's all accounted for, and
+_"don't miss anyting make sure it's all accounted for, and
 make sure not BACKLOG.md residue is left over in the
-substrate for next you."*
+substrate for next you."_

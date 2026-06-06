@@ -8,7 +8,7 @@ description: DBSP / Timely Dataflow — delta-stream composition, retraction-nat
 Capability skill. No persona. This is the execution-model
 narrow that carries Zeta's identity: **streaming,
 incremental, retraction-native**. Every other engine-type
-narrow is layered *over* this substrate. This hat owns the
+narrow is layered _over_ this substrate. This hat owns the
 base-substrate coherence.
 
 ## When to wear
@@ -21,7 +21,7 @@ base-substrate coherence.
   it out.
 - Time-domain questions (virtual time, wall time,
   watermarks, out-of-order ingest).
-- Standing-query semantics: what a query *means* when it's
+- Standing-query semantics: what a query _means_ when it's
   running continuously.
 - Delta-stream composition and the invariants an operator
   must satisfy.
@@ -62,7 +62,7 @@ base-substrate coherence.
 
 Murray, Isaacs et al.)
 
-- **Timely.** Dataflow with *logical timestamps* per
+- **Timely.** Dataflow with _logical timestamps_ per
   message; progress tracked via frontiers.
 - **Differential.** Collection-level semantics over
   partially-ordered time, supports iteration (recursive
@@ -103,14 +103,14 @@ A concrete Zeta streaming operator is:
 ## The classical-engine assumptions that leak in
 
 A rewrite / optimisation / analysis written with a
-classical engine in mind *will* leak assumptions. The
+classical engine in mind _will_ leak assumptions. The
 usual suspects:
 
 - **Monotone inputs.** "Rows arrive, never leave." Zeta
   violates this constantly. Every rule must handle
   retraction.
 - **Snapshot consistency.** "The result is the answer
-  *at the time of the query*." Zeta's standing queries
+  _at the time of the query_." Zeta's standing queries
   have no "time of the query"; the result is a stream,
   and consistency is a frontier-level property.
 - **Blocking operators are fine.** Sort / blocking-
@@ -138,7 +138,7 @@ A streaming engine has at least three time axes:
 
 Classical batch engines conflate all three; streaming
 must keep them separate. Watermarks / frontiers track
-the completion of *event-time* windows — a critical
+the completion of _event-time_ windows — a critical
 abstraction for out-of-order ingest.
 
 ## Watermarks — the five-second framing
@@ -160,7 +160,7 @@ Zeta's choice is optimistic with retraction, because
 retraction is native. Classical engines struggle here
 because they can't express "take that back".
 
-## Standing queries — what a query *means*
+## Standing queries — what a query _means_
 
 A standing query is a query that **runs forever**:
 
@@ -189,7 +189,7 @@ aggregators are:
   matrix products) — inverse exists under the semiring
   laws.
 
-Aggregators *without* inverses (`Min` / `Max` over a
+Aggregators _without_ inverses (`Min` / `Max` over a
 changing set, `Median`, `TopK`) need **bookkeeping**
 (a sketch, a priority queue) to support retraction.
 `Min`/`Max` are the canonical hard cases: the minimum
@@ -219,13 +219,13 @@ might be the element just retracted.
 
 ## Reference patterns
 
-- Budiu, Chajed, McSherry, Ryzhyk, Tannen 2022, *DBSP:
+- Budiu, Chajed, McSherry, Ryzhyk, Tannen 2022, _DBSP:
   Automatic Incremental View Maintenance for Rich Query
-  Languages*.
-- McSherry, Murray, Isaacs, Isard 2013, *Naiad: A Timely
-  Dataflow System*.
-- McSherry, Murray, Isaacs, Isard 2013, *Differential
-  Dataflow*.
+  Languages_.
+- McSherry, Murray, Isaacs, Isard 2013, _Naiad: A Timely
+  Dataflow System_.
+- McSherry, Murray, Isaacs, Isard 2013, _Differential
+  Dataflow_.
 - Materialize engineering blog.
 - Feldera — Rust DBSP implementation.
 - `.claude/skills/algebra-owner/SKILL.md` — operator laws.

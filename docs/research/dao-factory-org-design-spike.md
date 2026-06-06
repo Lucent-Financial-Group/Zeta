@@ -63,7 +63,7 @@ Not in scope for the spike:
 
 ### Conway's Law + Reverse Conway
 
-- Melvin Conway, *"How Do Committees Invent?"*, Datamation
+- Melvin Conway, _"How Do Committees Invent?"_, Datamation
   April 1968 (paper first submitted 1967). Core claim:
   organizations that design systems produce designs that are
   copies of the communication structures of those
@@ -98,7 +98,7 @@ Not in scope for the spike:
 
 - **Token-weighted voting** — the baseline. Critique:
   plutocracy failure mode.
-- **Quadratic voting** — Weyl + Posner's *Radical Markets*
+- **Quadratic voting** — Weyl + Posner's _Radical Markets_
   framing applied in Gitcoin grants.
 - **Conviction voting** — time-weighted preferences;
   1Hive's primitive.

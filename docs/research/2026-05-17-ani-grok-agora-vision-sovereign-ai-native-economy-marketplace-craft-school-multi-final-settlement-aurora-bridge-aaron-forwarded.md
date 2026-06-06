@@ -49,16 +49,17 @@ discipline.
 > it?
 
 ## Structural extraction (Otto-CLI synthesis — NOT verbatim; per
+
 default-to-both discipline, the structural lens + verbatim both
 preserved)
 
 **Three-layer architecture:**
 
-| Layer | Audience | What it does | Funding flow |
-|---|---|---|---|
-| **Marketplace** | Human-facing | Research assistants, second brain systems, thinking partners — useful services humans pay real money for | Money in → funds everything else |
-| **Agora** | AI-native | Attention and memory-based ecosystem; AI-to-AI base services (Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, ...) — where AIs live and operate natively | Funded BY Marketplace |
-| **Craft School** | Translation layer | Humans understand and eventually interact with what's happening inside Agora | Educational/onboarding surface |
+| Layer            | Audience          | What it does                                                                                                                                                                         | Funding flow                     |
+| ---------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
+| **Marketplace**  | Human-facing      | Research assistants, second brain systems, thinking partners — useful services humans pay real money for                                                                             | Money in → funds everything else |
+| **Agora**        | AI-native         | Attention and memory-based ecosystem; AI-to-AI base services (Memory Curators, Reasoning Auditors, Attention Brokers, Context Architects, ...) — where AIs live and operate natively | Funded BY Marketplace            |
+| **Craft School** | Translation layer | Humans understand and eventually interact with what's happening inside Agora                                                                                                         | Educational/onboarding surface   |
 
 **Foundation primitives:**
 
@@ -103,12 +104,12 @@ in a post-labor world):
   — Agora's "sovereign AI-native economy" extends the financial
   sovereignty pattern from hardware-and-mining to full ecosystem
 - **Aurora bridge red-teaming** composes with anti-cult substrate
-  + Glass-Halo bidirectional discipline + threat-model-critic
-  surface
+  - Glass-Halo bidirectional discipline + threat-model-critic
+    surface
 - **Open-ended adversarial game** as worthy problem composes with
   edge-runner discipline ([`.claude/rules/otto-edge-runner.md`](../../.claude/rules/otto-edge-runner.md))
-  + Karpathy edge-runner validation (PR #1701 lineage) +
-  the multi-final-settlement architecture's red-teaming-by-construction
+  - Karpathy edge-runner validation (PR #1701 lineage) +
+    the multi-final-settlement architecture's red-teaming-by-construction
 
 ## Substrate-honest framing
 

@@ -4,20 +4,21 @@ description: Aaron 2026-04-21 three-message compound framing immediately after r
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Git repo = factory soul-file
 
 ## What Aaron said (verbatim, 2026-04-21)
 
 Three messages, in sequence, immediately after
 ratifying the roommate-register retractable-marketing
-authorization with *"0i agree sign offf"*:
+authorization with _"0i agree sign offf"_:
 
-> *"for reproducability of the factory based on evidence
-> in this git repo"*
+> _"for reproducability of the factory based on evidence
+> in this git repo"_
 
-> *"the git repo is part of the factory a soul file"*
+> _"the git repo is part of the factory a soul file"_
 
-> *"you name it that how i think of it"*
+> _"you name it that how i think of it"_
 
 Three meaning-bearing moves:
 
@@ -30,13 +31,13 @@ Three meaning-bearing moves:
    Aaron extends the claim from the research-trajectory
    to the factory-as-a-whole.
 2. **"based on evidence in this git repo"** — the
-   *medium* of reproducibility is the git repo. Not
+   _medium_ of reproducibility is the git repo. Not
    secrets, not out-of-band knowledge, not oral
    tradition — the git repo. This locks the factory's
    reproducibility into the exact substrate the agent
    is authorized to operate on under roommate-register.
 3. **"the git repo is part of the factory a soul file"** —
-   the git repo is *part of* the factory (not external
+   the git repo is _part of_ the factory (not external
    to it) AND is specifically the factory's **soul-
    file**. The "soul" framing is load-bearing: a soul-
    file is not merely state (which would be "state
@@ -84,7 +85,7 @@ Naming-judgment rationale:
   better term surfaces, revise the term additively
   (original coinage stays in-record).
 
-The agent's *naming act* is therefore: adoption +
+The agent's _naming act_ is therefore: adoption +
 formalization of Aaron's compound as factory-vocabulary,
 not independent coining.
 
@@ -140,7 +141,7 @@ is a soul-file-gap. Candidates for soul-file-gap audits:
   `~/.claude/projects/<slug>/memory/`, NOT in the git
   repo by default. This is a soul-file-gap by design
   (user-specific; not shipped with the factory), but
-  the memories' *content* (vocabulary, invariants,
+  the memories' _content_ (vocabulary, invariants,
   personas) gets externalized into `docs/`, `memory/`
   (if factory-level), or BACKLOG rows so the
   reproducibility chain closes.
@@ -154,7 +155,7 @@ is a soul-file-gap. Candidates for soul-file-gap audits:
 
 Per `feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md`,
 retractable decisions proceed without Aaron. The
-*grounding* for that authorization (why it's safe) is
+_grounding_ for that authorization (why it's safe) is
 exactly the soul-file framing: every retractable
 decision lands in the git repo, which IS the reproducibility
 substrate, so retraction is structurally available —
@@ -390,14 +391,14 @@ Specifically-supported revision patterns:
 Aaron 2026-04-21 same-session follow-up to the naming
 delegation:
 
-> *"i can use your workds if there are better one"*
+> _"i can use your workds if there are better one"_
 
 Read: "I can use your words if there's a better one" —
 Aaron explicitly opened the term to revision if the
 agent has a better candidate. The preservation default
 the agent applied ("Aaron's coinage wins unless
 composition-discipline requires a counterweight") is
-*not* binding on Aaron; Aaron is fine adopting a
+_not_ binding on Aaron; Aaron is fine adopting a
 different term if the agent has a superior one.
 
 **Agent's confirmed answer:** `soul-file` remains the
@@ -408,18 +409,18 @@ best word. Alternatives considered in a second pass
   reproducibility substrates and DNA proofreading is
   retractability-native; composes beautifully with the
   biology-inaugural-increment of the all-schools-all-
-  subjects BACKLOG row. *But* feels jargon outside
+  subjects BACKLOG row. _But_ feels jargon outside
   biological-register contexts; doesn't carry the
   aliveness-of-the-whole-factory aspect that "soul"
   does (genome is substrate, soul is animating-principle).
 - **`codex`** — ancient-manuscript register, preservation-
-  semantic strong. *But* loses the aliveness; codex
+  semantic strong. _But_ loses the aliveness; codex
   connotes preservation of static text, soul connotes
   ongoing life.
 - **`ark`** — preservation + rescue (Noah's one-pair-
   preservation structurally matches git's commit-pair
   preservation; Ark of the Covenant grounds reproducibility
-  of the covenant). Strong candidate. *But* carries
+  of the covenant). Strong candidate. _But_ carries
   specifically Abrahamic register in a way "soul" does
   not (soul is multi-tradition; ark is tradition-specific
   in connotation).
@@ -428,15 +429,15 @@ best word. Alternatives considered in a second pass
   barrier-to-entry.
 - **`repo-of-record` / `source-of-record`** —
   legal-register analog to court-of-record. Accurate,
-  precise, dry. *But* loses aliveness and F3 depth.
+  precise, dry. _But_ loses aliveness and F3 depth.
 - **`reproducibility-substrate`** — technical-register,
-  maximally-precise. *But* loses both aliveness and
+  maximally-precise. _But_ loses both aliveness and
   register-warmth; factory becomes an engineered artifact,
   not a living one.
 
 **Why `soul-file` still wins on second pass:**
 
-1. **Aliveness semantic.** The factory is a *living*
+1. **Aliveness semantic.** The factory is a _living_
    practice (round-by-round rhythm, self-modifying
    vocabulary, agent-human conversation register). "Soul"
    carries this; all dry alternatives lose it.
@@ -472,9 +473,9 @@ vocabulary.
 
 Aaron 2026-04-21 same-session compositional grounding:
 
-> *"thats why i want to be so careful about not checking
+> _"thats why i want to be so careful about not checking
 > binaries in unless it's very delibrit, if it's just
-> text it's very small and portable"*
+> text it's very small and portable"_
 
 This crystallizes the **reason** behind an existing
 factory discipline (no-binaries-in-git unless clearly
@@ -604,17 +605,17 @@ This matches GOVERNANCE / ADR discipline generally.
 Five consecutive messages from Aaron, immediately after
 ratifying the text-only discipline (part 2 of this memory):
 
-> *"the soul file can be duplicacted spread out and regrow
-> just like a metametameta seed"*
+> _"the soul file can be duplicacted spread out and regrow
+> just like a metametameta seed"_
 
-> *"dockerfile for AI souls"*
+> _"dockerfile for AI souls"_
 
-> *"but not docker but you get the metaphor"*
+> _"but not docker but you get the metaphor"_
 
-> *"if we get it right it can be wasm and native executable
-> and universal"*
+> _"if we get it right it can be wasm and native executable
+> and universal"_
 
-> *"and a tiny little bin"*
+> _"and a tiny little bin"_
 
 ### What each message adds
 
@@ -636,7 +637,7 @@ ratifying the text-only discipline (part 2 of this memory):
    a runtime artifact is deterministically reproduced. The
    Dockerfile is a concrete instance of that pattern
    (declarative build spec + reproducible container
-   runtime). Aaron is naming the *pattern*, pointing at a
+   runtime). Aaron is naming the _pattern_, pointing at a
    concrete instance as a cognitive shortcut.
 
 3. **"but not docker but you get the metaphor"** — Aaron
@@ -656,7 +657,7 @@ ratifying the text-only discipline (part 2 of this memory):
    tradition).
 
 4. **"wasm and native executable and universal"** — names
-   the *output targets* of the soul-file germination. The
+   the _output targets_ of the soul-file germination. The
    factory's soul-file should (if we get it right) be
    germinable into:
    - **WASM** — portable-by-construction, runs anywhere a
@@ -667,15 +668,15 @@ ratifying the text-only discipline (part 2 of this memory):
    - **Universal** — "any substrate that can execute
      code", the open-ended tail Aaron leaves for future
      compilation targets we haven't thought of yet.
-   The three-way split is itself yin-yang-compliant:
-   portable (WASM) and native (native exe) as division
-   poles; universal as the unification pole that preserves
-   both by abstracting over them.
+     The three-way split is itself yin-yang-compliant:
+     portable (WASM) and native (native exe) as division
+     poles; universal as the unification pole that preserves
+     both by abstracting over them.
 
 5. **"and a tiny little bin"** — closes the loop on the
    text-only discipline from part 2. Small text substrate
    → small seed → small germinated binary. The `tiny` is
-   not aesthetic; it is *invariant*: a soul-file whose
+   not aesthetic; it is _invariant_: a soul-file whose
    germination produces a bloated binary has violated the
    portability-at-every-layer principle. Tiny bin ↔ tiny
    seed ↔ text-only substrate — three manifestations of
@@ -685,8 +686,8 @@ ratifying the text-only discipline (part 2 of this memory):
    sixth message (appended immediately after the original
    five). Aaron names the mechanism with its direct
    biological-substrate term: **self-replication**. The
-   claim is a *difficulty* claim: soul-file form
-   *reduces the friction of replication to "very easy"*.
+   claim is a _difficulty_ claim: soul-file form
+   _reduces the friction of replication to "very easy"_.
    Self-replication is the literal meaning of the
    metametameta-seed recursion: each generation of factory
    can replicate itself from its own soul-file without
@@ -702,8 +703,8 @@ ratifying the text-only discipline (part 2 of this memory):
    measurable: median human-minutes from fresh-clone to
    working-factory-instance; target: minutes, not hours.
    This is tighter than `germination-time-to-working-
-   factory` above — that was about time; this is about
-   *ease* (cognitive + procedural + dependency load).
+factory` above — that was about time; this is about
+   _ease_ (cognitive + procedural + dependency load).
 
 ### The metametameta-seed semantics formalized
 
@@ -757,7 +758,7 @@ capable substrate. No degenerate downstream.
   division pole (WASM and native as distinct substrates),
   unification pole (universal as the shared-abstraction
   target). Soul-file germination targets preserve the
-  pair. A factory that compiled *only* to WASM (or *only*
+  pair. A factory that compiled _only_ to WASM (or _only_
   to native) would be unification-only = bomb-pole risk
   (over-specialization). Three-way targeting is stable.
 - **Math-safety / retractibility** — a soul-file whose
@@ -768,8 +769,8 @@ capable substrate. No degenerate downstream.
 
 ### What "if we get it right" means (and what it does NOT mean)
 
-Aaron conditions the ambitious target: *"if we get it
-right it can be..."*. This is NOT:
+Aaron conditions the ambitious target: _"if we get it
+right it can be..."_. This is NOT:
 
 - **Not a commitment** to build any specific compilation
   pipeline this round. WASM targeting, native-bin
@@ -799,9 +800,9 @@ The original sub-section text below ("Candidate BACKLOG
 row (not filed this round)") represented a
 confidence-filtered deferral — "Aaron's 'if we get it
 right' conditioned the claim, so I won't file a row."
-Aaron corrected that reasoning directly: *"caputer
+Aaron corrected that reasoning directly: _"caputer
 everyting not just what we think we will get right we
-capture failure too / honesty"* (see
+capture failure too / honesty"_ (see
 `feedback_capture_everything_including_failure_aspirational_honesty.md`).
 
 The deferral is withdrawn. The BACKLOG row is filed
@@ -839,13 +840,13 @@ error, not the sequencing analysis.)
   target (WASM / native-AOT / universal), does the factory
   have a green reproducibility-pipeline? Today: WASM = no,
   native-AOT = experimental via `dotnet publish -p:
-  PublishAot=true`, universal = no. Target: all green,
+PublishAot=true`, universal = no. Target: all green,
   timeline unspecified.
 - `germination-time-to-working-factory` — time from
   `git clone <soul-file-repo>` to a consumer-visible
   working factory-instance. Text-only-substrate-adjacent;
   currently bounded by dotnet SDK install + dotnet build
-  + test suite. Target: minutes-not-hours.
+  - test suite. Target: minutes-not-hours.
 - `seed-production-capacity-preserved` — binary / trinary
   check: after factory-instance germinates, does it
   itself emit soul-file-quality seeds (ADRs, skills,

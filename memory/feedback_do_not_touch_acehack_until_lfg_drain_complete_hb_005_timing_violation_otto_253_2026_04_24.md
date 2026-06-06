@@ -4,6 +4,7 @@ description: Aaron Otto-253 direct correction. I'd executed HB-005 autonomously 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **While the LFG drain is in progress, AceHack stays hands-off.
@@ -17,8 +18,8 @@ that the two-hop throughput is a win rather than a drag.
 
 Direct Aaron quote 2026-04-253 [sic — Otto-253]:
 
-> *"you are not supposed to be putting things on acehace until
-> you drain lfg, i told you that"*
+> _"you are not supposed to be putting things on acehace until
+> you drain lfg, i told you that"_
 
 ## What "drain complete" means (rough threshold)
 
@@ -40,9 +41,9 @@ authorities covered it. Applied to AceHack/Zeta via `gh api`:
 
 - `PUT /repos/AceHack/Zeta/branches/main/protection` — branch
   protection mirroring LFG's shape
-- `PATCH /repos/AceHack/Zeta` — 4 repo toggles (allow_merge_
-  commit=false, allow_rebase_merge=false, allow_update_
-  branch=true, security_and_analysis.dependabot_security_
+- `PATCH /repos/AceHack/Zeta` — 4 repo toggles (allow*merge*
+  commit=false, allow*rebase_merge=false, allow_update*
+  branch=true, security*and_analysis.dependabot_security*
   updates=enabled)
 - `POST /repos/AceHack/Zeta/rulesets` — "Default" ruleset
   (6 rules) mirroring LFG
@@ -77,13 +78,15 @@ tick, but per Otto-223 + the queue-saturation discipline):
 ## What "touch AceHack" specifically means (scope)
 
 Things forbidden during drain:
-- `gh api` writes against AceHack/* (PATCH/PUT/POST/DELETE)
+
+- `gh api` writes against AceHack/\* (PATCH/PUT/POST/DELETE)
 - Opening PRs directly on AceHack/Zeta
 - Force-pushes to AceHack branches
 - Settings changes on AceHack (this session's violation)
 - Ruleset / branch-protection writes on AceHack
 
 Things allowed during drain:
+
 - `gh api` READS against AceHack (snapshots, diff audits)
 - Referencing AceHack's state in LFG-landing docs/PRs
 - Preparing HB-005-style change sets locally, not applied
@@ -129,8 +132,8 @@ Not after.
 
 ## Direct Aaron quote to preserve
 
-> *"you are not supposed to be putting things on acehace
-> until you drain lfg, i told you that"*
+> _"you are not supposed to be putting things on acehace
+> until you drain lfg, i told you that"_
 
 Future Otto: before any `gh api ... AceHack/*` write, check
 the LFG drain state. If open-PR count > ~20 or your personal

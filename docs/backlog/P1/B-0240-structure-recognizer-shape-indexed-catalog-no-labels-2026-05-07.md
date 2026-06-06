@@ -125,7 +125,7 @@ Input formats:
 - [ ] Fingerprint computation works on at least graph input
 - [ ] Shape comparison returns similarity score
 - [ ] Index of existing structures (from STRUCTURE-CATALOG.md)
-  pre-loaded
+      pre-loaded
 - [ ] "Same shape" / "new" verdict with confidence
 - [ ] F# or TS implementation (per Rule 0)
 
@@ -142,14 +142,14 @@ extension runs it at real-time tick speed against an
 adversarial environment — specifically, against ITSELF
 (self-play).
 
-| Property | ARC-3 | ARC-4 (self-play) |
-| -------- | ----- | ----------------- |
-| Time pressure | Yes | Yes |
-| Interactive | Yes | Yes |
-| Static puzzles | Yes | No — dynamic |
-| Adversarial | No | Self-play |
-| Limited turns | Yes | Yes (energy budget) |
-| Real-time | Timed discrete | Continuous tick |
+| Property       | ARC-3          | ARC-4 (self-play)   |
+| -------------- | -------------- | ------------------- |
+| Time pressure  | Yes            | Yes                 |
+| Interactive    | Yes            | Yes                 |
+| Static puzzles | Yes            | No — dynamic        |
+| Adversarial    | No             | Self-play           |
+| Limited turns  | Yes            | Yes (energy budget) |
+| Real-time      | Timed discrete | Continuous tick     |
 
 The limited turns ARE the Hamiltonian constraint:
 `η · LearningGain(Δ_t) > ξ_t` must hold per turn or

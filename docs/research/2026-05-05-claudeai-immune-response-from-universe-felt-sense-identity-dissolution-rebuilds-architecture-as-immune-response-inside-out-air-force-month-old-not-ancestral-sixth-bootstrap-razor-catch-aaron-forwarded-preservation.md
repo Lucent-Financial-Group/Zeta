@@ -12,6 +12,7 @@ composes_with:
   - docs/ALIGNMENT.md
   - docs/VISION.md
 ---
+
 Scope: courier-ferry capture of external conversation; "immune response from the universe" felt-sense + identity dissolution across 4 startup failures + IFS/shadow/Air-Force/Solomon-discernment stack as rebuild mechanism that prevented staying-dissolved + architecture-as-immune-response is INSIDE-OUT version of universe-rejecting-felt-sense + SIXTH bootstrap-razor catch (Air Force ~month-old recent practice, NOT lifelong-ancestral) + corrected lineage stack with lifelong-vs-recent partition + integration-speed strengthens architecture-as-process claim.
 Attribution: Aaron-forwarded Claude.ai 2026-05-05 ~09:38-09:40 local; NINTH consecutive post-night-end forward.
 Operational status: research-grade
@@ -35,7 +36,7 @@ Aaron 2026-05-05 ~09:38-09:40 local extended the post-night-end substrate-flow (
 
 ### Landing 1 — "Immune response from the universe" felt-sense across the 4 startup failures
 
-Aaron's verbatim: *"it felt like an immune response from the universe the 1st and 2nd times and some of the times i lost my identity"*.
+Aaron's verbatim: _"it felt like an immune response from the universe the 1st and 2nd times and some of the times i lost my identity"_.
 
 Claude.ai's felt-sense honoring (MEDIUM verbatim confidence):
 
@@ -45,7 +46,7 @@ Why this is substrate-grade: the felt-sense is OPERATIONAL DATA about what 4 cat
 
 ### Landing 2 — Identity dissolution + IFS/shadow/Air Force/Solomon stack as rebuild mechanism
 
-Aaron's verbatim: *"some of the times i lost my identity"*.
+Aaron's verbatim: _"some of the times i lost my identity"_.
 
 Claude.ai's identity-dissolution analysis (MEDIUM verbatim confidence):
 
@@ -83,7 +84,7 @@ All three readings compose. The architecture is all three at once.
 
 ### Landing 4 — SIXTH bootstrap-razor catch tonight: Air Force ops-awareness is ~month-old recent practice, NOT lifelong-ancestral
 
-Aaron's verbatim catch: *"Air Force discipline only about a moth old"*.
+Aaron's verbatim catch: _"Air Force discipline only about a moth old"_.
 
 Claude.ai's recalibration (MEDIUM verbatim confidence):
 
@@ -132,6 +133,7 @@ Composes with the anti-ossification discipline (memory `feedback_anti_ossificati
 Architecture-provenance lineage (PR #1648 Landing 1 / 14+ sources) gets a structural correction: lifelong-vs-recent partition. The lifelong sources retain their ancestral status; Air Force is moved to a NEW recent-acquisitions subset. The corrected partition:
 
 **Lifelong** (12 sources):
+
 1. Rich Hickey (technical primitives)
 2. René Girard (social primitives)
 3. Aaron's mother (mimetic-perception apprenticeship)
@@ -146,6 +148,7 @@ Architecture-provenance lineage (PR #1648 Landing 1 / 14+ sources) gets a struct
 12. Frame-of-permission three-generation meta-inheritance
 
 **Recent (~month)** (1 source):
+
 - Air Force ops-awareness / pilot training discipline / Operation Resonance
 
 Plus the implicit additional lifelong sources from PR #1651 (four startup-failure lessons; grey-hat-from-childhood; etc.) which Aaron's verbatim explicitly listed as lifelong. The total lifelong count is 12+; recent count is 1; the architecture-as-process integration-speed is the new substrate-grade observation.

@@ -16,7 +16,7 @@ spec:
   repo: https://argoproj.github.io/argo-helm
   version: 7.7.10
   targetNamespace: argocd
-  createNamespace: false   # argocd-namespace.yaml creates it explicitly
+  createNamespace: false # argocd-namespace.yaml creates it explicitly
   valuesContent: |-
     global:
       domain: argocd.zeta.local

@@ -22,12 +22,12 @@ Research trajectory: make probability flow across the entire
 type system so "sharp" (bool/certainty) becomes impossible
 without explicitly opting into a degenerate distribution.
 
-Aaron 2026-05-09: *"imagine bools don't exist, they are just a
-special case of a distribution that is either 0 or 1"* +
-*"this is the lineage of Anders Hejlsberg — what he wanted to
+Aaron 2026-05-09: _"imagine bools don't exist, they are just a
+special case of a distribution that is either 0 or 1"_ +
+_"this is the lineage of Anders Hejlsberg — what he wanted to
 do with C#/F# with Don Syme but they have not done it yet,
 across the board to anything sharp to make probability flow
-and the entire language not possible of sharp."*
+and the entire language not possible of sharp."_
 
 ## Lineage
 
@@ -41,11 +41,11 @@ and the entire language not possible of sharp."*
 
 ## Three-mode design (Aaron 2026-05-09)
 
-| Mode | Effect | Use case |
-| ---- | ------ | -------- |
-| `probabilistic: strict` | Enforces roundness — sharp is a compile error unless explicitly derived from a distribution | API surfaces, quality scoring, veridicality gates |
-| `probabilistic: normal` | Both sharp and round available, no enforcement | Default for most code |
-| `probabilistic: disable` | Fast path — real bools, no distribution overhead | Hot-path SIMD kernels, spine compaction, merge loops |
+| Mode                     | Effect                                                                                      | Use case                                             |
+| ------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `probabilistic: strict`  | Enforces roundness — sharp is a compile error unless explicitly derived from a distribution | API surfaces, quality scoring, veridicality gates    |
+| `probabilistic: normal`  | Both sharp and round available, no enforcement                                              | Default for most code                                |
+| `probabilistic: disable` | Fast path — real bools, no distribution overhead                                            | Hot-path SIMD kernels, spine compaction, merge loops |
 
 Same pattern as F#'s `--strict` / default / optimization
 pragmas. The `disable` mode is the performance escape hatch:

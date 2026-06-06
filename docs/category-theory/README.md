@@ -14,7 +14,7 @@ upstream clones under `references/prior-art/` per the
 ## Upstreams to read
 
 - **[`hmemcpy/milewski-ctfp-pdf`](https://github.com/hmemcpy/milewski-ctfp-pdf)**
-  — Bartosz Milewski, *Category Theory for Programmers*. The
+  — Bartosz Milewski, _Category Theory for Programmers_. The
   canonical modern reference. Haskell-flavoured but the
   concepts port 1:1 to F# (every `class Functor f` becomes
   an `'F<'A>` with a `map`; every `Monad m` becomes a

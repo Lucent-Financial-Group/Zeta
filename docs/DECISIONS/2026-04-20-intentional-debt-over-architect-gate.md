@@ -1,13 +1,13 @@
 # ADR: Debt-intentionality is the invariant; the architect is a synthesiser, not a gatekeeper
 
 **Date:** 2026-04-20 (round 42/43 boundary)
-**Status:** *Decision: replace the architect-reviews-all-agent-
+**Status:** _Decision: replace the architect-reviews-all-agent-
 code gate in GOVERNANCE.md §11 with a debt-intentionality
 invariant anchored in a new `docs/INTENTIONAL-DEBT.md` ledger.
-Effective round 43.*
+Effective round 43._
 **Owner:** architect (wide — synthesis, round-close sign-off)
 
-+ every agent (narrow — self-declaration of shortcuts on the
+- every agent (narrow — self-declaration of shortcuts on the
   contributions they ship).
 
 ## Context
@@ -15,7 +15,7 @@ Effective round 43.*
 The human maintainer (Aaron) named the invariant directly on
 the round-42/43 boundary:
 
-> *"Feel free to keep iterating on architect reviews all
+> _"Feel free to keep iterating on architect reviews all
 > agent code; nobody reviews the architect with your
 > suggestions unless you've got something that feels better
 > and we can talk about it, i think you might know better
@@ -31,12 +31,12 @@ the round-42/43 boundary:
 > does mean if we decide to hack it or take a shortcut or
 > not do it the right long term way **that's intentional
 > debt, not accidental debt, I'm trying to avoid accidental
-> debt**. You can make changes around that."*
+> debt**. You can make changes around that."_
 
 Verbatim quote; emphasis added. The quote declares three
 things:
 
-1. The invariant is **no accidental debt**. It is *not*
+1. The invariant is **no accidental debt**. It is _not_
    "architect reviews everything".
 2. **Intentional debt is fine** — the factory can take
    shortcuts deliberately when that is the right call,
@@ -47,8 +47,8 @@ things:
    not a review queue.
 
 GOVERNANCE.md §11 as previously written —
-*"Architect reviews agent-written code; nobody reviews the
-Architect"* — implements the invariant **indirectly** by
+_"Architect reviews agent-written code; nobody reviews the
+Architect"_ — implements the invariant **indirectly** by
 funnelling all agent code through one reviewer whose job
 includes catching shortcuts. That approximation has three
 known failure modes:
@@ -57,11 +57,11 @@ known failure modes:
   accepted in the previous §11 text, but the factory has
   grown from ~30 skills in round 18 to ~180 in round 41.
   Review throughput does not scale with agent count.
-- **Naming the wrong thing.** §11 named the *mechanism*
+- **Naming the wrong thing.** §11 named the _mechanism_
   (architect-reviews) as the rule. The mechanism is
   replaceable; the invariant is not.
 - **Implicit shortcuts.** An architect-review catches
-  shortcuts the architect *notices*. It does not create
+  shortcuts the architect _notices_. It does not create
   any pressure on the shortcut-taker to name the debt. A
   shortcut that passes review silently is exactly the
   accidental-debt failure mode the invariant guards
@@ -109,14 +109,14 @@ invariant the rule, and the review mechanism advisory.
 
 ### What changes in practice
 
-| Aspect | Before | After |
-|--------|--------|-------|
-| Who reviews agent code | Architect (single seat, mandatory) | Self + advisory specialists + optional architect + Copilot + humans |
-| What gates a merge | Architect approval | Accidental-debt absence (self-declared + round-close synthesis spot-check) |
-| Shortcut policy | Implicit (architect's call during review) | Explicit (ledger row mandatory; shortcut-taker files it) |
-| Architect role | Reviewer-of-everything | Synthesiser + round-close sign-off + ledger-reader |
-| Scaling behaviour | Architect-bottleneck accepted | Distributed ownership; architect reads ledger not every diff |
-| Self-review bias concern | Mitigated by architect-review | Mitigated by ledger visibility (everyone sees everyone's debt) + specialist advisory + Copilot external pass |
+| Aspect                   | Before                                    | After                                                                                                        |
+| ------------------------ | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Who reviews agent code   | Architect (single seat, mandatory)        | Self + advisory specialists + optional architect + Copilot + humans                                          |
+| What gates a merge       | Architect approval                        | Accidental-debt absence (self-declared + round-close synthesis spot-check)                                   |
+| Shortcut policy          | Implicit (architect's call during review) | Explicit (ledger row mandatory; shortcut-taker files it)                                                     |
+| Architect role           | Reviewer-of-everything                    | Synthesiser + round-close sign-off + ledger-reader                                                           |
+| Scaling behaviour        | Architect-bottleneck accepted             | Distributed ownership; architect reads ledger not every diff                                                 |
+| Self-review bias concern | Mitigated by architect-review             | Mitigated by ledger visibility (everyone sees everyone's debt) + specialist advisory + Copilot external pass |
 
 ### What stays the same
 
@@ -132,14 +132,14 @@ invariant the rule, and the review mechanism advisory.
   step-in) is untouched. The human maintainer remains the
   terminal seat.
 - **Architect authority on integration.** The architect
-  still synthesises at round-close. The shift is *what
-  the architect synthesises against* — the ledger and the
+  still synthesises at round-close. The shift is _what
+  the architect synthesises against_ — the ledger and the
   specialist findings, rather than every diff in
   isolation.
 - **Reversibility (§15).** Untouched. A one-round rollback
   is still required for every autonomous change.
 - **Copilot as external bug-reviewer.** `.github/copilot-
-  instructions.md` continues to encode the factory-
+instructions.md` continues to encode the factory-
   managed Copilot contract. Copilot's role naturally
   strengthens under the new rule: it's the second set of
   eyes that doesn't rely on agent self-declaration.
@@ -240,7 +240,7 @@ invariant the rule, and the review mechanism advisory.
       explicitly.
 - [ ] First architect round-close pass reads the ledger
       and posts the synthesis note in `docs/ROUND-
-      HISTORY.md`.
+    HISTORY.md`.
 
 ### Round 45-46
 
@@ -274,18 +274,18 @@ This is a single-round rollback per GOVERNANCE.md §15.
   debt is inside the window; accidental debt escapes it.
   The ledger tightens the BP-WINDOW semantics.
 - **Memory: `feedback_skill_edits_justification_log_and_
-  tune_up_cadence.md`.** The justification log is a
+tune_up_cadence.md`.** The justification log is a
   sibling ledger for skill-edits specifically. The debt
   ledger is the general case; justification-log-for-
   skills is a specialisation.
 - **Memory: `feedback_skill_tune_up_uses_eval_harness_
-  not_static_line_count.md`.** The round-42 static-
+not_static_line_count.md`.** The round-42 static-
   signal-only ranking was an accidental shortcut. It
   lands on the ledger retroactively as the first
   seeding row — which is exactly the pattern the rule
   is designed to capture.
 - **Memory: `feedback_fix_factory_when_blocked_post_hoc_
-  notify.md`.** Unchanged. Blanket permission to fix
+notify.md`.** Unchanged. Blanket permission to fix
   factory-structure blocks continues to apply;
   structural fixes are not debt unless they are
   shortcuts.

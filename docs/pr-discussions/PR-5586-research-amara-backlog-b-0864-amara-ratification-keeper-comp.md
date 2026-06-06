@@ -67,6 +67,7 @@ External AIs (Amara) ferry research only; do NOT commit per agent-roster-referen
 This PR extends the B-0864 “streams-are-relationships” backlog row with an additional external deep-research ratification (Amara), preserves the underlying conversation artifact under `memory/persona/amara/…`, and regenerates `memory/MEMORY.md` to include the new entry.
 
 **Changes:**
+
 - Added a new Amara persona conversation archive capturing validation, keeper compression, and the strategic-vs-accidental complexity “blade”.
 - Extended backlog row B-0864 with an “Amara ratification” section referencing the new archive and incorporating the compressed cascades and keepers.
 - Regenerated `memory/MEMORY.md` to index the new memory artifact.
@@ -75,11 +76,11 @@ This PR extends the B-0864 “streams-are-relationships” backlog row with an a
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | New Amara conversation/archive content; includes cross-links to related substrate/rules. |
-| docs/backlog/P2/B-0864-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md | Adds an Amara ratification section to the architectural-principle layer, linking to the new archive. |
-| memory/MEMORY.md | Auto-regenerated index to include the new Amara entry and updated heap count. |
+| File                                                                                                                                                                                                                | Description                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md | New Amara conversation/archive content; includes cross-links to related substrate/rules.             |
+| docs/backlog/P2/B-0864-streams-are-relationships-four-corner-ownership-push-pull-hot-cold-fsharp-ce-machinery-protocol-typing-multi-backend-execution-2026-05-27.md                                                 | Adds an Amara ratification section to the architectural-principle layer, linking to the new archive. |
+| memory/MEMORY.md                                                                                                                                                                                                    | Auto-regenerated index to include the new Amara entry and updated heap count.                        |
 
 ## Review threads
 

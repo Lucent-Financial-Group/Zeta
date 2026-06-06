@@ -4,20 +4,21 @@ description: Aaron 2026-04-21 on WONT-DO Status-verb pass — "i love these deci
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Decision files — WONT-DO.md entries, BACKLOG rows, ADRs, mini-ADRs
 inline on artifacts — serve **two purposes simultaneously** and the
 second is often the load-bearing one:
 
 1. **Record the decision** (the obvious purpose).
 2. **Expose my judgement for calibration** against Aaron's. The
-   *categorization I chose* is a data point he reads to check
+   _categorization I chose_ is a data point he reads to check
    whether my thinking tracks his.
 
 **Why:** Aaron 2026-04-21, after the WONT-DO.md Status-verb pass
 landed (29 Rejected / 7 Declined):
 
-- *"i love these decision files"*
-- *"this will help me know if you think like me"*
+- _"i love these decision files"_
+- _"this will help me know if you think like me"_
 
 That second quote is the load-bearing one. Decision files are an
 alignment measurement device — Aaron reads them to audit my
@@ -58,7 +59,7 @@ my reason-shape classification, not just bookkeeping.
 **Pairs with:**
 
 - `feedback_decision_audits_for_everything_that_makes_sense_mini_adr.md`
-  — decision audits everywhere; this memory adds *why* they
+  — decision audits everywhere; this memory adds _why_ they
   are everywhere (calibration, not record-keeping).
 - `feedback_factory_reflects_aaron_decision_process_alignment_signal.md`
   — "factory reflecting Aaron's decision-process = alignment

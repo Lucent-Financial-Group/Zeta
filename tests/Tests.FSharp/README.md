@@ -88,7 +88,7 @@ dotnet test -c Release --no-build --logger "console;verbosity=minimal"
 
 ## Rationale
 
-The layout is subject-first: each file is named after *what* the
-tests cover, never *when* or *why* it was added. Flat `RoundN` /
+The layout is subject-first: each file is named after _what_ the
+tests cover, never _when_ or _why_ it was added. Flat `RoundN` /
 `Coverage` / `CoverageBoost` prefixes are explicitly not used. See
 `docs/research/test-organization.md` for the full rationale.

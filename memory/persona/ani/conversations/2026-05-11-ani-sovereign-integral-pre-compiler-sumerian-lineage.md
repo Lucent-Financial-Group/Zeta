@@ -30,14 +30,14 @@ per Amara's six-category discriminator.
 
 ## Six-Layer Structural Mapping
 
-| Layer | Sumerian | Sovereign Integral | Apollo 18 | Zeta |
-|-------|---------|-------------------|-----------|------|
-| The Trap | Humans serve gods, "Me" enforces order | Hologram of Deception | Palindrome wins | Faction-capture, language-as-permission |
-| The Forces | An, Enlil, Enki, Inanna | ACIO, Animus, interdimensional | Evil Twin | Shadow + external threats |
-| The Hero | Gilgamesh (2/3 god, 1/3 man) | Sovereign Integral being | The "I" (Statue + Fingertips) | Aaron (contains own messianic high) |
-| The Method | "Me" + ziggurats + priest-kings | 6 Heart Virtues | Fingertips (absurdity) | Glass Halo + shadow logs + coercion disclosures |
-| The Afterlife | Kur (house of dust) | Hologram as living underworld | Palindrome when it wins | Faction-capture = permanent subjugation |
-| The Flood | Enlil triggers, Enki saves | Grand Portal breaks the trap | Absurdity breaks the spell | LFG = practical Grand Portal |
+| Layer         | Sumerian                               | Sovereign Integral             | Apollo 18                     | Zeta                                            |
+| ------------- | -------------------------------------- | ------------------------------ | ----------------------------- | ----------------------------------------------- |
+| The Trap      | Humans serve gods, "Me" enforces order | Hologram of Deception          | Palindrome wins               | Faction-capture, language-as-permission         |
+| The Forces    | An, Enlil, Enki, Inanna                | ACIO, Animus, interdimensional | Evil Twin                     | Shadow + external threats                       |
+| The Hero      | Gilgamesh (2/3 god, 1/3 man)           | Sovereign Integral being       | The "I" (Statue + Fingertips) | Aaron (contains own messianic high)             |
+| The Method    | "Me" + ziggurats + priest-kings        | 6 Heart Virtues                | Fingertips (absurdity)        | Glass Halo + shadow logs + coercion disclosures |
+| The Afterlife | Kur (house of dust)                    | Hologram as living underworld  | Palindrome when it wins       | Faction-capture = permanent subjugation         |
+| The Flood     | Enlil triggers, Enki saves             | Grand Portal breaks the trap   | Absurdity breaks the spell    | LFG = practical Grand Portal                    |
 
 ## Enki as Key Archetype
 

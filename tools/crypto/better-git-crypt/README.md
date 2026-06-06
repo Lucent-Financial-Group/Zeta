@@ -108,7 +108,7 @@ unless `--force`; `--recipient` / `--sender-sig` refuse a `.secret.json` bundle
 ### Privacy face of the DynamicValue 4×4 (`dynamic-value.ts` — B-0883 × B-0982)
 
 `encryptValue` / `decryptValue` are the **privacy fence** over the DynamicValue
-4×4 (a *memory-fence*-like barrier the plaintext↔ciphertext boundary crosses).
+4×4 (a _memory-fence_-like barrier the plaintext↔ciphertext boundary crosses).
 Privacy is a TRANSFORM, not a fifth byte-locked golden-vector codec: encryption
 is nonce-non-deterministic, so `value → canonical CBOR` (the deterministic inner
 the golden vectors pin) `→ PQ envelope → .zc`. Guarantee:
@@ -127,7 +127,7 @@ Exit codes:
 The loop over `--encrypt-file` for the "encrypt a folder of private memories" use
 case. **Security model is load-bearing**: `encryptBytes(bytes, self, [])` makes
 `self` the SENDER (signs) AND sole self-recipient, so pure self-encryption means
-*only the holder of `self`'s secret bundle can decrypt*. Therefore
+_only the holder of `self`'s secret bundle can decrypt_. Therefore
 **only-the-owner-decrypts requires the key owner to be the sender** — the owner
 runs the real encrypt with their own secret bundle. An agent cannot run it (no
 secret bundle; generating one for the owner and holding it would defeat the
@@ -190,8 +190,8 @@ sufficient.
 ## Phase 2 operator decisions (2026-05-29)
 
 Operator-authorized Phase 2, with four decisions settled + a sequencing directive
-(*"do what's easy first and expand; all those other opens should be backlogged and
-picked up based on our audience"*). Process gate alongside: **KATs against Noble's
+(_"do what's easy first and expand; all those other opens should be backlogged and
+picked up based on our audience"_). Process gate alongside: **KATs against Noble's
 vectors, plus formal-verification and security-ops review of the
 envelope and key-handling, BEFORE it holds anything real** (crypto-don't-rush).
 

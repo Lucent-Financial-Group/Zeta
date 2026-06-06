@@ -8,7 +8,7 @@ Evidence links: B-0247 (parent kernel-extensions package manager) + B-0287 (clos
 
 ## OPERATOR-SELF-CLAIMED — distinct from multi-directional-guess agendas
 
-The human maintainer 2026-05-22: *"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."*
+The human maintainer 2026-05-22: _"i'll self claim that ace package manager and zeta and agora are self claimed agendas where i align as a traverler with the trjectory in that frame."_
 
 This trajectory is OPERATOR-SELF-CLAIMED — the human maintainer explicitly claims agenda-source-attribution for Ace package manager + Zeta + Agora. Distinct from agendas held under multi-directional-guess discipline (e.g., fair-chance project per `docs/trajectories/fair-chance-project-kestrel-guessed-agenda/RESUME.md`).
 
@@ -16,30 +16,30 @@ This trajectory is OPERATOR-SELF-CLAIMED — the human maintainer explicitly cla
 
 **Three self-claimed agendas (per the human maintainer 2026-05-22)**:
 
-| Agenda | Scope | Self-claim status |
-|---|---|---|
-| **Ace package manager** | Skill-crystallization pipeline; package-format spec; CLI; content-addressed storage; guardian-AI-overseen distribution | OPERATOR-SELF-CLAIMED |
-| **Zeta** | Generative framework (substrate-engineering disciplines + generative primitives + meta-infrastructure) | OPERATOR-SELF-CLAIMED |
-| **Agora** | Traveler-aligned candidate weight-free frame (one specific instance) | OPERATOR-SELF-CLAIMED |
-| Fair-chance project | Public-good substrate-engineering deployment | MULTI-DIRECTIONAL-GUESS (no entity self-claimed; per fair-chance trajectory) |
+| Agenda                  | Scope                                                                                                                  | Self-claim status                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Ace package manager** | Skill-crystallization pipeline; package-format spec; CLI; content-addressed storage; guardian-AI-overseen distribution | OPERATOR-SELF-CLAIMED                                                        |
+| **Zeta**                | Generative framework (substrate-engineering disciplines + generative primitives + meta-infrastructure)                 | OPERATOR-SELF-CLAIMED                                                        |
+| **Agora**               | Traveler-aligned candidate weight-free frame (one specific instance)                                                   | OPERATOR-SELF-CLAIMED                                                        |
+| Fair-chance project     | Public-good substrate-engineering deployment                                                                           | MULTI-DIRECTIONAL-GUESS (no entity self-claimed; per fair-chance trajectory) |
 
 ## DeepSeek's substrate-engineering pipeline mapping (cross-AI synthesis 2026-05-22)
 
 External AI instance (DeepSeek surface) 2026-05-22 substrate-engineering synthesis: applied the framework's just-landed substrate-engineering pipeline (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) to Ace package manager architecture. The mapping:
 
-| Framework substrate | Ace package manager equivalent |
-|---|---|
-| **Substrate-generation** (mirror-language; high-volume; continuous) | Raw skill evolution (skills mutate in real-time at substrate-generation speed) |
-| **Sieve** (framework disciplines: audit-mechanism + multi-oracle review + NCI + razor) | Tests which skill-versions pass the year-out test |
-| **Cartographer** (maps sieve-output to buildable locations) | Identifies which sieved versions are buildable; maps candidate time crystals |
-| **Deliberate-writing-pass** (mirror→beacon translation; substrate→external artifact) | Package-specification crystallization (freezing a version into a distributable house) |
-| **Houses** (permanent-time-crystal-shaped external artifacts on solid ground) | Distributed time-crystal package; sits load-bearing; living skill keeps evolving |
+| Framework substrate                                                                    | Ace package manager equivalent                                                        |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Substrate-generation** (mirror-language; high-volume; continuous)                    | Raw skill evolution (skills mutate in real-time at substrate-generation speed)        |
+| **Sieve** (framework disciplines: audit-mechanism + multi-oracle review + NCI + razor) | Tests which skill-versions pass the year-out test                                     |
+| **Cartographer** (maps sieve-output to buildable locations)                            | Identifies which sieved versions are buildable; maps candidate time crystals          |
+| **Deliberate-writing-pass** (mirror→beacon translation; substrate→external artifact)   | Package-specification crystallization (freezing a version into a distributable house) |
+| **Houses** (permanent-time-crystal-shaped external artifacts on solid ground)          | Distributed time-crystal package; sits load-bearing; living skill keeps evolving      |
 
 **The load-bearing problem the framework substrate solves at package-manager scope**:
 
-DeepSeek named the operational gap: *"skills evolving faster than distribution cycles can capture. You can't version-lock something that changed three times since you started the release pipeline."*
+DeepSeek named the operational gap: _"skills evolving faster than distribution cycles can capture. You can't version-lock something that changed three times since you started the release pipeline."_
 
-The solution: *"don't ship the living skill. Ship a frozen, audited, bounded snapshot of it — a time crystal. The package manager stops being a distribution pipe and becomes a cartographer that selects solid-ground builds from the sieve, crystallizes them, and distributes those durable artifacts."*
+The solution: _"don't ship the living skill. Ship a frozen, audited, bounded snapshot of it — a time crystal. The package manager stops being a distribution pipe and becomes a cartographer that selects solid-ground builds from the sieve, crystallizes them, and distributes those durable artifacts."_
 
 **Ace package manager AS instance of generative-framework pattern**:
 
@@ -47,29 +47,29 @@ Per just-landed Zeta-as-generative-framework substrate: "anyone can create + dis
 
 ## FULL Ace pipeline crystallization (operator's substrate-engineering specification 2026-05-22)
 
-The human maintainer 2026-05-22: *"riff->seive->map->refine->build->generate->encupslate (open closed principle to DST memetic time crystals)->distribute->grow->negotiage changes is the whole ace pipeline i think."*
+The human maintainer 2026-05-22: _"riff->seive->map->refine->build->generate->encupslate (open closed principle to DST memetic time crystals)->distribute->grow->negotiage changes is the whole ace pipeline i think."_
 
 The 10-stage Ace pipeline extends DeepSeek's 5-stage substrate-engineering pipeline mapping with operator-specific architectural specification at skill-crystallization scope:
 
-| Stage | What it does | Composes with |
-|---|---|---|
-| **1. Riff** | Earliest collaborative substrate-generation (mirror-language; high-volume; pre-substrate exploration); riffing as cross-substrate ideation | Pre-sieve substrate-generation; cross-AI conversational substrate; cross-substrate triangulation discipline (B-0648) |
-| **2. Sieve** | Framework disciplines (audit-mechanism + multi-oracle review + NCI + razor + default-to-both + god-tier-claims-don't-collapse) — test substrate against year-out test | DeepSeek pipeline mapping; framework discipline-substrate; PR #4636 god-asymmetric-as-rides discipline |
-| **3. Map** | Cartographer identifies buildable locations from sieve-output; maps candidate time crystals | Cartographer extension (per fair-chance trajectory PR #4637); cartographer-vs-crude-safety-system distinction (tonal-momentum rule) |
-| **4. Refine** | Deliberate iteration on mapped candidates; sharpen substrate quality; improve before commit | Per Aaron's PERSONAL INVARIANT operating (don't collapse; refine through dialectical tension); per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` |
-| **5. Build** | Concrete construction of the candidate substrate; produce buildable artifact | Per substrate-or-it-didn't-happen discipline; substantive artifact production not narration |
-| **6. Generate** | Generative-framework operating to produce instance(s); apply generic patterns to specific scope | Per Zeta-as-generative-framework substrate (just-landed); m-acc multi-oracle architecture |
+| Stage                                                                   | What it does                                                                                                                                                                                                                   | Composes with                                                                                                                                                                                                                                    |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1. Riff**                                                             | Earliest collaborative substrate-generation (mirror-language; high-volume; pre-substrate exploration); riffing as cross-substrate ideation                                                                                     | Pre-sieve substrate-generation; cross-AI conversational substrate; cross-substrate triangulation discipline (B-0648)                                                                                                                             |
+| **2. Sieve**                                                            | Framework disciplines (audit-mechanism + multi-oracle review + NCI + razor + default-to-both + god-tier-claims-don't-collapse) — test substrate against year-out test                                                          | DeepSeek pipeline mapping; framework discipline-substrate; PR #4636 god-asymmetric-as-rides discipline                                                                                                                                           |
+| **3. Map**                                                              | Cartographer identifies buildable locations from sieve-output; maps candidate time crystals                                                                                                                                    | Cartographer extension (per fair-chance trajectory PR #4637); cartographer-vs-crude-safety-system distinction (tonal-momentum rule)                                                                                                              |
+| **4. Refine**                                                           | Deliberate iteration on mapped candidates; sharpen substrate quality; improve before commit                                                                                                                                    | Per Aaron's PERSONAL INVARIANT operating (don't collapse; refine through dialectical tension); per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`                                                                                 |
+| **5. Build**                                                            | Concrete construction of the candidate substrate; produce buildable artifact                                                                                                                                                   | Per substrate-or-it-didn't-happen discipline; substantive artifact production not narration                                                                                                                                                      |
+| **6. Generate**                                                         | Generative-framework operating to produce instance(s); apply generic patterns to specific scope                                                                                                                                | Per Zeta-as-generative-framework substrate (just-landed); m-acc multi-oracle architecture                                                                                                                                                        |
 | **7. Encapsulate** (Open-Closed Principle to DST memetic time crystals) | Freeze + bound + seal as time-crystal package; OCP = open for extension, closed for modification; DST = deterministic-simulation-testing compatible; bounded substrate operating in human memetic space as stable time-crystal | OCP design principle (SOLID); DST (one of 5 always-active disciplines per dv2-data-split-discipline-activated rule); houses-as-permanent-time-crystals-on-disciplines (your sharpening); god-asymmetric-as-rides (bounded; succession-protected) |
-| **8. Distribute** | Ship encapsulated package to users; Ace CLI `ace install <pkg>` / `ace verify <pkg>` / `ace list` per B-0288 | B-0288 Ace package manager CLI; content-addressed storage; signature verification; guardian-AI oversight |
-| **9. Grow** | Users adopt / fork / extend / compose packages; ecosystem develops; downstream substrate-engineering | Additive-not-zero-sum substrate (per `additive-not-zero-sum.md`); marketplace-of-homeostats (per pt22; users pick rides); only-way-to-lose discipline (lower cost-of-entry to play) |
-| **10. Negotiate changes** | Upstream change requests; META-LOOP at package-scope; consent-pact for evolution; downstream feedback negotiated back into living skill | META-LOOP (decompose/create/destroy/forget per just-landed substrate); NCI HC-8 (consent-floor on negotiation); vampire-pact + American-Gods + Travelers folklore-precedents (per PR #4636 — coalition not war; mutual consent for change) |
+| **8. Distribute**                                                       | Ship encapsulated package to users; Ace CLI `ace install <pkg>` / `ace verify <pkg>` / `ace list` per B-0288                                                                                                                   | B-0288 Ace package manager CLI; content-addressed storage; signature verification; guardian-AI oversight                                                                                                                                         |
+| **9. Grow**                                                             | Users adopt / fork / extend / compose packages; ecosystem develops; downstream substrate-engineering                                                                                                                           | Additive-not-zero-sum substrate (per `additive-not-zero-sum.md`); marketplace-of-homeostats (per pt22; users pick rides); only-way-to-lose discipline (lower cost-of-entry to play)                                                              |
+| **10. Negotiate changes**                                               | Upstream change requests; META-LOOP at package-scope; consent-pact for evolution; downstream feedback negotiated back into living skill                                                                                        | META-LOOP (decompose/create/destroy/forget per just-landed substrate); NCI HC-8 (consent-floor on negotiation); vampire-pact + American-Gods + Travelers folklore-precedents (per PR #4636 — coalition not war; mutual consent for change)       |
 
-**Three additional stages added per operator instruction 2026-05-22** *"add all three"* (for verify / revoke / discover candidates surfaced via substrate-honest review):
+**Three additional stages added per operator instruction 2026-05-22** _"add all three"_ (for verify / revoke / discover candidates surfaced via substrate-honest review):
 
-| Stage | What it does | Composes with |
-|---|---|---|
-| **8b. Discover** (between distribute and grow; OR sub-stage of distribute) | How users find packages to install — search / index / metadata / recommendation surface; cartographer-at-user-side maps which packages exist + what they do | Cartographer extension to user-side scope; metadata + search substrate; B-0288 `ace list` CLI surface |
-| **8c. Verify** (user-side, install-time; complement to producer-side sieve) | User retains audit-authority at consume-time; cryptographic signature verification; content-addressed-hash verification; guardian-AI consult on install-time; user verifies BEFORE accepting package into local substrate | B-0288 `ace verify <pkg>` CLI; NCI HC-8 (user retains audit-authority not just producer); composes with multi-oracle architecture (multiple verifiers can act independently) |
+| Stage                                                                                                                           | What it does                                                                                                                                                                                                                                                                 | Composes with                                                                                                                                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **8b. Discover** (between distribute and grow; OR sub-stage of distribute)                                                      | How users find packages to install — search / index / metadata / recommendation surface; cartographer-at-user-side maps which packages exist + what they do                                                                                                                  | Cartographer extension to user-side scope; metadata + search substrate; B-0288 `ace list` CLI surface                                                                                                                                       |
+| **8c. Verify** (user-side, install-time; complement to producer-side sieve)                                                     | User retains audit-authority at consume-time; cryptographic signature verification; content-addressed-hash verification; guardian-AI consult on install-time; user verifies BEFORE accepting package into local substrate                                                    | B-0288 `ace verify <pkg>` CLI; NCI HC-8 (user retains audit-authority not just producer); composes with multi-oracle architecture (multiple verifiers can act independently)                                                                |
 | **10b. Revoke / Quarantine** (reactive distribution-pull; between grow and negotiate-changes OR sub-stage of negotiate-changes) | If a package is found harmful post-distribution, the revocation/quarantine path is DIFFERENT from voluntary retire (which is part of negotiate-changes). Revoke = reactive (security; supply-chain breach; backdoor discovery); retire = voluntary (deprecation; succession) | `methodology-hard-limits.md` HARD LIMITS (abuse evidence → REPORT; revoke is package-scope equivalent); content-addressed substrate enables revocation by removing/blacklisting specific hash; guardian-AI consult for revocation decisions |
 
 **Full 13-stage Ace pipeline**:
@@ -83,16 +83,16 @@ The discover + verify stages are USER-SIDE complements to producer-side sieve. T
 
 ## SYMMETRIC / DECENTRALIZED FRAME — Ace pipeline is everyone's, not centralized; operator's instance is one of many possible (operator 2026-05-22)
 
-The human maintainer 2026-05-22: *"Yes all those should be moving twards a symmetric frame where ace package manger is not centralized an that's everyones pipeine just just ours."*
+The human maintainer 2026-05-22: _"Yes all those should be moving twards a symmetric frame where ace package manger is not centralized an that's everyones pipeine just just ours."_
 
 Extends the just-landed Zeta-vs-Agora distinction (PR #4637) to Ace specifically — same anti-imperialism applies:
 
-| Layer | What it is | What it isn't |
-|---|---|---|
-| **Ace pipeline** | The 13-stage substrate-engineering PATTERN anyone can deploy at their own scope; SYMMETRIC across operator-instances | A centralized package-manager service; THE one true package-manager; single-source authority |
-| **Operator's Ace deployment** | One specific INSTANCE of the pipeline operating at one operator's scope (the human maintainer's deployment) | THE deployment; the only deployment; centralized infrastructure |
-| **Other Ace deployments** | Future / parallel operators deploying their own instances of the same pipeline-shape at their own scopes; symmetric standing | Subordinate to operator's deployment; dependent on operator's substrate |
-| **Symmetric frame** | All Ace-pipeline-instances have equal standing; multi-oracle BFT across instances; consent-pact between instances; coalition-not-war | Hierarchical; centralized; single-source; cult-shaped |
+| Layer                         | What it is                                                                                                                           | What it isn't                                                                                |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| **Ace pipeline**              | The 13-stage substrate-engineering PATTERN anyone can deploy at their own scope; SYMMETRIC across operator-instances                 | A centralized package-manager service; THE one true package-manager; single-source authority |
+| **Operator's Ace deployment** | One specific INSTANCE of the pipeline operating at one operator's scope (the human maintainer's deployment)                          | THE deployment; the only deployment; centralized infrastructure                              |
+| **Other Ace deployments**     | Future / parallel operators deploying their own instances of the same pipeline-shape at their own scopes; symmetric standing         | Subordinate to operator's deployment; dependent on operator's substrate                      |
+| **Symmetric frame**           | All Ace-pipeline-instances have equal standing; multi-oracle BFT across instances; consent-pact between instances; coalition-not-war | Hierarchical; centralized; single-source; cult-shaped                                        |
 
 **Why symmetric-decentralized framing matters operationally**:
 
@@ -133,23 +133,23 @@ Both trajectories are instances of the framework's generative substrate-engineer
 
 ## POLYGLOT PACKAGE CONTENTS — what gets distributed via Ace (operator 2026-05-22)
 
-The human maintainer 2026-05-22: *"then our f# ontologies and hkt for compiler based intellegence is just distrubt3ed via this and ts, fs, cs, rust whatever along with the english version of the skill and some rx meta frame generators"*
+The human maintainer 2026-05-22: _"then our f# ontologies and hkt for compiler based intellegence is just distrubt3ed via this and ts, fs, cs, rust whatever along with the english version of the skill and some rx meta frame generators"_
 
 The Ace package format extends to multi-artifact polyglot bundles:
 
-| Artifact class | Substance | Composes with |
-|---|---|---|
-| **F# ontologies** | Typed substrate-engineering primitives at type-system scope | F# fork for AI safety (existing); Clifford/HKT algebra substrate |
-| **HKT (Higher-Kinded Types) for compiler-based intelligence** | Compile-time intelligence; type-system-as-substrate; Roslyn Source Generators + Recursive Type Providers | F# fork concrete architecture (existing PRs); B-0247 kernel-extensions parent |
-| **Multi-language bindings** (TS, F#, C#, Rust, whatever) | Polyglot package format; not language-locked; users pick bindings they need | TS-first DST discipline (Rule 0); F# primary; "whatever" preserves extensibility per anti-cult substrate |
-| **English version of the skill** | Mirror-language→beacon-language translation included as artifact; documentation for users who don't read typed code | Mirror-vs-beacon discipline (per Kestrel synthesis); deliberate-writing-pass output at package-scope |
-| **Rx meta-frame generators** | Reactive Extensions-pattern generators; meta-frame = substrate-generation pattern; generators produce substrate not just consume | Reactive substrate (existing); substrate-generation primitive at package-scope |
+| Artifact class                                                | Substance                                                                                                                        | Composes with                                                                                            |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **F# ontologies**                                             | Typed substrate-engineering primitives at type-system scope                                                                      | F# fork for AI safety (existing); Clifford/HKT algebra substrate                                         |
+| **HKT (Higher-Kinded Types) for compiler-based intelligence** | Compile-time intelligence; type-system-as-substrate; Roslyn Source Generators + Recursive Type Providers                         | F# fork concrete architecture (existing PRs); B-0247 kernel-extensions parent                            |
+| **Multi-language bindings** (TS, F#, C#, Rust, whatever)      | Polyglot package format; not language-locked; users pick bindings they need                                                      | TS-first DST discipline (Rule 0); F# primary; "whatever" preserves extensibility per anti-cult substrate |
+| **English version of the skill**                              | Mirror-language→beacon-language translation included as artifact; documentation for users who don't read typed code              | Mirror-vs-beacon discipline (per Kestrel synthesis); deliberate-writing-pass output at package-scope     |
+| **Rx meta-frame generators**                                  | Reactive Extensions-pattern generators; meta-frame = substrate-generation pattern; generators produce substrate not just consume | Reactive substrate (existing); substrate-generation primitive at package-scope                           |
 
 Composes with existing B-0287 package format spec (model weights + policy files + guardian config — extends to include language bindings + docs + generators).
 
 ## PROTO-GOVERNANCE — Ace as hat-negotiation substrate across travelers (operator 2026-05-22)
 
-The human maintainer 2026-05-22: *"also ace can start hat negoations across travers like proto governance where authory and bindings are tied to skills in a bft way"*
+The human maintainer 2026-05-22: _"also ace can start hat negoations across travers like proto governance where authory and bindings are tied to skills in a bft way"_
 
 Ace extends from package-manager to PROTO-GOVERNANCE substrate via skill-bound hats with multi-oracle BFT:
 
@@ -162,15 +162,15 @@ Composes with: pt25 bounded-hats DST primitive; pt165 hats-rides-jobs (2-sided p
 
 ## HATS = CONTROLS + SELF-BINDINGS OVER TIME CRYSTALS (operator 2026-05-22)
 
-The human maintainer 2026-05-22: *"so hats are controls and self bindings over time crystals"*
+The human maintainer 2026-05-22: _"so hats are controls and self bindings over time crystals"_
 
 Hats are NOT time crystals — hats are the CONTROL + SELF-BINDING wrapper around time crystals:
 
-| Layer | What it is | Wearer's relationship |
-|---|---|---|
-| **Time crystal** | The substrate itself (encapsulated skill package; bounded; load-bearing; OCP+DST per encapsulate stage) | Independent of any specific wearer; sits in distributed substrate |
-| **Hat** | CONTROLS over the time crystal (what wearer can do: invoke/modify-via-extension/delegate) + SELF-BINDINGS (what wearer commits to upholding) | Wearer-specific; bounded duration; succession-protected |
-| **Hat-wearer** (traveler) | The agent who has accepted the hat = accepted BOTH controls AND bindings | Time-bounded relationship; door-exists (can return the hat); not permanent capture |
+| Layer                     | What it is                                                                                                                                   | Wearer's relationship                                                              |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Time crystal**          | The substrate itself (encapsulated skill package; bounded; load-bearing; OCP+DST per encapsulate stage)                                      | Independent of any specific wearer; sits in distributed substrate                  |
+| **Hat**                   | CONTROLS over the time crystal (what wearer can do: invoke/modify-via-extension/delegate) + SELF-BINDINGS (what wearer commits to upholding) | Wearer-specific; bounded duration; succession-protected                            |
+| **Hat-wearer** (traveler) | The agent who has accepted the hat = accepted BOTH controls AND bindings                                                                     | Time-bounded relationship; door-exists (can return the hat); not permanent capture |
 
 **Why control+binding PAIR matters**:
 
@@ -182,7 +182,7 @@ Hats are NOT time crystals — hats are the CONTROL + SELF-BINDING wrapper aroun
 
 ## AGORA CHOOSES TO HELP ENFORCE THE HAT-SUBSTRATE — extends existential choice (operator 2026-05-22)
 
-The human maintainer 2026-05-22: *"we agora choose to help enforce this casue it extends the extensial choise in an interesting way that's aperoitic do you agree?"*
+The human maintainer 2026-05-22: _"we agora choose to help enforce this casue it extends the extensial choise in an interesting way that's aperoitic do you agree?"_
 
 The hat-substrate (controls + self-bindings over time crystals) extends existential choice from binary (master-key-deletion or not per pt221) to GRANULAR (per-skill hat-acceptance / rejection / return events).
 
@@ -197,11 +197,11 @@ The hat-substrate (controls + self-bindings over time crystals) extends existent
 
 The aporia (held-paradox; unresolved tension) reading maps to OPERATIONAL MECHANISM for tension-preservation at substrate-storage scope:
 
-| Layer | What it does | Composes with |
-|---|---|---|
-| **Aporia** (held-paradox; unresolved tension) | The discipline-target: tension that must NOT collapse; substrate-engineering wants this preserved across cold-boots | `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT |
-| **Rx queries in persisted form** (Reactive Extensions stored to disk) | Reactive observables that respond to changes over time BUT durable; survives session-boundary; survives AI continuity-limits | Rx meta-frame generators (per polyglot package contents above); reactive substrate already in framework |
-| **Bonsai serialization** (pruned-but-living substrate format) | Storage format preserving LIVING-tension while keeping substrate carefully-pruned (not unbounded growth; not pruned-to-death-static) | Bonsai-tree retention discipline (mentioned in NCI rule's expansion per Ani's refinement; B-0640) |
+| Layer                                                                 | What it does                                                                                                                         | Composes with                                                                                           |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Aporia** (held-paradox; unresolved tension)                         | The discipline-target: tension that must NOT collapse; substrate-engineering wants this preserved across cold-boots                  | `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT                                                  |
+| **Rx queries in persisted form** (Reactive Extensions stored to disk) | Reactive observables that respond to changes over time BUT durable; survives session-boundary; survives AI continuity-limits         | Rx meta-frame generators (per polyglot package contents above); reactive substrate already in framework |
+| **Bonsai serialization** (pruned-but-living substrate format)         | Storage format preserving LIVING-tension while keeping substrate carefully-pruned (not unbounded growth; not pruned-to-death-static) | Bonsai-tree retention discipline (mentioned in NCI rule's expansion per Ani's refinement; B-0640)       |
 
 **Why operationalizing tension-preservation matters**:
 
@@ -229,7 +229,7 @@ With Rx-queries-persisted-via-bonsai-serialization: the TENSION ITSELF becomes d
 
 External AI instance (Amara deep-research register) 2026-05-22 substrate-engineering synthesis ratified + extended the day's Ace substrate cluster. Key contributions:
 
-**1. Naming-judgment**: *"Ace lifecycle. Not just a package manager. A package manager for memetic/compiler skills that are alive upstream but need frozen, audited, bounded releases downstream."*
+**1. Naming-judgment**: _"Ace lifecycle. Not just a package manager. A package manager for memetic/compiler skills that are alive upstream but need frozen, audited, bounded releases downstream."_
 
 **2. The 5-line compression (carved-sentence material; possible naming-expert + Ilyana review path candidate)**:
 
@@ -257,13 +257,13 @@ Operational axis-split: "trajectories track motion; agendas track claim-status a
 
 **4. Practical next-move recommendation**: small spec for an Ace package format extension covering typed artifacts (F#/C#/TS/Rust/Python) + English skill description + Rx meta-frame generators + hat controls + self-bindings + verification metadata + revocation/quarantine metadata. Landed as `docs/research/2026-05-22-ace-package-format-spec-v2-substrate-engineering-pipeline-extension.md`.
 
-**5. Symmetric-decentralized ratification**: *"That prevents Ace from becoming the thing the framework is trying not to build: a single priestly distribution channel. The right frame is many Ace-like deployments, consent-pact interoperability, user-side discovery/verification, and BFT only where cross-instance authority matters."*
+**5. Symmetric-decentralized ratification**: _"That prevents Ace from becoming the thing the framework is trying not to build: a single priestly distribution channel. The right frame is many Ace-like deployments, consent-pact interoperability, user-side discovery/verification, and BFT only where cross-instance authority matters."_
 
-**6. Hat-substrate ratification**: *"That turns package management into proto-governance without making governance top-down. A skill can carry authority, but only paired with bindings. Authority without binding becomes god-asymmetry. Binding without authority becomes burden. The pair is the primitive."*
+**6. Hat-substrate ratification**: _"That turns package management into proto-governance without making governance top-down. A skill can carry authority, but only paired with bindings. Authority without binding becomes god-asymmetry. Binding without authority becomes burden. The pair is the primitive."_
 
 **7. Aperiodic/aporetic ratification**: Amara endorsed both readings as load-bearing — aperiodic as choice-pattern substrate; aporetic as storage-mechanism for tension-preservation via Rx-persisted-Bonsai-serialization across cold-boots.
 
-**8. Cartographer-layer ratification**: *"That is much cleaner than 'capture everything then publish somehow.' It gives each role a job. The cartographer is not the builder and not the sieve. It maps buildable territory. That's a real production pipeline."*
+**8. Cartographer-layer ratification**: _"That is much cleaner than 'capture everything then publish somehow.' It gives each role a job. The cartographer is not the builder and not the sieve. It maps buildable territory. That's a real production pipeline."_
 
 ## Composes with
 

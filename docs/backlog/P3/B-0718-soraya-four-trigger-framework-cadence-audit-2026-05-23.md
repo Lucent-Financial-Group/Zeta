@@ -27,7 +27,7 @@ composes_with:
 
 Soraya's round-61 forced-decomposition per self-named brief-ack-counter discipline. Six consecutive holds without ANY of the four named triggers firing is itself a signal worth surfacing for audit.
 
-Round-60 NOTEBOOK self-reference: *"If hold count reaches 6+ consecutive without ANY trigger firing, escalate per `holding-without-named-dependency-is-standing-by-failure.md` counter — current count is 4 (rounds 54, 55, 56, 58, 59, 60 = 6 holds with round 57 substantive in between). At 6+ post-substantive holds without trigger movement, switch to forced decomposition: file a P3 backlog row to audit whether the four-trigger framework itself needs sharpening."*
+Round-60 NOTEBOOK self-reference: _"If hold count reaches 6+ consecutive without ANY trigger firing, escalate per `holding-without-named-dependency-is-standing-by-failure.md` counter — current count is 4 (rounds 54, 55, 56, 58, 59, 60 = 6 holds with round 57 substantive in between). At 6+ post-substantive holds without trigger movement, switch to forced decomposition: file a P3 backlog row to audit whether the four-trigger framework itself needs sharpening."_
 
 Round 61 = hold #6 in the post-round-57 sequence. Trigger fires; this row IS the forced-decomposition output.
 
@@ -35,12 +35,12 @@ Round 61 = hold #6 in the post-round-57 sequence. Trigger fires; this row IS the
 
 Soraya's current routing-tick re-engagement triggers (named round 54, carried forward through rounds 55-60):
 
-| Trigger | What it watches for |
-|---|---|
-| (a) PR merge on filed Soraya rows | B-0717 subitem (b) execution starting; KNOWN_ANCHORS additions in `tools/alignment/concept_registry.ts` |
-| (b) Peer execution-side PR merge | E.g., PR #4780 (B-0711 Residuated FsCheck, 980/980 passing) |
-| (c) New BUGS.md entry naming formal tool | TLA+/Z3/Lean/Alloy/FsCheck/Stryker etc. in fix-clause |
-| (d) Fresh spec on main without anchor citation | Razor-discipline catches landed specs missing paper-anchors |
+| Trigger                                        | What it watches for                                                                                     |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| (a) PR merge on filed Soraya rows              | B-0717 subitem (b) execution starting; KNOWN_ANCHORS additions in `tools/alignment/concept_registry.ts` |
+| (b) Peer execution-side PR merge               | E.g., PR #4780 (B-0711 Residuated FsCheck, 980/980 passing)                                             |
+| (c) New BUGS.md entry naming formal tool       | TLA+/Z3/Lean/Alloy/FsCheck/Stryker etc. in fix-clause                                                   |
+| (d) Fresh spec on main without anchor citation | Razor-discipline catches landed specs missing paper-anchors                                             |
 
 ## Two competing hypotheses to test
 

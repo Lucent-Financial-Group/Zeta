@@ -13,7 +13,6 @@ decomposition: decomposed
 owners: [algebra-owner]
 type: feature
 tags: [algebra, uncertainty, semiring, bayesian, inference, openspec]
-
 ---
 
 # B-0367 — First-class uncertainty in DBSP
@@ -80,15 +79,15 @@ ZSet<'K, 'W when 'W : ISemiring>
 
 Candidate weight types:
 
-| Semiring | Weight | Answers | Ring? |
-|---|---|---|---|
-| Integer (current) | int64 | multiplicity + retraction | yes |
-| Boolean | bool | exists? | no |
-| Tropical | (float, min, +) | shortest path / confidence | no |
-| Probabilistic | [0,1] | how likely? | no |
-| Gaussian | (μ, σ²) | estimate + uncertainty | yes |
-| Interval | [lo, hi] | bounded uncertainty | yes |
-| Provenance | polynomial | which inputs contributed? | yes |
+| Semiring          | Weight          | Answers                    | Ring? |
+| ----------------- | --------------- | -------------------------- | ----- |
+| Integer (current) | int64           | multiplicity + retraction  | yes   |
+| Boolean           | bool            | exists?                    | no    |
+| Tropical          | (float, min, +) | shortest path / confidence | no    |
+| Probabilistic     | [0,1]           | how likely?                | no    |
+| Gaussian          | (μ, σ²)         | estimate + uncertainty     | yes   |
+| Interval          | [lo, hi]        | bounded uncertainty        | yes   |
+| Provenance        | polynomial      | which inputs contributed?  | yes   |
 
 ## Key design decisions
 
@@ -136,7 +135,7 @@ Candidate weight types:
 - [ ] `Weight` type is generic with ISemiring constraint
 - [ ] Integer path performance unchanged (zero regression)
 - [ ] At least one non-integer semiring compiles and
-  passes a smoke test (Gaussian or Interval)
+      passes a smoke test (Gaussian or Interval)
 - [ ] OpenSpec can express uncertainty in spec output
 - [ ] Z3 lemmas generalize to semiring axioms
 
@@ -158,12 +157,12 @@ on the datetime" + "there is tidb we should research this
 actually and decide if we want to support multiple and make
 it pluggable."
 
-| System | Timestamp model | Uncertainty primitive |
-|---|---|---|
-| Spanner | TrueTime (GPS + atomic) | `[earliest, latest]` interval; commit-wait |
-| CockroachDB | HLC (Lamport + wall-clock) | Read uncertainty restart window |
-| TiDB | TSO (centralized oracle) | Single-point, no interval |
-| YugabyteDB | HLC variant | Similar to CockroachDB |
+| System      | Timestamp model            | Uncertainty primitive                      |
+| ----------- | -------------------------- | ------------------------------------------ |
+| Spanner     | TrueTime (GPS + atomic)    | `[earliest, latest]` interval; commit-wait |
+| CockroachDB | HLC (Lamport + wall-clock) | Read uncertainty restart window            |
+| TiDB        | TSO (centralized oracle)   | Single-point, no interval                  |
+| YugabyteDB  | HLC variant                | Similar to CockroachDB                     |
 
 Lamport's logical clocks → Spanner's TrueTime intervals →
 Zeta's weight semiring intervals. Three instantiations of

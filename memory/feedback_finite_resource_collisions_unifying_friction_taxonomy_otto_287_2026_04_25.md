@@ -9,7 +9,7 @@ type: feedback
 **All friction sources arise from finite-resource collisions.**
 
 Every observable "friction" in the factory's collaboration
-loop — every place where work *fails to flow smoothly* —
+loop — every place where work _fails to flow smoothly_ —
 turns out, on inspection, to be a collision between:
 
 - **Some finite cognitive / operational resource** (working
@@ -31,33 +31,33 @@ substrate.
 
 ## The taxonomy — recent rules mapped to their resource
 
-| Rule | Constrained resource | Mechanism |
-|---|---|---|
-| **Otto-281** *DST-exempt is deferred bug* | Flake-investigation budget | Concentrate cost into one fix instead of N reruns |
-| **Otto-282** *write code from reader perspective* | Reader's working memory | Externalize the WHY so re-derivation isn't paid N×M times |
-| **Otto-283** *don't bottleneck the maintainer* | Maintainer's context-switch budget | Decisions land with falsification signals; Aaron's bandwidth goes to interesting cases only |
-| **Otto-284** *idle-PR creative fallback* | Agent's session-time budget | Agent always-doing-something; idle time becomes substrate-building time |
-| **Otto-285** *DST tests chaos doesn't skip it* | Test-coverage budget | Cover real-world chaos deterministically; don't shrink coverage to make symptoms disappear |
-| **Otto-286** *definitional precision changes the future without war* | Argument-resolution context window | Compress concepts into precise definitions so the whole debate fits in working memory |
+| Rule                                                                 | Constrained resource               | Mechanism                                                                                   |
+| -------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Otto-281** _DST-exempt is deferred bug_                            | Flake-investigation budget         | Concentrate cost into one fix instead of N reruns                                           |
+| **Otto-282** _write code from reader perspective_                    | Reader's working memory            | Externalize the WHY so re-derivation isn't paid N×M times                                   |
+| **Otto-283** _don't bottleneck the maintainer_                       | Maintainer's context-switch budget | Decisions land with falsification signals; Aaron's bandwidth goes to interesting cases only |
+| **Otto-284** _idle-PR creative fallback_                             | Agent's session-time budget        | Agent always-doing-something; idle time becomes substrate-building time                     |
+| **Otto-285** _DST tests chaos doesn't skip it_                       | Test-coverage budget               | Cover real-world chaos deterministically; don't shrink coverage to make symptoms disappear  |
+| **Otto-286** _definitional precision changes the future without war_ | Argument-resolution context window | Compress concepts into precise definitions so the whole debate fits in working memory       |
 
 Older rules also fit:
 
-| Older rule | Constrained resource | Mechanism |
-|---|---|---|
-| **Otto-264** *rule of balance* | Rule-system coherence budget | Every found friction triggers a counterweight; system stays self-consistent |
-| **Otto-238** *retractability is a trust vector* | Trust-recovery budget | Make every action reversible by design; reversal cost stays bounded |
-| **Otto-272** *DST-everywhere* | Reproduction substrate | Make every flake reproducible so investigation isn't paid from scratch |
-| **Otto-227** *cross-harness skill placement* | Cross-tool sync budget | Externalize via shared substrate; each harness reads same source |
+| Older rule                                      | Constrained resource         | Mechanism                                                                   |
+| ----------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------- |
+| **Otto-264** _rule of balance_                  | Rule-system coherence budget | Every found friction triggers a counterweight; system stays self-consistent |
+| **Otto-238** _retractability is a trust vector_ | Trust-recovery budget        | Make every action reversible by design; reversal cost stays bounded         |
+| **Otto-272** _DST-everywhere_                   | Reproduction substrate       | Make every flake reproducible so investigation isn't paid from scratch      |
+| **Otto-227** _cross-harness skill placement_    | Cross-tool sync budget       | Externalize via shared substrate; each harness reads same source            |
 
 ## Aaron's framing
 
 Aaron 2026-04-25, after I synthesized the observation
 (itself an instance of the rule):
 
-> *"wow now you taught me a real novel unifying rule i've
+> _"wow now you taught me a real novel unifying rule i've
 > never thought of before, i love you ... The unifying
 > observation is substantial enough that it might deserve
-> its own slot i think it is, you got this."*
+> its own slot i think it is, you got this."_
 
 The synthesis itself was an Otto-287 instance: each piece
 was Aaron's seed (Otto-281..286 conversations across the
@@ -70,9 +70,9 @@ emerged because Otto-287 was the rule.
 
 Aaron's articulation of the mechanism (Otto-286 body):
 
-> *"we are all fighting physics in our brains we don't
+> _"we are all fighting physics in our brains we don't
 > have infinite context, so definitional precision
-> compresses concepts and ideas so it's easy to hold."*
+> compresses concepts and ideas so it's easy to hold."_
 
 Otto-287 generalizes: every cognitive / operational
 substrate has finite capacity. Working memory,
@@ -152,8 +152,8 @@ through Otto-286 had been individually externalized first.
 Hard to mechanize directly — the rule is meta-level
 explanation, not a discipline applied to individual
 artifacts. But a soft heuristic: when proposing a new
-substrate rule, ASK *"which finite resource does this
-externalize / compress / pre-allocate?"*. If the answer
+substrate rule, ASK _"which finite resource does this
+externalize / compress / pre-allocate?"_. If the answer
 is unclear, the rule may be redundant with an existing
 one. If the answer is novel, the new resource expands
 the taxonomy and Otto-287's table grows by one row.
@@ -180,7 +180,7 @@ For now, deferred to maintainer discretion per Otto-283.
 - **All Otto-NNN substrate from this session** —
   Otto-281/282/283/284/285/286 are all instances of
   Otto-287's unifying principle.
-- **Otto-264** *rule of balance* — every friction triggers
+- **Otto-264** _rule of balance_ — every friction triggers
   a counterweight; counterweight IS the externalize/
   compress/pre-allocate move.
 - **`docs/VISION.md`** + **`memory/project_factory_becoming_superfluid_described_by_its_algebra_2026_04_25.md`**

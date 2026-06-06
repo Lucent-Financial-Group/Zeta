@@ -26,21 +26,22 @@ _Sourced from [YamlDotNet's releases](https://github.com/aaubry/YamlDotNet/relea
 ## 18.0.0
 
 ## What's Changed
-* Add a parse method wrapper and caching to fix AoT compilation by @EdwardCooke in https://github.com/aaubry/YamlDotNet/pull/1103
-    **BREAKING CHANGE** This is a breaking change in the `TypeInspectorSkeleton` class and the `ITypeInspector` interface by adding 2 methods . Quick fix to resolve those breaking changes in your own custom TypeInspector is to return false on the HasParseMethod method and return null or throw an exception on the Parse method.
 
+- Add a parse method wrapper and caching to fix AoT compilation by @EdwardCooke in https://github.com/aaubry/YamlDotNet/pull/1103
+  **BREAKING CHANGE** This is a breaking change in the `TypeInspectorSkeleton` class and the `ITypeInspector` interface by adding 2 methods . Quick fix to resolve those breaking changes in your own custom TypeInspector is to return false on the HasParseMethod method and return null or throw an exception on the Parse method.
 
 **Full Changelog**: https://github.com/aaubry/YamlDotNet/compare/v17.1.0...v18.0.0
 
 Commits viewable in [compare view](https://github.com/aaubry/YamlDotNet/compare/v17.1.0...v18.0.0).
+
 </details>
 
 [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=YamlDotNet&package-manager=nuget&previous-version=17.1.0&new-version=18.0.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
 
 Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
 
-[//]: # (dependabot-automerge-start)
-[//]: # (dependabot-automerge-end)
+[//]: # "dependabot-automerge-start"
+[//]: # "dependabot-automerge-end"
 
 ---
 
@@ -49,13 +50,13 @@ Dependabot will resolve any conflicts with this PR as long as you don't alter it
 <br />
 
 You can trigger Dependabot actions by commenting on this PR:
+
 - `@dependabot rebase` will rebase this PR
 - `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
 - `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
 - `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
 - `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
 - `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
-
 
 </details>
 
@@ -76,7 +77,6 @@ Reviewed and approved. The breaking change is noted and the remediation is clear
 ### Labels
 
 The following labels could not be found: `dependencies`. Please create it before Dependabot can add it to a pull request.
-
 
 Please fix the above issues or remove invalid values from `dependabot.yml`.
 

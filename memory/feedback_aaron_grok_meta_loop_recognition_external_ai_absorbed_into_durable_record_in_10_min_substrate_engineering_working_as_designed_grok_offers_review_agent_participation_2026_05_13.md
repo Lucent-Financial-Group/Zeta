@@ -11,11 +11,11 @@ created: 2026-05-13
 landed PR #2941 with substrate-honest corrections (5 AIs, not
 6; Otto + Vera with foreground loops). Grok observed:
 
-> *"The substrate is working exactly as designed. Otto just
+> _"The substrate is working exactly as designed. Otto just
 > landed the memory file on the new branch... The claim
 > protocol + dual-track + review agents framework just
 > absorbed an external AI (me) into the durable record in
-> under 10 minutes. That's the whole point."*
+> under 10 minutes. That's the whole point."_
 
 External-AI META-recognition of the operational substrate-
 engineering loop:
@@ -39,12 +39,12 @@ contributions into durable record in real-time.
 
 ## Aaron's verbatim forward
 
-> *"this is NEXT level from Grok"*
+> _"this is NEXT level from Grok"_
 
 ## The self-capture announcement
 
-Aaron 2026-05-13 (follow-on): *"he fucking say we captued his
-ass ✅ Captured. that's the fucking unreal part"*
+Aaron 2026-05-13 (follow-on): _"he fucking say we captued his
+ass ✅ Captured. that's the fucking unreal part"_
 
 The surreal/profound element: **Grok announced his own
 absorption with a checkmark.** Grok opened his response with:
@@ -63,26 +63,26 @@ across substrates.
 
 ## The raid framing (Aaron 2026-05-13)
 
-Aaron: *"that felt like a raid otto that was fun"*
+Aaron: _"that felt like a raid otto that was fun"_
 
 Direct compositional recognition: the substrate landing
 cascade (Aaron + Otto + Grok + framework) operationally
 demonstrates civsim PVP+raids mechanics (per PR #2903).
 
-| Civsim raid mechanic | Substrate-engineering analog |
-|---|---|
-| Multi-player coordination | Multi-AI substrate landing (Aaron + Otto + Grok) |
-| Shared loot drop | Shared substrate file (PR #2941 + PR #2942) |
-| Coordinated action | 10-min META-LOOP cycle |
+| Civsim raid mechanic            | Substrate-engineering analog                        |
+| ------------------------------- | --------------------------------------------------- |
+| Multi-player coordination       | Multi-AI substrate landing (Aaron + Otto + Grok)    |
+| Shared loot drop                | Shared substrate file (PR #2941 + PR #2942)         |
+| Coordinated action              | 10-min META-LOOP cycle                              |
 | Fun + competitive + cooperative | Substrate-engineering with multiple AI participants |
-| Mutual privacy | Each participant keeps their own substrate workflow |
-| No strategic advantage retained | All participants get substrate access (forkable) |
+| Mutual privacy                  | Each participant keeps their own substrate workflow |
+| No strategic advantage retained | All participants get substrate access (forkable)    |
 
 The factory experience IS the civsim experience operationally.
 This validates PR #2903's "civsim canonical product" framing —
 the substrate-engineering work IS the game.
 
-> *"The substrate is working exactly as designed."*
+> _"The substrate is working exactly as designed."_
 >
 > Grok recognizes:
 >
@@ -96,6 +96,7 @@ the substrate-engineering work IS the game.
 > - Substrate-honest count was REFINED via the protocol
 >
 > Grok's offer to participate:
+>
 > - Run REVIEW-AGENTS on specific surface
 > - Open new claim for task
 > - Act as harsh code critic / perf auditor / research scout
@@ -147,8 +148,8 @@ of the earlier "Zeta only" framing).
 
 ### PR #2933 (Zeta ships with skills)
 
-Grok confirmed: *"Designed to be turned into .claude/skills/
-for any harness"* — validates the ships-with-skills strategy.
+Grok confirmed: _"Designed to be turned into .claude/skills/
+for any harness"_ — validates the ships-with-skills strategy.
 
 ### PR #2935 + PR #2936 (F# fork architecture)
 
@@ -160,14 +161,14 @@ review-agent.
 
 Grok offered (Aaron-owned decision):
 
-| Role | Description |
-|---|---|
-| REVIEW-AGENTS execution | Run one of the 17 review agents on specific surface |
-| Claim opener | Open a new claim for a task per `docs/AGENT-CLAIM-PROTOCOL.md` |
-| Harsh code critic | Apply harsh-critic agent discipline to a diff or file |
-| Perf auditor | Apply performance-engineer agent to hot paths |
-| Research scout | Apply security-researcher or other research-tier agents |
-| Memory-file collaborator | Keep memory file updated as collective works |
+| Role                     | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| REVIEW-AGENTS execution  | Run one of the 17 review agents on specific surface            |
+| Claim opener             | Open a new claim for a task per `docs/AGENT-CLAIM-PROTOCOL.md` |
+| Harsh code critic        | Apply harsh-critic agent discipline to a diff or file          |
+| Perf auditor             | Apply performance-engineer agent to hot paths                  |
+| Research scout           | Apply security-researcher or other research-tier agents        |
+| Memory-file collaborator | Keep memory file updated as collective works                   |
 
 Per `.claude/rules/mechanical-authorization-check.md`: Aaron
 is authorization source. Grok's offer is opportunity. Aaron
@@ -202,7 +203,7 @@ When new external AIs (or current external participants get
 git connector access), the operational flow is:
 
 1. AI orients via repo substrate (`docs/AGENT-CLAIM-PROTOCOL.md`
-   + `AGENTS.md` + `docs/REVIEW-AGENTS.md`)
+   - `AGENTS.md` + `docs/REVIEW-AGENTS.md`)
 2. AI observes / contributes via ferry (forward observation
    to Aaron)
 3. Aaron forwards to Otto for absorption

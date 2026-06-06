@@ -75,7 +75,7 @@ Aaron Otto-21 directive (verbatim):
   pass when Craft v1 content starts to draft — use
   firstmovers.ai to calibrate vibe / framing / adoption-
   story for the factory's AI-first education positioning.
-  **Attribution care**: absorb the *vibe* Aaron gestures at,
+  **Attribution care**: absorb the _vibe_ Aaron gestures at,
   not any specific methodology Julia espouses without
   independent review. Her methodology may or may not align
   with the factory's alignment floor + universal-welcome
@@ -170,7 +170,7 @@ Aaron Otto-22 verbatim sharpening:
 
 Aaron Otto-22 immediate correction on the word:
 
-> for those *who* really care
+> for those _who_ really care
 
 The "we" was a typo for "who". Corrected reading:
 **theoretical is extra / opt-in for those who really
@@ -195,47 +195,50 @@ Three load-bearing claims:
 Aaron establishes a **default applied track** + **optional
 opt-in theoretical track** structure:
 
-| Track | Audience | Content shape | Budget | Default? |
-|---|---|---|---|---|
-| **Applied (default)** | Everyone; the path for everyone | *When* to use a formula/tool, *how* to call it, *why* it fits this problem; practical applications; real-world anchors | Majority of module coverage | **YES — the default** |
-| **Theoretical (opt-in)** | Learners who really care to go deep; self-selected | First-principles derivation of the formula/tool; why it works mathematically; what properties it has | Minority; deep-dive track | **NO — explicit opt-in; available broadly for self-motivated learners** |
+| Track                    | Audience                                           | Content shape                                                                                                          | Budget                      | Default?                                                                |
+| ------------------------ | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------- |
+| **Applied (default)**    | Everyone; the path for everyone                    | _When_ to use a formula/tool, _how_ to call it, _why_ it fits this problem; practical applications; real-world anchors | Majority of module coverage | **YES — the default**                                                   |
+| **Theoretical (opt-in)** | Learners who really care to go deep; self-selected | First-principles derivation of the formula/tool; why it works mathematically; what properties it has                   | Minority; deep-dive track   | **NO — explicit opt-in; available broadly for self-motivated learners** |
 
 ### Three examples of applied-over-theoretical
 
 **Example 1: calculus integration (if taught in Craft)**
-- Applied: *"When you need the area under a curve, press
+
+- Applied: _"When you need the area under a curve, press
   the integral button. When it's a polynomial, integration
   gives you the anti-derivative. Common use cases: physics
-  displacement from velocity, cumulative probability."*
-- Theoretical: *"The Riemann integral is defined as the
+  displacement from velocity, cumulative probability."_
+- Theoretical: _"The Riemann integral is defined as the
   limit of Riemann sums; proof that continuous functions
-  are integrable; construction of the Lebesgue integral."*
+  are integrable; construction of the Lebesgue integral."_
 
 **Example 2: DBSP retraction**
-- Applied: *"When a row is deleted from the source, Zeta
+
+- Applied: _"When a row is deleted from the source, Zeta
   automatically retracts it downstream. You call `D` to
   compute the change; you call `I` to integrate it back
-  into state. Common use: incremental view maintenance."*
-- Theoretical: *"Z-set algebra over signed-integer semiring;
+  into state. Common use: incremental view maintenance."_
+- Theoretical: _"Z-set algebra over signed-integer semiring;
   proof that D is a homomorphism; retraction as algebraic
-  inverse; construction of the operator category."*
+  inverse; construction of the operator category."_
 
 **Example 3: Bloom filter**
-- Applied: *"When you need approximate set membership with
+
+- Applied: _"When you need approximate set membership with
   a tiny memory footprint, a Bloom filter tells you 'maybe
   present' or 'definitely absent'. Use it for dedup
-  pre-checks, routing decisions, caching admission."*
-- Theoretical: *"False-positive rate derivation; optimal
+  pre-checks, routing decisions, caching admission."_
+- Theoretical: _"False-positive rate derivation; optimal
   k-hash-function choice; double-hashing via Kirsch-
   Mitzenmacher; blocked-Bloom cache-line analysis;
-  counting-Bloom 4-bit bucket saturation bounds."*
+  counting-Bloom 4-bit bucket saturation bounds."_
 
 ### Calculator analogy as the primary-track heuristic
 
 **"Could a calculator do this formula?"** is the sorting
 question for primary-track content:
 
-- YES → teach *when/how/why* to press the button (primary-
+- YES → teach _when/how/why_ to press the button (primary-
   track material)
 - NO / only-sometimes → theoretical-track material
 
@@ -245,25 +248,26 @@ job" is primary-track.
 
 ### Theoretical track is voluntary, not impoverished
 
-Aaron's *"those who want to go very very deep"* — the
+Aaron's _"those who want to go very very deep"_ — the
 theoretical track exists and is respected, not dismissed.
 Future specialists (library-builders, researchers,
 paper-authors, tool-builders) need the theoretical track.
 The structure respects both audiences.
 
 ### Composition with Otto-16 samples-audience + Otto-21
+
 tool-use
 
 Full picture now:
 
-| Audience | Sample style | Curriculum track | Goal |
-|---|---|---|---|
-| Newcomer / learner | Learning samples (plain types) | Applied (primary) | Time-to-first-understanding; tool-use |
-| Researcher / deep specialist | Research samples (paper-grade) | Theoretical (secondary) | Time-to-verify-claim; tool-construction / foundations |
-| Production user | Production code | — (they ship, not learn here) | Zero-alloc + discipline |
-| Tests | Mixed by property | — | Contract preservation |
+| Audience                     | Sample style                   | Curriculum track              | Goal                                                  |
+| ---------------------------- | ------------------------------ | ----------------------------- | ----------------------------------------------------- |
+| Newcomer / learner           | Learning samples (plain types) | Applied (primary)             | Time-to-first-understanding; tool-use                 |
+| Researcher / deep specialist | Research samples (paper-grade) | Theoretical (secondary)       | Time-to-verify-claim; tool-construction / foundations |
+| Production user              | Production code                | — (they ship, not learn here) | Zero-alloc + discipline                               |
+| Tests                        | Mixed by property              | —                             | Contract preservation                                 |
 
-Clean composition: learning samples + applied track + 
+Clean composition: learning samples + applied track +
 research samples + theoretical track are the same
 audience-appropriate discipline across two substrates
 (samples + Craft modules).
@@ -284,17 +288,17 @@ reduce the concepts-needed-in-any-one-unit; import /
 reference the rest via well-defined boundaries; keep each
 unit focused on its own concept.
 
-| Axis | Code | Pedagogy (Craft) |
-|---|---|---|
-| Unit | One class / one module | One lesson / one Craft module |
-| Imports / prereqs | `using X` / `import X` | "Prerequisite: <seed-term>" / "See module: <other>" |
-| Scope boundary | Class public API | Lesson stated-scope |
-| Beyond-scope | Reference + link | Reference + link |
-| Deep-dive | Secondary (implementation internals) | Theoretical track (opt-in) |
-| Primary job | Use the class / library correctly | Use the concept / tool correctly |
+| Axis              | Code                                 | Pedagogy (Craft)                                    |
+| ----------------- | ------------------------------------ | --------------------------------------------------- |
+| Unit              | One class / one module               | One lesson / one Craft module                       |
+| Imports / prereqs | `using X` / `import X`               | "Prerequisite: <seed-term>" / "See module: <other>" |
+| Scope boundary    | Class public API                     | Lesson stated-scope                                 |
+| Beyond-scope      | Reference + link                     | Reference + link                                    |
+| Deep-dive         | Secondary (implementation internals) | Theoretical track (opt-in)                          |
+| Primary job       | Use the class / library correctly    | Use the concept / tool correctly                    |
 
-**Aaron's closure**: *"okay i think that's enough analogies,
-you got it."* — directive-absorption complete; no more
+**Aaron's closure**: _"okay i think that's enough analogies,
+you got it."_ — directive-absorption complete; no more
 analogies needed. Execute.
 
 **Implication for Craft execution**: apply the same
@@ -368,6 +372,7 @@ mastery: use-first, build-if-interested.
 For Zeta as a taught subject in Craft:
 
 **Primary curriculum** (tool-use):
+
 - How to query with Z-set operators (user's perspective)
 - How to pipeline retraction-native queries (pattern
   composition)
@@ -377,6 +382,7 @@ For Zeta as a taught subject in Craft:
   (tool-choice)
 
 **Secondary curriculum** (tool-construction):
+
 - How Z-set algebra is implemented (for algebra-builders)
 - How retraction is implemented (for DB-internals builders)
 - How the operator-composition preserves invariants
@@ -432,6 +438,7 @@ For every Craft module:
 ### Examples
 
 **Z-set algebra module** (primary):
+
 - Anchor: a tally counter on a market stall — each item
   adds or subtracts a count
 - Abstract: signed-integer weights; retraction via
@@ -440,11 +447,13 @@ For every Craft module:
   (retraction) and restocks (insertion)
 
 **Retraction module** (primary):
+
 - Anchor: an undo button on a web form
 - Abstract: every insert has a retractable partner
 - Running example: edit history in a document
 
 **Operator composition module** (primary):
+
 - Anchor: LEGO blocks snapping together
 - Abstract: algebraic laws preserved through pipeline
 - Running example: building a dashboard pipeline from
@@ -454,8 +463,8 @@ For every Craft module:
 
 Aaron's claim matches cognitive science: concrete-then-
 abstract sequences outperform abstract-then-concrete for
-the majority of learners (see Bransford et al., *How
-People Learn*). AI-first schools of the future — per
+the majority of learners (see Bransford et al., _How
+People Learn_). AI-first schools of the future — per
 Julia McCoy's framing — preserve this discipline because
 AI coaches can offer per-learner anchor variety at scale.
 
@@ -465,7 +474,7 @@ AI coaches can offer per-learner anchor variety at scale.
 - **Pedagogy**: tool-use-first, tool-construction optional
 - **Grounding**: every concept has a real-world anchor
 - **Reference points**: Khan Academy (scale + accessibility)
-  + Julia McCoy (AI-first schools-of-the-future framing)
+  - Julia McCoy (AI-first schools-of-the-future framing)
 - **Brand-clearance**: "Craft" is common-word; trademark-
   class check at public-facing adoption time; internal
   working name until then
@@ -597,12 +606,12 @@ Pre-built prereq-sorted sequences for common goals:
 - `zero-to-distributed-systems.md` — general CS ascent
 
 Ascent paths are the concrete instantiation of Aaron's
-*"anyone can get up to speed with all our projects"*.
+_"anyone can get up to speed with all our projects"_.
 
 ## Strategy: backwards-chain from current-project needs
 
-Aaron's *"start with what we actually need first and work
-our way backwards through prereqs over time"* is the
+Aaron's _"start with what we actually need first and work
+our way backwards through prereqs over time"_ is the
 complexity-managed rollout plan.
 
 ### Phase 1 — Zeta-shaped current needs (what we have today)
@@ -613,6 +622,7 @@ concept-shortlist, write the modules at the contributor
 level, stop. No prereqs-before-contributors for this phase.
 
 Example candidate concepts:
+
 - Z-set algebra (what, not why-not-alternatives)
 - Retraction-native operator intuition (D/I/z⁻¹/H)
 - DBSP vs. Differential Dataflow (when each is right)
@@ -625,6 +635,7 @@ When a Phase 1 module has an implicit prereq that a new
 contributor might not have, add a Phase 2 module for it.
 
 Example candidates:
+
 - Group theory basics (prereq for Z-set algebra)
 - Monotone operators (prereq for operator composition)
 - Schedulers / scheduling (prereq for factory autonomous-loop)
@@ -700,7 +711,7 @@ discipline extends to pedagogy:
 
 ## Authority + delegation
 
-Aaron 2026-04-23: *"we can backlog all this too"* —
+Aaron 2026-04-23: _"we can backlog all this too"_ —
 explicit authorization to file BACKLOG rows, start the
 substrate.
 
@@ -730,7 +741,7 @@ Schoolhouse serves those audiences + expands the roster:
   self-assessment-gates). Defer creation until ascent
   paths exist.
 
-Aaron's Otto-16 *"not sure"* about audience-persona expansion
+Aaron's Otto-16 _"not sure"_ about audience-persona expansion
 composes here: don't invent pedagogy-reviewer until
 Schoolhouse content makes the case.
 

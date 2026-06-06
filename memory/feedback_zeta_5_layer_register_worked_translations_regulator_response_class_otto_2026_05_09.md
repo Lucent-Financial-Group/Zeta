@@ -46,7 +46,7 @@ Same inquiry, five layers below.
 
 Audience: maintainer's private substrate; close peer in explicitly bilateral peer register
 
-> *FINRA wants the full rundown on our position-aggregation stack. okay. the real answer: Zeta.Core is doing this and it's actually solid — 94% coverage on the operator algebra, the FsCheck suites are real, the deterministic simulation tests run against historical trading data. the embarrassing parts: three open TODOs on position-netting under conflicting timestamps (#347, #349, #352). nothing has fired in prod and we're not hiding them from ourselves, they're in the issue tracker. but now i have to put them in a FINRA response and figure out how honest to be. here's the thing though — being fully honest is the only play. if they find #347 in a follow-up audit and it wasn't in our response we're cooked. and the compliance sign-off gap — we don't have a formal step in the deploy process before prod. that's real. it's fixable. i'm going to document the fix plan and put it in the response. the whole point is that regulators are actually fine with "here's a gap and here's when we're fixing it" — they're not fine with "we have no gaps" followed by finding gaps.*
+> _FINRA wants the full rundown on our position-aggregation stack. okay. the real answer: Zeta.Core is doing this and it's actually solid — 94% coverage on the operator algebra, the FsCheck suites are real, the deterministic simulation tests run against historical trading data. the embarrassing parts: three open TODOs on position-netting under conflicting timestamps (#347, #349, #352). nothing has fired in prod and we're not hiding them from ourselves, they're in the issue tracker. but now i have to put them in a FINRA response and figure out how honest to be. here's the thing though — being fully honest is the only play. if they find #347 in a follow-up audit and it wasn't in our response we're cooked. and the compliance sign-off gap — we don't have a formal step in the deploy process before prod. that's real. it's fixable. i'm going to document the fix plan and put it in the response. the whole point is that regulators are actually fine with "here's a gap and here's when we're fixing it" — they're not fine with "we have no gaps" followed by finding gaps._
 
 What's preserved: honest technical assessment, named gaps with issue numbers, the core strategic insight about gap-disclosure (regulators are fine with disclosed gaps; they are not fine with undisclosed gaps discovered in audit), honest acknowledgment of the compliance process gap.
 
@@ -154,6 +154,7 @@ Audience: SOC 2 auditor reviewing the firm's documented response; legal counsel 
 > **ITEM (a): Automated systems used to calculate or aggregate regulatory report figures**
 >
 > **System identification**:
+>
 > - Name: `Zeta.Core`
 > - Version deployed in regulatory reporting pipeline as of date of submission: v2.3.1
 > - Deployment date of current version: [date, ISO 8601]
@@ -183,11 +184,11 @@ Audience: SOC 2 auditor reviewing the firm's documented response; legal counsel 
 >
 > **Known test gaps disclosed**: Three edge cases in the position-netting logic are documented as open issues in the project's issue tracker:
 >
-> | Issue | Description | Priority | Remediation target | Scheduled date |
-> |-------|-------------|----------|-------------------|----------------|
-> | #347 | Position-netting under conflicting timestamps from concurrent feed sources | High | v2.3.2 | [date, ISO 8601] |
-> | #349 | Position-netting under conflicting timestamps — boundary condition at feed synchronization point | Medium | v2.4.0 | [date, ISO 8601] |
-> | #352 | Position-netting under conflicting timestamps — recovery after feed reconnection | Medium | v2.4.0 | [date, ISO 8601] |
+> | Issue | Description                                                                                      | Priority | Remediation target | Scheduled date   |
+> | ----- | ------------------------------------------------------------------------------------------------ | -------- | ------------------ | ---------------- |
+> | #347  | Position-netting under conflicting timestamps from concurrent feed sources                       | High     | v2.3.2             | [date, ISO 8601] |
+> | #349  | Position-netting under conflicting timestamps — boundary condition at feed synchronization point | Medium   | v2.4.0             | [date, ISO 8601] |
+> | #352  | Position-netting under conflicting timestamps — recovery after feed reconnection                 | Medium   | v2.4.0             | [date, ISO 8601] |
 >
 > **Production record for disclosed gaps**: No production computation failures attributable to the documented edge cases have been identified in the monitoring records for the period [start date] through [end date, ISO 8601]. The monitoring record for this period is available as Exhibit E.
 >
@@ -208,6 +209,7 @@ Audience: SOC 2 auditor reviewing the firm's documented response; legal counsel 
 > **Completeness attestation**: This response reflects Lucent Financial Group's accurate and complete understanding of the automated systems described as of the date of this submission. Each gap disclosed above represents a known limitation of the current state and is accompanied by a documented remediation plan. If any subsequent review identifies information that would materially supplement or correct this response, Lucent Financial Group will provide a supplemental submission within [N] business days of that identification.
 >
 > **Exhibits index**:
+>
 > - Exhibit A: `Zeta.Core` release history
 > - Exhibit B: Change-control process documentation
 > - Exhibit C: Compliance-review step remediation plan
@@ -241,6 +243,7 @@ The **all-five-layers-simultaneously-live architecture** is unique to regulator 
 The **gap-disclosure discipline is the load-bearing architectural claim**. Most legal reflexes say: minimize disclosure. The observation-not-evaluation discipline inverts this for regulated contexts. The mechanism: a regulator who finds an undisclosed gap in a follow-up audit can characterize the omission as a separate violation (failure to disclose a known material gap). A regulator who received "here is a known gap, here is the remediation timeline" has nothing to escalate. The discipline produces the legally correct outcome not despite honesty but structurally because of it.
 
 The **Regulated layer does three things simultaneously** that lower layers cannot:
+
 1. The "Gap disclosed —" section headers make gaps visually locatable for an adversarial scanner without requiring them to read every sentence.
 2. The ISO 8601 dates and exhibit references create an auditable cross-reference map that connects this submission to its supporting documentation.
 3. The completeness attestation creates a documented moment in time at which the firm certified its response as complete — this temporal anchor matters legally if a gap surfaces later (was it known at submission time?).

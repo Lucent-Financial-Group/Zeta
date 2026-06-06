@@ -82,10 +82,7 @@ Principles:
   "workspaceFolder": "/workspaces/zeta",
   "customizations": {
     "vscode": {
-      "extensions": [
-        "ionide.ionide-fsharp",
-        "ms-dotnettools.csharp"
-      ]
+      "extensions": ["ionide.ionide-fsharp", "ms-dotnettools.csharp"]
     }
   },
   "postCreateCommand": "tools/setup/install.sh",
@@ -161,7 +158,7 @@ Dockerfile.
   `ADD`'s auto-extract-tarball behaviour (which you
   almost never do).
 - **Shell form vs exec form.** `CMD ["dotnet",
-  "zeta.dll"]` (exec) doesn't invoke a shell;
+"zeta.dll"]` (exec) doesn't invoke a shell;
   `CMD dotnet zeta.dll` (shell) does. Exec form is
   safer (signals propagate).
 - **Forgetting HEALTHCHECK.** For a service container

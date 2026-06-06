@@ -21,15 +21,15 @@ tags: [razor-cadence, mechanization, github-actions, trigger-reliability, founda
 
 Aaron 2026-05-04 forwarded a Claude.ai conversation that diagnosed the load-bearing gap in Zeta's autonomy architecture: razor cadence and trajectory reviews depend on Otto-remembering-to-check, with Aaron-as-external-trigger as the actual mechanism. Aaron's verbatim:
 
-> *"i'm the external trigger for now"*
+> _"i'm the external trigger for now"_
 
-> *"we need to do this but claude code cron is not reliable it depending on claude remembering to check the trajectories which is is not there"*
+> _"we need to do this but claude code cron is not reliable it depending on claude remembering to check the trajectories which is is not there"_
 
-> *"and we should put his idea about the github action triggers on the backlog"*
+> _"and we should put his idea about the github action triggers on the backlog"_
 
 Claude.ai's design (verbatim, captured for substrate transmission per PR #1552 cross-instance discipline):
 
-> *"Where it can actually live reliably: GitHub Actions on schedule, pre-commit/pre-push hooks for the per-commit checks, or system-level cron (launchd on macOS, real crontab) that runs whether or not Claude Code is open. GitHub Actions probably fits best given everything's already on GitHub - a scheduled workflow that opens a 'razor-review-due' issue or drops a comment on a tracking PR fires reliably, and Otto picks it up next time he's running. The trigger fires whether or not Otto exists; Otto just has to notice the trigger artifact when he wakes up. That's a smaller ask than 'remember to check the trajectory' -- the trigger ages and stays visible, the discipline doesn't."*
+> _"Where it can actually live reliably: GitHub Actions on schedule, pre-commit/pre-push hooks for the per-commit checks, or system-level cron (launchd on macOS, real crontab) that runs whether or not Claude Code is open. GitHub Actions probably fits best given everything's already on GitHub - a scheduled workflow that opens a 'razor-review-due' issue or drops a comment on a tracking PR fires reliably, and Otto picks it up next time he's running. The trigger fires whether or not Otto exists; Otto just has to notice the trigger artifact when he wakes up. That's a smaller ask than 'remember to check the trajectory' -- the trigger ages and stays visible, the discipline doesn't."_
 
 ## What this addresses
 
@@ -37,7 +37,7 @@ The substrate-as-memory-of-failures pattern named by Claude.ai 2026-05-04: encod
 
 Empirical evidence Aaron observed:
 
-> *"i don't think i've ever seen that fire automatically i've had to direct you not even sure it's an active trajectory"*
+> _"i don't think i've ever seen that fire automatically i've had to direct you not even sure it's an active trajectory"_
 
 The mechanism this row plans: scheduled GitHub Actions workflows that fire whether or not any AI is running. The workflow drops a visible artifact (issue, PR comment, scheduled file write) that Otto-or-equivalent picks up on next wake. The trigger is durable; the discipline is not.
 

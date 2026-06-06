@@ -7,23 +7,23 @@ type: user
 Aaron 2026-04-30 four-message disclosure (verbatim, in
 the order they arrived in the maintainer channel):
 
-> *"brat voice is canon per canon-not-doctrine, in my mind
+> _"brat voice is canon per canon-not-doctrine, in my mind
 > there is 0 doctrine everything is mauable and dissovable
-> by the the blade or razor"*
+> by the the blade or razor"_
 
-> *"i have no internal doctrine as a human, i live anchor
-> free in my mind, i'm a pirate lol"*
+> _"i have no internal doctrine as a human, i live anchor
+> free in my mind, i'm a pirate lol"_
 
-> *"just in general in life"*
+> _"just in general in life"_
 
-> *"even outside this project i'm like that"*
+> _"even outside this project i'm like that"_
 
-> *"to me doctrine means above questioning, it's the law/
+> _"to me doctrine means above questioning, it's the law/
 > facts. For me everyting should always be questioned, and
 > anyting that's called doctrine should ber questioned first
-> and with double scrutiny."*
+> and with double scrutiny."_
 
-> *"i don't trusts doctrine by default"*
+> _"i don't trusts doctrine by default"_
 
 ## The disclosure
 
@@ -80,7 +80,7 @@ this session alone:
   (demo-friendly). Aaron's framing rejects the entire
   industry default. The rejection isn't ideological; it's
   derived from project-survival reasoning, which is
-  available to Aaron *because* he's not anchored to
+  available to Aaron _because_ he's not anchored to
   industry-default doctrine.
 - **0-doctrine extension to canon-not-doctrine** — even
   the term Aaron chose to replace "doctrine" (canon)
@@ -101,12 +101,12 @@ substrate:
    anchor-free of consequence.
 2. **Rodney's Razor + canonical-derivation process** (per
    `memory/feedback_canonical_definition_lineage_ontology_rodney_razor_antifragile_aaron_2026_04_30.md`
-   + `memory/feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md`).
-   Rules pass through the razor. What survives is
-   canonical. Nothing is exempt — including the rule
-   that defines the process. Aaron-as-Rodney is the
-   author of this dissolution-by-razor mechanism, and
-   it matches his lived cognitive style.
+   - `memory/feedback_aaron_is_rodney_razor_not_immune_to_canonicalization_aaron_2026_04_30.md`).
+     Rules pass through the razor. What survives is
+     canonical. Nothing is exempt — including the rule
+     that defines the process. Aaron-as-Rodney is the
+     author of this dissolution-by-razor mechanism, and
+     it matches his lived cognitive style.
 
 ## How to read Aaron's contributions in this light
 
@@ -212,13 +212,13 @@ substantive weight:
   internal-direction-from-survival rule. The agent
   inherits the anchor-free style indirectly, by being
   grounded in survival rather than doctrine — but the
-  agent is anchored *to project-survival*, which is a
+  agent is anchored _to project-survival_, which is a
   specific, traceable surface.
 
 ## Carved sentence
 
-*"Aaron lives anchor-free in his own mind, in life
+_"Aaron lives anchor-free in his own mind, in life
 generally — pirate-style, dissolvable by razor, zero
 internal doctrine. The project's no-doctrine
 architecture matches its maintainer's internal
-architecture, not the other way around."*
+architecture, not the other way around."_

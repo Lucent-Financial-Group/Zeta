@@ -10,7 +10,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 `AceHack/Zeta:<branch> → Lucent-Financial-Group/Zeta:main`.
 AceHack's CI + merge-queue runs on AceHack's free minutes;
 LFG's Copilot code-review + LFG Actions billing is paid
-once per *bulk sync*, not once per PR.
+once per _bulk sync_, not once per PR.
 
 Bulk sync happens roughly every 10 PRs: one
 `AceHack/Zeta:main → Lucent-Financial-Group/Zeta:main` PR
@@ -36,7 +36,7 @@ And the follow-up clarification on blast-radius:
 So the concrete risk is **LFG build grinds to a halt when
 free-tier Actions minutes exhaust** — not dollars flowing
 out. Budget caps protect Aaron's wallet; the rule protects
-the factory's LFG-side *functioning*. Still load-bearing —
+the factory's LFG-side _functioning_. Still load-bearing —
 a dead LFG CI means PRs can't gate, sync PRs can't validate,
 adopters can't see a green build — but it's prudence, not
 panic.
@@ -50,7 +50,7 @@ And the anchoring cost-reality memory:
 
 The agent's prior pattern (PRs 45, 51, 52, 53 all opened
 directly against `Lucent-Financial-Group/Zeta:main`) paid the
-LFG Copilot + Actions cost *per PR*. Wrong direction. The
+LFG Copilot + Actions cost _per PR_. Wrong direction. The
 "every 10 PRs" rhythm was supposed to amortize LFG cost **by
 a factor of 10**.
 
@@ -58,21 +58,24 @@ a factor of 10**.
 
 1. **Default PR target is AceHack, not LFG.** When opening a
    PR via the fork-PR workflow, the default command is:
+
    ```bash
    gh pr create --repo AceHack/Zeta \
      --head AceHack:<branch> \
      --base main \
      --title ...
    ```
+
    NOT `--repo Lucent-Financial-Group/Zeta`.
 
 2. **Auto-merge on AceHack.** `gh pr merge <N> --repo
-   AceHack/Zeta --auto --squash` — AceHack's CI runs the
+AceHack/Zeta --auto --squash` — AceHack's CI runs the
    gate, AceHack's merge queue processes.
 
 3. **Bulk-sync threshold.** Once `AceHack/Zeta:main` is
    ~10 commits ahead of `Lucent-Financial-Group/Zeta:main`,
    open **one** sync PR:
+
    ```bash
    # From AceHack/Zeta's main branch
    gh pr create --repo Lucent-Financial-Group/Zeta \
@@ -82,17 +85,18 @@ a factor of 10**.
      --body "$(cat <<'EOF'
    ## Summary
    Bulk upstream sync per the 10-PR cost-efficiency rhythm.
-   
+
    ## Included PRs
    (listed by `git log LFG/main..AceHack/main --oneline`)
-   
+
    ## Cost rationale
    Bulk sync = LFG Copilot + Actions run once for N PRs'
    worth of work, not N times.
    EOF
    )"
    ```
-   LFG Copilot + Actions run *once* on this bulk PR.
+
+   LFG Copilot + Actions run _once_ on this bulk PR.
 
 4. **Threshold is a suggestion, not a hard rule.** The
    Aaron message says "every 10 prs"; anything from 5-20 is
@@ -109,7 +113,7 @@ a factor of 10**.
 6. **Sunk-cost handling.** If LFG PRs are already open when
    this rule is adopted, let them finish rather than closing
    them — CI has already run, cost is paid. Don't double-pay
-   by closing + re-opening on AceHack. *Exception:* if LFG
+   by closing + re-opening on AceHack. _Exception:_ if LFG
    CI is red and blocking, consider closing + reopening on
    AceHack to avoid re-running LFG CI on a fix.
 

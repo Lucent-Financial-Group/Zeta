@@ -2,11 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  parseFrontmatter,
-  extractClaims,
-  checkFile,
-} from "./check-cross-surface.ts";
+import { parseFrontmatter, extractClaims, checkFile } from "./check-cross-surface.ts";
 
 // ── parseFrontmatter ──────────────────────────────────────────────────────────
 
@@ -29,7 +25,7 @@ describe("parseFrontmatter", () => {
   });
 
   test("strips surrounding quotes from field values", () => {
-    const content = "---\ndescription: \"quoted value\"\n---\n# Body";
+    const content = '---\ndescription: "quoted value"\n---\n# Body';
     const fm = parseFrontmatter(content);
     expect(fm!.fields["description"]).toBe("quoted value");
   });
@@ -241,10 +237,7 @@ describe("checkFile — clean", () => {
 
 describe("checkFile — drift", () => {
   test("instance #19 regression: description says '9 drift instances', body has 15 rows", () => {
-    const rows = Array.from(
-      { length: 15 },
-      (_, i) => `| ${i + 1} | instance ${i + 1} |`,
-    );
+    const rows = Array.from({ length: 15 }, (_, i) => `| ${i + 1} | instance ${i + 1} |`);
     withTmpFile(
       [
         "---",
@@ -270,10 +263,7 @@ describe("checkFile — drift", () => {
   });
 
   test("instance #20 regression: description says '18+', body has only 15 rows (undercount)", () => {
-    const rows = Array.from(
-      { length: 15 },
-      (_, i) => `| ${i + 1} | instance ${i + 1} |`,
-    );
+    const rows = Array.from({ length: 15 }, (_, i) => `| ${i + 1} | instance ${i + 1} |`);
     withTmpFile(
       [
         "---",

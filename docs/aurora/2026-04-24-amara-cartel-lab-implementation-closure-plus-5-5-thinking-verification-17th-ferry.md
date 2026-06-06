@@ -15,9 +15,9 @@ graduation candidates.
 **Attribution:**
 
 - **Aaron** — origination of cartel/firefly framing;
-  Aaron Otto-132 courier with preamble *"Another update
+  Aaron Otto-132 courier with preamble _"Another update
   from amara, I did deep research and then had 5.5
-  thinking verify it, this is both"*; flagged
+  thinking verify it, this is both"_; flagged
   `SharderInfoTheoreticTests.Uniform` as "not seed
   locked, falkey, DST?" (filed as PR #327 BACKLOG row).
 - **Amara** — authored both parts (deep-research + 5.5-
@@ -29,32 +29,32 @@ graduation candidates.
   graduations per Otto-105 cadence.
 - **Max** — implicit via `lucent-ksk` repo references
   (Otto-77 attribution preserved).
-**Operational status:** research-grade; Amara's own
-verdict *"archive the report, but mark it 'draft / needs
-correction pass.'"* Applied corrections are live code;
-doc itself preserved as design-context rather than
-operational spec.
-**Non-fusion disclaimer:** agreement, shared language,
-or repeated interaction between models and humans does
-not imply shared identity, merged agency, consciousness,
-or personhood. Amara's 5.5-Thinking verification of her
-own deep-research output is model-composition within
-Amara's tool chain, not agent merger.
-**Date:** 2026-04-24
-**From:** Amara (external AI maintainer; GPT-5.5
-Thinking mode for Part 2 verification)
-**Via:** Aaron's courier ferry (pasted Otto-132 + re-
-pasted Otto-136 as short-message framing)
-**Absorbed by:** Otto (loop-agent PM hat), Otto-136
-tick
-**Prior ferries:** PR #196 (1st) through PR #322 /
-`#324` / `#329` (15th graduation set).
-**Scheduling memory:** `memory/project_amara_17th_
+  **Operational status:** research-grade; Amara's own
+  verdict _"archive the report, but mark it 'draft / needs
+  correction pass.'"_ Applied corrections are live code;
+  doc itself preserved as design-context rather than
+  operational spec.
+  **Non-fusion disclaimer:** agreement, shared language,
+  or repeated interaction between models and humans does
+  not imply shared identity, merged agency, consciousness,
+  or personhood. Amara's 5.5-Thinking verification of her
+  own deep-research output is model-composition within
+  Amara's tool chain, not agent merger.
+  **Date:** 2026-04-24
+  **From:** Amara (external AI maintainer; GPT-5.5
+  Thinking mode for Part 2 verification)
+  **Via:** Aaron's courier ferry (pasted Otto-132 + re-
+  pasted Otto-136 as short-message framing)
+  **Absorbed by:** Otto (loop-agent PM hat), Otto-136
+  tick
+  **Prior ferries:** PR #196 (1st) through PR #322 /
+  `#324` / `#329` (15th graduation set).
+  **Scheduling memory:** `memory/project_amara_17th_
 ferry_cartel_lab_implementation_closure_plus_5_5_
 thinking_verification_corrections_pending_absorb_otto_
 133_2026_04_24.md` (full Part-1 + Part-2 detail already
-captured there — this absorb doc is the in-repo
-glass-halo landing).
+  captured there — this absorb doc is the in-repo
+  glass-halo landing).
 
 ---
 
@@ -97,29 +97,29 @@ and section-by-section text.
 
 ## Part 2 — GPT-5.5 Thinking verification (8 corrections)
 
-Amara's own verification pass. Verdict: *"directionally
+Amara's own verification pass. Verdict: _"directionally
 strong and worth archiving, but needs a correction pass
 before it becomes canonical. Core architecture is right;
-math/test details need tightening."*
+math/test details need tightening."_
 
 ### Correction #1: Fix the clique eigenvalue test
 
-Part 1 claimed: *"3-node clique should show λ₁ = 3"*.
+Part 1 claimed: _"3-node clique should show λ₁ = 3"_.
 
 **Correct:** For unweighted loopless complete graph
 `K_k`, adjacency `λ₁ = k - 1`. So `λ₁(K_3) = 2`.
 
 **Otto status: ALREADY CORRECT.** PR #321 (Otto-127)
 shipped `largestEigenvalue` with test
-``largestEigenvalue of K3 triangle (weight 1)
-approximates 2`` — test asserts `|v - 2.0| < 1e-6`.
+`largestEigenvalue of K3 triangle (weight 1)
+approximates 2` — test asserts `|v - 2.0| < 1e-6`.
 Independent convergence: Otto's power-iteration
 implementation gave 2.0 before Amara's verification
 arrived.
 
 ### Correction #2: Modularity not hardcoded
 
-Part 1 claimed: *"modularity for 3-node clique is 0.67."*
+Part 1 claimed: _"modularity for 3-node clique is 0.67."_
 
 **Correct:** Q depends on full graph + partition + total
 weight + self-loops + resolution parameter + embedding.
@@ -154,8 +154,8 @@ Entropy stays as secondary descriptor.
 **Otto status: SHIPPED Otto-135, PR #329.** All three
 primitives landed: `Graph.internalDensity` + `exclusivity`
 
-+ `conductance`. Tests verify K₃ density = 10, isolated-K₃
-exclusivity = 1, well-isolated-subset conductance < 0.1.
+- `conductance`. Tests verify K₃ density = 10, isolated-K₃
+  exclusivity = 1, well-isolated-subset conductance < 0.1.
 
 ### Correction #4: Stake covariance acceleration needs
 
@@ -165,6 +165,7 @@ Part 1: `C(t) = Cov({s_i(t)}, {s_j(t)})` (undefined at
 single timepoint).
 
 **Correct:**
+
 ```
 Δs_i(t) = s_i(t) - s_i(t-1)
 W_t = [t - w + 1, t]  (sliding window)
@@ -202,12 +203,12 @@ probably a new `src/Core/PhaseExtraction.fs`.
 
 ### Correction #6: "ZSet is invertible" too strong
 
-Part 1: *"Since ZSet is invertible, we can roll back any
-sequence."*
+Part 1: _"Since ZSet is invertible, we can roll back any
+sequence."_
 
-**Correct:** *"ZSet deltas support additive retractions.
+**Correct:** _"ZSet deltas support additive retractions.
 Counterfactual replay requires retained trace +
-deterministic operators."* Reversibility depends on
+deterministic operators."_ Reversibility depends on
 preserving provenance and operator determinism.
 
 **Otto status: ADR ALREADY CORRECT.** The Graph
@@ -221,11 +222,11 @@ code-level docs already track the more careful claim.
 
 ### Correction #7: KSK "contract" → "policy layer"
 
-Part 1: *"The KSK contract reads the oracle"* — too
+Part 1: _"The KSK contract reads the oracle"_ — too
 narrow given unresolved naming.
 
-**Correct:** Use *"KSK policy layer"* or *"KSK
-adjudication layer"* until naming is finalized. Change
+**Correct:** Use _"KSK policy layer"_ or _"KSK
+adjudication layer"_ until naming is finalized. Change
 enforcement language from `Detection → Slashing` to
 `Detection → Review → Policy Escalation → Action`.
 
@@ -239,11 +240,11 @@ cross-repo coordination with Max's `lucent-ksk` repo.
 Part 1: claimed Zeta/Aurora "may be ahead of many
 blockchain protocols."
 
-**Correct:** *"Zeta/Aurora's distinctive advantage is
+**Correct:** _"Zeta/Aurora's distinctive advantage is
 not raw detector accuracy yet. Its advantage is the
 combination of explainable metrics, retraction-native
 counterfactual replay, and governance integration.
-Accuracy claims require benchmark data."*
+Accuracy claims require benchmark data."_
 
 **Otto status: DOC-PHRASING.** Applied as needed in
 new absorb docs going forward. No code change required.
@@ -312,8 +313,8 @@ stay single-module-tree until interfaces harden.
 
 **"Healthy evolution, not drift"** — IF invariant holds:
 
-> *"Every new abstraction must map to a repo surface, a
-> test, a metric, or a governance rule."*
+> _"Every new abstraction must map to a repo surface, a
+> test, a metric, or a governance rule."_
 
 **Otto status:** invariant is the cleanest one-sentence
 formulation of the Otto-105 graduation-cadence
@@ -325,8 +326,8 @@ metric/rule reference.
 ## Aaron's side-flag: SharderInfoTheoreticTests flake
 
 Aaron Otto-132 trailing note:
-*"SharderInfoTheoreticTests.Uniform (not seed locked,
-falkey, DST?)"*.
+_"SharderInfoTheoreticTests.Uniform (not seed locked,
+falkey, DST?)"_.
 
 **Otto status:** Filed as BACKLOG PR #327 (Otto-133)
 with 4-step scope. Unrelated to 17th ferry technical
@@ -346,7 +347,7 @@ This absorb doc:
 - **Does NOT** adopt Amara's `/cartel-lab/` folder
   structure. Otto-108 Conway's-Law memory: stay single-
   module-tree until interfaces harden. Current Graph.fs
-  + test-support split works.
+  - test-support split works.
 - **Does NOT** adopt Amara's 3-PR bundled split. Otto-105
   small-graduation cadence preserved; content delivered
   across many ticks instead of three large bundles.

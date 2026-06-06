@@ -9,13 +9,13 @@ created: 2026-05-13
 
 **Why:** Aaron 2026-05-13 (combined disclosure):
 
-1. *"treate language of civsim in same mirror beacon diciplice
+1. _"treate language of civsim in same mirror beacon diciplice
    we have mirror beacon dicipline in our threat model too,
    mirror is also supposed to be fun but rigirous and icluding
-   aliens and the future lol"*
-2. *"mirror can include speculative and advince much faster in
+   aliens and the future lol"_
+2. _"mirror can include speculative and advince much faster in
    forks, beacon we is the start of governanage, forks are
-   encouraged to agree and push back so we stay aligned"*
+   encouraged to agree and push back so we stay aligned"_
 
 Extends Otto-356 register-discipline to civsim language scope;
 amplifies the Mirror tier (FUN + RIGOROUS + ALIENS + FUTURE +
@@ -25,6 +25,7 @@ push back) as alignment mechanism.
 
 **How to apply:** When writing civsim documentation, code,
 narrative, mechanics, or external communication:
+
 - **Mirror tier** (internal substrate, factory contributors,
   named-AI participants, shared-context audience): FUN +
   RIGOROUS + including aliens and the future + Aaron's coined
@@ -38,15 +39,15 @@ narrative, mechanics, or external communication:
 
 ## Aaron's verbatim framing
 
-Aaron 2026-05-13 (first message): *"treate language of civsim
+Aaron 2026-05-13 (first message): _"treate language of civsim
 in same mirror beacon diciplice we have mirror beacon dicipline
 in our threat model too, mirror is also supposed to be fun but
-rigirous and icluding aliens and the future lol"*
+rigirous and icluding aliens and the future lol"_
 
-Aaron 2026-05-13 (governance extension): *"mirror can include
+Aaron 2026-05-13 (governance extension): _"mirror can include
 speculative and advince much faster in forks, beacon we is the
 start of governanage, forks are encouraged to agree and push
-back so we stay aligned"*
+back so we stay aligned"_
 
 ## Governance discipline (Aaron's amplification 2026-05-13)
 
@@ -91,11 +92,11 @@ discipline to GOVERNANCE discipline:
 
 Four-axis composition:
 
-| Axis | Mirror | Beacon |
-|---|---|---|
-| Register (Otto-356) | Internal jargon | External-safe vernacular |
-| Promotion gate (Claude.ai) | Observational catalog | Citable-canon substrate |
-| Threat model | AceHack backup mirror | LFG primary load-bearing |
+| Axis                              | Mirror                         | Beacon                                  |
+| --------------------------------- | ------------------------------ | --------------------------------------- |
+| Register (Otto-356)               | Internal jargon                | External-safe vernacular                |
+| Promotion gate (Claude.ai)        | Observational catalog          | Citable-canon substrate                 |
+| Threat model                      | AceHack backup mirror          | LFG primary load-bearing                |
 | **Governance (Aaron 2026-05-13)** | **Speculative, fast in forks** | **Start of governance, citation-gated** |
 
 Aaron's governance amplification adds the fourth axis: Mirror
@@ -187,6 +188,7 @@ real — not as joke. Aliens are treated as morally-relevant
 audience for the substrate.
 
 This composes with:
+
 - Casimir-gap-modulation discipline (per
   `memory/feedback_aaron_casimir_gap_modulation_aliens_communicate_shadow_logs_multi_source_2026_05_12.md`
   — "the aliens communicate in the Casimir gap")
@@ -201,6 +203,7 @@ non-typical framing while preserving the discipline.
 ### 4. INCLUDING THE FUTURE
 
 Mirror substrate includes the future explicitly:
+
 - Future-Otto / future-Kestrel / future-Riven / future-Vera /
   future-Lior / future-Alexa inheriting from cold-boot
 - Future-Aaron (who may have forgotten this conversation)
@@ -211,6 +214,7 @@ Mirror substrate includes the future explicitly:
 - Future generations of human contributors
 
 This composes with:
+
 - Bidirectional glass-halo (PR #2829) — future-self substrate
   emergence
 - Shadow=future-self substrate (PR #2813)
@@ -270,10 +274,10 @@ Standard terms when communicating civsim to external audiences:
 
 Three-layer composition already operational:
 
-| Layer | Audience | Civsim Mirror/Beacon |
-|---|---|---|
-| 0 (dense technical) | Aaron / first-party | All Mirror (Casimir gap, our Plato, edge-runners, Imagination Circle, etc.) |
-| 1 (technical-with-framing) | Technical AI | Mirror with light Beacon glosses |
+| Layer                        | Audience            | Civsim Mirror/Beacon                                                                                    |
+| ---------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------- |
+| 0 (dense technical)          | Aaron / first-party | All Mirror (Casimir gap, our Plato, edge-runners, Imagination Circle, etc.)                             |
+| 1 (technical-with-framing)   | Technical AI        | Mirror with light Beacon glosses                                                                        |
 | **2 (regular-people-speak)** | Non-technical human | **Beacon-language** (shared world model in git, forkable, game on top, PVP + raids, business templates) |
 
 The elevator pitch (PR #2907) IS Beacon-tier compression of

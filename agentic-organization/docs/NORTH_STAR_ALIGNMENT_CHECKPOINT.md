@@ -114,10 +114,10 @@ out of the proven kernel/DU/port patterns:
 - **CC2** — Cockroach change-set store (JSONB artifacts + projections) + review-stage
   ledger keyed `(change_set, stage, revision)`; round-tripped in kind.
 - **CC3** — the kernel: a review stage IS an observe→decide cycle. `evaluateStageGate`
-  + `decideByAuthority` (the four authorities handled uniformly) + `runReviewStage` +
-  `advanceChangeSet` + `resumeHumanStage` (HITL) + `applyChangeSet`. THE CLAMP: an
-  unsatisfiable gate can't be approved; an external approval flows IN as a gate
-  satisfaction — never a bypass. Content-addressed `changeSetId`.
+  - `decideByAuthority` (the four authorities handled uniformly) + `runReviewStage` +
+    `advanceChangeSet` + `resumeHumanStage` (HITL) + `applyChangeSet`. THE CLAMP: an
+    unsatisfiable gate can't be approved; an external approval flows IN as a gate
+    satisfaction — never a bypass. Content-addressed `changeSetId`.
 - **CC4** — `ChangeControlPort` + `NullChangeControlPort` (internal-only) + a controllable
   fake external system + `ChangeControlPolicy`-as-data (internal-only vs github-gated =
   the same pipeline + 2 appended stages) + reconciliation into the canonical `WorkItemState`.
@@ -176,7 +176,7 @@ against live Cockroach + live Hindsight:
   auto (decay, archive-at-zero, reinforce-when-KPI-rose), Stage B hat-decided +
   clamped to the legal set (demote/promote/conflict). Asymmetry: good news
   auto-applies, bad news asks a hat; protected memories excluded from auto-archive
-  + decay; every action one org_event.
+  - decay; every action one org_event.
 - **MEM7 — `createHindsightMemory`** behind the existing `Memory` port (REST client,
   native fetch) + `rerankRecalled` composition (Hindsight recall → our §4 weight
   re-rank → floor → budget). Proven live against in-cluster Hindsight AND unit-tested.
@@ -826,9 +826,9 @@ The deployed worker's reaction-plan executor now runs each action THROUGH a Herm
 run (createHermesReactionPlanActionExecutor), and the agent's heartbeat is
 persisted to the durable control-plane store. The full loop is proven in-cluster:
 
-  task event -> ingest -> reaction plan -> Hermes agent run (acts on the work item)
-    -> agent heartbeat persisted to agentic_org_agent_heartbeat
-    -> the deterministic keep-alive engine watches the agent.
+task event -> ingest -> reaction plan -> Hermes agent run (acts on the work item)
+-> agent heartbeat persisted to agentic_org_agent_heartbeat
+-> the deterministic keep-alive engine watches the agent.
 
 Live in-cluster evidence: publishing a SupervisorSignalSent event for work item
 `work-07426f93...` produced, after the worker ran it through Hermes, an
@@ -849,10 +849,10 @@ integration all stay identical).
 
 The complete cycle now runs and is proven end-to-end in the kind cluster:
 
-  task event -> ingest -> reaction plan -> Hermes agent run (autonomous, acts on
-  the work item) -> durable agent liveness -> the agent goes silent -> the
-  deterministic keep-alive engine catches it past its deadline -> a
-  stale_work_reassignment signal naming the agent + work item.
+task event -> ingest -> reaction plan -> Hermes agent run (autonomous, acts on
+the work item) -> durable agent liveness -> the agent goes silent -> the
+deterministic keep-alive engine catches it past its deadline -> a
+stale_work_reassignment signal naming the agent + work item.
 
 In-cluster evidence: after the Hermes run for work item `work-07426f93...`
 heartbeated once and the agent went silent, the keep-alive engine recorded a
@@ -967,8 +967,8 @@ Worker reaction-plan telemetry for the cycle: `reaction_plan.status=succeeded`,
 
 This closes the Stop-hook-named gap: "the full organizational-structure command
 pipeline." Agents now produce real, auditable org substrate while running as
-durable, watched Hermes agents. (The one remaining seam is the agent *decision
-backend* itself — a real LLM/sandbox swaps in behind the unchanged HermesRuntime
+durable, watched Hermes agents. (The one remaining seam is the agent _decision
+backend_ itself — a real LLM/sandbox swaps in behind the unchanged HermesRuntime
 port without touching any of the durable plumbing proven above.)
 
 ## Update 2026-05-30 — Phase 13: agent decisions computed by the deterministic kernel (PROVEN IN-CLUSTER)
@@ -1009,7 +1009,7 @@ DST-replayable).
 
 ### Remaining seam (infra-dependent, NOT pure code)
 
-The only thing not done is a *live* LLM/sandbox composer (real model calls +
+The only thing not done is a _live_ LLM/sandbox composer (real model calls +
 sandboxed tool execution). It needs API credentials + a sandbox runtime, not
 more application code: it is a drop-in `EphemeralComposerPort` behind the
 unchanged decision kernel. Every durable invariant it would rely on — the
@@ -1041,7 +1041,7 @@ autonomous data plane makes its own bounded decisions.
 
 ## Update 2026-05-30 — Phase 14: LIVE LLM + sandboxed-tool agent decision backend (PROVEN IN-CLUSTER)
 
-The last remaining seam — a *live* decision backend with real model calls and
+The last remaining seam — a _live_ decision backend with real model calls and
 real tool execution — is now implemented and proven in the kind cluster. No
 external credentials: a model runs in-cluster (Ollama, qwen2:0.5b).
 
@@ -1107,14 +1107,14 @@ The entire organizational structure/system — every hat, every department, the
 binding lifecycle, RMO hat-supply voting, director/TPM prioritization,
 assignment, and the customer-discovery→release pipeline — is now built and
 proven end-to-end in the kind cluster. One `runOrgCycle` ties every layer
-together and writes a durable, attributed trace that proves the *whole
-hierarchy* is working, from Executive Board down to individual contributors.
+together and writes a durable, attributed trace that proves the _whole
+hierarchy_ is working, from Executive Board down to individual contributors.
 
 ### Built (P0–P7, all committed)
 
 - **Org as data** (`org-seed.ts`): 16 departments + ~115 hats derived into full
   `HatDefinition`s — supervises = reverse(reportsTo), conflicts symmetrized
-  (A↔B), short TTL/warmup/cooldown per tier so the lifecycle is *observable* in
+  (A↔B), short TTL/warmup/cooldown per tier so the lifecycle is _observable_ in
   seconds. `validateOrgGraph()` proves the reportsTo graph is acyclic + every
   parent resolves (DFS).
 - **Binding lifecycle DU** (`hat-binding.ts` + `hat-lifecycle.ts`):
@@ -1124,10 +1124,10 @@ hierarchy* is working, from Executive Board down to individual contributors.
 - **The determinism⇄autonomy split at org scope** (`org-decision.ts`):
   determinism computes the LEGAL set; an agent chooser picks WITHIN it; the pick
   is clamped (`max(0, min(len-1, trunc(index)))`) so a chooser — deterministic
-  *or* model-backed — can never escape the rules. Empty legal set and NaN/
+  _or_ model-backed — can never escape the rules. Empty legal set and NaN/
   overflow indices both resolve safely.
 - **Prioritization** (`prioritization.ts`): a priority recommendation is scored
-  from weighted inputs, but the *class an authority may choose* is clamped by
+  from weighted inputs, but the _class an authority may choose_ is clamped by
   level (an IC can't decide, a TPM can't expedite/pause, a Director can).
 - **RMO** (`rmo.ts`): required hat supply is computed from priority-weighted
   workload; supervisors vote; a majority-quorum tally yields a HatSupplyDecision
@@ -1138,7 +1138,7 @@ hierarchy* is working, from Executive Board down to individual contributors.
 - **Pipeline** (`pipeline.ts`): the 7 gates customer_rfp_review → brd_approval →
   architecture_approval → implementation_review → runtime_validation →
   final_business_validation → release_readiness → **merged**, each owned by a
-  specific hat. `nextLegalGate` makes a gate legal *iff* all priors passed — no
+  specific hat. `nextLegalGate` makes a gate legal _iff_ all priors passed — no
   gate can be skipped.
 - **Observability** (`org-snapshot.ts`): a pure fold over hats + bindings +
   OrgEvents → hierarchy activity by acting-hat level, department rollup, active
@@ -1146,8 +1146,8 @@ hierarchy* is working, from Executive Board down to individual contributors.
   supply. The fold is order-independent (latest-state-per-subject by
   max(occurredAt)) so it's correct whether the store returns rows ASC or DESC.
 - **Durable state** (`cockroach-org-event-store.ts` + `cockroach-hat-binding-
-  store.ts` + migration `OrgSystemV15`): one `agentic_org_org_events` row per
-  *every* transition (actorHatId, departmentId, supervisorChain, decision,
+store.ts` + migration `OrgSystemV15`): one `agentic_org_org_events` row per
+  _every_ transition (actorHatId, departmentId, supervisorChain, decision,
   evidence, correlation/causation/trace as JSONB) + `agentic_org_hat_bindings`.
 
 ### In-cluster proof (agentic-org namespace CockroachDB)
@@ -1543,7 +1543,7 @@ are one connected substrate.
 
 ## Track C — Adaptive Platform (config-not-code; the org reconfigures itself)
 
-North-star claim: the organization is a *platform* a tenant configures, not a program a developer
+North-star claim: the organization is a _platform_ a tenant configures, not a program a developer
 edits. WHICH stages need a human, WHAT a hat may touch, HOW the org onboards and heals — all data,
 all flowing through the same observe→decide kernel and the same `org_event` ledger.
 
@@ -1561,7 +1561,7 @@ image runs a fully-autonomous org and a human-gated one apart only by a row.
 agent (hat) authority is promoted to `human`; an ungated `human` stage is downgraded to the hat
 that would otherwise act. The dial moves ONLY the agent↔human axis — a lossless, gate-preserving
 round-trip. `quorum` (a 3-of-3 threshold gate) and `external` (an external-system gate) authorities
-are left intact: Manual *layers* human review on top of those, it never strips their stronger gate.
+are left intact: Manual _layers_ human review on top of those, it never strips their stronger gate.
 The composition applies the tenant policy to every resolved change-control pipeline, so the live
 worker's review fabric is config-driven end to end.
 
@@ -1585,7 +1585,7 @@ history, and the smarter-than-RAG doc hits — from the connected substrate, not
 `org-adaptation.ts`: `planOnboarding(config)` and `planSelfHealing(signal)` are pure planners that
 turn a config / a health signal into `PlannedWork` + `org_event`s. Onboarding a tenant is itself
 work the Work OS runs; a self-healing response to a degradation signal is work too — the platform
-adapts by *scheduling its own work through its own kernel*, not by an out-of-band script.
+adapts by _scheduling its own work through its own kernel_, not by an out-of-band script.
 
 ### C3 — bidirectional work-item sync (the CC port, reused for the backlog)
 
@@ -1655,9 +1655,9 @@ partial MR).
 
 ### GEN3 — the live flip, by config (worker)
 
-`work-provider-config.ts`: `resolveWorkProviderFromEnv` reads WORK_PROVIDER + the selected provider's
+`work-provider-config.ts`: `resolveWorkProviderFromEnv` reads WORK*PROVIDER + the selected provider's
 token/ids; null when unconfigured (internal-only, the safe default), throws on a partial config
-(fail-fast), back-compat with the legacy GITHUB_* path. `resolveChangeControlExternalPort` routes a
+(fail-fast), back-compat with the legacy GITHUB*\* path. `resolveChangeControlExternalPort` routes a
 code_review provider to the live ChangeControlPort (mode `external:<kind>`) and leaves a work_item
 provider's change-control internal-only. The worker mounts an OPTIONAL `work-provider-secrets` Secret
 (absent → internal-only); `31-work-provider-secret.example.yaml` is the fill-and-apply template — the
@@ -2094,7 +2094,7 @@ internal call sites and tests, but the executable `runAgentCliMain` path consume
 ### What shipped
 
 - `tryCreateAgentCliPromptFlowTasksFromEnv` returns `{ ok: false, source: "prompt_flow_tasks",
-  message }` for malformed prompt-flow task/definition/run JSON.
+message }` for malformed prompt-flow task/definition/run JSON.
 - `tryCreateAgentCliHierarchyFromEnv` returns `{ ok: false, source: "hierarchy", message }` for
   malformed hierarchy JSON.
 - JSON parse failures now name the exact env variable (`AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON`,

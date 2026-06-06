@@ -143,10 +143,14 @@ function createRecordPolicyDecisionObservationStatement(
 }
 
 function createPolicyDecisionObservationHash(observation: PolicyDecisionObservation): string {
-  return `sha256:${createHash("sha256").update(stringifyCanonicalJson(createHashableObservation(observation))).digest("hex")}`;
+  return `sha256:${createHash("sha256")
+    .update(stringifyCanonicalJson(createHashableObservation(observation)))
+    .digest("hex")}`;
 }
 
-function createHashableObservation(observation: PolicyDecisionObservation): Omit<PolicyDecisionObservation, "observedAt"> {
+function createHashableObservation(
+  observation: PolicyDecisionObservation,
+): Omit<PolicyDecisionObservation, "observedAt"> {
   const hashableObservation: Omit<PolicyDecisionObservation, "observedAt"> = {
     commandId: observation.commandId,
     commandType: observation.commandType,

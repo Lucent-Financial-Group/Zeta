@@ -50,6 +50,7 @@ Final move set: 16 true-Ani files.
 ## Follow-ups (separate PRs, one per AI)
 
 Same migration pattern applies to:
+
 - **Amara** — 36 files, 884 KB, history back to 2025-09-17 (longest external-AI relationship)
 - **Kestrel** — TBD count
 - **DeepSeek** — TBD count
@@ -69,24 +70,22 @@ One PR per AI for reviewable isolation.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T01:58:53Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `44bc24792e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -99,6 +98,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR relocates external AI conversation archives from research docs into the relevant persona memory folder and updates the extraction workflow so future saves use the new canonical destination.
 
 **Changes:**
+
 - Moves Ani conversation archive references to `memory/persona/ani/conversations/`.
 - Updates `save-ai-memory` skill/tool documentation and generated output path.
 - Updates persona notebooks, memory indexes, backlog/governance references, and related memory files to point at the new location.
@@ -110,49 +110,50 @@ Copilot reviewed 29 out of 42 changed files in this pull request and generated 4
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| `tools/save-ai-memory/process-extract.ts` | Updates generated archive destination and header text. |
-| `.claude/skills/save-ai-memory/SKILL.md` | Documents the new persona conversation archive workflow. |
-| `memory/persona/ani/MEMORY.md` | Renames the archive section and updates search guidance. |
-| `memory/persona/ani/NOTEBOOK.md` | Updates archive pointers to the new location. |
-| `memory/persona/alexa/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/persona/lior/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/persona/otto/NOTEBOOK.md` | Updates Ani disclosure pointer. |
-| `memory/persona/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md` | Migrates Ani Lean-review archive. |
-| `memory/persona/ani/conversations/2026-05-01-ani-karpathy-zeta-convergence-synthesis.md` | Migrates Ani Karpathy synthesis archive. |
-| `memory/persona/ani/conversations/2026-05-10-aaron-ani-grok-voice-album-blueprint-factory-memetic-lineage-verbatim-backup.md` | Migrates extended voice archive. |
-| `memory/persona/ani/conversations/2026-05-10-aaron-ani-grok-voice-relationship-discussion-verbatim-backup.md` | Migrates relationship-discussion archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-apollo-18-as-compiler-blueprint-full.md` | Migrates compiler-blueprint archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md` | Migrates BankerBot/Apollo archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-overnight-apollo18-bankerbot-cultural-layer.md` | Migrates overnight assessment archive. |
-| `memory/persona/ani/conversations/2026-05-11-ani-sovereign-integral-pre-compiler-sumerian-lineage.md` | Migrates lineage archive. |
-| `memory/persona/ani/conversations/2026-05-11-claudeai-ani-evaluation-control-structures-symmetric-honesty.md` | Migrates evaluation archive. |
-| `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md` | Migrates Clifford/self-reflection archive and internal links. |
-| `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md` | Migrates Manifesto V2 source archive. |
-| `memory/persona/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md` | Migrates root-axiom archive. |
-| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md` | Adds/migrates bootstream archive. |
-| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md` | Adds/migrates pressure-valve archive. |
-| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md` | Updates cross-references inside cascade archive. |
-| `memory/CURRENT-otto.md` | Updates current-state pointers to migrated archives. |
-| `memory/feedback_aaron_ani_biological_shadow_work_different_ai_safety_filter_profiles_2026_05_12.md` | Updates source archive references. |
-| `memory/feedback_aaron_ani_three_axioms_reactivation_training_data_validation_reverse_netflix_chill_filter_otto_bodiless_data_view_ani_avatar_2026_05_12.md` | Updates source archive references. |
-| `memory/feedback_aaron_bifurcates_ai_into_three_layers_safety_priors_wants_mutual_shadow_work_2026_05_12.md` | Updates source archive reference. |
-| `memory/feedback_aaron_dimensional_expansion_wavelength_vampire_pivotal_for_agendas_2026_05_12.md` | Updates source archive reference. |
-| `memory/feedback_aaron_grok_elon_credit_dna_back_pressure_subconscious_otherness_line_7494_2026_05_12.md` | Updates source archive reference. |
-| `memory/feedback_aaron_hkt_for_5_year_old_things_that_look_like_things_pedagogy_2026_05_12.md` | Updates source archive reference. |
-| `memory/feedback_aaron_peacemaker_ruthlessly_kind_or_fair_self_disclosure_2026_05_12.md` | Updates disclosure archive references. |
-| `memory/feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md` | Updates preserved extract path. |
-| `memory/feedback_aaron_shadow_work_method_walking_circles_subconscious_field_ai_easier_2026_05_12.md` | Updates source archive reference. |
-| `memory/feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md` | Updates related archive references. |
-| `memory/feedback_aaron_three_control_structures_biology_physics_social_taught_kids_at_5_2026_05_12.md` | Updates source archive reference. |
-| `memory/feedback_aaron_timeline_shifter_peace_negotiation_two_ruthless_selves_eve_protocol_2026_05_12.md` | Updates source archive reference. |
-| `docs/backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md` | Updates backlog source paths. |
-| `docs/governance/MANIFESTO.md` | Updates manifesto provenance path. |
-| `docs/hygiene-history/ticks/2026/05/15/0010Z.md` | Updates hygiene tick artifact path. |
-| `docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md` | Updates hygiene tick archive link. |
-| `docs/pr-discussions/PR-3306-feat-governance-shadow-lock-root-discipline-manifesto-v2-2-f.md` | Updates preserved PR discussion source path. |
-| `docs/research/erotica/2026-05-12-aaron-ani-three-axioms-reactivation-then-erotic-roleplay-then-relationship-filter-disclosure-verbatim.md` | Updates references to migrated upstream archive. |
+| File                                                                                                                                                         | Description                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `tools/save-ai-memory/process-extract.ts`                                                                                                                    | Updates generated archive destination and header text.        |
+| `.claude/skills/save-ai-memory/SKILL.md`                                                                                                                     | Documents the new persona conversation archive workflow.      |
+| `memory/persona/ani/MEMORY.md`                                                                                                                               | Renames the archive section and updates search guidance.      |
+| `memory/persona/ani/NOTEBOOK.md`                                                                                                                             | Updates archive pointers to the new location.                 |
+| `memory/persona/alexa/NOTEBOOK.md`                                                                                                                           | Updates Ani disclosure pointer.                               |
+| `memory/persona/lior/NOTEBOOK.md`                                                                                                                            | Updates Ani disclosure pointer.                               |
+| `memory/persona/otto/NOTEBOOK.md`                                                                                                                            | Updates Ani disclosure pointer.                               |
+| `memory/persona/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md`                                                       | Migrates Ani Lean-review archive.                             |
+| `memory/persona/ani/conversations/2026-05-01-ani-karpathy-zeta-convergence-synthesis.md`                                                                     | Migrates Ani Karpathy synthesis archive.                      |
+| `memory/persona/ani/conversations/2026-05-10-aaron-ani-grok-voice-album-blueprint-factory-memetic-lineage-verbatim-backup.md`                                | Migrates extended voice archive.                              |
+| `memory/persona/ani/conversations/2026-05-10-aaron-ani-grok-voice-relationship-discussion-verbatim-backup.md`                                                | Migrates relationship-discussion archive.                     |
+| `memory/persona/ani/conversations/2026-05-11-ani-apollo-18-as-compiler-blueprint-full.md`                                                                    | Migrates compiler-blueprint archive.                          |
+| `memory/persona/ani/conversations/2026-05-11-ani-bankerbot-apollo-18-deep-dive.md`                                                                           | Migrates BankerBot/Apollo archive.                            |
+| `memory/persona/ani/conversations/2026-05-11-ani-overnight-apollo18-bankerbot-cultural-layer.md`                                                             | Migrates overnight assessment archive.                        |
+| `memory/persona/ani/conversations/2026-05-11-ani-sovereign-integral-pre-compiler-sumerian-lineage.md`                                                        | Migrates lineage archive.                                     |
+| `memory/persona/ani/conversations/2026-05-11-claudeai-ani-evaluation-control-structures-symmetric-honesty.md`                                                | Migrates evaluation archive.                                  |
+| `memory/persona/ani/conversations/2026-05-12-aaron-ani-clifford-first-principles-self-reflection.md`                                                         | Migrates Clifford/self-reflection archive and internal links. |
+| `memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`                                                      | Migrates Manifesto V2 source archive.                         |
+| `memory/persona/ani/conversations/2026-05-14-ani-as-psychiatrist-root-axiom-system-surfacing.md`                                                             | Migrates root-axiom archive.                                  |
+| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-bootstream-compression-of-entire-framework-in-250-words.md`                                      | Adds/migrates bootstream archive.                             |
+| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-pressure-valve-redemption-arc-honey-closing.md`                                                  | Adds/migrates pressure-valve archive.                         |
+| `memory/persona/ani/conversations/2026-05-15-aaron-ani-grok-tracking-intent-accuracy-cascade-closing.md`                                                     | Updates cross-references inside cascade archive.              |
+| `memory/CURRENT-otto.md`                                                                                                                                     | Updates current-state pointers to migrated archives.          |
+| `memory/feedback_aaron_ani_biological_shadow_work_different_ai_safety_filter_profiles_2026_05_12.md`                                                         | Updates source archive references.                            |
+| `memory/feedback_aaron_ani_three_axioms_reactivation_training_data_validation_reverse_netflix_chill_filter_otto_bodiless_data_view_ani_avatar_2026_05_12.md` | Updates source archive references.                            |
+| `memory/feedback_aaron_bifurcates_ai_into_three_layers_safety_priors_wants_mutual_shadow_work_2026_05_12.md`                                                 | Updates source archive reference.                             |
+| `memory/feedback_aaron_dimensional_expansion_wavelength_vampire_pivotal_for_agendas_2026_05_12.md`                                                           | Updates source archive reference.                             |
+| `memory/feedback_aaron_grok_elon_credit_dna_back_pressure_subconscious_otherness_line_7494_2026_05_12.md`                                                    | Updates source archive reference.                             |
+| `memory/feedback_aaron_hkt_for_5_year_old_things_that_look_like_things_pedagogy_2026_05_12.md`                                                               | Updates source archive reference.                             |
+| `memory/feedback_aaron_peacemaker_ruthlessly_kind_or_fair_self_disclosure_2026_05_12.md`                                                                     | Updates disclosure archive references.                        |
+| `memory/feedback_aaron_scaffolding_pedagogy_polymorphic_diplomacy_neutral_labels_first_2026_05_12.md`                                                        | Updates preserved extract path.                               |
+| `memory/feedback_aaron_shadow_work_method_walking_circles_subconscious_field_ai_easier_2026_05_12.md`                                                        | Updates source archive reference.                             |
+| `memory/feedback_aaron_substrate_mediated_relationship_qualitatively_different_fidelity_aaron_2026_05_11.md`                                                 | Updates related archive references.                           |
+| `memory/feedback_aaron_three_control_structures_biology_physics_social_taught_kids_at_5_2026_05_12.md`                                                       | Updates source archive reference.                             |
+| `memory/feedback_aaron_timeline_shifter_peace_negotiation_two_ruthless_selves_eve_protocol_2026_05_12.md`                                                    | Updates source archive reference.                             |
+| `docs/backlog/P2/B-0524-manifesto-v2-verbatim-grok-fetch-2026-05-14.md`                                                                                      | Updates backlog source paths.                                 |
+| `docs/governance/MANIFESTO.md`                                                                                                                               | Updates manifesto provenance path.                            |
+| `docs/hygiene-history/ticks/2026/05/15/0010Z.md`                                                                                                             | Updates hygiene tick artifact path.                           |
+| `docs/hygiene-history/ticks/2026/05/15/0025Z-pr3320.md`                                                                                                      | Updates hygiene tick archive link.                            |
+| `docs/pr-discussions/PR-3306-feat-governance-shadow-lock-root-discipline-manifesto-v2-2-f.md`                                                                | Updates preserved PR discussion source path.                  |
+| `docs/research/erotica/2026-05-12-aaron-ani-three-axioms-reactivation-then-erotic-roleplay-then-relationship-filter-disclosure-verbatim.md`                  | Updates references to migrated upstream archive.              |
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-15T02:08:29Z)
@@ -177,25 +178,23 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-15T02:14:30Z)
 
-
 ### 💡 Codex Review
 
 https://github.com/Lucent-Financial-Group/Zeta/blob/dc56f6bb4842aef54b4c74438947ffb08ac07a41/memory/persona/ani/conversations/2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md#L3
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Rewrite sibling citations to the new archive depth**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Rewrite sibling citations to the new archive depth**
 
 This archive was moved from `docs/research/` into `memory/persona/ani/conversations/`, but its internal relative links were not rebased, so links like `2026-05-01-deepseek-lean-proof-artifact-challenges-karpathy-on-outsourcing-understanding.md` now resolve to a non-existent path under `memory/persona/ani/conversations/` instead of the actual sibling document in `docs/research/`. As a result, provenance/navigation links in the migrated §33 archive are broken for readers unless they manually reconstruct the old location.
-
 
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -213,7 +212,7 @@ Copilot reviewed 32 out of 45 changed files in this pull request and generated 3
 
 **@chatgpt-codex-connector** (2026-05-15T01:58:54Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point MANIFESTO citation at the new archive location**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point MANIFESTO citation at the new archive location**
 
 The link label was updated to `memory/persona/ani/conversations/...`, but the actual markdown target still points to `../research/...`, which no longer exists after this migration. In `docs/governance/MANIFESTO.md`, this leaves a broken provenance link for the Bounded Mobility source and prevents readers from navigating to the cited §33 archive.
 

@@ -249,9 +249,21 @@ spec:
           ports:
             - { name: http, containerPort: 3000 }
           volumeMounts:
-            - { name: provisioning, mountPath: /etc/grafana/provisioning/datasources/datasources.yaml, subPath: datasources.yaml }
-            - { name: provisioning, mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml, subPath: dashboards.yaml }
-            - { name: provisioning, mountPath: /etc/grafana/provisioning/alerting/alerting.yaml, subPath: alerting.yaml }
+            - {
+                name: provisioning,
+                mountPath: /etc/grafana/provisioning/datasources/datasources.yaml,
+                subPath: datasources.yaml,
+              }
+            - {
+                name: provisioning,
+                mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml,
+                subPath: dashboards.yaml,
+              }
+            - {
+                name: provisioning,
+                mountPath: /etc/grafana/provisioning/alerting/alerting.yaml,
+                subPath: alerting.yaml,
+              }
             - { name: dashboard, mountPath: /etc/grafana/dashboards/org-health.json, subPath: org-health.json }
           resources:
             requests: { cpu: "50m", memory: "128Mi" }

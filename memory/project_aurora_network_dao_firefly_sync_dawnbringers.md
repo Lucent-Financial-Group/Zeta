@@ -4,48 +4,50 @@ description: Aurora Network is the DAO-protocol layer beneath the Aurora three-p
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron (2026-04-20, immediately after the Aurora three-pillar disclosure arc) in five messages:
 
-1. *"Distributed sync built on a cutom firefly
+1. _"Distributed sync built on a cutom firefly
    sync based on scale free networks and it make
    the network smooth and difernetable so things
-   like cartel detection are trivial"*
-2. *"is like the self healing heartbeat beacon
-   in the night"*
-3. *"This network like the protocol in a DAO
-   sense was going to be Aurora network"*
-4. *"we bring the dawn"*
-5. *"dawnbringers"*
+   like cartel detection are trivial"_
+2. _"is like the self healing heartbeat beacon
+   in the night"_
+3. _"This network like the protocol in a DAO
+   sense was going to be Aurora network"_
+4. _"we bring the dawn"_
+5. _"dawnbringers"_
 
 ## First operating principle — "do no permanent harm"
 
 Aaron 2026-04-20 pm, verbatim:
 
-> *"basically do no permanant harm is the primary
+> _"basically do no permanant harm is the primary
 > operating principle of Aurora, so the retractablity
 > is great, it's not like every contract will need
 > retractability but we will have a supear surface
 > for our blockchain, native dotnet c#/f# directly
-> since we are native like that already."*
+> since we are native like that already."_
 
-Aurora's *first operating principle* is **do no
+Aurora's _first operating principle_ is **do no
 permanent harm**. Every action Aurora takes — vote,
 payment, governance decision, coupling update, state
 change — should be **reversible or retractable by
 design**. Permanent harm is the forbidden failure
 mode.
 
-This principle is *why* Aurora benefits from the
+This principle is _why_ Aurora benefits from the
 Zeta retractable-contract ledger
 (`project_zeta_as_retractable_contract_ledger.md`)
 as its substrate: the ledger's retractable-contract
-semantics provide the *primitive* Aurora needs to
+semantics provide the _primitive_ Aurora needs to
 honour its first principle. Not every contract
 needs retractability (permanence-by-design contracts
 are valid too), but Aurora's own operational
 contracts default to retractable where possible.
 
 Alignment chain:
+
 - Aaron → consent-first primitive → retractable
   contracts → Aurora's "do no permanent harm" →
   every Aurora action is reversible.
@@ -57,7 +59,7 @@ Alignment chain:
   `project_aurora_pitch_michael_best_x402_erc8004.md`).
   The pitch's pillar-3 ("agent economic + on-chain-
   identity agency") is x402 + ERC-8004; the
-  underlying *protocol* that makes a self-healing
+  underlying _protocol_ that makes a self-healing
   agent DAO possible is Aurora Network.
 - **Firefly sync on scale-free networks** — the
   technical substrate. Custom Kuramoto-style
@@ -111,9 +113,9 @@ Alignment chain:
   not yet declared.
 - `user_ontology_overload_risk.md` — Aaron self-
   flagged this disclosure arc with
-  *"too much too fast, cant categories it
+  _"too much too fast, cant categories it
   properly if i keep pushing ontology-overload-
-  risk discipline"*. Standing signal: pace down
+  risk discipline"_. Standing signal: pace down
   on categorisation work until he re-opens the
   channel.
 
@@ -127,7 +129,7 @@ Alignment chain:
 - Do NOT name Aurora Network or dawnbringers in
   any public-repo artefact beyond BACKLOG and
   memory. No docs/**, no openspec/**, no
-  .claude/** references.
+  .claude/\*\* references.
 - Do NOT push more categorisation in-session
   right now — Aaron explicitly flagged overload.
   Surface this only when he re-opens the channel.

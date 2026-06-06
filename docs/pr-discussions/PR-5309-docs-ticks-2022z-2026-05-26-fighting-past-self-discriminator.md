@@ -22,12 +22,12 @@ Otto-CLI background-worker session opened with task instruction "30 open PRs ...
 
 ## Empirical discriminator results
 
-| Discriminator | Result |
-|---|---|
-| Branch prefix scan (otto/, otto-cli/, otto-desktop/, otto-vscode/, shard/tick-*-otto-*) over 108 open PRs | **0 hits** |
-| GitHub author (`gh pr list --author "@me"`) | matches shared `AceHack` bot account — does NOT distinguish surface |
-| Commit-author verification on sample PR #5302 | commit-author = `Lior` ✓ |
-| Bucket by branch root | 96 lior + 2 zeta-lior + 2 decompose + 8 lior-* (no-slash) = 108 PEER |
+| Discriminator                                                                                             | Result                                                                |
+| --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Branch prefix scan (otto/, otto-cli/, otto-desktop/, otto-vscode/, shard/tick-_-otto-_) over 108 open PRs | **0 hits**                                                            |
+| GitHub author (`gh pr list --author "@me"`)                                                               | matches shared `AceHack` bot account — does NOT distinguish surface   |
+| Commit-author verification on sample PR #5302                                                             | commit-author = `Lior` ✓                                              |
+| Bucket by branch root                                                                                     | 96 lior + 2 zeta-lior + 2 decompose + 8 lior-\* (no-slash) = 108 PEER |
 
 ## Substrate-honest action
 
@@ -61,6 +61,7 @@ Catch-43 fired correctly at session-start; sentinel `8e0241c6` armed (`<<autonom
 Adds a new hygiene-history tick shard documenting an Otto-CLI background-worker session where an empirical discriminator scan found **0 Otto-prefix branches among 108 open PRs**, establishing that the queue was entirely peer-Lior work at the time of the session.
 
 **Changes:**
+
 - Added a new tick file capturing the discriminator methodology and results (branch-prefix scan, author/commit-author spot check, prefix bucketing).
 - Recorded the resulting “substrate-honest action” decision (surface discriminator outcome rather than acting on peer branches) and linked relevant coordinating rules.
 

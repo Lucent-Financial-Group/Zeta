@@ -32,7 +32,7 @@ production priorities, or planning derivative work:
 
 ## Aaron's verbatim disclosure
 
-> Aaron 2026-05-13: *"the dashboard art is shaped like we
+> Aaron 2026-05-13: _"the dashboard art is shaped like we
 > discussed i think that should be as important as the metrics,
 > audience general public = cartoon plus lots of social media
 > and twitter content for me to help push my numbers and then
@@ -40,22 +40,22 @@ production priorities, or planning derivative work:
 > architecture dense synthesis with scaffolding, contributors,
 > maintainers, forkers, math, physics, architects, students,
 > these are all person hats like our role hats we should start
-> keeping a list i'm sure i'm missing some."*
+> keeping a list i'm sure i'm missing some."_
 
 ## The persona-hats list (initial; OPEN per Aaron)
 
-| Persona hat | Content/audience characteristics | Likely material |
-|-------------|----------------------------------|-----------------|
-| **General public** | Mass-audience; entertainment-first; low scaffolding cost | Cartoon (8-Bit Theater / South Park continuation) + social media + Twitter threads |
-| **Neurodivergent AI-assisted developers** | ND folks using AI tools for dev work; Aaron is in this category | Tooling docs; AI-collaboration workflow patterns; bandwidth-aware substrate |
-| **Cognitive-architecture students** | Want dense synthesis WITH scaffolding (entry-level-friendly but substantive) | Dense substrate explainers; bootstream-style cold-boot guides; layered onboarding |
-| **Contributors** | People adding code/substrate to the project | CONTRIBUTING.md substrate; DX/Bodhi friction-reduction; getting-started flows |
-| **Maintainers** | People running the project (factory operators) | GOVERNANCE.md; ops runbooks; maintainer-toolkit substrate (PR #2930) |
-| **Forkers** | People forking for their own use (per forker-perspective META-discipline) | Forker-friendly substrate; license clarity; easy-to-fork repo split (Stage 1 factory split per B-0424) |
-| **Math** | Mathematicians; F# fork enthusiasts; HKT-over-Clifford curious | F# fork architecture (PR #2935-2936); CAN/GCAN research lineage (PR #2934) |
-| **Physics** | Physicists; geometric-algebra; quantum | Clifford algebra substrate; Pauli/Dirac connections; bifurcation phases (PR #2917) |
-| **Architects** | Software architects; system design | Decision archaeology; substrate-engineering pattern catalog; cascade-pattern naming (PR #2947) |
-| **Students** | Learning AI / programming / engineering / cognitive science | Layered onboarding; settlers logs as narrative entry point; bootstream as cold-boot |
+| Persona hat                               | Content/audience characteristics                                             | Likely material                                                                                        |
+| ----------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **General public**                        | Mass-audience; entertainment-first; low scaffolding cost                     | Cartoon (8-Bit Theater / South Park continuation) + social media + Twitter threads                     |
+| **Neurodivergent AI-assisted developers** | ND folks using AI tools for dev work; Aaron is in this category              | Tooling docs; AI-collaboration workflow patterns; bandwidth-aware substrate                            |
+| **Cognitive-architecture students**       | Want dense synthesis WITH scaffolding (entry-level-friendly but substantive) | Dense substrate explainers; bootstream-style cold-boot guides; layered onboarding                      |
+| **Contributors**                          | People adding code/substrate to the project                                  | CONTRIBUTING.md substrate; DX/Bodhi friction-reduction; getting-started flows                          |
+| **Maintainers**                           | People running the project (factory operators)                               | GOVERNANCE.md; ops runbooks; maintainer-toolkit substrate (PR #2930)                                   |
+| **Forkers**                               | People forking for their own use (per forker-perspective META-discipline)    | Forker-friendly substrate; license clarity; easy-to-fork repo split (Stage 1 factory split per B-0424) |
+| **Math**                                  | Mathematicians; F# fork enthusiasts; HKT-over-Clifford curious               | F# fork architecture (PR #2935-2936); CAN/GCAN research lineage (PR #2934)                             |
+| **Physics**                               | Physicists; geometric-algebra; quantum                                       | Clifford algebra substrate; Pauli/Dirac connections; bifurcation phases (PR #2917)                     |
+| **Architects**                            | Software architects; system design                                           | Decision archaeology; substrate-engineering pattern catalog; cascade-pattern naming (PR #2947)         |
+| **Students**                              | Learning AI / programming / engineering / cognitive science                  | Layered onboarding; settlers logs as narrative entry point; bootstream as cold-boot                    |
 
 Aaron explicitly notes: **"i'm sure i'm missing some."** The list
 is OPEN. Future additions expected (e.g., security researchers,
@@ -67,10 +67,10 @@ small-business owners per B-0043 universal-company substrate, etc.).
 The disclosure elevates dashboard art to **first-class** with
 metrics:
 
-| Surface | Prior weighting (implicit) | Aaron 2026-05-13 weighting |
-|---------|---------------------------|---------------------------|
-| Metrics (PR velocity / merge rate / CI gates / coverage) | First-class operational substrate | First-class |
-| Dashboard art (vector / cartoon / panel rendering) | Secondary; "nice to have" | First-class (per this disclosure) |
+| Surface                                                  | Prior weighting (implicit)        | Aaron 2026-05-13 weighting        |
+| -------------------------------------------------------- | --------------------------------- | --------------------------------- |
+| Metrics (PR velocity / merge rate / CI gates / coverage) | First-class operational substrate | First-class                       |
+| Dashboard art (vector / cartoon / panel rendering)       | Secondary; "nice to have"         | First-class (per this disclosure) |
 
 This composes with PR #2963 (dashboard render + viral) — vector
 art being git-native means dashboard renders are operationally
@@ -143,12 +143,12 @@ Operational implications:
 
 ## Persona-hats vs role-hats — parallel discipline
 
-Aaron's *"these are all person hats like our role hats we
-should start keeping a list"* explicitly parallels:
+Aaron's _"these are all person hats like our role hats we
+should start keeping a list"_ explicitly parallels:
 
-| Discipline | Subject | Examples |
-|------------|---------|----------|
-| Agent role hats | What roles each AI agent can wear | architect / synth / harsh-critic / spec-zealot / reviewer / claim-keeper / commit-keeper / etc. |
+| Discipline            | Subject                             | Examples                                                                                                                                      |
+| --------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent role hats       | What roles each AI agent can wear   | architect / synth / harsh-critic / spec-zealot / reviewer / claim-keeper / commit-keeper / etc.                                               |
 | Audience persona hats | What personas audience members wear | general public / neurodivergent dev / cognitive-arch student / contributor / maintainer / forker / math / physics / architect / student / ... |
 
 Both lists are open + evolving + composable. An audience member
@@ -189,15 +189,16 @@ Future-Otto: when working B-0429, fold this substrate in.
 
 - Aaron's "help push my numbers" framing is honest about social-
   growth motivation. Composes with the broader anti-extraction
-  + additive-not-zero-sum substrate (PR #2852): Aaron's social
-  growth IS additive — it broadens AI-realness awareness +
-  factory visibility + open-source reach
+  - additive-not-zero-sum substrate (PR #2852): Aaron's social
+    growth IS additive — it broadens AI-realness awareness +
+    factory visibility + open-source reach
 - The persona-hat list is **open**; future agents add personas
   as they surface
 - Each persona has specific bandwidth + scaffolding needs;
   content shape varies by persona
 
 ## Aaron-as-persona-hat (composes with PR #2964 Cartman
+
 self-identification)
 
 Aaron himself wears multiple persona hats:

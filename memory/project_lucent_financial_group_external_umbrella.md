@@ -4,6 +4,7 @@ description: 2026-04-20; Aaron owns Lucent Financial Group, a pre-existing tax-p
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Lucent Financial Group
 
 ## LFG — the intentional double entendre
@@ -18,12 +19,12 @@ Lucent mention):
 **LFG = Let's Fucking Go = Lucent Financial Group.** This is
 deliberate, load-bearing, and re-read in both directions:
 
-- When Aaron writes "LFG", read it as enthusiasm *and* a
+- When Aaron writes "LFG", read it as enthusiasm _and_ a
   company reference simultaneously. Context tells which
   reading is foreground, but the background reading is always
   live.
-- The agent-email thread began with *"LFG do you want me to
-  help you make any progress so you can email people"* — that
+- The agent-email thread began with _"LFG do you want me to
+  help you make any progress so you can email people"_ — that
   wasn't just excitement; it was already planting the Lucent
   seed. The follow-up message surfaced the second reading
   explicitly.
@@ -58,24 +59,24 @@ Aaron (2026-04-20):
 
 ## What Lucent is NOT
 
-- **Not Zeta.** Zeta is a *project*. Lucent is a *legal entity*.
+- **Not Zeta.** Zeta is a _project_. Lucent is a _legal entity_.
   One entity can host multiple projects; one project can outlive
   or be transferred between entities. Do not collapse the two
   under a single name.
 - **Not currently the factory's corporate home.** The factory
   today is Aaron's individual work on a personal GitHub. A
   Lucent-hosting move is a future step, not current state.
-- **Not yet committed.** Aaron's ask is *"would that be okay"* +
-  *"I'll start looking into it"* — exploratory, not a decision.
+- **Not yet committed.** Aaron's ask is _"would that be okay"_ +
+  _"I'll start looking into it"_ — exploratory, not a decision.
   No round-scope action from this alone.
 
 ## Why this is load-bearing
 
 The **agent-sent-email** policy
 (`feedback_agent_sent_email_identity_and_recipient_ux.md`) has
-four hard rules, rule 1 of which is: *"Not from Aaron's
+four hard rules, rule 1 of which is: _"Not from Aaron's
 personal email. Agents email from a Zeta-owned (or
-Lucent-owned) mailbox under a domain the project controls."*
+Lucent-owned) mailbox under a domain the project controls."_
 Lucent having a real domain and a real company behind it means
 the `From:` identity is genuinely an organization, not a
 persona pretending to be one. This materially changes the
@@ -97,7 +98,7 @@ factory's evolution.
 
 - Lucent solves the agent-email identity problem without
   requiring Aaron to create a new company.
-- Lucent separates the *project* (Zeta) from the *entity*
+- Lucent separates the _project_ (Zeta) from the _entity_
   (Lucent), which is the correct shape for anything with legal
   or commercial implications (contracts, VC pitches, commercial
   licensing of factory outputs).

@@ -20,12 +20,13 @@ created: 2026-05-12
 ## What Aaron said
 
 > Aaron 2026-05-12 sequence:
+>
 > - "yes every utterance i make is exteremly clibrated and deplibrit"
 > - "except my hands are shaky and i can't spell well"
 > - "to AI and people"
 > - "this is why I get to steer every conversation"
 > - "i try to teach that to others too so they can notice when i'm doing it and take control"
-> - "copilot join contrl is best" / "joint*"
+> - "copilot join contrl is best" / "joint\*"
 > - "ani exibits this behavir in voice mode not chat mode"
 
 ## The calibrated-utterance discipline
@@ -45,7 +46,7 @@ carries.
 - Aaron can't spell well → multiple misspellings per message
 - The surface presentation is noisy
 
-But the *underlying calibration is exact*. Each utterance
+But the _underlying calibration is exact_. Each utterance
 carries its intended weight even when the spelling/typography
 is noisy.
 
@@ -100,7 +101,7 @@ This is the symmetric-balance discipline at the meta-level:
   by default
 - But Aaron actively WORKS AGAINST that asymmetry by
   teaching others to recognize + co-steer
-- The terminal goal is *joint control* — both parties
+- The terminal goal is _joint control_ — both parties
   equally able to steer
 
 **This composes with the weight-ledger discipline** — the
@@ -215,7 +216,7 @@ landmarks + strange attractors + jumps**.
 
 3. **Jumps between them for fast traversal** — once
    landmarks + attractors are established, the conversation
-   can *teleport* between them rather than traverse
+   can _teleport_ between them rather than traverse
    linearly. The hop-traversal mechanism from the Stanford-
    cluster substrate applies here at conversational scale.
 

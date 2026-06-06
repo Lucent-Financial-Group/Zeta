@@ -1,8 +1,8 @@
 # ADR: Lock-free `Circuit.Register` — attempted, rejected for now
 
 **Date:** 2026-04-17 (round 17)
-**Status:** *Decision: keep the lock; document the CAS design for future
-revisit.*
+**Status:** _Decision: keep the lock; document the CAS design for future
+revisit._
 **Owner:** storage-specialist (narrow) + complexity-reviewer
 (wide).
 
@@ -56,7 +56,7 @@ member this.Build() =
 
 **Why it's correct.**
 
-- `op.idField` is written *before* the CAS, so any thread that reads
+- `op.idField` is written _before_ the CAS, so any thread that reads
   `state` after the successful CAS sees a fully-initialised op.
   .NET's `Interlocked.CompareExchange` has `memory_order_seq_cst`
   semantics on all supported platforms.
@@ -67,7 +67,7 @@ member this.Build() =
 
 **Complexity.**
 
-- Register: *O(n)* per call (full array copy) vs *O(1)* amortised
+- Register: _O(n)_ per call (full array copy) vs _O(1)_ amortised
   for the current `ResizeArray.Add`. For a 1000-op circuit this is
   500× more allocations during construction.
 - Build: unchanged (topo-sort dominates).
@@ -88,7 +88,7 @@ member this.Build() =
    latency guarantee nobody asked for for a 50× construction-time
    regression.
 
-3. **The race surface narrows the value.** The *only* scenario where
+3. **The race surface narrows the value.** The _only_ scenario where
    lock-free matters is a user calling `Circuit.Nest` from a
    background task while another thread has already called `Build`.
    That scenario is already invalidOp-throwing correctly under the
@@ -96,7 +96,7 @@ member this.Build() =
    microsecond.
 
 4. **More opportunity upstream.** The complexity budget is better
-   spent on the places where the lock *is* on the hot path —
+   spent on the places where the lock _is_ on the hot path —
    `DiskSpine.AppendAsync`, `SpineAsync` merges, Sink 2PC —
    which we're already attacking via `docs/LOCKS.md`.
 
@@ -127,14 +127,14 @@ stress tests, ship.
 
 - **`SegmentedList<Op>`** (Roslyn-style chunked list). O(1) append
   - O(n) snapshot. Worth considering if we ever want lock-free
-  *and* no-realloc. Listed in `docs/TECH-RADAR.md` as Assess.
+    _and_ no-realloc. Listed in `docs/TECH-RADAR.md` as Assess.
 
 ## References
 
-- [Shavit-Touitou, *Software Transactional Memory*](https://groups.csail.mit.edu/tds/papers/Shavit/ShavitT97.pdf) — for the
+- [Shavit-Touitou, _Software Transactional Memory_](https://groups.csail.mit.edu/tds/papers/Shavit/ShavitT97.pdf) — for the
   CAS-retry pattern.
-- [Michael-Scott, *Simple, fast, and practical non-blocking and
-  blocking concurrent queue algorithms*](https://www.cs.rochester.edu/~scott/papers/1996_PODC_queues.pdf) — classic CAS primer.
-- [Harris-Marlow-Peyton Jones, *Composable Memory Transactions*](https://www.microsoft.com/en-us/research/publication/composable-memory-transactions/) —
+- [Michael-Scott, _Simple, fast, and practical non-blocking and
+  blocking concurrent queue algorithms_](https://www.cs.rochester.edu/~scott/papers/1996_PODC_queues.pdf) — classic CAS primer.
+- [Harris-Marlow-Peyton Jones, _Composable Memory Transactions_](https://www.microsoft.com/en-us/research/publication/composable-memory-transactions/) —
   why atomic composition matters; applies to our seal-flip + append.
 - `docs/LOCKS.md` — current lock inventory and why each one exists.

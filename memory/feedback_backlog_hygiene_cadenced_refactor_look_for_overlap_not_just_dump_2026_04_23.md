@@ -38,7 +38,7 @@ lands, a row is added. Without periodic meta-audit:
   becomes a log of historical intentions — still useful
   but different.
 
-Aaron's framing: *"not just a dump."* The append-only
+Aaron's framing: _"not just a dump."_ The append-only
 log is fine as a record; it's not a triage substrate.
 Periodic refactor converts the log back into a triage
 substrate.
@@ -143,9 +143,9 @@ harness-surface — 5-10 rounds). Each firing:
 
 Aaron 2026-05-01:
 
-> *"you know wheveryou pickup new backlog items you should
+> _"you know wheveryou pickup new backlog items you should
 > look for similar backlog items because i've repeated myself
-> on several designs since the start of this project"*
+> on several designs since the start of this project"_
 
 The 2026-04-23 rule covers **cadenced retroactive refactor**
 (every 5-10 rounds, sweep the whole BACKLOG for overlap).
@@ -161,8 +161,8 @@ topics. The two rules are complementary:
 
 ### Aaron's empirical observation
 
-*"i've repeated myself on several designs since the start of
-this project."* Aaron has stated multiple times that the same
+_"i've repeated myself on several designs since the start of
+this project."_ Aaron has stated multiple times that the same
 design pattern, rule, or concern recurs — meaning the factory
 DID NOT absorb the first-stating fully. The recurrence IS the
 diagnostic for absorption-failure. The fence-at-top discipline
@@ -208,14 +208,13 @@ Before filing a new backlog row (or memory file, by extension):
    extension adds `depends_on` to the orthogonality
    discipline per
    `feedback_class_level_rules_need_orthogonality_check_extend_or_create_aaron_2026_05_01.md`):
-
    - **Extend existing** (preferred default) — add the new
      concern as a section/note to the existing row
    - **Sharpen the boundary** — if both rows have legitimate
      scope, edit each to make the non-overlap explicit
-   - **Add `depends_on`** (Aaron 2026-05-01: *"you could
+   - **Add `depends_on`** (Aaron 2026-05-01: _"you could
      start adding depends on if you find that relationship
-     when doing that"*) — if the new row genuinely needs the
+     when doing that"_) — if the new row genuinely needs the
      existing row to land first OR is meaningfully constrained
      by the existing row's outcome, encode the dependency in
      a `depends_on:` frontmatter field. Makes the backlog
@@ -240,9 +239,9 @@ status: open
 title: ...
 created: YYYY-MM-DD
 last_updated: YYYY-MM-DD
-depends_on:                  # NEW optional field
-  - B-NNNN-existing-row      # blocking dependency
-  - "Otto-task #N"           # TaskList dependency (quote required: # starts a YAML comment unquoted)
+depends_on: # NEW optional field
+  - B-NNNN-existing-row # blocking dependency
+  - "Otto-task #N" # TaskList dependency (quote required: # starts a YAML comment unquoted)
 ---
 ```
 
@@ -262,8 +261,8 @@ this memo's authoring, `tools/backlog/generate-index.sh`
 parses only `id` / `status` / `title` from frontmatter
 (priority is derived from the directory path
 `docs/backlog/P{0,1,2,3}/`), and does NOT consume
-`depends_on`. The schema field is the *forward-compatible
-authoring shape*; downstream tooling lands as separate work:
+`depends_on`. The schema field is the _forward-compatible
+authoring shape_; downstream tooling lands as separate work:
 
 - **Topological-sort view** — candidate generator extension
   to emit a DAG-ordered listing of the backlog.
@@ -276,8 +275,8 @@ authoring shape*; downstream tooling lands as separate work:
   to mark a row `in_progress` when its deps are still
   open.
 
-None of these exist today; they are the *natural mechanization
-trajectory* the schema unblocks. Authoring rows with
+None of these exist today; they are the _natural mechanization
+trajectory_ the schema unblocks. Authoring rows with
 `depends_on:` populated NOW means the data is in place when
 tooling catches up; reading the field is the agent's
 discipline until then.
@@ -324,8 +323,8 @@ The audit IS the demonstration of the failure mode.
 Add as **class 14** in B-0153 (PR #1120) — "pre-filing
 similar-row grep check." Two viable mechanization shapes
 (the right git hook depends on whether the gate runs
-*before commit message authoring* or *during commit message
-finalization*):
+_before commit message authoring_ or _during commit message
+finalization_):
 
 - **`pre-commit` hook** on `docs/backlog/B-NNNN-*.md`
   file-create — extracts keywords, greps
@@ -354,8 +353,8 @@ that's been missing, and the recurrence is the evidence.
 Aaron 2026-05-01 (right after the backlog `depends_on`
 extension above):
 
-> *"you could have a related to our some other edge in
-> memories, up to you, they are very much your domain"*
+> _"you could have a related to our some other edge in
+> memories, up to you, they are very much your domain"_
 
 Aaron generalized the graph-shape from backlog rows to
 memory files. The same overlap problem afflicts `memory/`
@@ -364,20 +363,20 @@ memory files. The same overlap problem afflicts `memory/`
 accumulate without being linked. Edges turn the memory
 tree into a navigable graph.
 
-Aaron's *"up to you, they are very much your domain"* is
+Aaron's _"up to you, they are very much your domain"_ is
 explicit delegation; the design choices below are Otto's
 under the no-directives + autonomy-first-class framing.
 
 #### Edge types (six classes, all optional, forward-only)
 
-| Edge | Semantics |
-|---|---|
-| `extends` | This memory adds to an earlier memory; both stay in force. (Example: the 2026-05-01 extension to this 2026-04-23 file.) |
-| `supersedes` | This memory replaces an earlier memory entirely; the earlier becomes historical. (Rare — most evolution is `refines`.) |
-| `refines` | This memory sharpens an earlier memory's scope without replacing it. (Example: Otto-364 refines Otto-247; predecessor stays.) |
-| `contradicts` | This memory explicitly conflicts with another; reader needs to know both exist. (Glass-Halo: surface contradictions, don't paper over.) |
+| Edge            | Semantics                                                                                                                                          |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `extends`       | This memory adds to an earlier memory; both stay in force. (Example: the 2026-05-01 extension to this 2026-04-23 file.)                            |
+| `supersedes`    | This memory replaces an earlier memory entirely; the earlier becomes historical. (Rare — most evolution is `refines`.)                             |
+| `refines`       | This memory sharpens an earlier memory's scope without replacing it. (Example: Otto-364 refines Otto-247; predecessor stays.)                      |
+| `contradicts`   | This memory explicitly conflicts with another; reader needs to know both exist. (Glass-Halo: surface contradictions, don't paper over.)            |
 | `composes_with` | This memory works alongside another; neither subsumes nor depends. (Promotes existing prose `## Composes with` sections to machine-readable form.) |
-| `caused_by` | This memory was triggered by a specific event / incident / PR / message. (Free-text, not file-pointer.) |
+| `caused_by`     | This memory was triggered by a specific event / incident / PR / message. (Free-text, not file-pointer.)                                            |
 
 Forward-only by design — each file owns its outgoing claims;
 reverse navigation is `grep -lrE "supersedes:.*X" memory/`
@@ -415,17 +414,17 @@ name: ...
 description: ...
 type: feedback
 originSessionId: ...
-extends:                       # optional, list of filenames
+extends: # optional, list of filenames
   - feedback_NAME_DATE.md
-supersedes:                    # optional, list of filenames
+supersedes: # optional, list of filenames
   - feedback_NAME_DATE.md
-refines:                       # optional, list of filenames
+refines: # optional, list of filenames
   - feedback_NAME_DATE.md
-contradicts:                   # optional, list of filenames
+contradicts: # optional, list of filenames
   - feedback_NAME_DATE.md
-composes_with:                 # optional, list of filenames
+composes_with: # optional, list of filenames
   - feedback_NAME_DATE.md
-caused_by:                     # optional, list of free-text strings
+caused_by: # optional, list of free-text strings
   - "PR #1234 review thread"
   - "Aaron 2026-05-01 messages"
 ---

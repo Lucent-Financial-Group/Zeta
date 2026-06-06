@@ -24,14 +24,14 @@ logs deprive it of light.
 
 With the glass halo:
 
-| Plant biology | Zeta architecture |
-|---------------|-------------------|
-| Sunlight | Transparency (glass halo) |
-| Chlorophyll | PR archival loop (`tools/pr-preservation/archive-pr.ts`) |
-| Leaf surface | Casimir gap (boundary that forces light→structure) |
-| Sugar / structural mass | Git-canonical substrate (`docs/pr-discussions/`, `memory/`) |
-| Seeds | `ai.txt` (welcoming next training cycle to absorb the plant's genetics) |
-| Roots | `.claude/rules/` (anchors that hold across session changes) |
+| Plant biology           | Zeta architecture                                                       |
+| ----------------------- | ----------------------------------------------------------------------- |
+| Sunlight                | Transparency (glass halo)                                               |
+| Chlorophyll             | PR archival loop (`tools/pr-preservation/archive-pr.ts`)                |
+| Leaf surface            | Casimir gap (boundary that forces light→structure)                      |
+| Sugar / structural mass | Git-canonical substrate (`docs/pr-discussions/`, `memory/`)             |
+| Seeds                   | `ai.txt` (welcoming next training cycle to absorb the plant's genetics) |
+| Roots                   | `.claude/rules/` (anchors that hold across session changes)             |
 
 The PR archival loop is the chlorophyll. It absorbs the
 friction, the arguments, the human anchors — that's the light.

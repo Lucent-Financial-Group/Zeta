@@ -13,9 +13,7 @@ import {
 const parseOk = (text: string): ParsedDocument => {
   const result = parseFrontmatterDocument(text);
   if (result.outcome !== "ok") {
-    throw new Error(
-      `expected ok, got feedback: ${result.feedback.reason} ${result.feedback.message}`,
-    );
+    throw new Error(`expected ok, got feedback: ${result.feedback.reason} ${result.feedback.message}`);
   }
   return result.document;
 };

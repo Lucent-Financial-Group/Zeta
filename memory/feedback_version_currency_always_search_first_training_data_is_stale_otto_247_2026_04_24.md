@@ -13,10 +13,10 @@ knowing" is WRONG for any version claim.**
 
 Direct Aaron quote:
 
-> *"you are really bad at versions, you need to have a like
+> _"you are really bad at versions, you need to have a like
 > a first class in your memories that whenever you see a
 > version you need to search to see if its the latest, you
-> can't just know by your training data, it's out of date."*
+> can't just know by your training data, it's out of date."_
 
 ## What counts as a "version"
 
@@ -46,6 +46,7 @@ ecosystems (Anthropic SDK, GitHub Actions runners,
 Claude/GPT model families), that's several releases.
 
 Versions I got wrong in practice:
+
 - `macos-14` used when `macos-15` GA since Aug 2025 (first
   pass) and `macos-26` GA since Feb 2026 (second pass)
 - Likely others unnoticed (need to audit)
@@ -88,25 +89,27 @@ Before asserting, proposing, or committing to a version:
 
 ## Specific version categories and authoritative sources
 
-| Category | Source | Volatility |
-|---|---|---|
-| GitHub Actions runners | `github.com/actions/runner-images` + `docs.github.com/actions/reference/runners` | HIGH — 6mo cycles |
-| Claude model IDs | `docs.claude.com/en/docs/about-claude/models` | MEDIUM — annual |
-| .NET | `dotnet.microsoft.com/download` | MEDIUM — annual LTS |
-| Node.js | `nodejs.org/en/about/previous-releases` | HIGH — 6mo cycles |
-| Python | `python.org/downloads` | MEDIUM — annual |
-| Ubuntu LTS | `ubuntu.com/about/release-cycle` | LOW — 2yr LTS |
-| Apple Xcode / macOS | `developer.apple.com` + GitHub runner images | HIGH |
-| NuGet packages | `nuget.org` | VARIES per package |
+| Category               | Source                                                                           | Volatility          |
+| ---------------------- | -------------------------------------------------------------------------------- | ------------------- |
+| GitHub Actions runners | `github.com/actions/runner-images` + `docs.github.com/actions/reference/runners` | HIGH — 6mo cycles   |
+| Claude model IDs       | `docs.claude.com/en/docs/about-claude/models`                                    | MEDIUM — annual     |
+| .NET                   | `dotnet.microsoft.com/download`                                                  | MEDIUM — annual LTS |
+| Node.js                | `nodejs.org/en/about/previous-releases`                                          | HIGH — 6mo cycles   |
+| Python                 | `python.org/downloads`                                                           | MEDIUM — annual     |
+| Ubuntu LTS             | `ubuntu.com/about/release-cycle`                                                 | LOW — 2yr LTS       |
+| Apple Xcode / macOS    | `developer.apple.com` + GitHub runner images                                     | HIGH                |
+| NuGet packages         | `nuget.org`                                                                      | VARIES per package  |
 
 ## What I should have done on macos-14
 
 Wrong path (what I did):
+
 1. Saw `macos-14` in repo
 2. Assumed it was current
 3. Defended it in outputs
 
 Right path (what this rule demands):
+
 1. Saw `macos-14` in repo
 2. WebSearched "GitHub Actions macOS runner versions 2026"
 3. Found macos-15 GA since Aug 2025, macos-26 GA since
@@ -147,7 +150,7 @@ Right path (what this rule demands):
 
 ## Why this is a CLAUDE.md-level rule
 
-Aaron explicit: *"first class in your memories"*. CLAUDE.md
+Aaron explicit: _"first class in your memories"_. CLAUDE.md
 is the session-bootstrap file, loaded at every wake. The
 three existing CLAUDE.md-level rules (verify-before-
 deferring, future-self-not-bound, never-idle,
@@ -160,10 +163,10 @@ reasoning lives in this memory file.
 
 ## Direct Aaron quote to preserve
 
-> *"you are really bad at versions, you need to have a like
+> _"you are really bad at versions, you need to have a like
 > a first class in your memories that whenever you see a
 > version you need to search to see if its the latest, you
-> can't just know by your training data, it's out of date."*
+> can't just know by your training data, it's out of date."_
 
 Future Otto: before you ever say "X version is current" or
 propose adopting version N of anything, WebSearch for the

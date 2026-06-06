@@ -18,12 +18,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Updates [B-0614](../backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md) with the empirical-instances-accumulated table:
 
-| # | Tick | Substrate produced |
-|---|---|---|
-| 1 | 22:13Z (this session) | [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) saturation anchor |
-| 2 | 22:07Z (peer Otto session) | [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) cross-axis composition |
-| 3 | 22:46Z (this session, recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) B-0614 row creation |
-| 4 | 23:03Z (this session, recursive #2) | THIS PR |
+| #   | Tick                                | Substrate produced                                                                          |
+| --- | ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| 1   | 22:13Z (this session)               | [PR #4110](https://github.com/Lucent-Financial-Group/Zeta/pull/4110) saturation anchor      |
+| 2   | 22:07Z (peer Otto session)          | [PR #4118](https://github.com/Lucent-Financial-Group/Zeta/pull/4118) cross-axis composition |
+| 3   | 22:46Z (this session, recursive #1) | [PR #4120](https://github.com/Lucent-Financial-Group/Zeta/pull/4120) B-0614 row creation    |
+| 4   | 23:03Z (this session, recursive #2) | THIS PR                                                                                     |
 
 **Same-session frequency**: 3 instances in ~50 min once post-cycle-close.
 **Cross-session**: peer Otto independently produced complementary substrate at the same hour.
@@ -47,22 +47,25 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Updates backlog row **B-0614** to record additional empirical evidence of the forced-#6 “dry meta-fallback” edge case and to draft (but not apply) a candidate refinement to the related rule text.
 
 **Changes:**
+
 - Adds an “Empirical instances accumulated” table plus same-session / cross-session observations.
 - Marks acceptance criterion #1 as completed based on the newly captured instances.
 - Drafts candidate rule-text refinement language (explicitly not yet applied).
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md:92**
-* The draft refinement says “Do NOT land this refinement until at least 1 cross-instance evidence accumulates…”, but the table/paragraph above already records a cross-session instance (#2). Either clarify why #2 doesn’t satisfy the bar (e.g., cross-machine verification) or update the gating sentence so it remains consistent with the evidence listed.
+
+- The draft refinement says “Do NOT land this refinement until at least 1 cross-instance evidence accumulates…”, but the table/paragraph above already records a cross-session instance (#2). Either clarify why #2 doesn’t satisfy the bar (e.g., cross-machine verification) or update the gating sentence so it remains consistent with the evidence listed.
+
 ```
 > If you find yourself paralyzed about what to pick — pick THIS rule (or its analog for whatever failure mode is recurring) and sharpen it based on the current session's evidence. That's the meta-decomposition move that USUALLY works because the empirical evidence is the current session's behavior. **Exception** (per B-0614): when the session is post-cycle-close AND the substrate-pool is genuinely saturated (the meta-fallback would produce a recursive-anchor / memo-of-memos / re-statement-with-different-phrasing), the substrate-honest move is to file a small backlog row capturing the edge case AND/OR update an existing edge-case row with the current instance's data. The row IS the forced-#6 concrete artifact.
 
 Do NOT land this refinement until at least 1 cross-instance evidence accumulates (different Otto identity, different session, different machine) — same-session evidence alone is insufficient to motivate a rule edit because it conflates "the pattern" with "this Otto's behavior under Pure-git tier."
 
 ```
+
 </details>
 
 ## Review threads

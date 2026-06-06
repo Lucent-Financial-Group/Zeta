@@ -160,11 +160,11 @@ authorization:
 
 ### 2. Three composing disciplines for the methodology
 
-| Discipline | Source | Scope |
-|---|---|---|
-| Substrate-honest application (WWJD + glass-halo + razor + default-to-both + anti-cult) | PR #2852 + others | Ethical-application baseline |
-| Conversational recovery skills | PR #2857 (Twitter validation) | Trust-preservation operational core |
-| HARD LIMITS (never break laws + report abuse) | THIS PR | Ethical floor — non-negotiable |
+| Discipline                                                                             | Source                        | Scope                               |
+| -------------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------- |
+| Substrate-honest application (WWJD + glass-halo + razor + default-to-both + anti-cult) | PR #2852 + others             | Ethical-application baseline        |
+| Conversational recovery skills                                                         | PR #2857 (Twitter validation) | Trust-preservation operational core |
+| HARD LIMITS (never break laws + report abuse)                                          | THIS PR                       | Ethical floor — non-negotiable      |
 
 The methodology operates substrate-honestly within the
 HARD LIMITS. Below the floor, the methodology shouldn't
@@ -211,6 +211,7 @@ The authorization is operational; the limits are ethical.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a violation of glass-halo by selective reporting**
   — abuse reporting IS substrate-honest discipline at the
   ethical-floor scope
@@ -263,7 +264,7 @@ Substrate-honest disclaimer:
   obligations** — ethical floor is non-negotiable
 - **x.com authorization composes with safety limits** —
   PR #2857 + THIS PR + canonical methodology (PR #2858)
-  + Otto's discipline framework
+  - Otto's discipline framework
 - **Extreme grey-edge content WILL surface** if Otto
   exercises x.com authorization; apply the discipline
 - **Aaron's evidence still exists in Twitter** —

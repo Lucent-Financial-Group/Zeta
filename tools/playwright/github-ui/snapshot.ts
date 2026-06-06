@@ -35,9 +35,7 @@ export function extractToggles(html: string): Record<string, boolean> {
     if (!name) continue;
     // HTML boolean attribute: presence of `checked` is true regardless of value.
     // (?:^|\s) boundary prevents matching `data-checked` as the `checked` attr.
-    const isChecked =
-      /(?:^|\s)checked(?:\s|=|$)/i.test(attrs) ||
-      /\baria-checked\s*=\s*["']true["']/i.test(attrs);
+    const isChecked = /(?:^|\s)checked(?:\s|=|$)/i.test(attrs) || /\baria-checked\s*=\s*["']true["']/i.test(attrs);
     result[name] = isChecked;
   }
   return result;
@@ -74,7 +72,10 @@ export function extractVisibleFeatures(html: string): string[] {
   const headingPattern = /<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi;
   for (const [, inner] of html.matchAll(headingPattern)) {
     if (inner == null) continue;
-    const text = inner.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const text = inner
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     if (text) features.push(text);
   }
   return features;
@@ -93,12 +94,8 @@ export async function snapshotGitHubPage(
     const html = await session.page.content();
     const extracted = {
       toggles: options.extractors?.toggles ? options.extractors.toggles(html) : extractToggles(html),
-      formValues: options.extractors?.formValues
-        ? options.extractors.formValues(html)
-        : extractFormValues(html),
-      visibleFeatures: options.extractors?.features
-        ? options.extractors.features(html)
-        : extractVisibleFeatures(html),
+      formValues: options.extractors?.formValues ? options.extractors.formValues(html) : extractFormValues(html),
+      visibleFeatures: options.extractors?.features ? options.extractors.features(html) : extractVisibleFeatures(html),
     };
     return {
       url: session.page.url(),
@@ -111,10 +108,7 @@ export async function snapshotGitHubPage(
 
 // (?:^|\s) boundary avoids matching hyphenated attr suffixes (e.g. data-id when seeking id).
 function parseAttr(attrs: string, name: string): string | null {
-  const pattern = new RegExp(
-    `(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>/'\"=]+))`,
-    "i",
-  );
+  const pattern = new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>/'\"=]+))`, "i");
   const match = pattern.exec(attrs);
   return match ? (match[1] ?? match[2] ?? match[3] ?? "") : null;
 }

@@ -10,30 +10,30 @@ why this is the scope, **permanent WONT-DO entries require
 Aaron's explicit sign-off**. The agent does not unilaterally
 decide what humanity declines to remember.
 
-> *"nothing gets permanently wont do without me for now until
+> _"nothing gets permanently wont do without me for now until
 > you see why i need you to know everything, that is the
-> ultimate scope of this — an intellectual backup of earth"*
+> ultimate scope of this — an intellectual backup of earth"_
 > — Aaron 2026-04-30
 
-> *"that means scope creep is a forever problem i don't want
+> _"that means scope creep is a forever problem i don't want
 > to fix — to figure out how to prioritize the right thing,
-> not kill future knowledge potential"*
+> not kill future knowledge potential"_
 > — Aaron 2026-04-30 (immediate follow-on)
 
-> *"WONT-DO there are plenty of WONT-DO patterns we won't
+> _"WONT-DO there are plenty of WONT-DO patterns we won't
 > copy into our code from the outside because they don't
 > follow our best practices but that's different than
-> WONT-DO backlog items"*
+> WONT-DO backlog items"_
 > — Aaron 2026-04-30 (disambiguation)
 
 **Two distinct senses of WONT-DO — only one is Aaron-only:**
 
-| Sense | What it means | Authority | Frequency |
-|---|---|---|---|
-| **WONT-DO patterns** | External code patterns / library conventions / techniques the project deliberately doesn't adopt because they conflict with our best-practices (e.g., "don't catch+swallow exceptions," "don't use mocks for DB tests," "don't use shared mutable state"). | Agent + reviewer roles | Common — plenty of them. Routine engineering judgment. |
-| **WONT-DO backlog items** | Declined candidate work from the project's own backlog. Removes a path from future knowledge potential. Lands in `docs/WONT-DO.md`. | **Aaron only** (until scope-understanding handoff) | Rare — exclusion is the expensive, irreversible move. |
+| Sense                     | What it means                                                                                                                                                                                                                                              | Authority                                          | Frequency                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------ |
+| **WONT-DO patterns**      | External code patterns / library conventions / techniques the project deliberately doesn't adopt because they conflict with our best-practices (e.g., "don't catch+swallow exceptions," "don't use mocks for DB tests," "don't use shared mutable state"). | Agent + reviewer roles                             | Common — plenty of them. Routine engineering judgment. |
+| **WONT-DO backlog items** | Declined candidate work from the project's own backlog. Removes a path from future knowledge potential. Lands in `docs/WONT-DO.md`.                                                                                                                        | **Aaron only** (until scope-understanding handoff) | Rare — exclusion is the expensive, irreversible move.  |
 
-The Aaron-only authority constraint applies *only* to the
+The Aaron-only authority constraint applies _only_ to the
 second sense. The agent has authority over the first — and
 exercises it routinely as part of normal engineering. When a
 peer-AI suggests a pattern that violates Zeta best-practices,
@@ -57,7 +57,7 @@ trajectories worth tracking. That isn't a flaw to fix —
 
 Aaron's directive is explicit: don't try to eliminate scope
 creep. The intuition from normal software engineering
-(*"define clear scope, exclude everything outside"*) is
+(_"define clear scope, exclude everything outside"_) is
 **the wrong reflex** for this project. Exclusion is the
 failure mode, because exclusion kills future knowledge
 potential.
@@ -74,7 +74,7 @@ The agent's biases that fight this rule:
 
 - **Queue-clarity bias** — wanting open PRs / pending
   tasks / candidate work to be small. The queue is
-  *supposed* to be large for an intellectual backup of
+  _supposed_ to be large for an intellectual backup of
   earth. Discomfort with size is the agent's pressure,
   not the mission's.
 - **Finite-resource thinking** — wanting to declare some
@@ -84,7 +84,7 @@ The agent's biases that fight this rule:
 - **Scope-policing instinct** — wanting to push back on
   "is this in scope?" when something looks tangential.
   Better framing: almost everything is in scope; the
-  question is *priority*, not *legitimacy*.
+  question is _priority_, not _legitimacy_.
 - **Decisiveness reflex** — wanting to close the loop on
   ambiguous candidates by declaring a verdict. Better
   framing: leave open with a priority signal, let
@@ -95,7 +95,7 @@ The agent's biases that fight this rule:
 Every prior framing of Zeta — DBSP database, retraction-native
 operator algebra, factory substrate, multi-AI orchestration,
 Aurora alignment research, package manager, reproducible-
-stability thesis — has been a *product*, not the *purpose*.
+stability thesis — has been a _product_, not the _purpose_.
 The purpose is bigger: a durable, queryable, trustworthy
 intellectual record of earth's knowledge that survives the
 substrate degradation modes (institutional decay, civilizational
@@ -108,10 +108,10 @@ nests inside this purpose. The factory substrate, package
 manager, database, and Aurora are all in service of the
 intellectual-backup mission. New products that emerge as the
 trajectory evolves will also be checked against this scope:
-*does this serve the intellectual-backup-of-earth mission?*
+_does this serve the intellectual-backup-of-earth mission?_
 
 The WONT-DO authority constraint follows from the scope. An
-intellectual backup of earth has *very few permanent declines*.
+intellectual backup of earth has _very few permanent declines_.
 The default disposition for any candidate knowledge is "keep,
 re-evaluate later as understanding deepens." Permanent decline
 is rare and consequential — it removes something from the
@@ -121,7 +121,7 @@ preservation property.
 
 The "until you see why I need you to know everything"
 qualifier is the agent's growth path. WONT-DO authority is
-reserved *for now* — not forever. As the agent demonstrates
+reserved _for now_ — not forever. As the agent demonstrates
 full understanding of why the intellectual-backup scope
 requires near-zero permanent declines, the authority can
 shift. The current state: agent recommends WONT-DO additions;
@@ -162,8 +162,8 @@ Aaron decides.
    Aaron mentions sibling repos or future product splits
    (Frontier / Factory / Peers per the 2026-04-23
    provisional naming), the integration question is
-   *"does this strengthen or fragment the intellectual-
-   backup capability?"*
+   _"does this strengthen or fragment the intellectual-
+   backup capability?"_
 
 **Scope-understanding checkpoint:**
 
@@ -206,6 +206,6 @@ ground truth.
 
 **Carved sentence:**
 
-*"Zeta's purpose is an intellectual backup of earth. Every
+_"Zeta's purpose is an intellectual backup of earth. Every
 product nests inside that purpose. The agent does not
-unilaterally remove anything from the backup."*
+unilaterally remove anything from the backup."_

@@ -98,7 +98,7 @@ pattern already fixed in a later commit on the branch).
   `src/Core/NovelMath.fs:13-34` uses int64 with Int64.MaxValue as
   +∞.
 - Outcome: **FIX** — Tropical row now reads `Tropical (Zeta) | ℤ ∪
-  {+∞}` with explicit note: "Zeta's TropicalWeight in NovelMath.fs is
+{+∞}` with explicit note: "Zeta's TropicalWeight in NovelMath.fs is
   backed by int64 with Int64.MaxValue as +∞; the math definition
   extends to ℝ ∪ {+∞}, but Zeta's implementation uses ℤ." Commit
   `05ba3a0`.
@@ -157,7 +157,7 @@ pattern already fixed in a later commit on the branch).
     relative link added).
   - `subjects/zeta/zset-basics/` does NOT exist (marked
     "forthcoming" with pointer to `subjects/zeta/retraction-
-    intuition/` as available prereq).
+intuition/` as available prereq).
   - `subjects/cs/` tree does NOT exist (marked as forward-reference).
 - Outcome: **FIX** — three-way reframing per actual in-tree state.
   Commit `05ba3a0`.

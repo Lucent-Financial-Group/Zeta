@@ -1,10 +1,6 @@
 import { equal } from "node:assert/strict";
 import { test } from "node:test";
-import {
-  HermesRunState,
-  createInProcessHermesRuntime,
-  type HermesRunBinding,
-} from "../src/hermes-runtime.ts";
+import { HermesRunState, createInProcessHermesRuntime, type HermesRunBinding } from "../src/hermes-runtime.ts";
 
 function binding(overrides: Partial<HermesRunBinding> = {}): HermesRunBinding {
   return {

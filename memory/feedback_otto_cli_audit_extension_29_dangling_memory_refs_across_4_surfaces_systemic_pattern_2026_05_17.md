@@ -9,15 +9,15 @@ created: 2026-05-17
 
 **Fact**: Audit [#4031](https://github.com/Lucent-Financial-Group/Zeta/pull/4031) found 5 dangling rule→memory refs in `.claude/rules/`. Extending the audit to other substrate surfaces revealed **29 dangling refs** total across **4 surfaces**:
 
-| Surface | Dangling / Unique refs | Pattern |
-|---------|------------------------|---------|
-| `.claude/agents/` | 0 / 0 | clean |
-| `.claude/skills/` | 1 / 14 | tiny |
-| `.claude/rules/` | 5 / N (was the #4031 audit; addressed by #4031+#4033+#4038 chain) | landed |
-| `docs/research/` | 8 / 186 | small |
-| `docs/backlog/` | 17 / 200 | largest |
-| `memory/persona/` | 3 / 58 | small |
-| **TOTAL** | **29 dangling refs** across 4 still-open surfaces | systemic |
+| Surface           | Dangling / Unique refs                                            | Pattern  |
+| ----------------- | ----------------------------------------------------------------- | -------- |
+| `.claude/agents/` | 0 / 0                                                             | clean    |
+| `.claude/skills/` | 1 / 14                                                            | tiny     |
+| `.claude/rules/`  | 5 / N (was the #4031 audit; addressed by #4031+#4033+#4038 chain) | landed   |
+| `docs/research/`  | 8 / 186                                                           | small    |
+| `docs/backlog/`   | 17 / 200                                                          | largest  |
+| `memory/persona/` | 3 / 58                                                            | small    |
+| **TOTAL**         | **29 dangling refs** across 4 still-open surfaces                 | systemic |
 
 **Why**: User-scope-only memory files (`~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`) get cited by in-repo substrate via `memory/feedback_*.md` path form. Aaron's Otto-CLI auto-loads user-scope memory so citations resolve; cold-boot agents on fresh checkouts don't have user-scope memory and the citations dangle.
 

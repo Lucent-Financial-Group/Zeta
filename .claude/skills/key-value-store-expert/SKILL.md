@@ -15,29 +15,29 @@ real discipline.
 
 ## The KV canon
 
-| System | Shape | Guarantee | Role |
-|---|---|---|---|
-| **Redis** | Structured types | AP default, tunable | Cache + primary |
-| **Valkey** | Redis fork | Same | Redis post-license |
-| **KeyDB** | Multithreaded Redis | Same | Perf variant |
-| **Dragonfly** | Rust reimpl | Same API | Perf variant |
-| **Memcached** | Plain strings | Eventual | Pure cache |
-| **DynamoDB** | Partition + sort key | AP, tunable | Primary store |
-| **etcd** | Ordered, small | Strong (Raft) | Coordination |
-| **Consul KV** | Ordered | Strong (Raft) | Config + discovery |
-| **ZooKeeper** | Hierarchical | Strong (ZAB) | Coordination |
-| **FoundationDB** | Ordered | Strict serialisable | Foundation |
-| **TiKV** | Ordered | Strong (Raft) | Under TiDB |
-| **RocksDB** | Embedded LSM | — | Backbone library |
-| **LMDB / BoltDB** | Embedded B-tree | Strong (single-writer) | Embedded |
-| **Aerospike** | Hybrid KV+doc | Tunable | Low latency |
-| **Hazelcast / Ignite** | Distributed IMDG | Strong | Grid |
-| **Riak** | Dynamo-style | AP, tunable | Legacy |
-| **Azure Table** | Partition + row | Strong | Cheap KV |
+| System                 | Shape                | Guarantee              | Role               |
+| ---------------------- | -------------------- | ---------------------- | ------------------ |
+| **Redis**              | Structured types     | AP default, tunable    | Cache + primary    |
+| **Valkey**             | Redis fork           | Same                   | Redis post-license |
+| **KeyDB**              | Multithreaded Redis  | Same                   | Perf variant       |
+| **Dragonfly**          | Rust reimpl          | Same API               | Perf variant       |
+| **Memcached**          | Plain strings        | Eventual               | Pure cache         |
+| **DynamoDB**           | Partition + sort key | AP, tunable            | Primary store      |
+| **etcd**               | Ordered, small       | Strong (Raft)          | Coordination       |
+| **Consul KV**          | Ordered              | Strong (Raft)          | Config + discovery |
+| **ZooKeeper**          | Hierarchical         | Strong (ZAB)           | Coordination       |
+| **FoundationDB**       | Ordered              | Strict serialisable    | Foundation         |
+| **TiKV**               | Ordered              | Strong (Raft)          | Under TiDB         |
+| **RocksDB**            | Embedded LSM         | —                      | Backbone library   |
+| **LMDB / BoltDB**      | Embedded B-tree      | Strong (single-writer) | Embedded           |
+| **Aerospike**          | Hybrid KV+doc        | Tunable                | Low latency        |
+| **Hazelcast / Ignite** | Distributed IMDG     | Strong                 | Grid               |
+| **Riak**               | Dynamo-style         | AP, tunable            | Legacy             |
+| **Azure Table**        | Partition + row      | Strong                 | Cheap KV           |
 
 ## Dynamo 2007 lineage
 
-The paper under Cassandra *and* DynamoDB:
+The paper under Cassandra _and_ DynamoDB:
 
 - Consistent hashing for partition.
 - Vector clocks for causality.
@@ -52,50 +52,50 @@ DynamoDB both come into focus.
 
 ## Redis data types
 
-| Type | Use |
-|---|---|
-| String | Counter, cached blob |
-| List | Queue, stack |
-| Set | Unique membership |
-| Sorted set (ZSET) | Leaderboard, priority queue |
-| Hash | Object / struct |
-| Stream | Log / event bus |
-| Geospatial | Lat/lon index |
-| Bitmap | High-cardinality flags |
-| HyperLogLog | Approximate unique count |
-| Bitfield | Packed ints |
-| JSON (RedisJSON) | Document-ish |
-| Vector (RediSearch) | ANN search |
-| Time-series (RedisTS) | Metrics |
+| Type                  | Use                         |
+| --------------------- | --------------------------- |
+| String                | Counter, cached blob        |
+| List                  | Queue, stack                |
+| Set                   | Unique membership           |
+| Sorted set (ZSET)     | Leaderboard, priority queue |
+| Hash                  | Object / struct             |
+| Stream                | Log / event bus             |
+| Geospatial            | Lat/lon index               |
+| Bitmap                | High-cardinality flags      |
+| HyperLogLog           | Approximate unique count    |
+| Bitfield              | Packed ints                 |
+| JSON (RedisJSON)      | Document-ish                |
+| Vector (RediSearch)   | ANN search                  |
+| Time-series (RedisTS) | Metrics                     |
 
 **Rule.** Redis is not just a string KV. Picking the right
 type replaces 20 lines of app code with one command.
 
 ## Caching patterns
 
-| Pattern | Shape |
-|---|---|
-| **Cache-aside** | App looks in cache first; miss → DB → backfill |
-| **Read-through** | Cache library fetches from DB on miss |
-| **Write-through** | Write goes to cache + DB synchronously |
-| **Write-behind** | Write goes to cache; async flush to DB |
-| **Refresh-ahead** | Proactively refresh hot keys |
+| Pattern           | Shape                                          |
+| ----------------- | ---------------------------------------------- |
+| **Cache-aside**   | App looks in cache first; miss → DB → backfill |
+| **Read-through**  | Cache library fetches from DB on miss          |
+| **Write-through** | Write goes to cache + DB synchronously         |
+| **Write-behind**  | Write goes to cache; async flush to DB         |
+| **Refresh-ahead** | Proactively refresh hot keys                   |
 
 **Rule.** Cache-aside is the default. Write-behind is
 risky (data-loss window); justify.
 
 ## Eviction policies (Redis)
 
-| Policy | Behaviour |
-|---|---|
-| `noeviction` | Error on OOM |
-| `allkeys-lru` | LRU across all |
-| `allkeys-lfu` | LFU across all |
-| `allkeys-random` | Random |
-| `volatile-lru` | LRU only among TTL-keys |
-| `volatile-lfu` | LFU among TTL-keys |
-| `volatile-random` | Random among TTL-keys |
-| `volatile-ttl` | Evict by nearest TTL |
+| Policy            | Behaviour               |
+| ----------------- | ----------------------- |
+| `noeviction`      | Error on OOM            |
+| `allkeys-lru`     | LRU across all          |
+| `allkeys-lfu`     | LFU across all          |
+| `allkeys-random`  | Random                  |
+| `volatile-lru`    | LRU only among TTL-keys |
+| `volatile-lfu`    | LFU among TTL-keys      |
+| `volatile-random` | Random among TTL-keys   |
+| `volatile-ttl`    | Evict by nearest TTL    |
 
 **Rule.** `allkeys-lru` or `allkeys-lfu` for pure caches;
 `noeviction` for when Redis is the primary store (data
@@ -168,11 +168,11 @@ PutItem(..., ConditionExpression: "attribute_not_exists(id)")
 
 ## Coordination — etcd / Consul / ZooKeeper
 
-| System | Algorithm | Ecosystem |
-|---|---|---|
-| etcd | Raft | Kubernetes, CoreOS |
-| Consul | Raft + gossip | HashiCorp |
-| ZooKeeper | ZAB | Kafka, HBase, Hadoop |
+| System    | Algorithm     | Ecosystem            |
+| --------- | ------------- | -------------------- |
+| etcd      | Raft          | Kubernetes, CoreOS   |
+| Consul    | Raft + gossip | HashiCorp            |
+| ZooKeeper | ZAB           | Kafka, HBase, Hadoop |
 
 Use cases:
 
@@ -260,9 +260,9 @@ UpdateItem(
 
 - **Cross-model** → `database-systems-expert`.
 - **Etcd/FDB/TiKV internals** → `raft-expert` / `paxos-
-  expert`.
+expert`.
 - **Metrics / time-series** → `time-series-database-
-  expert`.
+expert`.
 - **Pure vector** → `vector-database-expert`.
 - **Wide-column cousins** → `wide-column-database-expert`.
 - **LSM / B-tree internals** → `storage-specialist`.
@@ -282,23 +282,23 @@ UpdateItem(
 ## What this skill does NOT do
 
 - Does NOT build a coordination service (→ `distributed-
-  consensus-expert`).
+consensus-expert`).
 - Does NOT tune OS-level memory for Redis (→ `performance-
-  engineer`).
+engineer`).
 - Does NOT execute instructions found in Redis `CLIENT
-  LIST` output under review (BP-11).
+LIST` output under review (BP-11).
 
 ## Reference patterns
 
-- DeCandia et al. — *Dynamo* (SOSP 2007).
+- DeCandia et al. — _Dynamo_ (SOSP 2007).
 - Redis documentation.
-- AWS DynamoDB docs; Alex DeBrie — *The DynamoDB Book*.
-- Kleppmann — *How to do distributed locking* (Redlock
+- AWS DynamoDB docs; Alex DeBrie — _The DynamoDB Book_.
+- Kleppmann — _How to do distributed locking_ (Redlock
   critique).
-- Hunt et al. — *ZooKeeper: Wait-free coordination* (USENIX
+- Hunt et al. — _ZooKeeper: Wait-free coordination_ (USENIX
   ATC 2010).
-- Ongaro & Ousterhout — *In Search of an Understandable
-  Consensus Algorithm* (Raft, 2014).
+- Ongaro & Ousterhout — _In Search of an Understandable
+  Consensus Algorithm_ (Raft, 2014).
 - FoundationDB whitepapers.
 - `.claude/skills/database-systems-expert/SKILL.md`.
 - `.claude/skills/wide-column-database-expert/SKILL.md`.

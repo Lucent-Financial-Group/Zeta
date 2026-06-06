@@ -4,13 +4,14 @@ description: Aaron Otto-272 meta-directive — the stabilization process (Otto-2
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## Scope generalization — DST EVERYWHERE by default
 
 Aaron 2026-04-24 extension:
 
-> *"it should be DST everywhere except where
+> _"it should be DST everywhere except where
 > explicitly call out to exclued like demos and
-> samples for new commers not experience people"*
+> samples for new commers not experience people"_
 
 **DST is the FACTORY-WIDE DEFAULT, not a scoped
 discipline.** Every surface is DST-conformant unless
@@ -34,14 +35,14 @@ EXPLICITLY called out with a reasoned exemption.
 **Explicit DST exemption criterion** (Aaron
 2026-04-24 tightening):
 
-> *"it could be in demos and samples too if it's the
+> _"it could be in demos and samples too if it's the
 > easier to understand path too, only if the non-DST
 > path makes things conceptually simpler should it
-> be excluded"*
+> be excluded"_
 
-**The exemption test**: *"does the non-DST path make
+**The exemption test**: _"does the non-DST path make
 the CONCEPT CONCEPTUALLY SIMPLER for the target
-audience than the DST path?"*
+audience than the DST path?"_
 
 - **Yes** → exempt with inline marker + reason
 - **No or comparable** → use DST (default)
@@ -79,8 +80,8 @@ demo should use it):
   read than non-deterministic ones.
 
 **Otto-272 exemption is ONLY two areas** (Aaron
-2026-04-24 final tightening: *"only in theese two
-areas"*):
+2026-04-24 final tightening: _"only in theese two
+areas"_):
 
 1. **Demos** — where non-DST makes the concept
    conceptually simpler for newcomers.
@@ -114,7 +115,7 @@ permanent exemption.
 per Otto-260/255 symmetric naming):
 
 - In-code: `// DST-exempt: <reason>; tracked in
-  <BACKLOG row quote>` or language-appropriate
+<BACKLOG row quote>` or language-appropriate
   equivalent.
 - In-doc: `<!-- DST-exempt: <reason> -->` or inline
   paragraph naming the exemption.
@@ -150,9 +151,9 @@ discipline) should be AS DETERMINISTIC AS POSSIBLE.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"backlog starboard DST balance enahancements
+> _"backlog starboard DST balance enahancements
 > whatever is needed to make this whole
-> stabalization process as deterministic as possible"*
+> stabalization process as deterministic as possible"_
 
 Parsing:
 
@@ -221,6 +222,7 @@ Layers that need DST-ification:
   pattern.
 
 ### 4. Drain-queue behavior (Otto-265 merge-queue
+
 counterweight)
 
 - **Cycle cap**: 3 rebase cycles per PR per session
@@ -335,10 +337,10 @@ catch-all that's unenforceable.
 
 ## Direct Aaron quote to preserve
 
-> *"backlog starboard DST balance enahancements
+> _"backlog starboard DST balance enahancements
 > whatever is needed to make this whole
 > stabalization process as deterministic as
-> possible"*
+> possible"_
 
 Future Otto: when filing a new counterweight,
 word-discipline correction, subagent dispatch, or

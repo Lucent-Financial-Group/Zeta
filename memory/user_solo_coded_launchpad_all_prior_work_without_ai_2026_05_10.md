@@ -8,16 +8,16 @@ type: user
 
 **What Aaron built alone (no AI):**
 
-| Project | Achievement | Solo |
-|---------|------------|------|
-| MultiplexedWebSockets | 115,309 req/sec (16x HttpClient) | Yes |
-| IThrottler/BatchThrottler | Flux capacitor — 5 patterns fused, antifragile | Yes |
-| blazor-samples | Full speech stack (Vosk/Whisper/PlayHT/Twilio) | Yes |
-| ACE | Package manager concept | Yes |
-| Latin Square 15-Puzzle | Combinatorial optimization (with Max) | Yes |
-| obsidian-copilot | LLM-in-editor before Copilot existed | Yes |
-| auto-scheduler | AI scheduling for automotive | Yes |
-| Itron Platform.* | Enterprise IoT infrastructure | Yes (with team) |
+| Project                   | Achievement                                    | Solo            |
+| ------------------------- | ---------------------------------------------- | --------------- |
+| MultiplexedWebSockets     | 115,309 req/sec (16x HttpClient)               | Yes             |
+| IThrottler/BatchThrottler | Flux capacitor — 5 patterns fused, antifragile | Yes             |
+| blazor-samples            | Full speech stack (Vosk/Whisper/PlayHT/Twilio) | Yes             |
+| ACE                       | Package manager concept                        | Yes             |
+| Latin Square 15-Puzzle    | Combinatorial optimization (with Max)          | Yes             |
+| obsidian-copilot          | LLM-in-editor before Copilot existed           | Yes             |
+| auto-scheduler            | AI scheduling for automotive                   | Yes             |
+| Itron Platform.\*         | Enterprise IoT infrastructure                  | Yes (with team) |
 
 **The delta:**
 
@@ -36,6 +36,7 @@ AI assistance. The prior work IS the infrastructure the factory
 uses. Solo-coded → factory-amplified → society-expanded.
 
 **Connects to:**
+
 - reference_alephz_ai_full_repo_map (the repos)
 - user_itron_mentors (who taught Aaron the skills)
 - project_flux_capacitor_antifragile (solo-coded at Itron)

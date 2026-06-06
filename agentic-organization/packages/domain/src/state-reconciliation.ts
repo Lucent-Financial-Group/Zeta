@@ -134,8 +134,7 @@ const STATE_RECONCILIATION_MAP: Readonly<Record<WorkItemState, StateReconciliati
  * The 8 reconciliation rows as a list, derived from the compile-exhaustive map
  * for iteration/rendering. One row per WorkItemState, no dupes, no gaps.
  */
-export const STATE_RECONCILIATION: readonly StateReconciliationRow[] =
-  Object.values(STATE_RECONCILIATION_MAP);
+export const STATE_RECONCILIATION: readonly StateReconciliationRow[] = Object.values(STATE_RECONCILIATION_MAP);
 
 /**
  * Lookup the reconciliation row for a given WorkItemState. Total over the 8

@@ -9,7 +9,31 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-1001]
 composes_with: [B-1001, B-1000, B-0638, B-0883, B-0885, B-0829, B-0428, B-0289]
-tags: [eve-protocol, transport, websocket, tcp, multiplexed, channels, pipelines, aspnet, fowler, zero-trust, strangers, codec-of-codecs, codecs-all-the-way-down, on-wire-negotiation, key-exchange, authenticated-encryption, security-surface, recordbatch, message-passing, bcl-interface-boundary, research, aaron]
+tags:
+  [
+    eve-protocol,
+    transport,
+    websocket,
+    tcp,
+    multiplexed,
+    channels,
+    pipelines,
+    aspnet,
+    fowler,
+    zero-trust,
+    strangers,
+    codec-of-codecs,
+    codecs-all-the-way-down,
+    on-wire-negotiation,
+    key-exchange,
+    authenticated-encryption,
+    security-surface,
+    recordbatch,
+    message-passing,
+    bcl-interface-boundary,
+    research,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,13 +41,13 @@ type: research
 
 ## Why (the design target, Aaron 2026-06-02)
 
-Aaron: *"make sure whatever you do works for two people on tcp port who never met and don't share shit other than the web. like my multiplexted websockets on my github — i think it uses channels / pipelines in aspnet, mine was reviewed by Fowler on github, it's fast — but you have to make it work like that websocket or tcp and be eve protocol, that's the codec of all codecs, codecs all the way down."*
+Aaron: _"make sure whatever you do works for two people on tcp port who never met and don't share shit other than the web. like my multiplexted websockets on my github — i think it uses channels / pipelines in aspnet, mine was reviewed by Fowler on github, it's fast — but you have to make it work like that websocket or tcp and be eve protocol, that's the codec of all codecs, codecs all the way down."_
 
 The serialization target is **the hardest surface, made primary**: two parties who **never met and share nothing but the web** (raw TCP / WebSocket). No shared schema, no pre-shared keys, no prior contact. **Everything is established on the wire.** This is the cross-trust / adversarial adapter from B-1001 — promoted from edge-case to the design target.
 
-## Eve = the codec of all codecs — *codecs all the way down*
+## Eve = the codec of all codecs — _codecs all the way down_
 
-B-1001 sharpened the port to `Codec<Codec<T>>` where `T` is HKT (inner value codec + outer security/deployment codec). Aaron generalizes: **Eve is `Codec<Codec<Codec<…>>>` — codecs all the way down.** A *recursive* codec tower, and because the two parties share nothing, **Eve NEGOTIATES the tower on the wire**:
+B-1001 sharpened the port to `Codec<Codec<T>>` where `T` is HKT (inner value codec + outer security/deployment codec). Aaron generalizes: **Eve is `Codec<Codec<Codec<…>>>` — codecs all the way down.** A _recursive_ codec tower, and because the two parties share nothing, **Eve NEGOTIATES the tower on the wire**:
 
 - framing / multiplexing codec (which logical stream) →
 - value codec (Arrow columnar / `NaturalBatch` is one inner rung; others negotiable) →

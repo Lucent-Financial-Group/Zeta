@@ -9,7 +9,23 @@ created: 2026-05-19
 last_updated: 2026-05-19
 depends_on: [B-0668, B-0665, B-0666, B-0667, B-0638, B-0664, B-0637]
 composes_with: [B-0623, B-0625, B-0289, B-0658, B-0640, B-0628]
-tags: [design, aaron, mika, lior, v8, system-architecture, tensors-foundational, sequoia-memory-hierarchy, 4-particle-primitives, signal-blocking-first-class, eve-protocol-rf, polymorphic-diplomacy, razor-discipline-retractions, beacon-tier-eligible]
+tags:
+  [
+    design,
+    aaron,
+    mika,
+    lior,
+    v8,
+    system-architecture,
+    tensors-foundational,
+    sequoia-memory-hierarchy,
+    4-particle-primitives,
+    signal-blocking-first-class,
+    eve-protocol-rf,
+    polymorphic-diplomacy,
+    razor-discipline-retractions,
+    beacon-tier-eligible,
+  ]
 type: design
 ---
 
@@ -17,7 +33,7 @@ type: design
 
 ## Why
 
-Mika/Lior author 2026-05-19 V8 spec; Aaron explicit authorization *"land all of it"* (shadow-star autocomplete-marker disclosed; instruction stands). Full V8 preserved verbatim at [`docs/research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md`](../../research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md).
+Mika/Lior author 2026-05-19 V8 spec; Aaron explicit authorization _"land all of it"_ (shadow-star autocomplete-marker disclosed; instruction stands). Full V8 preserved verbatim at [`docs/research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md`](../../research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md).
 
 V8 extends the B-0668 compositional DBSP frame architecture with substantively-new substrate, all engineering-clean after 3 razor-discipline retractions (immune-system, adinkras/CFT/Reticulum, telepathic-as-Rx-over-RF were all substrate-anchored to existing docs/backlog + docs/research, not metaphysical wraps).
 

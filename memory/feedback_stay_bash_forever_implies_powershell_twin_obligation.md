@@ -4,12 +4,13 @@ description: Cost-benefit reframe from Aaron 2026-04-22 — permanent post-setup
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron 2026-04-22: *"you do remember we have to support windows
+
+Aaron 2026-04-22: _"you do remember we have to support windows
 so that means you commited to two version of everything that
 was bash only, i was going to wait and see if you rmembered
-that. stay bash forever"* followed by *"powershell too"* and
-then *"does that make you reconsider any? would you rather
-maintain one?"*
+that. stay bash forever"_ followed by _"powershell too"_ and
+then _"does that make you reconsider any? would you rather
+maintain one?"_
 
 **Why:** I flipped three scripts (`tools/audit-packages.sh`,
 `tools/lint/no-empty-dirs.sh`, `tools/lint/safety-clause-audit.sh`)
@@ -42,15 +43,15 @@ specific bash+PowerShell twins maintained in parallel forever.
 **How to apply:**
 
 - Before flipping any script to "stay bash forever" (or any
-  *permanent* bash exception: `trivial find-xargs pipeline`,
+  _permanent_ bash exception: `trivial find-xargs pipeline`,
   `thin wrapper over existing CLI`, `stay bash forever`), ask
   first: "will I write and maintain a PowerShell twin for
   this?" If the answer is no, the honest label is "bun+TS
   migration candidate", not a permanent exception.
-- *Transitional* exceptions (`bun+TS migration candidate`,
+- _Transitional_ exceptions (`bun+TS migration candidate`,
   `bash scaffolding`) do NOT owe a twin — their plan is one
   cross-platform bun+TS script soon.
-- *Permanent* exceptions DO owe a twin. The header comment
+- _Permanent_ exceptions DO owe a twin. The header comment
   must state the twin's path OR a BACKLOG row queuing its
   authoring.
 - The fifth exception ("stay bash forever") remains valid but
@@ -73,8 +74,8 @@ partial, then the cost input was partial. The correction isn't
 "don't use the new answer"; it's "price the full cost before
 using it".
 
-**Aaron's teaching style confirmed:** *"i was going to wait and
-see if you rmembered that"* — he sets up situations where the
+**Aaron's teaching style confirmed:** _"i was going to wait and
+see if you rmembered that"_ — he sets up situations where the
 factory can get it right on its own, then course-corrects
 gently when it doesn't. The "did you remember" phrasing is
 signal that the factory OWNS a rule Aaron thinks should be
@@ -82,6 +83,7 @@ automatic. Over time, these should decrease — that's a crude
 alignment metric.
 
 **Related memories:**
+
 - `memory/feedback_preinstall_scripts_forced_shell_meet_developer_where_they_live`
   — pre-setup dual-authoring rule (Q1 equivalent).
 - `memory/feedback_intentionality_doesnt_demand_migration_bash_forever_valid.md`

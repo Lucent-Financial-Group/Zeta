@@ -42,14 +42,8 @@ describe("worker process entrypoint", () => {
 
     equal(result.exitCode, WorkerEntrypointExitCode.Success);
     equal(result.loopResult.status, WorkerProcessLoopStatus.Completed);
-    deepEqual(signalSource.registeredSignals, [
-      WorkerEntrypointSignalName.Sigint,
-      WorkerEntrypointSignalName.Sigterm,
-    ]);
-    deepEqual(signalSource.disposedSignals, [
-      WorkerEntrypointSignalName.Sigint,
-      WorkerEntrypointSignalName.Sigterm,
-    ]);
+    deepEqual(signalSource.registeredSignals, [WorkerEntrypointSignalName.Sigint, WorkerEntrypointSignalName.Sigterm]);
+    deepEqual(signalSource.disposedSignals, [WorkerEntrypointSignalName.Sigint, WorkerEntrypointSignalName.Sigterm]);
     deepEqual(
       observer.records.map((record) => record.eventName),
       [WorkerProcessLoopEventName.IterationCompleted, WorkerProcessLoopEventName.ShutdownCompleted],
@@ -130,9 +124,7 @@ describe("worker process entrypoint", () => {
 
 type RecordingProcessStep = WorkerProcessRunResult;
 
-function createRecordingProcess(
-  steps: readonly RecordingProcessStep[],
-): WorkerProcess & {
+function createRecordingProcess(steps: readonly RecordingProcessStep[]): WorkerProcess & {
   readonly runCount: number;
 } {
   let runCount = 0;

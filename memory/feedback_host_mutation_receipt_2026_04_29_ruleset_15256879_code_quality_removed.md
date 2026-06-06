@@ -6,19 +6,21 @@ type: feedback
 
 # Host mutation receipt — ruleset 15256879 / code_quality rule removed
 
-**This is a receipt, not a doctrine memory.** The rule it records: *Clickops used to restore declarative ownership must become a receipt, or it becomes the next drift* (Amara 2026-04-29). The receipt's purpose is to make the live host change visible to future agents and to the future executable-host-settings reconciler.
+**This is a receipt, not a doctrine memory.** The rule it records: _Clickops used to restore declarative ownership must become a receipt, or it becomes the next drift_ (Amara 2026-04-29). The receipt's purpose is to make the live host change visible to future agents and to the future executable-host-settings reconciler.
 
 ## What changed
 
 **Operation**: `PUT /repos/Lucent-Financial-Group/Zeta/rulesets/15256879`
 
 **Diff** (rules array):
+
 - BEFORE (6 rules): `deletion`, `non_fast_forward`, `copilot_code_review`, `pull_request`, `required_linear_history`, **`code_quality severity=all`**
 - AFTER (5 rules): `deletion`, `non_fast_forward`, `copilot_code_review`, `pull_request`, `required_linear_history`
 
-The `code_quality severity=all` rule was the *only* item removed.
+The `code_quality severity=all` rule was the _only_ item removed.
 
 **Ruleset metadata after change**:
+
 - `id: 15256879`
 - `name: "Default"`
 - `target: branch`
@@ -32,7 +34,7 @@ The `code_quality severity=all` rule was the *only* item removed.
 
 ### The failure mode
 
-The repo's `code_quality severity=all` rule (a public-preview GitHub Code Quality feature, NOT marked "legacy" in GitHub's product taxonomy — only legacy *relative to Zeta's desired declarative architecture*) was injecting `event=dynamic` runs named `"Code Quality: PR #849"` whose `workflowName: "CodeQL"` matched the repo's advanced-setup workflow but ran with a different shape — without the `path-gate` job and without the per-language source-presence gate that PR #857 added.
+The repo's `code_quality severity=all` rule (a public-preview GitHub Code Quality feature, NOT marked "legacy" in GitHub's product taxonomy — only legacy _relative to Zeta's desired declarative architecture_) was injecting `event=dynamic` runs named `"Code Quality: PR #849"` whose `workflowName: "CodeQL"` matched the repo's advanced-setup workflow but ran with a different shape — without the `path-gate` job and without the per-language source-presence gate that PR #857 added.
 
 For PR #849 (Python tools retiring after the TS port), the live CodeQL extractor on the dynamic run failed with the documented "no source code seen during build" error (exit 32) because no first-party `*.py` files remained. The PR was BLOCKED on `Analyze (python) FAILURE` from this dynamic run, even though the parallel `event=pull_request` run from the advanced workflow showed `Analyze (python) SUCCESS` via the no-source baseline path.
 
@@ -42,17 +44,17 @@ Per Amara 2026-04-29 ("Choose one owner: Default Setup only OR Advanced Setup on
 
 ### Aaron's signal
 
-Aaron 2026-04-29: *"if the org-recommended are legacy we can remove, declarative is better."* Aaron's "GitHub legacy = non-declarative" framing — whenever GitHub offers two paths for one capability (declarative + API-driven), prefer declarative; if no declarative path exists, wrap the API. The `code_quality` rule is the API-driven path; `.github/workflows/codeql.yml` is the declarative path with the source-presence gate.
+Aaron 2026-04-29: _"if the org-recommended are legacy we can remove, declarative is better."_ Aaron's "GitHub legacy = non-declarative" framing — whenever GitHub offers two paths for one capability (declarative + API-driven), prefer declarative; if no declarative path exists, wrap the API. The `code_quality` rule is the API-driven path; `.github/workflows/codeql.yml` is the declarative path with the source-presence gate.
 
 ## Authorization chain
 
-1. **Aaron 2026-04-29**: *"if the org-recommended are legacy we can remove, declarative is better"* — explicit signal authorizing removal.
-2. **Amara 2026-04-29**: *"Make advanced setup the sole CodeQL owner for Zeta right now. Disable Default Setup / dynamic CodeQL owner"* — design recommendation prior to Aaron's signal.
+1. **Aaron 2026-04-29**: _"if the org-recommended are legacy we can remove, declarative is better"_ — explicit signal authorizing removal.
+2. **Amara 2026-04-29**: _"Make advanced setup the sole CodeQL owner for Zeta right now. Disable Default Setup / dynamic CodeQL owner"_ — design recommendation prior to Aaron's signal.
 3. **Standing-authority memory** (`feedback_standing_authority_create_test_git_repos_public_only_track_billing_aaron_2026_04_29.md`) and **branch-protection-is-agent-call** (Aaron 2026-04-23) — delegated authority pattern that this mutation falls under.
 
 ## What this receipt is NOT
 
-- **NOT a doctrine adoption.** Removing the rule is invariant maintenance. The doctrine that should govern future ruleset mutations is the executable-host-settings design — verbatim packet currently parked on branch `doctrine/executable-declarative-host-settings-2026-04-29` (unlanded on main pending Aaron's "research-first" lane; will land at `docs/research/2026-04-29-amara-executable-declarative-host-settings.md` and `memory/feedback_executable_declarative_host_settings_design_packet_research_first_aaron_amara_2026_04_29.md` when the space-survey research lands). **Research-first; NO active adoption yet** per Aaron's *"we should research it first i think the whole space"* signal.
+- **NOT a doctrine adoption.** Removing the rule is invariant maintenance. The doctrine that should govern future ruleset mutations is the executable-host-settings design — verbatim packet currently parked on branch `doctrine/executable-declarative-host-settings-2026-04-29` (unlanded on main pending Aaron's "research-first" lane; will land at `docs/research/2026-04-29-amara-executable-declarative-host-settings.md` and `memory/feedback_executable_declarative_host_settings_design_packet_research_first_aaron_amara_2026_04_29.md` when the space-survey research lands). **Research-first; NO active adoption yet** per Aaron's _"we should research it first i think the whole space"_ signal.
 - **NOT a precedent for casual ruleset mutations.** The hook denial during this episode was **healthy**: it required explicit authorization and refused the broad-permission shortcut. Per Amara: future ruleset apply path is host-reconciler-mediated with WorkClaim + policy + receipt, NOT direct `gh api ... rulesets/PUT` from the agent. Do NOT broaden the `Bash:gh api -X PUT repos/.../rulesets/*` permission in `.claude/settings.json`.
 - **NOT a permanent erasure of GitHub Code Quality.** GitHub Code Quality is a current public-preview feature — it's "legacy" only relative to Zeta's desired architecture. If the executable-host-settings design later determines the host-side rule should re-enable in a different form (e.g., as a non-blocking advisory check), the desired-state declaration at `.zeta/hosts/github/lfg-zeta.yaml` will say so and the reconciler will converge.
 
@@ -67,7 +69,7 @@ rulesets:
     target: branch
     enforcement: active
     include:
-      - "~DEFAULT_BRANCH"   # matches the live ruleset condition; resolves to refs/heads/main on this repo today
+      - "~DEFAULT_BRANCH" # matches the live ruleset condition; resolves to refs/heads/main on this repo today
     rules:
       - type: deletion
       - type: non_fast_forward
@@ -102,6 +104,6 @@ When the reconciler runs `hosts:diff` for the first time, this receipt should re
 
 ## Carved blade (Amara, preserved verbatim)
 
-> *Clickops used to restore declarative ownership must become a receipt, or it becomes the next drift.*
+> _Clickops used to restore declarative ownership must become a receipt, or it becomes the next drift._
 
-> *The host was disagreeing with git. We made git the owner again. Now record the host mutation so git can remember it.*
+> _The host was disagreeing with git. We made git the owner again. Now record the host mutation so git can remember it._

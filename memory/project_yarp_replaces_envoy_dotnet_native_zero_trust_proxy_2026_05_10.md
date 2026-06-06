@@ -17,12 +17,12 @@ type: project
 
 **The complete Zeta zero trust stack:**
 
-| Primitive | Question | Istio (refuse) | Zeta (steal) |
-|-----------|----------|---------------|--------------|
-| WHO | Identity | SPIFFE/SPIRE server | Hat credentials via F# types |
-| WHAT | Policy | OPA/Rego | F# type constraints (compiler enforces) |
-| HOW | Consensus | Control plane (SPOF) | BFT consensus |
-| WHERE | Transport | Envoy (C++ sidecar) | YARP (.NET in-process) + Arrow Tier 0 |
+| Primitive | Question  | Istio (refuse)       | Zeta (steal)                            |
+| --------- | --------- | -------------------- | --------------------------------------- |
+| WHO       | Identity  | SPIFFE/SPIRE server  | Hat credentials via F# types            |
+| WHAT      | Policy    | OPA/Rego             | F# type constraints (compiler enforces) |
+| HOW       | Consensus | Control plane (SPOF) | BFT consensus                           |
+| WHERE     | Transport | Envoy (C++ sidecar)  | YARP (.NET in-process) + Arrow Tier 0   |
 
 **Why YARP over Envoy:**
 
@@ -41,6 +41,7 @@ type: project
 YARP is the proxy for tiers 1-3. Arrow bypasses it at Tier 0. The proxy only exists where trust requires verification.
 
 **Connects to:**
+
 - project_zero_trust_four_primitives (WHERE primitive)
 - project_spiffe_concept_steal (the full stack)
 - project_microkernel_trust_tier_router (kernel routes on trust)

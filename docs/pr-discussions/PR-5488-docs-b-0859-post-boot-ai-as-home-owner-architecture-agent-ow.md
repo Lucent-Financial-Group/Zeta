@@ -29,6 +29,7 @@ Operator-named fast-track architectural inversion: AI = home-owner; booting huma
 Adds a new P1 backlog row (B-0859) documenting the “AI-as-home-owner” post-boot architecture target (agent controls environment from first boot; booting human acts as facilitator/auth-advisee), and wires it into the main backlog index.
 
 **Changes:**
+
 - Introduces `B-0859` backlog row detailing the architecture inversion, knob inventory, auth-advisor flow, and planned sub-rows.
 - Adds `B-0859` to `docs/BACKLOG.md` under P1.
 
@@ -36,10 +37,10 @@ Adds a new P1 backlog row (B-0859) documenting the “AI-as-home-owner” post-b
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                    | Description                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md | New backlog row defining the post-boot AI-as-home-owner architecture target + decomposition into sub-rows. |
-| docs/BACKLOG.md | Adds the new B-0859 entry to the P1 index. |
+| docs/BACKLOG.md                                                                                                         | Adds the new B-0859 entry to the P1 index.                                                                 |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-27T15:41:54Z)
 

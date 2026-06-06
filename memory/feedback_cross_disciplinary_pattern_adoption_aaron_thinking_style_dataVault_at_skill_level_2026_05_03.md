@@ -10,7 +10,7 @@ type: feedback
 
 Aaron 2026-05-03, after the B-0172 calibration recovery flagged "Hub-satellite at domain level" as an inferred pattern:
 
-> *"i often take patterns from dispert displines like Data Vault and apply them at the code and/or skill levels, I often use things in ways there were never orignall intended but fit well if it imporove something."*
+> _"i often take patterns from dispert displines like Data Vault and apply them at the code and/or skill levels, I often use things in ways there were never orignall intended but fit well if it imporove something."_
 
 This is a load-bearing meta-statement about Aaron's architectural thinking style — and a refinement of my B-0172 calibration.
 
@@ -46,7 +46,7 @@ Aaron has applied this thinking style across multiple substrate layers:
 ### Design-by-Contract (Eiffel/Meyer) → skill-creation hooks
 
 - Design-by-Contract's pre/post-condition framing (originally for OOP method specifications) → applied at skill-creation + git-commit boundary (hooks enforce pre/post-conditions per B-0173)
-- Reference: B-0173's verbatim *"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"*
+- Reference: B-0173's verbatim _"this feature is great for reminding yourself to do the right thing the pre conditions and post condtions in contract based development or spec based development like openspec"_
 
 ### OpenSpec / spec-based development → behavioral specs as canonical source-of-truth
 

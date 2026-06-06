@@ -105,9 +105,7 @@ export type ContextPackInboxAnchorStateReaderPort = {
 };
 
 export type HatAssignmentAuthorityReaderPort = {
-  findHatAssignmentAuthority: (
-    hatAssignmentId: string,
-  ) => Promise<HatAssignmentAuthoritySnapshot | undefined>;
+  findHatAssignmentAuthority: (hatAssignmentId: string) => Promise<HatAssignmentAuthoritySnapshot | undefined>;
 };
 
 export type SupervisorSignalStateReaderPort = {
@@ -121,9 +119,7 @@ export type WorkScheduleBlockAuthorityLookup = {
 };
 
 export type WorkScheduleBlockAuthorityReaderPort = {
-  findAuthorizingScheduleBlocks: (
-    lookup: WorkScheduleBlockAuthorityLookup,
-  ) => Promise<readonly WorkScheduleBlock[]>;
+  findAuthorizingScheduleBlocks: (lookup: WorkScheduleBlockAuthorityLookup) => Promise<readonly WorkScheduleBlock[]>;
 };
 
 export type QualityGateEvaluationWorkItemLookup = {
@@ -186,9 +182,7 @@ export type CommandScheduleAuthorityDecision =
     };
 
 export type CommandScheduleAuthorityPort = {
-  authorizeCommandSchedule: (
-    request: CommandScheduleAuthorityRequest,
-  ) => Promise<CommandScheduleAuthorityDecision>;
+  authorizeCommandSchedule: (request: CommandScheduleAuthorityRequest) => Promise<CommandScheduleAuthorityDecision>;
 };
 
 export type RecordCommandOutcomeInput<Result = unknown> = {

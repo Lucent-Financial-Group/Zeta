@@ -145,18 +145,18 @@ surface, and the golden signals as the dashboard baseline.
 Useful as the analyst's reflex denominator (Jeff Dean,
 updated):
 
-| Op                           | Latency (ns)   |
-|------------------------------|----------------|
-| L1 cache ref                 | ~1             |
-| Branch mispredict            | ~3             |
-| L2 cache ref                 | ~4             |
-| Mutex lock/unlock (uncontended) | ~15-25     |
-| Main memory ref              | ~100           |
-| SSD random read              | ~16,000 (16 µs) |
-| Round trip in DC             | ~500,000 (500 µs) |
-| SSD sequential 1 MB          | ~1,000,000 (1 ms) |
-| Disk seek                    | ~10,000,000 (10 ms) |
-| Round trip CA ↔ Netherlands  | ~150,000,000 (150 ms) |
+| Op                              | Latency (ns)          |
+| ------------------------------- | --------------------- |
+| L1 cache ref                    | ~1                    |
+| Branch mispredict               | ~3                    |
+| L2 cache ref                    | ~4                    |
+| Mutex lock/unlock (uncontended) | ~15-25                |
+| Main memory ref                 | ~100                  |
+| SSD random read                 | ~16,000 (16 µs)       |
+| Round trip in DC                | ~500,000 (500 µs)     |
+| SSD sequential 1 MB             | ~1,000,000 (1 ms)     |
+| Disk seek                       | ~10,000,000 (10 ms)   |
+| Round trip CA ↔ Netherlands     | ~150,000,000 (150 ms) |
 
 These are order-of-magnitude, not precise. Quote them
 when a claim (`"we can do 10 M of X per second per core"`)
@@ -187,7 +187,7 @@ optimisation is a hobby, not a contract.
   generator stops sending requests while the server is
   slow, you measure a biased sample. Use HDRHistogram
   - rate-based coordination-omission correction
-  (`-e` mode).
+    (`-e` mode).
 - **Tail amplification.** A single backend with p99 = 10
   ms fan-out N-wide lands p99 ≈ 10 ms at the caller;
   fan-out 100-wide lands p99 ≈ 50 ms (the slowest of 100
@@ -209,8 +209,8 @@ uProf, and Linux `perf`:
 - **Frontend Bound** — fetch / decode stalled. Usually
   icache / ITLB miss.
 - **Backend Bound** — execution pipeline stalled.
-  - *Memory bound* — L1, L2, LLC, DRAM, store-forward.
-  - *Core bound* — FP / INT ports, divider.
+  - _Memory bound_ — L1, L2, LLC, DRAM, store-forward.
+  - _Core bound_ — FP / INT ports, divider.
 - **Bad Speculation** — branch mispredict, machine
   clears.
 - **Retiring** — actually doing useful work. What you want
@@ -360,7 +360,7 @@ job is to pick.
 ### The trade-off the analyst quotes
 
 | Axis            | JIT + DPGO | ReadyToRun | NativeAOT |
-|-----------------|------------|------------|-----------|
+| --------------- | ---------- | ---------- | --------- |
 | Startup         | slow       | medium     | **fast**  |
 | Peak throughput | **best**   | near-best  | close     |
 | Binary size     | tiny       | medium     | large-ish |
@@ -520,14 +520,17 @@ For each binary in `tools/setup/` and `.claude/scripts/`:
 # Performance analysis — <target>, round N
 
 ## Question
+
 <1 sentence: what are we analysing, and to what end?>
 
 ## Model
+
 - Workload shape: <open|closed>, <arrival distribution>, <service distribution>
 - Bottleneck hypothesis: <resource + unit cost>
 - Relevant law: <Little / M/M/k / Amdahl / Gustafson / ...>
 
 ## Back-of-envelope
+
 - Unloaded service time: <...>
 - Target arrival rate: <...>
 - Implied utilisation: <ρ>
@@ -536,21 +539,25 @@ For each binary in `tools/setup/` and `.claude/scripts/`:
 - Loaded latency at ρ (M/M/1 approximation): <W/(1−ρ)>
 
 ## Profiling plan (if invoked)
+
 - Tool(s): <perf / PerfView / dotnet-trace / Instruments / VTune>
 - Counters / events: <...>
 - Flame graph type: <CPU / off-CPU / differential>
 - Expected signal: <what would confirm / refute the hypothesis>
 
 ## AOT / PGO assessment (if relevant)
+
 - Compilation model recommended: <JIT+DPGO | R2R+PGO | NativeAOT>
 - Why: <startup sensitivity / reflection demands / trimming blockers / ...>
 - Static PGO collection plan: <representative workload + command>
 
 ## Risks & follow-ups
+
 - <handoff to performance-engineer / benchmark-authoring-expert>
 - <telemetry gap to observability-and-tracing-expert>
 
 ## Next action
+
 [model further | hand to performance-engineer for benchmark | escalate]
 ```
 
@@ -619,24 +626,24 @@ For each binary in `tools/setup/` and `.claude/scripts/`:
 
 ## Further reading (stable references)
 
-- Brendan Gregg, *Systems Performance* (2nd ed., 2020) —
+- Brendan Gregg, _Systems Performance_ (2nd ed., 2020) —
   USE method, flame graphs, Linux toolkit.
-- Brendan Gregg, *BPF Performance Tools* (2019) — eBPF
+- Brendan Gregg, _BPF Performance Tools_ (2019) — eBPF
   tracing.
-- Gil Tene, *How NOT to Measure Latency* (QCon talk) —
+- Gil Tene, _How NOT to Measure Latency_ (QCon talk) —
   coordinated omission.
-- Ahmad Yasin, *A Top-Down Method for Performance
-  Analysis and Counters Architecture* (ISPASS 2014) —
+- Ahmad Yasin, _A Top-Down Method for Performance
+  Analysis and Counters Architecture_ (ISPASS 2014) —
   the PMU decomposition that VTune / `perf` use.
-- Raj Jain, *The Art of Computer Systems Performance
-  Analysis* (1991) — still the canonical queueing-theory
+- Raj Jain, _The Art of Computer Systems Performance
+  Analysis_ (1991) — still the canonical queueing-theory
   text for systems.
-- Neil Gunther, *Guerrilla Capacity Planning* (2007) —
+- Neil Gunther, _Guerrilla Capacity Planning_ (2007) —
   back-of-envelope discipline.
 - Google SRE book, chapters on SLOs and error budgets.
-- Jeff Dean, *Numbers Everyone Should Know* (OSDI 2009
+- Jeff Dean, _Numbers Everyone Should Know_ (OSDI 2009
   keynote).
-- Microsoft docs, *Profile-Guided Optimization in .NET* —
+- Microsoft docs, _Profile-Guided Optimization in .NET_ —
   Dynamic PGO, `dotnet-pgo`, crossgen2.
 - Matt Warren's blog, PerfView tutorials — the canonical
   introduction to ETW-based .NET profiling.

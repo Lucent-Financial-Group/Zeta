@@ -199,7 +199,7 @@ it for everyone else.
 4. **The PR merges** by squash-merge into `main`.
    Your name is on the commit.
 
-## What you do *not* need to worry about
+## What you do _not_ need to worry about
 
 - **You do not need to understand DBSP, Z-sets, or
   retraction-native IVM.** The maintainer does not
@@ -257,7 +257,7 @@ it for everyone else.
   [`docs/WONT-DO.md`](WONT-DO.md).
 - **Not a promise that reviewers will be gentle on
   the code itself.** Reviewers are gentle with
-  *contributors*; they are direct with *code*. The
+  _contributors_; they are direct with _code_. The
   harsh-critic role never compliments code; that is a
   feature of the role, not hostility toward you.
 

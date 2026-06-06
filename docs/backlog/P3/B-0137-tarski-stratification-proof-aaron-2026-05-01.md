@@ -40,4 +40,4 @@ Formalize and prove the Tarski-stratification claim that emerged in 2026-05-01 s
 
 ## Status
 
-**Filed.** P3 (deferred). Cannot activate until prerequisites land. The honest outcome might be: substrate is mathematically interesting but doesn't earn a Tarski-stratification *theorem* in the strict sense; the architectural choice is sound regardless.
+**Filed.** P3 (deferred). Cannot activate until prerequisites land. The honest outcome might be: substrate is mathematically interesting but doesn't earn a Tarski-stratification _theorem_ in the strict sense; the architectural choice is sound regardless.

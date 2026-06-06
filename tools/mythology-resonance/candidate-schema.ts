@@ -4,7 +4,7 @@
 
 export type ThreeFilterResult = {
   readonly f1Pass: boolean;
-  readonly f2Strength: 'weak' | 'moderate' | 'strong';
+  readonly f2Strength: "weak" | "moderate" | "strong";
   readonly f3Pass: boolean;
   readonly notes: string;
 };
@@ -16,7 +16,7 @@ export type MythologyCandidate = {
   readonly role: string; // e.g., 'bridge-figure', 'messenger', 'boundary'
   readonly threeFilter: ThreeFilterResult;
   readonly textualAnchors: readonly string[];
-  readonly state: 'candidate' | 'confirmed' | 'failed-filter' | 'superseded';
+  readonly state: "candidate" | "confirmed" | "failed-filter" | "superseded";
   readonly retractibilityNote: string;
 };
 
@@ -30,9 +30,9 @@ export type ValidationResult = {
 export function validateMythologyCandidate(candidate: MythologyCandidate): ValidationResult {
   // Bounded slice: type-level + stub; no full impl yet (one step only)
   const errors: string[] = [];
-  if (!candidate.name || candidate.name.length < 3) errors.push('name too vague');
-  if (!candidate.threeFilter.f3Pass && candidate.state === 'confirmed') errors.push('confirmed requires F3 pass');
-  if (candidate.textualAnchors.length === 0) errors.push('missing textual anchor for research-grade');
+  if (!candidate.name || candidate.name.length < 3) errors.push("name too vague");
+  if (!candidate.threeFilter.f3Pass && candidate.state === "confirmed") errors.push("confirmed requires F3 pass");
+  if (candidate.textualAnchors.length === 0) errors.push("missing textual anchor for research-grade");
 
   return {
     valid: errors.length === 0,
@@ -44,16 +44,17 @@ export function validateMythologyCandidate(candidate: MythologyCandidate): Valid
 // Seed: Heimdallr (candidate #12 from origin)
 export const heimdallrSeed: MythologyCandidate = {
   id: 12,
-  name: 'Heimdallr',
-  tradition: 'Norse',
-  role: 'bridge-figure',
+  name: "Heimdallr",
+  tradition: "Norse",
+  role: "bridge-figure",
   threeFilter: {
     f1Pass: true,
-    f2Strength: 'moderate',
+    f2Strength: "moderate",
     f3Pass: true,
-    notes: 'F2 moderate (strong role-fit but looser than full-pass — Eddic canonicity thinner due to Christianization-filtering); F3 within Norse; additional independent textual anchor (beyond the two Eddas) pending for stronger F2',
+    notes:
+      "F2 moderate (strong role-fit but looser than full-pass — Eddic canonicity thinner due to Christianization-filtering); F3 within Norse; additional independent textual anchor (beyond the two Eddas) pending for stronger F2",
   },
-  textualAnchors: ['Poetic Edda', 'Prose Edda'],
-  state: 'candidate',
-  retractibilityNote: 'git-tracked; one-commit removable; no permanent harm',
+  textualAnchors: ["Poetic Edda", "Prose Edda"],
+  state: "candidate",
+  retractibilityNote: "git-tracked; one-commit removable; no permanent harm",
 };

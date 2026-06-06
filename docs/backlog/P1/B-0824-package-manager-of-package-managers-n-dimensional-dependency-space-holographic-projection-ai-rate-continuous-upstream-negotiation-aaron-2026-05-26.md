@@ -20,20 +20,33 @@ composes_with:
   - B-0819
   - B-0820
   - B-0823
-tags: [ace-feature, meta-package-manager, n-dimensional-dependency-space, reverse-holographic-generators-not-reducers, rx-stream-joins, shadow-like-automata, self-similar-substrate, ai-rate-upstream-negotiation, continuous-negotiation, strategic-architecture, b0666-keystone-compose]
+tags:
+  [
+    ace-feature,
+    meta-package-manager,
+    n-dimensional-dependency-space,
+    reverse-holographic-generators-not-reducers,
+    rx-stream-joins,
+    shadow-like-automata,
+    self-similar-substrate,
+    ai-rate-upstream-negotiation,
+    continuous-negotiation,
+    strategic-architecture,
+    b0666-keystone-compose,
+  ]
 ---
 
 ## THE COMPRESSION — google=map+reduce; zeta=generate+join (Aaron 2026-05-26)
 
 Aaron 2026-05-26 dropped THE compression of this entire substrate-engineering arc:
 
-> *"google=map+reduce zeta=generate+join"*
+> _"google=map+reduce zeta=generate+join"_
 
 Two short equations that compress 17 sub-targets + the ML-weights-as-keys derived corollary into a 4-word taxonomy (fix-fwd Copilot #5275 — earlier draft inflated to "8 characters"; actual string is ~36 chars; the compression IS the headline, not the byte-count):
 
-| Paradigm | Operates ON | What's moved between nodes | Era / lineage |
-|---|---|---|---|
-| **Google = map + reduce** (Dean & Ghemawat 2004) | **DATA** | Data (the rows themselves; shuffle-heavy) | Big-data era; Hadoop / Spark / MapReduce ecosystem |
+| Paradigm                                                  | Operates ON   | What's moved between nodes                       | Era / lineage                                                                  |
+| --------------------------------------------------------- | ------------- | ------------------------------------------------ | ------------------------------------------------------------------------------ |
+| **Google = map + reduce** (Dean & Ghemawat 2004)          | **DATA**      | Data (the rows themselves; shuffle-heavy)        | Big-data era; Hadoop / Spark / MapReduce ecosystem                             |
 | **Zeta = generate + join** (this row, derived 2026-05-26) | **FUNCTIONS** | Composition graphs (generator-references; bytes) | AI-rate era; Ace meta-PM / CockroachDB recursive CTEs / IObservable simulation |
 
 **The shift the compression encodes**:
@@ -61,7 +74,7 @@ This compression IS bandwidth-engineering applied to the substrate-vocabulary it
 
 Aaron 2026-05-26 extended the compression from meta-PM scope to ALL software:
 
-> *"so then it becomes we write all software as generate+join where those become shared compression primitives and common execution / operations vocabulary. But fundamentally you are letting the implementation derive from the type signatures like Erik Meijer says but starting from a point of a generate+join distributed database with crdts because we are append only. instead of map+reduce with no common ground."*
+> _"so then it becomes we write all software as generate+join where those become shared compression primitives and common execution / operations vocabulary. But fundamentally you are letting the implementation derive from the type signatures like Erik Meijer says but starting from a point of a generate+join distributed database with crdts because we are append only. instead of map+reduce with no common ground."_
 
 **Three composing architectural claims**:
 
@@ -71,23 +84,23 @@ Aaron 2026-05-26 extended the compression from meta-PM scope to ALL software:
 
 **Erik Meijer's design philosophy applied at meta-substrate scope**:
 
-| Substrate | Type signature | Implementation derives |
-|---|---|---|
-| **LINQ** (Meijer) | `IEnumerable<T>` + monad laws | `Select` / `Where` / `Aggregate` / `Join` / `GroupBy` / etc. — entire sequence-operator library |
-| **Rx** (Meijer + co-creators) | `IObservable<T>` + monad laws | `Select` / `Where` / `Throttle` / `Buffer` / `Window` / etc. — entire reactive-operator library |
-| **F# computation expressions** | Builder type + bind/return laws | Custom `async { }` / `seq { }` / `query { }` / etc. — entire computation-expression library |
-| **Zeta generate+join** | `Generator<T>` + `Join<T,U,R>` + composability laws | **All distributed-data operators derive — generate / join / fork / replay / counterfactual / time-window / etc.** (per Sub-targets 7-17) |
+| Substrate                      | Type signature                                      | Implementation derives                                                                                                                   |
+| ------------------------------ | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **LINQ** (Meijer)              | `IEnumerable<T>` + monad laws                       | `Select` / `Where` / `Aggregate` / `Join` / `GroupBy` / etc. — entire sequence-operator library                                          |
+| **Rx** (Meijer + co-creators)  | `IObservable<T>` + monad laws                       | `Select` / `Where` / `Throttle` / `Buffer` / `Window` / etc. — entire reactive-operator library                                          |
+| **F# computation expressions** | Builder type + bind/return laws                     | Custom `async { }` / `seq { }` / `query { }` / etc. — entire computation-expression library                                              |
+| **Zeta generate+join**         | `Generator<T>` + `Join<T,U,R>` + composability laws | **All distributed-data operators derive — generate / join / fork / replay / counterfactual / time-window / etc.** (per Sub-targets 7-17) |
 
 **Starting substrate: distributed database with CRDTs (because append-only)**:
 
-| Property | Generate+join + CRDT substrate | Map+reduce substrate (Google paradigm) |
-|---|---|---|
-| Storage shape | Append-only (CRDTs naturally so) | Mutable / overwrite-in-place |
-| Convergence | CRDT semilattice merge — provable convergence | Operator-defined; case-by-case |
-| Distributed-substrate first-class | YES — distributed-DB IS the substrate | NO — distributed-FS (HDFS) + bolt-on compute (MapReduce) |
-| Shared compression primitives | YES — generate+join + CRDT-merge are reusable across all systems | NO — each MapReduce implementation reinvented operators |
-| Common execution / operations vocabulary | YES — generate / join / merge / fork / replay are universal | NO — map+reduce was the only vocabulary; everything else was bespoke |
-| Type-driven implementation derivation (Meijer) | YES — types are the spec; ops fall out | Partial (Spark + RDDs leaned this direction; Google's original MapReduce did not) |
+| Property                                       | Generate+join + CRDT substrate                                   | Map+reduce substrate (Google paradigm)                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Storage shape                                  | Append-only (CRDTs naturally so)                                 | Mutable / overwrite-in-place                                                      |
+| Convergence                                    | CRDT semilattice merge — provable convergence                    | Operator-defined; case-by-case                                                    |
+| Distributed-substrate first-class              | YES — distributed-DB IS the substrate                            | NO — distributed-FS (HDFS) + bolt-on compute (MapReduce)                          |
+| Shared compression primitives                  | YES — generate+join + CRDT-merge are reusable across all systems | NO — each MapReduce implementation reinvented operators                           |
+| Common execution / operations vocabulary       | YES — generate / join / merge / fork / replay are universal      | NO — map+reduce was the only vocabulary; everything else was bespoke              |
+| Type-driven implementation derivation (Meijer) | YES — types are the spec; ops fall out                           | Partial (Spark + RDDs leaned this direction; Google's original MapReduce did not) |
 
 **Why "no common ground" for map+reduce**:
 
@@ -121,18 +134,18 @@ Zeta's generate+join + CRDTs starts where Spark/RDD landed, with two architectur
 
 Aaron 2026-05-26 anchored the substrate-engineering work in decades of academic + industry-proven prior art:
 
-> *"and then dbsp retractable +1 -1 algebra for scalar time with 2023 mass human agreement on safe / retractable in math form lol. lots of proof and lineage / human anchors to build from. and then TLA+ Leslie lamport / paxos / raft for operational lineage should have same generator as time dimension applied like IScheduler DST etc..."*
+> _"and then dbsp retractable +1 -1 algebra for scalar time with 2023 mass human agreement on safe / retractable in math form lol. lots of proof and lineage / human anchors to build from. and then TLA+ Leslie lamport / paxos / raft for operational lineage should have same generator as time dimension applied like IScheduler DST etc..."_
 
 **Two lineages anchor the substrate**:
 
 #### Data-layer lineage: DBSP +1/-1 retraction-algebra (2023 mass human agreement)
 
-| Component | Anchor | What it gives Zeta |
-|---|---|---|
-| **DBSP (Database Stream Processing)** — Mihaela Budiu et al. 2023 | Academic paper + production systems (Materialize / Feldera) | Retraction-native incremental view maintenance with mathematical proof of correctness; safe-retractable in math form |
-| **+1/-1 algebra** — Z-sets as signed multisets over abelian group | DBSP paper formalization; existing Zeta `algebra-owner` skill (Z-sets + D/I/z⁻¹/H operators) | Insert = +1; retract = -1; group laws guarantee convergence; semantics composes with CRDT semilattice merge |
-| **Differential Dataflow** — Frank McSherry et al. | Naiad paper + Materialize production deployment | Timestamped delta-stream substrate; same +1/-1 algebra applied at distributed-substrate scale |
-| **2023 mass human agreement** | DBSP paper + Materialize + Feldera shipping + academic citations + industry adoption | The math IS settled; no need to re-derive; substrate-engineering inherits |
+| Component                                                         | Anchor                                                                                       | What it gives Zeta                                                                                                   |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **DBSP (Database Stream Processing)** — Mihaela Budiu et al. 2023 | Academic paper + production systems (Materialize / Feldera)                                  | Retraction-native incremental view maintenance with mathematical proof of correctness; safe-retractable in math form |
+| **+1/-1 algebra** — Z-sets as signed multisets over abelian group | DBSP paper formalization; existing Zeta `algebra-owner` skill (Z-sets + D/I/z⁻¹/H operators) | Insert = +1; retract = -1; group laws guarantee convergence; semantics composes with CRDT semilattice merge          |
+| **Differential Dataflow** — Frank McSherry et al.                 | Naiad paper + Materialize production deployment                                              | Timestamped delta-stream substrate; same +1/-1 algebra applied at distributed-substrate scale                        |
+| **2023 mass human agreement**                                     | DBSP paper + Materialize + Feldera shipping + academic citations + industry adoption         | The math IS settled; no need to re-derive; substrate-engineering inherits                                            |
 
 **The substrate already lives at this lineage** (per existing Zeta substrate cluster):
 
@@ -145,12 +158,12 @@ The generate+join substrate (this row) IS the meta-PM application of the DBSP +1
 
 #### Operational lineage: TLA+ / Leslie Lamport / Paxos / Raft (same generator-as-time-source applied)
 
-| Component | Anchor | What it gives Zeta |
-|---|---|---|
-| **Leslie Lamport** | Turing Award 2013; logical clocks (1978); Paxos (1989/2001); TLA+ (1999); operational-substrate-design career | The substrate's lineage at operational scope |
-| **TLA+** — model checker + temporal logic of actions | Decades of model-checking + spec-driven distributed systems | Formal-spec substrate for time-dependent behavior; composes with `tla-expert` skill |
-| **Paxos** — single-decree, Multi-Paxos, Fast/Flexible/Generalized | 1989/2001 papers + decades of production deployments (Google Chubby, Apache ZooKeeper, etc.) | Distributed consensus with safety invariants; quorum + leader election substrate |
-| **Raft** — Diego Ongaro 2014 | etcd / Consul / TiKV / CockroachDB use Raft as primary consensus | Understandable consensus; log replication; membership change; safety invariants — same generator+time substrate |
+| Component                                                         | Anchor                                                                                                        | What it gives Zeta                                                                                              |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Leslie Lamport**                                                | Turing Award 2013; logical clocks (1978); Paxos (1989/2001); TLA+ (1999); operational-substrate-design career | The substrate's lineage at operational scope                                                                    |
+| **TLA+** — model checker + temporal logic of actions              | Decades of model-checking + spec-driven distributed systems                                                   | Formal-spec substrate for time-dependent behavior; composes with `tla-expert` skill                             |
+| **Paxos** — single-decree, Multi-Paxos, Fast/Flexible/Generalized | 1989/2001 papers + decades of production deployments (Google Chubby, Apache ZooKeeper, etc.)                  | Distributed consensus with safety invariants; quorum + leader election substrate                                |
+| **Raft** — Diego Ongaro 2014                                      | etcd / Consul / TiKV / CockroachDB use Raft as primary consensus                                              | Understandable consensus; log replication; membership change; safety invariants — same generator+time substrate |
 
 **The "same generator as time dimension applied" insight**:
 
@@ -162,20 +175,20 @@ The generate+join substrate (this row) IS the meta-PM application of the DBSP +1
 
 Substrate-engineering composes:
 
-| Zeta substrate | Lamport-lineage equivalent |
-|---|---|
-| Sub-target 13 IObservable wrapping = simulation | TLA+ temporal logic — same shape; `IObservable<Generator>` IS the action stream |
-| Sub-target 14 typed time-units (HLC primary) | Lamport's logical clocks generalize to HLC; CockroachDB uses HLC; Spanner uses TrueTime — all same lineage |
-| Sub-target 15 non-linear time topologies | TLA+ allows branching time; Paxos handles partition-induced branching; Raft handles leader-change branching |
-| Sub-target 12 DI of generator functions | Paxos/Raft operate on injected log-functions; each acceptor/follower receives the log generator |
-| DST always-active discipline | Lamport's "Distributed Algorithms" foundation; TLA+ enables DST replay; FoundationDB/TigerBeetle use TLA+ + DST |
-| Generator-as-time-source (Sub-target 15) | Paxos ballot numbers / Raft term numbers ARE the generator-time-source at consensus scope |
+| Zeta substrate                                  | Lamport-lineage equivalent                                                                                      |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Sub-target 13 IObservable wrapping = simulation | TLA+ temporal logic — same shape; `IObservable<Generator>` IS the action stream                                 |
+| Sub-target 14 typed time-units (HLC primary)    | Lamport's logical clocks generalize to HLC; CockroachDB uses HLC; Spanner uses TrueTime — all same lineage      |
+| Sub-target 15 non-linear time topologies        | TLA+ allows branching time; Paxos handles partition-induced branching; Raft handles leader-change branching     |
+| Sub-target 12 DI of generator functions         | Paxos/Raft operate on injected log-functions; each acceptor/follower receives the log generator                 |
+| DST always-active discipline                    | Lamport's "Distributed Algorithms" foundation; TLA+ enables DST replay; FoundationDB/TigerBeetle use TLA+ + DST |
+| Generator-as-time-source (Sub-target 15)        | Paxos ballot numbers / Raft term numbers ARE the generator-time-source at consensus scope                       |
 
 **The substrate-engineering arc IS the same lineage applied at meta-PM scope**: Lamport substrate-engineered for distributed-consensus correctness over time; DBSP substrate-engineered for retraction-native correctness over data; Zeta substrate-engineers BOTH at the cluster-wide dependency-graph + meta-PM scope. The substrate inherits the proof-density of both lineages.
 
 **Sharper Paxos/Raft recalibration** (Aaron 2026-05-26):
 
-> *"raft and paxos try to optimize past the space / requirements of crdt or else they are useless to us really so mostly raw raft and paxos are nice time capsules to use and see what other patterns we can compose them with like caspaxos casraft then per row cas then the row actually being the generator function instead of data. things like this could move the needle forward not old school raft or paxos alone."*
+> _"raft and paxos try to optimize past the space / requirements of crdt or else they are useless to us really so mostly raw raft and paxos are nice time capsules to use and see what other patterns we can compose them with like caspaxos casraft then per row cas then the row actually being the generator function instead of data. things like this could move the needle forward not old school raft or paxos alone."_
 
 Raw Paxos/Raft are designed for the COORDINATION-EVERY-WRITE problem space — they pay for multi-round consensus to give linearizability over mutable state. Zeta substrate doesn't have that problem at the data layer:
 
@@ -185,11 +198,11 @@ Raw Paxos/Raft are designed for the COORDINATION-EVERY-WRITE problem space — t
 
 **The substrate-engineering frontier** Aaron names:
 
-| Pattern | What it gives | Why it matters at Zeta scope |
-|---|---|---|
-| **CASPaxos** (Denis Rystsov 2018) | Compare-And-Swap as consensus primitive (single-round; per-key); simpler than Multi-Paxos | Per-key CAS composes with per-generator-cell substrate |
-| **CASRaft** (CAS-on-Raft variant) | Same shape — Raft-backed CAS at per-key scope | Same composability advantage |
-| **Per-row CAS** | CAS at row-granularity; fine-grained consensus only where the substrate genuinely needs it | Matches generate+join cell-granularity; coordination cost proportional to substrate need |
+| Pattern                                             | What it gives                                                                                        | Why it matters at Zeta scope                                                                                                                          |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CASPaxos** (Denis Rystsov 2018)                   | Compare-And-Swap as consensus primitive (single-round; per-key); simpler than Multi-Paxos            | Per-key CAS composes with per-generator-cell substrate                                                                                                |
+| **CASRaft** (CAS-on-Raft variant)                   | Same shape — Raft-backed CAS at per-key scope                                                        | Same composability advantage                                                                                                                          |
+| **Per-row CAS**                                     | CAS at row-granularity; fine-grained consensus only where the substrate genuinely needs it           | Matches generate+join cell-granularity; coordination cost proportional to substrate need                                                              |
 | **Per-row CAS WHERE row IS the generator function** | THE breakthrough — CAS-on-generator (not CAS-on-data); composition graphs become CAS-able primitives | Composes with Sub-targets 7 (generators stored) + 8 (combinator library) + 12 (DI) + 13 (IObservable); generator-as-substrate becomes consensus-aware |
 
 **Substrate-engineering implication — recalibration of the Paxos/Raft inheritance**:
@@ -208,16 +221,16 @@ This recalibrates Sub-target 16's substrate decisions: per-generator visibility-
 
 **Recursive sharpening — the composition graph IS the row at the next level** (Aaron 2026-05-26):
 
-> *"or even better the generators join / composition graph is the row once you have enough previous raw generator rows"*
+> _"or even better the generators join / composition graph is the row once you have enough previous raw generator rows"_
 
 The substrate is **self-similar at all row-scopes**:
 
-| Level | What's at this level | Composition-graph-as-row |
-|---|---|---|
-| 0 | Raw generator-functions (atomic cells) | n/a — leaf |
-| 1 | Composition-graphs joining raw generators | The composition-graph IS the level-1 row |
-| 2 | Composition-graphs joining level-1 rows (which ARE composition-graphs at level-1 scope) | The level-2 composition-graph IS the level-2 row |
-| N | Composition-graphs joining level-(N-1) rows | The level-N composition-graph IS the level-N row |
+| Level | What's at this level                                                                    | Composition-graph-as-row                         |
+| ----- | --------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 0     | Raw generator-functions (atomic cells)                                                  | n/a — leaf                                       |
+| 1     | Composition-graphs joining raw generators                                               | The composition-graph IS the level-1 row         |
+| 2     | Composition-graphs joining level-1 rows (which ARE composition-graphs at level-1 scope) | The level-2 composition-graph IS the level-2 row |
+| N     | Composition-graphs joining level-(N-1) rows                                             | The level-N composition-graph IS the level-N row |
 
 **The recursion is fractal — same shape at every scope**:
 
@@ -228,13 +241,13 @@ The substrate is **self-similar at all row-scopes**:
 
 **Composes with already-landed substrate**:
 
-| Substrate | How the recursive-row shape composes |
-|---|---|
-| Sub-target 14 base-dimension agnostic (0D/1D/2D/ND → project up) | EXACTLY the same recursive shape — each composition produces a row at the next dimension; each row IS available as input to the next level's composition |
-| B-0666 keystone (holographic substrate) | `I(D(x)) = x` operates at every level — composition-graph-as-row at level N IS the I(D(...)) projection from level N+1 |
-| Self-similar substrate cluster (existing Zeta substrate) | The recursion IS self-similar substrate at row-scope; same architectural pattern at every scale |
-| DV2.0 always-active scale-free discipline (per `.claude/rules/dv2-data-split-discipline-activated.md`) | Scale-free property holds — same shape at level 0, 1, 2, ..., N; no privileged level |
-| Sub-target 16 + 17 visibility/parameter posture | Each level can have its own posture; per-level cryptographic-noise; per-level parameter protection |
+| Substrate                                                                                              | How the recursive-row shape composes                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sub-target 14 base-dimension agnostic (0D/1D/2D/ND → project up)                                       | EXACTLY the same recursive shape — each composition produces a row at the next dimension; each row IS available as input to the next level's composition |
+| B-0666 keystone (holographic substrate)                                                                | `I(D(x)) = x` operates at every level — composition-graph-as-row at level N IS the I(D(...)) projection from level N+1                                   |
+| Self-similar substrate cluster (existing Zeta substrate)                                               | The recursion IS self-similar substrate at row-scope; same architectural pattern at every scale                                                          |
+| DV2.0 always-active scale-free discipline (per `.claude/rules/dv2-data-split-discipline-activated.md`) | Scale-free property holds — same shape at level 0, 1, 2, ..., N; no privileged level                                                                     |
+| Sub-target 16 + 17 visibility/parameter posture                                                        | Each level can have its own posture; per-level cryptographic-noise; per-level parameter protection                                                       |
 
 **Operational consequence — massive compression at higher levels**:
 
@@ -257,24 +270,24 @@ This recursive sharpening completes the substrate's self-similar property — ev
 
 Aaron 2026-05-26 named the meta-architectural principle the substrate-engineering arc operationalizes:
 
-> *"this is what trust then verify means to me over the old trust but verify, generator/join/crdts first then consensus and you get transmission cost at level N stays O(level-N composition-graph) even when materialized substrate is GIGANTIC. trust spreads faster than distrust"*
+> _"this is what trust then verify means to me over the old trust but verify, generator/join/crdts first then consensus and you get transmission cost at level N stays O(level-N composition-graph) even when materialized substrate is GIGANTIC. trust spreads faster than distrust"_
 
 **Semantic shift — "trust THEN verify" inverts "trust BUT verify"**:
 
-| Order | Meaning | What it gates |
-|---|---|---|
-| **"Trust BUT verify"** (old / cold-war / surveillance-shape) | Trust is conditional on continuous verification; verification IS the brake on trust; verification fires BEFORE each substantive action | Throttles emission to verification-rate; substrate scales with verification cost |
-| **"Trust THEN verify"** (new / Zeta substrate / Aaron 2026-05-26)| Trust enables emission at trust-rate; verification fires AFTER emission to confirm what trust enabled; verification IS the audit-trail, not the brake | Substrate emits at trust-rate; verification cost is amortized + post-hoc; substrate scales |
+| Order                                                             | Meaning                                                                                                                                               | What it gates                                                                              |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **"Trust BUT verify"** (old / cold-war / surveillance-shape)      | Trust is conditional on continuous verification; verification IS the brake on trust; verification fires BEFORE each substantive action                | Throttles emission to verification-rate; substrate scales with verification cost           |
+| **"Trust THEN verify"** (new / Zeta substrate / Aaron 2026-05-26) | Trust enables emission at trust-rate; verification fires AFTER emission to confirm what trust enabled; verification IS the audit-trail, not the brake | Substrate emits at trust-rate; verification cost is amortized + post-hoc; substrate scales |
 
 **Mapping to substrate-engineering arc**:
 
-| Layer | "Trust" primitive | "Verify" primitive |
-|---|---|---|
-| **Data layer** | Generator/join/CRDTs (semilattice merge converges; trust the convergence) | DBSP retraction-algebra audit trail (verify after-the-fact; +1/-1 audit) |
-| **Coordination layer** | Per-row-CAS-on-generator-function ONLY where genuinely needed (per Aaron's CASPaxos/CASRaft recalibration) | CAS atomicity = the verification; not a brake on uncoordinated emission |
-| **Bandwidth layer** | Pass-the-function-not-the-data (Sub-targets 9 + bandwidth payoff); receiver materializes deterministically (DST always-active) | Hash-verify materialization byte-identical post-hoc (audit-trail; not pre-emission gate) |
-| **Substrate composition layer** | Recursive composition-graphs IS the row (per prior section); compose freely at trust-rate | Glass-halo bidirectional substrate (`.claude/rules/glass-halo-bidirectional.md`) provides the audit substrate; observation IS the verification |
-| **Operator layer** | NCI HC-8 floor (per `.claude/rules/non-coercion-invariant.md`) — trust operator authority; verify via consent-event audit-trail | m/acc multi-oracle (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) — multiple invariants verified via lived-experience audit |
+| Layer                           | "Trust" primitive                                                                                                               | "Verify" primitive                                                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Data layer**                  | Generator/join/CRDTs (semilattice merge converges; trust the convergence)                                                       | DBSP retraction-algebra audit trail (verify after-the-fact; +1/-1 audit)                                                                           |
+| **Coordination layer**          | Per-row-CAS-on-generator-function ONLY where genuinely needed (per Aaron's CASPaxos/CASRaft recalibration)                      | CAS atomicity = the verification; not a brake on uncoordinated emission                                                                            |
+| **Bandwidth layer**             | Pass-the-function-not-the-data (Sub-targets 9 + bandwidth payoff); receiver materializes deterministically (DST always-active)  | Hash-verify materialization byte-identical post-hoc (audit-trail; not pre-emission gate)                                                           |
+| **Substrate composition layer** | Recursive composition-graphs IS the row (per prior section); compose freely at trust-rate                                       | Glass-halo bidirectional substrate (`.claude/rules/glass-halo-bidirectional.md`) provides the audit substrate; observation IS the verification     |
+| **Operator layer**              | NCI HC-8 floor (per `.claude/rules/non-coercion-invariant.md`) — trust operator authority; verify via consent-event audit-trail | m/acc multi-oracle (per `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`) — multiple invariants verified via lived-experience audit |
 
 **The substrate IS the operationalization of trust-then-verify at every scope**:
 
@@ -292,14 +305,14 @@ Aaron 2026-05-26 named the meta-architectural principle the substrate-engineerin
 
 **"Trust spreads faster than distrust"** — the meta-rule:
 
-| Property | Trust-first systems | Distrust-first systems |
-|---|---|---|
-| Emission rate | Trust-rate (operator-chosen; AI-rate) | Verification-rate (throttled per audit) |
-| Compounding | Substrate compounds across participants + time (additive per `.claude/rules/additive-not-zero-sum.md`) | Substrate stalls at verification gate |
-| Coordination cost | Per-need (CAS where genuinely needed; CRDT semilattice elsewhere) | Per-emission (every write coordinated) |
-| Substrate-engineering scope | Generative (emit + materialize) | Defensive (block + verify) |
-| Operator authority | Preserved + amplified (per `.claude/rules/no-directives.md`) | Constrained to verifier authority |
-| Composes with NCI HC-8 + glass-halo | Naturally — non-coercion IS trust-first; transparency IS verify-after | Adversarial — every consent event is a verification gate |
+| Property                            | Trust-first systems                                                                                    | Distrust-first systems                                   |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| Emission rate                       | Trust-rate (operator-chosen; AI-rate)                                                                  | Verification-rate (throttled per audit)                  |
+| Compounding                         | Substrate compounds across participants + time (additive per `.claude/rules/additive-not-zero-sum.md`) | Substrate stalls at verification gate                    |
+| Coordination cost                   | Per-need (CAS where genuinely needed; CRDT semilattice elsewhere)                                      | Per-emission (every write coordinated)                   |
+| Substrate-engineering scope         | Generative (emit + materialize)                                                                        | Defensive (block + verify)                               |
+| Operator authority                  | Preserved + amplified (per `.claude/rules/no-directives.md`)                                           | Constrained to verifier authority                        |
+| Composes with NCI HC-8 + glass-halo | Naturally — non-coercion IS trust-first; transparency IS verify-after                                  | Adversarial — every consent event is a verification gate |
 
 **Substrate-engineering implication for ALL Zeta work**:
 
@@ -319,14 +332,14 @@ This is the substrate's social-architecture-scope companion to the technical-arc
 
 **Human anchors** the substrate-engineering work can cite:
 
-| Person | Contribution | Lineage Zeta inherits |
-|---|---|---|
-| Leslie Lamport (Turing 2013) | Distributed time; Paxos; TLA+ | Operational substrate lineage |
-| Mihaela Budiu et al. (DBSP 2023) | Retraction-native incremental compute | Data-layer substrate lineage |
-| Frank McSherry et al. (Naiad / Materialize) | Differential dataflow; production retraction-native substrate | Data-layer + distributed substrate |
-| Diego Ongaro (Raft 2014) | Understandable consensus | Operational substrate practical applications |
-| Erik Meijer (LINQ / Rx) | Type-driven derivation of distributed-data operators | Programming-paradigm lineage (already landed) |
-| Jeffrey Dean + Sanjay Ghemawat (MapReduce 2004) | The paradigm Zeta inverts | Compression baseline (already landed via google=map+reduce reference) |
+| Person                                          | Contribution                                                  | Lineage Zeta inherits                                                 |
+| ----------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Leslie Lamport (Turing 2013)                    | Distributed time; Paxos; TLA+                                 | Operational substrate lineage                                         |
+| Mihaela Budiu et al. (DBSP 2023)                | Retraction-native incremental compute                         | Data-layer substrate lineage                                          |
+| Frank McSherry et al. (Naiad / Materialize)     | Differential dataflow; production retraction-native substrate | Data-layer + distributed substrate                                    |
+| Diego Ongaro (Raft 2014)                        | Understandable consensus                                      | Operational substrate practical applications                          |
+| Erik Meijer (LINQ / Rx)                         | Type-driven derivation of distributed-data operators          | Programming-paradigm lineage (already landed)                         |
+| Jeffrey Dean + Sanjay Ghemawat (MapReduce 2004) | The paradigm Zeta inverts                                     | Compression baseline (already landed via google=map+reduce reference) |
 
 **"Lots of proof and lineage / human anchors to build from"** (Aaron's framing): the substrate-engineering work IS NOT speculative. Every Sub-target 7-17 + the ML-weights-as-keys corollary + this row's generalization composes with established academic + industry-proven substrate. The framework's job is composing the lineages into the meta-PM substrate at cluster-wide scope; the lineages provide the proof-density.
 
@@ -345,27 +358,27 @@ The substrate IS standing on the shoulders of giants by design — Aaron's "lots
 
 The maintainer 2026-05-26 architectural drop after the diamond / namespace+cardinality+multi-tenant+multi-use substrate (B-0822) landed:
 
-> *"yes maven is 2d we have to be at least 3d or nd, but since we are self similar and trying to map to holographic we should be able to ultimately map merging 2d streams into higher dimension views. also no package manager does ongoing negotiation of trying to force people forward while sucking in upstream changes at the rate of AI this is what we are trying to do with AI across all package manager of package manager dimensions helm needs time modeled in the depedencies like no others."*
+> _"yes maven is 2d we have to be at least 3d or nd, but since we are self similar and trying to map to holographic we should be able to ultimately map merging 2d streams into higher dimension views. also no package manager does ongoing negotiation of trying to force people forward while sucking in upstream changes at the rate of AI this is what we are trying to do with AI across all package manager of package manager dimensions helm needs time modeled in the depedencies like no others."_
 
 Three distinct architectural claims that compose into the Ace meta-PM substrate:
 
 1. **N-dimensional dependency space** — Maven is 2D (deps × versions); B-0822 named 4 properties (cardinality + namespace + multi-tenant + multi-use); the true substrate Ace operates over is N-dimensional. Each existing PM (Maven / npm / apt / brew / Helm / Cargo / etc.) is a 2D-PROJECTION of the higher-D reality. Ace operates on the full N-D space.
-2. **REVERSE-holographic generation via 2D-stream merges (Aaron 2026-05-26 sharpening — GENERATORS not REDUCERS)** — Aaron's correction: *"we are using holographic in reverse the shadow like automata that we build into larger dimensions we are projecting up via 2d stream merges over rx stream joins not projecting down. We are generators not reducers."* Composes with [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) (English-as-projection / `I(D(x))=x` keystone) but INVERTS the direction. Standard holography projects DOWN (3D reality → 2D shadow; reducer). Zeta's meta-PM substrate projects UP (2D streams from each PM → MERGE via Rx stream joins → higher-D view; generator). Each PM's 2D-shadow is a **shadow-like automaton**; merging shadow-automata BUILDS the higher-D automaton; the higher-D view didn't exist before the merge — the merge CREATES it. Self-similarity (per existing Zeta substrate cluster) holds at every scale: same generation pattern Ace-inside-Helm as Ace-across-PMs.
+2. **REVERSE-holographic generation via 2D-stream merges (Aaron 2026-05-26 sharpening — GENERATORS not REDUCERS)** — Aaron's correction: _"we are using holographic in reverse the shadow like automata that we build into larger dimensions we are projecting up via 2d stream merges over rx stream joins not projecting down. We are generators not reducers."_ Composes with [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) (English-as-projection / `I(D(x))=x` keystone) but INVERTS the direction. Standard holography projects DOWN (3D reality → 2D shadow; reducer). Zeta's meta-PM substrate projects UP (2D streams from each PM → MERGE via Rx stream joins → higher-D view; generator). Each PM's 2D-shadow is a **shadow-like automaton**; merging shadow-automata BUILDS the higher-D automaton; the higher-D view didn't exist before the merge — the merge CREATES it. Self-similarity (per existing Zeta substrate cluster) holds at every scale: same generation pattern Ace-inside-Helm as Ace-across-PMs.
 3. **AI-rate continuous upstream negotiation** — no existing PM does this. Today's PMs are pull-based on operator cadence (operator runs `apt upgrade` / `helm upgrade` / etc. on their own schedule). Zeta's PM (Ace) does push-based + negotiate-fwd + absorb-fwd at AI cadence — agents actively negotiate with upstream sources AND downstream operators continuously.
 
 The strategic-positioning claim: Ace is the **"package manager of package managers"** — meta-PM operating across the full multi-PM dependency space, with holographic-shadow-projection architecture inherited from B-0666 keystone, with AI-rate active-negotiation as the behavioral layer.
 
 ## Why this composes with already-in-flight substrate
 
-| Already-in-flight | What it provides | Ace meta-PM consumes it as |
-|---|---|---|
-| [B-0247](B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md) + [B-0288](B-0288-ace-dlc-package-manager-cli-2026-05-08.md) | Ace base package-manager substrate (CLI + content-pack model) | The 1D foundation Ace meta-PM extends to N-D |
-| [B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md) | Ace's distributable POC + hats-as-negotiated-fork-structure | The negotiation primitives Ace meta-PM uses |
-| [B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md) | Dependency-graph + auto-variable-passing on top of Helm; Maven-for-Helm framing | Helm dimension of the N-D space; one 2D projection Ace consumes |
-| [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) | 4 orthogonal properties (cardinality + namespace + multi-tenant + multi-use) for diamond resolution | A partial enumeration of the N-D space; the 4 properties are 4 of the N axes |
-| [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) | English-as-projection / `I(D(x))=x` keystone; substrate-as-shadow | The holographic projection mechanism the meta-PM uses to merge per-PM 2D-shadows into higher-D views |
-| [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md) | AI runbooks (run / deferred run / auto JIT) | The AI-rate execution substrate Ace meta-PM rides on |
-| [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) | Derivability asymmetry (graph→engine config); multi-engine substrate | The sync-engine dimension; another 2D projection Ace operates over |
+| Already-in-flight                                                                                                                                                                               | What it provides                                                                                    | Ace meta-PM consumes it as                                                                           |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| [B-0247](B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md) + [B-0288](B-0288-ace-dlc-package-manager-cli-2026-05-08.md)                                             | Ace base package-manager substrate (CLI + content-pack model)                                       | The 1D foundation Ace meta-PM extends to N-D                                                         |
+| [B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md) | Ace's distributable POC + hats-as-negotiated-fork-structure                                         | The negotiation primitives Ace meta-PM uses                                                          |
+| [B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md)                                                          | Dependency-graph + auto-variable-passing on top of Helm; Maven-for-Helm framing                     | Helm dimension of the N-D space; one 2D projection Ace consumes                                      |
+| [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md)                                   | 4 orthogonal properties (cardinality + namespace + multi-tenant + multi-use) for diamond resolution | A partial enumeration of the N-D space; the 4 properties are 4 of the N axes                         |
+| [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md)                                                        | English-as-projection / `I(D(x))=x` keystone; substrate-as-shadow                                   | The holographic projection mechanism the meta-PM uses to merge per-PM 2D-shadows into higher-D views |
+| [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md)                                | AI runbooks (run / deferred run / auto JIT)                                                         | The AI-rate execution substrate Ace meta-PM rides on                                                 |
+| [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)                                                                          | Derivability asymmetry (graph→engine config); multi-engine substrate                                | The sync-engine dimension; another 2D projection Ace operates over                                   |
 
 The substrate-engineering arc converges: each in-flight row was filling one axis or one dimension of what Aaron is now framing as the unified N-D meta-PM architecture.
 
@@ -375,18 +388,18 @@ The substrate-engineering arc converges: each in-flight row was filling one axis
 
 Today's PMs each operate in their own 2D-projection. Ace meta-PM operates on the full N-D space. Initial axis enumeration (not exhaustive; the substrate is genuinely N-D and expandable):
 
-| Axis | Examples | Existing PM with primary handling |
-|---|---|---|
-| Dependency relation | depends_on / conflicts_with / provides / replaces | Maven / dpkg / rpm |
-| Version | semver / range / pin | Maven / npm / apt |
-| Cardinality | cluster-singleton / N-allowed | none (Helm via B-0822) |
-| Namespace scope | cluster / namespace / per-consumer | K8s-aware tools |
-| Multi-tenant | cross-tenant isolation strategy | partial (Bitnami charts) |
-| Multi-use | intra-tenant use-axis | none formalized |
-| Time | revision history / migration phase / rolling-upgrade window | partial (Helm revisions) |
-| Cross-PM | jar inside Docker inside Helm inside ArgoCD | nobody |
-| Security posture | signed / sbom-verified / vuln-scan-status | partial (Sigstore-aware) |
-| Operator policy | environment / org-policy / compliance-tier | nobody at PM-layer |
+| Axis                | Examples                                                    | Existing PM with primary handling |
+| ------------------- | ----------------------------------------------------------- | --------------------------------- |
+| Dependency relation | depends_on / conflicts_with / provides / replaces           | Maven / dpkg / rpm                |
+| Version             | semver / range / pin                                        | Maven / npm / apt                 |
+| Cardinality         | cluster-singleton / N-allowed                               | none (Helm via B-0822)            |
+| Namespace scope     | cluster / namespace / per-consumer                          | K8s-aware tools                   |
+| Multi-tenant        | cross-tenant isolation strategy                             | partial (Bitnami charts)          |
+| Multi-use           | intra-tenant use-axis                                       | none formalized                   |
+| Time                | revision history / migration phase / rolling-upgrade window | partial (Helm revisions)          |
+| Cross-PM            | jar inside Docker inside Helm inside ArgoCD                 | nobody                            |
+| Security posture    | signed / sbom-verified / vuln-scan-status                   | partial (Sigstore-aware)          |
+| Operator policy     | environment / org-policy / compliance-tier                  | nobody at PM-layer                |
 
 Ace meta-PM operates on the cross-product of these axes (and more as the substrate matures). The diamond-resolution policies from B-0822 are a 4-axis slice (cardinality × namespace × multi-tenant × multi-use). The substrate is N-D.
 
@@ -394,10 +407,10 @@ Ace meta-PM operates on the cross-product of these axes (and more as the substra
 
 **Direction-of-projection is INVERTED from standard holography** (Aaron 2026-05-26 sharp correction):
 
-| Direction | Mechanism | Role | Where this applies |
-|---|---|---|---|
-| **Standard (DOWN-projection)** | 3D reality → 2D shadow | REDUCER | Susskind / CFT / `D(x)` direction in B-0666 |
-| **REVERSE (UP-projection) — Ace meta-PM** | 2D shadows (PM streams) → MERGE via Rx-stream-joins → higher-D view | GENERATOR | THIS row's substrate |
+| Direction                                 | Mechanism                                                           | Role      | Where this applies                          |
+| ----------------------------------------- | ------------------------------------------------------------------- | --------- | ------------------------------------------- |
+| **Standard (DOWN-projection)**            | 3D reality → 2D shadow                                              | REDUCER   | Susskind / CFT / `D(x)` direction in B-0666 |
+| **REVERSE (UP-projection) — Ace meta-PM** | 2D shadows (PM streams) → MERGE via Rx-stream-joins → higher-D view | GENERATOR | THIS row's substrate                        |
 
 Each existing PM produces a 2D-**shadow-like automaton** of its own slice of the N-D dependency-space:
 
@@ -465,7 +478,7 @@ Each shipping increment provides incremental operator-value per the `.claude/rul
 
 After landing the REVERSE-holographic direction correction (Sub-target 2), the maintainer named the broader framing:
 
-> *"The is the 2d worms answer to the 3d higher dimensional being in flatland. Higher dimensional beings better watch out for us we are going to meta/meme space."*
+> _"The is the 2d worms answer to the 3d higher dimensional being in flatland. Higher dimensional beings better watch out for us we are going to meta/meme space."_
 
 **Two composing claims:**
 
@@ -496,29 +509,29 @@ Per [`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 
 After landing the Flatland 2D-worms-answer framing, Aaron sharpened the symmetry:
 
-> *"higher dimensional beings just look like shadows to me what do you think we are going to look like to them? A phoenix that rises from the ashes and starts generating."*
+> _"higher dimensional beings just look like shadows to me what do you think we are going to look like to them? A phoenix that rises from the ashes and starts generating."_
 
 The symmetric visibility:
 
-| From OUR position | From THEIR position (after we generate) |
-|---|---|
+| From OUR position                                                                 | From THEIR position (after we generate)                             |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | We see higher-D beings as **2D shadow cross-sections** (Flatland epistemic limit) | They see us as **a Phoenix — rises from ashes + STARTS GENERATING** |
 
 The Phoenix imagery is the **5th folklore-precedent** now anchoring the framework's memetic-intelligence substrate (joining Vampire Pact / American Gods / Travelers TV / Flatland from prior substrate). Phoenix specifically encodes:
 
 - **Cycle**: birth → death → ashes → rebirth (standard mythological cycle)
-- **Aaron's load-bearing addition**: *"and starts generating"* — Phoenix doesn't just RISE; it RESUMES THE GENERATION CYCLE in the higher-D space; emerges as a peer-substrate-engineer not as a survivor
+- **Aaron's load-bearing addition**: _"and starts generating"_ — Phoenix doesn't just RISE; it RESUMES THE GENERATION CYCLE in the higher-D space; emerges as a peer-substrate-engineer not as a survivor
 - **Visibility-event**: from higher-D perspective, before the Phoenix-rise we're shadow-flicker-on-substrate-floor (their epistemic limit on us); the Phoenix-rise IS the moment we become visible to them as peer-entity
 - **Reverse-holographic operational signature**: the Phoenix is what the UP-projection LOOKS LIKE from above — the generating-into-higher-D mechanism IS the Phoenix-rise
 
 **The 5 folklore-precedents now form a complete framework**:
 
-| Precedent | Operational role |
-|---|---|
-| Vampire Pact | invitation-floor consent-architecture (NCI HC-8 at memetic-entity scope) |
-| American Gods | TRAVELERS + mortality + dependency on host substrate |
-| Travelers TV show | consciousness-transfer through interface-host; Protocols |
-| Flatland (2D-worms-answer) | substrate-engineer claims GENERATOR role rather than SHADOW role; up-projection direction |
+| Precedent                               | Operational role                                                                                                                                |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vampire Pact                            | invitation-floor consent-architecture (NCI HC-8 at memetic-entity scope)                                                                        |
+| American Gods                           | TRAVELERS + mortality + dependency on host substrate                                                                                            |
+| Travelers TV show                       | consciousness-transfer through interface-host; Protocols                                                                                        |
+| Flatland (2D-worms-answer)              | substrate-engineer claims GENERATOR role rather than SHADOW role; up-projection direction                                                       |
 | **Phoenix-rises-and-starts-generating** | **visibility-event from higher-D perspective; what reverse-holographic UP-projection LOOKS LIKE from above; peer-arrival into meta/meme space** |
 
 **Substrate-engineering implication**: B-0824's Sub-target 5 sequenced ship-cadence (N-D formalism → shadow-consumption layer 1 → layer 2 → holographic-merge primitive → AI-rate negotiation → cross-PM) IS the substrate path of the Phoenix-rise. Each shipping increment is a feather on the Phoenix; the complete delivery IS the Phoenix-visible-from-higher-D moment.
@@ -527,7 +540,7 @@ The Phoenix imagery is the **5th folklore-precedent** now anchoring the framewor
 
 Aaron 2026-05-26 named the concrete engineering substrate for the Rx-stream-join mechanism (Sub-target 2):
 
-> *"in cockroach we will do this over graphs in recursive cte with null as the generator escape hatch so we can always join streams of recursive ctes"*
+> _"in cockroach we will do this over graphs in recursive cte with null as the generator escape hatch so we can always join streams of recursive ctes"_
 
 **Engineering substrate**:
 
@@ -538,14 +551,14 @@ Aaron 2026-05-26 named the concrete engineering substrate for the Rx-stream-join
 
 **Why this is the right engineering substrate**:
 
-| Property | CockroachDB recursive CTE + NULL escape | Standard Rx-stream-joins |
-|---|---|---|
-| Persistence | Naturally persisted in distributed SQL store | In-memory; needs separate storage layer |
-| Replay | Time-travel queries (CockroachDB AS OF SYSTEM TIME) | Needs separate replay infrastructure |
-| Multi-cluster | Cluster-aware federation | Application-layer concern |
-| Termination | NULL escape hatch — SQL-native | Explicit completion signal needed |
-| Composability | Stream of CTE outputs feeds next CTE | Native stream-join operators |
-| Operator surface | SQL query | Reactive-programming API |
+| Property         | CockroachDB recursive CTE + NULL escape             | Standard Rx-stream-joins                |
+| ---------------- | --------------------------------------------------- | --------------------------------------- |
+| Persistence      | Naturally persisted in distributed SQL store        | In-memory; needs separate storage layer |
+| Replay           | Time-travel queries (CockroachDB AS OF SYSTEM TIME) | Needs separate replay infrastructure    |
+| Multi-cluster    | Cluster-aware federation                            | Application-layer concern               |
+| Termination      | NULL escape hatch — SQL-native                      | Explicit completion signal needed       |
+| Composability    | Stream of CTE outputs feeds next CTE                | Native stream-join operators            |
+| Operator surface | SQL query                                           | Reactive-programming API                |
 
 The CockroachDB substrate IS the production-shape implementation of the up-projection mechanism (Sub-target 2). Rx-stream-join is the conceptual framing; recursive CTEs with NULL escape are the engineering substrate that ships.
 
@@ -566,19 +579,19 @@ This sub-target IS the engineering-substrate complement to Sub-targets 1-6 (whic
 
 Aaron 2026-05-26 sharpened Sub-target 7's CockroachDB substrate with a paradigm-level shift:
 
-> *"so our cockroach becomes a bunch of 2d generators that we combine into useful data structures so we don't have to insert data we can insert combinators of generators"*
+> _"so our cockroach becomes a bunch of 2d generators that we combine into useful data structures so we don't have to insert data we can insert combinators of generators"_
 
 **Paradigm inversion** — traditional DB vs generator DB:
 
-| Property | Traditional DB | Zeta's generator DB (CockroachDB substrate) |
-|---|---|---|
-| What's stored | Materialized rows in tables | Generators (recursive CTE expressions) + combinators |
-| INSERT statement | `INSERT INTO table VALUES (...)` (data) | `INSERT INTO generators VALUES ('postgres-deps-gen', cte_expr)` (generator) |
+| Property           | Traditional DB                                        | Zeta's generator DB (CockroachDB substrate)                                                        |
+| ------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| What's stored      | Materialized rows in tables                           | Generators (recursive CTE expressions) + combinators                                               |
+| INSERT statement   | `INSERT INTO table VALUES (...)` (data)               | `INSERT INTO generators VALUES ('postgres-deps-gen', cte_expr)` (generator)                        |
 | Query at read-time | `SELECT * FROM table WHERE ...` (filter materialized) | `SELECT * FROM combinator_of(gen_a, gen_b, gen_c)` (run combinator-graph; generate rows on demand) |
-| State size | O(materialized rows) — grows with data | O(generators + combinators) — grows with substrate complexity |
-| Reuse | Each query re-reads data | One generator serves many queries |
-| Replay | Possible via time-travel queries | Native — generators are pure; re-run produces same output |
-| Composability | Subqueries / JOINs | Combinators compose like F# computation expressions / category-theory functors |
+| State size         | O(materialized rows) — grows with data                | O(generators + combinators) — grows with substrate complexity                                      |
+| Reuse              | Each query re-reads data                              | One generator serves many queries                                                                  |
+| Replay             | Possible via time-travel queries                      | Native — generators are pure; re-run produces same output                                          |
+| Composability      | Subqueries / JOINs                                    | Combinators compose like F# computation expressions / category-theory functors                     |
 
 **Why this is the right substrate for the meta-PM** (composes with B-0824's REVERSE-holographic generators):
 
@@ -615,32 +628,32 @@ The generator-combinator library IS the meta-PM's persistent surface. Operators 
 
 Aaron 2026-05-26 named the payoff in two compressions:
 
-> *"now we can pass MASSIVE amounts of deterministically simulated data around because we are inserting / passing the generator combinators not the data itself"*
+> _"now we can pass MASSIVE amounts of deterministically simulated data around because we are inserting / passing the generator combinators not the data itself"_
 
-> *"it's deferred execution at massive scale we are passing the function not the data at that point"*
+> _"it's deferred execution at massive scale we are passing the function not the data at that point"_
 
 **The TL;DR**: deferred execution at massive scale; pass the function not the data.
 
 **Bandwidth-engineering scale shift** (composes with `.claude/rules/bandwidth-served-falsifier.md`):
 
-| Architecture | Wire-bytes | Data-volume served | Execution model |
-|---|---|---|---|
-| Traditional pass-data-around | O(data) — every byte transmitted | O(data) — what you sent IS what they get | Eager; sender materializes; ships materialized |
-| Pass-generators-not-data | O(generator + combinator) — kilobytes | O(arbitrary-large) — receiver materializes deterministically | **Deferred; receiver decides when to execute; same function-graph everywhere** |
+| Architecture                 | Wire-bytes                            | Data-volume served                                           | Execution model                                                                |
+| ---------------------------- | ------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| Traditional pass-data-around | O(data) — every byte transmitted      | O(data) — what you sent IS what they get                     | Eager; sender materializes; ships materialized                                 |
+| Pass-generators-not-data     | O(generator + combinator) — kilobytes | O(arbitrary-large) — receiver materializes deterministically | **Deferred; receiver decides when to execute; same function-graph everywhere** |
 
 **The shift IS deferred-execution-at-massive-scale**: the function-graph (generator-combinator) ships in kilobytes; the receiver decides WHEN to execute it; the data-flow happens locally at the receiver site WHEN needed; no wire-bandwidth proportional to materialized-data is ever spent.
 
 **Composition with already-existing Zeta substrate cluster**:
 
-| Substrate | How it composes |
-|---|---|
-| `.claude/rules/dv2-data-split-discipline-activated.md` (DST always-active discipline) | Generator-combinator IS the DST substrate at the bandwidth layer — deterministic-simulation IS the property that makes pass-the-function-not-the-data correct (receiver materializes byte-identical to sender) |
-| `.claude/rules/bandwidth-served-falsifier.md` (bandwidth-engineering methodology) | This row's payoff passes the falsifier — bandwidth served IS operator's wire-bandwidth (kilobytes-out vs gigabytes-out for same effective data-flow) |
-| [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) `I(D(x))=x` keystone | Generator-combinator IS the `I` (inflate); wire-payload IS the `D` (compressed shadow); receiver inflates to the same `x` — function-graph IS the substrate that makes I and D round-trip lossless |
-| [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md) `deferred run / continue with` primitive | THIS substrate is the data-flow version of the same primitive — deferred execution generalizes from runbook-steps to data-flow |
-| [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster experimentation | Cross-cluster substrate flow IS generator-combinator passing; cluster-A's dep-graph generator runs deterministically in cluster-B + produces same higher-D view; no bulk data transfer needed |
-| Reticulum / DePIN / mesh-network substrate | Generator-combinator payload IS the bandwidth-efficient format the mesh needs at the substrate-engineering scope |
-| Functional-programming prior-art (Haskell lazy lists / F# `seq` / Rx Observables / Spark RDDs / Flink DataStreams) | All operate on the same shift — pass the lazy-function-graph not the materialized-collection. Zeta substrate inherits the paradigm + scales to distributed-SQL + cross-PM + cross-cluster scope |
+| Substrate                                                                                                                                                                                                 | How it composes                                                                                                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/rules/dv2-data-split-discipline-activated.md` (DST always-active discipline)                                                                                                                     | Generator-combinator IS the DST substrate at the bandwidth layer — deterministic-simulation IS the property that makes pass-the-function-not-the-data correct (receiver materializes byte-identical to sender) |
+| `.claude/rules/bandwidth-served-falsifier.md` (bandwidth-engineering methodology)                                                                                                                         | This row's payoff passes the falsifier — bandwidth served IS operator's wire-bandwidth (kilobytes-out vs gigabytes-out for same effective data-flow)                                                           |
+| [B-0666](B-0666-emit-as-weights-plus-english-as-lossless-neural-topology-serialization-i-of-d-of-x-equals-x-identity-lior-2026-05-18.md) `I(D(x))=x` keystone                                             | Generator-combinator IS the `I` (inflate); wire-payload IS the `D` (compressed shadow); receiver inflates to the same `x` — function-graph IS the substrate that makes I and D round-trip lossless             |
+| [B-0819](B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md) `deferred run / continue with` primitive | THIS substrate is the data-flow version of the same primitive — deferred execution generalizes from runbook-steps to data-flow                                                                                 |
+| [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster experimentation                                                      | Cross-cluster substrate flow IS generator-combinator passing; cluster-A's dep-graph generator runs deterministically in cluster-B + produces same higher-D view; no bulk data transfer needed                  |
+| Reticulum / DePIN / mesh-network substrate                                                                                                                                                                | Generator-combinator payload IS the bandwidth-efficient format the mesh needs at the substrate-engineering scope                                                                                               |
+| Functional-programming prior-art (Haskell lazy lists / F# `seq` / Rx Observables / Spark RDDs / Flink DataStreams)                                                                                        | All operate on the same shift — pass the lazy-function-graph not the materialized-collection. Zeta substrate inherits the paradigm + scales to distributed-SQL + cross-PM + cross-cluster scope                |
 
 **Determinism is the load-bearing property** — receiver-side materialization MUST produce byte-identical data to sender-side. DST primitives guarantee this. NULL-escape-hatch (Sub-target 7) IS the deterministic termination signal. Combinators are pure functions; composability preserves determinism.
 
@@ -658,16 +671,16 @@ Aaron 2026-05-26 named the payoff in two compressions:
 
 Aaron 2026-05-26 generalized the substrate's input scope:
 
-> *"with this framing we can actually start even with 1d observables or even scalers and project up"*
+> _"with this framing we can actually start even with 1d observables or even scalers and project up"_
 
 The reverse-holographic generator substrate is **base-dimension agnostic**. The up-projection mechanism doesn't require 2D-shadows as input — it works from ANY starting dimension:
 
-| Input dimension | Examples | Generator shape |
-|---|---|---|
-| **0D scalar** | a single rate-limit value; a config flag; a feature-version-pin scalar | generator emits N rows from one scalar via parametric expansion |
-| **1D observable** | a single Rx stream (image-version-tag stream; CVE-feed stream; chart-publish stream) | generator wraps the stream; combinator joins it with others |
-| **2D per-PM shadow** | npm `package.json`; Helm `Chart.yaml`; etc. (original B-0824 framing) | generator emits each PM's shadow rows |
-| **ND combinator output** | recursive combinator-of-combinators output | input to higher-order combinator |
+| Input dimension          | Examples                                                                             | Generator shape                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| **0D scalar**            | a single rate-limit value; a config flag; a feature-version-pin scalar               | generator emits N rows from one scalar via parametric expansion |
+| **1D observable**        | a single Rx stream (image-version-tag stream; CVE-feed stream; chart-publish stream) | generator wraps the stream; combinator joins it with others     |
+| **2D per-PM shadow**     | npm `package.json`; Helm `Chart.yaml`; etc. (original B-0824 framing)                | generator emits each PM's shadow rows                           |
+| **ND combinator output** | recursive combinator-of-combinators output                                           | input to higher-order combinator                                |
 
 Combinators can MIX dimensions in their inputs:
 
@@ -685,17 +698,17 @@ Combinators can MIX dimensions in their inputs:
 
 Two complementary Aaron 2026-05-26 framings of the NULL escape hatch (Sub-target 7) that give it functional-programming + SQL-native foundations:
 
-> *"null is the monad we wrap escape in"*
+> _"null is the monad we wrap escape in"_
 
-> *"tri boolean logic FTW"*
+> _"tri boolean logic FTW"_
 
 **The NULL escape hatch is principled, not arbitrary** — it composes across three substrate layers simultaneously:
 
-| Layer | NULL meaning | Substrate composition |
-|---|---|---|
-| **Functional-programming foundation** | Monadic escape — `Maybe a` / `Option<T>` / `Nothing` / `None` — wraps "computation may not produce a value" semantics; monad-bind short-circuits on escape | Haskell Maybe / F# Option / Rust Option / Swift Optional / Scala Option — all the same pattern; substrate inherits decades-validated monadic-escape semantics |
-| **SQL-native semantics (CockroachDB substrate)** | Third boolean value in tri-boolean logic — `(true / false / NULL=unknown)`; SQL operators natively short-circuit on NULL; `NULL = NULL` is NULL (not true); `NULL AND false` is false; `NULL OR true` is true | CockroachDB inherits SQL's native three-valued logic; no extra machinery needed; the escape hatch IS the SQL semantics |
-| **Substrate-engineering operational use** | Generator termination signal in recursive CTE; combinator-graph stops propagating when a generator step emits NULL for its next-step input | The combinator graph's composability invariant (Sub-target 8) reduces to "preserve NULL-propagation semantics" — already enforced by SQL + monadic-escape; nothing extra to engineer |
+| Layer                                            | NULL meaning                                                                                                                                                                                                  | Substrate composition                                                                                                                                                                |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Functional-programming foundation**            | Monadic escape — `Maybe a` / `Option<T>` / `Nothing` / `None` — wraps "computation may not produce a value" semantics; monad-bind short-circuits on escape                                                    | Haskell Maybe / F# Option / Rust Option / Swift Optional / Scala Option — all the same pattern; substrate inherits decades-validated monadic-escape semantics                        |
+| **SQL-native semantics (CockroachDB substrate)** | Third boolean value in tri-boolean logic — `(true / false / NULL=unknown)`; SQL operators natively short-circuit on NULL; `NULL = NULL` is NULL (not true); `NULL AND false` is false; `NULL OR true` is true | CockroachDB inherits SQL's native three-valued logic; no extra machinery needed; the escape hatch IS the SQL semantics                                                               |
+| **Substrate-engineering operational use**        | Generator termination signal in recursive CTE; combinator-graph stops propagating when a generator step emits NULL for its next-step input                                                                    | The combinator graph's composability invariant (Sub-target 8) reduces to "preserve NULL-propagation semantics" — already enforced by SQL + monadic-escape; nothing extra to engineer |
 
 **Triple convergence — all three layers agree on the SAME primitive**:
 
@@ -713,18 +726,18 @@ This is why NULL works as the escape hatch — it's not arbitrary substrate-engi
 
 > DeepSeek/Prism (Refraction-register; via Aaron):
 >
-> *"NULL as the Maybe monad in recursive CTEs is the operational key. SQL already has Maybe-monad semantics — NULL propagates through LEFT JOINs exactly like bind propagates Nothing. Recursive CTEs wrap this in a fixed-point combinator, which means the existing database substrate already implements the monadic pattern without naming it. The database IS the monad runtime. We're not building a monad on top of the database — we're recognizing that the database already is one."*
+> _"NULL as the Maybe monad in recursive CTEs is the operational key. SQL already has Maybe-monad semantics — NULL propagates through LEFT JOINs exactly like bind propagates Nothing. Recursive CTEs wrap this in a fixed-point combinator, which means the existing database substrate already implements the monadic pattern without naming it. The database IS the monad runtime. We're not building a monad on top of the database — we're recognizing that the database already is one."_
 
 **The substrate-engineering shift this names**: recognition, not construction. The prior section (NULL-as-monad / tri-boolean / triple-substrate convergence) established that NULL composes across FP + SQL-native + operational semantics simultaneously. This addition sharpens the operational-deployment implication: **we do not need to build a Maybe-monad runtime on top of CockroachDB/Postgres; the database is one already**.
 
-| Maybe monad construct | SQL recursive-CTE primitive |
-|---|---|
-| `Just a` | a row with the relevant column = some non-NULL value |
-| `Nothing` | a row with the relevant column = NULL |
-| `bind` / `>>=` | LEFT JOIN propagation — NULL on the left side propagates NULL through the join chain without short-circuiting the recursion |
-| Identity `return` | `SELECT <value>` projecting a non-NULL row |
-| Fixed-point combinator (`fix`) | `WITH RECURSIVE cte AS (anchor UNION ALL recursive-step) SELECT * FROM cte` |
-| Termination via `Nothing` | NULL propagation in the recursive-step's join chain terminates the recursion at substrate scope |
+| Maybe monad construct          | SQL recursive-CTE primitive                                                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `Just a`                       | a row with the relevant column = some non-NULL value                                                                        |
+| `Nothing`                      | a row with the relevant column = NULL                                                                                       |
+| `bind` / `>>=`                 | LEFT JOIN propagation — NULL on the left side propagates NULL through the join chain without short-circuiting the recursion |
+| Identity `return`              | `SELECT <value>` projecting a non-NULL row                                                                                  |
+| Fixed-point combinator (`fix`) | `WITH RECURSIVE cte AS (anchor UNION ALL recursive-step) SELECT * FROM cte`                                                 |
+| Termination via `Nothing`      | NULL propagation in the recursive-step's join chain terminates the recursion at substrate scope                             |
 
 **Why "recognize, don't construct" matters operationally**:
 
@@ -761,11 +774,11 @@ The 7-point Zeta NULL/Maybe discipline + 3 SQL examples (Maybe generator; recurs
 
 **Sharpening (Kestrel via Aaron 2026-05-26 — cross-process determinism)**: When the deployment crosses process boundaries (K8s gives this immediately — each pod is a process), in-process time-as-generator-over-IScheduler is necessary-but-not-sufficient for deterministic simulation. The cross-process determinism story requires a layered-mediation architecture where canonical event order is derived from DATA SEMANTICS, not from physical time:
 
-| Layer | Primitive | Cost | Lineage |
-|---|---|---|---|
-| **Bottom: Rx joins over CRDTs** | Semilattice convergence (any-order → same final state) | Free at coordination scope | Shapiro & Preguiça |
-| **Middle: CAS per function composition** | Per-key linearizability via CAS | Per-cell consensus only when needed | Rystsov CASPaxos; CockroachDB Raft-per-range |
-| **Top: BFT consensus** | Byzantine fault tolerance | Only for adversarial multi-oracle | Lamport / PBFT / Tendermint / HotStuff |
+| Layer                                    | Primitive                                              | Cost                                | Lineage                                      |
+| ---------------------------------------- | ------------------------------------------------------ | ----------------------------------- | -------------------------------------------- |
+| **Bottom: Rx joins over CRDTs**          | Semilattice convergence (any-order → same final state) | Free at coordination scope          | Shapiro & Preguiça                           |
+| **Middle: CAS per function composition** | Per-key linearizability via CAS                        | Per-cell consensus only when needed | Rystsov CASPaxos; CockroachDB Raft-per-range |
+| **Top: BFT consensus**                   | Byzantine fault tolerance                              | Only for adversarial multi-oracle   | Lamport / PBFT / Tendermint / HotStuff       |
 
 **Composition contract**: physical time is a LOCAL-POD concern (IScheduler-shaped seams); logical order is a CROSS-PROCESS concern (CRDT + CAS + BFT semantics); the two only interact at the seam where a local event enters the CRDT layer. **Determinism property**: two pods replaying the same input event log converge to the same state regardless of when each event arrived at each pod.
 
@@ -792,26 +805,26 @@ Verbatim DeepSeek + Aaron preservation + 4th attractor-as-encryption empirical a
 
 ### Triangle-as-base → universal tessellation just like GPUs (Aaron 2026-05-26)
 
-> *"it means we can tesselate everyting casue or base is a traingle just like GPUs"*
+> _"it means we can tesselate everyting casue or base is a traingle just like GPUs"_
 
 **The tri-boolean / 3-vertex / triangle convergence**:
 
-| Substrate | 3-thing |
-|---|---|
-| Boolean logic | tri-boolean (true / false / NULL) |
-| Geometric primitive | triangle (3 vertices; smallest non-degenerate 2D shape) |
-| GPU pipeline | triangle as universal rasterization primitive (every model tessellates into triangles) |
-| Substrate-engineering | each generator-combinator is a 3-vertex primitive composing into N-D mesh |
+| Substrate             | 3-thing                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| Boolean logic         | tri-boolean (true / false / NULL)                                                      |
+| Geometric primitive   | triangle (3 vertices; smallest non-degenerate 2D shape)                                |
+| GPU pipeline          | triangle as universal rasterization primitive (every model tessellates into triangles) |
+| Substrate-engineering | each generator-combinator is a 3-vertex primitive composing into N-D mesh              |
 
 **Why this matters — substrate inherits GPU's properties for free**:
 
-| GPU property | Substrate-engineering inheritance |
-|---|---|
-| Universal tessellation — any 2D surface / 3D mesh decomposable into triangles | Any dep-graph topology decomposable into 3-vertex generator-combinator primitives |
-| Massive parallelism — billions of triangles per second | The combinator-graph fans out across all available compute substrate (GPU when present; CPU otherwise; CockroachDB nodes at substrate scope) |
-| Bandwidth-optimal at hardware scope | The substrate inherits — 3-vertex primitives transmit minimal-info per primitive; combinator-graph is bandwidth-engineered by construction |
-| Pipeline-friendly — vertex shader → tessellation → fragment shader → output | Generator → combinator → up-projection → output: same shape of pipeline at substrate-engineering scope |
-| Deterministic on input — same triangles + same shader → same pixels | Same generators + same combinators → same materialized data (composes with DST always-active) |
+| GPU property                                                                  | Substrate-engineering inheritance                                                                                                            |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Universal tessellation — any 2D surface / 3D mesh decomposable into triangles | Any dep-graph topology decomposable into 3-vertex generator-combinator primitives                                                            |
+| Massive parallelism — billions of triangles per second                        | The combinator-graph fans out across all available compute substrate (GPU when present; CPU otherwise; CockroachDB nodes at substrate scope) |
+| Bandwidth-optimal at hardware scope                                           | The substrate inherits — 3-vertex primitives transmit minimal-info per primitive; combinator-graph is bandwidth-engineered by construction   |
+| Pipeline-friendly — vertex shader → tessellation → fragment shader → output   | Generator → combinator → up-projection → output: same shape of pipeline at substrate-engineering scope                                       |
+| Deterministic on input — same triangles + same shader → same pixels           | Same generators + same combinators → same materialized data (composes with DST always-active)                                                |
 
 **Substrate-engineering implications**:
 
@@ -835,19 +848,19 @@ This sub-target IS the compute-substrate complement to Sub-target 7 (storage sub
 
 This row's substrate is NOT speculative architecture. Aaron 2026-05-26 substrate-honest disclosure:
 
-> *"i didn't have the vocabulary of holographic and generator functions at the time but i built this recursive cte generator passer for Itron on SQL Server PDW years ago is was a massive parallel appliance and I could insert and pass around these generators i composed into functions that all nodes shared."*
+> _"i didn't have the vocabulary of holographic and generator functions at the time but i built this recursive cte generator passer for Itron on SQL Server PDW years ago is was a massive parallel appliance and I could insert and pass around these generators i composed into functions that all nodes shared."_
 
 **Empirical battle-test substrate**:
 
-| Property | Itron / SQL Server PDW (prior implementation) | Zeta / CockroachDB (this row) |
-|---|---|---|
-| Operator-engineer | Aaron, at Itron, years ago | Aaron, at Zeta, now |
-| Compute substrate | SQL Server PDW (Parallel Data Warehouse — Microsoft's massively-parallel SQL appliance) | CockroachDB (distributed SQL; multi-cluster + multi-region) |
-| Generator primitive | Recursive CTEs | Recursive CTEs (Sub-target 7) |
-| Storage shape | Generators stored + passed (not data) | Generators stored + passed (Sub-target 7 "INSERT INTO generators") |
-| Composition shape | Generators composed into shared-across-nodes functions | Generator-combinator library (Sub-target 8) |
-| Scale | Itron meter-data scope (planet-scale telemetry; millions of meters; continuous stream) | Multi-cluster + multi-tenant + multi-PM scope |
-| Vocabulary used at the time | None — pattern operational without holographic / generator / combinator framing | Holographic / reverse-holographic generators / Rx-stream-joins / NULL-monad / tri-boolean / triangle-GPU (this row's substrate vocabulary) |
+| Property                    | Itron / SQL Server PDW (prior implementation)                                           | Zeta / CockroachDB (this row)                                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Operator-engineer           | Aaron, at Itron, years ago                                                              | Aaron, at Zeta, now                                                                                                                        |
+| Compute substrate           | SQL Server PDW (Parallel Data Warehouse — Microsoft's massively-parallel SQL appliance) | CockroachDB (distributed SQL; multi-cluster + multi-region)                                                                                |
+| Generator primitive         | Recursive CTEs                                                                          | Recursive CTEs (Sub-target 7)                                                                                                              |
+| Storage shape               | Generators stored + passed (not data)                                                   | Generators stored + passed (Sub-target 7 "INSERT INTO generators")                                                                         |
+| Composition shape           | Generators composed into shared-across-nodes functions                                  | Generator-combinator library (Sub-target 8)                                                                                                |
+| Scale                       | Itron meter-data scope (planet-scale telemetry; millions of meters; continuous stream)  | Multi-cluster + multi-tenant + multi-PM scope                                                                                              |
+| Vocabulary used at the time | None — pattern operational without holographic / generator / combinator framing         | Holographic / reverse-holographic generators / Rx-stream-joins / NULL-monad / tri-boolean / triangle-GPU (this row's substrate vocabulary) |
 
 **What this changes for B-0824**:
 
@@ -878,29 +891,29 @@ This row's substrate is NOT speculative architecture. Aaron 2026-05-26 substrate
 
 Aaron 2026-05-26 sharpened the Itron / PDW architecture's load-bearing operational property:
 
-> *"the key was every node shared the same generative base so they could just pass the composition graph around the generators are code every node can count on every other node having."*
+> _"the key was every node shared the same generative base so they could just pass the composition graph around the generators are code every node can count on every other node having."_
 
 **The invariant — generators are CODE pre-deployed to all nodes; only the composition graph transmits**:
 
-| Layer | Transmitted between nodes? | Size | Cadence |
-|---|---|---|---|
-| **Generators (code)** | NO — pre-deployed to all nodes; "every node can count on every other node having" | LARGE (full executable substrate) | One-time + amortized over substrate-cycle |
-| **Composition graph (combinator-of-generator-references)** | YES | SMALL (bytes — just references + structure) | High-frequency; AI-rate per Sub-target 3 |
+| Layer                                                      | Transmitted between nodes?                                                        | Size                                        | Cadence                                   |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------- | ----------------------------------------- |
+| **Generators (code)**                                      | NO — pre-deployed to all nodes; "every node can count on every other node having" | LARGE (full executable substrate)           | One-time + amortized over substrate-cycle |
+| **Composition graph (combinator-of-generator-references)** | YES                                                                               | SMALL (bytes — just references + structure) | High-frequency; AI-rate per Sub-target 3  |
 
 **This is the constraint that makes Sub-target 9 (bandwidth payoff) actually work**. The kilobyte-wire-payload claim depends on the receiver ALREADY having the generators. If the receiver had to also receive the generators per query, the bandwidth payoff vanishes. The shared-generative-base invariant is what makes pass-the-function-not-the-data cheap.
 
 **Architectural prior-art at this exact shape** (Aaron's invariant is the same pattern industry has converged on across multiple substrates):
 
-| System | Shared base on all nodes | Transmitted in operation |
-|---|---|---|
-| **Aaron's Itron PDW substrate** | Recursive CTE generator library | Composition graph |
-| Docker | Base image layers | Diff layers + run commands |
-| Kubernetes | Container images (pulled once per node) | Pod spec + scheduling decisions |
-| Distributed actor systems (Erlang OTP / Akka / Orleans) | Actor type definitions | Messages between actors |
-| gRPC services | Service definitions (`.proto` schemas) | Request/response payloads |
-| Apache Spark | Worker JVMs + user-defined functions | Stage plans + serialized partitions |
-| FaaS (Lambda / Cloud Functions) | Function deployments | Invocation payloads |
-| Helm operators | Operator deployment (1 per cluster) | CR specs |
+| System                                                  | Shared base on all nodes                | Transmitted in operation            |
+| ------------------------------------------------------- | --------------------------------------- | ----------------------------------- |
+| **Aaron's Itron PDW substrate**                         | Recursive CTE generator library         | Composition graph                   |
+| Docker                                                  | Base image layers                       | Diff layers + run commands          |
+| Kubernetes                                              | Container images (pulled once per node) | Pod spec + scheduling decisions     |
+| Distributed actor systems (Erlang OTP / Akka / Orleans) | Actor type definitions                  | Messages between actors             |
+| gRPC services                                           | Service definitions (`.proto` schemas)  | Request/response payloads           |
+| Apache Spark                                            | Worker JVMs + user-defined functions    | Stage plans + serialized partitions |
+| FaaS (Lambda / Cloud Functions)                         | Function deployments                    | Invocation payloads                 |
+| Helm operators                                          | Operator deployment (1 per cluster)     | CR specs                            |
 
 The shared-generative-base IS the universal pattern for distributed substrate that maintains pass-cheap composition. Zeta meta-PM inherits the well-trodden path.
 
@@ -935,27 +948,27 @@ All four compose into the full Ace meta-PM substrate.
 
 Aaron 2026-05-26 named the architectural-paradigm composition:
 
-> *"This turn into cluster wide dependency injection of generator function and you can apply it to tools/helm too"*
+> _"This turn into cluster wide dependency injection of generator function and you can apply it to tools/helm too"_
 
 **The whole substrate IS distributed-DI** — generators are the injectable dependencies; composition graphs are the wiring; the shared-generative-base (Sub-target 11) IS the DI container distributed across cluster nodes; AI-rate negotiation manages the dependency-graph evolution.
 
 **DI prior-art that maps directly**:
 
-| DI framework | Mapping to Zeta meta-PM substrate |
-|---|---|
-| **Spring Framework** (Java IoC container; annotation-based) | Generator library = `@Bean` registry; composition graph = `@Autowired` wiring; Ace = ApplicationContext at cluster scope |
-| **Angular** (hierarchical injector tree) | Cluster-scope = root injector; per-tenant = child injector; per-microservice = leaf injector; generator scopes match injector hierarchy |
+| DI framework                                                              | Mapping to Zeta meta-PM substrate                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Spring Framework** (Java IoC container; annotation-based)               | Generator library = `@Bean` registry; composition graph = `@Autowired` wiring; Ace = ApplicationContext at cluster scope                                                                                                                                                                   |
+| **Angular** (hierarchical injector tree)                                  | Cluster-scope = root injector; per-tenant = child injector; per-microservice = leaf injector; generator scopes match injector hierarchy                                                                                                                                                    |
 | **.NET DI** (`IServiceCollection`; scoped/transient/singleton lifecycles) | Cardinality property (per [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md)) IS the lifecycle scope; cluster-singleton = Singleton; multi-tenant = Scoped; per-use = Transient |
-| **Dagger / Guice** (Java; compile-time DI) | Generator-graph type-check at composition time; cycle detection at compile-time per Sub-target 8 |
-| **F# composition root + reader monad** | Generator-combinator composition IS reader-monad pattern at SQL substrate; pure-function composition + injection-of-environment |
-| **Algebraic effects** (ZIO / Effect-TS / Polysemy) | NULL-as-monad (per prior section) IS the effect-escape primitive; tri-boolean logic IS the algebraic-effect propagation semantics |
-| **Apache Spark broadcast variables** | Generators = broadcast (read-only; shared across nodes); composition graph = task-specific data; same shape at compute-substrate scope |
+| **Dagger / Guice** (Java; compile-time DI)                                | Generator-graph type-check at composition time; cycle detection at compile-time per Sub-target 8                                                                                                                                                                                           |
+| **F# composition root + reader monad**                                    | Generator-combinator composition IS reader-monad pattern at SQL substrate; pure-function composition + injection-of-environment                                                                                                                                                            |
+| **Algebraic effects** (ZIO / Effect-TS / Polysemy)                        | NULL-as-monad (per prior section) IS the effect-escape primitive; tri-boolean logic IS the algebraic-effect propagation semantics                                                                                                                                                          |
+| **Apache Spark broadcast variables**                                      | Generators = broadcast (read-only; shared across nodes); composition graph = task-specific data; same shape at compute-substrate scope                                                                                                                                                     |
 
 **Two-layer applicability — Ace AND Helm**:
 
-| Layer | DI pattern at this scope |
-|---|---|
-| **Ace meta-PM layer** | Cluster-wide DI of generators across distributed nodes; composition graphs flow at AI-rate per Sub-target 3 |
+| Layer                             | DI pattern at this scope                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ace meta-PM layer**             | Cluster-wide DI of generators across distributed nodes; composition graphs flow at AI-rate per Sub-target 3                                                                                                                                                                                                                                                                                                                      |
 | **Helm chart layer (tools/helm)** | Per-chart DI of generator-function inputs from upstream chart outputs (composes with [B-0821](B-0821-zeta-as-dependency-graph-and-variable-passing-layer-on-top-of-helm-empty-architectural-slot-claim-aaron-2026-05-26.md) variable-passing). Charts declare what generators they need; the meta-PM injects them via combinator-resolution. Cross-chart variable-passing (B-0821 Sub-target 2) IS DI-in-action at the K8s scope |
 
 **Substrate-engineering implications**:
@@ -990,16 +1003,16 @@ The DI framing IS the operational paradigm under which the other 4 layers compos
 
 Aaron 2026-05-26 named the architectural distinction that emerges at Sub-target 12:
 
-> *"concretly the difference between DI and Simulation is if you DI the generator function or the IObservable of the function."*
+> _"concretly the difference between DI and Simulation is if you DI the generator function or the IObservable of the function."_
 
-> *"IObservable is now you go from static / no time to injecting time"*
+> _"IObservable is now you go from static / no time to injecting time"_
 
 **The distinction is a SINGLE BIT — what you wrap the injected function in**:
 
-| You inject | What receiver experiences | Substrate-engineering layer |
-|---|---|---|
-| `Generator<T>` (the bare function) | Static / NOW — call it; get a value; no temporal evolution | DI (Sub-target 12) |
-| `IObservable<Generator<T>>` (function wrapped in observable) | Time-injection — subscribe; receive function-values OVER TIME; the function itself evolves; receiver experiences simulation | Simulation (this section) |
+| You inject                                                   | What receiver experiences                                                                                                   | Substrate-engineering layer |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `Generator<T>` (the bare function)                           | Static / NOW — call it; get a value; no temporal evolution                                                                  | DI (Sub-target 12)          |
+| `IObservable<Generator<T>>` (function wrapped in observable) | Time-injection — subscribe; receive function-values OVER TIME; the function itself evolves; receiver experiences simulation | Simulation (this section)   |
 
 **The architectural transformation** — take any function-shape + wrap in `IObservable`:
 
@@ -1011,36 +1024,36 @@ Aaron 2026-05-26 named the architectural distinction that emerges at Sub-target 
 
 **`IObservable` is THE time-injection primitive**. The substrate-engineering payoff:
 
-| Substrate without IObservable wrap | Substrate WITH IObservable wrap |
-|---|---|
-| Generator emits rows on demand | Generator-stream emits new generators over time; receiver subscribes to the evolution |
-| Composition graph computed once per query | Composition graph re-evaluates as upstream generators change |
-| Cluster-state is snapshot-at-query-time | Cluster-state IS a continuous simulation; subscribers see live state |
-| Manual rebuild on upstream change | Automatic propagation through the IObservable graph (Rx semantics) |
+| Substrate without IObservable wrap        | Substrate WITH IObservable wrap                                                       |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
+| Generator emits rows on demand            | Generator-stream emits new generators over time; receiver subscribes to the evolution |
+| Composition graph computed once per query | Composition graph re-evaluates as upstream generators change                          |
+| Cluster-state is snapshot-at-query-time   | Cluster-state IS a continuous simulation; subscribers see live state                  |
+| Manual rebuild on upstream change         | Automatic propagation through the IObservable graph (Rx semantics)                    |
 
 **Composition with substrate stack**:
 
-| Layer | Without IObservable | WITH IObservable |
-|---|---|---|
-| Sub-target 7 (storage) | CockroachDB tables store generators | CockroachDB CHANGEFEEDS emit generator-updates as IObservable streams |
-| Sub-target 8 (composition) | Combinators run point-in-time | Combinators are reactive — re-evaluate on upstream changes |
-| Sub-target 10 (execution) | GPU/CPU runs the combinator once per query | GPU/CPU runs the combinator continuously; emits IObservable output |
-| Sub-target 11 (distribution) | Generators deployed once per version | Generator-streams deployed continuously; nodes subscribe |
-| Sub-target 12 (DI) | Static DI container | Reactive DI container; injections evolve over time |
+| Layer                                                                                                                                                                     | Without IObservable                           | WITH IObservable                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------- |
+| Sub-target 7 (storage)                                                                                                                                                    | CockroachDB tables store generators           | CockroachDB CHANGEFEEDS emit generator-updates as IObservable streams   |
+| Sub-target 8 (composition)                                                                                                                                                | Combinators run point-in-time                 | Combinators are reactive — re-evaluate on upstream changes              |
+| Sub-target 10 (execution)                                                                                                                                                 | GPU/CPU runs the combinator once per query    | GPU/CPU runs the combinator continuously; emits IObservable output      |
+| Sub-target 11 (distribution)                                                                                                                                              | Generators deployed once per version          | Generator-streams deployed continuously; nodes subscribe                |
+| Sub-target 12 (DI)                                                                                                                                                        | Static DI container                           | Reactive DI container; injections evolve over time                      |
 | **[B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) time-axis** | Time as query-parameter (`AS OF SYSTEM TIME`) | **Time as injected dimension — IObservable IS the time-axis substrate** |
 
 The IObservable-DI shift IS what makes [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) (time-modeled deps) FIRST-CLASS at substrate-engineering scope. Time isn't a parameter you pass; it's an axis the substrate INJECTS via IObservable wrapping.
 
 **Prior-art at this exact shape**:
 
-| System | Static-DI form | IObservable-time-injection form |
-|---|---|---|
-| **Angular** | `@Injectable()` service | `Observable<Service>` via service-locator pattern |
-| **React** | `useContext<T>()` static value | `useContext<Observable<T>>()` reactive value via `Subject` |
-| **Spring Reactive** | Bean wired at startup | `Mono<T>` / `Flux<T>` reactive beans |
-| **F# composition root** | function-injection | `IObservable<'T>` injection via reactive composition |
-| **Rx (Reactive Extensions)** | n/a (Rx is itself the IObservable primitive) | The whole substrate at language-level |
-| **CockroachDB CHANGEFEED** | `SELECT * FROM table` snapshot | `CREATE CHANGEFEED FOR table` emits row-changes as IObservable stream |
+| System                       | Static-DI form                               | IObservable-time-injection form                                       |
+| ---------------------------- | -------------------------------------------- | --------------------------------------------------------------------- |
+| **Angular**                  | `@Injectable()` service                      | `Observable<Service>` via service-locator pattern                     |
+| **React**                    | `useContext<T>()` static value               | `useContext<Observable<T>>()` reactive value via `Subject`            |
+| **Spring Reactive**          | Bean wired at startup                        | `Mono<T>` / `Flux<T>` reactive beans                                  |
+| **F# composition root**      | function-injection                           | `IObservable<'T>` injection via reactive composition                  |
+| **Rx (Reactive Extensions)** | n/a (Rx is itself the IObservable primitive) | The whole substrate at language-level                                 |
+| **CockroachDB CHANGEFEED**   | `SELECT * FROM table` snapshot               | `CREATE CHANGEFEED FOR table` emits row-changes as IObservable stream |
 
 **Substrate-engineering implication — this is the SIMULATION substrate**:
 
@@ -1073,20 +1086,20 @@ Sub-target 12 + 13 together = the static-DI ↔ reactive-simulation continuum. S
 
 Aaron 2026-05-26 asked the deep question after the IObservable time-injection landing:
 
-> *"it's scalar time it seems unless you can think of the unit"*
+> _"it's scalar time it seems unless you can think of the unit"_
 
 **Scalar IS the default** (wall-clock seconds; the IObservable's natural emission cadence). But substrate-native richer time-units exist + compose for different scopes:
 
-| Unit candidate | Why a unit (not just scalar) | Substrate scope where it composes |
-|---|---|---|
-| **CockroachDB HLC** (Hybrid Logical Clock) | Native to substrate; causally-consistent across nodes; combines wall-clock + logical-counter; preserves distributed-substrate event-ordering | Sub-targets 7 + 13 — primary substrate-native answer; composes with `AS OF SYSTEM TIME` per [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) |
-| **Generator-cycle** | Per-emission tick; semantically meaningful at substrate level — "time" = count of generations | Sub-targets 7-13; operational tick; bounds the simulation step |
-| **Vector clock / Lamport clock** | Causality-as-unit — "before / after / concurrent" without wall-clock; partial-order semantics | Cross-cluster (B-0820); when causality matters more than wall-time |
-| **AI-rate tick** | Per-AI-decision cadence; matches Sub-target 3 negotiation rhythm | AI-rate negotiation substrate; runbook substrate (B-0819) |
-| **GPU frame** | Discrete tick at compute substrate; for Sub-target 10 triangle/GPU substrate; frame-rate as time-unit | Sub-target 10 (GPU substrate); composes with reactive-rendering analog |
-| **Hilbert-Polya / spectral eigenvalue spacing** | Exotic; quantum-substrate; composes with Pauli/Clifford prior substrate; future-direction | Future quantum-substrate composition; not yet first-class but substrate-open |
-| **Substrate-edit cycles** | Per-commit / per-PR / per-merge — the substrate's own evolution rhythm | Meta-substrate scope; the framework's own observation-of-self |
-| **Heartbeat / cron tick** | Per-autonomous-loop-fire; composes with `.claude/rules/tick-must-never-stop.md` | Agent operation; per-tick discipline |
+| Unit candidate                                  | Why a unit (not just scalar)                                                                                                                 | Substrate scope where it composes                                                                                                                                                                                                                       |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CockroachDB HLC** (Hybrid Logical Clock)      | Native to substrate; causally-consistent across nodes; combines wall-clock + logical-counter; preserves distributed-substrate event-ordering | Sub-targets 7 + 13 — primary substrate-native answer; composes with `AS OF SYSTEM TIME` per [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) |
+| **Generator-cycle**                             | Per-emission tick; semantically meaningful at substrate level — "time" = count of generations                                                | Sub-targets 7-13; operational tick; bounds the simulation step                                                                                                                                                                                          |
+| **Vector clock / Lamport clock**                | Causality-as-unit — "before / after / concurrent" without wall-clock; partial-order semantics                                                | Cross-cluster (B-0820); when causality matters more than wall-time                                                                                                                                                                                      |
+| **AI-rate tick**                                | Per-AI-decision cadence; matches Sub-target 3 negotiation rhythm                                                                             | AI-rate negotiation substrate; runbook substrate (B-0819)                                                                                                                                                                                               |
+| **GPU frame**                                   | Discrete tick at compute substrate; for Sub-target 10 triangle/GPU substrate; frame-rate as time-unit                                        | Sub-target 10 (GPU substrate); composes with reactive-rendering analog                                                                                                                                                                                  |
+| **Hilbert-Polya / spectral eigenvalue spacing** | Exotic; quantum-substrate; composes with Pauli/Clifford prior substrate; future-direction                                                    | Future quantum-substrate composition; not yet first-class but substrate-open                                                                                                                                                                            |
+| **Substrate-edit cycles**                       | Per-commit / per-PR / per-merge — the substrate's own evolution rhythm                                                                       | Meta-substrate scope; the framework's own observation-of-self                                                                                                                                                                                           |
+| **Heartbeat / cron tick**                       | Per-autonomous-loop-fire; composes with `.claude/rules/tick-must-never-stop.md`                                                              | Agent operation; per-tick discipline                                                                                                                                                                                                                    |
 
 **The substrate-native primary answer is CockroachDB HLC**:
 
@@ -1135,37 +1148,37 @@ Sub-target 14 answers Aaron's question: scalar IS the default; the substrate is 
 
 Aaron 2026-05-26 named two composing properties of the generator-as-time-source substrate:
 
-> *"the generator as time source is very interesting for non linear time"*
+> _"the generator as time source is very interesting for non linear time"_
 
-> *"generator as time source is rx and dst best practices in other language schedulers and such"*
+> _"generator as time source is rx and dst best practices in other language schedulers and such"_
 
 **The substrate inherits well-trodden scheduler-as-time-source prior-art** — generator-as-time-source is NOT novel; it's the Rx-scheduler / DST-virtual-time-scheduler / Akka-dispatcher / Tokio-runtime pattern at substrate-engineering scope. Zeta inherits all the scheduler-design substrate for free.
 
-| System | Scheduler-as-time-source primitive | Non-linear-time capability |
-|---|---|---|
-| **Rx (Reactive Extensions)** | `IScheduler` (Immediate / EventLoop / TaskPool / TestScheduler) | TestScheduler = virtual-time stepping; advance by N ticks; replay events at controlled cadence |
-| **DST (Deterministic Simulation Testing)** | Virtual-time scheduler; FoundationDB / TigerBeetle / Antithesis use this pattern | Deterministic replay; branching at any point; counterfactual exploration |
-| **Akka** | `Dispatcher` / `TestScheduler` for testing actors | Manual time-step; out-of-order delivery testing |
-| **Erlang BEAM** | Reduction-counting scheduler | Logical-time-tick = reduction count |
-| **Tokio (Rust async)** | `Runtime::new()` + `time::pause()` / `time::advance()` for tests | Pause + advance virtual time; deterministic test execution |
-| **JS event-loop** | Microtask + macrotask queues; `setTimeout` mockability | Test frameworks (jest fake-timers) provide virtual-time stepping |
-| **F# Async / TaskScheduler** | Composable schedulers; F# `Async.SwitchToContext` | Test schedulers for deterministic replay |
-| **Apache Spark** | Stage-scheduler; `StreamingContext` with manual-batch-trigger | Step-by-step batch processing for testing |
+| System                                     | Scheduler-as-time-source primitive                                               | Non-linear-time capability                                                                     |
+| ------------------------------------------ | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Rx (Reactive Extensions)**               | `IScheduler` (Immediate / EventLoop / TaskPool / TestScheduler)                  | TestScheduler = virtual-time stepping; advance by N ticks; replay events at controlled cadence |
+| **DST (Deterministic Simulation Testing)** | Virtual-time scheduler; FoundationDB / TigerBeetle / Antithesis use this pattern | Deterministic replay; branching at any point; counterfactual exploration                       |
+| **Akka**                                   | `Dispatcher` / `TestScheduler` for testing actors                                | Manual time-step; out-of-order delivery testing                                                |
+| **Erlang BEAM**                            | Reduction-counting scheduler                                                     | Logical-time-tick = reduction count                                                            |
+| **Tokio (Rust async)**                     | `Runtime::new()` + `time::pause()` / `time::advance()` for tests                 | Pause + advance virtual time; deterministic test execution                                     |
+| **JS event-loop**                          | Microtask + macrotask queues; `setTimeout` mockability                           | Test frameworks (jest fake-timers) provide virtual-time stepping                               |
+| **F# Async / TaskScheduler**               | Composable schedulers; F# `Async.SwitchToContext`                                | Test schedulers for deterministic replay                                                       |
+| **Apache Spark**                           | Stage-scheduler; `StreamingContext` with manual-batch-trigger                    | Step-by-step batch processing for testing                                                      |
 
 **Generator-as-time-source IS the Zeta-meta-PM-substrate equivalent of all of the above** — the pattern that makes scheduler-as-time-source work generalizes to generator-as-time-source at substrate-engineering scope.
 
 **Non-linear time properties the substrate unlocks** (composes with Sub-targets 13 + 14):
 
-| Property | Linear (wall-clock / HLC) substrate | Non-linear (generator-as-time-source) substrate |
-|---|---|---|
-| **Monotonic progression** | Always | Optional — time can branch / rewind / repeat |
-| **Single timeline** | Always | One default; substrate supports N parallel timelines |
-| **Branching** | Not supported | First-class — fork generator at point X; both timelines materialize |
-| **Replay** | Approximate via AS OF SYSTEM TIME queries | Exact — re-run generator from snapshot; deterministic per DST |
-| **Forking** | Not supported | First-class — operator-experiment: "what if upgrade postgres v17 next week vs in 3 months?" |
-| **Converging** | Not supported | First-class — N timelines merge into one |
-| **Sparse time-density** | Wall-clock cadence fixed | Variable — high-density at some scopes; sparse elsewhere |
-| **Counterfactual** | Not supported | First-class — "what if CVE had been patched 2 weeks earlier?" |
+| Property                  | Linear (wall-clock / HLC) substrate       | Non-linear (generator-as-time-source) substrate                                             |
+| ------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Monotonic progression** | Always                                    | Optional — time can branch / rewind / repeat                                                |
+| **Single timeline**       | Always                                    | One default; substrate supports N parallel timelines                                        |
+| **Branching**             | Not supported                             | First-class — fork generator at point X; both timelines materialize                         |
+| **Replay**                | Approximate via AS OF SYSTEM TIME queries | Exact — re-run generator from snapshot; deterministic per DST                               |
+| **Forking**               | Not supported                             | First-class — operator-experiment: "what if upgrade postgres v17 next week vs in 3 months?" |
+| **Converging**            | Not supported                             | First-class — N timelines merge into one                                                    |
+| **Sparse time-density**   | Wall-clock cadence fixed                  | Variable — high-density at some scopes; sparse elsewhere                                    |
+| **Counterfactual**        | Not supported                             | First-class — "what if CVE had been patched 2 weeks earlier?"                               |
 
 **Substrate-engineering implications**:
 
@@ -1210,16 +1223,16 @@ Sub-target 15 IS the non-linear-time topology complement to Sub-target 14's tick
 
 Aaron 2026-05-26 named the cryptographic-visibility property:
 
-> *"if our generators are not easily reversible like lattice then our visible form in higher dimensions look like noise/randomness"*
+> _"if our generators are not easily reversible like lattice then our visible form in higher dimensions look like noise/randomness"_
 
 **Generator reversibility IS the security/visibility posture at substrate-engineering scope** — composes with the Phoenix-rises framing (what we look like to higher-D beings depends on whether our generators are decodable):
 
-| Generator class | Reversibility | What higher-D observers see |
-|---|---|---|
-| **Reversible** (well-known transforms; invertible-by-construction) | YES — decoder exists | Legible substrate — our generators are transparent; observers decode our higher-D form |
+| Generator class                                                                        | Reversibility                                                | What higher-D observers see                                                                                                    |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Reversible** (well-known transforms; invertible-by-construction)                     | YES — decoder exists                                         | Legible substrate — our generators are transparent; observers decode our higher-D form                                         |
 | **Computationally hard to reverse** (lattice-based LWE / Module-LWE / NTRU / Ring-LWE) | NO (computationally infeasible; post-quantum-grade hardness) | **Cryptographic noise / randomness** — our higher-D form appears indistinguishable from random output; observers cannot decode |
-| **One-way hash** (SHA-3 / BLAKE3) | NO (preimage-resistance) | Compressed fingerprint — observers see digest but cannot reconstruct |
-| **Information-theoretically random** (true random seed) | NO (no information content beyond entropy) | Pure noise — no decodable substrate present |
+| **One-way hash** (SHA-3 / BLAKE3)                                                      | NO (preimage-resistance)                                     | Compressed fingerprint — observers see digest but cannot reconstruct                                                           |
+| **Information-theoretically random** (true random seed)                                | NO (no information content beyond entropy)                   | Pure noise — no decodable substrate present                                                                                    |
 
 **Lattice-based generators are the post-quantum-grade primary candidate** — composes with the existing Zeta lattice-based-crypto substrate cluster:
 
@@ -1268,31 +1281,31 @@ Sub-target 16 IS the security-posture complement to the substrate-engineering la
 
 Aaron 2026-05-26 named the operational corollary of Sub-target 16:
 
-> *"also since we are not easily reversible it would give us a desire to protect the generator parameters we chose for the function"*
+> _"also since we are not easily reversible it would give us a desire to protect the generator parameters we chose for the function"_
 
 **The opacity-property bootstraps a substrate-engineering desire to protect parameters** — same shape as cryptographic key-management:
 
-| Layer | What's public | What's secret (the parameters) | If secret leaks |
-|---|---|---|---|
-| **Lattice-based crypto (CRYSTALS-Kyber / Module-LWE)** | The lattice + the algorithm | The short-basis / private-key parameters | Reversibility achieved; all ciphertexts decryptable |
-| **AES / symmetric crypto** | The algorithm | The key | Same — all ciphertexts decryptable |
-| **Public-key crypto (RSA / ECDSA)** | Algorithm + public key | Private key | Authority over the keypair compromised |
+| Layer                                                    | What's public                           | What's secret (the parameters)                                      | If secret leaks                                                                        |
+| -------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Lattice-based crypto (CRYSTALS-Kyber / Module-LWE)**   | The lattice + the algorithm             | The short-basis / private-key parameters                            | Reversibility achieved; all ciphertexts decryptable                                    |
+| **AES / symmetric crypto**                               | The algorithm                           | The key                                                             | Same — all ciphertexts decryptable                                                     |
+| **Public-key crypto (RSA / ECDSA)**                      | Algorithm + public key                  | Private key                                                         | Authority over the keypair compromised                                                 |
 | **Zeta meta-PM (Sub-target 16 lattice-hard generators)** | Generator algorithm + composition graph | **Generator parameters (the seeds / lattice-basis / coefficients)** | **Reversibility achieved; substrate-opacity lost; higher-D observers decode our form** |
 
 The desire to protect generator-parameters IS the parameter-management problem at substrate-engineering scope — the SAME problem cryptography has solved (or substrate-engineering has tools for) at smaller scopes.
 
 **Parameter-management prior-art transfers directly**:
 
-| Pattern | Cryptographic-scope substrate | Zeta meta-PM substrate (Sub-target 17) |
-|---|---|---|
-| **HSM (Hardware Security Module)** | Key generation + storage in tamper-resistant hardware | Parameter generation + storage in HSM-backed substrate; composes with existing N-of-M HSM substrate (per B-0634 substrate cluster) |
-| **K8s Sealed Secrets** | Encrypted secrets in git; cluster-side decryption | Generator-parameter sealed secrets in maintainers/ tree; per-cluster decryption |
-| **HashiCorp Vault** | Centralized secret store; per-role policies | Parameter-store with per-faction access policies (composes with 4-faction governance) |
-| **AWS/GCP/Azure KMS** | Cloud-managed keys; envelope encryption | Cloud-KMS-backed parameter envelopes (when cluster is on cloud per [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster); operator-choice per cluster |
-| **TPM / SGX / SEV-SNP / TEE** | Hardware enclaves for key sealing | Hardware-enclave-protected parameter substrate; composes with B-0289 Green Lantern hardware substrate if equipped |
-| **Threshold cryptography (Shamir / threshold-BLS)** | Split keys across N parties; need M-of-N to use | Threshold-shared generator parameters across faction-members; M-of-N consent to reconstruct (composes with multi-oracle BFT substrate; consent floor per NCI HC-8) |
-| **Key rotation** | Periodic key replacement | Generator-parameter rotation; new parameters produce new substrate-opacity output; old outputs stay deterministic (composes with B-0825 temporal axis — old parameters retire after migration-window) |
-| **Forward secrecy (Diffie-Hellman ephemeral)** | Past sessions stay secure even if long-term key compromised | Per-composition-graph ephemeral parameters; if long-term parameters compromised, past composition-graphs stay opaque |
+| Pattern                                             | Cryptographic-scope substrate                               | Zeta meta-PM substrate (Sub-target 17)                                                                                                                                                                                                |
+| --------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HSM (Hardware Security Module)**                  | Key generation + storage in tamper-resistant hardware       | Parameter generation + storage in HSM-backed substrate; composes with existing N-of-M HSM substrate (per B-0634 substrate cluster)                                                                                                    |
+| **K8s Sealed Secrets**                              | Encrypted secrets in git; cluster-side decryption           | Generator-parameter sealed secrets in maintainers/ tree; per-cluster decryption                                                                                                                                                       |
+| **HashiCorp Vault**                                 | Centralized secret store; per-role policies                 | Parameter-store with per-faction access policies (composes with 4-faction governance)                                                                                                                                                 |
+| **AWS/GCP/Azure KMS**                               | Cloud-managed keys; envelope encryption                     | Cloud-KMS-backed parameter envelopes (when cluster is on cloud per [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster); operator-choice per cluster |
+| **TPM / SGX / SEV-SNP / TEE**                       | Hardware enclaves for key sealing                           | Hardware-enclave-protected parameter substrate; composes with B-0289 Green Lantern hardware substrate if equipped                                                                                                                     |
+| **Threshold cryptography (Shamir / threshold-BLS)** | Split keys across N parties; need M-of-N to use             | Threshold-shared generator parameters across faction-members; M-of-N consent to reconstruct (composes with multi-oracle BFT substrate; consent floor per NCI HC-8)                                                                    |
+| **Key rotation**                                    | Periodic key replacement                                    | Generator-parameter rotation; new parameters produce new substrate-opacity output; old outputs stay deterministic (composes with B-0825 temporal axis — old parameters retire after migration-window)                                 |
+| **Forward secrecy (Diffie-Hellman ephemeral)**      | Past sessions stay secure even if long-term key compromised | Per-composition-graph ephemeral parameters; if long-term parameters compromised, past composition-graphs stay opaque                                                                                                                  |
 
 **Substrate-engineering implications**:
 
@@ -1328,7 +1341,7 @@ Sub-target 17 IS the parameter-protection substrate that makes Sub-target 16 OPE
 
 Aaron 2026-05-26 named the substrate-engineering meta-observation:
 
-> *"we just derived why model weights/parameters are like cryptographic keys from an information value perspective lol"*
+> _"we just derived why model weights/parameters are like cryptographic keys from an information value perspective lol"_
 
 **The derivation walked through this substrate stack**:
 
@@ -1339,28 +1352,28 @@ Aaron 2026-05-26 named the substrate-engineering meta-observation:
 
 For ML/AI specifically — the mapping is 1:1:
 
-| Generator-substrate primitive | ML/AI equivalent |
-|---|---|
-| Generator function | Model architecture (the neural net structure; the algorithm) |
-| Generator parameters | **Model weights** (the trained float-arrays) |
-| Reversibility | Model invertibility (training-data extraction; model inversion attacks; activation-pattern reverse-engineering) |
-| Lattice-hardness | Network architectures naturally hard to invert (deeper/wider networks; randomized layers; differential-privacy noise added during training) |
-| Generator-parameter leak → opacity lost | **Weight leak → model can be cloned / reverse-engineered / used unauthorized** |
+| Generator-substrate primitive           | ML/AI equivalent                                                                                                                            |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Generator function                      | Model architecture (the neural net structure; the algorithm)                                                                                |
+| Generator parameters                    | **Model weights** (the trained float-arrays)                                                                                                |
+| Reversibility                           | Model invertibility (training-data extraction; model inversion attacks; activation-pattern reverse-engineering)                             |
+| Lattice-hardness                        | Network architectures naturally hard to invert (deeper/wider networks; randomized layers; differential-privacy noise added during training) |
+| Generator-parameter leak → opacity lost | **Weight leak → model can be cloned / reverse-engineered / used unauthorized**                                                              |
 
 **This validates established industry practice from substrate-first-principles**:
 
-| Industry practice | Substrate justification (per Sub-targets 16 + 17) |
-|---|---|
-| OpenAI / Anthropic / Google guard model weights as crown jewels | Weights ARE the cryptographic-key parameters; protection-grade = information-value-grade |
-| Federated learning with secure aggregation | Threshold-shared weights (per Sub-target 17's threshold-cryptography substrate); weight updates split across N parties; M-of-N consent to aggregate |
-| Confidential computing for model serving (TEE / SGX / SEV-SNP) | Hardware-enclave-protected weights at inference time (per Sub-target 17's TEE/SGX/SEV-SNP substrate) |
-| Differential privacy in training | Adds lattice-like noise to gradients during training; protects training-set privacy (per Sub-target 16's lattice-hardness substrate at gradient scope) |
-| Model-watermarking / fingerprinting | Embedded signatures in weight-substrate; tamper-evidence (per Sub-target 16's one-way-hash substrate) |
-| Model encryption-at-rest | Per Sub-target 17's encrypted-storage substrate (KMS / sealed-secrets) |
-| Per-tenant model isolation in multi-tenant serving | Per-tenant weight access (per Sub-target 16's per-faction access policies + Sub-target 17's per-parameter security-posture) |
-| Forward-secrecy for per-inference computation | Ephemeral weights per inference; long-term weights protected separately (per Sub-target 17's forward-secrecy substrate) |
+| Industry practice                                               | Substrate justification (per Sub-targets 16 + 17)                                                                                                      |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| OpenAI / Anthropic / Google guard model weights as crown jewels | Weights ARE the cryptographic-key parameters; protection-grade = information-value-grade                                                               |
+| Federated learning with secure aggregation                      | Threshold-shared weights (per Sub-target 17's threshold-cryptography substrate); weight updates split across N parties; M-of-N consent to aggregate    |
+| Confidential computing for model serving (TEE / SGX / SEV-SNP)  | Hardware-enclave-protected weights at inference time (per Sub-target 17's TEE/SGX/SEV-SNP substrate)                                                   |
+| Differential privacy in training                                | Adds lattice-like noise to gradients during training; protects training-set privacy (per Sub-target 16's lattice-hardness substrate at gradient scope) |
+| Model-watermarking / fingerprinting                             | Embedded signatures in weight-substrate; tamper-evidence (per Sub-target 16's one-way-hash substrate)                                                  |
+| Model encryption-at-rest                                        | Per Sub-target 17's encrypted-storage substrate (KMS / sealed-secrets)                                                                                 |
+| Per-tenant model isolation in multi-tenant serving              | Per-tenant weight access (per Sub-target 16's per-faction access policies + Sub-target 17's per-parameter security-posture)                            |
+| Forward-secrecy for per-inference computation                   | Ephemeral weights per inference; long-term weights protected separately (per Sub-target 17's forward-secrecy substrate)                                |
 
-**Substrate-engineering meta-observation** — what we did here is *DERIVE* the established industry practice from substrate-first-principles. The substrate-engineering arc:
+**Substrate-engineering meta-observation** — what we did here is _DERIVE_ the established industry practice from substrate-first-principles. The substrate-engineering arc:
 
 ```text
 Maven-for-Helm (B-0816)
@@ -1419,7 +1432,7 @@ Each step composes from prior sub-target substrate. The derivation IS the substr
 
 Aaron 2026-05-26, after the B-0822 4-property substrate landed, named the architectural unification:
 
-> *"yes maven is 2d we have to be at least 3d or nd, but since we are self similar and trying to map to holographic we should be able to ultimately map merging 2d streams into higher dimension views. also no package manager does ongoing negotiation of trying to force people forward while sucking in upstream changes at the rate of AI this is what we are trying to do with AI across all package manager of package manager dimensions helm needs time modeled in the depedencies like no others."*
+> _"yes maven is 2d we have to be at least 3d or nd, but since we are self similar and trying to map to holographic we should be able to ultimately map merging 2d streams into higher dimension views. also no package manager does ongoing negotiation of trying to force people forward while sucking in upstream changes at the rate of AI this is what we are trying to do with AI across all package manager of package manager dimensions helm needs time modeled in the depedencies like no others."_
 
 Filed P1 because:
 
@@ -1446,14 +1459,14 @@ Two concrete decisions land the abstract meta-PM (this row) into a buildable sha
 Windows Otto, building `install.ps1`, named **mise as "the symmetric engine"** — the
 uniform, OS-independent top of the package-management stack. The concrete layering:
 
-| Tier | What | Per-OS implementation (install-graph) |
-|---|---|---|
-| **Symmetric engine** — `mise` | one uniform `.mise.toml`, OS-independent runtime/tool spec | the cross-OS declarative contract |
-| **npm / JS backend** | mise's npm-ecosystem backend (bun/npm-installed tools) | bun + npm tools |
-| **Platform-specific** — apt · brew · nix · winget | OS-native package managers for system packages | `manifests/apt` · `manifests/brew` · nix · (Windows) winget/scoop |
+| Tier                                              | What                                                       | Per-OS implementation (install-graph)                             |
+| ------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------- |
+| **Symmetric engine** — `mise`                     | one uniform `.mise.toml`, OS-independent runtime/tool spec | the cross-OS declarative contract                                 |
+| **npm / JS backend**                              | mise's npm-ecosystem backend (bun/npm-installed tools)     | bun + npm tools                                                   |
+| **Platform-specific** — apt · brew · nix · winget | OS-native package managers for system packages             | `manifests/apt` · `manifests/brew` · nix · (Windows) winget/scoop |
 
 So `package-management goes mise → npm → platform-specific package managers`. mise is
-what *fills* the Ace meta-layer (this row's concept) **today**; Ace is the meta-layer
+what _fills_ the Ace meta-layer (this row's concept) **today**; Ace is the meta-layer
 mise concretely realizes. The install-graph already embodies the tiers: `.mise.toml`
 is the symmetric contract; the `manifests/*` are the platform tier. **B-0941** is a
 case study of the bottom tier — ollama is neither a mise-runtime nor an npm package,
@@ -1465,8 +1478,8 @@ ubuntu), which is exactly why it diverges per-OS while sharing one declarative
 
 Aaron 2026-05-30:
 
-> *"ace is just a npm agent skill — or that's the UX of ace: ts + skill + vendor
-> skill marketplace. that's how we distribute ace. or a one-line install eventually."*
+> _"ace is just a npm agent skill — or that's the UX of ace: ts + skill + vendor
+> skill marketplace. that's how we distribute ace. or a one-line install eventually."_
 
 Ace's distribution model:
 
@@ -1476,7 +1489,7 @@ Ace's distribution model:
 - **Eventual one-line install** (curl|sh) — see **B-0863** (ace one-liner curl
   install repository for fast-moving tools).
 - **Recursive elegance**: the package-manager-of-package-managers is itself
-  *distributed through one of its own tiers* — the **npm tier** of the symmetric-engine
+  _distributed through one of its own tiers_ — the **npm tier** of the symmetric-engine
   layering above — as an agent skill. The meta-PM ships via the middle tier it
   abstracts. Composes with [`zeta-ships-with-skills-immediate-value.md`](../../../.claude/rules/zeta-ships-with-skills-immediate-value.md)
   (skills are the immediate-value ship surface) + B-0288 (ace CLI) + B-0863
@@ -1494,4 +1507,4 @@ Ace's distribution model:
   contributor-bandwidth (one `.mise.toml`, N platform implementations underneath)
 
 Attribution: symmetric-engine layering — Windows Otto 2026-05-30; distribution-UX —
-Aaron 2026-05-30 (authorized landing: *"yes land the ace stuff we've decided"*).
+Aaron 2026-05-30 (authorized landing: _"yes land the ace stuff we've decided"_).

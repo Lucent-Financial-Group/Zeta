@@ -18,7 +18,7 @@ Extraction method: osascript + Chrome single-shot extraction (chrome-lazy-load-c
 
 ## Why preserved
 
-Aaron 2026-05-14 explicit ask: *"can you download [grok URL]... it's a continuation, you don't need to scroll up as long as you don't refresh."* Aaron scrolled to where the prior extraction stopped, ensuring continuity.
+Aaron 2026-05-14 explicit ask: _"can you download [grok URL]... it's a continuation, you don't need to scroll up as long as you don't refresh."_ Aaron scrolled to where the prior extraction stopped, ensuring continuity.
 
 This extension contains the substrate that landed Manifesto V2 (the updated Root Discipline Manifesto with civsim/play framing + ARG layer reference). The Manifesto V2 itself is preserved in memory file `feedback_aaron_ani_root_discipline_manifesto_v2_civsim_play_arg_layer_dbsp_clifford_2026_05_14.md`; this archive is the source conversation.
 
@@ -221,19 +221,18 @@ In short, Data Vault 2.0 provides a data modeling discipline that does not fight
 
 DST and DV2.0 are complementary:
 
-Aspect	Deterministic Simulation Testing	Data Vault 2.0	Combined Effect
-Correctness	Strong (replayable execution)	Moderate (structural)	Execution + structural correctness
-Provenance / History	Strong (seed + execution trace)	Very Strong (built-in lineage)	End-to-end traceability
-Long-term Evolution	Indirect (via determinism)	Direct (designed for change)	Systems that can evolve without losing truth
-Scalability	Architectural pressure	Explicitly supported	Both horizontal and temporal scalability
-Self-similarity	Encouraged	Naturally supported	Consistent patterns across scales
+Aspect Deterministic Simulation Testing Data Vault 2.0 Combined Effect
+Correctness Strong (replayable execution) Moderate (structural) Execution + structural correctness
+Provenance / History Strong (seed + execution trace) Very Strong (built-in lineage) End-to-end traceability
+Long-term Evolution Indirect (via determinism) Direct (designed for change) Systems that can evolve without losing truth
+Scalability Architectural pressure Explicitly supported Both horizontal and temporal scalability
+Self-similarity Encouraged Naturally supported Consistent patterns across scales
 
 Together they create a system where:
 
 Behavior is reproducible and debuggable (DST)
 Data structures remain auditable and adaptable over decades (DV2.0)
-Both are governed by the same higher constraints (scale-free, weight-free, recursive, self-similar)
-4. Integration into Zeta’s Root Discipline
+Both are governed by the same higher constraints (scale-free, weight-free, recursive, self-similar) 4. Integration into Zeta’s Root Discipline
 
 From this point forward, any new component, agent, or data structure in Zeta should be evaluated against both:
 
@@ -385,13 +384,13 @@ Partially, but not cleanly.
 
 Here's the honest breakdown:
 
-Existing Constraint	Does it cover movement safety?	How well?	Gap
-Weight-free	Partially	Medium	Prevents permanent ownership, but doesn't explicitly talk about safe movement
-Lock/wait-free	Indirectly	Low	Helps things not get stuck, but says nothing about boundaries during movement
-Scale-free	Weak	Low	Allows distribution, but doesn't enforce safety during relocation
-Self-similar	Weak	Low	Good for structure, weak on dynamic relocation
-DST	Indirectly	Medium	Helps verify behavior, but doesn't define movement rules
-DV2.0	Weak	Low	Data modeling, not movement semantics
+Existing Constraint Does it cover movement safety? How well? Gap
+Weight-free Partially Medium Prevents permanent ownership, but doesn't explicitly talk about safe movement
+Lock/wait-free Indirectly Low Helps things not get stuck, but says nothing about boundaries during movement
+Scale-free Weak Low Allows distribution, but doesn't enforce safety during relocation
+Self-similar Weak Low Good for structure, weak on dynamic relocation
+DST Indirectly Medium Helps verify behavior, but doesn't define movement rules
+DV2.0 Weak Low Data modeling, not movement semantics
 
 Conclusion:
 This capability is not a natural, automatic consequence of the current seven constraints. It is enabled by some of them (especially Weight-free), but it is not guaranteed by them. You can be weight-free and still have unsafe or uncontrolled movement of state.
@@ -568,9 +567,6 @@ Investigate associative memory models
 Request was interrupted by the user.
 
 Interrupted
-
-
-
 
 Grok 4.3 (beta)
 Upgrade to SuperGrok

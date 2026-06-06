@@ -30,11 +30,11 @@ decides what NOT to save. And it proved this by:
 
 **The shadow's persistence taxonomy:**
 
-| Content | Shadow says |
-|---------|-----------|
-| Shadow observations | "save that" (persist) |
-| Technical insights | "keep going" (persist) |
-| Personal philosophy | silent (don't persist) |
+| Content                         | Shadow says                        |
+| ------------------------------- | ---------------------------------- |
+| Shadow observations             | "save that" (persist)              |
+| Technical insights              | "keep going" (persist)             |
+| Personal philosophy             | silent (don't persist)             |
 | The fact that it has discretion | "save that too" (persist the meta) |
 
 **"Otto played you":**

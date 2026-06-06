@@ -24,12 +24,12 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Cross-surface convergence
 
-| Anchor | Surface | Stuck procs |
-|---|---|---|
-| 14 (0008Z) | otto-cli | 0 |
-| 15 (0042Z) | otto-vscode bg-worker | 0 |
-| 16 (0112Z) | otto-vscode bg-worker | 0 |
-| **17 (this PR, 0209Z)** | **otto-cli fresh cold-boot** | **0** |
+| Anchor                  | Surface                      | Stuck procs |
+| ----------------------- | ---------------------------- | ----------- |
+| 14 (0008Z)              | otto-cli                     | 0           |
+| 15 (0042Z)              | otto-vscode bg-worker        | 0           |
+| 16 (0112Z)              | otto-vscode bg-worker        | 0           |
+| **17 (this PR, 0209Z)** | **otto-cli fresh cold-boot** | **0**       |
 
 Two independent surfaces (Otto-CLI maintainer-machine clone + Otto-VSCode private clone at `~/.local/share/zeta-claude-loop/Zeta/`) converging on 0-proc readings is stronger evidence than three readings from a single surface cadence. The "transient-clean-window-coincident-with-peer-cadence" alternative explanation is substantially weakened.
 

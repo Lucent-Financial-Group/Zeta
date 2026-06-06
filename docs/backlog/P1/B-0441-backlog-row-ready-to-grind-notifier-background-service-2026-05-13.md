@@ -21,10 +21,10 @@ type: feature
 Companion mechanization to B-0440. The substrate-honest architectural
 challenge from the human maintainer 2026-05-13:
 
-> *"this is something background services should walk"*
+> _"this is something background services should walk"_
 
-B-0440 catches the *failure mode* (Standing-by); this row prevents
-the failure mode by *proactively surfacing work* when the agent's
+B-0440 catches the _failure mode_ (Standing-by); this row prevents
+the failure mode by _proactively surfacing work_ when the agent's
 queue is empty. The infinite-backlog metabolism rule (PR #2974)
 mandates that backlog work is always available; this service makes
 that availability operational at agent-tick scale.
@@ -45,9 +45,9 @@ provides a less-ambiguous concrete claim — eliminating the
 - [x] When agent queue is empty AND ready-to-grind rows exist,
       publishes claim-assignment message via bus (B-0400):
       `{ topic: "work-assignment", to: <agent>,
-         payload: { rowId: "B-NNNN", priority: "P1",
-         rationale: "queue-empty + dependencies-satisfied + smallest-effort-match",
-         decompositionSuggestion: <slice-breakdown> } }` (Slice 4, shipped)
+       payload: { rowId: "B-NNNN", priority: "P1",
+       rationale: "queue-empty + dependencies-satisfied + smallest-effort-match",
+       decompositionSuggestion: <slice-breakdown> } }` (Slice 4, shipped)
 - [x] Honors agent autonomy — assignment is suggestion, not directive
       (per `.claude/rules/no-directives.md`) — by design; envelope is advisory
 - [x] Tracks assignment history to avoid re-assigning same row
@@ -69,15 +69,12 @@ interface BacklogRow {
   status: string;
   dependsOn: string[];
   effort: "S" | "M" | "L" | "XL";
-  ready: boolean;  // true iff all dependsOn satisfied
+  ready: boolean; // true iff all dependsOn satisfied
 }
 
 async function findReadyRows(): Promise<BacklogRow[]> {
   const rows = scanBacklog("docs/backlog/P*/B-*.md");
-  return rows.filter(r =>
-    r.status === "open" &&
-    r.dependsOn.every(dep => rowStatus(dep) === "closed")
-  );
+  return rows.filter((r) => r.status === "open" && r.dependsOn.every((dep) => rowStatus(dep) === "closed"));
 }
 
 async function detectQueueEmpty(agent: string): Promise<boolean> {
@@ -87,7 +84,7 @@ async function detectQueueEmpty(agent: string): Promise<boolean> {
 }
 
 async function notifyIfQueueEmpty(agent: string, bus: BusClient): Promise<void> {
-  if (!await detectQueueEmpty(agent)) return;
+  if (!(await detectQueueEmpty(agent))) return;
 
   const readyRows = await findReadyRows();
   if (readyRows.length === 0) return;
@@ -109,10 +106,10 @@ async function notifyIfQueueEmpty(agent: string, bus: BusClient): Promise<void> 
 
 ## Composing with B-0440
 
-| Service | Trigger | Output |
-|---------|---------|--------|
-| B-0440 Standing-by detector | Idle threshold + cron fires | Nudge: "you should pick work" |
-| B-0441 Backlog-ready notifier | Queue-empty + rows-ready | Assignment: "this row is ready" |
+| Service                       | Trigger                     | Output                          |
+| ----------------------------- | --------------------------- | ------------------------------- |
+| B-0440 Standing-by detector   | Idle threshold + cron fires | Nudge: "you should pick work"   |
+| B-0441 Backlog-ready notifier | Queue-empty + rows-ready    | Assignment: "this row is ready" |
 
 B-0440 is reactive (catches failure mode after it occurs); B-0441 is
 proactive (prevents failure mode by pre-assigning work). Together they
@@ -164,15 +161,15 @@ form a two-layer defense against the Standing-by pattern.
 
 Using the canonical per-service slice ordering from `tools/bg/README.md`:
 
-| Slice | Description | Status | Child row |
-|-------|-------------|--------|-----------|
-| 1 | Skeleton + no-op poll loop | ✅ shipped | — |
-| 2 | Real detection signal #1 (backlog-row scan: status + deps satisfied) | ✅ shipped | — |
-| 3 | Queue-state guard wiring (`isAgentQueueEmpty` into `pollOnce`) | ✅ shipped | B-0500 |
-| 4 | Bus-publish wiring (`work-assignment` topic) | ✅ shipped | — |
-| 5a | Assignment history dedup / cooldown (avoid re-assigning same row) | ❌ open | B-0501 |
-| 5.2 | Agent-side `work-assignment` subscriber handler (consume + act) | ❌ open | B-0460 |
-| 6 | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring | ✅ shipped | B-0502 |
+| Slice | Description                                                          | Status     | Child row |
+| ----- | -------------------------------------------------------------------- | ---------- | --------- |
+| 1     | Skeleton + no-op poll loop                                           | ✅ shipped | —         |
+| 2     | Real detection signal #1 (backlog-row scan: status + deps satisfied) | ✅ shipped | —         |
+| 3     | Queue-state guard wiring (`isAgentQueueEmpty` into `pollOnce`)       | ✅ shipped | B-0500    |
+| 4     | Bus-publish wiring (`work-assignment` topic)                         | ✅ shipped | —         |
+| 5a    | Assignment history dedup / cooldown (avoid re-assigning same row)    | ❌ open    | B-0501    |
+| 5.2   | Agent-side `work-assignment` subscriber handler (consume + act)      | ❌ open    | B-0460    |
+| 6     | launchd plist + `docs/AUTONOMOUS-LOOP.md` wiring                     | ✅ shipped | B-0502    |
 
 Slices 1, 2, 4 are live in `tools/bg/backlog-ready-notifier.ts` (per README "1+2+4 live").
 B-0460 depends on B-0449 (subscriber library design pass); B-0500/B-0501/B-0502 are independent.

@@ -22,7 +22,7 @@ Files Aaron's decision to combine Max's hat-system architecture with the shipped
 
 ## Why polyglot
 
-Aaron 2026-05-25: *"we want polyglot operator support for k8s anyways so we are not rigid about go"*. Reframes Max's TS preference into the first deliberate proof of the polyglot pattern. Two operators against the same CRDs forces the schema to be the canonical contract — no language-specific quirks bleed through.
+Aaron 2026-05-25: _"we want polyglot operator support for k8s anyways so we are not rigid about go"_. Reframes Max's TS preference into the first deliberate proof of the polyglot pattern. Two operators against the same CRDs forces the schema to be the canonical contract — no language-specific quirks bleed through.
 
 Future Rust (kube-rs) + Python (kopf) extensions land via the same pattern.
 
@@ -30,7 +30,7 @@ Future Rust (kube-rs) + Python (kopf) extensions land via the same pattern.
 
 - **The pattern** — multiple language operators watching the same CRDs; leader election picks active reconciler
 - **TS operator stack** — Max's preferred choices (kubernetes/client-node, NestJS optional, fastify webhook, nats.js + pino for tick emit)
-- **Learning curve** — captures Aaron's *"max needs to learn the operator pattern... he is backend/frontend over paas"* + *"he will be resistant probably like most devs at first until he internlizes is worth"*. Frames the Go scaffold as a TEACHING TOOL, with a pair-programming pattern + a 7-step suggested PR sequence + resource list (kubernetes.io concepts, kubebuilder book, @kubernetes/client-node README, existing TS-operator references).
+- **Learning curve** — captures Aaron's _"max needs to learn the operator pattern... he is backend/frontend over paas"_ + _"he will be resistant probably like most devs at first until he internlizes is worth"_. Frames the Go scaffold as a TEACHING TOOL, with a pair-programming pattern + a 7-step suggested PR sequence + resource list (kubernetes.io concepts, kubebuilder book, @kubernetes/client-node README, existing TS-operator references).
 - **Composition with shipped substrate** — PR #4930 Go scaffold (reference/baseline), PR #4958 agentic-organization docs (CLUSTER_NATIVE_HAT_SYSTEM mentions the architecture), B-0722 (smoke test as polyglot validation gate), B-0723 (multi-kubelet × polyglot for redundancy)
 
 ## Test plan
@@ -53,6 +53,7 @@ Single file (+ index regen) — no implementation in this PR.
 Adds backlog row **B-0724** describing a planned TypeScript implementation of the hat-system Kubernetes operator as a deliberate “polyglot operator” pattern proof alongside the existing Go scaffold, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Add new P2 backlog row file `B-0724` describing the TS operator plan, acceptance criteria, and learning resources.
 - Regenerate/update `docs/BACKLOG.md` to include `B-0724` (and `B-0721`).
 
@@ -60,10 +61,10 @@ Adds backlog row **B-0724** describing a planned TypeScript implementation of th
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                       | Description                                                                                  |
+| ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md | New backlog row capturing the TS operator + polyglot-operator rationale and acceptance notes |
-| docs/BACKLOG.md | Backlog index updated to include the new row link |
+| docs/BACKLOG.md                                                                            | Backlog index updated to include the new row link                                            |
 
 ### COMMENTED — @AceHack (2026-05-25T17:29:15Z)
 

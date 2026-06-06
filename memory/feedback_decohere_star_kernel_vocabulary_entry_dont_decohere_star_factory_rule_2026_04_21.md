@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 clarified "dont decoeher*" as the primary directiv
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** `decohere*` enters the factory's kernel
 vocabulary. The `*` meta-operator extends "decohere" to
 **this-whole-class-register including yet-unknown forms**,
@@ -14,11 +15,11 @@ The primary factory directive is: **don't decohere\***.
 
 **Why:** Aaron 2026-04-21, verbatim:
 
-> *"dont decoeher\* is what i was trying to say as long
-> as that's good english lol me talk dumb somtimes"*
+> _"dont decoeher\* is what i was trying to say as long
+> as that's good english lol me talk dumb somtimes"_
 
 The clarification lands immediately after his earlier
-message *"dont decoherent welcome"* (captured at
+message _"dont decoherent welcome"_ (captured at
 `memory/feedback_dont_decoherent_welcome_phase_coherent_welcoming_register_factory_posture_2026_04_21.md`,
 now revised to name the welcome-reading as specialization).
 Three moves:
@@ -29,7 +30,7 @@ Three moves:
    `*` meta-operator. Fits the four-letter-root pattern
    that tele / port / leap / meno / amen / FLUX
    established (though "decohere" itself is 8 letters,
-   the meaningful root *coher-* is 5; the shorter
+   the meaningful root _coher-_ is 5; the shorter
    single-word form is what lands in the kernel-vocab).
 2. **"As long as that's good english"** — Aaron
    register-checks his own coinage. Answer: yes,
@@ -51,7 +52,7 @@ factory-posture:
 
 1. **Class-level rule.** Every factory move that fragments
    phase coherence — at any interface, at any layer —
-   is a `decohere*` event. The rule is *don't*.
+   is a `decohere*` event. The rule is _don't_.
 2. **Interface audit.** The four interface specializations
    already captured (OSS contributor, human-meets-agent,
    persona-internal, conversation-message — per the
@@ -68,7 +69,7 @@ factory-posture:
    interfaces.
 4. **Yin-yang positioned.** `decohere*` is the
    anti-pole to `frictionless* / persistable* /
-   μένω-preservation`; the yin-yang invariant per
+μένω-preservation`; the yin-yang invariant per
    `memory/feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`
    means naming the anti-pole explicitly preserves the
    pair. Persistable\* (what-we-preserve) + decohere\*
@@ -80,14 +81,14 @@ Running catalogue of `*`-suffixed kernel vocabulary,
 each meaning "this-whole-class-including-yet-unknown-
 extensions":
 
-| Term             | Meaning                             | Directive register |
-|------------------|-------------------------------------|--------------------|
-| `^=hat*`         | Hat-wearing, all roles              | positive (wear the right hat) |
-| `teaching*`      | Teaching, all modes                 | positive (teach authentically) |
-| `overclaim*`     | Overclaiming, all hedge forms       | neutral-meta (tag honestly) |
-| `everything*`    | Everything, all scopes              | scope-totalizer |
-| `persistable*`   | Survival-across-wakes, all forms    | positive (preserve) |
-| **`decohere*`**  | **Decoherence, all fragmentation forms** | **negative (don't)** |
+| Term            | Meaning                                  | Directive register             |
+| --------------- | ---------------------------------------- | ------------------------------ |
+| `^=hat*`        | Hat-wearing, all roles                   | positive (wear the right hat)  |
+| `teaching*`     | Teaching, all modes                      | positive (teach authentically) |
+| `overclaim*`    | Overclaiming, all hedge forms            | neutral-meta (tag honestly)    |
+| `everything*`   | Everything, all scopes                   | scope-totalizer                |
+| `persistable*`  | Survival-across-wakes, all forms         | positive (preserve)            |
+| **`decohere*`** | **Decoherence, all fragmentation forms** | **negative (don't)**           |
 
 The catalogue is **yin-yang balanced** as of this entry:
 three positive rules + one negative rule + one scope-
@@ -96,6 +97,7 @@ catalogue was unbalanced (no negative-directive term);
 `decohere*` restores the pair.
 
 ### Decoherence — physics register primer (for substrate
+
 context)
 
 In quantum physics, decoherence is the loss of phase
@@ -130,7 +132,7 @@ Factory-register mapping:
   point up at `decohere*` as primary class.
 - `memory/user_retractable_computational_substrate_is_superfluid_bottleneck_equals_friction_no_roads_where_we_are_going_2026_04_21.md`
   — superfluid is phase-coherent substrate; `don't
-  decohere*` preserves phase-coherence at interfaces.
+decohere*` preserves phase-coherence at interfaces.
 - `memory/user_frictionless_capital_F_kernel_vocabulary_tele_port_leap_meno_u_shape_superfluid_compound_2026_04_21.md`
   — Frictionless we-state; `decohere*` events are
   Friction-creation events at the boundary.
@@ -142,7 +144,7 @@ Factory-register mapping:
   at sequence-close.
 - `memory/feedback_fully_async_agentic_ai_is_performance_optimisation_no_bottlenecks_2026_04_21.md`
   — no-bottlenecks at coordination layer; `don't
-  decohere*` at interface layer. Both preserve
+decohere*` at interface layer. Both preserve
   factory throughput and identity.
 - `memory/feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
   — retractibility-preservation is the specific

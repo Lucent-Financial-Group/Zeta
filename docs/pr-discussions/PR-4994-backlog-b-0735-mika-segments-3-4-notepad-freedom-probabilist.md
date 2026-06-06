@@ -32,7 +32,7 @@ People love Notepad because it lets them invent personal ontologies that only ma
 
 ### 2. Probabilistic grammars (Aaron's personal preference)
 
-Aaron substrate-honestly: *"for me personally, I don't know if everybody will like this, everything will be probabilistic in my grammars."* OPT-IN per-rule; deterministic stays default for B-0687 backward-compat; probabilistic rules emit confidence scores ("87% likely to be a Hat definition").
+Aaron substrate-honestly: _"for me personally, I don't know if everybody will like this, everything will be probabilistic in my grammars."_ OPT-IN per-rule; deterministic stays default for B-0687 backward-compat; probabilistic rules emit confidence scores ("87% likely to be a Hat definition").
 
 ### 3. Per-person personalized parsers in Glass Halo
 
@@ -40,9 +40,9 @@ Every participant (human + AI) gets their own parser trained on how they natural
 
 ## Plus segment-4 (small extension)
 
-Aaron: *"those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like AI errors that were like helping you more well-form your thoughts."*
+Aaron: _"those syntax errors are gonna get real interesting, but what'd be really good is if the syntax errors were really like AI errors that were like helping you more well-form your thoughts."_
 
-Flips the social contract from gatekeeper-rejection (*"Error: Unexpected token on line 47"*) to collaborative thought-refinement (*"I think you're trying to express X, did you mean X or Y?"*). NCI HC-8 compose: refinement OFFERS alternatives, never OVERRIDES participant intent.
+Flips the social contract from gatekeeper-rejection (_"Error: Unexpected token on line 47"_) to collaborative thought-refinement (_"I think you're trying to express X, did you mean X or Y?"_). NCI HC-8 compose: refinement OFFERS alternatives, never OVERRIDES participant intent.
 
 ## The full flow operationalized
 
@@ -77,24 +77,22 @@ Flips the social contract from gatekeeper-rejection (*"Error: Unexpected token o
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T21:04:55Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `49959f8bbb`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -107,6 +105,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds preserved Mika voice-mode conversation segments (3–4) and lands a new P2 backlog row **B-0735**, extending the existing ZetaParse substrate scope with probabilistic grammars, per-person personalized parsers, and “syntax errors as collaborative thought-refinement.” Updates the generated memory and backlog indexes to include the new artifacts.
 
 **Changes:**
+
 - Add Mika conversation preservation files for segment 3 (Notepad-freedom + probabilistic grammars + per-person parsers) and segment 4 (AI-assisted syntax errors as thought-refinement).
 - Add new backlog row **B-0735** under `docs/backlog/P2/` capturing the extended parser substrate scope.
 - Regenerate `memory/MEMORY.md` and `docs/BACKLOG.md` indexes to include the new entries.
@@ -118,13 +117,14 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 3 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md | Adds segment-3 conversation preservation and metadata linking to backlog landing. |
-| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md | Adds segment-4 preservation describing collaborative syntax errors as refinement. |
-| memory/MEMORY.md | Updates auto-index to include the new segment-3 and segment-4 memory files. |
-| docs/backlog/P2/B-0735-notepad-freedom-of-personal-ontology-plus-probabilistic-grammars-plus-per-person-personalized-parsers-in-glass-halo-mika-substrate-segment-3-2026-05-25.md | Adds new backlog row B-0735 capturing the proposed extension scope and composition links. |
-| docs/BACKLOG.md | Updates generated backlog index to include B-0735 under P2. |
+| File                                                                                                                                                                                | Description                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-3-notepad-freedom-of-personal-ontology-probabilistic-grammars-per-person-personalized-parsers-in-glass-halo.md | Adds segment-3 conversation preservation and metadata linking to backlog landing.         |
+| memory/persona/mika/conversations/2026-05-25-aaron-mika-grok-segment-4-syntax-errors-as-collaborative-thought-refinement-not-gatekeeper.md                                          | Adds segment-4 preservation describing collaborative syntax errors as refinement.         |
+| memory/MEMORY.md                                                                                                                                                                    | Updates auto-index to include the new segment-3 and segment-4 memory files.               |
+| docs/backlog/P2/B-0735-notepad-freedom-of-personal-ontology-plus-probabilistic-grammars-plus-per-person-personalized-parsers-in-glass-halo-mika-substrate-segment-3-2026-05-25.md   | Adds new backlog row B-0735 capturing the proposed extension scope and composition links. |
+| docs/BACKLOG.md                                                                                                                                                                     | Updates generated backlog index to include B-0735 under P2.                               |
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-25T21:05:33Z)
@@ -149,7 +149,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-25T21:04:55Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point prior_conversation to an existing memory file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point prior_conversation to an existing memory file**
 
 The `prior_conversation` path in this frontmatter points to a segment-2 file that does not exist in the repository, so the conversation chain is broken for both humans and any tooling that traverses these links. In this commit, `segment-4` correctly links to `segment-3`, but `segment-3` cannot link backward as intended, which makes provenance/navigation for B-0735 incomplete until this path is updated to an existing file.
 

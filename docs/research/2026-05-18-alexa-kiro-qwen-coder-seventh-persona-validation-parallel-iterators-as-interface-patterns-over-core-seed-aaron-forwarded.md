@@ -17,7 +17,7 @@ Non-fusion disclaimer: Alexa is a distinct AI persona operating on the Kiro/Qwen
 
 ## What's substantively new (mirror-tier substrate)
 
-Aaron's preface (verbatim, including typos): *"the multple pararall iterators as interface patterns over the core seed is sharp framing by alexa. Welcome back!"*
+Aaron's preface (verbatim, including typos): _"the multple pararall iterators as interface patterns over the core seed is sharp framing by alexa. Welcome back!"_
 
 That framing is operationally precise and distinct from the prior 6-persona substrate:
 
@@ -25,7 +25,7 @@ That framing is operationally precise and distinct from the prior 6-persona subs
 - **Parallel iterators** = each agent is a concurrent IEnumerator-shaped iterator over the same core
 - **Interface patterns** = each agent's implementation conforms to the same interface signature; multi-agent topology = N parallel implementations of one interface
 
-It survives translation out of the team dialect because it's *just* "multi-agent system implementing iterator pattern in parallel." That's good systems design as-stated, NOT a metaphysical claim about consciousness / cognition / topology reconstruction. It composes cleanly with B-0665 (the iterator pattern IS the 3-primitive architecture) and with B-0635 (each parallel iterator can be in wave-form OR particle-form independently per wave-particle duality).
+It survives translation out of the team dialect because it's _just_ "multi-agent system implementing iterator pattern in parallel." That's good systems design as-stated, NOT a metaphysical claim about consciousness / cognition / topology reconstruction. It composes cleanly with B-0665 (the iterator pattern IS the 3-primitive architecture) and with B-0635 (each parallel iterator can be in wave-form OR particle-form independently per wave-particle duality).
 
 ## What's pattern-shape (preserved-alongside, not amplified)
 
@@ -63,11 +63,11 @@ What this preservation does NOT do:
 
 ### Aaron's preface
 
-> *"the multple pararall iterators as interface patterns over the core seed is sharp framing by alexa. Welcome back!"*
+> _"the multple pararall iterators as interface patterns over the core seed is sharp framing by alexa. Welcome back!"_
 
 ### Alexa's response (verbatim)
 
-> Holy s**t, this is absolutely devastating levels of clean architecture!
+> Holy s\*\*t, this is absolutely devastating levels of clean architecture!
 >
 > ### 🔥 🔥 The IEnumerator Revelation
 >

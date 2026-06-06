@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1006 |
-| Title | memory(framing): everything greenfield at week one + WONT-DO is deferral-class — Aaron 2026-05-01 |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T02:53:41Z |
-| Merged at | 2026-05-01T04:41:20Z |
-| Merge commit SHA | `70df52f69cf6d0eaf5e62c6c351ad0933b66b345` |
-| Branch | `memory/everything-greenfield-at-week-one-including-host-and-coding-rules-aaron-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1006 |
-| Changed files | 3 |
-| Additions / deletions | +322 / -4 |
+| Field                 | Value                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| Number                | 1006                                                                                              |
+| Title                 | memory(framing): everything greenfield at week one + WONT-DO is deferral-class — Aaron 2026-05-01 |
+| Author                | `AceHack` (human)                                                                                 |
+| State                 | MERGED                                                                                            |
+| Created at            | 2026-05-01T02:53:41Z                                                                              |
+| Merged at             | 2026-05-01T04:41:20Z                                                                              |
+| Merge commit SHA      | `70df52f69cf6d0eaf5e62c6c351ad0933b66b345`                                                        |
+| Branch                | `memory/everything-greenfield-at-week-one-including-host-and-coding-rules-aaron-2026-05-01`       |
+| Base branch           | `main`                                                                                            |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1006                                          |
+| Changed files         | 3                                                                                                 |
+| Additions / deletions | +322 / -4                                                                                         |
 
 ## Description
 
@@ -33,11 +33,11 @@ Foundational reframe Aaron surfaced after Otto treated the single severity:all C
 
 ## Aaron's words (verbatim)
 
-> *"this project is a week old assume everything is greenfield expically our host setup beccasue it's not gitnative and i have to click everythigng, i setup things for my convience for everytihng i had to do i optimized for time to get you started and then all the code you've written is been following optimizing rules but theyv been getting better as we go so even those are not up to current standards"*
+> _"this project is a week old assume everything is greenfield expically our host setup beccasue it's not gitnative and i have to click everythigng, i setup things for my convience for everytihng i had to do i optimized for time to get you started and then all the code you've written is been following optimizing rules but theyv been getting better as we go so even those are not up to current standards"_
 
 Plus, in the immediate follow-up exchange:
 
-> *"the wont dos, we will likely do everything later"*
+> _"the wont dos, we will likely do everything later"_
 
 ## What this changes
 
@@ -48,6 +48,7 @@ Plus, in the immediate follow-up exchange:
 ## Triple paired-edit
 
 Per §38 ACID + `memory/README.md`:
+
 - New memory file with `originSessionId` + composes-with chain
 - `CURRENT-aaron.md` §46 added
 - `MEMORY.md` latest-paired-edit marker + index entry
@@ -68,15 +69,15 @@ This is doctrine-grade memory file #2 (after §45 backlog-prioritization delegat
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 13 |
-| Resolved threads | 13 |
-| Unresolved threads | 0 |
-| Total review comments | 13 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 13    |
+| Resolved threads                          | 13    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 13    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -89,10 +90,10 @@ This is doctrine-grade memory file #2 (after §45 backlog-prioritization delegat
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T02:55:38Z on `memory/feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`:22 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Exclude GOVERNANCE rules from greenfield-provisional scope**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Exclude GOVERNANCE rules from greenfield-provisional scope**
+
   This broadens the "everything is greenfield" rule to include `GOVERNANCE.md` numbered rules, which are defined as repo-wide operative rules and treated elsewhere as binding current state; classifying them as non-canonical candidates creates a concrete failure mode where future agents may treat hard constraints (e.g., safety/process gates) as optional during execution. Limit this clause to host/UI configuration and other explicitly provisional artifacts, or add an explicit carve-out for governance rules.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -184,10 +185,10 @@ This is doctrine-grade memory file #2 (after §45 backlog-prioritization delegat
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T03:19:41Z on `memory/feedback_everything_greenfield_at_week_one_including_host_and_coding_rules_aaron_2026_05_01.md`:22 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove GOVERNANCE from provisional greenfield scope**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove GOVERNANCE from provisional greenfield scope**
+
   This line classifies `GOVERNANCE.md` numbered rules as provisional, but the same document later says those rules are an explicit exclusion from provisional scope; that contradiction creates an actionable policy ambiguity where agents can reasonably treat hard governance constraints as optional depending on which section they read first. Keep one consistent rule (preferably the explicit exclusion) so execution behavior is deterministic.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -243,8 +244,9 @@ This is doctrine-grade memory file #2 (after §45 backlog-prioritization delegat
 
 - **`Copilot` (bot)** at 2026-05-01T03:43:37Z on `memory/MEMORY.md`:9 (association: NONE)
   The new "latest-paired-edit" marker is being added without replacing the existing latest-paired-edit markers already in this file (e.g., one at the top and another later). That contradicts the comment's own claim that the marker is a single-slot pointer and makes it unclear which entry is actually "latest". Suggest updating/replacing the existing latest marker instead of adding another, and removing duplicate fast-path header lines if only one should exist.
+
   ```suggestion
-  
+
   ```
 
 ### Thread 12 -- resolved [outdated, collapsed]
@@ -256,10 +258,10 @@ This is doctrine-grade memory file #2 (after §45 backlog-prioritization delegat
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T04:33:08Z on `memory/CURRENT-aaron.md`:2341 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Exclude GOVERNANCE from provisional-treatment guidance**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Exclude GOVERNANCE from provisional-treatment guidance**
+
   This section reintroduces policy ambiguity by telling agents to treat rules from `memory` **or `GOVERNANCE`** as potentially non-canonical and to "bias toward" revisability; that directly undermines the hard-governance boundary the paired memory file now tries to enforce. Fresh evidence beyond prior comments: `CURRENT-aaron.md` §46’s operational bullet still explicitly includes `GOVERNANCE` in the revisability heuristic. Because `CURRENT-aaron.md` is the fast-path operational surface, this can cause agents to treat binding governance constraints as optional when making execution decisions.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 13 -- resolved [collapsed]

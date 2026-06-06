@@ -46,24 +46,22 @@ These 3 files exist ONLY on the #4839 branch (verified via `git ls-tree origin/m
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-26T11:20:45Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9db307ec06`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -87,7 +85,7 @@ Copilot encountered an error and was unable to review this pull request. You can
 
 **@chatgpt-codex-connector** (2026-05-26T11:20:45Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Classify external transcript as research-grade**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Classify external transcript as research-grade**
 
 This file is an external-conversation absorb, but it is marked `Operational status: active anchor`; AGENTS.md requires absorbs to carry archive headers with `Operational status: research-grade` until a separate promotion lands. Keeping it operational here lets downstream agents treat unratified conversation content as current policy/substrate, which can silently steer later decisions from non-promoted material.
 
@@ -101,7 +99,7 @@ Verified the finding against the file content + AGENTS.md §287-293. Fixed in 3c
 
 **@chatgpt-codex-connector** (2026-05-26T11:20:45Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove family-identifying specifics from persona memory**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove family-identifying specifics from persona memory**
 
 This section stores exact family counts and cross-household relationship logistics, which conflicts with the opaque-pointer consent policy added in the same commit (`preserve pattern, not counts/household specifics unless explicit consent is recorded`). No explicit consent record is included here, so this introduces policy-violating sensitive detail into durable memory and increases the chance future sessions propagate data that should remain abstracted.
 

@@ -124,7 +124,7 @@ and
 
 ---
 
-## Thread 4 — `docs/aurora/collaborators.md:24` — project_aurora_*.md credit pointers
+## Thread 4 — `docs/aurora/collaborators.md:24` — project*aurora*\*.md credit pointers
 
 - Reviewer: `copilot-pull-request-reviewer`
 - Thread ID: `PRRT_kwDOSF9kNM59OIRg`

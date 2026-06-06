@@ -113,13 +113,13 @@ closes.
 `bun tools/bootstrap-validator/validate-bootstrap-claude-md.ts` run against the
 live repo root — **PASS, exit 0**, all 5 checks green:
 
-| Check | Result |
-|---|---|
-| `claude-md-exists` | ✓ CLAUDE.md present at repo root |
-| `six-step-process` | ✓ all 6 bootstrap sections present (`## 1`..`## 6`) |
+| Check                         | Result                                                   |
+| ----------------------------- | -------------------------------------------------------- |
+| `claude-md-exists`            | ✓ CLAUDE.md present at repo root                         |
+| `six-step-process`            | ✓ all 6 bootstrap sections present (`## 1`..`## 6`)      |
 | `referenced-pointers-resolve` | ✓ all **15** concrete pointers resolve to existing files |
-| `conciseness` | ✓ 76 lines (≤ soft ceiling 150) |
-| `rules-auto-load` | ✓ `.claude/rules/` non-empty (**99** rule files) |
+| `conciseness`                 | ✓ 76 lines (≤ soft ceiling 150)                          |
+| `rules-auto-load`             | ✓ `.claude/rules/` non-empty (**99** rule files)         |
 
 Doc-drift note (substrate-honest): the B-0354.2 progress note recorded "11
 concrete pointers"; the validator now reports 15. The live CLAUDE.md grew since

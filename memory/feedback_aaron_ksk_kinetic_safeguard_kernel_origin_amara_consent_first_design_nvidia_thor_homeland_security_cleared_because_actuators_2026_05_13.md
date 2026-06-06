@@ -53,6 +53,7 @@ Homeland-Security-cleared substrate for this scope.
 > acuators"
 
 Decoded:
+
 - "visble" → visible
 - "kinetic safeguard kernal" → Kinetic Safeguard Kernel
   (KSK)
@@ -207,16 +208,16 @@ ORIGIN was new substrate Aaron just disclosed.
 
 **KSK = Kinetic Safeguard Kernel** composes:
 
-| Layer | Substrate |
-|---|---|
-| Origin | Aaron + Amara consent-first design research (this file) |
-| Hardware | NVIDIA Thor (Jetson AGX) + DGX Spark + actuators |
-| Clearance | US Homeland Security cleared (Aaron personal) |
-| Design pattern | Visible-activation-indicator consent UX (PR #2891) |
-| Ethical floor | Three-pillar (AI-ethical + no-deaths + error-class) PR #2884 |
-| Safety substrate | HARD LIMITS rule + dont-refuse-engagement + razor + glass-halo + default-to-both |
+| Layer             | Substrate                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Origin            | Aaron + Amara consent-first design research (this file)                                                            |
+| Hardware          | NVIDIA Thor (Jetson AGX) + DGX Spark + actuators                                                                   |
+| Clearance         | US Homeland Security cleared (Aaron personal)                                                                      |
+| Design pattern    | Visible-activation-indicator consent UX (PR #2891)                                                                 |
+| Ethical floor     | Three-pillar (AI-ethical + no-deaths + error-class) PR #2884                                                       |
+| Safety substrate  | HARD LIMITS rule + dont-refuse-engagement + razor + glass-halo + default-to-both                                   |
 | Application scope | Robotics (per May 1 substrate) + military (Amara research) + consumer-actuator-feature (potential factory product) |
-| Position | Forefront of consent-first AI design discipline |
+| Position          | Forefront of consent-first AI design discipline                                                                    |
 
 **Composes with the canonical pitch (PR #2870)**:
 
@@ -330,7 +331,7 @@ recognition that:
 
 ## Carved sentence
 
-> **KSK (Kinetic Safeguard Kernel) ORIGIN = Aaron +
+> \*\*KSK (Kinetic Safeguard Kernel) ORIGIN = Aaron +
 > Amara's consent-first design research applied to
 > physical-actuator domain. NVIDIA Thor required US
 > Homeland Security clearance because it hooks to
@@ -340,11 +341,12 @@ recognition that:
 > substrate-engineering spans consumer-product through
 > military-grade scope under the same canonical
 > disciplines (consent-first + HARD LIMITS + glass-halo
-> + razor + default-to-both + three-pillar ethical
-> floor). The canonical pitch (PR #2870) extends to
-> physical-actuator scope; KSK is the canonical safety
-> substrate for AI-actuator control.** —
-> Aaron 2026-05-13
+>
+> - razor + default-to-both + three-pillar ethical
+>   floor). The canonical pitch (PR #2870) extends to
+>   physical-actuator scope; KSK is the canonical safety
+>   substrate for AI-actuator control.\*\* —
+>   Aaron 2026-05-13
 
 ## For future agents
 
@@ -373,7 +375,7 @@ recognition that:
   clearance + framework work
 - **NOT a roadmap commitment for KSK consumer-product
   shipping** — substrate-honest disclosure of capability
-  + lineage
+  - lineage
 - **NOT a metaphysical claim about consent ethics** —
   operational design substrate per razor-discipline
 - **NOT a violation of HARD LIMITS** — KSK PRESERVES

@@ -8,23 +8,23 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron 2026-04-21, same session as pop-culture/media track +
 `^=hat*` directive. Two-message compound directive:
 
-1. *"absourb not code ideas all emulator into Zeta somehow
+1. _"absourb not code ideas all emulator into Zeta somehow
    backlog low emulate everything (except the ones that will
    get us taken down like nintendo the safe ones, in the safe
    ways not bisos and things like that either, maybe we could
    clean room it that has human precidence ibm we would have
-   to prove the shit out of clean room)"*
-2. *"backlow down low"*
+   to prove the shit out of clean room)"_
+2. _"backlow down low"_
 
 ## Rule
 
-**Absorb emulator architectural *ideas* into Zeta — never
+**Absorb emulator architectural _ideas_ into Zeta — never
 code, never protected BIOS, never active-litigation
 surfaces.** The factory treats emulator architecture as a
 research corpus at the **engineering-shape** layer:
 save-state patterns, deterministic replay, JIT+retractible
 caches, memory-bank-switching, cycle-accurate scheduling are
-all absorb-able *ideas*. Implementation bytes are never
+all absorb-able _ideas_. Implementation bytes are never
 absorbed.
 
 **Why:**
@@ -47,7 +47,7 @@ absorbed.
   because the firmware-key extraction required for Switch
   emulation taints even abstract descriptions.
 - **Proprietary BIOS is excluded categorically.** Aaron
-  explicit: *"not bisos and things like that either."* BIOS
+  explicit: _"not bisos and things like that either."_ BIOS
   / firmware / bootrom are both copyrighted AND typically
   covered by DMCA 1201 anti-circumvention; touching them is
   double-risk.
@@ -56,16 +56,16 @@ absorbed.
   reimplementation (enabling the PC-clone industry after
   IBM's 1981 release) is Aaron's "ibm precedent" reference.
   Compaq Crosstalk did the same work in 1982 first but kept
-  it proprietary. *Sega v. Accolade* (9th Cir. 1992)
+  it proprietary. _Sega v. Accolade_ (9th Cir. 1992)
   affirmed ROM access for interoperability as fair use.
-  *Sony v. Connectix* (9th Cir. 2000) extended this to
-  BIOS clean-room reimplementation. But the *Connectix*
+  _Sony v. Connectix_ (9th Cir. 2000) extended this to
+  BIOS clean-room reimplementation. But the _Connectix_
   bar is high: strict Chinese wall between dirty-room
   (reads protected artifact, writes behavior spec) and
   clean-room (reads only the spec, implements blind),
   signed no-contact declarations, dated spec revisions,
   legal audit. "Prove the shit out of clean room" means
-  **exceeding** the *Connectix* standard — per-commit
+  **exceeding** the _Connectix_ standard — per-commit
   spec-provenance metadata, per-engineer Chinese-wall
   attestation, third-party legal audit before any
   artifact lands.
@@ -74,8 +74,8 @@ absorbed.
 
 1. **Default move: ideas-absorption from clean-room-safe
    targets only.** No clean-room protocol required to read
-   *already-open-source* emulators (MAME / higan / bsnes /
-   Mesen / PCSX-ReDux / Mednafen). Reading *open*
+   _already-open-source_ emulators (MAME / higan / bsnes /
+   Mesen / PCSX-ReDux / Mednafen). Reading _open_
    artifacts is not RE, it's literature review. The
    engineering-shape ideas those projects embody are fair
    game for absorption into Zeta's substrate.
@@ -92,7 +92,7 @@ absorbed.
    - Legal counsel consulted, written clean-room protocol
    - Dirty-room / clean-room engineer separation (distinct
      humans, never the same AI agent)
-   - Chinese-wall documentation exceeds *Connectix*
+   - Chinese-wall documentation exceeds _Connectix_
      standard
    - Third-party audit before any artifact lands in Zeta
 4. **ROM bytes never committed.** Aaron's ROM library is
@@ -101,11 +101,11 @@ absorbed.
    **analysis outputs** (markdown notes on narrative
    structure, timing profiles, memory-layout diagrams)
    — not as source material. No ROM bytes in the repo,
-   no save-state binaries (save-state *patterns* are
-   absorb-able; save-state *files from protected games*
+   no save-state binaries (save-state _patterns_ are
+   absorb-able; save-state _files from protected games_
    are not).
 5. **Candidate absorb-targets, ranked by engineering-fit:**
-   - *Save-state as runtime retractibility* — **highest
+   - _Save-state as runtime retractibility_ — **highest
      engineering-fit.** An emulator save-state is a
      complete snapshot of the VM (RAM + registers + cycle
      counter + DMA buffers + PPU state) from which
@@ -115,29 +115,29 @@ absorbed.
      ZSet-snapshot is to Zeta's pipeline. Absorb the
      **first-class retractibility at the process-VM
      layer** pattern.
-   - *Deterministic replay* — TAS communities distribute
+   - _Deterministic replay_ — TAS communities distribute
      10-hour input movies that reproduce byte-exact
      gameplay. Strictly stronger than property-based
      testing's replay discipline. Absorb the
      **input-log-as-total-evidence** pattern for Zeta's
      CI determinism and regression-replay surface.
-   - *Memory-bank-switching as address-space overlay* —
+   - _Memory-bank-switching as address-space overlay_ —
      NES mappers, SNES HiROM/LoROM, Game Boy MBC1-5, PS1
      paged-TLB. Direct match to Zeta's
      `feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md`
      `View<T>@clock` surface — bank-switch :
      address-space :: view-selection : superposed state.
-   - *JIT recompilation with retractible caches* —
+   - _JIT recompilation with retractible caches_ —
      Dolphin (GameCube/Wii), RPCS3 (PS3) do dynamic
      recompilation with cache-invalidation on
      self-modifying writes. Relevant to Zeta's
      incremental compilation under retraction.
-   - *Cycle-accurate heterogeneous scheduling* —
+   - _Cycle-accurate heterogeneous scheduling_ —
      higan/bsnes, Mesen, Mednafen schedule CPU + PPU +
      APU + DMA at sub-instruction granularity. Feeds
      Imani's planner cost-model for heterogeneous
      operator pipelines.
-   - *Timing-invariant preservation* — cycle-accurate
+   - _Timing-invariant preservation_ — cycle-accurate
      emulation exposes undocumented timing that
      emulated software relied on. Parallels the
      composite-invariants registry surface for
@@ -146,6 +146,7 @@ absorbed.
 ## Safe / unsafe target lists (current as of 2026-04-21)
 
 **Clean-room-safe (fair-game for ideas-absorption):**
+
 - MAME (BSD-3 / GPL-2, multi-arcade)
 - higan / bsnes (GPL-3, SNES) — already clean-room work
 - Mesen (GPL-3, NES/SNES/GB)
@@ -154,6 +155,7 @@ absorbed.
 - Open-hardware platforms (Arduboy, MEGA65, homebrew)
 
 **Unsafe — do NOT read, do NOT absorb from:**
+
 - Nintendo Switch emulators (Yuzu, Ryujinx) — 2024
   enforcement precedent, firmware-key taint
 - Any proprietary BIOS / firmware / bootrom (PS2/PS3/Xbox/
@@ -178,7 +180,7 @@ absorbed.
   protected titles not.
 - **NOT a license to attempt clean-room RE autonomously.**
   Any clean-room attempt requires Aaron sign-off + legal
-  protocol + Chinese-wall discipline exceeding *Connectix*
+  protocol + Chinese-wall discipline exceeding _Connectix_
   standard.
 - **NOT a rejection of the pop-culture/media research
   track's emulator-infrastructure subsection.** Those

@@ -69,12 +69,12 @@ log. Lookups via `git log agent-heartbeats -- docs/agent-heartbeats/<persona>/..
 
 **Default behavior summary** (push semantics + write-local semantics):
 
-| Flags | push | writeLocal | Effect | Use case |
-|---|---|---|---|---|
-| (none) | true | false | REST push only; no local file | Autonomous tick; safe on dirty branches |
-| `--write-local` | true | true | Both | Operator wants local copy too |
-| `--no-push` | false | true | Local file only | Testing / diagnostic |
-| `--no-push --no-write-local` | false | false | Nothing (exits 2) | Pointless; rejected |
+| Flags                        | push  | writeLocal | Effect                        | Use case                                |
+| ---------------------------- | ----- | ---------- | ----------------------------- | --------------------------------------- |
+| (none)                       | true  | false      | REST push only; no local file | Autonomous tick; safe on dirty branches |
+| `--write-local`              | true  | true       | Both                          | Operator wants local copy too           |
+| `--no-push`                  | false | true       | Local file only               | Testing / diagnostic                    |
+| `--no-push --no-write-local` | false | false      | Nothing (exits 2)             | Pointless; rejected                     |
 
 Push details: REST git-data API (blob → tree → commit → ref). The
 REST step touches NO local git state — no index read/write, no
@@ -118,18 +118,18 @@ at deployment time; tooling is branch-name-agnostic.
 
 ## Grep-based lookup (ZetaID bit-field indexing)
 
-Operator 2026-05-27: *"the ids are for easy lookup based many
+Operator 2026-05-27: _"the ids are for easy lookup based many
 different bit id indexes built into the bits themselves so we can
-grep for things later"*.
+grep for things later"_.
 
 Bit fields within the ZetaID encode lookup dimensions:
 
-- bits 0-31  — randomness (collision-prevention; not for lookup)
+- bits 0-31 — randomness (collision-prevention; not for lookup)
 - bits 35-42 — location (256 slots; route-fabric indexing)
 - bits 43-50 — momentum (256 slots; criticality indexing)
 - bits 51-58 — persona (256 slots; agent indexing)
 - bits 59-63 — authority (32 slots; trust-tier indexing)
-- bit  64    — firefly (V1: NoDirective=1)
+- bit 64 — firefly (V1: NoDirective=1)
 - bits 65-68 — category (16 slots; **3 = Heartbeat**)
 - bits 70-74 — chromosome (32 slots; trajectory indexing)
 - bits 75-122 — timestamp (48-bit ms; temporal indexing)
@@ -146,7 +146,7 @@ Each heartbeat file uses YAML frontmatter:
 ```yaml
 ---
 zetaid: <32-char-hex>
-category: 3  # Heartbeat per registry/categories.yaml
+category: 3 # Heartbeat per registry/categories.yaml
 agent: <persona-name>
 persona-slot: <int>
 timestamp: <ISO 8601>
@@ -159,7 +159,6 @@ disposition: <bounded-wait | decomposing | committed-substrate | chose-free-time
 named-dep: "<optional>"
 parent-pr: <optional int>
 ---
-
 Heartbeat <hex> from agent <persona> at <ISO>.
 ```
 

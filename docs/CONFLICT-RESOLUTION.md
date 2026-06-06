@@ -35,7 +35,7 @@ the first document consulted. Its clauses
 defaults, DIR-1..DIR-5 directional aims) are the
 ground; the conference protocol below is how we
 apply that ground to the specific case. Conferences
-that propose a *revision* to `docs/ALIGNMENT.md`
+that propose a _revision_ to `docs/ALIGNMENT.md`
 itself run under the renegotiation protocol
 documented in that file — either signer can
 propose, Kenji integrates, no silent edits.
@@ -210,7 +210,7 @@ sign-off.
 - **Algebra Owner ↔ Maintainability Reviewer** — residuated
   lattices and profunctor optics are beautiful; new contributors
   bounce off. Standing resolution: require a runnable test per
-  abstraction *or* move to Assess in TECH-RADAR.
+  abstraction _or_ move to Assess in TECH-RADAR.
 - **Query Planner ↔ Storage Specialist** — plan-time cost model
   needs durability-mode latencies. Standing resolution: storage
   exposes latency per mode via `IStorageCostProbe`.
@@ -225,7 +225,7 @@ when no integration is available, it wins. When a human says
 which case the Architect surfaces the conflict rather than
 silently resolving.
 
-**Terminology rule:** contributors are *agents*, not bots. If a
+**Terminology rule:** contributors are _agents_, not bots. If a
 human refers to agents as bots, the Architect gently corrects the
 word. "Bot" implies rote execution; "agent" carries agency,
 judgement, and accountability.

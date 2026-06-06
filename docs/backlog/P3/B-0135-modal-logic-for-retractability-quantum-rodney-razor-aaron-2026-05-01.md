@@ -19,9 +19,9 @@ type: feature
 
 ## What
 
-Formalize Quantum-Rodney's-Razor (possibility-space pruning preserving retractability) as a specific modal logic. *Many-worlds-pruning* IS the Kripke-semantics-of-modal-logic frame. **S4** (reflexive + transitive accessibility) probably fits the substrate's pruning semantics; **dynamic logic** (with explicit programs that transform worlds) fits retraction-operators.
+Formalize Quantum-Rodney's-Razor (possibility-space pruning preserving retractability) as a specific modal logic. _Many-worlds-pruning_ IS the Kripke-semantics-of-modal-logic frame. **S4** (reflexive + transitive accessibility) probably fits the substrate's pruning semantics; **dynamic logic** (with explicit programs that transform worlds) fits retraction-operators.
 
-**Reference:** Blackburn, de Rijke, Venema, *Modal Logic* (Cambridge, 2001).
+**Reference:** Blackburn, de Rijke, Venema, _Modal Logic_ (Cambridge, 2001).
 
 ## Acceptance criteria
 

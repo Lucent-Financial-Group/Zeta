@@ -20,10 +20,10 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 The "Legacy violations" callout in [`.claude/rules/rule-0-no-sh-files.md`](../../.claude/rules/rule-0-no-sh-files.md) listed three `tools/hygiene/audit-*.sh` files as outstanding TS-port debt. All three have since been ported to `.ts` and the corresponding `.sh` files removed from the tree:
 
-| Was (`.sh`) | Now (`.ts`) |
-|---|---|
-| `tools/hygiene/audit-lost-files.sh` | [`audit-lost-files.ts`](../../tools/hygiene/audit-lost-files.ts) |
-| `tools/hygiene/audit-trajectories.sh` | [`audit-trajectories.ts`](../../tools/hygiene/audit-trajectories.ts) |
+| Was (`.sh`)                            | Now (`.ts`)                                                            |
+| -------------------------------------- | ---------------------------------------------------------------------- |
+| `tools/hygiene/audit-lost-files.sh`    | [`audit-lost-files.ts`](../../tools/hygiene/audit-lost-files.ts)       |
+| `tools/hygiene/audit-trajectories.sh`  | [`audit-trajectories.ts`](../../tools/hygiene/audit-trajectories.ts)   |
 | `tools/hygiene/audit-backlog-items.sh` | [`audit-backlog-items.ts`](../../tools/hygiene/audit-backlog-items.ts) |
 
 `tools/hygiene/` is now entirely Rule-0-compliant.
@@ -55,6 +55,7 @@ Continuation of this session's substrate-hygiene sweep — alongside [#3043](htt
 Updates Rule 0 documentation to reflect that the previously listed `tools/hygiene/audit-*.sh` scripts have been ported to TypeScript and are no longer outstanding debt, while also recording an open question about `.gemini/service/*.sh` scripts that appear “install-graph by intent” but sit outside the currently allowed path.
 
 **Changes:**
+
 - Replace the “Legacy violations” callout with a “cleared 2026-05-13” statement for the three `tools/hygiene/audit-*.sh` ports.
 - Add a note documenting the remaining `.gemini/service/*.sh` ambiguity relative to the “only `tools/setup/`” rule wording.
 

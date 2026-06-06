@@ -8,12 +8,12 @@ cluster will OOM or thrash if you don't bump it.
 
 ## Resource sizing (GUI — Docker Desktop → Settings → Resources)
 
-| Setting | Default | Recommended for this cluster |
-|---------|---------|------------------------------|
-| CPUs | 2 | **6** (4 minimum if your Mac is constrained) |
-| Memory | 8 GB | **16 GB** (12 GB minimum) |
-| Swap | 1 GB | leave at default |
-| Virtual disk limit | 64 GB | **128 GB** (containers + images + volumes) |
+| Setting            | Default | Recommended for this cluster                 |
+| ------------------ | ------- | -------------------------------------------- |
+| CPUs               | 2       | **6** (4 minimum if your Mac is constrained) |
+| Memory             | 8 GB    | **16 GB** (12 GB minimum)                    |
+| Swap               | 1 GB    | leave at default                             |
+| Virtual disk limit | 64 GB   | **128 GB** (containers + images + volumes)   |
 
 If you have an M1/M2/M3/M4 Pro or Max, push CPU + memory higher.
 The Cilium agent alone wants ~512 MB per node × 3 nodes; add
@@ -53,9 +53,7 @@ a mirror via `~/.docker/daemon.json`:
 
 ```json
 {
-  "registry-mirrors": [
-    "https://your-mirror.example.com"
-  ]
+  "registry-mirrors": ["https://your-mirror.example.com"]
 }
 ```
 
@@ -98,15 +96,15 @@ docker network ls            # before ./up.sh: just defaults
 
 ## When things go sideways
 
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| `./up.sh` hangs at Cilium install | Resource starvation | Bump CPU/memory in Docker Desktop |
-| ArgoCD apps stuck in Progressing | Same as above | Same as above |
-| `kubectl get pods -A` shows lots of Pending | Resource starvation | Same as above |
-| `docker ps` shows containers exiting | OOM | Bump memory, drop a node from k3d-config (`agents: 1`) |
-| Slow image pulls | Network or no registry mirror | Configure registry mirror above |
-| "context k3d-zeta-dev not found" | k3d cluster gone | Run `./up.sh` again |
-| Docker Desktop won't start | Various | `~/Library/Containers/com.docker.docker → Logs/` |
+| Symptom                                     | Likely cause                  | Fix                                                    |
+| ------------------------------------------- | ----------------------------- | ------------------------------------------------------ |
+| `./up.sh` hangs at Cilium install           | Resource starvation           | Bump CPU/memory in Docker Desktop                      |
+| ArgoCD apps stuck in Progressing            | Same as above                 | Same as above                                          |
+| `kubectl get pods -A` shows lots of Pending | Resource starvation           | Same as above                                          |
+| `docker ps` shows containers exiting        | OOM                           | Bump memory, drop a node from k3d-config (`agents: 1`) |
+| Slow image pulls                            | Network or no registry mirror | Configure registry mirror above                        |
+| "context k3d-zeta-dev not found"            | k3d cluster gone              | Run `./up.sh` again                                    |
+| Docker Desktop won't start                  | Various                       | `~/Library/Containers/com.docker.docker → Logs/`       |
 
 ## Treating Docker as shared substrate
 
@@ -120,7 +118,7 @@ down to fit:
 
 ```yaml
 # k3d-config.yaml
-agents: 1   # instead of 2, halves the memory pressure
+agents: 1 # instead of 2, halves the memory pressure
 ```
 
 Single-node dev still reconciles the App-of-Apps correctly; just

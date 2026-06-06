@@ -1,17 +1,17 @@
 import { equal, ok, throws } from "node:assert/strict";
 import { test } from "node:test";
 
-import {
-  WorkBatchState,
-  assertWorkBatchTransition,
-  isTerminalWorkBatch,
-  legalNextBatchStates,
-} from "../src/index.ts";
+import { WorkBatchState, assertWorkBatchTransition, isTerminalWorkBatch, legalNextBatchStates } from "../src/index.ts";
 
 test("the batch lifecycle advances created → … → active → completion_check → done", () => {
   const path: WorkBatchState[] = [
-    WorkBatchState.Created, WorkBatchState.Scoped, WorkBatchState.CapacityPlanned,
-    WorkBatchState.Scheduled, WorkBatchState.Active, WorkBatchState.CompletionCheck, WorkBatchState.Done,
+    WorkBatchState.Created,
+    WorkBatchState.Scoped,
+    WorkBatchState.CapacityPlanned,
+    WorkBatchState.Scheduled,
+    WorkBatchState.Active,
+    WorkBatchState.CompletionCheck,
+    WorkBatchState.Done,
   ];
   for (let i = 0; i < path.length - 1; i += 1) {
     assertWorkBatchTransition(path[i]!, path[i + 1]!); // must not throw

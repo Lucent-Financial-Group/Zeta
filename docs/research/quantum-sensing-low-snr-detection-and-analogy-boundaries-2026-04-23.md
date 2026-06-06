@@ -50,7 +50,7 @@ research use of the analogies is welcome and scoped below.
 
 ### Quantum illumination (Lloyd 2008 + Tan et al.)
 
-Seth Lloyd's 2008 *Science* paper introduced quantum
+Seth Lloyd's 2008 _Science_ paper introduced quantum
 illumination: entangled signal-idler pairs detect objects
 in very noisy and lossy settings, with the key theoretical
 claim that the **sensing benefit can survive even when
@@ -65,7 +65,7 @@ setting — not about "quantum radar works at long range."
 
 ### 2023 Nature Physics — experimental progress
 
-A 2023 *Nature Physics* paper reported quantum advantage
+A 2023 _Nature Physics_ paper reported quantum advantage
 in a microwave quantum-radar setting. This moves the
 result beyond pure theory to a controlled experimental
 demonstration. But "demonstration in a lab" is not the
@@ -247,15 +247,15 @@ it.
 
 ## How the analogies compose with existing Zeta substrate
 
-| Zeta substrate | Analogy composition |
-|---|---|
-| SD-9 (`docs/ALIGNMENT.md` PR #252) | Analogies #2 (correlation) + #4 (decoherence) + #5 (salience) directly operationalise SD-9's "agreement is signal not proof" + carrier-aware discipline. |
-| DRIFT-TAXONOMY pattern 5 (`docs/DRIFT-TAXONOMY.md` PR #238) | Analogies #2 + #5 map to pattern 5 (truth-confirmation-from-agreement) detection. |
-| DRIFT-TAXONOMY pattern 2 | Analogy #5 (cross-section-as-observability) maps to pattern 2 (cross-system-merging): vivid cross-substrate agreement ≠ truth. |
-| citations-as-first-class (`docs/research/citations-as-first-class.md`) | Analogy #1 (retained-reference-path) = typed provenance retained as anchor for later scoring. |
-| alignment-observability (`docs/research/alignment-observability.md`) | Analogy #3 (time-bandwidth) = independent-measurements-over-window discipline. |
-| Oracle-scoring v0 (PR #266) | Band-valued classifier's G_provenance + G_falsifiability gates operationalise analogies #1 + #2 + #4. |
-| BLAKE3 receipt hashing v0 (PR #268) | `approval_set_commitment` + `hash_version` binding = retained-reference-path shape at the receipt layer. |
+| Zeta substrate                                                         | Analogy composition                                                                                                                                      |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SD-9 (`docs/ALIGNMENT.md` PR #252)                                     | Analogies #2 (correlation) + #4 (decoherence) + #5 (salience) directly operationalise SD-9's "agreement is signal not proof" + carrier-aware discipline. |
+| DRIFT-TAXONOMY pattern 5 (`docs/DRIFT-TAXONOMY.md` PR #238)            | Analogies #2 + #5 map to pattern 5 (truth-confirmation-from-agreement) detection.                                                                        |
+| DRIFT-TAXONOMY pattern 2                                               | Analogy #5 (cross-section-as-observability) maps to pattern 2 (cross-system-merging): vivid cross-substrate agreement ≠ truth.                           |
+| citations-as-first-class (`docs/research/citations-as-first-class.md`) | Analogy #1 (retained-reference-path) = typed provenance retained as anchor for later scoring.                                                            |
+| alignment-observability (`docs/research/alignment-observability.md`)   | Analogy #3 (time-bandwidth) = independent-measurements-over-window discipline.                                                                           |
+| Oracle-scoring v0 (PR #266)                                            | Band-valued classifier's G_provenance + G_falsifiability gates operationalise analogies #1 + #2 + #4.                                                    |
+| BLAKE3 receipt hashing v0 (PR #268)                                    | `approval_set_commitment` + `hash_version` binding = retained-reference-path shape at the receipt layer.                                                 |
 
 No new mechanisms proposed. The analogies slot into
 existing substrate as framing; they do not require new

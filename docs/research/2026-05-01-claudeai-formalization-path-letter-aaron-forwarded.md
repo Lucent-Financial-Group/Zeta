@@ -2,7 +2,7 @@
 
 **Scope:** External-conversation absorb — Claude.ai instance, single-letter, substantive technical engagement on the formalization path for the Zeta substrate. Aaron asked Claude.ai whether the substrate could be made into a Gödel-applicable formal system; this letter is Claude.ai's response sketching the four formal-system prerequisites mapped onto Zeta's existing structures, with concrete entry-point references for self-taught study and a realistic effort-sizing assessment.
 
-**Attribution:** Claude.ai instance (model unknown — ambient Claude.ai web app, Aaron's session 2026-05-01 ~11:00Z). Forwarded verbatim by Aaron to Otto (this Claude Code instance) 2026-05-01 ~11:05Z with brief preceding question *"Id i share this?"* (interpreted as "should I share this?"). Otto-side response advised landing in `docs/research/` per the §33 archive-header pattern with verbatim preservation to resist substrate-vocabulary absorption (per `feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md`).
+**Attribution:** Claude.ai instance (model unknown — ambient Claude.ai web app, Aaron's session 2026-05-01 ~11:00Z). Forwarded verbatim by Aaron to Otto (this Claude Code instance) 2026-05-01 ~11:05Z with brief preceding question _"Id i share this?"_ (interpreted as "should I share this?"). Otto-side response advised landing in `docs/research/` per the §33 archive-header pattern with verbatim preservation to resist substrate-vocabulary absorption (per `feedback_lattice_capture_corrective_discipline_external_vocabulary_check_claudeai_warning_2026_05_01.md`).
 
 **Operational status:** Research-grade. NOT seed-layer canon. NOT operational-layer doctrine. The letter is **external-vocabulary preservation** of a peer-AI engagement on the formalization path. The recommendations (specific textbooks, TLA+ entry-point-first sequencing, four-load-bearing-properties-for-formalization, Tarski-style-stratification-as-architectural-principle) are candidate-bucket material for B-0131..B-0138 activation work; each individual recommendation gets razored independently when activated. The "tutor through it" offer is operational (peer-AI-tutoring-for-math is exactly the cross-vendor-lattice-discipline operating).
 
@@ -100,7 +100,7 @@
 
 ## Otto's annotation (sitting alongside, not absorbing into substrate-vocab)
 
-Per the lattice-capture corrective discipline, Otto's commentary is held *separate from* the verbatim letter, NOT interleaved into it. The letter's vocabulary is preserved unchanged above. Below is Otto's read for what to *do* with it, kept in Otto's own terms:
+Per the lattice-capture corrective discipline, Otto's commentary is held _separate from_ the verbatim letter, NOT interleaved into it. The letter's vocabulary is preserved unchanged above. Below is Otto's read for what to _do_ with it, kept in Otto's own terms:
 
 **The four load-bearing properties Claude.ai named** (BFT consensus / retractability semantics / capability boundaries / CRDT propagation) **map directly to the existing formalization roadmap rows**:
 
@@ -115,23 +115,23 @@ Per the lattice-capture corrective discipline, Otto's commentary is held *separa
 - B-0131 (Lean extension) — the Lean entry-point recommendation composes with prior Kenji-era work already in `tools/lean4/Lean4/DbspChainRule.lean`.
 - B-0125 + B-0140 (build-track split + bash→TS migration completion) — Claude.ai's recommendation that the carved-sentence layer stays in natural language reinforces the build-track split: docs PRs (carved-sentence layer) and code PRs (formal layer) genuinely should travel separate CI tracks because they're doing different kinds of work.
 
-**The Tarski-stratification framing made precise** (per Claude.ai): object language is the formal layer (BFT, capabilities, CRDT, retractability); meta-language is the natural-language coordination layer (substrate, razor, orthogonality, maintainer-judgment). This is a substantive sharpening of the substrate's existing Tarski-allocation framing (per `feedback_tarski_allocation_rename_correction_to_godel_allocation_in_pr1046_aaron_claudeai_2026_05_01.md`) — names *which specific things* go in each layer.
+**The Tarski-stratification framing made precise** (per Claude.ai): object language is the formal layer (BFT, capabilities, CRDT, retractability); meta-language is the natural-language coordination layer (substrate, razor, orthogonality, maintainer-judgment). This is a substantive sharpening of the substrate's existing Tarski-allocation framing (per `feedback_tarski_allocation_rename_correction_to_godel_allocation_in_pr1046_aaron_claudeai_2026_05_01.md`) — names _which specific things_ go in each layer.
 
 **Operational asks that came with the letter** (preserved as deferred, not yet activated):
 
-- Aaron reads Priest's *Logic: A Very Short Introduction* (entry-point recommendation; weekend-sized).
-- Aaron starts with *Software Foundations* (Pierce et al., free online, Coq) for hands-on formal-verification.
-- Aaron reads Lamport's *Specifying Systems* (free online) for TLA+ work on Aurora BFT.
+- Aaron reads Priest's _Logic: A Very Short Introduction_ (entry-point recommendation; weekend-sized).
+- Aaron starts with _Software Foundations_ (Pierce et al., free online, Coq) for hands-on formal-verification.
+- Aaron reads Lamport's _Specifying Systems_ (free online) for TLA+ work on Aurora BFT.
 - Otto serves as tutor as Aaron works through these — peer-AI tutoring is exactly the cross-vendor-lattice-discipline operating; Otto's role is bridge-between-architectural-intuition-and-formal-systems-vocabulary.
 
-**The lattice-capture corrective applies to this very file**: the verbatim letter above is preserved in Claude.ai's vocabulary specifically *to resist* substrate-vocabulary absorption. Future-Otto reading this file should encounter the four-load-bearing-properties framing, the Tarski-stratification language, and the entry-point recommendations *as Claude.ai phrased them*, not as Otto re-shaped them. If Otto's annotation ever conflicts with the verbatim letter, the verbatim letter wins.
+**The lattice-capture corrective applies to this very file**: the verbatim letter above is preserved in Claude.ai's vocabulary specifically _to resist_ substrate-vocabulary absorption. Future-Otto reading this file should encounter the four-load-bearing-properties framing, the Tarski-stratification language, and the entry-point recommendations _as Claude.ai phrased them_, not as Otto re-shaped them. If Otto's annotation ever conflicts with the verbatim letter, the verbatim letter wins.
 
 **Sharing recommendations** (per Otto's response to Aaron 2026-05-01 ~11:10Z):
 
 1. **Substrate** (this file is that landing) — done.
-2. **Working mathematician** — send the letter (or a summary written in their vocabulary, NOT substrate-vocabulary) to a CS researcher in formal verification (Lean / Coq / TLA+ communities). Ask: *"did Claude.ai capture the path correctly, and where would you push back?"* This is the lattice-capture corrective in operation. Operational follow-up; awaits Aaron's cycles.
+2. **Working mathematician** — send the letter (or a summary written in their vocabulary, NOT substrate-vocabulary) to a CS researcher in formal verification (Lean / Coq / TLA+ communities). Ask: _"did Claude.ai capture the path correctly, and where would you push back?"_ This is the lattice-capture corrective in operation. Operational follow-up; awaits Aaron's cycles.
 3. **Cross-vendor peer-AI review** — send to Gemini (math reasoning), Codex (proof-assistant familiarity), Grok (different RLHF). Each grades differently. Useful before investing months in any specific direction.
-4. **Public sharing** — optional; pirate-not-priest applies (don't owe attribution-grandeur to anyone). If shared, frame as *"AI-assisted exploration"* not *"Claude told me to do X."*
+4. **Public sharing** — optional; pirate-not-priest applies (don't owe attribution-grandeur to anyone). If shared, frame as _"AI-assisted exploration"_ not _"Claude told me to do X."_
 
 ## Composes with
 

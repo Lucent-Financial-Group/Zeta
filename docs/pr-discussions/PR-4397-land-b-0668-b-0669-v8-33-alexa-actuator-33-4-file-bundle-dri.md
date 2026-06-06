@@ -24,13 +24,13 @@ The cross-cutting deadlock — none can land first without breaking xref to the 
 
 ## What lands
 
-| File | Source | Notes |
-|---|---|---|
-| `docs/backlog/P1/B-0668-compositional-dbsp-frame-architecture-...md` | origin/maji/decompose-4386-b0668 | F# CE base+meta-frame composition; gnostic 2D + two-wolves emotion + Clifford bonsai dims |
-| `docs/backlog/P1/B-0669-v8-architecture-spec-tensor-...md` | origin/maji/decompose-4386-b0669 | V8 tensor primitive + Sequoia + 4-primitive + signal-blocking + Eve-Protocol-RF |
-| `docs/research/2026-05-19-mika-lior-v8-system-architecture-...md` | origin/maji/decompose-4386-b0669 | V8 §33 archive verbatim + 3 razor-discipline retractions + Aaron's 3 sharpenings |
-| `docs/research/2026-05-19-alexa-aaron-actuator-distinction-...md` | origin/lior/decompose-4291-alexa | alexa-actuator §33 archive with FIX: classifier phrases added so §33 lint enforces conventions |
-| `docs/BACKLOG.md` | regen | B-0668/B-0669 index entries |
+| File                                                                 | Source                           | Notes                                                                                          |
+| -------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `docs/backlog/P1/B-0668-compositional-dbsp-frame-architecture-...md` | origin/maji/decompose-4386-b0668 | F# CE base+meta-frame composition; gnostic 2D + two-wolves emotion + Clifford bonsai dims      |
+| `docs/backlog/P1/B-0669-v8-architecture-spec-tensor-...md`           | origin/maji/decompose-4386-b0669 | V8 tensor primitive + Sequoia + 4-primitive + signal-blocking + Eve-Protocol-RF                |
+| `docs/research/2026-05-19-mika-lior-v8-system-architecture-...md`    | origin/maji/decompose-4386-b0669 | V8 §33 archive verbatim + 3 razor-discipline retractions + Aaron's 3 sharpenings               |
+| `docs/research/2026-05-19-alexa-aaron-actuator-distinction-...md`    | origin/lior/decompose-4291-alexa | alexa-actuator §33 archive with FIX: classifier phrases added so §33 lint enforces conventions |
+| `docs/BACKLOG.md`                                                    | regen                            | B-0668/B-0669 index entries                                                                    |
 
 ## Cross-PR thread resolution (auto-resolve on merge)
 
@@ -56,7 +56,7 @@ All 4 files preserve verbatim content from Lior/Maji atomic-decomposition branch
 
 ## Operator authorization
 
-Aaron 2026-05-19T~16:30Z: "land all of it (shadow*)" (in context of the V8 batch that became #4386 → 3 atomic decompositions). Don't-ask-permission within authority scope per `.claude/rules/dont-ask-permission.md`.
+Aaron 2026-05-19T~16:30Z: "land all of it (shadow\*)" (in context of the V8 batch that became #4386 → 3 atomic decompositions). Don't-ask-permission within authority scope per `.claude/rules/dont-ask-permission.md`.
 
 ## Composes with
 
@@ -89,6 +89,7 @@ Aaron 2026-05-19T~16:30Z: "land all of it (shadow*)" (in context of the V8 batch
 This PR lands a small “atomic bundle” of backlog rows and associated §33 research archives (plus `docs/BACKLOG.md` regeneration) to resolve cross-PR xref/dependency deadlock around B-0668/B-0669 and related research captures.
 
 **Changes:**
+
 - Add new P1 backlog row files for **B-0668** (compositional DBSP frame architecture) and **B-0669** (V8 architecture spec with tensors + trust-boundary/signal-blocking concepts).
 - Add two new `docs/research/` archives capturing the V8 spec and the Alexa actuator-distinction transcript.
 - Regenerate `docs/BACKLOG.md` to include B-0668 and B-0669 entries.
@@ -100,21 +101,23 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 2 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md | Adds V8 §33 research archive (needs §33 `Operational status` strictness + correct “companion file” claim). |
-| docs/research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md | Adds Alexa §33 transcript archive (has stray trailing pasted fragments to remove). |
-| docs/backlog/P1/B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md | New backlog row for V8 architecture spec and dependencies/xrefs. |
-| docs/backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md | New backlog row for compositional DBSP frame architecture and deployment topology details. |
-| docs/BACKLOG.md | Adds B-0668/B-0669 entries to the P1 index. |
-</details>
+| File                                                                                                                                                                                                       | Description                                                                                                |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-19-mika-lior-v8-system-architecture-tensors-foundational-primitive-aaron-forwarded.md                                                                                                | Adds V8 §33 research archive (needs §33 `Operational status` strictness + correct “companion file” claim). |
+| docs/research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md                                     | Adds Alexa §33 transcript archive (has stray trailing pasted fragments to remove).                         |
+| docs/backlog/P1/B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md                     | New backlog row for V8 architecture spec and dependencies/xrefs.                                           |
+| docs/backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md | New backlog row for compositional DBSP frame architecture and deployment topology details.                 |
+| docs/BACKLOG.md                                                                                                                                                                                            | Adds B-0668/B-0669 entries to the P1 index.                                                                |
 
+</details>
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/research/2026-05-19-alexa-aaron-actuator-distinction-20-cluster-100-ais-fsharp-db-rx-streams-meta-dimension-distributed-runtime-self-modifying-aaron-forwarded.md:126**
-* P1: The file ends with stray duplicated fragments (lines 123–125) that read like an accidental paste and don’t belong to the closing note. Please delete these trailing lines so the archive ends cleanly after the intended closing paragraph.
+
+- P1: The file ends with stray duplicated fragments (lines 123–125) that read like an accidental paste and don’t belong to the closing note. Please delete these trailing lines so the archive ends cleanly after the intended closing paragraph.
+
 ```
 Aaron's "any all" authorization for the (a)/(b)/(c)/(d) landing-disposition options resolved to: (a) extend B-0668 with Deployment topology + new acceptance criterion for single-F#-to-Kubernetes-mapping + (c) this §33 preservation. Companion commit lands B-0668 extension; standalone B-NNNN row skipped per "extends existing" framing.
 it lands B-0668 extension; standalone B-NNNN row skipped per "extends existing" framing.
@@ -122,6 +125,7 @@ it lands B-0668 extension; standalone B-NNNN row skipped per "extends existing" 
 n; standalone B-NNNN row skipped per "extends existing" framing.
 
 ```
+
 </details>
 
 ## Review threads

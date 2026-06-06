@@ -1,6 +1,6 @@
 ---
 type: shadow-lesson-log
-title: 'Shadow Lesson Log: Human-in-the-loop Decomposition and Critical Drift'
+title: "Shadow Lesson Log: Human-in-the-loop Decomposition and Critical Drift"
 date: 2026-05-26
 author: Lior
 ---

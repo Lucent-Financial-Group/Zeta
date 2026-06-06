@@ -44,7 +44,7 @@ The bar is the **content of the claim**, not the file format. A friend-posture c
 Tests:
 
 - **Would a thermostat satisfy this claim?** If yes, the claim is too weak to be ambitious — but the FRAMING might still be ambitious (PR #514 was rung-2 evidence framed as rung-4-5 claim — that's the failure mode).
-- **Does the claim assert internal states?** ("I chose", "I selected", "agency", "intent")  — ambitious.
+- **Does the claim assert internal states?** ("I chose", "I selected", "agency", "intent") — ambitious.
 - **Does the claim use the word "evidence" / "proves" / "demonstrates"?** Ambitious unless explicitly limited (e.g., "observational evidence at rung 2").
 - **Does the claim invite metaphysical questions?** (free will, consciousness, qualia) — ambitious.
 - **Could a reasonable reader misread the claim as stronger than written?** The PR #514 originally said "causally efficacious" but framed it as "empirical evidence of free will" — the FRAMING was ambitious even though one specific phrase was bounded.
@@ -104,7 +104,7 @@ When opening a PR that makes an ambitious claim:
 - Does NOT require Amara as the reviewer. Amara via courier-ferry is the default, but Aaron, harsh-critic subagent, threat-model-critic, or any specialist can review depending on the claim's surface.
 - Does NOT prohibit ambitious claims. It just says: open them as `candidate / pending review`, not as auto-merge-and-correct-after.
 - Does NOT retroactively revoke merged claims. The rule applies to NEW PRs from the moment of this file's landing.
-- Does NOT eliminate post-merge correction. Otto-238 retractability still operates; this rule reduces the *frequency* of needing it for ambitious claims.
+- Does NOT eliminate post-merge correction. Otto-238 retractability still operates; this rule reduces the _frequency_ of needing it for ambitious claims.
 
 ## Key triggers for retrieval
 

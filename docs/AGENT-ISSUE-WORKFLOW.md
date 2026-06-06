@@ -17,15 +17,15 @@ Aaron 2026-04-22, setting scope:
 
 Every unit of factory work lives on two surfaces:
 
-| Surface | Role | Decay risk |
-|---|---|---|
-| **Active workflow** — claims, discussion, labels, assignment, parallelization locks | Tells you what somebody is working on right now | High. Platform / org / auth changes. |
-| **Durable git-history** — in-repo markdown (`docs/BACKLOG.md`, `docs/BUGS.md`, `docs/HUMAN-BACKLOG.md`, `docs/FACTORY-HYGIENE.md`, `docs/DEBT.md` for accidental debt, `docs/INTENTIONAL-DEBT.md` for declared shortcuts) | Tells you what the project ever did; mineable by `git log` / `git blame` / `git diff` across years | Zero while the repo exists. |
+| Surface                                                                                                                                                                                                                   | Role                                                                                               | Decay risk                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **Active workflow** — claims, discussion, labels, assignment, parallelization locks                                                                                                                                       | Tells you what somebody is working on right now                                                    | High. Platform / org / auth changes. |
+| **Durable git-history** — in-repo markdown (`docs/BACKLOG.md`, `docs/BUGS.md`, `docs/HUMAN-BACKLOG.md`, `docs/FACTORY-HYGIENE.md`, `docs/DEBT.md` for accidental debt, `docs/INTENTIONAL-DEBT.md` for declared shortcuts) | Tells you what the project ever did; mineable by `git log` / `git blame` / `git diff` across years | Zero while the repo exists.          |
 
 The durable-git-history surface is always **required** — it is
-the factory's research substrate (Aaron 2026-04-22: *"we should
+the factory's research substrate (Aaron 2026-04-22: _"we should
 run both github tracking and issues for this project long term
-becasue we want the git histroy too for reserach purposes"*).
+becasue we want the git histroy too for reserach purposes"_).
 
 The active-workflow surface is **one of three adapter choices**
 picked at setup time:
@@ -73,7 +73,7 @@ picked at setup time:
   `claim/<slug>` branch pushed to `origin`. Parallel
   agents discover live claims by listing remote claim
   branches (`git fetch origin &&
-  git branch -r --list 'origin/claim/*'`) and reading
+git branch -r --list 'origin/claim/*'`) and reading
   the claim file directly from the remote ref
   (`git show origin/claim/<slug>:docs/claims/<slug>.md`);
   `ls docs/claims/` on `main` only shows merged-but-not-
@@ -110,12 +110,12 @@ along with the task URL. The table below summarises the
 mechanism per adapter; the git-native row is the substrate
 the other two adapters mirror.
 
-| Adapter | Claim mechanism | Release mechanism | Lookup for parallel agent |
-|---|---|---|---|
-| GitHub Issues | Comment `claimed by session <id> <UTC-ts> — ETA <...>` + add `in-progress` label | Comment `releasing — landed in <SHA>` + remove label + close (if done) | `gh issue list --label in-progress` |
-| Jira | Transition to `In Progress` state + assign to self + add comment | Transition to `Done` / `Released` + comment with commit | `jql: status = "In Progress"` |
-| Git-native | Claim file at `docs/claims/<slug>.md` on a `claim/<slug>` branch pushed to `origin` (directory tracked on `main`, `README.md` placeholder); commit `claim: <slug> - <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> - landed in <SHA>` | `git fetch origin && git branch -r --list 'origin/claim/*'` (active claims) plus `ls docs/claims/` (claims merged to `main`) |
-| Git-native (legacy row-marker variant) | Short commit touching the row: `BACKLOG: claim row #42 — session <id> <UTC-ts>` | Commit touching the row: `BACKLOG: release row #42 — landed in <SHA>` | `git log --grep="claim row" docs/BACKLOG.md` |
+| Adapter                                | Claim mechanism                                                                                                                                                                                                                                            | Release mechanism                                                      | Lookup for parallel agent                                                                                                    |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Issues                          | Comment `claimed by session <id> <UTC-ts> — ETA <...>` + add `in-progress` label                                                                                                                                                                           | Comment `releasing — landed in <SHA>` + remove label + close (if done) | `gh issue list --label in-progress`                                                                                          |
+| Jira                                   | Transition to `In Progress` state + assign to self + add comment                                                                                                                                                                                           | Transition to `Done` / `Released` + comment with commit                | `jql: status = "In Progress"`                                                                                                |
+| Git-native                             | Claim file at `docs/claims/<slug>.md` on a `claim/<slug>` branch pushed to `origin` (directory tracked on `main`, `README.md` placeholder); commit `claim: <slug> - <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> - landed in <SHA>`      | `git fetch origin && git branch -r --list 'origin/claim/*'` (active claims) plus `ls docs/claims/` (claims merged to `main`) |
+| Git-native (legacy row-marker variant) | Short commit touching the row: `BACKLOG: claim row #42 — session <id> <UTC-ts>`                                                                                                                                                                            | Commit touching the row: `BACKLOG: release row #42 — landed in <SHA>`  | `git log --grep="claim row" docs/BACKLOG.md`                                                                                 |
 
 ### Claim windows and stale-claim force-release
 
@@ -155,20 +155,20 @@ row is what survives for research.
 
 Keep the set small. Add by ADR, not ad-hoc.
 
-| Tag | Meaning |
-|---|---|
-| `bug` | Correctness / spec / invariant break |
-| `backlog` | Any non-bug work unit |
-| `human-ask` | Needs the project maintainer's sign-off |
-| `hygiene` | `docs/FACTORY-HYGIENE.md` row work |
-| `research` | Produces `docs/research/<slug>.md` |
-| `skill` | Touches `.claude/skills/**` (or equivalent in other harnesses) |
-| `P0` / `P1` / `P2` / `P3` | Priority tier |
-| `S` / `M` / `L` | Effort estimate |
-| `in-progress` | Currently claimed |
-| `blocked` | Waiting on an external signal (add a comment naming the signal) |
-| `factory-internal` | Scope limited to the factory; does not ship to project-under-construction |
-| `shipped-scope` | Visible to adopters of any Zeta library |
+| Tag                       | Meaning                                                                   |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `bug`                     | Correctness / spec / invariant break                                      |
+| `backlog`                 | Any non-bug work unit                                                     |
+| `human-ask`               | Needs the project maintainer's sign-off                                   |
+| `hygiene`                 | `docs/FACTORY-HYGIENE.md` row work                                        |
+| `research`                | Produces `docs/research/<slug>.md`                                        |
+| `skill`                   | Touches `.claude/skills/**` (or equivalent in other harnesses)            |
+| `P0` / `P1` / `P2` / `P3` | Priority tier                                                             |
+| `S` / `M` / `L`           | Effort estimate                                                           |
+| `in-progress`             | Currently claimed                                                         |
+| `blocked`                 | Waiting on an external signal (add a comment naming the signal)           |
+| `factory-internal`        | Scope limited to the factory; does not ship to project-under-construction |
+| `shipped-scope`           | Visible to adopters of any Zeta library                                   |
 
 Label sprawl is a hygiene gap. Before adding a new label,
 ask: can this be a comment or a column in the markdown row?

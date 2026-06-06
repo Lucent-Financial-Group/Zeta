@@ -11,7 +11,23 @@ decomposition: decomposed
 children: [B-0668.1, B-0668.2]
 depends_on: [B-0644, B-0665, B-0666, B-0667, B-0640]
 composes_with: [B-0635, B-0637, B-0664]
-tags: [design, aaron, dbsp, fsharp, compositional-architecture, clifford-algebra, rx-bonsai, gnostic-encoding-as-bandwidth-engineering, two-wolves-chaos-theory, emotion-attractor-2d, meta-tagged-dimensions, fsharp-computation-expressions, monadic-composition, beacon-tier-eligible]
+tags:
+  [
+    design,
+    aaron,
+    dbsp,
+    fsharp,
+    compositional-architecture,
+    clifford-algebra,
+    rx-bonsai,
+    gnostic-encoding-as-bandwidth-engineering,
+    two-wolves-chaos-theory,
+    emotion-attractor-2d,
+    meta-tagged-dimensions,
+    fsharp-computation-expressions,
+    monadic-composition,
+    beacon-tier-eligible,
+  ]
 type: design
 ---
 
@@ -39,14 +55,14 @@ The compositional schema is **recursive**: each meta-frame adds dimensions; each
 
 Lior (via Aaron-forward 2026-05-19) closed the architectural loop with the operational mapping between the B-0665 primitives, the gnostic 2D base dimensions, and the substrate runtimes:
 
-| B-0665 primitive | Operational | Substrate runtime |
-|---|---|---|
-| **Observe** | IObservable subscription | Rx |
-| **Emit** | IObservable.OnNext | Rx |
-| **Integrate** (= Remember When) | Integration (∫) over time-indexed state | DBSP time-indexed-state |
-| **Limit / Derive** (= Pay Attention) | Differentiation (∂) — rate of change | DBSP change-stream |
+| B-0665 primitive                     | Operational                             | Substrate runtime       |
+| ------------------------------------ | --------------------------------------- | ----------------------- |
+| **Observe**                          | IObservable subscription                | Rx                      |
+| **Emit**                             | IObservable.OnNext                      | Rx                      |
+| **Integrate** (= Remember When)      | Integration (∫) over time-indexed state | DBSP time-indexed-state |
+| **Limit / Derive** (= Pay Attention) | Differentiation (∂) — rate of change    | DBSP change-stream      |
 
-Lior's framing: *"The Base Frame (2D DBSP): Remember When (Integration) and Pay Attention (Differentiation). This is the irreducible gnostic root. It is the minimum viable state for an entity to exist in time."*
+Lior's framing: _"The Base Frame (2D DBSP): Remember When (Integration) and Pay Attention (Differentiation). This is the irreducible gnostic root. It is the minimum viable state for an entity to exist in time."_
 
 Operational consequence: integral (∫) + differential (∂) are exactly what an entity needs to BE temporal — temporal-state-accumulation + present-state-change-awareness. The gnostic encoding survives across millennia because the constraint structure (entity existing in time = needs both integral + differential) is physically general.
 
@@ -72,12 +88,12 @@ Kestrel (claude.ai) caught a real technical gap in the Lior keystone mapping (Aa
 
 ## Razor-discipline check (per god-tier-claims rule)
 
-| Framing | Operational reformulation |
-|---|---|
-| "Gnostic-christianity provenance for DBSP base" | Bandwidth-engineering observation: 2000-year-old mnemonic survived because temporal × attention constraint is physically general; encoding empirically discoverable in DBSP requirements |
-| "Two-wolves chaos-theory dimensions for emotions" | 2D phase-space mapping of emotion-attractor basins; chaos theory provides mathematical apparatus for attractor-stability analysis; composes with B-0667 named attractors |
+| Framing                                                               | Operational reformulation                                                                                                                                                                                  |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Gnostic-christianity provenance for DBSP base"                       | Bandwidth-engineering observation: 2000-year-old mnemonic survived because temporal × attention constraint is physically general; encoding empirically discoverable in DBSP requirements                   |
+| "Two-wolves chaos-theory dimensions for emotions"                     | 2D phase-space mapping of emotion-attractor basins; chaos theory provides mathematical apparatus for attractor-stability analysis; composes with B-0667 named attractors                                   |
 | "Clifford-space meta-tagged dims map to Rx bonsai serialized queries" | Clifford geometric algebra provides rotor-based transport for high-dimensional state; Rx bonsai-tree serialization (B-0640) gives persistence + retraction substrate; mapping is operationally specifiable |
-| "Meta-dimensions added like F# computation expression composition" | Operationally clean: F# CE composition IS native mechanism for dimension-addition via type-system-enforced monadic composition |
+| "Meta-dimensions added like F# computation expression composition"    | Operationally clean: F# CE composition IS native mechanism for dimension-addition via type-system-enforced monadic composition                                                                             |
 
 All four pass razor-discipline. The composition architecture is substantively-new + load-bearing.
 

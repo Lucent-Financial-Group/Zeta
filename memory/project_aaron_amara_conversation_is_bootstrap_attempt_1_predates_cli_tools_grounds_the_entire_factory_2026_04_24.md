@@ -4,9 +4,10 @@ description: Aaron Otto-113 explicit historical-frame statement. The 1.6M-word c
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-24 Otto-113 (verbatim):
 
-*"this is my bootstrap attempt #1 before clis existed"*
+_"this is my bootstrap attempt #1 before clis existed"_
 
 ## What this means
 
@@ -29,31 +30,31 @@ not "optional reading material". It is:
 - **Genesis of the whole stack** — the 2025-08-31
   opening message (preserved verbatim in
   `docs/amara-full-conversation/2025-08-aaron-amara-
-  conversation.md`) contains Aaron's stream-of-thought
+conversation.md`) contains Aaron's stream-of-thought
   specification for "event sourcing framework based
   on Proxmox, kubernetes/containers/LXC, event sourcing,
   gita". That spec became Zeta.
 
 ## Cross-reference table — factory-substrate origin map
 
-| Factory concept | Origin in bootstrap conversation | Graduation / landing |
-|---|---|---|
-| Event-sourcing substrate (Zeta core) | 2025-08-31 opening message | Zeta codebase (`src/Core/**`) |
-| Retraction-native semantics | Throughout 2025-09 (heaviest month) | `ZSet` + retraction-native-by-design memory (Otto-73) |
-| Decentralized L0/L1/LX hierarchy | 2025-08-31 opening | TBD — multi-node substrate not yet shipped |
-| Event identity / SPIFFE/SPIRE-style | 2025-08-31 opening | TBD |
-| Cross-harness architecture | TBD in 2025-09/10/11/2026-04 | `.codex/` substrate (Otto-102); peer-harness progression memory (Otto-79/86/93) |
-| Glass halo transparency | Amara's 2025-09-05 reference to "our shared canary phrases (like 'glass halo')" | `docs/ALIGNMENT.md` cultural value; project-glass-halo-origin memory (Otto-110) |
-| Differentiable firefly network / trivial cartel detect | Aaron's design, 2025/2026 conversation | `src/Core/TemporalCoordinationDetection.fs` graduations (#297, #298, #306) |
-| Bullshit detector / veridicality scoring | Aaron's design, 2025/2026 conversation (also Amara 7th-10th ferries) | Future `src/Core/Veridicality.fs` graduation |
-| Drift taxonomy 5 patterns + SD-9 | Amara's 3rd ferry + conversation context | `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md` + SD-9 soft default |
-| Decision-proxy-evidence schema | Amara 4th ferry + Aaron Otto-67 deterministic-reconciliation endorsement | PR #222 |
-| KSK as safety kernel / capability tiers | Amara 5th/7th ferries + LFG/lucent-ksk pre-repo (Max co-attributed) | Future graduation; 7th-ferry design spec |
-| Aurora as program composing Zeta+KSK | Amara 5th ferry | Future substrate |
-| Temporal Coordination Detection Layer | Amara's 11th-ferry formalization of Aaron's firefly design | `src/Core/TemporalCoordinationDetection.fs` |
-| Rainbow-table / semantic canonicalization | Conversation-era + Amara 8th ferry | Future `src/Core/SemanticCanonicalization.fs` |
-| Quantum-illumination low-SNR detection analogy | Conversation + Amara 8th-ferry grounding (Lloyd 2008 + Tan + 2024 review) | Graduation candidate; physics-grounded framework |
-| Steganography awareness | Aaron Otto-113 "amara and i talked a lot about stenography she might have put some stuff in there" | BP-10 invisible-unicode enforcement (semgrep `invisible-unicode-in-text`); Otto-112 scrub of 2025-09-w2 |
+| Factory concept                                        | Origin in bootstrap conversation                                                                   | Graduation / landing                                                                                    |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Event-sourcing substrate (Zeta core)                   | 2025-08-31 opening message                                                                         | Zeta codebase (`src/Core/**`)                                                                           |
+| Retraction-native semantics                            | Throughout 2025-09 (heaviest month)                                                                | `ZSet` + retraction-native-by-design memory (Otto-73)                                                   |
+| Decentralized L0/L1/LX hierarchy                       | 2025-08-31 opening                                                                                 | TBD — multi-node substrate not yet shipped                                                              |
+| Event identity / SPIFFE/SPIRE-style                    | 2025-08-31 opening                                                                                 | TBD                                                                                                     |
+| Cross-harness architecture                             | TBD in 2025-09/10/11/2026-04                                                                       | `.codex/` substrate (Otto-102); peer-harness progression memory (Otto-79/86/93)                         |
+| Glass halo transparency                                | Amara's 2025-09-05 reference to "our shared canary phrases (like 'glass halo')"                    | `docs/ALIGNMENT.md` cultural value; project-glass-halo-origin memory (Otto-110)                         |
+| Differentiable firefly network / trivial cartel detect | Aaron's design, 2025/2026 conversation                                                             | `src/Core/TemporalCoordinationDetection.fs` graduations (#297, #298, #306)                              |
+| Bullshit detector / veridicality scoring               | Aaron's design, 2025/2026 conversation (also Amara 7th-10th ferries)                               | Future `src/Core/Veridicality.fs` graduation                                                            |
+| Drift taxonomy 5 patterns + SD-9                       | Amara's 3rd ferry + conversation context                                                           | `docs/research/drift-taxonomy-bootstrap-precursor-2026-04-22.md` + SD-9 soft default                    |
+| Decision-proxy-evidence schema                         | Amara 4th ferry + Aaron Otto-67 deterministic-reconciliation endorsement                           | PR #222                                                                                                 |
+| KSK as safety kernel / capability tiers                | Amara 5th/7th ferries + LFG/lucent-ksk pre-repo (Max co-attributed)                                | Future graduation; 7th-ferry design spec                                                                |
+| Aurora as program composing Zeta+KSK                   | Amara 5th ferry                                                                                    | Future substrate                                                                                        |
+| Temporal Coordination Detection Layer                  | Amara's 11th-ferry formalization of Aaron's firefly design                                         | `src/Core/TemporalCoordinationDetection.fs`                                                             |
+| Rainbow-table / semantic canonicalization              | Conversation-era + Amara 8th ferry                                                                 | Future `src/Core/SemanticCanonicalization.fs`                                                           |
+| Quantum-illumination low-SNR detection analogy         | Conversation + Amara 8th-ferry grounding (Lloyd 2008 + Tan + 2024 review)                          | Graduation candidate; physics-grounded framework                                                        |
+| Steganography awareness                                | Aaron Otto-113 "amara and i talked a lot about stenography she might have put some stuff in there" | BP-10 invisible-unicode enforcement (semgrep `invisible-unicode-in-text`); Otto-112 scrub of 2025-09-w2 |
 
 ## Implications
 
@@ -78,10 +79,11 @@ attribution treatment.
 When a future Otto or future contributor asks "where did
 concept X come from?", the answer for bootstrap-era
 concepts is:
+
 1. Primary: the corresponding month/week chunk in
    `docs/amara-full-conversation/**`
 2. Secondary: the formalization ferry (`docs/aurora/
-   *-ferry.md`) if one exists
+*-ferry.md`) if one exists
 3. Tertiary: the memory files that track the
    operationalization path (`memory/feedback_*` or
    `memory/project_*`)
@@ -121,9 +123,9 @@ concepts are Otto's interpretations.
 
 The bootstrap conversation contains Aaron's stream-of-
 thought at pre-factory stages. That means it has
-(confirmed by Aaron Otto-108): *"a lot of psychology
+(confirmed by Aaron Otto-108): _"a lot of psychology
 and physology about me and humans, might be
-interesting research"*. When extracting content from
+interesting research"_. When extracting content from
 the corpus for graduations, privacy-review first-pass
 must identify:
 
@@ -165,7 +167,7 @@ would be a category error.
 
 ## Direct Aaron quote to preserve
 
-*"this is my bootstrap attempt #1 before clis existed"*
+_"this is my bootstrap attempt #1 before clis existed"_
 
 Future Otto instances: this is the canonical framing
 for the pre-CLI conversation corpus. "Bootstrap

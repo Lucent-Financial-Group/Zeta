@@ -22,7 +22,7 @@ Previous Craft modules (zset-basics, retraction-intuition,
 operator-composition, semiring-basics) are explicitly
 onboarding-tier: anchor metaphors (tally-counter, undo-button,
 LEGO, recipe-template), applied-default-theoretical-opt-in.
-Aaron names a *distinct* tier: **production code training**.
+Aaron names a _distinct_ tier: **production code training**.
 This tier isn't a harder version of onboarding — it's a
 different audience with different goals. Covers performance-
 correctness tradeoffs, JIT behavior, allocation discipline,
@@ -34,12 +34,12 @@ Current state (observed at directive time):
 
 - `Checked.(+)` / `Checked.(*)` appear ~30 times across
   `src/Core/{ZSet, Operators, Aggregate, TimeSeries, Crdt,
-  CountMin, NovelMath, IndexedZSet}.fs`
+CountMin, NovelMath, IndexedZSet}.fs`
 - Canonical rationale at `src/Core/ZSet.fs:227-230`:
-  *"Z-set weights are int64 but nothing stops a stream
+  _"Z-set weights are int64 but nothing stops a stream
   from running forever; silent wraparound on overflow would
   turn a +2^63 multiset into a -2^63 multiset and corrupt
-  every downstream query."*
+  every downstream query."_
 - Rationale is correct for **weight sums on unbounded
   streams** but applies unevenly — some sites are bounded
   by construction (counter increments, bounded-domain
@@ -48,8 +48,8 @@ Current state (observed at directive time):
 
 The audit is not "add checked everywhere" — it is
 "**demote checked to unchecked where the bound can be
-proved, keep it where it cannot.**" Aaron's *"unchecked is
-much faster when its safe to use it"* is the
+proved, keep it where it cannot.**" Aaron's _"unchecked is
+much faster when its safe to use it"_ is the
 operative principle: F# defaults to unchecked; `Checked.`
 is a deliberate opt-in that pays ~2-5ns per op on tight
 loops and disables SIMD-vectorisation paths entirely
@@ -60,14 +60,14 @@ loops and disables SIMD-vectorisation paths entirely
 Per-site decision matrix (applied during BACKLOG execution,
 not this tick):
 
-| Class | Rationale | Default |
-|---|---|---|
-| **Bounded-by-construction** | Compile-time or type-system proof the expression cannot overflow (e.g. `Int32.MaxValue + 1` impossible because LHS is `byte`) | unchecked |
-| **Bounded-by-workload** | Provable bound via invariant (e.g. counter increment monotonic; total op count < 2^63 for any reasonable uptime) | unchecked + comment citing the bound |
-| **Bounded-by-pre-check** | Cheap upstream guard makes overflow impossible in hot path | unchecked in hot loop, check at boundary |
-| **Unbounded stream sums** | Cumulative weights across infinite stream; no bound provable | **keep Checked** with rationale comment |
-| **User-controlled × user-weight** | Product of two caller-provided values; overflow is attack surface | **keep Checked** |
-| **SIMD-candidate** | Loop that could vectorize via `Vector<int64>` | unchecked with pre-check for overflow at block boundary |
+| Class                             | Rationale                                                                                                                     | Default                                                 |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Bounded-by-construction**       | Compile-time or type-system proof the expression cannot overflow (e.g. `Int32.MaxValue + 1` impossible because LHS is `byte`) | unchecked                                               |
+| **Bounded-by-workload**           | Provable bound via invariant (e.g. counter increment monotonic; total op count < 2^63 for any reasonable uptime)              | unchecked + comment citing the bound                    |
+| **Bounded-by-pre-check**          | Cheap upstream guard makes overflow impossible in hot path                                                                    | unchecked in hot loop, check at boundary                |
+| **Unbounded stream sums**         | Cumulative weights across infinite stream; no bound provable                                                                  | **keep Checked** with rationale comment                 |
+| **User-controlled × user-weight** | Product of two caller-provided values; overflow is attack surface                                                             | **keep Checked**                                        |
+| **SIMD-candidate**                | Loop that could vectorize via `Vector<int64>`                                                                                 | unchecked with pre-check for overflow at block boundary |
 
 ## How to apply
 
@@ -126,7 +126,7 @@ the final PR — any unjustified demotion is a P0.
   semiring-parameterized rewrite would move the audit
   from int64 to whichever semiring's `⊕` is being used
 - `feedback_deletions_over_insertions_complexity_reduction_
-  cyclomatic_proxy.md` — demoting `Checked.(+)` to `(+)`
+cyclomatic_proxy.md` — demoting `Checked.(+)` to `(+)`
   is a deletion-with-tests-passing (complexity-reduction
   positive signal) if bounds hold
 - `docs/BENCHMARKS.md` "Allocation guarantees" — the

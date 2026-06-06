@@ -77,7 +77,8 @@ export function createHindsightHttpClient(input: CreateHindsightHttpClientInput)
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ description: `agentic-org memory bank ${bankId}` }),
       });
-      if (!res.ok && res.status !== 409) throw new Error(`hindsight ensureBank failed: ${res.status} ${await res.text()}`);
+      if (!res.ok && res.status !== 409)
+        throw new Error(`hindsight ensureBank failed: ${res.status} ${await res.text()}`);
     },
 
     async retain(bankId: string, items: readonly HindsightRetainItem[]): Promise<{ ids: readonly string[] }> {
@@ -86,13 +87,19 @@ export function createHindsightHttpClient(input: CreateHindsightHttpClientInput)
         headers: { "content-type": "application/json" },
         // async: extraction/embedding happens in the background — retain returns fast
         // (store-everything; the weight engine decides worth later, not the hot path)
-        body: JSON.stringify({ async: true, items: items.map((i) => ({ content: i.content, metadata: i.metadata, tags: i.tags })) }),
+        body: JSON.stringify({
+          async: true,
+          items: items.map((i) => ({ content: i.content, metadata: i.metadata, tags: i.tags })),
+        }),
       });
       const body = await json<{ memory_ids?: string[]; operation_ids?: string[] }>(res, "retain");
       return { ids: body.memory_ids ?? body.operation_ids ?? [] };
     },
 
-    async recall(bankId: string, req: HindsightRecallRequest): Promise<{ results: readonly HindsightRecallCandidate[] }> {
+    async recall(
+      bankId: string,
+      req: HindsightRecallRequest,
+    ): Promise<{ results: readonly HindsightRecallCandidate[] }> {
       const res = await doFetch(`${bankUrl(bankId)}/memories/recall`, {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -148,13 +155,7 @@ function attributionToMetadata(attr: MemoryAttribution, organizationId: string):
 }
 
 function attributionFromMetadata(metadata: Record<string, string>): MemoryAttribution | undefined {
-  const {
-    agentId,
-    hatAssignmentId,
-    projectId,
-    workItemId,
-    promptFlowRunId,
-  } = metadata;
+  const { agentId, hatAssignmentId, projectId, workItemId, promptFlowRunId } = metadata;
   if (
     agentId === undefined ||
     hatAssignmentId === undefined ||
@@ -214,7 +215,10 @@ export function createHindsightMemory(input: CreateHindsightMemoryInput): Memory
 
     async reflect(attribution: MemoryAttribution): Promise<ReflectResult> {
       const bankId = attribution.projectId;
-      const { operationId } = await input.client.reflect(bankId, `Insights for ${attribution.hatAssignmentId} on ${attribution.workItemId}`);
+      const { operationId } = await input.client.reflect(
+        bankId,
+        `Insights for ${attribution.hatAssignmentId} on ${attribution.workItemId}`,
+      );
       return {
         operation: MemoryOperation.Reflect,
         consideredCount: 0,

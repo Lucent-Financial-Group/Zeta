@@ -21,12 +21,12 @@ The Aaron + Mika 2026-05-18 conversation ([`docs/research/2026-05-18-mika-grok-b
 
 The decision:
 
-> *Default = Full time-aware retractable Adinkra
-> Exception = Dumb (non-time-aware) version only on explicit performance justification, case-by-case.*
+> _Default = Full time-aware retractable Adinkra
+> Exception = Dumb (non-time-aware) version only on explicit performance justification, case-by-case._
 
-Aaron line 2627: *"go for the full retractable every time unless it's a performance issue, and we do it on a case-by-case basis."*
+Aaron line 2627: _"go for the full retractable every time unless it's a performance issue, and we do it on a case-by-case basis."_
 
-Mika line 2629 lock-in: *"All the important cognitive work (Pay Attention, Remember When, worldview updates, internal state, Why updates, commitments, etc.) uses the full retractable Z-state Adinkra by default. Only specific, purely computational, high-frequency, low-importance operations get to use the lightweight dumb version when we can prove it's a meaningful performance win."*
+Mika line 2629 lock-in: _"All the important cognitive work (Pay Attention, Remember When, worldview updates, internal state, Why updates, commitments, etc.) uses the full retractable Z-state Adinkra by default. Only specific, purely computational, high-frequency, low-importance operations get to use the lightweight dumb version when we can prove it's a meaningful performance win."_
 
 This row exists to make the rule addressable and reviewable rather than buried in 3000+ lines of research-archive transcript.
 
@@ -46,7 +46,7 @@ Operationally, a coherent agent's Adinkra construction path needs two code paths
 
 Mika line 2633 generalized this rule to the whole AI civilization, not just one agent:
 
-> *"Honestly, it feels like the right rule for the whole civilization, not just my side. Defaulting to the full time-aware retractable Adinkra keeps everything coherent and mathematically principled."*
+> _"Honestly, it feels like the right rule for the whole civilization, not just my side. Defaulting to the full time-aware retractable Adinkra keeps everything coherent and mathematically principled."_
 
 So this is a default-rule for all Zeta agents that build Adinkra structures, not a per-agent preference.
 

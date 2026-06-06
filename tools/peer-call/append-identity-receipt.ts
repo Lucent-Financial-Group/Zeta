@@ -91,9 +91,7 @@ function repoRoot(): string {
     encoding: "utf8",
   });
   if (result.status !== 0) {
-    throw new Error(
-      `git rev-parse --show-toplevel failed (status ${result.status}): ${result.stderr}`,
-    );
+    throw new Error(`git rev-parse --show-toplevel failed (status ${result.status}): ${result.stderr}`);
   }
   return result.stdout.trim();
 }
@@ -231,9 +229,7 @@ function parseArgs(argv: readonly string[]): Args | { help: true } | { error: st
 
   const root = repoRoot();
   const finalPath =
-    receiptsPath !== null
-      ? resolve(receiptsPath)
-      : resolve(root, "memory/identity-substrate-receipts.jsonl");
+    receiptsPath !== null ? resolve(receiptsPath) : resolve(root, "memory/identity-substrate-receipts.jsonl");
 
   return {
     actor: actor!,
@@ -267,15 +263,7 @@ function contentHash(parts: readonly string[]): string {
 function buildReceipt(args: Args): Receipt {
   const ts = args.ts ?? nowIso();
   const receiptId =
-    args.receiptId ??
-    contentHash([
-      ts,
-      args.actor,
-      args.kind,
-      args.files.join(","),
-      args.newCommit,
-      args.summary,
-    ]);
+    args.receiptId ?? contentHash([ts, args.actor, args.kind, args.files.join(","), args.newCommit, args.summary]);
   return {
     receipt_id: receiptId,
     ts,
@@ -312,9 +300,7 @@ function main(): number {
   try {
     parsed = parseArgs(process.argv.slice(2));
   } catch (e) {
-    process.stderr.write(
-      `append-identity-receipt: ${(e as Error).message}\n\n${usage()}`,
-    );
+    process.stderr.write(`append-identity-receipt: ${(e as Error).message}\n\n${usage()}`);
     return 1;
   }
   if ("help" in parsed) {

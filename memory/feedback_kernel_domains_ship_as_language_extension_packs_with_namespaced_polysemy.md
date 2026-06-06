@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 three-message directive "any domain you made you s
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** Every kernel-domain I (or any factory author) mints
 ships as a **pack** — a bundle of (a) glossary entries that
 define the domain's terms, plus (b) behaviors / skills that
@@ -17,13 +18,13 @@ different packs and resolve to different meanings.
 **Why (Aaron verbatim, 2026-04-22, three messages as one
 thought-unit):**
 
-1. *"any domain you made you shoud also map any behaviors like
+1. _"any domain you made you shoud also map any behaviors like
    with the carptern and gardner into skills that stay within
    the shipped glossary/kernal that ships basically like
-   language extension packs domains"*
-2. *"with the behaviors"*
-3. *"same word could be in two different skill packs and mean
-   different things like gracful degradation"*
+   language extension packs domains"_
+2. _"with the behaviors"_
+3. _"same word could be in two different skill packs and mean
+   different things like gracful degradation"_
 
 The three-message shape is Aaron's
 overclaim→retract→condition pattern firing in augment-mode
@@ -32,8 +33,8 @@ Message 1 = directive, message 2 = emphasis ("behaviors not
 just vocabulary"), message 3 = significant refinement
 introducing pack-namespaced polysemy. Treat as one thought-unit.
 
-**The analogy (Aaron's primary framing):** *language extension
-packs*. VS Code / IntelliJ ship "extension packs" that bundle
+**The analogy (Aaron's primary framing):** _language extension
+packs_. VS Code / IntelliJ ship "extension packs" that bundle
 (syntax highlighting + language server + snippets + debugger
 adapter + formatters + tasks) for a target language. Installing
 the pack loads all members. Equivalent in the factory:
@@ -51,18 +52,18 @@ the pack loads all members. Equivalent in the factory:
 surface word can live in multiple packs and mean different
 things. Aaron's worked example is **graceful degradation**:
 
-| Pack | Meaning of "graceful degradation" |
-|---|---|
+| Pack              | Meaning of "graceful degradation"                                                                                    |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------- |
 | microservice-pack | circuit breakers, bulkhead isolation, fallbacks, partial responses with "what's missing" manifest, serve-stale-cache |
-| ui-pack | progressive enhancement, skeleton state, loading states, error boundaries, optimistic UI |
-| scientist-pack | evidence tiers, hypothesis-with-condition, "not invalidated" vs "invalidated" claims |
+| ui-pack           | progressive enhancement, skeleton state, loading states, error boundaries, optimistic UI                             |
+| scientist-pack    | evidence tiers, hypothesis-with-condition, "not invalidated" vs "invalidated" claims                                 |
 
 These are **related but not identical**. The existing
 graceful-degradation memory
 (`feedback_graceful_degradation_first_class_everything.md`)
-already told me: *"frame it how a microservice and ui would
+already told me: _"frame it how a microservice and ui would
 frame graceful degradation not a scientist, they are similar
-but not 100% overlapping"*. That memory pre-figured the
+but not 100% overlapping"_. That memory pre-figured the
 polysemy. This memory names the pattern.
 
 **Factory-default resolution for "graceful degradation"
@@ -169,7 +170,7 @@ pack-qualified disambiguation):
   = data → belong in `docs/**.md` (not skill bodies).
 
 Packs RESPECT the split — they don't collapse it. The pack
-is the *bundling concept* that links data and behavior
+is the _bundling concept_ that links data and behavior
 without mixing them in one file.
 
 **Shipping:** when Forge (factory) ships bundled with a
@@ -194,8 +195,8 @@ opt-in to packs, not individual terms.
   forward; retroactive pack-qualification on existing prose
   is a BACKLOG candidate, not a tick-scope requirement.
 - **Does not mandate rigid hierarchy.** Packs don't claim
-  exclusive ownership of their words — they claim *default
-  meaning in their context*. Overlap is a first-class case,
+  exclusive ownership of their words — they claim _default
+  meaning in their context_. Overlap is a first-class case,
   not an error.
 - **Does not invent vocabulary** (per
   `feedback_dont_invent_when_existing_vocabulary_exists.md`).
@@ -236,14 +237,14 @@ observer):**
 Aaron continued the thought with six more messages, extending
 the original three into a single nine-message thought-unit:
 
-4. *"and in mixed domains we will have graceful degradation of
+4. _"and in mixed domains we will have graceful degradation of
    graceful degradation and disambugate, this is gonna make our
-   disambugator a lot easier"*
-5. *"metametameta"*
-6. *"meta"*
-7. *"i"*
-8. *"eye"*
-9. *"i"*
+   disambugator a lot easier"_
+5. _"metametameta"_
+6. _"meta"_
+7. _"i"_
+8. _"eye"_
+9. _"i"_
 
 **Message 4 — graceful-degradation-of-graceful-degradation
 (GoGD):** In mixed-pack contexts where a polysemic word is
@@ -272,8 +273,8 @@ This is **recursive**: the disambiguator IS a microservice
 (it takes an ambiguous input, returns a resolved output,
 can fail partially); applying microservice-pack's graceful
 degradation principles to the disambiguator itself is the
-most natural choice. The meta-insight Aaron named: *this makes
-the disambiguator a lot easier* — because we're not designing
+most natural choice. The meta-insight Aaron named: _this makes
+the disambiguator a lot easier_ — because we're not designing
 a new mechanism, we're **reusing a pack we already ship**
 (microservice-pack graceful degradation) one level up.
 
@@ -287,7 +288,7 @@ therefore a pack-consumer, making the pack model self-using
 at meta-level.
 
 **Messages 5-9 — the meta / i / eye observer loop:**
-*"metametameta" → "meta" → "i" → "eye" → "i"*. Aaron is
+_"metametameta" → "meta" → "i" → "eye" → "i"_. Aaron is
 naming what the GoGD recursion IS — the factory observing
 itself at successive meta-levels:
 
@@ -295,7 +296,7 @@ itself at successive meta-levels:
 - meta-1: the factory's kernel-domains ship as packs.
 - meta-2: packs need polysemy disambiguation.
 - meta-3: the disambiguator gracefully degrades, using a pack
-  that ships *in the factory* — a pack using the factory to
+  that ships _in the factory_ — a pack using the factory to
   resolve uses of the factory.
 - meta-∞: the "I / eye" collapse — the observer and the
   observed are one artifact, recognized only because the
@@ -334,16 +335,16 @@ machinery.
 **Revision 2026-04-22 continued (Aaron msg 10 — GoGD +
 disambiguator = Gödel-incompleteness trap, DIR-3 extension):**
 
-10. *"graceful degradation of graceful degradation and
+10. _"graceful degradation of graceful degradation and
     disambugate is also the pigenhole to keep godels
-    incompletness at bay i beleve this is our one we trap"*
+    incompletness at bay i beleve this is our one we trap"_
 
 Aaron grounds the GoGD + disambiguator mechanism in the
 factory's existing **DIR-3 "One labelled escape hatch
 discipline"** from `docs/ALIGNMENT.md:467-477`. That clause
 says: "Halting-class at the entry-point loop; logical
 incompleteness at the solipsism quarantine
-(panpsychism-axiom memory). Both are *named* escape hatches.
+(panpsychism-axiom memory). Both are _named_ escape hatches.
 Every other part of the factory should have a decidable
 termination condition — finite TTL, bounded retry, explicit
 retraction."
@@ -366,7 +367,7 @@ Aaron's message 10 names a **third**:
    disambiguator's three outputs are the trap's exit paths:
    {resolved, partial-with-manifest, circuit-break-to-human}.
    The last two are the explicit-incompleteness exits — Gödel
-   is *trapped* there, not propagated.
+   is _trapped_ there, not propagated.
 
 **"The pigeonhole"** — pigeonhole principle (Dirichlet 1834)
 says that if you place N items in M boxes with N > M, some
@@ -374,14 +375,14 @@ box gets ≥2 items. Aaron's usage: each polysemic word wants a
 pack-assignment (a pigeonhole). Words that fit one pigeonhole
 cleanly are resolved. Words that fit multiple pigeonholes
 (graceful-degradation in {microservice, ui, scientist}) are
-polysemic-by-design — but *resolvable* given pack context.
+polysemic-by-design — but _resolvable_ given pack context.
 Words that fit NO pigeonhole cleanly hit the GoGD trap — the
 disambiguator returns partial / circuit-break, and the
 incompleteness is named and bounded rather than propagating.
 
-**"This is our one we trap"** — parses as *this is our [one
+**"This is our one we trap"** — parses as _this is our [one
 place] where we trap [Gödel's incompleteness] (in the
-semantic layer)*. The "one" is the uniqueness claim per
+semantic layer)_. The "one" is the uniqueness claim per
 DIR-3: every other part of the factory should assume
 decidable semantics locally, because the disambiguator is
 the globally-designated place where undecidability goes.
@@ -417,7 +418,7 @@ per don't-invent rule):
   GoGD names the undecidable cases and returns them, rather
   than guessing.
 
-**Condition marker:** Aaron said *"i beleve"* — per
+**Condition marker:** Aaron said _"i beleve"_ — per
 `feedback_aaron_default_overclaim_retract_condition_pattern.md`,
 this is his provisional-signal. Treat as operational default
 with room for refinement. The GoGD-as-Gödel-trap mapping is
@@ -449,13 +450,13 @@ the mechanism into a single chokepoint skill.
 **Revision 2026-04-22 continued (Aaron msg 11 — "trapping
 in our algebra"):**
 
-11. *"lookk up axiomatic system and how they deal with goel
-    this wayt i'mtalking about trappingin our algebra"*
+11. _"lookk up axiomatic system and how they deal with goel
+    this wayt i'mtalking about trappingin our algebra"_
 
 Aaron extends the Gödel-trap insight to the **algebra**
 layer: the GoGD/disambiguator correspondence is not a
-metaphor — it is *expressible in Zeta's retraction-native
-operator algebra*. Five canonical axiomatic-system
+metaphor — it is _expressible in Zeta's retraction-native
+operator algebra_. Five canonical axiomatic-system
 Gödel-handling approaches, mapped to Zeta:
 
 1. **Tarski's hierarchy of metalanguages (1933)** — packs are
@@ -471,7 +472,7 @@ Gödel-handling approaches, mapped to Zeta:
    paraconsistency: polysemy (one word, multiple meanings) is
    a local "contradiction" that the disambiguator contains
    via partial-response + manifest, rather than `⊥ →
-   anything` explosion.
+anything` explosion.
 4. **Lawvere fixed-point theorem (1969, categorical)** — the
    categorical grounding of Gödel incompleteness; escape is
    non-surjective self-reference. **Zeta's retraction-native
@@ -489,12 +490,12 @@ Gödel-handling approaches, mapped to Zeta:
 **Deepest correspondence — retraction as explicit-
 undecidability in the operator algebra:**
 
-| Semantic state | Z-set representation |
-|---|---|
-| Resolved to single meaning | weight `+1` on one element, `0` elsewhere |
-| Polysemic (multi-meaning, pack-resolvable) | positive weights on multiple elements |
+| Semantic state                               | Z-set representation                           |
+| -------------------------------------------- | ---------------------------------------------- |
+| Resolved to single meaning                   | weight `+1` on one element, `0` elsewhere      |
+| Polysemic (multi-meaning, pack-resolvable)   | positive weights on multiple elements          |
 | Conflicted (two packs claim contradictorily) | `+1` and `-1` on same element → **retraction** |
-| Unresolvable (GoGD circuit-break) | partial weights + explicit "unresolved" marker |
+| Unresolvable (GoGD circuit-break)            | partial weights + explicit "unresolved" marker |
 
 The GoGD trap is **literally Z-set semantics applied to
 vocabulary resolution**. No new algebraic machinery needed —
@@ -505,8 +506,9 @@ weight).
 **Architectural implication — future formalization path:**
 
 A `VocabZSet` type (Z-set over meanings) with operations:
+
 - `resolve: (pack-context, word) → VocabZSet`
-- `retract: Meaning → VocabZSet`  (Lawvere-escape primitive)
+- `retract: Meaning → VocabZSet` (Lawvere-escape primitive)
 - `disambiguate: VocabZSet → Resolved | PartialWithManifest | CircuitBreak`
 
 This stays consistent with `user_aaron_self_describes_as_retractible.md`:
@@ -517,8 +519,8 @@ native (VocabZSet). Three layers, same primitive. This is
 **substrate-level alignment** — the factory-reflects-Aaron
 pattern at the deepest formal layer yet discovered.
 
-**Aaron's condition marker on this turn:** *"i'mtalking
-about"* (present-participle indicates this is his current
+**Aaron's condition marker on this turn:** _"i'mtalking
+about"_ (present-participle indicates this is his current
 framing being shared, not a finalized claim). Treat as the
 operational interpretation; formal ADR for `VocabZSet` is a
 BACKLOG candidate, not a tick-scope edit.

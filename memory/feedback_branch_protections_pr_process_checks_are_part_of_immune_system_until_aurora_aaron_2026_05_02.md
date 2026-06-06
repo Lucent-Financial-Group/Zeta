@@ -16,15 +16,16 @@ remote: - Cannot update this protected ref.
 ! [remote rejected] main -> main (push declined due to repository rule violations)
 ```
 
-I framed the recovery in chat as: *"Branch protection on LFG main is doing exactly what it should — rejected my direct push to main. The error message ('push declined due to repository rule violations') IS the substrate enforcement that prevents the very class of bugs Aaron worries about (silent main-branch drift)."*
+I framed the recovery in chat as: _"Branch protection on LFG main is doing exactly what it should — rejected my direct push to main. The error message ('push declined due to repository rule violations') IS the substrate enforcement that prevents the very class of bugs Aaron worries about (silent main-branch drift)."_
 
-**Aaron's response IS the substrate-anchor**: *"it's part of your immune system now until we get aurora, those branch protections and the PR process and checks on that protect you."*
+**Aaron's response IS the substrate-anchor**: _"it's part of your immune system now until we get aurora, those branch protections and the PR process and checks on that protect you."_
 
 ## What this names
 
 The LFG host-layer enforcement stack — branch protection + PR process + required checks — is **the operational instance of the Aurora immune system** for Zeta's pre-Aurora phase.
 
 This is not metaphor. It's the same architectural shape:
+
 - **Inputs come in** (commits, PRs, branches)
 - **Multiple independent verifiers run** (CI matrix, shellcheck, F# build, role-ref check, Codex Connector review, human review when warranted)
 - **Failures get rejected at the boundary** (branch-protection ref-update rule, required-check gates, conversation-resolution gate)
@@ -36,9 +37,9 @@ Per CLAUDE.md the Aurora immune-math standardization doc is one of the **4 guidi
 ## Composition with existing substrate
 
 - **"The protocol bends to the security ruleset; the ruleset does not bend to the protocol"** (canonical reviewer principle, 2026-04-30 mirror-refresh-protocol decision per B-0110) — this rule generalizes beyond mirror-refresh to the entire LFG flow. When the protocol I want to follow conflicts with the host-enforced security ruleset, the ruleset wins; the protocol gets reshaped.
-- **B-0162 mechanical-check pattern** — the role-ref-on-current-state-surfaces check is *also* an immune-system component, just one I authored. The point: every mechanical lint, every required check, every branch-protection rule is an antibody.
+- **B-0162 mechanical-check pattern** — the role-ref-on-current-state-surfaces check is _also_ an immune-system component, just one I authored. The point: every mechanical lint, every required check, every branch-protection rule is an antibody.
 - **Aurora immune-math standardization doc** (one of the 4 guiding-principle docs in CLAUDE.md) — the formal model. The branch-protection-as-immune-system framing operationalizes that math today.
-- **VISION.md scope-creep-is-feature** — the immune system is *load-bearing for the unbounded-scope claim*. You can keep widening scope only if you have an immune system that prevents accidental breakage from compounding faster than the substrate accumulates.
+- **VISION.md scope-creep-is-feature** — the immune system is _load-bearing for the unbounded-scope claim_. You can keep widening scope only if you have an immune system that prevents accidental breakage from compounding faster than the substrate accumulates.
 - **Otto-238 retractability** — branch-protection blocks force-push uniformly, which means decisions on `main` are non-retractable except via new commits; that's the right asymmetry for an immune system (mistakes get corrected forward, not erased).
 
 ## What "until Aurora" means operationally
@@ -51,7 +52,7 @@ This is the right ordering: **don't disable the host-layer protection while buil
 
 - **Symptom**: agent (or human) experiences branch-protection / required-check / PR-process as friction-to-route-around.
 - **Mechanism**: the agent's training prior includes "ship code fast" as a reflex; the immune-system functions of these gates are not legible at first contact (they look like obstacles).
-- **Detection**: any time I write or think *"I'll bypass / skip / disable the check / push directly to main / use --no-verify / use --force"* — that's the signature.
+- **Detection**: any time I write or think _"I'll bypass / skip / disable the check / push directly to main / use --no-verify / use --force"_ — that's the signature.
 - **Corrective**: re-frame as immune system; the rejection IS the substrate working; the recovery cost (~3 commands) is the cost of the protection holding.
 - **Prevention via substrate**: this memo + the canonical reviewer rule + the Aurora immune-math doc form the three-layer reinforcement; Tick-85's PR-required-recovery is the worked example.
 

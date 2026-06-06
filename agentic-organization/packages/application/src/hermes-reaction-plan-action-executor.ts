@@ -18,11 +18,7 @@
 import type { ReactionPlanAction } from "../../domain/src/index.ts";
 import type { HermesRuntime } from "../../hermes/src/index.ts";
 import type { Memory } from "../../memory/src/index.ts";
-import {
-  TelemetrySpanStatusCode,
-  type TelemetryPort,
-  type TelemetrySpan,
-} from "../../observability/src/index.ts";
+import { TelemetrySpanStatusCode, type TelemetryPort, type TelemetrySpan } from "../../observability/src/index.ts";
 import {
   ReactionPlanExecutionStatus,
   type ReactionPlanActionExecutionContext,
@@ -37,11 +33,7 @@ import {
   type ReactionDecisionSummary,
 } from "./reaction-decision.ts";
 import { toAsyncComposer } from "./model-backed-composer.ts";
-import {
-  buildVerificationToolRequest,
-  verificationEvidenceRef,
-  type SandboxToolPort,
-} from "./sandbox-tool.ts";
+import { buildVerificationToolRequest, verificationEvidenceRef, type SandboxToolPort } from "./sandbox-tool.ts";
 import { runWorkItemThroughHermes, type AgentHeartbeatWriter, type WorkItemRunRequest } from "./orchestrate-run.ts";
 
 export type HermesReactionPlanActionExecutorDeps = {
@@ -178,10 +170,7 @@ function createOptionalSpanParent(
   return traceparent === undefined ? {} : { parent: telemetry.extract({ traceparent }) };
 }
 
-function recordHermesRunSpanResult(
-  span: TelemetrySpan | undefined,
-  result: ReactionPlanActionExecutionResult,
-): void {
+function recordHermesRunSpanResult(span: TelemetrySpan | undefined, result: ReactionPlanActionExecutionResult): void {
   if (span === undefined) {
     return;
   }
@@ -204,12 +193,10 @@ function mapActionToRunRequest(
   toolEvidenceRef: string | undefined,
 ): WorkItemRunRequest {
   // evidence = the trigger event + (when the sandbox produced one) the tool result
-  const evidenceRefs = toolEvidenceRef === undefined
-    ? [action.triggerEventId]
-    : [action.triggerEventId, toolEvidenceRef];
-  const learned = toolEvidenceRef === undefined
-    ? decision.learned
-    : `${decision.learned}; sandbox tool produced ${toolEvidenceRef}`;
+  const evidenceRefs =
+    toolEvidenceRef === undefined ? [action.triggerEventId] : [action.triggerEventId, toolEvidenceRef];
+  const learned =
+    toolEvidenceRef === undefined ? decision.learned : `${decision.learned}; sandbox tool produced ${toolEvidenceRef}`;
   return {
     organizationId: action.organizationId,
     workItemId: action.workItemId,

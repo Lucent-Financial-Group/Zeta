@@ -21,14 +21,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Operator-directed substrate-engineering extension with explicit
 scope-bounding:
 
-> *\"Result<TResult, TOutFeedback> x(Input<TInput, TInFeedback> y) is
+> _\"Result<TResult, TOutFeedback> x(Input<TInput, TInFeedback> y) is
 > also important for like streams here is the ownership model.
 > TResult TInput owned by caller, TOutFeedback owned by function,
-> TInFeedback coowned.\"*
+> TInFeedback coowned.\"_
 
-> *\"i think it matters more for streams maybe not a hard shape/rule
+> _\"i think it matters more for streams maybe not a hard shape/rule
 > except when a function gets involved in a stream/observable at
-> this point.\"*
+> this point.\"_
 
 ## What lands
 

@@ -50,9 +50,9 @@ const mockEvolve = async (
   return [
     {
       id: `evolved-cycle-${cycle}`,
-      substrate: { payload: `evolved-${ranked.map(h => h.id).join("+")}` },
+      substrate: { payload: `evolved-${ranked.map((h) => h.id).join("+")}` },
       cycleIndex: cycle,
-      derivedFrom: ranked.map(h => h.id),
+      derivedFrom: ranked.map((h) => h.id),
       composesWith: [],
     },
   ];
@@ -99,7 +99,7 @@ describe("B-0914.2 closed-loop orchestrator", () => {
     };
     const result = await runCycle(hs, callbacks, 0);
     expect(result.ok).toBe(true);
-    expect(rankedCount).toBe(1);  // only h1-good propagated
+    expect(rankedCount).toBe(1); // only h1-good propagated
   });
 
   it("runCycle includes needs-revision with non-empty suggestions", async () => {
@@ -114,13 +114,13 @@ describe("B-0914.2 closed-loop orchestrator", () => {
       evolveSurvivors: mockEvolve,
     };
     await runCycle(hs, callbacks, 0);
-    expect(rankedCount).toBe(2);  // good + revise both propagate; bad excluded
+    expect(rankedCount).toBe(2); // good + revise both propagate; bad excluded
   });
 
   it("runCycle returns InsufficientPropagatable when propagatable below minimum", async () => {
     const hs = [hypothesis("h1", "alpha")];
     const callbacks: LoopCallbacks<SubstrateT> = {
-      dispatchCi: failingCi,  // all fail
+      dispatchCi: failingCi, // all fail
       rankSurvivors: identityRank,
       evolveSurvivors: mockEvolve,
     };
@@ -133,7 +133,9 @@ describe("B-0914.2 closed-loop orchestrator", () => {
   it("runCycle returns CiDispatchFailure on CI exception", async () => {
     const hs = [hypothesis("h1", "alpha")];
     const callbacks: LoopCallbacks<SubstrateT> = {
-      dispatchCi: async () => { throw new Error("ci broken"); },
+      dispatchCi: async () => {
+        throw new Error("ci broken");
+      },
       rankSurvivors: identityRank,
       evolveSurvivors: mockEvolve,
     };
@@ -147,7 +149,9 @@ describe("B-0914.2 closed-loop orchestrator", () => {
     const hs = [hypothesis("h1", "alpha")];
     const callbacks: LoopCallbacks<SubstrateT> = {
       dispatchCi: passingCi,
-      rankSurvivors: async () => { throw new Error("rank broken"); },
+      rankSurvivors: async () => {
+        throw new Error("rank broken");
+      },
       evolveSurvivors: mockEvolve,
     };
     const result = await runCycle(hs, callbacks, 0);
@@ -161,7 +165,9 @@ describe("B-0914.2 closed-loop orchestrator", () => {
     const callbacks: LoopCallbacks<SubstrateT> = {
       dispatchCi: passingCi,
       rankSurvivors: identityRank,
-      evolveSurvivors: async () => { throw new Error("evolve broken"); },
+      evolveSurvivors: async () => {
+        throw new Error("evolve broken");
+      },
     };
     const result = await runCycle(hs, callbacks, 0);
     expect(result.ok).toBe(false);
@@ -174,12 +180,15 @@ describe("B-0914.2 closed-loop orchestrator", () => {
     let rankedCount = 0;
     const callbacks: LoopCallbacks<SubstrateT> = {
       dispatchCi: async (_h) => ({ kind: "infrastructure-error", reason: "blocked-on-runnability" }),
-      rankSurvivors: async (v) => { rankedCount = v.length; return v; },
+      rankSurvivors: async (v) => {
+        rankedCount = v.length;
+        return v;
+      },
       evolveSurvivors: mockEvolve,
     };
     const result = await runCycle(hs, callbacks, 0);
-    expect(result.ok).toBe(false);  // no propagatable
-    expect(rankedCount).toBe(0);  // ranking never called with empty
+    expect(result.ok).toBe(false); // no propagatable
+    expect(rankedCount).toBe(0); // ranking never called with empty
   });
 
   it("runLoop iterates until max-cycles", async () => {
@@ -205,7 +214,7 @@ describe("B-0914.2 closed-loop orchestrator", () => {
       hs,
       callbacks,
       DEFAULT_LOOP_CONFIG,
-      (cycleIndex, _current) => cycleIndex < 2,  // stop at cycle 2
+      (cycleIndex, _current) => cycleIndex < 2, // stop at cycle 2
     );
     expect(termination.terminatedAtCycle).toBe(2);
     expect(termination.reason).toBe("predicate-stopped");
@@ -214,7 +223,7 @@ describe("B-0914.2 closed-loop orchestrator", () => {
   it("runLoop terminates on insufficient-propagatable", async () => {
     const hs = [hypothesis("h0-bad", "init")];
     const callbacks: LoopCallbacks<SubstrateT> = {
-      dispatchCi: mixedCi,  // h0-bad → failed
+      dispatchCi: mixedCi, // h0-bad → failed
       rankSurvivors: identityRank,
       evolveSurvivors: mockEvolve,
     };
@@ -226,7 +235,9 @@ describe("B-0914.2 closed-loop orchestrator", () => {
   it("runLoop terminates on error", async () => {
     const hs = [hypothesis("h0", "init")];
     const callbacks: LoopCallbacks<SubstrateT> = {
-      dispatchCi: async () => { throw new Error("broken"); },
+      dispatchCi: async () => {
+        throw new Error("broken");
+      },
       rankSurvivors: identityRank,
       evolveSurvivors: mockEvolve,
     };
@@ -237,7 +248,9 @@ describe("B-0914.2 closed-loop orchestrator", () => {
 
   it("LoopFeedback exhaustive switch (compile-time check)", () => {
     type Feedback = LoopFeedback;
-    const assertNever = (x: never): never => { throw new Error(`unhandled LoopFeedback: ${JSON.stringify(x)}`); };
+    const assertNever = (x: never): never => {
+      throw new Error(`unhandled LoopFeedback: ${JSON.stringify(x)}`);
+    };
     const acknowledge = (f: Feedback): string => {
       switch (f.kind) {
         case "EmptyHypothesisSet":
@@ -253,11 +266,15 @@ describe("B-0914.2 closed-loop orchestrator", () => {
     };
     expect(acknowledge({ kind: "EmptyHypothesisSet" })).toBe("EmptyHypothesisSet");
     expect(acknowledge({ kind: "CiDispatchFailure", hypothesisId: "x", reason: "y" })).toBe("CiDispatchFailure");
-    expect(acknowledge({ kind: "InsufficientPropagatable", propagatableCount: 0, minRequired: 1, cycleIndex: 0 })).toBe("InsufficientPropagatable");
+    expect(acknowledge({ kind: "InsufficientPropagatable", propagatableCount: 0, minRequired: 1, cycleIndex: 0 })).toBe(
+      "InsufficientPropagatable",
+    );
   });
 
   it("CiVerdict exhaustive switch (compile-time check)", () => {
-    const assertNever = (x: never): never => { throw new Error(`unhandled CiVerdict: ${JSON.stringify(x)}`); };
+    const assertNever = (x: never): never => {
+      throw new Error(`unhandled CiVerdict: ${JSON.stringify(x)}`);
+    };
     const acknowledge = (v: CiVerdict): string => {
       switch (v.kind) {
         case "passed":
@@ -276,11 +293,7 @@ describe("B-0914.2 closed-loop orchestrator", () => {
   });
 
   it("integration test: full closed-loop with realistic callback wiring", async () => {
-    const hs = [
-      hypothesis("h1-good", "alpha"),
-      hypothesis("h2-good", "beta"),
-      hypothesis("h3-bad", "gamma"),
-    ];
+    const hs = [hypothesis("h1-good", "alpha"), hypothesis("h2-good", "beta"), hypothesis("h3-bad", "gamma")];
     const callbacks: LoopCallbacks<SubstrateT> = {
       dispatchCi: mixedCi,
       rankSurvivors: identityRank,

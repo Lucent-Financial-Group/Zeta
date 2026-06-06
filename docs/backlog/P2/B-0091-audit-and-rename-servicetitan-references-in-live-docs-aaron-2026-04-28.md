@@ -20,11 +20,11 @@ tags: [aaron-2026-04-28, factory-hygiene, naming-canonical, scope-of-org-access,
 
 Aaron 2026-04-28T23ish:
 
-> *"servicetitan-factory-demo-api-csharp we can just say
+> _"servicetitan-factory-demo-api-csharp we can just say
 > external UI demo or something like that, we don't have to
 > say service titan anywhere in this repo other than to say
 > that's my day job, they fund me, i fund you, and you don't
-> have org rights to their github only the lfg."*
+> have org rights to their github only the lfg."_
 
 Encoded as rule in
 `memory/feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`.
@@ -125,7 +125,7 @@ The brand-bleed risk is non-blocking but real. Forward-going work needs the disc
 
 ## What this row does NOT do
 
-- **Does NOT** scrub historical surfaces. ROUND-HISTORY, force-multiplication-log, memory/*, docs/research/*, amara-conversation archives stay verbatim.
+- **Does NOT** scrub historical surfaces. ROUND-HISTORY, force-multiplication-log, memory/_, docs/research/_, amara-conversation archives stay verbatim.
 - **Does NOT** rename the worktree branch `feat/servicetitan-factory-demo-api-csharp`. That branch is in lost-substrate surface (B-0090 audit); the branch name is historical record of work-in-progress.
 - **Does NOT** require AceHack-side changes. AceHack worktrees / branches are out of scope for this LFG-resident audit.
 

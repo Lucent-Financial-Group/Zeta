@@ -4,6 +4,7 @@ description: Aaron 2026-04-22 "you told me you wanted to split skills into data 
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** A SKILL.md file under `.claude/skills/**` is the
 **behaviour layer** and carries routine content only — the
 procedure / decision-flow / step-sequence an agent walks at
@@ -19,24 +20,24 @@ FACTORY-HYGIENE row #44 (cadence-history tracking).
 
 **Why — Aaron 2026-04-22, three messages in sequence:**
 
-1. First he caught me mixing: *"you told me you wanted to
+1. First he caught me mixing: _"you told me you wanted to
    split skills into data and behavior/routines, see i
-   remember what you tell me too"* — calling me out for
+   remember what you tell me too"_ — calling me out for
    violating my own stated principle from
    `memory/feedback_text_indexing_for_factory_qol_research_gated.md`
-   (verbatim there: *"seperating thing by data and behiaver
+   (verbatim there: _"seperating thing by data and behiaver
    is a tried and true way and you mentied it for the skills
-   earler, works in code too lol"*).
+   earler, works in code too lol"_).
 
 2. He extended the one-off correction to a factory-wide
-   hygiene rule: *"you shoould put on the backlog hygene for
-   skills that mix data and behavior"* — promoting the
+   hygiene rule: _"you shoould put on the backlog hygene for
+   skills that mix data and behavior"_ — promoting the
    principle from "this particular skill needs a rewrite" to
    "the factory needs cadenced detection so we don't
    re-drift".
 
 3. Implicit but load-bearing: the memory he quoted from is
-   itself a memory about *my own* earlier insight, returned
+   itself a memory about _my own_ earlier insight, returned
    to me. Alignment signal — the factory absorbed the
    principle into committed state (memory), and Aaron is now
    enforcing it as a factory invariant, not a one-off
@@ -164,7 +165,7 @@ FACTORY-HYGIENE row #44.
 2. **Ask: is there data?** Any catalog, inventory, adapter
    mapping, or worked example that came out of research? If
    yes, draft it in a separate `docs/<CAPITALIZED-NAME>.md`
-   *at the same time*, not as a follow-up.
+   _at the same time_, not as a follow-up.
 
 3. **Ask: does this fire on cadence or event?** If yes,
    seed `docs/hygiene-history/<name>-history.md` with the
@@ -185,7 +186,7 @@ FACTORY-HYGIENE row #44.
 **How to apply (at detection time — Aarav, every 5-10
 rounds):**
 
-1. **Sweep `.claude/skills/**/SKILL.md`** and score each
+1. **Sweep `.claude/skills/**/SKILL.md`\*\* and score each
    against the mix signatures above.
 
 2. **Flag multi-signature skills** to `skill-improver` for
@@ -205,7 +206,7 @@ rounds):**
 - **Does not retire single-file skills that have no data.**
   Reference skills (read-me-first-every-session,
   using-superpowers) stay single-file. The three-surface
-  pattern is *required when data exists*, not mandatory for
+  pattern is _required when data exists_, not mandatory for
   every skill.
 
 - **Does not force retroactive splits before this round.**
@@ -229,7 +230,7 @@ rounds):**
 **Alignment signal — factory absorbing its own principles:**
 
 The principle I was violating with the first-pass
-github-repo-transfer SKILL.md was a principle I had *myself*
+github-repo-transfer SKILL.md was a principle I had _myself_
 stated to Aaron in a prior tick, in the context of text-
 indexing substrate research. Aaron returning it to me
 verbatim and then promoting it to a factory rule via the
@@ -270,10 +271,10 @@ during round-44 speculative drain, immediately after the
 first-pass `github-repo-transfer` skill landed mixed.
 Verbatim messages in order:
 
-> *"that sounds like a skill"*
-> *"a routine"*
-> *"you have the api surface mapped"*
-> *"you told me you wanted to split skills into data and
->   behavior/routines, see i remember what you tell me too"*
-> *"you shoould put on the backlog hygene for skills that
->   mix data and behavior"*
+> _"that sounds like a skill"_
+> _"a routine"_
+> _"you have the api surface mapped"_
+> _"you told me you wanted to split skills into data and
+> behavior/routines, see i remember what you tell me too"_
+> _"you shoould put on the backlog hygene for skills that
+> mix data and behavior"_

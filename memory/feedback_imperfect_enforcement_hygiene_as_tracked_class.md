@@ -10,10 +10,10 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron verbatim, 2026-04-22, playful follow-up after the
 filename-content-match hygiene row landed:
 
-> *"hygene, hygene that can't be enforced lol backlog"*
+> _"hygene, hygene that can't be enforced lol backlog"_
 
-Translation: *"[Add] hygiene — hygiene-that-can't-be-enforced
-— lol, [to the] backlog."*
+Translation: _"[Add] hygiene — hygiene-that-can't-be-enforced
+— lol, [to the] backlog."_
 
 ## The meta-insight
 
@@ -69,10 +69,10 @@ start small:
 ## Why the tone matters — "lol backlog"
 
 Aaron's "lol" signals he sees the recursion as amusing rather
-than existential: *we have a hygiene rule for filenames, which
+than existential: _we have a hygiene rule for filenames, which
 we admit we can't enforce; let's have a hygiene rule for
 tracking our un-enforceable hygiene rules, which itself will
-probably also be imperfectly enforced.* The tone is
+probably also be imperfectly enforced._ The tone is
 anti-ceremony. The BACKLOG row and eventual audit artifact
 should match that tone: small, tight, no framework-scaffolding
 on top of what's already in `docs/FACTORY-HYGIENE.md`. A
@@ -86,6 +86,6 @@ one-page audit table, not a new subsystem.
 - `feedback_crystallize_everything_lossless_compression_except_memory.md`
   — the companion "make the surface honest" policy.
 - `feedback_missing_hygiene_class_gap_finder.md` — the
-  *missing-class* tier-3 gap-finder; this meta-rule is the
-  *imperfect-enforcement* tier-3 gap-finder's near-cousin.
+  _missing-class_ tier-3 gap-finder; this meta-rule is the
+  _imperfect-enforcement_ tier-3 gap-finder's near-cousin.
 - `docs/FACTORY-HYGIENE.md` — source of the rules to audit.

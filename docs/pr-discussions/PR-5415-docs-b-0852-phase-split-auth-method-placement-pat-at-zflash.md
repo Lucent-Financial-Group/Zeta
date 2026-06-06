@@ -18,16 +18,16 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-B-0852 row body refinement per operator: *"i think if we do token we should do at zflash time and human interactive at setup time what do you think?"*
+B-0852 row body refinement per operator: _"i think if we do token we should do at zflash time and human interactive at setup time what do you think?"_
 
 Match each auth method to the operator-UX phase that fits it best.
 
 ## Phase split
 
-| Phase | Where | Auth methods |
-|---|---|---|
-| zflash time | Operator Mac | (optional) PAT inject + passphrase-encrypt + ESP write |
-| Boot time | Target console | (1) restore-blob default / (2) device-flow / (3) PAT-paste rare / (4) skip |
+| Phase       | Where          | Auth methods                                                               |
+| ----------- | -------------- | -------------------------------------------------------------------------- |
+| zflash time | Operator Mac   | (optional) PAT inject + passphrase-encrypt + ESP write                     |
+| Boot time   | Target console | (1) restore-blob default / (2) device-flow / (3) PAT-paste rare / (4) skip |
 
 ## Why better than picker-only-at-install-time
 
@@ -58,6 +58,7 @@ Refinement recorded NOW per Aaron 2026-05-27 separation-of-concerns discipline (
 Refines backlog row **B-0852** to document a **phase-split** between flash-time (operator Mac) and boot/setup-time (target console) GitHub authentication, aligning each auth method with the most ergonomic operator-UX phase.
 
 **Changes:**
+
 - Adds a new “Phase-split” section describing flash-time PAT injection (optional) vs boot-time device-flow / PAT fallback / skip.
 - Documents the rationale/tradeoffs of the phase split vs a picker-only-at-install-time approach.
 - Explicitly calls out the “same USB → multiple machines = same PAT” fleet-vs-isolation edge case and advises surfacing it in prompts.

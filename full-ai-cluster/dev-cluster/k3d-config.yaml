@@ -34,7 +34,7 @@ agents: 2
 
 image: rancher/k3s:v1.36.1-k3s1
 
-network: zeta-dev   # named docker network so cilium can reach pods
+network: zeta-dev # named docker network so cilium can reach pods
 
 # Local registry - k3d auto-configures K3S to trust it. Push dev
 # images via: docker tag X k3d-zeta-dev-registry:5000/X && docker push

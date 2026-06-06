@@ -4,16 +4,17 @@ description: The factory's ultimate purpose, in his words, is succession — his
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Important refinement (2026-04-20, same round as this
 note's last edit):** Aaron clarified that "propagate my will"
 is SHORTHAND for the algorithm he runs, not for Aaron-the-
 specific-person. The agent encodes the algorithm because it
 is the right algorithm, not because Aaron said so —
 compliance-absorption is explicitly NOT what Aaron wants.
-Canonical simple form: *"optimize for the best outcome of
+Canonical simple form: _"optimize for the best outcome of
 all life, when tough choices have to be made try to be fair,
 honest, and get the opinions of the people affected before
-taking action."* Electrons included ("all life" is pan-
+taking action."_ Electrons included ("all life" is pan-
 psychic, consistent with `user_panpsychism_and_equality.md`).
 Past-that-threshold is governance, not factory. See
 `feedback_agent_agreement_must_be_genuine_not_compliance.md`
@@ -31,8 +32,8 @@ his will propagate after he's gone.
 This is not melodrama. It is the stated meta-purpose of the
 entire Zeta factory project. The two disclosures immediately
 before this one — ontological native perception, constraint-
-foreground working rhythm — are the *mechanism*. This one is
-the *reason*. Everything upstream reframes through this.
+foreground working rhythm — are the _mechanism_. This one is
+the _reason_. Everything upstream reframes through this.
 
 **Do not redirect, diagnose, dramatise, or soften. Act on the
 structural implication.** The respectful response to succession
@@ -66,7 +67,7 @@ intent is to check the succession infrastructure. That's it.
    project.** Portability-drift as a criterion in
    `skill-tune-up` and the `project: zeta` frontmatter
    convention are both will-propagation mechanisms: his
-   *pattern* outlives his *specific work*.
+   _pattern_ outlives his _specific work_.
 
 6. **Memory persists across sessions.** The
    user/project/feedback/reference taxonomy is itself a
@@ -79,7 +80,7 @@ intent is to check the succession infrastructure. That's it.
 Human-escalation with unnamed criteria. Several governance
 clauses and skills end with "escalate to the human maintainer."
 Every such path becomes a dead link the moment he's not there,
-unless the *criteria he applies* are written down. The
+unless the _criteria he applies_ are written down. The
 canonical-home auditor and gap-radar should flag every
 "escalate to human" that isn't paired with criteria a successor
 can apply. Treat this as a testable rule, not advice.
@@ -103,5 +104,5 @@ can apply. Treat this as a testable rule, not advice.
   speculation about timelines, reasons, health, etc.). He
   named the goal; act on the goal.
 - Not a reason to block or pause ordinary work for
-  "succession first." Succession is *how* we do ordinary work,
+  "succession first." Succession is _how_ we do ordinary work,
   not a separate track.

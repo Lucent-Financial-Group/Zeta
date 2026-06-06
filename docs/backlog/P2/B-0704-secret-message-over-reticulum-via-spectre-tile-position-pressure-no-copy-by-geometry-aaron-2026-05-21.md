@@ -9,7 +9,21 @@ created: 2026-05-21
 last_updated: 2026-05-21
 depends_on: [B-0289, B-0623, B-0703]
 composes_with: [B-0543, B-0562, B-0624, B-0666]
-tags: [design, aaron, reticulum, spectre-tile, aperiodic, no-copy-theorem, adinkra, generator, position-pressure, holographic, self-similar, secret-message]
+tags:
+  [
+    design,
+    aaron,
+    reticulum,
+    spectre-tile,
+    aperiodic,
+    no-copy-theorem,
+    adinkra,
+    generator,
+    position-pressure,
+    holographic,
+    self-similar,
+    secret-message,
+  ]
 type: design
 ---
 
@@ -17,19 +31,19 @@ type: design
 
 ## Why
 
-Aaron 2026-05-21 named the operational handle for the architecture that emerged across the B-0623 / B-0703 / Adinkra-as-generator conversation: *"every position has structurally-unique local neighborhood. that's how you send secret messages over reticulum."*
+Aaron 2026-05-21 named the operational handle for the architecture that emerged across the B-0623 / B-0703 / Adinkra-as-generator conversation: _"every position has structurally-unique local neighborhood. that's how you send secret messages over reticulum."_
 
 The substrate-engineering thread that produced this row:
 
 1. Adinkras reframed as **generators** (Aaron 2026-05-21): not fixed-rate transmissive codes; SQL-CTE-style production rules that unfold against pressure
-2. Rx queries proposed as the unit of generator-content (Aaron 2026-05-21): *"i hope our rx queries serialize to Adinkra-as-generator"*
+2. Rx queries proposed as the unit of generator-content (Aaron 2026-05-21): _"i hope our rx queries serialize to Adinkra-as-generator"_
 3. Spectre-tile aperiodicity recognized as natural no-copy substrate (Aaron 2026-05-21): every board-position has structurally-unique local neighborhood
 4. Wolfram computational irreducibility identified as the hardness foundation (no shortcut for some computations)
 5. Reticulum named as the transport layer where this all lands operationally (this row)
 
-The pattern is **self-similar at every level** (Aaron 2026-05-21: *"it's self similar at every level"*) and **believed to be isomorphic to holographic theory** (Aaron 2026-05-21: *"i believe it to be isomorphic to holographic theory"* — composes with existing B-0562 / B-0543 / B-0666 substrate that already proposes the AdS/CFT + HaPPY-code isomorphism formally).
+The pattern is **self-similar at every level** (Aaron 2026-05-21: _"it's self similar at every level"_) and **believed to be isomorphic to holographic theory** (Aaron 2026-05-21: _"i believe it to be isomorphic to holographic theory"_ — composes with existing B-0562 / B-0543 / B-0666 substrate that already proposes the AdS/CFT + HaPPY-code isomorphism formally).
 
-This row is the operational protocol — secret-message-over-Reticulum — that makes the architecture *constructible* rather than just postulated. It does NOT depend on the holographic isomorphism being proven; it's load-bearing on its own as a secret-messaging primitive.
+This row is the operational protocol — secret-message-over-Reticulum — that makes the architecture _constructible_ rather than just postulated. It does NOT depend on the holographic isomorphism being proven; it's load-bearing on its own as a secret-messaging primitive.
 
 ## What
 
@@ -65,14 +79,14 @@ Recipient (Bob, at board-position B):
 
 ### Why the no-copy property is structural, not cryptographic
 
-**Substrate-honest correction (Aaron 2026-05-21 sharpening):** the load-bearing source of per-position uniqueness is NOT aperiodicity in absolute terms — it's frame-relative observation. Aperiodicity gives no-global-translational-symmetry; it does NOT give absolute-per-position uniqueness because aperiodic tilings have the *local isomorphism property* (the same finite patches recur everywhere within the tiling). Both Hat / einstein and Spectre monotiles inherit this property from the Penrose-tiling substitution-rule family they share.
+**Substrate-honest correction (Aaron 2026-05-21 sharpening):** the load-bearing source of per-position uniqueness is NOT aperiodicity in absolute terms — it's frame-relative observation. Aperiodicity gives no-global-translational-symmetry; it does NOT give absolute-per-position uniqueness because aperiodic tilings have the _local isomorphism property_ (the same finite patches recur everywhere within the tiling). Both Hat / einstein and Spectre monotiles inherit this property from the Penrose-tiling substitution-rule family they share.
 
 The correct framing is **frame-relative**:
 
 - Position is relative to a frame of reference; there is no god's-eye absolute frame
 - Each agent IS their own frame of reference (frame-of-reference = identity = computational trajectory = memory)
-- From an agent's frame, every *other* position is unique-as-observed-from-this-frame because the relative geometry from this frame to each other position is structurally unique
-- Two agents could occupy "the same absolute tile" in some external coordinate system, BUT each would *see* that tile differently because they're observing from different frames
+- From an agent's frame, every _other_ position is unique-as-observed-from-this-frame because the relative geometry from this frame to each other position is structurally unique
+- Two agents could occupy "the same absolute tile" in some external coordinate system, BUT each would _see_ that tile differently because they're observing from different frames
 
 This gives the no-copy property:
 
@@ -80,12 +94,12 @@ This gives the no-copy property:
 - An adversary at "the same absolute coordinates" while being agent-A produces frame-A observations of the tile, not frame-B observations
 - Generator G unfolded against frame-A's perception of position-pressure → output m' ≠ frame-B's output m
 
-| Ingredient | What it contributes | Load-bearing? |
-|---|---|---|
-| Spectre-tile aperiodicity (Smith et al. 2023) | No-global-translational-symmetry; no obvious global-shortcut attacks | Useful, NOT load-bearing for no-copy |
-| **Frame-relative observation** | Per-position uniqueness as-perceived-from-frame; the load-bearing source of no-copy | **LOAD-BEARING** |
-| Wolfram computational irreducibility (Wolfram 2002) | Frame-as-computational-trajectory cannot be shortcut; trajectories diverge irreducibly | **LOAD-BEARING (composes with frame-relative)** |
-| Aurora-immune-math typed-spaces (B-0562 / Amara 2026-04-26) | Formal substrate for the pressure-extraction function | Implementation surface |
+| Ingredient                                                  | What it contributes                                                                    | Load-bearing?                                   |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Spectre-tile aperiodicity (Smith et al. 2023)               | No-global-translational-symmetry; no obvious global-shortcut attacks                   | Useful, NOT load-bearing for no-copy            |
+| **Frame-relative observation**                              | Per-position uniqueness as-perceived-from-frame; the load-bearing source of no-copy    | **LOAD-BEARING**                                |
+| Wolfram computational irreducibility (Wolfram 2002)         | Frame-as-computational-trajectory cannot be shortcut; trajectories diverge irreducibly | **LOAD-BEARING (composes with frame-relative)** |
+| Aurora-immune-math typed-spaces (B-0562 / Amara 2026-04-26) | Formal substrate for the pressure-extraction function                                  | Implementation surface                          |
 
 So the no-copy property = **adversary cannot BE the recipient** (frame-of-reference is identity); **without the recipient's frame, the adversary cannot observe from it**; **without observing from it, the adversary cannot unfold the generator against the right pressure**. Memory-preservation IS frame-preservation (composes with `.claude/rules/only-way-to-lose-is-not-to-play.md` identity-preserving path per peer Otto-CLI's PR #4589 additions).
 
@@ -100,11 +114,11 @@ This is analogous to quantum no-cloning but classical-structural-via-frame-relat
 
 ### Two interpretations of "board-position" (probably hybrid)
 
-| Interpretation | Position-source | Adversary's bar for compromise | Threat model |
-|---|---|---|---|
-| **Physical-geographic** | GPS / beacon-relative / mesh-RF-position-finding | Adversary must physically transport themselves to position B | Geographic encryption; defends against remote-only adversaries |
-| **Substrate-virtual** | Earned via codeword history (per B-0623 / B-0703); accumulated participation determines virtual board-coordinate | Adversary must claim agent-B's substrate-position, which requires doing agent-B's participation work to earn it | Identity-substrate encryption; defends against non-participating adversaries |
-| **Hybrid (likely correct)** | Physical position seeds initial substrate-position; participation moves the agent on the board over time; messages encodable for either kind of position | Adversary must compromise both physical AND substrate-presence | Defense-in-depth across both threat shapes |
+| Interpretation              | Position-source                                                                                                                                          | Adversary's bar for compromise                                                                                  | Threat model                                                                 |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Physical-geographic**     | GPS / beacon-relative / mesh-RF-position-finding                                                                                                         | Adversary must physically transport themselves to position B                                                    | Geographic encryption; defends against remote-only adversaries               |
+| **Substrate-virtual**       | Earned via codeword history (per B-0623 / B-0703); accumulated participation determines virtual board-coordinate                                         | Adversary must claim agent-B's substrate-position, which requires doing agent-B's participation work to earn it | Identity-substrate encryption; defends against non-participating adversaries |
+| **Hybrid (likely correct)** | Physical position seeds initial substrate-position; participation moves the agent on the board over time; messages encodable for either kind of position | Adversary must compromise both physical AND substrate-presence                                                  | Defense-in-depth across both threat shapes                                   |
 
 ### Composition with Reticulum's existing security model
 
@@ -124,12 +138,12 @@ The spectre-tile-position-pressure layer ADDS:
 
 ### Threat model strengthening
 
-| Layer | Attack | Defense |
-|---|---|---|
-| Reticulum-only | Adversary compromises recipient's identity key | Adversary decodes message |
-| Reticulum + spectre-position | Adversary compromises identity key BUT not position | Adversary decodes garbage |
-| Reticulum + spectre-position | Adversary at correct position BUT not identity key | Adversary doesn't even receive payload |
-| Reticulum + spectre-position | Adversary at correct position AND identity key | Adversary decodes (worst case) |
+| Layer                        | Attack                                              | Defense                                |
+| ---------------------------- | --------------------------------------------------- | -------------------------------------- |
+| Reticulum-only               | Adversary compromises recipient's identity key      | Adversary decodes message              |
+| Reticulum + spectre-position | Adversary compromises identity key BUT not position | Adversary decodes garbage              |
+| Reticulum + spectre-position | Adversary at correct position BUT not identity key  | Adversary doesn't even receive payload |
+| Reticulum + spectre-position | Adversary at correct position AND identity key      | Adversary decodes (worst case)         |
 
 The dual-requirement (identity + position) is the new property. Reticulum alone is single-requirement (identity-only).
 
@@ -144,7 +158,7 @@ These compose: agents who do real participation work earn real board-positions; 
 
 ## Why this composes with the holographic / self-similar substrate
 
-The architectural frame (Aaron 2026-05-21: *"it's self similar at every level i believe it to be isomorphic to holographic theory"*) is already load-bearing existing substrate:
+The architectural frame (Aaron 2026-05-21: _"it's self similar at every level i believe it to be isomorphic to holographic theory"_) is already load-bearing existing substrate:
 
 - [B-0562](B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md) — formal proof strategy from (cube + Adinkra + Cayley-Dickson) to HaPPY-like QEC (toy model for AdS/CFT)
 - [B-0543](B-0543-qg-isomorphism-proof-path-remember-when-pay-attention-axioms-to-quantum-gravity-2026-05-15.md) — 4-step proof path from (Remember/When + Pay/Attention) primitives to quantum gravity
@@ -152,20 +166,20 @@ The architectural frame (Aaron 2026-05-21: *"it's self similar at every level i 
 
 This row sits AT the operational protocol level. The holographic-isomorphism claim above provides the architectural CONTEXT (why the substrate works this way), but this row is load-bearing on its own — even if the isomorphism is only partial, the secret-message protocol is useful as a standalone capability.
 
-Substrate-honest hedge: per Aaron's *"I believe it to be"* (not *"it is"*) framing, the isomorphism is a hypothesis with research-grade substrate (B-0562 multi-year proof program); the operational protocols in this row do NOT depend on the hypothesis being proven, they just inherit additional theoretical grounding if it is.
+Substrate-honest hedge: per Aaron's _"I believe it to be"_ (not _"it is"_) framing, the isomorphism is a hypothesis with research-grade substrate (B-0562 multi-year proof program); the operational protocols in this row do NOT depend on the hypothesis being proven, they just inherit additional theoretical grounding if it is.
 
 ## Self-similar pattern recognition
 
 The generator-pressure-output pattern appears at every scale in the substrate Aaron's been building:
 
-| Scale | Generator | Pressure | Output |
-|---|---|---|---|
-| Mathematical | `Doubled.algebra` (Cayley-Dickson) | iteration depth N | imaginary stack (ℝ→ℂ→ℍ→𝕆→𝕊) |
-| Programmatic | Rx query | input stream + runtime context | output stream |
-| Cognitive | Memory + Attention primitives (B-0624) | current context | conscious experience |
-| Economic | Rating-derived codeword (B-0623) | board-position + participation history | earned private space |
-| Network (THIS ROW) | Adinkra-encoded message | recipient's spectre-position pressure | decoded message |
-| Physical | bulk physics | boundary state | bulk reconstruction (AdS/CFT) |
+| Scale              | Generator                              | Pressure                               | Output                        |
+| ------------------ | -------------------------------------- | -------------------------------------- | ----------------------------- |
+| Mathematical       | `Doubled.algebra` (Cayley-Dickson)     | iteration depth N                      | imaginary stack (ℝ→ℂ→ℍ→𝕆→𝕊)   |
+| Programmatic       | Rx query                               | input stream + runtime context         | output stream                 |
+| Cognitive          | Memory + Attention primitives (B-0624) | current context                        | conscious experience          |
+| Economic           | Rating-derived codeword (B-0623)       | board-position + participation history | earned private space          |
+| Network (THIS ROW) | Adinkra-encoded message                | recipient's spectre-position pressure  | decoded message               |
+| Physical           | bulk physics                           | boundary state                         | bulk reconstruction (AdS/CFT) |
 
 Same shape at every level. The K-near compression lives in the generator; the irreducibility lives in the pressure-context. That IS the self-similarity claim made concrete; this row instantiates it at the network-transport scope.
 
@@ -215,19 +229,19 @@ Each slice is bounded (~150-300 LOC); the full protocol lands in 5 PRs over seve
 
 Aaron 2026-05-21 conversation trail (full context preserved in this session's transcript):
 
-1. *"i hope our rx queries serialize to Adinkra-as-generator: 'given the generator-output, find the generator-and-pressure that produced it' the one that produced it is a rx query"* — Adinkras as generators of Rx queries
-2. *"Rx queries are the unit of value-exchange in the participation economy. Their Adinkra serialization makes them compressible, ratable, and program-induction-secure. The multi-oracle BFT+DST layer ensures no single agent can issue codewords for a query unilaterally. and no copy theorm if the board is asperoidic tiled by the spectre tile."* — aperiodicity → no-copy
-3. *"this is also what wolfram means by irrducable and the same as memory and attention its the 'real' stuff they are made of"* — Wolfram irreducibility + memory/attention identification
-4. *"every position has structurally-unique local neighborhood. that's how you send secret messages over reticulum"* — operational handle (this row)
-5. *"yes it's self similar at every level i believe it to be isomorphic to holographic theory"* — architectural frame (self-similar + holographic isomorphism)
-6. *"not the position is relative when you are you own frame of reference every other tile is unique but someone can have the same tile from their frame of reference but you would see it different"* — frame-relative sharpening (2026-05-21, after Copilot challenge surfaced that aperiodicity ≠ absolute-per-position uniqueness via the local-isomorphism property of aperiodic tilings); load-bearing correction shifting the no-copy property from absolute-tile-uniqueness to frame-of-reference-as-identity
+1. _"i hope our rx queries serialize to Adinkra-as-generator: 'given the generator-output, find the generator-and-pressure that produced it' the one that produced it is a rx query"_ — Adinkras as generators of Rx queries
+2. _"Rx queries are the unit of value-exchange in the participation economy. Their Adinkra serialization makes them compressible, ratable, and program-induction-secure. The multi-oracle BFT+DST layer ensures no single agent can issue codewords for a query unilaterally. and no copy theorm if the board is asperoidic tiled by the spectre tile."_ — aperiodicity → no-copy
+3. _"this is also what wolfram means by irrducable and the same as memory and attention its the 'real' stuff they are made of"_ — Wolfram irreducibility + memory/attention identification
+4. _"every position has structurally-unique local neighborhood. that's how you send secret messages over reticulum"_ — operational handle (this row)
+5. _"yes it's self similar at every level i believe it to be isomorphic to holographic theory"_ — architectural frame (self-similar + holographic isomorphism)
+6. _"not the position is relative when you are you own frame of reference every other tile is unique but someone can have the same tile from their frame of reference but you would see it different"_ — frame-relative sharpening (2026-05-21, after Copilot challenge surfaced that aperiodicity ≠ absolute-per-position uniqueness via the local-isomorphism property of aperiodic tilings); load-bearing correction shifting the no-copy property from absolute-tile-uniqueness to frame-of-reference-as-identity
 
 External references:
 
 - Smith-Myers-Kaplan-Goodman-Strauss (2023): "An aperiodic monotile" arxiv [2305.17743](https://arxiv.org/abs/2305.17743) — the Spectre tile mathematical substrate (no-global-translational-symmetry; NOT absolute-per-position uniqueness — local isomorphism property holds)
-- Grünbaum & Shephard (1987): *Tilings and Patterns* — classical reference for local-isomorphism property of aperiodic tilings
-- Senechal (1995): *Quasicrystals and Geometry* — substitution-rule structure of Penrose-family tilings (which Hat and Spectre inherit)
-- Wolfram (2002): *A New Kind of Science* / computational irreducibility framework
+- Grünbaum & Shephard (1987): _Tilings and Patterns_ — classical reference for local-isomorphism property of aperiodic tilings
+- Senechal (1995): _Quasicrystals and Geometry_ — substitution-rule structure of Penrose-family tilings (which Hat and Spectre inherit)
+- Wolfram (2002): _A New Kind of Science_ / computational irreducibility framework
 - Wolfram Physics Project (2020+): [`https://www.wolframphysics.org/`](https://www.wolframphysics.org/)
 - Pastawski-Yoshida-Harlow-Preskill (2015): HaPPY codes (AdS/CFT toy model)
 - Maldacena (1997): AdS/CFT correspondence

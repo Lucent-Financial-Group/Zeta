@@ -9,23 +9,22 @@
 
 ### Failing-check identity
 
-| Field | Value |
-|---|---|
-| Failing check name | `Analyze (python)` |
-| Failing run id | 25134077654 (PR #849 head) |
-| Workflow path | `dynamic/github-code-scanning/codeql` (GitHub-managed dynamic, NOT a checked-in workflow file) |
-| Run event | `dynamic` |
-| Workflow display name | `Code Quality: PR #849` |
-| `isRequired` | `null` (NOT a required check under branch protection) |
-| Conclusion | `failure` (configuration error: `CodeQL detected code written in GitHub Actions, C#, JavaScript/TypeScript and Java/Kotlin, but not any written in Python.`) |
+| Field                 | Value                                                                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Failing check name    | `Analyze (python)`                                                                                                                                           |
+| Failing run id        | 25134077654 (PR #849 head)                                                                                                                                   |
+| Workflow path         | `dynamic/github-code-scanning/codeql` (GitHub-managed dynamic, NOT a checked-in workflow file)                                                               |
+| Run event             | `dynamic`                                                                                                                                                    |
+| Workflow display name | `Code Quality: PR #849`                                                                                                                                      |
+| `isRequired`          | `null` (NOT a required check under branch protection)                                                                                                        |
+| Conclusion            | `failure` (configuration error: `CodeQL detected code written in GitHub Actions, C#, JavaScript/TypeScript and Java/Kotlin, but not any written in Python.`) |
 
 ### Repo-level Code Scanning state
 
 ```json
 {
   "state": "not-configured",
-  "languages": ["actions", "csharp", "java-kotlin", "javascript",
-                "javascript-typescript", "python", "typescript"],
+  "languages": ["actions", "csharp", "java-kotlin", "javascript", "javascript-typescript", "python", "typescript"],
   "query_suite": "extended",
   "threat_model": "remote",
   "runner_type": "standard"
@@ -87,14 +86,14 @@ PR #849's diff includes the two `tools/hygiene/*.py` scripts being deleted as pa
 
 ### PR #849 mergeability
 
-| Field | Value |
-|---|---|
-| `state` | OPEN |
-| `mergeable` | MERGEABLE |
-| `mergeStateStatus` | UNSTABLE (failed checks present, but none required) |
-| Required failing checks | 0 |
-| Unresolved review threads | 0 |
-| Auto-merge | NOT armed |
+| Field                     | Value                                               |
+| ------------------------- | --------------------------------------------------- |
+| `state`                   | OPEN                                                |
+| `mergeable`               | MERGEABLE                                           |
+| `mergeStateStatus`        | UNSTABLE (failed checks present, but none required) |
+| Required failing checks   | 0                                                   |
+| Unresolved review threads | 0                                                   |
+| Auto-merge                | NOT armed                                           |
 
 PR #849 is **mergeable** under branch protection. The UNSTABLE state reflects only the non-required `Analyze (python)` failure.
 
@@ -110,16 +109,16 @@ Per the locked Lane A closure states (Amara extended set, 5 options):
 
 **Two-axis classification** (because the sticky check and the PR are different objects):
 
-| Object | State | Reasoning |
-|---|---|---|
-| Sticky `Analyze (python)` check | `non_actionable_by_otto_with_evidence` | Modifying LFG org config 244997 `default_for_new_repos: "all"` would affect every LFG repo (wrong blast radius). Out of Lane A scope. |
-| PR #849 merge | `actionable_by_otto` | All required checks pass, 0 unresolved threads, branch protection allows merge with non-required failures, standing authority covers the merge. |
+| Object                          | State                                  | Reasoning                                                                                                                                       |
+| ------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sticky `Analyze (python)` check | `non_actionable_by_otto_with_evidence` | Modifying LFG org config 244997 `default_for_new_repos: "all"` would affect every LFG repo (wrong blast radius). Out of Lane A scope.           |
+| PR #849 merge                   | `actionable_by_otto`                   | All required checks pass, 0 unresolved threads, branch protection allows merge with non-required failures, standing authority covers the merge. |
 
 **Lane A closes at `merged`** — not at "sticky check fixed." The check is informational noise. The PR is the lane.
 
 ### Evidence (per locked evidence types)
 
-Evidence type 5 from the locked list — *"specific stale/non-required check evidence showing no further technical action needed"* — is met:
+Evidence type 5 from the locked list — _"specific stale/non-required check evidence showing no further technical action needed"_ — is met:
 
 - The sticky check is `isRequired: null`
 - Branch protection allows merge with non-required failing checks
@@ -145,7 +144,7 @@ Squash-merge PR #849 as-is — under standing authority per the locked disciplin
 - Branch protection allows the merge (0 approvals required, conversation resolution met, squash-only allowed).
 - This advances the TS migration trajectory by ~3% in PR → ~3% landed.
 
-**Why-it-advances-Lane-A test**: squash-merging PR #849 advances closure of Lane A directly because Lane A *is* the unblock of #849. The merge moves the lane from `actionable_by_otto` → `merged`. This satisfies the lane-continuation classifier ("Would completing this directly advance closure of #849?" → yes).
+**Why-it-advances-Lane-A test**: squash-merging PR #849 advances closure of Lane A directly because Lane A _is_ the unblock of #849. The merge moves the lane from `actionable_by_otto` → `merged`. This satisfies the lane-continuation classifier ("Would completing this directly advance closure of #849?" → yes).
 
 ## Composes with
 
@@ -161,4 +160,4 @@ Squash-merge PR #849 as-is — under standing authority per the locked disciplin
 - Round-close meta-observations on review-surface health are optional. The data is in the diff. Commentary can rest for several rounds.
 - The org-level `default_for_new_repos: "all"` policy is a candidate for Lane B+ trajectory work (post-#849 closure). If Lane B's trajectory enumeration walks branches/PRs/tasks, it should pick this up. Until then, parking here as a deferred note rather than a new task (per the zero-fan-out rule).
 - The github-settings-drift workflow is failing on every push event (separate pre-existing tech debt). Also a Lane B+ candidate, not a Lane A subtask.
-- **Trajectory-naming correction (mid-Lane-A, post-merge)**: this directory is named `ci-codeql-host-ownership/` and reads like a trajectory, but it's actually a **blocker record** for the actual trajectory (TypeScript/Bun migration). The trajectory the maintainer cares about is *"how far along is the TS/Bun migration, and what's the next slice?"* — not *"who owns the sticky CodeQL check?"*. Lane B's first artifact should be `docs/trajectories/typescript-bun-migration/RESUME.md` tracking landed TS/Bun ports + remaining Python + remaining Bash + which scripts stay Bash vs become TS vs become F#/dotnet + next PR slice. This investigation links FROM that trajectory as the #849 blocker record. Carved: *CodeQL was the blocker. TypeScript/Bun is the trajectory.*
+- **Trajectory-naming correction (mid-Lane-A, post-merge)**: this directory is named `ci-codeql-host-ownership/` and reads like a trajectory, but it's actually a **blocker record** for the actual trajectory (TypeScript/Bun migration). The trajectory the maintainer cares about is _"how far along is the TS/Bun migration, and what's the next slice?"_ — not _"who owns the sticky CodeQL check?"_. Lane B's first artifact should be `docs/trajectories/typescript-bun-migration/RESUME.md` tracking landed TS/Bun ports + remaining Python + remaining Bash + which scripts stay Bash vs become TS vs become F#/dotnet + next PR slice. This investigation links FROM that trajectory as the #849 blocker record. Carved: _CodeQL was the blocker. TypeScript/Bun is the trajectory._

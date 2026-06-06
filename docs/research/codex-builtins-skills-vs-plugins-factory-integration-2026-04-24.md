@@ -92,16 +92,16 @@ for marketplace listing.
 
 ### Key asymmetries
 
-| Dimension | Claude Code | Codex |
-|---|---|---|
-| Manifest dir | `.claude-plugin/` | `.codex-plugin/` |
-| Manifest fields | Minimal (name/description/author) | Rich (semver + interface block + URLs + category) |
-| Can bundle commands | Yes (`commands/`) | Not observed in manifest schema |
-| Can bundle MCP | Not in manifest schema | Yes (`.mcp.json`) |
-| Can bundle apps | Not explicit | Yes (`.app.json`) |
-| Marketplace | `enabledPlugins` in settings.json | `codex plugin marketplace` CLI + app browser |
-| Manifest format | JSON | JSON |
-| Skill format | `SKILL.md` + optional `references/` | `SKILL.md` + optional `references/` + optional `agents/*.yaml` |
+| Dimension           | Claude Code                         | Codex                                                          |
+| ------------------- | ----------------------------------- | -------------------------------------------------------------- |
+| Manifest dir        | `.claude-plugin/`                   | `.codex-plugin/`                                               |
+| Manifest fields     | Minimal (name/description/author)   | Rich (semver + interface block + URLs + category)              |
+| Can bundle commands | Yes (`commands/`)                   | Not observed in manifest schema                                |
+| Can bundle MCP      | Not in manifest schema              | Yes (`.mcp.json`)                                              |
+| Can bundle apps     | Not explicit                        | Yes (`.app.json`)                                              |
+| Marketplace         | `enabledPlugins` in settings.json   | `codex plugin marketplace` CLI + app browser                   |
+| Manifest format     | JSON                                | JSON                                                           |
+| Skill format        | `SKILL.md` + optional `references/` | `SKILL.md` + optional `references/` + optional `agents/*.yaml` |
 
 Neither is a superset of the other. Codex's richer
 marketplace-shaped manifest suggests it aims for public
@@ -136,7 +136,7 @@ docs domain.
 uses already covers factory-internal discipline; OpenAI
 Docs complements when a Codex session needs to look up
 SDK / API / feature documentation. Should be treated as
-*external reference tool*, not *substrate replacement*.
+_external reference tool_, not _substrate replacement_.
 
 ### 3. Plugin Creator
 
@@ -247,8 +247,8 @@ courier-collaborator's architectural recommendations.
 
 ### Phase 3 — Plugin Creator deep integration (S, Otto-106+)
 
-Maintainer directive: *"if you have a plugin creator skill
-we should be a deep integration for it too"*. Translation:
+Maintainer directive: _"if you have a plugin creator skill
+we should be a deep integration for it too"_. Translation:
 when a session invokes Codex's `$plugin-creator` to build a
 Zeta Codex plugin, the scaffolding should pick up Zeta's
 existing substrate rather than generating blank.

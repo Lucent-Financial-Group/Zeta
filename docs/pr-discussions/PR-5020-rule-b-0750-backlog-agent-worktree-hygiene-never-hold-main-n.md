@@ -21,6 +21,7 @@ Operator 2026-05-25: 'we need to fix this mess yall always stepping on each othe
 Empirical anchor: 37 agent worktrees mass-cleaned same session (B-0728→B-0749 cascade leftovers) + 1 peer worktree holding [main] at stale SHA blocked operator's git checkout main.
 
 Ships:
+
 - .claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md (auto-loads at cold-boot)
 - B-0750 backlog row with 5 mechanization scope items
 
@@ -37,6 +38,7 @@ Composes with B-0530 cron-sentinel-mutex + B-0751 per-agent-clones architecture 
 This PR lands an operational rule under `.claude/rules/` to prevent multi-agent git worktree contention (especially blocking `main` and interfering with the operator’s primary checkout), and it records the follow-on mechanization targets as a new backlog row (B-0750) with an index entry in `docs/BACKLOG.md`.
 
 **Changes:**
+
 - Add a new auto-loaded rule: “Agent worktree hygiene — never hold `main`, never step on operator, clean up after PR merge”.
 - Add a new P2 backlog row (B-0750) describing mechanization scope items (cleanup tooling, worktree pool, PR-merge cleanup hook, etc.).
 - Add B-0750 to the main backlog index.
@@ -45,11 +47,11 @@ This PR lands an operational rule under `.claude/rules/` to prevent multi-agent 
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                    | Description                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | `docs/backlog/P2/B-0750-agent-worktree-hygiene-rule-landing-plus-mechanization-target-cleanup-tooling-plus-worktree-pool-primitive-aaron-2026-05-25.md` | New backlog row capturing the worktree hygiene problem statement + mechanization scope/acceptance criteria. |
-| `docs/BACKLOG.md` | Adds B-0750 to the P2 backlog index. |
-| `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md` | New operational rule documenting required agent worktree discipline and concrete audit/cleanup commands. |
+| `docs/BACKLOG.md`                                                                                                                                       | Adds B-0750 to the P2 backlog index.                                                                        |
+| `.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`                                                    | New operational rule documenting required agent worktree discipline and concrete audit/cleanup commands.    |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T00:51:40Z)
 
@@ -85,7 +87,7 @@ Copilot reviewed 3 out of 3 changed files in this pull request and generated 3 c
 
 **@copilot-pull-request-reviewer** (2026-05-25T22:52:33Z):
 
-The “Verify operator can checkout main” check is described as “should show ONLY operator's primary”, but if the operator’s primary worktree is *not* on `main` (common), this grep will return no lines even though things are fine. This can mislead the cleanup/audit flow; the check should instead assert that **no agent worktree** holds `[main]` (i.e., zero matches, or at most one match if the operator intentionally has `main` checked out).
+The “Verify operator can checkout main” check is described as “should show ONLY operator's primary”, but if the operator’s primary worktree is _not_ on `main` (common), this grep will return no lines even though things are fine. This can mislead the cleanup/audit flow; the check should instead assert that **no agent worktree** holds `[main]` (i.e., zero matches, or at most one match if the operator intentionally has `main` checked out).
 
 **@AceHack** (2026-05-26T00:52:38Z):
 

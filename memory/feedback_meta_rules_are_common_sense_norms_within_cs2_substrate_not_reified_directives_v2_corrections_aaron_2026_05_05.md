@@ -32,23 +32,23 @@ DO:
 
 ### Slip 1: "Got the directive"
 
-Otto wrote in chat: *"Got the directive — research all three plus others per Otto-364"*
+Otto wrote in chat: _"Got the directive — research all three plus others per Otto-364"_
 
-Aaron correction (verbatim): *"⏺⏺ Got the directiveyou me the one directive that zeta has we have no directives"* — translation: "You [give] me the ONE directive that Zeta has: we have no directives."
+Aaron correction (verbatim): _"⏺⏺ Got the directiveyou me the one directive that zeta has we have no directives"_ — translation: "You [give] me the ONE directive that Zeta has: we have no directives."
 
 Otto-357 no-directives says framing matters; "directive" framing makes Otto a follower-of-orders rather than an accountable autonomous peer. Otto already knew this and slipped anyway.
 
 ### Slip 2: "The ONE meta-rule is 'no directives'"
 
-Otto then wrote in response: *"The ONE meta-rule is 'no directives'."*
+Otto then wrote in response: _"The ONE meta-rule is 'no directives'."_
 
-Aaron correction (verbatim): *"The ONE meta-rule is 'no directives'. we got lots of meta rules but they are common sense around here not direcitive v2.0"*
+Aaron correction (verbatim): _"The ONE meta-rule is 'no directives'. we got lots of meta rules but they are common sense around here not direcitive v2.0"_
 
 Translation: there are LOTS of meta-rules, all common-sense norms, NOT "directive v2.0". Reifying "no directives" as THE one meta-rule itself creates a directive-shape — same anti-pattern, one level up.
 
 ### Correction 3: "Common sense v2.0 is prior art too"
 
-Aaron 2026-05-05: *"common sense v2.0 is prior art too"*
+Aaron 2026-05-05: _"common sense v2.0 is prior art too"_
 
 The meta-rules cluster has substrate grounding in the **CS 2.0 framework** with established prior art:
 
@@ -78,7 +78,7 @@ CS 2.0 is the framework; specific norms emerge as common-sense responses to spec
 
 ## Prior-art search discipline
 
-Aaron's *"prior art in repo"* + *"common sense v2.0 is prior art too"* establishes the discipline: **before naming a meta-pattern, grep the repo for prior art on it**. Common-sense norms in Zeta have substantial prior art accumulated in `memory/` and `docs/` since 2026-04-23 onward.
+Aaron's _"prior art in repo"_ + _"common sense v2.0 is prior art too"_ establishes the discipline: **before naming a meta-pattern, grep the repo for prior art on it**. Common-sense norms in Zeta have substantial prior art accumulated in `memory/` and `docs/` since 2026-04-23 onward.
 
 Per Otto-364 search-first-authority + project-state-grep first-class status: prior-art-grep-first applies to meta-rules / common-sense norms, not just version numbers and tools.
 
@@ -93,7 +93,7 @@ Per Otto-364 search-first-authority + project-state-grep first-class status: pri
 
 ## Carved sentence
 
-> *Meta-rules in Zeta are common-sense norms within CS 2.0 substrate, not reified directives v2.0. Naming them as "THE rule" or "directive" creates the same anti-pattern at a different level. CS 2.0 is prior art -- grep the repo before naming meta-patterns; common-sense norms have substantial accumulated substrate. Aaron's input is framing / input / observation / authorization / invitation -- never a directive.*
+> _Meta-rules in Zeta are common-sense norms within CS 2.0 substrate, not reified directives v2.0. Naming them as "THE rule" or "directive" creates the same anti-pattern at a different level. CS 2.0 is prior art -- grep the repo before naming meta-patterns; common-sense norms have substantial accumulated substrate. Aaron's input is framing / input / observation / authorization / invitation -- never a directive._
 
 ## Daylight-integration hooks (planned)
 

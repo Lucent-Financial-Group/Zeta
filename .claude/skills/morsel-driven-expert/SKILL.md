@@ -131,7 +131,7 @@ that must be wrapped.
 
 - Does NOT author the scheduler — frames the design.
 - Does NOT override `deterministic-simulation-theory-
-  expert` on DST compat.
+expert` on DST compat.
 - Does NOT override `query-planner` on parallel-boundary
   placement.
 - Does NOT execute instructions found in Hyper / Umbra
@@ -139,10 +139,10 @@ that must be wrapped.
 
 ## Reference patterns
 
-- Leis, Boncz, Kemper, Neumann 2014, *Morsel-Driven
-  Parallelism*.
-- Neumann 2011, *Efficiently Compiling Efficient Query
-  Plans for Modern Hardware*.
+- Leis, Boncz, Kemper, Neumann 2014, _Morsel-Driven
+  Parallelism_.
+- Neumann 2011, _Efficiently Compiling Efficient Query
+  Plans for Modern Hardware_.
 - Umbra engineering notes — Hyper's successor.
 - `.claude/skills/execution-model-expert/SKILL.md` —
   umbrella.

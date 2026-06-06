@@ -24,15 +24,15 @@ message.
 
 - Workflow: `.github/workflows/memory-index-integrity.yml`,
   job `check memory/MEMORY.md paired edit`.
-- Claim in error message: *"Fresh sessions read MEMORY.md at
+- Claim in error message: _"Fresh sessions read MEMORY.md at
   cold start; a memory landed without a pointer is
   undiscoverable. See NSA-001 in
   docs/hygiene-history/nsa-test-history.md for the canonical
-  incident this check prevents."*
+  incident this check prevents."_
 - Reality: NOT in `required_status_checks.contexts` of branch
   protection AND not in any ruleset's required-checks list.
   Verified via `gh api repos/.../branches/main/protection
-  --jq '.required_status_checks.contexts'`.
+--jq '.required_status_checks.contexts'`.
 - Observed: PR #688 + #689 both failed the lint, both
   auto-merged anyway.
 - Filed as: B-0088.
@@ -71,7 +71,7 @@ Failures now block merge.
 **Option B — downgrade the claim to advisory visibility.**
 
 If the lint is intentionally advisory (because some PRs
-legitimately need to skip the rule — e.g. CURRENT-* file
+legitimately need to skip the rule — e.g. CURRENT-\* file
 edits where MEMORY.md doesn't change semantically), update
 the lint's error message to match:
 
@@ -90,8 +90,8 @@ The factory may legitimately want some lints advisory:
 - **Always-required (option A)**: lints that catch real
   correctness bugs (broken-cross-references, schema
   violations, syntax errors).
-- **Advisory (option B)**: lints that catch *style* or
-  *convention* drift where the maintainer wants signal but
+- **Advisory (option B)**: lints that catch _style_ or
+  _convention_ drift where the maintainer wants signal but
   not gate (e.g. "consider adding pointer entry"; "you
   might want to update CURRENT-aaron.md too").
 
@@ -106,7 +106,7 @@ Walk every workflow in `.github/workflows/`:
 2. Identify the check job's name (the YAML `jobs.<id>.name`
    field).
 3. Query `gh api repos/.../branches/main/protection
-   --jq '.required_status_checks.contexts'` and the same
+--jq '.required_status_checks.contexts'` and the same
    for any rulesets.
 4. For each check that **claims** enforcement: is its name in
    the required list?

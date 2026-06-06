@@ -149,9 +149,7 @@ describe("renderIndex", () => {
   });
 
   test("renders all entries when count <= MAX_STACK_ENTRIES", () => {
-    const entries = Array.from({ length: 5 }, (_, i) =>
-      makeEntry(`entry-${i}`, `desc-${i}`, `2026-05-0${i + 1}`),
-    );
+    const entries = Array.from({ length: 5 }, (_, i) => makeEntry(`entry-${i}`, `desc-${i}`, `2026-05-0${i + 1}`));
     const output = renderIndex(entries);
     for (const e of entries) {
       expect(output).toContain(e.fm.name);

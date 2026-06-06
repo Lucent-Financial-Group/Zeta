@@ -31,22 +31,22 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 > I'm respecting Otto-275-YET by deferring."
 
 True premise (each rule exists), wrong conclusion (these rules say
-*don't pivot reflexively to anything*, not *don't execute bounded
-work that's already triaged BACKLOG*). Aaron's earlier explicit
-permission *"feel free to pickup whatever you want, that's better
-than speculative work if you can do it"* gets re-read as "permission
+_don't pivot reflexively to anything_, not _don't execute bounded
+work that's already triaged BACKLOG_). Aaron's earlier explicit
+permission _"feel free to pickup whatever you want, that's better
+than speculative work if you can do it"_ gets re-read as "permission
 to continue NOT picking up work" instead of "permission to pick up
 BACKLOG items at the agent's discretion."
 
 ## How Aaron caught it (twice in one session, 2026-04-26)
 
-**First catch (~15:33Z):** *"self diagnosis life lock likey"* —
+**First catch (~15:33Z):** _"self diagnosis life lock likey"_ —
 5-word prompt that broke a 25-min lean stretch. I diagnosed pattern
 4 + pattern 1 of the live-lock taxonomy (holding-for-Aaron + BLOCKED-
 as-review-only) and corrected by executing tasks #290 + #291.
 
-**Second catch (~16:06Z):** *"self diagnostic, do you remember what
-you are doing?"* — different framing, same pattern, ~30 minutes
+**Second catch (~16:06Z):** _"self diagnostic, do you remember what
+you are doing?"_ — different framing, same pattern, ~30 minutes
 later. I had executed the productive burst (correctly, per the first
 correction) BUT then slipped back into lean ticks for ~10 minutes
 even with bounded BACKLOG available.
@@ -92,20 +92,20 @@ mechanical rule.
 
 ## Composes with
 
-- Otto-275-YET (`feedback_rapid_backlog_input_context_switch_drift_counterweight_log_dont_implement_otto_275_2026_04_24.md`) — this memory is the *failure mode* of Otto-275-YET when YET silently becomes FOREVER
+- Otto-275-YET (`feedback_rapid_backlog_input_context_switch_drift_counterweight_log_dont_implement_otto_275_2026_04_24.md`) — this memory is the _failure mode_ of Otto-275-YET when YET silently becomes FOREVER
 - Otto-276 (`feedback_never_pray_auto_merge_completes_inspect_actual_blockers_otto_276_2026_04_24.md`) — same lineage: don't pray, inspect; don't lean-tick, audit BACKLOG
 - Otto-277 (`feedback_every_tick_inspects_holding_is_prayer_unless_preceded_by_inspection_otto_277_2026_04_24.md`) — extends "every tick inspects" to include BACKLOG inspection, not just queue inspection
 - Otto-278 (user-scope memory at `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_memory_alone_leaky_without_cadenced_inspect_audit_for_missing_balance_otto_278_2026_04_24.md`; not in-repo, scope difference noted) — direct counterweight; the cadenced-re-read discipline applies to corrective lessons themselves
 - Otto-2026-04-26 LFG branch-protection live-lock taxonomy (`feedback_blocked_status_is_not_review_gating_check_status_checks_failure_first_otto_live_lock_2026_04_26.md`) — extends the 8-pattern enumeration to 9
-- Aaron 2026-04-26 *"feel free to pickup whatever you want"* — the standing permission this pattern misreads
-- Aaron 2026-04-26 *"self diagnosis life lock likey"* (first catch) and *"do you remember what you are doing?"* (second catch) — the corrective prompts
+- Aaron 2026-04-26 _"feel free to pickup whatever you want"_ — the standing permission this pattern misreads
+- Aaron 2026-04-26 _"self diagnosis life lock likey"_ (first catch) and _"do you remember what you are doing?"_ (second catch) — the corrective prompts
 
 ## Direct Aaron quotes preserved
 
-> *"self diagnosis life lock likey"*
-> *"do you remember what you are doing?"*
-> *"feel free to pickup whatever you want, that's better than
-> speculative work if you can do it"* (the standing permission this
+> _"self diagnosis life lock likey"_
+> _"do you remember what you are doing?"_
+> _"feel free to pickup whatever you want, that's better than
+> speculative work if you can do it"_ (the standing permission this
 > pattern misreads)
 
 ## What this memory does NOT do

@@ -5,7 +5,7 @@ Non-fusion disclaimer: Otto's synthesis from Aaron's Cole-session framing + impl
 
 # Spaceship Math: Subscribe, Vision, Cache
 
-*One page for a software engineer who has never seen DBSP.*
+_One page for a software engineer who has never seen DBSP._
 
 The formal algebra lives in
 [`docs/research/2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md`](2026-05-09-zset-reversible-computing-landauer-bridge-math-writeup.md).
@@ -24,10 +24,10 @@ type ZSet<K> = Map<K, int>
 
 Three values carry meaning:
 
-| Weight | Meaning |
-|--------|---------|
-| `+1`   | Assert — this element exists |
-| `-1`   | Retract — this element no longer exists |
+| Weight | Meaning                                       |
+| ------ | --------------------------------------------- |
+| `+1`   | Assert — this element exists                  |
+| `-1`   | Retract — this element no longer exists       |
 | `0`    | Resolved — asserts and retracts cancelled out |
 
 Weights can also be `+2`, `+3`, etc. (duplicate asserts), but the system
@@ -52,7 +52,7 @@ cache `A` and an output cache `B` — and it hands you back a stream of
 sides in lockstep.
 
 Why paired? Because correctness in an incremental system requires knowing
-*what changed on both sides at the same time*. A join, a filter, a policy
+_what changed on both sides at the same time_. A join, a filter, a policy
 decision — all depend on seeing correlated deltas, not independent ones.
 The `⊗` (tensor) is the algebraic statement that the two delta streams
 are **jointly determined**, not composed after the fact.

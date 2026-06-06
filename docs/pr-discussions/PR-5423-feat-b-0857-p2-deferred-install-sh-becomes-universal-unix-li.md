@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Operator-named direction: *"when are we moving to install.sh over zeta-install.sh? the universall install surface for unix like oses?"*
+Operator-named direction: _"when are we moving to install.sh over zeta-install.sh? the universall install surface for unix like oses?"_
 
 Filed immediately per Aaron 2026-05-27 separation-of-concerns discipline. Implementation defers until current cred-persistence + cosign + self-register stack lands + next USB test validates.
 
@@ -26,20 +26,20 @@ Filed immediately per Aaron 2026-05-27 separation-of-concerns discipline. Implem
 
 \`tools/setup/install.sh\` becomes universal Unix-like-OS entry that ROUTES by environment:
 
-| Detect | Routes to |
-|---|---|
-| macOS (Darwin) | \`setup/macos.sh\` (dev env) |
-| Linux non-NixOS | \`setup/linux.sh\` (dev env) |
+| Detect               | Routes to                                                           |
+| -------------------- | ------------------------------------------------------------------- |
+| macOS (Darwin)       | \`setup/macos.sh\` (dev env)                                        |
+| Linux non-NixOS      | \`setup/linux.sh\` (dev env)                                        |
 | Linux NixOS live-USB | \`setup/nixos-install-from-usb.sh\` (factored zeta-install.sh body) |
-| Installed NixOS | runtime verify / update |
+| Installed NixOS      | runtime verify / update                                             |
 
 ## Shorter than B-0854 (Ace migration)
 
-| | B-0857 | B-0854 |
-|---|---|---|
-| Scope | Routing + factor zeta-install.sh | Declarative manifest + Ace CLI |
-| Dependencies | None | B-0288 + manifest design |
-| Timeline | 1-2 ISO test cycles | Multi-phase long horizon |
+|              | B-0857                           | B-0854                         |
+| ------------ | -------------------------------- | ------------------------------ |
+| Scope        | Routing + factor zeta-install.sh | Declarative manifest + Ace CLI |
+| Dependencies | None                             | B-0288 + manifest design       |
+| Timeline     | 1-2 ISO test cycles              | Multi-phase long horizon       |
 
 B-0857 ships operator-facing unification at imperative-bash scope. B-0854 builds declarative substrate on top. Both compose; B-0857 doesn't block B-0854 + can ship faster.
 
@@ -70,6 +70,7 @@ Install-graph carve-out stays at \`tools/setup/\`; new \`nixos-install-from-usb.
 Docs-only PR that files a new P2 backlog row (B-0857) capturing the operator's direction to make `tools/setup/install.sh` the universal Unix-like-OS install entry, routing by environment (macOS / Linux-non-NixOS / NixOS-live-USB / installed-NixOS), and shrinking `zeta-install.sh` to a thin wrapper on a shorter path than the broader B-0854 Ace migration. Implementation is deferred; only the row and its index entry land here.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/B-0857-...md` with framing, current state, migration target, 10 enumerated sub-rows, composition with adjacent rows (B-0854/0852/0855/0853/0833), and P2 justification.
 - Adds the corresponding open-row entry to `docs/BACKLOG.md` under the P2 section.
 
@@ -77,10 +78,10 @@ Docs-only PR that files a new P2 backlog row (B-0857) capturing the operator's d
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                         | Description                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0857-...md | New backlog row defining install.sh universal-entry consolidation and 10 sub-rows |
-| docs/BACKLOG.md | Index entry pointing at the new B-0857 row |
+| docs/BACKLOG.md              | Index entry pointing at the new B-0857 row                                        |
 
 ## General comments
 

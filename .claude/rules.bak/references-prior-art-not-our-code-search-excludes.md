@@ -84,7 +84,7 @@ grep -rn "pattern" \
 ```
 
 **Caveat**: GNU `grep`'s `--exclude-dir=GLOB` matches directory
-*names* (basename), NOT slash-delimited paths. So
+_names_ (basename), NOT slash-delimited paths. So
 `--exclude-dir=references/prior-art` does NOT work (silently
 matches nothing). Use the basename `upstreams` instead, OR use
 explicit-allowlist sub-paths (`memory/ docs/ .claude/ tools/`)
@@ -138,11 +138,11 @@ from `.` and try to exclude — you'll always miss something.
 ## When `references/prior-art/` IS the right search target
 
 Not rare — actually a **first-class workflow** during backlog
-research. Per the human maintainer 2026-05-15: *"when doing
+research. Per the human maintainer 2026-05-15: _"when doing
 backlog items this is a good place to know about humans whoved
 solved similar issues i've been gathering their githubs so we
 can learn when doing our backlog itmes. some of these are very
-cutting edge and some are tried and true been around for years."*
+cutting edge and some are tried and true been around for years."_
 
 `references/prior-art/` is the curated **prior-art surface** —
 humans who've solved similar problems, mirrored as read-only
@@ -152,11 +152,11 @@ upstream(s) is encouraged and composes with
 
 **The two modes are not in tension:**
 
-| Mode | Pattern | Treatment |
-|---|---|---|
-| **Backlog prior-art research** (explicit-target) | `rg "pattern" references/prior-art/postgres/` | Encouraged; one of the curated prior-art surfaces; log queries on the backlog row |
-| **Unconstrained repo scan with plain `grep -r`** or `find . \| xargs grep` | (`grep -rn "pattern" .`) | MUST exclude `--exclude-dir=upstreams`; otherwise runaway-scan failure mode |
-| **Unconstrained repo scan with ripgrep** | `rg "pattern" .` | Safe-by-default — ripgrep respects `.gitignore`, and `references/prior-art/*` is already gitignored |
+| Mode                                                                       | Pattern                                       | Treatment                                                                                           |
+| -------------------------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Backlog prior-art research** (explicit-target)                           | `rg "pattern" references/prior-art/postgres/` | Encouraged; one of the curated prior-art surfaces; log queries on the backlog row                   |
+| **Unconstrained repo scan with plain `grep -r`** or `find . \| xargs grep` | (`grep -rn "pattern" .`)                      | MUST exclude `--exclude-dir=upstreams`; otherwise runaway-scan failure mode                         |
+| **Unconstrained repo scan with ripgrep**                                   | `rg "pattern" .`                              | Safe-by-default — ripgrep respects `.gitignore`, and `references/prior-art/*` is already gitignored |
 
 Other legitimate explicit-target reasons:
 
@@ -256,9 +256,9 @@ mechanization lands.
 ## Full reasoning
 
 The human maintainer 2026-05-15T~15:25Z, after observing the
-runaway grep process: *"references/prior-art/ in code we ignore
+runaway grep process: _"references/prior-art/ in code we ignore
 this folder everywhere casue its not our code but other githubs
-we reference for ideas"*
+we reference for ideas"_
 
 The 2-hour-grep evidence trail:
 

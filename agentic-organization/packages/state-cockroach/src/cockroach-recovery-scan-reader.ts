@@ -1,7 +1,4 @@
-import {
-  ReactionPlanStatus,
-  ScheduleBlockState,
-} from "../../domain/src/index.ts";
+import { ReactionPlanStatus, ScheduleBlockState } from "../../domain/src/index.ts";
 import type {
   DeadLetterRecoveryCandidate,
   ReactionPlanRecoveryCandidate,
@@ -72,18 +69,14 @@ export type RecoveryScanReader = {
   listAbandonedRunBindingCandidates: (
     input: ListAbandonedRunBindingCandidatesInput,
   ) => Promise<readonly RunBindingRecoveryCandidate[]>;
-  listDeadLetterCandidates: (
-    input: ListDeadLetterCandidatesInput,
-  ) => Promise<readonly DeadLetterRecoveryCandidate[]>;
+  listDeadLetterCandidates: (input: ListDeadLetterCandidatesInput) => Promise<readonly DeadLetterRecoveryCandidate[]>;
 };
 
 export type CreateCockroachRecoveryScanReaderInput = {
   executor: CockroachRecoveryScanSqlExecutor;
 };
 
-export function createCockroachRecoveryScanReader(
-  input: CreateCockroachRecoveryScanReaderInput,
-): RecoveryScanReader {
+export function createCockroachRecoveryScanReader(input: CreateCockroachRecoveryScanReaderInput): RecoveryScanReader {
   return {
     listStaleReactionPlanCandidates: async (scanInput) => {
       const result = await input.executor.execute<StaleReactionPlanRow>({
@@ -250,11 +243,8 @@ function stringifyTimestamp(value: string | Date): string {
   return value instanceof Date ? value.toISOString() : value;
 }
 
-function optionalTimestamp<Key extends string>(
-  key: Key,
-  value: string | Date | null,
-): { [K in Key]?: string } {
-  return value === null ? {} : { [key]: stringifyTimestamp(value) } as { [K in Key]?: string };
+function optionalTimestamp<Key extends string>(key: Key, value: string | Date | null): { [K in Key]?: string } {
+  return value === null ? {} : ({ [key]: stringifyTimestamp(value) } as { [K in Key]?: string });
 }
 
 function isEnumValue<Values extends Record<string, string>>(

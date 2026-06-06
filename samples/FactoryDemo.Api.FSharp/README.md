@@ -36,17 +36,17 @@ curl http://localhost:5000/api/pipeline/duplicates
 
 ## Endpoints (v0)
 
-| Method | Path | Returns |
-|---|---|---|
-| GET | `/` | API metadata + endpoint list |
-| GET | `/api/customers` | All customers |
-| GET | `/api/customers/{id}` | Single customer, 404 if missing |
-| GET | `/api/customers/{id}/activities` | Activities for one customer |
-| GET | `/api/opportunities` | All opportunities |
-| GET | `/api/opportunities/{id}` | Single opportunity, 404 if missing |
-| GET | `/api/activities` | All activities |
-| GET | `/api/pipeline/funnel` | Per-stage count + $ total |
-| GET | `/api/pipeline/duplicates` | Customers sharing an email |
+| Method | Path                             | Returns                            |
+| ------ | -------------------------------- | ---------------------------------- |
+| GET    | `/`                              | API metadata + endpoint list       |
+| GET    | `/api/customers`                 | All customers                      |
+| GET    | `/api/customers/{id}`            | Single customer, 404 if missing    |
+| GET    | `/api/customers/{id}/activities` | Activities for one customer        |
+| GET    | `/api/opportunities`             | All opportunities                  |
+| GET    | `/api/opportunities/{id}`        | Single opportunity, 404 if missing |
+| GET    | `/api/activities`                | All activities                     |
+| GET    | `/api/pipeline/funnel`           | Per-stage count + $ total          |
+| GET    | `/api/pipeline/duplicates`       | Customers sharing an email         |
 
 All responses are JSON.
 
@@ -83,7 +83,7 @@ Each of those is a follow-up PR.
 - **Anonymous records for derived views.** `/api/pipeline/funnel`
   returns an anonymous record with `Stage`, `Count`, and
   `TotalCents` fields using F#'s `{| Stage = ...; Count = ...;
-  TotalCents = ... |}` syntax. Keeps the output shape local to
+TotalCents = ... |}` syntax. Keeps the output shape local to
   the endpoint handler.
 - **`System.Text.Json` defaults.** No converter customisation in v0.
   If a frontend needs camelCase / different date shapes, add it as

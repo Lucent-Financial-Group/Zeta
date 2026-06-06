@@ -22,21 +22,21 @@ Prometheus CLI) for ad-hoc query / config-validation use.
 
 Aaron 2026-05-01:
 
-> *"plus promethius as a sick MCP and promtool and you'll love
+> _"plus promethius as a sick MCP and promtool and you'll love
 > the query language its like simplifed multidimensonal query
-> language MDX"*
+> language MDX"_
 
 This is the **operational counterpart** to B-0147 (timeseries-DB
 research) and B-0148 (MDX as meta-DSL). While B-0147 / B-0148
-research the *long-term* substrate question (which timeseries
-DB? which meta-DSL?), this row makes Prometheus *immediately
-usable* as a factory observability surface.
+research the _long-term_ substrate question (which timeseries
+DB? which meta-DSL?), this row makes Prometheus _immediately
+usable_ as a factory observability surface.
 
 Per the metrics-are-our-eyes framing (per
 `feedback_dependency_source_priority_open_source_microsoft_cncf_apache_mit_research_microsoft_research_metrics_are_our_eyes_aaron_2026_05_01.md`),
 the timeseries-channel is additive sensory capacity.
-Prometheus plus MCP is the lowest-friction path to *getting
-eyes operational NOW*, while the research about the optimal
+Prometheus plus MCP is the lowest-friction path to _getting
+eyes operational NOW_, while the research about the optimal
 long-term substrate proceeds in parallel.
 
 ## Acceptance criteria
@@ -51,7 +51,7 @@ long-term substrate proceeds in parallel.
    `.mcp.json` (or wherever harness MCP config lives).
 
 3. **promtool wired into factory tooling** — `tools/observability/
-   promtool/` wraps `promtool` for:
+promtool/` wraps `promtool` for:
    - Query validation (check PromQL syntax before storing
      queries)
    - Rule-file linting (ensure recording-rules / alerting-
@@ -86,8 +86,8 @@ long-term substrate proceeds in parallel.
 
 Aaron 2026-05-01 (earlier message):
 
-> *"i know prometheus, that's our good citizen dependency
-> candidate"*
+> _"i know prometheus, that's our good citizen dependency
+> candidate"_
 
 Prometheus is Aaron's known-quantity dependency:
 
@@ -101,8 +101,8 @@ Prometheus is Aaron's known-quantity dependency:
 - **PromQL is MDX-shaped** — composes with the meta-DSL
   research line (B-0148)
 
-Even if B-0147's research recommends a *different* long-term
-timeseries DB, Prometheus is the right *starting point*
+Even if B-0147's research recommends a _different_ long-term
+timeseries DB, Prometheus is the right _starting point_
 because:
 
 1. It exists today, deployable in minutes
@@ -115,7 +115,7 @@ because:
 ## Out of scope (defer)
 
 - **Long-term backend choice.** B-0147 owns that question.
-  This row instantiates Prometheus *now*; substrate-level
+  This row instantiates Prometheus _now_; substrate-level
   decisions can revise later.
 - **Production deployment.** Initial scope is local-dev /
   loop-runner consumption. Production observability stack
@@ -138,7 +138,7 @@ because:
   (PR #1116) — SRE metric frameworks (DORA/USE/RED/FGS) the
   initial query catalog targets
 - B-0147 — long-term timeseries-DB research; this row is the
-  *immediate practice* counterpart
+  _immediate practice_ counterpart
 - B-0148 — MDX-as-meta-DSL research; PromQL is the worked
   example that motivates the MDX framing
 - `feedback_absorb_and_contribute_community_dependency_discipline_2026_04_22.md`

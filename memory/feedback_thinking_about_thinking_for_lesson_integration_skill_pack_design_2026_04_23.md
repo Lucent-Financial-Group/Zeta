@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 directive linking meta-cognition to lesson-perma
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Thinking-about-thinking for skill-pack design
 
 ## Verbatim (2026-04-23)
@@ -28,14 +29,14 @@ idealised model.
 This sits one layer above the lesson-permanence rule
 (`feedback_lesson_permanence_is_how_we_beat_arc3_and_dora_2026_04_23.md`).
 Lesson-permanence names the product (integrate forward, don't
-forget). Thinking-about-thinking names the *design method* for
+forget). Thinking-about-thinking names the _design method_ for
 building the product.
 
 ## Why meta-cognition is load-bearing here
 
 The factory cannot mechanically prescribe "when you encounter
 X, apply lesson L." The world presents novel shapes. What the
-factory CAN do is teach itself to *notice* when the current
+factory CAN do is teach itself to _notice_ when the current
 situation rhymes with a past lesson — and that noticing is
 metacognitive.
 
@@ -113,7 +114,7 @@ modify, or reject. Authoring is gated.
 ### Pack 5: `meta-cognitive-journal`
 
 - **Purpose:** At a cadence (per-round or per-session), prompt
-  the agent to reflect on *how* it decided things that round
+  the agent to reflect on _how_ it decided things that round
   — not just what it decided. Surface heuristics the agent
   used, check whether any drifted, land revisions.
 - **Shape:** Capability skill + companion persona notebook.
@@ -126,7 +127,7 @@ modify, or reject. Authoring is gated.
 ### Pack 6: `lesson-archaeologist`
 
 - **Purpose:** On demand, scan historical commits / memory /
-  docs for *implicit* lessons that were never explicitly
+  docs for _implicit_ lessons that were never explicitly
   filed — patterns of commit messages like "fix X because Y
   didn't work" that encode a lesson without formal filing.
   Extract + file as structured lessons.

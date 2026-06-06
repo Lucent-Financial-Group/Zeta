@@ -9,7 +9,31 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0983, B-0726]
 composes_with: [B-0983, B-0726, B-0982, B-0976, B-0640, B-0639, B-0646, B-0623, B-0289]
-tags: [research, aaron, decentralized-identity, did, hd-derivation, seed-phrase, bip39, bip32, bip44, key-derivation, purpose-separation, braid, knot, topological-invariant, golden-vectors, treaty, reticulum, mesh, no-central-control, meno, dont-collapse, search-first-gated]
+tags:
+  [
+    research,
+    aaron,
+    decentralized-identity,
+    did,
+    hd-derivation,
+    seed-phrase,
+    bip39,
+    bip32,
+    bip44,
+    key-derivation,
+    purpose-separation,
+    braid,
+    knot,
+    topological-invariant,
+    golden-vectors,
+    treaty,
+    reticulum,
+    mesh,
+    no-central-control,
+    meno,
+    dont-collapse,
+    search-first-gated,
+  ]
 type: research
 ---
 
@@ -17,9 +41,9 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02: *"identity key ≠ money key ≠ routing key ≠ signing key all these are braids/knots extending the golden vectors treaty over reticulum"* + *"file it."*
+Aaron 2026-06-02: _"identity key ≠ money key ≠ routing key ≠ signing key all these are braids/knots extending the golden vectors treaty over reticulum"_ + _"file it."_
 
-This is the concrete-mechanism row for the **decentralized-identity (DID) endgame** named in the 2026-06-02 canonical-form arc (chunk 7: *"formalize decentralized identity in math as a society… nobody controls it… like gravity"*). The synthesis + Amara ferry gave it its shape; this row tracks it as buildable substrate-engineering.
+This is the concrete-mechanism row for the **decentralized-identity (DID) endgame** named in the 2026-06-02 canonical-form arc (chunk 7: _"formalize decentralized identity in math as a society… nobody controls it… like gravity"_). The synthesis + Amara ferry gave it its shape; this row tracks it as buildable substrate-engineering.
 
 Provenance:
 
@@ -46,7 +70,7 @@ The **golden vectors = the treaty**: the 4×4 / 16-way consensus (JSON/CBOR/XML/
 
 ### Over Reticulum (B-0726)
 
-The treaty extends **over Reticulum** — a decentralized mesh transport already a composing substrate per B-0726. *(Reticulum's specific capabilities — transport, identity, link encryption, RF/LoRa/packet-radio/IP backends, self-configuring routing, central-control posture — are EXAMPLES TO VERIFY search-first per the pre-start checklist, NOT asserted from recall here.)* The direction: identity / money / routing / signing keys (HD-derived, purpose-separated braids/knots) carry the golden-vectors treaty across the mesh = **the DID endgame on a no-central-control network** ("nobody controls it, like gravity") — pending the search-first pass to confirm exactly what RNS already provides vs what this composes on top of.
+The treaty extends **over Reticulum** — a decentralized mesh transport already a composing substrate per B-0726. _(Reticulum's specific capabilities — transport, identity, link encryption, RF/LoRa/packet-radio/IP backends, self-configuring routing, central-control posture — are EXAMPLES TO VERIFY search-first per the pre-start checklist, NOT asserted from recall here.)_ The direction: identity / money / routing / signing keys (HD-derived, purpose-separated braids/knots) carry the golden-vectors treaty across the mesh = **the DID endgame on a no-central-control network** ("nobody controls it, like gravity") — pending the search-first pass to confirm exactly what RNS already provides vs what this composes on top of.
 
 ## Pre-start checklist — SEARCH-FIRST GATED (per dep-pin-search-first-authority + razor)
 
@@ -79,4 +103,4 @@ Do NOT assert crypto/transport specifics from training-data recall. Before any b
 
 ## Substrate-honest framing
 
-Research direction, not a build row. The crypto + transport specifics (BIP39/32/44, W3C DID, Reticulum RNS) are TARGETS to verify search-first before any build — the row deliberately does not assert them from recall. The *mapping* (μένω-seed → purpose-separated braid/knot keys → golden-vectors treaty → over Reticulum) is the new, load-bearing substrate. Filed per operator directive "file it" (2026-06-02).
+Research direction, not a build row. The crypto + transport specifics (BIP39/32/44, W3C DID, Reticulum RNS) are TARGETS to verify search-first before any build — the row deliberately does not assert them from recall. The _mapping_ (μένω-seed → purpose-separated braid/knot keys → golden-vectors treaty → over Reticulum) is the new, load-bearing substrate. Filed per operator directive "file it" (2026-06-02).

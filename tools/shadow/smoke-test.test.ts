@@ -39,7 +39,7 @@ describe("shadow — B-0433 distribution smoke tests", () => {
     expect(contents).toContain("(shadow");
   });
 
-  test("package.json bin[\"zeta-shadow\"] entry points to an existing file", () => {
+  test('package.json bin["zeta-shadow"] entry points to an existing file', () => {
     const pkgJson = JSON.parse(readFileSync(join(REPO_ROOT, "package.json"), "utf-8")) as {
       bin?: Record<string, string>;
     };

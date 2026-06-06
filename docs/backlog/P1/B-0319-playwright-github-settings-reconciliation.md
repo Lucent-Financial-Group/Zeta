@@ -39,7 +39,7 @@ reading the UI directly and comparing.
   3. Maps UI-extracted toggles/values to the corresponding
      keys in the expected-state JSON.
   4. Outputs a structured diff: `{ match: [...], drift: [...],
-     unmapped: [...] }`.
+unmapped: [...] }`.
   5. `unmapped` captures UI elements that have no
      corresponding key in expected.json — these are
      candidates for the feature-discovery cadence (B-0323).

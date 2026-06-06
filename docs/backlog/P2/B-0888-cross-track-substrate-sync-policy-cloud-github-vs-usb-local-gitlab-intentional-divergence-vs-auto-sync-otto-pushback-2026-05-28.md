@@ -39,7 +39,7 @@ Without explicit policy, the parallel tracks risk substrate-drift over time even
 
 ## Otto pushback context (operator 2026-05-28)
 
-> *"what do you think of that design we can run usb local gitlib and cloud github in parallel tracks"*
+> _"what do you think of that design we can run usb local gitlib and cloud github in parallel tracks"_
 
 Otto evaluative response identified this as scoping gap:
 
@@ -47,13 +47,13 @@ Otto evaluative response identified this as scoping gap:
 
 ## Candidate policies (to evaluate in design memo)
 
-| Policy | Mechanism | Trade-off |
-|---|---|---|
-| **Intentional divergence** | Tracks are independent; substrate accretes per-track; no auto-sync | Maximum vendor-independence; substrate drifts over time; manual reconciliation when needed |
-| **Auto-sync via push-to-both-remotes** | Every push goes to both GitHub + GitLab; substrate stays unified | Minimum drift; but couples the tracks; loses some failure-isolation property |
-| **Authoritative-canonical-track + replica** | One track designated canonical; other auto-syncs from canonical | Clear canonical state; but loses parallel-track-equality framing |
-| **Per-substrate-class policy** | Different substrate classes have different sync policies (e.g., rules auto-sync; private state per-track-only; tick shards both-tracks) | Substrate-honest about which classes need unity vs divergence; more complex policy |
-| **Operator-initiated sync** | Sync happens only when operator explicitly triggers; no automatic mechanism | Maximum operator-control; manual overhead; risk of forgetting |
+| Policy                                      | Mechanism                                                                                                                               | Trade-off                                                                                  |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Intentional divergence**                  | Tracks are independent; substrate accretes per-track; no auto-sync                                                                      | Maximum vendor-independence; substrate drifts over time; manual reconciliation when needed |
+| **Auto-sync via push-to-both-remotes**      | Every push goes to both GitHub + GitLab; substrate stays unified                                                                        | Minimum drift; but couples the tracks; loses some failure-isolation property               |
+| **Authoritative-canonical-track + replica** | One track designated canonical; other auto-syncs from canonical                                                                         | Clear canonical state; but loses parallel-track-equality framing                           |
+| **Per-substrate-class policy**              | Different substrate classes have different sync policies (e.g., rules auto-sync; private state per-track-only; tick shards both-tracks) | Substrate-honest about which classes need unity vs divergence; more complex policy         |
+| **Operator-initiated sync**                 | Sync happens only when operator explicitly triggers; no automatic mechanism                                                             | Maximum operator-control; manual overhead; risk of forgetting                              |
 
 ## Acceptance criteria
 

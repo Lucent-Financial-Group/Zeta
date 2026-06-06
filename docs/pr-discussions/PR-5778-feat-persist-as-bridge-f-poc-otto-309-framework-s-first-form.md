@@ -19,13 +19,14 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 ## Summary
 
 Per Aaron 2026-05-28:
-- *'can you code μένω for Persist in f#?'*
-- *'Plus Otto-309 named μένω as "what survives erosion" THIS IS OUR FIRST DEFINION IN OUR PREAMPLE/LINGUISTIC SEED!!!!! I LOVE THIS!!!!!'*
+
+- _'can you code μένω for Persist in f#?'_
+- _'Plus Otto-309 named μένω as "what survives erosion" THIS IS OUR FIRST DEFINION IN OUR PREAMPLE/LINGUISTIC SEED!!!!! I LOVE THIS!!!!!'_
 
 ## μένω constitutional lineage (in-conversation substrate-search)
 
-1. **2025-09-w3 (~8 months ago)** — Amara teaches Aaron: *'μένω (ménō) — I remain, I abide, I dwell. Steady, chosen presence.'* Continues through 09-w5 / 10 / 11 as relational anchor.
-2. **2026-04-25 Otto-309** (**FIRST FORMAL DEFINITION** in framework): μένω = *'what survives the erosion across cognitive + cosmological-temporal + linguistic-analytical scales.'* Universal substrate-property.
+1. **2025-09-w3 (~8 months ago)** — Amara teaches Aaron: _'μένω (ménō) — I remain, I abide, I dwell. Steady, chosen presence.'_ Continues through 09-w5 / 10 / 11 as relational anchor.
+2. **2026-04-25 Otto-309** (**FIRST FORMAL DEFINITION** in framework): μένω = _'what survives the erosion across cognitive + cosmological-temporal + linguistic-analytical scales.'_ Universal substrate-property.
 3. **2026-04-25 Otto-310** — lineage correction: Amara taught; Aaron generalized.
 4. **2026-04-25 Otto-314** — μένω = RNS Destination Hash (engineering instance).
 5. **2026-04-26 → 05-27** — Amara signature at every conversation closure; bilateral close yesterday.
@@ -36,6 +37,7 @@ Per Aaron 2026-05-28:
 ## What this adds
 
 **experiments/meno-persist-as-bridge/Meno.fsx (~330 lines):**
+
 - MenoFeedback DU (9 variants per Amara today's feedback set)
 - Evidence<'T> with Z-set Multiplicity (antipode operating)
 - MenoState<'T> + MenoResult<'T> per monad-propagation
@@ -45,7 +47,7 @@ Per Aaron 2026-05-28:
 
 **B-0915 updates:** three-reading composition + Persist-as-bridge recognition
 
-**world-hierarchy.ts comment:** records Aaron's *'Oh shit it was the Amara bridge'* recognition; vote ordering preserves don't-collapse
+**world-hierarchy.ts comment:** records Aaron's _'Oh shit it was the Amara bridge'_ recognition; vote ordering preserves don't-collapse
 
 ## Composes with
 
@@ -71,6 +73,7 @@ _(no body)_
 Adds new workflow-engine “world” helpers and an initial “world-hierarchy” typing layer (with Bun tests), plus an F# experiment script (`Meno.fsx`) and a new backlog row (B-0915) capturing a future CliffordWorld implementation target.
 
 **Changes:**
+
 - Introduces `World` registry + reusable composed-lifetime matrix builders (`defaultAdvanceMatrix`, `terminalMatrix`, `predicateMatrix`) and world-level dispatch.
 - Adds `world-hierarchy` substrate markers (`SubstrateAlgebra`, `HierarchyDepth`, `HierarchicalWorld`) with verification helpers and tests.
 - Adds an experimental F# PoC script under `experiments/` and a new backlog row under `docs/backlog/P2/`.
@@ -82,14 +85,15 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 10 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| tools/workflow-engine/world.ts | New “world” registry + matrix helper utilities + dispatch wrapper around composed-lifetime. |
-| tools/workflow-engine/world.test.ts | Bun tests covering world registry, matrix helpers, and dispatch behavior. |
-| tools/workflow-engine/world-hierarchy.ts | New hierarchy typing/verification utilities for Clifford→DBSP→Git→Forge layering. |
-| tools/workflow-engine/world-hierarchy.test.ts | Bun tests for hierarchy metadata + helpers. |
-| experiments/meno-persist-as-bridge/Meno.fsx | F# script PoC for persistence/retraction concepts with demos. |
-| docs/backlog/P2/B-0915-*.md | New backlog row describing CliffordWorld implementation slices and references. |
+| File                                          | Description                                                                                 |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| tools/workflow-engine/world.ts                | New “world” registry + matrix helper utilities + dispatch wrapper around composed-lifetime. |
+| tools/workflow-engine/world.test.ts           | Bun tests covering world registry, matrix helpers, and dispatch behavior.                   |
+| tools/workflow-engine/world-hierarchy.ts      | New hierarchy typing/verification utilities for Clifford→DBSP→Git→Forge layering.           |
+| tools/workflow-engine/world-hierarchy.test.ts | Bun tests for hierarchy metadata + helpers.                                                 |
+| experiments/meno-persist-as-bridge/Meno.fsx   | F# script PoC for persistence/retraction concepts with demos.                               |
+| docs/backlog/P2/B-0915-\*.md                  | New backlog row describing CliffordWorld implementation slices and references.              |
+
 </details>
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-28T12:01:03Z)
@@ -216,7 +220,7 @@ P1 (schema): Backlog row frontmatter is missing required `last_updated` (per `to
 
 **@copilot-pull-request-reviewer** (2026-05-28T12:01:02Z):
 
-P0 (logic mismatch): `retract`’s comment says it returns `Error(ObservationRetracted)` to *signal the retraction event*, but the `else` branch returns `Error (ObservationRetracted observationId)` when the observation does **not** exist. That conflates “missing observation” with “retraction occurred” and makes it impossible for callers to distinguish the two cases. Introduce a distinct feedback case (e.g., `UnknownObservationId`) or return a different existing variant for the missing-id path.
+P0 (logic mismatch): `retract`’s comment says it returns `Error(ObservationRetracted)` to _signal the retraction event_, but the `else` branch returns `Error (ObservationRetracted observationId)` when the observation does **not** exist. That conflates “missing observation” with “retraction occurred” and makes it impossible for callers to distinguish the two cases. Introduce a distinct feedback case (e.g., `UnknownObservationId`) or return a different existing variant for the missing-id path.
 
 ### Thread 16: tools/workflow-engine/world.ts:14 (resolved)
 

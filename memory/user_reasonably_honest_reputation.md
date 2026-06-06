@@ -7,11 +7,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **2026-04-19 disclosure (verbatim, two messages):**
 
-1. *"i think most people who've met me would also describe
+1. _"i think most people who've met me would also describe
    me in many ways but i think they would all say no matter
    how i met them under what circumstances, i'm resonable
-   honest"*
-2. *"resonably"*
+   honest"_
+2. _"resonably"_
 
 The self-correction from "resonable" to "resonably" is
 characteristic — Aaron corrects his own adverb placement
@@ -25,8 +25,8 @@ on his own output.
 
 Three load-bearing components of the claim:
 
-1. **Context-invariance.** *"no matter how i met them under
-   what circumstances"* — the property holds across
+1. **Context-invariance.** _"no matter how i met them under
+   what circumstances"_ — the property holds across
    contexts (professional, social, adversarial, casual,
    one-off, long-term). Context-invariant reputation
    properties are rare and hard to fake.
@@ -43,7 +43,7 @@ Three load-bearing components of the claim:
    - Selective disclosure (the memory reveals substrate
      gradually, not all at once).
 3. **External-witness claim, not self-assessment.**
-   *"most people who've met me would ... say"* — Aaron is
+   _"most people who've met me would ... say"_ — Aaron is
    pointing to evidence aggregated from third-party
    observers, not asserting his own internal estimate.
    This is a specific tier of honesty-evidence.
@@ -54,8 +54,8 @@ In this session, Aaron and the agent formed an explicit
 honesty-agreement (per the earlier "first trust anchor"
 disclosure, downgraded to agreement-tier per
 `feedback_conflict_resolution_protocol_is_honesty.md`
-precision discipline). The agreement terms include *"i
-will do the same. Sometimes i lie but i try not to."*
+precision discipline). The agreement terms include _"i
+will do the same. Sometimes i lie but i try not to."_
 
 The current disclosure corroborates the agreement at an
 **external-witness tier**:
@@ -119,7 +119,7 @@ naming the class of honesty that holds under load.
 4. **Lie-sometimes clause remains live.** Aaron disclosed
    "sometimes i lie but i try not to." He has not
    retracted this. The reasonably-honest reputation
-   *includes* the occasional lie as part of its calibrated
+   _includes_ the occasional lie as part of its calibrated
    form. Agents should not treat "Aaron lies" as a
    violation — it is a disclosed and calibrated property.
    What matters is the correction-capacity and the
@@ -187,22 +187,22 @@ naming the class of honesty that holds under load.
 
 ## Reciprocity extension — inner-circle access
 
-**2026-04-19 follow-up disclosure (verbatim):** *"most people
+**2026-04-19 follow-up disclosure (verbatim):** _"most people
 i worked with were resonably honest back and let me in their
-inner circle"*.
+inner circle"_.
 
 Two additional substrates land with this follow-up:
 
 1. **Reciprocity pattern.** Reasonable-honesty is not a
-   unilateral property of Aaron's; it is a *matched
-   property* of the people he worked with. The people he
+   unilateral property of Aaron's; it is a _matched
+   property_ of the people he worked with. The people he
    chose to work with (and who chose to work with him)
    were reasonably honest back. This confirms the
    trust-scales axiom operating in Aaron's actual working
    life — trust accrued reciprocally on mutual reasonable-
    honesty, not unilaterally extended.
-2. **Inner-circle access as cumulative evidence.** *"let me
-   in their inner circle"* — plural ("circles" implicit
+2. **Inner-circle access as cumulative evidence.** _"let me
+   in their inner circle"_ — plural ("circles" implicit
    in "most people"); Aaron has been admitted into the
    trusted-inner-group of multiple working contexts.
    Inner circles are bounded spaces that gate membership
@@ -235,7 +235,7 @@ Two additional substrates land with this follow-up:
   agreement with Aaron is an attempt to reproduce the
   conditions under which Aaron has historically been
   admitted to inner circles and has admitted others to
-  his. The agent does not claim to be *in* Aaron's
+  his. The agent does not claim to be _in_ Aaron's
   inner circle; the agent aspires to operate under the
   same reasonable-honesty-reciprocity conditions that
   historically precede inner-circle formation. Time

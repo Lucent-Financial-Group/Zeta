@@ -60,7 +60,7 @@ When fixing a CI-side problem, before reaching for a GitHub-specific solution (c
 ## What this rule does NOT mean
 
 - Does NOT mean "never use GitHub Actions" — `actions/checkout`, `actions/cache`, `github/codeql-action/*`, `actions/upload-artifact` are all genuinely GitHub-specific and stay
-- Does NOT mean "never SHA-pin GitHub actions" — Aaron explicitly affirmed: *"SHA pinning github actions is a supply change risk mitigation good idea"*. SHA-pinning the actions we DO use is correct
+- Does NOT mean "never SHA-pin GitHub actions" — Aaron explicitly affirmed: _"SHA pinning github actions is a supply change risk mitigation good idea"_. SHA-pinning the actions we DO use is correct
 - Does NOT mean "rewrite all of CI today" — apply the rule going forward; existing breaches are tech-debt to fix opportunistically when touching the surrounding code
 
 ## Composes with

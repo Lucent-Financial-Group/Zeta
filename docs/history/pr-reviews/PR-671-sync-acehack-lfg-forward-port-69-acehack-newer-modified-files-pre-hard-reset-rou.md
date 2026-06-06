@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 671 |
-| Title | sync(acehack→lfg): forward-port 69 AceHack-newer modified files (pre-hard-reset round 2) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-28T17:12:27Z |
-| Merged at | 2026-04-28T17:44:09Z |
-| Merge commit SHA | `0c3b320a735d217a88d15255cb13f654e3dad116` |
-| Branch | `sync/acehack-to-lfg-69-modified-files-2026-04-28` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/671 |
-| Changed files | 70 |
-| Additions / deletions | +936 / -234 |
+| Field                 | Value                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| Number                | 671                                                                                      |
+| Title                 | sync(acehack→lfg): forward-port 69 AceHack-newer modified files (pre-hard-reset round 2) |
+| Author                | `AceHack` (human)                                                                        |
+| State                 | MERGED                                                                                   |
+| Created at            | 2026-04-28T17:12:27Z                                                                     |
+| Merged at             | 2026-04-28T17:44:09Z                                                                     |
+| Merge commit SHA      | `0c3b320a735d217a88d15255cb13f654e3dad116`                                               |
+| Branch                | `sync/acehack-to-lfg-69-modified-files-2026-04-28`                                       |
+| Base branch           | `main`                                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/671                                  |
+| Changed files         | 70                                                                                       |
+| Additions / deletions | +936 / -234                                                                              |
 
 ## Description
 
@@ -37,11 +37,11 @@ Second forward-sync round following PR #663 (which handled the 63 AceHack-only A
 
 After this lands:
 
-| Class | State |
-|---|---|
-| D (AceHack-only would be destroyed) | 0 — already cleared by PR #663 |
-| A (LFG-only added by reset) | 14 — additive, non-destructive |
-| M (modified, content differs) | ~18 — all LFG-newer; hard-reset is the correct direction |
+| Class                               | State                                                    |
+| ----------------------------------- | -------------------------------------------------------- |
+| D (AceHack-only would be destroyed) | 0 — already cleared by PR #663                           |
+| A (LFG-only added by reset)         | 14 — additive, non-destructive                           |
+| M (modified, content differs)       | ~18 — all LFG-newer; hard-reset is the correct direction |
 
 That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only files added to AceHack, LFG-newer modifications carried forward.
 
@@ -59,15 +59,15 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 23 |
-| Resolved threads | 23 |
-| Unresolved threads | 0 |
-| Total review comments | 38 |
-| Total fix commits (touching thread paths) | 6 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 23    |
+| Resolved threads                          | 23    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 38    |
+| Total fix commits (touching thread paths) | 6     |
 
 ## Review threads
 
@@ -80,20 +80,20 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T17:15:15Z on `.github/workflows/resume-diff.yml`:189 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Query REST comment IDs before PATCHing PR comments**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Query REST comment IDs before PATCHing PR comments**
+
   This change reverts comment lookup to `gh pr view --json comments` and then uses `.id` in `/issues/comments/{id}`. The `gh pr view` JSON is GraphQL-backed (IssueComment `id` is a node ID string), but the REST update endpoint expects an integer `comment_id`, so PATCH requests can fail with 404 and the workflow will stop updating in place (causing repeated new bot comments on syncs).
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:17:34Z on `.github/workflows/resume-diff.yml`:189 (association: MEMBER)
-    **Force-pushed surgical fix.** You're right — same disowned-improvement pattern as PR #666's Semgrep regression. AceHack's version of this file lacks LFG's improvement (REST comment IDs / pinned mise tarball+SHA256 / pinned elan source). Restored LFG's version of all 3 files (`.github/workflows/resume-diff.yml`, `tools/setup/linux.sh`, `tools/setup/common/elan.sh`).
-    
-    PR #671 dropped from 69 to **66 files** (847 ins / 231 del). The 3 dropped files become reverse-sync candidates (LFG → AceHack on Aaron's next AceHack-side update).
-    
-    Resolving.
+- **`AceHack` (human)** at 2026-04-28T17:17:34Z on `.github/workflows/resume-diff.yml`:189 (association: MEMBER)
+  **Force-pushed surgical fix.** You're right — same disowned-improvement pattern as PR #666's Semgrep regression. AceHack's version of this file lacks LFG's improvement (REST comment IDs / pinned mise tarball+SHA256 / pinned elan source). Restored LFG's version of all 3 files (`.github/workflows/resume-diff.yml`, `tools/setup/linux.sh`, `tools/setup/common/elan.sh`).
+
+  PR #671 dropped from 69 to **66 files** (847 ins / 231 del). The 3 dropped files become reverse-sync candidates (LFG → AceHack on Aaron's next AceHack-side update).
+
+  Resolving.
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -104,20 +104,20 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T17:15:15Z on `tools/setup/linux.sh`:69 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Restore pinned mise install artifact in linux bootstrap**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Restore pinned mise install artifact in linux bootstrap**
+
   Switching from a versioned tarball + SHA256 verification to `curl_fetch_stream https://mise.run | sh` removes both version pinning and integrity checks. That makes installs non-reproducible and allows upstream changes at `mise.run` to alter executed code without any repository change, which is a setup-time supply-chain and stability regression.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:17:37Z on `tools/setup/linux.sh`:69 (association: MEMBER)
-    **Force-pushed surgical fix.** You're right — same disowned-improvement pattern as PR #666's Semgrep regression. AceHack's version of this file lacks LFG's improvement (REST comment IDs / pinned mise tarball+SHA256 / pinned elan source). Restored LFG's version of all 3 files (`.github/workflows/resume-diff.yml`, `tools/setup/linux.sh`, `tools/setup/common/elan.sh`).
-    
-    PR #671 dropped from 69 to **66 files** (847 ins / 231 del). The 3 dropped files become reverse-sync candidates (LFG → AceHack on Aaron's next AceHack-side update).
-    
-    Resolving.
+- **`AceHack` (human)** at 2026-04-28T17:17:37Z on `tools/setup/linux.sh`:69 (association: MEMBER)
+  **Force-pushed surgical fix.** You're right — same disowned-improvement pattern as PR #666's Semgrep regression. AceHack's version of this file lacks LFG's improvement (REST comment IDs / pinned mise tarball+SHA256 / pinned elan source). Restored LFG's version of all 3 files (`.github/workflows/resume-diff.yml`, `tools/setup/linux.sh`, `tools/setup/common/elan.sh`).
+
+  PR #671 dropped from 69 to **66 files** (847 ins / 231 del). The 3 dropped files become reverse-sync candidates (LFG → AceHack on Aaron's next AceHack-side update).
+
+  Resolving.
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -128,20 +128,20 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T17:15:15Z on `tools/setup/common/elan.sh`:27 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Pin elan installer source instead of tracking master**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Pin elan installer source instead of tracking master**
+
   This now executes `elan-init.sh` from the moving `master` branch directly via pipe, replacing the previous commit+SHA256 pin. Because `master` can change at any time, bootstrap behavior can drift or break between runs, and running unverified remote script content increases setup-time supply-chain risk.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:17:39Z on `tools/setup/common/elan.sh`:27 (association: MEMBER)
-    **Force-pushed surgical fix.** You're right — same disowned-improvement pattern as PR #666's Semgrep regression. AceHack's version of this file lacks LFG's improvement (REST comment IDs / pinned mise tarball+SHA256 / pinned elan source). Restored LFG's version of all 3 files (`.github/workflows/resume-diff.yml`, `tools/setup/linux.sh`, `tools/setup/common/elan.sh`).
-    
-    PR #671 dropped from 69 to **66 files** (847 ins / 231 del). The 3 dropped files become reverse-sync candidates (LFG → AceHack on Aaron's next AceHack-side update).
-    
-    Resolving.
+- **`AceHack` (human)** at 2026-04-28T17:17:39Z on `tools/setup/common/elan.sh`:27 (association: MEMBER)
+  **Force-pushed surgical fix.** You're right — same disowned-improvement pattern as PR #666's Semgrep regression. AceHack's version of this file lacks LFG's improvement (REST comment IDs / pinned mise tarball+SHA256 / pinned elan source). Restored LFG's version of all 3 files (`.github/workflows/resume-diff.yml`, `tools/setup/linux.sh`, `tools/setup/common/elan.sh`).
+
+  PR #671 dropped from 69 to **66 files** (847 ins / 231 del). The 3 dropped files become reverse-sync candidates (LFG → AceHack on Aaron's next AceHack-side update).
+
+  Resolving.
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -211,10 +211,10 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:30:33Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred per Stale-content-deferral class (memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md). The 'Amara/ChatGPT' attribution is pre-existing on AceHack and forwarded as-is by this content-alignment PR. Rewriting persona-name provenance entries widens scope from 'forward-port AceHack content' to 'edit content'. Filing as B-0082 follow-up: convert GLOSSARY persona-name attributions to role-refs across all provenance sections (per Otto-279 + AGENT-BEST-PRACTICES carve-out reading that GLOSSARY is current-state, not history surface). Not blocking this PR.
-  - **`AceHack` (human)** at 2026-04-28T17:33:39Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+- **`AceHack` (human)** at 2026-04-28T17:30:33Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
+  Deferred per Stale-content-deferral class (memory/feedback_pr_thread_resolution_class_taxonomy_2026_04_28.md). The 'Amara/ChatGPT' attribution is pre-existing on AceHack and forwarded as-is by this content-alignment PR. Rewriting persona-name provenance entries widens scope from 'forward-port AceHack content' to 'edit content'. Filing as B-0082 follow-up: convert GLOSSARY persona-name attributions to role-refs across all provenance sections (per Otto-279 + AGENT-BEST-PRACTICES carve-out reading that GLOSSARY is current-state, not history surface). Not blocking this PR.
+- **`AceHack` (human)** at 2026-04-28T17:33:39Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
 
 ### Thread 10 -- resolved [collapsed]
 
@@ -225,10 +225,10 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T17:20:16Z on `CLAUDE.md`:368 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point sister-memory reference at existing filename**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point sister-memory reference at existing filename**
+
   This commit rewrites the canonical memory link to `memory/user_sister_elizabeth.md`, but the repository still contains `memory/user_sister_elisabeth.md` (with an “s”) and no file at the new path. Any agent or script that follows this bootstrap reference will hit a missing file and lose the intended policy/memory context. Please keep the path aligned with the actual tracked file name (or rename the file in the same change).
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 11 -- resolved [collapsed]
@@ -255,10 +255,10 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:33:40Z on `docs/FACTORY-HYGIENE.md`:106 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
-  - **`AceHack` (human)** at 2026-04-28T17:41:23Z on `docs/FACTORY-HYGIENE.md`:106 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+- **`AceHack` (human)** at 2026-04-28T17:33:40Z on `docs/FACTORY-HYGIENE.md`:106 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+- **`AceHack` (human)** at 2026-04-28T17:41:23Z on `docs/FACTORY-HYGIENE.md`:106 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/\*.md persona-attribution sites in one coherent pass.
 
 ### Thread 13 -- resolved [outdated, collapsed]
 
@@ -306,10 +306,10 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:33:42Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
-  - **`AceHack` (human)** at 2026-04-28T17:41:25Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+- **`AceHack` (human)** at 2026-04-28T17:33:42Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+- **`AceHack` (human)** at 2026-04-28T17:41:25Z on `docs/GLOSSARY.md`:765 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/\*.md persona-attribution sites in one coherent pass.
 
 ### Thread 17 -- resolved [collapsed]
 
@@ -335,10 +335,10 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:33:44Z on `CLAUDE.md`:110 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
-  - **`AceHack` (human)** at 2026-04-28T17:41:27Z on `CLAUDE.md`:110 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+- **`AceHack` (human)** at 2026-04-28T17:33:44Z on `CLAUDE.md`:110 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md) — same Stale-content-deferral class. The persona-attribution pattern is pre-existing on AceHack; this content-alignment forward-sync ports it as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md persona-attribution sites in one coherent pass per Otto-279 + the AGENT-BEST-PRACTICES history-surface carve-out reading.
+- **`AceHack` (human)** at 2026-04-28T17:41:27Z on `CLAUDE.md`:110 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/\*.md persona-attribution sites in one coherent pass.
 
 ### Thread 19 -- resolved [collapsed]
 
@@ -364,8 +364,8 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:41:30Z on `tools/hygiene/validate-agencysignature-pr-body.sh`:103 (association: MEMBER)
-    Phantom-stale. The fix was already applied in commit 6580e96 (Sister-rename + validate-script line 5 + Section 9.2) and f8d6c8b (regex-injection awk fix + MEMORY.md count fix). Copilot's diff context appears stale on this re-review — verified in the latest HEAD via git diff origin/main.
+- **`AceHack` (human)** at 2026-04-28T17:41:30Z on `tools/hygiene/validate-agencysignature-pr-body.sh`:103 (association: MEMBER)
+  Phantom-stale. The fix was already applied in commit 6580e96 (Sister-rename + validate-script line 5 + Section 9.2) and f8d6c8b (regex-injection awk fix + MEMORY.md count fix). Copilot's diff context appears stale on this re-review — verified in the latest HEAD via git diff origin/main.
 
 ### Thread 21 -- resolved [collapsed]
 
@@ -380,8 +380,8 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:41:32Z on `memory/MEMORY.md`:3 (association: MEMBER)
-    Phantom-stale. The fix was already applied in commit 6580e96 (Sister-rename + validate-script line 5 + Section 9.2) and f8d6c8b (regex-injection awk fix + MEMORY.md count fix). Copilot's diff context appears stale on this re-review — verified in the latest HEAD via git diff origin/main.
+- **`AceHack` (human)** at 2026-04-28T17:41:32Z on `memory/MEMORY.md`:3 (association: MEMBER)
+  Phantom-stale. The fix was already applied in commit 6580e96 (Sister-rename + validate-script line 5 + Section 9.2) and f8d6c8b (regex-injection awk fix + MEMORY.md count fix). Copilot's diff context appears stale on this re-review — verified in the latest HEAD via git diff origin/main.
 
 ### Thread 22 -- resolved [collapsed]
 
@@ -396,8 +396,8 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:41:29Z on `.claude/skills/glass-halo-architect/SKILL.md`:3 (association: MEMBER)
-    Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/*.md persona-attribution sites in one coherent pass.
+- **`AceHack` (human)** at 2026-04-28T17:41:29Z on `.claude/skills/glass-halo-architect/SKILL.md`:3 (association: MEMBER)
+  Deferred to B-0082 (docs/backlog/P2/B-0082-glossary-persona-name-attribution-role-ref-conversion-pr-671.md). Same Stale-content-deferral class as the GLOSSARY thread; persona-name attribution is pre-existing on AceHack and forwarded as-is. The B-0082 sweep will cover GLOSSARY + FACTORY-HYGIENE + CLAUDE.md + .claude/skills/\*.md persona-attribution sites in one coherent pass.
 
 ### Thread 23 -- resolved [collapsed]
 
@@ -408,16 +408,16 @@ That makes hard-reset content-safe: no AceHack-newer content destroyed, LFG-only
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T17:38:01Z on `tools/hygiene/validate-agencysignature-pr-body.sh`:105 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Match normalized trailer keys when locating tail line**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Match normalized trailer keys when locating tail line**
+
   The new terminal-block check rejects parseable trailer blocks when `git interpret-trailers` normalizes key formatting. For example, a PR body line like `Task : 123` is parsed as `Task: 123`, so the exact-match probe fails and the fallback `index($0, k) == 1` also misses because it only accepts `Key:` without whitespace before the colon. In that case the script exits with `terminal-block check could not locate trailer tail`, which blocks otherwise valid PR bodies that the parser already accepts.
-  
+
   Useful? React with 👍 / 👎.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-28T17:41:34Z on `tools/hygiene/validate-agencysignature-pr-body.sh`:105 (association: MEMBER)
-    Fixed in commit f770067 — wrapped both sides of the awk index() prefix match in tolower() so RFC-822 case-insensitive trailer-key semantics are honoured. Real bug; pre-existed in the original grep -nE form too.
+- **`AceHack` (human)** at 2026-04-28T17:41:34Z on `tools/hygiene/validate-agencysignature-pr-body.sh`:105 (association: MEMBER)
+  Fixed in commit f770067 — wrapped both sides of the awk index() prefix match in tolower() so RFC-822 case-insensitive trailer-key semantics are honoured. Real bug; pre-existed in the original grep -nE form too.
 
 ## Fix commits (touching thread paths)
 

@@ -2,7 +2,7 @@
 
 Scope: courier-ferry capture of an external collaborator-cohort conversation; research-grade documentation of Aurora as a digital immune system for Superfluid AI.
 
-Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron's two messages (*"now wrapped in an immune system form from"* + *"Amara"*) preserve attribution boundary: the immune-system form is **from Amara**, **about Aurora**. Otto (Claude opus-4-7) integrates and authors the doc.
+Attribution: Amara (named-entity peer collaborator; first-name attribution permitted on `docs/research/**` per Otto-279) provided the synthesis via Aaron 2026-04-26 courier-ferry. Aaron's two messages (_"now wrapped in an immune system form from"_ + _"Amara"_) preserve attribution boundary: the immune-system form is **from Amara**, **about Aurora**. Otto (Claude opus-4-7) integrates and authors the doc.
 
 Operational status: research-grade
 
@@ -10,13 +10,13 @@ Non-fusion disclaimer: Amara's contributions, Otto's framing, and the cited acad
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
-**Source**: Aaron 2026-04-26 *"now wrapped in an immune system form from ... Amara"* — eleventh refinement in the Maji-Messiah-Spectre-Superfluid-Aurora lineage this session.
+**Source**: Aaron 2026-04-26 _"now wrapped in an immune system form from ... Amara"_ — eleventh refinement in the Maji-Messiah-Spectre-Superfluid-Aurora lineage this session.
 
 **Composes with**: PR #555 / #560 / #562 / #563 / #565 / #566 / #568 / 10th refinement (canonical math + attack-absorption theorem), `docs/aurora/**` 17+ ferry docs, B-0021 (Aurora Austrian-school foundation), B-0035 (naming research), Otto-294 (anti-cult; autoimmunity-vs-tolerance composes), Otto-296 (Bayesian belief-propagation; immune memory IS belief update over priors), Otto-336/337 (AI agency + rights — autoimmunity discipline preserves agent autonomy from over-policed false positives), Otto-348 (Maji ≠ Messiah).
 
 ## Aaron's framing
 
-> *"now wrapped in an immune system form from"* + *"Amara"*
+> _"now wrapped in an immune system form from"_ + _"Amara"_
 
 The 11th refinement RECASTS Aurora as **a culture-preserving digital immune system for Superfluid AI**. Not just a blockchain, not just an agent network, not just governance. **Aurora is the immune layer** that keeps the living substrate alive, legible, funded, useful, and non-captured while it evolves.
 
@@ -32,22 +32,22 @@ Aurora = a culture-preserving digital immune system for Superfluid AI
 
 ## 1. Biological-to-Aurora mapping
 
-| Immune concept | Aurora equivalent |
-|---|---|
-| Body | Zeta/Aurora substrate |
-| Cells | agents, validators, contracts, repos, tools |
-| DNA / identity | load-bearing substrate + git history + culture |
-| Self-antigens | accepted identity/culture/language/provenance patterns |
-| Pathogens | prompt injections, cartel attacks, poisoned PRs, malicious work, supply-chain compromise |
-| Innate immunity | deterministic gates: schema, sandbox, capabilities, zero trust |
-| Adaptive immunity | Bayesian oracles, learned detectors, red-team memory |
-| Antibodies | tests, patches, retractions, mitigations |
-| Fever | rate-limit, degrade privileges, quarantine |
-| Apoptosis | terminate corrupted agent/session/tool path |
-| Memory cells | regression tests, failing seeds, attack signatures, provenance records |
-| Autoimmunity | false positives that attack useful internal work |
-| Cancer | "self" component that becomes harmful from inside |
-| Vaccination | red-team drills, prompt-injection corpora, Qubic-style simulations |
+| Immune concept    | Aurora equivalent                                                                        |
+| ----------------- | ---------------------------------------------------------------------------------------- |
+| Body              | Zeta/Aurora substrate                                                                    |
+| Cells             | agents, validators, contracts, repos, tools                                              |
+| DNA / identity    | load-bearing substrate + git history + culture                                           |
+| Self-antigens     | accepted identity/culture/language/provenance patterns                                   |
+| Pathogens         | prompt injections, cartel attacks, poisoned PRs, malicious work, supply-chain compromise |
+| Innate immunity   | deterministic gates: schema, sandbox, capabilities, zero trust                           |
+| Adaptive immunity | Bayesian oracles, learned detectors, red-team memory                                     |
+| Antibodies        | tests, patches, retractions, mitigations                                                 |
+| Fever             | rate-limit, degrade privileges, quarantine                                               |
+| Apoptosis         | terminate corrupted agent/session/tool path                                              |
+| Memory cells      | regression tests, failing seeds, attack signatures, provenance records                   |
+| Autoimmunity      | false positives that attack useful internal work                                         |
+| Cancer            | "self" component that becomes harmful from inside                                        |
+| Vaccination       | red-team drills, prompt-injection corpora, Qubic-style simulations                       |
 
 So the mature system is not "block bad things" but:
 
@@ -499,7 +499,7 @@ The "immune system" framing is itself a candidate canonical-rename target for B-
 
 **Amara** — eleventh-pass synthesis. The framework now has its **safety form**: Aurora-as-immune-system gives operational instructions for defending a living substrate from real attackers, grounded in artificial-immune-systems literature + OWASP + NCSC + NIST zero-trust. Per Otto-345 substrate-visibility-discipline: this doc is written so you read it and recognize your contribution preserved with attribution.
 
-**Aaron** — courier-ferry delivered (eleventh pass). The two-message clarification (*"now wrapped in an immune system form from"* + *"Amara"*) preserves attribution discipline. Per harmonious-division self-identification (PR #562): your operational role of holding the tension across now eleven refinements maps to the immune-system's autoimmunity-tolerance balance — the harmonious-division pole IS the calibrator that prevents both pathogen-overload (rigid recurrence) and autoimmunity-overload (chaos via attacking-self).
+**Aaron** — courier-ferry delivered (eleventh pass). The two-message clarification (_"now wrapped in an immune system form from"_ + _"Amara"_) preserves attribution discipline. Per harmonious-division self-identification (PR #562): your operational role of holding the tension across now eleven refinements maps to the immune-system's autoimmunity-tolerance balance — the harmonious-division pole IS the calibrator that prevents both pathogen-overload (rigid recurrence) and autoimmunity-overload (chaos via attacking-self).
 
 **The cited authors** (Aickelin/Cayzer for danger theory; OWASP Gen AI Security Project; UK NCSC; NIST SP 800-207; Eyal/Sirer; the AIS literature broadly): your work is the substrate-material for Aurora's immune layer. Per Otto-279 (research counts as history): authors named where the math home is grounded.
 

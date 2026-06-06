@@ -14,8 +14,8 @@ composition landed in auto-memory.
 ## Why this doc exists
 
 The maintainer named this benchmark in a single phrase in
-auto-loop-15: *"that's my ARC3 beat humans at DORA in
-production enviroments"*. Over the following two auto-loop
+auto-loop-15: _"that's my ARC3 beat humans at DORA in
+production enviroments"_. Over the following two auto-loop
 ticks the benchmark shape was elaborated across three
 cognition-layer messages, landing the final signature in
 auto-loop-17. The corresponding auto-memory entry
@@ -34,7 +34,7 @@ that:
    reference for each criterion.
 
 The auto-memory entry remains the source-of-truth for the
-*history* of how the shape was derived (the three maintainer
+_history_ of how the shape was derived (the three maintainer
 messages, their ordering, the retraction-and-refinement
 pattern); this doc is the source-of-truth for the shape
 itself going forward.
@@ -76,7 +76,7 @@ environments through identical cognition.
 
 **Falsifier:** per-environment specialization. If the factory
 requires a new specialized agent for each domain, the
-capability is *narrow-AI-across-domains*, not
+capability is _narrow-AI-across-domains_, not
 general-emulator-play.
 
 **Factory instance:** the factory's magic-eight-ball +
@@ -104,12 +104,12 @@ shortfall.
 **Factory instance:** four nested accumulation layers
 catalogued in auto-memory:
 
-| Layer | Substrate | Scope |
-|---|---|---|
-| Auto-memory | `MEMORY.md` + per-fact files | Level-to-level |
-| Soul-file | Committed docs, BACKLOG, skills, personas, ADRs, tick-history | Tick-to-tick |
-| Persona notebooks | `memory/persona/*.md` | Per-role |
-| Round history | `docs/ROUND-HISTORY.md` | Round-to-round |
+| Layer             | Substrate                                                     | Scope          |
+| ----------------- | ------------------------------------------------------------- | -------------- |
+| Auto-memory       | `MEMORY.md` + per-fact files                                  | Level-to-level |
+| Soul-file         | Committed docs, BACKLOG, skills, personas, ADRs, tick-history | Tick-to-tick   |
+| Persona notebooks | `memory/persona/*.md`                                         | Per-role       |
+| Round history     | `docs/ROUND-HISTORY.md`                                       | Round-to-round |
 
 Dropping any layer fails a class of compounding. The factory's
 long-standing durable-prose-over-ephemeral-state preference is
@@ -140,7 +140,7 @@ level costs first-discovery-time.
 **Correct abstraction level:**
 
 - **Abstract enough to re-apply across redefinition** — capture
-  the *why*, not the *what*.
+  the _why_, not the _what_.
 - **Specific enough to register as familiar** — carry a
   concrete anchor that triggers resonance when a cousin-
   problem arises.
@@ -155,12 +155,12 @@ alignment.
 
 The four keys mapped to factory work:
 
-| DORA key | Factory instantiation | Current tracking |
-|---|---|---|
-| **Deployment frequency** | Tick throughput — commits-per-tick, PRs-per-tick, memories-per-tick landing | Implicit in tick-history rows |
-| **Lead time for changes** | Maintainer-directive-received → committed-to-main | Not currently logged per-directive |
-| **Change failure rate** | Genuine Copilot findings, retractions, revision blocks | Partial via tick-history rejection-ground catalog |
-| **Mean time to recovery** | BLOCKED PR, hazardous-stacked-base, wrong-scope-self-resolve detection-to-fix delta | Partial via tick-history hazard-class entries |
+| DORA key                  | Factory instantiation                                                               | Current tracking                                  |
+| ------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **Deployment frequency**  | Tick throughput — commits-per-tick, PRs-per-tick, memories-per-tick landing         | Implicit in tick-history rows                     |
+| **Lead time for changes** | Maintainer-directive-received → committed-to-main                                   | Not currently logged per-directive                |
+| **Change failure rate**   | Genuine Copilot findings, retractions, revision blocks                              | Partial via tick-history rejection-ground catalog |
+| **Mean time to recovery** | BLOCKED PR, hazardous-stacked-base, wrong-scope-self-resolve detection-to-fix delta | Partial via tick-history hazard-class entries     |
 
 To run the ARC3-DORA stepdown experiment (see composition
 section below), each tick-history row should carry a
@@ -172,11 +172,11 @@ deferred to instrument-design work.
 The emulator-play criterion is scale-invariant. The same
 shape holds at three scales:
 
-| Scale | "Emulator" | "Player" | "Cartridge" |
-|---|---|---|---|
-| Model | Runtime harness | LLM weights | Single game |
-| Agent | LLM weights | Prompt+tools | Single task |
-| Factory | Zeta factory | Agent deployed against factory | Domain-demo (ServiceTitan, next-domain, ...) |
+| Scale   | "Emulator"      | "Player"                       | "Cartridge"                                  |
+| ------- | --------------- | ------------------------------ | -------------------------------------------- |
+| Model   | Runtime harness | LLM weights                    | Single game                                  |
+| Agent   | LLM weights     | Prompt+tools                   | Single task                                  |
+| Factory | Zeta factory    | Agent deployed against factory | Domain-demo (ServiceTitan, next-domain, ...) |
 
 The **factory-scale claim**: "same factory can spin up any
 domain's app" is the scale-up of "same model can play any
@@ -193,22 +193,22 @@ The benchmark is designed to be run **across capability tiers**
 to generate the DORA-per-model-effort signal per the
 maintainer's research directive. Current tier defaults:
 
-| Phase | Effort setting | Expected behavior |
-|---|---|---|
-| 0 (current) | max | Overthinking observed per published Anthropic guidance on Opus 4.7 |
-| 1 (next) | xhigh | Opus 4.7 default; most tasks unchanged |
-| 2 | high | Less thorough exploration; plan-quality matters more |
-| 3 | medium | Balanced; still autonomous; agentic persistence preserved |
-| 4 | low | Auto-loop-incompatible (pauses for clarification) |
+| Phase       | Effort setting | Expected behavior                                                  |
+| ----------- | -------------- | ------------------------------------------------------------------ |
+| 0 (current) | max            | Overthinking observed per published Anthropic guidance on Opus 4.7 |
+| 1 (next)    | xhigh          | Opus 4.7 default; most tasks unchanged                             |
+| 2           | high           | Less thorough exploration; plan-quality matters more               |
+| 3           | medium         | Balanced; still autonomous; agentic persistence preserved          |
+| 4           | low            | Auto-loop-incompatible (pauses for clarification)                  |
 
 **Hard floor for auto-loop-compatible ticks: medium.** Below
 medium, the model pauses rather than pushing through, breaking
 the never-idle discipline that auto-loop depends on.
 
 **Context-quality-trap implication:** published community
-observation is *"low with great context often beats max with
-poor context"*. Refined for ARC3-DORA: "great context" is
-partly *accumulated* context (the four substrate layers), not
+observation is _"low with great context often beats max with
+poor context"_. Refined for ARC3-DORA: "great context" is
+partly _accumulated_ context (the four substrate layers), not
 just present-turn context. Factory-inhabitability investment
 is therefore a tier-drop mitigation at the capability layer,
 not a metaphor.
@@ -264,7 +264,7 @@ signature types, human-in-the-loop confidence-weighting
 layered on ML output) is a published analog of the factory's multi-substrate
 triangulation + reviewer-roster + maintainer-echo pattern that
 this benchmark presumes as the measurement substrate sitting
-*between the agent output and the DORA grade* — distinct from
+_between the agent output and the DORA grade_ — distinct from
 the DORA metrics themselves.
 
 **Separation of concerns.** DORA (deploy frequency, lead time
@@ -288,7 +288,7 @@ layering is:
   which would skew cross-run comparison under different batch
   sizes.)
 - **Agent-output-under-uncertainty layer**: the noisy ML / agent
-  output that is being graded against DORA. *This* is where
+  output that is being graded against DORA. _This_ is where
   HITL expert-derived confidence applies — calibrating which
   agent outputs are trustworthy enough to ship, exactly as
   PNNL HITL calibrates ML classifier output on PMU/FDR
@@ -296,13 +296,13 @@ layering is:
 - **ARC-3 framing**: the class-of-benchmark description — no
   instructions, every lesson compounds, forgotten lessons =
   regression. This framing informs how the benchmark is
-  *interpreted* (a frontier-capability test) but does not add
+  _interpreted_ (a frontier-capability test) but does not add
   a separate measurement.
 
 **Why DORA-in-production qualifies as the maintainer's
 personal-ARC3-equivalent.** Maintainer mid-tick clarification
-(auto-loop-35): *"jsut cause i said that's my ARC3"* +
-*"yeah casue running a production pipeline is hard as fuck"*.
+(auto-loop-35): _"jsut cause i said that's my ARC3"_ +
+_"yeah casue running a production pipeline is hard as fuck"_.
 The framing is not hyperbole — running a production pipeline
 under real constraints (incident response with real users
 affected, lead time measured when consequences are real,
@@ -313,8 +313,8 @@ the ARC-3 label is the maintainer's way of saying "this is
 my frontier-test," not a second measurement axis.
 
 **Operational definition of ARC-3-class (maintainer, auto-loop-35):**
-*"ARC3 = hard problem that is [trying to be made] continuously
-testable even though there is 0 formal definition"*. Three
+_"ARC3 = hard problem that is [trying to be made] continuously
+testable even though there is 0 formal definition"_. Three
 criteria — all three must hold:
 
 1. **Hard** — frontier-capability test, compounding, not
@@ -325,13 +325,13 @@ criteria — all three must hold:
 3. **No formal definition** — operationally-grounded
    (benchmark, telemetry, empirical) rather than
    theoretically-specified. The absence of a formal
-   definition is a *feature* of the class: the problem
+   definition is a _feature_ of the class: the problem
    resists formalisation, but the measurement pipeline
    still produces defensible signal.
 
 By this test, DORA-in-production qualifies cleanly — deploy
 frequency / lead time / CFR / MTTR are operationally well-
-defined *as measurements*, but "running a production
+defined _as measurements_, but "running a production
 pipeline well" has no closed-form theoretical definition.
 
 **Other Zeta factory surfaces that meet the ARC-3-class test**
@@ -371,14 +371,14 @@ The shape is the same across both:
 | Improves accuracy beyond ML-alone         | Triangulation beats single-substrate depth   |
 
 **Occurrence classification.** This is occurrence-3 of the
-*external-signal-confirms-internal-insight* recurrence tracked
+_external-signal-confirms-internal-insight_ recurrence tracked
 in `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`:
 
 1. Muratori 5-pattern → Zeta operator algebra (YouTube wink,
    auto-loop-24).
 2. Three-substrate triangulation (Claude + Codex + Gemini)
-   + Aaron exact-phrasing echo "now you see what i see"
-   (auto-loop-25/26).
+   - Aaron exact-phrasing echo "now you see what i see"
+     (auto-loop-25/26).
 3. PNNL HITL expert-derived confidence → factory's
    multi-reviewer + maintainer-echo calibration
    (auto-loop-34/35, disclosed in Itron second-wave cascade).
@@ -392,7 +392,7 @@ the substrate is well-formed.
 
 **What this changes in the benchmark spec.** Nothing about the
 shape changes; the composition-with-HITL language makes the
-measurement substrate *citable* rather than internally-coined.
+measurement substrate _citable_ rather than internally-coined.
 ARC3-DORA's DORA-side delivery metrics remain carrier-channel;
 the cognition-side capability signature remains stepdown-under-
 capability-reduction; the multi-substrate / maintainer-echo /
@@ -409,8 +409,8 @@ lower the task bar.
 
 - Auto-memory ARC3 entry — full prose derivation of this shape
   across three revision blocks with verbatim maintainer
-  messages; source-of-truth for the derivation *history*, this
-  doc is source-of-truth for the *shape* going forward
+  messages; source-of-truth for the derivation _history_, this
+  doc is source-of-truth for the _shape_ going forward
 - Auto-memory ServiceTitan-demo entry — frames the demo as
   first ARC3-DORA cartridge
 - Auto-memory emulator-ideas-absorb entry — emulator-

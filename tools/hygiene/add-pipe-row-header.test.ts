@@ -3,11 +3,7 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-import {
-  alreadyCompliant,
-  buildHeader,
-  parseShardPath,
-} from "./add-pipe-row-header";
+import { alreadyCompliant, buildHeader, parseShardPath } from "./add-pipe-row-header";
 
 const REPO_ROOT = resolve(import.meta.dir, "..", "..");
 const SHARD_PREFIX = "docs/hygiene-history/ticks";
@@ -30,17 +26,13 @@ describe("parseShardPath", () => {
   });
 
   test("accepts HHMMZ-<hex>.md form (minute-grain + hash)", () => {
-    const info = parseShardPath(
-      shardPath(`${SHARD_PREFIX}/2026/05/17/0012Z-abc123.md`),
-    );
+    const info = parseShardPath(shardPath(`${SHARD_PREFIX}/2026/05/17/0012Z-abc123.md`));
     expect(info).not.toBeNull();
     expect(info?.iso).toBe("2026-05-17T00:12Z");
   });
 
   test("accepts HHMMSSZ-<hex>.md form (second-grain + hash)", () => {
-    const info = parseShardPath(
-      shardPath(`${SHARD_PREFIX}/2026/05/17/001234Z-abc123.md`),
-    );
+    const info = parseShardPath(shardPath(`${SHARD_PREFIX}/2026/05/17/001234Z-abc123.md`));
     expect(info).not.toBeNull();
     expect(info?.iso).toBe("2026-05-17T00:12:34Z");
   });
@@ -75,26 +67,22 @@ describe("alreadyCompliant", () => {
   const info = infoFor(`${SHARD_PREFIX}/2026/05/17/0012Z.md`);
 
   test("true for valid pipe-row matching path timestamp (HH:MM)", () => {
-    const content =
-      "| 2026-05-17T00:12Z | retrofit | unknown | retrofit | none | none |\n\n# Body\n";
+    const content = "| 2026-05-17T00:12Z | retrofit | unknown | retrofit | none | none |\n\n# Body\n";
     expect(alreadyCompliant(content, info)).toBe(true);
   });
 
   test("true for HH:MM:SS form matching path date+hour+min (validator ignores seconds)", () => {
-    const content =
-      "| 2026-05-17T00:12:34Z | retrofit | unknown | retrofit | none | none |\n";
+    const content = "| 2026-05-17T00:12:34Z | retrofit | unknown | retrofit | none | none |\n";
     expect(alreadyCompliant(content, info)).toBe(true);
   });
 
   test("false when pipe-row timestamp date does NOT match path", () => {
-    const content =
-      "| 2020-01-01T00:12Z | wrong | wrong | wrong | wrong | wrong |\n# Body\n";
+    const content = "| 2020-01-01T00:12Z | wrong | wrong | wrong | wrong | wrong |\n# Body\n";
     expect(alreadyCompliant(content, info)).toBe(false);
   });
 
   test("false when pipe-row timestamp hour/min does NOT match filename", () => {
-    const content =
-      "| 2026-05-17T05:30Z | retrofit | unknown | retrofit | none | none |\n";
+    const content = "| 2026-05-17T05:30Z | retrofit | unknown | retrofit | none | none |\n";
     expect(alreadyCompliant(content, info)).toBe(false);
   });
 
@@ -122,8 +110,7 @@ describe("alreadyCompliant", () => {
   });
 
   test("skips leading blank lines to find first non-empty", () => {
-    const content =
-      "\n\n| 2026-05-17T00:12Z | a | b | c | d | e |\n\n# Body\n";
+    const content = "\n\n| 2026-05-17T00:12Z | a | b | c | d | e |\n\n# Body\n";
     expect(alreadyCompliant(content, info)).toBe(true);
   });
 });
@@ -140,9 +127,7 @@ describe("buildHeader", () => {
   test("first row matches the validator's COL1_RE pattern", () => {
     const header = buildHeader("2026-05-17T00:12Z");
     const firstLine = header.split("\n")[0] ?? "";
-    expect(firstLine).toMatch(
-      /^\|\s\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z\s\|\s/,
-    );
+    expect(firstLine).toMatch(/^\|\s\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z\s\|\s/);
   });
 
   test("ends with double newline to separate from existing body", () => {
@@ -183,28 +168,17 @@ describe("atomic write behavior (processOne with --write)", () => {
       writeFileSync(shardAbs, "# Tick 0001Z — fixture\n\nbody\n", "utf8");
 
       // Drive the script via Bun subprocess to exercise the real main().
-      const proc = Bun.spawn(
-        [
-          "bun",
-          "tools/hygiene/add-pipe-row-header.ts",
-          "--write",
-          "--files",
-          shardRel,
-        ],
-        {
-          cwd: REPO_ROOT,
-          env: { ...process.env, REPO_ROOT: repo },
-          stdout: "pipe",
-          stderr: "pipe",
-        },
-      );
+      const proc = Bun.spawn(["bun", "tools/hygiene/add-pipe-row-header.ts", "--write", "--files", shardRel], {
+        cwd: REPO_ROOT,
+        env: { ...process.env, REPO_ROOT: repo },
+        stdout: "pipe",
+        stderr: "pipe",
+      });
       await proc.exited;
 
       const content = readFileSync(shardAbs, "utf8");
       const firstLine = content.split("\n")[0] ?? "";
-      expect(firstLine).toMatch(
-        /^\| 2026-05-17T00:01Z \| retrofit \| unknown \| retrofit/,
-      );
+      expect(firstLine).toMatch(/^\| 2026-05-17T00:01Z \| retrofit \| unknown \| retrofit/);
       // Original body must be preserved.
       expect(content).toContain("# Tick 0001Z — fixture");
       expect(content).toContain("body");
@@ -221,21 +195,12 @@ describe("atomic write behavior (processOne with --write)", () => {
       mkdirSync(join(repo, `${SHARD_PREFIX}/2026/05/17`), { recursive: true });
       writeFileSync(shardAbs, "# Tick 0002Z\nbody\n", "utf8");
 
-      const proc = Bun.spawn(
-        [
-          "bun",
-          "tools/hygiene/add-pipe-row-header.ts",
-          "--write",
-          "--files",
-          shardRel,
-        ],
-        {
-          cwd: REPO_ROOT,
-          env: { ...process.env, REPO_ROOT: repo },
-          stdout: "pipe",
-          stderr: "pipe",
-        },
-      );
+      const proc = Bun.spawn(["bun", "tools/hygiene/add-pipe-row-header.ts", "--write", "--files", shardRel], {
+        cwd: REPO_ROOT,
+        env: { ...process.env, REPO_ROOT: repo },
+        stdout: "pipe",
+        stderr: "pipe",
+      });
       await proc.exited;
 
       // Only the shard should exist in the parent dir — no `.tmp-*` siblings.
@@ -254,15 +219,12 @@ describe("argument-parser fail-closed behaviors (via subprocess)", () => {
   // Each test exercises main() via Bun.spawn to surface real exit codes.
 
   async function run(args: string[]): Promise<{ exit: number; stderr: string }> {
-    const proc = Bun.spawn(
-      ["bun", "tools/hygiene/add-pipe-row-header.ts", ...args],
-      {
-        cwd: REPO_ROOT,
-        env: { ...process.env, REPO_ROOT: "/nonexistent-tmpdir-for-test" },
-        stdout: "pipe",
-        stderr: "pipe",
-      },
-    );
+    const proc = Bun.spawn(["bun", "tools/hygiene/add-pipe-row-header.ts", ...args], {
+      cwd: REPO_ROOT,
+      env: { ...process.env, REPO_ROOT: "/nonexistent-tmpdir-for-test" },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
     await proc.exited;
     const stderr = await new Response(proc.stderr).text();
     return { exit: proc.exitCode ?? 0, stderr };

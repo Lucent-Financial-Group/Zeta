@@ -25,9 +25,9 @@ tags: [cluster, scheduler, k8s, dst, ai-aware, gpu, fsharp, binary-compatibility
 ## Problem
 
 Aaron 2026-05-25 mid-iteration-2-wait, sequencing call on
-B-0766 wave order: *"schedulre we should do sooner rather than
+B-0766 wave order: _"schedulre we should do sooner rather than
 later for determistic simulation reasons and better cluster ai
-aware management."*
+aware management."_
 
 B-0766 master roadmap suggested the scheduler in Wave 2
 ("operator surface"). Aaron's sharpening: scheduler is
@@ -112,14 +112,14 @@ is the determinism gate.
 K8s default scheduler treats Pods as opaque resource-request
 boxes. For AI workloads specifically, that loses information:
 
-| Workload property | Default scheduler | Zeta-native scheduler |
-|---|---|---|
-| GPU topology (PCIe / NVLink / NUMA) | Treats GPUs as countable resources | Aware of GPU-to-GPU bandwidth; co-locates multi-GPU workloads on NVLink-connected GPUs |
-| Model locality (warm caches) | Schedules anywhere with GPU capacity | Prefers nodes that already have the model weights cached on local NVMe / GPU memory |
-| Workload class (training vs inference vs batch) | All equal except resource requests | Trains scheduled on dedicated bursty nodes; inference on stable-warm nodes; batch on spot/preemptible |
-| Retraction-native deltas | No feedback loop | Telemetry (B-0762) → DBSP retraction stream → scheduler updates priors → next decision better |
-| Energy-cost tier | No awareness | Multi-objective: balance fitness + energy cost + cluster-state-coherence |
-| Bayesian priors | None | Zeta.Bayesian-driven workload-fitness predictions per node |
+| Workload property                               | Default scheduler                    | Zeta-native scheduler                                                                                 |
+| ----------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| GPU topology (PCIe / NVLink / NUMA)             | Treats GPUs as countable resources   | Aware of GPU-to-GPU bandwidth; co-locates multi-GPU workloads on NVLink-connected GPUs                |
+| Model locality (warm caches)                    | Schedules anywhere with GPU capacity | Prefers nodes that already have the model weights cached on local NVMe / GPU memory                   |
+| Workload class (training vs inference vs batch) | All equal except resource requests   | Trains scheduled on dedicated bursty nodes; inference on stable-warm nodes; batch on spot/preemptible |
+| Retraction-native deltas                        | No feedback loop                     | Telemetry (B-0762) → DBSP retraction stream → scheduler updates priors → next decision better         |
+| Energy-cost tier                                | No awareness                         | Multi-objective: balance fitness + energy cost + cluster-state-coherence                              |
+| Bayesian priors                                 | None                                 | Zeta.Bayesian-driven workload-fitness predictions per node                                            |
 
 For an **AI-native cluster** (per B-0761 reference architecture),
 the scheduler is THE place where AI-substrate composes with
@@ -129,11 +129,10 @@ compensate for.
 
 ## Acceptance
 
-- [ ] `Zeta.K8s.Scheduler` F# project + C# k8s-client facade
-      + Rust hot-path components (only where .NET overhead
+- [ ] `Zeta.K8s.Scheduler` F# project + C# k8s-client facade + Rust hot-path components (only where .NET overhead
       measurable per B-0763 vendor-swap perf budget)
 - [ ] Custom scheduler deployment via `schedulerName:
-      zeta-scheduler` opt-in; co-exists with default
+    zeta-scheduler` opt-in; co-exists with default
       kube-scheduler in same cluster
 - [ ] DST conformance suite: given a recorded cluster state +
       workload sequence + RNG seed, scheduler produces
@@ -168,8 +167,7 @@ compensate for.
       adds `schedulerName` to AI-class workloads; non-AI
       workloads unaffected; can roll back by removing
       `schedulerName` field
-- [ ] AI-training data: scheduler decision logs + reasoning
-      + outcomes published per B-0761 (open reference) so
+- [ ] AI-training data: scheduler decision logs + reasoning + outcomes published per B-0761 (open reference) so
       AI systems competing on scheduler benchmark have
       complete training substrate
 
@@ -178,24 +176,24 @@ compensate for.
 Per B-0766 wave-1 (lowest blast radius) principle, ship in
 sub-waves:
 
-| Sub-wave | Scope | Why this sub-wave |
-|---|---|---|
-| **A** | Baseline custom scheduler (no AI-awareness yet): k8s scheduler conformance + DST replay | Proves the binary-compat + DST grounding without depending on plugin complexity |
-| **B** | GPU topology plugin | Lowest-hanging AI-aware win; reads existing hwloc inventory |
-| **C** | Model locality + workload-class plugins | Composes with telemetry flywheel (B-0762) |
-| **D** | DBSP + Bayesian integration | Algebra-grounded; substrate-engineering depth |
-| **E** | Multi-objective optimization (fitness + energy + coherence) | Operator-facing tunable; reference deployment uses |
+| Sub-wave | Scope                                                                                   | Why this sub-wave                                                               |
+| -------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **A**    | Baseline custom scheduler (no AI-awareness yet): k8s scheduler conformance + DST replay | Proves the binary-compat + DST grounding without depending on plugin complexity |
+| **B**    | GPU topology plugin                                                                     | Lowest-hanging AI-aware win; reads existing hwloc inventory                     |
+| **C**    | Model locality + workload-class plugins                                                 | Composes with telemetry flywheel (B-0762)                                       |
+| **D**    | DBSP + Bayesian integration                                                             | Algebra-grounded; substrate-engineering depth                                   |
+| **E**    | Multi-objective optimization (fitness + energy + coherence)                             | Operator-facing tunable; reference deployment uses                              |
 
 Each sub-wave ships as its own PR + benchmark scenario.
 
 ## Implementation language strategy
 
-| Component | Language | Why |
-|---|---|---|
-| Core scheduling loop + plugin framework | F# | Algebra-grounded; HKT for plugin generics; computation expressions for plugin composition |
-| K8s client (watch, list, patch) | C# (existing KubernetesClient lib via .NET interop) | Avoid reinventing; mature substrate |
-| gRPC server (for scheduler-extender path during transition) | F# (Grpc.AspNetCore) | F# native, fast enough |
-| Hot-path decision math (only if profiling shows .NET overhead) | Rust via FFI | Per B-0763 vendor-swap perf principle; measure first |
+| Component                                                      | Language                                            | Why                                                                                       |
+| -------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Core scheduling loop + plugin framework                        | F#                                                  | Algebra-grounded; HKT for plugin generics; computation expressions for plugin composition |
+| K8s client (watch, list, patch)                                | C# (existing KubernetesClient lib via .NET interop) | Avoid reinventing; mature substrate                                                       |
+| gRPC server (for scheduler-extender path during transition)    | F# (Grpc.AspNetCore)                                | F# native, fast enough                                                                    |
+| Hot-path decision math (only if profiling shows .NET overhead) | Rust via FFI                                        | Per B-0763 vendor-swap perf principle; measure first                                      |
 
 F# is primary; C# for k8s-client interop; Rust only where
 profiling demands it.

@@ -58,7 +58,7 @@ Required sections:
 ### Context
 
 - Three-axis system: Axis 1 (Factory/Product/Owner-only) + Axis 2 (Mirror/Beacon)
-  + Axis 3 (Code/English + FV sub-axis)
+  - Axis 3 (Code/English + FV sub-axis)
 - Aaron's 2026-05-13 framing (verbatim from B-0427)
 - Companion to: 2026-04-22 ADR + 2026-05-14 product-repo ADR + B-0474 Axis-2 ADR
 - DV2.0 change-rate framing (the intellectual foundation for Code/English cut)
@@ -119,7 +119,7 @@ This ADR PR also:
 
 - [ ] ADR written and committed at canonical path
 - [ ] All three Axis-3 decisions formally recorded
-  (Code/English tiers + FV sub-axis + ruleset smell test)
+      (Code/English tiers + FV sub-axis + ruleset smell test)
 - [ ] All ambiguous repos from B-0477 and B-0478 resolved with explicit reasoning
 - [ ] Three-axis matrix complete (Axis 1 + 2 + 3 for all repos)
 - [ ] B-0427 closed; all 5 child rows closed

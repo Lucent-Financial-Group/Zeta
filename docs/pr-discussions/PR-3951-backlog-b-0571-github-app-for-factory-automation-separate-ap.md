@@ -28,7 +28,7 @@ Per the mitigation-axes table in B-0570: this is the substrate-honest primary mi
 
 ## Diff
 
-- \`docs/backlog/P2/B-0571-*.md\` (118 lines) — design row with origin, acceptance criteria, 7-slice decomposition, design sketch, alternatives comparison, composes-with, substrate-honest caveats, open questions
+- \`docs/backlog/P2/B-0571-\*.md\` (118 lines) — design row with origin, acceptance criteria, 7-slice decomposition, design sketch, alternatives comparison, composes-with, substrate-honest caveats, open questions
 - \`docs/BACKLOG.md\` (+1 line) — generated index updated
 
 ## Acceptance highlights
@@ -56,6 +56,7 @@ Per the mitigation-axes table in B-0570: this is the substrate-honest primary mi
 Files a P2 backlog row designing a "Zeta-Factory" GitHub App installation to give automated agents a separate API rate-limit pool from human-user PATs, as a primary mitigation for the shared-bucket saturation surfaced in sibling row B-0570.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/B-0571-*.md` design row with acceptance criteria, 7-slice decomposition, design sketch, alternatives table, and open questions.
 - Updates `docs/BACKLOG.md` generated index with the new B-0571 entry under P2.
 
@@ -63,7 +64,7 @@ Files a P2 backlog row designing a "Zeta-Factory" GitHub App installation to giv
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                               | Description                                                              |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
 | docs/backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md | New per-row backlog file (118 lines) describing the GitHub App proposal. |
-| docs/BACKLOG.md | Generated index line for B-0571 added under P2. |
+| docs/BACKLOG.md                                                    | Generated index line for B-0571 added under P2.                          |

@@ -12,20 +12,20 @@ If you are not sure which audience you are, read
 
 ## Quick-start
 
-| I am a ... | Start here |
-|---|---|
-| **Factory builder** (extending the software-factory substrate itself) | [`../AGENTS.md`](../AGENTS.md) -> [1. Factory builders](#1-factory-builders) |
-| **Factory adopter** (starting a new project on the factory kit) | [`../AGENTS.md`](../AGENTS.md) + [`../CONTRIBUTING.md`](../CONTRIBUTING.md) -> [2. Factory adopters](#2-factory-adopters) |
-| **AI agent** (fresh wake, need rules + skills + personas) | [`../CLAUDE.md`](../CLAUDE.md) -> [`../AGENTS.md`](../AGENTS.md) -> [3. AI agents](#3-ai-agents) |
-| **Zeta contributor** (shipping DBSP algebra, proofs, F# code) | [`ARCHITECTURE.md`](ARCHITECTURE.md) -> [4. Zeta contributors](#4-zeta-contributors) |
-| **Agentic Organization builder** (designing the AI cluster organization runtime) | [`../agentic-organization/docs/README.md`](../agentic-organization/docs/README.md) |
-| **Zeta consumer** (installing the NuGet libraries in my app) | [`../README.md`](../README.md) -> [5. Zeta consumers](#5-zeta-consumers) |
-| **Observer / reviewer** (not contributing; evaluating the project) | [`FACTORY-RESUME.md`](FACTORY-RESUME.md) -> [6. Observers / reviewers](#6-observers--reviewers) |
-| **Research-paper reader** (peer review, citation, verification) | [`research/`](research/) -> [7. Research-paper readers](#7-research-paper-readers) |
+| I am a ...                                                                       | Start here                                                                                                                |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Factory builder** (extending the software-factory substrate itself)            | [`../AGENTS.md`](../AGENTS.md) -> [1. Factory builders](#1-factory-builders)                                              |
+| **Factory adopter** (starting a new project on the factory kit)                  | [`../AGENTS.md`](../AGENTS.md) + [`../CONTRIBUTING.md`](../CONTRIBUTING.md) -> [2. Factory adopters](#2-factory-adopters) |
+| **AI agent** (fresh wake, need rules + skills + personas)                        | [`../CLAUDE.md`](../CLAUDE.md) -> [`../AGENTS.md`](../AGENTS.md) -> [3. AI agents](#3-ai-agents)                          |
+| **Zeta contributor** (shipping DBSP algebra, proofs, F# code)                    | [`ARCHITECTURE.md`](ARCHITECTURE.md) -> [4. Zeta contributors](#4-zeta-contributors)                                      |
+| **Agentic Organization builder** (designing the AI cluster organization runtime) | [`../agentic-organization/docs/README.md`](../agentic-organization/docs/README.md)                                        |
+| **Zeta consumer** (installing the NuGet libraries in my app)                     | [`../README.md`](../README.md) -> [5. Zeta consumers](#5-zeta-consumers)                                                  |
+| **Observer / reviewer** (not contributing; evaluating the project)               | [`FACTORY-RESUME.md`](FACTORY-RESUME.md) -> [6. Observers / reviewers](#6-observers--reviewers)                           |
+| **Research-paper reader** (peer review, citation, verification)                  | [`research/`](research/) -> [7. Research-paper readers](#7-research-paper-readers)                                        |
 
 **Notes.** Audience is **orthogonal to the scope tag**. A
 doc's scope (`factory` / `project` / `both`) says who
-*owns* the rule; the audience says who *reads* the
+_owns_ the rule; the audience says who _reads_ the
 explanation. A doc can have one primary audience and one or
 more secondary audiences — the doc appears in its primary
 section below, and is cross-referenced from the secondary
@@ -45,8 +45,8 @@ itself — adding hygiene rows, promoting `BP-NN` rules,
 writing new skills, tuning the review-persona roster,
 authoring round-history.
 
-**Canonical question at cold-start:** *"what rules govern
-how I extend the factory?"*
+**Canonical question at cold-start:** _"what rules govern
+how I extend the factory?"_
 
 ### Start here
 
@@ -113,15 +113,15 @@ how I extend the factory?"*
 substrate. You consume the factory as a kit; you may or
 may not contribute back.
 
-**Canonical question at cold-start:** *"how do I stand up
-my own project on this factory?"*
+**Canonical question at cold-start:** _"how do I stand up
+my own project on this factory?"_
 
 ### Start here
 
 - [`../AGENTS.md`](../AGENTS.md) — universal onboarding
   (shared with factory builders).
 - [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — installer
-  + build + test gate.
+  - build + test gate.
 - [`TECH-DEBT.md`](TECH-DEBT.md) — primer on the
   factory's idea of tech-debt bookkeeping.
 
@@ -148,8 +148,8 @@ Copilot, or another harness — that needs to know the
 rules, the skills, the personas, and the cross-wake
 discipline.
 
-**Canonical question at cold-start:** *"what do I load,
-in what order, and what is non-negotiable?"*
+**Canonical question at cold-start:** _"what do I load,
+in what order, and what is non-negotiable?"_
 
 ### Start here
 
@@ -173,9 +173,9 @@ in what order, and what is non-negotiable?"*
 
 ### Skills + personas (outside `docs/`)
 
-- `.claude/skills/` — capability registry (the *how*
+- `.claude/skills/` — capability registry (the _how_
   of each job).
-- `.claude/agents/` — persona registry (the *who*
+- `.claude/agents/` — persona registry (the _who_
   wearing each hat).
 - `memory/` (per-repo) and `~/.claude/projects/.../memory/`
   (per-agent) — earned memory across sessions.
@@ -196,10 +196,10 @@ in what order, and what is non-negotiable?"*
 **You are:** contributing to Zeta-the-library (the
 system-under-test) — shipping DBSP operator algebra, perf
 work, Lean proofs, F# code. Distinct from factory
-builders: you extend *the library*, not *the factory*.
+builders: you extend _the library_, not _the factory_.
 
-**Canonical question at cold-start:** *"what is Zeta,
-what shape is its algebra, where do features land?"*
+**Canonical question at cold-start:** _"what is Zeta,
+what shape is its algebra, where do features land?"_
 
 ### Start here
 
@@ -272,8 +272,8 @@ dependencies in your own application. You never see
 `.claude/`, you may never read `docs/` — you live in
 IntelliSense + README + samples.
 
-**Canonical question at cold-start:** *"how do I use
-Zeta in five minutes?"*
+**Canonical question at cold-start:** _"how do I use
+Zeta in five minutes?"_
 
 ### Start here
 
@@ -309,8 +309,8 @@ auditing the alignment-loop claim.
 **Reading mode:** evaluate-to-decide (fit, resume,
 character, posture).
 
-**Canonical question at cold-start:** *"what does this
-project claim, and where is the evidence?"*
+**Canonical question at cold-start:** _"what does this
+project claim, and where is the evidence?"_
 
 ### Start here
 
@@ -352,10 +352,10 @@ scripts.
 is the proof sound, is the benchmark fair, is the scope
 honest).
 
-**Canonical question at cold-start:** *"what is the
+**Canonical question at cold-start:** _"what is the
 claim, where is the proof or benchmark that supports it,
 what is out of scope, and where is the comparison vs
-prior work?"*
+prior work?"_
 
 ### Start here
 
@@ -387,7 +387,7 @@ prior work?"*
 
 ### Executable artefacts (outside `docs/`)
 
-Paper reviewers who want to *run* proofs or benchmarks
+Paper reviewers who want to _run_ proofs or benchmarks
 should read these despite their non-`docs/` location:
 
 - `tools/lean4/` — Lean proof scripts.
@@ -416,23 +416,23 @@ should read these despite their non-`docs/` location:
 Audience and scope are **orthogonal attributes** of
 every `docs/` file:
 
-- **Scope** (`factory` / `project` / `both`) answers *who
-  owns the rule or artefact*.
+- **Scope** (`factory` / `project` / `both`) answers _who
+  owns the rule or artefact_.
 - **Audience** (`factory-builders` / `factory-adopters`
   / `ai-agents` / `zeta-contributors` / `zeta-consumers`
-  / `observers` / `research-readers`) answers *who reads
-  the explanation*.
+  / `observers` / `research-readers`) answers _who reads
+  the explanation_.
 
 They correlate but do not collapse. Examples:
 
-| Doc | Scope | Primary audience |
-|---|---|---|
-| [`GLOSSARY.md`](GLOSSARY.md) | `factory` | factory-builders |
-| `SYSTEM-UNDER-TEST-GLOSSARY.md` (pending) | `project` | zeta-contributors |
-| [`TECH-DEBT.md`](TECH-DEBT.md) | `factory` | factory-builders (+ adopters + AI agents also-relevant) |
-| [`SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md) | `project` | zeta-contributors |
-| [`FACTORY-HYGIENE.md`](FACTORY-HYGIENE.md) | `both` | factory-builders |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | `project` | zeta-contributors |
+| Doc                                                                | Scope     | Primary audience                                        |
+| ------------------------------------------------------------------ | --------- | ------------------------------------------------------- |
+| [`GLOSSARY.md`](GLOSSARY.md)                                       | `factory` | factory-builders                                        |
+| `SYSTEM-UNDER-TEST-GLOSSARY.md` (pending)                          | `project` | zeta-contributors                                       |
+| [`TECH-DEBT.md`](TECH-DEBT.md)                                     | `factory` | factory-builders (+ adopters + AI agents also-relevant) |
+| [`SYSTEM-UNDER-TEST-TECH-DEBT.md`](SYSTEM-UNDER-TEST-TECH-DEBT.md) | `project` | zeta-contributors                                       |
+| [`FACTORY-HYGIENE.md`](FACTORY-HYGIENE.md)                         | `both`    | factory-builders                                        |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md)                               | `project` | zeta-contributors                                       |
 
 The scope tag travels with the rule; the audience
 travels with the doc.
@@ -467,9 +467,9 @@ survives across agent sessions.
 
 ```markdown
 ---
-audience: factory-builders          # primary; one of the seven
+audience: factory-builders # primary; one of the seven
 also-relevant-to: [ai-agents, factory-adopters]
-scope: factory                      # orthogonal to audience
+scope: factory # orthogonal to audience
 ---
 ```
 
@@ -489,8 +489,8 @@ navigation:
    deferred until ace source-code home settles.
 2. **Merge Zeta consumers and observers?** Both are
    "don't contribute, just read." Kept separate on
-   intent: consumers want to build *with* Zeta,
-   observers want to understand *about* Zeta.
+   intent: consumers want to build _with_ Zeta,
+   observers want to understand _about_ Zeta.
 3. **Split AI agents into contributors vs downstream
    users?** Becomes relevant when a downstream
    application uses Zeta as an AI-research primitive.

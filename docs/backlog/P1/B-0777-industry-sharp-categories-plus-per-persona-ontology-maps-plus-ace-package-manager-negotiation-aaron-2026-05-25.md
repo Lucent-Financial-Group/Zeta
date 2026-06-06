@@ -23,11 +23,11 @@ tags: [strategy, plugins, ontology, industry-standards, personas, ace-package-ma
 ## Problem
 
 Aaron 2026-05-25 mid-iter-3-CI-wait, sharpening B-0776 plugin
-sequence: *"any order is fine we just need to start working on
+sequence: _"any order is fine we just need to start working on
 simple shapes addion and max can use for categories that are
 also industry sharp so we don't get laughed out of ontology
 negoations we can keep multpile maps per perona type if needed
-this is the start of ace package manager negoations."*
+this is the start of ace package manager negoations."_
 
 Three sharpenings to the B-0776 per-plugin authoring contract:
 
@@ -60,20 +60,20 @@ Three sharpenings to the B-0776 per-plugin authoring contract:
 For each B-0776 plugin, the industry-sharp categories +
 established academic frames + standards-body positioning:
 
-| Plugin | Industry-sharp categories | Established academic frames | Standards-body candidates |
-|---|---|---|---|
-| **`Zeta.Storage.KeyValue`** | NoSQL key-value store; distributed cache; session store; rate-limiter substrate; in-memory data structure store | Dynamo (Amazon 2007); Bigtable (Google 2006); CRDT-compatible (Shapiro et al. 2011); RESP wire protocol (Redis); Voldemort (LinkedIn) | CNCF: Valkey graduated; Redis OSS pre-fork; OASIS: KMIP (key mgmt; tangential) |
-| **`Zeta.Messaging.PubSub`** | Publish-subscribe messaging; event-driven architecture; message broker; durable streaming | OMG DDS (1980s+); MQTT (IBM 1999); AMQP (JPMC 2003); Kafka log-structured (LinkedIn 2010); NATS (Apcera 2011) | CNCF: NATS incubating; Knative Eventing; CloudEvents; OASIS: AMQP graduated, MQTT graduated |
-| **`Zeta.Storage.Document`** | Document database; NoSQL document store; JSON-document store; aggregate-oriented database | Aggregate-oriented (Sadalage + Fowler 2012); MongoDB (10gen 2007); CouchDB (Apache 2005); BSON wire | IETF: JSON RFC 8259; ECMA-404 (JSON); ISO/IEC 21778 (JSON); W3C: JSON-LD |
-| **`Zeta.Storage.SQL`** | Relational database; SQL DBMS; OLTP store; distributed SQL | Codd 1970 relational model; Spanner (Google 2012); Calvin (Yale 2012); CockroachDB; YugabyteDB | ISO/IEC 9075 (SQL standard); ANSI/INCITS DM32.2 (SQL); CNCF: Cilium not relevant; SQL/MM |
-| **`Zeta.Workflow`** | Workflow orchestration engine; business process management; durable execution; saga orchestration | BPMN 2.0 (OMG); WS-BPEL 2.0 (OASIS); CIFF (OASIS); Saga pattern (Garcia-Molina + Salem 1987) | OMG: BPMN; OASIS: BPEL; CNCF: Argo Workflows incubating; Temporal pending |
-| **`Zeta.Actors`** | Actor model; concurrent computing; virtual actors; grain-based stateful compute | Hewitt 1973 (actor model); Erlang/OTP; Akka (Lightbend); Orleans (MS Research 2011); Pony language | CNCF: KubeEdge (tangential); Linux Foundation: Akka pre-license-change; ISO/IEC: actor model in concurrent computing standards |
-| **`Zeta.Policy.Engine`** | Policy engine; policy-as-code; admission control; RBAC/ABAC | Rego (OPA 2017); XACML 3.0 (OASIS 2013); RBAC NIST RFC; Cedar (AWS 2023) | OASIS: XACML graduated; CNCF: OPA graduated, Kyverno incubating |
-| **`Zeta.Identity.Workload`** | Workload identity; service mesh identity; SPIFFE/SPIRE; zero-trust workload identity | SPIFFE specification (CNCF); X.509-SVID; JWT-SVID; OAuth 2.0; OpenID Connect | CNCF: SPIFFE+SPIRE graduated; OASIS: SAML graduated; IETF: OAuth/OIDC RFCs |
-| **`Zeta.Distributed.AppRuntime`** | Distributed application runtime; sidecar pattern; building-block APIs; multi-runtime microservices | Sidecar pattern (Burns + Oppenheimer 2016); multi-runtime microservices (Bilgin Ibryam); DAPR | CNCF: DAPR incubating |
-| **`Zeta.Inference`** | Machine learning model serving; AI inference runtime; LLM serving | Triton (NVIDIA 2018); TorchServe; TensorFlow Serving; vLLM (UC Berkeley 2023); ONNX Runtime (Microsoft 2018) | LF AI & Data: ONNX (graduated); MLCommons: MLPerf Inference benchmark |
-| **`Zeta.Compute.NPU`** (B-0771) | Neural processing unit; AI accelerator; on-chip ML accelerator | Heterogeneous compute models; OpenVINO (Intel); CUDA (NVIDIA); ROCm (AMD); Core ML (Apple); MLIR (LLVM project) | LF AI & Data: ONNX; MLPerf benchmarks; Khronos: SYCL, OpenCL |
-| **`Zeta.Network.Mesh`** | Service mesh; sidecar proxy mesh; eBPF mesh; data-plane proxy | Envoy (Lyft 2016); Istio data plane; Cilium eBPF mesh; XDP | CNCF: Cilium graduated, Envoy graduated, Istio graduated; SMI graduated (deprecated since 2023) |
+| Plugin                            | Industry-sharp categories                                                                                       | Established academic frames                                                                                                           | Standards-body candidates                                                                                                      |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **`Zeta.Storage.KeyValue`**       | NoSQL key-value store; distributed cache; session store; rate-limiter substrate; in-memory data structure store | Dynamo (Amazon 2007); Bigtable (Google 2006); CRDT-compatible (Shapiro et al. 2011); RESP wire protocol (Redis); Voldemort (LinkedIn) | CNCF: Valkey graduated; Redis OSS pre-fork; OASIS: KMIP (key mgmt; tangential)                                                 |
+| **`Zeta.Messaging.PubSub`**       | Publish-subscribe messaging; event-driven architecture; message broker; durable streaming                       | OMG DDS (1980s+); MQTT (IBM 1999); AMQP (JPMC 2003); Kafka log-structured (LinkedIn 2010); NATS (Apcera 2011)                         | CNCF: NATS incubating; Knative Eventing; CloudEvents; OASIS: AMQP graduated, MQTT graduated                                    |
+| **`Zeta.Storage.Document`**       | Document database; NoSQL document store; JSON-document store; aggregate-oriented database                       | Aggregate-oriented (Sadalage + Fowler 2012); MongoDB (10gen 2007); CouchDB (Apache 2005); BSON wire                                   | IETF: JSON RFC 8259; ECMA-404 (JSON); ISO/IEC 21778 (JSON); W3C: JSON-LD                                                       |
+| **`Zeta.Storage.SQL`**            | Relational database; SQL DBMS; OLTP store; distributed SQL                                                      | Codd 1970 relational model; Spanner (Google 2012); Calvin (Yale 2012); CockroachDB; YugabyteDB                                        | ISO/IEC 9075 (SQL standard); ANSI/INCITS DM32.2 (SQL); CNCF: Cilium not relevant; SQL/MM                                       |
+| **`Zeta.Workflow`**               | Workflow orchestration engine; business process management; durable execution; saga orchestration               | BPMN 2.0 (OMG); WS-BPEL 2.0 (OASIS); CIFF (OASIS); Saga pattern (Garcia-Molina + Salem 1987)                                          | OMG: BPMN; OASIS: BPEL; CNCF: Argo Workflows incubating; Temporal pending                                                      |
+| **`Zeta.Actors`**                 | Actor model; concurrent computing; virtual actors; grain-based stateful compute                                 | Hewitt 1973 (actor model); Erlang/OTP; Akka (Lightbend); Orleans (MS Research 2011); Pony language                                    | CNCF: KubeEdge (tangential); Linux Foundation: Akka pre-license-change; ISO/IEC: actor model in concurrent computing standards |
+| **`Zeta.Policy.Engine`**          | Policy engine; policy-as-code; admission control; RBAC/ABAC                                                     | Rego (OPA 2017); XACML 3.0 (OASIS 2013); RBAC NIST RFC; Cedar (AWS 2023)                                                              | OASIS: XACML graduated; CNCF: OPA graduated, Kyverno incubating                                                                |
+| **`Zeta.Identity.Workload`**      | Workload identity; service mesh identity; SPIFFE/SPIRE; zero-trust workload identity                            | SPIFFE specification (CNCF); X.509-SVID; JWT-SVID; OAuth 2.0; OpenID Connect                                                          | CNCF: SPIFFE+SPIRE graduated; OASIS: SAML graduated; IETF: OAuth/OIDC RFCs                                                     |
+| **`Zeta.Distributed.AppRuntime`** | Distributed application runtime; sidecar pattern; building-block APIs; multi-runtime microservices              | Sidecar pattern (Burns + Oppenheimer 2016); multi-runtime microservices (Bilgin Ibryam); DAPR                                         | CNCF: DAPR incubating                                                                                                          |
+| **`Zeta.Inference`**              | Machine learning model serving; AI inference runtime; LLM serving                                               | Triton (NVIDIA 2018); TorchServe; TensorFlow Serving; vLLM (UC Berkeley 2023); ONNX Runtime (Microsoft 2018)                          | LF AI & Data: ONNX (graduated); MLCommons: MLPerf Inference benchmark                                                          |
+| **`Zeta.Compute.NPU`** (B-0771)   | Neural processing unit; AI accelerator; on-chip ML accelerator                                                  | Heterogeneous compute models; OpenVINO (Intel); CUDA (NVIDIA); ROCm (AMD); Core ML (Apple); MLIR (LLVM project)                       | LF AI & Data: ONNX; MLPerf benchmarks; Khronos: SYCL, OpenCL                                                                   |
+| **`Zeta.Network.Mesh`**           | Service mesh; sidecar proxy mesh; eBPF mesh; data-plane proxy                                                   | Envoy (Lyft 2016); Istio data plane; Cilium eBPF mesh; XDP                                                                            | CNCF: Cilium graduated, Envoy graduated, Istio graduated; SMI graduated (deprecated since 2023)                                |
 
 Each plugin's interface naming + documentation uses the
 industry-sharp categories explicitly. Operators (and AI systems
@@ -86,15 +86,15 @@ Different operator personas see the same underlying capability
 through different vocabulary lenses. Zeta substrate supports
 multiple per-persona ontology projections of the SAME plugin:
 
-| Plugin | Web-dev persona | Enterprise architect | AI/ML researcher | Industrial IoT engineer | Game developer |
-|---|---|---|---|---|---|
-| `Zeta.Storage.KeyValue` | "Redis cache layer / session store" | "Distributed KV store with HA replication" | "Feature cache / embedding cache / inference cache" | "Device twin shadow store / time-series state cache" | "Player session / leaderboard / matchmaking queue" |
-| `Zeta.Messaging.PubSub` | "Pub/sub queue" | "Event bus / message broker" | "Training event stream / inference event log" | "MQTT-equivalent device telemetry pipeline" | "Game-state event broadcast / chat messaging" |
-| `Zeta.Storage.Document` | "MongoDB-style document store" | "Aggregate-oriented NoSQL" | "Experiment metadata store / model registry" | "Device configuration store / SCADA tag store" | "Player profile store / inventory store" |
-| `Zeta.Storage.SQL` | "Postgres-style relational DB" | "Distributed SQL / NewSQL" | "Experiment results warehouse / metrics store" | "Historian database / time-series + relational" | "Player progression DB / economy ledger" |
-| `Zeta.Workflow` | "Job queue / background processor" | "BPM / workflow orchestrator" | "Training pipeline / experiment runner" | "Operational procedure orchestrator / batch process scheduler" | "Quest / progression / event-trigger orchestrator" |
-| `Zeta.Actors` | "Stateful service / WebSocket session manager" | "Distributed actor system / virtual actors" | "Per-agent / per-experiment stateful compute" | "Per-device state machine / per-PLC controller" | "Per-player / per-NPC / per-room stateful entity" |
-| `Zeta.Policy.Engine` | "Authz middleware / feature flag engine" | "Policy-as-code / governance enforcement" | "Model deployment policy / data access policy" | "Safety interlock policy / operational mode policy" | "Anti-cheat policy / content moderation policy" |
+| Plugin                  | Web-dev persona                                | Enterprise architect                        | AI/ML researcher                                    | Industrial IoT engineer                                        | Game developer                                     |
+| ----------------------- | ---------------------------------------------- | ------------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------- |
+| `Zeta.Storage.KeyValue` | "Redis cache layer / session store"            | "Distributed KV store with HA replication"  | "Feature cache / embedding cache / inference cache" | "Device twin shadow store / time-series state cache"           | "Player session / leaderboard / matchmaking queue" |
+| `Zeta.Messaging.PubSub` | "Pub/sub queue"                                | "Event bus / message broker"                | "Training event stream / inference event log"       | "MQTT-equivalent device telemetry pipeline"                    | "Game-state event broadcast / chat messaging"      |
+| `Zeta.Storage.Document` | "MongoDB-style document store"                 | "Aggregate-oriented NoSQL"                  | "Experiment metadata store / model registry"        | "Device configuration store / SCADA tag store"                 | "Player profile store / inventory store"           |
+| `Zeta.Storage.SQL`      | "Postgres-style relational DB"                 | "Distributed SQL / NewSQL"                  | "Experiment results warehouse / metrics store"      | "Historian database / time-series + relational"                | "Player progression DB / economy ledger"           |
+| `Zeta.Workflow`         | "Job queue / background processor"             | "BPM / workflow orchestrator"               | "Training pipeline / experiment runner"             | "Operational procedure orchestrator / batch process scheduler" | "Quest / progression / event-trigger orchestrator" |
+| `Zeta.Actors`           | "Stateful service / WebSocket session manager" | "Distributed actor system / virtual actors" | "Per-agent / per-experiment stateful compute"       | "Per-device state machine / per-PLC controller"                | "Per-player / per-NPC / per-room stateful entity"  |
+| `Zeta.Policy.Engine`    | "Authz middleware / feature flag engine"       | "Policy-as-code / governance enforcement"   | "Model deployment policy / data access policy"      | "Safety interlock policy / operational mode policy"            | "Anti-cheat policy / content moderation policy"    |
 
 Each row is one substrate; multiple vocabulary projections.
 Operator reads the projection that matches their mental model;
@@ -127,8 +127,8 @@ that maps:
 
 The first plugin shipment (per B-0776 — pick any rank 1-10)
 becomes the **kickoff for Ace ontology negotiation operating at
-substrate scope**. Aaron 2026-05-25: *"this is the start of ace
-package manager negoations."*
+substrate scope**. Aaron 2026-05-25: _"this is the start of ace
+package manager negoations."_
 
 ## Acceptance
 
@@ -169,9 +169,9 @@ package manager negoations."*
 
 ## Why industry-sharp matters (defensibility)
 
-Aaron's framing: *"max can use for categories that are also
+Aaron's framing: _"max can use for categories that are also
 industry sharp so we don't get laughed out of ontology
-negoations"*. Substrate-honest argument:
+negoations"_. Substrate-honest argument:
 
 **Without industry-sharp positioning**: Zeta plugin specs look
 like "yet another wrapper around Redis" — dismissed in

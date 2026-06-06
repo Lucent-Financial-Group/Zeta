@@ -43,8 +43,8 @@ Outcomes it serves, ordered:
    trivially cheap (one file = one rule = one query).
 
 3. **Carved-sentences-only compression** — Aaron 2026-05-01:
-   *"you are only allowed carved statments in the rules
-   compression is key."* Forces every rule to be
+   _"you are only allowed carved statments in the rules
+   compression is key."_ Forces every rule to be
    blade-shaped, not prose-shaped. Composes with the
    carved-sentences architectural-claim cluster (in-flight
    integration) + CSAP framework. The constraint is the
@@ -72,20 +72,21 @@ ships this pattern at production scale:
 
 The sibling's `claude-md-lean.md` documents the proven
 incident: a fresh Claude Code session reported
-*"Large CLAUDE.md will impact performance (50.1k chars
-> 40.0k)"* after rules accreted directly into CLAUDE.md.
-The split was the mitigation. We are 23.7k on CLAUDE.md
-today + 40.4k on GOVERNANCE.md — the ceiling is on the
-horizon, not theoretical.
+\*"Large CLAUDE.md will impact performance (50.1k chars
+
+> 40.0k)"\* after rules accreted directly into CLAUDE.md.
+> The split was the mitigation. We are 23.7k on CLAUDE.md
+> today + 40.4k on GOVERNANCE.md — the ceiling is on the
+> horizon, not theoretical.
 
 ## Aaron's framing — load-bearing constraints
 
 Aaron 2026-05-01 (verbatim):
 
-> *"i mean honestly the way
+> _"i mean honestly the way
 > ../no-copy-only-learning-agents-insight does .claude/rules
 > seems like the way to go and you are only allowed carved
-> statments in the rules compression is key."*
+> statments in the rules compression is key."_
 
 Two load-bearing constraints:
 
@@ -96,7 +97,7 @@ Two load-bearing constraints:
 2. **Carved-sentences-only** — TIGHTER than the sibling
    repo (whose rules carry full prose bodies). Our
    constraint: every rule in `.claude/rules/<rule>.md`
-   is a *carved sentence* (blade-shaped statement, no
+   is a _carved sentence_ (blade-shaped statement, no
    prose-explanation). Per the CSAP framework + the
    carved-sentences architectural-claim cluster
    (in-flight integration; the canonical filename will
@@ -127,8 +128,8 @@ constraint is our addition.
    - Candidate 1: verify-before-deferring
    - Candidate 2: future-self-not-bound
    - Candidate 3: substrate-or-it-didn't-happen (Otto-363)
-   Each becomes a `.claude/rules/<name>.md` with a
-   carved-sentence body + reference incident pointer.
+     Each becomes a `.claude/rules/<name>.md` with a
+     carved-sentence body + reference incident pointer.
 3. **CLAUDE.md updated** — replace the three rules' bodies
    with: heading + 1-paragraph summary + pointer line.
 4. **Char-count verification** — `wc -c CLAUDE.md` after
@@ -197,8 +198,8 @@ source.
   rule** — Phase 1 ships three pilot rules; bulk
   migration is Phase 2 + 3 with explicit cadence.
 - **NOT a replacement for `memory/`** — `.claude/rules/`
-  holds *standing rules* (BP-NN-class); `memory/` holds
-  *episodic substrate* (corrections, observations,
+  holds _standing rules_ (BP-NN-class); `memory/` holds
+  _episodic substrate_ (corrections, observations,
   preferences). Different stores, different shapes.
 - **NOT a hard ceiling shift** — the 40k char ceiling is
   Claude Code's reported threshold; if Anthropic raises

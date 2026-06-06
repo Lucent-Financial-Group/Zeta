@@ -145,12 +145,7 @@ export type StandardVerdict =
  * typing — caller would see them disappear despite the function
  * signature claiming a `World` round-trip.
  */
-export function registerLifetimePair<
-  W extends World,
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function registerLifetimePair<W extends World, A extends LifetimeState, B extends LifetimeState, T>(
   world: W,
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,
@@ -165,11 +160,7 @@ export function registerLifetimePair<
  *
  * Returns undefined if pair not registered.
  */
-export function lookupLifetimePair<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function lookupLifetimePair<A extends LifetimeState, B extends LifetimeState, T>(
   world: World,
   pairName: string,
 ): ReadonlyMap<ComposedKey<A, B>, T> | undefined {
@@ -188,10 +179,7 @@ export function lookupLifetimePair<
  * "every-cell-defaults-to-advance" pattern so caller doesn't write the
  * cross-product manually.
  */
-export function defaultAdvanceMatrix<
-  A extends LifetimeState,
-  B extends LifetimeState,
->(
+export function defaultAdvanceMatrix<A extends LifetimeState, B extends LifetimeState>(
   universeA: ReadonlyArray<A>,
   universeB: ReadonlyArray<B>,
   overrides?: ReadonlyMap<ComposedKey<A, B>, StandardVerdict>,
@@ -214,10 +202,7 @@ export function defaultAdvanceMatrix<
  * "the lifetime composition terminates here with `complete` verdict",
  * this builds the matrix from defaults + the terminal cell.
  */
-export function terminalMatrix<
-  A extends LifetimeState,
-  B extends LifetimeState,
->(
+export function terminalMatrix<A extends LifetimeState, B extends LifetimeState>(
   universeA: ReadonlyArray<A>,
   universeB: ReadonlyArray<B>,
   terminalA: A,
@@ -249,10 +234,7 @@ export function terminalMatrix<
  * Composes with composeFromDispatcher; this is the StandardVerdict-typed
  * specialization.
  */
-export function predicateMatrix<
-  A extends LifetimeState,
-  B extends LifetimeState,
->(
+export function predicateMatrix<A extends LifetimeState, B extends LifetimeState>(
   universeA: ReadonlyArray<A>,
   universeB: ReadonlyArray<B>,
   predicate: (a: A, b: B) => StandardVerdict,
@@ -279,9 +261,7 @@ export function predicateMatrix<
  * (per composed-lifetime.ts) which covers the lower-level
  * undefined-transition / invalid-state-A / invalid-state-B classes.
  */
-export type WorldTransitionFeedback =
-  | TransitionFeedback
-  | { kind: "UnregisteredPair"; pairName: string };
+export type WorldTransitionFeedback = TransitionFeedback | { kind: "UnregisteredPair"; pairName: string };
 
 /**
  * World-level dispatch result-shape per monad-propagation rule.
@@ -302,11 +282,7 @@ export type WorldTransitionResult<T> =
  * lifetime pairs it knows about; caller acknowledges by registering
  * pairs before dispatch.
  */
-export function dispatchInWorld<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function dispatchInWorld<A extends LifetimeState, B extends LifetimeState, T>(
   world: World,
   pairName: string,
   a: A,

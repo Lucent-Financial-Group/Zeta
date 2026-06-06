@@ -442,10 +442,7 @@ function createRecordingOutboxPublisher(result: OutboxPublishBatchResult): Recor
   };
 }
 
-function createFailingOutboxPublisher(
-  message: string,
-  evidence?: unknown,
-): OutboxPublisher {
+function createFailingOutboxPublisher(message: string, evidence?: unknown): OutboxPublisher {
   return {
     publishNextBatch: async () => {
       const error = new Error(message) as Error & {

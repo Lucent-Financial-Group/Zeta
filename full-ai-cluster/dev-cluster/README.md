@@ -208,7 +208,7 @@ spec:
       source:
         path: full-ai-cluster/k8s/applications
       destination:
-        server: '{{server}}'
+        server: "{{server}}"
         # ...
 ```
 

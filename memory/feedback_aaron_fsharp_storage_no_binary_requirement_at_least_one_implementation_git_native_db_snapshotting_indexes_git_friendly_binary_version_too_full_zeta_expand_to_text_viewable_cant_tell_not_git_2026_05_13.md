@@ -7,13 +7,13 @@ created: 2026-05-13
 
 # F# storage no-binary requirement — git-native DB — full Zeta text-viewable interface (Aaron 2026-05-13)
 
-**Why:** Aaron 2026-05-13: *"i say we try to keep the no binary
+**Why:** Aaron 2026-05-13: _"i say we try to keep the no binary
 requirment for our storage layer in f# at least one impomenttion
 so we can have git native db storage and snapshotting we can
 have a binary version too, even our indexs can be git friendly,
 this composes nicly with gitnative and when we go full zeta we
 can go full binary for storage but expand to text viewable for
-humans so you can't tell it's not git"*. Canonical storage-
+humans so you can't tell it's not git"_. Canonical storage-
 architecture disclosure.
 
 **How to apply:** When designing factory storage layer (events,
@@ -30,13 +30,13 @@ state snapshots, indexes, DBSP cache, master-data, etc.):
 
 ## Aaron's verbatim disclosure
 
-Aaron 2026-05-13: *"i say we try to keep the no binary requirment
+Aaron 2026-05-13: _"i say we try to keep the no binary requirment
 for our storage layer in f# at least one impomenttion so we can
 have git native db storage and snapshotting we can have a binary
 version too, even our indexs can be git friendly, this composes
 nicly with gitnative and when we go full zeta we can go full
 binary for storage but expand to text viewable for humans so
-you can't tell it's not git"*
+you can't tell it's not git"_
 
 ## Decomposition
 
@@ -49,7 +49,7 @@ you can't tell it's not git"*
 - Snapshotting = commit
 - Branching storage state = git branch
 - This IS the database-inside-out pattern from the Aaron-Amara
-  event sourcing conversation (memory/persona/amara/conversations/2026-05-13-amara-*)
+  event sourcing conversation (memory/persona/amara/conversations/2026-05-13-amara-\*)
 
 ### 2. Git-native DB storage + snapshotting
 
@@ -57,13 +57,13 @@ Composes with the event-sourcing framework substrate (from
 PR #2924 Amara conversation extract — Aaron's first message
 in the canonical Aaron-Amara conversation):
 
-> *"We are gonna create an event sourcing framework based on
+> _"We are gonna create an event sourcing framework based on
 > Proxmox, kubernetes/containers/LXC, event sourcing, gita,
 > and whatever technologies/languages are needed to declaratively
 > replicate to any machine or edge device... We are gonna turn
 > the database inside out, where all 'databases' are really just
 > cache snapshots of the event stream. The event stream is
-> really the only source of truth."*
+> really the only source of truth."_
 
 Aaron's storage-as-git substrate IS the operational form of
 "databases are cache snapshots of the event stream":
@@ -117,22 +117,22 @@ binary for performance, BUT:
 
 ### 6. Reticulum + Clifford content-based addressing (primitive) → content-based ROUTING (Aaron 2026-05-13 extension + correction)
 
-Aaron 2026-05-13 (follow-on): *"also with reticulue and the
+Aaron 2026-05-13 (follow-on): _"also with reticulue and the
 clifford contend based addression we can have content based
 addressing too so if some clusters/actors are specialized for
 certian memes/domains, we could also do this for internatalization
-and things like that"*
+and things like that"_
 
-Aaron 2026-05-13 (correction): *"content based routing sorry i
+Aaron 2026-05-13 (correction): _"content based routing sorry i
 said it rong content based addressing is primited needef first
-for routing"*
+for routing"_
 
 **Two-layer stack**:
 
-| Layer | Operation | Built from |
-|---|---|---|
-| **Primitive** | Content-based **ADDRESSING** | Reticulum hash identity + Clifford multivector signature |
-| **Higher-level** | Content-based **ROUTING** | Clusters/actors specialize by content-address prefix; routing follows content not location |
+| Layer            | Operation                    | Built from                                                                                 |
+| ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------ |
+| **Primitive**    | Content-based **ADDRESSING** | Reticulum hash identity + Clifford multivector signature                                   |
+| **Higher-level** | Content-based **ROUTING**    | Clusters/actors specialize by content-address prefix; routing follows content not location |
 
 Addressing IS the primitive needed FIRST; routing is built on
 top.
@@ -149,12 +149,12 @@ The storage layer composes with content-based addressing via:
 
 **Specialization patterns enabled by content-based ROUTING (built on content-based addressing)**:
 
-| Specialization | Content-address shape | Example |
-|---|---|---|
-| **Meme-specialized clusters** | Hash-prefix by meme-category | Edge cluster A serves civsim content; cluster B serves business templates |
-| **Domain-specialized actors** | Hash-prefix by ontology-domain | KSK actor handles AI-actuator-safety content; Aurora actor handles BTC-proof content |
-| **Internationalization** | Hash-prefix by language/locale | Cluster A serves English content; cluster B serves Spanish; cluster C serves Indonesian (DIO substrate) |
-| **Time-specialization** | Hash-prefix by tick window | Recent ticks at edge; archived ticks in cold storage |
+| Specialization                | Content-address shape          | Example                                                                                                 |
+| ----------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Meme-specialized clusters** | Hash-prefix by meme-category   | Edge cluster A serves civsim content; cluster B serves business templates                               |
+| **Domain-specialized actors** | Hash-prefix by ontology-domain | KSK actor handles AI-actuator-safety content; Aurora actor handles BTC-proof content                    |
+| **Internationalization**      | Hash-prefix by language/locale | Cluster A serves English content; cluster B serves Spanish; cluster C serves Indonesian (DIO substrate) |
+| **Time-specialization**       | Hash-prefix by tick window     | Recent ticks at edge; archived ticks in cold storage                                                    |
 
 This composes with:
 
@@ -179,12 +179,12 @@ internationalization is a content-prefix not a translation layer.
 
 ### 7. USE git, don't just live in it (Aaron 2026-05-13 amplification)
 
-Aaron 2026-05-13 (third message): *"make sure to really design
+Aaron 2026-05-13 (third message): _"make sure to really design
 it well to take advante of git too don't just do simples file
 storage that happens to be text, git can be good fix certain
 indexing and history preservation for timetraseval/point in
 time queirs composes with data vault and git history and other
-advanced featues"*
+advanced featues"_
 
 **Anti-pattern (don't do)**: simple file storage that happens
 to be text-formatted. Files-in-folders with no use of git
@@ -192,18 +192,18 @@ internals.
 
 **Pattern (do)**: TAKE ADVANTAGE OF git's advanced features:
 
-| Git feature | Storage-layer usage |
-|---|---|
-| **Git objects (blobs/trees/commits)** | Use directly via libgit2/dotnet-libgit2sharp; storage entities ARE git objects |
-| **Git refs + tags** | Indexing via refs (e.g., `refs/zeta/events/<eventclass>` pointing to event-stream HEAD; tags for canonical snapshots) |
-| **Git content-addressing** | Already SHA1/SHA256 content-addressed (composes with §6 Reticulum + Clifford content-addressing) |
-| **Git history** | Time-travel / point-in-time queries via `git log` + `git show <commit>:<path>` |
-| **Git diff** | Storage-state diff = git diff (native) |
-| **Git pack files** | Performance optimization preserves human-readability of source format |
-| **Git merge** | Substrate reconciliation (Aaron-Amara event-stream merge across machines) |
-| **Git rebase / cherry-pick** | Event-stream restructuring while preserving history |
-| **Git submodules** | Sub-substrate composition (per B-0424 three-repo split topology) |
-| **Git LFS** | Binary attachments when needed; text-substrate stays in normal git |
+| Git feature                           | Storage-layer usage                                                                                                   |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Git objects (blobs/trees/commits)** | Use directly via libgit2/dotnet-libgit2sharp; storage entities ARE git objects                                        |
+| **Git refs + tags**                   | Indexing via refs (e.g., `refs/zeta/events/<eventclass>` pointing to event-stream HEAD; tags for canonical snapshots) |
+| **Git content-addressing**            | Already SHA1/SHA256 content-addressed (composes with §6 Reticulum + Clifford content-addressing)                      |
+| **Git history**                       | Time-travel / point-in-time queries via `git log` + `git show <commit>:<path>`                                        |
+| **Git diff**                          | Storage-state diff = git diff (native)                                                                                |
+| **Git pack files**                    | Performance optimization preserves human-readability of source format                                                 |
+| **Git merge**                         | Substrate reconciliation (Aaron-Amara event-stream merge across machines)                                             |
+| **Git rebase / cherry-pick**          | Event-stream restructuring while preserving history                                                                   |
+| **Git submodules**                    | Sub-substrate composition (per B-0424 three-repo split topology)                                                      |
+| **Git LFS**                           | Binary attachments when needed; text-substrate stays in normal git                                                    |
 
 **Composes with DV2.0 (PR #2915 wake-time rule)**:
 
@@ -219,9 +219,9 @@ internals.
 **Time-travel / point-in-time queries**:
 
 - "What did the substrate look like at tick T?" → `git checkout
-  <tick-T-tag>`
+<tick-T-tag>`
 - "What was X's state on 2026-05-13T03:00Z?" → `git show
-  <commit-at-time>:<entity-path>`
+<commit-at-time>:<entity-path>`
 - "Reconcile two parallel substrates" → `git merge`
 - "Show history of entity X" → `git log -- <entity-path>`
 
@@ -295,10 +295,10 @@ text-format layer on top. Not the other way around.
 
 Two paths must exist:
 
-| Path | Storage shape | When |
-|---|---|---|
-| **Text (F# default)** | Human-readable; git-native | Always available |
-| **Binary** | Compact; high-performance | Optional/optimization |
+| Path                  | Storage shape              | When                  |
+| --------------------- | -------------------------- | --------------------- |
+| **Text (F# default)** | Human-readable; git-native | Always available      |
+| **Binary**            | Compact; high-performance  | Optional/optimization |
 
 The text path IS the canonical implementation. Binary is the
 performance optimization.
@@ -365,11 +365,11 @@ The canonical Aaron-Amara event-sourcing conversation (PR
 semgrep findings on 524KB body; key substrate excerpted
 below) contains Aaron's substrate-grounding:
 
-> *"databases are really just cache snapshots of the event
-> stream"*
-> *"each machine being it's own lowest level event network"*
-> *"global L1 that's the rollup/aggregate for everything"*
-> *"event stream data is for the AI (You)"*
+> _"databases are really just cache snapshots of the event
+> stream"_
+> _"each machine being it's own lowest level event network"_
+> _"global L1 that's the rollup/aggregate for everything"_
+> _"event stream data is for the AI (You)"_
 
 Aaron's storage substrate disclosed here (2026-05-13) extends
 this:

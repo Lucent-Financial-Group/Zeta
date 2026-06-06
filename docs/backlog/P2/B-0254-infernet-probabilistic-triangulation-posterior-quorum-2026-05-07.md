@@ -10,7 +10,17 @@ created: 2026-05-07
 last_updated: 2026-05-07
 depends_on: [B-0253]
 composes_with: [B-0007, B-0189, B-0240, B-0250, B-0251, B-0253]
-tags: [infer-net, bayesian-inference, belief-propagation, expectation-propagation, bft, asa-triangulation, posterior-quorum, orleans]
+tags:
+  [
+    infer-net,
+    bayesian-inference,
+    belief-propagation,
+    expectation-propagation,
+    bft,
+    asa-triangulation,
+    posterior-quorum,
+    orleans,
+  ]
 type: feature
 ---
 

@@ -4,6 +4,7 @@ description: Factory's inbound-contribution posture — every close carries reas
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** When the factory closes, declines, or rejects an
 inbound contribution — from a human filing a BACKLOG row,
 from a specialist agent raising a finding, from an external

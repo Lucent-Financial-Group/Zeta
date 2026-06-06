@@ -103,13 +103,18 @@ function runBuild(timeoutSec: number, logPath: string, keepImage: boolean): Buil
   const ambientToken = process.env.GITHUB_TOKEN ?? "";
   const miseGithubToken = keepImage ? "" : ambientToken;
   if (keepImage && ambientToken !== "") {
-    console.log("[Slice 2c] --keep-image set: OMITTING MISE_GITHUB_TOKEN so the retained image's history carries no token (mise runs unauthenticated for this run; GitHub rate-limit possible).");
+    console.log(
+      "[Slice 2c] --keep-image set: OMITTING MISE_GITHUB_TOKEN so the retained image's history carries no token (mise runs unauthenticated for this run; GitHub rate-limit possible).",
+    );
   }
   const buildArgs = [
     "build",
-    "--file", DOCKERFILE_PATH,
-    "--build-arg", `MISE_GITHUB_TOKEN=${miseGithubToken}`,
-    "--tag", IMAGE_TAG,
+    "--file",
+    DOCKERFILE_PATH,
+    "--build-arg",
+    `MISE_GITHUB_TOKEN=${miseGithubToken}`,
+    "--tag",
+    IMAGE_TAG,
     ".",
   ];
   // REDACT the token value in the logged command — NEVER print the secret to CI logs. (GHA also
@@ -162,7 +167,9 @@ function main(): void {
 
   const timeoutSec = parseInt(process.env.DOCKER_BUILD_TIMEOUT_SEC ?? String(DEFAULT_TIMEOUT_SEC), 10);
   if (!Number.isFinite(timeoutSec) || timeoutSec <= 0) {
-    console.error(`error: DOCKER_BUILD_TIMEOUT_SEC must be a positive integer (got: ${process.env.DOCKER_BUILD_TIMEOUT_SEC})`);
+    console.error(
+      `error: DOCKER_BUILD_TIMEOUT_SEC must be a positive integer (got: ${process.env.DOCKER_BUILD_TIMEOUT_SEC})`,
+    );
     process.exit(2);
   }
   const logPath = resolve(process.env.DOCKER_LOG_OUT_PATH ?? DEFAULT_LOG_PATH);

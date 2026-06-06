@@ -34,14 +34,14 @@ fire-and-forget — a trust violation.
   1. Defines a drain-log entry schema:
      ```typescript
      interface MutationLogEntry {
-       id: string;           // UUID
-       timestamp: string;    // ISO-8601
-       surfaceId: string;    // from authorized-surfaces.json
-       action: string;       // what was done
+       id: string; // UUID
+       timestamp: string; // ISO-8601
+       surfaceId: string; // from authorized-surfaces.json
+       action: string; // what was done
        inverseAction: string; // how to undo it
        beforeSnapshot: string; // path to before-snapshot JSON
-       afterSnapshot: string;  // path to after-snapshot JSON
-       diff: object;         // structured diff
+       afterSnapshot: string; // path to after-snapshot JSON
+       diff: object; // structured diff
        status: "applied" | "reverted";
      }
      ```

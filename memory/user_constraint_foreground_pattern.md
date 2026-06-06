@@ -4,6 +4,7 @@ description: Aaron thinks in constraints; his foreground declares them tightly a
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron described (2026-04-19) his working rhythm: "background
 threads just give me the answers I desire and it feels like
 magic and don't even have to put much foreground thought into
@@ -26,7 +27,7 @@ optimise against.
 
 2. **"Feels like magic" is a quality signal.** It means the
    constraint was well-typed enough that downstream propagation
-   cohered without further input. When it *doesn't* feel like
+   cohered without further input. When it _doesn't_ feel like
    magic — when he has to come back and nudge — the original
    constraint was under-specified. I should watch for this
    and, over time, help him refine constraint-statements

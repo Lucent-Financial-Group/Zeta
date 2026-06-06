@@ -4,7 +4,12 @@ import type {
   SupervisorSignalStatus,
   SupervisorSignalToolType,
 } from "./supervisor-communication.ts";
-import { WorkItemState, type WorkItemType, type WorkItemSource, type WorkItemSeverity } from "./work-item-state-machine.ts";
+import {
+  WorkItemState,
+  type WorkItemType,
+  type WorkItemSource,
+  type WorkItemSeverity,
+} from "./work-item-state-machine.ts";
 
 export const ProjectStatus = {
   Active: "active",
@@ -175,8 +180,7 @@ export function isDiscussionAnchorType(value: unknown): value is DiscussionAncho
 
 export function isDiscussionExpectedOutput(value: unknown): value is DiscussionExpectedOutput {
   return (
-    typeof value === "string" &&
-    Object.values(DiscussionExpectedOutput).includes(value as DiscussionExpectedOutput)
+    typeof value === "string" && Object.values(DiscussionExpectedOutput).includes(value as DiscussionExpectedOutput)
   );
 }
 

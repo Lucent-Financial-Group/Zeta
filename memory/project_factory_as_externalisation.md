@@ -4,6 +4,7 @@ description: The factory is Aaron's algorithm for indexing all code classes into
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron (2026-04-19) stated the factory's meta-purpose: it is his
 algorithm to eventually index all code classes into one
 project, and at that end-state he "won't even have to tell you

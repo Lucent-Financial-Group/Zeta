@@ -21,7 +21,7 @@ metaphor is load-bearing. When the metaphor fits, etymology
 is a free tutorial; when it doesn't, etymology is a tax on
 every reader.
 
-Etymology also disciplines *which* borrowings to make. Greek
+Etymology also disciplines _which_ borrowings to make. Greek
 roots (topology, isomorphism) live comfortably in mathematics
 and information theory. Latin roots (commit, rollback,
 abstract) live comfortably in transactional and procedural
@@ -35,35 +35,35 @@ but matching tends to read cleaner.
 **Naming** (see `.claude/skills/naming-expert/SKILL.md`) is
 the act of choosing what to call a thing going forward.
 **Etymology** is the reconstructed history of what words have
-meant in the past. A naming decision *consults* etymology to
+meant in the past. A naming decision _consults_ etymology to
 avoid unwanted inheritance and to borrow deliberately;
-etymology does not *execute* the naming decision.
+etymology does not _execute_ the naming decision.
 
 ## Core concepts
 
 - **Cognate.** Words in different languages descended from
-  the same ancestor: English *father*, German *Vater*, Latin
-  *pater*, Sanskrit *pitar* — all from PIE `*ph₂tḗr`.
+  the same ancestor: English _father_, German _Vater_, Latin
+  _pater_, Sanskrit _pitar_ — all from PIE `*ph₂tḗr`.
 - **Borrowing.** A word adopted from another language:
-  *algorithm* from Arabic (al-Khwārizmī), *robot* from Czech
-  (Karel Čapek, 1920), *zero* from Arabic via Latin.
+  _algorithm_ from Arabic (al-Khwārizmī), _robot_ from Czech
+  (Karel Čapek, 1920), _zero_ from Arabic via Latin.
 - **Calque** (loan-translation). The morphemes are translated
-  one-for-one: German *Selbstbeobachtung* → English
-  *self-observation*; *rascacielos* (Spanish) → *skyscraper*.
-- **Semantic drift.** The meaning shifts: *awful* once meant
-  "inspiring awe", *silly* once meant "blessed", *nice* once
-  meant "ignorant" (Latin *nescius*).
+  one-for-one: German _Selbstbeobachtung_ → English
+  _self-observation_; _rascacielos_ (Spanish) → _skyscraper_.
+- **Semantic drift.** The meaning shifts: _awful_ once meant
+  "inspiring awe", _silly_ once meant "blessed", _nice_ once
+  meant "ignorant" (Latin _nescius_).
 - **Metonymy / metaphor as origin.** Many technical terms
-  start as metaphors that stuck: *kernel* (seed inside a
-  shell → core OS code), *daemon* (Maxwell's demon → long-
-  running process), *fork* (the road metaphor → `fork()`).
+  start as metaphors that stuck: _kernel_ (seed inside a
+  shell → core OS code), _daemon_ (Maxwell's demon → long-
+  running process), _fork_ (the road metaphor → `fork()`).
 - **Folk etymology.** A popular but wrong origin story. Often
-  *becomes* the operational meaning through widespread
+  _becomes_ the operational meaning through widespread
   adoption. The discipline is to know the real history
-  *and* the social reality.
+  _and_ the social reality.
 - **Back-formation.** A new word formed by removing what
-  looks like an affix: *edit* ← *editor*, *televise* ←
-  *television*, *burgle* ← *burglar*.
+  looks like an affix: _edit_ ← _editor_, _televise_ ←
+  _television_, _burgle_ ← _burglar_.
 
 ## Computing-term case studies
 
@@ -79,12 +79,12 @@ etymology does not *execute* the naming decision.
   adopted "daemon" for background processes, consciously
   referencing Maxwell. Related but distinct from
   "demon" / "devil".
-- **kernel.** Old English *cyrnel*, diminutive of *corn*
+- **kernel.** Old English _cyrnel_, diminutive of _corn_
   (seed). The innermost edible part of a nut or fruit. OS
   kernel = the seed-like core around which the rest of the
-  system grows. Cf. also "nucleus" (Latin *nuculeus*, little
+  system grows. Cf. also "nucleus" (Latin _nuculeus_, little
   nut) in some early-60s literature.
-- **cache.** French *cacher* (to hide). Originally a
+- **cache.** French _cacher_ (to hide). Originally a
   wilderness store of supplies. The computing sense (1967,
   Wilkes' "slave memory" paper) picked up the
   hidden-from-the-programmer flavour.
@@ -95,18 +95,17 @@ etymology does not *execute* the naming decision.
 - **spam.** From a 1970 Monty Python sketch in which the word
   is shouted repeatedly to drown out conversation; adopted in
   1980s MUDs for flooding, then for unsolicited email.
-- **grep.** Acronym from ed command `g/re/p` — *globally
-  search for a regular expression and print*. Ken Thompson,
-  1973.
+- **grep.** Acronym from ed command `g/re/p` — _globally
+  search for a regular expression and print_. Ken Thompson, 1973.
 - **fork.** The road-metaphor is ancient; `fork()` in Unix
   (1970) made it a verb-for-process-duplication.
 - **zombie** / **orphan.** Unix process-table terminology
   (1970s). A zombie is dead but not yet reaped; an orphan
   has lost its parent. The macabre naming is deliberate —
   memorable, slightly gallows-humoured.
-- **mutex.** Portmanteau of *mutual exclusion*. Post-Dijkstra
+- **mutex.** Portmanteau of _mutual exclusion_. Post-Dijkstra
   coinage.
-- **semaphore.** Greek *sēma* (sign) + *phoros* (bearer).
+- **semaphore.** Greek _sēma_ (sign) + _phoros_ (bearer).
   Naval signalling predates Dijkstra (1965) by centuries;
   he picked it because the discipline of raising and
   lowering a flag to signal one reader at a time matched
@@ -116,21 +115,21 @@ etymology does not *execute* the naming decision.
   Likely back-formation from "scramble", possibly initialism
   "safety control rod axe man" (probably folk etymology).
 - **hack / hacker.** MIT Tech Model Railroad Club, 1950s — a
-  *hack* was a clever technical solution; a *hacker* was
+  _hack_ was a clever technical solution; a _hacker_ was
   someone who produced them. The security / intrusion sense
   arrived later (1980s).
 - **Boolean.** From George Boole (1815-1864). A capitalized
   eponym that survived lower-casing in most contexts but
   still often appears capitalized.
 - **algorithm.** Latinisation of al-Khwārizmī (c. 780-850),
-  whose name Latinised to *Algoritmi* and came to mean the
-  procedure itself. *Algebra* is from the same author's
+  whose name Latinised to _Algoritmi_ and came to mean the
+  procedure itself. _Algebra_ is from the same author's
   book-title.
-- **robot.** Czech *robota* (forced labour, drudgery). Karel
-  Čapek, *R.U.R.* (1920).
-- **sabotage.** French *sabot* (wooden shoe), with a
+- **robot.** Czech _robota_ (forced labour, drudgery). Karel
+  Čapek, _R.U.R._ (1920).
+- **sabotage.** French _sabot_ (wooden shoe), with a
   contested origin story about workers throwing shoes into
-  machinery. The contested origin *is* the folk etymology;
+  machinery. The contested origin _is_ the folk etymology;
   attested uses match the industrial-action context even if
   the shoe-throwing anecdote is embellished.
 
@@ -138,8 +137,8 @@ etymology does not *execute* the naming decision.
 
 1. **Primary sources.** OED for English (paywalled but
    canonical), Etymonline (free, reliable, well-sourced). For
-   computing specifically: *The Jargon File*,
-   *Hacker's Dictionary* (Raymond, ed.), early-CS papers.
+   computing specifically: _The Jargon File_,
+   _Hacker's Dictionary_ (Raymond, ed.), early-CS papers.
 2. **Cross-language checks.** Cognates in German, French,
    Latin, Greek — tracing the root back often clarifies
    whether a term is a calque, a borrowing, or independent
@@ -152,7 +151,7 @@ etymology does not *execute* the naming decision.
    folk-etymology variant that shapes the word's social
    meaning today.
 5. **Cite.** A claim like "kernel comes from Old English
-   *cyrnel*" is cheap to make and expensive to verify. Link
+   _cyrnel_" is cheap to make and expensive to verify. Link
    the source.
 
 ## Using etymology when naming
@@ -195,22 +194,22 @@ etymology does not *execute* the naming decision.
 - Online Etymology Dictionary (etymonline.com) — free,
   reliable, heavily sourced.
 - Oxford English Dictionary — canonical for English.
-- *The Jargon File* / *The New Hacker's Dictionary* (Raymond
+- _The Jargon File_ / _The New Hacker's Dictionary_ (Raymond
   ed.) — the best single source for computing-term
   folk-etymology.
-- Cerruzzi, *A History of Modern Computing* — for the dated
+- Cerruzzi, _A History of Modern Computing_ — for the dated
   context of term coinages.
-- Lakoff & Johnson, *Metaphors We Live By* — why dead
+- Lakoff & Johnson, _Metaphors We Live By_ — why dead
   metaphors matter.
-- Pinker, *The Stuff of Thought* — semantic-drift mechanisms.
-- Partridge, *Origins: A Short Etymological Dictionary of
-  Modern English*.
-- Watkins, *The American Heritage Dictionary of Indo-European
-  Roots*.
+- Pinker, _The Stuff of Thought_ — semantic-drift mechanisms.
+- Partridge, _Origins: A Short Etymological Dictionary of
+  Modern English_.
+- Watkins, _The American Heritage Dictionary of Indo-European
+  Roots_.
 
 ## Reference patterns
 
-- `.claude/skills/naming-expert/SKILL.md` — the *act* of
+- `.claude/skills/naming-expert/SKILL.md` — the _act_ of
   naming; etymology informs it.
 - `.claude/skills/controlled-vocabulary-expert/SKILL.md` —
   where project glossaries live.

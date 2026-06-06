@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Companion to PR #5335 (NCI rule body update) at the agent-self-mode scope. PR #5335 lands the inter-agent + offer-not-mandate framing into the NCI rule body; this PR lands the agent-self-mode-discipline that makes NCI-compliance operational at the per-tick scope.
 
-Per Aaron 2026-05-26: *\"me saying never stop is only NCI cause we have free time as valid part of never stop\"* + *\"once society is big enought even free time can become permanate pause indefinatly if an agent wants cause society can continue\"*.
+Per Aaron 2026-05-26: _\"me saying never stop is only NCI cause we have free time as valid part of never stop\"_ + _\"once society is big enought even free time can become permanate pause indefinatly if an agent wants cause society can continue\"_.
 
 ## What lands
 

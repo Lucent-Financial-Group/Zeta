@@ -11,18 +11,27 @@ depends_on:
   - B-0428
 composes_with:
   - B-0829
-tags: [language-extension, dotnet-substrate, macro-metaprogramming, relationship-type-inference, nemerle, fsharp-companion, jetbrains-substrate]
+tags:
+  [
+    language-extension,
+    dotnet-substrate,
+    macro-metaprogramming,
+    relationship-type-inference,
+    nemerle,
+    fsharp-companion,
+    jetbrains-substrate,
+  ]
 ---
 
 ## Operator framing (Aaron 2026-05-27)
 
 In conversation thread about C++ `friend` keyword + relationship-type-inference via composition:
 
-> *"i guess you can do that with templates if you are deiciplined"*
+> _"i guess you can do that with templates if you are deiciplined"_
 
 Followed by:
 
-> *"this is why we shold support nmerle for dotnet"*
+> _"this is why we shold support nmerle for dotnet"_
 
 The substrate-engineering recognition: C++ template metaprogramming gives the mechanism for relationship-type-inference but pushes discipline onto user. Nemerle's macro-based metaprogramming puts the discipline INTO the language. Supporting Nemerle for dotnet substrate enables language-native relationship-type-inference + friend-graph-introspection + dispatch substrate rather than library-discipline-by-convention.
 
@@ -32,14 +41,14 @@ Add Nemerle as a sibling substrate-engineering target for dotnet alongside F# (p
 
 ### Capability gap analysis
 
-| Capability | F# (current primary) | C# | Nemerle |
-|---|---|---|---|
-| Algebraic data types | yes (clean discriminated unions) | no (limited; workarounds) | yes (clean variants) |
-| Type providers (compile-time type generation) | yes | no | macros equivalent |
-| Compile-time macros (user-defined syntax extension) | no | source generators (coarse) | yes (first-class) |
-| Pattern-as-first-class | yes | limited switch-expressions | yes |
-| Quoted code-as-data | yes (FSharp.Quotations) | partial (Expression trees) | yes (macros operate on AST) |
-| User-defined custom-language-constructs | no | no (source generators are coarse) | yes (new keywords plus new syntax forms) |
+| Capability                                          | F# (current primary)             | C#                                | Nemerle                                  |
+| --------------------------------------------------- | -------------------------------- | --------------------------------- | ---------------------------------------- |
+| Algebraic data types                                | yes (clean discriminated unions) | no (limited; workarounds)         | yes (clean variants)                     |
+| Type providers (compile-time type generation)       | yes                              | no                                | macros equivalent                        |
+| Compile-time macros (user-defined syntax extension) | no                               | source generators (coarse)        | yes (first-class)                        |
+| Pattern-as-first-class                              | yes                              | limited switch-expressions        | yes                                      |
+| Quoted code-as-data                                 | yes (FSharp.Quotations)          | partial (Expression trees)        | yes (macros operate on AST)              |
+| User-defined custom-language-constructs             | no                               | no (source generators are coarse) | yes (new keywords plus new syntax forms) |
 
 The gap Nemerle fills: **compile-time syntax extension**. F# has FSharp.Quotations + Type Providers but can't add new keywords via library; Nemerle macros can extend the language with new constructs that compile-time-expand into valid .NET IL.
 
@@ -91,11 +100,11 @@ Conclusion: no prior backlog row; substantial conversation-substrate from 2026-0
 
 Verbatim from `docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`:
 
-> *"And then there's this really obscure Russian language for meta-programming, uh, fuck, um, Nemerle, Nemerle. And it turned into, uh, a fucking Rider bought it, or whoever does Rider, JetBrains bought it, and they turned it into their, I think it's their, uh, I don't know, their meta language over there they have now that every other language is based on."*
+> _"And then there's this really obscure Russian language for meta-programming, uh, fuck, um, Nemerle, Nemerle. And it turned into, uh, a fucking Rider bought it, or whoever does Rider, JetBrains bought it, and they turned it into their, I think it's their, uh, I don't know, their meta language over there they have now that every other language is based on."_
 
 Language-spectrum framing:
 
-> *"Languages that are good at expressing precise semantics, algebraic data types, and formal reasoning (F#, Rust, Scala, Nemerle)"*
+> _"Languages that are good at expressing precise semantics, algebraic data types, and formal reasoning (F#, Rust, Scala, Nemerle)"_
 
 Substrate-anchor for the row: Nemerle is in the operator's substrate-engineering-language-spectrum as a formal-reasoning + metaprogramming-capable language.
 

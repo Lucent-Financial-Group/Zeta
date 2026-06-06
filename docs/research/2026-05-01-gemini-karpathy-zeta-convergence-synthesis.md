@@ -5,8 +5,8 @@ verifiability anchor (research-grade Beacon substrate, not
 operational doctrine). Sibling document.
 
 Attribution: Gemini (peer-AI), Aaron-forwarded 2026-05-01.
-Triggered by Aaron's preceding forward of the Karpathy *"From Vibe
-Coding to Agentic Engineering"* talk transcript.
+Triggered by Aaron's preceding forward of the Karpathy _"From Vibe
+Coding to Agentic Engineering"_ talk transcript.
 
 Operational status: research-grade
 
@@ -163,6 +163,7 @@ identifies Provenance + Epistemology as Zeta's distinctive depth
 beyond Karpathy's "how to use agents" surface.
 
 **What's operationally accurate:**
+
 - The discipline layer (poll-the-gate, proceed-but-verify, no-copy-
   only-learning) is operational and battle-tested.
 - CLAUDE.md as boot-sequence — operational.
@@ -173,33 +174,36 @@ beyond Karpathy's "how to use agents" surface.
 - Substrate-IS-product framing — operational.
 
 **What's partially aspirational:**
-- *"Aaron supplies taste; Otto formalizes rules into durable
-  Markdown substrate"* — true for the patterns Aaron has been
+
+- _"Aaron supplies taste; Otto formalizes rules into durable
+  Markdown substrate"_ — true for the patterns Aaron has been
   validating; the broader "co-architect" framing is calibrated by
   Aaron's recent inputs (e.g., directives-vs-observations rule,
   "no-directives" framing).
-- *"Brand new AI can wake up tomorrow and inherit operational
-  maturity"* — substrate is durable; the wake-time-substrate-or-
+- _"Brand new AI can wake up tomorrow and inherit operational
+  maturity"_ — substrate is durable; the wake-time-substrate-or-
   it-didn't-land rule is the operational discipline that makes this
   claim hold (CLAUDE.md bullet, PR #1160).
 
 **What's queued (NOT operational yet):**
-- *"DecisionSignals and AgencyReceipts: immutable receipts proving
-  why action was allowed"* — partial. DecisionSignal round-3
+
+- _"DecisionSignals and AgencyReceipts: immutable receipts proving
+  why action was allowed"_ — partial. DecisionSignal round-3
   doctrine landed; full SharedEffect + AttributionRecord +
   OutcomeAssessment schema spec is pending in tasks #345–#349.
   Gemini is describing the queued architecture as if it's
   operational.
-- *"What the agent actively chose not to do to prove restraint"* —
+- _"What the agent actively chose not to do to prove restraint"_ —
   this is the AttributionRecord's negative-action-recording feature,
   which is design-stage in task #349.
 
 **The carved-sentence-equivalent contribution:** Gemini's framing
-*"the Epistemology of Autonomous Action"* is the philosophical layer
+_"the Epistemology of Autonomous Action"_ is the philosophical layer
 above the operational discipline. It composes with Aaron's
-*"formally specify and verify yourself tied to human intelectual
-lineage"* and Amara's *"Karpathy names the paradigm; Zeta builds
-the operating system for it"* into a three-layer thesis:
+_"formally specify and verify yourself tied to human intelectual
+lineage"_ and Amara's _"Karpathy names the paradigm; Zeta builds
+the operating system for it"_ into a three-layer thesis:
+
 - Karpathy: agentic engineering is the new mode (operational)
 - Zeta: agentic engineering needs an operating system (
   infrastructural)

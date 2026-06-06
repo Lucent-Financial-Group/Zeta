@@ -16,9 +16,7 @@ export type YamlValue =
   | { t: "Seq"; items: YamlValue[] }
   | { t: "Map"; entries: Array<[string, YamlValue]> }; // ordered pairs
 
-export type ParseResult =
-  | { ok: true; value: YamlValue }
-  | { ok: false; feedback: YamlFeedback };
+export type ParseResult = { ok: true; value: YamlValue } | { ok: false; feedback: YamlFeedback };
 
 // A structural problem folding a well-formed-looking stream (should not occur for output
 // of this reader; surfaced as UnsupportedConstruct defensively). Field declared

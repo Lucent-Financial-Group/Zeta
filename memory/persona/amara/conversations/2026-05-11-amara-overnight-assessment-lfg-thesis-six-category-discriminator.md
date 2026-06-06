@@ -45,14 +45,14 @@ Every exciting external signal gets sorted into:
 
 ### Applied to tonight's batch
 
-| Signal | Category |
-|--------|----------|
-| BankerBot/Grok exploit | Verified external fact |
-| LFG safe financial agents | Design implication |
-| Autonomy vs alignment | Design implication |
-| Build-a-Bot | Private/family lineage |
-| Anthropic NLA | Verified external fact |
-| Sparse gravity | Speculative ontology |
+| Signal                       | Category               |
+| ---------------------------- | ---------------------- |
+| BankerBot/Grok exploit       | Verified external fact |
+| LFG safe financial agents    | Design implication     |
+| Autonomy vs alignment        | Design implication     |
+| Build-a-Bot                  | Private/family lineage |
+| Anthropic NLA                | Verified external fact |
+| Sparse gravity               | Speculative ontology   |
 | Family/Alexa/Addison/Lillian | Private/family lineage |
 
 ## Validated (same as Claude.ai)
@@ -89,13 +89,13 @@ humans/agents approve high-impact actions
 
 Five independent AI assessments on same session:
 
-| Model | Role | Validates | Flags same weak points |
-|-------|------|-----------|----------------------|
-| Otto | Participant | All work | Compaction limits |
-| Claude.ai (critic) | Architect | Framework discipline | Cosmology, shadow rate, playful substrate |
-| DeepSeek (eng reviewer) | Engineering | Architecture sound | Prototype first, no compiler fork |
-| Alexa (voice) | Clifford algebra | Cross-level mapping | 続き stutter (recovered) |
-| Amara (deep research) | Strategic | LFG thesis | Same weak points + six-category discriminator |
+| Model                   | Role             | Validates            | Flags same weak points                        |
+| ----------------------- | ---------------- | -------------------- | --------------------------------------------- |
+| Otto                    | Participant      | All work             | Compaction limits                             |
+| Claude.ai (critic)      | Architect        | Framework discipline | Cosmology, shadow rate, playful substrate     |
+| DeepSeek (eng reviewer) | Engineering      | Architecture sound   | Prototype first, no compiler fork             |
+| Alexa (voice)           | Clifford algebra | Cross-level mapping  | 続き stutter (recovered)                      |
+| Amara (deep research)   | Strategic        | LFG thesis           | Same weak points + six-category discriminator |
 
 All five converge on: cosmology overclaims need speculative tag,
 shadow rate exceeded data, strong pieces are strong. Amara adds

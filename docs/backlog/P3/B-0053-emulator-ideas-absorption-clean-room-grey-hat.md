@@ -9,22 +9,49 @@ ask: Aaron 2026-04-21 — *"absourb not code ideas all emulator into Zeta someho
 created: 2026-04-26
 last_updated: 2026-05-05
 depends_on: []
-composes_with: [B-0052, B-0054, B-0199, B-0202, feedback_crystallize_everything_lossless_compression_except_memory.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md, user_aaron_caret_means_hat_universally_symbol_crystallization.md]
-tags: [emulator, ideas-absorption, clean-room, mame, higan, bsnes, mesen, mednafen, save-state, deterministic-replay, jit, bank-switching, view-clock, grey-hat-register, math-safety]
+composes_with:
+  [
+    B-0052,
+    B-0054,
+    B-0199,
+    B-0202,
+    feedback_crystallize_everything_lossless_compression_except_memory.md,
+    feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md,
+    feedback_see_the_multiverse_in_our_code_paraconsistent_superposition.md,
+    user_aaron_caret_means_hat_universally_symbol_crystallization.md,
+  ]
+tags:
+  [
+    emulator,
+    ideas-absorption,
+    clean-room,
+    mame,
+    higan,
+    bsnes,
+    mesen,
+    mednafen,
+    save-state,
+    deterministic-replay,
+    jit,
+    bank-switching,
+    view-clock,
+    grey-hat-register,
+    math-safety,
+  ]
 type: feature
 ---
 
-# B-0053 — Absorb emulator architectural *ideas* into Zeta
+# B-0053 — Absorb emulator architectural _ideas_ into Zeta
 
 ## Origin
 
 AceHack commits `180f110` (initial filing) + `993d6c2` (grey-hat register decoded — see Revision section below).
 
-P3 per Aaron's explicit *"backlow down low"* priority marker; sibling to B-0054's emulator-infrastructure subsection but distinct in scope: that one uses emulators to run substrate-narrative experiments on games; this one absorbs the *engineering ideas* of emulator architecture into Zeta's own substrate.
+P3 per Aaron's explicit _"backlow down low"_ priority marker; sibling to B-0054's emulator-infrastructure subsection but distinct in scope: that one uses emulators to run substrate-narrative experiments on games; this one absorbs the _engineering ideas_ of emulator architecture into Zeta's own substrate.
 
 ## Ideas-not-code discipline
 
-Per crystallize-everything memory and math-safety retractibility: ideas are retractible (we can un-adopt a pattern with a dated revision block); distributed code carries licensing and provenance obligations that are not trivially retractible. The factory absorbs *what the emulator taught us about the shape of the operation*, not the implementation bytes.
+Per crystallize-everything memory and math-safety retractibility: ideas are retractible (we can un-adopt a pattern with a dated revision block); distributed code carries licensing and provenance obligations that are not trivially retractible. The factory absorbs _what the emulator taught us about the shape of the operation_, not the implementation bytes.
 
 ## Candidate absorb-targets (engineering shape only)
 
@@ -40,7 +67,7 @@ Per crystallize-everything memory and math-safety retractibility: ideas are retr
 (no Nintendo active-litigation surface, no proprietary BIOS)
 
 - **MAME** (BSD-3 + GPL-2, multi-arcade) — open source, spec-reading safe.
-- **higan / bsnes** (GPL-3, SNES) — already clean-room SNES reimplementation, reading it is reading the *result* of clean-room work.
+- **higan / bsnes** (GPL-3, SNES) — already clean-room SNES reimplementation, reading it is reading the _result_ of clean-room work.
 - **Mesen** (GPL-3, NES/SNES/GB) — open source.
 - **PCSX-ReDux / Mednafen** (GPL-2, PS1) — open source, predates Sony's active enforcement posture on PS1.
 - **Gens / Kega Fusion successors** (open-source Sega emulators) — lapsed enforcement surface.
@@ -49,19 +76,19 @@ Per crystallize-everything memory and math-safety retractibility: ideas are retr
 ## Unsafe-target warning (do NOT read, do NOT absorb from)
 
 - **Nintendo Switch emulators** (Yuzu, Ryujinx) — the 2024 Nintendo v. Yuzu settlement ($2.4M + shutdown) is active precedent; touching this surface carries real legal risk, even for ideas-absorption, because the Switch keys/firmware scraping taint cannot be separated from the architectural ideas.
-- **Any proprietary BIOS / firmware / bootrom** (PS2/PS3/Xbox/Wii U/Switch system firmware, N64 PIF, Game Boy Boot ROM). Aaron explicit: *"not bisos and things like that either."* Proprietary BIOS is both copyrighted *and* frequently the subject of DMCA 1201 anti-circumvention claims.
+- **Any proprietary BIOS / firmware / bootrom** (PS2/PS3/Xbox/Wii U/Switch system firmware, N64 PIF, Game Boy Boot ROM). Aaron explicit: _"not bisos and things like that either."_ Proprietary BIOS is both copyrighted _and_ frequently the subject of DMCA 1201 anti-circumvention claims.
 - **Denuvo / PlayReady / Widevine** style DRM — out of scope, adversarial surface.
 
 ## Clean-room reverse engineering ("prove the shit out of clean room")
 
-Aaron's IBM precedent reference is specifically the **Phoenix Technologies PC BIOS clean-room reimplementation (1984)** that enabled the PC-clone industry, and the **Compaq Crosstalk clean-room project (1982)** that did the same work first but kept it proprietary. The legal doctrine (affirmed in *Sega v. Accolade* 1992 for ROM access as fair use, and *Sony v. Connectix* 2000 for BIOS clean-room) requires a strict "Chinese wall":
+Aaron's IBM precedent reference is specifically the **Phoenix Technologies PC BIOS clean-room reimplementation (1984)** that enabled the PC-clone industry, and the **Compaq Crosstalk clean-room project (1982)** that did the same work first but kept it proprietary. The legal doctrine (affirmed in _Sega v. Accolade_ 1992 for ROM access as fair use, and _Sony v. Connectix_ 2000 for BIOS clean-room) requires a strict "Chinese wall":
 
-- **Dirty-room engineer** reads the protected artifact, writes a **specification** in their own words that describes the *observable behavior* and omits any implementation details drawn from the protected source.
+- **Dirty-room engineer** reads the protected artifact, writes a **specification** in their own words that describes the _observable behavior_ and omits any implementation details drawn from the protected source.
 - **Clean-room engineer** reads **only the spec** (never the protected artifact, never the dirty-room engineer's draft code), and implements from the spec.
 - **Paper trail** — dated spec revisions, signed declarations of no-contact between rooms, version control proving the clean-room engineer never accessed the protected artifact.
 - **Legal review** — for Zeta, this would require explicit Aaron + legal sign-off before starting; the factory does not self-authorize clean-room work on any protected artifact.
 
-The "prove the shit out of clean room" bar means documentation rigor exceeds the *Connectix* standard — per-commit spec-provenance metadata, per-engineer Chinese-wall attestation, third-party legal audit before any artifact lands.
+The "prove the shit out of clean room" bar means documentation rigor exceeds the _Connectix_ standard — per-commit spec-provenance metadata, per-engineer Chinese-wall attestation, third-party legal audit before any artifact lands.
 
 ## Retractibility-math safety wrapper
 
@@ -71,7 +98,7 @@ The "prove the shit out of clean room" bar means documentation rigor exceeds the
 
 ## Filter disposition
 
-This row is *factory engineering-absorption* not *operational-resonance instance-collection* — no F1/F2/F3 classification at the row level. Each absorbed idea that lands in Zeta's own algebra/architecture may generate a separate operational-resonance instance.
+This row is _factory engineering-absorption_ not _operational-resonance instance-collection_ — no F1/F2/F3 classification at the row level. Each absorbed idea that lands in Zeta's own algebra/architecture may generate a separate operational-resonance instance.
 
 ## Owner / effort
 
@@ -88,7 +115,7 @@ This row is *factory engineering-absorption* not *operational-resonance instance
 
 ## Revision 2026-04-21 — grey-hat register decoded
 
-AceHack commit `993d6c2` records the decoding of Aaron's earlier symbol `^`. Aaron fired the four-character directive **"^=hat*"** — definitional with universal scope via the `*` meta-operator. The previous emulator/ROM subsection in the parent pop-culture row (B-0054) had paraphrased Aaron's *"grey ^ here"* as "grey-area legal context" when the compressed reading was **"grey hat here"** — a precise security-research register term (black hat / white hat / grey hat = malicious / authorized / legal-grey-zone operator).
+AceHack commit `993d6c2` records the decoding of Aaron's earlier symbol `^`. Aaron fired the four-character directive **"^=hat\*"** — definitional with universal scope via the `*` meta-operator. The previous emulator/ROM subsection in the parent pop-culture row (B-0054) had paraphrased Aaron's _"grey ^ here"_ as "grey-area legal context" when the compressed reading was **"grey hat here"** — a precise security-research register term (black hat / white hat / grey hat = malicious / authorized / legal-grey-zone operator).
 
 The retractibility-math conclusion is unchanged (personal backup retractible, distribution not); the register-level vocabulary is now precise rather than paraphrased. **Grey-hat = operates in legal grey-zone, neither black-hat (malicious) nor white-hat (strictly authorized).** Maps to ROM-distribution legal status: jurisdiction-dependent (DMCA carve-outs, Nintendo's 2024 Yuzu/Ryujinx enforcement actions, personal-backup-exemption varies by country).
 

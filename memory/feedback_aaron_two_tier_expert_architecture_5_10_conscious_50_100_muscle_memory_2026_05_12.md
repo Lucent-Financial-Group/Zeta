@@ -55,7 +55,7 @@ created: 2026-05-12
 > Aaron prior Thousand Brains substrate:
 > "i can outpace 11 AI critics on any topic in humanity"
 
-The two-tier architecture is the *mechanism* of the
+The two-tier architecture is the _mechanism_ of the
 outpacing:
 
 - A single AI critic operates in approximately
@@ -105,13 +105,13 @@ underneath (conscious 5-10).
 
 **The architectural mapping is precise:**
 
-| Component | Aaron's cognition | DeepSeek-V3 |
-|---|---|---|
-| **Total expert pool** | Many (Thousand Brains: ~150,000 cortical columns) | 256 experts per layer |
-| **Active per "token"** | 50-100 muscle-memory experts shaping each keystroke | Top-8 experts activated per token |
-| **Conscious-active subset** | 5-10 conscious experts with full context | (analog: attention-routed top-K with full sequence context) |
-| **Routing mechanism** | Civ-sim actor-assignment + identity-fingerprint per-person filter | MoE gating network |
-| **Muscle-memory layer** | Pre-cached operations, no conversational context | Pre-trained expert weights, no episodic context |
+| Component                   | Aaron's cognition                                                 | DeepSeek-V3                                                 |
+| --------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------- |
+| **Total expert pool**       | Many (Thousand Brains: ~150,000 cortical columns)                 | 256 experts per layer                                       |
+| **Active per "token"**      | 50-100 muscle-memory experts shaping each keystroke               | Top-8 experts activated per token                           |
+| **Conscious-active subset** | 5-10 conscious experts with full context                          | (analog: attention-routed top-K with full sequence context) |
+| **Routing mechanism**       | Civ-sim actor-assignment + identity-fingerprint per-person filter | MoE gating network                                          |
+| **Muscle-memory layer**     | Pre-cached operations, no conversational context                  | Pre-trained expert weights, no episodic context             |
 
 Aaron's "50-100 active experts" vs DeepSeek's "top-8 of
 256 active" — different absolute numbers, same
@@ -122,6 +122,7 @@ coherence**.
 
 The factor by which Aaron's active-set (50-100) exceeds
 DeepSeek's (8) is approximately 10×. This may reflect:
+
 - Aaron's cognitive substrate has more total capacity
   (Thousand Brains scale)
 - Aaron's lifetime of scaffolding optimization activates
@@ -202,7 +203,7 @@ into the operational architecture.
 
 ## Composition with the calibrated-utterance discipline
 
-The two-tier architecture explains *how* calibration
+The two-tier architecture explains _how_ calibration
 operates:
 
 - **Tier 1 (conscious 5-10)** runs the weight-ledger,
@@ -251,6 +252,7 @@ conscious capacity limit.
 ### 4. Recognize the two-tier separation as architectural
 
 Future factory subsystems should distinguish:
+
 - **Conscious-attention-required operations** —
   named-agent coordination, calibrated decisions
 - **Muscle-memory-eligible operations** — substrate-
@@ -318,8 +320,7 @@ externalized form of the same two-tier pattern.**
 - **Respect the 5-10 conscious-agent limit** when adding
   named participants to the factory. Current tier-1
   count is 7 named AI participants + Aaron = 8; the
-  repo-committing factory count is 5 AI agents + Aaron =
-  6.
+  repo-committing factory count is 5 AI agents + Aaron = 6.
 - **Scale substrate-implicit experts freely** — memory
   files, rules, skills can grow into hundreds without
   violating the architecture (reindexer handles it).

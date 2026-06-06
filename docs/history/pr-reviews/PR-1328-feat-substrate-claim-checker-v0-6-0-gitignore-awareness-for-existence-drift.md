@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1328 |
-| Title | feat(substrate-claim-checker): v0.6.0 — gitignore awareness for existence-drift |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-03T05:50:38Z |
-| Merged at | 2026-05-03T06:01:36Z |
-| Merge commit SHA | `56741bc6c6dc9cc87e5dcd8f0e353729c2629267` |
-| Branch | `feat/substrate-claim-checker-v0-6-gitignore-aware-existence-drift-otto-2026-05-03` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1328 |
-| Changed files | 3 |
-| Additions / deletions | +230 / -8 |
+| Field                 | Value                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| Number                | 1328                                                                                |
+| Title                 | feat(substrate-claim-checker): v0.6.0 — gitignore awareness for existence-drift     |
+| Author                | `AceHack` (human)                                                                   |
+| State                 | MERGED                                                                              |
+| Created at            | 2026-05-03T05:50:38Z                                                                |
+| Merged at             | 2026-05-03T06:01:36Z                                                                |
+| Merge commit SHA      | `56741bc6c6dc9cc87e5dcd8f0e353729c2629267`                                          |
+| Branch                | `feat/substrate-claim-checker-v0-6-gitignore-aware-existence-drift-otto-2026-05-03` |
+| Base branch           | `main`                                                                              |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1328                            |
+| Changed files         | 3                                                                                   |
+| Additions / deletions | +230 / -8                                                                           |
 
 ## Description
 
@@ -33,10 +33,10 @@ Extends check-existence.ts (v0.5) with gitignore awareness — paths that exist 
 
 ## Severity model (new)
 
-| Severity | Condition | Exit |
-|---|---|---|
-| `drift` | Path doesn't exist anywhere | 1 |
-| `warning` | Path exists on disk but is gitignored | 0 |
+| Severity  | Condition                             | Exit |
+| --------- | ------------------------------------- | ---- |
+| `drift`   | Path doesn't exist anywhere           | 1    |
+| `warning` | Path exists on disk but is gitignored | 0    |
 
 Drift wins exit code if both present.
 
@@ -58,15 +58,15 @@ Drift wins exit code if both present.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 5 |
-| Resolved threads | 5 |
-| Unresolved threads | 0 |
-| Total review comments | 10 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 5     |
+| Resolved threads                          | 5     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 10    |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -90,11 +90,11 @@ Drift wins exit code if both present.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:00:19Z on `tools/substrate-claim-checker/check-existence.test.ts`:265 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-03T06:00:19Z on `tools/substrate-claim-checker/check-existence.test.ts`:265 (association: MEMBER)
 
-    <pre>
-    Addressed in amend `1cb2434`. Replaced developer-local `references/upstreams/efcore/...` paths with a self-contained `setupGitignoreFixture()` helper that builds a temp git repo with `.gitignore`, a tracked file, and an ignored file. Tests now run identically in fresh clones / CI without any upstream-mirror precondition.
-    </pre>
+  <pre>
+  Addressed in amend `1cb2434`. Replaced developer-local `references/upstreams/efcore/...` paths with a self-contained `setupGitignoreFixture()` helper that builds a temp git repo with `.gitignore`, a tracked file, and an ignored file. Tests now run identically in fresh clones / CI without any upstream-mirror precondition.
+  </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -112,11 +112,11 @@ Drift wins exit code if both present.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:00:20Z on `tools/substrate-claim-checker/check-existence.test.ts`:266 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-03T06:00:20Z on `tools/substrate-claim-checker/check-existence.test.ts`:266 (association: MEMBER)
 
-    <pre>
-    Addressed in amend `1cb2434`. Replaced developer-local `references/upstreams/efcore/...` paths with a self-contained `setupGitignoreFixture()` helper that builds a temp git repo with `.gitignore`, a tracked file, and an ignored file. Tests now run identically in fresh clones / CI without any upstream-mirror precondition.
-    </pre>
+  <pre>
+  Addressed in amend `1cb2434`. Replaced developer-local `references/upstreams/efcore/...` paths with a self-contained `setupGitignoreFixture()` helper that builds a temp git repo with `.gitignore`, a tracked file, and an ignored file. Tests now run identically in fresh clones / CI without any upstream-mirror precondition.
+  </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -134,11 +134,11 @@ Drift wins exit code if both present.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:00:22Z on `tools/substrate-claim-checker/check-existence.test.ts`:302 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-03T06:00:22Z on `tools/substrate-claim-checker/check-existence.test.ts`:302 (association: MEMBER)
 
-    <pre>
-    Addressed in amend `1cb2434`. Replaced developer-local `references/upstreams/efcore/...` paths with a self-contained `setupGitignoreFixture()` helper that builds a temp git repo with `.gitignore`, a tracked file, and an ignored file. Tests now run identically in fresh clones / CI without any upstream-mirror precondition.
-    </pre>
+  <pre>
+  Addressed in amend `1cb2434`. Replaced developer-local `references/upstreams/efcore/...` paths with a self-contained `setupGitignoreFixture()` helper that builds a temp git repo with `.gitignore`, a tracked file, and an ignored file. Tests now run identically in fresh clones / CI without any upstream-mirror precondition.
+  </pre>
 
 ### Thread 4 -- resolved [collapsed]
 
@@ -156,11 +156,11 @@ Drift wins exit code if both present.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:00:24Z on `tools/substrate-claim-checker/check-existence.ts`:387 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-03T06:00:24Z on `tools/substrate-claim-checker/check-existence.ts`:387 (association: MEMBER)
 
-    <pre>
-    Addressed in amend `1cb2434`. Added `describe("main CLI - v0.6 exit codes")` block with two tests: warning-only run exits 0 with a `[WARNING]` summary line; drift-only run exits 1 with `[DRIFT]` summary. Both spawn the actual CLI via `bun` so the `main()` exit-path contract is now under test.
-    </pre>
+  <pre>
+  Addressed in amend `1cb2434`. Added `describe("main CLI - v0.6 exit codes")` block with two tests: warning-only run exits 0 with a `[WARNING]` summary line; drift-only run exits 1 with `[DRIFT]` summary. Both spawn the actual CLI via `bun` so the `main()` exit-path contract is now under test.
+  </pre>
 
 ### Thread 5 -- resolved [collapsed]
 
@@ -178,11 +178,11 @@ Drift wins exit code if both present.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-03T06:00:25Z on `tools/substrate-claim-checker/README.md`:164 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-03T06:00:25Z on `tools/substrate-claim-checker/README.md`:164 (association: MEMBER)
 
-    <pre>
-    Addressed in amend `1cb2434`. Top-level exit-code line clarified to: `Exit code 0 = no drift detected (warnings alone are non-blocking per the v0.6 severity model — see "v0.6 — gitignore awareness for existence-drift" below). Exit code 1 = drift detected (or input error).` — single source of truth, no contradiction with the v0.6 section.
-    </pre>
+  <pre>
+  Addressed in amend `1cb2434`. Top-level exit-code line clarified to: `Exit code 0 = no drift detected (warnings alone are non-blocking per the v0.6 severity model — see "v0.6 — gitignore awareness for existence-drift" below). Exit code 1 = drift detected (or input error).` — single source of truth, no contradiction with the v0.6 section.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

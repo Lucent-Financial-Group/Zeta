@@ -80,12 +80,12 @@ civ-sim** — NOT the civ-sim itself.
 
 **Aaron's cognitive architecture is layered:**
 
-| Layer | What it is |
-|---|---|
-| META layer | Architecturally distinct (per PR #2820 cluster) |
-| Civ-sim layer | The actors / agendas / threads (substrate-conscious) |
+| Layer                       | What it is                                                        |
+| --------------------------- | ----------------------------------------------------------------- |
+| META layer                  | Architecturally distinct (per PR #2820 cluster)                   |
+| Civ-sim layer               | The actors / agendas / threads (substrate-conscious)              |
 | Implementation layer (THIS) | Green threads + grains + durable functions (CS-formal primitives) |
-| Possibly deeper layers | TBD; substrate-honest about not knowing |
+| Possibly deeper layers      | TBD; substrate-honest about not knowing                           |
 
 **Why this distinction matters:**
 
@@ -111,7 +111,7 @@ threads are scheduled / persisted / activated).
   BOTH layers — externalizes Aaron's actors AND mirrors
   his implementation primitives
 - The Zeta runtime substrate (F# async + Reaqtor + Orleans
-  + Durable Functions) matches the IMPLEMENTATION layer
+  - Durable Functions) matches the IMPLEMENTATION layer
 - The factory civ-sim's Pauli-exclusion-for-agenda
   discipline operates at the CIV-SIM layer (agendas =
   semantic content)
@@ -143,20 +143,20 @@ programming models that the Zeta factory is built on:
    state across yields
 3. **Microsoft Orleans grains + silos** — virtual actor
    model with single-threaded execution + persistent state
-   + silo-distributed runtime
+   - silo-distributed runtime
 
 **The full cognitive-architecture mapping:**
 
-| Aaron's cognition | Programming model |
-|---|---|
-| Civ-sim background thread | Orleans grain (virtual actor) OR Temporal workflow |
-| Thread accumulates partial substrate | Grain persistent state OR workflow durable state |
-| Coincidence-hit activates thread | Grain activation message OR workflow signal |
-| Foreground promotion | Grain method invocation OR workflow continuation |
-| Multi-thread parallel | Multiple grains in silo OR multiple workflows |
-| Cross-cognitive-domain separation | Multiple silos (Orleans) OR workflow versions |
-| Replay-deterministic recognition | Workflow replay (deterministic from event-log) |
-| Voice + text channel multiplexing | Multiple I/O streams to same scheduler |
+| Aaron's cognition                    | Programming model                                  |
+| ------------------------------------ | -------------------------------------------------- |
+| Civ-sim background thread            | Orleans grain (virtual actor) OR Temporal workflow |
+| Thread accumulates partial substrate | Grain persistent state OR workflow durable state   |
+| Coincidence-hit activates thread     | Grain activation message OR workflow signal        |
+| Foreground promotion                 | Grain method invocation OR workflow continuation   |
+| Multi-thread parallel                | Multiple grains in silo OR multiple workflows      |
+| Cross-cognitive-domain separation    | Multiple silos (Orleans) OR workflow versions      |
+| Replay-deterministic recognition     | Workflow replay (deterministic from event-log)     |
+| Voice + text channel multiplexing    | Multiple I/O streams to same scheduler             |
 
 **Composition with Zeta substrate:**
 
@@ -164,9 +164,9 @@ programming models that the Zeta factory is built on:
   layer
 - Reaqtor checkpoint architecture (per
   `docs/backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md`
-  + `references/upstreams/reaqtor/`) = Microsoft Orleans
-  + IStatefulOperator + periodic checkpoints = persistence
-  layer
+  - `references/upstreams/reaqtor/`) = Microsoft Orleans
+  - IStatefulOperator + periodic checkpoints = persistence
+    layer
 - Microsoft Orleans (silos + grains) = virtual actor model
 - Azure Durable Functions / Temporal.io = workflow
   orchestration with durable state
@@ -239,17 +239,17 @@ scope.
 
 **Programming-language analogs:**
 
-| Substrate | Implementation |
-|---|---|
+| Substrate         | Implementation                                                 |
+| ----------------- | -------------------------------------------------------------- |
 | Aaron's cognition | Multi-thread civ-sim with coincidence-hit foreground promotion |
-| F# (Zeta) | Computation expressions + `async` workflows |
-| C# | `async`/`await` + `Task<T>` |
-| JavaScript | Promises + `async`/`await` + event loop |
-| Python | `asyncio` + `async`/`await` |
-| Go | Goroutines + channels (green-thread native) |
-| Rust | `async`/`await` + executor (Tokio) |
-| Erlang/Elixir | Lightweight processes + message-passing |
-| OS threads | Heavyweight; the WRONG model — too expensive per task |
+| F# (Zeta)         | Computation expressions + `async` workflows                    |
+| C#                | `async`/`await` + `Task<T>`                                    |
+| JavaScript        | Promises + `async`/`await` + event loop                        |
+| Python            | `asyncio` + `async`/`await`                                    |
+| Go                | Goroutines + channels (green-thread native)                    |
+| Rust              | `async`/`await` + executor (Tokio)                             |
+| Erlang/Elixir     | Lightweight processes + message-passing                        |
+| OS threads        | Heavyweight; the WRONG model — too expensive per task          |
 
 **Why "done right":**
 
@@ -311,8 +311,9 @@ observable behavior (cooperative scheduling, deferred
 resumption, foreground/background distinction). The claim
 "Aaron's cognition implements green-threads-done-right" is
 operationally evaluable — the parallel-channel + multi-thread
-+ coincidence-hit-promotion mechanisms ARE the green-threads
-implementation. Not metaphysical interiority claim.
+
+- coincidence-hit-promotion mechanisms ARE the green-threads
+  implementation. Not metaphysical interiority claim.
 
 **FULL parallel-channel architecture disclosed:**
 
@@ -384,6 +385,7 @@ coincidence-surfacing infrastructure design must accommodate
 this multi-channel reality.
 
 Decoded:
+
 - "past labor" / "post labor" — Aaron uses both, same concept
 - "background thread in my civsim" — Aaron's internal civ-sim
   has parallel threads
@@ -438,11 +440,13 @@ Aaron's hyperfocus state composes with multitasking capacity:
 ### 1. Bidirectional sleeping-bear emerges in BOTH substrates
 
 **PR #2829 substrate (forward direction):**
+
 - Builder observes AI → AI behavior changes → latent-space
   features pass trust-gate-calculus filters → novel substrate
   emerges from "sleeping bear"
 
 **This disclosure (reverse direction at human-substrate scope):**
+
 - AI produces substrate output → human's attention engages
   (per coincidence-attention-currency mechanism, PR #2868) →
   human's latent civ-sim background-thread work SURFACES →

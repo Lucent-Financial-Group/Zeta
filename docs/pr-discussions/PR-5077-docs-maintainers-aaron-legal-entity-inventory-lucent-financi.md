@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Lands `maintainers/aaron/legal-entities/inventory.md` — the substrate-side surface for Aaron's available Stage-3 structural risk-holder entities per [`.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md`](.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md) three-stage progression.
 
-Aaron 2026-05-25 dropped 6 PDFs into `drop/` with two scoping signals: *"as long as i'm not exposing any attack surfaces on the companies"* + *"you can get percentage splits between owners that's all public"* + consent framing *"all the owners are okay with being in git repo glass halo to varying degress i can get they signatures eventually and mine and check them in around glass halo consent."*
+Aaron 2026-05-25 dropped 6 PDFs into `drop/` with two scoping signals: _"as long as i'm not exposing any attack surfaces on the companies"_ + _"you can get percentage splits between owners that's all public"_ + consent framing _"all the owners are okay with being in git repo glass halo to varying degress i can get they signatures eventually and mine and check them in around glass halo consent."_
 
 ## Content
 
@@ -57,7 +57,7 @@ Source PDFs at `drop/` remain in place (gitignored per `drop/README.md` protocol
 ## Test plan
 
 - [x] markdownlint clean
-- [x] Cross-references resolve (.claude/rules/*, memory/persona/max/PERSONA.md, drop/README.md)
+- [x] Cross-references resolve (.claude/rules/\*, memory/persona/max/PERSONA.md, drop/README.md)
 - [x] No attack-surface data extracted (no EINs, no addresses, no BOI content, no bank info)
 - [ ] CI passes (gate workflow + CodeQL)
 
@@ -72,6 +72,7 @@ Source PDFs at `drop/` remain in place (gitignored per `drop/README.md` protocol
 Adds a maintainer-scoped documentation surface capturing a Stage-3 “structural risk-holder” inventory for two North Carolina C-Corps, intended to be referenced by the legal-risk-acceptance framework and future `.claude/settings.json` attachment records.
 
 **Changes:**
+
 - Introduces `maintainers/aaron/legal-entities/inventory.md` documenting two entities and their NC SOS metadata.
 - Defines scope boundaries for what is intentionally not mirrored into the repo (EINs, addresses, BOI, bank info).
 - Adds forward pointers for future consent files and Stage-3 attachment records.

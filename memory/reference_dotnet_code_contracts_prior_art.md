@@ -4,6 +4,7 @@ description: Microsoft Research's Code Contracts (Spec# descendant) attempted fi
 type: reference
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 2026-04-20 — Aaron cited Code Contracts as "that project kind
 of died off" when discussing the skill.yaml spike on prompt-
 protector. He is correct and the history is directly

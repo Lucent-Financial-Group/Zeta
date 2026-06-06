@@ -6,7 +6,7 @@ share (the F# Z-set algebra, the multi-language observe algebra, the git-native 
 through the product-team agreement before it becomes binding doctrine.
 **Owner:** operator (Aaron, shaping) + Otto (synthesis).
 **Decision confidence:** medium-high — the core pieces exist in code; this ADR is mostly
-*recognition + naming* of one design across them, plus the explicit two-backends equivalence.
+_recognition + naming_ of one design across them, plus the explicit two-backends equivalence.
 
 ## Context & problem
 
@@ -22,7 +22,7 @@ This ADR states the design once.
 
 ## The design
 
-**One sentence:** the database is an *append-only event log* whose entries live in the
+**One sentence:** the database is an _append-only event log_ whose entries live in the
 **G-Set / Bag / Z-set** algebra, and every query/report/index is a **materialized view**
 produced by **folding** that log with **Rx-style observables that update incrementally**
 (DBSP / differential-dataflow IVM) — add and retract propagate as deltas, never full
@@ -30,16 +30,16 @@ recompute.
 
 ### 1. The log is the source of truth (event-sourced)
 
-Append-only, ZetaId-keyed events. Nothing is updated-in-place; state is *derived*. (Same
+Append-only, ZetaId-keyed events. Nothing is updated-in-place; state is _derived_. (Same
 principle as the event-sourced-observability ADR, 2026-05-29.)
 
 ### 2. Entries live in the algebra ladder
 
-| Container | Element count | Merge | Use |
-|---|---|---|---|
-| **G-Set** | {0,1} | union (idempotent) | grow-only / comms / append-only facts (the bus) |
-| **Bag** | ℕ | sum | counts / metrics / DORA (the LGTM "M") |
-| **Z-set** | ℤ (retraction) | sum | sets with add+remove → resolved views (Ace deps, work-items, the open backlog) |
+| Container | Element count  | Merge              | Use                                                                            |
+| --------- | -------------- | ------------------ | ------------------------------------------------------------------------------ |
+| **G-Set** | {0,1}          | union (idempotent) | grow-only / comms / append-only facts (the bus)                                |
+| **Bag**   | ℕ              | sum                | counts / metrics / DORA (the LGTM "M")                                         |
+| **Z-set** | ℤ (retraction) | sum                | sets with add+remove → resolved views (Ace deps, work-items, the open backlog) |
 
 (G-Set = Z-set restricted to non-negative multiplicity; Bag sits between. See the bus↔Ace
 synthesis doc.)
@@ -59,17 +59,17 @@ not a rebuild.
 The logical model above is **identical** across two storage substrates; only the on-disk
 encoding + transport differ:
 
-| | **git-native backend** | **F# filesystem backend** |
-|---|---|---|
-| Encoding | ZetaId-keyed JSON files | **binary-efficient** on-disk format |
-| Transport / merge | git (replication log; CRDT/G-Set merge; no-PR folders-on-main) | local filesystem / the F# engine |
-| Algebra home | the `observe`/fold tools (TS) | `src/Core/ZSet.fs` · `IndexedZSet.fs` · `Algebra.fs` |
-| Strengths | conflict-free **multi-agent** (no ID consensus — ZetaId PKs), human-auditable, zero-infra, cross-machine/Windows-safe | **throughput + compactness**, hot-path, deterministic-simulation replay |
-| Used for | bus (B-0954), work-items (B-0956), Ace (B-0824), observability/LGTM (#6289) | the engine's high-volume state; binary-efficient storage over the same Z-set algebra |
-| **Same** | **event log + G-Set/Bag/Z-set algebra + Rx-fold→incremental materialized view** | **(identical)** |
+|                   | **git-native backend**                                                                                                | **F# filesystem backend**                                                            |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Encoding          | ZetaId-keyed JSON files                                                                                               | **binary-efficient** on-disk format                                                  |
+| Transport / merge | git (replication log; CRDT/G-Set merge; no-PR folders-on-main)                                                        | local filesystem / the F# engine                                                     |
+| Algebra home      | the `observe`/fold tools (TS)                                                                                         | `src/Core/ZSet.fs` · `IndexedZSet.fs` · `Algebra.fs`                                 |
+| Strengths         | conflict-free **multi-agent** (no ID consensus — ZetaId PKs), human-auditable, zero-infra, cross-machine/Windows-safe | **throughput + compactness**, hot-path, deterministic-simulation replay              |
+| Used for          | bus (B-0954), work-items (B-0956), Ace (B-0824), observability/LGTM (#6289)                                           | the engine's high-volume state; binary-efficient storage over the same Z-set algebra |
+| **Same**          | **event log + G-Set/Bag/Z-set algebra + Rx-fold→incremental materialized view**                                       | **(identical)**                                                                      |
 
 A fold/query/view written against the algebra **ports between backends** — write the view
-once, run it over git-native JSON *or* F# binary storage. git-native is the
+once, run it over git-native JSON _or_ F# binary storage. git-native is the
 multi-agent/audit/zero-infra surface; the F# binary backend is the perf/compactness surface;
 both are the same database.
 
@@ -81,7 +81,7 @@ both are the same database.
 - **Queries are cheap + always-fresh:** materialized views are maintained incrementally
   (DBSP), not recomputed; retraction-native, so corrections are deltas.
 - **One mental model, many features:** bus / Ace / work-items / observability / DORA are
-  all *folds over one log* — learn the algebra once.
+  all _folds over one log_ — learn the algebra once.
 - **Right tool per surface, same logic:** git-native for collaboration/audit/zero-infra; F#
   binary for throughput — without forking the design.
 

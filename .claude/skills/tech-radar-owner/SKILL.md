@@ -58,14 +58,14 @@ set of research reports under `docs/research/`.
 
 ## Ring-change rules (enforced)
 
-| Move | Required evidence |
-|---|---|
-| Nothing → Assess | One sentence of why we care |
-| Assess → Trial | A live file / skill / experiment in the repo |
-| Trial → Adopt | A test proving the property we claimed + used by a non-trivial caller |
-| Any → Hold | One-line rationale (why we're declining) |
-| Adopt → Trial | Evidence that the Adopt claim has weakened (e.g. a harsh-critic finding the claim is false) |
-| Hold → (anything) | The Hold-reason no longer applies |
+| Move              | Required evidence                                                                           |
+| ----------------- | ------------------------------------------------------------------------------------------- |
+| Nothing → Assess  | One sentence of why we care                                                                 |
+| Assess → Trial    | A live file / skill / experiment in the repo                                                |
+| Trial → Adopt     | A test proving the property we claimed + used by a non-trivial caller                       |
+| Any → Hold        | One-line rationale (why we're declining)                                                    |
+| Adopt → Trial     | Evidence that the Adopt claim has weakened (e.g. a harsh-critic finding the claim is false) |
+| Hold → (anything) | The Hold-reason no longer applies                                                           |
 
 ## Output format
 
@@ -75,18 +75,23 @@ When updating, they produce:
 ## Radar changes this round
 
 **Promoted:**
+
 - `<row>`: Assess → Trial (round N) — evidence: `<file>`
 
 **Demoted:**
+
 - `<row>`: Adopt → Trial (round N) — evidence: `<harsh-critic finding>`
 
 **Added (new Assess rows):**
+
 - `<row>`: Assess (round N) — rationale
 
 **Retired Holds:**
+
 - `<row>`: Hold (round M) → archived (round N) — reason
 
 **No-change (but reviewed):**
+
 - `<row>`: still `<ring>` — still justified because `<reason>`
 ```
 

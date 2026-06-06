@@ -70,7 +70,7 @@ the sync-fast-path avoids the cost.
 
 The F# core is generic-by-default (see
 `fsharp-expert/SKILL.md` "Generic-by-default" section). The
-C# facade exists to specialise *only* where Roslyn inference
+C# facade exists to specialise _only_ where Roslyn inference
 can't cleanly consume the parametric F# form. That makes the
 facade a deliberate escape hatch, not a policy exception.
 
@@ -134,11 +134,13 @@ carry allocation cost.
 ## Idioms we use
 
 **Records for value types.**
+
 ```csharp
 public sealed record StreamHandle(int Id);
 ```
 
 **`required` members for construction invariants (C# 11+).**
+
 ```csharp
 public sealed record Config {
     public required string Name { get; init; }
@@ -147,6 +149,7 @@ public sealed record Config {
 ```
 
 **Primary constructors.**
+
 ```csharp
 public sealed class Processor(ILogger logger, Config config) {
     public void Run() => logger.LogInformation(config.Name);
@@ -154,6 +157,7 @@ public sealed class Processor(ILogger logger, Config config) {
 ```
 
 **Collection expressions (C# 12+).**
+
 ```csharp
 ReadOnlySpan<int> xs = [1, 2, 3];
 ```

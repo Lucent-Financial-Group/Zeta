@@ -59,7 +59,7 @@ This is a pure research task. The work is:
 - Proving the coherence conditions
 - Writing up the results
 
-The effort is "L" because the mathematical machinery is well-established (topos theory, monads, modal operators). The challenge is in the *interpretation* — mapping the physical/cosmological intuitions (Remember-When, Pay-Attention) to the right categorical structures.
+The effort is "L" because the mathematical machinery is well-established (topos theory, monads, modal operators). The challenge is in the _interpretation_ — mapping the physical/cosmological intuitions (Remember-When, Pay-Attention) to the right categorical structures.
 
 ## Next steps
 

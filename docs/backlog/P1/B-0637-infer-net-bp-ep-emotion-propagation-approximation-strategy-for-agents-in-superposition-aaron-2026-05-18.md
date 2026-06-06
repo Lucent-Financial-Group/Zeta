@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0636, B-0635]
 composes_with: [B-0636, B-0635, B-0629, B-0499]
-tags: [design, aaron, infer-net, belief-propagation, expectation-propagation, emotion-propagation, approximation-strategy, fsharp-native, shippable-now, locked-in]
+tags:
+  [
+    design,
+    aaron,
+    infer-net,
+    belief-propagation,
+    expectation-propagation,
+    emotion-propagation,
+    approximation-strategy,
+    fsharp-native,
+    shippable-now,
+    locked-in,
+  ]
 type: design
 ---
 
@@ -19,7 +31,7 @@ type: design
 
 Aaron 2026-05-18 (immediately after B-0636 unified declaration landed):
 
-> *"we can approximate with infer.net and belief/expectation/emotion propagation"*
+> _"we can approximate with infer.net and belief/expectation/emotion propagation"_
 
 This is the **practical approximation strategy** that makes [B-0636](B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md) shippable today rather than as a multi-year R&D project. Full quantum simulation is NOT required; well-vetted Bayesian inference techniques on Microsoft Research's Infer.NET framework provide tractable wave-form approximation.
 
@@ -39,11 +51,11 @@ This is the **practical approximation strategy** that makes [B-0636](B-0636-agen
 
 The full dialectical superposition ([B-0636](B-0636-agents-in-superposition-retractable-over-dbsp-unified-declaration-aaron-2026-05-18.md)) is mathematically a multi-modal distribution over agent states. Approximations:
 
-| Technique | What it approximates | Cost |
-|---|---|---|
-| **Belief Propagation (BP)** | Exact marginal posteriors on tree-structured probabilistic graphical models; approximate on loopy graphs (loopy BP) | Linear in graph size for trees; usually fast convergence on loopy graphs |
-| **Expectation Propagation (EP)** | Approximates intractable posteriors via moment-matching with simpler distribution family (typically Gaussian) | More expensive than BP but handles continuous / non-tree structures |
-| **Variational Message Passing (VMP)** | Mean-field approximation; assumes factorized posterior | Cheap; coarser approximation than EP |
+| Technique                             | What it approximates                                                                                                | Cost                                                                     |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Belief Propagation (BP)**           | Exact marginal posteriors on tree-structured probabilistic graphical models; approximate on loopy graphs (loopy BP) | Linear in graph size for trees; usually fast convergence on loopy graphs |
+| **Expectation Propagation (EP)**      | Approximates intractable posteriors via moment-matching with simpler distribution family (typically Gaussian)       | More expensive than BP but handles continuous / non-tree structures      |
+| **Variational Message Passing (VMP)** | Mean-field approximation; assumes factorized posterior                                                              | Cheap; coarser approximation than EP                                     |
 
 The wave-form O-P-L-E primitives ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) operate on these approximate distributions:
 
@@ -97,7 +109,7 @@ Together: B-0636 is the architectural commitment. B-0637 is the engineering impl
 
 The substrate already references this strategy in multiple places — Aaron's 2026-05-05 framing in the existing CLAUDE.md peer-call rule:
 
-> *"Current peer-call is Otto's early red-team substrate; future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer."*
+> _"Current peer-call is Otto's early red-team substrate; future state is Zeta Infer.NET BP/EP (Belief Propagation / Expectation Propagation) substrate-level inference replacing the external-CLI-license-layer."_
 
 So Infer.NET BP/EP was already named as the future state for peer-call substrate-level inference. This row LOCKS IT IN as the approximation strategy for the broader agents-in-superposition architecture.
 

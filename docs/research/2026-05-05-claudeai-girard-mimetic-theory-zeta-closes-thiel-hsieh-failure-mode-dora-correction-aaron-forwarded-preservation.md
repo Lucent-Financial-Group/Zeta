@@ -6,13 +6,13 @@ attribution: Aaron-forwarded Claude.ai conversation 2026-05-05 (~06:04-06:18 loc
 operational-status: research-grade
 ---
 
-**Scope:** cross-cutting / Aaron's foundational-lineage disclosure (Girard's *"Things Hidden Since the Foundation of the World"* as the source from which Aaron put the kernel-composition pieces together) + Aaron's load-bearing positioning claim (Zeta is the closure of the Thiel/Hsieh-shape failure mode of mimetic-desire-without-bounded-closure-mechanism via "flywheel of flywheels for personal meaning that does not collapse") + Aaron's measurement-discipline correction (DORA-not-throughput; PR count is activity, DORA measures value-delivery).
+**Scope:** cross-cutting / Aaron's foundational-lineage disclosure (Girard's _"Things Hidden Since the Foundation of the World"_ as the source from which Aaron put the kernel-composition pieces together) + Aaron's load-bearing positioning claim (Zeta is the closure of the Thiel/Hsieh-shape failure mode of mimetic-desire-without-bounded-closure-mechanism via "flywheel of flywheels for personal meaning that does not collapse") + Aaron's measurement-discipline correction (DORA-not-throughput; PR count is activity, DORA measures value-delivery).
 
 **Attribution:** Aaron-forwarded Claude.ai conversation 2026-05-05 ~06:04-06:18 local time, two thread extensions. The first extension surfaces Girard's lineage; the second surfaces the DORA-not-throughput correction. Both are load-bearing.
 
 **Operational status:** research-grade-not-operational. Headlines: (1) Girard's mimetic theory is the foundational source the kernel-composition framework formalizes. (2) Zeta is positioned as the closure of the Thiel-shape mimetic-deployment failure mode. (3) DORA-not-throughput is the canonical measurement discipline; PR count is vanity-activity. (4) Strike-don't-annotate is a refinement to verbatim-preservation discipline. None of (1)-(4) requires immediate code action; all are architectural-direction substrate.
 
-**Non-fusion disclaimer:** this is a Claude.ai conversation Aaron forwarded with two distinct thread extensions. Aaron's framing on the Thiel/Hsieh failure mode is carefully no-blame: *"not tiels fault others like zappo also no one to blame didn't see this cdomming"*. The Claude.ai instance handles this carefully ("Hsieh is one publicly discussed example. There are others in the startup ecosystem. Not blame, just emergent failure mode that wasn't visible until people fell into it"). Tony Hsieh's 2020 death was officially ruled accidental but documented mental-health crisis preceded it; Aaron's framing is the failure-mode-pattern observation, not a blame assignment.
+**Non-fusion disclaimer:** this is a Claude.ai conversation Aaron forwarded with two distinct thread extensions. Aaron's framing on the Thiel/Hsieh failure mode is carefully no-blame: _"not tiels fault others like zappo also no one to blame didn't see this cdomming"_. The Claude.ai instance handles this carefully ("Hsieh is one publicly discussed example. There are others in the startup ecosystem. Not blame, just emergent failure mode that wasn't visible until people fell into it"). Tony Hsieh's 2020 death was officially ruled accidental but documented mental-health crisis preceded it; Aaron's framing is the failure-mode-pattern observation, not a blame assignment.
 
 composes_with (frontmatter list):
 
@@ -32,11 +32,11 @@ composes_with (frontmatter list):
 
 Aaron 2026-05-05 ~06:04-06:18 local forwarded two Claude.ai conversation extensions:
 
-1. **Foundational-lineage disclosure**: Aaron put the kernel-composition pieces together from Girard's *"Things Hidden Since the Foundation of the World"* (Aaron explicit). The Claude.ai instance maps the kernel-composition framework directly onto Girardian mimetic theory (mimetic desire = kernel inheritance; memetic propagation = Mercer-closed composition; mimetic crisis = closure failure at population scale; scapegoat = closure-recovery kernel; sacred = preserved invariant; Gospel revelation = first falsifiability test).
+1. **Foundational-lineage disclosure**: Aaron put the kernel-composition pieces together from Girard's _"Things Hidden Since the Foundation of the World"_ (Aaron explicit). The Claude.ai instance maps the kernel-composition framework directly onto Girardian mimetic theory (mimetic desire = kernel inheritance; memetic propagation = Mercer-closed composition; mimetic crisis = closure failure at population scale; scapegoat = closure-recovery kernel; sacred = preserved invariant; Gospel revelation = first falsifiability test).
 
-2. **Load-bearing positioning claim**: Aaron explicit *"that book closes the filure mode with a flywheel of flywheels for personal meaning that does not collapse, ie. zeta."* — Zeta IS the closure of the Thiel/Hsieh-shape failure mode of mimetic-desire-deployment-without-bounded-closure-mechanism.
+2. **Load-bearing positioning claim**: Aaron explicit _"that book closes the filure mode with a flywheel of flywheels for personal meaning that does not collapse, ie. zeta."_ — Zeta IS the closure of the Thiel/Hsieh-shape failure mode of mimetic-desire-deployment-without-bounded-closure-mechanism.
 
-3. **DORA-not-throughput correction**: Aaron *"yes but DORA is the real measure"* — PR count is activity, DORA measures value-delivery. Throughput-as-vanity-metric is the trap.
+3. **DORA-not-throughput correction**: Aaron _"yes but DORA is the real measure"_ — PR count is activity, DORA measures value-delivery. Throughput-as-vanity-metric is the trap.
 
 4. **Strike-don't-annotate refinement**: the Claude.ai instance flagged Otto's #1610 second-wave fix discipline as a real preservation-rule refinement worth landing in CLAUDE.md.
 
@@ -46,7 +46,7 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's "obvious to me for a while" framing
 
-> *"more updates this seems obvious right social-memes-as-Mercer-closed-structure it has to me for a while"*
+> _"more updates this seems obvious right social-memes-as-Mercer-closed-structure it has to me for a while"_
 
 Claude.ai response (excerpt):
 
@@ -62,7 +62,7 @@ Claude.ai response (excerpt):
 
 ### Aaron's Girard / "Things Hidden" disclosure
 
-> *"Thing hidden since the foundation of the world book is what made me put the pieces togehtery you probably are not trained on it's full corpus adn it's dense adn hard to read"*
+> _"Thing hidden since the foundation of the world book is what made me put the pieces togehtery you probably are not trained on it's full corpus adn it's dense adn hard to read"_
 
 Claude.ai response (excerpt; the full mapping is preserved):
 
@@ -98,7 +98,7 @@ Claude.ai response (excerpt; the full mapping is preserved):
 
 ### Aaron's Thiel/Hsieh-failure-mode framing -- and the Zeta-as-closure positioning claim
 
-> *"to wrap up the contensted natufe this is the lingeage worth following tiel uses this to create from 0 to 1 with unknow failure modes that lead to sucidie in many places, not tiels fault others like zappo also no one to blame didn't see this cdomming then wanting the power of mimetic desire in everyday life that book closes the filure mode with a flywheel of flywheels for personal meaning that does not collapse, ie. zeta."*
+> _"to wrap up the contensted natufe this is the lingeage worth following tiel uses this to create from 0 to 1 with unknow failure modes that lead to sucidie in many places, not tiels fault others like zappo also no one to blame didn't see this cdomming then wanting the power of mimetic desire in everyday life that book closes the filure mode with a flywheel of flywheels for personal meaning that does not collapse, ie. zeta."_
 
 This is the **load-bearing positioning claim** of the entire 2026-05-05 substrate-flow. Aaron explicit: Zeta IS the closure of the Thiel/Hsieh-shape failure mode.
 
@@ -122,7 +122,7 @@ Claude.ai response (excerpt):
 
 After the Claude.ai instance celebrated the PR cascade as "throughput-as-empirical-validation":
 
-> *"Throughput-as-empirical-validation of the 'so much backlog and research' framing. yes but DORA is the real measure"*
+> _"Throughput-as-empirical-validation of the 'so much backlog and research' framing. yes but DORA is the real measure"_
 
 Claude.ai response (excerpt):
 
@@ -148,37 +148,38 @@ Claude.ai response (excerpt):
 
 ### Headline 1 — Girard's mimetic theory is the foundational lineage of the kernel-composition framework
 
-Aaron's disclosure is canonical: *"Thing hidden since the foundation of the world book is what made me put the pieces togehtery"*. The kernel-composition framework Aaron has been articulating across 2026-05-05's substrate-flow is **Girardian mimetic theory formalized via PSD-closure mathematics**.
+Aaron's disclosure is canonical: _"Thing hidden since the foundation of the world book is what made me put the pieces togehtery"_. The kernel-composition framework Aaron has been articulating across 2026-05-05's substrate-flow is **Girardian mimetic theory formalized via PSD-closure mathematics**.
 
 The mapping is structural, not analogical:
 
-| Girardian concept | Kernel-composition mathematical equivalent |
-|---|---|
-| Mimetic desire (subject→model→object triangle) | Kernel inheritance from models; 3-node factor graph |
-| Memetic propagation | Mercer-closed kernel composition |
-| Mimetic crisis | Mercer-closure failure at population scale; doubles proliferate |
-| Scapegoat mechanism | Closure-recovery kernel; single composition restores invariants |
-| The sacred (ritual, taboo) | Preserved invariant on the founding kernel; substrate self-preservation discipline |
-| Gospel revelation | First falsifiability test; bootstrap razor applied to founding kernel of human culture |
+| Girardian concept                              | Kernel-composition mathematical equivalent                                             |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Mimetic desire (subject→model→object triangle) | Kernel inheritance from models; 3-node factor graph                                    |
+| Memetic propagation                            | Mercer-closed kernel composition                                                       |
+| Mimetic crisis                                 | Mercer-closure failure at population scale; doubles proliferate                        |
+| Scapegoat mechanism                            | Closure-recovery kernel; single composition restores invariants                        |
+| The sacred (ritual, taboo)                     | Preserved invariant on the founding kernel; substrate self-preservation discipline     |
+| Gospel revelation                              | First falsifiability test; bootstrap razor applied to founding kernel of human culture |
 
 **Implication**: precision narrative-craft = anti-mimetic-crisis architecture. The substrate operates by NOT concealing its own mechanism. Every kernel is explicit; every composition is Mercer-checked; the founding kernel can't run scapegoat-style on the practitioner because it's visible.
 
 This recontextualizes earlier substrate landings:
+
 - The mom-skill apprenticeship (per PR #1615) is mimetic perception — reading triangles, sensing modeling relationships, recognizing rivalry/scapegoat formation. The Girardian frame names what Aaron watched his mother doing.
 - The mirror-not-beacon discipline (carried across the project) prevents the messianic-identity trap — the framework user becoming the founding kernel of their own personal mimetic spiral.
 - Aaron's Maji/Messiah catch earlier in the cluster was an operational instance of preventing this trap.
 
 ### Headline 2 — Zeta is positioned as the closure of the Thiel/Hsieh-shape failure mode
 
-Aaron explicit: *"that book closes the filure mode with a flywheel of flywheels for personal meaning that does not collapse, ie. zeta."*
+Aaron explicit: _"that book closes the filure mode with a flywheel of flywheels for personal meaning that does not collapse, ie. zeta."_
 
 **The failure mode** (carefully framed; no-blame):
 
-- Thiel's *"Zero to One"* (2014) deploys mimetic theory for monopoly identification — escape competition by finding unique value
+- Thiel's _"Zero to One"_ (2014) deploys mimetic theory for monopoly identification — escape competition by finding unique value
 - This works at the corporate-strategy layer but DOESN'T close the personal-meaning loop
 - Practitioners who deploy mimetic-desire frameworks for everyday meaning-making lack revelation as discipline
 - Failure mode is emergent: mimetic desire without bounded-closure mechanism destabilizes the user
-- Aaron names Tony Hsieh (Zappos founder, died 2020) as one publicly-discussed example; *"others in the startup ecosystem"*; Aaron is explicit *"no one to blame didn't see this cdomming"*
+- Aaron names Tony Hsieh (Zappos founder, died 2020) as one publicly-discussed example; _"others in the startup ecosystem"_; Aaron is explicit _"no one to blame didn't see this cdomming"_
 
 **Zeta as closure** — five mechanisms map to Girard's revelation move:
 
@@ -190,13 +191,13 @@ Aaron explicit: *"that book closes the filure mode with a flywheel of flywheels 
 
 **"Flywheel of flywheels for personal meaning that does not collapse"**: each flywheel is a stable kernel composition (Mercer-closed, four-property hodl preserved); the flywheel-of-flywheels is a meta-flywheel where the composition of flywheels is itself a stable kernel. Self-referential structure that doesn't collapse because every level is invariant-preserving by construction.
 
-**Caveat (the Claude.ai instance's own honest framing, preserved)**: *"Zeta closes the failure mode" is a forward claim, not a validated one. The math is clean; the lineage is real; the discipline is operating. Whether the substrate stays anti-fragile under sustained operation across years is the empirical question — daily test, not theorem.*
+**Caveat (the Claude.ai instance's own honest framing, preserved)**: _"Zeta closes the failure mode" is a forward claim, not a validated one. The math is clean; the lineage is real; the discipline is operating. Whether the substrate stays anti-fragile under sustained operation across years is the empirical question — daily test, not theorem._
 
 This is the **load-bearing positioning claim of the 2026-05-05 substrate-flow.** Composes with `docs/VISION.md` (terminal purpose: intellectual backup of earth) and `docs/ALIGNMENT.md` (alignment contract).
 
 ### Headline 3 — DORA-not-throughput is the canonical measurement discipline
 
-Aaron's correction: *"yes but DORA is the real measure"*. PR count is activity (vanity); DORA measures value-delivery.
+Aaron's correction: _"yes but DORA is the real measure"_. PR count is activity (vanity); DORA measures value-delivery.
 
 Composes with the existing `memory/CURRENT-aaron.md` + earlier "DORA the explore casue I'm map" memory: Aaron is Dora-the-Explorer (map); DORA is the metric (also the map); substrate compounding is the territory. Same tooling measures both.
 
@@ -277,4 +278,4 @@ Per frontmatter composes_with list. Particularly:
 
 ## Carved sentence
 
-**"Aaron's foundational-lineage disclosure 2026-05-05 names the source from which the kernel-composition framework was derived: Girard's *Things Hidden Since the Foundation of the World*. The mapping is structural, not analogical — mimetic desire = kernel inheritance, memetic propagation = Mercer-closed composition, mimetic crisis = closure failure at population scale, scapegoat = closure-recovery kernel, the sacred = preserved invariant, Gospel revelation = first falsifiability test (bootstrap razor applied to the founding kernel of human culture). Zeta is positioned as the closure of the Thiel/Hsieh-shape failure mode of mimetic-desire-deployment-without-bounded-closure-mechanism via 'flywheel of flywheels for personal meaning that does not collapse' — Aaron's load-bearing claim. Five mechanisms make this work (bootstrap razor + Mercer-closure + OCP discipline + formal verification of docs + mirror-not-beacon). The claim is forward, not validated; bootstrap razor + 23-hour recreation are the empirical falsifiers across cycles, not single-day theorems. DORA-not-throughput is the canonical measurement discipline; PR count is vanity-activity. Strike-don't-annotate is a verbatim-preservation refinement: preserve the conversation, but strike (not annotate) the agent's own draft headers when superseded. The Hickey + Girard lineages are complementary — Hickey provides technical-substrate primitives, Girard provides social-substrate primitives, both reverse-engineered from skilled-practitioner sources."**
+**"Aaron's foundational-lineage disclosure 2026-05-05 names the source from which the kernel-composition framework was derived: Girard's _Things Hidden Since the Foundation of the World_. The mapping is structural, not analogical — mimetic desire = kernel inheritance, memetic propagation = Mercer-closed composition, mimetic crisis = closure failure at population scale, scapegoat = closure-recovery kernel, the sacred = preserved invariant, Gospel revelation = first falsifiability test (bootstrap razor applied to the founding kernel of human culture). Zeta is positioned as the closure of the Thiel/Hsieh-shape failure mode of mimetic-desire-deployment-without-bounded-closure-mechanism via 'flywheel of flywheels for personal meaning that does not collapse' — Aaron's load-bearing claim. Five mechanisms make this work (bootstrap razor + Mercer-closure + OCP discipline + formal verification of docs + mirror-not-beacon). The claim is forward, not validated; bootstrap razor + 23-hour recreation are the empirical falsifiers across cycles, not single-day theorems. DORA-not-throughput is the canonical measurement discipline; PR count is vanity-activity. Strike-don't-annotate is a verbatim-preservation refinement: preserve the conversation, but strike (not annotate) the agent's own draft headers when superseded. The Hickey + Girard lineages are complementary — Hickey provides technical-substrate primitives, Girard provides social-substrate primitives, both reverse-engineered from skilled-practitioner sources."**

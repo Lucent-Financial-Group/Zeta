@@ -65,13 +65,13 @@ one type.
 
 ## Comparison with DV / Kimball
 
-| Axis | DV | Kimball | Activity |
-| --- | --- | --- | --- |
-| Core unit | Hub/link/satellite | Fact + dim | One activity row |
-| Schema growth | Add a hub/satellite | Add a conformed dim | Add activity type |
-| Time-first | Optional | SCD2 bolt-on | Native |
-| Re-modelling | Rare but real | Occasional | Effectively never |
-| Consumer surface | Business vault views | Star schema | Pattern templates |
+| Axis             | DV                   | Kimball             | Activity          |
+| ---------------- | -------------------- | ------------------- | ----------------- |
+| Core unit        | Hub/link/satellite   | Fact + dim          | One activity row  |
+| Schema growth    | Add a hub/satellite  | Add a conformed dim | Add activity type |
+| Time-first       | Optional             | SCD2 bolt-on        | Native            |
+| Re-modelling     | Rare but real        | Occasional          | Effectively never |
+| Consumer surface | Business vault views | Star schema         | Pattern templates |
 
 Activity Schema trades schema richness for temporal
 uniformity. It's at its best when the analytical questions
@@ -90,11 +90,11 @@ are all "what sequence of things happened".
 
 - **Data Vault rigour** → `data-vault-expert`.
 - **Traditional dimensional marts** → `dimensional-modeling-
-  expert`.
+expert`.
 - **Application-side event sourcing** → `event-sourcing-
-  expert`.
+expert`.
 - **DBSP streaming algebra** → `streaming-incremental-
-  expert`, `algebra-owner`.
+expert`, `algebra-owner`.
 
 ## Hazards
 

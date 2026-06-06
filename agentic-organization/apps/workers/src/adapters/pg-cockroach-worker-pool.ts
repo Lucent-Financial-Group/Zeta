@@ -1,5 +1,9 @@
 import type { CockroachAnySqlResult } from "../../../../packages/state-cockroach/src/index.ts";
-import type { CockroachWorkerPool, CockroachWorkerPoolClient, CockroachWorkerShutdownPool } from "./cockroach-worker-client.ts";
+import type {
+  CockroachWorkerPool,
+  CockroachWorkerPoolClient,
+  CockroachWorkerShutdownPool,
+} from "./cockroach-worker-client.ts";
 
 export const PgCockroachWorkerPoolErrorCode = {
   InvalidDriverModule: "invalid_driver_module",
@@ -97,12 +101,7 @@ function adaptPgCockroachPoolClient(client: PgCockroachPoolClient): CockroachWor
 }
 
 function assertPgCockroachDriverModule(module: unknown): PgCockroachDriverModule {
-  if (
-    typeof module === "object" &&
-    module !== null &&
-    "Pool" in module &&
-    typeof module.Pool === "function"
-  ) {
+  if (typeof module === "object" && module !== null && "Pool" in module && typeof module.Pool === "function") {
     return module as PgCockroachDriverModule;
   }
 

@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Carry-over from PR #4997 which got force-pushed to no-diff state in error + GitHub auto-closed + refused reopen. This PR carries the same B-0737 zflash substrate + all 7 Copilot+Codex review fixes from the original PR's iteration trail, squashed onto current origin/main.
 
-Aaron 2026-05-25 verbatim: *"minimize for humain to easy to type one liners and add sudo via touch and then maybe even you can executie and i have to approve with my fingerprint."*
+Aaron 2026-05-25 verbatim: _"minimize for humain to easy to type one liners and add sudo via touch and then maybe even you can executie and i have to approve with my fingerprint."_
 
 ## What ships
 

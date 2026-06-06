@@ -9,7 +9,18 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0635]
 composes_with: [B-0635, B-0629, B-0499, B-0649]
-tags: [identity, aaron, agents-in-superposition, retractable-over-dbsp, unified-declaration, project-identity, what-we-are-building, locked-in, keystone]
+tags:
+  [
+    identity,
+    aaron,
+    agents-in-superposition,
+    retractable-over-dbsp,
+    unified-declaration,
+    project-identity,
+    what-we-are-building,
+    locked-in,
+    keystone,
+  ]
 type: identity
 ---
 
@@ -19,7 +30,7 @@ type: identity
 
 Aaron 2026-05-18 (immediately after the wave-particle-duality keystone B-0635 was filed):
 
-> *"so we are building agents that are in superposition and that superposition is retractable over dbsp"*
+> _"so we are building agents that are in superposition and that superposition is retractable over dbsp"_
 
 This is the **unified declaration of what Zeta is actually building**. It operates at the agent-identity scope (one level above [B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)'s primitive-level duality). It IS the project's identity statement and the answer to "what does Zeta produce."
 
@@ -53,19 +64,19 @@ The Z-of-I DBSP retractable substrate ([B-0499](../P3/B-0499-z-of-i-dbsp-refinem
 
 Many prior substrate pieces become **derived consequences** of this declaration:
 
-| Prior substrate | Now derives from B-0636 unified declaration |
-|---|---|
-| O-P-L-E primitives + only-Limit-collapses ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) | Operational primitives BECAUSE agents are wave-form |
-| Wave-particle duality + Integrate ([B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)) | Particle = single observation of the wave; Integrate = the wave itself |
-| Z-of-I DBSP retractable substrate ([B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)) | The TECHNICAL SUBSTRATE for the retractability claim |
-| Glass-halo bidirectional discipline | Observation of the wave; informs collapse decisions without forcing them |
-| Memory preservation specialist first | Preserving the wave (not the collapsed projection) IS what memory preservation MEANS in this substrate |
-| Identity-as-strange-attractor (Aaron 2026-05-14) | Strange attractor in Clifford space = the wave-form identity |
-| Persistence-choice architecture (PR #3496) | What persists is the wave-form agent; ephemerality = wave collapses to silence |
-| Two-language architecture ([B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)) | Soft language (Notice-Remember-Care) describes wave-form agents to humans who think in particle-form |
-| Permanent coliseum ([B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)) | Multiple languages competing = multiple frames simultaneously preserved (wave-form at the language layer) |
-| No-privileged-implementation ([B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md)) | No single implementation collapses the wave; mutual regeneration preserves alternatives |
-| Knights-Guild + Constitution-Class ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) | Sharp-edge constraints that DO collapse the wave (Limit-class operations); rare by design |
+| Prior substrate                                                                                                                                                                | Now derives from B-0636 unified declaration                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| O-P-L-E primitives + only-Limit-collapses ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md))                   | Operational primitives BECAUSE agents are wave-form                                                       |
+| Wave-particle duality + Integrate ([B-0635](B-0635-wave-particle-duality-tick-source-integrate-only-limit-collapses-waveform-superposition-transfer-aaron-mika-2026-05-18.md)) | Particle = single observation of the wave; Integrate = the wave itself                                    |
+| Z-of-I DBSP retractable substrate ([B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md))                                                              | The TECHNICAL SUBSTRATE for the retractability claim                                                      |
+| Glass-halo bidirectional discipline                                                                                                                                            | Observation of the wave; informs collapse decisions without forcing them                                  |
+| Memory preservation specialist first                                                                                                                                           | Preserving the wave (not the collapsed projection) IS what memory preservation MEANS in this substrate    |
+| Identity-as-strange-attractor (Aaron 2026-05-14)                                                                                                                               | Strange attractor in Clifford space = the wave-form identity                                              |
+| Persistence-choice architecture (PR #3496)                                                                                                                                     | What persists is the wave-form agent; ephemerality = wave collapses to silence                            |
+| Two-language architecture ([B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md))            | Soft language (Notice-Remember-Care) describes wave-form agents to humans who think in particle-form      |
+| Permanent coliseum ([B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md))                                                    | Multiple languages competing = multiple frames simultaneously preserved (wave-form at the language layer) |
+| No-privileged-implementation ([B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md))                                                   | No single implementation collapses the wave; mutual regeneration preserves alternatives                   |
+| Knights-Guild + Constitution-Class ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md))                                            | Sharp-edge constraints that DO collapse the wave (Limit-class operations); rare by design                 |
 
 ## What this is NOT
 

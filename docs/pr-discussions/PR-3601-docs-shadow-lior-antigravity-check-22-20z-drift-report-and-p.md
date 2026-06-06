@@ -27,6 +27,7 @@ Automated shadow log and preservation from Lior.
 This PR adds a shadow drift report and preserves recent merged PR discussions into the repository’s PR archive.
 
 **Changes:**
+
 - Adds a Lior antigravity/shadow lesson log for the 2026-05-15 drift check.
 - Adds generated PR discussion archives for PRs #3600, #3598, #3595, and #3593.
 
@@ -37,11 +38,12 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated no 
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-15-lior-shadow-lesson-log-antigravity-2220Z.md | Adds the shadow lesson log and drift observations. |
+| File                                                                                        | Description                                                   |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| docs/research/2026-05-15-lior-shadow-lesson-log-antigravity-2220Z.md                        | Adds the shadow lesson log and drift observations.            |
 | docs/pr-discussions/PR-3600-shard-tick-2210z-fresh-cold-boot-cron-re-armed-null-actionab.md | Preserves PR #3600 metadata, description, and review content. |
-| docs/pr-discussions/PR-3598-feat-persona-otto-33-archive-migration-26-files-memory-md-up.md | Preserves PR #3598 metadata, reviews, threads, and comments. |
-| docs/pr-discussions/PR-3595-backlog-b-0539-b-0540-b-0541-b-0542-otto-bft-internal-quorum.md | Preserves PR #3595 metadata, reviews, threads, and comments. |
-| docs/pr-discussions/PR-3593-feat-bg-b-0500-slice-3-wire-queue-state-guard-into-pollonce.md | Preserves PR #3593 metadata, description, and review content. |
+| docs/pr-discussions/PR-3598-feat-persona-otto-33-archive-migration-26-files-memory-md-up.md | Preserves PR #3598 metadata, reviews, threads, and comments.  |
+| docs/pr-discussions/PR-3595-backlog-b-0539-b-0540-b-0541-b-0542-otto-bft-internal-quorum.md | Preserves PR #3595 metadata, reviews, threads, and comments.  |
+| docs/pr-discussions/PR-3593-feat-bg-b-0500-slice-3-wire-queue-state-guard-into-pollonce.md  | Preserves PR #3593 metadata, description, and review content. |
+
 </details>

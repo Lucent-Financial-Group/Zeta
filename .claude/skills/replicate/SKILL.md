@@ -44,13 +44,13 @@ ssh-copy-id "$TARGET"
 ssh "$TARGET" "which git bun dotnet gh && uname -s"
 ```
 
-| Requirement | Install if missing |
-|---|---|
-| git | OS package manager |
-| bun | OS package manager or official installer |
-| dotnet | `dotnet-install.sh` or OS package manager |
-| gh | OS package manager or `gh auth login` |
-| claude | `npm install -g @anthropic-ai/claude-code` |
+| Requirement | Install if missing                         |
+| ----------- | ------------------------------------------ |
+| git         | OS package manager                         |
+| bun         | OS package manager or official installer   |
+| dotnet      | `dotnet-install.sh` or OS package manager  |
+| gh          | OS package manager or `gh auth login`      |
+| claude      | `npm install -g @anthropic-ai/claude-code` |
 
 Record the remote OS (Darwin / Linux / Windows via
 WSL) — this determines which service manager
@@ -90,11 +90,11 @@ ssh "$TARGET" '
 
 Or, if the target runs a different harness:
 
-| Harness | Remote command |
-|---|---|
+| Harness     | Remote command                        |
+| ----------- | ------------------------------------- |
 | Claude Code | `claude -p -w --permission-mode auto` |
-| Cursor | `cursor-agent -p --model grok-4.3` |
-| Codex | codex CLI equivalent |
+| Cursor      | `cursor-agent -p --model grok-4.3`    |
+| Codex       | codex CLI equivalent                  |
 
 ## Phase 5: Verify remote heartbeat
 
@@ -131,14 +131,14 @@ After successful replication, record the new node:
 
 ## Failure recovery
 
-| Symptom | Fix |
-|---|---|
-| SSH refused | Check key, firewall, sshd config |
-| Clone fails | Check network, GitHub auth on target |
-| Build fails | Check dotnet SDK version on target |
-| Service won't start | SSH in, run make-persistent directly |
-| No heartbeats after 5min | Check logs on target, restart service |
-| Wrong harness | Re-run Phase 4 with correct harness CLI |
+| Symptom                  | Fix                                     |
+| ------------------------ | --------------------------------------- |
+| SSH refused              | Check key, firewall, sshd config        |
+| Clone fails              | Check network, GitHub auth on target    |
+| Build fails              | Check dotnet SDK version on target      |
+| Service won't start      | SSH in, run make-persistent directly    |
+| No heartbeats after 5min | Check logs on target, restart service   |
+| Wrong harness            | Re-run Phase 4 with correct harness CLI |
 
 ## What this skill does NOT do
 

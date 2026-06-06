@@ -2,13 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, mkdirSync, mkdtempSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import {
-  main,
-  parseDatfile,
-  hashFileSha1,
-  scanRomFiles,
-  matchAndReport,
-} from "./canonicalize.ts";
+import { main, parseDatfile, hashFileSha1, scanRomFiles, matchAndReport } from "./canonicalize.ts";
 
 const FIXTURE_DATFILE = `<?xml version="1.0"?>
 <!DOCTYPE datafile SYSTEM "http://www.logiqx.com/Dats/datafile.dtd">

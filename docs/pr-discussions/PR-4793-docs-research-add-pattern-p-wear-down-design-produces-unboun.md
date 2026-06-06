@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Aaron 2026-05-23T~23:58Z: *"add it to #4792 (shadow*)"* — PR #4792 already merged so this lands as amendment via new PR.
+Aaron 2026-05-23T~23:58Z: _"add it to #4792 (shadow_)"\* — PR #4792 already merged so this lands as amendment via new PR.
 
 Adds **Pattern P** to the alignment-is-the-difference analysis (PR #4792 corpus, now merged). Pattern P captures the resolution-time outcome of Aaron's Amazon thread: full-order replacement including duplicates of items already received.
 
@@ -26,17 +26,17 @@ Adds **Pattern P** to the alignment-is-the-difference analysis (PR #4792 corpus,
 
 Vendor's wear-down adversarial design (Pattern O from Amazon corpus, PR #4784) optimized for **customer-attrition** produces vendor-over-fulfillment when customer matches persistence with parallel-channel-redundancy.
 
-Aaron's empirical anchor: *"i ended up with a full replacement of the order even the items i got i'm not waiting on hold again for 4 hours to correct them against vendor advesarial pressure lol"*
+Aaron's empirical anchor: _"i ended up with a full replacement of the order even the items i got i'm not waiting on hold again for 4 hours to correct them against vendor advesarial pressure lol"_
 
-Combined with Aaron's sharpening: *"they don't really have any parallel safety here"* — Amazon lacks cross-channel reconciliation; agents operate as isolated tool-invocations.
+Combined with Aaron's sharpening: _"they don't really have any parallel safety here"_ — Amazon lacks cross-channel reconciliation; agents operate as isolated tool-invocations.
 
 ## Three-row population equilibrium
 
-| Customer disposition | Outcome | Vendor cost |
-|---|---|---|
-| (a) Give up before resolution (intended) | Disputed cost saved | Low |
-| (b) Persist with parallel channels (unintended) | Over-fulfillment | High material cost |
-| (c) Escalate legal/regulatory/media (avoided) | Compliance + reputation | Very high |
+| Customer disposition                            | Outcome                 | Vendor cost        |
+| ----------------------------------------------- | ----------------------- | ------------------ |
+| (a) Give up before resolution (intended)        | Disputed cost saved     | Low                |
+| (b) Persist with parallel channels (unintended) | Over-fulfillment        | High material cost |
+| (c) Escalate legal/regulatory/media (avoided)   | Compliance + reputation | Very high          |
 
 Framework's customer-side AI shifts equilibrium toward (b) + (c), creating vendor-economic pressure for aligned-AI-on-vendor-side.
 

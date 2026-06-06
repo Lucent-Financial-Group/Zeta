@@ -24,14 +24,14 @@ cp -r full-ai-cluster/nixos/hosts/worker-template \
 Open `full-ai-cluster/nixos/hosts/$HOST/default.nix` and edit
 each of the six clearly-marked PLACEHOLDER blocks:
 
-| What | Where to get it |
-|------|-----------------|
-| `networking.hostName` | the name you chose above (`worker-gpu-03`) |
-| `networking.hostId` | `head -c4 /dev/urandom \| od -A n -t x4 \| tr -d ' '` |
-| `zeta.disko.nvme0` | On the live system: `ls -l /dev/disk/by-id/ \| grep nvme \| awk '{print $9, $11}'` — pick the disk you want to BE the boot disk (gets OS + first Longhorn data path) |
-| `zeta.disko.nvme1` | Same listing, the other NVMe (becomes pure Longhorn data) |
-| Network config | Static IP block if you don't use DHCP |
-| `users.users.zeta.openssh.authorizedKeys` | Maintainer key |
+| What                                      | Where to get it                                                                                                                                                      |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `networking.hostName`                     | the name you chose above (`worker-gpu-03`)                                                                                                                           |
+| `networking.hostId`                       | `head -c4 /dev/urandom \| od -A n -t x4 \| tr -d ' '`                                                                                                                |
+| `zeta.disko.nvme0`                        | On the live system: `ls -l /dev/disk/by-id/ \| grep nvme \| awk '{print $9, $11}'` — pick the disk you want to BE the boot disk (gets OS + first Longhorn data path) |
+| `zeta.disko.nvme1`                        | Same listing, the other NVMe (becomes pure Longhorn data)                                                                                                            |
+| Network config                            | Static IP block if you don't use DHCP                                                                                                                                |
+| `users.users.zeta.openssh.authorizedKeys` | Maintainer key                                                                                                                                                       |
 
 ## Step 3: wire into the flake
 
@@ -103,12 +103,14 @@ prompts in order:
    menu per PR #5635 since 2026-05-27)
    Numbered menu with `lspci`-based hardware detection suggesting
    the default:
+
    ```
    1) control-plane    K3S server + Cilium + ArgoCD bootstrap
    2) worker-gpu       NVIDIA passthrough + device-plugin + Longhorn
    3) worker-template  Cookie-cutter worker; per PROVISIONING.md
    4) other            Custom flake host attribute (advanced)
    ```
+
    Hardware detection (NVIDIA / AMD VGA / AMD 3D / Intel Arc GPU
    present → suggests `worker-gpu`; default → `control-plane`).
    Operator hits Enter to accept the suggestion or types a different
@@ -122,8 +124,8 @@ prompts in order:
    - `ZETA_CREDS_PASSPHRASE` is set (auto-populated by Step 6.56)
    - `/etc/zeta/usb-uuid` is present (auto-captured by B-0852.3a-prep
      during iter-4.2 ESP probe)
-   On opt-out, the SPECIFIC reason is echoed (no generic
-   `set ZETA_CREDS_*=1 to enable` message anymore).
+     On opt-out, the SPECIFIC reason is echoed (no generic
+     `set ZETA_CREDS_*=1 to enable` message anymore).
 
 ### Subsequent-boot credential restore (B-0852.4 since 2026-05-27)
 
@@ -198,13 +200,13 @@ instead of re-running each tool's individual login flow.
 
 Default credential manifest (per `tools/installer/zeta-creds-manifest.ts`):
 
-| Cred id | Captured paths |
-|---|---|
-| `gh-cli` | `~/.config/gh/hosts.yml` |
-| `claude` | `~/.config/claude/credentials.json`, `~/.claude/.credentials.json` |
-| `gemini` | `~/.gemini/oauth_creds.json` |
-| `codex` | `~/.codex/auth.json` |
-| `ssh-host-keys` | `/etc/ssh/ssh_host_ed25519_key{,.pub}`, `/etc/ssh/ssh_host_rsa_key{,.pub}` |
+| Cred id               | Captured paths                                                                   |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `gh-cli`              | `~/.config/gh/hosts.yml`                                                         |
+| `claude`              | `~/.config/claude/credentials.json`, `~/.claude/.credentials.json`               |
+| `gemini`              | `~/.gemini/oauth_creds.json`                                                     |
+| `codex`               | `~/.codex/auth.json`                                                             |
+| `ssh-host-keys`       | `/etc/ssh/ssh_host_ed25519_key{,.pub}`, `/etc/ssh/ssh_host_rsa_key{,.pub}`       |
 | `ssh-operator-pubkey` | `/etc/zeta/operator-authorized-keys`, `/etc/ssh/authorized_keys.d/zeta-operator` |
 
 To verify the cascade works end-to-end after a fresh USB install:
@@ -292,13 +294,13 @@ sudo -u zeta codex --version      # Codex CLI: expect no login flow
 
 Common symptoms and likely causes:
 
-| Symptom | Likely cause |
-|---|---|
-| `systemctl status zeta-creds-restore` reports "condition failed" | `/boot/zeta-creds.enc` doesn't exist on the installed system; check the install log for `[iter-5.5.0] ── 6.95-picker:` line + any `WARN: picker exited non-zero` output |
-| `/boot/zeta-creds.enc` exists but restore-service fails on next boot | Wrong passphrase entered at the systemd-ask-password prompt; the scrypt → HKDF chain fails AEAD verification; retry next boot |
-| Cred restored but `gh` (or another tool) still prompts for login | Either (a) the cred wasn't present at install time so the picker had nothing to capture, OR (b) the tool's cred-storage path changed between versions; cross-check against `tools/installer/zeta-creds-manifest.ts` defaultManifest |
-| Install warns `picker exited non-zero` | USB UUID changed (e.g., reflashed onto a different USB stick); cred-blob is bound to USB UUID via scrypt → HKDF; reflash + re-enter passphrase to rebuild blob bound to new UUID |
-| `systemd-ask-password` prompt doesn't fire on boot | Either `passphraseMode = "file"` is set, OR the restore service's `ConditionPathExists` is unmet (so the unit skipped); check `systemctl status zeta-creds-restore` |
+| Symptom                                                              | Likely cause                                                                                                                                                                                                                        |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `systemctl status zeta-creds-restore` reports "condition failed"     | `/boot/zeta-creds.enc` doesn't exist on the installed system; check the install log for `[iter-5.5.0] ── 6.95-picker:` line + any `WARN: picker exited non-zero` output                                                             |
+| `/boot/zeta-creds.enc` exists but restore-service fails on next boot | Wrong passphrase entered at the systemd-ask-password prompt; the scrypt → HKDF chain fails AEAD verification; retry next boot                                                                                                       |
+| Cred restored but `gh` (or another tool) still prompts for login     | Either (a) the cred wasn't present at install time so the picker had nothing to capture, OR (b) the tool's cred-storage path changed between versions; cross-check against `tools/installer/zeta-creds-manifest.ts` defaultManifest |
+| Install warns `picker exited non-zero`                               | USB UUID changed (e.g., reflashed onto a different USB stick); cred-blob is bound to USB UUID via scrypt → HKDF; reflash + re-enter passphrase to rebuild blob bound to new UUID                                                    |
+| `systemd-ask-password` prompt doesn't fire on boot                   | Either `passphraseMode = "file"` is set, OR the restore service's `ConditionPathExists` is unmet (so the unit skipped); check `systemctl status zeta-creds-restore`                                                                 |
 
 ## Disk failure recovery
 

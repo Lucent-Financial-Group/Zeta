@@ -8,8 +8,53 @@ effort: L
 created: 2026-06-01
 last_updated: 2026-06-01
 depends_on: [B-0640, B-0668, B-0917]
-composes_with: [B-0251, B-0640, B-0668, B-0668.1, B-0706, B-0764, B-0776, B-0777, B-0785, B-0867, B-0872, B-0883, B-0917, B-0957, B-0959, B-0040, B-0253]
-tags: [saga, self-evolving-saga, durable-execution, bonsai, nuqleon, reaqtor, durabletask, temporal, durable-functions, dapr, dapr-actors, dapr-workflow, orleans, z-set, indexed-z-set, retraction, otel, intrctx, kleisli, observe-loop, du-workflow, resume-not-replay, cross-language, aaron]
+composes_with:
+  [
+    B-0251,
+    B-0640,
+    B-0668,
+    B-0668.1,
+    B-0706,
+    B-0764,
+    B-0776,
+    B-0777,
+    B-0785,
+    B-0867,
+    B-0872,
+    B-0883,
+    B-0917,
+    B-0957,
+    B-0959,
+    B-0040,
+    B-0253,
+  ]
+tags:
+  [
+    saga,
+    self-evolving-saga,
+    durable-execution,
+    bonsai,
+    nuqleon,
+    reaqtor,
+    durabletask,
+    temporal,
+    durable-functions,
+    dapr,
+    dapr-actors,
+    dapr-workflow,
+    orleans,
+    z-set,
+    indexed-z-set,
+    retraction,
+    otel,
+    intrctx,
+    kleisli,
+    observe-loop,
+    du-workflow,
+    resume-not-replay,
+    cross-language,
+    aaron,
+  ]
 type: design
 ---
 
@@ -17,7 +62,7 @@ type: design
 
 ## Why
 
-Aaron 2026-06-01: *"file a backlog row for the saga build."* Crystallized across
+Aaron 2026-06-01: _"file a backlog row for the saga build."_ Crystallized across
 the day's framings (serialize deferred execution → subsumes Durable Functions →
 closure-propagation-with-state as self-evolving sagas → every partition + cross-
 partition joins → agent-mediators with compensation → composes with DU workflow →
@@ -37,14 +82,14 @@ on a retraction-native (Z-set / IndexedZSet) stream:
   but **non-determinism in the body is fine** (we snapshot the value).
 - **the pattern is data** — the serialized expr-tree can be edited in flight
   (retract a sub-tree, add another); the ℤ **retraction IS the pattern-evolution
-  operator** (B-0668: *"saga compensation = retraction = additive inverse in
-  Z-set algebra"* — this core already exists there; this row builds it). Both
+  operator** (B-0668: _"saga compensation = retraction = additive inverse in
+  Z-set algebra"_ — this core already exists there; this row builds it). Both
   pattern AND state evolve — the superset the replay family structurally can't do.
 
 ## Interface target = Temporal (own-our-interface, meet-or-beat)
 
-Aaron 2026-06-01: *"durable functs and especially temporal have the better
-interfaces than mine; their interfaces are much better."* Target Temporal-grade
+Aaron 2026-06-01: _"durable functs and especially temporal have the better
+interfaces than mine; their interfaces are much better."_ Target Temporal-grade
 ergonomics:
 
 - **durability-transparent body** — author writes normal code; no per-step
@@ -128,7 +173,7 @@ container where one exists):
   JSON-pointer keys.
 - **Accumulate (applicative) — the tracked next slice (consumer-driven).** For
   batch / model-validation (validate N golden vectors at once, the bus validating a
-  batch of envelopes, throttled-batch ops) you want *every* failure, keyed by field.
+  batch of envelopes, throttled-batch ops) you want _every_ failure, keyed by field.
   That shape is **RFC 9457 "Problem Details"** (supersedes RFC 7807), and .NET ships
   it as **`ValidationProblemDetails`** with `Errors: IDictionary<string, string[]>`
   (field → messages) — useful well outside HTTP (only `status` is HTTP-flavored).
@@ -136,34 +181,34 @@ container where one exists):
   (`{type, title, status?, detail, instance?, errors}`), adapt to .NET's
   `ValidationProblemDetails` at the C# seam; a `BonsaiFeedback list` maps straight
   onto the `errors` map via the `where` keys. Complementary primitive for the family
-  + the git-native bus (B-0954) — build when scheduled; **saved here so the
-  hexagonal isn't forgotten** (the operator 2026-06-01).
+  - the git-native bus (B-0954) — build when scheduled; **saved here so the
+    hexagonal isn't forgotten** (the operator 2026-06-01).
 
 ## Acceptance / decomposition (slices)
 
 - ✅ Cross-language **Bonsai-subset serializer** (`{Context, Expression}`) +
-      golden-vector cross-verify — **all four oracles done + byte-locked** on the
-      shared `golden-vectors.json` (`serialize(parse(canonical)) == canonical`),
-      Nuqleon retained as the .NET-typed conformance oracle. Weakly-typed /
-      reflection-omitted subset (const/param/lambda/binary/call/cond); canonical
-      byte-exact serialize + parse round-trip; `serialize`/`parse` return
-      `Result<_, BonsaiFeedback>` (result over throw); safe-int + lone-surrogate +
-      canonical-only + shared `MaxDepth=1024` + op/bool boundary validation:
-      **TS** (`src/Core.TypeScript/bonsai/`, 57 tests) ·
-      **F#** (`src/Core/Bonsai.fs`, 30 tests) ·
-      **C#** (`src/Core.CSharp.Bonsai/`, #6440 — owns a minimal `Result<T,TError>`
-      port + System.Text.Json, sealed-record DUs, 23 tests) ·
-      **Rust** (`src/Core.Rust.Bonsai/`, #6442 — `std::result::Result`-native +
-      zero-dep hand-rolled JSON reader, 17 tests). All four agree byte-for-byte AND
-      error-shape-for-error-shape (same `BonsaiFeedback` variant set, same `Result`
-      contract, same `MaxDepth`).
+  golden-vector cross-verify — **all four oracles done + byte-locked** on the
+  shared `golden-vectors.json` (`serialize(parse(canonical)) == canonical`),
+  Nuqleon retained as the .NET-typed conformance oracle. Weakly-typed /
+  reflection-omitted subset (const/param/lambda/binary/call/cond); canonical
+  byte-exact serialize + parse round-trip; `serialize`/`parse` return
+  `Result<_, BonsaiFeedback>` (result over throw); safe-int + lone-surrogate +
+  canonical-only + shared `MaxDepth=1024` + op/bool boundary validation:
+  **TS** (`src/Core.TypeScript/bonsai/`, 57 tests) ·
+  **F#** (`src/Core/Bonsai.fs`, 30 tests) ·
+  **C#** (`src/Core.CSharp.Bonsai/`, #6440 — owns a minimal `Result<T,TError>`
+  port + System.Text.Json, sealed-record DUs, 23 tests) ·
+  **Rust** (`src/Core.Rust.Bonsai/`, #6442 — `std::result::Result`-native +
+  zero-dep hand-rolled JSON reader, 17 tests). All four agree byte-for-byte AND
+  error-shape-for-error-shape (same `BonsaiFeedback` variant set, same `Result`
+  contract, same `MaxDepth`).
 - ✅ **Accumulate-mode error channel** (RFC-9457 ProblemDetails) — the applicative
-      complement to the fail-fast `Result`: `parseAll` collects *every* per-node
-      decline keyed by JSON-path (not just the first), for batch / model-validation /
-      the bus validating a batch of envelopes. Additive over the same `BonsaiFeedback`
-      payload; `toProblemDetails` adapts the collected list to the RFC-9457 errors-map
-      (the .NET `ValidationProblemDetails` shape at the C# seam). Shipped across
-      **all four oracles** (TS #6436 · F# #6438 · C# #6440 · Rust #6442).
+  complement to the fail-fast `Result`: `parseAll` collects _every_ per-node
+  decline keyed by JSON-path (not just the first), for batch / model-validation /
+  the bus validating a batch of envelopes. Additive over the same `BonsaiFeedback`
+  payload; `toProblemDetails` adapts the collected list to the RFC-9457 errors-map
+  (the .NET `ValidationProblemDetails` shape at the C# seam). Shipped across
+  **all four oracles** (TS #6436 · F# #6438 · C# #6440 · Rust #6442).
 - [ ] **Resume engine** — serialize closure + expr-tree; restore-not-replay;
       no-handles discipline enforced; non-determinism allowed.
 - [ ] **Context propagation** = OTel/IntrCtx — C#/TS AsyncLocal adapter + **F#

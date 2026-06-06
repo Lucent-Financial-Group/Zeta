@@ -35,10 +35,10 @@ Six consecutive holds without ANY of these firing.
 
 ## Two hypotheses to test
 
-| Hypothesis | Claim | If true → |
-|---|---|---|
-| **H1** | Under-specified triggers — real signals exist that the four don't cover | Extend trigger set |
-| **H2** | Cadence mismatch — formal-verification work-arrival genuinely slower than ~10-min tick cadence | Formalize Soraya-wakeup-interval (e.g., 4-tick = ~40 min) |
+| Hypothesis | Claim                                                                                          | If true →                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **H1**     | Under-specified triggers — real signals exist that the four don't cover                        | Extend trigger set                                        |
+| **H2**     | Cadence mismatch — formal-verification work-arrival genuinely slower than ~10-min tick cadence | Formalize Soraya-wakeup-interval (e.g., 4-tick = ~40 min) |
 
 ## Empirical context
 
@@ -63,24 +63,22 @@ Six consecutive holds without ANY of these firing.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T01:08:23Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `a59d4a1d6e`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -93,6 +91,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a new P3 backlog row (B-0718) capturing a meta-audit of Soraya’s “four-trigger routing-tick” framework after repeated hold cycles, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Added `docs/backlog/P3/B-0718-...md` with the audit framing, hypotheses, and acceptance criteria.
 - Updated `docs/BACKLOG.md` to include B-0718 (and also adds an entry for B-0700).
 
@@ -100,10 +99,10 @@ Adds a new P3 backlog row (B-0718) capturing a meta-audit of Soraya’s “four-
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md | New backlog row documenting the cadence/trigger audit plan and cross-references. |
-| docs/BACKLOG.md | Index update to list B-0718 (but currently also introduces a broken B-0700 entry). |
+| File                                                                             | Description                                                                        |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| docs/backlog/P3/B-0718-soraya-four-trigger-framework-cadence-audit-2026-05-23.md | New backlog row documenting the cadence/trigger audit plan and cross-references.   |
+| docs/BACKLOG.md                                                                  | Index update to list B-0718 (but currently also introduces a broken B-0700 entry). |
 
 ### COMMENTED — @AceHack (2026-05-24T02:09:35Z)
 
@@ -115,7 +114,7 @@ _(no body)_
 
 **@chatgpt-codex-connector** (2026-05-24T01:08:23Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove dangling backlog link without a row file**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove dangling backlog link without a row file**
 
 `docs/BACKLOG.md` is generated from files under `docs/backlog/P*/B-*.md`, but this new index entry points to `backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md`, which is not present in the repo. That creates a broken link in the canonical index and guarantees regeneration/check drift (the entry will disappear the next time the index is rebuilt), so the commit leaves the backlog surface inconsistent.
 
@@ -150,6 +149,7 @@ Verify-before-fix per `.claude/rules/blocked-green-ci-investigate-threads.md`: t
 ## Otto-CLI autonomous-loop steward — 3 of 4 threads resolved
 
 **Resolved no-op**:
+
 - \`PRRT_kwDOSF9kNM6EWITL\` + \`PRRT_kwDOSF9kNM6EWIbs\` (B-0700 dangling link) — outdated; recurring across multiple PRs; B-0700 row file authoring is separate substrate work
 - \`PRRT_kwDOSF9kNM6EWIbv\` (line 43 \`||\` table) — known Copilot FP class per [\`.claude/rules/blocked-green-ci-investigate-threads.md\`](https://github.com/Lucent-Financial-Group/Zeta/blob/main/.claude/rules/blocked-green-ci-investigate-threads.md); direct \`awk\` shows single-pipe row (\`| (d) Fresh spec... | Razor-discipline... |\`) — 5th confirmed FP this session
 

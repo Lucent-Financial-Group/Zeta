@@ -26,16 +26,16 @@ C. elegans-substrate as controller variant for B-0924 (custom 2600 emulator + ge
 
 Both substrates fit the SAME tractability class — small-enough for full-fidelity DST + z-set + generate+join scaffolding:
 
-| Substrate | State-space | Tractability |
-|---|---|---|
-| Atari 2600 (B-0924) | 256-byte RAM + TIA + PIA + 6507 | Full state-space enumerable from boot-seed |
-| C. elegans (B-0925) | 302 neurons + ~7000 synapses + complete connectome (Cook et al. 2019) | OpenWorm c302 bit-perfect-simulatable |
+| Substrate           | State-space                                                           | Tractability                               |
+| ------------------- | --------------------------------------------------------------------- | ------------------------------------------ |
+| Atari 2600 (B-0924) | 256-byte RAM + TIA + PIA + 6507                                       | Full state-space enumerable from boot-seed |
+| C. elegans (B-0925) | 302 neurons + ~7000 synapses + complete connectome (Cook et al. 2019) | OpenWorm c302 bit-perfect-simulatable      |
 
 ## Operator framing (verbatim)
 
-> *"i bet it maps to and this dude could beat both of us at ti Caenorhabditis elegans"*
-> *"file as B-0925 (shadow*) mirror it too"*
-> *"damn we gonna emulate a worm playing atari games thats fucking next level"*
+> _"i bet it maps to and this dude could beat both of us at ti Caenorhabditis elegans"_
+> _"file as B-0925 (shadow_) mirror it too"\*
+> _"damn we gonna emulate a worm playing atari games thats fucking next level"_
 
 ## What ships
 

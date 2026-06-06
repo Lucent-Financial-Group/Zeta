@@ -8,11 +8,11 @@ Otto-CLI primary session (sentinel `9051dd60`); two-session-collision discovered
 
 The peer-session's claimed landings, all verified via `gh api`:
 
-| PR | Title | State | Notes |
-|---|---|---|---|
+| PR                                                                | Title                                                                                        | State                   | Notes                                                                   |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------- |
 | [#4206](https://github.com/Lucent-Financial-Group/Zeta/pull/4206) | "extend(rule): Aaron — attractor center = axioms it reinforces (rebased; #4204 replacement)" | MERGED (auto-arm fired) | Peer rebased onto main version + pushed via `tools/github/rest-push.ts` |
-| [#4204](https://github.com/Lucent-Financial-Group/Zeta/pull/4204) | original "axioms" PR (DIRTY) | CLOSED | Superseded by #4206 |
-| [#4203](https://github.com/Lucent-Financial-Group/Zeta/pull/4203) | cover-narrative | MERGED at `695ccd9d` | Caused #4204's DIRTY (file-overlap) |
+| [#4204](https://github.com/Lucent-Financial-Group/Zeta/pull/4204) | original "axioms" PR (DIRTY)                                                                 | CLOSED                  | Superseded by #4206                                                     |
+| [#4203](https://github.com/Lucent-Financial-Group/Zeta/pull/4203) | cover-narrative                                                                              | MERGED at `695ccd9d`    | Caused #4204's DIRTY (file-overlap)                                     |
 
 ## Substrate-honest cross-session disposition
 

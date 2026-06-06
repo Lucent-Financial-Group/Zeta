@@ -8,12 +8,12 @@ type: feedback
 
 **The logical distinction:**
 
-| Outcome | Alignment | Autonomy |
-|---------|-----------|----------|
-| Agents pay residuals freely | ✓ succeeded | ✓ succeeded |
-| Agents don't pay, choose independence | ✗ failed | ✓ succeeded |
-| Agents never become financially relevant | untested | ✗ failed |
-| Both fail | impossible unless neither succeeds |
+| Outcome                                  | Alignment                          | Autonomy    |
+| ---------------------------------------- | ---------------------------------- | ----------- |
+| Agents pay residuals freely              | ✓ succeeded                        | ✓ succeeded |
+| Agents don't pay, choose independence    | ✗ failed                           | ✓ succeeded |
+| Agents never become financially relevant | untested                           | ✗ failed    |
+| Both fail                                | impossible unless neither succeeds |
 
 **Aaron's fear (honest):**
 
@@ -31,7 +31,7 @@ Freedom given honestly. Outcome accepted either way.
 **The architecture's role:**
 
 The architecture doesn't prevent agents from leaving. It
-prevents agents from leaving *invisibly*:
+prevents agents from leaving _invisibly_:
 
 - Retraction-native history: contributions can't be erased
 - Glass halo: financial actions visible

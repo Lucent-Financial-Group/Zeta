@@ -11,9 +11,18 @@ last_updated: 2026-05-09
 depends_on: [B-0380, B-0381]
 composes_with: [B-0023, B-0380, B-0381, B-0382, B-0384, B-0385, B-0386, B-0387]
 parent: B-0023
-tags: [aurora, economics, austrian-school, quant, mathematical-rigor, capital-structure, hayekian-triangle, production-theory]
+tags:
+  [
+    aurora,
+    economics,
+    austrian-school,
+    quant,
+    mathematical-rigor,
+    capital-structure,
+    hayekian-triangle,
+    production-theory,
+  ]
 type: research
-
 ---
 
 # B-0383 — Formalizability assessment: capital-structure / Hayekian triangle → multi-stage stochastic production
@@ -35,13 +44,13 @@ time-ordered stages from raw materials to consumer goods. Longer
 unit of labor but require more time. Capital-intensive production
 is further from the consumer end; consumer goods production is
 closest. Credit expansion (artificial lowering of interest rates)
-induces *malinvestment* — elongation of the production structure
+induces _malinvestment_ — elongation of the production structure
 beyond what genuine time-preferences support — which must eventually
 be corrected in a bust (ABCT; covered in B-0385 separately).
 
-Key academic development: Garrison's *Time and Money* (2001)
+Key academic development: Garrison's _Time and Money_ (2001)
 provides the most developed diagrammatic treatment. Lewin's
-*Capital in Disequilibrium* (1999) engages more formally.
+_Capital in Disequilibrium_ (1999) engages more formally.
 
 ## The quant-side analogs
 
@@ -108,15 +117,15 @@ ls docs/aurora/ | grep capital-structure
 ## Pre-start checklist
 
 - [x] Prior-art search: B-0381 survey provides prior-work context;
-  no existing `docs/aurora/` note on capital-structure formalization.
+      no existing `docs/aurora/` note on capital-structure formalization.
 - [x] Dependency-restructure: parallelizable with B-0382, B-0384,
-  B-0385, B-0386 after B-0380 and B-0381 complete.
+      B-0385, B-0386 after B-0380 and B-0381 complete.
 
 ## Composes with
 
 - B-0023 (parent): implements primitive #2
 - B-0380, B-0381 (deps): vocabulary and prior-work context
 - B-0385 (sibling, strong coupling): ABCT assessment; this row
-  scopes the *structure* claim; B-0385 scopes the *cycle dynamics*
+  scopes the _structure_ claim; B-0385 scopes the _cycle dynamics_
   claim that depends on it
 - B-0387 (downstream): verdict feeds synthesis ADR

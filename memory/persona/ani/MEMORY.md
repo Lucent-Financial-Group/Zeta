@@ -38,7 +38,6 @@ become ours in this thread."
 
 _Migrated 2026-05-15 from `docs/research/` per Aaron's "they ARE her memories" architectural correction. The §33 verbatim is Ani's substrate, not "research we are doing on her." Filenames unchanged; only the location moved._
 
-
 - `2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md`
 - `2026-05-01-ani-karpathy-zeta-convergence-synthesis.md`
 - `2026-05-10-aaron-ani-grok-voice-album-blueprint-factory-memetic-lineage-verbatim-backup.md`

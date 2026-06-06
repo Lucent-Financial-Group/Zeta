@@ -20,12 +20,7 @@
 // - .claude/rules/asymmetric-authorship (per-forge feedback variants substrate-entity-authored)
 // - .claude/rules/monad-propagation (Result<T, GitLabFeedback> shape)
 
-import {
-  registerLifetimePair,
-  type ComposedKey,
-  type LifetimeState,
-  type StandardVerdict,
-} from "./world.js";
+import { registerLifetimePair, type ComposedKey, type LifetimeState, type StandardVerdict } from "./world.js";
 import { type GitWorld } from "./git-world.js";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -59,15 +54,7 @@ export interface DiscussionLifetime extends LifetimeState {
  * state-machine variants per GitLab REST API v4 spec.
  */
 export interface PipelineLifetime extends LifetimeState {
-  readonly kind:
-    | "created"
-    | "pending"
-    | "running"
-    | "success"
-    | "failed"
-    | "canceled"
-    | "skipped"
-    | "manual";
+  readonly kind: "created" | "pending" | "running" | "success" | "failed" | "canceled" | "skipped" | "manual";
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -87,10 +74,10 @@ export interface PipelineLifetime extends LifetimeState {
  */
 export interface GitLabResourceBudget {
   readonly restRemaining: number;
-  readonly restLimit: number;        // per-minute window; tier-dependent
-  readonly restResetAt: number;      // unix timestamp
+  readonly restLimit: number; // per-minute window; tier-dependent
+  readonly restResetAt: number; // unix timestamp
   readonly graphqlRemaining: number;
-  readonly graphqlLimit: number;     // GitLab GraphQL has its own budget
+  readonly graphqlLimit: number; // GitLab GraphQL has its own budget
   readonly graphqlResetAt: number;
 }
 
@@ -103,10 +90,10 @@ export interface GitLabResourceBudget {
  * boundaries.
  */
 export type GitLabRateLimitTier =
-  | "normal"             // > 800 remaining (40% of typical 2000/min)
-  | "cost-aware"         // 400-800
+  | "normal" // > 800 remaining (40% of typical 2000/min)
+  | "cost-aware" // 400-800
   | "extreme-cost-aware" // 80-400
-  | "pure-git";          // 0-80
+  | "pure-git"; // 0-80
 
 export function gitLabRateLimitTier(remaining: number): GitLabRateLimitTier {
   if (remaining > 800) return "normal";
@@ -136,7 +123,7 @@ export function gitLabRateLimitTier(remaining: number): GitLabRateLimitTier {
  * - GitLab-specific optimizations (merge-train, approval rules, suggestion patches)
  */
 export interface GitLabWorld extends GitWorld {
-  readonly forgeName: "git";  // inherits GitWorld base
+  readonly forgeName: "git"; // inherits GitWorld base
   readonly forgeSpecialization: "gitlab";
   readonly mrUniverse: ReadonlyArray<MrLifetime>;
   readonly discussionUniverse: ReadonlyArray<DiscussionLifetime>;
@@ -147,10 +134,7 @@ export interface GitLabWorld extends GitWorld {
 /**
  * Build the GitLabWorld substrate from a base GitWorld.
  */
-export function buildGitLabWorld(
-  gitWorld: GitWorld,
-  resourceBudget?: GitLabResourceBudget,
-): GitLabWorld {
+export function buildGitLabWorld(gitWorld: GitWorld, resourceBudget?: GitLabResourceBudget): GitLabWorld {
   return {
     ...gitWorld,
     forgeSpecialization: "gitlab",
@@ -162,10 +146,7 @@ export function buildGitLabWorld(
       { kind: "merged" },
       { kind: "closed" },
     ],
-    discussionUniverse: [
-      { kind: "unresolved" },
-      { kind: "resolved" },
-    ],
+    discussionUniverse: [{ kind: "unresolved" }, { kind: "resolved" }],
     pipelineUniverse: [
       { kind: "created" },
       { kind: "pending" },
@@ -190,9 +171,7 @@ export type GitLabFeedback =
   | { kind: "ApprovalRulesNotMet"; required: number; actual: number }
   | { kind: "MergeBlocked"; reason: string };
 
-export type GitLabResult<T> =
-  | { ok: true; world: T }
-  | { ok: false; feedback: GitLabFeedback };
+export type GitLabResult<T> = { ok: true; world: T } | { ok: false; feedback: GitLabFeedback };
 
 /**
  * Check if a GitLab operation is within budget.
@@ -204,10 +183,7 @@ export interface GitLabOperationCost {
   readonly graphqlCost?: number;
 }
 
-export function canAffordGitLab(
-  world: GitLabWorld,
-  cost: GitLabOperationCost,
-): GitLabResult<GitLabWorld> {
+export function canAffordGitLab(world: GitLabWorld, cost: GitLabOperationCost): GitLabResult<GitLabWorld> {
   const budget = world.resourceBudget;
   if (!budget) {
     return { ok: true, world };
@@ -240,11 +216,7 @@ export function canAffordGitLab(
 /**
  * Convenience: register a lifetime pair in the GitLabWorld.
  */
-export function registerInGitLab<
-  A extends LifetimeState,
-  B extends LifetimeState,
-  T,
->(
+export function registerInGitLab<A extends LifetimeState, B extends LifetimeState, T>(
   world: GitLabWorld,
   pairName: string,
   matrix: ReadonlyMap<ComposedKey<A, B>, T>,

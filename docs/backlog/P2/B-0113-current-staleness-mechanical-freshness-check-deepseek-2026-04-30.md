@@ -15,7 +15,16 @@ composes_with:
   - B-0113.1
   - B-0113.2
   - B-0113.3
-tags: [deepseek-2026-04-30, current-files, mechanism-not-vigilance, freshness-check, factory-hygiene, peer-review-finding, decomposed-2026-05-11]
+tags:
+  [
+    deepseek-2026-04-30,
+    current-files,
+    mechanism-not-vigilance,
+    freshness-check,
+    factory-hygiene,
+    peer-review-finding,
+    decomposed-2026-05-11,
+  ]
 type: friction-reducer
 ---
 
@@ -26,7 +35,7 @@ type: friction-reducer
 Deepseek peer review of the 2026-04-30 substrate-landing session
 (forwarded by Aaron 2026-04-30T~PM):
 
-> *"CURRENT-aaron.md is 4 days stale. This is a real gap. The
+> _"CURRENT-aaron.md is 4 days stale. This is a real gap. The
 > file exists specifically to prevent cold-start agents from
 > needing to read the full memory index. If it's 4 days behind
 > ... a cold-starting agent will make decisions on incomplete
@@ -34,23 +43,23 @@ Deepseek peer review of the 2026-04-30 substrate-landing session
 > mechanical trigger, not an agent's memory of whether it
 > remembered. A pre-commit hook that checks the last-modified
 > date of CURRENT-aaron.md against the newest memory file and
-> warns if the gap exceeds 24 hours would close this."*
+> warns if the gap exceeds 24 hours would close this."_
 
 ## Why this matters
 
-CURRENT-*.md files are the **fast-path projection** of
+CURRENT-\*.md files are the **fast-path projection** of
 currently-in-force rules per maintainer. Per CLAUDE.md
 session-bootstrap protocol:
 
-> *"Fast-path on wake: read any `CURRENT-<maintainer>.md`
-> files ... before the raw `feedback_*.md` ... log."*
+> _"Fast-path on wake: read any `CURRENT-<maintainer>.md`
+> files ... before the raw `feedback\__.md` ... log."\*
 
 If CURRENT-aaron.md is stale, cold-starting agents read an
 outdated projection and make decisions on incomplete context.
 The same-tick-CURRENT-update rule (codified in CURRENT-aaron.md
-itself: *"When a new memory updates a rule here, I update this
+itself: _"When a new memory updates a rule here, I update this
 file in the same tick. If I don't, this file is lying by
-omission."*) currently depends on the agent's memory of whether
+omission."_) currently depends on the agent's memory of whether
 the rule fired — vigilance, not mechanism.
 
 The 2026-04-30 session caught a 4-day staleness only because
@@ -114,22 +123,22 @@ existing `tools/hygiene/check-no-conflict-markers.sh` and
   agent's job; this row only catches the gap mechanically so
   the agent can't forget.
 - Does NOT replace peer review of CURRENT-file accuracy. Stale
-  by date is mechanical; *correct* by content needs a reader.
+  by date is mechanical; _correct_ by content needs a reader.
 - Does NOT extend to per-user CURRENT files outside the repo
   (none currently — CURRENT-ani.md is user-scope-only at time
   of writing).
 
 ## Carved sentence
 
-*"Same-tick-CURRENT-update is a rule. Vigilance is the
+_"Same-tick-CURRENT-update is a rule. Vigilance is the
 implementation. Mechanism is the implementation that doesn't
-forget."*
+forget."_
 
 ## Pre-start checklist (backlog-item start gate)
 
 **Prior-art-search completed 2026-05-11 (Riven worktree):**
 
-- Searched wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md (tools/hygiene/), memory/CURRENT-*.md, tools/hygiene/*.ts (post-bash-port), .github/workflows/gate.yml, docs/trajectories/* (no overlap with freshness).
+- Searched wake-time-substrate, skill-router, orthogonal-axes, Otto-364, PR #1701, decision-archaeology, LOST-FILES-LOCATIONS.md (tools/hygiene/), memory/CURRENT-_.md, tools/hygiene/_.ts (post-bash-port), .github/workflows/gate.yml, docs/trajectories/\* (no overlap with freshness).
 - No prior mechanical CURRENT check; closest are hygiene lints (tick-history-order, no-conflict-markers) now in TS.
 - Result: B-0113 was the first; no superseding work.
 

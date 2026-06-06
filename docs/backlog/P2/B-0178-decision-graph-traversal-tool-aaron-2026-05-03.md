@@ -35,16 +35,16 @@ Per B-0177's audit hypothesis: the tool was named with specific scope but never 
 
 Per the decision-graph memo, the substrate is a typed-edge provenance graph:
 
-| Node class | Source surface |
-|---|---|
-| Backlog rows | `docs/backlog/P*/B-*.md` |
-| ADRs | `docs/DECISIONS/*.md` |
-| Memos | `memory/*.md` |
-| Skills | `.claude/skills/*/SKILL.md` |
-| Personas | `.claude/agents/*.md` |
-| Research artifacts | `docs/research/*.md` |
-| Tick shards | `docs/hygiene-history/ticks/**/*.md` |
-| Commits | git log |
+| Node class         | Source surface                       |
+| ------------------ | ------------------------------------ |
+| Backlog rows       | `docs/backlog/P*/B-*.md`             |
+| ADRs               | `docs/DECISIONS/*.md`                |
+| Memos              | `memory/*.md`                        |
+| Skills             | `.claude/skills/*/SKILL.md`          |
+| Personas           | `.claude/agents/*.md`                |
+| Research artifacts | `docs/research/*.md`                 |
+| Tick shards        | `docs/hygiene-history/ticks/**/*.md` |
+| Commits            | git log                              |
 
 Edge types:
 
@@ -126,7 +126,7 @@ Visualization output:
 
 ## Why this matters
 
-Per the decision-graph memo's carved sentence: *"The graph's value compounds with backlog size: each new node + edge costs O(1); each new query benefits from the cumulative graph."* The substrate is already a graph; querying it requires either manual archaeology (slow) or mechanized traversal (this row). Without the tool, the graph stays implicit; with the tool, it becomes operational.
+Per the decision-graph memo's carved sentence: _"The graph's value compounds with backlog size: each new node + edge costs O(1); each new query benefits from the cumulative graph."_ The substrate is already a graph; querying it requires either manual archaeology (slow) or mechanized traversal (this row). Without the tool, the graph stays implicit; with the tool, it becomes operational.
 
 Composes with the alignment-frontier framing: substrate-quality tooling that makes the implicit graph queryable IS alignment-frontier substrate. The graph IS the project's accumulated decision-knowledge; not querying it leaves that knowledge inert.
 

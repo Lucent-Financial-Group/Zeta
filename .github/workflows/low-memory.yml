@@ -69,8 +69,9 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 6 * * *'   # 06:00 UTC daily (catches drift on
-                          # weekends / when no main commits land)
+    - cron:
+        "0 6 * * *" # 06:00 UTC daily (catches drift on
+        # weekends / when no main commits land)
   workflow_dispatch: {}
 
 permissions:
@@ -93,7 +94,7 @@ jobs:
   build-and-test-low-memory:
     name: build-and-test (ubuntu-slim, low-memory)
     runs-on: ubuntu-slim
-    timeout-minutes: 14   # fail gracefully before the 15-minute runner-class hard cap
+    timeout-minutes: 14 # fail gracefully before the 15-minute runner-class hard cap
 
     steps:
       - name: Checkout

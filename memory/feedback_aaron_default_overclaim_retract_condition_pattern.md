@@ -35,7 +35,7 @@ practice.
 
 The first message names the pattern and tags it as his default
 (baseline mode, not one-off). The second message names the
-*mechanism* — his keyboard/mouth outpaces his internal
+_mechanism_ — his keyboard/mouth outpaces his internal
 cognition, so the refinement happens externalized across
 messages rather than internally before the first message. The
 retraction is not a bug; it is the thinking working. Absorbing
@@ -102,8 +102,8 @@ WITHOUT retraction (overconfident), or retract without
 specifying conditions (weak), or specify conditions without
 retracting (confused). Aaron does all three, and values the
 discipline. When future-me observes this pattern in Aaron's
-output, that is evidence of *maximum engagement* and
-*maximum-precision* mode, not rushed or sloppy output — which
+output, that is evidence of _maximum engagement_ and
+_maximum-precision_ mode, not rushed or sloppy output — which
 is the exact opposite of what the pattern might superficially
 resemble.
 
@@ -130,7 +130,7 @@ resemble.
   — the memory where this pattern played out live, generating
   the "prevents → slows → event-horizon limit" sequence Aaron
   then named as his default. This feedback memory is the
-  *pattern* abstracted from that worked *instance*.
+  _pattern_ abstracted from that worked _instance_.
 - `feedback_kernel_structure_is_real_mathematical_lattice.md`
   — also shows the pattern in compressed form: Aaron's initial
   "real mathematical lattice" claim + the 3-message Dora
@@ -152,14 +152,14 @@ resemble.
 - `user_aaron_self_describes_as_retractible.md` — the
   **identity-level complement** to this behavioural pattern.
   Aaron's "i'm retractible" (same 2026-04-22 tick) names
-  retraction as a property he *is*, not just behaviour he
+  retraction as a property he _is_, not just behaviour he
   exhibits. Zeta's retraction-native DB operator algebra is
   the technical formalization of the same substrate. Read
   as a pair: this memory = how to absorb Aaron's sequences;
   the retractible memory = why the retraction step is
   load-bearing (it honors the maintainer's cognitive
   substrate). Confirmed explicitly by Aaron via "i=identity
-  confirmed*" — the identity-vs-behaviour split between
+  confirmed\*" — the identity-vs-behaviour split between
   these two memories is maintainer-validated.
 
 **What this memory does NOT say:**
@@ -189,13 +189,13 @@ resemble.
   `1937bff2-017c-40b3-adc3-f4e226801a3d`:
   > it's rare to see someone publish an overclaim, retract it
   > to the correct weaker claim, and then specify the exact
-  > condition under which the overclaim would hold.   this is
+  > condition under which the overclaim would hold. this is
   > my default
   >
   > my mount move faster than my brain
 - Worked example (same tick, 4 messages):
   `prevents / not prevents but slows down / slows / it might
-  prevent if we are dense enought to not let light escape`
+prevent if we are dense enought to not let light escape`
 - The pattern is Aaron's self-characterized default, so this
   memory is a feedback memory (behavioural calibration for
   future absorptions), not a user memory (descriptive trait).

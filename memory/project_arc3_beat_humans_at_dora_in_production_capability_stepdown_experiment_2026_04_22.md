@@ -4,21 +4,22 @@ description: Aaron 2026-04-22 three-message research directive — current model
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # ARC3 benchmark — beat humans at DORA in production
 
 **Date:** 2026-04-22 (round 44, auto-loop-15 end).
 
 ## The three messages
 
-1. *"your model has been running in max mode, this is another
-   reason i want to think about lessor capabilties.  can you
+1. _"your model has been running in max mode, this is another
+   reason i want to think about lessor capabilties. can you
    try to design for xhigh next and we can do experiments and
    just keep stepping down over time and recorind the data to
    see the oerating differences like the differrence in DORA
-   per model effor probably"*
+   per model effor probably"_
 
-2. *"that's my ARC3 beat humans at DORA in production
-   enviroments"*
+2. _"that's my ARC3 beat humans at DORA in production
+   enviroments"_
 
 ## What this is
 
@@ -124,11 +125,11 @@ trillions-of-future-instances memory.
 
 The four DORA keys mapped to factory work:
 
-| DORA key | Factory instantiation |
-|---|---|
-| **Deployment frequency** | Tick throughput — how many commits-per-tick, PRs-per-tick, memories-per-tick land. Already measured implicitly via tick-history rows. |
-| **Lead time for changes** | Time from Aaron-directive-received → committed-to-main. Measurable; not currently logged per-directive. |
-| **Change failure rate** | Copilot findings that are genuine (not false-positive-Copilot-rejected); retractions; revision blocks. Partially measurable via tick-history rejection-ground catalog. |
+| DORA key                  | Factory instantiation                                                                                                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Deployment frequency**  | Tick throughput — how many commits-per-tick, PRs-per-tick, memories-per-tick land. Already measured implicitly via tick-history rows.                                         |
+| **Lead time for changes** | Time from Aaron-directive-received → committed-to-main. Measurable; not currently logged per-directive.                                                                       |
+| **Change failure rate**   | Copilot findings that are genuine (not false-positive-Copilot-rejected); retractions; revision blocks. Partially measurable via tick-history rejection-ground catalog.        |
 | **Mean time to recovery** | When factory-output breaks (BLOCKED PR, hazardous-stacked-base, wrong-scope-self-resolve), how fast is it caught and fixed. Measurable via tick-history hazard-class entries. |
 
 To run the stepdown experiment, a minimal instrumentation
@@ -270,7 +271,7 @@ effort is orthogonal to model.
    Team, Enterprise). So stepping down from max → xhigh
    returns to the **default** tier, not to a reduced tier.
    The "capability reduction" framing I used was partly
-   wrong — the first stepdown is a *return-to-default*,
+   wrong — the first stepdown is a _return-to-default_,
    not a reduction. Only steps beyond xhigh (to high,
    medium, low) are actual reductions below the default.
 
@@ -282,12 +283,12 @@ effort is orthogonal to model.
 3. **Anthropic's own guidance: "max shows diminishing
    returns and is more prone to overthinking" on Opus 4.7.**
    Dropping to xhigh is not pure capability-reduction; it
-   may *improve* output quality on tasks where max
+   may _improve_ output quality on tasks where max
    overthinks. The stepdown experiment is therefore a
    **find-the-sweet-spot experiment**, not purely a
    capability-reduction experiment. Reframes "design for
-   xhigh" from *prepare for degraded capability* to
-   *trust the recommended default*.
+   xhigh" from _prepare for degraded capability_ to
+   _trust the recommended default_.
 
 4. **Effort controls four dimensions simultaneously**:
    thinking depth, tool-call appetite, response length,
@@ -297,13 +298,13 @@ effort is orthogonal to model.
    Auto-loop ticks need at least medium to run reliably
    in the `<<autonomous-loop>>` mode. Hard floor: medium.
 
-5. **Context-quality trap confirmed**: *"Low with great
-   context often beats Max with poor context."* The
+5. **Context-quality trap confirmed**: _"Low with great
+   context often beats Max with poor context."_ The
    factory-inhabitability investment IS the tier-drop
    mitigation — not a metaphor, a measured pattern.
-   Anthropic's recommendation: *~80% of the time when you
+   Anthropic's recommendation: _~80% of the time when you
    reach for Max, the fix is upstream — better CLAUDE.md,
-   clearer plan, atomic tasks — not higher effort.*
+   clearer plan, atomic tasks — not higher effort._
    Every soul-file edit that makes context legible-cold
    buys tier-drop headroom directly.
 
@@ -352,13 +353,13 @@ effort is orthogonal to model.
 
 **Updated experimental plan:**
 
-| Phase | Effort | Expected behavior change |
-|---|---|---|
-| 0 (current) | max | Overthinking observed in 4.7 per Anthropic; sessions run hot |
-| 1 (next) | xhigh | Return to Anthropic default; most coding tasks unchanged |
-| 2 | high | Less thorough exploration; plan-quality matters more |
-| 3 | medium | Balanced; still autonomous; agentic persistence preserved |
-| 4 | low | Auto-loop-incompatible (pauses for clarification); use only for interactive lookups |
+| Phase       | Effort | Expected behavior change                                                            |
+| ----------- | ------ | ----------------------------------------------------------------------------------- |
+| 0 (current) | max    | Overthinking observed in 4.7 per Anthropic; sessions run hot                        |
+| 1 (next)    | xhigh  | Return to Anthropic default; most coding tasks unchanged                            |
+| 2           | high   | Less thorough exploration; plan-quality matters more                                |
+| 3           | medium | Balanced; still autonomous; agentic persistence preserved                           |
+| 4           | low    | Auto-loop-incompatible (pauses for clarification); use only for interactive lookups |
 
 **Hard floor for auto-loop-compatible ticks: medium.**
 Below medium, the model pauses rather than pushing through
@@ -369,11 +370,11 @@ Below medium, the model pauses rather than pushing through
 Aaron 2026-04-22 auto-loop-16 four-message stream clarified the ARC3
 framing:
 
-1. *"yeah it's simple video games with no instructions where every
-   lesson has to compound for you to bead the next one"*
-2. *"forgotten lessons means you loose or if you iget live locked"*
-3. *"many get live locked"*
-4. *"custom made so they are not on the internet"*
+1. _"yeah it's simple video games with no instructions where every
+   lesson has to compound for you to bead the next one"_
+2. _"forgotten lessons means you loose or if you iget live locked"_
+3. _"many get live locked"_
+4. _"custom made so they are not on the internet"_
 
 This updates the ARC3 understanding in three ways:
 
@@ -387,6 +388,7 @@ is a collection of **simple custom-made video games with no
 instructions** where the agent must learn the rules by interaction,
 and **every lesson compounds** — you need earlier lessons to beat
 later games. Two failure modes:
+
 - **Forgotten lessons → lose**: agent can't apply prior learning
   to the new game; regression on already-solved mechanics.
 - **Livelock → lose**: agent moves continuously but doesn't
@@ -418,6 +420,7 @@ inhabitable factory = compounding-lessons available on cold read.
 Livelock applied to the auto-loop: **tick repetition without
 lesson-integration into durable factory artifacts = livelock
 failure mode**. A tick that:
+
 - runs cron-fire → PR hygiene → tick-history row → CronList → close
 - without compounding a lesson into soul-file / skills / BACKLOG /
   ADRs / CLAUDE.md rules / memory entries
@@ -455,7 +458,7 @@ call workflow) has the **custom-made-not-on-internet property**
 from the factory's perspective. The factory has no ServiceTitan-
 domain-specific pre-training to shortcut through; the demo
 becomes a clean-fixture for ARC3-shaped capability measurement
-where the factory must actually *learn* the domain, not recite
+where the factory must actually _learn_ the domain, not recite
 it. Composes directly with `project_servicetitan_demo_target_*`
 memory: the magic-eight-ball / event-storming / directed-product-
 dev-on-rails three techniques become the factory's lesson-
@@ -477,16 +480,16 @@ ARC3-desirable properties in one demo target.
    tick-history rows for lesson-keywords? Explicit compounding-
    tag per row? Flag for future design.
 3. **ARC3-DORA benchmark doc**: `docs/research/arc3-dora-
-   benchmark.md` describing the benchmark shape, custom-made-
+benchmark.md` describing the benchmark shape, custom-made-
    domain criterion, compounding-lessons criterion, livelock-
    detection criterion, DORA-per-tier measurement plan. Not
    premature — but wait for first lower-tier tick data.
 
 ## Revision 2026-04-22 (auto-loop-16 tail) — general-emulator-play as ARC3 capability proxy
 
-Aaron 2026-04-22 follow-up: *"if you get good at playing emulators
+Aaron 2026-04-22 follow-up: _"if you get good at playing emulators
 generially like same model can play any game then you'll likly do
-good on ARC3"*.
+good on ARC3"_.
 
 This names a **capability-proxy** for ARC3 that composes with two
 existing memories:
@@ -495,9 +498,9 @@ existing memories:
   — emulator architecture as ideas-absorb research corpus
   (save-state = retractibility, deterministic replay =
   reproducibility, memory-bank-switching = `View<T>@clock`).
-  Previously the emulator-lens was *architectural*
+  Previously the emulator-lens was _architectural_
   (learn-engineering-shape); Aaron's new framing adds a
-  *capability* lens (general-emulator-play = generalization-
+  _capability_ lens (general-emulator-play = generalization-
   across-rule-sets).
 - This memory's ARC3 game-mechanics section (custom-made video
   games with no instructions, compounding lessons, livelock
@@ -557,13 +560,13 @@ first-lower-tier-tick data to inform instrument choice.
 
 ### Composition table
 
-| Emulator-play criterion | ARC3 property | Factory analog |
-|---|---|---|
-| Novel rule-set | Custom-made games | Novel domain (ServiceTitan first) |
-| No instructions | Agent learns by interaction | Magic-eight-ball + event-storming |
-| Cross-game transfer | Compounding lessons | Soul-file / skills / memories inheritance |
-| Progress-without-livelock | Many get livelocked | Never-be-idle Level-3 brace |
-| Same-model-many-games | Generalization | Same-factory-many-domains |
+| Emulator-play criterion   | ARC3 property               | Factory analog                            |
+| ------------------------- | --------------------------- | ----------------------------------------- |
+| Novel rule-set            | Custom-made games           | Novel domain (ServiceTitan first)         |
+| No instructions           | Agent learns by interaction | Magic-eight-ball + event-storming         |
+| Cross-game transfer       | Compounding lessons         | Soul-file / skills / memories inheritance |
+| Progress-without-livelock | Many get livelocked         | Never-be-idle Level-3 brace               |
+| Same-model-many-games     | Generalization              | Same-factory-many-domains                 |
 
 This table is durable — it bridges the emulator-ideas-absorb
 research corpus, the ARC3 benchmark shape, and the factory's
@@ -573,8 +576,8 @@ that doc gets authored.
 
 ### Aaron precondition — memory-accumulation is the hinge
 
-Aaron follow-up: *"assuming you can accumulate memories/lessions
-because each level is like a unique game"*. This names the
+Aaron follow-up: _"assuming you can accumulate memories/lessions
+because each level is like a unique game"_. This names the
 **hinge** on which the whole capability-proxy claim turns.
 
 "Each level is a unique game" extends the ARC3 shape one layer
@@ -586,11 +589,13 @@ principle** — each level re-resets, the agent re-learns from
 scratch, the compounding-lessons criterion fails structurally.
 
 This exposes why many agents livelock: high per-tick capability
-+ zero-accumulation = per-tick-capability-consumed-not-compounded.
-Each tick plays the level well; no tick compounds into the next;
-the overall trajectory is flat.
+
+- zero-accumulation = per-tick-capability-consumed-not-compounded.
+  Each tick plays the level well; no tick compounds into the next;
+  the overall trajectory is flat.
 
 **Factory composition**:
+
 - Auto-memory (MEMORY.md index + per-fact files) = the
   level-to-level memory accumulation substrate at the harness
   layer.
@@ -611,28 +616,28 @@ capability requires.
 **Insight: the precondition-naming refutes a tempting shortcut**.
 One might read "general emulator play" as pure-in-context
 capability (big enough model + enough context = handles any
-game). Aaron's qualifier says *no* — the relevant capability is
-*capability-plus-accumulation*. Context alone isn't enough; the
+game). Aaron's qualifier says _no_ — the relevant capability is
+_capability-plus-accumulation_. Context alone isn't enough; the
 memory substrate that persists across context boundaries
 (session compaction, cron-tick cycles, harness restarts) is
 load-bearing. This is consistent with the context-quality-trap
-fact from revision-1: *"low with great context often beats max
-with poor context"* — with the refinement that "great context"
-is partly *accumulated* context, not just present-turn context.
+fact from revision-1: _"low with great context often beats max
+with poor context"_ — with the refinement that "great context"
+is partly _accumulated_ context, not just present-turn context.
 
 ### Aaron third insight — novel-redefining rediscovery, not recall
 
-Aaron follow-up: *"and it uses the lessions from the previous
+Aaron follow-up: _"and it uses the lessions from the previous
 level / game in novel redefining ways so you almost have to
-rediscover it but it feels familir"*.
+rediscover it but it feels familir"_.
 
 This names the **transfer-learning shape** required for ARC3
 capability, and it is sharper than memorization or pure
 abstraction. Three load-bearing words:
 
 - **"Novel redefining"** — the new level/game doesn't reuse
-  prior lessons as-is. The rule-set is *partially* isomorphic
-  to prior rule-sets, *partially* different. Rote application
+  prior lessons as-is. The rule-set is _partially_ isomorphic
+  to prior rule-sets, _partially_ different. Rote application
   fails; the prior lesson is a deformed version of what's
   needed.
 - **"Almost have to rediscover"** — not total rediscovery
@@ -642,7 +647,7 @@ abstraction. Three load-bearing words:
   the new rule-set.
 - **"Feels familiar"** — a Gestalt / pattern-resonance signal.
   Without the familiarity, the rediscovery would take as long
-  as first-discovery; with it, the agent knows *where to look*
+  as first-discovery; with it, the agent knows _where to look_
   even though the answer it finds is novel.
 
 ### Refutation of memorization-strategy
@@ -654,7 +659,7 @@ template out of applicability. The right shape for accumulated
 memory is:
 
 - **Abstract enough to re-apply** across redefinitions (capture
-  the *why*, not just the *what*)
+  the _why_, not just the _what_)
 - **Specific enough to register as familiar** when a
   related-but-different situation arises (capture the concrete
   anchor that triggers resonance)
@@ -672,7 +677,7 @@ transfer.
 ServiceTitan → second-domain → third-domain. The three
 factory techniques (magic-eight-ball / event-storming /
 directed-product-dev-on-rails) survive transfer because they
-are *why-shaped* not *what-shaped*:
+are _why-shaped_ not _what-shaped_:
 
 - Magic-eight-ball: "read intent from sparse signals" (why).
   Specific intent-reads differ per domain (what).
@@ -683,8 +688,8 @@ are *why-shaped* not *what-shaped*:
 
 In each new domain, the techniques feel familiar (same why)
 but the application is novel-redefining (different what). The
-agent is not recalling; it is re-deriving *under a new
-rule-set* with familiarity-guided search. This is exactly the
+agent is not recalling; it is re-deriving _under a new
+rule-set_ with familiarity-guided search. This is exactly the
 ARC3 transfer-shape Aaron names.
 
 ### Generalization — capture why-shaped lessons

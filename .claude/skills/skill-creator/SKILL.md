@@ -64,9 +64,9 @@ A proposal contains:
     by a `project:` frontmatter field naming the project
     (`project: zeta`) and a one-line rationale in the body
     ("Project-specific: this skill owns Zeta's …").
-  The software factory is intended to become reusable across
-  projects; every project-specific skill is a deliberate
-  exception, not an accident.
+    The software factory is intended to become reusable across
+    projects; every project-specific skill is a deliberate
+    exception, not an accident.
 
 ### 2. Draft
 
@@ -168,7 +168,7 @@ future rounds may want the reasoning.
 
 ## Interaction with the Architect
 
-The Architect has edit rights on *his own* skill
+The Architect has edit rights on _his own_ skill
 (`.claude/agents/architect.md` + `round-management`) through this
 workflow — which means his edits go through the same draft /
 Prompt-Protector / commit cycle. He does **not** have the

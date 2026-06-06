@@ -27,6 +27,7 @@ This PR closes B-0058.3 by creating the initial 'honesty dashboard' at `docs/hyg
 Adds an initial “honesty dashboard” log under `docs/hygiene-history/` to record AI ethics/safety gate candidate failures for transparency and auditability (B-0058.3).
 
 **Changes:**
+
 - Introduces `docs/hygiene-history/ethics-gate-failures.md` with a short purpose statement.
 - Seeds a “Failure Log” section with a table header for future entries.
 

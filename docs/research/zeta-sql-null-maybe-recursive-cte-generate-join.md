@@ -113,17 +113,17 @@ Per `.claude/rules/substrate-or-it-didnt-happen.md` verbatim-preservation trigge
 
 ## Why Amara's blade matters (operational sharpening)
 
-The PR #5277 "recognize, don't construct" substrate landed an unconditional claim: *"the database IS the Maybe monad runtime."* Amara's blade names the gap between **structural recognition** (SQL has NULL + LEFT JOIN propagation + recursive-CTE fixed-point semantics — the SHAPE of a Maybe monad) and **lawful Maybe-monad behavior** (the monad laws: left identity, right identity, associativity).
+The PR #5277 "recognize, don't construct" substrate landed an unconditional claim: _"the database IS the Maybe monad runtime."_ Amara's blade names the gap between **structural recognition** (SQL has NULL + LEFT JOIN propagation + recursive-CTE fixed-point semantics — the SHAPE of a Maybe monad) and **lawful Maybe-monad behavior** (the monad laws: left identity, right identity, associativity).
 
 SQL NULL violates the laws in several well-documented places:
 
-| Maybe-monad law | SQL NULL violation |
-|---|---|
-| `NULL = NULL` should hold structurally | SQL: `NULL = NULL` → NULL (not true) |
-| `bind` should preserve `Nothing` cleanly | SQL: `NOT IN (subquery with NULL)` traps; returns no rows when intuition says it should return all-non-NULL rows |
-| Aggregate behavior should be consistent | SQL: `COUNT(*)` includes NULL rows; `COUNT(col)` excludes them; `SUM(col)` returns NULL on empty set; `AVG` ignores NULLs |
-| Optimizer-invariant under refactoring | SQL: optimizer behavior on NULL-bearing predicates varies across PostgreSQL / CockroachDB / MySQL / SQL Server / Oracle |
-| Reference equality on the third value | SQL: `WHERE x = NULL` never matches; `WHERE x IS NULL` does — two different operators for what should be one comparison |
+| Maybe-monad law                          | SQL NULL violation                                                                                                        |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `NULL = NULL` should hold structurally   | SQL: `NULL = NULL` → NULL (not true)                                                                                      |
+| `bind` should preserve `Nothing` cleanly | SQL: `NOT IN (subquery with NULL)` traps; returns no rows when intuition says it should return all-non-NULL rows          |
+| Aggregate behavior should be consistent  | SQL: `COUNT(*)` includes NULL rows; `COUNT(col)` excludes them; `SUM(col)` returns NULL on empty set; `AVG` ignores NULLs |
+| Optimizer-invariant under refactoring    | SQL: optimizer behavior on NULL-bearing predicates varies across PostgreSQL / CockroachDB / MySQL / SQL Server / Oracle   |
+| Reference equality on the third value    | SQL: `WHERE x = NULL` never matches; `WHERE x IS NULL` does — two different operators for what should be one comparison   |
 
 The structural recognition is REAL (SQL has the shape). The lawful behavior requires DISCIPLINE (the 7-point Zeta NULL/Maybe discipline below) to recover monad-like behavior from a substrate that doesn't natively enforce it.
 

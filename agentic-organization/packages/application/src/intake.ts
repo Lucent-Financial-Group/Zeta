@@ -57,9 +57,12 @@ const KIND_TO_TYPE: Readonly<Record<NonNullable<ExternalIntakeEvent["kind"]>, Wo
 
 /** Deterministic mapping of an external payload to a normalized work item shape. */
 export function normalizeIntake(raw: ExternalIntakeEvent): Result<NormalizedIntake> {
-  if (raw.title.trim().length === 0) return { ok: false, feedback: { reason: "missing_title", message: "intake event has no title" } };
-  if (raw.projectId.trim().length === 0) return { ok: false, feedback: { reason: "missing_project", message: "intake event has no projectId" } };
-  if (raw.externalId.trim().length === 0) return { ok: false, feedback: { reason: "missing_external_id", message: "intake event has no externalId" } };
+  if (raw.title.trim().length === 0)
+    return { ok: false, feedback: { reason: "missing_title", message: "intake event has no title" } };
+  if (raw.projectId.trim().length === 0)
+    return { ok: false, feedback: { reason: "missing_project", message: "intake event has no projectId" } };
+  if (raw.externalId.trim().length === 0)
+    return { ok: false, feedback: { reason: "missing_external_id", message: "intake event has no externalId" } };
   return {
     ok: true,
     value: {
@@ -82,7 +85,13 @@ export type IntakeDeps = {
   appendEvent: (event: OrgEvent) => Promise<void>;
 };
 
-function transitionEvent(deps: IntakeDeps, workItemId: string, from: WorkItemState, to: WorkItemState, decision: string): OrgEvent {
+function transitionEvent(
+  deps: IntakeDeps,
+  workItemId: string,
+  from: WorkItemState,
+  to: WorkItemState,
+  decision: string,
+): OrgEvent {
   return {
     id: deps.createId("evt"),
     kind: OrgEventKind.WorkItemTransition,
@@ -106,7 +115,10 @@ export async function createWorkItemFromIntake(
   deps: IntakeDeps,
 ): Promise<Result<{ workItem: WorkItem; event: OrgEvent }>> {
   if (deps.existsByExternalRef(normalized.externalRef)) {
-    return { ok: false, feedback: { reason: "duplicate", message: `intake ${normalized.externalRef} already ingested` } };
+    return {
+      ok: false,
+      feedback: { reason: "duplicate", message: `intake ${normalized.externalRef} already ingested` },
+    };
   }
   const now = deps.nowIso();
   const workItem: WorkItem = {
@@ -151,14 +163,23 @@ export async function createWorkItemFromIntake(
  * triage hat can reclassify before this in a richer flow.)
  */
 export async function triageIntake(workItem: WorkItem, deps: IntakeDeps): Promise<WorkItem> {
-  const path: readonly WorkItemState[] = [WorkItemState.Created, WorkItemState.Intake, WorkItemState.Triage, WorkItemState.Ready];
+  const path: readonly WorkItemState[] = [
+    WorkItemState.Created,
+    WorkItemState.Intake,
+    WorkItemState.Triage,
+    WorkItemState.Ready,
+  ];
   let current = workItem;
   for (let i = 0; i < path.length - 1; i += 1) {
     const from = path[i]!;
     const to = path[i + 1]!;
     // an external report carries the triage fields + reproduction evidence the
     // defect guard requires; the triage hat confirms them here.
-    assertWorkItemTransition(from, to, { workItemType: workItem.workItemType, hasTriageFields: true, hasRequiredEvidence: true });
+    assertWorkItemTransition(from, to, {
+      workItemType: workItem.workItemType,
+      hasTriageFields: true,
+      hasRequiredEvidence: true,
+    });
     await deps.appendEvent(transitionEvent(deps, workItem.workItemId, from, to, `triage: ${from} → ${to}`));
     current = { ...current, state: to, updatedAt: deps.nowIso() };
   }

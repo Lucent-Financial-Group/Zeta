@@ -14,21 +14,21 @@ MySQL or MSSQL or Spanner or Cockroach", this is the seat.
 
 ## The RDBMS canon
 
-| System | Since | Lineage | Key differentiator |
-|---|---|---|---|
-| **Postgres** | 1986 | Ingres → Postgres | Extensibility, compliance |
-| **MySQL** | 1995 | Own | Fast reads, replication, InnoDB |
-| **MariaDB** | 2009 | MySQL fork | Governance independence |
-| **SQL Server** | 1989 | Sybase → MSSQL | Windows-native, tooling |
-| **Oracle** | 1979 | Own | Scale, history, $ |
-| **SQLite** | 2000 | Own | Embedded, file-per-db |
-| **Db2** | 1983 | IBM | Mainframe, z/OS |
-| **SAP HANA** | 2010 | Own | In-memory, column+row |
-| **Spanner** | 2012 | Google | Global, TrueTime |
-| **CockroachDB** | 2015 | Own | Postgres-wire, Raft, HLC |
-| **TiDB** | 2016 | Own | MySQL-wire, Raft |
-| **YugabyteDB** | 2017 | Own | Postgres-wire, Raft, DocDB |
-| **VoltDB** | 2010 | Stonebraker | Deterministic, in-memory |
+| System          | Since | Lineage           | Key differentiator              |
+| --------------- | ----- | ----------------- | ------------------------------- |
+| **Postgres**    | 1986  | Ingres → Postgres | Extensibility, compliance       |
+| **MySQL**       | 1995  | Own               | Fast reads, replication, InnoDB |
+| **MariaDB**     | 2009  | MySQL fork        | Governance independence         |
+| **SQL Server**  | 1989  | Sybase → MSSQL    | Windows-native, tooling         |
+| **Oracle**      | 1979  | Own               | Scale, history, $               |
+| **SQLite**      | 2000  | Own               | Embedded, file-per-db           |
+| **Db2**         | 1983  | IBM               | Mainframe, z/OS                 |
+| **SAP HANA**    | 2010  | Own               | In-memory, column+row           |
+| **Spanner**     | 2012  | Google            | Global, TrueTime                |
+| **CockroachDB** | 2015  | Own               | Postgres-wire, Raft, HLC        |
+| **TiDB**        | 2016  | Own               | MySQL-wire, Raft                |
+| **YugabyteDB**  | 2017  | Own               | Postgres-wire, Raft, DocDB      |
+| **VoltDB**      | 2010  | Stonebraker       | Deterministic, in-memory        |
 
 **Rule.** Name the system, not "SQL". A migration between
 Postgres and MySQL is a real project.
@@ -51,15 +51,15 @@ diagnostic, not a dogma.
 
 ## Normal forms
 
-| Form | Rule |
-|---|---|
-| **1NF** | Atomic attribute values |
-| **2NF** | No partial-key dependencies |
-| **3NF** | No transitive dependencies |
-| **BCNF** | Every determinant is a candidate key |
-| **4NF** | No multi-valued dependencies |
-| **5NF** | No join-dependency anomalies |
-| **6NF** | Maximum decomposition |
+| Form     | Rule                                        |
+| -------- | ------------------------------------------- |
+| **1NF**  | Atomic attribute values                     |
+| **2NF**  | No partial-key dependencies                 |
+| **3NF**  | No transitive dependencies                  |
+| **BCNF** | Every determinant is a candidate key        |
+| **4NF**  | No multi-valued dependencies                |
+| **5NF**  | No join-dependency anomalies                |
+| **6NF**  | Maximum decomposition                       |
 | **DKNF** | Only domain + key constraints (theoretical) |
 
 **Rule.** 3NF / BCNF is the practical target for OLTP.
@@ -100,14 +100,14 @@ trade-offs.
 
 ## Replication
 
-| Model | Example | Lag |
-|---|---|---|
-| Statement-based | MySQL legacy | Fragile |
-| Row-based | MySQL (default) | Mainstream |
-| Logical streaming | Postgres logical | Selective |
-| Physical streaming | Postgres streaming, MSSQL AG | Fastest |
-| Raft-based | CockroachDB, TiDB | Sync, strong-consistent |
-| Paxos-based | Spanner | Global |
+| Model              | Example                      | Lag                     |
+| ------------------ | ---------------------------- | ----------------------- |
+| Statement-based    | MySQL legacy                 | Fragile                 |
+| Row-based          | MySQL (default)              | Mainstream              |
+| Logical streaming  | Postgres logical             | Selective               |
+| Physical streaming | Postgres streaming, MSSQL AG | Fastest                 |
+| Raft-based         | CockroachDB, TiDB            | Sync, strong-consistent |
+| Paxos-based        | Spanner                      | Global                  |
 
 ## Query planning — cost vs rule
 
@@ -141,14 +141,14 @@ old data), performance second.
 
 ## The procedural-extension wars
 
-| Dialect | System |
-|---|---|
-| PL/pgSQL | Postgres |
-| T-SQL | SQL Server, Sybase |
-| PL/SQL | Oracle |
-| MySQL Stored Procedures | MySQL |
-| SQL PL | Db2 |
-| PL/HANA / SQLScript | HANA |
+| Dialect                 | System             |
+| ----------------------- | ------------------ |
+| PL/pgSQL                | Postgres           |
+| T-SQL                   | SQL Server, Sybase |
+| PL/SQL                  | Oracle             |
+| MySQL Stored Procedures | MySQL              |
+| SQL PL                  | Db2                |
+| PL/HANA / SQLScript     | HANA               |
 
 **Rule.** Stored procedures lock-in by dialect. Modern
 recipe: procedural logic in app tier, SQL in DB.
@@ -156,14 +156,14 @@ Exception: hot loops where the round-trip cost dominates.
 
 ## JSON support
 
-| System | JSON type |
-|---|---|
-| Postgres | JSONB (indexed), JSON (text) |
-| MySQL 5.7+ | JSON (binary, indexed via generated cols) |
-| MariaDB | JSON alias of LONGTEXT with CHECK |
-| SQL Server 2016+ | NVARCHAR + JSON functions |
-| Oracle 21c+ | JSON type |
-| SQLite | JSON1 extension |
+| System           | JSON type                                 |
+| ---------------- | ----------------------------------------- |
+| Postgres         | JSONB (indexed), JSON (text)              |
+| MySQL 5.7+       | JSON (binary, indexed via generated cols) |
+| MariaDB          | JSON alias of LONGTEXT with CHECK         |
+| SQL Server 2016+ | NVARCHAR + JSON functions                 |
+| Oracle 21c+      | JSON type                                 |
+| SQLite           | JSON1 extension                           |
 
 **Rule.** JSONB in Postgres is the best of the class.
 MySQL JSON is adequate. SQL Server requires generated
@@ -171,12 +171,12 @@ columns for performance.
 
 ## Cloud-managed variants
 
-| Cloud | Postgres | MySQL | MSSQL | Proprietary-scale |
-|---|---|---|---|---|
-| AWS | RDS, Aurora | RDS, Aurora | RDS | Aurora Serverless |
-| GCP | Cloud SQL | Cloud SQL | — | Cloud Spanner, AlloyDB |
-| Azure | Azure DB for PG | Azure DB for MySQL | Azure SQL | Cosmos DB |
-| Independents | Neon, Supabase, Planetscale-for-Postgres-adjacent, Crunchy | Planetscale | — | — |
+| Cloud        | Postgres                                                   | MySQL              | MSSQL     | Proprietary-scale      |
+| ------------ | ---------------------------------------------------------- | ------------------ | --------- | ---------------------- |
+| AWS          | RDS, Aurora                                                | RDS, Aurora        | RDS       | Aurora Serverless      |
+| GCP          | Cloud SQL                                                  | Cloud SQL          | —         | Cloud Spanner, AlloyDB |
+| Azure        | Azure DB for PG                                            | Azure DB for MySQL | Azure SQL | Cosmos DB              |
+| Independents | Neon, Supabase, Planetscale-for-Postgres-adjacent, Crunchy | Planetscale        | —         | —                      |
 
 **Rule.** Pick managed unless operational expertise is
 strong. Self-hosted Postgres is a real commitment.
@@ -229,11 +229,11 @@ Ora2Pg, AWS DMS) help but don't replace judgement.
 - **SQL language** → `sql-expert`.
 - **Engine internals** → `sql-engine-expert`.
 - **Concurrency-control deep-dive** → `transaction-manager-
-  expert`.
+expert`.
 - **Replication protocols** → `distributed-consensus-
-  expert` / `raft-expert`.
+expert` / `raft-expert`.
 - **Cross-model (document / KV / ...)** → `database-
-  systems-expert`.
+systems-expert`.
 
 ## Hazards
 
@@ -257,16 +257,16 @@ Ora2Pg, AWS DMS) help but don't replace judgement.
 
 ## Reference patterns
 
-- Codd — *The Relational Model for Database Management*
+- Codd — _The Relational Model for Database Management_
   (1970, 1990 book).
-- Date — *An Introduction to Database Systems* (8th).
-- Garcia-Molina, Ullman, Widom — *Database Systems: The
-  Complete Book*.
-- Hellerstein & Stonebraker — *Readings in Database
-  Systems* (the Red Book).
-- Bernstein, Hadzilacos, Goodman — *Concurrency Control
-  and Recovery* (classic).
-- Pavlo & Aslett — *What's Really New with NewSQL*.
+- Date — _An Introduction to Database Systems_ (8th).
+- Garcia-Molina, Ullman, Widom — _Database Systems: The
+  Complete Book_.
+- Hellerstein & Stonebraker — _Readings in Database
+  Systems_ (the Red Book).
+- Bernstein, Hadzilacos, Goodman — _Concurrency Control
+  and Recovery_ (classic).
+- Pavlo & Aslett — _What's Really New with NewSQL_.
 - `.claude/skills/postgresql-expert/SKILL.md`.
 - `.claude/skills/sql-expert/SKILL.md`.
 - `.claude/skills/sql-engine-expert/SKILL.md`.

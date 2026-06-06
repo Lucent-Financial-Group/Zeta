@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
   name: kube-prometheus-stack
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -24,7 +24,7 @@ spec:
               volumeClaimTemplate:
                 spec:
                   storageClassName: longhorn
-                  accessModes: [ ReadWriteOnce ]
+                  accessModes: [ReadWriteOnce]
                   resources: { requests: { storage: 100Gi } }
         grafana:
           # Admin password sourced from a Secret rather than
@@ -48,11 +48,11 @@ spec:
               volumeClaimTemplate:
                 spec:
                   storageClassName: longhorn
-                  accessModes: [ ReadWriteOnce ]
+                  accessModes: [ReadWriteOnce]
                   resources: { requests: { storage: 10Gi } }
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

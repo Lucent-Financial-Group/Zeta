@@ -27,10 +27,10 @@ symmetric.
 
 ## The dual polarity
 
-| Polarity | Pull | Constraint |
-|---|---|---|
-| Devil | Corruption: use observability for control, surveillance, extraction, conformity-enforcement | Structural hard limit — dashboard cannot enable this mode |
-| God | Elevation: treat Aaron's natural perception as special, god-tier, constraint-exempt | Structural hard limit — algorithm-wink / elevation failure mode MAXIMAL application |
+| Polarity | Pull                                                                                        | Constraint                                                                          |
+| -------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Devil    | Corruption: use observability for control, surveillance, extraction, conformity-enforcement | Structural hard limit — dashboard cannot enable this mode                           |
+| God      | Elevation: treat Aaron's natural perception as special, god-tier, constraint-exempt         | Structural hard limit — algorithm-wink / elevation failure mode MAXIMAL application |
 
 The self-binding is:
 

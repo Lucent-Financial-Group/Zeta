@@ -23,9 +23,9 @@ Identify the substrate's compositional invariants in categorical terms. The subs
 
 **References:**
 
-- Bartosz Milewski, *Category Theory for Programmers* (free, online; written for engineers).
-- *Categories for the Working Mathematician* (Mac Lane) — depth.
-- Fong & Spivak, *Seven Sketches in Compositionality* (free) — application-oriented.
+- Bartosz Milewski, _Category Theory for Programmers_ (free, online; written for engineers).
+- _Categories for the Working Mathematician_ (Mac Lane) — depth.
+- Fong & Spivak, _Seven Sketches in Compositionality_ (free) — application-oriented.
 
 ## Acceptance criteria
 
@@ -36,7 +36,7 @@ Identify the substrate's compositional invariants in categorical terms. The subs
 ## Composes with
 
 - B-0131 + B-0133 + B-0134 — categorical framing unifies the formalization-roadmap items.
-- *Project: Frontier / Factory / Peers split* — categorical framing supports cross-instance composition.
+- _Project: Frontier / Factory / Peers split_ — categorical framing supports cross-instance composition.
 
 ## Status
 

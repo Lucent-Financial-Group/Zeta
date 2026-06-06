@@ -45,7 +45,7 @@ substantively-new findings:
 - `gh pr checks 5135` → "no checks reported on the branch"
 - `gh api .../check-runs` → `total: 0`
 - `bun tools/github/poll-pr-gate.ts 5135` → `gate: BLOCKED, autoMerge: armed,
-  unresolvedThreads: 0, nextAction: none`
+unresolvedThreads: 0, nextAction: none`
 
 The cause is upstream GitHub Actions infrastructure — NOT a Zeta-side corruption
 case the canary rule was designed to catch.
@@ -107,8 +107,8 @@ Substrate-honest follow-up on the markdown-validation recommendation:
 `.github/workflows/gate.yml` already runs `markdownlint-cli2` against every PR via the `lint (markdownlint)` job:
 
 ```yaml
-      - name: Run markdownlint
-        run: mise exec -- markdownlint-cli2 "**/*.md"
+- name: Run markdownlint
+  run: mise exec -- markdownlint-cli2 "**/*.md"
 ```
 
 It's wired into the `gate` aggregate check (required by branch protection), so auto-merge IS gated by markdown lint passing. The check is currently `in_progress` on this PR (per `bun tools/github/poll-pr-gate.ts 5137`: 1 required OK + 6 required in_progress + 0 failed).

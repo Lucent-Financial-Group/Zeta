@@ -96,7 +96,20 @@ avoid YAML-in-YAML quoting). Schema:
   "version": 1,
   "description": "Canonical YAML reader vectors (TS/F#/C#/Rust). Inputs as JSON strings; expected = L1 event stream.",
   "vectors": [
-    { "id": "flat-scalars", "yaml": "name: zeta\ncount: 42\n", "expected": [ {"e":"StreamStart"}, {"e":"MappingStart"}, {"e":"Scalar","raw":"name","kind":"Str","style":"Plain"}, {"e":"Scalar","raw":"zeta","kind":"Str","style":"Plain"}, {"e":"Scalar","raw":"count","kind":"Str","style":"Plain"}, {"e":"Scalar","raw":"42","kind":"Int","style":"Plain"}, {"e":"MappingEnd"}, {"e":"StreamEnd"} ] }
+    {
+      "id": "flat-scalars",
+      "yaml": "name: zeta\ncount: 42\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "name", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "zeta", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "count", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "42", "kind": "Int", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    }
   ]
 }
 ```
@@ -171,37 +184,37 @@ cross-verify.ts, package.json}`; `tests/cross-verification/yaml/{vectors.json, c
 ts-output.json}`.
 
 - [ ] **Step 1 — `vectors.json`**: author all 10 canonical vectors per the contracts above
-  (inputs as JSON strings; expected = full L1 event arrays). This is the shared fixture +
-  the reference for every other task; get it exactly right.
+      (inputs as JSON strings; expected = full L1 event arrays). This is the shared fixture +
+      the reference for every other task; get it exactly right.
 - [ ] **Step 2 — `reader.ts` (L1)**: implement the forward-only one-pass `YamlReader` per
-  the algorithm. Export the `YamlEvent` / `ScalarKind` / `ScalarStyle` types + a function
-  `readEvents(text: string): YamlEvent[]` (eager-collect built on a `next()` pull core is
-  fine; the contract is the event sequence) and a `YamlFeedback`-returning variant
-  `tryReadEvents(text): { ok: true; events } | { ok: false; feedback }`. RED first
-  (`reader.test.ts`), GREEN after.
+      the algorithm. Export the `YamlEvent` / `ScalarKind` / `ScalarStyle` types + a function
+      `readEvents(text: string): YamlEvent[]` (eager-collect built on a `next()` pull core is
+      fine; the contract is the event sequence) and a `YamlFeedback`-returning variant
+      `tryReadEvents(text): { ok: true; events } | { ok: false; feedback }`. RED first
+      (`reader.test.ts`), GREEN after.
 - [ ] **Step 3 — `reader.test.ts`**: a `bun:test` case per canonical vector asserting
-  `readEvents(input)` deep-equals the expected array; plus decline-path cases
-  (`\tx: 1` → TabIndentation; `a: "unterminated` → UnterminatedQuote; `a: &anchor` →
-  UnsupportedConstruct). Write tests FIRST; confirm RED; implement to GREEN.
+      `readEvents(input)` deep-equals the expected array; plus decline-path cases
+      (`\tx: 1` → TabIndentation; `a: "unterminated` → UnterminatedQuote; `a: &anchor` →
+      UnsupportedConstruct). Write tests FIRST; confirm RED; implement to GREEN.
 - [ ] **Step 4 — `dom.ts` (L2)**: `YamlValue` type + `parse(text): { ok; value } | { ok:
-  false; feedback }` folding the event stream into the tree (Map = ordered pairs).
+false; feedback }` folding the event stream into the tree (Map = ordered pairs).
 - [ ] **Step 5 — `dom.test.ts`**: assert `parse` on vectors 2/6/7/8 yields the expected
-  trees (Int/Float/Bool/Null typed; Map order preserved).
+      trees (Int/Float/Bool/Null typed; Map order preserved).
 - [ ] **Step 6 — `cross-verify.ts`**: read `vectors.json` from CWD (run from
-  `tests/cross-verification/yaml/`), run `readEvents` on each `yaml`, assert equals
-  `expected`, write `{ id: events }` to `ts-output.json`; non-zero exit on any mismatch.
-  Import the reader by sibling path from the src file.
+      `tests/cross-verification/yaml/`), run `readEvents` on each `yaml`, assert equals
+      `expected`, write `{ id: events }` to `ts-output.json`; non-zero exit on any mismatch.
+      Import the reader by sibling path from the src file.
 - [ ] **Step 7 — `compare.ts`**: copy `tests/cross-verification/zeta-id/compare.ts`; adapt
-  to read `{ts,fsharp,cs,rust}-output.json`; per-id use `Bun.deepEquals` (events are
-  arrays/objects, not flat strings); also deep-equal each present oracle's events against
-  the fixture's `expected` (read `vectors.json`). Key-set equality + per-id deep-equal;
-  tolerate missing oracle files; exit non-zero on mismatch.
+      to read `{ts,fsharp,cs,rust}-output.json`; per-id use `Bun.deepEquals` (events are
+      arrays/objects, not flat strings); also deep-equal each present oracle's events against
+      the fixture's `expected` (read `vectors.json`). Key-set equality + per-id deep-equal;
+      tolerate missing oracle files; exit non-zero on mismatch.
 - [ ] **Step 8 — `package.json`**: mirror `src/Core.TypeScript/zeta-id/package.json`
-  (`@zeta/yaml`, type module, Apache-2.0, bun peer).
+      (`@zeta/yaml`, type module, Apache-2.0, bun peer).
 - [ ] **Step 9 — verify + commit**: `bun test src/Core.TypeScript/yaml/` green;
-  `bun --bun tsc --noEmit -p tsconfig.json` exit 0; from the yaml tests dir run the
-  cross-verify (writes `ts-output.json`) then `bun run compare.ts` green (TS-only). CR=0;
-  canary 67. Commit.
+      `bun --bun tsc --noEmit -p tsconfig.json` exit 0; from the yaml tests dir run the
+      cross-verify (writes `ts-output.json`) then `bun run compare.ts` green (TS-only). CR=0;
+      canary 67. Commit.
 
 ---
 
@@ -211,26 +224,26 @@ ts-output.json}`.
 src/dom.rs, tests/cross_verify.rs}`.
 
 - [ ] **Step 1 — `Cargo.toml`**: mirror `src/Core.Rust.ZetaId/Cargo.toml` — `name =
-  "zeta-core-yaml"`, edition 2024, `publish = false`, **zero `[dependencies]`**,
-  `[lints.rust] unsafe_code = "forbid"`.
+"zeta-core-yaml"`, edition 2024, `publish = false`, **zero `[dependencies]`**,
+      `[lints.rust] unsafe_code = "forbid"`.
 - [ ] **Step 2 — `src/reader.rs` (L1)**: `pub enum YamlEvent` / `ScalarKind` /
-  `ScalarStyle` / `YamlFeedback`; `pub fn read_events(text: &str) -> Result<Vec<YamlEvent>,
-  YamlFeedback>` per the algorithm. `#![forbid(unsafe_code)]` at crate root.
+      `ScalarStyle` / `YamlFeedback`; `pub fn read_events(text: &str) -> Result<Vec<YamlEvent>,
+YamlFeedback>` per the algorithm. `#![forbid(unsafe_code)]` at crate root.
 - [ ] **Step 3 — unit tests (in `src/reader.rs` `#[cfg(test)]` or `tests/`)**: a case per
-  canonical vector (hard-coded expected `Vec<YamlEvent>`); decline-path cases. RED → GREEN.
+      canonical vector (hard-coded expected `Vec<YamlEvent>`); decline-path cases. RED → GREEN.
 - [ ] **Step 4 — `src/dom.rs` (L2)**: `pub enum YamlValue` + `pub fn parse(text: &str) ->
-  Result<YamlValue, YamlFeedback>` folding events; `IndexMap`-free ordered map = `Vec<(String,
-  YamlValue)>`.
+Result<YamlValue, YamlFeedback>` folding events; `IndexMap`-free ordered map = `Vec<(String,
+YamlValue)>`.
 - [ ] **Step 5 — `tests/cross_verify.rs`**: repo-root walk to `Zeta.sln`; read
-  `tests/cross-verification/yaml/vectors.json` (hand-rolled minimal JSON read OR reuse the
-  ZetaId crate's reader pattern — zero-dep); for each vector run `read_events`, assert ==
-  `expected` (compare by serializing events to the same JSON object shape), write
-  `{ id: events }` to `rust-output.json`. Keeping it zero-dep: emit the events JSON by hand
-  (each event is a tiny fixed-shape object) exactly like `ZetaId`'s `cross_verify.rs` writes
-  its output by hand.
+      `tests/cross-verification/yaml/vectors.json` (hand-rolled minimal JSON read OR reuse the
+      ZetaId crate's reader pattern — zero-dep); for each vector run `read_events`, assert ==
+      `expected` (compare by serializing events to the same JSON object shape), write
+      `{ id: events }` to `rust-output.json`. Keeping it zero-dep: emit the events JSON by hand
+      (each event is a tiny fixed-shape object) exactly like `ZetaId`'s `cross_verify.rs` writes
+      its output by hand.
 - [ ] **Step 6 — verify + commit**: `cargo test` green (unit + cross_verify);
-  `rust-output.json` matches `ts-output.json` (run `compare.ts` → TS≡Rust). CR=0; canary 67.
-  Commit. (`cargo` is installed — `rust-gnu` 1.96.0 on PATH.)
+      `rust-output.json` matches `ts-output.json` (run `compare.ts` → TS≡Rust). CR=0; canary 67.
+      Commit. (`cargo` is installed — `rust-gnu` 1.96.0 on PATH.)
 
 ---
 
@@ -240,31 +253,31 @@ src/dom.rs, tests/cross_verify.rs}`.
 `tests/Tests.FSharp/Yaml/{ReaderTests.fs, CrossVerifyTests.fs}`.
 
 - [ ] **Step 1 — `.fsproj`**: mirror `src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj`
-  (net10.0, RootNamespace/AssemblyName `Zeta.Core.FSharp.Yaml`, TreatWarningsAsErrors, zero
-  deps); `<Compile Include="Reader.fs" />` then `Dom.fs`.
+      (net10.0, RootNamespace/AssemblyName `Zeta.Core.FSharp.Yaml`, TreatWarningsAsErrors, zero
+      deps); `<Compile Include="Reader.fs" />` then `Dom.fs`.
 - [ ] **Step 2 — register**: `dotnet sln add src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj`.
 - [ ] **Step 3 — `Reader.fs` (L1)**: module `Zeta.Core.FSharp.Yaml` — DU `YamlEvent` /
-  `ScalarKind` / `ScalarStyle` / `YamlFeedback`; `readEvents : string -> Result<YamlEvent
-  list, YamlFeedback>` per the algorithm.
+      `ScalarKind` / `ScalarStyle` / `YamlFeedback`; `readEvents : string -> Result<YamlEvent
+list, YamlFeedback>` per the algorithm.
 - [ ] **Step 4 — `Dom.fs` (L2)**: `YamlValue` DU + `parse : string -> Result<YamlValue,
-  YamlFeedback>`.
+YamlFeedback>`.
 - [ ] **Step 5 — `tests/Tests.FSharp/Yaml/ReaderTests.fs`**: xUnit `[<Fact>]` per canonical
-  vector (hard-coded expected `YamlEvent list`) + decline paths.
+      vector (hard-coded expected `YamlEvent list`) + decline paths.
 - [ ] **Step 6 — `tests/Tests.FSharp/Yaml/CrossVerifyTests.fs`**: mirror the ZetaId
-  CrossVerifyTests pattern — repo-root walk; read `vectors.json` via `System.Text.Json`
-  (NOT YamlDotNet — the fixture is JSON); for each vector run `readEvents`, assert ==
-  `expected`, serialize `{ id: events }` to `fsharp-output.json` via `System.Text.Json`.
-  **Plus a differential `[<Fact>]`**: parse each vector's `yaml` with both `readEvents`→DOM
-  and YamlDotNet's `DeserializerBuilder`, assert the resulting structures agree (the
-  YamlDotNet differential oracle).
+      CrossVerifyTests pattern — repo-root walk; read `vectors.json` via `System.Text.Json`
+      (NOT YamlDotNet — the fixture is JSON); for each vector run `readEvents`, assert ==
+      `expected`, serialize `{ id: events }` to `fsharp-output.json` via `System.Text.Json`.
+      **Plus a differential `[<Fact>]`**: parse each vector's `yaml` with both `readEvents`→DOM
+      and YamlDotNet's `DeserializerBuilder`, assert the resulting structures agree (the
+      YamlDotNet differential oracle).
 - [ ] **Step 7 — wire Tests.FSharp.fsproj** (patch-script, exact-occurrence): add
-  `<ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />`
-  after the `Core.FSharp.Observe` ProjectReference; add `<Compile Include="Yaml/ReaderTests.fs" />`
-  then `<Compile Include="Yaml/CrossVerifyTests.fs" />` after the `ZetaId/CrossVerifyTests.fs`
-  Compile line.
+      `<ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />`
+      after the `Core.FSharp.Observe` ProjectReference; add `<Compile Include="Yaml/ReaderTests.fs" />`
+      then `<Compile Include="Yaml/CrossVerifyTests.fs" />` after the `ZetaId/CrossVerifyTests.fs`
+      Compile line.
 - [ ] **Step 8 — verify + commit**: `dotnet build Zeta.sln -c Release` 0-warn;
-  `dotnet test tests/Tests.FSharp` (Yaml facts green); run `compare.ts` (TS≡F#). CR=0;
-  canary 67. Commit.
+      `dotnet test tests/Tests.FSharp` (Yaml facts green); run `compare.ts` (TS≡F#). CR=0;
+      canary 67. Commit.
 
 ---
 
@@ -275,26 +288,26 @@ Zeta.Core.CSharp.Yaml.csproj}`; `tests/Tests.CSharp/Yaml/{ReaderTests.cs,
 CrossVerifyTests.cs}`.
 
 - [ ] **Step 1 — `.csproj`**: mirror `src/Core.CSharp.ZetaId/Zeta.Core.CSharp.ZetaId.csproj`
-  (net10.0, RootNamespace/AssemblyName `Zeta.Core.CSharp.Yaml`, TreatWarningsAsErrors,
-  Nullable enable; **no FSharp.Core**); `.cs` globs automatically.
+      (net10.0, RootNamespace/AssemblyName `Zeta.Core.CSharp.Yaml`, TreatWarningsAsErrors,
+      Nullable enable; **no FSharp.Core**); `.cs` globs automatically.
 - [ ] **Step 2 — register**: `dotnet sln add src/Core.CSharp.Yaml/Zeta.Core.CSharp.Yaml.csproj`.
 - [ ] **Step 3 — `YamlReader.cs` (L1)**: namespace `Zeta.Core.CSharp.Yaml` — records/enums
-  `YamlEvent` (a sealed-hierarchy or a struct with an `EventKind` tag), `ScalarKind`,
-  `ScalarStyle`, `YamlFeedback`; `static Result<...>`-shaped `ReadEvents(string)` (use a
-  small result struct/tuple; BCL-clean). Per the algorithm.
+      `YamlEvent` (a sealed-hierarchy or a struct with an `EventKind` tag), `ScalarKind`,
+      `ScalarStyle`, `YamlFeedback`; `static Result<...>`-shaped `ReadEvents(string)` (use a
+      small result struct/tuple; BCL-clean). Per the algorithm.
 - [ ] **Step 4 — `YamlValue.cs` (L2)**: `YamlValue` sealed hierarchy + `static Parse(string)`.
 - [ ] **Step 5 — `tests/Tests.CSharp/Yaml/ReaderTests.cs`**: xUnit `[Fact]` per canonical
-  vector + decline paths.
+      vector + decline paths.
 - [ ] **Step 6 — `tests/Tests.CSharp/Yaml/CrossVerifyTests.cs`**: mirror ZetaId pattern —
-  repo-root walk; read `vectors.json` via `System.Text.Json`; run `ReadEvents`, assert ==
-  `expected`, write `{ id: events }` to `cs-output.json`. Plus a YamlDotNet differential
-  `[Fact]`.
+      repo-root walk; read `vectors.json` via `System.Text.Json`; run `ReadEvents`, assert ==
+      `expected`, write `{ id: events }` to `cs-output.json`. Plus a YamlDotNet differential
+      `[Fact]`.
 - [ ] **Step 7 — wire Tests.CSharp.csproj** (patch-script if explicit refs; else glob): add
-  `<ProjectReference Include="..\..\src\Core.CSharp.Yaml\Zeta.Core.CSharp.Yaml.csproj" />`
-  (YamlDotNet PackageReference already present in Tests.CSharp).
+      `<ProjectReference Include="..\..\src\Core.CSharp.Yaml\Zeta.Core.CSharp.Yaml.csproj" />`
+      (YamlDotNet PackageReference already present in Tests.CSharp).
 - [ ] **Step 8 — verify + commit**: `dotnet build Zeta.sln -c Release` 0-warn;
-  `dotnet test tests/Tests.CSharp` (Yaml facts green); run `compare.ts` (now TS≡F#≡C#).
-  CR=0; canary 67. Commit.
+      `dotnet test tests/Tests.CSharp` (Yaml facts green); run `compare.ts` (now TS≡F#≡C#).
+      CR=0; canary 67. Commit.
 
 ---
 
@@ -306,29 +319,29 @@ CrossVerifyTests.cs}`.
 scope — see note).
 
 - [ ] **Step 1 — 4-way compare**: from `tests/cross-verification/yaml/` run all four
-  cross-verify entries (regenerate the four `*-output.json`) then `bun run compare.ts` →
-  `All implementations agree on 10 vectors.` exit 0.
+      cross-verify entries (regenerate the four `*-output.json`) then `bun run compare.ts` →
+      `All implementations agree on 10 vectors.` exit 0.
 - [ ] **Step 2 — retrofit zeta-id (F#/C#)**: replace the direct
-  `DeserializerBuilder().Deserialize<VectorEnvelope>(...)` in the two ZetaId CrossVerifyTests
-  with our port (or the wrapped YamlDotNet adapter behind it) — the only remaining YamlDotNet
-  reference should be the adapter, not the test body. Re-run `dotnet test` — the 12-vector
-  zeta-id suite stays green byte-identically.
+      `DeserializerBuilder().Deserialize<VectorEnvelope>(...)` in the two ZetaId CrossVerifyTests
+      with our port (or the wrapped YamlDotNet adapter behind it) — the only remaining YamlDotNet
+      reference should be the adapter, not the test body. Re-run `dotnet test` — the 12-vector
+      zeta-id suite stays green byte-identically.
 - [ ] **Step 3 — retrofit TS zeta-id cross-verify**: replace direct `Bun.YAML.parse` in
-  `src/Core.TypeScript/zeta-id/cross-verify.ts` with our TS YAML port (the port may call
-  `Bun.YAML` internally as the BCL-tier adapter). Re-run; zeta-id stays green. (The sha256
-  TS cross-verify lives on the paused slice-8 branch, not main — note it for the slice-8
-  resume rather than retrofitting here.)
+      `src/Core.TypeScript/zeta-id/cross-verify.ts` with our TS YAML port (the port may call
+      `Bun.YAML` internally as the BCL-tier adapter). Re-run; zeta-id stays green. (The sha256
+      TS cross-verify lives on the paused slice-8 branch, not main — note it for the slice-8
+      resume rather than retrofitting here.)
 - [ ] **Step 4 — registry flip** (patch-script): in `docs/PRIMITIVE-REGISTRY.md` line 62
-  flip the YAML row from `⬜ **YAML** (text; config-friendly)` to `✅ **YAML** (4/4)`
-  and update its prose to note: forward-only one-pass `YamlReader` + `YamlValue`
-  DOM-on-top; hand-rolled default; YamlDotNet / `Bun.YAML` differential adapter; Rust
-  hand-rolled-only. markdownlint clean.
+      flip the YAML row from `⬜ **YAML** (text; config-friendly)` to `✅ **YAML** (4/4)`
+      and update its prose to note: forward-only one-pass `YamlReader` + `YamlValue`
+      DOM-on-top; hand-rolled default; YamlDotNet / `Bun.YAML` differential adapter; Rust
+      hand-rolled-only. markdownlint clean.
 - [ ] **Step 5 — final holistic review**: dispatch a final reviewer over
-  `git diff origin/main..HEAD`; confirm contracts identical across langs, no vendor import
-  in any core module, all gates green.
+      `git diff origin/main..HEAD`; confirm contracts identical across langs, no vendor import
+      in any core module, all gates green.
 - [ ] **Step 6 — open impl PR + gate loop**: open the PR (base main), arm
-  `gh pr merge <N> --auto --squash`, poll the gate, resolve any review threads
-  (verify-against-source first), re-arm. Bookkeeping after merge.
+      `gh pr merge <N> --auto --squash`, poll the gate, resolve any review threads
+      (verify-against-source first), re-arm. Bookkeeping after merge.
 
 **Note (slice-8 dependency):** the SHA-256 slice is paused on its own branch
 (`otto-windows/ace-slice8-sha256-impl-2026-06-01`). When it resumes, its TS/F#/C# oracles

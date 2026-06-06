@@ -77,10 +77,7 @@ test("mission trajectory distinguishes at-risk and on-track schedules by toleran
   equal(atRisk.status, MissionTrajectoryStatus.AtRisk);
   deepEqual(
     atRisk.correctiveActions.map((action) => action.kind),
-    [
-      ScheduleCorrectiveActionKind.ExtendFocusBlock,
-      ScheduleCorrectiveActionKind.OpenOfficeHours,
-    ],
+    [ScheduleCorrectiveActionKind.ExtendFocusBlock, ScheduleCorrectiveActionKind.OpenOfficeHours],
   );
   equal(onTrack.status, MissionTrajectoryStatus.OnTrack);
   deepEqual(onTrack.correctiveActions, []);
@@ -142,7 +139,10 @@ test("low pressure keeps corrective actions narrow and avoids reassignment churn
   });
 
   equal(pressure.level, SchedulePressureLevel.Normal);
-  deepEqual(pressure.correctiveActions.map((action) => action.kind), [ScheduleCorrectiveActionKind.ExtendFocusBlock]);
+  deepEqual(
+    pressure.correctiveActions.map((action) => action.kind),
+    [ScheduleCorrectiveActionKind.ExtendFocusBlock],
+  );
 });
 
 test("schedule pressure does not let another hat's active block hide this hat's schedule gap", () => {
@@ -189,11 +189,13 @@ test("schedulePressureReadoutForHat rolls subordinate queues and bindings up to 
   ok(readout.correctiveActions.some((action) => action.kind === ScheduleCorrectiveActionKind.ReassignAfterExpiry));
 });
 
-function queue(input: {
-  hatId?: string;
-  readyShards?: number;
-  staleClaimCount?: number;
-} = {}): HatWorkQueue {
+function queue(
+  input: {
+    hatId?: string;
+    readyShards?: number;
+    staleClaimCount?: number;
+  } = {},
+): HatWorkQueue {
   const readyShards = input.readyShards ?? 0;
   const staleClaimCount = input.staleClaimCount ?? 0;
   return {
@@ -261,7 +263,13 @@ function block(input: Partial<WorkScheduleBlock> = {}): WorkScheduleBlock {
     endsAt: "2026-05-31T13:00:00.000Z",
     scheduledAt: "2026-05-31T11:30:00.000Z",
     scheduledBy: { agentId: "agent-manager", hatAssignmentId: "binding-manager" },
-    metadata: { updatedAt: "2026-05-31T11:30:00.000Z", version: 1, correlationId: "corr", causationId: "cause", traceId: "trace" },
+    metadata: {
+      updatedAt: "2026-05-31T11:30:00.000Z",
+      version: 1,
+      correlationId: "corr",
+      causationId: "cause",
+      traceId: "trace",
+    },
     ...input,
   };
 }

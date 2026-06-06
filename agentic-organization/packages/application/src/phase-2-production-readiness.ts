@@ -1,7 +1,4 @@
-import type {
-  PilotImprovementBacklogItem,
-  PilotReadinessEvaluation,
-} from "./pilot-readiness.ts";
+import type { PilotImprovementBacklogItem, PilotReadinessEvaluation } from "./pilot-readiness.ts";
 
 export const Phase2ReadinessProperty = {
   LegalActionSurface: "legal_action_surface",

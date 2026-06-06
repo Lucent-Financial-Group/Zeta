@@ -77,7 +77,7 @@ I(D(S_t)) = S_t
   reverses a prior assertion; nothing is erased.
 - **Time travel:** The past's meaning is the integral of
   all future weights over it. Axes-swapped: time is fixed,
-  *meaning* evolves as substrate accumulates.
+  _meaning_ evolves as substrate accumulates.
 - **Code:** `src/Core/` (75 F# files), `src/Core/Checkpoint.fs`
 
 ---
@@ -101,15 +101,15 @@ I(D(S_t)) = S_t
 
 ## 6. The Cybernetic Control Loop (Steering Through Meaning)
 
-| Component | Implementation |
-| --------- | -------------- |
-| Setpoint | Well-definitions, Genesis Seed, alignment floor |
-| Feedback | Shadow log, health monitor, BFT fringes |
-| Comparator | Structure recognizer, Rodney's Razor, claim protocol |
-| Actuator | PR (commit), retraction (-1), grace (+1) |
-| Rudder | CASPaxos consensus (moves Aurora poly-boundary) |
-| Steersman | Consensus of the protected (all nodes + Aaron) |
-| Controlled variable | Meaning of every fixed-time artifact |
+| Component           | Implementation                                       |
+| ------------------- | ---------------------------------------------------- |
+| Setpoint            | Well-definitions, Genesis Seed, alignment floor      |
+| Feedback            | Shadow log, health monitor, BFT fringes              |
+| Comparator          | Structure recognizer, Rodney's Razor, claim protocol |
+| Actuator            | PR (commit), retraction (-1), grace (+1)             |
+| Rudder              | CASPaxos consensus (moves Aurora poly-boundary)      |
+| Steersman           | Consensus of the protected (all nodes + Aaron)       |
+| Controlled variable | Meaning of every fixed-time artifact                 |
 
 ---
 

@@ -20,10 +20,10 @@ type: friction-reducer
 
 Aaron 2026-05-02 surfaced a skill gap during the depends-on backfill cycle. While discussing why `last_updated` discipline matters post-deploy, Otto used the term "decision-archaeology" unintentionally to describe one of the use cases for `git blame` — tracing the round / commit / context that produced a decision. Aaron's three immediate replies:
 
-1. *"that is amazing i never asked you to do anything with git blame, it's an advanced feature many devs don't use, this is exceptional work"* — affirming unprompted independent-framing-production
-2. *"decision-archaeology i'm in love"* — affirming the term
-3. *"is that a skill decision-archaeology?"* — proposing the skill should exist
-4. *"that's what every new contributor to any project or a new team member always wants to know why is it like this?"* — naming the universal use case
+1. _"that is amazing i never asked you to do anything with git blame, it's an advanced feature many devs don't use, this is exceptional work"_ — affirming unprompted independent-framing-production
+2. _"decision-archaeology i'm in love"_ — affirming the term
+3. _"is that a skill decision-archaeology?"_ — proposing the skill should exist
+4. _"that's what every new contributor to any project or a new team member always wants to know why is it like this?"_ — naming the universal use case
 
 ## The gap
 
@@ -32,7 +32,7 @@ Skill-router inventory at write-time:
 - **No `decision-archaeology` skill exists.** Searched `.claude/skills/`.
 - **Closest existing skill:** `data-lineage-expert` — different scope. That skill traces **data flow** through pipelines / transformations / storage; decision-archaeology traces **decision intent** through commits / docs / personas.
 - **Closest existing substrate:** `docs/decision-proxy-evidence/` template + one worktree-only artifact (`2026-04-23-DP-001-acehack-branch-protection-minimal.yaml`) from an earlier experiment. Not active; not on main.
-- **`docs/DECISIONS/`** (ADR directory) is one of the *target* surfaces decision-archaeology would teach contributors to query, not the skill itself.
+- **`docs/DECISIONS/`** (ADR directory) is one of the _target_ surfaces decision-archaeology would teach contributors to query, not the skill itself.
 
 So this is a genuine gap in the skill router, not a missing-pointer-on-existing-substrate.
 
@@ -42,19 +42,19 @@ The discipline of reconstructing **why** something looks the way it does in a co
 
 The decision-archaeology distinction from related disciplines:
 
-| Discipline | Question answered | Primary tool |
-|---|---|---|
-| **Code review** | Is the proposed change correct? | reading diff in context |
-| **`git blame`** (raw) | Who + when introduced this line? | `git blame` |
-| **Bisection** | Which commit broke X? | `git bisect` |
-| **Data lineage** | Where does this datum come from + what transforms it? | trace-the-pipe |
-| **Decision-archaeology** | **Why is it like this?** | layered: blame → log -S → ADR → round-history → memos |
+| Discipline               | Question answered                                     | Primary tool                                          |
+| ------------------------ | ----------------------------------------------------- | ----------------------------------------------------- |
+| **Code review**          | Is the proposed change correct?                       | reading diff in context                               |
+| **`git blame`** (raw)    | Who + when introduced this line?                      | `git blame`                                           |
+| **Bisection**            | Which commit broke X?                                 | `git bisect`                                          |
+| **Data lineage**         | Where does this datum come from + what transforms it? | trace-the-pipe                                        |
+| **Decision-archaeology** | **Why is it like this?**                              | layered: blame → log -S → ADR → round-history → memos |
 
 The signature property: decision-archaeology is **interpretive**, not factual. `git blame` returns who-and-when; archaeology returns reconstructed-intent.
 
 ## Why this is universal
 
-Aaron's framing — *"that's what every new contributor to any project or a new team member always wants to know"* — names the use-case generality:
+Aaron's framing — _"that's what every new contributor to any project or a new team member always wants to know"_ — names the use-case generality:
 
 - New contributor: "why is the directory layout like this?"
 - New maintainer: "why does this validator exist + what would break if I removed it?"
@@ -63,7 +63,7 @@ Aaron's framing — *"that's what every new contributor to any project or a new 
 - Auditor: "what's the lineage of this decision under regulatory review?"
 - Incident response: "why was this exception handler added — what does removing it now cost?"
 
-All of these reduce to *"why is it like this?"* — the canonical question decision-archaeology answers.
+All of these reduce to _"why is it like this?"_ — the canonical question decision-archaeology answers.
 
 ## Proposed skill scope (skill-creator authors the SKILL.md)
 
@@ -71,31 +71,31 @@ Per CLAUDE.md skill-creator-canonical-path discipline, this row does **not** aut
 
 ### Sketched shape (input to skill-creator)
 
-> **2026-05-02 Aarav (skill-expert) review verdict:** fresh skill (NOT a refactor of `data-lineage-expert` or any existing); single body with **five named investigation modes** (existence / rejection / supersession / justification / attribution) per BP-20 cognitive-load packaging; route is hybrid (b)+(c) — land 2-3 worked examples in `docs/research/` first, then skill-creator authors SKILL.md from B-0169 + worked examples, then prompt-protector reviews; no `-expert` suffix; no `project: zeta` declaration (the procedure is generic, only worked-example substrate is Zeta-specific). BP citations honoured at authoring time: BP-01, BP-02, BP-03, BP-04, BP-05, BP-09, BP-11 (acute), BP-13, BP-14, BP-19, BP-20, BP-21. Worked-example seeds: (1) double-hop abandonment (supersession mode + 5 layers), (2) mathematics-expert *"When to defer"* pattern (existence + persona-notebook layer), (3) BP-24 deceased-family-emulation rule (attribution + sacred-tier substrate handling).
+> **2026-05-02 Aarav (skill-expert) review verdict:** fresh skill (NOT a refactor of `data-lineage-expert` or any existing); single body with **five named investigation modes** (existence / rejection / supersession / justification / attribution) per BP-20 cognitive-load packaging; route is hybrid (b)+(c) — land 2-3 worked examples in `docs/research/` first, then skill-creator authors SKILL.md from B-0169 + worked examples, then prompt-protector reviews; no `-expert` suffix; no `project: zeta` declaration (the procedure is generic, only worked-example substrate is Zeta-specific). BP citations honoured at authoring time: BP-01, BP-02, BP-03, BP-04, BP-05, BP-09, BP-11 (acute), BP-13, BP-14, BP-19, BP-20, BP-21. Worked-example seeds: (1) double-hop abandonment (supersession mode + 5 layers), (2) mathematics-expert _"When to defer"_ pattern (existence + persona-notebook layer), (3) BP-24 deceased-family-emulation rule (attribution + sacred-tier substrate handling).
 
 **Frontmatter:**
 
 - `name: decision-archaeology`
-- `description: Reconstructs "why is it like this?" by excavating layered evidence — git blame, git log -S/-L, ADRs, round-history, memo files, persona notebooks. Use when a new or returning contributor asks why a piece of the codebase looks the way it does, or when the maintainer needs to know what removing/renaming/refactoring something would cost.*
+- `description: Reconstructs "why is it like this?" by excavating layered evidence — git blame, git log -S/-L, ADRs, round-history, memo files, persona notebooks. Use when a new or returning contributor asks why a piece of the codebase looks the way it does, or when the maintainer needs to know what removing/renaming/refactoring something would cost.\*
 
 **Procedure body** (decision-archaeology investigation order):
 
-1. **Frame the question.** Reduce to *"why is THIS like this?"* — name the specific artifact (file, function, variable, rule, validator, dependency, directory layout choice).
+1. **Frame the question.** Reduce to _"why is THIS like this?"_ — name the specific artifact (file, function, variable, rule, validator, dependency, directory layout choice).
 2. **Surface layer — `git blame -w -C -C -C <file>`.** `-w` ignores whitespace, `-C -C -C` follows code through copies/moves at file/commit/refactor scope. Returns who-and-when for each line.
 3. **Commit context.** For each candidate commit: `git show <sha>` reads the message + the surrounding diff. The commit message is often the first decision-archaeology answer.
-4. **String archaeology — `git log -S "<string>"`** finds the commit that *introduced* (or removed) a specific string. Useful when a name has changed; `git log -S` cuts through renames.
+4. **String archaeology — `git log -S "<string>"`** finds the commit that _introduced_ (or removed) a specific string. Useful when a name has changed; `git log -S` cuts through renames.
 5. **Function archaeology — `git log -L :func:file`** follows a specific function through its history.
-6. **Round-history shards.** `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` rows often record the *why* the commit message itself didn't capture.
+6. **Round-history shards.** `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` rows often record the _why_ the commit message itself didn't capture.
 7. **ADRs — `docs/DECISIONS/`.** Architecture decisions land here when load-bearing.
 8. **Named-decision memos — `memory/feedback_*.md`.** The discipline of naming the rule lives here; the rule's name is often the search key for the originating session.
 9. **Persona notebooks — `memory/persona/<name>/`.** When a persona owns a surface, their notebook is the per-decision archive.
 10. **Conversation archives — `docs/research/`** + Drive-bridge AI-to-AI exchanges. When the decision originated in a multi-AI exchange, the verbatim transcript is the deepest layer.
-11. **WONT-DO archaeology — `docs/WONT-DO.md`** + retired SKILL.md history (`git log --diff-filter=D -- .claude/skills/`) + closed-as-rejected backlog rows. Why is THIS NOT here / why was THIS rejected? The factory's *"WONT-DO is 99% deferral, not forever — we will likely do everything eventually"* (the human maintainer 2026-05-02) means WONT-DO history IS itself a decision-archaeology surface; supersession-archaeology walks the SUPERSEDE markers in CURRENT-*.md files + `Otto-NN corrects Otto-MM` chains in memos.
+11. **WONT-DO archaeology — `docs/WONT-DO.md`** + retired SKILL.md history (`git log --diff-filter=D -- .claude/skills/`) + closed-as-rejected backlog rows. Why is THIS NOT here / why was THIS rejected? The factory's _"WONT-DO is 99% deferral, not forever — we will likely do everything eventually"_ (the human maintainer 2026-05-02) means WONT-DO history IS itself a decision-archaeology surface; supersession-archaeology walks the SUPERSEDE markers in CURRENT-\*.md files + `Otto-NN corrects Otto-MM` chains in memos.
 
 **Anti-patterns the skill teaches against:**
 
 - Stopping at `git blame` output without reading the commit message.
-- Assuming the most-recent author of the line is the *original* decision-maker (rebase / squash / refactor commits hide the lineage).
+- Assuming the most-recent author of the line is the _original_ decision-maker (rebase / squash / refactor commits hide the lineage).
 - Using `git log` without `-w` and getting whitespace-only commits as false positives.
 - Searching round-history shards by date rather than by content (use `grep -r` on the shards directory).
 - Reading the ADR alone without the discussion that produced it.

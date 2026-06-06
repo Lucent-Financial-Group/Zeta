@@ -66,13 +66,20 @@ function checkDependencies(): string | null {
 
 function buildQemuArgs(isoPath: string, serialLogPath: string): string[] {
   const args: string[] = [
-    "-machine", "q35",
-    "-m", String(MEMORY_MB),
-    "-smp", "2",
-    "-cdrom", isoPath,
-    "-boot", "d",
-    "-serial", `file:${serialLogPath}`,
-    "-display", "none",
+    "-machine",
+    "q35",
+    "-m",
+    String(MEMORY_MB),
+    "-smp",
+    "2",
+    "-cdrom",
+    isoPath,
+    "-boot",
+    "d",
+    "-serial",
+    `file:${serialLogPath}`,
+    "-display",
+    "none",
     "-no-reboot",
     // BIOS instead of UEFI — simpler boot path; ISO supports both but
     // BIOS requires no extra firmware package.

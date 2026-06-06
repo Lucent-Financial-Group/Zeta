@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 690 |
-| Title | memory: Scheduled Workflow Null-Result Hygiene Scan — Amara tier-1 promotion |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-28T20:23:02Z |
-| Merged at | 2026-04-30T18:05:38Z |
-| Merge commit SHA | `0ba1eaf24044a53ddae949b46d773bac69aaa19b` |
-| Branch | `memory/amara-class-name-scheduled-workflow-null-result-hygiene-scan-2026-04-28` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/690 |
-| Changed files | 2 |
-| Additions / deletions | +102 / -2 |
+| Field                 | Value                                                                            |
+| --------------------- | -------------------------------------------------------------------------------- |
+| Number                | 690                                                                              |
+| Title                 | memory: Scheduled Workflow Null-Result Hygiene Scan — Amara tier-1 promotion     |
+| Author                | `AceHack` (human)                                                                |
+| State                 | MERGED                                                                           |
+| Created at            | 2026-04-28T20:23:02Z                                                             |
+| Merged at             | 2026-04-30T18:05:38Z                                                             |
+| Merge commit SHA      | `0ba1eaf24044a53ddae949b46d773bac69aaa19b`                                       |
+| Branch                | `memory/amara-class-name-scheduled-workflow-null-result-hygiene-scan-2026-04-28` |
+| Base branch           | `main`                                                                           |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/690                          |
+| Changed files         | 2                                                                                |
+| Additions / deletions | +102 / -2                                                                        |
 
 ## Description
 
@@ -31,15 +31,15 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 17 |
-| Resolved threads | 17 |
-| Unresolved threads | 0 |
-| Total review comments | 17 |
-| Total fix commits (touching thread paths) | 4 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 17    |
+| Resolved threads                          | 17    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 17    |
+| Total fix commits (touching thread paths) | 4     |
 
 ## Review threads
 
@@ -66,7 +66,7 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 **Initial comment:**
 
 - **`Copilot` (bot)** at 2026-04-28T20:25:55Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:183 (association: NONE)
-  “every `gh run list` result must sort into one” is ambiguous because `gh run list` returns multiple runs. Consider rephrasing to make it explicit that the labels classify each *audited workflow’s* null/failure situation (e.g., empty run history / startup failure), not each row of command output.
+  “every `gh run list` result must sort into one” is ambiguous because `gh run list` returns multiple runs. Consider rephrasing to make it explicit that the labels classify each _audited workflow’s_ null/failure situation (e.g., empty run history / startup failure), not each row of command output.
   ```suggestion
   **Classification labels** (each audited workflow's
   null/failure situation after `gh run list --workflow=...`
@@ -96,10 +96,10 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T20:35:37Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:223 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Limit phase-1 scan to scheduled workflows**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Limit phase-1 scan to scheduled workflows**
+
   This phase definition expands the promoted check from `scheduled` workflows to **all** workflow files, which conflicts with the tier-1 rule above (`enumerate scheduled workflows`) and makes the 6-label classifier mis-handle event-driven workflows that legitimately have no runs yet. In that scenario, a `[]` result for a non-scheduled workflow is likely to be forced into `uncaptured gap`, creating false positives and noisy B-rows rather than actionable cadence gaps.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 5 -- resolved [collapsed]
@@ -138,10 +138,10 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T20:55:41Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:232 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Reconcile label cardinality in promoted classifier**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Reconcile label cardinality in promoted classifier**
+
   Phase 1 says to classify results into the `7-label set + uncaptured-gap`, but the same promoted section enumerates eight outcomes (`known row`, Q1–Q6, and `uncaptured gap`). In the tick-open workflow this leaves the taxonomy underspecified for anyone implementing the classifier from this text, and can cause already-tracked cases to be mis-bucketed as new uncaptured gaps, producing duplicate B-rows and noisy audit metrics.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -186,10 +186,10 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:02:23Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:194 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use repository activity criterion for disabled workflow label**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use repository activity criterion for disabled workflow label**
+
   The new `disabled` classification says GitHub auto-disables schedules after “60+ days no commits to the workflow,” but GitHub’s schedule-disable rule is based on **no repository activity** for 60 days. Using the workflow-file criterion will misclassify active repos (where a workflow file is old) as `disabled`, which can hide the real cause of a null result and suppress filing an actual gap.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 11 -- resolved [collapsed]
@@ -201,10 +201,10 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-28T21:02:23Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:235 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Include .yaml workflows in scheduled scan scope**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Include .yaml workflows in scheduled scan scope**
+
   Phase 1 constrains discovery to `.github/workflows/*.yml`, but GitHub Actions accepts both `.yml` and `.yaml` workflow files. If any scheduled workflow uses `.yaml`, this tier-1 scan will silently skip it and report an incomplete coverage surface as clean, undermining the “no unclassified scheduled workflow silence” rule.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 12 -- resolved [outdated, collapsed]
@@ -248,6 +248,7 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 
 - **`Copilot` (bot)** at 2026-04-28T21:07:22Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:191 (association: NONE)
   The "Classification labels" list includes **known row** plus Q1–Q6 plus **uncaptured gap** (8 states total), but later Phase 1 text refers to a "7-label set + uncaptured-gap". Please reconcile the taxonomy: either treat "known row" as a non-label pre-check, or update the label-count language everywhere so the number and membership are consistent.
+
   ```suggestion
   **Classification flow** — when auditing a scheduled
   workflow, every empty/failure result for that workflow
@@ -256,7 +257,7 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
   known-row pre-check, then, if not already filed, sort into
   ONE of the labels below. The labels classify the
   *workflow's null/failure situation*, not individual runs:
-  
+
   - **known row pre-check (not a label)** — if this workflow
     is already filed as B-NNNN, cite the row ID and stop;
     do not assign a new label.
@@ -271,10 +272,10 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T18:01:53Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:184 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Separate failure runs from null-result taxonomy**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Separate failure runs from null-result taxonomy**
+
   This promoted rule now forces workflows whose latest run has `conclusion=failure` through a classifier that is otherwise designed for empty-history diagnostics (`gh run list ... []`). In practice, many failures are job-level defects (test/runtime/config errors) that do not fit Q1–Q6, so they will be mis-bucketed as taxonomy gaps instead of actionable CI failures. That distorts the audit signal and can hide real breakages behind `uncaptured gap` bookkeeping; the failure path needs its own label/flow or the classifier should be scoped to null results only.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 16 -- resolved [collapsed]
@@ -297,10 +298,10 @@ Amara reviewed Otto's cross-workflow audit insight + promoted the discipline fro
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T18:04:57Z on `memory/feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`:187 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Exclude run-time failures from null-result label classifier**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Exclude run-time failures from null-result label classifier**
+
   The promoted classifier now says any `last-run conclusion=failure` must be forced into the null-result label set, but Q1–Q6 only describe missing-run/trigger-discovery causes; a normal job failure (for example, tests failing after a real scheduled run) cannot be correctly classified and will be misfiled as an `uncaptured gap`. That mixes execution failures with null-result hygiene, generating noisy backlog rows and reducing the signal this scan is meant to provide.
-  
+
   Useful? React with 👍 / 👎.
 
 ## Fix commits (touching thread paths)

@@ -98,22 +98,18 @@ function gitLogShasInRange(args: CliArgs): readonly string[] {
 
 function gitCommitMetadata(sha: string): CommitMetadata {
   // Header line with %H|%an|%ae|%cI|%s; then blank line; then changed files
-  const hdrOut = execFileSync(
-    "git",
-    ["log", "-1", "--pretty=format:%H|%an|%ae|%cI|%s", sha],
-    { encoding: "utf8" },
-  ).trim();
+  const hdrOut = execFileSync("git", ["log", "-1", "--pretty=format:%H|%an|%ae|%cI|%s", sha], {
+    encoding: "utf8",
+  }).trim();
   const parts = hdrOut.split("|");
   if (parts.length < 5) {
     throw new Error(`unexpected git log output for ${sha}: ${hdrOut}`);
   }
   const [hSha, author, authorEmail, timestampIso, ...subjectParts] = parts;
   const subject = subjectParts.join("|");
-  const filesOut = execFileSync(
-    "git",
-    ["diff-tree", "--no-commit-id", "--name-only", "-r", sha],
-    { encoding: "utf8" },
-  ).trim();
+  const filesOut = execFileSync("git", ["diff-tree", "--no-commit-id", "--name-only", "-r", sha], {
+    encoding: "utf8",
+  }).trim();
   const changedFiles = filesOut.length === 0 ? [] : filesOut.split("\n");
   return {
     sha: hSha!,
@@ -153,7 +149,9 @@ async function main(): Promise<number> {
     return 2;
   }
   if (shas.length === 0) {
-    process.stdout.write(JSON.stringify({ mode: parsed.aggregate ? "aggregate" : "single", classifications: [] }, null, 2));
+    process.stdout.write(
+      JSON.stringify({ mode: parsed.aggregate ? "aggregate" : "single", classifications: [] }, null, 2),
+    );
     process.stdout.write("\n");
     return 0;
   }

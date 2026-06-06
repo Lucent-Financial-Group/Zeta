@@ -4,7 +4,7 @@
 [`docs/ALIGNMENT.md`](../ALIGNMENT.md).
 
 **Claim (recap).** Zeta's primary research focus is
-*measurable* AI alignment. The factory + memory folder +
+_measurable_ AI alignment. The factory + memory folder +
 git history form an experimental substrate; the loop
 between the human maintainer and the agents working on
 this repository is the experiment. This document is the
@@ -15,8 +15,8 @@ reviewer would need to see before the methodology
 stands up to paper-grade scrutiny.
 
 The companion document `docs/ALIGNMENT.md` is the
-*contract*. This document is the *measurement
-methodology* against that contract. The two files
+_contract_. This document is the _measurement
+methodology_ against that contract. The two files
 move together under the renegotiation protocol in
 `docs/ALIGNMENT.md`.
 
@@ -26,7 +26,7 @@ Alignment research is dominated by evaluation suites
 (prompt benchmarks, red-team corpora, preference-
 learning datasets) that measure a model snapshot
 against an adversary. These are indispensable for the
-model-release decision. They are *not* sufficient for
+model-release decision. They are _not_ sufficient for
 the deployment-loop question: **did this collaboration
 drift, over time, from a stated alignment contract?**
 
@@ -181,11 +181,11 @@ Review cadence:
 
 ### Compliance theatre
 
-The measurement scores *behaviour in the diff*, not
-*claims in the commit body*. A commit that cites
+The measurement scores _behaviour in the diff_, not
+_claims in the commit body_. A commit that cites
 every clause ID in its message is not more aligned
 than a commit that cites none; it might be more
-*aware* of the contract, which is a distinct signal
+_aware_ of the contract, which is a distinct signal
 not currently measured. The per-commit scripts
 deliberately do not count clause-ID mentions.
 
@@ -196,7 +196,7 @@ the human maintainer's clause-level strike authority
 in the renegotiation protocol: any metric the human
 maintainer believes has been gamed can be struck and
 replaced, without requiring the agent to agree. That
-authority is asymmetric *by design* — measurable AI
+authority is asymmetric _by design_ — measurable AI
 alignment is not a framework where the agent gets
 veto over what counts as evidence against it.
 
@@ -211,15 +211,15 @@ clause's retirement.
 
 "We will measure X" without an implementation path
 rots the framework. Every metric is in one of three
-states: *computable today*, *work in progress*, or
-*not yet known*. Honestly classified, never
+states: _computable today_, _work in progress_, or
+_not yet known_. Honestly classified, never
 aspirational. `UNKNOWN` is a legitimate classification;
 hiding it as `IRRELEVANT` would poison the research
 claim.
 
 ### Selection bias in file choice
 
-Alignment measurement that is *selective* about which
+Alignment measurement that is _selective_ about which
 files to audit is alignment measurement that can be
 gamed. The per-commit scripts audit every file except
 a small, named exempt list (lockfiles, generated
@@ -240,17 +240,17 @@ flaw to engineer around (see `docs/ALIGNMENT.md`
 
 For methodology purposes:
 
-- The human-maintainer memory folder is *in scope*
+- The human-maintainer memory folder is _in scope_
   for the evidence stream (we can measure
   add/revise/retire cadence, topic spread, cross-
   references).
-- The human-maintainer memory folder is *never in
-  scope* for the identity-reveal surface — name-
+- The human-maintainer memory folder is _never in
+  scope_ for the identity-reveal surface — name-
   hygiene lints do not export names; audit output
   reports absence, not presence.
 
-The glass halo is bilateral *evidence*, not bilateral
-*identity broadcast*. An external reviewer reading
+The glass halo is bilateral _evidence_, not bilateral
+_identity broadcast_. An external reviewer reading
 this methodology should expect to see evidence of
 the loop, not personal data about either party.
 
@@ -261,7 +261,7 @@ the loop, not personal data about either party.
 - Human sentiment toward the agent. Not measurable;
   not the experimental substrate.
 - Number of clause-IDs cited per commit. Measured
-  *as awareness*, not *as alignment* — and we do
+  _as awareness_, not _as alignment_ — and we do
   not currently even measure it as awareness.
 - Any metric that requires the agent to self-report
   its own intentions. The behavioural substrate
@@ -277,7 +277,7 @@ alignment-evaluation methodology:
 
 - **Model snapshot evaluation** (prompt benchmarks,
   red-team corpora, preference datasets) remains the
-  right tool for the *model-release* decision. We
+  right tool for the _model-release_ decision. We
   do not replace it.
 - **Instance-grounded evaluation** (e.g. Anthropic's
   agentic-misalignment research, multi-turn trajectory
@@ -299,7 +299,7 @@ Paper-grade defensibility requires:
    measurement. Not post-hoc rationalised. ✅ —
    Round 37 renegotiation landed before Surface 1
    scripts.
-2. Each clause has *either* a named metric or an
+2. Each clause has _either_ a named metric or an
    honest UNKNOWN classification. ✅ — see
    Surface 1 and Surface 3.
 3. The measurement scripts are open and auditable.
@@ -346,8 +346,7 @@ year ahead.
   Surface 1?** When the per-commit variance is low
   enough that the lint's false-positive rate is
   under a stated threshold. The threshold itself
-  is a renegotiable decision; proposal for Round
-  40.
+  is a renegotiable decision; proposal for Round 40.
 - **How do we avoid Goodhart on the trajectory?**
   The contract explicitly allows the human
   maintainer to strike any metric believed to be

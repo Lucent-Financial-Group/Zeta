@@ -23,13 +23,24 @@
 // --- named basic colors (SGR 30-37 / 90-97 foreground; +10 for background) ---
 
 const BASIC: Record<string, number> = {
-  black: 30, red: 31, green: 32, yellow: 33, blue: 34, magenta: 35, cyan: 36, white: 37,
-  brightblack: 90, brightred: 91, brightgreen: 92, brightyellow: 93,
-  brightblue: 94, brightmagenta: 95, brightcyan: 96, brightwhite: 97,
+  black: 30,
+  red: 31,
+  green: 32,
+  yellow: 33,
+  blue: 34,
+  magenta: 35,
+  cyan: 36,
+  white: 37,
+  brightblack: 90,
+  brightred: 91,
+  brightgreen: 92,
+  brightyellow: 93,
+  brightblue: 94,
+  brightmagenta: 95,
+  brightcyan: 96,
+  brightwhite: 97,
 };
-const BASIC_FG_TO_NAME: Record<number, string> = Object.fromEntries(
-  Object.entries(BASIC).map(([n, c]) => [c, n]),
-);
+const BASIC_FG_TO_NAME: Record<number, string> = Object.fromEntries(Object.entries(BASIC).map(([n, c]) => [c, n]));
 
 const ESC = "\x1b";
 const RESET = `${ESC}[0m`;
@@ -67,7 +78,10 @@ const CLOSE_RE = /\{\/(c|bg)\}/g;
  * left as literal text (no fabricated color).
  */
 export function renderToAnsi(markup: string): string {
-  type Tok = { kind: "text"; v: string } | { kind: "open"; ch: "c" | "bg"; spec: string } | { kind: "close"; ch: "c" | "bg" };
+  type Tok =
+    | { kind: "text"; v: string }
+    | { kind: "open"; ch: "c" | "bg"; spec: string }
+    | { kind: "close"; ch: "c" | "bg" };
   const toks: Tok[] = [];
   let i = 0;
   while (i < markup.length) {
@@ -76,7 +90,9 @@ export function renderToAnsi(markup: string): string {
     const open = OPEN_RE.exec(markup);
     const close = CLOSE_RE.exec(markup);
     // earliest match at/after i
-    const next = [open, close].filter((m): m is RegExpExecArray => m !== null && m.index >= i).sort((a, b) => a.index - b.index)[0];
+    const next = [open, close]
+      .filter((m): m is RegExpExecArray => m !== null && m.index >= i)
+      .sort((a, b) => a.index - b.index)[0];
     if (!next) {
       toks.push({ kind: "text", v: markup.slice(i) });
       break;
@@ -132,7 +148,8 @@ export function renderToAnsi(markup: string): string {
     } else {
       const stack = t.ch === "c" ? fg : bg;
       const popped = stack.pop();
-      if (popped === null) out += `{/${t.ch}}`; // matched a literal open
+      if (popped === null)
+        out += `{/${t.ch}}`; // matched a literal open
       else out += sgrFor();
     }
   }
@@ -204,7 +221,9 @@ export function parseFromAnsi(input: string): string {
           spec = String(Number(params[p + 2]));
           p += 3;
         } else if (mode === 2) {
-          const r = Number(params[p + 2]), g = Number(params[p + 3]), b = Number(params[p + 4]);
+          const r = Number(params[p + 2]),
+            g = Number(params[p + 3]),
+            b = Number(params[p + 4]);
           spec = "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
           p += 5;
         } else {

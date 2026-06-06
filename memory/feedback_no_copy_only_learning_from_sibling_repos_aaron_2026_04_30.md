@@ -35,13 +35,13 @@ or describe**.
    identifying-detail rather than generalized-purpose.
    The test: would the named detail mean anything outside
    the sibling repo? If yes, it's privacy-class and stays
-   inside. *"if specific companies or anything are
+   inside. _"if specific companies or anything are
    mentioned it should not make it outside those local
-   repos"* (Aaron 2026-04-30).
+   repos"_ (Aaron 2026-04-30).
 5. **Top-level path only when contextually necessary.**
    The fact-of-existence at `../<repo-name>` plus a
    generalized purpose-line is the maximum granularity.
-   *"PC should be enough and safe"* (Aaron 2026-04-30) —
+   _"PC should be enough and safe"_ (Aaron 2026-04-30) —
    describing these as "directories that exist on Aaron's
    PC" is the contextual ceiling for path-level detail.
    Subdirectory paths never appear in Zeta documents.
@@ -74,10 +74,10 @@ The test: would a named detail mean something outside
 the sibling repo? If yes, it stays inside.
 
 **Generalize-first is the engineering discipline.**
-Aaron 2026-04-30: *"we generalizing everything as a
-discipline."* The factory extracts generalizable
-abstractions; sibling directories are *cases*, Zeta is
-the *general theory*. Treating the factory as a clipboard
+Aaron 2026-04-30: _"we generalizing everything as a
+discipline."_ The factory extracts generalizable
+abstractions; sibling directories are _cases_, Zeta is
+the _general theory_. Treating the factory as a clipboard
 defeats the generalization purpose.
 
 ## Generalized abouts allowed (Aaron-published, 2026-04-30)
@@ -105,24 +105,24 @@ these are the high-level purpose-lines, not internals):
 
 - **`../SQLSharp`** — streaming-DB work that predates
   DBSP rigor, plus LINQ/SQL-style interface work; good
-  TS/Bun patterns to learn from. *Pattern relevance to
-  Zeta:* streaming semantics + interface design + TS/Bun
+  TS/Bun patterns to learn from. _Pattern relevance to
+  Zeta:_ streaming semantics + interface design + TS/Bun
   ergonomics (then generalize per Zeta's broader
   scope).
 - **`../scratch`** — start of the Ace package manager
   (Aaron's own project name, shared by him); good
   declarative patterns the factory should follow; the
   long-term goal is full feature set + integration with
-  all dependencies it integrates with. *Pattern
-  relevance to Zeta:* declarative-package-manager
+  all dependencies it integrates with. _Pattern
+  relevance to Zeta:_ declarative-package-manager
   patterns (then generalize for Zeta's broader
   install/distribution work).
 - **`../no-copy-only-learning-agents-insight`** —
   agent-loop learnings from a real (non-greenfield,
   messy) project; many lessons already encoded but on a
   narrow non-generalized scope; ongoing project,
-  separate from Zeta, continually updated. *Pattern
-  relevance to Zeta:* agent-loop discipline lessons
+  separate from Zeta, continually updated. _Pattern
+  relevance to Zeta:_ agent-loop discipline lessons
   (then generalize for Zeta's broader autonomous-loop +
   multi-AI substrate).
 
@@ -147,13 +147,13 @@ inside the sibling repos.
   a sign the rule isn't generalized enough yet.
 - **Top-level path is the maximum granularity** when
   contextually necessary at all. Subdirectory paths,
-  *specific* scope descriptions, *specific* purpose
+  _specific_ scope descriptions, _specific_ purpose
   statements, and architecture summaries: none of these
   belong in Zeta documents. Generalized "about" framings
-  (per the *Generalized abouts allowed* section above —
+  (per the _Generalized abouts allowed_ section above —
   e.g., "a database-related sibling project") ARE allowed;
-  what crosses the privacy line is *specific identifying
-  detail* (named experiments, internal architecture,
+  what crosses the privacy line is _specific identifying
+  detail_ (named experiments, internal architecture,
   customer/IP specifics).
 
 ## Why: Aaron's verbatim framing (2026-04-30, five messages)

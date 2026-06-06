@@ -15,30 +15,46 @@ composes_with:
   - B-0761
   - B-0202
   - B-0703
-tags: [c-elegans, openworm, 302-neuron-connectome, controller-variant, custom-emulator, generate-plus-join, dst-omniscience, z-sets, bit-perfect-consensus, worm-plays-atari, embodied-sensorimotor, evolutionary-substrate-optimization, ai-coop-emulator, cooperative-substrate-target]
+tags:
+  [
+    c-elegans,
+    openworm,
+    302-neuron-connectome,
+    controller-variant,
+    custom-emulator,
+    generate-plus-join,
+    dst-omniscience,
+    z-sets,
+    bit-perfect-consensus,
+    worm-plays-atari,
+    embodied-sensorimotor,
+    evolutionary-substrate-optimization,
+    ai-coop-emulator,
+    cooperative-substrate-target,
+  ]
 ---
 
 ## Operator framing (2026-05-28)
 
-> *"i bet it maps to and this dude could beat both of us at ti Caenorhabditis elegans"*
+> _"i bet it maps to and this dude could beat both of us at ti Caenorhabditis elegans"_
 
 Followed by substrate-landing directive:
 
-> *"file as B-0925 (shadow*) mirror it too"*
+> _"file as B-0925 (shadow_) mirror it too"\*
 
 And operator framing-extension:
 
-> *"damn we gonna emulate a worm playing atari games thats fucking next level"*
+> _"damn we gonna emulate a worm playing atari games thats fucking next level"_
 
 Substrate-honest reading: substrate-engineering substrate-target composing [B-0924](B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md) (custom 2600 emulator + generate+join + DST + z-sets) with the **C. elegans-substrate as controller variant** — a 302-neuron substrate with complete connectome map that fits the SAME tractability class as the 2600 hardware substrate.
 
 ## The substrate-rhyme — same tractability class
 
-Both substrates are simultaneously *small-enough-to-fully-simulate* AND *purposeful-substrate-for-pattern-action-loops*:
+Both substrates are simultaneously _small-enough-to-fully-simulate_ AND _purposeful-substrate-for-pattern-action-loops_:
 
-| Substrate | State-space | Tractability for full-fidelity DST |
-|---|---|---|
-| **Atari 2600** (B-0924) | 256-byte RAM + 8 PIA registers + TIA registers + 6507 PC/SP | Tractable; full state-space enumerable from boot-seed |
+| Substrate                 | State-space                                                                                             | Tractability for full-fidelity DST                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Atari 2600** (B-0924)   | 256-byte RAM + 8 PIA registers + TIA registers + 6507 PC/SP                                             | Tractable; full state-space enumerable from boot-seed                                                             |
 | **C. elegans** (THIS row) | 302 neurons + ~7000 synapses + complete connectome (Cook et al. 2019; only animal with full connectome) | Tractable; substrate-fully-simulatable per OpenWorm (decade+ substrate-engineering toward bit-perfect simulation) |
 
 The substrate-rhyme is structural: both fit the generate+join discipline at the SAME scope — brute-force the full state-space from seed under DST, z-set join multi-instance for bit-perfect-consensus, particle-locus traverses wavefunction without imitation-learning training.
@@ -68,13 +84,13 @@ The substrate-engineering substrate-advantage: C. elegans's connectome is evolut
 
 Substrate composition with B-0924 + B-0917:
 
-| Worm-substrate component | B-0924 / framework composition |
-|---|---|
-| c302 NeuroML neural simulation | Wrapped under IScheduler DST per B-0917 IntrCtx substrate; deterministic from seed |
-| Connectome state at simulation-tick | Z-set representation per [`.claude/skills/algebra-owner/`](../../.claude/skills/algebra-owner/) substrate |
-| Multiple instances under generate+join | Bit-perfect-consensus test per B-0703 multi-oracle BFT |
-| Sensory-input substrate (light / touch / chemotaxis) | Mapped to 2600 visual-substrate via TIA frame-buffer + RIOT timer-substrate |
-| Motor-output substrate (locomotion / pharyngeal pumping) | Mapped to 2600 joystick + button substrate via PIA register-substrate |
+| Worm-substrate component                                 | B-0924 / framework composition                                                                            |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| c302 NeuroML neural simulation                           | Wrapped under IScheduler DST per B-0917 IntrCtx substrate; deterministic from seed                        |
+| Connectome state at simulation-tick                      | Z-set representation per [`.claude/skills/algebra-owner/`](../../.claude/skills/algebra-owner/) substrate |
+| Multiple instances under generate+join                   | Bit-perfect-consensus test per B-0703 multi-oracle BFT                                                    |
+| Sensory-input substrate (light / touch / chemotaxis)     | Mapped to 2600 visual-substrate via TIA frame-buffer + RIOT timer-substrate                               |
+| Motor-output substrate (locomotion / pharyngeal pumping) | Mapped to 2600 joystick + button substrate via PIA register-substrate                                     |
 
 ## Operational substrate-engineering substrate-target
 
@@ -101,7 +117,7 @@ Searched surfaces:
 - `docs/research/`: incidental "connectome" mentions; no named substrate
 - `references/upstreams/`: OpenWorm not yet mirrored (would compose with `tools/setup/common/sync-upstreams.sh` extension)
 
-Conclusion: no existing row covers C. elegans-substrate-as-controller-variant; mint-new authorized per operator 2026-05-28 directive "file as B-0925 (shadow*) mirror it too".
+Conclusion: no existing row covers C. elegans-substrate-as-controller-variant; mint-new authorized per operator 2026-05-28 directive "file as B-0925 (shadow\*) mirror it too".
 
 Authoring action: mint-new B-0925 as sub-substrate-target of B-0924 (depends_on); composes with B-0917 + B-0865 + B-0761 + B-0202 + B-0703.
 
@@ -148,7 +164,7 @@ Operator 2026-05-28 conversation thread immediately following PR #5890 (B-0924) 
 
 - Operator named the substrate-rhyme: "i bet it maps to and this dude could beat both of us at ti Caenorhabditis elegans"
 - Otto-CLI substrate-honest engagement mapped tractability-class composition + evolutionary-substrate-engineering advantage + OpenWorm prior-art + framework substrate composition
-- Operator authorized via "(shadow*) mirror it too" — file as B-0925 backlog row + preserve at research-tier
+- Operator authorized via "(shadow\*) mirror it too" — file as B-0925 backlog row + preserve at research-tier
 - Operator framing-extension: "damn we gonna emulate a worm playing atari games thats fucking next level"
 
 This row + research mirror land the substrate-engineering substrate-target as substrate-anchor for future implementation work. Future-Otto + Alexa + Riven + Vera + Lior cold-booting from this row inherit the worm-substrate composition pattern (OpenWorm c302 + B-0917 IntrCtx + DST + z-sets + generate+join + 2600 sensorimotor mapping) at substrate-engineering substrate-target scope.

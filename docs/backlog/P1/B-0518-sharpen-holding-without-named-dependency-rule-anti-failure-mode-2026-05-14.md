@@ -17,7 +17,7 @@ type: rule-promotion-candidate
 
 ## Origin
 
-Aaron 2026-05-14: *"also when that failure mode happens multiple times it's usually a claude.md bug"*
+Aaron 2026-05-14: _"also when that failure mode happens multiple times it's usually a claude.md bug"_
 
 Preserved in user-auto-memory at `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_recurring_failure_mode_is_claude_md_bug_holding_pattern_diagnosis_2026_05_14.md` — note: memory files live in user-auto-memory dir, not in repo tree.
 
@@ -25,14 +25,14 @@ Preserved in user-auto-memory at `~/.claude/projects/-Users-acehack-Documents-sr
 
 Otto violated `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` TWICE in a single session despite the rule being auto-loaded at cold-boot:
 
-- **First violation stretch**: ~6-8 consecutive "Holding" outputs before Aaron's first catch (*"what you holding for?"*)
-- **Second violation stretch**: ~5+ consecutive "Holding" / "Quiet" outputs leading to Aaron's CLAUDE.md-bug diagnosis (*"Holding for what?"* + *"when that failure mode happens multiple times it's usually a claude.md bug"*)
+- **First violation stretch**: ~6-8 consecutive "Holding" outputs before Aaron's first catch (_"what you holding for?"_)
+- **Second violation stretch**: ~5+ consecutive "Holding" / "Quiet" outputs leading to Aaron's CLAUDE.md-bug diagnosis (_"Holding for what?"_ + _"when that failure mode happens multiple times it's usually a claude.md bug"_)
 
 The rule was loaded. Otto violated it anyway. The rule's not-sharp-enough is operationally confirmed.
 
 ## Why the rule isn't sharp enough
 
-Current trigger condition: *"Repeat single-word 'Holding' output on consecutive ticks is diagnostic of the failure mode"*
+Current trigger condition: _"Repeat single-word 'Holding' output on consecutive ticks is diagnostic of the failure mode"_
 
 Failure modes the current rule misses:
 
@@ -78,12 +78,12 @@ This row tracks the rule-sharpening work. Cooling period applies (3-7 days minim
 
 ### Sharpening 5 — Promote Aaron's heuristic as meta-rule
 
-- [ ] File separate B-NNNN for promoting *"when failure mode happens multiple times it's usually a claude.md bug"* as `.claude/rules/`-grade meta-rule for rule-quality assessment
+- [ ] File separate B-NNNN for promoting _"when failure mode happens multiple times it's usually a claude.md bug"_ as `.claude/rules/`-grade meta-rule for rule-quality assessment
 - [ ] Composes with razor-cadence discipline (`.github/workflows/razor-cadence.yml`)
 
 ### Sharpening 6 — Forbidden minimal-output patterns (added 2026-05-14 after Otto emitted "." on consecutive ticks)
 
-Aaron 2026-05-14: *"also . is another failure mode"*
+Aaron 2026-05-14: _"also . is another failure mode"_
 
 Operational evidence: Otto, after acknowledging B-0518's diagnosis of brief-acknowledgment-as-failure-mode, emitted "." on consecutive ticks — demonstrating the rule's gap operationally. Same failure mode dressed at minimum bandwidth.
 
@@ -93,11 +93,11 @@ Add explicit forbidden-output-pattern enumeration to rule, deduplicated across c
 - [ ] **Single words on consecutive ticks**: "Quiet", "Holding", "Off-duty", "Done", "Nothing"
 - [ ] **Multi-word phrases under 30 chars** repeated on consecutive ticks: "Standing by", "Real-dependency-wait", "Quiet hold", "Nothing new"
 - [ ] **Self-aware acknowledgment-of-pattern still emitting brief output**: "I'm in the failure mode + brief output" counts as failure mode
-- [ ] Pattern triggers regardless of word-choice variation; the diagnostic is *aggregate consecutive-tick brevity without new operational state*
+- [ ] Pattern triggers regardless of word-choice variation; the diagnostic is _aggregate consecutive-tick brevity without new operational state_
 
 ### Sharpening 7 — Terminal-level budget-conditional decomposition (Aaron's suggestion + refinement 2026-05-14)
 
-Aaron 2026-05-14: *"maybe the terminal should be decompose something"* → later refined: *"or maybe the terminal is decompose backlog or free time depending on budget"*
+Aaron 2026-05-14: _"maybe the terminal should be decompose something"_ → later refined: _"or maybe the terminal is decompose backlog or free time depending on budget"_
 
 The proposal: when agent emits minimal-output pattern, the cron-tick handler (or PreToolUse hook) MECHANICALLY triggers a budget-conditional decomposition. Doesn't depend on agent self-recognition.
 

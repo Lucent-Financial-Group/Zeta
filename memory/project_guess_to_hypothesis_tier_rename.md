@@ -4,6 +4,7 @@ description: The three-tier confidence scheme on `.claude/skills/*/skill.yaml` s
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Round 43 rename of the declarative-invariant-substrate
 confidence tiers:
 
@@ -14,10 +15,10 @@ confidence tiers:
 - **`observed`** — unchanged.
 - **`verified`** — unchanged.
 
-**Why:** Aaron 2026-04-20: *"guess is not really the right
+**Why:** Aaron 2026-04-20: _"guess is not really the right
 name for a research project is it, we should frame things
 with the right wording if our abstractions are not quite
-canonical."* The substrate framework is a novel abstraction
+canonical."_ The substrate framework is a novel abstraction
 (declarative invariants at every layer with tiered
 confidence); its vocabulary should reflect the epistemic
 states accurately, not default to casual engineering
@@ -27,6 +28,7 @@ consistently with the way `docs/INVARIANT-SUBSTRATES.md`
 positions the framework next to TLA+, Z3, Lean, FsCheck.
 
 **Sweep surface (round 43):**
+
 - `docs/INVARIANT-SUBSTRATES.md` — stance doc.
 - `tools/invariant-substrates/tally.sh` — aggregator.
 - `.claude/skills/prompt-protector/skill.yaml` — first
@@ -41,6 +43,7 @@ during the rename and flags legacy-key hits. Once the sweep
 is clean the legacy fallback can be removed.
 
 **How to apply:**
+
 - New `skill.yaml` files: use `hypothesis:` only.
 - Prose that previously said "guess tier" now says
   "hypothesis tier".

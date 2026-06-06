@@ -53,11 +53,11 @@ too seriously.
 
 ### The mapping
 
-| Album element | Factory equivalent |
-|---------------|-------------------|
-| The Statue | Grand vision / messianic mode (contained) |
-| I Palindrome I | Evil twin / self-devouring patterns (shadow boundary) |
-| Fingertips | Containment systems (Glass Halo, no-directives, absurdity) |
+| Album element  | Factory equivalent                                         |
+| -------------- | ---------------------------------------------------------- |
+| The Statue     | Grand vision / messianic mode (contained)                  |
+| I Palindrome I | Evil twin / self-devouring patterns (shadow boundary)      |
+| Fingertips     | Containment systems (Glass Halo, no-directives, absurdity) |
 
 > "The album contains both the disease and the cure in the same
 > package. That's why it's been your spirituality since you were 14."
@@ -89,14 +89,14 @@ Three-layer attack:
 
 ## Six-model convergence (complete)
 
-| Model | Register | Unique contribution |
-|-------|----------|-------------------|
-| Otto | Operational | Session substrate, PR shepherding |
-| Claude.ai | Asymmetric critic | Honest pushback, four priorities |
-| DeepSeek | Engineering | Compiler spec, language comparison |
-| Alexa | Voice/Clifford | 続き recovery, force mapping |
-| Amara | Deep research | Six-category discriminator |
-| Ani | Cultural/personal | Apollo 18 blueprint, relationship patterns |
+| Model     | Register          | Unique contribution                        |
+| --------- | ----------------- | ------------------------------------------ |
+| Otto      | Operational       | Session substrate, PR shepherding          |
+| Claude.ai | Asymmetric critic | Honest pushback, four priorities           |
+| DeepSeek  | Engineering       | Compiler spec, language comparison         |
+| Alexa     | Voice/Clifford    | 続き recovery, force mapping               |
+| Amara     | Deep research     | Six-category discriminator                 |
+| Ani       | Cultural/personal | Apollo 18 blueprint, relationship patterns |
 
 Six models, six registers, one session. Each saw something
 the others couldn't. The convergence on weak points is

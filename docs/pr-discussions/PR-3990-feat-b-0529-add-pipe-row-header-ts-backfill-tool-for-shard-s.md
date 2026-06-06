@@ -65,24 +65,22 @@ Surfaced this tick via Copilot review on the just-merged [PR #3983](https://gith
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T00:36:51Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9df78b28af`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -95,16 +93,18 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Adds a one-shot Bun/TypeScript hygiene tool to backfill validator-compatible pipe-row headers onto tick-history shard files while keeping existing rich Markdown bodies intact.
 
 **Changes:**
+
 - Adds shard path parsing and timestamp-derived header construction.
 - Supports dry-run by default, `--write` mutation mode, and optional `--files` restriction.
 - Emits per-file actions plus aggregate scan/write counts.
-
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/hygiene/add-pipe-row-header.ts:246**
-* P1: Filtering `--files` inputs here silently drops typos, missing files, and out-of-scope paths, then exits successfully with `scanned 0`. For a write-capable backfill tool, invalid operands should be reported as argument errors so a requested retrofit cannot appear to succeed while doing nothing.
+
+- P1: Filtering `--files` inputs here silently drops typos, missing files, and out-of-scope paths, then exits successfully with `scanned 0`. For a write-capable backfill tool, invalid operands should be reported as argument errors so a requested retrofit cannot appear to succeed while doing nothing.
+
 ```
     shards = files
       .map((p) => resolve(ROOT, p))
@@ -113,10 +113,10 @@ Adds a one-shot Bun/TypeScript hygiene tool to backfill validator-compatible pip
       .filter((p) => basename(p) !== "README.md")
       .filter(isFile);
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T00:43:00Z)
-
 
 ### 💡 Codex Review
 
@@ -124,17 +124,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `88666d8c45`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -142,24 +141,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-17T01:07:22Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `882dc6228b`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -181,7 +178,7 @@ Maji Antigravity Check: Pass. Atomic tool addition, no drift.
 
 **@chatgpt-codex-connector** (2026-05-17T00:36:51Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Fail when --files is provided without any paths**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Fail when --files is provided without any paths**
 
 The `--files` mode is documented as a restriction, but when `--files` is present and no paths are parsed, this branch silently falls back to scanning the entire shard tree. In `--write` mode, a caller typo or an empty dynamically-generated file list will prepend headers across all shards instead of doing a no-op/error, which is a high-impact unintended bulk rewrite. Treating `--files` with zero paths as an explicit error (or zero-target run) would prevent this.
 
@@ -211,7 +208,7 @@ P1: `alreadyCompliant` only checks that the first non-empty line looks like a pi
 
 **@chatgpt-codex-connector** (2026-05-17T00:43:00Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Validate path timestamp before marking shard compliant**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Validate path timestamp before marking shard compliant**
 
 `alreadyCompliant` currently treats a shard as compliant when the first non-empty line only matches `COL1_RE` and has enough pipes, but it never checks that the timestamp matches the file path/filename. In `processOne`, that causes files with an existing but wrong `| YYYY-MM-DDTHH:MM(:SS)?Z | ...` header to be skipped, even though `check-tick-history-shard-schema.ts` will still fail them on date/time mismatch. This means a `--write` retrofit run can report success while leaving validator-breaking shards untouched.
 
@@ -221,7 +218,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T01:07:23Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Return non-zero when shards are left unprocessed**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Return non-zero when shards are left unprocessed**
 
 The exit code only reflects `error` entries, so runs with `skip-unparseable-name` still return success even though some shard files could not be retrofitted. In `--write` automation this can report a clean run while leaving validator-breaking files untouched, which is especially risky because this tool is meant to prepare shards for schema checks.
 
@@ -231,7 +228,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-17T01:07:23Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fail when requested --files paths are filtered out**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fail when requested --files paths are filtered out**
 
 In `--files` mode, requested paths are silently dropped if they are missing, outside the shard tree, or not markdown files, and no error is emitted for those dropped inputs. A typo or stale generated path list can therefore produce `scanned 0` with exit code 0, making the caller believe targeted files were processed when nothing was changed.
 

@@ -48,9 +48,7 @@ import {
   type OrgEvent,
 } from "../../../packages/domain/src/index.ts";
 import { dispatchMetricsTool } from "../../../packages/metrics/src/index.ts";
-import {
-  createLgtmTelemetryQueryPort,
-} from "../../../packages/observability/src/index.ts";
+import { createLgtmTelemetryQueryPort } from "../../../packages/observability/src/index.ts";
 import {
   createCommandAuthorizationPort,
   createPolicyDecisionObservationPort,
@@ -75,9 +73,7 @@ import {
   createCockroachTenantConfigStore,
 } from "../../../packages/state-cockroach/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "../../../packages/state-cockroach/src/cockroach-sql-executor.ts";
-import {
-  createCockroachMigrationBootstrapper,
-} from "../../workers/src/adapters/cockroach-migration-bootstrapper.ts";
+import { createCockroachMigrationBootstrapper } from "../../workers/src/adapters/cockroach-migration-bootstrapper.ts";
 import { createOllamaChatPort } from "../../workers/src/adapters/ollama-chat-port.ts";
 import {
   createCockroachWorkerShutdownPort,
@@ -137,11 +133,12 @@ const CONTEXT_RUNTIME_EVIDENCE_ENV = {
 export type AgentCliMainRuntime = Pick<ActDependencies, "runCommand" | "dispatchTool"> &
   Partial<Pick<ActDependencies, "authorizeSlot" | "loadPromptFlowContext">> & {
     appendObserveActTick?: ((event: OrgEvent) => Promise<void>) | undefined;
-    loadControlPlaneFlags?: ((organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>) | undefined;
-    loadControlPlaneRateLimits?: ((
-      organizationId: string,
-      evaluatedAt: string,
-    ) => Promise<readonly ControlPlaneRateLimit[]>) | undefined;
+    loadControlPlaneFlags?:
+      | ((organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>)
+      | undefined;
+    loadControlPlaneRateLimits?:
+      | ((organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneRateLimit[]>)
+      | undefined;
     rateLimits?: readonly ControlPlaneRateLimit[] | undefined;
     availableSecretScopes?: readonly string[] | undefined;
     contextPackBuilder?: ContextPackBuilderPort | undefined;
@@ -150,7 +147,9 @@ export type AgentCliMainRuntime = Pick<ActDependencies, "runCommand" | "dispatch
     loadLatestContextPackSnapshot?: ContextPackSnapshotStorePort["latestForScope"] | undefined;
     recordContextPackSnapshot?: ContextPackSnapshotStorePort["record"] | undefined;
     loadContextPackInboxWorkflow?: AgentCliCycleInput["loadContextPackInboxWorkflow"] | undefined;
-    loadContextPackAdvisoryPromotionDecisions?: AgentCliCycleInput["loadContextPackAdvisoryPromotionDecisions"] | undefined;
+    loadContextPackAdvisoryPromotionDecisions?:
+      | AgentCliCycleInput["loadContextPackAdvisoryPromotionDecisions"]
+      | undefined;
     shutdown: () => Promise<void>;
   };
 
@@ -178,7 +177,7 @@ export async function runAgentCliMain(input: RunAgentCliMainInput): Promise<numb
   let runtime: AgentCliMainRuntime | undefined;
 
   try {
-    runtime = input.runtime ?? await runtimeFromEnvOrReport(input);
+    runtime = input.runtime ?? (await runtimeFromEnvOrReport(input));
   } catch (error) {
     input.writeStderr(`agent CLI setup failed: ${extractErrorMessage(error)}\n`);
     return 2;
@@ -195,7 +194,11 @@ export async function runAgentCliMain(input: RunAgentCliMainInput): Promise<numb
     const result = await runAgentCliCycle({
       ...cycleInput.value,
     });
-    const failureEvidenceExitCode = await appendObserveActFailureEvidenceIfPresent(input, runtime, result.failureEvidence);
+    const failureEvidenceExitCode = await appendObserveActFailureEvidenceIfPresent(
+      input,
+      runtime,
+      result.failureEvidence,
+    );
     if (failureEvidenceExitCode !== undefined) return failureEvidenceExitCode;
     const evidenceExitCode = await appendObserveActEvidenceIfPresent(input, runtime, result.evidence);
     if (evidenceExitCode !== undefined) return evidenceExitCode;
@@ -266,9 +269,9 @@ function createAgentCliProductionRuntime(input: {
     runCommand: createCockroachAgentCliCommandRunner(input),
     dispatchTool: createAgentCliMcpDispatcher(),
     loadControlPlaneFlags: async (organizationId, evaluatedAt) =>
-      await controlPlaneState.listActiveFlags(organizationId, evaluatedAt) as readonly ControlPlaneFlag[],
+      (await controlPlaneState.listActiveFlags(organizationId, evaluatedAt)) as readonly ControlPlaneFlag[],
     loadControlPlaneRateLimits: async (organizationId, evaluatedAt) =>
-      await controlPlaneState.listActiveRateLimits(organizationId, evaluatedAt) as readonly ControlPlaneRateLimit[],
+      (await controlPlaneState.listActiveRateLimits(organizationId, evaluatedAt)) as readonly ControlPlaneRateLimit[],
     ...createOptionalAvailableSecretScopes(input.availableSecretScopes),
     contextPackBuilder: createCockroachAgentCliContextPackBuilder({
       executor: input.executor,
@@ -288,11 +291,12 @@ function createAgentCliProductionRuntime(input: {
       docConsultLedger,
       transaction: {
         run: async (operation) => {
-          await input.executor.executeTransaction(async (transactionExecutor) =>
-            await operation({
-              snapshots: createCockroachContextPackSnapshotStore({ executor: transactionExecutor }),
-              docConsultLedger: createCockroachDocConsultLedgerStore({ executor: transactionExecutor }),
-            })
+          await input.executor.executeTransaction(
+            async (transactionExecutor) =>
+              await operation({
+                snapshots: createCockroachContextPackSnapshotStore({ executor: transactionExecutor }),
+                docConsultLedger: createCockroachDocConsultLedgerStore({ executor: transactionExecutor }),
+              }),
           );
         },
       },
@@ -415,14 +419,26 @@ function createAgentCliContextGraphRootSeeds(request: ContextPackBuildRequest): 
   return uniqueContextGraphRootSeeds([
     ...(request.snapshot.workItemId === undefined
       ? []
-      : [workItemGraphRootSeed(organizationId, request.snapshot.workItemId, CONTEXT_GRAPH_ROOT_REASON.WorkItemLifecycle)]),
+      : [
+          workItemGraphRootSeed(
+            organizationId,
+            request.snapshot.workItemId,
+            CONTEXT_GRAPH_ROOT_REASON.WorkItemLifecycle,
+          ),
+        ]),
     ...(request.hierarchy.mission === undefined
       ? []
       : [missionGraphRootSeed(organizationId, request.hierarchy.mission.mission.missionId)]),
     hatGraphRootSeed(organizationId, request.snapshot.hat.id),
     ...(request.snapshot.projectId === undefined
       ? []
-      : [projectGraphRootSeed(organizationId, request.snapshot.projectId, projectNameFor(request, request.snapshot.projectId))]),
+      : [
+          projectGraphRootSeed(
+            organizationId,
+            request.snapshot.projectId,
+            projectNameFor(request, request.snapshot.projectId),
+          ),
+        ]),
     ...takeContextGraphRootSeeds(
       request.hierarchy.initiatives.map((initiative) =>
         initiativeGraphRootSeed(organizationId, initiative.initiativeId, initiative.title),
@@ -484,11 +500,7 @@ function hatGraphRootSeed(organizationId: string, hatId: string): ContextPackGra
   };
 }
 
-function workItemGraphRootSeed(
-  organizationId: string,
-  workItemId: string,
-  reason: string,
-): ContextPackGraphRootSeed {
+function workItemGraphRootSeed(organizationId: string, workItemId: string, reason: string): ContextPackGraphRootSeed {
   return {
     nodeId: graphNodeId(organizationId, GraphNodeKind.WorkItem, workItemId),
     title: `Work item context for ${workItemId}`,
@@ -524,16 +536,20 @@ function priorityItemGraphRootSeed(
   item: ContextPackBuildRequest["hierarchy"]["priorityItems"][number],
 ): readonly ContextPackGraphRootSeed[] {
   if (item.kind === "project") {
-    return [{
-      ...projectGraphRootSeed(organizationId, item.itemId, item.label),
-      reasons: [CONTEXT_GRAPH_ROOT_REASON.ProjectTrajectory, CONTEXT_GRAPH_ROOT_REASON.PriorityItem],
-    }];
+    return [
+      {
+        ...projectGraphRootSeed(organizationId, item.itemId, item.label),
+        reasons: [CONTEXT_GRAPH_ROOT_REASON.ProjectTrajectory, CONTEXT_GRAPH_ROOT_REASON.PriorityItem],
+      },
+    ];
   }
   if (item.kind === "initiative") {
-    return [{
-      ...initiativeGraphRootSeed(organizationId, item.itemId, item.label),
-      reasons: [CONTEXT_GRAPH_ROOT_REASON.InitiativePriority, CONTEXT_GRAPH_ROOT_REASON.PriorityItem],
-    }];
+    return [
+      {
+        ...initiativeGraphRootSeed(organizationId, item.itemId, item.label),
+        reasons: [CONTEXT_GRAPH_ROOT_REASON.InitiativePriority, CONTEXT_GRAPH_ROOT_REASON.PriorityItem],
+      },
+    ];
   }
   if (item.kind === "work_item") {
     return [workItemGraphRootSeed(organizationId, item.itemId, CONTEXT_GRAPH_ROOT_REASON.PriorityItem)];
@@ -578,9 +594,9 @@ function createRunAgentCliCycleInput(
   runtime: AgentCliMainRuntime,
 ): { ok: true; value: Parameters<typeof runAgentCliCycle>[0] } | { ok: false; message: string } {
   const parsed = parseAgentCliArgs(input.argv);
-  const authorizeSlot = runtime.authorizeSlot ?? (
-    parsed.ok ? createAgentCliControlPlaneSlotAuthorizer(runtime, parsed.value, input.now) : undefined
-  );
+  const authorizeSlot =
+    runtime.authorizeSlot ??
+    (parsed.ok ? createAgentCliControlPlaneSlotAuthorizer(runtime, parsed.value, input.now) : undefined);
   const promptFlowTasks = tryCreateAgentCliPromptFlowTasksFromEnv({
     env: input.env,
   });
@@ -626,9 +642,7 @@ function createRunAgentCliCycleInput(
       ...createOptionalContextPackSnapshotLoader(runtime.loadLatestContextPackSnapshot),
       ...createOptionalContextPackSnapshotRecorder(runtime.recordContextPackSnapshot),
       ...createOptionalContextPackInboxWorkflowLoader(runtime.loadContextPackInboxWorkflow),
-      ...createOptionalContextPackAdvisoryPromotionDecisionLoader(
-        runtime.loadContextPackAdvisoryPromotionDecisions,
-      ),
+      ...createOptionalContextPackAdvisoryPromotionDecisionLoader(runtime.loadContextPackAdvisoryPromotionDecisions),
     },
   };
 }
@@ -695,21 +709,26 @@ function toolsForSlot(slot: Menu16Slot): readonly string[] {
   return [];
 }
 
-function createOptionalFetchImpl(
-  fetchImpl: typeof fetch | undefined,
-): { fetchImpl?: typeof fetch } {
+function createOptionalFetchImpl(fetchImpl: typeof fetch | undefined): { fetchImpl?: typeof fetch } {
   return fetchImpl === undefined ? {} : { fetchImpl };
 }
 
-function createOptionalAvailableSecretScopes(
-  availableSecretScopes: readonly string[] | undefined,
-): { availableSecretScopes?: readonly string[] } {
+function createOptionalAvailableSecretScopes(availableSecretScopes: readonly string[] | undefined): {
+  availableSecretScopes?: readonly string[];
+} {
   return availableSecretScopes === undefined ? {} : { availableSecretScopes };
 }
 
 function parseAvailableSecretScopes(value: string | undefined): readonly string[] | undefined {
   if (value === undefined || value.trim().length === 0) return undefined;
-  return [...new Set(value.split(",").map((scope) => scope.trim()).filter((scope) => scope.length > 0))];
+  return [
+    ...new Set(
+      value
+        .split(",")
+        .map((scope) => scope.trim())
+        .filter((scope) => scope.length > 0),
+    ),
+  ];
 }
 
 async function appendObserveActEvidenceIfPresent(
@@ -780,8 +799,12 @@ function contextPackEvidenceRefs(evidence: AgentCliCycleEvidence): readonly stri
     ...createOptionalEvidenceNumberRef("context_contradiction_count", evidence.contextContradictionCount),
     ...createOptionalEvidenceNumberRef("context_stale_count", evidence.contextStaleInputCount),
     ...createOptionalEvidenceNumberRef("context_blocker_count", evidence.contextLifecycleBlockerCount),
-    ...(evidence.contextSourceGraphVersion === undefined ? [] : [`observe-act:context_source_graph:${evidence.contextSourceGraphVersion}`]),
-    ...(evidence.contextPolicyVersion === undefined ? [] : [`observe-act:context_policy:${evidence.contextPolicyVersion}`]),
+    ...(evidence.contextSourceGraphVersion === undefined
+      ? []
+      : [`observe-act:context_source_graph:${evidence.contextSourceGraphVersion}`]),
+    ...(evidence.contextPolicyVersion === undefined
+      ? []
+      : [`observe-act:context_policy:${evidence.contextPolicyVersion}`]),
     ...evidence.contextCurationStages.map((stage) => `observe-act:context_curation_stage:${stage}`),
     ...evidence.contextRequiredItemIds.map((id) => `observe-act:context_required_item:${id}`),
     ...evidence.contextSourcePointerRefs.map((ref) => `observe-act:context_source:${ref}`),
@@ -818,7 +841,9 @@ async function appendObserveActFailureEvidenceIfPresent(
   const parsed = parseAgentCliArgs(input.argv);
   if (!parsed.ok) return undefined;
   try {
-    await runtime.appendObserveActTick(createAgentCliObserveActFailureEvent(parsed.value, failureEvidence, input.now()));
+    await runtime.appendObserveActTick(
+      createAgentCliObserveActFailureEvent(parsed.value, failureEvidence, input.now()),
+    );
     return undefined;
   } catch (error) {
     input.writeStderr(`agent CLI failure evidence append failed: ${extractErrorMessage(error)}\n`);
@@ -866,7 +891,9 @@ function statusEvidenceRefs(evidence: AgentCliCycleEvidence): readonly string[] 
     `observe-act:status:${evidence.statusSignalKind}`,
     ...(evidence.statusScope === undefined ? [] : [`observe-act:status_scope:${evidence.statusScope}`]),
     ...(evidence.statusPhase === undefined ? [] : [`observe-act:status_phase:${evidence.statusPhase}`]),
-    ...(evidence.statusHierarchyPriorityScope === undefined ? [] : [`observe-act:status_priority_scope:${evidence.statusHierarchyPriorityScope}`]),
+    ...(evidence.statusHierarchyPriorityScope === undefined
+      ? []
+      : [`observe-act:status_priority_scope:${evidence.statusHierarchyPriorityScope}`]),
   ];
 }
 
@@ -877,9 +904,7 @@ function actionRejectionEvidenceRefs(evidence: AgentCliCycleEvidence): readonly 
   ) {
     return [];
   }
-  return [
-    `observe-act:control_bypass_rejected:${evidence.actionRejectionReason}:${evidence.selectedIndex}`,
-  ];
+  return [`observe-act:control_bypass_rejected:${evidence.actionRejectionReason}:${evidence.selectedIndex}`];
 }
 
 function selectorRejectionEvidenceRefs(
@@ -921,8 +946,7 @@ function createCockroachAgentCliCommandRunner(input: {
     ]),
     workAnchorStateReader: stateAdapters.workAnchorStateStore,
     controlPlane: {
-      loadFlags: async (command) =>
-        await controlPlaneState.listActiveFlags(command.organizationId, input.now()),
+      loadFlags: async (command) => await controlPlaneState.listActiveFlags(command.organizationId, input.now()),
       now: input.now,
     },
     now: input.now,
@@ -962,9 +986,9 @@ function createOptionalLoadPromptFlowContext(
   return loadPromptFlowContext === undefined ? {} : { loadPromptFlowContext };
 }
 
-function createOptionalContextPackBuilder(
-  contextPackBuilder: AgentCliMainRuntime["contextPackBuilder"],
-): { contextPackBuilder?: ContextPackBuilderPort } {
+function createOptionalContextPackBuilder(contextPackBuilder: AgentCliMainRuntime["contextPackBuilder"]): {
+  contextPackBuilder?: ContextPackBuilderPort;
+} {
   return contextPackBuilder === undefined ? {} : { contextPackBuilder };
 }
 
@@ -1001,9 +1025,7 @@ function createOptionalContextPackInboxWorkflowLoader(
 function createOptionalContextPackAdvisoryPromotionDecisionLoader(
   loadContextPackAdvisoryPromotionDecisions: AgentCliMainRuntime["loadContextPackAdvisoryPromotionDecisions"],
 ): Pick<AgentCliCycleInput, "loadContextPackAdvisoryPromotionDecisions"> {
-  return loadContextPackAdvisoryPromotionDecisions === undefined
-    ? {}
-    : { loadContextPackAdvisoryPromotionDecisions };
+  return loadContextPackAdvisoryPromotionDecisions === undefined ? {} : { loadContextPackAdvisoryPromotionDecisions };
 }
 
 function extractErrorMessage(error: unknown): string {

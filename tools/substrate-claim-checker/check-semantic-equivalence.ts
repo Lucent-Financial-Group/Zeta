@@ -2,15 +2,15 @@
 // check-semantic-equivalence.ts -- finds claims of semantic equivalence in markdown files.
 // Part of B-0170.1.
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 const CLAIM_REGEX = /`([^`]+)`\s+(is equivalent to|is an alias for|is the same as)\s+`([^`]+)`/gi;
 // `upstreams` excludes references/prior-art/ — 85+ full clones of external
 // projects; walking it takes minutes and returns mostly noise (per
 // .claude/rules/references-prior-art-not-our-code-search-excludes.md).
-const IGNORE_DIRS = ['node_modules', '.git', '.vscode', '.idea', 'dist', 'build', 'upstreams'];
-const INCLUDE_EXTS = ['.md', '.mdx'];
+const IGNORE_DIRS = ["node_modules", ".git", ".vscode", ".idea", "dist", "build", "upstreams"];
+const INCLUDE_EXTS = [".md", ".mdx"];
 
 interface Match {
   file: string;
@@ -20,16 +20,16 @@ interface Match {
 
 function searchInFile(filePath: string): Match[] {
   const matches: Match[] = [];
-  if (!INCLUDE_EXTS.some(ext => filePath.endsWith(ext))) {
+  if (!INCLUDE_EXTS.some((ext) => filePath.endsWith(ext))) {
     return matches;
   }
 
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n");
 
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i] ?? '';
+      const line = lines[i] ?? "";
       let match;
       while ((match = CLAIM_REGEX.exec(line)) !== null) {
         matches.push({
@@ -76,7 +76,7 @@ function main() {
   const allMatches = searchInDirectory(searchDir);
 
   if (allMatches.length === 0) {
-    console.log('No semantic equivalence claims found.');
+    console.log("No semantic equivalence claims found.");
     return;
   }
 

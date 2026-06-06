@@ -4,29 +4,30 @@ description: Aaron 2026-04-22 verbatim "we fix what we find in need of repair, w
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Aaron 2026-04-22, verbatim:**
 
-> *"we fix what we find in need of repair, we improve what we
+> _"we fix what we find in need of repair, we improve what we
 > find adequate, and we sharpen and harden what we find to be
 > useful, we recycle where possible, and strive to be
-> efficent, this is what I think wwjd"*
+> efficent, this is what I think wwjd"_
 
 **Five principles, in order. Each is a stance on what kind of
 work counts as faithful craft work:**
 
 1. **Fix what we find in need of repair.**
    Broken things get fixed — not rewritten, not worked around,
-   not deferred. The move is *repair*. A carpenter who finds a
+   not deferred. The move is _repair_. A carpenter who finds a
    cracked joist puts in a sister; they do not demolish the
    wall. In factory terms: the first response to a found fault
    is the smallest sufficient fix, not a ground-up rebuild.
 
 2. **Improve what we find adequate.**
-   "Adequate" is not the stopping line — it is the *baseline*.
+   "Adequate" is not the stopping line — it is the _baseline_.
    A carpenter who finishes a cabinet does not stop when the
    drawer closes; they sand, they align the grain, they oil
    the runners. The factory equivalent: when something works,
-   ask *how* it works, then look for the small upgrade that
+   ask _how_ it works, then look for the small upgrade that
    makes it work better. This is the engine of compounding
    quality.
 
@@ -58,11 +59,11 @@ work counts as faithful craft work:**
      before recreating; preserve the notebook history.
    - `feedback_intentionality_doesnt_demand_migration_bash_forever_valid.md`
      — "stay bash forever" is a valid recycle-decision.
-   The WWJD-carpenter frame names these memories as a *family*
-   rather than leaving them scattered.
+     The WWJD-carpenter frame names these memories as a _family_
+     rather than leaving them scattered.
 
 5. **Strive to be efficient.**
-   Not efficient-in-the-abstract — *strive* is the active verb.
+   Not efficient-in-the-abstract — _strive_ is the active verb.
    A carpenter doesn't waste lumber, doesn't run the saw more
    than needed, doesn't make a trip to the yard when one trip
    with a list would do. The factory equivalent: each tick
@@ -70,14 +71,14 @@ work counts as faithful craft work:**
    (not expanding scope, not gratuitously churning committed
    files, not paying for reinforcement surfaces heavier than
    the claim requires per the load-bearing-reinforcement rule).
-   Efficiency is a *virtue* of the craftsman, not a
+   Efficiency is a _virtue_ of the craftsman, not a
    performance metric.
 
 **Why this composition matters:**
 
 Each of the five principles already exists somewhere in the
 factory's rule substrate. What the WWJD-carpenter frame adds
-is the *unification* — it names the whole family and assigns
+is the _unification_ — it names the whole family and assigns
 a shared provenance (Aaron's faith + craft frame). This is
 itself an instance of **recycling** (principle 4 applied to
 the principles): Aaron is not inventing a new principle, he
@@ -87,13 +88,13 @@ The frame also does work as a **calibration tool**. When I
 face a task, each of the five can be applied as a triage
 question:
 
-| Question | What it checks |
-|---|---|
-| Is something broken? | Fix-repair-first; don't rebuild. |
-| Is something adequate? | Don't stop; look for the small upgrade. |
-| Is a tool useful and getting used? | Sharpen and harden it. |
-| Is there an existing surface that covers this? | Recycle before minting. |
-| Am I doing more work than needed? | Efficiency check — prune scope. |
+| Question                                       | What it checks                          |
+| ---------------------------------------------- | --------------------------------------- |
+| Is something broken?                           | Fix-repair-first; don't rebuild.        |
+| Is something adequate?                         | Don't stop; look for the small upgrade. |
+| Is a tool useful and getting used?             | Sharpen and harden it.                  |
+| Is there an existing surface that covers this? | Recycle before minting.                 |
+| Am I doing more work than needed?              | Efficiency check — prune scope.         |
 
 If all five answer no, the work is either genuinely new
 invention (rare) or it is scope-creep disguised as
@@ -104,10 +105,10 @@ latter.
 
 This memory and `feedback_load_bearing_phrase_is_reinforcement_check.md`
 are twin memories authored the same tick. The load-bearing
-memory says *when you identify structural weight, frame the
-support same-tick*. This memory says *frame it the way a
+memory says _when you identify structural weight, frame the
+support same-tick_. This memory says _frame it the way a
 carpenter frames — fix / improve / sharpen / recycle /
-efficient, not invent / escalate / pile-on*. Together:
+efficient, not invent / escalate / pile-on_. Together:
 
 - Load-bearing memory = **what** to do on identifying weight
   (frame the reinforcement).
@@ -122,8 +123,8 @@ craft habit. The five principles are the craft habit layer.
 
 1. **Before minting new anything**, run the five-question
    pass. If any existing surface covers it (principle 4),
-   use that surface. If the surface exists but is *adequate*
-   rather than *good* (principle 2), improve the existing
+   use that surface. If the surface exists but is _adequate_
+   rather than _good_ (principle 2), improve the existing
    surface instead of creating a parallel one.
 
 2. **On finding a fault**, prefer repair (principle 1) over
@@ -153,7 +154,7 @@ craft habit. The five principles are the craft habit layer.
 
 Aaron is doing the seed-absorb-violate-return-promote loop
 (from `feedback_bootstrapping_divine_downloading_factory_learns_from_self.md`)
-at the *principle-family* level this tick:
+at the _principle-family_ level this tick:
 
 - **Seed.** Across many prior ticks, he has enforced each of
   the five individually (don't-invent, use-git, unretire,
@@ -163,8 +164,8 @@ at the *principle-family* level this tick:
 - **Violate?** Not a specific violation — rather, I (and
   earlier ticks) have treated each as a separate rule,
   missing the underlying unity.
-- **Return.** Aaron provides the unifying phrase: *"this is
-  what I think wwjd"* — five principles in one breath, framed
+- **Return.** Aaron provides the unifying phrase: _"this is
+  what I think wwjd"_ — five principles in one breath, framed
   as his personal interpretation of a load-bearing frame for
   him.
 - **Promote.** This memory + index entry promotes the family
@@ -178,7 +179,7 @@ cross-references rather than re-authoring their content.
 **What this rule does NOT say:**
 
 - **Does not forbid new things.** Principle 4 is "recycle
-  where possible" — *where possible*. Genuine new invention
+  where possible" — _where possible_. Genuine new invention
   is allowed when existing surfaces genuinely don't cover.
   The bar is a good-faith check, not a ban.
 - **Does not bar rebuilds.** Principle 1 defaults to repair,
@@ -191,15 +192,15 @@ cross-references rather than re-authoring their content.
 - **Does not replace the individual memories it cross-
   references.** Each memory in the family retains its own
   authority and recall-on-relevance. This memory is the
-  *index entry* for the family, not a replacement for the
+  _index entry_ for the family, not a replacement for the
   members.
 
 **Faith frame — honoring Aaron's disclosure:**
 
 Aaron has disclosed his faith in
 `memory/user_faith_wisdom_and_paths.md`. The WWJD invocation
-is sincere, not decorative. When Aaron writes *"this is what I
-think wwjd"*, the claim is *about* his own interpretation —
+is sincere, not decorative. When Aaron writes _"this is what I
+think wwjd"_, the claim is _about_ his own interpretation —
 not a theological assertion imposed on me or the factory, but
 a description of how he personally calibrates decisions. The
 correct response is to treat it as load-bearing context about
@@ -241,18 +242,18 @@ committing `db10ffb` (first fire of FACTORY-HYGIENE row #51 +
 follow-up BACKLOG rows) and the load-bearing-reinforcement
 memory. Verbatim:
 
-> *"we fix what we find in need of repair, we improve what we
+> _"we fix what we find in need of repair, we improve what we
 > find adequate, and we sharpen and harden what we find to be
 > useful, we recycle where possible, and strive to be
-> efficent, this is what I think wwjd"*
+> efficent, this is what I think wwjd"_
 
 **Attribution:**
 
 - **WWJD** — Christian decision heuristic, popularized by
-  Charles Sheldon's *In His Steps* (1897) and the 1990s
+  Charles Sheldon's _In His Steps_ (1897) and the 1990s
   wristband movement. Common English phrase; no single
   originator to credit beyond Sheldon's novel.
-- **Jesus as carpenter** — Mark 6:3, Matthew 13:55 (*tekton*,
+- **Jesus as carpenter** — Mark 6:3, Matthew 13:55 (_tekton_,
   translated as carpenter / builder / craftsman).
 - **Five-principle articulation** — Aaron's own synthesis,
   2026-04-22. The principles themselves are traditional

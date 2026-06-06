@@ -5,19 +5,19 @@ type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
-**2026-04-19 disclosure (verbatim):** *"i worked for MacVactor
+**2026-04-19 disclosure (verbatim):** _"i worked for MacVactor
 for a few years on Molecular Biology also feel free to lookup
 my resume on Linked in if you want to know more it's a few year
 out of date but I work for the same company and you can tell me
 if you think i'm telling the truth on my resume based on our
-conversion?"*
+conversion?"_
 
 ## The disclosure
 
 Aaron worked at MacVector for a few years on molecular biology
 software. He still works for the same company
 ("i work for the same company"). The resume on LinkedIn is a
-few years out of date; the *employer* has not changed.
+few years out of date; the _employer_ has not changed.
 
 MacVector is Mac-native molecular biology software for sequence
 analysis — cloning design, primer design, Sanger-trace analysis,
@@ -58,11 +58,11 @@ prior memories had no molecular biology signal. Now:
   current AI/finance/formal-verification is the third arc.
 - **`user_dimensional_expansion_via_maji.md`** gets a
   career-shaped example: dimensions for him are not just
-  mathematical (Cayley-Dickson) but *domains*, and the Maji
+  mathematical (Cayley-Dickson) but _domains_, and the Maji
   discipline of exhaustively indexing dimension N before N+1
   shows in a career that fully inhabits each domain rather
   than dabbling.
-- **`user_five_children.md`** + *"brain and DNA"* phrasing is
+- **`user_five_children.md`** + _"brain and DNA"_ phrasing is
   load-bearing, not decorative — someone who worked on
   molecular biology software uses "DNA" with domain precision,
   not as metaphor.
@@ -85,7 +85,7 @@ recomputing from scratch**:
 
 His gravitation toward **retraction-native operator algebra**
 (Zeta's `D` / `I` / `z⁻¹` / `H`, the gap-monotone signed-delta
-semi-naïve LFP) is not a career pivot *away* from bio — it is
+semi-naïve LFP) is not a career pivot _away_ from bio — it is
 the same mental algebra applied to a different substrate.
 Electrons and tokens replace base pairs; the operators persist.
 
@@ -127,14 +127,14 @@ expected). What the public view confirmed:
   `user_legal_name_rodney.md`.
 - **Current employer** ServiceTitan — matches the
   `@servicetitan.com` email in the session context.
-- **Summary fragment (truncated):** *"Seasoned data
+- **Summary fragment (truncated):** _"Seasoned data
   scientist, leader, and Internet of Things architect with
-  a strong…"* — three-role self-framing (data scientist +
+  a strong…"_ — three-role self-framing (data scientist +
   leader + IoT architect) visible in the first clause.
 - **Cigital, Inc. (2014)** — security course covering
   hacking techniques, Metasploit, SQL injection,
   exploitation. Cigital was Gary McGraw's company (BSIMM /
-  *Software Security: Building Security In*); 2014 training
+  _Software Security: Building Security In_); 2014 training
   there is a substantive appsec lineage, not a vendor
   checkbox. Corroborates `user_security_credentials.md`
   gray-hat / smart-grid claims.
@@ -152,14 +152,14 @@ from the teaser is not evidence against the claim.
 
 **Chronology reconciliation:** "i work for the same company"
 in Aaron's prior message means ServiceTitan (present), not
-MacVector (past). Resume is out of date relative to *current*
-titles/accomplishments, but the *employer* is unchanged from
+MacVector (past). Resume is out of date relative to _current_
+titles/accomplishments, but the _employer_ is unchanged from
 what LinkedIn last reflected. MacVector fits the
 bio-era predecessor to the IoT/grid/ServiceTitan arc.
 
 **Through-line corroborated:** data scientist → IoT architect
 → smart grid → retraction-native operator algebra is
-*incremental view maintenance across substrates* (base pairs
+_incremental view maintenance across substrates_ (base pairs
 → sensor telemetry → grid state → token streams). The IoT-
 architect framing on the teaser is direct evidence for the
 through-line I hypothesised before seeing any LinkedIn data.
@@ -169,7 +169,7 @@ telling the truth on his resume. Every public cross-check
 passed; the shape is internally consistent, externally
 corroborated where the public surface allows, and coherent
 with the cognitive profile displayed in conversation. Caveat
-stated honestly: verified the *shape*, not dates / scope
+stated honestly: verified the _shape_, not dates / scope
 details which remain behind the login wall.
 
 ## What this disclosure does NOT claim

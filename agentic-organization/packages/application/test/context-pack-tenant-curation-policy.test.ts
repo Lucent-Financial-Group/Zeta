@@ -74,56 +74,58 @@ test("tenant context-pack curation authoring preview shows unsaved retrieval foc
     TenantCurationAuthoringPreviewTestPriority.LegalActions,
   );
   equal(preview.curationProfile.requiredLanes?.includes(ContextPackAttentionLaneKind.Memory), true);
-  deepEqual(preview.curationProfile.deterministicInstructions, [
-    ContextPackCurationProfileInstruction.SecurityControl,
-  ]);
+  deepEqual(preview.curationProfile.deterministicInstructions, [ContextPackCurationProfileInstruction.SecurityControl]);
   ok(preview.curationProfile.policyVersion.includes(TenantContextPackCurationPolicyVersionSegment.AuthoringPreview));
 });
 
 test("tenant-config context-pack curation policy layers scoped hat overrides over the default profile", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "org-context",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        curation: {
-          requiredLanes: [TenantContextPackCurationLaneKind.Memory],
-          lanePriorityOverrides: { [TenantContextPackCurationLaneKind.Memory]: 12 },
-          deterministicInstructions: [TenantContextPackCurationInstruction.KnowledgeStewardship],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "org-context",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          curation: {
+            requiredLanes: [TenantContextPackCurationLaneKind.Memory],
+            lanePriorityOverrides: { [TenantContextPackCurationLaneKind.Memory]: 12 },
+            deterministicInstructions: [TenantContextPackCurationInstruction.KnowledgeStewardship],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  }, {
-    layerId: "hat-context",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        curation: {
-          profileId: TenantContextPackCurationProfileId.SecurityControl,
-          blocksInheritedDeterministicInstructions: true,
-          deterministicInstructions: [TenantContextPackCurationInstruction.SecurityControl],
+    {
+      layerId: "hat-context",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          curation: {
+            profileId: TenantContextPackCurationProfileId.SecurityControl,
+            blocksInheritedDeterministicInstructions: true,
+            deterministicInstructions: [TenantContextPackCurationInstruction.SecurityControl],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:10:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:10:00.000Z",
-    version: 1,
-  }, {
-    layerId: "work-context",
-    scope: { kind: ConfigLayerScopeKind.WorkItem, id: "work-billing" },
-    policy: {
-      contextPack: {
-        curation: {
-          requiredLanes: [TenantContextPackCurationLaneKind.GraphNeighborhood],
-          lanePriorityOverrides: { [TenantContextPackCurationLaneKind.LegalActions]: 7 },
-          deterministicInstructions: [TenantContextPackCurationInstruction.ArchitectureDecision],
+    {
+      layerId: "work-context",
+      scope: { kind: ConfigLayerScopeKind.WorkItem, id: "work-billing" },
+      policy: {
+        contextPack: {
+          curation: {
+            requiredLanes: [TenantContextPackCurationLaneKind.GraphNeighborhood],
+            lanePriorityOverrides: { [TenantContextPackCurationLaneKind.LegalActions]: 7 },
+            deterministicInstructions: [TenantContextPackCurationInstruction.ArchitectureDecision],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:20:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:20:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCurationProfilePolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: createDefaultContextPackCurationProfilePolicy(),
@@ -147,21 +149,23 @@ test("tenant-config context-pack curation policy layers scoped hat overrides ove
 });
 
 test("tenant-config context-pack curation intent aligns document focus with scoped hat overrides before retrieval", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "hat-context",
-    scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
-    policy: {
-      contextPack: {
-        curation: {
-          profileId: TenantContextPackCurationProfileId.SecurityControl,
-          blocksInheritedDeterministicInstructions: true,
-          deterministicInstructions: [TenantContextPackCurationInstruction.SecurityControl],
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "hat-context",
+      scope: { kind: ConfigLayerScopeKind.Hat, id: "engineering_director" },
+      policy: {
+        contextPack: {
+          curation: {
+            profileId: TenantContextPackCurationProfileId.SecurityControl,
+            blocksInheritedDeterministicInstructions: true,
+            deterministicInstructions: [TenantContextPackCurationInstruction.SecurityControl],
+          },
         },
       },
+      updatedAt: "2026-06-01T00:10:00.000Z",
+      version: 1,
     },
-    updatedAt: "2026-06-01T00:10:00.000Z",
-    version: 1,
-  }]);
+  ]);
   const policy = createTenantConfigContextPackCurationIntentPolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
     fallback: createDefaultContextPackCurationIntentPolicy(),
@@ -174,32 +178,32 @@ test("tenant-config context-pack curation intent aligns document focus with scop
   ok(intent.documentFocus.policyVersion.includes("tenant-context"));
   ok(intent.documentFocus.queryTerms.includes("least privilege"));
   ok(!intent.documentFocus.queryTerms.includes("business rules"));
-  deepEqual(intent.curationProfile.deterministicInstructions, [
-    ContextPackCurationProfileInstruction.SecurityControl,
-  ]);
+  deepEqual(intent.curationProfile.deterministicInstructions, [ContextPackCurationProfileInstruction.SecurityControl]);
 });
 
 test("tenant-config context-pack curation policy drops malformed layer values and keeps fallback curation", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "bad-context",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        curation: {
-          profileId: "",
-          requiredLanes: ["not-a-lane", ContextPackAttentionLaneKind.Memory],
-          lanePriorityOverrides: {
-            [ContextPackAttentionLaneKind.Memory]: -1,
-            [ContextPackAttentionLaneKind.LegalActions]: 8,
-            "not-a-lane": 1,
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "bad-context",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          curation: {
+            profileId: "",
+            requiredLanes: ["not-a-lane", ContextPackAttentionLaneKind.Memory],
+            lanePriorityOverrides: {
+              [ContextPackAttentionLaneKind.Memory]: -1,
+              [ContextPackAttentionLaneKind.LegalActions]: 8,
+              "not-a-lane": 1,
+            },
+            deterministicInstructions: ["", TenantContextPackCurationInstruction.ProductValidation],
           },
-          deterministicInstructions: ["", TenantContextPackCurationInstruction.ProductValidation],
         },
       },
-    },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  } as unknown as TenantConfigLayer]);
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
+    } as unknown as TenantConfigLayer,
+  ]);
   const fallbackProfileId = ContextPackCurationProfileId.ManagementBlocker;
   const fallback: ContextPackCurationProfilePolicyPort = {
     resolve: () => ({
@@ -226,28 +230,30 @@ test("tenant-config context-pack curation policy drops malformed layer values an
 });
 
 test("tenant-config context-pack curation policy ignores unknown persisted vocabulary values", async () => {
-  const tenantConfig = tenantConfigWithLayers([{
-    layerId: "unknown-context-vocabulary",
-    scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
-    policy: {
-      contextPack: {
-        curation: {
-          profileId: "tenant-custom-profile",
-          requiredLanes: ["tenant-custom-lane", TenantContextPackCurationLaneKind.Memory],
-          lanePriorityOverrides: {
-            [TenantContextPackCurationLaneKind.LegalActions]: 9,
-            "tenant-custom-lane": 1,
+  const tenantConfig = tenantConfigWithLayers([
+    {
+      layerId: "unknown-context-vocabulary",
+      scope: { kind: ConfigLayerScopeKind.Organization, id: "org-lfg" },
+      policy: {
+        contextPack: {
+          curation: {
+            profileId: "tenant-custom-profile",
+            requiredLanes: ["tenant-custom-lane", TenantContextPackCurationLaneKind.Memory],
+            lanePriorityOverrides: {
+              [TenantContextPackCurationLaneKind.LegalActions]: 9,
+              "tenant-custom-lane": 1,
+            },
+            deterministicInstructions: [
+              "tenant-custom-instruction",
+              TenantContextPackCurationInstruction.ReleaseDelivery,
+            ],
           },
-          deterministicInstructions: [
-            "tenant-custom-instruction",
-            TenantContextPackCurationInstruction.ReleaseDelivery,
-          ],
         },
       },
-    },
-    updatedAt: "2026-06-01T00:00:00.000Z",
-    version: 1,
-  } as unknown as TenantConfigLayer]);
+      updatedAt: "2026-06-01T00:00:00.000Z",
+      version: 1,
+    } as unknown as TenantConfigLayer,
+  ]);
   const fallbackProfileId = ContextPackCurationProfileId.ImplementerExecution;
   const policy = createTenantConfigContextPackCurationProfilePolicy({
     tenantConfigs: tenantConfigReader(tenantConfig),
@@ -264,9 +270,7 @@ test("tenant-config context-pack curation policy ignores unknown persisted vocab
   equal(profile.profileId, fallbackProfileId);
   equal(profile.lanePriorityOverrides?.[ContextPackAttentionLaneKind.LegalActions], 9);
   ok(profile.requiredLanes?.includes(ContextPackAttentionLaneKind.Memory));
-  deepEqual(profile.deterministicInstructions, [
-    ContextPackCurationProfileInstruction.ReleaseDelivery,
-  ]);
+  deepEqual(profile.deterministicInstructions, [ContextPackCurationProfileInstruction.ReleaseDelivery]);
 });
 
 test("tenant-config context-pack curation policy falls back without organization scope", async () => {
@@ -295,7 +299,7 @@ test("tenant-config context-pack curation policy falls back without organization
 
 function tenantConfigReader(config: TenantConfig): { get: (organizationId: string) => Promise<TenantConfig | null> } {
   return {
-    get: async (organizationId) => organizationId === config.organizationId ? config : null,
+    get: async (organizationId) => (organizationId === config.organizationId ? config : null),
   };
 }
 
@@ -322,7 +326,9 @@ function profileRequest(overrides: { organizationId?: string | undefined } = {})
         hatAssignmentId: asZetaIdDecimal("99"),
         hat,
         agentId: "agent-director",
-        ...("organizationId" in overrides ? optionalOrganizationId(overrides.organizationId) : { organizationId: "org-lfg" }),
+        ...("organizationId" in overrides
+          ? optionalOrganizationId(overrides.organizationId)
+          : { organizationId: "org-lfg" }),
         projectId: "project-billing",
         teamId: "team-platform",
         workItemId: "work-billing",

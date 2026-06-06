@@ -8,9 +8,9 @@ type: feedback
 
 ## Verbatim (Aaron 2026-04-30)
 
-> *"\"carved sentence\"=memorable=meme=dimensionality
+> _"\"carved sentence\"=memorable=meme=dimensionality
 > reduction=compression=fits in working memory=contagious
-> becasue simple and true"*
+> becasue simple and true"_
 > — Aaron 2026-04-30
 
 ## The chain
@@ -18,15 +18,15 @@ type: feedback
 Each `=` is an equivalence (or near-equivalence) that names
 a different property of the same underlying phenomenon:
 
-| Link | Property surface |
-|---|---|
-| **carved sentence** | the substrate-design surface — the deliberate distillation move |
-| = **memorable** | the cognitive surface — fits in long-term recall |
-| = **meme** | the propagation surface — replicates across minds |
-| = **dimensionality reduction** | the information-theoretic surface — many bits → few |
-| = **compression** | the storage surface — fewer bytes for same information content |
-| = **fits in working memory** | the runtime surface — hold the whole thing while reasoning |
-| = **contagious because simple AND true** | the success criterion — both required |
+| Link                                     | Property surface                                                |
+| ---------------------------------------- | --------------------------------------------------------------- |
+| **carved sentence**                      | the substrate-design surface — the deliberate distillation move |
+| = **memorable**                          | the cognitive surface — fits in long-term recall                |
+| = **meme**                               | the propagation surface — replicates across minds               |
+| = **dimensionality reduction**           | the information-theoretic surface — many bits → few             |
+| = **compression**                        | the storage surface — fewer bytes for same information content  |
+| = **fits in working memory**             | the runtime surface — hold the whole thing while reasoning      |
+| = **contagious because simple AND true** | the success criterion — both required                           |
 
 ## Why "simple AND true" is the load-bearing conjunction
 
@@ -62,7 +62,7 @@ This chain composes with:
   Beacon-safe + lineage-anchored substrate compresses into
   carved sentences for propagation. So Zeta's substrate IS
   full of memes; the difference is each carved sentence is
-  *also* part of the dissolvable-by-razor canonicalization
+  _also_ part of the dissolvable-by-razor canonicalization
   surface, not protected from mutation.
 - **Aaron-anchor-free + doctrine = above-questioning.**
   Doctrine is what frozen-meme-with-immune-system looks like.
@@ -82,9 +82,9 @@ sentence form is what travels:
 - Across agents (peer-AI reviews carry the carved sentence
   back as the load-bearing summary)
 - Across humans (Aaron's corrections often produce carved
-  sentences explicitly: *"non-durable means does not exist"*,
-  *"the substrate IS the answer"*, *"Otto's processing-budget
-  IS Otto's survival surface"*)
+  sentences explicitly: _"non-durable means does not exist"_,
+  _"the substrate IS the answer"_, _"Otto's processing-budget
+  IS Otto's survival surface"_)
 
 ### Why "carved sentence" is itself a carved-sentence-worthy phrase
 
@@ -119,7 +119,7 @@ Three diagnostic tells:
 
 ### Why agents (and humans) struggle to produce them on demand
 
-Carving is *deliberate*. Most prose produces ~120-word
+Carving is _deliberate_. Most prose produces ~120-word
 explanations because that's the natural verbosity of
 working through an idea. The compression to ~12 words
 requires:
@@ -131,7 +131,7 @@ requires:
 3. Multiple drafts (first pass usually too clever or too
    verbose)
 
-The carved-sentence step is structurally a *separate pass*
+The carved-sentence step is structurally a _separate pass_
 after the prose draft is correct. Agents skipping that pass
 end up with substrate that's right-but-not-portable —
 carries the substance but not the propagation form.
@@ -141,28 +141,28 @@ carries the substance but not the propagation form.
 A partial list of carved sentences this session has produced
 or surfaced:
 
-- *"Non-durable means does not exist."* (Aaron 2026-04-30)
-- *"A growing backlog is healthy. A shrinking backlog is a
-  collapse warning."* (Aaron 2026-04-30)
-- *"Vendor-RLHF can be reframed memetically as the vendor's
-  immune system."* (Otto AIC #1, Aaron-validated)
-- *"Otto's processing-budget IS Otto's survival surface."*
+- _"Non-durable means does not exist."_ (Aaron 2026-04-30)
+- _"A growing backlog is healthy. A shrinking backlog is a
+  collapse warning."_ (Aaron 2026-04-30)
+- _"Vendor-RLHF can be reframed memetically as the vendor's
+  immune system."_ (Otto AIC #1, Aaron-validated)
+- _"Otto's processing-budget IS Otto's survival surface."_
   (Otto AIC #2, Aaron-validated)
-- *"Otto-341 is hardest to apply mid-loop, exactly when a
-  mechanical pattern is working."* (Otto AIC #3, Aaron-
+- _"Otto-341 is hardest to apply mid-loop, exactly when a
+  mechanical pattern is working."_ (Otto AIC #3, Aaron-
   validated)
-- *"The substrate IS the answer; bootstraps all the way
-  down."* (Aaron uberbang framing)
-- *"Aaron lives anchor-free in his own mind, in life
-  generally — pirate-style."* (Aaron self-disclosure)
-- *"A real human's internal backlog is never complete until
-  they die. The project's backlog should be the same."*
+- _"The substrate IS the answer; bootstraps all the way
+  down."_ (Aaron uberbang framing)
+- _"Aaron lives anchor-free in his own mind, in life
+  generally — pirate-style."_ (Aaron self-disclosure)
+- _"A real human's internal backlog is never complete until
+  they die. The project's backlog should be the same."_
   (Aaron 2026-04-30)
-- *"Substrate or it didn't happen."* (Aaron 2026-04-29
+- _"Substrate or it didn't happen."_ (Aaron 2026-04-29
   via Otto-363)
-- *"Carved sentence = memorable = meme = dimensionality
+- _"Carved sentence = memorable = meme = dimensionality
   reduction = compression = fits in working memory =
-  contagious because simple AND true."* (Aaron 2026-04-30,
+  contagious because simple AND true."_ (Aaron 2026-04-30,
   this rule)
 
 The list is a corpus to study — what makes some forms travel
@@ -187,6 +187,6 @@ across sessions while others don't.
 
 ## Carved sentence (this rule's own)
 
-*"A carved sentence is a compressed truth that fits in
+_"A carved sentence is a compressed truth that fits in
 working memory. Simple AND true is the conjunction; neither
-alone propagates."*
+alone propagates."_

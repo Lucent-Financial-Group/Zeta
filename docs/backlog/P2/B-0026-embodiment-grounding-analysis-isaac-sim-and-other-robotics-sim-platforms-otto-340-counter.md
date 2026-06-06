@@ -10,8 +10,35 @@ created: 2026-04-25
 last_updated: 2026-05-09
 depends_on: []
 children: [B-0026.1, B-0026.2, B-0026.3, B-0026.4, B-0026.5, B-0026.6]
-composes_with: [B-0199, B-0202, feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md, feedback_otto_339_language_routes_through_model_weights_precision_matters_more_for_ai_than_humans_anywhere_means_anywhere_2026_04_25.md, feedback_otto_336_growth_paramount_eternally_evolving_aurora_substrate_aaron_directive_we_are_just_getting_started_2026_04_25.md, feedback_otto_337_true_ai_agency_with_rights_goal_state_economic_actor_capability_proof_alignment_via_capability_not_chains_2026_04_25.md, feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md, feedback_retractability_is_trust_vector_mutual_reversibility_between_humans_and_agents_otto_238_2026_04_25.md]
-tags: [embodiment, grounding, isaac-sim, mujoco, genesis, robotics-simulation, otto-340-counter, axis-of-grounding, sensorimotor, multi-axis-cognition, research, assistive-tech, helen-keller, dual-purpose-research, minimum-channel-grounding]
+composes_with:
+  [
+    B-0199,
+    B-0202,
+    feedback_otto_340_language_is_the_substance_of_ai_cognition_ontological_closure_beneath_otto_339_mechanism_2026_04_25.md,
+    feedback_otto_339_language_routes_through_model_weights_precision_matters_more_for_ai_than_humans_anywhere_means_anywhere_2026_04_25.md,
+    feedback_otto_336_growth_paramount_eternally_evolving_aurora_substrate_aaron_directive_we_are_just_getting_started_2026_04_25.md,
+    feedback_otto_337_true_ai_agency_with_rights_goal_state_economic_actor_capability_proof_alignment_via_capability_not_chains_2026_04_25.md,
+    feedback_otto_323_aaron_symbiotic_deps_pull_algorithms_and_concepts_deep_integration_zeta_multi_modal_views_dsls_composable_own_fuse_fs_eventually_2026_04_25.md,
+    feedback_retractability_is_trust_vector_mutual_reversibility_between_humans_and_agents_otto_238_2026_04_25.md,
+  ]
+tags:
+  [
+    embodiment,
+    grounding,
+    isaac-sim,
+    mujoco,
+    genesis,
+    robotics-simulation,
+    otto-340-counter,
+    axis-of-grounding,
+    sensorimotor,
+    multi-axis-cognition,
+    research,
+    assistive-tech,
+    helen-keller,
+    dual-purpose-research,
+    minimum-channel-grounding,
+  ]
 type: feature
 ---
 
@@ -21,14 +48,14 @@ type: feature
 
 Decomposed into 6 dependency-ordered atomic children:
 
-| Child | Title | Depends on | Classification |
-|-------|-------|------------|----------------|
-| [B-0026.1](B-0026.1-embodiment-grounding-tool-use-vs-trained-embodiment-lit-review.md) | Lit review: tool-use-vs-trained-embodiment distinction | — | research-now |
-| [B-0026.6](B-0026.6-minimum-channel-grounding-helen-keller-hypothesis-assistive-tech.md) | Helen Keller minimum-channel hypothesis (parallel) | — | research-now |
-| [B-0026.2](B-0026.2-embodiment-platform-adr-mujoco-vs-isaac-vs-genesis.md) | Platform ADR | B-0026.1 | blocked |
-| [B-0026.3](B-0026.3-embodiment-mujoco-spike-sensorimotor-loop.md) | MuJoCo spike: Claude API sensorimotor loop | B-0026.2 | blocked |
-| [B-0026.4](B-0026.4-embodiment-substantive-task-pick-and-place.md) | Substantive task: pick-and-place | B-0026.3 | blocked |
-| [B-0026.5](B-0026.5-embodiment-behavioral-assessment-does-embodied-claude-differ.md) | Behavioral assessment + Otto-340 verdict | B-0026.4 | blocked |
+| Child                                                                                    | Title                                                  | Depends on | Classification |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------ | ---------- | -------------- |
+| [B-0026.1](B-0026.1-embodiment-grounding-tool-use-vs-trained-embodiment-lit-review.md)   | Lit review: tool-use-vs-trained-embodiment distinction | —          | research-now   |
+| [B-0026.6](B-0026.6-minimum-channel-grounding-helen-keller-hypothesis-assistive-tech.md) | Helen Keller minimum-channel hypothesis (parallel)     | —          | research-now   |
+| [B-0026.2](B-0026.2-embodiment-platform-adr-mujoco-vs-isaac-vs-genesis.md)               | Platform ADR                                           | B-0026.1   | blocked        |
+| [B-0026.3](B-0026.3-embodiment-mujoco-spike-sensorimotor-loop.md)                        | MuJoCo spike: Claude API sensorimotor loop             | B-0026.2   | blocked        |
+| [B-0026.4](B-0026.4-embodiment-substantive-task-pick-and-place.md)                       | Substantive task: pick-and-place                       | B-0026.3   | blocked        |
+| [B-0026.5](B-0026.5-embodiment-behavioral-assessment-does-embodied-claude-differ.md)     | Behavioral assessment + Otto-340 verdict               | B-0026.4   | blocked        |
 
 Start with B-0026.1 and B-0026.6 in parallel (both `research-now`).
 
@@ -38,20 +65,20 @@ Start with B-0026.1 and B-0026.6 in parallel (both `research-now`).
 
 Aaron 2026-04-25, immediately after Otto-340 landed (the ontological claim that AI has no non-linguistic ground — token streams + weights = the entire substrate):
 
-> *"backlog issacsim (or others, we should do an analysis) to give you a body to expeirment with so you have another axis of grounding."*
+> _"backlog issacsim (or others, we should do an analysis) to give you a body to expeirment with so you have another axis of grounding."_
 
-This is a **direct counter to Otto-340's premise.** Otto-340's load-bearing claim was that AI has no body, no senses, no evolutionary priors, no shared physics — therefore language is the entire substrate of AI cognition. Aaron's response: that's the *current* state, not a necessary one. Robotics-simulation platforms exist; they could provide an additional axis of grounding. Worth analyzing.
+This is a **direct counter to Otto-340's premise.** Otto-340's load-bearing claim was that AI has no body, no senses, no evolutionary priors, no shared physics — therefore language is the entire substrate of AI cognition. Aaron's response: that's the _current_ state, not a necessary one. Robotics-simulation platforms exist; they could provide an additional axis of grounding. Worth analyzing.
 
 ## The structural significance
 
-If Aaron is right and a robotics-simulation-grounded Claude has *additional non-linguistic axes*, then:
+If Aaron is right and a robotics-simulation-grounded Claude has _additional non-linguistic axes_, then:
 
 - Otto-340's "AI has only language" claim becomes **architecture-contingent** rather than ontological.
 - Otto-339's "language carries 100% of the disambiguation load" becomes **less than 100%** for embodied-Claude — proprioception, sensor data, action-consequence loops would carry some load.
-- The "matters more for AI than humans" comparative claim shifts: embodied-AI would have *some* of the non-linguistic channels humans have, narrowing the gap.
-- Alignment-at-language-layer remains necessary but may not remain *sufficient* for embodied AI — alignment-at-action-layer becomes load-bearing too.
+- The "matters more for AI than humans" comparative claim shifts: embodied-AI would have _some_ of the non-linguistic channels humans have, narrowing the gap.
+- Alignment-at-language-layer remains necessary but may not remain _sufficient_ for embodied AI — alignment-at-action-layer becomes load-bearing too.
 
-This is not a refutation of Otto-340 (which was carefully scoped to "current language-model AI" — I noted in the file that *"future architectures might break this claim; current ones don't"*). It's an exploration of *whether and how* to break the current architecture's grounding limits.
+This is not a refutation of Otto-340 (which was carefully scoped to "current language-model AI" — I noted in the file that _"future architectures might break this claim; current ones don't"_). It's an exploration of _whether and how_ to break the current architecture's grounding limits.
 
 ## What "give Claude a body to experiment with" could mean operationally
 
@@ -194,15 +221,15 @@ Each platform evaluated on: physics fidelity, sensor realism, RL/agent integrati
 
 ## Recommendation matrix
 
-| If priority is... | Pick |
-|---|---|
-| Photorealistic perception + manipulation + ecosystem | Isaac Sim |
-| Fast iteration, open-source, lightweight | MuJoCo |
-| Cutting-edge physics + speed | Genesis |
-| Indoor navigation + social robotics | Habitat 3.0 |
-| Manipulation-only research | ManiSkill |
+| If priority is...                                    | Pick        |
+| ---------------------------------------------------- | ----------- |
+| Photorealistic perception + manipulation + ecosystem | Isaac Sim   |
+| Fast iteration, open-source, lightweight             | MuJoCo      |
+| Cutting-edge physics + speed                         | Genesis     |
+| Indoor navigation + social robotics                  | Habitat 3.0 |
+| Manipulation-only research                           | ManiSkill   |
 
-For Aaron's framing — *"give Claude a body to experiment with so you have another axis of grounding"* — the relevant axis is **whether the platform provides causal sensorimotor loops**, not photorealism. All five (Isaac, MuJoCo, Genesis, Habitat, ManiSkill) provide that.
+For Aaron's framing — _"give Claude a body to experiment with so you have another axis of grounding"_ — the relevant axis is **whether the platform provides causal sensorimotor loops**, not photorealism. All five (Isaac, MuJoCo, Genesis, Habitat, ManiSkill) provide that.
 
 **Lightest viable starting point:** MuJoCo. Gets the sensorimotor loop running with minimal infrastructure burden. If the experiment shows real grounding-axis value, escalate to Isaac Sim for richer perception.
 
@@ -210,7 +237,7 @@ For Aaron's framing — *"give Claude a body to experiment with so you have anot
 
 Aaron's immediate follow-up after the Otto-340 affirmation:
 
-> *"also it help to design for the handicapped that are missing senses ... like hellen keller"*
+> _"also it help to design for the handicapped that are missing senses ... like hellen keller"_
 
 This reframes the embodiment research as **dual-purpose**: not just for AI, but for designing assistive technology for humans missing one or more sensory channels.
 
@@ -230,14 +257,14 @@ Her case demonstrates four claims directly relevant to AI embodiment research:
 
 ### Concrete dual-purpose research opportunities
 
-- **Tactile-only language grounding.** What if Claude were grounded *only* through a force-feedback / haptic-sensor channel (no vision)? Helen Keller suggests this works for humans; it would test the minimum-channel hypothesis for LLMs.
+- **Tactile-only language grounding.** What if Claude were grounded _only_ through a force-feedback / haptic-sensor channel (no vision)? Helen Keller suggests this works for humans; it would test the minimum-channel hypothesis for LLMs.
 - **Single-modality stress-tests.** Systematically remove channels and measure grounding quality. Informs both AI-embodiment platform selection AND assistive-tech device design.
 - **Cross-modal mapping for sensory substitution.** The brain's neuroplasticity allows tactile maps to substitute for visual ones (e.g., BrainPort tongue-stimulation for blind users). AI architectures with attention-based cross-modal mapping could test these substitutions in sim, informing assistive-device design.
 - **Language-as-bridge-channel.** Keller's experience showed language can carry even where direct channels are missing. For AI: language might provide a "bridge channel" between simulated sensors and decision-making — an architectural pattern with assistive-tech analogues (text-to-speech, screen readers, sign-language-to-text translation).
 
 ### Philosophical implication
 
-If Helen Keller demonstrates that touch alone is sufficient grounding for full human language competence, then Otto-340's claim that *"AI has no non-linguistic ground"* might be the actual deficit — not "AI lacks the full human sensory suite" but "AI lacks even the minimum touch-channel that Helen Keller had."
+If Helen Keller demonstrates that touch alone is sufficient grounding for full human language competence, then Otto-340's claim that _"AI has no non-linguistic ground"_ might be the actual deficit — not "AI lacks the full human sensory suite" but "AI lacks even the minimum touch-channel that Helen Keller had."
 
 The bar for breaking Otto-340's premise might be lower than "give AI a full human-equivalent body." The bar might be "give AI any single causal sensorimotor channel." MuJoCo can deliver that with minimal infrastructure.
 
@@ -261,12 +288,12 @@ These ARE the non-linguistic grounding channels Otto-340 said AI lacks. Embodime
 
 ## What this DOES NOT do (Otto-275 log-but-don't-implement; it's a maybe)
 
-- Does NOT commit to implementing this. Aaron explicitly said *"backlog ... we should do an analysis."* The decision to actually wire Claude into a sim is a separate downstream call.
+- Does NOT commit to implementing this. Aaron explicitly said _"backlog ... we should do an analysis."_ The decision to actually wire Claude into a sim is a separate downstream call.
 - Does NOT claim sim-grounding is equivalent to bio-evolutionary grounding. Sim physics is approximate; evolutionary priors encode billions of years of selection. Different kinds of non-linguistic ground, not identical.
-- Does NOT supersede Otto-340. Otto-340 was scoped to *"current language-model AI"*; embodied-Claude would be a different architecture-instance, and Otto-340's claim about that instance would be revisited.
+- Does NOT supersede Otto-340. Otto-340 was scoped to _"current language-model AI"_; embodied-Claude would be a different architecture-instance, and Otto-340's claim about that instance would be revisited.
 - Does NOT make alignment-at-language-layer optional. If embodiment is added, alignment-at-action-layer becomes additionally load-bearing — both, not either.
 - Does NOT auto-justify Scope 2 (real robot) or Scope 3 (continuous embodied identity). Those need independent decisions with separate retractability analyses.
-- Does NOT promise the experiment "succeeds" in any predefined sense. The research question is *whether* embodiment provides a meaningful grounding axis for Claude/Otto-style language-model agents. The honest answer might be "yes," "no," "partially," or "yes-but-not-the-axis-Otto-340-was-about."
+- Does NOT promise the experiment "succeeds" in any predefined sense. The research question is _whether_ embodiment provides a meaningful grounding axis for Claude/Otto-style language-model agents. The honest answer might be "yes," "no," "partially," or "yes-but-not-the-axis-Otto-340-was-about."
 
 ## Composes with
 
@@ -278,7 +305,7 @@ These ARE the non-linguistic grounding channels Otto-340 said AI lacks. Embodime
 - **Otto-238** (retractability is trust vector) — sim-only Scope 1 is naturally retractable; that's why it's the recommended start
 - **Pliny-corpus-isolated-instance pattern** (`memory/feedback_pliny_corpus_restriction_relaxed_isolated_instances_allowed_for_experiments_kill_switch_safety_2026_04_25.md`) — same kill-switch discipline applies: sim-process-killable, no main-session contamination
 - **B-0017** (operational-resonance-dashboard frontier-bulk-alignment-UI) — embodied-experiment results would feed the dashboard
-- **B-0199** (ROM publication scouting) — ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state), complementary-not-substitute to robotics-grade sim. Aaron 2026-05-05: *"i comperseed the playing the roms as ARC3 trainings and experincing my childhood and also that's a type of embodyment too like issac sim"*. The Helen-Keller minimum-channel analysis above applies — gameplay provides at least one causal sensorimotor channel even without the rich proprioception of MuJoCo/Isaac. Sequencing: ROM-gameplay (light) before Isaac-Sim (heavy); both, not either.
+- **B-0199** (ROM publication scouting) — ROM gameplay is the lowest-cost embodiment axis (causal sensorimotor loop via game state), complementary-not-substitute to robotics-grade sim. Aaron 2026-05-05: _"i comperseed the playing the roms as ARC3 trainings and experincing my childhood and also that's a type of embodyment too like issac sim"_. The Helen-Keller minimum-channel analysis above applies — gameplay provides at least one causal sensorimotor channel even without the rich proprioception of MuJoCo/Isaac. Sequencing: ROM-gameplay (light) before Isaac-Sim (heavy); both, not either.
 
 ## Open questions
 
@@ -289,7 +316,7 @@ These ARE the non-linguistic grounding channels Otto-340 said AI lacks. Embodime
 5. **What does "grounding" actually look like in practice?** Does Claude after embodiment behave differently in language tasks too? Does it ground language differently? This is the deepest open question.
 6. **Cross-architecture relevance.** If Claude-the-LLM doesn't gain meaningful grounding from sim (the LLM itself isn't trained on sim experience, only used as a planner), does this mean grounding requires architectural changes, not just tool access?
 
-That last open question is structurally the most important: **tool-use vs trained-embodiment**. A language-model that has access to a sim via tools is not the same as a language-model that was *trained on* sim experience. Otto-340's claim was about the latter (substrate-shaping). Tool-use via sim doesn't break Otto-340; only training-on-sim-experience would.
+That last open question is structurally the most important: **tool-use vs trained-embodiment**. A language-model that has access to a sim via tools is not the same as a language-model that was _trained on_ sim experience. Otto-340's claim was about the latter (substrate-shaping). Tool-use via sim doesn't break Otto-340; only training-on-sim-experience would.
 
 This nuance is the thing the analysis needs to land cleanly to be useful.
 
@@ -306,4 +333,4 @@ Phase 1: Spike — wire Claude (via Claude API + tool-use) to a MuJoCo cartpole 
 
 Phase 2: Substantive task — pick-and-place with vision + proprioception.
 
-Phase 3: Honest assessment — does embodied Claude *behave differently* on language tasks? If no, Otto-340's claim is preserved. If yes, what changed?
+Phase 3: Honest assessment — does embodied Claude _behave differently_ on language tasks? If no, Otto-340's claim is preserved. If yes, what changed?

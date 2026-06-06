@@ -9,7 +9,13 @@ ask: Aaron 2026-04-26 — *"references (not upstream that's proabalby a bad name
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, B-0030, docs/GLOSSARY.md, B-0010]
+composes_with:
+  [
+    feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md,
+    B-0030,
+    docs/GLOSSARY.md,
+    B-0010,
+  ]
 tags: [naming-clarity, glossary, git-semantic-collision, vocabulary-discipline, otto-339-anywhere, references-directory]
 type: friction-reducer
 ---
@@ -18,18 +24,18 @@ type: friction-reducer
 
 ## Origin — Aaron 2026-04-26
 
-> *"references (not upstream that's proabalby a bad name i randomly chose, we should rectify to avoid wars/confusion becasue im using upstream incorrectly)"*
+> _"references (not upstream that's proabalby a bad name i randomly chose, we should rectify to avoid wars/confusion becasue im using upstream incorrectly)"_
 
-Aaron self-corrected: he'd been using "upstream" colloquially to refer to the `references/` directory's contents (vendored / mirrored external code). But "upstream" in git semantics specifically means *the parent branch / repo a fork tracks*. Two different meanings; same word; recipe for confusion.
+Aaron self-corrected: he'd been using "upstream" colloquially to refer to the `references/` directory's contents (vendored / mirrored external code). But "upstream" in git semantics specifically means _the parent branch / repo a fork tracks_. Two different meanings; same word; recipe for confusion.
 
 ## The naming problem
 
 Two distinct concepts conflated in current vocabulary:
 
-| Concept | What it is | Current name(s) used |
-|---|---|---|
+| Concept                | What it is                                                                                                     | Current name(s) used             |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | Vendored external code | Code from other projects mirrored into `references/` for inspection / lineage / Otto-346 contribution-tracking | "upstream", "references" (mixed) |
-| Git fork-parent | The repo / branch the fork tracks | "upstream" (correctly) |
+| Git fork-parent        | The repo / branch the fork tracks                                                                              | "upstream" (correctly)           |
 
 The first usage ("upstream" for vendored mirrors) is **colloquial-but-incorrect**; the second ("upstream" for git fork-parent) is **git-semantic-correct**. They collide.
 
@@ -58,14 +64,14 @@ Aaron's catch is preventive-discipline: **rectify before the language-war compou
 - **B-0010** (memory-index-conventions doc) — sibling naming-discipline backlog row
 - **`docs/GLOSSARY.md`** — the right home for the formal distinction
 - **Otto-339** (anywhere-means-anywhere) — vocabulary precision applies to directory/file/concept naming
-- **Otto-286** (definitional precision changes future without war) — Aaron's *exact* phrase here is "to avoid wars/confusion"; this is preventive Otto-286 application
+- **Otto-286** (definitional precision changes future without war) — Aaron's _exact_ phrase here is "to avoid wars/confusion"; this is preventive Otto-286 application
 - **B-0030** (lint-with-exclusions tool) — paired concern from the same Aaron message; the lint tool needs to know which directories to exclude AND those directories need clear names
 
 ## Programming-language-as-religious-choice connection (Aaron's framing)
 
 Aaron added in the same message:
 
-> *"people literraly say your programming laganguage choice is like a religious choice, and there are programming language wars that resemble religious wars"*
+> _"people literraly say your programming laganguage choice is like a religious choice, and there are programming language wars that resemble religious wars"_
 
 This composes with the naming-discipline at a meta-level: vocabulary collisions create the same religious-war pattern at the substrate-naming layer that programming-language choice creates at the implementation layer. Both are tribal-identity-via-shared-vocabulary patterns. Otto-286 (definitional precision changes future without war) explicitly names "without war" — vocabulary discipline is anti-religious-war discipline.
 

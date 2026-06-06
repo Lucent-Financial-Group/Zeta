@@ -13,7 +13,35 @@ composes_with:
   - .claude/rules/substrate-or-it-didnt-happen.md
   - .claude/rules/additive-not-zero-sum.md
   - .claude/rules/honor-those-that-came-before.md
-tags: [memory-substrate, git-native, indexes, eventually-consistent, materialized-view, dbsp, z-set, dv2.0, retrieval, knowledge-graph, hindsight, hermes, o-notation, text-based, spatial-index, h3, geohash, bloom-filter, temporal-index, time-travel, semantic-index, vector-index, hnsw, ann, aggregation-index, integrity-index]
+tags:
+  [
+    memory-substrate,
+    git-native,
+    indexes,
+    eventually-consistent,
+    materialized-view,
+    dbsp,
+    z-set,
+    dv2.0,
+    retrieval,
+    knowledge-graph,
+    hindsight,
+    hermes,
+    o-notation,
+    text-based,
+    spatial-index,
+    h3,
+    geohash,
+    bloom-filter,
+    temporal-index,
+    time-travel,
+    semantic-index,
+    vector-index,
+    hnsw,
+    ann,
+    aggregation-index,
+    integrity-index,
+  ]
 type: feature
 ---
 
@@ -21,14 +49,14 @@ type: feature
 
 ## The directive (Aaron 2026-05-31)
 
-> *"i basically want our git native to have git native indexes that are kept up to date too and are
+> _"i basically want our git native to have git native indexes that are kept up to date too and are
 > just text based then we have good o notation lookups for all our native git stuff it's just
-> eventually consistent indexes in git"*
+> eventually consistent indexes in git"_
 
 Plus, from the same Hindsight thread:
 
-> *"we will conribute back gitnative versoin of storage interface into hindsight eventually and maxes
-> coackrachdb stuff works already cause it's a postgres interface in coackroach"*
+> _"we will conribute back gitnative versoin of storage interface into hindsight eventually and maxes
+> coackrachdb stuff works already cause it's a postgres interface in coackroach"_
 
 ## The bet
 
@@ -40,7 +68,7 @@ the source. The index is a **materialized view over git** — git stays the sing
 
 This **is** the git-native Hindsight storage interface: text indexes in git provide entity + graph +
 full-text lookups with **no Postgres required**, so Hindsight / CockroachDB (Max's Postgres-wire
-interface) become *optional acceleration* over the same git source-of-truth, never a competing one.
+interface) become _optional acceleration_ over the same git source-of-truth, never a competing one.
 
 ## Proto-example already in-repo
 
@@ -63,8 +91,8 @@ Additional index types (added 2026-06-02; Lior-ferry index-structure question �
 - **spatial index** — H3 (hexagonal) / S2 / geohash cell → records; `<cell> <tab> <records…>`, O(1) point→cell→jurisdiction lookup. Powers **B-0988** world-borders O(1) (the hexagonal H3 cell rhymes the hex core B-0985) + B-0986 orientation-tile. The "spatial reverse index."
 - **bloom-filter index** — git-committed bit-array for fast **negative membership** ("definitely-not-here" in O(1), no log scan); composes the caustic-engineered-bloom-filter / `substrate-smoothness` substrate. The cheap pre-filter before a sorted/inverted lookup.
 - **temporal / time-bucketed index** — `<time-bucket> <tab> <events…>` over the event log, for **time-travel queries** (the three-clocks / generator-time substrate); distinct from sorted-key (by-key) — this is by-time-range over the append-only log.
-- **semantic / vector index** — approximate-nearest-neighbor (HNSW / LSH + product-quantization) over embeddings; the **veridicality-detector** retrieval substrate. Distinct from the *text-keyword* inverted index — this is *meaning* similarity. (Git-committed: the quantized vectors + the ANN graph as text/binary blobs.)
-- **aggregation / materialized-metric index** — DBSP **incremental-view-maintenance** folds cached as git data: the `integrity_index` / say-do-gap metric (B-0995/B-0997), the LGTM/Prometheus metric series + Rainbow-Table-after-storms recovery metrics (B-0994). The metric *is* a materialized view over the event log; cache the fold, recompute incrementally (the Z-set delta nets in).
+- **semantic / vector index** — approximate-nearest-neighbor (HNSW / LSH + product-quantization) over embeddings; the **veridicality-detector** retrieval substrate. Distinct from the _text-keyword_ inverted index — this is _meaning_ similarity. (Git-committed: the quantized vectors + the ANN graph as text/binary blobs.)
+- **aggregation / materialized-metric index** — DBSP **incremental-view-maintenance** folds cached as git data: the `integrity_index` / say-do-gap metric (B-0995/B-0997), the LGTM/Prometheus metric series + Rainbow-Table-after-storms recovery metrics (B-0994). The metric _is_ a materialized view over the event log; cache the fold, recompute incrementally (the Z-set delta nets in).
 
 **Three disciplines that make it O-fast + conflict-safe:**
 
@@ -72,7 +100,7 @@ Additional index types (added 2026-06-02; Lior-ferry index-structure question �
    rebuild (never hand-merge). This is what lets indexes live in git under multi-agent writes
    (BACKLOG.md already does this).
 2. **Sorted + byte-offset = real O(log n)** (or a `hash→offset` file for O(1)). A flat text file is
-   still O(n) grep — the *format* is the lookup complexity.
+   still O(n) grep — the _format_ is the lookup complexity.
 3. **Eventually-consistent ⇒ stamp + fallback.** Each index header carries the **source commit SHA**
    it was built from, so readers know freshness and fall back to grep on a miss during the lag
    window.

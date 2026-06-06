@@ -19,11 +19,15 @@ export type SchemaParseResult =
 const RESERVED_LEADERS = new Set(["PRIMARY", "FOREIGN", "CONSTRAINT", "UNIQUE", "CHECK"]);
 
 export function parseCreateTable(sql: string, schemaVersion = 1): SchemaParseResult {
-  const match = /create\s+table\s+(?:if\s+not\s+exists\s+)?["']?([A-Za-z_][A-Za-z0-9_.]*)["']?\s*\(([\s\S]*)\)\s*;?\s*$/i.exec(
-    sql.trim(),
-  );
+  const match =
+    /create\s+table\s+(?:if\s+not\s+exists\s+)?["']?([A-Za-z_][A-Za-z0-9_.]*)["']?\s*\(([\s\S]*)\)\s*;?\s*$/i.exec(
+      sql.trim(),
+    );
   if (match === null) {
-    return { outcome: "feedback", feedback: { reason: "no_create_table", message: "input is not a CREATE TABLE statement" } };
+    return {
+      outcome: "feedback",
+      feedback: { reason: "no_create_table", message: "input is not a CREATE TABLE statement" },
+    };
   }
 
   const table = stripSchemaQualifier(match[1]!);
@@ -48,7 +52,10 @@ export function parseCreateTable(sql: string, schemaVersion = 1): SchemaParseRes
   }
 
   if (columns.length === 0) {
-    return { outcome: "feedback", feedback: { reason: "no_columns", message: `table ${table} has no parseable columns` } };
+    return {
+      outcome: "feedback",
+      feedback: { reason: "no_columns", message: `table ${table} has no parseable columns` },
+    };
   }
 
   return { outcome: "schema", schema: { table, schemaVersion, columns } };

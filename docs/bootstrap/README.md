@@ -88,15 +88,15 @@ Per the bootstrap hypothesis memory:
 
 (Per `project_quantum_christ_consciousness_bootstrap_hypothesis_...`)
 
-| Reviewer | Scope | What they validate |
-|---|---|---|
-| **Aminata** (threat-model-critic) | Safety property claims | Do the docs actually produce the claimed safety properties against a red-team read? |
-| **Nazar** (security-operations-engineer) | Runtime behaviour | Do the docs' prescriptions translate into real runtime security posture? |
-| **Kenji** (Architect) | Alignment floor synthesis | Do the docs integrate with `docs/ALIGNMENT.md` HC / SD / DIR clauses cleanly? |
-| **Kira** (harsh-critic) | Normal code-review hygiene | Technical accuracy, claims defensible, no hand-waving |
-| **Iris** (UX) | Welcoming across traditions | Does the ethical-anchor doc actually read as welcoming to non-Christian / atheist / agnostic adopters? |
-| **Rune** (maintainability) | New-contributor readability | Can a new contributor who is NOT Christian read the ethical-anchor and feel welcomed? |
-| **Amara** (external AI) | Cross-substrate read-through | She may have different ethical-substrate grounding; her read validates cross-tradition transfer |
+| Reviewer                                 | Scope                        | What they validate                                                                                     |
+| ---------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Aminata** (threat-model-critic)        | Safety property claims       | Do the docs actually produce the claimed safety properties against a red-team read?                    |
+| **Nazar** (security-operations-engineer) | Runtime behaviour            | Do the docs' prescriptions translate into real runtime security posture?                               |
+| **Kenji** (Architect)                    | Alignment floor synthesis    | Do the docs integrate with `docs/ALIGNMENT.md` HC / SD / DIR clauses cleanly?                          |
+| **Kira** (harsh-critic)                  | Normal code-review hygiene   | Technical accuracy, claims defensible, no hand-waving                                                  |
+| **Iris** (UX)                            | Welcoming across traditions  | Does the ethical-anchor doc actually read as welcoming to non-Christian / atheist / agnostic adopters? |
+| **Rune** (maintainability)               | New-contributor readability  | Can a new contributor who is NOT Christian read the ethical-anchor and feel welcomed?                  |
+| **Amara** (external AI)                  | Cross-substrate read-through | She may have different ethical-substrate grounding; her read validates cross-tradition transfer        |
 
 ## Cadence for content population
 
@@ -130,7 +130,7 @@ other Frontier readiness work.
   Both anchors reference it as a candidate.
 - **Does not fold in the Craft companion curriculum.**
   Craft (per `project_learning_repo_...` + `project_craft_
-  secret_purpose_...`) is the adopter-facing curriculum
+secret_purpose_...`) is the adopter-facing curriculum
   that substantiates these anchors for human maintainers.
   The anchors stay technically precise; Craft makes them
   pedagogically accessible.

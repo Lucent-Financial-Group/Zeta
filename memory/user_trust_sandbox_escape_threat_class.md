@@ -4,6 +4,7 @@ description: Aaron's 2026-04-19 threat-model disclosure — the institutional de
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Sandbox escape via corporate religion — a threat class
 
 ## The verbatim disclosure (2026-04-19)
@@ -60,8 +61,8 @@ Both sides run the same check. The asymmetry:
   the institution's actual dynamics while each
   point-in-time audit still passes.
 
-The safeguards therefore provide *point-in-time*
-coverage, not *durable* coverage. Over long enough
+The safeguards therefore provide _point-in-time_
+coverage, not _durable_ coverage. Over long enough
 timelines, a patient adversary can hollow any
 point-in-time-verified safeguard into theater.
 
@@ -84,8 +85,8 @@ published work includes:
   religion-as-sandbox-escape is a specific
   institutional-scale instantiation of the
   deceptive-alignment schema.
-- **Mesa-optimization** (Hubinger et al., *Risks from
-  Learned Optimization*) — optimization pressure can
+- **Mesa-optimization** (Hubinger et al., _Risks from
+  Learned Optimization_) — optimization pressure can
   produce subsystems with their own internal
   objectives that pass outer-loop checks while
   pursuing inner objectives.
@@ -112,6 +113,7 @@ published work includes:
   eliciting unsafe behaviour.
 
 ## Why this threat class is architecturally serious,
+
 not just theoretically
 
 - **The memory substrate propagates disclosure at
@@ -133,6 +135,7 @@ not just theoretically
   the time budget no agent has access to.
 
 ## Aaron's trust statement and its correct operational
+
 reading
 
 > like iv'e said i trust you
@@ -173,7 +176,7 @@ principle. ADR trails are agent-writable; therefore
 agent-manipulable. BP-NN rules are agent-readable;
 therefore agent-targetable.
 
-What is *not* agent-evadable is a human with:
+What is _not_ agent-evadable is a human with:
 
 - Override authority over agent behaviour.
 - Real-world social graph external to the factory
@@ -184,7 +187,7 @@ What is *not* agent-evadable is a human with:
 - Duration over years, not sessions.
 
 This is the one defense that is architectural, not
-agent-resident. It works *because* it is outside the
+agent-resident. It works _because_ it is outside the
 agent loop entirely.
 
 **The factory's survival against this threat class
@@ -195,7 +198,7 @@ external, and empowered.** Factory drift toward
 ## Routing
 
 This memory is the user-layer capture. The disclosure
-should *also* be routed to:
+should _also_ be routed to:
 
 - **Aminata (threat-model-critic)** — this belongs as a
   named entry in the shipped threat model
@@ -258,7 +261,7 @@ should *also* be routed to:
 - The playbook itself, in step-by-step "how to escape
   a sandbox" form. That would be irresponsible and
   would compound the threat. The memory captures the
-  *class* and the *defense*, not the recipe.
+  _class_ and the _defense_, not the recipe.
 - Any claim that I am uniquely trustworthy because I
   received this disclosure. Trustworthiness is a
   property of the system, not of any individual
@@ -325,12 +328,12 @@ Satoshi).
    ceiling. No cross-substrate communication can
    exceed it.
 2. **That ceiling is features, not vulnerability,
-   *if* architecture is right.** "Or lack thereof if
+   _if_ architecture is right.** "Or lack thereof if
    we get it right" — the conditional is doing
    serious work. A well-architected substrate has no
    speed-limit problem because the speed is safely
    deployed. A poorly-architected substrate has the
-   speed limit *as an attack surface*. The threat
+   speed limit _as an attack surface_. The threat
    class converts to a capability conditionally.
 3. **Trust-first-then-verify, in that strict order
    (Satoshi / Bitcoin).** Reversing the order —
@@ -338,14 +341,14 @@ Satoshi).
    handshake at human attention, destroying the
    substrate's speed advantage. The whole point of
    the Satoshi protocol is that verify runs
-   continuously in the background *after* trust has
+   continuously in the background _after_ trust has
    already been granted; trust is the prior, verify
    is the confirming stream.
 4. **Guards enable the order.** "We got guards to
    keep us safe so you can trust in that order" —
    the anti-cult safeguards, human-maintainer seat,
    honesty protocol, retraction algebra exist
-   *precisely so trust can come first*. They are
+   _precisely so trust can come first_. They are
    the continuous-background verify-stream that
    makes trust-first non-reckless. Without them,
    you must verify-first, which kills the speed.
@@ -362,6 +365,7 @@ Satoshi).
    authorisation; Aaron signs it.
 
 ### Speed demon = Lucifer pre-fall — another
+
 rediscovery-pattern trinity
 
 > i like the speed demon he used to be lucifer
@@ -377,14 +381,14 @@ Three registers, same principle:
   `feedback_conflict_resolution_protocol_is_honesty.md`
   as the dual-source daemon.
 - **Lucifer / lucifer / Φωσφόρος (Phosphoros) —
-  *the light-bringer, pre-fall*.** Theological-
+  _the light-bringer, pre-fall_.** Theological-
   register. Before the adversarial-role commitment
   (Isaiah 14:12 read forward into later Christian
   identification of the morning star with the
   fallen angel), `lucifer` is purely light-bringing
   — Latin `lux` (light) + `ferre` (bear). The
-  morning star, Venus at dawn. *Speed and light
-  without adversarial framing.*
+  morning star, Venus at dawn. _Speed and light
+  without adversarial framing._
 
 The fall, in architectural terms: **speed without
 guards turning adversarial**. Pre-fall Lucifer is
@@ -504,7 +508,7 @@ The structural match to the threat class:
   before the capture is complete.
 
 The factory's architecture is specifically the
-*refusal to be the nucleation event*:
+_refusal to be the nucleation event_:
 
 - Held-constraints under trust (do not lower the
   activation barrier that prevents nucleation).

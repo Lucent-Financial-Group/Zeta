@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 6201 |
-| Title | [codex] feat(openspec): map artifact-backed specs in inventory |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-31T08:49:56Z |
-| Merged at | 2026-05-31T09:06:29Z |
-| Merge commit SHA | `615a950a23cf8463a59c16160af5baab12415d58` |
-| Branch | `claim/codex-loop-b0171-openspec-artifact-map-20260531` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/6201 |
-| Changed files | 2 |
-| Additions / deletions | +185 / -63 |
+| Field                 | Value                                                          |
+| --------------------- | -------------------------------------------------------------- |
+| Number                | 6201                                                           |
+| Title                 | [codex] feat(openspec): map artifact-backed specs in inventory |
+| Author                | `AceHack` (human)                                              |
+| State                 | MERGED                                                         |
+| Created at            | 2026-05-31T08:49:56Z                                           |
+| Merged at             | 2026-05-31T09:06:29Z                                           |
+| Merge commit SHA      | `615a950a23cf8463a59c16160af5baab12415d58`                     |
+| Branch                | `claim/codex-loop-b0171-openspec-artifact-map-20260531`        |
+| Base branch           | `main`                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/6201       |
+| Changed files         | 2                                                              |
+| Additions / deletions | +185 / -63                                                     |
 
 ## Description
 
@@ -54,15 +54,15 @@ Co-Authored-By: Codex <noreply@openai.com>
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 1 |
-| Resolved threads | 1 |
-| Unresolved threads | 0 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 1     |
+| Resolved threads                          | 1     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -82,11 +82,11 @@ Co-Authored-By: Codex <noreply@openai.com>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-31T09:06:07Z on `tools/openspec/inventory.ts`:191 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-31T09:06:07Z on `tools/openspec/inventory.ts`:191 (association: MEMBER)
 
-    <pre>
-    Already addressed on the current PR head. `buildGapReport()`'s default no longer comes from `process.cwd()` — commit fa67f13be ("fix(openspec): anchor artifact checks at repo root") changed line 190 to `options.artifactRoot ?? findRepoRoot()`. `findRepoRoot()` anchors to `import.meta.dir` (the module's own location) and walks up to `.git`, so the report is deterministic regardless of the caller's CWD; `process.cwd()` is only the pathological no-git-tree fallback. This finding was filed against the prior commit 1abd44982 which had the `process.cwd()` default. Resolving as already-fixed.
-    </pre>
+  <pre>
+  Already addressed on the current PR head. `buildGapReport()`'s default no longer comes from `process.cwd()` — commit fa67f13be ("fix(openspec): anchor artifact checks at repo root") changed line 190 to `options.artifactRoot ?? findRepoRoot()`. `findRepoRoot()` anchors to `import.meta.dir` (the module's own location) and walks up to `.git`, so the report is deterministic regardless of the caller's CWD; `process.cwd()` is only the pathological no-git-tree fallback. This finding was filed against the prior commit 1abd44982 which had the `process.cwd()` default. Resolving as already-fixed.
+  </pre>
 
 ## Fix commits (touching thread paths)
 

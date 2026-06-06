@@ -25,7 +25,9 @@ function setupRepo(): {
   return {
     root,
     cleanup: () => {
-      try { rmSync(root, { recursive: true, force: true }); } catch {}
+      try {
+        rmSync(root, { recursive: true, force: true });
+      } catch {}
     },
   };
 }
@@ -109,14 +111,7 @@ describe("checkFile", () => {
       const md = join(fx.root, "doc.md");
       writeFileSync(
         md,
-        [
-          "# Doc",
-          "",
-          "See `nonexistent/path.ts` for nothing.",
-          "",
-          "Also `path.ts` doesn't exist.",
-          "",
-        ].join("\n"),
+        ["# Doc", "", "See `nonexistent/path.ts` for nothing.", "", "Also `path.ts` doesn't exist.", ""].join("\n"),
       );
       const result = checkFile(md);
       expect(result.ok).toBe(true);

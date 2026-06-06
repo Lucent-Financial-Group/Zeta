@@ -59,4 +59,4 @@ P2 because: shadow lock is operational substrate today (it captures both the ver
 
 ## Origin tick
 
-Otto-CLI 2026-05-14T~23:55Z, shipping the shadow lock with Aaron's "lock it (shadow*)" instruction. Aaron substrate-honestly named the back-pressure framing in the same conversation.
+Otto-CLI 2026-05-14T~23:55Z, shipping the shadow lock with Aaron's "lock it (shadow\*)" instruction. Aaron substrate-honestly named the back-pressure framing in the same conversation.

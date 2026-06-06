@@ -49,8 +49,8 @@ When a tick shard needs to cite a session PR total:
 
 3. **Better: move totals to a generated projection.** A small
    script that walks `docs/hygiene-history/ticks/YYYY/MM/DD/*.md`
-   + `gh` API + `git log` and produces a session-summary file
-   eliminates the manual drift class entirely.
+   - `gh` API + `git log` and produces a session-summary file
+     eliminates the manual drift class entirely.
 
 ## Composes with
 

@@ -45,6 +45,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 Closes backlog row B-0506 after the stale-worktree audit tool was previously shipped, and regenerates the backlog index to reflect the closed status.
 
 **Changes:**
+
 - Marks B-0506 as `closed`, adds closure metadata, and documents the claimed resolution.
 - Regenerates `docs/BACKLOG.md` so B-0506 appears checked.
 
@@ -52,20 +53,22 @@ Closes backlog row B-0506 after the stale-worktree audit tool was previously shi
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                              | Description                                                      |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md` | Updates B-0506 status/frontmatter and adds a Resolution section. |
-| `docs/BACKLOG.md` | Regenerated backlog index checkbox for B-0506. |
-
+| `docs/BACKLOG.md`                                                                 | Regenerated backlog index checkbox for B-0506.                   |
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **docs/backlog/P3/B-0506-stale-worktree-prune-cadence-mechanization-2026-05-14.md:85**
-* This line conflicts with the current repo state: `.github/workflows/factory-hygiene-audit-cadence.yml` already lists `tools/hygiene/audit-stale-worktrees.ts` in the daily cadence/self-test workflow, and the archived PR #3230 discussion says it composed PR #3225 into that cron. If that job satisfies the cadence, cite it; if it is insufficient, this row should not describe GHA wire-up as merely future/if-needed while closing B-0506.
+
+- This line conflicts with the current repo state: `.github/workflows/factory-hygiene-audit-cadence.yml` already lists `tools/hygiene/audit-stale-worktrees.ts` in the daily cadence/self-test workflow, and the archived PR #3230 discussion says it composed PR #3225 into that cron. If that job satisfies the cadence, cite it; if it is insufficient, this row should not describe GHA wire-up as merely future/if-needed while closing B-0506.
+
 ```
 Phase 2 (GHA cron wire-up + per-Otto-process worktree isolation) is **out of scope** per the tool's own header comment and would compose with `factory-hygiene-audit-cadence.yml` if/when needed; that's a separate row, not a B-0506 obligation.
 ```
+
 </details>
 
 ## Review threads

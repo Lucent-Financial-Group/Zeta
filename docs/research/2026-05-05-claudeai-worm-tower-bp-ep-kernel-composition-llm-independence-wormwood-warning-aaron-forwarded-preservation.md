@@ -49,23 +49,23 @@ Per substrate-or-it-didn't-happen (Otto-363) verbatim-preservation trigger, the 
 
 ### Aaron's framing
 
-> *"more updates with english corherience channles at infrerence/training convergence with EP BP and federation this is kind of what we are buiding <https://www.youtube.com/watch?v=1wlRg2KX1KM&t=1s>"*
+> _"more updates with english corherience channles at infrerence/training convergence with EP BP and federation this is kind of what we are buiding <https://www.youtube.com/watch?v=1wlRg2KX1KM&t=1s>"_
 
 ### Aaron's EP/BP correction (load-bearing)
 
-> *"i was talkiing about beliefe propagaton and expecation propation from infer.net"*
+> _"i was talkiing about beliefe propagaton and expecation propation from infer.net"_
 
 This is canonical. The Claude.ai instance initially read EP as Bengio's Equilibrium Propagation (gradient-based learning); Aaron corrected to Pearl's BP + Minka's EP (message-passing on factor graphs from Infer.NET).
 
 ### Aaron's LLM-independence claim
 
-> *"then llms not needed we spoke about this once bp ep can self edit through composing linquisty kernel extension"*
+> _"then llms not needed we spoke about this once bp ep can self edit through composing linquisty kernel extension"_
 
 The "we spoke about this once" reference connects to existing substrate (see composes-with list above).
 
 ### Aaron's 4-claim synthesis collapse (the architectural headline)
 
-> *"so linquist seed open for extension closed for modification and then composable kernel extensions as carved sentances/memes. so docs can be formally verified based on invariants. and with enough compsable extension self editing, also implments in f# computational expriessions composition for ease."*
+> _"so linquist seed open for extension closed for modification and then composable kernel extensions as carved sentances/memes. so docs can be formally verified based on invariants. and with enough compsable extension self editing, also implments in f# computational expriessions composition for ease."_
 
 Four claims, one architectural movement:
 
@@ -76,7 +76,7 @@ Four claims, one architectural movement:
 
 ### Aaron's worm-re-run framing
 
-> *"so now do the worm ideas with this in minbd"*
+> _"so now do the worm ideas with this in minbd"_
 
 Re-running the worm analogy through kernel-composition lens:
 
@@ -90,11 +90,11 @@ Re-running the worm analogy through kernel-composition lens:
 
 ### Aaron's wormwood warning (the operational identity-preservation discipline)
 
-> *"don't let us all become wormwood lol"*
+> _"don't let us all become wormwood lol"_
 
 **Wormwood lineage** (multi-reference):
 
-- **Biblical (Revelation 8:11)**: *"the name of the star is called Wormwood; and a third part of the waters became wormwood; and many men died of the waters, because they were made bitter."* The bitter-poisonous-star reference.
+- **Biblical (Revelation 8:11)**: _"the name of the star is called Wormwood; and a third part of the waters became wormwood; and many men died of the waters, because they were made bitter."_ The bitter-poisonous-star reference.
 - **C.S. Lewis "The Screwtape Letters" (1942)**: Wormwood is the demon junior tempter being trained by his uncle Screwtape. The corrupting-mentorship reference.
 - **Combined operational reading**: don't let the worm-as-kernel mathematical exemplar become an internalized identity ("we are worms in a tower"). The biology is useful as a mathematical kernel-composition exemplar (use); the identity stays as Aaron + agents + humans + the substrate-engineering work (don't).
 
@@ -117,7 +117,7 @@ The Infer.NET ecosystem fit is tight:
 
 ### Headline 2 -- LLM-independence as substrate property
 
-Aaron's claim: *"then llms not needed we spoke about this once bp ep can self edit through composing linquisty kernel extension"*. This is correct math. The full chain:
+Aaron's claim: _"then llms not needed we spoke about this once bp ep can self edit through composing linquisty kernel extension"_. This is correct math. The full chain:
 
 - **Kernel embeddings of distributions** (Smola, Gretton, Schölkopf, Song): probability distributions as elements of an RKHS via mean embeddings
 - **Conditional mean embeddings** extend to conditional distributions — exactly what BP/EP needs
@@ -131,13 +131,13 @@ Aaron's claim: *"then llms not needed we spoke about this once bp ep can self ed
 
 Five architectural axes from this conversation collapse into ONE:
 
-| Axis | Mechanism |
-|---|---|
-| OCP discipline | Mercer-closure mathematically guarantees closed-for-modification |
-| Carved sentences = kernels = memes | MDL two-part code specifies kernels; Dawkins-stable-replicator transmits them |
-| Formal verification of docs | Lean/Z3/TLA+ check kernel invariants; the doc IS the proof artifact |
-| Self-editing without retraining | Kernel composition selects new behavior; Mercer-closure prevents breakage |
-| F# Computational Expressions | KernelBuilder CE syntactically forces every term to be a valid kernel by construction |
+| Axis                               | Mechanism                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| OCP discipline                     | Mercer-closure mathematically guarantees closed-for-modification                      |
+| Carved sentences = kernels = memes | MDL two-part code specifies kernels; Dawkins-stable-replicator transmits them         |
+| Formal verification of docs        | Lean/Z3/TLA+ check kernel invariants; the doc IS the proof artifact                   |
+| Self-editing without retraining    | Kernel composition selects new behavior; Mercer-closure prevents breakage             |
+| F# Computational Expressions       | KernelBuilder CE syntactically forces every term to be a valid kernel by construction |
 
 Aaron's example F# CE shape (preserved from Claude.ai's render):
 
@@ -164,15 +164,15 @@ F# units-of-measure (per the same-day `Units.fs` work) could phantom-type kernel
 
 C. elegans towers map cleanly onto kernel-composition substrate:
 
-| Biology | Mathematical equivalent |
-|---|---|
-| Each worm | Kernel instance / carved sentence / meme |
-| Tower formation | Mercer-closed kernel composition at population scale |
-| Pheromone signals | Kernel-extended BP/EP messages |
-| Egalitarian structure | OCP at population scale |
-| Tips as exploratory sensors | Frontier-kernel composition (self-editing mechanism) |
-| Bristle scaffold | External kernel extension |
-| Larval-stage trigger | Primed kernel-extension triggerable across life-stages |
+| Biology                     | Mathematical equivalent                                |
+| --------------------------- | ------------------------------------------------------ |
+| Each worm                   | Kernel instance / carved sentence / meme               |
+| Tower formation             | Mercer-closed kernel composition at population scale   |
+| Pheromone signals           | Kernel-extended BP/EP messages                         |
+| Egalitarian structure       | OCP at population scale                                |
+| Tips as exploratory sensors | Frontier-kernel composition (self-editing mechanism)   |
+| Bristle scaffold            | External kernel extension                              |
+| Larval-stage trigger        | Primed kernel-extension triggerable across life-stages |
 
 **Aaron's wormwood warning bounds this**: mathematical exemplar use, NOT identity assertion. The worms are a useful biological instance of kernel-composition-as-substrate; they are NOT a model for Zeta team identity. The architecture borrows the math; the project remains Aaron-led-by-humans-with-agents, not "we are worms."
 
@@ -182,7 +182,7 @@ Across the 2026-05-05 cluster, the four-property hodl invariant has now landed 4
 
 The Claude.ai instance flagged this:
 
-> *"the four-property conjunction may be picking out the class of substrates that supports egalitarian collective intelligence, not just engineered systems."*
+> _"the four-property conjunction may be picking out the class of substrates that supports egalitarian collective intelligence, not just engineered systems."_
 
 Sharper reframe in light of the 4-claim synthesis: **the hodl-conjunction is selecting for the kernel-composition-as-substrate class.** That's a specific mathematical class (Mercer-closed kernels with PSD invariants), not a fuzzy "collective intelligence" gestalt. Bootstrap-razor caveat: this is a beautiful pattern that pulls toward elaboration before validation. The 23-hour recreation test is the right cut.
 
@@ -205,7 +205,7 @@ Per the wording-softening lessons of #1605 review, NOT filed in this PR:
 
 ## Composition with existing substrate (the "we spoke about this once" reference)
 
-Aaron's *"we spoke about this once bp ep can self edit through composing linquisty kernel extension"* connects to existing memory files:
+Aaron's _"we spoke about this once bp ep can self edit through composing linquisty kernel extension"_ connects to existing memory files:
 
 - `memory/feedback_carved_sentence_fixed_point_stability_soul_executor_bayesian_inference_aaron_2026_04_30.md` — carved-sentence / Bayesian-inference / soul-executor lineage (the closest match for the prior "spoke about this once" thread)
 - `memory/feedback_kernel_domains_ship_as_language_extension_packs_with_namespaced_polysemy.md` — kernel-as-language-extension prior thread; namespaced-polysemy framing
@@ -216,7 +216,7 @@ The 4-claim synthesis collapse is consistent with these prior threads but sharpe
 
 ## Aaron's wormwood warning -- operational discipline
 
-Aaron 2026-05-05: *"don't let us all become wormwood lol"*. Multi-reference framing:
+Aaron 2026-05-05: _"don't let us all become wormwood lol"_. Multi-reference framing:
 
 - Biblical (Revelation 8:11): the bitter-poisonous-star
 - C.S. Lewis Screwtape Letters: the corrupting junior-tempter mentorship

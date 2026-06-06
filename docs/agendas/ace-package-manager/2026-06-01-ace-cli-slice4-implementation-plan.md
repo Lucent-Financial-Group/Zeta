@@ -14,14 +14,14 @@
 
 ## File Structure
 
-| File | Responsibility |
-|---|---|
-| `tools/ace/store.ts` | (modify) `AceManifest.dependencies?` + `AceDependency` export; factor `validatePackagePaths(pkg)` out of `installPackage` |
-| `tools/ace/resolve.ts` | (create) pure resolver: `packageHash`, `resolve` (identity-keyed DFS, verify per node, topo order) |
-| `tools/ace/resolve.test.ts` | (create) resolver unit tests, injected in-memory fetch |
-| `tools/ace/ace.ts` | (modify) wire `resolve` into `install`; graph preflight; graph-wide `--allow-no-signature`; resolved-set output |
-| `tools/ace/ace.test.ts` | (modify) e2e graph-install + atomic-refuse tests |
-| `.claude/skills/ace/SKILL.md` | (modify) document transitive install + refusal reasons |
+| File                          | Responsibility                                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `tools/ace/store.ts`          | (modify) `AceManifest.dependencies?` + `AceDependency` export; factor `validatePackagePaths(pkg)` out of `installPackage` |
+| `tools/ace/resolve.ts`        | (create) pure resolver: `packageHash`, `resolve` (identity-keyed DFS, verify per node, topo order)                        |
+| `tools/ace/resolve.test.ts`   | (create) resolver unit tests, injected in-memory fetch                                                                    |
+| `tools/ace/ace.ts`            | (modify) wire `resolve` into `install`; graph preflight; graph-wide `--allow-no-signature`; resolved-set output           |
+| `tools/ace/ace.test.ts`       | (modify) e2e graph-install + atomic-refuse tests                                                                          |
+| `.claude/skills/ace/SKILL.md` | (modify) document transitive install + refusal reasons                                                                    |
 
 ---
 
@@ -38,10 +38,17 @@
 test("installPackage ignores a manifest's dependencies field (leaf back-compat)", () => {
   const store = mkdtempSync(join(tmpdir(), "ace-store-"));
   const files = { "r.txt": "hi" };
-  const content_hash = "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const content_hash =
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
   const pkg = {
     manifest: {
-      format_version: 1, name: "demo", version: "1.0.0", content_hash,
+      format_version: 1,
+      name: "demo",
+      version: "1.0.0",
+      content_hash,
       dependencies: [{ name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "sha256:deadbeef" }],
     },
     files,
@@ -105,13 +112,28 @@ import { validatePackagePaths } from "./store.ts"; // add to the existing import
 
 describe("validatePackagePaths", () => {
   test("returns null for safe paths", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "ok.txt": "y" } })).toBeNull();
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "ok.txt": "y" },
+      }),
+    ).toBeNull();
   });
   test("returns the offending path for '..' traversal", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "../escape": "y" } })).toBe("../escape");
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "../escape": "y" },
+      }),
+    ).toBe("../escape");
   });
   test("returns the offending path for an absolute path", () => {
-    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "/etc/passwd": "y" } })).toBe("/etc/passwd");
+    expect(
+      validatePackagePaths({
+        manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" },
+        files: { "/etc/passwd": "y" },
+      }),
+    ).toBe("/etc/passwd");
   });
 });
 ```
@@ -140,10 +162,10 @@ export function validatePackagePaths(pkg: AcePackage): string | null {
 Then replace the inline loop in `installPackage` (the `for (const rel of Object.keys(pkg.files)) { if (...) return {ok:false,...}}` block) with:
 
 ```ts
-  const unsafe = validatePackagePaths(pkg);
-  if (unsafe !== null) {
-    return { ok: false, error: `unsafe file path in package: ${unsafe}` };
-  }
+const unsafe = validatePackagePaths(pkg);
+if (unsafe !== null) {
+  return { ok: false, error: `unsafe file path in package: ${unsafe}` };
+}
 ```
 
 - [ ] **Step 4: Run test to verify it passes**
@@ -175,14 +197,26 @@ import { packageHash } from "./resolve.ts";
 import type { AcePackage } from "./store.ts";
 
 const mk = (name: string, deps?: unknown): AcePackage => ({
-  manifest: { format_version: 1, name, version: "1.0.0", content_hash: "sha256:aaa", ...(deps ? { dependencies: deps } : {}) } as AcePackage["manifest"],
+  manifest: {
+    format_version: 1,
+    name,
+    version: "1.0.0",
+    content_hash: "sha256:aaa",
+    ...(deps ? { dependencies: deps } : {}),
+  } as AcePackage["manifest"],
   files: { "a.txt": "x" },
 });
 
 describe("packageHash", () => {
   test("stable under key reordering (canonical)", () => {
-    const a: AcePackage = { manifest: { format_version: 1, name: "n", version: "1", content_hash: "h" }, files: { a: "1", b: "2" } };
-    const b: AcePackage = { manifest: { content_hash: "h", version: "1", name: "n", format_version: 1 }, files: { b: "2", a: "1" } } as AcePackage;
+    const a: AcePackage = {
+      manifest: { format_version: 1, name: "n", version: "1", content_hash: "h" },
+      files: { a: "1", b: "2" },
+    };
+    const b: AcePackage = {
+      manifest: { content_hash: "h", version: "1", name: "n", format_version: 1 },
+      files: { b: "2", a: "1" },
+    } as AcePackage;
     expect(packageHash(a)).toBe(packageHash(b));
   });
   test("differs when manifest differs even if files identical", () => {
@@ -219,7 +253,12 @@ function canonicalJson(value: unknown): string {
 /** sha256 of the canonical whole package ({manifest incl. signature, files}). The parent's
  *  pin / identity for a dependency. Two edges sharing a packageHash are byte-identical. */
 export function packageHash(pkg: AcePackage): string {
-  return "sha256:" + createHash("sha256").update(canonicalJson({ manifest: pkg.manifest, files: pkg.files })).digest("hex");
+  return (
+    "sha256:" +
+    createHash("sha256")
+      .update(canonicalJson({ manifest: pkg.manifest, files: pkg.files }))
+      .digest("hex")
+  );
 }
 ```
 
@@ -250,20 +289,40 @@ import { resolve, packageHash, type FetchPackage } from "./resolve.ts";
 import { contentHash, type AcePackage } from "./store.ts";
 
 // Build a package; deps is an array of { pkg, url } children already built.
-function pkgOf(name: string, files: Record<string, string>, children: { pkg: AcePackage; url: string }[] = []): AcePackage {
-  const ch = "sha256:" + // slice-2 files hash
-    require("node:crypto").createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+function pkgOf(
+  name: string,
+  files: Record<string, string>,
+  children: { pkg: AcePackage; url: string }[] = [],
+): AcePackage {
+  const ch =
+    "sha256:" + // slice-2 files hash
+    require("node:crypto")
+      .createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
   return {
     manifest: {
-      format_version: 1, name, version: "1.0.0", content_hash: ch,
-      dependencies: children.map((c) => ({ name: c.pkg.manifest.name, version: c.pkg.manifest.version, url: c.url, package_hash: packageHash(c.pkg) })),
+      format_version: 1,
+      name,
+      version: "1.0.0",
+      content_hash: ch,
+      dependencies: children.map((c) => ({
+        name: c.pkg.manifest.name,
+        version: c.pkg.manifest.version,
+        url: c.url,
+        package_hash: packageHash(c.pkg),
+      })),
     },
     files,
   };
 }
 // An injected fetch over a {url: package} map.
 function fetchOf(map: Record<string, AcePackage>): FetchPackage {
-  return async (url: string) => { const p = map[url]; if (!p) throw new Error("404 " + url); return JSON.stringify(p); };
+  return async (url: string) => {
+    const p = map[url];
+    if (!p) throw new Error("404 " + url);
+    return JSON.stringify(p);
+  };
 }
 const NO_TRUST = new Map(); // empty trust store; tests use allowNoSignature:true unless testing signatures
 ```
@@ -303,9 +362,17 @@ import type { AceManifest, LoadedTrustEntry } from "./store.ts";
 export type FetchPackage = (urlOrPath: string) => Promise<string>;
 
 export type ResolveReason =
-  | "version-skew" | "tamper" | "pin-mismatch" | "bad-content-hash"
-  | "bad-signature" | "untrusted-key" | "unsupported-algo" | "no-signature"
-  | "cycle" | "fetch-failed" | "invalid-package";
+  | "version-skew"
+  | "tamper"
+  | "pin-mismatch"
+  | "bad-content-hash"
+  | "bad-signature"
+  | "untrusted-key"
+  | "unsupported-algo"
+  | "no-signature"
+  | "cycle"
+  | "fetch-failed"
+  | "invalid-package";
 
 export type ResolveResult =
   | { ok: true; order: AcePackage[] }
@@ -328,8 +395,11 @@ export async function resolve(
     for (const edge of node.manifest.dependencies ?? []) {
       const here = [...path, edge.name];
       let dep: AcePackage;
-      try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
-      catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
+      try {
+        dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage;
+      } catch (e) {
+        return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here };
+      }
       byName.set(edge.name, { version: edge.version, pkgHash: edge.package_hash, path: here });
       visiting.add(edge.name);
       const sub = await walk(dep, here);
@@ -375,8 +445,13 @@ describe("resolve — dedup", () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const A = pkgOf("A", { "a.txt": "a" }, [{ pkg: D, url: "http://e/D" }]);
     const B = pkgOf("B", { "b.txt": "b" }, [{ pkg: D, url: "http://e/D" }]);
-    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }, { pkg: B, url: "http://e/B" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D": D }), NO_TRUST, { allowNoSignature: true });
+    const root = pkgOf("root", { "r.txt": "r" }, [
+      { pkg: A, url: "http://e/A" },
+      { pkg: B, url: "http://e/B" },
+    ]);
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D": D }), NO_TRUST, {
+      allowNoSignature: true,
+    });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.filter((p) => p.manifest.name === "D").length).toBe(1);
   });
@@ -384,7 +459,10 @@ describe("resolve — dedup", () => {
     const files = { "same.txt": "identical" };
     const X = pkgOf("X", files); // same files...
     const Y = pkgOf("Y", files); // ...different name => different package_hash
-    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: X, url: "http://e/X" }, { pkg: Y, url: "http://e/Y" }]);
+    const root = pkgOf("root", { "r.txt": "r" }, [
+      { pkg: X, url: "http://e/X" },
+      { pkg: Y, url: "http://e/Y" },
+    ]);
     const r = await resolve(root, fetchOf({ "http://e/X": X, "http://e/Y": Y }), NO_TRUST, { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name).sort()).toEqual(["X", "Y", "root"]);
@@ -400,31 +478,44 @@ Expected: FAIL — diamond installs D twice (no dedup yet).
 - [ ] **Step 3: Add dedup/cycle/skew/tamper branch** — in `walk`, replace the top of the loop body (before the fetch) with the identity checks:
 
 ```ts
-    for (const edge of node.manifest.dependencies ?? []) {
-      const here = [...path, edge.name];
-      if (visiting.has(edge.name)) {
-        return { ok: false, reason: "cycle", detail: here.join(" → "), path: here };
-      }
-      const seen = byName.get(edge.name);
-      if (seen) {
-        if (seen.version !== edge.version) {
-          return { ok: false, reason: "version-skew", detail: `${edge.name} required at ${seen.version} (via ${seen.path.join(" → ")}) and ${edge.version} (via ${here.join(" → ")})`, path: here };
-        }
-        if (seen.pkgHash !== edge.package_hash) {
-          return { ok: false, reason: "tamper", detail: `${edge.name}@${edge.version} has two different package hashes`, path: here };
-        }
-        continue; // diamond dedup: same name+version+package_hash, already resolved
-      }
-      let dep: AcePackage;
-      try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
-      catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
-      byName.set(edge.name, { version: edge.version, pkgHash: edge.package_hash, path: here });
-      visiting.add(edge.name);
-      const sub = await walk(dep, here);
-      if (sub) return sub;
-      visiting.delete(edge.name);
-      order.push(dep);
+for (const edge of node.manifest.dependencies ?? []) {
+  const here = [...path, edge.name];
+  if (visiting.has(edge.name)) {
+    return { ok: false, reason: "cycle", detail: here.join(" → "), path: here };
+  }
+  const seen = byName.get(edge.name);
+  if (seen) {
+    if (seen.version !== edge.version) {
+      return {
+        ok: false,
+        reason: "version-skew",
+        detail: `${edge.name} required at ${seen.version} (via ${seen.path.join(" → ")}) and ${edge.version} (via ${here.join(" → ")})`,
+        path: here,
+      };
     }
+    if (seen.pkgHash !== edge.package_hash) {
+      return {
+        ok: false,
+        reason: "tamper",
+        detail: `${edge.name}@${edge.version} has two different package hashes`,
+        path: here,
+      };
+    }
+    continue; // diamond dedup: same name+version+package_hash, already resolved
+  }
+  let dep: AcePackage;
+  try {
+    dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage;
+  } catch (e) {
+    return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here };
+  }
+  byName.set(edge.name, { version: edge.version, pkgHash: edge.package_hash, path: here });
+  visiting.add(edge.name);
+  const sub = await walk(dep, here);
+  if (sub) return sub;
+  visiting.delete(edge.name);
+  order.push(dep);
+}
 ```
 
 - [ ] **Step 4: Run to verify it passes**
@@ -453,26 +544,61 @@ describe("resolve — conflicts", () => {
     const D1 = pkgOf("D", { "d.txt": "d1" });
     const D2: AcePackage = { manifest: { ...D1.manifest, version: "2.0.0" }, files: { "d.txt": "d2" } };
     const A = pkgOf("A", { "a.txt": "a" }, [{ pkg: D1, url: "http://e/D1" }]);
-    const B: AcePackage = { manifest: { ...pkgOf("B", { "b.txt": "b" }).manifest, dependencies: [{ name: "D", version: "2.0.0", url: "http://e/D2", package_hash: packageHash(D2) }] }, files: { "b.txt": "b" } };
-    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }, { pkg: B, url: "http://e/B" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D1": D1, "http://e/D2": D2 }), NO_TRUST, { allowNoSignature: true });
+    const B: AcePackage = {
+      manifest: {
+        ...pkgOf("B", { "b.txt": "b" }).manifest,
+        dependencies: [{ name: "D", version: "2.0.0", url: "http://e/D2", package_hash: packageHash(D2) }],
+      },
+      files: { "b.txt": "b" },
+    };
+    const root = pkgOf("root", { "r.txt": "r" }, [
+      { pkg: A, url: "http://e/A" },
+      { pkg: B, url: "http://e/B" },
+    ]);
+    const r = await resolve(
+      root,
+      fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D1": D1, "http://e/D2": D2 }),
+      NO_TRUST,
+      { allowNoSignature: true },
+    );
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("version-skew");
   });
   test("root-involving skew (root@1 -> A -> root@2) refuses (root is seeded)", async () => {
-    const root2: AcePackage = { manifest: { format_version: 1, name: "root", version: "2.0.0", content_hash: "sha256:zzz" }, files: { "r.txt": "two" } };
-    const A: AcePackage = { manifest: { ...pkgOf("A", { "a.txt": "a" }).manifest, dependencies: [{ name: "root", version: "2.0.0", url: "http://e/root2", package_hash: packageHash(root2) }] }, files: { "a.txt": "a" } };
+    const root2: AcePackage = {
+      manifest: { format_version: 1, name: "root", version: "2.0.0", content_hash: "sha256:zzz" },
+      files: { "r.txt": "two" },
+    };
+    const A: AcePackage = {
+      manifest: {
+        ...pkgOf("A", { "a.txt": "a" }).manifest,
+        dependencies: [{ name: "root", version: "2.0.0", url: "http://e/root2", package_hash: packageHash(root2) }],
+      },
+      files: { "a.txt": "a" },
+    };
     const root = pkgOf("root", { "r.txt": "one" }, [{ pkg: A, url: "http://e/A" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root2": root2 }), NO_TRUST, { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root2": root2 }), NO_TRUST, {
+      allowNoSignature: true,
+    });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(["version-skew", "cycle"]).toContain(r.reason); // root is on the stack -> cycle takes precedence
   });
   test("root cycle (root@1 -> A -> root@1) refuses as cycle", async () => {
     const root1Files = { "r.txt": "one" };
     const rootPlaceholder = pkgOf("root", root1Files); // for hash only
-    const A: AcePackage = { manifest: { ...pkgOf("A", { "a.txt": "a" }).manifest, dependencies: [{ name: "root", version: "1.0.0", url: "http://e/root", package_hash: packageHash(rootPlaceholder) }] }, files: { "a.txt": "a" } };
+    const A: AcePackage = {
+      manifest: {
+        ...pkgOf("A", { "a.txt": "a" }).manifest,
+        dependencies: [
+          { name: "root", version: "1.0.0", url: "http://e/root", package_hash: packageHash(rootPlaceholder) },
+        ],
+      },
+      files: { "a.txt": "a" },
+    };
     const root = pkgOf("root", root1Files, [{ pkg: A, url: "http://e/A" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root": root }), NO_TRUST, { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root": root }), NO_TRUST, {
+      allowNoSignature: true,
+    });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("cycle");
   });
@@ -505,14 +631,30 @@ git commit -m "test(ace): resolve version-skew + root-seeded skew/cycle (slice 4
 ```ts
 test("cycle A->B->A refuses with the loop in path", async () => {
   // Build B that depends on A, and A that depends on B (mutual). Use placeholders for hashes.
-  const aFiles = { "a.txt": "a" }, bFiles = { "b.txt": "b" };
+  const aFiles = { "a.txt": "a" },
+    bFiles = { "b.txt": "b" };
   const aPlaceholder = pkgOf("A", aFiles);
-  const B: AcePackage = { manifest: { ...pkgOf("B", bFiles).manifest, dependencies: [{ name: "A", version: "1.0.0", url: "http://e/A", package_hash: packageHash(aPlaceholder) }] }, files: bFiles };
-  const A: AcePackage = { manifest: { ...pkgOf("A", aFiles).manifest, dependencies: [{ name: "B", version: "1.0.0", url: "http://e/B", package_hash: packageHash(B) }] }, files: aFiles };
+  const B: AcePackage = {
+    manifest: {
+      ...pkgOf("B", bFiles).manifest,
+      dependencies: [{ name: "A", version: "1.0.0", url: "http://e/A", package_hash: packageHash(aPlaceholder) }],
+    },
+    files: bFiles,
+  };
+  const A: AcePackage = {
+    manifest: {
+      ...pkgOf("A", aFiles).manifest,
+      dependencies: [{ name: "B", version: "1.0.0", url: "http://e/B", package_hash: packageHash(B) }],
+    },
+    files: aFiles,
+  };
   const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }]);
   const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B }), NO_TRUST, { allowNoSignature: true });
   expect(r.ok).toBe(false);
-  if (!r.ok) { expect(r.reason).toBe("cycle"); expect(r.path).toContain("A"); }
+  if (!r.ok) {
+    expect(r.reason).toBe("cycle");
+    expect(r.path).toContain("A");
+  }
 });
 ```
 
@@ -593,29 +735,50 @@ import { verifySignature } from "./signing.ts";
 Then in `walk`, immediately AFTER the successful `JSON.parse` of `dep` and BEFORE `byName.set(...)`, insert:
 
 ```ts
-      // slice-2 self-check
-      const filesHash = contentHash(new TextEncoder().encode(JSON.stringify(dep.files)));
-      if (filesHash !== dep.manifest.content_hash) {
-        return { ok: false, reason: "bad-content-hash", detail: `${edge.name}: files hash ${filesHash} != manifest ${dep.manifest.content_hash}`, path: here };
-      }
-      // pin check (whole-package identity)
-      const got = packageHash(dep);
-      if (got !== edge.package_hash) {
-        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${edge.package_hash} but fetched ${got}`, path: here };
-      }
-      // declared-identity check
-      if (dep.manifest.name !== edge.name || dep.manifest.version !== edge.version) {
-        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}@${edge.version}: edge identity != fetched ${dep.manifest.name}@${dep.manifest.version}`, path: here };
-      }
-      // slice-3 signature gate
-      const v = verifySignature(dep.manifest, _trustStore);
-      if (!v.ok) {
-        if (v.reason === "no-signature") {
-          if (!_opts.allowNoSignature) return { ok: false, reason: "no-signature", detail: `${edge.name}: unsigned (use --allow-no-signature)`, path: here };
-        } else {
-          return { ok: false, reason: v.reason, detail: `${edge.name}: ${v.reason}`, path: here };
-        }
-      }
+// slice-2 self-check
+const filesHash = contentHash(new TextEncoder().encode(JSON.stringify(dep.files)));
+if (filesHash !== dep.manifest.content_hash) {
+  return {
+    ok: false,
+    reason: "bad-content-hash",
+    detail: `${edge.name}: files hash ${filesHash} != manifest ${dep.manifest.content_hash}`,
+    path: here,
+  };
+}
+// pin check (whole-package identity)
+const got = packageHash(dep);
+if (got !== edge.package_hash) {
+  return {
+    ok: false,
+    reason: "pin-mismatch",
+    detail: `${edge.name}: expected package_hash ${edge.package_hash} but fetched ${got}`,
+    path: here,
+  };
+}
+// declared-identity check
+if (dep.manifest.name !== edge.name || dep.manifest.version !== edge.version) {
+  return {
+    ok: false,
+    reason: "pin-mismatch",
+    detail: `${edge.name}@${edge.version}: edge identity != fetched ${dep.manifest.name}@${dep.manifest.version}`,
+    path: here,
+  };
+}
+// slice-3 signature gate
+const v = verifySignature(dep.manifest, _trustStore);
+if (!v.ok) {
+  if (v.reason === "no-signature") {
+    if (!_opts.allowNoSignature)
+      return {
+        ok: false,
+        reason: "no-signature",
+        detail: `${edge.name}: unsigned (use --allow-no-signature)`,
+        path: here,
+      };
+  } else {
+    return { ok: false, reason: v.reason, detail: `${edge.name}: ${v.reason}`, path: here };
+  }
+}
 ```
 
 Rename `_trustStore`/`_opts` params to `trustStore`/`opts` (drop the underscores) now that they're used.
@@ -646,27 +809,72 @@ import { resolve as _r, packageHash } from "./resolve.ts"; // packageHash for bu
 test("e2e: install a small graph (root->A->B) installs all three, leaves first", async () => {
   const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
   const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-  const hash = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-  const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: hash({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
-  writeFileSync(join(dir,"B.json"), JSON.stringify(B));
-  const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: hash({ "a.txt":"a" }), dependencies:[{ name:"B", version:"1.0.0", url: join(dir,"B.json"), package_hash: packageHash(B) }] }, files: { "a.txt":"a" } };
-  writeFileSync(join(dir,"A.json"), JSON.stringify(A));
-  const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: hash({ "r.txt":"r" }), dependencies:[{ name:"A", version:"1.0.0", url: join(dir,"A.json"), package_hash: packageHash(A) }] }, files: { "r.txt":"r" } };
-  writeFileSync(join(dir,"root.json"), JSON.stringify(root));
-  const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+  const hash = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
+  const B = {
+    manifest: { format_version: 1, name: "B", version: "1.0.0", content_hash: hash({ "b.txt": "b" }) },
+    files: { "b.txt": "b" },
+  };
+  writeFileSync(join(dir, "B.json"), JSON.stringify(B));
+  const A = {
+    manifest: {
+      format_version: 1,
+      name: "A",
+      version: "1.0.0",
+      content_hash: hash({ "a.txt": "a" }),
+      dependencies: [{ name: "B", version: "1.0.0", url: join(dir, "B.json"), package_hash: packageHash(B) }],
+    },
+    files: { "a.txt": "a" },
+  };
+  writeFileSync(join(dir, "A.json"), JSON.stringify(A));
+  const root = {
+    manifest: {
+      format_version: 1,
+      name: "root",
+      version: "1.0.0",
+      content_hash: hash({ "r.txt": "r" }),
+      dependencies: [{ name: "A", version: "1.0.0", url: join(dir, "A.json"), package_hash: packageHash(A) }],
+    },
+    files: { "r.txt": "r" },
+  };
+  writeFileSync(join(dir, "root.json"), JSON.stringify(root));
+  const code = await main(["install", join(dir, "root.json"), "--store", store, "--allow-no-signature"]);
   expect(code).toBe(0);
-  expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["A","B","root"]);
+  expect(
+    listInstalled(store)
+      .map((p) => p.manifest.name)
+      .sort(),
+  ).toEqual(["A", "B", "root"]);
 });
 
 test("atomic: a graph with an unsafe-path node installs NOTHING (preflight)", async () => {
   const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
   const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-  const hash = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-  const bad = { manifest: { format_version:1, name:"BAD", version:"1.0.0", content_hash: hash({ "../escape":"x" }) }, files: { "../escape":"x" } };
-  writeFileSync(join(dir,"BAD.json"), JSON.stringify(bad));
-  const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: hash({ "r.txt":"r" }), dependencies:[{ name:"BAD", version:"1.0.0", url: join(dir,"BAD.json"), package_hash: packageHash(bad) }] }, files: { "r.txt":"r" } };
-  writeFileSync(join(dir,"root.json"), JSON.stringify(root));
-  const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+  const hash = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
+  const bad = {
+    manifest: { format_version: 1, name: "BAD", version: "1.0.0", content_hash: hash({ "../escape": "x" }) },
+    files: { "../escape": "x" },
+  };
+  writeFileSync(join(dir, "BAD.json"), JSON.stringify(bad));
+  const root = {
+    manifest: {
+      format_version: 1,
+      name: "root",
+      version: "1.0.0",
+      content_hash: hash({ "r.txt": "r" }),
+      dependencies: [{ name: "BAD", version: "1.0.0", url: join(dir, "BAD.json"), package_hash: packageHash(bad) }],
+    },
+    files: { "r.txt": "r" },
+  };
+  writeFileSync(join(dir, "root.json"), JSON.stringify(root));
+  const code = await main(["install", join(dir, "root.json"), "--store", store, "--allow-no-signature"]);
   expect(code).toBe(1);
   expect(listInstalled(store).length).toBe(0); // nothing extracted
 });
@@ -689,33 +897,46 @@ import { validatePackagePaths } from "./store.ts"; // add to the existing store 
 In the `install` block, AFTER the root authenticity gate succeeds and BEFORE the `installPackage(parsed.storePath, pkg)` line, branch on dependencies:
 
 ```ts
-    // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
-    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
-      const fetchPackage = async (u: string): Promise<string> =>
-        u.startsWith("http") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), { allowNoSignature: parsed.allowNoSignature });
-      if (!res.ok) {
-        console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
-        return 1;
-      }
-      // PREFLIGHT (atomic): path-safety + store-key collision across the whole graph BEFORE any extract.
-      const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
-      for (const node of res.order) {
-        const unsafe = validatePackagePaths(node);
-        if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.manifest.name}: ${unsafe}`); return 1; }
-        const ph = packageHash(node);
-        const prior = byStoreKey.get(node.manifest.content_hash);
-        if (prior !== undefined && prior !== ph) { console.error(`ace: install refused: store-collision — ${node.manifest.name} shares a content_hash store key with a different package`); return 1; }
-        byStoreKey.set(node.manifest.content_hash, ph);
-      }
-      // EXTRACT all, leaves first.
-      for (const node of res.order) {
-        const out = installPackage(parsed.storePath, node);
-        if (!out.ok) { console.error(`ace: install failed mid-graph: ${out.error}`); return 1; }
-      }
-      console.log(`ace: installed ${res.order.length}: ${res.order.map((p) => `${p.manifest.name}@${p.manifest.version}`).join(", ")}`);
-      return 0;
+// SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
+if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+  const fetchPackage = async (u: string): Promise<string> =>
+    u.startsWith("http") ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+  const res = await resolve(pkg, fetchPackage, loadTrustStore(), { allowNoSignature: parsed.allowNoSignature });
+  if (!res.ok) {
+    console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
+    return 1;
+  }
+  // PREFLIGHT (atomic): path-safety + store-key collision across the whole graph BEFORE any extract.
+  const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
+  for (const node of res.order) {
+    const unsafe = validatePackagePaths(node);
+    if (unsafe !== null) {
+      console.error(`ace: install refused: unsafe file path in ${node.manifest.name}: ${unsafe}`);
+      return 1;
     }
+    const ph = packageHash(node);
+    const prior = byStoreKey.get(node.manifest.content_hash);
+    if (prior !== undefined && prior !== ph) {
+      console.error(
+        `ace: install refused: store-collision — ${node.manifest.name} shares a content_hash store key with a different package`,
+      );
+      return 1;
+    }
+    byStoreKey.set(node.manifest.content_hash, ph);
+  }
+  // EXTRACT all, leaves first.
+  for (const node of res.order) {
+    const out = installPackage(parsed.storePath, node);
+    if (!out.ok) {
+      console.error(`ace: install failed mid-graph: ${out.error}`);
+      return 1;
+    }
+  }
+  console.log(
+    `ace: installed ${res.order.length}: ${res.order.map((p) => `${p.manifest.name}@${p.manifest.version}`).join(", ")}`,
+  );
+  return 0;
+}
 ```
 
 - [ ] **Step 4: Run to verify it passes**
@@ -742,18 +963,37 @@ git commit -m "feat(ace): wire resolver into install — graph preflight + atomi
 test("store-collision: two distinct packages with identical files install NOTHING", async () => {
   const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
   const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-  const hash = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+  const hash = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
   const sharedFiles = { "same.txt": "identical" };
-  const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: hash(sharedFiles) }, files: sharedFiles };
-  const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: hash(sharedFiles) }, files: sharedFiles }; // same content_hash, diff name => diff package_hash
-  writeFileSync(join(dir,"X.json"), JSON.stringify(X));
-  writeFileSync(join(dir,"Y.json"), JSON.stringify(Y));
-  const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: hash({ "r.txt":"r" }), dependencies:[
-    { name:"X", version:"1.0.0", url: join(dir,"X.json"), package_hash: packageHash(X) },
-    { name:"Y", version:"1.0.0", url: join(dir,"Y.json"), package_hash: packageHash(Y) },
-  ] }, files: { "r.txt":"r" } };
-  writeFileSync(join(dir,"root.json"), JSON.stringify(root));
-  const code = await main(["install", join(dir,"root.json"), "--store", store, "--allow-no-signature"]);
+  const X = {
+    manifest: { format_version: 1, name: "X", version: "1.0.0", content_hash: hash(sharedFiles) },
+    files: sharedFiles,
+  };
+  const Y = {
+    manifest: { format_version: 1, name: "Y", version: "1.0.0", content_hash: hash(sharedFiles) },
+    files: sharedFiles,
+  }; // same content_hash, diff name => diff package_hash
+  writeFileSync(join(dir, "X.json"), JSON.stringify(X));
+  writeFileSync(join(dir, "Y.json"), JSON.stringify(Y));
+  const root = {
+    manifest: {
+      format_version: 1,
+      name: "root",
+      version: "1.0.0",
+      content_hash: hash({ "r.txt": "r" }),
+      dependencies: [
+        { name: "X", version: "1.0.0", url: join(dir, "X.json"), package_hash: packageHash(X) },
+        { name: "Y", version: "1.0.0", url: join(dir, "Y.json"), package_hash: packageHash(Y) },
+      ],
+    },
+    files: { "r.txt": "r" },
+  };
+  writeFileSync(join(dir, "root.json"), JSON.stringify(root));
+  const code = await main(["install", join(dir, "root.json"), "--store", store, "--allow-no-signature"]);
   expect(code).toBe(1);
   expect(listInstalled(store).length).toBe(0);
 });

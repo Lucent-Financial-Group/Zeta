@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per the maintainer's 2026-05-26 *"take your time with the security fix"* + *"you can do whatever you think is best"* signals. PR #5086 (already merged at `0b9f5ea`) shipped the minimal sed-escape that the Copilot finding asked for — but on second review I found it MISSES Nix's `${expr}` antiquotation. If a pubkey comment contains `${anything}`, it'd evaluate at install time — same Nix-injection class, different vector.
+Per the maintainer's 2026-05-26 _"take your time with the security fix"_ + _"you can do whatever you think is best"_ signals. PR #5086 (already merged at `0b9f5ea`) shipped the minimal sed-escape that the Copilot finding asked for — but on second review I found it MISSES Nix's `${expr}` antiquotation. If a pubkey comment contains `${anything}`, it'd evaluate at install time — same Nix-injection class, different vector.
 
 Adding `$` to the sed pipeline would fix that specific vector but the underlying problem stays: untrusted USB content going through a Nix string parser is whack-a-mole.
 
@@ -33,13 +33,13 @@ Adding `$` to the sed pipeline would fix that specific vector but the underlying
 
 ## Threat-model after redesign
 
-| Attack vector | Pre-#5086 | Post-#5086 (current main) | Post-this-PR |
-|---|---|---|---|
-| `"` in pubkey comment | Invalid Nix | Escaped → safe | Data → safe |
-| `\` in pubkey comment | Invalid Nix | Escaped → safe | Data → safe |
-| `${...}` antiquotation | **CODE EXEC** | **CODE EXEC** (sed missed `$`) | Data → safe |
-| `''${...}''` indented-string antiquotation | N/A | N/A | Data → safe |
-| Any future Nix escape syntax | Class | Whack-a-mole | Class eliminated |
+| Attack vector                              | Pre-#5086     | Post-#5086 (current main)      | Post-this-PR     |
+| ------------------------------------------ | ------------- | ------------------------------ | ---------------- |
+| `"` in pubkey comment                      | Invalid Nix   | Escaped → safe                 | Data → safe      |
+| `\` in pubkey comment                      | Invalid Nix   | Escaped → safe                 | Data → safe      |
+| `${...}` antiquotation                     | **CODE EXEC** | **CODE EXEC** (sed missed `$`) | Data → safe      |
+| `''${...}''` indented-string antiquotation | N/A           | N/A                            | Data → safe      |
+| Any future Nix escape syntax               | Class         | Whack-a-mole                   | Class eliminated |
 
 ## Files
 
@@ -70,6 +70,7 @@ Adding `$` to the sed pipeline would fix that specific vector but the underlying
 This PR redesigns the iter-4.2 SSH-key injection path to eliminate Nix string-parsing of USB-supplied pubkey material by switching from generating a `.nix` file with embedded strings to writing a plain `.txt` file that is read via `builtins.readFile`.
 
 **Changes:**
+
 - Update the NixOS module to read authorized keys from a sibling `operator-ssh-keys.txt` file instead of inline Nix string literals.
 - Add `operator-ssh-keys.txt` stub file to the repo as the canonical editable key list.
 - Simplify `zeta-install.sh` to write the detected USB pubkey file directly into `operator-ssh-keys.txt` during install, and broaden `zflash.ts` pubkey validation/`~/` expansion behavior.
@@ -78,12 +79,12 @@ This PR redesigns the iter-4.2 SSH-key injection path to eliminate Nix string-pa
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                | Description                                                                               |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | full-ai-cluster/usb-nixos-installer/zeta-install.sh | Writes probed pubkey content to `operator-ssh-keys.txt` instead of generating a Nix file. |
-| full-ai-cluster/tools/zflash.ts | Broadens pubkey type validation and expands `~/` in `--ssh-key` paths. |
-| full-ai-cluster/nixos/modules/operator-ssh-keys.txt | New stub file that holds operator SSH pubkeys as data. |
-| full-ai-cluster/nixos/modules/operator-ssh-keys.nix | Reads and filters key lines from `operator-ssh-keys.txt` via `builtins.readFile`. |
+| full-ai-cluster/tools/zflash.ts                     | Broadens pubkey type validation and expands `~/` in `--ssh-key` paths.                    |
+| full-ai-cluster/nixos/modules/operator-ssh-keys.txt | New stub file that holds operator SSH pubkeys as data.                                    |
+| full-ai-cluster/nixos/modules/operator-ssh-keys.nix | Reads and filters key lines from `operator-ssh-keys.txt` via `builtins.readFile`.         |
 
 ## Review threads
 

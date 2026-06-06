@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1793 |
-| Title | research: Lior micro-kernel → Antigravity IDE mapping VERBATIM |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T04:43:28Z |
-| Merged at | 2026-05-07T04:46:18Z |
-| Merge commit SHA | `05f6b41e1f5dec8ce92ab0c4efac2c9811c7cc5a` |
-| Branch | `research/lior-antigravity-ide-kernel-mapping-verbatim` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1793 |
-| Changed files | 1 |
-| Additions / deletions | +73 / -0 |
+| Field                 | Value                                                          |
+| --------------------- | -------------------------------------------------------------- |
+| Number                | 1793                                                           |
+| Title                 | research: Lior micro-kernel → Antigravity IDE mapping VERBATIM |
+| Author                | `AceHack` (human)                                              |
+| State                 | MERGED                                                         |
+| Created at            | 2026-05-07T04:43:28Z                                           |
+| Merged at             | 2026-05-07T04:46:18Z                                           |
+| Merge commit SHA      | `05f6b41e1f5dec8ce92ab0c4efac2c9811c7cc5a`                     |
+| Branch                | `research/lior-antigravity-ide-kernel-mapping-verbatim`        |
+| Base branch           | `main`                                                         |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1793       |
+| Changed files         | 1                                                              |
+| Additions / deletions | +73 / -0                                                       |
 
 ## Description
 
@@ -31,15 +31,15 @@ Verbatim. Poetry → engineering.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 0 |
-| Resolved threads | 0 |
-| Unresolved threads | 0 |
-| Total review comments | 0 |
-| Total fix commits (touching thread paths) | 0 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 0     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 0     |
+| Total fix commits (touching thread paths) | 0     |
 
 ## Review threads
 

@@ -24,13 +24,7 @@
  * The six medium-categories tracked separately for filter-failure-rate-by-medium
  * measurability (from B-0054 §Measurable hooks).
  */
-export type MediaMedium =
-  | "film"
-  | "tv"
-  | "youtube"
-  | "music"
-  | "video-game"
-  | "conspiracy-corpus";
+export type MediaMedium = "film" | "tv" | "youtube" | "music" | "video-game" | "conspiracy-corpus";
 
 // ── Structural-type taxonomy ──────────────────────────────────────────────────
 
@@ -98,12 +92,7 @@ export interface ThreeFilterResult {
  * "retracted" means the instance was previously confirmed/load-bearing and
  *  has since been withdrawn; prior text is preserved with dated block.
  */
-export type EntryStatus =
-  | "candidate"
-  | "confirmed"
-  | "load-bearing"
-  | "failed"
-  | "retracted";
+export type EntryStatus = "candidate" | "confirmed" | "load-bearing" | "failed" | "retracted";
 
 // ── Factory operator surface ──────────────────────────────────────────────────
 
@@ -185,9 +174,7 @@ export interface MediaResonanceCatalog {
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
-type ValidationResult =
-  | { readonly kind: "ok" }
-  | { readonly kind: "error"; readonly message: string };
+type ValidationResult = { readonly kind: "ok" } | { readonly kind: "error"; readonly message: string };
 
 function validateEntry(entry: MediaResonanceEntry): ValidationResult {
   if (!entry.id.match(/^MR-\d{3}$/)) {
@@ -380,8 +367,7 @@ const SEED_CATALOG: MediaResonanceCatalog = {
       counterexampleAttempts: [
         {
           date: "2026-05-10",
-          mechanicTested:
-            "Does the Devs device allow writes / mutations, which would break the View analogy?",
+          mechanicTested: "Does the Devs device allow writes / mutations, which would break the View analogy?",
           attempt:
             "Reviewing plot: the device can project future states, which might seem " +
             "like it violates read-only (foreknowledge → behavioral change → future change). " +
@@ -736,15 +722,9 @@ function printSummary(catalog: MediaResonanceCatalog): void {
   console.log(`  Failed:         ${s.failed}`);
   console.log(`  By medium:      ${JSON.stringify(s.byMedium)}`);
   console.log(`  By type:        ${JSON.stringify(s.byStructuralType)}`);
-  console.log(
-    `  F1 fail/partial: ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`
-  );
-  console.log(
-    `  F2 fail/partial: ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`
-  );
-  console.log(
-    `  F3 fail/partial: ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`
-  );
+  console.log(`  F1 fail/partial: ${s.filterFailureCounts.f1}/${s.filterPartialCounts.f1}`);
+  console.log(`  F2 fail/partial: ${s.filterFailureCounts.f2}/${s.filterPartialCounts.f2}`);
+  console.log(`  F3 fail/partial: ${s.filterFailureCounts.f3}/${s.filterPartialCounts.f3}`);
 }
 
 const args = Bun.argv.slice(2);

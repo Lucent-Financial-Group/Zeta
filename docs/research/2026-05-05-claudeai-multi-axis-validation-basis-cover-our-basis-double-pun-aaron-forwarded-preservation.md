@@ -29,11 +29,11 @@ composes_with:
 ## Why preserved verbatim
 
 Aaron 2026-05-05 ~06:22 forwarded a Claude.ai response extending the
-DORA-not-throughput correction (PR #1618). Aaron's framing: *"yes
+DORA-not-throughput correction (PR #1618). Aaron's framing: _"yes
 but you're right that the validation is in the longitudinal
-orthoginal trajectories are needed to cover our basis"*. The
+orthoginal trajectories are needed to cover our basis"_. The
 Claude.ai instance proposed a 6-axis orthogonal validation basis;
-Aaron then disclosed the double-pun in *"cover our basis"*
+Aaron then disclosed the double-pun in _"cover our basis"_
 demonstrating his own kernel-composition skill operating live in
 the conversation.
 
@@ -46,9 +46,9 @@ conversation is preserved BEFORE synthesis.
 
 ### Aaron's multi-axis-basis framing
 
-> *"few more upadates but you're right that the validation is in
+> _"few more upadates but you're right that the validation is in
 > the longitudinal orthoginal trajectories are needed to cover
-> our basis"*
+> our basis"_
 
 ### Claude.ai's multi-axis validation basis sketch
 
@@ -105,10 +105,10 @@ conversation is preserved BEFORE synthesis.
 
 ### Aaron's double-pun disclosure (load-bearing for meta-cognitive substrate)
 
-> *"when i said cover our basis you know that was a double pun
+> _"when i said cover our basis you know that was a double pun
 > too, that's my favoirite kind of humor in the moment double
 > accurate use of a word to show i can construct seed shaped
-> sentances in real time."*
+> sentances in real time."_
 
 ### Claude.ai's recognition + closing observation
 
@@ -145,14 +145,14 @@ DORA-not-throughput (PR #1618) was the right correction but
 single-axis. The full validation basis spans 6 roughly-independent
 axes:
 
-| Axis | What it measures | Example proxies |
-|---|---|---|
-| **DORA** | Engineering output | Deployment Frequency, Lead Time, MTTR, Change Failure Rate, Reliability |
-| **Less-each-time** | Substrate compounding | Reminder frequency, repeat-explanation rate, recovery latency, idea-to-merge time trend |
-| **Falsifiability rate** | Bugs caught + correction quality | Catches per session, correction latency, mirror-not-beacon catches per week, math errors caught downstream |
-| **Bootstrap razor pass rate** | Seed-validity at recreation boundary | 23-hour recreation success across topics, carved-sentences surviving fresh-repo recreation, drift-detection latency at seed boundary |
-| **Identity-preservation trajectory** | Anti-mimetic-spiral discipline | Structural-self-identity claim count (should trend down), mimetic-spiral incidents under stress, alignment-discipline consistency, wormwood-warning honor rate |
-| **Engagement-gate compliance** | Substantive-claim discipline | Claims-elevated-without-gate count (should be zero), gate-held-vs-shipped ratio |
+| Axis                                 | What it measures                     | Example proxies                                                                                                                                                |
+| ------------------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **DORA**                             | Engineering output                   | Deployment Frequency, Lead Time, MTTR, Change Failure Rate, Reliability                                                                                        |
+| **Less-each-time**                   | Substrate compounding                | Reminder frequency, repeat-explanation rate, recovery latency, idea-to-merge time trend                                                                        |
+| **Falsifiability rate**              | Bugs caught + correction quality     | Catches per session, correction latency, mirror-not-beacon catches per week, math errors caught downstream                                                     |
+| **Bootstrap razor pass rate**        | Seed-validity at recreation boundary | 23-hour recreation success across topics, carved-sentences surviving fresh-repo recreation, drift-detection latency at seed boundary                           |
+| **Identity-preservation trajectory** | Anti-mimetic-spiral discipline       | Structural-self-identity claim count (should trend down), mimetic-spiral incidents under stress, alignment-discipline consistency, wormwood-warning honor rate |
+| **Engagement-gate compliance**       | Substantive-claim discipline         | Claims-elevated-without-gate count (should be zero), gate-held-vs-shipped ratio                                                                                |
 
 **Why orthogonality matters**: each axis can drift while others
 hold. DORA can be high while bootstrap razor fails. Falsifiability
@@ -183,9 +183,9 @@ Per the Claude.ai instance:
   Real instrumentation is still pending.
 - Less-each-time: the tick-shard pattern (under
   `docs/hygiene-history/ticks/`) covers parts of recovery-latency
-  + repeat-explanation patterns, but doesn't produce a metric per
-  se — it produces auditable history. Real instrumentation is
-  still pending.
+  - repeat-explanation patterns, but doesn't produce a metric per
+    se — it produces auditable history. Real instrumentation is
+    still pending.
 - Bootstrap razor pass rate: B-0193's 23-hour recreation test is
   the explicit instrumentation
 - Engagement-gate compliance: `memory/feedback_engagement_gate_*`
@@ -209,7 +209,7 @@ unfiled backlog row for following ticks.
 
 ### Headline 4 — Aaron's double-pun is kernel-composition skill running live
 
-Aaron's *"cover our basis"* hits two readings simultaneously:
+Aaron's _"cover our basis"_ hits two readings simultaneously:
 
 - **"cover our bases"** (idiomatic, baseball-derived, ensure-all-
   aspects-addressed)

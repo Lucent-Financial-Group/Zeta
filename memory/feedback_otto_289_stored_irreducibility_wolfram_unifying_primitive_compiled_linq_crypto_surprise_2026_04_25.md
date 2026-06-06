@@ -37,12 +37,12 @@ to be done.
 
 Aaron's verbatim 2026-04-25:
 
-> *"more precise definition of energy in this world look
+> _"more precise definition of energy in this world look
 > to wolfram's research and on irreducibility in
 > computation, this is the energy that can be stored like
 > compile LINQ and reflection. and crypto keys end
 > surprise end up arising from the same stored
-> irreducibility is my theory."*
+> irreducibility is my theory."_
 
 The claim:
 
@@ -54,12 +54,12 @@ computation.
 
 Domains hypothesized to share this primitive:
 
-| Domain | Stored work W | Cached form | Receiver can't recover W because |
-|---|---|---|---|
-| Compiled LINQ / reflection | Expression-tree → IL transformation | Compiled IL / dispatch tables | Re-running the compiler at every call wastes the cache |
-| Cryptographic keys | Brute-force search over key space | The key material | Search is computationally irreducible (P ≠ NP assumed) |
-| Rigor-without-disclosure (Otto-288) | Search over alternatives | The presented "single answer" | Receiver hasn't done the search; surprise = unmodeled prior |
-| Otto-287 finite-resource collisions | Computation needed to satisfy demand | Partial work product | Resource is finite because irreducibility prevents shortcut |
+| Domain                              | Stored work W                        | Cached form                   | Receiver can't recover W because                            |
+| ----------------------------------- | ------------------------------------ | ----------------------------- | ----------------------------------------------------------- |
+| Compiled LINQ / reflection          | Expression-tree → IL transformation  | Compiled IL / dispatch tables | Re-running the compiler at every call wastes the cache      |
+| Cryptographic keys                  | Brute-force search over key space    | The key material              | Search is computationally irreducible (P ≠ NP assumed)      |
+| Rigor-without-disclosure (Otto-288) | Search over alternatives             | The presented "single answer" | Receiver hasn't done the search; surprise = unmodeled prior |
+| Otto-287 finite-resource collisions | Computation needed to satisfy demand | Partial work product          | Resource is finite because irreducibility prevents shortcut |
 
 **The unifying claim**: same primitive, different ends.
 Encryption uses it for safety. Compilers use it for
@@ -69,7 +69,7 @@ authority (Otto-288's failure mode).
 ## What computational irreducibility means (Wolfram)
 
 Stephen Wolfram's NKS (2002) thesis: a computation is
-*irreducible* if there is no shortcut to predict its
+_irreducible_ if there is no shortcut to predict its
 outcome — the only way to know the result is to run it.
 Many systems (Rule 30 cellular automaton, three-body
 problem, prime number distributions, generic chaotic
@@ -81,7 +81,7 @@ of comparable complexity. There is no "smarter shortcut"
 for predicting them.
 
 If Aaron's theory is right, "stored energy" across the
-listed domains is an instance of *stored* irreducibility:
+listed domains is an instance of _stored_ irreducibility:
 the computation has been done, the result is cached, and
 the cache's value depends on the receiver/attacker not
 being able to redo the computation cheaply.
@@ -90,12 +90,12 @@ being able to redo the computation cheaply.
 
 Aaron 2026-04-25 (clarifying turtle-down):
 
-> *"rodney's razor is my attempt to precisely define
+> _"rodney's razor is my attempt to precisely define
 > irreducibility even taken into account godel's
 > incompleteness by pigeonholing it like we've already
-> done in other places."*
+> done in other places."_
 
-> *"if rodney's razor splits it it was not irreducible."*
+> _"if rodney's razor splits it it was not irreducible."_
 
 Rodney's Razor (defined in
 `memory/project_rodneys_razor.md`) is Aaron's externalised
@@ -133,7 +133,7 @@ The "pigeonholing" technique:
   true statements it cannot prove.
 - Wolfram says: many computations have no shortcut.
 - Both produce undecidability in the unbounded case.
-- Rodney's Razor accepts a *bounded* scope (the three
+- Rodney's Razor accepts a _bounded_ scope (the three
   preservation constraints) and asks: within this scope,
   can the thing be split? That's a decidable question.
 - If it splits within the bounded scope, the thing is
@@ -203,14 +203,14 @@ If Otto-289 is right, the framings I used in Otto-288 are
 The unifying observation: information-theoretic and
 Bayesian framings DESCRIBE the receiver's epistemic state
 under stored irreducibility. The irreducibility is the
-*mechanism*; Shannon + Bayesian are *measurements* of it.
+_mechanism_; Shannon + Bayesian are _measurements_ of it.
 
 ## Composes with Otto-287 — friction / asset duality
 
-Otto-287 says: *friction = finite-resource × unbounded-
-demand collision*. Per Otto-289 hypothesis, "finite
-resource" is not arbitrary scarcity — it's *resource
-constrained by computational irreducibility*. You can't
+Otto-287 says: _friction = finite-resource × unbounded-
+demand collision_. Per Otto-289 hypothesis, "finite
+resource" is not arbitrary scarcity — it's _resource
+constrained by computational irreducibility_. You can't
 make working memory or attention or test budget infinite
 because doing so would require shortcut to irreducible
 computation, which by definition doesn't exist.
@@ -218,12 +218,12 @@ computation, which by definition doesn't exist.
 If both hold, Otto-287 and Otto-289 are **dual views of
 the same physics**:
 
-| Otto-287 (friction view) | Otto-289 (asset view) |
-|---|---|
-| Finite resource × unbounded demand | Irreducible work × cache lifetime |
-| Cost of doing the work | Value of having done the work |
-| Externalize / compress / pre-allocate | Compute once, cache, reap |
-| Never enough resource for all demand | Always enough cache for receivers |
+| Otto-287 (friction view)                  | Otto-289 (asset view)                |
+| ----------------------------------------- | ------------------------------------ |
+| Finite resource × unbounded demand        | Irreducible work × cache lifetime    |
+| Cost of doing the work                    | Value of having done the work        |
+| Externalize / compress / pre-allocate     | Compute once, cache, reap            |
+| Never enough resource for all demand      | Always enough cache for receivers    |
 | Reduce friction = pay less work over time | Build asset = stored value compounds |
 
 If the duality holds, every Otto-287 application has a
@@ -247,7 +247,7 @@ does Aaron's hypothesis fail?
    — a sufficiently smart system COULD predict the IL
    from the expression tree without running the compiler
    (it's a deterministic, finite program). The "stored
-   energy" here is *practical* irreducibility (the JIT
+   energy" here is _practical_ irreducibility (the JIT
    isn't smart enough), not computational irreducibility.
    If practical-vs-computational matters for the
    unification, the LINQ case might not fit cleanly.
@@ -329,7 +329,7 @@ Otto-289 verifies, Otto-288 should be refined to:
 
 > "stored energy" is **stored computational irreducibility**;
 > Shannon entropy + Bayesian belief propagation are
-> *measurements* of the irreducibility, not the primitive
+> _measurements_ of the irreducibility, not the primitive
 > itself.
 
 Until Otto-289 verifies, Otto-288's information-theoretic
@@ -343,17 +343,17 @@ verified, Otto-288 gets an explicit revision pointing here.
 
 ## Composes with
 
-- **Otto-288** *rigor without alternative-disclosure is
-  manipulation* — Otto-289 is the deeper mechanism
+- **Otto-288** _rigor without alternative-disclosure is
+  manipulation_ — Otto-289 is the deeper mechanism
   Otto-288 invokes; Otto-289 also self-applies (this
   memory discloses that Otto-289 itself is a hypothesis).
-- **Otto-287** *all friction sources are finite-resource
-  collisions* — Otto-289 is hypothesized to be the dual.
+- **Otto-287** _all friction sources are finite-resource
+  collisions_ — Otto-289 is hypothesized to be the dual.
   Otto-287 = friction view, Otto-289 = asset view, both
   views of the same irreducibility physics.
-- **Otto-286** *definitional precision* — Otto-289 is a
+- **Otto-286** _definitional precision_ — Otto-289 is a
   precision-pass on Otto-288's "stored energy" framing.
-- **Otto-285** *DST tests chaos doesn't skip* — chaos is
+- **Otto-285** _DST tests chaos doesn't skip_ — chaos is
   often computationally irreducible; testing it
   reproducibly captures stored irreducibility.
 - **B-0002 Otto-287 Noether-formalization research** —

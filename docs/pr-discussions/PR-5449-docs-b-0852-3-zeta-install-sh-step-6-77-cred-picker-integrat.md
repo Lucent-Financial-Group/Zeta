@@ -22,7 +22,7 @@ Files B-0852.3 backlog row capturing operator's 2026-05-27 three-message framing
 
 ## Operator USB push
 
-> *"lets keep pushing forward and get cred persistance any anthing else we can make it in before i test again"*
+> _"lets keep pushing forward and get cred persistance any anthing else we can make it in before i test again"_
 
 This row is the substrate-engineering anchor; the picker implementation lands separately to maximize chance of reaching next ISO before operator's USB test.
 

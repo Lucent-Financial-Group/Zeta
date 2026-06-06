@@ -19,9 +19,10 @@ describe("cockroach discussion anchor state store", () => {
 
     const discussionAnchor = await store.findDiscussionAnchor("discussion-anchor-001");
 
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachDiscussionAnchorStateStoreStatement.FindDiscussionAnchor,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachDiscussionAnchorStateStoreStatement.FindDiscussionAnchor],
+    );
     deepEqual(executor.statements[0]?.parameters, ["discussion-anchor-001"]);
     equal(discussionAnchor?.discussionAnchorId, "discussion-anchor-001");
     equal(discussionAnchor?.organizationId, "org-lfg");
@@ -51,9 +52,7 @@ describe("cockroach discussion anchor state store", () => {
   });
 });
 
-function createRecordingExecutor(
-  input: { expectedOutputs?: unknown } = {},
-): CockroachDiscussionAnchorSqlExecutor & {
+function createRecordingExecutor(input: { expectedOutputs?: unknown } = {}): CockroachDiscussionAnchorSqlExecutor & {
   statements: CockroachDiscussionAnchorSqlStatement[];
 } {
   const statements: CockroachDiscussionAnchorSqlStatement[] = [];

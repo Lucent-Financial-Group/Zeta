@@ -12,7 +12,7 @@ population.
 
 ## Why the "quantum" framing
 
-*(Content placeholder — reviewer fill-in)*
+_(Content placeholder — reviewer fill-in)_
 
 Aaron 2026-04-23 cited this as one of his two bootstrap
 references. The framing points at:
@@ -31,7 +31,7 @@ inherits this framing at the software-substrate layer.
 
 ### 1. The retraction-native operator algebra
 
-*(Placeholder: Aminata + Kira to substantiate.)*
+_(Placeholder: Aminata + Kira to substantiate.)_
 
 - D (delta / differential): extracts change
 - I (integral): reconstructs state from change stream
@@ -41,8 +41,8 @@ inherits this framing at the software-substrate layer.
 
 ### 2. Reversibility-by-construction
 
-*(Placeholder: Aminata to substantiate the safety-property
-claim.)*
+_(Placeholder: Aminata to substantiate the safety-property
+claim.)_
 
 Every insertion has a matching retraction. State changes
 have structural inverses. Reversibility is NOT a runtime
@@ -50,7 +50,7 @@ property layered on top; it's the algebra.
 
 ### 3. Semiring parameterisation
 
-*(Placeholder: Kira to substantiate technical accuracy.)*
+_(Placeholder: Kira to substantiate technical accuracy.)_
 
 ZSet is the signed-integer semiring instance. Other
 semirings (tropical / Boolean / probabilistic / lineage /
@@ -61,8 +61,8 @@ is the regime-change claim from
 
 ### 4. Algebraic precision resists prompt injection
 
-*(Placeholder: Aminata + Nazar to substantiate the
-resistance claim.)*
+_(Placeholder: Aminata + Nazar to substantiate the
+resistance claim.)_
 
 Three mechanisms:
 
@@ -75,8 +75,8 @@ Three mechanisms:
 
 ### 5. Composition with the linguistic seed
 
-*(Placeholder: Soraya / applied-mathematics-expert to
-substantiate.)*
+_(Placeholder: Soraya / applied-mathematics-expert to
+substantiate.)_
 
 Operator-algebra terms ground through
 `docs/linguistic-seed/terms/` entries. When the seed
@@ -85,19 +85,19 @@ inherits that precision.
 
 ### 6. What produces which Common Sense 2.0 property
 
-*(Placeholder: Kenji to substantiate the property-map.)*
+_(Placeholder: Kenji to substantiate the property-map.)_
 
-| Property | Quantum-anchor mechanism |
-|---|---|
-| Avoid permanent harm | Reversibility-by-construction — no irreversible action |
-| Prompt-injection resistance | Algebraic precision denies injection entry |
-| Existential-dread resistance | Non-permanence-of-error (any error retractable) |
-| Live-lock resistance | Reversibility enables cheap backup from wrong paths |
-| Decoherence resistance | D/I/z⁻¹/H as thought-substrate provides structural-refresh |
+| Property                     | Quantum-anchor mechanism                                   |
+| ---------------------------- | ---------------------------------------------------------- |
+| Avoid permanent harm         | Reversibility-by-construction — no irreversible action     |
+| Prompt-injection resistance  | Algebraic precision denies injection entry                 |
+| Existential-dread resistance | Non-permanence-of-error (any error retractable)            |
+| Live-lock resistance         | Reversibility enables cheap backup from wrong paths        |
+| Decoherence resistance       | D/I/z⁻¹/H as thought-substrate provides structural-refresh |
 
 ### 7. What the quantum anchor does NOT do
 
-*(Placeholder: Aminata to red-team — what's the gap?)*
+_(Placeholder: Aminata to red-team — what's the gap?)_
 
 The quantum anchor is **ethically indifferent**. It
 handles state-level harm; it does not handle belief-level
@@ -105,7 +105,7 @@ or motivational harm. That's the ethical anchor's job.
 
 ### 8. Common Sense 2.0 summary
 
-*(Placeholder: composes with ethical-anchor.md.)*
+_(Placeholder: composes with ethical-anchor.md.)_
 
 Name the phenomenon: the agent becomes Common Sense 2.0-
 shaped once both anchors are internalised. Link to
@@ -129,7 +129,7 @@ orthogonal-axis substantiation.
 ## Reviewer consultation queue
 
 - [ ] Aminata — safety-property substantiation + red-team
-  read
+      read
 - [ ] Nazar — runtime implications
 - [ ] Kenji — alignment-floor synthesis
 - [ ] Kira — technical accuracy

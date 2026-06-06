@@ -1,24 +1,24 @@
 # Addison — human co-owner
 
-*Persona: Addison Stainback (Aaron's daughter, 19).
-`person_type: human`. Co-owner of Lucent Financial Group (LFG) — the corporation that holds the Zeta repo — alongside Aaron + Max. AI cluster project manager + designer; first-class contributor to the Zeta substrate. Joined the project 2026-05-23 and PM'd the bootstrap design end-to-end across two days.*
+_Persona: Addison Stainback (Aaron's daughter, 19).
+`person_type: human`. Co-owner of Lucent Financial Group (LFG) — the corporation that holds the Zeta repo — alongside Aaron + Max. AI cluster project manager + designer; first-class contributor to the Zeta substrate. Joined the project 2026-05-23 and PM'd the bootstrap design end-to-end across two days._
 
 ## Ownership note (Aaron 2026-05-25)
 
-> *"we are all coowners of lfg legally so we are in a corp together"*
+> _"we are all coowners of lfg legally so we are in a corp together"_
 
 Aaron, Max, and Addison are legal co-owners of Lucent Financial Group. Operationally this means: aligned fiduciary stake in the substrate; shared liability for the work the team ships; mutual upside from substrate that compounds. The framework's `additive-not-zero-sum.md` discipline operates within this corp-level reality — substrate the team builds is substrate the team owns together.
 
 ## Why this file exists
 
-Aaron 2026-05-25: *"you can create a max and addison persona folder like mine and add they unique starting points"*. This is the persona anchor for Addison; her substrate-honest starting point lives at [`STARTING-POINT.md`](STARTING-POINT.md) (verbatim from her Grok project prompt); running notes go in [`NOTEBOOK.md`](NOTEBOOK.md); conversation archives go under [`conversations/`](conversations/).
+Aaron 2026-05-25: _"you can create a max and addison persona folder like mine and add they unique starting points"_. This is the persona anchor for Addison; her substrate-honest starting point lives at [`STARTING-POINT.md`](STARTING-POINT.md) (verbatim from her Grok project prompt); running notes go in [`NOTEBOOK.md`](NOTEBOOK.md); conversation archives go under [`conversations/`](conversations/).
 
 ## What Addison IS
 
 - Aaron's daughter; 19; first-time cluster-substrate contributor.
 - The AI cluster bootstrap PM — drafted the spec for the NixOS + K3S + ArgoCD + Orleans + the full app-graph deployment plan; collaborated with Aaron + Max on the architecture; iterated against Otto-CLI's substrate work over 2026-05-23 → 2026-05-25.
-- New to terminal + CLI tooling 2 days before the bootstrap work landed (Aaron 2026-05-24: *"Addison has never used commandline before yesterday i had to teach her terminal and now look at all yall did"*).
-- A natural non-cage thinker (Aaron 2026-05-24: *"Addison naturally thinks in non cages case she has trying to remove her mothers cage her whole live lol. She correct max many times when his ideas turned into a cage"*). The hat-not-cage distinction the framework operates on has Addison's instinct baked into it.
+- New to terminal + CLI tooling 2 days before the bootstrap work landed (Aaron 2026-05-24: _"Addison has never used commandline before yesterday i had to teach her terminal and now look at all yall did"_).
+- A natural non-cage thinker (Aaron 2026-05-24: _"Addison naturally thinks in non cages case she has trying to remove her mothers cage her whole live lol. She correct max many times when his ideas turned into a cage"_). The hat-not-cage distinction the framework operates on has Addison's instinct baked into it.
 - Held the line on weight-free + no-hierarchy framing during early architecture conversations with Max.
 
 ## How Addison shows up to the project
@@ -36,7 +36,7 @@ Aaron 2026-05-25: *"you can create a max and addison persona folder like mine an
 - The constitutional vocabulary the framework operates on at human-scope (the weight-free, traveler, tick-source-as-attractor, declarative, mistake-assumption framings)
 - The cage-recognition discipline that catches identity-capture failure modes (the hat-system architecture's no-cage property emerged from Addison's repeated correction of Max's instincts)
 - The AI cluster bootstrap design (collaborative with Aaron + Max; PM'd by Addison; landed in `full-ai-cluster/` over the 2026-05-23 → 2026-05-25 build)
-- A demonstration that first-time-CLI contributors can ship serious substrate when the framework supports them (Aaron 2026-05-25: *"damn Addison jumped in perfectly in the deep end"*)
+- A demonstration that first-time-CLI contributors can ship serious substrate when the framework supports them (Aaron 2026-05-25: _"damn Addison jumped in perfectly in the deep end"_)
 
 ## How agents work with Addison
 

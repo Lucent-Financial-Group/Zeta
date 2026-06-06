@@ -40,7 +40,7 @@ the implementation script.
    substrate-quality bug, not judgment problem").
 3. "When to wear / When to defer" section names the composing
    surfaces: `refresh-before-decide`, `never-idle`, `substrate-or-
-   it-didn't-happen`, autonomous-loop tick-start.
+it-didn't-happen`, autonomous-loop tick-start.
 4. Passes `prompt-protector` review (BP-10 invisible-Unicode lint).
 5. Does NOT reference a TS implementation path — the skill body
    is the contract; implementation lands in B-0306/B-0307.
@@ -50,19 +50,19 @@ the implementation script.
 Completed 2026-05-08.
 
 - [x] Prior-art search: grepped `.claude/skills/` for
-  "authorization" / "pace" / "mechanical-auth" / "source.*filter"
-  — 12 files matched on generic "authorization" (consent, graphql,
-  governance, etc.), zero on mechanical-authorization-check scope.
-  Skill router listing confirmed no existing skill with this slug.
-  No overlapping scope found.
+      "authorization" / "pace" / "mechanical-auth" / "source.\*filter"
+      — 12 files matched on generic "authorization" (consent, graphql,
+      governance, etc.), zero on mechanical-authorization-check scope.
+      Skill router listing confirmed no existing skill with this slug.
+      No overlapping scope found.
 - [x] Dependency walk: `depends_on: []` — this is a root child
-  of B-0160. Sibling items B-0306/B-0307/B-0308 depend on this
-  skill's contract but this item has no upstream blockers.
+      of B-0160. Sibling items B-0306/B-0307/B-0308 depend on this
+      skill's contract but this item has no upstream blockers.
 - [x] Source materials verified: memory file at
-  `memory/feedback_mechanical_authorization_check_supersedes_introspective_discipline_claudeai_2026_05_02.md`
-  EXISTS. Research doc at
-  `docs/research/2026-05-02-claudeai-mechanical-authorization-check-supersedes-introspective-discipline.md`
-  EXISTS. Both read and used as source material for the skill body.
+      `memory/feedback_mechanical_authorization_check_supersedes_introspective_discipline_claudeai_2026_05_02.md`
+      EXISTS. Research doc at
+      `docs/research/2026-05-02-claudeai-mechanical-authorization-check-supersedes-introspective-discipline.md`
+      EXISTS. Both read and used as source material for the skill body.
 
 ## Composes with
 
@@ -73,4 +73,4 @@ Completed 2026-05-08.
   this skill defines)
 - B-0308 (autonomous-loop wiring references this skill)
 - `memory/feedback_mechanical_authorization_check_supersedes_
-  introspective_discipline_claudeai_2026_05_02.md`
+introspective_discipline_claudeai_2026_05_02.md`

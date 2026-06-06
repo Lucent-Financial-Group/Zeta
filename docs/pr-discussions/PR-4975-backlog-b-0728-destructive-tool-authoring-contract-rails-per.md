@@ -27,8 +27,9 @@ Codifies the pattern landed in PR #4974 (flash-usb.ts hardening) as a repo conve
 ## Why now
 
 Aaron 2026-05-25:
-> *"this is a good flow now that addison and max are on the project i dont mind thinking about safety more"*
-> *"i have 27 years of land-the-lesson-before-anyone-has-to-relearn-it. i can bake in over time"*
+
+> _"this is a good flow now that addison and max are on the project i dont mind thinking about safety more"_
+> _"i have 27 years of land-the-lesson-before-anyone-has-to-relearn-it. i can bake in over time"_
 
 Solo-maintainer + single-trusted-agent: ceremony costs more than it pays back. Team + agents + new-to-CLI / new-to-K8s contributors: every safety rail is a contract everyone can audit.
 
@@ -58,6 +59,7 @@ Single file (+ index regen) — docs only; no code in this PR.
 Codifies a repository convention for authoring destructive CLI tools by documenting a three-part “destructive-tool authoring contract” (safety rails, path-scoped agent invocation permission, and a runtime acceptance gate with a per-run nonce) using `flash-usb.ts` as the canonical reference.
 
 **Changes:**
+
 - Adds a new P2 backlog row (B-0728) documenting the destructive-tool contract, including a TypeScript skeleton/template.
 - Regenerates `docs/BACKLOG.md` to include the new backlog entry.
 
@@ -65,10 +67,10 @@ Codifies a repository convention for authoring destructive CLI tools by document
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                          | Description                                                                                   |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0728-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md | New backlog row that defines the destructive-tool authoring contract and provides a template. |
-| docs/BACKLOG.md | Index update to include B-0728 under P2. |
+| docs/BACKLOG.md                                                                                                                               | Index update to include B-0728 under P2.                                                      |
 
 ## Review threads
 
@@ -76,7 +78,7 @@ Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 c
 
 **@copilot-pull-request-reviewer** (2026-05-25T19:26:59Z):
 
-The exit-code contract here doesn’t match the “canonical reference” behavior in `full-ai-cluster/tools/flash-usb.ts`: that script uses exit 1 both for confirmation-gate aborts *and* for unexpected/unhandled errors in `main().catch(...)`. Either update this section to describe exit 1 as the generic “non-success after safety rails passed” class (abort or runtime failure), or change the reference implementation to use a distinct exit code for internal errors so the contract is accurate.
+The exit-code contract here doesn’t match the “canonical reference” behavior in `full-ai-cluster/tools/flash-usb.ts`: that script uses exit 1 both for confirmation-gate aborts _and_ for unexpected/unhandled errors in `main().catch(...)`. Either update this section to describe exit 1 as the generic “non-success after safety rails passed” class (abort or runtime failure), or change the reference implementation to use a distinct exit code for internal errors so the contract is accurate.
 
 ### Thread 2: docs/backlog/P2/B-0728-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md:141 (unresolved)
 

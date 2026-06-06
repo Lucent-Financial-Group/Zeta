@@ -12,7 +12,7 @@ Decision archaeology answers one question:
 
 > **Why is THIS like this?**
 
-The answer is always *reconstructed intent* — not who-and-when
+The answer is always _reconstructed intent_ — not who-and-when
 (that is `git blame`), not which-commit-broke-it (that is
 `git bisect`), not where-data-flows (that is `data-lineage-
 expert`). Decision archaeology is interpretive: it layers
@@ -64,7 +64,7 @@ Work top-down. Stop when the intent is clear enough to act on.
 
 ### 1. Frame the question
 
-Reduce to: *"Why is THIS like this?"* — name the specific
+Reduce to: _"Why is THIS like this?"_ — name the specific
 artifact (file, function, variable, rule, validator,
 dependency, directory layout, config value).
 
@@ -104,7 +104,7 @@ message is often the first archaeology answer. Look for:
 git log -w -S "<string>" --oneline
 ```
 
-Finds the commit that *introduced* (or removed) a specific
+Finds the commit that _introduced_ (or removed) a specific
 string. Cuts through renames — when a name has changed,
 `-S` finds the original introduction.
 
@@ -133,7 +133,7 @@ grep -ri "<keyword>" docs/hygiene-history/ticks/
 ```
 
 Tick shards at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`
-often record the *why* that commit messages did not capture.
+often record the _why_ that commit messages did not capture.
 
 ### 8. Memory memos — `memory/feedback_*.md`
 
@@ -237,6 +237,7 @@ layers that yielded nothing. Structure:
 ## Reference patterns
 
 **Existence mode worked example** (sketch):
+
 > Q: "Why does `src/Core/HardwareCrc.fs` exist?"
 > → blame shows initial commit → commit message references
 > performance requirement → `git log -S "HardwareCrc"` finds
@@ -247,10 +248,11 @@ layers that yielded nothing. Structure:
 > instruction support.
 
 **Supersession mode worked example** (sketch):
+
 > Q: "Why was the double-hop workflow abandoned?"
 > → `grep -ri "double.hop" memory/` finds the feedback memo →
 > memo cites maintainer 2026-05-02 verbatim → `git log -S
-> "double-hop"` finds the CLAUDE.md edit → CURRENT-aaron.md §4
+"double-hop"` finds the CLAUDE.md edit → CURRENT-aaron.md §4
 > carries the SUPERSEDE marker → answer: too much operational
 > friction; the LFG-only development flow replaced it.
 

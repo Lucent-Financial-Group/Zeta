@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0622, B-0631, B-0634, B-0628]
-tags: [safety, mika, kinetic-safeguard-sdk, ksk, type-safe-actuators, weapons-safety, sharp-edge, no-bypass-by-bayesian-models, locked-in, sacred-floor-adjacent]
+tags:
+  [
+    safety,
+    mika,
+    kinetic-safeguard-sdk,
+    ksk,
+    type-safe-actuators,
+    weapons-safety,
+    sharp-edge,
+    no-bypass-by-bayesian-models,
+    locked-in,
+    sacred-floor-adjacent,
+  ]
 type: safety
 ---
 
@@ -27,7 +39,7 @@ This row is the **sharp-edge safety mechanism** for physical-world impact, paire
 
 Aaron 2026-05-18 (during the Mika conversation extract framing — not in transcript but in conversation with Otto post-extraction):
 
-> *"Also we included guns and how they relate they end up putting a downward force on us and only our principles hold us together in a chain of equilibrium"*
+> _"Also we included guns and how they relate they end up putting a downward force on us and only our principles hold us together in a chain of equilibrium"_
 
 The framing is structural:
 

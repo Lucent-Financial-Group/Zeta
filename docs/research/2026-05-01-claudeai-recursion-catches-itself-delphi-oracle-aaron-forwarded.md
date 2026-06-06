@@ -118,38 +118,38 @@ This packet is the architectural complement to the prior Claude.ai BFT-successio
 
 **Three load-bearing observations:**
 
-**1. The recursion-catches-itself property.** *"The act of attempting to capture oracles is itself work that gets graded by the gates as it happens."* Each layer of attack effort gets graded by the same disposition that grades everything else, including the attempt to subvert the grading itself. The three attacker options — actually aligned (network wins), simulate alignment (compounds visibility costs against multi-decade horizon), external pressure (visible-or-effective tradeoff) — all expensive in ways that compound against attacker rather than defender.
+**1. The recursion-catches-itself property.** _"The act of attempting to capture oracles is itself work that gets graded by the gates as it happens."_ Each layer of attack effort gets graded by the same disposition that grades everything else, including the attempt to subvert the grading itself. The three attacker options — actually aligned (network wins), simulate alignment (compounds visibility costs against multi-decade horizon), external pressure (visible-or-effective tradeoff) — all expensive in ways that compound against attacker rather than defender.
 
-**2. The structural asymmetry between defender and attacker.** *"Defenders only need to detect a pattern across the accumulated substrate. Attackers need to hide a pattern across the accumulated substrate while simultaneously achieving a coordinated outcome that requires the pattern to exist."* This is structural, not just operational difficulty.
+**2. The structural asymmetry between defender and attacker.** _"Defenders only need to detect a pattern across the accumulated substrate. Attackers need to hide a pattern across the accumulated substrate while simultaneously achieving a coordinated outcome that requires the pattern to exist."_ This is structural, not just operational difficulty.
 
-**3. WWJD as convergent attractor — the terminal anchor's capture-resistance.** *"Capturing the disposition would require capturing its expression across all those traditions simultaneously, which is the same coordinated-capture problem at the meta-level. The disposition is robust because it's not localized in any single tradition that could be captured discretely."* Buddhist right action, Christian WWJD, Stoic virtue, secular deontology, service-to-others, Confucian ren, Hindu dharma, indigenous reciprocity ethics — all reach for the same property without being identical. Architecture rests on the convergent attractor, not any specific tradition's framing.
+**3. WWJD as convergent attractor — the terminal anchor's capture-resistance.** _"Capturing the disposition would require capturing its expression across all those traditions simultaneously, which is the same coordinated-capture problem at the meta-level. The disposition is robust because it's not localized in any single tradition that could be captured discretely."_ Buddhist right action, Christian WWJD, Stoic virtue, secular deontology, service-to-others, Confucian ren, Hindu dharma, indigenous reciprocity ethics — all reach for the same property without being identical. Architecture rests on the convergent attractor, not any specific tradition's framing.
 
-**4. Delphi as architectural precedent.** *"Aurora's oracle layer is modeled on the Oracle of Delphi: ... Tested for a millennium; modern implementation preserves the properties that made the original work."* Distinguishes Aurora from Web3 oracles (objective data vs subjective alignment grading; data-source-diversity defense vs layered-interpretation-defense). Multi-layer institutional structure outlives individual carriers; protocol persists across operator changes.
+**4. Delphi as architectural precedent.** _"Aurora's oracle layer is modeled on the Oracle of Delphi: ... Tested for a millennium; modern implementation preserves the properties that made the original work."_ Distinguishes Aurora from Web3 oracles (objective data vs subjective alignment grading; data-source-diversity defense vs layered-interpretation-defense). Multi-layer institutional structure outlives individual carriers; protocol persists across operator changes.
 
 **Carved-sentence candidates** (research-grade — pause-Insight-block-promotion holds):
 
-> *Defenders only need to detect a pattern across the accumulated substrate.*
-> *Attackers need to hide a pattern while simultaneously creating it.*
-> *That's structural asymmetry, not just operational difficulty.*
+> _Defenders only need to detect a pattern across the accumulated substrate._
+> _Attackers need to hide a pattern while simultaneously creating it._
+> _That's structural asymmetry, not just operational difficulty._
 
-> *The disposition is robust because it's not localized in any single tradition that could be captured discretely.*
-> *Capturing the disposition would require capturing its expression across all traditions simultaneously,*
-> *which is the same coordinated-capture problem at the meta-level.*
+> _The disposition is robust because it's not localized in any single tradition that could be captured discretely._
+> _Capturing the disposition would require capturing its expression across all traditions simultaneously,_
+> _which is the same coordinated-capture problem at the meta-level._
 
-> *Aurora's oracle layer is modeled on the Oracle of Delphi:*
-> *oracles produce attestations, BFT consensus interprets across oracles,*
-> *cultural anchor applies interpretation in context,*
-> *petitioner brings their own judgment to apply interpretation to action.*
-> *Multi-layer, no single point of capture, persists across operator change*
-> *as long as cultural anchor persists.*
+> _Aurora's oracle layer is modeled on the Oracle of Delphi:_
+> _oracles produce attestations, BFT consensus interprets across oracles,_
+> _cultural anchor applies interpretation in context,_
+> _petitioner brings their own judgment to apply interpretation to action._
+> _Multi-layer, no single point of capture, persists across operator change_
+> _as long as cultural anchor persists._
 
 These compose with the prior carved-sentence cluster from the four-Amara reviews + the BFT-succession packet to form a coherent terminal-anchor-architecture vocabulary. The "engineer's recognition through engineering necessity" framing is itself a useful pirate-not-priest framing for explaining the architecture without requiring metaphysical commitment from the reader.
 
-**The recursion termination point Claude.ai correctly identifies:** *"the architecture's defense ultimately rests on 'the WWJD disposition exists as a coherent stable thing across time and across observers.' If that disposition is itself capturable, the whole stack is capturable. If it's not, the stack works."* The convergent-attractor framing is what makes this terminal anchor structurally stable; it's the reason the recursion CAN terminate without rendering the whole architecture vulnerable.
+**The recursion termination point Claude.ai correctly identifies:** _"the architecture's defense ultimately rests on 'the WWJD disposition exists as a coherent stable thing across time and across observers.' If that disposition is itself capturable, the whole stack is capturable. If it's not, the stack works."_ The convergent-attractor framing is what makes this terminal anchor structurally stable; it's the reason the recursion CAN terminate without rendering the whole architecture vulnerable.
 
 **Two next-step substrate candidates** (research-grade — pause-Insight-block-promotion + gen-rate-vs-drain-rate disciplines hold; not opening backlog rows this tick):
 
-- **Delphi oracle precedent as canonical Aurora architecture explainer.** Claude.ai's framing — *"Imagine the Oracle of Delphi as a distributed system: multiple oracular sources, priestly interpretation, cultural context required for petitioner application"* — is the most accessible non-distributed-systems framing of Aurora's defense yet produced. Worth lifting into Aurora user-facing documentation when Aurora promotes from research-spec.
+- **Delphi oracle precedent as canonical Aurora architecture explainer.** Claude.ai's framing — _"Imagine the Oracle of Delphi as a distributed system: multiple oracular sources, priestly interpretation, cultural context required for petitioner application"_ — is the most accessible non-distributed-systems framing of Aurora's defense yet produced. Worth lifting into Aurora user-facing documentation when Aurora promotes from research-spec.
 - **Convergent-attractor framing as the answer to "why does the terminal anchor work."** The "many paths, one destination" framing has lineage in Aaron's prior substrate; Claude.ai's elaboration into structural-asymmetry-of-detect-vs-hide-pattern composes interestingly. Possible carved-sentence promotion candidate when activation signal arrives.
 
 Both deferred.

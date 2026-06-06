@@ -6,7 +6,6 @@ origin: B-0051 (P2)
 owner: category-theory-expert (capability skill); formal-verification-expert (Lean formalization routing)
 status: v0 — forward index, promotion-protocol draft
 tags: [isomorphism, homomorphism, category-theory, retraction-algebra, dbsp, lean-formalization, IF-filters]
-
 ---
 
 # Isomorphism / Homomorphism Catalog
@@ -31,24 +30,24 @@ Cross-references:
 Before promoting any claimed isomorphism/homomorphism to a load-bearing factory
 claim, all four filters must pass (or be explicitly documented as deferred):
 
-| Filter | Question | Pass condition |
-|--------|----------|----------------|
-| **IF1** — engineering-first | Did the factory reach this structure through engineering need, not by noticing the isomorphism first? | Yes — the structure was built for engineering reasons and the isomorphism was *discovered*, not designed in. |
-| **IF2** — operator-preserving | Does the map preserve *operators*, not just *carriers*? | For every relevant operator `∘` on the source side and `∘'` on the target side: `f(a ∘ b) = f(a) ∘' f(b)` — the algebraic operations commute with the map. Sets of things are isomorphic too easily; the bar is that the operations compose through the map. |
-| **IF3** — counterexample-search | Was an active search for counterexamples performed before promotion? | A documented search for counterexamples was run. Failed searches strengthen the claim; succeeded searches downgrade to partial-homomorphism / retract / section. |
-| **IF4** — Lean-formalizable-in-principle | Can the morphism be written as a function and its preservation law stated as a proposition, even if the Lean proof is deferred? | Yes — the morphism has a concrete type-level statement. "This is isomorphic" without a nameable morphism function fails IF4. |
+| Filter                                   | Question                                                                                                                        | Pass condition                                                                                                                                                                                                                                               |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **IF1** — engineering-first              | Did the factory reach this structure through engineering need, not by noticing the isomorphism first?                           | Yes — the structure was built for engineering reasons and the isomorphism was _discovered_, not designed in.                                                                                                                                                 |
+| **IF2** — operator-preserving            | Does the map preserve _operators_, not just _carriers_?                                                                         | For every relevant operator `∘` on the source side and `∘'` on the target side: `f(a ∘ b) = f(a) ∘' f(b)` — the algebraic operations commute with the map. Sets of things are isomorphic too easily; the bar is that the operations compose through the map. |
+| **IF3** — counterexample-search          | Was an active search for counterexamples performed before promotion?                                                            | A documented search for counterexamples was run. Failed searches strengthen the claim; succeeded searches downgrade to partial-homomorphism / retract / section.                                                                                             |
+| **IF4** — Lean-formalizable-in-principle | Can the morphism be written as a function and its preservation law stated as a proposition, even if the Lean proof is deferred? | Yes — the morphism has a concrete type-level statement. "This is isomorphic" without a nameable morphism function fails IF4.                                                                                                                                 |
 
 Claim statuses:
 
-| Status | Meaning |
-|--------|---------|
-| `claimed` | Asserted in prose; no IF-filter check yet performed |
-| `partial` | IF1 + IF2 pass; IF3 search deferred; IF4 not yet attempted |
-| `confirmed` | IF1 + IF2 + IF3 all pass |
-| `formalized` | Lean proof committed and compiling |
-| `load-bearing` | Other factory claims cite this; retraction would require updating dependents |
-| `downgraded` | IF2 or IF3 revealed a counterexample; claim reduced to partial-homomorphism or section/retract |
-| `retracted` | Claim withdrawn; prior text preserved with dated retraction block |
+| Status         | Meaning                                                                                        |
+| -------------- | ---------------------------------------------------------------------------------------------- |
+| `claimed`      | Asserted in prose; no IF-filter check yet performed                                            |
+| `partial`      | IF1 + IF2 pass; IF3 search deferred; IF4 not yet attempted                                     |
+| `confirmed`    | IF1 + IF2 + IF3 all pass                                                                       |
+| `formalized`   | Lean proof committed and compiling                                                             |
+| `load-bearing` | Other factory claims cite this; retraction would require updating dependents                   |
+| `downgraded`   | IF2 or IF3 revealed a counterexample; claim reduced to partial-homomorphism or section/retract |
+| `retracted`    | Claim withdrawn; prior text preserved with dated retraction block                              |
 
 Promotion path: `claimed` → `partial` → `confirmed` → `formalized` → `load-bearing`
 
@@ -107,7 +106,7 @@ direct formalization target.
 ### CAT-002 — Semi-naive body as semiring homomorphism
 
 **Claim:** The recursive-program `body` operator in the semi-naive evaluation is
-a *semiring homomorphism* on linear operators: `body(a + b) = body(a) + body(b)`.
+a _semiring homomorphism_ on linear operators: `body(a + b) = body(a) + body(b)`.
 This linearity is what makes feeding a negative delta through `body` produce the
 correct retraction of IDB tuples derived from the retracted inputs.
 
@@ -122,8 +121,8 @@ as a module homomorphism)
 
 **Source files:**
 
-- `docs/research/retraction-safe-semi-naive.md` line 77: *"body is a semiring
-  homomorphism on linear operators"*
+- `docs/research/retraction-safe-semi-naive.md` line 77: _"body is a semiring
+  homomorphism on linear operators"_
 - `src/Core/RecursiveSigned.fs`
 
 **Counterexample attempts (IF3):**
@@ -281,8 +280,8 @@ commute with the mapping
 currently load-bearing for factory engineering decisions.
 
 **Note on scope:** Aaron's explicit claim is structural-algebraic, not
-metaphysical: *"the retraction-native algebraic pattern … is isomorphic at the
-algebraic level to the bidirectional-time pattern."* This catalog entry
+metaphysical: _"the retraction-native algebraic pattern … is isomorphic at the
+algebraic level to the bidirectional-time pattern."_ This catalog entry
 preserves that phrasing. IF2 is the critical gate — the question is whether
 CPT's operator-composition laws match the DBSP operator-composition laws under
 the proposed morphism, or whether the analogy is only carrier-level.
@@ -356,13 +355,13 @@ medium for the alignment track (where the immune-system frame is load-bearing).
 
 ## Gaps — to be closed by later B-0051 child rows
 
-| Gap | Description | Child row candidate |
-|-----|-------------|---------------------|
-| No promotion protocol enforcement | IF-filter checks are advisory; no mechanical gate exists | B-0051.2 |
-| No Lean formalization for CAT-002/CAT-003 beyond chain-rule file | Semi-naive homomorphism not yet in Lean | B-0051.3 |
-| No persona home | Category-theory-expert is a capability skill (no persona); Soraya covers Lean routing | note in B-0051 row |
-| No GLOSSARY.md entries | `isomorphism`, `homomorphism`, `functor`, `natural transformation` absent | B-0051.4 (when information-density-gravity warrants) |
-| CAT-004 through CAT-009 IF3 searches | Counterexample searches not yet run | Per-claim follow-up |
+| Gap                                                              | Description                                                                           | Child row candidate                                  |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| No promotion protocol enforcement                                | IF-filter checks are advisory; no mechanical gate exists                              | B-0051.2                                             |
+| No Lean formalization for CAT-002/CAT-003 beyond chain-rule file | Semi-naive homomorphism not yet in Lean                                               | B-0051.3                                             |
+| No persona home                                                  | Category-theory-expert is a capability skill (no persona); Soraya covers Lean routing | note in B-0051 row                                   |
+| No GLOSSARY.md entries                                           | `isomorphism`, `homomorphism`, `functor`, `natural transformation` absent             | B-0051.4 (when information-density-gravity warrants) |
+| CAT-004 through CAT-009 IF3 searches                             | Counterexample searches not yet run                                                   | Per-claim follow-up                                  |
 
 ---
 

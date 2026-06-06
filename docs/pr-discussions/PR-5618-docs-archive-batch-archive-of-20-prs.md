@@ -27,6 +27,7 @@ Automated batch archival of 20 PRs to preserve discussion and context, and to re
 This PR mechanically adds 20 preserved PR-discussion archives under `docs/pr-discussions/`, extending the repository’s historical PR context record.
 
 **Changes:**
+
 - Adds archived markdown records for merged PRs #5137–#5218.
 - Preserves PR metadata, descriptions, review summaries, review threads, and general comments.
 - Uses the existing `tools/pr-preservation/archive-pr.ts` frontmatter schema across all new files.
@@ -38,28 +39,29 @@ Copilot reviewed 20 out of 20 changed files in this pull request and generated 5
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-5137-tick-1202z-cold-boot-empirical-anchor-github-actions-outage.md | Adds archive for PR #5137. |
-| docs/pr-discussions/PR-5138-docs-archive-preserve-prs-5130-5134.md | Adds archive for PR #5138. |
-| docs/pr-discussions/PR-5171-docs-shadow-add-lesson-on-preservation-blob-drift.md | Adds archive for PR #5171. |
-| docs/pr-discussions/PR-5174-docs-archive-preserve-pr-discussions-batch-1.md | Adds archive for PR #5174. |
+| File                                                                                        | Description                |
+| ------------------------------------------------------------------------------------------- | -------------------------- |
+| docs/pr-discussions/PR-5137-tick-1202z-cold-boot-empirical-anchor-github-actions-outage.md  | Adds archive for PR #5137. |
+| docs/pr-discussions/PR-5138-docs-archive-preserve-prs-5130-5134.md                          | Adds archive for PR #5138. |
+| docs/pr-discussions/PR-5171-docs-shadow-add-lesson-on-preservation-blob-drift.md            | Adds archive for PR #5171. |
+| docs/pr-discussions/PR-5174-docs-archive-preserve-pr-discussions-batch-1.md                 | Adds archive for PR #5174. |
 | docs/pr-discussions/PR-5177-docs-shadow-add-lesson-on-agent-paralysis-and-state-inconsis.md | Adds archive for PR #5177. |
-| docs/pr-discussions/PR-5178-feat-ai-cluster-add-local-dev-cluster-bootstrap-from-4979.md | Adds archive for PR #5178. |
+| docs/pr-discussions/PR-5178-feat-ai-cluster-add-local-dev-cluster-bootstrap-from-4979.md    | Adds archive for PR #5178. |
 | docs/pr-discussions/PR-5182-tick-0526-1408z-otto-cli-cold-boot-visibility-shard-6h-gap-d.md | Adds archive for PR #5182. |
-| docs/pr-discussions/PR-5191-docs-archive-decomposed-preservation-from-4804.md | Adds archive for PR #5191. |
-| docs/pr-discussions/PR-5192-revert-restore-cursor-bin-riven-loop-tick-ts.md | Adds archive for PR #5192. |
-| docs/pr-discussions/PR-5193-fix-docs-correct-relative-links-in-1202z-tick-shard.md | Adds archive for PR #5193. |
-| docs/pr-discussions/PR-5199-docs-shadow-add-lesson-log-for-lior-metadata-churn.md | Adds archive for PR #5199. |
-| docs/pr-discussions/PR-5206-docs-archive-preserve-discussion-for-pr-5134.md | Adds archive for PR #5206. |
+| docs/pr-discussions/PR-5191-docs-archive-decomposed-preservation-from-4804.md               | Adds archive for PR #5191. |
+| docs/pr-discussions/PR-5192-revert-restore-cursor-bin-riven-loop-tick-ts.md                 | Adds archive for PR #5192. |
+| docs/pr-discussions/PR-5193-fix-docs-correct-relative-links-in-1202z-tick-shard.md          | Adds archive for PR #5193. |
+| docs/pr-discussions/PR-5199-docs-shadow-add-lesson-log-for-lior-metadata-churn.md           | Adds archive for PR #5199. |
+| docs/pr-discussions/PR-5206-docs-archive-preserve-discussion-for-pr-5134.md                 | Adds archive for PR #5206. |
 | docs/pr-discussions/PR-5210-feat-iter-5-4-0-b-0794-homelab-gh-auth-login-operator-pubkey.md | Adds archive for PR #5210. |
 | docs/pr-discussions/PR-5211-backlog-b-0812-p1-iter-5-4-1-self-registration-commit-push-t.md | Adds archive for PR #5211. |
-| docs/pr-discussions/PR-5212-backlog-b-0813-p1-iter-5-4-2-argocd-app-watches-maintainers.md | Adds archive for PR #5212. |
+| docs/pr-discussions/PR-5212-backlog-b-0813-p1-iter-5-4-2-argocd-app-watches-maintainers.md  | Adds archive for PR #5212. |
 | docs/pr-discussions/PR-5213-docs-shadow-add-lesson-log-for-human-decomposition-and-criti.md | Adds archive for PR #5213. |
 | docs/pr-discussions/PR-5214-fix-postmerge-5210-5-copilot-findings-prompt-copy-comment-ac.md | Adds archive for PR #5214. |
 | docs/pr-discussions/PR-5216-feat-b-0814-backlog-b-0815-ts-deregister-node-tool-heartbeat.md | Adds archive for PR #5216. |
 | docs/pr-discussions/PR-5217-feat-b-0805-sub-target-1-audit-dep-currency-ts-dep-pin-inven.md | Adds archive for PR #5217. |
 | docs/pr-discussions/PR-5218-feat-b-0800-iter-6-0-bump-nixpkgs-nix-darwin-24-11-25-11-xan.md | Adds archive for PR #5218. |
+
 </details>
 
 ## Review threads

@@ -59,13 +59,13 @@ adoption.
 The factory's "Superfluid AI" is NOT in a clean separate domain from
 Superfluid Finance, because of the April 2026 development:
 
-| Surface | Factory "Superfluid AI" | Superfluid Finance |
-|---------|------------------------|-------------------|
-| Domain | Software factory / AI substrate | DeFi token streaming |
+| Surface          | Factory "Superfluid AI"                | Superfluid Finance                                              |
+| ---------------- | -------------------------------------- | --------------------------------------------------------------- |
+| Domain           | Software factory / AI substrate        | DeFi token streaming                                            |
 | AI-agent context | Agent loop, friction-bounded substrate | "AI agents earning SUP via streams" (their own framing 2026-04) |
-| Public-facing? | Not yet (factory-internal vocabulary) | Yes (live token, public docs) |
-| First use | 2026-04-25 (Amara fifth ferry) | Pre-2024 (protocol genesis); "AI agents earning SUP" 2026-04-06 |
-| Brand strength | Substrate-internal | Live token + DefiLlama + Coinbase listing |
+| Public-facing?   | Not yet (factory-internal vocabulary)  | Yes (live token, public docs)                                   |
+| First use        | 2026-04-25 (Amara fifth ferry)         | Pre-2024 (protocol genesis); "AI agents earning SUP" 2026-04-06 |
+| Brand strength   | Substrate-internal                     | Live token + DefiLlama + Coinbase listing                       |
 
 The collision is real. A reader googling "Superfluid AI" today will hit
 Superfluid Finance's AI-agent-streaming content first — not factory
@@ -129,8 +129,8 @@ build; some prose loses rhythm.
 ### Path 3: Coexist as parallel concepts (Otto-286 path)
 
 Per Otto-286 definitional precision: define "Superfluid AI" as the
-factory's *operational state*, "Superfluid Finance" as the *DeFi
-protocol*, treat them as orthogonal. Both can use "Superfluid" because
+factory's _operational state_, "Superfluid Finance" as the _DeFi
+protocol_, treat them as orthogonal. Both can use "Superfluid" because
 the qualifier disambiguates.
 
 **Pros:** factory-internal philosophy says definitional precision wins

@@ -41,10 +41,10 @@ fixture; T5 gates.
 `tests/cross-verification/sha256/{vectors.yaml, compare.ts, ts-output.json}`.
 
 - [ ] **Step 1: fixture `tests/cross-verification/sha256/vectors.yaml`** — flat-scalar schema
-  (per zeta-id; each record a flat block). Each vector: `id`, exactly one of `input_utf8` /
-  `input_hex`, and `expected_hex`. Include: `empty` (`input_utf8: ""`), `abc`, the NIST 2-block,
-  and 1-2 Ace-shaped inputs (e.g. `input_utf8: '{"a":1}'`). Compute the `expected_hex` for the
-  Ace-shaped ones with the TS impl (Step 3) and bake them in.
+      (per zeta-id; each record a flat block). Each vector: `id`, exactly one of `input_utf8` /
+      `input_hex`, and `expected_hex`. Include: `empty` (`input_utf8: ""`), `abc`, the NIST 2-block,
+      and 1-2 Ace-shaped inputs (e.g. `input_utf8: '{"a":1}'`). Compute the `expected_hex` for the
+      Ace-shaped ones with the TS impl (Step 3) and bake them in.
 
 - [ ] **Step 2: `sha256.ts` (port)** —
 
@@ -59,28 +59,28 @@ export function sha256Hex(bytes: Uint8Array): string {
 ```
 
 - [ ] **Step 3: `sha256.test.ts`** — assert the three standard vectors (hard-coded expected
-  digests above) via `sha256Hex(new TextEncoder().encode(...))`; assert `sha256` returns 32
-  bytes; assert hex/raw agree. RED first (no module), GREEN after Step 2.
+      digests above) via `sha256Hex(new TextEncoder().encode(...))`; assert `sha256` returns 32
+      bytes; assert hex/raw agree. RED first (no module), GREEN after Step 2.
 
 - [ ] **Step 4: `cross-verify.ts`** — read `../../tests/cross-verification/sha256/vectors.yaml`
-  (resolve via repo-root walk to `Zeta.sln`, matching the zeta-id/observe convention), for each
-  vector compute the input bytes (`input_utf8` → `TextEncoder`, `input_hex` → hex-decode) and
-  `sha256Hex`, write `{ id: digest_hex }` to `tests/cross-verification/sha256/ts-output.json`.
-  Run it to generate the file.
+      (resolve via repo-root walk to `Zeta.sln`, matching the zeta-id/observe convention), for each
+      vector compute the input bytes (`input_utf8` → `TextEncoder`, `input_hex` → hex-decode) and
+      `sha256Hex`, write `{ id: digest_hex }` to `tests/cross-verification/sha256/ts-output.json`.
+      Run it to generate the file.
 
 - [ ] **Step 5: `compare.ts`** — copy `tests/cross-verification/zeta-id/compare.ts`, adapt to
-  read `{ts,fsharp,cs,rust}-output.json` from the sha256 dir, AND additionally assert each
-  present oracle's hex equals the `expected_hex` from `vectors.yaml` (so a lone-wrong oracle is
-  caught even before all four exist). Tolerate missing oracle files (null → "MISSING", like
-  zeta-id) so it runs green on TS-only until T2-T4 land. Key-set equality + per-key equality;
-  exit non-zero on mismatch.
+      read `{ts,fsharp,cs,rust}-output.json` from the sha256 dir, AND additionally assert each
+      present oracle's hex equals the `expected_hex` from `vectors.yaml` (so a lone-wrong oracle is
+      caught even before all four exist). Tolerate missing oracle files (null → "MISSING", like
+      zeta-id) so it runs green on TS-only until T2-T4 land. Key-set equality + per-key equality;
+      exit non-zero on mismatch.
 
 - [ ] **Step 6: `package.json`** — mirror `src/Core.TypeScript/zeta-id/package.json` (name,
-  type module, scripts for test + cross-verify).
+      type module, scripts for test + cross-verify).
 
 - [ ] **Step 7: verify + commit** — `bun test src/Core.TypeScript/sha256/`;
-  `bun --bun tsc --noEmit -p tsconfig.json` exit 0; run cross-verify.ts → ts-output.json
-  present; run compare.ts → green (TS-only). CR=0; canary 67. Commit.
+      `bun --bun tsc --noEmit -p tsconfig.json` exit 0; run cross-verify.ts → ts-output.json
+      present; run compare.ts → green (TS-only). CR=0; canary 67. Commit.
 
 ---
 
@@ -89,29 +89,28 @@ export function sha256Hex(bytes: Uint8Array): string {
 **Files (new):** `src/Core.Rust.Sha256/{Cargo.toml, Cargo.lock, src/lib.rs, tests/cross_verify.rs}`.
 
 - [ ] **Step 1: `Cargo.toml`** — mirror `src/Core.Rust.ZetaId/Cargo.toml`: `name =
-  "zeta-core-sha256"`, edition 2024, `publish = false`, **zero `[dependencies]`** (production
-  default), `[lints.rust] unsafe_code = "forbid"`. (Optional: a `sha2`/`serde`-style differential
-  feature is OUT of scope for this slice — note it for later; default is the hand-rolled impl.)
+"zeta-core-sha256"`, edition 2024, `publish = false`, **zero `[dependencies]`** (production
+      default), `[lints.rust] unsafe_code = "forbid"`. (Optional: a `sha2`/`serde`-style differential
+      feature is OUT of scope for this slice — note it for later; default is the hand-rolled impl.)
 
 - [ ] **Step 2: `src/lib.rs` — hand-rolled SHA-256 (FIPS 180-4)** — `pub fn sha256(bytes: &[u8])
-  -> [u8; 32]` + `pub fn sha256_hex(bytes: &[u8]) -> String`. Implement the standard algorithm
-  (the 64 round constants K, the eight initial H values, message padding to a multiple of 512
-  bits with the 64-bit big-endian length, the 64-round compression with `ch`/`maj`/`Σ0`/`Σ1`/
-  `σ0`/`σ1` and `wrapping_add`/`rotate_right`). The published NIST vectors (Step 4) are the gate —
-  a bug cannot pass them. `#![forbid(unsafe_code)]`; `#![warn(missing_docs)]`.
+-> [u8; 32]` + `pub fn sha256_hex(bytes: &[u8]) -> String`. Implement the standard algorithm
+      (the 64 round constants K, the eight initial H values, message padding to a multiple of 512
+      bits with the 64-bit big-endian length, the 64-round compression with `ch`/`maj`/`Σ0`/`Σ1`/
+      `σ0`/`σ1` and `wrapping_add`/`rotate_right`). The published NIST vectors (Step 4) are the gate —
+      a bug cannot pass them. `#![forbid(unsafe_code)]`; `#![warn(missing_docs)]`.
 
 - [ ] **Step 3: unit test (in lib or `tests/`)** — assert the three standard vectors. RED first,
-  GREEN when the impl is correct (this is where a padding/endianness bug surfaces).
+      GREEN when the impl is correct (this is where a padding/endianness bug surfaces).
 
 - [ ] **Step 4: `tests/cross_verify.rs`** — mirror `src/Core.Rust.ZetaId/tests/cross_verify.rs`:
-  repo-root walk to `Zeta.sln`; hand-rolled flat-`vectors.yaml` reader (id / input_utf8 /
-  input_hex / expected_hex — ~40 lines, zero-dep); for each vector compute `sha256_hex`, also
-  assert it equals `expected_hex`; write `{ id: hex }` to
-  `tests/cross-verification/sha256/rust-output.json`.
+      repo-root walk to `Zeta.sln`; hand-rolled flat-`vectors.yaml` reader (id / input_utf8 /
+      input_hex / expected_hex — ~40 lines, zero-dep); for each vector compute `sha256_hex`, also
+      assert it equals `expected_hex`; write `{ id: hex }` to
+      `tests/cross-verification/sha256/rust-output.json`.
 
 - [ ] **Step 5: verify + commit** — `cargo test` in the crate dir green (unit + cross_verify);
-  `rust-output.json` written + matches ts-output.json (run compare.ts → TS≡Rust). CR=0; canary
-  67. Commit.
+      `rust-output.json` written + matches ts-output.json (run compare.ts → TS≡Rust). CR=0; canary 67. Commit.
 
 ---
 
@@ -120,18 +119,18 @@ export function sha256Hex(bytes: Uint8Array): string {
 **Files (new):** `src/Core.FSharp.Sha256/{Sha256.fs, CrossVerify.fs, Zeta.Core.FSharp.Sha256.fsproj}`.
 
 - [ ] **Step 1: `.fsproj`** — mirror `src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj`
-  (TargetFramework, TreatWarningsAsErrors etc.); compile `Sha256.fs` then `CrossVerify.fs`.
+      (TargetFramework, TreatWarningsAsErrors etc.); compile `Sha256.fs` then `CrossVerify.fs`.
 - [ ] **Step 2: `Sha256.fs`** — module `Zeta.Core.FSharp.Sha256`:
-  `let sha256 (bytes: byte[]) : byte[] = System.Security.Cryptography.SHA256.HashData bytes` +
-  `let sha256Hex (bytes: byte[]) : string = (sha256 bytes |> Array.map (sprintf "%02x") |> String.concat "")`.
+      `let sha256 (bytes: byte[]) : byte[] = System.Security.Cryptography.SHA256.HashData bytes` +
+      `let sha256Hex (bytes: byte[]) : string = (sha256 bytes |> Array.map (sprintf "%02x") |> String.concat "")`.
 - [ ] **Step 3: unit test** — add to `tests/Tests.FSharp/` (or a Sha256 test file) asserting
-  the three standard vectors. (Match where ZetaId's F# tests live.)
+      the three standard vectors. (Match where ZetaId's F# tests live.)
 - [ ] **Step 4: `CrossVerify.fs`** — an entry (e.g. `[<EntryPoint>]` or a test) that does the
-  repo-root walk, hand-reads `vectors.yaml` (flat reader), computes `sha256Hex`, asserts ==
-  `expected_hex`, writes `fsharp-output.json`. Match how ZetaId's F# cross-verify emits its output.
+      repo-root walk, hand-reads `vectors.yaml` (flat reader), computes `sha256Hex`, asserts ==
+      `expected_hex`, writes `fsharp-output.json`. Match how ZetaId's F# cross-verify emits its output.
 - [ ] **Step 5: register + verify + commit** — `dotnet sln Zeta.sln add src/Core.FSharp.Sha256/Zeta.Core.FSharp.Sha256.fsproj`;
-  `dotnet build Zeta.sln -c Release` 0-warn; run the cross-verify to emit `fsharp-output.json`;
-  `dotnet test` green; compare.ts → TS≡F#(≡Rust). CR=0; canary 67. Commit.
+      `dotnet build Zeta.sln -c Release` 0-warn; run the cross-verify to emit `fsharp-output.json`;
+      `dotnet test` green; compare.ts → TS≡F#(≡Rust). CR=0; canary 67. Commit.
 
 ---
 
@@ -140,17 +139,17 @@ export function sha256Hex(bytes: Uint8Array): string {
 **Files (new):** `src/Core.CSharp.Sha256/{Sha256.cs, CrossVerify.cs, Zeta.Core.CSharp.Sha256.csproj}`.
 
 - [ ] **Step 1: `.csproj`** — mirror `src/Core.CSharp.ZetaId/Zeta.Core.CSharp.ZetaId.csproj`;
-  no FSharp.Core reference.
+      no FSharp.Core reference.
 - [ ] **Step 2: `Sha256.cs`** — `public static class Sha256`:
-  `public static byte[] Hash(ReadOnlySpan<byte> bytes) => System.Security.Cryptography.SHA256.HashData(bytes);`
-  + `public static string HashHex(ReadOnlySpan<byte> bytes) => Convert.ToHexStringLower(Hash(bytes));`
-  (use `Convert.ToHexStringLower`, .NET 9 — verify availability; else `Convert.ToHexString(...).ToLowerInvariant()`).
+      `public static byte[] Hash(ReadOnlySpan<byte> bytes) => System.Security.Cryptography.SHA256.HashData(bytes);`
+  - `public static string HashHex(ReadOnlySpan<byte> bytes) => Convert.ToHexStringLower(Hash(bytes));`
+    (use `Convert.ToHexStringLower`, .NET 9 — verify availability; else `Convert.ToHexString(...).ToLowerInvariant()`).
 - [ ] **Step 3: unit test** — `tests/Core.CSharp.Tests/` (or where ZetaId C# tests live) — three standard vectors.
 - [ ] **Step 4: `CrossVerify.cs`** — repo-root walk, hand-read `vectors.yaml`, compute, assert ==
-  `expected_hex`, write `cs-output.json`. Match ZetaId C# cross-verify emission.
+      `expected_hex`, write `cs-output.json`. Match ZetaId C# cross-verify emission.
 - [ ] **Step 5: register + verify + commit** — `dotnet sln Zeta.sln add src/Core.CSharp.Sha256/Zeta.Core.CSharp.Sha256.csproj`;
-  `dotnet build Zeta.sln -c Release` 0-warn; emit `cs-output.json`; `dotnet test` green;
-  compare.ts → all four equal. CR=0; canary 67. Commit.
+      `dotnet build Zeta.sln -c Release` 0-warn; emit `cs-output.json`; `dotnet test` green;
+      compare.ts → all four equal. CR=0; canary 67. Commit.
 
 ---
 
@@ -159,13 +158,13 @@ export function sha256Hex(bytes: Uint8Array): string {
 **Files:** Modify `docs/PRIMITIVE-REGISTRY.md`.
 
 - [ ] **Step 1: run the full 4-way compare** — `cd tests/cross-verification/sha256 && bun compare.ts`
-  → exit 0, all four oracles present + byte-identical + matching `expected_hex`.
+      → exit 0, all four oracles present + byte-identical + matching `expected_hex`.
 - [ ] **Step 2: registry flip** — in `docs/PRIMITIVE-REGISTRY.md`: change the Codec/BCL-like
-  `⬜ SHA-256` to `✅ SHA-256 (4/4)`; add a Tier-1 table row (TS/F#/C# ✅, Rust ✅; Consensus
-  "Tier 1 — golden-vector byte-consensus + N-way compare"; Locations the four `src/Core.*.Sha256`
-  + `tests/cross-verification/sha256/`); note it's the foundation of the Ace trust core arc
-  (slice 8). Watch markdownlint (no nested backticks; blank lines around lists/fences;
-  no wrapped line starting with a `+` or `-` list marker).
+      `⬜ SHA-256` to `✅ SHA-256 (4/4)`; add a Tier-1 table row (TS/F#/C# ✅, Rust ✅; Consensus
+      "Tier 1 — golden-vector byte-consensus + N-way compare"; Locations the four `src/Core.*.Sha256`
+  - `tests/cross-verification/sha256/`); note it's the foundation of the Ace trust core arc
+    (slice 8). Watch markdownlint (no nested backticks; blank lines around lists/fences;
+    no wrapped line starting with a `+` or `-` list marker).
 - [ ] **Step 3: verify + commit** — markdownlint clean; CR=0; canary 67. Commit.
 
 ---

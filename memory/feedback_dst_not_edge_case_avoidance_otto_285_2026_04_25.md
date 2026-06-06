@@ -13,11 +13,11 @@ case stops happening.
 
 Aaron's verbatim framing 2026-04-25:
 
-> *"we never want to use random seed pins to cheat by not
-> fully testing if you understand what I mean."*
+> _"we never want to use random seed pins to cheat by not
+> fully testing if you understand what I mean."_
 
-> *"I guess the general rule is dont use DST and
-> determinism to avoid edge cases handling."*
+> _"I guess the general rule is dont use DST and
+> determinism to avoid edge cases handling."_
 
 This is the meta-principle behind Otto-281
 (`feedback_dst_exempt_is_deferred_bug_not_containment_otto_281_2026_04_25.md`)
@@ -29,12 +29,12 @@ fix isn't itself a cheat**.
 
 Aaron's deeper articulation 2026-04-25:
 
-> *"like the tests are all deterministic but the real world
+> _"like the tests are all deterministic but the real world
 > is [non-deterministic], our tests are trying to test all
 > the edge cases of the real world but in a deterministic
 > way not reduce scope by eliminating edge cases of the
 > real world in our tests with determinism. that will lead
-> to more robust tests."*
+> to more robust tests."_
 
 **The point of DST is not to escape chaos — it is to
 reproduce chaos reproducibly.**
@@ -46,8 +46,8 @@ Production code will encounter all of it.
 
 A test's job is to deterministically exercise every flavor
 of that chaos that the algorithm needs to handle. The
-*reproduction* is deterministic so the bug, when found, can
-be replayed. The *coverage* is the chaos — every edge case
+_reproduction_ is deterministic so the bug, when found, can
+be replayed. The _coverage_ is the chaos — every edge case
 the real world will throw at the algorithm.
 
 Determinism is the **way** we test chaos reproducibly. It
@@ -137,18 +137,18 @@ problems" → cheat.
 
 ## Examples — legitimate vs cheat
 
-| Situation | LEGITIMATE | CHEAT |
-|---|---|---|
+| Situation                                  | LEGITIMATE                                                                                                             | CHEAT                                                                                      |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | HLL fuzz test flakes on `HashCode.Combine` | Route through `XxHash3` (HLL needs uniform hashes per its contract; we're invoking the contract, not narrowing inputs) | Pin a hash-function seed that happens to give error <4% (narrows input space artificially) |
-| Concurrency test races | Add proper synchronization to the algorithm so it's correct under concurrent inputs | Force the test to single-threaded sequential execution |
-| Float comparison test flakes | Use the algorithm's documented epsilon tolerance | Pin float inputs to values that don't trigger rounding edge cases |
-| `Random` unseeded → unpredictable test | Seed with a fixed value AND extend test to also sweep multiple seeds (DST + breadth) | Pin one seed and call it done |
-| DateTime.UtcNow → leap-second flake | Handle leap seconds in the algorithm | Freeze clock to noon |
+| Concurrency test races                     | Add proper synchronization to the algorithm so it's correct under concurrent inputs                                    | Force the test to single-threaded sequential execution                                     |
+| Float comparison test flakes               | Use the algorithm's documented epsilon tolerance                                                                       | Pin float inputs to values that don't trigger rounding edge cases                          |
+| `Random` unseeded → unpredictable test     | Seed with a fixed value AND extend test to also sweep multiple seeds (DST + breadth)                                   | Pin one seed and call it done                                                              |
+| DateTime.UtcNow → leap-second flake        | Handle leap seconds in the algorithm                                                                                   | Freeze clock to noon                                                                       |
 
-The legitimate fixes either *invoke the algorithm's
-contract* (the algorithm doesn't have to handle inputs it
-didn't promise to) or *fix the algorithm to handle the
-edge case it was caught failing on*. The cheats narrow
+The legitimate fixes either _invoke the algorithm's
+contract_ (the algorithm doesn't have to handle inputs it
+didn't promise to) or _fix the algorithm to handle the
+edge case it was caught failing on_. The cheats narrow
 test coverage to make symptoms disappear.
 
 ## How my Otto-281 fix this session relates
@@ -190,21 +190,21 @@ violation. The legitimate fix did.
 
 ## Composes with
 
-- **Otto-281** *DST-exempt is deferred bug* — Otto-285 is
+- **Otto-281** _DST-exempt is deferred bug_ — Otto-285 is
   the meta-rule above Otto-281. Otto-281 says "fix the
   determinism"; Otto-285 says "make sure your determinism
   fix isn't a cheat that narrows coverage."
-- **Otto-272** *DST-everywhere* — DST is the substrate
+- **Otto-272** _DST-everywhere_ — DST is the substrate
   that lets us reproduce flakes. It's a tool for
-  *characterizing* edge cases, not for *avoiding* them.
-- **Otto-264** *rule of balance* — every "make it
+  _characterizing_ edge cases, not for _avoiding_ them.
+- **Otto-264** _rule of balance_ — every "make it
   deterministic" fix should pair with verification that
   the test's coverage didn't shrink.
-- **Otto-282** *write the why* — when applying a
+- **Otto-282** _write the why_ — when applying a
   determinism fix, comment WHY: "routes through XxHash3
   because HLL's contract requires uniform hashes" makes
   the discriminator visible to future readers.
-- **Otto-248** *never ignore flakes* — flakes ARE the
+- **Otto-248** _never ignore flakes_ — flakes ARE the
   signal that something violates the algorithm's contract
   (or the algorithm has a real edge case). Investigation
   finds which; Otto-285 is the rule for the fix-shape.

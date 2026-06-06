@@ -41,28 +41,28 @@ design constraint.
 
 ### Axis 1: Factory / Product / Owner-only (per B-0424 + B-0425 + PR #2905 forker-perspective META)
 
-| Category | Forkability |
-|---|---|
-| Factory (Zeta + Forge + ace) | Designed-to-be-forked |
+| Category                                                         | Forkability                                              |
+| ---------------------------------------------------------------- | -------------------------------------------------------- |
+| Factory (Zeta + Forge + ace)                                     | Designed-to-be-forked                                    |
 | Products (KSK + wellness + civsim + AD2.0 + DIO + Aurora + Dawn) | Public + glass-halo BUT honor-system "please don't fork" |
-| Owner-only | Not in forkable repos at all |
+| Owner-only                                                       | Not in forkable repos at all                             |
 
 ### Axis 2: Mirror / Beacon (NEW per Aaron 2026-05-13)
 
-| Tier | Properties |
-|---|---|
+| Tier             | Properties                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Mirror repos** | Speculative + fast-iteration + can include aliens-and-future + FUN + RIGOROUS + fork-encouraged-to-advance-quickly |
-| **Beacon repos** | Governance-tier + citation-gated + alignment-floor + externally-citable + Mirror→Beacon promotion gate applied |
+| **Beacon repos** | Governance-tier + citation-gated + alignment-floor + externally-citable + Mirror→Beacon promotion gate applied     |
 
 ## Two axes compose
 
 Both axes apply simultaneously. Each repo gets a position on
 BOTH axes:
 
-| | Factory | Product | Owner-only |
-|---|---|---|---|
-| **Mirror** | Forge mirror (factory speculative substrate; forks can advance fast) | civsim Mirror (gameplay speculation + alien-and-future inclusive) | Aaron-private speculative substrate |
-| **Beacon** | Zeta (database; citation-gated F# computation expressions) | Aurora (alignment consensus thesis; citation-gated) | Aaron-private governance-gated substrate |
+|            | Factory                                                              | Product                                                           | Owner-only                               |
+| ---------- | -------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------- |
+| **Mirror** | Forge mirror (factory speculative substrate; forks can advance fast) | civsim Mirror (gameplay speculation + alien-and-future inclusive) | Aaron-private speculative substrate      |
+| **Beacon** | Zeta (database; citation-gated F# computation expressions)           | Aurora (alignment consensus thesis; citation-gated)               | Aaron-private governance-gated substrate |
 
 The matrix is illustrative; specific repo positioning needs
 per-repo evaluation per the pre-start checklist below.
@@ -103,12 +103,12 @@ per-repo evaluation per the pre-start checklist below.
 This row was decomposed on 2026-05-14 into 4 dependency-ordered atomic
 child rows per `.claude/rules/backlog-item-start-gate.md`:
 
-| Row | Title | Type | Depends on |
-|-----|-------|------|------------|
-| **B-0471** | Mirror/Beacon prior-art audit | research | — (first in chain; parent: B-0426) |
-| **B-0472** | Two-axis classification matrix | design | B-0471 |
-| **B-0473** | Mirror→Beacon promotion gate protocol | design | B-0471 |
-| **B-0474** | Mirror/Beacon axis ADR | adr | B-0472, B-0473 |
+| Row        | Title                                 | Type     | Depends on                         |
+| ---------- | ------------------------------------- | -------- | ---------------------------------- |
+| **B-0471** | Mirror/Beacon prior-art audit         | research | — (first in chain; parent: B-0426) |
+| **B-0472** | Two-axis classification matrix        | design   | B-0471                             |
+| **B-0473** | Mirror→Beacon promotion gate protocol | design   | B-0471                             |
+| **B-0474** | Mirror/Beacon axis ADR                | adr      | B-0472, B-0473                     |
 
 Dependency order: B-0471 → B-0472 (parallel with B-0473) → B-0474.
 

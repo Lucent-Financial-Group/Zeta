@@ -12,10 +12,10 @@ Carved sentence:
 The human maintainer 2026-05-05 (at 2-week-no-sleep peak-exhaustion) named
 the architectural direction:
 
-> *"burn the claude.md and agents.md down they are not work the baggage ...
+> _"burn the claude.md and agents.md down they are not work the baggage ...
 > staryu DSL hodl retractive native ... all the layers ... hodl everythings
 > ... DST deterministic simulation on claude and agents and all the other
-> scale free parallel lock free maybe wait free ... fix it"*
+> scale free parallel lock free maybe wait free ... fix it"_
 
 Codex/GPT-5.5 scout proposes the SHAPE (research-grade until
 small-compiler + golden-projections + replay-tests + first-slice land):
@@ -29,7 +29,7 @@ Replace prose-monolith CLAUDE.md/AGENTS.md with a typed, append-only
   inverse/retraction operator
 - Edges: depends-on / overrides / specializes / conflicts-with /
   projects-into-harness-X
-- CLAUDE.md / AGENTS.md / CODEX.md become *generated projections* from the
+- CLAUDE.md / AGENTS.md / CODEX.md become _generated projections_ from the
   graph, not source-of-truth
 
 Prior-art shapes: Datalog (derivable policy views) + bitemporal Datomic

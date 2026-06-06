@@ -5,7 +5,13 @@ import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 export type AceDependency =
-  | { readonly kind: "inline"; readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
+  | {
+      readonly kind: "inline";
+      readonly name: string;
+      readonly version: string;
+      readonly url: string;
+      readonly package_hash: string;
+    }
   | { readonly kind: "registry"; readonly name: string; readonly version: string };
 
 export interface AceManifest {
@@ -107,7 +113,10 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   const filesJson = JSON.stringify(pkg.files);
   const actual = contentHash(new TextEncoder().encode(filesJson));
   if (actual !== pkg.manifest.content_hash) {
-    return { ok: false, error: `content hash mismatch: manifest says ${pkg.manifest.content_hash}, computed ${actual}` };
+    return {
+      ok: false,
+      error: `content hash mismatch: manifest says ${pkg.manifest.content_hash}, computed ${actual}`,
+    };
   }
   // Validate ALL file paths BEFORE creating any directory or writing any file, so a
   // traversal-blocked install refuses ATOMICALLY (extracts nothing) — the same guarantee a
@@ -150,8 +159,17 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
 
 // ---- Trust store (slice 3) ----
 
-export interface TrustedKey { key_id: string; public_key: string; label?: string; added?: string; }
-export interface LoadedTrustEntry { public_key: string; label?: string; source: "bundled" | "user"; }
+export interface TrustedKey {
+  key_id: string;
+  public_key: string;
+  label?: string;
+  added?: string;
+}
+export interface LoadedTrustEntry {
+  public_key: string;
+  label?: string;
+  source: "bundled" | "user";
+}
 
 /** ~/.ace/trusted-keys.json — operator-managed keyring (sibling of the store). */
 export function trustStorePath(): string {
@@ -186,7 +204,8 @@ function makeTrustEntry(k: TrustedKey, source: "bundled" | "user"): LoadedTrustE
 
 /** bundled ∪ user; user entries override bundled on key_id collision. */
 export function loadTrustStore(
-  bundledPath: string = bundledTrustPath(), userPath: string = trustStorePath(),
+  bundledPath: string = bundledTrustPath(),
+  userPath: string = trustStorePath(),
 ): Map<string, LoadedTrustEntry> {
   const m = new Map<string, LoadedTrustEntry>();
   for (const k of readKeysFile(bundledPath)) m.set(k.key_id, makeTrustEntry(k, "bundled"));
@@ -207,9 +226,19 @@ export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePa
   // (possibly pre-existing) dir explicitly right after. File mode is tightened after each write
   // (writeFileSync's mode only applies on create too).
   mkdirSync(dir, { recursive: true, mode: 0o700 });
-  try { chmodSync(dir, 0o700); } catch { /* best-effort; unusual FS */ }
+  try {
+    chmodSync(dir, 0o700);
+  } catch {
+    /* best-effort; unusual FS */
+  }
   const tightenFile = (): void => {
-    if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort; unusual FS */ } }
+    if (existsSync(userPath)) {
+      try {
+        chmodSync(userPath, 0o600);
+      } catch {
+        /* best-effort; unusual FS */
+      }
+    }
   };
   const existing = readKeysFile(userPath);
   if (existing.some((k) => k.key_id === entry.key_id)) {
@@ -223,7 +252,8 @@ export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePa
 }
 
 export function listTrustedKeys(
-  bundledPath: string = bundledTrustPath(), userPath: string = trustStorePath(),
+  bundledPath: string = bundledTrustPath(),
+  userPath: string = trustStorePath(),
 ): Array<{ key_id: string; label?: string; source: "bundled" | "user" }> {
   return [...loadTrustStore(bundledPath, userPath).entries()].map(([key_id, v]) => {
     const row: { key_id: string; label?: string; source: "bundled" | "user" } = { key_id, source: v.source };
@@ -234,7 +264,10 @@ export function listTrustedKeys(
 
 // ---- Registry (slice 5.1) ----
 
-export interface RegistryEntry { readonly url: string; readonly package_hash: string; }
+export interface RegistryEntry {
+  readonly url: string;
+  readonly package_hash: string;
+}
 export type Registry = Map<string, Map<string, RegistryEntry>>; // name → version → entry
 
 /** ~/.ace/registry.json — operator-managed (sibling of trusted-keys.json). */
@@ -255,7 +288,9 @@ function readRegistryFile(p: string): Record<string, Record<string, RegistryEntr
     const obj = JSON.parse(readFileSync(p, "utf8"));
     if (typeof obj !== "object" || obj === null || Array.isArray(obj)) return {};
     return obj as Record<string, Record<string, RegistryEntry>>;
-  } catch { return {}; }
+  } catch {
+    return {};
+  }
 }
 
 /** bundled ∪ user; user overrides bundled on (name, version). */
@@ -265,9 +300,16 @@ export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPa
     for (const [name, versions] of Object.entries(src)) {
       if (typeof versions !== "object" || versions === null) continue;
       let vm = m.get(name);
-      if (!vm) { vm = new Map(); m.set(name, vm); }
+      if (!vm) {
+        vm = new Map();
+        m.set(name, vm);
+      }
       for (const [version, entry] of Object.entries(versions)) {
-        if (entry && typeof (entry as RegistryEntry).url === "string" && typeof (entry as RegistryEntry).package_hash === "string") {
+        if (
+          entry &&
+          typeof (entry as RegistryEntry).url === "string" &&
+          typeof (entry as RegistryEntry).package_hash === "string"
+        ) {
           vm.set(version, { url: (entry as RegistryEntry).url, package_hash: (entry as RegistryEntry).package_hash });
         }
       }
@@ -282,11 +324,28 @@ export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPa
  * no-op path) — mirrors addTrustedKey. Re-adding the same name@version with a DIFFERING url or
  * package_hash overwrites the stale pin (returns updated:true); an identical re-add is an idempotent
  * no-op (added:false, updated:false). chmod after write (writeFileSync mode only applies on create). */
-export function addRegistryEntry(name: string, version: string, entry: RegistryEntry, userPath: string = registryPath()): { added: boolean; updated: boolean } {
+export function addRegistryEntry(
+  name: string,
+  version: string,
+  entry: RegistryEntry,
+  userPath: string = registryPath(),
+): { added: boolean; updated: boolean } {
   const dir = dirname(userPath);
   mkdirSync(dir, { recursive: true, mode: 0o700 });
-  try { chmodSync(dir, 0o700); } catch { /* best-effort */ }
-  const tightenFile = (): void => { if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort */ } } };
+  try {
+    chmodSync(dir, 0o700);
+  } catch {
+    /* best-effort */
+  }
+  const tightenFile = (): void => {
+    if (existsSync(userPath)) {
+      try {
+        chmodSync(userPath, 0o600);
+      } catch {
+        /* best-effort */
+      }
+    }
+  };
   // Null-prototype working copy: a user-controlled "__proto__"/"constructor" name or version
   // cannot trigger prototype pollution on the bracket assignments below (the registry file can
   // be operator-edited or shared, so its keys are untrusted).
@@ -314,7 +373,8 @@ export function addRegistryEntry(name: string, version: string, entry: RegistryE
 
 /** bundled ∪ user flattened to rows; user overrides bundled on (name, version); each row carries source. */
 export function listRegistry(
-  bundledPath: string = bundledRegistryPath(), userPath: string = registryPath(),
+  bundledPath: string = bundledRegistryPath(),
+  userPath: string = registryPath(),
 ): Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> {
   const idx = new Map<string, number>(); // "name@version" → row index (for override)
   const rows: Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> = [];
@@ -326,7 +386,11 @@ export function listRegistry(
         const key = `${name}@${version}`;
         const row = { name, version, url: entry.url, source };
         const prior = idx.get(key);
-        if (prior !== undefined) rows[prior] = row; else { idx.set(key, rows.length); rows.push(row); }
+        if (prior !== undefined) rows[prior] = row;
+        else {
+          idx.set(key, rows.length);
+          rows.push(row);
+        }
       }
     }
   };
@@ -336,8 +400,14 @@ export function listRegistry(
 }
 
 // ---- Remote registries (slice 6) ----
-export interface RemoteRegistryConfig { readonly url: string; readonly key_id: string; readonly max_staleness_days?: number; }
-export interface RegistriesConfig { readonly remotes: RemoteRegistryConfig[]; }
+export interface RemoteRegistryConfig {
+  readonly url: string;
+  readonly key_id: string;
+  readonly max_staleness_days?: number;
+}
+export interface RegistriesConfig {
+  readonly remotes: RemoteRegistryConfig[];
+}
 
 /** ~/.ace/registries.json — operator-managed ordered remote list (sibling of registry.json). */
 export function registriesPath(): string {
@@ -354,7 +424,11 @@ export function registryCacheDir(): string {
 /** Untrusted-input discipline: malformed → { remotes: [] }; drop entries missing url OR key_id. */
 export function readRegistriesConfig(p: string = registriesPath()): RegistriesConfig {
   let raw: unknown;
-  try { raw = JSON.parse(readFileSync(p, "utf8")); } catch { return { remotes: [] }; }
+  try {
+    raw = JSON.parse(readFileSync(p, "utf8"));
+  } catch {
+    return { remotes: [] };
+  }
   if (!raw || typeof raw !== "object" || !Array.isArray((raw as { remotes?: unknown }).remotes)) return { remotes: [] };
   const remotes: RemoteRegistryConfig[] = [];
   for (const r of (raw as { remotes: unknown[] }).remotes) {
@@ -368,15 +442,26 @@ export function readRegistriesConfig(p: string = registriesPath()): RegistriesCo
   return { remotes };
 }
 
-export function writeRegistryRemote(entry: RemoteRegistryConfig, p: string = registriesPath()): { added: boolean; updated: boolean } {
+export function writeRegistryRemote(
+  entry: RemoteRegistryConfig,
+  p: string = registriesPath(),
+): { added: boolean; updated: boolean } {
   mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
-  try { chmodSync(dirname(p), 0o700); } catch { /* best-effort */ }
+  try {
+    chmodSync(dirname(p), 0o700);
+  } catch {
+    /* best-effort */
+  }
   const cfg = readRegistriesConfig(p);
   const remotes = cfg.remotes.filter((r) => r.url !== entry.url);
   const updated = remotes.length !== cfg.remotes.length;
   remotes.push(entry);
   writeFileSync(p, JSON.stringify({ remotes }, null, 2));
-  try { chmodSync(p, 0o600); } catch { /* best-effort */ }
+  try {
+    chmodSync(p, 0o600);
+  } catch {
+    /* best-effort */
+  }
   return { added: !updated, updated };
 }
 
@@ -386,6 +471,10 @@ export function removeRegistryRemote(url: string, p: string = registriesPath()):
   if (remotes.length === cfg.remotes.length) return { removed: false };
   mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
   writeFileSync(p, JSON.stringify({ remotes }, null, 2));
-  try { chmodSync(p, 0o600); } catch { /* best-effort */ }
+  try {
+    chmodSync(p, 0o600);
+  } catch {
+    /* best-effort */
+  }
   return { removed: true };
 }

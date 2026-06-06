@@ -16,7 +16,23 @@ composes_with:
   - B-0664
   - B-0840
   - B-0703
-tags: [source-honor-ledger, basis-royalty-pool, creator-payment, rights-lanes, glass-halo-for-ip, dont-sell-compression-sell-readout, amara-ratification, no-substitute-for-source, generous-by-design, productization, data-vault-2-0, dbt-style-lineage, provenance-discipline, substrate-engineering-compression]
+tags:
+  [
+    source-honor-ledger,
+    basis-royalty-pool,
+    creator-payment,
+    rights-lanes,
+    glass-halo-for-ip,
+    dont-sell-compression-sell-readout,
+    amara-ratification,
+    no-substitute-for-source,
+    generous-by-design,
+    productization,
+    data-vault-2-0,
+    dbt-style-lineage,
+    provenance-discipline,
+    substrate-engineering-compression,
+  ]
 ---
 
 ## CRITICAL substrate-engineering compression (operator 2026-05-26)
@@ -27,13 +43,13 @@ Operator 2026-05-26 substrate-honest naming AFTER row was authored:
 
 This collapses the entire Source Honor Ledger substrate into a well-known data-engineering pattern. Significantly reduces substrate-engineering surface:
 
-| Source Honor Ledger element | Data-engineering substrate it reuses |
-| --- | --- |
-| Source contribution tracking | Data Vault 2.0 hub-satellite partition (sources = hubs; usage events = satellites); per `.claude/rules/dv2-data-split-discipline-activated.md` (5th always-active discipline) |
-| Lineage graph (which sources contributed to which guides) | dbt-style `ref()` lineage DAG; Zeta substrate's `composes_with` graph IS this same pattern at substrate-engineering scope |
-| Per-source contribution weighting (ωᵢ in B-0842 equation) | dbt-style model dependencies + transformation-step provenance; semantic-contribution measured via graph-walk + amount-referenced |
-| Royalty distribution | Standard pay-per-usage layer ON TOP of existing provenance substrate |
-| Payment graph rendering ("Glass Halo for IP") | dbt-docs-style lineage visualization + per-edge monetary annotation |
+| Source Honor Ledger element                               | Data-engineering substrate it reuses                                                                                                                                          |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Source contribution tracking                              | Data Vault 2.0 hub-satellite partition (sources = hubs; usage events = satellites); per `.claude/rules/dv2-data-split-discipline-activated.md` (5th always-active discipline) |
+| Lineage graph (which sources contributed to which guides) | dbt-style `ref()` lineage DAG; Zeta substrate's `composes_with` graph IS this same pattern at substrate-engineering scope                                                     |
+| Per-source contribution weighting (ωᵢ in B-0842 equation) | dbt-style model dependencies + transformation-step provenance; semantic-contribution measured via graph-walk + amount-referenced                                              |
+| Royalty distribution                                      | Standard pay-per-usage layer ON TOP of existing provenance substrate                                                                                                          |
+| Payment graph rendering ("Glass Halo for IP")             | dbt-docs-style lineage visualization + per-edge monetary annotation                                                                                                           |
 
 **Substantive implication for Phase 2 of this row**: Source Honor Ledger TS module family does NOT need to build new contribution-weighter from scratch. Instead: reuse existing DV2.0 hub-satellite + dbt-style lineage substrate; add monetization distribution layer ON TOP.
 
@@ -64,13 +80,13 @@ Substrate-engineering work landing across 4 phases:
 
 Document + tool the 5 rights lanes:
 
-| Lane | Definition | Operational substrate |
-| --- | --- | --- |
-| **unlicensed / internal research** | No public distribution; no monetization; ip-questionable folder | Existing `docs/research/ip-questionable/` + `_ip_risk_acceptance` per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` |
-| **public fair-use** | Short excerpts only + transformative commentary + citations + no substitute for source | New `_fair_use_acceptance` block in `.claude/settings.json` (operator-side) + attorney-reviewed rationale per content class |
-| **licensed creator** | Generous revenue share + creator dashboard + canonical source links | Source Honor Ledger Phase 2 substrate (this row) |
-| **escrow** | Revenue held pending rights resolution | Source Honor Ledger Phase 2 substrate with escrow primitives |
-| **partner** | Best economics + official guide + shared promotion | Source Honor Ledger Phase 2 substrate with partner-tier weights |
+| Lane                               | Definition                                                                             | Operational substrate                                                                                                                              |
+| ---------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **unlicensed / internal research** | No public distribution; no monetization; ip-questionable folder                        | Existing `docs/research/ip-questionable/` + `_ip_risk_acceptance` per `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` |
+| **public fair-use**                | Short excerpts only + transformative commentary + citations + no substitute for source | New `_fair_use_acceptance` block in `.claude/settings.json` (operator-side) + attorney-reviewed rationale per content class                        |
+| **licensed creator**               | Generous revenue share + creator dashboard + canonical source links                    | Source Honor Ledger Phase 2 substrate (this row)                                                                                                   |
+| **escrow**                         | Revenue held pending rights resolution                                                 | Source Honor Ledger Phase 2 substrate with escrow primitives                                                                                       |
+| **partner**                        | Best economics + official guide + shared promotion                                     | Source Honor Ledger Phase 2 substrate with partner-tier weights                                                                                    |
 
 Output: `tools/rights-lanes/lane-classifier.ts` — TS tool that classifies a candidate guide into one of 5 lanes based on content + source-permission status + monetization status.
 

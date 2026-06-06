@@ -13,7 +13,17 @@ composes_with:
   - B-0794
   - B-0813
   - B-0819
-tags: [argocd, flux, multi-engine, flag-toggle, helm-chart-convergence, multi-cluster-experimentation, dependsOn, weave-gitops]
+tags:
+  [
+    argocd,
+    flux,
+    multi-engine,
+    flag-toggle,
+    helm-chart-convergence,
+    multi-cluster-experimentation,
+    dependsOn,
+    weave-gitops,
+  ]
 ---
 
 ## Problem
@@ -22,7 +32,7 @@ tags: [argocd, flux, multi-engine, flag-toggle, helm-chart-convergence, multi-cl
 
 The maintainer's 2026-05-26 follow-up directive:
 
-> *"backlog flux over argocd so we can have a flag and support both eventually"*
+> _"backlog flux over argocd so we can have a flag and support both eventually"_
 
 The substrate target: file the work to add Flux as a SECOND supported sync-engine — flag-toggle between ArgoCD (default) and Flux at cluster-substrate authoring time, eventually supporting BOTH (different clusters; different teams; different engine choices per Helm chart) for direct A/B engine-comparison on production-shape workloads.
 
@@ -82,13 +92,13 @@ Test both; pick the one with the cleanest declarative-from-git story (Flux's who
 
 Aaron 2026-05-26 explicit endorsement of Flux's `dependsOn` ("clean as fuck") + the sharper architectural framing:
 
-> *"but depends on is the only reason i'm giving flux a chance cause they sync waves are derivable"*
+> _"but depends on is the only reason i'm giving flux a chance cause they sync waves are derivable"_
 
 **Derivability asymmetry — load-bearing architectural finding (Aaron 2026-05-26)**:
 
-| Direction | Possible? | Why |
-|---|---|---|
-| `dependsOn` graph → sync-wave numbers | YES | Topological sort + assign wave per topo-level → numeric wave annotations |
+| Direction                             | Possible?      | Why                                                                               |
+| ------------------------------------- | -------------- | --------------------------------------------------------------------------------- |
+| `dependsOn` graph → sync-wave numbers | YES            | Topological sort + assign wave per topo-level → numeric wave annotations          |
 | sync-wave numbers → `dependsOn` graph | NO (trivially) | Numbers don't carry the WHY of ordering; can't recover named-dependency semantics |
 
 This means the SOURCE-OF-TRUTH SHOULD BE `dependsOn`-shaped; sync-waves are a DERIVED PROJECTION. The substrate-engineering pattern:
@@ -97,7 +107,7 @@ This means the SOURCE-OF-TRUTH SHOULD BE `dependsOn`-shaped; sync-waves are a DE
 2. **For Flux**: emit `dependsOn: [name1, name2]` directly (1:1 mapping)
 3. **For ArgoCD**: topo-sort the graph + emit `argocd.argoproj.io/sync-wave: "N"` annotations (derived)
 
-Aaron's "shit" insight (2026-05-26): *"oh shit maybe we should calculate this for our argo too eventually somehow with some helm chart tricks"* — the derivation can live IN the Helm chart itself, so ArgoCD users get `dependsOn`-shaped UX without thinking about wave numbers. Two candidate derivation surfaces:
+Aaron's "shit" insight (2026-05-26): _"oh shit maybe we should calculate this for our argo too eventually somehow with some helm chart tricks"_ — the derivation can live IN the Helm chart itself, so ArgoCD users get `dependsOn`-shaped UX without thinking about wave numbers. Two candidate derivation surfaces:
 
 **Approach A — Helm template-level derivation (Helm tricks)**:
 
@@ -125,12 +135,12 @@ Side benefit: this makes the Helm-charts-first directory layout (Sub-target 2) e
 
 ArgoCD ships with a polished OSS UI (graph view + sync status + manifest diff + sync-wave visualization + rollback). Flux's OSS UI options are thinner:
 
-| Flux UI option | Status |
-|---|---|
-| **Weave GitOps OSS** | Closest ArgoCD-UI analog; less polished; Weaveworks shut down 2024; OSS continues community-maintained |
-| **Capacitor** | Community-built lightweight Flux UI; runs as Flux extension |
-| **Headlamp + Flux plugin** | Generic K8s UI with Flux integration |
-| **k9s + Flux plugin** | TUI not GUI |
+| Flux UI option             | Status                                                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Weave GitOps OSS**       | Closest ArgoCD-UI analog; less polished; Weaveworks shut down 2024; OSS continues community-maintained |
+| **Capacitor**              | Community-built lightweight Flux UI; runs as Flux extension                                            |
+| **Headlamp + Flux plugin** | Generic K8s UI with Flux integration                                                                   |
+| **k9s + Flux plugin**      | TUI not GUI                                                                                            |
 
 The "conversation is the new UI" framing per Aaron 2026-05-26 ties to [B-0819](../P1/B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md): once the AI-runbook substrate ships, the GUI matters less — operators describe ontology shapes; agents materialize state; status surfaces via conversational query rather than dashboard polling. UI parity between engines is a near-term concern; long-term the AI-runbook layer is the actual operator surface.
 
@@ -182,7 +192,7 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.cl
 
 ## Origin
 
-Aaron 2026-05-26 in conversation about ServiceTitan-uses-Flux + Helm-as-convergence-point: *"backlog flux over argocd so we can have a flag and support both eventually"*. Composes with B-0816's Helm-as-convergence-point + multi-engine-experimentation framing landed in #5225.
+Aaron 2026-05-26 in conversation about ServiceTitan-uses-Flux + Helm-as-convergence-point: _"backlog flux over argocd so we can have a flag and support both eventually"_. Composes with B-0816's Helm-as-convergence-point + multi-engine-experimentation framing landed in #5225.
 
 Filed as P2 because:
 

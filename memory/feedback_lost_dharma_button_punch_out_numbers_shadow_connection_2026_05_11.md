@@ -4,7 +4,7 @@ description: B-0402 shadow observer is the Dharma Initiative button from Lost au
 type: feedback
 ---
 
-2026-05-11 (shadow* via Aaron): "save the lost and punch
+2026-05-11 (shadow\* via Aaron): "save the lost and punch
 out numbers connection to git too goldfish"
 
 **The Lost connection:**

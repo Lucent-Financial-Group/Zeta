@@ -50,15 +50,15 @@ The requirement maturity state should gate the normal work item state. A custome
 Ambiguous/customer-facing work must pass business gates before it becomes
 engineering work and again before it is merged into `main`.
 
-| Phase | Artifact | Gate kind | Required before |
-|---|---|---|---|
-| RFP / discovery brief | what exists, what is missing, what needs extension, risks, unknowns | `customer_rfp_review` | BRD drafting |
-| Business requirements | BRD, business rules, acceptance criteria, non-goals | `brd_approval` | architecture |
-| Architecture | CA, ADRs, design docs, workflow and data model | `architecture_approval` | implementation |
-| Implementation | code, tests, branch evidence | `implementation_review` | runtime validation |
-| Runtime validation | QA/browser evidence, screenshots, logs, traces | `runtime_validation` | final business validation |
-| Outcome validation | rule-by-rule BRD outcome report | `final_business_validation` | release readiness |
-| Release readiness | gate summary and branch evidence package | `release_readiness` | merge to `main` |
+| Phase                 | Artifact                                                            | Gate kind                   | Required before           |
+| --------------------- | ------------------------------------------------------------------- | --------------------------- | ------------------------- |
+| RFP / discovery brief | what exists, what is missing, what needs extension, risks, unknowns | `customer_rfp_review`       | BRD drafting              |
+| Business requirements | BRD, business rules, acceptance criteria, non-goals                 | `brd_approval`              | architecture              |
+| Architecture          | CA, ADRs, design docs, workflow and data model                      | `architecture_approval`     | implementation            |
+| Implementation        | code, tests, branch evidence                                        | `implementation_review`     | runtime validation        |
+| Runtime validation    | QA/browser evidence, screenshots, logs, traces                      | `runtime_validation`        | final business validation |
+| Outcome validation    | rule-by-rule BRD outcome report                                     | `final_business_validation` | release readiness         |
+| Release readiness     | gate summary and branch evidence package                            | `release_readiness`         | merge to `main`           |
 
 The RFP / discovery brief is the first customer gate. It tells the customer or
 user what the Organization believes already exists, what is missing, and what
@@ -529,14 +529,14 @@ To make this lifecycle real, the Work OS needs these capabilities:
 
 Add these signal families to the Work OS:
 
-| Signal family | Examples |
-|---|---|
-| Requirement maturity | `RequirementReceived`, `AmbiguityDetected`, `DiscoveryRequired`, `RequirementsDrafted`, `WorkflowModeled`, `ImplementationReady` |
-| Interview | `InterviewRequested`, `InterviewStarted`, `CustomerAnswerRecorded`, `ClarificationQuestionOpened`, `InterviewCompleted` |
-| BRD/Product | `BrdDraftCreated`, `BrdReviewRequested`, `BrdApproved`, `BrdRejected`, `ProductSignoffRecorded` |
-| Architecture readiness | `CaCreated`, `ArchitectureApproved`, `ArchitectureRejected`, `AdrRequired` |
-| Decomposition | `FeatureDecomposed`, `RequiredHatsComputed`, `QaPlanCreated`, `ReleasePlanCreated` |
-| Learning | `DiscoveryGapFound`, `CustomerOutcomeVerified`, `ProjectSkillRequested`, `MemoryAdaptationRequested` |
+| Signal family          | Examples                                                                                                                         |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Requirement maturity   | `RequirementReceived`, `AmbiguityDetected`, `DiscoveryRequired`, `RequirementsDrafted`, `WorkflowModeled`, `ImplementationReady` |
+| Interview              | `InterviewRequested`, `InterviewStarted`, `CustomerAnswerRecorded`, `ClarificationQuestionOpened`, `InterviewCompleted`          |
+| BRD/Product            | `BrdDraftCreated`, `BrdReviewRequested`, `BrdApproved`, `BrdRejected`, `ProductSignoffRecorded`                                  |
+| Architecture readiness | `CaCreated`, `ArchitectureApproved`, `ArchitectureRejected`, `AdrRequired`                                                       |
+| Decomposition          | `FeatureDecomposed`, `RequiredHatsComputed`, `QaPlanCreated`, `ReleasePlanCreated`                                               |
+| Learning               | `DiscoveryGapFound`, `CustomerOutcomeVerified`, `ProjectSkillRequested`, `MemoryAdaptationRequested`                             |
 
 ## UI Requirements
 

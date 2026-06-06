@@ -32,11 +32,11 @@ which bun git dotnet claude gh
 
 Map the results:
 
-| OS | Service manager | Tick config |
-|---|---|---|
-| macOS | launchd (plist) | ~/Library/LaunchAgents/ |
-| Windows | Task Scheduler | schtasks / Register-ScheduledTask |
-| Linux | systemd (unit file) | ~/.config/systemd/user/ |
+| OS      | Service manager     | Tick config                       |
+| ------- | ------------------- | --------------------------------- |
+| macOS   | launchd (plist)     | ~/Library/LaunchAgents/           |
+| Windows | Task Scheduler      | schtasks / Register-ScheduledTask |
+| Linux   | systemd (unit file) | ~/.config/systemd/user/           |
 
 ### Phase 2: Create service worktree
 
@@ -198,13 +198,13 @@ REMOTE
 
 ## Failure recovery
 
-| Symptom | Fix |
-|---|---|
-| No heartbeats | Check service registration, restart |
-| `fetch=exit-1` | Network issue, will self-recover |
-| Stale lock | `rm -rf "APP_SUPPORT_DIR/lock"` |
-| `status=143` every cycle | Item too large, mark as blob |
-| Dirty worktree | `git reset --hard origin/main` in service worktree |
+| Symptom                  | Fix                                                |
+| ------------------------ | -------------------------------------------------- |
+| No heartbeats            | Check service registration, restart                |
+| `fetch=exit-1`           | Network issue, will self-recover                   |
+| Stale lock               | `rm -rf "APP_SUPPORT_DIR/lock"`                    |
+| `status=143` every cycle | Item too large, mark as blob                       |
+| Dirty worktree           | `git reset --hard origin/main` in service worktree |
 
 ## What this skill does NOT do
 
@@ -219,11 +219,11 @@ The tick script and service registration pattern is the same
 for any harness. Replace `claude -p --permission-mode auto`
 with the harness equivalent:
 
-| Harness | Non-interactive command |
-|---|---|
+| Harness     | Non-interactive command               |
+| ----------- | ------------------------------------- |
 | Claude Code | `claude -p -w --permission-mode auto` |
-| Cursor | `cursor-agent -p --model grok-4.3` |
-| Codex | codex CLI equivalent |
+| Cursor      | `cursor-agent -p --model grok-4.3`    |
+| Codex       | codex CLI equivalent                  |
 
 The rest (launchd/systemd/Task Scheduler, worktree, heartbeat)
 is identical across harnesses.

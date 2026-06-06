@@ -20,7 +20,7 @@ composes_with:
 
 ## Pre-start checklist (completed 2026-05-14T0940Z)
 
-1. **Prior-art search** — Searched skill router (no "product-substrate-inventory" skill exists; new work); grepped memory/ and docs/ for all 7 product terms (ksk, civsim, wellness, american dream, DIO, aurora, dawn); checked docs/backlog/ for existing rows. Surfaces searched: memory/*.md, docs/research/*.md, docs/backlog/*.md.
+1. **Prior-art search** — Searched skill router (no "product-substrate-inventory" skill exists; new work); grepped memory/ and docs/ for all 7 product terms (ksk, civsim, wellness, american dream, DIO, aurora, dawn); checked docs/backlog/ for existing rows. Surfaces searched: memory/_.md, docs/research/_.md, docs/backlog/\*.md.
 
 2. **Dependency-restructure** — No `depends_on:` chain (this row has none). Verified B-0466 and B-0467 both correctly list B-0465 as dependency. B-0468 lists B-0465. All reciprocal pointers confirmed correct.
 
@@ -54,6 +54,7 @@ The inventory is pure research — no write operations needed outside the output
 summary document.
 
 This also satisfies B-0425's explicit pre-start checklist item:
+
 > "Prior-art-search — verify each product has substrate established to justify
 > its own repo (not just an idea-sized substrate)"
 

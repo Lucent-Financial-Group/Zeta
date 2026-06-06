@@ -103,7 +103,13 @@ export function createLgtmTelemetryQueryPort(input: LgtmTelemetryQueryPortInput)
 
   return {
     queryMetrics: async (promql, range) =>
-      await queryJson(fetchImpl, "mimir", createPrometheusRangeUrl(input.mimirBaseUrl, promql, range, stepSeconds), mapPrometheusRange, mimirHeaders(input.mimirTenantId)),
+      await queryJson(
+        fetchImpl,
+        "mimir",
+        createPrometheusRangeUrl(input.mimirBaseUrl, promql, range, stepSeconds),
+        mapPrometheusRange,
+        mimirHeaders(input.mimirTenantId),
+      ),
     queryTraces: async (traceql, range) =>
       await queryJson(fetchImpl, "tempo", createTempoSearchUrl(input.tempoBaseUrl, traceql, range), mapTempoSearch),
     queryLogs: async (logql, range) =>
@@ -176,10 +182,7 @@ function mimirHeaders(tenantId: string | undefined): Record<string, string> | un
   return tenantId === undefined ? undefined : { "X-Scope-OrgID": tenantId };
 }
 
-function validateLgtmResponseBody(
-  source: TelemetryQuerySource,
-  body: unknown,
-): TelemetryQueryDegraded | undefined {
+function validateLgtmResponseBody(source: TelemetryQuerySource, body: unknown): TelemetryQueryDegraded | undefined {
   if (source === "recording") {
     return undefined;
   }
@@ -189,7 +192,10 @@ function validateLgtmResponseBody(
   if (source === "mimir" || source === "loki") {
     const status = readOptionalString(body.status);
     if (status === "error") {
-      return badTelemetryResponse(source, readOptionalString(body.error) ?? readOptionalString(body.errorType) ?? "unknown error");
+      return badTelemetryResponse(
+        source,
+        readOptionalString(body.error) ?? readOptionalString(body.errorType) ?? "unknown error",
+      );
     }
     if (status !== "success") {
       return badTelemetryResponse(source, `expected status=success, got ${status ?? "missing"}`);
@@ -214,12 +220,7 @@ function badTelemetryResponse(source: TelemetryQuerySource, detail: string): Tel
   };
 }
 
-function createPrometheusRangeUrl(
-  baseUrl: string,
-  query: string,
-  range: TelemetryTimeRange,
-  stepSeconds: number,
-): URL {
+function createPrometheusRangeUrl(baseUrl: string, query: string, range: TelemetryTimeRange, stepSeconds: number): URL {
   const url = new URL("api/v1/query_range", ensureTrailingSlash(baseUrl));
   url.searchParams.set("query", query);
   url.searchParams.set("start", toUnixSeconds(range.start));
@@ -249,7 +250,9 @@ function mapPrometheusRange(body: unknown): readonly MetricSeries[] {
   const result = requireArray(readPath(body, ["data", "result"]), "expected Prometheus data.result array");
   return result.map((series) => ({
     labels: readStringRecord(readPath(series, ["metric"])),
-    points: requireArray(readPath(series, ["values"]), "expected Prometheus series values array").map(mapPrometheusPoint),
+    points: requireArray(readPath(series, ["values"]), "expected Prometheus series values array").map(
+      mapPrometheusPoint,
+    ),
   }));
 }
 
@@ -300,7 +303,7 @@ function mapLokiRange(body: unknown): readonly LogLine[] {
   return requireArray(readPath(body, ["data", "result"]), "expected Loki data.result array").flatMap((stream) => {
     const labels = readStringRecord(readPath(stream, ["stream"]));
     return requireArray(readPath(stream, ["values"]), "expected Loki stream values array").map((value) =>
-      mapLokiLine(value, labels)
+      mapLokiLine(value, labels),
     );
   });
 }
@@ -384,7 +387,5 @@ function isTimeoutError(error: unknown): boolean {
   if (!(error instanceof Error)) {
     return false;
   }
-  return error.name === "AbortError" ||
-    error.name === "TimeoutError" ||
-    /\btime(?:d)?\s*out\b/i.test(error.message);
+  return error.name === "AbortError" || error.name === "TimeoutError" || /\btime(?:d)?\s*out\b/i.test(error.message);
 }

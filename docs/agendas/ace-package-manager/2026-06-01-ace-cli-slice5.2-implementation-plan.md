@@ -16,17 +16,17 @@
 
 ## File Structure
 
-| File | Responsibility |
-|---|---|
-| `tools/ace/semver.ts` | new — pure subset: `parseVersion`, `compareVersions`, `parseRange`, `satisfies`, `maxSatisfying` |
-| `tools/ace/solver.ts` | new — `solve(root, fetchPackage, registry)` → `Map<name,version>` or failure |
-| `tools/ace/resolve.ts` | minimal — `solved` map param; registry edge concrete-from-map + `satisfies` re-check; `unsatisfiable`/`bad-range` reasons |
-| `tools/ace/ace.ts` | install runs solve→resolve; optional `--print-resolution` |
-| `tools/ace/semver.test.ts` | new — unit + node-semver differential |
-| `tools/ace/solver.test.ts` | new — unit + Z3 differential |
-| `tools/ace/resolve.test.ts`, `ace.test.ts` | range / unsatisfiable / inline-back-compat / e2e |
-| `package.json` | test-only devDeps `semver` 7.8.1, `@types/semver` 7.7.1, `z3-solver` 4.16.0 |
-| `.claude/skills/ace/SKILL.md` | range deps + solver docs |
+| File                                       | Responsibility                                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `tools/ace/semver.ts`                      | new — pure subset: `parseVersion`, `compareVersions`, `parseRange`, `satisfies`, `maxSatisfying`                          |
+| `tools/ace/solver.ts`                      | new — `solve(root, fetchPackage, registry)` → `Map<name,version>` or failure                                              |
+| `tools/ace/resolve.ts`                     | minimal — `solved` map param; registry edge concrete-from-map + `satisfies` re-check; `unsatisfiable`/`bad-range` reasons |
+| `tools/ace/ace.ts`                         | install runs solve→resolve; optional `--print-resolution`                                                                 |
+| `tools/ace/semver.test.ts`                 | new — unit + node-semver differential                                                                                     |
+| `tools/ace/solver.test.ts`                 | new — unit + Z3 differential                                                                                              |
+| `tools/ace/resolve.test.ts`, `ace.test.ts` | range / unsatisfiable / inline-back-compat / e2e                                                                          |
+| `package.json`                             | test-only devDeps `semver` 7.8.1, `@types/semver` 7.7.1, `z3-solver` 4.16.0                                               |
+| `.claude/skills/ace/SKILL.md`              | range deps + solver docs                                                                                                  |
 
 ---
 
@@ -41,8 +41,14 @@ import { describe, expect, test } from "bun:test";
 import { parseVersion, compareVersions, parseRange, satisfies } from "./semver.ts";
 
 describe("parseVersion + compareVersions", () => {
-  test("parses x.y.z", () => { expect(parseVersion("1.2.3")).toEqual({ major: 1, minor: 2, patch: 3 }); });
-  test("rejects junk", () => { expect(parseVersion("1.2")).toBeNull(); expect(parseVersion("v1.2.3")).toBeNull(); expect(parseVersion("1.2.x")).toBeNull(); });
+  test("parses x.y.z", () => {
+    expect(parseVersion("1.2.3")).toEqual({ major: 1, minor: 2, patch: 3 });
+  });
+  test("rejects junk", () => {
+    expect(parseVersion("1.2")).toBeNull();
+    expect(parseVersion("v1.2.3")).toBeNull();
+    expect(parseVersion("1.2.x")).toBeNull();
+  });
   test("orders numerically (not lexically)", () => {
     expect(compareVersions("1.2.3", "1.2.10")).toBe(-1);
     expect(compareVersions("2.0.0", "1.9.9")).toBe(1);
@@ -51,7 +57,11 @@ describe("parseVersion + compareVersions", () => {
 });
 
 describe("satisfies — exact / comparator / wildcard", () => {
-  test("exact", () => { expect(satisfies("1.2.3", "1.2.3")).toBe(true); expect(satisfies("1.2.4", "1.2.3")).toBe(false); expect(satisfies("1.2.3", "=1.2.3")).toBe(true); });
+  test("exact", () => {
+    expect(satisfies("1.2.3", "1.2.3")).toBe(true);
+    expect(satisfies("1.2.4", "1.2.3")).toBe(false);
+    expect(satisfies("1.2.3", "=1.2.3")).toBe(true);
+  });
   test("comparators", () => {
     expect(satisfies("1.5.0", ">=1.2.0")).toBe(true);
     expect(satisfies("1.1.0", ">=1.2.0")).toBe(false);
@@ -60,8 +70,13 @@ describe("satisfies — exact / comparator / wildcard", () => {
     expect(satisfies("1.2.0", ">1.2.0")).toBe(false);
     expect(satisfies("1.2.0", "<=1.2.0")).toBe(true);
   });
-  test("wildcard * and x match any valid version", () => { expect(satisfies("9.9.9", "*")).toBe(true); expect(satisfies("0.0.1", "x")).toBe(true); });
-  test("malformed range surfaces via parseRange error", () => { expect("error" in (parseRange("@@@") as object)).toBe(true); });
+  test("wildcard * and x match any valid version", () => {
+    expect(satisfies("9.9.9", "*")).toBe(true);
+    expect(satisfies("0.0.1", "x")).toBe(true);
+  });
+  test("malformed range surfaces via parseRange error", () => {
+    expect("error" in (parseRange("@@@") as object)).toBe(true);
+  });
 });
 ```
 
@@ -71,7 +86,11 @@ describe("satisfies — exact / comparator / wildcard", () => {
 
 ```ts
 // Pure semver subset for Ace slice 5.2 (no pre-release / build-metadata / unions / hyphen — see B-0970).
-export interface Version { readonly major: number; readonly minor: number; readonly patch: number }
+export interface Version {
+  readonly major: number;
+  readonly minor: number;
+  readonly patch: number;
+}
 export type Comparator = { readonly op: ">=" | "<=" | ">" | "<" | "="; readonly v: Version };
 // A Range is a conjunction (AND) of comparators. `*` / `x` → empty conjunction (matches all).
 export type Range = { readonly comparators: ReadonlyArray<Comparator> };
@@ -96,11 +115,16 @@ export function compareVersions(a: string | Version, b: string | Version): -1 | 
 function cmp(a: Version, op: Comparator["op"], b: Version): boolean {
   const c = compareVersions(a, b);
   switch (op) {
-    case "=": return c === 0;
-    case ">": return c === 1;
-    case "<": return c === -1;
-    case ">=": return c >= 0;
-    case "<=": return c <= 0;
+    case "=":
+      return c === 0;
+    case ">":
+      return c === 1;
+    case "<":
+      return c === -1;
+    case ">=":
+      return c >= 0;
+    case "<=":
+      return c <= 0;
   }
 }
 
@@ -154,13 +178,29 @@ import { maxSatisfying } from "./semver.ts";
 import semverLib from "semver";
 
 describe("caret / tilde desugaring", () => {
-  test("^1.2.3 => >=1.2.3 <2.0.0", () => { expect(satisfies("1.9.0", "^1.2.3")).toBe(true); expect(satisfies("2.0.0", "^1.2.3")).toBe(false); expect(satisfies("1.2.2", "^1.2.3")).toBe(false); });
-  test("^0.2.3 => >=0.2.3 <0.3.0", () => { expect(satisfies("0.2.9", "^0.2.3")).toBe(true); expect(satisfies("0.3.0", "^0.2.3")).toBe(false); });
-  test("^0.0.3 => >=0.0.3 <0.0.4", () => { expect(satisfies("0.0.3", "^0.0.3")).toBe(true); expect(satisfies("0.0.4", "^0.0.3")).toBe(false); });
-  test("~1.2.3 => >=1.2.3 <1.3.0", () => { expect(satisfies("1.2.9", "~1.2.3")).toBe(true); expect(satisfies("1.3.0", "~1.2.3")).toBe(false); });
+  test("^1.2.3 => >=1.2.3 <2.0.0", () => {
+    expect(satisfies("1.9.0", "^1.2.3")).toBe(true);
+    expect(satisfies("2.0.0", "^1.2.3")).toBe(false);
+    expect(satisfies("1.2.2", "^1.2.3")).toBe(false);
+  });
+  test("^0.2.3 => >=0.2.3 <0.3.0", () => {
+    expect(satisfies("0.2.9", "^0.2.3")).toBe(true);
+    expect(satisfies("0.3.0", "^0.2.3")).toBe(false);
+  });
+  test("^0.0.3 => >=0.0.3 <0.0.4", () => {
+    expect(satisfies("0.0.3", "^0.0.3")).toBe(true);
+    expect(satisfies("0.0.4", "^0.0.3")).toBe(false);
+  });
+  test("~1.2.3 => >=1.2.3 <1.3.0", () => {
+    expect(satisfies("1.2.9", "~1.2.3")).toBe(true);
+    expect(satisfies("1.3.0", "~1.2.3")).toBe(false);
+  });
 });
 describe("AND ranges + maxSatisfying", () => {
-  test("space-AND", () => { expect(satisfies("1.5.0", ">=1.2.0 <2.0.0")).toBe(true); expect(satisfies("2.1.0", ">=1.2.0 <2.0.0")).toBe(false); });
+  test("space-AND", () => {
+    expect(satisfies("1.5.0", ">=1.2.0 <2.0.0")).toBe(true);
+    expect(satisfies("2.1.0", ">=1.2.0 <2.0.0")).toBe(false);
+  });
   test("maxSatisfying picks newest in range", () => {
     expect(maxSatisfying(["1.0.0", "1.2.0", "1.9.0", "2.0.0"], "^1.0.0")).toBe("1.9.0");
     expect(maxSatisfying(["1.0.0", "2.0.0"], "^3.0.0")).toBeNull();
@@ -181,17 +221,17 @@ describe("node-semver differential (oracle)", () => {
 - [ ] **Step 3: Implement** in `tools/ace/semver.ts`: (a) extend `parseComparatorToken` to handle `^` and `~`:
 
 ```ts
-  if (token.startsWith("^") || token.startsWith("~")) {
-    const v = parseVersion(token.slice(1));
-    if (v === null) return { error: `bad version in range: ${token}` };
-    const lower: Comparator = { op: ">=", v };
-    let upper: Version;
-    if (token.startsWith("~")) upper = { major: v.major, minor: v.minor + 1, patch: 0 };
-    else if (v.major > 0) upper = { major: v.major + 1, minor: 0, patch: 0 };
-    else if (v.minor > 0) upper = { major: 0, minor: v.minor + 1, patch: 0 };
-    else upper = { major: 0, minor: 0, patch: v.patch + 1 };
-    return { comparators: [lower, { op: "<", v: upper }] };
-  }
+if (token.startsWith("^") || token.startsWith("~")) {
+  const v = parseVersion(token.slice(1));
+  if (v === null) return { error: `bad version in range: ${token}` };
+  const lower: Comparator = { op: ">=", v };
+  let upper: Version;
+  if (token.startsWith("~")) upper = { major: v.major, minor: v.minor + 1, patch: 0 };
+  else if (v.major > 0) upper = { major: v.major + 1, minor: 0, patch: 0 };
+  else if (v.minor > 0) upper = { major: 0, minor: v.minor + 1, patch: 0 };
+  else upper = { major: 0, minor: 0, patch: v.patch + 1 };
+  return { comparators: [lower, { op: "<", v: upper }] };
+}
 ```
 
 (b) add `maxSatisfying`:
@@ -250,21 +290,33 @@ import type { FetchPackage } from "./resolve.ts";
 
 export type SolveResult =
   | { ok: true; versions: Map<string, string> }
-  | { ok: false; reason: "unsatisfiable" | "bad-range" | "registry-miss" | "fetch-failed" | "invalid-package"; detail: string; path: string[] };
+  | {
+      ok: false;
+      reason: "unsatisfiable" | "bad-range" | "registry-miss" | "fetch-failed" | "invalid-package";
+      detail: string;
+      path: string[];
+    };
 
-interface Constraint { readonly range: string; readonly via: string[] }
+interface Constraint {
+  readonly range: string;
+  readonly via: string[];
+}
 
 export async function solve(root: AcePackage, fetchPackage: FetchPackage, registry: Registry): Promise<SolveResult> {
   // edges(): typed accessor over untrusted manifest.dependencies
-  const edgesOf = (p: AcePackage): AceDependency[] => Array.isArray(p.manifest.dependencies) ? [...p.manifest.dependencies] : [];
+  const edgesOf = (p: AcePackage): AceDependency[] =>
+    Array.isArray(p.manifest.dependencies) ? [...p.manifest.dependencies] : [];
   // inline source map: name -> {version, pkg} discovered from inline edges (pre-decided)
   // registry constraint map: name -> Constraint[] (ranges to intersect)
   // assignment: name -> version
   // fetched cache: "name@version" -> AcePackage (solve-run scoped)
   const fetched = new Map<string, AcePackage>();
   const fetchByUrl = async (url: string, here: string[]): Promise<AcePackage | SolveResult> => {
-    try { return JSON.parse(await fetchPackage(url)) as AcePackage; }
-    catch (e) { return { ok: false, reason: "fetch-failed", detail: `${url}: ${(e as Error).message}`, path: here }; }
+    try {
+      return JSON.parse(await fetchPackage(url)) as AcePackage;
+    } catch (e) {
+      return { ok: false, reason: "fetch-failed", detail: `${url}: ${(e as Error).message}`, path: here };
+    }
   };
 
   // Backtracking search. Implementer: a recursive/iterative explorer that
@@ -324,15 +376,24 @@ Implementer: keep the corpus small but adversarial (include at least one UNSAT g
 - [ ] **Step 3: Implement** in `tools/ace/resolve.ts`: (a) `import { satisfies } from "./semver.ts";` (b) add `"unsatisfiable" | "bad-range"` to `ResolveReason`. (c) add `solved: Map<string, string>` param after `registry`, before `opts`. (d) in the registry-edge branch, derive concrete from the map + re-check:
 
 ```ts
-      if (edge.kind === "registry") {
-        const concrete = solved.get(edge.name);
-        if (concrete === undefined) return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: no solved version`, path: here };
-        if (!satisfies(concrete, edge.version)) return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: solved ${concrete} violates ${edge.version}`, path: here };
-        const entry = registry.get(edge.name)?.get(concrete);
-        if (entry === undefined) return { ok: false, reason: "registry-miss", detail: `${edge.name}@${concrete} not in registry`, path: here };
-        url = entry.url; package_hash = entry.package_hash;
-        // downstream byName/version-skew/tamper use `concrete` — bind a local and use it for those checks
-      }
+if (edge.kind === "registry") {
+  const concrete = solved.get(edge.name);
+  if (concrete === undefined)
+    return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: no solved version`, path: here };
+  if (!satisfies(concrete, edge.version))
+    return {
+      ok: false,
+      reason: "unsatisfiable",
+      detail: `${edge.name}: solved ${concrete} violates ${edge.version}`,
+      path: here,
+    };
+  const entry = registry.get(edge.name)?.get(concrete);
+  if (entry === undefined)
+    return { ok: false, reason: "registry-miss", detail: `${edge.name}@${concrete} not in registry`, path: here };
+  url = entry.url;
+  package_hash = entry.package_hash;
+  // downstream byName/version-skew/tamper use `concrete` — bind a local and use it for those checks
+}
 ```
 
 Implementer: ensure the registry-edge concrete version (not the range string) is what flows into the `visiting`/`byName`/`seen.version` bookkeeping below (replace the prior `edge.version` usages on the registry path with `concrete`; inline path keeps `edge.version`). Keep all verify steps intact.
@@ -353,10 +414,15 @@ Implementer: ensure the registry-edge concrete version (not the range string) is
 - [ ] **Step 3: Implement** in `tools/ace/ace.ts`: import `solve` from `./solver.ts`. In the install handler, before the graph `resolve` call, run the solver and thread its map:
 
 ```ts
-      const sv = await solve(pkg, fetchPackage, loadRegistry());
-      if (!sv.ok) { console.error(`ace: install: ${sv.reason}: ${sv.detail} (at ${sv.path.join(" → ")})`); return 1; }
-      if (parsed.printResolution) for (const [n, v] of [...sv.versions].sort()) console.log(`  ${n}@${v}`);
-      const r = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), sv.versions, { allowNoSignature: parsed.allowNoSignature });
+const sv = await solve(pkg, fetchPackage, loadRegistry());
+if (!sv.ok) {
+  console.error(`ace: install: ${sv.reason}: ${sv.detail} (at ${sv.path.join(" → ")})`);
+  return 1;
+}
+if (parsed.printResolution) for (const [n, v] of [...sv.versions].sort()) console.log(`  ${n}@${v}`);
+const r = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), sv.versions, {
+  allowNoSignature: parsed.allowNoSignature,
+});
 ```
 
 Add an optional `--print-resolution` flag to the install parse (mirror `--allow-no-signature`); carry `printResolution?: boolean` on the parsed install args. Confirm `solve` import + `loadRegistry` (already imported from slice 5.1).

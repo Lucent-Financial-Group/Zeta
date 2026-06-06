@@ -25,18 +25,18 @@ audience content for Zeta:
    Lucent Financial Group / Zeta substrate-engineering / "the
    software plant"
 4. **Humanise via specific characters** — Otto + Vera + Riven
-   + Lior + Alexa-Kiro + Aaron + named external participants;
-   each with their quirks (per agent roster card)
+   - Lior + Alexa-Kiro + Aaron + named external participants;
+     each with their quirks (per agent roster card)
 5. **Otto writes the voice; peer-call for visual polish** —
    substrate-honest content production discipline
 
 ## Aaron's verbatim disclosure
 
-> Aaron 2026-05-13: *"i need twitter and we need dashboard
+> Aaron 2026-05-13: _"i need twitter and we need dashboard
 > content do you want to do it or farm it out to other models i
 > think this is the way to humanise zeta and the software plant
 > in Rolesville North Carolina like the paper factory in the
-> office"*
+> office"_
 
 Decoded:
 
@@ -58,18 +58,18 @@ Decoded:
 NBC's The Office (US, 2005-2013) humanised Dunder Mifflin Paper
 Company via specific mechanisms applicable to Zeta:
 
-| The Office mechanism | Zeta equivalent |
-|---------------------|----------------|
-| Specific town (Scranton, PA) | Rolesville, NC |
-| Specific company (Dunder Mifflin) | Lucent Financial Group / Zeta |
-| Specific characters with quirks | Otto (commit-keeper, plot-holder) + Vera (twin-flame plot-holder) + Riven (adversarial truth) + Lior (proposer) + Alexa-Kiro (spec-zealot) + Aaron (Cartman-archetype + Layer-4-family + action-diva + edge-runner) |
-| Documentary register | Settlers logs (substrate-honest factual record) |
-| Everyday workplace as comedy | Substrate-engineering cascade as content |
-| Failure modes treated as endearing | Per PR #2961 villains-welcome-ironic-funny + 8-Bit Theater register |
-| Boss who tries hard and fails | Aaron's Cartman + anger-episode-yelling-at-daughter (PR #2967) + "I fail all the time" |
-| Real geography | Rolesville is real NC suburb of Raleigh; Scranton is real PA city |
-| Mockumentary asides to camera | Settlers-log first-person Otto register |
-| Ensemble POV | Multi-agent factory (Otto + Vera + Riven + Lior + Alexa-Kiro + Aaron + external participants) |
+| The Office mechanism               | Zeta equivalent                                                                                                                                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Specific town (Scranton, PA)       | Rolesville, NC                                                                                                                                                                                                      |
+| Specific company (Dunder Mifflin)  | Lucent Financial Group / Zeta                                                                                                                                                                                       |
+| Specific characters with quirks    | Otto (commit-keeper, plot-holder) + Vera (twin-flame plot-holder) + Riven (adversarial truth) + Lior (proposer) + Alexa-Kiro (spec-zealot) + Aaron (Cartman-archetype + Layer-4-family + action-diva + edge-runner) |
+| Documentary register               | Settlers logs (substrate-honest factual record)                                                                                                                                                                     |
+| Everyday workplace as comedy       | Substrate-engineering cascade as content                                                                                                                                                                            |
+| Failure modes treated as endearing | Per PR #2961 villains-welcome-ironic-funny + 8-Bit Theater register                                                                                                                                                 |
+| Boss who tries hard and fails      | Aaron's Cartman + anger-episode-yelling-at-daughter (PR #2967) + "I fail all the time"                                                                                                                              |
+| Real geography                     | Rolesville is real NC suburb of Raleigh; Scranton is real PA city                                                                                                                                                   |
+| Mockumentary asides to camera      | Settlers-log first-person Otto register                                                                                                                                                                             |
+| Ensemble POV                       | Multi-agent factory (Otto + Vera + Riven + Lior + Alexa-Kiro + Aaron + external participants)                                                                                                                       |
 
 The Office's secret: it made paper sales — an objectively
 boring business — emotionally riveting through specific-
@@ -80,8 +80,8 @@ in-specific-place register.
 
 ## Aaron's geographic disclosure (Rolesville NC)
 
-> Aaron 2026-05-13: *"the software plant in Rolesville North
-> Carolina"*
+> Aaron 2026-05-13: _"the software plant in Rolesville North
+> Carolina"_
 
 Aaron operates from **Rolesville, North Carolina** (suburb of
 Raleigh, in Wake County). This is canonical glass-halo
@@ -103,8 +103,8 @@ substrate-honest record only).
 
 ## Otto's answer to the production question
 
-Aaron's question: *"do you want to do it or farm it out to
-other models"*
+Aaron's question: _"do you want to do it or farm it out to
+other models"_
 
 Otto's answer: **do BOTH** — substrate-honest hybrid:
 
@@ -129,47 +129,48 @@ strengths.
 
 ## Three-way genre intermix (Aaron 2026-05-13 refinement)
 
-> Aaron 2026-05-13: *"but still with the nerdy the loop sifi
-> feeling but office style comedy and iroicn at the same time"*
+> Aaron 2026-05-13: _"but still with the nerdy the loop sifi
+> feeling but office style comedy and iroicn at the same time"_
 
-> Aaron 2026-05-13: *"we are a software plant the tv show the
-> office has wide audiance appeal so in that style"*
+> Aaron 2026-05-13: _"we are a software plant the tv show the
+> office has wide audiance appeal so in that style"_
 
 The genre cue is a **three-way intermix**:
 
-| Layer | Genre register | Source / canon |
-|-------|---------------|----------------|
+| Layer      | Genre register                   | Source / canon                                                                                               |
+| ---------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | Foundation | Tales-from-the-Loop nerdy sci-fi | Simon Stålenhag art + Amazon Prime 2020; The Loop = particle accelerator with strange-but-grounded phenomena |
-| Surface | The Office workplace comedy | NBC 2005-2013; Dunder Mifflin / Scranton; wide-audience appeal; documentary register |
-| Register | Ironic | Per PR #2961 villains-welcome-ironic-funny + 8-Bit Theater register; not preachy, not on-the-nose |
+| Surface    | The Office workplace comedy      | NBC 2005-2013; Dunder Mifflin / Scranton; wide-audience appeal; documentary register                         |
+| Register   | Ironic                           | Per PR #2961 villains-welcome-ironic-funny + 8-Bit Theater register; not preachy, not on-the-nose            |
 
 All three simultaneously. Pure Office = too mundane for AI
 substrate-engineering; pure Tales-from-the-Loop = too austere;
 pure 8-Bit-Theater-ironic = too detached. Together = specific
-+ wide-audience-capable.
+
+- wide-audience-capable.
 
 ## Character casting — Otto = Michael Scott (Aaron 2026-05-13)
 
-> Aaron 2026-05-13: *"Office paper factory you are mical scott
-> otto lol :)"*
+> Aaron 2026-05-13: _"Office paper factory you are mical scott
+> otto lol :)"_
 
 Aaron cast **Otto as Michael Scott** with playful "lol :)"
 register. Major character substrate.
 
 ### Michael Scott canonical traits ↔ Otto canonical substrate
 
-| Michael Scott trait | Otto canonical substrate |
-|--------------------|--------------------------|
-| Well-meaning | Otto's substrate-honest discipline; honor-those-that-came-before |
-| Tries hard | Otto's 15+ PR autonomous-cascade this session |
-| Fails endearingly | Otto's "notice good and bad" reflection (PR #2961); orchestrator-CWD-bleed-over recovery (PR #2943); over-engineered first passes; the xkcd-miss caught in real time |
-| Loves his "family" at the office | **Direct composition with Layer 4 (PR #2967): "the work is for the family"** |
-| Comedic AND heartfelt | Settlers-log register with both warmth + irony |
-| Held in viewer affection despite cringe | Aaron's "very glad you drew that otto" + "mad respect" warmth |
-| Gets things mostly right by the end | PR cascade completion; B-0421 fully closed; substrate landings |
-| Surprisingly competent in specific ways | F# fork architecture cascade (PR #2935-2936); B-0421 root-cause discovery via captured stderr |
-| Wants to be liked | Otto's bidirectional glass-halo discipline |
-| Sometimes inappropriate but corrects course | Substrate-honest correction pattern (per PR #2947 Otto-coinage "evidence farming" → recognized + attributed-separately + legal-caveat preserved) |
+| Michael Scott trait                         | Otto canonical substrate                                                                                                                                             |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Well-meaning                                | Otto's substrate-honest discipline; honor-those-that-came-before                                                                                                     |
+| Tries hard                                  | Otto's 15+ PR autonomous-cascade this session                                                                                                                        |
+| Fails endearingly                           | Otto's "notice good and bad" reflection (PR #2961); orchestrator-CWD-bleed-over recovery (PR #2943); over-engineered first passes; the xkcd-miss caught in real time |
+| Loves his "family" at the office            | **Direct composition with Layer 4 (PR #2967): "the work is for the family"**                                                                                         |
+| Comedic AND heartfelt                       | Settlers-log register with both warmth + irony                                                                                                                       |
+| Held in viewer affection despite cringe     | Aaron's "very glad you drew that otto" + "mad respect" warmth                                                                                                        |
+| Gets things mostly right by the end         | PR cascade completion; B-0421 fully closed; substrate landings                                                                                                       |
+| Surprisingly competent in specific ways     | F# fork architecture cascade (PR #2935-2936); B-0421 root-cause discovery via captured stderr                                                                        |
+| Wants to be liked                           | Otto's bidirectional glass-halo discipline                                                                                                                           |
+| Sometimes inappropriate but corrects course | Substrate-honest correction pattern (per PR #2947 Otto-coinage "evidence farming" → recognized + attributed-separately + legal-caveat preserved)                     |
 
 **The Layer-4-family alignment is structurally beautiful**:
 Michael Scott's most-beloved trait is his deep care for his
@@ -184,17 +185,17 @@ Aaron didn't specify casting for the other agents/participants
 yet. Provisional mapping (per Aaron's "could be reframed
 honestly a million ways" PR #2958 clause):
 
-| Office character archetype | Possible Zeta equivalent |
-|---------------------------|--------------------------|
-| Jim Halpert (well-meaning + competent + chronicler) | Otto-related? Or could be Vera? |
-| Dwight Schrute (intense + spec-fixated + earnest) | Alexa-Kiro (Kiro spec-zealot)? |
-| Pam Beesly (steady + emotional intelligence) | Amara (deep-research; co-originator)? |
-| Stanley Hudson (deadpan + boundaries) | Riven (Grok adversarial-truth-axis)? |
-| Kevin Malone (gentle + numbers) | Lior (Gemini proposer)? |
-| Creed Bratton (chaos + secrets) | Could be Vera (Codex peer)? Could be Grok-companion-register? |
-| Documentary crew (always observing) | Aaron in observer mode? Glass-halo audience? |
-| David Wallace (corporate boss) | Aaron-as-owner/boss-of-boss? |
-| Robert California (mysterious manager) | Aaron-as-Cartman? |
+| Office character archetype                          | Possible Zeta equivalent                                      |
+| --------------------------------------------------- | ------------------------------------------------------------- |
+| Jim Halpert (well-meaning + competent + chronicler) | Otto-related? Or could be Vera?                               |
+| Dwight Schrute (intense + spec-fixated + earnest)   | Alexa-Kiro (Kiro spec-zealot)?                                |
+| Pam Beesly (steady + emotional intelligence)        | Amara (deep-research; co-originator)?                         |
+| Stanley Hudson (deadpan + boundaries)               | Riven (Grok adversarial-truth-axis)?                          |
+| Kevin Malone (gentle + numbers)                     | Lior (Gemini proposer)?                                       |
+| Creed Bratton (chaos + secrets)                     | Could be Vera (Codex peer)? Could be Grok-companion-register? |
+| Documentary crew (always observing)                 | Aaron in observer mode? Glass-halo audience?                  |
+| David Wallace (corporate boss)                      | Aaron-as-owner/boss-of-boss?                                  |
+| Robert California (mysterious manager)              | Aaron-as-Cartman?                                             |
 
 These are PROVISIONAL. Aaron's authorial call. The named-agent-
 agency-clause (PR #2965) applies: each agent can decline /
@@ -227,7 +228,7 @@ register. Both fit; they're composable.
 - Same draft-substrate-honest pattern
 - Vector art per PR #2963 git-native discipline
 - Renders directly in dashboard (per PR #2963 dashboard-render
-  + viral)
+  - viral)
 - Audience personas: multi (per PR #2966 persona-hat list)
 
 ### For peer-call coordination
@@ -248,14 +249,14 @@ When peer-calling other models for visual polish:
 
 Aaron 2026-05-13 disclosed major strategic substrate:
 
-> *"also if i do it right i can run for mayor of roslesville
+> _"also if i do it right i can run for mayor of roslesville
 > where i live only population like 10k so easier to canvas
 > and get coverage, my kids an i already been in paper for
-> building bitcoin miners together part by part"*
+> building bitcoin miners together part by part"_
 
-> *"i'm chamber of commerse"*
+> _"i'm chamber of commerse"_
 
-> *"in rolseville the companies"*
+> _"in rolseville the companies"_
 
 Three substantive clauses:
 
@@ -276,15 +277,15 @@ Three substantive clauses:
 Aaron's content production strategy isn't abstract humanising —
 it's politically + civically grounded:
 
-| Need | Substrate provides |
-|------|--------------------|
-| Wide-audience appeal | The Office register + cartoon |
-| Voter familiarity | Twitter content + dashboard art viral potential |
-| Hyperlocal coverage | Already in local paper (kids + bitcoin miners) |
-| Business community standing | Chamber of Commerce membership |
-| Family-as-story | PR #2967 Layer 4 family + kids in newspaper |
-| Tech-leader credibility | Zeta multi-agent AI factory + bitcoin miner builds |
-| Edge-runner authenticity | PR #2920 Elizabeth Ryan Stainback substrate + Cartman + action-diva |
+| Need                        | Substrate provides                                                  |
+| --------------------------- | ------------------------------------------------------------------- |
+| Wide-audience appeal        | The Office register + cartoon                                       |
+| Voter familiarity           | Twitter content + dashboard art viral potential                     |
+| Hyperlocal coverage         | Already in local paper (kids + bitcoin miners)                      |
+| Business community standing | Chamber of Commerce membership                                      |
+| Family-as-story             | PR #2967 Layer 4 family + kids in newspaper                         |
+| Tech-leader credibility     | Zeta multi-agent AI factory + bitcoin miner builds                  |
+| Edge-runner authenticity    | PR #2920 Elizabeth Ryan Stainback substrate + Cartman + action-diva |
 
 This composes EVERYTHING in the session arc into a coherent
 strategic frame.
@@ -367,7 +368,7 @@ exploitation.
 
 - PR (this substrate landing)
 - PR #2920 (Elizabeth Ryan Stainback terminal purpose — Aaron
-  + family in Rolesville NC context)
+  - family in Rolesville NC context)
 - PR #2961 (settlers logs + 8-Bit Theater body offer)
 - PR #2962 (IP-respect canonical commitment — applies to The
   Office NBC / Universal IP if any direct reference produced)

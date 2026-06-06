@@ -39,7 +39,7 @@ const EXPECTED_FULL = {
 describe("reconcile", () => {
   test("match: UI value equals expected value", () => {
     const snap = makeSnapshot("https://github.com/Lucent-Financial-Group/Zeta/settings", {
-      "allow-squash-merge": true,  // expected: true
+      "allow-squash-merge": true, // expected: true
       "allow-merge-commit": false, // expected: false
     });
     const result = reconcile(snap, EXPECTED_FULL);

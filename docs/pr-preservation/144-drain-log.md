@@ -339,7 +339,7 @@ FIX — same change as thread 7.
 ### Reply (verbatim)
 
 > Fixed in the same change as thread 7 — `git rev-parse
-> --verify --quiet origin/main` gate added pre-log; zero-commit
+--verify --quiet origin/main` gate added pre-log; zero-commit
 > branch flipped from exit 0 to exit 2. Ref-resolution
 > failure no longer silently passes. Resolved.
 

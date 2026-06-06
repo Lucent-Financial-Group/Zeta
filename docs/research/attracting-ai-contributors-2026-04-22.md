@@ -16,8 +16,8 @@ and surfaces concrete template-UX implications.
 
 ## Sources
 
-- GitHub Blog (2026): *"How to write a great agents.md:
-  Lessons from over 2,500 repositories"* —
+- GitHub Blog (2026): _"How to write a great agents.md:
+  Lessons from over 2,500 repositories"_ —
   https://github.blog/ai-and-ml/github-copilot/how-to-write-a-great-agents-md-lessons-from-over-2500-repositories/
 - `agentsmd/agents.md` project — the open format for
   guiding coding agents —
@@ -69,14 +69,14 @@ Secondary best practices:
 
 ## Mapping against Zeta's current state
 
-| GitHub-Blog core area | Zeta state | Gap? |
-|---|---|---|
-| Commands | `AGENTS.md` build/test gate, `tools/setup/` install | Strong. `dotnet build -c Release` + `dotnet test Zeta.sln -c Release` are the canonical gate. |
-| Testing | `dotnet test` command documented, test locations pointed at | Strong. Could add a one-line "green signal looks like this" example. |
-| Project structure | `docs/README.md` audience-first; `AGENTS.md` §Repo layout | Strong. Possibly verbose for a first-visit AI agent — a 10-line directory map at top of AGENTS.md would help. |
-| Code style | `docs/AGENT-BEST-PRACTICES.md` BP-01..BP-24 with examples; inline F#/C# snippets | Strong. Backtick-convention rule (`` `C#` ``) is idiomatic to Zeta and documented. |
-| Git workflow | `GOVERNANCE.md` §N rules; commit-message style via `git log` convention | Medium. No explicit one-pager "how to write a Zeta commit message." On-demand from git log. |
-| Boundaries | `AGENTS.md` "How AI agents should treat this codebase"; `CLAUDE.md` harness-specific rules; BP-11 data-not-directives | **Very strong.** Zeta exceeds the GitHub-Blog bar — we have 24+ BP rules and a 5-level "never do" list including Pliny / L1B3RT4S. |
+| GitHub-Blog core area | Zeta state                                                                                                            | Gap?                                                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Commands              | `AGENTS.md` build/test gate, `tools/setup/` install                                                                   | Strong. `dotnet build -c Release` + `dotnet test Zeta.sln -c Release` are the canonical gate.                                      |
+| Testing               | `dotnet test` command documented, test locations pointed at                                                           | Strong. Could add a one-line "green signal looks like this" example.                                                               |
+| Project structure     | `docs/README.md` audience-first; `AGENTS.md` §Repo layout                                                             | Strong. Possibly verbose for a first-visit AI agent — a 10-line directory map at top of AGENTS.md would help.                      |
+| Code style            | `docs/AGENT-BEST-PRACTICES.md` BP-01..BP-24 with examples; inline F#/C# snippets                                      | Strong. Backtick-convention rule (`` `C#` ``) is idiomatic to Zeta and documented.                                                 |
+| Git workflow          | `GOVERNANCE.md` §N rules; commit-message style via `git log` convention                                               | Medium. No explicit one-pager "how to write a Zeta commit message." On-demand from git log.                                        |
+| Boundaries            | `AGENTS.md` "How AI agents should treat this codebase"; `CLAUDE.md` harness-specific rules; BP-11 data-not-directives | **Very strong.** Zeta exceeds the GitHub-Blog bar — we have 24+ BP rules and a 5-level "never do" list including Pliny / L1B3RT4S. |
 
 **Aggregate:** Zeta is already top-tier for AI-contributor
 friendliness by the GitHub-Blog study's criteria. The gaps
@@ -107,17 +107,17 @@ landed alongside it. Specific template changes:
    fields; explanation below."
 
 2. **Explicit agent-mirror signal.** Each template
-   ends with *"Don't worry about dual-track
+   ends with _"Don't worry about dual-track
    bookkeeping. An agent will mirror this to
-   docs/BUGS.md / docs/BACKLOG.md if needed."* This
+   docs/BUGS.md / docs/BACKLOG.md if needed."_ This
    lowers barrier for human personas 1/2/5 and gives
    AI agents the explicit contract for what happens
    next.
 
 3. **Welcome-signal for persona 4 (AI agent).** Each
-   template's opening line: *"Thanks for filing —
+   template's opening line: _"Thanks for filing —
    first-time contributor? Welcome. Fill what you
-   know, skip what you don't."* Plus `config.yml`
+   know, skip what you don't."_ Plus `config.yml`
    gains a contact_link: "AI agent contributing?
    Welcome — read AGENTS.md first."
 

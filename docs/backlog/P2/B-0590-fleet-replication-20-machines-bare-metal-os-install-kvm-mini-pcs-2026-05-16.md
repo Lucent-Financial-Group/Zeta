@@ -19,7 +19,7 @@ type: feature
 
 Aaron 2026-05-16, after the SshdPinAuthLsa-blocked ServiceTitan replication attempt + the pivot toward owned hardware:
 
-> *"backlog i have 20 machine i need you to spread to all of them and also install the os if you can everyting i have 20 comet pro kvms too seems like we can get it worked out do soe research i can buy other kvms too but my hardward preference is minipcs with ai cpus and occulik, pci, or better ports for gpu like beelink and others have better oculink ports too more bandwith stuff, this is what i have and like to buy"*
+> _"backlog i have 20 machine i need you to spread to all of them and also install the os if you can everyting i have 20 comet pro kvms too seems like we can get it worked out do soe research i can buy other kvms too but my hardward preference is minipcs with ai cpus and occulik, pci, or better ports for gpu like beelink and others have better oculink ports too more bandwith stuff, this is what i have and like to buy"_
 
 Four dimensions of work:
 
@@ -69,24 +69,24 @@ Better path for bare-metal: **PXE boot from a control machine** running DHCP + T
 
 **AI CPU comparison** (NPUs for local ML inference):
 
-| CPU family | NPU performance | Use case |
-|---|---|---|
-| AMD Ryzen AI 300 (XDNA 2) | 50 TOPS NPU | Aggressive AI inference; mid-range |
-| Intel Core Ultra Series 2 (Arrow Lake-H) | 13 TOPS NPU + GPU | Workstation-class; moderate AI |
-| AMD Strix Halo (Ryzen AI Max+) | 50+ TOPS NPU + Radeon 8060S iGPU | High-end AI workstation in mini-PC form factor |
-| Qualcomm Snapdragon X Elite | 45 TOPS NPU (Hexagon) | ARM-based; Windows-on-ARM ecosystem; not x86 |
+| CPU family                               | NPU performance                  | Use case                                       |
+| ---------------------------------------- | -------------------------------- | ---------------------------------------------- |
+| AMD Ryzen AI 300 (XDNA 2)                | 50 TOPS NPU                      | Aggressive AI inference; mid-range             |
+| Intel Core Ultra Series 2 (Arrow Lake-H) | 13 TOPS NPU + GPU                | Workstation-class; moderate AI                 |
+| AMD Strix Halo (Ryzen AI Max+)           | 50+ TOPS NPU + Radeon 8060S iGPU | High-end AI workstation in mini-PC form factor |
+| Qualcomm Snapdragon X Elite              | 45 TOPS NPU (Hexagon)            | ARM-based; Windows-on-ARM ecosystem; not x86   |
 
 For Zeta's workloads (mostly cross-machine substrate + agent inference), CPU + NPU matters more than discrete GPU. OCuLink for GPU expansion is for the rare workloads needing dedicated GPU (e.g., heavier ML training on the edge).
 
 ### Bare-metal OS install paths
 
-| Path | How it works | Effort | Scale-friendliness |
-|---|---|---|---|
-| **PXE boot + DHCP/TFTP/HTTP** | Control machine serves boot images; targets boot from network; auto-install via preseed/kickstart | High setup; near-zero per-machine | 20 machines: ideal |
-| **KVM virtual-media + automated installer keystrokes** | Mount ISO via KVM; drive installer via virtual keyboard | Medium setup per-KVM; medium per-machine | 20 machines: tedious |
-| **USB stick + manual boot** | Physically insert USB; boot; install | Low per-stick; high per-machine | 20 machines: doesn't scale |
-| **Cloud-init / Ignition (after first boot)** | Pre-configure post-install; combine with PXE or pre-imaged disks | Medium initial; near-zero per-machine | 20 machines: ideal if combined with PXE |
-| **Disk imaging (clonezilla / dd)** | Image one master disk; clone to others; per-machine identity post-clone | Medium setup; medium per-machine | 20 machines: viable; per-machine identity is the gotcha |
+| Path                                                   | How it works                                                                                      | Effort                                   | Scale-friendliness                                      |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| **PXE boot + DHCP/TFTP/HTTP**                          | Control machine serves boot images; targets boot from network; auto-install via preseed/kickstart | High setup; near-zero per-machine        | 20 machines: ideal                                      |
+| **KVM virtual-media + automated installer keystrokes** | Mount ISO via KVM; drive installer via virtual keyboard                                           | Medium setup per-KVM; medium per-machine | 20 machines: tedious                                    |
+| **USB stick + manual boot**                            | Physically insert USB; boot; install                                                              | Low per-stick; high per-machine          | 20 machines: doesn't scale                              |
+| **Cloud-init / Ignition (after first boot)**           | Pre-configure post-install; combine with PXE or pre-imaged disks                                  | Medium initial; near-zero per-machine    | 20 machines: ideal if combined with PXE                 |
+| **Disk imaging (clonezilla / dd)**                     | Image one master disk; clone to others; per-machine identity post-clone                           | Medium setup; medium per-machine         | 20 machines: viable; per-machine identity is the gotcha |
 
 **Recommended approach for 20-machine Otto fleet**: PXE + cloud-init combination. Spin up a small control box (could be one of the Beelinks) running:
 
@@ -126,18 +126,18 @@ For 20-machine Otto fleet specifically: **NixOS** likely wins — declarative co
 
 ## Decomposition into implementation slices
 
-| Slice | Description | Effort | Status |
-|-------|-------------|--------|--------|
-| 1 | KVM capability survey: test Comet Pro virtual-media mount + automation API; document features | S | open |
-| 2 | Hardware purchasing list: 2-3 specific mini-PC models with reasoning + URLs + price | S | open |
-| 3 | Control box setup: small Beelink running PXE + DHCP + HTTP for installer serving | M | open |
-| 4 | OS choice decision: NixOS vs Debian/Ubuntu vs Talos; rationale documented | S | open |
-| 5 | Bare-metal install automation: cloud-init / preseed / nixos-anywhere config that installs OS + Otto in one pass | M-L | open |
-| 6 | Per-machine identity provisioning: each machine gets unique hostname + Otto-instance-id; cloud-init handles | S | open |
-| 7 | Pilot deployment: 1 machine end-to-end (rack → power → fully-deployed-Otto) | M | open |
-| 8 | Fleet scale-out: deploy to remaining 19 machines using the pipeline from slice 7 | S (if pipeline works) | open |
-| 9 | Fleet management tooling: `tools/fleet/` scripts for list/push-config/restart/observe | M | open |
-| 10 | Documentation: `docs/governance/FLEET.md` with full operational guide | S | open |
+| Slice | Description                                                                                                     | Effort                | Status |
+| ----- | --------------------------------------------------------------------------------------------------------------- | --------------------- | ------ |
+| 1     | KVM capability survey: test Comet Pro virtual-media mount + automation API; document features                   | S                     | open   |
+| 2     | Hardware purchasing list: 2-3 specific mini-PC models with reasoning + URLs + price                             | S                     | open   |
+| 3     | Control box setup: small Beelink running PXE + DHCP + HTTP for installer serving                                | M                     | open   |
+| 4     | OS choice decision: NixOS vs Debian/Ubuntu vs Talos; rationale documented                                       | S                     | open   |
+| 5     | Bare-metal install automation: cloud-init / preseed / nixos-anywhere config that installs OS + Otto in one pass | M-L                   | open   |
+| 6     | Per-machine identity provisioning: each machine gets unique hostname + Otto-instance-id; cloud-init handles     | S                     | open   |
+| 7     | Pilot deployment: 1 machine end-to-end (rack → power → fully-deployed-Otto)                                     | M                     | open   |
+| 8     | Fleet scale-out: deploy to remaining 19 machines using the pipeline from slice 7                                | S (if pipeline works) | open   |
+| 9     | Fleet management tooling: `tools/fleet/` scripts for list/push-config/restart/observe                           | M                     | open   |
+| 10    | Documentation: `docs/governance/FLEET.md` with full operational guide                                           | S                     | open   |
 
 Total: XL overall; iterative — slice 7 (pilot) is the gate to slice 8 (scale).
 

@@ -21,11 +21,26 @@ test("Grafana manifest provisions the conformance SLI panel and alert rule", asy
   const dashboard = parseOrgHealthDashboard(manifest);
   equal(firstExpr(panelByTitle(dashboard, "Conformance Pass Ratio")), "min(org_conformance_pass_ratio)");
   equal(firstExpr(panelByTitle(dashboard, "Conformance Coverage Ratio")), "min(org_conformance_coverage_ratio)");
-  equal(firstExpr(panelByTitle(dashboard, "Agent Cost by Hat")), "sum(rate(org_agent_cost_usd[5m])) by (agentic_hat,llm_model)");
-  equal(firstExpr(panelByTitle(dashboard, "Internal DORA Deployment Frequency")), "sum(org_dora_deployment_frequency_per_day) by (agentic_project_id,agentic_initiative_id)");
-  equal(firstExpr(panelByTitle(dashboard, "Internal DORA Lead Time")), "avg(org_dora_lead_time_ms) by (agentic_project_id,agentic_initiative_id)");
-  equal(firstExpr(panelByTitle(dashboard, "Internal DORA Change Failure Ratio")), "avg(org_dora_change_failure_ratio) by (agentic_project_id,agentic_initiative_id)");
-  equal(firstExpr(panelByTitle(dashboard, "Internal DORA MTTR")), "avg(org_dora_mttr_ms) by (agentic_project_id,agentic_initiative_id)");
+  equal(
+    firstExpr(panelByTitle(dashboard, "Agent Cost by Hat")),
+    "sum(rate(org_agent_cost_usd[5m])) by (agentic_hat,llm_model)",
+  );
+  equal(
+    firstExpr(panelByTitle(dashboard, "Internal DORA Deployment Frequency")),
+    "sum(org_dora_deployment_frequency_per_day) by (agentic_project_id,agentic_initiative_id)",
+  );
+  equal(
+    firstExpr(panelByTitle(dashboard, "Internal DORA Lead Time")),
+    "avg(org_dora_lead_time_ms) by (agentic_project_id,agentic_initiative_id)",
+  );
+  equal(
+    firstExpr(panelByTitle(dashboard, "Internal DORA Change Failure Ratio")),
+    "avg(org_dora_change_failure_ratio) by (agentic_project_id,agentic_initiative_id)",
+  );
+  equal(
+    firstExpr(panelByTitle(dashboard, "Internal DORA MTTR")),
+    "avg(org_dora_mttr_ms) by (agentic_project_id,agentic_initiative_id)",
+  );
 
   const passAlert = alertRuleBlock(manifest, "agentic-org-conformance-pass-ratio");
   ok(passAlert.includes("title: Conformance pass ratio below 1.0"));
@@ -37,10 +52,7 @@ test("Grafana manifest provisions the conformance SLI panel and alert rule", asy
 });
 
 test("Mimir manifest is queryable as a single-node KIND deployment", async () => {
-  const manifest = await readFile(
-    fileURLToPath(new URL("../../../deploy/k8s/42-mimir.yaml", import.meta.url)),
-    "utf8",
-  );
+  const manifest = await readFile(fileURLToPath(new URL("../../../deploy/k8s/42-mimir.yaml", import.meta.url)), "utf8");
 
   ok(manifest.includes("-ingester.ring.replication-factor=1"));
 });

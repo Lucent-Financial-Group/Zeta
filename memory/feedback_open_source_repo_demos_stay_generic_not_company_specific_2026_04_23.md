@@ -4,22 +4,23 @@ description: Aaron's 2026-04-23 directive. The public Zeta repo is open-source a
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Demos stay generic. The repo stays open.
 
 ## Verbatim (2026-04-23)
 
 > lets try to reduce the number of class and thing we call servce
-> titan or this will be confusing in a Zeta repo.  Just call it
+> titan or this will be confusing in a Zeta repo. Just call it
 > like UI/factory demo or something, it semething that should be
 > about to be demo to more than service titan too, these is
 > basically the Why choose the software factory set of demos we
 > can show to anyone that will make them want to adaopt the
-> software factory.  In general even our demos should try to be
+> software factory. In general even our demos should try to be
 > generics and not spedific to a company so they can be resued.
 > Also in general we want to limit the number of times we mention
 > ServiceTitan in the repo history, this is not a service titan
-> repo, it's an open source repo.  So lets make sure that stays
-> obvious.  I split this out so it would not need specifics to
+> repo, it's an open source repo. So lets make sure that stays
+> obvious. I split this out so it would not need specifics to
 > service titan, i want something very generic any company or
 > project could use.
 
@@ -29,7 +30,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 repo's identity is public, research-driven, and company-neutral.
 Anything committed to the repo — file names, class names,
 commit messages, doc prose, README framing — should read as
-generic so *any* company or project could adopt the sample
+generic so _any_ company or project could adopt the sample
 code / demo / factory.
 
 **Demos are "why choose the software factory" pitches.** The
@@ -64,7 +65,7 @@ schemas back into the repo.
   `ServiceTitanFactoryApi` in namespace / module / type
   declarations. Generic F# / C# names only.
 - No ServiceTitan mentions in README / doc file names.
-- Exception: referencing ServiceTitan is fine *as an example*
+- Exception: referencing ServiceTitan is fine _as an example_
   ("e.g. a CRM like ServiceTitan's") in passing, at most once
   per document, and only when it genuinely aids the reader.
   Never as the subject.
@@ -112,12 +113,12 @@ schemas back into the repo.
 Sometimes the reasoning legitimately depends on ServiceTitan
 context (they use C#, zero F#, etc.). In those cases:
 
-- Keep the reasoning in *per-user* memory where it is
+- Keep the reasoning in _per-user_ memory where it is
   naturally private.
 - Reference the reasoning in repo-local content only in
   generic form: "the immediate-target audience has a C#
   backend" rather than "ServiceTitan has a C# backend."
-- Never let the repo-local content *require* ServiceTitan-
+- Never let the repo-local content _require_ ServiceTitan-
   knowledge to be useful. A reader cloning the repo cold
   should understand the demo on its own terms.
 

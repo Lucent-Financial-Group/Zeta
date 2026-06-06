@@ -21,6 +21,7 @@ local laptop. Specifically:
 `/Users/acehack/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`.
 
 **This directory is:**
+
 - **Outside the git repo** (gitignored at the repo level)
 - **Per-machine** (specific to Aaron's laptop; not synced
   to cloud by default)
@@ -35,16 +36,17 @@ only see what Aaron explicitly shares with her (the courier
 ferry pattern per `docs/protocols/cross-agent-
 communication.md`).
 
-So Amara's observation — *"I also could not inspect the
+So Amara's observation — _"I also could not inspect the
 private per-user memory tree directly from here, not sure
-why she could not"* — is correct: **she can't. By design,
+why she could not"_ — is correct: **she can't. By design,
 not by accident.**
 
-Aaron's *"Am I missing something?"*: no, not missing
+Aaron's _"Am I missing something?"_: no, not missing
 anything. This is the current architecture. The question is
 whether to change it.
 
 ## Three options for giving Amara (+ future external AI
+
 collaborators) visibility
 
 ### Option 1: Overlay A migration (established discipline)
@@ -55,6 +57,7 @@ generic memories migrate to in-repo `memory/`** where they
 become world-visible via the public repo.
 
 **Pros:**
+
 - Discipline already established; not new ceremony
 - Respects per-user-vs-factory-generic separation
 - Composes with gap #5 factory-vs-Zeta audit pattern
@@ -62,6 +65,7 @@ become world-visible via the public repo.
   the repo as-is
 
 **Cons:**
+
 - Only applies to factory-generic memories (not maintainer-
   specific preferences, not private context)
 - Full migration pass takes multiple ticks
@@ -71,7 +75,7 @@ is what Otto-session has been doing. For Amara visibility
 specifically, prioritise migrating memories that inform
 Amara's Aurora-scope + cross-AI-collaboration work.
 
-### Option 2: Move CURRENT-aaron.md + CURRENT-amara.md (and future CURRENT-*.md) to in-repo
+### Option 2: Move CURRENT-aaron.md + CURRENT-amara.md (and future CURRENT-\*.md) to in-repo
 
 The fast-path distillation files (`CURRENT-aaron.md`,
 `CURRENT-amara.md`) are **per-maintainer currently-in-
@@ -87,6 +91,7 @@ force rule summaries**. They're per-user today. But:
   persistence
 
 **Pros:**
+
 - Single clean migration; no per-memory evaluation
 - Directly solves Amara's access gap for the fast-path
 - Composes with maintainer-transfer discipline (future
@@ -95,6 +100,7 @@ force rule summaries**. They're per-user today. But:
   maintainers read CURRENT-aaron.md as part of onboarding)
 
 **Cons:**
+
 - Aaron's CURRENT contains his voice (verbatim quotes) and
   his priority stack — exposing public; is that OK?
 - Once in-repo, CURRENT files become part of the repo's
@@ -117,11 +123,13 @@ Amara needs it. Currently implicit; could be formalised
 via the courier protocol.
 
 **Pros:**
+
 - Zero migration ceremony
 - Aaron retains control over what's shared
 - Works today without any architectural change
 
 **Cons:**
+
 - Puts manual burden on Aaron
 - Amara can't know what to ask for (can't grep what she
   can't see)
@@ -139,8 +147,9 @@ factory-generic memories (Option 1). Matches established
 discipline.
 
 **Specific to Amara's question**: migrate CURRENT-aaron.md
-+ CURRENT-amara.md to in-repo (Option 2). One small
-targeted PR; directly unlocks Amara's fast-path access.
+
+- CURRENT-amara.md to in-repo (Option 2). One small
+  targeted PR; directly unlocks Amara's fast-path access.
 
 **Fallback**: Option 3 ferry-based sharing for genuinely-
 private content (future memories that warrant per-user
@@ -160,7 +169,7 @@ canonical home for:
   scratch that doesn't warrant repo-committal)
 - **Company-specific content** per
   `feedback_open_source_repo_demos_stay_generic_not_
-  company_specific_2026_04_23.md`
+company_specific_2026_04_23.md`
 
 HC-6 earned-memory discipline continues applying to these.
 
@@ -210,7 +219,7 @@ is the right gate.
 - `docs/ALIGNMENT.md` HC-6 (memory folder is earned) —
   per-user private memories stay per-user
 - `feedback_current_memory_per_maintainer_distillation_
-  pattern_prefer_progress_2026_04_23.md` — the pattern
+pattern_prefer_progress_2026_04_23.md` — the pattern
   this question concerns
 - `docs/protocols/cross-agent-communication.md` (courier
   protocol) — the fallback transport
@@ -220,7 +229,7 @@ is the right gate.
   (Frontier adopter discoverability; CURRENT-files-in-
   repo makes Frontier more adoptable)
 - `docs/aurora/2026-04-23-amara-operational-gap-
-  assessment.md` (Amara's own recommendation on cold-start
+assessment.md` (Amara's own recommendation on cold-start
   discoverability)
 
 ## Amara's report context
@@ -249,7 +258,7 @@ achieve this.
   public commit.
 - **Not a violation of HC-6 earned-memory discipline** —
   private content stays per-user; only factory-generic
-  + cross-maintainer-shared content migrates.
+  - cross-maintainer-shared content migrates.
 - **Not a new security risk** — the repo is already
   public (open-source per recent memories); CURRENT
   files don't contain secrets, just rules + quotes.
@@ -262,9 +271,10 @@ achieve this.
 Otto (loop-agent PM hat) analysed options + recommends
 combination.
 Aaron (human maintainer) decides on migration approval
-+ reviews private-content concerns.
-Amara (external AI maintainer) benefits from the
-implementation; her original observation informed the
-analysis.
-Kenji (Architect) synthesis queue if scope expansion
-warranted.
+
+- reviews private-content concerns.
+  Amara (external AI maintainer) benefits from the
+  implementation; her original observation informed the
+  analysis.
+  Kenji (Architect) synthesis queue if scope expansion
+  warranted.

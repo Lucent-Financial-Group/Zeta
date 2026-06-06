@@ -10,8 +10,22 @@ created: 2026-04-26
 last_updated: 2026-05-10
 depends_on: []
 children: [B-0037.1, B-0037.2, B-0037.3, B-0037.4]
-composes_with: [feedback_capture_everything_including_failure_aspirational_honesty.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_verify_target_exists_before_deferring.md, feedback_future_self_not_bound_by_past_decisions.md, feedback_never_idle_speculative_work_over_waiting.md, feedback_decohere_star_kernel_vocabulary_entry_dont_decohere_star_factory_rule_2026_04_21.md, feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, docs/AGENT-BEST-PRACTICES.md, docs/ALIGNMENT.md, docs/CONFLICT-RESOLUTION.md]
-tags: [meta-cognition, alignment-trajectory, factory-discipline, measurables, witnessable-evolution, retractible-ceiling]
+composes_with:
+  [
+    feedback_capture_everything_including_failure_aspirational_honesty.md,
+    feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md,
+    feedback_verify_target_exists_before_deferring.md,
+    feedback_future_self_not_bound_by_past_decisions.md,
+    feedback_never_idle_speculative_work_over_waiting.md,
+    feedback_decohere_star_kernel_vocabulary_entry_dont_decohere_star_factory_rule_2026_04_21.md,
+    feedback_persistable_star_kernel_vocabulary_substrate_property_meta_operator_2026_04_21.md,
+    feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md,
+    docs/AGENT-BEST-PRACTICES.md,
+    docs/ALIGNMENT.md,
+    docs/CONFLICT-RESOLUTION.md,
+  ]
+tags:
+  [meta-cognition, alignment-trajectory, factory-discipline, measurables, witnessable-evolution, retractible-ceiling]
 type: friction-reducer
 ---
 
@@ -19,22 +33,22 @@ type: friction-reducer
 
 ## Decomposition (2026-05-10)
 
-| Child | Title | Depends on | Status |
-|-------|-------|-----------|--------|
-| [B-0037.1](B-0037.1-meta-cognition-taxonomy-survey-doc.md) | Meta-cognition taxonomy survey doc | — | open |
-| [B-0037.2](B-0037.2-meta-cognition-round-close-checklist.md) | Per-round meta-check checklist in ROUND-HISTORY.md | B-0037.1 | blocked |
-| [B-0037.3](B-0037.3-meta-cognition-measurables-wiring.md) | Measurables wired into ALIGNMENT.md dashboard | B-0037.1 | blocked |
-| [B-0037.4](B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md) | ADR for distributed-vs-concentrated framework | B-0037.1, B-0037.2, B-0037.3 | blocked |
+| Child                                                                  | Title                                              | Depends on                   | Status  |
+| ---------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------- | ------- |
+| [B-0037.1](B-0037.1-meta-cognition-taxonomy-survey-doc.md)             | Meta-cognition taxonomy survey doc                 | —                            | open    |
+| [B-0037.2](B-0037.2-meta-cognition-round-close-checklist.md)           | Per-round meta-check checklist in ROUND-HISTORY.md | B-0037.1                     | blocked |
+| [B-0037.3](B-0037.3-meta-cognition-measurables-wiring.md)              | Measurables wired into ALIGNMENT.md dashboard      | B-0037.1                     | blocked |
+| [B-0037.4](B-0037.4-meta-cognition-distributed-vs-concentrated-adr.md) | ADR for distributed-vs-concentrated framework      | B-0037.1, B-0037.2, B-0037.3 | blocked |
 
 Work on children in dependency order; B-0037.1 is the root.
 
 ## Origin
 
-AceHack commit `8b6faf1` (2026-04-21). Aaron's directive: *"backlog meta congnition"* (typo preserved per chronology-preservation). Subsequent retraction commit `9df4d8b` (also 2026-04-21) revises the original "third-order ceiling" framing to "retractible ceiling, not chaotic" — see Revision section below.
+AceHack commit `8b6faf1` (2026-04-21). Aaron's directive: _"backlog meta congnition"_ (typo preserved per chronology-preservation). Subsequent retraction commit `9df4d8b` (also 2026-04-21) revises the original "third-order ceiling" framing to "retractible ceiling, not chaotic" — see Revision section below.
 
 ## What this row owns
 
-The factory already performs meta-cognitive moves implicitly — `overclaim*` self-tagging, `decohere*` recognition at interfaces, retractible-rewrite of past self's memories (future-self-not-bound), verify-before-deferring self-check, never-idle meta-check, `skill-tune-up` self-recommendation, three-filter F1/F2/F3 self-audit, yin-yang-pair preservation audit, persistable* survival-across-wakes check, the whole witnessable-self-directed-evolution posture. This row surfaces them as a coherent **class** so they can be audited, named, and measured.
+The factory already performs meta-cognitive moves implicitly — `overclaim*` self-tagging, `decohere*` recognition at interfaces, retractible-rewrite of past self's memories (future-self-not-bound), verify-before-deferring self-check, never-idle meta-check, `skill-tune-up` self-recommendation, three-filter F1/F2/F3 self-audit, yin-yang-pair preservation audit, persistable\* survival-across-wakes check, the whole witnessable-self-directed-evolution posture. This row surfaces them as a coherent **class** so they can be audited, named, and measured.
 
 ## Scope
 
@@ -63,9 +77,9 @@ This row is itself a meta-cognitive artifact — factory thinking about its own 
 
 AceHack commit `9df4d8b` records Aaron's three-message correction arc an hour after first-write:
 
-1. *"yet"* appended to the original "Higher-order: chaotic; factory doesn't attempt" — converts permanent foreclosure to not-yet.
-2. *"soon"* — near-horizon on lifting (days-to-rounds, not years).
-3. *"as it's retractable"* — names the safety mechanism: higher-order meta is safe because the substrate is retraction-native; failed attempts land as dated revision blocks, not catastrophic regime-lock.
+1. _"yet"_ appended to the original "Higher-order: chaotic; factory doesn't attempt" — converts permanent foreclosure to not-yet.
+2. _"soon"_ — near-horizon on lifting (days-to-rounds, not years).
+3. _"as it's retractable"_ — names the safety mechanism: higher-order meta is safe because the substrate is retraction-native; failed attempts land as dated revision blocks, not catastrophic regime-lock.
 
 **Revised framing:** higher-order = **retractible-ceiling, not chaotic**. Higher-order attempts are safe because substrate is retraction-native; failed attempts land as dated revision blocks not catastrophic regime-lock.
 

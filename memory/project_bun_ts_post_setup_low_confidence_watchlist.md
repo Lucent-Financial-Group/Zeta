@@ -4,6 +4,7 @@ description: Aaron chose bun+TS for Zeta's post-setup `tools/` surface after mul
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **The decision** (2026-04-20, round 43): post-setup
 scripting work in Zeta's `tools/` surface is **bun +
 TypeScript**. Recorded in
@@ -12,12 +13,12 @@ TypeScript**. Recorded in
 **The unusual thing about this decision:** Aaron
 described it verbatim as
 
-> *"this was one of the hardest decisoins i've made
+> _"this was one of the hardest decisoins i've made
 > and i'm still not sure i made the right one, we
 > should probbalby keep and eye out and see if we have
 > any reason to change or can find any other way of
 > doing this that looks better, no rush wahatever you
-> want to do here at this point"*
+> want to do here at this point"_
 
 That is a decision held with **explicit low
 confidence** and an explicit delegation of the
@@ -29,9 +30,9 @@ Aaron's cross-cutting reasoning, in decision-weight
 order):
 
 1. **UI-TS amortization — the load-bearing pillar.**
-   Aaron: *"also i know we will end up using
+   Aaron: _"also i know we will end up using
    typescrpt for our ui here too eventually so bun
-   is a tool that's comming no matter what"*.
+   is a tool that's comming no matter what"_.
    TypeScript is an inevitable Zeta surface. Bun is
    then a runtime the project needs regardless of
    tooling. The second-runtime objection — the
@@ -42,18 +43,18 @@ order):
    case-normalization overhead). Bun ships a native
    Windows binary and starts fast.
 3. **Faction problem with shell languages.** Per
-   Aaron: *"pwsh is also clunky cause some people
+   Aaron: _"pwsh is also clunky cause some people
    hate powershell and some hate bash which is
-   another reason i tried to go outside those."*
+   another reason i tried to go outside those."_
    Bash and PowerShell both have cultural factions
    that object to them. Picking either alienates one
    camp. bun+TS sidesteps the faction war.
 4. **Static types + sibling-project consistency.**
    TypeScript gives static types on automation code;
    SQLSharp already runs bun+TS, so cross-project
-   consistency is a bonus — *explicitly two-way*,
-   per Aaron: *"SQLSharp can be updated to use
-   whatever we choose though"*. Either project can
+   consistency is a bonus — _explicitly two-way_,
+   per Aaron: _"SQLSharp can be updated to use
+   whatever we choose though"_. Either project can
    lead a future change.
 
 **Why the confidence is medium, not high** (after the
@@ -69,7 +70,7 @@ UI-TS amortization input moved it up from low):
   bun+TS, but Zeta's maintenance horizon is long and
   personal experience may not generalize to all
   future maintainers.
-- The UI-TS amortization is load-bearing *if* the UI
+- The UI-TS amortization is load-bearing _if_ the UI
   actually lands on TypeScript. If Zeta's UI surface
   ends up on a different runtime (Blazor WebAssembly,
   a Rust-based frontend, native .NET MAUI), the
@@ -92,7 +93,7 @@ Revisit is NOT on a calendar. Trigger-driven:
 3. **Pain accumulates on the chosen path** — we
    repeatedly fight the type system, the compile
    step, the ecosystem sprawl, or the package-manager
-   surface. If writing `.ts` feels *worse* than
+   surface. If writing `.ts` feels _worse_ than
    writing bash did, that's the signal.
 4. **SQLSharp changes course** — if the sibling
    project finds bun+TS unsatisfying and pivots, that
@@ -119,8 +120,8 @@ Revisit is NOT on a calendar. Trigger-driven:
 - On any of the six triggers above, dispatch a
   formal ADR supersession round. Don't wait for
   Aaron to raise it; that's the whole point of the
-  delegation — he said *"whatever you want to do
-  here at this point"*.
+  delegation — he said _"whatever you want to do
+  here at this point"_.
 - Log watchlist observations into
   `docs/TECH-RADAR.md` under the bun+TS row when
   they accumulate. Multiple small signals add up to

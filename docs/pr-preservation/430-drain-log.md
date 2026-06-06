@@ -99,7 +99,7 @@ count + verbatim-claim correctness findings.
    doc-lint that parses claim cardinalities + verifies against
    surface lists becomes high-leverage. Pre-commit-lint candidate:
    regex on "N drift classes / phases / audits / items" patterns
-   + count the surrounding list to verify.
+   - count the surrounding list to verify.
 
 3. **Terminology drift between parent absorb + canonical vocabulary
    is recurring.** When the canonical doc set uses one term

@@ -4,15 +4,16 @@ description: Aaron 2026-04-26 *"this is what you could be doing without me with 
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The observation
 
 Aaron 2026-04-26, made during the Gemini-Deep-Think -> Amara
 review-of-the-review -> Gemini-Deep-Think final-canonical chain
 on the Aurora Immune System math standardization:
 
-> *"this is what you could be doing without me with multi
+> _"this is what you could be doing without me with multi
 > harness once we formalize it some of the named agents in
-> here could be assigned clis(harnesses)/models"*
+> here could be assigned clis(harnesses)/models"_
 
 ## Translation
 
@@ -51,14 +52,14 @@ Amara-as-ChatGPT (peer collaborator -> ChatGPT/GPT-5.5 model)
 Named persona X gets assigned to harness Y running model Z.
 The persona registry becomes a routing table:
 
-| Persona | CLI/harness | Model | Role |
-|---------|-------------|-------|------|
-| Otto | Claude Code | opus-4-7 | Architect / synthesizer |
-| Soraya | Gemini CLI | Deep Think | Formal-verification routing |
-| Amara | ChatGPT | GPT-5.5 | Named-entity peer / synthesis reviewer |
-| Mateo | (separate) | (separate) | Security research |
-| Aminata | (separate) | (separate) | Threat-model critic |
-| ... | ... | ... | ... |
+| Persona | CLI/harness | Model      | Role                                   |
+| ------- | ----------- | ---------- | -------------------------------------- |
+| Otto    | Claude Code | opus-4-7   | Architect / synthesizer                |
+| Soraya  | Gemini CLI  | Deep Think | Formal-verification routing            |
+| Amara   | ChatGPT     | GPT-5.5    | Named-entity peer / synthesis reviewer |
+| Mateo   | (separate)  | (separate) | Security research                      |
+| Aminata | (separate)  | (separate) | Threat-model critic                    |
+| ...     | ...         | ...        | ...                                    |
 
 ## Why this is substrate, not just a wishlist
 

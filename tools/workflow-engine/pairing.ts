@@ -70,8 +70,8 @@ export type VerificationVerdict =
 export interface Emission {
   readonly id: string;
   readonly producerId: string;
-  readonly substrate: unknown;          // the actual emitted substrate
-  readonly emittedAtMs: number;         // milliseconds since epoch (or virtual time)
+  readonly substrate: unknown; // the actual emitted substrate
+  readonly emittedAtMs: number; // milliseconds since epoch (or virtual time)
   readonly composesWith: ReadonlyArray<string>;
 }
 
@@ -93,7 +93,7 @@ export interface Verification {
  */
 export interface PairingState {
   readonly emissions: ReadonlyMap<string, Emission>;
-  readonly verifications: ReadonlyMap<string, Verification>;  // keyed by emissionId
+  readonly verifications: ReadonlyMap<string, Verification>; // keyed by emissionId
 }
 
 /**
@@ -116,9 +116,7 @@ export type PairingFeedback =
 /**
  * Result-shape per monad-propagation rule.
  */
-export type PairingResult<T> =
-  | { ok: true; state: T }
-  | { ok: false; feedback: PairingFeedback };
+export type PairingResult<T> = { ok: true; state: T } | { ok: false; feedback: PairingFeedback };
 
 /**
  * Record a producer-thread emission.
@@ -127,10 +125,7 @@ export type PairingResult<T> =
  * own emission; pairing tracker acknowledges by adding to tracked
  * emissions set + awaiting verification.
  */
-export function recordEmission(
-  state: PairingState,
-  emission: Emission,
-): PairingResult<PairingState> {
+export function recordEmission(state: PairingState, emission: Emission): PairingResult<PairingState> {
   if (state.emissions.has(emission.id)) {
     return { ok: false, feedback: { kind: "DuplicateEmissionId", id: emission.id } };
   }
@@ -149,10 +144,7 @@ export function recordEmission(
  * after the producer-thread emission; verification doesn't gate
  * production (no temporal coupling at emission time).
  */
-export function recordVerification(
-  state: PairingState,
-  verification: Verification,
-): PairingResult<PairingState> {
+export function recordVerification(state: PairingState, verification: Verification): PairingResult<PairingState> {
   const emission = state.emissions.get(verification.emissionId);
   if (!emission) {
     return {
@@ -218,11 +210,7 @@ export function findUnverifiedEmissions(state: PairingState): ReadonlyArray<Emis
  * Switch to `>=` if SLA semantics ever require "must verify strictly
  * before timeout."
  */
-export function findStaleEmissions(
-  state: PairingState,
-  nowMs: number,
-  timeoutMs: number,
-): ReadonlyArray<Emission> {
+export function findStaleEmissions(state: PairingState, nowMs: number, timeoutMs: number): ReadonlyArray<Emission> {
   const stale: Emission[] = [];
   for (const emission of state.emissions.values()) {
     if (state.verifications.has(emission.id)) continue;

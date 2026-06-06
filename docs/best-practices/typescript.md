@@ -12,11 +12,11 @@ action.
 
 ## Upstream sources (verified)
 
-| Source | URL | Last verified |
-|---|---|---|
-| TypeScript 6.0 release notes | https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html | 2026-04-29 |
-| typescript-eslint v8 typed-linting | https://typescript-eslint.io/getting-started/typed-linting/ | 2026-04-29 |
-| typescript-eslint v8 announcement | https://typescript-eslint.io/blog/announcing-typescript-eslint-v8/ | 2026-04-29 |
+| Source                             | URL                                                                            | Last verified |
+| ---------------------------------- | ------------------------------------------------------------------------------ | ------------- |
+| TypeScript 6.0 release notes       | https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html | 2026-04-29    |
+| typescript-eslint v8 typed-linting | https://typescript-eslint.io/getting-started/typed-linting/                    | 2026-04-29    |
+| typescript-eslint v8 announcement  | https://typescript-eslint.io/blog/announcing-typescript-eslint-v8/             | 2026-04-29    |
 
 Per Otto-364 (search-first authority): training-data knowledge of
 TypeScript idioms is stale within weeks. Re-search before treating
@@ -33,14 +33,14 @@ this as ground truth.
 {
   "compilerOptions": {
     // strictness — recommended by TS 6.0
-    "strict": true,                          // default in TS 6.0
-    "noUncheckedIndexedAccess": true,        // index access yields T | undefined
-    "exactOptionalPropertyTypes": true,      // distinguish missing vs undefined
-    "verbatimModuleSyntax": true,            // explicit type-only imports
+    "strict": true, // default in TS 6.0
+    "noUncheckedIndexedAccess": true, // index access yields T | undefined
+    "exactOptionalPropertyTypes": true, // distinguish missing vs undefined
+    "verbatimModuleSyntax": true, // explicit type-only imports
 
     // emit discipline — runtime decides whether emit happens at all
-    "noEmitOnError": true
-  }
+    "noEmitOnError": true,
+  },
 }
 ```
 
@@ -76,8 +76,8 @@ files decide whether to enable it.
   - Pin seeds where randomness is unavoidable.
   - Test retries are a DST-violation smell — investigate root
     cause; never paper over.
-  Runtime-specific DST tooling lives in the runtime layer
-  (`bun.md` for Bun; future `node.md` / `deno.md` for those).
+    Runtime-specific DST tooling lives in the runtime layer
+    (`bun.md` for Bun; future `node.md` / `deno.md` for those).
 - **Code-coverage gate** — every language adopts code coverage:
   - Tests cover the public API surface of every module by default.
     A new module without coverage is incomplete.
@@ -85,8 +85,8 @@ files decide whether to enable it.
     fail the gate.
   - Branch + line coverage both tracked. Line-only is necessary
     but not sufficient.
-  Runtime-specific coverage tooling lives in the runtime layer
-  (Bun's built-in coverage in `bun.md`).
+    Runtime-specific coverage tooling lives in the runtime layer
+    (Bun's built-in coverage in `bun.md`).
 
 ## Preferred patterns (style — not the merge gate, but adopt where natural)
 

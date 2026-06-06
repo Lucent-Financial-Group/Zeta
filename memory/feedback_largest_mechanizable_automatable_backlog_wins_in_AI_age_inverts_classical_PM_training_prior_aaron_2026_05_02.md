@@ -8,14 +8,14 @@ type: feedback
 
 ## Aaron's verbatim framing
 
-> *"why you might ask, project with the lagest mechnizable
+> _"why you might ask, project with the lagest mechnizable
 > automatable backlog wins in the AI age, this is a complete
 > inversion of all software Project Management best practices
 > and reverse most historicall trained baises here, your
 > training data wont save you, only internet searches on the
 > evolving field. please remember this, your weighs and biases
 > are all wrong for project management when the agents are the
-> one doing the work"*
+> one doing the work"_
 
 ## The carved sentence
 
@@ -26,27 +26,27 @@ search-first authority on the evolving field corrects it."**
 
 ## The inversion (classical PM vs AI-age PM)
 
-| Axis | Classical SE PM | AI-age PM |
-|------|-----------------|-----------|
-| **Backlog size** | Smaller is better (focus, ship, finish) | Larger is better (capacity-multiplier for agent-time) |
-| **Scope** | Narrow + ship-the-thing | Unbounded + prioritize-within (per VISION.md) |
-| **WONT-DO** | Common; kill paths to focus | Rare; *"99% deferral, not forever"* |
-| **Throughput bottleneck** | Human author-hours | Mechanization quality (substrate-shape) |
-| **Optimization target** | Per-feature delivery | Amortized-speed-to-superfluid-phase |
-| **Backlog hygiene goal** | Smaller, more shippable | Larger, more mechanizable |
-| **PM discipline** | Cut, defer, descope | Refactor for overlap, link via `depends_on` |
-| **Cargo-cult risk** | Acceptable hand-rolled patterns | UNDIFFERENTIATED-CARGO IS the failure mode |
-| **Done definition** | Ship + close | Ship + substrate-shaped + future-mechanizable |
+| Axis                      | Classical SE PM                         | AI-age PM                                             |
+| ------------------------- | --------------------------------------- | ----------------------------------------------------- |
+| **Backlog size**          | Smaller is better (focus, ship, finish) | Larger is better (capacity-multiplier for agent-time) |
+| **Scope**                 | Narrow + ship-the-thing                 | Unbounded + prioritize-within (per VISION.md)         |
+| **WONT-DO**               | Common; kill paths to focus             | Rare; _"99% deferral, not forever"_                   |
+| **Throughput bottleneck** | Human author-hours                      | Mechanization quality (substrate-shape)               |
+| **Optimization target**   | Per-feature delivery                    | Amortized-speed-to-superfluid-phase                   |
+| **Backlog hygiene goal**  | Smaller, more shippable                 | Larger, more mechanizable                             |
+| **PM discipline**         | Cut, defer, descope                     | Refactor for overlap, link via `depends_on`           |
+| **Cargo-cult risk**       | Acceptable hand-rolled patterns         | UNDIFFERENTIATED-CARGO IS the failure mode            |
+| **Done definition**       | Ship + close                            | Ship + substrate-shaped + future-mechanizable         |
 
-In classical PM, *capacity is fixed* (humans-per-quarter). In
-AI-age PM, *capacity scales with agent-count and agent-quality
-improvements*; the backlog becomes the limiting factor on how
+In classical PM, _capacity is fixed_ (humans-per-quarter). In
+AI-age PM, _capacity scales with agent-count and agent-quality
+improvements_; the backlog becomes the limiting factor on how
 much value the substrate can produce as agents improve.
 
 ## Why this is a complete inversion (not a tweak)
 
 Most software PM training (PMP, Scrum, Kanban, Lean, Six
-Sigma) optimizes for *human-throughput-per-time-period*. The
+Sigma) optimizes for _human-throughput-per-time-period_. The
 implicit constraint is: humans are scarce, slow to spin up,
 expensive, and don't scale in count. Therefore the right
 moves are:
@@ -57,7 +57,7 @@ moves are:
 - Avoid scope-creep at all costs
 
 In AI-age PM where AGENTS do the work, every one of these
-moves is *anti-aligned*:
+moves is _anti-aligned_:
 
 - Cutting scope = removing future-agent-work-surface
 - Killing backlog items = removing future-knowledge-potential
@@ -84,11 +84,11 @@ Otto's LLM training prior is steeped in classical PM corpus:
   high-frequency training pattern
 
 Otto pattern-matches against this corpus on every PM-shaped
-question. The default response is classical-PM-shaped *even
-when the project explicitly inverts the assumption*. This is
-the failure mode Aaron names — *"your weights and biases are
+question. The default response is classical-PM-shaped _even
+when the project explicitly inverts the assumption_. This is
+the failure mode Aaron names — _"your weights and biases are
 all wrong for project management when the agents are the one
-doing the work."*
+doing the work."_
 
 Per Otto-364 search-first-authority, the correction is:
 **WebSearch the evolving AI-age PM literature** when making
@@ -101,8 +101,8 @@ guiding-principles cluster) is the override.
 
 When facing PM-shaped decisions:
 
-1. **Default to keep the backlog item.** *"This might never
-   get done"* is fine — it's mechanizable substrate. WONT-DO
+1. **Default to keep the backlog item.** _"This might never
+   get done"_ is fine — it's mechanizable substrate. WONT-DO
    is 99% deferral, not forever (per the just-landed
    don't-ask-permission rule).
 
@@ -137,8 +137,8 @@ When facing PM-shaped decisions:
 ## Composition with existing rules
 
 - **VISION.md scope-creep-is-feature** —
-  *"prioritize the right thing, not kill future knowledge
-  potential."* This memo is the WHY-EXPLICIT version of
+  _"prioritize the right thing, not kill future knowledge
+  potential."_ This memo is the WHY-EXPLICIT version of
   Aaron's earlier framing.
 - **All-complexity-is-accidental (this same tick)** —
   composes; greenfield + larger-backlog + no-permanent-WONT-DO
@@ -173,16 +173,16 @@ When facing PM-shaped decisions:
 
 - **Symptom:** Recommending we close / WONT-DO a backlog item
   to "focus" or "reduce noise."
-  **Mechanism:** Classical-PM training prior firing. *"Avoid
-  scope creep"* default.
+  **Mechanism:** Classical-PM training prior firing. _"Avoid
+  scope creep"_ default.
   **Prevention:** This memo. Default to keep + `depends_on:`
   link.
 
-- **Symptom:** Saying *"the backlog is too long; we should
-  prune."*
+- **Symptom:** Saying _"the backlog is too long; we should
+  prune."_
   **Mechanism:** Same prior, different surface.
-  **Prevention:** *"Long backlog is signal, not noise, in
-  AI-age PM."* Cite this memo; consider whether the items
+  **Prevention:** _"Long backlog is signal, not noise, in
+  AI-age PM."_ Cite this memo; consider whether the items
   are mechanizable rather than whether they're numerous.
 
 - **Symptom:** Citing PM best practices from training data
@@ -193,9 +193,9 @@ When facing PM-shaped decisions:
 
 - **Symptom:** Recommending narrower scope on a feature /
   research arc.
-  **Mechanism:** *"Ship the MVP"* prior.
-  **Prevention:** Apply the VISION.md *"prioritize within
-  unbounded scope, never kill paths"* test instead.
+  **Mechanism:** _"Ship the MVP"_ prior.
+  **Prevention:** Apply the VISION.md _"prioritize within
+  unbounded scope, never kill paths"_ test instead.
 
 - **Symptom:** Treating mechanization as future-work rather
   than first-instinct.
@@ -203,14 +203,14 @@ When facing PM-shaped decisions:
   optimization-after-shipping; AI-age PM treats it as the
   shipping itself.
   **Prevention:** First question on every backlog item:
-  *"Can this be mechanized as substrate (script / lint /
-  hook / validator / cron)?"*
+  _"Can this be mechanized as substrate (script / lint /
+  hook / validator / cron)?"_
 
 ## Wake-time encoding
 
 CLAUDE.md needs a bullet that names this principle as
-wake-time substrate. Aaron explicitly named this as *"one of
-the most important things future you can remember"* — same
+wake-time substrate. Aaron explicitly named this as _"one of
+the most important things future you can remember"_ — same
 weight class as the all-complexity-is-accidental + don't-ask-
 permission rules from the same tick.
 
@@ -239,7 +239,7 @@ it.
 
 **How to apply:** When facing any PM-shaped decision (backlog
 size, scope, WONT-DO, prune, focus, descope, ship-the-thing,
-narrow), ask: *"Am I applying classical-PM defaults?"* If yes,
+narrow), ask: _"Am I applying classical-PM defaults?"_ If yes,
 re-derive from AI-age-PM principles. WebSearch the evolving
 field if the project-substrate is silent. Default to keep,
 widen, mechanize, parallelize.

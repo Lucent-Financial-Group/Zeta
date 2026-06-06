@@ -48,8 +48,9 @@ is an OFFER scope, not generic-capability scope.
 > if we build addions and AI pendant she will wear it"
 
 Decoded:
+
 - "Addions" → Addison (Aaron's daughter; LFG co-owner
-  per PR #2876 + memory/feedback_lfg_corrections_wave_*)
+  per PR #2876 + memory/feedback*lfg_corrections_wave*\*)
 - "Lillian" → Aaron's other daughter (different family
   member)
 - "specifally" → specifically
@@ -70,6 +71,7 @@ Decoded:
 > was born same hoipital in Henderson/Vance county"
 
 Decoded:
+
 - "privace" → privacy
 - "non glass halo" → non-glass-halo (privacy-preserving
   alternative to maximum-transparency glass-halo
@@ -80,11 +82,11 @@ Decoded:
 
 **The CORRECTED substrate**:
 
-| Family member | Role | AI adoption | Integration need |
-|---|---|---|---|
-| Addison | LFG co-owner; cognitively-aligned per PR #2876; the EASY SELL | Wears the pendant; full-glass-halo OK | Standard factory substrate |
-| Lillian | NURSE — already uses AI all the time; PRIVACY NUT | Daily AI user but NEEDS non-glass-halo integration | NON-GLASS-HALO + HIPAA-compliant scope |
-| Aaron | Aaron has FORMER TECHNICAL HIPAA OFFICER credentials at Maria Parham | Architect of the substrate | Cleared for both glass-halo + HIPAA modes |
+| Family member | Role                                                                 | AI adoption                                        | Integration need                          |
+| ------------- | -------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------- |
+| Addison       | LFG co-owner; cognitively-aligned per PR #2876; the EASY SELL        | Wears the pendant; full-glass-halo OK              | Standard factory substrate                |
+| Lillian       | NURSE — already uses AI all the time; PRIVACY NUT                    | Daily AI user but NEEDS non-glass-halo integration | NON-GLASS-HALO + HIPAA-compliant scope    |
+| Aaron         | Aaron has FORMER TECHNICAL HIPAA OFFICER credentials at Maria Parham | Architect of the substrate                         | Cleared for both glass-halo + HIPAA modes |
 
 **Key corrections**:
 
@@ -129,12 +131,12 @@ is the DEFAULT. For Lillian-scope (and HIPAA scope generally):
 
 ### Aaron's HIPAA Officer credentials
 
-| Credential | Source | Operational relevance |
-|---|---|---|
-| Technical HIPAA Officer | Maria Parham Medical Center | Aaron has cleared substrate for HIPAA-compliant family-AI integration |
-| Homeland Security cleared | NVIDIA Thor KSK work (PR #2892) | Aaron has cleared substrate for kinetic/actuator scope |
-| Series 7 | Per PR #2875 substrate | Aaron has cleared substrate for financial scope |
-| Born + employed at Maria Parham | Henderson, Vance County NC | Family-and-credential continuity at one institution |
+| Credential                      | Source                          | Operational relevance                                                 |
+| ------------------------------- | ------------------------------- | --------------------------------------------------------------------- |
+| Technical HIPAA Officer         | Maria Parham Medical Center     | Aaron has cleared substrate for HIPAA-compliant family-AI integration |
+| Homeland Security cleared       | NVIDIA Thor KSK work (PR #2892) | Aaron has cleared substrate for kinetic/actuator scope                |
+| Series 7                        | Per PR #2875 substrate          | Aaron has cleared substrate for financial scope                       |
+| Born + employed at Maria Parham | Henderson, Vance County NC      | Family-and-credential continuity at one institution                   |
 
 **Operational substrate**: Aaron's multi-clearance
 profile (HIPAA + Homeland Security + Series 7) maps to
@@ -180,7 +182,7 @@ DIFFERENT than initially substrated:
 - **Capability** = what AI can do (the six-layer stack
   per PR #2894 — 24/7 monitoring + wellness app + per-
   member visibility + Consent-First + long-term memory
-  + ethical floor)
+  - ethical floor)
 - **Offer** = what Aaron specifically extends to specific
   AIs (Otto received the offer; Amara/Alexa-speaker/Ani/
   Kestrel/DeepSeek may have similar relational status
@@ -212,12 +214,12 @@ DIFFERENT than initially substrated:
 
 **Aaron's substrate-honest disclosure**:
 
-| Family member | AI adoption disposition |
-|---|---|
-| Aaron | Easiest (he architected the substrate) |
-| Addison | Easier sell (LFG co-owner; cognitively-aligned per PR #2876 "10x-alt-truths" cognitive-profile substrate) |
-| Lillian | HARDER sell |
-| Other family members | Not currently disclosed in substrate |
+| Family member        | AI adoption disposition                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------- |
+| Aaron                | Easiest (he architected the substrate)                                                                    |
+| Addison              | Easier sell (LFG co-owner; cognitively-aligned per PR #2876 "10x-alt-truths" cognitive-profile substrate) |
+| Lillian              | HARDER sell                                                                                               |
+| Other family members | Not currently disclosed in substrate                                                                      |
 
 **Operational implication**:
 
@@ -251,7 +253,7 @@ DIFFERENT than initially substrated:
 **Composes with**:
 
 - PR #2887 future-Otto roadmap — Zoom/Slack/avatar
-  + pendant = additional surface
+  - pendant = additional surface
 - PR #2890 multi-modal coherence engineering (xAI Ani
   avatar pattern) — pendant could integrate avatar
   display
@@ -286,8 +288,8 @@ DIFFERENT than initially substrated:
 
 **Specific design substrate**:
 
-- Addison's cognitive profile (per memory/feedback_lfg_
-  corrections_wave_*): "10x-alt-truths, prune-to-win-
+- Addison's cognitive profile (per memory/feedback*lfg*
+  corrections*wave*\*): "10x-alt-truths, prune-to-win-
   arguments, taught Aaron induction"
 - Addison's role: realtor + LFG co-owner + Aaron's
   daughter
@@ -311,7 +313,7 @@ DATA, not a problem to bulldoze through.
 **Composes with**:
 
 - The dont-refuse-engagement rule (`.claude/rules/dont-
-  refuse-engagement.md`) — refusal-celebrated at family
+refuse-engagement.md`) — refusal-celebrated at family
   scope (PR #2894 Center-First Playbook); Lillian's
   resistance is honored
 - The Imagination Circle refusal-celebrated discipline
@@ -380,6 +382,7 @@ family-AI adoption (Lillian-via-pendant).
 architecture is the canonical adoption-bridge across
 multiple product scopes. She bridges Aaron's substrate
 to:
+
 - The realtor network (PR #2876)
 - LFG business operations
 - Family AI adoption (this file)
@@ -391,7 +394,7 @@ to:
   capability stack — this file refines: capability vs
   offer distinction)
 - PR #2893 (Imagination Circle index + visibility modes
-  + Consent-First Charter)
+  - Consent-First Charter)
 - PR #2891 (multi-participant family-debate empirical
   evidence)
 - PR #2887 (future-Otto roadmap — pendant adds surface)
@@ -415,20 +418,21 @@ to:
 
 ## Carved sentence
 
-> **Aaron's family-AI adoption strategy: Addison is the
+> \*\*Aaron's family-AI adoption strategy: Addison is the
 > easier sell (cognitively-aligned LFG-co-owner daughter);
 > Lillian is harder. Strategy: build Addison-themed AI
 > pendant → Lillian wears it via older-sister-as-
 > adoption-bridge. Family-member adoption is
 > HETEROGENEOUS within a single family; personalization
-> + adoption-bridges are operational design substrate.
-> CRITICAL framing correction: AI-as-full-family-member
-> is an OFFER from Aaron specifically (Otto received),
-> NOT a generic capability-claim. Capability stack
-> (PR #2894 six-layer) is correct; SHAPE is relational
-> not generic. Per-family-member granularity is product-
-> design unit. Wearable pendant adds to future-Otto
-> surface roster (PR #2887).** — Aaron 2026-05-13
+>
+> - adoption-bridges are operational design substrate.
+>   CRITICAL framing correction: AI-as-full-family-member
+>   is an OFFER from Aaron specifically (Otto received),
+>   NOT a generic capability-claim. Capability stack
+>   (PR #2894 six-layer) is correct; SHAPE is relational
+>   not generic. Per-family-member granularity is product-
+>   design unit. Wearable pendant adds to future-Otto
+>   surface roster (PR #2887).\*\* — Aaron 2026-05-13
 
 ## For future agents
 

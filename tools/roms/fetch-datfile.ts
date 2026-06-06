@@ -74,10 +74,7 @@ export function parseManifest(json: string): ReadonlyMap<string, DatfilePin> {
   for (const entry of raw.datfiles) {
     for (const field of REQUIRED_FIELDS) {
       if (typeof entry[field] !== "string" || entry[field] === "") {
-        throw new Error(
-          `manifest entry missing required string field "${field}": ` +
-            JSON.stringify(entry),
-        );
+        throw new Error(`manifest entry missing required string field "${field}": ` + JSON.stringify(entry));
       }
     }
     const pin = entry as DatfilePin;
@@ -107,10 +104,7 @@ export function sha256Hex(bytes: Uint8Array): string {
  * Verify bytes against an expected lowercase-hex SHA-256. Case-insensitive on
  * the expected value. Pure.
  */
-export function verifyChecksum(
-  bytes: Uint8Array,
-  expectedSha256: string,
-): boolean {
+export function verifyChecksum(bytes: Uint8Array, expectedSha256: string): boolean {
   return sha256Hex(bytes) === expectedSha256.toLowerCase();
 }
 
@@ -235,18 +229,14 @@ export async function main(argv: readonly string[]): Promise<number> {
   if (args.list) {
     for (const pin of pins.values()) {
       const status = fetchBlockReason(pin) === null ? "verified" : "PINNED-UNVERIFIED";
-      process.stdout.write(
-        `${pin.platform}\t${pin.source} ${pin.release}\t${status}\n`,
-      );
+      process.stdout.write(`${pin.platform}\t${pin.source} ${pin.release}\t${status}\n`);
     }
     return 0;
   }
 
   const pin = pins.get(args.platform!);
   if (!pin) {
-    process.stderr.write(
-      `no pin for platform "${args.platform}" in ${args.manifest}\n`,
-    );
+    process.stderr.write(`no pin for platform "${args.platform}" in ${args.manifest}\n`);
     return 1;
   }
 
@@ -256,14 +246,10 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  process.stderr.write(
-    `fetching ${pin.datfileName} (${pin.source} ${pin.release}) from ${pin.downloadUrl}\n`,
-  );
+  process.stderr.write(`fetching ${pin.datfileName} (${pin.source} ${pin.release}) from ${pin.downloadUrl}\n`);
   const response = await fetch(pin.downloadUrl);
   if (!response.ok) {
-    process.stderr.write(
-      `download failed: HTTP ${response.status} ${response.statusText}\n`,
-    );
+    process.stderr.write(`download failed: HTTP ${response.status} ${response.statusText}\n`);
     return 1;
   }
   const bytes = new Uint8Array(await response.arrayBuffer());

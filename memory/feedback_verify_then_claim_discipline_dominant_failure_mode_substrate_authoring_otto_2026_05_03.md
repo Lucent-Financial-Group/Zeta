@@ -8,28 +8,28 @@ type: feedback
 
 ## Empirical evidence (this session, 9+ PRs, 20 distinct drift instances)
 
-| Drift instance | PR | Wrong claim | Actual reality |
-|---|---|---|---|
-| 1 | #1248 (post-merge to #1249) | future-domain memo had `feedback_at_pickup_time_*` ref after rename | line 35 still pointed at old filename |
-| 2 | #1245 (post-merge) | "12-row surface→specialist table" in MEMORY.md index | actually 13 rows |
-| 3 | #1248 (post-merge) | "5 procedure skills + 5 tools" in canonical-starting-set | actually 6 + 7 (after refinements) |
-| 4 | #1250 (post-merge) | Layer-6 shards are `1610Z.md`, `1612Z.md`, `1619Z.md` | fictional names; actual: `0112Z.md`, `1456Z.md`, `1520Z.md`, `1522Z.md`, `1523Z.md` |
-| 5 | #1250 (post-merge) | Layer-7 ADR search ("ls docs/DECISIONS/ piped through grep") returns nothing | returns `2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md` |
-| 6 | #1250 (post-merge) | Layer-9 `memory/persona/amara/` exists | doesn't exist (Aaron does, 21 others, no Amara) |
-| 7 | #1250 (post-merge) | Layer-10 docs/research grep returns no specific double-hop artifact | adjacent-substrate artifacts ARE there (5+) |
-| 8 | #1252 (post-merge) | future-domain memo references `docs/courier-ferry-protocol.md` | doesn't exist |
-| 9 | #1253 (post-merge) | skill-design memo references `tools/backlog/expand-from-closure.ts` as the mechanizing tool | doesn't exist; only proposed |
-| 10 | #1255 (in-flight) | drift catalogue itself contained `\|` table-cell escapes (rows 5 and 7 of THIS table, in earlier draft) | the catalogue was itself drifting; rewrote rows in prose form |
-| 11 | #1255 (in-flight) | mechanization path claimed pre-commit hook validates commit-message claims | git pre-commit fires BEFORE commit-msg exists; needs commit-msg hook for that surface |
-| 12 | #1255 (in-flight, recursive #1) | replaced `ls\|grep` with `find -iname` — claimed equivalent | `find -iname` only does shell glob, not regex alternation; semantic-equivalence drift |
-| 13 | #1255 (in-flight, recursive #2) | replaced earlier with `grep -ilrE PATTERN docs/DECISIONS/` — claimed equivalent | `grep -r` searches file CONTENTS, not filenames; semantic-equivalence drift, attempt #2 |
-| 14 | #1254 (post-merge) | recommended `superseded:` / `current_status:` ADR frontmatter marker | canonical convention is `> **Superseded by** [link]` blockquote (per `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`) |
-| 15 | #1256 (post-merge) | path-form inconsistency in adjacent ADR citations (mixing fully-qualified with bare filename) | a recurring sub-class — pick one form and apply uniformly per document |
-| 16 | #1256 (post-merge) | claim that BOTH router-coherence v1 AND v2 ADRs contain the `> **Superseded by** [link]` blockquote pattern | only v1 has the blockquote pattern; v2 carries forward-pointing references and instructions-to-append-marker but not the pattern itself |
-| 17 | #1256 (post-merge) | tick shard 0034Z's empirical-verification claim wrote `grep "Superseded by" docs/DECISIONS/` as if runnable | grep on a directory errors without `-r/-R` flag |
-| 18 | #1256 (post-merge) | tick shard 0039Z described the MD038 fix using the same MD038 trigger (backtick-plus-space-backtick) | reintroduced the same lint failure in describing the previous fix |
-| 19 | #1257 (post-merge to itself) | frontmatter description + MEMORY.md index entry said "9 drift instances" but body said "15+" | classic count-drift sub-pattern: body content updated but metadata surfaces didn't follow |
-| 20 | #1259 (in-flight, recursive) | frontmatter description updated to "18+" + MEMORY.md updated to "18+" but body table still had only 15 rows | the count-drift fix itself introduced opposite-direction drift; this very table-row addition fixes it |
+| Drift instance | PR                              | Wrong claim                                                                                                 | Actual reality                                                                                                                             |
+| -------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1              | #1248 (post-merge to #1249)     | future-domain memo had `feedback_at_pickup_time_*` ref after rename                                         | line 35 still pointed at old filename                                                                                                      |
+| 2              | #1245 (post-merge)              | "12-row surface→specialist table" in MEMORY.md index                                                        | actually 13 rows                                                                                                                           |
+| 3              | #1248 (post-merge)              | "5 procedure skills + 5 tools" in canonical-starting-set                                                    | actually 6 + 7 (after refinements)                                                                                                         |
+| 4              | #1250 (post-merge)              | Layer-6 shards are `1610Z.md`, `1612Z.md`, `1619Z.md`                                                       | fictional names; actual: `0112Z.md`, `1456Z.md`, `1520Z.md`, `1522Z.md`, `1523Z.md`                                                        |
+| 5              | #1250 (post-merge)              | Layer-7 ADR search ("ls docs/DECISIONS/ piped through grep") returns nothing                                | returns `2026-04-26-sync-drain-plan-acehack-lfg-roundtrip-option-c.md`                                                                     |
+| 6              | #1250 (post-merge)              | Layer-9 `memory/persona/amara/` exists                                                                      | doesn't exist (Aaron does, 21 others, no Amara)                                                                                            |
+| 7              | #1250 (post-merge)              | Layer-10 docs/research grep returns no specific double-hop artifact                                         | adjacent-substrate artifacts ARE there (5+)                                                                                                |
+| 8              | #1252 (post-merge)              | future-domain memo references `docs/courier-ferry-protocol.md`                                              | doesn't exist                                                                                                                              |
+| 9              | #1253 (post-merge)              | skill-design memo references `tools/backlog/expand-from-closure.ts` as the mechanizing tool                 | doesn't exist; only proposed                                                                                                               |
+| 10             | #1255 (in-flight)               | drift catalogue itself contained `\|` table-cell escapes (rows 5 and 7 of THIS table, in earlier draft)     | the catalogue was itself drifting; rewrote rows in prose form                                                                              |
+| 11             | #1255 (in-flight)               | mechanization path claimed pre-commit hook validates commit-message claims                                  | git pre-commit fires BEFORE commit-msg exists; needs commit-msg hook for that surface                                                      |
+| 12             | #1255 (in-flight, recursive #1) | replaced `ls\|grep` with `find -iname` — claimed equivalent                                                 | `find -iname` only does shell glob, not regex alternation; semantic-equivalence drift                                                      |
+| 13             | #1255 (in-flight, recursive #2) | replaced earlier with `grep -ilrE PATTERN docs/DECISIONS/` — claimed equivalent                             | `grep -r` searches file CONTENTS, not filenames; semantic-equivalence drift, attempt #2                                                    |
+| 14             | #1254 (post-merge)              | recommended `superseded:` / `current_status:` ADR frontmatter marker                                        | canonical convention is `> **Superseded by** [link]` blockquote (per `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`) |
+| 15             | #1256 (post-merge)              | path-form inconsistency in adjacent ADR citations (mixing fully-qualified with bare filename)               | a recurring sub-class — pick one form and apply uniformly per document                                                                     |
+| 16             | #1256 (post-merge)              | claim that BOTH router-coherence v1 AND v2 ADRs contain the `> **Superseded by** [link]` blockquote pattern | only v1 has the blockquote pattern; v2 carries forward-pointing references and instructions-to-append-marker but not the pattern itself    |
+| 17             | #1256 (post-merge)              | tick shard 0034Z's empirical-verification claim wrote `grep "Superseded by" docs/DECISIONS/` as if runnable | grep on a directory errors without `-r/-R` flag                                                                                            |
+| 18             | #1256 (post-merge)              | tick shard 0039Z described the MD038 fix using the same MD038 trigger (backtick-plus-space-backtick)        | reintroduced the same lint failure in describing the previous fix                                                                          |
+| 19             | #1257 (post-merge to itself)    | frontmatter description + MEMORY.md index entry said "9 drift instances" but body said "15+"                | classic count-drift sub-pattern: body content updated but metadata surfaces didn't follow                                                  |
+| 20             | #1259 (in-flight, recursive)    | frontmatter description updated to "18+" + MEMORY.md updated to "18+" but body table still had only 15 rows | the count-drift fix itself introduced opposite-direction drift; this very table-row addition fixes it                                      |
 
 **20 drift instances across 9+ PRs (and counting; instances #10-#20 landed AFTER the discipline was named — strongest possible empirical urgency for mechanization, since manual discipline already provably hit its wall on the very memo defining the discipline).** Each one a Copilot catch; each one a real claim Otto wrote without verifying. Instances #12 and #13 are particularly diagnostic: same substitution attempt failed twice in succession (find→grep equivalence; grep -ilrE→ls|grep equivalence) — each "fix" introduced a new equivalence-class drift. Instance #20 is even more diagnostic: the very PR fixing one direction of count drift introduced the opposite-direction count drift, perfectly demonstrating why mechanization (the substrate-claim-checker TS tool, v0 shipped in PR #1260) is the only path.
 
@@ -49,13 +49,13 @@ Recurring sub-classes within the broader claim-vs-reality drift:
 
 Specifically: before writing claims of form...
 
-- *"file `<path>` exists"* → `ls <path>` / `test -e <path>`
-- *"command `<cmd>` returns `<X>`"* → run `<cmd>`, pipe output, compare to claimed result
-- *"table has `<N>` rows"* → grep / awk count actual rows
-- *"tool `<tool>` ships / is built"* → check the path; mark "shipped" / "proposed" / "Phase-1b" explicitly
-- *"ADR `<name>` exists / does not exist in `docs/DECISIONS/`"* → run the actual `ls docs/DECISIONS/` query
-- *"directory `<path>` is present / absent"* → `ls -d <path>` / `find <parent> -maxdepth 1 -name <name>`
-- *"row count is `<N>`"* → re-run the count command before committing the claim
+- _"file `<path>` exists"_ → `ls <path>` / `test -e <path>`
+- _"command `<cmd>` returns `<X>`"_ → run `<cmd>`, pipe output, compare to claimed result
+- _"table has `<N>` rows"_ → grep / awk count actual rows
+- _"tool `<tool>` ships / is built"_ → check the path; mark "shipped" / "proposed" / "Phase-1b" explicitly
+- _"ADR `<name>` exists / does not exist in `docs/DECISIONS/`"_ → run the actual `ls docs/DECISIONS/` query
+- _"directory `<path>` is present / absent"_ → `ls -d <path>` / `find <parent> -maxdepth 1 -name <name>`
+- _"row count is `<N>`"_ → re-run the count command before committing the claim
 
 ...verify the corresponding command empirically FIRST, then commit the claim.
 
@@ -65,7 +65,7 @@ The verify-then-claim discipline composes with several named rules at the more-g
 
 - **Otto-247** (`feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`) — "always search first" specifically for version numbers; verify-then-claim generalizes to any claim
 - **Otto-364** (`feedback_otto_364_search_first_authority_not_training_data_not_project_memory_aaron_2026_04_29.md`) — "search-first authority" for evolving-field assertions; verify-then-claim generalizes to project-state assertions too
-- **Otto-363** (`feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`) — substrate-or-it-didn't-happen guards against the *fact* not being durably preserved; verify-then-claim guards against the *fact being wrong* in the first place
+- **Otto-363** (`feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`) — substrate-or-it-didn't-happen guards against the _fact_ not being durably preserved; verify-then-claim guards against the _fact being wrong_ in the first place
 - **`feedback_verify_target_exists_before_deferring.md`** (CLAUDE.md-load) — verify the deferral target exists before committing; verify-then-claim is the broader rule
 - **`feedback_assumed_state_vs_actual_state_audit_horizon_check_aaron_2026_05_01.md`** — audit horizon defaults to actual-state; verify-then-claim ensures the actual-state fact stated is true
 - **Aarav's BP-14 review on B-0169** — worked examples ARE the dry-run-eval-set; their claims need empirical grounding to serve as eval-data

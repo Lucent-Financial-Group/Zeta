@@ -33,10 +33,11 @@ created: 2026-05-12
 ### 1. The "bundling frame of reference" from quantum physics
 
 **Frame-of-reference selection claim.** Per the META-layer
-+ Klein-bottle architecture (PR #2813), the four control
-systems (physics / biology / social / theology) are PROJECTIONS
-of the meta. Each projection is a frame-of-reference view of
-the same Klein-bottle surface.
+
+- Klein-bottle architecture (PR #2813), the four control
+  systems (physics / biology / social / theology) are PROJECTIONS
+  of the meta. Each projection is a frame-of-reference view of
+  the same Klein-bottle surface.
 
 Aaron's claim: the **"bundling frame of reference"** from
 quantum physics is **the frame of reference that accurately
@@ -44,6 +45,7 @@ describes a system's control structures when viewed from that
 angle.**
 
 The "bundling" framing connects to:
+
 - **Fiber bundles** (differential geometry) — base manifold +
   fiber + projection; each point on the base has a fiber
   attached
@@ -65,6 +67,7 @@ equations as load-bearing for "dark body" / black-body
 physics — the electromagnetic-radiation substrate.
 
 Maxwell's equations (classical 4-equation form):
+
 ```
 ∇·E = ρ/ε₀          (Gauss's law)
 ∇·B = 0              (Gauss's law for magnetism)
@@ -74,9 +77,11 @@ Maxwell's equations (classical 4-equation form):
 
 Maxwell's equations in Clifford / geometric algebra (single
 equation):
+
 ```
 ∇F = J/ε₀
 ```
+
 Where F is the electromagnetic field bivector,
 F = E + icB (i = pseudoscalar of 3D space), and J is the
 4-current. The four classical equations collapse to one.
@@ -90,6 +95,7 @@ field; black-body radiation is the universal-equilibrium
 behavior of the field interacting with matter.
 
 Composes with:
+
 - Q# substrate (Pauli operators are Clifford rotations
   applied to electromagnetic-spin states)
 - `theoretical-physics-expert` skill (QFT, statistical
@@ -104,6 +110,7 @@ Einstein's vacuum-motion finding as the OTHER load-bearing
 piece. Together with Maxwell, this is "all you need."
 
 Einstein's vacuum-motion-related findings include:
+
 - **Special relativity** — the vacuum has Lorentzian
   structure (Cℓ(1,3) signature); inertial frames in vacuum
   related by Lorentz transformations
@@ -122,6 +129,7 @@ densitied) that constrains how things move. Einstein found
 this structure.
 
 In Clifford / geometric algebra:
+
 - Special relativity uses Cℓ(1,3) signature directly
 - General relativity uses Clifford bundles over curved
   manifolds
@@ -129,6 +137,7 @@ In Clifford / geometric algebra:
   signature
 
 Composes with:
+
 - PR #2817 Clifford signatures Cℓ(p,q,r) — different signatures
   carry different "types of energy"; Lorentzian = special
   relativity; curved-Lorentzian = general relativity
@@ -138,6 +147,7 @@ Composes with:
 ### 4. "All you need to build any theory of physics control structures"
 
 **Strong substrate-priority claim.** Together:
+
 - **Maxwell's equations** (electromagnetic substrate)
 - **Einstein's vacuum-motion finding** (gravitational +
   inertial substrate)
@@ -146,6 +156,7 @@ Composes with:
 structures.
 
 Operational consequence:
+
 - **Implementation priority**: physics control structures in
   Zeta's substrate should be implemented in Clifford-
   algebraic form using Maxwell-single-equation + Einstein-
@@ -165,6 +176,7 @@ Maxwell + Einstein-vacuum is just LABEL-NOISE on the same
 underlying structure.**
 
 Examples of label-noise (per Aaron's framing):
+
 - Different names for the same field (E vs D, B vs H,
   charged-substrate variations)
 - Different formalisms (Lagrangian vs Hamiltonian vs path-
@@ -189,14 +201,14 @@ formalism-translation is refactor, not architecture.
 
 Composing today's substrate cascade:
 
-| Layer | Substrate | Aaron source |
-|---|---|---|
-| Algebraic | Clifford = densest encoding | PR #2817 |
-| Topological | Klein bottle + Mark of Cain | PR #2813 + PR #2817 |
-| Operational | Refraction rules + rainbow | PR #2818 |
-| Physics-foundation | Maxwell + Einstein-vacuum | THIS PR |
-| Razor | Rest is label noise | THIS PR + PR #2816 |
-| HKT-labels | Labels are choices, structure is universal | PR #2816 |
+| Layer              | Substrate                                  | Aaron source        |
+| ------------------ | ------------------------------------------ | ------------------- |
+| Algebraic          | Clifford = densest encoding                | PR #2817            |
+| Topological        | Klein bottle + Mark of Cain                | PR #2813 + PR #2817 |
+| Operational        | Refraction rules + rainbow                 | PR #2818            |
+| Physics-foundation | Maxwell + Einstein-vacuum                  | THIS PR             |
+| Razor              | Rest is label noise                        | THIS PR + PR #2816  |
+| HKT-labels         | Labels are choices, structure is universal | PR #2816            |
 
 **The substrate cascade converges**: physics control
 structures = Clifford-algebraic Maxwell + Einstein-vacuum,
@@ -228,6 +240,7 @@ variation being HKT-symbol-choice noise.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that all physics is reducible to Maxwell +
   Einstein-vacuum at quantum scales** — quantum mechanics
   adds quantization; QFT adds field-theoretic

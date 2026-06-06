@@ -105,7 +105,7 @@ Existing related backlog rows (link, don't duplicate):
 - B-0284 — Interloop messaging implementation on chosen transport
 - B-0635 — wave-particle duality (observation primitives)
 - B-0669 — V8 System Architecture (Sequoia memory hierarchy + tensors
-  + 4-particle primitives — Aaron-authorized 2026-05-19)
+  - 4-particle primitives — Aaron-authorized 2026-05-19)
 - B-0683 — Tier-deferred causality worked example (Z-sets indexed by
   tier; this row references that one)
 

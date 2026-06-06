@@ -7,9 +7,9 @@ description: "Theoretical physics — symmetry/group theory, QFT, general relati
 
 Capability skill. No persona. Sibling to `applied-physics-
 expert` under the physics umbrella. The formal side: when a
-paper draft reaches for a physics analogy that is *structural*
+paper draft reaches for a physics analogy that is _structural_
 (symmetry, conservation, effective theory, limit) rather than
-*numerical*, this hat carries the rigor. Zeta's actual physics
+_numerical_, this hat carries the rigor. Zeta's actual physics
 footprint is small; the risk is metaphor-drift, and this hat
 exists to catch it.
 
@@ -119,7 +119,7 @@ lim_{t→∞} f(N, t) = lim_{t→∞} lim_{N→∞} f(N, t)`, that's a
 claim that needs justification. In Zeta's setting:
 
 - `lim_{t→∞}` (steady-state) and `lim_{ε→0}` (sketch error
-  to zero) do *not* trivially commute — a sketch at fixed ε
+  to zero) do _not_ trivially commute — a sketch at fixed ε
   has a steady-state different from the exact steady state.
 - `β → ∞` (tropical limit) and `N → ∞` (key cardinality) do
   commute in the cases we use, but that's a property, not a

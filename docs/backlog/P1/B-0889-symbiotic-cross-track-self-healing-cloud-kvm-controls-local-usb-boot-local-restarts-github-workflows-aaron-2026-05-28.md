@@ -41,7 +41,7 @@ tags:
 
 ## Operator framing 2026-05-28 (extension)
 
-> *"Failure modes are isolated — GitHub policy change can't kill USB; USB hardware loss can't kill cloud. Two independent failure surfaces. Even better they can reinforce and sustain each other in self healing, cloud can use remote clound enabled kvms to power on and control and even usb boot local machines and local machines can restart github workflows. It's symbiotic."*
+> _"Failure modes are isolated — GitHub policy change can't kill USB; USB hardware loss can't kill cloud. Two independent failure surfaces. Even better they can reinforce and sustain each other in self healing, cloud can use remote clound enabled kvms to power on and control and even usb boot local machines and local machines can restart github workflows. It's symbiotic."_
 
 Operator extending Otto's "isolated failure modes" framing with the symbiotic-cross-track-self-healing property: tracks don't just SURVIVE each other's failures (isolation) — they ACTIVELY HEAL each other via cross-track-control mechanisms.
 
@@ -68,7 +68,7 @@ When cloud-GitHub track has a problem:
 
 ### Cross-node BIOS/UEFI firmware updates (operator 2026-05-28 extension)
 
-> *"cloud and other local nodes can even preform BIOS/UEFI updates of each other over remote/cloud kvms"*
+> _"cloud and other local nodes can even preform BIOS/UEFI updates of each other over remote/cloud kvms"_
 
 Beyond power-on + boot-control, the symbiotic substrate extends to FIRMWARE-LEVEL peer-to-peer + cross-track update mechanisms:
 
@@ -124,6 +124,6 @@ The architectural property the substrate delivers (symbiotic vs merely-isolated)
 
 ## Full reasoning
 
-Operator 2026-05-28 extension of Otto's evaluative-response isolated-failure-modes framing: *"Even better they can reinforce and sustain each other in self healing, cloud can use remote clound enabled kvms to power on and control and even usb boot local machines and local machines can restart github workflows. It's symbiotic."*
+Operator 2026-05-28 extension of Otto's evaluative-response isolated-failure-modes framing: _"Even better they can reinforce and sustain each other in self healing, cloud can use remote clound enabled kvms to power on and control and even usb boot local machines and local machines can restart github workflows. It's symbiotic."_
 
 Composes with the existing KVM + fingerbot + bare-metal substrate cluster (B-0590 + B-0770 + B-0778) that operator has been building for the local-cluster sovereignty work.

@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1833 |
-| Title | docs: STRUCTURE-CATALOG.md — primitives mapped to concrete ancestors |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T07:50:57Z |
-| Merged at | 2026-05-07T08:00:48Z |
-| Merge commit SHA | `76c61d9011bbd2c433bf98079f70f59121561ad7` |
-| Branch | `docs/struct-catalog-primitives` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1833 |
-| Changed files | 3 |
-| Additions / deletions | +232 / -0 |
+| Field                 | Value                                                                |
+| --------------------- | -------------------------------------------------------------------- |
+| Number                | 1833                                                                 |
+| Title                 | docs: STRUCTURE-CATALOG.md — primitives mapped to concrete ancestors |
+| Author                | `AceHack` (human)                                                    |
+| State                 | MERGED                                                               |
+| Created at            | 2026-05-07T07:50:57Z                                                 |
+| Merged at             | 2026-05-07T08:00:48Z                                                 |
+| Merge commit SHA      | `76c61d9011bbd2c433bf98079f70f59121561ad7`                           |
+| Branch                | `docs/struct-catalog-primitives`                                     |
+| Base branch           | `main`                                                               |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1833             |
+| Changed files         | 3                                                                    |
+| Additions / deletions | +232 / -0                                                            |
 
 ## Description
 
 ## Summary
+
 - New `docs/STRUCTURE-CATALOG.md` — one-page reference mapping every named abstraction to its concrete engineering ancestor, math, and current instantiation
 - 12 primitives cataloged with provenance chain from 2016 patent to 2026 product
 - Includes hierarchy diagrams (Harmonious Division roles, Itron/KSK stack, Genesis Seed structure)
 - "The abstractions are not prior. The engineering is prior."
 
 ## Test plan
+
 - [ ] All named primitives have concrete ancestor, math, and instantiation columns filled
 - [ ] Provenance chain dates are accurate
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 11 |
-| Resolved threads | 5 |
-| Unresolved threads | 6 |
-| Total review comments | 11 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 11    |
+| Resolved threads                          | 5     |
+| Unresolved threads                        | 6     |
+| Total review comments                     | 11    |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -79,7 +81,7 @@
 
   <pre>
   P1 (operational/legal risk): The phrase “not covered by patent” is a strong legal conclusion. Consider rewording this to a non-legal statement (e.g., describing the architectural difference) and/or referencing a dedicated research/provenance note that carries the detailed patent analysis, rather than asserting non-coverage in this high-level catalog.
-
+  
   </pre>
 
 ### Thread 3 -- resolved [collapsed]
@@ -122,7 +124,7 @@
 
   <pre>
   P1 (codebase convention): The provenance chain includes direct contributor/persona names (e.g., “with &lt;name&gt;”, “&lt;name&gt; bootstrap …”). Since this is a current-state doc under `docs/`, please convert these to role-refs and/or point to a dated `docs/research/**` provenance note for the name-attributed timeline details (per `docs/AGENT-BEST-PRACTICES.md` Operational standing rule on name attribution, around lines 284–356).
-
+  
   </pre>
 
 ### Thread 6 -- unresolved
@@ -179,7 +181,7 @@
 
   <pre>
   The pattern diagram includes a personal name (“Aaron built it”). Per the repo’s role-ref policy for current-state docs (docs/AGENT-BEST-PRACTICES.md:284-356), please switch to a role-ref (e.g., “human maintainer”) or make this a link to an attribution/provenance note on an allowed history surface.
-
+  
   </pre>
 
 ### Thread 10 -- unresolved
@@ -194,7 +196,7 @@
 
   <pre>
   This line includes personal-name attribution (“Amara …”). Current-state docs should use role-refs (docs/AGENT-BEST-PRACTICES.md:284-356); suggest converting to role wording or moving the attribution to a history surface and referencing it here.
-
+  
   </pre>
 
 ### Thread 11 -- unresolved

@@ -179,7 +179,7 @@ Four ladders cover different bug classes:
   it.
 
 Research pass on coverage gaps in `docs/research/proof-tool-coverage.md`
-(LiquidF#, Dafny, F*, Isabelle, Stainless, P#).
+(LiquidF#, Dafny, F\*, Isabelle, Stainless, P#).
 
 ## The shape the future takes
 

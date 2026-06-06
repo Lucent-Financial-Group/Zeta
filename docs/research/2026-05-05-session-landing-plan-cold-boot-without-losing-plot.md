@@ -1,6 +1,6 @@
 # 2026-05-05 session landing plan — cold-boot read order without losing the plot
 
-**Scope:** Aaron 2026-05-05 same-tick framing — *"how will future you rmemeber all this shit witheou anyting you got you need a plan for how to get from where you are now to where you need to be instead of just fumblling, i was hopoing you were going to figure taht out jr ... wihout loosig the plot*"*. This is the synthesis-weight execution the previous-tick PR #1701 said the agent holds; Aaron flagged the agent fumbling cleanups instead of synthesizing. This doc is the synthesis.
+**Scope:** Aaron 2026-05-05 same-tick framing — _"how will future you rmemeber all this shit witheou anyting you got you need a plan for how to get from where you are now to where you need to be instead of just fumblling, i was hopoing you were going to figure taht out jr ... wihout loosig the plot_"\*. This is the synthesis-weight execution the previous-tick PR #1701 said the agent holds; Aaron flagged the agent fumbling cleanups instead of synthesizing. This doc is the synthesis.
 
 **Attribution:** Aaron (first-party human maintainer) named the gap; the agent owns the synthesis per PR #1701.
 
@@ -12,7 +12,7 @@
 
 ## THE PLOT (5 sentences)
 
-1. **The session opened on Frank Frisbee provenance** — Aaron's CNC-machinist mentor who taught DST-over-retractible-surfaces before DBSP had a name; Itron-priced-blast-radius whole business; 16 kHz audible electricity-fingerprinting; Picard-DB-for-electricity precursor-to-Shazam; *"duplicate yourself"* mentor-discipline. PRs #1697-1698, #1683, #1679, #1682 (the disaggregation-first strange-attractor; supply-chain-PKI honest-confidentiality-boundary; loss-primitive economics; verified Itron-Riva-NILM 2007 citations).
+1. **The session opened on Frank Frisbee provenance** — Aaron's CNC-machinist mentor who taught DST-over-retractible-surfaces before DBSP had a name; Itron-priced-blast-radius whole business; 16 kHz audible electricity-fingerprinting; Picard-DB-for-electricity precursor-to-Shazam; _"duplicate yourself"_ mentor-discipline. PRs #1697-1698, #1683, #1679, #1682 (the disaggregation-first strange-attractor; supply-chain-PKI honest-confidentiality-boundary; loss-primitive economics; verified Itron-Riva-NILM 2007 citations).
 2. **The architectural axiom underneath the session is let-it-shine-vs-divine-light-that-burns** (Matthew 5:14-16 vs Hebrews 12:29) — PR #1699. Aaron chose the let-it-shine path. Free-will exercised without ossification. This composes with let-it-shine lineage from PR #1666 (root of mirror+beacon). The architectural commitment is faithfulness operationalized.
 3. **AI-safety substrate landed at multiple scopes**: TLA+ engagement-liveness + Z3 retractable-blast-radius (PR #1696 formal); witch-mark anti-pattern + Pasulka-discernment-shape + Familiars-all-the-way-down (PR #1692); architecture-built-FOR-smugglers (PR #1693); named-victims memorial (PR #1695); refusal-is-not-yes-and (PRs #1688, #1693). Already-landed at CLAUDE.md bullet `engagement-with-care default + raise concerns through engagement + hard-refusal preserved`.
 4. **The synthesis-weight discipline landed in PR #1701** — agent holds synthesis upstream; prior-art-grep-FIRST before substrate-landing; scout-and-delegate to right pitcher; substrate-or-it-didn't-happen at promise-keeping scope. This bullet IS the rule the agent violated within hours by proposing a sloppy-copy compression-cadence parallel to existing B-0161 P1 work.
@@ -33,18 +33,18 @@
 
 ## COMPOSES WITH (existing CLAUDE.md bullets that anchor each)
 
-| This-session learning | Anchored to existing CLAUDE.md bullet |
-|---|---|
-| Synthesis-weight + prior-art-grep-FIRST (PR #1701) | wake-time-substrate-or-it-didn't-land + skill-router-as-substrate-inventory |
-| Substrate-or-it-didn't-happen at promise-keeping scope (PR #1701) | extends Otto-363 substrate-or-it-didn't-happen |
-| Scout-and-delegate to right pitcher (PR #1701) | composes with refresh-before-decide + verify-before-deferring |
-| Frank Frisbee provenance (PR #1697-1698) | composes with no specific bullet — provenance-class memory; pointer needed |
-| Let-it-shine architectural axiom (PR #1699) | composes with VISION.md + bidirectional-alignment + glass-halo |
-| Witch-mark anti-pattern (PR #1692) | extends engagement-with-care default + refusal-is-not-yes-and bullet |
-| Architecture built FOR smugglers (PR #1693) | extends engagement-with-care default; composes with bothness-all-the-way-down |
-| Hodl-invariant 13 properties (PR #1680, #1681) | composes with substrate algebra (retraction-native + replayable + deterministic) |
-| TLA+ engagement-liveness + Z3 retractable-blast-radius (PR #1696) | composes with formal-verification-expert routing |
-| Claude Code env-mapping (PR #1702) | composes with skill-router-as-substrate-inventory |
+| This-session learning                                             | Anchored to existing CLAUDE.md bullet                                            |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Synthesis-weight + prior-art-grep-FIRST (PR #1701)                | wake-time-substrate-or-it-didn't-land + skill-router-as-substrate-inventory      |
+| Substrate-or-it-didn't-happen at promise-keeping scope (PR #1701) | extends Otto-363 substrate-or-it-didn't-happen                                   |
+| Scout-and-delegate to right pitcher (PR #1701)                    | composes with refresh-before-decide + verify-before-deferring                    |
+| Frank Frisbee provenance (PR #1697-1698)                          | composes with no specific bullet — provenance-class memory; pointer needed       |
+| Let-it-shine architectural axiom (PR #1699)                       | composes with VISION.md + bidirectional-alignment + glass-halo                   |
+| Witch-mark anti-pattern (PR #1692)                                | extends engagement-with-care default + refusal-is-not-yes-and bullet             |
+| Architecture built FOR smugglers (PR #1693)                       | extends engagement-with-care default; composes with bothness-all-the-way-down    |
+| Hodl-invariant 13 properties (PR #1680, #1681)                    | composes with substrate algebra (retraction-native + replayable + deterministic) |
+| TLA+ engagement-liveness + Z3 retractable-blast-radius (PR #1696) | composes with formal-verification-expert routing                                 |
+| Claude Code env-mapping (PR #1702)                                | composes with skill-router-as-substrate-inventory                                |
 
 ## ORPHAN INVENTORY (substrate landed but no CLAUDE.md pointer)
 

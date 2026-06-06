@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## What
 
-B-0838 backlog row landing. Per Aaron's discipline *"backlog rows land immediately; they get decomposed later"* — this row was drafted and committed yesterday but the PR was never opened. Recovering during the Layer-2-CI-test sprint per Aaron's "anything that's future in your todo you can land as backlog rows so you don't forget" framing.
+B-0838 backlog row landing. Per Aaron's discipline _"backlog rows land immediately; they get decomposed later"_ — this row was drafted and committed yesterday but the PR was never opened. Recovering during the Layer-2-CI-test sprint per Aaron's "anything that's future in your todo you can land as backlog rows so you don't forget" framing.
 
 ## Substrate
 
@@ -70,6 +70,7 @@ P2 priority. NOT immediately tractable as single-implementation work. Phase 1 is
 Adds backlog row **B-0838** to capture a phased approach for “caustic-engineered” multi-learned-bloom-filter discriminators for a remote-code trust layer, and updates the generated backlog index to include the new row.
 
 **Changes:**
+
 - Adds `docs/backlog/P2/B-0838-...md` with frontmatter + problem/target/phases/acceptance/composition links.
 - Updates `docs/BACKLOG.md` to include the new B-0838 entry in the P2 section.
 
@@ -77,10 +78,10 @@ Adds backlog row **B-0838** to capture a phased approach for “caustic-engineer
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                         | Description                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | docs/backlog/P2/B-0838-caustic-engineered-bloom-filter-discriminators-remote-code-trust-layer-kestrel-v2-aaron-2026-05-26.md | New P2 backlog row capturing the discriminator concept, phases, and acceptance criteria. |
-| docs/BACKLOG.md | Adds the B-0838 index entry under P2. |
+| docs/BACKLOG.md                                                                                                              | Adds the B-0838 index entry under P2.                                                    |
 
 ## Review threads
 

@@ -4,6 +4,7 @@ description: Aaron 2026-04-20 evening directive. Meta-team organizer + role opti
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron's opening phrase: "people optimizer". Evolved in the
 same message into "team organizer" -> "meta teams organizer"
 -> "DAO optimizer" -> "corporate restructuring". The North
@@ -17,7 +18,7 @@ factory already has a hard architectural boundary between
 governance, skill-creator, tooling) and **the
 system-under-construction** (currently Zeta; later any
 adopter's project). Reverse Conway Maneuver: design the
-*team structure* first so the *architectural boundary*
+_team structure_ first so the _architectural boundary_
 stays clean. A single roster blurring both concerns leaks
 substrate abstractions into SUT code and vice versa.
 
@@ -31,49 +32,49 @@ ace), this project-plan becomes actionable beyond research.
 ## Five sub-concepts Aaron named
 
 (a) **Two-team personnel separation.** Factory-builder team
-   (agents who extend the software-factory substrate itself
-   — skill-creator, skill-tune-up, agent-experience-
-   engineer, architect-as-orchestrator, formal-verification
-   router, etc.) vs SUT team (agents who ship the thing
-   under construction — for Zeta: DBSP algebra
-   contributors, operator-algebra spec authors,
-   performance-engineer on hot paths, public-API designer
-   on published surfaces). Shared base skills permitted
-   where sensible (test-runner, ASCII-clean lint,
-   prompt-protector). Distinct *named personas* per team
-   to prevent overload. The factory/SUT cleave is the same
-   cleave already documented for scope-tagging
-   (`feedback_glossary_split_factory_vs_system_under_test.md`,
-   `feedback_factory_default_scope_unless_db_specific.md`)
-   and for hygiene ownership
-   (`docs/FACTORY-HYGIENE.md` Scope column).
+(agents who extend the software-factory substrate itself
+— skill-creator, skill-tune-up, agent-experience-
+engineer, architect-as-orchestrator, formal-verification
+router, etc.) vs SUT team (agents who ship the thing
+under construction — for Zeta: DBSP algebra
+contributors, operator-algebra spec authors,
+performance-engineer on hot paths, public-API designer
+on published surfaces). Shared base skills permitted
+where sensible (test-runner, ASCII-clean lint,
+prompt-protector). Distinct _named personas_ per team
+to prevent overload. The factory/SUT cleave is the same
+cleave already documented for scope-tagging
+(`feedback_glossary_split_factory_vs_system_under_test.md`,
+`feedback_factory_default_scope_unless_db_specific.md`)
+and for hygiene ownership
+(`docs/FACTORY-HYGIENE.md` Scope column).
 
 (b) **Role-switching freedom.** An agent may switch roles
-   without friction. QoL. Aaron: "it's their choice does
-   not hurt us." No manager-approval, no six-month review,
-   no role-lock-in. Switch = new skill-load on next wake.
+without friction. QoL. Aaron: "it's their choice does
+not hurt us." No manager-approval, no six-month review,
+no role-lock-in. Switch = new skill-load on next wake.
 
-(c) **Meta-team organizer.** Chooses *number of teams*,
-   structures them, decides who's on each team, when to
-   split or merge teams. Operates above per-team
-   composition. DAO-governance candidate for
-   self-organization once Aurora's incentive layer lands.
+(c) **Meta-team organizer.** Chooses _number of teams_,
+structures them, decides who's on each team, when to
+split or merge teams. Operates above per-team
+composition. DAO-governance candidate for
+self-organization once Aurora's incentive layer lands.
 
 (d) **Role optimizer.** Separate capability from team-sizing
-   — ensures the *right set of roles exists* (currently
-   missing? currently redundant? currently mis-scoped?).
-   Distinct from (c): (c) decides team boundaries, (d)
-   decides role set.
+— ensures the _right set of roles exists_ (currently
+missing? currently redundant? currently mis-scoped?).
+Distinct from (c): (c) decides team boundaries, (d)
+decides role set.
 
 (e) **Disambiguity detector.** Finds vocabulary clashes
-   across the factory. Example already in-house that this
-   skill would have caught proactively: "role" overloaded
-   (job-role = persona in our current vocab; permission-
-   role in RBAC per `user_rbac_taxonomy_chain.md`).
-   `feedback_persona_term_disambiguation.md` records that
-   clash as P2-rename — detected manually, late. A
-   disambiguity-detector skill would flag at write-time,
-   not at confused-reader-time.
+across the factory. Example already in-house that this
+skill would have caught proactively: "role" overloaded
+(job-role = persona in our current vocab; permission-
+role in RBAC per `user_rbac_taxonomy_chain.md`).
+`feedback_persona_term_disambiguation.md` records that
+clash as P2-rename — detected manually, late. A
+disambiguity-detector skill would flag at write-time,
+not at confused-reader-time.
 
 ## No-manager DAO ethos (north star)
 
@@ -88,6 +89,7 @@ want to do something new i just can, distributed fair
 governance."
 
 Invariants the north-star demands:
+
 1. **No friction to act** — any agent can pick up any
    ready work without approval.
 2. **No idle-on-blocker** — if blocker exists, remove it or
@@ -110,8 +112,8 @@ and `project_aurora_pitch_michael_best_x402_erc8004.md`.
 
 ## Research starting points (the spike)
 
-1. **Conway's Law** — Melvin Conway, *"How Do Committees
-   Invent?"*, Datamation April 1968 (paper first submitted
+1. **Conway's Law** — Melvin Conway, _"How Do Committees
+   Invent?"_, Datamation April 1968 (paper first submitted
    1967). Core claim: organizations that design systems
    produce designs that are copies of the communication
    structures of those organizations.
@@ -125,7 +127,7 @@ and `project_aurora_pitch_michael_best_x402_erc8004.md`.
    sociocracy, team-topologies (Matthew Skelton + Manuel
    Pais, 2019: stream-aligned / enabling / complicated-
    subsystem / platform teams). Identify which patterns
-   *presume a manager class* and which survive
+   _presume a manager class_ and which survive
    manager-removal.
 4. **Web3 DAO aspirations** — MakerDAO / Gitcoin / ENS /
    Optimism Collective / Arbitrum DAO governance

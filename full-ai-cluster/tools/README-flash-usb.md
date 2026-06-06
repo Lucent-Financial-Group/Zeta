@@ -92,9 +92,7 @@ to `.claude/settings.json`:
 ```json
 {
   "permissions": {
-    "allow": [
-      "Bash(bun full-ai-cluster/tools/flash-usb.ts *)"
-    ]
+    "allow": ["Bash(bun full-ai-cluster/tools/flash-usb.ts *)"]
   }
 }
 ```
@@ -132,8 +130,8 @@ Filing as a follow-up when a Linux workstation is in the mix.
 
 ## Exit codes
 
-| Code | Meaning |
-|------|---------|
-| 0 | Flash completed successfully |
-| 1 | User aborted (typed-path mismatch or interrupted) |
-| 2 | Safety check failed (bad ISO, no USB, wrong device class) |
+| Code | Meaning                                                   |
+| ---- | --------------------------------------------------------- |
+| 0    | Flash completed successfully                              |
+| 1    | User aborted (typed-path mismatch or interrupted)         |
+| 2    | Safety check failed (bad ISO, no USB, wrong device class) |

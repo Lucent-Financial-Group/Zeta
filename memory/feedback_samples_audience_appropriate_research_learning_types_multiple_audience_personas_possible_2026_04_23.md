@@ -29,30 +29,30 @@ Execute against this axis without further re-litigation.
 
 The earlier memory
 (`feedback_samples_readability_real_code_zero_alloc_2026_04_22.md`)
-framed samples as a single category: *"samples optimize for
-newcomer readability."* Aaron now sharpens: **samples are
+framed samples as a single category: _"samples optimize for
+newcomer readability."_ Aaron now sharpens: **samples are
 plural.** Each sample type is style-matched to its audience.
 
 ### Current framing (too narrow — ONE audience)
 
-| Category | Style | Audience |
-|---|---|---|
-| Samples | Newcomer readability (plain-tuple `ZSet.ofSeq`) | Newcomers |
-| Production | Zero-alloc (struct-tuple `ZSet.ofPairs`, `Span`, `ArrayPool`) | Production users |
-| Tests | Mixed by property tested | Regression coverage |
+| Category   | Style                                                         | Audience            |
+| ---------- | ------------------------------------------------------------- | ------------------- |
+| Samples    | Newcomer readability (plain-tuple `ZSet.ofSeq`)               | Newcomers           |
+| Production | Zero-alloc (struct-tuple `ZSet.ofPairs`, `Span`, `ArrayPool`) | Production users    |
+| Tests      | Mixed by property tested                                      | Regression coverage |
 
 ### Sharpened framing (audience-appropriate)
 
-| Sample type | Style | Audience | Purpose |
-|---|---|---|---|
-| **Learning samples** | Newcomer readability — plain constructs, minimal ceremony, comment-heavy, step-by-step flow | Newcomers / students / first-time contributors | Teach the concept; optimize for comprehension |
-| **Research samples** | Paper-grade clarity — algebraic shape visible, invariants labelled, references to source literature, proof-of-property comments | Researchers / paper reviewers / evaluators | Communicate the research claim; optimize for verification |
-| **Production code** | Zero-alloc, `Span`, `ArrayPool`, struct-tuples — all the discipline | Production users / shipping code | Optimize for allocation / cache / throughput |
-| **Tests** | Mixed by property tested | Regression-coverage | Keep the contract |
-| **(Potentially more)** | TBD | TBD | TBD |
+| Sample type            | Style                                                                                                                           | Audience                                       | Purpose                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- |
+| **Learning samples**   | Newcomer readability — plain constructs, minimal ceremony, comment-heavy, step-by-step flow                                     | Newcomers / students / first-time contributors | Teach the concept; optimize for comprehension             |
+| **Research samples**   | Paper-grade clarity — algebraic shape visible, invariants labelled, references to source literature, proof-of-property comments | Researchers / paper reviewers / evaluators     | Communicate the research claim; optimize for verification |
+| **Production code**    | Zero-alloc, `Span`, `ArrayPool`, struct-tuples — all the discipline                                                             | Production users / shipping code               | Optimize for allocation / cache / throughput              |
+| **Tests**              | Mixed by property tested                                                                                                        | Regression-coverage                            | Keep the contract                                         |
+| **(Potentially more)** | TBD                                                                                                                             | TBD                                            | TBD                                                       |
 
-Aaron's *"maybe we need more audiance perosnas too, not
-sure"* — open question.
+Aaron's _"maybe we need more audiance perosnas too, not
+sure"_ — open question.
 
 ## Research samples vs. learning samples — the distinction
 
@@ -97,12 +97,12 @@ someone doing verification-drift audits.
 - Algebraic shape visible — operator names match paper
   notation (`D`, `I`, `z⁻¹`, `H` where the paper uses those)
 - Invariants labelled inline as comments — e.g. `// D is
-  a homomorphism: D(f ∘ g) = D(f) ∘ g + f ∘ D(g)`
+a homomorphism: D(f ∘ g) = D(f) ∘ g + f ∘ D(g)`
 - References to source literature inline — e.g. `// Per
-  Budiu et al. VLDB 2023 §3.2`
+Budiu et al. VLDB 2023 §3.2`
 - Proof-of-property comments where invariants should hold
   — e.g. `// Claim: result.Weight = Σ inputs[i].Weight for
-  all i; test in Tests.FSharp/Zset.Tests.fs:143`
+all i; test in Tests.FSharp/Zset.Tests.fs:143`
 - Prefer named intermediate values matching paper variables
 - Minimal ceremony but no hand-waving — every
   non-obvious step has a justification pointer
@@ -147,13 +147,13 @@ Current audience-persona roster (per
 Gaps Aaron's directive surfaces:
 
 - **Researcher audience** — someone evaluating for a paper
-  / research-fit / verification. A *Research audience*
+  / research-fit / verification. A _Research audience_
   persona could audit research samples + the research-doc
   layer. Candidate: **Hiroshi** (complexity-theory reviewer)
   partially covers this; a dedicated research-audience
   persona would be purer.
 - **Evaluator audience** — someone deciding whether to
-  adopt / fund / partner. A *Decision audience* persona
+  adopt / fund / partner. A _Decision audience_ persona
   would audit the "first 5 minutes of evaluating whether
   Zeta fits our use case" — adjacent to Iris but narrower
   (executive decision, not library consumer).
@@ -164,7 +164,7 @@ Decision: **defer expansion until audience-specific sample
 types land first**. The factory has a bias toward
 persona-proliferation; audience-persona expansion should
 wait until there's real sample-content to audit against.
-Aaron's *"not sure"* framing matches this — delegate with
+Aaron's _"not sure"_ framing matches this — delegate with
 nudge-latitude.
 
 ## How to apply
@@ -181,7 +181,7 @@ nudge-latitude.
 
 - Declare the audience in the sample's top comment block.
   Example: `// AUDIENCE: learning (newcomer; zero prior
-  knowledge of DBSP)`.
+knowledge of DBSP)`.
 - Match style to declared audience per the signatures
   above.
 
@@ -213,7 +213,7 @@ nudge-latitude.
   sample companion may or may not be worth building per
   case. Each research sample earns its existence.
 - **Not persona-proliferation authorisation.** Aaron said
-  *"not sure"* on audience-persona expansion. New personas
+  _"not sure"_ on audience-persona expansion. New personas
   earn their existence; defer until sample-content makes
   the case.
 - **Not a CURRENT-aaron.md §6 rewrite.** The CURRENT
@@ -249,8 +249,8 @@ nudge-latitude.
 
 ## Open question for Aaron's nudge
 
-The *"maybe we need more audiance perosnas too, not
-sure"* framing signals delegated-decision with
+The _"maybe we need more audiance perosnas too, not
+sure"_ framing signals delegated-decision with
 after-the-fact nudge. If during real execution I find:
 
 - Research samples need a dedicated audit persona → propose

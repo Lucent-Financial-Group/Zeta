@@ -15,7 +15,22 @@ composes_with:
   - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
   - docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
   - .claude/skills/file-system-persistence-expert/SKILL.md
-tags: [filesystem, dsl, computation-expression, fsharp, fuse, closure-table, dst, deterministic-simulation, crdt, summonable-bft, microkernel, federation, substrate-deployment]
+tags:
+  [
+    filesystem,
+    dsl,
+    computation-expression,
+    fsharp,
+    fuse,
+    closure-table,
+    dst,
+    deterministic-simulation,
+    crdt,
+    summonable-bft,
+    microkernel,
+    federation,
+    substrate-deployment,
+  ]
 type: feature
 ---
 
@@ -23,12 +38,12 @@ type: feature
 
 ## The directive (Aaron 2026-05-30)
 
-> *"we should have a file system dsl too"* + *"in computatinal expressions"*
+> _"we should have a file system dsl too"_ + _"in computatinal expressions"_
 
-> *"Also we are taking for any microkernal or db work we can run multi cluster federated multi
+> _"Also we are taking for any microkernal or db work we can run multi cluster federated multi
 > node cluster efficently and determisisticlly simulated at scales of millions on single computer
 > i can show you code than can do this if you can't figure it out but if you search latest
-> research and such since we have on demand bft and crdts it's probably gonna be easy."*
+> research and such since we have on demand bft and crdts it's probably gonna be easy."_
 
 ## Part 1 -- Filesystem DSL as an F# computation expression
 
@@ -88,12 +103,12 @@ operator for the reference code if the search + on-demand-BFT/CRDT substrate isn
 What makes the millions-of-nodes DST tractable: you do NOT simulate full physical reality -- you
 simulate DIGITAL TWINS. Operator (verbatim):
 
-> *"it's basically digital twins that can be updated fast but they are desired state and local
+> _"it's basically digital twins that can be updated fast but they are desired state and local
 > actions are responsible for converging desired state into partition local actions to represent
-> the change in environment"*
+> the change in environment"_
 
-> *"the digital twin of the agent/device/environment whatever can update fast and then the actions
-> can be distribution to make the actual thing match the twin"*
+> _"the digital twin of the agent/device/environment whatever can update fast and then the actions
+> can be distribution to make the actual thing match the twin"_
 
 The model:
 
@@ -120,7 +135,7 @@ digital-twin pattern.
 
 ## Empirical anchor -- the meter simulator (this model is already proven) (operator 2026-05-30)
 
-> *"we did this for meters for the meter simulator and the state update was our flywheel"*
+> _"we did this for meters for the meter simulator and the state update was our flywheel"_
 
 This is NOT speculative -- operator has already built the digital-twin + DST + desired-state model
 for **smart meters** (the meter simulator; Itron context -- composes with the NULL-as-quantum-state

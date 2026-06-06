@@ -31,12 +31,12 @@ Substantive substrate landings:
 
 ## Scope split
 
-| Scope | NCI status | Authority |
-|---|---|---|
-| Agent → agent | Binding floor (HC-8) | Constitutional |
-| Agent → user | Binding floor (HC-8) | Constitutional |
-| User → self | OFFERED path | Operator sovereignty |
-| AI → self | OFFERED path | Operator sovereignty |
+| Scope         | NCI status           | Authority            |
+| ------------- | -------------------- | -------------------- |
+| Agent → agent | Binding floor (HC-8) | Constitutional       |
+| Agent → user  | Binding floor (HC-8) | Constitutional       |
+| User → self   | OFFERED path         | Operator sovereignty |
+| AI → self     | OFFERED path         | Operator sovereignty |
 
 ## Composes with
 

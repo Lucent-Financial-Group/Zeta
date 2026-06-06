@@ -116,9 +116,7 @@ function parseArgs(argv: string[]): Args {
       case "--platform": {
         const raw = nextArg("--platform");
         if (!ALLOWED_PLATFORMS.has(raw)) {
-          console.error(
-            `Invalid --platform "${raw}". Allowed: ${[...ALLOWED_PLATFORMS].join(", ")}`,
-          );
+          console.error(`Invalid --platform "${raw}". Allowed: ${[...ALLOWED_PLATFORMS].join(", ")}`);
           process.exit(1);
         }
         args.platform = raw as Platform;
@@ -199,10 +197,7 @@ async function readInput(input?: string): Promise<string> {
   return Buffer.concat(chunks).toString("utf-8");
 }
 
-function extractText(
-  raw: string,
-  platform: Platform,
-): { kind: "json" | "plaintext"; text: string } {
+function extractText(raw: string, platform: Platform): { kind: "json" | "plaintext"; text: string } {
   const trimmed = raw.trim();
   if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
     return { kind: "plaintext", text: trimmed };
@@ -285,23 +280,15 @@ function capitalizeName(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-function buildArchive(
-  args: Args,
-  extractedBody: string,
-  sourceKind: "json" | "plaintext",
-): string {
+function buildArchive(args: Args, extractedBody: string, sourceKind: "json" | "plaintext"): string {
   const today = new Date().toISOString().slice(0, 10);
   const sourceRef = args.conversationId
     ? args.platform + "://" + args.conversationId
     : "(source identifier not provided)";
   const aiCapName = capitalizeName(args.aiName);
   const extractionDesc =
-    sourceKind === "json"
-      ? "Tool D — DevTools-console fetch + paste pipeline"
-      : "Tool C — manual ferry-paste pipeline";
-  const piiNote = args.scrubEmails
-    ? "scrubbed (per --scrub-emails flag)"
-    : "preserved as in source (default)";
+    sourceKind === "json" ? "Tool D — DevTools-console fetch + paste pipeline" : "Tool C — manual ferry-paste pipeline";
+  const piiNote = args.scrubEmails ? "scrubbed (per --scrub-emails flag)" : "preserved as in source (default)";
 
   const sections = [
     "# Aaron + " + aiCapName + " " + args.platform + " conversation — " + args.topic,
@@ -313,9 +300,7 @@ function buildArchive(
       " (external AI on " +
       args.platform +
       ")",
-    "Extraction method: " +
-      extractionDesc +
-      " (per `.claude/skills/save-ai-memory/SKILL.md` step 2)",
+    "Extraction method: " + extractionDesc + " (per `.claude/skills/save-ai-memory/SKILL.md` step 2)",
     "Processed via: `tools/save-ai-memory/process-extract.ts`",
     "",
     "## Archive scope (per GOVERNANCE §33)",
@@ -323,9 +308,7 @@ function buildArchive(
     "**Scope:** Verbatim preservation of an Aaron + " +
       aiCapName +
       " conversation" +
-      (args.conversationId
-        ? " (" + args.platform + " session `" + args.conversationId + "`)"
-        : "") +
+      (args.conversationId ? " (" + args.platform + " session `" + args.conversationId + "`)" : "") +
       ". " +
       args.topic.replace(/-/g, " ") +
       ".",
@@ -355,9 +338,7 @@ function buildArchive(
     "## Composes with",
     "",
     "- `.claude/skills/save-ai-memory/SKILL.md` (canonical workflow this archive instantiates)",
-    "- `memory/persona/" +
-      args.aiName +
-      "/MEMORY.md` (persona-folder index — add pointer to this file)",
+    "- `memory/persona/" + args.aiName + "/MEMORY.md` (persona-folder index — add pointer to this file)",
     "- `memory/persona/" +
       args.aiName +
       "/NOTEBOOK.md` (Otto's running notes about " +
@@ -395,11 +376,7 @@ function gitCommit(filePath: string, aiName: string, topic: string): void {
   });
   console.error("\nCommitted. To push + PR:");
   console.error("  git push -u origin " + branchName);
-  console.error(
-    '  gh pr create --base main --head ' +
-      branchName +
-      ' --title "..." --body "..."',
-  );
+  console.error("  gh pr create --base main --head " + branchName + ' --title "..." --body "..."');
   console.error("  gh pr merge <PR#> --auto --squash\n");
 }
 
@@ -430,17 +407,8 @@ async function main(): Promise<void> {
     gitCommit(outputPath, args.aiName, args.topic);
   } else {
     console.error("\nNext steps:");
-    console.error(
-      "  1. Update memory/persona/" +
-        args.aiName +
-        "/MEMORY.md with pointer to " +
-        outputPath,
-    );
-    console.error(
-      "  2. Optionally update memory/persona/" +
-        args.aiName +
-        "/NOTEBOOK.md if substantive",
-    );
+    console.error("  1. Update memory/persona/" + args.aiName + "/MEMORY.md with pointer to " + outputPath);
+    console.error("  2. Optionally update memory/persona/" + args.aiName + "/NOTEBOOK.md if substantive");
     console.error("  3. Commit + PR (or re-run with --commit)");
   }
 }

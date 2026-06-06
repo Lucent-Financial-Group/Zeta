@@ -33,13 +33,13 @@ Substrate-drift discriminator at session start confirmed Phases 1-5 = DONE (all 
 
 ## Focused checks
 
-| Check | Outcome |
-|---|---|
-| `bun test tools/lint/no-python-files.test.ts` | 9 pass / 0 fail / 15 expect() calls |
-| `bun tools/lint/no-python-files.ts` (real repo) | `OK (0 allowlisted, 0 flagged)` — exit 0 |
-| `bun tools/lint/no-empty-dirs.ts` (regression check after adding new files) | green |
-| `js-yaml` parse of `.github/workflows/gate.yml` | 17 jobs, `lint-no-python-files` present |
-| `git ls-tree HEAD \| wc -l` vs `origin/main` (broken-commit canary) | 53 vs 53, OK |
+| Check                                                                       | Outcome                                  |
+| --------------------------------------------------------------------------- | ---------------------------------------- |
+| `bun test tools/lint/no-python-files.test.ts`                               | 9 pass / 0 fail / 15 expect() calls      |
+| `bun tools/lint/no-python-files.ts` (real repo)                             | `OK (0 allowlisted, 0 flagged)` — exit 0 |
+| `bun tools/lint/no-empty-dirs.ts` (regression check after adding new files) | green                                    |
+| `js-yaml` parse of `.github/workflows/gate.yml`                             | 17 jobs, `lint-no-python-files` present  |
+| `git ls-tree HEAD \| wc -l` vs `origin/main` (broken-commit canary)         | 53 vs 53, OK                             |
 
 ## Test plan
 
@@ -64,6 +64,7 @@ Substrate-drift discriminator at session start confirmed Phases 1-5 = DONE (all 
 Adds a Bun/TypeScript CI lint gate for B-0156 Phase 6 to prevent first-party `.py` files outside approved exclusions/allowlist.
 
 **Changes:**
+
 - Adds `no-python-files` lint tool, allowlist, and Bun tests.
 - Wires the lint into `gate.yml`.
 - Updates backlog/tick documentation for the completed phase.
@@ -75,29 +76,31 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated 6 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| `tools/lint/no-python-files.ts` | Implements the `.py` file scanner and policy enforcement. |
-| `tools/lint/no-python-files.test.ts` | Adds unit tests for lint outcomes and exclusions. |
-| `tools/lint/no-python-files.allowlist` | Documents the explicit allowed `.py` path list. |
-| `.github/workflows/gate.yml` | Adds the CI job that runs the new lint. |
-| `docs/backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md` | Marks Phase 6 complete and updates status details. |
-| `docs/hygiene-history/ticks/2026/05/16/2157Z.md` | Records the implementation tick for this phase. |
-</details>
+| File                                                                                        | Description                                               |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `tools/lint/no-python-files.ts`                                                             | Implements the `.py` file scanner and policy enforcement. |
+| `tools/lint/no-python-files.test.ts`                                                        | Adds unit tests for lint outcomes and exclusions.         |
+| `tools/lint/no-python-files.allowlist`                                                      | Documents the explicit allowed `.py` path list.           |
+| `.github/workflows/gate.yml`                                                                | Adds the CI job that runs the new lint.                   |
+| `docs/backlog/P1/B-0156-typescript-standardization-non-install-scripts-aaron-2026-05-01.md` | Marks Phase 6 complete and updates status details.        |
+| `docs/hygiene-history/ticks/2026/05/16/2157Z.md`                                            | Records the implementation tick for this phase.           |
 
+</details>
 
 <details>
 <summary>Comments suppressed due to low confidence (1)</summary>
 
 **tools/lint/no-python-files.ts:62**
-* This second `spawnSync("git", ...)` has the same SonarJS issue as the `repoRoot()` call: TypeScript tools in this repo suppress `sonarjs/no-os-command-from-path` with a short rationale when intentionally invoking `git` from PATH. Without that, the new tool is likely to break the TypeScript lint gate.
+
+- This second `spawnSync("git", ...)` has the same SonarJS issue as the `repoRoot()` call: TypeScript tools in this repo suppress `sonarjs/no-os-command-from-path` with a short rationale when intentionally invoking `git` from PATH. Without that, the new tool is likely to break the TypeScript lint gate.
+
 ```
   const result = spawnSync("git", ["check-ignore", "--stdin"], {
 ```
+
 </details>
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T22:02:32Z)
-
 
 ### 💡 Codex Review
 
@@ -105,17 +108,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `72ab8dc69c`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -165,7 +167,7 @@ This workflow comment also says `.lake` is hard-excluded, but the script only ha
 
 **@chatgpt-codex-connector** (2026-05-16T22:02:32Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Detect Python extensions case-insensitively**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Detect Python extensions case-insensitively**
 
 `findPythonFiles()` only flags names ending with lowercase `.py`, so a committed file like `scripts/tool.PY` or `tool.Py` is treated as non-Python and the new CI job passes even though policy intent is to block Python files. This creates a straightforward bypass of the enforcement introduced in this commit; normalize the filename case (or use a case-insensitive suffix check) before testing the extension.
 

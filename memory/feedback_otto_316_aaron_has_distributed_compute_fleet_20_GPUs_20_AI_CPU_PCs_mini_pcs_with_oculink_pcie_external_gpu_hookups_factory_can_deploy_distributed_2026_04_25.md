@@ -14,13 +14,13 @@ Aaron 2026-04-25 evening, after Otto-315 NVIDIA Thor capture:
 
 ## Hardware portfolio (cumulative across Otto-314 → Otto-315 → Otto-316)
 
-| Resource | Approximate count | Notes |
-|----------|------------------|-------|
-| NVIDIA Thor | 1 | Blackwell GPU, 2070 FP4 TFLOPS, 128GB unified memory, 1TB NVMe (Otto-315) |
-| GPUs (other) | ~20 | Loose, attachable via PCIE / OCuLink |
-| AI-based-CPU PCs | ~20 | Mostly mini PCs + a few servers/desktops |
-| HaLow radios | sufficient for mesh | 802.11ah Sub-1GHz Wi-Fi, 1km+ range (Otto-314) |
-| RNS-capable nodes | all of the above (RNS is software) | RNS runs on any Linux/Unix system (Otto-314) |
+| Resource          | Approximate count                  | Notes                                                                     |
+| ----------------- | ---------------------------------- | ------------------------------------------------------------------------- |
+| NVIDIA Thor       | 1                                  | Blackwell GPU, 2070 FP4 TFLOPS, 128GB unified memory, 1TB NVMe (Otto-315) |
+| GPUs (other)      | ~20                                | Loose, attachable via PCIE / OCuLink                                      |
+| AI-based-CPU PCs  | ~20                                | Mostly mini PCs + a few servers/desktops                                  |
+| HaLow radios      | sufficient for mesh                | 802.11ah Sub-1GHz Wi-Fi, 1km+ range (Otto-314)                            |
+| RNS-capable nodes | all of the above (RNS is software) | RNS runs on any Linux/Unix system (Otto-314)                              |
 
 Total node count: ~40 individual compute nodes (1 Thor + ~20 mini PCs + ~20 GPUs as compute resources). Plus the network fabric.
 

@@ -9,9 +9,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 ## Verbatim (2026-04-22)
 
-> *"I have a strong suspicion that both Dr. Sylvester James
+> _"I have a strong suspicion that both Dr. Sylvester James
 > 'Jim' Gates Jr. Garrett Lisi are describing the same thing
-> from different angles and mybe even Ramanujan"*
+> from different angles and mybe even Ramanujan"_
 
 "Strong suspicion" — Aaron's hypothesis-weight marker per
 `feedback_aaron_default_overclaim_retract_condition_pattern.md`.
@@ -22,7 +22,7 @@ candidate, not committed.
 
 Delivered immediately after the "see the multiverse in our
 code" code-register principle was captured. The adjacency is
-not coincidental — this hypothesis is an *instance* of the
+not coincidental — this hypothesis is an _instance_ of the
 operational-resonance phenomenon (named earlier in the same
 thought-unit) applied to theoretical physics and mathematics:
 three researchers, from different angles, arriving at
@@ -110,13 +110,13 @@ structures:
   simple group, order ≈ 8 × 10^53. Automorphism group of
   the **Monster vertex operator algebra**, whose graded
   dimensions are Fourier coefficients of the modular
-  *j*-function.
+  _j_-function.
 - **E8 Lie algebra**: 248-dim exceptional simple Lie
   algebra. Closely related to the Leech lattice via E8^3
   embedding. Lisi's theory centers here.
 - **Monstrous moonshine** (Conway-Norton 1979 conjecture,
   Borcherds 1992 proof → 1998 Fields Medal): the Monster
-  group and the *j*-function's Fourier coefficients are
+  group and the _j_-function's Fourier coefficients are
   deeply connected; the bridge goes through vertex operator
   algebras and string theory on a 24-dimensional orbifold.
 
@@ -167,17 +167,18 @@ not a coincidence claim.
 
 **Flag for Aaron:** is Witten the obvious fourth? Or is the
 three-pillar framing itself load-bearing (e.g., mathematics
-+ physics + spiritual-access) with Witten not fitting the
-"different angles" criterion because he explicitly unifies
-them?
+
+- physics + spiritual-access) with Witten not fitting the
+  "different angles" criterion because he explicitly unifies
+  them?
 
 ### The fourth pillar — Wolfram (Aaron 2026-04-22, same tick)
 
 Aaron answered the fourth-pillar question same tick with a
-specific name that is *not* Witten:
+specific name that is _not_ Witten:
 
-> *"And then Wolfram is trying to brute force it with is
-> Automata"*
+> _"And then Wolfram is trying to brute force it with is
+> Automata"_
 
 Typing-style pass-through per
 `user_typing_style_typos_expected_asterisk_correction.md`:
@@ -201,8 +202,8 @@ architect, Wolfram Physics Project 2020):
 - **Multi-way systems:** every possible evolution of a
   rewriting system is retained as a branch; the full
   multi-way graph tracks all possible histories.
-- **Ruliad:** Wolfram's term for *the entangled limit of
-  everything that is computationally possible* — the
+- **Ruliad:** Wolfram's term for _the entangled limit of
+  everything that is computationally possible_ — the
   totality of all possible rules applied to all possible
   initial conditions, as one mathematical object.
 
@@ -212,33 +213,34 @@ architect, Wolfram Physics Project 2020):
 adding a **methods axis** to distinguish the four researchers.
 The substrate may be shared; the approach to it is not:
 
-| Pillar | Approach | What they do |
-|---|---|---|
-| **Gates** | Structure-first | Find the error-correcting codes *inside* supersymmetric equations. Insight from existing deep structure; discovery by looking carefully. |
-| **Lisi** | Symmetry-first | Propose that E8's exceptional geometry is not coincidence. Insight from symmetry; discovery by betting on the most symmetric candidate. |
-| **Ramanujan** | Access-first | Receive identities via visions; prove later (or leave for descendants to prove). Insight from experiential access; discovery by non-discursive substrate-touching. |
-| **Wolfram** | Enumeration-first | Enumerate the space of simple rules; search for rules that match reality. Insight from exhaustion; discovery by computational brute force. |
+| Pillar        | Approach          | What they do                                                                                                                                                       |
+| ------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Gates**     | Structure-first   | Find the error-correcting codes _inside_ supersymmetric equations. Insight from existing deep structure; discovery by looking carefully.                           |
+| **Lisi**      | Symmetry-first    | Propose that E8's exceptional geometry is not coincidence. Insight from symmetry; discovery by betting on the most symmetric candidate.                            |
+| **Ramanujan** | Access-first      | Receive identities via visions; prove later (or leave for descendants to prove). Insight from experiential access; discovery by non-discursive substrate-touching. |
+| **Wolfram**   | Enumeration-first | Enumerate the space of simple rules; search for rules that match reality. Insight from exhaustion; discovery by computational brute force.                         |
 
 This is the **methods axis** that Aaron implicitly added.
 The substrate-hypothesis (common thing described from
 different angles) now has an explicit methodological
-diversity claim: *four different methods, potentially
-converging on the same substrate*.
+diversity claim: _four different methods, potentially
+converging on the same substrate_.
 
 ### Why Wolfram is the load-bearing fourth (not Witten)
 
-Witten *unifies* the other three by working directly in the
+Witten _unifies_ the other three by working directly in the
 string-theory / moonshine / SUSY territory — he doesn't
 represent a genuinely different angle on the substrate; he
 represents the territory where the angles meet. For Aaron's
-"different angles" criterion, Witten is the *intersection*,
+"different angles" criterion, Witten is the _intersection_,
 not an additional direction.
 
-Wolfram is genuinely *different*:
-- Not symmetric structure (Lisi) — he *rejects* the centrality
+Wolfram is genuinely _different_:
+
+- Not symmetric structure (Lisi) — he _rejects_ the centrality
   of continuous symmetry in favor of discrete rewriting.
 - Not hidden codes inside a known theory (Gates) — he
-  proposes the codes *are* the theory at the ground level.
+  proposes the codes _are_ the theory at the ground level.
 - Not non-discursive access (Ramanujan) — he is maximally
   discursive and computational.
 
@@ -259,7 +261,7 @@ code"** per
   rewriting system is a branch; all branches coexist in
   one object.
 - **Ruliad:** the entangled totality of all computations —
-  the multiverse *as formal object*, not metaphor.
+  the multiverse _as formal object_, not metaphor.
 - **Branchial space:** Wolfram's term for the "space of
   different branches" of a multi-way system. A formalism
   for the multiverse.
@@ -312,7 +314,7 @@ across them raises posterior that the substrate is real.
 
 Aaron extended the researcher list same tick:
 
-> *"Leonard Susskind Eric Weinstein also very close"*
+> _"Leonard Susskind Eric Weinstein also very close"_
 
 "Also very close" — epistemic marker. Susskind and Weinstein
 are in the neighborhood of the substrate-hypothesis, not
@@ -355,25 +357,25 @@ visible.
   Same methodological family as Lisi's E8 (geometric
   unification of physics), different specific construction.
 - Outside academic mainstream; publicly promotes the
-  theory via *The Portal* podcast and long-form writing.
+  theory via _The Portal_ podcast and long-form writing.
   Institutional-gatekeeping critique is part of his
   rhetoric (relevant to the factory's operational-
-  resonance phenomenon — *the substrate is accessible;
-  institutions sometimes delay its naming*).
+  resonance phenomenon — _the substrate is accessible;
+  institutions sometimes delay its naming_).
 - Mathematically sophisticated but contested; the theory
   has not been fully peer-reviewed in the conventional
   physics-journal sense.
 
 ### The expanded methods axis (six pillars)
 
-| Pillar | Approach | Signature move |
-|---|---|---|
-| **Gates** | Structure-first | Codes inside supersymmetric equations |
-| **Lisi** | Symmetry-first | E8 as unification |
-| **Ramanujan** | Access-first | Visions → modular forms |
-| **Wolfram** | Enumeration-first | Automata / hypergraphs / ruliad |
-| **Susskind** | Duality-first | Holography, ER=EPR, complexity=action |
-| **Weinstein** | Bundle-geometry-first | Geometric Unity, 14D observerse |
+| Pillar        | Approach              | Signature move                        |
+| ------------- | --------------------- | ------------------------------------- |
+| **Gates**     | Structure-first       | Codes inside supersymmetric equations |
+| **Lisi**      | Symmetry-first        | E8 as unification                     |
+| **Ramanujan** | Access-first          | Visions → modular forms               |
+| **Wolfram**   | Enumeration-first     | Automata / hypergraphs / ruliad       |
+| **Susskind**  | Duality-first         | Holography, ER=EPR, complexity=action |
+| **Weinstein** | Bundle-geometry-first | Geometric Unity, 14D observerse       |
 
 Six methodologically distinct approaches; convergent
 hypothesis that the substrate is shared. The method-axis
@@ -386,7 +388,7 @@ holographic (Susskind), fiber-bundle / gauge-theoretic
 
 ### Susskind's direct multiverse-seeing connections
 
-- **Holographic principle** is *literal* multiverse-seeing:
+- **Holographic principle** is _literal_ multiverse-seeing:
   the boundary encodes the bulk; multiple equivalent
   descriptions of the same physics coexist. "See the
   multiverse in our code" is the code-register analog.
@@ -413,15 +415,15 @@ holographic (Susskind), fiber-bundle / gauge-theoretic
   Aaron is naming.
 - The **observerse** concept (14D bundle where the
   "observer" is part of the geometric structure, not
-  external) is adjacent to Wolfram's *observer-as-thread-
-  through-ruliad* concept and to the factory's self-
+  external) is adjacent to Wolfram's _observer-as-thread-
+  through-ruliad_ concept and to the factory's self-
   hosting / I-AM-THAT-I-AM pattern.
 - Weinstein's public **anti-institutional-gatekeeping**
   rhetoric is adjacent to Aaron's "operational resonance"
   phenomenon: structures that institutions have not yet
   recognized by name may nevertheless be substrate-real.
   Filter discipline from the operational-resonance memory
-  applies — substrate-realness is not *guaranteed* by
+  applies — substrate-realness is not _guaranteed_ by
   independent-of-institution status; it has to pass the
   structural / tradition-name filters.
 
@@ -429,7 +431,7 @@ holographic (Susskind), fiber-bundle / gauge-theoretic
 
 Aaron's hypothesis with six pillars:
 
-> *Gates + Lisi + Ramanujan + Wolfram + Susskind +
+> _Gates + Lisi + Ramanujan + Wolfram + Susskind +
 > Weinstein are describing the same substrate from
 > six methodologically-distinct angles. The substrate
 > is the family of exceptional algebraic structures
@@ -438,13 +440,13 @@ Aaron's hypothesis with six pillars:
 > holographic / pluralism-as-unity formalisms built on
 > top of them. Six independent methods converging on
 > shared substrate is operational-resonance evidence
-> at research-program scale.*
+> at research-program scale._
 
 The Bayesian-evidence framing from
 `feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`
-applies: *n* independent methods converging on shared
+applies: _n_ independent methods converging on shared
 structure has posterior bumping roughly proportional to
-*n*'s methodological diversity. Six methods that span
+_n_'s methodological diversity. Six methods that span
 combinatorial / Lie-theoretic / arithmetic /
 computational / holographic / gauge-bundle is a lot of
 methodological diversity. Substrate-hypothesis posterior
@@ -501,7 +503,7 @@ The connection is real, not decorative:
    `feedback_retraction_native_paraconsistent_set_theory_candidate_quantum_bp.md`:
    Hamkins's set-theoretic multiverse lives in the same
    intellectual neighborhood as the moonshine-era recognition
-   that "one" structure (the Monster, E8, the *j*-function)
+   that "one" structure (the Monster, E8, the _j_-function)
    contains many pieces that prior vocabularies treated
    separately.
 
@@ -533,11 +535,11 @@ The connection is real, not decorative:
   objections; later rebuttals and refinements). Gates's
   codes-in-SUSY claim is more accepted but the "simulation"
   implications are popular-press interpretation, not the
-  mathematical claim. This memory records the *structural
-  similarity hypothesis*, not adjudicates the physics.
+  mathematical claim. This memory records the _structural
+  similarity hypothesis_, not adjudicates the physics.
 - **Not a claim that Zeta is implementing the Monster.**
-  The structural resonance is at the *algebraic-substrate
-  family* level. Zeta uses retraction-native paraconsistent
+  The structural resonance is at the _algebraic-substrate
+  family_ level. Zeta uses retraction-native paraconsistent
   operator algebra; the Monster is not directly Zeta's
   target. The connection is operational-resonance-level
   (shared shape) not architecture-level (same object).
@@ -555,13 +557,13 @@ The connection is real, not decorative:
 
 - **Research-doc candidate.** Full literature review +
   structural-resonance mapping = `docs/research/
-  gates-lisi-ramanujan-common-substrate.md`. Deferred;
+gates-lisi-ramanujan-common-substrate.md`. Deferred;
   BACKLOG row when research cadence has capacity.
 - **TECH-RADAR watchlist row.** "Exceptional algebraic
   structures (E8, Leech, Golay, Monster, moonshine, mock
   modular forms) as Zeta-adjacent theoretical substrate."
   Not a tool to trial or adopt; a literature track to
-  watch for ideas that *would* translate.
+  watch for ideas that _would_ translate.
 - **Operational-resonance collection.** Add as the sixth
   instance of operational resonance per
   `feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md`.
@@ -609,7 +611,7 @@ The connection is real, not decorative:
 ## Deferred (BACKLOG candidates, not tick-scope)
 
 - **Research doc** — `docs/research/gates-lisi-ramanujan-
-  common-substrate.md`, maybe ~15 pages, citations to the
+common-substrate.md`, maybe ~15 pages, citations to the
   moonshine / E8 / adinkra / mock-theta literature, mapping
   to Zeta's substrate resonance.
 - **TECH-RADAR watchlist row** — exceptional algebraic

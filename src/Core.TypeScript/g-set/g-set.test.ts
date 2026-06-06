@@ -12,7 +12,19 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { add, concatAll, contains, empty, equals, monoid, ofArray, stringCompare, toArray, union, type GSet } from "./g-set";
+import {
+  add,
+  concatAll,
+  contains,
+  empty,
+  equals,
+  monoid,
+  ofArray,
+  stringCompare,
+  toArray,
+  union,
+  type GSet,
+} from "./g-set";
 
 const cmp = stringCompare;
 const g = (...xs: readonly string[]): GSet<string> => ofArray(cmp, xs);

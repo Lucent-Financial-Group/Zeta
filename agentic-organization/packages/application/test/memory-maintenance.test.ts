@@ -34,14 +34,37 @@ function env(over: {
   distinctScopes?: string[];
 }): MemoryEnvelope {
   const state: MemoryState = {
-    memoryId: over.memoryId, organizationId: "org-lfg", phase: over.phase ?? MemoryPhase.Active,
-    confidence: over.confidence ?? 0.7, weight: 0.5, freshnessAt: over.freshnessAt ?? "2026-05-30T00:00:00Z",
+    memoryId: over.memoryId,
+    organizationId: "org-lfg",
+    phase: over.phase ?? MemoryPhase.Active,
+    confidence: over.confidence ?? 0.7,
+    weight: 0.5,
+    freshnessAt: over.freshnessAt ?? "2026-05-30T00:00:00Z",
     reinforcementCount: 1,
-    outcome: { successCount: over.outcome?.successCount ?? 0, failureCount: over.outcome?.failureCount ?? 0, inconclusiveCount: 0, workItemsObserved: [] },
+    outcome: {
+      successCount: over.outcome?.successCount ?? 0,
+      failureCount: over.outcome?.failureCount ?? 0,
+      inconclusiveCount: 0,
+      workItemsObserved: [],
+    },
     utility: { injectedCount: 6, citedCount: 3 },
-    crossScope: { distinctScopes: over.distinctScopes ?? [], firstObservedAt: "2026-05-30T00:00:00Z", lastObservedAt: "2026-05-30T00:00:00Z" },
+    crossScope: {
+      distinctScopes: over.distinctScopes ?? [],
+      firstObservedAt: "2026-05-30T00:00:00Z",
+      lastObservedAt: "2026-05-30T00:00:00Z",
+    },
   };
-  return { memoryId: over.memoryId, organizationId: "org-lfg", tier: over.tier ?? MemoryTier.Hat, scope: over.scope ?? "release-manager", key: "k", protected: over.protected ?? false, writtenBy: "system", writtenAt: "2026-05-30T00:00:00Z", state };
+  return {
+    memoryId: over.memoryId,
+    organizationId: "org-lfg",
+    tier: over.tier ?? MemoryTier.Hat,
+    scope: over.scope ?? "release-manager",
+    key: "k",
+    protected: over.protected ?? false,
+    writtenBy: "system",
+    writtenAt: "2026-05-30T00:00:00Z",
+    state,
+  };
 }
 
 test("Stage A: confidence reinforcement auto-applies when KPI rose (good news, no hat)", () => {
@@ -55,7 +78,14 @@ test("Stage A: confidence reinforcement auto-applies when KPI rose (good news, n
 
 test("Stage A: archive-at-zero retires an aged, useless memory forever", () => {
   // fully decayed work memory with bad KPI → resting weight under archive floor
-  const aged = env({ memoryId: "m-old", tier: MemoryTier.Work, scope: "work-1", confidence: 0.2, freshnessAt: new Date(NOW - 90 * 86_400_000).toISOString(), outcome: { successCount: 0, failureCount: 6 } });
+  const aged = env({
+    memoryId: "m-old",
+    tier: MemoryTier.Work,
+    scope: "work-1",
+    confidence: 0.2,
+    freshnessAt: new Date(NOW - 90 * 86_400_000).toISOString(),
+    outcome: { successCount: 0, failureCount: 6 },
+  });
   const r = runMemoryMaintenanceCycle([aged], deps());
   ok(r.archived.includes("m-old"));
   const upd = r.updates.find((u) => u.memoryId === "m-old")!;
@@ -66,7 +96,15 @@ test("Stage A: archive-at-zero retires an aged, useless memory forever", () => {
 });
 
 test("protected memories are excluded from auto-archive and confidence decay", () => {
-  const prot = env({ memoryId: "m-prot", tier: MemoryTier.Work, scope: "work-1", protected: true, confidence: 0.9, freshnessAt: new Date(NOW - 90 * 86_400_000).toISOString(), outcome: { successCount: 0, failureCount: 6 } });
+  const prot = env({
+    memoryId: "m-prot",
+    tier: MemoryTier.Work,
+    scope: "work-1",
+    protected: true,
+    confidence: 0.9,
+    freshnessAt: new Date(NOW - 90 * 86_400_000).toISOString(),
+    outcome: { successCount: 0, failureCount: 6 },
+  });
   const r = runMemoryMaintenanceCycle([prot], deps());
   ok(!r.archived.includes("m-prot"), "protected memory must not be auto-archived");
   const upd = r.updates.find((u) => u.memoryId === "m-prot")!;
@@ -84,17 +122,30 @@ test("Stage B: a bad-KPI memory is FLAGGED but kept by default (bad news asks a 
 
 test("Stage B: a hat chooser CAN demote within the legal set", () => {
   const bad = env({ memoryId: "m-bad", confidence: 0.8, outcome: { successCount: 1, failureCount: 5 } });
-  const r = runMemoryMaintenanceCycle([bad], deps({
-    chooseDemotion: (legal) => ({ index: legal.indexOf(MemoryDemotionChoice.Demote), reason: "reviewer demotes" }),
-  }));
+  const r = runMemoryMaintenanceCycle(
+    [bad],
+    deps({
+      chooseDemotion: (legal) => ({ index: legal.indexOf(MemoryDemotionChoice.Demote), reason: "reviewer demotes" }),
+    }),
+  );
   ok(r.demoted.includes("m-bad"));
   equal(r.updates.find((u) => u.memoryId === "m-bad")!.nextPhase, MemoryPhase.Demoted);
   ok(r.events.some((e) => e.kind === OrgEventKind.MemoryDemoted && e.actorHatId === "memory_reviewer"));
 });
 
 test("Stage B: a lesson seen across ≥3 scopes is a promotion candidate; chooser approves work→hat", () => {
-  const cross = env({ memoryId: "m-cross", tier: MemoryTier.Work, scope: "work-1", confidence: 0.8, outcome: { successCount: 5 }, distinctScopes: ["work-1", "work-2", "work-3"] });
-  const r = runMemoryMaintenanceCycle([cross], deps({ choosePromotion: (legal) => ({ index: legal.indexOf(true), reason: "router approves" }) }));
+  const cross = env({
+    memoryId: "m-cross",
+    tier: MemoryTier.Work,
+    scope: "work-1",
+    confidence: 0.8,
+    outcome: { successCount: 5 },
+    distinctScopes: ["work-1", "work-2", "work-3"],
+  });
+  const r = runMemoryMaintenanceCycle(
+    [cross],
+    deps({ choosePromotion: (legal) => ({ index: legal.indexOf(true), reason: "router approves" }) }),
+  );
   ok(r.promotionCandidates.includes("m-cross"));
   equal(r.promoted[0]!.memoryId, "m-cross");
   equal(r.promoted[0]!.target.toTier, MemoryTier.Hat);
@@ -102,10 +153,21 @@ test("Stage B: a lesson seen across ≥3 scopes is a promotion candidate; choose
 });
 
 test("Stage B: conflict resolution routes through memory_reviewer within the legal set", () => {
-  const conflicted = env({ memoryId: "m-conf", phase: MemoryPhase.Conflicted, confidence: 0.8, outcome: { successCount: 5 } });
-  const r = runMemoryMaintenanceCycle([conflicted], deps({
-    chooseConflict: (legal) => ({ index: legal.indexOf(MemoryConflictChoice.KeepThis), reason: "reviewer keeps this" }),
-  }));
+  const conflicted = env({
+    memoryId: "m-conf",
+    phase: MemoryPhase.Conflicted,
+    confidence: 0.8,
+    outcome: { successCount: 5 },
+  });
+  const r = runMemoryMaintenanceCycle(
+    [conflicted],
+    deps({
+      chooseConflict: (legal) => ({
+        index: legal.indexOf(MemoryConflictChoice.KeepThis),
+        reason: "reviewer keeps this",
+      }),
+    }),
+  );
   ok(r.conflictsResolved.includes("m-conf"));
   equal(r.updates.find((u) => u.memoryId === "m-conf")!.nextPhase, MemoryPhase.Active);
   ok(r.events.some((e) => e.kind === OrgEventKind.MemoryConflictFlagged));

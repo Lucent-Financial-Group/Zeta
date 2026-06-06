@@ -39,16 +39,16 @@
  * with a `details` field naming the contributing lanes.
  */
 export type Lane =
-  | "operational"        // ships on USB / runs on cluster / changes live-system DORA
+  | "operational" // ships on USB / runs on cluster / changes live-system DORA
   | "verbatim-preservation" // memory/persona/<x>/conversations/** (Kestrel/Mika/Ani ferries)
-  | "memory"             // memory/*.md (project memory; not persona-conversations)
-  | "heartbeat"          // docs/agent-heartbeats/** (B-0858)
-  | "backlog-row"        // docs/backlog/** (sub-rows + parent rows)
-  | "shadow-work"        // docs/research/2026-*-shadow-lesson-log-*.md + docs/hygiene-history/ticks/**
-  | "tooling-or-ci"      // tools/ci/** + tools/hygiene/** + .github/workflows/** + tools/lint/**
-  | "docs-general"       // docs/** not matching above
-  | "substrate-cascade"  // default for unclassifiable — meta-summaries without specific lane fit
-  | "mixed";             // multiple lanes touched (details lists them)
+  | "memory" // memory/*.md (project memory; not persona-conversations)
+  | "heartbeat" // docs/agent-heartbeats/** (B-0858)
+  | "backlog-row" // docs/backlog/** (sub-rows + parent rows)
+  | "shadow-work" // docs/research/2026-*-shadow-lesson-log-*.md + docs/hygiene-history/ticks/**
+  | "tooling-or-ci" // tools/ci/** + tools/hygiene/** + .github/workflows/** + tools/lint/**
+  | "docs-general" // docs/** not matching above
+  | "substrate-cascade" // default for unclassifiable — meta-summaries without specific lane fit
+  | "mixed"; // multiple lanes touched (details lists them)
 
 /**
  * Per-lane prefix rules. Order matters: first matching rule wins for a
@@ -95,11 +95,7 @@ const PATH_RULES: readonly PathRule[] = [
  * prefix-rule lookup as a refinement for shadow-lesson-logs that live
  * directly in docs/research/.
  */
-const SHADOW_FILENAME_PATTERNS: readonly RegExp[] = [
-  /shadow-lesson-log/,
-  /shadow-log-/,
-  /-shadow-/,
-];
+const SHADOW_FILENAME_PATTERNS: readonly RegExp[] = [/shadow-lesson-log/, /shadow-log-/, /-shadow-/];
 
 /**
  * Classify a single file path into a lane.
@@ -171,9 +167,7 @@ export function classifyCommit(metadata: CommitMetadata): ClassificationResult {
     lane: classifyPath(path),
   }));
   const distinctLanes = [...new Set(perFileLanes.map((p) => p.lane))];
-  const lane: Lane = distinctLanes.length === 1
-    ? distinctLanes[0]!
-    : "mixed";
+  const lane: Lane = distinctLanes.length === 1 ? distinctLanes[0]! : "mixed";
   return {
     sha: metadata.sha,
     author: metadata.author,
@@ -199,9 +193,7 @@ export interface AuthorRatioStats {
   readonly operationalRatio: number; // operationalCount / totalCommits; range [0, 1]
 }
 
-export function aggregateAuthorRatios(
-  classifications: readonly ClassificationResult[],
-): readonly AuthorRatioStats[] {
+export function aggregateAuthorRatios(classifications: readonly ClassificationResult[]): readonly AuthorRatioStats[] {
   const byAuthor = new Map<string, ClassificationResult[]>();
   for (const c of classifications) {
     if (!byAuthor.has(c.author)) byAuthor.set(c.author, []);
@@ -217,8 +209,7 @@ export function aggregateAuthorRatios(
       // operational, OR if its lane is mixed AND distinctLanes includes
       // operational (partial credit; mixed-with-operational still
       // contributes operational substrate).
-      if (c.lane === "operational"
-          || (c.lane === "mixed" && c.distinctLanes.includes("operational"))) {
+      if (c.lane === "operational" || (c.lane === "mixed" && c.distinctLanes.includes("operational"))) {
         operationalCount++;
       }
     }

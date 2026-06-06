@@ -25,12 +25,12 @@ Feldera publishes Nexmark numbers in
 https://www.feldera.com/blog/nexmark-vs-flink. Representative expected
 numbers at 100 M events / 16 worker threads (Threadripper 3990X):
 
-| Query | Feldera | DBSP target |
-|-------|---------|-------------|
+| Query                 | Feldera          | DBSP target       |
+| --------------------- | ---------------- | ----------------- |
 | Q1/Q2 projection-only | 10–40 M events/s | ≥ 70 % of Feldera |
-| Q3 hash join          | 3–8 M/s          | ≥ 60 % |
-| Q7 windowed top-1     | 5–10 M/s         | ≥ 60 % |
-| Q5 tumbling top-N     | 2–5 M/s          | ≥ 50 % |
+| Q3 hash join          | 3–8 M/s          | ≥ 60 %            |
+| Q7 windowed top-1     | 5–10 M/s         | ≥ 60 %            |
+| Q5 tumbling top-N     | 2–5 M/s          | ≥ 50 %            |
 
 Our near-term target is to **beat Feldera on projection/filter** and
 match within 2× on joins — we have a better allocation story on the

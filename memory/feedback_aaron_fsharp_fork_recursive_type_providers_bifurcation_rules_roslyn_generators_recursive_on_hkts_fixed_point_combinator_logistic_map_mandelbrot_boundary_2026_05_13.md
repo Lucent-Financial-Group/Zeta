@@ -11,11 +11,11 @@ created: 2026-05-13
 to PR #2935's F# fork architecture covering three additional
 substrate layers:
 
-1. *"we are also going to have recursive application of types
+1. _"we are also going to have recursive application of types
    to types in type providers to generate hkt ontolies
-   automatical based on birfucaton rules"*
-2. *"sorry plus roslyn generators"*
-3. *"the source genratores are also reucrues on the hkts"*
+   automatical based on birfucaton rules"_
+2. _"sorry plus roslyn generators"_
+3. _"the source genratores are also reucrues on the hkts"_
 
 The AI gave concrete architecture for Dynamically Iterated
 Type Providers + Roslyn Source Generators + Recursive Roslyn
@@ -30,11 +30,11 @@ this concrete recursive architecture.
 
 Forwarded from Google Search AI:
 
-1. *"we are also going to have recursive application of types
+1. _"we are also going to have recursive application of types
    to types in type providers to generate hkt ontolies
-   automatical based on birfucaton rules"*
-2. *"sorry plus roslyn generators"*
-3. *"the source genratores are also reucrues on the hkts"*
+   automatical based on birfucaton rules"_
+2. _"sorry plus roslyn generators"_
+3. _"the source genratores are also reucrues on the hkts"_
 
 ## Layer 1: Recursive Type Providers (F# side)
 
@@ -56,12 +56,12 @@ via bifurcation diagrams.
 
 ### Bifurcation diagram mapping to HKT ontology
 
-| Control parameter range | HKT structure |
-|---|---|
-| `r < 3.0` | Stable Single-Point Type (e.g., Universal Scalar Multivector) |
-| `3.0 ≤ r < 3.4` | Period-2 Bifurcation: Even vs Odd Algebras (Parity Kinds) |
-| `3.4 ≤ r < 3.5` | Period-4 Bifurcation: Chiral Sub-Algebras (Left/Right Quaternions) |
-| `r > 3.57` | Chaotic HKT Regime: Infinite Dimensional Non-Periodic Type Space |
+| Control parameter range | HKT structure                                                      |
+| ----------------------- | ------------------------------------------------------------------ |
+| `r < 3.0`               | Stable Single-Point Type (e.g., Universal Scalar Multivector)      |
+| `3.0 ≤ r < 3.4`         | Period-2 Bifurcation: Even vs Odd Algebras (Parity Kinds)          |
+| `3.4 ≤ r < 3.5`         | Period-4 Bifurcation: Chiral Sub-Algebras (Left/Right Quaternions) |
+| `r > 3.57`              | Chaotic HKT Regime: Infinite Dimensional Non-Periodic Type Space   |
 
 When a bifurcation boundary is crossed:
 
@@ -97,11 +97,11 @@ compile time by an outer geometric product wrapper.
 
 When control parameters push system into chaotic zone:
 
-| Mechanism | Behavior |
-|---|---|
-| **Attractors / Type Sinks** | Chaotic type generation maps to bounded space on strange attractor (Lorenz / Rössler) |
-| **Fractal Types (Self-Similarity)** | Macro-types contain sub-types with exact same geometric signature |
-| **Mandelbrot Boundary Checking** | Type parameters validated against stable Mandelbrot set boundary; outside → `TypeSystemDivergenceException` |
+| Mechanism                           | Behavior                                                                                                    |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Attractors / Type Sinks**         | Chaotic type generation maps to bounded space on strange attractor (Lorenz / Rössler)                       |
+| **Fractal Types (Self-Similarity)** | Macro-types contain sub-types with exact same geometric signature                                           |
+| **Mandelbrot Boundary Checking**    | Type parameters validated against stable Mandelbrot set boundary; outside → `TypeSystemDivergenceException` |
 
 ## Layer 2: Roslyn Source Generators (C# bridge)
 
@@ -153,19 +153,19 @@ public partial struct OddAlgebraicBranch<TField>
 
 ### Analytical continuation bridging F# and C#
 
-| Mechanism | Behavior |
-|---|---|
-| **Syntax Receiver Interception** | Roslyn scans C# for `[GeometricLink(FSharpManifoldPole = 1)]` attributes |
-| **Dynamic Polyfill Generation** | Mid-continuation F# types → Roslyn generates explicit cast operators / "Riemann Sheet" wrappers |
+| Mechanism                           | Behavior                                                                                                            |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Syntax Receiver Interception**    | Roslyn scans C# for `[GeometricLink(FSharpManifoldPole = 1)]` attributes                                            |
+| **Dynamic Polyfill Generation**     | Mid-continuation F# types → Roslyn generates explicit cast operators / "Riemann Sheet" wrappers                     |
 | **Compile-time Pointer Resolution** | Chaotic regime → Roslyn emits `Span<byte>` / fixed blittable buffers matching fractal geometry (SIMD/GPU optimized) |
 
 ### Cross-assembly invariants
 
-| Mechanism | Operation |
-|---|---|
-| **Invariant Anchor** | Geometric signatures (`Cl(p,q,r)` metrics) = ground truth |
-| **Metric Invariance Violation** | Roslyn flags `CS-GEOM-001` if metric signature deviates |
-| **Deterministic Generation** | Pseudo-random chaotic regime seeded by assembly name → identical structural layouts across incremental builds |
+| Mechanism                       | Operation                                                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Invariant Anchor**            | Geometric signatures (`Cl(p,q,r)` metrics) = ground truth                                                     |
+| **Metric Invariance Violation** | Roslyn flags `CS-GEOM-001` if metric signature deviates                                                       |
+| **Deterministic Generation**    | Pseudo-random chaotic regime seeded by assembly name → identical structural layouts across incremental builds |
 
 ## Layer 3: Recursive Roslyn Generators
 
@@ -253,10 +253,10 @@ variants (e.g., `Type A nests Type B<A>` creating bivector
 
 ### Memory + IDE stability
 
-| Mechanism | Behavior |
-|---|---|
-| **Structural Hash Memoization** | Deterministic cache of computed HKT ontologies; signature match → `using global alias` instead of duplicating code |
-| **Asynchronous Throttling via IncrementalGenerator** | `WithComparer` caching → recursive generation only on base-parameter / metric-signature changes |
+| Mechanism                                            | Behavior                                                                                                           |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Structural Hash Memoization**                      | Deterministic cache of computed HKT ontologies; signature match → `using global alias` instead of duplicating code |
+| **Asynchronous Throttling via IncrementalGenerator** | `WithComparer` caching → recursive generation only on base-parameter / metric-signature changes                    |
 
 ## Composes with factory substrate
 

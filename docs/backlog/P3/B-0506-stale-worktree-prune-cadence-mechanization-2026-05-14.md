@@ -73,14 +73,14 @@ Mechanization shipped 2026-05-14 via **PR #3225** (`feat(B-0506): mechanize stal
 
 The shipped tool [`tools/hygiene/audit-stale-worktrees.ts`](../../../tools/hygiene/audit-stale-worktrees.ts) implements every behavior named in "Proposed mechanization" above:
 
-| Specified behavior | Status |
-|---|---|
-| Enumerate via `git worktree list --porcelain` | shipped |
-| Existence-check each working-tree path | shipped |
-| Markdown summary report (`--report PATH`) | shipped |
+| Specified behavior                                  | Status  |
+| --------------------------------------------------- | ------- |
+| Enumerate via `git worktree list --porcelain`       | shipped |
+| Existence-check each working-tree path              | shipped |
+| Markdown summary report (`--report PATH`)           | shipped |
 | `--prune` runs `git worktree prune --expire=now -v` | shipped |
-| Exit codes (0 / 64 / 128) | shipped |
-| DST-friendly (only timestamp non-deterministic) | shipped |
+| Exit codes (0 / 64 / 128)                           | shipped |
+| DST-friendly (only timestamp non-deterministic)     | shipped |
 
 Phase 2 (GHA cron wire-up + per-Otto-process worktree isolation) is **out of scope** per the tool's own header comment and would compose with `factory-hygiene-audit-cadence.yml` if/when needed; that's a separate row, not a B-0506 obligation.
 

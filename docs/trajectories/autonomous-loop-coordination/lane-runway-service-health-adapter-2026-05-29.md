@@ -29,12 +29,12 @@ its prior branch/claim-only behavior instead of inventing health state.
 
 `tools/health/factory-health-monitor.ts` now exports:
 
-| Export | Purpose |
-|---|---|
-| `LaneRunwayNamedLane` | Named factory lanes that can carry service-health observations. |
-| `LaneRunwayServiceHealthObservation` | Runtime observation shape for lane service health. |
+| Export                                    | Purpose                                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------ |
+| `LaneRunwayNamedLane`                     | Named factory lanes that can carry service-health observations.          |
+| `LaneRunwayServiceHealthObservation`      | Runtime observation shape for lane service health.                       |
 | `laneRunwayServiceHealthFromObservations` | Converts runtime observations into `LaneRunwaySnapshot.healthyServices`. |
-| `codexLoopServiceHealthFromJson` | Parses Codex host-loop health JSON into a boolean health signal. |
+| `codexLoopServiceHealthFromJson`          | Parses Codex host-loop health JSON into a boolean health signal.         |
 
 ## Verification
 

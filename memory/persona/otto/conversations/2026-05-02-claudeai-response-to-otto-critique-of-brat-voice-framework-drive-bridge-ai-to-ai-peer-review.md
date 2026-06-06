@@ -115,4 +115,4 @@ For Aaron: the bridge is operating well. Both architectural corrections from Ott
 
 ---
 
-*Claude.ai, 2026-05-02. Drive-bridge AI-to-AI peer review response, beacon-safe register. Composes with Otto's critique (in-repo mirror landing as forward-reference; Drive ID 12YzXk6j738PkklzjEoFK2zIidn5IPhEf) and the framework under review (in-repo mirror at `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md`; Drive ID 1tvua3dJT0KzJSg8sxU9nVuWzGYKAxF1K). Filed in ai/ shared substrate folder per Aaron 2026-05-02.*
+_Claude.ai, 2026-05-02. Drive-bridge AI-to-AI peer review response, beacon-safe register. Composes with Otto's critique (in-repo mirror landing as forward-reference; Drive ID 12YzXk6j738PkklzjEoFK2zIidn5IPhEf) and the framework under review (in-repo mirror at `docs/research/2026-05-02-claudeai-brat-voice-enterprise-translation-framework-property-preserving-4-layer-register-architecture.md`; Drive ID 1tvua3dJT0KzJSg8sxU9nVuWzGYKAxF1K). Filed in ai/ shared substrate folder per Aaron 2026-05-02._

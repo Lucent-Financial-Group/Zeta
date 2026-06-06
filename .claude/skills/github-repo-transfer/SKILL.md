@@ -21,8 +21,8 @@ Data layer (consulted by this routine):
   — known silent drifts (S1-S7), what-survives inventory,
   adapter-neutrality mapping, worked-example summaries.
 - [`docs/GITHUB-SETTINGS.md`](../../../docs/GITHUB-SETTINGS.md)
-  + [`tools/hygiene/github-settings.expected.json`](../../../tools/hygiene/github-settings.expected.json)
-  — declarative scorecard this routine snapshots and diffs.
+  - [`tools/hygiene/github-settings.expected.json`](../../../tools/hygiene/github-settings.expected.json)
+    — declarative scorecard this routine snapshots and diffs.
 - [`docs/AGENT-GITHUB-SURFACES.md`](../../../docs/AGENT-GITHUB-SURFACES.md)
   — ten-surface playbook informing step 3 and step 8.
 
@@ -91,7 +91,7 @@ Do **not** wear this hat for:
 Each step is a gate — do **not** skip. Steps 1-4 are
 pre-flight (reversible); step 5 is the one-way event;
 steps 6-9 are the graceful-degradation discipline that
-turns "we moved it" into "we moved it *well*".
+turns "we moved it" into "we moved it _well_".
 
 ### Step 1 — Authorize
 
@@ -179,6 +179,7 @@ Outcomes:
 - **403 Forbidden.** Admin missing on one side.
 
 Verify propagation:
+
 ```bash
 gh api /repos/<new>/<name> --jq '.full_name'
 # Expect: "<new>/<name>"
@@ -256,10 +257,10 @@ drifts, what-survives inventory, adapter mappings, and
 worked-example summaries live at
 `docs/GITHUB-REPO-TRANSFER.md`. Those change as new
 transfers surface new patterns; the routine changes as
-the *procedure* evolves. Split by change-rate, per the
+the _procedure_ evolves. Split by change-rate, per the
 human maintainer 2026-04-22:
-*"seperating thing by data and behiaver is a tried and true
-way and you mentied it for the skills earler, works in code too lol"*.
+_"seperating thing by data and behiaver is a tried and true
+way and you mentied it for the skills earler, works in code too lol"_.
 
 ## What this skill does NOT do
 

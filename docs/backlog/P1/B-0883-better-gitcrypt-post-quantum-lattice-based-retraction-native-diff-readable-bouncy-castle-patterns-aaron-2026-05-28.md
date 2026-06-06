@@ -35,21 +35,21 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"hey lets write better gitcrypt so we can have encryption also didn't we just have to do some encrypted stuff for zflash?"*
+> _"hey lets write better gitcrypt so we can have encryption also didn't we just have to do some encrypted stuff for zflash?"_
 
-> *"post quantium lattice based with swapple lattice we can do in ts if it's easie enough or we can pull in libraries"*
+> _"post quantium lattice based with swapple lattice we can do in ts if it's easie enough or we can pull in libraries"_
 
-> *"look at bouncy castle or someting or some other libaries and copy patterns"*
+> _"look at bouncy castle or someting or some other libaries and copy patterns"_
 
 ## What this row tracks
 
 Build a Zeta-native better-git-crypt that supersedes the 2026-04-21 git-crypt rejection by addressing all three rejection reasons named in `docs/research/git-crypt-deep-dive-2026-04-21.md`:
 
-| Original rejection reason | Better-git-crypt solution |
-|---|---|
-| No access revocation (violates Zeta retraction-native value #4) | Retraction-native key rotation: revoked keys cannot decrypt historical content (forward-secrecy at the version level; compose with B-0840 thermal-forgetting-as-root-axiom-update substrate) |
-| Binary diffs break code review | Diff-readable encrypted content (encrypted-but-line-structured per content-class; reviewers can see structure even when contents are encrypted; compose with B-0623 adinkras-ECC for structural integrity) |
-| Pre-v1.0 with authors reserving compatibility-break right | Zeta-owned substrate with semver discipline + retraction-native primitives baked in |
+| Original rejection reason                                       | Better-git-crypt solution                                                                                                                                                                                  |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No access revocation (violates Zeta retraction-native value #4) | Retraction-native key rotation: revoked keys cannot decrypt historical content (forward-secrecy at the version level; compose with B-0840 thermal-forgetting-as-root-axiom-update substrate)               |
+| Binary diffs break code review                                  | Diff-readable encrypted content (encrypted-but-line-structured per content-class; reviewers can see structure even when contents are encrypted; compose with B-0623 adinkras-ECC for structural integrity) |
+| Pre-v1.0 with authors reserving compatibility-break right       | Zeta-owned substrate with semver discipline + retraction-native primitives baked in                                                                                                                        |
 
 PLUS — **post-quantum** crypto by default (not optional add-on):
 
@@ -61,14 +61,14 @@ PLUS — **post-quantum** crypto by default (not optional add-on):
 
 Post-quantum-git-crypt is NOT a single tool but composes with existing Zeta encryption substrate:
 
-| Existing substrate | Composes how |
-|---|---|
-| **B-0623** Adinkras (Jim Gates ECC) — private-state encryption | Structural integrity layer above the lattice KEM/signature |
-| **B-0840** Thermal-forgetting + private-encryption-budget exception | Forward-secrecy semantic — revoked keys = thermal-forgotten content; budget mechanics apply to per-content encryption |
-| **B-0852** Credential-persistence-on-USB-ESP + boot-sequence + encrypted-blob-bound-to-USB-UUID | The USB-bound credential IS the post-quantum-git-crypt key-store anchor |
-| **B-0852.3** zeta-install.sh step 6.77 cred-picker | Interactive bake-vs-zflash-token-override path; PQ git-crypt is one consumer |
-| **B-0737** zflash + Touch ID + PAM | Authentication layer; PQ git-crypt key access gated by Touch ID per session |
-| **B-0844** zflash agent-mode native implementation | Distribution + bootstrap path for PQ git-crypt keys |
+| Existing substrate                                                                              | Composes how                                                                                                          |
+| ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **B-0623** Adinkras (Jim Gates ECC) — private-state encryption                                  | Structural integrity layer above the lattice KEM/signature                                                            |
+| **B-0840** Thermal-forgetting + private-encryption-budget exception                             | Forward-secrecy semantic — revoked keys = thermal-forgotten content; budget mechanics apply to per-content encryption |
+| **B-0852** Credential-persistence-on-USB-ESP + boot-sequence + encrypted-blob-bound-to-USB-UUID | The USB-bound credential IS the post-quantum-git-crypt key-store anchor                                               |
+| **B-0852.3** zeta-install.sh step 6.77 cred-picker                                              | Interactive bake-vs-zflash-token-override path; PQ git-crypt is one consumer                                          |
+| **B-0737** zflash + Touch ID + PAM                                                              | Authentication layer; PQ git-crypt key access gated by Touch ID per session                                           |
+| **B-0844** zflash agent-mode native implementation                                              | Distribution + bootstrap path for PQ git-crypt keys                                                                   |
 
 ## Acceptance criteria
 

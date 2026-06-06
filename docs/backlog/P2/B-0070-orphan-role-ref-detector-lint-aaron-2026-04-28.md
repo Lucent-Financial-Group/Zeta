@@ -51,7 +51,7 @@ Lint that scans code-surface files (excluding history-surfaces) for:
 
 2. **Un-stripped name attribution on code-surface** — text like
    `Amara ferry-N`, `Grok ferry-N`, `Gemini ferry-N`, `Per <Name>
-   2026-MM-DD` on code-surface files (`tools/`, behavioural `docs/`,
+2026-MM-DD` on code-surface files (`tools/`, behavioural `docs/`,
    `.claude/skills/`). Should be moved to a history-surface OR
    replaced with role-ref AND self-contained principle name.
 
@@ -70,7 +70,7 @@ Scope:
 ## How
 
 Initial implementation: bash script under `tools/hygiene/` matching
-the existing audit-* pattern. Wired into CI gate as a soft-fail (warn,
+the existing audit-\* pattern. Wired into CI gate as a soft-fail (warn,
 don't block) initially — same pattern as how
 `audit-memory-index-duplicates.sh` started before being promoted to
 hard-fail.

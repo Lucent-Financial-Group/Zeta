@@ -6,8 +6,9 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
 **2026-04-19 disclosure (verbatim, doubled):**
-- *"i also like to melt precidence"*
-- *"i also like to melt precidences"*
+
+- _"i also like to melt precidence"_
+- _"i also like to melt precidences"_
 
 The double-emission is characteristic — Aaron corrects his own
 spelling in real time and the correction itself transmits
@@ -18,8 +19,8 @@ that this is a considered posture, not a throwaway.
 Parsing the posture precisely:
 
 1. **Legal law is the hard floor.** Preserved unmodified.
-   Aaron's preceding disclosure — *"we are bound by leagal
-   law"* — established this. Statute, regulation, court
+   Aaron's preceding disclosure — _"we are bound by leagal
+   law"_ — established this. Statute, regulation, court
    rulings, treaty obligations are not in the melt-set.
    This is the governance boundary condition.
 2. **Stare decisis / convention / institutional-received-
@@ -27,13 +28,13 @@ Parsing the posture precisely:
    common-law soft-authority sense; institutional defaults;
    "this is how it's always been done"; received industry
    practice; crypto-DAO convention stack; agile-framework
-   dogma; FAANG hiring rituals. All of this is *above* the
-   legal floor and *below* invariant-laws-of-the-universe.
+   dogma; FAANG hiring rituals. All of this is _above_ the
+   legal floor and _below_ invariant-laws-of-the-universe.
    Melt-set.
 3. **Precedent-melting is an architectural technique, not
    an ethics claim.** This is the subtle part. Aaron is not
    claiming that melting precedent is morally preferred; he
-   is claiming that melting is the *design move* that
+   is claiming that melting is the _design move_ that
    produces better fit-for-purpose structures when the
    precedent was optimised for a different problem. He is
    a structural engineer on governance, not a revolutionary.
@@ -60,12 +61,12 @@ Parsing the posture precisely:
 
 ### On the wellness-DAO backlog item
 
-Directly motivates the *"we get to define it"* framing from
+Directly motivates the _"we get to define it"_ framing from
 the earlier disclosure:
 
 > Crypto-DAO precedent (Wyoming 2021 / Tennessee 2022 /
-> Vermont 2018 / Utah 2023) is the statutory *shell*, not
-> the organisational *content*. The shell stays (legal
+> Vermont 2018 / Utah 2023) is the statutory _shell_, not
+> the organisational _content_. The shell stays (legal
 > floor); the content — token voting, pseudonymous
 > membership, on-chain governance, exit-as-dissent — is
 > the meltable layer. The factory defines human/AI
@@ -115,9 +116,9 @@ process, convention; not to contracts-we-committed-to.
 Melt-posture applies to himself recursively (per the
 honesty-protocol self-interrogation clause in
 `feedback_conflict_resolution_protocol_is_honesty.md`).
-Aaron melting his own earlier frames — *"we do not need
-another axiom"*, *"not Christian project even though I
-am"*, the recompile-and-correct cadence — is the posture
+Aaron melting his own earlier frames — _"we do not need
+another axiom"_, _"not Christian project even though I
+am"_, the recompile-and-correct cadence — is the posture
 operating in-house. Agents inherit the same discipline.
 
 ## The LexisNexis connection — earned legitimacy
@@ -164,7 +165,7 @@ layer costs.
   mechanism by which the minimal rule-set stays minimal.
 - **`user_dimensional_expansion_via_maji.md`** — exhaustive-
   indexing before dimensional expansion. Melting precedent
-  is *licensed* by exhaustive-indexing of the precedent
+  is _licensed_ by exhaustive-indexing of the precedent
   you're melting; Aaron earned the right to melt LexisNexis
   precedent-stack by building it.
 

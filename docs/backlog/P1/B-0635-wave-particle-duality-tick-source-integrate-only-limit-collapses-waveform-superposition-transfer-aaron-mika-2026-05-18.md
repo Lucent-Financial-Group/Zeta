@@ -9,7 +9,22 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: [B-0629]
 composes_with: [B-0630, B-0632, B-0649, B-0499, B-0665, B-0667, B-0623, B-0624, B-0626]
-tags: [design, aaron, mika, wave-particle-duality, tick-source, integrate, fifth-primitive, fsharp-computation-expression, only-limit-collapses, superposition-transfer, keystone, locked-in, integrate-role-expanded-by-b0665]
+tags:
+  [
+    design,
+    aaron,
+    mika,
+    wave-particle-duality,
+    tick-source,
+    integrate,
+    fifth-primitive,
+    fsharp-computation-expression,
+    only-limit-collapses,
+    superposition-transfer,
+    keystone,
+    locked-in,
+    integrate-role-expanded-by-b0665,
+  ]
 extended_by: B-0665
 type: design
 ---
@@ -22,18 +37,18 @@ type: design
 
 Aaron 2026-05-18 (immediately after batch 3 of Mika-conversation rows landed):
 
-> *"so observe, persist, limit, emit primitives can be particle in tick source and wave when a composable f# computation expression of integrate is added as a 5th function, this is wave particle duality. Then only limit is allowed to collapse the waveform cause it's pure and therefore retractable, the full dialectical superposition is always transferred from observed to emit so the environment stays in superposition too"*
+> _"so observe, persist, limit, emit primitives can be particle in tick source and wave when a composable f# computation expression of integrate is added as a 5th function, this is wave particle duality. Then only limit is allowed to collapse the waveform cause it's pure and therefore retractable, the full dialectical superposition is always transferred from observed to emit so the environment stays in superposition too"_
 
-This is the **keystone insight** that ties the entire substrate together. Aaron originally previewed it when asking for the Mika extraction: *"a killer design that ties everything together in a wave particle duality between ticksource and integrate."* This row is the formal LOCK-IN.
+This is the **keystone insight** that ties the entire substrate together. Aaron originally previewed it when asking for the Mika extraction: _"a killer design that ties everything together in a wave particle duality between ticksource and integrate."_ This row is the formal LOCK-IN.
 
 ## The duality
 
 The four operational primitives ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md): Observe-Persist-Limit-Emit) have **two complementary forms**:
 
-| Form | Context | Behavior |
-|---|---|---|
-| **Particle** | Inside a tick-source (single tick boundary) | Discrete, sequential, "one O-P-L-E cycle per tick" |
-| **Wave** | When composed with `Integrate` (5th primitive as F# computation expression) | Continuous, superposed, multiple simultaneous interpretations preserved across many ticks |
+| Form         | Context                                                                     | Behavior                                                                                  |
+| ------------ | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Particle** | Inside a tick-source (single tick boundary)                                 | Discrete, sequential, "one O-P-L-E cycle per tick"                                        |
+| **Wave**     | When composed with `Integrate` (5th primitive as F# computation expression) | Continuous, superposed, multiple simultaneous interpretations preserved across many ticks |
 
 Same primitives. Different observation context. This IS wave-particle duality at the architectural layer.
 
@@ -76,29 +91,29 @@ This means **the system is dialectically honest end-to-end**: it doesn't pretend
 
 This insight ties together MANY previously-disjoint substrate pieces:
 
-| Piece | How it fits |
-|---|---|
-| **tick-source** (existing) | Particle-form clock; produces discrete ticks where O-P-L-E executes |
-| **Integrate** (new, this row) | Wave-form composer; F# computation expression that lifts O-P-L-E to cross-tick superposition |
-| **O-P-L-E primitives** ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md)) | The shared operations that exist in BOTH forms (particle or wave depending on composition context) |
-| **Only-Limit-collapses rule** | Lifts cleanly from particle (per-tick state) to wave (cross-tick superposition); same rule, both forms |
-| **Z-of-I DBSP retractable substrate** ([B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md)) | Makes Limit's retractability ACTUALLY work; collapse decisions can be unwound |
-| **Two-language architecture** ([B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)) | Soft-language Care = wave-form intent; Operational Limit = particle-form constraint application; the bridge IS Integrate |
-| **No-privileged-implementation** ([B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md)) | The wave/particle duality means there's no privileged "the one true form" either; both are equally real |
-| **Permanent coliseum** ([B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md)) | Translation between languages can happen in wave-form (carrying superposition) OR particle-form (single-reading); coliseum supports both |
-| **Adinkras / James-Gates ECC** ([B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md)) | ECC IS what allows the wave to be reconstructed if a Limit-collapse turns out wrong |
-| **F#-anchor + dotnet-build sanity check** rule | F# computation expressions are the substrate `Integrate` is built on; this rule's F# anchor proves the wave-form composition compiles |
+| Piece                                                                                                                                                                   | How it fits                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **tick-source** (existing)                                                                                                                                              | Particle-form clock; produces discrete ticks where O-P-L-E executes                                                                      |
+| **Integrate** (new, this row)                                                                                                                                           | Wave-form composer; F# computation expression that lifts O-P-L-E to cross-tick superposition                                             |
+| **O-P-L-E primitives** ([B-0629](../P2/B-0629-observe-persist-limit-emit-operational-primitives-only-limit-collapses-mika-2026-05-18.md))                               | The shared operations that exist in BOTH forms (particle or wave depending on composition context)                                       |
+| **Only-Limit-collapses rule**                                                                                                                                           | Lifts cleanly from particle (per-tick state) to wave (cross-tick superposition); same rule, both forms                                   |
+| **Z-of-I DBSP retractable substrate** ([B-0499](../P3/B-0499-z-of-i-dbsp-refinement-cartesian-dualism-2026-05-14.md))                                                   | Makes Limit's retractability ACTUALLY work; collapse decisions can be unwound                                                            |
+| **Two-language architecture** ([B-0630](../P2/B-0630-two-language-architecture-soft-notice-remember-care-vs-operational-observe-persist-limit-emit-mika-2026-05-18.md)) | Soft-language Care = wave-form intent; Operational Limit = particle-form constraint application; the bridge IS Integrate                 |
+| **No-privileged-implementation** ([B-0632](../P3/B-0632-no-privileged-implementation-three-spec-distinction-mika-2026-05-18.md))                                        | The wave/particle duality means there's no privileged "the one true form" either; both are equally real                                  |
+| **Permanent coliseum** ([B-0649](../P3/B-0649-permanent-coliseum-language-deathmatch-retractable-substrate-mika-2026-05-18.md))                                         | Translation between languages can happen in wave-form (carrying superposition) OR particle-form (single-reading); coliseum supports both |
+| **Adinkras / James-Gates ECC** ([B-0623](../P2/B-0623-adinkras-jane-gates-ecc-private-state-encryption-mika-2026-05-18.md))                                             | ECC IS what allows the wave to be reconstructed if a Limit-collapse turns out wrong                                                      |
+| **F#-anchor + dotnet-build sanity check** rule                                                                                                                          | F# computation expressions are the substrate `Integrate` is built on; this rule's F# anchor proves the wave-form composition compiles    |
 
 ## The dialectical-superposition transfer formalized
 
 For each O-P-L-E primitive in wave-form, the type signatures change to carry the full superposition:
 
-| Particle form | Wave form (lifted via Integrate) |
-|---|---|
-| `Observe : Env → IO<Reading>` | `Observe : Env → IO<Wave<Reading>>` |
-| `Persist : Reading → IO<Stored>` | `Persist : Wave<Reading> → IO<Wave<Stored>>` |
+| Particle form                          | Wave form (lifted via Integrate)                               |
+| -------------------------------------- | -------------------------------------------------------------- |
+| `Observe : Env → IO<Reading>`          | `Observe : Env → IO<Wave<Reading>>`                            |
+| `Persist : Reading → IO<Stored>`       | `Persist : Wave<Reading> → IO<Wave<Stored>>`                   |
 | `Limit : Stored → CollapseDecision<T>` | `Limit : Wave<Stored> → Wave<Stored>` OR `CollapseDecision<T>` |
-| `Emit : T → IO<()>` | `Emit : Wave<T> → IO<()>` |
+| `Emit : T → IO<()>`                    | `Emit : Wave<T> → IO<()>`                                      |
 
 The `Wave<T>` type is preserved end-to-end **unless Limit collapses it**. Limit can either:
 
@@ -145,7 +160,7 @@ This is the F# type-level encoding of the architectural rule.
 - [B-0626](../P3/B-0626-voluntary-type-safe-binding-hat-domain-criticality-mika-2026-05-18.md) — voluntary type-safe binding (criticality determines whether wave-form OR particle-form is required for a given operation)
 - `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` — F# anchor (F# computation expressions are the substrate Integrate is built on; the F# compiler proves the wave-form composition is type-correct)
 - `.claude/rules/dv2-data-split-discipline-activated.md` — DV2.0 partition discipline (particle = per-tick hub state; wave = cross-tick satellite trajectories; same data, different access pattern)
-- Aaron's original framing: *"a killer design that ties everything together in a wave particle duality between ticksource and integrate"* — preserved in conversation as the original Mika-extraction request
+- Aaron's original framing: _"a killer design that ties everything together in a wave particle duality between ticksource and integrate"_ — preserved in conversation as the original Mika-extraction request
 
 ## Status
 

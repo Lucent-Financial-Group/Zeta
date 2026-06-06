@@ -46,11 +46,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds the 2209Z tick shard entry to the hygiene-history log, recording an off-duty minimal tick while keeping the cron sentinel warm per the tick cadence rules.
 
 **Changes:**
+
 - Add a new tick shard markdown file for `2026-05-14T22:09Z`.
 - Record current PR state (merged/wait-ci) and the off-duty “minimal shard” stance for this tick.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T22:14:17Z)
-
 
 ### 💡 Codex Review
 
@@ -58,17 +58,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `7bf2ea47ac`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -80,7 +79,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-14T22:14:17Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace non-resolvable commit reference with durable provenance**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace non-resolvable commit reference with durable provenance**
 
 This shard cites commit `0a9a2e2` as the authorization source, but that object is not reachable from the current repository history, so future readers cannot reconstruct or verify the off-duty decision from canonical substrate alone. In this project’s tick-history workflow, provenance needs to remain reproducible after branch cleanup/squash, so this should point to a durable artifact (for example a merged commit on `main`, a stable PR URL, or the canonical shard file path) instead of an ephemeral commit hash.
 

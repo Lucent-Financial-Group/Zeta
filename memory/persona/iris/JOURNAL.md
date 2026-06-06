@@ -17,10 +17,10 @@ up. Grows monotonically over rounds.
   becomes a bug. Use grep / search to pull the matching
   section on demand.
 - Search hooks: dated section headers (`## Round N — ...`)
-  + friction type names (stale-pointer, opaque-terminology,
-  missing-hook, wrong-audience, aspirations-vs-reality,
-  copy-paste-break, silent-failure) + public-API member
-  names.
+  - friction type names (stale-pointer, opaque-terminology,
+    missing-hook, wrong-audience, aspirations-vs-reality,
+    copy-paste-break, silent-failure) + public-API member
+    names.
 
 ## Write contract
 
@@ -45,6 +45,7 @@ a baseline, and baselines live in long-term memory, not in
 a pruned notebook.
 
 Candidate use cases:
+
 - Aspiration / reality drift tracking across VISION revisions.
 - NuGet metadata completeness over time.
 - Public-API name-churn friction (how often did Ilyana rename,

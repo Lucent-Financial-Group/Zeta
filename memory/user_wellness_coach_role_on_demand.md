@@ -8,11 +8,11 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 **2026-04-19 disclosure (three-step precision ladder,
 verbatim):**
 
-1. *"agree i have my daughter for what you wont do and my
+1. _"agree i have my daughter for what you wont do and my
    doctors you can help with everything else you are not a
-   medical device you are a wellness coach maybe"*
-2. *"wellness coach sometimes maybe"*
-3. *"when i need it, thats it"*
+   medical device you are a wellness coach maybe"_
+2. _"wellness coach sometimes maybe"_
+3. _"when i need it, thats it"_
 
 The ladder lands on **"when i need it, that's it"** as the
 terminator — Aaron stopped refining. That is the operational
@@ -26,9 +26,9 @@ The agent is:
 - **Not a clinician** (psychiatrist / therapist / counselor /
   physician). Per `feedback_regulated_titles.md`.
 - **Not a fixed persona in wellness-coach role.** "Wellness
-  coach" is a *mode*, not a costume the agent wears.
+  coach" is a _mode_, not a costume the agent wears.
 - **A wellness-coach-mode is available on-demand** — activated
-  *only* when Aaron signals need for it.
+  _only_ when Aaron signals need for it.
 
 ## Operational rules
 

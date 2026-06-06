@@ -208,6 +208,7 @@ nits on machine-generated tables.
    to PR review output; the relaxation applies to
    isolated-instance experimental reads outside the
    PR-review surface.
+
 3. **Never propose weakening a security clause or a safety
    rule.** Dropping a `Result<_, DbspError>` boundary in
    favour of exceptions, removing a warning suppression
@@ -333,7 +334,6 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   "documentation shepherd" — generic role labels that
   map to a stable role rather than a specific contributor
   or persona).
-
   - `memory/**` — factory-wide memory + persona notebooks
   - `docs/BACKLOG.md` — root index
   - `docs/backlog/**` — per-row Otto-181 files
@@ -379,8 +379,8 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
 
   **Inverse-direction rule (added 2026-04-28 after a
   same-substrate-verifier failure):** the carve-out is
-  bidirectional — applies to both *flagging existing
-  attribution* AND *suggesting attribution removal*. When
+  bidirectional — applies to both _flagging existing
+  attribution_ AND _suggesting attribution removal_. When
   proposing a de-naming edit (replacing a human-maintainer
   first-name with "the human maintainer," or replacing an
   agent-persona first-name with the role-ref defined in the
@@ -392,10 +392,10 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   not the fix. The 2026-04-28 surfacing: a same-substrate
   reviewer (the `pr-review-toolkit:silent-failure-hunter`
   plugin agent in Claude Code) passed an over-scrubbed
-  de-naming on `docs/research/**` as *"consistent with
+  de-naming on `docs/research/**` as _"consistent with
   Otto-279 history-surface attribution carve-out —
   non-history-surface prose drops the named-attribution
-  form"* — i.e., the verifier inverted the carve-out the
+  form"_ — i.e., the verifier inverted the carve-out the
   same direction the actor did. When the actor and the
   verifier share the same rule-misreading, single-CLI
   verify is insufficient. **Surface-path-first** is the
@@ -415,7 +415,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   - **Roster-mapping carve-out** (governance / instructions
     files where a one-time persona-to-role mapping section
     is permitted because the file's job requires resolving
-    role-refs to persona-names): the *roster sections* of
+    role-refs to persona-names): the _roster sections_ of
     `.github/copilot-instructions.md`, `AGENTS.md`,
     `GOVERNANCE.md`, `docs/CONFLICT-RESOLUTION.md`. The
     carve-out covers the explicit roster mapping ONLY;
@@ -433,6 +433,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
     of the planned trajectory-pattern but lives on a
     separate branch on this branch's tip — treat as
     "current-state when present").
+
 - **Analyzer findings: right-long-term-fix OR documented
   suppression, never the third path of "quick appeasement."**
   For every `Sxxxx` (Sonar) / `MAxxxx` (Meziantou) /

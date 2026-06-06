@@ -63,24 +63,22 @@ Discussed in conversation:
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T16:36:10Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `1f1d1e3699`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -92,7 +90,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T16:36:10Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Remove unsupported auto-patch step from provisioning workflow**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Remove unsupported auto-patch step from provisioning workflow**
 
 This step states that a Longhorn DaemonSet will read `/etc/longhorn/node-disks.yaml` and patch Node CRs automatically, but this commit does not add any manifest or script under `full-ai-cluster/k8s/` that consumes that file (and `nixos/modules/longhorn-disks.nix` still documents the patch job as TODO/manual). As written, operators can complete the runbook believing both data disks are active while Longhorn still uses default disk config, which can misreport usable capacity and scheduling behavior immediately after node bring-up.
 
@@ -102,7 +100,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-25T16:36:10Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Synchronize disko package change with root USB installer copy**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Synchronize disko package change with root USB installer copy**
 
 Adding `disko` only to `full-ai-cluster/usb-nixos-installer` breaks the documented "byte-identical" relationship with `/workspace/Zeta/usb-nixos-installer`, whose `nixos/installer/configuration.nix` still lacks this package. That creates divergent installer behavior: users building from the root `usb-nixos-installer/` path (explicitly supported in its README) will not have offline `disko`, so the documented provisioning flow can fail on air-gapped installs.
 

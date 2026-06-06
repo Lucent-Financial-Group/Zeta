@@ -112,7 +112,7 @@ design and affects pilot calls:
     (default for `--full-auto`).
   - `danger-full-access` — full shell access, no sandbox.
 - `--full-auto` — convenience alias for `--sandbox
-  workspace-write`.
+workspace-write`.
 - `--dangerously-bypass-approvals-and-sandbox` — skip all
   confirmations and sandboxing. **EXTREMELY DANGEROUS** per the
   CLI's own help; intended solely for externally-sandboxed
@@ -127,7 +127,7 @@ writes are intended. Use `--full-auto` for agentic-coding tasks.
 
 ## Sandbox subcommand
 
-`codex sandbox` runs commands *within* a Codex-provided sandbox.
+`codex sandbox` runs commands _within_ a Codex-provided sandbox.
 This is orthogonal to the agent — it's a utility for running
 arbitrary commands through the same sandbox wrapper Codex uses
 internally.
@@ -271,21 +271,21 @@ codex review \
 
 ## Codex vs Claude — quick comparison
 
-| Concern                       | Claude Code                                   | OpenAI Codex                                      |
-|-------------------------------|-----------------------------------------------|---------------------------------------------------|
-| Non-interactive flag          | `--print` / `-p`                              | `codex exec` (subcommand, not flag)               |
-| Effort/model lever            | `--effort low..max` (discrete tiers)          | `-m` / `-c model="..."` + `--profile`             |
-| Budget ceiling flag           | `--max-budget-usd`                            | **None** — external dashboard tracks spend        |
-| Ephemeral session             | `--no-session-persistence`                    | `--ephemeral`                                     |
-| Structured output             | `--json-schema` + `--output-format=json`      | `--output-schema` + `--json`                      |
-| Strip defaults (bare)         | `--bare`                                      | `--ignore-user-config` + `--ignore-rules`         |
-| MCP serve (pilot bridge)      | `claude mcp serve`                            | `codex mcp-server`                                |
-| Sandbox levels                | `--permission-mode ...`                       | `-s read-only / workspace-write / danger-full-access` |
-| Diff apply (explicit)         | (implicit via edit tools)                     | `codex apply` / `codex a`                         |
-| Session resume                | `-c` / `-r`                                   | `codex resume [--last]`                           |
-| Session fork                  | `--fork-session`                              | `codex fork [--last]`                             |
-| Image input (multimodal)      | (surface not separately flagged here)         | `-i` / `--image <FILE>`                           |
-| Cloud integration             | `--from-pr`                                   | `codex cloud` (experimental)                      |
+| Concern                  | Claude Code                              | OpenAI Codex                                          |
+| ------------------------ | ---------------------------------------- | ----------------------------------------------------- |
+| Non-interactive flag     | `--print` / `-p`                         | `codex exec` (subcommand, not flag)                   |
+| Effort/model lever       | `--effort low..max` (discrete tiers)     | `-m` / `-c model="..."` + `--profile`                 |
+| Budget ceiling flag      | `--max-budget-usd`                       | **None** — external dashboard tracks spend            |
+| Ephemeral session        | `--no-session-persistence`               | `--ephemeral`                                         |
+| Structured output        | `--json-schema` + `--output-format=json` | `--output-schema` + `--json`                          |
+| Strip defaults (bare)    | `--bare`                                 | `--ignore-user-config` + `--ignore-rules`             |
+| MCP serve (pilot bridge) | `claude mcp serve`                       | `codex mcp-server`                                    |
+| Sandbox levels           | `--permission-mode ...`                  | `-s read-only / workspace-write / danger-full-access` |
+| Diff apply (explicit)    | (implicit via edit tools)                | `codex apply` / `codex a`                             |
+| Session resume           | `-c` / `-r`                              | `codex resume [--last]`                               |
+| Session fork             | `--fork-session`                         | `codex fork [--last]`                                 |
+| Image input (multimodal) | (surface not separately flagged here)    | `-i` / `--image <FILE>`                               |
+| Cloud integration        | `--from-pr`                              | `codex cloud` (experimental)                          |
 
 **Structural observation:** Claude's CLI leans
 flag-centric-on-the-root-command (everything threads through
@@ -327,7 +327,7 @@ conventions, not variations of one.
 
 - 2026-04-22 — first map (auto-loop-25). Verified against
   `codex --version` 0.122.0, `codex login status` reports
-  *"Logged in using ChatGPT"* (shared ChatGPT auth). Subcommand
+  _"Logged in using ChatGPT"_ (shared ChatGPT auth). Subcommand
   enumeration is complete per `codex --help`.
   Experimental commands (`cloud`, `app-server`, `exec-server`)
   recorded as-declared; subject to change.

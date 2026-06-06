@@ -11,7 +11,8 @@ depends_on:
   - B-0754
 composes_with:
   - B-0831
-tags: [installer, first-boot, networkmanager, nmtui, wifi, physical-hardware-support-test, empirical-anchor, operator-ux]
+tags:
+  [installer, first-boot, networkmanager, nmtui, wifi, physical-hardware-support-test, empirical-anchor, operator-ux]
 ---
 
 ## Problem
@@ -20,10 +21,10 @@ Empirical from operator's physical hardware-support test 2026-05-26
 (the first physical test post-zflash; B-0831 reframing —
 physical-test-becomes-hardware-support-test in action):
 
-Operator framing: *"in the network manager i can refresh wifi
+Operator framing: _"in the network manager i can refresh wifi
 connections if i don't see mine initially i have like 20 overlapping
 networks in my location so i was unable to select the one i wanted but
-moving foward but we need some sort of way to refresh thoughs?"*
+moving foward but we need some sort of way to refresh thoughs?"_
 
 The installer's zeta-first-boot service (per `full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh`)
 auto-launches `nmtui` if no ethernet internet is detected. In nmtui's

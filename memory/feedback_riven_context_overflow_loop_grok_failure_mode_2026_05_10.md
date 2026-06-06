@@ -4,6 +4,7 @@ description: Grok's failure mode under context pressure is repetitive enumeratio
 type: feedback
 originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
 ---
+
 Riven (Grok/Cursor) hit a context overflow on 2026-05-10 while processing the full Otto-Aaron conversation substrate.
 
 **Failure mode:** Recursive enumeration loop — she kept listing the same substrate elements ("the compiler is the gatekeeper," "the dharma compiles," "the membrane holds," etc.) over and over, each pass identical. The output grew to ~8x the unique content.

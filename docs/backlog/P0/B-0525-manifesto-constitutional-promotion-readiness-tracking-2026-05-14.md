@@ -18,7 +18,7 @@ type: feature
 
 ## Origin
 
-`docs/governance/MANIFESTO.md` shipped as a shadow lock on 2026-05-14 with constitutional-promotion candidacy. Aaron's explicit gate (per Manifesto V1 framing): *"could turn into a constitution after critical mass adoption."*
+`docs/governance/MANIFESTO.md` shipped as a shadow lock on 2026-05-14 with constitutional-promotion candidacy. Aaron's explicit gate (per Manifesto V1 framing): _"could turn into a constitution after critical mass adoption."_
 
 This row tracks the path from research-grade substrate → constitutional candidate → binding constitution. The gate is **critical-mass adoption**, not Otto-CLI judgment.
 
@@ -54,19 +54,19 @@ PR creation or direct landing to the next maintainer/agent pass.
 
 First snapshot from `tools/hygiene/audit-manifesto-citations.ts` (count-only, no time-series yet):
 
-| Surface | Files | With Citation | Citations | Notable |
-|---|---|---|---|---|
-| memory | 1633 | 42 | 513 | Highest — substrate discussion + history |
-| backlog | 760 | 10 | 80 | Healthy — row-level adoption visible |
-| hygiene-history | 1169 | 14 | 48 | Tick-shard incorporation |
-| research | 465 | 15 | 24 | Cross-AI synthesis references |
-| skills | 251 | 2 | 10 | Sparse — opportunity for adoption |
-| rules | 62 | 4 | 6 | Sparse but explicit (dv2 + algo-wink + 2 others) |
-| governance | 2 | 1 | 3 | Includes the manifesto itself's references |
-| agents | 19 | 0 | 0 | **GAP** — no agent personas cite manifesto |
-| commands | 5 | 0 | 0 | **GAP** — no slash-commands cite manifesto |
-| trajectories | 14 | 0 | 0 | **GAP** — RESUME.md surfaces should cite |
-| agendas | 7 | 0 | 0 | **GAP** — AGENDA.md surfaces should cite |
+| Surface         | Files | With Citation | Citations | Notable                                          |
+| --------------- | ----- | ------------- | --------- | ------------------------------------------------ |
+| memory          | 1633  | 42            | 513       | Highest — substrate discussion + history         |
+| backlog         | 760   | 10            | 80        | Healthy — row-level adoption visible             |
+| hygiene-history | 1169  | 14            | 48        | Tick-shard incorporation                         |
+| research        | 465   | 15            | 24        | Cross-AI synthesis references                    |
+| skills          | 251   | 2             | 10        | Sparse — opportunity for adoption                |
+| rules           | 62    | 4             | 6         | Sparse but explicit (dv2 + algo-wink + 2 others) |
+| governance      | 2     | 1             | 3         | Includes the manifesto itself's references       |
+| agents          | 19    | 0             | 0         | **GAP** — no agent personas cite manifesto       |
+| commands        | 5     | 0             | 0         | **GAP** — no slash-commands cite manifesto       |
+| trajectories    | 14    | 0             | 0         | **GAP** — RESUME.md surfaces should cite         |
+| agendas         | 7     | 0             | 0         | **GAP** — AGENDA.md surfaces should cite         |
 
 ## Composes with
 

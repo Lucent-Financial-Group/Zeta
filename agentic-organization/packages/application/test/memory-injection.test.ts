@@ -29,8 +29,15 @@ function ranked(memoryId: string, tier: MemoryTier, scope: string, weight: numbe
     crossScope: { distinctScopes: [], firstObservedAt: "2026-05-30T00:00:00Z", lastObservedAt: "2026-05-30T00:00:00Z" },
   };
   const envelope: MemoryEnvelope = {
-    memoryId, organizationId: "org-lfg", tier, scope, key: "k", protected: false,
-    writtenBy: "system", writtenAt: "2026-05-30T00:00:00Z", state,
+    memoryId,
+    organizationId: "org-lfg",
+    tier,
+    scope,
+    key: "k",
+    protected: false,
+    writtenBy: "system",
+    writtenAt: "2026-05-30T00:00:00Z",
+    state,
   };
   return { envelope, weight, freshness: 1, outcome: 0.75, utility: 0.66, semantic: 0.6 };
 }
@@ -44,8 +51,16 @@ const ctx: RetrievalCtx = {
 };
 
 test("the injection query is a pure function of the binding (reproducible + hashable)", () => {
-  const a = composeInjectionQuery({ roleSentence: "You are the release manager.", taskSummary: "approve release", recentTurns: ["x", "y"] });
-  const b = composeInjectionQuery({ roleSentence: "You are the release manager.", taskSummary: "approve release", recentTurns: ["x", "y"] });
+  const a = composeInjectionQuery({
+    roleSentence: "You are the release manager.",
+    taskSummary: "approve release",
+    recentTurns: ["x", "y"],
+  });
+  const b = composeInjectionQuery({
+    roleSentence: "You are the release manager.",
+    taskSummary: "approve release",
+    recentTurns: ["x", "y"],
+  });
   equal(a, b);
   equal(injectionQueryHash(a), injectionQueryHash(b));
   ok(a.includes("release manager"));
@@ -77,7 +92,12 @@ test("injection ledger ids are deterministic per (run, memory) — re-injection 
 });
 
 test("recordInjections produces one ledger row per surfaced memory, cited=false", () => {
-  const rows = recordInjections([ranked("m-hat", MemoryTier.Hat, "release-manager", 0.8), ranked("m-agent", MemoryTier.Agent, "agent-7", 0.7)], ctx, "run-1", "2026-05-30T00:00:00Z");
+  const rows = recordInjections(
+    [ranked("m-hat", MemoryTier.Hat, "release-manager", 0.8), ranked("m-agent", MemoryTier.Agent, "agent-7", 0.7)],
+    ctx,
+    "run-1",
+    "2026-05-30T00:00:00Z",
+  );
   equal(rows.length, 2);
   ok(rows.every((r) => r.cited === false && r.promptFlowRunId === "run-1" && r.workItemId === "work-1"));
   equal(rows[0]!.weightAtInjection, 0.8);
@@ -101,7 +121,10 @@ test("nextUtility increments injected always, cited only when actually cited", (
 });
 
 test("must-address: a high-weight surfaced-but-uncited memory is flagged", () => {
-  const surfaced = [ranked("m-high", MemoryTier.Hat, "release-manager", 0.8), ranked("m-low", MemoryTier.Work, "work-1", 0.4)];
+  const surfaced = [
+    ranked("m-high", MemoryTier.Hat, "release-manager", 0.8),
+    ranked("m-low", MemoryTier.Work, "work-1", 0.4),
+  ];
   const flagged = unaddressedHighWeight(surfaced, [], 0.6);
   equal(flagged.length, 1);
   equal(flagged[0]!.envelope.memoryId, "m-high");

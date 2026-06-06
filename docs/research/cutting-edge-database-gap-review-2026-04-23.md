@@ -14,7 +14,7 @@ files a BACKLOG P2/P3 row with a cutting-edge research anchor.
 D/I/z⁻¹/H operators, semi-naive recursion, consolidate / distinct
 incremental) is at or ahead of the state of the art — Feldera's
 Rust impl is the main peer. The gaps below are on the
-*engineering substrate* around the algebra — storage, execution,
+_engineering substrate_ around the algebra — storage, execution,
 scheduling, memory, networking — where production-database
 research has moved since Zeta's current implementation.
 
@@ -44,7 +44,7 @@ FastCDC-chunked storage. All on local filesystem. No S3 backend.
 No partition-evolution protocol. No "shared catalog" story.
 
 **Gap:** Zeta cannot be the storage layer for multi-process readers
-on cloud object stores. The retraction-native algebra *would* make
+on cloud object stores. The retraction-native algebra _would_ make
 Delta-style MERGE trivial (retractions ARE deletes), but there is
 no S3-backing wired.
 
@@ -72,7 +72,7 @@ combined compiled vectorized execution with JIT fallback.
 
 **Zeta today:** Interpreted operator graph. Streams flow through
 boxed `Op<_>` implementations. No codegen. No adaptive JIT path.
-This is fine for correctness; it is *not* cutting edge for
+This is fine for correctness; it is _not_ cutting edge for
 latency-critical query paths.
 
 **Gap:** Zeta has no plan for an adaptive-compilation story. A
@@ -124,8 +124,7 @@ use.
 ### 4. Memory — CXL / disaggregated memory tiering
 
 **State of art:** CXL 2.0/3.0 enables memory pooling across nodes;
-Samsung's CXL DDR5 modules shipped 2024; Pond (Microsoft, ASPLOS
-2023) shows 30-40% TCO savings for OLTP workloads via CXL memory
+Samsung's CXL DDR5 modules shipped 2024; Pond (Microsoft, ASPLOS 2023) shows 30-40% TCO savings for OLTP workloads via CXL memory
 tiering. TPC-H benchmarks on Azure's CXL preview show queries can
 spill to CXL memory before disk with 2-3x lower latency than SSD.
 
@@ -274,8 +273,7 @@ competitive with KLL on different shape-of-distribution.
 ### 9. Networking — RDMA-native operators
 
 **State of art:** FaRMv2 (Microsoft, EuroSys 2019), Silo+CoRM
-(Dragojevic, NSDI 2021), and Microsoft's SSD-RDMA fabric (SIGCOMM
-2024) all push RDMA to the operator boundary. RPC over RDMA cuts
+(Dragojevic, NSDI 2021), and Microsoft's SSD-RDMA fabric (SIGCOMM 2024) all push RDMA to the operator boundary. RPC over RDMA cuts
 latency by 5-10x for small messages.
 
 **Zeta today:** No RDMA story. The mailbox runtime is in-process.
@@ -322,18 +320,18 @@ not under fault-injection. No crashtest or power-loss simulator.
 
 ## Summary — priority ranking by dividend/cost
 
-| # | Gap | Expected dividend | Effort | Band |
-|---|---|---|---|---|
-| 5 | Cost-model framework | **High** (multi-algebra synergy) | M-L | P2 |
-| 10 | Power-loss simulator | **High** (production credibility) | M | P2 |
-| 1 | Object-store Spine | **High** (cloud-native path) | L | P2 |
-| 6 | Deterministic-execution mode | Medium | M | P2 |
-| 8 | Xor filter + DDSketch | Medium (easy wins) | S-M | P3 |
-| 2 | Codegen-backed execution | Medium (perf) | L | P3 |
-| 3 | io_uring native disk | Low (Linux-only) | M | P3 |
-| 4 | CXL memory tiering | Low now, High 2028+ | L | P3 |
-| 7 | Retraction-weight compression | Low (specialised) | S | P3 |
-| 9 | RDMA operator transport | Low (pre-multi-node) | L | P3 |
+| #   | Gap                           | Expected dividend                 | Effort | Band |
+| --- | ----------------------------- | --------------------------------- | ------ | ---- |
+| 5   | Cost-model framework          | **High** (multi-algebra synergy)  | M-L    | P2   |
+| 10  | Power-loss simulator          | **High** (production credibility) | M      | P2   |
+| 1   | Object-store Spine            | **High** (cloud-native path)      | L      | P2   |
+| 6   | Deterministic-execution mode  | Medium                            | M      | P2   |
+| 8   | Xor filter + DDSketch         | Medium (easy wins)                | S-M    | P3   |
+| 2   | Codegen-backed execution      | Medium (perf)                     | L      | P3   |
+| 3   | io_uring native disk          | Low (Linux-only)                  | M      | P3   |
+| 4   | CXL memory tiering            | Low now, High 2028+               | L      | P3   |
+| 7   | Retraction-weight compression | Low (specialised)                 | S      | P3   |
+| 9   | RDMA operator transport       | Low (pre-multi-node)              | L      | P3   |
 
 **Top-three to file:** (5) learned cost model, (10) power-loss
 simulator, (1) object-store Spine. These are the highest
@@ -345,8 +343,8 @@ cutting-edge persistence).
 
 - Not a commitment to land any of these this round. Aaron gates.
 - Not a claim Zeta is generally behind — the algebraic core is
-  ahead. The review deliberately surfaces the *engineering-
-  substrate* frontier where the industry has moved.
+  ahead. The review deliberately surfaces the _engineering-
+  substrate_ frontier where the industry has moved.
 - Not exhaustive — ten surfaces reviewed; more exist (object
   storage formats, query federation, bufferpool replacement
   policies, learned join-ordering, query-rewriter DSLs, ...).

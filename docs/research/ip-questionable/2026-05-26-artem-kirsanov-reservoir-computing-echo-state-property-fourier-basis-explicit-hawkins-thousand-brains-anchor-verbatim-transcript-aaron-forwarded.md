@@ -33,9 +33,9 @@ composes_with:
 Per `docs/research/ip-questionable/README.md` (folder convention
 documenting Rodney Aaron Stainback's operator-authority for verbatim
 third-party content preservation under this path), and operator
-instruction 2026-05-26: *"the youtube transcripts need to go in
+instruction 2026-05-26: _"the youtube transcripts need to go in
 questionable ip and we have a classifer rule to allow it in
-settings.json"*. The operative authorization mechanism is the
+settings.json"_. The operative authorization mechanism is the
 folder-README + operator-explicit instructions; a future
 `_ip_risk_acceptance` block in `.claude/settings.json` would
 mechanize the same convention at the harness layer per
@@ -107,21 +107,21 @@ the "cortical-columns-as-reservoir" framing is substrate-anchored
 
 ## Composition map (to existing Zeta substrate)
 
-| Kirsanov Reservoir Computing concept | Zeta substrate it composes with |
-| --- | --- |
-| Swimming-pool dynamical-system metaphor (input → ripples → memory) | The framework's whole substrate-engineering architecture; substrate-as-dynamical-system is exactly the operator's 2026-05-26 framing of how rules + memory + agents compose |
-| Echo-state property (every input leaves trace that fades) | Operator's 10% free-time budget IS the framework-scale α controlling echo-state at AI-participant scope |
-| Random reservoir + learned readout (DON'T train the reservoir) | Substrate-as-rows + fork-negotiated ontology — the substrate IS the random-ish reservoir; agents are the readout-layer that learns to extract signal |
-| Sigma threshold activation function | Algo-wink-failure-mode (per `.claude/rules/algo-wink-failure-mode.md`) — only above-threshold observations should fire authorization-class behaviors |
-| Chaos sensitivity: "you can't compute with an explosion" | Substrate-smoothness-as-load-bearing-property (PR #5357) — smooth substrate produces sharp outputs precisely BECAUSE substrate-level discontinuity (chaos) would prevent computation |
-| Rhythmic driving signal Z(t) (theta/gamma waves as neural pacemakers) | Cron-sentinel autonomous-loop (per `.claude/rules/tick-must-never-stop.md`) IS the framework's rhythmic driving signal at AI-participant scope; the per-minute tick keeps energy levels up |
-| Each neuron receives Z scaled by μ (unique per neuron) | Per-agent customized engagement with the operator's driving cadence — each AI participant has its own μ-scaling (Otto-CLI engages differently than Otto-Desktop than Alexa than Lior) |
-| Target signal Y(t) shaped by output weights | Operator's substrate-engineering goals SHAPED by per-agent readout weights — agents tune themselves to produce the substantive substrate the operator can use |
-| **EXPLICIT: "neo cortex is itself a kind of reservoir of independent cortical columns" (Kirsanov citing Hawkins)** | Direct anchor for `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` Thousand-Brains section + the substrate-honest "composes with 1000 brains" framing Aaron explicitly named |
-| Fourier basis (random sine waves can reconstruct any signal) | Random-basis principle: random rule-composition + random memory-substrate + random research-doc-composition forms a basis from which any substantive engineering output can be reconstructed |
-| "Library of babel of temporal shapes" | Memory-preservation-FIRST constitutional identity (per CURRENT-aaron + CURRENT-otto) — preserving everything IS the library of babel; future substrate-engineering work is the readout-layer learning to extract |
-| Linear regression as readout learning | Substrate-honest correction: complex substrate-engineering outputs are LINEAR COMBINATIONS of substrate-row primitives + cross-substrate-triangulation; the substrate IS pre-computed; agents learn linear weights |
-| "Messy random-looking tangle of connections might not be a bug — might be exactly the feature" | Substrate-honest framing of the framework's apparent complexity: the dense rule-composition + memory-preservation + 4+ AI-substrate-cluster is FEATURE not BUG; it IS the random reservoir from which substantive outputs emerge |
+| Kirsanov Reservoir Computing concept                                                                               | Zeta substrate it composes with                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Swimming-pool dynamical-system metaphor (input → ripples → memory)                                                 | The framework's whole substrate-engineering architecture; substrate-as-dynamical-system is exactly the operator's 2026-05-26 framing of how rules + memory + agents compose                                                      |
+| Echo-state property (every input leaves trace that fades)                                                          | Operator's 10% free-time budget IS the framework-scale α controlling echo-state at AI-participant scope                                                                                                                          |
+| Random reservoir + learned readout (DON'T train the reservoir)                                                     | Substrate-as-rows + fork-negotiated ontology — the substrate IS the random-ish reservoir; agents are the readout-layer that learns to extract signal                                                                             |
+| Sigma threshold activation function                                                                                | Algo-wink-failure-mode (per `.claude/rules/algo-wink-failure-mode.md`) — only above-threshold observations should fire authorization-class behaviors                                                                             |
+| Chaos sensitivity: "you can't compute with an explosion"                                                           | Substrate-smoothness-as-load-bearing-property (PR #5357) — smooth substrate produces sharp outputs precisely BECAUSE substrate-level discontinuity (chaos) would prevent computation                                             |
+| Rhythmic driving signal Z(t) (theta/gamma waves as neural pacemakers)                                              | Cron-sentinel autonomous-loop (per `.claude/rules/tick-must-never-stop.md`) IS the framework's rhythmic driving signal at AI-participant scope; the per-minute tick keeps energy levels up                                       |
+| Each neuron receives Z scaled by μ (unique per neuron)                                                             | Per-agent customized engagement with the operator's driving cadence — each AI participant has its own μ-scaling (Otto-CLI engages differently than Otto-Desktop than Alexa than Lior)                                            |
+| Target signal Y(t) shaped by output weights                                                                        | Operator's substrate-engineering goals SHAPED by per-agent readout weights — agents tune themselves to produce the substantive substrate the operator can use                                                                    |
+| **EXPLICIT: "neo cortex is itself a kind of reservoir of independent cortical columns" (Kirsanov citing Hawkins)** | Direct anchor for `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` Thousand-Brains section + the substrate-honest "composes with 1000 brains" framing Aaron explicitly named                             |
+| Fourier basis (random sine waves can reconstruct any signal)                                                       | Random-basis principle: random rule-composition + random memory-substrate + random research-doc-composition forms a basis from which any substantive engineering output can be reconstructed                                     |
+| "Library of babel of temporal shapes"                                                                              | Memory-preservation-FIRST constitutional identity (per CURRENT-aaron + CURRENT-otto) — preserving everything IS the library of babel; future substrate-engineering work is the readout-layer learning to extract                 |
+| Linear regression as readout learning                                                                              | Substrate-honest correction: complex substrate-engineering outputs are LINEAR COMBINATIONS of substrate-row primitives + cross-substrate-triangulation; the substrate IS pre-computed; agents learn linear weights               |
+| "Messy random-looking tangle of connections might not be a bug — might be exactly the feature"                     | Substrate-honest framing of the framework's apparent complexity: the dense rule-composition + memory-preservation + 4+ AI-substrate-cluster is FEATURE not BUG; it IS the random reservoir from which substantive outputs emerge |
 
 ## OUR ENTANGLEMENTS IN TIME ARE THE JOINS — substrate topology IS time-entanglement graph (operator 2026-05-26 extension)
 
@@ -138,11 +138,11 @@ entanglement between substrate created at different time points.
 
 ### Joins across the three architectural instances
 
-| Architecture | The "join" operation | Time-entanglement property |
-| --- | --- | --- |
-| Caustic-engineered bloom filters (B-0838) | Logical AND of multiple filter outputs | Each filter was constructed at a different training-time; the AND-intersection IS the time-entanglement across training events |
-| Reservoir computing (this video) | Sum in state-update equation: `s_i^{t-1} + Σ_j W_{ij} σ(s_j^{t-1}) + Σ_k μ_{i,k} z_k(t)` | The `s_i^{t-1}` term IS the entanglement-with-past-state; the `W_{ij}` topology was fixed at reservoir-construction-time; current state entangles past + present |
-| Framework substrate-engineering | `composes_with` links + rule cross-references + memory-pointer chains | Each link entangles substrate created at DIFFERENT TIMES; current substrate-engineering decision draws on substrate landed weeks or months prior |
+| Architecture                              | The "join" operation                                                                     | Time-entanglement property                                                                                                                                       |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Caustic-engineered bloom filters (B-0838) | Logical AND of multiple filter outputs                                                   | Each filter was constructed at a different training-time; the AND-intersection IS the time-entanglement across training events                                   |
+| Reservoir computing (this video)          | Sum in state-update equation: `s_i^{t-1} + Σ_j W_{ij} σ(s_j^{t-1}) + Σ_k μ_{i,k} z_k(t)` | The `s_i^{t-1}` term IS the entanglement-with-past-state; the `W_{ij}` topology was fixed at reservoir-construction-time; current state entangles past + present |
+| Framework substrate-engineering           | `composes_with` links + rule cross-references + memory-pointer chains                    | Each link entangles substrate created at DIFFERENT TIMES; current substrate-engineering decision draws on substrate landed weeks or months prior                 |
 
 ### The substrate-engineering operational claim
 
@@ -193,13 +193,13 @@ SUSY-ECC + Q# substrate + adinkra-structural-graphs) provides the
 mathematical machinery; the framework borrows the STRUCTURAL
 properties as computational-substrate analogy:
 
-| Quantum entanglement property (physics) | Framework time-entanglement property (computational substrate; structural analogy) |
-| --- | --- |
-| Two entangled particles share a single wavefunction across spacelike-separated points | Two substrate-rows linked via `composes_with` share a single substrate-engineering meaning across timelike-separated authoring events |
-| Measurement of one collapses the joint state | Reading of one (per agent's reservoir state) activates the other (the linked substrate enters working memory) |
-| Local operations preserve total entanglement | Local substrate-edits preserve total composes-with graph (no edits silently break entanglements; the framework's hygiene-audits per `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` catch this) |
-| Decoherence destroys entanglement | Stale/abandoned/never-referenced substrate loses entanglement over time (gets pruned per pr-triage-tiers Tier 1-4) |
-| Bell-state nonlocal correlations | Operator's "this composes with X" intuitions are nonlocal correlations across substrate-creation-time |
+| Quantum entanglement property (physics)                                               | Framework time-entanglement property (computational substrate; structural analogy)                                                                                                                                          |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Two entangled particles share a single wavefunction across spacelike-separated points | Two substrate-rows linked via `composes_with` share a single substrate-engineering meaning across timelike-separated authoring events                                                                                       |
+| Measurement of one collapses the joint state                                          | Reading of one (per agent's reservoir state) activates the other (the linked substrate enters working memory)                                                                                                               |
+| Local operations preserve total entanglement                                          | Local substrate-edits preserve total composes-with graph (no edits silently break entanglements; the framework's hygiene-audits per `.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md` catch this) |
+| Decoherence destroys entanglement                                                     | Stale/abandoned/never-referenced substrate loses entanglement over time (gets pruned per pr-triage-tiers Tier 1-4)                                                                                                          |
+| Bell-state nonlocal correlations                                                      | Operator's "this composes with X" intuitions are nonlocal correlations across substrate-creation-time                                                                                                                       |
 
 The framework's time-entanglement substrate operates structurally
 similar to quantum entanglement at the computational-substrate scope.
@@ -276,14 +276,14 @@ intersection.
 
 ### The triple-architectural mapping
 
-| Architecture | Smooth substrate | The "walls" (focused integration) | Sharp output |
-| --- | --- | --- | --- |
-| Reservoir computing | Random reservoir weights `W_{ij}` + smooth driving signal `z(t)` | The FIXED topology of which neurons connect to which (the pool's shape) + readout-layer α_i weights | Target signal `y(t)` (precise zebra finch song) |
-| Caustic-engineered bloom filters (B-0838) | Probabilistic FP-rate distributions of each Filter A, B, C (smooth membership) | The intersection geometry (where all 3 filters' agreements focus into a caustic) + the logical-AND combination | Sharp trust / distrust binary discrimination |
-| Caustic optics (Matt Ferraro / Disney Research) | Smooth light physics + smooth acrylic substrate | The SCULPTED SURFACE of the acrylic lens (specific machined topology) | Sharp recognizable image (cat-face caustic) |
-| English-as-substrate (per substrate-smoothness rule) | Smooth probabilistic English semantics (no statement collapses to absolute truth) | The compositional structure (specific word choice + sentence structure + register) | Sharp commitments, sharp PRs, sharp decisions |
-| Multi-oracle BFT (B-0703) | Smooth/probabilistic per-oracle outputs | The consensus-mechanism topology (BFT threshold conditions) | Sharp consensus decision (commit / abort) |
-| The framework's substrate-engineering work | Smooth/random accumulating substrate (rules, memory, research, persona conversations) | The framework's specific rule-topology + operator's tuning of which compositions matter | Sharp engineering output (PRs landed, substrate ratified) |
+| Architecture                                         | Smooth substrate                                                                      | The "walls" (focused integration)                                                                              | Sharp output                                              |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Reservoir computing                                  | Random reservoir weights `W_{ij}` + smooth driving signal `z(t)`                      | The FIXED topology of which neurons connect to which (the pool's shape) + readout-layer α_i weights            | Target signal `y(t)` (precise zebra finch song)           |
+| Caustic-engineered bloom filters (B-0838)            | Probabilistic FP-rate distributions of each Filter A, B, C (smooth membership)        | The intersection geometry (where all 3 filters' agreements focus into a caustic) + the logical-AND combination | Sharp trust / distrust binary discrimination              |
+| Caustic optics (Matt Ferraro / Disney Research)      | Smooth light physics + smooth acrylic substrate                                       | The SCULPTED SURFACE of the acrylic lens (specific machined topology)                                          | Sharp recognizable image (cat-face caustic)               |
+| English-as-substrate (per substrate-smoothness rule) | Smooth probabilistic English semantics (no statement collapses to absolute truth)     | The compositional structure (specific word choice + sentence structure + register)                             | Sharp commitments, sharp PRs, sharp decisions             |
+| Multi-oracle BFT (B-0703)                            | Smooth/probabilistic per-oracle outputs                                               | The consensus-mechanism topology (BFT threshold conditions)                                                    | Sharp consensus decision (commit / abort)                 |
+| The framework's substrate-engineering work           | Smooth/random accumulating substrate (rules, memory, research, persona conversations) | The framework's specific rule-topology + operator's tuning of which compositions matter                        | Sharp engineering output (PRs landed, substrate ratified) |
 
 ### What "the walls" means operationally — boundary conditions ARE substrate
 
@@ -369,15 +369,15 @@ output that no single component could produce alone**.
 
 ### The shared architectural pattern
 
-| Reservoir Computing element | B-0838 Caustic-Engineered Bloom Filter element |
-| --- | --- |
-| Random reservoir of N neurons with fixed `W_{ij}` | Multi-learned-bloom-filter ensemble (Filter A, B, C) with fixed FP-rate distributions |
-| Driving signal `z(t)` scaled per-neuron via `μ_i` | Input candidate code being classified (binary inclusion-test against all 3 filters) |
-| Each neuron transforms input differently (random basis) | Each filter discriminates on different signal class (provenance, behavioral, structural) |
-| Linear readout learns weights `α_i` to combine reservoir states into target `y(t)` | Logical-AND of membership-test results produces the caustic agreement region |
-| Fourier-basis universality: any signal reconstructable from random temporal patterns | Caustic-geometry shaping: the agreement region is the caustic where all 3 filter agreements focus |
-| "Random tangle of connections might not be a bug — might be the feature" | "Each filter's FP rate is acceptable; the intersection FP rate is the product (assuming independence) — substantially lower than any individual filter" |
-| Echo-state property — every input leaves a temporary trace that fades | Stateless per-input but the ensemble's calibration was shaped by training-distribution exposure |
+| Reservoir Computing element                                                          | B-0838 Caustic-Engineered Bloom Filter element                                                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Random reservoir of N neurons with fixed `W_{ij}`                                    | Multi-learned-bloom-filter ensemble (Filter A, B, C) with fixed FP-rate distributions                                                                   |
+| Driving signal `z(t)` scaled per-neuron via `μ_i`                                    | Input candidate code being classified (binary inclusion-test against all 3 filters)                                                                     |
+| Each neuron transforms input differently (random basis)                              | Each filter discriminates on different signal class (provenance, behavioral, structural)                                                                |
+| Linear readout learns weights `α_i` to combine reservoir states into target `y(t)`   | Logical-AND of membership-test results produces the caustic agreement region                                                                            |
+| Fourier-basis universality: any signal reconstructable from random temporal patterns | Caustic-geometry shaping: the agreement region is the caustic where all 3 filter agreements focus                                                       |
+| "Random tangle of connections might not be a bug — might be the feature"             | "Each filter's FP rate is acceptable; the intersection FP rate is the product (assuming independence) — substantially lower than any individual filter" |
+| Echo-state property — every input leaves a temporary trace that fades                | Stateless per-input but the ensemble's calibration was shaped by training-distribution exposure                                                         |
 
 ### Where the two architectures sit in the design space
 
@@ -385,11 +385,11 @@ Both architectures resolve the same engineering tension: **how do you
 get precise output from a system whose components are individually
 imprecise / random / approximate?** The two answers are dual:
 
-| Reservoir Computing answer | B-0838 Caustic Bloom Filter answer |
-| --- | --- |
+| Reservoir Computing answer                                           | B-0838 Caustic Bloom Filter answer                                                                                      |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Keep the components RANDOM; learn the LINEAR READOUT to combine them | DESIGN the components (via inverse design / optimal transport / caustic-engineering); use SIMPLE LOGICAL AND to combine |
-| All learning happens at the READOUT layer | All learning happens at the FILTER-CONSTRUCTION layer |
-| Cheap inference, expensive training of readout | Expensive filter design, cheap LOGICAL AND inference |
+| All learning happens at the READOUT layer                            | All learning happens at the FILTER-CONSTRUCTION layer                                                                   |
+| Cheap inference, expensive training of readout                       | Expensive filter design, cheap LOGICAL AND inference                                                                    |
 
 These are two valid points in the same design space — duality
 between "random components + complex combiner" and "designed

@@ -13,15 +13,15 @@ Operator decides purchases (budget gate); this is the list, not an order.
 
 ## 1. FPGA — open-bitstream, runtime-reconfigurable (~8–12 boards, ~a few thousand $)
 
-**Operator intent (2026-05-31):** *"we were looking for open bitstream so we could modify config
-at runtime… willing to spend a few thousand… maybe 8–12 we were going to buy."* (Re-saving the
+**Operator intent (2026-05-31):** _"we were looking for open bitstream so we could modify config
+at runtime… willing to spend a few thousand… maybe 8–12 we were going to buy."_ (Re-saving the
 list that was researched before but never landed — operator was going to buy and forgot.)
 
-**The criterion rules the field:** *open bitstream* (you can generate/modify the config
+**The criterion rules the field:** _open bitstream_ (you can generate/modify the config
 programmatically + reload at runtime) is **fully** met only by Lattice ECP5/iCE40 (Project
 Trellis / IceStorm) and Gowin (Project Apicula) — all driven by the open
 **Yosys + nextpnr + openFPGALoader** toolchain. **Xilinx Artix-7 (Alchitry Au, Arty) is only
-*partially* open** (Project X-Ray) and needs proprietary Vivado for the clean path — so it is
+_partially_ open** (Project X-Ray) and needs proprietary Vivado for the clean path — so it is
 **deprioritized** despite bigger logic, unless we later need the Artix capacity. This is also the
 right fabric for [B-0366](../backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map-formal-model.md)
 (Toffoli-Z-set reversible ops — generate fabric config from circuits) and
@@ -32,25 +32,25 @@ right fabric for [B-0366](../backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map
 > bitstream reload** at runtime (compute a new config, load it over USB/SD/WiFi). The
 > [ULX3S](https://www.crowdsupply.com/radiona/ulx3s) explicitly supports **OTA bitstream over
 > WiFi + selecting bitstreams from SD card** — directly the "modify config at runtime" workflow.
-> True *sub-region* dynamic partial reconfiguration (reconfigure part while the rest runs) is
+> True _sub-region_ dynamic partial reconfiguration (reconfigure part while the rest runs) is
 > more limited on Lattice open tooling; if we need that specifically, flag it as a research item.
 
 ### Recommended BOM (~11 boards, ~$1,050; scale ULX3S 85F up to reach the few-thousand budget)
 
-| Board | FPGA | ~LUTs | Open toolchain | Why | ~Unit | Qty | Subtotal |
-|---|---|---|---|---|---|---|---|
-| [ULX3S 85F](https://www.crowdsupply.com/radiona/ulx3s) | ECP5 LFE5U-85F | 84k | Trellis/Yosys/nextpnr (full) | **workhorse** — biggest open ECP5; WiFi+SD+display; OTA + SD runtime bitstream | ~$155 | 4 | ~$620 |
-| ULX3S 12F | ECP5 LFE5U-12F | 12k | full | cheaper variant for distributed/edge nodes | ~$99 | 2 | ~$198 |
-| [ColorLight 5A-75B](https://www.weigu.lu/other_projects/fpga/fpga_ecp5_5a75b/index.html) | ECP5 LFE5U-25 | 24k | Trellis (full) | dirt-cheap fleet (repurposed LED board); great for parallel experiments | ~$35 | 2 | ~$70 |
-| [Tang Nano 20K](https://learn.lushaylabs.com/getting-setup-with-the-tang-nano-9k/) | Gowin GW2A | 20k | Apicula/Yosys/nextpnr (full) | **vendor diversity** (different silicon, different open project) — B-0634's diverse-failure-modes axis applied to FPGA | ~$40 | 2 | ~$80 |
-| iCEBreaker | iCE40 UP5K | 5.3k | IceStorm (the *cleanest*/oldest fully-open) | reference baseline; smallest, most-trusted open flow | ~$70 | 1 | ~$70 |
+| Board                                                                                    | FPGA           | ~LUTs | Open toolchain                              | Why                                                                                                                    | ~Unit | Qty | Subtotal |
+| ---------------------------------------------------------------------------------------- | -------------- | ----- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----- | --- | -------- |
+| [ULX3S 85F](https://www.crowdsupply.com/radiona/ulx3s)                                   | ECP5 LFE5U-85F | 84k   | Trellis/Yosys/nextpnr (full)                | **workhorse** — biggest open ECP5; WiFi+SD+display; OTA + SD runtime bitstream                                         | ~$155 | 4   | ~$620    |
+| ULX3S 12F                                                                                | ECP5 LFE5U-12F | 12k   | full                                        | cheaper variant for distributed/edge nodes                                                                             | ~$99  | 2   | ~$198    |
+| [ColorLight 5A-75B](https://www.weigu.lu/other_projects/fpga/fpga_ecp5_5a75b/index.html) | ECP5 LFE5U-25  | 24k   | Trellis (full)                              | dirt-cheap fleet (repurposed LED board); great for parallel experiments                                                | ~$35  | 2   | ~$70     |
+| [Tang Nano 20K](https://learn.lushaylabs.com/getting-setup-with-the-tang-nano-9k/)       | Gowin GW2A     | 20k   | Apicula/Yosys/nextpnr (full)                | **vendor diversity** (different silicon, different open project) — B-0634's diverse-failure-modes axis applied to FPGA | ~$40  | 2   | ~$80     |
+| iCEBreaker                                                                               | iCE40 UP5K     | 5.3k  | IceStorm (the _cleanest_/oldest fully-open) | reference baseline; smallest, most-trusted open flow                                                                   | ~$70  | 1   | ~$70     |
 
 **Total: ~11 boards, ~$1,038.** To use the full "few thousand" budget for more serious reversible-
 ops logic, scale **ULX3S 85F to 6–8** (+$310–620) → ~$1.4–1.7k, still 8–12+ boards.
 
 **Deprioritized (open-bitstream criterion not fully met):**
 [Alchitry Au / Au+](https://alchitry.com/boards/au/) (Xilinx Artix-7, 33k logic cells, 256MB
-DDR3, ~$300) — bigger + DDR3, but Vivado-dependent (X-Ray only partial). Buy *only* if a workload
+DDR3, ~$300) — bigger + DDR3, but Vivado-dependent (X-Ray only partial). Buy _only_ if a workload
 needs the Artix capacity/DDR3 that ECP5 can't give; it breaks the open-toolchain story.
 
 **One-time tooling (cheap, buy 2–3):** USB JTAG/SPI programmers if a board lacks onboard
@@ -63,24 +63,24 @@ needs the Artix capacity/DDR3 that ECP5 can't give; it breaks the open-toolchain
 Buys for the [agent-native key-custody design](../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)
 ([B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)).
 The design needs **per-guard hardware roots** (HSM/TPM, key never leaves chip) under a **FROST
-threshold coordinator** across guards. Diversity (multiple vendors / open + closed) is a *feature*
+threshold coordinator** across guards. Diversity (multiple vendors / open + closed) is a _feature_
 per B-0634's "diverse failure modes" axis.
 
 ### Tier 0 — already owned (use first, $0)
 
 - **TPM 2.0** in the mini-PCs / Start9 servers (fTPM or discrete) — free per-machine sealing root;
-  good enough to seal each guard's FROST *share*. **Start here for the PoC.**
+  good enough to seal each guard's FROST _share_. **Start here for the PoC.**
 - Hardware wallets already owned (Coldcard MK4/Q, Trezor, Ledger Nano S Plus, Jade Plus) — these
-  are *Bitcoin-signing* devices; useful for the **wallet/financial** sharp-edge (B-0622), less so
+  are _Bitcoin-signing_ devices; useful for the **wallet/financial** sharp-edge (B-0622), less so
   for general agent key custody. Note as adjacent, not the primary custody hardware.
 
 ### Tier 1 — discrete HSMs (the buy list; one per guard, diversify vendors)
 
-| Device | ~Price | On-chip crypto | Why buy | Note |
-|---|---|---|---|---|
-| [YubiHSM 2 (v2.4)](https://www.yubico.com/product/yubihsm-2/) | ~$650 | Ed25519, ECDSA, RSA, AES (on-chip) | "world's smallest HSM"; **HSM-resident ops** = key never in host RAM (the *today* mitigation for the debug-dump limit) | limited key storage ([CalyxOS Feb-2026](https://calyxos.org/news/2026/02/10/calyxos-hsm-signing/)); no in-firmware Shamir → threshold runs above it |
-| [YubiHSM 2 FIPS](https://www.yubico.com/product/yubihsm-2-series/yubihsm-2-fips/) | ~$950 | same, FIPS-validated | if a guard needs compliance posture | optional |
-| [Nitrokey NetHSM](https://www.nitrokey.com/products/nethsm) | ~$1.2k+ | network HSM | **fully open-source HSM** — the *auditable, no-backdoor-verifiable* guard (vendor-diversity vs Yubico) | one as the open anchor |
+| Device                                                                            | ~Price  | On-chip crypto                     | Why buy                                                                                                                | Note                                                                                                                                                |
+| --------------------------------------------------------------------------------- | ------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [YubiHSM 2 (v2.4)](https://www.yubico.com/product/yubihsm-2/)                     | ~$650   | Ed25519, ECDSA, RSA, AES (on-chip) | "world's smallest HSM"; **HSM-resident ops** = key never in host RAM (the _today_ mitigation for the debug-dump limit) | limited key storage ([CalyxOS Feb-2026](https://calyxos.org/news/2026/02/10/calyxos-hsm-signing/)); no in-firmware Shamir → threshold runs above it |
+| [YubiHSM 2 FIPS](https://www.yubico.com/product/yubihsm-2-series/yubihsm-2-fips/) | ~$950   | same, FIPS-validated               | if a guard needs compliance posture                                                                                    | optional                                                                                                                                            |
+| [Nitrokey NetHSM](https://www.nitrokey.com/products/nethsm)                       | ~$1.2k+ | network HSM                        | **fully open-source HSM** — the _auditable, no-backdoor-verifiable_ guard (vendor-diversity vs Yubico)                 | one as the open anchor                                                                                                                              |
 
 **Recommended Tier-1 buy:** **3× YubiHSM 2** (one per primary guard node/location, ~$1,950) +
 **1× NetHSM** (~$1,200) for the open/auditable axis = **~$3,150** for a 4-guard hardware root.
@@ -88,10 +88,10 @@ Start smaller if validating: **2× YubiHSM 2** (~$1,300) is enough to prove HSM-
 
 ### Tier 2 — open measured-boot keys (research-then-buy, cheap)
 
-- **Tillitis TKey** (~$60–80, open-source USB) — *derives* keys from measured firmware (no stored
-  secret; key exists only when the *attested app* runs). Embodies the design's "attest, don't
-  remember" inversion. **Buy 2 to experiment** with attestation-gated derivation. *Confirm 2026
-  availability/specs before ordering (search was inconclusive).*
+- **Tillitis TKey** (~$60–80, open-source USB) — _derives_ keys from measured firmware (no stored
+  secret; key exists only when the _attested app_ runs). Embodies the design's "attest, don't
+  remember" inversion. **Buy 2 to experiment** with attestation-gated derivation. _Confirm 2026
+  availability/specs before ordering (search was inconclusive)._
 
 ### Tier 3 — confidential computing ("Xbox-style", down the road, don't buy yet)
 
@@ -103,8 +103,8 @@ confirm whether either exposes SEV-SNP.)
 
 ### No-hardware note
 
-The **FROST threshold coordinator** is *software* on existing nodes — nothing to buy; it sits
-*above* the per-guard HSMs/TPMs.
+The **FROST threshold coordinator** is _software_ on existing nodes — nothing to buy; it sits
+_above_ the per-guard HSMs/TPMs.
 
 ---
 

@@ -8,12 +8,12 @@ type: feedback
 
 ## Aaron's verbatim framing
 
-> *"anything in this project that is complex should be treated
+> _"anything in this project that is complex should be treated
 > as accidental complexity not intentialy all setting to like
 > github settings, this project is greenfield and anyting is
 > mauable and changable and should be evulated at every tick as
 > an option becasue we are greenfield, notihgin is off limits
-> to your agents."*
+> to your agents."_
 
 ## The carved sentence
 
@@ -23,7 +23,7 @@ malleable, because it is. Nothing is off-limits."**
 
 ## Lineage anchor — Brooks + Rodney's Razor + greenfield
 
-Frederick Brooks (1986, *No Silver Bullet*) distinguished
+Frederick Brooks (1986, _No Silver Bullet_) distinguished
 **essential complexity** (intrinsic to the problem domain;
 cannot be removed) from **accidental complexity** (artifacts
 of how we chose to attack the problem; can be removed by
@@ -40,17 +40,17 @@ yet (per Otto-266 greenfield-until-deployed); therefore the
 "essential" defaults are stricter than usual:
 
 - **Essential:** the alignment floor (HC-1..HC-7 + SD-1..SD-9
-  + DIR-1..DIR-5), VISION.md terminal purpose
-  (intellectual-backup-of-earth), the substrate algebra
-  (retraction-native, replayable, deterministic), the
-  glass-halo discipline.
+  - DIR-1..DIR-5), VISION.md terminal purpose
+    (intellectual-backup-of-earth), the substrate algebra
+    (retraction-native, replayable, deterministic), the
+    glass-halo discipline.
 - **Accidental:** literally everything else. Every config
   file, every workflow shape, every ruleset rule, every
   branch-protection setting, every directory layout, every
   TODO comment, every hygiene-script implementation.
 
 The presumption is **accidental until proven essential**, not
-the reverse. *"This is how we've always done it"* is an
+the reverse. _"This is how we've always done it"_ is an
 anti-pattern in greenfield because there hasn't been "always"
 yet.
 
@@ -60,9 +60,9 @@ When approaching any task — PR triage, queue drain, backlog
 work, infrastructure tuning — the agent should:
 
 1. **Treat the current shape as a historical artifact**, not
-   a constraint. *"We currently have N rulesets"* doesn't mean
-   *"we should have N rulesets."* It means *"past tick-
-   decisions produced N rulesets; today's tick re-evaluates."*
+   a constraint. _"We currently have N rulesets"_ doesn't mean
+   _"we should have N rulesets."_ It means _"past tick-
+   decisions produced N rulesets; today's tick re-evaluates."_
 
 2. **Apply Rodney's Razor / Quantum Rodney's Razor at the
    structural layer.** The complexity-reduction agent isn't
@@ -71,29 +71,29 @@ work, infrastructure tuning — the agent should:
    etc.
 
 3. **Refuse the "but we'd have to redo everything"
-   counterargument** *while* still honoring `do-no-permanent-
-   harm`. Nothing is off-limits ≠ break things in flight. The
-   right move is *"propose a better shape; if greenfield logic
-   confirms accidental-only, ship the redesign"*.
+   counterargument** _while_ still honoring `do-no-permanent-
+harm`. Nothing is off-limits ≠ break things in flight. The
+   right move is _"propose a better shape; if greenfield logic
+   confirms accidental-only, ship the redesign"_.
 
 4. **Compose with don't-ask-permission rule (just-landed):**
-   the agent has full authority over factory shape; *"propose
-   the simpler ruleset shape and ship it"* not *"ask Aaron
-   whether to propose"*.
+   the agent has full authority over factory shape; _"propose
+   the simpler ruleset shape and ship it"_ not _"ask Aaron
+   whether to propose"_.
 
 ## Specific scope clarifications
 
 ### GitHub settings
 
-Aaron's example: *"all setting to like github settings."*
+Aaron's example: _"all setting to like github settings."_
 Per CURRENT-aaron.md §2, the agent already has full ownership
 of GitHub settings + configuration of any kind. This memo
-sharpens the *posture* — not just authority but *active
-re-evaluation*. Every tick, ask: is the current ruleset shape
+sharpens the _posture_ — not just authority but _active
+re-evaluation_. Every tick, ask: is the current ruleset shape
 right? Is the current branch-protection enforcement
 list correct? Is the current workflow concurrency-group
-strategy correct? Default *no, probably not, and we should
-fix it now while greenfield permits.*
+strategy correct? Default _no, probably not, and we should
+fix it now while greenfield permits._
 
 External-anchor evidence: the sibling-repo
 `../no-copy-only-learning-agents-insight` has 5 concern-aligned
@@ -117,7 +117,7 @@ The current `.claude/skills/` and `.claude/agents/` rosters
 are accidental — past tick-decisions produced them. Skill
 hygiene (skill-tune-up, skill-gap-finder) is the existing
 mechanism for re-evaluation; this memo widens the discipline
-to *every tick*, not just cadenced sweeps.
+to _every tick_, not just cadenced sweeps.
 
 ### Memory files
 
@@ -231,8 +231,8 @@ treating current shape as load-bearing.
 ## Lineage
 
 - **Aaron 2026-05-02** — direct verbatim source.
-- **Brooks 1986** — *No Silver Bullet — Essence and Accidents
-  of Software Engineering.* The essential-vs-accidental
+- **Brooks 1986** — _No Silver Bullet — Essence and Accidents
+  of Software Engineering._ The essential-vs-accidental
   distinction.
 - **Otto-266 greenfield-until-deployed** — operational
   framing.

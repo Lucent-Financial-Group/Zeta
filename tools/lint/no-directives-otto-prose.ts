@@ -113,25 +113,14 @@ function splitLines(s: string): readonly string[] {
 }
 
 function changedFilesPr(baseRef: string): readonly string[] {
-  return splitLines(
-    gitOutput(["diff", "--name-only", "--diff-filter=AMR", `${baseRef}...HEAD`]),
-  );
+  return splitLines(gitOutput(["diff", "--name-only", "--diff-filter=AMR", `${baseRef}...HEAD`]));
 }
 
 function changedFilesWorktree(baseRef: string): readonly string[] {
   const sets = [
     splitLines(gitOutput(["diff", "--name-only", "--diff-filter=AMR"])),
-    splitLines(
-      gitOutput(["diff", "--cached", "--name-only", "--diff-filter=AMR"]),
-    ),
-    splitLines(
-      gitOutput([
-        "diff",
-        "--name-only",
-        "--diff-filter=AMR",
-        `${baseRef}...HEAD`,
-      ]),
-    ),
+    splitLines(gitOutput(["diff", "--cached", "--name-only", "--diff-filter=AMR"])),
+    splitLines(gitOutput(["diff", "--name-only", "--diff-filter=AMR", `${baseRef}...HEAD`])),
     splitLines(gitOutput(["ls-files", "--others", "--exclude-standard"])),
   ];
   const merged = new Set<string>();
@@ -140,9 +129,7 @@ function changedFilesWorktree(baseRef: string): readonly string[] {
 }
 
 function getChangedFiles(scope: Scope, baseRef: string): readonly string[] {
-  return scope === "worktree"
-    ? changedFilesWorktree(baseRef)
-    : changedFilesPr(baseRef);
+  return scope === "worktree" ? changedFilesWorktree(baseRef) : changedFilesPr(baseRef);
 }
 
 function isProseFile(path: string): boolean {
@@ -176,11 +163,7 @@ function readFileAsAddedLines(file: string): readonly AddedLine[] {
     .map((content) => ({ file, content }));
 }
 
-function diffOutput(
-  scope: Scope,
-  baseRef: string,
-  file: string,
-): readonly string[] {
+function diffOutput(scope: Scope, baseRef: string, file: string): readonly string[] {
   if (scope === "worktree") {
     return [
       gitOutput(["diff", "-U0", "--", file]),
@@ -200,10 +183,7 @@ function isAddedContentLine(line: string): boolean {
   return line.startsWith("+");
 }
 
-function extractAddedLinesFromDiff(
-  file: string,
-  diffText: string,
-): readonly AddedLine[] {
+function extractAddedLinesFromDiff(file: string, diffText: string): readonly AddedLine[] {
   const out: AddedLine[] = [];
   for (const line of diffText.split("\n")) {
     if (!isAddedContentLine(line)) continue;
@@ -212,11 +192,7 @@ function extractAddedLinesFromDiff(
   return out;
 }
 
-function extractAddedLines(
-  scope: Scope,
-  baseRef: string,
-  file: string,
-): readonly AddedLine[] {
+function extractAddedLines(scope: Scope, baseRef: string, file: string): readonly AddedLine[] {
   if (!existsSync(file)) return [];
   if (scope === "worktree" && isUntracked(file)) {
     return readFileAsAddedLines(file);
@@ -235,15 +211,9 @@ function matchesDirective(content: string): boolean {
 
 function emitFooter(): void {
   process.stderr.write("\n");
-  process.stderr.write(
-    "Prose framing maintainer input as 'directive' (Aaron's directive /\n",
-  );
-  process.stderr.write(
-    "maintainer directive / QoL directive / human directive) collapses\n",
-  );
-  process.stderr.write(
-    "self-provenance into bot-execution. Use 'input' / 'framing' /\n",
-  );
+  process.stderr.write("Prose framing maintainer input as 'directive' (Aaron's directive /\n");
+  process.stderr.write("maintainer directive / QoL directive / human directive) collapses\n");
+  process.stderr.write("self-provenance into bot-execution. Use 'input' / 'framing' /\n");
   process.stderr.write("'correction' / 'pass' instead.\n");
   process.stderr.write(
     "See memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md\n",
@@ -260,25 +230,19 @@ export function main(argv: readonly string[]): ExitCode {
 
   const changed = getChangedFiles(scope, baseRef);
   if (changed.length === 0) {
-    process.stdout.write(
-      `no-directives-otto-prose: no changed files vs ${baseRef}; skipping\n`,
-    );
+    process.stdout.write(`no-directives-otto-prose: no changed files vs ${baseRef}; skipping\n`);
     return 0;
   }
 
   const proseFiles = changed.filter(isProseFile);
   if (proseFiles.length === 0) {
-    process.stdout.write(
-      "no-directives-otto-prose: no Otto-prose surfaces changed; skipping\n",
-    );
+    process.stdout.write("no-directives-otto-prose: no Otto-prose surfaces changed; skipping\n");
     return 0;
   }
 
   const filtered = proseFiles.filter((f) => !isRuleDoc(f));
   if (filtered.length === 0) {
-    process.stdout.write(
-      "no-directives-otto-prose: only rule-docs touched; skipping\n",
-    );
+    process.stdout.write("no-directives-otto-prose: only rule-docs touched; skipping\n");
     return 0;
   }
 
@@ -299,15 +263,11 @@ export function main(argv: readonly string[]): ExitCode {
     }
     emitFooter();
     if (mode === "strict") return 1;
-    process.stderr.write(
-      "(advisory mode; not failing build — pass --strict to fail)\n",
-    );
+    process.stderr.write("(advisory mode; not failing build — pass --strict to fail)\n");
     return 0;
   }
 
-  process.stdout.write(
-    "no-directives-otto-prose: clean (0 candidate hits in added Otto-prose lines)\n",
-  );
+  process.stdout.write("no-directives-otto-prose: clean (0 candidate hits in added Otto-prose lines)\n");
   return 0;
 }
 

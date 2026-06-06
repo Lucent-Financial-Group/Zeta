@@ -22,24 +22,22 @@ This PR addresses the review comments on PR #4780, fixing the issues in the FsCh
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T14:57:03Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `fc379a773a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -52,6 +50,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds/updates FsCheck property-based tests around the residuated-lattice (`ResidualMax`) laws and wires them into the F# test project, with a small documentation update claiming coverage in the research “proof tool coverage” map.
 
 **Changes:**
+
 - Add `tests/Tests.FSharp/Algebra/Residuated.Tests.fs` with FsCheck properties for Galois connection, residual behavior, and a retraction-equivalence scenario.
 - Register the new test file in `tests/Tests.FSharp/Tests.FSharp.fsproj` so it is compiled and executed.
 - Update `docs/research/proof-tool-coverage.md` to mention residuated lattice property coverage.
@@ -60,11 +59,11 @@ This PR adds/updates FsCheck property-based tests around the residuated-lattice 
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tests/Tests.FSharp/Tests.FSharp.fsproj | Includes the new Residuated FsCheck test file in the test project compile list. |
+| File                                           | Description                                                                               |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| tests/Tests.FSharp/Tests.FSharp.fsproj         | Includes the new Residuated FsCheck test file in the test project compile list.           |
 | tests/Tests.FSharp/Algebra/Residuated.Tests.fs | Introduces FsCheck properties intended to validate `ResidualMax`/residuated-lattice laws. |
-| docs/research/proof-tool-coverage.md | Updates the “FsCheck properties — map” narrative to claim residuated lattice coverage. |
+| docs/research/proof-tool-coverage.md           | Updates the “FsCheck properties — map” narrative to claim residuated lattice coverage.    |
 
 ### COMMENTED — @AceHack (2026-05-24T17:08:23Z)
 
@@ -80,24 +79,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-24T17:12:49Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `dcb32bc2a9`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -109,7 +106,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-24T14:57:03Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Return false when residual is absent**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Return false when residual is absent**
 
 The `None` branch currently sets `rhs` to `not lhs`, which makes the property fail for every case where `a > b` (because `lhs` is false, `rhs` becomes true, and `lhs = rhs` is false). This turns the FsCheck property into a deterministic failure for a large input region, so CI will fail as soon as those inputs are generated; the branch should evaluate to `false` (or an equivalent encoding of “`x ≤ a \ b` is false when no residual exists”).
 
@@ -119,7 +116,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-24T14:57:03Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Exercise production residual logic in property test**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Exercise production residual logic in property test**
 
 This property defines `residualMax` locally and then asserts that local function against the same condition used to define it, so it can pass even if the real implementation regresses. Given the commit message and docs claim this adds law coverage for `Residuated.fs`, the test should call production code (or a shared law helper) rather than proving a self-referential definition.
 
@@ -165,7 +162,7 @@ This line claims the residuated lattice is now FsCheck property-covered, but it'
 
 **@chatgpt-codex-connector** (2026-05-24T17:12:49Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove claim of full residuated-law property coverage**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove claim of full residuated-law property coverage**
 
 Update this coverage note to avoid stating that all residuated laws now have property-based coverage, because the newly added tests still encode `residualMax` locally (`tests/Tests.FSharp/Algebra/Residuated.Tests.fs`, lines 23-26 and 44-50) instead of checking the production residual semantics directly. As written, this line overstates verification status and can mislead future reviewers/research writeups about what regressions the suite can actually catch.
 

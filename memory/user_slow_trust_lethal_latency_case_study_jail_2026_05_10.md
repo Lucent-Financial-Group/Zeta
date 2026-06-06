@@ -4,6 +4,7 @@ description: Aaron's month in solitary over legal marijuana, denied blood pressu
 type: user
 originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
 ---
+
 Aaron's lived case study for the trust-then-verify claim.
 
 **The facts:**

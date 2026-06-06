@@ -6,20 +6,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 915 |
-| Title | research: multi-AI feedback packets verbatim preservation (2026-04-30) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-30T12:45:30Z |
-| Merged at | 2026-04-30T15:06:55Z |
-| Merge commit SHA | `e81979e97117ec591f2906ccc4661400bd8711e9` |
-| Branch | `ops/research-multi-ai-feedback-packets-2026-04-30` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/915 |
-| Changed files | 3 |
-| Additions / deletions | +4320 / -0 |
+| Field                 | Value                                                                  |
+| --------------------- | ---------------------------------------------------------------------- |
+| Number                | 915                                                                    |
+| Title                 | research: multi-AI feedback packets verbatim preservation (2026-04-30) |
+| Author                | `AceHack` (human)                                                      |
+| State                 | MERGED                                                                 |
+| Created at            | 2026-04-30T12:45:30Z                                                   |
+| Merged at             | 2026-04-30T15:06:55Z                                                   |
+| Merge commit SHA      | `e81979e97117ec591f2906ccc4661400bd8711e9`                             |
+| Branch                | `ops/research-multi-ai-feedback-packets-2026-04-30`                    |
+| Base branch           | `main`                                                                 |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/915                |
+| Changed files         | 3                                                                      |
+| Additions / deletions | +4320 / -0                                                             |
 
 ## Description
 
@@ -59,15 +59,15 @@ rule applied to other in-flight PRs this session.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 36 |
-| Resolved threads | 36 |
-| Unresolved threads | 0 |
-| Total review comments | 36 |
-| Total fix commits (touching thread paths) | 17 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 36    |
+| Resolved threads                          | 36    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 36    |
+| Total fix commits (touching thread paths) | 17    |
 
 ## Review threads
 
@@ -80,10 +80,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T12:47:31Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:15 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use a valid §33 operational-status value**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use a valid §33 operational-status value**
+
   This archive header uses `research-absorb`, but `GOVERNANCE.md §33` constrains `Operational status:` to only `research-grade` or `operational`. Keeping a non-enum value here breaks the repository’s boundary-header contract and makes this absorb non-compliant with the documented ingest schema.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [collapsed]
@@ -95,10 +95,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T12:47:31Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2520 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace compose references that do not exist in-tree**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace compose references that do not exist in-tree**
+
   Several paths in the `Composes with` list (e.g., `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`, `docs/backlog/P0/B-0109-dependency-status-tracking-surface-2026-04-30.md`, and `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md`) are not present in this repository state, so readers cannot trace the claimed substrate lineage from this document. Either point to existing artifacts or land the referenced files in the same change set.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -185,10 +185,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T13:26:06Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2278 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Stop marking uncommitted artifacts as landed**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Stop marking uncommitted artifacts as landed**
+
   This status line asserts that B-0109 was already filed, but in this commit tree there is no corresponding backlog artifact (I checked the tree with `git ls-tree`/`rg`, and no `B-0109` file exists). Reporting absent work as "landed" weakens the repo’s substrate provenance and can mislead later rounds into assuming dependency-gate work is already durable. Either land the referenced artifact in the same change or downgrade the status wording to queued/pending.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 9 -- resolved [collapsed]
@@ -200,10 +200,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T13:30:59Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2299 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove landed claim for missing GitHub-status memory file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove landed claim for missing GitHub-status memory file**
+
   This line marks `memory/reference_github_status_first_class_aaron_2026_04_30.md` as already landed, but that artifact is absent from commit `b70870877b2b282b6056c2d8bdc0ad424cdb9b4a` (the path is not present in the tree). Because this document is positioned as provenance substrate, reporting a missing file as landed can mislead later rounds into treating the dependency-status policy as durable when it is not; either include the referenced file in the same change set or downgrade the status wording to queued/pending.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 10 -- resolved [collapsed]
@@ -306,10 +306,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T13:35:48Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2329 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove landed claim for missing B-0110 artifact**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove landed claim for missing B-0110 artifact**
+
   This status line says B-0110 was filed in PR #913, but in commit `6b4b933fd3befa8ee73a5f89995c5dd90a690dad` there is no corresponding `docs/backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md` artifact in-tree. In this repository, these research absorbs are used as provenance substrate, so marking absent work as landed can mislead later rounds into treating an uncommitted decision as durable.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 19 -- resolved [collapsed]
@@ -321,10 +321,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T13:35:48Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2375 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Drop landed status for missing canon memory file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Drop landed status for missing canon memory file**
+
   The document states that `memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md` landed in PR #914, but that file is not present in this commit tree. Because this section is framed as chronological substrate status, the landed claim creates incorrect provenance and should be downgraded to queued/pending unless the referenced artifact is committed in the same change set.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 20 -- resolved [outdated, collapsed]
@@ -336,10 +336,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T13:52:24Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:22 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Move non-fusion header into the first 20 lines**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Move non-fusion header into the first 20 lines**
+
   In `docs/research/**` external-conversation absorbs, `GOVERNANCE.md §33` requires all four boundary headers to appear within the first 20 lines; I checked that rule in `GOVERNANCE.md` and this file’s `Non-fusion disclaimer:` starts at line 22, so the document is out of contract for the archive-header format and may fail policy/audit expectations built on that boundary schema.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 21 -- resolved [collapsed]
@@ -457,10 +457,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T14:29:05Z on `docs/research/2026-04-30-multi-ai-feedback-packets-this-session.md`:2516 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove unresolved compose link to missing Amara artifact**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove unresolved compose link to missing Amara artifact**
+
   The `Composes with` section points to `memory/feedback_amara_poll_gate_not_ending_holding_is_not_status_2026_04_30.md`, but that file is not present in commit `90ebed2b315e9f2271093a8ccc17dfd0aa27e08f` (checked via tree lookup). Because this document is explicitly framed as provenance substrate, a missing compose target breaks traceability for the Amara-derived rule lineage and can mislead later rounds into assuming the backing artifact exists.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 30 -- resolved [collapsed]
@@ -472,10 +472,10 @@ rule applied to other in-flight PRs this session.
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T14:36:40Z on `docs/backlog/P2/B-0112-stale-2026-04-27-project-file-internals-bleed-out-cleanup-2026-04-30.md`:112 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace missing no-copy discipline cross-reference**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace missing no-copy discipline cross-reference**
+
   This backlog row points to `memory/feedback_no_copy_only_learning_from_sibling_repos_aaron_2026_04_30.md` as the governing discipline, but that artifact does not exist in commit `8d78f73` (verified via tree lookup), so future rounds cannot trace or validate the exact rule this cleanup is supposed to implement. Because this file is the durable trigger spec for B-0112, the broken reference undermines provenance and makes the cleanup criteria ambiguous; link to an existing canonical memory file or land the referenced artifact in the same change.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 31 -- resolved [outdated, collapsed]

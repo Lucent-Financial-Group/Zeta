@@ -13,26 +13,48 @@ describe("grammar-16 v0 — shape", () => {
   });
 
   it("has dense indices 0..15 in order", () => {
-    expect(GRAMMAR_16_V0.map((s) => s.index)).toEqual([
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-    ]);
+    expect(GRAMMAR_16_V0.map((s) => s.index)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
   });
 
   it("is four groups of four, in Navigate/Commit/Scope/Meta order", () => {
     expect(GRAMMAR_16_V0.map((s) => s.group)).toEqual([
-      "Navigate", "Navigate", "Navigate", "Navigate",
-      "Commit", "Commit", "Commit", "Commit",
-      "Scope", "Scope", "Scope", "Scope",
-      "Meta", "Meta", "Meta", "Meta",
+      "Navigate",
+      "Navigate",
+      "Navigate",
+      "Navigate",
+      "Commit",
+      "Commit",
+      "Commit",
+      "Commit",
+      "Scope",
+      "Scope",
+      "Scope",
+      "Scope",
+      "Meta",
+      "Meta",
+      "Meta",
+      "Meta",
     ]);
   });
 
   it("matches the ADR's controller-input layout exactly", () => {
     expect(GRAMMAR_16_V0.map((s) => s.controllerInput)).toEqual([
-      "D-pad Up", "D-pad Down", "D-pad Left", "D-pad Right",
-      "A", "B", "X", "Y",
-      "LB", "RB", "LT", "RT",
-      "Start", "View", "L3", "R3",
+      "D-pad Up",
+      "D-pad Down",
+      "D-pad Left",
+      "D-pad Right",
+      "A",
+      "B",
+      "X",
+      "Y",
+      "LB",
+      "RB",
+      "LT",
+      "RT",
+      "Start",
+      "View",
+      "L3",
+      "R3",
     ]);
   });
 });

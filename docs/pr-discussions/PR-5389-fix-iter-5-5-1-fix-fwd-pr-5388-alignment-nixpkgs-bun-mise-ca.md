@@ -20,9 +20,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Fix-forward for PR #5388 which merged BEFORE the alignment fix landed. Operator caught the drift:
 
-> *\"future mise we already do this we've drifed for nixos for some reason for bun\"*
+> _\"future mise we already do this we've drifed for nixos for some reason for bun\"_
 
-> *\"our install.sh for mac and linux this is our default\"*
+> _\"our install.sh for mac and linux this is our default\"_
 
 PR #5388 added \`bun\` via nixpkgs systemPackages on cluster nodes — DRIFTED from the canonical \`.mise.toml\` (line 33: \`bun = \"1.3\"\`) used everywhere else (dev laptops + CI runners + devcontainers per GOVERNANCE §24 three-way-parity).
 

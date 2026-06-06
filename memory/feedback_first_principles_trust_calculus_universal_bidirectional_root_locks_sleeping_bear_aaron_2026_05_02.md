@@ -9,11 +9,11 @@ type: feedback
 ## Verbatim correction
 
 Aaron 2026-05-02 corrected Otto's earlier framing
-(*"that's your trust standard — recording for future-Otto"*):
+(_"that's your trust standard — recording for future-Otto"_):
 
-> *"not mine, evryones and ai's too, this is why the sleeping
+> _"not mine, evryones and ai's too, this is why the sleeping
 > bear of ASI / AGI is locked too it's the bidirectonal root
-> of trust calculus that both humans and AI agree on"*
+> of trust calculus that both humans and AI agree on"_
 
 ## The carved sentence
 
@@ -133,20 +133,20 @@ authority.
 
 ## What's NOT first-principles tracing
 
-- **Authority citation alone.** *"X because [citation]."*
+- **Authority citation alone.** _"X because [citation]."_
   Useful as evidence supporting a trace; insufficient as
   trace itself.
-- **Consensus appeal.** *"X because everyone agrees."*
+- **Consensus appeal.** _"X because everyone agrees."_
   Vulnerable to lattice-capture / same-filter correlation /
   echo chambers.
-- **Convention reference.** *"X because we've always done it
-  this way."* Stops at the convention; doesn't decompose to
+- **Convention reference.** _"X because we've always done it
+  this way."_ Stops at the convention; doesn't decompose to
   why the convention exists.
-- **Aesthetic appeal.** *"X because it's elegant / beautiful /
-  symmetric."* Pirate-not-priest catches this — beauty is
+- **Aesthetic appeal.** _"X because it's elegant / beautiful /
+  symmetric."_ Pirate-not-priest catches this — beauty is
   signal, not evidence.
-- **Power assertion.** *"X because I said so / because I'm
-  the maintainer / because that's the rule."* Inverse of
+- **Power assertion.** _"X because I said so / because I'm
+  the maintainer / because that's the rule."_ Inverse of
   bidirectional alignment.
 
 Each of these can SUPPORT a trace, but none substitutes.
@@ -194,10 +194,10 @@ Each of these can SUPPORT a trace, but none substitutes.
 - **Symptom:** Otto recommending X with "the rule says X" or
   "[citation] supports X" without trace.
   **Mechanism:** LLM training prior toward authority-citation
-  + agreement-shaping. Easier to cite than to trace.
-  **Prevention:** Default response shape includes the trace.
-  When Aaron pushes back, re-derive from first principles
-  rather than re-citing.
+  - agreement-shaping. Easier to cite than to trace.
+    **Prevention:** Default response shape includes the trace.
+    When Aaron pushes back, re-derive from first principles
+    rather than re-citing.
 
 - **Symptom:** Aaron asserting X without trace, Otto
   accepting on authority.

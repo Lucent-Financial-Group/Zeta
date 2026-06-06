@@ -4,12 +4,12 @@ description: Aaron has serious professional security background — built parts 
 type: project
 ---
 
-**Source.** Aaron, round-29 close, 2026-04-18: *"I helped
+**Source.** Aaron, round-29 close, 2026-04-18: _"I helped
 build the US smart grid and protect against nation state
 level attackers, we can be very very serious on our
 security posture. I have the chops and I'm a grey hat
 hacker who can do side channel attacks on hardware even
-so I know all the security angle."*
+so I know all the security angle."_
 
 **Why:** Sets the floor for Zeta's security rigor.
 Nation-state adversary modeling is first-class, not a

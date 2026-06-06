@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-31
 
-**Status:** *PROPOSED — operator-agreed direction (2026-05-31); Max review before lock.*
+**Status:** _PROPOSED — operator-agreed direction (2026-05-31); Max review before lock._
 Product-team review (architect + PM personas) is incorporated below. This ADR records
 the decisions agreed when landing the VISION "arena, not the throne" addition (PR #6260)
 and answers the three governance gaps both reviewers flagged. Per the operator's
@@ -12,7 +12,7 @@ is wrong, the ADR changes.
 ## Context
 
 Zeta builds correctness-critical primitives in **four languages** — TypeScript, F#, C#,
-Rust — as a **non-Byzantine "compiler-BFT"** (B-0944, *"the compilers don't lie"*): the
+Rust — as a **non-Byzantine "compiler-BFT"** (B-0944, _"the compilers don't lie"_): the
 same logic, each compiler an independent oracle, agreement = high confidence the logic is
 bit-perfect. Already shipped: the observe-algebra in all four (B-0867.27, PRs 6248 / 6251 /
 6253 / 6255) and the observe-fold additive monoid in C#+F# (B-0867.28, PR 6259). The
@@ -38,14 +38,14 @@ There are **two orthogonal axes of authority**, and conflating them is the error
   an F# (FSharp.Core) dependency to consumers (real market insight: C# devs reject F# DLLs).
 - **Rust = low-level + WASM** — systems guarantees; WASM target.
 
-This **supersedes the existing VISION bullet "First-class F#, polyglot over time"** *for the
-DB*: F# is no longer "the primary language with polyglot drift" — it is correctness-/spec-
+This **supersedes the existing VISION bullet "First-class F#, polyglot over time"** _for the
+DB_: F# is no longer "the primary language with polyglot drift" — it is correctness-/spec-
 authoritative while TS is distribution-authoritative. (The VISION Product-1 bullet now
 points here.)
 
-**Why (challenge it):** "primary" was doing two jobs (who's authoritative for *correctness*
-vs for *reach*). Naming both axes removes the contradiction a reader hits between "F# is
-primary" and "TS is the distribution king." *Newcomer pushback:* is two-axis over-engineered
+**Why (challenge it):** "primary" was doing two jobs (who's authoritative for _correctness_
+vs for _reach_). Naming both axes removes the contradiction a reader hits between "F# is
+primary" and "TS is the distribution king." _Newcomer pushback:_ is two-axis over-engineered
 vs just "F# core, TS shipping layer"? — the axes matter precisely because they can disagree
 about which language a given artifact should live in (Decision 2).
 
@@ -63,10 +63,10 @@ above the primitive layer:
 
 - **Default TypeScript** (distribution).
 - **+ F#** where correctness/proof is needed (the spec).
-- **+ C# behind a port/shim** when a *named* enterprise consumer can't take the shim — prefer
+- **+ C# behind a port/shim** when a _named_ enterprise consumer can't take the shim — prefer
   a pure-C# façade over the F# core (B-0445 already shipped this pattern, PR #3120) over a
   full re-implementation.
-- **+ Rust** only when a *named* WASM/systems customer exists.
+- **+ Rust** only when a _named_ WASM/systems customer exists.
 
 **Minimum viable to ship:** TS (distribution) + F# (correctness/spec) **now**; C# via shim
 **now-ish**; Rust + full-parity C# **later/research** (gate on a named customer).
@@ -74,24 +74,24 @@ above the primitive layer:
 **Why (challenge it):** four parallel impls is a 4× change-tax; spending it everywhere buys
 little and risks drift. Spending it on frozen kernel primitives — where bit-exact agreement
 is a real correctness signal (B-0949 caught a real bound bug via cross-language divergence) —
-is where the BFT pays. *Newcomer pushback:* does the gate's "small+pure+total" exclude things
-that *should* be cross-checked (e.g. a stateful but security-critical component)? — then widen
+is where the BFT pays. _Newcomer pushback:_ does the gate's "small+pure+total" exclude things
+that _should_ be cross-checked (e.g. a stateful but security-critical component)? — then widen
 the gate for that named case + record why.
 
 ## Decision 3 — Golden vectors are the oracle; F# is one signer; divergence tie-break
 
 - **The shared golden vectors are the oracle** — not any single language. F# is the clean-room
-  **spec** the others implement from, but the *vectors* (not F#) are the authority no
+  **spec** the others implement from, but the _vectors_ (not F#) are the authority no
   implementation can override. **No single implementation, including F#, self-certifies.**
 - **On cross-language divergence:** treat it as a **spec-ambiguity / real-bug ticket**, never
   resolved by "ship whichever 3 agree" majority vote. Investigate (the B-0949 precedent:
   divergence surfaced a genuine bug). F# (the spec) is authoritative for what the vectors
-  *should be*; once the vectors are corrected, all four are fixed to match them.
+  _should be_; once the vectors are corrected, all four are fixed to match them.
 
 **Why (challenge it):** a self-certifying oracle is a confident single point of failure; the
-proofs check the *spec*, the BFT checks the *implementations*, and the vectors are the shared
-ground truth that closes the loop. *Newcomer pushback:* if F# decides what the vectors should
-be, isn't F# still the de-facto authority? — yes for *spec intent*, but a vectors change is
+proofs check the _spec_, the BFT checks the _implementations_, and the vectors are the shared
+ground truth that closes the loop. _Newcomer pushback:_ if F# decides what the vectors should
+be, isn't F# still the de-facto authority? — yes for _spec intent_, but a vectors change is
 visible + reviewable + must be matched by all four; the gate against silent single-oracle
 trust is that no impl ships by out-voting the vectors.
 
@@ -117,4 +117,4 @@ trust is that no impl ships by out-voting the vectors.
   4-language) · B-0867.28 (observe-fold monoid) · B-0445 (C# shim over F#) · B-0949
   (divergence caught a real bug — the healthy precedent) · B-0952 (good-citizen / clean-room
   upstream) · VISION Product 1 (arena-not-throne + clean-room) · `.claude/rules/bcl-interface-
-  boundary-own-your-interfaces-hexagonal.md` · `.claude/rules/dep-pin-search-first-authority.md`.
+boundary-own-your-interfaces-hexagonal.md` · `.claude/rules/dep-pin-search-first-authority.md`.

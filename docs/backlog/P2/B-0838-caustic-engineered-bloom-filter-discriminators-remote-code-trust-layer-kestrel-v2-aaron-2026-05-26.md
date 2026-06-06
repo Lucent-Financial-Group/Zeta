@@ -11,7 +11,17 @@ depends_on: []
 composes_with:
   - B-0664
   - B-0648
-tags: [bloom-filter, caustic-engineering, remote-code-discriminator, trust-then-verify, multi-oracle, inverse-design, research-direction-flavored, kestrel-v2-substrate]
+tags:
+  [
+    bloom-filter,
+    caustic-engineering,
+    remote-code-discriminator,
+    trust-then-verify,
+    multi-oracle,
+    inverse-design,
+    research-direction-flavored,
+    kestrel-v2-substrate,
+  ]
 ---
 
 ## Problem
@@ -117,8 +127,8 @@ Phased:
 
 - **Phase 1 acceptance**: working prototype of 3-filter caustic
   composition; benchmark FP rate against single-high-accuracy filter
-  + against majority-vote composition; demonstrate caustic-design
-  advantage in at least one specific input-distribution scenario
+  - against majority-vote composition; demonstrate caustic-design
+    advantage in at least one specific input-distribution scenario
 - **Phase 2 acceptance**: mathematical formulation of inverse design
   for bloom filter composition; working solver; at least one
   end-to-end example translating from target specification →
@@ -154,7 +164,7 @@ Phased:
   #5327) — speech-as-RPC framing this discriminator slots into
 - B-0833 (interactive-login vs baked-in-keys CI-test tension) — bloom
   filter discriminators serve the trust layer of the broader auth
-  + verification pipeline
+  - verification pipeline
 - PR #5356 Kestrel-v2 ferry — substrate origin (full verbatim
   preservation including operator's cat-caustic image as physical
   existence proof of computational inverse-design extending into

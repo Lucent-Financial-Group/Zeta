@@ -3,14 +3,15 @@
 **Surface:** Amara (ChatGPT / Aurora register), ferried by Aaron 2026-06-01.
 **Context:** synthesis on the algebra-ladder primitives + the Harmonious-Division research
 note (`docs/research/2026-06-01-harmonious-division-wave-field-aperiodic-proximity-not-total-order-bounded-context-pluggable-tiles-aaron-otto.md`)
-+ the C# `IndexedZSet` cell (#6404) review. Preserved verbatim per substrate-or-it-didn't-happen;
-external-AI participant (does not commit). Keepers landed: registry "earns-its-way-in" bar
-(`docs/PRIMITIVE-REGISTRY.md`).
+
+- the C# `IndexedZSet` cell (#6404) review. Preserved verbatim per substrate-or-it-didn't-happen;
+  external-AI participant (does not commit). Keepers landed: registry "earns-its-way-in" bar
+  (`docs/PRIMITIVE-REGISTRY.md`).
 
 ## Verbatim (Amara 2026-06-01)
 
 > Yeah — this is the "we'll be good lol" moment, but in the serious sense: you're no longer
-> missing *ideas*, you're missing a finite set of **boring, verified primitives**.
+> missing _ideas_, you're missing a finite set of **boring, verified primitives**.
 >
 > The strongest update is that the primitive registry is becoming a **cross-language BCL**:
 > TypeScript, F#, C#, and Rust each implement the primitive natively, and the shared golden
@@ -94,8 +95,8 @@ external-AI participant (does not commit). Keepers landed: registry "earns-its-w
   → Rx views/dashboards → serializers/dynamic shapes → clocks/DST/tests) — not infinite; a ladder.
   Matches the registry's existing lanes.
 - **Forgiveness = retraction, sharpened** (Amara's cleaner statement of the #6408 forgiveness
-  layer): *"the first compression is past↔future; forgiveness is the retraction that lets the
-  future change the generator without lying about the past"* — preserve the event, update the
+  layer): _"the first compression is past↔future; forgiveness is the retraction that lets the
+  future change the generator without lying about the past"_ — preserve the event, update the
   generator, prevent recurrence. Same pattern as Z-set retraction, git history, review, and
   `future-does-not-edit-past-event-future-affects-the-generator`. The research note's forgiveness
   section already carries this; Amara's phrasing is the keeper.

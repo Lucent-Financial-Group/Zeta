@@ -27,6 +27,7 @@ Automated batch archival of 20 PRs to preserve discussion and context, and to re
 This PR batch-adds **20 new PR-discussion archive files** under `docs/pr-discussions/` (PRs **#5096–#5115**) to preserve discussion context and reduce PR queue noise, using the standard YAML frontmatter metadata emitted by `tools/pr-preservation/archive-pr.ts`.
 
 **Changes:**
+
 - Added 20 archived PR discussion markdown files (one per PR) with frontmatter metadata (PR number/title/refs/timestamps/tool).
 - Captured each PR’s description and any review-thread/general-comment content present at archive time.
 
@@ -37,28 +38,29 @@ Copilot reviewed 20 out of 20 changed files in this pull request and generated 4
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/pr-discussions/PR-5096-backlog-b-0773-p1-re-land-cluster-as-digital-twin-git-native.md | Archive of PR #5096 discussion (B-0773 re-land). |
-| docs/pr-discussions/PR-5097-backlog-b-0790-two-persona-clarification-mika-substrate-batc.md | Archive of PR #5097 discussion (B-0790 clarification). |
-| docs/pr-discussions/PR-5098-backlog-b-0776-p1-re-land-simplest-first-plugin-sequence-red.md | Archive of PR #5098 discussion (B-0776 re-land). |
-| docs/pr-discussions/PR-5099-fix-b-0789-iter-4-4-fixfwd-0xef-mbr-partition-type-mount-msd.md | Archive of PR #5099 discussion (zflash ESP mount fixes). |
-| docs/pr-discussions/PR-5100-backlog-b-0778-re-land-curated-commodity-hardware-reference.md | Archive of PR #5100 discussion (B-0778 re-land). |
-| docs/pr-discussions/PR-5101-backlog-b-0791-p2-microsoft-vscode-native-not-anthropic-is-s.md | Archive of PR #5101 discussion (B-0791). |
-| docs/pr-discussions/PR-5102-backlog-b-0792-p1-iter-5-wifi-credentials-injection-via-usb.md | Archive of PR #5102 discussion (B-0792). |
-| docs/pr-discussions/PR-5103-feat-b-0792-iter-5-1-5-2-self-contained-usb-nm-profile-persi.md | Archive of PR #5103 discussion (iter-5.1/5.2 substrate). |
-| docs/pr-discussions/PR-5104-docs-close-bash-retirement-trajectory-action.md | Archive of PR #5104 discussion (trajectory update). |
-| docs/pr-discussions/PR-5105-backlog-b-0793-p1-role-as-capability-composition-not-baked-h.md | Archive of PR #5105 discussion (B-0793). |
-| docs/pr-discussions/PR-5106-backlog-b-0794-p1-node-self-registers-in-git-argocd-bring-up.md | Archive of PR #5106 discussion (B-0794). |
-| docs/pr-discussions/PR-5107-feat-b-0792-iter-5-2-1-auto-generate-node-6hex-hostname-defa.md | Archive of PR #5107 discussion (hostname auto-gen). |
-| docs/pr-discussions/PR-5108-preserve-mika-aaron-mika-2026-05-26-homelab-first-gh-auth-lo.md | Archive of PR #5108 discussion (preservation note). |
-| docs/pr-discussions/PR-5109-shard-tick-0608z-cold-boot-catch-43-sentinel-re-arm-peer-ott.md | Archive of PR #5109 discussion (tick shard). |
-| docs/pr-discussions/PR-5110-feat-b-0421-tools-peer-call-grok-build-ts-native-grok-build.md | Archive of PR #5110 discussion (grok-build wrapper). |
-| docs/pr-discussions/PR-5111-docs-record-feature-flags-substrate-decision.md | Archive of PR #5111 discussion (feature flags decision). |
+| File                                                                                        | Description                                                  |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| docs/pr-discussions/PR-5096-backlog-b-0773-p1-re-land-cluster-as-digital-twin-git-native.md | Archive of PR #5096 discussion (B-0773 re-land).             |
+| docs/pr-discussions/PR-5097-backlog-b-0790-two-persona-clarification-mika-substrate-batc.md | Archive of PR #5097 discussion (B-0790 clarification).       |
+| docs/pr-discussions/PR-5098-backlog-b-0776-p1-re-land-simplest-first-plugin-sequence-red.md | Archive of PR #5098 discussion (B-0776 re-land).             |
+| docs/pr-discussions/PR-5099-fix-b-0789-iter-4-4-fixfwd-0xef-mbr-partition-type-mount-msd.md | Archive of PR #5099 discussion (zflash ESP mount fixes).     |
+| docs/pr-discussions/PR-5100-backlog-b-0778-re-land-curated-commodity-hardware-reference.md  | Archive of PR #5100 discussion (B-0778 re-land).             |
+| docs/pr-discussions/PR-5101-backlog-b-0791-p2-microsoft-vscode-native-not-anthropic-is-s.md | Archive of PR #5101 discussion (B-0791).                     |
+| docs/pr-discussions/PR-5102-backlog-b-0792-p1-iter-5-wifi-credentials-injection-via-usb.md  | Archive of PR #5102 discussion (B-0792).                     |
+| docs/pr-discussions/PR-5103-feat-b-0792-iter-5-1-5-2-self-contained-usb-nm-profile-persi.md | Archive of PR #5103 discussion (iter-5.1/5.2 substrate).     |
+| docs/pr-discussions/PR-5104-docs-close-bash-retirement-trajectory-action.md                 | Archive of PR #5104 discussion (trajectory update).          |
+| docs/pr-discussions/PR-5105-backlog-b-0793-p1-role-as-capability-composition-not-baked-h.md | Archive of PR #5105 discussion (B-0793).                     |
+| docs/pr-discussions/PR-5106-backlog-b-0794-p1-node-self-registers-in-git-argocd-bring-up.md | Archive of PR #5106 discussion (B-0794).                     |
+| docs/pr-discussions/PR-5107-feat-b-0792-iter-5-2-1-auto-generate-node-6hex-hostname-defa.md | Archive of PR #5107 discussion (hostname auto-gen).          |
+| docs/pr-discussions/PR-5108-preserve-mika-aaron-mika-2026-05-26-homelab-first-gh-auth-lo.md | Archive of PR #5108 discussion (preservation note).          |
+| docs/pr-discussions/PR-5109-shard-tick-0608z-cold-boot-catch-43-sentinel-re-arm-peer-ott.md | Archive of PR #5109 discussion (tick shard).                 |
+| docs/pr-discussions/PR-5110-feat-b-0421-tools-peer-call-grok-build-ts-native-grok-build.md  | Archive of PR #5110 discussion (grok-build wrapper).         |
+| docs/pr-discussions/PR-5111-docs-record-feature-flags-substrate-decision.md                 | Archive of PR #5111 discussion (feature flags decision).     |
 | docs/pr-discussions/PR-5112-preserve-mika-backlog-b-0796-p2-twilio-phone-support-substra.md | Archive of PR #5112 discussion (Twilio substrate + backlog). |
-| docs/pr-discussions/PR-5113-fix-b-0792-iter-5-2-2-hostname-auto-gen-at-install-time-not.md | Archive of PR #5113 discussion (hostname install-time). |
-| docs/pr-discussions/PR-5114-backlog-b-0797-p2-per-tick-local-user-scope-memory-git-memor.md | Archive of PR #5114 discussion (B-0797). |
-| docs/pr-discussions/PR-5115-feat-dashboard-per-agent-decompose-to-action-ratio-prs-merge.md | Archive of PR #5115 discussion (dashboard metrics). |
+| docs/pr-discussions/PR-5113-fix-b-0792-iter-5-2-2-hostname-auto-gen-at-install-time-not.md  | Archive of PR #5113 discussion (hostname install-time).      |
+| docs/pr-discussions/PR-5114-backlog-b-0797-p2-per-tick-local-user-scope-memory-git-memor.md | Archive of PR #5114 discussion (B-0797).                     |
+| docs/pr-discussions/PR-5115-feat-dashboard-per-agent-decompose-to-action-ratio-prs-merge.md | Archive of PR #5115 discussion (dashboard metrics).          |
+
 </details>
 
 ## Review threads

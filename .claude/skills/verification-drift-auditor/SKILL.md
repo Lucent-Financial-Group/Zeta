@@ -5,7 +5,7 @@ description: Verification drift detection — audit Lean, TLA+, Z3, Semgrep agai
 
 # Verification Drift Auditor — Procedure
 
-This is a **capability skill**. It encodes the *how* of
+This is a **capability skill**. It encodes the _how_ of
 checking that our verification artifacts match their external
 sources. The owning persona is the `formal-verification-expert`
 (Soraya) at `.claude/agents/formal-verification-expert.md` —
@@ -40,7 +40,7 @@ auditor's job is to catch the next one before it ships.
 
 Every verification artifact in the repo that **claims fidelity
 to an external source**. The auditor is tool-agnostic: the list
-of verification backends grows over time (Alloy, F*, Stainless,
+of verification backends grows over time (Alloy, F\*, Stainless,
 LiquidF# if it ever revives, Dafny, Viper, Lean's own mathlib,
 whatever lands in round 40+), and the scope expands with the
 portfolio rather than being re-scoped row-by-row.
@@ -72,18 +72,18 @@ class or a new procedure. When a new tool enters the
 portfolio (per `formal-verification-expert`'s routing table),
 it gains a row here in the same round.
 
-| Tool | Artifact locations | Citation markers to grep |
-|---|---|---|
-| Lean 4 | `tools/lean4/**/*.lean` | docstring lines containing `arXiv:`, `DOI:`, venue names (`VLDB`, `POPL`, `PLDI`, `SIGMOD`, `ICFP`), or author-year (`Budiu et al.`, `Gupta-Mumick`) |
-| TLA+ | `tools/tla/specs/**/*.tla` | module-level `\* Paper: ...`, `\* Proposition N.M of ...`, `\* Algorithm X of ...` |
-| Z3 / SMT | `docs/formal/**/z3-*.md`, `**/*.smt2` | top-of-file citation block, `; Paper: ...` |
-| FsCheck | `tests/**/*.fs` (and `src/**/*.fs` for in-line properties) | XML doc comments / `///` comments citing a paper or named theorem |
-| Alloy | `tools/alloy/**/*.als` | `-- Paper: ...`, module-header comments |
-| F\* (if adopted) | `tools/fstar/**/*.fst` | `(* Paper: ... *)` |
-| Future tool | `<path pattern>` | `<marker pattern>` (add row on adoption) |
+| Tool             | Artifact locations                                         | Citation markers to grep                                                                                                                             |
+| ---------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lean 4           | `tools/lean4/**/*.lean`                                    | docstring lines containing `arXiv:`, `DOI:`, venue names (`VLDB`, `POPL`, `PLDI`, `SIGMOD`, `ICFP`), or author-year (`Budiu et al.`, `Gupta-Mumick`) |
+| TLA+             | `tools/tla/specs/**/*.tla`                                 | module-level `\* Paper: ...`, `\* Proposition N.M of ...`, `\* Algorithm X of ...`                                                                   |
+| Z3 / SMT         | `docs/formal/**/z3-*.md`, `**/*.smt2`                      | top-of-file citation block, `; Paper: ...`                                                                                                           |
+| FsCheck          | `tests/**/*.fs` (and `src/**/*.fs` for in-line properties) | XML doc comments / `///` comments citing a paper or named theorem                                                                                    |
+| Alloy            | `tools/alloy/**/*.als`                                     | `-- Paper: ...`, module-header comments                                                                                                              |
+| F\* (if adopted) | `tools/fstar/**/*.fst`                                     | `(* Paper: ... *)`                                                                                                                                   |
+| Future tool      | `<path pattern>`                                           | `<marker pattern>` (add row on adoption)                                                                                                             |
 
 Rows are **swappable**. When `proof-tool-coverage.md` promotes
-a tool from *Assess* to *Trial* / *Adopt*, the Architect or
+a tool from _Assess_ to _Trial_ / _Adopt_, the Architect or
 the owning expert adds a row here in the same round — not a
 separate round. The drift procedure (§"Procedure") does not
 change; only the enumeration targets do.
@@ -111,7 +111,7 @@ overclaims relative to what it actually proves.
 
 **How to catch.** Compare the artifact's name + docstring
 label against the source's exact statement. If our statement
-matches a *different* named theorem in the same paper, that is
+matches a _different_ named theorem in the same paper, that is
 a Class 1 drift (the paper already has a name for what we
 proved, and it's not the name we used).
 
@@ -286,9 +286,11 @@ A drift-audit report at
 ...
 
 ## Registry rows added / updated
+
 - `<row-name>`: (added | updated: last-audit field).
 
 ## Notebook entry
+
 (One paragraph logged to `memory/persona/soraya/NOTEBOOK.md`.)
 ```
 

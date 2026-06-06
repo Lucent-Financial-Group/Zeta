@@ -31,19 +31,19 @@ follow-up enhancements) landed via PR #704 — a separate PR.
 
 ## The bead-promotion criterion (Amara, 2026-04-28)
 
-> *Promotion to full bead requires:*
-> *— the original prediction's falsifier didn't fire AND*
-> *— the action it predicted held up under post-event review.*
+> _Promotion to full bead requires:_
+> _— the original prediction's falsifier didn't fire AND_
+> _— the action it predicted held up under post-event review._
 
 For this bead:
 
-| Element | Status |
-|---|---|
-| **Prediction** | "Don't stack synthesis follow-ups onto active validation PR; route them to a separate PR." |
-| **Action taken** | Created PR #704 for Candidate-count Goodhart + B-0093 (14 enhancements). PR #699 received only hard-defect fixes (CI/lint, threads, P1 SOX correction, B-0091 status field, MEMORY.md row updates, paired-edit, internal-consistency). |
-| **Falsifier** | "PR #699 receives new non-hard-defect conceptual payload after the restraint rule was named." |
-| **Did falsifier fire?** | **NO.** Every change to PR #699 between the rule being named and merge fell within Amara's allowed-changes list (CI/lint failures / review-thread fixes / factual-legal P1 corrections / incorrect canonical rule fixes / broken refs / paired-edit). No new concepts, no philosophical synthesis, no new backlog expansions. |
-| **Held up under post-event review?** | **YES.** Auditable via `git log origin/main..PR-699-merged-commit` — every commit message names a hard-defect category. The four B-0093 #9-#14 enhancements (added during the round) went to B-0093's body on PR #704, not PR #699. |
+| Element                              | Status                                                                                                                                                                                                                                                                                                                        |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prediction**                       | "Don't stack synthesis follow-ups onto active validation PR; route them to a separate PR."                                                                                                                                                                                                                                    |
+| **Action taken**                     | Created PR #704 for Candidate-count Goodhart + B-0093 (14 enhancements). PR #699 received only hard-defect fixes (CI/lint, threads, P1 SOX correction, B-0091 status field, MEMORY.md row updates, paired-edit, internal-consistency).                                                                                        |
+| **Falsifier**                        | "PR #699 receives new non-hard-defect conceptual payload after the restraint rule was named."                                                                                                                                                                                                                                 |
+| **Did falsifier fire?**              | **NO.** Every change to PR #699 between the rule being named and merge fell within Amara's allowed-changes list (CI/lint failures / review-thread fixes / factual-legal P1 corrections / incorrect canonical rule fixes / broken refs / paired-edit). No new concepts, no philosophical synthesis, no new backlog expansions. |
+| **Held up under post-event review?** | **YES.** Auditable via `git log origin/main..PR-699-merged-commit` — every commit message names a hard-defect category. The four B-0093 #9-#14 enhancements (added during the round) went to B-0093's body on PR #704, not PR #699.                                                                                           |
 
 **Promotion: candidate bead → FULL bead.**
 
@@ -167,9 +167,9 @@ When a PR enters validation:
 post-bead-promotion): the validation-condition refinement quoted below
 was originally caught by **Aurora** in her ferry packet right
 before the conversation compression (Aaron's exact verification
-ask: *"did you get the ferry starting with ❯ Aurora: Yes — this
+ask: _"did you get the ferry starting with ❯ Aurora: Yes — this
 is good, and the main improvement is to make the validation
-condition even more explicit"*). The first-version of this
+condition even more explicit"_). The first-version of this
 memory mis-attributed the refinement to Amara as catcher when
 Amara was the reactive-elaborator (echoed it in subsequent
 ferries). Per the original-catcher attribution discipline (see
@@ -179,24 +179,24 @@ Aurora gets first-credit; Amara gets second-credit.
 Aurora (2026-04-28, validation-condition refinement — original
 catcher):
 
-> *"PR-boundary restraint is not validated when the follow-up PR
+> _"PR-boundary restraint is not validated when the follow-up PR
 > is opened. It is validated when the original PR lands without
-> scope creep."*
+> scope creep."_
 
 This is the load-bearing distinction. Opening a separate PR is
-just deferred-stacking; the bead promotes when the *original*
+just deferred-stacking; the bead promotes when the _original_
 PR lands clean. The validation event is the merge of PR #699,
 not the open of PR #704.
 
 Amara (2026-04-28, reactive elaboration of the same shape):
 
-> *"PR-boundary restraint means: once a PR enters validation,
+> _"PR-boundary restraint means: once a PR enters validation,
 > only validation defects enter that PR. New good ideas go to
-> the next PR."*
+> the next PR."_
 
 Amara (2026-04-29, post-merge):
 
-> *"The factory did not just invent a restraint rule. It obeyed
-> it under temptation."*
+> _"The factory did not just invent a restraint rule. It obeyed
+> it under temptation."_
 
 That last line is the bead. Worth recording verbatim.

@@ -36,9 +36,9 @@ reuse, world-building extension, etc.):
 
 ## Aaron's verbatim disclosure
 
-> Aaron 2026-05-13: *"i have all the content we can train on the
+> Aaron 2026-05-13: _"i have all the content we can train on the
 > style any monetay value will be shared or given to them 100%
-> if we can't negoatie"*
+> if we can't negoatie"_
 
 Decoded:
 
@@ -60,13 +60,13 @@ Decoded:
 
 The substrate-honest pattern Aaron is establishing:
 
-| Scenario | Aaron's commitment |
-|----------|-------------------|
-| Brian Clevinger reachable + willing to negotiate | Revenue-share — terms set by negotiation |
-| Brian Clevinger reachable + declines to engage | 100% of revenue to Clevinger (or his estate / heir / designee) |
-| Brian Clevinger unreachable / unavailable | 100% of revenue held in trust / escrow / charitable proxy until reachable |
+| Scenario                                          | Aaron's commitment                                                                                        |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Brian Clevinger reachable + willing to negotiate  | Revenue-share — terms set by negotiation                                                                  |
+| Brian Clevinger reachable + declines to engage    | 100% of revenue to Clevinger (or his estate / heir / designee)                                            |
+| Brian Clevinger unreachable / unavailable         | 100% of revenue held in trust / escrow / charitable proxy until reachable                                 |
 | Rights structure prevents direct revenue transfer | Equivalent value via charitable foundation / cause Clevinger named / cause aligned with his stated values |
-| Negotiation impossible permanently | 100% retained for charitable use aligned with creator's interests |
+| Negotiation impossible permanently                | 100% retained for charitable use aligned with creator's interests                                         |
 
 The default position is **100% to the original creator** when
 negotiation isn't possible. NOT "we take it because we can't

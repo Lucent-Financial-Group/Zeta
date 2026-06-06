@@ -30,7 +30,7 @@ tags:
 
 ## Operator framing 2026-05-28
 
-> *"didn't we just have to do some encrypted stuff for zflash?"*
+> _"didn't we just have to do some encrypted stuff for zflash?"_
 
 Yes — the recent zflash cluster (B-0844 + B-0852 + B-0852.3 + B-0737) shipped USB-bound credential substrate. The post-quantum git-crypt (B-0883) needs to compose with this, not parallel-it.
 

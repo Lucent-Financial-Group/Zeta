@@ -25,16 +25,43 @@ function outcome(over: Partial<MemoryOutcomeCorrelation> = {}): MemoryOutcomeCor
 
 function envelope(memoryId: string, phase: MemoryPhase, o: MemoryOutcomeCorrelation): MemoryEnvelope {
   const state: MemoryState = {
-    memoryId, organizationId: "org-lfg", phase, confidence: 0.7, weight: 0.5,
-    freshnessAt: AT, reinforcementCount: 1, outcome: o,
+    memoryId,
+    organizationId: "org-lfg",
+    phase,
+    confidence: 0.7,
+    weight: 0.5,
+    freshnessAt: AT,
+    reinforcementCount: 1,
+    outcome: o,
     utility: { injectedCount: 6, citedCount: 3 },
     crossScope: { distinctScopes: [], firstObservedAt: AT, lastObservedAt: AT },
   };
-  return { memoryId, organizationId: "org-lfg", tier: MemoryTier.Hat, scope: "release-manager", key: "k", protected: false, writtenBy: "system", writtenAt: AT, state };
+  return {
+    memoryId,
+    organizationId: "org-lfg",
+    tier: MemoryTier.Hat,
+    scope: "release-manager",
+    key: "k",
+    protected: false,
+    writtenBy: "system",
+    writtenAt: AT,
+    state,
+  };
 }
 
 function injection(memoryId: string, workItemId: string): MemoryInjectionRecord {
-  return { injectionId: `inj-${memoryId}-${workItemId}`, organizationId: "org-lfg", memoryId, workItemId, hatId: "release-manager", agentId: "agent-7", promptFlowRunId: "run-1", weightAtInjection: 0.6, cited: false, injectedAt: AT };
+  return {
+    injectionId: `inj-${memoryId}-${workItemId}`,
+    organizationId: "org-lfg",
+    memoryId,
+    workItemId,
+    hatId: "release-manager",
+    agentId: "agent-7",
+    promptFlowRunId: "run-1",
+    weightAtInjection: 0.6,
+    cited: false,
+    injectedAt: AT,
+  };
 }
 
 test("merged → success; recovery path → failure; neither → inconclusive", () => {
@@ -72,7 +99,12 @@ test("planOutcomeCorrelation bumps every distinct injected memory, skips archive
     ["m-archived", envelope("m-archived", MemoryPhase.Archived, outcome())],
   ]);
   // m-active injected twice in the same work item; m-archived once; m-missing has no envelope
-  const injections = [injection("m-active", "work-9"), injection("m-active", "work-9"), injection("m-archived", "work-9"), injection("m-missing", "work-9")];
+  const injections = [
+    injection("m-active", "work-9"),
+    injection("m-active", "work-9"),
+    injection("m-archived", "work-9"),
+    injection("m-missing", "work-9"),
+  ];
 
   const updates = planOutcomeCorrelation(injections, envs, OutcomeVerdict.Success, "work-9", AT);
   // only m-active updates (archived skipped; missing skipped; dup collapsed)

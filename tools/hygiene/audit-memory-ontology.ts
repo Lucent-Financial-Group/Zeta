@@ -58,17 +58,9 @@ interface Args {
 // Constants
 // ---------------------------------------------------------------------------
 
-const SKIP_FILES: ReadonlySet<string> = new Set([
-  "MEMORY.md",
-  "README.md",
-]);
+const SKIP_FILES: ReadonlySet<string> = new Set(["MEMORY.md", "README.md"]);
 
-const VALID_TYPES: ReadonlySet<string> = new Set([
-  "feedback",
-  "user",
-  "project",
-  "reference",
-]);
+const VALID_TYPES: ReadonlySet<string> = new Set(["feedback", "user", "project", "reference"]);
 
 const DEFAULT_MEMORY_DIR = (() => {
   const home = process.env.HOME ?? process.env.USERPROFILE ?? "";
@@ -245,10 +237,7 @@ function applyFixes(
   const suggestedNameCounts = new Map<string, number>();
   for (const entry of toFix) {
     if (entry.error) continue; // skip entries with invalid types
-    suggestedNameCounts.set(
-      entry.suggestedName,
-      (suggestedNameCounts.get(entry.suggestedName) ?? 0) + 1,
-    );
+    suggestedNameCounts.set(entry.suggestedName, (suggestedNameCounts.get(entry.suggestedName) ?? 0) + 1);
   }
 
   for (const entry of toFix) {
@@ -271,9 +260,7 @@ function applyFixes(
 
     // Check for destination file collision
     if (existsSync(newPath)) {
-      errors.push(
-        `Skipped ${entry.file}: destination '${entry.suggestedName}' already exists`,
-      );
+      errors.push(`Skipped ${entry.file}: destination '${entry.suggestedName}' already exists`);
       continue;
     }
 

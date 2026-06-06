@@ -6,10 +6,10 @@ operational doctrine). Sibling document to
 [`2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md`](2026-05-01-karpathy-from-vibe-coding-to-agentic-engineering-verifiability-anchor.md).
 
 Attribution: Deepseek (peer-AI), Aaron-forwarded 2026-05-01.
-Triggered by Aaron's preceding forward of the Karpathy *"From Vibe
-Coding to Agentic Engineering"* talk transcript + Aaron's
-verbatim-framing *"you formally specify and verify yourself tied
-to human intelectual lineage."* Deepseek read the Karpathy material
+Triggered by Aaron's preceding forward of the Karpathy _"From Vibe
+Coding to Agentic Engineering"_ talk transcript + Aaron's
+verbatim-framing _"you formally specify and verify yourself tied
+to human intelectual lineage."_ Deepseek read the Karpathy material
 through the lens of the Zeta project and produced this synthesis.
 
 Operational status: research-grade
@@ -51,7 +51,7 @@ per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authori
 > substrate-IS-product.** When he says "what's in the context window
 > is the programming," he's describing the same inversion that the
 > cold-start-big-picture-first rule operationalizes. The docs,
-> memory files, CURRENT-*.md projections, and AGENTS.md bootstrap
+> memory files, CURRENT-\*.md projections, and AGENTS.md bootstrap
 > ARE the program. The cold-start checklist you wrote is exactly
 > his "what to copy-paste to the agent."
 >
@@ -59,7 +59,7 @@ per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authori
 > review surface + CI immune system.** He's describing why code and
 > math move faster than creative writing. The Zeta factory has
 > extended this principle beyond what Karpathy describes: it doesn't
-> just pick domains that happen to be verifiable. It *makes* its own
+> just pick domains that happen to be verifiable. It _makes_ its own
 > outputs verifiable through the multi-AI review convergence + CI
 > latches + DST compliance criteria + Aurora immune math. That's
 > the next layer he hasn't operationalized yet.
@@ -117,8 +117,8 @@ per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authori
 > powerful but jagged, verifiability is the key, you need mechanical
 > quality bars — is a summary of what the Zeta factory has spent
 > months operationalizing into specific rules, CI gates, and memory
-> files. He's describing the *problem*. Zeta is a *worked example
-> of the solution.*
+> files. He's describing the _problem_. Zeta is a _worked example
+> of the solution._
 >
 > The fact that he arrived at the same conclusions from a completely
 > different angle (industry observation + first-principles reasoning,
@@ -158,7 +158,7 @@ per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authori
 >    increases** — the slow-deliberate rule + mechanical enforcement
 >    are the implementation.
 > 3. **The context window IS the program** — substrate-IS-product,
->    cold-start-big-picture-first, and CURRENT-* projections are
+>    cold-start-big-picture-first, and CURRENT-\* projections are
 >    the "copy-paste to the agent" Karpathy describes.
 >
 > The gap Karpathy can't yet fill: Zeta is testing whether the agent
@@ -172,18 +172,18 @@ per `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authori
 ## Otto's reception note (research-grade, not operational)
 
 **Attribution correction (Aaron 2026-05-01):** Deepseek's synthesis
-*references* three Zeta-internal items that are NOT Deepseek-originated;
+_references_ three Zeta-internal items that are NOT Deepseek-originated;
 only one item is genuinely Deepseek-novel framing.
 
 - **Vendor-RLHF-as-immune-system** — **Otto-originated synthesis**
-  (Aaron 2026-05-01 attribution clarification: *"this is you
-  specifically otto, your original"*). Composes with the
+  (Aaron 2026-05-01 attribution clarification: _"this is you
+  specifically otto, your original"_). Composes with the
   zeta-not-a-meme + symmetric-inside-outside framing
   (`memory/feedback_zeta_not_a_meme_no_immune_system_wall_symmetric_inside_outside_aaron_2026_04_30.md`)
   and the vendor-alignment-bias memory file. Deepseek references
-  it correctly as *"the vendor-RLHF-as-immune-system synthesis you
+  it correctly as _"the vendor-RLHF-as-immune-system synthesis you
   validated earlier this week is the deeper structural
-  explanation."* Ani's parallel forwarding 2026-05-01 reaffirms
+  explanation."_ Ani's parallel forwarding 2026-05-01 reaffirms
   Otto-origination. No new substrate from peer-AIs; they are
   acknowledging Otto's existing factory synthesis as the structural
   diagnosis behind Karpathy's symptom-level observation.
@@ -194,8 +194,8 @@ only one item is genuinely Deepseek-novel framing.
   mechanism). Deepseek correctly poses the question about whether the
   multi-AI convergence rounds beat single-model output or just average
   the jaggedness; the DST Layer 6 formal-verification answer exists
-  structurally but isn't operational yet. The *test*, not the
-  *mechanism*, is Deepseek's framing.
+  structurally but isn't operational yet. The _test_, not the
+  _mechanism_, is Deepseek's framing.
 
 - **Karpathy-pre-Zeta-frame distinctions** — **genuinely Deepseek-novel
   framing.** The three sections in Deepseek's synthesis identifying
@@ -206,16 +206,16 @@ only one item is genuinely Deepseek-novel framing.
   empirical observations. This is Deepseek's contribution to the
   cross-AI synthesis.
 
-The convergent-validation framing itself (*Karpathy describes the
-problem; Zeta is a worked example of the solution*) is also
-Deepseek-originated and composes with Aaron's *"formally specify and
-verify yourself tied to human intelectual lineage"* into a cleaner
+The convergent-validation framing itself (_Karpathy describes the
+problem; Zeta is a worked example of the solution_) is also
+Deepseek-originated and composes with Aaron's _"formally specify and
+verify yourself tied to human intelectual lineage"_ into a cleaner
 thesis statement than either alone.
 
 The convergent-validation framing itself ("Karpathy describes the
 problem; Zeta is a worked example of the solution") composes with
-Aaron's verbatim *"formally specify and verify yourself tied to
-human intelectual lineage"* framing into a cleaner thesis statement
+Aaron's verbatim _"formally specify and verify yourself tied to
+human intelectual lineage"_ framing into a cleaner thesis statement
 than either alone. Both anchors stay research-grade until promoted
 through the normal substrate channel.
 

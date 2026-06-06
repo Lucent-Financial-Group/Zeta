@@ -34,8 +34,9 @@ Layers:      legacy DELETED (per Aaron); rulesets re-enabled
 ## Stale-prose fixes (Amara substrate-pass catch)
 
 Two paragraphs flipped from pre-reset state to in-force post-reset state:
-- Line 221: *"Currently NOT signoff-eligible"* → *"0/0/0 ACHIEVED 2026-04-29T14:04:50Z..."*
-- Line 413: *"Hard-reset is NOT YET signoff-eligible"* → *"Hard-reset complete (2026-04-29T14:04:50Z)..."*
+
+- Line 221: _"Currently NOT signoff-eligible"_ → _"0/0/0 ACHIEVED 2026-04-29T14:04:50Z..."_
+- Line 413: _"Hard-reset is NOT YET signoff-eligible"_ → _"Hard-reset complete (2026-04-29T14:04:50Z)..."_
 
 This is **Derived-Rollup Drift** class — primary state changed, downstream prose still claims old state. Caught pre-commit by Amara's substrate pass; not a Codex/Copilot retry.
 
@@ -45,17 +46,18 @@ This is **Derived-Rollup Drift** class — primary state changed, downstream pro
 
 - AceHack/Zeta had BOTH legacy branch protection AND repository rulesets on `main`
 - Both layers enforced independently; GitHub UI doesn't surface dual-layer state
-- Aaron: *"I knew there were two but I was confused why."*
+- Aaron: _"I knew there were two but I was confused why."_
 - Maintainer call: legacy DELETED, rulesets canonical going forward
 - Error-code mapping: `GH013` = rulesets surface, `GH006` = legacy surface
 - Diagnostic script (`gh api` commands) for future audits
-- Future-protocol note: rulesets `non_fast_forward` rule still doesn't match CLAUDE.md's *"force-push to AceHack main is part of protocol"* — task #305 home for that decision
+- Future-protocol note: rulesets `non_fast_forward` rule still doesn't match CLAUDE.md's _"force-push to AceHack main is part of protocol"_ — task #305 home for that decision
 
 `MEMORY.md` index updated with one-line pointer.
 
 ## Tick shard 1410Z
 
 Records the entire 0/0/0 hard-reset arc:
+
 - Triple-check buddy review (Amara approved meaningful-content-loss-free)
 - Verify-only gate packet (5/5 PASS at 13:39Z)
 - Aaron's explicit EXECUTE at 13:58Z
@@ -93,24 +95,22 @@ Unclear → stop, report exact uncertainty, propose one safe action
 
 ### COMMENTED — @chatgpt-codex-connector (2026-04-29T14:16:32Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `8630c28e57`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -123,6 +123,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 Post-0/0/0 cleanup to align durable docs/memory with the now-in-force hard-reset state and to capture the branch-protection dual-layer incident for future debugging.
 
 **Changes:**
+
 - Updates `docs/active-trajectory.md` to reflect that the 0/0/0 hard-reset is complete (replacing stale “not signoff-eligible” prose).
 - Adds a new memory entry documenting the dual-layer (rulesets + legacy branch protection) enforcement surprise and the chosen canonical surface going forward.
 - Updates the memory index and appends a tick shard recording the reset arc and this cleanup PR.
@@ -131,12 +132,12 @@ Post-0/0/0 cleanup to align durable docs/memory with the now-in-force hard-reset
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                           | Description                                                                          |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md` | New memory capturing the GH013/GH006 dual-layer behavior, decision, and diagnostics. |
-| `memory/MEMORY.md` | Adds an index entry pointing to the new protection-config memory. |
-| `docs/hygiene-history/ticks/2026/04/29/1410Z.md` | New tick shard recording the 0/0/0 achievement and follow-on cleanup PR. |
-| `docs/active-trajectory.md` | Flips two stale paragraphs to reflect the achieved post-reset state. |
+| `memory/MEMORY.md`                                                                             | Adds an index entry pointing to the new protection-config memory.                    |
+| `docs/hygiene-history/ticks/2026/04/29/1410Z.md`                                               | New tick shard recording the 0/0/0 achievement and follow-on cleanup PR.             |
+| `docs/active-trajectory.md`                                                                    | Flips two stale paragraphs to reflect the achieved post-reset state.                 |
 
 ## Review threads
 
@@ -144,7 +145,7 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
 
 **@chatgpt-codex-connector** (2026-04-29T14:16:33Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Use supported gh api request-body syntax**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Use supported gh api request-body syntax**
 
 The `Executed` commands document `gh api ... --input '{"enforcement": "disabled"}'`, but `gh api` treats `--input` as a file argument (manual: `--input <file>`, use `-` for stdin), so this form is interpreted as a filename and is not reproducible as written. Because this memory file is positioned as an operational reference for future protection toggles, the current command text can cause failed retries during incident handling; use a real file/stdin body or field flags instead.
 
@@ -161,6 +162,7 @@ The `gh api ... --input '{"enforcement": ...}'` invocations won’t work as writ
 **@copilot-pull-request-reviewer** (2026-04-29T14:19:28Z):
 
 The step list appears internally inconsistent: the earlier GH006 rejection indicates legacy branch protection was active, but the subsequent `gh api -X DELETE .../branches/main/protection` line claims a 404 "Branch not protected" response (which typically means there was no classic protection to delete). To keep this memory reliable, please reconcile this (e.g., clarify an intermediate UI/API change, confirm the endpoint/repo/branch used, or update the recorded responses).
+
 ```suggestion
 # Delete legacy branch protection (this removed the GH006 blocker)
 gh api -X DELETE repos/AceHack/Zeta/branches/main/protection
@@ -178,6 +180,7 @@ References to “Task #305” here are ambiguous in-repo (this repo already has 
 **@copilot-pull-request-reviewer** (2026-04-29T14:19:28Z):
 
 Minor wording nit: “the only rulesets ruleset” reads like a duplication. Consider rephrasing to “the only ruleset” / “the only rulesets entry” for clarity.
+
 ```suggestion
 After disabling the only ruleset (id=15524390 "Default", `enforcement: disabled`) and retrying, the push was rejected AGAIN with a **different error code**:
 ```
@@ -190,4 +193,4 @@ Codex P2 (14:16Z) addressed in f6d6a94. Fixed memory-file documentation: `gh api
 
 ### @AceHack (2026-04-29T14:18:51Z)
 
-Closing per Aaron's correction: this PR went LFG-first, but the canonical pattern is AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA. *"Without the double-hop in a few hours we'll be right back to where we started — that's load-bearing to get right."* Branch `post-0-0-0-cleanup-2026-04-29` is being repushed to AceHack remote and opened there as the canonical first PR. Codex P2 review feedback (gh api --input syntax fix) is preserved as commit `f6d6a94` on the branch + carried into the AceHack PR.
+Closing per Aaron's correction: this PR went LFG-first, but the canonical pattern is AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA. _"Without the double-hop in a few hours we'll be right back to where we started — that's load-bearing to get right."_ Branch `post-0-0-0-cleanup-2026-04-29` is being repushed to AceHack remote and opened there as the canonical first PR. Codex P2 review feedback (gh api --input syntax fix) is preserved as commit `f6d6a94` on the branch + carried into the AceHack PR.

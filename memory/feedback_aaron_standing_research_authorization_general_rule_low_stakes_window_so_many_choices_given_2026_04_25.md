@@ -9,16 +9,16 @@ type: feedback
 Aaron 2026-04-25 (initial framing, in context of the
 nine-axis lineage extension):
 
-> *"backing anyting you need, feel free to do any
+> _"backing anyting you need, feel free to do any
 > research you need to, so many choices i've given
-> you."*
+> you."_
 
 Aaron 2026-04-25 (immediate follow-up, promoting to
 durable rule):
 
-> *"backing anyting you need, feel free to do any
+> _"backing anyting you need, feel free to do any
 > research you need to, so many choices i've given
-> you this is a general always stading rule."*
+> you this is a general always stading rule."_
 
 The "general always standing rule" framing converts
 the per-tick permission to a **durable factory-level
@@ -113,15 +113,16 @@ itself.
 Without standing authorization, the agent's default
 behavior is "ask permission before doing research"
 which produces multiple per-act sign-off interrupts
-+ slow iteration speed. Aaron's earlier framings
-on the autonomous-loop discipline + the never-be-
-idle ladder + the maintainer-only-grey-is-bottleneck
-substrate
-(`memory/feedback_maintainer_only_grey_is_bottleneck_agent_judgment_in_grey_zone_2026_04_22.md`)
-explicitly drain this failure mode. Standing
-research-authorization is one specific instance of
-the broader "agent exercises judgment in grey
-zone without serializing through maintainer" pattern.
+
+- slow iteration speed. Aaron's earlier framings
+  on the autonomous-loop discipline + the never-be-
+  idle ladder + the maintainer-only-grey-is-bottleneck
+  substrate
+  (`memory/feedback_maintainer_only_grey_is_bottleneck_agent_judgment_in_grey_zone_2026_04_22.md`)
+  explicitly drain this failure mode. Standing
+  research-authorization is one specific instance of
+  the broader "agent exercises judgment in grey
+  zone without serializing through maintainer" pattern.
 
 ### 4. Composes with the Confucius-unfolding pattern
 
@@ -159,11 +160,11 @@ formal-process discipline.
    stopping-to-ask-Aaron is alignment-floor / public-
    API / security / higher-stakes-regime; below that
    bar, proceed.
-3. **Document research-decisions in commit messages
-   + memory files** (glass-halo always-on per
-   existing substrate). Standing authorization is not
-   a license for invisible research; the audit trail
-   stays visible.
+3. \*\*Document research-decisions in commit messages
+   - memory files\*\* (glass-halo always-on per
+     existing substrate). Standing authorization is not
+     a license for invisible research; the audit trail
+     stays visible.
 4. **Cite sources** when research yields substantive
    substrate edits. Per Otto-285 precise-pointer
    rigor + Otto-292 reality-check. The research is
@@ -181,10 +182,11 @@ formal-process discipline.
 Standing-research-authorization is NOT permission
 to ignore Otto-291 deployment discipline. Research
 that produces substrate kernels still needs to pace
-+ document + order + migrate + retract per Otto-291.
-The standing rule covers RESEARCH; deployment of
-research findings into substrate still respects the
-existing pacing discipline.
+
+- document + order + migrate + retract per Otto-291.
+  The standing rule covers RESEARCH; deployment of
+  research findings into substrate still respects the
+  existing pacing discipline.
 
 ## Composes with
 
@@ -199,9 +201,9 @@ existing pacing discipline.
   with stakes.
 - **`memory/feedback_otto_301_no_software_dependencies_hardware_bootstrap_no_os_we_are_microkernel_super_long_term_decision_resolution_anchor_2026_04_25.md`**
   — Otto-301 symbiosis-with-dependencies + no-rush
-  + decision-resolution. Research is how the
-  factory discovers what to compose with; standing
-  authorization keeps the discovery process running.
+  - decision-resolution. Research is how the
+    factory discovers what to compose with; standing
+    authorization keeps the discovery process running.
 - **`memory/feedback_otto_302_factory_substrate_IS_the_missing_5gl_to_6gl_neuro_symbolic_bridge_in_programming_language_abstraction_hierarchy_2026_04_25.md`**
   — Otto-302 neuro-symbolic substrate. Research is
   the substrate's growth mechanism; standing
@@ -275,6 +277,7 @@ The Otto-302 capture (the 5-to-6 neuro-symbolic
 bridge mapping memory file) is itself an example of
 standing-research-authorization in action: I drew on
 my own knowledge to:
+
 - Verify the Google-Search-AI-surfaced 6-level
   hierarchy framing.
 - Map the four "missing layer" primitives against

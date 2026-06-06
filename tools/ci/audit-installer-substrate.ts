@@ -119,7 +119,8 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "/proc/cpuinfo", // CPU_MODEL extraction
       "link/ether", // MAC_ADDR parses field AFTER link/ether (not before)
     ],
-    rationale: "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. B-0835 Bug 2a/2b fixes) substrate must be present in installer script",
+    rationale:
+      "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. B-0835 Bug 2a/2b fixes) substrate must be present in installer script",
   },
   {
     path: "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -145,10 +146,10 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
     path: "full-ai-cluster/nixos/modules/zeta-self-register.nix",
     mustContain: [
       "systemd.services.zeta-self-register", // service unit exists
-      "Type = \"oneshot\"", // fires once, not a loop
+      'Type = "oneshot"', // fires once, not a loop
       "ConditionPathExists", // marker gate permits retries across failed first-boot attempts
-      "Restart = \"on-failure\"", // transient failures retry instead of losing first-boot opportunity
-      "RestartSec = \"30s\"", // bounded backoff before retrying registration intent
+      'Restart = "on-failure"', // transient failures retry instead of losing first-boot opportunity
+      'RestartSec = "30s"', // bounded backoff before retrying registration intent
       "network-online.target", // waits for network before registration intent
       "zeta-creds-restore.service", // ordered after restored creds when that service exists
       'default = "${cfg.home}/Zeta";', // repoRoot derives from home override
@@ -161,7 +162,8 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
       "ZETA_SELF_REGISTER_INTENT_DIR", // intent handoff dir exported to implementation
     ],
-    rationale: "B-0855.1 service must be a post-install marker-gated oneshot ordered after network and credential restore surfaces",
+    rationale:
+      "B-0855.1 service must be a post-install marker-gated oneshot ordered after network and credential restore surfaces",
   },
   {
     path: "full-ai-cluster/nixos/modules/injected-hostname.nix",
@@ -248,7 +250,8 @@ const CROSS_FILE_ASSERTIONS: readonly CrossFileAssertion[] = [
       // failure via the cross-file-mismatch path.
       return `INVALID-producer-must-be-on-mnt-boot-got:${producer}`;
     },
-    rationale: "PR #5640 + #5644 surfaced producer/consumer path mismatch (picker --output / restore-service blobPath defaults). ESP partition is mounted at /mnt/boot during install (zeta-install.sh Step 5), /boot post-reboot (disko `mountpoint = \"/boot\"`). Same physical file across the install-vs-installed boundary. Producer MUST write to /mnt/boot/; consumer MUST read from /boot/. Drift = restore service ConditionPathExists always evaluates false = creds silently never restore.",
+    rationale:
+      'PR #5640 + #5644 surfaced producer/consumer path mismatch (picker --output / restore-service blobPath defaults). ESP partition is mounted at /mnt/boot during install (zeta-install.sh Step 5), /boot post-reboot (disko `mountpoint = "/boot"`). Same physical file across the install-vs-installed boundary. Producer MUST write to /mnt/boot/; consumer MUST read from /boot/. Drift = restore service ConditionPathExists always evaluates false = creds silently never restore.',
   },
 ];
 
@@ -393,9 +396,7 @@ function main(): number {
     return 0;
   }
 
-  process.stderr.write(
-    `audit-installer-substrate: FAIL — ${total} assertion(s) failed\n\n`,
-  );
+  process.stderr.write(`audit-installer-substrate: FAIL — ${total} assertion(s) failed\n\n`);
   for (const f of [...fileFailures, ...sentinelFailures, ...crossFileFailures]) {
     process.stderr.write(`  [${f.kind}] ${f.path}\n    ${f.detail}\n`);
   }

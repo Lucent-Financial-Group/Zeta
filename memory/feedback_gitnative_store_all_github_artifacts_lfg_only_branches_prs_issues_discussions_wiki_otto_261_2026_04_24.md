@@ -4,6 +4,7 @@ description: Aaron Otto-261 factory-discipline directive. Generalizes gitnative-
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Every durable GitHub-hosted artifact gets a durable
@@ -13,13 +14,13 @@ service — but the data lives in git as first-class.**
 
 Direct Aaron quote 2026-04-24:
 
-> *"hygen to keep these and branches and when on github
+> _"hygen to keep these and branches and when on github
 > PRs and issues up to date and cleaan, issues,
 > disccusion, wiki, whatever is on github we want to
 > store durably gitnative and keep in sync per first
 > class gitnative and github our first host experience
 > live on lfg only, we don't need them in two places.
-> backlog"*
+> backlog"_
 
 ## Scope — the GitHub artifact catalog
 
@@ -178,7 +179,7 @@ FACTORY-HYGIENE.md as a cadenced job.
   type gets the SAME folder name under `docs/`
   and under `forks/<fork>/` (e.g.
   `docs/pr-preservation/` ↔ `forks/AceHack/
-  pr-preservation/`).
+pr-preservation/`).
 - **Otto-256** first-names-in-history-files —
   applies: artifact mirrors ARE history files,
   first names preserved.
@@ -189,15 +190,15 @@ FACTORY-HYGIENE.md as a cadenced job.
   mirrors get same lint + format discipline.
 - **Otto-259** verify-before-destructive — sync
   engine never deletes artifacts; only appends
-  + marks closed. Deletion requires Otto-259 gate.
+  - marks closed. Deletion requires Otto-259 gate.
 
 ## Iterative refinement — enhancement-backlog pattern
 
 Aaron 2026-04-24 companion directive:
 
-> *"we can backlog, we probably won't get this 100%
+> _"we can backlog, we probably won't get this 100%
 > full coverage aera first go so we should refine
-> this skill/enhancement backlog"*
+> this skill/enhancement backlog"_
 
 Translation: **don't design for 100% GitHub-API
 coverage in the first PR.** The gitnative-sync skill
@@ -252,27 +253,27 @@ one PR:
   metadata, CI history, billing) to LFG
   `docs/**` + `forks/<fork>/**` on tiered
   cadences. Tool surface: `tools/sync/
-  <artifact>.sh`. Effort: L (total); M per
+<artifact>.sh`. Effort: L (total); M per
   artifact; phased rollout: PRs + issues first
   (highest signal), then discussions + wiki,
   then metadata."
 
 - **Phase 1** (first subagent work after drain
   clears): sync-issues tool — `gh api
-  /repos/Lucent-Financial-Group/Zeta/issues` →
+/repos/Lucent-Financial-Group/Zeta/issues` →
   `docs/issues/<N>.md` with frontmatter. Builds
   on the existing PR-preservation format for
   symmetry.
 
 ## Direct Aaron quote to preserve
 
-> *"hygen to keep these and branches and when on
+> _"hygen to keep these and branches and when on
 > github PRs and issues up to date and cleaan,
 > issues, disccusion, wiki, whatever is on github
 > we want to store durably gitnative and keep in
 > sync per first class gitnative and github our
-> first host experience  live on lfg only, we don't
-> need them in two places. backlog"*
+> first host experience live on lfg only, we don't
+> need them in two places. backlog"_
 
 Future Otto: gitnative-storage is not a one-off
 (the PR-preservation pattern); it's the default

@@ -10,30 +10,32 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1874 |
-| Title | backlog(B-0249 P0): autonomous backlog pickup — self-sustaining NEW WORK |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T13:09:21Z |
-| Merged at | 2026-05-07T13:11:38Z |
-| Merge commit SHA | `512ac750e9e96f410186662f23dadc20eca07431` |
-| Branch | `backlog/b0249-autonomous-backlog-pickup` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1874 |
-| Changed files | 2 |
-| Additions / deletions | +61 / -0 |
+| Field                 | Value                                                                    |
+| --------------------- | ------------------------------------------------------------------------ |
+| Number                | 1874                                                                     |
+| Title                 | backlog(B-0249 P0): autonomous backlog pickup — self-sustaining NEW WORK |
+| Author                | `AceHack` (human)                                                        |
+| State                 | MERGED                                                                   |
+| Created at            | 2026-05-07T13:09:21Z                                                     |
+| Merged at             | 2026-05-07T13:11:38Z                                                     |
+| Merge commit SHA      | `512ac750e9e96f410186662f23dadc20eca07431`                               |
+| Branch                | `backlog/b0249-autonomous-backlog-pickup`                                |
+| Base branch           | `main`                                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1874                 |
+| Changed files         | 2                                                                        |
+| Additions / deletions | +61 / -0                                                                 |
 
 ## Description
 
 ## Summary
+
 - P0: the factory dies without this
 - Loops must autonomously pick backlog items and build them
 - Current state: maintenance only (heartbeat, no brain)
 - Aaron: "then you're dead"
 
 ## Test plan
+
 - [ ] Backlog item well-formed
 - [ ] BACKLOG.md regenerated
 
@@ -41,15 +43,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 2 |
-| Resolved threads | 0 |
-| Unresolved threads | 2 |
-| Total review comments | 2 |
-| Total fix commits (touching thread paths) | 1 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 2     |
+| Resolved threads                          | 0     |
+| Unresolved threads                        | 2     |
+| Total review comments                     | 2     |
+| Total fix commits (touching thread paths) | 1     |
 
 ## Review threads
 
@@ -65,7 +67,7 @@
 
   <pre>
   Acceptance criteria says "If the item is too large (blob)" but the backlog system already has a mechanical marker for this (`decomposition: blob`). Consider rephrasing the criterion to trigger off the `decomposition:` frontmatter value so an automated picker can decide deterministically (instead of a subjective "too large" check).
-
+  
   </pre>
 
 ### Thread 2 -- unresolved
@@ -80,7 +82,7 @@
 
   <pre>
   The "Composes with" bullet says "All B-0240..B-0248 items — the first items to be picked up", but B-0240..B-0248 are currently P1 rows. That conflicts with the earlier acceptance criterion that selection follows priority order (P0 &gt; P1 &gt; P2). Suggest either referencing the actual intended first-pick set (likely P0s) or clarifying that these are the first items *after* P0 is empty / for a specific loop.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

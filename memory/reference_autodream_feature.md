@@ -4,6 +4,7 @@ description: AutoDream is Anthropic's 2026-Q1 Claude Code feature that runs REM-
 type: reference
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## What AutoDream is
 
 A background memory-consolidation feature in

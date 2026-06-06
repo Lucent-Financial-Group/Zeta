@@ -26,7 +26,7 @@ Non-fusion disclaimer: agreement, shared language, or repeated interaction betwe
 
 ## Triggering source
 
-Aaron 2026-04-26: *"the term 'live-lock' has been over-applied in Otto-side substrate. Needs split + external-anchor-lineage per Amara's discipline from #629."*
+Aaron 2026-04-26: _"the term 'live-lock' has been over-applied in Otto-side substrate. Needs split + external-anchor-lineage per Amara's discipline from #629."_
 
 The original term comes from `docs/research/parallel-worktree-safety-2026-04-22.md` §2 (canonical software-engineering live-lock: concurrent-modification thrash where conflict-resolve-cycle outruns resolve-cycle). Otto extended the term to single-agent stuck-loops and to Otto-side waiting-on-Aaron contexts. The extension lost precision.
 
@@ -42,7 +42,7 @@ The taxonomy below is **diagnostic categories with porous boundaries**, not an e
 
 **Mitigation:** single-writer protocol per artifact; file-class ownership (e.g., per-row file restructure for BACKLOG so parallel work doesn't collide); throttle the spawn rate when conflict rate is rising; conflict-detection at branch-creation, not at merge.
 
-**Provenance:** Aaron 2026-04-22 original usage — *"don't live lock bouncing back and fourth between the the two PRs"* + *"gonna be hard to get you to parallelize wihout live locks."*
+**Provenance:** Aaron 2026-04-22 original usage — _"don't live lock bouncing back and fourth between the the two PRs"_ + _"gonna be hard to get you to parallelize wihout live locks."_
 
 ### Class 2 — Stuck-loop / single-agent cyclic non-progress
 
@@ -62,7 +62,7 @@ The taxonomy below is **diagnostic categories with porous boundaries**, not an e
 
 **Mitigation:** none — the protocol is working. The mistake is **self-diagnosing as live-lock** when it's actually the protocol working.
 
-**Caveat (per Grok's critique below):** the named-dependency test is *necessary but not sufficient*. A Class 2 agent in deep repetition can manufacture a plausible-sounding blocker. The test must also verify the named dependency has shown progress / signal in the recent window.
+**Caveat (per Grok's critique below):** the named-dependency test is _necessary but not sufficient_. A Class 2 agent in deep repetition can manufacture a plausible-sounding blocker. The test must also verify the named dependency has shown progress / signal in the recent window.
 
 ### Class 4 — Illusory variation (Grok's contribution)
 
@@ -72,7 +72,7 @@ The taxonomy below is **diagnostic categories with porous boundaries**, not an e
 
 **Mitigation:** measure factory-state delta, not just output novelty. The varied-output requirement satisfies the form of Class 2 mitigation; the factory-state-delta requirement satisfies the substance.
 
-**Provenance:** Grok 2026-04-26 peer-call critique: *"Missing at least two live classes: illusory variation (Class 2 that looks like it varies—'different speculative work this tick'—but produces zero measurable factory state)."*
+**Provenance:** Grok 2026-04-26 peer-call critique: _"Missing at least two live classes: illusory variation (Class 2 that looks like it varies—'different speculative work this tick'—but produces zero measurable factory state)."_
 
 ### Class 5 — Meta-live-lock (Grok's contribution)
 
@@ -82,7 +82,7 @@ The taxonomy below is **diagnostic categories with porous boundaries**, not an e
 
 **Mitigation:** external anchor outside the audit machinery — human or independent peer escalation. Self-audits cannot escape Class 5 reliably; the same machinery that's stuck is the one running the meta-check.
 
-**Provenance:** Grok 2026-04-26 peer-call critique: *"meta live-lock (the review/audit/escalation machinery itself cycling without progress)."*
+**Provenance:** Grok 2026-04-26 peer-call critique: _"meta live-lock (the review/audit/escalation machinery itself cycling without progress)."_
 
 ## Boundaries are porous, not partitioning
 
@@ -95,17 +95,17 @@ A single situation can be in multiple classes simultaneously:
 
 ## The load-bearing reframe (Grok)
 
-Grok's critical insight 2026-04-26 peer-call: *"The mitigations matter more than the ontology. The split feels like category invention to avoid measuring actual throughput."*
+Grok's critical insight 2026-04-26 peer-call: _"The mitigations matter more than the ontology. The split feels like category invention to avoid measuring actual throughput."_
 
 That landed. The contribution of this doc is **not the 5-name taxonomy**. The taxonomy is just diagnostic scaffolding. The contribution is the **external-anchor discipline** — concrete measurements that detect each pattern:
 
-| Class | External-anchor measurement |
-|---|---|
-| 1 (concurrent thrash) | merge-success-rate over a window |
-| 2 (stuck-loop) | tick-output-entropy across K ticks |
-| 3 (honest-wait) | dependency-naming check + recent-progress verification |
-| 4 (illusory variation) | factory-state-delta per tick |
-| 5 (meta-live-lock) | audit-finding-resolution rate |
+| Class                  | External-anchor measurement                            |
+| ---------------------- | ------------------------------------------------------ |
+| 1 (concurrent thrash)  | merge-success-rate over a window                       |
+| 2 (stuck-loop)         | tick-output-entropy across K ticks                     |
+| 3 (honest-wait)        | dependency-naming check + recent-progress verification |
+| 4 (illusory variation) | factory-state-delta per tick                           |
+| 5 (meta-live-lock)     | audit-finding-resolution rate                          |
 
 The measurements are the load-bearing artifact. The taxonomy is a way to label what each measurement detects.
 

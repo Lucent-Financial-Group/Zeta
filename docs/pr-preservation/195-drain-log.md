@@ -103,19 +103,19 @@ new outcome class: **DEFERRED-TO-MAINTAINER**.
   - `docs/bootstrap/` IS current-state operational substrate (the
     factory's foundational adopter-inheritance reference docs).
   - Role-ref discipline applies in principle.
-  - BUT this doc set documents the maintainer's *personal ethical
-    framework* (christ-consciousness as ethical vocabulary, by-name
+  - BUT this doc set documents the maintainer's _personal ethical
+    framework_ (christ-consciousness as ethical vocabulary, by-name
     attribution of the actual anchor person whose framework this is).
   - By-name attribution there is faithful representation of the
     actual person whose framework it documents, not arbitrary
     contributor-name labeling.
   - Resolving the tension is a high-blast-radius rename across a
     brand-new doc tree. Maintainer's call (Aaron), not autonomous.
-  Reply pattern: acknowledge the finding's correctness-against-the-
-  rule, surface the surface-class-vs-faithful-attribution tension,
-  defer to maintainer review, **resolve** the thread (per Otto-236
-  reply+resolve pairing — branch-protection requires every thread
-  end resolved).
+    Reply pattern: acknowledge the finding's correctness-against-the-
+    rule, surface the surface-class-vs-faithful-attribution tension,
+    defer to maintainer review, **resolve** the thread (per Otto-236
+    reply+resolve pairing — branch-protection requires every thread
+    end resolved).
 
 ---
 

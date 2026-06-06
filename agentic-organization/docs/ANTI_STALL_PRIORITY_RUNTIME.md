@@ -43,40 +43,40 @@ The goal is not to pretend blockers never happen. The goal is that blockers neve
 
 Blockers need typed routing. A generic `blocked` state is too weak.
 
-| Blocker type | Owner hats | Resolution path |
-|---|---|---|
-| Requirements unclear | Requirement Clarifier, Product Owner, Business Analyst | Open clarification thread, customer interview, BRD update, acceptance criteria revision |
-| Customer unavailable | Product Owner, Customer Interviewer, TPM | Schedule follow-up, create async questionnaire, proceed with approved assumption, escalate priority decision |
-| Missing BRD/product signoff | Product Owner, BRD Reviewer, Business Approver | Route to BRD review queue and product signoff gate |
-| Architecture missing | Architect, Architecture Reviewer, Chief Architect | Create CA/ADR/design task, run architecture meeting, approve or reject design |
-| Security/credential blocked | Security Reviewer, Credential Scope Approver, Policy Engineer | Security review, credential scope decision, proxy endpoint request, policy change |
-| Hat supply exhausted | Engineering Manager, TPM, Director, Cost Controller | Reprioritize, reserve later, release lower-priority hats, request more supply, queue work |
-| Reviewer unavailable | Engineering Manager, Review Coordinator, Director | Reassign reviewer, escalate queue saturation, provision more reviewer hats |
-| QA unavailable | QA Director, QA Engineering Manager, TPM | Reprioritize QA queue, assign regression verifier, schedule QA run, provision QA hats |
-| Environment/runtime issue | Platform Operator, SRE, Oz/K3s Reconciler | Open operations task, incident, self-healing plan, rerun or rebind session |
-| Build/test/pipeline failure | DevOps Analyst, Engineering Manager, Implementer | Classify failure, route to owner, create defect or infra task |
-| Dependency not complete | TPM, Dependency Manager, Engineering Manager | Re-sequence, split work, parallelize unaffected tasks, escalate dependency |
-| Budget exceeded | Cost Controller, CFO, Director, Executive Board | Pause lower-value work, adjust budget, shrink scope, approve exception |
-| Memory/context missing | Memory Curator, Knowledge Router, Engineering Manager | Attach context, create memory adaptation request, project skill request |
-| Tool/capability missing | Capability Request Owner, Tool Registry Steward, Architect, Security | Create capability request, route approvals, assign implementation |
-| Release blocked | Delivery Reviewer, Release Manager, QA, Security, Architecture | Identify missing evidence/gate, route to responsible hat, re-evaluate release scope |
+| Blocker type                | Owner hats                                                           | Resolution path                                                                                              |
+| --------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Requirements unclear        | Requirement Clarifier, Product Owner, Business Analyst               | Open clarification thread, customer interview, BRD update, acceptance criteria revision                      |
+| Customer unavailable        | Product Owner, Customer Interviewer, TPM                             | Schedule follow-up, create async questionnaire, proceed with approved assumption, escalate priority decision |
+| Missing BRD/product signoff | Product Owner, BRD Reviewer, Business Approver                       | Route to BRD review queue and product signoff gate                                                           |
+| Architecture missing        | Architect, Architecture Reviewer, Chief Architect                    | Create CA/ADR/design task, run architecture meeting, approve or reject design                                |
+| Security/credential blocked | Security Reviewer, Credential Scope Approver, Policy Engineer        | Security review, credential scope decision, proxy endpoint request, policy change                            |
+| Hat supply exhausted        | Engineering Manager, TPM, Director, Cost Controller                  | Reprioritize, reserve later, release lower-priority hats, request more supply, queue work                    |
+| Reviewer unavailable        | Engineering Manager, Review Coordinator, Director                    | Reassign reviewer, escalate queue saturation, provision more reviewer hats                                   |
+| QA unavailable              | QA Director, QA Engineering Manager, TPM                             | Reprioritize QA queue, assign regression verifier, schedule QA run, provision QA hats                        |
+| Environment/runtime issue   | Platform Operator, SRE, Oz/K3s Reconciler                            | Open operations task, incident, self-healing plan, rerun or rebind session                                   |
+| Build/test/pipeline failure | DevOps Analyst, Engineering Manager, Implementer                     | Classify failure, route to owner, create defect or infra task                                                |
+| Dependency not complete     | TPM, Dependency Manager, Engineering Manager                         | Re-sequence, split work, parallelize unaffected tasks, escalate dependency                                   |
+| Budget exceeded             | Cost Controller, CFO, Director, Executive Board                      | Pause lower-value work, adjust budget, shrink scope, approve exception                                       |
+| Memory/context missing      | Memory Curator, Knowledge Router, Engineering Manager                | Attach context, create memory adaptation request, project skill request                                      |
+| Tool/capability missing     | Capability Request Owner, Tool Registry Steward, Architect, Security | Create capability request, route approvals, assign implementation                                            |
+| Release blocked             | Delivery Reviewer, Release Manager, QA, Security, Architecture       | Identify missing evidence/gate, route to responsible hat, re-evaluate release scope                          |
 
 ## Hat-Owned Operating Cadences
 
 Anti-stall behavior should be part of the Organization's normal operating rhythm. Durable schedules and event triggers create agenda items, reports, inbox tasks, and meeting requests for the right hats. The hats then decide priority, assignment, escalation, alternate work, or explicit pause.
 
-| Cadence or routine | Owner hats | Responsibility |
-|---|---|---|
-| Initiative movement review | TPM, Mission Control Lead, Program Director | Review active initiative flow, blocked tasks, dependency drift, team utilization, release risk, and next executable work |
-| Department priority review | Department Director, TPM Manager, Engineering Manager or department manager | Rebalance department initiatives, resolve hat scarcity, move blocked work to the right owner, and escalate cross-department conflicts |
-| Engineering execution review | Engineering Manager, Team Lead, Readiness Reviewer | Inspect ready queue, blocked implementation, TDD evidence, missing context, silent assignments, and alternate work options |
-| Review queue review | Engineering Manager, Review Coordinator, Architecture Reviewer, Security Reviewer, QA Reviewer, Delivery Reviewer | Detect review saturation, assign reviewers, escalate missing evidence, and request more reviewer hats when needed |
-| QA flow review | QA Director, QA Engineering Manager, Regression Scheduler | Prioritize QA-ready work, schedule regression runs, route reproducible failures, and identify test tooling gaps |
-| Security and credential review | Security Director, Security Reviewer, Credential Scope Approver, Policy Engineer | Triage credential/tool/policy blockers and decide whether to approve, reject, request architecture input, or open capability work |
-| Release readiness review | Release Manager, Delivery Reviewer, TPM, QA Reviewer | Review release candidates, missing gates, rollback plans, post-release verification, and risk tradeoffs |
-| Hat supply and budget review | Director, Cost Controller, CFO, Executive Board when needed | Decide whether to reserve, release, expand, or preempt hat capacity based on priority and budget |
-| Blocker triage meeting | TPM, Blocker Manager, owning department manager | Classify blockers, assign blocker owners, choose alternate work, and set escalation deadlines |
-| Executive movement review | CEO, CTO, COO, CFO, Executive Board | Resolve cross-department priority conflicts, major bottlenecks, budget exceptions, and high-risk pauses |
+| Cadence or routine             | Owner hats                                                                                                        | Responsibility                                                                                                                        |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Initiative movement review     | TPM, Mission Control Lead, Program Director                                                                       | Review active initiative flow, blocked tasks, dependency drift, team utilization, release risk, and next executable work              |
+| Department priority review     | Department Director, TPM Manager, Engineering Manager or department manager                                       | Rebalance department initiatives, resolve hat scarcity, move blocked work to the right owner, and escalate cross-department conflicts |
+| Engineering execution review   | Engineering Manager, Team Lead, Readiness Reviewer                                                                | Inspect ready queue, blocked implementation, TDD evidence, missing context, silent assignments, and alternate work options            |
+| Review queue review            | Engineering Manager, Review Coordinator, Architecture Reviewer, Security Reviewer, QA Reviewer, Delivery Reviewer | Detect review saturation, assign reviewers, escalate missing evidence, and request more reviewer hats when needed                     |
+| QA flow review                 | QA Director, QA Engineering Manager, Regression Scheduler                                                         | Prioritize QA-ready work, schedule regression runs, route reproducible failures, and identify test tooling gaps                       |
+| Security and credential review | Security Director, Security Reviewer, Credential Scope Approver, Policy Engineer                                  | Triage credential/tool/policy blockers and decide whether to approve, reject, request architecture input, or open capability work     |
+| Release readiness review       | Release Manager, Delivery Reviewer, TPM, QA Reviewer                                                              | Review release candidates, missing gates, rollback plans, post-release verification, and risk tradeoffs                               |
+| Hat supply and budget review   | Director, Cost Controller, CFO, Executive Board when needed                                                       | Decide whether to reserve, release, expand, or preempt hat capacity based on priority and budget                                      |
+| Blocker triage meeting         | TPM, Blocker Manager, owning department manager                                                                   | Classify blockers, assign blocker owners, choose alternate work, and set escalation deadlines                                         |
+| Executive movement review      | CEO, CTO, COO, CFO, Executive Board                                                                               | Resolve cross-department priority conflicts, major bottlenecks, budget exceptions, and high-risk pauses                               |
 
 The always-on substrate only does mechanical support:
 
@@ -131,7 +131,15 @@ type PriorityDecision = {
   preemptableAssignments: string[];
   alternateWorkItems: string[];
   blockerResolutionPlanId?: string;
-  decidedBy: "tpm" | "engineering_manager" | "department_director" | "review_hat" | "agent_vote" | "executive" | "incident_commander" | "approved_policy";
+  decidedBy:
+    | "tpm"
+    | "engineering_manager"
+    | "department_director"
+    | "review_hat"
+    | "agent_vote"
+    | "executive"
+    | "incident_commander"
+    | "approved_policy";
   expiresAt?: string;
 };
 ```
@@ -220,17 +228,17 @@ Required checks:
 
 Every queue should have SLOs.
 
-| Queue | Example SLO |
-|---|---|
+| Queue                     | Example SLO                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------- |
 | Requirement clarification | first response within policy window; no open question stale beyond threshold |
-| BRD review | review assigned quickly; rejection reasons typed |
-| Architecture review | architecture-risk work cannot sit unassigned |
-| Code review | review queue saturation creates reviewer provisioning or reprioritization |
-| QA verification | QA-ready work gets assigned or escalated |
-| Security review | credential/tool requests get triaged by risk quickly |
-| Delivery review | release candidates cannot sit without missing-evidence signal |
-| Blocker resolution | blockers get owner and resolution plan quickly |
-| Capability expansion | requests get classified and either accepted, rejected, or deferred |
+| BRD review                | review assigned quickly; rejection reasons typed                             |
+| Architecture review       | architecture-risk work cannot sit unassigned                                 |
+| Code review               | review queue saturation creates reviewer provisioning or reprioritization    |
+| QA verification           | QA-ready work gets assigned or escalated                                     |
+| Security review           | credential/tool requests get triaged by risk quickly                         |
+| Delivery review           | release candidates cannot sit without missing-evidence signal                |
+| Blocker resolution        | blockers get owner and resolution plan quickly                               |
+| Capability expansion      | requests get classified and either accepted, rejected, or deferred           |
 
 SLO violations should emit signals such as:
 
@@ -248,17 +256,17 @@ SLO violations should emit signals such as:
 
 Reconciliation should compare intended state to actual state and route discrepancies to the owning hats.
 
-| Intended state | Actual check |
-|---|---|
-| Assigned work has active agent | hat assignment exists, token valid, session heartbeat present |
-| Ready work has required hats | hat supply reserved or waiting queue visible |
-| Blocked work has owner | blocker work item and owner hat exist |
-| Review requested | reviewer assigned and review SLO active |
-| QA requested | QA assignment exists and evidence plan is attached |
-| Release candidate open | missing gates/evidence are explicit |
-| Oz run active | run bound to work item and heartbeating |
-| Department active | at least one next action, scheduled review, or explicit pause exists |
-| Project active | initiatives are moving, blocked, or intentionally paused with reason |
+| Intended state                 | Actual check                                                         |
+| ------------------------------ | -------------------------------------------------------------------- |
+| Assigned work has active agent | hat assignment exists, token valid, session heartbeat present        |
+| Ready work has required hats   | hat supply reserved or waiting queue visible                         |
+| Blocked work has owner         | blocker work item and owner hat exist                                |
+| Review requested               | reviewer assigned and review SLO active                              |
+| QA requested                   | QA assignment exists and evidence plan is attached                   |
+| Release candidate open         | missing gates/evidence are explicit                                  |
+| Oz run active                  | run bound to work item and heartbeating                              |
+| Department active              | at least one next action, scheduled review, or explicit pause exists |
+| Project active                 | initiatives are moving, blocked, or intentionally paused with reason |
 
 If intended and actual state diverge, the system creates a report, inbox item, or meeting request for the responsible hat. Safe mechanical repairs can be automated by approved policy, but priority, staffing, and pause/resume decisions stay with organizational roles.
 

@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-27 (verbatim):
 
-> *\"my mac is ethernet connected and i connected to the same wifi as it but i still can't ping could it be something else or can we make hostname more reliable?  maybe a netbios or something?  i like ashai or whatever it is but can we make it reliable?  i think this is looking very good.\"*
+> _\"my mac is ethernet connected and i connected to the same wifi as it but i still can't ping could it be something else or can we make hostname more reliable? maybe a netbios or something? i like ashai or whatever it is but can we make it reliable? i think this is looking very good.\"_
 
 Empirical: ping by IP works ✓, SSH works ✓, but Bonjour resolution times out AND unicast mDNS query to port 5353/udp times out (actual no-response, not connection-attempt noise). Avahi alone proved unreliable.
 
@@ -41,9 +41,9 @@ NetBIOS uses UDP broadcast on port 137 (vs mDNS multicast on 5353) — **differe
 
 Operator usage (any LAN host):
 \`\`\`bash
-nmblookup node-e5a176          # Linux/macOS NetBIOS lookup
-smbutil lookup node-e5a176     # macOS native NetBIOS
-ping node-e5a176               # if nsswitch has wins
+nmblookup node-e5a176 # Linux/macOS NetBIOS lookup
+smbutil lookup node-e5a176 # macOS native NetBIOS
+ping node-e5a176 # if nsswitch has wins
 \`\`\`
 
 Samba is enabled for NetBIOS name-advertisement **only** (no shares declared = no SMB file-share exposure).
@@ -54,12 +54,12 @@ NetworkManager already advertises hostname via DHCP option 12 by default. Many h
 
 ## Operator now has 3 name-resolution mechanisms
 
-| # | Lookup | Mechanism | Failure mode |
-|---|---|---|---|
-| 1 | \`node-e5a176.local\` | mDNS multicast | IGMP filtering, multicast drop |
-| 2 | \`node-e5a176\` (via nmblookup) | NetBIOS broadcast | Different protocol; works when mDNS fails |
-| 3 | \`node-e5a176.lan\` | Router DHCP+DNS | Depends on router support |
-| 4 | IP (192.168.4.128) | Always reliable | Need \`arp -a\` first if IP not memorized |
+| #   | Lookup                          | Mechanism         | Failure mode                              |
+| --- | ------------------------------- | ----------------- | ----------------------------------------- |
+| 1   | \`node-e5a176.local\`           | mDNS multicast    | IGMP filtering, multicast drop            |
+| 2   | \`node-e5a176\` (via nmblookup) | NetBIOS broadcast | Different protocol; works when mDNS fails |
+| 3   | \`node-e5a176.lan\`             | Router DHCP+DNS   | Depends on router support                 |
+| 4   | IP (192.168.4.128)              | Always reliable   | Need \`arp -a\` first if IP not memorized |
 
 ## Test plan
 
@@ -82,6 +82,7 @@ B-0792 (injected-hostname) · iter-5.4.1 self-registration (PR #5380 carries MAC
 This PR aims to make cluster-node hostname resolution more reliable on typical home/SMB LANs by keeping Avahi/Bonjour mDNS and adding additional fallback mechanisms (notably NetBIOS name advertisement via Samba).
 
 **Changes:**
+
 - Harden Avahi configuration (IPv6 NSS, explicit v4/v6 enablement, reflector, additional publish records).
 - Enable Samba with NetBIOS-focused settings to support broadcast-based name lookup as an mDNS fallback.
 - Document DHCP hostname registration as an additional expected fallback layer.

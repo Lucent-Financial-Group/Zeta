@@ -210,23 +210,23 @@ Distinct from and above:
 
 ## The canonical problem-shape → technique mapping
 
-| Shape | First-pick technique |
-|-------|---------------------|
-| Pattern-matching, ≤ 50 patterns, text 10^6 | Aho-Corasick |
-| Single-pattern matching, text 10^6 | KMP or Z |
-| Substring queries after preprocessing | Suffix array + Kasai |
-| Path queries on tree with updates | Heavy-light decomposition |
-| Range update + range query, 10^5 | Segment tree + lazy |
-| Count points in range, offline, 10^5 queries | Mo's algorithm |
-| K-th smallest in range, online | Persistent segment tree |
-| LCA, 10^6 queries | Euler tour + sparse table |
-| Max-flow, V=10^3, E=10^5 | Dinic |
-| Bipartite matching, V=10^3, E=10^5 | Hopcroft-Karp |
-| DP recurrence dp[i]=min(a_j·x_i+b_j) | CHT / Li Chao |
-| Subset convolution, n ≤ 20 | SOS DP |
-| Linear recurrence, n=10^18 | Matrix exponentiation |
-| Polynomial multiplication, degree 10^5 | FFT / NTT |
-| 2-SAT on 10^5 variables | Tarjan SCC on implication graph |
+| Shape                                        | First-pick technique            |
+| -------------------------------------------- | ------------------------------- |
+| Pattern-matching, ≤ 50 patterns, text 10^6   | Aho-Corasick                    |
+| Single-pattern matching, text 10^6           | KMP or Z                        |
+| Substring queries after preprocessing        | Suffix array + Kasai            |
+| Path queries on tree with updates            | Heavy-light decomposition       |
+| Range update + range query, 10^5             | Segment tree + lazy             |
+| Count points in range, offline, 10^5 queries | Mo's algorithm                  |
+| K-th smallest in range, online               | Persistent segment tree         |
+| LCA, 10^6 queries                            | Euler tour + sparse table       |
+| Max-flow, V=10^3, E=10^5                     | Dinic                           |
+| Bipartite matching, V=10^3, E=10^5           | Hopcroft-Karp                   |
+| DP recurrence dp[i]=min(a_j·x_i+b_j)         | CHT / Li Chao                   |
+| Subset convolution, n ≤ 20                   | SOS DP                          |
+| Linear recurrence, n=10^18                   | Matrix exponentiation           |
+| Polynomial multiplication, degree 10^5       | FFT / NTT                       |
+| 2-SAT on 10^5 variables                      | Tarjan SCC on implication graph |
 
 ## Anti-patterns
 

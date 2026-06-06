@@ -14,14 +14,14 @@
 
 ## File Structure
 
-| File | Responsibility |
-|---|---|
-| `tools/ace/store.ts` | `AceDependency` → DU; `RegistryEntry`/`Registry` types; `bundledRegistryPath`/`registryPath`/`loadRegistry`/`listRegistry`/`addRegistryEntry` (mirror the trust-store fns) |
-| `tools/ace/registry.json` | (create) bundled anchor, ships `{}` |
-| `tools/ace/resolve.ts` | `resolve` gains `registry` param; per-edge `kind` dispatch (registry lookup); `registry-miss` reason |
-| `tools/ace/ace.ts` | `ace registry add`/`list` verbs; pass `loadRegistry()` into `resolve` |
-| `tools/ace/store.test.ts`, `resolve.test.ts`, `ace.test.ts` | tests; existing inline edges gain `kind:"inline"`; `resolve()` calls add the registry arg |
-| `.claude/skills/ace/SKILL.md` | `registry` verbs + registry-dep docs |
+| File                                                        | Responsibility                                                                                                                                                             |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tools/ace/store.ts`                                        | `AceDependency` → DU; `RegistryEntry`/`Registry` types; `bundledRegistryPath`/`registryPath`/`loadRegistry`/`listRegistry`/`addRegistryEntry` (mirror the trust-store fns) |
+| `tools/ace/registry.json`                                   | (create) bundled anchor, ships `{}`                                                                                                                                        |
+| `tools/ace/resolve.ts`                                      | `resolve` gains `registry` param; per-edge `kind` dispatch (registry lookup); `registry-miss` reason                                                                       |
+| `tools/ace/ace.ts`                                          | `ace registry add`/`list` verbs; pass `loadRegistry()` into `resolve`                                                                                                      |
+| `tools/ace/store.test.ts`, `resolve.test.ts`, `ace.test.ts` | tests; existing inline edges gain `kind:"inline"`; `resolve()` calls add the registry arg                                                                                  |
+| `.claude/skills/ace/SKILL.md`                               | `registry` verbs + registry-dep docs                                                                                                                                       |
 
 ---
 
@@ -53,14 +53,23 @@ describe("registry paths + empty load", () => {
 
 ```ts
 export type AceDependency =
-  | { readonly kind: "inline"; readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
+  | {
+      readonly kind: "inline";
+      readonly name: string;
+      readonly version: string;
+      readonly url: string;
+      readonly package_hash: string;
+    }
   | { readonly kind: "registry"; readonly name: string; readonly version: string };
 ```
 
 (b) Add registry types + paths (near the trust-store section):
 
 ```ts
-export interface RegistryEntry { readonly url: string; readonly package_hash: string; }
+export interface RegistryEntry {
+  readonly url: string;
+  readonly package_hash: string;
+}
 export type Registry = Map<string, Map<string, RegistryEntry>>; // name → version → entry
 
 /** ~/.ace/registry.json — operator-managed (sibling of trusted-keys.json). */
@@ -80,7 +89,9 @@ function readRegistryFile(p: string): Record<string, Record<string, RegistryEntr
     const obj = JSON.parse(readFileSync(p, "utf8"));
     if (typeof obj !== "object" || obj === null || Array.isArray(obj)) return {};
     return obj as Record<string, Record<string, RegistryEntry>>;
-  } catch { return {}; }
+  } catch {
+    return {};
+  }
 }
 
 /** bundled ∪ user; user overrides bundled on (name, version). */
@@ -90,9 +101,16 @@ export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPa
     for (const [name, versions] of Object.entries(src)) {
       if (typeof versions !== "object" || versions === null) continue;
       let vm = m.get(name);
-      if (!vm) { vm = new Map(); m.set(name, vm); }
+      if (!vm) {
+        vm = new Map();
+        m.set(name, vm);
+      }
       for (const [version, entry] of Object.entries(versions)) {
-        if (entry && typeof (entry as RegistryEntry).url === "string" && typeof (entry as RegistryEntry).package_hash === "string") {
+        if (
+          entry &&
+          typeof (entry as RegistryEntry).url === "string" &&
+          typeof (entry as RegistryEntry).package_hash === "string"
+        ) {
           vm.set(version, { url: (entry as RegistryEntry).url, package_hash: (entry as RegistryEntry).package_hash });
         }
       }
@@ -131,11 +149,17 @@ git commit -m "feat(ace): AceDependency DU (inline|registry) + registry types/pa
 describe("registry load + list", () => {
   test("loadRegistry unions bundled+user; user overrides on (name,version)", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
-    const b = join(dir, "b.json"); const u = join(dir, "u.json");
+    const b = join(dir, "b.json");
+    const u = join(dir, "u.json");
     writeFileSync(b, JSON.stringify({ libfoo: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
-    writeFileSync(u, JSON.stringify({ libfoo: { "1.0.0": { url: "U", package_hash: "sha256:u" }, "2.0.0": { url: "U2", package_hash: "sha256:u2" } } }));
+    writeFileSync(
+      u,
+      JSON.stringify({
+        libfoo: { "1.0.0": { url: "U", package_hash: "sha256:u" }, "2.0.0": { url: "U2", package_hash: "sha256:u2" } },
+      }),
+    );
     const m = loadRegistry(b, u);
-    expect(m.get("libfoo")?.get("1.0.0")?.url).toBe("U");      // user override
+    expect(m.get("libfoo")?.get("1.0.0")?.url).toBe("U"); // user override
     expect(m.get("libfoo")?.get("2.0.0")?.url).toBe("U2");
   });
   test("loadRegistry skips malformed entries (not fatal)", () => {
@@ -148,7 +172,8 @@ describe("registry load + list", () => {
   });
   test("listRegistry reports source per entry, user overriding bundled", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-reg-"));
-    const b = join(dir, "b.json"); const u = join(dir, "u.json");
+    const b = join(dir, "b.json");
+    const u = join(dir, "u.json");
     writeFileSync(b, JSON.stringify({ a: { "1.0.0": { url: "B", package_hash: "sha256:b" } } }));
     writeFileSync(u, JSON.stringify({ a: { "1.0.0": { url: "U", package_hash: "sha256:u" } } }));
     const rows = listRegistry(b, u);
@@ -165,7 +190,8 @@ describe("registry load + list", () => {
 
 ```ts
 export function listRegistry(
-  bundledPath: string = bundledRegistryPath(), userPath: string = registryPath(),
+  bundledPath: string = bundledRegistryPath(),
+  userPath: string = registryPath(),
 ): Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> {
   const idx = new Map<string, number>(); // "name@version" → row index (for override)
   const rows: Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> = [];
@@ -177,7 +203,11 @@ export function listRegistry(
         const key = `${name}@${version}`;
         const row = { name, version, url: entry.url, source };
         const prior = idx.get(key);
-        if (prior !== undefined) rows[prior] = row; else { idx.set(key, rows.length); rows.push(row); }
+        if (prior !== undefined) rows[prior] = row;
+        else {
+          idx.set(key, rows.length);
+          rows.push(row);
+        }
       }
     }
   };
@@ -232,13 +262,33 @@ describe("addRegistryEntry", () => {
 ```ts
 /** Append/overwrite a user-registry entry; dir 0o700, file 0o600 on EVERY call (incl. dedup
  * early-return) — mirrors addTrustedKey. chmod after write (writeFileSync mode only applies on create). */
-export function addRegistryEntry(name: string, version: string, entry: RegistryEntry, userPath: string = registryPath()): { added: boolean } {
+export function addRegistryEntry(
+  name: string,
+  version: string,
+  entry: RegistryEntry,
+  userPath: string = registryPath(),
+): { added: boolean } {
   const dir = dirname(userPath);
   mkdirSync(dir, { recursive: true, mode: 0o700 });
-  try { chmodSync(dir, 0o700); } catch { /* best-effort */ }
-  const tightenFile = (): void => { if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort */ } } };
+  try {
+    chmodSync(dir, 0o700);
+  } catch {
+    /* best-effort */
+  }
+  const tightenFile = (): void => {
+    if (existsSync(userPath)) {
+      try {
+        chmodSync(userPath, 0o600);
+      } catch {
+        /* best-effort */
+      }
+    }
+  };
   const obj = readRegistryFile(userPath);
-  if (obj[name]?.[version]) { tightenFile(); return { added: false }; }
+  if (obj[name]?.[version]) {
+    tightenFile();
+    return { added: false };
+  }
   obj[name] = obj[name] ?? {};
   obj[name][version] = { url: entry.url, package_hash: entry.package_hash };
   writeFileSync(userPath, JSON.stringify(obj, null, 2));
@@ -282,43 +332,66 @@ import type { RegistryEntry } from "./store.ts";
 // Build a registry Map from {name:{version:entry}}
 function regOf(src: Record<string, Record<string, RegistryEntry>>): Map<string, Map<string, RegistryEntry>> {
   const m = new Map<string, Map<string, RegistryEntry>>();
-  for (const [n, vs] of Object.entries(src)) { const vm = new Map<string, RegistryEntry>(); for (const [v, e] of Object.entries(vs)) vm.set(v, e); m.set(n, vm); }
+  for (const [n, vs] of Object.entries(src)) {
+    const vm = new Map<string, RegistryEntry>();
+    for (const [v, e] of Object.entries(vs)) vm.set(v, e);
+    m.set(n, vm);
+  }
   return m;
 }
 // A registry dependency edge (no url/package_hash on the edge).
-function regEdge(name: string, version: string) { return { kind: "registry" as const, name, version }; }
+function regEdge(name: string, version: string) {
+  return { kind: "registry" as const, name, version };
+}
 
 describe("resolve — registry deps", () => {
   test("a registry dep resolves via lookup + full verify", async () => {
     const D = pkgOf("D", { "d.txt": "d" });
-    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "1.0.0")] }, files: { "r.txt": "r" } };
+    const root: AcePackage = {
+      manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "1.0.0")] },
+      files: { "r.txt": "r" },
+    };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
     const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name)).toEqual(["D", "root"]);
   });
   test("registry-miss (name/version absent) refuses", async () => {
-    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "9.9.9")] }, files: { "r.txt": "r" } };
+    const root: AcePackage = {
+      manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "9.9.9")] },
+      files: { "r.txt": "r" },
+    };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "sha256:x" } } }); // 9.9.9 absent
     const r = await resolve(root, fetchOf({}), NO_TRUST, reg, { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("registry-miss");
   });
   test("mixed inline + registry edges both resolve", async () => {
-    const A = pkgOf("A", { "a.txt": "a" });       // inline child
-    const D = pkgOf("D", { "d.txt": "d" });        // registry child
-    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }]).manifest, dependencies: [
-      { kind: "inline" as const, name: "A", version: "1.0.0", url: "http://e/A", package_hash: packageHash(A) },
-      regEdge("D", "1.0.0"),
-    ] }, files: { "r.txt": "r" } };
+    const A = pkgOf("A", { "a.txt": "a" }); // inline child
+    const D = pkgOf("D", { "d.txt": "d" }); // registry child
+    const root: AcePackage = {
+      manifest: {
+        ...pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }]).manifest,
+        dependencies: [
+          { kind: "inline" as const, name: "A", version: "1.0.0", url: "http://e/A", package_hash: packageHash(A) },
+          regEdge("D", "1.0.0"),
+        ],
+      },
+      files: { "r.txt": "r" },
+    };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/D": D }), NO_TRUST, reg, { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/D": D }), NO_TRUST, reg, {
+      allowNoSignature: true,
+    });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name).sort()).toEqual(["A", "D", "root"]);
   });
   test("registry dep whose registry package_hash mismatches the fetched pkg → pin-mismatch", async () => {
     const D = pkgOf("D", { "d.txt": "d" });
-    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "1.0.0")] }, files: { "r.txt": "r" } };
+    const root: AcePackage = {
+      manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "1.0.0")] },
+      files: { "r.txt": "r" },
+    };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "sha256:wrong" } } });
     const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, { allowNoSignature: true });
     expect(r.ok).toBe(false);
@@ -354,17 +427,24 @@ export async function resolve(
 (d) At the TOP of the `walk` for-loop body (right after `const here = [...path, edge.name];`), derive `url` + `package_hash` from the edge kind, BEFORE the cycle/seen checks:
 
 ```ts
-      let url: string;
-      let package_hash: string;
-      if (edge.kind === "registry") {
-        const entry = registry.get(edge.name)?.get(edge.version);
-        if (entry === undefined) {
-          return { ok: false, reason: "registry-miss", detail: `${edge.name}@${edge.version} not found in registry`, path: here };
-        }
-        url = entry.url; package_hash = entry.package_hash;
-      } else {
-        url = edge.url; package_hash = edge.package_hash;
-      }
+let url: string;
+let package_hash: string;
+if (edge.kind === "registry") {
+  const entry = registry.get(edge.name)?.get(edge.version);
+  if (entry === undefined) {
+    return {
+      ok: false,
+      reason: "registry-miss",
+      detail: `${edge.name}@${edge.version} not found in registry`,
+      path: here,
+    };
+  }
+  url = entry.url;
+  package_hash = entry.package_hash;
+} else {
+  url = edge.url;
+  package_hash = edge.package_hash;
+}
 ```
 
 (e) Replace the remaining `edge.package_hash` references in the loop with `package_hash`, and `edge.url` with `url`:
@@ -402,9 +482,17 @@ import { loadRegistry } from "./store.ts";
 
 test("ace registry add fetches + computes hash + stores; registry list shows it", async () => {
   const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-  const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
-  const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
+  const h = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
+  const D = {
+    manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) },
+    files: { "d.txt": "d" },
+  };
+  const dPath = join(dir, "D.json");
+  writeFileSync(dPath, JSON.stringify(D));
   expect(await main(["registry", "add", "D", "1.0.0", dPath])).toBe(0);
   // HOME is redirected to a temp dir by beforeEach, so loadRegistry() reads the test user file
   const reg = loadRegistry();
@@ -415,23 +503,59 @@ test("ace registry add fetches + computes hash + stores; registry list shows it"
 test("e2e: install a root with a registry dep resolves via the registry", async () => {
   const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
   const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-  const D = { manifest: { format_version:1, name:"D", version:"1.0.0", content_hash: h({ "d.txt":"d" }) }, files: { "d.txt":"d" } };
-  const dPath = join(dir, "D.json"); writeFileSync(dPath, JSON.stringify(D));
+  const h = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
+  const D = {
+    manifest: { format_version: 1, name: "D", version: "1.0.0", content_hash: h({ "d.txt": "d" }) },
+    files: { "d.txt": "d" },
+  };
+  const dPath = join(dir, "D.json");
+  writeFileSync(dPath, JSON.stringify(D));
   await main(["registry", "add", "D", "1.0.0", dPath]); // populate user registry
-  const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry", name:"D", version:"1.0.0" }] }, files: { "r.txt":"r" } };
-  const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+  const root = {
+    manifest: {
+      format_version: 1,
+      name: "root",
+      version: "1.0.0",
+      content_hash: h({ "r.txt": "r" }),
+      dependencies: [{ kind: "registry", name: "D", version: "1.0.0" }],
+    },
+    files: { "r.txt": "r" },
+  };
+  const rootPath = join(dir, "root.json");
+  writeFileSync(rootPath, JSON.stringify(root));
   const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
   expect(code).toBe(0);
-  expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["D","root"]);
+  expect(
+    listInstalled(store)
+      .map((p) => p.manifest.name)
+      .sort(),
+  ).toEqual(["D", "root"]);
 });
 
 test("e2e: install with a registry dep missing from the registry → exit 1, store empty", async () => {
   const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
   const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
-  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
-  const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry", name:"MISSING", version:"1.0.0" }] }, files: { "r.txt":"r" } };
-  const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+  const h = (files: Record<string, string>) =>
+    "sha256:" +
+    createHash("sha256")
+      .update(new TextEncoder().encode(JSON.stringify(files)))
+      .digest("hex");
+  const root = {
+    manifest: {
+      format_version: 1,
+      name: "root",
+      version: "1.0.0",
+      content_hash: h({ "r.txt": "r" }),
+      dependencies: [{ kind: "registry", name: "MISSING", version: "1.0.0" }],
+    },
+    files: { "r.txt": "r" },
+  };
+  const rootPath = join(dir, "root.json");
+  writeFileSync(rootPath, JSON.stringify(root));
   const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
   expect(code).toBe(1);
   expect(listInstalled(store).length).toBe(0);
@@ -447,23 +571,35 @@ test("e2e: install with a registry dep missing from the registry → exit 1, sto
 (b) **parseArgs:** add a `registry` command parallel to `trust`. After the `trust` parsing block, add (mirror its shape — `registry add <name> <version> <url> [--hash <h>]` and `registry list`):
 
 ```ts
-  if (cmd === "registry") {
-    const sub = argv[1];
-    if (sub === "list") return { command: "registry", sub: "list", storePath };
-    if (sub === "add") {
-      const name = argv[2], version = argv[3], url = argv[4];
-      if (!name || !version || !url || name.startsWith("-") || version.startsWith("-") || url.startsWith("-")) {
-        return { error: "registry add requires <name> <version> <url>" };
-      }
-      let hash: string | undefined;
-      for (let i = 5; i < argv.length; i++) {
-        if (argv[i] === "--hash") { hash = argv[++i]; if (!hash) return { error: "--hash requires a value" }; }
-        else return { error: `Unknown option for registry add: ${argv[i]}` };
-      }
-      return { command: "registry", sub: "add", regName: name, regVersion: version, regUrl: url, regHash: hash, storePath };
+if (cmd === "registry") {
+  const sub = argv[1];
+  if (sub === "list") return { command: "registry", sub: "list", storePath };
+  if (sub === "add") {
+    const name = argv[2],
+      version = argv[3],
+      url = argv[4];
+    if (!name || !version || !url || name.startsWith("-") || version.startsWith("-") || url.startsWith("-")) {
+      return { error: "registry add requires <name> <version> <url>" };
     }
-    return { error: "registry requires 'add' or 'list'" };
+    let hash: string | undefined;
+    for (let i = 5; i < argv.length; i++) {
+      if (argv[i] === "--hash") {
+        hash = argv[++i];
+        if (!hash) return { error: "--hash requires a value" };
+      } else return { error: `Unknown option for registry add: ${argv[i]}` };
+    }
+    return {
+      command: "registry",
+      sub: "add",
+      regName: name,
+      regVersion: version,
+      regUrl: url,
+      regHash: hash,
+      storePath,
+    };
   }
+  return { error: "registry requires 'add' or 'list'" };
+}
 ```
 
 (Extend the parsed-args type to carry `sub?`, `regName?`, `regVersion?`, `regUrl?`, `regHash?` — match how the existing `trust` parse carries its fields.)
@@ -471,27 +607,46 @@ test("e2e: install with a registry dep missing from the registry → exit 1, sto
 (c) **Verb handler** (add before the `install` handler, mirroring the `trust` handler):
 
 ```ts
-  if (parsed.command === "registry") {
-    if (parsed.sub === "list") {
-      const rows = listRegistry();
-      if (rows.length === 0) { console.log("No registry entries. (add one: ace registry add <name> <version> <url>)"); return 0; }
-      for (const r of rows) console.log(`  ${r.name}@${r.version}  ${r.url}  [${r.source}]`);
+if (parsed.command === "registry") {
+  if (parsed.sub === "list") {
+    const rows = listRegistry();
+    if (rows.length === 0) {
+      console.log("No registry entries. (add one: ace registry add <name> <version> <url>)");
       return 0;
     }
-    // sub === "add"
-    let pkgHash = parsed.regHash;
-    if (pkgHash === undefined) {
-      let raw: string;
-      try { raw = parsed.regUrl!.startsWith("http://") || parsed.regUrl!.startsWith("https://") ? await (await fetch(parsed.regUrl!)).text() : readFileSync(parsed.regUrl!, "utf8"); }
-      catch (e) { console.error(`ace: registry add: fetch/read failed: ${(e as Error).message}`); return 1; }
-      let pkg: AcePackage;
-      try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: registry add: package is not valid JSON"); return 65; }
-      pkgHash = packageHash(pkg);
-    }
-    const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: parsed.regUrl!, package_hash: pkgHash });
-    console.log(res.added ? `ace: registered ${parsed.regName}@${parsed.regVersion}` : `ace: ${parsed.regName}@${parsed.regVersion} already registered`);
+    for (const r of rows) console.log(`  ${r.name}@${r.version}  ${r.url}  [${r.source}]`);
     return 0;
   }
+  // sub === "add"
+  let pkgHash = parsed.regHash;
+  if (pkgHash === undefined) {
+    let raw: string;
+    try {
+      raw =
+        parsed.regUrl!.startsWith("http://") || parsed.regUrl!.startsWith("https://")
+          ? await (await fetch(parsed.regUrl!)).text()
+          : readFileSync(parsed.regUrl!, "utf8");
+    } catch (e) {
+      console.error(`ace: registry add: fetch/read failed: ${(e as Error).message}`);
+      return 1;
+    }
+    let pkg: AcePackage;
+    try {
+      pkg = JSON.parse(raw) as AcePackage;
+    } catch {
+      console.error("ace: registry add: package is not valid JSON");
+      return 65;
+    }
+    pkgHash = packageHash(pkg);
+  }
+  const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: parsed.regUrl!, package_hash: pkgHash });
+  console.log(
+    res.added
+      ? `ace: registered ${parsed.regName}@${parsed.regVersion}`
+      : `ace: ${parsed.regName}@${parsed.regVersion} already registered`,
+  );
+  return 0;
+}
 ```
 
 (d) **Wire registry into install:** change the graph-branch resolve call from

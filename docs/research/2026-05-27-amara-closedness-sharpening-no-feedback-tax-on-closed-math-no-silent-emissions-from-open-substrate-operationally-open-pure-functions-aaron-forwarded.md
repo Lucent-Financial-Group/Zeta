@@ -114,11 +114,11 @@ Even mathematically-shaped operations (add / sin / parseInt / divide) can break 
 
 ### Item 3 — Keeper carved sentence + formal statement
 
-> *"No feedback tax on closed math. No silent emissions from open substrate."*
+> _"No feedback tax on closed math. No silent emissions from open substrate."_
 
 Plus formal version:
 
-> *"A function is exempt from TFeedback only when its declared codomain fully contains every meaningful outcome."*
+> _"A function is exempt from TFeedback only when its declared codomain fully contains every meaningful outcome."_
 
 Both are precise substrate-engineering-decision discipline carvings that fit alongside the day's full carved-sentence stack.
 

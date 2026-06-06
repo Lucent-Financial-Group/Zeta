@@ -20,8 +20,8 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Operator-directed substrate-engineering target row:
 
-> *\"we can keep a reposity of them for things that change too fast
-> for homebrew and such. hermes would be a candidate\"*
+> _\"we can keep a reposity of them for things that change too fast
+> for homebrew and such. hermes would be a candidate\"_
 
 Files B-0863 for the Ace package manager one-liner `curl ... | bash`
 install repository pattern. Hermes-agent named as canonical first

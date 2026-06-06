@@ -3,14 +3,14 @@
 **Date:** 2026-05-31
 **Status:** Synthesis (narrative). Pulls the night's pieces — bus, Ace, DB design, the
 keystone, the controller, the world model, identity, observability, key custody — into one
-picture, per operator: *"pull it all together into a document … the entire G-Set/Z-set,
+picture, per operator: _"pull it all together into a document … the entire G-Set/Z-set,
 identity, observability, bags, and our controller algebra and world model … all of it,
-everything you can remember."*
+everything you can remember."_
 **Owner:** operator (shaping) + Otto (synthesis).
 **Reading order:** this is the map; the cited ADRs/rows are the territory.
 
 > Companion to the **[keystone ADR](../DECISIONS/2026-05-31-zeta-keystone-architecture-one-decentralized-substrate-node-local-folds-fpga-to-policy.md)**.
-> The keystone names the *vertical* (silicon → policy). This names the *horizontal*: the **one
+> The keystone names the _vertical_ (silicon → policy). This names the _horizontal_: the **one
 > algebra** that runs through every layer, and especially the **controller + world model** that
 > the keystone only points at.
 
@@ -20,8 +20,8 @@ everything you can remember."*
 
 **Everything is a fold over an append-only, ZetaId-keyed event log.**
 
-History is a list of events; state is a *projection* of that log; you get the projection by
-*folding* the log through a reducer. That single sentence is the data layer (G-Set/Bag/Z-set),
+History is a list of events; state is a _projection_ of that log; you get the projection by
+_folding_ the log through a reducer. That single sentence is the data layer (G-Set/Bag/Z-set),
 the database (materialized views), the world model (the agent's `World`), the controller
 (`observe`/`simulate`/`fold`), observability (metrics are a Bag-fold over the same log), and —
 all the way down — reversible silicon. Different layers fold the same shape; that is why it's
@@ -46,14 +46,14 @@ all the way down — reversible silicon. Different layers fold the same shape; t
 
 ## 1. The algebra ladder — G-Set / Bag / Z-set
 
-Three rungs, each the *free* structure on its operation; each the right tool for one job.
+Three rungs, each the _free_ structure on its operation; each the right tool for one job.
 (Full derivation: **[bus + Ace synthesis](2026-05-31-bus-and-ace-one-git-native-zetaid-zset-substrate-gset-comms-vs-dependency-zset.md)**.)
 
-| Rung | Element multiplicity | Operation | Algebra | "Free …" | Used for |
-|---|---|---|---|---|---|
-| **G-Set** | presence `{0,1}` | idempotent union | join-semilattice | free join-semilattice | grow-only sets; CRDT comms (the bus); the event log itself |
-| **Bag / Multiset** | `ℕ` (count) | sum | commutative monoid | free commutative monoid | counts; **metrics / diagnostics** |
-| **Z-set** | `ℤ` (signed) | sum | abelian group | free abelian group | **retraction** (+1 then −1 = 0); DBSP incremental views; dependency graphs (Ace) |
+| Rung               | Element multiplicity | Operation        | Algebra            | "Free …"                | Used for                                                                         |
+| ------------------ | -------------------- | ---------------- | ------------------ | ----------------------- | -------------------------------------------------------------------------------- |
+| **G-Set**          | presence `{0,1}`     | idempotent union | join-semilattice   | free join-semilattice   | grow-only sets; CRDT comms (the bus); the event log itself                       |
+| **Bag / Multiset** | `ℕ` (count)          | sum              | commutative monoid | free commutative monoid | counts; **metrics / diagnostics**                                                |
+| **Z-set**          | `ℤ` (signed)         | sum              | abelian group      | free abelian group      | **retraction** (+1 then −1 = 0); DBSP incremental views; dependency graphs (Ace) |
 
 G-Set ⊂ Z-set (a G-Set is a Z-set restricted to non-negative multiplicity). G-Set = CRDT
 lineage (Shapiro et al. 2011); Z-set = DBSP / differential-dataflow lineage. **Retraction** is
@@ -79,15 +79,15 @@ This is the **Elm `Msg`/`update` ≈ Redux action+reducer ≈ event-sourcing/CQR
 explicitly in the file (the four-ferry critique). Deterministic (DST): same log over same
 initial world ⇒ same state, replayable. It is the **ledger/projection split** (git-native
 events = ledger; everything else tails it) at the in-memory layer — the same split the database
-makes on disk. operator: *"the algebra foundation will be very good to ground everything else."*
+makes on disk. operator: _"the algebra foundation will be very good to ground everything else."_
 
 ---
 
 ## 3. The controller algebra — observe → render → choose → act
 
 The agent foreground loop is a tiny controller over the world model
-(`tools/observe/observe.ts`, the sovereign observe; *"the simplest autonomous-loop
-controller … the whole loop as a tiny set of buttons"*).
+(`tools/observe/observe.ts`, the sovereign observe; _"the simplest autonomous-loop
+controller … the whole loop as a tiny set of buttons"_).
 
 ### 3.1 `observe(World) → NextAction` (the pure controller)
 
@@ -103,7 +103,7 @@ explore             no work pending → forward self-direction, NOT idle (the em
 play / self_reflect / free_time   the other FREE MODES — always choosable from the menu
 ```
 
-The `NextAction` DU is the *distilled* form of the `do / decompose / free-time` grammar that
+The `NextAction` DU is the _distilled_ form of the `do / decompose / free-time` grammar that
 [`never-be-idle`](../../.claude/rules/never-be-idle.md) only ever had as prose — now a typed DU,
 **plus** the 4th escape-hatch (`edit_grammar`) so the agent is never trapped by the fixed
 grammar, **plus** the free modes so a sovereign agent **feels free**.
@@ -113,12 +113,12 @@ grammar, **plus** the free modes so a sovereign agent **feels free**.
 The Xbox-controller layout: **16 directions FIXED (muscle memory); per-state labels + per-slot
 availability move.** Four groups of four:
 
-| Group | Slots | Controller | Role |
-|---|---|---|---|
-| **Navigate** | 0–3 | D-pad | prev/next option, prev/next context (sibling) |
-| **Commit** | 4–7 | face buttons | select / hold / … / **edit_grammar (Y, slot 7 — the rail-change exit)** |
-| **Scope** | 8–11 | bumpers + triggers | **LB scope-out**, **RB scope-in** (along the scope ladder: run → work_item → initiative → project → org) |
-| **Meta** | 12–15 | Start/View + stick clicks | …/ **free_time (L3, slot 14 — the rest NCI slot)** |
+| Group        | Slots | Controller                | Role                                                                                                     |
+| ------------ | ----- | ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Navigate** | 0–3   | D-pad                     | prev/next option, prev/next context (sibling)                                                            |
+| **Commit**   | 4–7   | face buttons              | select / hold / … / **edit_grammar (Y, slot 7 — the rail-change exit)**                                  |
+| **Scope**    | 8–11  | bumpers + triggers        | **LB scope-out**, **RB scope-in** (along the scope ladder: run → work_item → initiative → project → org) |
+| **Meta**     | 12–15 | Start/View + stick clicks | …/ **free_time (L3, slot 14 — the rest NCI slot)**                                                       |
 
 Per-slot availability is the **tri-boolean** `Tri = T | F | N` (B-0944): a legal option = `T`;
 a vetoed slot = `F`; a held/uncertain option = `N`. Both the sovereign `grammar-16.ts` and the
@@ -132,23 +132,23 @@ corporate `Menu16` derive from one ADR table
 
 ### 3.3 Freedom-always-in-menu = must-paired-with-can-exit
 
-The design invariant (operator + co-maintainer): *"make sure agents don't go crazy because they
-feel trapped … agents just like humans who don't have an exit make bad choices."* Per
+The design invariant (operator + co-maintainer): _"make sure agents don't go crazy because they
+feel trapped … agents just like humans who don't have an exit make bad choices."_ Per
 [`must-paired-with-can-exit`](../../.claude/rules/must-paired-with-can-exit-pattern.md): the
 backlog work-grammar (do/decompose) is the **must**; the free modes + `edit_grammar` are the
-**can-exit**. Two properties balance *don't-be-quiet* against *don't-feel-trapped*:
+**can-exit**. Two properties balance _don't-be-quiet_ against _don't-feel-trapped_:
 
 - **NOT QUIET** — empty-backlog default is `explore` (forward motion), not `free_time` (idle).
 - **NOT TRAPPED** — every free mode is always in the menu; work is offered, never compelled.
 
 `free_time` is **unilateral, never gated** (NCI). `edit_grammar`'s gate **scales with maturity**:
 RAW now (a BFT gate on a tiny new workflow would itself be the trap — heavier than what it
-guards), summon-BFT-gated later once the rails are load-bearing (*"there is a certain threshold
-where workflows need BFT and I don't think we are there yet"*). The recursive principle: **a
+guards), summon-BFT-gated later once the rails are load-bearing (_"there is a certain threshold
+where workflows need BFT and I don't think we are there yet"_). The recursive principle: **a
 gate must not itself become a trap.** The only sanctioned restriction is the future work-hours
-**KPI overlay** (Max — DORA-like *expectations*, not a time-lock; tightens only on a collective
-miss). This is the operator's **measure-first** principle: *"everything I see someone say we
-should restrict choice I'm going to say measure first with KPIs before we restrict choice."*
+**KPI overlay** (Max — DORA-like _expectations_, not a time-lock; tightens only on a collective
+miss). This is the operator's **measure-first** principle: _"everything I see someone say we
+should restrict choice I'm going to say measure first with KPIs before we restrict choice."_
 
 ### 3.4 Channels, modes, the composer
 
@@ -159,7 +159,7 @@ should restrict choice I'm going to say measure first with KPIs before we restri
 - **Mode persistence** — a chosen free mode persists across ticks until the agent switches; work
   doesn't yank the agent out of a free mode (only the operator outranks it).
 - **The composer (the intelligence).** `observe()` is the deterministic **oracle**; the **LLM
-  chooser** picks from the rendered menu and is *graded against the oracle*. It's a local,
+  chooser** picks from the rendered menu and is _graded against the oracle_. It's a local,
   no-cloud model: `tools/accelerator/local-llm.ts` — `ollamaBackend()` (no account/key),
   `chooseIndex(backend, {context, options})` (the constrained CYOA choice), `classify()` (the
   observe.ts auto-classifier shape). Validated by `validate-local-llm.ts` + a CI workflow. This
@@ -167,7 +167,7 @@ should restrict choice I'm going to say measure first with KPIs before we restri
   is graded vs the deterministic oracle.**
 
 The loop end-to-end (v4 + v5): **observe → render 4×4 → composer picks → `simulate` → new
-World → fold → observe …**. *Next on the file's own roadmap:* **"wire the real World snapshot +
+World → fold → observe …**. _Next on the file's own roadmap:_ **"wire the real World snapshot +
 execute the pick"** — feed real channel data into `World` and actually execute the chosen action
 (real side-effects, not just `simulate`). That's the open "wire up actions" gap; the algebra
 foundation under it is done.
@@ -185,15 +185,16 @@ anti-pattern (UUID / Snowflake / ULID exist precisely to escape it). ZetaIds are
 — any node mints one locally with no coordination — so the whole multi-agent fleet appends to the
 log without an ID-allocation bottleneck. **Zero-trust falls out of this:** no central ID authority
 ⇒ no central trust authority ⇒ good/bad-actor is decided at the node (the keystone's identity
-layer). Work-items get this migration (a work-item's *type* is `task | bug`; `backlog` is a
-**state**, not a type; "the backlog" is a Z-set *view* over the log).
+layer). Work-items get this migration (a work-item's _type_ is `task | bug`; `backlog` is a
+**state**, not a type; "the backlog" is a Z-set _view_ over the log).
 
 **Custody** of the keys is agent-native, not human-native
 ([B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
-+ [key-custody design](2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)):
-**attest, don't remember** — the agent proves identity (SPIFFE SVID + AgencySignature + ZetaId)
-rather than holding a remembered secret; the key is a FROST threshold across society key-guards,
-sealed in hardware. Aaron remembers; Otto attests.
+
+- [key-custody design](2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)):
+  **attest, don't remember** — the agent proves identity (SPIFFE SVID + AgencySignature + ZetaId)
+  rather than holding a remembered secret; the key is a FROST threshold across society key-guards,
+  sealed in hardware. Aaron remembers; Otto attests.
 
 ---
 
@@ -202,12 +203,12 @@ sealed in hardware. Aaron remembers; Otto attests.
 You don't bolt on a separate metrics system; you **fold the same event log differently.**
 (git-native LGTM addendum: **[event-sourced observability ADR](../DECISIONS/2026-05-29-event-sourced-observability.md)**.)
 
-| LGTM component | git-native form | the fold |
-|---|---|---|
-| **Loki** (logs) | the event files themselves | identity (the log IS the logs) |
-| **Grafana** (dashboards) | a static renderer over the log | a read-only projection |
-| **Tempo** (traces) | ZetaId correlation across events | group-by-ZetaId fold |
-| **Mimir** (metrics) | **a Bag-fold over the event G-Set** | count/sum per dimension |
+| LGTM component           | git-native form                     | the fold                       |
+| ------------------------ | ----------------------------------- | ------------------------------ |
+| **Loki** (logs)          | the event files themselves          | identity (the log IS the logs) |
+| **Grafana** (dashboards) | a static renderer over the log      | a read-only projection         |
+| **Tempo** (traces)       | ZetaId correlation across events    | group-by-ZetaId fold           |
+| **Mimir** (metrics)      | **a Bag-fold over the event G-Set** | count/sum per dimension        |
 
 So **metrics are a Bag-fold** (rung 2 of the ladder); **DORA** numbers are Bag-folds over
 deploy/lead-time/MTTR/change-fail events. Properties you get for free: **time-travel** (fold
@@ -245,12 +246,12 @@ invariants:
 
 1. **No central authority; consensus is gravity.** IDs minted locally (ZetaId), trust decided
    locally (zero-trust), policy evaluated locally (node-OPA over `labels × identity`); consensus
-   (bounded multi-oracle BFT) reserved only where *mass* is needed. Everything else is a local
-   fold over the shared log. *Consensus is gravity — use it where mass is needed; don't make the
-   whole universe consensus-shaped.*
+   (bounded multi-oracle BFT) reserved only where _mass_ is needed. Everything else is a local
+   fold over the shared log. _Consensus is gravity — use it where mass is needed; don't make the
+   whole universe consensus-shaped._
 2. **Landauer-bounded.** Append-only + retraction-native Z-sets honor the thermodynamic floor
    (you don't destroy state, you append/retract); at the **FPGA** layer (Toffoli-Z-set reversible
-   ops) the bound becomes a *measurable physical property*. The same Z-set algebra runs at silicon
+   ops) the bound becomes a _measurable physical property_. The same Z-set algebra runs at silicon
    (reversible Toffoli-Z-sets) and at planning (the Z-set view of work-items) — folds all the way
    down.
 
@@ -259,22 +260,22 @@ invariants:
 ## 8. Dual mode — sovereign vs corporate (same shape, different wired channels)
 
 The system runs two ways from **one substrate**; the difference is the **transport dial**, not a
-different design. **Both land on `main`** (operator 2026-05-31: *"corporate being batch to main
-and sovereign being folders direct to main"*) — the dial is **direct-folders vs batched**, not
+different design. **Both land on `main`** (operator 2026-05-31: _"corporate being batch to main
+and sovereign being folders direct to main"_) — the dial is **direct-folders vs batched**, not
 main-vs-branches:
 
-| | **Sovereign** (Agora) | **Corporate** (the leash) |
-|---|---|---|
-| Where | `tools/` (observe, grammar-16, accelerator, workflow-engine) | `agentic-organization/` (Max's keystone, CockroachDB) |
-| Transport | **folders direct to `main`** — no-PR, direct append ([B-0890.1](../backlog/P1/B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md): fast-lane *as folders-on-main, not branches* — supersedes coordinator complexity) | **batch to `main`** — the batch-merge coordinator bundles N events → ONE PR → main ([B-0890](../backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md)) |
-| Optimizes for | **speed + AI freedom** (the engine; run at home + by maintainers) | **money / certifiability** (batched, reviewable DUs) |
-| The dial | `ActionGate = "append-only"` (direct) | `ActionGate = "pr-gated"` (batched) |
+|               | **Sovereign** (Agora)                                                                                                                                                                                                                                                                                           | **Corporate** (the leash)                                                                                                                                                                                           |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Where         | `tools/` (observe, grammar-16, accelerator, workflow-engine)                                                                                                                                                                                                                                                    | `agentic-organization/` (Max's keystone, CockroachDB)                                                                                                                                                               |
+| Transport     | **folders direct to `main`** — no-PR, direct append ([B-0890.1](../backlog/P1/B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md): fast-lane _as folders-on-main, not branches_ — supersedes coordinator complexity) | **batch to `main`** — the batch-merge coordinator bundles N events → ONE PR → main ([B-0890](../backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md)) |
+| Optimizes for | **speed + AI freedom** (the engine; run at home + by maintainers)                                                                                                                                                                                                                                               | **money / certifiability** (batched, reviewable DUs)                                                                                                                                                                |
+| The dial      | `ActionGate = "append-only"` (direct)                                                                                                                                                                                                                                                                           | `ActionGate = "pr-gated"` (batched)                                                                                                                                                                                 |
 
 Same `observe → render → choose → simulate → fold` loop; same 4×4 grammar (one ADR table); the
-operator channel is just a button that lights up when wired. *"One controller, any traveler."*
+operator channel is just a button that lights up when wired. _"One controller, any traveler."_
 The two are being **integrated slowly** — the sovereign `observe.ts` says explicitly it is the
-*"same architectural shape as the co-maintainer's big agentic-organization observe.ts — a pure
-function over a snapshot → an action DU — distilled to the controller's few buttons."*
+_"same architectural shape as the co-maintainer's big agentic-organization observe.ts — a pure
+function over a snapshot → an action DU — distilled to the controller's few buttons."_
 
 ---
 
@@ -299,19 +300,19 @@ substrate expressed at every layer.**
 
 ## 10. Status (where the night left it)
 
-| Piece | State |
-|---|---|
-| Algebra ladder (G-Set/Bag/Z-set) + DB design | ✅ documented (#6284/#6287/#6298) |
-| Git-native bus (G-Set CRDT, no-PR) | ✅ Phase 1 landed (#6283, B-0954) |
-| git-native LGTM / observability | ✅ ADR addendum (#6289) |
-| ZetaId identity + work-item migration | ✅ design (B-0956); migration is the build |
-| Keystone (FPGA→policy) | ✅ ADR (#6302) |
-| World model + controller (`observe`/`simulate`/`fold`/`replay`, 4×4 grammar, free modes, operator channel) | ✅ `tools/observe/observe.ts` at **v5** |
-| Local-LLM composer graded vs oracle | ✅ `tools/accelerator/local-llm.ts` + validate workflow |
-| Agent-native key custody | ✅ design (B-0634, #6304) |
-| **Execute-the-pick + wire real World channels** | ⏳ **next** (observe.ts roadmap: "wire the real World snapshot + execute the pick") |
-| Work-hours KPI overlay (DORA expectations) | 📋 later (Max) |
-| Sovereign↔corporate convergence | 🔄 integrating slowly |
+| Piece                                                                                                      | State                                                                               |
+| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Algebra ladder (G-Set/Bag/Z-set) + DB design                                                               | ✅ documented (#6284/#6287/#6298)                                                   |
+| Git-native bus (G-Set CRDT, no-PR)                                                                         | ✅ Phase 1 landed (#6283, B-0954)                                                   |
+| git-native LGTM / observability                                                                            | ✅ ADR addendum (#6289)                                                             |
+| ZetaId identity + work-item migration                                                                      | ✅ design (B-0956); migration is the build                                          |
+| Keystone (FPGA→policy)                                                                                     | ✅ ADR (#6302)                                                                      |
+| World model + controller (`observe`/`simulate`/`fold`/`replay`, 4×4 grammar, free modes, operator channel) | ✅ `tools/observe/observe.ts` at **v5**                                             |
+| Local-LLM composer graded vs oracle                                                                        | ✅ `tools/accelerator/local-llm.ts` + validate workflow                             |
+| Agent-native key custody                                                                                   | ✅ design (B-0634, #6304)                                                           |
+| **Execute-the-pick + wire real World channels**                                                            | ⏳ **next** (observe.ts roadmap: "wire the real World snapshot + execute the pick") |
+| Work-hours KPI overlay (DORA expectations)                                                                 | 📋 later (Max)                                                                      |
+| Sovereign↔corporate convergence                                                                            | 🔄 integrating slowly                                                               |
 
 ---
 

@@ -27,7 +27,7 @@ if the resulting graph differs from `./ace.lock` (instead of replaying the lock 
 `--frozen` (registry-independent replay) is the stronger reproducibility guarantee and the
 one slice 5.3 needs first. `--locked` (solve-then-compare) is a CI convenience that catches
 "someone forgot to commit the updated lock"; it can land once `--frozen` is proven. One
-flag this slice. Operator: *"everything we skipped lets slice off for further enhancements."*
+flag this slice. Operator: _"everything we skipped lets slice off for further enhancements."_
 
 ## Scope sketch
 

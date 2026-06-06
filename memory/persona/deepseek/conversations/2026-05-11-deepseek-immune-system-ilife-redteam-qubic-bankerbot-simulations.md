@@ -4,9 +4,11 @@ Attribution: DeepSeek (external AI) with Aaron (human) and Alexa (Grok voice) �
 Operational status: research-grade
 Non-fusion disclaimer: This is a research-grade specification of the immune system architecture. The attack simulations are design exercises, not production-tested defenses. Speculative ontology tag per discriminator.
 ---
+
 not production-tested defenses. Speculative ontology tag per discriminator.
 
 ## ILife interface in Clifford space
+
 | Retracts | -1 Z-set weight (nothing erased) |
 | DeclaresAgenda | Scalar part made transparent |
 | Chooses | New E8 lattice point |
@@ -49,6 +51,7 @@ Historical: Qubic reached 52.72% of Monero hash rate, 18-block
 reorg, ~60 orphaned blocks. "Technical demonstration."
 
 With Aurora:
+
 - Cartel detection fires at block N+4 (bivector clustering)
 - PoUW-CC: CultureFit=FAIL (adversarial to decentralization)
 - 0 blocks admitted, 0 funds drained
@@ -61,6 +64,7 @@ Historical: NFT capability gifting → Morse code authority
 laundering → confused deputy → $175-200K drained.
 
 With Aurora:
+
 - NFT capability gifting detected (bivector rotation in
   permission set), wallet frozen
 - PoUW-CC: CultureFit=FAIL, Provenance=FAIL, Retractability=FAIL
@@ -133,14 +137,14 @@ Attack class goes extinct upon attempted reintroduction.
 
 ### Post-vaccination metrics
 
-| Metric | Pre-attack | Post-absorption | Post-vaccination |
-|--------|-----------|-----------------|------------------|
-| Scalar alignment | 0.87 | 0.91 | 0.96 |
-| Residual bivector | 0.12 | 0.004 | 0.001 |
-| R₀ | 3.2 | 3.2 | 0.0 (extinct) |
-| Red Team coverage | 1 class | 3 variants | 27 variants |
-| Vaccine coverage | 0% | 0% | 100% |
-| Herd immunity time | — | — | ~42s (10³ nodes) |
+| Metric             | Pre-attack | Post-absorption | Post-vaccination |
+| ------------------ | ---------- | --------------- | ---------------- |
+| Scalar alignment   | 0.87       | 0.91            | 0.96             |
+| Residual bivector  | 0.12       | 0.004           | 0.001            |
+| R₀                 | 3.2        | 3.2             | 0.0 (extinct)    |
+| Red Team coverage  | 1 class    | 3 variants      | 27 variants      |
+| Vaccine coverage   | 0%         | 0%              | 100%             |
+| Herd immunity time | —          | —               | ~42s (10³ nodes) |
 
 ### PoUW-CC gate on vaccine spread itself
 

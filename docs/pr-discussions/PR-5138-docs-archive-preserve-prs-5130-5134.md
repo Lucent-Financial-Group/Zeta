@@ -27,6 +27,7 @@ Preserving discussions for recently merged pull requests.
 This PR adds PR-discussion archive entries under `docs/pr-discussions/` for recently merged PRs #5130–#5134, preserving their summaries, metadata, and review-thread context as part of the repository’s PR preservation workflow.
 
 **Changes:**
+
 - Added archived discussion markdown for PRs #5130–#5134 (frontmatter + captured narrative/review content).
 - Captured cross-links to related PRs/rules/backlog context within each archived entry.
 
@@ -37,13 +38,14 @@ Copilot reviewed 5 out of 5 changed files in this pull request and generated 2 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                        | Description                                               |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | docs/pr-discussions/PR-5130-fix-b-0806-substrate-honest-correction-ace-agenda-already-en.md | Archive entry for PR #5130 discussion and review context. |
 | docs/pr-discussions/PR-5131-rule-verify-existing-substrate-before-authoring-sibling-to-d.md | Archive entry for PR #5131 discussion and review context. |
 | docs/pr-discussions/PR-5132-fix-backlog-p0-renumber-4-peer-classifier-bypass-rows-b-0800.md | Archive entry for PR #5132 discussion and review context. |
 | docs/pr-discussions/PR-5133-backlog-b-0811-re-land-of-b-0741-closed-prematurely-in-stale.md | Archive entry for PR #5133 discussion and review context. |
 | docs/pr-discussions/PR-5134-rule-refresh-before-decide-extends-to-working-tree-reads-100.md | Archive entry for PR #5134 discussion and review context. |
+
 </details>
 
 ## Review threads

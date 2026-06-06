@@ -56,12 +56,17 @@ function gateOf(r: { ok: true } | { ok: false; reason: string }): string {
 
 const out: Record<string, { ok: boolean; gate: string }> = {};
 let mismatches = 0;
-const fail = (msg: string): void => { mismatches++; console.error(msg); };
+const fail = (msg: string): void => {
+  mismatches++;
+  console.error(msg);
+};
 
 for (const c of vec.cases) {
   const cacheMeta: CacheMeta = {
-    url: c.remote.url, sequence_high_water: c.cache_sequence_high_water,
-    index_content_hash: "", fetched_at: "",
+    url: c.remote.url,
+    sequence_high_water: c.cache_sequence_high_water,
+    index_content_hash: "",
+    fetched_at: "",
   };
   const trustStore = new Map<string, TrustEntry>(Object.entries(c.trust));
   const opts: VerifyOpts = { offline: c.offline };

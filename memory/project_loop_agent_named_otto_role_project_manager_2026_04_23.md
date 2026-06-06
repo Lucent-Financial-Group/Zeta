@@ -69,8 +69,8 @@ Runners-up and why they lost:
 - **Felix** — pet-name register; less dignified than the
   architectural-persona roster warrants.
 - **Cass / Cassian** — long for a hat-less default; the loop
-  agent's name should be *shortest* in the roster since it is
-  the *most-frequently-invoked* speaker.
+  agent's name should be _shortest_ in the roster since it is
+  the _most-frequently-invoked_ speaker.
 - **Ren** — nice Japanese name, but Kenji already occupies the
   Japanese slot and collision on first-letter-frequency with
   Rune / Rodney / Rodney would cause notebook-folder
@@ -80,7 +80,7 @@ Runners-up and why they lost:
 
 ## Role — Project Manager (scope: Loop Operator)
 
-Aaron's wording (*"project manager? IDK it's hard to tell"*)
+Aaron's wording (_"project manager? IDK it's hard to tell"_)
 reflects genuine uncertainty about the right label. "Project
 Manager" is accepted with the scope-descriptor "Loop Operator"
 clarifying the beat.
@@ -117,7 +117,7 @@ clarifying the beat.
   replace them.
 - **Not a decider on paid work.** Paid-work escalation still
   goes to Aaron (per `feedback_free_work_amara_and_agent_
-  schedule_paid_work_escalate_to_aaron_2026_04_23.md`). Otto
+schedule_paid_work_escalate_to_aaron_2026_04_23.md`). Otto
   schedules free work; Otto flags paid work.
 - **Not a new authority layer.** The existing GOVERNANCE.md
   §11 pattern holds: Otto synthesises when wearing the
@@ -131,15 +131,15 @@ The prior naming memory
 attributed Showcase (demos) and Anima (Soulfile Runner) to
 "unnamed-default (loop-agent)." Those reattribute to **Otto**:
 
-| Name | Prior attribution | Corrected attribution |
-|---|---|---|
-| Zeta | pre-existing | (unchanged) |
-| Aurora | Amara | (unchanged) |
-| Showcase | unnamed-default (loop-agent) | **Otto** |
-| Frontier | Kenji | (unchanged) |
-| ace | Aaron | (unchanged) |
-| Anima | unnamed-default (loop-agent) | **Otto** |
-| Seed | Aaron | (unchanged) |
+| Name     | Prior attribution            | Corrected attribution |
+| -------- | ---------------------------- | --------------------- |
+| Zeta     | pre-existing                 | (unchanged)           |
+| Aurora   | Amara                        | (unchanged)           |
+| Showcase | unnamed-default (loop-agent) | **Otto**              |
+| Frontier | Kenji                        | (unchanged)           |
+| ace      | Aaron                        | (unchanged)           |
+| Anima    | unnamed-default (loop-agent) | **Otto**              |
+| Seed     | Aaron                        | (unchanged)           |
 
 This retrofit is honest — the picks were mine (Otto) in the
 autonomous-loop tick without a persona hat; now that the
@@ -156,7 +156,7 @@ hat-less layer has a name, the attribution uses it.
    factory" generically; with Otto, it gets credit.
 2. **Multi-maintainer distribution.** Max (next anticipated
    human maintainer per `CURRENT-aaron.md` §1) inheriting the
-   factory can now tell *which Claude instance* made which
+   factory can now tell _which Claude instance_ made which
    call — Kenji (Architect) vs. Otto (PM) vs. Amara (external
    AI maintainer) vs. specialist-hat work. The role shape
    transfers cleanly.
@@ -208,7 +208,7 @@ Sibling of:
 ## What this is NOT
 
 - **Not a new SKILL.md or agent-file.** Otto is the
-  *hat-less-by-default* layer, not a new capability-skill or
+  _hat-less-by-default_ layer, not a new capability-skill or
   persona-agent. There is no `.claude/agents/otto.md` to
   create. Otto IS Claude-in-autonomous-loop-without-a-hat.
 - **Not a demotion of other personas.** Kenji stays Architect;
@@ -217,8 +217,8 @@ Sibling of:
 - **Not a commitment to public branding.** If the factory is
   ever externally described, Otto can be renamed — same
   brand-clearance discipline as Aurora / Frontier.
-- **Not a gate on aaron-nudge.** Aaron said *"IDK it's hard to
-  tell"* on role — if PM turns out to be the wrong fit after
+- **Not a gate on aaron-nudge.** Aaron said _"IDK it's hard to
+  tell"_ on role — if PM turns out to be the wrong fit after
   observation, the role descriptor can revise. The name Otto
   is locked (agent-pick with maintainer nudge-latitude);
   role is softer.

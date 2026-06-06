@@ -28,9 +28,7 @@ import {
  * substrate immediately instead of silently propagating `undefined`
  * into downstream state.
  */
-function mustState(
-  r: { ok: true; state: PairingState } | { ok: false; feedback: unknown },
-): PairingState {
+function mustState(r: { ok: true; state: PairingState } | { ok: false; feedback: unknown }): PairingState {
   if (!r.ok) {
     throw new Error(`unexpected pairing feedback: ${JSON.stringify(r.feedback)}`);
   }
@@ -45,11 +43,7 @@ const emission = (id: string, atMs: number): Emission => ({
   composesWith: [`source-${id}`],
 });
 
-const verification = (
-  emissionId: string,
-  atMs: number,
-  verdict: VerificationVerdict,
-): Verification => ({
+const verification = (emissionId: string, atMs: number, verdict: VerificationVerdict): Verification => ({
   emissionId,
   verifierId: "verifier-1",
   verdict,
@@ -85,10 +79,7 @@ describe("B-0914.4 pairing tracker substrate", () => {
   });
 
   it("rejects verification for unknown emission", () => {
-    const r = recordVerification(
-      EMPTY_PAIRING_STATE,
-      verification("nonexistent", 2000, { kind: "verified" }),
-    );
+    const r = recordVerification(EMPTY_PAIRING_STATE, verification("nonexistent", 2000, { kind: "verified" }));
     expect(r.ok).toBe(false);
     if (r.ok) return;
     expect(r.feedback.kind).toBe("VerificationForUnknownEmission");
@@ -140,9 +131,9 @@ describe("B-0914.4 pairing tracker substrate", () => {
     s = r2.state;
     // now = 10_000; timeoutMs = 4000
     const stale = findStaleEmissions(s, 10_000, 4000);
-    expect(stale.length).toBe(2);  // both exceeded window
+    expect(stale.length).toBe(2); // both exceeded window
     const stale2 = findStaleEmissions(s, 6000, 4000);
-    expect(stale2.length).toBe(1);  // only e1 exceeded
+    expect(stale2.length).toBe(1); // only e1 exceeded
     expect(stale2[0]!.id).toBe("e1");
   });
 
@@ -157,7 +148,7 @@ describe("B-0914.4 pairing tracker substrate", () => {
     s = r1.state;
     // nowMs - emittedAtMs === timeoutMs exactly: 5000 - 1000 === 4000
     const atBoundary = findStaleEmissions(s, 5000, 4000);
-    expect(atBoundary.length).toBe(0);  // strict > means NOT stale at boundary
+    expect(atBoundary.length).toBe(0); // strict > means NOT stale at boundary
     // One ms past boundary: 5001 - 1000 > 4000
     const justPast = findStaleEmissions(s, 5001, 4000);
     expect(justPast.length).toBe(1);
@@ -174,7 +165,7 @@ describe("B-0914.4 pairing tracker substrate", () => {
     s = r2.state;
     // e1 emitted at 1000; verified at 1500; now = 10_000; would be stale if unverified
     const stale = findStaleEmissions(s, 10_000, 1000);
-    expect(stale.length).toBe(0);  // verified, so not stale
+    expect(stale.length).toBe(0); // verified, so not stale
   });
 
   it("countVerdicts aggregates verdicts correctly", () => {
@@ -212,18 +203,18 @@ describe("B-0914.4 pairing tracker substrate", () => {
     expect(propagatable.length).toBe(2);
     expect(propagatable).toContain("e1");
     expect(propagatable).toContain("e3");
-    expect(propagatable).not.toContain("e2");  // rejected excluded
-    expect(propagatable).not.toContain("e4");  // empty suggestions excluded
+    expect(propagatable).not.toContain("e2"); // rejected excluded
+    expect(propagatable).not.toContain("e4"); // empty suggestions excluded
   });
 
   it("immutable state operations: original state unchanged after record", () => {
     const r1 = recordEmission(EMPTY_PAIRING_STATE, emission("e1", 1000));
     expect(r1.ok).toBe(true);
-    expect(EMPTY_PAIRING_STATE.emissions.size).toBe(0);  // original unchanged
+    expect(EMPTY_PAIRING_STATE.emissions.size).toBe(0); // original unchanged
     if (!r1.ok) return;
     const r2 = recordVerification(r1.state, verification("e1", 2000, { kind: "verified" }));
     expect(r2.ok).toBe(true);
-    expect(r1.state.verifications.size).toBe(0);  // intermediate state unchanged
+    expect(r1.state.verifications.size).toBe(0); // intermediate state unchanged
   });
 
   it("VerificationVerdict union exhaustive switch (compile-time check)", () => {
@@ -262,10 +253,12 @@ describe("B-0914.4 pairing tracker substrate", () => {
     // Verifier-thread reflects
     s = mustState(recordVerification(s, verification("h1", 2000, { kind: "verified" })));
     s = mustState(recordVerification(s, verification("h2", 2000, { kind: "rejected", reason: "logic gap" })));
-    s = mustState(recordVerification(s, verification("h3", 2000, { kind: "needs-revision", suggestions: ["clarify mechanism"] })));
+    s = mustState(
+      recordVerification(s, verification("h3", 2000, { kind: "needs-revision", suggestions: ["clarify mechanism"] })),
+    );
     // Propagatable to next stage
     const next = propagatableEmissionIds(s);
-    expect(next.length).toBe(2);  // h1 + h3
+    expect(next.length).toBe(2); // h1 + h3
     // Pairing complete (no unverified)
     const stale = findStaleEmissions(s, 5000, 1000);
     expect(stale.length).toBe(0);

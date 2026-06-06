@@ -4,13 +4,12 @@ about: An agent needs the human maintainer's sign-off before proceeding
 title: "[human-ask] "
 labels: human-ask
 assignees: AceHack
-
 ---
 
-*This template is primarily for **AI agents** surfacing
+_This template is primarily for **AI agents** surfacing
 decisions that need the human maintainer's sign-off.
 Humans filing a human-ask are welcome — use this same
-shape.*
+shape._
 
 ## What I'm asking
 
@@ -25,8 +24,7 @@ a few words.
       tradeoff
 - [ ] **tech-adoption** — new library / language / tooling
       (ADR-worthy)
-- [ ] **naming** — public surface needing `naming-expert`
-      + Ilyana sign-off
+- [ ] **naming** — public surface needing `naming-expert` + Ilyana sign-off
 - [ ] **architectural** — load-bearing design cleave
 - [ ] **research-direction** — paper-grade commitment
 - [ ] **ethical** — consent / alignment / trust-
@@ -52,7 +50,7 @@ space.
 ## Cost of delay
 
 What's blocked while this is open, and how soon that
-matters. *"Nothing blocked; just want your call"* is a
+matters. _"Nothing blocked; just want your call"_ is a
 legitimate answer.
 
 ---
@@ -65,13 +63,13 @@ legitimate answer.
 
 ---
 
-*If Aaron's answer resolves this, the agent who landed
+_If Aaron's answer resolves this, the agent who landed
 the decision will close this issue with a one-line summary
-and a link to the commit.*
+and a link to the commit._
 
-*Dual-track: every human-ask also lives as a row in
+_Dual-track: every human-ask also lives as a row in
 `docs/HUMAN-BACKLOG.md` so the git history preserves the
 decision even if the GH Issue is later archived. The
 mirror row is the agent's responsibility, not yours.
 Full protocol:
-[`docs/AGENT-ISSUE-WORKFLOW.md`](../../docs/AGENT-ISSUE-WORKFLOW.md).*
+[`docs/AGENT-ISSUE-WORKFLOW.md`](../../docs/AGENT-ISSUE-WORKFLOW.md)._

@@ -20,9 +20,10 @@ describe("cockroach work schedule block authority reader", () => {
       evaluatedAt: "2026-05-29T16:00:00.000Z",
     });
 
-    deepEqual(executor.statements.map((statement) => statement.name), [
-      CockroachWorkScheduleBlockAuthorityReaderStatement.FindAuthorizingScheduleBlocks,
-    ]);
+    deepEqual(
+      executor.statements.map((statement) => statement.name),
+      [CockroachWorkScheduleBlockAuthorityReaderStatement.FindAuthorizingScheduleBlocks],
+    );
     deepEqual(executor.statements[0]?.parameters, [
       "agent-dev-001",
       "hat-assignment-dev-001",

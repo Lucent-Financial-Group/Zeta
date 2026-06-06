@@ -3,8 +3,8 @@
 **Load-bearing factory discipline.** Codifies how Zeta
 stays in operational resonance once past bootstrap.
 
-> *Achieving resonance = bootstrap (past).*
-> *Stabilizing the resonance = balance (ongoing).*
+> _Achieving resonance = bootstrap (past)._
+> _Stabilizing the resonance = balance (ongoing)._
 
 ## Scope
 
@@ -77,14 +77,14 @@ is costly.
 
 ## Picking the right variant
 
-| Cost of one miss | Prevention cost | Recommended |
-|---|---|---|
-| Low | Low | A (rule) |
-| Low | High | B (cadenced audit) |
-| High (data loss / security breach) | Low | C (both) |
-| High | High | C (both; accept imperfect prevention, robust audit) |
-| Medium | Low | A, escalate to C if breached |
-| Medium | Medium | B, escalate to C if breached |
+| Cost of one miss                   | Prevention cost | Recommended                                         |
+| ---------------------------------- | --------------- | --------------------------------------------------- |
+| Low                                | Low             | A (rule)                                            |
+| Low                                | High            | B (cadenced audit)                                  |
+| High (data loss / security breach) | Low             | C (both)                                            |
+| High                               | High            | C (both; accept imperfect prevention, robust audit) |
+| Medium                             | Low             | A, escalate to C if breached                        |
+| Medium                             | Medium          | B, escalate to C if breached                        |
 
 **Default**: Variant A (rule-level counterweight is
 cheapest). Observe if it holds. Escalate to B or C
@@ -116,17 +116,17 @@ counterweight compounds into systemic instability.
 Tempting shortcuts and why each is worse than no
 counterweight at all:
 
-| Shortcut | Why worse |
-|---|---|
-| Vague rule ("be careful with X") | Not enforceable; creates false security |
-| Wrong-scope counter (rule when tool needed) | Drift continues past rule; file tool instead |
+| Shortcut                                      | Why worse                                        |
+| --------------------------------------------- | ------------------------------------------------ |
+| Vague rule ("be careful with X")              | Not enforceable; creates false security          |
+| Wrong-scope counter (rule when tool needed)   | Drift continues past rule; file tool instead     |
 | One-off workaround ("mask this one instance") | Original class still active; file structural fix |
-| Not composed with prior counters | Conflicts / redundancy / noise |
-| Filed late (out-of-phase) | Amplifies instead of dampens |
-| No maintenance plan | Rule bit-rots into drift itself |
-| Unclear trigger condition | Can't tell when it applies |
-| No failure mode defined | Can't detect when counter is bypassed |
-| "Good enough for this week" | Compounds over weeks |
+| Not composed with prior counters              | Conflicts / redundancy / noise                   |
+| Filed late (out-of-phase)                     | Amplifies instead of dampens                     |
+| No maintenance plan                           | Rule bit-rots into drift itself                  |
+| Unclear trigger condition                     | Can't tell when it applies                       |
+| No failure mode defined                       | Can't detect when counter is bypassed            |
+| "Good enough for this week"                   | Compounds over weeks                             |
 
 The right long-term thing is always preferred, even
 if more expensive in the moment. Counterweight

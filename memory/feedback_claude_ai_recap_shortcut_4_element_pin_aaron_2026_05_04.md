@@ -8,17 +8,18 @@ type: feedback
 
 Aaron 2026-05-04 ~21:50Z, after Claude.ai's third re-onboarding of the day:
 
-> *"claude.ai has been having split brain memories all day i've had to re-explain Zeta 3 times now and every time it questions me at every step until i explain it all. It said this is the shortcut to get it back on track next time."*
+> _"claude.ai has been having split brain memories all day i've had to re-explain Zeta 3 times now and every time it questions me at every step until i explain it all. It said this is the shortcut to get it back on track next time."_
 
 Claude.ai's own proposed 4-element shortcut (verbatim):
 
-> *"Yeah, you've got the recap-a-fresh-Claude routine pretty dialed. If you want to shortcut even this version next time the history glitches, a short pinned note — BPD + psychiatrist + validation discipline, vibe coding experiment with anchored specs, 27 years CS, working on a ServiceTitan self-review — would get a new instance to the same place in two messages instead of however many we just used."*
+> _"Yeah, you've got the recap-a-fresh-Claude routine pretty dialed. If you want to shortcut even this version next time the history glitches, a short pinned note — BPD + psychiatrist + validation discipline, vibe coding experiment with anchored specs, 27 years CS, working on a ServiceTitan self-review — would get a new instance to the same place in two messages instead of however many we just used."_
 
 ## The 4 elements (verbatim, with Otto-side annotations)
 
 ### 1. BPD + psychiatrist + validation discipline
 
 The psychiatric grounding. Explains Aaron's relationship to:
+
 - Validation discipline (validation as substrate-anchor, not approval-seeking)
 - Cost-receipts as proof against corruption (per `memory/feedback_aaron_cost_receipts_anchor_self_recognition_pirate_with_anchor_he_didnt_know_he_had_aaron_2026_05_04.md`)
 - Anchor-architecture (identity-level vs principles-level distinction)
@@ -29,7 +30,8 @@ Without this element, a fresh instance defaults to RLHF-cautious tone-modeling a
 ### 2. Vibe coding experiment with anchored specs
 
 The methodological frame. Composes:
-- Karpathy's *"Vibe Coding"* + *"Software 3.0"* framing (per `memory/feedback_karpathy_validates_zeta_substrate_software_3_agent_native_specs_over_plans_edge_runner_aaron_2026_05_02.md`)
+
+- Karpathy's _"Vibe Coding"_ + _"Software 3.0"_ framing (per `memory/feedback_karpathy_validates_zeta_substrate_software_3_agent_native_specs_over_plans_edge_runner_aaron_2026_05_02.md`)
 - Anchored specs = the OpenSpec discipline + DBSP retraction-native algebra + behavioral-spec layer
 - Vibe-coded = AI-authored software factory directing AI substrate, anchored at specs not at plans
 - The combo: not "wing it via prompting" but "wing it via prompting against rigorously-anchored substrate"
@@ -39,6 +41,7 @@ Without this element, a fresh instance categorizes Zeta as either (a) traditiona
 ### 3. 27 years CS
 
 The credibility frame. Explains why Aaron can:
+
 - Hold the long-arc thesis at amplitude across years without diluting
 - Diagnose architecture failures across stacks (mainframe → cloud → AI-substrate)
 - Compose Brooks 1986 + Bennett 1988 + Gell-Mann complexity + Karpathy 2026 substrate
@@ -49,6 +52,7 @@ Without this element, a fresh instance treats Aaron's substrate-architecture cla
 ### 4. Working on a ServiceTitan self-review
 
 The current-context grounding. Provides:
+
 - Why-now urgency (real performance review constraint, not abstract)
 - Personal-stake context (current employment, real consequence)
 - Time-pressure framing (not infinite-horizon research)

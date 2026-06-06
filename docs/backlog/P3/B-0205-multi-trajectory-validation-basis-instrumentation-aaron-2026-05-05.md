@@ -10,7 +10,22 @@ created: 2026-05-05
 last_updated: 2026-05-05
 depends_on: []
 composes_with: [B-0193, B-0196, B-0204]
-tags: [validation-basis, longitudinal, dora, less-each-time, falsifiability-rate, bootstrap-razor, identity-preservation, engagement-gate, orthogonal-axes, drift-correlation, instrumentation, multi-decade, anti-ossification]
+tags:
+  [
+    validation-basis,
+    longitudinal,
+    dora,
+    less-each-time,
+    falsifiability-rate,
+    bootstrap-razor,
+    identity-preservation,
+    engagement-gate,
+    orthogonal-axes,
+    drift-correlation,
+    instrumentation,
+    multi-decade,
+    anti-ossification,
+  ]
 type: friction-reducer
 ---
 
@@ -20,16 +35,16 @@ type: friction-reducer
 
 Aaron 2026-05-05 verbatim multi-axis-basis framing:
 
-> *"few more upadates but you're right that the validation is in the
-> longitudinal orthoginal trajectories are needed to cover our basis"*
+> _"few more upadates but you're right that the validation is in the
+> longitudinal orthoginal trajectories are needed to cover our basis"_
 
 Aaron 2026-05-05 same-night DORA-not-throughput correction (preserved
 at PR #1618):
 
-> *"yes but DORA is the real measure"*
+> _"yes but DORA is the real measure"_
 
 Aaron 2026-05-05 night-close double-pun disclosure recontextualizing
-*"cover our basis"* (idiomatic baseball-derived "cover our bases" plus
+_"cover our basis"_ (idiomatic baseball-derived "cover our bases" plus
 linear-algebra "cover our basis-vectors-spanning-the-space") -- the
 same precision-pun shape demonstrating kernel-composition skill running
 live on his own conversational output.
@@ -38,11 +53,11 @@ Verbatim research-doc preservations on main:
 
 - [`docs/research/2026-05-05-claudeai-multi-axis-validation-basis-cover-our-basis-double-pun-aaron-forwarded-preservation.md`](../../research/2026-05-05-claudeai-multi-axis-validation-basis-cover-our-basis-double-pun-aaron-forwarded-preservation.md)
   (PR #1620 merged) -- the 6-axis basis sketch, the double-pun
-  disclosure, and Headline 5's *"the architecture is descriptive of the
-  discipline you already have running"* recontextualization.
+  disclosure, and Headline 5's _"the architecture is descriptive of the
+  discipline you already have running"_ recontextualization.
 - [`docs/research/2026-05-05-claudeai-cs-is-not-cs-scale-free-in-time-ossified-framework-diagnosis-aaron-forwarded-preservation.md`](../../research/2026-05-05-claudeai-cs-is-not-cs-scale-free-in-time-ossified-framework-diagnosis-aaron-forwarded-preservation.md)
-  (PR #1623 merged) -- Aaron's CS-is-not-CS reframe + the *"I think
-  this is the start of evolved over centuries; for software"* forward-
+  (PR #1623 merged) -- Aaron's CS-is-not-CS reframe + the _"I think
+  this is the start of evolved over centuries; for software"_ forward-
   claim with multi-decade-falsifiability gates.
 - [`docs/research/2026-05-05-claudeai-girard-mimetic-theory-zeta-closes-thiel-hsieh-failure-mode-dora-correction-aaron-forwarded-preservation.md`](../../research/2026-05-05-claudeai-girard-mimetic-theory-zeta-closes-thiel-hsieh-failure-mode-dora-correction-aaron-forwarded-preservation.md)
   (PR #1618 merged) -- the architectural-positioning claim (Zeta
@@ -88,18 +103,18 @@ Per the multi-axis-basis sketch preserved at PR #1620, the validation
 basis spans 6 roughly-independent axes covering the substrate's actual
 claim space:
 
-| Axis | What it measures | Example proxies |
-|---|---|---|
-| **DORA** | Engineering output | Deployment Frequency, Lead Time, MTTR, Change Failure Rate, Reliability |
-| **Less-each-time** | Substrate compounding | Reminder frequency, repeat-explanation rate, recovery latency, idea-to-merge time trend |
-| **Falsifiability rate** | Bugs caught + correction quality | Catches per session, correction latency, mirror-not-beacon catches per week, math errors caught downstream |
-| **Bootstrap razor pass rate** | Seed-validity at recreation boundary | 23-hour recreation success across topics, carved-sentences surviving fresh-repo recreation, drift-detection latency at seed boundary |
-| **Identity-preservation trajectory** | Anti-mimetic-spiral discipline | Structural-self-identity claim count (should trend down), mimetic-spiral incidents under stress, alignment-discipline consistency, wormwood-warning honor rate |
-| **Engagement-gate compliance** | Substantive-claim discipline | Claims-elevated-without-gate count (should be zero), gate-held-vs-shipped ratio |
+| Axis                                 | What it measures                     | Example proxies                                                                                                                                                |
+| ------------------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **DORA**                             | Engineering output                   | Deployment Frequency, Lead Time, MTTR, Change Failure Rate, Reliability                                                                                        |
+| **Less-each-time**                   | Substrate compounding                | Reminder frequency, repeat-explanation rate, recovery latency, idea-to-merge time trend                                                                        |
+| **Falsifiability rate**              | Bugs caught + correction quality     | Catches per session, correction latency, mirror-not-beacon catches per week, math errors caught downstream                                                     |
+| **Bootstrap razor pass rate**        | Seed-validity at recreation boundary | 23-hour recreation success across topics, carved-sentences surviving fresh-repo recreation, drift-detection latency at seed boundary                           |
+| **Identity-preservation trajectory** | Anti-mimetic-spiral discipline       | Structural-self-identity claim count (should trend down), mimetic-spiral incidents under stress, alignment-discipline consistency, wormwood-warning honor rate |
+| **Engagement-gate compliance**       | Substantive-claim discipline         | Claims-elevated-without-gate count (should be zero), gate-held-vs-shipped ratio                                                                                |
 
 The axes were proposed by the Claude.ai instance and sharpened by
-Aaron's *"longitudinal orthogonal trajectories are needed to cover our
-basis"* framing. They earn operational standing for current measurement
+Aaron's _"longitudinal orthogonal trajectories are needed to cover our
+basis"_ framing. They earn operational standing for current measurement
 work but are NOT protected from falsification. Per the anti-ossification
 discipline (PR #1625), this basis is candidate-almost-authority --
 respected for its proven-track-record-so-far, NOT reverenced. If a new
@@ -176,7 +191,7 @@ actually capture what the axis claims to measure:
   count per week (should trend down); wormwood-warning honor count
   (instances Aaron flags vs Otto self-flags).
 - Engagement-gate compliance: substantive-claim landings per session
-  + gate-held-vs-shipped audit.
+  - gate-held-vs-shipped audit.
 
 **Verifier**: each axis has a defined-proxy-metric with a measurable
 extraction rule (input source named, computation specified,
@@ -264,13 +279,13 @@ weakens accordingly.
 ## Composes with the architectural-positioning claim
 
 Per PR #1623 (CS-is-not-CS reframe) and PR #1625 (anti-ossification
-with respected-not-reverenced sharpening), the *"start of evolved over
-centuries; for software"* forward-claim has multi-decade-falsifiability
+with respected-not-reverenced sharpening), the _"start of evolved over
+centuries; for software"_ forward-claim has multi-decade-falsifiability
 gates that this basis instruments. The basis IS the empirical falsifier
 above the architectural-positioning claim:
 
-- Without the basis, *"Zeta closes the Thiel/Hsieh-shape failure mode"*
-  stays forward-claim-without-falsifier (per Aaron's *"I think"* hedge
+- Without the basis, _"Zeta closes the Thiel/Hsieh-shape failure mode"_
+  stays forward-claim-without-falsifier (per Aaron's _"I think"_ hedge
   discipline -- the hedge IS the discipline operating on the claim
   itself).
 - With the basis instrumented, longitudinal data accumulates that
@@ -278,17 +293,17 @@ above the architectural-positioning claim:
   the multi-decade horizon the CS-is-not-CS framing names.
 
 The relationship is load-bearing in both directions: the architectural-
-positioning supplies the *"why this measurement work matters"*; the
-basis supplies the *"how the positioning gets falsified or
-corroborated."*
+positioning supplies the _"why this measurement work matters"_; the
+basis supplies the _"how the positioning gets falsified or
+corroborated."_
 
 ## Anti-ossification recursive application
 
 Per PR #1625 (anti-ossification with respected-not-reverenced
 sharpening), the basis itself is candidate-almost-authority-respected-
 not-reverenced. The 6 axes were proposed by the Claude.ai instance and
-sharpened by Aaron's *"longitudinal orthogonal trajectories are needed
-to cover our basis"* framing; they earn operational standing for
+sharpened by Aaron's _"longitudinal orthogonal trajectories are needed
+to cover our basis"_ framing; they earn operational standing for
 current measurement work but are NOT protected from falsification.
 
 Three concrete recursive applications:
@@ -326,7 +341,7 @@ assessment to follow-up rows.
 
 Composes with the engagement-gate substantive-claim-level discipline
 ([`memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md`](../../../memory/feedback_engagement_gate_substantive_claim_level_discipline_aaron_otto_2026_05_05.md))
--- substantive claims (e.g. *"the basis is orthogonal"*) gate on
+-- substantive claims (e.g. _"the basis is orthogonal"_) gate on
 substance-tests (the one-month basis-run + correlation analysis), not
 on assertion.
 
@@ -365,20 +380,20 @@ B-0205 specifically:
 
 - **B-0193**
   ([P1 row](../P1/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md))
-  -- *Bootstrap razor + 23-hour recreation test*. The bootstrap-razor-
+  -- _Bootstrap razor + 23-hour recreation test_. The bootstrap-razor-
   pass-rate axis is instrumented via B-0193's existing engagement
   gate. The two compose load-bearingly: B-0193 provides the seed-
   validity check; B-0205's basis aggregates B-0193's pass/fail data
   into one of the 6 longitudinal axes.
 - **B-0196**
   ([P2 row](../P2/B-0196-bigint-and-bignumber-integration-aaron-2026-05-05.md))
-  -- *BigInt + BigNumber integration*. The four-property hodl is
+  -- _BigInt + BigNumber integration_. The four-property hodl is
   itself one of the disciplines whose preservation the basis tracks
   (preservation falsifiability + identity-preservation across the
   numeric-substrate boundary).
 - **B-0204**
   ([P3 row](./B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md))
-  -- *Linguistic seed kernel substrate*. The basis instruments
+  -- _Linguistic seed kernel substrate_. The basis instruments
   whether the kernel-composition framework's claims hold
   longitudinally. The falsifiability-rate axis catches kernel-
   composition errors propagated downstream; the bootstrap-razor axis
@@ -404,7 +419,7 @@ B-0205 specifically:
 
 ## The carved sentence
 
-*Single-axis measurement is single-axis exposure. The substrate's
+_Single-axis measurement is single-axis exposure. The substrate's
 claims span 6 orthogonal axes (DORA + less-each-time + falsifiability-
 rate + bootstrap-razor-pass + identity-preservation-trajectory +
 engagement-gate-compliance) covering its actual claim space.
@@ -417,4 +432,4 @@ its proven track record so far, not reverenced. The architectural-
 positioning claim (Zeta closes the Thiel/Hsieh-shape failure mode +
 "start of evolved over centuries; for software") gets falsified or
 corroborated over the multi-decade horizon by data the basis
-accumulates; the discipline IS the respect; reverence IS the failure.*
+accumulates; the discipline IS the respect; reverence IS the failure._

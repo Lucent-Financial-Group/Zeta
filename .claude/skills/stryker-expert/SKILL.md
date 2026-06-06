@@ -7,9 +7,9 @@ description: "Stryker.NET mutation testing — score interpretation, threshold p
 
 Capability skill. No persona. Tool-routing and configuration
 hat for Stryker.NET as Zeta's mutation-testing layer. The
-complement to property-based testing: FsCheck perturbs *inputs*
+complement to property-based testing: FsCheck perturbs _inputs_
 and watches the program fail or succeed; Stryker perturbs the
-*program* and watches the tests fail or succeed. Together they
+_program_ and watches the tests fail or succeed. Together they
 cover two orthogonal axes of "are the tests real?".
 
 ## When to wear
@@ -51,16 +51,16 @@ cover two orthogonal axes of "are the tests real?".
 
 ## Mutation testing in one paragraph
 
-Stryker generates *mutants* — small, syntactically valid
+Stryker generates _mutants_ — small, syntactically valid
 variations of the source (flip `<` to `<=`, replace `+` with
 `-`, replace `true` with `false`, remove a statement). For each
 mutant, it runs the test suite. A **killed mutant** is one where
 at least one test failed on the mutated program — good, the
-tests noticed. A **survived mutant** is one where *every* test
+tests noticed. A **survived mutant** is one where _every_ test
 still passed on the mutated program — bad, the tests missed a
 regression. The **mutation score** is `killed / (killed +
 survived)`; an **equivalent mutant** is a survivor that
-*cannot* be distinguished because the mutation is semantically
+_cannot_ be distinguished because the mutation is semantically
 a no-op (e.g. `return 0` vs `return 0 + 0`), and is not a bug
 in the tests — those get excluded by hand.
 
@@ -88,7 +88,7 @@ requires a `devops-engineer` decision; raising it is a
 1. **Genuine test gap.** The mutation changes behaviour and no
    test notices. This is the signal Stryker exists to produce.
    Fix: add a targeted test (ideally an FsCheck property that
-   *would have* killed the mutant).
+   _would have_ killed the mutant).
 2. **Equivalent mutant.** The mutation is a no-op semantically
    (dead code, a redundant check). Fix: mark as excluded in
    `stryker-config.json` with a comment citing why.
@@ -102,7 +102,7 @@ requires a `devops-engineer` decision; raising it is a
    module.
 
 The skill's discipline is to name which bucket each survivor
-is in *before* silencing it.
+is in _before_ silencing it.
 
 ## Stryker vs. FsCheck — when to reach for which
 
@@ -118,7 +118,7 @@ Reach for **FsCheck** when:
 
 - The code has a property you can state (commutativity,
   idempotence, roundtrip through serialisation).
-- You want counterexamples *on the input side*, not on the
+- You want counterexamples _on the input side_, not on the
   program side.
 
 Reach for **both** when:

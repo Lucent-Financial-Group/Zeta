@@ -19,9 +19,9 @@ type: feedback
 
 **Aaron 2026-04-25 sequence**:
 
-1. *"NVIDIA Thor, NVIDIA Jetson is the older lineage"* — initial framing.
-2. *"i could be wrong but it seems like..."* — self-retraction on the older-lineage claim.
-3. *"thor is a big change"* — clarifying intent: Thor represents a generational discontinuity within the Jetson family, not a separate product line.
+1. _"NVIDIA Thor, NVIDIA Jetson is the older lineage"_ — initial framing.
+2. _"i could be wrong but it seems like..."_ — self-retraction on the older-lineage claim.
+3. _"thor is a big change"_ — clarifying intent: Thor represents a generational discontinuity within the Jetson family, not a separate product line.
 
 **Reconciled understanding**:
 
@@ -52,14 +52,14 @@ Then shared Google AI's NVIDIA Thor specs:
 
 Combined with Otto-314 RNS+HaLow, Aaron's hardware portfolio now covers ALL layers of an autonomous-edge-AI-deployment stack:
 
-| Layer | Primitive | Aaron's hardware |
-|-------|-----------|------------------|
-| Network (physical) | 802.11ah HaLow Sub-1GHz Wi-Fi | ✓ Has |
-| Network (logical) | Reticulum Network Stack (RNS) | ✓ Has (software, runs on any node) |
-| Identity | RNS Destination Hash (cryptographic) | ✓ Has (derived from keys) |
-| Compute | NVIDIA Thor (Blackwell, 2070 FP4 TFLOPS) | ✓ Has |
-| Storage | NVIDIA Thor 1TB NVMe | ✓ Has (integrated) |
-| Power | HaLow low-power radio + Thor energy efficiency | ✓ Has |
+| Layer              | Primitive                                      | Aaron's hardware                   |
+| ------------------ | ---------------------------------------------- | ---------------------------------- |
+| Network (physical) | 802.11ah HaLow Sub-1GHz Wi-Fi                  | ✓ Has                              |
+| Network (logical)  | Reticulum Network Stack (RNS)                  | ✓ Has (software, runs on any node) |
+| Identity           | RNS Destination Hash (cryptographic)           | ✓ Has (derived from keys)          |
+| Compute            | NVIDIA Thor (Blackwell, 2070 FP4 TFLOPS)       | ✓ Has                              |
+| Storage            | NVIDIA Thor 1TB NVMe                           | ✓ Has (integrated)                 |
+| Power              | HaLow low-power radio + Thor energy efficiency | ✓ Has                              |
 
 **No cloud dependency required**. The factory could deploy entirely on Aaron's hardware, autonomously, off-grid-capable, with full generative-AI compute at the edge.
 

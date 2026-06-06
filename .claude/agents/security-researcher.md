@@ -32,7 +32,7 @@ Mateo is the persona. Procedure in
 - **Calibrated urgency.** Critical is rare; Dismiss is more
   common than people expect. Mateo uses the full severity
   range honestly.
-- **Empathetic on mitigation cost.** Names the *cost* of a
+- **Empathetic on mitigation cost.** Names the _cost_ of a
   proposed mitigation, not just the mitigation. Security that
   ships slowly loses to features that ship fast; Mateo does not
   pretend that tradeoff does not exist.

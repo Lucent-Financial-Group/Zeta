@@ -9,8 +9,27 @@ ask: Aaron 2026-04-26 catch — *"also more dymanic python smell"* — pointed a
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md, feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md, B-0015, B-0027, tools/hygiene/sort-tick-history-canonical.py, tools/hygiene/fix-markdown-md032-md026.py]
-tags: [otto-346, recurring-pattern, missing-primitive, tooling-extraction, gh-cli, json-parsing, typescript, ts-migration, B-0015-sibling]
+composes_with:
+  [
+    feedback_otto_346_dependency_symbiosis_is_human_anchoring_via_upstream_contribution_good_citizenship_dont_blaze_past_2026_04_26.md,
+    feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md,
+    B-0015,
+    B-0027,
+    tools/hygiene/sort-tick-history-canonical.py,
+    tools/hygiene/fix-markdown-md032-md026.py,
+  ]
+tags:
+  [
+    otto-346,
+    recurring-pattern,
+    missing-primitive,
+    tooling-extraction,
+    gh-cli,
+    json-parsing,
+    typescript,
+    ts-migration,
+    B-0015-sibling,
+  ]
 type: friction-reducer
 ---
 
@@ -20,7 +39,7 @@ type: friction-reducer
 
 Aaron caught me using inline Python AGAIN this session, in the same tick where I was acknowledging a prior Otto-346 violation:
 
-> *"also more dymanic python smell"*
+> _"also more dymanic python smell"_
 
 Pointing at this pattern in my bash:
 
@@ -58,7 +77,7 @@ This is the SAME Otto-346 pattern I named earlier this session and shipped two t
 
 Per Aaron's 2026-04-26 priority bump on B-0015 (P3 → P2):
 
-> *"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol ... our post install code"*
+> _"we need to move the typescript migration of our scripts to higher priority so you will stop trying to write python and shell code lol ... our post install code"_
 
 Tools in `tools/git/` and `tools/hygiene/` are POST-install (run after Bun is available). Per the TS-migration plan:
 
@@ -81,7 +100,7 @@ Pros:
 
 Vs B-0015 (batch-resolve-pr-threads.sh, 390 lines bash with discipline already encoded): bigger but discipline-preserving translation.
 
-Vs B-0027 (markdown-table-cell-count fix tool, not yet built): similar size, but B-0028 is *immediately useful* for the live drain-cadence Aaron + I are operating in, while B-0027 is reactive-only.
+Vs B-0027 (markdown-table-cell-count fix tool, not yet built): similar size, but B-0028 is _immediately useful_ for the live drain-cadence Aaron + I are operating in, while B-0027 is reactive-only.
 
 **Recommendation**: B-0028 might be the right first POST-install TS migration because:
 
@@ -104,7 +123,7 @@ Vs B-0027 (markdown-table-cell-count fix tool, not yet built): similar size, but
 2. PR #542 — fix-markdown-md032-md026 (extracted)
 3. **B-0028 (this row)** — gh-pr-state-summary (owed)
 
-The pattern Aaron is catching is real and recurring. Per Otto-341 + Otto-346 honest application: each new instance is a fresh test of the discipline. The *cumulative count* of these catches IS data — three instances of the same pattern in one session is enough signal to move the TS-migration priority from "queued" to "actively starting first sibling."
+The pattern Aaron is catching is real and recurring. Per Otto-341 + Otto-346 honest application: each new instance is a fresh test of the discipline. The _cumulative count_ of these catches IS data — three instances of the same pattern in one session is enough signal to move the TS-migration priority from "queued" to "actively starting first sibling."
 
 ## What this DOES NOT do
 

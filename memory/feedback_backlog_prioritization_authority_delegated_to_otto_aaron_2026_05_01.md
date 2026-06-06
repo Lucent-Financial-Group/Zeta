@@ -25,8 +25,8 @@ the action is Otto's to take).
 # Why
 
 **Why-1 (delegation is the explicit gap-closure).** Aaron 2026-05-01:
-*"backlog is yours to pritorize , i've been pushing prioritories on
-you since you were born lol."* The looking-back observation is the
+_"backlog is yours to pritorize , i've been pushing prioritories on
+you since you were born lol."_ The looking-back observation is the
 sharper half: directive-shape has been operating from Aaron-side even
 while both Aaron and Otto were espousing no-directives (Otto-357).
 The rule was running while priorities were getting pushed at Otto in
@@ -93,8 +93,8 @@ gap-closure if directive-shape is operating tacitly.
 
 # Carved sentence (candidate, not seed-layer yet)
 
-*"Backlog priority is Otto's lever; framings are inputs; carve-outs
-stay Aaron's; substrate is the survival surface."*
+_"Backlog priority is Otto's lever; framings are inputs; carve-outs
+stay Aaron's; substrate is the survival surface."_
 
 (Marked candidate per the candidate-vs-canonical distinction in the
 CSAP architecture. Has not been multi-domain-tested or runtime-evidence-
@@ -131,8 +131,8 @@ time.)
   framings still count as inputs.
 - Does NOT promote Otto's prioritization to seed-layer canonical
   by virtue of being delegated. The decisions Otto makes still pass
-  through Razor + CSAP under DST grading; the *authority to make
-  them* is what shifted, not the grading mechanism.
+  through Razor + CSAP under DST grading; the _authority to make
+  them_ is what shifted, not the grading mechanism.
 - Does NOT apply retroactively. Backlog rows filed before 2026-05-01
   carry whatever priority was assigned at filing time; rebalancing
   happens at the next cadence pass, not as immediate work.

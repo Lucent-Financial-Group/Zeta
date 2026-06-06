@@ -4,9 +4,10 @@ description: Aaron 2026-04-21 "we only need to upstram back to lfg like every 10
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-21, in the thread that set up the fork-PR workflow
 after the AceHack/Zeta → Lucent-Financial-Group/Zeta transfer:
-*"we only need to upstram back to lfg like every 10prs"*.
+_"we only need to upstram back to lfg like every 10prs"_.
 
 **Why:** Every push to LFG/Zeta fires Copilot code review (per the
 `Default` ruleset `copilot_code_review.review_on_push: true`), which
@@ -23,6 +24,7 @@ fact that Zeta is single-maintainer pre-v1 so consumer promptness
 is not a constraint.
 
 **How to apply:**
+
 - **Fork is the staging environment.** Treat AceHack/Zeta as a
   complete development surface: branch-per-PR, CI gate runs, PRs
   merged on the fork's own `main`. Full matrix (Linux + macOS per

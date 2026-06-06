@@ -8,12 +8,12 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 Aaron 2026-04-21, during a multi-directive session where he
 filed a sequence of BACKLOG rows at various priorities:
 
-> *"dont reorder you memories cause i said that, i want
-> our real order of events"*
+> _"dont reorder you memories cause i said that, i want
+> our real order of events"_
 
 Fired immediately after a two-message priority-correction
-(*"ai ethic and safety backlog whoops we should have done
-that first"* + *"high on backlog"*) that would have tempted
+(_"ai ethic and safety backlog whoops we should have done
+that first"_ + _"high on backlog"_) that would have tempted
 a dutiful absorption pass to retrofit the BACKLOG row
 ordering to look like Aaron filed AI-ethics-and-safety
 first.
@@ -35,9 +35,9 @@ them.
 Aaron added, same session, immediately after the core
 directive above:
 
-> *"it becomes tempting to rewrite history because this
+> _"it becomes tempting to rewrite history because this
 > make it so easy. We much asses the blast radius,
-> current history stands"*
+> current history stands"_
 
 This is the deeper principle. The retractibly-rewrite
 infrastructure (memory edits, git rebase, squash,
@@ -121,11 +121,11 @@ why this matters, inferred from prior memories:
 2. **Annotate the filing-order.** In the row text itself,
    include an explicit chronological annotation when the
    tier-placement disagrees with filing-order. Example:
-   *"[Aaron 2026-04-21 filed LATER in session with
+   _"[Aaron 2026-04-21 filed LATER in session with
    self-correction 'whoops we should have done that
    first'; P1 tier reflects substrate precedence, but
    chronological filing after mythology/occult P2 rows
-   is preserved as real order of events]"*.
+   is preserved as real order of events]"_.
 3. **MEMORY.md prepend = newest-chronological, not
    highest-priority.** The newest-first = σ convention
    (operational-resonance instance #2) is chronological

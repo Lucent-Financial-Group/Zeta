@@ -27,6 +27,7 @@ Aaron 2026-05-26: 'also the machine alt to register itself in git somewhere unde
 Adds a new P1 backlog row (B-0794) describing a GitOps-native Kubernetes cluster bring-up flow where nodes self-register into the repo and ArgoCD reconciles the cluster/apps from that registration.
 
 **Changes:**
+
 - Added new backlog row file for B-0794 with sub-target decomposition and acceptance criteria.
 - Updated `docs/BACKLOG.md` to include the new B-0794 entry under P1.
 
@@ -34,10 +35,10 @@ Adds a new P1 backlog row (B-0794) describing a GitOps-native Kubernetes cluster
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 5 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                                  | Description                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0794-node-self-registers-in-git-under-maintainers-cluster-nodes-triggers-argocd-full-bringup-of-k8s-apps-charts-gitops-native-cluster-substrate-aaron-2026-05-26.md | New P1 backlog row documenting the desired node self-registration → ArgoCD reconciliation end-state and sub-targets. |
-| docs/BACKLOG.md | Adds the B-0794 index entry under the P1 section. |
+| docs/BACKLOG.md                                                                                                                                                                       | Adds the B-0794 index entry under the P1 section.                                                                    |
 
 ## Review threads
 

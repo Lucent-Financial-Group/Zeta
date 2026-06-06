@@ -12,11 +12,11 @@ install.sh cross-OS Docker test matrix (NixOS/Ubuntu/mac):
 
 ### 1. The shield is the automated tests, not the artifact they guard
 
-*"it's impossible to keep all the install surfaces in your mind at
+_"it's impossible to keep all the install surfaces in your mind at
 once — only automation can be sure a nixos change didn't break ubuntu
 or mac and vice versa. trying to manually make sure everything is a
-losing game to entropy."* → *"the automated tests around install.sh —
-that's the shield."*
+losing game to entropy."_ → _"the automated tests around install.sh —
+that's the shield."_
 
 `install.sh` is the **lever** (bare machine → substrate). It cannot
 certify itself, and no human holds all install surfaces in working
@@ -36,22 +36,22 @@ A test that passes **by not exercising the thing** is a hole in the
 shield. The failure class — "control that reports OK without
 exercising what it's supposed to guarantee":
 
-| Surface | The hole |
-|---|---|
-| CI test | skips-to-green (graceful skip, `xfail`, early-return on missing dep) |
-| Monitor / alert | no data flowing through the alert path |
-| Security control | report-only / audit mode, never enforcing |
-| Type check | `any`-cast / suppression on the hard case |
-| Audit | samples the easy 95%, never the risky tail |
+| Surface          | The hole                                                             |
+| ---------------- | -------------------------------------------------------------------- |
+| CI test          | skips-to-green (graceful skip, `xfail`, early-return on missing dep) |
+| Monitor / alert  | no data flowing through the alert path                               |
+| Security control | report-only / audit mode, never enforcing                            |
+| Type check       | `any`-cast / suppression on the hard case                            |
+| Audit            | samples the easy 95%, never the risky tail                           |
 
 A **known gap shows up on the map**; a **false-green erases itself
 from the map** — it reads as covered. That is why it is worse.
 
 **The discriminator — graceful vs assert by layer:**
 
-- An **installer / runtime** step *should* be graceful (warn + exit 0
-  on a missing *optional* dep — don't brick a machine over a probe).
-- The **test** that wraps it *must not* inherit that grace — its job
+- An **installer / runtime** step _should_ be graceful (warn + exit 0
+  on a missing _optional_ dep — don't brick a machine over a probe).
+- The **test** that wraps it _must not_ inherit that grace — its job
   is to catch exactly the skipped case. Keep the grace in the
   artifact; strip it in the test's validation step. Conflating the two
   produces false-green, which is indistinguishable from coverage.
@@ -70,7 +70,7 @@ the test **assert** it works and fail if absent.
 > Note: the install.sh local-LLM matrix + B-0940/B-0941 are currently
 > off-leash on `accelerator/pr-less-git-monster` (pending harvest to
 > main); refs are plain-text, not links, until that substrate lands on
-> main. The *principle* this rule carries is general and stands alone.
+> main. The _principle_ this rule carries is general and stands alone.
 
 ## Operational discipline
 
@@ -111,8 +111,8 @@ write the skip-able test or trust the green-by-skip.
 ## Full reasoning
 
 Aaron 2026-05-30, over the install.sh cross-OS Docker test matrix:
-*"a shield with a hole is worse than a known gap, because it reads as
-covered."* Carved from the B-0941 empirical anchor (NixOS local-LLM
+_"a shield with a hole is worse than a known gap, because it reads as
+covered."_ Carved from the B-0941 empirical anchor (NixOS local-LLM
 green-by-skip). install.sh is the entropy lever; the automated tests
 around it are the entropy shield; a test that skips-to-green is a hole
 in that shield.

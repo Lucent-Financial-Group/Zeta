@@ -147,15 +147,11 @@ export type ParsedAgentCliArgs = {
   contextAdvisoryPromotionDecision?: AgentCliContextPackAdvisoryPromotionDecisionArgs;
 };
 
-export type ParseAgentCliArgsResult =
-  | { ok: true; value: ParsedAgentCliArgs }
-  | { ok: false; message: string };
+export type ParseAgentCliArgsResult = { ok: true; value: ParsedAgentCliArgs } | { ok: false; message: string };
 
 type AgentCliZetaIdDecimal = ReturnType<typeof asZetaIdDecimal>;
 
-type ParseAgentCliZetaIdResult =
-  | { ok: true; value: AgentCliZetaIdDecimal }
-  | { ok: false; message: string };
+type ParseAgentCliZetaIdResult = { ok: true; value: AgentCliZetaIdDecimal } | { ok: false; message: string };
 
 export type AgentCliScreen = {
   scope: RunScope;
@@ -226,8 +222,7 @@ const AGENT_CLI_INBOX_ACTION_DIRECTION = "inbox.action";
 const AGENT_CLI_ADVISORY_PROMOTION_DECISION_SLOT_INDEX = -2;
 const AGENT_CLI_ADVISORY_PROMOTION_DECISION_DIRECTION = "context.advisory_promotion_decision";
 const AGENT_CLI_ADVISORY_PROMOTION_UNKNOWN_CURATION_PROFILE = "unknown";
-const AGENT_CLI_CONTEXT_PACK_ADVISORY_PROMOTION_STATUS_QUERY =
-  "observe-act advisory-promotion candidate status";
+const AGENT_CLI_CONTEXT_PACK_ADVISORY_PROMOTION_STATUS_QUERY = "observe-act advisory-promotion candidate status";
 const AGENT_CLI_TENANT_CONTEXT_PACK_LANE_PRIORITY_SEPARATOR = "=";
 const AGENT_CLI_TENANT_CONTEXT_PACK_COMPLETENESS_PREVIEW_QUERY = "observe-act tenant completeness authoring preview";
 const AGENT_CLI_TENANT_CONTEXT_PACK_SYNTHESIS_PREVIEW_ANY_APPLIES_TO = "any";
@@ -275,7 +270,8 @@ const AgentCliContextPackAdvisoryPromotionFlag = {
 } as const;
 
 const AgentCliContextPackAdvisoryPromotionErrorMessage = {
-  FlagsIncomplete: "--context-advisory-promotion-item, --context-advisory-promotion-status, and --context-advisory-promotion-blocker are required together",
+  FlagsIncomplete:
+    "--context-advisory-promotion-item, --context-advisory-promotion-status, and --context-advisory-promotion-blocker are required together",
   ItemMissing: "requested advisory-promotion item is not visible in the current context pack",
   ItemNotPromotable: "requested advisory-promotion item is not a synthesis gap hypothesis",
   StatusUnknown: "unknown context advisory-promotion status",
@@ -355,7 +351,10 @@ export type MenuSelectionSurface = {
   hierarchy?: HierarchyReadout | undefined;
 };
 
-export type MenuSelector = (menu: Menu16, surface?: MenuSelectionSurface | undefined) => Promise<MenuSelectorOutput> | MenuSelectorOutput;
+export type MenuSelector = (
+  menu: Menu16,
+  surface?: MenuSelectionSurface | undefined,
+) => Promise<MenuSelectorOutput> | MenuSelectorOutput;
 
 export type CreateModelBackedMenuSelectorInput = {
   chat: ChatCompletionPort;
@@ -378,8 +377,7 @@ export const AgentCliCycleFailureKind = {
   ContextRefreshLookupFailed: "context_refresh_lookup_failed",
 } as const;
 
-export type AgentCliCycleFailureKind =
-  (typeof AgentCliCycleFailureKind)[keyof typeof AgentCliCycleFailureKind];
+export type AgentCliCycleFailureKind = (typeof AgentCliCycleFailureKind)[keyof typeof AgentCliCycleFailureKind];
 
 export type AgentCliCycleFailureEvidence = {
   kind: AgentCliCycleFailureKind;
@@ -465,7 +463,11 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
   const promptFlowPageValue = values.flags.get("prompt-flow-page");
   const promptFlowPage = promptFlowPageValue === undefined ? undefined : Number.parseInt(promptFlowPageValue, 10);
   if (promptFlowPageValue !== undefined) {
-    if (!Number.isInteger(promptFlowPage) || String(promptFlowPage) !== promptFlowPageValue || (promptFlowPage ?? -1) < 0) {
+    if (
+      !Number.isInteger(promptFlowPage) ||
+      String(promptFlowPage) !== promptFlowPageValue ||
+      (promptFlowPage ?? -1) < 0
+    ) {
       return { ok: false, message: `--prompt-flow-page must be a non-negative integer, got '${promptFlowPageValue}'` };
     }
   }
@@ -521,9 +523,7 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
 
 export function selectFirstTrueSlot(menu: Menu16): number {
   const selectable = menu.slots.filter((slot) => slot.availability === TriAvailability.True);
-  return selectable.find((slot) => !slot.direction.startsWith("navigate."))?.index
-    ?? selectable[0]?.index
-    ?? -1;
+  return selectable.find((slot) => !slot.direction.startsWith("navigate."))?.index ?? selectable[0]?.index ?? -1;
 }
 
 export function formatAgentCliScreen(screen: AgentCliScreen): string {
@@ -561,14 +561,16 @@ function formatTenantContextPackCurationAuthoringPreview(preview: ContextPackCur
 }
 
 function formatTenantContextPackCurationProfileCatalog(): readonly string[] {
-  return listContextPackCurationProfileDescriptors().map((profile) =>
-    `- profile ${profile.profileId} focus=${profile.documentFocus.profileId} docs=${profile.documentFocus.preferredDocTypes.join(",")} terms=${profile.documentFocus.queryTerms.join(",")}`
+  return listContextPackCurationProfileDescriptors().map(
+    (profile) =>
+      `- profile ${profile.profileId} focus=${profile.documentFocus.profileId} docs=${profile.documentFocus.preferredDocTypes.join(",")} terms=${profile.documentFocus.queryTerms.join(",")}`,
   );
 }
 
 function formatTenantContextPackCurationLaneCatalog(): readonly string[] {
-  return listContextPackAttentionLaneDescriptors().map((lane) =>
-    `- lane ${lane.kind} defaultPriority=${lane.defaultPriority} required=${String(lane.defaultRequired)} objective=${lane.objective}`
+  return listContextPackAttentionLaneDescriptors().map(
+    (lane) =>
+      `- lane ${lane.kind} defaultPriority=${lane.defaultPriority} required=${String(lane.defaultRequired)} objective=${lane.objective}`,
   );
 }
 
@@ -586,8 +588,9 @@ function formatTenantContextPackCurationPreviewRequiredLanes(preview: ContextPac
 }
 
 function formatTenantContextPackCurationPreviewInstructions(preview: ContextPackCurationIntent): readonly string[] {
-  return [...(preview.curationProfile.deterministicInstructions ?? [])]
-    .map((instruction) => `- preview instruction ${instruction}`);
+  return [...(preview.curationProfile.deterministicInstructions ?? [])].map(
+    (instruction) => `- preview instruction ${instruction}`,
+  );
 }
 
 function formatTenantContextPackCompletenessAuthoringPreview(preview: ContextPackCompletenessPolicyResult): string {
@@ -601,13 +604,16 @@ function formatTenantContextPackCompletenessAuthoringPreview(preview: ContextPac
 }
 
 function formatTenantContextPackCompletenessRequirementSetCatalog(): readonly string[] {
-  return listTenantContextPackCompletenessRequirementSetDescriptors().map((descriptor) =>
-    `- completeness set ${descriptor.setId} requirements=${descriptor.requirements.map(formatTenantContextPackCompletenessRequirement).join(",")}`
+  return listTenantContextPackCompletenessRequirementSetDescriptors().map(
+    (descriptor) =>
+      `- completeness set ${descriptor.setId} requirements=${descriptor.requirements.map(formatTenantContextPackCompletenessRequirement).join(",")}`,
   );
 }
 
 function formatTenantContextPackCompletenessRequirement(
-  requirement: ReturnType<typeof listTenantContextPackCompletenessRequirementSetDescriptors>[number]["requirements"][number],
+  requirement: ReturnType<
+    typeof listTenantContextPackCompletenessRequirementSetDescriptors
+  >[number]["requirements"][number],
 ): string {
   return `${requirement.requirementId}:${requirement.itemKind}:${requirement.requiredSourceScope}`;
 }
@@ -615,8 +621,8 @@ function formatTenantContextPackCompletenessRequirement(
 function formatTenantContextPackCompletenessPreviewOmissions(
   preview: ContextPackCompletenessPolicyResult,
 ): readonly string[] {
-  return preview.omittedItemsWithReason.map((item) =>
-    `- completeness preview omission ${item.nodeId ?? "unspecified"} ${item.reason}: ${item.message}`
+  return preview.omittedItemsWithReason.map(
+    (item) => `- completeness preview omission ${item.nodeId ?? "unspecified"} ${item.reason}: ${item.message}`,
   );
 }
 
@@ -632,9 +638,7 @@ function formatTenantContextPackCompletenessPreviewEvidence(
   return (preview.evidenceRefs ?? []).map((evidenceRef) => `- completeness preview evidence ${evidenceRef}`);
 }
 
-function formatTenantContextPackSynthesisRequirementAuthoringPreview(
-  preview: ContextPackSynthesisRequirement,
-): string {
+function formatTenantContextPackSynthesisRequirementAuthoringPreview(preview: ContextPackSynthesisRequirement): string {
   return [
     "tenant context-pack synthesis-requirement authoring:",
     ...formatTenantContextPackSynthesisRequirementSetCatalog(),
@@ -643,13 +647,16 @@ function formatTenantContextPackSynthesisRequirementAuthoringPreview(
 }
 
 function formatTenantContextPackSynthesisRequirementSetCatalog(): readonly string[] {
-  return listTenantContextPackSynthesisRequirementSetDescriptors().map((descriptor) =>
-    `- synthesis set ${descriptor.setId} requirements=${descriptor.requirements.map(formatTenantContextPackSynthesisRequirement).join(",")}`
+  return listTenantContextPackSynthesisRequirementSetDescriptors().map(
+    (descriptor) =>
+      `- synthesis set ${descriptor.setId} requirements=${descriptor.requirements.map(formatTenantContextPackSynthesisRequirement).join(",")}`,
   );
 }
 
 function formatTenantContextPackSynthesisRequirement(
-  requirement: ReturnType<typeof listTenantContextPackSynthesisRequirementSetDescriptors>[number]["requirements"][number],
+  requirement: ReturnType<
+    typeof listTenantContextPackSynthesisRequirementSetDescriptors
+  >[number]["requirements"][number],
 ): string {
   return [
     `${requirement.requirementId}:${requirement.reason}`,
@@ -707,10 +714,7 @@ export function createAgentCliPromptFlowTasksFromEnv(
   if (!Array.isArray(parsed)) {
     throw new Error("AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON must be a JSON array");
   }
-  return [
-    ...compiled,
-    ...parsed.map(parsePromptFlowTask),
-  ];
+  return [...compiled, ...parsed.map(parsePromptFlowTask)];
 }
 
 export function tryCreateAgentCliPromptFlowTasksFromEnv(
@@ -727,9 +731,7 @@ export function tryCreateAgentCliPromptFlowTasksFromEnv(
   }
 }
 
-export function createAgentCliHierarchyFromEnv(
-  input: CreateAgentCliHierarchyFromEnvInput,
-): HierarchySnapshot {
+export function createAgentCliHierarchyFromEnv(input: CreateAgentCliHierarchyFromEnvInput): HierarchySnapshot {
   const raw = input.env.AGENTIC_ORG_HIERARCHY_JSON;
   if (raw === undefined || raw.trim().length === 0) {
     return { projects: [], initiatives: [] };
@@ -762,9 +764,7 @@ export function tryCreateAgentCliHierarchyFromEnv(
   }
 }
 
-export function createAgentCliWorkQueuesFromEnv(
-  input: CreateAgentCliWorkQueuesFromEnvInput,
-): readonly HatWorkQueue[] {
+export function createAgentCliWorkQueuesFromEnv(input: CreateAgentCliWorkQueuesFromEnvInput): readonly HatWorkQueue[] {
   const raw = input.env.AGENTIC_ORG_WORK_MARKET_QUEUES_JSON;
   if (raw === undefined || raw.trim().length === 0) {
     return [];
@@ -821,7 +821,10 @@ export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelect
     const parsed = parseModelSelectedIndex(rawOutput, menu);
     if (parsed.ok) return parsed.index;
 
-    const fallback = normalizeMenuSelectionResult(await input.fallback(menu, surface), "fallback_after_selector_rejection");
+    const fallback = normalizeMenuSelectionResult(
+      await input.fallback(menu, surface),
+      "fallback_after_selector_rejection",
+    );
     return {
       index: fallback.index,
       reason: "fallback_after_selector_rejection",
@@ -896,7 +899,9 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     projectId: parsed.value.projectId,
     ...(parsed.value.teamId === undefined ? {} : { teamId: parsed.value.teamId }),
     workItemId: parsed.value.workItemId,
-    ...(parsed.value.supervisorHatAssignmentId === undefined ? {} : { supervisorHatAssignmentId: parsed.value.supervisorHatAssignmentId }),
+    ...(parsed.value.supervisorHatAssignmentId === undefined
+      ? {}
+      : { supervisorHatAssignmentId: parsed.value.supervisorHatAssignmentId }),
   };
 
   const refreshDecisionResult = await loadContextPackRefreshDecision(input, snapshot);
@@ -957,28 +962,32 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     contextRefresh,
   );
   if (!advisoryPromotionDecisionResult.ok) {
-    input.writeStderr?.(`agent CLI advisory-promotion decision status load failed: ${advisoryPromotionDecisionResult.message}\n`);
+    input.writeStderr?.(
+      `agent CLI advisory-promotion decision status load failed: ${advisoryPromotionDecisionResult.message}\n`,
+    );
   }
 
-  input.writeStdout?.(`${formatAgentCliScreen({
-    scope: parsed.value.scope,
-    phase: parsed.value.phase,
-    hatId: parsed.value.hatId,
-    metrics: observed.metrics,
-    context: observed.context,
-    ...createOptionalContextPackAdvisoryPromotionDecisions(advisoryPromotionDecisionResult.decisions),
-    ...createOptionalInboxWorkflow(inboxWorkflowResult.view),
-    promptFlows: observed.promptFlows,
-    page: observed.actions.page,
-    hierarchy: observed.hierarchy,
-    workMarket: workMarketReadoutForHat(input.workQueues ?? [], {
-      organizationId: parsed.value.organizationId,
-      hatId: hat.id,
-      visibleHatIds: visibleWorkMarketHatIds(hat, hats, input.workQueues ?? []),
-      now: input.now(),
-    }),
-    slots: observed.actions.slots,
-  })}\n`);
+  input.writeStdout?.(
+    `${formatAgentCliScreen({
+      scope: parsed.value.scope,
+      phase: parsed.value.phase,
+      hatId: parsed.value.hatId,
+      metrics: observed.metrics,
+      context: observed.context,
+      ...createOptionalContextPackAdvisoryPromotionDecisions(advisoryPromotionDecisionResult.decisions),
+      ...createOptionalInboxWorkflow(inboxWorkflowResult.view),
+      promptFlows: observed.promptFlows,
+      page: observed.actions.page,
+      hierarchy: observed.hierarchy,
+      workMarket: workMarketReadoutForHat(input.workQueues ?? [], {
+        organizationId: parsed.value.organizationId,
+        hatId: hat.id,
+        visibleHatIds: visibleWorkMarketHatIds(hat, hats, input.workQueues ?? []),
+        now: input.now(),
+      }),
+      slots: observed.actions.slots,
+    })}\n`,
+  );
 
   if (parsed.value.contextCurationPreview !== undefined) {
     const preview = await previewTenantContextPackCurationPolicy({
@@ -1063,15 +1072,17 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     return inboxActionResult;
   }
 
-  const selection = parsed.value.selectIndex === undefined
-    ? normalizeMenuSelectionResult(
-      await (input.selectSlot?.(observed.actions, createMenuSelectionSurface(observed, inboxWorkflowResult.view)) ?? selectFirstTrueSlot(observed.actions)),
-      "selector_selected",
-    )
-    : {
-        index: parsed.value.selectIndex,
-        reason: "cli_select_index",
-      };
+  const selection =
+    parsed.value.selectIndex === undefined
+      ? normalizeMenuSelectionResult(
+          await (input.selectSlot?.(observed.actions, createMenuSelectionSurface(observed, inboxWorkflowResult.view)) ??
+            selectFirstTrueSlot(observed.actions)),
+          "selector_selected",
+        )
+      : {
+          index: parsed.value.selectIndex,
+          reason: "cli_select_index",
+        };
   const selectedIndex = selection.index;
   if (!observed.actions.slots.some((slot) => slot.availability === TriAvailability.True)) {
     const actionResult = rejectAct(
@@ -1152,7 +1163,11 @@ async function dispatchContextPackInboxWorkflowAction(input: {
   const actionResult: ActResult = {
     outcome: "dispatched",
     kind: "command",
-    result: await input.input.runCommand(CommandType.UpdateContextPackInboxAnchorStatus, actionCommand.value, actionSlot),
+    result: await input.input.runCommand(
+      CommandType.UpdateContextPackInboxAnchorStatus,
+      actionCommand.value,
+      actionSlot,
+    ),
   };
   input.input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
   return {
@@ -1205,7 +1220,11 @@ async function dispatchContextPackAdvisoryPromotionDecision(input: {
   const actionResult: ActResult = {
     outcome: "dispatched",
     kind: "command",
-    result: await input.input.runCommand(CommandType.AuthorContextPackAdvisoryPromotionDecision, actionCommand.value, actionSlot),
+    result: await input.input.runCommand(
+      CommandType.AuthorContextPackAdvisoryPromotionDecision,
+      actionCommand.value,
+      actionSlot,
+    ),
   };
   input.input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
   return {
@@ -1227,7 +1246,11 @@ async function loadContextPackRefreshDecision(
   input: Pick<AgentCliCycleInput, "loadLatestContextPackSnapshot" | "now">,
   snapshot: AgentObserveSnapshot,
 ): Promise<{ ok: true; decision?: ContextPackRefreshDecision | undefined } | { ok: false; message: string }> {
-  if (input.loadLatestContextPackSnapshot === undefined || snapshot.organizationId === undefined || snapshot.agentId === undefined) {
+  if (
+    input.loadLatestContextPackSnapshot === undefined ||
+    snapshot.organizationId === undefined ||
+    snapshot.agentId === undefined
+  ) {
     return { ok: true };
   }
   try {
@@ -1378,8 +1401,8 @@ function createContextPackAdvisoryPromotionDecisionCommand(input: {
   args: ParsedAgentCliArgs & { contextAdvisoryPromotionDecision: AgentCliContextPackAdvisoryPromotionDecisionArgs };
   observed: { context: ContextReadout };
 }): { ok: true; value: unknown } | { ok: false; message: AgentCliContextPackAdvisoryPromotionErrorMessage } {
-  const item = input.observed.context.pack.items.find((candidate) =>
-    candidate.id === input.args.contextAdvisoryPromotionDecision.itemId
+  const item = input.observed.context.pack.items.find(
+    (candidate) => candidate.id === input.args.contextAdvisoryPromotionDecision.itemId,
   );
   if (item === undefined) {
     return { ok: false, message: AgentCliContextPackAdvisoryPromotionErrorMessage.ItemMissing };
@@ -1490,9 +1513,7 @@ function contextPackInboxWorkflowItemFor(
   workflow: ContextPackInboxWorkflowView,
   inboxAnchorId: string,
 ): ContextPackInboxWorkflowView["batches"][number]["items"][number] | undefined {
-  return workflow.batches
-    .flatMap((batch) => batch.items)
-    .find((item) => item.inboxAnchorId === inboxAnchorId);
+  return workflow.batches.flatMap((batch) => batch.items).find((item) => item.inboxAnchorId === inboxAnchorId);
 }
 
 function createContextPackInboxWorkflowActionSlot(
@@ -1538,22 +1559,15 @@ function menuWithContextPackActionSlot(menu: Menu16, actionSlot: Menu16Slot): Me
 }
 
 function contextPackAdvisoryPromotionDecisionEvidenceRefs(item: ContextPackItem): readonly string[] {
-  return uniqueSorted([
-    item.id,
-    item.sourceRef,
-    ...(item.citationRefs ?? []),
-  ]);
+  return uniqueSorted([item.id, item.sourceRef, ...(item.citationRefs ?? [])]);
 }
 
 function createOptionalMenuPage(page: Menu16["page"] | undefined): { page?: Menu16["page"] } {
   return page === undefined ? {} : { page };
 }
 
-function createOptionalCommandString<K extends string>(
-  key: K,
-  value: string | undefined,
-): { [P in K]?: string } {
-  return value === undefined ? {} : { [key]: value } as { [P in K]?: string };
+function createOptionalCommandString<K extends string>(key: K, value: string | undefined): { [P in K]?: string } {
+  return value === undefined ? {} : ({ [key]: value } as { [P in K]?: string });
 }
 
 function createMenuSelectionSurface(
@@ -1574,33 +1588,33 @@ function createMenuSelectionSurface(
   };
 }
 
-async function loadPromptFlowContextFromRequest(
-  request: PromptFlowContextRequest,
-): Promise<PromptFlowContext> {
+async function loadPromptFlowContextFromRequest(request: PromptFlowContextRequest): Promise<PromptFlowContext> {
   return {
     taskId: request.taskId,
     promptFlowId: request.promptFlowId,
     directions: request.directions,
     toolInjections: request.toolInjections,
     metrics: request.metrics,
-    contextArtifacts: request.contextArtifactRefs.map((ref): PromptFlowContextArtifact => ({
-      id: ref,
-      label: ref,
-      value: ref,
-    })),
+    contextArtifacts: request.contextArtifactRefs.map(
+      (ref): PromptFlowContextArtifact => ({
+        id: ref,
+        label: ref,
+        value: ref,
+      }),
+    ),
     ...copyPromptFlowRequestMetadata(request),
   };
 }
 
-function createOptionalScheduleBlocks(
-  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
-): { scheduleBlocks?: readonly WorkScheduleBlock[] } {
+function createOptionalScheduleBlocks(scheduleBlocks: readonly WorkScheduleBlock[] | undefined): {
+  scheduleBlocks?: readonly WorkScheduleBlock[];
+} {
   return scheduleBlocks === undefined ? {} : { scheduleBlocks };
 }
 
-function createOptionalAvailableSecretScopes(
-  availableSecretScopes: readonly string[] | undefined,
-): { availableSecretScopes?: readonly string[] } {
+function createOptionalAvailableSecretScopes(availableSecretScopes: readonly string[] | undefined): {
+  availableSecretScopes?: readonly string[];
+} {
   return availableSecretScopes === undefined ? {} : { availableSecretScopes };
 }
 
@@ -1674,7 +1688,9 @@ function materializeCommand(
   };
 }
 
-function createOptionalObserveLifecyclePolicyContext(actionType: string): { policyContext?: { toolType: ActionClass } } {
+function createOptionalObserveLifecyclePolicyContext(actionType: string): {
+  policyContext?: { toolType: ActionClass };
+} {
   const toolType = ACTION_CLASS_FOR_OBSERVE_LIFECYCLE[actionType];
   return toolType === undefined ? {} : { policyContext: { toolType } };
 }
@@ -1707,7 +1723,9 @@ function createAgentCliCycleEvidence(
     ...selectedCommandEvidence(menu, selection.index),
     ...createOptionalEvidenceNumber("promptFlowPage", menu.page?.promptFlows?.page),
     ...selectedPromptFlowEvidence(menu, selection.index),
-    ...(actionResult?.outcome === "reobserve" ? createOptionalEvidenceNumber("reobservePromptFlowPage", actionResult.menuPage?.promptFlows) : {}),
+    ...(actionResult?.outcome === "reobserve"
+      ? createOptionalEvidenceNumber("reobservePromptFlowPage", actionResult.menuPage?.promptFlows)
+      : {}),
     ...contextPackEvidence(context),
     ...contextPackRefreshEvidence(contextRefresh),
     promptFlowIds: uniqueSorted([
@@ -1735,7 +1753,9 @@ function contextPackRefreshEvidence(
   };
 }
 
-function contextPackEvidence(context: ContextReadout): Pick<
+function contextPackEvidence(
+  context: ContextReadout,
+): Pick<
   AgentCliCycleEvidence,
   | "contextPackId"
   | "contextPackStatus"
@@ -1766,9 +1786,9 @@ function contextPackEvidence(context: ContextReadout): Pick<
     contextSourceGraphVersion: context.pack.sourceGraphVersion,
     contextPolicyVersion: context.pack.policyVersion,
     contextCurationStages: uniqueSorted(context.pack.curationTrace.map((stage) => stage.stage)),
-    contextSourcePointerRefs: uniqueSorted(context.pack.items.flatMap((item) =>
-      (item.sourcePointers ?? []).map(contextSourcePointerEvidenceRef),
-    )),
+    contextSourcePointerRefs: uniqueSorted(
+      context.pack.items.flatMap((item) => (item.sourcePointers ?? []).map(contextSourcePointerEvidenceRef)),
+    ),
   };
 }
 
@@ -1894,9 +1914,11 @@ function selectedStatusEvidence(
     statusSignalKind: actionResult.status.kind,
     statusScope: actionResult.status.scope,
     statusPhase: actionResult.status.phase,
-    ...(actionResult.status.hierarchy === undefined ? {} : {
-      statusHierarchyPriorityScope: actionResult.status.hierarchy.priorityScope,
-    }),
+    ...(actionResult.status.hierarchy === undefined
+      ? {}
+      : {
+          statusHierarchyPriorityScope: actionResult.status.hierarchy.priorityScope,
+        }),
   };
 }
 
@@ -1912,27 +1934,18 @@ function selectedPromptFlowEvidence(
   };
 }
 
-function selectedCommandEvidence(
-  menu: Menu16,
-  selectedIndex: number,
-): { selectedCommandType?: string } {
+function selectedCommandEvidence(menu: Menu16, selectedIndex: number): { selectedCommandType?: string } {
   const selected = menu.slots.find((slot) => slot.index === selectedIndex);
   return selected?.impl?.kind === "command" ? { selectedCommandType: selected.impl.commandType } : {};
 }
 
-function selectedImplKindEvidence(
-  menu: Menu16,
-  selectedIndex: number,
-): { selectedImplKind?: string } {
+function selectedImplKindEvidence(menu: Menu16, selectedIndex: number): { selectedImplKind?: string } {
   const selected = menu.slots.find((slot) => slot.index === selectedIndex);
   return selected?.impl?.kind === undefined ? {} : { selectedImplKind: selected.impl.kind };
 }
 
-function createOptionalEvidenceNumber<K extends string>(
-  key: K,
-  value: number | undefined,
-): { [P in K]?: number } {
-  return value === undefined ? {} : { [key]: value } as { [P in K]?: number };
+function createOptionalEvidenceNumber<K extends string>(key: K, value: number | undefined): { [P in K]?: number } {
+  return value === undefined ? {} : ({ [key]: value } as { [P in K]?: number });
 }
 
 function uniqueSorted(values: readonly string[]): readonly string[] {
@@ -1944,7 +1957,7 @@ function buildMenuSelectorPrompt(selectable: readonly Menu16Slot[], surface: Men
     "Selectable slots:",
     ...selectable.map((slot) => `[${String(slot.index).padStart(2, "0")}] ${slot.direction} ${slot.label}`),
     ...formatMenuSelectionSurface(surface),
-    "Return exactly this JSON shape: {\"slot\": <one listed integer>, \"reason\": \"short reason\"}.",
+    'Return exactly this JSON shape: {"slot": <one listed integer>, "reason": "short reason"}.',
   ].join("\n");
 }
 
@@ -1968,12 +1981,12 @@ function formatSelectorContext(context: ContextReadout | undefined): readonly st
   ];
 }
 
-function formatSelectorContextItems(label: string, items: readonly ContextReadout["requiredItems"][number][]): readonly string[] {
+function formatSelectorContextItems(
+  label: string,
+  items: readonly ContextReadout["requiredItems"][number][],
+): readonly string[] {
   if (items.length === 0) return [];
-  return [
-    label,
-    ...items.slice(0, 5).map((item) => `- ${item.kind} ${item.id}: ${item.title}`),
-  ];
+  return [label, ...items.slice(0, 5).map((item) => `- ${item.kind} ${item.id}: ${item.title}`)];
 }
 
 function formatSelectorAttentionLanes(context: ContextReadout): readonly string[] {
@@ -1981,8 +1994,9 @@ function formatSelectorAttentionLanes(context: ContextReadout): readonly string[
   if (lanes.length === 0) return [];
   return [
     "Attention lanes:",
-    ...lanes.map((lane) =>
-      `- ${lane.kind} priority=${lane.priority} required=${String(lane.required)} refs=${formatAttentionLaneRefs(lane.refs)} objective=${lane.objective}`
+    ...lanes.map(
+      (lane) =>
+        `- ${lane.kind} priority=${lane.priority} required=${String(lane.required)} refs=${formatAttentionLaneRefs(lane.refs)} objective=${lane.objective}`,
     ),
     ...formatSelectorAttentionLaneDetails(context),
   ];
@@ -1991,13 +2005,11 @@ function formatSelectorAttentionLanes(context: ContextReadout): readonly string[
 function formatSelectorAttentionLaneDetails(context: ContextReadout): readonly string[] {
   const lanes = context.pack.curationPlan?.lanes ?? [];
   if (lanes.length === 0) return [];
-  const details = lanes
-    .flatMap((lane) => lane.refs.slice(0, 3).map((ref) => formatSelectorAttentionLaneRefDetail(lane.kind, ref, context)));
+  const details = lanes.flatMap((lane) =>
+    lane.refs.slice(0, 3).map((ref) => formatSelectorAttentionLaneRefDetail(lane.kind, ref, context)),
+  );
   if (details.length === 0) return [];
-  return [
-    "Attention lane details:",
-    ...details,
-  ];
+  return ["Attention lane details:", ...details];
 }
 
 function formatSelectorAttentionLaneRefDetail(
@@ -2013,8 +2025,8 @@ function formatSelectorAttentionLaneRefDetail(
         : `- lane=${laneKind} item ${item.kind} ${item.id}: ${item.title}`;
     }
     case ContextPackAttentionLaneRefKind.Omission: {
-      const omission = context.omittedItemsWithReason.find((candidate) =>
-        candidate.nodeId === ref.omissionRef || `omission:${candidate.reason}` === ref.omissionRef
+      const omission = context.omittedItemsWithReason.find(
+        (candidate) => candidate.nodeId === ref.omissionRef || `omission:${candidate.reason}` === ref.omissionRef,
       );
       return omission === undefined
         ? `- lane=${laneKind} missing omission ${ref.omissionRef}`
@@ -2031,11 +2043,16 @@ function formatSelectorInboxWorkflow(inboxWorkflow: ContextPackInboxWorkflowView
   if (inboxWorkflow === undefined) return [];
   return [
     `Inbox workflow: total=${inboxWorkflow.summary.totalVisibleCount} urgent=${inboxWorkflow.summary.urgentUnreadCount} normal=${inboxWorkflow.summary.normalUnreadCount} due=${inboxWorkflow.summary.snoozedDueCount} future=${inboxWorkflow.summary.snoozedFutureCount} read=${inboxWorkflow.summary.readCount}`,
-    ...inboxWorkflow.batches.flatMap((batch) =>
-      batch.items.slice(0, 3).map((item) =>
-        `- ${batch.kind} ${item.inboxAnchorId} ${item.priority}/${item.status}${formatInboxWorkflowSnooze(item)}: ${item.title} actions=${item.actions.map((action) => action.kind).join(",")}`
+    ...inboxWorkflow.batches
+      .flatMap((batch) =>
+        batch.items
+          .slice(0, 3)
+          .map(
+            (item) =>
+              `- ${batch.kind} ${item.inboxAnchorId} ${item.priority}/${item.status}${formatInboxWorkflowSnooze(item)}: ${item.title} actions=${item.actions.map((action) => action.kind).join(",")}`,
+          ),
       )
-    ).slice(0, 5),
+      .slice(0, 5),
   ];
 }
 
@@ -2043,7 +2060,9 @@ function formatSelectorMetrics(metrics: ScopedReadout | undefined): readonly str
   if (metrics === undefined || metrics.blocks.length === 0) return [];
   return [
     "Metrics:",
-    ...metrics.blocks.slice(0, 5).map((block) => `- ${block.label}: ${block.value}${block.unit === undefined ? "" : ` ${block.unit}`}`),
+    ...metrics.blocks
+      .slice(0, 5)
+      .map((block) => `- ${block.label}: ${block.value}${block.unit === undefined ? "" : ` ${block.unit}`}`),
   ];
 }
 
@@ -2100,16 +2119,11 @@ function parseModelSelectedIndex(
   return { ok: true, index };
 }
 
-function normalizeMenuSelectionResult(
-  output: MenuSelectorOutput,
-  defaultReason: string,
-): MenuSelectionResult {
+function normalizeMenuSelectionResult(output: MenuSelectorOutput, defaultReason: string): MenuSelectionResult {
   return typeof output === "number" ? { index: output, reason: defaultReason } : output;
 }
 
-function createOptionalRejectedIndex(
-  rejectedIndex: number | undefined,
-): { rejectedIndex?: number } {
+function createOptionalRejectedIndex(rejectedIndex: number | undefined): { rejectedIndex?: number } {
   return rejectedIndex === undefined ? {} : { rejectedIndex };
 }
 
@@ -2128,9 +2142,7 @@ function isLifecycleTransitionPayload(value: unknown): value is LifecycleTransit
   );
 }
 
-function isSupervisorSignalPayload(
-  value: unknown,
-): value is {
+function isSupervisorSignalPayload(value: unknown): value is {
   targetHatAssignmentId: string;
   title: string;
   message: string;
@@ -2149,15 +2161,20 @@ function isSupervisorSignalPayload(
   );
 }
 
-function parseTenantContextPackCurationPreview(
-  values: { flags: Map<string, string>; booleans: Set<string> },
-): { ok: true; value?: AgentCliTenantContextPackCurationPreviewArgs | undefined } | { ok: false; message: string } {
+function parseTenantContextPackCurationPreview(values: {
+  flags: Map<string, string>;
+  booleans: Set<string>;
+}): { ok: true; value?: AgentCliTenantContextPackCurationPreviewArgs | undefined } | { ok: false; message: string } {
   const previewRequested = values.booleans.has(AgentCliTenantContextPackCurationFlag.Preview);
   const profileValue = values.flags.get(AgentCliTenantContextPackCurationFlag.Profile);
   const requiredLaneValue = values.flags.get(AgentCliTenantContextPackCurationFlag.RequiredLane);
   const lanePriorityValue = values.flags.get(AgentCliTenantContextPackCurationFlag.LanePriority);
-  const deterministicInstructionValue = values.flags.get(AgentCliTenantContextPackCurationFlag.DeterministicInstruction);
-  const blockInheritedInstructions = values.booleans.has(AgentCliTenantContextPackCurationFlag.BlockInheritedInstructions);
+  const deterministicInstructionValue = values.flags.get(
+    AgentCliTenantContextPackCurationFlag.DeterministicInstruction,
+  );
+  const blockInheritedInstructions = values.booleans.has(
+    AgentCliTenantContextPackCurationFlag.BlockInheritedInstructions,
+  );
   if (
     !previewRequested &&
     profileValue === undefined &&
@@ -2169,7 +2186,10 @@ function parseTenantContextPackCurationPreview(
     return { ok: true };
   }
   if (!previewRequested) {
-    return { ok: false, message: `--${AgentCliTenantContextPackCurationFlag.Preview} is required for context curation authoring flags` };
+    return {
+      ok: false,
+      message: `--${AgentCliTenantContextPackCurationFlag.Preview} is required for context curation authoring flags`,
+    };
   }
 
   const policy: TenantContextPackCurationPolicy = {};
@@ -2181,7 +2201,10 @@ function parseTenantContextPackCurationPreview(
   }
   if (requiredLaneValue !== undefined) {
     if (!isTenantContextPackCurationLaneKind(requiredLaneValue)) {
-      return { ok: false, message: `unknown --${AgentCliTenantContextPackCurationFlag.RequiredLane} '${requiredLaneValue}'` };
+      return {
+        ok: false,
+        message: `unknown --${AgentCliTenantContextPackCurationFlag.RequiredLane} '${requiredLaneValue}'`,
+      };
     }
     policy.requiredLanes = [requiredLaneValue as TenantContextPackCurationLaneKind];
   }
@@ -2192,7 +2215,10 @@ function parseTenantContextPackCurationPreview(
   }
   if (deterministicInstructionValue !== undefined) {
     if (!isTenantContextPackCurationInstruction(deterministicInstructionValue)) {
-      return { ok: false, message: `unknown --${AgentCliTenantContextPackCurationFlag.DeterministicInstruction} '${deterministicInstructionValue}'` };
+      return {
+        ok: false,
+        message: `unknown --${AgentCliTenantContextPackCurationFlag.DeterministicInstruction} '${deterministicInstructionValue}'`,
+      };
     }
     policy.deterministicInstructions = [deterministicInstructionValue as TenantContextPackCurationInstruction];
   }
@@ -2206,32 +2232,52 @@ function parseTenantContextPackCurationLanePriority(
   value: string,
 ): { ok: true; kind: TenantContextPackCurationLaneKind; priority: number } | { ok: false; message: string } {
   const [kind, priorityValue, extra] = value.split(AGENT_CLI_TENANT_CONTEXT_PACK_LANE_PRIORITY_SEPARATOR);
-  if (kind === undefined || priorityValue === undefined || extra !== undefined || !isTenantContextPackCurationLaneKind(kind)) {
-    return { ok: false, message: `--${AgentCliTenantContextPackCurationFlag.LanePriority} must be <lane>=<non-negative-integer>` };
+  if (
+    kind === undefined ||
+    priorityValue === undefined ||
+    extra !== undefined ||
+    !isTenantContextPackCurationLaneKind(kind)
+  ) {
+    return {
+      ok: false,
+      message: `--${AgentCliTenantContextPackCurationFlag.LanePriority} must be <lane>=<non-negative-integer>`,
+    };
   }
   const priority = Number.parseInt(priorityValue, 10);
   if (!Number.isInteger(priority) || priority < 0 || String(priority) !== priorityValue) {
-    return { ok: false, message: `--${AgentCliTenantContextPackCurationFlag.LanePriority} priority must be a non-negative integer` };
+    return {
+      ok: false,
+      message: `--${AgentCliTenantContextPackCurationFlag.LanePriority} priority must be a non-negative integer`,
+    };
   }
   return { ok: true, kind: kind as TenantContextPackCurationLaneKind, priority };
 }
 
-function parseTenantContextPackCompletenessPreview(
-  values: { flags: Map<string, string>; booleans: Set<string> },
-): { ok: true; value?: AgentCliTenantContextPackCompletenessPreviewArgs | undefined } | { ok: false; message: string } {
+function parseTenantContextPackCompletenessPreview(values: {
+  flags: Map<string, string>;
+  booleans: Set<string>;
+}):
+  | { ok: true; value?: AgentCliTenantContextPackCompletenessPreviewArgs | undefined }
+  | { ok: false; message: string } {
   const previewRequested = values.booleans.has(AgentCliTenantContextPackCompletenessFlag.Preview);
   const requirementSetValue = values.flags.get(AgentCliTenantContextPackCompletenessFlag.RequirementSet);
   if (!previewRequested && requirementSetValue === undefined) {
     return { ok: true };
   }
   if (!previewRequested) {
-    return { ok: false, message: `--${AgentCliTenantContextPackCompletenessFlag.Preview} is required for context completeness authoring flags` };
+    return {
+      ok: false,
+      message: `--${AgentCliTenantContextPackCompletenessFlag.Preview} is required for context completeness authoring flags`,
+    };
   }
   if (requirementSetValue === undefined) {
     return { ok: true, value: { policy: {} } };
   }
   if (!isTenantContextPackCompletenessRequirementSetId(requirementSetValue)) {
-    return { ok: false, message: `unknown --${AgentCliTenantContextPackCompletenessFlag.RequirementSet} '${requirementSetValue}'` };
+    return {
+      ok: false,
+      message: `unknown --${AgentCliTenantContextPackCompletenessFlag.RequirementSet} '${requirementSetValue}'`,
+    };
   }
   return {
     ok: true,
@@ -2246,26 +2292,36 @@ function parseTenantContextPackCompletenessPreview(
 function isTenantContextPackCompletenessRequirementSetId(
   value: string,
 ): value is TenantContextPackCompletenessRequirementSetIdType {
-  return Object.values(TenantContextPackCompletenessRequirementSetId)
-    .includes(value as TenantContextPackCompletenessRequirementSetIdType);
+  return Object.values(TenantContextPackCompletenessRequirementSetId).includes(
+    value as TenantContextPackCompletenessRequirementSetIdType,
+  );
 }
 
-function parseTenantContextPackSynthesisRequirementPreview(
-  values: { flags: Map<string, string>; booleans: Set<string> },
-): { ok: true; value?: AgentCliTenantContextPackSynthesisRequirementPreviewArgs | undefined } | { ok: false; message: string } {
+function parseTenantContextPackSynthesisRequirementPreview(values: {
+  flags: Map<string, string>;
+  booleans: Set<string>;
+}):
+  | { ok: true; value?: AgentCliTenantContextPackSynthesisRequirementPreviewArgs | undefined }
+  | { ok: false; message: string } {
   const previewRequested = values.booleans.has(AgentCliTenantContextPackSynthesisRequirementFlag.Preview);
   const requirementSetValue = values.flags.get(AgentCliTenantContextPackSynthesisRequirementFlag.RequirementSet);
   if (!previewRequested && requirementSetValue === undefined) {
     return { ok: true };
   }
   if (!previewRequested) {
-    return { ok: false, message: `--${AgentCliTenantContextPackSynthesisRequirementFlag.Preview} is required for context synthesis-requirement authoring flags` };
+    return {
+      ok: false,
+      message: `--${AgentCliTenantContextPackSynthesisRequirementFlag.Preview} is required for context synthesis-requirement authoring flags`,
+    };
   }
   if (requirementSetValue === undefined) {
     return { ok: true, value: { policy: {} } };
   }
   if (!isTenantContextPackSynthesisRequirementSetId(requirementSetValue)) {
-    return { ok: false, message: `unknown --${AgentCliTenantContextPackSynthesisRequirementFlag.RequirementSet} '${requirementSetValue}'` };
+    return {
+      ok: false,
+      message: `unknown --${AgentCliTenantContextPackSynthesisRequirementFlag.RequirementSet} '${requirementSetValue}'`,
+    };
   }
   return {
     ok: true,
@@ -2280,13 +2336,17 @@ function parseTenantContextPackSynthesisRequirementPreview(
 function isTenantContextPackSynthesisRequirementSetId(
   value: string,
 ): value is TenantContextPackSynthesisRequirementSetIdType {
-  return Object.values(TenantContextPackSynthesisRequirementSetId)
-    .includes(value as TenantContextPackSynthesisRequirementSetIdType);
+  return Object.values(TenantContextPackSynthesisRequirementSetId).includes(
+    value as TenantContextPackSynthesisRequirementSetIdType,
+  );
 }
 
-function parseContextPackAdvisoryPromotionDecision(
-  values: { flags: Map<string, string>; booleans: Set<string> },
-): { ok: true; value?: AgentCliContextPackAdvisoryPromotionDecisionArgs | undefined } | { ok: false; message: string } {
+function parseContextPackAdvisoryPromotionDecision(values: {
+  flags: Map<string, string>;
+  booleans: Set<string>;
+}):
+  | { ok: true; value?: AgentCliContextPackAdvisoryPromotionDecisionArgs | undefined }
+  | { ok: false; message: string } {
   const itemId = values.flags.get(AgentCliContextPackAdvisoryPromotionFlag.Item);
   const statusValue = values.flags.get(AgentCliContextPackAdvisoryPromotionFlag.Status);
   const lifecycleBlocker = values.flags.get(AgentCliContextPackAdvisoryPromotionFlag.Blocker);
@@ -2315,11 +2375,14 @@ function parseContextPackAdvisoryPromotionDecision(
 function isContextPackAdvisoryPromotionDecisionStatus(
   value: string,
 ): value is ContextPackAdvisoryPromotionDecisionStatusType {
-  return Object.values(ContextPackAdvisoryPromotionDecisionStatus)
-    .includes(value as ContextPackAdvisoryPromotionDecisionStatusType);
+  return Object.values(ContextPackAdvisoryPromotionDecisionStatus).includes(
+    value as ContextPackAdvisoryPromotionDecisionStatusType,
+  );
 }
 
-function parseFlags(args: readonly string[]): { ok: true; flags: Map<string, string>; booleans: Set<string> } | { ok: false; message: string } {
+function parseFlags(
+  args: readonly string[],
+): { ok: true; flags: Map<string, string>; booleans: Set<string> } | { ok: false; message: string } {
   const flags = new Map<string, string>();
   const booleans = new Set<string>();
   for (let index = 0; index < args.length; index += 1) {
@@ -2361,8 +2424,9 @@ function parseRunLifecyclePhase(value: string): RunLifecyclePhase | undefined {
 function parseContextPackInboxWorkflowActionKind(
   value: string | undefined,
 ): ContextPackInboxWorkflowActionKindType | undefined {
-  return value !== undefined && Object.values(ContextPackInboxWorkflowActionKind).includes(value as ContextPackInboxWorkflowActionKindType)
-    ? value as ContextPackInboxWorkflowActionKindType
+  return value !== undefined &&
+    Object.values(ContextPackInboxWorkflowActionKind).includes(value as ContextPackInboxWorkflowActionKindType)
+    ? (value as ContextPackInboxWorkflowActionKindType)
     : undefined;
 }
 
@@ -2410,21 +2474,21 @@ function createOptionalContextPackAdvisoryPromotionDecision(
   return decision === undefined ? {} : { contextAdvisoryPromotionDecision: decision };
 }
 
-function createOptionalMetricAgents(
-  metricAgents: readonly ScopedMetricAgent[] | undefined,
-): { metricAgents?: readonly ScopedMetricAgent[] } {
+function createOptionalMetricAgents(metricAgents: readonly ScopedMetricAgent[] | undefined): {
+  metricAgents?: readonly ScopedMetricAgent[];
+} {
   return metricAgents === undefined ? {} : { metricAgents };
 }
 
-function createOptionalPromptFlowTasks(
-  promptFlowTasks: readonly PromptFlowTask[] | undefined,
-): { promptFlowTasks?: readonly PromptFlowTask[] } {
+function createOptionalPromptFlowTasks(promptFlowTasks: readonly PromptFlowTask[] | undefined): {
+  promptFlowTasks?: readonly PromptFlowTask[];
+} {
   return promptFlowTasks === undefined ? {} : { promptFlowTasks };
 }
 
-function createOptionalContextPackBuilder(
-  contextPackBuilder: ContextPackBuilderPort | undefined,
-): { contextPackBuilder?: ContextPackBuilderPort } {
+function createOptionalContextPackBuilder(contextPackBuilder: ContextPackBuilderPort | undefined): {
+  contextPackBuilder?: ContextPackBuilderPort;
+} {
   return contextPackBuilder === undefined ? {} : { contextPackBuilder };
 }
 
@@ -2434,21 +2498,21 @@ function createOptionalContextPackReadinessPolicy(
   return contextPackReadinessPolicy === undefined ? {} : { contextPackReadinessPolicy };
 }
 
-function createOptionalContextPackWakeContext(
-  contextRefresh: ContextPackRefreshDecision | undefined,
-): { contextPackWakeContext?: ContextPackRefreshDecision } {
+function createOptionalContextPackWakeContext(contextRefresh: ContextPackRefreshDecision | undefined): {
+  contextPackWakeContext?: ContextPackRefreshDecision;
+} {
   return contextRefresh === undefined ? {} : { contextPackWakeContext: contextRefresh };
 }
 
-function createOptionalContextReadinessEnforcement(
-  enforceContextReadiness: boolean | undefined,
-): { enforceContextReadiness?: boolean } {
+function createOptionalContextReadinessEnforcement(enforceContextReadiness: boolean | undefined): {
+  enforceContextReadiness?: boolean;
+} {
   return enforceContextReadiness === undefined ? {} : { enforceContextReadiness };
 }
 
-function createOptionalInboxWorkflow(
-  inboxWorkflow: ContextPackInboxWorkflowView | undefined,
-): { inboxWorkflow?: ContextPackInboxWorkflowView } {
+function createOptionalInboxWorkflow(inboxWorkflow: ContextPackInboxWorkflowView | undefined): {
+  inboxWorkflow?: ContextPackInboxWorkflowView;
+} {
   return inboxWorkflow === undefined ? {} : { inboxWorkflow };
 }
 
@@ -2458,15 +2522,13 @@ function createOptionalContextPackAdvisoryPromotionDecisions(
   return advisoryPromotionDecisions === undefined ? {} : { advisoryPromotionDecisions };
 }
 
-function createOptionalHierarchy(
-  hierarchy: HierarchySnapshot | undefined,
-): { hierarchy?: HierarchySnapshot } {
+function createOptionalHierarchy(hierarchy: HierarchySnapshot | undefined): { hierarchy?: HierarchySnapshot } {
   return hierarchy === undefined ? {} : { hierarchy };
 }
 
-function createOptionalDeterministicRules(
-  deterministicRules: readonly DeterministicRule[] | undefined,
-): { deterministicRules?: readonly DeterministicRule[] } {
+function createOptionalDeterministicRules(deterministicRules: readonly DeterministicRule[] | undefined): {
+  deterministicRules?: readonly DeterministicRule[];
+} {
   return deterministicRules === undefined ? {} : { deterministicRules };
 }
 
@@ -2507,9 +2569,7 @@ function formatContextReadout(
   ];
 }
 
-function formatContextPackInboxWorkflow(
-  inboxWorkflow: ContextPackInboxWorkflowView | undefined,
-): readonly string[] {
+function formatContextPackInboxWorkflow(inboxWorkflow: ContextPackInboxWorkflowView | undefined): readonly string[] {
   if (inboxWorkflow === undefined) return ["inbox workflow: unavailable"];
   return [
     `inbox workflow: total=${inboxWorkflow.summary.totalVisibleCount} urgent=${inboxWorkflow.summary.urgentUnreadCount} normal=${inboxWorkflow.summary.normalUnreadCount} due=${inboxWorkflow.summary.snoozedDueCount} future=${inboxWorkflow.summary.snoozedFutureCount} read=${inboxWorkflow.summary.readCount}`,
@@ -2517,20 +2577,17 @@ function formatContextPackInboxWorkflow(
   ];
 }
 
-function formatContextPackInboxWorkflowBatches(
-  inboxWorkflow: ContextPackInboxWorkflowView,
-): readonly string[] {
+function formatContextPackInboxWorkflowBatches(inboxWorkflow: ContextPackInboxWorkflowView): readonly string[] {
   if (inboxWorkflow.batches.length === 0) return ["- no inbox workflow items"];
   return inboxWorkflow.batches.flatMap((batch) =>
-    batch.items.map((item) =>
-      `- inbox ${batch.kind} ${item.inboxAnchorId} ${item.priority}/${item.status}${formatInboxWorkflowSnooze(item)} ${item.title} actions=${item.actions.map((action) => action.kind).join(",")}`
-    )
+    batch.items.map(
+      (item) =>
+        `- inbox ${batch.kind} ${item.inboxAnchorId} ${item.priority}/${item.status}${formatInboxWorkflowSnooze(item)} ${item.title} actions=${item.actions.map((action) => action.kind).join(",")}`,
+    ),
   );
 }
 
-function formatInboxWorkflowSnooze(
-  item: ContextPackInboxWorkflowView["batches"][number]["items"][number],
-): string {
+function formatInboxWorkflowSnooze(item: ContextPackInboxWorkflowView["batches"][number]["items"][number]): string {
   return item.snoozedUntil === undefined ? "" : ` until=${item.snoozedUntil}`;
 }
 
@@ -2539,8 +2596,9 @@ function formatContextAttentionLanes(context: ContextReadout): readonly string[]
   if (lanes.length === 0) return ["- no context attention lanes"];
   return [
     "context attention lanes:",
-    ...lanes.map((lane) =>
-      `- attention lane ${lane.kind} priority=${lane.priority} required=${String(lane.required)}: ${lane.objective}; refs=${formatAttentionLaneRefs(lane.refs)}`
+    ...lanes.map(
+      (lane) =>
+        `- attention lane ${lane.kind} priority=${lane.priority} required=${String(lane.required)}: ${lane.objective}; refs=${formatAttentionLaneRefs(lane.refs)}`,
     ),
     ...formatContextAttentionInstructions(context.pack.curationPlan?.deterministicInstructions ?? []),
   ];
@@ -2556,16 +2614,15 @@ function formatContextDrillTargetGroups(context: ContextReadout): readonly strin
   return [
     "context drill targets:",
     ...context.drillTargetGroups.flatMap((group) =>
-      group.targets.map((target) =>
-        `- context drill ${group.itemId} ${target.routeRef} ${target.label}${formatContextDrillGovernance(target)}`
-      )
+      group.targets.map(
+        (target) =>
+          `- context drill ${group.itemId} ${target.routeRef} ${target.label}${formatContextDrillGovernance(target)}`,
+      ),
     ),
   ];
 }
 
-function formatContextDrillGovernance(
-  target: ContextReadout["drillTargetGroups"][number]["targets"][number],
-): string {
+function formatContextDrillGovernance(target: ContextReadout["drillTargetGroups"][number]["targets"][number]): string {
   if (target.governance === undefined) return "";
   return ` governance=${target.governance.tier}/${target.governance.phase} weight=${target.governance.weight} floor=${target.governance.readFloor}`;
 }
@@ -2588,10 +2645,7 @@ function formatAttentionLaneRef(ref: ContextPackAttentionLaneRef): string {
   }
 }
 
-function formatContextItems(
-  label: string,
-  items: ContextReadout["requiredItems"],
-): readonly string[] {
+function formatContextItems(label: string, items: ContextReadout["requiredItems"]): readonly string[] {
   if (items.length === 0) return [`- no ${label} context items`];
   return items.map((item) => `- ${label} context ${item.kind} ${item.id}: ${item.title}`);
 }
@@ -2644,9 +2698,10 @@ function contextPackAdvisoryPromotionApprovedDecisionFor(
   advisoryPromotionDecisions: readonly ContextPackAdvisoryPromotionDecision[],
 ): ContextPackAdvisoryPromotionDecision | undefined {
   const fingerprint = contextPackAdvisoryPromotionFingerprint(item);
-  return advisoryPromotionDecisions.find((decision) =>
-    decision.status === ContextPackAdvisoryPromotionDecisionStatus.Approved &&
-    contextPackAdvisoryPromotionFingerprintsMatch(decision.fingerprint, fingerprint)
+  return advisoryPromotionDecisions.find(
+    (decision) =>
+      decision.status === ContextPackAdvisoryPromotionDecisionStatus.Approved &&
+      contextPackAdvisoryPromotionFingerprintsMatch(decision.fingerprint, fingerprint),
   );
 }
 
@@ -2654,10 +2709,12 @@ function contextPackAdvisoryPromotionFingerprintsMatch(
   expected: ContextPackAdvisoryPromotionFingerprint,
   actual: ContextPackAdvisoryPromotionFingerprint,
 ): boolean {
-  return expected.itemKind === actual.itemKind &&
+  return (
+    expected.itemKind === actual.itemKind &&
     expected.summaryHash === actual.summaryHash &&
     stringArraysMatch(expected.citationRefs, actual.citationRefs) &&
-    stringArraysMatch(expected.sourcePointerKeys, actual.sourcePointerKeys);
+    stringArraysMatch(expected.sourcePointerKeys, actual.sourcePointerKeys)
+  );
 }
 
 function stringArraysMatch(left: readonly string[], right: readonly string[]): boolean {
@@ -2681,8 +2738,9 @@ function formatContextAdvisoryPromotionCommandHint(item: ContextPackItem): strin
 
 function formatContextOmissions(omissions: ContextReadout["omittedItemsWithReason"]): readonly string[] {
   if (omissions.length === 0) return ["- no context omissions"];
-  return omissions.map((omission) =>
-    `- context omission ${omission.reason}${omission.nodeId === undefined ? "" : ` ${omission.nodeId}`}: ${omission.message}`
+  return omissions.map(
+    (omission) =>
+      `- context omission ${omission.reason}${omission.nodeId === undefined ? "" : ` ${omission.nodeId}`}: ${omission.message}`,
   );
 }
 
@@ -2697,7 +2755,9 @@ function formatPromptFlowTasks(promptFlows: PromptFlowReadout | undefined): read
   }
   return [
     ...promptFlows.tasks.map((task) => `- ${task.taskId} ${task.promptFlowId} ${task.label}`),
-    ...promptFlows.vetoedTasks.map((vetoed) => `- ${vetoed.task.taskId} ${vetoed.task.promptFlowId} ${vetoed.task.label} (${vetoed.reason})`),
+    ...promptFlows.vetoedTasks.map(
+      (vetoed) => `- ${vetoed.task.taskId} ${vetoed.task.promptFlowId} ${vetoed.task.label} (${vetoed.reason})`,
+    ),
   ];
 }
 
@@ -2734,11 +2794,15 @@ function formatHierarchyMission(mission: HierarchyReadout["mission"]): readonly 
     `mission progress: ${mission.actualProgressPercent}% actual / ${mission.expectedProgressPercent}% expected`,
     `mission days remaining: ${mission.daysRemaining}`,
     ...mission.objectives.map((objective) => `- mission objective ${objective}`),
-    ...mission.nextMilestones.map((milestone) => `- mission milestone ${milestone.milestoneId} ${milestone.title} (${milestone.status})`),
+    ...mission.nextMilestones.map(
+      (milestone) => `- mission milestone ${milestone.milestoneId} ${milestone.title} (${milestone.status})`,
+    ),
     ...mission.metrics.map((metric) => `- mission metric ${metric.label}: ${metric.value}${metric.unit ?? ""}`),
     ...mission.lagSignals.map((signal) => `- mission lag ${signal.label}: ${signal.value}${signal.unit ?? ""}`),
     ...mission.correctiveActions.map((action) => `- mission corrective action ${action.kind}: ${action.label}`),
-    ...mission.vetoedCorrectiveActions.map((vetoed) => `- mission corrective action veto ${vetoed.action.kind}: ${vetoed.reason}`),
+    ...mission.vetoedCorrectiveActions.map(
+      (vetoed) => `- mission corrective action veto ${vetoed.action.kind}: ${vetoed.reason}`,
+    ),
   ];
 }
 
@@ -2793,8 +2857,10 @@ function formatWorkMarket(workMarket: WorkMarketReadout | undefined): readonly s
     `work market shards: ready=${workMarket.totalReadyShards} claimed=${workMarket.totalClaimedShards} stale=${workMarket.totalStaleClaims}`,
     ...workMarket.queues.flatMap((queue) => [
       `- queue ${queue.queueId} ${queue.scope.kind}:${queue.scope.id} ready=${queue.readyShardCount} claimed=${queue.claimedShardCount} stale=${queue.staleClaimCount}`,
-      ...queue.activeClaims.map((claim) =>
-        `- active claim ${claim.claimId} shard=${claim.shardId} owner=${claim.ownerAgentId} fence=${claim.fencingToken}`),
+      ...queue.activeClaims.map(
+        (claim) =>
+          `- active claim ${claim.claimId} shard=${claim.shardId} owner=${claim.ownerAgentId} fence=${claim.fencingToken}`,
+      ),
     ]),
   ];
 }
@@ -2838,7 +2904,9 @@ function copyPromptFlowRequestMetadata(request: PromptFlowContextRequest): Parti
     ...(request.definitionVersion !== undefined ? { definitionVersion: request.definitionVersion } : {}),
     ...(request.phaseId !== undefined ? { phaseId: request.phaseId } : {}),
     ...(request.runState !== undefined ? { runState: request.runState } : {}),
-    ...(request.permittedUniversalActions !== undefined ? { permittedUniversalActions: request.permittedUniversalActions } : {}),
+    ...(request.permittedUniversalActions !== undefined
+      ? { permittedUniversalActions: request.permittedUniversalActions }
+      : {}),
     ...(request.requiredEvidenceRefs !== undefined ? { requiredEvidenceRefs: request.requiredEvidenceRefs } : {}),
     ...(request.gate !== undefined ? { gate: request.gate } : {}),
     ...(request.reviewerHatIds !== undefined ? { reviewerHatIds: request.reviewerHatIds } : {}),
@@ -2882,9 +2950,7 @@ function formatToolInjections(tools: readonly PromptFlowToolInjection[]): readon
 }
 
 function formatContextArtifacts(artifacts: readonly PromptFlowContextArtifact[]): readonly string[] {
-  return artifacts.length === 0
-    ? ["- none"]
-    : artifacts.map((artifact) => `- ${artifact.label}: ${artifact.value}`);
+  return artifacts.length === 0 ? ["- none"] : artifacts.map((artifact) => `- ${artifact.label}: ${artifact.value}`);
 }
 
 function formatSlot(slot: Pick<Menu16Slot, "index" | "direction" | "label" | "availability" | "reason">): string {
@@ -2920,16 +2986,27 @@ function compileAgentCliPromptFlowTasksFromEnv(
 ): readonly PromptFlowTask[] {
   const definitionsRaw = input.env.AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON;
   const runsRaw = input.env.AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON;
-  if ((definitionsRaw === undefined || definitionsRaw.trim().length === 0) && (runsRaw === undefined || runsRaw.trim().length === 0)) {
+  if (
+    (definitionsRaw === undefined || definitionsRaw.trim().length === 0) &&
+    (runsRaw === undefined || runsRaw.trim().length === 0)
+  ) {
     return [];
   }
-  if (definitionsRaw === undefined || definitionsRaw.trim().length === 0 || runsRaw === undefined || runsRaw.trim().length === 0) {
-    throw new Error("AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON and AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON must be provided together");
+  if (
+    definitionsRaw === undefined ||
+    definitionsRaw.trim().length === 0 ||
+    runsRaw === undefined ||
+    runsRaw.trim().length === 0
+  ) {
+    throw new Error(
+      "AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON and AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON must be provided together",
+    );
   }
   const definitions = parsePromptFlowDefinitionsJson(definitionsRaw);
   const lintMessages = definitions.flatMap((definition) =>
-    lintPromptFlowDefinition(definition).map((diagnostic) =>
-      `${definition.promptFlowId}@${definition.version}${diagnostic.phaseId === undefined ? "" : `:${diagnostic.phaseId}`}:${diagnostic.code}`,
+    lintPromptFlowDefinition(definition).map(
+      (diagnostic) =>
+        `${definition.promptFlowId}@${definition.version}${diagnostic.phaseId === undefined ? "" : `:${diagnostic.phaseId}`}:${diagnostic.code}`,
     ),
   );
   if (lintMessages.length > 0) {
@@ -2952,7 +3029,9 @@ function parsePromptFlowDefinitionsJson(raw: string): readonly PromptFlowDefinit
   const definitions = parsed.map(parsePromptFlowDefinition);
   const duplicateDefinitionKeys = repeatedValues(definitions.map(promptFlowDefinitionKey));
   if (duplicateDefinitionKeys.length > 0) {
-    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON contains duplicate definition keys: ${duplicateDefinitionKeys.join(", ")}`);
+    throw new Error(
+      `AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON contains duplicate definition keys: ${duplicateDefinitionKeys.join(", ")}`,
+    );
   }
   return definitions;
 }
@@ -3012,7 +3091,9 @@ function parsePromptFlowDefinition(value: unknown): PromptFlowDefinition {
   };
   const duplicatePhaseIds = repeatedValues(definition.phases.map((phase) => phase.phaseId));
   if (duplicatePhaseIds.length > 0) {
-    throw new Error(`prompt-flow definition ${promptFlowDefinitionKey(definition)} contains duplicate phase ids: ${duplicatePhaseIds.join(", ")}`);
+    throw new Error(
+      `prompt-flow definition ${promptFlowDefinitionKey(definition)} contains duplicate phase ids: ${duplicatePhaseIds.join(", ")}`,
+    );
   }
   return definition;
 }
@@ -3034,20 +3115,17 @@ function parsePromptFlowRun(value: unknown): PromptFlowRun {
   };
 }
 
-function assertPromptFlowRunCompileCoverage(
-  runs: readonly PromptFlowRun[],
-  tasks: readonly PromptFlowTask[],
-): void {
+function assertPromptFlowRunCompileCoverage(runs: readonly PromptFlowRun[], tasks: readonly PromptFlowTask[]): void {
   const executableRunIds = new Set(
-    runs
-      .filter((run) => isExecutablePromptFlowRunState(run.state))
-      .map((run) => run.runId),
+    runs.filter((run) => isExecutablePromptFlowRunState(run.state)).map((run) => run.runId),
   );
   for (const task of tasks) {
     executableRunIds.delete(task.taskId);
   }
   if (executableRunIds.size > 0) {
-    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON failed compile coverage: ${[...executableRunIds].sort().join(", ")}`);
+    throw new Error(
+      `AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON failed compile coverage: ${[...executableRunIds].sort().join(", ")}`,
+    );
   }
 }
 
@@ -3106,7 +3184,13 @@ function parseWorkMarketScope(value: unknown): WorkMarketScope {
 }
 
 function parseWorkMarketShardability(value: unknown): HatWorkQueue["shardability"] {
-  if (value === "none" || value === "by_file" || value === "by_component" || value === "by_test_suite" || value === "manual") {
+  if (
+    value === "none" ||
+    value === "by_file" ||
+    value === "by_component" ||
+    value === "by_test_suite" ||
+    value === "manual"
+  ) {
     return value;
   }
   throw new Error("work-market queue shardability is invalid");
@@ -3120,9 +3204,14 @@ function parseWorkMarketReviewQuorum(value: unknown): HatWorkQueue["reviewQuorum
   return {
     requiredApprovals: parseWorkMarketPositiveInteger(quorum.requiredApprovals, "reviewQuorum.requiredApprovals"),
     reviewerHatIds: parseWorkMarketStringArray(quorum.reviewerHatIds, "reviewQuorum.reviewerHatIds"),
-    ...(quorum.allowProducerApproval === undefined ? {} : {
-      allowProducerApproval: parseWorkMarketBoolean(quorum.allowProducerApproval, "reviewQuorum.allowProducerApproval"),
-    }),
+    ...(quorum.allowProducerApproval === undefined
+      ? {}
+      : {
+          allowProducerApproval: parseWorkMarketBoolean(
+            quorum.allowProducerApproval,
+            "reviewQuorum.allowProducerApproval",
+          ),
+        }),
   };
 }
 
@@ -3143,10 +3232,14 @@ function parseWorkMarketShards(value: unknown): HatWorkQueue["shards"] {
       state: parseWorkShardState(shard.state),
       dependencyShardIds: parseWorkMarketStringArray(shard.dependencyShardIds, "dependencyShardIds"),
       mergePolicy: parseWorkShardMergePolicy(shard.mergePolicy),
-      ...(shard.claimedByClaimId === undefined ? {} : { claimedByClaimId: parseWorkMarketRequiredString(shard, "claimedByClaimId") }),
+      ...(shard.claimedByClaimId === undefined
+        ? {}
+        : { claimedByClaimId: parseWorkMarketRequiredString(shard, "claimedByClaimId") }),
       ...(shard.completedAt === undefined ? {} : { completedAt: parseWorkMarketRequiredString(shard, "completedAt") }),
       ...(shard.mergedAt === undefined ? {} : { mergedAt: parseWorkMarketRequiredString(shard, "mergedAt") }),
-      ...(shard.evidenceRefs === undefined ? {} : { evidenceRefs: parseWorkMarketStringArray(shard.evidenceRefs, "evidenceRefs") }),
+      ...(shard.evidenceRefs === undefined
+        ? {}
+        : { evidenceRefs: parseWorkMarketStringArray(shard.evidenceRefs, "evidenceRefs") }),
     };
   });
 }
@@ -3177,8 +3270,12 @@ function parseWorkMarketClaims(value: unknown): HatWorkQueue["claims"] {
       claimedAt: parseWorkMarketRequiredString(claim, "claimedAt"),
       ...(claim.completedAt === undefined ? {} : { completedAt: parseWorkMarketRequiredString(claim, "completedAt") }),
       ...(claim.releasedAt === undefined ? {} : { releasedAt: parseWorkMarketRequiredString(claim, "releasedAt") }),
-      ...(claim.releaseReason === undefined ? {} : { releaseReason: parseWorkMarketRequiredString(claim, "releaseReason") }),
-      ...(claim.evidenceRefs === undefined ? {} : { evidenceRefs: parseWorkMarketStringArray(claim.evidenceRefs, "evidenceRefs") }),
+      ...(claim.releaseReason === undefined
+        ? {}
+        : { releaseReason: parseWorkMarketRequiredString(claim, "releaseReason") }),
+      ...(claim.evidenceRefs === undefined
+        ? {}
+        : { evidenceRefs: parseWorkMarketStringArray(claim.evidenceRefs, "evidenceRefs") }),
     };
   });
 }
@@ -3268,7 +3365,9 @@ function parseWorkMarketQuorumOutcome(value: unknown): WorkMarketQuorumOutcome {
   throw new Error("work-market review outcome is invalid");
 }
 
-function parseWorkShardReviewRejectReason(value: unknown): NonNullable<NonNullable<HatWorkQueue["reviews"]>[number]["reason"]> {
+function parseWorkShardReviewRejectReason(
+  value: unknown,
+): NonNullable<NonNullable<HatWorkQueue["reviews"]>[number]["reason"]> {
   if (
     value === "self_only_review" ||
     value === "insufficient_quorum" ||
@@ -3294,7 +3393,10 @@ function parseWorkMarketRequiredString(candidate: Record<string, unknown>, prope
   return value;
 }
 
-function parseOptionalWorkMarketStringProperty(value: unknown, property: "priorityClass" | "slaDeadlineAt"): Partial<Pick<HatWorkQueue, "priorityClass" | "slaDeadlineAt">> {
+function parseOptionalWorkMarketStringProperty(
+  value: unknown,
+  property: "priorityClass" | "slaDeadlineAt",
+): Partial<Pick<HatWorkQueue, "priorityClass" | "slaDeadlineAt">> {
   if (value === undefined) return {};
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`work-market ${property} must be a non-empty string when present`);
@@ -3316,7 +3418,10 @@ function parseWorkMarketNumber(value: unknown, property: string): number {
   return value;
 }
 
-function parseOptionalWorkMarketNumberProperty(value: unknown, property: "revision"): Partial<Pick<HatWorkQueue, "revision">> {
+function parseOptionalWorkMarketNumberProperty(
+  value: unknown,
+  property: "revision",
+): Partial<Pick<HatWorkQueue, "revision">> {
   if (value === undefined) return {};
   return { [property]: parseWorkMarketNumber(value, property) };
 }
@@ -3521,7 +3626,13 @@ function parseHierarchyMissionMilestones(value: unknown): readonly HierarchyMiss
 }
 
 function parseHierarchyMissionStatus(value: unknown): HierarchyMission["status"] {
-  if (value === "on_track" || value === "at_risk" || value === "behind" || value === "blocked" || value === "complete") {
+  if (
+    value === "on_track" ||
+    value === "at_risk" ||
+    value === "behind" ||
+    value === "blocked" ||
+    value === "complete"
+  ) {
     return value;
   }
   throw new Error("hierarchy mission requires valid status");
@@ -3574,7 +3685,14 @@ function parseHierarchyInitiativeStatus(value: unknown): HierarchyInitiative["st
 }
 
 function parseHierarchyWorkBatchStatus(value: unknown): HierarchyWorkBatch["status"] {
-  if (value === "active" || value === "scheduled" || value === "blocked" || value === "completed" || value === "archived") return value;
+  if (
+    value === "active" ||
+    value === "scheduled" ||
+    value === "blocked" ||
+    value === "completed" ||
+    value === "archived"
+  )
+    return value;
   throw new Error("hierarchy work batch requires valid status");
 }
 
@@ -3720,19 +3838,30 @@ function parsePromptFlowGate(value: unknown): PromptFlowPhaseGate {
   return {
     kind: gate.kind as PromptFlowGateKind,
     requiredEvidenceRefs: parseStringArray(gate.requiredEvidenceRefs, "gate.requiredEvidenceRefs"),
-    ...(gate.reviewerHatIds === undefined ? {} : { reviewerHatIds: parseStringArray(gate.reviewerHatIds, "gate.reviewerHatIds") }),
-    ...(gate.approverHatIds === undefined ? {} : { approverHatIds: parseStringArray(gate.approverHatIds, "gate.approverHatIds") }),
+    ...(gate.reviewerHatIds === undefined
+      ? {}
+      : { reviewerHatIds: parseStringArray(gate.reviewerHatIds, "gate.reviewerHatIds") }),
+    ...(gate.approverHatIds === undefined
+      ? {}
+      : { approverHatIds: parseStringArray(gate.approverHatIds, "gate.approverHatIds") }),
     ...(gate.requiredHumanApprovalCount === undefined
       ? {}
-      : { requiredHumanApprovalCount: parsePositiveInteger(gate.requiredHumanApprovalCount, "gate.requiredHumanApprovalCount") }),
+      : {
+          requiredHumanApprovalCount: parsePositiveInteger(
+            gate.requiredHumanApprovalCount,
+            "gate.requiredHumanApprovalCount",
+          ),
+        }),
   };
 }
 
-function parseOptionalPositiveInteger(value: unknown, property: "timeoutSeconds" | "retryLimit"): Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">> {
+function parseOptionalPositiveInteger(
+  value: unknown,
+  property: "timeoutSeconds" | "retryLimit",
+): Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">> {
   if (value === undefined) return {};
-  const parsed = property === "timeoutSeconds"
-    ? parsePositiveInteger(value, property)
-    : parseNonNegativeInteger(value, property);
+  const parsed =
+    property === "timeoutSeconds" ? parsePositiveInteger(value, property) : parseNonNegativeInteger(value, property);
   return { [property]: parsed } as Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">>;
 }
 
@@ -3760,7 +3889,11 @@ function parsePromptFlowRollbackPolicy(value: unknown): PromptFlowDefinition["ro
     throw new Error("prompt-flow task rollbackPolicy must be an object when present");
   }
   const rollback = value as Record<string, unknown>;
-  if (rollback.kind !== "compensating_action" && rollback.kind !== "revert_artifact" && rollback.kind !== "cancel_only") {
+  if (
+    rollback.kind !== "compensating_action" &&
+    rollback.kind !== "revert_artifact" &&
+    rollback.kind !== "cancel_only"
+  ) {
     throw new Error("prompt-flow task rollbackPolicy kind is invalid");
   }
   if (typeof rollback.description !== "string" || rollback.description.length === 0) {

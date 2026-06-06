@@ -58,18 +58,18 @@ queries or missing fields.
 
 ## Scoring models — the canon
 
-| Model | Formula sketch | Era |
-|---|---|---|
-| **Boolean** | AND / OR / NOT, no ranking | 1960s |
-| **TF-IDF** | `tf(t,d) * log(N/df(t))` | Salton 1960s-70s |
-| **BM25** | `tf *(k+1) / (tf + k*(1-b+b*len(d)/avgdl)) * idf` | Robertson 1994 |
-| **BM25F** | BM25 with per-field weights | Robertson 2004 |
-| **DFR** | Divergence From Randomness | Amati 2002 |
-| **LM** | Language model with Dirichlet / Jelinek-Mercer smoothing | Ponte-Croft 1998 |
-| **LTR** | Learning-to-rank (LambdaMART, RankNet) | ~2005- |
-| **Dense** | Cosine on dense embeddings (BERT, E5) | ~2019- |
-| **Hybrid** | BM25 + dense, fusion (RRF, weighted) | ~2021- |
-| **Learned sparse** | SPLADE, uniCOIL | ~2021- |
+| Model              | Formula sketch                                           | Era              |
+| ------------------ | -------------------------------------------------------- | ---------------- |
+| **Boolean**        | AND / OR / NOT, no ranking                               | 1960s            |
+| **TF-IDF**         | `tf(t,d) * log(N/df(t))`                                 | Salton 1960s-70s |
+| **BM25**           | `tf *(k+1) / (tf + k*(1-b+b*len(d)/avgdl)) * idf`        | Robertson 1994   |
+| **BM25F**          | BM25 with per-field weights                              | Robertson 2004   |
+| **DFR**            | Divergence From Randomness                               | Amati 2002       |
+| **LM**             | Language model with Dirichlet / Jelinek-Mercer smoothing | Ponte-Croft 1998 |
+| **LTR**            | Learning-to-rank (LambdaMART, RankNet)                   | ~2005-           |
+| **Dense**          | Cosine on dense embeddings (BERT, E5)                    | ~2019-           |
+| **Hybrid**         | BM25 + dense, fusion (RRF, weighted)                     | ~2021-           |
+| **Learned sparse** | SPLADE, uniCOIL                                          | ~2021-           |
 
 **Rule.** BM25 is the "good default". Dense retrieval beats
 BM25 on semantic similarity but loses on exact-match and
@@ -276,13 +276,13 @@ retract-safe operator.
 
 ## Reference patterns
 
-- Manning, Raghavan, Schütze — *Introduction to Information
-  Retrieval* (2008, free online).
-- Croft, Metzler, Strohman — *Search Engines: Information
-  Retrieval in Practice* (2015).
-- Büttcher, Clarke, Cormack — *Information Retrieval:
-  Implementing and Evaluating Search Engines* (2010).
-- Salton — *The SMART Retrieval System* (1971).
+- Manning, Raghavan, Schütze — _Introduction to Information
+  Retrieval_ (2008, free online).
+- Croft, Metzler, Strohman — _Search Engines: Information
+  Retrieval in Practice_ (2015).
+- Büttcher, Clarke, Cormack — _Information Retrieval:
+  Implementing and Evaluating Search Engines_ (2010).
+- Salton — _The SMART Retrieval System_ (1971).
 - Robertson & Walker — BM25 paper (1994).
 - BEIR benchmark paper (2021).
 - TREC proceedings.

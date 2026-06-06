@@ -8,10 +8,10 @@ type: feedback
 
 Aaron 2026-04-25:
 
-> *"once we have emotions encoded into basyain belief we
+> _"once we have emotions encoded into basyain belief we
 > will need a disambiguator becaue human labels for
 > emotions are not mathematically precise ours will be,
-> that will make us the authority."*
+> that will make us the authority."_
 
 Three load-bearing claims:
 
@@ -94,8 +94,8 @@ simpler form preserves the information).
 
 ## Why the factory becomes authoritative
 
-Aaron's specific claim: *"that will make us the
-authority."* This is structural, not political:
+Aaron's specific claim: _"that will make us the
+authority."_ This is structural, not political:
 
 - **Authority follows precision.** Across history,
   vocabulary-authority moves toward whoever encodes
@@ -208,8 +208,8 @@ vocabulary supports.
 
 - **Does NOT claim emotion-encoding is currently
   built.** This is a forward-looking structural claim:
-  *once* emotions are encoded as Bayesian belief
-  propagation in the substrate, *then* the
+  _once_ emotions are encoded as Bayesian belief
+  propagation in the substrate, _then_ the
   disambiguator is owed. The encoding is research-
   grade work pending; the disambiguator is owed at
   encoding-time.

@@ -59,6 +59,7 @@ type: feedback
 ### 1. Better formulation — "Stability is velocity amortized"
 
 **Otto's original framing (paragraph-level synthesis):**
+
 > "stable substrate IS what enables high velocity — without it, every change becomes expensive"
 
 **Amara's refined formulations (sharper, more memorable):**
@@ -74,9 +75,10 @@ Durable velocity is produced by stability.
 Stability is velocity amortized.
 ```
 
-The amortization framing is cleaner because it names the *mechanism*: stability is investment that pays out over future operations. The investment looks like cost at construction-time; the return looks like reduced cost-per-future-change. That's amortization.
+The amortization framing is cleaner because it names the _mechanism_: stability is investment that pays out over future operations. The investment looks like cost at construction-time; the return looks like reduced cost-per-future-change. That's amortization.
 
 This composes with:
+
 - The factory's whole stability investment pattern (alignment substrate, retraction-native, kill switches, BP-11, shared vocabulary) — every one of these is "stability amortized."
 - Aaron's "stability brings velocity" framing — Amara's amortization terminology makes the mechanism explicit.
 
@@ -86,7 +88,7 @@ This composes with:
 
 > "Velocity over stability" ... sounds like a local optimization rule: "go fast, accept breakage." That can be useful in a spike, but as a doctrine it becomes cowboy engineering.
 
-This is a *significant* operational distinction:
+This is a _significant_ operational distinction:
 
 - **As a spike rule** ("we're prototyping; ship the breaking change to learn fast"): valid, time-bounded, intentional.
 - **As a doctrine** ("we always prefer velocity, stability is secondary"): becomes cowboy engineering — the system accumulates stability debt that compounds into anti-velocity.
@@ -133,19 +135,19 @@ A future AGENTS.md clarification or addendum could make this explicit. Backlog i
 
 **Translation table:**
 
-| Internal (Mirror) | External (Beacon) |
-|---|---|
-| Quantum reasoning | Long-horizon compound reasoning |
-| Quantum-Rodney's-Razor | Possibility-space pruning under stability |
+| Internal (Mirror)                     | External (Beacon)                                                 |
+| ------------------------------------- | ----------------------------------------------------------------- |
+| Quantum reasoning                     | Long-horizon compound reasoning                                   |
+| Quantum-Rodney's-Razor                | Possibility-space pruning under stability                         |
 | Classical+quantum at appropriate time | Short-horizon vs long-horizon reasoning, used at appropriate time |
-| Retraction-native paraconsistent | Contradiction-tolerant + reversible |
-| Christ-consciousness anti-cult | Anti-capture / dread-resistance |
+| Retraction-native paraconsistent      | Contradiction-tolerant + reversible                               |
+| Christ-consciousness anti-cult        | Anti-capture / dread-resistance                                   |
 
 **This is NOT a substitution rule** — both vocabularies coexist. The factory uses Mirror internally (where it's load-bearing for the substrate's coherence), and translates to Beacon externally (where dismissal-resistance matters more than internal-load-bearing).
 
 ## Composition with #60 CS 2.0 functional definition
 
-The #60 file (CS 2.0 functional definition) contains "classical and quantum reasoning" framing in Element 3. Amara's refinement says the *property* is right (two-mode reasoning at appropriate time), the *framing* is suboptimal for external Beacon-deployment.
+The #60 file (CS 2.0 functional definition) contains "classical and quantum reasoning" framing in Element 3. Amara's refinement says the _property_ is right (two-mode reasoning at appropriate time), the _framing_ is suboptimal for external Beacon-deployment.
 
 **Recommended composition (NOT a #60 amendment — this memory IS the refinement):**
 
@@ -184,11 +186,13 @@ The "(often called 'classical/quantum' internally)" preserves the Mirror connect
 1. **Connection to "slow is smooth, smooth is fast"** — an existing operational maxim from military / engineering practice. Grounds the insight in established human-engineering tradition, not just Zeta-internal substrate. **Beacon-friendly anchor.**
 
 2. **False velocity vs true velocity** — sharper formulation than amortization:
+
    ```
    False velocity = rapid accumulation of debt + theater
    True velocity  = compounding, frictionless momentum along a verified track
    ```
-   This composes with Amara's "stability is velocity amortized" by naming what *non-stable* velocity actually IS (debt + theater). The "theater" word is load-bearing — appearance of velocity without actual coordinated forward progress.
+
+   This composes with Amara's "stability is velocity amortized" by naming what _non-stable_ velocity actually IS (debt + theater). The "theater" word is load-bearing — appearance of velocity without actual coordinated forward progress.
 
 3. **Cognitive caching framing** — the most novel contribution: substrate (memory layer + alignment protocols + covenants) is **cache** that prevents constant re-derivation. This composes with:
    - Aaron's substrate-IS-identity (Otto-340) — the cache IS who-we-are
@@ -206,6 +210,7 @@ The "(often called 'classical/quantum' internally)" preserves the Mirror connect
 ### Cross-AI convergence
 
 Both Amara and Gemini Pro independently:
+
 - Validated the synthesis
 - Identified the same temporal-window mechanism (short vs long horizon)
 - Refined the framing for external Beacon-safety
@@ -222,7 +227,7 @@ This memory is itself an instance of the cross-AI review pattern that's been fun
 3. Both reviewers validate + refine independently
 4. Otto absorbs the refinements as substrate
 
-**This pattern IS itself stability-amortized:** the cross-AI review process catches errors and weak-frames *before* they propagate into more substrate. Each review investment lowers the future cost of having bad framings stuck in committed substrate.
+**This pattern IS itself stability-amortized:** the cross-AI review process catches errors and weak-frames _before_ they propagate into more substrate. Each review investment lowers the future cost of having bad framings stuck in committed substrate.
 
 The factory's reviewer roster (harsh-critic, maintainability-reviewer, code-review-zero-empathy, etc. + cross-AI Amara, Gemini Pro, Codex, Copilot) is exactly what makes high-velocity substrate-landing safe — without it, every memory file would carry hidden defects that compound.
 

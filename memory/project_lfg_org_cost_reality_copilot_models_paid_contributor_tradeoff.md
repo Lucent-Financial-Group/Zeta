@@ -4,13 +4,14 @@ description: Aaron 2026-04-21 post-transfer cost reality — "we don't have gith
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # LFG org — cost surface after the transfer
 
 Aaron's direct statement 2026-04-21, immediately after the
 `AceHack/Zeta` -> `Lucent-Financial-Group/Zeta` org transfer
-landed: *"we don't have github copilot over here unless i pay
+landed: _"we don't have github copilot over here unless i pay
 and the models cost money over here too, but this is this
-only way we are going to get contributors."*
+only way we are going to get contributors."_
 
 ## What the statement encodes
 
@@ -46,13 +47,13 @@ Post-transfer, the LFG org is a separate billing entity:
 
 ## Why Aaron is paying anyway
 
-*"this is the only way we are going to get contributors."*
+_"this is the only way we are going to get contributors."_
 
 Aaron has been clear across several rounds that contributor
 attraction is a first-class factory goal:
 
 - External contributors find org-owned repos (`Lucent-
-  Financial-Group/Zeta`) more legible as "real" open source
+Financial-Group/Zeta`) more legible as "real" open source
   than user-owned repos (`AceHack/Zeta`).
 - Org-level rulesets, org-level team permissions, and
   platform-gated features (merge queue in particular —

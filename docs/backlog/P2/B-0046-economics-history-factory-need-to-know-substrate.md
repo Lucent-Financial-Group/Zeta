@@ -10,8 +10,28 @@ created: 2026-04-26
 last_updated: 2026-05-10
 children: [B-0046.1, B-0046.2, B-0046.3, B-0046.4]
 depends_on: []
-composes_with: [B-0045, B-0043, B-0047, user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
-tags: [economics, history, time-energy, ammous-bitcoin-standard, yin-yang, substrate-knowledge, retraction-log, three-filter, candidate-probe]
+composes_with:
+  [
+    B-0045,
+    B-0043,
+    B-0047,
+    user_aaron_money_is_inefficient_storage_of_time_energy_factory_value_framing.md,
+    feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md,
+    feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md,
+    project_operational_resonance_instances_collection_index_2026_04_22.md,
+  ]
+tags:
+  [
+    economics,
+    history,
+    time-energy,
+    ammous-bitcoin-standard,
+    yin-yang,
+    substrate-knowledge,
+    retraction-log,
+    three-filter,
+    candidate-probe,
+  ]
 type: feature
 ---
 
@@ -19,11 +39,11 @@ type: feature
 
 ## Origin
 
-AceHack commit `a3837d0` (2026-04-21). Aaron's follow-up to the PR/marketing ask: *"we do need to know economics and history pettty well though backlog"*. Same-conversation companion frame: *"money is an inefficent storage of time/energy"*.
+AceHack commit `a3837d0` (2026-04-21). Aaron's follow-up to the PR/marketing ask: _"we do need to know economics and history pettty well though backlog"_. Same-conversation companion frame: _"money is an inefficent storage of time/energy"_.
 
 ## Frame
 
-Economics is load-bearing for the factory because it's the discipline that studies *how time/energy flows through social substrate* — the factory studies it for substrate understanding, not for money-optimisation.
+Economics is load-bearing for the factory because it's the discipline that studies _how time/energy flows through social substrate_ — the factory studies it for substrate understanding, not for money-optimisation.
 
 History is the time-axis: how prior substrates succeeded or decayed, what retraction paths were available, what bomb / Higgs-decay patterns recur.
 
@@ -42,7 +62,7 @@ No analysis yet; just the shelf.
 
 Apply F1/F2/F3 + yin-yang composition-discipline check to each candidate. Record candidate / confirmed / failed per math-safety log-and-track.
 
-**Ammous's *The Bitcoin Standard* (Wiley 2018)** is **candidate-probe already**, filed 2026-04-21 from Aaron's Google-dump naming hard-money-as-μένω / 21M-cap / tri-root filter / low-time-preference ↔ persistence:
+**Ammous's _The Bitcoin Standard_ (Wiley 2018)** is **candidate-probe already**, filed 2026-04-21 from Aaron's Google-dump naming hard-money-as-μένω / 21M-cap / tri-root filter / low-time-preference ↔ persistence:
 
 - Unification pole strong (21M cap → monetary-function unification; μένω staying-operator resonance with operational-resonance instance #9).
 - Harmonious-division pole weak → fails yin-yang composition check in maximalist reading. Admission requires explicit divisional counterweight (Bitcoin-as-one-monetary-primitive-among-plural, not Bitcoin-as-THE-standard).
@@ -50,11 +70,11 @@ Apply F1/F2/F3 + yin-yang composition-discipline check to each candidate. Record
 
 ### Stage 3 — Time/energy flow modeling (L)
 
-Economics-as-substrate-knowledge means modeling *what time and energy flow through the factory and its consumers*. Concrete: every factory surface gets a time-compression measurable; every `docs/INTENTIONAL-DEBT.md` entry gains a time/energy cost column; factory-reuse readiness denominated in time-to-first-working-output (minutes, not dollars).
+Economics-as-substrate-knowledge means modeling _what time and energy flow through the factory and its consumers_. Concrete: every factory surface gets a time-compression measurable; every `docs/INTENTIONAL-DEBT.md` entry gains a time/energy cost column; factory-reuse readiness denominated in time-to-first-working-output (minutes, not dollars).
 
 ### Stage 4 — History-as-retraction-log (L)
 
-Historical cases treated as retraction-log data: which prior civilisational substrates collapsed (bomb-pole), which unraveled (Higgs-decay pole), which maintained the paired stable regime. Tainter's *Collapse of Complex Societies* + Diamond's *Collapse* as empirical defense-surface for the yin-yang invariant. Speculative; L.
+Historical cases treated as retraction-log data: which prior civilisational substrates collapsed (bomb-pole), which unraveled (Higgs-decay pole), which maintained the paired stable regime. Tainter's _Collapse of Complex Societies_ + Diamond's _Collapse_ as empirical defense-surface for the yin-yang invariant. Speculative; L.
 
 ## Composition discipline (non-negotiable)
 

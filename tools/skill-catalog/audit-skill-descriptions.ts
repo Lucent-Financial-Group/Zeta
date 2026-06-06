@@ -26,10 +26,7 @@ function extractDescription(content: string): string | null {
   const raw = m[1];
   if (raw == null) return null;
   let val = raw.trim();
-  if (
-    (val.startsWith('"') && val.endsWith('"')) ||
-    (val.startsWith("'") && val.endsWith("'"))
-  ) {
+  if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
     val = val.slice(1, -1).trim();
   }
   return val || null;
@@ -39,9 +36,7 @@ function auditDescriptions(): AuditResult {
   let total = 0;
   let long = 0;
   const examples: string[] = [];
-  const entries = readdirSync(SKILLS_ROOT, { withFileTypes: true }).sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  const entries = readdirSync(SKILLS_ROOT, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
   for (const e of entries) {
     if (!e.isDirectory()) continue;
     const skillMd = join(SKILLS_ROOT, e.name, "SKILL.md");
@@ -64,7 +59,9 @@ function auditDescriptions(): AuditResult {
 
 export function main() {
   const result = auditDescriptions();
-  console.log(`B-0347 audit: scanned ${result.total} skills, ${result.long} descriptions exceed 120-char routing budget.`);
+  console.log(
+    `B-0347 audit: scanned ${result.total} skills, ${result.long} descriptions exceed 120-char routing budget.`,
+  );
   if (result.examples.length > 0) {
     console.log("\nLong descriptions (carve next batch from these):");
     for (const ex of result.examples.slice(0, 20)) {

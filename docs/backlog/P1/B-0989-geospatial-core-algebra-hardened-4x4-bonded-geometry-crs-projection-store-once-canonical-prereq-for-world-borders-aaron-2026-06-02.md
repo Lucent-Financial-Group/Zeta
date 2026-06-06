@@ -9,7 +9,31 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0982]
 composes_with: [B-0982, B-0986, B-0988, B-0985, B-0703, B-0638, B-0704, B-0883]
-tags: [geospatial, geospatial-algebra, geometry, crs, projection, ogc-simple-features, geojson, wkt, wkb, epsg, proj, de-9im, 4x4-bond, golden-vectors, store-once-canonical, no-redundancy, generic-math, dbsp, z-set, hexagonal, high-priority, aaron]
+tags:
+  [
+    geospatial,
+    geospatial-algebra,
+    geometry,
+    crs,
+    projection,
+    ogc-simple-features,
+    geojson,
+    wkt,
+    wkb,
+    epsg,
+    proj,
+    de-9im,
+    4x4-bond,
+    golden-vectors,
+    store-once-canonical,
+    no-redundancy,
+    generic-math,
+    dbsp,
+    z-set,
+    hexagonal,
+    high-priority,
+    aaron,
+  ]
 type: research
 ---
 
@@ -17,9 +41,9 @@ type: research
 
 ## Why
 
-Aaron 2026-06-02 (verbatim): *"we need geospacation albegras agreement on our noral 4x4s first before safefme like border — i can get all of those and we can efficently store insteoad of 50 copies of redudant data — but we need the geospatial core hardened frirst on hight priority on primitives."*
+Aaron 2026-06-02 (verbatim): _"we need geospacation albegras agreement on our noral 4x4s first before safefme like border — i can get all of those and we can efficently store insteoad of 50 copies of redudant data — but we need the geospatial core hardened frirst on hight priority on primitives."_
 
-**Sequencing correction:** before the SAFE-FME-style world-border ingest (B-0988), the **geospatial core algebra** must be **hardened** — i.e., it must **agree across our normal 4×4** (the language×serializer bond, B-0982). The WHY is the storage win: a canonical, 4×4-bonded geospatial algebra lets us store the borders **once** (canonical geodetic) and *derive* every projection + perspective on query — **instead of 50 copies of redundant data** (one per projection/perspective/format). Aaron can source all the border data; the gate is the hardened core. So **B-0988 (world-borders) is BLOCKED BY this row** — high priority, harden first.
+**Sequencing correction:** before the SAFE-FME-style world-border ingest (B-0988), the **geospatial core algebra** must be **hardened** — i.e., it must **agree across our normal 4×4** (the language×serializer bond, B-0982). The WHY is the storage win: a canonical, 4×4-bonded geospatial algebra lets us store the borders **once** (canonical geodetic) and _derive_ every projection + perspective on query — **instead of 50 copies of redundant data** (one per projection/perspective/format). Aaron can source all the border data; the gate is the hardened core. So **B-0988 (world-borders) is BLOCKED BY this row** — high priority, harden first.
 
 ## What it is — the geospatial core algebra
 
@@ -33,7 +57,7 @@ Aaron 2026-06-02 (verbatim): *"we need geospacation albegras agreement on our no
 Aaron's storage argument: don't store 50 redundant copies (one per projection/perspective/format). Instead:
 
 - **Store the canonical seed once** — geodetic geometry + the sovereign claim (multi-oracle, per B-0988).
-- **Derive views on query** — projection (project-on-query, any EPSG/PROJ), perspective (per-frame, B-0988), format (serialize per the 4×4). Each of the "50 copies" becomes a *derivation* of the one canonical, not a stored duplicate.
+- **Derive views on query** — projection (project-on-query, any EPSG/PROJ), perspective (per-frame, B-0988), format (serialize per the 4×4). Each of the "50 copies" becomes a _derivation_ of the one canonical, not a stored duplicate.
 - The **algebra is what makes this sound**: operations are defined canonically; views are pure derivations; the 4×4 bond guarantees a derived view is byte-identical regardless of which language/serializer produced it. This is `interfaces-are-the-asset` / `code-follows-from-types` (Meijer) at geospatial scope — define the geospatial algebra, the derivations follow.
 
 ## Sequencing — harden core, THEN ingest borders

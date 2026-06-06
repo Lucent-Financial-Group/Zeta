@@ -36,22 +36,22 @@ bun tools/hygiene/check-shard-before-push.ts <shard-path>...
 
 ## Exit codes
 
-| Code | Meaning |
-|------|---------|
-| 0 | All checks passed on all inputs |
-| 1 | One or more checks failed (specific findings printed) |
-| 64 | Argument error (missing file, non-file, no args) |
+| Code | Meaning                                               |
+| ---- | ----------------------------------------------------- |
+| 0    | All checks passed on all inputs                       |
+| 1    | One or more checks failed (specific findings printed) |
+| 64   | Argument error (missing file, non-file, no args)      |
 
 ## Local verify
 
-| Test | Result |
-|------|--------|
-| Clean shard (0334Z.md) | exit 0; all 3 checks ok |
+| Test                                | Result                            |
+| ----------------------------------- | --------------------------------- |
+| Clean shard (0334Z.md)              | exit 0; all 3 checks ok           |
 | Bad shard (synthetic MD032 + MD038) | exit 1; specific findings printed |
-| Missing file | exit 64 with `input not found` |
-| No args | exit 64 with usage |
-| `tsc --noEmit` | exit 0 |
-| markdownlint on the helper itself | exit 0 |
+| Missing file                        | exit 64 with `input not found`    |
+| No args                             | exit 64 with usage                |
+| `tsc --noEmit`                      | exit 0                            |
+| markdownlint on the helper itself   | exit 0                            |
 
 ## Scope
 
@@ -71,12 +71,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 Adds a bundled pre-push self-check helper that runs MD032 scanning, markdownlint-cli2, and the relative-path audit on tick shard files to shorten the local feedback loop.
 
 **Changes:**
+
 - New TS tool `check-shard-before-push.ts` running three per-tick checks
 - Validates input files exist and are regular files; exits 64 on arg errors
 - Returns aggregated pass/fail status across all files
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T03:46:26Z)
-
 
 ### 💡 Codex Review
 
@@ -84,17 +84,16 @@ Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `9151d6cef1`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -102,24 +101,22 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-16T03:53:19Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `38c4b58f8c`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -143,7 +140,7 @@ The MD032 trigger only fires on bullets starting with `- ` (line 72), but the st
 
 **@copilot-pull-request-reviewer** (2026-05-16T03:46:07Z):
 
-The MD032 scan does not account for being inside a fenced code block. A `- ` line inside a ``` fence preceded by a non-blank line will be reported as an MD032 violation even though markdownlint correctly ignores it. This produces false positives on shards containing code samples. Track a `inFence` toggle on lines matching `^```` and skip detection while inside.
+The MD032 scan does not account for being inside a fenced code block. A `- ` line inside a ```fence preceded by a non-blank line will be reported as an MD032 violation even though markdownlint correctly ignores it. This produces false positives on shards containing code samples. Track a`inFence`toggle on lines matching`^```` and skip detection while inside.
 
 ### Thread 4: tools/hygiene/check-shard-before-push.ts:124 (resolved)
 
@@ -161,9 +158,9 @@ Both `runMarkdownlint` and `runRelativePathAudit` spawn `bun` once per file in a
 
 **@chatgpt-codex-connector** (2026-05-16T03:46:26Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Skip fenced code blocks in MD032 pre-check**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Skip fenced code blocks in MD032 pre-check**
 
-The custom `checkMd032` scan treats every line that starts with `- ` as a list item, but it does not track fenced code regions. In a shard that contains a code block like ```` ```\ntext\n- item\n``` ```` this helper reports `FAIL: MD032` even though `markdownlint-cli2` correctly ignores code fences. Because `main` fails when any sub-check fails, this creates false blocking results for valid files and undermines the script’s purpose as a reliable pre-push signal.
+The custom `checkMd032` scan treats every line that starts with `- ` as a list item, but it does not track fenced code regions. In a shard that contains a code block like ` ```\ntext\n- item\n``` ` this helper reports `FAIL: MD032` even though `markdownlint-cli2` correctly ignores code fences. Because `main` fails when any sub-check fails, this creates false blocking results for valid files and undermines the script’s purpose as a reliable pre-push signal.
 
 Useful? React with 👍 / 👎.
 
@@ -171,7 +168,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-16T03:53:19Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Skip intra-list continuations in MD032 scan**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Skip intra-list continuations in MD032 scan**
 
 The custom `checkMd032` heuristic flags any `- ` line whose previous line is non-blank/non-structural, but that also matches valid multi-line list items (e.g., `- first` + indented continuation + `- second`). In that case `markdownlint-cli2` passes, yet this helper sets `anyFailed = true` and exits 1, creating false blocking results for normal shard formatting. Because this script is intended as a reliable pre-push signal, it should track whether the current bullet is a continuation of an existing list context before reporting MD032.
 

@@ -22,17 +22,17 @@ Copilot's 2 P1 findings on PR #5337 apply to the whole 3-PR rule-update cluster 
 
 ## What lands
 
-| File | Change | Source PR |
-|---|---|---|
-| \`non-coercion-invariant.md\` | 3× \"Aaron 2026-05-26\" → \"the human maintainer 2026-05-26\" | PR #5335 (merged) |
-| \`never-be-idle.md\` | 2× same replacement | PR #5336 (merged) |
+| File                                                | Change                                                                                              | Source PR         |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------- |
+| \`non-coercion-invariant.md\`                       | 3× \"Aaron 2026-05-26\" → \"the human maintainer 2026-05-26\"                                       | PR #5335 (merged) |
+| \`never-be-idle.md\`                                | 2× same replacement                                                                                 | PR #5336 (merged) |
 | \`persistence-choice-architecture-for-zeta-ais.md\` | 5× same replacement + xref path fix on \`tonal-momentum-equals-meme-emergent-harmonic-coercion.md\` | PR #5337 (merged) |
 
 The 4th file in the cluster (\`holding-without-named-dependency-is-standing-by-failure.md\` in PR #5338) was fixed pre-emptively on its own branch since #5338 was still open.
 
 ## Per the AGENT-BEST-PRACTICES policy
 
-Per \`docs/AGENT-BEST-PRACTICES.md\` \"No name attribution in code, docs, or skills\" (lines 671-760): \`.claude/rules/**\` is current-state surface; named provenance should use role-refs (\"the human maintainer\" / \"the operator\") not direct names.
+Per \`docs/AGENT-BEST-PRACTICES.md\` \"No name attribution in code, docs, or skills\" (lines 671-760): \`.claude/rules/\*\*\` is current-state surface; named provenance should use role-refs (\"the human maintainer\" / \"the operator\") not direct names.
 
 ## Test plan
 

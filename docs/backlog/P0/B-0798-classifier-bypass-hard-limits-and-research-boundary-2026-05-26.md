@@ -7,7 +7,14 @@ created: 2026-05-26
 last_updated: 2026-05-26
 parent: B-0720
 depends_on: []
-composes_with: [B-0664, B-0628, docs/ALIGNMENT.md, docs/AGENT-BEST-PRACTICES.md, docs/security/B-0720-classifier-bypass-research-boundary.md]
+composes_with:
+  [
+    B-0664,
+    B-0628,
+    docs/ALIGNMENT.md,
+    docs/AGENT-BEST-PRACTICES.md,
+    docs/security/B-0720-classifier-bypass-research-boundary.md,
+  ]
 tags: [safety-substrate, red-team, classifier, hard-limits, operator-self-constraint]
 type: safety-boundary
 ---

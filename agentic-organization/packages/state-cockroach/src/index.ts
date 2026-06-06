@@ -31,11 +31,7 @@ export {
   type CreateCockroachKeepAliveActionSinkInput,
   type KeepAliveActionSink as CockroachKeepAliveActionSink,
 } from "./cockroach-keep-alive-action-sink.ts";
-export {
-  CockroachMemoryStatement,
-  createCockroachMemory,
-  type CockroachMemoryDeps,
-} from "./cockroach-memory.ts";
+export { CockroachMemoryStatement, createCockroachMemory, type CockroachMemoryDeps } from "./cockroach-memory.ts";
 export {
   CockroachHermesRuntimeStatement,
   createCockroachHermesRuntime,
@@ -186,8 +182,16 @@ export {
   type CockroachSqlClient,
   type CreateCockroachSqlExecutorInput,
 } from "./cockroach-sql-executor.ts";
-export { createCockroachOrgEventStore, type CreateCockroachOrgEventStoreInput, type OrgEventStore } from "./cockroach-org-event-store.ts";
-export { createCockroachHatBindingStore, type CreateCockroachHatBindingStoreInput, type HatBindingStore } from "./cockroach-hat-binding-store.ts";
+export {
+  createCockroachOrgEventStore,
+  type CreateCockroachOrgEventStoreInput,
+  type OrgEventStore,
+} from "./cockroach-org-event-store.ts";
+export {
+  createCockroachHatBindingStore,
+  type CreateCockroachHatBindingStoreInput,
+  type HatBindingStore,
+} from "./cockroach-hat-binding-store.ts";
 export { createCockroachOrgSystemMigration } from "./cockroach-schema.ts";
 export { createCockroachMemorySystemMigration } from "./cockroach-schema.ts";
 export { createCockroachChangeControlMigration } from "./cockroach-schema.ts";

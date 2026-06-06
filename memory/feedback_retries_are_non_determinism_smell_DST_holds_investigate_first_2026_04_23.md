@@ -50,9 +50,9 @@ a last resort, not a first reach.
 
 ## The exception
 
-Aaron's phrasing is explicit: *"except when explicitly
+Aaron's phrasing is explicit: _"except when explicitly
 decided against for real external reasons we can't
-control."* Retries are legitimate when:
+control."_ Retries are legitimate when:
 
 - The failure cause is genuinely **external and
   uncontrollable** (remote service outage, network
@@ -155,7 +155,7 @@ investigating:
 - **Not a DST-purity demand.** Wall-clock, network,
   filesystem, external services are all unavoidable
   sources of real-world non-determinism. DST doesn't ban
-  them; it demands we *surface* them as explicit
+  them; it demands we _surface_ them as explicit
   boundaries and handle them with intent.
 - **Not a demand to remove every existing retry.**
   Existing retries in the factory substrate may be

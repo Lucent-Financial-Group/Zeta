@@ -3,8 +3,8 @@
 **Status**: Active. Runtime-level baseline (orthogonal to language —
 see `typescript.md` for TypeScript language conventions).
 
-**Trigger**: Required to exist and be current before the *first
-mutating action* on any Bun-runtime port slice (TS/Bun migration
+**Trigger**: Required to exist and be current before the _first
+mutating action_ on any Bun-runtime port slice (TS/Bun migration
 trajectory's Gate B prerequisite). Read-only scoping may happen
 first; mutation waits for this artifact + `typescript.md` (when
 the source is TypeScript).
@@ -16,10 +16,10 @@ before that slice mutates files.
 
 ## Upstream sources (verified)
 
-| Source | URL | Last verified |
-|---|---|---|
-| Bun TypeScript runtime | https://bun.com/docs/runtime/typescript | 2026-04-29 |
-| Bun Shell ($) | https://bun.com/docs/runtime/shell | 2026-04-29 |
+| Source                 | URL                                     | Last verified |
+| ---------------------- | --------------------------------------- | ------------- |
+| Bun TypeScript runtime | https://bun.com/docs/runtime/typescript | 2026-04-29    |
+| Bun Shell ($)          | https://bun.com/docs/runtime/shell      | 2026-04-29    |
 
 If any date is >30 days old when the next slice opens, re-run the
 WebSearch and update the date before mutating files. Per Otto-364
@@ -40,8 +40,8 @@ shape in `typescript.md`:
     "moduleResolution": "bundler",
 
     // TS 6.0 changed default to []; Bun globals require explicit listing
-    "types": ["bun"]
-  }
+    "types": ["bun"],
+  },
 }
 ```
 
@@ -81,10 +81,7 @@ When using `spawnSync`, mirror SQLSharp's
 `tools/automation/format/process-runner.ts` pattern:
 
 ```ts
-function classifyGitFailure(
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyGitFailure(args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start 'git ${args.join(" ")}': ${result.error.message}`;
   }
@@ -96,9 +93,7 @@ function classifyGitFailure(
   }
   if (result.status !== 0) {
     const stderr = result.stderr.trim();
-    return stderr !== ""
-      ? stderr
-      : `'git ${args.join(" ")}' exited ${String(result.status)}`;
+    return stderr !== "" ? stderr : `'git ${args.join(" ")}' exited ${String(result.status)}`;
   }
   return null;
 }
@@ -118,7 +113,7 @@ output is unbounded:
 ```ts
 spawnSync("git", ["ls-files", "-z", "*.md"], {
   encoding: "utf8",
-  maxBuffer: 64 * 1024 * 1024,  // 64 MiB; bash original streams, no fixed buffer
+  maxBuffer: 64 * 1024 * 1024, // 64 MiB; bash original streams, no fixed buffer
 });
 ```
 

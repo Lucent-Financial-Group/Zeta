@@ -4,6 +4,7 @@ description: Aaron's core claim distilled to one sentence, with OpenAI paper bac
 type: project
 originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
 ---
+
 Aaron's core claim (2026-05-10):
 
 > **The cost of occasional wrong-trust is lower than the cost of permanent slow-trust.**

@@ -68,30 +68,30 @@ to a single install step.
 
 ## Zeta's adoption — decisions locked / open
 
-| Decision | Source | Choice | Rationale |
-|---|---|---|---|
-| Adopt all three features | `../scratch` | yes | Solves Python + Bun tool-set growth before copy-paste debt compounds |
-| Port order | Zeta | 1 → 2 → 3 | Each primitive is independent-usable; `@include` alone already fixes flat-manifest copy-paste |
-| Manifest extensions | Zeta | existing `apt`, `brew`, `dotnet-tools`, `uv-tools`, `verifiers` stay bare; new files follow `min.<ext>` / `all.<ext>` shape once Primitive 2 lands | Backward compatible; existing tooling keeps working |
-| Category list | open question 1 | TBD | Depends on which axes of orthogonality matter to Zeta |
-| Reserved category names | open question 2 | TBD | `bootstrap` reserved? `min` reserved? Fail-loud if a user manifest takes the name |
-| Error on unknown `@name` | Zeta | fail loud | Silent no-op hides manifest typos; CI should red on them |
+| Decision                 | Source          | Choice                                                                                                                                             | Rationale                                                                                     |
+| ------------------------ | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Adopt all three features | `../scratch`    | yes                                                                                                                                                | Solves Python + Bun tool-set growth before copy-paste debt compounds                          |
+| Port order               | Zeta            | 1 → 2 → 3                                                                                                                                          | Each primitive is independent-usable; `@include` alone already fixes flat-manifest copy-paste |
+| Manifest extensions      | Zeta            | existing `apt`, `brew`, `dotnet-tools`, `uv-tools`, `verifiers` stay bare; new files follow `min.<ext>` / `all.<ext>` shape once Primitive 2 lands | Backward compatible; existing tooling keeps working                                           |
+| Category list            | open question 1 | TBD                                                                                                                                                | Depends on which axes of orthogonality matter to Zeta                                         |
+| Reserved category names  | open question 2 | TBD                                                                                                                                                | `bootstrap` reserved? `min` reserved? Fail-loud if a user manifest takes the name             |
+| Error on unknown `@name` | Zeta            | fail loud                                                                                                                                          | Silent no-op hides manifest typos; CI should red on them                                      |
 
 ## What Zeta borrows
 
-| From scratch | Why it fits |
-|---|---|
-| `@include` directive syntax | Simple, readable, no DSL; any editor highlights comments the same |
-| Cycle detection on recursive includes | Essential for user safety; three-line implementation |
-| `BOOTSTRAP_MODE` / `BOOTSTRAP_CATEGORIES` env-var shape | No config file; works identically on laptop / CI / devcontainer |
-| Manifest-per-file-type directories | `apt/`, `python/tools/`, `dotnet/tools/` — makes adding a new tool type one file drop |
+| From scratch                                            | Why it fits                                                                           |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `@include` directive syntax                             | Simple, readable, no DSL; any editor highlights comments the same                     |
+| Cycle detection on recursive includes                   | Essential for user safety; three-line implementation                                  |
+| `BOOTSTRAP_MODE` / `BOOTSTRAP_CATEGORIES` env-var shape | No config file; works identically on laptop / CI / devcontainer                       |
+| Manifest-per-file-type directories                      | `apt/`, `python/tools/`, `dotnet/tools/` — makes adding a new tool type one file drop |
 
 ## What Zeta does NOT borrow
 
-| From scratch | Why not |
-|---|---|
-| scratch's Debian-specific `.apt` bootstrap list | Zeta's apt manifest is already smaller; port only what Zeta needs |
-| scratch's Windows branch | Zeta's Windows branch is backlogged; port alongside that work |
+| From scratch                                       | Why not                                                                 |
+| -------------------------------------------------- | ----------------------------------------------------------------------- |
+| scratch's Debian-specific `.apt` bootstrap list    | Zeta's apt manifest is already smaller; port only what Zeta needs       |
+| scratch's Windows branch                           | Zeta's Windows branch is backlogged; port alongside that work           |
 | scratch's full category list (runner / cli / etc.) | Categories are project-specific; Zeta picks its own per the table above |
 
 ## Proposed layout after Primitive 1 lands
@@ -117,11 +117,11 @@ backward-compatible.
 
 ## Cost estimate
 
-| Primitive | Port hours | Net effect on CI minutes |
-|---|---|---|
-| 1 `@include` | 6h | 0 (same manifests, just deduplicated) |
-| 2 `BOOTSTRAP_MODE` | 8h | -20 to -40% (CI drops dev-only tool installs) |
-| 3 `BOOTSTRAP_CATEGORIES` | 12h | -30 to -50% additional for category-slim CI stages |
+| Primitive                | Port hours | Net effect on CI minutes                           |
+| ------------------------ | ---------- | -------------------------------------------------- |
+| 1 `@include`             | 6h         | 0 (same manifests, just deduplicated)              |
+| 2 `BOOTSTRAP_MODE`       | 8h         | -20 to -40% (CI drops dev-only tool installs)      |
+| 3 `BOOTSTRAP_CATEGORIES` | 12h        | -30 to -50% additional for category-slim CI stages |
 
 ## Open questions for the human maintainer
 

@@ -9,12 +9,30 @@ ask: Aaron 2026-04-25 ("we should backlog all of this and everyting we talked ab
 created: 2026-04-25
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md, feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md]
+composes_with:
+  [
+    feedback_definitional_precision_changes_future_without_war_otto_286_2026_04_25.md,
+    feedback_operational_resonance_engineering_shape_matches_tradition_name_alignment_signal.md,
+  ]
 # composes_with also references files currently in flight on open PRs (will resolve post-merge)
 #   - feedback_otto_338_sx_self_recursive_substrate_user_experience_perfect_home_never_bulk_resolve_you_are_the_substrate_hypothesis_2026_04_25.md (PR #522)
 #   - feedback_otto_335_naming_mistakes_between_ai_and_humans_can_compound_to_human_extinction_via_war_of_disagreement_from_misunderstanding_alignment_at_language_layer_2026_04_25.md (PR #520)
 #   - docs/backlog/P2/B-0021-aurora-austrian-school-economic-foundation-rigorous-why-teaching-anti-deception.md (PR #523)
-tags: [backlog, capture, decide-later, exchange-cluster, substance-not-throughput, aaron-convincer, ai-pattern, deepmind, microsoft-ai, mattergen, tele-port-leap, taxonomic-refinement]
+tags:
+  [
+    backlog,
+    capture,
+    decide-later,
+    exchange-cluster,
+    substance-not-throughput,
+    aaron-convincer,
+    ai-pattern,
+    deepmind,
+    microsoft-ai,
+    mattergen,
+    tele-port-leap,
+    taxonomic-refinement,
+  ]
 type: friction-reducer
 ---
 
@@ -163,8 +181,8 @@ Amara flagged a separate unification claim worth preserving: **AI + physics + HP
 
 These are two different unification claims:
 
-1. *Microsoft stack components unify into teleport-the-concept* — false (components remain separable)
-2. *AI/physics/HPC traditions unify into digital-materials-discovery* — possibly true; different claim entirely
+1. _Microsoft stack components unify into teleport-the-concept_ — false (components remain separable)
+2. _AI/physics/HPC traditions unify into digital-materials-discovery_ — possibly true; different claim entirely
 
 I had addressed #1 (correctly rejected) and missed #2 (which is the more interesting question and probably has substance).
 

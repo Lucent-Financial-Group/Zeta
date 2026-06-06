@@ -148,10 +148,9 @@ describe("Bag — additive-monoid surface (empty + concat)", () => {
     expect(toEntries(m.concat(a, a))).toEqual([entry("a", 2), entry("b", 4)]); // doubles
   });
   it("concatAll folds a collection through the monoid (per-key sums)", () => {
-    expect(toEntries(concatAll(cmp, [bag(entry("a", 1)), bag(entry("a", 2), entry("b", 1)), bag(entry("b", 3))]))).toEqual([
-      entry("a", 3),
-      entry("b", 4),
-    ]);
+    expect(
+      toEntries(concatAll(cmp, [bag(entry("a", 1)), bag(entry("a", 2), entry("b", 1)), bag(entry("b", 3))])),
+    ).toEqual([entry("a", 3), entry("b", 4)]);
   });
 });
 

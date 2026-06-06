@@ -313,7 +313,10 @@ describe("schedule work block handler", () => {
 
     equal(outcome.result.status, CommandResultStatus.Rejected);
     equal(outcome.result.error?.code, CommandErrorCode.PreconditionFailed);
-    equal(outcome.result.error?.message, "schedule block assigned hat assignment scope does not match the command scope");
+    equal(
+      outcome.result.error?.message,
+      "schedule block assigned hat assignment scope does not match the command scope",
+    );
     equal(outcome.effects.workScheduleBlocks.length, 0);
   });
 });

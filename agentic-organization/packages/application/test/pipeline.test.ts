@@ -17,11 +17,16 @@ const hats = buildHatDefinitions();
 const byId = new Map(hats.map((h) => [h.id, h]));
 
 const ctx = {
-  createEventId: (() => { let n = 0; return () => `evt-${++n}`; })(),
+  createEventId: (() => {
+    let n = 0;
+    return () => `evt-${++n}`;
+  })(),
   nowIso: () => "2026-05-30T09:00:00.000Z",
   organizationId: "org-1",
   supervisorChain: ["executive_board_member", "ceo", "product_director", "product_owner"],
-  correlationId: "c", causationId: "c", traceId: "t",
+  correlationId: "c",
+  causationId: "c",
+  traceId: "t",
 };
 
 // a chooser that always picks a specific outcome
@@ -36,7 +41,10 @@ test("the first legal gate is customer_rfp_review with nothing passed", () => {
 
 test("gates unlock strictly in order as priors pass", () => {
   equal(nextLegalGate(new Set([QualityGateKind.CustomerRfpReview])), QualityGateKind.BrdApproval);
-  equal(nextLegalGate(new Set([QualityGateKind.CustomerRfpReview, QualityGateKind.BrdApproval])), QualityGateKind.ArchitectureApproval);
+  equal(
+    nextLegalGate(new Set([QualityGateKind.CustomerRfpReview, QualityGateKind.BrdApproval])),
+    QualityGateKind.ArchitectureApproval,
+  );
 });
 
 test("when all 7 gates pass, the work item may merge", () => {
@@ -47,13 +55,16 @@ test("when all 7 gates pass, the work item may merge", () => {
 
 test("an owner hat approves a gate and advances the work item one stage", () => {
   const productOwner = byId.get("product_owner")!;
-  const result = evaluateGate({
-    workItemId: "wi-1",
-    gateKind: QualityGateKind.CustomerRfpReview,
-    evaluatorHat: productOwner,
-    passedGateKinds: new Set(),
-    outcomeChooser: pick(QualityGateOutcome.Approved),
-  }, ctx);
+  const result = evaluateGate(
+    {
+      workItemId: "wi-1",
+      gateKind: QualityGateKind.CustomerRfpReview,
+      evaluatorHat: productOwner,
+      passedGateKinds: new Set(),
+      outcomeChooser: pick(QualityGateOutcome.Approved),
+    },
+    ctx,
+  );
   equal(result.outcome, "evaluated");
   if (result.outcome !== "evaluated") return;
   equal(result.evaluation.outcome, QualityGateOutcome.Approved);
@@ -65,25 +76,31 @@ test("an owner hat approves a gate and advances the work item one stage", () => 
 
 test("a non-owner hat cannot evaluate a gate", () => {
   const backend = byId.get("backend_implementer")!;
-  const result = evaluateGate({
-    workItemId: "wi-1",
-    gateKind: QualityGateKind.CustomerRfpReview,
-    evaluatorHat: backend,
-    passedGateKinds: new Set(),
-    outcomeChooser: firstLegalChooser(),
-  }, ctx);
+  const result = evaluateGate(
+    {
+      workItemId: "wi-1",
+      gateKind: QualityGateKind.CustomerRfpReview,
+      evaluatorHat: backend,
+      passedGateKinds: new Set(),
+      outcomeChooser: firstLegalChooser(),
+    },
+    ctx,
+  );
   equal(result.outcome, "not_authorized");
 });
 
 test("changes_requested does NOT advance the stage (stays put)", () => {
   const productOwner = byId.get("product_owner")!;
-  const result = evaluateGate({
-    workItemId: "wi-1",
-    gateKind: QualityGateKind.CustomerRfpReview,
-    evaluatorHat: productOwner,
-    passedGateKinds: new Set(),
-    outcomeChooser: pick(QualityGateOutcome.ChangesRequested),
-  }, ctx);
+  const result = evaluateGate(
+    {
+      workItemId: "wi-1",
+      gateKind: QualityGateKind.CustomerRfpReview,
+      evaluatorHat: productOwner,
+      passedGateKinds: new Set(),
+      outcomeChooser: pick(QualityGateOutcome.ChangesRequested),
+    },
+    ctx,
+  );
   equal(result.outcome, "evaluated");
   if (result.outcome !== "evaluated") return;
   equal(result.advancedTo, PipelineStage.AwaitingCustomerRfpReview); // unchanged

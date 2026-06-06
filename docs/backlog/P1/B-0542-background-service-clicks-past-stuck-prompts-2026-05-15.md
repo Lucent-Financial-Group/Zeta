@@ -29,8 +29,8 @@ Aaron's authorization for routine PR work. Extending it to
 recognize and unblock stuck-prompt states on the foreground Ottos
 would close the loop.
 
-Per Aaron's phrasing: *"include your background service to click
-past stuck prompts on both — you have your own internal BFT."*
+Per Aaron's phrasing: _"include your background service to click
+past stuck prompts on both — you have your own internal BFT."_
 
 ## What
 

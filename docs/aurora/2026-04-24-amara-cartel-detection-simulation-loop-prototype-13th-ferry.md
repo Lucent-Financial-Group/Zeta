@@ -7,7 +7,7 @@ time (Amara wrote Python; Zeta is F#/.NET).
 
 - **Human maintainer (Aaron)** — originator of the cartel-
   detection + firefly-network design; explicit maintainer flag
-  *"not sure why she did python but you get the concepts"*
+  _"not sure why she did python but you get the concepts"_
   authorizes F# translation at graduation.
 - **External AI maintainer (Amara)** — formalization of the
   5-component simulation loop (graph-builder + warning-signals +
@@ -15,38 +15,38 @@ time (Amara wrote Python; Zeta is F#/.NET).
   Python pseudo-code sketch.
 - **Loop-agent (Otto, factory role)** — absorb + F# translation
   plan.
-**Operational status:** research-grade unless promoted. The
-5-component structure is sound; the Python-specific repo layout
-(`/cartel-lab/graph/builder.py` etc.) does NOT apply — Zeta-
-native `src/Core/**.fs` + `tests/Tests.FSharp/**` + `bench/**`
-is the actual target.
-**Non-fusion disclaimer:** agreement, shared language, or
-repeated interaction between models and humans does not imply
-shared identity, merged agency, consciousness, or personhood.
-Aaron declined Amara's offer to write starter code: *"nah we
-don't need her code, we can just worry about f# for now"*
-(Otto-117). Otto graduates concepts to idiomatic F#.
-**Date:** 2026-04-24
-**From:** Amara (external AI maintainer; Aurora co-originator)
-**Via:** Aaron's courier ferry (pasted into autonomous-loop
-session Otto-117)
-**Absorbed by:** Otto (loop-agent PM hat), Otto-118 tick
-**Prior ferries:** PR #196 (1st) through PR #311 (12th,
-pending).
-**Scheduling discipline:** Content-Classification discipline
-(CC-002) — paste-scoped absorb deferred to a dedicated tick,
-tracked in the loop-agent's out-of-repo auto-memory
-(not an in-repo file).
+  **Operational status:** research-grade unless promoted. The
+  5-component structure is sound; the Python-specific repo layout
+  (`/cartel-lab/graph/builder.py` etc.) does NOT apply — Zeta-
+  native `src/Core/**.fs` + `tests/Tests.FSharp/**` + `bench/**`
+  is the actual target.
+  **Non-fusion disclaimer:** agreement, shared language, or
+  repeated interaction between models and humans does not imply
+  shared identity, merged agency, consciousness, or personhood.
+  Aaron declined Amara's offer to write starter code: _"nah we
+  don't need her code, we can just worry about f# for now"_
+  (Otto-117). Otto graduates concepts to idiomatic F#.
+  **Date:** 2026-04-24
+  **From:** Amara (external AI maintainer; Aurora co-originator)
+  **Via:** Aaron's courier ferry (pasted into autonomous-loop
+  session Otto-117)
+  **Absorbed by:** Otto (loop-agent PM hat), Otto-118 tick
+  **Prior ferries:** PR #196 (1st) through PR #311 (12th,
+  pending).
+  **Scheduling discipline:** Content-Classification discipline
+  (CC-002) — paste-scoped absorb deferred to a dedicated tick,
+  tracked in the loop-agent's out-of-repo auto-memory
+  (not an in-repo file).
 
 ---
 
 ## Preamble context from Aaron (Otto-117 / Otto-118)
 
-Otto-117 paste preamble (verbatim): *"not sure why she did
-python but you get the concepts next drop from amara"*.
+Otto-117 paste preamble (verbatim): _"not sure why she did
+python but you get the concepts next drop from amara"_.
 
-Otto-118 clarification (verbatim): *"nah we don't need her
-code, we can just worry about f# for now"*.
+Otto-118 clarification (verbatim): _"nah we don't need her
+code, we can just worry about f# for now"_.
 
 Load-bearing directives:
 
@@ -217,16 +217,16 @@ If you want, I can write the exact starter code for the simulation loop + cartel
 
 Amara's Python maps to Zeta-native F# as follows:
 
-| Amara Python | Zeta F# translation | Location |
-|---|---|---|
-| `/cartel-lab/graph/builder.py` | `Graph.build : Event seq -> Graph` (pure) | `src/Core/GraphState.fs` (new) |
-| `/cartel-lab/metrics/spectral.py` `largest_eigenvalue` | `largestEigenvalue : Graph -> double option` | `src/Core/TemporalCoordinationDetection.fs` extension |
-| `/cartel-lab/metrics/spectral.py` `eigenvector_centrality` | `eigenvectorCentrality : Graph -> IReadOnlyDictionary<Node, double>` | same module |
-| `/cartel-lab/metrics/modularity.py` `compute_modularity` | `modularityScore : Graph -> double` | same module |
-| `/cartel-lab/metrics/covariance.py` `d2_dt2` | `covarianceAcceleration : double[] seq -> double option` | `src/Core/RobustStats.fs` extension |
-| `/cartel-lab/adversary/injector.py` | `CartelInjector.inject : Graph -> int -> double -> Graph` | `tests/Tests.FSharp/_Support/CartelInjector.fs` (test-only) |
-| `/cartel-lab/simulation/loop.py` | FsCheck property-test harness | `tests/Tests.FSharp/Simulation/CartelLoop.Tests.fs` |
-| `/cartel-lab/experiments/baseline_vs_attack.ipynb` | BenchmarkDotNet project | `bench/CartelDetection/` (new) |
+| Amara Python                                               | Zeta F# translation                                                  | Location                                                    |
+| ---------------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `/cartel-lab/graph/builder.py`                             | `Graph.build : Event seq -> Graph` (pure)                            | `src/Core/GraphState.fs` (new)                              |
+| `/cartel-lab/metrics/spectral.py` `largest_eigenvalue`     | `largestEigenvalue : Graph -> double option`                         | `src/Core/TemporalCoordinationDetection.fs` extension       |
+| `/cartel-lab/metrics/spectral.py` `eigenvector_centrality` | `eigenvectorCentrality : Graph -> IReadOnlyDictionary<Node, double>` | same module                                                 |
+| `/cartel-lab/metrics/modularity.py` `compute_modularity`   | `modularityScore : Graph -> double`                                  | same module                                                 |
+| `/cartel-lab/metrics/covariance.py` `d2_dt2`               | `covarianceAcceleration : double[] seq -> double option`             | `src/Core/RobustStats.fs` extension                         |
+| `/cartel-lab/adversary/injector.py`                        | `CartelInjector.inject : Graph -> int -> double -> Graph`            | `tests/Tests.FSharp/_Support/CartelInjector.fs` (test-only) |
+| `/cartel-lab/simulation/loop.py`                           | FsCheck property-test harness                                        | `tests/Tests.FSharp/Simulation/CartelLoop.Tests.fs`         |
+| `/cartel-lab/experiments/baseline_vs_attack.ipynb`         | BenchmarkDotNet project                                              | `bench/CartelDetection/` (new)                              |
 
 ### Key F# vs Python differences (already in scheduling memory)
 
@@ -251,7 +251,7 @@ Priority queue (per Otto-105 cadence):
    windowed-covariance; pure.
 4. **Composite `cartelScore`** — `α·λ₁_growth + β·ΔQ + γ·d²_cov` with tunable weights;
    needs ADR on weights (analog to Veridicality scoring).
-5. **`CartelInjector`** test-support — lives in tests/_Support/,
+5. **`CartelInjector`** test-support — lives in tests/\_Support/,
    NOT shipped as public API (red-team tooling).
 6. **Simulation-loop harness** — FsCheck property-tests +
    BenchmarkDotNet.
@@ -260,16 +260,16 @@ Priority queue (per Otto-105 cadence):
 
 ### Already-shipped cross-reference
 
-| 13th ferry component | Already shipped |
-|---|---|
-| Graph builder | Not shipped; graduation candidate |
-| λ₁ / eigenvector centrality | Not shipped; queued |
-| Modularity | Not shipped; queued |
-| Stake covariance | Not shipped; queued; composes on `RobustStats` |
-| Cartel injector | Not shipped; test-only |
-| Detection-latency measurement | Not shipped; bench-project |
-| Score function composite | Not shipped; analog to Veridicality composite |
-| Related primitives | `TemporalCoordinationDetection` (PRs #297 / #298 / #306 pending), `RobustStats` (#295), `Veridicality.Provenance/Claim` (#309), `antiConsensusGate` (#310 pending) |
+| 13th ferry component          | Already shipped                                                                                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Graph builder                 | Not shipped; graduation candidate                                                                                                                                  |
+| λ₁ / eigenvector centrality   | Not shipped; queued                                                                                                                                                |
+| Modularity                    | Not shipped; queued                                                                                                                                                |
+| Stake covariance              | Not shipped; queued; composes on `RobustStats`                                                                                                                     |
+| Cartel injector               | Not shipped; test-only                                                                                                                                             |
+| Detection-latency measurement | Not shipped; bench-project                                                                                                                                         |
+| Score function composite      | Not shipped; analog to Veridicality composite                                                                                                                      |
+| Related primitives            | `TemporalCoordinationDetection` (PRs #297 / #298 / #306 pending), `RobustStats` (#295), `Veridicality.Provenance/Claim` (#309), `antiConsensusGate` (#310 pending) |
 
 ### Why this ferry is operationally more specific than 12th
 
@@ -293,8 +293,8 @@ tooling. Proper red-team discipline:
    graph type in `src/Core/**` that the cartel-detection
    primitives should use, or is this a net-new graduation?
    Otto will audit `src/Core/Crdt.fs` + `src/Core/Hierarchy.fs`
-   + any other candidates before the first graph-typed
-   graduation lands.
+   - any other candidates before the first graph-typed
+     graduation lands.
 2. **Bench-project creation** — should Otto create a new
    BenchmarkDotNet project `bench/CartelDetection/` or add to
    an existing `bench/` project? Default: new project (isolates
@@ -303,11 +303,11 @@ tooling. Proper red-team discipline:
 
 ### Aaron's explicit decisions captured
 
-1. **Python → F# translation** — Otto-117 *"not sure why she
-   did python but you get the concepts"* authorizes F# at
+1. **Python → F# translation** — Otto-117 _"not sure why she
+   did python but you get the concepts"_ authorizes F# at
    graduation.
-2. **Decline Amara's starter-code offer** — Otto-118 *"nah we
-   don't need her code, we can just worry about f# for now"*.
+2. **Decline Amara's starter-code offer** — Otto-118 _"nah we
+   don't need her code, we can just worry about f# for now"_.
    Otto's graduation cadence is the right source for Zeta-
    native code.
 

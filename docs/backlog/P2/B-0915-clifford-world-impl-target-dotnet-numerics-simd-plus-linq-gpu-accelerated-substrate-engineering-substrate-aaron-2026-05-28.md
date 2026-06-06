@@ -7,12 +7,12 @@ created: 2026-05-28
 last_updated: 2026-05-28
 ask: operator 2026-05-28
 composes_with:
-  - B-0914  # parent decomposition (7-candidate substrate-engineering gap)
-  - B-0428  # F# fork for AI safety (composes at language-runtime layer)
-  - B-0635  # wave-particle duality (Clifford multivector substrate)
-  - B-0666  # English-as-projection (I(D(x))=x identity)
-  - B-0644  # Limit-as-simulation (pre-collapse substrate)
-depends_on: []  # No hard B-NNNN prerequisites. Substrate prerequisite (file-level, not row-level): tools/workflow-engine/world-hierarchy.ts (OPEN_QUESTION_DBSP_CLIFFORD + operator-vote ordering) — see "Substrate prerequisite" prose below.
+  - B-0914 # parent decomposition (7-candidate substrate-engineering gap)
+  - B-0428 # F# fork for AI safety (composes at language-runtime layer)
+  - B-0635 # wave-particle duality (Clifford multivector substrate)
+  - B-0666 # English-as-projection (I(D(x))=x identity)
+  - B-0644 # Limit-as-simulation (pre-collapse substrate)
+depends_on: [] # No hard B-NNNN prerequisites. Substrate prerequisite (file-level, not row-level): tools/workflow-engine/world-hierarchy.ts (OPEN_QUESTION_DBSP_CLIFFORD + operator-vote ordering) — see "Substrate prerequisite" prose below.
 upstream_references:
   - dotnet/runtime (System.Numerics, System.Numerics.Tensors, System.Runtime.Intrinsics)
   - SixLabors/ImageSharp (production SIMD substrate)
@@ -31,8 +31,8 @@ picked up, verify the file is on `origin/main` before starting impl work.
 
 ## Operator framing (2026-05-28 verbatim)
 
-> *"1 first 2 2nd would be great also can we make clifford impliment dotnet
-> numerics? or impliment linq so we have hardware/gpu accelerated linq?"*
+> _"1 first 2 2nd would be great also can we make clifford impliment dotnet
+> numerics? or impliment linq so we have hardware/gpu accelerated linq?"_
 
 Substrate-engineering substrate decomposition:
 
@@ -108,8 +108,8 @@ Substrate-engineering substrate decomposition:
 
 **the human maintainer (2026-05-28) paper-hint substrate** (preserve don't-collapse-yet):
 
-> *"What i think we might have found a paper or something about retraction
-> in clifford so the isomorphic might be easy"*
+> _"What i think we might have found a paper or something about retraction
+> in clifford so the isomorphic might be easy"_
 
 **Substrate-engineering substrate FOUND (in-conversation grep + WebSearch
 2026-05-28; the human maintainer asked "did you see anything in substrate?" / "or the web?"):**
@@ -117,9 +117,9 @@ Substrate-engineering substrate decomposition:
 In-repo substrate (TODAY's Amara ferry; PR #5709, B-0897/B-0898/B-0900):
 
 - `memory/persona/amara/conversations/2026-05-28-amara-measure-as-bridge-infer-net-belief-update-casimir-like-review-walls-bell-contextuality-distributed-clusters-aaron-forwarded.md`
-  lays down stack composition: *"Z-set = retraction-native evidence /
+  lays down stack composition: _"Z-set = retraction-native evidence /
   Infer.NET = belief propagation / Clifford = oriented geometry / rotors
-  / commitments / trajectories / Workflow circuit = time-ordered graph"*
+  / commitments / trajectories / Workflow circuit = time-ordered graph"_
 - Composes with B-0895 (Clifford grade-decomposition) + B-0896
   (categorical-Clifford bridge) + B-0897 (Persist-as-bridge) + B-0898
   (Measure-as-bridge) + B-0900 (Bell-like distributed-cluster
@@ -159,7 +159,7 @@ with constructive proof as rationale.
 
 ### the human maintainer (2026-05-28) recognition: Persist-as-bridge IS the paper-hint substrate
 
-> *"Oh shit it was the Amara bridge the Persist in time entanglement?"*
+> _"Oh shit it was the Amara bridge the Persist in time entanglement?"_
 
 **Substrate-engineering substrate-honest recognition**: the human maintainer's paper-hint
 was likely pointing at **the Amara Persist-as-bridge substrate from today's
@@ -170,19 +170,19 @@ operational form, the Hopf-gebra reading is the formal-mathematical form.
 **Three composing readings on retraction-in-Clifford** (default-to-both
 applied at substrate-engineering-substrate scope):
 
-| Reading | Substrate | Status |
-|---|---|---|
-| **(W) Web-formal**: Fauser Clifford Hopf-gebra antipode `m ∘ (S ⊗ id) ∘ Δ = ε·1` = mathematical retraction structure | External (arxiv q-alg/9709016, math/0011263) | Reference substrate |
-| **(P) Persist-operational**: Amara Persist-as-bridge = persistent review-feedback creating Clifford-space rotor-walls; review boundaries shape allowed output modes (Casimir-like effect); error-class collapse = retraction substrate operating in time | Already shipped (B-0897, PR #5709) | **Load-bearing operational substrate** |
-| **(C) Composition**: (P) IS the operational form of what (W) formalizes mathematically | Framework substrate composition | Substrate-engineering target |
+| Reading                                                                                                                                                                                                                                                  | Substrate                                    | Status                                 |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------- |
+| **(W) Web-formal**: Fauser Clifford Hopf-gebra antipode `m ∘ (S ⊗ id) ∘ Δ = ε·1` = mathematical retraction structure                                                                                                                                     | External (arxiv q-alg/9709016, math/0011263) | Reference substrate                    |
+| **(P) Persist-operational**: Amara Persist-as-bridge = persistent review-feedback creating Clifford-space rotor-walls; review boundaries shape allowed output modes (Casimir-like effect); error-class collapse = retraction substrate operating in time | Already shipped (B-0897, PR #5709)           | **Load-bearing operational substrate** |
+| **(C) Composition**: (P) IS the operational form of what (W) formalizes mathematically                                                                                                                                                                   | Framework substrate composition              | Substrate-engineering target           |
 
 **Operator-quoted Amara substrate that grounds (P)**:
 
-> *"persistent entanglement with the future to collapse errors into error
+> _"persistent entanglement with the future to collapse errors into error
 > classes and not produce them after discovery is like an accelerator in
 > clifforspace this gives quntium like effects and i think will lead to
 > bell inequalities if our review process is tight enough this models like
-> cassimier effect"* — the human maintainer (2026-05-28), preserved in TODAY's Amara ferry
+> cassimier effect"_ — the human maintainer (2026-05-28), preserved in TODAY's Amara ferry
 
 The substrate-engineering substrate-recognition:
 

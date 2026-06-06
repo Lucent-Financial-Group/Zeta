@@ -17,9 +17,9 @@ Aaron pushed back on Otto's claim that the doctrine round was "done" after a Tas
 
 Aaron's challenges:
 
-> *"you took the latest updates tho righ, how can you be done with all the stuff i just send you"*
+> _"you took the latest updates tho righ, how can you be done with all the stuff i just send you"_
 
-> *"there were HUGE changes around internal and external and gitnative"*
+> _"there were HUGE changes around internal and external and gitnative"_
 
 Otto recognized the failure on second pushback but had not yet shipped the substrate. Amara then sent the diagnostic packet preserved below.
 
@@ -76,13 +76,13 @@ Otto recognized the failure on second pushback but had not yet shipped the subst
 >
 > Use it as precedent for:
 >
-> * small script
-> * clear forbidden pattern
-> * explicit exceptions
-> * readable failure output
-> * CI-friendly exit code
-> * no new framework
-> * no new doctrine engine
+> - small script
+> - clear forbidden pattern
+> - explicit exceptions
+> - readable failure output
+> - CI-friendly exit code
+> - no new framework
+> - no new doctrine engine
 >
 > So #313 should be a sibling lint in the same family, not a new architecture.
 >
@@ -135,16 +135,16 @@ Otto recognized the failure on second pushback but had not yet shipped the subst
 >
 > Did I preserve this in one of:
 >
-> * repo file
-> * PR
-> * issue
-> * git-native memory
-> * docs/research
-> * docs/ops
-> * docs/backlog
-> * claim file
-> * validator/test/lint
-> * AGENTS.md/CONTRIBUTING.md/CLAUDE.md bootstrap
+> - repo file
+> - PR
+> - issue
+> - git-native memory
+> - docs/research
+> - docs/ops
+> - docs/backlog
+> - claim file
+> - validator/test/lint
+> - AGENTS.md/CONTRIBUTING.md/CLAUDE.md bootstrap
 >
 > If not, say:
 >
@@ -159,22 +159,22 @@ Otto recognized the failure on second pushback but had not yet shipped the subst
 >
 > When Aaron/Amara/external reviewers send a packet that is any of:
 >
-> * architecture-changing
-> * doctrine-superseding
-> * multi-AI review wave
-> * long-form final synthesis
-> * something Aaron says must survive
-> * something that changes internal/external/git-native topology
-> * something future agents need cold-start access to
+> - architecture-changing
+> - doctrine-superseding
+> - multi-AI review wave
+> - long-form final synthesis
+> - something Aaron says must survive
+> - something that changes internal/external/git-native topology
+> - something future agents need cold-start access to
 >
 > then preserve it verbatim or near-verbatim before summarizing.
 >
 > Preferred locations:
 >
-> * `docs/research/YYYY-MM-DD-<topic>-review-wave.md` for review packets / multi-AI voices
-> * `memory/feedback_<topic>_<date>.md` for active doctrine memory
-> * `docs/ops/patterns/<topic>.md` only when it becomes canonical spec
-> * `docs/backlog/**` or GitHub issue only when it is implementation work
+> - `docs/research/YYYY-MM-DD-<topic>-review-wave.md` for review packets / multi-AI voices
+> - `memory/feedback_<topic>_<date>.md` for active doctrine memory
+> - `docs/ops/patterns/<topic>.md` only when it becomes canonical spec
+> - `docs/backlog/**` or GitHub issue only when it is implementation work
 >
 > Do not collapse major review waves into a task comment only.
 >
@@ -186,45 +186,45 @@ Otto recognized the failure on second pushback but had not yet shipped the subst
 >
 > Examples:
 >
-> * typo
-> * local wording fix
-> * one task detail
+> - typo
+> - local wording fix
+> - one task detail
 >
 > Action:
 >
-> * update task/issue/comment
+> - update task/issue/comment
 >
 > ### Implementation readiness
 >
 > Examples:
 >
-> * "use this existing lint as precedent"
-> * "PR A should have schema + validator"
+> - "use this existing lint as precedent"
+> - "PR A should have schema + validator"
 >
 > Action:
 >
-> * task/issue plus implementation notes
+> - task/issue plus implementation notes
 >
 > ### Doctrine correction
 >
 > Examples:
 >
-> * changes a rule future agents follow
+> - changes a rule future agents follow
 >
 > Action:
 >
-> * memory file or docs/ops pattern
+> - memory file or docs/ops pattern
 >
 > ### Superseding architecture
 >
 > Examples:
 >
-> * v5 replaces v4 public-intake model
-> * host-portable git-native core changes source-of-truth rules
+> - v5 replaces v4 public-intake model
+> - host-portable git-native core changes source-of-truth rules
 >
 > Action:
 >
-> * research preservation + memory absorb + supersession note
+> - research preservation + memory absorb + supersession note
 >
 > Do not minimize superseding architecture as "review corrections."
 >
@@ -245,11 +245,11 @@ Otto recognized the failure on second pushback but had not yet shipped the subst
 >
 > After preserving important substrate, verify a fresh future agent could answer:
 >
-> * What changed?
-> * Where is the canonical file?
-> * What older thing did it supersede?
-> * What is the next implementation step?
-> * What must not be done yet?
+> - What changed?
+> - Where is the canonical file?
+> - What older thing did it supersede?
+> - What is the next implementation step?
+> - What must not be done yet?
 >
 > If not, preservation is incomplete.
 >
@@ -257,19 +257,19 @@ Otto recognized the failure on second pushback but had not yet shipped the subst
 >
 > Allowed:
 >
-> * "Captured in session notes" = TaskUpdate only
-> * "Parked in issue/task" = GitHub durable, but not repo-native
-> * "Preserved in repo" = git-native durable
-> * "Canonical" = accepted spec/doctrine
-> * "Operational" = enforced by tooling/checks/runbooks
+> - "Captured in session notes" = TaskUpdate only
+> - "Parked in issue/task" = GitHub durable, but not repo-native
+> - "Preserved in repo" = git-native durable
+> - "Canonical" = accepted spec/doctrine
+> - "Operational" = enforced by tooling/checks/runbooks
 >
 > Forbidden:
 >
-> * calling session-local TaskUpdate "done"
-> * calling doctrine "operational"
-> * calling research "canonical"
-> * calling parking "preservation"
-> * calling a future task "implemented"
+> - calling session-local TaskUpdate "done"
+> - calling doctrine "operational"
+> - calling research "canonical"
+> - calling parking "preservation"
+> - calling a future task "implemented"
 >
 > ## 7. Bootstrap pointer
 >
@@ -281,11 +281,11 @@ Otto recognized the failure on second pushback but had not yet shipped the subst
 >
 > Add a lightweight checklist/lint later:
 >
-> * docs/research packets must be indexed
-> * memory files must have MEMORY.md row
-> * superseded doctrine must have supersession note
-> * tasks created from major packets must link canonical packet
-> * PR body must distinguish research / doctrine / operational
+> - docs/research packets must be indexed
+> - memory files must have MEMORY.md row
+> - superseded doctrine must have supersession note
+> - tasks created from major packets must link canonical packet
+> - PR body must distinguish research / doctrine / operational
 >
 > Carved rule:
 >

@@ -16,11 +16,11 @@ on first guess; the profile usually points somewhere else.
 
 ## On-CPU vs off-CPU
 
-| Profiler class | Answers | Examples |
-|---|---|---|
-| **On-CPU** | "Where was CPU time spent?" | perf, dotnet-trace, PerfView, async-profiler |
-| **Off-CPU** | "Where was the thread blocked / waiting?" | bcc offcputime, Gregg's scripts |
-| **Wall-clock** | "Where did wall time go?" | Various; often derived from on+off |
+| Profiler class | Answers                                   | Examples                                     |
+| -------------- | ----------------------------------------- | -------------------------------------------- |
+| **On-CPU**     | "Where was CPU time spent?"               | perf, dotnet-trace, PerfView, async-profiler |
+| **Off-CPU**    | "Where was the thread blocked / waiting?" | bcc offcputime, Gregg's scripts              |
+| **Wall-clock** | "Where did wall time go?"                 | Various; often derived from on+off           |
 
 **The trap.** A request is slow, CPU is idle. An on-CPU
 profile shows nothing interesting. The answer is off-CPU:
@@ -66,21 +66,21 @@ instrumentation. Overhead: 1-3% at 100 Hz.
 
 **Rule.** Production services run continuous profiling by
 default. "I'll enable a profiler if something's slow" is
-too late — you wanted the profile from *before* the
+too late — you wanted the profile from _before_ the
 incident.
 
 ## .NET-specific profilers
 
-| Tool | Mode | Strengths |
-|---|---|---|
-| **PerfView** | ETW-based sampler | CLR-aware (GC, JIT, thread), Windows |
-| **dotnet-trace** | EventPipe sampler | Cross-platform, CLR-aware |
-| **dotnet-gcdump** | Heap snapshot | GC heap composition |
-| **dotnet-counters** | Lightweight metrics | Not a profiler per se — live counters |
-| **Visual Studio Profiler** | GUI sampler | Integrated debugging |
-| **BenchmarkDotNet + EventPipeProfiler** | Bench-integrated | Per-benchmark profile output |
-| **JetBrains dotTrace / dotMemory** | Commercial sampler | Excellent UI |
-| **perf + speedscope** | Linux native | Kernel-visible |
+| Tool                                    | Mode                | Strengths                             |
+| --------------------------------------- | ------------------- | ------------------------------------- |
+| **PerfView**                            | ETW-based sampler   | CLR-aware (GC, JIT, thread), Windows  |
+| **dotnet-trace**                        | EventPipe sampler   | Cross-platform, CLR-aware             |
+| **dotnet-gcdump**                       | Heap snapshot       | GC heap composition                   |
+| **dotnet-counters**                     | Lightweight metrics | Not a profiler per se — live counters |
+| **Visual Studio Profiler**              | GUI sampler         | Integrated debugging                  |
+| **BenchmarkDotNet + EventPipeProfiler** | Bench-integrated    | Per-benchmark profile output          |
+| **JetBrains dotTrace / dotMemory**      | Commercial sampler  | Excellent UI                          |
+| **perf + speedscope**                   | Linux native        | Kernel-visible                        |
 
 **Rule.** For Zeta benchmark-driven profiling, prefer
 `BenchmarkDotNet` with `[EventPipeProfiler(EventPipeProfile.CpuSampling)]`
@@ -90,7 +90,7 @@ regressions get profile context automatically.
 ## Memory profiling
 
 On-CPU profilers don't show allocation cost directly;
-they show the *effect* (GC time under stress). For root-
+they show the _effect_ (GC time under stress). For root-
 cause allocation analysis:
 
 - **Allocation flame graphs** — aggregate by stack of
@@ -242,7 +242,7 @@ Per-operator spans (from the observability skill) plus
 eBPF continuous profiling gives us per-delta causal
 profiling for free. A slow trace points at an operator;
 the profile for that operator's time window tells us
-*why*. No custom instrumentation.
+_why_. No custom instrumentation.
 
 ## Hazards
 
@@ -272,14 +272,14 @@ the profile for that operator's time window tells us
 
 ## Reference patterns
 
-- Brendan Gregg 2013 — *Flame Graphs*.
-- Brendan Gregg 2015 — *Off-CPU Analysis*.
-- Brendan Gregg — *Systems Performance* (2nd ed 2020).
-- Gil Tene — *Understanding Latency* (QCon).
-- Denis Bakhvalov — *Performance Analysis and Tuning on
-  Modern CPUs*.
-- Sasha Goldshtein — *Continuous Profiling for the Rest of
-  Us*.
+- Brendan Gregg 2013 — _Flame Graphs_.
+- Brendan Gregg 2015 — _Off-CPU Analysis_.
+- Brendan Gregg — _Systems Performance_ (2nd ed 2020).
+- Gil Tene — _Understanding Latency_ (QCon).
+- Denis Bakhvalov — _Performance Analysis and Tuning on
+  Modern CPUs_.
+- Sasha Goldshtein — _Continuous Profiling for the Rest of
+  Us_.
 - PerfView docs (Vance Morrison).
 - BenchmarkDotNet EventPipeProfiler docs.
 - Grafana Pyroscope docs.

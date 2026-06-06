@@ -21,7 +21,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 B-0259: wire the B-0258 reindexer into developer flow and CI so MEMORY.md drift is caught mechanically.
 
 - **CI workflow** (`.github/workflows/memory-index-drift.yml`) — triggers on `memory/**` changes, runs `bun tools/memory/reindex-memory-md.ts --check`, fails with remediation instructions when stale. Safe-pattern compliant: SHA-pinned checkout, `permissions: contents: read`, no user-authored text in `run:` steps.
-- **Harness hook** (`.claude/hooks/post-write-memory-reindex.ts`) — PostToolUse hook for `Write` + `Edit` matchers; auto-regenerates MEMORY.md after agent writes to any heap file. Excludes MEMORY.md, CURRENT-*.md, README.md, persona/**. Non-blocking on failure (CI is the hard gate).
+- **Harness hook** (`.claude/hooks/post-write-memory-reindex.ts`) — PostToolUse hook for `Write` + `Edit` matchers; auto-regenerates MEMORY.md after agent writes to any heap file. Excludes MEMORY.md, CURRENT-\*.md, README.md, persona/\*\*. Non-blocking on failure (CI is the hard gate).
 - **MEMORY.md regenerated** — first full regeneration via the B-0258 generator (triggered by the hook smoke-test). Previously manually curated; generator output is now canonical.
 
 ## Post-merge manual step required
@@ -72,24 +72,22 @@ B-0259: wire the B-0258 reindexer into developer flow and CI so MEMORY.md drift 
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-14T06:08:03Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `4e8eedc556`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -102,6 +100,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR adds mechanical enforcement for `memory/MEMORY.md` drift by combining a CI gate with a Claude Code harness hook, then regenerates the memory index using the existing reindexer.
 
 **Changes:**
+
 - Adds a GitHub Actions workflow to run `bun tools/memory/reindex-memory-md.ts --check` on `memory/**` changes.
 - Adds a PostToolUse hook that reindexes `MEMORY.md` after qualifying memory heap file writes.
 - Closes B-0259 and updates `memory/MEMORY.md` to generated output.
@@ -110,12 +109,12 @@ This PR adds mechanical enforcement for `memory/MEMORY.md` drift by combining a 
 
 Copilot reviewed 3 out of 4 changed files in this pull request and generated 3 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `.github/workflows/memory-index-drift.yml` | Adds CI drift enforcement for generated memory index parity. |
-| `.claude/hooks/post-write-memory-reindex.ts` | Adds hook-side automatic reindexing after memory heap file writes/edits. |
-| `docs/backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md` | Marks the backlog row closed and documents implementation/wiring. |
-| `memory/MEMORY.md` | Regenerates the memory index from heap files. |
+| File                                                                           | Description                                                              |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `.github/workflows/memory-index-drift.yml`                                     | Adds CI drift enforcement for generated memory index parity.             |
+| `.claude/hooks/post-write-memory-reindex.ts`                                   | Adds hook-side automatic reindexing after memory heap file writes/edits. |
+| `docs/backlog/P1/B-0259-memory-md-hook-and-ci-drift-enforcement-2026-05-08.md` | Marks the backlog row closed and documents implementation/wiring.        |
+| `memory/MEMORY.md`                                                             | Regenerates the memory index from heap files.                            |
 
 ## Review threads
 
@@ -123,7 +122,7 @@ Copilot reviewed 3 out of 4 changed files in this pull request and generated 3 c
 
 **@chatgpt-codex-connector** (2026-05-14T06:08:03Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Match memory paths against project root**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Match memory paths against project root**
 
 The hook derives `rel` from `relative(process.cwd(), abs)` and then requires exactly `memory/<file>`; this fails whenever Claude is started from a subdirectory (for example `cwd=/workspace/Zeta/docs`), because an absolute `file_path` like `/workspace/Zeta/memory/x.md` becomes `../memory/x.md` and is rejected. In that common context the hook silently skips reindexing, so `MEMORY.md` drifts until CI catches it, which defeats the intended real-time regeneration behavior.
 
@@ -133,7 +132,7 @@ Useful? React with 👍 / 👎.
 
 **@chatgpt-codex-connector** (2026-05-14T06:08:03Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Run drift check when reindexer logic changes**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Run drift check when reindexer logic changes**
 
 This workflow only triggers on `memory/**`, so a PR that changes `tools/memory/reindex-memory-md.ts` (or related generation logic) but forgets to regenerate `memory/MEMORY.md` will not run this gate and can merge stale generated output. Because the workflow is intended to enforce index freshness, it should also trigger on generator/hook changes that can invalidate `MEMORY.md` even without direct edits under `memory/`.
 

@@ -10,24 +10,25 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1932 |
-| Title | fix(backlog): B-0062 drawdown oracle + classification signal proposals |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-07T19:16:43Z |
-| Merged at | 2026-05-07T19:27:41Z |
-| Merge commit SHA | `bc7839c7cb3f46940b4161a710828d043d7596c7` |
-| Branch | `otto/b0062-oracle-classification-proposals` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1932 |
-| Changed files | 3 |
-| Additions / deletions | +96 / -2 |
+| Field                 | Value                                                                  |
+| --------------------- | ---------------------------------------------------------------------- |
+| Number                | 1932                                                                   |
+| Title                 | fix(backlog): B-0062 drawdown oracle + classification signal proposals |
+| Author                | `AceHack` (human)                                                      |
+| State                 | MERGED                                                                 |
+| Created at            | 2026-05-07T19:16:43Z                                                   |
+| Merged at             | 2026-05-07T19:27:41Z                                                   |
+| Merge commit SHA      | `bc7839c7cb3f46940b4161a710828d043d7596c7`                             |
+| Branch                | `otto/b0062-oracle-classification-proposals`                           |
+| Base branch           | `main`                                                                 |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1932               |
+| Changed files         | 3                                                                      |
+| Additions / deletions | +96 / -2                                                               |
 
 ## Description
 
 ## Summary
+
 - Drawdown oracle: monitor-signed price update (no Chainlink for v0)
 - Classification signal: monitor-signed classification message (same pattern)
 - Both: monitor signs, contract verifies — single pattern for both
@@ -36,15 +37,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 6 |
-| Resolved threads | 6 |
-| Unresolved threads | 0 |
-| Total review comments | 6 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 6     |
+| Resolved threads                          | 6     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 6     |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -88,7 +89,7 @@
 
   <pre>
   This new entry introduces a second `B-0252` link in the index, but there is already an existing `B-0252` entry in the P2 section. Please resolve the underlying duplicate backlog ID so the index doesn’t contain ambiguous/duplicate IDs.
-
+  
   </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
@@ -131,7 +132,7 @@
 
   <pre>
   Similarly for the monitor-signed price update: the proposal should call out the minimum signed payload required for deterministic verification and replay protection (e.g., asset identifier, price/decimals, chainId, smart-account address, and a timestamp/expiry or monotonic round/nonce). Otherwise an attacker (or faulty relayer) could replay stale signed prices to bypass or trigger drawdown freezes incorrectly.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

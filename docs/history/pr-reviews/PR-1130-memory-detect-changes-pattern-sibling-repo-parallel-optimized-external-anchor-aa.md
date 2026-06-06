@@ -10,26 +10,26 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1130 |
-| Title | memory(detect-changes pattern): sibling-repo parallel-optimized external anchor (Aaron 2026-05-01) |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-01T17:51:10Z |
-| Merged at | 2026-05-01T19:13:47Z |
-| Merge commit SHA | `949c5b04b1869e82dc447cc579b2039bce3a35a2` |
-| Branch | `backlog/b0157-detect-changes-pattern-stcrm-parallel-optimization-aaron-2026-05-01` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1130 |
-| Changed files | 2 |
-| Additions / deletions | +319 / -0 |
+| Field                 | Value                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| Number                | 1130                                                                                               |
+| Title                 | memory(detect-changes pattern): sibling-repo parallel-optimized external anchor (Aaron 2026-05-01) |
+| Author                | `AceHack` (human)                                                                                  |
+| State                 | MERGED                                                                                             |
+| Created at            | 2026-05-01T17:51:10Z                                                                               |
+| Merged at             | 2026-05-01T19:13:47Z                                                                               |
+| Merge commit SHA      | `949c5b04b1869e82dc447cc579b2039bce3a35a2`                                                         |
+| Branch                | `backlog/b0157-detect-changes-pattern-stcrm-parallel-optimization-aaron-2026-05-01`                |
+| Base branch           | `main`                                                                                             |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1130                                           |
+| Changed files         | 2                                                                                                  |
+| Additions / deletions | +319 / -0                                                                                          |
 
 ## Description
 
 ## Summary
 
-Aaron 2026-05-01: *\"`../no-copy-only-learning-agents-insight` is the best repo in github i've seen setup to be parallel.\"*
+Aaron 2026-05-01: _\"`../no-copy-only-learning-agents-insight` is the best repo in github i've seen setup to be parallel.\"_
 
 Direct inspection (DST grade-A pull-to-sibling-repo + gh-api-on-host disciplines) revealed seven load-bearing parallel-optimization patterns. Memory file captures them as substrate; company name redacted per the no-copy-only-learning principle.
 
@@ -49,7 +49,7 @@ The sibling repo's host config is **deliberate-by-others** (multi-engineer org-s
 
 ## Carved candidate
 
-> *\"The detect-changes pattern is the parallel-PR primitive. Without it, every PR contests for every check. With it, PRs that touch different concerns don't see each other.\"*
+> _\"The detect-changes pattern is the parallel-PR primitive. Without it, every PR contests for every check. With it, PRs that touch different concerns don't see each other.\"_
 
 ## composes_with
 
@@ -66,15 +66,15 @@ B-0153 (lint suite) + B-0154 (Pages + Wiki) + B-0155 (ruleset-split) + B-0156 (T
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 24 |
-| Resolved threads | 24 |
-| Unresolved threads | 0 |
-| Total review comments | 24 |
-| Total fix commits (touching thread paths) | 7 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 24    |
+| Resolved threads                          | 24    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 24    |
+| Total fix commits (touching thread paths) | 7     |
 
 ## Review threads
 
@@ -87,10 +87,10 @@ B-0153 (lint suite) + B-0154 (Pages + Wiki) + B-0155 (ruleset-split) + B-0156 (T
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T17:53:04Z on `memory/MEMORY.md`:7 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point the new detect-changes index entry at the real file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point the new detect-changes index entry at the real file**
+
   The newly added MEMORY index link targets `feedback_detect_changes_pattern_the sibling-repo external anchor_parallel_optimized_repo_external_anchor_aaron_2026_05_01.md`, but this file does not exist in `memory/`; the committed file is `feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`. This makes the new entry non-navigable and breaks the memory index lookup path for the pattern this commit introduces.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -102,10 +102,10 @@ B-0153 (lint suite) + B-0154 (Pages + Wiki) + B-0155 (ruleset-split) + B-0156 (T
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T17:53:04Z on `memory/MEMORY.md`:103 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Keep redacted link text but preserve existing file targets**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Keep redacted link text but preserve existing file targets**
+
   This edit changes the link target to `feedback_<sibling-org>_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`, but no such file exists; the existing document remains `feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md`. The same placeholder-target pattern appears in other edited entries in this commit, creating dead links in a central navigation file even though the underlying docs were not renamed.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -174,8 +174,9 @@ B-0153 (lint suite) + B-0154 (Pages + Wiki) + B-0155 (ruleset-split) + B-0156 (T
 
 - **`Copilot` (bot)** at 2026-05-01T17:55:48Z on `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`:11 (association: NONE)
   `composes_with` references `feedback_otto_352_external_anchor_lineage_for_substrate_credibility_2026_04_26.md`, but that file does not exist anywhere in the repo. Either add the referenced memory file or remove/correct this entry to keep frontmatter xrefs valid.
+
   ```suggestion
-  
+
   ```
 
 ### Thread 8 -- resolved [outdated, collapsed]
@@ -257,10 +258,10 @@ B-0153 (lint suite) + B-0154 (Pages + Wiki) + B-0155 (ruleset-split) + B-0156 (T
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T17:59:07Z on `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`:11 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point composes_with edge at an existing memory file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point composes_with edge at an existing memory file**
+
   The new memory artifact declares `feedback_otto_352_external_anchor_lineage_for_substrate_credibility_2026_04_26.md` in `composes_with`, but that file is not present under `memory/` in this commit. This leaves a dangling edge in the memory graph, so any tooling or reviewers traversing `composes_with` for provenance/navigation will hit a dead reference and lose the intended linkage.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 14 -- resolved [collapsed]
@@ -297,10 +298,10 @@ B-0153 (lint suite) + B-0154 (Pages + Wiki) + B-0155 (ruleset-split) + B-0156 (T
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-05-01T18:51:05Z on `memory/MEMORY.md`:8 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Point STCRM detect-changes entry at an existing memory file**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Point STCRM detect-changes entry at an existing memory file**
+
   This new `MEMORY.md` bullet links to `feedback_detect_changes_pattern_stcrm_parallel_optimized_repo_external_anchor_aaron_2026_05_01.md`, but this commit only adds `feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`. The result is a dead link in the top-level memory index, so readers and tooling cannot navigate to the artifact from this entry.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 17 -- resolved [outdated, collapsed]
@@ -313,8 +314,9 @@ B-0153 (lint suite) + B-0154 (Pages + Wiki) + B-0155 (ruleset-split) + B-0156 (T
 
 - **`Copilot` (bot)** at 2026-05-01T18:51:56Z on `memory/feedback_detect_changes_pattern_sibling_repo_parallel_optimized_external_anchor_aaron_2026_05_01.md`:132 (association: NONE)
   P2: Sentence starts with lowercase “the sibling repo…” after a period (“...via `evaluate` mode for new rules). the sibling repo has done this...”), which looks like an unintentional capitalization/grammar issue.
-  
+
   Suggested fix: capitalize this (and similar sentence starts nearby) for readability.
+
   ```suggestion
   via `evaluate` mode for new rules). The sibling repo has done this in
   ```

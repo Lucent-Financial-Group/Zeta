@@ -34,7 +34,9 @@ export function signIndex(content: IndexSignableContent, privatePem: string): Ac
 }
 
 export function verifyIndexSignature(
-  content: IndexSignableContent, signature: AceSignature, trustStore: Map<string, TrustEntry>,
+  content: IndexSignableContent,
+  signature: AceSignature,
+  trustStore: Map<string, TrustEntry>,
 ): VerifyResult {
   if (signature.algo !== "ed25519") return { ok: false, reason: "unsupported-algo" };
   const entry = trustStore.get(signature.key_id);
@@ -43,7 +45,9 @@ export function verifyIndexSignature(
   try {
     const pub = createPublicKey({ key: Buffer.from(entry.public_key, "base64"), format: "der", type: "spki" });
     verified = nodeVerify(null, canonicalIndexBytes(content), pub, Buffer.from(signature.sig, "base64"));
-  } catch { verified = false; }
+  } catch {
+    verified = false;
+  }
   if (!verified) return { ok: false, reason: "bad-signature" };
   const result: VerifyResult = { ok: true, key_id: signature.key_id };
   if (entry.label !== undefined) (result as { ok: true; key_id: string; label?: string }).label = entry.label;

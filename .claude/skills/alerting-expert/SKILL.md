@@ -14,7 +14,7 @@ Capability skill. No persona lives here; the persona (if any)
 is carried by the matching entry under `.claude/agents/`.
 
 An alert is a contract with an on-call human: "this
-specific signal means *you* need to act." Most
+specific signal means _you_ need to act." Most
 observability incidents are not outages; they are alert
 failures. The signal was there, the alert wasn't, the
 alert was too noisy, the runbook was stale, the rule was
@@ -57,11 +57,11 @@ For an SLO of 99.9% over 30 days (43-minute monthly
 budget):
 
 | Window | Burn rate | Budget consumed at alert | Severity |
-|---|---|---|---|
-| 1h | 14.4× | 2% in 1h | Page |
-| 6h | 6× | 5% in 6h | Page |
-| 3d | 1× | 10% in 3d | Ticket |
-| 30d | 0.25× | 7.5% in 30d | Review |
+| ------ | --------- | ------------------------ | -------- |
+| 1h     | 14.4×     | 2% in 1h                 | Page     |
+| 6h     | 6×        | 5% in 6h                 | Page     |
+| 3d     | 1×        | 10% in 3d                | Ticket   |
+| 30d    | 0.25×     | 7.5% in 30d              | Review   |
 
 **Why multi-window.** A single-window alert is either too
 sensitive (false pages) or too slow (bleed budget). Two
@@ -73,7 +73,7 @@ threshold alerts (`error_rate > 1%`) are a legacy pattern.
 
 ## AlertManager / Opsgenie routing
 
-Mental model: a *tree* of matchers.
+Mental model: a _tree_ of matchers.
 
 - **Root receiver** — default catch-all; often a ticket.
 - **Team receivers** — one per team; matched by
@@ -145,9 +145,9 @@ tests:
   - interval: 1m
     input_series:
       - series: 'http_requests_total{status="200"}'
-        values: '100+100x60'
+        values: "100+100x60"
       - series: 'http_requests_total{status="500"}'
-        values: '0+5x60'
+        values: "0+5x60"
     alert_rule_test:
       - eval_time: 10m
         alertname: HighErrorBudgetBurn
@@ -252,7 +252,7 @@ intuition.
 - **Absolute threshold** — `latency_p99 > 500ms`. Brittle
   — doesn't adapt to traffic patterns.
 - **Rate of change** — `increase(errors[5m]) > 2 *
-  increase(errors[5m] offset 1h)`. Adaptive.
+increase(errors[5m] offset 1h)`. Adaptive.
 - **Z-score / anomaly** — requires baselining; Prometheus
   `predict_linear` or external anomaly-detection service.
 
@@ -289,7 +289,7 @@ ride on those:
 - **Metric contract** → `metrics-expert`.
 - **SLI / SLO policy** → `operations-monitoring-expert`.
 - **Three-pillar umbrella** → `observability-and-tracing-
-  expert`.
+expert`.
 - **Security / SIEM detection rules** →
   `security-operations-engineer`.
 - **AlertManager / Opsgenie deployment** →
@@ -328,9 +328,9 @@ monitoring misses. Alert design accounts for it.
 
 ## Reference patterns
 
-- Beyer et al. — *SRE Workbook* chapter 5 (burn-rate
+- Beyer et al. — _SRE Workbook_ chapter 5 (burn-rate
   alerting).
-- Rob Ewaschuk — *My Philosophy on Alerting* (Google).
+- Rob Ewaschuk — _My Philosophy on Alerting_ (Google).
 - Prometheus AlertManager docs.
 - PagerDuty / Opsgenie incident response docs.
 - `promtool test rules` docs.

@@ -20,7 +20,10 @@ CodeQL alert #79 (`github-advanced-security` bot) flagged
 
 ```typescript
 function autogenOutputPath(entity: string): string {
-  const ts = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+  const ts = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z");
   return `/tmp/peer-call-output/${ts}-${entity}.md`;
 }
 ```
@@ -76,7 +79,10 @@ import { mkdtempSync } from "node:fs";
 import { resolve } from "node:path";
 
 function autogenOutputPath(entity: string): string {
-  const ts = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+  const ts = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z");
   // mkdtempSync creates a unique non-predictable directory; the
   // filename inside it can stay deterministic for caller-side
   // recovery via the OUTPUT-FILE: marker.

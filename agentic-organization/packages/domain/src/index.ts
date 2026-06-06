@@ -141,12 +141,7 @@ export {
   type HatDefinition,
 } from "./hat-definition.ts";
 export { OrgEventKind, type OrgEvent, type OrgEventTransitionContext } from "./org-event.ts";
-export {
-  HatBindingPhase,
-  TerminalHatBindingPhases,
-  isTerminalHatBinding,
-  type HatBinding,
-} from "./hat-binding.ts";
+export { HatBindingPhase, TerminalHatBindingPhases, isTerminalHatBinding, type HatBinding } from "./hat-binding.ts";
 export {
   TestExecutionMode,
   TestCaseStatus,

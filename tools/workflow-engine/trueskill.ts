@@ -47,8 +47,8 @@
  *   - sigma = 25/3 ≈ 8.333 (so initial skill range is approximately [0, 50])
  */
 export interface TrueSkillRating {
-  readonly mu: number;     // posterior mean of skill
-  readonly sigma: number;  // posterior standard deviation of skill
+  readonly mu: number; // posterior mean of skill
+  readonly sigma: number; // posterior standard deviation of skill
 }
 
 /**
@@ -63,9 +63,9 @@ export const DEFAULT_INITIAL_RATING: TrueSkillRating = {
  * TrueSkill match outcome — discriminated union.
  */
 export type MatchOutcome =
-  | { kind: "win-A" }   // hypothesis A beat hypothesis B
-  | { kind: "win-B" }   // hypothesis B beat hypothesis A
-  | { kind: "draw" };   // tied (rare in idea-tournament; supported)
+  | { kind: "win-A" } // hypothesis A beat hypothesis B
+  | { kind: "win-B" } // hypothesis B beat hypothesis A
+  | { kind: "draw" }; // tied (rare in idea-tournament; supported)
 
 /**
  * Ranking feedback per asymmetric-authorship + monad-propagation rules.
@@ -86,15 +86,15 @@ export type RankingResult =
  * TrueSkill hyperparameters per the paper's defaults.
  */
 export interface TrueSkillParams {
-  readonly beta: number;       // skill-to-performance noise; default mu/6
-  readonly tau: number;        // dynamics factor (skill drift over time); default mu/300
+  readonly beta: number; // skill-to-performance noise; default mu/6
+  readonly tau: number; // dynamics factor (skill drift over time); default mu/300
   readonly drawProbability: number; // P(draw); default 0.10
 }
 
 export const DEFAULT_PARAMS: TrueSkillParams = {
   beta: 25 / 6,
   tau: 25 / 300,
-  drawProbability: 0.10,
+  drawProbability: 0.1,
 };
 
 /**
@@ -111,17 +111,17 @@ function normalPdf(x: number): number {
  */
 function normalCdf(x: number): number {
   // Constants per A&S 7.1.26
-  const a1 =  0.254829592;
+  const a1 = 0.254829592;
   const a2 = -0.284496736;
-  const a3 =  1.421413741;
+  const a3 = 1.421413741;
   const a4 = -1.453152027;
-  const a5 =  1.061405429;
-  const p  =  0.3275911;
+  const a5 = 1.061405429;
+  const p = 0.3275911;
 
   const sign = x < 0 ? -1 : 1;
   const ax = Math.abs(x) / Math.sqrt(2);
   const t = 1.0 / (1.0 + p * ax);
-  const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-ax * ax);
+  const y = 1.0 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-ax * ax);
 
   return 0.5 * (1.0 + sign * y);
 }

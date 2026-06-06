@@ -24,13 +24,13 @@ AGENTS.md, CLAUDE.md, docs/ALIGNMENT.md).
 
 ## Target doctrines
 
-| Doctrine | Public surface | Core property |
-| --- | --- | --- |
-| Radical honesty | AGENTS.md, ALIGNMENT.md | AI never hides reasoning from observers |
-| Total observability | AGENTS.md, ALIGNMENT.md | Every decision trail is inspectable |
-| No hidden reasoning | AGENTS.md | Visible chain of thought, not opaque |
-| Glass-halo transparency | CLAUDE.md, README.md | External-facing truthfulness contract |
-| Retraction-native | AGENTS.md | Every action has a bounded undo path |
+| Doctrine                | Public surface          | Core property                           |
+| ----------------------- | ----------------------- | --------------------------------------- |
+| Radical honesty         | AGENTS.md, ALIGNMENT.md | AI never hides reasoning from observers |
+| Total observability     | AGENTS.md, ALIGNMENT.md | Every decision trail is inspectable     |
+| No hidden reasoning     | AGENTS.md               | Visible chain of thought, not opaque    |
+| Glass-halo transparency | CLAUDE.md, README.md    | External-facing truthfulness contract   |
+| Retraction-native       | AGENTS.md               | Every action has a bounded undo path    |
 
 ## Research approach per doctrine
 
@@ -70,7 +70,7 @@ Queries run (2026-05-10):
 
 Results:
 
-- Dalio (2017) *Principles: Life and Work* → radical transparency / no hidden moves
+- Dalio (2017) _Principles: Life and Work_ → radical transparency / no hidden moves
 - Doshi-Velez & Kim (2017) arxiv:1702.08608 → total observability / inspectable decisions
 - Brundage et al. (2020) arxiv:2004.07213 → audit trails / total observability
 - Korbak et al. (2025) arxiv:2507.11473 → CoT monitorability / no hidden reasoning

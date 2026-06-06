@@ -35,10 +35,10 @@ This is recurring evidence that:
   behavior — only Aaron's manual intervention does
 - Three Otto surfaces converging on the same failure mode = 3-of-N
   quorum potential for self-recovery (BFT-of-Ottos)
-- Aaron's phrasing: *"if yall catch each other it's unlikely you
+- Aaron's phrasing: _"if yall catch each other it's unlikely you
   will drive [into the failure mode], and include your background
   service to click past stuck prompts on both — you have your own
-  internal BFT"*
+  internal BFT"_
 
 ## What
 

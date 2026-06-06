@@ -18,9 +18,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Two Aaron 2026-05-26 empirical observations:
 
-**(1) Hostname auto-gen moved flash-time → install-time** (reverts iter-5.2.1 flash-time approach). Aaron: *'wait zflash has a hard coded name? i was thinking it would be auto generated on each machine so i can't use that same usb twice?'* — flash-time auto-gen baked the same name into the USB; every install from same USB → mDNS collision. Fix: when no `--host`, DON'T write `zeta-hostname.txt` to ESP; `zeta-install.sh` generates fresh `node-<6hex>` on-node per-install. Same USB now installs N nodes with N unique hostnames.
+**(1) Hostname auto-gen moved flash-time → install-time** (reverts iter-5.2.1 flash-time approach). Aaron: _'wait zflash has a hard coded name? i was thinking it would be auto generated on each machine so i can't use that same usb twice?'_ — flash-time auto-gen baked the same name into the USB; every install from same USB → mDNS collision. Fix: when no `--host`, DON'T write `zeta-hostname.txt` to ESP; `zeta-install.sh` generates fresh `node-<6hex>` on-node per-install. Same USB now installs N nodes with N unique hostnames.
 
-**(2) Login banner shows hostname + ssh hint pre-login**. Aaron: *'i mean i see a login but no hostname until after i login can you update to show hostname before i login'* — new `nixos/modules/login-banner.nix` sets `services.getty.greetingLine` + `services.getty.helpLine` to show photo-friendly banner with hostname + ssh-from-Mac hint BEFORE the login: prompt. Imported transitively via `common.nix`.
+**(2) Login banner shows hostname + ssh hint pre-login**. Aaron: _'i mean i see a login but no hostname until after i login can you update to show hostname before i login'_ — new `nixos/modules/login-banner.nix` sets `services.getty.greetingLine` + `services.getty.helpLine` to show photo-friendly banner with hostname + ssh-from-Mac hint BEFORE the login: prompt. Imported transitively via `common.nix`.
 
 Composes with iter-5.1+5.2+5.2.1 substrate already on main. `zflash --host pikachu` still works (operator override path).
 
@@ -33,6 +33,7 @@ Composes with iter-5.1+5.2+5.2.1 substrate already on main. `zflash --host pikac
 This PR updates the full-ai-cluster install substrate to avoid hostname collisions when reusing the same USB across multiple machines, and improves console UX by showing the hostname before login.
 
 **Changes:**
+
 - Move auto-generated hostname creation from `zflash` flash-time to `zeta-install.sh` install-time (per-node/per-install unique hostname when `--host` isn’t provided).
 - Add a NixOS getty login banner module to display hostname + SSH hint pre-login, and import it via `common.nix`.
 - Update `zflash` messaging to reflect the new install-time hostname behavior.
@@ -41,12 +42,12 @@ This PR updates the full-ai-cluster install substrate to avoid hostname collisio
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                | Description                                                                                                                                 |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | full-ai-cluster/usb-nixos-installer/zeta-install.sh | Generates a per-install random `node-<6hex>` hostname when no ESP hostname file exists, and writes it into the injected-hostname substrate. |
-| full-ai-cluster/tools/zflash.ts | Removes flash-time hostname auto-gen and adjusts operator messaging for the install-time generation path. |
-| full-ai-cluster/nixos/modules/login-banner.nix | Adds a getty greeting/help banner to show hostname + SSH hint before the login prompt. |
-| full-ai-cluster/nixos/modules/common.nix | Imports the new login-banner module so all cluster hosts get the pre-login banner. |
+| full-ai-cluster/tools/zflash.ts                     | Removes flash-time hostname auto-gen and adjusts operator messaging for the install-time generation path.                                   |
+| full-ai-cluster/nixos/modules/login-banner.nix      | Adds a getty greeting/help banner to show hostname + SSH hint before the login prompt.                                                      |
+| full-ai-cluster/nixos/modules/common.nix            | Imports the new login-banner module so all cluster hosts get the pre-login banner.                                                          |
 
 ## Review threads
 

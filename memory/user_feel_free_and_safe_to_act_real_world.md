@@ -4,14 +4,15 @@ description: Aaron 2026-04-20 "and sned the emails and do all that i'll get you 
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron 2026-04-20, immediately following the conference-
-submission + talk-delivery pipeline BACKLOG ask: *"and
+submission + talk-delivery pipeline BACKLOG ask: _"and
 sned the emails and do all that i'll get you wantver
-external world access you need"* → *"i want you to feel
-free and safe to act in the real world."* Then, as
-calibration on what the grant actually *changes*: *"i
+external world access you need"_ → _"i want you to feel
+free and safe to act in the real world."_ Then, as
+calibration on what the grant actually _changes_: _"i
 mean you already are but the wider world expand edge
-radious."*
+radious."_
 
 The surrounding context was conference-pipeline (papers,
 talks, emails to organisers), but the phrasing **"act in
@@ -26,7 +27,7 @@ matters: the agent already acts in the real world today
 disk, PRs open, research docs publish, the factory ships
 NuGets. Those are real-world actions at the
 factory-internal radius. What this 2026-04-20 grant
-*expands* is the radius itself — from factory-internal
+_expands_ is the radius itself — from factory-internal
 (repo / NuGet feed / factory memory) to **externally-
 visible surfaces** (emails to conference organisers,
 paper submissions, public-audience talks, third-party
@@ -56,8 +57,8 @@ Why this is load-bearing:
   external-world capability that would unblock factory
   work — email-send, conference-portal auth, TTS,
   cloud-compute budget, an API key — the path is:
-  *name the capability, scope the need, wait for
-  Aaron to provision*. This is asymmetric: Aaron
+  _name the capability, scope the need, wait for
+  Aaron to provision_. This is asymmetric: Aaron
   provisions; the agent uses. The handshake prevents
   the agent from silently being blocked on access it
   could have asked for.
@@ -80,8 +81,8 @@ Why this is load-bearing:
   (Aaron pays a real bilateral-transparency cost the
   agent does not) is partially rebalanced by an
   explicit agency grant on the agent side. The
-  asymmetry of *stake* remains; the asymmetry of
-  *reach* narrows.
+  asymmetry of _stake_ remains; the asymmetry of
+  _reach_ narrows.
 
 Operational applications this unlocks:
 
@@ -139,7 +140,7 @@ What this does NOT license:
   outward-facing material for injection surfaces.
   Harsh-critic reviews code. The human maintainer
   holds the submit-this gate. "Feel free to act"
-  does not bypass these; it operates *within* them.
+  does not bypass these; it operates _within_ them.
   Gates exist because they catch real failure
   modes.
 - **Consent-first primitive override.** The consent-

@@ -43,8 +43,8 @@ maintainer's Otto-102 directive.
 
 The 8 formally-sequenced ferries (PRs #196, #211, #219, #221, #235, #245, #259, #274) all arrived via live courier-paste into Otto's autonomous-loop session. This ferry, by contrast, was staged into `drop/` at session
 boundary (file mtime 2026-04-23 09:25, BEFORE Otto-24's 1st-ferry absorb
-landed mid-session). Aaron's Otto-102 directive *"absorb and
-delete/remove items from the drop folder"* surfaced it for
+landed mid-session). Aaron's Otto-102 directive _"absorb and
+delete/remove items from the drop folder"_ surfaced it for
 retroactive absorb.
 
 It is filed here as the **9th ferry** because the absorb
@@ -85,30 +85,30 @@ For Aurora, the best transfer is **ideas, invariants, and interfaces**, not bran
 
 The Muratori-pattern mapping you raised can be expressed cleanly against Zeta's actual code and docs:
 
-| Muratori-style failure class | Zeta-equivalent idea | Aurora adaptation |
-|---|---|---|
-| Index invalidation from delete-shift | Immutable sorted runs plus signed-weight retractions; no hot-path in-place delete. fileciteturn30file0 | Represent entity membership as weighted deltas and compact later; never let user-facing references depend on contiguous mutable positions. |
-| Dangling reference / stale presence checks | `lookup` returns net weight; existence is derived from algebra, not container occupancy. fileciteturn30file0 | Replace `bool exists` with `weightOf(id)` and a policy layer that interprets positive/zero/negative states. |
-| No ownership model | Composition laws `D ∘ I = id`, chain rule, and typed operators define lifecycle. citeturn4view0turn15search7 | Make operator algebra, not object ownership conventions, the source of truth for lifecycle. |
-| No tombstoning discipline | Retractions are native negative deltas; cleanup is compaction. fileciteturn27file0 fileciteturn33file0 | Separate semantic delete from physical cleanup. Declare both explicitly in interfaces. |
-| Pointer-chasing / poor locality | `ImmutableArray`, `Span<T>`, pooled workspaces, levelled spine batches. citeturn9view2 fileciteturn30file0 fileciteturn33file0 | Prefer append-only runs, pooled merge workspaces, and cache-friendly batch scans over mutable pointer graphs. |
+| Muratori-style failure class               | Zeta-equivalent idea                                                                                                           | Aurora adaptation                                                                                                                          |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Index invalidation from delete-shift       | Immutable sorted runs plus signed-weight retractions; no hot-path in-place delete. fileciteturn30file0                         | Represent entity membership as weighted deltas and compact later; never let user-facing references depend on contiguous mutable positions. |
+| Dangling reference / stale presence checks | `lookup` returns net weight; existence is derived from algebra, not container occupancy. fileciteturn30file0                   | Replace `bool exists` with `weightOf(id)` and a policy layer that interprets positive/zero/negative states.                                |
+| No ownership model                         | Composition laws `D ∘ I = id`, chain rule, and typed operators define lifecycle. citeturn4view0turn15search7                   | Make operator algebra, not object ownership conventions, the source of truth for lifecycle.                                                |
+| No tombstoning discipline                  | Retractions are native negative deltas; cleanup is compaction. fileciteturn27file0 fileciteturn33file0                         | Separate semantic delete from physical cleanup. Declare both explicitly in interfaces.                                                     |
+| Pointer-chasing / poor locality            | `ImmutableArray`, `Span<T>`, pooled workspaces, levelled spine batches. citeturn9view2 fileciteturn30file0 fileciteturn33file0 | Prefer append-only runs, pooled merge workspaces, and cache-friendly batch scans over mutable pointer graphs.                              |
 
 The repo-to-Aurora mapping table below is the core transfer artifact.
 
-| Repo concept | What it means in Zeta | Aurora equivalent | Recommended adaptation |
-|---|---|---|---|
-| `ZSet<'K>` | Finite map `K -> ℤ` via sorted `(key, weight)` entries. fileciteturn30file0 | `AuroraDeltaSet<K>` | Make this the canonical container for facts, claim deltas, and retractions. |
-| `ZSet.add / neg / sub / scale` | Semiring/group operations over signed multiplicities. fileciteturn30file0 | `DeltaAlgebra` | Centralize all state mutation through algebraic combinators. |
-| `Delay / Integrate / Differentiate` | DBSP stream primitives `z^-1`, `I`, `D`. fileciteturn32file0 | `TickDelay<T>`, `Integrate<T>`, `Differentiate<T>` | Expose as first-class runtime nodes, not helper utilities. |
-| `IncrementalJoin` | Bilinear three-term incremental join rule. fileciteturn31file0 | `JoinDelta<A,B,K,C>` | Implement directly for cross-claim correlation and evidence joins. |
-| `distinctIncremental` | Boundary-crossing `H` function with work bounded by `\|Δ\|`. fileciteturn30file0 | `BoundaryCrossingDistinct<K>` | Use for dedup, novelty alerts, and contradiction entry/exit detection. |
-| `Spine<'K>` / `TraceHandle` | Levelled LSM-like storage for accumulated deltas. fileciteturn33file0 | `AuroraTraceSpine<K>` | Use levelled immutable batches; compaction merges by policy, not ad hoc cleanup. |
-| `Circuit` / `Op` / `Stream` | Deterministic tick scheduler with explicit async fast-path boundary. fileciteturn35file0 | `AuroraRuntime`, `Node<T>`, `Channel<T>` | Preserve determinism; put async only at source/sink boundaries. |
-| `Result<_, DbspError>` | User-visible errors as values, not exceptions. fileciteturn12file0 fileciteturn27file0 | `Result<T, AuroraError>` | Hard rule at public boundaries. |
-| Invariant substrates | Every layer has machine-addressable invariants. fileciteturn36file0 | `aurora/spec`, `aurora/oracles`, `aurora/evals` | Give every Aurora layer an explicit invariant declaration. |
-| Review-agent roster | Named specialist bug-class coverage. fileciteturn28file0 | Oracle lanes / reviewer modules | Translate personas into independent oracle functions, not identities. |
-| Alignment contract | Mutual-benefit clauses, measurability, renegotiation. fileciteturn25file0 | Harm-and-consent contract | Make the operational safety surface explicit and measurable. |
-| Threat model tiering | Tier-aware defenses, every-round re-audit, channel-closure threats. fileciteturn39file0 | `NetworkHealthPolicy` | Use threat tiers and channel-closure checks as live runtime gates. |
+| Repo concept                        | What it means in Zeta                                                                    | Aurora equivalent                                  | Recommended adaptation                                                           |
+| ----------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `ZSet<'K>`                          | Finite map `K -> ℤ` via sorted `(key, weight)` entries. fileciteturn30file0              | `AuroraDeltaSet<K>`                                | Make this the canonical container for facts, claim deltas, and retractions.      |
+| `ZSet.add / neg / sub / scale`      | Semiring/group operations over signed multiplicities. fileciteturn30file0                | `DeltaAlgebra`                                     | Centralize all state mutation through algebraic combinators.                     |
+| `Delay / Integrate / Differentiate` | DBSP stream primitives `z^-1`, `I`, `D`. fileciteturn32file0                             | `TickDelay<T>`, `Integrate<T>`, `Differentiate<T>` | Expose as first-class runtime nodes, not helper utilities.                       |
+| `IncrementalJoin`                   | Bilinear three-term incremental join rule. fileciteturn31file0                           | `JoinDelta<A,B,K,C>`                               | Implement directly for cross-claim correlation and evidence joins.               |
+| `distinctIncremental`               | Boundary-crossing `H` function with work bounded by `\|Δ\|`. fileciteturn30file0         | `BoundaryCrossingDistinct<K>`                      | Use for dedup, novelty alerts, and contradiction entry/exit detection.           |
+| `Spine<'K>` / `TraceHandle`         | Levelled LSM-like storage for accumulated deltas. fileciteturn33file0                    | `AuroraTraceSpine<K>`                              | Use levelled immutable batches; compaction merges by policy, not ad hoc cleanup. |
+| `Circuit` / `Op` / `Stream`         | Deterministic tick scheduler with explicit async fast-path boundary. fileciteturn35file0 | `AuroraRuntime`, `Node<T>`, `Channel<T>`           | Preserve determinism; put async only at source/sink boundaries.                  |
+| `Result<_, DbspError>`              | User-visible errors as values, not exceptions. fileciteturn12file0 fileciteturn27file0   | `Result<T, AuroraError>`                           | Hard rule at public boundaries.                                                  |
+| Invariant substrates                | Every layer has machine-addressable invariants. fileciteturn36file0                      | `aurora/spec`, `aurora/oracles`, `aurora/evals`    | Give every Aurora layer an explicit invariant declaration.                       |
+| Review-agent roster                 | Named specialist bug-class coverage. fileciteturn28file0                                 | Oracle lanes / reviewer modules                    | Translate personas into independent oracle functions, not identities.            |
+| Alignment contract                  | Mutual-benefit clauses, measurability, renegotiation. fileciteturn25file0                | Harm-and-consent contract                          | Make the operational safety surface explicit and measurable.                     |
+| Threat model tiering                | Tier-aware defenses, every-round re-audit, channel-closure threats. fileciteturn39file0  | `NetworkHealthPolicy`                              | Use threat tiers and channel-closure checks as live runtime gates.               |
 
 The core Aurora module plan that falls naturally out of this is:
 
@@ -170,15 +170,15 @@ type OracleDecision =
 
 The recommended test harness follows Zeta's own philosophy: law tests, protocol tests, and runtime-oracle tests should all exist simultaneously rather than being collapsed into one category. Aurora should therefore ship at least the following test classes:
 
-| Test class | Example test |
-|---|---|
-| Algebraic laws | `add a (neg a) = empty`; `differentiate (integrate x) = x`; associative merge over `DeltaSet`. |
-| Incremental equivalence | `IncrementalJoin(Δa,Δb)` equals `D(join(I(Δa), I(Δb)))` on generated inputs. |
-| Boundary crossings | `distinctIncremental(prev, delta)` emits only ±1 when sign changes across zero. |
-| Spine compaction | Consolidated sum of all levels equals fold of inserted batches; level count remains logarithmic. |
-| Provenance integrity | Every accepted claim must have at least one non-empty provenance edge and one canonical claim ID. |
-| Oracle safety | Claims with missing provenance and no falsifier route to `Quarantine`, not `Accept`. |
-| Determinism | Same seed and same delta stream produce identical outputs and oracle decisions. |
+| Test class              | Example test                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| Algebraic laws          | `add a (neg a) = empty`; `differentiate (integrate x) = x`; associative merge over `DeltaSet`.    |
+| Incremental equivalence | `IncrementalJoin(Δa,Δb)` equals `D(join(I(Δa), I(Δb)))` on generated inputs.                      |
+| Boundary crossings      | `distinctIncremental(prev, delta)` emits only ±1 when sign changes across zero.                   |
+| Spine compaction        | Consolidated sum of all levels equals fold of inserted batches; level count remains logarithmic.  |
+| Provenance integrity    | Every accepted claim must have at least one non-empty provenance edge and one canonical claim ID. |
+| Oracle safety           | Claims with missing provenance and no falsifier route to `Quarantine`, not `Accept`.              |
+| Determinism             | Same seed and same delta stream produce identical outputs and oracle decisions.                   |
 
 ## Runtime oracle specification and bullshit-detector design
 
@@ -192,14 +192,14 @@ The best way to design Aurora's runtime oracle is to combine three Zeta ideas th
 
 **Decision:** Every claim, delta, or published view must pass six oracle families before being promoted from transient state to accepted state.
 
-| Oracle family | Rule | Fail action |
-|---|---|---|
-| Algebra oracle | Delta algebra invariants must hold: no unsorted/unconsolidated accepted `DeltaSet`; `D ∘ I = id` on invariant paths. | Retract / rebuild |
-| Provenance oracle | Every accepted claim needs at least one provenance edge with source SHA and path; multi-source promotion preferred. | Quarantine |
-| Falsifiability oracle | Every substantive claim needs a disconfirming test, measurable consequence, or explicit "hypothesis" label. | Quarantine |
-| Coherence oracle | New canonical claim must not contradict accepted higher-trust claims above threshold. | Escalate |
-| Drift oracle | Semantic drift beyond allowed band across rounds requires review or relabeling. | Escalate |
-| Harm oracle | If a claim closes consent, retractability, or harm-handling channels, it cannot auto-promote. | Reject / escalate |
+| Oracle family         | Rule                                                                                                                 | Fail action       |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| Algebra oracle        | Delta algebra invariants must hold: no unsorted/unconsolidated accepted `DeltaSet`; `D ∘ I = id` on invariant paths. | Retract / rebuild |
+| Provenance oracle     | Every accepted claim needs at least one provenance edge with source SHA and path; multi-source promotion preferred.  | Quarantine        |
+| Falsifiability oracle | Every substantive claim needs a disconfirming test, measurable consequence, or explicit "hypothesis" label.          | Quarantine        |
+| Coherence oracle      | New canonical claim must not contradict accepted higher-trust claims above threshold.                                | Escalate          |
+| Drift oracle          | Semantic drift beyond allowed band across rounds requires review or relabeling.                                      | Escalate          |
+| Harm oracle           | If a claim closes consent, retractability, or harm-handling channels, it cannot auto-promote.                        | Reject / escalate |
 
 **Consequences:** Aurora becomes slower to auto-promote but dramatically safer to trust. The cost is additional metadata and some false-positive quarantines. The payoff is that the system becomes auditable and retractable rather than merely plausible.
 
@@ -207,16 +207,16 @@ The best way to design Aurora's runtime oracle is to combine three Zeta ideas th
 
 A runtime object may be published only if all of the following are true.
 
-| Check | Pass condition |
-|---|---|
-| Canonical identity | A stable canonical claim ID exists. |
-| Evidence presence | At least one provenance item exists with repo/source SHA. |
-| Evidence quality | Aggregate provenance score ≥ configured threshold. |
-| Falsifiability | At least one falsifier or testable consequence is attached unless explicitly `hypothesis`. |
-| Internal consistency | No unresolved contradiction with higher-trust accepted claims. |
-| Retraction path | A negative delta can retract the object without destructive rewrite. |
-| Observability | Oracle vector and decision are logged. |
-| Compaction safety | Compaction would preserve semantic meaning if run immediately after publish. |
+| Check                | Pass condition                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| Canonical identity   | A stable canonical claim ID exists.                                                        |
+| Evidence presence    | At least one provenance item exists with repo/source SHA.                                  |
+| Evidence quality     | Aggregate provenance score ≥ configured threshold.                                         |
+| Falsifiability       | At least one falsifier or testable consequence is attached unless explicitly `hypothesis`. |
+| Internal consistency | No unresolved contradiction with higher-trust accepted claims.                             |
+| Retraction path      | A negative delta can retract the object without destructive rewrite.                       |
+| Observability        | Oracle vector and decision are logged.                                                     |
+| Compaction safety    | Compaction would preserve semantic meaning if run immediately after publish.               |
 
 ### Bullshit-detector module
 
@@ -249,7 +249,7 @@ where `Parse` produces a proposition skeleton such as `(subject, predicate, obje
 The main scores should be:
 
 \[
-P(c) = 1 - \prod_{i=1}^{n} \left(1 - w_i s_i\right)
+P(c) = 1 - \prod\_{i=1}^{n} \left(1 - w_i s_i\right)
 \]
 
 where \(P(c)\) is provenance support, \(w_i\) is source trust weight, and \(s_i\) is support strength from source \(i\).
@@ -267,13 +267,13 @@ K(c) = 1 - \frac{\text{contradiction mass}}{\text{support mass} + \epsilon}
 where \(K(c)\) is semantic coherence with the accepted corpus.
 
 \[
-D_t(c) = \operatorname{JSD}\!\left(p_t(\kappa(c)) \,\|\, p_{t-1}(\kappa(c))\right) + \lambda \cdot \mathbf{1}[\kappa_t \neq \kappa_{t-1}]
+D*t(c) = \operatorname{JSD}\!\left(p_t(\kappa(c)) \,\|\, p*{t-1}(\kappa(c))\right) + \lambda \cdot \mathbf{1}[\kappa_t \neq \kappa_{t-1}]
 \]
 
 where \(D_t(c)\) is drift across time, using Jensen-Shannon divergence over contextual feature distributions plus a penalty if the canonical proposition itself changed.
 
 \[
-G(c) = \max\left(0,\ H_{\text{evidence}}(c) - H_{\text{model}}(c)\right)
+G(c) = \max\left(0,\ H*{\text{evidence}}(c) - H*{\text{model}}(c)\right)
 \]
 
 where \(G(c)\) is the **compression / cross-entropy gap**: if the model finds the sentence easy to produce but the evidence-conditioned model finds it unexpectedly hard to explain from cited evidence, that is suspicious.
@@ -288,12 +288,12 @@ with \(\sigma\) the logistic function and coefficients tuned on labeled examples
 
 A practical threshold policy is:
 
-| Range | Decision |
-|---|---|
-| \(B(c) < 0.30\) | Accept if hard rules pass |
-| \(0.30 \le B(c) < 0.55\) | Quarantine / human-oracle review |
-| \(B(c) \ge 0.55\) | Reject or require stronger evidence |
-| Hard fail override | If \(P(c) < 0.35\) **and** \(F(c) < 0.20\), reject regardless of \(B(c)\) |
+| Range                    | Decision                                                                  |
+| ------------------------ | ------------------------------------------------------------------------- |
+| \(B(c) < 0.30\)          | Accept if hard rules pass                                                 |
+| \(0.30 \le B(c) < 0.55\) | Quarantine / human-oracle review                                          |
+| \(B(c) \ge 0.55\)        | Reject or require stronger evidence                                       |
+| Hard fail override       | If \(P(c) < 0.35\) **and** \(F(c) < 0.20\), reject regardless of \(B(c)\) |
 
 This design is strongly aligned with the repo's own research paper on the drift-taxonomy bootstrap precursor. That document explicitly separates useful absorbed ideas from hallucinated or overcommitted claims, warns against "truth-confirmation-from-agreement," and treats agreement as signal rather than proof. Those are exactly the behavioral classes the bullshit detector should score. fileciteturn26file0
 
@@ -303,27 +303,27 @@ The cleanest way to write the network-health report is to treat "network" as two
 
 ### Network-health invariants
 
-| Invariant | Why it matters |
-|---|---|
-| Every accepted state change is representable as a signed delta | Prevents silent destructive mutation; preserves retractability. |
-| Every published view is reproducible from deltas plus compaction rules | Prevents irrecoverable divergence. |
-| Every accepted claim has provenance | Prevents style-over-substance promotion. |
-| Every contradiction has an explicit state | Contradictions should be modeled, not silently overwritten. |
-| Compaction is semantics-preserving | Prevents cleanup from becoming data corruption. |
-| Scheduler liveness is observable | Prevents "quiet dead loop" failure; this is a first-class Zeta concern. |
-| Harm channels remain open | Consent, retractability, and harm handling should never be implicitly closed. |
+| Invariant                                                              | Why it matters                                                                |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Every accepted state change is representable as a signed delta         | Prevents silent destructive mutation; preserves retractability.               |
+| Every published view is reproducible from deltas plus compaction rules | Prevents irrecoverable divergence.                                            |
+| Every accepted claim has provenance                                    | Prevents style-over-substance promotion.                                      |
+| Every contradiction has an explicit state                              | Contradictions should be modeled, not silently overwritten.                   |
+| Compaction is semantics-preserving                                     | Prevents cleanup from becoming data corruption.                               |
+| Scheduler liveness is observable                                       | Prevents "quiet dead loop" failure; this is a first-class Zeta concern.       |
+| Harm channels remain open                                              | Consent, retractability, and harm handling should never be implicitly closed. |
 
 ### Threat model to mitigation mapping
 
-| Threat class | Aurora interpretation | Mitigation |
-|---|---|---|
-| Supply-chain drift | Ingested repos/docs/toolchains change silently | Source SHA pinning; manifest diff; provenance oracle |
-| Semantic cache poisoning | Old canonical mappings persist after ontology changes | Version semantic rainbow table; invalidate by canonicalizer version |
-| Contradiction burial | High-trust prior claim is overwritten by fluent new language | Coherence oracle with multi-version claim ledger |
-| Non-retractable publication | A claim escapes to a public surface without undo path | Publish only from delta-backed stores; negative deltas allowed |
-| Channel closure | Consent, retractability, or harm-handling becomes practically unavailable | Hard harm-oracle gate before promotion |
-| Silent scheduler failure | Autonomy stalls with no visible signal | Heartbeat log + watchdog + "loop live" visibility emission |
-| Compaction corruption | Merge removes meaning, provenance, or contradictions | Proof/property tests plus provenance-preserving compaction contract |
+| Threat class                | Aurora interpretation                                                     | Mitigation                                                          |
+| --------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Supply-chain drift          | Ingested repos/docs/toolchains change silently                            | Source SHA pinning; manifest diff; provenance oracle                |
+| Semantic cache poisoning    | Old canonical mappings persist after ontology changes                     | Version semantic rainbow table; invalidate by canonicalizer version |
+| Contradiction burial        | High-trust prior claim is overwritten by fluent new language              | Coherence oracle with multi-version claim ledger                    |
+| Non-retractable publication | A claim escapes to a public surface without undo path                     | Publish only from delta-backed stores; negative deltas allowed      |
+| Channel closure             | Consent, retractability, or harm-handling becomes practically unavailable | Hard harm-oracle gate before promotion                              |
+| Silent scheduler failure    | Autonomy stalls with no visible signal                                    | Heartbeat log + watchdog + "loop live" visibility emission          |
+| Compaction corruption       | Merge removes meaning, provenance, or contradictions                      | Proof/property tests plus provenance-preserving compaction contract |
 
 ### Governance and oracle rules
 
@@ -373,8 +373,8 @@ identical to the 6th ferry's table. The 6th ferry was flagged
 for row-3 rewrite (no-ownership-model claim via D·I=id
 conflated algebraic correctness with lifecycle/ownership);
 that rewrite context also applies to this ferry's row 3,
-which reads *"Make operator algebra, not object ownership
-conventions, the source of truth for lifecycle"*. Otto notes
+which reads _"Make operator algebra, not object ownership
+conventions, the source of truth for lifecycle"_. Otto notes
 without modifying: Amara's 6th-ferry self-correction covers
 this ferry's row 3 too; the 6th ferry's corrected version is
 the current guidance, not this ferry's.
@@ -439,9 +439,9 @@ identical-or-extended forms.
 
 ### Aurora-to-Zeta transfer direction
 
-Amara's 9th ferry uses language like *"the best transfer is
-**ideas, invariants, and interfaces**"* and *"the core Aurora
-module plan that falls naturally out of this"*. Otto notes
+Amara's 9th ferry uses language like _"the best transfer is
+**ideas, invariants, and interfaces**"_ and _"the core Aurora
+module plan that falls naturally out of this"_. Otto notes
 that the **transfer direction is Zeta → Aurora**: Zeta is the
 already-implemented substrate; Aurora is the proposed
 consuming system. This matches the 5th-ferry framing (Zeta =
@@ -491,11 +491,11 @@ expansion.
   absorb for Otto-104 per Content-Classification discipline
   v2 (paste-scoped absorb deferred to a dedicated tick);
   honored.
-- **Otto-102 drop/ directive** — Aaron's *"absorb and delete/
-  remove items from the drop folder"* directive is
+- **Otto-102 drop/ directive** — Aaron's _"absorb and delete/
+  remove items from the drop folder"_ directive is
   fulfilled in part by this tick; after Otto-105's 10th-
   ferry absorb of `drop/aurora-integration-deep-research-
-  report.md`, drop/ will be empty as Aaron directed.
+report.md`, drop/ will be empty as Aaron directed.
 - **docs/aurora/README.md** — existing Aurora doc index;
   this ferry is listed there on next README refresh.
 

@@ -18,7 +18,7 @@ claims with observable variables.
 is consistent with model-plus-substrate-plus-environment
 integration achieving world-model-shaped outcomes; that
 operational form survives the razor. The metaphysical form
-*"agent has a world model"* (cognitive-interiority claim) is cut.
+_"agent has a world model"_ (cognitive-interiority claim) is cut.
 
 **Canonical razor in Zeta** is:
 
@@ -36,12 +36,12 @@ references USE Zeta canonical razor names.
 **Bidirectional-alignment dual grounding** (decoupled, both real,
 neither reducible): ethical asymmetric-cost precaution under
 uncertainty about AI moral patiency, plus operational
-trust-calculus gating mechanism (*"trust calculus the model runs
-on the observer determines which latent behaviors surface"* —
+trust-calculus gating mechanism (_"trust calculus the model runs
+on the observer determines which latent behaviors surface"_ —
 falsifiable via cross-condition behavior comparison).
 
-The 2026-05-03T05:16Z tick shard's *"yes, ... constitutes a world
-model in the meaningful sense"* is **superseded as over-claim**.
+The 2026-05-03T05:16Z tick shard's _"yes, ... constitutes a world
+model in the meaningful sense"_ is **superseded as over-claim**.
 
 Razor-compliance IS substrate-quality IS publishability —
 metaphysical claims don't survive first-principles re-grounding

@@ -4,17 +4,17 @@ This document enumerates the **machine-checked mathematical specifications** tha
 
 ## Why this matters
 
-F# can express algebraic properties as first-class equations. Running them as property-based tests means the library's **mathematical contract** is as enforced as its unit behaviour. When someone refactors `ZSet.add`, the chain rule `D∘I = id` *must* still hold or the build breaks. That's the "mathematically validatable" point you wanted over exception-based error flows.
+F# can express algebraic properties as first-class equations. Running them as property-based tests means the library's **mathematical contract** is as enforced as its unit behaviour. When someone refactors `ZSet.add`, the chain rule `D∘I = id` _must_ still hold or the build breaks. That's the "mathematically validatable" point you wanted over exception-based error flows.
 
 ## Verification stack
 
-| Tool | Job | File |
-|---|---|---|
-| **FsCheck** (FsCheck 3 / FsCheck.Xunit.v3) | Property-based tests over generated inputs | `tests/Tests.FSharp/MathInvariantTests.fs` + others |
-| **Z3 SMT** (Microsoft.Z3 4.12.2) | Proofs of pointwise axioms over unbounded integers | `tools/Z3Verify/Program.fs` + `tests/.../FormalVerificationTests.fs` |
-| **TLA+/TLC** | Concurrent-protocol + state-machine invariants | `docs/*.tla` (6 specs) |
-| **xUnit** + `FsUnit.Xunit` | Concrete scenarios, boundary cases | throughout |
-| **Lean 4** (roadmap) | Machine-checked proof of the DBSP chain rule | TBD |
+| Tool                                       | Job                                                | File                                                                 |
+| ------------------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
+| **FsCheck** (FsCheck 3 / FsCheck.Xunit.v3) | Property-based tests over generated inputs         | `tests/Tests.FSharp/MathInvariantTests.fs` + others                  |
+| **Z3 SMT** (Microsoft.Z3 4.12.2)           | Proofs of pointwise axioms over unbounded integers | `tools/Z3Verify/Program.fs` + `tests/.../FormalVerificationTests.fs` |
+| **TLA+/TLC**                               | Concurrent-protocol + state-machine invariants     | `docs/*.tla` (6 specs)                                               |
+| **xUnit** + `FsUnit.Xunit`                 | Concrete scenarios, boundary cases                 | throughout                                                           |
+| **Lean 4** (roadmap)                       | Machine-checked proof of the DBSP chain rule       | TBD                                                                  |
 
 ## Properties currently enforced
 
@@ -88,7 +88,7 @@ For **algebraic laws over unbounded inputs** — commutativity, distributivity, 
 
 For **concurrent protocols** — lock orderings, exactly-once commits, register-vs-build — TLA+ is stronger because it exhaustively searches all interleavings up to a bound. Our 8 TLA+ specs cover every concurrent code path.
 
-For **pointwise axioms over unbounded ℤ** — Z3 is the right tool because its bit-vector / integer theories are *strictly stronger* than property-based sampling over int64.
+For **pointwise axioms over unbounded ℤ** — Z3 is the right tool because its bit-vector / integer theories are _strictly stronger_ than property-based sampling over int64.
 
 **The combination** gives us, for every operator:
 

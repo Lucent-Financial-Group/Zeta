@@ -21,7 +21,9 @@ const ctx = {
   nowIso: () => "2026-05-30T09:00:00.000Z",
   organizationId: "org-1",
   supervisorChain: ["executive_board_member", "cto", "engineering_director", "backend_implementer"],
-  correlationId: "c", causationId: "c", traceId: "t",
+  correlationId: "c",
+  causationId: "c",
+  traceId: "t",
 };
 
 function candidate(agentId: string, rep: number): AgentCandidate {
@@ -68,7 +70,12 @@ test("excludes an agent already wearing the hat, in cooldown, or in a conflictin
   const now = 1_000_000;
   const bindings: ActiveBindingSummary[] = [
     { hatId: "backend_implementer", wearerAgentId: "a", phase: HatBindingPhase.Active }, // already wearing
-    { hatId: "backend_implementer", wearerAgentId: "b", phase: HatBindingPhase.Expired, cooldownUntil: new Date(now + 10_000).toISOString() }, // cooldown
+    {
+      hatId: "backend_implementer",
+      wearerAgentId: "b",
+      phase: HatBindingPhase.Expired,
+      cooldownUntil: new Date(now + 10_000).toISOString(),
+    }, // cooldown
     { hatId: "hat_designer", wearerAgentId: "c", phase: HatBindingPhase.Active }, // conflicts with backend
   ];
   const ranked = rankEligibleCandidates({
@@ -87,13 +94,27 @@ test("respects the per-agent active-hat cap", () => {
     { hatId: "qa_reviewer", wearerAgentId: "a", phase: HatBindingPhase.Active },
     { hatId: "tpm", wearerAgentId: "a", phase: HatBindingPhase.Active },
   ];
-  const ranked = rankEligibleCandidates({ hat: backend, candidates: [candidate("a", 9)], activeBindings: bindings, nowMs: 1, agentMaxActiveHats: 3 });
+  const ranked = rankEligibleCandidates({
+    hat: backend,
+    candidates: [candidate("a", 9)],
+    activeBindings: bindings,
+    nowMs: 1,
+    agentMaxActiveHats: 3,
+  });
   equal(ranked.length, 0); // a is at cap
 });
 
 test("assigns the top-ranked eligible candidate when supply has room", () => {
-  const ranked = rankEligibleCandidates({ hat: backend, candidates: [candidate("a", 3), candidate("b", 9)], activeBindings: [], nowMs: 1 });
-  const result = assignHat({ hat: backend, eligibleRanked: ranked, activeWearerCount: 0, supplyTarget: 2, chooser: firstLegalChooser() }, ctx);
+  const ranked = rankEligibleCandidates({
+    hat: backend,
+    candidates: [candidate("a", 3), candidate("b", 9)],
+    activeBindings: [],
+    nowMs: 1,
+  });
+  const result = assignHat(
+    { hat: backend, eligibleRanked: ranked, activeWearerCount: 0, supplyTarget: 2, chooser: firstLegalChooser() },
+    ctx,
+  );
   equal(result.outcome, "assigned");
   if (result.outcome !== "assigned") return;
   equal(result.agentId, "b"); // highest reputation
@@ -101,15 +122,26 @@ test("assigns the top-ranked eligible candidate when supply has room", () => {
 });
 
 test("refuses to over-staff: supply exhausted routes to RMO", () => {
-  const ranked = rankEligibleCandidates({ hat: backend, candidates: [candidate("a", 9)], activeBindings: [], nowMs: 1 });
-  const result = assignHat({ hat: backend, eligibleRanked: ranked, activeWearerCount: 2, supplyTarget: 2, chooser: firstLegalChooser() }, ctx);
+  const ranked = rankEligibleCandidates({
+    hat: backend,
+    candidates: [candidate("a", 9)],
+    activeBindings: [],
+    nowMs: 1,
+  });
+  const result = assignHat(
+    { hat: backend, eligibleRanked: ranked, activeWearerCount: 2, supplyTarget: 2, chooser: firstLegalChooser() },
+    ctx,
+  );
   equal(result.outcome, "supply_exhausted");
   if (result.outcome !== "supply_exhausted") return;
   ok(result.event.decision.includes("supply exhausted"));
 });
 
 test("no eligible candidate is reported distinctly", () => {
-  const result = assignHat({ hat: backend, eligibleRanked: [], activeWearerCount: 0, supplyTarget: 2, chooser: firstLegalChooser() }, ctx);
+  const result = assignHat(
+    { hat: backend, eligibleRanked: [], activeWearerCount: 0, supplyTarget: 2, chooser: firstLegalChooser() },
+    ctx,
+  );
   equal(result.outcome, "no_eligible_candidate");
 });
 

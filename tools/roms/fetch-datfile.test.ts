@@ -51,9 +51,7 @@ describe("parseManifest", () => {
   });
 
   test("throws on an empty-string required field", () => {
-    expect(() =>
-      parseManifest(manifestJson([{ ...VERIFIED_PIN, platform: "" }])),
-    ).toThrow(/platform/);
+    expect(() => parseManifest(manifestJson([{ ...VERIFIED_PIN, platform: "" }]))).toThrow(/platform/);
   });
 
   test("throws on a missing romsDir (explicit-path field is required)", () => {
@@ -62,9 +60,7 @@ describe("parseManifest", () => {
   });
 
   test("throws on a duplicate platform", () => {
-    expect(() =>
-      parseManifest(manifestJson([VERIFIED_PIN, VERIFIED_PIN])),
-    ).toThrow(/duplicate platform/);
+    expect(() => parseManifest(manifestJson([VERIFIED_PIN, VERIFIED_PIN]))).toThrow(/duplicate platform/);
   });
 
   test("ignores the _comment field", () => {
@@ -91,8 +87,7 @@ describe("isPlaceholder", () => {
 
 describe("sha256Hex / verifyChecksum", () => {
   const abc = new TextEncoder().encode("abc");
-  const knownAbc =
-    "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
+  const knownAbc = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
 
   test("computes a known SHA-256", () => {
     expect(sha256Hex(abc)).toBe(knownAbc);
@@ -105,9 +100,7 @@ describe("sha256Hex / verifyChecksum", () => {
 
   test("verifyChecksum rejects a mismatch", () => {
     expect(verifyChecksum(abc, "deadbeef")).toBe(false);
-    expect(verifyChecksum(new TextEncoder().encode("abd"), knownAbc)).toBe(
-      false,
-    );
+    expect(verifyChecksum(new TextEncoder().encode("abd"), knownAbc)).toBe(false);
   });
 });
 
@@ -159,9 +152,7 @@ describe("main (CLI, no network)", () => {
   });
 
   test("missing manifest => exit 1", async () => {
-    expect(
-      await main(["--platform", "atari-2600", "--manifest", "/no/such/file"]),
-    ).toBe(1);
+    expect(await main(["--platform", "atari-2600", "--manifest", "/no/such/file"])).toBe(1);
   });
 
   test("--list against real manifest => exit 0", async () => {
@@ -179,12 +170,7 @@ describe("main (CLI, no network)", () => {
   test("verified pin with missing platform in a temp manifest still exit 2 when placeholder", async () => {
     const dir = mkdtempSync(join(tmpdir(), "datfile-test-"));
     const path = join(dir, "m.json");
-    writeFileSync(
-      path,
-      manifestJson([{ ...VERIFIED_PIN, downloadUrl: "<placeholder>" }]),
-    );
-    expect(
-      await main(["--platform", "test-2600", "--manifest", path]),
-    ).toBe(2);
+    writeFileSync(path, manifestJson([{ ...VERIFIED_PIN, downloadUrl: "<placeholder>" }]));
+    expect(await main(["--platform", "test-2600", "--manifest", path])).toBe(2);
   });
 });

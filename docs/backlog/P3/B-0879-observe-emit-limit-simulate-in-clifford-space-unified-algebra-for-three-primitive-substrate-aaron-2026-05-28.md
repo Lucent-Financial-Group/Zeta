@@ -44,7 +44,7 @@ Long-horizon research direction: express the 4 agent-loop primitives (Observe, E
 
 ## Operator's framing 2026-05-28
 
-> *"the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."*
+> _"the whole clifford can describe our agenst and humans commications as meme patterns through time with tonal trajectories and momentium and such and every commitment is a entanglment in time. bascially we want to be able to describe observe emit limit simulate in here."_
 
 ## Why this composes naturally
 

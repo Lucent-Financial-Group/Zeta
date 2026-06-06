@@ -5,9 +5,9 @@
 maintainer-dropped 2026-04-22 auto-loop-43; deleted post-absorption per
 drop-zone protocol).
 **Session context:** inaugural test of the `drop/` protocol
-(`drop/README.md`); Aaron's directive *"new research just dropped in the
+(`drop/README.md`); Aaron's directive _"new research just dropped in the
 repo can you make me a folder you check every now and then i can put
-files in for you to absorb"*.
+files in for you to absorb"_.
 
 ## What the report is
 
@@ -37,11 +37,11 @@ not resolvable outside the original tool.
 
 Verbatim-preservation note: the above is my paraphrase of the
 report's conclusion section, not a verbatim pull. The report's
-own words in the conclusion: *"the durable value here is the
+own words in the conclusion: _"the durable value here is the
 architectural stack of retractions, laws, simulation,
 provenance, compaction discipline, and threat-aware gating,
 and those ideas are strong enough to port directly into
-Aurora."*
+Aurora."_
 
 ## Five preservation strata
 
@@ -60,7 +60,7 @@ ideas, not filenames.
    portfolio, SHA-pinned GHA, threat model.
 4. **Factory skills and agents** — persona roster, conflict
    resolution protocol, autonomous-loop discipline. The
-   *heaviest* overlay — defer import until core and security
+   _heaviest_ overlay — defer import until core and security
    are stable.
 5. **Memory and research** — the per-persona notebooks,
    research docs, decision log. Import last as lived context
@@ -74,22 +74,22 @@ points — **register**, **build**, **tick publish**,
 **compaction** — and emits `pass | warn | fail | quarantine`
 findings from seven evidence layers:
 
-| Layer        | What it checks                                                                   |
-|--------------|----------------------------------------------------------------------------------|
-| Schema       | Dependency declarations match actual dependencies; capability tags present      |
-| Algebra      | Operators pass their declared laws (linearity, bilinearity, idempotence, etc.) |
-| Retraction   | Signed-delta conservation; no non-zero residual where zero is required         |
-| Provenance   | Tick envelopes carry valid `ProvenanceStamp` (tick, frontier, inputs, rules, SHA) |
-| Compaction   | Compaction frontier > rollback frontier; observational equivalence to un-compacted trace |
-| Runtime      | Seed-replay determinism; budget/timeout compliance; checkpoint hash integrity  |
-| Security     | Action pins live; SAST/CodeQL/Semgrep gates fresh; signed-publish policy enforced |
+| Layer      | What it checks                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| Schema     | Dependency declarations match actual dependencies; capability tags present               |
+| Algebra    | Operators pass their declared laws (linearity, bilinearity, idempotence, etc.)           |
+| Retraction | Signed-delta conservation; no non-zero residual where zero is required                   |
+| Provenance | Tick envelopes carry valid `ProvenanceStamp` (tick, frontier, inputs, rules, SHA)        |
+| Compaction | Compaction frontier > rollback frontier; observational equivalence to un-compacted trace |
+| Runtime    | Seed-replay determinism; budget/timeout compliance; checkpoint hash integrity            |
+| Security   | Action pins live; SAST/CodeQL/Semgrep gates fresh; signed-publish policy enforced        |
 
-**Distinction the design insists on:** *semantic failure*
+**Distinction the design insists on:** _semantic failure_
 (algebra-law violation, retraction leak) triggers **reject**;
-*possibly-already-visible-side-effect* failure
+_possibly-already-visible-side-effect_ failure
 (checkpoint-integrity, replay-nondeterminism) triggers
 **quarantine** — explicit retraction rather than silent drop;
-*freshness/coverage* gaps trigger **warn** only and must be
+_freshness/coverage_ gaps trigger **warn** only and must be
 logged to a debt surface.
 
 The report includes a ~150-line F# skeleton (`module
@@ -114,10 +114,10 @@ procedure (trademark search across relevant classes, overlap
 audit, domain/social/SEO review, multi-audience message
 testing, brand-architecture decisioning). The report also
 says the message house should be built around what the repo
-actually teaches — *retraction-native systems*, *observable
-rollback*, *harm-bounding infrastructure*, *verifiable
-AI/software operations*, *compaction after truth, not before
-truth* — not around mythic cosmic metaphors.
+actually teaches — _retraction-native systems_, _observable
+rollback_, _harm-bounding infrastructure_, _verifiable
+AI/software operations_, _compaction after truth, not before
+truth_ — not around mythic cosmic metaphors.
 
 ## Relevance to Zeta factory
 

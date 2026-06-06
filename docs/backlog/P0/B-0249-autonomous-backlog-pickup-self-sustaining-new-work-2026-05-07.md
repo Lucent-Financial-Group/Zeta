@@ -53,7 +53,7 @@ sleeps.
 - [ ] Work is bounded (one item per tick, smallest atomic first)
 - [ ] PR is created and auto-merge armed
 - [ ] If the item is too large (blob), decompose first, then
-  pick the first atomic child
+      pick the first atomic child
 
 ## Decomposition
 

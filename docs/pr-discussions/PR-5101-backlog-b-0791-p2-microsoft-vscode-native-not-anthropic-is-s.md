@@ -20,9 +20,9 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-26 surfaced screenshot intel from VSCode-native \"Agents window\" surface, then critically corrected the attribution mid-PR:
 
-> *\"the new Agents window seems to be standardized ontology across multiple harnesses in one vscode window they are definting what are agents and skills and hooks and plugins and instruction etc... they are trying to standardize it seems.\"*
+> _\"the new Agents window seems to be standardized ontology across multiple harnesses in one vscode window they are definting what are agents and skills and hooks and plugins and instruction etc... they are trying to standardize it seems.\"_
 
-> *\"The Agents window is not anthropic is Microsoft i think vscode native cross harness not Anthropic\"*
+> _\"The Agents window is not anthropic is Microsoft i think vscode native cross harness not Anthropic\"_
 
 **Critical correction**: this is **Microsoft VSCode-native cross-harness substrate**, NOT an Anthropic-specific extension surface. Platform-level standardization, not vendor-level.
 
@@ -79,5 +79,6 @@ Much stronger selection pressure toward convergence.
 Adds a new P2 backlog row (B-0791) capturing surfaced intel that Anthropic’s VSCode extension UI is converging on a standardized multi-harness ontology (Agents / Skills / Hooks / MCP Servers / Instructions / Plugins), and records implications for Zeta’s multi-harness substrate strategy.
 
 **Changes:**
+
 - Adds backlog row **B-0791** documenting the VSCode “Agents window” ontology convergence signal and its implications for Zeta.
 - Introduces an initial Anthropic→Zeta vocabulary mapping table and identifies follow-on work items (mapping doc + separate UX row).

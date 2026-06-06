@@ -23,13 +23,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
-import {
-  xmlEscape,
-  substitutePlaceholders,
-  requireAbsolute,
-  tryDetect,
-  plutilLint,
-} from "./install-launchagent";
+import { xmlEscape, substitutePlaceholders, requireAbsolute, tryDetect, plutilLint } from "./install-launchagent";
 
 const SCRIPT_PATH = join(import.meta.dir, "install-launchagent.ts");
 
@@ -54,10 +48,13 @@ describe("substitutePlaceholders", () => {
     const tpl = "bun=<{{BUN_PATH}}> mystery=<{{UNKNOWN_THING}}>";
     const proc = spawnSync(
       "bun",
-      ["-e", `
+      [
+        "-e",
+        `
         import { substitutePlaceholders } from "${SCRIPT_PATH}";
         substitutePlaceholders(${JSON.stringify(tpl)}, "/r", "/b");
-      `],
+      `,
+      ],
       { encoding: "utf-8" },
     );
     expect(proc.status).toBe(1);
@@ -72,9 +69,7 @@ describe("substitutePlaceholders", () => {
 
 describe("xmlEscape", () => {
   it("escapes the five XML predefined entities", () => {
-    expect(xmlEscape("a & b < c > d \" e ' f")).toBe(
-      "a &amp; b &lt; c &gt; d &quot; e &apos; f",
-    );
+    expect(xmlEscape("a & b < c > d \" e ' f")).toBe("a &amp; b &lt; c &gt; d &quot; e &apos; f");
   });
 
   it("leaves safe characters unchanged", () => {
@@ -106,7 +101,11 @@ describe("substitutePlaceholders + xmlEscape (integration)", () => {
       const proc = spawnSync("plutil", ["-lint", tmp], { encoding: "utf-8" });
       expect(proc.status).toBe(0);
     } finally {
-      try { rmSync(dir, { recursive: true, force: true }); } catch { /* ignore */ }
+      try {
+        rmSync(dir, { recursive: true, force: true });
+      } catch {
+        /* ignore */
+      }
     }
   });
 });
@@ -172,15 +171,13 @@ describe("--dry-run", () => {
   itDarwin("writes rendered plist to stdout, not to ~/Library/LaunchAgents/", () => {
     // Use the actual repo template via --repo-root <wt path>, --bun-path /opt/homebrew/bin/bun (or any abs).
     const repoRoot = process.cwd();
-    const bunPath = process.execPath;  // bun itself is an absolute path
-    const proc = spawnSync(
-      "bun",
-      [SCRIPT_PATH, "--dry-run", "--repo-root", repoRoot, "--bun-path", bunPath],
-      { encoding: "utf-8" },
-    );
+    const bunPath = process.execPath; // bun itself is an absolute path
+    const proc = spawnSync("bun", [SCRIPT_PATH, "--dry-run", "--repo-root", repoRoot, "--bun-path", bunPath], {
+      encoding: "utf-8",
+    });
     expect(proc.status).toBe(0);
-    expect(proc.stdout).toContain("<?xml version=\"1.0\"");
-    expect(proc.stdout).toContain("<plist version=\"1.0\">");
+    expect(proc.stdout).toContain('<?xml version="1.0"');
+    expect(proc.stdout).toContain('<plist version="1.0">');
     expect(proc.stdout).toContain(repoRoot);
     expect(proc.stdout).toContain(bunPath);
     // Verify it's a valid plist by piping to plutil
@@ -191,7 +188,11 @@ describe("--dry-run", () => {
       const lint = spawnSync("plutil", ["-lint", tmp], { encoding: "utf-8" });
       expect(lint.status).toBe(0);
     } finally {
-      try { rmSync(dir, { recursive: true, force: true }); } catch { /* ignore */ }
+      try {
+        rmSync(dir, { recursive: true, force: true });
+      } catch {
+        /* ignore */
+      }
     }
   });
 });
@@ -217,11 +218,14 @@ describe("tryDetect", () => {
     // Run via subprocess with cwd=/tmp (outside any git repo)
     const proc = spawnSync(
       "bun",
-      ["-e", `
+      [
+        "-e",
+        `
         import { tryDetect } from "${SCRIPT_PATH}";
         const r = tryDetect("git", ["rev-parse", "--show-toplevel"]);
         console.log(JSON.stringify({ r }));
-      `],
+      `,
+      ],
       { cwd: "/tmp", encoding: "utf-8" },
     );
     expect(proc.status).toBe(0);
@@ -247,10 +251,13 @@ describe("plutilLint", () => {
     // plutilLint calls process.exit(1) on failure; can't test in-process.
     const proc = spawnSync(
       "bun",
-      ["-e", `
+      [
+        "-e",
+        `
         import { plutilLint } from "${SCRIPT_PATH}";
         plutilLint("<not a plist>");
-      `],
+      `,
+      ],
       { encoding: "utf-8" },
     );
     expect(proc.status).toBe(1);

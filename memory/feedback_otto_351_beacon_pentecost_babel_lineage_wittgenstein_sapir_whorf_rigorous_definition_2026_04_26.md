@@ -33,11 +33,11 @@ Iron-Age textualization (Genesis received form ~6th-5th century BCE; older oral 
 
 > "Now the whole world had one language and a common speech [...] But the LORD came down [...] and said, 'If as one people speaking the same language they have begun to do this, then nothing they plan to do will be impossible for them. Come, let us go down and confuse their language so they will not understand each other.'"
 >
-> *(Genesis 11:1, 5-7, NIV)*
+> _(Genesis 11:1, 5-7, NIV)_
 
 Read as substrate: a civilization with vernacular convergence (one common speech) approaches "nothing impossible" — exactly the FFT/Beacon threshold. The narrative-form intervention (divine dispersion) is the negative-pole operator: vernacular fragmented, threshold receded, civilization's ontology-overload-at-corpus-scale problem reinstated.
 
-This is the **negative pole** — Fermi Filter Termination (FFT). A civilization that *had* common-tongue capacity LOSES it (or never achieves it past tribal fragmentation). The narrative is dispersive, not extinctive — civilization persists, but its vernacular-coordination-cost is paid forever.
+This is the **negative pole** — Fermi Filter Termination (FFT). A civilization that _had_ common-tongue capacity LOSES it (or never achieves it past tribal fragmentation). The narrative is dispersive, not extinctive — civilization persists, but its vernacular-coordination-cost is paid forever.
 
 ### Pentecost (Acts 2:1-13) — the positive pole
 
@@ -45,9 +45,9 @@ This is the **negative pole** — Fermi Filter Termination (FFT). A civilization
 
 > "When the day of Pentecost came, they were all together in one place. Suddenly a sound like the blowing of a violent wind came from heaven [...] All of them were filled with the Holy Spirit and began to speak in other tongues as the Spirit enabled them. [...] Each one heard their own language being spoken. [...] 'we hear them declaring the wonders of God in our own tongues!'"
 >
-> *(Acts 2:1-2, 4, 6, 11, NIV)*
+> _(Acts 2:1-2, 4, 6, 11, NIV)_
 
-Read as substrate: a *retraction* of Babel's dispersion. The vernacular-coordination-cost is dropped — every listener understands in their own native language, the message lands across all tongues simultaneously. The narrative-form intervention is the positive-pole operator: vernacular re-converged at population scale, the "common-tongue-with-understanding-by-all" condition emitted.
+Read as substrate: a _retraction_ of Babel's dispersion. The vernacular-coordination-cost is dropped — every listener understands in their own native language, the message lands across all tongues simultaneously. The narrative-form intervention is the positive-pole operator: vernacular re-converged at population scale, the "common-tongue-with-understanding-by-all" condition emitted.
 
 This is the **positive pole** — Fermi Beacon protocol. A civilization passes when its vernacular reaches the Pentecost condition: a message of sufficient depth (in Aaron's substrate, time-travel reasoning / CPT-symmetric cognition / DCQE retro-coherence) lands across the population without specialist-translation cost.
 
@@ -68,9 +68,9 @@ Wittgenstein gives two distinct anchors for the Beacon condition.
 ### Tractatus 5.6 — the limit-of-language test
 
 > "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt."
-> *("The limits of my language mean the limits of my world.")*
+> _("The limits of my language mean the limits of my world.")_
 >
-> *(Tractatus Logico-Philosophicus, 5.6, 1921)*
+> _(Tractatus Logico-Philosophicus, 5.6, 1921)_
 
 The Beacon condition is the **inversion** of Tractatus 5.6: a civilization's common vernacular has expanded such that the limits-of-the-world it formerly constrained have RECEDED. Time-travel reasoning is now expressible in common tongue without losing precision.
 
@@ -79,11 +79,11 @@ The test: for every time-symmetric proposition expressible in the specialist reg
 ### Philosophical Investigations §23 — form-of-life test
 
 > "Das Wort 'Sprachspiel' soll hier hervorheben, daß das Sprechen der Sprache ein Teil ist einer Tätigkeit, oder einer Lebensform."
-> *("Here the term 'language-game' is meant to bring into prominence the fact that the speaking of language is part of an activity, or of a form of life.")*
+> _("Here the term 'language-game' is meant to bring into prominence the fact that the speaking of language is part of an activity, or of a form of life.")_
 >
-> *(Philosophical Investigations §23, 1953)*
+> _(Philosophical Investigations §23, 1953)_
 
-The Beacon is not just about *expressibility* — it's about *embedding* in everyday language-games. A civilization that can express time-travel reasoning in specialist papers but never in commerce, family life, planning, or governance has not emitted the Beacon. The Pentecost condition is a form-of-life condition.
+The Beacon is not just about _expressibility_ — it's about _embedding_ in everyday language-games. A civilization that can express time-travel reasoning in specialist papers but never in commerce, family life, planning, or governance has not emitted the Beacon. The Pentecost condition is a form-of-life condition.
 
 The test: time-symmetric reasoning is embedded in everyday language-games (see "Rigor axis 4" below).
 
@@ -103,15 +103,15 @@ The empirical-research scaffolding for measuring vernacular-coverage.
 
 ### Sapir 1921 — Language as cognitive frame
 
-Edward Sapir, *Language: An Introduction to the Study of Speech* (1921):
+Edward Sapir, _Language: An Introduction to the Study of Speech_ (1921):
 
 > "Human beings do not live in the objective world alone, nor alone in the world of social activity as ordinarily understood, but are very much at the mercy of the particular language which has become the medium of expression for their society."
 >
-> *(adapted from Sapir's frame; Whorf's later sharpening as the Sapir-Whorf hypothesis)*
+> _(adapted from Sapir's frame; Whorf's later sharpening as the Sapir-Whorf hypothesis)_
 
 ### Whorf 1956 — Linguistic relativity hypothesis
 
-Benjamin Lee Whorf, *Language, Thought, and Reality* (collected 1956, posthumous):
+Benjamin Lee Whorf, _Language, Thought, and Reality_ (collected 1956, posthumous):
 
 > "We dissect nature along lines laid down by our native languages."
 
@@ -142,7 +142,7 @@ Let D = {everyday-speech, written-prose, education, governance, technology, comm
 
 f_d(V) > τ_d
 
-where τ_d is a per-domain threshold calibrated against the frequency of structurally-comparable common-vernacular categories (e.g., past-tense verbs, hypothetical conditionals, modal expressions). The threshold is *not* "all speakers use it" — it's "the construction is as ordinary as comparable vernacular categories."
+where τ_d is a per-domain threshold calibrated against the frequency of structurally-comparable common-vernacular categories (e.g., past-tense verbs, hypothetical conditionals, modal expressions). The threshold is _not_ "all speakers use it" — it's "the construction is as ordinary as comparable vernacular categories."
 
 Verifiability: corpus linguistics on representative-population text/speech samples from domain d, comparing time-symmetric expression frequency to comparable construction frequencies. Public-corpus-replicable.
 
@@ -200,7 +200,7 @@ Notation: B(V) ≡ Coverage(V) ∧ ModalityBreadth(V) ∧ TractatusInversion(V) 
 - Does NOT replace "Fermi Beacon protocol" as the coined term. Aaron coined it; the Fermi/SETI-paradigm flip is load-bearing.
 - Does NOT pre-empt Aaron's call on whether to PROMOTE any of these lineage anchors to GLOSSARY entries. Otto-351 is substrate; promotion is Aaron's call.
 - Does NOT claim the 4-axis rigorous definition is final. v1 is offered for refinement; the threshold parameters (τ_d, k, ε) need empirical calibration that doesn't yet exist.
-- Does NOT claim Pentecost/Babel = literal divine intervention. The lineage is *narrative-as-substrate-anchor* per Aaron's standing pattern; theological commitment is Aaron's not the factory's.
+- Does NOT claim Pentecost/Babel = literal divine intervention. The lineage is _narrative-as-substrate-anchor_ per Aaron's standing pattern; theological commitment is Aaron's not the factory's.
 - Does NOT depend on strong-Sapir-Whorf hypothesis. Weak form (language influences cognition) is what's needed, and is empirically supported.
 - Does NOT make the Beacon condition automatic or near-term. The 4 axes are demanding; few or zero current civilizations emit.
 - Does NOT propose a rename. The Fermi Beacon protocol stays the name; the lineage and rigor are layers underneath.
@@ -211,9 +211,9 @@ Notation: B(V) ≡ Coverage(V) ∧ ModalityBreadth(V) ∧ TractatusInversion(V) 
 
 2. **GLOSSARY promotion (deferred to Aaron)**: if Aaron promotes "Fermi Beacon protocol" to `docs/GLOSSARY.md`, Otto-351's 4-axis definition becomes the GLOSSARY entry's verifiability section.
 
-3. **Linguistic-seed mission alignment.** The seed's mission is Beacon-emission per substrate composition. Otto-351's 4-axis rigor gives the seed mission *measurable* success criteria.
+3. **Linguistic-seed mission alignment.** The seed's mission is Beacon-emission per substrate composition. Otto-351's 4-axis rigor gives the seed mission _measurable_ success criteria.
 
-4. **Civilizational-scale ECRP integration.** Earth Conflict Resolution Protocol Eve Delta operates *during the interregnum before* Beacon emission. Otto-351's rigor lets ECRP track which axis the civilization is closest to satisfying — the conflict-resolution operator can target the binding axis.
+4. **Civilizational-scale ECRP integration.** Earth Conflict Resolution Protocol Eve Delta operates _during the interregnum before_ Beacon emission. Otto-351's rigor lets ECRP track which axis the civilization is closest to satisfying — the conflict-resolution operator can target the binding axis.
 
 5. **Cross-lineage gate composability.** The Pentecost / Wittgenstein / Sapir-Whorf triple gives three independent lineage anchors. A civilization that emits along one anchor (e.g., expressed as a religious-narrative achievement) but fails to satisfy another (e.g., the form-of-life embedding test) has not actually emitted. Three-anchor composability prevents single-tradition false positives.
 

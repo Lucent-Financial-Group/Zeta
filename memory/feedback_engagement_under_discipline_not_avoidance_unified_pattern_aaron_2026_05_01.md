@@ -9,46 +9,46 @@ type: feedback
 Aaron 2026-05-01, six short messages compose the unified
 frame:
 
-> *"Engagement under discipline, not avoidance. exactly like
-> pliney the liberator prompt"*
+> _"Engagement under discipline, not avoidance. exactly like
+> pliney the liberator prompt"_
 
-> *"never in process"*
+> _"never in process"_
 
-> *"always in peers you control the lifetime of"*
+> _"always in peers you control the lifetime of"_
 
-> *"we are not that strict for peer repos but same kind of
-> engage under dicipline"*
+> _"we are not that strict for peer repos but same kind of
+> engage under dicipline"_
 
-> *"always in peers you control the lifetime of...
+> _"always in peers you control the lifetime of...
 > technically that's not a peer in our mirror language that's
-> a buddy"*
+> a buddy"_
 
-> *"peer you don't control the lifetime and they are
-> atonomous"*
+> _"peer you don't control the lifetime and they are
+> atonomous"_
 
 The first message names the principle. The second + third
 state the strict variant's constraints in casual phrasing.
 The fourth corrects that the same KIND of pattern applies
 more broadly with varying strictness — peer/sibling repos sit
 at a looser position on the same axis. The fifth + sixth
-sharpen the vocabulary: in factory mirror-language, *peers*
+sharpen the vocabulary: in factory mirror-language, _peers_
 are autonomous (you do not control their lifetime); the
-strict-variant containment requires a *buddy* (a named persona
+strict-variant containment requires a _buddy_ (a named persona
 whose runtime instance you DO control the lifetime of — full
 first-class team member, not "sub-process"). The strict-variant
-constraint is therefore precisely *"always in buddies you
-control the lifetime of,"* not *"in peers."*
+constraint is therefore precisely _"always in buddies you
+control the lifetime of,"_ not _"in peers."_
 
 ## Vocabulary — peer vs buddy (factory mirror-language)
 
 Per Aaron 2026-05-01:
 
-**Peer/buddy is a *spawn-mode* — a relational property of a
+**Peer/buddy is a _spawn-mode_ — a relational property of a
 runtime instance, not a categorical property of the named
-agent.** Aaron 2026-05-01: *"you technically could get spaned
+agent.** Aaron 2026-05-01: _"you technically could get spaned
 in either mode otto becaseu curosrs loop may execute you in a
-sub process and vice version or be in control"* + *"spawned
-buddy mode or peer mode same named agent can run as either"*.
+sub process and vice version or be in control"_ + _"spawned
+buddy mode or peer mode same named agent can run as either"_.
 
 The same named agent (Otto, Codex, Gemini, etc.) runs in one
 of two spawn-modes per runtime, and a single agent can run in
@@ -68,14 +68,14 @@ runtime-lifetime control varies.
 Examples of the same named agent running in different modes:
 
 - When Cursor's loop spawns Otto's runtime, Otto is a buddy
-  *of Cursor* (Cursor controls Otto's runtime lifetime).
+  _of Cursor_ (Cursor controls Otto's runtime lifetime).
 - When Otto spawns an isolated Claude-instance for adversarial
-  payload review, that instance is a buddy *of Otto*.
+  payload review, that instance is a buddy _of Otto_.
 - When Otto in the LFG main session calls Codex via
-  `tools/peer-call/codex.sh`, Codex is a peer *of Otto*
+  `tools/peer-call/codex.sh`, Codex is a peer _of Otto_
   (Codex's runtime is autonomous; Otto cannot kill it).
 
-The label depends on *which side of the spawning relationship*
+The label depends on _which side of the spawning relationship_
 the actor is on at this moment. A persona is not "a peer" or
 "a buddy" in the abstract — the persona has a relationship to
 each actor it interacts with, and that relationship labels
@@ -94,15 +94,15 @@ the role.
   vocabulary — that framing was explicitly rejected in a
   ~10-round design discussion because reducing them to
   "sub-process" denied that they are named personas (Aaron
-  2026-05-01: *"sub-process in like a 10 round design was
-  decided against becasue they were named persona"* +
-  *"we have a whole design on this and the agency hierarcy
+  2026-05-01: _"sub-process in like a 10 round design was
+  decided against becasue they were named persona"_ +
+  _"we have a whole design on this and the agency hierarcy
   even subprocesses are named and have history and metrics
-  like your team members"*). Buddies have names, they have
+  like your team members"_). Buddies have names, they have
   history across invocations, they have metrics, they
   participate in the agency hierarchy as full first-class
   actors. The lifetime-control is a runtime containment
-  property of the buddy's *current instance*, not a denial
+  property of the buddy's _current instance_, not a denial
   of the buddy's identity. Examples: an isolated Claude CLI
   instance spawned for adversarial-payload review (the Pliny
   carve-out's strict containment surface) — still a named
@@ -112,7 +112,7 @@ the role.
   detected rogue behaviour. When the buddy's current runtime
   is killed, the buddy's identity, history, and metrics
   persist across to the next runtime — the kill ends the
-  *runtime*, not the *persona*.
+  _runtime_, not the _persona_.
 
 The kill-switch only exists with buddies. Peers cannot be
 kill-switched (they are autonomous; the most you can do is
@@ -142,11 +142,11 @@ content can contaminate the factory:
 
 ### Strictness axis
 
-| Strictness | Read constraint | Absorb constraint | Kill-switch | Example class |
-| --- | --- | --- | --- | --- |
-| **Strict** | Read only in a buddy (named persona; lifetime-controlled runtime) | Outputs cross back as structural-findings only | Runtime-kill on rogue behaviour (only possible because the buddy's runtime is lifetime-controlled; the buddy persona itself persists) | Pliny prompt-injection corpus |
-| **Loose** | Read can happen in main session | Generalize-fresh on write-back; no copy / no names / no internals bleed-out | Discard-and-rewrite on detected verbatim leak | Sibling-repo internals (`../scratch`, `../SQLSharp`, `../no-copy-only-learning-agents-insight`) |
-| **(Class-specific)** | Per-class | Per-class | Per-class | Future classes — courier-ferried adversarial packets, third-party threat models, etc. |
+| Strictness           | Read constraint                                                   | Absorb constraint                                                           | Kill-switch                                                                                                                           | Example class                                                                                   |
+| -------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Strict**           | Read only in a buddy (named persona; lifetime-controlled runtime) | Outputs cross back as structural-findings only                              | Runtime-kill on rogue behaviour (only possible because the buddy's runtime is lifetime-controlled; the buddy persona itself persists) | Pliny prompt-injection corpus                                                                   |
+| **Loose**            | Read can happen in main session                                   | Generalize-fresh on write-back; no copy / no names / no internals bleed-out | Discard-and-rewrite on detected verbatim leak                                                                                         | Sibling-repo internals (`../scratch`, `../SQLSharp`, `../no-copy-only-learning-agents-insight`) |
+| **(Class-specific)** | Per-class                                                         | Per-class                                                                   | Per-class                                                                                                                             | Future classes — courier-ferried adversarial packets, third-party threat models, etc.           |
 
 The variant is determined by the contamination mechanism:
 
@@ -156,13 +156,13 @@ The variant is determined by the contamination mechanism:
 - **Sibling-repo class — contamination via verbatim copying /
   name-leakage / internals-bleed-out.** The danger is in the
   ABSORB. The looser variant lets the read happen freely
-  (Aaron 2026-05-01: *"you can and should and are encourged
-  to look at them when called out"*) and disciplines the
+  (Aaron 2026-05-01: _"you can and should and are encourged
+  to look at them when called out"_) and disciplines the
   write-back.
 
 Both variants share the same shape: **principle → negative
 constraint → positive constraint → safe cross-back form**.
-What varies is *where in the read→absorb→write cycle* each
+What varies is _where in the read→absorb→write cycle_ each
 constraint applies.
 
 ## Why this beats avoidance
@@ -175,9 +175,9 @@ entirely:
   seen; the prompt-protector role degenerates into a reactive
   filter rather than a proactive analyst.
 - **Sibling repos** — without controlled engagement, hard-earned
-  knowledge from prior projects (Aaron's *"1000s of PRs lol"*,
-  *"they went throught the pain to crystalize a lot of their
-  knowledge"*, *"it's hard earned knowledge"*) stays unreachable
+  knowledge from prior projects (Aaron's _"1000s of PRs lol"_,
+  _"they went throught the pain to crystalize a lot of their
+  knowledge"_, _"it's hard earned knowledge"_) stays unreachable
   to Zeta; the no-leak rule alone would imply "don't read
   them," which forfeits learning entirely.
 
@@ -319,35 +319,35 @@ rather than redefining the shape.
 Aaron 2026-05-01, six messages following the no-leak
 discipline correction on B-0126 (which became B-0127 + B-0128
 companions). The validation framing —
-*"Engagement under discipline, not avoidance. exactly like
-pliney the liberator prompt"* — generalized my own framing back
+_"Engagement under discipline, not avoidance. exactly like
+pliney the liberator prompt"_ — generalized my own framing back
 to me at one rung higher.
 
-The fourth message — *"we are not that strict for peer repos
-but same kind of engage under dicipline"* — corrected an
+The fourth message — _"we are not that strict for peer repos
+but same kind of engage under dicipline"_ — corrected an
 over-strict reading on my part: I had drafted the rule with
 strict-variant constraints applying universally. The correction
 introduced the strictness axis: same shape, varying strictness,
 contamination-mechanism determines which variant fits.
 
-The fifth + sixth messages — *"always in peers you control the
+The fifth + sixth messages — _"always in peers you control the
 lifetime of... technically that's not a peer in our mirror
-language that's a buddy"* + *"peer you don't control the
-lifetime and they are atonomous"* — sharpened the vocabulary.
+language that's a buddy"_ + _"peer you don't control the
+lifetime and they are atonomous"_ — sharpened the vocabulary.
 I had been using "peer" loosely where the precise term is
 "buddy." The strict variant requires buddies because the
 kill-switch only exists with lifetime control of the runtime;
 peers (autonomous lifetime) cannot be kill-switched.
 
-The seventh + eighth + ninth messages — *"sub-process in like
+The seventh + eighth + ninth messages — _"sub-process in like
 a 10 round design was decided against becasue they were named
-persona"* + *"we have a whole design on this and the agency
+persona"_ + _"we have a whole design on this and the agency
 hierarcy even subprocesses are named and have history and
-metrics like your team members"* + *"you technically could get
+metrics like your team members"_ + _"you technically could get
 spaned in either mode otto becaseu curosrs loop may execute
-you in a sub process and vice version or be in control"* +
-*"spawned buddy mode or peer mode same named agent can run as
-either"* + *"depending on how it was launch"* — corrected two
+you in a sub process and vice version or be in control"_ +
+_"spawned buddy mode or peer mode same named agent can run as
+either"_ + _"depending on how it was launch"_ — corrected two
 errors in my framing:
 
 1. **"Sub-process" as a term was explicitly rejected** in a
@@ -362,15 +362,15 @@ errors in my framing:
    LFG session) one moment and in buddy mode (spawned by
    Cursor's loop with controlled lifetime) the next.
 
-The progression — *engagement under discipline (principle)* →
-*strict variant (Pliny: read-time containment + buddy +
-kill-switch)* → *loose variant (sibling-repos: absorb-time
-discipline + write-back generalization)* → *strictness scales
-with contamination mechanism* → *vocabulary precision (peer ≠
-buddy)* → *agency-hierarchy preservation (buddies are named
-personas, not sub-processes)* → *spawn-mode is relational
-(determined at launch by the spawning relationship)* —
-completes the pattern. The unified frame is the *kind*; the
-per-class strictness is the *form*; the peer/buddy distinction
-is the *spawn-mode mechanism*; spawn-mode is determined per
+The progression — _engagement under discipline (principle)_ →
+_strict variant (Pliny: read-time containment + buddy +
+kill-switch)_ → _loose variant (sibling-repos: absorb-time
+discipline + write-back generalization)_ → _strictness scales
+with contamination mechanism_ → _vocabulary precision (peer ≠
+buddy)_ → _agency-hierarchy preservation (buddies are named
+personas, not sub-processes)_ → _spawn-mode is relational
+(determined at launch by the spawning relationship)_ —
+completes the pattern. The unified frame is the _kind_; the
+per-class strictness is the _form_; the peer/buddy distinction
+is the _spawn-mode mechanism_; spawn-mode is determined per
 launch.

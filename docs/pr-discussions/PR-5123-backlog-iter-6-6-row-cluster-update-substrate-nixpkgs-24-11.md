@@ -20,22 +20,22 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Backlog cluster for iter-6 cluster-update substrate, per maintainer directives:
 
-- *"is there a 25 we should go ahead and distro upgrade ... don't start behind from the beginning"*
-- *"lets backlog all that we need to be able to upgrade without ... manual operator"*
-- *"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"*
+- _"is there a 25 we should go ahead and distro upgrade ... don't start behind from the beginning"_
+- _"lets backlog all that we need to be able to upgrade without ... manual operator"_
+- _"we need to do that same thing to all our nix installed deps and argocd deps casue you are not good at getting current version"_
 
 WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 2025-11-30; EOL 2026-06-30). Our current pin `nixos-24.11` is **past EOL** as of 2025-06-30 — substantively behind + supply-chain-security exposure.
 
 ## Rows filed
 
-| ID | Tier | Title |
-|---|---|---|
-| **B-0800** | P1 | iter-6.0 — bump nixpkgs 24.11→25.11 (urgent EOL recovery) |
-| **B-0801** | P2 | iter-6.1 — `system.autoUpgrade` in `nixos/modules/common.nix` |
-| **B-0802** | P2 | iter-6.2 — kured ArgoCD app (K8s-aware drain+reboot) |
-| **B-0803** | P2 | iter-6.3 — deploy-rs from CI (GitOps alt to autoUpgrade) |
-| **B-0804** | P2 | iter-6.4 — distro-upgrade runbook + orchestrator |
-| **B-0805** | P1 | iter-6.5 (CAPSTONE) — ALL deps current-version sweep + `.claude/rules/dep-pin-search-first-authority.md` |
+| ID         | Tier | Title                                                                                                    |
+| ---------- | ---- | -------------------------------------------------------------------------------------------------------- |
+| **B-0800** | P1   | iter-6.0 — bump nixpkgs 24.11→25.11 (urgent EOL recovery)                                                |
+| **B-0801** | P2   | iter-6.1 — `system.autoUpgrade` in `nixos/modules/common.nix`                                            |
+| **B-0802** | P2   | iter-6.2 — kured ArgoCD app (K8s-aware drain+reboot)                                                     |
+| **B-0803** | P2   | iter-6.3 — deploy-rs from CI (GitOps alt to autoUpgrade)                                                 |
+| **B-0804** | P2   | iter-6.4 — distro-upgrade runbook + orchestrator                                                         |
+| **B-0805** | P1   | iter-6.5 (CAPSTONE) — ALL deps current-version sweep + `.claude/rules/dep-pin-search-first-authority.md` |
 
 ## Key design decisions captured
 
@@ -62,6 +62,7 @@ WebSearch confirmed: **NixOS 25.11 \"Xantusia\"** is current stable (released 20
 Files a six-row iter-6 backlog cluster (B-0800–B-0805) for `full-ai-cluster` OS lifecycle: an urgent nixpkgs/nix-darwin 24.11→25.11 EOL-recovery bump, `system.autoUpgrade` enablement, kured ArgoCD app for drain-aware reboots, deploy-rs-from-CI as an alternative push-shape, a cross-channel distro-upgrade runbook + orchestrator, and a capstone all-deps currency audit + agent search-first-authority rule. Pure docs change — six new per-row markdown files plus the auto-regenerated `docs/BACKLOG.md` index entries.
 
 **Changes:**
+
 - Add six new backlog rows under `docs/backlog/P1/` and `docs/backlog/P2/` covering the iter-6 cluster-update substrate with `depends_on` / `composes_with` edges wired across the cluster.
 - Regenerate `docs/BACKLOG.md` to surface the new entries under P1 and P2.
 - Encode an autoUpgrade-XOR-deploy-rs design constraint and a capstone agent-discipline rule (`.claude/rules/dep-pin-search-first-authority.md`) to land later.
@@ -73,15 +74,16 @@ Copilot reviewed 7 out of 7 changed files in this pull request and generated 5 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P1/B-0800-…md | P1 row: bump nixpkgs/nix-darwin pin 24.11→25.11 (EOL recovery) |
+| File                       | Description                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| docs/backlog/P1/B-0800-…md | P1 row: bump nixpkgs/nix-darwin pin 24.11→25.11 (EOL recovery)                    |
 | docs/backlog/P1/B-0805-…md | P1 capstone row: all-deps currency audit tool + agent search-first-authority rule |
-| docs/backlog/P2/B-0801-…md | P2 row: enable `system.autoUpgrade` in `common.nix` |
-| docs/backlog/P2/B-0802-…md | P2 row: kured ArgoCD app for K8s-aware drain+reboot |
-| docs/backlog/P2/B-0803-…md | P2 row: deploy-rs from CI as alternative push-shape |
-| docs/backlog/P2/B-0804-…md | P2 row: distro-upgrade runbook + Bun orchestrator |
-| docs/BACKLOG.md | Regenerated index entries for the six new rows |
+| docs/backlog/P2/B-0801-…md | P2 row: enable `system.autoUpgrade` in `common.nix`                               |
+| docs/backlog/P2/B-0802-…md | P2 row: kured ArgoCD app for K8s-aware drain+reboot                               |
+| docs/backlog/P2/B-0803-…md | P2 row: deploy-rs from CI as alternative push-shape                               |
+| docs/backlog/P2/B-0804-…md | P2 row: distro-upgrade runbook + Bun orchestrator                                 |
+| docs/BACKLOG.md            | Regenerated index entries for the six new rows                                    |
+
 </details>
 
 ## Review threads

@@ -107,7 +107,11 @@ export function createReconcileWorker(input: CreateReconcileWorkerInput): Reconc
         const flushed = await input.gitAdapter.flush();
         written = flushed.written;
       } catch (error) {
-        failures.push({ lane: ReconcileLane.Flush, table: "*", message: error instanceof Error ? error.message : String(error) });
+        failures.push({
+          lane: ReconcileLane.Flush,
+          table: "*",
+          message: error instanceof Error ? error.message : String(error),
+        });
       }
 
       // Rows just emitted to git are now durable; clear the changed-set so the

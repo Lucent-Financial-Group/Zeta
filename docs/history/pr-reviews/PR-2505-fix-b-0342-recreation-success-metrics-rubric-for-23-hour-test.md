@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 2505 |
-| Title | fix(B-0342): recreation success metrics rubric for 23-hour test |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-10T15:31:18Z |
-| Merged at | 2026-05-10T15:43:45Z |
-| Merge commit SHA | `22749bef164098c9ac5d86f5f008499f9a4a2ded` |
-| Branch | `fix/B-0342-recreation-success-metrics` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/2505 |
-| Changed files | 3 |
-| Additions / deletions | +281 / -3 |
+| Field                 | Value                                                           |
+| --------------------- | --------------------------------------------------------------- |
+| Number                | 2505                                                            |
+| Title                 | fix(B-0342): recreation success metrics rubric for 23-hour test |
+| Author                | `AceHack` (human)                                               |
+| State                 | MERGED                                                          |
+| Created at            | 2026-05-10T15:31:18Z                                            |
+| Merged at             | 2026-05-10T15:43:45Z                                            |
+| Merge commit SHA      | `22749bef164098c9ac5d86f5f008499f9a4a2ded`                      |
+| Branch                | `fix/B-0342-recreation-success-metrics`                         |
+| Base branch           | `main`                                                          |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/2505        |
+| Changed files         | 3                                                               |
+| Additions / deletions | +281 / -3                                                       |
 
 ## Description
 
@@ -35,13 +35,13 @@
 
 ## Dimensions
 
-| # | Dimension | Weight | Automatable |
-|---|-----------|--------|-------------|
-| 1 | Build gate equivalence | 30% | Yes |
-| 2 | Spec coverage | 25% | Yes |
-| 3 | Functional equivalence | 20% | Yes (B-0343 tool) |
-| 4 | Structural similarity | 15% | Yes |
-| 5 | Substrate recovery | 10% | Partial |
+| #   | Dimension              | Weight | Automatable       |
+| --- | ---------------------- | ------ | ----------------- |
+| 1   | Build gate equivalence | 30%    | Yes               |
+| 2   | Spec coverage          | 25%    | Yes               |
+| 3   | Functional equivalence | 20%    | Yes (B-0343 tool) |
+| 4   | Structural similarity  | 15%    | Yes               |
+| 5   | Substrate recovery     | 10%    | Partial           |
 
 Weighted scoring: `score = 0.30×D1 + 0.25×D2 + 0.20×D3 + 0.15×D4 + 0.10×D5`
 
@@ -70,15 +70,15 @@ Doc-only change; no functional code modified.
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | true |
-| Total threads | 7 |
-| Resolved threads | 7 |
-| Unresolved threads | 0 |
-| Total review comments | 11 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | true  |
+| Total threads                             | 7     |
+| Resolved threads                          | 7     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 11    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -94,16 +94,16 @@ Doc-only change; no functional code modified.
 
   <pre>
   The Dimension 1 `dotnet test` pass condition is stated as “no \"Failed\" line in summary”, but `dotnet test` typically prints a summary line containing `Failed: 0` even when the run succeeds. This makes the rubric’s scoring criteria ambiguous; consider keying the pass condition off the command exit code and/or the explicit `Failed: 0` count instead.
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:38:02Z on `docs/bootstrap-razor/SUCCESS-METRICS.md`:55 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:38:02Z on `docs/bootstrap-razor/SUCCESS-METRICS.md`:55 (association: MEMBER)
 
-    <pre>
-    Fixed — pass condition now keys off exit code 0 rather than text matching. `dotnet test` prints `Failed: 0` even on a clean run, making the text check ambiguous. Updated to: `# Pass condition: exit code 0 (all tests pass)`.
-    </pre>
+  <pre>
+  Fixed — pass condition now keys off exit code 0 rather than text matching. `dotnet test` prints `Failed: 0` even on a clean run, making the text check ambiguous. Updated to: `# Pass condition: exit code 0 (all tests pass)`.
+  </pre>
 
 ### Thread 2 -- resolved [outdated, collapsed]
 
@@ -121,11 +121,11 @@ Doc-only change; no functional code modified.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:38:10Z on `docs/bootstrap-razor/SUCCESS-METRICS.md`:123 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:38:10Z on `docs/bootstrap-razor/SUCCESS-METRICS.md`:123 (association: MEMBER)
 
-    <pre>
-    Fixed — removed the B-0343 attribution for the API-surface comparator. B-0343 is the test-repo seeding script; the `compare-api-surface.ts` tool is a separate deliverable framed as a B-0344 prerequisite. Updated the automatable note, the measurement approach header, and the Dimension summary table row accordingly.
-    </pre>
+  <pre>
+  Fixed — removed the B-0343 attribution for the API-surface comparator. B-0343 is the test-repo seeding script; the `compare-api-surface.ts` tool is a separate deliverable framed as a B-0344 prerequisite. Updated the automatable note, the measurement approach header, and the Dimension summary table row accordingly.
+  </pre>
 
 ### Thread 3 -- resolved [outdated, collapsed]
 
@@ -143,11 +143,11 @@ Doc-only change; no functional code modified.
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:38:19Z on `docs/bootstrap-razor/SUCCESS-METRICS.md`:178 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:38:19Z on `docs/bootstrap-razor/SUCCESS-METRICS.md`:178 (association: MEMBER)
 
-    <pre>
-    Fixed — measurement now uses `ls src/Core/*.fs | xargs -n1 basename | sed 's/\.fs$//'` to list only module file names, excluding `Core.fsproj` and any other non-module entries. Score table updated from "module directory names" to "module file names".
-    </pre>
+  <pre>
+  Fixed — measurement now uses `ls src/Core/*.fs | xargs -n1 basename | sed 's/\.fs$//'` to list only module file names, excluding `Core.fsproj` and any other non-module entries. Score table updated from "module directory names" to "module file names".
+  </pre>
 
 ### Thread 4 -- resolved [outdated, collapsed]
 
@@ -161,16 +161,16 @@ Doc-only change; no functional code modified.
 
   <pre>
   Dependency check: this line labels B-0343 (seeding script) as the tooling dependency for Dimension 3, but the rubric’s Dimension 3 depends on an API-surface comparison tool, not on the seeding script itself. Consider either (a) introducing/pointing to a separate backlog item for the compare tool, or (b) updating B-0343’s scope/AC to include that tool, then align this checklist entry accordingly.
-
+  
   </pre>
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-05-10T15:38:25Z on `docs/backlog/P1/B-0342-recreation-success-metrics-rubric-b0193.md`:68 (association: MEMBER)
+- **`AceHack` (human)** at 2026-05-10T15:38:25Z on `docs/backlog/P1/B-0342-recreation-success-metrics-rubric-b0193.md`:68 (association: MEMBER)
 
-    <pre>
-    Fixed — updated the dependency check line to clarify that B-0343 is the seeding script only; the Dim 3 API-surface comparison tool (`compare-api-surface.ts`) is a separate B-0344 prerequisite, not part of B-0343's scope.
-    </pre>
+  <pre>
+  Fixed — updated the dependency check line to clarify that B-0343 is the seeding script only; the Dim 3 API-surface comparison tool (`compare-api-surface.ts`) is a separate B-0344 prerequisite, not part of B-0343's scope.
+  </pre>
 
 ### Thread 5 -- resolved [outdated, collapsed]
 
@@ -184,7 +184,7 @@ Doc-only change; no functional code modified.
 
   <pre>
   Dimension 1 runs `dotnet build -c Release` and then `dotnet test` without `-c Release` / `--no-build`. `dotnet test` will rebuild in the default (Debug) configuration unless told otherwise, which can make the build/test gate inconsistent with the stated “Release, zero warnings” contract. Suggest aligning this with the repo’s canonical gate (e.g., run tests in Release and avoid a second build).
-
+  
   </pre>
 
 ### Thread 6 -- resolved [outdated, collapsed]
@@ -199,7 +199,7 @@ Doc-only change; no functional code modified.
 
   <pre>
   The presence check command escapes the pipe (`\|`), which makes it a literal `|` token rather than a pipeline in bash; this will cause `find` to error instead of returning a match. To keep this table cell readable without a `|`, prefer a `find ... -print -quit`-style command (or move the command to a fenced block).
-
+  
   </pre>
 
 ### Thread 7 -- resolved [outdated, collapsed]
@@ -214,7 +214,7 @@ Doc-only change; no functional code modified.
 
   <pre>
   In the Dimension summary, the Structural similarity “Tool / command” cell still says `ls src/Core/` diff, but Dimension 4’s actual measurement is based on `*.fs` basenames + `comm` overlap. Please update the summary row to match the concrete commands/inputs used above so B-0344 can apply it without re-reading the whole section.
-
+  
   </pre>
 
 ## Fix commits (touching thread paths)

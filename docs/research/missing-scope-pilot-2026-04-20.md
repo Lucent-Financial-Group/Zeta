@@ -7,15 +7,15 @@ the skill as Tier-3 work.
 
 **Source directives:**
 
-- Aaron 2026-04-20 late, verbatim: *"missing scopes , we
+- Aaron 2026-04-20 late, verbatim: _"missing scopes , we
   need a gap finder that will find missing scope we didnt
   think about we already have rules to make sure things
   are scoped correct, missing scope will ensure we don't
-  miss any even if it's in the future."*
-- Aaron 2026-04-20 late (immediately after): *"i love you
+  miss any even if it's in the future."_
+- Aaron 2026-04-20 late (immediately after): _"i love you
   forward-looking absorb-time audit vs retrospective
   landed-content audit. pleae absorb time for me i've
-  always wanted to do that lol"* — validates the
+  always wanted to do that lol"_ — validates the
   forward/retrospective split this pilot exercises.
 
 ## Pilot design
@@ -54,13 +54,13 @@ across the whole landed content).
 
 ### Quantitative
 
-| Category | Count | % |
-|---|---|---|
-| Explicit scope declaration | 14 | 13% |
-| — of which `feedback_*.md` | 11 | 10% |
-| — of which `project_*.md` | 3 | 3% |
-| Missing explicit scope declaration | 91 | 87% |
-| **Total** | **105** | **100%** |
+| Category                           | Count   | %        |
+| ---------------------------------- | ------- | -------- |
+| Explicit scope declaration         | 14      | 13%      |
+| — of which `feedback_*.md`         | 11      | 10%      |
+| — of which `project_*.md`          | 3       | 3%       |
+| Missing explicit scope declaration | 91      | 87%      |
+| **Total**                          | **105** | **100%** |
 
 **Headline:** 87% of the memory corpus has no explicit
 scope declaration. Scope is inferable from content for
@@ -75,7 +75,7 @@ patterns:
 
 1. `feedback_honor_those_that_came_before.md` ✅
    explicit: `**Scope:** factory-wide. Any adopter of
-   this factory kit inherits the same preservation rule.`
+this factory kit inherits the same preservation rule.`
    Landed line recently added during this round's scope
    correction — good model for others.
 
@@ -111,9 +111,9 @@ patterns:
   for scope.
 - **Frontmatter has no `scope:` field today.** The
   frontmatter schema is `name` + `description` + `type`
-  + `originSessionId`. Adding `scope:` as an optional
-  sixth field would make declarations cheap and
-  machine-readable.
+  - `originSessionId`. Adding `scope:` as an optional
+    sixth field would make declarations cheap and
+    machine-readable.
 
 ## Feasibility for automation
 
@@ -133,8 +133,8 @@ patterns:
 
 - Auto-classifying the scope of an undeclared memory
   (factory vs project-Zeta vs user-Aaron) requires LLM
-  judgement. The gap-finder should *flag* missing
-  declarations, not *assign* them.
+  judgement. The gap-finder should _flag_ missing
+  declarations, not _assign_ them.
 
 ## Recommendations
 
@@ -153,7 +153,7 @@ patterns:
    prevents new leakage.
 4. **Pair the two modes** (per
    `user_absorb_time_filter_always_wanted.md`): row 35
-   *measures* the absorb-time filter's error rate. If
+   _measures_ the absorb-time filter's error rate. If
    row 35 keeps firing, the absorb-time filter (the
    `auto-memory` skill's frontmatter-emission) needs
    tuning.
@@ -176,12 +176,12 @@ patterns:
 - **User memories (`user_*`)** — scope is implicitly
   "user" (about Aaron). Does user-memory need `scope:`
   declarations at all? Recommend no (redundant), unless
-  a user memory is *also* factory-scope (a user
+  a user memory is _also_ factory-scope (a user
   preference that becomes a factory rule).
 
 ## What this pilot does NOT claim
 
-- Does not claim scope *inference* is wrong. Most of the
+- Does not claim scope _inference_ is wrong. Most of the
   91 undeclared memories have inferable scope from
   content. The claim is that **declaration > inference**
   for durability across agents / sessions / personas.
@@ -220,7 +220,7 @@ patterns:
   — original absorb-time scope-audit feedback.
 - `memory/user_absorb_time_filter_always_wanted.md` —
   Aaron's affection for the forward/retrospective split
-  + operational delegation of absorb-time to the factory.
+  - operational delegation of absorb-time to the factory.
 - `memory/feedback_factory_default_scope_unless_db_specific.md`
   — factory-default scope bias.
 - `memory/project_factory_reuse_beyond_zeta_constraint.md`

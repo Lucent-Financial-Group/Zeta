@@ -12,7 +12,7 @@ archived_at: "2026-05-27T19:43:00Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
-# PR #5105: backlog(B-0793 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-*.nix capability modules (Aaron 2026-05-26)
+# PR #5105: backlog(B-0793 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-\*.nix capability modules (Aaron 2026-05-26)
 
 ## PR description
 
@@ -20,30 +20,34 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Aaron 2026-05-26 architectural correction during iter-5.2 substrate-engineering:
 
-> *\"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very elegant and host names tied to them are not great either\"*
+> _\"since our different roles are multi install you can be control plane AND gpu node AND cpu node these distinctions are not very elegant and host names tied to them are not great either\"_
 
 iter-5.2 (B-0792 PR #5103) addressed the **hostname** side (decoupled via \`injected-hostname.nix\` + \`--host\` flag). This row captures the deeper **role-side** concern: role-stack-as-baked-host-config is the remaining architectural blocker for true multi-role nodes.
 
 ## Refactor target
 
-| Today | Target |
-|---|---|
+| Today                                           | Target                                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------ |
 | \`nixos/hosts/control-plane/configuration.nix\` | \`nixos/modules/role-control-plane.nix\` (K3S server + Cilium + ArgoCD; NO hostname) |
-| \`nixos/hosts/worker-gpu/configuration.nix\` | \`nixos/modules/role-worker-gpu.nix\` (GPU stack + K3S agent; NO hostname) |
-| \`nixos/hosts/worker-template/default.nix\` | \`nixos/modules/role-worker-cpu.nix\` (K3S agent; NO hostname) |
-| Per-host \`nixosConfigurations\` entries | Single \`node\` config; install-time role-module composition |
+| \`nixos/hosts/worker-gpu/configuration.nix\`    | \`nixos/modules/role-worker-gpu.nix\` (GPU stack + K3S agent; NO hostname)           |
+| \`nixos/hosts/worker-template/default.nix\`     | \`nixos/modules/role-worker-cpu.nix\` (K3S agent; NO hostname)                       |
+| Per-host \`nixosConfigurations\` entries        | Single \`node\` config; install-time role-module composition                         |
 
 ## Empirical UX (after refactor lands as iter-5.3)
 
 \`\`\`
 zflash --host pikachu --role control-plane
+
 # → Single role
 
 zflash --host charizard --role worker-gpu,control-plane,storage
+
 # → TRIPLE role on one node (homelab persona's typical 1-3 node cluster)
 
 zflash --host bulbasaur --role worker-cpu
+
 # → CPU-only worker
+
 \`\`\`
 
 Default: \`--role control-plane\` (preserves zero-typing single-node UX).
@@ -67,9 +71,10 @@ Default: \`--role control-plane\` (preserves zero-typing single-node UX).
 
 ## Pull request overview
 
-Adds a new P1 backlog row (B-0793) describing the next architectural refactor for NixOS role configuration: moving from baked per-host role stacks to composable “role-*” capability modules to support multi-role nodes (e.g., control-plane + GPU + storage on a single machine).
+Adds a new P1 backlog row (B-0793) describing the next architectural refactor for NixOS role configuration: moving from baked per-host role stacks to composable “role-\*” capability modules to support multi-role nodes (e.g., control-plane + GPU + storage on a single machine).
 
 **Changes:**
+
 - Adds `docs/backlog/P1/B-0793-...md` with the problem statement, target design, sub-targets, and acceptance criteria for role-as-capability composition.
 - Updates `docs/BACKLOG.md` to include the new B-0793 entry.
 
@@ -77,10 +82,10 @@ Adds a new P1 backlog row (B-0793) describing the next architectural refactor fo
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 2 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                                                             | Description                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0793-role-as-capability-composition-NOT-baked-host-control-plane-AND-gpu-AND-storage-on-single-node-decouple-roles-from-flake-host-configs-aaron-2026-05-26.md | New backlog row defining the role-module composition refactor scope and acceptance criteria. |
-| docs/BACKLOG.md | Adds B-0793 to the generated backlog index. |
+| docs/BACKLOG.md                                                                                                                                                                  | Adds B-0793 to the generated backlog index.                                                  |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T05:53:08Z)
 

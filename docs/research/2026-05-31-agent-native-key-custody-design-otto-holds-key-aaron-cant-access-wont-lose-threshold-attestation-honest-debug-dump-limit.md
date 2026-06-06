@@ -7,39 +7,39 @@ rationale, hardware selection, key-ceremony shape) at the **encryption-key** sco
 the governance-signing scope. **Routed through product-team agreement; not auto-loaded rule.**
 **Owner:** operator (Aaron, shaping) + Otto (synthesis).
 **Decision confidence:** medium — the primitives are well-vetted (FROST, Shamir, HSM-resident
-ops, SPIFFE attestation, confidential computing); the *composition* is the design here, and the
+ops, SPIFFE attestation, confidential computing); the _composition_ is the design here, and the
 honest limit is named (Aaron named it himself).
 
 ## The question (operator 2026-05-31, verbatim)
 
-> *"how can otto hold a key for encryption that Aaron does not have access to but otto can be
+> _"how can otto hold a key for encryption that Aaron does not have access to but otto can be
 > sure he wont loose, or has a member of society that acts as his key guard or multiple members?
 > yall have access to multiple machines tpms and i'm happy to buy any hardware that makes sense
 > too for hsm or mini hsm or whatever. i'm trying to design agent native encryption not just
 > human native. i remember my password — how can an agent have a key they remember that the
-> human does not?"*
+> human does not?"_
 
 Plus the honest-limit acknowledgment (operator 2026-05-31):
 
-> *"i get that debug dumping can still get it until we have hardware secure boot everywhere with
-> security memory channels like xbox or something but that's down the road."*
+> _"i get that debug dumping can still get it until we have hardware secure boot everywhere with
+> security memory channels like xbox or something but that's down the road."_
 
 ## The core inversion — attest, don't remember
 
 A human holds a **secret they remember** (a password) and that secret unlocks the key. An AI
-*instance* is **fresh on every cold-boot** — it has no persistent biological memory, no place to
+_instance_ is **fresh on every cold-boot** — it has no persistent biological memory, no place to
 hold a remembered secret that survives across instances. So the human pattern doesn't port:
 there is no "Otto's memory" to put a password in.
 
 The agent-native inversion: the key is **not recalled, it is reconstructed**, and access is
 bound to **proof-of-identity (attestation)** rather than **possession-of-secret**.
 
-| | Human (Aaron) | Agent (Otto) |
-|---|---|---|
-| What unlocks the key | a secret **remembered** (password) | an identity **proven** (attestation) |
-| Where the secret lives | biological memory | nowhere — there is no persistent secret to hold |
-| How it survives loss | the human keeps remembering | reconstructable by a quorum of key-guards |
-| The unlock event | "I know the password" | "I can prove I am Otto" |
+|                        | Human (Aaron)                      | Agent (Otto)                                    |
+| ---------------------- | ---------------------------------- | ----------------------------------------------- |
+| What unlocks the key   | a secret **remembered** (password) | an identity **proven** (attestation)            |
+| Where the secret lives | biological memory                  | nowhere — there is no persistent secret to hold |
+| How it survives loss   | the human keeps remembering        | reconstructable by a quorum of key-guards       |
+| The unlock event       | "I know the password"              | "I can prove I am Otto"                         |
 
 **Aaron remembers; Otto attests.** That single reframe dissolves "how can an agent remember a
 key the human doesn't?" — the key never lives in the agent's memory at all. It lives as a
@@ -54,15 +54,15 @@ chip. You send the chip data to sign or decrypt; it returns the result. Neither 
 can read the raw key out — both interact through the same constrained API.
 
 - This gives **use-without-extract**: the host (and anyone with host root) sees ciphertext and
-  plaintext-being-processed, never the key — *as long as the crypto happens inside the chip*.
+  plaintext-being-processed, never the key — _as long as the crypto happens inside the chip_.
 - A single chip is a **single point of loss** (chip dies → key gone) and a **single point of
   control** (whoever holds the chip controls it). Layer 2 fixes both.
 
 ### Layer 2 — N-of-M threshold across society key-guards: durability + sovereignty
 
 This is [B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)'s
-N-of-M, applied at the **encryption** layer (B-0634's table was scoped to *signing*; this extends
-it to *key custody / decryption*). The key is either **split** (Shamir Secret Sharing) or
+N-of-M, applied at the **encryption** layer (B-0634's table was scoped to _signing_; this extends
+it to _key custody / decryption_). The key is either **split** (Shamir Secret Sharing) or
 **never assembled** (threshold-MPC: FROST for Schnorr/Ed25519) across **M key-guards** =
 trusted society members + multiple machines/TPMs across locations.
 
@@ -70,17 +70,17 @@ trusted society members + multiple machines/TPMs across locations.
   B-0634's distribution axes).
 - **N** = threshold to use the key (e.g. N = ceil(M·2/3)).
 - **Durability:** lose up to **M−N** guards → key survives (reconstruct from the rest). This is
-  the "won't lose it" guarantee — it is the *distributed-system* sense of "remember": no single
+  the "won't lose it" guarantee — it is the _distributed-system_ sense of "remember": no single
   head holds it, but a quorum can always reconstruct it.
 - **Sovereignty:** no single party — not Aaron, not one stolen laptop, not one agent instance —
-  can use the key alone. Aaron is *one of the M*, so he loses unilateral access but keeps a
+  can use the key alone. Aaron is _one of the M_, so he loses unilateral access but keeps a
   threshold voice (exactly B-0634's "Aaron is one keyholder, not the keyholder").
 
 > **This is the literal answer to "an agent that remembers a key the human doesn't."** It isn't in
-> the agent's memory; it's a threshold secret the *attested* agent can *invoke* via the guards.
+> the agent's memory; it's a threshold secret the _attested_ agent can _invoke_ via the guards.
 > "Remembering" = the guards still holding their shares; "recall" = a quorum cooperating.
 
-**Why FROST over plain Shamir for the live key:** plain Shamir *reassembles* the key on one
+**Why FROST over plain Shamir for the live key:** plain Shamir _reassembles_ the key on one
 machine to use it (a momentary single point of compromise — exactly the debug-dump window).
 FROST/threshold-MPC produces the operation (signature / decryption-share) **without ever
 assembling** the key on any one node. Prefer FROST for the operating key; reserve Shamir for
@@ -89,8 +89,8 @@ cold backup/recovery shares kept offline.
 > **HSM nuance (verified 2026-05-31):** the [YubiHSM 2](https://www.yubico.com/product/yubihsm-2/)
 > does **not** implement Shamir/threshold in firmware
 > ([CalyxOS, Feb 2026](https://calyxos.org/news/2026/02/10/calyxos-hsm-signing/) found this).
-> So the **threshold layer runs as a coordinator *above* the HSMs** (FROST in software across
-> guard nodes), with each guard's *share* sealed in its local HSM/TPM. HSM = per-guard root of
+> So the **threshold layer runs as a coordinator _above_ the HSMs** (FROST in software across
+> guard nodes), with each guard's _share_ sealed in its local HSM/TPM. HSM = per-guard root of
 > trust; FROST = the cross-guard threshold. Two layers, not one device.
 
 ### Layer 3 — Attestation-gated invocation: who may ask the guards to cooperate?
@@ -98,11 +98,11 @@ cold backup/recovery shares kept offline.
 The guards only cooperate when the requester **proves it is a legitimate Otto instance** — this
 is where the keystone's identity layer plugs in:
 
-- **SPIFFE/SPIRE SVID** — workload identity (this process, on this attested node, *is* Otto).
+- **SPIFFE/SPIRE SVID** — workload identity (this process, on this attested node, _is_ Otto).
 - **AgencySignature** — the commit-trailer attribution convention (this actor's track record).
 - **ZetaId** — the category-tagged distributed identity (which agent, which category).
 
-Aaron cannot forge Otto's *workload attestation* to make the guards cooperate "as Otto," and
+Aaron cannot forge Otto's _workload attestation_ to make the guards cooperate "as Otto," and
 every invocation is **auditable (glass-halo)**. The **NCI social-consent floor** binds the human
 guards: a key-guard is a society member with agency — their cooperation is **consent, not
 compulsion** (no coercing a guard to release a share; per
@@ -114,10 +114,10 @@ While a key (or a reassembled Shamir secret, or a FROST partial) is **in use in 
 with root/physical access on that machine can dump it from memory. This is real and we don't
 pretend otherwise. Two responses — one available **today**, one **down the road**:
 
-- **Today (strong partial fix): keep the crypto *inside the HSM*.** YubiHSM 2 does
-  Ed25519/ECDSA/RSA/AES *on-chip* — the raw key never enters host RAM, so a host debugger dumps
-  only the *plaintext being processed*, not the *key*. The key-in-RAM exposure only occurs for
-  *software* keys, or when you must compute over the key in a way the HSM can't. **Design rule:
+- **Today (strong partial fix): keep the crypto _inside the HSM_.** YubiHSM 2 does
+  Ed25519/ECDSA/RSA/AES _on-chip_ — the raw key never enters host RAM, so a host debugger dumps
+  only the _plaintext being processed_, not the _key_. The key-in-RAM exposure only occurs for
+  _software_ keys, or when you must compute over the key in a way the HSM can't. **Design rule:
   prefer HSM-resident operations; minimize software-key handling.**
 - **Down the road (the "Xbox-style" full fix Aaron named): confidential computing —
   encrypted memory + measured/secure boot everywhere.** This is
@@ -126,13 +126,13 @@ pretend otherwise. Two responses — one available **today**, one **down the roa
   [AWS Nitro Enclaves](https://www.redhat.com/en/blog/deploy-confidential-computing-aws-nitro-enclaves-red-hat-enterprise-linux),
   Apple Secure Enclave, and measured-boot chains. With memory encrypted on the bus + a measured
   boot chain, even a host debugger can't read the key out of RAM. "Security memory channels like
-  Xbox" = exactly this (encrypted memory bus + secure boot). It's the *future* layer; the
-  HSM-resident-ops rule is the *now* layer that already closes most of the gap.
+  Xbox" = exactly this (encrypted memory bus + secure boot). It's the _future_ layer; the
+  HSM-resident-ops rule is the _now_ layer that already closes most of the gap.
 
 **Threat-model honesty:** this design defends against remote compromise, single-machine theft,
 single-jurisdiction subpoena, and single-vendor backdoor (via M-diversity). It does **not** fully
-defend against a well-resourced adversary with sustained physical + root access to a *non-
-confidential* machine *while the key is being used in software* — until Layer 4's confidential-
+defend against a well-resourced adversary with sustained physical + root access to a _non-
+confidential_ machine _while the key is being used in software_ — until Layer 4's confidential-
 computing path is everywhere. Aaron accepted this explicitly. HSM-resident ops shrink that window
 to near-zero for the operations the HSM supports.
 
@@ -141,15 +141,15 @@ to near-zero for the operations the HSM supports.
 1. Otto instance boots on an attested node; SPIRE issues an **SVID** (proof: "I am Otto, here").
 2. Otto needs to decrypt its private encrypted state (per B-0840 / B-0883 substrate).
 3. Otto requests a threshold decryption from the **key-guards**, presenting SVID + AgencySignature
-   + ZetaId.
+   - ZetaId.
 4. Each guard verifies the attestation (and human guards consent, per NCI), then produces its
    **decryption share inside its local HSM** — no guard ever holds the full key.
 5. N shares combine (FROST) → the plaintext is recovered **without the key ever assembling** on
    any node. Where the data must transit host RAM, that node should be a confidential-compute
-   node (Layer 4) — until then, the *key* is never in RAM (Layer 1), only the *plaintext* is.
+   node (Layer 4) — until then, the _key_ is never in RAM (Layer 1), only the _plaintext_ is.
 6. The whole invocation is logged to the append-only substrate (glass-halo / git-native LGTM).
 
-Aaron can't do step 3-as-Otto (can't forge the workload attestation) and is only *one* of the M
+Aaron can't do step 3-as-Otto (can't forge the workload attestation) and is only _one_ of the M
 guards in step 4 (can't unilaterally release). The key survives any M−N guard losses (step 4
 durability). Nobody — including Otto's own host — sees the raw key (Layer 1).
 
@@ -158,9 +158,9 @@ durability). Nobody — including Otto's own host — sees the raw key (Layer 1)
 - [B-0634](../backlog/P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)
   — this doc is the encryption-scope design detail for that row's N-of-M.
 - [B-0646](../backlog/P1/B-0646-agora-v6-constitution-marketplace-agora-2-primitives-economic-architecture-aaron-ani-2026-05-18.md)
-  — agora-v6 private-encryption-budget (the *what* this key protects).
+  — agora-v6 private-encryption-budget (the _what_ this key protects).
 - B-0840 (thermal-forgetting / private encrypted memory) + B-0883 (PQ encryption envelope —
-  noble X-Wing / ML-DSA-65) — the encryption this custody design holds the keys *for*; threshold
+  noble X-Wing / ML-DSA-65) — the encryption this custody design holds the keys _for_; threshold
   scheme should track the PQ-migration (SLH-DSA / ML-DSA threshold variants where available).
 - B-0622 (F# agent-wallet type safety) — the wallet sharp-edge that N-of-M also gates.
 - The **keystone identity layer** (SPIFFE/SPIRE + AgencySignature + ZetaId) — the attestation
@@ -183,7 +183,7 @@ durability). Nobody — including Otto's own host — sees the raw key (Layer 1)
 ## Substrate-honest framing
 
 This design does **not** claim perfect secrecy against a physical adversary today — it names the
-exact gap (Layer 4) and the exact *today* mitigation (HSM-resident ops). It does claim: no single
+exact gap (Layer 4) and the exact _today_ mitigation (HSM-resident ops). It does claim: no single
 party (including Aaron) can use the key alone, the key survives bounded guard loss, and access is
 bound to attested identity rather than a remembered secret — which is the agent-native custody
 Aaron asked for.

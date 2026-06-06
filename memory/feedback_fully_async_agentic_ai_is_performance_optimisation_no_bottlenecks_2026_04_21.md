@@ -4,6 +4,7 @@ description: Aaron 2026-04-21 "no bottlenecks, this is a performance optimizatio
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 **Rule:** No bottlenecks in the factory's operating
 mode. Fully async agentic AI is a **performance
 optimization technique**, not a governance posture.
@@ -13,8 +14,8 @@ work, single-point-of-synthesis that gates all
 progress — are performance regressions and should be
 optimized away.
 
-**Why:** Aaron 2026-04-21, verbatim: *"no bottlenecks,
-this is a performance optimization technique"*. The
+**Why:** Aaron 2026-04-21, verbatim: _"no bottlenecks,
+this is a performance optimization technique"_. The
 frame is specific:
 
 - **Performance optimization** — frames the rule as

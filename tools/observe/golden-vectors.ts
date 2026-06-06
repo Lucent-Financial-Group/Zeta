@@ -92,5 +92,7 @@ if (import.meta.main) {
   const vectors = generateGoldenVectors();
   writeFileSync(GOLDEN_VECTORS_PATH, `${JSON.stringify(vectors, null, 2)}\n`);
   console.log(`wrote ${GOLDEN_VECTORS_PATH}`);
-  console.log(`  ${vectors.events.length} events; final backlog=${String(vectors.expectedFinalState.backlog.length)} mode=${vectors.expectedFinalState.mode ?? "-"}`);
+  console.log(
+    `  ${vectors.events.length} events; final backlog=${String(vectors.expectedFinalState.backlog.length)} mode=${vectors.expectedFinalState.mode ?? "-"}`,
+  );
 }

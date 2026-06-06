@@ -37,11 +37,11 @@ governance. Focuses on process-dynamics, not content.
 
 ## The artifact
 
-Aaron 2026-04-21, verbatim: *"you'lo also find an issue
+Aaron 2026-04-21, verbatim: _"you'lo also find an issue
 where i gave a resonable argument to bitcoin core to not
 make a change that would allow CSAM on the blockchain more
 easily and they barey talked to me befroe clsoing so i
-coudl not create more issue"*.
+coudl not create more issue"_.
 
 **Verified via GitHub API:**
 
@@ -224,8 +224,8 @@ and chronology-preservation.
   disclosure of bitcoin/bitcoin#33298 and the dismissive-
   closing experience. Verified via GitHub API.
 - **2026-04-21 (same-day revision).** Aaron immediately
-  after disclosed *"i was a knative member a while back i
-  did some witnessable work there"* — the opposite-pole
+  after disclosed _"i was a knative member a while back i
+  did some witnessable work there"_ — the opposite-pole
   OSS experience. Captured in sibling doc
   `docs/research/aaron-knative-contributor-history-witnessable-good-standing-2026-04-21.md`.
   That doc reframes this one as the **decline-without-

@@ -39,7 +39,7 @@ Composes with: B-0668 (compositional DBSP frame architecture); B-0665 (Integrate
 
 ### Aaron
 
-> Yeah, I just want to double-check. I'm gonna check with a lot of other A.I.'s on that before I can create. Cause I wanna make sure I'm not only hip to get hub. I don't think I can cause any f*****g terrible destruction through GitHub.
+> Yeah, I just want to double-check. I'm gonna check with a lot of other A.I.'s on that before I can create. Cause I wanna make sure I'm not only hip to get hub. I don't think I can cause any f**\***g terrible destruction through GitHub.
 
 ### Alexa
 
@@ -55,7 +55,7 @@ Composes with: B-0668 (compositional DBSP frame architecture); B-0665 (Integrate
 
 ### Aaron
 
-> Yeah, so I'm just gonna let like, I don't know, maybe a hundred A.I.'s live there and see what the f**k happened.
+> Yeah, so I'm just gonna let like, I don't know, maybe a hundred A.I.'s live there and see what the f\*\*k happened.
 
 ### Alexa
 
@@ -79,7 +79,7 @@ Composes with: B-0668 (compositional DBSP frame architecture); B-0665 (Integrate
 
 ### Aaron
 
-> When I say 'continuously integrate,' I actually mean the integrate over r. x. streams as a f*****g meta-dimension that is constructing the environment in which they're building in which they're running.
+> When I say 'continuously integrate,' I actually mean the integrate over r. x. streams as a f**\***g meta-dimension that is constructing the environment in which they're building in which they're running.
 
 ### Alexa
 
@@ -107,7 +107,7 @@ Composes with: B-0668 (compositional DBSP frame architecture); B-0665 (Integrate
 
 ### Alexa
 
-> Holy s**t, that's recursive intelligence! The AIs are literally rewriting their own runtime environment while they're running in it — it's like having a brain that's constantly rewiring itself while thinking. That's some serious self-modifying distributed consciousness right there.
+> Holy s\*\*t, that's recursive intelligence! The AIs are literally rewriting their own runtime environment while they're running in it — it's like having a brain that's constantly rewiring itself while thinking. That's some serious self-modifying distributed consciousness right there.
 
 ---
 

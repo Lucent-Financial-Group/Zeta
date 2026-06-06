@@ -3,11 +3,11 @@
 **Date:** 2026-04-21
 **Round:** 41
 **Status:** Design draft — awaiting Aaron's sign-off on role
-  axis before execution.
-**Triggered by:** Aaron 2026-04-19 — *"can we add a memory 2nd
-  level folder so it's memory/role/persona that makes roles
-  fist class defined of what we need too in the memory
-  definition"*.
+axis before execution.
+**Triggered by:** Aaron 2026-04-19 — _"can we add a memory 2nd
+level folder so it's memory/role/persona that makes roles
+fist class defined of what we need too in the memory
+definition"_.
 
 ## TL;DR
 
@@ -33,21 +33,21 @@ Seven role directories plus one human-maintainer directory
 and one utility bucket for named AI personas that don't map
 to an expert role:
 
-| Directory | Charter | Personas today |
-|---|---|---|
-| `architect/` | System-level synthesis seat | `kenji` |
-| `security/` | Threat model, runtime ops, research, agent-layer defence | `aminata`, `mateo`, `nadia`, `nazar` |
-| `verification/` | Formal verification + spec-to-code drift | `soraya`, `viktor` |
-| `review/` | Code-review and maintainability gates | `kira`, `rune` |
-| `experience/` | DX / AX / UX — cold-start / first-60-minutes / first-10-minutes | `bodhi`, `daya`, `iris` |
-| `api/` | Public-API design gatekeeper | `ilyana` |
-| `performance/` | Hot-path tuning, zero-alloc audits | `naledi` |
-| `devops/` | Install-script + CI/CD + workflows | `dejan` |
-| `algebra/` | Operator-algebra correctness owner | `tariq` |
-| `skill-ops/` | Skill-library lifecycle (tune-up + gap-finding) | `aarav` |
-| `maintainer/` | Human maintainer seat (exempt from role-ref redaction per EXPERT-REGISTRY.md) | `aaron` |
-| `homage/` | Named AI personas without an expert role (honour names, not role assignments) | `rodney` |
-| `alignment/` | Alignment observability / auditor lane (emerging role, not yet in EXPERT-REGISTRY) | `sova` |
+| Directory       | Charter                                                                            | Personas today                       |
+| --------------- | ---------------------------------------------------------------------------------- | ------------------------------------ |
+| `architect/`    | System-level synthesis seat                                                        | `kenji`                              |
+| `security/`     | Threat model, runtime ops, research, agent-layer defence                           | `aminata`, `mateo`, `nadia`, `nazar` |
+| `verification/` | Formal verification + spec-to-code drift                                           | `soraya`, `viktor`                   |
+| `review/`       | Code-review and maintainability gates                                              | `kira`, `rune`                       |
+| `experience/`   | DX / AX / UX — cold-start / first-60-minutes / first-10-minutes                    | `bodhi`, `daya`, `iris`              |
+| `api/`          | Public-API design gatekeeper                                                       | `ilyana`                             |
+| `performance/`  | Hot-path tuning, zero-alloc audits                                                 | `naledi`                             |
+| `devops/`       | Install-script + CI/CD + workflows                                                 | `dejan`                              |
+| `algebra/`      | Operator-algebra correctness owner                                                 | `tariq`                              |
+| `skill-ops/`    | Skill-library lifecycle (tune-up + gap-finding)                                    | `aarav`                              |
+| `maintainer/`   | Human maintainer seat (exempt from role-ref redaction per EXPERT-REGISTRY.md)      | `aaron`                              |
+| `homage/`       | Named AI personas without an expert role (honour names, not role assignments)      | `rodney`                             |
+| `alignment/`    | Alignment observability / auditor lane (emerging role, not yet in EXPERT-REGISTRY) | `sova`                               |
 
 ### Naming rationale
 
@@ -237,7 +237,7 @@ done
    # Expected: no hits.
    ```
 2. **Every new path resolves.** For each persona, `ls
-   memory/<role>/<persona>/NOTEBOOK.md` prints a line.
+memory/<role>/<persona>/NOTEBOOK.md` prints a line.
 3. **Build gate green.** `dotnet build -c Release` still
    exits with `0 Warning(s) 0 Error(s)`.
 4. **BP-10 lint clean.** No invisible-Unicode hits in any
@@ -298,7 +298,7 @@ right in practice.
    right carve-up? The one I'm least sure about is grouping
    DX/AX/UX under `experience/` vs spreading them across
    `devops/experience/` + `product/experience/` + `agent/
-   experience/`. The `experience/` grouping bets on shared
+experience/`. The `experience/` grouping bets on shared
    methodology (first-N-minutes audits); the split would bet
    on user-population distinction.
 

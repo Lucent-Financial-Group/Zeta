@@ -1,10 +1,10 @@
 # ADR: BP-HOME as Rule Zero, paired with BP-HOME-AS-TYPE — every artifact has a canonical home, and that home is its type signature
 
 **Date:** 2026-04-19 (round 35)
-**Status:** *Decision: promote BP-HOME and BP-HOME-AS-TYPE as a
+**Status:** _Decision: promote BP-HOME and BP-HOME-AS-TYPE as a
 paired rule — Rule Zero — effective round 36. Five additional
 rules (BP-CF, BP-SPLIT, BP-FACET, BP-OPT-BAL, BP-THEORY-APPLIED)
-promote in the same batch.*
+promote in the same batch._
 **Owner:** architect (wide) + canonical-home-auditor and
 skill-ontology-auditor (narrow enforcement).
 
@@ -14,21 +14,21 @@ Over round 35 the human maintainer escalated a skill-library
 ontology concern into a repo-wide ordering principle, stated
 verbatim:
 
-> *"that enforcement is for everyting code, docs, skills,
+> _"that enforcement is for everyting code, docs, skills,
 > factory, scripts, literally everything will have its right
-> home ... like this is the number one rule above all else".*
+> home ... like this is the number one rule above all else"._
 
 He then connected the rule to his declared life philosophy
 — Erik Meijer's "let the types drive the code" — via a second
 load-bearing observation:
 
-> *"once you have a cononical home, i know your type signature"*.
+> _"once you have a cononical home, i know your type signature"_.
 
 And extended the framing into an architectural direction:
 
-> *"i can almost see the axiomatic system in my head that can
+> _"i can almost see the axiomatic system in my head that can
 > enforce rules onces i know all the type singnatures even of
-> docs lol and skill files and such"*.
+> docs lol and skill files and such"_.
 
 Together these statements declare that artifact placement in
 this repository is not a tidiness concern but **the repo's type
@@ -198,19 +198,19 @@ this ADR is safe to land as Rule Zero in the first place.
 
 ## Theoretical lineage
 
-- Pierce, *Types and Programming Languages* (2002).
-- Harper, *Practical Foundations for Programming Languages*
+- Pierce, _Types and Programming Languages_ (2002).
+- Harper, _Practical Foundations for Programming Languages_
   (2016).
 - Meijer — LINQ, Reactive Extensions, TypeScript discriminated
   unions; the "types drive the code" maxim across decades.
-- Wlaschin, *Domain Modeling Made Functional* (2018).
-- Brady, *Type-Driven Development with Idris* (2017).
+- Wlaschin, _Domain Modeling Made Functional_ (2018).
+- Brady, _Type-Driven Development with Idris_ (2017).
 - Ranganathan, colon classification (PMEST facets).
 - Gruber, ontology-as-specification.
-- Evans, *Domain-Driven Design* — bounded contexts.
+- Evans, _Domain-Driven Design_ — bounded contexts.
 - Berners-Lee, semantic-web type discipline (applied inward).
-- Jackson, *Software Abstractions* (Alloy).
-- Lamport, *Specifying Systems* (TLA+).
+- Jackson, _Software Abstractions_ (Alloy).
+- Lamport, _Specifying Systems_ (TLA+).
 
 ## Enforcement
 

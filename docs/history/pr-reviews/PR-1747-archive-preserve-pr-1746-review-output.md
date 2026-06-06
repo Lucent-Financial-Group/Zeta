@@ -10,29 +10,31 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 1747 |
-| Title | archive: preserve PR 1746 review output |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-05-06T23:01:11Z |
-| Merged at | 2026-05-06T23:12:57Z |
-| Merge commit SHA | `4d1dcc2d5f84e65f6a99aee0715ebdcc37e9e317` |
-| Branch | `codex/archive-pr1746-review-output` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/1747 |
-| Changed files | 3 |
-| Additions / deletions | +178 / -8 |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Number                | 1747                                                     |
+| Title                 | archive: preserve PR 1746 review output                  |
+| Author                | `AceHack` (human)                                        |
+| State                 | MERGED                                                   |
+| Created at            | 2026-05-06T23:01:11Z                                     |
+| Merged at             | 2026-05-06T23:12:57Z                                     |
+| Merge commit SHA      | `4d1dcc2d5f84e65f6a99aee0715ebdcc37e9e317`               |
+| Branch                | `codex/archive-pr1746-review-output`                     |
+| Base branch           | `main`                                                   |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/1747 |
+| Changed files         | 3                                                        |
+| Additions / deletions | +178 / -8                                                |
 
 ## Description
 
 ## Summary
+
 - preserves the PR #1746 review archive that the post-merge workflow generated but could not push to protected main
 - appends the corresponding docs/github/prs/manifest.jsonl entry through the normal PR path
 - keeps the failed direct-push workflow as signal; this PR is the branch-protection-safe recovery path
 
 ## Checks
+
 - git diff --check
 - git diff --cached --check
 - bun tools/hygiene/check-archive-header-section33.ts
@@ -40,15 +42,15 @@
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 1 |
-| Resolved threads | 1 |
-| Unresolved threads | 0 |
-| Total review comments | 1 |
-| Total fix commits (touching thread paths) | 2 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 1     |
+| Resolved threads                          | 1     |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 1     |
+| Total fix commits (touching thread paths) | 2     |
 
 ## Review threads
 
@@ -64,9 +66,9 @@
 
   <pre>
   **&lt;sub&gt;&lt;sub&gt;![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)&lt;/sub&gt;&lt;/sub&gt;  Set post-fix review flag only when a fix follows review**
-
+  
   The archive marks `Re-reviewed post-fix` as `true`, but this PR’s only listed “fix commit” is at `2026-05-06T22:53:27Z` while the first review comments are later (`2026-05-06T22:57:53Z`), so no post-fix re-review actually occurred in this record. This makes the outcome metadata inaccurate and can skew any downstream reporting that treats this field as evidence that reviewers validated changes after a fix.
-
+  
   Useful? React with 👍 / 👎.
   </pre>
 

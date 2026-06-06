@@ -31,12 +31,12 @@ empirically validated.
 Z-set +1/-1 weights map directly to reversible gate
 operations:
 
-| Z-set operation | Reversible gate | What happens |
-| --------------- | --------------- | ------------ |
-| `+1` (assert) | Toffoli forward | Information added |
-| `-1` (retract) | Toffoli reverse | Information recovered (not erased) |
-| `delta` (D) | Difference circuit | Net: no bits erased |
-| `integrate` (I) | Accumulate circuit | Checkpoint state |
+| Z-set operation | Reversible gate    | What happens                       |
+| --------------- | ------------------ | ---------------------------------- |
+| `+1` (assert)   | Toffoli forward    | Information added                  |
+| `-1` (retract)  | Toffoli reverse    | Information recovered (not erased) |
+| `delta` (D)     | Difference circuit | Net: no bits erased                |
+| `integrate` (I) | Accumulate circuit | Checkpoint state                   |
 
 Traditional gates (AND, OR) destroy input bits — two inputs
 become one output, one bit erased, kT·ln2 heat per Landauer.

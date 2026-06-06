@@ -24,13 +24,13 @@ Documents the EXISTING imperative bash state-machine in \`zeta-install.sh\` (1,3
 
 ## What's inventoried
 
-| Category | Count | Purpose |
-|---|---|---|
-| Sub-steps documented | 14 (Steps 1, 2, 3, 4, 5, 6, 6.5, 6.55, 6.6, 6.7, 6.8, 6.9, 6.95, 7) | inputs/outputs/side-effects/failure-modes/declarative-equivalent per step |
-| Operator-prompt accumulation | 7 today → 1 passphrase post-B-0852 | informs B-0852 phase-split UX claim |
-| Idempotency surface rows | Per-step yes/no/partial | informs B-0855 architectural-fix scope |
-| Declarative-input categories | 12 | informs B-0854 Phase 2 manifest schema |
-| Files-generated table | 9 files → mapped to B-0852.5 manifest entries | identifies 3 candidate-expansion items |
+| Category                     | Count                                                               | Purpose                                                                   |
+| ---------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Sub-steps documented         | 14 (Steps 1, 2, 3, 4, 5, 6, 6.5, 6.55, 6.6, 6.7, 6.8, 6.9, 6.95, 7) | inputs/outputs/side-effects/failure-modes/declarative-equivalent per step |
+| Operator-prompt accumulation | 7 today → 1 passphrase post-B-0852                                  | informs B-0852 phase-split UX claim                                       |
+| Idempotency surface rows     | Per-step yes/no/partial                                             | informs B-0855 architectural-fix scope                                    |
+| Declarative-input categories | 12                                                                  | informs B-0854 Phase 2 manifest schema                                    |
+| Files-generated table        | 9 files → mapped to B-0852.5 manifest entries                       | identifies 3 candidate-expansion items                                    |
 
 ## Composes with already-landed substrate
 
@@ -66,6 +66,7 @@ Documents the EXISTING imperative bash state-machine in \`zeta-install.sh\` (1,3
 This PR adds a Phase 0 documentation substrate for B-0854.1 by inventorying the existing `full-ai-cluster/usb-nixos-installer/zeta-install.sh` step/state-machine so later Ace-manifest work can mirror the current imperative behavior.
 
 **Changes:**
+
 - Introduces a new installer inventory document capturing step inputs/outputs/side-effects/failure modes and proposed declarative equivalents.
 - Adds cross-cutting summaries (prompt accumulation, idempotency surface, declarative input categories, generated files mapping).
 
@@ -123,7 +124,7 @@ Step 7 references `MAGIC_NUMBER` and a “magic-number-fallback”, but the scri
 
 **@copilot-pull-request-reviewer** (2026-05-27T07:38:04Z):
 
-The Step 6.95+ section describes `nixos-install` as occurring after Step 6.95 and gives a line range of 1096–1340, but in `zeta-install.sh` the `sudo nixos-install ...` block is around lines 974–1011 and *precedes* Step 6.95. If this doc is meant to be verifiable against specific line ranges, this step boundary/order needs to be reconciled with the source script.
+The Step 6.95+ section describes `nixos-install` as occurring after Step 6.95 and gives a line range of 1096–1340, but in `zeta-install.sh` the `sudo nixos-install ...` block is around lines 974–1011 and _precedes_ Step 6.95. If this doc is meant to be verifiable against specific line ranges, this step boundary/order needs to be reconciled with the source script.
 
 ### Thread 10: docs/installer/zeta-install-step-state-machine-inventory-2026-05-27.md:164 (resolved)
 

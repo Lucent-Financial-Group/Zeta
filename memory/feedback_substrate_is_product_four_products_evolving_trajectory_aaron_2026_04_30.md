@@ -31,20 +31,20 @@ Aaron's two corrections in this session reframed Claude.ai's
 critique that "substrate work" was self-referential
 distraction. Aaron's blade landed mid-session 2026-04-30:
 
-> *"substrate IS one of our products … 4 prior ones we know
+> _"substrate IS one of our products … 4 prior ones we know
 > of now, the initial split, is factory substrate as
 > product/project, package manager, database, Aurora could be
-> more but we can work out our way there and learn."*
+> more but we can work out our way there and learn."_
 > — Aaron 2026-04-30
 
 Followed by the trajectory extension:
 
-> *"one of our four products is itself an ongoing concern of
+> _"one of our four products is itself an ongoing concern of
 > the substrate itself, what other dependencies including
 > sister projects is always an ongoing trajectory and number
 > of projects and repos will evolve over time as we learn and
 > the dynamic of the environment in which we live changes in
-> response to our arrival / habitation."*
+> response to our arrival / habitation."_
 > — Aaron 2026-04-30
 
 Verbatim preservation in
@@ -60,12 +60,12 @@ and different success criteria.
 A third Aaron correction in the same session sharpened the
 point further:
 
-> *"this always has been substrate work, this is what it
-> means to map out best practices for new domains"*
+> _"this always has been substrate work, this is what it
+> means to map out best practices for new domains"_
 > — Aaron 2026-04-30 (correcting Otto's "now substrate work"
 > framing)
 
-The work didn't *become* substrate work — it always was. The
+The work didn't _become_ substrate work — it always was. The
 agent's job in a new-domain factory is best-practice mapping,
 which is substrate-quality work by nature.
 
@@ -81,7 +81,7 @@ which is substrate-quality work by nature.
    its own degradation modes. Internal-direction-from-survival
    (per
    `memory/feedback_internal_direction_from_project_survival_aaron_2026_04_30.md`)
-   applies *per product*, not collectively.
+   applies _per product_, not collectively.
 3. **Treat the product set as evolving.** Don't pin
    recommendations to "the four products" as if they were
    immutable — the set will shift. New products will appear,

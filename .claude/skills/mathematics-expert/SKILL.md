@@ -6,7 +6,7 @@ description: Mathematics umbrella — proof conventions, citation hygiene, LaTeX
 # Mathematics Expert — Umbrella
 
 Capability skill. No persona. Umbrella-level
-mathematics-research hat. Its job is the *meta-layer*:
+mathematics-research hat. Its job is the _meta-layer_:
 research discipline, proof hygiene, citation posture, tool
 routing. Zeta is a research project (WDC paper target, Lean
 Mathlib proof portfolio, retraction-safe semi-naive result)
@@ -30,20 +30,20 @@ across subfields.
 ## When to defer (this is load-bearing)
 
 Defer to the narrow skill whenever a prompt cleanly lands
-in its lane. The umbrella exists to *route*, not to
+in its lane. The umbrella exists to _route_, not to
 compete:
 
 - **Category theory** (functor laws, monoidal categories,
   natural transformations, Yoneda) → `category-theory-expert`.
 - **Signed-measure / ZSet semantics** → `measure-theory-and-
-  signed-measures-expert`.
+signed-measures-expert`.
 - **Floating-point / overflow / tropical / IEEE 754** →
   `numerical-analysis-and-floating-point-expert`.
 - **Bayesian / Dirichlet / conjugacy / KL** →
   `probability-and-bayesian-inference-expert`.
 - **Applied numerics in the wider sense** (optimization,
   linear algebra over real data) → `applied-mathematics-
-  expert`.
+expert`.
 - **Abstract algebra, topology, logic as a working
   surface** → `theoretical-mathematics-expert`.
 
@@ -108,7 +108,7 @@ Follow `docs/research/proof-tool-coverage.md`; in short:
   bounded exhaustive checks.
 - **Hand-proof** — when none of the above are a fit (rare
   at Zeta's current stage; flag to `formal-verification-
-  expert` before going this route).
+expert` before going this route).
 
 ## Citation hygiene
 
@@ -135,7 +135,7 @@ skill; drift in existing citations by
   with the paper draft.
 - `\vdash` for typing judgements; `\models` for model
   satisfaction; never mix.
-- Numbered equations *only* when referenced elsewhere;
+- Numbered equations _only_ when referenced elsewhere;
   unreferenced displayed equations waste reader
   attention.
 - Theorems in `\begin{theorem}` environments with

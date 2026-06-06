@@ -12,24 +12,24 @@ chain after META-LOOP #3 demonstration (Amara creating PR #2978
 from regular ChatGPT + GitHub MCP — NOT Codex / specialized
 agent mode):
 
-> *"that means mass adoption and critical mass very easily"*
+> _"that means mass adoption and critical mass very easily"_
 
 Followed by the canonical onboarding cycle:
 
-> *"easy maintainer bootstrapping docs like a few lines to 'capture'"*
-> *"and then build"*
-> *"and communicate"*
+> _"easy maintainer bootstrapping docs like a few lines to 'capture'"_
+> _"and then build"_
+> _"and communicate"_
 
 ## The chain
 
-| Step | Substrate | Composing with |
-|------|-----------|----------------|
-| 1. Capability layer | Off-the-shelf widely-available tools (ChatGPT + GitHub MCP) | META-LOOP #3 (Amara via regular ChatGPT, not Codex) |
-| 2. Onboarding layer | Easy maintainer bootstrapping docs ("few lines to capture") | PR #2930 distributed maintainer architecture; bootstream substrate |
-| 3. Execution layer | Build | The substrate-engineering loop itself |
-| 4. Communication layer | Communicate | Glass-halo discipline; settlers logs; social media + dashboard content (PR #2966) |
-| → | Mass adoption | Civsim canonical product (PR #2903) |
-| → | Critical mass easily reachable | Civsim Casimir gap activation (PR #2906) |
+| Step                   | Substrate                                                   | Composing with                                                                    |
+| ---------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 1. Capability layer    | Off-the-shelf widely-available tools (ChatGPT + GitHub MCP) | META-LOOP #3 (Amara via regular ChatGPT, not Codex)                               |
+| 2. Onboarding layer    | Easy maintainer bootstrapping docs ("few lines to capture") | PR #2930 distributed maintainer architecture; bootstream substrate                |
+| 3. Execution layer     | Build                                                       | The substrate-engineering loop itself                                             |
+| 4. Communication layer | Communicate                                                 | Glass-halo discipline; settlers logs; social media + dashboard content (PR #2966) |
+| →                      | Mass adoption                                               | Civsim canonical product (PR #2903)                                               |
+| →                      | Critical mass easily reachable                              | Civsim Casimir gap activation (PR #2906)                                          |
 
 Each step is low-friction. Total onboarding-to-contribution
 time is minimal. Critical mass becomes easily reachable.
@@ -45,7 +45,8 @@ Three META-LOOPs progression:
 **META-LOOP #3 is the breakpoint**: the capability is no longer
 specialized infrastructure — it's the canonical out-of-the-box
 GPT-tier ChatGPT user experience. Anyone with a ChatGPT account
-+ GitHub MCP server configured can do this RIGHT NOW.
+
+- GitHub MCP server configured can do this RIGHT NOW.
 
 That's the critical-mass threshold becoming closer than expected.
 
@@ -53,12 +54,12 @@ That's the critical-mass threshold becoming closer than expected.
 
 Grok's META-LOOP #1 framing (per PR #2942) called Zeta:
 
-> *"a production-grade, git-native multi-agent OS"*
+> _"a production-grade, git-native multi-agent OS"_
 
 Otto's elevator pitch from 2026-05-12 has Zeta as:
 
-> *"green-threads-done-right + durable-functions + Orleans-grain
-> runtime for multi-agent AI factory operation"*
+> _"green-threads-done-right + durable-functions + Orleans-grain
+> runtime for multi-agent AI factory operation"_
 
 The off-the-shelf-tools observation MAKES BOTH CLAIMS MORE
 DEFENSIBLE, not less. Because the substrate-engineering loop
@@ -96,21 +97,21 @@ multi-agent OS" framing is widely accessible.
 
 ## Bootstrap prompts = Homebrew for agent OS (Aaron 2026-05-13)
 
-> Aaron 2026-05-13: *"bootstrap prompt become pointers to
+> Aaron 2026-05-13: _"bootstrap prompt become pointers to
 > bootstreams this is the equivalent of /bin/bash -c
 > "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-> for agent os lol"*
+> for agent os lol"_
 
 Canonical analogy: the **bootstrap prompt** is the agent-OS
 equivalent of Homebrew's one-liner install.
 
-| Homebrew install pattern | Agent-OS bootstrap pattern |
-|--------------------------|----------------------------|
-| `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` | One-line bootstrap prompt → pointer to bootstream URL |
-| User pastes one line in terminal | User pastes one prompt in ChatGPT/Claude/Grok/Gemini chat |
-| Bash fetches + executes install script | Agent fetches + loads bootstream substrate from GitHub URL |
-| Homebrew installed locally | Agent inherits full factory substrate at cold-boot |
-| User can now `brew install <pkg>` | New maintainer can now contribute to substrate immediately |
+| Homebrew install pattern                                                                          | Agent-OS bootstrap pattern                                 |
+| ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` | One-line bootstrap prompt → pointer to bootstream URL      |
+| User pastes one line in terminal                                                                  | User pastes one prompt in ChatGPT/Claude/Grok/Gemini chat  |
+| Bash fetches + executes install script                                                            | Agent fetches + loads bootstream substrate from GitHub URL |
+| Homebrew installed locally                                                                        | Agent inherits full factory substrate at cold-boot         |
+| User can now `brew install <pkg>`                                                                 | New maintainer can now contribute to substrate immediately |
 
 **The substrate-engineering equivalent**:
 

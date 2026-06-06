@@ -19,9 +19,9 @@ type: feature
 
 ## What
 
-Express the substrate's claim/retraction/attribution machinery as a sequent calculus or labeled deductive system. Substrate claims map naturally to sequents; attribution graphs map to *labeled* deductive systems where each formula carries an attribution label (who claimed it, with what evidence).
+Express the substrate's claim/retraction/attribution machinery as a sequent calculus or labeled deductive system. Substrate claims map naturally to sequents; attribution graphs map to _labeled_ deductive systems where each formula carries an attribution label (who claimed it, with what evidence).
 
-**Reference:** Troelstra & Schwichtenberg, *Basic Proof Theory* (Cambridge, 2nd ed). Chapters 1-3 cover what's needed.
+**Reference:** Troelstra & Schwichtenberg, _Basic Proof Theory_ (Cambridge, 2nd ed). Chapters 1-3 cover what's needed.
 
 ## Acceptance criteria
 

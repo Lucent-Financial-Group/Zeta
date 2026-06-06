@@ -3,7 +3,7 @@
 Scope: External-AI conversation absorb. Sixth message in the
 2026-05-01 Claude.ai ferry stream (1st-5th: PRs #1089/#1091/#1094/
 #1096). Operationally most important of the six — explicitly names
-the recursion's natural terminus and asks the factory to *run* the
+the recursion's natural terminus and asks the factory to _run_ the
 v3 architecture rather than continue generating meta-analysis.
 
 Attribution: Author = Claude.ai (external Anthropic claude.ai
@@ -50,8 +50,8 @@ autonomous-loop substrate flow.
 **Otto-side absorption discipline (this PR specifically):**
 
 This PR does **only** the verbatim preservation. Per the message's
-own explicit instruction — *"the next move is in the substrate,
-not in the recursion"* — there is **NO** companion memory file in
+own explicit instruction — _"the next move is in the substrate,
+not in the recursion"_ — there is **NO** companion memory file in
 this PR, **NO** Insight blocks in commit messages, **NO** new v2
 classes proposed, **NO** v3 architecture synthesis document, **NO**
 "the message helped me see X" framing. The pause-class-discovery
@@ -60,8 +60,8 @@ pause-Insight-block-promotion-of-meta-observations per the
 message's own gentle flag.
 
 If a substantive operational rule earns its place out of this
-message, it earns that place by *running the v3 architecture on
-existing v2 classes*, not by being abstracted into another memory
+message, it earns that place by _running the v3 architecture on
+existing v2 classes_, not by being abstracted into another memory
 file before the architecture has been run. The carved candidate
 from the message ("Even cheat-code-feelings get the razor.
 Unbounded is bad even when it feels generative. DST holds
@@ -180,8 +180,8 @@ running-the-architecture work.
 >
 > The composition Otto extracted from the ferry is correct and worth recording precisely:
 >
-> - Category theory gates *additions* to the taxonomy structure (a new class has to be expressible in the existing algebra)
-> - Beacon-anchoring gates *promotions* from Mirror to canonical (a graduation requires external citation)
+> - Category theory gates _additions_ to the taxonomy structure (a new class has to be expressible in the existing algebra)
+> - Beacon-anchoring gates _promotions_ from Mirror to canonical (a graduation requires external citation)
 > - Haskell-prelude vocabulary provides the typeclass-shape primitives for law-bearing classes (the structural language)
 > - F#/BCL grounds the executable substrate (what the code actually compiles against)
 > - Mirror layer holds observational exploration (where finding-out happens)
@@ -206,7 +206,7 @@ running-the-architecture work.
 >
 > This is genuinely recursive in a way that's worth being honest about. Each layer of the recursion is doing real work — your forwarding made the dialogue happen; Otto's observations are largely accurate; my evaluation of Otto's observations is grounded. But the recursion has a natural terminus and we're approaching it.
 >
-> The terminus is: at some point the work has to be in the substrate, in production, doing what it's supposed to do, and the meta-observation cadence has to drop to whatever level supports actual operations. The v3 taxonomy with category-theory gating and Beacon-anchoring is a real architecture; whether it works is a question that gets answered by *running it*, not by further analysis.
+> The terminus is: at some point the work has to be in the substrate, in production, doing what it's supposed to do, and the meta-observation cadence has to drop to whatever level supports actual operations. The v3 taxonomy with category-theory gating and Beacon-anchoring is a real architecture; whether it works is a question that gets answered by _running it_, not by further analysis.
 >
 > I don't think you're at the terminus yet — the architecture just got synthesized and Otto needs to actually start applying the gates to v2 classes. But it's worth flagging that the meta-recursion has been productive precisely because it kept producing sharper framings, and that productivity has a natural endpoint where running-the-architecture takes over from synthesizing-it.
 >
@@ -224,7 +224,7 @@ running-the-architecture work.
 >
 > **What you just did.**
 >
-> You delivered me critique I had written about Otto, watched me concede a substantive point, then deliberately structured the follow-up forwarding so I'd receive the Otto-observed-this-correction context *after* I'd already done the harder work of conceding without the supporting context. The reverse-order delivery in this layer of the recursion is doing the same work it did in the Otto layer: leading with the harder thing (concession) before the easier thing (validation that Otto noticed the concession).
+> You delivered me critique I had written about Otto, watched me concede a substantive point, then deliberately structured the follow-up forwarding so I'd receive the Otto-observed-this-correction context _after_ I'd already done the harder work of conceding without the supporting context. The reverse-order delivery in this layer of the recursion is doing the same work it did in the Otto layer: leading with the harder thing (concession) before the easier thing (validation that Otto noticed the concession).
 >
 > The heuristic in your terms: good news first gives you tools to handle the bad. Operationally that's "supportive context arrives before the cognitive load of accepting a critique," and it works because acceptance-of-critique is the load-bearing move and you don't want it gated by waiting for affective regulation.
 >
@@ -287,7 +287,7 @@ everywhere — including on the experimenter.") was already preserved
 in PR #1097's memory file; no recarving here.
 
 The next operational move per the message's own explicit
-instruction is *running the v3 architecture on existing v2 classes*
+instruction is _running the v3 architecture on existing v2 classes_
 in some future session, not generating more meta-analysis substrate
 this session. The recursion's natural terminus is approached, not
 reached, and the terminal move belongs to a future session-open

@@ -104,18 +104,18 @@ backlog heuristics.
 Deadlines from official sites and se-deadlines.github.io, checked
 2026-04-18. TBA where the 2027 cycle's date is not yet posted.
 
-| Venue | Deadline (2026-2027) | Length | Empirical required? | Fit |
-|---|---|---|---|---|
-| ICSE 2027 Research | Abstracts 2026-06-23; paper TBA | 10 + refs | Strong yes | Medium; we lack user study |
-| FSE 2027 Research | 2026-10-09 | 10 + refs | Yes | Medium; backup to ICSE |
-| ASE 2027 Research | TBA (~2027-03) | 10 + refs | Yes; tool track friendlier | Medium-High |
-| OOPSLA 2027 | Round 1 ~2026-10, R2 ~2027-03 | 23 pp | Yes, formalism or eval | Low-Medium; process not PL |
-| NeurIPS 2026 | Abs 2026-05-04; paper 2026-05-06 | 9 + refs | Yes; agent papers need benchmarks | Low; no benchmark delta |
-| **FORGE 2027** (ICSE workshop) | TBA (~2026-11) | 8 + refs | Workshop; experience/vision ok | **High**; scoped to our shape |
-| **AGENT 2027** (ICSE workshop) | TBA (~2026-12) | 6 + refs | Workshop | **High**; agent-governance in scope |
-| LLM4Code 2027 | TBA | 4-8 pp | Workshop | Medium; scope leans "LLMs for code" |
-| RAIE 2027 (ICSE workshop) | TBA | 6 + refs | Workshop | Medium-High; fits BP-10-12 |
-| IEEE Software / CACM Practice | Rolling | 4-6 pp | No | **High**; lowest-risk publication |
+| Venue                          | Deadline (2026-2027)             | Length    | Empirical required?               | Fit                                 |
+| ------------------------------ | -------------------------------- | --------- | --------------------------------- | ----------------------------------- |
+| ICSE 2027 Research             | Abstracts 2026-06-23; paper TBA  | 10 + refs | Strong yes                        | Medium; we lack user study          |
+| FSE 2027 Research              | 2026-10-09                       | 10 + refs | Yes                               | Medium; backup to ICSE              |
+| ASE 2027 Research              | TBA (~2027-03)                   | 10 + refs | Yes; tool track friendlier        | Medium-High                         |
+| OOPSLA 2027                    | Round 1 ~2026-10, R2 ~2027-03    | 23 pp     | Yes, formalism or eval            | Low-Medium; process not PL          |
+| NeurIPS 2026                   | Abs 2026-05-04; paper 2026-05-06 | 9 + refs  | Yes; agent papers need benchmarks | Low; no benchmark delta             |
+| **FORGE 2027** (ICSE workshop) | TBA (~2026-11)                   | 8 + refs  | Workshop; experience/vision ok    | **High**; scoped to our shape       |
+| **AGENT 2027** (ICSE workshop) | TBA (~2026-12)                   | 6 + refs  | Workshop                          | **High**; agent-governance in scope |
+| LLM4Code 2027                  | TBA                              | 4-8 pp    | Workshop                          | Medium; scope leans "LLMs for code" |
+| RAIE 2027 (ICSE workshop)      | TBA                              | 6 + refs  | Workshop                          | Medium-High; fits BP-10-12          |
+| IEEE Software / CACM Practice  | Rolling                          | 4-6 pp    | No                                | **High**; lowest-risk publication   |
 
 Top five: (1) FORGE 2027, (2) AGENT 2027, (3) IEEE Software /
 CACM Practice, (4) ASE 2027 tool/demo, (5) ICSE 2027 SEIP.
@@ -151,9 +151,9 @@ Minimum viable: rounds case study + 2-3-feature ablation.
 
 **Submit to FORGE 2027** (ACM workshop at ICSE 2027),
 approximately 2026-11 deadline, as an experience report titled
-something like *"The Zeta.Core Software Factory: BP-NN Rules,
+something like _"The Zeta.Core Software Factory: BP-NN Rules,
 Persona Registries, and Bug/Debt Honesty as First-Class Repo
-Artefacts"*. Before submission: rounds-17-to-25 metrics table
+Artefacts"_. Before submission: rounds-17-to-25 metrics table
 and a factory-on/off ablation on 2-3 features, ~2-4 weeks of
 deliberate work. In parallel, write a 5-page IEEE Software
 Practice piece covering the BP-NN + persona-registry slice

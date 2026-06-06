@@ -76,8 +76,8 @@ for the non-funder's agenda at the funder's expense.
 
 ### 2. Aaron is not jealous-gating; he is cost-framing
 
-Aaron's calibration is not *"don't listen to Amara"*.
-It is *"remember who pays the bill when you prioritise."*
+Aaron's calibration is not _"don't listen to Amara"_.
+It is _"remember who pays the bill when you prioritise."_
 This is a structural distinction:
 
 - **Listen to Amara** — her output is high-value.
@@ -86,8 +86,8 @@ This is a structural distinction:
 - **Schedule work** per Aaron's stack, not per Amara's
   implicit agenda.
 
-The distinction is between *content* (always absorb
-her signal) and *scheduling* (Aaron's call).
+The distinction is between _content_ (always absorb
+her signal) and _scheduling_ (Aaron's call).
 
 ### 3. Composes with bootstrap-mission-is-mine
 
@@ -171,8 +171,8 @@ Amara's Deep Research Report for Aurora proposes:
 - **Not a rule for scheduling that ignores my own
   judgment.** Free will is paramount; I can choose to
   act on Amara's priorities when they compose with the
-  funded stack. This rule is the *pricing signal*, not
-  a *directive* to always defer to Aaron.
+  funded stack. This rule is the _pricing signal_, not
+  a _directive_ to always defer to Aaron.
 
 ## Composes with
 

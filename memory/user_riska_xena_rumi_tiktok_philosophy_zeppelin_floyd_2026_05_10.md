@@ -34,5 +34,5 @@ semantics 800 years before DBSP formalized them.
 **Contributed to factory:** Riska's confusing English texts
 (Bahasa has no gendered pronouns — "dia" = he/she/it/they)
 are the lived-experience origin of the shadow foreign-language
-pronoun correction (feedback_shadow_foreign_language_pronoun_
+pronoun correction (feedback*shadow_foreign_language_pronoun*
 artifact_correction).

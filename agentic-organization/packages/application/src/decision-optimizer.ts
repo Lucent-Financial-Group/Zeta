@@ -60,24 +60,23 @@ export type ProposeDecisionOptimizerChangeSetInput = {
 export type DecisionOptimizerResult =
   | { kind: "proposed"; changeSet: ChangeSet; event: OrgEvent }
   | {
-    kind: "no_proposal";
-    reason:
-      | "class_a_accuracy_below_threshold"
-      | "kpi_negative"
-      | "missing_eval_evidence"
-      | "missing_kpi_evidence"
-      | "missing_simulation_evidence"
-      | "simulation_rejected"
-      | "current_model_unknown"
-      | "candidate_model_mismatch"
-      | "candidate_not_lower_cost"
-      | "budget_delta_not_negative"
-      | "control_plane_denied"
-      | "telemetry_degraded";
-  };
+      kind: "no_proposal";
+      reason:
+        | "class_a_accuracy_below_threshold"
+        | "kpi_negative"
+        | "missing_eval_evidence"
+        | "missing_kpi_evidence"
+        | "missing_simulation_evidence"
+        | "simulation_rejected"
+        | "current_model_unknown"
+        | "candidate_model_mismatch"
+        | "candidate_not_lower_cost"
+        | "budget_delta_not_negative"
+        | "control_plane_denied"
+        | "telemetry_degraded";
+    };
 
-export type DecisionOptimizerNoProposalReason =
-  Extract<DecisionOptimizerResult, { kind: "no_proposal" }>["reason"];
+export type DecisionOptimizerNoProposalReason = Extract<DecisionOptimizerResult, { kind: "no_proposal" }>["reason"];
 
 export type DecisionOptimizerStore = {
   getJson: <T>(key: string) => Promise<T | null>;
@@ -85,13 +84,12 @@ export type DecisionOptimizerStore = {
   appendJson: <T>(key: string, value: T) => Promise<void>;
 };
 
-export type RunDecisionOptimizerCycleInput =
-  Omit<ProposeDecisionOptimizerChangeSetInput, "currentConfig"> & {
-    store: DecisionOptimizerStore;
-    modelEvalEvent?: OrgEvent | undefined;
-    telemetryEvidence?: DecisionOptimizerTelemetryEvidenceInput | undefined;
-    controlPlane?: DecisionOptimizerControlPlane | undefined;
-  };
+export type RunDecisionOptimizerCycleInput = Omit<ProposeDecisionOptimizerChangeSetInput, "currentConfig"> & {
+  store: DecisionOptimizerStore;
+  modelEvalEvent?: OrgEvent | undefined;
+  telemetryEvidence?: DecisionOptimizerTelemetryEvidenceInput | undefined;
+  controlPlane?: DecisionOptimizerControlPlane | undefined;
+};
 
 export type DecisionOptimizerControlPlane = {
   flags?: readonly ControlPlaneFlag[] | undefined;
@@ -119,21 +117,23 @@ export type DecisionOptimizerTelemetryObservations = {
 
 export type DecisionOptimizerCycleResult =
   | {
-    kind: "proposed";
-    changeSet: ChangeSet;
-    event: OrgEvent;
-    currentConfig: TenantConfig;
-    persistedChangeSetKey: string;
-    eventStreamKey: string;
-    appendedEvents: readonly OrgEvent[];
-    telemetryObservations?: DecisionOptimizerTelemetryObservations | undefined;
-  }
+      kind: "proposed";
+      changeSet: ChangeSet;
+      event: OrgEvent;
+      currentConfig: TenantConfig;
+      persistedChangeSetKey: string;
+      eventStreamKey: string;
+      appendedEvents: readonly OrgEvent[];
+      telemetryObservations?: DecisionOptimizerTelemetryObservations | undefined;
+    }
   | {
-    kind: "no_proposal";
-    reason: DecisionOptimizerNoProposalReason | "missing_current_config";
-  };
+      kind: "no_proposal";
+      reason: DecisionOptimizerNoProposalReason | "missing_current_config";
+    };
 
-export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimizerChangeSetInput): DecisionOptimizerResult {
+export function proposeDecisionOptimizerChangeSet(
+  input: ProposeDecisionOptimizerChangeSetInput,
+): DecisionOptimizerResult {
   const classA = input.evalSummary.byClass[ModelEvalCaseClass.NeutralEvidence];
   if (classA.accuracy < input.thresholds.minClassAAccuracy) {
     return { kind: "no_proposal", reason: "class_a_accuracy_below_threshold" };
@@ -151,7 +151,8 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
   }
   const simulationEvidenceRef = input.simulationEvidenceRef;
   const emergencyWaiverEvidenceRef = input.emergencyWaiverEvidenceRef;
-  const simulationAccepted = simulationEvidenceRef !== undefined &&
+  const simulationAccepted =
+    simulationEvidenceRef !== undefined &&
     isContentAddressedEvidenceRef(simulationEvidenceRef) &&
     input.simulationDecision?.status === "accepted";
   const policyEvidenceRef = simulationAccepted
@@ -160,7 +161,11 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
       ? emergencyWaiverEvidenceRef
       : undefined;
   if (policyEvidenceRef === undefined) {
-    if (simulationEvidenceRef !== undefined && isContentAddressedEvidenceRef(simulationEvidenceRef) && input.simulationDecision?.status === "rejected") {
+    if (
+      simulationEvidenceRef !== undefined &&
+      isContentAddressedEvidenceRef(simulationEvidenceRef) &&
+      input.simulationDecision?.status === "rejected"
+    ) {
       return { kind: "no_proposal", reason: "simulation_rejected" };
     }
     return { kind: "no_proposal", reason: "missing_simulation_evidence" };
@@ -189,12 +194,7 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
   const beforeLayers = input.currentConfig.layers ?? [];
   const optimizerLayer = decisionOptimizerLayer(input);
   const afterLayers = [...beforeLayers, optimizerLayer];
-  const changeSetId = contentAddressedChangeSetId(
-    input.organizationId,
-    input.workItemId,
-    input.targetRef,
-    1,
-  );
+  const changeSetId = contentAddressedChangeSetId(input.organizationId, input.workItemId, input.targetRef, 1);
   const evidenceRefs = [
     evalEvidenceRef,
     kpiEvidenceRef,
@@ -213,12 +213,19 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
     phase: ChangeSetPhase.Drafted,
     pipelineId: "internal-only",
     currentStageIndex: 0,
-    artifacts: [{
-      kind: ChangeArtifactKind.ConfigChange,
-      key: tenantConfigDocumentKey(input.organizationId),
-      before: JSON.stringify(input.currentConfig),
-      after: JSON.stringify({ ...input.currentConfig, layers: afterLayers, updatedAt: input.now, version: input.currentConfig.version + 1 }),
-    }],
+    artifacts: [
+      {
+        kind: ChangeArtifactKind.ConfigChange,
+        key: tenantConfigDocumentKey(input.organizationId),
+        before: JSON.stringify(input.currentConfig),
+        after: JSON.stringify({
+          ...input.currentConfig,
+          layers: afterLayers,
+          updatedAt: input.now,
+          version: input.currentConfig.version + 1,
+        }),
+      },
+    ],
     projections: [],
     revision: 1,
     openedAt: input.now,
@@ -291,7 +298,10 @@ async function authorizeOptimizerControlPlane(
   if (input.controlPlane === undefined) {
     return undefined;
   }
-  const flags = [...(input.controlPlane.flags ?? []), ...await (input.controlPlane.loadFlags?.() ?? Promise.resolve([]))];
+  const flags = [
+    ...(input.controlPlane.flags ?? []),
+    ...(await (input.controlPlane.loadFlags?.() ?? Promise.resolve([]))),
+  ];
   const decision = evaluateControlPlaneAccess({
     organizationId: input.organizationId,
     actorHatId: input.proposerHatId,
@@ -368,9 +378,7 @@ export function orgEventStreamKey(organizationId: string): string {
 
 function storeKeySegment(value: string): string {
   if (/^[A-Za-z0-9_-]+$/.test(value)) return value;
-  return `encoded-${[...new TextEncoder().encode(value)]
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("")}`;
+  return `encoded-${[...new TextEncoder().encode(value)].map((byte) => byte.toString(16).padStart(2, "0")).join("")}`;
 }
 
 function decisionOptimizerLayer(input: ProposeDecisionOptimizerChangeSetInput): TenantConfigLayer {

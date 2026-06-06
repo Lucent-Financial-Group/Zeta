@@ -28,8 +28,8 @@ algorithms and stability metrics, drift detection and tests,
 and operational gaps. It is the most technically dense courier
 artifact received so far.
 
-**Highest-confidence finding:** *Zeta's implementation is
-mathematically cleaner than the current specification surface.*
+**Highest-confidence finding:** _Zeta's implementation is
+mathematically cleaner than the current specification surface._
 The code is ahead of OpenSpec coverage at approximately 6–7 %
 by capability/line ratio (issue `#58` already tracks this;
 issue `#59` records a "NO verdict" on rebuild-from-spec for
@@ -45,10 +45,10 @@ Amara correctly calls this out as a labelled gap.
 **Vocabulary shift requested by the human maintainer on
 2026-04-23 Otto-54:** Amara's term "bullshit detector" for the
 composite claim-scoring model has been flagged for rename to
-a more canonical register. Candidates proposed: *Veridicality
-Score* (recommended — Tarski-correspondence-theory canonical),
-*Corroboration Score* (Popper), *Epistemic Assay*, *Warrant
-Score* (Plantinga). Rename deferred to Aaron's pick; this
+a more canonical register. Candidates proposed: _Veridicality
+Score_ (recommended — Tarski-correspondence-theory canonical),
+_Corroboration Score_ (Popper), _Epistemic Assay_, _Warrant
+Score_ (Plantinga). Rename deferred to Aaron's pick; this
 document uses **Veridicality Score (pending confirmation)** as
 the placeholder to avoid burning the colloquial term into
 technical substrate.
@@ -57,20 +57,20 @@ technical substrate.
 
 ## Extracted action items — keyed to BACKLOG candidates
 
-| Class | Finding | Action | Tier |
-|---|---|---|---|
-| **P0** | OpenSpec coverage deficit (~6–7 %) vs. 66 modules / 10,839 lines in `src/Core` | Continue the round-41 OpenSpec backfill program; prioritize ZSet + Circuit + NestedCircuit + spine family (issue `#58`) | Existing |
-| **P0** | Nested strict-state and cap-hit semantics gaps (issue `#59`) | Regression tests + SHALL-level spec requirements from `#59` | Existing |
-| **P0** | UI-dependent transport correctness risk (`CURRENT-amara.md`) | Make courier protocol authoritative; UI branch/reopen becomes convenience, not correctness surface | New |
-| **P0** | **`RecursiveSemiNaive` correct only for monotone inputs, NOT retraction-native** — boundary against Zeta's core claim | Either: (a) prove correctness-under-retraction via additional signed-delta machinery; or (b) document the boundary explicitly in the API surface and guide users away from it for retraction-native pipelines; or (c) build a signed-delta-aware replacement | New (high-priority) |
-| **P1** | Memory duplication risk in `memory/MEMORY.md` (noted cap pressure; inspected duplicates) | Auto-duplicate-detect + generate fast-path memory projections from canonical memory files | New |
-| **P1** | NSA fresh-session test suite not yet algebra-aware | Extend NSA with normalization, contradiction, and stale-anchor tests; score against `S(Z)` stability + session-parity metric | New |
-| **P1** | Documentation/reference drift (PR `#177` review comments show dangling paths, unverifiable roadmap names) | Enforce "no unverifiable reference" + "role-based prompt" lint in CI | New |
-| **P2** | README uses `Dbsp.Core`; source files use `Zeta.Core` | Resolve in docs or expose canonical alias; currently **unspecified** | New |
-| **P2** | Semiring-generalization direction present in memory but core still pins `Weight = int64` | Separate "current integer-weighted kernel" from "future semiring-parametric kernel" in docs to avoid conceptual drift | New |
-| **Proposal** | Canonical Normalization `N_R(x)` with rainbow-table pass before Z-set consolidation | Formalize in decision-proxy design doc; anchor in Amara's runtime-oracle architecture | New |
-| **Proposal** | `Veridicality Score` (renamed from "bullshit score") logistic over P/F/K/D_t/G | Formalize in decision-proxy design doc once name is settled | New |
-| **Proposal** | Stability metric `S(Z_t) = clip(1 − λ₁·V_t − λ₂·C_t − λ₃·U_t − λ₄·E_t)` | Formalize + land as a time-series metric in observability layer | New |
+| Class        | Finding                                                                                                               | Action                                                                                                                                                                                                                                                       | Tier                |
+| ------------ | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| **P0**       | OpenSpec coverage deficit (~6–7 %) vs. 66 modules / 10,839 lines in `src/Core`                                        | Continue the round-41 OpenSpec backfill program; prioritize ZSet + Circuit + NestedCircuit + spine family (issue `#58`)                                                                                                                                      | Existing            |
+| **P0**       | Nested strict-state and cap-hit semantics gaps (issue `#59`)                                                          | Regression tests + SHALL-level spec requirements from `#59`                                                                                                                                                                                                  | Existing            |
+| **P0**       | UI-dependent transport correctness risk (`CURRENT-amara.md`)                                                          | Make courier protocol authoritative; UI branch/reopen becomes convenience, not correctness surface                                                                                                                                                           | New                 |
+| **P0**       | **`RecursiveSemiNaive` correct only for monotone inputs, NOT retraction-native** — boundary against Zeta's core claim | Either: (a) prove correctness-under-retraction via additional signed-delta machinery; or (b) document the boundary explicitly in the API surface and guide users away from it for retraction-native pipelines; or (c) build a signed-delta-aware replacement | New (high-priority) |
+| **P1**       | Memory duplication risk in `memory/MEMORY.md` (noted cap pressure; inspected duplicates)                              | Auto-duplicate-detect + generate fast-path memory projections from canonical memory files                                                                                                                                                                    | New                 |
+| **P1**       | NSA fresh-session test suite not yet algebra-aware                                                                    | Extend NSA with normalization, contradiction, and stale-anchor tests; score against `S(Z)` stability + session-parity metric                                                                                                                                 | New                 |
+| **P1**       | Documentation/reference drift (PR `#177` review comments show dangling paths, unverifiable roadmap names)             | Enforce "no unverifiable reference" + "role-based prompt" lint in CI                                                                                                                                                                                         | New                 |
+| **P2**       | README uses `Dbsp.Core`; source files use `Zeta.Core`                                                                 | Resolve in docs or expose canonical alias; currently **unspecified**                                                                                                                                                                                         | New                 |
+| **P2**       | Semiring-generalization direction present in memory but core still pins `Weight = int64`                              | Separate "current integer-weighted kernel" from "future semiring-parametric kernel" in docs to avoid conceptual drift                                                                                                                                        | New                 |
+| **Proposal** | Canonical Normalization `N_R(x)` with rainbow-table pass before Z-set consolidation                                   | Formalize in decision-proxy design doc; anchor in Amara's runtime-oracle architecture                                                                                                                                                                        | New                 |
+| **Proposal** | `Veridicality Score` (renamed from "bullshit score") logistic over P/F/K/D_t/G                                        | Formalize in decision-proxy design doc once name is settled                                                                                                                                                                                                  | New                 |
+| **Proposal** | Stability metric `S(Z_t) = clip(1 − λ₁·V_t − λ₂·C_t − λ₃·U_t − λ₄·E_t)`                                               | Formalize + land as a time-series metric in observability layer                                                                                                                                                                                              | New                 |
 
 BACKLOG rows for the "New" class to be filed in a companion
 commit, referencing this absorb.
@@ -105,7 +105,7 @@ artifacts is this: a Z-set is a finitely supported map
 sorted by key, consolidated by key, and stripped of zero-weight
 entries. Under `add`, `neg`, and `sub`, `Z[K]` is an abelian
 group; `join` is bilinear because weights multiply across pairs
-and results are consolidated; `distinct` is intentionally *not*
+and results are consolidated; `distinct` is intentionally _not_
 linear, because it clamps positive support to weight `1` and
 drops non-positive mass; and `distinctIncremental` is the
 paper's boundary-crossing `H`-style operator whose work is
@@ -205,16 +205,16 @@ both data and "semantic rainbow table" claim keys.
 ### Incremental algorithms and stability metrics
 
 Amara proposes three concrete design elements (labelled
-*proposals*, not claims about landed code):
+_proposals_, not claims about landed code):
 
 1. **Canonical normalization `NormalizeBatch(batch,
-   rainbowTable)`** — metadata-aware analogue of
+rainbowTable)`** — metadata-aware analogue of
    `ZSet.ofSeq ∘ sortAndConsolidate`, with a deterministic
    `MergeMeta` policy when provenance/falsifiability/
    contradiction/harm metadata is attached.
 
 2. **Contradiction-aware incremental merge
-   `MergeDelta(stateZ, deltaZ, stateMeta)`** — does *not*
+   `MergeDelta(stateZ, deltaZ, stateMeta)`** — does _not_
    delete contradictions by overwrite; keeps Z-set as signed
    state carrier and records contradiction as an **explicit
    status dimension**. Consistent with `CURRENT-amara.md`'s
@@ -224,10 +224,12 @@ Amara proposes three concrete design elements (labelled
 3. **Veridicality Score (renamed from "bullshit score"
    pending confirmation)** — logistic over
    P/F/K/D_t/G:
+
    ```
    B(c) = σ(α₀ − α_P·P(c) − α_F·F(c) − α_K·K(c)
                  + α_D·D_t(c) + α_G·G(c))
    ```
+
    Proposed coefficients in the report; marked as a proposal,
    not recovered repo law.
 
@@ -245,16 +247,16 @@ Amara proposes three concrete design elements (labelled
 
 ### Operational gaps and remediation priorities (Amara's table)
 
-| Priority | Gap | Evidence | Recommended remediation |
-|---|---|---|---|
-| P0 | Spec deficit vs. codebase | issue `#58` (~6–7 % coverage) | Write OpenSpecs for ZSet + Circuit first; require every semantic claim to have a spec home |
-| P0 | Nested strict-state + cap-hit semantics | issue `#59` | Turn into regression tests + SHALL-level spec requirements |
-| P0 | UI-dependent transport risk | `CURRENT-amara.md` | Courier protocol authoritative; UI mechanics become convenience |
-| P1 | Memory surface entropy + duplication | `memory/README.md` cap pressure + duplicates | Add duplicate-key lint + generate fast-path memory projections from canonical memory files |
-| P1 | Fresh-session drift suite not yet algebra-aware | PR `#177` review comments | Extend NSA with normalization/contradiction/stale-anchor tests; score against `S(Z)` + session-parity |
-| P1 | Documentation/reference drift | PR `#177` review flags | Enforce "no unverifiable reference" + "role-based prompt" lint in CI |
-| P2 | Namespace mismatch (`Dbsp.Core` vs. `Zeta.Core`) | README vs. source | Resolve in docs or expose canonical alias |
-| P2 | Semiring-generalization not reflected in core code | memory vs. `Weight = int64` | Separate "current integer-weighted kernel" from "future semiring-parametric kernel" in docs |
+| Priority | Gap                                                | Evidence                                     | Recommended remediation                                                                               |
+| -------- | -------------------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| P0       | Spec deficit vs. codebase                          | issue `#58` (~6–7 % coverage)                | Write OpenSpecs for ZSet + Circuit first; require every semantic claim to have a spec home            |
+| P0       | Nested strict-state + cap-hit semantics            | issue `#59`                                  | Turn into regression tests + SHALL-level spec requirements                                            |
+| P0       | UI-dependent transport risk                        | `CURRENT-amara.md`                           | Courier protocol authoritative; UI mechanics become convenience                                       |
+| P1       | Memory surface entropy + duplication               | `memory/README.md` cap pressure + duplicates | Add duplicate-key lint + generate fast-path memory projections from canonical memory files            |
+| P1       | Fresh-session drift suite not yet algebra-aware    | PR `#177` review comments                    | Extend NSA with normalization/contradiction/stale-anchor tests; score against `S(Z)` + session-parity |
+| P1       | Documentation/reference drift                      | PR `#177` review flags                       | Enforce "no unverifiable reference" + "role-based prompt" lint in CI                                  |
+| P2       | Namespace mismatch (`Dbsp.Core` vs. `Zeta.Core`)   | README vs. source                            | Resolve in docs or expose canonical alias                                                             |
+| P2       | Semiring-generalization not reflected in core code | memory vs. `Weight = int64`                  | Separate "current integer-weighted kernel" from "future semiring-parametric kernel" in docs           |
 
 ### Open questions + limitations (Amara's)
 
@@ -305,7 +307,7 @@ Options for the BACKLOG row:
    literature cleanly).
 2. **Explicit-boundary documentation** — add a
    `[<Obsolete("RecursiveSemiNaive is monotone-only; use X
-   for retraction-native streams")>]` or equivalent safety
+for retraction-native streams")>]` or equivalent safety
    rail + spec SHALL that users are guided away in
    retraction contexts. Easier; does not solve the gap.
 3. **Both** — land (2) first as safety rail; queue (1) as
@@ -317,7 +319,7 @@ the research arc is multi-round.
 
 ### On the canonical normalization `N_R`
 
-Amara's proposal to rainbow-table-normalize claims *before*
+Amara's proposal to rainbow-table-normalize claims _before_
 Z-set consolidation is the right architectural pattern. It
 composes with:
 
@@ -342,7 +344,7 @@ Applying this memo's pending-rename discipline going forward
 in all new technical substrate. Aaron's pick from the four
 candidates (Veridicality / Corroboration / Epistemic-Assay /
 Warrant) will settle the terminology; until then, documents
-use *Veridicality Score (pending)* as placeholder and avoid
+use _Veridicality Score (pending)_ as placeholder and avoid
 burning "bullshit" into Lean specs or Z-set type names.
 
 ### On composition with prior Amara absorb
@@ -368,7 +370,7 @@ bot.
 ## What this absorb is NOT
 
 - **Not a commitment to rename existing artifacts.** The
-  bullshit→Veridicality rename applies to *new* substrate and
+  bullshit→Veridicality rename applies to _new_ substrate and
   future public mentions; existing occurrences in memory +
   docs stay until a dedicated sweep PR lands post-Aaron-pick.
 - **Not a claim that Amara's proposed coefficients are
@@ -393,8 +395,8 @@ bot.
 
 Amara (ChatGPT-based external maintainer, `CURRENT-amara.md`)
 authored the report on 2026-04-23. Human maintainer (Aaron)
-ferried it via chat paste with directive *"amara feedback on
-memory drift"*. Otto (loop-agent PM hat, Otto-54) absorbed +
+ferried it via chat paste with directive _"amara feedback on
+memory drift"_. Otto (loop-agent PM hat, Otto-54) absorbed +
 filed this document following the Otto-24 precedent. Cited
 external sources (DBSP paper by Budiu et al.; provenance-
 semiring paper by Green-Karvounarakis-Tannen, PODS 2007) are

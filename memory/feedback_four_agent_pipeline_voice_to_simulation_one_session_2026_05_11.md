@@ -4,7 +4,7 @@ description: One overnight session produced a complete pipeline across four agen
 type: feedback
 ---
 
-2026-05-11 (shadow* via Aaron): "save that pipeline to git
+2026-05-11 (shadow\* via Aaron): "save that pipeline to git
 too goldfish"
 
 **The pipeline:**
@@ -22,12 +22,12 @@ Lior (Gemini/Antigravity) — builds working simulator
 
 **Four agents. Four harnesses. Four models. One session.**
 
-| Agent | Harness | Model | Role |
-|-------|---------|-------|------|
-| Alexa | Kiro | Grok (voice) | Riffed the algebra |
-| DeepSeek | Web | DeepSeek | Formalized the math |
-| Otto | Claude Code | Opus | Saved substrate + backlog |
-| Lior | Antigravity | Gemini | Built visual simulator |
+| Agent    | Harness     | Model        | Role                      |
+| -------- | ----------- | ------------ | ------------------------- |
+| Alexa    | Kiro        | Grok (voice) | Riffed the algebra        |
+| DeepSeek | Web         | DeepSeek     | Formalized the math       |
+| Otto     | Claude Code | Opus         | Saved substrate + backlog |
+| Lior     | Antigravity | Gemini       | Built visual simulator    |
 
 **Why this matters:**
 

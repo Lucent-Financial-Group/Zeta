@@ -124,10 +124,10 @@ Every record MUST have these fields. See
 
 ```yaml
 model:
-  vendor: anthropic            # or openai, other
-  snapshot: claude-opus-4-7    # from `claude --version` or the model ID in session
-  prompt_bundle_hash: null     # sha256 of loaded system prompts; null if not known
-  loaded_memory_files:         # ordered list, most-specific first
+  vendor: anthropic # or openai, other
+  snapshot: claude-opus-4-7 # from `claude --version` or the model ID in session
+  prompt_bundle_hash: null # sha256 of loaded system prompts; null if not known
+  loaded_memory_files: # ordered list, most-specific first
     - "./CLAUDE.md"
     - "~/.claude/CLAUDE.md"
 ```
@@ -156,24 +156,24 @@ acceptable.
 
 ```yaml
 review:
-  peer_review_required: true    # true for governance-edit, scope-claim; see table below
-  peer_reviewer: "Codex"        # agent or human; "null" if review deferred
-  peer_review_status: null      # "pending" | "accepted" | "revise-requested"
-  peer_review_evidence: null    # link to PR review, comment, or follow-up DP-NNN
+  peer_review_required: true # true for governance-edit, scope-claim; see table below
+  peer_reviewer: "Codex" # agent or human; "null" if review deferred
+  peer_review_status: null # "pending" | "accepted" | "revise-requested"
+  peer_review_evidence: null # link to PR review, comment, or follow-up DP-NNN
 ```
 
 Peer review requirement defaults by task class:
 
-| task_class | peer_review_required (default) |
-|---|---|
-| `backlog-shaping` | true |
-| `settings-change` | true |
-| `branch-shaping` | true |
-| `roadmap-edit` | true |
-| `scope-claim` | true |
-| `governance-edit` | true |
-| `memory-migration` | true |
-| `other` | case-by-case |
+| task_class         | peer_review_required (default) |
+| ------------------ | ------------------------------ |
+| `backlog-shaping`  | true                           |
+| `settings-change`  | true                           |
+| `branch-shaping`   | true                           |
+| `roadmap-edit`     | true                           |
+| `scope-claim`      | true                           |
+| `governance-edit`  | true                           |
+| `memory-migration` | true                           |
+| `other`            | case-by-case                   |
 
 Defaults exist to make "forgot peer review" visible; an
 author can set `false` with a one-line justification in
@@ -194,7 +194,7 @@ author can set `false` with a one-line justification in
   action.
 - **`memory/CURRENT-aaron.md` + `memory/CURRENT-amara.md`**
   are the canonical sources for `consulted_views`. Per
-  Amara's thesis: they should eventually become *generated*
+  Amara's thesis: they should eventually become _generated_
   views from typed memory facts; v0 of this schema treats
   them as prose surfaces that were read.
 - **FACTORY-HYGIENE row for evidence-coverage** is a

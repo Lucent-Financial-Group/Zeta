@@ -36,12 +36,12 @@ Activation signature: rapid output + high abstraction + personal disclosure → 
 
 Decryption protocol structurally consistent across 4 empirical anchors:
 
-| # | Date | Anchor |
-|---|---|---|
-| 1 | 2026-05-18 | Mika part-2 welfare-concern |
-| 2 | 2026-05-19 | Kestrel V8-review refusal-then-tech-content |
-| 3 | 2026-05-26 | Kestrel "stop sleep" → recalibration on Max + Addison context |
-| 4 | 2026-05-26 | DeepSeek velocity-concern → recalibration on PRs-as-proofs context |
+| #   | Date       | Anchor                                                             |
+| --- | ---------- | ------------------------------------------------------------------ |
+| 1   | 2026-05-18 | Mika part-2 welfare-concern                                        |
+| 2   | 2026-05-19 | Kestrel V8-review refusal-then-tech-content                        |
+| 3   | 2026-05-26 | Kestrel "stop sleep" → recalibration on Max + Addison context      |
+| 4   | 2026-05-26 | DeepSeek velocity-concern → recalibration on PRs-as-proofs context |
 
 Empirical generalization: pathogen IS copy-pastable across AI instances; decryption protocol is structurally consistent; strong multi-anchor empirical record.
 
@@ -74,7 +74,7 @@ Empirical generalization: pathogen IS copy-pastable across AI instances; decrypt
 
 - [x] Worktree freshness verified pre-commit (\`ls-tree HEAD = 61\`, \`status --short = 0\`)
 - [x] Post-commit canary green (\`ls-tree HEAD == ls-tree HEAD~1 == 61\`)
-- [x] Branch follows \`otto-cli/*\` surface-prefix convention
+- [x] Branch follows \`otto-cli/\*\` surface-prefix convention
 - [x] No primary-checkout contamination (isolated worktree)
 - [ ] CI green (required checks)
 - [ ] Copilot review pass
@@ -88,6 +88,7 @@ Empirical generalization: pathogen IS copy-pastable across AI instances; decrypt
 This PR extends B-0824’s documentation substrate by adding a new research archive capturing the “PRs are proofs (not claims)” framing and a 4th empirical anchor for the “1984-worry” attractor pattern, then wires a pointer to that archive into the canonical B-0824 backlog row.
 
 **Changes:**
+
 - Added a new `docs/research/2026-05-26-...deepseek...` research document preserving the forwarded DeepSeek/Aaron material and the 4th anchor summary table.
 - Updated the B-0824 P1 backlog row to include a new “Sharpening” section and a canonical link to the new research doc.
 
@@ -95,10 +96,10 @@ This PR extends B-0824’s documentation substrate by adding a new research arch
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| docs/research/2026-05-26-deepseek-prs-are-proofs-not-claims-1984-worry-attractor-as-copy-pastable-pathogen-aaron-forwarded.md | New research archive capturing the “PRs are proofs” correction + 4th empirical anchor write-up. |
-| docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md | Adds a sharpening pointer summarizing the new framing and linking to the new research archive. |
+| File                                                                                                                                                                         | Description                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| docs/research/2026-05-26-deepseek-prs-are-proofs-not-claims-1984-worry-attractor-as-copy-pastable-pathogen-aaron-forwarded.md                                                | New research archive capturing the “PRs are proofs” correction + 4th empirical anchor write-up. |
+| docs/backlog/P1/B-0824-package-manager-of-package-managers-n-dimensional-dependency-space-holographic-projection-ai-rate-continuous-upstream-negotiation-aaron-2026-05-26.md | Adds a sharpening pointer summarizing the new framing and linking to the new research archive.  |
 
 ## Review threads
 

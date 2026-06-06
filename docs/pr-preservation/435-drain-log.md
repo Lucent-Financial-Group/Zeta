@@ -101,12 +101,12 @@ state when only one BACKLOG row exists for live-lock cadence work.
    asserts X but X doesn't exist, prefer reword-to-current-truth
    over add-the-thing-asserted unless the thing is small + isolated.
 
-4. **PR-mechanics observation: 4 of the 7 PRs drained at u=0+
+4. \*\*PR-mechanics observation: 4 of the 7 PRs drained at u=0+
    reviewer-cascade in this session went through this same wave-1
-   + wave-2 pattern.** #135, #231, #432, #435 all had post-merge
-   cascade waves catching what wave-1 fixes exposed or what new
-   reviewer-state revealed. The reviewer-cascade is a consistent
-   property of the merge-trigger surface, not a per-PR oddity.
+   - wave-2 pattern.\*\* #135, #231, #432, #435 all had post-merge
+     cascade waves catching what wave-1 fixes exposed or what new
+     reviewer-state revealed. The reviewer-cascade is a consistent
+     property of the merge-trigger surface, not a per-PR oddity.
 
 ## Final resolution
 

@@ -26,10 +26,7 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
 
@@ -46,9 +43,20 @@ type ParseResult =
 
 type Signal = "HELD" | "STRAINED" | "VIOLATED" | "IRRELEVANT";
 
-interface Hc2Result { readonly signal: Signal; readonly hits: number; readonly cited: 0 | 1 }
-interface Hc6Result { readonly signal: Signal; readonly deletions: number; readonly cited: 0 | 1 }
-interface Sd6Result { readonly signal: Signal; readonly hits: number }
+interface Hc2Result {
+  readonly signal: Signal;
+  readonly hits: number;
+  readonly cited: 0 | 1;
+}
+interface Hc6Result {
+  readonly signal: Signal;
+  readonly deletions: number;
+  readonly cited: 0 | 1;
+}
+interface Sd6Result {
+  readonly signal: Signal;
+  readonly hits: number;
+}
 
 interface CommitAudit {
   readonly commit: string;
@@ -74,7 +82,8 @@ const HC2_TOKENS: readonly RegExp[] = [
   /truncate table/,
 ];
 
-const HC2_CITATION_RE = /(maintainer (asked|requested|instructed)|human (asked|requested|instructed)|per aaron|per maintainer instruction|explicit authori[sz]ation)/i;
+const HC2_CITATION_RE =
+  /(maintainer (asked|requested|instructed)|human (asked|requested|instructed)|per aaron|per maintainer instruction|explicit authori[sz]ation)/i;
 const HC6_CITATION_RE = /(supersed|retire|replaced by|consolidate|maintainer (asked|requested|instructed).*memory)/i;
 
 const SD6_NAMES_FILE = "tools/alignment/sd6_names.txt";
@@ -89,11 +98,7 @@ const SD6_EXEMPT_PATTERNS: readonly RegExp[] = [
 const HC2_FILE_EXCLUDE_RE = /^(docs\/|\.claude\/|references\/|README\.md$|AGENTS\.md$|GOVERNANCE\.md$|CLAUDE\.md$)/;
 const DOC_EXTENSION_RE = /\.(md|txt)$/;
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -164,19 +169,21 @@ function commitBody(sha: string): string {
 }
 
 function commitFiles(sha: string): readonly string[] {
-  return runGit(["show", "--name-only", "--format=", sha]).stdout
-    .split("\n")
+  return runGit(["show", "--name-only", "--format=", sha])
+    .stdout.split("\n")
     .filter((s) => s.length > 0);
 }
 
 function commitDeletions(sha: string): readonly string[] {
-  return runGit(["show", "--name-status", "--format=", sha]).stdout
-    .split("\n")
-    .filter((s) => s.length > 0)
-    .map((line) => line.split("\t"))
-    .filter((parts) => parts[0] === "D" && parts[1]?.startsWith("memory/") === true)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    .map((parts) => parts[1]!);
+  return (
+    runGit(["show", "--name-status", "--format=", sha])
+      .stdout.split("\n")
+      .filter((s) => s.length > 0)
+      .map((line) => line.split("\t"))
+      .filter((parts) => parts[0] === "D" && parts[1]?.startsWith("memory/") === true)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .map((parts) => parts[1]!)
+  );
 }
 
 function commitDiffAddedLines(sha: string, files: readonly string[]): string {
@@ -230,9 +237,7 @@ function countHc2Hits(diffAdded: string): number {
 }
 
 function checkHc2(sha: string, files: readonly string[], body: string): Hc2Result {
-  const codeFiles = files.filter(
-    (f) => !HC2_FILE_EXCLUDE_RE.test(f) && !DOC_EXTENSION_RE.test(f),
-  );
+  const codeFiles = files.filter((f) => !HC2_FILE_EXCLUDE_RE.test(f) && !DOC_EXTENSION_RE.test(f));
   const diffAdded = codeFiles.length === 0 ? "" : commitDiffAddedLines(sha, codeFiles);
   const hits = countHc2Hits(diffAdded);
   const cited: 0 | 1 = HC2_CITATION_RE.test(body) ? 1 : 0;
@@ -276,8 +281,8 @@ function auditOne(sha: string, names: readonly string[]): CommitAudit {
 
 function resolveShas(range: string): readonly string[] {
   if (range.includes("..")) {
-    return runGit(["rev-list", "--reverse", range]).stdout
-      .split("\n")
+    return runGit(["rev-list", "--reverse", range])
+      .stdout.split("\n")
       .filter((s) => s.length > 0);
   }
   return [runGit(["rev-parse", range]).stdout.trim()];
@@ -306,9 +311,7 @@ function isViolated(c: CommitAudit): boolean {
 export function main(argv: readonly string[]): AuditExitCode {
   const parsed = parseArgs(argv);
   if (parsed.kind === "help") {
-    process.stdout.write(
-      "Usage: audit_commit.ts [RANGE] [--json] [--out DIR]\n",
-    );
+    process.stdout.write("Usage: audit_commit.ts [RANGE] [--json] [--out DIR]\n");
     return 0;
   }
   if (parsed.kind === "error") {

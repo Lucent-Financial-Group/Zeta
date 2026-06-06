@@ -39,20 +39,14 @@ interface SpawnResult {
   readonly exitCode: number;
 }
 
-async function runCmd(
-  cmd: readonly string[],
-  cwd: string = REPO_ROOT,
-): Promise<SpawnResult> {
+async function runCmd(cmd: readonly string[], cwd: string = REPO_ROOT): Promise<SpawnResult> {
   const proc = Bun.spawn({
     cmd: [...cmd],
     cwd,
     stdout: "pipe",
     stderr: "pipe",
   });
-  const [stdout, stderr] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-  ]);
+  const [stdout, stderr] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()]);
   const exitCode = await proc.exited;
   return { stdout, stderr, exitCode };
 }
@@ -131,9 +125,7 @@ async function classClosedNotMergedPRs(ghAvailable: boolean): Promise<void> {
 }
 
 async function classOrphanBranches(ghAvailable: boolean): Promise<void> {
-  console.log(
-    "## 2. Orphan branches (remote, unmerged-to-main AND no-open-PR)",
-  );
+  console.log("## 2. Orphan branches (remote, unmerged-to-main AND no-open-PR)");
   const refsResult = await runCmd([
     "git",
     "for-each-ref",
@@ -193,9 +185,7 @@ async function classOrphanBranches(ghAvailable: boolean): Promise<void> {
     const arr = JSON.parse(prResult.stdout || "[]") as Array<{
       headRefName?: string;
     }>;
-    prBranches = new Set(
-      arr.map((x) => x.headRefName ?? "").filter((s) => s.length > 0),
-    );
+    prBranches = new Set(arr.map((x) => x.headRefName ?? "").filter((s) => s.length > 0));
   } catch {
     prBranches = new Set();
   }
@@ -262,9 +252,7 @@ async function classStash(): Promise<void> {
 }
 
 async function classUntracked(): Promise<void> {
-  console.log(
-    "## 6. Untracked working-directory artifacts (drop/, .playwright-mcp/, *.tmp, *.log)",
-  );
+  console.log("## 6. Untracked working-directory artifacts (drop/, .playwright-mcp/, *.tmp, *.log)");
   const r = await runCmd(["git", "status", "--porcelain", "--ignored"]);
   const lines = r.stdout
     .split("\n")
@@ -340,12 +328,8 @@ function classDeferred(): void {
   console.log(
     "## 9-14. Closed-PR threads / squash intermediates / force-pushed / courier-ferry / external exports / deleted-PR-descriptions",
   );
-  console.log(
-    "DEFERRED: per-PR API calls expensive; run on incident or full-sweep cadence.",
-  );
-  console.log(
-    "See: tools/hygiene/LOST-FILES-LOCATIONS.md classes 9-14 for survey commands.",
-  );
+  console.log("DEFERRED: per-PR API calls expensive; run on incident or full-sweep cadence.");
+  console.log("See: tools/hygiene/LOST-FILES-LOCATIONS.md classes 9-14 for survey commands.");
   console.log("");
 }
 
@@ -384,10 +368,7 @@ async function main(): Promise<number> {
   console.log("Catalog: tools/hygiene/LOST-FILES-LOCATIONS.md (15 location-classes)");
   console.log("");
 
-  const [ghAvailable, bunAvailable] = await Promise.all([
-    hasCommand("gh"),
-    hasCommand("bun"),
-  ]);
+  const [ghAvailable, bunAvailable] = await Promise.all([hasCommand("gh"), hasCommand("bun")]);
 
   await classClosedNotMergedPRs(ghAvailable);
   await classOrphanBranches(ghAvailable);
@@ -402,9 +383,7 @@ async function main(): Promise<number> {
 
   console.log("## Summary");
   console.log("Audit complete. Catalog: tools/hygiene/LOST-FILES-LOCATIONS.md");
-  console.log(
-    "Triage: per-class (see catalog for protocols + Otto-262/-254/-257/-238 lineage).",
-  );
+  console.log("Triage: per-class (see catalog for protocols + Otto-262/-254/-257/-238 lineage).");
   return 0;
 }
 

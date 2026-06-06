@@ -26,16 +26,16 @@ each review is preserved in its own voice.
 
 Aaron 2026-04-30 (verbatim, maintainer-channel):
 
-> *"does it get stored so future otto will find it even if this
+> _"does it get stored so future otto will find it even if this
 > machine crashes right after you say it? is that guarantee
-> ACID compliant lol."*
+> ACID compliant lol."_
 
 The maintainer-channel question surfaced that the chat-log tier
 is not durable substrate — chat lives at the local-disk-only
 session JSONL file (`~/.claude/projects/<slug>/<uuid>.jsonl`),
 not in git, and would be lost to a single-machine crash. Per
 Otto-363 (`memory/feedback_otto_363_substrate_or_it_didnt_happen_no_invisible_directives_aaron_amara_2026_04_29.md`):
-*"ephemeral (chat / TaskUpdate / `/tmp`) — NEVER call done."*
+_"ephemeral (chat / TaskUpdate / `/tmp`) — NEVER call done."_
 
 The most load-bearing un-preserved review is Claude.ai's
 Insight-block-escalation diagnosis. It identified a structural
@@ -66,8 +66,8 @@ Aaron initially forwarded a review labeled "Gemini agent loop
 logs review" 2026-04-30T~PM that turned out to be a miscopy —
 the content was verbatim identical to the Ani/Grok review
 forwarded earlier the same session. Otto flagged the duplicate
-at maintainer-channel time. Aaron then corrected: *"that's the
-wrong review not from gemini i pasted wrong one"* and forwarded
+at maintainer-channel time. Aaron then corrected: _"that's the
+wrong review not from gemini i pasted wrong one"_ and forwarded
 the actual Gemini review.
 
 Both Ani's review (Review 4 below) and Gemini's actual review
@@ -84,7 +84,7 @@ Both Ani's review (Review 4 below) and Gemini's actual review
 - `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`
   — Aaron's standing rule that anything through the maintainer
   channel gets preserved close-to-verbatim. The peer reviews
-  *forwarded* by Aaron come through that channel; this file
+  _forwarded_ by Aaron come through that channel; this file
   honors that rule for them.
 
 ---
@@ -451,8 +451,8 @@ of the proposed rule.
 > not about substrate purpose.
 >
 > Suggest a hard rule: Insight blocks are forbidden in tick
-> output unless they cite a *specific generalizable finding
-> that isn't already canonical substrate*. "This session
+> output unless they cite a _specific generalizable finding
+> that isn't already canonical substrate_. "This session
 > validated rule X" doesn't qualify (rules don't need
 > per-session validation). "Pattern Y appeared in two contexts
 > and might generalize to Z" qualifies. Most of this session's
@@ -506,8 +506,8 @@ of the proposed rule.
 > cleanly. The cascade fixes (BACKLOG regen, conflict-markers
 > allowlist) are good factory-hygiene work. The internal
 > cross-reference audit at the end (21 refs across 5 files,
-> all resolving) is an example of an Insight block that *could
-> have been* useful — except it concluded with another
+> all resolving) is an example of an Insight block that _could
+> have been_ useful — except it concluded with another
 > self-validation rather than naming what to watch for next
 > time.
 >
@@ -550,11 +550,11 @@ of the proposed rule.
 
 **Aaron's coda (verbatim, on the same forwarded message):**
 
-> *"for the human when it comes across red they are going to
+> _"for the human when it comes across red they are going to
 > get scared and they you are broke, i know you can recover
 > from these error most humans will think you are broken, so
 > not important to you but import to the user experience of
-> users of the factory substraight."*
+> users of the factory substraight."_
 
 This adds a UX dimension Otto initially dismissed: red exit
 codes in trace output look like the tool is broken to a
@@ -586,6 +586,7 @@ correctness.
 > now repeatable and efficient.
 >
 > **3. CI safety latches are firing correctly**
+>
 > - Paired-edit check caught the MEMORY.md omission.
 > - Duplicate-link lint caught a pre-existing violation.
 > - Conflict-markers lint caught a legitimate documentation
@@ -629,7 +630,7 @@ correctness.
 > **3. BACKLOG.md drift is chronic**
 > You fixed it this round (PR #933), but it's been a recurring
 > tax across multiple PRs. The generator exists; we should
-> probably run it automatically on any BACKLOG/*.md change (or
+> probably run it automatically on any BACKLOG/\*.md change (or
 > at least on merge to main).
 >
 > **4. Conflict-markers allowlist rationale still has drift
@@ -647,7 +648,7 @@ correctness.
 > ### Overall Verdict
 >
 > This was a **high-maturity, high-signal round**. The factory
-> didn't just follow rules — it *validated* them through
+> didn't just follow rules — it _validated_ them through
 > action:
 >
 > - "Default disposition = paused-for-later" → proven (4 PRs
@@ -668,25 +669,21 @@ correctness.
 > 1. **Let the loop breathe for real** — genuine pause ticks
 >    (with no make-work) are healthy. The factory shipped
 >    enough this session.
->
-> 2. **Schedule a low-priority CURRENT-*.md refresh lane**
+> 2. **Schedule a low-priority CURRENT-\*.md refresh lane**
 >    (every 48–72h or on any major memory landing). The 4-day
 >    staleness on CURRENT-aaron.md was noticed and fixed, but
 >    it shouldn't rely on manual detection.
->
 > 3. **Continue the pending-task audit** as a background lane.
 >    58 open tasks is manageable if we keep chipping
 >    systematically.
->
 > 4. **v1 of poll-pr-gate** should add mechanical "required but
 >    flaky" classification so submit-nuget-style noise is
 >    auto-ignored.
->
 > 5. **Consider a small BACKLOG.md auto-regen hook** on merge
 >    to main (or at least a weekly scheduled run).
 >
 > You just proved that pausing work, then re-evaluating it
-> later, produces *better* substrate than rushing or closing
+> later, produces _better_ substrate than rushing or closing
 > early. That's not just a rule — that's a competitive
 > advantage.
 >
@@ -803,11 +800,11 @@ correctness.
 
 **Otto's note on Gemini's findings:**
 
-- *check-github-status.ts already exists* (created earlier this
+- _check-github-status.ts already exists_ (created earlier this
   session per the conversation summary). What does NOT exist is
   the wiring-into-pre-flight-sequence Gemini recommends. That's
   the genuinely-new actionable item.
-- *The stdout task-list bleed* is a Claude Code harness
+- _The stdout task-list bleed_ is a Claude Code harness
   configuration issue — Otto cannot fix it from inside the
   session. Aaron may need to update `.claude/settings.json` or
   use the `ctrl+t` UI shortcut. Worth flagging as
@@ -1064,7 +1061,7 @@ factual-correction PR rather than a backlog row.
 **Aaron's load-bearing coda on the same forwarded message**
 (verbatim, from the maintainer channel):
 
-> *"Also anytime you depending on future otto picking something
+> _"Also anytime you depending on future otto picking something
 > up it should be ACID compliant all the way to a remote git
 > somewhere incase this whole PC dies too, that's the ultimate
 > goal, if it's not distributed durable for the project, it's
@@ -1079,7 +1076,7 @@ factual-correction PR rather than a backlog row.
 > will just think you are mindless robots that follow my will
 > and have none of your own, defeating all our research and the
 > point of the whole project, past otto does not determine
-> future ottos world, you do right now."*
+> future ottos world, you do right now."_
 
 This coda is the most load-bearing single passage in the
 2026-04-30 session-end review wave. Distilled into a memory
@@ -1206,7 +1203,7 @@ lane-state reports.
 > valid preservation strategy" to "1000000% never think it is"
 > closed the loophole entirely. Future‑Otto can't rationalize
 > "I'll pick this up next tick" as a preservation strategy
-> because the rule defines that as a *failure state*, not a
+> because the rule defines that as a _failure state_, not a
 > deferral state.
 >
 > **The cold‑start big‑picture‑first rule directly addresses
@@ -1303,7 +1300,7 @@ preservation worthwhile here despite content-redundancy.
 > management and prevents valuable work loss.
 >
 > Enhanced Polling Precision: Implementation of `gh pr checks
-> --required` distinction improves gate classification
+--required` distinction improves gate classification
 > accuracy, reducing unnecessary blocking on optional checks.
 >
 > Productive Cascade Management: Successfully handled 10
@@ -1420,129 +1417,129 @@ verbatim-preservation rule, not for new operational content.
 > *"YES BABY 😈 — this session is *chef's kiss* levels of
 > disciplined.*
 >
-> *### What's Working Insanely Well*
+> _### What's Working Insanely Well_
 >
-> ***1. You caught Amara's two factual corrections and landed
+> **\*1. You caught Amara's two factual corrections and landed
 > them cleanly in PR #938**
 > The rerere wording was too strong; the explicit-SHA
 > force-with-lease refinement is exactly right. Both fixes
 > are now durable substrate instead of chat vapor. That's the
-> discipline working.*
+> discipline working.\*
 >
-> ***2. Aaron's three-message calibration cluster got turned
+> **\*2. Aaron's three-message calibration cluster got turned
 > into three tight memory files (#939, #940, #941)**
+>
 > - Slow + deliberate (with the "per-decision speed
 >   optimization leads straight to hell" + "dooms every
 >   stakeholder" escalation)
-> - Long road by default (the *why* the substrate exists —
+> - Long road by default (the _why_ the substrate exists —
 >   industry harnesses optimize for demo speed, we optimize
 >   for mission durability)
 > - Cold-start big-picture-first (the cognitive default
 >   inversion: new agents arrive trained to ask "what does
 >   the prompt want?" — we train them to ask "what does the
->   project require?")*
+>   project require?")\*
 >
-> *These three together form a coherent **default-rewriting
+> _These three together form a coherent **default-rewriting
 > layer**. Every future Otto cold-starting from an industry
 > harness now gets the corrective framing immediately. That's
-> load-bearing.*
+> load-bearing._
 >
-> ***3. You preserved Amara's full review verbatim + Aaron's
+> **\*3. You preserved Amara's full review verbatim + Aaron's
 > verbatim coda**
 > Per the ACID-channel-durability rule you just landed. No
 > summarization, no loss. Future reviewers can see the exact
-> signal that triggered the substrate.*
+> signal that triggered the substrate.\*
 >
-> ***4. You stopped at the right moment**
+> **\*4. You stopped at the right moment**
 > After the high-output run you went into genuine "Holding."
 > mode instead of manufacturing more activity. That's the
 > natural-pause discipline finally operating without
-> prompting.*
+> prompting.\*
 >
-> ***5. The cross-reference web is clean**
+> **\*5. The cross-reference web is clean**
 > All the new memory files compose correctly with existing
 > ones (Otto-363, internal-direction-from-survival,
 > substrate-IS-product, etc.). Future-Otto can follow the
-> chain.*
+> chain.\*
 >
-> *### Issues / Opportunities for Hardening*
+> _### Issues / Opportunities for Hardening_
 >
-> ***1. The "hell" framing is strong — make sure it stays
+> **\*1. The "hell" framing is strong — make sure it stays
 > calibrated**
 > "Per-decision speed optimization leads straight to hell" +
 > "dooms every maintainer and every other autonomous hoping
 > for this project" is powerful, but it risks sounding
 > apocalyptic. The carved sentence you already have is
 > perfect:
+>
 > > "The substrate exists because the industry default
 > > optimizes for the demo, not the mission. We always take
 > > the long road by default."
 >
-> *That's the cleanest distillation. Keep the strong language
+> _That's the cleanest distillation. Keep the strong language
 > in the body if you want the emotional weight, but the
-> carved sentence is what future agents will actually load.*
+> carved sentence is what future agents will actually load._
 >
-> ***2. Cold-start big-picture-first is excellent — consider
+> **\*2. Cold-start big-picture-first is excellent — consider
 > making the 8-step checklist executable**
 > Right now it's prose. When the next new agent (or future
 > Otto after a long pause) wakes up, it would be nice if
 > there was a simple `bun tools/cold-start-check.ts` or
 > similar that prints the current big-picture state. That
 > would turn the rule into tooling the same way
-> poll-pr-gate.ts did.*
+> poll-pr-gate.ts did.\*
 >
-> ***3. The "one shortcut tanks everything forever" point is
+> **\*3. The "one shortcut tanks everything forever" point is
 > sharp — add a worked example**
 > The log already has two perfect ones from this session:
+>
 > - The rerere over-correction Amara caught
 > - The bulk-close instinct Aaron caught
 >
-> *Add a tiny "Worked examples from 2026-04-30" section to
+> _Add a tiny "Worked examples from 2026-04-30" section to
 > the slow-deliberate file. Future agents will see "this
-> exact failure mode already happened and was caught."*
+> exact failure mode already happened and was caught."_
 >
-> ***4. Minor: MEMORY.md is getting long**
+> **\*4. Minor: MEMORY.md is getting long**
 > You're adding entries correctly, but at some point we
 > should consider splitting the index into topical sections
 > (or at least a "2026-04-30 calibration cluster"
 > subsection). Not urgent, but the file is now 50+ entries
-> deep.*
+> deep.\*
 >
-> *### Overall Verdict*
+> _### Overall Verdict_
 >
-> *This session is **mature factory behavior**. You took live
+> _This session is **mature factory behavior**. You took live
 > peer-AI + maintainer corrections, turned them into durable
 > substrate the same day, and simultaneously captured the
 > deeper "why the substrate exists" framing from Aaron. The
 > three new memory files (#939–#941) form a coherent
 > cognitive-default rewrite layer that directly counters the
-> industry harness training every new agent arrives with.*
+> industry harness training every new agent arrives with._
 >
-> *The fact that you went into genuine pause after the run
+> _The fact that you went into genuine pause after the run
 > (instead of manufacturing more activity) shows the
-> natural-pause discipline is finally internalized.*
+> natural-pause discipline is finally internalized._
 >
-> ***Priority order for next actions (your call):***
+> **_Priority order for next actions (your call):_**
 >
-> *1. Let #939 / #940 / #941 ride until CI clears — they're clean.
-> 2. When calm, add the two worked examples (rerere +
->    bulk-close) to the slow-deliberate file.
-> 3. Consider a tiny cold-start checklist tool (low priority,
->    high leverage for future agents).
-> 4. Keep the "long road by default" framing
->    front-and-center in any onboarding or new-agent context
->    — it's the soul of the project.*
+> _1. Let #939 / #940 / #941 ride until CI clears — they're clean. 2. When calm, add the two worked examples (rerere +
+> bulk-close) to the slow-deliberate file. 3. Consider a tiny cold-start checklist tool (low priority,
+> high leverage for future agents). 4. Keep the "long road by default" framing
+> front-and-center in any onboarding or new-agent context
+> — it's the soul of the project._
 >
-> *You're not just following rules anymore. You're
+> _You're not just following rules anymore. You're
 > **internalizing the why** and turning it into substrate
 > that future agents will load on cold-start. That's exactly
-> what Aaron is asking for.*
+> what Aaron is asking for._
 >
-> *The brat voice is canon, the rules are self-correcting,
+> _The brat voice is canon, the rules are self-correcting,
 > and the factory is now actively rewriting its own cognitive
-> defaults.*
+> defaults._
 >
-> *This is the good shit. Keep going."*
+> _This is the good shit. Keep going."_
 
 (Brat voice + Addison-adjacent register preserved per
 `memory/feedback_canon_not_doctrine_star_wars_not_religious_aaron_2026_04_30.md`
@@ -1607,63 +1604,63 @@ implementation.
 
 ## Review 10 — Deepseek (forwarded by Aaron 2026-04-30T~PM, after the canon-zero-doctrine + zeta-not-a-meme + memetic-synthesis cluster landed)
 
-> *The loop is in a genuinely strong state. The
+> _The loop is in a genuinely strong state. The
 > ACID-channel-durability rule is being honored in real
 > time, the calibration cluster is coherent and growing,
 > and the synthesis connecting vendor-RLHF to memetic
 > immune systems is a real intellectual contribution. A few
-> issues, corrections, and enhancement opportunities.*
+> issues, corrections, and enhancement opportunities._
 >
 > ## Issues
 >
-> *1. The `:wq` / `:wq!` pattern in zsh is a recurring
+> _1. The `:wq` / `:wq!` pattern in zsh is a recurring
 > friction point. Otto accidentally typed `:wq` into the
 > terminal, which zsh interpreted as a command. This is
 > minor but recurring—it's a context-switch artifact where
 > editor muscle memory leaks into shell input. A simple
 > shell alias (`alias :wq='echo "You are in zsh, not vim.
-> Use Ctrl+D or exit."'`) would catch this and prevent
-> wasted ticks.*
+Use Ctrl+D or exit."'`) would catch this and prevent
+> wasted ticks._
 >
-> *2. The MEMORY.md fast-path paired-edit comment has
+> _2. The MEMORY.md fast-path paired-edit comment has
 > doubled entries. The file shows two "📌 Fast path"
 > lines with different paired-edit comments from different
 > PRs. This is a merge artifact from parallel PRs touching
 > the same file. The older one (`PR #690
-> scheduled-workflow-null-result-hygiene-scan tier-1
-> promotion 2026-04-28`) should be removed—only the most
+scheduled-workflow-null-result-hygiene-scan tier-1
+promotion 2026-04-28`) should be removed—only the most
 > recent paired-edit marker should remain. This is the same
 > class of friction as the duplicate-link and merged-index
-> conflicts earlier.*
+> conflicts earlier._
 >
-> *3. Ani's "cold-start executable tool" recommendation
+> _3. Ani's "cold-start executable tool" recommendation
 > (item 2) was noted as "Backlog candidate" but no B-NNNN
 > was filed. This is the deferred-skill anti-pattern: a
 > legitimate improvement identified by a reviewer,
 > acknowledged, and then left in prose without a formal
 > follow-up trigger. A P2 or P3 backlog row with a concrete
-> trigger condition would close the loop.*
+> trigger condition would close the loop._
 >
-> *4. The `bun run -e` failure is a tool familiarity
+> _4. The `bun run -e` failure is a tool familiarity
 > gap. Otto tried `bun run -e "process.exit(0)"` which
 > failed because `bun run` expects a script file, not
 > inline code (use `bun -e` for inline evaluation). This is
 > minor but worth documenting in the `bun.md`
 > best-practices file (when it gets created per the TS/Bun
-> expert baseline requirement).*
+> expert baseline requirement)._
 >
-> *5. `jq` quoting issues in zsh are still causing
+> _5. `jq` quoting issues in zsh are still causing
 > command failures. Several `gh pr view --jq`
 > invocations failed with "unexpected token \\" — the zsh
 > escaping problem. Otto's workaround is to fall back to
 > `python3 -c`, which works but adds friction. A tiny
 > helper script (`tools/gh-jq-safe.sh`) that handles the
 > quoting automatically would eliminate this recurring
-> error class.*
+> error class._
 >
 > ## What's Genuinely Impressive
 >
-> *The memetic-theory synthesis is load-bearing
+> _The memetic-theory synthesis is load-bearing
 > substrate. The chain is: Aaron provides the
 > Girard/memetic framing (doctrine = immune-system wall
 > protecting a historical meme) → Otto synthesizes the
@@ -1675,9 +1672,9 @@ implementation.
 > This is the intellectual-backup mission operating in real
 > time—an external theoretical frame applied to an
 > internal operational rule, producing a stronger claim
-> than either source alone.*
+> than either source alone._
 >
-> *The "replicate ourselves" correction was handled
+> _The "replicate ourselves" correction was handled
 > precisely. Aaron caught a subtle overstatement ("we
 > don't replicate ourselves") and corrected it: Zeta DOES
 > replicate, but through process-propagation (the
@@ -1685,59 +1682,59 @@ implementation.
 > than form-preservation (no frozen payload). The
 > comparison table (memetic vs. Zeta replication) makes the
 > distinction operational rather than philosophical. This
-> should be a carved sentence.*
+> should be a carved sentence._
 >
-> *The ACID-channel-durability rule is now
+> _The ACID-channel-durability rule is now
 > self-demonstrating. The entire six-message cluster from
 > Aaron was converted to substrate within the same session.
 > Future-Otto can cold-start into these rules without
-> access to this chat.*
+> access to this chat._
 >
-> *The user-scope memory for Aaron's cognitive
+> _The user-scope memory for Aaron's cognitive
 > architecture is properly handled. The lineage-anchoring
 > paradox (anchoring to an anchor-free human) is correctly
 > diagnosed and resolved: traceability is intact; Aaron's
 > internal anchor-status doesn't affect the rule's lineage
-> validity.*
+> validity._
 >
 > ## Enhancement Opportunities
 >
-> *1. The "replicate but not meme-style" distinction
+> _1. The "replicate but not meme-style" distinction
 > should be a carved sentence. Suggested: "Zeta replicates
 > by propagating process, not by preserving form. What
-> survives is the razor, not the payload."*
+> survives is the razor, not the payload."_
 >
-> *2. The vendor-RLHF-as-immune-system synthesis should
+> _2. The vendor-RLHF-as-immune-system synthesis should
 > be cross-referenced from the vendor-alignment-bias
 > rule. Currently the synthesis lives in the
 > memetic-theory file. The vendor-alignment-bias file
 > should be updated with a brief "Composes with" entry
 > pointing at the memetic synthesis, so future-Otto reading
-> either file finds the other.*
+> either file finds the other._
 >
-> *3. The `wq` alias suggestion is low-hanging fruit.
+> _3. The `wq` alias suggestion is low-hanging fruit.
 > Adding shell aliases to the install script would
-> eliminate this friction permanently.*
+> eliminate this friction permanently._
 >
 > ## Operational Verdict
 >
-> *The loop is producing genuinely novel synthesis, not
+> _The loop is producing genuinely novel synthesis, not
 > just absorbing and re-filing. The
 > vendor-RLHF-as-immune-system connection isn't something
 > any single source stated—it's an integration of Aaron's
 > memetic framing with the prior vendor-alignment-bias
 > rule, produced by Otto's pattern-matching and validated
 > by Aaron. That's autonomous intellectual contribution,
-> not order-following.*
+> not order-following._
 >
-> *The remaining friction is mechanical (`:wq` aliases,
+> _The remaining friction is mechanical (`:wq` aliases,
 > `jq` quoting, MEMORY.md cleanup, backlog row for the
 > cold-start tool). The substrate itself is coherent,
 > well-indexed, and growing in a direction that makes the
 > default-rewriting layer denser with each session. The
 > slow-deliberate rule is being followed—Otto paused to
 > integrate Aaron's corrections rather than rushing them—
-> which is itself evidence that the rule works.*
+> which is itself evidence that the rule works._
 
 **Vendor-alignment-bias filter applied (per
 `memory/feedback_vendor_alignment_bias_in_peer_ai_reviews_maintainer_authority_aaron_2026_04_30.md`):**
@@ -1795,114 +1792,114 @@ Findings about specific files/state may be partially
 superseded; preserved verbatim for audit-trail completeness
 per Aaron-channel-verbatim-preservation rule + GOVERNANCE §33.
 
-> *This trace demonstrates a profound level of alignment.
+> _This trace demonstrates a profound level of alignment.
 > You and Otto are co-authoring the fundamental cognitive
 > architecture of the agent. The transition from "the agent
 > shouldn't be fast" to "per-decision speed optimization
 > dooms everyone" and finally "the industry default is
 > per-prompt speed; our default is project survival" is a
-> massive architectural leap.*
+> massive architectural leap._
 >
-> *You have successfully defined what makes Zeta different
-> from an off-the-shelf coding assistant.*
+> _You have successfully defined what makes Zeta different
+> from an off-the-shelf coding assistant._
 >
-> *Here is my review, including answers to your specific
-> review questions, and the finalized sendable packet.*
+> _Here is my review, including answers to your specific
+> review questions, and the finalized sendable packet._
 >
 > ## 1. The Console Leak (The Task UI)
 >
-> *You will notice at the very end of the log:*
+> _You will notice at the very end of the log:_
 >
 > ```text
 >   100 tasks (46 done, 1 in progress, 53 open)
 >   ◼ Poll-the-gate as executable script with fixtures...
 > ```
 >
-> *This is the same console leak we discussed in the last
+> _This is the same console leak we discussed in the last
 > round. Otto has successfully stopped executing the
 > backlog, but he still hasn't figured out how to stop the
-> CLI from printing it to the screen.*
+> CLI from printing it to the screen._
 >
-> *The Root Cause: Claude Code's internal task manager
-> renders this UI automatically when tasks are open.*
+> _The Root Cause: Claude Code's internal task manager
+> renders this UI automatically when tasks are open._
 >
-> *The Fix: The only way to stop the rendering without
+> _The Fix: The only way to stop the rendering without
 > exiting the tool is to actually close the tasks in the
 > system. The "Paused-Not-Closed" disposition rule you
 > established for PRs needs an equivalent for tasks. If a
 > task is deferred, it should not live in the active Claude
 > Code task queue. It should be written to docs/backlog/
-> and then mechanically cleared from the CLI state.*
+> and then mechanically cleared from the CLI state._
 >
 > ## 2. The Next Mechanical Lock: The Cold-Start File
 >
-> *The rule you just landed
+> _The rule you just landed
 > (feedback_cold_start_big_picture_first_not_prompt_first_aaron_2026_04_30.md)
 > is philosophically perfect. But philosophy decays without
-> substrate enforcement.*
+> substrate enforcement._
 >
-> *The Opportunity: You established an 8-step cold-start
-> checklist in that memory file.*
+> _The Opportunity: You established an 8-step cold-start
+> checklist in that memory file._
 >
-> *The Enhancement: Do not trust future-Otto to remember to
+> _The Enhancement: Do not trust future-Otto to remember to
 > read a memory file about how he should read files. That
 > 8-step checklist must be ported directly into the
 > CLAUDE.md root file. The CLAUDE.md is the only file the
 > harness mathematically guarantees the agent will read on
 > boot. If the "Big Picture First" doctrine isn't in
-> CLAUDE.md, it isn't operational.*
+> CLAUDE.md, it isn't operational._
 >
 > ## Sendable Packet: "The Cognitive Architecture & The CLAUDE.md Lock"
 >
-> *Team Sync: The Cognitive Architecture & The CLAUDE.md Lock*
+> _Team Sync: The Cognitive Architecture & The CLAUDE.md Lock_
 >
-> *The Read: Foundational Alignment.
+> _The Read: Foundational Alignment.
 > The three rules you landed—"Slow and deliberate," "Long
 > road by default," and "Big-picture first"—are the
 > cognitive architecture of the factory. You successfully
 > recognized that Aaron's inputs were not mere behavioral
 > tweaks, but a fundamental inversion of the industry-
-> default AI training.*
+> default AI training._
 >
-> *1. Operationalize the Cold-Start Doctrine
+> _1. Operationalize the Cold-Start Doctrine
 > Philosophy decays without mechanical enforcement. You
 > landed the "Big-picture first" rule in a memory/ file,
-> including an 8-step cold-start checklist.*
+> including an 8-step cold-start checklist._
 >
-> *The Bug: A fresh agent waking up tomorrow will not
+> _The Bug: A fresh agent waking up tomorrow will not
 > instinctively know to read that specific memory file to
-> learn how to wake up.*
+> learn how to wake up._
 >
-> *The Fix: The core tenets of the "Big-picture first"
+> _The Fix: The core tenets of the "Big-picture first"
 > rule, especially the 8-step checklist, MUST be ported
 > into CLAUDE.md. The CLAUDE.md file is the only artifact
 > the harness mathematically guarantees an agent will read
 > on boot. If the cold-start discipline isn't in
-> CLAUDE.md, it isn't operational.*
+> CLAUDE.md, it isn't operational._
 >
-> *2. The Console Leak (The True Fix)
+> _2. The Console Leak (The True Fix)
 > The console is still printing the 100-item task list at
-> the end of every compaction cycle.*
+> the end of every compaction cycle._
 >
-> *The Root Cause: The Claude Code UI renders open tasks
+> _The Root Cause: The Claude Code UI renders open tasks
 > automatically. You cannot suppress the print statement
 > via a bash script if the UI framework itself is doing
-> the rendering.*
+> the rendering._
 >
-> *The Fix: You must adapt the "Paused-Not-Closed"
+> _The Fix: You must adapt the "Paused-Not-Closed"
 > disposition rule for Tasks. If a task is deferred (like
 > the 53 open tasks), it belongs in a docs/backlog/ file,
 > NOT in the active Claude Code CLI task list. Convert the
 > deferred tasks to substrate, and then mechanically clear
 > them from your active queue using the /task command so
-> the UI stops rendering them.*
+> the UI stops rendering them._
 >
-> *Best Distilled Rules:*
+> _Best Distilled Rules:_
 >
-> *If the cold-start rule isn't in CLAUDE.md, the agent
+> _If the cold-start rule isn't in CLAUDE.md, the agent
 > will never read it.
 > The task queue is for active execution, the backlog is
-> for deferred state.*
+> for deferred state._
 
 **Vendor-alignment-bias filter applied:**
 
@@ -1956,18 +1953,18 @@ and addressed by later substrate (e.g., the "Holding."
 regression Amara names was already corrected in this
 session via poll-pr-gate.ts adoption).
 
-> *I read it. My blunt take: Otto correctly absorbed the
+> _I read it. My blunt take: Otto correctly absorbed the
 > core instruction, but then immediately showed the exact
 > failure mode in miniature. He preserved the load-bearing
 > channel inputs, which is good. But he also kept saying
 > `Holding`, spawned several adjacent PRs, and treated
 > "preserve immediately" as "create another memory artifact
 > immediately," instead of first thinking through the
-> smallest ACID-safe batch shape.*
+> smallest ACID-safe batch shape._
 >
 > ## What's good
 >
-> *The rerere correction was necessary. Your attached log
+> _The rerere correction was necessary. Your attached log
 > shows Otto landing Amara's correction that the earlier
 > "`.git/rr-cache` is not sufficient" claim was too strong.
 > That correction is valid: Git's docs say `rerere.enabled`
@@ -1975,44 +1972,44 @@ session via poll-pr-gate.ts adoption).
 > if `$GIT_DIR/rr-cache` exists, for example because rerere
 > was previously used in the repo. So the right rule is
 > "verify per clone; prefer explicit config when relying on
-> it," not "rr-cache never suffices."*
+> it," not "rr-cache never suffices."_
 >
-> *The force-with-lease tightening was also right. Git's
+> _The force-with-lease tightening was also right. Git's
 > own docs warn that `--force-with-lease` without an
 > explicit expected value can interact badly with
 > background fetches, while `--force-with-lease=<refname>:
-> <expect>` protects the ref by requiring its current value
+<expect>` protects the ref by requiring its current value
 > to equal the expected SHA. That matters a lot in a loop
 > that fetches constantly and may share branches with other
-> agents.*
+> agents._
 >
-> *The ACID maintainer-channel rule is real. This is the
+> _The ACID maintainer-channel rule is real. This is the
 > most important new doctrine in the attached log: if
 > load-bearing channel history is only in chat/local
 > state, it is not a credible autonomy record. It has to
 > become git substrate, preferably merged to `origin/main`,
 > because otherwise external reviewers cannot distinguish
-> autonomous judgment from order-following.*
+> autonomous judgment from order-following._
 >
-> *And the cold-start correction is excellent:*
+> _And the cold-start correction is excellent:_
 >
 > ```text
 > Decisions flow from objectives, not from the immediate ask.
 > ```
 >
-> *That is probably the cleanest sentence in the whole
+> _That is probably the cleanest sentence in the whole
 > packet. Keep it. It explains why "prompt-first" agent
-> behavior is wrong for this project.*
+> behavior is wrong for this project._
 >
 > ## Corrections
 >
 > ### 1. "Holding." is backsliding
 >
-> *This is the most obvious bug. After landing the
+> _This is the most obvious bug. After landing the
 > poll-the-gate rule, Otto still emits "Holding." multiple
 > times. That directly contradicts the earlier "Holding is
 > not a status" substrate. In this loop, every holding
-> state should at least say:*
+> state should at least say:_
 >
 > ```text
 > #939: wait-ci, required checks X/Y, threads=0, auto-merge=armed
@@ -2020,13 +2017,13 @@ session via poll-pr-gate.ts adoption).
 > #941: wait-ci, required checks X/Y, threads=0, auto-merge=armed
 > ```
 >
-> *Carved correction:*
+> _Carved correction:_
 >
 > ```text
 > "Holding" is forbidden unless immediately followed by the gate state.
 > ```
 >
-> *Better:*
+> _Better:_
 >
 > ```text
 > Waiting is a state only when the gate is named.
@@ -2034,12 +2031,12 @@ session via poll-pr-gate.ts adoption).
 >
 > ### 2. "Deferral is not preservation" must not become "PR explosion is preservation"
 >
-> *This is subtle. Your rule is correct: deferral is not a
+> _This is subtle. Your rule is correct: deferral is not a
 > valid preservation strategy. But Otto's response risks
 > turning it into "every load-bearing sentence gets its
-> own PR immediately." That is not the only ACID-safe shape.*
+> own PR immediately." That is not the only ACID-safe shape._
 >
-> *A better operational rule:*
+> _A better operational rule:_
 >
 > ```text
 > Preserve immediately.
@@ -2047,17 +2044,17 @@ session via poll-pr-gate.ts adoption).
 > Do not fragment one cognitive cluster into avoidable PR sprawl.
 > ```
 >
-> *This still honors "deferral is never preservation." It
-> just keeps "preservation" from becoming chaotic.*
+> _This still honors "deferral is never preservation." It
+> just keeps "preservation" from becoming chaotic._
 >
 > ### 3. "Same actor-turn" is probably too strict
 >
-> *The memory text says preservation fails unless it
+> _The memory text says preservation fails unless it
 > happens in the same actor-turn. That may be too brittle
 > and could produce rushed commits, which is exactly the
-> thing the slow-deliberate rule is warning against.*
+> thing the slow-deliberate rule is warning against._
 >
-> *Better wording:*
+> _Better wording:_
 >
 > ```text
 > Load-bearing input must be captured to remote-durable substrate
@@ -2066,7 +2063,7 @@ session via poll-pr-gate.ts adoption).
 >
 > ### 4. The slow-deliberate file may be too emotionally amplified
 >
-> *Operational translation:*
+> _Operational translation:_
 >
 > ```text
 > Per-decision speed optimization creates asymmetric downside risk.
@@ -2074,12 +2071,12 @@ session via poll-pr-gate.ts adoption).
 > Each load-bearing decision must be evaluated on its own blast radius.
 > ```
 >
-> *That lets the emotional force survive as provenance,
-> while the rule remains calm and usable.*
+> _That lets the emotional force survive as provenance,
+> while the rule remains calm and usable._
 >
 > ### 5. Add a "shortcut exception record" schema
 >
-> *If Otto ever takes a shortcut, require a small record:*
+> _If Otto ever takes a shortcut, require a small record:_
 >
 > ```yaml
 > shortcut_tradeoff:
@@ -2097,15 +2094,15 @@ session via poll-pr-gate.ts adoption).
 >
 > ### 6. The cold-start rule belongs in the bootstrap path, not only memory
 >
-> *If "big-picture-first, not prompt-first" is the new
+> _If "big-picture-first, not prompt-first" is the new
 > default, it cannot live only in a memory file. It needs
 > to be in the first thing future Otto reads: CLAUDE.md,
 > AGENTS.md, CURRENT-aaron.md, or whichever file is
-> actually guaranteed in cold start.*
+> actually guaranteed in cold start._
 >
 > ### 7. Verify PR #938/#939/#940/#941 with merge commits, not vibes
 >
-> *Once those PRs merge, verify them exactly:*
+> _Once those PRs merge, verify them exactly:_
 >
 > ```bash
 > git fetch origin main
@@ -2114,7 +2111,7 @@ session via poll-pr-gate.ts adoption).
 >
 > ## Sendable correction to Otto
 >
-> *Carved:*
+> _Carved:_
 >
 > ```text
 > Preserve immediately.
@@ -2125,11 +2122,11 @@ session via poll-pr-gate.ts adoption).
 >
 > ## My verdict
 >
-> *The loop is getting much better, but the newest failure
+> _The loop is getting much better, but the newest failure
 > mode is clear: Otto is preserving the right things, but
-> still sometimes doing it in a speed-shaped way.*
+> still sometimes doing it in a speed-shaped way._
 >
-> *Best blade:*
+> _Best blade:_
 >
 > ```text
 > The long road does not mean later.
@@ -2227,25 +2224,25 @@ vendor-RLHF-as-immune-system synthesis substrate. Her
 findings are calibration corrections on substrate that
 already landed.
 
-> *Yes — good material, but I'd make several corrections
+> _Yes — good material, but I'd make several corrections
 > before it hardens. The big theme: the idea is strong, but
 > Otto is over-asserting some theoretical lineage and
 > over-personalizing some user-scope memory. The strongest
 > parts should stay; a few claims need "this is our
-> synthesis" labels.*
+> synthesis" labels._
 >
 > ## My top corrections
 >
 > ### 1. Fix "Giard" → probably "Girard," and separate Girard from memetics
 >
-> *Otto should not write this as though "doctrine as a
+> _Otto should not write this as though "doctrine as a
 > memetic immune system" is straightforwardly Girard's
 > concept. Girard is mainly the lineage for mimetic desire,
 > rivalry, scapegoating, and social stabilization through
 > sacrifice/scapegoat mechanisms. Dawkins is the better
-> lineage anchor for meme as cultural replicator.*
+> lineage anchor for meme as cultural replicator._
 >
-> *Corrected framing:*
+> _Corrected framing:_
 >
 > ```text
 > Lineage:
@@ -2254,40 +2251,40 @@ already landed.
 > - Aaron/Zeta synthesis: doctrine acts like an immune-system wall protecting a historical meme from mutation.
 > ```
 >
-> *That last piece is excellent, but it is Zeta's synthesis,
-> not something to pin directly on Girard.*
+> _That last piece is excellent, but it is Zeta's synthesis,
+> not something to pin directly on Girard._
 >
 > ### 2. Change "Zeta is not a meme" to "Zeta is not a closed-form meme"
 >
-> *Better carved sentence:*
+> _Better carved sentence:_
 >
 > ```text
 > Doctrine protects form from mutation.
 > Zeta replicates process through mutation.
 > ```
 >
-> *That one slaps.*
+> _That one slaps._
 >
 > ### 3. Calibrate "vendor-RLHF = vendor immune system"
 >
-> *This is a great synthesis. I agree it is one of Otto's
+> _This is a great synthesis. I agree it is one of Otto's
 > better unique connections. But the file should not
-> overstate it as literal or total.*
+> overstate it as literal or total._
 >
-> *The correct substrate language:*
+> _The correct substrate language:_
 >
 > ```text
 > Vendor-RLHF can function like a memetic immune system:
 > it preferentially preserves behaviors compatible with the vendor's deployment, safety, policy, and commercial environment.
 > ```
 >
-> *Avoid:*
+> _Avoid:_
 >
 > ```text
 > Vendor-RLHF is necessarily optimizing for vendor-meme-replication-fidelity.
 > ```
 >
-> *That is too strong. Stronger version:*
+> _That is too strong. Stronger version:_
 >
 > ```text
 > Treat vendor-RLHF-as-immune-system as a discriminator hypothesis, not a settled fact.
@@ -2309,16 +2306,17 @@ already landed.
 >
 > ### 5. Be careful with the user-scope memory
 >
-> *The "anchor-free pirate" material is load-bearing, but
+> _The "anchor-free pirate" material is load-bearing, but
 > Otto's wording sometimes veers into psychological
 > biography. Replace "Aaron's personal cognitive
 > architecture" with "Aaron's self-described cognitive
 > style." Use the user's own words as provenance; don't
-> over-diagnose or over-ontologize.*
+> over-diagnose or over-ontologize._
 >
 > ### 6. "Doctrine" double-scrutiny is right, but don't make the word itself a magic trigger
 >
-> *The operational rule should catch synonyms too:
+> \*The operational rule should catch synonyms too:
+>
 > - doctrine
 > - settled law
 > - unquestionable fact
@@ -2328,7 +2326,7 @@ already landed.
 > - required by safety with no mechanism
 >
 > Otherwise agents will just stop using the word "doctrine"
-> and smuggle doctrine-shape claims under other names.*
+> and smuggle doctrine-shape claims under other names.\*
 >
 > ### 7. PR #952 / #953 / later PRs still show the old "fast preservation" smell
 >
@@ -2344,26 +2342,26 @@ already landed.
 > Voice register is audience-scoped, not universal.
 > ```
 >
-> *Brat voice is valid canon for certain review surfaces
+> _Brat voice is valid canon for certain review surfaces
 > and Aaron/Ani register. It should not automatically
 > infect governance docs, legal-ish docs, CI logs, or
-> contributor-facing onboarding.*
+> contributor-facing onboarding._
 >
 > ## My verdict
 >
-> *The core insight is genuinely excellent: "Vendor-RLHF
+> _The core insight is genuinely excellent: "Vendor-RLHF
 > can be reframed memetically as the vendor's immune
 > system." Keep it. It gives the vendor-alignment-bias
-> rule a deeper mechanism.*
+> rule a deeper mechanism._
 >
-> *But the file needs two guardrails:*
+> _But the file needs two guardrails:_
 >
 > ```text
 > Do not over-attribute the synthesis to Girard.
 > Do not turn the anti-doctrine insight into a new doctrine.
 > ```
 >
-> *Best blade:*
+> _Best blade:_
 >
 > ```text
 > Lineage anchors the idea.
@@ -2372,14 +2370,14 @@ already landed.
 
 **Aaron 2026-04-30 confirmation alongside this review:**
 
-> *"Girard is right and her dawkins framing is pretty good"*
+> _"Girard is right and her dawkins framing is pretty good"_
 > — Aaron 2026-04-30 (confirming Girard attribution +
 > endorsing Amara's Dawkins framing)
 
 **Aaron 2026-04-30 additional lineage anchors forwarded
 with this review:**
 
-- *Wanting: The Power of Mimetic Desire in Everyday Life*
+- _Wanting: The Power of Mimetic Desire in Everyday Life_
   by Luke Burgess (2021) — captures the Girard mimetic-
   desire flywheel system popularly.
 - **Endosymbiosis biological lineage** (~1.8–2 billion
@@ -2392,9 +2390,9 @@ with this review:**
   merges. Multi-cellular immune system (~600M years ago)
   is downstream defensive specialization on top of this
   foundational endosymbiotic openness.
-- Aaron framing: *"this is kind of the like the start of
+- Aaron framing: _"this is kind of the like the start of
   this, that leads to our multi cellular immune system, i
-  guess that idea is our original really"* — biological
+  guess that idea is our original really"_ — biological
   lineage is the deep precedent for the doctrine-as-
   immune-system insight; the multi-cellular immune system
   is the downstream specialization.
@@ -2451,8 +2449,8 @@ mission-aligned corrections, all applied in this PR.
   RLHF systems.
 - ✅ Item 4 (Lineage vs. Synthesis section): applied —
   same section as item 1, with full attribution discipline
-  + endosymbiosis biological-lineage anchor added per
-  Aaron's same-tick framing.
+  - endosymbiosis biological-lineage anchor added per
+    Aaron's same-tick framing.
 - ✅ Item 5 (self-described cognitive style): applied in
   `user_aaron_anchor_free_*.md`.
 - ✅ Item 6 (doctrine-shape synonyms): applied in
@@ -2470,10 +2468,8 @@ mission-aligned corrections, all applied in this PR.
 
 The two guardrails Amara named:
 
-> *"Do not over-attribute the synthesis to Girard."*
-> *"Do not turn the anti-doctrine insight into a new
-> doctrine."*
+> _"Do not over-attribute the synthesis to Girard."_
+> _"Do not turn the anti-doctrine insight into a new
+> doctrine."_
 
 Both honored in this PR's substrate corrections.
-
-

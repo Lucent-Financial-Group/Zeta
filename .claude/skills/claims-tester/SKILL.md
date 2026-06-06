@@ -93,25 +93,25 @@ surfaces at round-close.
    discharge fires Stage 2 after a Stage-1 audit.
 3. **Reverse trigger — unconditional.** Any benchmark surprise
    (CI regression, allocation growth, unexpected scaling) fires
-   Daisy *first*, then Hiroshi. Per Closure C-P0-2 this is
+   Daisy _first_, then Hiroshi. Per Closure C-P0-2 this is
    unconditional — a matching bound still merits diagnosis
    because the constant factor or workload assumption usually
    tells us something new.
 4. **Escalation-evidence request.** When Hiroshi and Daisy
    dispute the analytic argument itself (not the code's
    implementation of it), Daisy's measurement is permitted as
-   *conference-protocol evidence* per Closure C-P0-3. Label such
-   measurements explicitly: *"Measured under analytic-argument
-   dispute; does not certify the claim."*
+   _conference-protocol evidence_ per Closure C-P0-3. Label such
+   measurements explicitly: _"Measured under analytic-argument
+   dispute; does not certify the claim."_
 
 **Three Stage-2 outputs:**
 
-1. *Measurement matches analytic bound.* Test lands; tighten the
+1. _Measurement matches analytic bound._ Test lands; tighten the
    docstring to name the measured constant factor.
-2. *Measurement contradicts analytic bound.* Re-engage Hiroshi.
+2. _Measurement contradicts analytic bound._ Re-engage Hiroshi.
    File a P0 until reconciled.
-3. *Measurement matches on claimed workload but fails contrary
-   workload.* Narrow the claim to the workloads that held.
+3. _Measurement matches on claimed workload but fails contrary
+   workload._ Narrow the claim to the workloads that held.
 
 **Escalation timebox** (Closure C-P1-7): disputes file at
 `docs/DECISIONS/YYYY-MM-DD-<topic>-escalation.md`; round-window

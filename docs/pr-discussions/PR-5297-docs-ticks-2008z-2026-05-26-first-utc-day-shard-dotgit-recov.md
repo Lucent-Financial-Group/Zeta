@@ -34,14 +34,14 @@ First tick shard for UTC day 2026-05-26 from a fresh Otto-CLI autonomous-loop co
 
 ## Worldview snapshot
 
-| Surface | Reading |
-|---|---|
-| GraphQL tier | Normal (4870/5000) |
-| REST core | 4914/5000 |
-| Stuck git plumbing | 0 |
-| Peer agent procs | 10 |
-| Root branch | `lior/fix-4827-codeql` (contaminated — isolated worktree used) |
-| Worktree canary | ls-tree HEAD = 61 ✓; status = 0 ✓ |
+| Surface            | Reading                                                        |
+| ------------------ | -------------------------------------------------------------- |
+| GraphQL tier       | Normal (4870/5000)                                             |
+| REST core          | 4914/5000                                                      |
+| Stuck git plumbing | 0                                                              |
+| Peer agent procs   | 10                                                             |
+| Root branch        | `lior/fix-4827-codeql` (contaminated — isolated worktree used) |
+| Worktree canary    | ls-tree HEAD = 61 ✓; status = 0 ✓                              |
 
 ## Composes with
 
@@ -64,6 +64,7 @@ First tick shard for UTC day 2026-05-26 from a fresh Otto-CLI autonomous-loop co
 Adds the first tick shard for UTC day 2026-05-26, capturing the cold-boot worldview snapshot and documenting the “dotgit-saturation recovery” observation as a durable hygiene-history artifact.
 
 **Changes:**
+
 - Add a new tick shard document at `2008Z` for 2026-05-26.
 - Record worldview snapshot + 7-step discipline trace + composition pointers to relevant `.claude/rules/*` artifacts.
 
@@ -73,7 +74,7 @@ Adds the first tick shard for UTC day 2026-05-26, capturing the cold-boot worldv
 
 **@copilot-pull-request-reviewer** (2026-05-26T20:14:22Z):
 
-P1 (xref): This refers to “MEMORY.md”, but there is no `MEMORY.md` at the repo root. For navigability, please point at the actual in-repo index file (`memory/MEMORY.md`) or explicitly label this as the *user-scope* MEMORY.md if that’s what you mean.
+P1 (xref): This refers to “MEMORY.md”, but there is no `MEMORY.md` at the repo root. For navigability, please point at the actual in-repo index file (`memory/MEMORY.md`) or explicitly label this as the _user-scope_ MEMORY.md if that’s what you mean.
 
 ### Thread 2: docs/hygiene-history/ticks/2026/05/26/2008Z.md:62 (resolved)
 

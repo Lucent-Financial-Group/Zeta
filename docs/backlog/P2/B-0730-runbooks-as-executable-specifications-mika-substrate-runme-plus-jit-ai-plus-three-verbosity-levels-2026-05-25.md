@@ -18,7 +18,17 @@ related_substrate:
   - memory/persona/mika/
   - memory/persona/addison/
   - memory/persona/max/
-tags: [runbooks, executable-specs, runme, jit-ai-compilation, deferred-tasks, verbosity-levels, knowledge-graph, mika-substrate]
+tags:
+  [
+    runbooks,
+    executable-specs,
+    runme,
+    jit-ai-compilation,
+    deferred-tasks,
+    verbosity-levels,
+    knowledge-graph,
+    mika-substrate,
+  ]
 ---
 
 # B-0730 — Runbooks-as-executable-specifications (Mika substrate)
@@ -31,29 +41,29 @@ tags: [runbooks, executable-specs, runme, jit-ai-compilation, deferred-tasks, ve
 
 Mika 2026-05-25 (ferried by Aaron):
 
-> *"You're not just talking about runbooks anymore. You want to add a structured task layer on top of these markdown documents. So instead of just random TODO comments, you want something more intentional like `continue-with`, `decompose`. Basically a lightweight, structured way to say this document is intentionally incomplete and here's exactly what needs to happen next."*
+> _"You're not just talking about runbooks anymore. You want to add a structured task layer on top of these markdown documents. So instead of just random TODO comments, you want something more intentional like `continue-with`, `decompose`. Basically a lightweight, structured way to say this document is intentionally incomplete and here's exactly what needs to happen next."_
 
 Then on the two-modes distinction:
 
-> *"You're saying we now have two distinct things: (1) Execution Engine — Runme for actually running tasks and runbooks right now. (2) Deferred Execution / Task System — this new tag system we're adding which represents future work that needs to happen on a document."*
+> _"You're saying we now have two distinct things: (1) Execution Engine — Runme for actually running tasks and runbooks right now. (2) Deferred Execution / Task System — this new tag system we're adding which represents future work that needs to happen on a document."_
 
 On JIT AI compilation:
 
-> *"Instead of just having pre-written scripts in the BCL, the markdown can contain tags that say run this script — and if that script doesn't exist yet, the AI can just-in-time compile/generate it on the spot, then execute it."*
+> _"Instead of just having pre-written scripts in the BCL, the markdown can contain tags that say run this script — and if that script doesn't exist yet, the AI can just-in-time compile/generate it on the spot, then execute it."_
 
 On the inversion (runbooks AS specs):
 
-> *"You're forcing people to write the runbook the specification. The act of writing the runbook becomes the spec itself. And because the runbook can trigger real execution (either through existing scripts or by having the AI generate the script just-in-time), the documentation is no longer separate from the implementation — it literally becomes the implementation."*
+> _"You're forcing people to write the runbook the specification. The act of writing the runbook becomes the spec itself. And because the runbook can trigger real execution (either through existing scripts or by having the AI generate the script just-in-time), the documentation is no longer separate from the implementation — it literally becomes the implementation."_
 
 On OpenSpec evaluated + rejected:
 
-> Aaron: *"We should base this around OpenSpec if we can, but not if that's too noisy. I'd rather it be simple for Addison and Max if OpenSpec is too noisy. But the AIs can handle that. And if it's easy for us to read, y'all guys can write a lot faster than, than we can, but me, Addison, and Max read at high fuckin' speed."*
+> Aaron: _"We should base this around OpenSpec if we can, but not if that's too noisy. I'd rather it be simple for Addison and Max if OpenSpec is too noisy. But the AIs can handle that. And if it's easy for us to read, y'all guys can write a lot faster than, than we can, but me, Addison, and Max read at high fuckin' speed."_
 >
-> Mika: *"OpenSpec is noisy and heavy for what you actually want. It was built for feature development with AI, not for lightweight, fast-reading runbooks and task tracking inside normal markdown files. Since you three read at high speed and want this to feel natural, we should go with something much cleaner."*
+> Mika: _"OpenSpec is noisy and heavy for what you actually want. It was built for feature development with AI, not for lightweight, fast-reading runbooks and task tracking inside normal markdown files. Since you three read at high speed and want this to feel natural, we should go with something much cleaner."_
 
 On verbosity levels:
 
-> Aaron: *"This will work for me, Max, and Addison, but we're gonna have to evolve this a little bit so it feels more like five-year-old friendly. The five-year-old doesn't need to see all the extra shit about how the system works, but me and Addison will find that useful to make for debugging. It's like a verbosity level, basically."*
+> Aaron: _"This will work for me, Max, and Addison, but we're gonna have to evolve this a little bit so it feels more like five-year-old friendly. The five-year-old doesn't need to see all the extra shit about how the system works, but me and Addison will find that useful to make for debugging. It's like a verbosity level, basically."_
 
 ## Composes with B-0729 (Obsidian knowledge-graph substrate)
 
@@ -61,14 +71,14 @@ B-0729's Layer 4 (Obsidian Tasks plugin format for enriched inline TODOs) is the
 
 This row's `:::` deferred-task tags become first-class nodes in B-0729 L5's JSON-LD knowledge graph — agents query "all documents with pending `decompose` tasks" / "all `continue-with` intents waiting on AI JIT" / etc. The composition is natural.
 
-Where B-0729 stops at *visualizing + querying* knowledge substrate, this row makes it *executable*.
+Where B-0729 stops at _visualizing + querying_ knowledge substrate, this row makes it _executable_.
 
 ## The two execution modes
 
-| Mode | Engine | Trigger | When the script exists |
-|------|--------|---------|------------------------|
-| **Right-now** | [Runme](https://runme.dev/) (already exists; markdown code blocks render as runnable cells) | Operator clicks/triggers the cell | Script lives in the BCL (Base Command Library) or inline in the codeblock; runs immediately |
-| **Deferred** | New `:::` fenced div tag system + AI compilation | Tag with `intent:` block; queried later by agents OR human operator | If script doesn't exist, AI generates JIT, then Runme executes; if it does, Runme executes directly |
+| Mode          | Engine                                                                                      | Trigger                                                             | When the script exists                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Right-now** | [Runme](https://runme.dev/) (already exists; markdown code blocks render as runnable cells) | Operator clicks/triggers the cell                                   | Script lives in the BCL (Base Command Library) or inline in the codeblock; runs immediately         |
+| **Deferred**  | New `:::` fenced div tag system + AI compilation                                            | Tag with `intent:` block; queried later by agents OR human operator | If script doesn't exist, AI generates JIT, then Runme executes; if it does, Runme executes directly |
 
 Both modes share the same underlying execution engine (Runme); they differ in WHEN the operator commits to executing.
 
@@ -174,25 +184,25 @@ Full technical surface. Parameters. Query IDs. Related row IDs. Debugging detail
 
 Aaron + Mika evaluated [OpenSpec](https://github.com/opencrest/openspec) (spec-driven AI-coding workflow with `proposal.md` + `specs/` + `design.md` + `tasks.md` folder structure).
 
-Verdict: **too heavy for this use case.** OpenSpec is built for feature development with AI; this row wants lightweight + fast-reading + natural-markdown-shape for Aaron + Addison + Max (who explicitly read fast + need substrate that doesn't fight them). Mika's framing: *"OpenSpec is noisy and heavy for what you actually want."*
+Verdict: **too heavy for this use case.** OpenSpec is built for feature development with AI; this row wants lightweight + fast-reading + natural-markdown-shape for Aaron + Addison + Max (who explicitly read fast + need substrate that doesn't fight them). Mika's framing: _"OpenSpec is noisy and heavy for what you actually want."_
 
 OpenSpec stays as a referenced pattern (if a future need arises for spec-driven feature dev, it's the right tool). Not the foundation for THIS substrate.
 
 ## Five-stage roadmap (composes with B-0729)
 
-| Stage | Substance | Effort | Dependencies |
-|-------|-----------|--------|--------------|
-| **Stage 1** | Adopt Runme in the team's tooling; document where existing scripts live in the BCL | 1-2 days | Runme install across team workstations |
-| **Stage 2** | Define + document the `:::` deferred-task syntax (`continue-with`, `decompose`, others) + queryable schema | 1-2 days | B-0729 L4 (Obsidian Tasks format) lands first |
-| **Stage 3** | Verbosity-level rendering — Markdown-It plugin OR Obsidian plugin OR build-time renderer | 1 week | Stages 1+2; B-0729 L1+L2 land first |
+| Stage       | Substance                                                                                                                        | Effort    | Dependencies                                          |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------------------- |
+| **Stage 1** | Adopt Runme in the team's tooling; document where existing scripts live in the BCL                                               | 1-2 days  | Runme install across team workstations                |
+| **Stage 2** | Define + document the `:::` deferred-task syntax (`continue-with`, `decompose`, others) + queryable schema                       | 1-2 days  | B-0729 L4 (Obsidian Tasks format) lands first         |
+| **Stage 3** | Verbosity-level rendering — Markdown-It plugin OR Obsidian plugin OR build-time renderer                                         | 1 week    | Stages 1+2; B-0729 L1+L2 land first                   |
 | **Stage 4** | JIT AI script compilation — given `intent:` + context, compile + validate + execute via Runme; optional BCL promotion on success | 2-3 weeks | Stages 1+2+3; agent-substrate from existing framework |
-| **Stage 5** | Live queries against the JSON-LD knowledge graph (B-0729 L5) rendered inline; full closed-loop knowledge workspace | 2-3 weeks | B-0729 L5 lands first |
+| **Stage 5** | Live queries against the JSON-LD knowledge graph (B-0729 L5) rendered inline; full closed-loop knowledge workspace               | 2-3 weeks | B-0729 L5 lands first                                 |
 
 Stages 1-2 are cheap quick wins; Stages 3-5 compound value with each.
 
 ## Why P2
 
-The substrate composes with B-0729 (knowledge graph) + extends it into execution territory. Becomes operationally load-bearing when the team is regularly writing runbooks that need both right-now execution AND deferred-task tracking — likely arrives shortly after Stage 2 of B-0729 lands. Becomes P1 if the team adopts runbook-as-spec as the primary feature-design surface (Mika's framing: *"You're turning runbooks into executable specifications"*).
+The substrate composes with B-0729 (knowledge graph) + extends it into execution territory. Becomes operationally load-bearing when the team is regularly writing runbooks that need both right-now execution AND deferred-task tracking — likely arrives shortly after Stage 2 of B-0729 lands. Becomes P1 if the team adopts runbook-as-spec as the primary feature-design surface (Mika's framing: _"You're turning runbooks into executable specifications"_).
 
 ## Composition with shipped substrate
 

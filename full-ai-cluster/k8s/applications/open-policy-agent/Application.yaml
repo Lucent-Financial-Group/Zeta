@@ -7,7 +7,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-25"
   name: open-policy-agent
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -21,10 +21,10 @@ spec:
         controllerManager:
           metricsPort: 8888
         validatingWebhookFailurePolicy: Fail
-        mutatingWebhookFailurePolicy: Ignore   # safer default while iterating
+        mutatingWebhookFailurePolicy: Ignore # safer default while iterating
   destination:
     server: https://kubernetes.default.svc
     namespace: gatekeeper-system
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [CreateNamespace=true, ServerSideApply=true]

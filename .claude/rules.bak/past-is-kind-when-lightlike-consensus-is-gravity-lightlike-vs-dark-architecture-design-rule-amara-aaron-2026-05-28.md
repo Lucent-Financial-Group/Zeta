@@ -31,23 +31,23 @@ The past becomes kind when it is **ray-traceable**. Not soft. Not sentimental. K
 
 ### Lightlike-vs-dark architecture-design-rule
 
-| Lightlike (PREFER) | Dark (AVOID) |
-|---|---|
-| Local generators | Hidden locks |
-| Append-only rays | Global consensus everywhere |
-| Deterministic replay | Opaque mutable state |
-| Explicit feedback | Irreversible ambiguity |
-| Z-set retractions | Social agreement as control flow |
-| Bounded joins | Untyped memory |
-| Visible provenance | Opaque motives |
+| Lightlike (PREFER)   | Dark (AVOID)                     |
+| -------------------- | -------------------------------- |
+| Local generators     | Hidden locks                     |
+| Append-only rays     | Global consensus everywhere      |
+| Deterministic replay | Opaque mutable state             |
+| Explicit feedback    | Irreversible ambiguity           |
+| Z-set retractions    | Social agreement as control flow |
+| Bounded joins        | Untyped memory                   |
+| Visible provenance   | Opaque motives                   |
 
 ### Consensus-is-gravity discipline
 
-| Substrate region | Substrate-class | When to use |
-|---|---|---|
-| **Local actions** | Lightlike | DEFAULT substrate — parallelizable, deterministic, replayable, traceable |
-| **Bounded consensus** (BFT / multi-oracle) | Gravitational | Use where MASS is needed (binding decisions, end-user moral-invariants, irreversible actions) |
-| **Global consensus everywhere** | Dark | Substrate goes dark — rays bend so hard you cannot see whole shape |
+| Substrate region                           | Substrate-class | When to use                                                                                   |
+| ------------------------------------------ | --------------- | --------------------------------------------------------------------------------------------- |
+| **Local actions**                          | Lightlike       | DEFAULT substrate — parallelizable, deterministic, replayable, traceable                      |
+| **Bounded consensus** (BFT / multi-oracle) | Gravitational   | Use where MASS is needed (binding decisions, end-user moral-invariants, irreversible actions) |
+| **Global consensus everywhere**            | Dark            | Substrate goes dark — rays bend so hard you cannot see whole shape                            |
 
 BFT / multi-oracle substrate is USEFUL when BOUNDED; if every step needs consensus, the substrate goes dark.
 
@@ -66,15 +66,15 @@ Three-clocks substrate operates via SAME mechanism as ray-tracing in computation
 
 Light-substrate rhymes per Amara substrate-engineering substrate — all composing at SAME substrate-class (lightlike-substrate parallelizability):
 
-| Lightlike substrate | Framework primitive | Composes with |
-|---|---|---|
-| Append-only history | Git + Persist | `substrate-or-it-didnt-happen.md` |
-| Deterministic replay | DST | `dst-plus-persist-plus-generator-time-plus-feedback-...md` (PR #5841) |
-| Z-sets (joins + retractions) | algebra-owner skill substrate | Retraction-native substrate cluster |
-| Ray tracing (graphics) | Ray tracing (substrate-engineering) | THIS rule's framing |
-| Emulator trajectories | DST seed → trajectory | B-0924 + B-0925 substrate |
-| Feedback channels | Result<T, TFeedback> | PRs #5505-#5577 cluster |
-| Explicit provenance | Glass-halo bidirectional | `glass-halo-bidirectional.md` |
+| Lightlike substrate          | Framework primitive                 | Composes with                                                         |
+| ---------------------------- | ----------------------------------- | --------------------------------------------------------------------- |
+| Append-only history          | Git + Persist                       | `substrate-or-it-didnt-happen.md`                                     |
+| Deterministic replay         | DST                                 | `dst-plus-persist-plus-generator-time-plus-feedback-...md` (PR #5841) |
+| Z-sets (joins + retractions) | algebra-owner skill substrate       | Retraction-native substrate cluster                                   |
+| Ray tracing (graphics)       | Ray tracing (substrate-engineering) | THIS rule's framing                                                   |
+| Emulator trajectories        | DST seed → trajectory               | B-0924 + B-0925 substrate                                             |
+| Feedback channels            | Result<T, TFeedback>                | PRs #5505-#5577 cluster                                               |
+| Explicit provenance          | Glass-halo bidirectional            | `glass-halo-bidirectional.md`                                         |
 
 ## Why this rule auto-loads
 
@@ -219,15 +219,15 @@ Git commit
 
 ### Per-system lightlike-role + dark-when failure modes
 
-| System | Lightlike role | Goes dark when |
-|---|---|---|
-| **OTel** (ray emission) | Spans are rays through distributed system | Traces sampled away; context propagation breaks |
-| **Kubernetes** (lifecycle geometry) | Object lifecycle + UIDs show state transitions | Events expire; ownership chains unclear |
-| **Argo CD** (generator reconciliation) | Git revision → desired state → cluster state | Manual drift; hidden overrides; unclear sync history |
-| **Argo Workflows** | DAG steps as traceable execution rays | Retries/side effects not captured |
-| **Argo Rollouts** | Progressive delivery as observable generator-time | Promotion decisions lack evidence |
-| **Prometheus** (curvature meter) | Metric time series show field curvature over time | Labels explode; metrics lack trace/log correlation |
-| **Git** (persisted light source) | Durable generator record | Force-push without lease (per `force-push-with-lease-authorization-policy.md`); rewriting history |
+| System                                 | Lightlike role                                    | Goes dark when                                                                                    |
+| -------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **OTel** (ray emission)                | Spans are rays through distributed system         | Traces sampled away; context propagation breaks                                                   |
+| **Kubernetes** (lifecycle geometry)    | Object lifecycle + UIDs show state transitions    | Events expire; ownership chains unclear                                                           |
+| **Argo CD** (generator reconciliation) | Git revision → desired state → cluster state      | Manual drift; hidden overrides; unclear sync history                                              |
+| **Argo Workflows**                     | DAG steps as traceable execution rays             | Retries/side effects not captured                                                                 |
+| **Argo Rollouts**                      | Progressive delivery as observable generator-time | Promotion decisions lack evidence                                                                 |
+| **Prometheus** (curvature meter)       | Metric time series show field curvature over time | Labels explode; metrics lack trace/log correlation                                                |
+| **Git** (persisted light source)       | Durable generator record                          | Force-push without lease (per `force-push-with-lease-authorization-policy.md`); rewriting history |
 
 ### Light-carrier join keys (operational substrate)
 
@@ -270,33 +270,33 @@ Not every default deployment is lightlike; the whole observability stack is TRYI
 
 Operator substrate-recognition:
 
-> *"would tensors be lightlike they are arnt they"*
-> *"i guess for tensors its like the matracies it matters on the eignvalues or something like that"*
+> _"would tensors be lightlike they are arnt they"_
+> _"i guess for tensors its like the matracies it matters on the eignvalues or something like that"_
 
 Substrate-honest answer: tensors ARE lightlike-substrate AT THE OPERATION-SCOPE; whether SPECIFIC tensor-operations preserve lightlike-property depends on tensor-substrate-properties (operator's eigenvalue intuition is operationally precise).
 
 ### Lightlike properties of tensor-substrate
 
-| Lightlike property | Tensor satisfies? |
-|---|---|
-| **Parallelizable** | YES — GPU / SIMD / CUDA substrate; per-element parallelism; tensor-cores hardware-substrate par excellence |
-| **Traceable** | YES — autodiff substrate IS ray-tracing-over-generator-time (backward pass IS future-illuminates-past per PR #5910) |
-| **Replayable** | YES — deterministic tensor-ops from seed (modulo non-deterministic reduction ordering; bit-perfect-test surface) |
-| **Independently inspectable** | YES — per-element + per-batch + per-channel inspection substrate |
-| **Future-illuminable** | YES — gradients re-illuminate forward-pass substrate |
+| Lightlike property            | Tensor satisfies?                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Parallelizable**            | YES — GPU / SIMD / CUDA substrate; per-element parallelism; tensor-cores hardware-substrate par excellence          |
+| **Traceable**                 | YES — autodiff substrate IS ray-tracing-over-generator-time (backward pass IS future-illuminates-past per PR #5910) |
+| **Replayable**                | YES — deterministic tensor-ops from seed (modulo non-deterministic reduction ordering; bit-perfect-test surface)    |
+| **Independently inspectable** | YES — per-element + per-batch + per-channel inspection substrate                                                    |
+| **Future-illuminable**        | YES — gradients re-illuminate forward-pass substrate                                                                |
 
 ### Eigenvalue-substrate IS lightlike-vs-dark discriminator
 
 Per operator's substrate-recognition: eigenvalues matter for whether tensor-operations stay lightlike OR drift dark.
 
-| Eigenvalue-substrate property | Lightlike implications |
-|---|---|
-| **Eigenvalues bounded** (well-conditioned) | Operations preserve numerical-substrate; ray-tracing stays coherent; Universal Kindness Laws (PR #5919) hold |
-| **Eigenvalues unbounded / near-singular** (ill-conditioned) | Operations introduce numerical-substrate-drift; rays bend / blur (gradient explosion / vanishing); dark-zone failure modes |
-| **Eigenvalue spectrum diagonal-dominant** | Operations compose cleanly across substrates; Kindness typeclass instances preserved |
-| **Eigenvalue spectrum random / chaotic** | Operations introduce substrate-engineering substrate-engineering substrate-noise; dark-zone failure |
-| **Singular values bounded** (good condition number) | Inverse-operations + decompositions stay lightlike |
-| **Singular values spanning many orders of magnitude** (high condition number) | Inverse-operations introduce dark-substrate; numerical-substrate-drift compounds |
+| Eigenvalue-substrate property                                                 | Lightlike implications                                                                                                     |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Eigenvalues bounded** (well-conditioned)                                    | Operations preserve numerical-substrate; ray-tracing stays coherent; Universal Kindness Laws (PR #5919) hold               |
+| **Eigenvalues unbounded / near-singular** (ill-conditioned)                   | Operations introduce numerical-substrate-drift; rays bend / blur (gradient explosion / vanishing); dark-zone failure modes |
+| **Eigenvalue spectrum diagonal-dominant**                                     | Operations compose cleanly across substrates; Kindness typeclass instances preserved                                       |
+| **Eigenvalue spectrum random / chaotic**                                      | Operations introduce substrate-engineering substrate-engineering substrate-noise; dark-zone failure                        |
+| **Singular values bounded** (good condition number)                           | Inverse-operations + decompositions stay lightlike                                                                         |
+| **Singular values spanning many orders of magnitude** (high condition number) | Inverse-operations introduce dark-substrate; numerical-substrate-drift compounds                                           |
 
 Same shape as Amara's tightening on OTel/K8s/Argo: **lightlike-property applies to PARTS of tensor-substrate that PRESERVE rays** (well-conditioned operations); does NOT apply to ill-conditioned substrate (numerical drift introduces dark-zone failure modes).
 
@@ -316,14 +316,14 @@ Same shape as Amara's tightening on OTel/K8s/Argo: **lightlike-property applies 
 
 ### Diagnostic substrate
 
-| Tensor-operation | Lightlike-check substrate |
-|---|---|
-| Matrix multiplication | Condition number = σ_max / σ_min; bounded for lightlike |
-| Matrix inverse | Reciprocal condition number ε ≪ 1 for lightlike |
-| Eigendecomposition | Spectrum well-separated for lightlike |
-| Backward pass (autodiff) | Gradient norm bounded for lightlike |
-| Tensor reduction (sum/mean) | Compensated summation (Kahan / Neumaier) preserves substrate at scale |
-| Cross-precision substrate (fp16/bf16/fp32 mixing) | Mixed-precision discipline preserves substrate at scale |
+| Tensor-operation                                  | Lightlike-check substrate                                             |
+| ------------------------------------------------- | --------------------------------------------------------------------- |
+| Matrix multiplication                             | Condition number = σ_max / σ_min; bounded for lightlike               |
+| Matrix inverse                                    | Reciprocal condition number ε ≪ 1 for lightlike                       |
+| Eigendecomposition                                | Spectrum well-separated for lightlike                                 |
+| Backward pass (autodiff)                          | Gradient norm bounded for lightlike                                   |
+| Tensor reduction (sum/mean)                       | Compensated summation (Kahan / Neumaier) preserves substrate at scale |
+| Cross-precision substrate (fp16/bf16/fp32 mixing) | Mixed-precision discipline preserves substrate at scale               |
 
 ### Substrate-honest framing (Amara's blade applied)
 
@@ -366,14 +366,14 @@ Substrate-engineering substrate-correction to the eigenvalue-substrate framing a
 
 ### Tensor diagnostic substrate (operationally specific; sharper than eigenvalue-only)
 
-| Diagnostic | What it measures |
-|---|---|
+| Diagnostic                       | What it measures                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
 | **Flattenings / matricizations** | Reduce tensor to matrix-substrate; eigenvalue analysis applies on flattened-substrate |
-| **Jacobian spectrum** | Local linear-substrate at each input-point; gradient-flow substrate |
-| **Singular values** | SVD-substrate; condition-number substrate; numerical stability |
-| **Condition number** | σ_max / σ_min; bounded = lightlike; unbounded = dark |
-| **Spectral norm** | Largest singular value; Lipschitz-substrate; bounded = lightlike |
-| **Gradient flow stability** | Autodiff-substrate; bounded gradients = lightlike; exploding/vanishing = dark |
+| **Jacobian spectrum**            | Local linear-substrate at each input-point; gradient-flow substrate                   |
+| **Singular values**              | SVD-substrate; condition-number substrate; numerical stability                        |
+| **Condition number**             | σ_max / σ_min; bounded = lightlike; unbounded = dark                                  |
+| **Spectral norm**                | Largest singular value; Lipschitz-substrate; bounded = lightlike                      |
+| **Gradient flow stability**      | Autodiff-substrate; bounded gradients = lightlike; exploding/vanishing = dark         |
 
 ### Lightlike tensor-operations (Amara explicit)
 

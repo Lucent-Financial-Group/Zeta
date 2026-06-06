@@ -97,12 +97,12 @@ Per-recipient `kem_ct` + `wrapped_cek` is the RFC 9629 shape (one KEM per recipi
 
 ```typescript
 // types.ts
-export type Identity = string;  // e.g., "otto-cli@zeta"
+export type Identity = string; // e.g., "otto-cli@zeta"
 
 export type AlgId =
-  | "ML-KEM-768+X25519"   // XWing; default
-  | "ML-KEM-768"          // ML-KEM standalone
-  | "Saber"               // Future; deferred to TS-native impl
+  | "ML-KEM-768+X25519" // XWing; default
+  | "ML-KEM-768" // ML-KEM standalone
+  | "Saber" // Future; deferred to TS-native impl
   | "NTRU-Prime-sntrup761"
   | "Frodo-KEM-640";
 
@@ -114,8 +114,8 @@ export type RecipientKey = {
   pqKemPublic: Uint8Array;
   dsaAlg: SigAlgId;
   dsaPublic: Uint8Array;
-  validFrom: string;       // ISO 8601
-  validUntil?: string;     // forward-revocation surface
+  validFrom: string; // ISO 8601
+  validUntil?: string; // forward-revocation surface
 };
 
 export type RecipientEntry = {
@@ -141,7 +141,7 @@ export type EnvelopeSig = {
 
 export type FileEnvelope = {
   v: 1;
-  ctx: string;             // "zeta.git-crypt.file.v1"
+  ctx: string; // "zeta.git-crypt.file.v1"
   alg: EnvelopeAlg;
   recipients: ReadonlyArray<RecipientEntry>;
   content_nonce: Uint8Array;
@@ -151,17 +151,17 @@ export type FileEnvelope = {
 
 export type SeedSource =
   | { kind: "random-bytes" }
-  | { kind: "adinkra-derived"; descriptor: AdinkraDescriptor }   // future per B-0623
-  | { kind: "hsm-derived"; slot: string };                       // future per B-0634
+  | { kind: "adinkra-derived"; descriptor: AdinkraDescriptor } // future per B-0623
+  | { kind: "hsm-derived"; slot: string }; // future per B-0634
 ```
 
 ## Cipher dispatch (parameterized hedge)
 
 ```typescript
 // ciphers/registry.ts
-import { ml_kem768 } from '@noble/post-quantum/ml-kem';
-import { xwing } from '@noble/post-quantum/hybrid';
-import { ml_dsa65 } from '@noble/post-quantum/ml-dsa';
+import { ml_kem768 } from "@noble/post-quantum/ml-kem";
+import { xwing } from "@noble/post-quantum/hybrid";
+import { ml_dsa65 } from "@noble/post-quantum/ml-dsa";
 
 export interface KemCipher {
   algId: AlgId;
@@ -178,14 +178,14 @@ export interface SigCipher {
 }
 
 const kemRegistry = new Map<AlgId, KemCipher>([
-  ["ML-KEM-768+X25519", xwingCipher],     // primary
-  ["ML-KEM-768", mlKem768Cipher],         // alternate
+  ["ML-KEM-768+X25519", xwingCipher], // primary
+  ["ML-KEM-768", mlKem768Cipher], // alternate
   // Saber/NTRU-Prime/Frodo register here when TS-native impls mature
 ]);
 
 const sigRegistry = new Map<SigAlgId, SigCipher>([
-  ["ML-DSA-65", mlDsa65Cipher],           // primary
-  ["SLH-DSA-SHA2-128s", slhDsaCipher],    // hash-based hedge per B-0883.2
+  ["ML-DSA-65", mlDsa65Cipher], // primary
+  ["SLH-DSA-SHA2-128s", slhDsaCipher], // hash-based hedge per B-0883.2
 ]);
 
 export function getKem(algId: AlgId): KemCipher {
@@ -207,11 +207,11 @@ Cipher swap = register the new cipher's impl; envelope alg-id selects it. No str
 
 ```typescript
 // files/encrypt.ts
-import { hkdf } from '@noble/hashes/hkdf';
-import { sha256 } from '@noble/hashes/sha256';
-import { chacha20poly1305 } from '@noble/ciphers/chacha';
-import { randomBytes } from '@noble/hashes/utils';
-import * as cbor from '@stablelib/cbor';  // or another mature TS CBOR lib (Sonatype-gated)
+import { hkdf } from "@noble/hashes/hkdf";
+import { sha256 } from "@noble/hashes/sha256";
+import { chacha20poly1305 } from "@noble/ciphers/chacha";
+import { randomBytes } from "@noble/hashes/utils";
+import * as cbor from "@stablelib/cbor"; // or another mature TS CBOR lib (Sonatype-gated)
 
 export async function encryptFile(
   plaintext: Uint8Array,
@@ -225,7 +225,7 @@ export async function encryptFile(
 
   // 2. Per-recipient KEM encapsulation + CEK wrap
   const kem = getKem(alg.kem);
-  const recipientEntries: RecipientEntry[] = recipients.map(r => {
+  const recipientEntries: RecipientEntry[] = recipients.map((r) => {
     const { cipherText, sharedSecret } = kem.encapsulate(r.pqKemPublic);
     const kdfInfo = new TextEncoder().encode(`zeta.git-crypt.cek-wrap.v1:${r.identity}`);
     const wrapKey = hkdf(sha256, sharedSecret, undefined, kdfInfo, 32);
@@ -238,7 +238,14 @@ export async function encryptFile(
 
   // 4. Sign the envelope (everything except the signature itself)
   const sig = getSig(signer.alg);
-  const toSign = cbor.encode({ v: 1, ctx: "zeta.git-crypt.file.v1", alg, recipients: recipientEntries, content_nonce: contentNonce, content_ct: contentCt });
+  const toSign = cbor.encode({
+    v: 1,
+    ctx: "zeta.git-crypt.file.v1",
+    alg,
+    recipients: recipientEntries,
+    content_nonce: contentNonce,
+    content_ct: contentCt,
+  });
   const sigValue = sig.sign(toSign, signer.secretKey, "zeta.git-crypt.file.v1");
 
   return {
@@ -261,13 +268,20 @@ export async function decryptFile(
   const signerInfo = signerPublicKeys.get(envelope.sig.signer);
   if (!signerInfo) return err("unknown-signer");
   const sig = getSig(signerInfo.alg);
-  const toVerify = cbor.encode({ v: envelope.v, ctx: envelope.ctx, alg: envelope.alg, recipients: envelope.recipients, content_nonce: envelope.content_nonce, content_ct: envelope.content_ct });
+  const toVerify = cbor.encode({
+    v: envelope.v,
+    ctx: envelope.ctx,
+    alg: envelope.alg,
+    recipients: envelope.recipients,
+    content_nonce: envelope.content_nonce,
+    content_ct: envelope.content_ct,
+  });
   if (!sig.verify(envelope.sig.value, toVerify, signerInfo.publicKey, envelope.sig.context)) {
     return err("signature-invalid");
   }
 
   // 2. Find recipient entry for this identity
-  const entry = envelope.recipients.find(r => r.id === recipient.identity);
+  const entry = envelope.recipients.find((r) => r.id === recipient.identity);
   if (!entry) return err("not-a-recipient");
 
   // 3. KEM decapsulate → shared secret → unwrap CEK
@@ -281,7 +295,7 @@ export async function decryptFile(
   try {
     cek = chacha20poly1305(wrapKey).decrypt(new Uint8Array(12), entry.wrapped_cek);
   } catch {
-    return err("cek-unwrap-failed");   // ciphertext malformed OR wrong recipient
+    return err("cek-unwrap-failed"); // ciphertext malformed OR wrong recipient
   }
 
   // 4. Decrypt content with CEK
@@ -308,20 +322,20 @@ export async function decryptFile(
 // Reads encrypted blob from disk; decrypts; prints plaintext to stdout
 // Operator's recipient secret is loaded from B-0852 USB-bound credentials (per B-0884)
 
-import { readFileSync } from 'fs';
-import * as cbor from '@stablelib/cbor';
-import { decryptFile } from './decrypt';
+import { readFileSync } from "fs";
+import * as cbor from "@stablelib/cbor";
+import { decryptFile } from "./decrypt";
 
 async function main() {
   const path = process.argv[2];
   if (!path) {
-    console.error('Usage: textconv.ts <encrypted-file-path>');
+    console.error("Usage: textconv.ts <encrypted-file-path>");
     process.exit(2);
   }
   const encBlob = readFileSync(path);
   const envelope = cbor.decode(encBlob) as FileEnvelope;
-  const recipient = await loadOperatorRecipient();  // composes with B-0884 USB-bound creds
-  const signers = await loadSignerPublicKeys();     // .zeta-crypt/recipients.json
+  const recipient = await loadOperatorRecipient(); // composes with B-0884 USB-bound creds
+  const signers = await loadSignerPublicKeys(); // .zeta-crypt/recipients.json
   const result = await decryptFile(envelope, recipient, signers);
   if (result.ok) {
     process.stdout.write(result.value);
@@ -371,7 +385,7 @@ export async function addRecipient(newRecipient: RecipientKey): Promise<void> {
 export async function revokeRecipient(identity: Identity): Promise<void> {
   // Forward-revocation: drop from current recipient set + re-encrypt all working-tree files
   const current = loadRecipients();
-  current.recipients = current.recipients.filter(r => r.identity !== identity);
+  current.recipients = current.recipients.filter((r) => r.identity !== identity);
   saveRecipients(current);
 
   // Re-encrypt every encrypted file in working tree under new recipient set
@@ -382,9 +396,9 @@ export async function revokeRecipient(identity: Identity): Promise<void> {
 export async function rotateKeyPair(identity: Identity): Promise<void> {
   // Generate new keypair for identity; update recipient entry; re-encrypt working tree
   const current = loadRecipients();
-  const idx = current.recipients.findIndex(r => r.identity === identity);
+  const idx = current.recipients.findIndex((r) => r.identity === identity);
   if (idx < 0) throw new Error(`Unknown identity: ${identity}`);
-  const seed = generateSeed({ kind: "random-bytes" });  // or "adinkra-derived" per B-0623
+  const seed = generateSeed({ kind: "random-bytes" }); // or "adinkra-derived" per B-0623
   const kem = getKem(current.recipients[idx].pqKemAlg);
   const newKeyPair = kem.keygen(seed);
   // Distribute newKeyPair.secretKey to the identity owner via secure channel (B-0884 USB-bound creds)
@@ -418,18 +432,18 @@ bun tools/crypto/better-git-crypt/cli/main.ts rotate --identity otto-cli@zeta
 
 Per the 11-sub-row breakdown in the B-0890 design memo's analog (apply same pattern):
 
-| Phase | Sub-row | Scope | Effort |
-|---|---|---|---|
-| **P1** | B-0883.6 | Types + envelope CBOR + cipher registry skeleton | 2-3 days |
-| **P2** | B-0883.7 | Primary cipher impls (XWing + ML-DSA-65 + ChaCha20-Poly1305) wired to registry | 3-5 days |
-| **P3** | B-0883.8 | Encrypt + decrypt + signature verify + KAT tests (per FIPS 203/204 test vectors) | 3-5 days |
-| **P4** | B-0883.9 | Recipient management (.zeta-crypt/recipients.json + add/revoke/rotate) | 2-3 days |
-| **P5** | B-0883.10 | Git textconv integration + smudge/clean filters | 3-5 days |
-| **P6** | B-0883.11 | CLI surface (`bun tools/.../cli/main.ts`) | 2-3 days |
-| **P7** | B-0883.12 | B-0884 zflash USB-bound integration (operator secret loaded from USB blob) | 2-3 days |
-| **P8** | B-0883.13 | B-0885 Otto private state rollout (consumer; ASAP target) | 2-4 days |
-| **P9** | B-0883.14 | Empirical validation (round-trip; concurrent recipients; rotation; revocation) | 3-5 days |
-| **P10** | B-0883.15 | Documentation + skill update (`.claude/skills/better-git-crypt/SKILL.md`) | 1-2 days |
+| Phase   | Sub-row   | Scope                                                                            | Effort   |
+| ------- | --------- | -------------------------------------------------------------------------------- | -------- |
+| **P1**  | B-0883.6  | Types + envelope CBOR + cipher registry skeleton                                 | 2-3 days |
+| **P2**  | B-0883.7  | Primary cipher impls (XWing + ML-DSA-65 + ChaCha20-Poly1305) wired to registry   | 3-5 days |
+| **P3**  | B-0883.8  | Encrypt + decrypt + signature verify + KAT tests (per FIPS 203/204 test vectors) | 3-5 days |
+| **P4**  | B-0883.9  | Recipient management (.zeta-crypt/recipients.json + add/revoke/rotate)           | 2-3 days |
+| **P5**  | B-0883.10 | Git textconv integration + smudge/clean filters                                  | 3-5 days |
+| **P6**  | B-0883.11 | CLI surface (`bun tools/.../cli/main.ts`)                                        | 2-3 days |
+| **P7**  | B-0883.12 | B-0884 zflash USB-bound integration (operator secret loaded from USB blob)       | 2-3 days |
+| **P8**  | B-0883.13 | B-0885 Otto private state rollout (consumer; ASAP target)                        | 2-4 days |
+| **P9**  | B-0883.14 | Empirical validation (round-trip; concurrent recipients; rotation; revocation)   | 3-5 days |
+| **P10** | B-0883.15 | Documentation + skill update (`.claude/skills/better-git-crypt/SKILL.md`)        | 1-2 days |
 
 **Total estimate:** 22-38 days of focused implementation. P1+P2+P3 (foundation) → P5 (textconv) → P7+P8 (B-0884/B-0885 integration) is the load-bearing critical path; P4/P6/P9/P10 are additive but improve operator-facing UX.
 
@@ -470,7 +484,7 @@ The memo is research-grade substrate per `docs/research/` conventions; lands in 
 
 After this memo was drafted, operator sent substantial scope-sharpening that reframes B-0883 v1:
 
-> *"a few things 1 we don't need to encrypt everything we are glass halo open by default agents and humans have to earn encryption budget and if we can do plane text encryption somehow instead of binary that would be best for git, if not we can discuss. Playbooks have runme and assumed jit when scripts dont exist and continue-with and other trigger annotations for agent swarm interaction, also playbook authoring is not just for human intent but also agent intent we should keep personal playbooks in the personas directory while having system ones in docs i guess or playbooks folder. we also have a lot of backlog around this. yes we are assuming good actors for now, we will harden later so we can work in that order just looking for some basic privacy but not stuck in old encryption from the start."*
+> _"a few things 1 we don't need to encrypt everything we are glass halo open by default agents and humans have to earn encryption budget and if we can do plane text encryption somehow instead of binary that would be best for git, if not we can discuss. Playbooks have runme and assumed jit when scripts dont exist and continue-with and other trigger annotations for agent swarm interaction, also playbook authoring is not just for human intent but also agent intent we should keep personal playbooks in the personas directory while having system ones in docs i guess or playbooks folder. we also have a lot of backlog around this. yes we are assuming good actors for now, we will harden later so we can work in that order just looking for some basic privacy but not stuck in old encryption from the start."_
 
 6 substantive sharpenings:
 
@@ -492,10 +506,10 @@ Per B-0867.21 two-path interface ALREADY says this; operator re-emphasizing. Enc
 
 ### Sharpening 5 — Personal vs system playbook directory convention
 
-| Scope | Location |
-|---|---|
-| Personal (per-persona) | `memory/persona/{persona}/playbooks/{name}.md` |
-| System (shared, framework-level) | `docs/playbooks/{name}.md` |
+| Scope                            | Location                                       |
+| -------------------------------- | ---------------------------------------------- |
+| Personal (per-persona)           | `memory/persona/{persona}/playbooks/{name}.md` |
+| System (shared, framework-level) | `docs/playbooks/{name}.md`                     |
 
 **Filed as B-0867.22.**
 

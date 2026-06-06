@@ -49,6 +49,7 @@ This slice adds:
 ### `--loop <ms>` flag
 
 Add to `ShadowConfig`:
+
 ```typescript
 loopMs?: number; // undefined = no outer loop (manual restart); >0 = embedded loop with outer interval
 ```

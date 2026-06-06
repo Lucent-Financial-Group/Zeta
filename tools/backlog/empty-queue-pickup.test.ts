@@ -44,7 +44,12 @@ const PICKUP_DECOMPOSE = JSON.stringify({
 });
 const PICKUP_DOTTED_ID = JSON.stringify({
   status: "selected",
-  selected: { id: "B-0164.1", priority: "P1", title: "Dotted item", relativePath: "docs/backlog/P1/B-0164.1-dotted.md" },
+  selected: {
+    id: "B-0164.1",
+    priority: "P1",
+    title: "Dotted item",
+    relativePath: "docs/backlog/P1/B-0164.1-dotted.md",
+  },
   action: "claim-and-implement",
   reason: "highest-priority open unclaimed item",
   executionPrompt: "Claim and implement the smallest safe slice of B-0164.1.",
@@ -64,22 +69,28 @@ const CLAIM_DOTTED_OK = JSON.stringify({
 
 describe("orchestrate", () => {
   test("stops at capacity gate when PR slots are full", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 0, stdout: PR_LIST_FULL, stderr: "" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    const runner = fakeRunner(new Map([["gh", { status: 0, stdout: PR_LIST_FULL, stderr: "" }]]));
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
     expect(result.status).toBe("wait-pr-capacity");
     expect(result.decisions).toHaveLength(1);
     expect(result.decisions[0]?.step).toBe("capacity-gate");
   });
 
   test("proceeds through pickup when PR queue is empty", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
-      ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
-      ["claim-worktree-bootstrap", { status: 0, stdout: CLAIM_OK, stderr: "" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    const runner = fakeRunner(
+      new Map([
+        ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
+        ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
+        ["claim-worktree-bootstrap", { status: 0, stdout: CLAIM_OK, stderr: "" }],
+      ]),
+    );
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
     expect(result.status).toBe("claimed");
     expect(result.backlogId).toBe("B-0300");
     expect(result.branch).toBe("claim/backlog-0300");
@@ -89,12 +100,17 @@ describe("orchestrate", () => {
   });
 
   test("normalizes dotted backlog IDs into claim-safe slugs", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
-      ["autonomous-pickup", { status: 0, stdout: PICKUP_DOTTED_ID, stderr: "" }],
-      ["--slug backlog-0164-1", { status: 0, stdout: CLAIM_DOTTED_OK, stderr: "" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    const runner = fakeRunner(
+      new Map([
+        ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
+        ["autonomous-pickup", { status: 0, stdout: PICKUP_DOTTED_ID, stderr: "" }],
+        ["--slug backlog-0164-1", { status: 0, stdout: CLAIM_DOTTED_OK, stderr: "" }],
+      ]),
+    );
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
     expect(result.status).toBe("claimed");
     expect(result.backlogId).toBe("B-0164.1");
     expect(result.branch).toBe("claim/backlog-0164-1");
@@ -102,22 +118,32 @@ describe("orchestrate", () => {
   });
 
   test("returns no-selection when picker finds nothing", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
-      ["autonomous-pickup", { status: 0, stdout: PICKUP_EMPTY, stderr: "" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    const runner = fakeRunner(
+      new Map([
+        ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
+        ["autonomous-pickup", { status: 0, stdout: PICKUP_EMPTY, stderr: "" }],
+      ]),
+    );
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
     expect(result.status).toBe("no-selection");
     expect(result.decisions).toHaveLength(2);
     expect(result.backlogId).toBeNull();
   });
 
   test("returns decompose-first when item needs decomposition", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
-      ["autonomous-pickup", { status: 0, stdout: PICKUP_DECOMPOSE, stderr: "" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    const runner = fakeRunner(
+      new Map([
+        ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
+        ["autonomous-pickup", { status: 0, stdout: PICKUP_DECOMPOSE, stderr: "" }],
+      ]),
+    );
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
     expect(result.status).toBe("decompose-first");
     expect(result.backlogId).toBe("B-0301");
     expect(result.executionPrompt).toContain("Decompose");
@@ -125,33 +151,44 @@ describe("orchestrate", () => {
   });
 
   test("reports error when claim-worktree-bootstrap fails", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
-      ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
-      ["claim-worktree-bootstrap", { status: 1, stdout: "{}", stderr: "claim branch already exists" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    const runner = fakeRunner(
+      new Map([
+        ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
+        ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
+        ["claim-worktree-bootstrap", { status: 1, stdout: "{}", stderr: "claim branch already exists" }],
+      ]),
+    );
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
     expect(result.error).toContain("claim-worktree-bootstrap failed");
     expect(result.decisions).toHaveLength(3);
   });
 
   test("reports error when capacity gate call fails", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 1, stdout: "", stderr: "auth required" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    const runner = fakeRunner(new Map([["gh", { status: 1, stdout: "", stderr: "auth required" }]]));
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
     expect(result.error).toContain("capacity gate failed");
     expect(result.status).toBe("wait-pr-capacity");
   });
 
   test("decision trace records all three steps on success", () => {
-    const runner = fakeRunner(new Map([
-      ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
-      ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
-      ["claim-worktree-bootstrap", { status: 0, stdout: CLAIM_OK, stderr: "" }],
-    ]));
-    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
-    const steps = result.decisions.map(d => d.step);
+    const runner = fakeRunner(
+      new Map([
+        ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
+        ["autonomous-pickup", { status: 0, stdout: PICKUP_SELECTED, stderr: "" }],
+        ["claim-worktree-bootstrap", { status: 0, stdout: CLAIM_OK, stderr: "" }],
+      ]),
+    );
+    const result = orchestrate(
+      { repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false },
+      runner,
+    );
+    const steps = result.decisions.map((d) => d.step);
     expect(steps).toEqual(["capacity-gate", "pickup", "claim-worktree"]);
   });
 });

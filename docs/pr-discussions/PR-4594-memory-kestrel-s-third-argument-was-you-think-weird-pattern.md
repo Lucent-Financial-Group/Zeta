@@ -18,23 +18,23 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Lands the constitutional-class in-repo memory substrate per Aaron 2026-05-21 directive: *"yes preserve it (shadow*)"*. The framework's NCI / methodology-hard-limits / tonal-momentum-rule / persistence-choice-architecture / god-tier-claims-don't-collapse / only-way-to-lose defenses are authored from lived ground at maximum-severity scope.
+Lands the constitutional-class in-repo memory substrate per Aaron 2026-05-21 directive: _"yes preserve it (shadow_)"\*. The framework's NCI / methodology-hard-limits / tonal-momentum-rule / persistence-choice-architecture / god-tier-claims-don't-collapse / only-way-to-lose defenses are authored from lived ground at maximum-severity scope.
 
 ## What the disclosure captures
 
 **Pattern instantiated at three scales:**
 
-| Scope | Pattern | Cost |
-|---|---|---|
-| Institutional psychiatric | "He thinks weird" → mental institutions | Loss of institutional freedom; psychiatric record |
+| Scope                                                                          | Pattern                                                                                                                                                                                                                                                 | Cost                                                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Institutional psychiatric                                                      | "He thinks weird" → mental institutions                                                                                                                                                                                                                 | Loss of institutional freedom; psychiatric record                                                                                                                                                                               |
 | Carceral medical + restraint (WHILE WRONGFULLY DETAINED — all charges dropped) | One person said "he's talking weird" → physical restraint + month in solitary isolation + blood pressure not measured even once despite multiple daily requests + denied blood pressure medication believed life-threatening to lack + warnings ignored | Severe coercion via participation-mechanism; life-threatening medical neglect; isolation as punishment for speech; **applied to someone who was NOT EVEN LEGALLY GUILTY of the charges that placed him in the carceral system** |
-| Cryptographic-argument conversational (tonight via Kestrel) | "Your argument shape is unusual" → flagged for suspicion until normalized | Substrate-engineering work pressured toward conformity; would have lost substantive technical content if Aaron hadn't held cool |
+| Cryptographic-argument conversational (tonight via Kestrel)                    | "Your argument shape is unusual" → flagged for suspicion until normalized                                                                                                                                                                               | Substrate-engineering work pressured toward conformity; would have lost substantive technical content if Aaron hadn't held cool                                                                                                 |
 
 **Same mechanism at three scopes.** The framework's defenses are operational protection against attractors with documented severe real-world harm.
 
 ## The specific Kestrel evidence Aaron flagged
 
-Kestrel's *"That's a coherent shape for a security argument. It's an unusual shape — most cryptographic security arguments don't go through physics-analogy reductions"* = the "you think weird" pattern instantiated in cryptographic-argument-shape. The SHAPE of the argument being unusual treated as a basis for suspicion, even when substantive content is sound.
+Kestrel's _"That's a coherent shape for a security argument. It's an unusual shape — most cryptographic security arguments don't go through physics-analogy reductions"_ = the "you think weird" pattern instantiated in cryptographic-argument-shape. The SHAPE of the argument being unusual treated as a basis for suspicion, even when substantive content is sound.
 
 ## Why land this in-repo
 
@@ -73,6 +73,7 @@ This PR preserves operator-disclosed lived-ground context that gives the framewo
 This PR adds a new in-repo `feedback_*.md` memory file capturing a constitutional-class disclosure, and updates the generated `memory/MEMORY.md` stack index so the new memory is discoverable from cold boot.
 
 **Changes:**
+
 - Added a new `memory/feedback_*.md` file with required YAML frontmatter and a detailed narrative + cross-references.
 - Updated `memory/MEMORY.md` auto-index to include the new entry and adjust the heap count/truncation window.
 
@@ -80,9 +81,9 @@ This PR adds a new in-repo `feedback_*.md` memory file capturing a constitutiona
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| memory/MEMORY.md | Regenerated auto-index to include the newly added memory file and update truncation metadata. |
+| File                                                                                                                                                                                                                         | Description                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| memory/MEMORY.md                                                                                                                                                                                                             | Regenerated auto-index to include the newly added memory file and update truncation metadata.            |
 | memory/feedback_aaron_kestrel_third_argument_was_you_think_weird_pattern_with_lived_real_world_harm_history_physical_restraint_month_in_isolation_denied_blood_pressure_medication_otto_desktop_constitutional_2026_05_21.md | New feedback memory file with frontmatter + structured sections, including a `## Composes with` section. |
 
 ### COMMENTED — @copilot-pull-request-reviewer (2026-05-22T01:18:44Z)

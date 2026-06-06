@@ -4,33 +4,34 @@ description: Aaron Otto-257 general factory discipline. Prior recovery work (clo
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 ## The rule
 
 **Factory default is "keep things clean."** Therefore any
 drift from clean is a smell. The reflex on seeing drift
-is *"what did I forget?"* — not *"that's just how it is."*
+is _"what did I forget?"_ — not _"that's just how it is."_
 
 Direct Aaron quote 2026-04-24:
 
-> *"these recovery git history, closed prs, old
+> _"these recovery git history, closed prs, old
 > worktrees, old branches, they should all be smells
 > that make you think, what did i forget, i don't
 > remember that there cause our default is to keep
 > things clean. so if you find any of those it's likely
 > unfinihsed work. Also you should absorbe this entire
 > gitnatiave and seperate github host recovery processes
-> backlog"*
+> backlog"_
 
 ## Smell classes (non-exhaustive)
 
 **Git-native recovery surface** (local to the repo):
 
 1. **Commits in git history not on main** — `git log
-   --all --source --remotes --not main` shows commits on
+--all --source --remotes --not main` shows commits on
    feature branches that never landed. Each one is a
    recovery candidate.
 2. **Closed PRs with unmerged content** — `gh pr list
-   --state closed` + cross-reference "merged_at: null"
+--state closed` + cross-reference "merged_at: null"
    means CLOSED-not-MERGED. Content is in git history
    but not in main. Recovery-candidate unless explicitly
    superseded.
@@ -135,14 +136,14 @@ backlog" directive:
 
 ## Direct Aaron quote to preserve
 
-> *"these recovery git history, closed prs, old
+> _"these recovery git history, closed prs, old
 > worktrees, old branches, they should all be smells
 > that make you think, what did i forget, i don't
 > remember that there cause our default is to keep
 > things clean. so if you find any of those it's likely
 > unfinihsed work. Also you should absorbe this entire
 > gitnatiave and seperate github host recovery processes
-> backlog"*
+> backlog"_
 
 Future Otto: when you see a closed-not-merged PR, an
 old worktree, an orphan branch, a closed issue with

@@ -26,7 +26,7 @@ zeta-install.sh:1090-1100 contains the invocation:
 
 \`\`\`bash
 sudo HOME=\"$ZETA_HOME\" -u \"#$ZETA_UID\" \\
-  bash -c \"cd $ZETA_HOME/Zeta && tools/setup/install.sh\"
+bash -c \"cd $ZETA_HOME/Zeta && tools/setup/install.sh\"
 \`\`\`
 
 Dispatch chain: install.sh → linux.sh (detects /etc/NIXOS) → common/mise.sh (reads .mise.toml).
@@ -65,6 +65,7 @@ Closed at landing. No implementation work needed; substrate is correct.
 Documentation-only PR that adds a new closed P2 backlog sub-row (B-0857.1) recording the audit of PR #5389's integration claim, and corrects the parent B-0857 row body to reflect the verified-present state of the `tools/setup/install.sh` invocation in `zeta-install.sh`.
 
 **Changes:**
+
 - Adds new backlog row file `B-0857.1` (status: closed) documenting the audit result with grep-verified line references.
 - Updates the parent `B-0857` row body to replace the inaccurate "grep finds NO actual invocation" claim with the audit-verified finding.
 
@@ -72,10 +73,10 @@ Documentation-only PR that adds a new closed P2 backlog sub-row (B-0857.1) recor
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
-| docs/backlog/P2/B-0857.1-audit-pr-5389-...md | New closed audit sub-row documenting verified-present integration at zeta-install.sh:1097-1099. |
-| docs/backlog/P2/B-0857-install-sh-universal-unix-entry-...md | Corrects row body to reflect audit finding; updates substrate-honest framing. |
+| File                                                         | Description                                                                                     |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| docs/backlog/P2/B-0857.1-audit-pr-5389-...md                 | New closed audit sub-row documenting verified-present integration at zeta-install.sh:1097-1099. |
+| docs/backlog/P2/B-0857-install-sh-universal-unix-entry-...md | Corrects row body to reflect audit finding; updates substrate-honest framing.                   |
 
 ## General comments
 

@@ -13,7 +13,7 @@ modelling method that refuses to choose between Inmon's EDW
 ideal (every atomic fact captured, never lose data) and
 Kimball's star-schema ergonomics (analysts need joins they can
 reason about). DV's trick: store the raw atoms in an audit-first
-shape (hubs / links / satellites), then *derive* Kimball-style
+shape (hubs / links / satellites), then _derive_ Kimball-style
 marts on top. You keep history forever, you keep the source
 system's promise, and the BI layer is always disposable.
 
@@ -26,12 +26,12 @@ Activity Schema, Unified Star Schema).
 
 ### Hub — "this business key exists"
 
-| Column | Purpose |
-| --- | --- |
-| `<HUB>_HK` | Hash key: `SHA-256(business_key)`, same everywhere |
+| Column           | Purpose                                            |
+| ---------------- | -------------------------------------------------- |
+| `<HUB>_HK`       | Hash key: `SHA-256(business_key)`, same everywhere |
 | `<BUSINESS_KEY>` | The natural key from the source (e.g. CUSTOMER_ID) |
-| `LOAD_DATETIME` | When we first saw this business key |
-| `RECORD_SOURCE` | Source system (e.g. `SALESFORCE.ACCOUNTS`) |
+| `LOAD_DATETIME`  | When we first saw this business key                |
+| `RECORD_SOURCE`  | Source system (e.g. `SALESFORCE.ACCOUNTS`)         |
 
 A hub is an **insert-only list of distinct business keys**. No
 attributes, no dates beyond `LOAD_DATETIME`, no status. If you
@@ -43,13 +43,13 @@ prematurely.
 
 ### Link — "these hubs relate"
 
-| Column | Purpose |
-| --- | --- |
-| `<LINK>_HK` | Hash key over the concatenated parent hub hashes |
-| `<HUB_A>_HK` | Foreign hash to hub A |
-| `<HUB_B>_HK` | Foreign hash to hub B |
-| `LOAD_DATETIME` | When we first saw this relationship |
-| `RECORD_SOURCE` | Source system |
+| Column          | Purpose                                          |
+| --------------- | ------------------------------------------------ |
+| `<LINK>_HK`     | Hash key over the concatenated parent hub hashes |
+| `<HUB_A>_HK`    | Foreign hash to hub A                            |
+| `<HUB_B>_HK`    | Foreign hash to hub B                            |
+| `LOAD_DATETIME` | When we first saw this relationship              |
+| `RECORD_SOURCE` | Source system                                    |
 
 A link is a **many-to-many unidirectional relationship**. Links
 never carry business logic, never carry attributes except the
@@ -57,22 +57,22 @@ hash keys and audit columns. If the relationship has context
 (a date, a status, a role), that context lives in a **satellite
 on the link**, not on the link itself.
 
-Unit-of-work insight: a link's grain is the *smallest unique
-combination of hubs* the source system emits as one event. If
+Unit-of-work insight: a link's grain is the _smallest unique
+combination of hubs_ the source system emits as one event. If
 the source emits `(customer, product, store, date)` as a single
 sales event, the link has four hub-hash columns, not two
 separate two-hub links.
 
 ### Satellite — "here is the context, as of this moment"
 
-| Column | Purpose |
-| --- | --- |
-| `<PARENT>_HK` | Hash of the parent hub or link |
-| `LOAD_DATETIME` | When this version was loaded |
-| `LOAD_END_DATETIME` | When it was superseded (open = high-date / NULL) |
-| `HASH_DIFF` | Hash of all descriptive columns combined |
-| `RECORD_SOURCE` | Source system |
-| `<descriptive columns>` | The actual attributes |
+| Column                  | Purpose                                          |
+| ----------------------- | ------------------------------------------------ |
+| `<PARENT>_HK`           | Hash of the parent hub or link                   |
+| `LOAD_DATETIME`         | When this version was loaded                     |
+| `LOAD_END_DATETIME`     | When it was superseded (open = high-date / NULL) |
+| `HASH_DIFF`             | Hash of all descriptive columns combined         |
+| `RECORD_SOURCE`         | Source system                                    |
+| `<descriptive columns>` | The actual attributes                            |
 
 A satellite is **insert-only, never updated**. When a source
 attribute changes, Data Vault writes a new satellite row with a
@@ -96,8 +96,8 @@ Why it matters:
 
 - **Parallel loading.** You can load hubs, links, and
   satellites in parallel, out of order, from different source
-  systems, because every foreign-hash is computed *from the
-  business key alone*, not from a database-assigned sequence.
+  systems, because every foreign-hash is computed _from the
+  business key alone_, not from a database-assigned sequence.
 - **Late-arriving data works without re-keying.** A child
   satellite can land before its parent hub; the hash is stable,
   so re-running the parent loader later fills in the row and
@@ -128,16 +128,16 @@ Costs to be honest about:
 split
 
 - **Raw vault.** Loaded directly from source systems. Only
-  *hard rules* apply: hash computation, null handling,
+  _hard rules_ apply: hash computation, null handling,
   datatype alignment, deduplication. Zero business logic.
   "What the source said" is preserved exactly.
-- **Business vault.** Derived from raw vault by applying *soft
-  rules*: business logic, unified attribute computation,
+- **Business vault.** Derived from raw vault by applying _soft
+  rules_: business logic, unified attribute computation,
   same-as / computed links, derived satellites. Still in
   hub/link/satellite shape, still insert-only.
 
 Consumer-facing marts (Kimball star schemas, flat BI tables,
-feature stores) are built *on top* of the business vault, and
+feature stores) are built _on top_ of the business vault, and
 are disposable — you rebuild them from the vault any time the
 business logic changes. **The vault never loses data; the
 marts are caches.**
@@ -196,7 +196,7 @@ complex links this is expensive.
 - **Bridge table.** Pre-computed many-hop joins across hubs
   and links for frequent analytic paths. Also disposable.
 
-PITs and bridges are *query accelerators*, not data. They are
+PITs and bridges are _query accelerators_, not data. They are
 rebuildable from the raw + business vault and carry no
 authoritative content.
 
@@ -235,7 +235,7 @@ Zeta's Z-set algebra. The translation:
   erasure, for instance). Hubs never mutate.
 - **Link** = `Stream<Delta<Link>>` same discipline.
 - **Satellite** = `Stream<Delta<SatelliteRow>>` where a source
-  *change* becomes a `(new_row, +1)` delta plus a
+  _change_ becomes a `(new_row, +1)` delta plus a
   `(old_row, -1)` retraction sharing the parent hash. The
   `HASH_DIFF` on the `+1` row differs from the `-1` row's;
   that is the change signal.
@@ -246,7 +246,7 @@ Zeta's Z-set algebra. The translation:
   stream, integrated with DBSP incremental maintenance. A
   new satellite delta triggers an incremental PIT update; no
   batch rebuild.
-- **Audit replay.** The Z-set delta stream *is* the audit
+- **Audit replay.** The Z-set delta stream _is_ the audit
   log. To answer "what did the vault look like at time T?",
   replay the stream up to `LOAD_DATETIME <= T`.
 
@@ -296,7 +296,7 @@ fact that data changes and history is sacred.
   `postgresql-expert`.
 - **DBSP operator algebra, Z-set semantics, retraction
   streams** → `algebra-owner`, `streaming-incremental-
-  expert`.
+expert`.
 - **Storage format choice (row vs column)** →
   `storage-specialist`, `columnar-storage-expert`.
 
@@ -351,7 +351,7 @@ skill catalog.
 ## What this skill does NOT do
 
 - Does NOT author Kimball schemas (→ `dimensional-modeling-
-  expert`).
+expert`).
 - Does NOT author SCD types (those are Kimball; DV does not
   need them, the satellites already track history).
 - Does NOT override `sql-expert` on DDL mechanics.
@@ -362,15 +362,15 @@ skill catalog.
 
 ## Reference patterns
 
-- Dan Linstedt & Michael Olschimke, *Building a Scalable Data
-  Warehouse with Data Vault 2.0* (2015, Morgan Kaufmann). The
+- Dan Linstedt & Michael Olschimke, _Building a Scalable Data
+  Warehouse with Data Vault 2.0_ (2015, Morgan Kaufmann). The
   canonical 2.0 book.
 - Dan Linstedt's original 2000 Data Vault 1.0 formulation
   (Lockheed Martin internal, published 2002).
-- Kent Graziano, *The Data Warrior* — practitioner blog,
+- Kent Graziano, _The Data Warrior_ — practitioner blog,
   many DV 2.0 walkthroughs.
 - Roelant Vos — DV automation patterns.
-- John Giles, *The Nimble Elephant* — DV for agile shops.
+- John Giles, _The Nimble Elephant_ — DV for agile shops.
 - Erwin Bender & Carla Rennenberg — European DV community.
 - Dirk Lerner — BITool (DV-automation).
 - AutomateDV / dbtvault — the dbt-based metadata-driven

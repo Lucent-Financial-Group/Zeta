@@ -175,7 +175,7 @@ createCommandAuthorizationPort({
     hatDefinitions: buildHatDefinitions(),
     createId: input.createId,
   }),
-})
+});
 ```
 
 If the reaction-plan actor resolver synthesizes an actor for a required hat, make that actor resolve to a durable assignment row in the proof setup rather than silently granting authority in code.

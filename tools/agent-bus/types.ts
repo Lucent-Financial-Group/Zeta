@@ -58,10 +58,7 @@ const WINDOWS_RESERVED_NAME = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\.|$)/i;
 
 export function isSafeSegment(seg: string): boolean {
   return (
-    /^[A-Za-z0-9._-]+$/.test(seg) &&
-    !seg.startsWith(".") &&
-    !seg.includes("..") &&
-    !WINDOWS_RESERVED_NAME.test(seg)
+    /^[A-Za-z0-9._-]+$/.test(seg) && !seg.startsWith(".") && !seg.includes("..") && !WINDOWS_RESERVED_NAME.test(seg)
   );
 }
 

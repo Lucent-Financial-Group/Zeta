@@ -18,11 +18,11 @@ cron tick is canonicalized at [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../docs/AU
 Before this canonicalization, the discipline existed in 3 divergent
 forms:
 
-| Surface | Where | Drift risk |
-|---------|-------|------------|
-| Otto-CLI | Ambient `.claude/rules/*` + CLAUDE.md | Auto-loaded; no drift |
-| Otto-Desktop | Inline prompt in `tools/routines/autonomous-loop/SKILL.md` | Required manual sync |
-| B-0448 cloud | TBD (queued) | Would have re-implemented |
+| Surface      | Where                                                      | Drift risk                |
+| ------------ | ---------------------------------------------------------- | ------------------------- |
+| Otto-CLI     | Ambient `.claude/rules/*` + CLAUDE.md                      | Auto-loaded; no drift     |
+| Otto-Desktop | Inline prompt in `tools/routines/autonomous-loop/SKILL.md` | Required manual sync      |
+| B-0448 cloud | TBD (queued)                                               | Would have re-implemented |
 
 The canonical file is the one-source-of-truth. This rule auto-loads
 at every fresh Otto cold-boot so future-Otto knows to consult the
@@ -73,9 +73,9 @@ load-bearing because:
 
 ## Full reasoning
 
-The human maintainer 2026-05-13 22:08Z: *"and yall both share the background loop right?
+The human maintainer 2026-05-13 22:08Z: _"and yall both share the background loop right?
 any changes you need to make to it so it's more like the routines and
-like a 3 coordinated version?"*
+like a 3 coordinated version?"_
 
 The proposal that emerged: factor Part 5 of the canonical bootstream
 (the cron/loop substrate) into its own pointer file all three surfaces

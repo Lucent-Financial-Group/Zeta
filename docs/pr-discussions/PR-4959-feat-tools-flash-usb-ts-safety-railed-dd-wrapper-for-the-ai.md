@@ -73,24 +73,22 @@ The safety rails are what makes that permission grant reasonable.
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T17:23:36Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `fe466f8b85`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -102,7 +100,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T17:23:36Z):
 
-**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Revalidate device identity before launching dd**
+**<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Revalidate device identity before launching dd**
 
 The script writes to a previously captured `/dev/diskN` node without re-checking that it still maps to the same physical device at write time. On macOS, disk identifiers are volatile across detach/attach events, so if the target is unplugged/replugged (or another device appears) between confirmation and `dd`, the same path can point at different hardware and the script can overwrite the wrong disk despite the typed-path gate. Add a final identity check (e.g., stable UUID/serial from `diskutil info -plist`) immediately before spawning `dd`.
 

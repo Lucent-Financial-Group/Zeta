@@ -20,11 +20,11 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Three deliverables addressing the maintainer 2026-05-26 dual ask:
 
-1. **`tools/cluster/deregister-node.ts`** (B-0814 P1, ships ready-to-use) — TS Bun tool that removes a registered machine from git via PR. Operator-name auto-derives from `gh api /user`. Temp worktree (no operator-checkout touch). Default opens PR; `--push-direct` for fast-path. Per *"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"*.
+1. **`tools/cluster/deregister-node.ts`** (B-0814 P1, ships ready-to-use) — TS Bun tool that removes a registered machine from git via PR. Operator-name auto-derives from `gh api /user`. Temp worktree (no operator-checkout touch). Default opens PR; `--push-direct` for fast-path. Per _"lets make a ts file for removing machines from git too cause i'm going to delete clusters a lot lol"_.
 
 2. **B-0814 P1 backlog row** — captures the deregister tool's design + acceptance + sub-targets (status: in-progress → done on this PR's merge).
 
-3. **B-0815 P2 backlog row** — heartbeat/expiration design space for "keep registration physically in sync with machine". 4 options documented (TTL / heartbeat-daemon / hybrid / K8s-status-as-truth) with tradeoffs + my recommendation (Option C hybrid for homelab; Option D K8s-native as upgrade path). Per *"how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"*.
+3. **B-0815 P2 backlog row** — heartbeat/expiration design space for "keep registration physically in sync with machine". 4 options documented (TTL / heartbeat-daemon / hybrid / K8s-status-as-truth) with tradeoffs + my recommendation (Option C hybrid for homelab; Option D K8s-native as upgrade path). Per _"how do keep registration status physically in sync with machine, like maybe you have to reregister once a day or week or something or it expires"_.
 
 ## Usage (B-0814)
 
@@ -51,6 +51,7 @@ Exit codes: 0=PR opened (or direct push) / 1=invocation error / 2=host not found
 This PR adds cluster-operations substrate for removing registered nodes from the GitOps tree, plus backlog rows capturing the deregistration tool and a follow-on heartbeat/expiration design space.
 
 **Changes:**
+
 - Add `tools/cluster/deregister-node.ts` Bun/TS CLI to delete `maintainers/<op>/cluster-nodes/<host>/`, commit, push, and open a PR (or optionally push directly).
 - Add backlog rows B-0814 (tool) and B-0815 (heartbeat/expiration design options).
 - Update `docs/BACKLOG.md` to include the new backlog entries.
@@ -59,12 +60,12 @@ This PR adds cluster-operations substrate for removing registered nodes from the
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated 10 comments.
 
-| File | Description |
-| ---- | ----------- |
-| tools/cluster/deregister-node.ts | New Bun/TS tool to deregister a cluster node via git worktree + PR/direct push. |
-| docs/backlog/P1/B-0814-tools-cluster-deregister-node-ts-removes-registered-machine-from-git-sibling-to-iter-5-4-1-self-registration-aaron-2026-05-26.md | New P1 backlog row documenting the deregister-node tool’s intent/acceptance. |
-| docs/backlog/P2/B-0815-cluster-node-registration-heartbeat-expiration-pattern-physical-sync-design-aaron-2026-05-26.md | New P2 backlog row exploring heartbeat/expiration designs to keep registration synced to physical reality. |
-| docs/BACKLOG.md | Adds B-0814 and B-0815 entries to the generated backlog index. |
+| File                                                                                                                                                    | Description                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| tools/cluster/deregister-node.ts                                                                                                                        | New Bun/TS tool to deregister a cluster node via git worktree + PR/direct push.                            |
+| docs/backlog/P1/B-0814-tools-cluster-deregister-node-ts-removes-registered-machine-from-git-sibling-to-iter-5-4-1-self-registration-aaron-2026-05-26.md | New P1 backlog row documenting the deregister-node tool’s intent/acceptance.                               |
+| docs/backlog/P2/B-0815-cluster-node-registration-heartbeat-expiration-pattern-physical-sync-design-aaron-2026-05-26.md                                  | New P2 backlog row exploring heartbeat/expiration designs to keep registration synced to physical reality. |
+| docs/BACKLOG.md                                                                                                                                         | Adds B-0814 and B-0815 entries to the generated backlog index.                                             |
 
 ## Review threads
 

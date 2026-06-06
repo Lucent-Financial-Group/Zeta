@@ -34,10 +34,10 @@ the full narrative.
 From `docs/BACKLOG.md` P0 "next round (committed)":
 
 1. **`memory/role/persona/` restructure** — Aaron
-   2026-04-19 explicit ask: *"can we add a memory 2nd
+   2026-04-19 explicit ask: _"can we add a memory 2nd
    level folder so it's memory/role/persona that makes
    roles fist class defined of what we need too in the
-   memory definition"*. Scope: (a) define the role axis
+   memory definition"_. Scope: (a) define the role axis
    (crosswalk `docs/EXPERT-REGISTRY.md` → role
    directories), (b) move existing notebooks from
    `memory/persona/<name>/NOTEBOOK.md` to

@@ -23,13 +23,13 @@ machine-readable edge layer; the prose is the node.
 ```yaml
 ---
 title: <human title, matches the H1>
-canonical_name: Agentic Organization      # always; never "Hermes"/"Work OS" at platform scope
-status: design | v0 | implemented          # lifecycle of the doc's content
+canonical_name: Agentic Organization # always; never "Hermes"/"Work OS" at platform scope
+status: design | v0 | implemented # lifecycle of the doc's content
 ideas: [<operator idea numbers this doc covers>]
 extends: [<doc filenames this builds directly on>]
-composes_with:                             # related docs (bidirectional intent)
+composes_with: # related docs (bidirectional intent)
   - ./<doc>.md
-code_anchors:                              # real code paths the doc describes
+code_anchors: # real code paths the doc describes
   - ../packages/<pkg>/src/<file>.ts
 supersedes: [<doc filenames this replaces, if any>]
 ---
@@ -38,10 +38,10 @@ supersedes: [<doc filenames this replaces, if any>]
 ### Key semantics
 
 - **`canonical_name`** — enforces the naming discipline from the README:
-  "Agentic Organization" is the platform; "Hermes" is *only* the agent runtime;
-  "Organization Work OS" is *only* the work-management subsystem. Docs whose
+  "Agentic Organization" is the platform; "Hermes" is _only_ the agent runtime;
+  "Organization Work OS" is _only_ the work-management subsystem. Docs whose
   scope is one of those subsystems may still set `canonical_name: Agentic
-  Organization` and name the subsystem in the body.
+Organization` and name the subsystem in the body.
 - **`status`** — `design` (reference substrate), `v0` (smallest end-to-end
   slice in flight), `implemented` (code exists and is tested). A doc moves
   `design → v0 → implemented` as its `code_anchors` become real and green.
@@ -73,7 +73,7 @@ mechanism at two scopes:
    a `.md` file is a row, its frontmatter is the typed columns, and `fk`/`fk_array`
    columns are graph edges resolved exactly like `composes_with`.
 
-A doc's `composes_with` list *is* an `fk_array` over the docs "table"; a task row's
+A doc's `composes_with` list _is_ an `fk_array` over the docs "table"; a task row's
 `depends_on` is an `fk_array` over the task table. The traversal code
 (`packages/frontmatter-db/src/traverse.ts`) is therefore reusable for both: the
 doc graph and the data graph are one graph with different schemas.

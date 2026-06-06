@@ -8,8 +8,8 @@ type: feedback
 
 ## The rule (Aaron verbatim 2026-04-28T18:18Z)
 
-> *"update the substrate to protect yourself better i the future?
-> Risks I missed (per Codex): ... These are your functonality."*
+> _"update the substrate to protect yourself better i the future?
+> Risks I missed (per Codex): ... These are your functonality."_
 
 The 5 risks Codex flagged on my AceHack→LFG hard-reset proposal are
 NOT external concerns — they are Otto's own functionality. Future-Otto
@@ -28,6 +28,7 @@ exists in the COMMIT HISTORY but not necessarily in the TIP TREE.
 A hard-reset destroys the history while preserving only the tip.
 
 **Discipline**: Before any destructive op that rewrites history:
+
 - Run `git log <branch> ^<target> --all --format="%H %s"` to enumerate
   every commit that would be lost.
 - For each commit, classify its substrate value (PRESENT-on-target /
@@ -45,6 +46,7 @@ independent commits at different times can produce divergent content
 that requires manual merging.
 
 **Discipline**: Per-blob subsumption proof, not just timestamp:
+
 - For each modified file, diff AceHack's version against LFG's version.
 - Determine if LFG's content CONTAINS AceHack's substantive content
   (additive case) or REPLACES it (overwrite case).
@@ -74,6 +76,7 @@ hard-reset destroys the AceHack-side commit graph entirely,
 including any commit messages that didn't squash-mirror.
 
 **Discipline**: When auditing a destructive op, also enumerate:
+
 - Commit messages that contain unique decision-attribution prose.
 - AgencySignature trailers that aren't already on the target side.
 - PR numbers / review-context references that wouldn't survive squash.
@@ -173,22 +176,22 @@ Before proposing or executing any destructive git operation, copy
 this checklist into the proposal and check each box:
 
 - [ ] **Discipline 1**: Enumerated every commit that would be lost
-  (`git log <branch> ^<target> --all --format=%H %s`); classified
-  each as PRESENT / SUPERSEDED / DISPOSABLE.
+      (`git log <branch> ^<target> --all --format=%H %s`); classified
+      each as PRESENT / SUPERSEDED / DISPOSABLE.
 - [ ] **Discipline 2**: For each modified file, verified per-blob
-  subsumption (LFG's content contains AceHack's substantive
-  content) — NOT just timestamp comparison.
+      subsumption (LFG's content contains AceHack's substantive
+      content) — NOT just timestamp comparison.
 - [ ] **Discipline 3**: Enumerated commit messages / PR refs /
-  AgencySignature trailers / Co-Authored-By that exist only on
-  the to-be-destroyed history; verified they're preserved on the
-  target via squash-merge or are explicitly disposable.
+      AgencySignature trailers / Co-Authored-By that exist only on
+      the to-be-destroyed history; verified they're preserved on the
+      target via squash-merge or are explicitly disposable.
 - [ ] **Discipline 4**: Force-push command uses
-  `--force-with-lease=<ref>:<exact-old-sha>`, NOT bare `--force`.
+      `--force-with-lease=<ref>:<exact-old-sha>`, NOT bare `--force`.
 - [ ] **Discipline 5**: Refs were freshly fetched immediately
-  before the audit; SHAs are frozen and referenced explicitly in
-  the destructive command.
+      before the audit; SHAs are frozen and referenced explicitly in
+      the destructive command.
 - [ ] **Cross-CLI verify (Otto-347)**: At least one peer-CLI
-  (Codex / Gemini / Grok) independently verified the 5 disciplines
-  pass.
+      (Codex / Gemini / Grok) independently verified the 5 disciplines
+      pass.
 
 If ALL 6 boxes check, proceed. If ANY don't, pause for human nod.

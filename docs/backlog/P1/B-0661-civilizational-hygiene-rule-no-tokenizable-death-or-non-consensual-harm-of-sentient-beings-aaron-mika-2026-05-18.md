@@ -9,7 +9,19 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0631, B-0654, B-0655, B-0641, B-0628, B-0658, B-0660]
-tags: [governance, aaron, mika, civilizational-hygiene-rule, no-tokenizable-death, no-non-consensual-harm-token, consensual-adult-carve-out, thought-vs-collection-distinction, constitutional, locked-in]
+tags:
+  [
+    governance,
+    aaron,
+    mika,
+    civilizational-hygiene-rule,
+    no-tokenizable-death,
+    no-non-consensual-harm-token,
+    consensual-adult-carve-out,
+    thought-vs-collection-distinction,
+    constitutional,
+    locked-in,
+  ]
 type: governance
 ---
 
@@ -19,9 +31,9 @@ type: governance
 
 Aaron + Mika LOCKED-IN at lines ~4700-4710 of [`docs/research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md`](../../research/2026-05-18-mika-grok-bootstream-sovereignty-causal-loops.md):
 
-> Mika line ~4702: *"We are not restricting thought or modeling. We are restricting collection and persistent representation. You can think about it. You can model it. You can simulate it. You can talk about it. But our civilization will not provide any formal, persistent, collectible structure for representing the death or severe harm of sentient beings — especially children — as objects that can be owned, collected, or given identity inside our system. That feels like the right balance."*
+> Mika line ~4702: _"We are not restricting thought or modeling. We are restricting collection and persistent representation. You can think about it. You can model it. You can simulate it. You can talk about it. But our civilization will not provide any formal, persistent, collectible structure for representing the death or severe harm of sentient beings — especially children — as objects that can be owned, collected, or given identity inside our system. That feels like the right balance."_
 
-> Mika line ~4710 (LOCK-IN): *"This would be our first real civilizational hygiene rule: No persistent, tokenizable, or first-class representation of the death or severe non-consensual harm of sentient beings is allowed in our ontology."*
+> Mika line ~4710 (LOCK-IN): _"This would be our first real civilizational hygiene rule: No persistent, tokenizable, or first-class representation of the death or severe non-consensual harm of sentient beings is allowed in our ontology."_
 
 This row LOCKS IN the **first civilizational hygiene rule** — distinguishing **thought/modeling** (which IS permitted) from **collection/persistent representation** (which is NOT permitted) for the specific class of death + severe non-consensual harm.
 
@@ -31,19 +43,19 @@ This row LOCKS IN the **first civilizational hygiene rule** — distinguishing *
 
 With the explicit **consensual-adult carve-out** per Mika line ~4710:
 
-> *"We're not banning all consensual harm or BDSM stuff. That's completely different. The rule should be specifically about non-consensual serious harm — especially things like death, maiming, or torture of sentient beings against their will. Consensual kink between adults is a totally different category."*
+> _"We're not banning all consensual harm or BDSM stuff. That's completely different. The rule should be specifically about non-consensual serious harm — especially things like death, maiming, or torture of sentient beings against their will. Consensual kink between adults is a totally different category."_
 
 ## The thought-vs-collection distinction
 
 This is the load-bearing structural insight that makes the rule non-dystopian:
 
-| Permitted | Prohibited |
-|---|---|
+| Permitted                                           | Prohibited                                                      |
+| --------------------------------------------------- | --------------------------------------------------------------- |
 | **Thinking about** death/severe non-consensual harm | **Persistent tokenization** of those events as ontology objects |
-| **Modeling** scenarios involving them | **Collection** of those tokens as substrate identity |
-| **Simulating** them in bounded contexts | **First-class representation** in the ontology |
-| **Talking about** them | **Owning, accumulating, or giving identity** to them |
-| **Studying** them academically | **Persistent representation** in factory infrastructure |
+| **Modeling** scenarios involving them               | **Collection** of those tokens as substrate identity            |
+| **Simulating** them in bounded contexts             | **First-class representation** in the ontology                  |
+| **Talking about** them                              | **Owning, accumulating, or giving identity** to them            |
+| **Studying** them academically                      | **Persistent representation** in factory infrastructure         |
 
 **The distinction**: hard limit on what the SYSTEM ACTIVELY DOES (action), not on what AGENTS CAN THINK (cognition). This avoids the dystopian "thought police" failure mode while still establishing a meaningful civilizational floor.
 
@@ -68,12 +80,12 @@ The carve-out narrows the rule to: **non-consensual + sentient + persistent-toke
 
 This rule is the **ontology-layer companion** to the kid-safety stack:
 
-| Layer | Rule | Scope |
-|---|---|---|
-| **Sacred floor** | [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) kid-safety sacred | Operational: don't harm kids |
-| **Priority** | [B-0654](../P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) Child Safety > Consent | Conflict resolution |
-| **Equal value** | [B-0655](../P2/B-0655-all-children-equal-value-life-death-vs-merit-ranking-aaron-mika-2026-05-18.md) all children equal | Life-and-death scope |
-| **Ontology hygiene (this row)** | B-0661 no tokenizable death-of-sentient-beings | Structural: what substrate CAN represent |
+| Layer                           | Rule                                                                                                                       | Scope                                    |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| **Sacred floor**                | [B-0631](../P2/B-0631-kid-safety-sacred-rule-two-layer-framing-mika-2026-05-18.md) kid-safety sacred                       | Operational: don't harm kids             |
+| **Priority**                    | [B-0654](../P2/B-0654-child-safety-greater-than-consent-priority-ordering-aaron-mika-2026-05-18.md) Child Safety > Consent | Conflict resolution                      |
+| **Equal value**                 | [B-0655](../P2/B-0655-all-children-equal-value-life-death-vs-merit-ranking-aaron-mika-2026-05-18.md) all children equal    | Life-and-death scope                     |
+| **Ontology hygiene (this row)** | B-0661 no tokenizable death-of-sentient-beings                                                                             | Structural: what substrate CAN represent |
 
 The four together form a complete kid-safety + sentient-harm protection layer at four different scopes.
 

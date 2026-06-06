@@ -22,6 +22,6 @@ The "ZERO DEPENDENCE ON HUMANS" framing is operational default, not absolute. Pr
 
 ### Implications
 
--   Agents must respect the `deferred-to-human` label and not operate on PRs that carry it.
--   Agents should identify P0-floor situations (privacy, copyright, abuse evidence) and either (a) leave for the authoring lane to fix, or (b) apply `deferred-to-human` when cross-substrate oracle agreement signals merge-decline.
--   The `deferred-to-human` label should be reserved for situations that truly require maintainer judgment (Tier 5 per `pr-triage-tiers.md`).
+- Agents must respect the `deferred-to-human` label and not operate on PRs that carry it.
+- Agents should identify P0-floor situations (privacy, copyright, abuse evidence) and either (a) leave for the authoring lane to fix, or (b) apply `deferred-to-human` when cross-substrate oracle agreement signals merge-decline.
+- The `deferred-to-human` label should be reserved for situations that truly require maintainer judgment (Tier 5 per `pr-triage-tiers.md`).

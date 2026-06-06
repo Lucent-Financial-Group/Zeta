@@ -89,10 +89,7 @@ async function buildReferenceIndex(): Promise<Map<string, string>> {
 // Match only on the normalized full relative path. Bare-filename matches
 // (e.g. `CayleyDickson.fs` in unrelated prose) produce false positives that
 // hide truly unreferenced artifacts.
-function findRefsInIndex(
-  relPath: string,
-  index: Map<string, string>,
-): string[] {
+function findRefsInIndex(relPath: string, index: Map<string, string>): string[] {
   const refs: string[] = [];
 
   for (const [mdFile, content] of index) {
@@ -115,12 +112,8 @@ function emitMarkdown(artifacts: FSharpArtifact[]): void {
 
   console.log(`# F# Core Artifact Catalog (${nowIso()})`);
   console.log("");
-  console.log(
-    "B-0522 slice output. Scans F# files in src/Core.",
-  );
-  console.log(
-    "Cross-references against docs/ for substrate-status.",
-  );
+  console.log("B-0522 slice output. Scans F# files in src/Core.");
+  console.log("Cross-references against docs/ for substrate-status.");
   console.log("");
   console.log("## Summary");
   console.log("");
@@ -135,44 +128,40 @@ function emitMarkdown(artifacts: FSharpArtifact[]): void {
   if (unreferenced.length > 0) {
     console.log("## Unreferenced Artifacts");
     console.log("");
-    console.log(
-      "Unreferenced artifacts need substrate integration (memory-file pointer,",
-    );
-    console.log(
-      "backlog-row pointer, or explicit 'preserved-in-codebase-only' classification).",
-    );
+    console.log("Unreferenced artifacts need substrate integration (memory-file pointer,");
+    console.log("backlog-row pointer, or explicit 'preserved-in-codebase-only' classification).");
     console.log("");
     for (const a of unreferenced) {
-        console.log(`### \`${a.path}\``);
-        console.log(`- Lines: ${a.lines}`);
-        console.log(`- Status: **UNREFERENCED**`);
-        console.log("");
+      console.log(`### \`${a.path}\``);
+      console.log(`- Lines: ${a.lines}`);
+      console.log(`- Status: **UNREFERENCED**`);
+      console.log("");
     }
   }
 
   console.log("## Referenced Artifacts");
   console.log("");
   for (const a of referenced) {
-      console.log(`### \`${a.path}\``);
-      console.log(`- Lines: ${a.lines}`);
-      console.log(`- Status: REFERENCED`);
-      if (a.referencedIn.length > 0) {
-        console.log("- Referenced in:");
-        for (const ref of a.referencedIn.slice(0, 5)) {
-          console.log(`  - ${ref}`);
-        }
-        if (a.referencedIn.length > 5) {
-          console.log(`  - ... and ${a.referencedIn.length - 5} more`);
-        }
+    console.log(`### \`${a.path}\``);
+    console.log(`- Lines: ${a.lines}`);
+    console.log(`- Status: REFERENCED`);
+    if (a.referencedIn.length > 0) {
+      console.log("- Referenced in:");
+      for (const ref of a.referencedIn.slice(0, 5)) {
+        console.log(`  - ${ref}`);
       }
-      console.log("");
+      if (a.referencedIn.length > 5) {
+        console.log(`  - ... and ${a.referencedIn.length - 5} more`);
+      }
+    }
+    console.log("");
   }
 }
 
 async function main(): Promise<number> {
   const jsonMode = process.argv.includes("--json");
 
-  const fsharpFiles = (await gitLsFiles("src/Core")).filter(f => f.endsWith(".fs"));
+  const fsharpFiles = (await gitLsFiles("src/Core")).filter((f) => f.endsWith(".fs"));
 
   const allPaths = [...new Set(fsharpFiles)];
 
@@ -199,11 +188,8 @@ async function main(): Promise<number> {
     const summary = {
       generatedAt: nowIso(),
       totalArtifacts: artifacts.length,
-      referenced: artifacts.filter((a) => a.substrateStatus === "referenced")
-        .length,
-      unreferenced: artifacts.filter(
-        (a) => a.substrateStatus === "unreferenced",
-      ).length,
+      referenced: artifacts.filter((a) => a.substrateStatus === "referenced").length,
+      unreferenced: artifacts.filter((a) => a.substrateStatus === "unreferenced").length,
       totalLines: artifacts.reduce((sum, a) => sum + a.lines, 0),
       artifacts,
     };

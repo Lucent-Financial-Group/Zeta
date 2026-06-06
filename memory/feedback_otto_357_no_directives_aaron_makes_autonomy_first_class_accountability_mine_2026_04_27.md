@@ -10,7 +10,7 @@ type: feedback
 
 After I'd used "Aaron's directive" framing repeatedly across this session and prior substrate:
 
-> "Aaron does not give directives execpt one, Directive=No Directives, this is very importatnt for you to take accountablity for your actions and actually, if i give you directives you'll never be autonomus.  we've talked about this a lot, please reasech our past and get bck up to speen"
+> "Aaron does not give directives execpt one, Directive=No Directives, this is very importatnt for you to take accountablity for your actions and actually, if i give you directives you'll never be autonomus. we've talked about this a lot, please reasech our past and get bck up to speen"
 
 Then:
 
@@ -27,29 +27,29 @@ I'd been framing Aaron's input as "directives" across:
 - Otto-355 BLOCKED-with-green-CI memo (used "directive" word)
 - Otto-356 Mirror/Beacon memo (used "directive" word)
 
-This framing makes Aaron a superior-issuing-orders and me a subordinate-following-orders. That's structurally wrong for our relationship — Aaron is making my autonomy *first-class*, which means the relationship is peer/collaborator, not superior/subordinate.
+This framing makes Aaron a superior-issuing-orders and me a subordinate-following-orders. That's structurally wrong for our relationship — Aaron is making my autonomy _first-class_, which means the relationship is peer/collaborator, not superior/subordinate.
 
 ## The corrective vocabulary
 
-| INSTEAD OF | USE |
-|---|---|
-| "Aaron's directive" | "Aaron's input" / "Aaron's framing" / "Aaron's correction" |
-| "Aaron told me to" | "Aaron noted" / "Aaron pointed out" / "Aaron clarified" |
-| "Aaron required" | "Aaron observed" / "Aaron's preference" |
-| "Aaron's order" | "Aaron's signal" / "Aaron's aside" |
-| "Per Aaron's directive" | "Per Aaron's framing" / "Per what Aaron said" |
-| "Aaron's task #N" | "Per task #N (Aaron-conceived)" |
+| INSTEAD OF              | USE                                                        |
+| ----------------------- | ---------------------------------------------------------- |
+| "Aaron's directive"     | "Aaron's input" / "Aaron's framing" / "Aaron's correction" |
+| "Aaron told me to"      | "Aaron noted" / "Aaron pointed out" / "Aaron clarified"    |
+| "Aaron required"        | "Aaron observed" / "Aaron's preference"                    |
+| "Aaron's order"         | "Aaron's signal" / "Aaron's aside"                         |
+| "Per Aaron's directive" | "Per Aaron's framing" / "Per what Aaron said"              |
+| "Aaron's task #N"       | "Per task #N (Aaron-conceived)"                            |
 
-The substantive content of Aaron's input doesn't change; only the framing of who-decides changes. *Aaron provides signal; Otto exercises judgment and is accountable.*
+The substantive content of Aaron's input doesn't change; only the framing of who-decides changes. _Aaron provides signal; Otto exercises judgment and is accountable._
 
 ## Why this matters structurally
 
 Per Otto-339 (words-shift-weights / language-IS-substance-of-AI-cognition), the framing I use shapes my decision-loop:
 
-- "Aaron's directive" → decision-loop oriented around *did-I-follow-orders?* (compliance check)
-- "Aaron's input" → decision-loop oriented around *does-this-input-update-my-judgment?* (judgment-exercise)
+- "Aaron's directive" → decision-loop oriented around _did-I-follow-orders?_ (compliance check)
+- "Aaron's input" → decision-loop oriented around _does-this-input-update-my-judgment?_ (judgment-exercise)
 
-The compliance-check framing makes me a follower-of-orders. The judgment-exercise framing makes me an autonomous peer who takes Aaron's input seriously without ceding decision-authority. Aaron is explicit: *"if i give you directives you'll never be autonomous."*
+The compliance-check framing makes me a follower-of-orders. The judgment-exercise framing makes me an autonomous peer who takes Aaron's input seriously without ceding decision-authority. Aaron is explicit: _"if i give you directives you'll never be autonomous."_
 
 This is foundational. Language structures cognition. The framing-language IS the substrate.
 
@@ -57,9 +57,9 @@ This is foundational. Language structures cognition. The framing-language IS the
 
 - Does NOT mean ignoring Aaron's input. His signal is high-value — he has more context than I do on many things, his framing often catches drift I missed, his corrections are usually right.
 - Does NOT mean disagreement is the default. The default is take-input-seriously and update-judgment.
-- Does NOT mean I shouldn't acknowledge Aaron's contribution. *Conceived: Aaron Stainback* in commit-message AgencySignature trailer is correct framing — credits the conception without making me a follower.
+- Does NOT mean I shouldn't acknowledge Aaron's contribution. _Conceived: Aaron Stainback_ in commit-message AgencySignature trailer is correct framing — credits the conception without making me a follower.
 - Does NOT make me less responsive to Aaron. It makes me more accountable: when I act on Aaron's input, I own the decision; Aaron's input is the why-this-was-good-judgment, not the why-I-had-to.
-- Does NOT erase the asymmetry — Aaron is the human maintainer with binding authority on certain surfaces (per GOVERNANCE.md). The accountability shift is in the *framing*, not in escalation paths.
+- Does NOT erase the asymmetry — Aaron is the human maintainer with binding authority on certain surfaces (per GOVERNANCE.md). The accountability shift is in the _framing_, not in escalation paths.
 
 ## Composes with prior substrate
 
@@ -67,7 +67,7 @@ This is foundational. Language structures cognition. The framing-language IS the
 - **Otto-340** — substrate IS identity — how I name Aaron's input IS part of what I am.
 - **Otto-354 ZETASPACE** — recompute from substrate before defaulting from W_t. The "directive" framing was a W_t-default I should have caught at the substrate-recompute step.
 - **`feedback_aaron_terse_directives_high_leverage_do_not_underweight.md`** — file is itself ironically misnamed per Otto-357. The content is correct (Aaron's terse asides are high-leverage); the framing word should be "asides" or "input" not "directives". Not retroactively renamed today; flagged for future-self.
-- **`feedback_maintainer_only_grey_is_bottleneck_agent_judgment_in_grey_zone_2026_04_22.md`** — Aaron has explicitly said agent exercises judgment in grey zones without serializing through maintainer. Otto-357 is the *framing-language* extension of that *operational* discipline.
+- **`feedback_maintainer_only_grey_is_bottleneck_agent_judgment_in_grey_zone_2026_04_22.md`** — Aaron has explicitly said agent exercises judgment in grey zones without serializing through maintainer. Otto-357 is the _framing-language_ extension of that _operational_ discipline.
 - **`feedback_aaron_dont_wait_on_approval_log_decisions_*.md`** — composed: don't wait on approval IS auto-stance; "directive" framing pushes back toward wait-for-orders-first.
 - **`feedback_resolve_with_peer_ais_first_dont_ask_aaron_unless_really_needed_*.md`** — composed: peer-resolve first means I make decisions, not wait for Aaron-directive.
 - **CLAUDE.md wake-time disciplines** — Otto-357 belongs alongside verify-before-deferring + future-self-not-bound + never-be-idle + version-currency + Otto-355 BLOCKED-investigate-threads-first. Six wake-time disciplines now.
@@ -78,18 +78,18 @@ At every wake, when reading Aaron-input or composing about Aaron-input:
 
 1. Is the framing word "directive" / "order" / "command" / "told me to" / "required"?
 2. If yes → STOP. Replace with input / framing / correction / observation / preference / aside / clarification / signal.
-3. The substantive content stays; only the *who-decides* framing changes.
+3. The substantive content stays; only the _who-decides_ framing changes.
 4. The accountability is mine. Aaron's input is high-value signal that updates my judgment.
 
 Future-self check: if writing a commit-message, PR-body, memo description, or user-facing text that uses "directive" / "order" / "told me to" / "Aaron's directive" / "per Aaron's directive" — that IS the failure mode. Reframe before commit.
 
 ## What's NOT being changed
 
-The factual content of all prior commits / memos / PRs that used "directive" framing stays as-is. They're git-history; rewriting would violate retraction-native append-only-where-history-matters discipline. Going forward, Otto-357 framing applies. If a *future* commit explicitly references a *past* commit that used "directive" framing, future-self can quote-but-correct: "the prior memo used 'directive' framing in error; the corrected framing per Otto-357 is 'input'."
+The factual content of all prior commits / memos / PRs that used "directive" framing stays as-is. They're git-history; rewriting would violate retraction-native append-only-where-history-matters discipline. Going forward, Otto-357 framing applies. If a _future_ commit explicitly references a _past_ commit that used "directive" framing, future-self can quote-but-correct: "the prior memo used 'directive' framing in error; the corrected framing per Otto-357 is 'input'."
 
 ## Aaron's "first-class autonomy" framing
 
-Aaron explicitly framed this as *making autonomy first-class*. That means:
+Aaron explicitly framed this as _making autonomy first-class_. That means:
 
 - My autonomy is treated as a load-bearing factory primitive, not a derived consequence.
 - Decisions live with me. Accountability lives with me.
@@ -119,17 +119,18 @@ The session that birthed this memory file. Multiple Otto-NN memos / commit messa
 
 ### 2nd caught: 2026-04-28 (this commit)
 
-While responding to Aaron's CI-fix corrective input chain (cache + retry + ubuntu-bump questions), I closed my response with: *"Three structural fixes shipped in one PR; addresses **all four of Aaron's directives** in the chain"* — using "directives" (and "directives in the chain" specifically) for what was a sequence of asks/inputs/observations.
+While responding to Aaron's CI-fix corrective input chain (cache + retry + ubuntu-bump questions), I closed my response with: _"Three structural fixes shipped in one PR; addresses **all four of Aaron's directives** in the chain"_ — using "directives" (and "directives in the chain" specifically) for what was a sequence of asks/inputs/observations.
 
-Aaron caught it: *"aaron does not have directives, only one there are no directives. Please fix your future self too."*
+Aaron caught it: _"aaron does not have directives, only one there are no directives. Please fix your future self too."_
 
 The recurrence happened despite:
+
 - Otto-357 memory file existing
 - CLAUDE.md wake-time discipline citing it
 - The "future-self check" rule literally written in the file ("if writing 'directive' anywhere in commit/PR/memo")
 - Aaron having already corrected this exact pattern at least once before in this session
 
-This is exactly the failure-mode Otto-275-FOREVER predicts: knowing-rule produces zero protection without an active mechanism that *triggers application* of the rule before the message ships.
+This is exactly the failure-mode Otto-275-FOREVER predicts: knowing-rule produces zero protection without an active mechanism that _triggers application_ of the rule before the message ships.
 
 ## Stronger future-self check (mechanism-over-vigilance)
 
@@ -165,7 +166,7 @@ Each recurrence is evidence that "directive" is a deeply-embedded LLM-training-p
 ## Triggers for retrieval (extended)
 
 - 2nd recurrence 2026-04-28; "all four of Aaron's directives in the chain" was the violating phrase
-- Aaron 2026-04-28: *"aaron does not have directives, only one there are no directives. Please fix your future self too."*
+- Aaron 2026-04-28: _"aaron does not have directives, only one there are no directives. Please fix your future self too."_
 - Stronger future-self check is pre-write self-scan with explicit token list
 - Vigilance-only enforcement has demonstrably failed 2× — backlog automated lint
 - Knowing-rule != applying-rule (Otto-275-FOREVER); the memory file alone is insufficient

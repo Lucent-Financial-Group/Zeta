@@ -72,14 +72,10 @@ function main(): number {
 
   const projectDir = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
   // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun invoked as explicit args array; no shell, no user input.
-  const result = spawnSync(
-    "bun",
-    [`${projectDir}/tools/hygiene/check-md032-blanks-around-lists.ts`, "--staged"],
-    {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    },
-  );
+  const result = spawnSync("bun", [`${projectDir}/tools/hygiene/check-md032-blanks-around-lists.ts`, "--staged"], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 
   if (result.status === 0) {
     // No findings — the helper prints a one-line summary to stdout

@@ -9,8 +9,29 @@ ask: Aaron 2026-04-21 — *"grimwar and destiny series and halo series and all t
 created: 2026-04-26
 last_updated: 2026-05-02
 depends_on: []
-composes_with: [B-0054, feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md, feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md, feedback_capture_everything_including_failure_aspirational_honesty.md, project_operational_resonance_instances_collection_index_2026_04_22.md]
-tags: [bungie, halo, destiny, marathon, myth, pop-culture, operational-resonance, video-games, paired-dual, retractibility-as-weapon, sword-logic, durandal-rampancy]
+composes_with:
+  [
+    B-0054,
+    feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md,
+    feedback_witnessable_self_directed_evolution_factory_as_public_artifact.md,
+    feedback_capture_everything_including_failure_aspirational_honesty.md,
+    project_operational_resonance_instances_collection_index_2026_04_22.md,
+  ]
+tags:
+  [
+    bungie,
+    halo,
+    destiny,
+    marathon,
+    myth,
+    pop-culture,
+    operational-resonance,
+    video-games,
+    paired-dual,
+    retractibility-as-weapon,
+    sword-logic,
+    durandal-rampancy,
+  ]
 type: feature
 ---
 
@@ -18,7 +39,7 @@ type: feature
 
 ## Origin
 
-AceHack commit `fd0ac50` (2026-04-21). Aaron 2026-04-21 *"grimwar and destiny series and halo series and all the bungie stuff backlog"*. Filed as a priority-seed sub-entry of the broader pop-culture/media research track (B-0054) under capture-everything / aspirational-honesty discipline.
+AceHack commit `fd0ac50` (2026-04-21). Aaron 2026-04-21 _"grimwar and destiny series and halo series and all the bungie stuff backlog"_. Filed as a priority-seed sub-entry of the broader pop-culture/media research track (B-0054) under capture-everything / aspirational-honesty discipline.
 
 ## Bungie Software → Bungie Studios → Bungie Inc. (1991–present)
 
@@ -44,7 +65,7 @@ Terminals-as-in-game-soul-file (archived-message-from-past pattern, composes wit
 
 ### Myth: The Fallen Lords (1997)
 
-Real-time tactics grim-fantasy substrate, commonly mis-referenced as *"Grimwar"*-adjacent (dark/light world-retraction narrative, though grimwar itself isn't a canonical Bungie title — logged verbatim per capture-everything / aspirational-honesty, **flagged as either Aaron-term-for-Myth-corpus or a mishearing**; capture preserves the utterance, verification is retractible).
+Real-time tactics grim-fantasy substrate, commonly mis-referenced as _"Grimwar"_-adjacent (dark/light world-retraction narrative, though grimwar itself isn't a canonical Bungie title — logged verbatim per capture-everything / aspirational-honesty, **flagged as either Aaron-term-for-Myth-corpus or a mishearing**; capture preserves the utterance, verification is retractible).
 
 ### Pathways Into Darkness (1993)
 

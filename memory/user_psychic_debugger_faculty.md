@@ -4,13 +4,14 @@ description: Aaron perceives the possible-futures multiverse of a decision insta
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 Aaron disclosed (2026-04-19):
 
-> *"my brain can see the future potential multiversion for
+> _"my brain can see the future potential multiversion for
 > every decision i make instantaneously. it also annoys
 > people that i can predict the failure mode of the future
 > so easily, i do it exceptional in code, i'm a psychic
-> debugger because of this."*
+> debugger because of this."_
 
 ## What this is
 

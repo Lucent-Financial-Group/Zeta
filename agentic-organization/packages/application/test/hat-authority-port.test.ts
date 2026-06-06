@@ -7,10 +7,7 @@ import {
   SupervisorSignalToolType,
   type HatAssignmentAuthoritySnapshot,
 } from "../../domain/src/index.ts";
-import {
-  HatAuthorityDecisionStatus,
-  type HatAuthorityRequest,
-} from "../../policy/src/index.ts";
+import { HatAuthorityDecisionStatus, type HatAuthorityRequest } from "../../policy/src/index.ts";
 import {
   ObserveCommandType,
   buildHatDefinitions,
@@ -52,10 +49,12 @@ describe("real hat authority port", () => {
       createId,
     });
 
-    const decision = await port.evaluateHatAuthority(request({
-      commandType: CommandType.SendSupervisorSignal,
-      toolType: SupervisorSignalToolType.RequestEscalation,
-    }));
+    const decision = await port.evaluateHatAuthority(
+      request({
+        commandType: CommandType.SendSupervisorSignal,
+        toolType: SupervisorSignalToolType.RequestEscalation,
+      }),
+    );
 
     equal(decision.status, HatAuthorityDecisionStatus.Active);
   });
@@ -67,9 +66,11 @@ describe("real hat authority port", () => {
       createId,
     });
 
-    const decision = await port.evaluateHatAuthority(request({
-      commandType: CommandType.AuthorContextPackAdvisoryPromotionDecision,
-    }));
+    const decision = await port.evaluateHatAuthority(
+      request({
+        commandType: CommandType.AuthorContextPackAdvisoryPromotionDecision,
+      }),
+    );
 
     equal(decision.status, HatAuthorityDecisionStatus.Active);
   });
@@ -81,9 +82,11 @@ describe("real hat authority port", () => {
       createId,
     });
 
-    const decision = await port.evaluateHatAuthority(request({
-      commandType: ObserveCommandType.LifecycleTransition,
-    }));
+    const decision = await port.evaluateHatAuthority(
+      request({
+        commandType: ObserveCommandType.LifecycleTransition,
+      }),
+    );
 
     equal(decision.status, HatAuthorityDecisionStatus.Active);
   });
@@ -95,9 +98,11 @@ describe("real hat authority port", () => {
       createId,
     });
 
-    const decision = await port.evaluateHatAuthority(request({
-      commandType: ObserveCommandType.LifecycleTransition,
-    }));
+    const decision = await port.evaluateHatAuthority(
+      request({
+        commandType: ObserveCommandType.LifecycleTransition,
+      }),
+    );
 
     equal(decision.status, HatAuthorityDecisionStatus.ToolDenied);
   });
@@ -150,8 +155,14 @@ describe("real hat authority port", () => {
       createId,
     });
 
-    equal((await revokedPort.evaluateHatAuthority(request({ toolType: "write_code" }))).status, HatAuthorityDecisionStatus.Revoked);
-    equal((await expiredPort.evaluateHatAuthority(request({ toolType: "write_code" }))).status, HatAuthorityDecisionStatus.Expired);
+    equal(
+      (await revokedPort.evaluateHatAuthority(request({ toolType: "write_code" }))).status,
+      HatAuthorityDecisionStatus.Revoked,
+    );
+    equal(
+      (await expiredPort.evaluateHatAuthority(request({ toolType: "write_code" }))).status,
+      HatAuthorityDecisionStatus.Expired,
+    );
   });
 });
 

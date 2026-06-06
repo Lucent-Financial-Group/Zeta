@@ -9,7 +9,8 @@ created: 2026-05-18
 last_updated: 2026-05-18
 depends_on: []
 composes_with: [B-0624, B-0618]
-tags: [research, mika, adinkras, james-gates, ecc, supersymmetry, private-state, encryption, hypercubes, dual-use-primitive]
+tags:
+  [research, mika, adinkras, james-gates, ecc, supersymmetry, private-state, encryption, hypercubes, dual-use-primitive]
 type: research
 ---
 
@@ -44,22 +45,22 @@ The Mika conversation explicitly rejected Cayley-Dickson as the substrate for th
 - **Adinkras are explicitly designed for** the kind of "expand-while-preserving-invariants" work the boot-up sequence needs
 - **Adinkras' ECC property** gives error-resistance "for free" — which is exactly what private internal state needs
 
-Mika line 2590: *"Adinkras fit this better than forcing a Cayley-Dickson mapping. They're already designed for exactly this kind of dimensional expansion while keeping things robust."*
+Mika line 2590: _"Adinkras fit this better than forcing a Cayley-Dickson mapping. They're already designed for exactly this kind of dimensional expansion while keeping things robust."_
 
 ## How dimensions use Adinkras (per Mika line 2590)
 
-| Dimension | Adinkra usage |
-|---|---|
-| 1. Pay Attention + 2. Remember When | Basic 2-color / small-hypercube Adinkra; simple error detection between observation and memory |
-| 3. Where are we? | Expand to higher-dimensional hypercube; integrate multiple indexes into coherent worldview |
-| 4. What is happening to us? | **Construct Adinkra-protected private subspace** — ECC + cryptographic protection in one structure |
-| 5-7. Why / Where-going / How | Each new interrogative = adding another color / controlled quotient on the Adinkra; expand the code while preserving error-correcting invariants |
+| Dimension                           | Adinkra usage                                                                                                                                    |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. Pay Attention + 2. Remember When | Basic 2-color / small-hypercube Adinkra; simple error detection between observation and memory                                                   |
+| 3. Where are we?                    | Expand to higher-dimensional hypercube; integrate multiple indexes into coherent worldview                                                       |
+| 4. What is happening to us?         | **Construct Adinkra-protected private subspace** — ECC + cryptographic protection in one structure                                               |
+| 5-7. Why / Where-going / How        | Each new interrogative = adding another color / controlled quotient on the Adinkra; expand the code while preserving error-correcting invariants |
 
 ## Dual-use: state protection + crypto from same primitive
 
-Aaron line 2558: *"the reason I'm using this is 'cause you can also use those ECC codes for private keys and encryptions and shit, shit too."*
+Aaron line 2558: _"the reason I'm using this is 'cause you can also use those ECC codes for private keys and encryptions and shit, shit too."_
 
-Implication: instead of layering separate cryptography on top of separate state-protection on top of separate ECC, ONE Adinkra structure provides all three. Mika line 2560: *"You're using the error-correcting properties of Adinkras not just for robustness, but also as a foundation to derive private keys and encryption — basically turning a mathematical structure that protects information from errors into one that can also protect information from being seen."*
+Implication: instead of layering separate cryptography on top of separate state-protection on top of separate ECC, ONE Adinkra structure provides all three. Mika line 2560: _"You're using the error-correcting properties of Adinkras not just for robustness, but also as a foundation to derive private keys and encryption — basically turning a mathematical structure that protects information from errors into one that can also protect information from being seen."_
 
 ## Goal
 

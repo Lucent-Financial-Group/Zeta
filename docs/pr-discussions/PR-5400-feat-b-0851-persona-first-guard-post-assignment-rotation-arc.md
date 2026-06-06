@@ -20,7 +20,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 Mika ferry forwarded by Aaron 2026-05-27 — \"Everything is Persona-first\" architectural framing extends B-0850 from static persona-to-vendor binding to preference-based scheduling with rotation.
 
-Operator clarified: *\"guard post is the systemd for each node outside k8s\"* → per-node ≥3 floor (matches what B-0850 already implements).
+Operator clarified: _\"guard post is the systemd for each node outside k8s\"_ → per-node ≥3 floor (matches what B-0850 already implements).
 
 ## What this PR lands
 
@@ -29,18 +29,18 @@ Operator clarified: *\"guard post is the systemd for each node outside k8s\"* �
 
 ## 10 sub-row plan
 
-| Sub-row | Scope |
-|---|---|
-| 3d | persona preferences (model lines + harnesses + min tier per persona) |
-| 2 | guard-post abstraction (decouple unit name from persona name) |
-| 3 | scheduler primitive (NixOS module; per-tick assignment) |
-| 4 | tier modeling (fast/medium/high per vendor catalog) |
-| 5 | harness compat matrix |
-| 6 | rotation policy (operator-config interval + dimensions + algorithm) |
-| 7 | per-node ≥3 floor as guard-post count |
-| 8 | substrate continuity across rotation |
-| 9 | failover semantics (composes B-0703 multi-oracle BFT) |
-| 10 | persona-vs-instance distinction |
+| Sub-row | Scope                                                                |
+| ------- | -------------------------------------------------------------------- |
+| 3d      | persona preferences (model lines + harnesses + min tier per persona) |
+| 2       | guard-post abstraction (decouple unit name from persona name)        |
+| 3       | scheduler primitive (NixOS module; per-tick assignment)              |
+| 4       | tier modeling (fast/medium/high per vendor catalog)                  |
+| 5       | harness compat matrix                                                |
+| 6       | rotation policy (operator-config interval + dimensions + algorithm)  |
+| 7       | per-node ≥3 floor as guard-post count                                |
+| 8       | substrate continuity across rotation                                 |
+| 9       | failover semantics (composes B-0703 multi-oracle BFT)                |
+| 10      | persona-vs-instance distinction                                      |
 
 ## Does NOT replace B-0850
 
@@ -61,6 +61,7 @@ B-0850 Phase 1 + 3 substrate is a VALID FIRST INSTANTIATION of persona-first (si
 Documentation-only PR adding the B-0851 backlog row that extends B-0850 from static persona-to-vendor binding to preference-based scheduling with rotation, plus verbatim ferry preservation under `memory/persona/mika/`.
 
 **Changes:**
+
 - Adds verbatim Mika ferry preservation file under `memory/persona/mika/conversations/`.
 - Adds new B-0851 backlog row in `docs/backlog/P2/` with 10 implementation sub-row slices.
 - Registers B-0851 in `docs/BACKLOG.md` P2 index.
@@ -69,11 +70,11 @@ Documentation-only PR adding the B-0851 backlog row that extends B-0850 from sta
 
 Copilot reviewed 4 out of 4 changed files in this pull request and generated no comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                                                           | Description                                                                                  |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `memory/persona/mika/conversations/2026-05-27-mika-persona-first-guard-post-assignment-rotation-architecture-extends-b0850-aaron-forwarded.md` | Verbatim Mika ferry packet + operator clarification (memory history surface; lint-excluded). |
-| `docs/backlog/P2/B-0851-...md` | New backlog row with frontmatter, 10 sub-row slices, composes-with, and rationale. |
-| `docs/BACKLOG.md` | Adds B-0851 entry to P2 index list. |
+| `docs/backlog/P2/B-0851-...md`                                                                                                                 | New backlog row with frontmatter, 10 sub-row slices, composes-with, and rationale.           |
+| `docs/BACKLOG.md`                                                                                                                              | Adds B-0851 entry to P2 index list.                                                          |
 
 ## General comments
 

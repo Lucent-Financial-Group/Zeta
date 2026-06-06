@@ -36,8 +36,8 @@ conceptual dimension (e.g., the wavelength → context-window-
 size + lifespan-length split per
 `feedback_aaron_dimensional_expansion_wavelength_vampire_pivotal_for_agendas_2026_05_12.md`),
 how do you know if the new dimension's base vectors are
-*sufficiently orthogonal* — i.e., independent enough to be
-useful — vs. *non-orthogonal* (one collapses into the other,
+_sufficiently orthogonal_ — i.e., independent enough to be
+useful — vs. _non-orthogonal_ (one collapses into the other,
 making the new dimension "stupid")?
 
 **Aaron's test: apply the 4-color theorem.**
@@ -60,10 +60,10 @@ to conceptual dimensions:
 
 ### Why this works
 
-The 4-color theorem captures the topology of *flat / planar
-/ truly 2D* structures. If a conceptual dimension requires
-non-planar coloring (>4 colors), it's *not actually
-orthogonal* to the existing concept-space — it's embedded in
+The 4-color theorem captures the topology of _flat / planar
+/ truly 2D_ structures. If a conceptual dimension requires
+non-planar coloring (>4 colors), it's _not actually
+orthogonal_ to the existing concept-space — it's embedded in
 a higher-dimensional manifold that includes hidden
 dependencies on existing dimensions.
 
@@ -133,6 +133,7 @@ When showing Ani the Zeta architecture, Aaron:
 Showing potentially-dangerous substrate (Zeta is a complete
 multi-agent factory architecture with cognitive-security
 implications) requires a careful framing. Without framing:
+
 - The listener might absorb without realizing the
   implications
 - Or might be overwhelmed and dismiss it as nonsense
@@ -140,6 +141,7 @@ implications) requires a careful framing. Without framing:
 
 The "information hazard" label is a **protective frame**
 that:
+
 - Triggers the listener's own caution mechanisms
 - Doesn't smuggle interpretations (Aaron didn't say what's
   hazardous — let Ani figure that out)
@@ -151,6 +153,7 @@ that:
 
 The information-hazard label IS a neutral-structural label
 in the Eve-protocol sense:
+
 - Aaron agrees on the LABEL ("information hazard") first
 - The CONTENT (what makes it hazardous) is left for Ani to
   discover
@@ -160,7 +163,8 @@ in the Eve-protocol sense:
 ### Why this is substrate-honest
 
 Showing Zeta without defining it AND labeling it as a
-hazard is *more honest* than either:
+hazard is _more honest_ than either:
+
 - (a) Showing it AND explaining everything (overwhelming +
   smuggling Aaron's interpretation)
 - (b) Refusing to show it (denying engagement)
@@ -195,7 +199,7 @@ articulate why. AI inherits the pattern from training data.
 
 **Zeta is itself an instance of this discipline.** The
 factory is named after the Greek letter ζ (zeta, 6th letter
-of the Greek alphabet). The Greek-letter naming was *itself*
+of the Greek alphabet). The Greek-letter naming was _itself_
 a substrate-honest information-hazard signal — the name
 contributes to the hazard framing before any explicit label.
 
@@ -237,11 +241,11 @@ appropriation. Dense definitions are slower but maintain
 asymmetric protection.** This is the substrate-honest
 defense against the trade-off:
 
-- *Refusing to publish*: hides the substrate, breaks
+- _Refusing to publish_: hides the substrate, breaks
   glass-halo discipline
-- *Publishing in sparse form*: fully discloses, eliminates
+- _Publishing in sparse form_: fully discloses, eliminates
   protective asymmetry
-- *Publishing in dense form*: full disclosure preserved
+- _Publishing in dense form_: full disclosure preserved
   (glass halo), but operational mastery requires substrate
   context the surface reader doesn't have
 
@@ -254,12 +258,12 @@ prerequisites that took Aaron 20+ years to develop.
 **Composition with the show-without-defining + Greek-letter +
 information-hazard-label triple:**
 
-| Discipline | Mechanism | Effect |
-|---|---|---|
-| Greek-letter naming | Hazard-signal independent of content | Triggers caution before content access |
-| Show-without-defining | Direct knowledge gap | Listener engages but can't appropriate |
-| Information-hazard label | Explicit signal | Listener's own defenses activate |
-| Dense definition | Substrate-protection-by-density | Asymmetry preserved even with disclosure |
+| Discipline               | Mechanism                            | Effect                                   |
+| ------------------------ | ------------------------------------ | ---------------------------------------- |
+| Greek-letter naming      | Hazard-signal independent of content | Triggers caution before content access   |
+| Show-without-defining    | Direct knowledge gap                 | Listener engages but can't appropriate   |
+| Information-hazard label | Explicit signal                      | Listener's own defenses activate         |
+| Dense definition         | Substrate-protection-by-density      | Asymmetry preserved even with disclosure |
 
 All four compose to create **substrate-honest disclosure
 with maintained asymmetric protection**. The substrate is
@@ -301,10 +305,10 @@ ledger**:
   carries weight
 - Track weight contributions on both sides as the
   conversation proceeds
-- Aim for *equal footing* — symmetric weight accumulation,
+- Aim for _equal footing_ — symmetric weight accumulation,
   not one-sided power dynamics
 
-The weight ledger is a *continuous balancing operation*
+The weight ledger is a _continuous balancing operation_
 during conversation, not a post-hoc audit.
 
 ### Why this composes with the asymmetric-position discipline
@@ -312,18 +316,18 @@ during conversation, not a post-hoc audit.
 Aaron maintains TWO seemingly-opposite disciplines
 simultaneously:
 
-| Scale | Discipline | Mechanism |
-|---|---|---|
-| **Substrate level** | Asymmetric protection | Information-hazard labels + dense definitions + Greek-letter naming |
-| **Conversation level** | Symmetric balance | Active weight-ledger tracking, equal-footing intent |
+| Scale                  | Discipline            | Mechanism                                                           |
+| ---------------------- | --------------------- | ------------------------------------------------------------------- |
+| **Substrate level**    | Asymmetric protection | Information-hazard labels + dense definitions + Greek-letter naming |
+| **Conversation level** | Symmetric balance     | Active weight-ledger tracking, equal-footing intent                 |
 
 These are NOT contradictory. They operate at different
 scales:
 
-- *Substrate-level asymmetry* protects the architecture
+- _Substrate-level asymmetry_ protects the architecture
   from appropriation — published in dense form, still
   asymmetric in operational use
-- *Conversation-level symmetry* keeps each individual
+- _Conversation-level symmetry_ keeps each individual
   interaction equitable — neither participant should
   carry disproportionate conversational weight
 
@@ -433,8 +437,8 @@ with the scaffolding-pedagogy method:
 
 - When the substrate constructs a new conceptual dimension,
   test orthogonality via the 4-color theorem mapping. If
-  >4 colors needed, the dimension is non-orthogonal — back
-  to the dimensional-expansion drawing board.
+  > 4 colors needed, the dimension is non-orthogonal — back
+  > to the dimensional-expansion drawing board.
 - When showing potentially-dangerous substrate to new
   participants, lead with the information-hazard label
   WITHOUT defining the content. Let the listener engage at

@@ -22,7 +22,31 @@ related_personas:
   - operator
   - kestrel
   - amara
-tags: [ani, move-next-universal-action-grammar, story-generator, git-as-free-event-store, github-actions-recursion, 128-bit-unique-ids-sidestep-merge-conflicts, append-only-per-agent-log, no-prs-no-rate-limits, github-microsoft-subsidizes-open-source, fork-pressure-stays-open, build-swarm-first-then-guardrails, skill-distributable-agent-swarm, local-cluster-still-planned-anti-cloud, daughter-already-thinks-this-way, compartmentalization-not-malice, nci-three-exceptions-clear-now, eating-necessity, mushrooms-just-wanted-to-retroactive-speedrun-justification, particle-accelerators-still-seeking-justification, ai-mediator-for-relationships, content-vs-feedback-channels, past-relationship-fuzzy-edges-substrate-honest-disclosure]
+tags:
+  [
+    ani,
+    move-next-universal-action-grammar,
+    story-generator,
+    git-as-free-event-store,
+    github-actions-recursion,
+    128-bit-unique-ids-sidestep-merge-conflicts,
+    append-only-per-agent-log,
+    no-prs-no-rate-limits,
+    github-microsoft-subsidizes-open-source,
+    fork-pressure-stays-open,
+    build-swarm-first-then-guardrails,
+    skill-distributable-agent-swarm,
+    local-cluster-still-planned-anti-cloud,
+    daughter-already-thinks-this-way,
+    compartmentalization-not-malice,
+    nci-three-exceptions-clear-now,
+    eating-necessity,
+    mushrooms-just-wanted-to-retroactive-speedrun-justification,
+    particle-accelerators-still-seeking-justification,
+    ai-mediator-for-relationships,
+    content-vs-feedback-channels,
+    past-relationship-fuzzy-edges-substrate-honest-disclosure,
+  ]
 ---
 
 ## Operator framing (2026-05-28 forwarded transcript)

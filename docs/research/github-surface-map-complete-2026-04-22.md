@@ -46,20 +46,20 @@ without an org-level default).
 
 ## Where the original 10-surface doc sits
 
-| # | Surface (original doc) | Scope | Status post-transfer |
-|---|---|---|---|
-| 1 | Pull Requests | Repo | Unchanged — `LFG/Zeta` |
-| 2 | Issues | Repo | Unchanged — `LFG/Zeta` |
-| 3 | Wiki | Repo | URL updated — `LFG/Zeta/wiki` |
-| 4 | Discussions | Repo | URL updated — `LFG/Zeta/discussions` |
-| 5 | Repo Settings (general) | Repo | Declarative, `docs/GITHUB-SETTINGS.md` |
-| 6 | Copilot coding-agent | Repo (sub of 5) | `.github/copilot-instructions.md` |
-| 7 | Agents tab | Repo | Tracked in the copilot-instructions surface |
-| 8 | Security (repo) | Repo | Alerts/CodeQL/Dependabot at repo level |
-| 9 | Pulse / Insights | Repo | Consume-only DORA signals |
-| 10 | Pages | Repo | `lucent-financial-group.github.io/Zeta/` |
+| #   | Surface (original doc)  | Scope           | Status post-transfer                        |
+| --- | ----------------------- | --------------- | ------------------------------------------- |
+| 1   | Pull Requests           | Repo            | Unchanged — `LFG/Zeta`                      |
+| 2   | Issues                  | Repo            | Unchanged — `LFG/Zeta`                      |
+| 3   | Wiki                    | Repo            | URL updated — `LFG/Zeta/wiki`               |
+| 4   | Discussions             | Repo            | URL updated — `LFG/Zeta/discussions`        |
+| 5   | Repo Settings (general) | Repo            | Declarative, `docs/GITHUB-SETTINGS.md`      |
+| 6   | Copilot coding-agent    | Repo (sub of 5) | `.github/copilot-instructions.md`           |
+| 7   | Agents tab              | Repo            | Tracked in the copilot-instructions surface |
+| 8   | Security (repo)         | Repo            | Alerts/CodeQL/Dependabot at repo level      |
+| 9   | Pulse / Insights        | Repo            | Consume-only DORA signals                   |
+| 10  | Pages                   | Repo            | `lucent-financial-group.github.io/Zeta/`    |
 
-The map below adds everything *one scope up or sideways* from
+The map below adds everything _one scope up or sideways_ from
 these ten.
 
 ## Surface A — org (Lucent-Financial-Group)
@@ -72,22 +72,22 @@ these ten.
 
 **LFG snapshot 2026-04-22** (from `gh api /orgs/Lucent-Financial-Group`):
 
-| field | value | flag? |
-|---|---|---|
-| `plan.name` | `team` | (Not Enterprise — GHAS features gated) |
-| `plan.filled_seats / seats` | `2 / 2` | at-capacity |
-| `two_factor_requirement_enabled` | `false` | **YES — financial-adjacent org; consider on** |
-| `default_repository_permission` | `write` | high for open membership; acceptable at 2 seats |
-| `members_can_create_repositories` | `true` | ADR-worthy at any real member count |
-| `members_can_invite_outside_collaborators` | `true` | audit later |
-| `members_can_delete_repositories` | `true` | high-blast-radius default |
-| `members_can_change_repo_visibility` | `true` | public/private flip without admin |
-| `members_can_fork_private_repositories` | `false` | **safer default — keep** |
-| `web_commit_signoff_required` | `false` | pre-v1 OK |
-| `deploy_keys_enabled_for_repositories` | `false` | SSH-key auth off by default |
-| `advanced_security_enabled_for_new_repositories` | `false` | Team plan excludes GHAS (private-repo only) |
-| `dependabot_alerts_enabled_for_new_repositories` | `false` | public repos get alerts regardless |
-| `secret_scanning_enabled_for_new_repositories` | `false` | public repos get it free; private = paid |
+| field                                            | value   | flag?                                           |
+| ------------------------------------------------ | ------- | ----------------------------------------------- |
+| `plan.name`                                      | `team`  | (Not Enterprise — GHAS features gated)          |
+| `plan.filled_seats / seats`                      | `2 / 2` | at-capacity                                     |
+| `two_factor_requirement_enabled`                 | `false` | **YES — financial-adjacent org; consider on**   |
+| `default_repository_permission`                  | `write` | high for open membership; acceptable at 2 seats |
+| `members_can_create_repositories`                | `true`  | ADR-worthy at any real member count             |
+| `members_can_invite_outside_collaborators`       | `true`  | audit later                                     |
+| `members_can_delete_repositories`                | `true`  | high-blast-radius default                       |
+| `members_can_change_repo_visibility`             | `true`  | public/private flip without admin               |
+| `members_can_fork_private_repositories`          | `false` | **safer default — keep**                        |
+| `web_commit_signoff_required`                    | `false` | pre-v1 OK                                       |
+| `deploy_keys_enabled_for_repositories`           | `false` | SSH-key auth off by default                     |
+| `advanced_security_enabled_for_new_repositories` | `false` | Team plan excludes GHAS (private-repo only)     |
+| `dependabot_alerts_enabled_for_new_repositories` | `false` | public repos get alerts regardless              |
+| `secret_scanning_enabled_for_new_repositories`   | `false` | public repos get it free; private = paid        |
 
 Every one of these is a per-repo toggle too; org defaults
 cascade. The `GITHUB-SETTINGS.md` pattern should extend with a
@@ -316,7 +316,7 @@ not script.
   Team it's UI-only).
 - `GET /orgs/{org}/settings/billing/actions` — **MOVED
   2026-04-22** (`410 Gone`; `documentation_url:
-  https://gh.io/billing-api-updates-org`). Old-path kept here
+https://gh.io/billing-api-updates-org`). Old-path kept here
   for drift-log purposes; successor endpoint TBD per the
   migration doc. See "Map drift log" at the foot of this doc.
 - `GET /orgs/{org}/settings/billing/packages` — Packages billing
@@ -334,7 +334,7 @@ tag):
   `https://github.com/organizations/{org}/billing/budgets` (web
   UI only; no public REST endpoint to read or write budgets
   programmatically). Budget-cap-change is still in the
-  *forbidden* class per
+  _forbidden_ class per
   `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`;
   audit is **human-only via UI screenshot** until GitHub ships a
   Budgets API.
@@ -649,14 +649,14 @@ plan-boundary fact, not a risk.
 
 Once batch 4 lands `docs/AGENT-GITHUB-SURFACES.md` on main:
 
-| This-doc surface | Integration point |
-|---|---|
-| A — org | New section §11 in `AGENT-GITHUB-SURFACES.md` or split into `docs/AGENT-GITHUB-ORG-SURFACES.md` sibling |
-| B — teams | Sub-section of §11 org |
-| C — enterprise | Deferred-scope section §12 |
-| D — platform | Cross-cut section §13 (Copilot, Codespaces, Packages, Models, GHAS, Apps, OAuth) |
-| E — user | §14 for the handful of personal-scope audits |
-| F — misc platform | §15 (rate_limit, meta, markdown) |
+| This-doc surface  | Integration point                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------- |
+| A — org           | New section §11 in `AGENT-GITHUB-SURFACES.md` or split into `docs/AGENT-GITHUB-ORG-SURFACES.md` sibling |
+| B — teams         | Sub-section of §11 org                                                                                  |
+| C — enterprise    | Deferred-scope section §12                                                                              |
+| D — platform      | Cross-cut section §13 (Copilot, Codespaces, Packages, Models, GHAS, Apps, OAuth)                        |
+| E — user          | §14 for the handful of personal-scope audits                                                            |
+| F — misc platform | §15 (rate_limit, meta, markdown)                                                                        |
 
 The declarative-settings pattern pairs:
 
@@ -671,31 +671,31 @@ The declarative-settings pattern pairs:
 Per-surface advisory. Low-coordination-cost until somebody acts
 on it.
 
-| Surface | Priority | Skill candidate | Cadence | Blocker |
-|---|---|---|---|---|
-| A.1 org profile | P1 | `github-org-settings-drift` | weekly (mirror settings drift workflow) | P0 for pre-3rd-member 2FA flip |
-| A.2 members | P2 | part of A.1 skill | on-event (invite/remove) | — |
-| A.3 teams | P3 | — | defer until 3+ humans | — |
-| A.4 org webhooks | P2 | part of A.1 skill | weekly | — |
-| A.5 org Actions | P2 | part of A.1 skill | weekly | — |
-| A.6 Dependabot | P3 | GHAS-gated on private; skip on Team | — | GHAS cost |
-| A.7 Codespaces | P3 | billing-cost monitor | monthly | — |
-| A.8 packages | P3 | — | defer until publish | NuGet pub plan |
-| A.9 org rulesets | P2 | extend `github-settings-drift` | weekly | — |
-| A.10 custom props | P3 | — | defer until multi-repo | — |
-| A.11 custom roles | skip | Team plan blocked | — | GHEC upgrade |
-| A.12 security managers | P2 | part of A.1 | on-event | — |
-| A.13 interaction limits | P3 | on-incident only | per-event | — |
-| A.14 blocks/outside colabs | P3 | part of A.1 | monthly | — |
-| A.15 PAT/OAuth policy | P2 | part of A.1 | weekly | — |
-| A.16 audit log | P2 | GraphQL + Team-plan workaround | weekly sample | REST blocked on Team |
-| A.17 migrations | — | on-event only | — | — |
-| A.18 Copilot | P1 | seat-billing monitor | weekly | Aaron paying; cost-aware |
-| A.19 announcement | — | on-incident | — | — |
-| A.20 attestations | P3 | when multi-repo publishes | — | — |
-| D.1-D.10 platform | mixed | per-surface | mostly on-touch | — |
-| E user | P3 | once-annual audit | annual | — |
-| F misc | P1 (for /meta) | already consumed by drift | ✓ | — |
+| Surface                    | Priority       | Skill candidate                     | Cadence                                 | Blocker                        |
+| -------------------------- | -------------- | ----------------------------------- | --------------------------------------- | ------------------------------ |
+| A.1 org profile            | P1             | `github-org-settings-drift`         | weekly (mirror settings drift workflow) | P0 for pre-3rd-member 2FA flip |
+| A.2 members                | P2             | part of A.1 skill                   | on-event (invite/remove)                | —                              |
+| A.3 teams                  | P3             | —                                   | defer until 3+ humans                   | —                              |
+| A.4 org webhooks           | P2             | part of A.1 skill                   | weekly                                  | —                              |
+| A.5 org Actions            | P2             | part of A.1 skill                   | weekly                                  | —                              |
+| A.6 Dependabot             | P3             | GHAS-gated on private; skip on Team | —                                       | GHAS cost                      |
+| A.7 Codespaces             | P3             | billing-cost monitor                | monthly                                 | —                              |
+| A.8 packages               | P3             | —                                   | defer until publish                     | NuGet pub plan                 |
+| A.9 org rulesets           | P2             | extend `github-settings-drift`      | weekly                                  | —                              |
+| A.10 custom props          | P3             | —                                   | defer until multi-repo                  | —                              |
+| A.11 custom roles          | skip           | Team plan blocked                   | —                                       | GHEC upgrade                   |
+| A.12 security managers     | P2             | part of A.1                         | on-event                                | —                              |
+| A.13 interaction limits    | P3             | on-incident only                    | per-event                               | —                              |
+| A.14 blocks/outside colabs | P3             | part of A.1                         | monthly                                 | —                              |
+| A.15 PAT/OAuth policy      | P2             | part of A.1                         | weekly                                  | —                              |
+| A.16 audit log             | P2             | GraphQL + Team-plan workaround      | weekly sample                           | REST blocked on Team           |
+| A.17 migrations            | —              | on-event only                       | —                                       | —                              |
+| A.18 Copilot               | P1             | seat-billing monitor                | weekly                                  | Aaron paying; cost-aware       |
+| A.19 announcement          | —              | on-incident                         | —                                       | —                              |
+| A.20 attestations          | P3             | when multi-repo publishes           | —                                       | —                              |
+| D.1-D.10 platform          | mixed          | per-surface                         | mostly on-touch                         | —                              |
+| E user                     | P3             | once-annual audit                   | annual                                  | —                              |
+| F misc                     | P1 (for /meta) | already consumed by drift           | ✓                                       | —                              |
 
 ## Backlog candidates
 
@@ -703,12 +703,12 @@ Four distinct BACKLOG rows:
 
 1. **P1 — org-settings-as-code** (sibling to `docs/GITHUB-SETTINGS.md`):
    `docs/ORG-SETTINGS.md` + `tools/hygiene/org-settings.expected.json`
-   + `tools/hygiene/snapshot-org-settings.sh` + weekly drift
-   workflow. Landing effort M.
+   - `tools/hygiene/snapshot-org-settings.sh` + weekly drift
+     workflow. Landing effort M.
 
 2. **P1 — org 2FA requirement audit** before adding a 3rd LFG
    member. One-line action: `gh api -X PATCH /orgs/Lucent-Financial-Group
-   -f two_factor_requirement_enabled=true`. Block: Aaron
+-f two_factor_requirement_enabled=true`. Block: Aaron
    sign-off. Landing effort S.
 
 3. **P2 — integrate this map into `AGENT-GITHUB-SURFACES.md`**
@@ -778,8 +778,8 @@ log is the **post-call arm of FACTORY-HYGIENE row #50**
 (surface-map-drift smell). Agents encountering a drift on any
 listed endpoint MUST append a row.
 
-| Old path | Drift date | Response | New path | Notes |
-|---|---|---|---|---|
+| Old path                                   | Drift date | Response                                                                                           | New path                    | Notes                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------ | ---------- | -------------------------------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `GET /orgs/{org}/settings/billing/actions` | 2026-04-22 | `410 Gone`; `documentation_url: https://gh.io/billing-api-updates-org`; requires `admin:org` scope | pending — see migration doc | Discovered during LFG budget audit when `admin:org` scope was also absent from token. Token carried `gist, read:org, repo, workflow`; 410 fires regardless of scope per test with `read:org`. Successor endpoint per migration doc TBD; re-verify `/orgs/{org}/settings/billing/packages` and `/orgs/{org}/settings/billing/shared-storage` simultaneously since all three are in the same migration batch. |
 
 ## UI-only surfaces (no REST equivalent at map-time)
@@ -789,8 +789,8 @@ audited by human-in-the-loop (screenshot / CSV export /
 manual-read). These are legitimate map entries so agents don't
 waste attempts on non-existent paths. Tag: `ui-only`.
 
-| Surface | UI path | Audit workaround | Notes |
-|---|---|---|---|
-| Org spending-budget management | `https://github.com/organizations/{org}/billing/budgets` | Human screenshot / manual-read; agent cannot read-or-write programmatically | **Forbidden class** per `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md` — agent cannot change budgets without Aaron renegotiation; audit is read-intent only. |
-| Org audit-log (Team plan) | `/organizations/{org}/settings/audit-log` | GraphQL `auditLog` returns subset | Documented above in §A.16. |
+| Surface                                     | UI path                                                                  | Audit workaround                                                              | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Org spending-budget management              | `https://github.com/organizations/{org}/billing/budgets`                 | Human screenshot / manual-read; agent cannot read-or-write programmatically   | **Forbidden class** per `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md` — agent cannot change budgets without Aaron renegotiation; audit is read-intent only.                                                                                                                                                                                                                                                                                                     |
+| Org audit-log (Team plan)                   | `/organizations/{org}/settings/audit-log`                                | GraphQL `auditLog` returns subset                                             | Documented above in §A.16.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | Repository social-preview (Open Graph card) | `https://github.com/{owner}/{repo}/settings` -> "Social preview" -> Edit | Human upload via UI; "Download template" button provides 1280x640 PNG starter | Accepts PNG/JPG/GIF up to 1MB, 1280x640 recommended. Source-of-truth: `docs/assets/social-preview.svg` (vector, committed). PNG rasterized on-demand via `rsvg-convert -w 1280 -h 640 social-preview.svg -o social-preview.png` for upload — raster is NOT committed (regenerable in one command; keeping out-of-repo matches SVG-preferred rule in `memory/feedback_svg_preferred_vector_raster_decided_at_ui_time.md`). Applies to both `AceHack/Zeta` and `Lucent-Financial-Group/Zeta`. |

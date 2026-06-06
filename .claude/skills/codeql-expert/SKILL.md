@@ -22,7 +22,7 @@ items closed.
 - Reviewing a CodeQL alert shown in the GitHub code-
   scanning UI.
 - Triaging SARIF output from a local `codeql database
-  analyze` run.
+analyze` run.
 - Debating CodeQL vs Semgrep vs CI unit tests with
   `security-researcher` or `formal-verification-expert`.
 - Evaluating when F# language-pack support becomes
@@ -50,7 +50,7 @@ The round-34 tune closed items 1-5. Status per item:
 
 1. ✅ **`build-mode: none` on `csharp` → `manual`** —
    workflow now runs `./tools/setup/install.sh` + `dotnet
-   build Zeta.sln -c Release` before CodeQL init, so the
+build Zeta.sln -c Release` before CodeQL init, so the
    C# pack analyses compiled IL. Load-bearing fix.
 2. ✅ **`java-kotlin` dropped from matrix** — Zeta has no
    Java / Kotlin source; matrix is now `actions` + `csharp`.
@@ -58,7 +58,7 @@ The round-34 tune closed items 1-5. Status per item:
    `security-extended` (fast, high-confidence); scheduled
    weekly sweep adds `security-and-quality` on top.
 4. ✅ **`paths-ignore` shipped** — `.github/codeql/
-   codeql-config.yml` excludes `references/prior-art/**`,
+codeql-config.yml` excludes `references/prior-art/**`,
    `bench/**`, `tools/tla/**`, `tools/alloy/**`,
    `tools/lean4/**`, `**/*.generated.cs`.
 5. ✅ **Concurrency + timeout** — `cancel-in-progress` on
@@ -99,7 +99,7 @@ runs on MSIL, not on F# source. This:
 
 Before proposing a workflow, confirm which slice of this
 we're paying for. "CodeQL runs on all our F# code" is
-*technically* true and *practically* lossy — note it in
+_technically_ true and _practically_ lossy — note it in
 the PR description.
 
 ## CodeQL pipeline (CLI form)
@@ -282,7 +282,7 @@ do not pretend otherwise.
 ## What this skill does NOT do
 
 - Does NOT grant security-triage authority — `security-
-  researcher` (Mateo) and `security-operations-engineer`
+researcher` (Mateo) and `security-operations-engineer`
   (Nazar) own triage; this skill covers the tool.
 - Does NOT override `formal-verification-expert` routing
   — CodeQL vs Semgrep vs FsCheck vs Lean is a Soraya call.

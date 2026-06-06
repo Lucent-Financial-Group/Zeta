@@ -66,7 +66,7 @@ B-0093 decomposed into 4 smallest dependency-ordered atomic children (B-0093.1â€
 
 **Proposed fix:**
 
-- Standardized Aaron response: *"Evaluate that hypothesis purely against public market data; I cannot confirm or deny internal roadmap overlaps."*
+- Standardized Aaron response: _"Evaluate that hypothesis purely against public market data; I cannot confirm or deny internal roadmap overlaps."_
 - Agent rule: do NOT ask Aaron whether a speculative feature matches internal roadmap; do NOT treat silence / discomfort / refusal as confirmation
 - Add to `memory/feedback_public_company_contributor_compliance_no_insider_info_in_public_repos_with_trajectories_aaron_2026_04_28.md` as a section
 
@@ -92,14 +92,14 @@ B-0093 decomposed into 4 smallest dependency-ordered atomic children (B-0093.1â€
 
 Add a table to B-0092 trajectory section:
 
-| Trajectory | Owner | Trigger | Recording surface |
-|---|---|---|---|
-| Continuous self-audit | Otto/agent author | before commit touching public-company context | commit notes / PR body |
-| PR compliance audit | PR author + reviewer + CI scanner | PR mentions public company | PR checklist |
-| Weekly scan | Otto cron / factory hygiene | weekly cadence | compliance audit log |
-| Monthly review | Otto + Aaron review if needed | monthly cadence | docs/compliance/round-N.md |
-| Onboarding briefing | Aaron / repo maintainers | new contributor with public-company employer | acknowledgement record |
-| Drift retrospective | Otto + reviewer | compliance drift caught | memory + backlog row if repeated |
+| Trajectory            | Owner                             | Trigger                                       | Recording surface                |
+| --------------------- | --------------------------------- | --------------------------------------------- | -------------------------------- |
+| Continuous self-audit | Otto/agent author                 | before commit touching public-company context | commit notes / PR body           |
+| PR compliance audit   | PR author + reviewer + CI scanner | PR mentions public company                    | PR checklist                     |
+| Weekly scan           | Otto cron / factory hygiene       | weekly cadence                                | compliance audit log             |
+| Monthly review        | Otto + Aaron review if needed     | monthly cadence                               | docs/compliance/round-N.md       |
+| Onboarding briefing   | Aaron / repo maintainers          | new contributor with public-company employer  | acknowledgement record           |
+| Drift retrospective   | Otto + reviewer                   | compliance drift caught                       | memory + backlog row if repeated |
 
 **Effort:** S â€” B-0092 update
 
@@ -156,7 +156,7 @@ Input-Is-Not-Directive:
 
 Memory file: `feedback_beacon_promotion_load_bearing_rules_earn_external_anchors_aaron_2026_04_28.md`. Encodes the rule:
 
-> *Load-bearing factory rules consistently earn external anchors when they're correct. The absence of an external anchor on a long-running internal rule is a useful drift signal.*
+> _Load-bearing factory rules consistently earn external anchors when they're correct. The absence of an external anchor on a long-running internal rule is a useful drift signal._
 
 **Effort:** S â€” new memory file
 

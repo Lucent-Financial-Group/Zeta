@@ -32,10 +32,7 @@
 
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  spawnSync,
-  type SpawnSyncReturns,
-} from "node:child_process";
+import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 
 type AuditExitCode = 0 | 1 | 2;
 
@@ -78,11 +75,7 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const ROUND_RE = /^## Round (\d+)/gm;
 const OWNER_RE = /memory\/persona\/([a-z0-9_-]+)\/NOTEBOOK\.md/;
 
-function classifyFailure(
-  cmd: string,
-  args: readonly string[],
-  result: SpawnSyncReturns<string>,
-): string | null {
+function classifyFailure(cmd: string, args: readonly string[], result: SpawnSyncReturns<string>): string | null {
   if (result.error) {
     return `Failed to start '${cmd} ${args.join(" ")}': ${result.error.message}`;
   }
@@ -352,10 +345,7 @@ function applyStaleFilter(rows: readonly SkillRow[], staleMin: number): readonly
 
 export function audit(args: Args): AuditResult {
   const skills = listSkills();
-  const cr =
-    args.roundLabel !== null && /^\d+$/.test(args.roundLabel)
-      ? Number(args.roundLabel)
-      : currentRound();
+  const cr = args.roundLabel !== null && /^\d+$/.test(args.roundLabel) ? Number(args.roundLabel) : currentRound();
   const roundLabel = args.roundLabel ?? String(cr);
   const allRows = skills.map((s) => buildRow(s, cr, args.range));
   const rows = applyStaleFilter(allRows, args.staleMin);
@@ -408,7 +398,9 @@ function emitMd(r: AuditResult): string {
   lines.push("reliable skill-scope signal today emit `-`; see header comment");
   lines.push("in `tools/alignment/audit_skills.sh` for the mapping rationale):");
   lines.push("");
-  lines.push("| Skill | Owner | Last round | Friction (#9) | Throughput (#4) | Instability (#5) | Ind. effectiveness (#7) | Touched |");
+  lines.push(
+    "| Skill | Owner | Last round | Friction (#9) | Throughput (#4) | Instability (#5) | Ind. effectiveness (#7) | Touched |",
+  );
   lines.push("| --- | --- | --- | --- | --- | --- | --- | --- |");
   for (const row of r.rows) {
     const mark = row.touched ? "yes" : "no";
@@ -467,17 +459,9 @@ export function main(argv: readonly string[]): AuditExitCode {
 
   if (args.outDir !== null) {
     mkdirSync(args.outDir, { recursive: true });
-    writeFileSync(
-      join(args.outDir, `round-${result.roundLabel}-skills.json`),
-      emitJson(result),
-    );
-    writeFileSync(
-      join(args.outDir, `round-${result.roundLabel}-skills.md`),
-      `${emitMd(result)}\n`,
-    );
-    process.stdout.write(
-      `audit_skills: wrote ${args.outDir}/round-${result.roundLabel}-skills.{json,md}\n`,
-    );
+    writeFileSync(join(args.outDir, `round-${result.roundLabel}-skills.json`), emitJson(result));
+    writeFileSync(join(args.outDir, `round-${result.roundLabel}-skills.md`), `${emitMd(result)}\n`);
+    process.stdout.write(`audit_skills: wrote ${args.outDir}/round-${result.roundLabel}-skills.{json,md}\n`);
   } else if (args.json) {
     process.stdout.write(emitJson(result));
   } else if (args.md) {
@@ -490,9 +474,7 @@ export function main(argv: readonly string[]): AuditExitCode {
     const failing = gateCheck(result.rows, args.gate);
     if (failing.length > 0) {
       for (const f of failing) {
-        process.stderr.write(
-          `audit_skills: ${f.name} friction=${f.friction} >= gate ${String(args.gate)}\n`,
-        );
+        process.stderr.write(`audit_skills: ${f.name} friction=${f.friction} >= gate ${String(args.gate)}\n`);
       }
       return 1;
     }

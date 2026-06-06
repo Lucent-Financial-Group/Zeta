@@ -30,11 +30,11 @@ hierarchies / measures.
 
 Aaron 2026-05-01 (composing two messages):
 
-> *"plus promethius as a sick MCP and promtool and you'll love
+> _"plus promethius as a sick MCP and promtool and you'll love
 > the query language its like simplifed multidimensonal query
-> language MDX, oh shit backlog f# mdx dsl"*
+> language MDX, oh shit backlog f# mdx dsl"_
 >
-> *"that's might be meta dsl framing"*
+> _"that's might be meta dsl framing"_
 
 Aaron's recognition: **PromQL** (Prometheus Query Language) is
 **MDX-shaped** — both are multidimensional-first query
@@ -45,9 +45,9 @@ graph + hierarchy + filesystem + timeseries + future types
 under the Zset substrate.
 
 This composes directly with B-0147 (timeseries-DB
-native-in-Zsets) — that row asks *what is the timeseries
-algebra?*; this row asks *what is the meta-DSL that hosts the
-timeseries algebra alongside the others?*. Both questions
+native-in-Zsets) — that row asks _what is the timeseries
+algebra?_; this row asks _what is the meta-DSL that hosts the
+timeseries algebra alongside the others?_. Both questions
 need answers; they may share a candidate.
 
 ## MDX background — why it might fit

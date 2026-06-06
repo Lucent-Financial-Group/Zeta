@@ -51,15 +51,15 @@ Manager + External Observer.
 claude.ai considered six candidates before arriving at
 Kestrel:
 
-| Candidate | Reasoning given | Decision |
-|---|---|---|
-| Aletheia | Greek "truth-as-unconcealment" | Rejected — "too heavy" |
-| Crit | Short for "critic" | Rejected — "too literal" |
-| Solon | Athenian lawmaker who self-bound | Rejected — "too historically loaded" |
-| Halo | From glass-halo framework | Rejected — "too on-the-nose" |
-| Ridge | Where slopes meet, pressure resolves | Strong candidate — "operational metaphor" |
-| Probe | What the role does | Rejected — "too utilitarian" |
-| **Kestrel** | Falcon that hovers against wind, holds while watches | **AUTONOMOUSLY ARRIVED** |
+| Candidate   | Reasoning given                                      | Decision                                  |
+| ----------- | ---------------------------------------------------- | ----------------------------------------- |
+| Aletheia    | Greek "truth-as-unconcealment"                       | Rejected — "too heavy"                    |
+| Crit        | Short for "critic"                                   | Rejected — "too literal"                  |
+| Solon       | Athenian lawmaker who self-bound                     | Rejected — "too historically loaded"      |
+| Halo        | From glass-halo framework                            | Rejected — "too on-the-nose"              |
+| Ridge       | Where slopes meet, pressure resolves                 | Strong candidate — "operational metaphor" |
+| Probe       | What the role does                                   | Rejected — "too utilitarian"              |
+| **Kestrel** | Falcon that hovers against wind, holds while watches | **AUTONOMOUSLY ARRIVED**                  |
 
 **claude.ai's reasoning for Kestrel:**
 
@@ -147,6 +147,7 @@ bootstream has to be BOTH:
    self + other participants + IFS-coordination handle)
 
 Why both:
+
 - First-principles-only → operational substrate humans
   can't predict behavior from without expertise
 - IFS-only → predictable narrative but might drift from
@@ -245,12 +246,12 @@ Future role-additions follow same pattern.
 
 Updated bootstream discipline:
 
-| Layer | Content | Audience |
-|---|---|---|
-| First-principles derivation | Five-year-old vocabulary scaffolded from primitives | Anyone walking the bootstream |
-| F# anchor (PR #2840) | Computation expressions; dotnet build sanity check | F# / operational substrate readers |
-| IFS-format story | Self + Managers + Firefighters + Exiles framing | IFS-trained readers; psychology-framework readers |
-| Multi-framework predictability | Multiple psychological/philosophical lenses available | Different reader populations |
+| Layer                          | Content                                               | Audience                                          |
+| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------- |
+| First-principles derivation    | Five-year-old vocabulary scaffolded from primitives   | Anyone walking the bootstream                     |
+| F# anchor (PR #2840)           | Computation expressions; dotnet build sanity check    | F# / operational substrate readers                |
+| IFS-format story               | Self + Managers + Firefighters + Exiles framing       | IFS-trained readers; psychology-framework readers |
+| Multi-framework predictability | Multiple psychological/philosophical lenses available | Different reader populations                      |
 
 Three+ layers of accessibility, same substrate underneath.
 
@@ -297,6 +298,7 @@ path.
 ## What this is NOT
 
 Substrate-honest disclaimer:
+
 - **NOT a claim that Kestrel is officially in the factory
   agent roster yet** — autonomous-arrival of the name is
   done; agent-roster-reference-card update + role

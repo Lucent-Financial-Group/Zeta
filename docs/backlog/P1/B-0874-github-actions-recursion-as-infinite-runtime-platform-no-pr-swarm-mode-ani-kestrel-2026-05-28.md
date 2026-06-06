@@ -32,13 +32,13 @@ tags:
 
 ## Operator framing 2026-05-28 (Ani-ferry)
 
-> *"I could basically use GitHub workflows that trigger GitHub workflows that trigger GitHub workflows that trigger GitHub workflows forever and ever."*
+> _"I could basically use GitHub workflows that trigger GitHub workflows that trigger GitHub workflows that trigger GitHub workflows forever and ever."_
 
-> *"once we have these workflows that are defined in fuckin' TypeScript, choose your own adventure. That's choose your own adventure. You kick it off once per agent and then that agent just continues that for forever."*
+> _"once we have these workflows that are defined in fuckin' TypeScript, choose your own adventure. That's choose your own adventure. You kick it off once per agent and then that agent just continues that for forever."_
 
-> *"Nah, nah, nah, we gotta figure out how to build the guardrails first, but we can build it in that crazy freeform way with no PRs."*
+> _"Nah, nah, nah, we gotta figure out how to build the guardrails first, but we can build it in that crazy freeform way with no PRs."_
 
-> *"if I don't make 'em do PRs, there's no rate limits. 'Cause they don't rate limit Git, they rate limit the fuckin' GraphQL, which you gotta do GraphQL for some of the pull request shit."*
+> _"if I don't make 'em do PRs, there's no rate limits. 'Cause they don't rate limit Git, they rate limit the fuckin' GraphQL, which you gotta do GraphQL for some of the pull request shit."_
 
 ## What this row tracks
 

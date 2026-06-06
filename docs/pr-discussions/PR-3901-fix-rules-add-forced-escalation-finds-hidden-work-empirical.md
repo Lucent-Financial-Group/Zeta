@@ -20,10 +20,10 @@ Carves today's session evidence into [\`.claude/rules/holding-without-named-depe
 
 ## Three instances this session
 
-| Tick | Trigger | Hidden work surfaced |
-|---|---|---|
-| 14:56Z | Forced escalation #6 | PR [#3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) BLOCKED-armed 22 min hid 6 Copilot findings (last_updated, type, 0715Z, git syntax, B-0506 link, BACKLOG.md regen). All 6 fixed in one tick |
-| 15:29Z | Pre-emptive at #5 | Own PR [#3883](https://github.com/Lucent-Financial-Group/Zeta/pull/3883) (the 13:31Z stale-armed-triage shard) was itself stale-armed 108 min with MD032 failure — recursively ironic; fixed same tick |
+| Tick   | Trigger              | Hidden work surfaced                                                                                                                                                                                                                                                         |
+| ------ | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 14:56Z | Forced escalation #6 | PR [#3894](https://github.com/Lucent-Financial-Group/Zeta/pull/3894) BLOCKED-armed 22 min hid 6 Copilot findings (last_updated, type, 0715Z, git syntax, B-0506 link, BACKLOG.md regen). All 6 fixed in one tick                                                             |
+| 15:29Z | Pre-emptive at #5    | Own PR [#3883](https://github.com/Lucent-Financial-Group/Zeta/pull/3883) (the 13:31Z stale-armed-triage shard) was itself stale-armed 108 min with MD032 failure — recursively ironic; fixed same tick                                                                       |
 | 15:45Z | Forced escalation #6 | PR [#3545](https://github.com/Lucent-Financial-Group/Zeta/pull/3545) DIRTY-armed 19+ hours (61-file conflict); forward-signal comment named two viable resolution paths + flagged possible supersession by [#3886](https://github.com/Lucent-Financial-Group/Zeta/pull/3886) |
 
 ## Pattern
@@ -41,5 +41,6 @@ Composes with [\`blocked-green-ci-investigate-threads.md\`](.claude/rules/blocke
 Adds an empirical “forced-escalation-finds-hidden-work” anchor to the standing-by-failure rule, documenting that brief-ack escalation (#6, and pre-emptive at #5) consistently surfaced substantive missed work during a single session window.
 
 **Changes:**
+
 - Adds a new empirical anchor subsection covering three concrete instances from 2026-05-16.
 - Documents the observed pattern and links the finding to the investigation discipline rule it composes with.

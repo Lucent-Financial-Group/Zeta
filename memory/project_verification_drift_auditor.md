@@ -4,6 +4,7 @@ description: Round-35 scaffold catches drift between research papers and Zeta fo
 type: project
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 New skill: `.claude/skills/verification-drift-auditor/SKILL.md`.
 Registry: `docs/research/verification-registry.md`. First audit:
 `docs/research/verification-drift-audit-2026-04-19.md`.
@@ -20,7 +21,7 @@ the same round.
 / Z3 lemma / FsCheck property cites an external source (paper,
 RFC, textbook, author-year reference), add a row to the
 verification-registry in the same commit. When the
-verification tool portfolio grows (Alloy, F*, Stainless, etc.)
+verification tool portfolio grows (Alloy, F\*, Stainless, etc.)
 add a row to the skill's tool-registry table. Audit cadence:
 every 5-10 rounds, or on any commit touching a citing artifact.
 Six drift classes: Name, Precondition, Statement, Definition,

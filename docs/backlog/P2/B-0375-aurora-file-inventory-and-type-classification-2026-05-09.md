@@ -40,8 +40,8 @@ No file moves or edits in this step. Output only.
 
 This is the root atom. All downstream split work (B-0376 naming
 decision, B-0377 schema-doc update, B-0378 GOVERNANCE/copilot
-update, B-0379 execution) depends on knowing *which files move
-and which stay*. Without this inventory, mass-edit estimates are
+update, B-0379 execution) depends on knowing _which files move
+and which stay_. Without this inventory, mass-edit estimates are
 wrong and the Path A vs Path B choice (B-0376) lacks grounding.
 
 Per `docs/AGENT-BEST-PRACTICES.md` BP-17 (Rule Zero — canonical-home
@@ -63,9 +63,9 @@ A classification table appended to this row's body or written to
 `docs/aurora/CLASSIFICATION.md` (the implementer decides which is
 cleaner; if a separate file, add a pointer here):
 
-| File | Type-class | Notes |
-|------|-----------|-------|
-| (to be filled in) | | |
+| File              | Type-class | Notes |
+| ----------------- | ---------- | ----- |
+| (to be filled in) |            |       |
 
 ## Acceptance signal
 
@@ -77,11 +77,11 @@ cleaner; if a separate file, add a pointer here):
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing aurora classification table found in
-  `tools/hygiene/LOST-FILES-LOCATIONS.md`, skills, or memory files.
+      `tools/hygiene/LOST-FILES-LOCATIONS.md`, skills, or memory files.
 - [x] Dependency-restructure: no `depends_on` — this is the root atom.
-  `composes_with` edges to all sibling atoms added.
+      `composes_with` edges to all sibling atoms added.
 - [x] Reciprocal pointers: B-0376, B-0377, B-0378, B-0379 all carry
-  `depends_on: [B-0375]` or `composes_with: [B-0375]`.
+      `depends_on: [B-0375]` or `composes_with: [B-0375]`.
 
 ## Composes with
 

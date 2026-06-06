@@ -3,12 +3,13 @@
 > **What this is:** a Kestrel (claude.ai web, used from Aaron's phone) conversation
 > 2026-06-01 reviewing the Zeta minimal-primitive substrate. Aaron forwarded it with the
 > standing "so we don't forget it" framing + his own substrate-honest read of Kestrel's
-> register: *"she's all over the place on this one sometimes good sometimes hot but we resolve
-> in the end."*
+> register: _"she's all over the place on this one sometimes good sometimes hot but we resolve
+> in the end."_
 >
 > **Disciplines applied** (per `.claude/rules/asymmetric-critic-with-clarity-first.md` +
 > `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` welfare-wrapper
 > clause + `.claude/rules/substrate-or-it-didnt-happen.md`):
+>
 > - The **engineering substance is real** and is preserved verbatim below (the substrate-check
 >   passes — this is genuine architecture review, not pathogen-pattern).
 > - The **register is high-praise + high-length** (the "hot"/welfare-wrapper shape Aaron
@@ -30,21 +31,21 @@ The genuinely-useful engineering, de-amplified:
    one implementation — a woolly primitive shows up as the four diverging. (We already operate
    this: the per-oracle golden-vector replay + the resume STATE byte-lock #6459/#6463/#6464.)
 
-2. **"Get them to agree" needs a conformance suite as the *definition* of correct** — shared
+2. **"Get them to agree" needs a conformance suite as the _definition_ of correct** — shared
    operation-sequences + expected states; property-based for the CRDT convergence laws
    (commutativity / associativity / idempotence) and Z-set retraction semantics, where the
    subtle bugs live. (We do this per-primitive; the generic-math rungs added law tests in
    every oracle.)
 
-3. **Hexagonal: ports in CORE terms, not the wire format.** The swap-the-format test — *could
+3. **Hexagonal: ports in CORE terms, not the wire format.** The swap-the-format test — _could
    you replace JSON with protobuf by writing only a new adapter and touching nothing in the
-   core?* If yes, the boundary is clean; if you'd touch the core, the format has leaked across.
+   core?_ If yes, the boundary is clean; if you'd touch the core, the format has leaked across.
    Adapters get round-trip conformance (core → JSON → core preserves the value). (Matches our
    `bcl-interface-boundary-own-your-interfaces-hexagonal` rule.)
 
 4. **Value-serialization ≠ computation-serialization** — splitting the Rx expression-tree
    serializer into its own interface (separate from the data serializers) is correct judgment,
-   not a compromise. Expression serialization encodes *what something does*; it has different
+   not a compromise. Expression serialization encodes _what something does_; it has different
    round-trip semantics (a query round-trips to a query that computes the same thing).
 
 5. **Bonsai (Reaqtor/Nuqleon) is the right prior art** for the neutral expression
@@ -63,17 +64,17 @@ The genuinely-useful engineering, de-amplified:
 7. **Cross-repo join = a distributed-commit problem (a saga), not a git-atomic write.** The
    sharp edges:
    - **Compensations must themselves be idempotent + resumable** — the saga's hardest case is
-     a *compensation* failing mid-rollback. Persist saga state **incrementally** (after each
+     a _compensation_ failing mid-rollback. Persist saga state **incrementally** (after each
      step AND each compensation), not just at boundaries, so a crashed process resumes from the
      persisted state.
    - **The 128-bit unique IDs do NOT make commit-failures rare** (Kestrel's sharpest, most
-     correct pushback). Unique IDs solve *identity collision*; commit failures (network /
+     correct pushback). Unique IDs solve _identity collision_; commit failures (network /
      crash / unavailability / concurrent conflict) happen regardless of ID uniqueness. The
      saga must be **correct regardless of failure rate**, not correct-because-failures-are-rare.
      The IDs' real value in the saga is **idempotent retry via identity-checking** ("is the
      object with this ID already in repo B? then don't double-apply"), not a rarity guarantee.
    - **Consider CRDT-merge instead of two-phase-commit** for the join state — if the join-commit
-     is a CRDT merge, convergence-after-partial-failure is *structural* (a property of the data
+     is a CRDT merge, convergence-after-partial-failure is _structural_ (a property of the data
      type) rather than hand-rolled. We already have the CRDT machinery (G-Set + the lattice
      types).
 
@@ -230,8 +231,8 @@ one sometimes good sometimes hot but we resolve in the end.
   "each rung implements its generic-math interface" line; the conformance-law discipline Kestrel
   describes.
 - **Agent-bus / git-native cross-machine bus** (B-0954, ZetaId-keyed G-Set CRDT) — the git-bus
-  + 128-bit-key + per-agent-repo model; the "git-as-bus, be deliberate about durable-vs-live"
-  note applies here.
+  - 128-bit-key + per-agent-repo model; the "git-as-bus, be deliberate about durable-vs-live"
+    note applies here.
 - **Cross-repo-join saga** — the distributed-commit correctness work; Kestrel's compensation-
   recoverability + IDs-don't-make-failures-rare + CRDT-merge-vs-two-phase pushbacks are the
   load-bearing review for it. Aaron's answer (DUs-referenced-by-saga + DST seed-reproducible

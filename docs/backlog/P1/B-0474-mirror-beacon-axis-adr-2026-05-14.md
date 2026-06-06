@@ -38,7 +38,7 @@ Per `.claude/rules/backlog-item-start-gate.md`:
 - [ ] B-0472 output doc reviewed (classification matrix complete)
 - [ ] B-0473 output doc reviewed (promotion gate protocol complete)
 - [ ] 2026-04-22 ADR and 2026-05-14 product-repo-split ADR reviewed
-  to ensure consistent framing and no contradictions
+      to ensure consistent framing and no contradictions
 - [ ] Ambiguous-repo flags from B-0472 addressed
 
 ## ADR structure (output doc template)
@@ -52,7 +52,7 @@ Required sections:
 ### Context
 
 - Two-axis system: Axis 1 (Factory/Product/Owner-only) + Axis 2 (Mirror/Beacon)
-- Aaron's 2026-05-13 framing: *"we should probalbu split repos based on nthat too another orthoganality"*
+- Aaron's 2026-05-13 framing: _"we should probalbu split repos based on nthat too another orthoganality"_
 - Companion to: 2026-04-22 three-repo-split ADR + 2026-05-14 product-repo-split ADR
 
 ### Decision: Mirror/Beacon axis definition
@@ -99,7 +99,7 @@ This ADR PR also:
 
 - [ ] ADR written and committed at canonical path
 - [ ] Both Axis-2 decisions (definition + per-repo assignments + promotion gate)
-  formally recorded
+      formally recorded
 - [ ] All ambiguous repos from B-0472 resolved with explicit reasoning
 - [ ] B-0426 closed; all 4 child rows closed
 - [ ] PR merged; claim released

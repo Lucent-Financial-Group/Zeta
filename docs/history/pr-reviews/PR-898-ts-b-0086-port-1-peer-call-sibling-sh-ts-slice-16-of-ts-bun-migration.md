@@ -10,20 +10,20 @@
 
 ## Metadata
 
-| Field | Value |
-|---|---|
-| Number | 898 |
-| Title | ts(B-0086): port 1 peer-call sibling (.sh→.ts) — slice 16 of TS/Bun migration |
-| Author | `AceHack` (human) |
-| State | MERGED |
-| Created at | 2026-04-30T06:15:31Z |
-| Merged at | 2026-04-30T06:42:51Z |
-| Merge commit SHA | `db8f3e82dcb6a0830555e887d64a0b975c522b47` |
-| Branch | `lane-b/ts-bun-slice-16-peer-call-gemini-2026-04-30` |
-| Base branch | `main` |
-| URL | https://github.com/Lucent-Financial-Group/Zeta/pull/898 |
-| Changed files | 2 |
-| Additions / deletions | +382 / -3 |
+| Field                 | Value                                                                         |
+| --------------------- | ----------------------------------------------------------------------------- |
+| Number                | 898                                                                           |
+| Title                 | ts(B-0086): port 1 peer-call sibling (.sh→.ts) — slice 16 of TS/Bun migration |
+| Author                | `AceHack` (human)                                                             |
+| State                 | MERGED                                                                        |
+| Created at            | 2026-04-30T06:15:31Z                                                          |
+| Merged at             | 2026-04-30T06:42:51Z                                                          |
+| Merge commit SHA      | `db8f3e82dcb6a0830555e887d64a0b975c522b47`                                    |
+| Branch                | `lane-b/ts-bun-slice-16-peer-call-gemini-2026-04-30`                          |
+| Base branch           | `main`                                                                        |
+| URL                   | https://github.com/Lucent-Financial-Group/Zeta/pull/898                       |
+| Changed files         | 2                                                                             |
+| Additions / deletions | +382 / -3                                                                     |
 
 ## Description
 
@@ -58,15 +58,15 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 
 ## Outcome
 
-| Field | Value |
-|---|---|
-| Merged | true |
-| Re-reviewed post-fix | false |
-| Total threads | 19 |
-| Resolved threads | 19 |
-| Unresolved threads | 0 |
-| Total review comments | 20 |
-| Total fix commits (touching thread paths) | 5 |
+| Field                                     | Value |
+| ----------------------------------------- | ----- |
+| Merged                                    | true  |
+| Re-reviewed post-fix                      | false |
+| Total threads                             | 19    |
+| Resolved threads                          | 19    |
+| Unresolved threads                        | 0     |
+| Total review comments                     | 20    |
+| Total fix commits (touching thread paths) | 5     |
 
 ## Review threads
 
@@ -79,10 +79,11 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-30T06:17:25Z on `tools/peer-call/gemini.ts`:171 (association: NONE)
+
   ## CodeQL / Indirect uncontrolled command line
-  
+
   This command depends on an unsanitized [command-line argument](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/34)
 
 ### Thread 2 -- resolved [outdated, collapsed]
@@ -94,10 +95,10 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T06:17:41Z on `tools/peer-call/gemini.ts`:159 (association: NONE)
-  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub>  Read only the file head instead of loading full file**
-  
+  **<sub><sub>![P1 Badge](https://img.shields.io/badge/P1-orange?style=flat)</sub></sub> Read only the file head instead of loading full file**
+
   When `--file` is provided, this implementation reads the entire file into memory and only then truncates to 20KB. That is a regression from `gemini.sh` (`head -c 20000`) and can cause large memory spikes or OOMs if someone passes a big artifact (logs, dumps, generated data) as context, even though only the first 20KB are needed.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 3 -- resolved [outdated, collapsed]
@@ -109,10 +110,10 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T06:17:41Z on `tools/peer-call/gemini.ts`:173 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Truncate context command output at source**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Truncate context command output at source**
+
   The context command path captures all stdout/stderr up to `SPAWN_MAX_BUFFER` and truncates afterward, which is not equivalent to the shell version’s `... | head -c 20000`. For high-volume commands (for example, wide `git diff` ranges), this can block much longer than necessary or hit the 64MB buffer limit before producing the intended 20KB snippet.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 4 -- resolved [collapsed]
@@ -161,15 +162,14 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 
 **Replies:**
 
-  - **`AceHack` (human)** at 2026-04-30T06:33:42Z on `tools/peer-call/gemini.ts`:208 (association: MEMBER)
-    Pushing back on this one for the PREAMBLE specifically (separate from the surrounding code-comments which I agree should use role-refs):
-    
-    The PREAMBLE is **prompt content sent verbatim to the LLM peer** — not pure code-surface. The bash original (`tools/peer-call/gemini.sh`) uses the same persona names ("Otto", "Amara", "Grok", "Gemini", maintainer-first-name), and the byte-equivalence invariant of this migration says the TS port produces the same prompt the bash version did. Changing names in the TS port alone diverges from the bash original's actual outbound communication content.
-    
-    The right shape is a **separate task** that retools the PREAMBLE attribution on both the bash AND the TS sides together — possibly with a rationale that the four-ferry-consensus identifiers carry recognizability that role-refs would lose ("propose peer" doesn't tell Gemini which sibling-instance is being invoked).
-    
-    For the surrounding **code-comments** that aren't part of the prompt, I'm happy to switch to role-refs in a follow-up. Tracking via this thread; will file a follow-up PR if/when the human maintainer wants the PREAMBLE-side decision made.
-    
+- **`AceHack` (human)** at 2026-04-30T06:33:42Z on `tools/peer-call/gemini.ts`:208 (association: MEMBER)
+  Pushing back on this one for the PREAMBLE specifically (separate from the surrounding code-comments which I agree should use role-refs):
+
+  The PREAMBLE is **prompt content sent verbatim to the LLM peer** — not pure code-surface. The bash original (`tools/peer-call/gemini.sh`) uses the same persona names ("Otto", "Amara", "Grok", "Gemini", maintainer-first-name), and the byte-equivalence invariant of this migration says the TS port produces the same prompt the bash version did. Changing names in the TS port alone diverges from the bash original's actual outbound communication content.
+
+  The right shape is a **separate task** that retools the PREAMBLE attribution on both the bash AND the TS sides together — possibly with a rationale that the four-ferry-consensus identifiers carry recognizability that role-refs would lose ("propose peer" doesn't tell Gemini which sibling-instance is being invoked).
+
+  For the surrounding **code-comments** that aren't part of the prompt, I'm happy to switch to role-refs in a follow-up. Tracking via this thread; will file a follow-up PR if/when the human maintainer wants the PREAMBLE-side decision made.
 
 ### Thread 8 -- resolved [collapsed]
 
@@ -202,10 +202,11 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-30T06:21:12Z on `tools/peer-call/gemini.ts`:187 (association: NONE)
+
   ## CodeQL / Indirect uncontrolled command line
-  
+
   This command depends on an unsanitized [command-line argument](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/35)
 
 ### Thread 10 -- resolved [outdated, collapsed]
@@ -217,10 +218,10 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T06:22:02Z on `tools/peer-call/gemini.ts`:184 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve bash semantics for --context-cmd execution**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Preserve bash semantics for --context-cmd execution**
+
   Switching from the bash script's `eval "$context_cmd"` to `/bin/sh -c` changes which command syntax is accepted, so existing `--context-cmd` inputs that rely on bash-only features (for example `source`, `[[ ... ]]`, brace expansion, or process substitution) now fail or return different output. This degrades the context attached to peer prompts and can lead to incorrect reviews/proposals even though the same command worked in `gemini.sh`.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 11 -- resolved [outdated, collapsed]
@@ -232,10 +233,10 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T06:22:02Z on `tools/peer-call/gemini.ts`:168 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Surface file-read failures instead of silently dropping context**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Surface file-read failures instead of silently dropping context**
+
   When `--file` points to a regular file that cannot be read (for example permission denied), this path swallows the exception and returns an empty string, so the script proceeds as if context was attached when it was not. In the shell version, `head` emitted an error to stderr, which made the failure visible; hiding it here makes bad peer outputs much harder to diagnose.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 12 -- resolved [outdated, collapsed]
@@ -247,10 +248,11 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-30T06:27:27Z on `tools/peer-call/gemini.ts`:187 (association: NONE)
+
   ## CodeQL / Indirect uncontrolled command line
-  
+
   This command depends on an unsanitized [command-line argument](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/38)
 
 ### Thread 13 -- resolved [collapsed]
@@ -262,10 +264,11 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`github-advanced-security[bot]` (bot)** at 2026-04-30T06:34:26Z on `tools/peer-call/gemini.ts`:214 (association: NONE)
+
   ## CodeQL / Indirect uncontrolled command line
-  
+
   This command depends on an unsanitized [command-line argument](1).
-  
+
   [Show more details](https://github.com/Lucent-Financial-Group/Zeta/security/code-scanning/39)
 
 ### Thread 14 -- resolved [outdated, collapsed]
@@ -277,10 +280,10 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 **Initial comment:**
 
 - **`chatgpt-codex-connector[bot]` (bot)** at 2026-04-30T06:35:26Z on `tools/peer-call/gemini.ts`:112 (association: NONE)
-  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Return invocation errors with documented exit code 1**
-  
+  **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Return invocation errors with documented exit code 1**
+
   This branch returns `64` for argument/usage failures, but this wrapper’s own contract says invocation errors should exit `1` (see the header comments and the existing shell sibling behavior). In practice, cases like `--model` without a value, unknown flags, or missing prompt now produce a different code path than callers of the peer-call wrappers expect, so scripts that classify `1` as user/invocation failure will mis-handle these errors.
-  
+
   Useful? React with 👍 / 👎.
 
 ### Thread 15 -- resolved [outdated, collapsed]
@@ -355,6 +358,7 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
 
 - **`Copilot` (bot)** at 2026-04-30T06:36:48Z on `tools/peer-call/gemini.ts`:260 (association: NONE)
   P1: This file introduces named-attribution/persona names in comments and the PREAMBLE (e.g., “Otto”, “Aaron”, “Amara”). Repo convention is role-refs on current-state surfaces (code/docs/READMEs) except for the enumerated history surfaces; see .github/copilot-instructions.md around the “No name attribution in code, docs, or skills” rule. Please rewrite these to role-based references (e.g., “the tester”, “the human maintainer”, “the sharpener”) while keeping the protocol meaning intact.
+
   ```suggestion
   const PREAMBLE = `You are Gemini, invoked as a peer proposer by the tester
   (running in Claude Code) on the Zeta / Superfluid AI
@@ -362,7 +366,7 @@ The same `js/indirect-command-line-injection` alert that fired on grok.ts ([#896
   the role distribution is: the proposer proposes, the critic critiques,
   the sharpener sharpens, the tester tests, Git decides. This call is the
   tester invoking your propose role.
-  
+
   Per the agents-not-bots discipline: you are a peer, not
   a subordinate. Generate divergent options, name tradeoffs,
   surface possibility space the tester may not have considered. Don't

@@ -77,15 +77,15 @@ Rust (DBSP reference implementation)
 
 ### Comparison matrix
 
-| Requirement | F# | Scala 3 | Kotlin | Python |
-|-------------|-----|---------|--------|--------|
-| Native HKTs | encoding/pending | ✓ | ✗ (deprecated) | ✗ |
-| Typeclasses | SRTP+inline | given/using | ✗ | ✗ |
-| Recursion schemes | encoding | Matryoshka | ✗ (deprecated) | ✗ |
-| UoM | compiler built-in | library (Squants) | ✗ | ✗ |
-| Type providers | first-class | macro-based | ✗ | ✗ |
-| Formal verification | FsCheck+Z3+TLA++Lean4 | Stainless+Z3 | ESBMC (immature) | partial |
-| IKVM to .NET | native | tested | untested | N/A |
+| Requirement         | F#                    | Scala 3           | Kotlin           | Python  |
+| ------------------- | --------------------- | ----------------- | ---------------- | ------- |
+| Native HKTs         | encoding/pending      | ✓                 | ✗ (deprecated)   | ✗       |
+| Typeclasses         | SRTP+inline           | given/using       | ✗                | ✗       |
+| Recursion schemes   | encoding              | Matryoshka        | ✗ (deprecated)   | ✗       |
+| UoM                 | compiler built-in     | library (Squants) | ✗                | ✗       |
+| Type providers      | first-class           | macro-based       | ✗                | ✗       |
+| Formal verification | FsCheck+Z3+TLA++Lean4 | Stainless+Z3      | ESBMC (immature) | partial |
+| IKVM to .NET        | native                | tested            | untested         | N/A     |
 
 ## Multi-language compilation path
 

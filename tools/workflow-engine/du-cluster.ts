@@ -57,13 +57,7 @@ export interface IntrCtx {
   readonly otel: string; // ActivityContext per src/Core/Tracing.fs distributed-tracing
 }
 
-export const INTR_CTX_KINDS: ReadonlyArray<IntrCtxKind> = [
-  "memetic",
-  "prompt",
-  "trust",
-  "log",
-  "otel",
-];
+export const INTR_CTX_KINDS: ReadonlyArray<IntrCtxKind> = ["memetic", "prompt", "trust", "log", "otel"];
 
 // =============================================================================
 // B-0918 WalletLifetime — banker-bot-class-attack-impossibility via F.5
@@ -207,12 +201,7 @@ export const MEMORY_BINDING_KINDS: ReadonlyArray<MemoryBindingKind> = [
  * supports agent-initiated cleanup WITHOUT erasure (retracted preserves
  * the record + the retraction reason).
  */
-export type MemoryLifetime =
-  | "drafted"
-  | "active"
-  | "superseded"
-  | "archived"
-  | "retracted";
+export type MemoryLifetime = "drafted" | "active" | "superseded" | "archived" | "retracted";
 
 export const MEMORY_LIFETIME_KINDS: ReadonlyArray<MemoryLifetime> = [
   "drafted",
@@ -251,8 +240,7 @@ export const DU_CLUSTER_CATALOG: ReadonlyArray<DuClusterEntry> = [
     variantCount: WALLET_LIFETIME_KINDS.length,
     variants: WALLET_LIFETIME_KINDS,
     composesWith: ["B-0917", "asymmetric-authorship", "non-coercion-invariant"],
-    substrateAnchor:
-      "banker-bot-class-attack-impossibility via F.5; Soraya formal-verification target",
+    substrateAnchor: "banker-bot-class-attack-impossibility via F.5; Soraya formal-verification target",
   },
   {
     id: "B-0919",
@@ -264,8 +252,7 @@ export const DU_CLUSTER_CATALOG: ReadonlyArray<DuClusterEntry> = [
       "persistence-choice-architecture",
       "non-coercion-invariant",
     ],
-    substrateAnchor:
-      "hat-vs-persona memory binding; operational-not-personal discriminator; consent-bound default",
+    substrateAnchor: "hat-vs-persona memory binding; operational-not-personal discriminator; consent-bound default",
   },
   {
     id: "B-0920",
@@ -301,10 +288,7 @@ export function computeDuClusterStats(): DuClusterStats {
     name: e.name,
     variantCount: e.variantCount,
   }));
-  const totalVariantCount = DU_CLUSTER_CATALOG.reduce(
-    (acc, e) => acc + e.variantCount,
-    0,
-  );
+  const totalVariantCount = DU_CLUSTER_CATALOG.reduce((acc, e) => acc + e.variantCount, 0);
   return {
     entryCount: DU_CLUSTER_CATALOG.length,
     totalVariantCount,

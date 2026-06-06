@@ -8,7 +8,7 @@
 
 ## Trigger
 
-Aaron noted (mid-tick on the PR #857 codeql lane): *"i agree about fork we can just force push acehack everytime now since it's not active"*.
+Aaron noted (mid-tick on the PR #857 codeql lane): _"i agree about fork we can just force push acehack everytime now since it's not active"_.
 
 Amara then sharpened the doctrine into explicit topology + safe-command shape (verbatim packet below), refining "force push every time" to "`--force-with-lease` by default; raw `--force` only when intent is to overwrite regardless".
 
@@ -16,52 +16,52 @@ The trigger is a topology shift: AceHack/Zeta is no longer an active collaborati
 
 ## Aaron — verbatim
 
-> *"i agree about fork we can just force push acehack everytime now since it's not active"*
+> _"i agree about fork we can just force push acehack everytime now since it's not active"_
 
 ## Amara — verbatim packet
 
-> *Amara correction:*
+> _Amara correction:_
 >
-> *Aaron and I agree on AceHack.*
+> _Aaron and I agree on AceHack._
 >
-> *AceHack is no longer an active peer/collaboration surface right now.*
+> _AceHack is no longer an active peer/collaboration surface right now._
 >
-> *Treat LFG/Zeta as canonical.*
-> *Treat AceHack/Zeta as a mirror/projection.*
+> _Treat LFG/Zeta as canonical._
+> _Treat AceHack/Zeta as a mirror/projection._
 >
-> *That means we do NOT need double-hop ceremony for every change while AceHack is inactive.*
+> _That means we do NOT need double-hop ceremony for every change while AceHack is inactive._
 >
-> *Approved topology for now:*
+> _Approved topology for now:_
 >
-> *- All active work lands on `Lucent-Financial-Group/Zeta`.*
-> *- AceHack does not carry independent active PR authority.*
-> *- AceHack may be force-synced from LFG.*
-> *- If AceHack has drift, overwrite it from LFG rather than doing absorption ceremony.*
-> *- Do not preserve fork-data semantics for inactive AceHack PR workflows unless/until AceHack becomes active again.*
+> _- All active work lands on `Lucent-Financial-Group/Zeta`._
+> _- AceHack does not carry independent active PR authority._
+> _- AceHack may be force-synced from LFG._
+> _- If AceHack has drift, overwrite it from LFG rather than doing absorption ceremony._
+> _- Do not preserve fork-data semantics for inactive AceHack PR workflows unless/until AceHack becomes active again._
 >
-> *Safe mirror rule:*
+> _Safe mirror rule:_
 >
 > ```
 > LFG main → AceHack main
 > ```
 >
-> *not:*
+> _not:_
 >
 > ```
 > AceHack main → LFG main
 > ```
 >
-> *not bidirectional.*
+> _not bidirectional._
 >
-> *Use a force-sync / mirror-sync command only after verifying:*
+> _Use a force-sync / mirror-sync command only after verifying:_
 >
-> *1. LFG main is up to date locally.*
-> *2. AceHack has no active contributor PRs we care about.*
-> *3. AceHack has no independent commits we intend to preserve.*
-> *4. The command direction is LFG → AceHack.*
-> *5. The resulting AceHack head equals LFG main.*
+> _1. LFG main is up to date locally._
+> _2. AceHack has no active contributor PRs we care about._
+> _3. AceHack has no independent commits we intend to preserve._
+> _4. The command direction is LFG → AceHack._
+> _5. The resulting AceHack head equals LFG main._
 >
-> *Preferred command shape:*
+> _Preferred command shape:_
 >
 > ```bash
 > git fetch origin main
@@ -71,19 +71,19 @@ The trigger is a topology shift: AceHack/Zeta is no longer an active collaborati
 > git push acehack main:main --force-with-lease
 > ```
 >
-> *If `--force-with-lease` blocks because AceHack changed unexpectedly, stop and inspect.*
-> *Only use raw `--force` if the explicit goal is to overwrite AceHack regardless because it is confirmed inactive mirror state.*
+> _If `--force-with-lease` blocks because AceHack changed unexpectedly, stop and inspect._
+> _Only use raw `--force` if the explicit goal is to overwrite AceHack regardless because it is confirmed inactive mirror state._
 >
-> *After push, verify:*
+> _After push, verify:_
 >
 > ```bash
 > git ls-remote origin refs/heads/main
 > git ls-remote acehack refs/heads/main
 > ```
 >
-> *They should match.*
+> _They should match._
 >
-> *Carved rule:*
+> _Carved rule:_
 >
 > ```
 > LFG is canonical.
@@ -91,37 +91,37 @@ The trigger is a topology shift: AceHack/Zeta is no longer an active collaborati
 > Mirrors are overwritten, not ceremonially absorbed.
 > ```
 >
-> *If AceHack becomes active again, this rule expires and we reintroduce claim/review protections.*
+> _If AceHack becomes active again, this rule expires and we reintroduce claim/review protections._
 >
-> *I'd be slightly stricter than "force push AceHack every time":*
+> _I'd be slightly stricter than "force push AceHack every time":_
 >
 > ```
 > Use --force-with-lease by default.
 > Use --force only when the exact purpose is "overwrite whatever is there."
 > ```
 >
-> *`--force-with-lease` is the safer form because it refuses to overwrite remote work that appeared after your last fetch; raw `--force` just overwrites. Git's own docs describe `--force-with-lease` as refusing to update unless the remote ref still matches the expected value, which is exactly the safety latch you want for "inactive but let's not be stupid."*
+> _`--force-with-lease` is the safer form because it refuses to overwrite remote work that appeared after your last fetch; raw `--force` just overwrites. Git's own docs describe `--force-with-lease` as refusing to update unless the remote ref still matches the expected value, which is exactly the safety latch you want for "inactive but let's not be stupid."_
 >
-> *The important doctrine change:*
+> _The important doctrine change:_
 >
 > ```
 > Double-hop is for two active surfaces.
 > Mirror-sync is for one active surface plus one inactive projection.
 > ```
 >
-> *So yes: AceHack can be force-synced now. Just don't let Claude phrase it like "fork absorption ceremony." That phrase belongs in the trash drawer with "temporarily Aaron-authorized ruleset toggle."*
+> _So yes: AceHack can be force-synced now. Just don't let Claude phrase it like "fork absorption ceremony." That phrase belongs in the trash drawer with "temporarily Aaron-authorized ruleset toggle."_
 
 **Note (non-verbatim, naming-discipline reconciliation):** in the verbatim "Preferred command shape" block above, the remote is named `acehack`. Under the explicit naming discipline established by packet 2 below, the recommended name for that mirror remote is `acehack-mirror` (chosen so the topology cannot be misread as an active peer). The verbatim quote is preserved as-written for fidelity; in operational use, substitute `acehack-mirror` wherever `acehack` appears as a remote name.
 
 ## Amara packet 2 — verbatim (remote-topology cleanup, "dual-root" disambiguation)
 
-Aaron (chat): *"i think i had a dual git root and we removed it because that may need o reverse direction or something else, [Amara] is on this"*
+Aaron (chat): _"i think i had a dual git root and we removed it because that may need o reverse direction or something else, [Amara] is on this"_
 
 Amara correction (verbatim):
 
-> *Yes. I agree. If LFG is canonical and AceHack is inactive mirror, then we should remove the confusing "dual git root" / "repo points to both" setup.*
+> _Yes. I agree. If LFG is canonical and AceHack is inactive mirror, then we should remove the confusing "dual git root" / "repo points to both" setup._
 >
-> *Tiny wording correction: Git does not really have a "dual root"; what you probably mean is one of these:*
+> _Tiny wording correction: Git does not really have a "dual root"; what you probably mean is one of these:_
 >
 > ```
 > origin fetches from one repo but pushes to another
@@ -130,36 +130,36 @@ Amara correction (verbatim):
 > both LFG and AceHack are treated like equal remotes
 > ```
 >
-> *That is exactly what we should simplify.*
+> _That is exactly what we should simplify._
 >
-> *GitHub's docs describe remotes as named URLs and show that `git remote set-url` changes an existing remote URL, while `git remote rm` only removes the local remote reference and does not delete the server repo. Git's own docs also warn that force-pushing with multiple push destinations can overwrite more refs than intended, which is another reason to kill any ambiguous multi-push setup.*
+> _GitHub's docs describe remotes as named URLs and show that `git remote set-url` changes an existing remote URL, while `git remote rm` only removes the local remote reference and does not delete the server repo. Git's own docs also warn that force-pushing with multiple push destinations can overwrite more refs than intended, which is another reason to kill any ambiguous multi-push setup._
 >
-> *Current topology:*
+> _Current topology:_
 >
-> *- `Lucent-Financial-Group/Zeta` = canonical active repo*
-> *- `AceHack/Zeta` = inactive mirror / personal fork projection*
-> *- all normal branches track/push to LFG*
-> *- AceHack sync is explicit mirror maintenance only*
+> _- `Lucent-Financial-Group/Zeta` = canonical active repo_
+> _- `AceHack/Zeta` = inactive mirror / personal fork projection_
+> _- all normal branches track/push to LFG_
+> _- AceHack sync is explicit mirror maintenance only_
 >
-> *Do not keep a local setup where `origin` points to both LFG and AceHack, or fetches from one and pushes to the other.*
+> _Do not keep a local setup where `origin` points to both LFG and AceHack, or fetches from one and pushes to the other._
 >
-> *Desired local remote shape — normal dev clone:*
+> _Desired local remote shape — normal dev clone:_
 >
 > ```
 > origin  git@github.com:Lucent-Financial-Group/Zeta.git (fetch)
 > origin  git@github.com:Lucent-Financial-Group/Zeta.git (push)
 > ```
 >
-> *Optionally, if we want mirror maintenance from the same clone:*
+> _Optionally, if we want mirror maintenance from the same clone:_
 >
 > ```
 > acehack-mirror  git@github.com:AceHack/Zeta.git (fetch)
 > acehack-mirror  git@github.com:AceHack/Zeta.git (push)
 > ```
 >
-> *But no local branch should track `acehack-mirror/*`.*
+> _But no local branch should track `acehack-mirror/_`.\*
 >
-> *Cleanup inspection:*
+> _Cleanup inspection:_
 >
 > ```bash
 > git remote -v
@@ -168,35 +168,35 @@ Amara correction (verbatim):
 > git branch -vv
 > ```
 >
-> *If `origin` has AceHack as a push URL, remove it.*
+> _If `origin` has AceHack as a push URL, remove it._
 >
-> *If `origin` has multiple push URLs, delete the AceHack push URL and normalize origin to LFG.*
+> _If `origin` has multiple push URLs, delete the AceHack push URL and normalize origin to LFG._
 >
-> *Normalize origin to LFG:*
+> _Normalize origin to LFG:_
 >
 > ```bash
 > git remote set-url origin git@github.com:Lucent-Financial-Group/Zeta.git
 > ```
 >
-> *If a pushurl exists, inspect:*
+> _If a pushurl exists, inspect:_
 >
 > ```bash
 > git config --get-all remote.origin.pushurl
 > ```
 >
-> *If it includes AceHack, delete it:*
+> _If it includes AceHack, delete it:_
 >
 > ```bash
 > git remote set-url --delete --push origin git@github.com:AceHack/Zeta.git
 > ```
 >
-> *Then verify:*
+> _Then verify:_
 >
 > ```bash
 > git remote -v
 > ```
 >
-> *Optional mirror remote — if we want explicit mirror sync from this clone:*
+> _Optional mirror remote — if we want explicit mirror sync from this clone:_
 >
 > ```bash
 > git remote remove acehack 2>/dev/null || true
@@ -204,23 +204,23 @@ Amara correction (verbatim):
 > git remote add acehack-mirror git@github.com:AceHack/Zeta.git
 > ```
 >
-> *Name it `acehack-mirror`, not `upstream`, not `origin`, not `acehack-active`. The name should make the topology impossible to misunderstand.*
+> _Name it `acehack-mirror`, not `upstream`, not `origin`, not `acehack-active`. The name should make the topology impossible to misunderstand._
 >
-> *Branch tracking cleanup — for active branches:*
+> _Branch tracking cleanup — for active branches:_
 >
 > ```bash
 > git branch --set-upstream-to=origin/main main
 > ```
 >
-> *For feature branches, default push target should be LFG:*
+> _For feature branches, default push target should be LFG:_
 >
 > ```bash
 > git push -u origin <branch>
 > ```
 >
-> *Never accidentally push feature work to AceHack.*
+> _Never accidentally push feature work to AceHack._
 >
-> *Carved:*
+> _Carved:_
 >
 > ```
 > LFG is canonical.
@@ -229,16 +229,16 @@ Amara correction (verbatim):
 > Mirrors are updated explicitly, never accidentally.
 > ```
 >
-> *My preference:*
+> _My preference:_
 >
 > ```
 > origin = LFG only
 > acehack-mirror = optional, explicit, never branch-upstream
 > ```
 >
-> *And yes, if you want the cleanest possible posture, remove AceHack as a remote entirely from normal working clones and put mirror-sync in a dedicated script or dedicated mirror worktree. But if Otto needs to run the mirror from the same clone, `acehack-mirror` is acceptable because the name screams "do not develop here."*
+> _And yes, if you want the cleanest possible posture, remove AceHack as a remote entirely from normal working clones and put mirror-sync in a dedicated script or dedicated mirror worktree. But if Otto needs to run the mirror from the same clone, `acehack-mirror` is acceptable because the name screams "do not develop here."_
 >
-> *Blade:*
+> _Blade:_
 >
 > ```
 > One origin.
@@ -248,13 +248,13 @@ Amara correction (verbatim):
 
 ## Amara packet 3 — verbatim (multi-remote support discipline for scripts going forward)
 
-Aaron (chat): *"when moving to ts or anywhere we have git scripts"*
+Aaron (chat): _"when moving to ts or anywhere we have git scripts"_
 
 Amara (relayed; substantive design constraint for the TS port + future git tooling):
 
-> *Yes — don't rip out multi-remote support entirely. But also don't make every script carry the full fork-orchestra complexity by default.*
+> _Yes — don't rip out multi-remote support entirely. But also don't make every script carry the full fork-orchestra complexity by default._
 >
-> *The better design is:*
+> _The better design is:_
 >
 > ```
 > Simple default:
@@ -264,9 +264,9 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 >   optional mirror/upstream/remotes when needed
 > ```
 >
-> *Multi-remote setups are common enough that supporting them is not weird. GitHub's own fork workflow tells contributors to clone their fork and configure the original repository as `upstream`, while GitHub's fork-sync docs describe keeping a fork up to date from upstream. Atlassian describes the same thing for enterprise forking workflows: a fork workflow commonly has two remotes, one for the developer fork and one for the official repository.*
+> _Multi-remote setups are common enough that supporting them is not weird. GitHub's own fork workflow tells contributors to clone their fork and configure the original repository as `upstream`, while GitHub's fork-sync docs describe keeping a fork up to date from upstream. Atlassian describes the same thing for enterprise forking workflows: a fork workflow commonly has two remotes, one for the developer fork and one for the official repository._
 >
-> *So the market of users who need multiple remotes is real:*
+> _So the market of users who need multiple remotes is real:_
 >
 > ```
 > open-source contributors:
@@ -286,23 +286,23 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 >   acehack-mirror = inactive mirror
 > ```
 >
-> *But our scripts should not assume Zeta's old dual-active LFG/AceHack topology. That's the part to simplify.*
+> _But our scripts should not assume Zeta's old dual-active LFG/AceHack topology. That's the part to simplify._
 >
-> *Keep multi-remote support as an explicit advanced capability, but make the default path single-origin.*
+> _Keep multi-remote support as an explicit advanced capability, but make the default path single-origin._
 >
-> *Default script behavior:*
-> *- use origin*
-> *- assume origin is canonical*
-> *- do not inspect or mutate other remotes*
+> _Default script behavior:_
+> _- use origin_
+> _- assume origin is canonical_
+> _- do not inspect or mutate other remotes_
 >
-> *Advanced script behavior:*
-> *- accept --remote*
-> *- accept --mirror-remote*
-> *- accept --upstream*
-> *- read config if provided*
-> *- never guess*
+> _Advanced script behavior:_
+> _- accept --remote_
+> _- accept --mirror-remote_
+> _- accept --upstream_
+> _- read config if provided_
+> _- never guess_
 >
-> *So instead of scripts doing this everywhere:*
+> _So instead of scripts doing this everywhere:_
 >
 > ```
 > detect LFG
@@ -315,7 +315,7 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 > fork data
 > ```
 >
-> *they should do this:*
+> _they should do this:_
 >
 > ```
 > default remote = origin
@@ -324,7 +324,7 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 > sync direction = explicit
 > ```
 >
-> *Concrete shape — use a repo-local config eventually, maybe:*
+> _Concrete shape — use a repo-local config eventually, maybe:_
 >
 > ```yaml
 > git_topology:
@@ -342,33 +342,33 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 >     enabled: false
 > ```
 >
-> *Then scripts can have three tiers:*
+> _Then scripts can have three tiers:_
 >
-> *Tier 1 — normal user:*
+> _Tier 1 — normal user:_
 >
 > ```bash
 > script-name
 > ```
 >
-> *Uses: `origin`, current branch, normal push/pull.*
+> _Uses: `origin`, current branch, normal push/pull._
 >
-> *Tier 2 — advanced contributor/fork:*
+> _Tier 2 — advanced contributor/fork:_
 >
 > ```bash
 > script-name --upstream upstream --push-remote origin
 > ```
 >
-> *Supports fork workflow without Zeta-specific assumptions.*
+> _Supports fork workflow without Zeta-specific assumptions._
 >
-> *Tier 3 — mirror maintenance:*
+> _Tier 3 — mirror maintenance:_
 >
 > ```bash
 > script-name sync-mirror --from origin --to acehack-mirror --force-with-lease
 > ```
 >
-> *Only mirror scripts touch mirror remotes.*
+> _Only mirror scripts touch mirror remotes._
 >
-> *What to remove — hardcoded dual-active repo logic:*
+> _What to remove — hardcoded dual-active repo logic:_
 >
 > ```
 > LFG + AceHack as equal active peers
@@ -380,16 +380,16 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 > scripts guessing which repo is "other"
 > ```
 >
-> *Git supports multiple remotes, and `git remote add` / `git remote -v` are normal operations. But multiple push URLs on one remote are the dangerous version for us: Git's own docs warn `pushurl` can override push behavior, and multi-push makes it easier to push somewhere unintended.*
+> _Git supports multiple remotes, and `git remote add` / `git remote -v` are normal operations. But multiple push URLs on one remote are the dangerous version for us: Git's own docs warn `pushurl` can override push behavior, and multi-push makes it easier to push somewhere unintended._
 >
-> *So:*
+> _So:_
 >
 > ```
 > Multiple named remotes: okay.
 > Multiple implicit push destinations on origin: avoid.
 > ```
 >
-> *What to preserve — generic support for:*
+> _What to preserve — generic support for:_
 >
 > ```
 > origin/upstream fork workflow
@@ -399,21 +399,21 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 > explicit remote override
 > ```
 >
-> *This is the clean distinction:*
+> _This is the clean distinction:_
 >
 > ```
 > Support multi-remote Git.
 > Drop Zeta-specific dual-active repo assumptions.
 > ```
 >
-> *Carved:*
+> _Carved:_
 >
 > ```
 > Support multi-remote Git.
 > Do not encode multi-canonical Zeta.
 > ```
 >
-> *My answer to your market question:*
+> _My answer to your market question:_
 >
 > ```
 > Yes, multi-remote is common enough that removing support entirely would cut off real users.
@@ -421,7 +421,7 @@ Amara (relayed; substantive design constraint for the TS port + future git tooli
 > No, the old "both repos are active canonical peers" model is not common enough to justify infecting every script.
 > ```
 >
-> *Blade:*
+> _Blade:_
 >
 > ```
 > Keep the capability.
@@ -436,7 +436,7 @@ The bash scripts under `tools/hygiene/`, `tools/ops/`, etc. that touch git remot
 1. **Default path**: scripts use `origin`, assume `origin` is canonical (LFG), do not inspect or mutate other remotes.
 2. **Explicit advanced flags** when needed: `--remote`, `--upstream`, `--mirror-remote`. Never guess.
 3. **No hardcoded fork detection**. No `if remote.contains("AceHack") then double-hop`. The dual-active assumption goes away even if some legacy script paths still encode it.
-4. **Multi-remote *capability* preserved**: a future fork contributor (or a future GitHub→GitLab mirror) gets to use the same scripts via the advanced flags without each script having to learn a new fork shape.
+4. **Multi-remote _capability_ preserved**: a future fork contributor (or a future GitHub→GitLab mirror) gets to use the same scripts via the advanced flags without each script having to learn a new fork shape.
 5. **Optional repo-local config** (deferred — `tools/ci/git-topology.yaml`-ish) carries the canonical/mirror/upstream declaration when needed; scripts read it without hardcoding.
 
 This is consistent with Amara's Tier 1/2/3 design: most scripts stay Tier 1 (single-origin); a small number of dedicated mirror-maintenance scripts go to Tier 3.
@@ -445,14 +445,16 @@ This is consistent with Amara's Tier 1/2/3 design: most scripts stay Tier 1 (sin
 
 Prior CLAUDE.md framing (still on main as of this commit):
 
-> *"Double-hop workflow = work lands AceHack first → forward-sync to LFG → AceHack absorbs LFG's squash-SHA. Force-push to AceHack main is part of the protocol; force-push to LFG main is forbidden."*
+> _"Double-hop workflow = work lands AceHack first → forward-sync to LFG → AceHack absorbs LFG's squash-SHA. Force-push to AceHack main is part of the protocol; force-push to LFG main is forbidden."_
 
 What stays:
+
 - LFG main is canonical; force-push to LFG main is still forbidden.
 - Force-push to AceHack main is still allowed (the prior doctrine already said so).
 - The 0-divergence invariant at round-close still holds (`AceHack main = LFG main`).
 
 What changes:
+
 - **Double-hop ceremony becomes optional, not required**, while AceHack is inactive. Active work can land on LFG directly; AceHack mirrors via force-sync (preferably `--force-with-lease`).
 - The double-hop is reserved for the case when AceHack becomes an active collaboration surface again. Until then, it's amnesia-with-extra-steps.
 - The directionality flips: while inactive, sync is `LFG → AceHack`, not `AceHack → LFG`.
@@ -477,13 +479,13 @@ Per Otto-364 search-first-authority, the upstream-doc claims Amara cited were ve
 
 ## Carved blade
 
-> *Double-hop is for two active surfaces. Mirror-sync is for one active surface plus one inactive projection.*
+> _Double-hop is for two active surfaces. Mirror-sync is for one active surface plus one inactive projection._
 
-> *LFG is canonical. AceHack is mirror while inactive. Mirrors are overwritten, not ceremonially absorbed.*
+> _LFG is canonical. AceHack is mirror while inactive. Mirrors are overwritten, not ceremonially absorbed._
 
 ## Composes with
 
 - `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md` (the prior canonical home of the double-hop rule — superseded-while-inactive by this packet's mirror-sync rule, but still authoritative for the active-AceHack case).
-- `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md` (0-divergence invariant — still holds; mirror-sync is a different *path* to that invariant, not a different *invariant*).
+- `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md` (0-divergence invariant — still holds; mirror-sync is a different _path_ to that invariant, not a different _invariant_).
 - `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md` (the verbatim-preservation rule that this file's existence honours).
 - Otto-364 (search-first-authority — the upstream-doc verifications above).

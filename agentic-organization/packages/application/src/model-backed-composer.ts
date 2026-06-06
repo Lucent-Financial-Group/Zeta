@@ -14,10 +14,7 @@
  * the concrete HTTP/model adapter lives at the composition root.
  */
 
-import {
-  TelemetryMetricKind,
-  type TelemetryPort,
-} from "../../observability/src/index.ts";
+import { TelemetryMetricKind, type TelemetryPort } from "../../observability/src/index.ts";
 import {
   ComposerDecision,
   type AsyncEphemeralComposerPort,

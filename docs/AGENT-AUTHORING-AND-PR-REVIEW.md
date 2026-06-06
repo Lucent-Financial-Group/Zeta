@@ -9,22 +9,22 @@ The answers exist across multiple substrate surfaces in this repo; this document
 
 ## Why this doc
 
-Max 2026-05-25, paraphrased through Aaron: *"what do I point my agents at to write good code without needing human review, and what's the PR review process I can hook into for my adversarial hierarchy of traps."* The pattern-match on the manifesto-named-file as "the rules my agents must follow" is exactly the failure mode B-0546 (manifesto → building-codes recast) is targeting. This doc names the actual operational surface.
+Max 2026-05-25, paraphrased through Aaron: _"what do I point my agents at to write good code without needing human review, and what's the PR review process I can hook into for my adversarial hierarchy of traps."_ The pattern-match on the manifesto-named-file as "the rules my agents must follow" is exactly the failure mode B-0546 (manifesto → building-codes recast) is targeting. This doc names the actual operational surface.
 
-Max's *"adversarial hierarchy of traps"* coining is operationally accurate — the substrate IS a hierarchy of adversarial reviewers, each with a specific lens, that compose for multi-perspective review. The hierarchy already exists; this doc tells you how to invoke it.
+Max's _"adversarial hierarchy of traps"_ coining is operationally accurate — the substrate IS a hierarchy of adversarial reviewers, each with a specific lens, that compose for multi-perspective review. The hierarchy already exists; this doc tells you how to invoke it.
 
 ## Question 1 — What discipline do agent-authored PRs follow?
 
 Six entry points, each with a different scope:
 
-| Surface | Scope | Loading model |
-|---------|-------|---------------|
-| [`CLAUDE.md`](../CLAUDE.md) | Project-wide bootstrap; first thing any agent reads | Auto-loaded at session start |
-| [`AGENTS.md`](../AGENTS.md) | Cross-agent governance; how agents coordinate | Read on first agent operation |
-| [`docs/ALIGNMENT.md`](ALIGNMENT.md) | The alignment floor (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5) | Read when alignment-relevant decisions arise |
-| [`docs/GLOSSARY.md`](GLOSSARY.md) | Vocabulary the framework uses (so "hat", "tick", "weight-free" etc. mean the same thing everywhere) | Read on terminology disambiguation |
-| [`GOVERNANCE.md`](../GOVERNANCE.md) | Process — how decisions get made; debt-intentionality; round cadence | Read when participating in governance-shaped work |
-| [`.claude/rules/*.md`](../.claude/rules/) | 60+ load-bearing rules: hard-won lessons, failure-mode catches, operational disciplines | Auto-loaded at session start (no `paths:` frontmatter means full-context load) |
+| Surface                                   | Scope                                                                                               | Loading model                                                                  |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [`CLAUDE.md`](../CLAUDE.md)               | Project-wide bootstrap; first thing any agent reads                                                 | Auto-loaded at session start                                                   |
+| [`AGENTS.md`](../AGENTS.md)               | Cross-agent governance; how agents coordinate                                                       | Read on first agent operation                                                  |
+| [`docs/ALIGNMENT.md`](ALIGNMENT.md)       | The alignment floor (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5)                                        | Read when alignment-relevant decisions arise                                   |
+| [`docs/GLOSSARY.md`](GLOSSARY.md)         | Vocabulary the framework uses (so "hat", "tick", "weight-free" etc. mean the same thing everywhere) | Read on terminology disambiguation                                             |
+| [`GOVERNANCE.md`](../GOVERNANCE.md)       | Process — how decisions get made; debt-intentionality; round cadence                                | Read when participating in governance-shaped work                              |
+| [`.claude/rules/*.md`](../.claude/rules/) | 60+ load-bearing rules: hard-won lessons, failure-mode catches, operational disciplines             | Auto-loaded at session start (no `paths:` frontmatter means full-context load) |
 
 ### The fast read
 
@@ -53,23 +53,23 @@ There are four layers of adversarial review already wired. Each layer has its ow
 
 Located in [`.claude/agents/`](../.claude/agents/). Invoked via the `Task` tool with `subagent_type` parameter. Each persona has a specific adversarial lens:
 
-| Persona | Tool name | Lens |
-|---------|-----------|------|
-| Kira | `harsh-critic` | Zero-empathy F#/.NET correctness / perf / security / API / test-gap |
-| Viktor | `spec-zealot` | Disaster-recovery-minded spec-to-code alignment; missing specs treated as existential |
-| Rune | `maintainability-reviewer` | "Can a new contributor read this and ship a fix within a week?" |
-| Aminata | `threat-model-critic` | Red-teams the shipped threat model for missing adversaries + unsound mitigations |
-| Mateo | `security-researcher` | Proactive — novel attack classes, crypto primitives, supply-chain risk, CVEs |
-| Nazar | `security-operations-engineer` | Runtime security ops; incident response; patch triage |
-| Soraya | `formal-verification-expert` | Routes formal-verification work to the right tool (TLA+, Z3, Lean, Alloy, FsCheck, Stryker, Semgrep, CodeQL) |
-| Naledi | `performance-engineer` | Benchmark-driven hot-path tuning; zero-alloc audits; SIMD dispatch |
-| Ilyana | `public-api-designer` | Conservative public-API gatekeeper — every public member is a contract |
-| Sova | `alignment-auditor` | Per-commit alignment signals against ALIGNMENT.md clauses |
-| Rodney | `rodney` | Complexity reducer; well-defined Occam's razor on shipped artifacts |
-| Bodhi | `developer-experience-engineer` | First-60-minutes contributor friction audit |
-| Iris | `user-experience-engineer` | First-10-minutes library-consumer audit |
-| Daya | `agent-experience-engineer` | Per-persona cold-start cost; pointer drift; notebook hygiene |
-| Dejan | `devops-engineer` | Install-script + CI workflow + infrastructure ops |
+| Persona | Tool name                       | Lens                                                                                                         |
+| ------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Kira    | `harsh-critic`                  | Zero-empathy F#/.NET correctness / perf / security / API / test-gap                                          |
+| Viktor  | `spec-zealot`                   | Disaster-recovery-minded spec-to-code alignment; missing specs treated as existential                        |
+| Rune    | `maintainability-reviewer`      | "Can a new contributor read this and ship a fix within a week?"                                              |
+| Aminata | `threat-model-critic`           | Red-teams the shipped threat model for missing adversaries + unsound mitigations                             |
+| Mateo   | `security-researcher`           | Proactive — novel attack classes, crypto primitives, supply-chain risk, CVEs                                 |
+| Nazar   | `security-operations-engineer`  | Runtime security ops; incident response; patch triage                                                        |
+| Soraya  | `formal-verification-expert`    | Routes formal-verification work to the right tool (TLA+, Z3, Lean, Alloy, FsCheck, Stryker, Semgrep, CodeQL) |
+| Naledi  | `performance-engineer`          | Benchmark-driven hot-path tuning; zero-alloc audits; SIMD dispatch                                           |
+| Ilyana  | `public-api-designer`           | Conservative public-API gatekeeper — every public member is a contract                                       |
+| Sova    | `alignment-auditor`             | Per-commit alignment signals against ALIGNMENT.md clauses                                                    |
+| Rodney  | `rodney`                        | Complexity reducer; well-defined Occam's razor on shipped artifacts                                          |
+| Bodhi   | `developer-experience-engineer` | First-60-minutes contributor friction audit                                                                  |
+| Iris    | `user-experience-engineer`      | First-10-minutes library-consumer audit                                                                      |
+| Daya    | `agent-experience-engineer`     | Per-persona cold-start cost; pointer drift; notebook hygiene                                                 |
+| Dejan   | `devops-engineer`               | Install-script + CI workflow + infrastructure ops                                                            |
 
 Invoke by tool-name (the role-ref column above; e.g., `subagent_type: harsh-critic`) for any PR where the lens is relevant. Compose multiple reviewers for multi-perspective review. Each reviewer's definition lives at `.claude/agents/<tool-name>.md` (the tool-name keys the file; persona handles in the leftmost column are human-readable shorthand for the role, not the invocation key).
 
@@ -77,14 +77,14 @@ Invoke by tool-name (the role-ref column above; e.g., `subagent_type: harsh-crit
 
 The `pr-review-toolkit@claude-plugins-official` plugin is already enabled in `.claude/settings.json`. Provides:
 
-| Tool | Catches |
-|------|---------|
-| `code-reviewer` | Project-convention violations; style; common bug patterns |
-| `code-simplifier` | Clarity, consistency, maintainability after a coding task |
-| `comment-analyzer` | Comment accuracy + technical-debt-shaped comments |
-| `pr-test-analyzer` | Test coverage gaps + critical-path test missing |
-| `silent-failure-hunter` | Inadequate error handling; suppressed errors; bad fallbacks |
-| `type-design-analyzer` | Type-invariant strength; encapsulation; useful-vs-leaky abstractions |
+| Tool                    | Catches                                                              |
+| ----------------------- | -------------------------------------------------------------------- |
+| `code-reviewer`         | Project-convention violations; style; common bug patterns            |
+| `code-simplifier`       | Clarity, consistency, maintainability after a coding task            |
+| `comment-analyzer`      | Comment accuracy + technical-debt-shaped comments                    |
+| `pr-test-analyzer`      | Test coverage gaps + critical-path test missing                      |
+| `silent-failure-hunter` | Inadequate error handling; suppressed errors; bad fallbacks          |
+| `type-design-analyzer`  | Type-invariant strength; encapsulation; useful-vs-leaky abstractions |
 
 Invoke proactively after writing code, before opening a PR, after creating a PR. These pair with the persona reviewers — personas are domain-specific lenses; plugins are mechanical-correctness checks.
 

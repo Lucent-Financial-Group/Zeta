@@ -35,10 +35,10 @@ describe("in-memory work schedule block authority reader", () => {
       evaluatedAt: "2026-05-29T16:00:00.000Z",
     });
 
-    deepEqual(blocks.map((block) => block.workScheduleBlockId), [
-      "work-schedule-block-001",
-      "work-schedule-block-scheduled",
-    ]);
+    deepEqual(
+      blocks.map((block) => block.workScheduleBlockId),
+      ["work-schedule-block-001", "work-schedule-block-scheduled"],
+    );
   });
 
   test("returns cloned blocks so callers cannot mutate stored schedule state", async () => {

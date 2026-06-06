@@ -36,24 +36,26 @@ function adapters(opts: {
     now: () => new Date(opts.nowIso),
     fetchRecentMergedPRs: () => opts.fetch,
     detectCascade: opts.detectCascade ?? (() => null),
-    publishCascade: opts.publishImpl ?? ((from, to, finding): MessageEnvelope => {
-      captured.push({ from, to, finding });
-      return {
-        id: `env-${captured.length}`,
-        from,
-        to,
-        timestamp: opts.nowIso,
-        expiresAt: opts.nowIso,
-        topic: "missed-substrate-cascade",
-        payload: {
-          prNumber: finding.prNumber,
-          branchName: finding.branchName,
-          missingCommits: finding.missingCommits,
-          recommendedAction: "open-recovery-PR",
-          urgency: finding.urgency,
-        },
-      };
-    }),
+    publishCascade:
+      opts.publishImpl ??
+      ((from, to, finding): MessageEnvelope => {
+        captured.push({ from, to, finding });
+        return {
+          id: `env-${captured.length}`,
+          from,
+          to,
+          timestamp: opts.nowIso,
+          expiresAt: opts.nowIso,
+          topic: "missed-substrate-cascade",
+          payload: {
+            prNumber: finding.prNumber,
+            branchName: finding.branchName,
+            missingCommits: finding.missingCommits,
+            recommendedAction: "open-recovery-PR",
+            urgency: finding.urgency,
+          },
+        };
+      }),
   };
 }
 
@@ -64,8 +66,7 @@ function cascadeAdapters(opts: {
 }): CascadeDetectorAdapters {
   return {
     now: () => new Date(opts.nowIso ?? "2026-05-13T18:00:00Z"),
-    fetchPRRefs: (prNumber: number) =>
-      opts.prRefs?.[prNumber] ?? { status: "error", reason: "no fake configured" },
+    fetchPRRefs: (prNumber: number) => opts.prRefs?.[prNumber] ?? { status: "error", reason: "no fake configured" },
     compareBranchToMerged: (branchName: string) =>
       opts.branchCompares?.[branchName] ?? { status: "error", reason: "no fake configured" },
   };
@@ -83,10 +84,13 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
 
   describe("pollOnce — fetch path", () => {
     test("0 candidates when no merged PRs", () => {
-      const result = pollOnce(DEFAULT_CONFIG, adapters({
-        nowIso: "2026-05-13T18:00:00Z",
-        fetch: { status: "ok", prs: [], truncated: false },
-      }));
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        adapters({
+          nowIso: "2026-05-13T18:00:00Z",
+          fetch: { status: "ok", prs: [], truncated: false },
+        }),
+      );
       expect(result.candidatesScanned).toBe(0);
       expect(result.cascadesDetected).toBe(0);
       expect(result.publishedEnvelopeIds).toHaveLength(0);
@@ -98,20 +102,26 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
         { number: 2997, headRefName: "feat/x", mergedAt: "2026-05-13T17:50:00Z" },
         { number: 2998, headRefName: "feat/y", mergedAt: "2026-05-13T17:55:00Z" },
       ];
-      const result = pollOnce(DEFAULT_CONFIG, adapters({
-        nowIso: "2026-05-13T18:00:00Z",
-        fetch: { status: "ok", prs: merged, truncated: false },
-      }));
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        adapters({
+          nowIso: "2026-05-13T18:00:00Z",
+          fetch: { status: "ok", prs: merged, truncated: false },
+        }),
+      );
       expect(result.candidatesScanned).toBe(2);
       expect(result.cascadesDetected).toBe(0);
       expect(result.note).toContain("no cascades detected");
     });
 
     test("gh-error surfaces explicitly (does NOT silently treat as zero)", () => {
-      const result = pollOnce(DEFAULT_CONFIG, adapters({
-        nowIso: "2026-05-13T18:00:00Z",
-        fetch: { status: "gh-error", reason: "HTTP 503" },
-      }));
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        adapters({
+          nowIso: "2026-05-13T18:00:00Z",
+          fetch: { status: "gh-error", reason: "HTTP 503" },
+        }),
+      );
       expect(result.fetchStatus).toBe("gh-error");
       expect(result.note).toContain("gh fetch failed");
     });
@@ -122,10 +132,13 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
         headRefName: `feat/${i}`,
         mergedAt: "2026-05-13T17:50:00Z",
       }));
-      const result = pollOnce(DEFAULT_CONFIG, adapters({
-        nowIso: "2026-05-13T18:00:00Z",
-        fetch: { status: "ok", prs: merged, truncated: true },
-      }));
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        adapters({
+          nowIso: "2026-05-13T18:00:00Z",
+          fetch: { status: "ok", prs: merged, truncated: true },
+        }),
+      );
       expect(result.fetchTruncated).toBe(true);
       expect(result.note).toContain("WARNING: results truncated");
     });
@@ -140,12 +153,19 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
         missingCommits: ["abc123", "def456"],
         urgency: "medium",
       };
-      const result = pollOnce(DEFAULT_CONFIG, adapters({
-        nowIso: "2026-05-13T18:00:00Z",
-        fetch: { status: "ok", prs: [{ number: 2980, headRefName: "feat/launch-thread", mergedAt: "2026-05-13T17:55:00Z" }], truncated: false },
-        detectCascade: () => cascade,
-        capturedPublishes: captured,
-      }));
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        adapters({
+          nowIso: "2026-05-13T18:00:00Z",
+          fetch: {
+            status: "ok",
+            prs: [{ number: 2980, headRefName: "feat/launch-thread", mergedAt: "2026-05-13T17:55:00Z" }],
+            truncated: false,
+          },
+          detectCascade: () => cascade,
+          capturedPublishes: captured,
+        }),
+      );
       expect(result.cascadesDetected).toBe(1);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
       expect(captured).toHaveLength(1);
@@ -167,7 +187,11 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
         { ...DEFAULT_CONFIG, noPublish: true },
         adapters({
           nowIso: "2026-05-13T18:00:00Z",
-          fetch: { status: "ok", prs: [{ number: 2980, headRefName: "feat/x", mergedAt: "2026-05-13T17:55:00Z" }], truncated: false },
+          fetch: {
+            status: "ok",
+            prs: [{ number: 2980, headRefName: "feat/x", mergedAt: "2026-05-13T17:55:00Z" }],
+            truncated: false,
+          },
           detectCascade: () => cascade,
           capturedPublishes: captured,
         }),
@@ -185,12 +209,21 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
         missingCommits: ["sha1"],
         urgency: "low",
       };
-      const result = pollOnce(DEFAULT_CONFIG, adapters({
-        nowIso: "2026-05-13T18:00:00Z",
-        fetch: { status: "ok", prs: [{ number: 2980, headRefName: "feat/x", mergedAt: "2026-05-13T17:55:00Z" }], truncated: false },
-        detectCascade: () => cascade,
-        publishImpl: () => { throw new Error("bus IO failure"); },
-      }));
+      const result = pollOnce(
+        DEFAULT_CONFIG,
+        adapters({
+          nowIso: "2026-05-13T18:00:00Z",
+          fetch: {
+            status: "ok",
+            prs: [{ number: 2980, headRefName: "feat/x", mergedAt: "2026-05-13T17:55:00Z" }],
+            truncated: false,
+          },
+          detectCascade: () => cascade,
+          publishImpl: () => {
+            throw new Error("bus IO failure");
+          },
+        }),
+      );
       expect(result.cascadesDetected).toBe(1);
       expect(result.publishedEnvelopeIds).toHaveLength(0);
       expect(result.note).toContain("publish failed");
@@ -205,13 +238,16 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
     };
 
     test("detects cascade — branch has post-squash drift commits", () => {
-      const finding = realCascadeDetector(pr2980, cascadeAdapters({
-        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
-        branchCompares: {
-          "feat/launch-thread": { status: "ok", missingCommits: ["bbb111", "ccc222"] },
-        },
-        nowIso: "2026-05-13T18:00:00Z",
-      }));
+      const finding = realCascadeDetector(
+        pr2980,
+        cascadeAdapters({
+          prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+          branchCompares: {
+            "feat/launch-thread": { status: "ok", missingCommits: ["bbb111", "ccc222"] },
+          },
+          nowIso: "2026-05-13T18:00:00Z",
+        }),
+      );
       expect(finding).not.toBeNull();
       expect(finding!.prNumber).toBe(2980);
       expect(finding!.branchName).toBe("feat/launch-thread");
@@ -220,59 +256,77 @@ describe("missed-substrate-detector slice 4 (bus publish wiring; slice-3 detect 
     });
 
     test("no cascade when missingCommits is empty (branch matches squash exactly)", () => {
-      const finding = realCascadeDetector(pr2980, cascadeAdapters({
-        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
-        branchCompares: {
-          "feat/launch-thread": { status: "ok", missingCommits: [] },
-        },
-      }));
+      const finding = realCascadeDetector(
+        pr2980,
+        cascadeAdapters({
+          prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+          branchCompares: {
+            "feat/launch-thread": { status: "ok", missingCommits: [] },
+          },
+        }),
+      );
       expect(finding).toBeNull();
     });
 
     test("returns null when branch was deleted post-merge (unrecoverable)", () => {
-      const finding = realCascadeDetector(pr2980, cascadeAdapters({
-        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
-        branchCompares: {
-          "feat/launch-thread": { status: "branch-deleted", reason: "deleted" },
-        },
-      }));
+      const finding = realCascadeDetector(
+        pr2980,
+        cascadeAdapters({
+          prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+          branchCompares: {
+            "feat/launch-thread": { status: "branch-deleted", reason: "deleted" },
+          },
+        }),
+      );
       expect(finding).toBeNull();
     });
 
     test("returns null when branch was rebased (too complex to auto-diagnose)", () => {
-      const finding = realCascadeDetector(pr2980, cascadeAdapters({
-        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
-        branchCompares: {
-          "feat/launch-thread": { status: "branch-rebased", reason: "not ancestor" },
-        },
-      }));
+      const finding = realCascadeDetector(
+        pr2980,
+        cascadeAdapters({
+          prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+          branchCompares: {
+            "feat/launch-thread": { status: "branch-rebased", reason: "not ancestor" },
+          },
+        }),
+      );
       expect(finding).toBeNull();
     });
 
     test("returns null when gh has no merge commit (closed-not-merged)", () => {
-      const finding = realCascadeDetector(pr2980, cascadeAdapters({
-        prRefs: { 2980: { status: "no-merge", reason: "no mergeCommit" } },
-        branchCompares: {
-          "feat/launch-thread": { status: "ok", missingCommits: ["should-not-reach"] },
-        },
-      }));
+      const finding = realCascadeDetector(
+        pr2980,
+        cascadeAdapters({
+          prRefs: { 2980: { status: "no-merge", reason: "no mergeCommit" } },
+          branchCompares: {
+            "feat/launch-thread": { status: "ok", missingCommits: ["should-not-reach"] },
+          },
+        }),
+      );
       expect(finding).toBeNull();
     });
 
     test("returns null when gh errors (cannot diagnose without refs)", () => {
-      const finding = realCascadeDetector(pr2980, cascadeAdapters({
-        prRefs: { 2980: { status: "error", reason: "HTTP 503" } },
-      }));
+      const finding = realCascadeDetector(
+        pr2980,
+        cascadeAdapters({
+          prRefs: { 2980: { status: "error", reason: "HTTP 503" } },
+        }),
+      );
       expect(finding).toBeNull();
     });
 
     test("returns null when git compare errors", () => {
-      const finding = realCascadeDetector(pr2980, cascadeAdapters({
-        prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
-        branchCompares: {
-          "feat/launch-thread": { status: "error", reason: "git fatal" },
-        },
-      }));
+      const finding = realCascadeDetector(
+        pr2980,
+        cascadeAdapters({
+          prRefs: { 2980: { status: "ok", headRefOid: "aaaaaaa" } },
+          branchCompares: {
+            "feat/launch-thread": { status: "error", reason: "git fatal" },
+          },
+        }),
+      );
       expect(finding).toBeNull();
     });
   });
@@ -375,15 +429,22 @@ describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
     let adapterCalled = false;
     const config = { ...DEFAULT_CONFIG, once: true };
     const finding = makeFinding();
-    const result = pollOnce(config, adaptersWithRecovery({
-      nowIso: "2026-05-15T12:00:00Z",
-      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
-      detectCascade: () => finding,
-      openRecoveryPR: () => {
-        adapterCalled = true;
-        return { status: "opened", prUrl: "https://example/pr/1", cherryPickedCount: 2 };
-      },
-    }));
+    const result = pollOnce(
+      config,
+      adaptersWithRecovery({
+        nowIso: "2026-05-15T12:00:00Z",
+        fetch: {
+          status: "ok",
+          prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }],
+          truncated: false,
+        },
+        detectCascade: () => finding,
+        openRecoveryPR: () => {
+          adapterCalled = true;
+          return { status: "opened", prUrl: "https://example/pr/1", cherryPickedCount: 2 };
+        },
+      }),
+    );
     expect(result.recoveryAttempts).toBe(0);
     expect(result.recoveryOpened).toBe(0);
     expect(adapterCalled).toBe(false);
@@ -392,12 +453,19 @@ describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
   test("autoRecover=true, adapter returns opened: recoveryOpened=1; note contains PR URL", () => {
     const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
     const finding = makeFinding();
-    const result = pollOnce(config, adaptersWithRecovery({
-      nowIso: "2026-05-15T12:00:00Z",
-      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
-      detectCascade: () => finding,
-      openRecoveryPR: () => ({ status: "opened", prUrl: "https://example.com/pr/9999", cherryPickedCount: 2 }),
-    }));
+    const result = pollOnce(
+      config,
+      adaptersWithRecovery({
+        nowIso: "2026-05-15T12:00:00Z",
+        fetch: {
+          status: "ok",
+          prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }],
+          truncated: false,
+        },
+        detectCascade: () => finding,
+        openRecoveryPR: () => ({ status: "opened", prUrl: "https://example.com/pr/9999", cherryPickedCount: 2 }),
+      }),
+    );
     expect(result.recoveryAttempts).toBe(1);
     expect(result.recoveryOpened).toBe(1);
     expect(result.note).toContain("https://example.com/pr/9999");
@@ -407,13 +475,20 @@ describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
     const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, recoveryDryRun: true, noPublish: true };
     const finding = makeFinding();
     const calls: Array<{ finding: CascadeFinding; dryRun: boolean }> = [];
-    const result = pollOnce(config, adaptersWithRecovery({
-      nowIso: "2026-05-15T12:00:00Z",
-      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
-      detectCascade: () => finding,
-      openRecoveryPR: () => ({ status: "opened", prUrl: "dry-run", cherryPickedCount: 0 }),
-      recoveryCalls: calls,
-    }));
+    const result = pollOnce(
+      config,
+      adaptersWithRecovery({
+        nowIso: "2026-05-15T12:00:00Z",
+        fetch: {
+          status: "ok",
+          prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }],
+          truncated: false,
+        },
+        detectCascade: () => finding,
+        openRecoveryPR: () => ({ status: "opened", prUrl: "dry-run", cherryPickedCount: 0 }),
+        recoveryCalls: calls,
+      }),
+    );
     expect(calls).toHaveLength(1);
     expect(calls[0]!.dryRun).toBe(true);
     expect(result.recoveryAttempts).toBe(1);
@@ -423,12 +498,19 @@ describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
 
   test("autoRecover=true, adapter returns already-exists: recoveryOpened=0; note contains already-exists", () => {
     const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
-    const result = pollOnce(config, adaptersWithRecovery({
-      nowIso: "2026-05-15T12:00:00Z",
-      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
-      detectCascade: () => makeFinding(),
-      openRecoveryPR: () => ({ status: "already-exists", reason: "PR for recovery/1234 already open" }),
-    }));
+    const result = pollOnce(
+      config,
+      adaptersWithRecovery({
+        nowIso: "2026-05-15T12:00:00Z",
+        fetch: {
+          status: "ok",
+          prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }],
+          truncated: false,
+        },
+        detectCascade: () => makeFinding(),
+        openRecoveryPR: () => ({ status: "already-exists", reason: "PR for recovery/1234 already open" }),
+      }),
+    );
     expect(result.recoveryAttempts).toBe(1);
     expect(result.recoveryOpened).toBe(0);
     expect(result.note).toContain("already-exists");
@@ -436,12 +518,21 @@ describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
 
   test("autoRecover=true, adapter throws: recoveryOpened=0; note contains 'recovery error'; poll completes", () => {
     const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
-    const result = pollOnce(config, adaptersWithRecovery({
-      nowIso: "2026-05-15T12:00:00Z",
-      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
-      detectCascade: () => makeFinding(),
-      openRecoveryPR: () => { throw new Error("simulated adapter blowup"); },
-    }));
+    const result = pollOnce(
+      config,
+      adaptersWithRecovery({
+        nowIso: "2026-05-15T12:00:00Z",
+        fetch: {
+          status: "ok",
+          prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }],
+          truncated: false,
+        },
+        detectCascade: () => makeFinding(),
+        openRecoveryPR: () => {
+          throw new Error("simulated adapter blowup");
+        },
+      }),
+    );
     expect(result.recoveryAttempts).toBe(1);
     expect(result.recoveryOpened).toBe(0);
     expect(result.note).toContain("recovery error");
@@ -468,11 +559,18 @@ describe("missed-substrate-detector slice 5b (auto-recover wiring)", () => {
   test("autoRecover=true but adapter undefined: recoveryAttempts=0 (treats missing adapter as autoRecover=false)", () => {
     const config = { ...DEFAULT_CONFIG, once: true, autoRecover: true, noPublish: true };
     // Don't pass openRecoveryPR to adapters() — it's optional.
-    const result = pollOnce(config, adapters({
-      nowIso: "2026-05-15T12:00:00Z",
-      fetch: { status: "ok", prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }], truncated: false },
-      detectCascade: () => makeFinding(),
-    }));
+    const result = pollOnce(
+      config,
+      adapters({
+        nowIso: "2026-05-15T12:00:00Z",
+        fetch: {
+          status: "ok",
+          prs: [{ number: 1234, headRefName: "feat/x", mergedAt: "2026-05-15T11:59:00Z" }],
+          truncated: false,
+        },
+        detectCascade: () => makeFinding(),
+      }),
+    );
     // Cascade was detected but adapter is missing → recovery skipped silently.
     expect(result.cascadesDetected).toBe(1);
     expect(result.recoveryAttempts).toBe(0);

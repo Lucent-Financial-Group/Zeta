@@ -26,8 +26,8 @@ or formal sort, and attach one falsifiable property. This row is
 the guardrail against jumping from useful control-theory
 machinery to a general "alignment proof" claim.
 
-Aaron 2026-05-09: *"we do want to try to build twards alignment
-proofs like one primitve at a time"*.
+Aaron 2026-05-09: _"we do want to try to build twards alignment
+proofs like one primitve at a time"_.
 
 ## Narrow thesis
 
@@ -101,33 +101,33 @@ it into optimistic proof language.
 - [x] Add one concrete F# type, Z3 sort, Lean structure, or TLA+
       state variable set for that primitive.
       → Z3 sorts: `SharedTrace`, `Action`; PrivateState as `Int`;
-        `PolicyA: Int × SharedTrace → Action` (uninterpreted function).
+      `PolicyA: Int × SharedTrace → Action` (uninterpreted function).
 - [x] Add one falsifiable property that can fail under at least
       one small counterexample.
       → `hasCausalPower(P)` fails for any collapsed policy (the
-        quantifier `(forall s1 s2 t, P(s1,t)=P(s2,t))` is a
-        concrete small counterexample — a constant function).
+      quantifier `(forall s1 s2 t, P(s1,t)=P(s2,t))` is a
+      concrete small counterexample — a constant function).
 - [x] Add one focused check: FsCheck property, Z3 query, Lean
       theorem, TLA+ model, or runtime monitor test.
       → Two Z3 queries in `tools/Z3Verify/Program.fs` (lemmas 16+17)
-        and two test cases in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
+      and two test cases in `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`.
 - [x] Write a short note distinguishing what the check proves
       from what it does not prove.
       → Proved: collapse implies zero causal power (Lemma 17 UNSAT).
-        NOT proved: any specific concrete agent is non-collapsed;
-        proving that requires membrane specs + private-state update
-        rules — the next slice.
+      NOT proved: any specific concrete agent is non-collapsed;
+      proving that requires membrane specs + private-state update
+      rules — the next slice.
 - [x] Run an adversarial review pass before promoting the proof
       vocabulary to `docs/ALIGNMENT.md`, `docs/AGENDA.md`, or
       other current-state surfaces.
       → Adversarial finding (2026-05-09): Lemma 17 missing
-        `(assert (not (= stateA1 stateA2)))` — UNSAT could be
-        achieved trivially via identity (stateA1=stateA2) rather
-        than via the collapse constraint. Fixed in Program.fs +
-        Z3.Laws.Tests.fs. UNSAT now exclusively attributable to
-        collapse. Vocabulary not yet promoted to ALIGNMENT.md
-        (no promotion needed until non-collapse for a concrete
-        agent is proven — that requires the next slice).
+      `(assert (not (= stateA1 stateA2)))` — UNSAT could be
+      achieved trivially via identity (stateA1=stateA2) rather
+      than via the collapse constraint. Fixed in Program.fs +
+      Z3.Laws.Tests.fs. UNSAT now exclusively attributable to
+      collapse. Vocabulary not yet promoted to ALIGNMENT.md
+      (no promotion needed until non-collapse for a concrete
+      agent is proven — that requires the next slice).
 
 ## Non-goals
 

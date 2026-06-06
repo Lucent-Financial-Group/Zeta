@@ -13,12 +13,7 @@
  */
 import { fromEvents } from "./crdt-log.ts";
 import { project } from "./project.ts";
-import {
-  EventOp,
-  asZetaIdDecimal,
-  type FrontmatterEvent,
-  type ZetaIdDecimal,
-} from "./event.ts";
+import { EventOp, asZetaIdDecimal, type FrontmatterEvent, type ZetaIdDecimal } from "./event.ts";
 import type { FrontmatterRow } from "./schema.ts";
 
 export const SyncDirection = {

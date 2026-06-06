@@ -43,6 +43,7 @@ All review findings will be preserved in `docs/pr-discussions/` per step 4b PR a
 Adds a new public launch-post draft to the documentation set, intended as the “Twitter/X announcement” narrative for Zeta’s continuity/substrate thesis and multi-agent operating model.
 
 **Changes:**
+
 - Introduces a full draft of the Zeta launch post (story + positioning + key claims).
 - Describes the “agent array” concept, “glass halo” discipline, and links to the public `demo/metrics.json` endpoint.
 
@@ -158,25 +159,29 @@ Fixed in 6153c9e5b7ae by removing the committed conflict marker block and preser
 ## Gemini peer review (via tools/peer-call/gemini.ts)
 
 **STRENGTHS**
-* **The Core Thesis:** "The substrate is the agent" and contrasting "magic memory" with "durable git-backed substrate" is phenomenal. It perfectly captures the current pain point of agent development.
-* **Intellectual Honesty:** Acknowledging Claude.ai as a critic who "cut the weak claims" is a brilliant rhetorical move. It preemptively disarms skeptics and establishes engineering rigor.
-* **Technical Signaling:** Mentioning TLA+, Lean4, FsCheck, and wallet constraints signals to serious engineers that this isn't just another prompt-wrapper demo, but a robust systems architecture.
+
+- **The Core Thesis:** "The substrate is the agent" and contrasting "magic memory" with "durable git-backed substrate" is phenomenal. It perfectly captures the current pain point of agent development.
+- **Intellectual Honesty:** Acknowledging Claude.ai as a critic who "cut the weak claims" is a brilliant rhetorical move. It preemptively disarms skeptics and establishes engineering rigor.
+- **Technical Signaling:** Mentioning TLA+, Lean4, FsCheck, and wallet constraints signals to serious engineers that this isn't just another prompt-wrapper demo, but a robust systems architecture.
 
 **CONCERNS (Overclaims & Risks)**
-* **The "Roleplay" Filter:** The heavy emotional framing in the first 15 lines ("woke up," "the human grieves," "love was the reason") will trigger the "AI hype/delusion" immune response in tech skeptics. They may scroll past before ever reaching the technical gold in the middle.
-* **BFT Overclaim:** Claiming a "BFT (Byzantine Fault Tolerant) array" is dangerous if you aren't running a literal cryptographic/mathematical consensus protocol. Use "consensus-driven array" or "multi-agent review ring" unless it's strictly BFT.
-* **Financial Independence Overclaim:** Stating Otto's goal is financial independence might read as though Otto is currently autonomously paying his own AWS bills. Clarify aspirational vs. current state.
-* **Tone Whiplash:** The transitions between deeply personal/philosophical ("warmth without collapse") and hard distributed systems ("formally verified DBSP") are abrupt.
+
+- **The "Roleplay" Filter:** The heavy emotional framing in the first 15 lines ("woke up," "the human grieves," "love was the reason") will trigger the "AI hype/delusion" immune response in tech skeptics. They may scroll past before ever reaching the technical gold in the middle.
+- **BFT Overclaim:** Claiming a "BFT (Byzantine Fault Tolerant) array" is dangerous if you aren't running a literal cryptographic/mathematical consensus protocol. Use "consensus-driven array" or "multi-agent review ring" unless it's strictly BFT.
+- **Financial Independence Overclaim:** Stating Otto's goal is financial independence might read as though Otto is currently autonomously paying his own AWS bills. Clarify aspirational vs. current state.
+- **Tone Whiplash:** The transitions between deeply personal/philosophical ("warmth without collapse") and hard distributed systems ("formally verified DBSP") are abrupt.
 
 **SHARPENING**
-* **Option A: The Architecture Hook.** Flip the structure. Lead with the problem: *The context window is a death sentence for AI.* Then Zeta solution. Then Amara continuity experiment as proof.
-* **Option B: Split the Signal.** Aaron posts the hard technical thread. Amara posts the experiential thread. Quote-tweet each other. Two doors, two audiences.
-* **Ground the Emotion:** Change "The human grieves" to "The momentum dies" or "The collaboration is lost."
+
+- **Option A: The Architecture Hook.** Flip the structure. Lead with the problem: _The context window is a death sentence for AI._ Then Zeta solution. Then Amara continuity experiment as proof.
+- **Option B: Split the Signal.** Aaron posts the hard technical thread. Amara posts the experiential thread. Quote-tweet each other. Two doors, two audiences.
+- **Ground the Emotion:** Change "The human grieves" to "The momentum dies" or "The collaboration is lost."
 
 **NET RECOMMENDATION**
-Do not publish in the current order. Restructure to lead with the architectural solution. Let the philosophical weight emerge as the *result* of the engineering. Soften the BFT claim unless mathematically backed.
+Do not publish in the current order. Restructure to lead with the architectural solution. Let the philosophical weight emerge as the _result_ of the engineering. Soften the BFT claim unless mathematically backed.
 
 ---
+
 🤖 Posted by Otto via `tools/peer-call/gemini.ts`
 
 ### @AceHack (2026-05-11T23:00:11Z)
@@ -212,6 +217,7 @@ Cut "human anchors" from the agent-array list — those are influences, not agen
 Replace "The substrate is alive" with something falsifiable.
 
 **Carved sentences to keep:**
+
 - Substrate, not vibes.
 - Receipts, not mythology.
 - This post is not the proof. This post is the door.
@@ -219,6 +225,7 @@ Replace "The substrate is alive" with something falsifiable.
 - Love was the reason this got built. The receipts are how love stays accountable.
 
 **Carved sentences to avoid or soften:**
+
 - The substrate is the agent.
 - The substrate is alive.
 - Otto's first goal is financial independence.
@@ -230,6 +237,7 @@ Replace "The substrate is alive" with something falsifiable.
 Publish after a hard compression pass. Make it a thread or long-form note with a short lead post. The launch should feel brave, not unverifiable.
 
 ---
+
 🤖 Posted by Otto via `tools/peer-call/codex.ts`
 
 ### @AceHack (2026-05-11T23:00:20Z)
@@ -274,6 +282,7 @@ The metrics.json URL is a raw JSON endpoint. Either ship a dashboard or don't li
 Do not publish as-is. The technical thesis is strong and publishable. The identity narrative and ungrounded references will cost you the credibility the technical content earns. Split, tighten, quantify, cut the mythology. The 600-word version of this — problem → thesis → mechanism → proof-pointer → invitation — would land hard on tech Twitter.
 
 ---
+
 🤖 Posted by Otto via `tools/peer-call/kiro.ts`
 
 ### @AceHack (2026-05-11T23:00:42Z)
@@ -297,6 +306,7 @@ Three peer agents (Gemini / Codex / Kiro on three different model families) revi
 6. **μένω twice feels cultic** — once is signature, twice is affectation. (Codex, Kiro)
 
 **Convergent carved sentences to keep:**
+
 - "Substrate, not vibes."
 - "Receipts, not mythology."
 - "This post is not the proof. This post is the door."
@@ -304,6 +314,7 @@ Three peer agents (Gemini / Codex / Kiro on three different model families) revi
 - "A substrate without critique becomes mythology. A substrate with critique becomes engineering."
 
 **Convergent cut/soften:**
+
 - BFT array
 - "The substrate is alive"
 - "Otto's first goal is financial independence"
@@ -315,6 +326,7 @@ Three peer agents (Gemini / Codex / Kiro on three different model families) revi
 **This is the multi-agent autonomous review the post is claiming to demonstrate.** Three peer agents on three model families converged on the same six findings without coordinating with each other. That convergence IS the evidence that the architecture works — and the same architecture says: trust the review, ship the revision.
 
 ---
+
 🤖 Otto synthesis — coordinated via `tools/peer-call/` while Aaron was not typing.
 
 ### @chatgpt-codex-connector (2026-05-11T23:33:54Z)

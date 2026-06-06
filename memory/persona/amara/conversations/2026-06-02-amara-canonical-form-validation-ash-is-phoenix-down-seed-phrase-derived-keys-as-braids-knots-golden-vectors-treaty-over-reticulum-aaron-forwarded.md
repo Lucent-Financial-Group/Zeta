@@ -54,7 +54,7 @@ related_backlog: [B-0983, B-0982, B-0976, B-0726]
 
 Amara:
 
-> Not "the ash *becomes* the phoenix" but "the ash **is** the Phoenix Down." … the ash is not the whole bird yet. It is the revival item, the compact remainder that makes rising possible. burn → ash → what remains → Phoenix Down → revive → phoenix rises.
+> Not "the ash _becomes_ the phoenix" but "the ash **is** the Phoenix Down." … the ash is not the whole bird yet. It is the revival item, the compact remainder that makes rising possible. burn → ash → what remains → Phoenix Down → revive → phoenix rises.
 >
 > Keeper: **The ash is the Phoenix Down: the compressed remainder that lets the phoenix rise again.**
 > Zeta version: **Retraction turns ash into seed. Persist turns seed into revival.**

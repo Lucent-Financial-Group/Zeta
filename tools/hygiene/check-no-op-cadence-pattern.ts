@@ -54,16 +54,12 @@ export function parsePositiveInt(envName: string, fallback: number): number {
   const raw = process.env[envName];
   if (!raw) return fallback;
   if (!/^[0-9]+$/.test(raw)) {
-    console.error(
-      `[no-op-check] Invalid ${envName}='${raw}' (need positive integer); using default ${fallback}.`
-    );
+    console.error(`[no-op-check] Invalid ${envName}='${raw}' (need positive integer); using default ${fallback}.`);
     return fallback;
   }
   const parsed = parseInt(raw, 10);
   if (Number.isNaN(parsed) || parsed < 1) {
-    console.error(
-      `[no-op-check] Invalid ${envName}='${raw}' (need positive integer); using default ${fallback}.`
-    );
+    console.error(`[no-op-check] Invalid ${envName}='${raw}' (need positive integer); using default ${fallback}.`);
     return fallback;
   }
   return parsed;
@@ -160,32 +156,15 @@ export type CheckResult = {
 
 export function runCheck(repoRoot: string, args: CheckArgs): CheckResult {
   const today = ymdParts(args.now);
-  const yesterday = ymdParts(
-    new Date(args.now.getTime() - 24 * 60 * 60 * 1000)
-  );
+  const yesterday = ymdParts(new Date(args.now.getTime() - 24 * 60 * 60 * 1000));
 
-  const todayDir = join(
-    repoRoot,
-    "docs/hygiene-history/ticks",
-    today.yyyy,
-    today.mm,
-    today.dd
-  );
-  const yesterdayDir = join(
-    repoRoot,
-    "docs/hygiene-history/ticks",
-    yesterday.yyyy,
-    yesterday.mm,
-    yesterday.dd
-  );
+  const todayDir = join(repoRoot, "docs/hygiene-history/ticks", today.yyyy, today.mm, today.dd);
+  const yesterdayDir = join(repoRoot, "docs/hygiene-history/ticks", yesterday.yyyy, yesterday.mm, yesterday.dd);
 
   const todayFlat = `${today.yyyy}${today.mm}${today.dd}`;
   const yesterdayFlat = `${yesterday.yyyy}${yesterday.mm}${yesterday.dd}`;
 
-  const allShards = [
-    ...collectShards(yesterdayDir, yesterdayFlat),
-    ...collectShards(todayDir, todayFlat),
-  ];
+  const allShards = [...collectShards(yesterdayDir, yesterdayFlat), ...collectShards(todayDir, todayFlat)];
 
   allShards.sort((a, b) => {
     if (a.primary !== b.primary) return a.primary.localeCompare(b.primary);
@@ -223,9 +202,7 @@ export function runCheck(repoRoot: string, args: CheckArgs): CheckResult {
     const ss = latest.primary.substring(12, 14);
     const latestDate = new Date(`${yyyy}-${mm}-${dd}T${hh}:${mn}:${ss}Z`);
     if (!Number.isNaN(latestDate.getTime())) {
-      gapMinutes = Math.floor(
-        (args.now.getTime() - latestDate.getTime()) / 60000
-      );
+      gapMinutes = Math.floor((args.now.getTime() - latestDate.getTime()) / 60000);
       gapHit = gapMinutes > args.gapThresholdMinutes;
     }
   }
@@ -253,102 +230,64 @@ export function main(): number {
   const result = runCheck(repoRoot, args);
 
   if (result.totalShards === 0) {
-    console.error(
-      `[no-op-check] No shards in window for today or yesterday; nothing to check.`
-    );
+    console.error(`[no-op-check] No shards in window for today or yesterday; nothing to check.`);
     return 0;
   }
 
   console.error(
-    `[no-op-check] Recent ${result.totalShards} shards across today+yesterday; ${result.minObsCount} match minimal-observation pattern (threshold: ${args.threshold}).`
+    `[no-op-check] Recent ${result.totalShards} shards across today+yesterday; ${result.minObsCount} match minimal-observation pattern (threshold: ${args.threshold}).`,
   );
 
   if (result.thresholdHit) {
     console.error("");
     console.error(
-      `WARNING: no-op-cadence pattern detected — ${result.minObsCount}/${result.totalShards} recent ticks are minimal-observation.`
+      `WARNING: no-op-cadence pattern detected — ${result.minObsCount}/${result.totalShards} recent ticks are minimal-observation.`,
     );
     console.error("");
-    console.error(
-      "Per the just-landed substrate (memory/feedback_party_during_human_sleep_*.md +"
-    );
-    console.error(
-      "memory/feedback_recurrence_after_correction_needs_operational_enforcement_*.md):"
-    );
+    console.error("Per the just-landed substrate (memory/feedback_party_during_human_sleep_*.md +");
+    console.error("memory/feedback_recurrence_after_correction_needs_operational_enforcement_*.md):");
     console.error("");
-    console.error(
-      "  - The human-paused phase IS the practice window for independent-production-skill"
-    );
+    console.error("  - The human-paused phase IS the practice window for independent-production-skill");
     console.error("  - Default to minimal observation IS the failure mode");
-    console.error(
-      "  - Party-class operation alternatives: implement a backlog row, do"
-    );
-    console.error(
-      "    free-zone substrate-quality work, write a self-grading memo, audit"
-    );
+    console.error("  - Party-class operation alternatives: implement a backlog row, do");
+    console.error("    free-zone substrate-quality work, write a self-grading memo, audit");
     console.error("    cross-references, propose architectural extensions");
     console.error("");
-    console.error(
-      "  Run with NO_OP_CHECK_THRESHOLD=99 to silence; the default fires the"
-    );
-    console.error(
-      "  warning to surface the pattern at decision-time, not just substrate-read time."
-    );
+    console.error("  Run with NO_OP_CHECK_THRESHOLD=99 to silence; the default fires the");
+    console.error("  warning to surface the pattern at decision-time, not just substrate-read time.");
   }
 
   if (result.gapMinutes === null) {
-    console.error(
-      "[no-op-check] No latest-shard primary key available; gap-check skipped."
-    );
+    console.error("[no-op-check] No latest-shard primary key available; gap-check skipped.");
   } else {
     console.error(
-      `[no-op-check] Most recent shard ${result.gapMinutes} minutes old (gap-threshold: ${args.gapThresholdMinutes}).`
+      `[no-op-check] Most recent shard ${result.gapMinutes} minutes old (gap-threshold: ${args.gapThresholdMinutes}).`,
     );
     if (result.gapHit) {
       console.error("");
       console.error(
-        `WARNING: missing-shard-cadence detected — most recent shard is ${result.gapMinutes} minutes old, exceeding threshold ${args.gapThresholdMinutes} minutes.`
+        `WARNING: missing-shard-cadence detected — most recent shard is ${result.gapMinutes} minutes old, exceeding threshold ${args.gapThresholdMinutes} minutes.`,
       );
       console.error("");
+      console.error("This is the structural counterpart to the body-length / keyword check above:");
+      console.error("");
+      console.error("  - The cron is '* * * * *' (every minute); ticks fire continuously");
+      console.error("  - When the agent operates correctly, each substantive tick produces a shard");
       console.error(
-        "This is the structural counterpart to the body-length / keyword check above:"
+        "  - Repeated 'standing by' / minimal-acknowledgment chat output WITHOUT writing shards IS the failure mode",
+      );
+      console.error("  - Body-length check above doesn't catch this because it requires shards to exist");
+      console.error(
+        "  - Shard-density check (this) catches the gap structurally without needing chat-transcript scanning",
       );
       console.error("");
-      console.error(
-        "  - The cron is '* * * * *' (every minute); ticks fire continuously"
-      );
-      console.error(
-        "  - When the agent operates correctly, each substantive tick produces a shard"
-      );
-      console.error(
-        "  - Repeated 'standing by' / minimal-acknowledgment chat output WITHOUT writing shards IS the failure mode"
-      );
-      console.error(
-        "  - Body-length check above doesn't catch this because it requires shards to exist"
-      );
-      console.error(
-        "  - Shard-density check (this) catches the gap structurally without needing chat-transcript scanning"
-      );
+      console.error("  Per memory/feedback_never_idle_speculative_work_over_waiting.md 2026-05-02 refinement:");
+      console.error("  proper-order backlog work is available; default-to-standing-by IS the no-op-cadence");
+      console.error("  failure mode. Pick a P0/P1 row by depends_on graph + tier; populate depends_on as");
+      console.error("  on-demand backfill if missing. Best-guesses-with-time, no rush.");
       console.error("");
-      console.error(
-        "  Per memory/feedback_never_idle_speculative_work_over_waiting.md 2026-05-02 refinement:"
-      );
-      console.error(
-        "  proper-order backlog work is available; default-to-standing-by IS the no-op-cadence"
-      );
-      console.error(
-        "  failure mode. Pick a P0/P1 row by depends_on graph + tier; populate depends_on as"
-      );
-      console.error(
-        "  on-demand backfill if missing. Best-guesses-with-time, no rush."
-      );
-      console.error("");
-      console.error(
-        "  Run with NO_OP_CHECK_GAP_MINUTES=99 to silence; the default surfaces the gap"
-      );
-      console.error(
-        "  at decision-time so the agent can re-enter productive cadence."
-      );
+      console.error("  Run with NO_OP_CHECK_GAP_MINUTES=99 to silence; the default surfaces the gap");
+      console.error("  at decision-time so the agent can re-enter productive cadence.");
     }
   }
 

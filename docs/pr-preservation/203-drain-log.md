@@ -117,7 +117,7 @@ readers at the canonical Z-set sources today.
 ### Outcome
 
 FIX in `facebb0`. The self-check was rewritten to ask the
-learner to *explain* why a `map` after `count` cannot
+learner to _explain_ why a `map` after `count` cannot
 type-check given `Pipeline.count: Stream<ZSet<_>> ->
 Stream<int64>` and `Pipeline.map: Stream<ZSet<_>> ->
 Stream<ZSet<_>>`. The pedagogical intent (is the learner

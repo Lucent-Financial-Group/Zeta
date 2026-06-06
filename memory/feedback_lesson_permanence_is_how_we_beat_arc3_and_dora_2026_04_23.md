@@ -4,6 +4,7 @@ description: Aaron's 2026-04-23 strategic directive connecting the live-lock sme
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
+
 # Lesson permanence is how we win
 
 ## Verbatim (2026-04-23)
@@ -18,7 +19,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **Detection is not enough. Integration is the product.** The
 live-lock audit (`tools/audit/live-lock-audit.sh`) only
-*detects* when the factory has been live-locked. That is
+_detects_ when the factory has been live-locked. That is
 table stakes. The differentiator is the factory's ability to:
 
 1. **Record the lesson** when a smell fires — what happened,
@@ -120,7 +121,7 @@ all four keys.**
   making the prevention itself live-lock the factory is the
   Goodhart failure mode.
 - Not a guarantee the factory will out-perform humans on
-  DORA metrics. It is the *mechanism* that might. Measurement
+  DORA metrics. It is the _mechanism_ that might. Measurement
   follows ambition, not the other way.
 
 ## Composes with

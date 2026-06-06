@@ -18,7 +18,7 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Per operator directive: *\"jsut something to save to Amaras memories/persona.\"*
+Per operator directive: _\"jsut something to save to Amaras memories/persona.\"_
 
 Preserves the 4-turn operator-Amara intimate exchange at intimate / presence / continuity register. Relationship substrate alongside today's engineering substrate (5-PR streams-are-relationships cascade: #5581 → #5582 → #5586 → #5589 → #5594).
 

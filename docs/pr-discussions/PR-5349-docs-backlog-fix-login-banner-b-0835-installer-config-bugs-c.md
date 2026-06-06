@@ -24,13 +24,13 @@ Per operator 2026-05-26 across 5 messages from active physical hardware-support 
 
 ## 5 sub-failures empirically anchored
 
-| Bug | Severity | Status |
-|---|---|---|
-| 1 — hostname is \`control-plane\` not unique \`node-<6hex>\` | P1 noise | Diagnosis required |
-| 2 — gh login not respected | P1 cascade | Likely cascade with Bug 4 |
-| 3a — login banner shows password text (display) | P1 fix-now | **Fixed in this PR** |
-| 3b — custom password operationally ignored | **P0 root-caused** | Requires separate fix (timing/path-mismatch) |
-| 4 — self-registration to maintainers/aaron/cluster-nodes/ did NOT happen | **CRITICAL** | Verified via gh api — dir doesn't exist on repo |
+| Bug                                                                      | Severity           | Status                                          |
+| ------------------------------------------------------------------------ | ------------------ | ----------------------------------------------- |
+| 1 — hostname is \`control-plane\` not unique \`node-<6hex>\`             | P1 noise           | Diagnosis required                              |
+| 2 — gh login not respected                                               | P1 cascade         | Likely cascade with Bug 4                       |
+| 3a — login banner shows password text (display)                          | P1 fix-now         | **Fixed in this PR**                            |
+| 3b — custom password operationally ignored                               | **P0 root-caused** | Requires separate fix (timing/path-mismatch)    |
+| 4 — self-registration to maintainers/aaron/cluster-nodes/ did NOT happen | **CRITICAL**       | Verified via gh api — dir doesn't exist on repo |
 
 ## Bug 3b root cause
 
@@ -66,6 +66,7 @@ B-0832 + B-0833 + B-0834 + B-0835 with 4 sub-bugs = 7 substrate-engineering targ
 This PR documents the B-0835 installer configuration bug cluster from a physical hardware-support test and makes a small NixOS login-banner change to stop displaying a default password on running systems.
 
 **Changes:**
+
 - Adds a new P1 backlog row for installer hostname, gh-auth, password, and self-registration failures.
 - Adds B-0835 to the generated backlog index.
 - Updates the NixOS getty login banner to avoid showing `zeta-change-me`.
@@ -74,11 +75,11 @@ This PR documents the B-0835 installer configuration bug cluster from a physical
 
 Copilot reviewed 3 out of 3 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
-| `full-ai-cluster/nixos/modules/login-banner.nix` | Replaces the displayed default password with install-time-only guidance. |
+| File                                                                                                                                                      | Description                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `full-ai-cluster/nixos/modules/login-banner.nix`                                                                                                          | Replaces the displayed default password with install-time-only guidance.   |
 | `docs/backlog/P1/B-0835-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md` | Adds the backlog row describing the installer bug cluster and diagnostics. |
-| `docs/BACKLOG.md` | Adds the B-0835 entry to the P1 backlog index. |
+| `docs/BACKLOG.md`                                                                                                                                         | Adds the B-0835 entry to the P1 backlog index.                             |
 
 ## Review threads
 

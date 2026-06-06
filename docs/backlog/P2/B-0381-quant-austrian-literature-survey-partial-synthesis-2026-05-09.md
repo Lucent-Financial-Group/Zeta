@@ -13,7 +13,6 @@ composes_with: [B-0023, B-0380, B-0382, B-0383, B-0384, B-0385, B-0386, B-0387]
 parent: B-0023
 tags: [aurora, economics, austrian-school, quant, mathematical-rigor, open-research, literature-survey]
 type: research
-
 ---
 
 # B-0381 — Literature survey: partial quant × Austrian synthesis attempts
@@ -41,10 +40,10 @@ vocabulary from B-0380. For each source:
 
 - **Selgin / White / Dowd** — free-banking quant rigor on monetary
   equilibria (closest to "Austrian quant")
-- **Roger Garrison** — diagrammatic capital-structure in *Time and
-  Money* (2001); not SDE-level but is the most developed visual-formal
+- **Roger Garrison** — diagrammatic capital-structure in _Time and
+  Money_ (2001); not SDE-level but is the most developed visual-formal
   treatment of ABCT
-- **Saifedean Ammous** — *Bitcoin Standard* stock-to-flow model;
+- **Saifedean Ammous** — _Bitcoin Standard_ stock-to-flow model;
   empirical-embedding of sound-money, not measure-theoretic
 - **Steve Keen** — Minsky-flavored disequilibrium models using ODEs;
   post-Keynesian, not Austrian, but math-heavy + shares anti-equilibrium
@@ -100,12 +99,12 @@ Expected: the survey doc present with today's date prefix.
 ## Pre-start checklist
 
 - [x] Prior-art search: no existing survey doc in `docs/aurora/` or
-  memory files. B-0023 §"Owed work" mentions the corpus but does not
-  execute the survey.
+      memory files. B-0023 §"Owed work" mentions the corpus but does not
+      execute the survey.
 - [x] Dependency-restructure: `depends_on: [B-0380]` — vocabulary
-  required to correctly classify each source's formalization type.
-  B-0382–B-0386 depend on this survey for the "prior attempts per
-  primitive" context.
+      required to correctly classify each source's formalization type.
+      B-0382–B-0386 depend on this survey for the "prior attempts per
+      primitive" context.
 
 ## Composes with
 

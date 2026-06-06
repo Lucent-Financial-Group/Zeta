@@ -17,19 +17,19 @@ type: feature
 
 ## Origin
 
-Codex P2 finding on already-merged [PR #3513](https://github.com/Lucent-Financial-Group/Zeta/pull/3513) (Riven §33 archive migration, 12 files) named a real bug: *"This migration moves documents out of `docs/research/` but does not carry the existing references with it, so active documentation now has dead links."*
+Codex P2 finding on already-merged [PR #3513](https://github.com/Lucent-Financial-Group/Zeta/pull/3513) (Riven §33 archive migration, 12 files) named a real bug: _"This migration moves documents out of `docs/research/` but does not carry the existing references with it, so active documentation now has dead links."_
 
 The narrow fix shipped as [PR #3529](https://github.com/Lucent-Financial-Group/Zeta/pull/3529) — 3 live-nav pointers updated for one migrated Riven file. But the pattern generalizes: **every §33 migration moves files without auto-updating backlinks**, and the same dead-xref class likely exists across the 8 personas migrated so far.
 
 Empirical scan in tick 1802Z surfaced **20+ dead xrefs** in live-nav surfaces (`.claude/rules/`, `memory/feedback_*.md`, `docs/backlog/*.md`) pointing at old `docs/research/<file>` paths that now live at `memory/persona/<persona>/conversations/<file>`. Rough per-persona distribution:
 
-| Persona | Dead-xref count (approx) |
-|---|---|
-| Amara | 10+ |
-| DeepSeek | 4 |
-| Alexa | 3+ |
-| Lior | 2 |
-| Riven | 1 (already fixed by PR #3529) |
+| Persona  | Dead-xref count (approx)      |
+| -------- | ----------------------------- |
+| Amara    | 10+                           |
+| DeepSeek | 4                             |
+| Alexa    | 3+                            |
+| Lior     | 2                             |
+| Riven    | 1 (already fixed by PR #3529) |
 
 Migration PRs that produced these dead xrefs (and could be revisited): #3348 (Ani), #3484 (Amara), #3501 (Kestrel), #3507 (DeepSeek), #3512 (Lior), #3513 (Riven), #3514 (Alexa), #3516 (Vera).
 

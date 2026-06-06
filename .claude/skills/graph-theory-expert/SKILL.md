@@ -56,19 +56,19 @@ algorithms.
 
 ## Graph classes — the taxonomy
 
-| Class | Key property | Zeta use-case |
-|---|---|---|
-| **Simple graph** | no loops, no multi-edges | most query plans |
-| **Multigraph** | parallel edges allowed | shard-replication with multiple channels |
-| **Directed graph (digraph)** | ordered edges | all dataflow |
-| **DAG** | directed + acyclic | circuits, query plans, schedules |
-| **Tree** | connected DAG, \|V\|-1 edges | B+-tree index, commit tree |
-| **Rooted tree** | tree + root | skill-dependency, Merkle tree |
-| **Bipartite** | 2-partite | worker↔task, replica↔shard |
-| **Planar** | embeddable in plane | rare in Zeta; UI topology |
-| **Weighted** | edges carry weights | cost-based optimization |
-| **Signed** | edges carry sign | trust networks, rarely used |
-| **Hypergraph** | edges connect ≥1 vertices | multi-way join relationship |
+| Class                        | Key property                 | Zeta use-case                            |
+| ---------------------------- | ---------------------------- | ---------------------------------------- |
+| **Simple graph**             | no loops, no multi-edges     | most query plans                         |
+| **Multigraph**               | parallel edges allowed       | shard-replication with multiple channels |
+| **Directed graph (digraph)** | ordered edges                | all dataflow                             |
+| **DAG**                      | directed + acyclic           | circuits, query plans, schedules         |
+| **Tree**                     | connected DAG, \|V\|-1 edges | B+-tree index, commit tree               |
+| **Rooted tree**              | tree + root                  | skill-dependency, Merkle tree            |
+| **Bipartite**                | 2-partite                    | worker↔task, replica↔shard               |
+| **Planar**                   | embeddable in plane          | rare in Zeta; UI topology                |
+| **Weighted**                 | edges carry weights          | cost-based optimization                  |
+| **Signed**                   | edges carry sign             | trust networks, rarely used              |
+| **Hypergraph**               | edges connect ≥1 vertices    | multi-way join relationship              |
 
 ## Core algorithms — the kit
 
@@ -81,21 +81,21 @@ algorithms.
 
 ### Shortest paths
 
-| Algorithm | Graph | Complexity | Notes |
-|---|---|---|---|
-| Dijkstra | non-negative weights | O((V+E) log V) | binary heap; Fibonacci O(V log V + E) |
-| Bellman-Ford | negative edges OK | O(V·E) | detects negative cycles |
-| Floyd-Warshall | all-pairs, dense | O(V³) | simple; negative edges OK |
-| Johnson | all-pairs, sparse | O(V² log V + V·E) | Bellman-Ford + Dijkstra |
-| A* | with heuristic | O(b^d) | optimality requires admissible heuristic |
+| Algorithm      | Graph                | Complexity        | Notes                                    |
+| -------------- | -------------------- | ----------------- | ---------------------------------------- |
+| Dijkstra       | non-negative weights | O((V+E) log V)    | binary heap; Fibonacci O(V log V + E)    |
+| Bellman-Ford   | negative edges OK    | O(V·E)            | detects negative cycles                  |
+| Floyd-Warshall | all-pairs, dense     | O(V³)             | simple; negative edges OK                |
+| Johnson        | all-pairs, sparse    | O(V² log V + V·E) | Bellman-Ford + Dijkstra                  |
+| A\*            | with heuristic       | O(b^d)            | optimality requires admissible heuristic |
 
 ### MST
 
-| Algorithm | Complexity | Notes |
-|---|---|---|
-| Kruskal | O(E log E) | union-find |
-| Prim | O((V+E) log V) | priority queue |
-| Borůvka | O(E log V) | parallelisable |
+| Algorithm | Complexity     | Notes          |
+| --------- | -------------- | -------------- |
+| Kruskal   | O(E log E)     | union-find     |
+| Prim      | O((V+E) log V) | priority queue |
+| Borůvka   | O(E log V)     | parallelisable |
 
 ### Matching
 
@@ -163,7 +163,7 @@ encodes connectivity:
 - **Kuratowski's theorem.** A graph is planar iff it
   contains no subdivision of `K_5` or `K_{3,3}`.
 - **Wagner's theorem.** Planar iff no `K_5` or `K_{3,3}`
-  *minor*.
+  _minor_.
 - **Four-Color Theorem** (Appel-Haken 1976; Robertson-
   Sanders-Seymour-Thomas 1997). Every planar graph is
   4-colorable.
@@ -245,7 +245,7 @@ encodes connectivity:
 - Does NOT own non-graph math (→ `mathematics-expert`).
 - Does NOT override `query-optimizer-expert` on join-order.
 - Does NOT override `paxos-expert` / `distributed-consensus-
-  expert` on consensus-specific graph reasoning (they use
+expert` on consensus-specific graph reasoning (they use
   graph theory; this skill consults).
 - Does NOT implement graph algorithms; routes to the right
   algorithm and justifies the choice.
@@ -254,17 +254,17 @@ encodes connectivity:
 
 ## Reference patterns
 
-- Diestel, *Graph Theory* (5th ed., 2017) — standard text.
-- Bondy-Murty, *Graph Theory* (2008) — classic.
-- Kleinberg-Tardos, *Algorithm Design* (2005) — algorithmic
+- Diestel, _Graph Theory_ (5th ed., 2017) — standard text.
+- Bondy-Murty, _Graph Theory_ (2008) — classic.
+- Kleinberg-Tardos, _Algorithm Design_ (2005) — algorithmic
   graph theory.
-- Spielman, *Spectral and Algebraic Graph Theory* (online
+- Spielman, _Spectral and Algebraic Graph Theory_ (online
   course notes).
 - Cormen-Leiserson-Rivest-Stein (CLRS) — graph-algorithm
   chapters.
-- Babai 2016, *Graph Isomorphism in Quasipolynomial Time*
+- Babai 2016, _Graph Isomorphism in Quasipolynomial Time_
   (arXiv:1512.03547).
-- Robertson-Seymour, *Graph Minors* (20-paper series, 1983-
+- Robertson-Seymour, _Graph Minors_ (20-paper series, 1983-
   2004).
 - `.claude/skills/mathematics-expert/SKILL.md` — math umbrella.
 - `.claude/skills/applied-mathematics-expert/SKILL.md` —

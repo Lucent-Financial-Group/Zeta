@@ -17,9 +17,9 @@ type: feature
 
 Follow-on to Ace slice 3 (Ed25519 authenticity; signed-enforced install gate,
 `--allow-no-signature` opt-out). Operator-authorized deferred follow-on
-(the operator 2026-06-01): *"you can push it through it can be a later follow on …
+(the operator 2026-06-01): _"you can push it through it can be a later follow on …
 it's better to build strict first in my mind and back off later cause of friction
-instead of the other way around."*
+instead of the other way around."_
 
 ## Decision context — the default is CONFIRMED strict; this row is the paving
 
@@ -29,11 +29,11 @@ Ran it by the team + web research; **all lenses converged on KEEP strict-by-defa
 
 - **Security (security-researcher):** "Pick A. Do not change the default." Loose-default
   on an untrusted distribution surface = unauthenticated write-then-install (the exact
-  attack); fail-closed is correct; the empty-bundled-trust bootstrap *strengthens* the
+  attack); fail-closed is correct; the empty-bundled-trust bootstrap _strengthens_ the
   argument (the first experience sets the mental model). Loose-default flagged Important
   (teaches the wrong reflex), not a shipped P0 (bundled trust is empty today).
 - **DX (developer-experience-engineer):** strict is the correct posture; the risk is
-  *friction*, not the default — a strict path that's too painful makes `--allow-no-signature`
+  _friction_, not the default — a strict path that's too painful makes `--allow-no-signature`
   the reflexive de-facto mode (strictness becomes theater). Verdict: keep strict, **pave
   the road**.
 - **Web research (search-first):** secure-defaults UX — users stick with defaults;
@@ -51,8 +51,8 @@ The default stays strict (shipped in the slice-3 build PR). This row tracks the
 
 1. **Golden-path refusal messages** — the unsigned-install refusal should name the
    remediation FIRST (`ace trust add <pub>` / where to get the publisher `.pub`),
-   not lead with `--allow-no-signature`. (Slice 3 already enriched the *untrusted-key*
-   refusal + trust-list-empty hint; extend the same to the *unsigned* refusal +
+   not lead with `--allow-no-signature`. (Slice 3 already enriched the _untrusted-key_
+   refusal + trust-list-empty hint; extend the same to the _unsigned_ refusal +
    make the `--allow-no-signature` WARNING nudge toward `ace trust add`.)
 2. **Root-key custody ceremony (the big one)** — bundled `tools/ace/trusted-keys.json`
    ships empty, so out-of-box every install needs `trust add`/`--allow-no-signature`.

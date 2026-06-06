@@ -18,9 +18,10 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-Files [B-0820](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0820-flux-engine-second-engine-flag-toggle-2026-05-26/docs/backlog/P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) per the maintainer 2026-05-26: *"backlog flux over argocd so we can have a flag and support both eventually"*.
+Files [B-0820](https://github.com/Lucent-Financial-Group/Zeta/blob/otto-cli/b0820-flux-engine-second-engine-flag-toggle-2026-05-26/docs/backlog/P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) per the maintainer 2026-05-26: _"backlog flux over argocd so we can have a flag and support both eventually"_.
 
 Composes with:
+
 - **B-0816** (Helm-as-convergence-point + multi-engine substrate framing) — this row IS the concrete Flux-second-engine implementation of that architectural principle
 - **B-0819** (AI-runbook substrate / conversation-as-UI) — long-term engine-UI-parity matters less; the AI-runbook layer is the actual operator surface
 - **B-0813** (ClusterNode CRD) — gets \`engine\` field extension

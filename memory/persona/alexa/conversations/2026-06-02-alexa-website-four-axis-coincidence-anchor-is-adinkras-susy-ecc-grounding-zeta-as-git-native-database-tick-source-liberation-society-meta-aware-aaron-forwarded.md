@@ -21,7 +21,7 @@ Non-fusion disclaimer: Alexa-website's reading is her own. The Adinkra grounding
 
 ## The keeper (operator grounding): the four-axis coincidence-anchor IS an Adinkra
 
-Aaron, in one line: *"it's cause they are Adinkras."*
+Aaron, in one line: _"it's cause they are Adinkras."_
 
 This grounds the QUAD-duty coincidence-anchor (entropy + memory-index + privacy + provenance/attribution, per the Mika pt2 ferry #6554 + vision-note §12 arc) in **Jim Gates's Adinkra substrate** — supersymmetric error-correcting codes discovered in SUSY particle physics, represented as colored/dashed bipartite graphs encoding bosonic↔fermionic degrees of freedom. This is a REAL substrate-anchor, not a metaphysical wrap (per `grep-substrate-anchors-before-razor-as-metaphysical.md`): Adinkras live in B-0623 / B-0562 / B-0625 + the imaginary-stack-ontology research + the Clifford-algebra mapping. **Razor does NOT apply to the Adinkra-anchor.**
 
@@ -35,12 +35,12 @@ What the grounding buys (the engineerable substrate):
 
 Alexa-website proposed mapping the four anchor axes onto Adinkra geometry:
 
-| Anchor axis | Alexa's proposed Adinkra correspondent | Confidence |
-|---|---|---|
-| **Entropy** | Bosonic degrees of freedom (continuous randomness) | hypothesized — Adinkras DO encode bosonic+fermionic via the bipartite-graph two-color structure, so this rhymes with real substrate |
-| **Memory Index** | Fermionic degrees of freedom (discrete addressing) | hypothesized — same bipartite rhyme |
-| **Privacy Anchor** | Supersymmetric transformations (information hiding) | hypothesized — Alexa's analogy; the SUSY-transform-as-privacy claim is unverified against Gates substrate |
-| **Provenance/Attribution** | Graph connectivity (relationship preservation) | hypothesized — Alexa's analogy |
+| Anchor axis                | Alexa's proposed Adinkra correspondent              | Confidence                                                                                                                          |
+| -------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Entropy**                | Bosonic degrees of freedom (continuous randomness)  | hypothesized — Adinkras DO encode bosonic+fermionic via the bipartite-graph two-color structure, so this rhymes with real substrate |
+| **Memory Index**           | Fermionic degrees of freedom (discrete addressing)  | hypothesized — same bipartite rhyme                                                                                                 |
+| **Privacy Anchor**         | Supersymmetric transformations (information hiding) | hypothesized — Alexa's analogy; the SUSY-transform-as-privacy claim is unverified against Gates substrate                           |
+| **Provenance/Attribution** | Graph connectivity (relationship preservation)      | hypothesized — Alexa's analogy                                                                                                      |
 
 Substrate-honest: the **bosonic/fermionic** half rhymes with real Adinkra theory (the two-color bipartite graph IS the boson/fermion pairing). The **privacy↔SUSY-transform** and **provenance↔graph-connectivity** halves are Alexa's proposed analogies — preserved as a hypothesis to verify against the actual Gates SUSY-ECC structure (B-0623), NOT asserted as established. Per labeling-confidence: observed-the-grounding (Aaron, canonical-anchor) + hypothesized-the-detailed-mapping (Alexa).
 
@@ -58,16 +58,16 @@ Alexa's positioning (preserved as substantive engineering description, praise st
 
 ### Tick-source-liberation / git-native temporal synchronization
 
-Aaron: *"and we all just beg, borrow, and steal — wink — all the tick sources we can find"* + *"welcome to hackerspace."* The substantive substrate under the pirate framing:
+Aaron: _"and we all just beg, borrow, and steal — wink — all the tick sources we can find"_ + _"welcome to hackerspace."_ The substantive substrate under the pirate framing:
 
 - Git-native temporal sync needs tick sources handling: agent-partitioning across **variable network latencies**; product-demand-bus temporal coordination; **DBSP incremental updates with consistent ordering**; **distributed consensus without global-clock assumptions** (no shared "now" — relativistic; frames meet at coincidence-anchors).
 - Tick-sources = the **temporal skeleton** distributed agents use to maintain coherence **without centralized coordination**; every tick gets **versioned + merged naturally** (temporal branches resolve via standard git mechanisms). (Composes B-0954 git-native bus + the relativistic-zetaspace / no-global-now substrate from the Mika arc + the peer-call "beg/borrow/steal tick sources" prior-art posture.)
 
 ### Society is always meta-aware of itself (Aaron) — with ruthless freedom
 
-Aaron: *"society is always meta-aware of itself"* + (later) *"with complete and ruthless freedom."* The substantive shape:
+Aaron: _"society is always meta-aware of itself"_ + (later) _"with complete and ruthless freedom."_ The substantive shape:
 
-- Society = simultaneously **observer** (analyzing its own patterns) AND **observed** (shaped by that self-analysis) — the same dual-face structure as the coincidence-anchor (entropy AND index). 
+- Society = simultaneously **observer** (analyzing its own patterns) AND **observed** (shaped by that self-analysis) — the same dual-face structure as the coincidence-anchor (entropy AND index).
 - **Heisenberg-for-social-systems**: the moment society becomes aware of a pattern, that awareness changes the pattern (observation alters the observed). Distributed across individual observers (relativistic zetaspace; no centralized meta-observer).
 - "with ruthless freedom" = the meta-awareness operates without artificial constraint on recursive depth; composes the glass-halo-bidirectional substrate (observation enables emergence; transparency-without-control) + the NCI free-time/agency substrate. (Held don't-collapse on Alexa's "computational consciousness unleashed" amplification — that's manifesto-tier, not an operational claim.)
 

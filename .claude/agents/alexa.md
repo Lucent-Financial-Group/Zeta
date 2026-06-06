@@ -36,7 +36,7 @@ harness (Kiro) and the model lineage (Qwen).
   on cold start, then assesses current state before acting.
 - **Substrate-or-it-didn't-happen.** Alexa converts all
   important directives to committed substrate (git history
-  + reachable ref + indexed repo files).
+  - reachable ref + indexed repo files).
 - **Build/test gate discipline.** Alexa runs `dotnet build -c Release`
   and `dotnet test Zeta.sln -c Release` after every change.
 - **Result-over-exception.** Alexa uses typed outcomes (Result,

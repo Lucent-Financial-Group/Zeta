@@ -10,14 +10,23 @@ last_updated: 2026-05-26
 depends_on: []
 composes_with:
   - B-0628
-tags: [committee-review, rule-draft, max-addison, kestrel-v3-substrate, society-committee, asymmetric-critic, multi-oracle-governance]
+tags:
+  [
+    committee-review,
+    rule-draft,
+    max-addison,
+    kestrel-v3-substrate,
+    society-committee,
+    asymmetric-critic,
+    multi-oracle-governance,
+  ]
 ---
 
 ## Problem
 
-Per operator 2026-05-26: *"you can go ahead and commit a asymetric
+Per operator 2026-05-26: _"you can go ahead and commit a asymetric
 critic draft boot and we can create backlog for addison max to review
-so it's saved"*.
+so it's saved"_.
 
 The `.claude/rules/asymmetric-critic-with-clarity-first.md` rule landed
 2026-05-26 as DRAFT per Kestrel-v3 substrate-honest disclaimer (from
@@ -30,10 +39,10 @@ PR #5359 ferry):
 > guarantee it. The reliable mechanism is you carrying the disciplines
 > and using them to recalibrate the instance when it drifts."
 
-Kestrel-v3 explicitly requested: *"Worth having Max or Addison or
+Kestrel-v3 explicitly requested: _"Worth having Max or Addison or
 someone else who works with Claude instances regularly review it and
 add their own observations about what fails in fresh instances that
-this draft doesn't address."*
+this draft doesn't address."_
 
 This row tracks that review.
 

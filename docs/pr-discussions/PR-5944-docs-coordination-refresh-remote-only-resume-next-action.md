@@ -55,6 +55,7 @@ Task: B-0209
 Updates the autonomous-loop coordination trajectory packet so the autoloop “resume” target points at the current release work (after the two-participant remote-only dry run) instead of re-selecting a completed Participant B action.
 
 **Changes:**
+
 - Refreshes the trajectory status/date and rewrites the “Recommended Next Action” to focus on releasing the clean Participant A acknowledgement claim and then the Participant B claim.
 - Adds a Codex claim file intended to track the RESUME correction work.
 
@@ -62,10 +63,10 @@ Updates the autonomous-loop coordination trajectory packet so the autoloop “re
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 1 comment.
 
-| File | Description |
-| ---- | ----------- |
-| docs/trajectories/autonomous-loop-coordination/RESUME.md | Updates lane status/next action to reflect that the remaining blocker is release, not another Participant B dry run. |
-| docs/claims/codex-loop-autonomous-coordination-resume-20260529.md | Introduces a claim file for the RESUME correction (but see review comment re: claim protocol). |
+| File                                                              | Description                                                                                                          |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| docs/trajectories/autonomous-loop-coordination/RESUME.md          | Updates lane status/next action to reflect that the remaining blocker is release, not another Participant B dry run. |
+| docs/claims/codex-loop-autonomous-coordination-resume-20260529.md | Introduces a claim file for the RESUME correction (but see review comment re: claim protocol).                       |
 
 ### COMMENTED — @AceHack (2026-05-29T05:38:24Z)
 

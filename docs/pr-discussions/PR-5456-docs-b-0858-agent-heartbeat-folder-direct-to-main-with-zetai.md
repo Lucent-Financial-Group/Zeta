@@ -46,6 +46,7 @@ Operator 2026-05-27 reminder pointed at existing substrate I wasn't using: ZetaI
 Adds a new P1 backlog row (B-0858) proposing an `docs/agent-heartbeats/` substrate that uses ZetaID-based filenames and a path-scoped branch-protection carve-out to enable low-friction, direct-to-main heartbeat commits, then indexes the row in `docs/BACKLOG.md`.
 
 **Changes:**
+
 - Introduces backlog row **B-0858** specifying folder layout, heartbeat schema, and planned sub-rows for tooling + enforcement.
 - Documents how the proposal composes with existing ZetaID and AgencySignature substrates.
 - Adds **B-0858** to the P1 section of `docs/BACKLOG.md`.
@@ -54,10 +55,10 @@ Adds a new P1 backlog row (B-0858) proposing an `docs/agent-heartbeats/` substra
 
 Copilot reviewed 2 out of 2 changed files in this pull request and generated 6 comments.
 
-| File | Description |
-| ---- | ----------- |
+| File                                                                                                              | Description                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | docs/backlog/P1/B-0858-agent-heartbeat-folder-direct-to-main-zetaid-filenames-no-pr-mechanism-aaron-2026-05-27.md | New backlog row describing the heartbeat-folder + ZetaID-filename design and integration plan |
-| docs/BACKLOG.md | Adds the B-0858 entry to the P1 index |
+| docs/BACKLOG.md                                                                                                   | Adds the B-0858 entry to the P1 index                                                         |
 
 ## Review threads
 

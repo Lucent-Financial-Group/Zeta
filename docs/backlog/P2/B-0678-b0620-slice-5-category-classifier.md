@@ -7,8 +7,8 @@ created: 2026-05-19
 last_updated: 2026-05-20
 type: feature
 composes_with:
-  - B-0620  # multi-account + multi-vendor inventory consolidation
-  - B-0610  # amazon-orders-extract v3 design pass
+  - B-0620 # multi-account + multi-vendor inventory consolidation
+  - B-0610 # amazon-orders-extract v3 design pass
 depends_on:
   - B-0676 # B-0620 slice 4 consolidator script
 ---

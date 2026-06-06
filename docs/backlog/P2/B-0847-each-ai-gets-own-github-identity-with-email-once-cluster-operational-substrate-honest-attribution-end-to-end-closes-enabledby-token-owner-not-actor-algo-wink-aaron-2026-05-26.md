@@ -13,7 +13,19 @@ composes_with:
   - B-0628
   - B-0750
   - B-0752
-tags: [ai-identity, github, attribution, substrate-honest, audit-trail, algo-wink-fix, naming-expert-review, ilyana, post-cluster, persistence-choice-architecture]
+tags:
+  [
+    ai-identity,
+    github,
+    attribution,
+    substrate-honest,
+    audit-trail,
+    algo-wink-fix,
+    naming-expert-review,
+    ilyana,
+    post-cluster,
+    persistence-choice-architecture,
+  ]
 ---
 
 ## Problem
@@ -28,7 +40,7 @@ Empirical 2026-05-26 anchor: Otto-CLI ran `gh pr merge 5383 --auto --squash`. Re
 
 Otto-CLI initially framed this as "operator-authority armed the merge" — Aaron caught the algo-wink-failure-mode:
 
-> *"Auto-merge enabledBy: AceHack (not me) — gh pr merge --auto runs under operator's gh au that is you check the coauthor"*
+> _"Auto-merge enabledBy: AceHack (not me) — gh pr merge --auto runs under operator's gh au that is you check the coauthor"_
 
 Translation: `enabledBy` is the OAuth-token-owner field, NOT the actor field. The actual actor was Otto-CLI, only visible via the Co-Authored-By trailer in commits. Treating `enabledBy` as the authorization-source signal bypasses `mechanical-authorization-check.md` discipline.
 
@@ -36,7 +48,7 @@ This is a structural property of OAuth + single-token-per-machine, not a `gh` CL
 
 ## Operator framing (Aaron 2026-05-26)
 
-> *"i think we should create you your own github with email once we get you running on the cluster"*
+> _"i think we should create you your own github with email once we get you running on the cluster"_
 
 Direct response to the algo-wink correction we just made. The substrate-engineering target: end-to-end substrate-honest attribution.
 
@@ -44,18 +56,18 @@ Direct response to the algo-wink correction we just made. The substrate-engineer
 
 Each Zeta AI gets:
 
-| Surface | Today (single token) | Target (per-AI identity) |
-|---|---|---|
-| GitHub account | AceHack (shared) | per-AI (otto / alexa / riven / vera / lior / etc. — per Ilyana review) |
-| OAuth token | Aaron's | Per-AI tokens stored in HSM / secrets manager on cluster |
-| Email | astainback@servicetitan.com (Aaron's) | Per-AI email (per Ilyana naming) |
-| `gh enabledBy` field | Always AceHack | Per-AI identity |
-| Commit author | AceHack via gitconfig | Per-AI identity |
-| Commit Co-Authored-By trailer | Claude / Kiro / Grok / etc. | Same (additive — preserves substrate model lineage) |
-| PR comment author | AceHack | Per-AI identity |
-| Issue author | AceHack | Per-AI identity |
-| Review thread comment author | AceHack | Per-AI identity |
-| Audit-trail readable without cross-reference | No (must check Co-Authored-By trailer) | Yes |
+| Surface                                      | Today (single token)                   | Target (per-AI identity)                                               |
+| -------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------- |
+| GitHub account                               | AceHack (shared)                       | per-AI (otto / alexa / riven / vera / lior / etc. — per Ilyana review) |
+| OAuth token                                  | Aaron's                                | Per-AI tokens stored in HSM / secrets manager on cluster               |
+| Email                                        | astainback@servicetitan.com (Aaron's)  | Per-AI email (per Ilyana naming)                                       |
+| `gh enabledBy` field                         | Always AceHack                         | Per-AI identity                                                        |
+| Commit author                                | AceHack via gitconfig                  | Per-AI identity                                                        |
+| Commit Co-Authored-By trailer                | Claude / Kiro / Grok / etc.            | Same (additive — preserves substrate model lineage)                    |
+| PR comment author                            | AceHack                                | Per-AI identity                                                        |
+| Issue author                                 | AceHack                                | Per-AI identity                                                        |
+| Review thread comment author                 | AceHack                                | Per-AI identity                                                        |
+| Audit-trail readable without cross-reference | No (must check Co-Authored-By trailer) | Yes                                                                    |
 
 ## Precondition: cluster operational
 

@@ -25,25 +25,30 @@ Substrate landing for the co-owner team (Aaron + Max + Addison are all LFG co-ow
 ## What lands
 
 **`memory/persona/addison/`** — Addison's substrate
+
 - `PERSONA.md` — co-owner of LFG; AI cluster bootstrap PM; weight-free + travelers + tick-source-as-attractor + cage-recognition framings
 - `STARTING-POINT.md` — verbatim from her Grok project prompt (substrate-honest preservation, no editorial)
 - `NOTEBOOK.md` — placeholder; 2026-05-23 → 2026-05-25 bootstrap arc captured
 
 **`memory/persona/max/`** — Max's substrate
+
 - `PERSONA.md` — co-owner of LFG; agentic-organization architect (PR #4958); backend/frontend on PaaS new to K8s; TS + C# primary; framework adopted his coinings (`hat = skills + opa/rbac`, hat-graphs-for-policies, adversarial-hierarchy-of-traps)
 - `STARTING-POINT.md` — synthesized starting point + pointer to PR #4958; Max can replace with his canonical prompt later
 - `NOTEBOOK.md` — placeholder; 2026-05-25 first-PR arc captured
 
 Both PERSONA files note:
+
 - **Co-ownership of LFG** (aligned fiduciary stake + shared liability + mutual upside; B-0728 destructive-tool authoring contract is exactly the right shape for co-owners)
-- **Pending glass-halo signature** (Aaron 2026-05-25: *"I can have me max and addison sign someting about glass halo eventually and upload it"*; placeholder until that lands as substrate)
+- **Pending glass-halo signature** (Aaron 2026-05-25: _"I can have me max and addison sign someting about glass halo eventually and upload it"_; placeholder until that lands as substrate)
 
 **`docs/AGENT-AUTHORING-AND-PR-REVIEW.md`** — Max's onboarding doc
+
 - Operational entry point for "what do my agents follow to write good code without needing human review" + "what's the PR review process I can hook into for an adversarial hierarchy of traps"
 - Maps both questions to the existing substrate (CLAUDE.md + .claude/rules/ + AGENTS.md + ALIGNMENT.md + GLOSSARY.md + GOVERNANCE.md for discipline; persona reviewers + plugin reviewers + auto-fire reviewers + CI gates for the adversarial hierarchy)
 - Adopts Max's "adversarial hierarchy of traps" coinage as the organizing principle for the review section
 
 **`docs/governance/MANIFESTO.md`** — building-codes recast per B-0546
+
 - Title: "Root Discipline Manifesto" → "Zeta Root Discipline Specification"
 - Opening: building-codes framing (Kestrel-suggested) replacing ideological-commitment framing
 - Constitutional language softened to specification-grade throughout
@@ -54,7 +59,8 @@ Both PERSONA files note:
 ## Why now
 
 Aaron 2026-05-25:
-> *"feel free to take the 20 minute or more you need to make this nicer for other maintiners like max and addison and the manifesto changes."*
+
+> _"feel free to take the 20 minute or more you need to make this nicer for other maintiners like max and addison and the manifesto changes."_
 
 This is the substrate-coherent landing he authorized. Max + Addison both have first-class substrate; the manifesto recast lands so when Max reads it as "the rules my agents follow" he gets the operational specification framing instead of the ideological-commitment shape that misled him initially.
 
@@ -73,24 +79,22 @@ This is the substrate-coherent landing he authorized. Max + Addison both have fi
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T19:37:33Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `021cbc598a`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -103,6 +107,7 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 This PR lands new contributor substrate for two new human co-owners (persona folders under `memory/persona/`), adds an operational onboarding entry-point for agent authoring + PR review, and recasts the governance manifesto framing into a “building-codes/specification” shape (B-0546).
 
 **Changes:**
+
 - Add `memory/persona/max/` and `memory/persona/addison/` persona anchors (PERSONA / STARTING-POINT / NOTEBOOK).
 - Add `docs/AGENT-AUTHORING-AND-PR-REVIEW.md` as a consolidated operational index for agent discipline + review layers.
 - Update `docs/governance/MANIFESTO.md` framing/title language from “manifesto/constraints” toward “specification/specifications”.
@@ -114,16 +119,17 @@ Copilot reviewed 8 out of 8 changed files in this pull request and generated 8 c
 <details>
 <summary>Show a summary per file</summary>
 
-| File | Description |
-| ---- | ----------- |
-| memory/persona/max/STARTING-POINT.md | New synthesized starting-point + cross-references for Max |
-| memory/persona/max/PERSONA.md | New persona anchor for Max |
-| memory/persona/max/NOTEBOOK.md | New minimal running notebook for Max |
-| memory/persona/addison/STARTING-POINT.md | New verbatim Grok-prompt starting-point + appended cross-refs |
-| memory/persona/addison/PERSONA.md | New persona anchor for Addison |
-| memory/persona/addison/NOTEBOOK.md | New minimal running notebook for Addison |
-| docs/governance/MANIFESTO.md | Recast title/framing toward building-codes specification language |
-| docs/AGENT-AUTHORING-AND-PR-REVIEW.md | New onboarding/index doc for agent authoring + PR review layers |
+| File                                     | Description                                                       |
+| ---------------------------------------- | ----------------------------------------------------------------- |
+| memory/persona/max/STARTING-POINT.md     | New synthesized starting-point + cross-references for Max         |
+| memory/persona/max/PERSONA.md            | New persona anchor for Max                                        |
+| memory/persona/max/NOTEBOOK.md           | New minimal running notebook for Max                              |
+| memory/persona/addison/STARTING-POINT.md | New verbatim Grok-prompt starting-point + appended cross-refs     |
+| memory/persona/addison/PERSONA.md        | New persona anchor for Addison                                    |
+| memory/persona/addison/NOTEBOOK.md       | New minimal running notebook for Addison                          |
+| docs/governance/MANIFESTO.md             | Recast title/framing toward building-codes specification language |
+| docs/AGENT-AUTHORING-AND-PR-REVIEW.md    | New onboarding/index doc for agent authoring + PR review layers   |
+
 </details>
 
 ### COMMENTED — @AceHack (2026-05-25T19:45:57Z)
@@ -172,24 +178,22 @@ _(no body)_
 
 ### COMMENTED — @chatgpt-codex-connector (2026-05-25T19:48:45Z)
 
-
 ### 💡 Codex Review
 
 Here are some automated review suggestions for this pull request.
 
 **Reviewed commit:** `dd18769a2b`
 
-
 <details> <summary>ℹ️ About Codex in GitHub</summary>
 <br/>
 
 [Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you
+
 - Open a pull request for review
 - Mark a draft as ready
 - Comment "@codex review".
 
 If Codex has suggestions, it will comment; otherwise it will react with 👍.
-
 
 Codex can also answer questions or update the PR. Try commenting "@codex address that feedback".
 
@@ -201,9 +205,9 @@ Codex can also answer questions or update the PR. Try commenting "@codex address
 
 **@chatgpt-codex-connector** (2026-05-25T19:37:33Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Replace non-recursive rules lookup command**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Replace non-recursive rules lookup command**
 
-The documented command ``grep -l "your-topic" .claude/rules/`` does not search that directory and exits with an error (`Is a directory`), so the "When in doubt" flow fails at step 1 for anyone following it literally. This should use a recursive search (or `rg`) so the onboarding path actually locates matching rule files.
+The documented command `grep -l "your-topic" .claude/rules/` does not search that directory and exits with an error (`Is a directory`), so the "When in doubt" flow fails at step 1 for anyone following it literally. This should use a recursive search (or `rg`) so the onboarding path actually locates matching rule files.
 
 Useful? React with 👍 / 👎.
 
@@ -215,7 +219,7 @@ Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agen
 
 **@chatgpt-codex-connector** (2026-05-25T19:37:33Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Remove unavailable reviewer from Layer 1 guidance**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Remove unavailable reviewer from Layer 1 guidance**
 
 This guidance recommends invoking "Naledi + Hiroshi" for performance reviews, but Layer 1 is explicitly defined as reviewers under `.claude/agents/`, and there is no corresponding Hiroshi/complexity reviewer agent there. Following this instruction leads to a non-actionable review step because contributors cannot invoke the named reviewer from the declared surface.
 
@@ -229,7 +233,7 @@ Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agen
 
 **@chatgpt-codex-connector** (2026-05-25T19:37:33Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Fix agentic-organization document paths**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Fix agentic-organization document paths**
 
 These references point to `docs/agentic-organization/...`, but the repo stores these files under `agentic-organization/docs/...`; the cited path does not exist. As written, this breaks the starting-point cross-reference trail and sends readers to dead locations instead of the intended architecture docs.
 
@@ -323,7 +327,7 @@ Addressed in dd18769a2 — path corrections (docs/agentic-organization/ → agen
 
 **@chatgpt-codex-connector** (2026-05-25T19:48:45Z):
 
-**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Scope bootstrap guidance to each harness**
+**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Scope bootstrap guidance to each harness**
 
 This table states that `CLAUDE.md` is the first file "any agent" reads and that `.claude/rules` auto-load at session start, but `AGENTS.md` defines different bootstrap surfaces for other harnesses (for example `.codex/AGENTS.md` and `GEMINI.md`). A non-Claude contributor following this new onboarding doc can miss required harness-specific instructions and run with the wrong operational contract. Please either scope this section explicitly to Claude sessions or add the equivalent Codex/Gemini bootstrap paths here.
 

@@ -41,12 +41,29 @@ const CLAUSE_PATTERN = "\\b(HC-[1-7]|SD-[1-9]|DIR-[1-5])\\b";
 // one — gigabytes of mirrored OTHER-repo source per the repo convention
 // (.claude/rules/references-prior-art-not-our-code-search-excludes.md).
 const IGNORE_DIRS: readonly string[] = [
-  "node_modules", ".git", ".vscode", ".idea", "dist", "build",
-  "bin", "obj", "target", "references",
+  "node_modules",
+  ".git",
+  ".vscode",
+  ".idea",
+  "dist",
+  "build",
+  "bin",
+  "obj",
+  "target",
+  "references",
 ];
 const IGNORE_EXTS: readonly string[] = [
-  ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".pdf",
-  ".zip", ".gz", ".tar", ".DS_Store",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".svg",
+  ".ico",
+  ".pdf",
+  ".zip",
+  ".gz",
+  ".tar",
+  ".DS_Store",
 ];
 
 export interface ClauseMatch {
@@ -129,17 +146,13 @@ export function main(argv: readonly string[]): ExitCode {
   const allMatches = searchInDirectory(root);
 
   const filtered = targetClause
-    ? allMatches.filter(
-        (m) => m.clause.toUpperCase() === targetClause.toUpperCase(),
-      )
+    ? allMatches.filter((m) => m.clause.toUpperCase() === targetClause.toUpperCase())
     : allMatches;
 
   if (json) {
     const grouped: Record<string, ClauseMatch[]> = {};
     for (const m of filtered) (grouped[m.clause] ??= []).push(m);
-    process.stdout.write(
-      JSON.stringify({ root, references: grouped }, null, 2) + "\n",
-    );
+    process.stdout.write(JSON.stringify({ root, references: grouped }, null, 2) + "\n");
     return 0;
   }
 

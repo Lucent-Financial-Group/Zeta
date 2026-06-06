@@ -119,7 +119,7 @@ for (const surface of surfaces) {
         pattern = /\bClaude\.ai( 2026| 2027|: |[ '][a-z])/;
       } else {
         pattern = new RegExp(
-          `\\b${name}( 2026| 2027|'s [a-z]| said| grants| proposed| asked| corrected| confirmed| disclosed)`
+          `\\b${name}( 2026| 2027|'s [a-z]| said| grants| proposed| asked| corrected| confirmed| disclosed)`,
         );
       }
 
@@ -127,9 +127,9 @@ for (const surface of surfaces) {
         const lineNum = i + 1;
         process.stderr.write(
           `VIOLATION: ${surface}:${lineNum}: direct name attribution '${name}' on current-state surface\n` +
-          `  ${line.trim()}\n` +
-          `  Fix: replace with role-ref (e.g., 'the human maintainer', 'the architect')\n` +
-          `       OR move to history surface (memory/, docs/research/**, etc.)\n`
+            `  ${line.trim()}\n` +
+            `  Fix: replace with role-ref (e.g., 'the human maintainer', 'the architect')\n` +
+            `       OR move to history surface (memory/, docs/research/**, etc.)\n`,
         );
         violations++;
       }
@@ -137,20 +137,18 @@ for (const surface of surfaces) {
   }
 }
 
-process.stderr.write(
-  `\nchecked ${surfaces.length} current-state surfaces; ${violations} violations\n`
-);
+process.stderr.write(`\nchecked ${surfaces.length} current-state surfaces; ${violations} violations\n`);
 
 if (violations > 0) {
   process.stderr.write(
     "\nPer docs/AGENT-BEST-PRACTICES.md Otto-279 carve-out:\n" +
-    "  current-state surfaces use role-refs ('the maintainer', 'the architect')\n" +
-    "  persona / human / external-AI names are reserved for history surfaces\n"
+      "  current-state surfaces use role-refs ('the maintainer', 'the architect')\n" +
+      "  persona / human / external-AI names are reserved for history surfaces\n",
   );
   if (softLaunch) {
     process.stderr.write(
       "\n[SOFT-LAUNCH MODE: exit 0 despite violations. Use --strict or\n" +
-      " ROLE_REF_CHECK_SOFT_LAUNCH=0 to enforce.]\n"
+        " ROLE_REF_CHECK_SOFT_LAUNCH=0 to enforce.]\n",
     );
     process.exit(0);
   }

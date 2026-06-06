@@ -475,12 +475,7 @@ export function main(argv: readonly string[]): number {
     return 1;
   }
 
-  const cliArgs: string[] = [
-    "--print",
-    "--tools",
-    CLAUDE_TOOLS,
-    "--no-session-persistence",
-  ];
+  const cliArgs: string[] = ["--print", "--tools", CLAUDE_TOOLS, "--no-session-persistence"];
   if (parsed.model.length > 0) {
     cliArgs.push("--model", parsed.model);
   }
